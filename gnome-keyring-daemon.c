@@ -2322,6 +2322,7 @@ main (int argc, char *argv[])
 	const char *path;
 	pid_t pid;
 	gboolean foreground;
+	gboolean daemon;
 	int i;
 	
 	
@@ -2336,11 +2337,15 @@ main (int argc, char *argv[])
 	}
 
 	foreground = FALSE;
+	daemon = FALSE;
 
 	if (argc > 1) {
 		for (i = 1; i < argc; i++) {
 			if (strcmp (argv[i], "-f") == 0) {
 				foreground = TRUE;
+			}
+			if (strcmp (argv[i], "-d") == 0) {
+				daemon = TRUE;
 			}
 		}
 	}
@@ -2349,25 +2354,26 @@ main (int argc, char *argv[])
 		pid = fork ();
 		if (pid == 0) {
 			/* intermediated child */
-
-			pid = fork ();
-			
-			if (pid != 0) {
-				/* still intermediated child */
-
-				/* This process exits, so that the
-				 * final child will inherit init as parent
-				 * to avoid zombies
-				 */
-				if (pid == -1) {
-					exit (1);
-				} else {
-					/* This is where we know the pid of the daemon.
-					 * The initial process will waitpid until we exit,
-					 * so there is no race */
-					g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
-					g_print ("GNOME_KEYRING_PID=%d\n", pid);
-					exit (0);
+			if (daemon) {
+				pid = fork ();
+				
+				if (pid != 0) {
+					/* still intermediated child */
+					
+					/* This process exits, so that the
+					 * final child will inherit init as parent
+					 * to avoid zombies
+					 */
+					if (pid == -1) {
+						exit (1);
+					} else {
+						/* This is where we know the pid of the daemon.
+						 * The initial process will waitpid until we exit,
+						 * so there is no race */
+						g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
+						g_print ("GNOME_KEYRING_PID=%d\n", pid);
+						exit (0);
+					}
 				}
 			}
 			
@@ -2375,16 +2381,21 @@ main (int argc, char *argv[])
 			
 			/* final child continues here */
 		} else {
-			int status;
-			/* Initial process, waits for intermediate child */
-			if (pid == -1) {
-				exit (1);
+			if (daemon) {
+				int status;
+				/* Initial process, waits for intermediate child */
+				if (pid == -1) {
+					exit (1);
+				}
+				waitpid (pid, &status, 0);
+				if (status != 0) {
+					exit (status);
+				}
+			} else {
+				g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
+				g_print ("GNOME_KEYRING_PID=%d\n", pid);
 			}
-			waitpid (pid, &status, 0);
-			if (status != 0) {
-				exit (status);
-			}
-
+			
 			exit (0);
 		}
 	} else {
@@ -2394,12 +2405,8 @@ main (int argc, char *argv[])
 
 	/* Daemon process continues here */
 
-        if (!foreground) {
-                signal (SIGINT, SIG_IGN);
-	} else {
-		signal (SIGINT, cleanup_handler);
-	}
 	signal (SIGPIPE, SIG_IGN);
+	signal (SIGINT, cleanup_handler);
         signal (SIGHUP, cleanup_handler);
         signal (SIGTERM, cleanup_handler);
 	
