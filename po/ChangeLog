@@ -1,3 +1,7 @@
+2004-03-21  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
 2004-03-21  Abel Cheung  <maddog@linux.org.hk>
 
 	* ar.po, ko.po: Mark wrong entry as fuzzy (msgfmt check failed).
