@@ -3,118 +3,325 @@
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Sébastien Bacher <seb128@debian.org>, 2004.
+# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 0.1.1\n"
-"POT-Creation-Date: 2004-01-12 08:48+0100\n"
-"PO-Revision-Date: 2004-01-11 16:55+0100\n"
-"Last-Translator: Sébastien Bacher <seb128@debian.org>\n"
+"Project-Id-Version: gnome-keyring 0.1.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-28 13:41+0100\n"
+"PO-Revision-Date: 2004-01-28 13:26+0100\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
-#: gnome-keyring-ask.c:170
+#: gnome-keyring-ask.c:223
 #, c-format
-msgid "The application '%s' (%s)"
-msgstr "L'application « %s » (%s)"
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"L'application « %s » (%s) veut accéder au trousseau de clé par défaut, mais "
+"il est verrouillé"
 
-#: gnome-keyring-ask.c:172
+#: gnome-keyring-ask.c:227
 #, c-format
-msgid "The application '%s'"
-msgstr "L'application « %s »"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"L'application « %s » (%s) veut accéder au trousseau de clés « %s », mais il "
+"est verrouillé"
 
-#: gnome-keyring-ask.c:175
+#: gnome-keyring-ask.c:232
 #, c-format
-msgid "The application %s"
-msgstr "L'application %s"
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr ""
+"L'application « %s » (%s) veut accéder à un trousseau de clés inconnu, mais "
+"il est verrouillé"
 
-#: gnome-keyring-ask.c:185
-msgid "the default keyring"
-msgstr "le trousseau par défaut"
-
-#: gnome-keyring-ask.c:187
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
-msgid "the keyring '%s'"
-msgstr "le trousseau « %s »"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"L'application « %s » veut accéder au trousseau de clés par défaut, mais il "
+"est verrouillé"
 
-#: gnome-keyring-ask.c:190
-msgid "an unknown keyring"
-msgstr "un trousseau inconnu"
-
-#: gnome-keyring-ask.c:206
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format
-msgid "%s wants access to %s, but it is locked."
-msgstr "%s veut accéder à %s, mais il est verrouillé."
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+"L'application « %s » veut accéder au trousseau de clés « %s », mais il est "
+"verrouillé"
 
-#: gnome-keyring-ask.c:210
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"L'application « %s » veut accéder à un trousseau de clés inconnu, mais il "
+"est verrouillé"
+
+#: gnome-keyring-ask.c:268
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Une application inconnue veut accéder au trousseau de clés par défaut, mais "
+"il est verrouillé"
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Une application inconnue veut accéder au trousseau de clés « %s », mais il "
+"est verrouillé"
+
+#: gnome-keyring-ask.c:277
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Une application inconnue veut accéder à un trousseau de clés inconnu, mais "
+"il est verrouillé"
+
+#: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
 msgstr ""
-"Saisissez le mot de passe du trousseau par défaut pour le déverrouiller"
+"Saisissez le mot de passe du trousseau de clés par défaut pour le "
+"déverrouiller"
 
-#: gnome-keyring-ask.c:212
+#: gnome-keyring-ask.c:286
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Saisissez le mot de passe du trousseau « %s » pour déverrouiller"
-
-#: gnome-keyring-ask.c:215
-msgid "Unlock Keyring"
-msgstr "Déverrouiller le trousseau"
-
-#: gnome-keyring-ask.c:251
-#, c-format
-msgid ""
-"%s wants to create a new keyring called '%s'. You have to choose the "
-"password you want to use for it."
 msgstr ""
-"« %s » veut créer un nouveau trousseau nommé « %s ». Vous devez choisir le "
-"mot de passe que vous voulez lui associer."
-
-#: gnome-keyring-ask.c:255
-msgid "New Keyring Password"
-msgstr "Mot de passe du nouveau trousseau"
-
-#: gnome-keyring-ask.c:256
-msgid "Choose password for new keyring"
-msgstr "Choisissez le mot de passe du nouveau trousseau"
-
-#: gnome-keyring-ask.c:285
-#, c-format
-msgid ""
-"%s wants to store a password, but there is no default keyring. To create "
-"one, you need to choose the password you wish to use for it."
-msgstr ""
-"« %s » veut archiver un mot de passe, mais il n'y a pas de trousseau par "
-"défaut. Pour en créer un, vous avez besoin de choisir le mot de passe que "
-"vous désirez lui associer."
+"Saisissez le mot de passe du trousseau de clés « %s » pour le déverrouiller"
 
 #: gnome-keyring-ask.c:289
-msgid "Create Default Keyring"
-msgstr "Créer le trousseau par défaut"
+msgid "Unlock Keyring"
+msgstr "Déverrouiller le trousseau de clés"
 
-#: gnome-keyring-ask.c:290
-msgid "Choose password for default keyring"
-msgstr "Choisissez un mot de passe pour le trousseau par défaut"
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "_Interdire"
 
-#: gnome-keyring-ask.c:327
-msgid "Allow application access to keyring?"
-msgstr "Autoriser l'application à accéder au trousseau ?"
-
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:329
 #, c-format
-msgid "%s wants to access the password for '%s' in %s."
-msgstr "« %s » veut accéder au mot de passe de « %s » dans « %s »"
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"L'application « %s » (%s) veut créer un nouveau trousseau de clés nommé « %"
+"s ». Vous devez choisir le mot de passe que vous voulez lui associer."
 
-#: gnome-keyring-ask.c:330
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"L'application « %s » (%s) veut créer un nouveau trousseau de clés. Vous "
+"devez choisir le mot de passe que vous voulez lui associer."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"L'application « %s » veut créer un nouveau trousseau de clés nommé « %s ». "
+"Vous devez choisir le mot de passe que vous voulez lui associer."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"L'application « %s » veut créer un nouveau trousseau de clés par défaut. "
+"Vous devez choisir le mot de passe que vous voulez lui associer."
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Une application inconnue veut créer un nouveau trousseau de clés nommé « %"
+"s ». Vous devez choisir le mot de passe que vous voulez lui associer."
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Une application inconnue veut créer un nouveau trousseau de clés par défaut. "
+"Vous devez choisir le mot de passe que vous voulez lui associer."
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "Mot de passe du nouveau trousseau de clés"
+
+#: gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "Choisissez le mot de passe du nouveau trousseau de clés"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"L'application « %s » (%s) veut archiver un mot de passe, mais il n'y a pas "
+"de trousseau de clés par défaut. Pour en créer un, vous avez besoin de "
+"choisir le mot de passe que vous désirez lui associer."
+
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"L'application « %s » veut archiver un mot de passe, mais il n'y a pas de "
+"trousseau de clés par défaut. Pour en créer un, vous avez besoin de choisir "
+"le mot de passe que vous désirez lui associer."
+
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Une application inconnue veut archiver un mot de passe, mais il n'y a pas de "
+"trousseau de clés par défaut. Pour en créer un, vous avez besoin de choisir "
+"le mot de passe que vous désirez lui associer."
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "Créer le trousseau de clés par défaut"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "Choisissez un mot de passe pour le trousseau de clés par défaut"
+
+#: gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "Autoriser l'application à accéder au trousseau de clés ?"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr ""
+"L'application « %s » (%s) veut accéder au mot de passe de « %s » dans « %s »."
+
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"L'application « %s » (%s) veut accéder au mot de passe de « %s » dans le "
+"trousseau de clés par défaut."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+"L'application « %s » (%s) veut accéder au mot de passe de « %s » dans un "
+"trousseau de clés inconnu."
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "L'application « %s » veut accéder au mot de passe de « %s » dans %s."
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"L'application « %s » veut accéder au mot de passe de « %s » dans le "
+"trousseau de clés par défaut."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"L'application « %s » veut accéder au mot de passe de « %s » dans un "
+"trousseau de clés inconnu."
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr ""
+"Une application inconue veut accéder au mot de passe de « %s » dans %s."
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Une application inconnue veut accéder au mot de passe de « %s » dans le "
+"trousseau de clés par défaut."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Une application inconnue veut accéder au mot de passe de « %s » dans un "
+"trousseau de clés inconnu."
+
+#: gnome-keyring-ask.c:501
 msgid "Allow access"
 msgstr "Autoriser l'accès"
 
-#: gnome-keyring-ask.c:366
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "Autoriser _une seule fois"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "_Toujours autoriser"
+
+#: gnome-keyring-ask.c:547
 msgid "You must specify the type of request to run\n"
 msgstr "Vous devez spécifier le type de requête à lancer\n"
 
-#: gnome-keyring-ask.c:379
+#: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "Type de requête inconnu\n"
+
+#~ msgid "The application '%s' (%s)"
+#~ msgstr "L'application « %s » (%s)"
+
+#~ msgid "The application '%s'"
+#~ msgstr "L'application « %s »"
+
+#~ msgid "The application %s"
+#~ msgstr "L'application %s"
+
+#~ msgid "the default keyring"
+#~ msgstr "le trousseau de clés par défaut"
+
+#~ msgid "the keyring '%s'"
+#~ msgstr "le trousseau de clés « %s »"
+
+#~ msgid "an unknown keyring"
+#~ msgstr "un trousseau de clés inconnu"
