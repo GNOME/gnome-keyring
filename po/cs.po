@@ -1,0 +1,115 @@
+# Czech translation of gnome-keyring
+# Copyright (C) 2003 gnome-keyring'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-keyring package.
+# Miloslav Trmac <mitr@volny.cz>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-17 03:55+0100\n"
+"PO-Revision-Date: 2003-12-17 13:26+0100\n"
+"Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-keyring-ask.c:170
+#, c-format
+msgid "The application '%s' (%s)"
+msgstr "Aplikace '%s' (%s)"
+
+#: gnome-keyring-ask.c:172
+#, c-format
+msgid "The application '%s'"
+msgstr "Aplikace '%s'"
+
+#: gnome-keyring-ask.c:175
+#, c-format
+msgid "The application %s"
+msgstr "Aplikace %s"
+
+#: gnome-keyring-ask.c:185
+msgid "the default keyring"
+msgstr "implicitní klíčenka"
+
+#: gnome-keyring-ask.c:187
+#, c-format
+msgid "the keyring '%s'"
+msgstr "klíčenka '%s'"
+
+#: gnome-keyring-ask.c:190
+msgid "an unknown keyring"
+msgstr "neznámá klíčenka"
+
+# FIXME: Won't work for grammar reasons
+#: gnome-keyring-ask.c:206
+#, c-format
+msgid "%s wants access to %s, but it is locked."
+msgstr "%s chce přístup k %s, která je zamčena."
+
+#: gnome-keyring-ask.c:210
+msgid "Enter password for default keyring to unlock"
+msgstr "Zadejte heslo pro odemčení implicitní klíčenky"
+
+#: gnome-keyring-ask.c:212
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Zadejte heslo pro odemčení klíčenky '%s'"
+
+#: gnome-keyring-ask.c:215
+msgid "Unlock Keyring"
+msgstr "Odemknout klíčenku"
+
+#: gnome-keyring-ask.c:251
+#, c-format
+msgid ""
+"%s wants to create a new keyring called '%s'. You have to choose the "
+"password you want to use for it."
+msgstr "%s chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolt heslo, které pro ni chcete používat."
+
+#: gnome-keyring-ask.c:255
+msgid "New Keyring Password"
+msgstr "Heslo nové klíčenky"
+
+#: gnome-keyring-ask.c:256
+msgid "Choose password for new keyring"
+msgstr "Zvolte heslo pro novou klíčenku"
+
+#: gnome-keyring-ask.c:285
+#, c-format
+msgid ""
+"%s wants to store a password, but there is no default keyring. To create "
+"one, you need to choose the password you wish to use for it."
+msgstr "%s chce uložit heslo, ale neexistuje implicitní klíčenka. Před jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
+
+#: gnome-keyring-ask.c:289
+msgid "Create Default Keyring"
+msgstr "Vytvořit implicitní klíčenku"
+
+#: gnome-keyring-ask.c:290
+msgid "Choose password for default keyring"
+msgstr "Zvolte heslo pro implicitní klíčenku"
+
+#: gnome-keyring-ask.c:327
+msgid "Allow application access to keyring?"
+msgstr "Povolit aplikaci přístup ke klíčence?"
+
+# FIXME: won't work for grammar reasons
+#: gnome-keyring-ask.c:328
+#, c-format
+msgid "%s wants to access the password for '%s' in %s."
+msgstr "%s chce přístup k heslu pro '%s' v %s."
+
+#: gnome-keyring-ask.c:330
+msgid "Allow access"
+msgstr "Povolit přístup"
+
+#: gnome-keyring-ask.c:366
+msgid "You must specify the type of request to run\n"
+msgstr "Musíte určit typ požadavku, který spustit\n"
+
+#: gnome-keyring-ask.c:379
+msgid "Unknown request type\n"
+msgstr "Neznámý typ požadavku\n"
