@@ -1,3 +1,8 @@
+2003-12-16  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-ask.c (ask_for_new_keyring_password):
+	Make the ask dialogs nicer.
+
 2003-12-14  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Add norwegian translation.

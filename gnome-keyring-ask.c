@@ -42,132 +42,342 @@
 #  define N_(String) (String)
 #endif
 
-int
-main (int argc, char *argv[])
+const char *env_app_display_name;
+const char *env_app_pathname;
+const char *env_keyring_name;
+const char *env_item_name;
+
+static char *
+create_markup (const char *primary, const char *secondary)
 {
-	const char *app_display_name;
-	const char *app_pathname;
-	const char *keyring_name;
-	const char *item_name;
+	return g_strconcat ("<span weight=\"bold\" size=\"larger\">", primary, "</span>\n\n", secondary, NULL);
+}
+
+static gint
+run_dialog (const char *title,
+	    const char *primary,
+	    const char *secondary,
+	    gboolean include_password,
+	    char **password_out,
+	    guint default_response,
+	    const gchar *first_button_text,
+	    ...)
+{
 	GtkWidget *dialog;
 	GtkLabel *message_widget;
 	char *message;
 	GtkWidget *entry;
 	gint response;
-	gboolean keyring;
-	gboolean new_keyring;
-	gboolean default_keyring;
-	char *title;
+	va_list args;
+	const char *text;
+	gint response_id;
+	GtkWidget *hbox;
+	GtkWidget *vbox;
+	GtkWidget *image;
+	const char *password;
 
-	app_display_name = g_getenv ("KEYRING_APP_NAME");
-	app_pathname = g_getenv ("KEYRING_APP_PATH");
-	keyring_name = g_getenv ("KEYRING_NAME");
-	item_name = g_getenv ("ITEM_NAME");
+	dialog = gtk_dialog_new_with_buttons (title , NULL, 0, NULL);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+ 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
+	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 12);
+ 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
+
+	va_start (args, first_button_text);
+	
+	text = first_button_text;
+	response_id = va_arg (args, gint);
+
+	while (text != NULL) {
+		gtk_dialog_add_button (GTK_DIALOG (dialog), text, response_id);
+			
+		text = va_arg (args, char*);
+		if (text == NULL) {
+			break;
+		}
+		response_id = va_arg (args, int);
+	}
+	
+	va_end (args);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), default_response);
+
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+	
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox, 
+	                    FALSE, FALSE, 0);
+
+	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_AUTHENTICATION, GTK_ICON_SIZE_DIALOG);
+	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
+
+	gtk_box_pack_start (GTK_BOX (hbox), image, 
+	                    FALSE, FALSE, 0);
+
+	vbox = gtk_vbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    GTK_WIDGET (vbox),
+			    FALSE, FALSE, 0);
+	
+	message = create_markup (primary, secondary);
+	message_widget = GTK_LABEL (gtk_label_new (message));
+	g_free (message);
+	gtk_label_set_use_markup (message_widget, TRUE);
+	gtk_misc_set_alignment (GTK_MISC (message_widget), 0.0, 0.5);
+	gtk_label_set_line_wrap (message_widget, TRUE);
+	gtk_label_set_justify (message_widget,
+			       GTK_JUSTIFY_LEFT);
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    GTK_WIDGET (message_widget),
+			    FALSE, FALSE, 0);
+
+	entry = NULL;
+	if (include_password) {
+		entry = gtk_entry_new ();
+		gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
+		g_signal_connect_swapped (entry,
+					  "activate",
+					  G_CALLBACK (gtk_window_activate_default),
+					  dialog);
+		gtk_box_pack_start (GTK_BOX (vbox),
+				    entry,
+				    FALSE, FALSE, 0);
+	}
+
+ retry:
+	gtk_widget_show_all (dialog);
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	if (include_password && entry != NULL) {
+		password = gtk_entry_get_text (GTK_ENTRY (entry));
+		if (response == GTK_RESPONSE_OK && *password == 0) {
+			goto retry;
+		}
+		*password_out = g_strdup (password);
+	}
+
+	gtk_widget_destroy (dialog);
+	
+	return response;
+}
+
+
+static char *
+get_app_string (void)
+{
+	if (env_app_display_name != NULL) {
+		if (env_app_pathname != NULL) {
+			return g_strdup_printf (_("The application '%s' (%s)"), env_app_display_name, env_app_pathname);
+		}
+		return g_strdup_printf (_("The application '%s'"), env_app_display_name);
+	}
+	if (env_app_pathname != NULL) {
+		return g_strdup_printf (_("The application %s"), env_app_pathname);
+	}
+	return g_strdup ("An unknown application");
+}
+
+static char *
+get_keyring_string (void)
+{
+	if (env_keyring_name != NULL) {
+		if (strcmp (env_keyring_name, "default") == 0) {
+			return g_strdup (_("the default keyring"));
+		} else {
+			return g_strdup_printf (_("the keyring '%s'"), env_keyring_name);
+		}
+	}
+	return g_strdup (_("an unknown keyring"));
+}
+
+static void
+ask_for_keyring_password (void)
+{
+	char *message;
+	gint response;
+	char *app;
+	char *keyring;
+	char *password;
+	char *primary;
+	
+	app = get_app_string ();
+	keyring = get_keyring_string ();
+
+	message = g_strdup_printf (_("%s wants access to %s, but it is locked."), app, keyring);
+
+	if (env_keyring_name == NULL ||
+	    strcmp (env_keyring_name, "default") == 0) {
+		primary = g_strdup (_("Enter password for default keyring to unlock"));
+	} else {
+		primary = g_strdup_printf (_("Enter password for keyring '%s' to unlock"), env_keyring_name);
+	}
+
+	response = run_dialog (_("Unlock Keyring"),
+			       primary,
+			       message,
+			       TRUE, &password,
+			       GTK_RESPONSE_OK,
+			       "_Deny", GTK_RESPONSE_CANCEL,
+			       GTK_STOCK_OK, GTK_RESPONSE_OK,
+			       NULL);
+	g_free (message);
+	g_free (primary);
+		    
+	if (response == GTK_RESPONSE_OK) {
+		response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_ONCE;
+	} else {
+		response = GNOME_KEYRING_ASK_RESPONSE_DENY;
+	}
+	
+	printf ("%d\n%s\n", response, password);
+	g_free (password);
+}
+
+static void
+ask_for_new_keyring_password (void)
+{
+	char *message;
+	gint response;
+	char *app;
+	const char *keyring;
+	char *password;
+	
+	app = get_app_string ();
+	keyring = env_keyring_name;
+	if (keyring == NULL) {
+		keyring = "";
+	}
+
+	message = g_strdup_printf (_("%s wants to create a new keyring called '%s'. "
+				     "You have to choose the password you want to use for it."),
+				   app, keyring);
+
+	response = run_dialog (_("New Keyring Password"),
+			       _("Choose password for new keyring"),
+			       message,
+			       TRUE, &password,
+			       GTK_RESPONSE_OK,
+			       "_Deny", GTK_RESPONSE_CANCEL,
+			       GTK_STOCK_OK, GTK_RESPONSE_OK,
+			       NULL);
+	g_free (message);
+	
+	if (response == GTK_RESPONSE_OK) {
+		response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_ONCE;
+	} else {
+		response = GNOME_KEYRING_ASK_RESPONSE_DENY;
+	}
+	
+	printf ("%d\n%s\n", response, password);
+	g_free (password);
+}
+
+static void
+ask_for_default_keyring (void)
+{
+	char *message;
+	gint response;
+	char *app;
+	char *password;
+	
+	app = get_app_string ();
+
+	message = g_strdup_printf (_("%s wants to store a password, but there is no default keyring. "
+				     "To create one, you need to choose the password you wish to use for it."),
+				   app);
+
+	response = run_dialog (_("Create Default Keyring"),
+			       _("Choose password for default keyring"),
+			       message,
+			       TRUE, &password,
+			       GTK_RESPONSE_OK,
+			       "_Deny", GTK_RESPONSE_CANCEL,
+			       GTK_STOCK_OK, GTK_RESPONSE_OK,
+			       NULL);
+	g_free (message);
+
+	if (response == GTK_RESPONSE_OK) {
+		response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_ONCE;
+	} else {
+		response = GNOME_KEYRING_ASK_RESPONSE_DENY;
+	}
+	
+	printf ("%d\n%s\n", response, password);
+	g_free (password);
+}
+
+
+static void
+ask_for_item_read_write_acccess (void)
+{
+	char *app;
+	char *keyring;
+	char *primary;
+	char *secondary;
+	const char *item;
+	gint response;
+	
+	app = get_app_string ();
+	keyring = get_keyring_string ();
+	item = env_item_name;
+	if (item == NULL) {
+		item = "";
+	}
+	
+	primary = _("Allow application access to keyring?");
+	secondary = g_strdup_printf (_("%s wants to access the password for '%s' in %s."),
+				     app, item, keyring);
+	response = run_dialog (_("Allow access"),
+			       primary, secondary,
+			       FALSE, NULL,
+			       2,
+			       "_Deny", GTK_RESPONSE_CANCEL,
+			       "_Allow Once", 1,
+			       "_Allow Forever", 2,
+			       NULL);
+	g_free (secondary);
+	
+	
+	if (response == 1) {
+		response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_ONCE;
+	} else if (response == 2) {
+		response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_FOREVER;
+	} else {
+		response = GNOME_KEYRING_ASK_RESPONSE_DENY;
+	}
+	
+	printf ("%d\n", response);
+}
+
+
+
+int
+main (int argc, char *argv[])
+{
+
+	env_app_display_name = g_getenv ("KEYRING_APP_NAME");
+	env_app_pathname = g_getenv ("KEYRING_APP_PATH");
+	env_keyring_name = g_getenv ("KEYRING_NAME");
+	env_item_name = g_getenv ("ITEM_NAME");
 
 	gtk_init (&argc, &argv);
 
-
-	keyring = FALSE;
-	new_keyring = FALSE;
-	default_keyring = FALSE;
-	if (argc >= 2 &&
-	    strcmp (argv[1], "-k") == 0) {
-		keyring = TRUE;
+	if (argc < 2) {
+		g_print (_("You must specify the type of request to run\n"));
+		return 1;
 	}
-	if (argc >= 2 &&
-	    strcmp (argv[1], "-n") == 0) {
-		keyring = TRUE;
-		new_keyring = TRUE;
-	}
-	if (argc >= 2 &&
-	    strcmp (argv[1], "-d") == 0) {
-		keyring = TRUE;
-		default_keyring = TRUE;
-	}
-	
-	if (keyring) {
-		if (new_keyring) {
-			title = _("New keyring password");
-		} else if (default_keyring) {
-			title = _("Create default keyring");
-		} else {
-			title = _("Unlock keyring");
-		}
-		
-		dialog = gtk_dialog_new_with_buttons (title , NULL, 0,
-						      "_Deny", GTK_RESPONSE_CANCEL,
-						      GTK_STOCK_OK, GTK_RESPONSE_OK,
-						      NULL);
-		
-		gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
 
-		if (new_keyring) {
-			message = g_strdup_printf (_("Enter password for new keyring %s"), keyring_name ? keyring_name : "unknown");
-		} else if (default_keyring) {
-			message = g_strdup_printf (_("There is no default keyring, and one is needed. Please enter the password for the new default keyring."));
-		} else {
-			message = g_strdup_printf (_("Enter password to unlock keyring %s"), keyring_name ? keyring_name : "unknown");
-		}
-		message_widget = GTK_LABEL (gtk_label_new (message));
-		g_free (message);
-		gtk_label_set_line_wrap (message_widget, TRUE);
-		gtk_label_set_justify (message_widget,
-				       GTK_JUSTIFY_LEFT);
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-				    GTK_WIDGET (message_widget),
-				    TRUE, TRUE, 6);
-		
-		entry = gtk_entry_new ();
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-				    entry,
-				    TRUE, TRUE, 6);
-		
-		gtk_widget_show_all (dialog);
-		
-		response = gtk_dialog_run (GTK_DIALOG (dialog));
-
-		if (response == GTK_RESPONSE_OK) {
-			response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_ONCE;
-		} else {
-			response = GNOME_KEYRING_ASK_RESPONSE_DENY;
-		}
-		
-		printf ("%d\n%s\n", response, gtk_entry_get_text (GTK_ENTRY (entry)));
-
+	if (strcmp (argv[1], "-k") == 0) {
+		ask_for_keyring_password ();
+	} else if (strcmp (argv[1], "-n") == 0) {
+		ask_for_new_keyring_password ();
+	} else if (strcmp (argv[1], "-i") == 0) {
+		ask_for_item_read_write_acccess ();
+	} else if (strcmp (argv[1], "-d") == 0) {
+		ask_for_default_keyring ();
 	} else {
-		dialog = gtk_dialog_new_with_buttons (_("Allow access") , NULL, 0,
-						      "_Deny", GTK_RESPONSE_CANCEL,
-						      "_Allow Once", 1,
-						      "_Allow Forever", 2,
-						      NULL);
-		
-		gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
-		
-		message = g_strdup_printf (_("Allow app %s to access item %s"),
-					   app_display_name, item_name);
-		message_widget = GTK_LABEL (gtk_label_new (message));
-		g_free (message);
-		gtk_label_set_line_wrap (message_widget, TRUE);
-		gtk_label_set_justify (message_widget,
-				       GTK_JUSTIFY_LEFT);
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-				    GTK_WIDGET (message_widget),
-				    TRUE, TRUE, 6);
-		
-		gtk_widget_show_all (dialog);
-		
-		response = gtk_dialog_run (GTK_DIALOG (dialog));
-		
-		if (response == 1) {
-			response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_ONCE;
-		} else if (response == 2) {
-			response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_FOREVER;
-		} else {
-			response = GNOME_KEYRING_ASK_RESPONSE_DENY;
-		}
-		printf ("%d\n", response);
+		g_print (_("Unknown request type\n"));
 	}
-
 	
 	return 0;
 }
