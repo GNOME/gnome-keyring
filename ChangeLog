@@ -1,3 +1,14 @@
+2005-02-21  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-ask.c:
+	* gnome-keyring-daemon-io.c:
+	* gnome-keyring-daemon.h:
+	* gnome-keyring-private.h:
+	* gnome-keyring.c:
+	* gnome-keyring.h:
+	Some AIX portability patches from The Written Word
+	(#148385)
+
 2005-01-14  Pawan Chitrakar  <pawan@nplinux.org>
 
 	* configure.in: Added ne "Nepali" in ALL_LINGUAS
