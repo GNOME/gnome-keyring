@@ -748,12 +748,6 @@ update_keyring_from_disk (GnomeKeyring *keyring,
 		return FALSE;
 	}
 	
-	/* TODO: Actually read file,
-	 * set locked to false if password set and correct, otherwise unset password
-	 * must set name unless i/o or parse failure
-	 * return false on i/o or parse failure
-	 */
-	
 	return TRUE;
 }
 

@@ -1,5 +1,10 @@
 2003-11-28  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-ask.c:
+	Fix gettext include
+
+2003-11-28  Alexander Larsson  <alexl@redhat.com>
+
 	* COPYING.LIB:
 	Add LGPL file
 	

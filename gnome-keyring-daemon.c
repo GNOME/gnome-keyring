@@ -1889,10 +1889,10 @@ main (int argc, char *argv[])
 
 	session_keyring = gnome_keyring_new ("session", NULL);
 
-	//default_keyring = session_keyring;
-
 	update_keyrings_from_disk ();
 	
+	//default_keyring = session_keyring;
+
 	loop = g_main_loop_new (NULL, FALSE);
 	g_main_loop_run (loop);
 	

@@ -30,6 +30,7 @@
 #include "gnome-keyring-private.h"
 
 #ifdef ENABLE_NLS
+#  include <libintl.h>
 #  define _(String) gettext (String)
 #  ifdef gettext_noop
 #    define N_(String) gettext_noop (String)
