@@ -1,3 +1,8 @@
+2004-10-11  Roozbeh Pournader  <roozbeh@farsiweb.info>
+
+	* configure.in:
+	Added 'fa' (Persian) to ALL_LINGUAS
+
 2004-09-13  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
