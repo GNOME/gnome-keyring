@@ -1,6 +1,11 @@
 2004-04-19  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
+	Bump version to 0.3.1 on head. 0.2.x is now on gnome-2-6 branch
+	
+2004-04-19  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
 	Post release version bump
 
 === gnome-keyring 0.2.1 ===
