@@ -7,14 +7,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.1\n"
-"POT-Creation-Date: 2004-02-24 04:52+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-02-24 22:52+0100\n"
 "Last-Translator: Francesco Marletta <francesco.marletta@tiscali.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: gnome-keyring-ask.c:223
 #, c-format
