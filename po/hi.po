@@ -1,0 +1,283 @@
+# translation of hi.po to Hindi
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Rajesh Ranjan <rranjan@redhat.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hi\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-03-01 07:09+0100\n"
+"PO-Revision-Date: 2005-03-04 21:40+0530\n"
+"Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
+"Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+
+#: gnome-keyring-ask.c:223
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr "से. से. को डिफ़ॉल्ट है"
+
+#: gnome-keyring-ask.c:227
+#, c-format
+#, fuzzy
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "से. से. को से. है"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "से. से. को अज्ञात है"
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, c-format
+#, fuzzy
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "से. को डिफ़ॉल्ट है"
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, c-format
+#, fuzzy
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "से. को से. है"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+#, fuzzy
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "से. को अज्ञात है"
+
+#: gnome-keyring-ask.c:268
+#, fuzzy
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "अज्ञात को डिफ़ॉल्ट है"
+
+#: gnome-keyring-ask.c:272
+#, c-format
+#, fuzzy
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "अज्ञात को से. है"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+#, fuzzy
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "अज्ञात को अज्ञात है"
+
+#: gnome-keyring-ask.c:284
+#, fuzzy
+msgid "Enter password for default keyring to unlock"
+msgstr "एंटर कुंजी के लिये डिफ़ॉल्ट को"
+
+#: gnome-keyring-ask.c:286
+#, c-format
+#, fuzzy
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "एंटर कुंजी के लिये से. को"
+
+#: gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "कीरिंग खोलें"
+
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "मना करें"
+
+#: gnome-keyring-ask.c:329
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr "से. से. को ए नया से. आप को को के लिये."
+
+#: gnome-keyring-ask.c:333
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "से. से. को ए नया डिफ़ॉल्ट आप को को के लिये."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "से. को ए नया से. आप को को के लिये."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "से. को ए नया डिफ़ॉल्ट आप को को के लिये."
+
+#: gnome-keyring-ask.c:359
+#, c-format
+#, fuzzy
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "को ए नया से. आप को को के लिये."
+
+#: gnome-keyring-ask.c:363
+#, fuzzy
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "को ए नया डिफ़ॉल्ट आप को को के लिये."
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "नया कीरिंग शब्दकूट"
+
+#: gnome-keyring-ask.c:370
+#, fuzzy
+msgid "Choose password for new keyring"
+msgstr "के लिये नया"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "से. से. को ए है नहीं डिफ़ॉल्ट को एक को को के लिये."
+
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "से. को ए है नहीं डिफ़ॉल्ट को एक को को के लिये."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+#, fuzzy
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "अज्ञात को ए है नहीं डिफ़ॉल्ट को एक को को के लिये."
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "बनाएँ डिफ़ॉल्ट कीरिंग"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "डिफ़ॉल्ट कीरिंग के लिये शब्दकूट बदलें"
+
+#: gnome-keyring-ask.c:454
+#, fuzzy
+msgid "Allow application access to keyring?"
+msgstr "स्वीकारें को?"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+#, fuzzy
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "से. से. को के लिये से. इंच से.."
+
+#: gnome-keyring-ask.c:460
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "से. से. को के लिये से. इंच डिफ़ॉल्ट."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "से. से. को के लिये से. इंच अज्ञात."
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+#, fuzzy
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "से. को के लिये से. इंच से.."
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "से. को के लिये से. इंच डिफ़ॉल्ट."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+#, fuzzy
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "से. को के लिये से. इंच अज्ञात."
+
+#: gnome-keyring-ask.c:490
+#, c-format
+#, fuzzy
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "अज्ञात को के लिये से. इंच से.."
+
+#: gnome-keyring-ask.c:493
+#, c-format
+#, fuzzy
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "अज्ञात को के लिये से. इंच डिफ़ॉल्ट."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+#, fuzzy
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "अज्ञात को के लिये से. इंच अज्ञात."
+
+#: gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "अभिगम स्वीकारें"
+
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "स्वीकारें एक बार"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "हमेशा स्वीकारें"
+
+#: gnome-keyring-ask.c:547
+#, fuzzy
+msgid "You must specify the type of request to run\n"
+msgstr "आप प्रकार का को n"
+
+#: gnome-keyring-ask.c:560
+msgid "Unknown request type\n"
+msgstr "अज्ञात आग्रह प्रकार\n"
+
