@@ -76,13 +76,15 @@ list_keyrings_SOURCES = \
 	list-keyrings.c
 
 list_keyrings_LDADD = \
-	libgnome-keyring.la
+	libgnome-keyring.la \
+	$(GTK_LIBS)
 
 test_keyring_SOURCES = \
 	test.c
 
 test_keyring_LDADD = \
-	libgnome-keyring.la
+	libgnome-keyring.la \
+	$(GTK_LIBS)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-keyring-1.pc

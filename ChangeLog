@@ -1,3 +1,14 @@
+2003-12-09  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon-io.c:
+	FreeBSD patches from Joe Marcus Clarke
+	
+2003-12-08  Alex Duggan  <aldug@astrolinux.com>
+
+	* configure.in:
+	* Makefile.am:
+	Build fixes to make gnome-keyring build with jhbuild again.
+
 2003-12-08  Alexander Larsson  <alexl@redhat.com>
 
 	* mkdtemp.[ch]:
