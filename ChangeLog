@@ -1,3 +1,27 @@
+2003-12-03  Alexander Larsson  <alexl@redhat.com>
+
+	* TODO:
+	Updated
+	
+	* gnome-keyring-daemon.c:
+	Clean up acl setting
+	Implement update_if_exists for create_item
+	Order find results least specific first
+	
+	* gnome-keyring-proto.[ch]:
+	Implement update_if_exists for create_item
+	
+	* gnome-keyring-utils.c: (gnome_keyring_found_list_free):
+	implement
+	
+	* gnome-keyring.[ch]:
+	Implement sync find ops
+	Make valist ops don't ignore NULL/0 attributes
+	Implement network password helpers
+	
+	* test.c:
+	some more tests
+
 2003-12-01  Alexander Larsson  <alexl@redhat.com>
 
 	* Makefile.am:

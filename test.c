@@ -35,11 +35,10 @@ unlock (char *keyring, char *password)
 	g_main_loop_run (loop);
 }
 
-#if 0
 static void
-found_items (GnomeKeyringResult result,
-	    GList *found_items,
-	    gpointer data)
+find_items_cb (GnomeKeyringResult result,
+	       GList *found_items,
+	       gpointer data)
 {
 	g_print ("found items: res: %d nr items: %d\n", result, g_list_length (found_items));
 
@@ -52,7 +51,16 @@ found_items (GnomeKeyringResult result,
 	
 	g_main_loop_quit (loop); 
 }
-#endif
+
+static void
+find_items (char *attr_val)
+{
+	gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_NOTE,
+				   find_items_cb, NULL, NULL,
+				   "testattribute", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, attr_val,
+				   NULL);
+	g_main_loop_run (loop);
+}
 
 static void
 creat_item_cb  (GnomeKeyringResult result,
@@ -64,14 +72,14 @@ creat_item_cb  (GnomeKeyringResult result,
 }
 
 static void
-create_item (char *name)
+create_item (char *name, char *attr_name, gboolean update_if_exists)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringAttribute attribute;
 
 	attribute.name = g_strdup ("testattribute");
 	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = g_strdup ("test item");
+	attribute.value.string = g_strdup (attr_name);
 	
 	attributes = gnome_keyring_attribute_list_new ();
 	g_array_append_val (attributes, attribute);
@@ -81,6 +89,7 @@ create_item (char *name)
 				   name,
 				   attributes,
 				   "secret text",
+				   update_if_exists,
 				   creat_item_cb, NULL, NULL);
 	gnome_keyring_attribute_list_free (attributes);
 	g_main_loop_run (loop);
@@ -205,6 +214,64 @@ set_default (char *name)
 	g_main_loop_run (loop);
 }
 
+static void
+set_network_cb  (GnomeKeyringResult result,
+		 guint32            id,
+		 gpointer           data)
+{
+	g_print ("set network password: res: %d id: %d\n", result, id);
+	g_main_loop_quit (loop);
+}
+
+
+static void
+set_network (char *server, char *password)
+{
+	gnome_keyring_set_network_password (NULL /* default keyring */,
+					    NULL,
+					    NULL,
+					    server,
+					    NULL,
+					    "smb",
+					    NULL,
+					    0,
+					    password,
+					    set_network_cb, NULL, NULL);
+	g_main_loop_run (loop);
+}
+
+static void
+find_network (char *server)
+{
+	GnomeKeyringResult res;
+	GList *list, *l;
+
+	list = NULL;
+	res = gnome_keyring_find_network_password_sync (NULL, NULL,
+							server, NULL,
+							"smb",
+							NULL, 
+							0,
+							&list);
+	g_print ("find network password, res: %d, len: %d\n", res, g_list_length (list));
+	for (l = list; l != NULL; l = l->next) {
+		GnomeKeyringNetworkPasswordData *data;
+		data = l->data;
+
+		g_print ("%s:%d - proto: %s, server: %s, object: %s, authtype: %s, port: %d, user: %s, domain: %s, password: %s\n",
+			 data->keyring,
+			 data->item_id,
+			 data->protocol,
+			 data->server,
+			 data->object,
+			 data->authtype,
+			 data->port,
+			 data->user,
+			 data->domain,
+			 data->password);
+	}
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -232,10 +299,16 @@ main (int argc, char *argv[])
 			g_print ("unlock requires keyring and password\n");
 		}
 	} else if (arg == 'c') {
-		if (argc >= 3) {
-			create_item (argv[2]);
+		if (argc >= 4) {
+			create_item (argv[2], argv[3], FALSE);
 		} else {
-			g_print ("create item requires item name\n");
+			g_print ("create item requires item name and attr value\n");
+		}
+	} else if (arg == 'C') {
+		if (argc >= 4) {
+			create_item (argv[2], argv[3], TRUE);
+		} else {
+			g_print ("create item requires item name and attr value\n");
 		}
 	} else if (arg == 'i') {
 		if (argc >= 4) {
@@ -261,6 +334,12 @@ main (int argc, char *argv[])
 		} else {
 			g_print ("must give keyring & item id & attribute value\n");
 		}
+	} else if (arg == 'f') {
+		if (argc >= 3) {
+			find_items (argv[2]);
+		} else {
+			g_print ("must give testattribute value\n");
+		}
 	} else if (arg == 'k') {
 		if (argc >= 4) {
 			create_keyring (argv[2], argv[3]);
@@ -275,6 +354,26 @@ main (int argc, char *argv[])
 		} else {
 			set_default (NULL);
 		}
+	} else if (arg == 'n') {
+		if (argc >= 4) {
+			set_network (argv[2], argv[3]);
+		} else {
+			g_print ("need server & password\n");
+		}
+	} else if (arg == 'p') {
+		if (argc >= 3) {
+			find_network (argv[2]);
+		} else {
+			g_print ("need server\n");
+		}
+#if 0
+	} else if (arg == 'N') {
+		if (argc >= 4) {
+			set_network_sync (argv[2], argv[3]);
+		} else {
+			g_print ("need server & password\n");
+		}
+#endif
 	} else {
 		g_print ("unsupported test\n");
 	}

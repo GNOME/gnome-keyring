@@ -411,6 +411,22 @@ acl_find_app (GList *acl, GnomeKeyringApplicationRef *app)
 	return NULL;
 }
 
+static void
+add_item_acl (GnomeKeyringItem *item,
+	      GnomeKeyringApplicationRef *app_ref,
+	      GnomeKeyringAccessType types_allowed)
+{
+	GnomeKeyringAccessControl *ac;
+	
+	ac = acl_find_app (item->acl, app_ref);
+	if (ac != NULL) {
+		ac->types_allowed |= types_allowed;
+	} else {
+		ac = gnome_keyring_access_control_new (app_ref,
+						       types_allowed);
+		item->acl = g_list_prepend (item->acl, ac);
+	} 
+}
 
 static gboolean
 request_allowed_for_app (GnomeKeyringAccessRequest *request,
@@ -475,13 +491,16 @@ gnome_keyring_ask_free (GnomeKeyringAsk *ask)
 
 static gboolean
 match_attributes (GnomeKeyringItem *item,
-		  GnomeKeyringAttributeList *attributes)
+		  GnomeKeyringAttributeList *attributes,
+		  gboolean match_all)
 {
 	int i, j;
 	GnomeKeyringAttribute *item_attribute;
 	GnomeKeyringAttribute *attribute;
 	gboolean found;
+	int attributes_matching;
 
+	attributes_matching = 0;
 	for (i = 0; i < attributes->len; i++) {
 		found = FALSE;
 		attribute = &g_array_index (attributes,
@@ -493,6 +512,7 @@ match_attributes (GnomeKeyringItem *item,
 							 j);
 			if (strcmp (attribute->name, item_attribute->name) == 0) {
 				found = TRUE;
+				attributes_matching++;
 				if (attribute->type != item_attribute->type) {
 					return FALSE;
 				}
@@ -516,7 +536,9 @@ match_attributes (GnomeKeyringItem *item,
 			return FALSE;
 		}
 	}
-
+	if (match_all) {
+		return attributes_matching == attributes->len;
+	}
 	return TRUE;
 }
 
@@ -1050,18 +1072,29 @@ op_create_item_collect (GString *packet,
 	char *keyring_name;
 	GList *access_requests;
 	GnomeKeyring *keyring;
+	GnomeKeyringAttributeList *attributes;
+	guint32 type;
+	gboolean update_if_exists;
+	GnomeKeyringAttributeList *hashed;
+	GList *ilist;
+	gboolean found_existing;
+	GnomeKeyringItem *item;
+	GnomeKeyringAccessRequest *access_request;
 	
 	if (!gnome_keyring_proto_decode_create_item (packet,
 						     &keyring_name, NULL,
-						     NULL, NULL, NULL)) {
+						     &attributes, NULL, &type,
+						     &update_if_exists)) {
 		return FALSE;
 	}
 
 	access_requests = NULL;
 	
+	found_existing = FALSE;
+
 	if (keyring_name == NULL) {
 		keyring = default_keyring;
-
+		
 		if (keyring == NULL) {
 			access_requests =
 				g_list_prepend (access_requests,
@@ -1070,14 +1103,34 @@ op_create_item_collect (GString *packet,
 	} else {
 		keyring = find_keyring (keyring_name);
 	}
+	
+	if (update_if_exists && keyring != NULL) {
+		hashed = gnome_keyring_attributes_hash (attributes);
 
-	if (keyring != NULL) {
+		for (ilist = keyring->items; ilist != NULL; ilist = ilist->next) {
+			item = ilist->data;
+			if (item->type == type &&
+			    match_attributes (item, keyring->locked ? hashed : attributes, TRUE)) {
+				found_existing = TRUE;
+				access_request =
+					access_request_from_item (item, GNOME_KEYRING_ACCESS_WRITE);
+				access_requests = g_list_prepend (access_requests,
+								  access_request);
+				break;
+			}
+		}
+		
+		gnome_keyring_attribute_list_free (hashed);
+	}
+	gnome_keyring_attribute_list_free (attributes);
+
+	if (!found_existing && keyring != NULL) {
 		access_requests =
 			g_list_prepend (access_requests,
 					access_request_from_keyring (keyring, GNOME_KEYRING_ACCESS_WRITE));
 	}
 	
-
+	g_free (keyring_name);
 	*access_requests_out = access_requests;
 	
 	return TRUE;
@@ -1096,7 +1149,8 @@ op_create_item_execute (GString *packet,
 	guint32 type;
 	GnomeKeyringResult res;
 	guint32 id;
-	GnomeKeyringAccessControl *ac;
+	gboolean update_if_exists;
+	GnomeKeyringAccessRequest *access_request;
 
 	keyring_name = display_name = secret = NULL;
 	attributes = NULL;
@@ -1109,7 +1163,8 @@ op_create_item_execute (GString *packet,
 						     &display_name,
 						     &attributes,
 						     &secret,
-						     &type)) {
+						     &type,
+						     &update_if_exists)) {
 		return FALSE;
 	}
 
@@ -1139,22 +1194,37 @@ op_create_item_execute (GString *packet,
 		res = GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 		goto bail;
 	}
-	
-	item = gnome_keyring_item_new (keyring, type);
+
+	if (access_requests == NULL) {
+		res = GNOME_KEYRING_RESULT_DENIED;
+		goto bail;
+	}
+	item = NULL;
+	access_request = access_requests->data;
+	if (access_request->item != NULL) {
+		item = access_request->item;
+	}
+
+	if (item == NULL) {
+		item = gnome_keyring_item_new (keyring, type);
+	}
 	if (item == NULL) {
 		res = GNOME_KEYRING_RESULT_DENIED;
 		goto bail;
 	}
-	g_free (keyring_name);
-	
+
+	g_free (item->display_name);
 	item->display_name = g_strdup (display_name);
+	g_free (item->secret);
 	item->secret = g_strdup (secret);
+	if (item->attributes != NULL) {
+		gnome_keyring_attribute_list_free (item->attributes);
+	}
 	item->attributes = gnome_keyring_attribute_list_copy (attributes);
-	ac = gnome_keyring_access_control_new (app_ref,
-					       GNOME_KEYRING_ACCESS_READ |
-					       GNOME_KEYRING_ACCESS_WRITE |
-					       GNOME_KEYRING_ACCESS_REMOVE);
-	item->acl = g_list_prepend (item->acl, ac);
+	add_item_acl (item, app_ref,
+		      GNOME_KEYRING_ACCESS_READ |
+		      GNOME_KEYRING_ACCESS_WRITE |
+		      GNOME_KEYRING_ACCESS_REMOVE);
 	
 	id = item->id;
 
@@ -1548,6 +1618,40 @@ out:
 	return TRUE;
 }
 
+static int
+unmatched_attributes (GnomeKeyringAttributeList *attributes,
+		      GnomeKeyringAttributeList *matching)
+{
+	int i, j;
+	GnomeKeyringAttribute *matching_attribute;
+	GnomeKeyringAttribute *attribute;
+	gboolean found;
+	int unmatching;
+
+	unmatching = 0;
+	for (i = 0; i < attributes->len; i++) {
+		found = FALSE;
+		attribute = &g_array_index (attributes,
+					    GnomeKeyringAttribute,
+					    i);
+		for (j = 0; j < matching->len; j++) {
+			matching_attribute = &g_array_index (matching,
+							     GnomeKeyringAttribute,
+							     j);
+			if (strcmp (attribute->name, matching_attribute->name) == 0 &&
+			    attribute->type == matching_attribute->type) {
+				found = TRUE;
+				break;
+			}
+		}
+		if (!found) {
+			unmatching++;
+		}
+	}
+
+	return unmatching;;
+}
+
 static gboolean
 op_set_item_attributes_execute (GString *packet,
 				GString *result,
@@ -1605,6 +1709,32 @@ out:
 	return TRUE;
 }
 
+static gint
+sort_found (gconstpointer  a,
+	    gconstpointer  b,
+	    gpointer       user_data)
+{
+	GnomeKeyringAttributeList *matching;
+	int a_unmatched, b_unmatched;
+	const GnomeKeyringAccessRequest *access_request;
+
+	
+	matching = user_data;
+
+	access_request = a;
+	a_unmatched = unmatched_attributes (access_request->item->attributes, matching);
+	access_request = b;
+	b_unmatched = unmatched_attributes (access_request->item->attributes, matching);
+
+	if (a_unmatched < b_unmatched) {
+		return -1;
+	} else if (a_unmatched == b_unmatched) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
 
 static gboolean
 op_find_execute (GString *packet,
@@ -1630,7 +1760,10 @@ op_find_execute (GString *packet,
 					      &attributes)) {
 		return FALSE;
 	}
-
+	
+	access_requests = g_list_sort_with_data (access_requests,
+						 sort_found, attributes);
+	
 	/* The attributes might have changed since we matched them, rematch */
 	return_val = TRUE;
 	for (l = access_requests; l != NULL; l = l->next) {
@@ -1639,7 +1772,7 @@ op_find_execute (GString *packet,
 		if (item != NULL &&
 		    item->type == type &&
 		    !item->locked &&
-		    match_attributes (item, attributes)) {
+		    match_attributes (item, attributes, FALSE)) {
 			if (!gnome_keyring_proto_add_utf8_string (result, item->keyring->keyring_name)) {
 				return_val = FALSE;
 				break;
@@ -1694,7 +1827,7 @@ op_find_collect (GString *packet,
 		for (ilist = keyring->items; ilist != NULL; ilist = ilist->next) {
 			item = ilist->data;
 			if (item->type == type &&
-			    match_attributes (item, keyring->locked ? hashed : attributes)) {
+			    match_attributes (item, keyring->locked ? hashed : attributes, FALSE)) {
 				access_request =
 				  access_request_from_item (item, GNOME_KEYRING_ACCESS_READ);
 				access_requests = g_list_prepend (access_requests,
@@ -1709,7 +1842,6 @@ op_find_collect (GString *packet,
 	return TRUE;
 }
 
-
 static void
 finish_ask_io (GnomeKeyringAsk *ask,
 	       gboolean failed)
@@ -1719,7 +1851,6 @@ finish_ask_io (GnomeKeyringAsk *ask,
 	char *str;
 	GnomeKeyring *keyring;
 	GnomeKeyringItem *item;
-	GnomeKeyringAccessControl *ac;
 
 	ask->input_watch = 0;
 	ask->ask_pid = 0;
@@ -1776,18 +1907,10 @@ finish_ask_io (GnomeKeyringAsk *ask,
 			item = ask->current_request->item;
 			g_assert (item != NULL);
 			if (response == GNOME_KEYRING_ASK_RESPONSE_ALLOW_FOREVER) {
-				ac = acl_find_app (item->acl, ask->app_ref);
-				if (ac != NULL) {
-					ac->types_allowed |= GNOME_KEYRING_ACCESS_READ |
-						GNOME_KEYRING_ACCESS_WRITE |
-						GNOME_KEYRING_ACCESS_REMOVE;
-				} else {
-					ac = gnome_keyring_access_control_new (ask->app_ref,
-									       GNOME_KEYRING_ACCESS_READ |
-									       GNOME_KEYRING_ACCESS_WRITE |
-									       GNOME_KEYRING_ACCESS_REMOVE);
-					item->acl = g_list_prepend (item->acl, ac);
-				} 
+				add_item_acl (item, ask->app_ref,
+					      GNOME_KEYRING_ACCESS_READ |
+					      GNOME_KEYRING_ACCESS_WRITE |
+					      GNOME_KEYRING_ACCESS_REMOVE);
 			}
 			ask->current_request->granted = TRUE;
 			/* ok */

@@ -82,7 +82,7 @@ struct GnomeKeyringOperation {
 };
 
 static int
-connect_to_daemon (void)
+connect_to_daemon (gboolean non_blocking)
 {
 	const char *socket_file;
 	struct sockaddr_un addr;
@@ -119,12 +119,14 @@ connect_to_daemon (void)
 		close (sock);
 		return -1;
 	}
-	
-	if (fcntl (sock, F_SETFL, val | O_NONBLOCK) < 0) {
-		close (sock);
-		return -1;
-	}
 
+	if (non_blocking) {
+		if (fcntl (sock, F_SETFL, val | O_NONBLOCK) < 0) {
+			close (sock);
+			return -1;
+		}
+	}
+	
 	return sock;
 }
 
@@ -198,6 +200,70 @@ schedule_op_failed (GnomeKeyringOperation *op,
 	op->result = result;
 	g_idle_add (op_failed, op);
 }
+
+static int
+read_all (int fd, char *buf, size_t len)
+{
+	size_t bytes;
+	ssize_t res;
+	
+	bytes = 0;
+	while (bytes < len) {
+		res = read (fd, buf + bytes, len - bytes);
+		if (res <= 0) {
+			if (res == 0)
+				res = -1;
+			return res;
+		}
+		bytes += res;
+	}
+	return 0;
+}
+
+
+static int
+write_all (int fd, const char *buf, size_t len)
+{
+	size_t bytes;
+	ssize_t res;
+
+	bytes = 0;
+	while (bytes < len) {
+		res = write (fd, buf + bytes, len - bytes);
+		if (res < 0) {
+			if (errno != EINTR &&
+			    errno != EAGAIN) {
+				perror ("write_all write failure:");
+				return -1;
+			}
+		} else {
+			bytes += res;
+		}
+	}
+	return 0;
+}
+
+static GnomeKeyringResult
+write_credentials_byte_sync (int socket)
+{
+  char buf;
+  int bytes_written;
+
+ again:
+
+  buf = 0;
+  bytes_written = write (socket, &buf, 1);
+
+  if (bytes_written < 0 && errno == EINTR)
+    goto again;
+
+  if (bytes_written <= 0) {
+	  return GNOME_KEYRING_RESULT_IO_ERROR;
+  } else {
+	  return GNOME_KEYRING_RESULT_OK;
+  }
+}
+  
 
 static void
 write_credentials_byte (GnomeKeyringOperation *op)
@@ -344,7 +410,7 @@ start_operation (gpointer callback, KeyringCallbackType callback_type,
 	op->user_data = user_data;
 	op->destroy_user_data = destroy_user_data;
 	
-	op->socket = connect_to_daemon ();
+	op->socket = connect_to_daemon (TRUE);
 
 	if (op->socket < 0) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON);
@@ -363,6 +429,52 @@ start_operation (gpointer callback, KeyringCallbackType callback_type,
 	return op;
 }
 
+static GnomeKeyringResult
+run_sync_operation (GString *buffer,
+		    GString *receive_buffer)
+{
+	GnomeKeyringResult res;
+	int socket;
+	guint32 packet_size;
+	
+	socket = connect_to_daemon (FALSE);
+	if (socket < 0) {
+		return GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON;
+	}
+	res = write_credentials_byte_sync (socket);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		close (socket);
+		return res;
+	}
+
+	if (write_all (socket,
+		       buffer->str, buffer->len) < 0) {
+		close (socket);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+
+	g_string_set_size (receive_buffer, 4);
+	if (read_all (socket, receive_buffer->str, 4) < 0) {
+		close (socket);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+
+	if (!gnome_keyring_proto_decode_packet_size (receive_buffer,
+						     &packet_size) ||
+	    packet_size < 4) {
+		close (socket);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	
+	g_string_set_size (receive_buffer, packet_size);
+	if (read_all (socket, receive_buffer->str + 4, packet_size - 4) < 0) {
+		close (socket);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	close (socket);
+	
+	return GNOME_KEYRING_RESULT_OK;
+}
 
 void
 gnome_keyring_cancel_request (gpointer request)
@@ -796,8 +908,7 @@ gnome_keyring_find_items_reply (GnomeKeyringOperation *op)
 		(*callback) (GNOME_KEYRING_RESULT_IO_ERROR, NULL, op->user_data);
 	} else {
 		(*callback) (result, found_items, op->user_data);
-		g_list_foreach (found_items, (GFunc) gnome_keyring_found_free, NULL);
-		g_list_free (found_items);
+		gnome_keyring_found_list_free (found_items);
 	}
 }
      
@@ -825,6 +936,40 @@ gnome_keyring_find_items  (GnomeKeyringItemType                  type,
 	return op;
 }
 
+
+static GnomeKeyringAttributeList *
+make_attribute_list_va (va_list args)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attribute;
+	char *str;
+	guint32 val;
+	
+	attributes = g_array_new (FALSE, FALSE, sizeof (GnomeKeyringAttribute));
+	
+	while ((attribute.name = va_arg (args, char *)) != NULL) {
+		attribute.type = va_arg (args, GnomeKeyringAttributeType);
+		
+		switch (attribute.type) {
+		case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
+			str = va_arg (args, char *);
+			attribute.value.string = str;
+			g_array_append_val (attributes, attribute);
+			break;
+		case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
+			val = va_arg (args, guint32);
+			attribute.value.integer = val;
+			g_array_append_val (attributes, attribute);
+			break;
+		default:
+			g_array_free (attributes, TRUE);
+			return NULL;
+		}
+	}
+	return attributes;
+}
+
+
 gpointer
 gnome_keyring_find_itemsv (GnomeKeyringItemType                  type,
 			   GnomeKeyringOperationGetListCallback  callback,
@@ -835,44 +980,19 @@ gnome_keyring_find_itemsv (GnomeKeyringItemType                  type,
 	GnomeKeyringOperation *op;
 	GnomeKeyringAttributeList *attributes;
 	va_list args;
-	char *str;
-	guint32 val;
-	GnomeKeyringAttribute attribute;
 	
 	op = start_operation (callback, CALLBACK_GET_LIST, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
 	}
 
-	attributes = g_array_new (FALSE, FALSE, sizeof (GnomeKeyringAttribute));
-	
 	va_start (args, destroy_data);
-	while ((attribute.name = va_arg (args, char *)) != NULL) {
-		attribute.type = va_arg (args, GnomeKeyringAttributeType);
-		
-		switch (attribute.type) {
-		case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
-			str = va_arg (args, char *);
-			if (str != NULL) {
-				attribute.value.string = str;
-				g_array_append_val (attributes, attribute);
-			}
-			break;
-		case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
-			val = va_arg (args, guint32);
-			if (val != 0) {
-				attribute.value.integer = val;
-				g_array_append_val (attributes, attribute);
-			}
-			break;
-		default:
-			schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-			g_array_free (attributes, TRUE);
-			return op;
-		}
-	}
-
+	attributes = make_attribute_list_va (args);
 	va_end (args);
+	if (attributes == NULL) {
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		return op;
+	}
 	
 	if (!gnome_keyring_proto_encode_find (op->send_buffer,
 					      type,
@@ -885,12 +1005,72 @@ gnome_keyring_find_itemsv (GnomeKeyringItemType                  type,
 	return op;
 }
 
+GnomeKeyringResult
+gnome_keyring_find_items_sync (GnomeKeyringItemType        type,
+			       GnomeKeyringAttributeList  *attributes,
+			       GList                     **found)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+
+	*found = NULL;
+	
+	if (!gnome_keyring_proto_encode_find (send, type,
+					      attributes)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+	
+	if (!gnome_keyring_proto_decode_find_reply (receive, &res, found)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
+}
+
+GnomeKeyringResult
+gnome_keyring_find_itemsv_sync  (GnomeKeyringItemType        type,
+				 GList                     **found,
+				 ...)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringResult res;
+	va_list args;
+
+	va_start (args, found);
+	attributes = make_attribute_list_va (args);
+	va_end (args);
+	if (attributes == NULL) {
+		return  GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	res = gnome_keyring_find_items_sync (type, attributes, found);
+	g_array_free (attributes, TRUE);
+	return res;
+}
+
+
 gpointer
 gnome_keyring_item_create (const char                          *keyring,
 			   GnomeKeyringItemType                 type,
 			   const char                          *display_name,
 			   GnomeKeyringAttributeList           *attributes,
 			   const char                          *secret,
+			   gboolean                             update_if_exists,
 			   GnomeKeyringOperationGetIntCallback  callback,
 			   gpointer                             data,
 			   GDestroyNotify                       destroy_data)
@@ -907,7 +1087,8 @@ gnome_keyring_item_create (const char                          *keyring,
 						     display_name,
 						     attributes,
 						     secret,
-						     type)) {
+						     type,
+						     update_if_exists)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 
@@ -1130,135 +1311,308 @@ gnome_keyring_item_info_get_ctime (GnomeKeyringItemInfo *item_info)
 }
 
 
+struct FindNetworkPasswordInfo {
+	GnomeKeyringOperationGetListCallback callback;
+	gpointer                             data;
+	GDestroyNotify                       destroy_data;
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#if 0
-
-GnomeKeyringResult
-gnome_keyring_find_internet_password (char *user,
-				      char *domain,
-				      char *server,
-				      char *path,
-				      char *protocol,
-				      char *authtype,
-				      guint32 port,
-				      GList **result_list_out)
+static void
+free_find_network_password_info (struct FindNetworkPasswordInfo *info)
 {
-	GnomeKeyringInternetPasswordData *data;
-	GnomeKeyringResult result;
-	GnomeKeyringFin *find;
-	GList *find_list;
-	GList *result_list;
-	GList *l;
-	int i;
-
-	result = gnome_keyring_find (&find_list,
-				     GNOME_KEYRING_ITEM_INTERNET_PASSWORD,
-				     "user", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, user,
-				     "domain", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, domain,
-				     "server", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, server,
-				     "path", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, path,
-				     "protocol", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, protocol,
-				     "auth", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, authtype,
-				     "port", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32, port,
-				     NULL);
-	if (result != GNOME_KEYRING_RESULT_OK) {
-		return result;
+	if (info->destroy_data != NULL) {
+		info->destroy_data (info->data);
 	}
+	g_free (info);
+}
 
-	result_list = NULL;
-	for (l = find_list; l != NULL; l = l->next) {
-		find = l->data;
+static GList *
+found_list_to_nework_password_list (GList *found_list)
+{
+	GnomeKeyringNetworkPasswordData *data;
+	GnomeKeyringFound *found;
+	GnomeKeyringAttribute *attributes;
+	GList *result, *l;
+	int i;
+	
+	result = NULL;
+	for (l = found_list; l != NULL; l = l->next) {
+		found = l->data;
 		
-		data = g_new0 (GnomeKeyringInternetPasswordData, 1);
+		data = g_new0 (GnomeKeyringNetworkPasswordData, 1);
 
-		result_list = g_list_prepend (result_list, data);
-		data->secret = g_strdup (find->secret);
-		for (i = 0; i < find->num_attributes; i++) {
-			if (strcmp (find->attributes[i].name, "user") == 0 &&
-			    find->attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
-				data->user = g_strdup (find->attributes[i].value.string);
-			} else if (strcmp (find->attributes[i].name, "domain") == 0 &&
-			    find->attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
-				data->domain = g_strdup (find->attributes[i].value.string);
-			} else if (strcmp (find->attributes[i].name, "server") == 0 &&
-			    find->attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
-				data->server = g_strdup (find->attributes[i].value.string);
-			} else if (strcmp (find->attributes[i].name, "path") == 0 &&
-			    find->attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
-				data->path = g_strdup (find->attributes[i].value.string);
-			} else if (strcmp (find->attributes[i].name, "protocol") == 0 &&
-			    find->attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
-				data->protocol = g_strdup (find->attributes[i].value.string);
-			} else if (strcmp (find->attributes[i].name, "auth") == 0 &&
-			    find->attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
-				data->authtype = g_strdup (find->attributes[i].value.string);
-			} else if (strcmp (find->attributes[i].name, "port") == 0 &&
-			    find->attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32) {
-				data->port = find->attributes[i].value.integer;
+		result = g_list_prepend (result, data);
+
+		data->keyring = g_strdup (found->keyring);
+		data->item_id = found->item_id;
+		data->password = g_strdup (found->secret);
+
+		attributes = (GnomeKeyringAttribute *) found->attributes->data;
+		for (i = 0; i < found->attributes->len; i++) {
+			if (strcmp (attributes[i].name, "user") == 0 &&
+			    attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+				data->user = g_strdup (attributes[i].value.string);
+			} else if (strcmp (attributes[i].name, "domain") == 0 &&
+				   attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+				data->domain = g_strdup (attributes[i].value.string);
+			} else if (strcmp (attributes[i].name, "server") == 0 &&
+				   attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+				data->server = g_strdup (attributes[i].value.string);
+			} else if (strcmp (attributes[i].name, "object") == 0 &&
+				   attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+				data->object = g_strdup (attributes[i].value.string);
+			} else if (strcmp (attributes[i].name, "protocol") == 0 &&
+				   attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+				data->protocol = g_strdup (attributes[i].value.string);
+			} else if (strcmp (attributes[i].name, "authtype") == 0 &&
+				   attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+				data->authtype = g_strdup (attributes[i].value.string);
+			} else if (strcmp (attributes[i].name, "port") == 0 &&
+				   attributes[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32) {
+				data->port = attributes[i].value.integer;
 			} 
 		}
 	}
-	*result_list_out = g_list_reverse (result_list);
-	return GNOME_KEYRING_RESULT_OK;
+	
+	return g_list_reverse (result);
+}
+
+void
+gnome_keyring_network_password_free (GnomeKeyringNetworkPasswordData *data)
+{
+	g_free (data->keyring);
+	g_free (data->protocol);
+	g_free (data->server);
+	g_free (data->object);
+	g_free (data->authtype);
+	g_free (data->user);
+	g_free (data->domain);
+	g_free (data->password);
+	
+	g_free (data);
+}
+
+void
+gnome_keyring_network_password_list_free (GList *list)
+{
+	g_list_foreach (list, (GFunc)gnome_keyring_network_password_free, NULL);
+	g_list_free (list);
+}
+
+static void
+find_network_password_callback (GnomeKeyringResult result,
+				GList             *list,
+				gpointer           data)
+{
+	struct FindNetworkPasswordInfo *info;
+	GList *data_list;
+
+	info = data;
+	
+	data_list = NULL;
+	if (result == GNOME_KEYRING_RESULT_OK) {
+		data_list = found_list_to_nework_password_list (list);
+	}
+	info->callback (result, data_list, data);
+	gnome_keyring_network_password_list_free (data_list);
+	return;
+}
+
+void
+gnome_keyring_attribute_list_append_string (GnomeKeyringAttributeList *attributes,
+					    const char *attributename, const char *value)
+{
+	GnomeKeyringAttribute attribute;
+
+	attribute.name = g_strdup (attributename);
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup (value);
+	
+	g_array_append_val (attributes, attribute);
+}
+
+void
+gnome_keyring_attribute_list_append_uint32 (GnomeKeyringAttributeList *attributes,
+					    const char *attributename, guint32 value)
+{
+	GnomeKeyringAttribute attribute;
+	
+	attribute.name = g_strdup (attributename);
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32;
+	attribute.value.integer = value;
+	g_array_append_val (attributes, attribute);
+}
+
+static GnomeKeyringAttributeList *
+make_attribute_list_for_network_password (const char                            *user,
+					  const char                            *domain,
+					  const char                            *server,
+					  const char                            *object,
+					  const char                            *protocol,
+					  const char                            *authtype,
+					  guint32                                port)
+{
+	GnomeKeyringAttributeList *attributes;
+	
+	attributes = g_array_new (FALSE, FALSE, sizeof (GnomeKeyringAttribute));
+
+	if (user != NULL) {
+		gnome_keyring_attribute_list_append_string (attributes, "user", user);
+	}
+	if (domain != NULL) {
+		gnome_keyring_attribute_list_append_string (attributes, "domain", domain);
+	}
+	if (server != NULL) {
+		gnome_keyring_attribute_list_append_string (attributes, "server", server);
+	}
+	if (object != NULL) {
+		gnome_keyring_attribute_list_append_string (attributes, "object", object);
+	}
+	if (protocol != NULL) {
+		gnome_keyring_attribute_list_append_string (attributes, "protocol", protocol);
+	}
+	if (authtype != NULL) {
+		gnome_keyring_attribute_list_append_string (attributes, "authtype", authtype);
+	}
+	if (port != 0) {
+		gnome_keyring_attribute_list_append_uint32 (attributes, "port", port);
+	}
+	return attributes;
+}
+
+
+gpointer
+gnome_keyring_find_network_password      (const char                            *user,
+					  const char                            *domain,
+					  const char                            *server,
+					  const char                            *object,
+					  const char                            *protocol,
+					  const char                            *authtype,
+					  guint32                                port,
+					  GnomeKeyringOperationGetListCallback   callback,
+					  gpointer                               user_data,
+					  GDestroyNotify                         destroy_data)
+{
+	GnomeKeyringAttributeList *attributes;
+	gpointer request;
+	struct FindNetworkPasswordInfo *info;
+
+	info = g_new0 (struct FindNetworkPasswordInfo, 1);
+	info->callback = callback;
+	info->data = user_data;
+	info->destroy_data = destroy_data;
+
+	attributes = make_attribute_list_for_network_password (user,
+							       domain,
+							       server,
+							       object,
+							       protocol,
+							       authtype,
+							       port);
+	
+	request = gnome_keyring_find_items (GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
+					    attributes,
+					    find_network_password_callback,
+					    info,
+					    (GDestroyNotify)free_find_network_password_info);
+
+	gnome_keyring_attribute_list_free (attributes);
+	return request;
 }
 
 
 
 GnomeKeyringResult
-gnome_keyring_find_internet_password_async (char *user,
-					    char *domain,
-					    char *server,
-					    char *path,
-					    char *protocol,
-					    char *authtype,
-					    guint32 port,
-					    GnomeKeyringFindInternetPasswordCallback callback);
+gnome_keyring_find_network_password_sync (const char                            *user,
+					  const char                            *domain,
+					  const char                            *server,
+					  const char                            *object,
+					  const char                            *protocol,
+					  const char                            *authtype,
+					  guint32                                port,
+					  GList                                **out_list)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringResult result;
+	GList *found;
+	
+	attributes = make_attribute_list_for_network_password (user,
+							       domain,
+							       server,
+							       object,
+							       protocol,
+							       authtype,
+							       port);
+	
+	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
+						 attributes,
+						 &found);
+
+	gnome_keyring_attribute_list_free (attributes);
+
+	if (result == GNOME_KEYRING_RESULT_OK) {
+		*out_list = found_list_to_nework_password_list (found);
+		gnome_keyring_found_list_free (found);
+	}
+
+	return result;
+}
+
+gpointer
+gnome_keyring_set_network_password      (const char                            *keyring,
+					 const char                            *user,
+					 const char                            *domain,
+					 const char                            *server,
+					 const char                            *object,
+					 const char                            *protocol,
+					 const char                            *authtype,
+					 guint32                                port,
+					 const char                            *password,
+					 GnomeKeyringOperationGetIntCallback    callback,
+					 gpointer                               data,
+					 GDestroyNotify                         destroy_data)
+{
+	GnomeKeyringAttributeList *attributes;
+	gpointer req;
+	char *name;
+	GString *s;
 
 
-GnomeKeyringResult
-gnome_keyring_set_internet_password (char *user,
-				     char *domain,
-				     char *server,
-				     char *path,
-				     char *protocol,
-				     char *authtype,
-				     guint32 port,
-				     char *password);
+	if (server != NULL) {
+		s = g_string_new (NULL);
+		if (user != NULL) {
+			g_string_append_printf (s, "%s@", user);
+		}
+		g_string_append (s, server);
+		if (port != 0) {
+			g_string_append_printf (s, ":%d", port);
+		}
+		if (object != NULL) {
+			g_string_append_printf (s, "/%s", object);
+		}
+		name = g_string_free (s, FALSE);
+	} else {
+		name = g_strdup ("network password");
+	}
 
-
-#endif
+	attributes = make_attribute_list_for_network_password (user,
+							       domain,
+							       server,
+							       object,
+							       protocol,
+							       authtype,
+							       port);
+	
+	req = gnome_keyring_item_create (keyring,
+					 GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
+					 name,
+					 attributes,
+					 password,
+					 TRUE,
+					 callback, data, destroy_data);
+	
+	gnome_keyring_attribute_list_free (attributes);
+	
+	g_free (name);
+	return req;
+}

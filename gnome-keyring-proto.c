@@ -417,7 +417,8 @@ gnome_keyring_proto_encode_create_item (GString                   *buffer,
 					const char                *display_name,
 					GnomeKeyringAttributeList *attributes,
 					const char                *secret,
-					GnomeKeyringItemType       type)
+					GnomeKeyringItemType       type,
+					gboolean                   update_if_exists)
 {
 	gsize op_start;
 
@@ -443,6 +444,7 @@ gnome_keyring_proto_encode_create_item (GString                   *buffer,
 		return FALSE;
 	}
 	gnome_keyring_proto_add_uint32 (buffer, type);
+	gnome_keyring_proto_add_uint32 (buffer, update_if_exists);
 	
 	if (!gnome_keyring_proto_end_operation (buffer,	op_start)) {
 		return FALSE;
@@ -457,11 +459,12 @@ gnome_keyring_proto_decode_create_item (GString              *buffer,
 					char                **display_name,
 					GnomeKeyringAttributeList **attributes,
 					char                **secret,
-					GnomeKeyringItemType *type)
+					GnomeKeyringItemType *type,
+					gboolean             *update_if_exists)
 {
 	gsize offset;
 	GnomeKeyringOpCode op;
-	guint typeint;
+	guint val;
 
 	if (keyring != NULL) {
 		*keyring  = NULL;
@@ -504,11 +507,18 @@ gnome_keyring_proto_decode_create_item (GString              *buffer,
 							attributes)) {
 		goto bail;
 	}
-	if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &typeint)) {
+	if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &val)) {
 		goto bail;
 	}
 	if (type != NULL) {
-		*type = typeint;
+		*type = val;
+	}
+
+	if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &val)) {
+		goto bail;
+	}
+	if (update_if_exists != NULL) {
+		*update_if_exists = val;
 	}
 
 	return TRUE;
@@ -817,15 +827,12 @@ gnome_keyring_proto_decode_find_reply (GString *buffer,
 	if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
-	g_print ("res: %d\n", res);
 	*result = res;
 	
 	if (res != GNOME_KEYRING_RESULT_OK) {
 		return TRUE;
 	}
 
-	g_print ("offset: %d, len: %d\n", offset, buffer->len);
-	
 	list = NULL;
 	while (offset < buffer->len) {
 		found = g_new0 (GnomeKeyringFound, 1);

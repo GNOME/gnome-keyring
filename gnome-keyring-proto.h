@@ -109,7 +109,8 @@ gboolean gnome_keyring_proto_encode_create_item      (GString                   
 						      const char                *display_name,
 						      GnomeKeyringAttributeList *attributes,
 						      const char                *secret,
-						      GnomeKeyringItemType       type);
+						      GnomeKeyringItemType       type,
+						      gboolean                   update_if_exists);
 gboolean gnome_keyring_proto_encode_set_attributes   (GString                   *buffer,
 						      const char                *keyring,
 						      guint32                    id,
@@ -128,10 +129,10 @@ gboolean gnome_keyring_proto_decode_packet_operation         (GString           
 							      GnomeKeyringOpCode         *op);
 gboolean gnome_keyring_proto_decode_packet_size              (GString                    *buffer,
 							      guint32                    *size);
-gboolean gnome_keyring_proto_decode_attribute_list (GString *buffer,
-						    gsize offset,
-						    gsize *next_offset,
-						    GnomeKeyringAttributeList **attributes_out);
+gboolean gnome_keyring_proto_decode_attribute_list           (GString                    *buffer,
+							      gsize                       offset,
+							      gsize                      *next_offset,
+							      GnomeKeyringAttributeList **attributes_out);
 gboolean gnome_keyring_proto_decode_result_reply             (GString                    *buffer,
 							      GnomeKeyringResult         *result);
 gboolean gnome_keyring_proto_decode_result_string_reply      (GString                    *buffer,
@@ -140,17 +141,17 @@ gboolean gnome_keyring_proto_decode_result_string_reply      (GString           
 gboolean gnome_keyring_proto_decode_result_string_list_reply (GString                    *buffer,
 							      GnomeKeyringResult         *result,
 							      GList                     **list);
-gboolean gnome_keyring_proto_decode_op_string (GString *buffer,
-					       GnomeKeyringOpCode *op_out,
-					       char **str_out);
-gboolean gnome_keyring_proto_decode_op_string_string (GString *buffer,
-						      GnomeKeyringOpCode *op_out,
-						      char **str1_out,
-						      char **str2_out);
-gboolean gnome_keyring_proto_decode_op_string_int (GString *buffer,
-						   GnomeKeyringOpCode *op_out,
-						   char **str1,
-						   guint32 *val);
+gboolean gnome_keyring_proto_decode_op_string                (GString                    *buffer,
+							      GnomeKeyringOpCode         *op_out,
+							      char                      **str_out);
+gboolean gnome_keyring_proto_decode_op_string_string         (GString                    *buffer,
+							      GnomeKeyringOpCode         *op_out,
+							      char                      **str1_out,
+							      char                      **str2_out);
+gboolean gnome_keyring_proto_decode_op_string_int            (GString                    *buffer,
+							      GnomeKeyringOpCode         *op_out,
+							      char                      **str1,
+							      guint32                    *val);
 gboolean gnome_keyring_proto_decode_find                     (GString                    *buffer,
 							      GnomeKeyringItemType       *type,
 							      GnomeKeyringAttributeList **attributes);
@@ -172,24 +173,23 @@ gboolean gnome_keyring_proto_decode_result_int_list_reply    (GString           
 gboolean gnome_keyring_proto_decode_result_integer_reply     (GString                    *buffer,
 							      GnomeKeyringResult         *result,
 							      guint32                    *integer);
-gboolean gnome_keyring_proto_decode_create_item (GString *packet,
-						 char **keyring,
-						 char **display_name,
-						 GnomeKeyringAttributeList **attributes,
-						 char **secret,
-						 GnomeKeyringItemType *type_out);
-gboolean gnome_keyring_proto_decode_set_item_info (GString              *buffer,
-						   char                **keyring,
-						   guint32              *item_id,
-						   GnomeKeyringItemType *type,
-						   char                **display_name,
-						   char                **secret);
-gboolean gnome_keyring_proto_decode_set_attributes (GString              *buffer,
-						    char                **keyring,
-						    guint32              *item_id,
-						    GnomeKeyringAttributeList **attributes);
-
-
+gboolean gnome_keyring_proto_decode_create_item              (GString                    *packet,
+							      char                      **keyring,
+							      char                      **display_name,
+							      GnomeKeyringAttributeList **attributes,
+							      char                      **secret,
+							      GnomeKeyringItemType       *type_out,
+							      gboolean                   *update_if_exists);
+gboolean gnome_keyring_proto_decode_set_item_info            (GString                    *buffer,
+							      char                      **keyring,
+							      guint32                    *item_id,
+							      GnomeKeyringItemType       *type,
+							      char                      **display_name,
+							      char                      **secret);
+gboolean gnome_keyring_proto_decode_set_attributes           (GString                    *buffer,
+							      char                      **keyring,
+							      guint32                    *item_id,
+							      GnomeKeyringAttributeList **attributes);
 
    
 #endif /* GNOME_KEYRING_PROTO_H */

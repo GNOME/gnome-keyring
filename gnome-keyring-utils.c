@@ -48,6 +48,13 @@ gnome_keyring_found_free (GnomeKeyringFound *found)
 }
 
 void
+gnome_keyring_found_list_free (GList *found_list)
+{
+	g_list_foreach (found_list, (GFunc) gnome_keyring_found_free, NULL);
+	g_list_free (found_list);
+}
+
+void
 gnome_keyring_attribute_list_free (GnomeKeyringAttributeList *attributes)
 {
 	GnomeKeyringAttribute *array;
