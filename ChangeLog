@@ -1,3 +1,7 @@
+2004-08-26  Jayaradha <njaya@redhat.com>
+
+	* configure.in: Added ta to ALL_LINGUAS.
+
 2004-08-26  Alexander Larsson  <alexl@redhat.com>
 
 	* AUTHORS (Contributors):
