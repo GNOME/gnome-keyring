@@ -1,0 +1,22 @@
+2003-11-28  Alexander Larsson  <alexl@redhat.com>
+
+	* COPYING.LIB:
+	Add LGPL file
+	
+	* gnome-keyring-ask.c:
+	Fix up gettext defines
+	
+	* gnome-keyring-ask.c:
+	* gnome-keyring-daemon-file.c:
+	* gnome-keyring-daemon-io.c:
+	* gnome-keyring-daemon.c:
+	* gnome-keyring-daemon.h:
+	* gnome-keyring-private.h:
+	* gnome-keyring-proto.c:
+	* gnome-keyring-proto.h:
+	* gnome-keyring-utils.c:
+	* gnome-keyring.c:
+	* gnome-keyring.h:
+	* list-keyrings.c:
+	Add GPL/LGPL headers.
+	Library is LGPL, daemon and gui is GPL.
