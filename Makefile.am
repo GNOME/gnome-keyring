@@ -1,6 +1,8 @@
 SUBDIRS = \
 	po
 
+libgnomekeyringincludedir = $(includedir)/gnome-keyring-1.0/
+
 bin_PROGRAMS= \
 	gnome-keyring-daemon \
 	gnome-keyring-ask
@@ -33,6 +35,10 @@ libgnome_keyring_common_la_LIBADD = \
 libgnome_keyring_la_SOURCES = \
 	gnome-keyring.c \
 	gnome-keyring.h
+
+libgnomekeyringinclude_HEADERS =		\
+	gnome-keyring.h
+
 
 libgnome_keyring_la_LIBADD = \
 	libgnome-keyring-common.la \
@@ -72,6 +78,9 @@ test_keyring_SOURCES = \
 
 test_keyring_LDADD = \
 	libgnome-keyring.la
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = gnome-keyring-1.0.pc
 
 EXTRA_DIST = \
 	file-format.txt

@@ -29,3 +29,4 @@ gnome-keyring-ask
 gnome-keyring-daemon
 list-keyrings
 test-keyring
+gnome-keyring-1.0.pc

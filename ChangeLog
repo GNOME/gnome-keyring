@@ -1,5 +1,17 @@
 2003-11-28  Alexander Larsson  <alexl@redhat.com>
 
+	* Makefile.am:
+	Install header files and .pc file
+	
+	* configure.in:
+	* gnome-keyring-1.0.pc.in:
+	pkg-config file for gnome-keyring
+	
+	* gnome-keyring.h:
+	add some comments about the unfinished part
+
+2003-11-28  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-daemon-file.c: (set_default_keyring):
 	Handle setting to NULL.
 	

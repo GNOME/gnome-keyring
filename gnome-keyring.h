@@ -238,10 +238,29 @@ time_t                gnome_keyring_item_info_get_mtime        (GnomeKeyringItem
 time_t                gnome_keyring_item_info_get_ctime        (GnomeKeyringItemInfo *item_info);
 
 
-/* Specialized Helpers: */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #if 0
+/* Specialized Helpers: */
 
+/* This API isn't done, it needs to be made async, and implemented on
+   top of the generic api above */
 typedef struct {
 	guint32 id;
 	
