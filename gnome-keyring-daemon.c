@@ -1002,7 +1002,11 @@ op_unlock_keyring_execute (GString *packet,
 	}
 	g_assert (opcode == GNOME_KEYRING_OP_UNLOCK_KEYRING);
 	
-	keyring = find_keyring (keyring_name);
+	if (keyring_name == NULL) {
+		keyring = default_keyring;
+	} else {
+		keyring = find_keyring (keyring_name);
+	}
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 	} else {
