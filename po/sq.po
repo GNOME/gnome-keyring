@@ -1,0 +1,251 @@
+# Albanian translation of gnome-keyring.
+# Copyright (C) 2004 THE gnome-keyring'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-keyring package.
+# Elian Myftiu <elian@lycos.com>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sq\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-04 22:15+0100\n"
+"PO-Revision-Date: 2004-02-04 22:22+0100\n"
+"Last-Translator:  Elian Myftiu <elian@lycos.com>\n"
+"Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3\n"
+
+#: gnome-keyring-ask.c:223
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr "Programi '%s'·(%s) po kërkon të ekzekutojë keyring e prezgjedhur, por është i bllokuar"
+
+#: gnome-keyring-ask.c:227
+#, c-format
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "Programi '%s' (%s) po kërkon të ekzekutojë keyring '%s', por është i bllokuar"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "Programi '%s' (%s) kërkon të ekzekutojë një keyring të panjohur, por është i bllokuar"
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, c-format
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "Programi '%s' kërkon të ekzekutojë keyring e prezgjedhur, por është i bllokuar"
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "Programi '%s' kërkon të ekzekutojë keyring '%s', por është i bllokuar"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "Programi '%s' kërkonë të ekzekutojë një keyring të panjohur, por është i bllokuar"
+
+#: gnome-keyring-ask.c:268
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "Një program i panjohur kërkon të ekzekutojë keyring e prezgjedhur, por është i bllokuar"
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "Një program i panjohur kërkon të ekzekutojë keyring '%s', por është i bllokuar"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "Një program i panjohur kërkon të ekzekutojë një keyring të panjohur, por është i bllokuar"
+
+#: gnome-keyring-ask.c:284
+msgid "Enter password for default keyring to unlock"
+msgstr "Shkruaj fjalëkalimin për zhbllokimin e keyring të prezgjedhur"
+
+#: gnome-keyring-ask.c:286
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Shkruaj fjalëkalimin për zhbllokimin e keyring '%s'"
+
+#: gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "Zhblloko Keyring"
+
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "_Moho"
+
+#: gnome-keyring-ask.c:329
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr "Programi '%s' (%s) po kërkon të krijojë një keyring të ri të quajtur '%s'. Duhet të zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "Programi '%s' (%s) po kërkon të krijojë një keyring të prezgjedhur. Duhet të zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "Programi '%s' po kërkon të krijojë një keyring të quajtur '%s'. Duhet të zgjedhësh fjalëkalimin e duhur nëse duhet ta përdorësh."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "Programi '%s' po kërkon të krijojë një keyring të prezgjedhur. Duhet të zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "Një program i panjohur po kërkon të krijojë një keyring të quajtur '%s'. Duhet të zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "Një program i panjohur po kërkon të krijojë një keyring të prezgjedhur. Duhet të zgjedhësh një fjalëkalim nëse dëshiron ta përdorësh."
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "Fjalëkalim i Ri"
+
+#: gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "Zgjidh një fjalëkalim për keyring e ri"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "Programi '%s' (%s) po kërkon të ruajë një fjalëkalim, por nuk ekziston një keyring i prezgjedhur. Për të krijuar një të tillë, duhet të zgjedhësh fjalëkalimin për përdorim."
+
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "Programi '%s' po kërkon të ruajë një fjalëkalim, por nuk ekziston një ·keyring i prezgjedhur. Për të krijuar një të tillë, duhet të zgjedhësh fjalëkalimin për përdorim."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "Një program i panjohur po kërkon të ruajë një fjalëkalim, por nuk ekziston një keyring i prezgjedhur. Për të krijuar një të tillë, duhet të zgjedhësh fjalëkalimin për përdorim."
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "Krijo Keyring e Prezgjedhur"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "Zgjidh fjalëkalimin për keyring e prezgjedhur"
+
+#: gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "A ti lejoj programit përdorimin e keyring-ut?"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "Programi '%s' (%s) po kërkon të përdorë fjalëkalimin për '%s' në %s."
+
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "Programi '%s' (%s) po kërkon të përdorë fjalëkalimin për '%s' në keyring-un e prezgjedhur."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "Programi '%s' (%s) po kërkon të përdorë fjalëkalimin për '%s' në një keyring të panjohur."
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "Programi '%s' po kërkon të përdorë fjalëkalimin për '%s' në %s."
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "Programi '%s' po kërkon të përdorë fjalëkalimin për '%s' në keyring e prezgjedhur."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "Programi '%s' po kërkon të përdorë fjalëkalimin për '%s' në një keyring të panjohur."
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "Një program i panjohur po kërkon të përdorë fjalëkalimin për '%s' në %s."
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "Një programi i panjohur po kërkon të përdorë fjalëkalimin për '%s' në keyring e prezgjedhur."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "Një program i panjohur po kërkon të përdorë fjalëkalimin për '%s' në një keyring të panjohur."
+
+#: gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "Lejo përdorimin"
+
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "Lejo _Një Herë"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "Lejo _Gjithmonë"
+
+#: gnome-keyring-ask.c:547
+msgid "You must specify the type of request to run\n"
+msgstr "Duhet të përcaktosh një lloj kërkese për ekzekutim\n"
+
+#: gnome-keyring-ask.c:560
+msgid "Unknown request type\n"
+msgstr "Lloj i panjohur kërkese\n"
+
