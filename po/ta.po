@@ -1,0 +1,252 @@
+# translation of ta.po to Tamil
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Jayaradha N <jaya@pune.redhat.com>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ta\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-26 11:45+0200\n"
+"PO-Revision-Date: 2004-08-26 18:36+0530\n"
+"Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
+"Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n\n"
+
+#: gnome-keyring-ask.c:223
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr "பயன்பாடு '%s' (%s) இயல்பான வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#: gnome-keyring-ask.c:227
+#, c-format
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "பயன்பாடு '%s' (%s) வளையம் '%s', அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "பயன்பாடு '%s' (%s) தெரியாத வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, c-format
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "பயன்பாடு '%s' இயல்பான வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "பயன்பாடு '%s' வன வம் '%s' ஐ யத்தை அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "பயன்பாடு '%s' தெரியாத வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#: gnome-keyring-ask.c:268
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "தெரியாத பயன்பாடு இயல்பான வளையத்தை அணுக முயற்சிக்கிறது ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "தெரியாத பயன்பாடு இயல்பான வளையம் '%s', ஐ அணுக முயற்சிக்கிறது ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "தெரியாத பயன்பாடு தெரியாத வளையத்தை அணுக முயற்சிக்கிறது ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#: gnome-keyring-ask.c:284
+msgid "Enter password for default keyring to unlock"
+msgstr "வளையத்தின் பூட்டத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#: gnome-keyring-ask.c:286
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "பூட்டைத்திறக்க வளையத்தின் கடவுச்சொல் '%s'"
+
+#: gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "வளையத்தின் பூட்டை திற"
+
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "(_D)மறுக்கவும்"
+
+#: gnome-keyring-ask.c:329
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr "பயன்பாடு '%s' (%s) புதிய வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "பயன்பாடு '%s' (%s) புதிய இயல்பான வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "பயன்பாடு '%s' புதிய வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "பயன்பாடு '%s'  புதிய இயல்பான ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "தெரியாத பயன்பாடு புதிய வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "பயன்பாடு புதிய வளையம் இயல்பான வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "புதிய வளைய கடவுச்சொல்"
+
+#: gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "புதிய வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "பயன்பாடு '%s' (%s) கடவுச்சொல்லை சேமிக்க விரும்புகிறதும் ஆனால் இயல்பான கடவுச்சொல் இல்லை. உருவாக்க நீங்கள் பயன்படுத்த விரும்புக் கடவுச்சொல்லை உள்ளிடவும்"
+
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "பயன்பாடு '%s' கடவுச்சொல்லை சேமிக்க விரும்புகிறதும் ஆனால் இயல்பான கடவுச்சொல் இல்லை. உருவாக்க நீங்கள் பயன்படுத்த விரும்புக் கடவுச்சொல்லை உள்ளிடவும்"
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "தெரியாத பயன்பாடு கடவுச்சொல்லை சேமிக்க விரும்புகிறதும் ஆனால் இயல்பான கடவுச்சொல் இல்லை. உருவாக்க நீங்கள் பயன்படுத்த விரும்புக் கடவுச்சொல்லை உள்ளிடவும்"
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "புதிய இயல்பான வளையத்தை உருவாக்கவும்"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "இயல்பான வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
+
+#: gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "பயன்பாடுகள் வளையத்தை அணுக அனுமதிக்கவா?"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "பயன்பாடு '%s' (%s) '%s' இல் உள்ள %s  கடவுச்சொல்லை அணுக விரும்புகிறது"
+
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "பயன்பாடு '%s' (%s) இயல்பான வளையத்தில் '%s' க்கான  கடவுச்சொல்லை அணுக விரும்புகிறது"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "பயன்பாடு '%s' (%s) தெரியாத வளையத்தில் '%s' க்கான  கடவுச்சொல்லை அணுக விரும்புகிறது"
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "பயன்பாடு '%s' '%s' இல் உள்ள %s  கடவுச்சொல்லை அணுக விரும்புகிறது"
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "பயன்பாடு '%s' இயல்பான வளையத்தில் %s  கடவுச்சொல்லை அணுக விரும்புகிறது"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "பயன்பாடு '%s' தெரியாத வளையத்தில் %s  கடவுச்சொல்லை அணுக விரும்புகிறது"
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "தெரியாத பயன்பாடு '%s' இல் உள்ள %s. கடவுச்சொல்லை அணுக விரும்புகிறது"
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "தெரியாத பயன்பாடு .'%s' கடவுச்சொல்லை இயல்பான வளையத்திலிருந்து அணுக விரும்புகிறது"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "தெரியாத பயன்பாடு .'%s' கடவுச்சொல்லை தெரியாத வளையத்திலிருந்து அணுக விரும்புகிறது"
+
+#: gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "அணுக அனுமதிக்கவும்"
+
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "(_O) ஒரு முறை அனுமதி"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "(_A)எப்போதும் அனுமதி"
+
+#: gnome-keyring-ask.c:547
+msgid "You must specify the type of request to run\n"
+msgstr "இயக்க வேண்டிய வேண்டுதலின் வகையை தேர்வு செய்யவும்.\n"
+
+#: gnome-keyring-ask.c:560
+msgid "Unknown request type\n"
+msgstr "தெரியாத வேண்டுதல் வகை\n"
+
