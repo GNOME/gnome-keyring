@@ -4,7 +4,9 @@ SUBDIRS = \
 libgnomekeyringincludedir = $(includedir)/gnome-keyring-1/
 
 bin_PROGRAMS= \
-	gnome-keyring-daemon \
+	gnome-keyring-daemon
+
+libexec_PROGRAMS= \
 	gnome-keyring-ask
 
 noinst_PROGRAMS= \
@@ -18,6 +20,7 @@ noinst_LTLIBRARIES=libgnome-keyring-common.la
 INCLUDES=	\
 	-DPREFIX=\""$(prefix)"\" 			\
 	-DBINDIR=\""$(bindir)"\" 			\
+	-DLIBEXECDIR=\""$(libexecdir)"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\

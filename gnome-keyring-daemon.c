@@ -2001,7 +2001,7 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 	int stdout_fd;
 	GError *error;
 	char *argv[] = {
-		BINDIR "/gnome-keyring-ask",
+		LIBEXECDIR "/gnome-keyring-ask",
 		NULL,
 		NULL,
 	};

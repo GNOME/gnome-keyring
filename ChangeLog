@@ -1,3 +1,9 @@
+2004-02-09  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am (INCLUDES): 
+	* gnome-keyring-daemon.c (launch_ask_helper):
+	Move gnome-keyring-ask to libexec.
+
 2004-02-06  Robert Sedak  <robert.sedak@sk.htnet.hr>
 
         * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
