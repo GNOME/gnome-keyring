@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-07 20:17+0300\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-09-09 01:34+0300\n"
 "Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
 "Language-Team: Romanian <gnomero@lists.sourceforge.net>\n"
@@ -21,12 +21,15 @@ msgstr ""
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "Aplicaţia „%s” (%s) doreşte să acceseze keyring-ul implicit, dar este blocat"
+msgstr ""
+"Aplicaţia „%s” (%s) doreşte să acceseze keyring-ul implicit, dar este blocat"
 
 #: gnome-keyring-ask.c:227
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "Aplicaţia „%s” (%s) doreşte să acceseze keyring-ul „%s”, dar este blocat"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Aplicaţia „%s” (%s) doreşte să acceseze keyring-ul „%s”, dar este blocat"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:232
@@ -34,11 +37,14 @@ msgstr "Aplicaţia „%s” (%s) doreşte să acceseze keyring-ul „%s”, dar 
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
-msgstr "Aplicaţia „%s” (%s) doreşte să acceseze un keyring necunoscut, dar este blocat"
+msgstr ""
+"Aplicaţia „%s” (%s) doreşte să acceseze un keyring necunoscut, dar este "
+"blocat"
 
 #: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr "Aplicaţia „%s” doreşte acces la keyring-ul implicit, dar este blocat"
 
 #: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
@@ -49,22 +55,30 @@ msgstr "Aplicaţia „%s” doreşte acces la keyring-ul „%s”, dar este bloc
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "Aplicaţia „%s” doreşte acces la un keyring necunoscut, dar este blocat"
 
 #: gnome-keyring-ask.c:268
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "O aplicaţie necunoscută doreşte acces la keyring-ul implicit, dar este blocat"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"O aplicaţie necunoscută doreşte acces la keyring-ul implicit, dar este blocat"
 
 #: gnome-keyring-ask.c:272
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "O aplicaţie necunoscută doreşte acces la keyring-ul „%s”, dar este blocat"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"O aplicaţie necunoscută doreşte acces la keyring-ul „%s”, dar este blocat"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr "O aplicaţie necunoscută doreşte acces la un keyring necunoscut, dar este blocat"
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"O aplicaţie necunoscută doreşte acces la un keyring necunoscut, dar este "
+"blocat"
 
 #: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
@@ -89,41 +103,53 @@ msgstr "_Refuză"
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "Aplicaţia „%s” (%s) doreşte să creeze un nou keyring numit „%s”. Va trebui să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
+msgstr ""
+"Aplicaţia „%s” (%s) doreşte să creeze un nou keyring numit „%s”. Va trebui "
+"să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
 
 #: gnome-keyring-ask.c:333
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Aplicaţia „%s” (%s) doreşte să creeze un nou keyring implicit. Va trebui să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
+msgstr ""
+"Aplicaţia „%s” (%s) doreşte să creeze un nou keyring implicit. Va trebui să "
+"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
 
 #: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "Aplicaţia „%s” doreşte să creeze un nou keyring numit „%s”. Va trebui să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
+msgstr ""
+"Aplicaţia „%s” doreşte să creeze un nou keyring numit „%s”. Va trebui să "
+"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
 
 #: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Aplicaţia „%s” doreşte să creeze un nou keyring implicit. Va trebui să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
+msgstr ""
+"Aplicaţia „%s” doreşte să creeze un nou keyring implicit. Va trebui să "
+"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
 
 #: gnome-keyring-ask.c:359
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "O aplicaţie necunoscută doreşte să creeze un nou keyring numit „%s”. Va trebui să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
+msgstr ""
+"O aplicaţie necunoscută doreşte să creeze un nou keyring numit „%s”. Va "
+"trebui să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
 
 #: gnome-keyring-ask.c:363
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "O aplicaţie necunoscută doreşte să creeze un nou keyring implicit. Va trebui să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
+msgstr ""
+"O aplicaţie necunoscută doreşte să creeze un nou keyring implicit. Va trebui "
+"să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
@@ -139,7 +165,10 @@ msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Aplicaţia „%s” (%s) doreşte să stocheze o parolă, dar nu există nici un keyring implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care să îl puteţi utiliza."
+msgstr ""
+"Aplicaţia „%s” (%s) doreşte să stocheze o parolă, dar nu există nici un "
+"keyring implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care "
+"să îl puteţi utiliza."
 
 #: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
 #, c-format
@@ -147,7 +176,10 @@ msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Aplicaţia „%s” doreşte să stocheze o parolă, dar nu există nici un keyring implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care să îl puteţi utiliza."
+msgstr ""
+"Aplicaţia „%s” doreşte să stocheze o parolă, dar nu există nici un keyring "
+"implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care să îl "
+"puteţi utiliza."
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:412
@@ -155,7 +187,10 @@ msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "O aplicaţie necunoscută doreşte să stocheze o parolă, dar nu există nici un keyring implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care să îl puteţi utiliza."
+msgstr ""
+"O aplicaţie necunoscută doreşte să stocheze o parolă, dar nu există nici un "
+"keyring implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care "
+"să îl puteţi utiliza."
 
 #: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
@@ -179,7 +214,9 @@ msgstr "Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” î
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
-msgstr "Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” în keyring-ul implicit."
+msgstr ""
+"Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” în keyring-ul "
+"implicit."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:463
@@ -187,7 +224,9 @@ msgstr "Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” î
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
-msgstr "Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” într-un keyring necunoscut."
+msgstr ""
+"Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” într-un keyring "
+"necunoscut."
 
 #: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
 #, c-format
@@ -199,7 +238,8 @@ msgstr "Aplicaţia „%s” doreşte să acceseze parola pentru „%s” în %s.
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
-msgstr "Aplicaţia „%s” doreşte să acceseze parola pentru „%s” în keyring-ul implicit."
+msgstr ""
+"Aplicaţia „%s” doreşte să acceseze parola pentru „%s” în keyring-ul implicit."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
@@ -207,7 +247,9 @@ msgstr "Aplicaţia „%s” doreşte să acceseze parola pentru „%s” în key
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "Aplicaţia „%s” doreşte să acceseze parola pentru „%s” într-un keyring necunoscut."
+msgstr ""
+"Aplicaţia „%s” doreşte să acceseze parola pentru „%s” într-un keyring "
+"necunoscut."
 
 #: gnome-keyring-ask.c:490
 #, c-format
@@ -219,7 +261,9 @@ msgstr "O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” �
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
-msgstr "O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” în keyring-ul implicit."
+msgstr ""
+"O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” în keyring-ul "
+"implicit."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:496
@@ -227,7 +271,9 @@ msgstr "O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” �
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” într-un keyring necunoscut."
+msgstr ""
+"O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” într-un "
+"keyring necunoscut."
 
 #: gnome-keyring-ask.c:501
 msgid "Allow access"
@@ -248,4 +294,3 @@ msgstr "Trebuie să specificaţi tipul cererii pentru rulare\n"
 #: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "Tip de cerere necunoscut\n"
-
