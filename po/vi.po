@@ -1,0 +1,258 @@
+# Vietnamese translation of gnome-keyring.
+# Copyright (C) 2004 THE gnome-keyring'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-keyring package.
+# pclouds <pclouds@vnlinux.org>, 2004.
+#
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 03:48+0200\n"
+"PO-Revision-Date: 2004-10-10 21:26+0700\n"
+"Last-Translator: pclouds <pclouds@vnlinux.org>\n"
+"Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: gnome-keyring-ask.c:223
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr "Ứng dụng '%s' (%s) muốn truy cập vào xâu khóa mặc định, nhưng xâu đã bị khóa"
+
+#: gnome-keyring-ask.c:227
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "Ứng dụng '%s' (%s) muốn truy cập vào xâu khóa '%s', nhưng xâu đã bị khóa"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "Ứng dụng '%s' (%s) muốn truy cập vào xâu khóa không tên, nhưng xâu đã bị khóa"
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr "Ứng dụng '%s' muốn truy cập vào xâu khóa mặc định, nhưng xâu đã bị khóa"
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "Ứng dụng '%s' muốn truy cập vào xâu khóa '%s', nhưng xâu đã bị khóa"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "Ứng dụng '%s' muốn truy cập vào xâu khóa không tên, nhưng xâu đã bị khóa"
+
+#: gnome-keyring-ask.c:268
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr "Ứng dụng lạ muốn truy cập vào xâu khóa mặc định, nhưng xâu đã bị khóa"
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "Ứng dụng lạ muốn truy cập vào xâu khóa '%s', nhưng xâu đã bị khóa"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "Ứng dụng lạ muốn truy cập vào xâu khóa không tên, nhưng xâu đã bị khóa"
+
+#: gnome-keyring-ask.c:284
+msgid "Enter password for default keyring to unlock"
+msgstr "Hãy nhập mật khẩu cho xâu khóa mặc định để mở xâu khóa"
+
+#: gnome-keyring-ask.c:286
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Hãy nhập mật khẩu cho xâu khóa '%s' để mở xâu khóa"
+
+#: gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "Mở xâu"
+
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "_Từ chối"
+
+#: gnome-keyring-ask.c:329
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr "Ứng dụng '%s' (%s) muốn tạo xâu khóa mới tên '%s'. Bạn phải chọn mật khẩu bạn muốn dùng để mở xâu khóa này."
+
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "Ứng dụng '%s' (%s) muốn tạo xâu khóa mặc định mới. Bạn phải chọn mật khẩu bạn muốn dùng để mở xâu khóa này."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "Ứng dụng '%s' muốn tạo xâu khóa mới tên '%s'. Bạn phải chọn mật khẩu bạn muốn dùng để mở xâu khóa này."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "Ứng dụng '%s' muốn tạo xâu khóa mặc định mới. Bạn phải chọn mật khẩu bạn muốn dùng để mở xâu khóa này."
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "Ứng dụng lạ muốn tạo xâu khóa mới tên '%s'. Bạn phải chọn mật khẩu bạn muốn dùng để mở xâu khóa này."
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "Ứng dụng lạ muốn tạo xâu khóa mặc định mới. Bạn phải chọn mật khẩu bạn muốn dùng để mở xâu khóa này."
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "Mật khẩu xâu khóa mới"
+
+#: gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "Hãy chọn mật khẩu cho xâu khóa mới"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "Ứng dụng '%s' (%s) muốn lưu mật khẩu, nhưng không có xâu khóa mặc định. Để tạo xâu, bạn cần chọn mật khẩu dùng để mở xâu khoá."
+
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "Ứng dụng '%s' muốn lưu mật khẩu, nhưng không có xâu khóa mặc định. Để tạo xâu, bạn cần chọn mật khẩu dùng để mở xâu khoá."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "Ứng dụng lạ muốn lưu mật khẩu, nhưng không có xâu khóa mặc định. Để tạo xâu, bạn cần chọn mật khẩu dùng để mở xâu khoá."
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "Tạo xâu khoá mặc định"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "Chọn mật khẩu cho xâu khóa mặc định"
+
+#: gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "Cho phép ứng dụng truy xuất xâu khóa chứ?"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "Ứng dụng '%s' (%s) muốn truy cập mật khẩu cho '%s' trong %s."
+
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "Ứng dụng '%s' (%s) muốn truy cập mật khẩu cho '%s' trong xâu khóa mặc định."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "Ứng dụng '%s' (%s) muốn truy cập mật khẩu cho '%s' trong xâu khóa không tên."
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "Ứng dụng '%s' muốn truy xuất mật khẩu cho '%s' trong %s."
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "Ứng dụng '%s' muốn truy xuất mật khẩu cho '%s' trong xâu khóa mặc định."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "Ứng dụng '%s' muốn truy xuất mật khẩu cho '%s' trong xâu khóa không tên."
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "Ứng dụng lạ muốn truy xuất mật khẩu cho '%s' trong %s."
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "Ứng dụng lạ muốn truy xuất mật khẩu cho '%s' trong xâu khoá mặc định."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "Ứng dụng lạ muốn truy xuất mật khẩu cho '%s' trong xâu khoá không tên."
+
+#: gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "Cho phép truy xuất"
+
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "Cho phép _một lần"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "_Luôn cho phép"
+
+#: gnome-keyring-ask.c:547
+msgid "You must specify the type of request to run\n"
+msgstr "Bạn phải xác định kiểu yêu cầu cần chạy\n"
+
+#: gnome-keyring-ask.c:560
+msgid "Unknown request type\n"
+msgstr "Kiểu yêu cầu lạ\n"
+
