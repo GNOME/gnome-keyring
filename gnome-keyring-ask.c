@@ -332,8 +332,8 @@ ask_for_item_read_write_acccess (void)
 			       FALSE, NULL,
 			       2,
 			       "_Deny", GTK_RESPONSE_CANCEL,
-			       "_Allow Once", 1,
-			       "_Allow Forever", 2,
+			       "Allow _Once", 1,
+			       "_Always Allow", 2,
 			       NULL);
 	g_free (secondary);
 	

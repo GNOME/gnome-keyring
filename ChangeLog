@@ -1,5 +1,11 @@
 2003-12-16  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-ask.c:
+	(ask_for_item_read_write_acccess):
+	Better wording for buttons
+
+2003-12-16  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-ask.c (ask_for_new_keyring_password):
 	Make the ask dialogs nicer.
 
