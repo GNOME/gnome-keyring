@@ -27,6 +27,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -37,6 +38,7 @@
 #include "gnome-keyring-private.h"
 #include "gnome-keyring-proto.h"
 #include "gnome-keyring-daemon.h"
+#include "mkdtemp.h"
 
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int

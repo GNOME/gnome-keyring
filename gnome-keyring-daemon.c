@@ -2280,7 +2280,7 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ op_set_item_info_or_attributes_collect, op_set_item_attributes_execute}, /* SET_ITEM_ATTRIBUTES */
 };
 
-static void
+static RETSIGTYPE
 cleanup_handler (int sig)
 {
         cleanup_socket_dir ();

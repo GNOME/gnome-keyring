@@ -1,5 +1,12 @@
 2004-01-13  Alexander Larsson  <alexl@redhat.com>
 
+	* configure.in:
+	* gnome-keyring-daemon-io.c:
+	* gnome-keyring-daemon.c:
+	Portability fixes from mterry@fastmail.fm
+
+2004-01-13  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-ask.c:
 	Fix some leaks.
 	Patch from tom@aliacom.fr.
