@@ -1,6 +1,6 @@
-This is gnome-keyring 0.4.1, a system for keeping user passwords and
-secrets. This version is for Gnome 2.6, and is the first publically
-availible version of gnome-keyring. 
+Changes in version 0.4.2 are:
+* AIX portability fixes
+* Translation updates
 
 Changes in version 0.4.1 are:
 * Support for slaving lifecycle to a file descriptor
