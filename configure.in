@@ -1,6 +1,6 @@
 AC_INIT(gnome-keyring.h)
 
-AM_INIT_AUTOMAKE(gnome-keyring, 0.3.3)
+AM_INIT_AUTOMAKE(gnome-keyring, 0.3.4)
 AM_CONFIG_HEADER(config.h)
 	
 AM_SANITY_CHECK
