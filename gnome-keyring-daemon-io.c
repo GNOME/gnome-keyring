@@ -591,9 +591,11 @@ create_master_socket (const char **path)
 	int sock;
 	struct sockaddr_un addr;
 	GIOChannel *channel;
+	gchar *tmp_tmp_dir;
 	
 	/* Create private directory for agent socket */
-	strncpy (tmp_dir, "/tmp/keyring-XXXXXX", sizeof (tmp_dir));
+	tmp_tmp_dir = g_build_filename (g_get_tmp_dir (), "keyring-XXXXXX", NULL);
+	strncpy (tmp_dir, tmp_tmp_dir, sizeof (tmp_dir));
 	if (mkdtemp (tmp_dir) == NULL) {
 		perror ("mkdtemp: socket dir");
 		return FALSE;
@@ -621,6 +623,7 @@ create_master_socket (const char **path)
 		return FALSE;
 	}
 
+	g_free (tmp_tmp_dir);
 	channel = g_io_channel_unix_new (sock);
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, new_client, NULL);
 	g_io_channel_unref (channel);

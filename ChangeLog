@@ -1,3 +1,9 @@
+2004-01-07  Alex Duggan  <aldug@astrolinux.com>
+
+	* gnome-keyring-daemon-io.c: Use g_get_tmp_dir () instead of 
+	hardcoding "/tmp"
+	* .cvsignore: Add gnome-keyring-1.pc
+
 2004-01-06  Kostas Papadimas <pkst@gnome.org>
 
         * configure.in: Added Greek (el) to ALL_LINGUAS.   
