@@ -1,0 +1,249 @@
+# This file is distributed under the same license as the PACKAGE package.
+# Changwoo Ryu <cwryu@debian.org>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-14 23:28+0900\n"
+"PO-Revision-Date: 2004-01-15 06:01+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-keyring-ask.c:222
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr "프로그램 '%s'(%s)에서 기본 키링에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:226
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "프로그램 '%s'(%s)에서 키링 '%s'에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:231
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "프로그램 '%s'(%s)에서 알 수 없는 키링에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:237 gnome-keyring-ask.c:251
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr "프로그램 '%s'(%s)에서 기본 키링에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:241 gnome-keyring-ask.c:256
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "프로그램 '%s'에서 키링 '%s'에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:245 gnome-keyring-ask.c:261
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "프로그램 '%s'에서 알 수 없는 키링에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:267
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr "알 수 없는 프로그램에서 기본 키링에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:271
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "알 수 없는 프로그램에서 키링 '%s'에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:276
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "알 수 없는 프로그램에서 알 수 없는 키링에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+
+#: gnome-keyring-ask.c:283
+msgid "Enter password for default keyring to unlock"
+msgstr "기본 키링의 잠금을 풀 열쇠글을 입력하십시오"
+
+#: gnome-keyring-ask.c:285
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "키링 '%s'의 잠금을 풀 열쇠글을 입력하십시오"
+
+#: gnome-keyring-ask.c:288
+msgid "Unlock Keyring"
+msgstr "키링 잠금 풀기"
+
+#: gnome-keyring-ask.c:293 gnome-keyring-ask.c:373 gnome-keyring-ask.c:420
+#: gnome-keyring-ask.c:504
+msgid "_Deny"
+msgstr "거부(_D)"
+
+#: gnome-keyring-ask.c:328
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr "'%s' (%s) 프로그램에서 '%s' 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:332
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "'%s' (%s) 프로그램에서 기본 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:338 gnome-keyring-ask.c:348
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "'%s' 프로그램에서 '%s' 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:342 gnome-keyring-ask.c:352
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "'%s' 프로그램에서 기본 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:358
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "알 수 없는 프로그램에서 '%s' 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:362
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "알 수 없는 프로그램에서 기본 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:368
+msgid "New Keyring Password"
+msgstr "새 키링 열쇠글"
+
+#: gnome-keyring-ask.c:369
+msgid "Choose password for new keyring"
+msgstr "새 키링에 대한 열쇠글을 고르십시오"
+
+#: gnome-keyring-ask.c:399
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "'%s' (%s) 프로그램에서 열쇠글을 저장하려 하지만, 기본 키링이 없습니다. 기본 키링을 만드려면 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:403 gnome-keyring-ask.c:407
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "'%s' 프로그램에서 열쇠글을 저장하려 하지만, 기본 키링이 없습니다. 기본 키링을 만드려면 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:411
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr "알 수 없는 프로그램에서 열쇠글을 저장하려 하지만, 기본 키링이 없습니다. 기본 키링을 만드려면 여기에 사용할 열쇠글을 지정해야 합니다."
+
+#: gnome-keyring-ask.c:415
+msgid "Create Default Keyring"
+msgstr "기본 키링 만들기"
+
+#: gnome-keyring-ask.c:416
+msgid "Choose password for default keyring"
+msgstr "기본 키링에 대한 열쇠글을 고르십시오"
+
+#: gnome-keyring-ask.c:453
+msgid "Allow application access to keyring?"
+msgstr "프로그램에 키링 접근을 허용합니까?"
+
+#: gnome-keyring-ask.c:456
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "'%s' (%s) 프로그램에서 '%s'에 대한 열쇠글을 %s에서 접근하려 합니다."
+
+#: gnome-keyring-ask.c:459
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "'%s' (%s) 프로그램에서 '%s'에 대한 열쇠글을 기본 키링에서 접근하려 합니다."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:462
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "'%s' (%s) 프로그램에서 '%s'에 대한 열쇠글을 알 수 없는 키링에서 접근하려 합니다."
+
+#: gnome-keyring-ask.c:467 gnome-keyring-ask.c:478
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "'%s' 프로그램에서 '%s'에 대한 열쇠글을 %s에서 접근하려 합니다."
+
+#: gnome-keyring-ask.c:470 gnome-keyring-ask.c:481
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "'%s' 프로그램에서 '%s'에 대한 열쇠글을 기본 키링에서 접근하려 합니다."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:473 gnome-keyring-ask.c:484
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "'%s' 프로그램에서 '%s'에 대한 열쇠글을 알 수 없는 키링에서 접근하려 합니다."
+
+#: gnome-keyring-ask.c:489
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "알 수 없는 프로그램에서 '%s'에 대한 열쇠글을 %s에서 접근하려 합니다."
+
+#: gnome-keyring-ask.c:492
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "알 수 없는 프로그램에서 '%s'에 대한 열쇠글을 기본 키링에서 접근하려 합니다."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:495
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "알 수 없는 프로그램에서 '%s'에 대한 열쇠글을 알 수 없는 키링에서 접근하려 합니다."
+
+#: gnome-keyring-ask.c:500
+msgid "Allow access"
+msgstr "접근 허용"
+
+#: gnome-keyring-ask.c:505
+msgid "Allow _Once"
+msgstr "한 번만 허용(_O)"
+
+#: gnome-keyring-ask.c:506
+msgid "_Always Allow"
+msgstr "항상 허용(_A)"
+
+#: gnome-keyring-ask.c:546
+msgid "You must specify the type of request to run\n"
+msgstr "실행할 요청의 종류를 지정해야 합니다\n"
+
+#: gnome-keyring-ask.c:559
+msgid "Unknown request type\n"
+msgstr "요청 종류를 알 수 없습니다\n"
