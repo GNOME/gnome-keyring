@@ -1,299 +1,308 @@
 # gnome-keyring ja.po.
-# Copyright (C) 2003 Free Software Foundation, Inc.
+# Copyright (C) 2003-2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Takeshi AIHANA <aihana@gnome.gr.jp>, 2003.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2003-2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 11:46+0100\n"
-"PO-Revision-Date: 2003-12-29 10:12+0900\n"
+"POT-Creation-Date: 2004-01-31 10:13+0900\n"
+"PO-Revision-Date: 2004-01-31 10:12+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gnome-keyring-ask.c:223
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' (%s) ¤¬¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş"
+"¤¹¤¬¡¢¥í¥Ã¥¯¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
 #: gnome-keyring-ask.c:227
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' (%s ¤¬ Keyring '%s' ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢"
+"¥í¥Ã¥¯¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
-#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:232
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' (%s) ¤¬ÉÔÌÀ¤Ê Keyring ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢"
+"¥í¥Ã¥¯¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
 #: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' ¤¬¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢"
+"¥í¥Ã¥¯¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
 #: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
-#, fuzzy, c-format
+#, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' ¤¬ Keyring '%s' ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢¥í¥Ã¥¯"
+"¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
-#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' ¤¬ÉÔÌÀ¤Ê Keyring ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢¥í¥Ã¥¯"
+"¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
 #: gnome-keyring-ask.c:268
-#, fuzzy
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢"
+"¥í¥Ã¥¯¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
 #: gnome-keyring-ask.c:272
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬ Keyring '%s' ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢¥í¥Ã¥¯"
+"¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
-#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
-#, fuzzy
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr "%s ãŒ %s ã¸ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬ÉÔÌÀ¤Ê Keyring ¤Ø¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢¥í¥Ã¥¯"
+"¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
 #: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
-msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã®ãƒ­ãƒƒã‚¯ã‚’è§£é™¤ã™ã‚‹ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’å…¥åŠ›ã—ã¦ä¸‹ã•ã„"
+msgstr "¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤Î¥í¥Ã¥¯¤ò²ò½ü¤¹¤ë¥Ñ¥¹¥ï¡¼¥É¤òÆşÎÏ¤·¤Æ²¼¤µ¤¤"
 
 #: gnome-keyring-ask.c:286
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "ã‚­ãƒ¼ãƒªãƒ³ã‚° '%s' ã®ãƒ­ãƒƒã‚¯ã‚’è§£é™¤ã™ã‚‹ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’å…¥åŠ›ã—ã¦ä¸‹ã•ã„"
+msgstr "Keyring '%s' ¤Î¥í¥Ã¥¯¤ò²ò½ü¤¹¤ë¥Ñ¥¹¥ï¡¼¥É¤òÆşÎÏ¤·¤Æ²¼¤µ¤¤"
 
 #: gnome-keyring-ask.c:289
 msgid "Unlock Keyring"
-msgstr "ã‚­ãƒ¼ãƒªãƒ³ã‚°ã®ãƒ­ãƒƒã‚¯è§£é™¤"
+msgstr "Keyring ¤Î¥í¥Ã¥¯²ò½ü"
 
 #: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
 #: gnome-keyring-ask.c:505
 msgid "_Deny"
-msgstr ""
+msgstr "µñÈİ¤¹¤ë(_D)"
 
 #: gnome-keyring-ask.c:329
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"%s ã¯ '%s' ã¨ã„ã†æ–°ã—ã„ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚ãã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ä½¿"
-"ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’é¸æŠã—ã¦ä¸‹ã•ã„ã€‚"
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' (%s) ¤¬ '%s' ¤È¤¤¤¦¿·¤·¤¤ Keyring ¤òÀ¸À®¤·¤è¤¦¤È¤·¤Æ¤¤"
+"¤Ş¤¹¡£¤½¤Î Keyring ¤ò»ÈÍÑ¤¹¤ë¤¿¤á¤Î¥Ñ¥¹¥ï¡¼¥É¤òÁªÂò¤·¤Æ²¼¤µ¤¤¡£"
 
 #: gnome-keyring-ask.c:333
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"%s ã¯ '%s' ã¨ã„ã†æ–°ã—ã„ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚ãã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ä½¿"
-"ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’é¸æŠã—ã¦ä¸‹ã•ã„ã€‚"
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' (%s) ¤¬¿·¤·¤¤¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤òÀ¸À®¤·¤è¤¦¤È¤·¤Æ¤¤"
+"¤Ş¤¹¡£¤½¤Î Keyring ¤ò»ÈÍÑ¤¹¤ë¤¿¤á¤Î¥Ñ¥¹¥ï¡¼¥É¤òÁªÂò¤·¤Æ²¼¤µ¤¤¡£"
 
 #: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"%s ã¯ '%s' ã¨ã„ã†æ–°ã—ã„ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚ãã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ä½¿"
-"ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’é¸æŠã—ã¦ä¸‹ã•ã„ã€‚"
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' ¤¬ '%s' ¤È¤¤¤¦¿·¤·¤¤ Keyring ¤òÀ¸À®¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
+"¤½¤Î Keyring ¤ò»ÈÍÑ¤¹¤ë¤¿¤á¤Î¥Ñ¥¹¥ï¡¼¥É¤òÁªÂò¤·¤Æ²¼¤µ¤¤¡£"
 
 #: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"%s ã¯ '%s' ã¨ã„ã†æ–°ã—ã„ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚ãã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ä½¿"
-"ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’é¸æŠã—ã¦ä¸‹ã•ã„ã€‚"
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' ¤¬¿·¤·¤¤ Keyring ¤òÀ¸À®¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£¤½¤Î "
+"Keyring ¤ò»ÈÍÑ¤¹¤ë¤¿¤á¤Î¥Ñ¥¹¥ï¡¼¥É¤òÁªÂò¤·¤Æ²¼¤µ¤¤¡£"
 
 #: gnome-keyring-ask.c:359
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"%s ã¯ '%s' ã¨ã„ã†æ–°ã—ã„ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚ãã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ä½¿"
-"ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’é¸æŠã—ã¦ä¸‹ã•ã„ã€‚"
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬ '%s' ¤È¤¤¤¦¿·¤·¤¤ Keyring ¤òÀ¸À®¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
+"¤½¤Î Keyring ¤ò»ÈÍÑ¤¹¤ë¤¿¤á¤Î¥Ñ¥¹¥ï¡¼¥É¤òÁªÂò¤·¤Æ²¼¤µ¤¤¡£"
 
 #: gnome-keyring-ask.c:363
-#, fuzzy
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"%s ã¯ '%s' ã¨ã„ã†æ–°ã—ã„ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚ãã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ä½¿"
-"ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’é¸æŠã—ã¦ä¸‹ã•ã„ã€‚"
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬¿·¤·¤¤¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤òÀ¸À®¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
+"¤½¤Î Keyring ¤ò»ÈÍÑ¤¹¤ë¤¿¤á¤Î¥Ñ¥¹¥ï¡¼¥É¤òÁªÂò¤·¤Æ²¼¤µ¤¤¡£"
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
-msgstr "æ–°ã—ã„ã‚­ãƒ¼ãƒªãƒ³ã‚°ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰"
+msgstr "¿·¤·¤¤ Keyring ¤Î¥Ñ¥¹¥ï¡¼¥É"
 
 #: gnome-keyring-ask.c:370
 msgid "Choose password for new keyring"
-msgstr "æ–°ã—ã„ã‚­ãƒ¼ãƒªãƒ³ã‚°ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®é¸æŠ"
+msgstr "¿·¤·¤¤ Keyring ¤Î¥Ñ¥¹¥ï¡¼¥É¤ÎÁªÂò"
 
 #: gnome-keyring-ask.c:400
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"%s ã¯ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’ä¿å­˜ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ãŒã‚ã‚Šã¾ã›"
-"ã‚“ã€‚ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã™ã‚‹å ´åˆã¯ã€ãã‚Œã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’"
-"é¸æŠã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚"
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' (%s) ¤¬¥Ñ¥¹¥ï¡¼¥É¤òÊİÂ¸¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢¥Ç¥Õ¥©¥ë¥È"
+"¤Î Keyring ¤¬¤¢¤ê¤Ş¤»¤ó¡£¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤òÀ¸À®¤¹¤ë¾ì¹ç¤Ï¡¢»ÈÍÑ¤¹¤ë¥Ñ¥¹"
+"¥ï¡¼¥É¤òÁªÂò¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Ş¤¹¡£"
 
 #: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"%s ã¯ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’ä¿å­˜ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ãŒã‚ã‚Šã¾ã›"
-"ã‚“ã€‚ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã™ã‚‹å ´åˆã¯ã€ãã‚Œã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’"
-"é¸æŠã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚"
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' ¤¬¥Ñ¥¹¥ï¡¼¥É¤òÊİÂ¸¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢¥Ç¥Õ¥©¥ë¥È¤Î "
+"keyring ¤¬¤¢¤ê¤Ş¤»¤ó¡£¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤òÀ¸À®¤¹¤ë¾ì¹ç¤Ï¡¢»ÈÍÑ¤¹¤ë¥Ñ¥¹¥ï¡¼"
+"¥É¤òÁªÂò¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Ş¤¹¡£"
 
-#. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:412
-#, fuzzy
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"%s ã¯ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’ä¿å­˜ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ãŒã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ãŒã‚ã‚Šã¾ã›"
-"ã‚“ã€‚ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã‚’ç”Ÿæˆã™ã‚‹å ´åˆã¯ã€ãã‚Œã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’"
-"é¸æŠã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚"
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬¥Ñ¥¹¥ï¡¼¥É¤òÊİÂ¸¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¤¬¡¢¥Ç¥Õ¥©¥ë¥È¤Î "
+"Keyring ¤¬¤¢¤ê¤Ş¤»¤ó¡£¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤òÀ¸À®¤¹¤ë¾ì¹ç¤Ï¡¢»ÈÍÑ¤¹¤ë¥Ñ¥¹¥ï¡¼"
+"¥É¤òÁªÂò¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Ş¤¹¡£"
 
 #: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
-msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã®ç”Ÿæˆ"
+msgstr "¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤ÎÀ¸À®"
 
 #: gnome-keyring-ask.c:417
 msgid "Choose password for default keyring"
-msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®é¸æŠ"
+msgstr "¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤Î¥Ñ¥¹¥ï¡¼¥É¤ÎÁªÂò"
 
 #: gnome-keyring-ask.c:454
 msgid "Allow application access to keyring?"
-msgstr "ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã«ã‚­ãƒ¼ãƒªãƒ³ã‚°ã¸ã®ã‚¢ã‚¯ã‚»ã‚¹ã‚’è¨±å¯ã—ã¾ã™ã‹ï¼Ÿ"
+msgstr "¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤Ë Keyring ¤Ø¤Î¥¢¥¯¥»¥¹¤òµö²Ä¤·¤Ş¤¹¤«¡©"
 
 #: gnome-keyring-ask.c:457
-#, fuzzy, c-format
+#, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%1$s' (%2$s) ¤¬ %4$s ¤Ë¤¢¤ë '%3$s' ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë¥¢¥¯¥»¥¹¤·"
+"¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
 
 #: gnome-keyring-ask.c:460
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' (%s) ¤¬¥Ç¥Õ¥©¥ë¥È¤Î Kerying ¤Ë¤¢¤ë '%s' ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë"
+"¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:463
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' (%s) ¤¬ÉÔÌÀ¤Ê Keyring ¤Ë¤¢¤ë '%s' ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë¥¢¥¯¥»"
+"¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
 
 #: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
-#, fuzzy, c-format
+#, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%1$s' ¤¬ %3$s ¤Ë¤¢¤ë '%2$s' ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë¥¢¥¯¥»¥¹¤·¤è¤¦¤È"
+"¤·¤Æ¤¤¤Ş¤¹¡£"
 
 #: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' ¤¬¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤Ë¤¢¤ë '%s' ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë¥¢¥¯¥»"
+"¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó '%s' ¤¬ÉÔÌÀ¤Ê Keyring ¤Ë¤¢¤ë '%s' ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë¥¢¥¯¥»¥¹¤·¤è"
+"¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
 
 #: gnome-keyring-ask.c:490
-#, fuzzy, c-format
+#, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬ %2$s ¤Ë¤¢¤ë %1$s ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë¥¢¥¯¥»¥¹¤·¤è¤¦¤È¤·¤Æ"
+"¤¤¤Ş¤¹¡£"
 
 #: gnome-keyring-ask.c:493
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬¥Ç¥Õ¥©¥ë¥È¤Î Keyring ¤Ë¤¢¤ë '%s' ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë¥¢¥¯¥»"
+"¥¹¤·¤è¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:496
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "%1$s ã¯ %3$s ã«ã‚ã‚‹ '%2$s' ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚"
+msgstr ""
+"ÉÔÌÀ¤Ê¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤¬ÉÔÌÀ¤Ê Keyring ¤Ë¤¢¤ë '%s' ¤Î¥Ñ¥¹¥ï¡¼¥É¤Ë¥¢¥¯¥»¥¹¤·¤è"
+"¤¦¤È¤·¤Æ¤¤¤Ş¤¹¡£"
 
 #: gnome-keyring-ask.c:501
 msgid "Allow access"
-msgstr "ã‚¢ã‚¯ã‚»ã‚¹ã®è¨±å¯"
+msgstr "¥¢¥¯¥»¥¹¤Îµö²Ä"
 
 #: gnome-keyring-ask.c:506
-#, fuzzy
 msgid "Allow _Once"
-msgstr "ã‚¢ã‚¯ã‚»ã‚¹ã®è¨±å¯"
+msgstr "°ìÅÙ¤À¤±µö²Ä¤¹¤ë(_O)"
 
 #: gnome-keyring-ask.c:507
 msgid "_Always Allow"
-msgstr ""
+msgstr "¾ï¤Ëµö²Ä¤¹¤ë(_A)"
 
 #: gnome-keyring-ask.c:547
 msgid "You must specify the type of request to run\n"
-msgstr "å®Ÿè¡Œã™ã‚‹ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®ç¨®é¡ã‚’æŒ‡å®šã—ã¦ä¸‹ã•ã„\n"
+msgstr "¼Â¹Ô¤¹¤ë¥ê¥¯¥¨¥¹¥È¤Î¼ïÎà¤ò»ØÄê¤·¤Æ²¼¤µ¤¤\n"
 
 #: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
-msgstr "ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®ç¨®é¡ãŒä¸æ˜\n"
-
-#~ msgid "The application '%s' (%s)"
-#~ msgstr "ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ '%s' (%s)"
-
-#~ msgid "The application '%s'"
-#~ msgstr "ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ '%s'"
-
-#~ msgid "The application %s"
-#~ msgstr "ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ %s"
-
-#~ msgid "the default keyring"
-#~ msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ¼ãƒªãƒ³ã‚°"
-
-#~ msgid "the keyring '%s'"
-#~ msgstr "ã‚­ãƒ¼ãƒªãƒ³ã‚° '%s'"
-
-#~ msgid "an unknown keyring"
-#~ msgstr "ä¸æ˜ãªã‚­ãƒ¼ãƒªãƒ³ã‚°"
+msgstr "¥ê¥¯¥¨¥¹¥È¤Î¼ïÎà¤¬ÉÔÌÀ¤Ç¤¹\n"
