@@ -1,3 +1,9 @@
+2004-01-12  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in: 
+	Update for 0.1.2
+
 2004-01-11  Christophe Merlet  <redfox@redfoxcenter.org>
 
 	* configure.in (ALL_LINGUAS): Added "fr" (French).

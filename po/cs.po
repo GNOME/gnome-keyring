@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring VERSION\n"
-"POT-Creation-Date: 2003-12-28 10:41+0100\n"
+"POT-Creation-Date: 2004-01-12 08:48+0100\n"
 "PO-Revision-Date: 2003-12-17 13:26+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"

@@ -1,7 +1,13 @@
 This is the initial release of gnome-keyring.
 It hasn't had much public testing yet, please try it out.
 
-Changes in version 0.1.1 are:
+Changes in version 0.1.2 are:
+* Spelling fix in API
+* require latest gtk/glib
+* use g_get_tmp_dir instead of hardcoding /tmp
+* More translations
+
+Changes in version 0.1.2 are:
 * Slave lifecycle to session
 * More translations
 * Nicer user interface

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"POT-Creation-Date: 2003-12-28 10:41+0100\n"
+"POT-Creation-Date: 2004-01-12 08:48+0100\n"
 "PO-Revision-Date: 2002-02-04 00:07+0800\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.net>\n"
