@@ -89,7 +89,7 @@ connect_to_daemon (gboolean non_blocking)
 	int sock;
 	int val;
 
-	socket_file = g_getenv ("GNOME_KEYCHAIN_SOCKET");
+	socket_file = g_getenv ("GNOME_KEYRING_SOCKET");
 	
 	if (socket_file == NULL) {
 		return -1;

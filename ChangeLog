@@ -1,5 +1,15 @@
 2003-12-06  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-daemon.c: (close_stdinout), (main):
+	Print daemon pid on startup
+	remove old test code
+	correct envvar name
+	
+	* gnome-keyring.c: (connect_to_daemon):
+	correct envvar name
+
+2003-12-06  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-daemon.c (main):
 	Close stdin/stdout in daemon process.
 	

@@ -2280,184 +2280,6 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ op_set_item_info_or_attributes_collect, op_set_item_attributes_execute}, /* SET_ITEM_ATTRIBUTES */
 };
 
-#if 0
-
-gboolean
-compare_keyrings (GnomeKeyring *a,
-		  GnomeKeyring *b)
-{
-	GList *la, *lb;
-	GnomeKeyringItem *ia, *ib;
-	GnomeKeyringAttribute *attribute_a, *attribute_b;
-	GnomeKeyringAccessControl *aca, *acb;
-	GList *acla, *aclb;
-	int i;
-	
-	g_assert (strcmp (a->password, b->password) == 0);
-	g_assert (strcmp (a->keyring_name, b->keyring_name) == 0);
-	g_assert (a->ctime == b->ctime);
-	g_assert (a->mtime == b->mtime);
-	g_assert (a->lock_on_idle == b->lock_on_idle);
-	g_assert (a->lock_timeout == b->lock_timeout);
-
-	la = a->items;
-	lb = b->items;
-
-	while (la != NULL) {
-		g_assert (lb != NULL);
-		ia = la->data;
-		ib = lb->data;
-
-		g_assert (ia->id == ib->id);
-		g_assert (ia->type == ib->type);
-		g_assert (ia->locked == FALSE);
-		g_assert (ia->locked == ib->locked);
-		g_assert (ia->ctime == ib->ctime);
-		g_assert (ia->mtime == ib->mtime);
-		g_assert ((ia->display_name == NULL && ib->display_name == NULL) ||
-			  strcmp (ia->display_name, ib->display_name) == 0);
-		g_assert ((ia->secret == NULL && ib->secret == NULL) ||
-			  strcmp (ia->secret, ib->secret) == 0);
-		g_assert (ia->attributes->len == ib->attributes->len);
-
-		attribute_a = (GnomeKeyringAttribute *)ia->attributes->data;
-		attribute_b = (GnomeKeyringAttribute *)ib->attributes->data;
-		
-		for (i = 0; i < ia->attributes->len; i++) {
-			g_assert (strcmp (attribute_a[i].name, attribute_b[i].name) == 0);
-			g_assert (attribute_a[i].type == attribute_b[i].type);
-			
-			if (attribute_a[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
-				g_assert (strcmp (attribute_a[i].value.string, attribute_b[i].value.string) == 0);
-			} else if (attribute_a[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32) {
-				g_assert (attribute_a[i].value.integer == attribute_b[i].value.integer);
-			} else {
-				g_assert_not_reached ();
-			}
-		}
-
-		acla = ia->acl;
-		aclb = ib->acl;
-
-		while (acla != NULL) {
-			g_assert (aclb != NULL);
-
-			aca = acla->data;
-			acb = aclb->data;
-			
-			g_assert (aca->types_allowed == acb->types_allowed);
-			g_assert ((aca->application->display_name == NULL && acb->application->display_name == NULL) ||
-				  strcmp (aca->application->display_name,
-					  acb->application->display_name) == 0);
-			g_assert ((aca->application->pathname == NULL && acb->application->pathname == NULL) ||
-				  strcmp (aca->application->pathname,
-					  acb->application->pathname) == 0);
-
-			acla = acla->next;
-			aclb = aclb->next;
-		}
-		g_assert (aclb == NULL);
-		
-
-		la = la->next;
-		lb = lb->next;
-	}
-	g_assert (lb == NULL);
-	
-	
-	
-	return TRUE;
-}
-
-static void
-test_files (void)
-{
-	GnomeKeyring *keyring;
-	GnomeKeyring *keyring2;
-	gboolean res;
-	GnomeKeyringItem *item;
-	GnomeKeyringAttribute attribute;
-	GnomeKeyringAccessControl *ac;
-	GnomeKeyringApplicationRef *app;
-	
-	keyring = gnome_keyring_new ("test", "./test.keyring");
-	keyring->password = "password";
-	
-	keyring2 = gnome_keyring_new ("test", "./test.keyring");
-	keyring2->password = "password";
-	
-	item = gnome_keyring_item_new (keyring, GNOME_KEYRING_ITEM_NOTE);
-	item->display_name = "top secret item";
-	item->secret = "top secret text";
-
-	item->attributes = gnome_keyring_attribute_list_new ();
-	
-	attribute.name = "string attribute";
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = "some text";
-	g_array_append_val (item->attributes, attribute);
-
-	attribute.name = "int attribute";
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32;
-	attribute.value.integer = 42;
-	g_array_append_val (item->attributes, attribute);
-
-	app = gnome_keyring_application_ref_new_from_pid (getpid ());
-	ac = gnome_keyring_access_control_new (app,
-					       GNOME_KEYRING_ACCESS_READ |
-					       GNOME_KEYRING_ACCESS_REMOVE);
-	item->acl = g_list_prepend (item->acl, ac);
-	app = g_new0 (GnomeKeyringApplicationRef, 1);
-	app->pathname = "/usr7bin/app";
-	app->display_name = "some app";
-	ac = gnome_keyring_access_control_new (app,
-					       GNOME_KEYRING_ACCESS_READ |
-					       GNOME_KEYRING_ACCESS_WRITE);
-	item->acl = g_list_prepend (item->acl, ac);
-
-
-
-
-	item = gnome_keyring_item_new (keyring, GNOME_KEYRING_ITEM_NOTE);
-	item->display_name = "top secret item 2";
-	item->secret = "top secret text again";
-
-	item->attributes = gnome_keyring_attribute_list_new ();
-	
-	attribute.name = "string attribute";
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = "some other text";
-	g_array_append_val (item->attributes, attribute);
-
-	attribute.name = "int attribute";
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32;
-	attribute.value.integer = 17;
-	g_array_append_val (item->attributes, attribute);
-
-	app = gnome_keyring_application_ref_new_from_pid (getpid ());
-	ac = gnome_keyring_access_control_new (app,
-					       GNOME_KEYRING_ACCESS_READ |
-					       GNOME_KEYRING_ACCESS_REMOVE);
-	item->acl = g_list_prepend (item->acl, ac);
-	app = g_new0 (GnomeKeyringApplicationRef, 1);
-	app->pathname = "/usr7bin/app2";
-	app->display_name = "some app2";
-	ac = gnome_keyring_access_control_new (app,
-					       GNOME_KEYRING_ACCESS_READ |
-					       GNOME_KEYRING_ACCESS_WRITE);
-	item->acl = g_list_prepend (item->acl, ac);
-
-	
-	save_keyring_to_disk (keyring);
-
-	res = update_keyring_from_disk (keyring2, FALSE);
-	g_print ("update_keyring_from_disk returned %d\n", res);
-
-	g_print ("keyrings equal: %d\n", compare_keyrings (keyring, keyring2));
-}
-
-#endif
-
 static void
 cleanup_handler (int sig)
 {
@@ -2476,6 +2298,22 @@ sane_dup2 (int fd1, int fd2)
 		goto retry;
 	
 	return ret;
+}
+
+static void
+close_stdinout (void)
+{
+	int fd;
+	
+	fd = open ("/dev/null", O_RDONLY);
+	close (0);
+	sane_dup2 (fd, 0);
+	close (fd);
+	
+	fd = open ("/dev/null", O_WRONLY);
+	close (1);
+	sane_dup2 (fd, 1);
+	close (fd);
 }
 
 int
@@ -2510,36 +2348,31 @@ main (int argc, char *argv[])
 	if (!foreground) {
 		pid = fork ();
 		if (pid == 0) {
-			int fd;
 			/* intermediated child */
 
-			/* We have to close the std read/write so the
-			 * paren't doesn't hang */
-			fd = open ("/dev/null", O_RDONLY);
-			close (0);
-			sane_dup2 (fd, 0);
-			close (fd);
-			
-			fd = open ("/dev/null", O_WRONLY);
-			close (1);
-			sane_dup2 (fd, 1);
-			close (fd);
-
 			pid = fork ();
-
+			
 			if (pid != 0) {
 				/* still intermediated child */
-				
-				/* This process just exits, so that the
+
+				/* This process exits, so that the
 				 * final child will inherit init as parent
 				 * to avoid zombies
 				 */
 				if (pid == -1) {
 					exit (1);
 				} else {
+					/* This is where we know the pid of the daemon.
+					 * The initial process will waitpid until we exit,
+					 * so there is no race */
+					g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
+					g_print ("GNOME_KEYRING_PID=%d\n", pid);
 					exit (0);
 				}
 			}
+			
+			close_stdinout ();
+			
 			/* final child continues here */
 		} else {
 			int status;
@@ -2552,12 +2385,11 @@ main (int argc, char *argv[])
 				exit (status);
 			}
 
-			g_print ("GNOME_KEYCHAIN_SOCKET=%s\n", path);
-
 			exit (0);
 		}
 	} else {
-		g_print ("GNOME_KEYCHAIN_SOCKET=%s\n", path);
+		g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
+		g_print ("GNOME_KEYRING_PID=%d\n", getpid ());
 	}
 
 	/* Daemon process continues here */
