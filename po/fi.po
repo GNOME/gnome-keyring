@@ -1,0 +1,308 @@
+# Finnish translation for gnome-keyring
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-keyring package.
+# Tommi Vainikainen <Tommi.Vainikainen@iki.fi>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-11 11:49+0200\n"
+"PO-Revision-Date: 2004-02-04 02:02+0200\n"
+"Last-Translator: Tommi Vainikainen <Tommi.Vainikainen@iki.fi>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-keyring-ask.c:223
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi oletusavainrenkaaseen, mutta "
+"avainrengas on lukittu"
+
+#: gnome-keyring-ask.c:227
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi avainrenkaaseen \"%s\", mutta "
+"avainrengas on lukittu"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi tuntemattomaan avainrenkaaseen, "
+"mutta avainrengas on lukittu"
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"Sovellus \"%s\" tahtoo päästä käsiksi oletusavainrenkaaseen, mutta "
+"avainrengas on lukittu"
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Sovellus \"%s\" tahtoo päästä käsiksi avainrenkaaseen \"%s\", mutta "
+"avainrengas on lukittu"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Sovellus \"%s\" tahtoo päästä käsiksi tuntemattomaan avainrenkaaseen, mutta "
+"avainrengas on lukittu"
+
+#: gnome-keyring-ask.c:268
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Tuntematon sovellus tahtoo päästä käsiksi oletusavainrenkaaseen, mutta "
+"avainrengas on lukittu"
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Tuntematon sovellus tahtoo päästä käsiksi avainrenkaaseen \"%s\", mutta "
+"avainrengas on lukittu"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Tuntematon sovellus tahtoo päästä käsiksi tuntemattomaan avainrenkaaseen, "
+"mutta avainrengas on lukittu"
+
+#: gnome-keyring-ask.c:284
+msgid "Enter password for default keyring to unlock"
+msgstr "Syötä oletusavainrenkaan salasana avataksesi"
+
+#: gnome-keyring-ask.c:286
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Syötä avainrenkaan \"%s\" salasana avataksesi"
+
+#: gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "Avaa avainrengas"
+
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "_Evää"
+
+#: gnome-keyring-ask.c:329
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo luoda uuden avainrenkaan nimellä \"%s\". Sinun "
+"täytyy valita avainrenkaalle salasana."
+
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo luoda uuden oletusavainrenkaan. Sinun täytyy "
+"valita avainrenkaalle salasana."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Sovellus \"%s\" tahtoo luoda uuden avainrenkaan nimellä \"%s\". Sinun täytyy "
+"valita avainrenkaalle salasana."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Sovellus \"%s\" tahtoo luoda uuden oletusavainrenkaan. Sinun täytyy valita "
+"avainrenkaalle salasana."
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Tuntematon sovellus tahtoo luoda uuden avainrenkaan nimellä \"%s\". Sinun "
+"täytyy valita avainrenkaalle salasana."
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Tuntematon sovellus tahtoo luoda uuden oletusavainrenkaan. Sinun täytyy "
+"valita avainrenkaalle salasana."
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "Uuden avainrenkaan salasana"
+
+#: gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "Valitse uuden avainrenkaan salasana"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo tallentaa salasanan, mutta oletusavainrengasta "
+"ei ole luotu. Luodaksesi sellaisen sinun täytyy valita avainrenkaalle "
+"salasana."
+
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Sovellus \"%s\" tahtoo tallentaa salasanan, mutta oletusavainrengasta ei ole "
+"luotu. Luodaksesi sellaisen sinun täytyy valita avainrenkaalle salasana."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Tuntematon sovellus tahtoo tallentaa salasanan, mutta oletusavainrengasta ei "
+"ole luotu. Luodaksesi sellaisen sinun täytyy valita avainrenkaalle salasana."
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "Luo oletusavainrengas"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "Valitse oletusavainrenkaan salasana"
+
+#: gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "Salli sovelluksien päästä käsiksi avainrenkaaseen?"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi \"%s\"-salasanaan avainrenkaassa %"
+"s."
+
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi \"%s\"-salasanaan "
+"oletusavainrenkaassa."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi \"%s\"-salasanaan tuntemattomassa "
+"avainrenkaassa."
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr ""
+"Sovellus \"%s\" tahtoo päästä käsiksi \"%s\"-salasanaan avainrenkaassa %s."
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Sovellus \"%s\" tahtoo päästä käsiksi \"%s\"-salasanaan oletusavainrenkaassa."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Sovellus \"%s\" tahtoo päästä käsiksi \"%s\"-salasanaan tuntemattomassa "
+"avainrenkaassa."
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr ""
+"Tuntematon sovellus tahtoo päästä käsiksi \"%s\"-salasanaan avainrenkaassa %"
+"s."
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Tuntematon sovellus tahtoo päästä käsiksi \"%s\"-salasanaan "
+"oletusavainrenkaassa."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Tuntematon sovellus tahtoo päästä käsiksi \"%s\"-salasanaan tuntemattomassa "
+"avainrenkaassa."
+
+#: gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "Salli päästä käsiksi"
+
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "Salli _kerran"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "Salli _aina"
+
+#: gnome-keyring-ask.c:547
+msgid "You must specify the type of request to run\n"
+msgstr "Pyynnön tyyppi täytyy antaa suorittaaksesi\n"
+
+#: gnome-keyring-ask.c:560
+msgid "Unknown request type\n"
+msgstr "Tuntematon pyyntötyyppi\n"
