@@ -1,0 +1,55 @@
+# gnome-keyring ja.po.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-keyring package.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-15 00:38+0900\n"
+"PO-Revision-Date: 2003-12-15 00:36+0900\n"
+"Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-keyring-ask.c:90
+msgid "New keyring password"
+msgstr "新しいキーリングのパスワード"
+
+#: gnome-keyring-ask.c:92
+msgid "Create default keyring"
+msgstr "デフォルトのキーリングの生成"
+
+#: gnome-keyring-ask.c:94
+msgid "Unlock keyring"
+msgstr "キーリングのロック解除"
+
+#: gnome-keyring-ask.c:105
+#, c-format
+msgid "Enter password for new keyring %s"
+msgstr "新しいキーリング %s のパスワードを入力して下さい"
+
+#: gnome-keyring-ask.c:107
+msgid ""
+"There is no default keyring, and one is needed. Please enter the password "
+"for the new default keyring."
+msgstr ""
+"デフォルトのキーリングがありません。キーリングは最低一つ必要です。新しいデ"
+"フォルトのキーリングに対するパスワードを入力して下さい。"
+
+#: gnome-keyring-ask.c:109
+#, c-format
+msgid "Enter password to unlock keyring %s"
+msgstr "キーリング %s のロックを解除するパスワードを入力して下さい"
+
+#: gnome-keyring-ask.c:138
+msgid "Allow access"
+msgstr "アクセスの許可"
+
+#: gnome-keyring-ask.c:146
+#, c-format
+msgid "Allow app %s to access item %s"
+msgstr "アプリケーション %s にアイテム %s のアクセスを許可します"
