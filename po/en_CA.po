@@ -3,14 +3,15 @@
 # This file is distributed under the same licence as the gnome-keyring package.
 # Adam Weinberger <adamw@gnome.org>, 2004.
 #
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.1.90\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-03-07 09:04+0100\n"
 "PO-Revision-Date: 2005-01-14 23:42-0500\n"
-"Last-Translator: Alexander Winston <alexander.winston@comcast.net>\n"
-"Language-Team: Canadian English <adamw@FreeBSD.org>\n"
+"Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
+"Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
