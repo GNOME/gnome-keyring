@@ -1,0 +1,320 @@
+# German gnome-keyring translation.
+# Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-keyring package.
+# Christian Neumair <chris@gnome-de.org>, 2003, 2004.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring 0.1.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-14 21:50+0100\n"
+"PO-Revision-Date: 2004-01-14 21:50+0100\n"
+"Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-keyring-ask.c:222
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, auf den Vorgabe-Schlüsselbund zuzugreifen. "
+"Dieser ist jedoch gesperrt."
+
+#: gnome-keyring-ask.c:226
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, auf den Schlüsselbund »%s« zuzugreifen. "
+"Dieser ist jedoch gesperrt."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:231
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, auf einen unbekannten Schlüsselbund "
+"zuzugreifen. Dieser ist jedoch gesperrt."
+
+#: gnome-keyring-ask.c:237 gnome-keyring-ask.c:251
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"Die Anwendung »%s« versucht, auf den Vorgabe-Schlüsselbund zuzugreifen. "
+"Dieser ist jedoch gesperrt."
+
+#: gnome-keyring-ask.c:241 gnome-keyring-ask.c:256
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Die Anwendung »%s« versucht, auf den Schlüsselbund »%s« zuzugreifen. Dieser "
+"ist jedoch gesperrt."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:245 gnome-keyring-ask.c:261
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Die Anwendung »%s« versucht, auf einen unbekannten Schlüsselbund "
+"zuzugreifen. Dieser ist jedoch gesperrt."
+
+#: gnome-keyring-ask.c:267
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Eine unbekannte Anwendung versucht, auf den Vorgabe-Schlüsselbund "
+"zuzugreifen. Dieser ist jedoch gesperrt."
+
+#: gnome-keyring-ask.c:271
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Eine unbekannte Anwendung versucht, auf den Schlüsselbund »%s« zuzugreifen. "
+"Dieser ist jedoch gesperrt."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:276
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Eine unbekannte Anwendung versucht, auf einen unbekannten Schlüsselbund "
+"zuzugreifen. Dieser ist jedoch gesperrt."
+
+#: gnome-keyring-ask.c:283
+msgid "Enter password for default keyring to unlock"
+msgstr ""
+"Geben Sie das Passwort für den Vorgabe-Schlüsselbund ein, um diesen "
+"freizugeben."
+
+#: gnome-keyring-ask.c:285
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr ""
+"Geben Sie das Passwort für den Schlüsselbund »%s« ein, um diesen freizugeben."
+
+#: gnome-keyring-ask.c:288
+msgid "Unlock Keyring"
+msgstr "Schlüsselbund freigeben"
+
+#: gnome-keyring-ask.c:293 gnome-keyring-ask.c:373 gnome-keyring-ask.c:420
+#: gnome-keyring-ask.c:504
+msgid "_Deny"
+msgstr "_Verweigern"
+
+#: gnome-keyring-ask.c:328
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, einen neuen Schlüsselbund namens »%s« "
+"anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
+
+#: gnome-keyring-ask.c:332
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, einen neuen Vorgabe-Schlüsselbund "
+"anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
+
+#: gnome-keyring-ask.c:338 gnome-keyring-ask.c:348
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Die Anwendung »%s« versucht, einen neuen Schlüsselbund namens »%s« "
+"anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
+
+#: gnome-keyring-ask.c:342 gnome-keyring-ask.c:352
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Die Anwendung »%s« versucht, einen neuen Vorgabe-Schlüsselbund anzulegen. "
+"Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
+
+#: gnome-keyring-ask.c:358
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Eine unbekannte Anwendung versucht, einen neuen Schlüsselbund namens »%s« "
+"anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
+
+#: gnome-keyring-ask.c:362
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Eine unbekannte Anwendung versucht, einen neuen Vorgabe-Schlüsselbund "
+"anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
+
+#: gnome-keyring-ask.c:368
+msgid "New Keyring Password"
+msgstr "Passwort für neuen Schlüsselbund"
+
+#: gnome-keyring-ask.c:369
+msgid "Choose password for new keyring"
+msgstr "Legen Sie ein Passwort für den neuen Schlüsselbund fest"
+
+#: gnome-keyring-ask.c:399
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, ein Passwort zu speichern. Es existiert "
+"jedoch kein Vorgabe-Schlüsselbund. Um einen anzulegen müssen Sie ein "
+"Passwort festlegen, das für diesen verwendet werden soll."
+
+#: gnome-keyring-ask.c:403 gnome-keyring-ask.c:407
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Die Anwendung »%s« versucht, ein Passwort zu speichern. Es existiert jedoch "
+"kein Vorgabe-Schlüsselbund. Um einen anzulegen müssen Sie ein Passwort "
+"festlegen, das für diesen verwendet werden soll."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:411
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Eine unbekannte Anwendung versucht, ein Passwort zu speichern. Es existiert "
+"jedoch kein Vorgabe-Schlüsselbund. Um einen anzulegen müssen Sie ein "
+"Passwort festlegen, das für diesen verwendet werden soll."
+
+#: gnome-keyring-ask.c:415
+msgid "Create Default Keyring"
+msgstr "Vorgabe-Schlüsselbund anlegen"
+
+#: gnome-keyring-ask.c:416
+msgid "Choose password for default keyring"
+msgstr "Legen Sie ein Passwort für den Vorgabe-Schlüsselbund fest"
+
+#: gnome-keyring-ask.c:453
+msgid "Allow application access to keyring?"
+msgstr "Der Anwendung Zugriff auf den Schlüsselbund gewähren?"
+
+#: gnome-keyring-ask.c:456
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, auf das Passwort für »%s« in %s "
+"zuzugreifen."
+
+#: gnome-keyring-ask.c:459
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, auf das Passwort für »%s« im Vorgabe-"
+"Schlüsselbund zuzugreifen."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:462
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, auf das Passwort für »%s« in einem "
+"unbekannten Schlüsselbund zuzugreifen."
+
+#: gnome-keyring-ask.c:467 gnome-keyring-ask.c:478
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr ""
+"Die Anwendung »%s« versucht, auf das Passwort für »%s« in %s zuzugreifen."
+
+#: gnome-keyring-ask.c:470 gnome-keyring-ask.c:481
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Die Anwendung »%s« versucht, auf das Passwort für »%s« im Vorgabe-"
+"Schlüsselbund zuzugreifen."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:473 gnome-keyring-ask.c:484
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Die Anwendung »%s« versucht, auf das Passwort für »%s« in einem unbekannten "
+"Schlüsselbund zuzugreifen."
+
+#: gnome-keyring-ask.c:489
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr ""
+"Eine unbekannte Anwendung versucht, auf das Passwort für »%s« in %s "
+"zuzugreifen."
+
+#: gnome-keyring-ask.c:492
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Eine unbekannte Anwendung versucht, auf das Passwort für »%s« im Vorgabe-"
+"Schlüsselbund zuzugreifen."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:495
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Eine unbekannte Anwendung versucht, auf das Passwort für »%s« in einem "
+"unbekannten Schlüsselbund zuzugreifen."
+
+#: gnome-keyring-ask.c:500
+msgid "Allow access"
+msgstr "Zugriff gewähren"
+
+#: gnome-keyring-ask.c:505
+msgid "Allow _Once"
+msgstr "_Einmal gewähren"
+
+#: gnome-keyring-ask.c:506
+msgid "_Always Allow"
+msgstr "_Immer gewähren"
+
+#: gnome-keyring-ask.c:546
+msgid "You must specify the type of request to run\n"
+msgstr "Sie müssen den Typ der auszuführenden Abfrage angeben\n"
+
+#: gnome-keyring-ask.c:559
+msgid "Unknown request type\n"
+msgstr "Unbekannter Abfragetyp\n"
