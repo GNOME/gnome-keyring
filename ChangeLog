@@ -1,3 +1,7 @@
+2004-03-11  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Russian to ALL_LINGUAS.
+
 2004-03-10  Alexander Winston  <alexander.winston@comcast.net>
 
 	* configure.in: Added en_CA to ALL_LINGUAS.
