@@ -1,3 +1,7 @@
+2004-03-13  Maxim Dziumanenko <mvd@mylinux.com.ua>
+
+	* configure.in: Added uk (Ukrainian) to ALL_LINGUAS.
+
 2004-03-11  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Russian to ALL_LINGUAS.
