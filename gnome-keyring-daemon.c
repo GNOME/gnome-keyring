@@ -1998,7 +1998,7 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 	GIOChannel *channel;
 	char **envp;
 	int i, n;
-	int stdout;
+	int stdout_fd;
 	GError *error;
 	char *argv[] = {
 		BINDIR "/gnome-keyring-ask",
@@ -2061,10 +2061,10 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 				      NULL, NULL,
 				      &ask->ask_pid,
 				      NULL,
-				      &stdout,
+				      &stdout_fd,
 				      NULL,
 				      &error)) {
-		channel = g_io_channel_unix_new (stdout);
+		channel = g_io_channel_unix_new (stdout_fd);
 		ask->input_watch = g_io_add_watch (channel, G_IO_IN | G_IO_HUP,
 						   ask_io, ask);
 		g_io_channel_unref (channel);

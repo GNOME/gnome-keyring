@@ -1,5 +1,15 @@
 2003-12-08  Alexander Larsson  <alexl@redhat.com>
 
+	* mkdtemp.[ch]:
+	* Makefile.am:
+	replacement for suffering OSes (from gettext)
+
+	* configure.in:
+	* gnome-keyring-daemon.c:
+	portability fixes
+	
+2003-12-08  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Make the version 0.1.0 so next version is 0.1.1
 

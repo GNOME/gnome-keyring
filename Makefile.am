@@ -44,6 +44,8 @@ libgnome_keyring_la_LIBADD = \
 	libgnome-keyring-common.la \
 	$(GLIB_LIBS)
 
+LIBADD_SOURCE = mkdtemp.c mkdtemp.h
+
 gnome_keyring_daemon_SOURCES = \
 	aes.c \
 	aes.h \
@@ -61,6 +63,7 @@ gnome_keyring_daemon_SOURCES = \
 
 gnome_keyring_daemon_LDADD = \
 	libgnome-keyring-common.la \
+	@LIBOBJS@ \
 	$(GLIB_LIBS)
 
 gnome_keyring_ask_SOURCES = \
@@ -85,4 +88,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-keyring-1.pc
 
 EXTRA_DIST = \
+	$(LIBADD_SOURCE) \
 	file-format.txt
+
