@@ -1,5 +1,20 @@
 2003-11-28  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-daemon.c:
+	* gnome-keyring-proto.c: 
+	* gnome-keyring-proto.h:
+	implement set_info and set_attributes
+	
+	* gnome-keyring.h:
+	* gnome-keyring-utils.c:
+	Add gnome_keyring_item_info_new
+	
+	* test.c:
+	generic ok callback
+	more tests
+
+2003-11-28  Alexander Larsson  <alexl@redhat.com>
+
 	* Makefile.am:
 	Install header files and .pc file
 	

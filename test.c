@@ -4,51 +4,34 @@
 
 static GMainLoop *loop = NULL;
 
-
 static void
-lock_all_cb  (GnomeKeyringResult result,
-	      gpointer           data)
+ok_cb  (GnomeKeyringResult result,
+	gpointer           data)
 {
-	g_print ("lock_all: %d\n", result);
+	g_print ("%s: %d\n", (char *)data, result);
 	g_main_loop_quit (loop);
 }
 
 static void
 lock_all (void)
 {
-	gnome_keyring_lock_all (lock_all_cb, NULL, NULL);
+	gnome_keyring_lock_all (ok_cb, "lock all", NULL);
 	g_main_loop_run (loop);
-}
-
-static void
-lock_cb  (GnomeKeyringResult result,
-	  gpointer           data)
-{
-	g_print ("lock: %d\n", result);
-	g_main_loop_quit (loop);
 }
 
 static void
 lock (char *keyring)
 {
 	gnome_keyring_lock (keyring,
- 			    lock_cb, NULL, NULL);
+ 			    ok_cb, "lock", NULL);
 	g_main_loop_run (loop);
-}
-
-static void
-unlock_cb  (GnomeKeyringResult result,
-	     gpointer           data)
-{
-	g_print ("unlock: %d\n", result);
-	g_main_loop_quit (loop);
 }
 
 static void
 unlock (char *keyring, char *password)
 {
 	gnome_keyring_unlock (keyring, password,
-			      unlock_cb, NULL, NULL);
+			      ok_cb, "unlock", NULL);
 	g_main_loop_run (loop);
 }
 
@@ -86,9 +69,9 @@ create_item (char *name)
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringAttribute attribute;
 
-	attribute.name = "attribute name";
+	attribute.name = g_strdup ("testattribute");
 	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = "test item";
+	attribute.value.string = g_strdup ("test item");
 	
 	attributes = gnome_keyring_attribute_list_new ();
 	g_array_append_val (attributes, attribute);
@@ -99,6 +82,7 @@ create_item (char *name)
 				   attributes,
 				   "secret text",
 				   creat_item_cb, NULL, NULL);
+	gnome_keyring_attribute_list_free (attributes);
 	g_main_loop_run (loop);
 }
 
@@ -127,58 +111,97 @@ show_item_cb (GnomeKeyringResult result,
 }
 
 static void
+print_attributes (GnomeKeyringResult result,
+		  GnomeKeyringAttributeList *attributes,
+		  gpointer           data)
+{
+	GnomeKeyringAttribute *array;
+	int i;
+	
+	if (result != GNOME_KEYRING_RESULT_OK) {
+		g_print ("error getting item attributes: %d\n", result);
+	} else {
+		array = (GnomeKeyringAttribute *)attributes->data;
+		g_print (" Attributes:\n");
+		for (i = 0; i < attributes->len; i++) {
+			if (array[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+				g_print ("  %s = '%s'\n", array[i].name, array[i].value.string);
+			} else if (array[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32) {
+				g_print ("  %s = %u\n", array[i].name, array[i].value.integer);
+			} else {
+				g_print ("  %s = ** unsupported attribute type **\n", array[i].name);
+			}
+		}
+	}
+	
+	g_main_loop_quit (loop);
+}
+
+
+static void
 show_item (char *keyring, guint32 item_id)
 {
 	gnome_keyring_item_get_info (keyring, item_id,
 				     show_item_cb, NULL, NULL);
 	g_main_loop_run (loop);
-}
-
-static void
-delete_item_cb  (GnomeKeyringResult result,
-		 gpointer           data)
-{
-	g_print ("delete item: %d\n", result);
-	g_main_loop_quit (loop);
+	gnome_keyring_item_get_attributes (keyring, item_id,
+					   print_attributes, NULL, NULL);
+	g_main_loop_run (loop);
 }
 
 static void
 delete_item (char *keyring, guint32 item_id)
 {
 	gnome_keyring_item_delete (keyring, item_id,
-				   delete_item_cb, NULL, NULL);
+				   ok_cb, "delete item", NULL);
 	g_main_loop_run (loop);
 }
 
 static void
-create_keyring_cb  (GnomeKeyringResult result,
-		  gpointer           data)
+set_item_secret (char *keyring, guint32 item_id, char *secret)
 {
-	g_print ("create_keyring: %d\n", result);
-	g_main_loop_quit (loop);
+	GnomeKeyringItemInfo *info;
+
+	info = gnome_keyring_item_info_new ();
+	gnome_keyring_item_info_set_secret (info, secret);
+	gnome_keyring_item_set_info (keyring, item_id, info, 
+				     ok_cb, "set item", NULL);
+	gnome_keyring_item_info_free (info);
+	g_main_loop_run (loop);
+}
+
+static void
+set_item_attribute (char *keyring, guint32 item_id, char *value)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attribute;
+
+	attribute.name = g_strdup ("testattribute");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup (value);
+	
+	attributes = gnome_keyring_attribute_list_new ();
+	g_array_append_val (attributes, attribute);
+	
+	gnome_keyring_item_set_attributes (keyring, item_id, attributes, 
+					   ok_cb, "set attributes", NULL);
+	gnome_keyring_attribute_list_free (attributes);
+	g_main_loop_run (loop);
 }
 
 static void
 create_keyring (char *name, char *password)
 {
 	gnome_keyring_create (name,  password, 
-				    create_keyring_cb, NULL, NULL);
+			      ok_cb, "create keyring", NULL);
 	g_main_loop_run (loop);
-}
-
-static void
-set_default_cb  (GnomeKeyringResult result,
-		 gpointer           data)
-{
-	g_print ("set default: %d\n", result);
-	g_main_loop_quit (loop);
 }
 
 static void
 set_default (char *name)
 {
 	gnome_keyring_set_default_keyring (name,
-						 set_default_cb, NULL, NULL);
+					   ok_cb, "set default", NULL);
 	g_main_loop_run (loop);
 }
 
@@ -194,7 +217,7 @@ main (int argc, char *argv[])
 		arg = argv[1][0];
 	}
 
-	if (arg == 'a') {
+	if (arg == 'L') {
 		lock_all ();
 	} else if (arg == 'l') {
 		if (argc >= 3) {
@@ -225,6 +248,18 @@ main (int argc, char *argv[])
 			delete_item (argv[2] ,atoi (argv[3]));
 		} else {
 			g_print ("must give keyring & item id to delete\n");
+		}
+	} else if (arg == 's') {
+		if (argc >= 5) {
+			set_item_secret (argv[2] ,atoi (argv[3]), argv[4]);
+		} else {
+			g_print ("must give keyring & item id & secret\n");
+		}
+	} else if (arg == 'a') {
+		if (argc >= 5) {
+			set_item_attribute (argv[2] ,atoi (argv[3]), argv[4]);
+		} else {
+			g_print ("must give keyring & item id & attribute value\n");
 		}
 	} else if (arg == 'k') {
 		if (argc >= 4) {

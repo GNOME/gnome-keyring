@@ -1456,7 +1456,174 @@ out:
 	return TRUE;
 }
 
+static gboolean
+op_set_item_info_or_attributes_collect (GString *packet,
+					GList **access_requests_out)
+{
+	char *keyring_name;
+	GnomeKeyring *keyring;
+	GnomeKeyringItem *item;
+	GnomeKeyringOpCode opcode;
+	guint32 item_id;
+	GnomeKeyringAccessRequest *access_request;
+	GList *access_requests;
 
+	
+	if (!gnome_keyring_proto_decode_op_string_int (packet,
+						       &opcode,
+						       &keyring_name,
+						       &item_id)) {
+		return FALSE;
+	}
+
+	access_requests = NULL;
+	if (keyring_name != NULL) {
+		keyring = find_keyring (keyring_name);
+		if (keyring != NULL) {
+			item = find_item (keyring, item_id);
+			if (item != NULL) {
+				access_request =
+					access_request_from_item (item,
+								  GNOME_KEYRING_ACCESS_WRITE);
+				access_requests = g_list_prepend (access_requests,
+								  access_request);
+			}
+		}
+	}
+
+	*access_requests_out = access_requests;
+	g_free (keyring_name);
+	
+	return TRUE;
+	
+}
+
+static gboolean
+op_set_item_info_execute (GString *packet,
+			  GString *result,
+			  GnomeKeyringApplicationRef *app_ref,
+			  GList *access_requests)
+{
+	char *keyring_name;
+	GnomeKeyring *keyring;
+	GnomeKeyringItem *item;
+	guint32 item_id, type;
+	GnomeKeyringAccessRequest *access_request;
+	char *item_name, *secret;
+	
+	if (!gnome_keyring_proto_decode_set_item_info (packet,
+						       &keyring_name,
+						       &item_id,
+						       &type,
+						       &item_name,
+						       &secret)) {
+		return FALSE;
+	}
+
+	if (keyring_name == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		goto out;
+	}
+		
+	keyring = find_keyring (keyring_name);
+	if (keyring == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		goto out;
+	}
+
+	if (access_requests == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+
+	access_request = access_requests->data;
+
+	if (access_request->item->keyring != keyring ||
+	    access_request->item == NULL ||
+	    access_request->item->locked) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+	item = access_request->item;
+
+	gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+
+	if (type != GNOME_KEYRING_ITEM_NO_TYPE) {
+		item->type = type;
+	}
+	if (item_name != NULL) {
+		g_free (item->display_name);
+		item->display_name = g_strdup (item_name);
+	}
+	if (secret != NULL) {
+		g_free (item->secret);
+		item->secret = g_strdup (secret);
+	}
+	
+out:
+	
+	g_free (keyring_name);
+	g_free (item_name);
+	gnome_keyring_free_password (secret);
+	return TRUE;
+}
+
+static gboolean
+op_set_item_attributes_execute (GString *packet,
+				GString *result,
+				GnomeKeyringApplicationRef *app_ref,
+				GList *access_requests)
+{
+	char *keyring_name;
+	GnomeKeyring *keyring;
+	GnomeKeyringItem *item;
+	guint32 item_id;
+	GnomeKeyringAccessRequest *access_request;
+	GnomeKeyringAttributeList *attributes;
+	
+	if (!gnome_keyring_proto_decode_set_attributes (packet,
+							&keyring_name,
+							&item_id,
+							&attributes)) {
+		return FALSE;
+	}
+
+	if (keyring_name == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		goto out;
+	}
+		
+	keyring = find_keyring (keyring_name);
+	if (keyring == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		goto out;
+	}
+
+	if (access_requests == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+
+	access_request = access_requests->data;
+
+	if (access_request->item->keyring != keyring ||
+	    access_request->item == NULL ||
+	    access_request->item->locked) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+	item = access_request->item;
+
+	gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+
+	item->attributes = gnome_keyring_attribute_list_copy (attributes);
+	
+out:
+	
+	gnome_keyring_attribute_list_free (attributes);
+	g_free (keyring_name);
+	return TRUE;
+}
 
 
 static gboolean
@@ -1972,9 +2139,9 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ op_create_item_collect, op_create_item_execute}, /* CREATE_ITEM */
 	{ op_delete_item_collect, op_delete_item_execute}, /* DELETE_ITEM */
 	{ op_get_item_info_or_attributes_collect, op_get_item_info_execute}, /* GET_ITEM_INFO */
-	{ NULL, NULL}, /* SET_ITEM_INFO */
+	{ op_set_item_info_or_attributes_collect, op_set_item_info_execute}, /* SET_ITEM_INFO */
 	{ op_get_item_info_or_attributes_collect, op_get_item_attributes_execute}, /* GET_ITEM_ATTRIBUTES */
-	{ NULL, NULL}, /* SET_ITEM_ATTRIBUTES */
+	{ op_set_item_info_or_attributes_collect, op_set_item_attributes_execute}, /* SET_ITEM_ATTRIBUTES */
 };
 
 #if 0

@@ -45,6 +45,8 @@ typedef enum {
 	GNOME_KEYRING_ITEM_NOTE,
 	
 	GNOME_KEYRING_ITEM_LAST_TYPE,
+	
+	GNOME_KEYRING_ITEM_NO_TYPE = 0xffffffff,
 } GnomeKeyringItemType;
 
 typedef enum {
@@ -224,6 +226,7 @@ gpointer gnome_keyring_item_set_attributes (const char                          
 					    GDestroyNotify                              destroy_data);
 
 void                  gnome_keyring_item_info_free             (GnomeKeyringItemInfo *item_info);
+GnomeKeyringItemInfo *gnome_keyring_item_info_new              (void);
 GnomeKeyringItemInfo *gnome_keyring_item_info_copy             (GnomeKeyringItemInfo *item_info);
 GnomeKeyringItemType  gnome_keyring_item_info_get_type         (GnomeKeyringItemInfo *item_info);
 void                  gnome_keyring_item_info_set_type         (GnomeKeyringItemInfo *item_info,

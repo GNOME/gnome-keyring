@@ -178,6 +178,16 @@ gboolean gnome_keyring_proto_decode_create_item (GString *packet,
 						 GnomeKeyringAttributeList **attributes,
 						 char **secret,
 						 GnomeKeyringItemType *type_out);
+gboolean gnome_keyring_proto_decode_set_item_info (GString              *buffer,
+						   char                **keyring,
+						   guint32              *item_id,
+						   GnomeKeyringItemType *type,
+						   char                **display_name,
+						   char                **secret);
+gboolean gnome_keyring_proto_decode_set_attributes (GString              *buffer,
+						    char                **keyring,
+						    guint32              *item_id,
+						    GnomeKeyringAttributeList **attributes);
 
 
 

@@ -127,6 +127,18 @@ gnome_keyring_item_info_free (GnomeKeyringItemInfo *item_info)
 }
 
 GnomeKeyringItemInfo *
+gnome_keyring_item_info_new (void)
+{
+	GnomeKeyringItemInfo *info;
+
+	info = g_new0 (GnomeKeyringItemInfo, 1);
+
+	info->type = GNOME_KEYRING_ITEM_NO_TYPE;
+	
+	return info;
+}
+
+GnomeKeyringItemInfo *
 gnome_keyring_item_info_copy (GnomeKeyringItemInfo *item_info)
 {
 	GnomeKeyringItemInfo *copy;
