@@ -2436,15 +2436,26 @@ close_stdinout (void)
 	close (fd);
 }
 
+static gboolean
+lifetime_slave_pipe_io (GIOChannel  *channel,
+			GIOCondition cond,
+			gpointer     callback_data)
+{
+        cleanup_socket_dir ();
+        _exit (2);
+}
+
 int
 main (int argc, char *argv[])
 {
 	const char *path;
+	char *fd_str;
+	int fd;
 	pid_t pid;
 	gboolean foreground;
 	gboolean daemon;
+	GIOChannel *channel;
 	int i;
-	
 	
 	if (!create_master_socket (&path)) {
 		exit (1);
@@ -2536,6 +2547,21 @@ main (int argc, char *argv[])
 	update_keyrings_from_disk ();
 
 	loop = g_main_loop_new (NULL, FALSE);
+
+	fd_str = getenv ("GNOME_KEYRING_LIFETIME_FD");
+	if (fd_str != NULL && fd_str[0] != 0) {
+		fd = atoi (fd_str);
+		if (fd != 0) {
+			channel = g_io_channel_unix_new (fd);
+			g_io_add_watch (channel,
+					G_IO_IN | G_IO_HUP,
+					lifetime_slave_pipe_io, NULL);
+			g_io_channel_unref (channel);
+		}
+		
+	}
+	
+	
 	g_main_loop_run (loop);
 	
 	cleanup_socket_dir ();

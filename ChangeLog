@@ -1,3 +1,8 @@
+2004-11-26  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon.c: (lifetime_slave_pipe_io), (main):
+	Added support for slaving lifetime to filedescriptor.
+
 2004-10-11  Roozbeh Pournader  <roozbeh@farsiweb.info>
 
 	* configure.in:
