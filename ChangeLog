@@ -1,5 +1,10 @@
 2003-12-04  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring.c (operation_io):
+	Fix type issue.
+
+2003-12-04  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in: 
 	* Makefile.am (libgnomekeyringincludedir): 
 	* gnome-keyring-1.0.pc.in: 

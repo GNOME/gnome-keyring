@@ -301,7 +301,7 @@ operation_io (GIOChannel  *io_channel,
 	GIOChannel *channel;
 	GnomeKeyringOperation *op;
 	int res;
-	gsize packet_size;
+	guint32 packet_size;
 
 	op = callback_data;
 
