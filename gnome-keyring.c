@@ -1111,6 +1111,52 @@ gnome_keyring_item_create (const char                          *keyring,
 	return op;
 }
 
+GnomeKeyringResult
+gnome_keyring_item_create_sync    (const char                                 *keyring,
+				   GnomeKeyringItemType                        type,
+				   const char                                 *display_name,
+				   GnomeKeyringAttributeList                  *attributes,
+				   const char                                 *secret,
+				   gboolean                                    update_if_exists,
+				   guint32                                    *item_id)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+
+	*item_id = 0;
+	
+	if (!gnome_keyring_proto_encode_create_item (send,
+						     keyring,
+						     display_name,
+						     attributes,
+						     secret,
+						     type,
+						     update_if_exists)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+	if (!gnome_keyring_proto_decode_result_integer_reply (receive, &res, item_id)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
+}
+
 gpointer
 gnome_keyring_item_delete (const char                                 *keyring,
 			   guint32                                     id,
@@ -1572,25 +1618,14 @@ gnome_keyring_find_network_password_sync (const char                            
 	return result;
 }
 
-gpointer
-gnome_keyring_set_network_password      (const char                            *keyring,
-					 const char                            *user,
-					 const char                            *domain,
-					 const char                            *server,
-					 const char                            *object,
-					 const char                            *protocol,
-					 const char                            *authtype,
-					 guint32                                port,
-					 const char                            *password,
-					 GnomeKeyringOperationGetIntCallback    callback,
-					 gpointer                               data,
-					 GDestroyNotify                         destroy_data)
+static char *
+get_network_password_display_name (const char *user,
+				   const char *server,
+				   const char *object,
+				   guint32  port)
 {
-	GnomeKeyringAttributeList *attributes;
-	gpointer req;
-	char *name;
 	GString *s;
-
+	char *name;
 
 	if (server != NULL) {
 		s = g_string_new (NULL);
@@ -1608,6 +1643,30 @@ gnome_keyring_set_network_password      (const char                            *
 	} else {
 		name = g_strdup ("network password");
 	}
+	return name;
+}
+				   
+
+
+gpointer
+gnome_keyring_set_network_password      (const char                            *keyring,
+					 const char                            *user,
+					 const char                            *domain,
+					 const char                            *server,
+					 const char                            *object,
+					 const char                            *protocol,
+					 const char                            *authtype,
+					 guint32                                port,
+					 const char                            *password,
+					 GnomeKeyringOperationGetIntCallback    callback,
+					 gpointer                               data,
+					 GDestroyNotify                         destroy_data)
+{
+	GnomeKeyringAttributeList *attributes;
+	gpointer req;
+	char *name;
+
+	name = get_network_password_display_name (user, server, object, port);
 
 	attributes = make_attribute_list_for_network_password (user,
 							       domain,
@@ -1626,7 +1685,46 @@ gnome_keyring_set_network_password      (const char                            *
 					 callback, data, destroy_data);
 	
 	gnome_keyring_attribute_list_free (attributes);
-	
 	g_free (name);
+	
 	return req;
+}
+
+GnomeKeyringResult
+gnome_keyring_set_network_password_sync (const char                            *keyring,
+					 const char                            *user,
+					 const char                            *domain,
+					 const char                            *server,
+					 const char                            *object,
+					 const char                            *protocol,
+					 const char                            *authtype,
+					 guint32                                port,
+					 const char                            *password,
+					 guint32                               *item_id)
+{
+	GnomeKeyringAttributeList *attributes;
+	char *name;
+	GnomeKeyringResult res;
+
+	name = get_network_password_display_name (user, server, object, port);
+	attributes = make_attribute_list_for_network_password (user,
+							       domain,
+							       server,
+							       object,
+							       protocol,
+							       authtype,
+							       port);
+	
+	res = gnome_keyring_item_create_sync (keyring,
+					      GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
+					      name,
+					      attributes,
+					      password,
+					      TRUE,
+					      item_id);
+	
+	gnome_keyring_attribute_list_free (attributes);
+	g_free (name);
+	
+	return res;
 }

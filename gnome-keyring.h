@@ -204,42 +204,50 @@ GnomeKeyringResult gnome_keyring_find_itemsv_sync (GnomeKeyringItemType        t
 						   GList                     **found,
 						   ...);
 
-gpointer gnome_keyring_item_create         (const char                                 *keyring,
-					    GnomeKeyringItemType                        type,
-					    const char                                 *display_name,
-					    GnomeKeyringAttributeList                  *attributes,
-					    const char                                 *secret,
-					    gboolean                                    update_if_exists,
-					    GnomeKeyringOperationGetIntCallback         callback,
-					    gpointer                                    data,
-					    GDestroyNotify                              destroy_data);
-gpointer gnome_keyring_item_delete         (const char                                 *keyring,
-					    guint32                                     id,
-					    GnomeKeyringOperationDoneCallback           callback,
-					    gpointer                                    data,
-					    GDestroyNotify                              destroy_data);
-gpointer gnome_keyring_item_get_info       (const char                                 *keyring,
-					    guint32                                     id,
-					    GnomeKeyringOperationGetItemInfoCallback    callback,
-					    gpointer                                    data,
-					    GDestroyNotify                              destroy_data);
-gpointer gnome_keyring_item_set_info       (const char                                 *keyring,
-					    guint32                                     id,
-					    GnomeKeyringItemInfo                       *info,
-					    GnomeKeyringOperationDoneCallback           callback,
-					    gpointer                                    data,
-					    GDestroyNotify                              destroy_data);
-gpointer gnome_keyring_item_get_attributes (const char                                 *keyring,
-					    guint32                                     id,
-					    GnomeKeyringOperationGetAttributesCallback  callback,
-					    gpointer                                    data,
-					    GDestroyNotify                              destroy_data);
-gpointer gnome_keyring_item_set_attributes (const char                                 *keyring,
-					    guint32                                     id,
-					    GnomeKeyringAttributeList                  *attributes,
-					    GnomeKeyringOperationDoneCallback           callback,
-					    gpointer                                    data,
-					    GDestroyNotify                              destroy_data);
+gpointer           gnome_keyring_item_create         (const char                                 *keyring,
+						      GnomeKeyringItemType                        type,
+						      const char                                 *display_name,
+						      GnomeKeyringAttributeList                  *attributes,
+						      const char                                 *secret,
+						      gboolean                                    update_if_exists,
+						      GnomeKeyringOperationGetIntCallback         callback,
+						      gpointer                                    data,
+						      GDestroyNotify                              destroy_data);
+GnomeKeyringResult gnome_keyring_item_create_sync    (const char                                 *keyring,
+						      GnomeKeyringItemType                        type,
+						      const char                                 *display_name,
+						      GnomeKeyringAttributeList                  *attributes,
+						      const char                                 *secret,
+						      gboolean                                    update_if_exists,
+						      guint32                                    *item_id);
+gpointer           gnome_keyring_item_delete         (const char                                 *keyring,
+						      guint32                                     id,
+						      GnomeKeyringOperationDoneCallback           callback,
+						      gpointer                                    data,
+						      GDestroyNotify                              destroy_data);
+gpointer           gnome_keyring_item_get_info       (const char                                 *keyring,
+						      guint32                                     id,
+						      GnomeKeyringOperationGetItemInfoCallback    callback,
+						      gpointer                                    data,
+						      GDestroyNotify                              destroy_data);
+gpointer           gnome_keyring_item_set_info       (const char                                 *keyring,
+						      guint32                                     id,
+						      GnomeKeyringItemInfo                       *info,
+						      GnomeKeyringOperationDoneCallback           callback,
+						      gpointer                                    data,
+						      GDestroyNotify                              destroy_data);
+gpointer           gnome_keyring_item_get_attributes (const char                                 *keyring,
+						      guint32                                     id,
+						      GnomeKeyringOperationGetAttributesCallback  callback,
+						      gpointer                                    data,
+						      GDestroyNotify                              destroy_data);
+gpointer           gnome_keyring_item_set_attributes (const char                                 *keyring,
+						      guint32                                     id,
+						      GnomeKeyringAttributeList                  *attributes,
+						      GnomeKeyringOperationDoneCallback           callback,
+						      gpointer                                    data,
+						      GDestroyNotify                              destroy_data);
+
 
 void                  gnome_keyring_item_info_free             (GnomeKeyringItemInfo *item_info);
 GnomeKeyringItemInfo *gnome_keyring_item_info_new              (void);
@@ -297,17 +305,28 @@ GnomeKeyringResult gnome_keyring_find_network_password_sync (const char         
 							     const char                            *authtype,
 							     guint32                                port,
 							     GList                                **result);
-gpointer           gnome_keyring_set_network_password      (const char                            *keyring,
-							    const char                            *user,
-							    const char                            *domain,
-							    const char                            *server,
-							    const char                            *object,
-							    const char                            *protocol,
-							    const char                            *authtype,
-							    guint32                                port,
-							    const char                            *password,
-							    GnomeKeyringOperationGetIntCallback    callback,
-							    gpointer                               data,
-							    GDestroyNotify                         destroy_data);
+gpointer           gnome_keyring_set_network_password       (const char                            *keyring,
+							     const char                            *user,
+							     const char                            *domain,
+							     const char                            *server,
+							     const char                            *object,
+							     const char                            *protocol,
+							     const char                            *authtype,
+							     guint32                                port,
+							     const char                            *password,
+							     GnomeKeyringOperationGetIntCallback    callback,
+							     gpointer                               data,
+							     GDestroyNotify                         destroy_data);
+GnomeKeyringResult gnome_keyring_set_network_password_sync  (const char                            *keyring,
+							     const char                            *user,
+							     const char                            *domain,
+							     const char                            *server,
+							     const char                            *object,
+							     const char                            *protocol,
+							     const char                            *authtype,
+							     guint32                                port,
+							     const char                            *password,
+							     guint32                               *item_id);
+
 
 #endif /* GNOME_KEYRING_H */

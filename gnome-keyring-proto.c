@@ -1288,7 +1288,9 @@ gnome_keyring_proto_decode_result_integer_reply (GString                    *buf
 	}
 	
 	*result = res;
-	*integer = val;
+	if (integer != NULL) {
+		*integer = val;
+	}
 	
 	return TRUE;
 }

@@ -1,5 +1,17 @@
 2003-12-04  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-proto.c:
+	(gnome_keyring_proto_decode_result_integer_reply):
+	Allow NULL integer
+	
+	* gnome-keyring.[ch]:
+	Sync item creation
+	
+	* test.c:
+	More tests
+
+2003-12-04  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring.[ch]:
 	Add gnome_keyring_is_availible.
 

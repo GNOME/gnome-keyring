@@ -241,6 +241,24 @@ set_network (char *server, char *password)
 }
 
 static void
+set_network_sync (char *server, char *password)
+{
+	guint32 id;
+	GnomeKeyringResult res;
+	res = gnome_keyring_set_network_password_sync (NULL /* default keyring */,
+						       NULL,
+						       NULL,
+						       server,
+						       NULL,
+						       "smb",
+						       NULL,
+						       0,
+						       password,
+						       &id);
+	g_print ("set network password: res: %d id: %d\n", res, id);
+}
+
+static void
 find_network (char *server)
 {
 	GnomeKeyringResult res;
@@ -360,20 +378,18 @@ main (int argc, char *argv[])
 		} else {
 			g_print ("need server & password\n");
 		}
-	} else if (arg == 'p') {
-		if (argc >= 3) {
-			find_network (argv[2]);
-		} else {
-			g_print ("need server\n");
-		}
-#if 0
 	} else if (arg == 'N') {
 		if (argc >= 4) {
 			set_network_sync (argv[2], argv[3]);
 		} else {
 			g_print ("need server & password\n");
 		}
-#endif
+	} else if (arg == 'p') {
+		if (argc >= 3) {
+			find_network (argv[2]);
+		} else {
+			g_print ("need server\n");
+		}
 	} else if (arg == 't') {
 		g_print ("gnome keyring is: %s\n",
 			 gnome_keyring_is_availible ()?"availible":"not availible");
