@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-17 03:55+0100\n"
+"POT-Creation-Date: 2003-12-28 10:41+0100\n"
 "PO-Revision-Date: 2003-12-17 13:26+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: gnome-keyring-ask.c:170
 #, c-format
@@ -67,7 +67,9 @@ msgstr "Odemknout klíčenku"
 msgid ""
 "%s wants to create a new keyring called '%s'. You have to choose the "
 "password you want to use for it."
-msgstr "%s chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolt heslo, které pro ni chcete používat."
+msgstr ""
+"%s chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolt heslo, které pro "
+"ni chcete používat."
 
 #: gnome-keyring-ask.c:255
 msgid "New Keyring Password"
@@ -82,7 +84,9 @@ msgstr "Zvolte heslo pro novou klíčenku"
 msgid ""
 "%s wants to store a password, but there is no default keyring. To create "
 "one, you need to choose the password you wish to use for it."
-msgstr "%s chce uložit heslo, ale neexistuje implicitní klíčenka. Před jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
+msgstr ""
+"%s chce uložit heslo, ale neexistuje implicitní klíčenka. Před jejím "
+"vytvořením musíte zvolit heslo, které pro ni chcete používat."
 
 #: gnome-keyring-ask.c:289
 msgid "Create Default Keyring"

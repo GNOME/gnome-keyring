@@ -1,3 +1,9 @@
+2003-12-28  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Update for 0.1.1
+
 2003-12-27  Hasbullah Bin Pit <sebol@ikhlas.com>
                                                                                 
         * configure.in: Added 'ms' (Malay) to ALL_LINGUAS.
