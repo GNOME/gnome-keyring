@@ -48,6 +48,10 @@ libgnome_keyring_la_LIBADD = \
 	libgnome-keyring-common.la \
 	$(GLIB_LIBS)
 
+libgnome_keyring_la_LDFLAGS = \
+	-version-info $(LIB_GNOME_KEYRING_LT_VERSION) \
+	-no-undefined
+
 LIBADD_SOURCE = mkdtemp.c mkdtemp.h
 
 gnome_keyring_daemon_SOURCES = \

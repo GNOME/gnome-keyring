@@ -1,6 +1,10 @@
-This is gnome-keyring 0.3.1, a system for keeping user passwords and
+This is gnome-keyring 0.3.2, a system for keeping user passwords and
 secrets. This version is for Gnome 2.6, and is the first publically
 availible version of gnome-keyring. 
+
+Changes in version 0.3.2 are:
+* New API functions for getting/setting ACL
+* Implemented delete keyring operation
 
 Changes in version 0.3.1 are:
 * New and updated translations.
