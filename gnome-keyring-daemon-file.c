@@ -34,7 +34,7 @@
 
 #include "gnome-keyring-daemon.h"
 #include "gnome-keyring-proto.h"
-#include "sha1.h"
+#include "md5.h"
 #include "aes.h"
 
 time_t keyring_dir_mtime = 0;
@@ -42,25 +42,15 @@ time_t keyring_dir_mtime = 0;
 static gboolean
 encrypt_buffer (GString *buffer, const char *password)
 {
-        sha1Param shaparam;
-        guchar digest[20];
+        guchar digest[16];
 	aesParam param;
 	guchar dst[16];
 	size_t pos;
 
 	g_assert (buffer->len % 16 == 0);
-		     
-	if (sha1Reset(&shaparam)) {
-		return FALSE;
-	}
-	if (sha1Update(&shaparam, password, strlen (password))) {
-		return FALSE;
-	}
-	if (sha1Digest(&shaparam, digest)) {
-		return FALSE;
-	}
 
-	
+	gnome_keyring_md5_string (password, digest);
+
 	if (aesSetup(&param, digest, 128, ENCRYPT)) {
 		return FALSE;
 	}
@@ -78,21 +68,12 @@ encrypt_buffer (GString *buffer, const char *password)
 static gboolean
 decrypt_buffer (GString *buffer, const char *password)
 {
-        sha1Param shaparam;
-        guchar digest[20];
+        guchar digest[16];
 	aesParam param;
 	guchar dst[16];
 	size_t pos;
 
-	if (sha1Reset(&shaparam)) {
-		return FALSE;
-	}
-	if (sha1Update(&shaparam, password, strlen (password))) {
-		return FALSE;
-	}
-	if (sha1Digest(&shaparam, digest)) {
-		return FALSE;
-	}
+	gnome_keyring_md5_string (password, digest);
 
 	if (aesSetup(&param, digest, 128, DECRYPT)) {
 		return FALSE;
@@ -113,20 +94,15 @@ decrypt_buffer (GString *buffer, const char *password)
 static gboolean
 verify_decrypted_buffer (GString *buffer)
 {
-        sha1Param param;
-        guchar digest[20];
+        struct GnomeKeyringMD5Context md5_context;
+        guchar digest[16];
 	
-	if (sha1Reset(&param)) {
-		return FALSE;
-	}
-	if (sha1Update(&param, buffer->str + 20, buffer->len - 20)) {
-		return FALSE;
-	}
-	if (sha1Digest(&param, digest)) {
-		return FALSE;
-	}
+	gnome_keyring_md5_init (&md5_context);
+	gnome_keyring_md5_update (&md5_context,
+				  buffer->str + 16, buffer->len - 16);
+	gnome_keyring_md5_final (digest, &md5_context);
 	
-	return memcmp (buffer->str, digest, 20) == 0;
+	return memcmp (buffer->str, digest, 16) == 0;
 }
 
 static char *
@@ -252,8 +228,8 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 	GnomeKeyringItem *item;
 	GnomeKeyringAttributeList *hashed;
 	GString *to_encrypt;
-        sha1Param param;
-        guchar digest[20];
+        struct GnomeKeyringMD5Context md5_context;
+        guchar digest[16];
 	int i;
 
 	g_assert (!keyring->locked);
@@ -262,7 +238,7 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 	g_string_append_c (buffer, 0); /* Major version */
 	g_string_append_c (buffer, 0); /* Minor version */
 	g_string_append_c (buffer, 0); /* crypto (0 == AEL) */
-	g_string_append_c (buffer, 0); /* hash (0 == SHA1) */
+	g_string_append_c (buffer, 0); /* hash (0 == MD5) */
 
 	if (!gnome_keyring_proto_add_utf8_string (buffer, keyring->keyring_name)) {
 		return FALSE;
@@ -302,7 +278,7 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 
 	/* Encrypted data: */
 	to_encrypt = g_string_new (NULL);
-	g_string_append_len (to_encrypt, digest, 20); /* Space for hash */
+	g_string_append_len (to_encrypt, digest, 16); /* Space for hash */
 
 	if (!generate_encrypted_data (to_encrypt, keyring)) {
 		g_string_free (to_encrypt, TRUE);
@@ -314,10 +290,11 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 		g_string_append_c (to_encrypt, 0);
 	}
 
-	sha1Reset(&param);
-	sha1Update(&param, to_encrypt->str + 20, to_encrypt->len - 20);
-	sha1Digest(&param, digest);
-	memcpy (to_encrypt->str, digest, 20);
+	gnome_keyring_md5_init (&md5_context);
+	gnome_keyring_md5_update (&md5_context,
+				  to_encrypt->str + 16, to_encrypt->len - 16);
+	gnome_keyring_md5_final (digest, &md5_context);
+	memcpy (to_encrypt->str, digest, 16);
 	
 	if (!encrypt_buffer (to_encrypt, keyring->password)) {
 		g_string_free (to_encrypt, TRUE);
@@ -590,7 +567,7 @@ update_keyring_from_data (GnomeKeyring *keyring, GString *buffer)
 			keyring->password = NULL;
 		} else {
 			locked = FALSE;
-			offset += 20; /* Skip hash */
+			offset += 16; /* Skip hash */
 			for (i = 0; i < num_items; i++) {
 				if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset,
 									  &items[i].display_name)) {

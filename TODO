@@ -1,3 +1,5 @@
+test uid check
+
 decide on whether to allow attribute collisions or not
  probably yes, do we want a create_or_set call then?
 

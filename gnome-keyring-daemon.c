@@ -38,7 +38,7 @@
 #include "gnome-keyring-private.h"
 #include "gnome-keyring-proto.h"
 #include "gnome-keyring-daemon.h"
-#include "sha1.h"
+#include "md5.h"
 
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
@@ -179,7 +179,7 @@ gnome_keyring_item_new (GnomeKeyring *keyring,
 	item->ctime = item->mtime = time (NULL);
 	item->type = type;
 		
-	keyring->items = g_list_prepend (keyring->items, item);
+	keyring->items = g_list_append (keyring->items, item);
 	
 	return item;
 }
@@ -260,30 +260,10 @@ hash_int (guint32 x)
 static char *
 hash_string (const char *str)
 {
-        sha1Param param;
-        guchar digest[20];
-	char *res;
-	char hexval[] = "0123456789ABCDEF";
-	int i;
-
-	if (sha1Reset(&param)) {
-		return NULL;
-	}
-	if (sha1Update(&param, str, strlen (str))) {
-		return NULL;
-	}
-	if (sha1Digest(&param, digest)) {
-		return NULL;
-	}
-	res = g_new (char, 41);
-
-	for (i = 0; i < 20; i++) {
-		res[i*2] = hexval[(digest[i] >> 4) & 0xf];
-		res[i*2+1] = hexval[digest[i] & 0xf];
-	}
-	res[40] = 0;
-
-	return res;
+        guchar digest[16];
+	
+	gnome_keyring_md5_string (str, digest);
+	return gnome_keyring_md5_digest_to_ascii (digest);
 }
 
 GnomeKeyringAttributeList *

@@ -1,3 +1,24 @@
+2003-12-01  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am:
+	* file-format.txt:
+	* md5.[ch]:
+	* sha1.[ch]:
+	Switch from sha1 to md5 to get a right size key for AES.
+
+	* gnome-keyring-daemon-file.c:
+	md5 update
+
+	* gnome-keyring-daemon.c:
+	md5 update.
+	append new items instead of prepending
+	
+	* TODO:
+	Update
+	
+	* test.c:
+	Fix up set default command name
+
 2003-11-29  Danilo Šegan  <dsegan@gmx.net>
 
 	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.

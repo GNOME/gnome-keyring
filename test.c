@@ -269,7 +269,7 @@ main (int argc, char *argv[])
 		} else {
 			g_print ("create keyring requires keyring name\n");
 		}
-	} else if (arg == 'd') {
+	} else if (arg == 'D') {
 		if (argc >= 3) {
 			set_default (argv[2]);
 		} else {

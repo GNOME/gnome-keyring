@@ -50,8 +50,8 @@ gnome_keyring_daemon_SOURCES = \
 	aes_be.h \
 	aes_le.h \
 	beecrypt_compat.h \
-	sha1.c \
-	sha1.h \
+	md5.c \
+	md5.h \
 	gnome-keyring-daemon.c \
 	gnome-keyring-daemon-file.c \
 	gnome-keyring-daemon.h \

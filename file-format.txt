@@ -3,10 +3,8 @@ time_t: 2 * guint32
 strings: uint32 + bytes, no padding, NULL is encoded as 0xffffffff
 reserved, must be zero
 
-string hash: 20 bytes sha1
+string hash: 16 bytes md5
 guint32 hash: 0xdeadbeef ^ x ^ (x>>16 | x&0xffff << 16)
-
-
 
 
 Header:
@@ -40,7 +38,7 @@ num_items *
 
 guin32 num_encrypted bytes
  encrypted data:
-  bytes[20] encryted hash, (for decrypt ok verify)
+  bytes[16] encryted hash, (for decrypt ok verify)
   
   num_items *
    string display_name
