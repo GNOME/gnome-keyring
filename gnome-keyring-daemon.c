@@ -2465,6 +2465,19 @@ cleanup_handler (int sig)
         _exit (2);
 }
 
+static int
+sane_dup2 (int fd1, int fd2)
+{
+	int ret;
+
+ retry:
+	ret = dup2 (fd1, fd2);
+	if (ret < 0 && errno == EINTR)
+		goto retry;
+	
+	return ret;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -2497,7 +2510,20 @@ main (int argc, char *argv[])
 	if (!foreground) {
 		pid = fork ();
 		if (pid == 0) {
+			int fd;
 			/* intermediated child */
+
+			/* We have to close the std read/write so the
+			 * paren't doesn't hang */
+			fd = open ("/dev/null", O_RDONLY);
+			close (0);
+			sane_dup2 (fd, 0);
+			close (fd);
+			
+			fd = open ("/dev/null", O_WRONLY);
+			close (1);
+			sane_dup2 (fd, 1);
+			close (fd);
 
 			pid = fork ();
 

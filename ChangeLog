@@ -1,6 +1,11 @@
 2003-12-06  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-daemon.c (main):
+	Close stdin/stdout in daemon process.
+	
+2003-12-06  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon.c (main):
 	Spawn in background unless -f specified
 	clean up socket dir on exit
 
