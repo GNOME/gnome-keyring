@@ -1,6 +1,9 @@
 2004-08-09 Amanpreet Singh Alam<aalam@redhat.com>
 	*configure.in: Add Gujurati Lang
 
+2004-08-07  Runa Bhattacharjee <runab@redhat.com>
+	* configure.in: Added Bengali (bn) to ALL_LINGUAS.
+
 2004-07-20  Fernando Herrera  <fherrera@onirica.com>
 
 	* configure.in:
