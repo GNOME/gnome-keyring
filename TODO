@@ -1,7 +1,3 @@
-install headers in right place
-
-pkg-config file
-
 decide on whether to allow attribute collisions or not
  probably yes, do we want a create_or_set call then?
 
