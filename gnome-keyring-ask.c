@@ -368,6 +368,16 @@ main (int argc, char *argv[])
 	env_item_name = g_getenv ("ITEM_NAME");
 
 	gtk_init (&argc, &argv);
+#ifdef HAVE_LOCALE_H
+	/* internationalisation */
+	setlocale (LC_ALL, "");
+#endif
+
+#ifdef HAVE_GETTEXT
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
 
 	if (argc < 2) {
 		g_print (_("You must specify the type of request to run\n"));

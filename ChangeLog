@@ -1,5 +1,11 @@
 2004-01-13  Alexander Larsson  <alexl@redhat.com>
 
+	* Makefile.am:
+	* gnome-keyring-ask.c: (main):
+	Actually use translations.
+
+2004-01-13  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	* gnome-keyring-daemon-io.c:
 	* gnome-keyring-daemon.c:

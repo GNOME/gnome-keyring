@@ -18,6 +18,7 @@ noinst_LTLIBRARIES=libgnome-keyring-common.la
 INCLUDES=	\
 	-DPREFIX=\""$(prefix)"\" 			\
 	-DBINDIR=\""$(bindir)"\" 			\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
 	$(GTK_CFLAGS) 					\
