@@ -1,0 +1,54 @@
+# Norwegian translations for gnome-keyring.
+# Copyright (C) 2003 Red Hat Inc.
+# This file is distributed under the same license as the gnome-keyring package.
+# Kjartan Maraas <kmaraas@gnome.org>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-14 20:09+0100\n"
+"PO-Revision-Date: 2003-12-14 20:12+0100\n"
+"Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
+"Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gnome-keyring-ask.c:90
+msgid "New keyring password"
+msgstr "Nytt passord for nøkkelring"
+
+#: gnome-keyring-ask.c:92
+msgid "Create default keyring"
+msgstr "Opprett forvalgt nøkkelring"
+
+#: gnome-keyring-ask.c:94
+msgid "Unlock keyring"
+msgstr "Lås opp nøkkelring"
+
+#: gnome-keyring-ask.c:105
+#, c-format
+msgid "Enter password for new keyring %s"
+msgstr "Oppgi passord for ny nøkkelring %s"
+
+#: gnome-keyring-ask.c:107
+msgid ""
+"There is no default keyring, and one is needed. Please enter the password "
+"for the new default keyring."
+msgstr "Det finnes ingen forvalgt nøkkelring, og dette kreves. Vennligst oppgi passord for den nye forvalgte nøkkelringen."
+
+#: gnome-keyring-ask.c:109
+#, c-format
+msgid "Enter password to unlock keyring %s"
+msgstr "Oppgi passord for å låse opp nøkkelring %s"
+
+#: gnome-keyring-ask.c:138
+msgid "Allow access"
+msgstr "Gi tilgang"
+
+#: gnome-keyring-ask.c:146
+#, c-format
+msgid "Allow app %s to access item %s"
+msgstr "Gi program %s tilgang til oppføring %s"
