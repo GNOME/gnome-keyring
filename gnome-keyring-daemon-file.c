@@ -758,20 +758,20 @@ set_default_keyring (GnomeKeyring *keyring)
 	char *dirname, *path;
 	int fd;
 
-	if (keyring->keyring_name != NULL) {
-		dirname = get_keyring_dir ();
-		path = g_build_filename (dirname, "default", NULL);
-
-		fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-		if (fd != -1) {
+	dirname = get_keyring_dir ();
+	path = g_build_filename (dirname, "default", NULL);
+	
+	fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	if (fd != -1) {
+		if (keyring != NULL && keyring->keyring_name != NULL) {
 			write_all (fd, keyring->keyring_name,
 				   strlen (keyring->keyring_name));
-			close (fd);
 		}
-		
-		g_free (path);
-		g_free (dirname);
+		close (fd);
 	}
+	
+	g_free (path);
+	g_free (dirname);
 
 	default_keyring = keyring;
 }

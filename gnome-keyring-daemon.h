@@ -156,6 +156,7 @@ GnomeKeyringItem *gnome_keyring_item_new  (GnomeKeyring         *keyring,
 void              gnome_keyring_free      (GnomeKeyring         *keyring);
 
 char *get_default_keyring_file_for_name (const char *keyring_name);
+void gnome_keyring_client_fixup_for_deleted (GnomeKeyring *keyring, GnomeKeyringItem *item);
 
 extern GList *keyrings;
 extern GnomeKeyring *session_keyring;

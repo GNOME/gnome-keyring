@@ -931,7 +931,7 @@ gnome_keyring_item_delete (const char                                 *keyring,
 	}
 	
 	if (!gnome_keyring_proto_encode_op_string_int (op->send_buffer,
-						       GNOME_KEYRING_OP_GET_KEYRING_INFO,
+						       GNOME_KEYRING_OP_DELETE_ITEM,
 						       keyring, id)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}

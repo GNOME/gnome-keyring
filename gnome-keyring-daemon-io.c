@@ -274,6 +274,32 @@ read_packet_with_size (GnomeKeyringClient *client)
 	return FALSE;
 }
 
+
+void
+gnome_keyring_client_fixup_for_deleted (GnomeKeyring *keyring, GnomeKeyringItem *item)
+{
+	GList *l, *reql;
+	GnomeKeyringClient *client;
+	GnomeKeyringAccessRequest *request;
+
+	for (l = clients; l != NULL; l = l->next) {
+		client = l->data;
+
+		reql = client->access_requests;
+		while (reql != NULL) {
+			request = reql->data;
+			reql = reql->next;
+
+			if ((keyring != NULL && request->keyring == keyring) ||
+			    (item != NULL && request->item == item)) {
+				client->access_requests = g_list_remove (client->access_requests,
+									 request);
+				gnome_keyring_access_request_free (request);
+			}
+		}
+	}
+}
+
 static void
 ask_result (GList *access_requests,
 	    gpointer data)
@@ -374,9 +400,8 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 			goto new_state;
 		}
 		
-		/* Make sure keyrings in memory are up to date */
+		/* Make sure keyrings in memory are up to date before asking for access */
 		update_keyrings_from_disk ();
-		/* TODO: keyring update may have removed a keyring and killed this ask operation */
 		
 		access_requests = NULL;
 		if (!keyring_ops[op].collect_info (client->input_buffer,
@@ -415,8 +440,10 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		client->output_buffer = g_string_new (NULL);
 
 		/* Make sure keyrings in memory are up to date */
+		/* This call may remove items or keyrings, which change
+		   the client->access_requests list */
 		update_keyrings_from_disk ();
-		/* TODO: keyring update may have removed a keyring and killed this ask operation */
+
 		
 		/* Add empty size */
 		gnome_keyring_proto_add_uint32 (client->output_buffer, 0);

@@ -82,19 +82,34 @@ GnomeKeyring *default_keyring;
 static GMainLoop *loop = NULL;
 
 static gboolean gnome_keyring_ask_iterate (GnomeKeyringAsk *ask);
+static void gnome_keyring_fixup_for_deleted (GnomeKeyring *keyring, GnomeKeyringItem *item);
 
 void
 gnome_keyring_free (GnomeKeyring *keyring)
 {
-	/* TODO: cancel outstanding requests for it */
+	GList *l;
+	GnomeKeyringItem *item;
+
+	l = keyring->items;
+	while (l != NULL) {
+		item = l->data;
+		l = l->next;
+
+		gnome_keyring_item_free (item);
+	}
+	g_list_free (keyring->items);
+		
+	gnome_keyring_fixup_for_deleted (keyring, NULL);
 
 	if (keyring == default_keyring) {
 		default_keyring = NULL;
 	}
+
+	keyrings = g_list_remove (keyrings, keyring);
 	
 	g_free (keyring->keyring_name);
 	g_free (keyring->file);
-	g_free (keyring->password);
+	gnome_keyring_free_password (keyring->password);
 	g_free (keyring);
 }
 
@@ -175,11 +190,10 @@ gnome_keyring_item_free (GnomeKeyringItem *item)
 {
 	GnomeKeyring *keyring;
 	
-	/* TODO: cancel outstanding requests for item */
+	gnome_keyring_fixup_for_deleted (NULL, item);
 	
 	keyring = item->keyring;
 	keyring->items = g_list_remove (keyring->items, item);
-	
 
 	gnome_keyring_attribute_list_free (item->attributes);
 	if (item->acl != NULL) {
@@ -267,7 +281,7 @@ hash_string (const char *str)
 		res[i*2] = hexval[(digest[i] >> 4) & 0xf];
 		res[i*2+1] = hexval[digest[i] & 0xf];
 	}
-	res[41] = 0;
+	res[40] = 0;
 
 	return res;
 }
@@ -454,15 +468,25 @@ request_allowed_for_app (GnomeKeyringAccessRequest *request,
 }
 
 static void
-gnome_keyring_ask_free (GnomeKeyringAsk *ask)
+gnome_keyring_ask_kill (GnomeKeyringAsk *ask)
 {
 	if (ask->input_watch != 0) {
 		g_source_remove (ask->input_watch);
+		ask->input_watch = 0;
 	}
 	if (ask->ask_pid != 0) {
 		kill (ask->ask_pid, SIGKILL);
-		
+		ask->ask_pid = 0;
 	}
+}
+
+static void
+gnome_keyring_ask_free (GnomeKeyringAsk *ask)
+{
+	outstanding_asks = g_list_remove (outstanding_asks, ask);
+
+	gnome_keyring_ask_kill (ask);
+	
 	gnome_keyring_access_request_list_free (ask->access_requests);
 	g_list_free (ask->denied_keyrings);
 	g_string_free (ask->buffer, TRUE);
@@ -622,12 +646,72 @@ unlock_keyring (GnomeKeyring *keyring, const char *password)
 	}
 }
 
-static gboolean
-op_keyring_lock_all_execute (GString *packet,
-			     GString *result,
-			     GnomeKeyringApplicationRef *app_ref,
-			     GList *access_requests)
+static void
+lock_keyring (GnomeKeyring *keyring)
 {
+	if (keyring->locked) {
+		return;
+	}
+	if (keyring->file == NULL) {
+		/* Never lock the session keyring */
+		return;
+	}
+	g_assert (keyring->password != NULL);
+	
+	g_free (keyring->password);
+	keyring->password = NULL;
+	if (!update_keyring_from_disk (keyring, TRUE)) {
+		/* Failed to re-read, remove the keyring */
+		g_warning ("Couldn't re-read keyring %s\n", keyring->keyring_name);
+		gnome_keyring_free (keyring);
+	}
+}
+
+static gboolean
+op_lock_keyring_execute (GString *packet,
+			 GString *result,
+			 GnomeKeyringApplicationRef *app_ref,
+			 GList *access_requests)
+{
+	char *keyring_name;
+	GnomeKeyringOpCode opcode;
+	GnomeKeyring *keyring;
+	
+	if (!gnome_keyring_proto_decode_op_string (packet,
+						   &opcode,
+						   &keyring_name)) {
+		return FALSE;
+	}
+
+	if (keyring_name == NULL) {
+		keyring = default_keyring;
+	} else {
+		keyring = find_keyring (keyring_name);
+	}
+	if (keyring == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+	} else {
+		lock_keyring (keyring);
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+	}
+	
+	return TRUE;
+}
+
+static gboolean
+op_lock_all_execute (GString *packet,
+		     GString *result,
+		     GnomeKeyringApplicationRef *app_ref,
+		     GList *access_requests)
+{
+	GList *l;
+	GnomeKeyring *keyring;
+
+	for (l = keyrings; l != NULL; l = l->next) {
+		keyring = l->data;
+		lock_keyring (keyring);
+	}
+	
 	gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	return TRUE;
 }
@@ -649,7 +733,8 @@ op_set_default_keyring_execute (GString *packet,
 	}
 
 	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		set_default_keyring (NULL);
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	} else {
 		keyring = find_keyring (keyring_name);
 		if (keyring == NULL) {
@@ -1105,6 +1190,107 @@ op_create_item_execute (GString *packet,
 	gnome_keyring_proto_add_uint32 (result, id);
 	return TRUE;
 }
+
+
+static gboolean
+op_delete_item_collect (GString *packet,
+			GList **access_requests_out)
+{
+	char *keyring_name;
+	GnomeKeyring *keyring;
+	GnomeKeyringItem *item;
+	GnomeKeyringOpCode opcode;
+	guint32 item_id;
+	GnomeKeyringAccessRequest *access_request;
+	GList *access_requests;
+
+	
+	if (!gnome_keyring_proto_decode_op_string_int (packet,
+						       &opcode,
+						       &keyring_name,
+						       &item_id)) {
+		return FALSE;
+	}
+
+	access_requests = NULL;
+	if (keyring_name != NULL) {
+		keyring = find_keyring (keyring_name);
+		if (keyring != NULL) {
+			item = find_item (keyring, item_id);
+			if (item != NULL) {
+				access_request =
+					access_request_from_item (item,
+								  GNOME_KEYRING_ACCESS_REMOVE);
+				access_requests = g_list_prepend (access_requests,
+								  access_request);
+			}
+		}
+	}
+
+	*access_requests_out = access_requests;
+	g_free (keyring_name);
+	
+	return TRUE;
+	
+}
+
+static gboolean
+op_delete_item_execute (GString *packet,
+			GString *result,
+			GnomeKeyringApplicationRef *app_ref,
+			GList *access_requests)
+{
+	char *keyring_name;
+	GnomeKeyring *keyring;
+	GnomeKeyringItem *item;
+	GnomeKeyringOpCode opcode;
+	guint32 item_id;
+	GnomeKeyringAccessRequest *access_request;
+	
+	if (!gnome_keyring_proto_decode_op_string_int (packet,
+						       &opcode,
+						       &keyring_name,
+						       &item_id)) {
+		return FALSE;
+	}
+
+	if (keyring_name == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		goto out;
+	}
+		
+	keyring = find_keyring (keyring_name);
+	if (keyring == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		goto out;
+	}
+
+	if (access_requests == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+
+	access_request = access_requests->data;
+
+	if (access_request->item->keyring != keyring ||
+	    access_request->item == NULL ||
+	    access_request->item->locked) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+	item = access_request->item;
+
+	gnome_keyring_item_free (item);
+	gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+	
+	save_keyring_to_disk (keyring);
+
+ out:
+	
+	g_free (keyring_name);
+	return TRUE;
+}
+
 
 
 static gboolean
@@ -1686,6 +1872,14 @@ gnome_keyring_ask_iterate (GnomeKeyringAsk *ask)
 	}
 }
 
+
+static gboolean
+idle_ask_iterate (gpointer data)
+{
+	gnome_keyring_ask_iterate ((GnomeKeyringAsk *)data);
+	return FALSE;
+}
+
 gpointer
 gnome_keyring_ask (GList                             *access_requests,
 		   GnomeKeyringApplicationRef        *app_ref,
@@ -1693,7 +1887,7 @@ gnome_keyring_ask (GList                             *access_requests,
 		   gpointer                           data)
 {
 	GnomeKeyringAsk *ask;
-	
+
 	ask = g_new0 (GnomeKeyringAsk, 1);
 	
 	ask->buffer = g_string_new (NULL);
@@ -1701,6 +1895,8 @@ gnome_keyring_ask (GList                             *access_requests,
 	ask->access_requests = gnome_keyring_access_request_list_copy (access_requests);
 	ask->callback = callback;
 	ask->callback_data = data;
+
+	outstanding_asks = g_list_prepend (outstanding_asks, ask);
 	
 	if (gnome_keyring_ask_iterate (ask)) {
 		/* Already finished & freed */
@@ -1721,14 +1917,52 @@ gnome_keyring_cancel_ask (gpointer operation)
 	gnome_keyring_ask_free (ask);
 }
 
+
+static void
+gnome_keyring_fixup_for_deleted (GnomeKeyring *keyring, GnomeKeyringItem *item)
+{
+	GList *l, *reql;
+	GnomeKeyringAsk *ask;
+	GnomeKeyringAccessRequest *request;
+
+	gnome_keyring_client_fixup_for_deleted (keyring, item);
+	
+	for (l = outstanding_asks; l != NULL; l = l->next) {
+		ask = l->data;
+
+		/* Note that current_request could be NULL here for an
+		 * outstanding request. This happens if e.g. a delete_item
+		 * call is what freed the item, since the actual ask
+		 * for the delete which has been ok:d is still alive */
+		
+		reql = ask->access_requests;
+		while (reql != NULL) {
+			request = reql->data;
+			reql = reql->next;
+
+			if ((keyring != NULL && request->keyring == keyring) ||
+			    (item != NULL && request->item == item)) {
+				if (request == ask->current_request) {
+					ask->current_request = NULL;
+					/* killing current req */
+					gnome_keyring_ask_kill (ask);
+					g_idle_add (idle_ask_iterate, ask);
+				}
+				ask->access_requests = g_list_remove (ask->access_requests,
+								      request);
+				gnome_keyring_access_request_free (request);
+			}
+		}
+	}
+}
+
 GnomeKeyringOperationImplementation keyring_ops[] = {
-	{ NULL,  op_keyring_lock_all_execute }, /* LOCK_ALL */
-	{ NULL, NULL}, /* CREATE */
+	{ NULL,  op_lock_all_execute }, /* LOCK_ALL */
 	{ NULL, op_set_default_keyring_execute}, /* SET_DEFAULT_KEYRING */
 	{ NULL, op_get_default_keyring_execute}, /* GET_DEFAULT_KEYRING */
 	{ NULL, op_list_keyrings_execute}, /* LIST_KEYRINGS */
 	{ op_create_keyring_collect, op_create_keyring_execute}, /* CREATE_KEYRING */
-	{ NULL, NULL}, /* LOCK_KEYRING */
+	{ NULL, op_lock_keyring_execute}, /* LOCK_KEYRING */
 	{ NULL, op_unlock_keyring_execute}, /* UNLOCK_KEYRING */
 	{ NULL, NULL}, /* DELETE_KEYRING */
 	{ NULL, op_get_keyring_info_execute}, /* GET_KEYRING_INFO */
@@ -1736,7 +1970,7 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ op_list_items_collect, op_list_items_execute}, /* LIST_ITEMS */
 	{ op_find_collect, op_find_execute }, /* FIND */
 	{ op_create_item_collect, op_create_item_execute}, /* CREATE_ITEM */
-	{ NULL, NULL}, /* DELETE_ITEM */
+	{ op_delete_item_collect, op_delete_item_execute}, /* DELETE_ITEM */
 	{ op_get_item_info_or_attributes_collect, op_get_item_info_execute}, /* GET_ITEM_INFO */
 	{ NULL, NULL}, /* SET_ITEM_INFO */
 	{ op_get_item_info_or_attributes_collect, op_get_item_attributes_execute}, /* GET_ITEM_ATTRIBUTES */

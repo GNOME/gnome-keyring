@@ -1,5 +1,34 @@
 2003-11-28  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-daemon-file.c: (set_default_keyring):
+	Handle setting to NULL.
+	
+	* gnome-keyring-daemon-io.c:
+	(gnome_keyring_client_fixup_for_deleted),
+	(gnome_keyring_client_state_machine):
+	Clean up clients outstanding access requests when
+	items/keyring are deleted
+	
+	* gnome-keyring-daemon.c:
+	Clean up outstanding ask access requests when
+	items/keyring are deleted.
+	Fix up item/keyring destruction paths
+	implement lock, lock_all & delete_item
+	
+	* gnome-keyring-daemon.h:
+	New functions
+	
+	* gnome-keyring-proto.h:
+	Remove unnecessary enum value
+	
+	* gnome-keyring.c: (gnome_keyring_item_delete):
+	Fix opcode for delete_item
+	
+	* test.c:
+	Make usable
+
+2003-11-28  Alexander Larsson  <alexl@redhat.com>
+
 	* .cvsignore:
 	* Makefile.am:
 	* test.c:
