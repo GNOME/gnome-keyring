@@ -6,114 +6,300 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"POT-Creation-Date: 2004-01-12 08:48+0100\n"
-"PO-Revision-Date: 2004-01-06 17:23+0200\n"
-"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-27 17:40+0200\n"
+"PO-Revision-Date: 2004-01-26 12:32+0200\n"
+"Last-Translator: Kostas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
-"X-Generator: KBabel 1.0.2\n"
 
-#: gnome-keyring-ask.c:170
+#: gnome-keyring-ask.c:223
 #, c-format
-msgid "The application '%s' (%s)"
-msgstr "Η εφαρμογή '%s' (%s)"
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"Η εφαρμογή '%s' (%s) επιθυμεί πρόσβαση στο προεπιλεγμένο keyring, αλλά είναι "
+"κλειδωμένο."
 
-#: gnome-keyring-ask.c:172
+#: gnome-keyring-ask.c:227
 #, c-format
-msgid "The application '%s'"
-msgstr "Η εφαρμογή '%s'"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Η εφαρμογή '%s' (%s)  επιθυμεί πρόσβαση στο keyring %s, αλλά είναι "
+"κλειδωμένο."
 
-#: gnome-keyring-ask.c:175
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
 #, c-format
-msgid "The application %s"
-msgstr "Η εφαρμογή %s"
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr ""
+"Η εφαρμογή '%s' (%s)  επιθυμεί πρόσβαση σε ένα άγνωστο keyring, αλλά είναι "
+"κλειδωμένο."
 
-#: gnome-keyring-ask.c:185
-msgid "the default keyring"
-msgstr "το προεπιλεγμένο keyring"
-
-#: gnome-keyring-ask.c:187
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
-msgid "the keyring '%s'"
-msgstr "το keyring '%s'"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"Η εφαρμογή %s επιθυμεί πρόσβαση στο προεπιλεγμένο keyring, αλλά είναι "
+"κλειδωμένο."
 
-#: gnome-keyring-ask.c:190
-msgid "an unknown keyring"
-msgstr "ένα άγνωστο keyring"
-
-#: gnome-keyring-ask.c:206
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format
-msgid "%s wants access to %s, but it is locked."
-msgstr "Το %s επιθυμεί πρόσβαση στο  %s, αλλά είναι κλειδωμένο."
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Η εφαρμογή '%s' επιθυμεί πρόσβαση στο keyring %s, αλλά είναι κλειδωμένο."
 
-#: gnome-keyring-ask.c:210
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Η εφαρμογή '%s' επιθυμεί πρόσβαση σε ένα άγνωστο keyring, αλλά είναι "
+"κλειδωμένο."
+
+#: gnome-keyring-ask.c:268
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Μια άγνωστη εφαρμογή επιθυμεί πρόσβαση στο προεπιλεγμένο keyring, αλλά είναι "
+"κλειδωμένο."
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Μια άγνωστη εφαρμογή  επιθυμεί πρόσβαση στο  keyring '%s', αλλά είναι "
+"κλειδωμένο."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Μια άγνωστη εφαρμογή επιθυμεί πρόσβαση σε ένα άγνωστο keyring, αλλά είναι "
+"κλειδωμένο."
+
+#: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
 msgstr "Εισάγετε κωδικό για το προεπιλεγμένο keyring για ξεκλείδωμα"
 
-#: gnome-keyring-ask.c:212
+#: gnome-keyring-ask.c:286
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Εισάγετε κωδικό για το keyring '%s' για ξεκλείδωμα"
 
-#: gnome-keyring-ask.c:215
+#: gnome-keyring-ask.c:289
 msgid "Unlock Keyring"
 msgstr "Ξεκλείδωμα Keyring"
 
-#: gnome-keyring-ask.c:251
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "Άρ_νηση"
+
+#: gnome-keyring-ask.c:329
 #, c-format
 msgid ""
-"%s wants to create a new keyring called '%s'. You have to choose the "
-"password you want to use for it."
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
 msgstr ""
-"Ο %s επιθυμεί να δημιουργήσει ένα νέο keyring με το όνομα '%s'. Θα πρέπει να "
-"επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+"Η εφαρμογή '%s' (%s) επιθυμεί να δημιουργήσει ένα νέο keyring με το όνομα '%"
+"s'. Θα πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
 
-#: gnome-keyring-ask.c:255
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Η εφαρμογή '%s' (%s) επιθυμεί να δημιουργήσει ένα νέο προεπιλεγμένο keyring. "
+"Θα πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Η εφαρμογή '%s' επιθυμεί να δημιουργήσει ένα νέο keyring με το όνομα '%s'. "
+"Θα πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Η εφαρμογή '%s' επιθυμεί να δημιουργήσει νέο προεπιλεγμένο keyring. Θα "
+"πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Μια άγνωστη εφαρμογή επιθυμεί να δημιουργήσει ένα νέο keyring με το όνομα '%"
+"s'. Θα πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Μια άγνωστη εφαρμογή επιθυμεί να δημιουργήσει ένα νέο προεπιλεγμένο keyring. "
+"Θα πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+
+#: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
 msgstr "Νέος κωδικός Keyring"
 
-#: gnome-keyring-ask.c:256
+#: gnome-keyring-ask.c:370
 msgid "Choose password for new keyring"
 msgstr "Επιλέξτε κωδικό για το νέο keyring"
 
-#: gnome-keyring-ask.c:285
+#: gnome-keyring-ask.c:400
 #, c-format
 msgid ""
-"%s wants to store a password, but there is no default keyring. To create "
-"one, you need to choose the password you wish to use for it."
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
 msgstr ""
-"Το %s επιθυμεί να αποθηκεύσει ένα κωδικό αλλά δεν υπάρχει προεπιλεγμένο "
-"keyring. Για να δημιουργήσετε ένα, θα χρειαστεί να  επιλέξετε ένα κωδικό που "
-"θέλετε να χρησιμοποιήσετε για αυτό."
+"Η εφαρμογή '%s' (%s) επιθυμεί να αποθηκεύσει ένα κωδικό αλλά δεν υπάρχει "
+"προεπιλεγμένο keyring. Για να δημιουργήσετε ένα, θα χρειαστεί να  επιλέξετε "
+"ένα κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
 
-#: gnome-keyring-ask.c:289
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Η εφαρμογή '%s' επιθυμεί να αποθηκεύσει ένα κωδικό αλλά δεν υπάρχει "
+"προεπιλεγμένο keyring. Για να δημιουργήσετε ένα, θα χρειαστεί να  επιλέξετε "
+"ένα κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Μια άγνωστη εφαρμογή επιθυμεί να αποθηκεύσει ένα κωδικό αλλά δεν υπάρχει "
+"προεπιλεγμένο keyring. Για να δημιουργήσετε ένα, θα χρειαστεί να  επιλέξετε "
+"ένα κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+
+#: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
 msgstr "Δημιουργία προεπιλεγμένου keyring"
 
-#: gnome-keyring-ask.c:290
+#: gnome-keyring-ask.c:417
 msgid "Choose password for default keyring"
 msgstr "Επιλέξτε κωδικό για το προεπιλεγμένο keyring"
 
-#: gnome-keyring-ask.c:327
+#: gnome-keyring-ask.c:454
 msgid "Allow application access to keyring?"
 msgstr "Να επιτρέπεται στην εφαρμογή η πρόσβαση στο keyring?"
 
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:457
 #, c-format
-msgid "%s wants to access the password for '%s' in %s."
-msgstr "Το %s επιθυμεί πρόσβαση στον κωδικό για το '%s' στο %s."
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "Η εφαρμογή '%s' (%s) επιθυμεί πρόσβαση στον κωδικό για το '%s' στο %s."
 
-#: gnome-keyring-ask.c:330
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"Η εφαρμογή '%s' (%s)επιθυμεί πρόσβαση στον κωδικό για το '%s' στο "
+"προεπιλεγμένο keyring."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+"Η εφαρμογή '%s' (%s)  επιθυμεί πρόσβαση στον κωδικό για το '%s' σε ένα "
+"άγνωστο keyring."
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "Η εφαρμογή '%s'  επιθυμεί πρόσβαση στον κωδικό για το '%s' στο %s."
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Η εφαρμογή '%s' επιθυμεί πρόσβαση στον κωδικό για το '%s' στο προεπιλεγμένο "
+"keyring."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Η εφαρμογή '%s' επιθυμεί πρόσβαση στον κωδικό για το '%s' σε ένα άγνωστο "
+"keyring."
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "Μια άγνωστη εφαρμογή επιθυμεί πρόσβαση στον κωδικό για το '%s' στο %s."
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Μια άγνωστη εφαρμογή επιθυμεί πρόσβαση στον κωδικό για το '%s'  στο "
+"προεπιλεγμένο keyring."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Μια άγνωστη εφαρμογή επιθυμεί πρόσβαση στον κωδικό για το '%s' σε ένα "
+"άγνωστο keyring."
+
+#: gnome-keyring-ask.c:501
 msgid "Allow access"
 msgstr "Να γίνεται έλεγχος πρόσβασης"
 
-#: gnome-keyring-ask.c:366
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "Να επιτρέπεται μια _φορά"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "Να επιτρέπεται πά_ντα"
+
+#: gnome-keyring-ask.c:547
 msgid "You must specify the type of request to run\n"
 msgstr "Θα πρέπει να καθορίσετε τον τύπο της αίτησης για εκτέλεση\n"
 
-#: gnome-keyring-ask.c:379
+#: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "Άγνωστος τύπος αίτησης\n"
