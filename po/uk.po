@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-13 14:09+0200\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-03-13 14:34+0200\n"
 "Last-Translator: Maxim Dzumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -29,7 +29,8 @@ msgstr ""
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до в'язки ключів \"%s\", але вона заблокована"
+"Програма \"%s\" (%s) бажає отримати доступ до в'язки ключів \"%s\", але вона "
+"заблокована"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:232
@@ -38,20 +39,23 @@ msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до невідомої в'язки ключів, але вона заблокована"
+"Програма \"%s\" (%s) бажає отримати доступ до невідомої в'язки ключів, але "
+"вона заблокована"
 
 #: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
-"Програма \"%s\" бажає отримати доступ до типової в'язки ключів, але вона заблокована"
+"Програма \"%s\" бажає отримати доступ до типової в'язки ключів, але вона "
+"заблокована"
 
 #: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Програма \"%s\" бажає отримати доступ до в'язки ключів \"%s\", але вона заблокована"
+"Програма \"%s\" бажає отримати доступ до в'язки ключів \"%s\", але вона "
+"заблокована"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
@@ -59,7 +63,8 @@ msgstr ""
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr ""
-"Програма \"%s\" бажає отримати доступ до невідомої в'язки ключів, але вона заблокована"
+"Програма \"%s\" бажає отримати доступ до невідомої в'язки ключів, але вона "
+"заблокована"
 
 #: gnome-keyring-ask.c:268
 msgid ""
@@ -79,7 +84,8 @@ msgstr ""
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
-"Невідома програма бажає отримати доступ до в'язки ключів, але вона заблокована"
+"Невідома програма бажає отримати доступ до в'язки ключів, але вона "
+"заблокована"
 
 #: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
@@ -105,8 +111,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Програма \"%s\" (%s) бажає створити нову в'язку ключів з назвою '%s'. Необхідно вибрати пароль для "
-"в'язки."
+"Програма \"%s\" (%s) бажає створити нову в'язку ключів з назвою '%s'. "
+"Необхідно вибрати пароль для в'язки."
 
 #: gnome-keyring-ask.c:333
 #, c-format
@@ -114,8 +120,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програма \"%s\" (%s) бажає створити нову типову в'язку ключів. Необхідно вибрати пароль для "
-"в'язки."
+"Програма \"%s\" (%s) бажає створити нову типову в'язку ключів. Необхідно "
+"вибрати пароль для в'язки."
 
 #: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
 #, c-format
@@ -123,8 +129,8 @@ msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програма \"%s\" бажає створити нову в'язку ключів з назвою '%s'. Необхідно вибрати пароль для "
-"в'язки."
+"Програма \"%s\" бажає створити нову в'язку ключів з назвою '%s'. Необхідно "
+"вибрати пароль для в'язки."
 
 #: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
 #, c-format
@@ -132,8 +138,8 @@ msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програма \"%s\" бажає створити нову типову в'язку ключів. Необхідно вибрати пароль для "
-"в'язки."
+"Програма \"%s\" бажає створити нову типову в'язку ключів. Необхідно вибрати "
+"пароль для в'язки."
 
 #: gnome-keyring-ask.c:359
 #, c-format
@@ -141,16 +147,16 @@ msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Невідома програма бажає створити нову в'язку ключів з назвою '%s'. Необхідно вибрати пароль для "
-"в'язки."
+"Невідома програма бажає створити нову в'язку ключів з назвою '%s'. Необхідно "
+"вибрати пароль для в'язки."
 
 #: gnome-keyring-ask.c:363
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Невідома програма бажає створити нову типову в'язку ключів. Необхідно вибрати пароль для "
-"в'язки."
+"Невідома програма бажає створити нову типову в'язку ключів. Необхідно "
+"вибрати пароль для в'язки."
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
@@ -167,8 +173,8 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Програма \"%s\" (%s) бажає зберегти пароль, але типова в'язка ключів відсутня. "
-"Для створення в'язки необхідно вибрати пароль."
+"Програма \"%s\" (%s) бажає зберегти пароль, але типова в'язка ключів "
+"відсутня. Для створення в'язки необхідно вибрати пароль."
 
 #: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
 #, c-format
@@ -206,7 +212,8 @@ msgstr "Дозволити програмам доступ до в'язки кл
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у в'язці ключів %s."
+"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у в'язці "
+"ключів %s."
 
 #: gnome-keyring-ask.c:460
 #, c-format
@@ -214,7 +221,8 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
 msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у типовій в'язці ключів."
+"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у типовій "
+"в'язці ключів."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:463
@@ -223,7 +231,8 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у типовій в'язці ключів."
+"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у типовій "
+"в'язці ключів."
 
 #: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
 #, c-format
@@ -237,7 +246,8 @@ msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
 msgstr ""
-"Програма \"%s\" бажає отримати доступ до паролю для '%s' у типовій в'язці ключів."
+"Програма \"%s\" бажає отримати доступ до паролю для '%s' у типовій в'язці "
+"ключів."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
@@ -246,19 +256,24 @@ msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr ""
-"Програма \"%s\" бажає отримати доступ до паролю для '%s' у невідомий в'язці ключів."
+"Програма \"%s\" бажає отримати доступ до паролю для '%s' у невідомий в'язці "
+"ключів."
 
 #: gnome-keyring-ask.c:490
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Невідома програма бажає отримати доступ до паролю для '%s' у в'язці ключів %s."
+msgstr ""
+"Невідома програма бажає отримати доступ до паролю для '%s' у в'язці ключів %"
+"s."
 
 #: gnome-keyring-ask.c:493
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
-msgstr "Невідома програма бажає отримати доступ до паролю для '%s' у типовій в'язці ключів."
+msgstr ""
+"Невідома програма бажає отримати доступ до паролю для '%s' у типовій в'язці "
+"ключів."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:496
@@ -267,7 +282,8 @@ msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr ""
-"Невідома програма бажає отримати доступ до паролю для '%s' у невідомій в'язці ключів."
+"Невідома програма бажає отримати доступ до паролю для '%s' у невідомій "
+"в'язці ключів."
 
 #: gnome-keyring-ask.c:501
 msgid "Allow access"
