@@ -1,3 +1,7 @@
+2004-01-07  Marcel Telka  <marcel@telka.sk>
+
+	* configure.in (ALL_LINGUAS): Added sk.
+
 2004-01-07  Alex Duggan  <aldug@astrolinux.com>
 
 	* gnome-keyring-daemon-io.c: Use g_get_tmp_dir () instead of 
