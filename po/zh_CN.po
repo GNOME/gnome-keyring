@@ -1,0 +1,263 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-keyring package.
+# Neo Willis <willis@linux.net>, 2003.
+# QA and Edited by Funda Wang <fundawang@linux.net.cn>, 2004
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"POT-Creation-Date: 2004-02-09 15:15+0100\n"
+"PO-Revision-Date: 2004-02-10 15:11+0800\n"
+"Last-Translator: Neo Willis <willis@linux.net>\n"
+"Language-Team: zh_CN  <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: Neo Willis <willis@linux.net>\n"
+
+#: gnome-keyring-ask.c:223
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr "应用程序“%s”(%s)想要访问默认密钥环，但该密钥环已上锁"
+
+#: gnome-keyring-ask.c:227
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "应用程序“%s”(%s)想要访问密钥环“%s”，但该密钥环已上锁"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "应用程序“%s”(%s)想要访问未知密钥环，但该密钥环已上锁"
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr "应用程序“%s”想要访问默认密钥环，但该密钥环已上锁"
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "应用程序“%s”想要访问密钥环“%s”，但该密钥环已上锁"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "应用程序“%s”想要访问未知密钥环，但该密钥环已上锁"
+
+#: gnome-keyring-ask.c:268
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr "未知应用程序想要访问默认密钥环，但该密钥环已上锁"
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "未知应用程序想要访问密钥环“%s”，但该密钥环已上锁"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "未知应用程序想要访问未知密钥环，但该密钥环已上锁"
+
+#: gnome-keyring-ask.c:284
+msgid "Enter password for default keyring to unlock"
+msgstr "要解锁，请输入默认密钥环的密码"
+
+#: gnome-keyring-ask.c:286
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "要解锁，请输入密钥环“%s”的密码"
+
+#: gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "解锁密钥环"
+
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "禁止(_D)"
+
+#: gnome-keyring-ask.c:329
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"应用程序“%s”(%s)想要创建名为“%s”的新密钥环。您必须为该密钥环选择一个密码。"
+
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "应用程序“%s”(%s)想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "应用程序“%s”想要创建名为“%s”的新密钥环。您必须为该密钥环选择一个密码。"
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "应用程序“%s”想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr "未知应用程序想要创建名为“%s”的新密钥环。您必须为该密钥环选择一个密码。"
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr "未知应用程序想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "新密钥环的密码"
+
+#: gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "选择新密钥环的密码"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"应用程序“%s”(%s)想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，请"
+"为其输入密码。"
+
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"应用程序“%s”想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，请为其"
+"输入密码。"
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"未知应用程序想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，请为其"
+"输入密码。"
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "创建默认密钥环"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "选择默认密钥环的密码"
+
+#: gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "允许应用程序访问密钥环吗？"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "应用程序“%1$s”(%2$s)想要访问 %4$s 中“%3$s”的密码。"
+
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "应用程序“%s”(%s)想要访问默认密钥环中“%s”的密码。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "应用程序“%s”(%s)想要访问未知密钥环中“%s”的密码。"
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "应用程序“%1$s”想要访问 %3$s 中“%2$s”的密码。"
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "应用程序“%s”想要访问默认密钥环中“%s”的密码。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "应用程序“%s”想要访问未知密钥环中“%s”的密码。"
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "一个未知程序想要访问 %2$s 中“%1$s”的密码。"
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "一个未知程序想要访问默认密钥环中“%s”的密码。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "一个未知程序想要访问未知密钥环中“%s”的密码。"
+
+#: gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "允许访问"
+
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "允许一次(_O)"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "总是运行(_A)"
+
+#: gnome-keyring-ask.c:547
+msgid "You must specify the type of request to run\n"
+msgstr "您必须指定要运行的请求类型\n"
+
+#: gnome-keyring-ask.c:560
+msgid "Unknown request type\n"
+msgstr "未知的请求类型\n"
