@@ -1,3 +1,7 @@
+2004-04-03  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* configur.in: Added "is" to ALL_LINGUAS.
+	
 2004-03-24  Guntupalli Karunakar  <karunakar@freedomink.org>
 
         * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
