@@ -1,3 +1,7 @@
+2004-02-22  Mətin Əmirov  <metin@karegen.com>
+                                                                                
+        * configure.in: Added "az" to ALL_LINGUAS.
+
 2004-02-11  Arafat Medini  <lumina@silverpen.de>
                                                                                 
         * configure.in: Added Arabic locale ar to ALL_LINGUAS.
