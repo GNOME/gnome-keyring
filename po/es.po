@@ -29,7 +29,8 @@ msgstr ""
 
 #: gnome-keyring-ask.c:227
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "La aplicación %s (%s) quiere acceder al anillo de claves %s, pero está "
 "bloqueado"
@@ -46,7 +47,8 @@ msgstr ""
 
 #: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "La aplicación «%s»  quiere acceder al anillo de claves predeterminado. pero "
 "está bloqueado"
@@ -54,32 +56,37 @@ msgstr ""
 #: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "La aplicación %s quiere acceder al anillo de claves %s, pero está bloqueado"
+msgstr ""
+"La aplicación %s quiere acceder al anillo de claves %s, pero está bloqueado"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr ""
 "La aplicación «%s» quiere acceder a un anillo de claves desconocido, pero "
 "está bloqueado"
 
 #: gnome-keyring-ask.c:268
-msgid "An unknown application wants access to the default keyring, but it is locked"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Una aplicación desconocida quiere acceder al anillo predeterminado, pero "
 "está bloqueado"
 
 #: gnome-keyring-ask.c:272
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Una aplicación desconocida quiere acceder al anillo de claves %s, pero está "
 "bloqueado"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Una aplicación desconocida quiere acceder a un anillo desconocido, pero está "
 "bloqueado"
@@ -211,7 +218,8 @@ msgstr "¿Permitir a la aplicación acceder al anillo?"
 #: gnome-keyring-ask.c:457
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en %s."
+msgstr ""
+"La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en %s."
 
 #: gnome-keyring-ask.c:460
 #, c-format
@@ -259,7 +267,8 @@ msgstr ""
 #: gnome-keyring-ask.c:490
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Una aplicación desconocida quiere acceder a la contraseña para «%s» en %s."
+msgstr ""
+"Una aplicación desconocida quiere acceder a la contraseña para «%s» en %s."
 
 #: gnome-keyring-ask.c:493
 #, c-format
@@ -317,4 +326,3 @@ msgstr "Tipo de solicitud desconocido\n"
 
 #~ msgid "an unknown keyring"
 #~ msgstr "un anillo de claves desconocido"
-
