@@ -8,49 +8,118 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"POT-Creation-Date: 2003-12-08 09:38+0100\n"
-"PO-Revision-Date: 2003-11-29 13:57+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-19 18:20+0100\n"
+"PO-Revision-Date: 2003-12-19 18:24+0100\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-keyring-ask.c:90
-msgid "New keyring password"
-msgstr "Nova lozinka u prstenu"
+#: gnome-keyring-ask.c:170
+#, c-format
+msgid "The application '%s' (%s)"
+msgstr "Program „%s“ (%s)"
 
-#: gnome-keyring-ask.c:92
-msgid "Create default keyring"
-msgstr "Napravi podrazumevani prsten"
+#: gnome-keyring-ask.c:172
+#, c-format
+msgid "The application '%s'"
+msgstr "Program „%s“"
 
-#: gnome-keyring-ask.c:94
-msgid "Unlock keyring"
+#: gnome-keyring-ask.c:175
+#, c-format
+msgid "The application %s"
+msgstr "Program %s"
+
+#: gnome-keyring-ask.c:185
+msgid "the default keyring"
+msgstr "podrazumevani prsten"
+
+#: gnome-keyring-ask.c:187
+#, c-format
+msgid "the keyring '%s'"
+msgstr "prsten „%s“"
+
+#: gnome-keyring-ask.c:190
+msgid "an unknown keyring"
+msgstr "nepoznat prsten"
+
+#: gnome-keyring-ask.c:206
+#, c-format
+msgid "%s wants access to %s, but it is locked."
+msgstr "%s želi da pristupi %s, ali je zaključano."
+
+#: gnome-keyring-ask.c:210
+msgid "Enter password for default keyring to unlock"
+msgstr "Unesite lozinku za podrazumevani prsten radi otključavanja"
+
+#: gnome-keyring-ask.c:212
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Unesite lozinku za prsten „%s“ radi otključavanja"
+
+#: gnome-keyring-ask.c:215
+msgid "Unlock Keyring"
 msgstr "Otključaj prsten"
 
-#: gnome-keyring-ask.c:105
+#: gnome-keyring-ask.c:251
 #, c-format
-msgid "Enter password for new keyring %s"
-msgstr "Unesite lozinku za novi prsten %s"
-
-#: gnome-keyring-ask.c:107
 msgid ""
-"There is no default keyring, and one is needed. Please enter the password "
-"for the new default keyring."
-msgstr ""
-"Nema podrazumevanog prstena, a jedan je neophodan. Unesite lozinku za novi "
-"podrazumevani prsten."
+"%s wants to create a new keyring called '%s'. You have to choose the "
+"password you want to use for it."
+msgstr "%s želi da napravi novi prsten imena „%s“. Morate izabrati lozinku koju želite da koristite za njega."
 
-#: gnome-keyring-ask.c:109
+#: gnome-keyring-ask.c:255
+msgid "New Keyring Password"
+msgstr "Nova lozinka u prstenu"
+
+#: gnome-keyring-ask.c:256
+msgid "Choose password for new keyring"
+msgstr "Unesite lozinku za novi prsten"
+
+#: gnome-keyring-ask.c:285
 #, c-format
-msgid "Enter password to unlock keyring %s"
-msgstr "Unesite lozinku za otključavanje prstena %s"
+msgid ""
+"%s wants to store a password, but there is no default keyring. To create "
+"one, you need to choose the password you wish to use for it."
+msgstr "%s želi da uskladišti lozinku, ali nema podrazumevanog prstena. Da biste napravili jedan, izaberite lozinku koju želite da koristite za njega."
 
-#: gnome-keyring-ask.c:138
+#: gnome-keyring-ask.c:289
+msgid "Create Default Keyring"
+msgstr "Napravi podrazumevani prsten"
+
+#: gnome-keyring-ask.c:290
+msgid "Choose password for default keyring"
+msgstr "Unesite lozinku za podrazumevani prsten"
+
+#: gnome-keyring-ask.c:327
+msgid "Allow application access to keyring?"
+msgstr "Dozvoli programu pristup prstenu?"
+
+#: gnome-keyring-ask.c:328
+#, c-format
+msgid "%s wants to access the password for '%s' in %s."
+msgstr "%s želi da koristi lozinku za „%s“ u %s."
+
+#: gnome-keyring-ask.c:330
 msgid "Allow access"
 msgstr "Dozvoli pristup"
 
-#: gnome-keyring-ask.c:146
-#, c-format
-msgid "Allow app %s to access item %s"
-msgstr "Dozvolu programu %s da pristupi stavci %s"
+#: gnome-keyring-ask.c:366
+msgid "You must specify the type of request to run\n"
+msgstr "Morate navesti vrstu zahteva za pokretanje\n"
+
+#: gnome-keyring-ask.c:379
+msgid "Unknown request type\n"
+msgstr "Nepoznata vrsta zahteva\n"
+
+#~ msgid ""
+#~ "There is no default keyring, and one is needed. Please enter the password "
+#~ "for the new default keyring."
+#~ msgstr ""
+#~ "Nema podrazumevanog prstena, a jedan je neophodan. Unesite lozinku za "
+#~ "novi podrazumevani prsten."
+
+#~ msgid "Enter password to unlock keyring %s"
+#~ msgstr "Unesite lozinku za otključavanje prstena %s"
