@@ -1,0 +1,54 @@
+# Serbian translation of gnome-keyring
+# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003.
+#
+# This file is distributed under the same license as the gnome-keyring package.
+#
+# Maintainer: Danilo Šegan <dsegan@gmx.net>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"PO-Revision-Date: 2003-11-29 13:57+0100\n"
+"Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
+"Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: gnome-keyring-ask.c:90
+msgid "New keyring password"
+msgstr "Nova lozinka u prstenu"
+
+#: gnome-keyring-ask.c:92
+msgid "Create default keyring"
+msgstr "Napravi podrazumevani prsten"
+
+#: gnome-keyring-ask.c:94
+msgid "Unlock keyring"
+msgstr "Otključaj prsten"
+
+#: gnome-keyring-ask.c:105
+#, c-format
+msgid "Enter password for new keyring %s"
+msgstr "Unesite lozinku za novi prsten %s"
+
+#: gnome-keyring-ask.c:107
+msgid ""
+"There is no default keyring, and one is needed. Please enter the password "
+"for the new default keyring."
+msgstr "Nema podrazumevanog prstena, a jedan je neophodan. Unesite lozinku za novi podrazumevani prsten."
+
+#: gnome-keyring-ask.c:109
+#, c-format
+msgid "Enter password to unlock keyring %s"
+msgstr "Unesite lozinku za otključavanje prstena %s"
+
+#: gnome-keyring-ask.c:138
+msgid "Allow access"
+msgstr "Dozvoli pristup"
+
+#: gnome-keyring-ask.c:146
+#, c-format
+msgid "Allow app %s to access item %s"
+msgstr "Dozvolu programu %s da pristupi stavci %s"
