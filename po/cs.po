@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-24 04:23+0100\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-01-25 16:29+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -96,41 +96,53 @@ msgstr "_Odepřít"
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "Aplikace '%s' (%s) chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit heslo, které pro ni chcete používat."
+msgstr ""
+"Aplikace '%s' (%s) chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
+"heslo, které pro ni chcete používat."
 
 #: gnome-keyring-ask.c:333
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Aplikace '%s' (%s) chce vytvořit novou implicitní klíčenku. Musíte zvolit heslo, které pro ni chcete používat."
+msgstr ""
+"Aplikace '%s' (%s) chce vytvořit novou implicitní klíčenku. Musíte zvolit "
+"heslo, které pro ni chcete používat."
 
 #: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "Aplikace '%s' chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit heslo, které pro ni chcete používat."
+msgstr ""
+"Aplikace '%s' chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
+"heslo, které pro ni chcete používat."
 
 #: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Aplikace '%s' chce vytvořit novou implicitní klíčenku. Musíte zvolit heslo, které pro ni chcete používat."
+msgstr ""
+"Aplikace '%s' chce vytvořit novou implicitní klíčenku. Musíte zvolit heslo, "
+"které pro ni chcete používat."
 
 #: gnome-keyring-ask.c:359
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "Neznámá aplikace chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit heslo, které pro ni chcete používat."
+msgstr ""
+"Neznámá aplikace chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
+"heslo, které pro ni chcete používat."
 
 #: gnome-keyring-ask.c:363
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Neznámá aplikace chce vytvořit novou implicitní klíčenku. Musíte zvolit heslo, které pro ni chcete používat."
+msgstr ""
+"Neznámá aplikace chce vytvořit novou implicitní klíčenku. Musíte zvolit "
+"heslo, které pro ni chcete používat."
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"

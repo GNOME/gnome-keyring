@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.6\n"
-"Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
-"POT-Creation-Date: 2004-01-22 00:48+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-01-22 01:05+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
@@ -76,16 +76,16 @@ msgstr ""
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Uma aplicação desconhecida deseja aceder ao chaveiro '%s', mas este "
-"está trancado"
+"Uma aplicação desconhecida deseja aceder ao chaveiro '%s', mas este está "
+"trancado"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
-"Uma aplicação desconhecida deseja aceder a um chaveiro desconhecido, mas este "
-"está trancado"
+"Uma aplicação desconhecida deseja aceder a um chaveiro desconhecido, mas "
+"este está trancado"
 
 #: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
@@ -111,8 +111,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"A aplicação '%s' (%s) deseja criar um novo chaveiro denominado '%s'. Terá "
-"de seleccionar a senha que deseja utilizar no chaveiro."
+"A aplicação '%s' (%s) deseja criar um novo chaveiro denominado '%s'. Terá de "
+"seleccionar a senha que deseja utilizar no chaveiro."
 
 #: gnome-keyring-ask.c:333
 #, c-format
@@ -147,16 +147,16 @@ msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Uma aplicação desconhecida deseja criar um novo chaveiro denominado '%s'. Terá "
-"de seleccionar a senha que deseja utilizar no chaveiro."
+"Uma aplicação desconhecida deseja criar um novo chaveiro denominado '%s'. "
+"Terá de seleccionar a senha que deseja utilizar no chaveiro."
 
 #: gnome-keyring-ask.c:363
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Uma aplicação desconhecida deseja criar um novo chaveiro por omissão. Terá de "
-"seleccionar a senha que deseja utilizar no chaveiro."
+"Uma aplicação desconhecida deseja criar um novo chaveiro por omissão. Terá "
+"de seleccionar a senha que deseja utilizar no chaveiro."
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
@@ -195,9 +195,9 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Uma aplicação desconhecida deseja armazenar uma senha mas não existe chaveiro "
-"por omissão. Para criar um, tem de seleccionar a senha que deseja utilizar no "
-"chaveiro."
+"Uma aplicação desconhecida deseja armazenar uma senha mas não existe "
+"chaveiro por omissão. Para criar um, tem de seleccionar a senha que deseja "
+"utilizar no chaveiro."
 
 #: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"

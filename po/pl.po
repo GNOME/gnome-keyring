@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-28 09:09+0100\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2003-06-27 01:25+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -35,6 +35,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
 "zablokowana"
 
+#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:232
 #, c-format
 msgid ""
@@ -59,6 +60,7 @@ msgstr ""
 "Aplikacja \"%s\" wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
 "zablokowana"
 
+#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
 msgid ""
@@ -82,6 +84,7 @@ msgstr ""
 "Nieznana aplikacja wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
 "zablokowana"
 
+#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
@@ -188,6 +191,7 @@ msgstr ""
 "Aplikacja \"%s\" potrzebuje zachować hasło, ale brak domyślnej bazy kluczy. "
 "Aby ją utworzyć, należy podać hasło jakie będzie z nią używane."
 
+#. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:412
 msgid ""
 "An unknown application wants to store a password, but there is no default "

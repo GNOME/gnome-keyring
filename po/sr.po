@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-14 09:19+0100\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-01-14 09:19+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-keyring-ask.c:222
+#: gnome-keyring-ask.c:223
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -25,14 +25,14 @@ msgid ""
 msgstr ""
 "Програм „%s“ (%s) жели да приступи подразумеваном прстену, али је он закључан"
 
-#: gnome-keyring-ask.c:226
+#: gnome-keyring-ask.c:227
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Програм „%s“ (%s) жели да приступи прстену „%s“, али је он закључан"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:231
+#: gnome-keyring-ask.c:232
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
@@ -40,63 +40,63 @@ msgid ""
 msgstr ""
 "Програм „%s“ (%s) жели да приступи непознатом прстену, али је он закључан"
 
-#: gnome-keyring-ask.c:237 gnome-keyring-ask.c:251
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Програм „%s“ жели да приступи подразумеваном прстену, али је он закључан"
 
-#: gnome-keyring-ask.c:241 gnome-keyring-ask.c:256
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Програм „%s“ жели да приступи прстену „%s“, али је он закључан"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:245 gnome-keyring-ask.c:261
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "Програм „%s“ жели да приступи непознатом прстену, али је он закључан"
 
-#: gnome-keyring-ask.c:267
+#: gnome-keyring-ask.c:268
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Непознати програм жели да приступи подразумеваном прстену, али је он закључан"
 
-#: gnome-keyring-ask.c:271
+#: gnome-keyring-ask.c:272
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Непознати програм жели да приступи прстену „%s“, али је он закључан"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:276
+#: gnome-keyring-ask.c:277
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Непознати програм жели да приступи непознатом прстену, али је он закључан"
 
-#: gnome-keyring-ask.c:283
+#: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
 msgstr "Унесите лозинку за подразумевани прстен ради откључавања"
 
-#: gnome-keyring-ask.c:285
+#: gnome-keyring-ask.c:286
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Унесите лозинку за прстен „%s“ ради откључавања"
 
-#: gnome-keyring-ask.c:288
+#: gnome-keyring-ask.c:289
 msgid "Unlock Keyring"
 msgstr "Откључај прстен"
 
-#: gnome-keyring-ask.c:293 gnome-keyring-ask.c:373 gnome-keyring-ask.c:420
-#: gnome-keyring-ask.c:504
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
 msgid "_Deny"
 msgstr "О_дбиј"
 
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:329
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -105,7 +105,7 @@ msgstr ""
 "Програм „%s“ (%s) жели да направи нови прстен имена „%s“. Морате изабрати "
 "лозинку коју желите да користите за њега."
 
-#: gnome-keyring-ask.c:332
+#: gnome-keyring-ask.c:333
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -114,7 +114,7 @@ msgstr ""
 "Програм „%s“ (%s) жели да направи нови подразумевани прстен. Морате изабрати "
 "лозинку коју желите да користите за њега."
 
-#: gnome-keyring-ask.c:338 gnome-keyring-ask.c:348
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -123,7 +123,7 @@ msgstr ""
 "Програм „%s“ жели да направи нови прстен имена „%s“. Морате изабрати лозинку "
 "коју желите да користите за њега."
 
-#: gnome-keyring-ask.c:342 gnome-keyring-ask.c:352
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -132,7 +132,7 @@ msgstr ""
 "Програм „%s“ жели да направи нови подразумевани прстен. Морате изабрати "
 "лозинку коју желите да користите за њега."
 
-#: gnome-keyring-ask.c:358
+#: gnome-keyring-ask.c:359
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -141,7 +141,7 @@ msgstr ""
 "Непознати програм жели да направи нови прстен имена „%s“. Морате изабрати "
 "лозинку коју желите да користите за њега."
 
-#: gnome-keyring-ask.c:362
+#: gnome-keyring-ask.c:363
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -149,15 +149,15 @@ msgstr ""
 "Непознати програм жели да направи нови подразумевани прстен. Морате изабрати "
 "лозинку коју желите да користите за њега."
 
-#: gnome-keyring-ask.c:368
+#: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
 msgstr "Нова лозинка у прстену"
 
-#: gnome-keyring-ask.c:369
+#: gnome-keyring-ask.c:370
 msgid "Choose password for new keyring"
 msgstr "Унесите лозинку за нови прстен"
 
-#: gnome-keyring-ask.c:399
+#: gnome-keyring-ask.c:400
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -168,7 +168,7 @@ msgstr ""
 "прстена. Да бисте направили један, изаберите лозинку коју желите да "
 "користите за њега."
 
-#: gnome-keyring-ask.c:403 gnome-keyring-ask.c:407
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -179,7 +179,7 @@ msgstr ""
 "бисте направили један, изаберите лозинку коју желите да користите за њега."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:411
+#: gnome-keyring-ask.c:412
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -189,24 +189,24 @@ msgstr ""
 "прстена. Да бисте направили један, изаберите лозинку коју желите да "
 "користите за њега."
 
-#: gnome-keyring-ask.c:415
+#: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
 msgstr "Направи подразумевани прстен"
 
-#: gnome-keyring-ask.c:416
+#: gnome-keyring-ask.c:417
 msgid "Choose password for default keyring"
 msgstr "Унесите лозинку за подразумевани прстен"
 
-#: gnome-keyring-ask.c:453
+#: gnome-keyring-ask.c:454
 msgid "Allow application access to keyring?"
 msgstr "Дозволи програму приступ прстену?"
 
-#: gnome-keyring-ask.c:456
+#: gnome-keyring-ask.c:457
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "Програм „%s“ (%s) жели да користи лозинку за „%s“ у прстену %s."
 
-#: gnome-keyring-ask.c:459
+#: gnome-keyring-ask.c:460
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -215,7 +215,7 @@ msgstr ""
 "Програм „%s“ (%s) жели да користи лозинку за „%s“ у подразумеваном прстену."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:462
+#: gnome-keyring-ask.c:463
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -223,12 +223,12 @@ msgid ""
 msgstr ""
 "Програм „%s“ (%s) жели да користи лозинку за „%s“ у непознатом прстену."
 
-#: gnome-keyring-ask.c:467 gnome-keyring-ask.c:478
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Програм „%s“ жели да користи лозинку за „%s“ у прстену %s."
 
-#: gnome-keyring-ask.c:470 gnome-keyring-ask.c:481
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -236,19 +236,19 @@ msgid ""
 msgstr "Програм „%s“ жели да користи лозинку за „%s“ у подразумеваном прстену."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:473 gnome-keyring-ask.c:484
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Програм „%s“ жели да користи лозинку за „%s“ у непознатом прстену."
 
-#: gnome-keyring-ask.c:489
+#: gnome-keyring-ask.c:490
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Непознати програм жели да користи лозинку за „%s“ у прстену „%s“."
 
-#: gnome-keyring-ask.c:492
+#: gnome-keyring-ask.c:493
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -257,7 +257,7 @@ msgstr ""
 "Непознати програм жели да користи лозинку за „%s“ у подразумеваном прстену."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:495
+#: gnome-keyring-ask.c:496
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -265,23 +265,23 @@ msgid ""
 msgstr ""
 "Непознати програм жели да користи лозинку за „%s“ у непознатом прстену."
 
-#: gnome-keyring-ask.c:500
+#: gnome-keyring-ask.c:501
 msgid "Allow access"
 msgstr "Дозволи приступ"
 
-#: gnome-keyring-ask.c:505
+#: gnome-keyring-ask.c:506
 msgid "Allow _Once"
 msgstr "Дозволи _једном"
 
-#: gnome-keyring-ask.c:506
+#: gnome-keyring-ask.c:507
 msgid "_Always Allow"
 msgstr "_Увек дозволи"
 
-#: gnome-keyring-ask.c:546
+#: gnome-keyring-ask.c:547
 msgid "You must specify the type of request to run\n"
 msgstr "Морате навести врсту захтева за покретање\n"
 
-#: gnome-keyring-ask.c:559
+#: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "Непозната врста захтева\n"
 

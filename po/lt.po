@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-12 12:07+0200\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-01-07 18:39+0200\n"
 "Last-Translator: Tomas Kuliavas <tokul@users.sourceforge.net>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -14,103 +14,282 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-keyring-ask.c:170
-#, c-format
-msgid "The application '%s' (%s)"
-msgstr "Programa „%s“ (%s)"
-
-#: gnome-keyring-ask.c:172
-#, c-format
-msgid "The application '%s'"
-msgstr "Programa „%s“"
-
-#: gnome-keyring-ask.c:175
-#, c-format
-msgid "The application %s"
-msgstr "Programa %s"
-
-#: gnome-keyring-ask.c:185
-msgid "the default keyring"
-msgstr "įprastas raktų rinkinys"
-
-#: gnome-keyring-ask.c:187
-#, c-format
-msgid "the keyring '%s'"
-msgstr "raktų rinkinys „%s“"
-
-#: gnome-keyring-ask.c:190
-msgid "an unknown keyring"
-msgstr "nežinomas raktų rinkinys"
-
-#: gnome-keyring-ask.c:206
-#, c-format
-msgid "%s wants access to %s, but it is locked."
+#: gnome-keyring-ask.c:223
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
 msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
 
-#: gnome-keyring-ask.c:210
+#: gnome-keyring-ask.c:227
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, fuzzy, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
+
+#: gnome-keyring-ask.c:268
+#, fuzzy
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
+
+#: gnome-keyring-ask.c:272
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+#, fuzzy
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "%s nori pasiekti %s, tačiau priėjimas yra blokuojamas."
+
+#: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
 msgstr "Įveskite įprasto raktų rinkinio slaptažodį, kad jį atblokuoti"
 
-#: gnome-keyring-ask.c:212
+#: gnome-keyring-ask.c:286
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Įveskite raktų rinkinio „%s“ slaptažodį, kad jį atblokuoti"
 
-#: gnome-keyring-ask.c:215
+#: gnome-keyring-ask.c:289
 msgid "Unlock Keyring"
 msgstr "Atblokuoti Raktų Rinkinį"
 
-#: gnome-keyring-ask.c:251
-#, c-format
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr ""
+
+#: gnome-keyring-ask.c:329
+#, fuzzy, c-format
 msgid ""
-"%s wants to create a new keyring called '%s'. You have to choose the "
-"password you want to use for it."
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
 msgstr ""
 "%s nori sukurti naują raktų rinkinį pavadintą „%s“. Jūs turite pasirinkti su "
 "rinkiniu naudojamą slaptažodį."
 
-#: gnome-keyring-ask.c:255
+#: gnome-keyring-ask.c:333
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s nori sukurti naują raktų rinkinį pavadintą „%s“. Jūs turite pasirinkti su "
+"rinkiniu naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s nori sukurti naują raktų rinkinį pavadintą „%s“. Jūs turite pasirinkti su "
+"rinkiniu naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s nori sukurti naują raktų rinkinį pavadintą „%s“. Jūs turite pasirinkti su "
+"rinkiniu naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:359
+#, fuzzy, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s nori sukurti naują raktų rinkinį pavadintą „%s“. Jūs turite pasirinkti su "
+"rinkiniu naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:363
+#, fuzzy
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s nori sukurti naują raktų rinkinį pavadintą „%s“. Jūs turite pasirinkti su "
+"rinkiniu naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
 msgstr "Naujas Rinkinio Slaptažodis"
 
-#: gnome-keyring-ask.c:256
+#: gnome-keyring-ask.c:370
 msgid "Choose password for new keyring"
 msgstr "Pasirinkite naujo raktų rinkinio slaptažodį"
 
-#: gnome-keyring-ask.c:285
-#, c-format
+#: gnome-keyring-ask.c:400
+#, fuzzy, c-format
 msgid ""
-"%s wants to store a password, but there is no default keyring. To create "
-"one, you need to choose the password you wish to use for it."
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
 msgstr ""
 "%s nori išsaugoti slaptažodį, bet nerastas įprastas raktų rinkinys. Norėdami "
 "jį sukurti, Jūs turi nurodyti su standartiniu rinkiniu naudojamą slaptažodį."
 
-#: gnome-keyring-ask.c:289
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"%s nori išsaugoti slaptažodį, bet nerastas įprastas raktų rinkinys. Norėdami "
+"jį sukurti, Jūs turi nurodyti su standartiniu rinkiniu naudojamą slaptažodį."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+#, fuzzy
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"%s nori išsaugoti slaptažodį, bet nerastas įprastas raktų rinkinys. Norėdami "
+"jį sukurti, Jūs turi nurodyti su standartiniu rinkiniu naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
 msgstr "Sukurti Standartinį Raktų Rinkinį"
 
-#: gnome-keyring-ask.c:290
+#: gnome-keyring-ask.c:417
 msgid "Choose password for default keyring"
 msgstr "Pasirinkite įprasto raktų rinkinio slaptažodį"
 
-#: gnome-keyring-ask.c:327
+#: gnome-keyring-ask.c:454
 msgid "Allow application access to keyring?"
 msgstr "Ar leisti programai pasiekti raktų rinkinį?"
 
-#: gnome-keyring-ask.c:328
-#, c-format
-msgid "%s wants to access the password for '%s' in %s."
+#: gnome-keyring-ask.c:457
+#, fuzzy, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
 
-#: gnome-keyring-ask.c:330
+#: gnome-keyring-ask.c:460
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, fuzzy, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
+
+#: gnome-keyring-ask.c:490
+#, fuzzy, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
+
+#: gnome-keyring-ask.c:493
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "%s reikia priėjimo prie „%s“ slaptažodžio tarp %s."
+
+#: gnome-keyring-ask.c:501
 msgid "Allow access"
 msgstr "Leisti priėjimą"
 
-#: gnome-keyring-ask.c:366
+#: gnome-keyring-ask.c:506
+#, fuzzy
+msgid "Allow _Once"
+msgstr "Leisti priėjimą"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr ""
+
+#: gnome-keyring-ask.c:547
 msgid "You must specify the type of request to run\n"
 msgstr "Jūs turite nurodyti vykdomos užklausos tipą\n"
 
-#: gnome-keyring-ask.c:379
+#: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "Nežinomas užklausos tipas\n"
+
+#~ msgid "The application '%s' (%s)"
+#~ msgstr "Programa „%s“ (%s)"
+
+#~ msgid "The application '%s'"
+#~ msgstr "Programa „%s“"
+
+#~ msgid "The application %s"
+#~ msgstr "Programa %s"
+
+#~ msgid "the default keyring"
+#~ msgstr "įprastas raktų rinkinys"
+
+#~ msgid "the keyring '%s'"
+#~ msgstr "raktų rinkinys „%s“"
+
+#~ msgid "an unknown keyring"
+#~ msgstr "nežinomas raktų rinkinys"

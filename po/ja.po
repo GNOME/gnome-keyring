@@ -6,113 +6,294 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
-"POT-Creation-Date: 2004-01-12 08:48+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2003-12-29 10:12+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
-#: gnome-keyring-ask.c:170
-#, c-format
-msgid "The application '%s' (%s)"
-msgstr "アプリケーション '%s' (%s)"
-
-#: gnome-keyring-ask.c:172
-#, c-format
-msgid "The application '%s'"
-msgstr "アプリケーション '%s'"
-
-#: gnome-keyring-ask.c:175
-#, c-format
-msgid "The application %s"
-msgstr "アプリケーション %s"
-
-#: gnome-keyring-ask.c:185
-msgid "the default keyring"
-msgstr "デフォルトのキーリング"
-
-#: gnome-keyring-ask.c:187
-#, c-format
-msgid "the keyring '%s'"
-msgstr "キーリング '%s'"
-
-#: gnome-keyring-ask.c:190
-msgid "an unknown keyring"
-msgstr "不明なキーリング"
-
-#: gnome-keyring-ask.c:206
-#, c-format
-msgid "%s wants access to %s, but it is locked."
+#: gnome-keyring-ask.c:223
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
 msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
 
-#: gnome-keyring-ask.c:210
+#: gnome-keyring-ask.c:227
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, fuzzy, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
+
+#: gnome-keyring-ask.c:268
+#, fuzzy
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
+
+#: gnome-keyring-ask.c:272
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+#, fuzzy
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "%s が %s へアクセスしようとしていますが、ロックされています。"
+
+#: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
 msgstr "デフォルトのキーリングのロックを解除するパスワードを入力して下さい"
 
-#: gnome-keyring-ask.c:212
+#: gnome-keyring-ask.c:286
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "キーリング '%s' のロックを解除するパスワードを入力して下さい"
 
-#: gnome-keyring-ask.c:215
+#: gnome-keyring-ask.c:289
 msgid "Unlock Keyring"
 msgstr "キーリングのロック解除"
 
-#: gnome-keyring-ask.c:251
-#, c-format
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr ""
+
+#: gnome-keyring-ask.c:329
+#, fuzzy, c-format
 msgid ""
-"%s wants to create a new keyring called '%s'. You have to choose the "
-"password you want to use for it."
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
 msgstr ""
 "%s は '%s' という新しいキーリングを生成しようとしています。そのキーリングを使"
 "用するためのパスワードを選択して下さい。"
 
-#: gnome-keyring-ask.c:255
+#: gnome-keyring-ask.c:333
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s は '%s' という新しいキーリングを生成しようとしています。そのキーリングを使"
+"用するためのパスワードを選択して下さい。"
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s は '%s' という新しいキーリングを生成しようとしています。そのキーリングを使"
+"用するためのパスワードを選択して下さい。"
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s は '%s' という新しいキーリングを生成しようとしています。そのキーリングを使"
+"用するためのパスワードを選択して下さい。"
+
+#: gnome-keyring-ask.c:359
+#, fuzzy, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s は '%s' という新しいキーリングを生成しようとしています。そのキーリングを使"
+"用するためのパスワードを選択して下さい。"
+
+#: gnome-keyring-ask.c:363
+#, fuzzy
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"%s は '%s' という新しいキーリングを生成しようとしています。そのキーリングを使"
+"用するためのパスワードを選択して下さい。"
+
+#: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
 msgstr "新しいキーリングのパスワード"
 
-#: gnome-keyring-ask.c:256
+#: gnome-keyring-ask.c:370
 msgid "Choose password for new keyring"
 msgstr "新しいキーリングのパスワードの選択"
 
-#: gnome-keyring-ask.c:285
-#, c-format
+#: gnome-keyring-ask.c:400
+#, fuzzy, c-format
 msgid ""
-"%s wants to store a password, but there is no default keyring. To create "
-"one, you need to choose the password you wish to use for it."
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
 msgstr ""
 "%s はパスワードを保存しようとしていますが、デフォルトのキーリングがありませ"
 "ん。デフォルトのキーリングを生成する場合は、それを使用するためのパスワードを"
 "選択する必要があります。"
 
-#: gnome-keyring-ask.c:289
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"%s はパスワードを保存しようとしていますが、デフォルトのキーリングがありませ"
+"ん。デフォルトのキーリングを生成する場合は、それを使用するためのパスワードを"
+"選択する必要があります。"
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+#, fuzzy
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"%s はパスワードを保存しようとしていますが、デフォルトのキーリングがありませ"
+"ん。デフォルトのキーリングを生成する場合は、それを使用するためのパスワードを"
+"選択する必要があります。"
+
+#: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
 msgstr "デフォルトのキーリングの生成"
 
-#: gnome-keyring-ask.c:290
+#: gnome-keyring-ask.c:417
 msgid "Choose password for default keyring"
 msgstr "デフォルトのキーリングのパスワードの選択"
 
-#: gnome-keyring-ask.c:327
+#: gnome-keyring-ask.c:454
 msgid "Allow application access to keyring?"
 msgstr "アプリケーションにキーリングへのアクセスを許可しますか？"
 
-#: gnome-keyring-ask.c:328
-#, c-format
-msgid "%s wants to access the password for '%s' in %s."
+#: gnome-keyring-ask.c:457
+#, fuzzy, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
 
-#: gnome-keyring-ask.c:330
+#: gnome-keyring-ask.c:460
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, fuzzy, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
+
+#: gnome-keyring-ask.c:490
+#, fuzzy, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
+
+#: gnome-keyring-ask.c:493
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "%1$s は %3$s にある '%2$s' のパスワードにアクセスしようとしています。"
+
+#: gnome-keyring-ask.c:501
 msgid "Allow access"
 msgstr "アクセスの許可"
 
-#: gnome-keyring-ask.c:366
+#: gnome-keyring-ask.c:506
+#, fuzzy
+msgid "Allow _Once"
+msgstr "アクセスの許可"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr ""
+
+#: gnome-keyring-ask.c:547
 msgid "You must specify the type of request to run\n"
 msgstr "実行するリクエストの種類を指定して下さい\n"
 
-#: gnome-keyring-ask.c:379
+#: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "リクエストの種類が不明\n"
+
+#~ msgid "The application '%s' (%s)"
+#~ msgstr "アプリケーション '%s' (%s)"
+
+#~ msgid "The application '%s'"
+#~ msgstr "アプリケーション '%s'"
+
+#~ msgid "The application %s"
+#~ msgstr "アプリケーション %s"
+
+#~ msgid "the default keyring"
+#~ msgstr "デフォルトのキーリング"
+
+#~ msgid "the keyring '%s'"
+#~ msgstr "キーリング '%s'"
+
+#~ msgid "an unknown keyring"
+#~ msgstr "不明なキーリング"
