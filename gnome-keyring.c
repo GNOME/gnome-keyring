@@ -46,6 +46,7 @@ typedef enum {
 	CALLBACK_GET_KEYRING_INFO,
 	CALLBACK_GET_ITEM_INFO,
 	CALLBACK_GET_ATTRIBUTES,
+	CALLBACK_GET_ACL,
 } KeyringCallbackType;
 
 typedef enum {
@@ -179,6 +180,9 @@ op_failed (gpointer data)
 		break;
 	case CALLBACK_GET_ATTRIBUTES:
 		((GnomeKeyringOperationGetAttributesCallback)op->user_callback) (op->result, NULL, op->user_data);
+		break;
+	case CALLBACK_GET_ACL:
+		((GnomeKeyringOperationGetListCallback)op->user_callback) (op->result, NULL, op->user_data);
 		break;
 	}
 
@@ -1266,6 +1270,24 @@ gnome_keyring_get_attributes_reply (GnomeKeyringOperation *op)
 	}
 }
 
+static void
+gnome_keyring_get_acl_reply (GnomeKeyringOperation *op)
+{
+	GnomeKeyringResult result;
+	GnomeKeyringOperationGetListCallback callback;
+	GList *acl;
+
+	callback = op->user_callback;
+	
+	if (!gnome_keyring_proto_decode_get_acl_reply (op->receive_buffer, &result, &acl)) {
+		(*callback) (GNOME_KEYRING_RESULT_IO_ERROR, NULL, op->user_data);
+	} else {
+		(*callback) (result, acl, op->user_data);
+		g_list_free (acl);
+	}
+}
+
+
 gpointer
 gnome_keyring_item_get_attributes (const char                                 *keyring,
 				   guint32                                     id,
@@ -1309,6 +1331,57 @@ gnome_keyring_item_set_attributes (const char                                 *k
 	if (!gnome_keyring_proto_encode_set_attributes (op->send_buffer,
 							keyring, id,
 							attributes)) {
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+	}
+	
+	op->reply_handler = gnome_keyring_standard_reply;
+	
+	return op;
+}
+
+gpointer
+gnome_keyring_item_get_acl (const char                                 *keyring,
+			    guint32                                     id,
+			    GnomeKeyringOperationGetListCallback        callback,
+			    gpointer                                    data,
+			    GDestroyNotify                              destroy_data)
+{
+	GnomeKeyringOperation *op;
+	
+	op = start_operation (callback, CALLBACK_GET_ACL, data, destroy_data);
+	if (op->state == STATE_FAILED) {
+		return op;
+	}
+	
+	if (!gnome_keyring_proto_encode_op_string_int (op->send_buffer,
+						       GNOME_KEYRING_OP_GET_ITEM_ACL,
+						       keyring, id)) {
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+	}
+	
+	op->reply_handler = gnome_keyring_get_acl_reply;
+	
+	return op;
+}
+
+gpointer
+gnome_keyring_item_set_acl (const char                                 *keyring,
+			    guint32                                     id,
+			    GList                                      *acl,
+			    GnomeKeyringOperationDoneCallback           callback,
+			    gpointer                                    data,
+			    GDestroyNotify                              destroy_data)
+{
+	GnomeKeyringOperation *op;
+	
+	op = start_operation (callback, CALLBACK_DONE, data, destroy_data);
+	if (op->state == STATE_FAILED) {
+		return op;
+	}
+	
+	if (!gnome_keyring_proto_encode_set_acl (op->send_buffer,
+						 keyring, id,
+						 acl)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 	
@@ -1368,6 +1441,47 @@ time_t
 gnome_keyring_item_info_get_ctime (GnomeKeyringItemInfo *item_info)
 {
 	return item_info->ctime;
+}
+
+char *
+gnome_keyring_item_ac_get_display_name (GnomeKeyringAccessControl *ac)
+{
+	return g_strdup (ac->application->display_name);
+}
+
+void
+gnome_keyring_item_ac_set_display_name (GnomeKeyringAccessControl *ac,
+					const char                *value)
+{
+	g_free (ac->application->display_name);
+	ac->application->display_name = g_strdup (value);
+}
+
+char *
+gnome_keyring_item_ac_get_path_name (GnomeKeyringAccessControl *ac)
+{
+	return g_strdup (ac->application->pathname);
+}
+
+void
+gnome_keyring_item_ac_set_path_name (GnomeKeyringAccessControl *ac,
+				     const char                *value)
+{
+	g_free (ac->application->pathname);
+	ac->application->pathname = g_strdup (value);
+}
+
+GnomeKeyringAccessType
+gnome_keyring_item_ac_get_access_type (GnomeKeyringAccessControl *ac)
+{
+	return ac->types_allowed;
+}
+
+void
+gnome_keyring_item_ac_set_access_type (GnomeKeyringAccessControl *ac,
+				       const GnomeKeyringAccessType value)
+{
+	ac->types_allowed = value;
 }
 
 

@@ -45,6 +45,8 @@ typedef enum {
 	GNOME_KEYRING_OP_SET_ITEM_INFO,
 	GNOME_KEYRING_OP_GET_ITEM_ATTRIBUTES,
 	GNOME_KEYRING_OP_SET_ITEM_ATTRIBUTES,
+	GNOME_KEYRING_OP_GET_ITEM_ACL,
+	GNOME_KEYRING_OP_SET_ITEM_ACL,
 
 	/* Add new ops here */
 	
@@ -90,6 +92,8 @@ gboolean gnome_keyring_proto_get_utf8_string    (GString                    *buf
 						 char                      **str_ret);
 gboolean gnome_keyring_proto_add_attribute_list (GString                    *buffer,
 						 GnomeKeyringAttributeList  *attributes);
+gboolean gnome_keyring_proto_add_acl            (GString                    *buffer,
+						 GList                      *acl);
 
 
 /* marshallers */
@@ -120,6 +124,10 @@ gboolean gnome_keyring_proto_encode_set_attributes   (GString                   
 						      const char                *keyring,
 						      guint32                    id,
 						      GnomeKeyringAttributeList *attributes);
+gboolean gnome_keyring_proto_encode_set_acl          (GString                   *buffer,
+						      const char                *keyring,
+						      guint32                    id,
+						      GList 			*acl);
 gboolean gnome_keyring_proto_encode_set_item_info    (GString                   *buffer,
 						      const char                *keyring,
 						      guint32                    id,
@@ -138,6 +146,10 @@ gboolean gnome_keyring_proto_decode_attribute_list           (GString           
 							      gsize                       offset,
 							      gsize                      *next_offset,
 							      GnomeKeyringAttributeList **attributes_out);
+gboolean gnome_keyring_proto_decode_acl                      (GString                    *buffer,
+							      gsize                       offset,
+							      gsize                      *next_offset,
+							      GList                     **attributes_out);
 gboolean gnome_keyring_proto_decode_result_reply             (GString                    *buffer,
 							      GnomeKeyringResult         *result);
 gboolean gnome_keyring_proto_decode_result_string_reply      (GString                    *buffer,
@@ -166,6 +178,9 @@ gboolean gnome_keyring_proto_decode_find_reply               (GString           
 gboolean gnome_keyring_proto_decode_get_attributes_reply     (GString                    *buffer,
 							      GnomeKeyringResult         *result,
 							      GnomeKeyringAttributeList **attributes);
+gboolean gnome_keyring_proto_decode_get_acl_reply            (GString                    *buffer,
+							      GnomeKeyringResult         *result,
+							      GList                     **acl);
 gboolean gnome_keyring_proto_decode_get_item_info_reply      (GString                    *buffer,
 							      GnomeKeyringResult         *result,
 							      GnomeKeyringItemInfo      **info);
@@ -195,6 +210,11 @@ gboolean gnome_keyring_proto_decode_set_attributes           (GString           
 							      char                      **keyring,
 							      guint32                    *item_id,
 							      GnomeKeyringAttributeList **attributes);
+gboolean gnome_keyring_proto_decode_set_acl                  (GString                    *buffer,
+							      char                      **keyring,
+							      guint32                    *item_id,
+							      GList                     **acl);
+
 
    
 #endif /* GNOME_KEYRING_PROTO_H */

@@ -31,12 +31,6 @@ struct GnomeKeyringApplicationRef {
 	char *pathname;
 };
 
-typedef enum {
-	GNOME_KEYRING_ACCESS_READ = 1<<0,
-	GNOME_KEYRING_ACCESS_WRITE = 1<<1,
-	GNOME_KEYRING_ACCESS_REMOVE = 1<<2
-} GnomeKeyringAccessType;
-
 struct GnomeKeyringAccessControl {
 	GnomeKeyringApplicationRef *application; /* null for all */
 	GnomeKeyringAccessType types_allowed;

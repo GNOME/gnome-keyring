@@ -125,6 +125,9 @@ void                       gnome_keyring_access_request_list_free (GList        
 void                       gnome_keyring_access_request_free      (GnomeKeyringAccessRequest *access_request);
 GnomeKeyringAccessRequest *gnome_keyring_access_request_copy      (GnomeKeyringAccessRequest *access_request);
 
+GList *                     gnome_keyring_acl_copy (GList *list);
+
+
 GnomeKeyringApplicationRef *gnome_keyring_application_ref_new_from_pid (pid_t                             pid);
 GnomeKeyringApplicationRef *gnome_keyring_application_ref_copy         (const GnomeKeyringApplicationRef *app);
 void                        gnome_keyring_application_ref_free         (GnomeKeyringApplicationRef       *app);
@@ -141,6 +144,7 @@ void     update_keyrings_from_disk (void);
 void     save_keyring_to_disk      (GnomeKeyring *keyring);
 gboolean update_keyring_from_disk  (GnomeKeyring *keyring,
 				    gboolean      force_reload);
+gboolean remove_keyring_file_from_disk  (GnomeKeyring *keyring);
 
 GnomeKeyringAttributeList *gnome_keyring_attributes_hash    (GnomeKeyringAttributeList        *attributes);
 GnomeKeyringAccessControl *gnome_keyring_access_control_new (const GnomeKeyringApplicationRef *application,

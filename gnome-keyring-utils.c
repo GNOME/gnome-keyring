@@ -159,3 +159,83 @@ gnome_keyring_item_info_copy (GnomeKeyringItemInfo *item_info)
 	return copy;
 }
 
+GnomeKeyringApplicationRef *
+gnome_keyring_application_ref_new (void)
+{
+	GnomeKeyringApplicationRef *app_ref;
+
+	app_ref = g_new0 (GnomeKeyringApplicationRef, 1);
+
+	return app_ref;
+}
+
+void
+gnome_keyring_application_ref_free (GnomeKeyringApplicationRef *app_ref)
+{
+	g_free (app_ref->display_name);
+	g_free (app_ref->pathname);
+	g_free (app_ref);
+}
+
+GnomeKeyringApplicationRef *
+gnome_keyring_application_ref_copy (const GnomeKeyringApplicationRef *app)
+{
+	GnomeKeyringApplicationRef *copy;
+
+	copy = g_new (GnomeKeyringApplicationRef, 1);
+	copy->display_name = g_strdup (app->display_name);
+	copy->pathname = g_strdup (app->pathname);
+
+	return copy;
+}
+
+GnomeKeyringAccessControl *
+gnome_keyring_access_control_new (const GnomeKeyringApplicationRef *application,
+                                  GnomeKeyringAccessType types_allowed)
+{
+	GnomeKeyringAccessControl *ac;
+	ac = g_new (GnomeKeyringAccessControl, 1);
+
+	ac->application = gnome_keyring_application_ref_copy (application);
+	ac->types_allowed = types_allowed;
+
+	return ac;
+}
+
+void
+gnome_keyring_access_control_free (GnomeKeyringAccessControl *ac)
+{
+	gnome_keyring_application_ref_free (ac->application);
+	g_free (ac);
+}
+
+GnomeKeyringAccessControl *
+gnome_keyring_access_control_copy (GnomeKeyringAccessControl *ac)
+{
+	GnomeKeyringAccessControl *ret;
+
+	ret = gnome_keyring_access_control_new (gnome_keyring_application_ref_copy (ac->application), ac->types_allowed);
+
+	return ret;
+}
+
+GList *
+gnome_keyring_acl_copy (GList *list)
+{
+	GList *ret, *l;
+
+	ret = g_list_copy (list);
+	for (l = ret; l != NULL; l = l->next) {
+		l->data = gnome_keyring_access_control_copy (l->data);
+	}
+
+	return ret;
+}
+
+void
+gnome_keyring_acl_free (GList *acl)
+{
+	g_list_foreach (acl, (GFunc)gnome_keyring_access_control_free, NULL);
+	g_list_free (acl);
+}
+

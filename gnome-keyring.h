@@ -64,6 +64,12 @@ typedef struct GnomeKeyringAccessControl GnomeKeyringAccessControl;
 typedef struct GnomeKeyringApplicationRef GnomeKeyringApplicationRef;
 typedef GArray GnomeKeyringAttributeList;
 
+typedef enum {
+	GNOME_KEYRING_ACCESS_READ = 1<<0,
+	GNOME_KEYRING_ACCESS_WRITE = 1<<1,
+	GNOME_KEYRING_ACCESS_REMOVE = 1<<2
+} GnomeKeyringAccessType;
+
 typedef struct GnomeKeyringInfo GnomeKeyringInfo;
 typedef struct GnomeKeyringItemInfo GnomeKeyringItemInfo;
 
@@ -247,6 +253,18 @@ gpointer           gnome_keyring_item_set_attributes (const char                
 						      GnomeKeyringOperationDoneCallback           callback,
 						      gpointer                                    data,
 						      GDestroyNotify                              destroy_data);
+gpointer           gnome_keyring_item_get_acl        (const char                                 *keyring,
+						      guint32                                     id,
+						      GnomeKeyringOperationGetListCallback        callback,
+						      gpointer                                    data,
+						      GDestroyNotify                              destroy_data);
+gpointer           gnome_keyring_item_set_acl        (const char                                 *keyring,
+						      guint32                                     id,
+						      GList                                      *acl,
+						      GnomeKeyringOperationDoneCallback           callback,
+						      gpointer                                    data,
+						      GDestroyNotify                              destroy_data);
+
 
 
 void                  gnome_keyring_item_info_free             (GnomeKeyringItemInfo *item_info);
@@ -264,8 +282,32 @@ void                  gnome_keyring_item_info_set_display_name (GnomeKeyringItem
 time_t                gnome_keyring_item_info_get_mtime        (GnomeKeyringItemInfo *item_info);
 time_t                gnome_keyring_item_info_get_ctime        (GnomeKeyringItemInfo *item_info);
 
+GnomeKeyringApplicationRef * gnome_keyring_application_ref_new          (void);
+GnomeKeyringApplicationRef * gnome_keyring_application_ref_copy         (const GnomeKeyringApplicationRef *app);
+void                         gnome_keyring_application_ref_free         (GnomeKeyringApplicationRef       *app);
+
+GnomeKeyringAccessControl *  gnome_keyring_access_control_new  (const GnomeKeyringApplicationRef *application,
+                                  			       GnomeKeyringAccessType             types_allowed);
+GnomeKeyringAccessControl *  gnome_keyring_access_control_copy (GnomeKeyringAccessControl        *ac);
 
 
+void    gnome_keyring_access_control_free (GnomeKeyringAccessControl *ac);
+GList * gnome_keyring_acl_copy            (GList                     *list);
+void    gnome_keyring_acl_free            (GList                     *acl);
+
+
+char *                gnome_keyring_item_ac_get_display_name   (GnomeKeyringAccessControl *ac);
+void                  gnome_keyring_item_ac_set_display_name   (GnomeKeyringAccessControl *ac,
+								const char           *value);
+
+char *                gnome_keyring_item_ac_get_path_name      (GnomeKeyringAccessControl *ac);
+void                  gnome_keyring_item_ac_set_path_name      (GnomeKeyringAccessControl *ac,
+							        const char           *value);
+
+
+GnomeKeyringAccessType gnome_keyring_item_ac_get_access_type   (GnomeKeyringAccessControl *ac);
+void                   gnome_keyring_item_ac_set_access_type   (GnomeKeyringAccessControl *ac,
+							        const GnomeKeyringAccessType value);
 
 /* Specialized Helpers for network passwords items */
 

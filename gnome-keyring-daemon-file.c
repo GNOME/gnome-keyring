@@ -359,6 +359,19 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 	return TRUE;
 }
 
+gboolean 
+remove_keyring_file_from_disk (GnomeKeyring *keyring)
+{
+	int res;
+
+	g_assert (keyring->file != NULL);
+	res = unlink (keyring->file);
+		
+	return (res == 0);
+}
+
+
+
 static int
 write_all (int fd, const char *buf, size_t len)
 {
