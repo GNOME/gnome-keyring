@@ -1,3 +1,9 @@
+2003-12-06  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon.c (main):
+	Spawn in background unless -f specified
+	clean up socket dir on exit
+
 2003-12-05  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

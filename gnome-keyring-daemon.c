@@ -32,6 +32,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <glib.h>
 
 #include "gnome-keyring.h"
@@ -2457,11 +2458,22 @@ test_files (void)
 
 #endif
 
+static void
+cleanup_handler (int sig)
+{
+        cleanup_socket_dir ();
+        _exit (2);
+}
+
 int
 main (int argc, char *argv[])
 {
 	const char *path;
-
+	pid_t pid;
+	gboolean foreground;
+	int i;
+	
+	
 	if (!create_master_socket (&path)) {
 		exit (1);
 	}
@@ -2471,11 +2483,68 @@ main (int argc, char *argv[])
 	if (g_getenv ("DISPLAY") != NULL) {
 		have_display = TRUE;
 	}
+
+	foreground = FALSE;
+
+	if (argc > 1) {
+		for (i = 1; i < argc; i++) {
+			if (strcmp (argv[i], "-f") == 0) {
+				foreground = TRUE;
+			}
+		}
+	}
+
+	if (!foreground) {
+		pid = fork ();
+		if (pid == 0) {
+			/* intermediated child */
+
+			pid = fork ();
+
+			if (pid != 0) {
+				/* still intermediated child */
+				
+				/* This process just exits, so that the
+				 * final child will inherit init as parent
+				 * to avoid zombies
+				 */
+				if (pid == -1) {
+					exit (1);
+				} else {
+					exit (0);
+				}
+			}
+			/* final child continues here */
+		} else {
+			int status;
+			/* Initial process, waits for intermediate child */
+			if (pid == -1) {
+				exit (1);
+			}
+			waitpid (pid, &status, 0);
+			if (status != 0) {
+				exit (status);
+			}
+
+			g_print ("GNOME_KEYCHAIN_SOCKET=%s\n", path);
+
+			exit (0);
+		}
+	} else {
+		g_print ("GNOME_KEYCHAIN_SOCKET=%s\n", path);
+	}
+
+	/* Daemon process continues here */
+
+        if (!foreground) {
+                signal (SIGINT, SIG_IGN);
+	} else {
+		signal (SIGINT, cleanup_handler);
+	}
+	signal (SIGPIPE, SIG_IGN);
+        signal (SIGHUP, cleanup_handler);
+        signal (SIGTERM, cleanup_handler);
 	
-	/* TODO: fork here and print env */
-
-	g_print ("GNOME_KEYCHAIN_SOCKET=%s\n", path);
-
 	session_keyring = gnome_keyring_new ("session", NULL);
 
 	default_keyring = NULL;
