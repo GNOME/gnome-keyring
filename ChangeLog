@@ -1,5 +1,10 @@
 2003-12-04  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring.c (find_network_password_callback):
+	Pass the right user data
+	
+2003-12-04  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-proto.c:
 	(gnome_keyring_proto_decode_result_integer_reply):
 	Allow NULL integer

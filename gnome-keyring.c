@@ -1473,7 +1473,7 @@ find_network_password_callback (GnomeKeyringResult result,
 	if (result == GNOME_KEYRING_RESULT_OK) {
 		data_list = found_list_to_nework_password_list (list);
 	}
-	info->callback (result, data_list, data);
+	info->callback (result, data_list, info->data);
 	gnome_keyring_network_password_list_free (data_list);
 	return;
 }
