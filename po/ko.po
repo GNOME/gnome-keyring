@@ -44,7 +44,8 @@ msgstr ""
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "프로그램 '%s'에서 기본 키링에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
+msgstr ""
+"프로그램 '%s'에서 기본 키링에 접근하려 합니다. 하지만 키링이 잠겨 있습니다"
 
 #: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format

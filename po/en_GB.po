@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-20 15:40-0500\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-03-20 15:42-0500\n"
 "Last-Translator: Gareth Owen <gowen72@yahoo.comg>\n"
 "Language-Team: \n"
@@ -51,7 +51,8 @@ msgstr ""
 #: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+"The application '%s' wants access to the keyring '%s', but it is locked"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262

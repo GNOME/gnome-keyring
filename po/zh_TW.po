@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-20 11:51+0800\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-03-20 11:55+0800\n"
 "Last-Translator: Woodman Tuen <woodman@culturecom.com.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -27,6 +27,7 @@ msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "程式 '%s' (%s) 要求存取金鑰環 '%s'，但該金鑰環已被鎖上"
 
+#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:232
 #, c-format
 msgid ""
@@ -45,6 +46,7 @@ msgstr "程式 '%s' 要求存取預設的金鑰環，但該金鑰環已被鎖上
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "程式 '%s' 要求存取金鑰環 '%s'，但該金鑰環已被鎖上"
 
+#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
 msgid ""
@@ -62,6 +64,7 @@ msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "一個不明的程式要求存取金鑰環 '%s'，但該金鑰環已被鎖上"
 
+#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
@@ -158,6 +161,7 @@ msgstr ""
 "程式 %s 要求儲存一個密碼，但是這裡並沒有預設的金鑰環。要新增一個預設的金鑰"
 "環，您需要輸入一個密碼。"
 
+#. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:412
 msgid ""
 "An unknown application wants to store a password, but there is no default "
