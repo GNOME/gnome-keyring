@@ -1,3 +1,7 @@
+2003-12-15  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added 'ja' Japanese into ALL_LINGUAS.
+
 2003-12-10  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring.c (operation_io):
