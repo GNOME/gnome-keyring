@@ -42,6 +42,8 @@ typedef struct {
 	gboolean locked;
 
 	/* On disk data: */
+	guchar salt[8];
+	guint32 hash_iterations;
 	   
 	char *keyring_name;
 	GList *items;

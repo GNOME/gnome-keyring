@@ -1,3 +1,20 @@
+2003-12-05  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am:
+	* sha256.[ch]:
+	* beecrypt_compat.h:
+	Added sha256 from beecrypt
+	
+	* file-format.txt:
+	* gnome-keyring-daemon-file.c:
+	* gnome-keyring-daemon.[ch]:
+	Use sha256 to get key and iv for aes crypto
+	Add salt and hash rounds count.
+	Warning: This changes the file format.
+	
+	* gnome-keyring-proto.[ch]:
+	New function gnome_keyring_proto_get_bytes
+
 2003-12-04  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring.c (operation_io):

@@ -19,6 +19,8 @@ time_t ctime
 time_t mtime
 guint32 flags (flag 0 == lock_on_idle)
 guint32 lock_timeout
+guint32 hash_iterations
+byte[8] salt
 guint32 reserved[4]
 
 hashed items:

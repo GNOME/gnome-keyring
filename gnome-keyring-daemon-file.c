@@ -35,30 +35,71 @@
 #include "gnome-keyring-daemon.h"
 #include "gnome-keyring-proto.h"
 #include "md5.h"
+#include "sha256.h"
 #include "aes.h"
 
 time_t keyring_dir_mtime = 0;
 
-static gboolean
-encrypt_buffer (GString *buffer, const char *password)
+static void
+generate_key (const char *password,
+	      guchar salt[8],
+	      int iterations,
+	      char key[16],
+	      char iv[16])
 {
-        guchar digest[16];
+	sha256Param sha;
+	guchar digest[32];
+
+	g_assert (iterations >= 1);
+
+	sha256Reset (&sha);
+	sha256Update (&sha, password, strlen (password));
+	sha256Update (&sha, salt, 8);
+	sha256Digest (&sha, digest);
+	iterations--;
+
+	while (iterations != 0) {
+		sha256Reset (&sha);
+		sha256Update (&sha, digest, 32);
+		sha256Digest (&sha, digest);
+		iterations--;
+	}
+
+	memcpy (key, digest, 16);
+	memcpy (iv, digest+16, 16);
+}
+
+static gboolean
+encrypt_buffer (GString *buffer,
+		const char *password,
+		guchar salt[8],
+		int iterations)
+{
+        guchar key[16];
+        guchar iv[16];
 	aesParam param;
 	guchar dst[16];
+	guchar src[16];
 	size_t pos;
+	int i;
 
 	g_assert (buffer->len % 16 == 0);
 
-	gnome_keyring_md5_string (password, digest);
-
-	if (aesSetup(&param, digest, 128, ENCRYPT)) {
+	generate_key (password, salt, iterations,
+		      key, iv);
+	
+	if (aesSetup(&param, key, 128, ENCRYPT)) {
 		return FALSE;
 	}
 	for (pos = 0; pos < buffer->len; pos += 16) {
-		if (aesEncrypt (&param, (guint32*) dst, (guint32*) (buffer->str + pos))) {
-			return FALSE;
+		for (i = 0; i < 16; i++) {
+			src[i] = iv[i] ^ (guchar)buffer->str[pos+i];
 		}
 		
+		if (aesEncrypt (&param, (guint32*) dst, (guint32*) src)) {
+			return FALSE;
+		}
+		memcpy (iv, dst, 16);
 		memcpy (buffer->str + pos, dst, 16);
 	}
 
@@ -66,28 +107,37 @@ encrypt_buffer (GString *buffer, const char *password)
 }
 
 static gboolean
-decrypt_buffer (GString *buffer, const char *password)
+decrypt_buffer (GString *buffer,
+		const char *password,
+		guchar salt[8],
+		int iterations)
 {
-        guchar digest[16];
+        guchar key[16];
+        guchar iv[16];
 	aesParam param;
 	guchar dst[16];
 	size_t pos;
-
-	gnome_keyring_md5_string (password, digest);
-
-	if (aesSetup(&param, digest, 128, DECRYPT)) {
-		return FALSE;
-	}
+	int i;
 
 	g_assert (buffer->len % 16 == 0);
 
+	generate_key (password, salt, iterations,
+		      key, iv);
+	
+	if (aesSetup(&param, key, 128, DECRYPT)) {
+		return FALSE;
+	}
 	for (pos = 0; pos < buffer->len; pos += 16) {
 		if (aesDecrypt (&param, (guint32*) dst, (guint32*) (buffer->str + pos))) {
 			return FALSE;
 		}
+		for (i = 0; i < 16; i++) {
+			dst[i] = iv[i] ^ dst[i];
+		}
+		memcpy (iv, buffer->str + pos, 16);
 		memcpy (buffer->str + pos, dst, 16);
 	}
-	
+
 	return TRUE;
 }
 
@@ -253,6 +303,8 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 	}
 	gnome_keyring_proto_add_uint32 (buffer, flags);
 	gnome_keyring_proto_add_uint32 (buffer, keyring->lock_timeout);
+	gnome_keyring_proto_add_uint32 (buffer, keyring->hash_iterations);
+	g_string_append_len (buffer, keyring->salt, 8);
 
 	/* Reserved: */
 	for (i = 0; i < 4; i++) {
@@ -296,7 +348,7 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 	gnome_keyring_md5_final (digest, &md5_context);
 	memcpy (to_encrypt->str, digest, 16);
 	
-	if (!encrypt_buffer (to_encrypt, keyring->password)) {
+	if (!encrypt_buffer (to_encrypt, keyring->password, keyring->salt, keyring->hash_iterations)) {
 		g_string_free (to_encrypt, TRUE);
 		return FALSE;
 	}
@@ -471,6 +523,8 @@ update_keyring_from_data (GnomeKeyring *keyring, GString *buffer)
 	guint32 tmp;
 	guint32 num_items;
 	guint32 crypto_size;
+	guint32 hash_iterations;
+	guchar salt[8];
 	ItemInfo *items;
 	GString to_decrypt;
 	gboolean locked;
@@ -515,6 +569,13 @@ update_keyring_from_data (GnomeKeyring *keyring, GString *buffer)
 	if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &lock_timeout)) {
 		goto bail;
 	}
+	if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &hash_iterations)) {
+		goto bail;
+	}
+	if (!gnome_keyring_proto_get_bytes (buffer, offset, &offset, salt, 8)) {
+		goto bail;
+	}
+	
 	for (i = 0; i < 4; i++) {
 		if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &tmp)) {
 			goto bail;
@@ -559,7 +620,7 @@ update_keyring_from_data (GnomeKeyring *keyring, GString *buffer)
 
 	locked = TRUE;
 	if (keyring->password != NULL) {
-		if (!decrypt_buffer (&to_decrypt, keyring->password)) {
+		if (!decrypt_buffer (&to_decrypt, keyring->password, salt, hash_iterations)) {
 			goto bail;
 		}
 		if (!verify_decrypted_buffer (&to_decrypt)) {
@@ -625,7 +686,8 @@ update_keyring_from_data (GnomeKeyring *keyring, GString *buffer)
 	keyring->ctime = ctime;
 	keyring->lock_on_idle = !!(flags & LOCK_ON_IDLE_FLAG);
 	keyring->lock_timeout = lock_timeout;
-
+	keyring->hash_iterations = hash_iterations;
+	memcpy (keyring->salt, salt, 8);
 
 	old_items = keyring->items;
 	keyring->items = NULL;

@@ -113,6 +113,35 @@ gnome_keyring_free (GnomeKeyring *keyring)
 	g_free (keyring);
 }
 
+static void
+init_salt (guchar salt[8])
+{
+	gboolean got_random;
+	int i;
+
+	got_random = FALSE;
+#ifdef __linux__
+	{
+		int fd;
+
+		fd = open ("/dev/random", O_RDONLY);
+		if (fd != -1) {
+			if (read (fd, salt, 8) == 8) {
+				got_random = TRUE;
+			}
+			close (fd);
+		}
+		
+	}
+#endif
+	if (!got_random) {
+		for (i=0; i < 8; i++) {
+			salt[i] = (int) (256.0*rand()/(RAND_MAX+1.0));
+		}
+	}
+	
+}
+
 GnomeKeyring *
 gnome_keyring_new (const char *name, const char *path)
 {
@@ -128,7 +157,10 @@ gnome_keyring_new (const char *name, const char *path)
 	/* Default values: */
 	keyring->lock_on_idle = FALSE;
 	keyring->lock_timeout = 0;
-	
+
+	keyring->hash_iterations = 1000 + (int) (1000.0*rand()/(RAND_MAX+1.0));
+	init_salt (keyring->salt);
+		
 	keyrings = g_list_prepend (keyrings, keyring);
 	
 	return keyring;
@@ -2434,6 +2466,8 @@ main (int argc, char *argv[])
 		exit (1);
 	}
 
+	srand (time (NULL));
+	
 	if (g_getenv ("DISPLAY") != NULL) {
 		have_display = TRUE;
 	}

@@ -15,7 +15,9 @@
 #define MP_WORDS_TO_BYTES(x)   ((x) << 2)
 #define MP_BITS_TO_WORDS(x)    ((x) >> 5) 
 #define mpmove(size, dst, src) memmove(dst, src, MP_WORDS_TO_BYTES(size))
-     
+
+#define BEECRYPTAPI
+
 typedef guchar byte;
 typedef guint32 mpw;
 

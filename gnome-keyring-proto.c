@@ -159,6 +159,23 @@ gnome_keyring_proto_add_utf8_string (GString *buffer, const char *str)
 	return 	gnome_keyring_proto_add_string (buffer, str, len);
 }
 
+gboolean
+gnome_keyring_proto_get_bytes (GString *buffer,
+			       gsize offset,
+			       gsize *next_offset,
+			       char *out, gsize n_bytes)
+{
+	if (buffer->len < n_bytes ||
+	    offset > buffer->len - n_bytes) {
+		return FALSE;
+	}
+
+	memcpy (out, buffer->str + offset, n_bytes);
+	*next_offset = offset + n_bytes;
+	
+	return TRUE;
+}
+
 
 static gboolean
 gnome_keyring_proto_get_string (GString *buffer,
