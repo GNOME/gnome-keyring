@@ -1,5 +1,16 @@
 2003-12-05  Alexander Larsson  <alexl@redhat.com>
 
+	* TODO:
+	update
+	* gnome-keyring-daemon.c: (op_find_execute):
+	fix typo
+	
+	* test.c: (print_attributes), (find_items_cb),
+	(print_attributes_cb), (show_item):
+	better find test
+
+2003-12-05  Alexander Larsson  <alexl@redhat.com>
+
 	* Makefile.am:
 	* sha256.[ch]:
 	* beecrypt_compat.h:

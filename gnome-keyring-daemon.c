@@ -1815,7 +1815,7 @@ op_find_execute (GString *packet,
 				break;
 			}
 			if (!gnome_keyring_proto_add_attribute_list (result,
-								     attributes)) {
+								     item->attributes)) {
 				return_val = FALSE;
 				break;
 			}

@@ -5,6 +5,26 @@
 static GMainLoop *loop = NULL;
 
 static void
+print_attributes (GnomeKeyringAttributeList *attributes)
+{
+	GnomeKeyringAttribute *array;
+	int i;
+	
+	array = (GnomeKeyringAttribute *)attributes->data;
+	g_print (" Attributes:\n");
+	for (i = 0; i < attributes->len; i++) {
+		if (array[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+			g_print ("  %s = '%s'\n", array[i].name, array[i].value.string);
+		} else if (array[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32) {
+			g_print ("  %s = %u\n", array[i].name, array[i].value.integer);
+		} else {
+			g_print ("  %s = ** unsupported attribute type **\n", array[i].name);
+		}
+	}
+}
+
+
+static void
 ok_cb  (GnomeKeyringResult result,
 	gpointer           data)
 {
@@ -46,7 +66,7 @@ find_items_cb (GnomeKeyringResult result,
 		GnomeKeyringFound *found = found_items->data;
 		
 		g_print ("Found item: keyring=%s, id=%d, secret='%s'\n", found->keyring, found->item_id, found->secret); 
-		
+		print_attributes (found->attributes);
 	}
 	
 	g_main_loop_quit (loop); 
@@ -120,32 +140,18 @@ show_item_cb (GnomeKeyringResult result,
 }
 
 static void
-print_attributes (GnomeKeyringResult result,
+print_attributes_cb (GnomeKeyringResult result,
 		  GnomeKeyringAttributeList *attributes,
 		  gpointer           data)
 {
-	GnomeKeyringAttribute *array;
-	int i;
-	
 	if (result != GNOME_KEYRING_RESULT_OK) {
 		g_print ("error getting item attributes: %d\n", result);
 	} else {
-		array = (GnomeKeyringAttribute *)attributes->data;
-		g_print (" Attributes:\n");
-		for (i = 0; i < attributes->len; i++) {
-			if (array[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
-				g_print ("  %s = '%s'\n", array[i].name, array[i].value.string);
-			} else if (array[i].type == GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32) {
-				g_print ("  %s = %u\n", array[i].name, array[i].value.integer);
-			} else {
-				g_print ("  %s = ** unsupported attribute type **\n", array[i].name);
-			}
-		}
+		print_attributes (attributes);
 	}
-	
+
 	g_main_loop_quit (loop);
 }
-
 
 static void
 show_item (char *keyring, guint32 item_id)
@@ -154,7 +160,7 @@ show_item (char *keyring, guint32 item_id)
 				     show_item_cb, NULL, NULL);
 	g_main_loop_run (loop);
 	gnome_keyring_item_get_attributes (keyring, item_id,
-					   print_attributes, NULL, NULL);
+					   print_attributes_cb, NULL, NULL);
 	g_main_loop_run (loop);
 }
 

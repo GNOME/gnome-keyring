@@ -1,3 +1,9 @@
+file format fix:
+ hash whole attibname + value
+ don't store hash to verify decrypt. Instead check attribute hashes.
+	
+set daemon chmod a-r or similar (pctrl)
+
 keyring acls?
 
 double fork in main
