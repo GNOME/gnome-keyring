@@ -204,6 +204,8 @@ ask_for_keyring_password (void)
 	keyring = get_keyring_string ();
 
 	message = g_strdup_printf (_("%s wants access to %s, but it is locked."), app, keyring);
+	g_free(app);
+	g_free(keyring);
 
 	if (env_keyring_name == NULL ||
 	    strcmp (env_keyring_name, "default") == 0) {
@@ -251,6 +253,7 @@ ask_for_new_keyring_password (void)
 	message = g_strdup_printf (_("%s wants to create a new keyring called '%s'. "
 				     "You have to choose the password you want to use for it."),
 				   app, keyring);
+	g_free(app);
 
 	response = run_dialog (_("New Keyring Password"),
 			       _("Choose password for new keyring"),
@@ -285,6 +288,7 @@ ask_for_default_keyring (void)
 	message = g_strdup_printf (_("%s wants to store a password, but there is no default keyring. "
 				     "To create one, you need to choose the password you wish to use for it."),
 				   app);
+	g_free(app);
 
 	response = run_dialog (_("Create Default Keyring"),
 			       _("Choose password for default keyring"),
@@ -327,6 +331,9 @@ ask_for_item_read_write_acccess (void)
 	primary = _("Allow application access to keyring?");
 	secondary = g_strdup_printf (_("%s wants to access the password for '%s' in %s."),
 				     app, item, keyring);
+	g_free(app);
+	g_free(keyring);
+
 	response = run_dialog (_("Allow access"),
 			       primary, secondary,
 			       FALSE, NULL,

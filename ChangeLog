@@ -1,3 +1,9 @@
+2004-01-13  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-ask.c:
+	Fix some leaks.
+	Patch from tom@aliacom.fr.
+
 2004-01-12  Žygimantas Beručka  <uid0@tuxfamily.org>
 
 	* configure.in: Added "lt" (Lithuanian) to ALL_LINGUAS.
