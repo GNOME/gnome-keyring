@@ -1,3 +1,8 @@
+2003-12-10  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring.c (operation_io):
+	Correct assertion
+
 2003-12-09  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-daemon-io.c:

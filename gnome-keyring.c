@@ -362,7 +362,7 @@ operation_io (GIOChannel  *io_channel,
 				schedule_op_failed (op, GNOME_KEYRING_RESULT_IO_ERROR);
 			}
 		
-			g_assert (op->receive_pos < packet_size);
+			g_assert (op->receive_pos <= packet_size);
 			g_string_set_size (op->receive_buffer, packet_size);
 
 			res = read (op->socket, op->receive_buffer->str + op->receive_pos,
