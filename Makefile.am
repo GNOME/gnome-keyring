@@ -1,7 +1,7 @@
 SUBDIRS = \
 	po
 
-libgnomekeyringincludedir = $(includedir)/gnome-keyring-1.0/
+libgnomekeyringincludedir = $(includedir)/gnome-keyring-1/
 
 bin_PROGRAMS= \
 	gnome-keyring-daemon \
@@ -80,7 +80,7 @@ test_keyring_LDADD = \
 	libgnome-keyring.la
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = gnome-keyring-1.0.pc
+pkgconfig_DATA = gnome-keyring-1.pc
 
 EXTRA_DIST = \
 	file-format.txt

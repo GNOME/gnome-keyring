@@ -1,5 +1,13 @@
 2003-12-04  Alexander Larsson  <alexl@redhat.com>
 
+	* configure.in: 
+	* Makefile.am (libgnomekeyringincludedir): 
+	* gnome-keyring-1.0.pc.in: 
+	* gnome-keyring-1.pc.in:
+	1.0 -> 1
+
+2003-12-04  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring.c (find_network_password_callback):
 	Pass the right user data
 	
