@@ -1,3 +1,8 @@
+2005-01-11  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release
+
 2004-11-26  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-daemon.c: (lifetime_slave_pipe_io), (main):
