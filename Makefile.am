@@ -95,5 +95,6 @@ pkgconfig_DATA = gnome-keyring-1.pc
 
 EXTRA_DIST = \
 	$(LIBADD_SOURCE) \
-	file-format.txt
+	file-format.txt  \
+	gnome-keyring-1-uninstalled.pc.in
 

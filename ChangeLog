@@ -1,3 +1,10 @@
+2004-03-02  Glynn Foster  <glynn.foster@sun.com>
+
+        * Makefile.am:
+        * configure.in:
+        * gnome-keyring-1-uninstalled.pc.in:
+        Add uninstalled pkg-config file.
+
 2004-02-27  Paisa Seeluangsawat  <paisa@users.sf.net>
 
 	* configure.in: Added "th" (Thai) to ALL_LINGUAS.

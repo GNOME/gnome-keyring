@@ -162,4 +162,5 @@ AC_OUTPUT([
 Makefile
 po/Makefile.in
 gnome-keyring-1.pc
+gnome-keyring-1-uninstalled.pc
 ])
