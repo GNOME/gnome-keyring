@@ -477,7 +477,7 @@ run_sync_operation (GString *buffer,
 }
 
 gboolean
-gnome_keyring_is_availible (void)
+gnome_keyring_is_available (void)
 {
 	int socket;
 	

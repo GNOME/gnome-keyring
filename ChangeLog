@@ -1,3 +1,10 @@
+2004-01-08  David Coulthart  <davec@columbia.edu>
+
+	* gnome-keyring.h: 
+	* gnome-keyring.c: 
+	* test.c:
+	s/gnome_keyring_is_availible/gnome_keyring_is_available/
+
 2004-01-08  Alex Duggan  <aldug@astrolinux.com>
 	
 	* configure.in: Require glib/gtk+ 2.3.1

@@ -398,7 +398,7 @@ main (int argc, char *argv[])
 		}
 	} else if (arg == 't') {
 		g_print ("gnome keyring is: %s\n",
-			 gnome_keyring_is_availible ()?"availible":"not availible");
+			 gnome_keyring_is_available ()?"available":"not available");
 	} else {
 		g_print ("unsupported test\n");
 	}

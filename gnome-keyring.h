@@ -116,7 +116,7 @@ void                       gnome_keyring_attribute_list_free          (GnomeKeyr
 GnomeKeyringAttributeList *gnome_keyring_attribute_list_copy          (GnomeKeyringAttributeList *attributes);
 
 
-gboolean gnome_keyring_is_availible (void);
+gboolean gnome_keyring_is_available (void);
 
 void gnome_keyring_free_password (char *password);
 
