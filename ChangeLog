@@ -1,3 +1,9 @@
+2004-09-07  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring.c: 
+	* gnome-keyring-daemon.c:
+	Include string.h to fix build (#151825)
+
 2004-08-30  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
