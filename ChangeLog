@@ -1,3 +1,9 @@
+2004-02-11  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump to 0.1.4
+
 2004-02-09  Alexander Larsson  <alexl@redhat.com>
 
 	* Makefile.am (INCLUDES): 
