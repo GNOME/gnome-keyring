@@ -5,7 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"POT-Creation-Date: 2004-02-02 18:48+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-02-02 18:59+0730\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@my-penguin.org>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.net>\n"
@@ -15,52 +16,67 @@ msgstr ""
 
 #: gnome-keyring-ask.c:223
 #, c-format
-msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
-msgstr "Aplikasi '%s' (%s) hendak mengakses keyring default, tetapi ianya dikunci"
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"Aplikasi '%s' (%s) hendak mengakses keyring default, tetapi ianya dikunci"
 
 #: gnome-keyring-ask.c:227
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Aplikasi '%s' (%s) hendak mengakses keyring '%s', tetapi ianya dikunci"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:232
 #, c-format
-msgid "The application '%s' (%s) wants access to an unknown keyring, but it is locked"
-msgstr "Aplikasi '%s' (%s) hendak mengakses keyring tak dikenali, tetapi ianya dikunci"
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr ""
+"Aplikasi '%s' (%s) hendak mengakses keyring tak dikenali, tetapi ianya "
+"dikunci"
 
-#: gnome-keyring-ask.c:238
-#: gnome-keyring-ask.c:252
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr "Aplikasi '%s' hendak mengakses keyring default, tetapi ianya dikunci"
 
-#: gnome-keyring-ask.c:242
-#: gnome-keyring-ask.c:257
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Aplikasi '%s' hendak mengakses keyring '%s', tetapi ianya dikunci"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:246
-#: gnome-keyring-ask.c:262
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "Aplikasi '%s' hendak mengakses keyring tak dikenali, tetapi ianya dikunci"
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Aplikasi '%s' hendak mengakses keyring tak dikenali, tetapi ianya dikunci"
 
 #: gnome-keyring-ask.c:268
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "Aplikasi tak dikenali mahu mengakses keyring default, tetapi ianya dikunci"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Aplikasi tak dikenali mahu mengakses keyring default, tetapi ianya dikunci"
 
 #: gnome-keyring-ask.c:272
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "Aplikasi tak diketahui hendak mengakses keyring '%s', tetapi ianya dikunci"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Aplikasi tak diketahui hendak mengakses keyring '%s', tetapi ianya dikunci"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr "Aplikasi tak dikenali mahu mengakses ke keyring tak dikenali, tetapi ia dikunci"
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Aplikasi tak dikenali mahu mengakses ke keyring tak dikenali, tetapi ia "
+"dikunci"
 
 #: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
@@ -75,43 +91,63 @@ msgstr "Masukkan katalaluan bagi keyring '%s' untuk dibuka"
 msgid "Unlock Keyring"
 msgstr "Buka Keyring"
 
-#: gnome-keyring-ask.c:294
-#: gnome-keyring-ask.c:374
-#: gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
 #: gnome-keyring-ask.c:505
 msgid "_Deny"
 msgstr "_Nafikan"
 
 #: gnome-keyring-ask.c:329
 #, c-format
-msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "Aplikasi '%s' (%s) mahu mencipta keyring baru dipanggil '%s'. Anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"Aplikasi '%s' (%s) mahu mencipta keyring baru dipanggil '%s'. Anda hendaklah "
+"memilih katalaluan yang anda ingin gunakan untuknya."
 
 #: gnome-keyring-ask.c:333
 #, c-format
-msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "Aplikasi '%s' (%s) mahu mencipta keyring default. Anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Aplikasi '%s' (%s) mahu mencipta keyring default. Anda hendaklah memilih "
+"katalaluan yang anda ingin gunakan untuknya."
 
-#: gnome-keyring-ask.c:339
-#: gnome-keyring-ask.c:349
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
 #, c-format
-msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "Aplikasi '%s' mahu mencipta keyring baru dipanggil '%s'. Anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Aplikasi '%s' mahu mencipta keyring baru dipanggil '%s'. Anda hendaklah "
+"memilih katalaluan yang anda ingin gunakan untuknya."
 
-#: gnome-keyring-ask.c:343
-#: gnome-keyring-ask.c:353
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
 #, c-format
-msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "Aplikasi '%s' mahu mencipta keyring default baru. Anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Aplikasi '%s' mahu mencipta keyring default baru. Anda hendaklah memilih "
+"katalaluan yang anda ingin gunakan untuknya."
 
 #: gnome-keyring-ask.c:359
 #, c-format
-msgid "An unkown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "Aplikasi tak dikenali mahu mencipta keyring baru dipanggil '%s'. Anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Aplikasi tak dikenali mahu mencipta keyring baru dipanggil '%s'. Anda "
+"hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
 
 #: gnome-keyring-ask.c:363
-msgid "An unkown application wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "Aplikasi tak dikenali mahu mencipta keyring default baru. Anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Aplikasi tak dikenali mahu mencipta keyring default baru. Anda hendaklah "
+"memilih katalaluan yang anda ingin gunakan untuknya."
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
@@ -123,19 +159,36 @@ msgstr "Pilih katalaluan bagi keyring baru"
 
 #: gnome-keyring-ask.c:400
 #, c-format
-msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "Aplikasi '%s'  (%s) mahu menyimpan katalaluan, tapi tiada keyring default. Untuk menciptanya, anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Aplikasi '%s'  (%s) mahu menyimpan katalaluan, tapi tiada keyring default. "
+"Untuk menciptanya, anda hendaklah memilih katalaluan yang anda ingin gunakan "
+"untuknya."
 
-#: gnome-keyring-ask.c:404
-#: gnome-keyring-ask.c:408
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
 #, c-format
-msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "Aplikasi '%s' mahu menyimpan katalaluan, tapi tiada keyring default. Untuk menciptanya, anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Aplikasi '%s' mahu menyimpan katalaluan, tapi tiada keyring default. Untuk "
+"menciptanya, anda hendaklah memilih katalaluan yang anda ingin gunakan "
+"untuknya."
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:412
-msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "Aplikasi tak dikenali mahu menyimpan katalaluan, tapi tiada keyring default. Untuk menciptanya, anda hendaklah memilih katalaluan yang anda ingin gunakan untuknya."
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Aplikasi tak dikenali mahu menyimpan katalaluan, tapi tiada keyring default. "
+"Untuk menciptanya, anda hendaklah memilih katalaluan yang anda ingin gunakan "
+"untuknya."
 
 #: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
@@ -156,33 +209,43 @@ msgstr "Aplikasi '%s' (%s) mahu mengakses katalaluan bagi '%s' pada %s."
 
 #: gnome-keyring-ask.c:460
 #, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in the default keyring."
-msgstr "Aplikasi '%s' (%s) mahu mengakses katalaluan bagi '%s' pada keyring default."
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"Aplikasi '%s' (%s) mahu mengakses katalaluan bagi '%s' pada keyring default."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:463
 #, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in an unknown keyring."
-msgstr "Aplikasi '%s' (%s) mahu mengakses katalaluan bagi '%s' pada keyring tak dikenali."
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+"Aplikasi '%s' (%s) mahu mengakses katalaluan bagi '%s' pada keyring tak "
+"dikenali."
 
-#: gnome-keyring-ask.c:468
-#: gnome-keyring-ask.c:479
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Aplikasi '%s' mahu mengakses katalaluan bagi '%s' pada %s."
 
-#: gnome-keyring-ask.c:471
-#: gnome-keyring-ask.c:482
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
 #, c-format
-msgid "The application '%s' wants to access the password for '%s' in the default keyring."
-msgstr "Aplikasi '%s' mahu mengakses katalaluan bagi '%s' pada keyring default."
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Aplikasi '%s' mahu mengakses katalaluan bagi '%s' pada keyring default."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:474
-#: gnome-keyring-ask.c:485
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
 #, c-format
-msgid "The application '%s' wants to access the password for '%s' in an unknown keyring."
-msgstr "Aplikasi '%s' mahu mengakses katalaluan bagi '%s' pada keyring tak dikenali."
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Aplikasi '%s' mahu mengakses katalaluan bagi '%s' pada keyring tak dikenali."
 
 #: gnome-keyring-ask.c:490
 #, c-format
@@ -191,14 +254,22 @@ msgstr "Aplikasi tak dikenali mahu mengakses katalaluan bagi '%s' pada %s."
 
 #: gnome-keyring-ask.c:493
 #, c-format
-msgid "An unknown application wants to access the password for '%s' in the default keyring."
-msgstr "Aplikasi tak dikenali mahu mengakses katalaluan bagi '%s' pada keyring default."
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Aplikasi tak dikenali mahu mengakses katalaluan bagi '%s' pada keyring "
+"default."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:496
 #, c-format
-msgid "An unknown application wants to access the password for '%s' in an unknown keyring."
-msgstr "Aplikasi tak dikenali mahu mengakses katalaluan bagi '%s' pada keyring tak dikenali."
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Aplikasi tak dikenali mahu mengakses katalaluan bagi '%s' pada keyring tak "
+"dikenali."
 
 #: gnome-keyring-ask.c:501
 msgid "Allow access"
@@ -219,4 +290,3 @@ msgstr "Anda mesti nyatakan jenis permintaan untuk dilaksana\n"
 #: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "Jenis permintaan tidak diketahui\n"
-

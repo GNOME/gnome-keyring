@@ -4,7 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0\n"
-"POT-Creation-Date: 2004-02-01 17:02+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-02-05 23:48+CET\n"
 "Last-Translator: auto\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
@@ -18,11 +19,14 @@ msgstr ""
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "Aplikacija '%s' (%s) želi pristupiti predefiniranom privjesku, ali je zaključan"
+msgstr ""
+"Aplikacija '%s' (%s) želi pristupiti predefiniranom privjesku, ali je "
+"zaključan"
 
 #: gnome-keyring-ask.c:227
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Aplikacija '%s' (%s) želi pristupiti privjesku '%s', ali je zaključan"
 
 #. keyring == KEYRING_NAME_UNKNOWN
@@ -31,12 +35,15 @@ msgstr "Aplikacija '%s' (%s) želi pristupiti privjesku '%s', ali je zaključan"
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
-msgstr "Aplikacija '%s' (%s) želi pristupiti nepoznatom privjesku, ali je zaključan"
+msgstr ""
+"Aplikacija '%s' (%s) želi pristupiti nepoznatom privjesku, ali je zaključan"
 
 #: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "Aplikacija '%s' želi pristupiti predefiniranom privjesku, ali je zaključan."
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"Aplikacija '%s' želi pristupiti predefiniranom privjesku, ali je zaključan."
 
 #: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
 #, c-format
@@ -46,28 +53,38 @@ msgstr "Aplikacija '%s' želi pristupiti privjesku '%s', ali je zaključan."
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "Aplikacija '%s' želi pristupiti nepoznatom privjesku, ali je zaključan."
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Aplikacija '%s' želi pristupiti nepoznatom privjesku, ali je zaključan."
 
 #: gnome-keyring-ask.c:268
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "Nepoznata aplikacija želi pristup predodređenom privjesku, ali je zaključan"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Nepoznata aplikacija želi pristup predodređenom privjesku, ali je zaključan"
 
 #: gnome-keyring-ask.c:272
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "Nepoznata aplikacija želi pristupiti privjesku '%s', ali taj je zaključan"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Nepoznata aplikacija želi pristupiti privjesku '%s', ali taj je zaključan"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr "Nepoznata aplikacija želi pristupiti nepoznatom privjesku, ali je ali je zaključan"
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Nepoznata aplikacija želi pristupiti nepoznatom privjesku, ali je ali je "
+"zaključan"
 
 #: gnome-keyring-ask.c:284
 msgid "Enter password for default keyring to unlock"
 msgstr "Unesite lozinku za predodređeni privjesak  da bi ga otključali."
 
 #: gnome-keyring-ask.c:286
+#, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Unesite lozinku za privjesak '%s' da bi ga otključali."
 
@@ -85,41 +102,53 @@ msgstr "_Odbij"
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "Aplikacija '%s' (%s) želi kreirati novi predefinirani privjesak koji se zove '%s'. Odaberite lozinku koju za njega. "
+msgstr ""
+"Aplikacija '%s' (%s) želi kreirati novi predefinirani privjesak koji se zove "
+"'%s'. Odaberite lozinku koju za njega. "
 
 #: gnome-keyring-ask.c:333
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Aplikacija '%s' (%s) želi kreirati novi predefinirani privjesak. Odaberite lozinku koju za njega. "
+msgstr ""
+"Aplikacija '%s' (%s) želi kreirati novi predefinirani privjesak. Odaberite "
+"lozinku koju za njega. "
 
 #: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "Aplikacija '%s' želi kreirati novi privjesak koji se zove '%s'. Odaberite lozinku za njega. "
+msgstr ""
+"Aplikacija '%s' želi kreirati novi privjesak koji se zove '%s'. Odaberite "
+"lozinku za njega. "
 
 #: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Aplikacija '%s' želi kreirati novi predefinirani privjesak. Odabrite lozinku za njega. "
+msgstr ""
+"Aplikacija '%s' želi kreirati novi predefinirani privjesak. Odabrite lozinku "
+"za njega. "
 
 #: gnome-keyring-ask.c:359
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "Nepoznata aplikacija želi kreirati novi privjesak koji se zove '%s'. Odaberite lozinku za njega. "
+msgstr ""
+"Nepoznata aplikacija želi kreirati novi privjesak koji se zove '%s'. "
+"Odaberite lozinku za njega. "
 
 #: gnome-keyring-ask.c:363
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Nepoznata aplikacija želi kreirati novi predodređeni privjesak. Odaberite lozinku za njega. "
+msgstr ""
+"Nepoznata aplikacija želi kreirati novi predodređeni privjesak. Odaberite "
+"lozinku za njega. "
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
@@ -135,7 +164,9 @@ msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Aplikacija '%s' (%s) želi spremiti lozinku, ali nema predefiniranog privjeska. Da bi ga kreirali odaberite lozinku za njega. "
+msgstr ""
+"Aplikacija '%s' (%s) želi spremiti lozinku, ali nema predefiniranog "
+"privjeska. Da bi ga kreirali odaberite lozinku za njega. "
 
 #: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
 #, c-format
@@ -143,7 +174,9 @@ msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Aplikacija '%s' želi spremiti lozinku, ali nema predefiniranog privjeska. Da bi ga kreirali, odaberite lozinku za njega. "
+msgstr ""
+"Aplikacija '%s' želi spremiti lozinku, ali nema predefiniranog privjeska. Da "
+"bi ga kreirali, odaberite lozinku za njega. "
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:412
@@ -151,7 +184,10 @@ msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Nepoznata aplikacija želi spremiti lozinku, ali nema predodređenog privjeska. Za kreiranje privjeska potrebno je odabrati lozinku koju želite upotrijebiti za to. "
+msgstr ""
+"Nepoznata aplikacija želi spremiti lozinku, ali nema predodređenog "
+"privjeska. Za kreiranje privjeska potrebno je odabrati lozinku koju želite "
+"upotrijebiti za to. "
 
 #: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
@@ -175,7 +211,9 @@ msgstr "Aplikacija '%s' (%s) želi pristupiti lozinki za '%s' u '%s'."
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
-msgstr "Aplikacija '%s' (%s) želi pristupiti lozinki za '%s' u predefiniranom privjesku. "
+msgstr ""
+"Aplikacija '%s' (%s) želi pristupiti lozinki za '%s' u predefiniranom "
+"privjesku. "
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:463
@@ -183,7 +221,8 @@ msgstr "Aplikacija '%s' (%s) želi pristupiti lozinki za '%s' u predefiniranom p
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
-msgstr "Aplikacija '%s' (%s) želi pristupiti lozinki za '%s' u nepoznatom privjesku. "
+msgstr ""
+"Aplikacija '%s' (%s) želi pristupiti lozinki za '%s' u nepoznatom privjesku. "
 
 #: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
 #, c-format
@@ -195,7 +234,8 @@ msgstr "Aplikacija '%s' želi pristupiti lozinki za '%s' u '%s'. "
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
-msgstr "Aplikacija '%s' želi pristupiti lozinki za '%s' u predefiniranom privjesku."
+msgstr ""
+"Aplikacija '%s' želi pristupiti lozinki za '%s' u predefiniranom privjesku."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
@@ -203,7 +243,8 @@ msgstr "Aplikacija '%s' želi pristupiti lozinki za '%s' u predefiniranom privje
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "Aplikacija '%s' želi pristupiti lozinki za '%s' u nepoznatom privjesku."
+msgstr ""
+"Aplikacija '%s' želi pristupiti lozinki za '%s' u nepoznatom privjesku."
 
 #: gnome-keyring-ask.c:490
 #, c-format
@@ -215,7 +256,8 @@ msgstr "Nepoznata aplikacija želi pristup lozinki za '%s' u '%s'. "
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
-msgstr "Nepoznata aplikacija želi pristup lozinki za '%s' u nepoznatom privjesku. "
+msgstr ""
+"Nepoznata aplikacija želi pristup lozinki za '%s' u nepoznatom privjesku. "
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:496
@@ -223,7 +265,8 @@ msgstr "Nepoznata aplikacija želi pristup lozinki za '%s' u nepoznatom privjesk
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "Nepoznata aplikacija želi pristup lozinki za '%s' u nepoznatom privjesku. "
+msgstr ""
+"Nepoznata aplikacija želi pristup lozinki za '%s' u nepoznatom privjesku. "
 
 #: gnome-keyring-ask.c:501
 msgid "Allow access"
@@ -244,4 +287,3 @@ msgstr "Morate navesti tip zahtjeva za pokretanje\n"
 #: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "Nepoznat tip zahtjeva\n"
-

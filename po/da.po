@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 21:34+0100\n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
 "PO-Revision-Date: 2004-01-30 22:11+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -19,13 +19,15 @@ msgstr ""
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "Programmet \"%s\" (%s) ønsker at tilgå standardnøgleringen, men den er låst"
+msgstr ""
+"Programmet \"%s\" (%s) ønsker at tilgå standardnøgleringen, men den er låst"
 
 #: gnome-keyring-ask.c:227
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "Programmet \"%s\" (%s) ønsker at tilgå nøgleringen \"%s\", men den er låst"
+msgstr ""
+"Programmet \"%s\" (%s) ønsker at tilgå nøgleringen \"%s\", men den er låst"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:232
@@ -33,7 +35,8 @@ msgstr "Programmet \"%s\" (%s) ønsker at tilgå nøgleringen \"%s\", men den er
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
-msgstr "Programmet \"%s\" (%s) ønsker at tilgå en ukendt nøglering, men den er låst"
+msgstr ""
+"Programmet \"%s\" (%s) ønsker at tilgå en ukendt nøglering, men den er låst"
 
 #: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
@@ -93,41 +96,53 @@ msgstr "_Nægt"
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "Programmet \"%s\" (%s) ønsker at oprette en ny nøglering med navnet \"%s\". Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
+msgstr ""
+"Programmet \"%s\" (%s) ønsker at oprette en ny nøglering med navnet \"%s\". "
+"Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:333
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Programmet \"%s\" (%s) ønsker at oprette en ny standardnøglering. Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
+msgstr ""
+"Programmet \"%s\" (%s) ønsker at oprette en ny standardnøglering. Du skal "
+"vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "Programmet \"%s\" ønsker at oprette en ny nøglering med navnet \"%s\". Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
+msgstr ""
+"Programmet \"%s\" ønsker at oprette en ny nøglering med navnet \"%s\". Du "
+"skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Programmet \"%s\" ønsker at oprette en ny standardnøglering. Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
+msgstr ""
+"Programmet \"%s\" ønsker at oprette en ny standardnøglering. Du skal vælge "
+"en adgangskode du ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:359
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "Et ukendt program ønsker at oprette en ny nøglering med navnet \"%s\". Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
+msgstr ""
+"Et ukendt program ønsker at oprette en ny nøglering med navnet \"%s\". Du "
+"skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:363
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Et ukendt program ønsker at oprette en ny standardnøglering. Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
+msgstr ""
+"Et ukendt program ønsker at oprette en ny standardnøglering. Du skal vælge "
+"en adgangskode du ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
@@ -143,7 +158,10 @@ msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Programmet \"%s\" (%s) ønsker at gemme en adgangskode, men der er ingen standardnøglering. For at oprette en skal du vælge en adgangskode som du ønsker at bruge til nøgleringen."
+msgstr ""
+"Programmet \"%s\" (%s) ønsker at gemme en adgangskode, men der er ingen "
+"standardnøglering. For at oprette en skal du vælge en adgangskode som du "
+"ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
 #, c-format
@@ -151,7 +169,10 @@ msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Programmet \"%s\" ønsker at gemme en adgangskode, men der er ingen standardnøglering. For at oprette en skal du vælge en adgangskode som du ønsker at bruge til nøgleringen."
+msgstr ""
+"Programmet \"%s\" ønsker at gemme en adgangskode, men der er ingen "
+"standardnøglering. For at oprette en skal du vælge en adgangskode som du "
+"ønsker at bruge til nøgleringen."
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:412
@@ -159,7 +180,10 @@ msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Et ukendt program ønsker at gemme en adgangskode, men der er ingen standardnøglering. For at oprette en skal du vælge en adgangskode som du ønsker at bruge til nøgleringen."
+msgstr ""
+"Et ukendt program ønsker at gemme en adgangskode, men der er ingen "
+"standardnøglering. For at oprette en skal du vælge en adgangskode som du "
+"ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
@@ -183,7 +207,9 @@ msgstr "Programmet \"%s\" (%s) ønsker at tilgå adgangskoden for \"%s\" i %s."
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
-msgstr "Programmet \"%s\" (%s) ønsker at tilgå adgangskoden for \"%s\" i standardnøgleringen."
+msgstr ""
+"Programmet \"%s\" (%s) ønsker at tilgå adgangskoden for \"%s\" i "
+"standardnøgleringen."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:463
@@ -191,7 +217,9 @@ msgstr "Programmet \"%s\" (%s) ønsker at tilgå adgangskoden for \"%s\" i stand
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
-msgstr "Programmet \"%s\" (%s) ønsker at tilgå adgangskoden for \"%s\" i en ukendt nøglering."
+msgstr ""
+"Programmet \"%s\" (%s) ønsker at tilgå adgangskoden for \"%s\" i en ukendt "
+"nøglering."
 
 #: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
 #, c-format
@@ -203,7 +231,9 @@ msgstr "Programmet \"%s\" ønsker at tilgå adgangskoden for \"%s\" i %s."
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
-msgstr "Programmet \"%s\" ønsker at tilgå adgangskoden for \"%s\" i standardnøgleringen."
+msgstr ""
+"Programmet \"%s\" ønsker at tilgå adgangskoden for \"%s\" i "
+"standardnøgleringen."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
@@ -211,7 +241,9 @@ msgstr "Programmet \"%s\" ønsker at tilgå adgangskoden for \"%s\" i standardn�
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "Programmet \"%s\" ønsker at tilgå adgangskoden for \"%s\" i en ukendt nøglering."
+msgstr ""
+"Programmet \"%s\" ønsker at tilgå adgangskoden for \"%s\" i en ukendt "
+"nøglering."
 
 #: gnome-keyring-ask.c:490
 #, c-format
@@ -223,7 +255,9 @@ msgstr "Et ukendt program ønsker at tilgå adgangskoden for \"%s\" i %s."
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
-msgstr "Et ukendt program ønsker at tilgå adgangskoden for \"%s\" i standardnøgleringen."
+msgstr ""
+"Et ukendt program ønsker at tilgå adgangskoden for \"%s\" i "
+"standardnøgleringen."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:496
@@ -231,7 +265,9 @@ msgstr "Et ukendt program ønsker at tilgå adgangskoden for \"%s\" i standardn�
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "Et ukendt program ønsker at tilgå adgangskoden for \"%s\" i en ukendt nøglering."
+msgstr ""
+"Et ukendt program ønsker at tilgå adgangskoden for \"%s\" i en ukendt "
+"nøglering."
 
 #: gnome-keyring-ask.c:501
 msgid "Allow access"
