@@ -1,6 +1,11 @@
-This is gnome-keyring 0.2.1, a system for keeping user passwords and
+This is gnome-keyring 0.3.1, a system for keeping user passwords and
 secrets. This version is for Gnome 2.6, and is the first publically
 availible version of gnome-keyring. 
+
+Changes in version 0.3.1 are:
+* New and updated translations.
+* New introduction document
+* unlocking the NULL keyring unlocks the default keyring
 
 Changes in version 0.2.1 are:
 * New and updated translations.
