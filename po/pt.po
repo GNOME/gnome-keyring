@@ -1,0 +1,117 @@
+# gnome-keyring's Portuguese translation.
+# Copyright (C) 2003 gnome-keyring
+# This file is distributed under the same license as the gnome-keyring package.
+# Duarte Loreto <happyguy_pt@hotmail.com>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.6\n"
+"Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"POT-Creation-Date: 2003-12-24 02:13+0000\n"
+"PO-Revision-Date: 2003-12-24 02:25+0000\n"
+"Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-keyring-ask.c:170
+#, c-format
+msgid "The application '%s' (%s)"
+msgstr "A aplicação '%s' (%s)"
+
+#: gnome-keyring-ask.c:172
+#, c-format
+msgid "The application '%s'"
+msgstr "A aplicação '%s'"
+
+#: gnome-keyring-ask.c:175
+#, c-format
+msgid "The application %s"
+msgstr "A aplicação %s"
+
+#: gnome-keyring-ask.c:185
+msgid "the default keyring"
+msgstr "o chaveiro por omissão"
+
+#: gnome-keyring-ask.c:187
+#, c-format
+msgid "the keyring '%s'"
+msgstr "o chaveiro '%s'"
+
+#: gnome-keyring-ask.c:190
+msgid "an unknown keyring"
+msgstr "um chaveiro desconhecido"
+
+#: gnome-keyring-ask.c:206
+#, c-format
+msgid "%s wants access to %s, but it is locked."
+msgstr "%s deseja aceder a %s, mas está trancado."
+
+#: gnome-keyring-ask.c:210
+msgid "Enter password for default keyring to unlock"
+msgstr "Introduza senha para chaveiro por omissão para destracar"
+
+#: gnome-keyring-ask.c:212
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Introduza senha para chaveiro '%s' para destrancar"
+
+#: gnome-keyring-ask.c:215
+msgid "Unlock Keyring"
+msgstr "Destrancar Chaveiro"
+
+#: gnome-keyring-ask.c:251
+#, c-format
+msgid ""
+"%s wants to create a new keyring called '%s'. You have to choose the "
+"password you want to use for it."
+msgstr ""
+"%s deseja criar um novo chaveiro denominado '%s'. Terá de seleccionar "
+"a senha que deseja utilizar no chaveiro."
+
+#: gnome-keyring-ask.c:255
+msgid "New Keyring Password"
+msgstr "Senha de Novo Chaveiro"
+
+#: gnome-keyring-ask.c:256
+msgid "Choose password for new keyring"
+msgstr "Seleccione senha para o novo chaveiro"
+
+#: gnome-keyring-ask.c:285
+#, c-format
+msgid ""
+"%s wants to store a password, but there is no default keyring. To create "
+"one, you need to choose the password you wish to use for it."
+msgstr ""
+"%s deseja armazenar uma senha mas não existe chaveiro por omissão. Para "
+"criar um, tem de seleccionar a senha que deseja utilizar no chaveiro."
+
+#: gnome-keyring-ask.c:289
+msgid "Create Default Keyring"
+msgstr "Criar Chaveiro por Omissão"
+
+#: gnome-keyring-ask.c:290
+msgid "Choose password for default keyring"
+msgstr "Seleccione senha para chaveiro por omissão"
+
+#: gnome-keyring-ask.c:327
+msgid "Allow application access to keyring?"
+msgstr "Permitir à aplicação acesso ao chaveiro?"
+
+#: gnome-keyring-ask.c:328
+#, c-format
+msgid "%s wants to access the password for '%s' in %s."
+msgstr "%s deseja aceder à senha para '%s' em %s."
+
+#: gnome-keyring-ask.c:330
+msgid "Allow access"
+msgstr "Permitir acesso"
+
+#: gnome-keyring-ask.c:366
+msgid "You must specify the type of request to run\n"
+msgstr "Tem de especificar o tipo de pedido a executar\n"
+
+#: gnome-keyring-ask.c:379
+msgid "Unknown request type\n"
+msgstr "Tipo de pedido desconhecido\n"
