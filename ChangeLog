@@ -1,3 +1,8 @@
+2004-08-26  Alexander Larsson  <alexl@redhat.com>
+
+	* AUTHORS (Contributors):
+	Add Fernando to AUTHORS.
+
 2004-08-13  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Added nb to ALL_LINGUAS.
