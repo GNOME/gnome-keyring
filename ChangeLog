@@ -1,3 +1,7 @@
+2004-02-11  Arafat Medini  <lumina@silverpen.de>
+                                                                                
+        * configure.in: Added Arabic locale ar to ALL_LINGUAS.
+                                            
 2004-02-11  Pauli Virtanen  <pauli.virtanen@hut.fi>
 
 	* configure.in: Added "fi" (Finnish) to ALL_LINGUAS.
