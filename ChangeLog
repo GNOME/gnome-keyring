@@ -1,5 +1,15 @@
 2004-01-13  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-ask.c: (get_app_information),
+	(get_keyring_information), (ask_for_keyring_password),
+	(ask_for_new_keyring_password), (ask_for_default_keyring),
+	(ask_for_item_read_write_acccess):
+	Don't split up strings for translations.
+	Mark some new strings translated.
+	Patch from chris@gnome-de.org
+
+2004-01-13  Alexander Larsson  <alexl@redhat.com>
+
 	* Makefile.am:
 	* gnome-keyring-ask.c: (main):
 	Actually use translations.

@@ -53,6 +53,19 @@ create_markup (const char *primary, const char *secondary)
 	return g_strconcat ("<span weight=\"bold\" size=\"larger\">", primary, "</span>\n\n", secondary, NULL);
 }
 
+enum {
+	KEYRING_NAME_NORMAL,
+	KEYRING_NAME_DEFAULT,
+	KEYRING_NAME_UNKNOWN,
+};
+
+enum {
+	APPLICATION_NAME_DISPLAY_AND_PATH,
+	APPLICATION_NAME_DISPLAY_ONLY,
+	APPLICATION_NAME_PATH_ONLY,
+	APPLICATION_NAME_UNKNOWN,
+};
+
 static gint
 run_dialog (const char *title,
 	    const char *primary,
@@ -162,32 +175,33 @@ run_dialog (const char *title,
 }
 
 
-static char *
-get_app_string (void)
+static int
+get_app_information (void)
 {
 	if (env_app_display_name != NULL) {
 		if (env_app_pathname != NULL) {
-			return g_strdup_printf (_("The application '%s' (%s)"), env_app_display_name, env_app_pathname);
+			return APPLICATION_NAME_DISPLAY_AND_PATH;
 		}
-		return g_strdup_printf (_("The application '%s'"), env_app_display_name);
+		return APPLICATION_NAME_DISPLAY_ONLY;
 	}
 	if (env_app_pathname != NULL) {
-		return g_strdup_printf (_("The application %s"), env_app_pathname);
+		return APPLICATION_NAME_PATH_ONLY;
 	}
-	return g_strdup ("An unknown application");
+	return APPLICATION_NAME_UNKNOWN;
 }
 
-static char *
-get_keyring_string (void)
+static int
+get_keyring_information (void)
 {
 	if (env_keyring_name != NULL) {
 		if (strcmp (env_keyring_name, "default") == 0) {
-			return g_strdup (_("the default keyring"));
+			return KEYRING_NAME_DEFAULT;
 		} else {
-			return g_strdup_printf (_("the keyring '%s'"), env_keyring_name);
+			return KEYRING_NAME_NORMAL;
 		}
 	}
-	return g_strdup (_("an unknown keyring"));
+
+	return KEYRING_NAME_UNKNOWN;
 }
 
 static void
@@ -195,17 +209,74 @@ ask_for_keyring_password (void)
 {
 	char *message;
 	gint response;
-	char *app;
-	char *keyring;
 	char *password;
 	char *primary;
+	int app;
+	int keyring;
 	
-	app = get_app_string ();
-	keyring = get_keyring_string ();
+	app = get_app_information ();
+	keyring = get_keyring_information ();
 
-	message = g_strdup_printf (_("%s wants access to %s, but it is locked."), app, keyring);
-	g_free(app);
-	g_free(keyring);
+	if (app == APPLICATION_NAME_DISPLAY_AND_PATH) {
+		if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' (%s) wants access to "
+						     "the default keyring, but it is locked"),
+						   env_app_display_name, env_app_pathname);
+		} else if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' (%s) wants access to "
+						     "the keyring '%s', but it is locked"),
+						   env_app_display_name, env_app_pathname,
+						   env_keyring_name);
+		} else /* keyring == KEYRING_NAME_UNKNOWN */ {
+			message = g_strdup_printf (_("The application '%s' (%s) wants access to "
+						     "an unknown keyring, but it is locked"), 
+						   env_app_display_name, env_app_pathname);
+		}
+	} else if (app == APPLICATION_NAME_DISPLAY_ONLY) {
+		if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' wants access to the "
+						     "default keyring, but it is locked"),
+						   env_app_display_name);
+		} else if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' wants access to the "
+						     "keyring '%s', but it is locked"),
+						   env_app_display_name, env_keyring_name);
+		} else /* keyring == KEYRING_NAME_UNKNOWN */ {
+			message = g_strdup_printf (_("The application '%s' wants access to an "
+						     "unknown keyring, but it is locked"),
+						   env_app_display_name);
+		}
+	} else if (app == APPLICATION_NAME_PATH_ONLY) {
+		if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' wants access to the "
+						     "default keyring, but it is locked"),
+						   env_app_pathname);
+		}
+		else if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' wants access to the "
+						     "keyring '%s', but it is locked"),
+						   env_app_pathname, env_keyring_name);
+		}
+		else /* keyring == KEYRING_NAME_UNKNOWN */ {
+			message = g_strdup_printf (_("The application '%s' wants access to an "
+						     "unknown keyring, but it is locked"),
+						   env_app_pathname);
+		}
+	} else { /* app == APPLICATION_NAME_UNKNOWN) */
+		if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("An unknown application wants access to the "
+						     "default keyring, but it is locked"));
+		}
+		else if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("An unknown application wants access to the "
+						     "keyring '%s', but it is locked"),
+						   env_keyring_name);
+		}
+		else /* keyring == KEYRING_NAME_UNKNOWN */ {
+			message = g_strdup_printf (_("An unknown application wants access to an "
+						     "unknown keyring, but it is locked"));
+		}
+	}
 
 	if (env_keyring_name == NULL ||
 	    strcmp (env_keyring_name, "default") == 0) {
@@ -219,7 +290,7 @@ ask_for_keyring_password (void)
 			       message,
 			       TRUE, &password,
 			       GTK_RESPONSE_OK,
-			       "_Deny", GTK_RESPONSE_CANCEL,
+			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
 			       NULL);
 	g_free (message);
@@ -240,27 +311,66 @@ ask_for_new_keyring_password (void)
 {
 	char *message;
 	gint response;
-	char *app;
-	const char *keyring;
+	int app;
+	int keyring;
 	char *password;
 	
-	app = get_app_string ();
-	keyring = env_keyring_name;
-	if (keyring == NULL) {
-		keyring = "";
+	app = get_app_information ();
+	if (env_keyring_name == NULL) {
+		env_keyring_name = "";
+	}
+	keyring = get_keyring_information ();
+	g_assert (keyring != KEYRING_NAME_UNKNOWN);
+	
+	message = NULL;
+	if (app == APPLICATION_NAME_DISPLAY_AND_PATH) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' (%s) wants to create a new keyring called '%s'. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_display_name, env_app_pathname, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' (%s) wants to create a new default keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_display_name, env_app_pathname);
+		} 
+	} else if (app == APPLICATION_NAME_DISPLAY_ONLY) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' wants to create a new keyring called '%s'. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_display_name, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' wants to create a new default keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_display_name);
+		} 
+	} else if (app == APPLICATION_NAME_PATH_ONLY) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' wants to create a new keyring called '%s'. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_pathname, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' wants to create a new default keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_pathname);
+		} 
+	} else /* app == APPLICATION_NAME_UNKNOWN */ {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("An unkown application wants to create a new keyring called '%s'. "
+						     "You have to choose the password you want to use for it."),
+						   env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("An unkown application wants to create a new default keyring. "
+						     "You have to choose the password you want to use for it."));
+		} 
 	}
 
-	message = g_strdup_printf (_("%s wants to create a new keyring called '%s'. "
-				     "You have to choose the password you want to use for it."),
-				   app, keyring);
-	g_free(app);
-
+	
 	response = run_dialog (_("New Keyring Password"),
 			       _("Choose password for new keyring"),
 			       message,
 			       TRUE, &password,
 			       GTK_RESPONSE_OK,
-			       "_Deny", GTK_RESPONSE_CANCEL,
+			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
 			       NULL);
 	g_free (message);
@@ -280,22 +390,34 @@ ask_for_default_keyring (void)
 {
 	char *message;
 	gint response;
-	char *app;
+	int app;
 	char *password;
 	
-	app = get_app_string ();
-
-	message = g_strdup_printf (_("%s wants to store a password, but there is no default keyring. "
-				     "To create one, you need to choose the password you wish to use for it."),
-				   app);
-	g_free(app);
+	app = get_app_information ();
+ 
+	if (app == APPLICATION_NAME_DISPLAY_AND_PATH) {
+		message = g_strdup_printf (_("The application '%s' (%s) wants to store a password, but there is no default keyring. "
+					     "To create one, you need to choose the password you wish to use for it."),
+					   env_app_display_name, env_app_pathname);
+	} else if (app == APPLICATION_NAME_DISPLAY_ONLY) {
+		message = g_strdup_printf (_("The application '%s' wants to store a password, but there is no default keyring. "
+					     "To create one, you need to choose the password you wish to use for it."),
+					   env_app_display_name);
+	} else if (app == APPLICATION_NAME_PATH_ONLY) {
+		message = g_strdup_printf (_("The application '%s' wants to store a password, but there is no default keyring. "
+					     "To create one, you need to choose the password you wish to use for it."),
+					   env_app_pathname);
+	} else /* app == APPLICATION_NAME_UNKNOWN */ {
+		message = g_strdup_printf (_("An unknown application wants to store a password, but there is no default keyring. "
+					     "To create one, you need to choose the password you wish to use for it."));
+	}
 
 	response = run_dialog (_("Create Default Keyring"),
 			       _("Choose password for default keyring"),
 			       message,
 			       TRUE, &password,
 			       GTK_RESPONSE_OK,
-			       "_Deny", GTK_RESPONSE_CANCEL,
+			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
 			       NULL);
 	g_free (message);
@@ -314,33 +436,74 @@ ask_for_default_keyring (void)
 static void
 ask_for_item_read_write_acccess (void)
 {
-	char *app;
-	char *keyring;
+	int app;
+	int keyring;
 	char *primary;
 	char *secondary;
 	const char *item;
 	gint response;
 	
-	app = get_app_string ();
-	keyring = get_keyring_string ();
+	app = get_app_information ();
+	keyring = get_keyring_information ();
 	item = env_item_name;
 	if (item == NULL) {
 		item = "";
 	}
 	
 	primary = _("Allow application access to keyring?");
-	secondary = g_strdup_printf (_("%s wants to access the password for '%s' in %s."),
-				     app, item, keyring);
-	g_free(app);
-	g_free(keyring);
+	if (app == APPLICATION_NAME_DISPLAY_AND_PATH) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			secondary = g_strdup_printf (_("The application '%s' (%s) wants to access the password for '%s' in %s."),
+						     env_app_display_name, env_app_pathname, item, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			secondary = g_strdup_printf (_("The application '%s' (%s) wants to access the password for '%s' in the default keyring."),
+						     env_app_display_name, env_app_pathname, item);
+		} else /* keyring == KEYRING_NAME_UNKNOWN */ {
+			secondary = g_strdup_printf (_("The application '%s' (%s) wants to access the password for '%s' in an unknown keyring."),
+						     env_app_display_name, env_app_pathname, item);
+		}
+	} else if (app == APPLICATION_NAME_DISPLAY_ONLY) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in %s."),
+						     env_app_display_name, item, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in the default keyring."),
+						     env_app_display_name, item);
+		} else /* keyring == KEYRING_NAME_UNKNOWN */ {
+			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in an unknown keyring."),
+						     env_app_display_name, item);
+		}
+	} else if (app == APPLICATION_NAME_PATH_ONLY) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in %s."),
+						     env_app_pathname, item, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in the default keyring."),
+						     env_app_pathname, item);
+		} else /* keyring == KEYRING_NAME_UNKNOWN */ {
+			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in an unknown keyring."),
+						     env_app_pathname, item);
+		}
+	} else /* app == APPLICATION_NAME_UNKNOWN */ {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			secondary = g_strdup_printf (_("An unknown application wants to access the password for '%s' in %s."),
+						     item, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			secondary = g_strdup_printf (_("An unknown application wants to access the password for '%s' in the default keyring."),
+						     item);
+		} else /* keyring == KEYRING_NAME_UNKNOWN */ {
+			secondary = g_strdup_printf (_("An unknown application wants to access the password for '%s' in an unknown keyring."),
+						     item);
+		}
+	}
 
 	response = run_dialog (_("Allow access"),
 			       primary, secondary,
 			       FALSE, NULL,
 			       2,
-			       "_Deny", GTK_RESPONSE_CANCEL,
-			       "Allow _Once", 1,
-			       "_Always Allow", 2,
+			       _("_Deny"), GTK_RESPONSE_CANCEL,
+			       _("Allow _Once"), 1,
+			       _("_Always Allow"), 2,
 			       NULL);
 	g_free (secondary);
 	
