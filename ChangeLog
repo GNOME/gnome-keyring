@@ -1,3 +1,7 @@
+2004-03-17  Dafydd Harries  <daf@muse.19inch.net>
+
+	* configure.in: Added "cy" (Welsh) to ALL_LINGUAS.
+
 === gnome-keyring 0.1.91 ===
 
 2004-03-15  Alexander Larsson  <alexl@redhat.com>
