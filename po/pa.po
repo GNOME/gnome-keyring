@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-01 23:07+0100\n"
+"POT-Creation-Date: 2005-03-07 09:04+0100\n"
 "PO-Revision-Date: 2005-03-02 05:45+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
@@ -32,7 +32,8 @@ msgstr "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਤੱਕ ਪਹੁ�
 
 #: gnome-keyring-ask.c:227
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "ਕਾਰਜ '%s' (%s) ਕੀਰਿੰਗ '%s' ਤੱਕ ਪਹੁੰਚ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਸ ਨੂੰ ਜਿੰਦਰਾ ਲੱਗਾ ਹੈ"
 
 #. keyring == KEYRING_NAME_UNKNOWN
@@ -45,7 +46,8 @@ msgstr "ਕਾਰਜ '%s' (%s) ਅਣਜਾਣੀ ਕੀਰਿੰਗ ਤੱਕ �
 
 #: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr "ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਤੱਕ ਪਹੁੰਚ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਸ ਨੂੰ ਜਿੰਦਰਾ ਲੱਗਾ ਹੈ"
 
 #: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
@@ -56,21 +58,25 @@ msgstr "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਤੱਕ ਪਹੁ�
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "ਕਾਰਜ '%s' ਅਣਜਾਣੀ ਕੀਰਿੰਗ ਤੱਕ ਪਹੁੰਚ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਸ ਨੂੰ ਜਿੰਦਰਾ ਲੱਗਾ ਹੈ"
 
 #: gnome-keyring-ask.c:268
-msgid "An unknown application wants access to the default keyring, but it is locked"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
 msgstr "ਕਾਰਜ ਮੂਲ ਕੀਰਿੰਗ ਤੱਕ ਪਹੁੰਚ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਸ ਨੂੰ ਜਿੰਦਰਾ ਲੱਗਾ ਹੈ"
 
 #: gnome-keyring-ask.c:272
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "ਅਣਜਾਣ ਕਾਰਜ ਕੀਰਿੰਗ '%s' ਤੱਕ ਪਹੁੰਚ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਸ ਨੂੰ ਜਿੰਦਰਾ ਲੱਗਾ ਹੈ"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "ਅਣਜਾਣ ਕਾਰਜ ਅਣਪਛਾਤੇ ਕੀਰਿੰਗ ਤੱਕ ਪਹੁੰਚ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਸ ਨੂੰ ਜਿੰਦਰਾ ਲੱਗਾ ਹੈ"
 
 #: gnome-keyring-ask.c:284
@@ -133,8 +139,8 @@ msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"ਅਣਜਾਣ ਕਾਰਜ ਨਵੀ ਕੀਰਿੰਗ '%s' ਪੈਦਾ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਵਾਸਤੇ ਵਰਤਣ ਲਈ ਗੁਪਤ-ਕੋਡ "
-"ਚੁਣਨਾ ਪਵੇਗਾ।"
+"ਅਣਜਾਣ ਕਾਰਜ ਨਵੀ ਕੀਰਿੰਗ '%s' ਪੈਦਾ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਵਾਸਤੇ ਵਰਤਣ ਲਈ ਗੁਪਤ-ਕੋਡ ਚੁਣਨਾ "
+"ਪਵੇਗਾ।"
 
 #: gnome-keyring-ask.c:363
 msgid ""
@@ -179,8 +185,8 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"ਅਣਜਾਣ ਕਾਰਜ ਗੁਪਤ-ਕੋਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇੱਥੇ ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀ, ਇੱਕ ਬਣਾਉਣ ਲਈ, "
-"ਤੁਹਾਨੂੰ ਗੁਪਤ-ਕੋਡ ਚੁਣਨਾ ਪਵੇਗਾ, ਜਿਹੜਾ ਤੁਸੀ ਇਸ ਲਈ ਵਰਤਣਾ ਚਾਹੁੰਦੇ ਹੋ।"
+"ਅਣਜਾਣ ਕਾਰਜ ਗੁਪਤ-ਕੋਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇੱਥੇ ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀ, ਇੱਕ ਬਣਾਉਣ ਲਈ, ਤੁਹਾਨੂੰ "
+"ਗੁਪਤ-ਕੋਡ ਚੁਣਨਾ ਪਵੇਗਾ, ਜਿਹੜਾ ਤੁਸੀ ਇਸ ਲਈ ਵਰਤਣਾ ਚਾਹੁੰਦੇ ਹੋ।"
 
 #: gnome-keyring-ask.c:416
 msgid "Create Default Keyring"
@@ -273,4 +279,3 @@ msgstr "ਤੁਹਾਨੂੰ ਚਲਾਉਣ ਲਈ ਬੇਨਤੀ ਦੀ ਕ�
 #: gnome-keyring-ask.c:560
 msgid "Unknown request type\n"
 msgstr "ਅਣਜਾਣ ਬੇਨਤੀ ਕਿਸਮ\n"
-
