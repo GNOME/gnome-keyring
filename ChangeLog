@@ -1,3 +1,7 @@
+2004-03-21  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "ca" "nl" "tr" "zh_CN" "zh_TW" to ALL_LINGUAS.
+
 2004-03-20  Gareth Owen  <gowen72@yahoo.com>
 
 	* configure.in: Added en_GB to ALL_LINGUAS
