@@ -6,8 +6,6 @@ set daemon chmod a-r or similar (pctrl)
 
 keyring acls?
 
-double fork in main
-
 keep track of denied_keyrings in ask to avoid asking multiple times
 
 make ask UI nicer

@@ -1,3 +1,11 @@
+2003-12-08  Alexander Larsson  <alexl@redhat.com>
+
+	* AUTHORS: 
+	* TODO: 
+	* README: 
+	* NEWS:
+	Some text for the 0.1 release
+
 2003-12-06  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-daemon.c: (close_stdinout), (main):
