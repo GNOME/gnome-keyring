@@ -1,13 +1,17 @@
+2004-02-27  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added "th" (Thai) to ALL_LINGUAS.
+
 2004-02-25  Alessio Frusciante  <algol@firenze.linux.it>
 
 	* configure.in: Added "it" (Italian) to ALL_LINGUAS.
 
 2004-02-22  Mətin Əmirov  <metin@karegen.com>
-                                                                                
+
         * configure.in: Added "az" to ALL_LINGUAS.
 
 2004-02-11  Arafat Medini  <lumina@silverpen.de>
-                                                                                
+
         * configure.in: Added Arabic locale ar to ALL_LINGUAS.
                                             
 2004-02-11  Pauli Virtanen  <pauli.virtanen@hut.fi>
