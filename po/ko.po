@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-01-30 11:46+0100\n"
-"PO-Revision-Date: 2004-01-15 06:01+0900\n"
+"PO-Revision-Date: 2004-03-21 08:15+0800\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr ""
 "있습니다"
 
 #: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""

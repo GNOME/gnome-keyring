@@ -1,3 +1,7 @@
+2004-03-21  Abel Cheung  <maddog@linux.org.hk>
+
+	* ar.po, ko.po: Mark wrong entry as fuzzy (msgfmt check failed).
+
 2004-03-20  Gareth Owen  <gowen72@yahoo.com>
 
 	* en_GB.po: Added British translation
