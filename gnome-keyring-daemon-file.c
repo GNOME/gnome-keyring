@@ -335,13 +335,14 @@ write_all (int fd, const char *buf, size_t len)
 {
 	size_t bytes;
 	int res;
-	
+
 	bytes = 0;
 	while (bytes < len) {
 		res = write (fd, buf + bytes, len - bytes);
 		if (res < 0) {
-			if (res != EINTR &&
-			    res != EAGAIN) {
+			if (errno != EINTR &&
+			    errno != EAGAIN) {
+				perror ("write_all write failure:");
 				return -1;
 			}
 		} else {
@@ -752,6 +753,65 @@ update_keyring_from_disk (GnomeKeyring *keyring,
 }
 
 void
+set_default_keyring (GnomeKeyring *keyring)
+{
+	char *dirname, *path;
+	int fd;
+
+	if (keyring->keyring_name != NULL) {
+		dirname = get_keyring_dir ();
+		path = g_build_filename (dirname, "default", NULL);
+
+		fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+		if (fd != -1) {
+			write_all (fd, keyring->keyring_name,
+				   strlen (keyring->keyring_name));
+			close (fd);
+		}
+		
+		g_free (path);
+		g_free (dirname);
+	}
+
+	default_keyring = keyring;
+}
+
+static void
+update_default (void)
+{
+	char *dirname, *path, *newline;
+	char *contents;
+	GnomeKeyring *keyring;
+	
+	dirname = get_keyring_dir ();
+	path = g_build_filename (dirname, "default", NULL);
+
+	keyring = NULL;
+	
+	if (g_file_get_contents (path,
+				 &contents, NULL, NULL)) {
+		/* remove any final newlines */
+		newline = strchr (contents, '\n');
+		if (newline != NULL) {
+			*newline = 0;
+		}
+
+		keyring = find_keyring (contents);
+		
+		g_free (contents);
+	}
+	
+	g_free (path);
+	g_free (dirname);
+
+	if (keyring == NULL) {
+		keyring = find_keyring ("default");
+	}
+	
+	default_keyring = keyring;
+}
+
+void
 update_keyrings_from_disk (void)
 {
 	char *dirname, *path;
@@ -774,6 +834,8 @@ update_keyrings_from_disk (void)
 			update_keyring_from_disk (l->data, FALSE);
 		}
 		
+		update_default ();
+		
 		return;
 	}
 
@@ -788,6 +850,9 @@ update_keyrings_from_disk (void)
 	if (dir != NULL) {
 		while ((filename = g_dir_read_name (dir)) != NULL) {
 			if (filename[0] == '.') {
+				continue;
+			}
+			if (strcmp (filename, "default") == 0) {
 				continue;
 			}
 			path = g_build_filename (dirname, filename, NULL);
@@ -823,8 +888,9 @@ update_keyrings_from_disk (void)
 	}
 	g_list_free (old_keyrings);
 
+	update_default ();
+	
 	keyring_dir_mtime = statbuf.st_mtime;
 
 	g_free (dirname);
 }
-

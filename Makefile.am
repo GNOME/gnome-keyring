@@ -6,7 +6,8 @@ bin_PROGRAMS= \
 	gnome-keyring-ask
 
 noinst_PROGRAMS= \
-	list-keyrings
+	list-keyrings \
+	test-keyring
 
 lib_LTLIBRARIES=libgnome-keyring.la
 
@@ -64,6 +65,12 @@ list_keyrings_SOURCES = \
 	list-keyrings.c
 
 list_keyrings_LDADD = \
+	libgnome-keyring.la
+
+test_keyring_SOURCES = \
+	test.c
+
+test_keyring_LDADD = \
 	libgnome-keyring.la
 
 EXTRA_DIST = \

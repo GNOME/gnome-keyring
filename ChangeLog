@@ -1,5 +1,28 @@
 2003-11-28  Alexander Larsson  <alexl@redhat.com>
 
+	* .cvsignore:
+	* Makefile.am:
+	* test.c:
+	Add cheesy test app
+
+	* gnome-keyring-daemon-file.c:
+	fix errno bugs
+	New function set_default_keyring
+	Read the default keyring on update_keyrings
+	
+	* gnome-keyring-daemon.c:
+	Reset default_keyring to NULL when its destroyed
+	implement set_default_keyring
+	fix errno bugs
+	
+	* gnome-keyring-daemon.h:
+	Export new stuff and clean up indention a bit
+	
+	* list-keyrings.c:
+	Nicer output
+
+2003-11-28  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-utils.c (gnome_keyring_item_info_free):
 	Don't crash if info is NULL
 

@@ -28,3 +28,4 @@ stamp-h.in
 gnome-keyring-ask
 gnome-keyring-daemon
 list-keyrings
+test-keyring

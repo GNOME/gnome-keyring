@@ -215,7 +215,7 @@ main (int argc, char *argv[])
 	g_main_loop_run (loop);
 	g_print ("\n");
 	if (keyring != NULL) {
-		g_print ("The default keyring for storage is %s\n", keyring);
+		g_print ("The default keyring for storage is '%s'\n", keyring);
 	} else {
 		g_print ("No default keyring defined\n");
 	}

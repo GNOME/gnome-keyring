@@ -134,27 +134,31 @@ void                        gnome_keyring_acl_free                     (GList   
 void     cleanup_socket_dir   (void);
 gboolean create_master_socket (const char **path);
 
-void update_keyrings_from_disk (void);
-void save_keyring_to_disk (GnomeKeyring *keyring);
-gboolean update_keyring_from_disk (GnomeKeyring *keyring, gboolean force_reload);
+void     set_default_keyring       (GnomeKeyring *keyring);
+void     update_keyrings_from_disk (void);
+void     save_keyring_to_disk      (GnomeKeyring *keyring);
+gboolean update_keyring_from_disk  (GnomeKeyring *keyring,
+				    gboolean      force_reload);
 
-GnomeKeyringAttributeList *gnome_keyring_attributes_hash (GnomeKeyringAttributeList *attributes);
+GnomeKeyringAttributeList *gnome_keyring_attributes_hash    (GnomeKeyringAttributeList        *attributes);
 GnomeKeyringAccessControl *gnome_keyring_access_control_new (const GnomeKeyringApplicationRef *application,
-							     GnomeKeyringAccessType types_allowed);
+							     GnomeKeyringAccessType            types_allowed);
 
-GnomeKeyringItem * find_item_in_list (GList *list, guint32 id);
-GnomeKeyring * find_keyring (const char *name);
-void gnome_keyring_item_free (GnomeKeyringItem *item);
 
-GnomeKeyring * gnome_keyring_new (const char *name, const char *path);
-GnomeKeyringItem * gnome_keyring_item_new (GnomeKeyring *keyring,
-					   GnomeKeyringItemType type);
-
-void gnome_keyring_free (GnomeKeyring *keyring);
+GnomeKeyringItem *find_item_in_list       (GList                *list,
+					   guint32               id);
+GnomeKeyring *    find_keyring            (const char           *name);
+void              gnome_keyring_item_free (GnomeKeyringItem     *item);
+GnomeKeyring *    gnome_keyring_new       (const char           *name,
+					   const char           *path);
+GnomeKeyringItem *gnome_keyring_item_new  (GnomeKeyring         *keyring,
+					   GnomeKeyringItemType  type);
+void              gnome_keyring_free      (GnomeKeyring         *keyring);
 
 char *get_default_keyring_file_for_name (const char *keyring_name);
 
 extern GList *keyrings;
 extern GnomeKeyring *session_keyring;
+extern GnomeKeyring *default_keyring;
 
 #endif /* GNOME_KEYRING_DAEMON_H */

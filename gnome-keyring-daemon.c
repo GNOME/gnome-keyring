@@ -87,6 +87,10 @@ void
 gnome_keyring_free (GnomeKeyring *keyring)
 {
 	/* TODO: cancel outstanding requests for it */
+
+	if (keyring == default_keyring) {
+		default_keyring = NULL;
+	}
 	
 	g_free (keyring->keyring_name);
 	g_free (keyring->file);
@@ -629,10 +633,43 @@ op_keyring_lock_all_execute (GString *packet,
 }
 
 static gboolean
+op_set_default_keyring_execute (GString *packet,
+				GString *result,
+				GnomeKeyringApplicationRef *app_ref,
+				GList *access_requests)
+{
+	char *keyring_name;
+	GnomeKeyringOpCode opcode;
+	GnomeKeyring *keyring;
+
+	if (!gnome_keyring_proto_decode_op_string (packet,
+						   &opcode,
+						   &keyring_name)) {
+		return FALSE;
+	}
+
+	if (keyring_name == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+	} else {
+		keyring = find_keyring (keyring_name);
+		if (keyring == NULL) {
+			gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		} else {
+			set_default_keyring (keyring);
+			gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		}
+	}
+	
+	g_free (keyring_name);
+	
+	return TRUE;
+}
+
+static gboolean
 op_get_default_keyring_execute (GString *packet,
-			     GString *result,
-			     GnomeKeyringApplicationRef *app_ref,
-			     GList *access_requests)
+				GString *result,
+				GnomeKeyringApplicationRef *app_ref,
+				GList *access_requests)
 {
 	char *name;
 	
@@ -1448,8 +1485,8 @@ ask_io (GIOChannel  *channel,
 	fd = g_io_channel_unix_get_fd (channel);
 	res = read (fd, buffer, sizeof (buffer));
 	if (res < 0) {
-		if (res != EINTR &&
-		    res != EAGAIN) {
+		if (errno != EINTR &&
+		    errno != EAGAIN) {
 			finish_ask_io (ask, TRUE);
 			return FALSE;
 		}
@@ -1687,7 +1724,7 @@ gnome_keyring_cancel_ask (gpointer operation)
 GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ NULL,  op_keyring_lock_all_execute }, /* LOCK_ALL */
 	{ NULL, NULL}, /* CREATE */
-	{ NULL, NULL}, /* SET_DEFAULT_KEYRING */
+	{ NULL, op_set_default_keyring_execute}, /* SET_DEFAULT_KEYRING */
 	{ NULL, op_get_default_keyring_execute}, /* GET_DEFAULT_KEYRING */
 	{ NULL, op_list_keyrings_execute}, /* LIST_KEYRINGS */
 	{ op_create_keyring_collect, op_create_keyring_execute}, /* CREATE_KEYRING */
@@ -1903,9 +1940,8 @@ main (int argc, char *argv[])
 
 	session_keyring = gnome_keyring_new ("session", NULL);
 
+	default_keyring = NULL;
 	update_keyrings_from_disk ();
-	
-	//default_keyring = session_keyring;
 
 	loop = g_main_loop_new (NULL, FALSE);
 	g_main_loop_run (loop);
