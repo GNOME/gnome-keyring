@@ -1,3 +1,9 @@
+2004-09-13  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump version to 0.4
+
 2004-09-09  Mugurel Tudor  <mugurelu@go.ro>
 
 	* configure.in: Added ro to ALL_LINGUAS
