@@ -1,0 +1,23 @@
+install headers in right place
+
+pkg-config file
+
+decide on whether to allow attribute collisions or not
+ probably yes, do we want a create_or_set call then?
+
+keyring acls?
+
+double fork in main
+
+keep track of denied_keyrings in ask to avoid asking multiple times
+
+make ask UI nicer
+
+verify acls work
+ 
+missing ops:
+ delete keyring
+ set keyring info
+ set item info
+ set item attributes
+  
