@@ -476,6 +476,20 @@ run_sync_operation (GString *buffer,
 	return GNOME_KEYRING_RESULT_OK;
 }
 
+gboolean
+gnome_keyring_is_availible (void)
+{
+	int socket;
+	
+	socket = connect_to_daemon (FALSE);
+	if (socket < 0) {
+		return FALSE;
+	}
+	close (socket);
+	return TRUE;
+}
+
+
 void
 gnome_keyring_cancel_request (gpointer request)
 {

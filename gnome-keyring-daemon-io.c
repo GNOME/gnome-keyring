@@ -591,7 +591,7 @@ create_master_socket (const char **path)
 	GIOChannel *channel;
 	
 	/* Create private directory for agent socket */
-	strncpy (tmp_dir, "/tmp/keyring-XXXXXXXX", sizeof (tmp_dir));
+	strncpy (tmp_dir, "/tmp/keyring-XXXXXX", sizeof (tmp_dir));
 	if (mkdtemp (tmp_dir) == NULL) {
 		perror ("mkdtemp: socket dir");
 		return FALSE;

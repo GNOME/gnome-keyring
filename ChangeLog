@@ -1,3 +1,11 @@
+2003-12-04  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring.[ch]:
+	Add gnome_keyring_is_availible.
+
+	* gnome-keyring-daemon-io.c (create_master_socket):
+	Only use 6 X:es in socket name
+
 2003-12-03  Alexander Larsson  <alexl@redhat.com>
 
 	* TODO:

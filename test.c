@@ -374,6 +374,9 @@ main (int argc, char *argv[])
 			g_print ("need server & password\n");
 		}
 #endif
+	} else if (arg == 't') {
+		g_print ("gnome keyring is: %s\n",
+			 gnome_keyring_is_availible ()?"availible":"not availible");
 	} else {
 		g_print ("unsupported test\n");
 	}
