@@ -1,6 +1,10 @@
 This is the initial release of gnome-keyring.
 It hasn't had much public testing yet, please try it out.
 
+Changes in version 0.1.90 are:
+* New translations
+* uninstalled pkg-config file
+
 Changes in version 0.1.4 are:
 * New translations
 * put gnome-keyring-ask in libexec
