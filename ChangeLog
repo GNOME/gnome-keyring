@@ -1,5 +1,16 @@
 2003-11-28  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-utils.c (gnome_keyring_item_info_free):
+	Don't crash if info is NULL
+
+	* gnome-keyring-daemon.c:
+	Implement gnome_keyring_ask_cancel
+
+	* gnome-keyring-daemon-io.c (gnome_keyring_client_state_machine):
+	Avoid crash on gnome_keyring_ask reentrancy
+	
+2003-11-28  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-ask.c:
 	Fix gettext include
 

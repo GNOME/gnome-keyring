@@ -27,6 +27,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -58,6 +59,7 @@ typedef struct {
 	
 	GList *denied_keyrings;
 
+	gint ask_pid;
 	GString *buffer;
 	guint input_watch;
 	
@@ -450,12 +452,18 @@ request_allowed_for_app (GnomeKeyringAccessRequest *request,
 static void
 gnome_keyring_ask_free (GnomeKeyringAsk *ask)
 {
+	if (ask->input_watch != 0) {
+		g_source_remove (ask->input_watch);
+	}
+	if (ask->ask_pid != 0) {
+		kill (ask->ask_pid, SIGKILL);
+		
+	}
 	gnome_keyring_access_request_list_free (ask->access_requests);
 	g_list_free (ask->denied_keyrings);
-	/* TODO: destroy callback_data? */
+	g_string_free (ask->buffer, TRUE);
 	g_free (ask);
 }
-
 
 static gboolean
 match_attributes (GnomeKeyringItem *item,
@@ -1343,6 +1351,9 @@ finish_ask_io (GnomeKeyringAsk *ask,
 	GnomeKeyringItem *item;
 	GnomeKeyringAccessControl *ac;
 
+	ask->input_watch = 0;
+	ask->ask_pid = 0;
+	
 	/* default for failed requests */
 	response = GNOME_KEYRING_ASK_RESPONSE_FAILURE;
 	str = NULL;
@@ -1522,7 +1533,7 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 				      envp,
 				      0,
 				      NULL, NULL,
-				      NULL,
+				      &ask->ask_pid,
 				      NULL,
 				      &stdout,
 				      NULL,
@@ -1666,8 +1677,11 @@ gnome_keyring_ask (GList                             *access_requests,
 void
 gnome_keyring_cancel_ask (gpointer operation)
 {
-	/* TODO: cancel outstanding operation & free operation */
-	g_assert_not_reached ();
+	GnomeKeyringAsk *ask;
+
+	ask = operation;
+
+	gnome_keyring_ask_free (ask);
 }
 
 GnomeKeyringOperationImplementation keyring_ops[] = {

@@ -38,7 +38,6 @@ gnome_keyring_free_password (char *str)
 	}
 }
 
-
 void
 gnome_keyring_found_free (GnomeKeyringFound *found)
 {
@@ -116,13 +115,15 @@ gnome_keyring_info_copy (GnomeKeyringInfo *keyring_info)
 void
 gnome_keyring_item_info_free (GnomeKeyringItemInfo *item_info)
 {
-	g_free (item_info->display_name);
-	if (item_info->secret != NULL) {
-		/* clear the secret on free */
-		memset (item_info->secret, 0, strlen (item_info->secret));
-		g_free (item_info->secret);
+	if (item_info != NULL) {
+		g_free (item_info->display_name);
+		if (item_info->secret != NULL) {
+			/* clear the secret on free */
+			memset (item_info->secret, 0, strlen (item_info->secret));
+			g_free (item_info->secret);
+		}
+		g_free (item_info);
 	}
-	g_free (item_info);
 }
 
 GnomeKeyringItemInfo *

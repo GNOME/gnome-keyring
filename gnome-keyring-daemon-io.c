@@ -307,6 +307,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 	GnomeKeyringOpCode op;
 	GIOChannel *channel;
 	GList *access_requests;
+	gpointer ask;
 	pid_t pid;
 	uid_t uid;
 	int res;
@@ -387,10 +388,15 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		/* request_access can reenter here if there is no need to
 		 * wait for access rights */
 		client->state = GNOME_CLIENT_STATE_REQUEST_ACCESS;
-		client->ask = gnome_keyring_ask (access_requests,
-						 client->app_ref,
-						 ask_result,
-						 client);
+		ask = gnome_keyring_ask (access_requests,
+					 client->app_ref,
+					 ask_result,
+					 client);
+		if (ask != NULL) {
+			/* Don't set this if NULL, because then the client can already be destroyed
+			 * in the ask_result callback. */
+			client->ask = ask;
+		}
 		gnome_keyring_access_request_list_free (access_requests);
 		break;
 	case GNOME_CLIENT_STATE_REQUEST_ACCESS:
