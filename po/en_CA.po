@@ -1,15 +1,16 @@
-# Canadian English translation of gnome-keyring 0.1.90.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the gnome-keyring package.
+# Canadian English translation of gnome-keyring
+# Copyright (C) Adam Weinberger and the GNOME Foundation
+# This file is distributed under the same licence as the gnome-keyring package.
 # Alexander Winston <alexander.winston@comcast.net>, 2004.
+# Adam Weinberger <adamw@gnome.org>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.1.90\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 11:46+0100\n"
-"PO-Revision-Date: 2004-03-08 18:56-0500\n"
-"Last-Translator: Alexander Winston <alexander.winston@comcast.net>\n"
+"POT-Creation-Date: 2004-09-08 03:10-0400\n"
+"PO-Revision-Date: 2004-09-08 18:56-0400\n"
+"Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,7 +32,6 @@ msgid ""
 msgstr ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 
-#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:232
 #, c-format
 msgid ""
@@ -54,7 +54,6 @@ msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "The application '%s' wants access to the keyring '%s', but it is locked"
 
-#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
 #, c-format
 msgid ""
@@ -75,7 +74,6 @@ msgid ""
 msgstr ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 
-#. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:277
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
@@ -183,7 +181,6 @@ msgstr ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 
-#. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:412
 msgid ""
 "An unknown application wants to store a password, but there is no default "
