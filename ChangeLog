@@ -1,5 +1,12 @@
 2005-01-11  Alexander Larsson  <alexl@redhat.com>
 
+	* configure.in:
+	Post release bump
+
+=== gnome-keyring 0.4.1 ===
+
+2005-01-11  Alexander Larsson  <alexl@redhat.com>
+
 	* NEWS:
 	Update for release
 
