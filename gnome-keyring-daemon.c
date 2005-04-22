@@ -2396,7 +2396,7 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ op_set_item_info_or_attributes_collect, op_set_item_info_execute}, /* SET_ITEM_INFO */
 	{ op_get_item_info_or_attributes_collect, op_get_item_attributes_execute}, /* GET_ITEM_ATTRIBUTES */
 	{ op_set_item_info_or_attributes_collect, op_set_item_attributes_execute}, /* SET_ITEM_ATTRIBUTES */
-	{ op_set_item_info_or_attributes_collect, op_get_item_acl_execute}, /* GET_ITEM_ACL */
+	{ op_get_item_info_or_attributes_collect, op_get_item_acl_execute}, /* GET_ITEM_ACL */
 	{ op_set_item_info_or_attributes_collect, op_set_item_acl_execute}, /* SET_ITEM_ACL */
 };
 

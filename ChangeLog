@@ -1,3 +1,9 @@
+2005-04-21  James Bowes  <bowes@cs.dal.ca>
+
+	* gnome-keyring-daemon.c: Fixed a typo in the 
+	GnomeKeyringOperationImplementation keyring_ops, where 
+	get_item_acl_execute was hooked to set_item..._collect.
+
 2005-03-31  Steve Murphy  <murf@e-tools.com>
 
         * configure.in: Added "rw" to ALL_LINGUAS.
