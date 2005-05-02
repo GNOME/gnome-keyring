@@ -798,6 +798,39 @@ op_list_keyrings_execute (GString *packet,
 
 
 static gboolean
+op_set_keyring_info_execute (GString *packet,
+			     GString *result,
+			     GnomeKeyringApplicationRef *app_ref,
+			     GList *access_requests)
+{
+	char    *keyring_name;
+	gboolean lock_on_idle;
+	guint32  lock_timeout;
+	GnomeKeyring *keyring;
+	
+	if (!gnome_keyring_proto_decode_set_keyring_info (packet,
+							  &keyring_name,
+							  &lock_on_idle,
+							  &lock_timeout)) {
+		return FALSE;
+	}
+	
+	keyring = find_keyring (keyring_name);
+	if (keyring == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+	} else {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		
+		keyring->lock_on_idle = lock_on_idle;
+		keyring->lock_timeout = lock_timeout;
+	}
+	
+	g_free (keyring_name);
+
+	return TRUE;
+}
+
+static gboolean
 op_get_keyring_info_execute (GString *packet,
 			     GString *result,
 			     GnomeKeyringApplicationRef *app_ref,
@@ -2387,7 +2420,7 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ NULL, op_unlock_keyring_execute}, /* UNLOCK_KEYRING */
 	{ NULL, op_delete_keyring_execute}, /* DELETE_KEYRING */
 	{ NULL, op_get_keyring_info_execute}, /* GET_KEYRING_INFO */
-	{ NULL, NULL}, /* SET_KEYRING_INFO */
+	{ NULL, op_set_keyring_info_execute}, /* SET_KEYRING_INFO */
 	{ op_list_items_collect, op_list_items_execute}, /* LIST_ITEMS */
 	{ op_find_collect, op_find_execute }, /* FIND */
 	{ op_create_item_collect, op_create_item_execute}, /* CREATE_ITEM */

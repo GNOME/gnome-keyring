@@ -1,3 +1,12 @@
+2005-04-24  James Bowes  <bowes@cs.dal.ca>
+
+	* gnome-keyring-daemon.c: (op_set_keyring_info_execute):
+	* gnome-keyring-proto.c:
+	(gnome_keyring_proto_encode_set_keyring_info),
+	(gnome_keyring_proto_decode_set_item_info),
+	(gnome_keyring_proto_decode_set_keyring_info):
+	* gnome-keyring-proto.h: Implement gnome_keyring_set_info.
+
 2005-04-21  James Bowes  <bowes@cs.dal.ca>
 
 	* gnome-keyring-daemon.c: Fixed a typo in the 
