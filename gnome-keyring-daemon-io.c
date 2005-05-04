@@ -156,7 +156,7 @@ read_unix_socket_credentials (int fd,
 	{
 #ifdef SO_PEERCRED
 		struct ucred cr;   
-		int cr_len = sizeof (cr);
+		socklen_t cr_len = sizeof (cr);
 		
 		if (getsockopt (fd, SOL_SOCKET, SO_PEERCRED, &cr, &cr_len) == 0 &&
 		    cr_len == sizeof (cr)) {

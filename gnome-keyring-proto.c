@@ -38,7 +38,7 @@ gnome_keyring_proto_set_uint32 (GString *buffer, gsize offset, guint32 val)
 		return FALSE;
 	}
 
-	ptr = buffer->str + offset;
+	ptr = (unsigned char *)buffer->str + offset;
 	ptr[0] = (val >> 24) & 0xff;
 	ptr[1] = (val >> 16) & 0xff;
 	ptr[2] = (val >> 8) & 0xff;
@@ -79,7 +79,7 @@ gnome_keyring_proto_get_uint32 (GString *buffer,
 		return FALSE;
 	}
 
-	ptr = buffer->str + offset;
+	ptr = (unsigned char *)buffer->str + offset;
 	if (val != NULL) {
 		*val = ptr[0] << 24 |
 			ptr[1] << 16 |
@@ -163,7 +163,7 @@ gboolean
 gnome_keyring_proto_get_bytes (GString *buffer,
 			       gsize offset,
 			       gsize *next_offset,
-			       char *out, gsize n_bytes)
+			       guchar *out, gsize n_bytes)
 {
 	if (buffer->len < n_bytes ||
 	    offset > buffer->len - n_bytes) {

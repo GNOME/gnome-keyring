@@ -76,7 +76,7 @@ gboolean gnome_keyring_proto_get_uint32         (GString                    *buf
 gboolean gnome_keyring_proto_get_bytes          (GString                    *buffer,
 						 gsize                       offset,
 						 gsize                      *next_offset,
-						 char                       *out,
+						 guchar                     *out,
 						 gsize                       n_bytes);
 void     gnome_keyring_proto_add_time           (GString                    *buffer,
 						 time_t                      val);

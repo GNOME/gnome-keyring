@@ -1,3 +1,12 @@
+2005-05-04  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon-file.c:
+	* gnome-keyring-daemon-io.c:
+	* gnome-keyring-proto.h:
+	* md5.c:
+	Fix char signness issues (#302938)
+	Based on patch from Jeramy Rutley
+
 2005-04-24  James Bowes  <bowes@cs.dal.ca>
 
 	* gnome-keyring-daemon.c: (op_set_keyring_info_execute):

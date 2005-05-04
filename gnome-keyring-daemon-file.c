@@ -44,8 +44,8 @@ static void
 generate_key (const char *password,
 	      guchar salt[8],
 	      int iterations,
-	      char key[16],
-	      char iv[16])
+	      guchar key[16],
+	      guchar iv[16])
 {
 	sha256Param sha;
 	guchar digest[32];
@@ -149,7 +149,7 @@ verify_decrypted_buffer (GString *buffer)
 	
 	gnome_keyring_md5_init (&md5_context);
 	gnome_keyring_md5_update (&md5_context,
-				  buffer->str + 16, buffer->len - 16);
+				  (guchar *)buffer->str + 16, buffer->len - 16);
 	gnome_keyring_md5_final (digest, &md5_context);
 	
 	return memcmp (buffer->str, digest, 16) == 0;
@@ -304,7 +304,7 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 	gnome_keyring_proto_add_uint32 (buffer, flags);
 	gnome_keyring_proto_add_uint32 (buffer, keyring->lock_timeout);
 	gnome_keyring_proto_add_uint32 (buffer, keyring->hash_iterations);
-	g_string_append_len (buffer, keyring->salt, 8);
+	g_string_append_len (buffer, (char *)keyring->salt, 8);
 
 	/* Reserved: */
 	for (i = 0; i < 4; i++) {
@@ -330,7 +330,7 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 
 	/* Encrypted data: */
 	to_encrypt = g_string_new (NULL);
-	g_string_append_len (to_encrypt, digest, 16); /* Space for hash */
+	g_string_append_len (to_encrypt, (char *)digest, 16); /* Space for hash */
 
 	if (!generate_encrypted_data (to_encrypt, keyring)) {
 		g_string_free (to_encrypt, TRUE);
@@ -344,7 +344,7 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 
 	gnome_keyring_md5_init (&md5_context);
 	gnome_keyring_md5_update (&md5_context,
-				  to_encrypt->str + 16, to_encrypt->len - 16);
+				  (guchar *)to_encrypt->str + 16, to_encrypt->len - 16);
 	gnome_keyring_md5_final (digest, &md5_context);
 	memcpy (to_encrypt->str, digest, 16);
 	
