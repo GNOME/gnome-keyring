@@ -53,7 +53,7 @@ generate_key (const char *password,
 	g_assert (iterations >= 1);
 
 	sha256Reset (&sha);
-	sha256Update (&sha, password, strlen (password));
+	sha256Update (&sha, (unsigned char *)password, strlen (password));
 	sha256Update (&sha, salt, 8);
 	sha256Digest (&sha, digest);
 	iterations--;

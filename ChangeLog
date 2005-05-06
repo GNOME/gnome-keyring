@@ -1,3 +1,9 @@
+2005-05-06  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon-file.c (generate_key):
+	More char signedness fixes.
+	Patch from Vincent Untz
+	
 2005-05-04  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-daemon-file.c:
