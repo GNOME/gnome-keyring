@@ -1,3 +1,22 @@
+2005-05-20  James Bowes  <bowes@cs.dal.ca>
+
+	* gnome-keyring.c: (gnome_keyring_set_default_keyring_sync),
+	(gnome_keyring_get_default_keyring_sync),
+	(gnome_keyring_list_keyring_names_sync),
+	(gnome_keyring_lock_all_sync), (gnome_keyring_create_sync),
+	(gnome_keyring_unlock_sync), (gnome_keyring_lock_sync),
+	(gnome_keyring_delete_sync), (gnome_keyring_get_info_sync),
+	(gnome_keyring_set_info_sync), (gnome_keyring_list_item_ids_sync),
+	(gnome_keyring_item_delete_sync),
+	(gnome_keyring_item_get_info_sync),
+	(gnome_keyring_item_set_info_sync),
+	(gnome_keyring_item_get_attributes_sync),
+	(gnome_keyring_item_set_attributes_sync),
+	(gnome_keyring_item_get_acl_sync),
+	(gnome_keyring_item_set_acl_sync):
+	* gnome-keyring.h:
+	Implement synchronous functions for all async functions.
+
 2005-05-06  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-daemon-file.c (generate_key):

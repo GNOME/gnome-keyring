@@ -582,6 +582,27 @@ gnome_keyring_set_default_keyring (const char                             *keyri
 	return op;
 }
 
+GnomeKeyringResult 
+gnome_keyring_set_default_keyring_sync (const char *keyring)
+{
+	GString *send;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_op_string (send,
+						   GNOME_KEYRING_OP_SET_DEFAULT_KEYRING,
+						   keyring)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+
+	return res;
+}
+
 gpointer
 gnome_keyring_get_default_keyring (GnomeKeyringOperationGetStringCallback  callback,
 				   gpointer                                data,
@@ -601,6 +622,41 @@ gnome_keyring_get_default_keyring (GnomeKeyringOperationGetStringCallback  callb
 
 	op->reply_handler = gnome_keyring_string_reply;
 	return op;
+}
+
+GnomeKeyringResult 
+gnome_keyring_get_default_keyring_sync (char **keyring)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+	
+	*keyring = NULL;
+
+	if (!gnome_keyring_proto_encode_op_only (send,
+						 GNOME_KEYRING_OP_GET_DEFAULT_KEYRING)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+	if (!gnome_keyring_proto_decode_result_string_reply (receive, &res, keyring)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
 }
 
 static void
@@ -642,6 +698,40 @@ gnome_keyring_list_keyring_names  (GnomeKeyringOperationGetListCallback    callb
 	return op;
 }
 
+GnomeKeyringResult 
+gnome_keyring_list_keyring_names_sync (GList **keyrings)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+	
+	*keyrings = NULL;
+
+	if (!gnome_keyring_proto_encode_op_only (send,
+						 GNOME_KEYRING_OP_LIST_KEYRINGS)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+	if (!gnome_keyring_proto_decode_result_string_list_reply (receive, &res, keyrings)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
+}
  
 gpointer
 gnome_keyring_lock_all (GnomeKeyringOperationDoneCallback       callback,
@@ -662,6 +752,26 @@ gnome_keyring_lock_all (GnomeKeyringOperationDoneCallback       callback,
 
 	op->reply_handler = gnome_keyring_standard_reply;
 	return op;
+}
+
+GnomeKeyringResult 
+gnome_keyring_lock_all_sync (void)
+{
+	GString *send;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+
+	if (!gnome_keyring_proto_encode_op_only (send,
+						 GNOME_KEYRING_OP_LOCK_ALL)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
 }
 
 
@@ -692,6 +802,28 @@ gnome_keyring_create (const char                                  *keyring_name,
 	return op;
 }
 
+GnomeKeyringResult
+gnome_keyring_create_sync (const char *keyring_name,
+			   const char *password)
+{
+	GString *send;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_op_string_string (send,
+							  GNOME_KEYRING_OP_CREATE_KEYRING,
+							  keyring_name, password)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
+}
+
 gpointer
 gnome_keyring_unlock (const char                                  *keyring,
 		      const char                                  *password,
@@ -715,6 +847,28 @@ gnome_keyring_unlock (const char                                  *keyring,
 	op->reply_handler = gnome_keyring_standard_reply;
 	
 	return op;
+}
+
+GnomeKeyringResult
+gnome_keyring_unlock_sync (const char *keyring,
+			   const char *password)
+{
+	GString *send;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_op_string_string (send,
+							  GNOME_KEYRING_OP_UNLOCK_KEYRING,
+							  keyring, password)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
 }
 
 gpointer
@@ -741,6 +895,27 @@ gnome_keyring_lock (const char                                  *keyring,
 	return op;
 }
 
+GnomeKeyringResult
+gnome_keyring_lock_sync (const char *keyring)
+{
+	GString *send;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_op_string (send,
+						   GNOME_KEYRING_OP_LOCK_KEYRING,
+						   keyring)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
+}
+
 gpointer
 gnome_keyring_delete (const char                                  *keyring,
 		      GnomeKeyringOperationDoneCallback            callback,
@@ -763,6 +938,27 @@ gnome_keyring_delete (const char                                  *keyring,
 	op->reply_handler = gnome_keyring_standard_reply;
 	
 	return op;
+}
+
+GnomeKeyringResult
+gnome_keyring_delete_sync (const char *keyring)
+{
+	GString *send;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_op_string (send,
+						   GNOME_KEYRING_OP_DELETE_KEYRING,
+						   keyring)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
 }
 
 static void
@@ -806,6 +1002,42 @@ gnome_keyring_get_info (const char                                  *keyring,
 	return op;
 }
 
+GnomeKeyringResult
+gnome_keyring_get_info_sync (const char        *keyring,
+			     GnomeKeyringInfo **info)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+	
+	*info = NULL;
+
+	if (!gnome_keyring_proto_encode_op_only (send,
+						 GNOME_KEYRING_OP_GET_KEYRING_INFO)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+	if (!gnome_keyring_proto_decode_get_keyring_info_reply (receive, &res, info)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
+}
+
 gpointer
 gnome_keyring_set_info (const char                                  *keyring,
 			GnomeKeyringInfo                            *info,
@@ -828,6 +1060,27 @@ gnome_keyring_set_info (const char                                  *keyring,
 	op->reply_handler = gnome_keyring_standard_reply;
 	
 	return op;
+}
+
+GnomeKeyringResult
+gnome_keyring_set_info_sync (const char       *keyring,
+			     GnomeKeyringInfo *info)
+{
+	GString *send;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_set_keyring_info (send,
+							  keyring, info)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
 }
 
 static void
@@ -868,6 +1121,43 @@ gnome_keyring_list_item_ids (const char                                  *keyrin
 
 	op->reply_handler = gnome_keyring_list_item_ids_reply;
 	return op;
+}
+
+GnomeKeyringResult
+gnome_keyring_list_item_ids_sync (const char  *keyring,
+				  GList      **ids)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+	
+	*ids = NULL;
+
+	if (!gnome_keyring_proto_encode_op_string (send,
+						   GNOME_KEYRING_OP_LIST_ITEMS,
+						   keyring)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+	if (!gnome_keyring_proto_decode_result_int_list_reply (receive, &res, ids)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
 }
 
 void
@@ -1187,6 +1477,29 @@ gnome_keyring_item_delete (const char                                 *keyring,
 	return op;
 }
 
+GnomeKeyringResult
+gnome_keyring_item_delete_sync (const char *keyring,
+				guint32     id)
+{
+	GString *send;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_op_string_int (send,
+						       GNOME_KEYRING_OP_DELETE_ITEM,
+						       keyring,
+						       id)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+
+	return res;
+}
+
 static void
 gnome_keyring_get_item_info_reply (GnomeKeyringOperation *op)
 {
@@ -1229,6 +1542,44 @@ gnome_keyring_item_get_info (const char                                 *keyring
 	return op;
 }
 
+GnomeKeyringResult 
+gnome_keyring_item_get_info_sync (const char            *keyring,
+				  guint32                id,
+				  GnomeKeyringItemInfo **info)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+
+	*info = NULL;
+	
+	if (!gnome_keyring_proto_encode_op_string_int (send, 
+						       GNOME_KEYRING_OP_GET_ITEM_INFO,
+						       keyring, id)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+	
+	if (!gnome_keyring_proto_decode_get_item_info_reply (receive, &res, info)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
+}
+
 gpointer
 gnome_keyring_item_set_info (const char                                 *keyring,
 			     guint32                                     id,
@@ -1252,6 +1603,28 @@ gnome_keyring_item_set_info (const char                                 *keyring
 	op->reply_handler = gnome_keyring_standard_reply;
 	
 	return op;
+}
+
+GnomeKeyringResult 
+gnome_keyring_item_set_info_sync (const char           *keyring,
+				  guint32               id,
+				  GnomeKeyringItemInfo *info)
+{
+	GString *send;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_set_item_info (send,
+						       keyring, id, info)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
 }
 
 static void
@@ -1314,6 +1687,44 @@ gnome_keyring_item_get_attributes (const char                                 *k
 	return op;
 }
 
+GnomeKeyringResult
+gnome_keyring_item_get_attributes_sync (const char                 *keyring,
+					guint32                     id,
+					GnomeKeyringAttributeList **attributes)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+
+	*attributes = NULL;
+	
+	if (!gnome_keyring_proto_encode_op_string_int (send, 
+						       GNOME_KEYRING_OP_GET_ITEM_ATTRIBUTES,
+						       keyring, id)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+	
+	if (!gnome_keyring_proto_decode_get_attributes_reply (receive, &res, attributes)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
+}
+
 gpointer
 gnome_keyring_item_set_attributes (const char                                 *keyring,
 				   guint32                                     id,
@@ -1338,6 +1749,30 @@ gnome_keyring_item_set_attributes (const char                                 *k
 	op->reply_handler = gnome_keyring_standard_reply;
 	
 	return op;
+}
+
+GnomeKeyringResult
+gnome_keyring_item_set_attributes_sync (const char                *keyring,
+					guint32                    id,
+					GnomeKeyringAttributeList *attributes)
+{
+	GString *send;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_set_attributes (send,
+							keyring, id, 
+							attributes)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
+
 }
 
 gpointer
@@ -1365,6 +1800,44 @@ gnome_keyring_item_get_acl (const char                                 *keyring,
 	return op;
 }
 
+GnomeKeyringResult
+gnome_keyring_item_get_acl_sync (const char  *keyring,
+				 guint32      id,
+				 GList      **acl)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+
+	*acl = NULL;
+	
+	if (!gnome_keyring_proto_encode_op_string_int (send, 
+						       GNOME_KEYRING_OP_GET_ITEM_ACL,
+						       keyring, id)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+	
+	if (!gnome_keyring_proto_decode_get_acl_reply (receive, &res, acl)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
+}
+
 gpointer
 gnome_keyring_item_set_acl (const char                                 *keyring,
 			    guint32                                     id,
@@ -1389,6 +1862,29 @@ gnome_keyring_item_set_acl (const char                                 *keyring,
 	op->reply_handler = gnome_keyring_standard_reply;
 	
 	return op;
+}
+
+GnomeKeyringResult 
+gnome_keyring_item_set_acl_sync (const char *keyring,
+				 guint32     id,
+				 GList      *acl)
+{
+	GString *send;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_set_acl (send,
+						 keyring, id, 
+						 acl)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	res = run_sync_operation (send, NULL);
+	g_string_free (send, TRUE);
+	
+	return res;
 }
 
 GnomeKeyringItemType
