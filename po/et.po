@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: gnome-et@linux.ee\n"
 "POT-Creation-Date: 2004-08-06 11:44+0200\n"
-"PO-Revision-Date: 2005-04-25 09:44+0300\n"
+"PO-Revision-Date: 2005-05-30 08:34+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -100,6 +100,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
+"Rakendus '%s' (%s) tahab luua uut võtmerõngast nimega '%s'. Sa pead selle "
+"võtmerõnga jaoks parooli sisestama."
 
 #: gnome-keyring-ask.c:333
 #, c-format
@@ -107,6 +109,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
+"Rakendus '%s' (%s) tahab luua uut vaikimisi võtmerõngast. Sa pead selle "
+"võtmerõnga jaoks parooli sisestama."
 
 #: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
 #, c-format
@@ -114,6 +118,8 @@ msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
+"Rakendus '%s' tahab luua uut võtmerõngast nimega '%s'. Sa pead selle "
+"võtmerõnga jaoks parooli sisestama."
 
 #: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
 #, c-format
@@ -121,6 +127,8 @@ msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
+"Rakendus '%s' tahab luua uut vaikimisi võtmerõngast. Sa pead selle "
+"võtmerõnga jaoks parooli sisestama."
 
 #: gnome-keyring-ask.c:359
 #, c-format
@@ -128,12 +136,16 @@ msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
+"Tundmatu rakendus tahab luua uut võtmerõngast nimega '%s'. Sa pead selle "
+"võtmerõnga jaoks parooli sisestama."
 
 #: gnome-keyring-ask.c:363
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
+"Tundmatu rakendus tahab luua uut vaikimisi võtmerõngast. Sa pead selle "
+"võtmerõnga jaoks parooli sisestama."
 
 #: gnome-keyring-ask.c:369
 msgid "New Keyring Password"
@@ -141,7 +153,7 @@ msgstr "Uue võtmerõnga parool"
 
 #: gnome-keyring-ask.c:370
 msgid "Choose password for new keyring"
-msgstr ""
+msgstr "Sisesta uue võtmerõnga parool"
 
 #: gnome-keyring-ask.c:400
 #, c-format
@@ -173,7 +185,7 @@ msgstr "Vaikimisi võtmerõnga loomine"
 
 #: gnome-keyring-ask.c:417
 msgid "Choose password for default keyring"
-msgstr ""
+msgstr "Sisesta vaikimisi võtmerõnga parool"
 
 #: gnome-keyring-ask.c:454
 msgid "Allow application access to keyring?"
