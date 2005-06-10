@@ -1,3 +1,7 @@
+2005-06-10  Ignacio Casal Quinteiro  <nacho.resa@gmail.com>
+
+	* configure.in: Added 'gl' to ALL_LINGUAS.
+
 2005-05-20  James Bowes  <bowes@cs.dal.ca>
 
 	* gnome-keyring.c: (gnome_keyring_set_default_keyring_sync),

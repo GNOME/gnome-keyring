@@ -1,0 +1,306 @@
+# translation of gnome-keyring.HEAD.po to Galego
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-06-10 15:35+0200\n"
+"PO-Revision-Date: 2005-06-10 15:33+0200\n"
+"Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
+"Language-Team: Galego\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+
+#: ../gnome-keyring-ask.c:223
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"A aplicación '%s' (%s) quere acceder ao anel predeterminado, pero está "
+"bloqueado"
+
+#: ../gnome-keyring-ask.c:227
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"A aplicación '%s' (%s) quere acceder ao anel de claves %s, pero está "
+"bloqueado"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr ""
+"A aplicación '%s' (%s) quere acceder a un anel de claves descoñecidas, pero "
+"está bloqueado"
+
+#: ../gnome-keyring-ask.c:238 ../gnome-keyring-ask.c:252
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"A aplicación '%s' quere acceder ao anel de claves predeterminado, pero está "
+"bloqueado"
+
+#: ../gnome-keyring-ask.c:242 ../gnome-keyring-ask.c:257
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+"A aplicación '%s' quere acceder ao anel de claves '%s', pero está bloqueado"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:246 ../gnome-keyring-ask.c:262
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"A aplicación '%s' quere acceder a un anel de claves descoñecido, pero está "
+"bloqueado"
+
+#: ../gnome-keyring-ask.c:268
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Unha aplicación descoñecida quere acceder ao anel predeterminado, pero está "
+"bloquedo"
+
+#: ../gnome-keyring-ask.c:272
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Unha aplicación descoñecida quere acceder ao anel %s, pero está bloqueado"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:277
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Unha aplicación descoñecida quere acceder a un anel descoñecido, pero está "
+"bloqueado"
+
+#: ../gnome-keyring-ask.c:284
+msgid "Enter password for default keyring to unlock"
+msgstr "Introduza o contrasinal para desbloquear o anel predeterminado"
+
+#: ../gnome-keyring-ask.c:286
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Introduza o contrasinal para desbloquear o anel '%s'"
+
+#: ../gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "Desbloquear anel"
+
+#: ../gnome-keyring-ask.c:294 ../gnome-keyring-ask.c:374
+#: ../gnome-keyring-ask.c:421 ../gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "_Denegar"
+
+#: ../gnome-keyring-ask.c:329
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"A aplicación '%s' (%s) quere crear un novo anel chamado '%s'. Ten que elixir "
+"o contrasinal que quere usar con el."
+
+#: ../gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"A aplicación '%s' (%s) quere crear un anel predeterminado novo. Ten que "
+"elixir o contrasinal que quere usar con el."
+
+#: ../gnome-keyring-ask.c:339 ../gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"A aplicación '%s' quere crear un novo anel chamado '%s'. Ten que escoller o "
+"contrasinal que quere usar con el."
+
+#: ../gnome-keyring-ask.c:343 ../gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"A aplicación '%s' quere crear un anel predeterminado novo. Ten que escoller "
+"o contrasinal que quere usar con el."
+
+#: ../gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Unha aplicación descoñecida quere crear un novo anel chamado '%s'. Ten que "
+"escoller o contrasinal que quere usar con el."
+
+#: ../gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Unha aplicación descoñecida quere crear un novo anel predeterminado. Ten que "
+"elixir o contrasinal que quere usar con el."
+
+#: ../gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "Contrasinal novo do anel"
+
+#: ../gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "Escolla o contrasinal para o novo anel"
+
+#: ../gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"A aplicación '%s' (%s) desexa almacenar un contrasinal, pero non hai un anel "
+"predeterminado. Para crear un debe escoller o contrasinal que quere usar con "
+"el."
+
+#: ../gnome-keyring-ask.c:404 ../gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"A aplicación '%s' desexa almacenar un contrasinal, pero non hai un anel "
+"predeterminado. Para crear un debe escoller o contrasinal que quere usar en "
+"el."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Unha aplicación descoñecida desexa almacenar un contrasinal, pero non hai un "
+"anel predeterminado. Para crear un debe escoller o contrasinal que quere "
+"usar en el."
+
+#: ../gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "Crear anel predeterminado"
+
+#: ../gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "Escoller un contrasinal para o anel predeterminado"
+
+#: ../gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "Permitir á aplicación acceder ao anel?"
+
+#: ../gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "A aplicación '%s' (%s) quere acceder ao contrasinal para '%s' en %s."
+
+#: ../gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"A aplicación '%s' (%s) quere acceder ao contrasinal para '%s' no anel "
+"predeterminado."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+"A aplicación '%s' (%s) quere acceder ao contrasinal para '%s' nun anel "
+"descoñecido."
+
+#: ../gnome-keyring-ask.c:468 ../gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "A aplicación '%s' quere acceder ao contrasinal para '%s' en %s."
+
+#: ../gnome-keyring-ask.c:471 ../gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"A aplicación '%s' quere acceder ao contrasinal para '%s' no anel "
+"predeterminado."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:474 ../gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"A aplicación '%s' quere acceder ao contrasinal para '%s' nun anel "
+"descoñecido."
+
+#: ../gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr ""
+"Una aplicación descoñecida quere acceder ao contrasinal para '%s' en %s."
+
+#: ../gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Unha aplicación descoñecida quere acceder ao contrasinal para '%s' no anel "
+"de claves predeterminado."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Unha aplicación descoñecida quere acceder ao contrasinal para '%s' nun anel "
+"descoñecido."
+
+#: ../gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "Permitir acceso"
+
+#: ../gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "Permitir _unha vez"
+
+#: ../gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "_Sempre permitir"
+
+#: ../gnome-keyring-ask.c:547
+msgid "You must specify the type of request to run\n"
+msgstr "Debe especificar o tipo de solicitud a executar\n"
+
+#: ../gnome-keyring-ask.c:560
+msgid "Unknown request type\n"
+msgstr "Tipo de solicitud descoñecida\n"
