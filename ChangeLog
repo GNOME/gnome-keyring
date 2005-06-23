@@ -1,3 +1,9 @@
+2005-06-23  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-ask.c: (run_dialog):
+	Add window icon.
+	Patch by Jaap A. Haitsma
+
 2005-06-10  Ignacio Casal Quinteiro  <nacho.resa@gmail.com>
 
 	* configure.in: Added 'gl' to ALL_LINGUAS.
