@@ -1,0 +1,334 @@
+# Macedonian translation for gnome-keyring
+# Copyright (c) (c) 2005 Canonical Ltd, and Rosetta Contributors 2005
+# This file is distributed under the same license as the gnome-keyring package.
+# Арангел Ангов <ufo@linux.net.mk>, 2005.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-03-30 10:17:05+00:00\n"
+"PO-Revision-Date: 2005-06-24 21:24+0200\n"
+"Last-Translator: Арангел Ангов <ufo@linux.net.mk>\n"
+"Language-Team: Macedonian <mk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1"
+
+#: gnome-keyring-ask.c:223
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"Апликацијата '%s' (%s) бара пристап до стандардниот приврзок но тој е заклучен"
+
+#: gnome-keyring-ask.c:227
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Апликацијата '%s' (%s) бара пристап до приврзокот '%s' но тој е заклучен"
+
+#: gnome-keyring-ask.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is locked"
+msgstr ""
+" Апликацијата '%s' (%s) бара пристап до непознат приврзок но тој е заклучен"
+
+#: gnome-keyring-ask.c:238
+#: gnome-keyring-ask.c:252
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"Апликацијата '%s' бара пристап до стандардниот приврзок но тој е заклучен"
+
+#: gnome-keyring-ask.c:242
+#: gnome-keyring-ask.c:257
+#, c-format
+msgid ""
+"The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "Апликацијата '%s' бара пристап до приврзокот '%s' но тој е заклучен"
+
+#: gnome-keyring-ask.c:246
+#: gnome-keyring-ask.c:262
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "Апликацијата '%s' бара пристап до непознат приврзок но тој е заклучен"
+
+#: gnome-keyring-ask.c:268
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Непозната апликација бара пристап до стандардниот приврзок но тој е заклучен"
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Непозната апликација бара пристап до приврзокот '%s' но тој е заклучен"
+
+#: gnome-keyring-ask.c:277
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Непозната апликација бара пристап до непознат приврзок но тој е заклучен"
+
+#: gnome-keyring-ask.c:284
+msgid "Enter password for default keyring to unlock"
+msgstr "Внесете лозинка за да го отклучите стандардниот приврзок"
+
+#: gnome-keyring-ask.c:286
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Внесете лозинка за отклучување на приврзокот '%s'"
+
+#: gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "Отклучи приврзок"
+
+#: gnome-keyring-ask.c:294
+#: gnome-keyring-ask.c:374
+#: gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "_Одбиј"
+
+#: gnome-keyring-ask.c:329
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"Апликацијата '%s' (%s) сака да креира нов приврзок кој што ќе се вика '%s'. "
+"Треба да ја изберете лозинката која што сакате да ја користите.\n"
+"                        \n"
+"                        "
+
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Апликацијата '%s' (%s) сака да креира нов стандарден приврзок. Треба да ја "
+"изберете лозинката која што сакате да ја користите.\n"
+"                        \n"
+"                        "
+
+#: gnome-keyring-ask.c:339
+#: gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Апликацијата '%s' сака да креира нов приврзок кој што ќе се вика '%s'. Треба "
+"да ја одберете лозинката која што сакате да ја користите. \n"
+"                        \n"
+"                        "
+
+#: gnome-keyring-ask.c:343
+#: gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Апликацијата '%s' сака да креира нов стандарден приврзок. Треба да ја "
+"изберете лозинката која што сакате да ја користите.\n"
+"                        \n"
+"                        "
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Непозната апликација сака да креира нов приврзок кој што ќе се вика '%s'. "
+"Треба да ја изберете лозинката која што сакате да ја користите."
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"                        \n"
+"                        \n"
+"                        "
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "Нова лозинка за приврзок"
+
+#: gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "Изберете лозинка за новиот приврзок"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Апликацијата '%s' (%s) сака да складира лозинка но не постои стандарден "
+"приврзок. За да креирате треба да изберете лозинка која што сакате да ја "
+"користите за истиот."
+
+#: gnome-keyring-ask.c:404
+#: gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Апликацијата '%s' сака да складира лозинка но не постои стандарден приврзок. "
+"За да креирате треба да изберете лозинка која што сакате да ја користите за "
+"истиот.\n"
+"                        "
+
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Непозната апликација сака да складира лозинка но не пости стандарден "
+"приврзок. За да креирате треба да изберете лозинка која што сакате да ја "
+"користите за истиот.\n"
+"                        "
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "Креирај стандарден приврзок"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "Изберете лозинка за стандардниот приврзок"
+
+#: gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "Дозволи пристап на апликациите до приврзокот"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr ""
+"Апликацијата '%s'(%s) сака да и пристапи на лозинката за '%s' во '%s'.\n"
+"                        "
+
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"Апликацијата '%s'(%s) сака да и пристапи на лозинката за '%s' во "
+"стандардниот приврзок.\n"
+"                        "
+
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+"Апликацијата '%s' (%s) сака да и пристапи на лозинката за '%s' во непознат "
+"приврзок."
+
+#: gnome-keyring-ask.c:468
+#: gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr ""
+"Апликацијата '%s' сака да и пристапи на лозинката за '%s' во %s.\n"
+"                        "
+
+#: gnome-keyring-ask.c:471
+#: gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Апликацијата '%s' сака да и пристапи на лозинката за '%s' во стандардниот "
+"приврзок.\n"
+"                        "
+
+#: gnome-keyring-ask.c:474
+#: gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Апликацијата '%s' сака да и пристапи на лозинката за '%s' во непознат "
+"приврзок.                     \n"
+"                        "
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr ""
+"Непознатата апликација сака да и пристапи на лозинката за '%s' во %s.\n"
+"                        "
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Непозната апликација сака да и пристапи на лозинката за '%s' во стандардниот "
+"приврзок.                       \n"
+"                        "
+
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Непозната апликација сака да да и пристапи на лозинката за '%s' во непознат "
+"приврзок.\n"
+"                        "
+
+#: gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "Дозволи пристап"
+
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "Дозволи _еднаш"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "_Дозволувај секогаш"
+
+#: gnome-keyring-ask.c:547
+msgid ""
+"You must specify the type of request to run\n"
+msgstr ""
+"Морате да одредите тип на барањето што треба да се изврши\n"
+
+
+#: gnome-keyring-ask.c:560
+msgid ""
+"Unknown request type\n"
+msgstr ""
+"Непознат тип на барање\n"
+
+#~ msgid ""
+#~ "There is no default keyring, and one is needed. Please enter the password "
+#~ "for the new default keyring."
+#~ msgstr ""
