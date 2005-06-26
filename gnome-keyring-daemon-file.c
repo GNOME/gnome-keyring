@@ -877,6 +877,7 @@ update_keyrings_from_disk (void)
 	dirname = get_keyring_dir ();
 
 	if (stat (dirname, &statbuf) < 0) {
+		g_free (dirname);
 		return;
 	}
 	if (statbuf.st_mtime == keyring_dir_mtime) {
