@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-31 17:25-0700\n"
+"POT-Creation-Date: 2005-07-01 16:36+0200\n"
 "PO-Revision-Date: 2005-03-28 19:35-0700\n"
 "Last-Translator: Steve Murphy <murf@e-tools.com>\n"
 "Language-Team: Kinyarwanda <translation-team-rw@lists.sourceforge.net>\n"
@@ -23,85 +23,85 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-keyring-ask.c:223
+#: gnome-keyring-ask.c:224
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "Porogaramu Kuri Mburabuzi ni Gifunze"
 
-#: gnome-keyring-ask.c:227
+#: gnome-keyring-ask.c:228
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Porogaramu Kuri ni Gifunze"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:232
+#: gnome-keyring-ask.c:233
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr "Porogaramu Kuri Kitazwi ni Gifunze"
 
-#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#: gnome-keyring-ask.c:239 gnome-keyring-ask.c:253
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "Porogaramu Kuri Mburabuzi ni Gifunze"
 
-#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#: gnome-keyring-ask.c:243 gnome-keyring-ask.c:258
 #, fuzzy, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Porogaramu Kuri ni Gifunze"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#: gnome-keyring-ask.c:247 gnome-keyring-ask.c:263
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "Porogaramu Kuri Kitazwi ni Gifunze"
 
-#: gnome-keyring-ask.c:268
+#: gnome-keyring-ask.c:269
 #, fuzzy
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "Kitazwi Porogaramu Kuri Mburabuzi ni Gifunze"
 
-#: gnome-keyring-ask.c:272
+#: gnome-keyring-ask.c:273
 #, fuzzy, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Kitazwi Porogaramu Kuri ni Gifunze"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:277
+#: gnome-keyring-ask.c:278
 #, fuzzy
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "Kitazwi Porogaramu Kuri Kitazwi ni Gifunze"
 
-#: gnome-keyring-ask.c:284
+#: gnome-keyring-ask.c:285
 #, fuzzy
 msgid "Enter password for default keyring to unlock"
 msgstr "Ijambobanga... kugirango Mburabuzi Kuri"
 
-#: gnome-keyring-ask.c:286
+#: gnome-keyring-ask.c:287
 #, fuzzy, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Ijambobanga... kugirango Kuri"
 
-#: gnome-keyring-ask.c:289
+#: gnome-keyring-ask.c:290
 msgid "Unlock Keyring"
 msgstr ""
 
-#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
-#: gnome-keyring-ask.c:505
+#: gnome-keyring-ask.c:295 gnome-keyring-ask.c:375 gnome-keyring-ask.c:422
+#: gnome-keyring-ask.c:506
 #, fuzzy
 msgid "_Deny"
 msgstr "Anga"
 
-#: gnome-keyring-ask.c:329
+#: gnome-keyring-ask.c:330
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -110,7 +110,7 @@ msgstr ""
 "Porogaramu Kuri Kurema a Gishya Kuri Guhitamo Ijambobanga... Kuri Gukoresha "
 "kugirango"
 
-#: gnome-keyring-ask.c:333
+#: gnome-keyring-ask.c:334
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -119,7 +119,7 @@ msgstr ""
 "Porogaramu Kuri Kurema a Gishya Mburabuzi Kuri Guhitamo Ijambobanga... Kuri "
 "Gukoresha kugirango"
 
-#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#: gnome-keyring-ask.c:340 gnome-keyring-ask.c:350
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -128,7 +128,7 @@ msgstr ""
 "Porogaramu Kuri Kurema a Gishya Kuri Guhitamo Ijambobanga... Kuri Gukoresha "
 "kugirango"
 
-#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#: gnome-keyring-ask.c:344 gnome-keyring-ask.c:354
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -137,7 +137,7 @@ msgstr ""
 "Porogaramu Kuri Kurema a Gishya Mburabuzi Kuri Guhitamo Ijambobanga... Kuri "
 "Gukoresha kugirango"
 
-#: gnome-keyring-ask.c:359
+#: gnome-keyring-ask.c:360
 #, fuzzy, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -146,7 +146,7 @@ msgstr ""
 "Porogaramu Kuri Kurema a Gishya Kuri Guhitamo Ijambobanga... Kuri Gukoresha "
 "kugirango"
 
-#: gnome-keyring-ask.c:363
+#: gnome-keyring-ask.c:364
 #, fuzzy
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
@@ -155,16 +155,16 @@ msgstr ""
 "Porogaramu Kuri Kurema a Gishya Mburabuzi Kuri Guhitamo Ijambobanga... Kuri "
 "Gukoresha kugirango"
 
-#: gnome-keyring-ask.c:369
+#: gnome-keyring-ask.c:370
 msgid "New Keyring Password"
 msgstr ""
 
-#: gnome-keyring-ask.c:370
+#: gnome-keyring-ask.c:371
 #, fuzzy
 msgid "Choose password for new keyring"
 msgstr "Ijambobanga... kugirango Gishya"
 
-#: gnome-keyring-ask.c:400
+#: gnome-keyring-ask.c:401
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -174,7 +174,7 @@ msgstr ""
 "Porogaramu Kuri a Ijambobanga... ni Oya Mburabuzi Kurema Kuri Guhitamo "
 "Ijambobanga... Kuri Gukoresha kugirango"
 
-#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#: gnome-keyring-ask.c:405 gnome-keyring-ask.c:409
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -185,7 +185,7 @@ msgstr ""
 "Ijambobanga... Kuri Gukoresha kugirango"
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:412
+#: gnome-keyring-ask.c:413
 #, fuzzy
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -195,26 +195,26 @@ msgstr ""
 "Kitazwi Porogaramu Kuri a Ijambobanga... ni Oya Mburabuzi Kurema Kuri "
 "Guhitamo Ijambobanga... Kuri Gukoresha kugirango"
 
-#: gnome-keyring-ask.c:416
+#: gnome-keyring-ask.c:417
 msgid "Create Default Keyring"
 msgstr ""
 
-#: gnome-keyring-ask.c:417
+#: gnome-keyring-ask.c:418
 #, fuzzy
 msgid "Choose password for default keyring"
 msgstr "Ijambobanga... kugirango Mburabuzi"
 
-#: gnome-keyring-ask.c:454
+#: gnome-keyring-ask.c:455
 #, fuzzy
 msgid "Allow application access to keyring?"
 msgstr "Porogaramu Kuri"
 
-#: gnome-keyring-ask.c:457
+#: gnome-keyring-ask.c:458
 #, fuzzy, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "Porogaramu Kuri Ijambobanga... kugirango in"
 
-#: gnome-keyring-ask.c:460
+#: gnome-keyring-ask.c:461
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -222,19 +222,19 @@ msgid ""
 msgstr "Porogaramu Kuri Ijambobanga... kugirango in Mburabuzi"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:463
+#: gnome-keyring-ask.c:464
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr "Porogaramu Kuri Ijambobanga... kugirango in Kitazwi"
 
-#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#: gnome-keyring-ask.c:469 gnome-keyring-ask.c:480
 #, fuzzy, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Porogaramu Kuri Ijambobanga... kugirango in"
 
-#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#: gnome-keyring-ask.c:472 gnome-keyring-ask.c:483
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -242,19 +242,19 @@ msgid ""
 msgstr "Porogaramu Kuri Ijambobanga... kugirango in Mburabuzi"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#: gnome-keyring-ask.c:475 gnome-keyring-ask.c:486
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Porogaramu Kuri Ijambobanga... kugirango in Kitazwi"
 
-#: gnome-keyring-ask.c:490
+#: gnome-keyring-ask.c:491
 #, fuzzy, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Kitazwi Porogaramu Kuri Ijambobanga... kugirango in"
 
-#: gnome-keyring-ask.c:493
+#: gnome-keyring-ask.c:494
 #, fuzzy, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -262,31 +262,31 @@ msgid ""
 msgstr "Kitazwi Porogaramu Kuri Ijambobanga... kugirango in Mburabuzi"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:496
+#: gnome-keyring-ask.c:497
 #, fuzzy, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Kitazwi Porogaramu Kuri Ijambobanga... kugirango in Kitazwi"
 
-#: gnome-keyring-ask.c:501
+#: gnome-keyring-ask.c:502
 msgid "Allow access"
 msgstr ""
 
-#: gnome-keyring-ask.c:506
+#: gnome-keyring-ask.c:507
 msgid "Allow _Once"
 msgstr ""
 
-#: gnome-keyring-ask.c:507
+#: gnome-keyring-ask.c:508
 msgid "_Always Allow"
 msgstr ""
 
-#: gnome-keyring-ask.c:547
+#: gnome-keyring-ask.c:548
 #, fuzzy
 msgid "You must specify the type of request to run\n"
 msgstr "Ubwoko Bya Kubaza... Kuri"
 
-#: gnome-keyring-ask.c:560
+#: gnome-keyring-ask.c:561
 #, fuzzy
 msgid "Unknown request type\n"
 msgstr "Kubaza..."
