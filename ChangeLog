@@ -1,3 +1,8 @@
+2005-07-01  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release.
+
 2005-06-26  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* gnome-keyring-daemon-file.c: (update_keyrings_from_disk):

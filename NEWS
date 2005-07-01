@@ -1,3 +1,10 @@
+Changes in version 0.4.3 are:
+* Translation updates
+* Fix bug in acl functions
+* implement gnome_keyring_set_info
+* add sync function for all operations
+* fix leaks
+
 Changes in version 0.4.2 are:
 * AIX portability fixes
 * Translation updates
