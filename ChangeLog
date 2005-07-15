@@ -1,3 +1,8 @@
+2005-07-15  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Require gtk 2.6.0 (needed for gtk_window_set_icon_name)
+
 2005-07-01  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
