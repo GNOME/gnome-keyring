@@ -237,7 +237,7 @@ msgstr ""
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "يريدالتطبيق 's%'  النفاذ إلى كلمة السر لـ '%s' في طوق مفاتيح مجهول."
+msgstr "يريدالتطبيق '%s'  النفاذ إلى كلمة السر لـ '%s' في طوق مفاتيح مجهول."
 
 #: gnome-keyring-ask.c:491
 #, c-format
