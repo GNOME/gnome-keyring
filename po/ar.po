@@ -47,9 +47,9 @@ msgid ""
 msgstr "يريد التطبيق '%s' النفاذ إلى طوق المفاتيح الإفتراضي لكن الطوق مقفول"
 
 #: gnome-keyring-ask.c:243 gnome-keyring-ask.c:258
-#, c-format
+, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "يريد التطبيق '%s'·'%s' النفاذ إلى طوق المفاتيح '%s' لكن الطوق مقفول"
+msgstr "يريد التطبيق '%s' النفاذ إلى طوق المفاتيح '%s' لكن الطوق مقفول"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:247 gnome-keyring-ask.c:263
@@ -108,7 +108,7 @@ msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"يريد·التطبيق·'%s' (%s)·إنشاء·طوق·مفاتيح إفتراضي·جديد·بإسم·'%s'."
+"يريد·التطبيق·'%s' (%s)·إنشاء·طوق·مفاتيح إفتراضي·جديد·بإسم."
 "يفترض·أن·تختار·كلمة·السر·التي·تريد·استخدمها·لهذا·الغرض."
 
 #: gnome-keyring-ask.c:340 gnome-keyring-ask.c:350
