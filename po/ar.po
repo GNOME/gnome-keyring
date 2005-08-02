@@ -47,7 +47,7 @@ msgid ""
 msgstr "يريد التطبيق '%s' النفاذ إلى طوق المفاتيح الإفتراضي لكن الطوق مقفول"
 
 #: gnome-keyring-ask.c:243 gnome-keyring-ask.c:258
-, c-format
+#, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "يريد التطبيق '%s' النفاذ إلى طوق المفاتيح '%s' لكن الطوق مقفول"
 
