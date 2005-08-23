@@ -3,157 +3,154 @@
 # This file is distributed under the same license as the gnome-keyring package.
 # Gergely Nagy <greg@gnome.hu>, 2004.
 # Laszlo Dvornik <dvornikl@mailbox.hu>, 2004.
+# Gabor Kelemen <kelemeng@gnome.hu>, 2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-01 16:36+0200\n"
-"PO-Revision-Date: 2004-05-16 13:45+0200\n"
-"Last-Translator: Laszlo Dvornik <dvornikl@mailbox.hu>\n"
+"POT-Creation-Date: 2005-08-23 15:08+0000\n"
+"PO-Revision-Date: 2005-08-23 21:33+0200\n"
+"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.10.2\n"
+"Plural-Forms:  nplurals=1; plural=0;\n"
 
-#: gnome-keyring-ask.c:224
+#: ../gnome-keyring-ask.c:224
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr ""
-"A(z) '%s' (%s) alkalmazás nem tud hozzáférni az alapértelmezett "
+"A(z) \"%s\" (%s) alkalmazás nem tud hozzáférni az alapértelmezett "
 "kulcstartóhoz, mert zárolva van"
 
-#: gnome-keyring-ask.c:228
+#: ../gnome-keyring-ask.c:228
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
-"A(z) '%s' (%s) alkalmazás nem tud hozzáférni a(z) '%s' kulcstartóhoz, mert "
+"A(z) \"%s\" (%s) alkalmazás nem tud hozzáférni a(z) \"%s\" kulcstartóhoz, mert "
 "zárolva van"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:233
+#: ../gnome-keyring-ask.c:233
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr ""
-"A(z) '%s' (%s) alkalmazás nem tud hozzáférni egy ismeretlen kulcstartóhoz, "
+"A(z) \"%s\" (%s) alkalmazás nem tud hozzáférni egy ismeretlen kulcstartóhoz, "
 "mert zárolva van"
 
-#: gnome-keyring-ask.c:239 gnome-keyring-ask.c:253
+#: ../gnome-keyring-ask.c:239 ../gnome-keyring-ask.c:253
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
+msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
-"A(z) '%s' alkalmazás nem tud hozzáférni az alapértelmezett kulcstartóhoz, "
+"A(z) \"%s\" alkalmazás nem tud hozzáférni az alapértelmezett kulcstartóhoz, "
 "mert zárolva van"
 
-#: gnome-keyring-ask.c:243 gnome-keyring-ask.c:258
+#: ../gnome-keyring-ask.c:243 ../gnome-keyring-ask.c:258
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
-"A(z) '%s' alkalmazás nem tud hozzáférni a(z) '%s' kulcstartóhoz, mert "
+"A(z) \"%s\" alkalmazás nem tud hozzáférni a(z) \"%s\" kulcstartóhoz, mert "
 "zárolva van"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:247 gnome-keyring-ask.c:263
+#: ../gnome-keyring-ask.c:247 ../gnome-keyring-ask.c:263
 #, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr ""
-"A(z) '%s' alkalmazás nem tud hozzáférni egy ismeretlen kulcstartóhoz, mert "
+"A(z) \"%s\" alkalmazás nem tud hozzáférni egy ismeretlen kulcstartóhoz, mert "
 "zárolva van"
 
-#: gnome-keyring-ask.c:269
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
+#: ../gnome-keyring-ask.c:269
+msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Egy ismeretlen alkalmazás nem tud hozzáférni az alapértelmezett "
 "kulcstartóhoz, mert zárolva van"
 
-#: gnome-keyring-ask.c:273
+#: ../gnome-keyring-ask.c:273
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Egy ismeretlen alkalmazás nem tud hozzáférni a '%s' kulcstartóhoz, mert "
+"Egy ismeretlen alkalmazás nem tud hozzáférni a(z) \"%s\" kulcstartóhoz, mert "
 "zárolva van"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:278
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
+#: ../gnome-keyring-ask.c:278
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Egy ismeretlen alkalmazás nem tud hozzáférni egy ismeretlen kulcstartóhoz, "
 "mert zárolva van"
 
-#: gnome-keyring-ask.c:285
+#: ../gnome-keyring-ask.c:285
 msgid "Enter password for default keyring to unlock"
 msgstr "Adja meg a jelszót az alapértelmezett kulcstartó nyitásához"
 
-#: gnome-keyring-ask.c:287
+#: ../gnome-keyring-ask.c:287
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Adja meg a jelszót a(z) '%s' kucstartó nyitásához"
+msgstr "Adja meg a jelszót a(z) \"%s\" kulcstartó nyitásához"
 
-#: gnome-keyring-ask.c:290
+#: ../gnome-keyring-ask.c:290
 msgid "Unlock Keyring"
 msgstr "Kulcstartó nyitása"
 
-#: gnome-keyring-ask.c:295 gnome-keyring-ask.c:375 gnome-keyring-ask.c:422
-#: gnome-keyring-ask.c:506
+#: ../gnome-keyring-ask.c:295 ../gnome-keyring-ask.c:375
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:506
 msgid "_Deny"
 msgstr "_Megtagad"
 
-#: gnome-keyring-ask.c:330
+#: ../gnome-keyring-ask.c:330
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"A(z) '%s' (%s) alkalmazás új kulcstartót akar létrehozni '%s' néven. Ehhez "
+"A(z) \"%s\" (%s) alkalmazás új kulcstartót akar létrehozni \"%s\" néven. Ehhez "
 "meg kell adnia egy jelszót."
 
-#: gnome-keyring-ask.c:334
+#: ../gnome-keyring-ask.c:334
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"A(z) '%s' (%s) alkalmazás új alapértelmezett kulcstartót akar létrehozni. "
+"A(z) \"%s\" (%s) alkalmazás új alapértelmezett kulcstartót akar létrehozni. "
 "Ehhez meg kell adnia egy jelszót."
 
-#: gnome-keyring-ask.c:340 gnome-keyring-ask.c:350
+#: ../gnome-keyring-ask.c:340 ../gnome-keyring-ask.c:350
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"A(z) '%s' alkalmazás új kulcstartót akar létrehozni '%s' néven. Ehhez meg "
+"A(z) \"%s\" alkalmazás új kulcstartót akar létrehozni \"%s\" néven. Ehhez meg "
 "kell adnia egy jelszót."
 
-#: gnome-keyring-ask.c:344 gnome-keyring-ask.c:354
+#: ../gnome-keyring-ask.c:344 ../gnome-keyring-ask.c:354
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"A(z) '%s' alkalmazás új alapértelmezett kulcstartót akar létrehozni. Ehhez "
+"A(z) \"%s\" alkalmazás új alapértelmezett kulcstartót akar létrehozni. Ehhez "
 "meg kell adnia egy jelszót."
 
-#: gnome-keyring-ask.c:360
+#: ../gnome-keyring-ask.c:360
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Egy ismeretlen alkalmazás új kulcstartót akar létrehozni '%s' néven. Ehhez "
+"Egy ismeretlen alkalmazás új kulcstartót akar létrehozni \"%s\" néven. Ehhez "
 "meg kell adnia egy jelszót."
 
-#: gnome-keyring-ask.c:364
+#: ../gnome-keyring-ask.c:364
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -161,36 +158,36 @@ msgstr ""
 "Egy ismeretlen alkalmazás új alapértelmezett kulcstartót . Ehhez meg kell "
 "adnia egy jelszót."
 
-#: gnome-keyring-ask.c:370
+#: ../gnome-keyring-ask.c:370
 msgid "New Keyring Password"
 msgstr "Új kulcstartójelszó"
 
-#: gnome-keyring-ask.c:371
+#: ../gnome-keyring-ask.c:371
 msgid "Choose password for new keyring"
 msgstr "Jelszó az új kulcstartóhoz"
 
-#: gnome-keyring-ask.c:401
+#: ../gnome-keyring-ask.c:401
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"A(z) '%s' (%s) alkalmazás egy jelszót akar eltárolni, de nincs "
+"A(z) \"%s\" (%s) alkalmazás egy jelszót akar eltárolni, de nincs "
 "alapértelmezett kulcstartó. A létrehozásához meg kell adnia egy jelszót."
 
-#: gnome-keyring-ask.c:405 gnome-keyring-ask.c:409
+#: ../gnome-keyring-ask.c:405 ../gnome-keyring-ask.c:409
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"A(z) '%s' alkalmazás egy jelszót akar eltárolni, de nincs alapértelmezett "
+"A(z) \"%s\" alkalmazás egy jelszót akar eltárolni, de nincs alapértelmezett "
 "kulcstartó. A létrehozásához meg kell adnia egy jelszót."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:413
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -199,111 +196,97 @@ msgstr ""
 "Egy ismeretlen alkalmazás egy jelszót akar eltárolni, de nincs "
 "alapértelmezett kulcstartó. A létrehozásához meg kell adnia egy jelszót."
 
-#: gnome-keyring-ask.c:417
+#: ../gnome-keyring-ask.c:417
 msgid "Create Default Keyring"
 msgstr "Alapértelmezett kulcstartó létrehozása"
 
-#: gnome-keyring-ask.c:418
+#: ../gnome-keyring-ask.c:418
 msgid "Choose password for default keyring"
 msgstr "Jelszó az alapértelmezett kulcstartóhoz"
 
-#: gnome-keyring-ask.c:455
+#: ../gnome-keyring-ask.c:455
 msgid "Allow application access to keyring?"
 msgstr "Az alkalmazás hozzáférhet a kulcstartóhoz?"
 
-#: gnome-keyring-ask.c:458
+#: ../gnome-keyring-ask.c:458
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr ""
-"A(z) '%s' (%s) alkalmazás hozzá akar férni (ebben %s) ennek a jelszavához: '%"
-"s'."
+msgstr "A(z) \"%s\" (%s) alkalmazás hozzá akar férni \"%s\" jelszavához ebben: %s."
 
-#: gnome-keyring-ask.c:461
+#: ../gnome-keyring-ask.c:461
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
-msgstr ""
-"A(z) '%s' (%s) alkalmazás hozzá akar férni az alapértelmezett kulcstartóban "
-"ennek a jelszavához: '%s'."
+msgstr "A(z) \"%s\" (%s) alkalmazás hozzá akar férni az alapértelmezett kulcstartóban \"%s\" jelszavához."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:464
+#: ../gnome-keyring-ask.c:464
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr ""
-"A(z) '%s' (%s) alkalmazás hozzá akar férni egy ismeretlen kulcstartóban "
-"ennek a jelszavához: '%s'."
+"A(z) \"%s\" (%s) alkalmazás hozzá akar férni egy ismeretlen kulcstartóban "
+"\"%s\" jelszavához."
 
-#: gnome-keyring-ask.c:469 gnome-keyring-ask.c:480
+#: ../gnome-keyring-ask.c:469 ../gnome-keyring-ask.c:480
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr ""
-"A(z) '%s' alkalmazás hozzá akar férni (ebben %s) ennek a jelszavához: '%s'."
+msgstr "A(z) \"%s\" alkalmazás hozzá akar férni \"%s\" jelszavához ebben: %s."
 
-#: gnome-keyring-ask.c:472 gnome-keyring-ask.c:483
+#: ../gnome-keyring-ask.c:472 ../gnome-keyring-ask.c:483
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
-msgstr ""
-"A(z) '%s' alkalmazás hozzá akar férni az alapértelmezett kulcstartóban ennek "
-"a jelszavához: '%s'."
+msgstr "A(z) \"%s\" alkalmazás hozzá akar férni az alapértelmezett kulcstartóban \"%s\" jelszavához."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:475 gnome-keyring-ask.c:486
+#: ../gnome-keyring-ask.c:475 ../gnome-keyring-ask.c:486
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr ""
-"A(z) '%s' alkalmazás hozzá akar férni egy ismeretlen kulcstartóban ennek a "
-"jelszavához: '%s'."
+msgstr "A(z) \"%s\" alkalmazás hozzá akar férni egy ismeretlen kulcstartóban \"%s\" jelszavához."
 
-#: gnome-keyring-ask.c:491
+#: ../gnome-keyring-ask.c:491
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr ""
-"Egy ismeretlen alkalmazás hozzá akar férni (ebben %s) ennek a jelszavához: '%"
-"s'."
+msgstr "Egy ismeretlen alkalmazás hozzá akar férni \"%s\" jelszavához ebben: %s."
 
-#: gnome-keyring-ask.c:494
+#: ../gnome-keyring-ask.c:494
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
-msgstr ""
-"Egy ismeretlen alkalmazás hozzá akar férni az alapértelmezett kulcstartóban "
-"ennek a jelszavához: '%s'."
+msgstr "Egy ismeretlen alkalmazás hozzá akar férni az alapértelmezett kulcstartóban \"%s\" jelszavához."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:497
+#: ../gnome-keyring-ask.c:497
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr ""
-"Egy ismeretlen alkalmazás hozzá akar férni egy ismeretlen kulcstartóban "
-"ennek a jelszavához: '%s'."
+msgstr "Egy ismeretlen alkalmazás hozzá akar férni egy ismeretlen kulcstartóban \"%s\" jelszavához."
 
-#: gnome-keyring-ask.c:502
+#: ../gnome-keyring-ask.c:502
 msgid "Allow access"
 msgstr "Hozzáférés engedélyezése"
 
-#: gnome-keyring-ask.c:507
+#: ../gnome-keyring-ask.c:507
 msgid "Allow _Once"
 msgstr "Engedélyezés _egyszer"
 
-#: gnome-keyring-ask.c:508
+#: ../gnome-keyring-ask.c:508
 msgid "_Always Allow"
 msgstr "Engedélyezés _mindig"
 
-#: gnome-keyring-ask.c:548
+#: ../gnome-keyring-ask.c:548
 msgid "You must specify the type of request to run\n"
 msgstr "Meg kell adnia a kérelem típusát a futtatáshoz\n"
 
-#: gnome-keyring-ask.c:561
+#: ../gnome-keyring-ask.c:561
 msgid "Unknown request type\n"
 msgstr "Ismeretlen kérelemtípus\n"
+
