@@ -90,7 +90,7 @@ run_dialog (const char *title,
 	GtkWidget *image;
 	const char *password;
 
-	dialog = gtk_dialog_new_with_buttons (title , NULL, 0, NULL);
+	dialog = gtk_dialog_new_with_buttons (title , NULL, 0, NULL, NULL);
 	gtk_window_set_icon_name(GTK_WINDOW(dialog), "stock_lock");
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
  	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);

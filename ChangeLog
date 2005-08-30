@@ -1,3 +1,8 @@
+2005-08-30  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-ask.c: (run_dialog):
+	Fix warning (#310903)
+
 2005-07-15  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
