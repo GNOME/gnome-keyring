@@ -1,3 +1,4 @@
+# translation of gnome-keyring.HEAD.po to Punjabi
 # translation of gnome-keyring-manager.HEAD.po to Punjabi
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
@@ -6,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring-manager.HEAD\n"
+"Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-29 14:48+0000\n"
-"PO-Revision-Date: 2005-08-29 03:03+0530\n"
+"POT-Creation-Date: 2005-08-31 07:03+0000\n"
+"PO-Revision-Date: 2005-08-30 15:15+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,522 +19,254 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.10.2\n"
 
-#: ../data/gnome-keyring-manager.desktop.in.in.h:1
-#: ../data/gnome-keyring-manager.glade.h:20
-#: ../src/gnome-keyring-manager-main-ui.c:533
-#: ../src/gnome-keyring-manager.c:160
-msgid "Keyring Manager"
-msgstr "ਕੀਰਿੰਗ ਪਰਬੰਧਕ"
-
-#: ../data/gnome-keyring-manager.desktop.in.in.h:2
-msgid "Manage your keyrings"
-msgstr "ਆਪਣੀ ਕੀਰਿੰਗ ਸੰਭਾਲੋ"
-
-#: ../data/gnome-keyring-manager.glade.h:1
-msgid "/path/to/application"
-msgstr "/path/to/application"
-
-#: ../data/gnome-keyring-manager.glade.h:2
-msgid "<b>Name</b>"
-msgstr "<b>ਨਾਂ</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:3
-msgid "<b>_Domain:</b>"
-msgstr "<b>ਡੋਮੇਨ(_D):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:4
-msgid "<b>_Method:</b>"
-msgstr "<b>ਢੰਗ(_M):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:5
-msgid "<b>_Note:</b>"
-msgstr "<b>ਸੂਚਨਾ(_N):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:6
-msgid "<b>_Object:</b>"
-msgstr "<b>ਇਕਾਈ(_O):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:7
-msgid "<b>_Password:</b>"
-msgstr "<b>ਗੁਪਤ-ਕੋਡ(_P):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:8
-msgid "<b>_Port:</b>"
-msgstr "<b>ਪੋਰਟ(_P):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:9
-msgid "<b>_Protocol:</b>"
-msgstr "<b>ਪਰੋਟੋਕਾਲ(_P):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:10
-msgid "<b>_Server:</b>"
-msgstr "<b>ਸਰਵਰ(_S):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:11
-msgid "<b>_Username:</b>"
-msgstr "<b>ਉਪਭੋਗੀ ਨਾਂ(_U):</b>"
-
-#: ../data/gnome-keyring-manager.glade.h:12
+#: ../gnome-keyring-ask.c:224
+#, c-format
 msgid ""
-"<span weight=\"bold\" size=\"larger\">Keyring name and password required</"
-"span>\n"
-"\n"
-"A name and password must be provided for the new keyring."
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:228
+#, c-format
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "ਕਾਰਜ '%s' (%s) ਕੀਰਿੰਗ '%s'ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:233
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr "ਕਾਰਜ '%s' (%s) ਅਣਜਾਣ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:239 ../gnome-keyring-ask.c:253
+#, c-format
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:243 ../gnome-keyring-ask.c:258
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "ਕਾਰਜ '%s' ਕੀਰਿੰਗ '%s'ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:247 ../gnome-keyring-ask.c:263
+#, c-format
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "ਕਾਰਜ '%s' ਅਣਜਾਣ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:269
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "ਮੂਲ ਕੀਰਿੰਗ ਨੂੰ ਅਣਜਾਣ ਕਾਰਜ ਵਰਤਣ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#: ../gnome-keyring-ask.c:273
+#, c-format
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਕੀਰਿੰਗ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹਨ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:278
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਅਣਜਾਣ ਕੀਰਿੰਗ ਨੂੰ ਵਰਤਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#: ../gnome-keyring-ask.c:285
+msgid "Enter password for default keyring to unlock"
+msgstr "ਮੂਲ ਕੀਰਿੰਗ ਦਾ ਤਾਲਾ ਖੋਲਣ ਲਈ ਗੁਪਤ-ਕੋਡ ਦਿਓ"
+
+#: ../gnome-keyring-ask.c:287
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "ਕੀਰਿੰਗ '%s' ਦਾ ਤਾਲਾ ਖੋਲਣ ਲਈ ਗੁਪਤ-ਕੋਡ ਦਿਓ"
+
+#: ../gnome-keyring-ask.c:290
+msgid "Unlock Keyring"
+msgstr "ਕੀਰਿੰਗ ਤਾਲਾ ਖੋਲੋ"
+
+#: ../gnome-keyring-ask.c:295 ../gnome-keyring-ask.c:375
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:506
+msgid "_Deny"
+msgstr "ਪਾਬੰਦੀ(_D)"
+
+#: ../gnome-keyring-ask.c:330
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">ਕੀਰਿੰਗ ਨਾਂ ਅਤੇ ਗੁਪਤ-ਕੋਡ ਲੋੜੀਦਾ</span>\n"
-"\n"
-"ਨਵੀਂ ਕੀਰਿੰਗ ਲਈ ਇੱਕ ਨਾਂ ਅਤੇ ਗੁਪਤ-ਕੋਡ ਲਾਜ਼ਮੀ ਦੇਣਾ ਚਾਹੀਦਾ ਹੈ।"
+"ਕਾਰਜ '%s' (%s) ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
+"ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
 
-#: ../data/gnome-keyring-manager.glade.h:15
-msgid "Applications"
-msgstr "ਕਾਰਜ"
-
-#: ../data/gnome-keyring-manager.glade.h:16
-msgid "C_onfirm password:"
-msgstr "ਗੁਪਤ-ਕੋਡ ਪੁਸ਼ਟੀ(_o):"
-
-#: ../data/gnome-keyring-manager.glade.h:17
-msgid "Create _Keyring"
-msgstr "ਕੀਰਿੰਗ ਬਣਾਓ(_K)"
-
-#: ../data/gnome-keyring-manager.glade.h:18
-msgid "Delete"
-msgstr "ਹਟਾਓ"
-
-#: ../data/gnome-keyring-manager.glade.h:19
-msgid "Key"
-msgstr "ਕੁੰਜੀ"
-
-#: ../data/gnome-keyring-manager.glade.h:21
-msgid "Keyring _name:"
-msgstr "ਕੀਰਿੰਗ ਨਾਂ(_n):"
-
-#: ../data/gnome-keyring-manager.glade.h:22
-msgid "Keyrings"
-msgstr "ਕੀਰਿੰਗ"
-
-#: ../data/gnome-keyring-manager.glade.h:23
-#: ../src/gnome-keyring-manager-attribute-editor.c:395
-msgid "Read"
-msgstr "ਪੜਨ"
-
-#: ../data/gnome-keyring-manager.glade.h:24
-msgid "Show n_ote"
-msgstr "ਸੂਚਨਾ ਵੇਖਾਓ(_o)"
-
-#: ../data/gnome-keyring-manager.glade.h:25
-msgid "Show pass_word"
-msgstr "ਗੁਪਤ-ਕੋਡ ਵੇਖਾਓ(_w)"
-
-#: ../data/gnome-keyring-manager.glade.h:26
-#: ../src/gnome-keyring-manager-attribute-editor.c:404
-msgid "Write"
-msgstr "ਲਿਖਣ"
-
-#: ../data/gnome-keyring-manager.glade.h:27
-msgid "_More Options"
-msgstr "ਹੋਰ ਚੋਣ(_M)"
-
-#: ../data/gnome-keyring-manager.glade.h:28
-#: ../src/gnome-keyring-manager-password-dialog.c:120
-msgid "_Password:"
-msgstr "ਗੁਪਤ-ਕੋਡ(_P):"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:1
-msgid "Display creation time column in the keyring item list."
-msgstr "ਕੀਰਿੰਗ ਇਕਾਈ ਸੂਚੀ ਵਿੱਚ ਨਿਰਮਾਣ ਸਮਾਂ ਕਾਲਮ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:2
-msgid "Display creation time column in the keyring list."
-msgstr "ਕੀਰਿੰਗ  ਸੂਚੀ ਵਿੱਚ ਨਿਰਮਾਣ ਸਮਾਂ ਕਾਲਮ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:3
-msgid "Display id column in the keyring item list."
-msgstr "ਕੀਰਿੰਗ ਇਕਾਈ ਸੂਚੀ ਵਿੱਚ id ਮਾਂ ਕਾਲਮ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:4
-msgid "Display modification time column in the keyring item list."
-msgstr "ਕੀਰਿੰਗ ਇਕਾਈ ਸੂਚੀ ਵਿੱਚ ਸੋਧ ਸਮਾਂ ਕਾਲਮ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:5
-msgid "Display modification time column in the keyring list."
-msgstr "ਕੀਰਿੰਗ ਸੂਚੀ ਵਿੱਚ ਸੋਧ ਸਮਾਂ ਕਾਲਮ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:6
-msgid "Display the creation time"
-msgstr "ਨਿਰਮਾਣ ਸਮਾਂ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:7
-msgid "Display the item id"
-msgstr "ਇਕਾਈ id ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:8
-msgid "Display the lock on idle column"
-msgstr "ਆਦਰਸ਼ ਕਾਲਮ ਤੇ ਤਾਲਾ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:9
-msgid "Display the lock on idle column in the keyring list."
-msgstr "ਕੀਰਿੰਗ ਸੂਚੀ ਵਿੱਚ ਆਦਰਸ਼ ਕਾਲਮ ਤੇ ਤਾਲਾ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:10
-msgid "Display the lock timeout column"
-msgstr "ਤਾਲਾ ਅੰਤਰਾਲ ਕਾਲਮ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:11
-msgid "Display the lock timeout column in the keyring list."
-msgstr "ਕੀਰਿੰਗ ਸੂਚੀ ਵਿੱਚ ਤਾਲਾ ਅੰਤਰਾਲ ਕਾਲਮ ਵੇਖਾਓ"
-
-#: ../data/gnome-keyring-manager.schemas.in.h:12
-msgid "Display the modification time"
-msgstr "ਸੋਧ ਸਮਾਂ ਵੇਖਾਓ"
-
-#: ../src/gnome-keyring-manager-acl-display.c:242
-#: ../src/gnome-keyring-manager-attribute-editor.c:320
-#: ../src/gnome-keyring-manager-attribute-editor.c:377
-#: ../src/gnome-keyring-manager-main-ui.c:401
-msgid "Name"
-msgstr "ਨਾਂ"
-
-#: ../src/gnome-keyring-manager-attribute-editor.c:168
-msgid "Attributes"
-msgstr "ਗੁਣ"
-
-#: ../src/gnome-keyring-manager-attribute-editor.c:213
-msgid "Application Access Rights"
-msgstr "ਕਾਰਜ ਪਹੁੰਚ ਅਧਿਕਾਰ"
-
-#: ../src/gnome-keyring-manager-attribute-editor.c:291
-#, c-format
-msgid "Advanced Editor: %s"
-msgstr "ਤਕਨੀਕੀ ਸੰਪਾਦਕ: %s"
-
-#: ../src/gnome-keyring-manager-attribute-editor.c:330
-#: ../src/gnome-keyring-manager-main-ui.c:391
-msgid "Type"
-msgstr "ਕਿਸਮ"
-
-#: ../src/gnome-keyring-manager-attribute-editor.c:344
-msgid "Value"
-msgstr "ਮੁੱਲ"
-
-#: ../src/gnome-keyring-manager-attribute-editor.c:386
-msgid "Path"
-msgstr "ਮਾਰਗ"
-
-#: ../src/gnome-keyring-manager-attribute-editor.c:413
-msgid "Remove"
-msgstr "ਹਟਾਓ"
-
-#: ../src/gnome-keyring-manager-keyring-editor.c:133
-msgid "Secret"
-msgstr "ਗੁਪਤ"
-
-#: ../src/gnome-keyring-manager-keyring-editor.c:136
-msgid "Network Password"
-msgstr "ਨੈੱਟਵਰਕ ਗੁਪਤ-ਕੋਡ"
-
-#: ../src/gnome-keyring-manager-keyring-editor.c:139
-msgid "Note"
-msgstr "ਟਿੱਪਣੀ"
-
-#: ../src/gnome-keyring-manager-keyring-editor.c:142
-#, c-format
-msgid "Unknown keyring item type: %d"
-msgstr "ਅਣਪਛਾਤੀ ਕੀਰਿੰਗ ਇਕਾਈ ਕਿਸਮ: %d"
-
-#: ../src/gnome-keyring-manager-keyring-editor.c:919
-#: ../src/gnome-keyring-manager-keyring-manager.c:824
-msgid "Failed to get keyring info."
-msgstr "ਕੀਰਿੰਗ ਜਾਣਕਾਰੀ ਪ੍ਰਾਪਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
-
-#: ../src/gnome-keyring-manager-keyring-editor.c:926
-#: ../src/gnome-keyring-manager-keyring-manager.c:831
-msgid "A row disappeared while we were waiting for the data..."
-msgstr "ਜਦੋਂ ਅਸੀਂ ਡਾਟਾ ਦੀ ਉਡੀਕ ਕਰ ਰਹੇ ਸਾਂ ਤਾਂ ਇੱਕ ਕਤਾਰ ਗੁੰਮ ਗਈ ਹੈ..."
-
-#: ../src/gnome-keyring-manager-keyring-manager.c:750
-msgid "Failed get the default keyring."
-msgstr "ਮੂਲ ਕੀਰਿੰਗ ਪ੍ਰਾਪਤਿਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
-
-#: ../src/gnome-keyring-manager-keyring-manager.c:767
-msgid "The default keyring is not in the list store!"
-msgstr "ਮੂਲ ਕੀਰਿੰਗ ਸੂਚੀ ਭੰਡਾਰ ਵਿੱਚ ਨਹੀਂ ਹੈ!"
-
-#: ../src/gnome-keyring-manager-main-ui.c:220
-#, c-format
-msgid "%d second"
-msgid_plural "%d seconds"
-msgstr[0] "%d ਸਕਿੰਟ"
-msgstr[1] "%d ਸਕਿੰਟ"
-
-#: ../src/gnome-keyring-manager-main-ui.c:249
-msgid "session"
-msgstr "ਸ਼ੈਸ਼ਨ"
-
-#: ../src/gnome-keyring-manager-main-ui.c:277
-msgid "Locked"
-msgstr "ਤਾਲਾ"
-
-#: ../src/gnome-keyring-manager-main-ui.c:287
-msgid "Keyring"
-msgstr "ਕੀਰਿੰਗ"
-
-#: ../src/gnome-keyring-manager-main-ui.c:302
-msgid "Lock on Idle"
-msgstr "ਆਦਰਸ਼ ਤੇ ਤਾਲਾ"
-
-#: ../src/gnome-keyring-manager-main-ui.c:312
-msgid "Lock Timeout"
-msgstr "ਤਾਲਾ ਸਮਾਂ-ਸੀਮਾ"
-
-#: ../src/gnome-keyring-manager-main-ui.c:325
-#: ../src/gnome-keyring-manager-main-ui.c:416
-msgid "Modification Time"
-msgstr "ਸੋਧ ਸਮਾਂ"
-
-#: ../src/gnome-keyring-manager-main-ui.c:339
-#: ../src/gnome-keyring-manager-main-ui.c:428
-msgid "Creation Time"
-msgstr "ਨਿਰਮਾਣ ਸਮਾਂ"
-
-#. To translators: %s is the name of the keyring.
-#: ../src/gnome-keyring-manager-main-ui.c:540
-#, c-format
-msgid "%s Keyring"
-msgstr "%s ਕੀਰਿੰਗ"
-
-#: ../src/gnome-keyring-manager-main-ui.c:704
-#, c-format
-msgid "Delete the '%s' key?"
-msgstr "ਕੀਰਿੰਗ ਇਕਾਈ '%s' ਹਟਾਉਣੀ ਹੈ?"
-
-#: ../src/gnome-keyring-manager-main-ui.c:705
-msgid "Deleting a key cannot be undone."
-msgstr "ਹਟਾਈ ਕੀਰਿੰਗ ਇਕਾਈ ਨੂੰ ਵਾਪਿਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।"
-
-#: ../src/gnome-keyring-manager-main-ui.c:724
-#, c-format
-msgid "Delete the '%s' keyring?"
-msgstr "ਕੀਰਿੰਗ ਇਕਾਈ '%s' ਹਟਾਉਣੀ ਹੈ?"
-
-#: ../src/gnome-keyring-manager-main-ui.c:725
-msgid "Deleting a keyring cannot be undone."
-msgstr "ਹਟਾਈ ਕੀਰਿੰਗ ਇਕਾਈ ਨੂੰ ਵਾਪਿਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1070
-msgid "_Keyring"
-msgstr "ਕੀਰਿੰਗ(_K)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1071
-msgid "_Edit"
-msgstr "ਸੋਧ(_E)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1072
-msgid "_View"
-msgstr "ਵੇਖੋ(_V)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1073
-msgid "_Help"
-msgstr "ਸਹਾਇਤਾ(_H)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1075
-msgid "_New Key"
-msgstr "ਨਵੀਂ ਕੁੰਜੀ(_N)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1076
-msgid "New _Keyring"
-msgstr "ਨਵੀਂ ਕੀਰਿੰਗ(_K)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1077
-msgid "_Delete Key"
-msgstr "ਕੁੰਜੀ ਹਟਾਓ(_D)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1078
-msgid "D_elete Keyring"
-msgstr "ਕੀਰਿੰਗ ਹਟਾਓ(_e)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1087
-msgid "_Contents"
-msgstr "ਭਾਗ(_C)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1093
-msgid "_Keyrings"
-msgstr "ਕੀਰਿੰਗ(_K)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1094
-msgid "Show _Modification Time"
-msgstr "ਸੋਧ ਸਮਾਂ ਵੇਖਾਓ(_M)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1095
-msgid "Show Last _Accessed Time"
-msgstr "ਆਖਰੀ ਵਰਤਣ ਸਮਾਂ ਵੇਖਾਓ(_A)"
-
-#: ../src/gnome-keyring-manager-main-ui.c:1120
-#, c-format
-msgid "building menus failed: %s"
-msgstr "ਮੇਨੂ ਬਣਾਉਣਾ ਫੇਲ: %s"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:141
-msgid "_Name:"
-msgstr "ਨਾਂ(_N):"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:148
-msgid "_Secret:"
-msgstr "ਗੁਪਤ(_S):"
-
-#. Generic Secret
-#: ../src/gnome-keyring-manager-new-item-dialog.c:156
-msgid "_Generic Secret"
-msgstr "ਆਮ ਭੇਦ(_G)"
-
-#. Network Secret
-#: ../src/gnome-keyring-manager-new-item-dialog.c:165
-msgid "N_etwork Secret"
-msgstr "ਨੈੱਟਵਰਕ ਭੇਦ(_e)"
-
-#. Note
-#: ../src/gnome-keyring-manager-new-item-dialog.c:183
-msgid "No_te"
-msgstr "ਟਿੱਪਣੀ(_t)"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:201
-msgid "C_reate"
-msgstr "ਬਣਾਓ(_r)"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:273
-msgid "New Item For Session Keyring"
-msgstr "ਅਜਲਾਸ ਕੀਰਿੰਗ ਲਈ ਨਵੀਂ ਇਕਾਈ"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:277
-#, c-format
-msgid "New Item For Keyring %s"
-msgstr "ਕੀਰਿੰਗ ਲਈ ਨਵੀਂ ਇਕਾਈ %s"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:300
-msgid "User:"
-msgstr "ਉਪਭੋਗੀ:"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:301
-msgid "Domain:"
-msgstr "ਡੋਮੇਨ:"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:302
-msgid "Server:"
-msgstr "ਸਰਵਰ:"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:303
-msgid "Object:"
-msgstr "ਇਕਾਈ:"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:304
-msgid "Authentication Method:"
-msgstr "ਪਰਮਾਣਕਿਤਾ ਢੰਗ:"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:305
-msgid "Protocol:"
-msgstr "ਪਰੋਟੋਕਾਲ:"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:306
-msgid "Port:"
-msgstr "ਪੋਰਟ:"
-
-#: ../src/gnome-keyring-manager-new-item-dialog.c:356
-msgid "Te_xt:"
-msgstr "ਪਾਠ(_x):"
-
-#: ../src/gnome-keyring-manager-util.c:106
-msgid "GNOME Keyring daemon is not running."
-msgstr "ਗਨੋਮ ਕੀਰਿੰਗ ਡਾਇਮੋਨ ਚੱਲ ਨਹੀਂ ਰਿਹਾ ਹੈ"
-
-#: ../src/gnome-keyring-manager-util.c:110
-msgid "Cannot communicate with GNOME Keyring daemon."
-msgstr "ਗਨੋਮ ਕੀਰਿੰਗ ਨਾਲ ਸੰਚਾਰ ਨਹੀਂ ਹੋ ਸਕਿਆ ਹੈ"
-
-#: ../src/gnome-keyring-manager-util.c:114
-msgid "Access denied to GNOME Keyring."
-msgstr "ਗਨੋਮ ਕੀਰਿੰਗ ਲਈ ਅਧਿਕਾਰ ਪਾਬੰਦੀ ਹੈ"
-
-#: ../src/gnome-keyring-manager-util.c:118
-msgid "Keyring already exists."
-msgstr "ਕੀਰਿੰਗ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ"
-
-#: ../src/gnome-keyring-manager-util.c:122
-msgid "No such keyring."
-msgstr "ਕੋਈ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ"
-
-#: ../src/gnome-keyring-manager-util.c:126
-msgid "Keyring already unlocked."
-msgstr "ਕੀਰਿੰਗ ਪਹਿਲਾਂ ਹੀ ਖੁੱਲਾ ਹੈ"
-
-#: ../src/gnome-keyring-manager-util.c:134
-msgid "Unknown GNOME Keyring error."
-msgstr "ਅਣਜਾਣੀ ਗਨੋਮ ਕੀਰਿੰਗ ਗਲਤੀ"
-
-#: ../src/gnome-keyring-manager-util.c:210
-msgid "?"
-msgstr "?"
-
-#: ../src/gnome-keyring-manager-util.c:219
-msgid "Today %l:%M %p"
-msgstr "ਅੱਜ %l:%M %p"
-
-#: ../src/gnome-keyring-manager-util.c:231
-msgid "Yesterday %l:%M %p"
-msgstr "ਕੱਲ %l:%M %p"
-
-#: ../src/gnome-keyring-manager-util.c:247
-msgid "%a %l:%M %p"
-msgstr "%a %l:%M %p"
-
-#: ../src/gnome-keyring-manager-util.c:258
-msgid "%b %d %l:%M %p"
-msgstr "%b %d %l:%M %p"
-
-#: ../src/gnome-keyring-manager-util.c:262
-msgid "%b %d %Y"
-msgstr "%b %d %Y"
-
-#: ../src/gnome-keyring-manager-util.c:330
-msgid "A simple keyring manager for GNOME 2"
-msgstr "ਗਨੋਮ ੨ ਲਈ ਇੱਕ ਆਮ ਕੀਰਿੰਗ ਪ੍ਰਬੰਧਕ"
-
-#: ../src/gnome-keyring-manager-util.c:331
-msgid "Copyright © 2004, 2005 The GNOME Love Project"
-msgstr "ਹੱਕ ਰਾਖਵੇਂ ਹਨ © ੨੦੦੪ ੨੦੦੫ ਲਈ ਗਨੋਮ ਲਵ ਪ੍ਰੋਜੈਕਟ"
-
-#: ../src/gnome-keyring-manager-util.c:335
-msgid "GNOME Keyring Manager"
-msgstr "ਗਨੋਮ ਕੀਰਿੰਗ ਪ੍ਰਬੰਧਕ"
-
-#: ../src/gnome-keyring-manager-util.c:336
-msgid "translator-credits"
-msgstr "translator-credits"
-
-#: ../src/gnome-keyring-manager-util.c:382
-#: ../src/gnome-keyring-manager-util.c:469
-#, c-format
-msgid "Error while trying to read the gconf key %s: %s"
-msgstr "ਜੀਕਾਨਫ ਕੀ %s ਪੜਨ ਦੌਰਾਨ ਗਲਤੀ: %s"
-
-#: ../src/gnome-keyring-manager-util.c:399
-#, c-format
-msgid "Error while setting the gconf key %s: %s"
-msgstr "ਜੀਕਾਨਫ ਕੀ %s ਨਿਰਧਾਰਿਤ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ: %s"
-
-#: ../src/gnome-keyring-manager-util.c:445
-#, c-format
-msgid "Error trying to add %s to the list of gconf directories we listen to: %s"
-msgstr "ਜਦੋਂ %s ਨੂੰ ਜੀਕਾਨਫ ਡਾਇਰੈਕਟਰੀਆਂ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ ਕੀਤੀ ਤਾਂ ਗਲਤੀ ਹੈ, ਅਸੀਂ ਸੁਣਿਆ: %s"
-
-#: ../src/gnome-keyring-manager-util.c:480
-#, c-format
-msgid "Error while trying to add a listener for changes on the gconf key %s: %s"
-msgstr "ਜੀਕਾਨਫ ਕੁੰਜੀ %s ਨੂੰ ਤਬਦੀਲ ਦੌਰਾਨ ਲਿਸਨਰ ਸ਼ਾਮਿਲ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ: %s"
-
-#: ../src/gnome-keyring-manager-util.c:515
+#: ../gnome-keyring-ask.c:334
 #, c-format
 msgid ""
-"Error while trying to remove the %s directory from the list of gconf "
-"directories we listen to: %s"
-msgstr "ਜੀਕਾਨਫ ਡਾਇਰੈਕਟਰੀਆਂ ਵਿੱਚੋਂ ਡਾਇ %s ਹਟਾਓ ਸਮੇਂ ਗਲਤੀ,ਅਸੀਂ ਸੁਣਿਆ: %s"
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"ਕਾਰਜ '%s' (%s) ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
+"ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:340 ../gnome-keyring-ask.c:350
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"ਕਾਰਜ '%s' ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
+"ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:344 ../gnome-keyring-ask.c:354
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"ਕਾਰਜ '%s' ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
+"ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:360
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
+"ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:364
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
+"ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:370
+msgid "New Keyring Password"
+msgstr "ਨਵਾਂ ਕੀਰਿੰਗ ਗੁਪਤ-ਕੋਡ"
+
+#: ../gnome-keyring-ask.c:371
+msgid "Choose password for new keyring"
+msgstr "ਨਵੇਂ ਕੀਰਿੰਗ ਲਈ ਗੁਪਤ-ਕੋਡ ਚੁਣੋ"
+
+#: ../gnome-keyring-ask.c:401
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"ਕਾਰਜ '%s' (%s) ਇੱਕ ਗੁਪਤ-ਕੋਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ "
+"ਬਣਾਉਣ ਲਈ ਤੁਹਾਨੂੰ ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#: ../gnome-keyring-ask.c:405 ../gnome-keyring-ask.c:409
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"ਕਾਰਜ '%s' ਇੱਕ ਗੁਪਤ-ਕੋਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ "
+"ਬਣਾਉਣ ਲਈ ਤੁਹਾਨੂੰ ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:413
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਗੁਪਤ-ਕੋਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ "
+"ਬਣਾਉਣ ਲਈ ਤੁਹਾਨੂੰ ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#: ../gnome-keyring-ask.c:417
+msgid "Create Default Keyring"
+msgstr "ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਓ"
+
+#: ../gnome-keyring-ask.c:418
+msgid "Choose password for default keyring"
+msgstr "ਮੂਲ ਕੀਰਿੰਗ ਲਈ ਗੁਪਤ-ਕੋਡ ਚੁਣੋ"
+
+#: ../gnome-keyring-ask.c:455
+msgid "Allow application access to keyring?"
+msgstr "ਕੀ ਕਾਰਜਾਂ ਨੂੰ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨ ਦੇਣੀ ਹੈ?"
+
+#: ../gnome-keyring-ask.c:458
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "ਕਾਰਜ '%s' (%s) %s ਵਿੱਚ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:461
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:464
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr "ਕਾਰਜ '%s' (%s) ਅਣਜਾਣ ਕੀਰਿੰਗ ਵਿੱਚ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:469 ../gnome-keyring-ask.c:480
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "ਕਾਰਜ '%s' %s ਵਿੱਚੋਂ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:472 ../gnome-keyring-ask.c:483
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr "ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚੋਂ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:475 ../gnome-keyring-ask.c:486
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "ਕਾਰਜ '%s' ਅਣਜਾਣ ਕੀਰਿੰਗ ਵਿੱਚੋਂ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:491
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ %s ਵਿੱਚੋਂ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:494
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚੋਂ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:497
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਅਣਜਾਣ ਕੀਰਿੰਗ ਵਿੱਚੋਂ '%s' ਲਈ ਗੁਪਤ-ਕੋਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#: ../gnome-keyring-ask.c:502
+msgid "Allow access"
+msgstr "ਪਹੁੰਚ ਮਨਜ਼ੂਰ"
+
+#: ../gnome-keyring-ask.c:507
+msgid "Allow _Once"
+msgstr "ਇੱਕ ਵਾਰ ਪਹੁੰਚ(_O)"
+
+#: ../gnome-keyring-ask.c:508
+msgid "_Always Allow"
+msgstr "ਹਮੇਸ਼ਾ ਪਹੁੰਚ(_A)"
+
+#: ../gnome-keyring-ask.c:548
+msgid "You must specify the type of request to run\n"
+msgstr "ਤੁਹਾਨੂੰ ਚਲਾਉਣ ਲਈ ਮੰਗ ਦੀ ਕਿਸਮ ਦੱਸਣੀ ਪਵੇਗੀ\n"
+
+#: ../gnome-keyring-ask.c:561
+msgid "Unknown request type\n"
+msgstr "ਅਣਜਾਣ ਬੇਨਤੀ ਕਿਸਮ\n"
 
