@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-12 14:38+0300\n"
+"POT-Creation-Date: 2005-09-05 10:08+0200\n"
 "PO-Revision-Date: 2005-07-12 14:42+0300\n"
 "Last-Translator: Tommi Vainikainen <Tommi.Vainikainen@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -17,44 +17,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gnome-keyring-ask.c:224
+#: gnome-keyring-ask.c:224
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "Sovellus \"%s\" (%s) tahtoo päästä käsiksi oletusavainnippuun, mutta avainnippu on lukittu"
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi oletusavainnippuun, mutta "
+"avainnippu on lukittu"
 
-#: ../gnome-keyring-ask.c:228
+#: gnome-keyring-ask.c:228
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "Sovellus \"%s\" (%s) tahtoo päästä käsiksi avainnippuun \"%s\", mutta avainnippu on lukittu"
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi avainnippuun \"%s\", mutta "
+"avainnippu on lukittu"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:233
+#: gnome-keyring-ask.c:233
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
-msgstr "Sovellus \"%s\" (%s) tahtoo päästä käsiksi tuntemattomaan avainnippuun, mutta avainnippu on lukittu"
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi tuntemattomaan avainnippuun, "
+"mutta avainnippu on lukittu"
 
-#: ../gnome-keyring-ask.c:239 ../gnome-keyring-ask.c:253
+#: gnome-keyring-ask.c:239 gnome-keyring-ask.c:253
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
-"Sovellus \"%s\" tahtoo päästä käsiksi oletusavainnippuun, mutta "
-"avainnippu on lukittu"
+"Sovellus \"%s\" tahtoo päästä käsiksi oletusavainnippuun, mutta avainnippu "
+"on lukittu"
 
-#: ../gnome-keyring-ask.c:243 ../gnome-keyring-ask.c:258
+#: gnome-keyring-ask.c:243 gnome-keyring-ask.c:258
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Sovellus \"%s\" tahtoo päästä käsiksi avainnippuun \"%s\", mutta "
-"avainnippu on lukittu"
+"Sovellus \"%s\" tahtoo päästä käsiksi avainnippuun \"%s\", mutta avainnippu "
+"on lukittu"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:247 ../gnome-keyring-ask.c:263
+#: gnome-keyring-ask.c:247 gnome-keyring-ask.c:263
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
@@ -62,14 +68,14 @@ msgstr ""
 "Sovellus \"%s\" tahtoo päästä käsiksi tuntemattomaan avainnippuun, mutta "
 "avainnippu on lukittu"
 
-#: ../gnome-keyring-ask.c:269
+#: gnome-keyring-ask.c:269
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Tuntematon sovellus tahtoo päästä käsiksi oletusavainnippuun, mutta "
 "avainnippu on lukittu"
 
-#: ../gnome-keyring-ask.c:273
+#: gnome-keyring-ask.c:273
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -78,32 +84,32 @@ msgstr ""
 "avainnippu on lukittu"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:278
+#: gnome-keyring-ask.c:278
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
-"Tuntematon sovellus tahtoo päästä käsiksi tuntemattomaan avainnippuun, "
-"mutta avainnippu on lukittu"
+"Tuntematon sovellus tahtoo päästä käsiksi tuntemattomaan avainnippuun, mutta "
+"avainnippu on lukittu"
 
-#: ../gnome-keyring-ask.c:285
+#: gnome-keyring-ask.c:285
 msgid "Enter password for default keyring to unlock"
 msgstr "Syötä oletusavainnipun salasana avataksesi"
 
-#: ../gnome-keyring-ask.c:287
+#: gnome-keyring-ask.c:287
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Syötä avainnipun \"%s\" salasana avataksesi"
 
-#: ../gnome-keyring-ask.c:290
+#: gnome-keyring-ask.c:290
 msgid "Unlock Keyring"
 msgstr "Avaa avainnippu"
 
-#: ../gnome-keyring-ask.c:295 ../gnome-keyring-ask.c:375
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:506
+#: gnome-keyring-ask.c:295 gnome-keyring-ask.c:375 gnome-keyring-ask.c:422
+#: gnome-keyring-ask.c:506
 msgid "_Deny"
 msgstr "_Evää"
 
-#: ../gnome-keyring-ask.c:330
+#: gnome-keyring-ask.c:330
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -112,7 +118,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo luoda uuden avainnipun nimellä \"%s\". Sinun "
 "täytyy valita avainnipulle salasana."
 
-#: ../gnome-keyring-ask.c:334
+#: gnome-keyring-ask.c:334
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -121,7 +127,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo luoda uuden oletusavainnipun. Sinun täytyy "
 "valita avainnipulle salasana."
 
-#: ../gnome-keyring-ask.c:340 ../gnome-keyring-ask.c:350
+#: gnome-keyring-ask.c:340 gnome-keyring-ask.c:350
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -130,7 +136,7 @@ msgstr ""
 "Sovellus \"%s\" tahtoo luoda uuden avainnipun nimellä \"%s\". Sinun täytyy "
 "valita avainnipulle salasana."
 
-#: ../gnome-keyring-ask.c:344 ../gnome-keyring-ask.c:354
+#: gnome-keyring-ask.c:344 gnome-keyring-ask.c:354
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -139,7 +145,7 @@ msgstr ""
 "Sovellus \"%s\" tahtoo luoda uuden oletusavainnipun. Sinun täytyy valita "
 "avainnipulle salasana."
 
-#: ../gnome-keyring-ask.c:360
+#: gnome-keyring-ask.c:360
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -148,72 +154,81 @@ msgstr ""
 "Tuntematon sovellus tahtoo luoda uuden avainnipun nimellä \"%s\". Sinun "
 "täytyy valita avainnipulle salasana."
 
-#: ../gnome-keyring-ask.c:364
+#: gnome-keyring-ask.c:364
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Tuntematon sovellus tahtoo luoda uuden oletusavainnipun. Sinun täytyy "
-"valita avainnipulle salasana."
+"Tuntematon sovellus tahtoo luoda uuden oletusavainnipun. Sinun täytyy valita "
+"avainnipulle salasana."
 
-#: ../gnome-keyring-ask.c:370
+#: gnome-keyring-ask.c:370
 msgid "New Keyring Password"
 msgstr "Uuden avainnipun salasana"
 
-#: ../gnome-keyring-ask.c:371
+#: gnome-keyring-ask.c:371
 msgid "Choose password for new keyring"
 msgstr "Valitse uuden avainnipun salasana"
 
-#: ../gnome-keyring-ask.c:401
+#: gnome-keyring-ask.c:401
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Sovellus \"%s\" (%s) tahtoo tallentaa salasanan, mutta oletusavainnippua ei ole luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo tallentaa salasanan, mutta oletusavainnippua ei "
+"ole luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
 
-#: ../gnome-keyring-ask.c:405 ../gnome-keyring-ask.c:409
+#: gnome-keyring-ask.c:405 gnome-keyring-ask.c:409
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Sovellus \"%s\" tahtoo tallentaa salasanan, mutta oletusavainnippua ei ole luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
+msgstr ""
+"Sovellus \"%s\" tahtoo tallentaa salasanan, mutta oletusavainnippua ei ole "
+"luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:413
+#: gnome-keyring-ask.c:413
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Tuntematon sovellus tahtoo tallentaa salasanan, mutta oletusavainnippua ei ole luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
+msgstr ""
+"Tuntematon sovellus tahtoo tallentaa salasanan, mutta oletusavainnippua ei "
+"ole luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
 
-#: ../gnome-keyring-ask.c:417
+#: gnome-keyring-ask.c:417
 msgid "Create Default Keyring"
 msgstr "Luo oletusavainnippu"
 
-#: ../gnome-keyring-ask.c:418
+#: gnome-keyring-ask.c:418
 msgid "Choose password for default keyring"
 msgstr "Valitse oletusavainnipun salasana"
 
-#: ../gnome-keyring-ask.c:455
+#: gnome-keyring-ask.c:455
 msgid "Allow application access to keyring?"
 msgstr "Salli sovelluksien päästä käsiksi avainnippuun?"
 
-#: ../gnome-keyring-ask.c:458
+#: gnome-keyring-ask.c:458
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Sovellus \"%s\" (%s) tahtoo päästä käsiksi \"%s\"-salasanaan avainnipussa %s."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi \"%s\"-salasanaan avainnipussa %s."
 
-#: ../gnome-keyring-ask.c:461
+#: gnome-keyring-ask.c:461
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
-msgstr "Sovellus \"%s\" (%s) tahtoo päästä käsiksi \"%s\"-salasanaan oletusavainnipussa."
+msgstr ""
+"Sovellus \"%s\" (%s) tahtoo päästä käsiksi \"%s\"-salasanaan "
+"oletusavainnipussa."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:464
+#: gnome-keyring-ask.c:464
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -222,13 +237,13 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo päästä käsiksi \"%s\"-salasanaan tuntemattomassa "
 "avainrenkaassa."
 
-#: ../gnome-keyring-ask.c:469 ../gnome-keyring-ask.c:480
+#: gnome-keyring-ask.c:469 gnome-keyring-ask.c:480
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr ""
 "Sovellus \"%s\" tahtoo päästä käsiksi \"%s\"-salasanaan avainrenkaassa %s."
 
-#: ../gnome-keyring-ask.c:472 ../gnome-keyring-ask.c:483
+#: gnome-keyring-ask.c:472 gnome-keyring-ask.c:483
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -237,7 +252,7 @@ msgstr ""
 "Sovellus \"%s\" tahtoo päästä käsiksi \"%s\"-salasanaan oletusavainrenkaassa."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:475 ../gnome-keyring-ask.c:486
+#: gnome-keyring-ask.c:475 gnome-keyring-ask.c:486
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -246,14 +261,14 @@ msgstr ""
 "Sovellus \"%s\" tahtoo päästä käsiksi \"%s\"-salasanaan tuntemattomassa "
 "avainrenkaassa."
 
-#: ../gnome-keyring-ask.c:491
+#: gnome-keyring-ask.c:491
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr ""
 "Tuntematon sovellus tahtoo päästä käsiksi \"%s\"-salasanaan avainrenkaassa %"
 "s."
 
-#: ../gnome-keyring-ask.c:494
+#: gnome-keyring-ask.c:494
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -263,7 +278,7 @@ msgstr ""
 "oletusavainrenkaassa."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:497
+#: gnome-keyring-ask.c:497
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -272,22 +287,22 @@ msgstr ""
 "Tuntematon sovellus tahtoo päästä käsiksi \"%s\"-salasanaan tuntemattomassa "
 "avainrenkaassa."
 
-#: ../gnome-keyring-ask.c:502
+#: gnome-keyring-ask.c:502
 msgid "Allow access"
 msgstr "Salli päästä käsiksi"
 
-#: ../gnome-keyring-ask.c:507
+#: gnome-keyring-ask.c:507
 msgid "Allow _Once"
 msgstr "Salli _kerran"
 
-#: ../gnome-keyring-ask.c:508
+#: gnome-keyring-ask.c:508
 msgid "_Always Allow"
 msgstr "Salli _aina"
 
-#: ../gnome-keyring-ask.c:548
+#: gnome-keyring-ask.c:548
 msgid "You must specify the type of request to run\n"
 msgstr "Pyynnön tyyppi täytyy antaa suorittaaksesi\n"
 
-#: ../gnome-keyring-ask.c:561
+#: gnome-keyring-ask.c:561
 msgid "Unknown request type\n"
 msgstr "Tuntematon pyyntötyyppi\n"

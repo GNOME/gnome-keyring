@@ -1,3 +1,8 @@
+2005-09-05  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release.
+
 2005-08-30  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-ask.c: (run_dialog):
