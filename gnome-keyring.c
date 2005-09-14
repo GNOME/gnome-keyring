@@ -441,7 +441,10 @@ run_sync_operation (GString *buffer,
 	GnomeKeyringResult res;
 	int socket;
 	guint32 packet_size;
-	
+
+	g_assert (buffer != NULL);
+	g_assert (receive_buffer != NULL);
+
 	socket = connect_to_daemon (FALSE);
 	if (socket < 0) {
 		return GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON;
@@ -585,7 +588,7 @@ gnome_keyring_set_default_keyring (const char                             *keyri
 GnomeKeyringResult 
 gnome_keyring_set_default_keyring_sync (const char *keyring)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 
 	send = g_string_new (NULL);
@@ -597,8 +600,10 @@ gnome_keyring_set_default_keyring_sync (const char *keyring)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	res = run_sync_operation (send, NULL);
+	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 
 	return res;
 }
@@ -757,7 +762,7 @@ gnome_keyring_lock_all (GnomeKeyringOperationDoneCallback       callback,
 GnomeKeyringResult 
 gnome_keyring_lock_all_sync (void)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 
 	send = g_string_new (NULL);
@@ -768,8 +773,10 @@ gnome_keyring_lock_all_sync (void)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 }
@@ -806,7 +813,7 @@ GnomeKeyringResult
 gnome_keyring_create_sync (const char *keyring_name,
 			   const char *password)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 	
 	send = g_string_new (NULL);
@@ -818,8 +825,10 @@ gnome_keyring_create_sync (const char *keyring_name,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 }
@@ -853,7 +862,7 @@ GnomeKeyringResult
 gnome_keyring_unlock_sync (const char *keyring,
 			   const char *password)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 	
 	send = g_string_new (NULL);
@@ -865,8 +874,10 @@ gnome_keyring_unlock_sync (const char *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 }
@@ -898,7 +909,7 @@ gnome_keyring_lock (const char                                  *keyring,
 GnomeKeyringResult
 gnome_keyring_lock_sync (const char *keyring)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 	
 	send = g_string_new (NULL);
@@ -910,8 +921,10 @@ gnome_keyring_lock_sync (const char *keyring)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 }
@@ -943,7 +956,7 @@ gnome_keyring_delete (const char                                  *keyring,
 GnomeKeyringResult
 gnome_keyring_delete_sync (const char *keyring)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 	
 	send = g_string_new (NULL);
@@ -955,8 +968,10 @@ gnome_keyring_delete_sync (const char *keyring)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 }
@@ -1066,7 +1081,7 @@ GnomeKeyringResult
 gnome_keyring_set_info_sync (const char       *keyring,
 			     GnomeKeyringInfo *info)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 	
 	send = g_string_new (NULL);
@@ -1077,8 +1092,10 @@ gnome_keyring_set_info_sync (const char       *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 }
@@ -1481,7 +1498,7 @@ GnomeKeyringResult
 gnome_keyring_item_delete_sync (const char *keyring,
 				guint32     id)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 
 	send = g_string_new (NULL);
@@ -1494,8 +1511,10 @@ gnome_keyring_item_delete_sync (const char *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 
 	return res;
 }
@@ -1610,7 +1629,7 @@ gnome_keyring_item_set_info_sync (const char           *keyring,
 				  guint32               id,
 				  GnomeKeyringItemInfo *info)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 	
 	send = g_string_new (NULL);
@@ -1621,8 +1640,10 @@ gnome_keyring_item_set_info_sync (const char           *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 }
@@ -1756,7 +1777,7 @@ gnome_keyring_item_set_attributes_sync (const char                *keyring,
 					guint32                    id,
 					GnomeKeyringAttributeList *attributes)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 	
 	send = g_string_new (NULL);
@@ -1768,8 +1789,10 @@ gnome_keyring_item_set_attributes_sync (const char                *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 
@@ -1869,7 +1892,7 @@ gnome_keyring_item_set_acl_sync (const char *keyring,
 				 guint32     id,
 				 GList      *acl)
 {
-	GString *send;
+	GString *send, *receive;
 	GnomeKeyringResult res;
 	
 	send = g_string_new (NULL);
@@ -1881,8 +1904,10 @@ gnome_keyring_item_set_acl_sync (const char *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	res = run_sync_operation (send, NULL);
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
+	g_string_free (receive, TRUE);
 	
 	return res;
 }

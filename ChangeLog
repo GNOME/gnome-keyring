@@ -1,3 +1,16 @@
+2005-09-14  Fernando Herrera  <fherrera@onirica.com>
+
+	* gnome-keyring.c: (run_sync_operation),
+	(gnome_keyring_set_default_keyring_sync),
+	(gnome_keyring_lock_all_sync), (gnome_keyring_create_sync),
+	(gnome_keyring_unlock_sync), (gnome_keyring_lock_sync),
+	(gnome_keyring_delete_sync), (gnome_keyring_set_info_sync),
+	(gnome_keyring_item_delete_sync),
+	(gnome_keyring_item_set_info_sync),
+	(gnome_keyring_item_set_attributes_sync),
+	(gnome_keyring_item_set_acl_sync): Fix all these sync functions
+	adding a receive buffer. Patch by Crispin Flowerday <crispin@gnome.org>
+
 === gnome-keyring 0.4.4 ===
 
 2005-09-05  Alexander Larsson  <alexl@redhat.com>
