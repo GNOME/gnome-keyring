@@ -1,5 +1,10 @@
 2005-09-14  Fernando Herrera  <fherrera@onirica.com>
 
+	* NEWS:
+	Update for release.
+
+2005-09-14  Fernando Herrera  <fherrera@onirica.com>
+
 	* gnome-keyring.c: (run_sync_operation),
 	(gnome_keyring_set_default_keyring_sync),
 	(gnome_keyring_lock_all_sync), (gnome_keyring_create_sync),
