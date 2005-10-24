@@ -54,6 +54,12 @@ create_markup (const char *primary, const char *secondary)
 	return g_strconcat ("<span weight=\"bold\" size=\"larger\">", primary, "</span>\n\n", secondary, NULL);
 }
 
+static char *
+create_notice (const char *text)
+{
+	return g_strconcat ("<span style=\"italic\" >", text, "</span>", NULL);
+}
+
 enum {
 	KEYRING_NAME_NORMAL,
 	KEYRING_NAME_DEFAULT,
@@ -72,6 +78,7 @@ run_dialog (const char *title,
 	    const char *primary,
 	    const char *secondary,
 	    gboolean include_password,
+	    gboolean include_confirm,
 	    char **password_out,
 	    guint default_response,
 	    const gchar *first_button_text,
@@ -79,16 +86,19 @@ run_dialog (const char *title,
 {
 	GtkWidget *dialog;
 	GtkLabel *message_widget;
+	GtkLabel *notice;
 	char *message;
+	char *notice_text;
 	GtkWidget *entry;
+	GtkWidget *confirm;
 	gint response;
 	va_list args;
 	const char *text;
 	gint response_id;
-	GtkWidget *hbox;
-	GtkWidget *vbox;
+	GtkWidget *table;
 	GtkWidget *image;
 	const char *password;
+	const char *confirmation;
 
 	dialog = gtk_dialog_new_with_buttons (title , NULL, 0, NULL, NULL);
 	gtk_window_set_icon_name(GTK_WINDOW(dialog), "stock_lock");
@@ -117,22 +127,19 @@ run_dialog (const char *title,
 
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), default_response);
 
-	hbox = gtk_hbox_new (FALSE, 12);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+	table = gtk_table_new (3, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 12);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 5);
 	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox, 
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, 
 	                    FALSE, FALSE, 0);
 
 	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_AUTHENTICATION, GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
 
-	gtk_box_pack_start (GTK_BOX (hbox), image, 
-	                    FALSE, FALSE, 0);
-
-	vbox = gtk_vbox_new (FALSE, 12);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    GTK_WIDGET (vbox),
-			    FALSE, FALSE, 0);
+	gtk_table_attach_defaults (GTK_TABLE (table), image, 
+	                    0, 1, 0 ,1);
 	
 	message = create_markup (primary, secondary);
 	message_widget = GTK_LABEL (gtk_label_new (message));
@@ -142,9 +149,14 @@ run_dialog (const char *title,
 	gtk_label_set_line_wrap (message_widget, TRUE);
 	gtk_label_set_justify (message_widget,
 			       GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start (GTK_BOX (vbox),
+	gtk_table_attach_defaults (GTK_TABLE (table), 
 			    GTK_WIDGET (message_widget),
-			    FALSE, FALSE, 0);
+			    1, 2, 0, 1);
+
+	notice = GTK_LABEL (gtk_label_new (NULL));
+	gtk_table_attach_defaults (GTK_TABLE (table), 
+			    GTK_WIDGET (notice),
+			    0, 2, 1, 2);
 
 	entry = NULL;
 	if (include_password) {
@@ -154,19 +166,45 @@ run_dialog (const char *title,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
-		gtk_box_pack_start (GTK_BOX (vbox),
+		gtk_table_attach_defaults (GTK_TABLE (table), 
 				    entry,
-				    FALSE, FALSE, 0);
+				    1, 2, 2, 3);
+	}
+
+	confirm = NULL;
+	if (include_confirm) {
+		gtk_table_resize (GTK_TABLE (table),4,2);
+		confirm = gtk_entry_new ();
+		gtk_entry_set_visibility (GTK_ENTRY (confirm), FALSE);
+		g_signal_connect_swapped (confirm,
+					  "activate",
+					  G_CALLBACK (gtk_window_activate_default),
+					  dialog);
+		gtk_table_attach_defaults (GTK_TABLE (table), 
+				    confirm,
+				    1, 2, 3, 4);
 	}
 
  retry:
 	gtk_widget_show_all (dialog);
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
 
-	if (include_password && entry != NULL) {
+	if (include_password && entry != NULL && response == GTK_RESPONSE_OK) {
 		password = gtk_entry_get_text (GTK_ENTRY (entry));
-		if (response == GTK_RESPONSE_OK && *password == 0) {
+		if (*password == 0) {
+			notice_text = create_notice (_("Password cannot be blank."));
+			gtk_label_set_markup (notice,  notice_text);
+			g_free (notice_text);			
 			goto retry;
+		}
+		if (include_confirm && confirm != NULL) {
+			confirmation = gtk_entry_get_text (GTK_ENTRY (confirm));
+			if (strcmp(password, confirmation) != 0) {
+				notice_text = create_notice (_("Passwords do not match."));
+				gtk_label_set_markup (notice,  notice_text);
+				g_free (notice_text);			
+				goto retry;
+			}
 		}
 		*password_out = g_strdup (password);
 	}
@@ -290,7 +328,7 @@ ask_for_keyring_password (void)
 	response = run_dialog (_("Unlock Keyring"),
 			       primary,
 			       message,
-			       TRUE, &password,
+			       TRUE, FALSE, &password,
 			       GTK_RESPONSE_OK,
 			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -370,7 +408,7 @@ ask_for_new_keyring_password (void)
 	response = run_dialog (_("New Keyring Password"),
 			       _("Choose password for new keyring"),
 			       message,
-			       TRUE, &password,
+			       TRUE, TRUE, &password,
 			       GTK_RESPONSE_OK,
 			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -417,7 +455,7 @@ ask_for_default_keyring (void)
 	response = run_dialog (_("Create Default Keyring"),
 			       _("Choose password for default keyring"),
 			       message,
-			       TRUE, &password,
+			       TRUE, TRUE, &password,
 			       GTK_RESPONSE_OK,
 			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -501,7 +539,7 @@ ask_for_item_read_write_acccess (void)
 
 	response = run_dialog (_("Allow access"),
 			       primary, secondary,
-			       FALSE, NULL,
+			       FALSE, FALSE, NULL,
 			       2,
 			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       _("Allow _Once"), 1,

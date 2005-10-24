@@ -1,3 +1,9 @@
+2005-10-24  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-ask.c:
+	Confirm password when selecting new password.
+	Patch from Trevor Davenport (#311872)
+
 2005-09-14  Fernando Herrera  <fherrera@onirica.com>
 
 	* configure.in: Post release version bump.
