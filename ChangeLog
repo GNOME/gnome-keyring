@@ -1,3 +1,8 @@
+2005-10-26  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon.c: (access_request_default_keyring):
+	Fix sparse warning. Patch from Kjartan Maraas.
+
 2005-10-24  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-ask.c:

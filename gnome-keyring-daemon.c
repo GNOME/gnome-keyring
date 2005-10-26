@@ -565,7 +565,7 @@ access_request_for_new_keyring_password (const char *keyring_name)
 }
 
 static GnomeKeyringAccessRequest *
-access_request_default_keyring ()
+access_request_default_keyring (void)
 {
 	GnomeKeyringAccessRequest *access_request;
 	access_request = g_new0 (GnomeKeyringAccessRequest, 1);
