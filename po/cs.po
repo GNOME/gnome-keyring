@@ -1,22 +1,30 @@
 # Czech translation of gnome-keyring
-# Copyright (C) 2003, 2004 gnome-keyring'S COPYRIGHT HOLDER
-# Copyright (C) 2004 Miloslav Trmac <mitr@volny.cz>
+# Copyright (C) 2003, 2004, 2005 gnome-keyring'S COPYRIGHT HOLDER
+# Copyright (C) 2004, 2005 Miloslav Trmac <mitr@volny.cz>
 # This file is distributed under the same license as the gnome-keyring package.
-# Miloslav Trmac <mitr@volny.cz>, 2003, 2004.
+# Miloslav Trmac <mitr@volny.cz>, 2003 - 2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-14 16:08+0200\n"
-"PO-Revision-Date: 2004-01-25 16:29+0100\n"
+"POT-Creation-Date: 2005-11-02 14:18+0100\n"
+"PO-Revision-Date: 2005-11-02 23:09+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-keyring-ask.c:224
+#: ../gnome-keyring-ask.c:195
+msgid "Password cannot be blank."
+msgstr "Heslo nesmí být prázdné."
+
+#: ../gnome-keyring-ask.c:203
+msgid "Passwords do not match."
+msgstr "Hesla nesouhlasí."
+
+#: ../gnome-keyring-ask.c:262
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -24,74 +32,74 @@ msgid ""
 msgstr ""
 "Aplikace '%s' (%s) chce přístup k implicitní klíčence, která je zamčena."
 
-#: gnome-keyring-ask.c:228
+#: ../gnome-keyring-ask.c:266
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Aplikace '%s' (%s) chce přístup ke klíčence '%s', která je zamčena."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:233
+#: ../gnome-keyring-ask.c:271
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr "Aplikace '%s' (%s) chce přístup k neznámé klíčence, která je zamčena."
 
-#: gnome-keyring-ask.c:239 gnome-keyring-ask.c:253
+#: ../gnome-keyring-ask.c:277 ../gnome-keyring-ask.c:291
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "Aplikace '%s' chce přístup k implicitní klíčence, která je zamčena."
 
-#: gnome-keyring-ask.c:243 gnome-keyring-ask.c:258
+#: ../gnome-keyring-ask.c:281 ../gnome-keyring-ask.c:296
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Aplikace '%s' chce přístup ke klíčence '%s', která je zamčena."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:247 gnome-keyring-ask.c:263
+#: ../gnome-keyring-ask.c:285 ../gnome-keyring-ask.c:301
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "Aplikace '%s' chce přístup k neznámé klíčence, která je zamčena."
 
-#: gnome-keyring-ask.c:269
+#: ../gnome-keyring-ask.c:307
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "Neznámá aplikace chce přístup k implicitní klíčence, která je zamčena."
 
-#: gnome-keyring-ask.c:273
+#: ../gnome-keyring-ask.c:311
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Neznámá aplikace chce přístup ke klíčence '%s', která je zamčena."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:278
+#: ../gnome-keyring-ask.c:316
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "Neznámá aplikace chce přístup k neznámé klíčence, která je zamčena."
 
-#: gnome-keyring-ask.c:285
+#: ../gnome-keyring-ask.c:323
 msgid "Enter password for default keyring to unlock"
 msgstr "Zadejte heslo pro odemčení implicitní klíčenky"
 
-#: gnome-keyring-ask.c:287
+#: ../gnome-keyring-ask.c:325
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Zadejte heslo pro odemčení klíčenky '%s'"
 
-#: gnome-keyring-ask.c:290
+#: ../gnome-keyring-ask.c:328
 msgid "Unlock Keyring"
 msgstr "Odemknout klíčenku"
 
-#: gnome-keyring-ask.c:295 gnome-keyring-ask.c:375 gnome-keyring-ask.c:422
-#: gnome-keyring-ask.c:506
+#: ../gnome-keyring-ask.c:333 ../gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:460 ../gnome-keyring-ask.c:544
 msgid "_Deny"
 msgstr "_Odepřít"
 
-#: gnome-keyring-ask.c:330
+#: ../gnome-keyring-ask.c:368
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -100,7 +108,7 @@ msgstr ""
 "Aplikace '%s' (%s) chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: gnome-keyring-ask.c:334
+#: ../gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -109,7 +117,7 @@ msgstr ""
 "Aplikace '%s' (%s) chce vytvořit novou implicitní klíčenku. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: gnome-keyring-ask.c:340 gnome-keyring-ask.c:350
+#: ../gnome-keyring-ask.c:378 ../gnome-keyring-ask.c:388
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -118,7 +126,7 @@ msgstr ""
 "Aplikace '%s' chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: gnome-keyring-ask.c:344 gnome-keyring-ask.c:354
+#: ../gnome-keyring-ask.c:382 ../gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -127,7 +135,7 @@ msgstr ""
 "Aplikace '%s' chce vytvořit novou implicitní klíčenku. Musíte zvolit heslo, "
 "které pro ni chcete používat."
 
-#: gnome-keyring-ask.c:360
+#: ../gnome-keyring-ask.c:398
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -136,7 +144,7 @@ msgstr ""
 "Neznámá aplikace chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: gnome-keyring-ask.c:364
+#: ../gnome-keyring-ask.c:402
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -144,15 +152,15 @@ msgstr ""
 "Neznámá aplikace chce vytvořit novou implicitní klíčenku. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: gnome-keyring-ask.c:370
+#: ../gnome-keyring-ask.c:408
 msgid "New Keyring Password"
 msgstr "Heslo nové klíčenky"
 
-#: gnome-keyring-ask.c:371
+#: ../gnome-keyring-ask.c:409
 msgid "Choose password for new keyring"
 msgstr "Zvolte heslo pro novou klíčenku"
 
-#: gnome-keyring-ask.c:401
+#: ../gnome-keyring-ask.c:439
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -162,7 +170,7 @@ msgstr ""
 "Aplikace '%s' (%s) chce uložit heslo, ale neexistuje implicitní klíčenka. "
 "Před jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
 
-#: gnome-keyring-ask.c:405 gnome-keyring-ask.c:409
+#: ../gnome-keyring-ask.c:443 ../gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -173,7 +181,7 @@ msgstr ""
 "jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:451
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -182,24 +190,24 @@ msgstr ""
 "Neznámá aplikace chce uložit heslo, ale neexistuje implicitní klíčenka. Před "
 "jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
 
-#: gnome-keyring-ask.c:417
+#: ../gnome-keyring-ask.c:455
 msgid "Create Default Keyring"
 msgstr "Vytvořit implicitní klíčenku"
 
-#: gnome-keyring-ask.c:418
+#: ../gnome-keyring-ask.c:456
 msgid "Choose password for default keyring"
 msgstr "Zvolte heslo pro implicitní klíčenku"
 
-#: gnome-keyring-ask.c:455
+#: ../gnome-keyring-ask.c:493
 msgid "Allow application access to keyring?"
 msgstr "Povolit aplikaci přístup ke klíčence?"
 
-#: gnome-keyring-ask.c:458
+#: ../gnome-keyring-ask.c:496
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "Aplikace '%s' (%s) chce přístup k heslu pro '%s' v %s."
 
-#: gnome-keyring-ask.c:461
+#: ../gnome-keyring-ask.c:499
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -208,19 +216,19 @@ msgstr ""
 "Aplikace '%s' (%s) chce přístup k heslu pro '%s' v implicitní klíčence."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:464
+#: ../gnome-keyring-ask.c:502
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr "Aplikace '%s' (%s) chce přístup k heslu pro '%s' v neznámé klíčence."
 
-#: gnome-keyring-ask.c:469 gnome-keyring-ask.c:480
+#: ../gnome-keyring-ask.c:507 ../gnome-keyring-ask.c:518
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Aplikace '%s' chce přístup k heslu pro '%s' v %s."
 
-#: gnome-keyring-ask.c:472 gnome-keyring-ask.c:483
+#: ../gnome-keyring-ask.c:510 ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -228,19 +236,19 @@ msgid ""
 msgstr "Aplikace '%s' chce přístup k heslu pro '%s' v implicitní klíčence."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:475 gnome-keyring-ask.c:486
+#: ../gnome-keyring-ask.c:513 ../gnome-keyring-ask.c:524
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Aplikace '%s' chce přístup k heslu pro '%s' v neznámé klíčence."
 
-#: gnome-keyring-ask.c:491
+#: ../gnome-keyring-ask.c:529
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Neznámá aplikace chce přístup k heslu pro '%s' v %s."
 
-#: gnome-keyring-ask.c:494
+#: ../gnome-keyring-ask.c:532
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -248,29 +256,29 @@ msgid ""
 msgstr "Neznámá aplikace chce přístup k heslu pro '%s' v implicitní klíčence."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:497
+#: ../gnome-keyring-ask.c:535
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Neznámá aplikace chce přístup k heslu pro '%s' v neznámé klíčence."
 
-#: gnome-keyring-ask.c:502
+#: ../gnome-keyring-ask.c:540
 msgid "Allow access"
 msgstr "Povolit přístup"
 
-#: gnome-keyring-ask.c:507
+#: ../gnome-keyring-ask.c:545
 msgid "Allow _Once"
 msgstr "Povolit _jednou"
 
-#: gnome-keyring-ask.c:508
+#: ../gnome-keyring-ask.c:546
 msgid "_Always Allow"
 msgstr "_Vždy povolit"
 
-#: gnome-keyring-ask.c:548
+#: ../gnome-keyring-ask.c:586
 msgid "You must specify the type of request to run\n"
 msgstr "Musíte určit typ požadavku, který spustit\n"
 
-#: gnome-keyring-ask.c:561
+#: ../gnome-keyring-ask.c:599
 msgid "Unknown request type\n"
 msgstr "Neznámý typ požadavku\n"
