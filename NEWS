@@ -1,3 +1,6 @@
+Changes in version 0.4.6 are:
+* Confirm password when selecting new password
+
 Changes in version 0.4.5 are:
 * Fix a crash in some sync functions.
 

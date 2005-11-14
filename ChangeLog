@@ -1,3 +1,8 @@
+2005-11-14  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release.
+
 2005-10-26  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-daemon.c: (access_request_default_keyring):
