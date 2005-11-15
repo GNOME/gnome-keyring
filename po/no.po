@@ -1,14 +1,14 @@
 # Norwegian translations for gnome-keyring.
 # Copyright (C) 2003 Red Hat Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Kjartan Maraas <kmaraas@gnome.org>, 2003.
+# Kjartan Maraas <kmaraas@gnome.org>, 2003-2005.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 0.1\n"
+"Project-Id-Version: gnome-keyring 0.4.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-11-14 17:16+0100\n"
-"PO-Revision-Date: 2004-01-13 21:52+0100\n"
+"PO-Revision-Date: 2005-11-15 13:02+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -18,11 +18,11 @@ msgstr ""
 
 #: gnome-keyring-ask.c:195
 msgid "Password cannot be blank."
-msgstr ""
+msgstr "Passordet kan ikke være tomt."
 
 #: gnome-keyring-ask.c:203
 msgid "Passwords do not match."
-msgstr ""
+msgstr "Passordene er ikke like."
 
 #: gnome-keyring-ask.c:262
 #, c-format
