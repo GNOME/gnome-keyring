@@ -39,7 +39,7 @@
 #    define N_(String) (String)
 #  endif
 #else
-#  define _(String)
+#  define _(String) (String)
 #  define N_(String) (String)
 #endif
 
