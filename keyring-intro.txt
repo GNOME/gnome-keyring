@@ -46,49 +46,49 @@ The example code below demonstrates how to add the new password (and associated
 data) into the selected keyring:
 
 
-        GnomeKeyringAttributeList *attributes;
-        GnomeKeyringAttribute attribute;
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attribute;
+
+	attributes = gnome_keyring_attribute_list_new ();
+
+	attribute.name = g_strdup ("user");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup ("gnomer");
+	g_array_append_val (attributes, attribute);
+
+	attribute.name = g_strdup ("server");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup ("master.gnome.org");
+	g_array_append_val (attributes, attribute);
+	 
+	attribute.name = g_strdup ("protocol");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup ("ssh");
+	g_array_append_val (attributes, attribute);
  
-        attributes = gnome_keyring_attribute_list_new ();
- 
-        attribute.name = g_strdup ("user");
-        attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-        attribute.value.string = g_strdup ("gnomer");
-        g_array_append_val (attributes, attribute);
- 
-        attribute.name = g_strdup ("server");
-        attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-        attribute.value.string = g_strdup ("master.gnome.org");
-        g_array_append_val (attributes, attribute);
-         
-        attribute.name = g_strdup ("protocol");
-        attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-        attribute.value.string = g_strdup ("ssh");
-        g_array_append_val (attributes, attribute);
- 
-        gnome_keyring_item_create (NULL, /* Use default keyring */
-                                   GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
-                                   "master.gnome.org SSH password", /* name */
-                                   attributes, /* attribute list */
-                                   "mypassword", /* password */
-                                   TRUE, /* Update if already exists */
-                                   create_item_cb, NULL, NULL);
+	gnome_keyring_item_create (NULL, /* Use default keyring */
+				   GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
+				   "master.gnome.org SSH password", /* name */
+				   attributes, /* attribute list */
+				   "mypassword", /* password */
+				   TRUE, /* Update if already exists */
+				   create_item_cb, NULL, NULL);
 	gnome_keyring_attribute_list_free (attributes);
 
 
 In most cases, applications must use standard attributes. There is a convenience
 function in gnome-keyring to aid in setting these attributes:
 
-	 gnome_keyring_set_network_password (NULL /* default keyring */,
-                                            "gnomer" /* user */
-                                            NULL, /* domain */
-                                            "master.gnome.org", /* server */
-                                            NULL, /* object */
-                                            "ssh", /* protocol */
-                                            NULL, /* authtype */
-                                            0, /* port, default */
-                                            "mypassword", /* password */
-                                            set_network_cb, NULL, NULL);
+	gnome_keyring_set_network_password (NULL /* default keyring */,
+					    "gnomer" /* user */
+					    NULL, /* domain */
+					    "master.gnome.org", /* server */
+					    NULL, /* object */
+					    "ssh", /* protocol */
+					    NULL, /* authtype */
+					    0, /* port, default */
+					    "mypassword", /* password */
+					    set_network_cb, NULL, NULL);
 
 
 Retrieving a password in a keyring
@@ -97,20 +97,20 @@ Retrieving a password in a keyring
 Typically, applications will search for a password that matches certain
 criteria. This is done by providing a list of specific attributes to the
 
-	   gnome_keyring_find_items
+	gnome_keyring_find_items
 
 function. In the common case that an application is searching for a network
 password, however, there is a convenience function that can be used instead:
 
 
-	 gnome_keyring_find_network_password_sync ("gnomer", /* user */
-						   NULL, /* domain */
-                                                   "master.gnome.org", /* server */
-						   NULL, /* object */
-                                                   "ssh", /* protocol */
-                                                   NULL, /* authtype */
-                                                   0, /* port */
-                                                   &list);
+	gnome_keyring_find_network_password_sync ("gnomer", /* user */
+						  NULL, /* domain */
+						  "master.gnome.org", /* server */
+						  NULL, /* object */
+						  "ssh", /* protocol */
+						  NULL, /* authtype */
+						  0, /* port */
+						  &list);
 
 
 In this example, list is a GList containing GnomeKeyringNetworkPasswordData
