@@ -28,13 +28,13 @@ msgstr "密碼不相符。"
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "程式‘%s’(%s) 要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
+msgstr "程式‘%s’(%s) 要求存取預設密碼匙圈，但該密碼匙圈已被鎖上"
 
 #: ../gnome-keyring-ask.c:266
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "程式‘%s’(%s) 要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
+msgstr "程式‘%s’(%s) 要求存取密碼匙圈‘%s’，但該密碼匙圈已被鎖上"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:271
@@ -42,55 +42,55 @@ msgstr "程式‘%s’(%s) 要求存取鑰匙圈‘%s’，但該鑰匙圈已被
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
-msgstr "程式‘%s’(%s) 要求存取一個不明的鑰匙圈，但該鑰匙圈已被鎖上"
+msgstr "程式‘%s’(%s) 要求存取一個不明的密碼匙圈，但該密碼匙圈已被鎖上"
 
 #: ../gnome-keyring-ask.c:277 ../gnome-keyring-ask.c:291
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "程式‘%s’要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
+msgstr "程式‘%s’要求存取預設密碼匙圈，但該密碼匙圈已被鎖上"
 
 #: ../gnome-keyring-ask.c:281 ../gnome-keyring-ask.c:296
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "程式 ‘%s’要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
+msgstr "程式 ‘%s’要求存取密碼匙圈‘%s’，但該密碼匙圈已被鎖上"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:285 ../gnome-keyring-ask.c:301
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "程式‘%s’要求存取一個不明的鑰匙圈，但該鑰匙圈已被鎖上"
+msgstr "程式‘%s’要求存取一個不明的密碼匙圈，但該密碼匙圈已被鎖上"
 
 #: ../gnome-keyring-ask.c:307
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
-msgstr "一個不明的程式要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
+msgstr "一個不明的程式要求存取預設密碼匙圈，但該密碼匙圈已被鎖上"
 
 #: ../gnome-keyring-ask.c:311
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "一個不明的程式要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
+msgstr "一個不明的程式要求存取密碼匙圈‘%s’，但該密碼匙圈已被鎖上"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:316
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr "一個不明的程式要求存取一個不明的鑰匙圈，但該鑰匙圈已被鎖上"
+msgstr "一個不明的程式要求存取一個不明的密碼匙圈，但該密碼匙圈已被鎖上"
 
 #: ../gnome-keyring-ask.c:323
 msgid "Enter password for default keyring to unlock"
-msgstr "輸入預設鑰匙圈的密碼，作為開鎖之用"
+msgstr "輸入預設密碼匙圈的密碼，作為開鎖之用"
 
 #: ../gnome-keyring-ask.c:325
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "輸入鑰匙圈‘%s’的密碼，作為開鎖之用"
+msgstr "輸入密碼匙圈‘%s’的密碼，作為開鎖之用"
 
 #: ../gnome-keyring-ask.c:328
 msgid "Unlock Keyring"
-msgstr "解開鑰匙圈"
+msgstr "解開密碼匙圈"
 
 #: ../gnome-keyring-ask.c:333 ../gnome-keyring-ask.c:413
 #: ../gnome-keyring-ask.c:460 ../gnome-keyring-ask.c:544
@@ -103,28 +103,28 @@ msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"程式‘%s’(%s) 要求新增一個鑰匙圈，名為：‘%s’。您須要為該鑰匙圈輸入一個密碼。"
+"程式‘%s’(%s) 要求新增一個密碼匙圈，名為：‘%s’。你須要為該密碼匙圈輸入一個密碼。"
 
 #: ../gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "程式‘%s’(%s) 要求新增一個預設鑰匙圈。您須要為預設鑰匙圈輸入一個密碼。"
+msgstr "程式‘%s’(%s) 要求新增一個預設密碼匙圈。你須要為預設密碼匙圈輸入一個密碼。"
 
 #: ../gnome-keyring-ask.c:378 ../gnome-keyring-ask.c:388
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "程式‘%s’要求新增一個鑰匙圈，名為：‘%s’。您須要為該鑰匙圈輸入一個密碼。"
+msgstr "程式‘%s’要求新增一個密碼匙圈，名為：‘%s’。你須要為該密碼匙圈輸入一個密碼。"
 
 #: ../gnome-keyring-ask.c:382 ../gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "程式 ‘%s’要求新增一個預設鑰匙圈。您須要為預設鑰匙圈輸入一個密碼。"
+msgstr "程式 ‘%s’要求新增一個預設密碼匙圈。你須要為預設密碼匙圈輸入一個密碼。"
 
 #: ../gnome-keyring-ask.c:398
 #, c-format
@@ -132,21 +132,21 @@ msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"不明的程式要求建立一個新的鑰匙圈，名為：‘%s’。您須要為該鑰匙圈輸入一個密碼。"
+"不明的程式要求建立一個新的密碼匙圈，名為：‘%s’。你須要為該密碼匙圈輸入一個密碼。"
 
 #: ../gnome-keyring-ask.c:402
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "不明的程式要求建立一個預設鑰匙圈。您須要為預設鑰匙圈輸入一個密碼。"
+msgstr "不明的程式要求建立一個預設密碼匙圈。你須要為預設密碼匙圈輸入一個密碼。"
 
 #: ../gnome-keyring-ask.c:408
 msgid "New Keyring Password"
-msgstr "新增鑰匙圈密碼"
+msgstr "新增密碼匙圈密碼"
 
 #: ../gnome-keyring-ask.c:409
 msgid "Choose password for new keyring"
-msgstr "輸入新鑰匙圈的密碼"
+msgstr "輸入新密碼匙圈的密碼"
 
 #: ../gnome-keyring-ask.c:439
 #, c-format
@@ -155,8 +155,8 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"程式‘%s’(%s) 要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙"
-"圈，您須需要輸入一個密碼。"
+"程式‘%s’(%s) 要求儲存一個密碼，但是這裏並沒有預設密碼匙圈。要新增一個預設鑰匙"
+"圈，你須需要輸入一個密碼。"
 
 #: ../gnome-keyring-ask.c:443 ../gnome-keyring-ask.c:447
 #, c-format
@@ -165,7 +165,7 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"程式‘%s’要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙圈，您"
+"程式‘%s’要求儲存一個密碼，但是這裏並沒有預設密碼匙圈。要新增一個預設密碼匙圈，你"
 "須要輸入一個密碼。"
 
 #. app == APPLICATION_NAME_UNKNOWN
@@ -175,20 +175,20 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"不明的程式要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙圈，"
-"您須要輸入一個密碼。"
+"不明的程式要求儲存一個密碼，但是這裏並沒有預設密碼匙圈。要新增一個預設密碼匙圈，"
+"你須要輸入一個密碼。"
 
 #: ../gnome-keyring-ask.c:455
 msgid "Create Default Keyring"
-msgstr "建立預設鑰匙圈"
+msgstr "建立預設密碼匙圈"
 
 #: ../gnome-keyring-ask.c:456
 msgid "Choose password for default keyring"
-msgstr "輸入預設鑰匙圈的密碼"
+msgstr "輸入預設密碼匙圈的密碼"
 
 #: ../gnome-keyring-ask.c:493
 msgid "Allow application access to keyring?"
-msgstr "允許程式存取鑰匙圈？"
+msgstr "允許程式存取密碼匙圈？"
 
 #: ../gnome-keyring-ask.c:496
 #, c-format
@@ -200,7 +200,7 @@ msgstr "程式 ‘%1$s’(%2$s) 要求存取在‘%4$s’中‘%3$s’的密碼 
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
-msgstr "程式‘%s’(%s) 要求存取在預設鑰匙圈中的‘%s’密碼。"
+msgstr "程式‘%s’(%s) 要求存取在預設密碼匙圈中的‘%s’密碼。"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:502
@@ -208,7 +208,7 @@ msgstr "程式‘%s’(%s) 要求存取在預設鑰匙圈中的‘%s’密碼。
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
-msgstr "程式‘%s’(%s) 要求存取在不明的鑰匙圈中‘%s’的密碼。"
+msgstr "程式‘%s’(%s) 要求存取在不明的密碼匙圈中‘%s’的密碼。"
 
 #: ../gnome-keyring-ask.c:507 ../gnome-keyring-ask.c:518
 #, c-format
@@ -220,7 +220,7 @@ msgstr "程式‘%1$s’要求存取在‘%3$s’中‘%2$s’的密碼。"
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
-msgstr "程式‘%s’要求存取在預設鑰匙圈中‘%s’的密碼。"
+msgstr "程式‘%s’要求存取在預設密碼匙圈中‘%s’的密碼。"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:513 ../gnome-keyring-ask.c:524
@@ -228,7 +228,7 @@ msgstr "程式‘%s’要求存取在預設鑰匙圈中‘%s’的密碼。"
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "程式‘%s’要求存取在一個不明的鑰匙圈中‘%s’的密碼。"
+msgstr "程式‘%s’要求存取在一個不明的密碼匙圈中‘%s’的密碼。"
 
 #: ../gnome-keyring-ask.c:529
 #, c-format
@@ -240,7 +240,7 @@ msgstr "一個不明的程式要求存取在‘%2$s’中‘%1$s’的密碼。"
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
-msgstr "一個不明的程式要求存取在預設鑰匙圈中‘%s’的密碼。"
+msgstr "一個不明的程式要求存取在預設密碼匙圈中‘%s’的密碼。"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:535
@@ -248,7 +248,7 @@ msgstr "一個不明的程式要求存取在預設鑰匙圈中‘%s’的密碼�
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
-msgstr "一個不明的程式要求存取在一個不明的鑰匙圈中‘%s’的密碼。"
+msgstr "一個不明的程式要求存取在一個不明的密碼匙圈中‘%s’的密碼。"
 
 #: ../gnome-keyring-ask.c:540
 msgid "Allow access"
@@ -264,7 +264,7 @@ msgstr "永遠允許(_A)"
 
 #: ../gnome-keyring-ask.c:586
 msgid "You must specify the type of request to run\n"
-msgstr "您必須指定一個請求的類型來執行\n"
+msgstr "你必須指定一個請求的類型來執行\n"
 
 #: ../gnome-keyring-ask.c:599
 msgid "Unknown request type\n"
