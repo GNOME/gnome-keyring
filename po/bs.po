@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.bs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-14 17:16+0100\n"
+"POT-Creation-Date: 2006-02-13 11:16+0100\n"
 "PO-Revision-Date: 2004-08-21 13:26+0200\n"
 "Last-Translator: Mehemed Sacirovic <mesa@tesanj.net>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -65,6 +65,7 @@ msgid ""
 msgstr "Program '%s' želi pristupiti nepoznatom privjesku, ali je zaključan"
 
 #: gnome-keyring-ask.c:307
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
@@ -78,6 +79,7 @@ msgstr "Nepoznati program želi pristupiti privjesku '%s', ali je zaključan"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:316
+#, c-format
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
@@ -147,6 +149,7 @@ msgstr ""
 "šifru koju želite koristiti za njega."
 
 #: gnome-keyring-ask.c:402
+#, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -186,6 +189,7 @@ msgstr ""
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:451
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -284,9 +288,11 @@ msgid "_Always Allow"
 msgstr "_Dozvoli uvijek"
 
 #: gnome-keyring-ask.c:586
+#, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Morate navesti tip zs pokretanju\n"
 
 #: gnome-keyring-ask.c:599
+#, c-format
 msgid "Unknown request type\n"
 msgstr "Nepoznati tip zahtjeva\n"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-14 17:16+0100\n"
+"POT-Creation-Date: 2006-02-13 11:16+0100\n"
 "PO-Revision-Date: 2004-01-30 22:11+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -65,6 +65,7 @@ msgid ""
 msgstr "Programmet \"%s\" ønsker at tilgå en ukendt nøglering, men den er låst"
 
 #: gnome-keyring-ask.c:307
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "Et ukendt program ønsker at tilgå standardnøgleringen, men den er låst"
@@ -77,6 +78,7 @@ msgstr "Et ukendt program ønsker at tilgå nøgleringen \"%s\", men den er lås
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:316
+#, c-format
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "Et ukendt program ønsker at tilgå en ukendt nøglering, men den er låst"
@@ -145,6 +147,7 @@ msgstr ""
 "skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: gnome-keyring-ask.c:402
+#, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -184,6 +187,7 @@ msgstr ""
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:451
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -290,9 +294,11 @@ msgid "_Always Allow"
 msgstr "Tillad _altid"
 
 #: gnome-keyring-ask.c:586
+#, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Du skal angive den type forespørgsel der skal foretages\n"
 
 #: gnome-keyring-ask.c:599
+#, c-format
 msgid "Unknown request type\n"
 msgstr "Ukendt forespørgselstype\n"

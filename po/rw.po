@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-14 17:16+0100\n"
+"POT-Creation-Date: 2006-02-13 11:16+0100\n"
 "PO-Revision-Date: 2005-03-28 19:35-0700\n"
 "Last-Translator: Steve Murphy <murf@e-tools.com>\n"
 "Language-Team: Kinyarwanda <translation-team-rw@lists.sourceforge.net>\n"
@@ -71,7 +71,7 @@ msgid ""
 msgstr "Porogaramu Kuri Kitazwi ni Gifunze"
 
 #: gnome-keyring-ask.c:307
-#, fuzzy
+#, fuzzy, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "Kitazwi Porogaramu Kuri Mburabuzi ni Gifunze"
@@ -84,7 +84,7 @@ msgstr "Kitazwi Porogaramu Kuri ni Gifunze"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:316
-#, fuzzy
+#, fuzzy, c-format
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "Kitazwi Porogaramu Kuri Kitazwi ni Gifunze"
@@ -155,7 +155,7 @@ msgstr ""
 "kugirango"
 
 #: gnome-keyring-ask.c:402
-#, fuzzy
+#, fuzzy, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -194,7 +194,7 @@ msgstr ""
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:451
-#, fuzzy
+#, fuzzy, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -290,11 +290,11 @@ msgid "_Always Allow"
 msgstr ""
 
 #: gnome-keyring-ask.c:586
-#, fuzzy
+#, fuzzy, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Ubwoko Bya Kubaza... Kuri"
 
 #: gnome-keyring-ask.c:599
-#, fuzzy
+#, fuzzy, c-format
 msgid "Unknown request type\n"
 msgstr "Kubaza..."

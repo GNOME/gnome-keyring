@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-14 17:16+0100\n"
+"POT-Creation-Date: 2006-02-13 11:16+0100\n"
 "PO-Revision-Date: 2005-11-06 20:00+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <L10n@opentle.org>\n"
@@ -64,6 +64,7 @@ msgid ""
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจที่ไม่รู้จักซึ่งถูกล็อคอยู่"
 
 #: gnome-keyring-ask.c:307
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "โปรแกรมที่ไม่รู้จัก ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
@@ -76,6 +77,7 @@ msgstr "โปรแกรมที่ไม่รู้จัก ต้อง�
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:316
+#, c-format
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "โปรแกรมที่ไม่รู้จัก ต้องการจะใช้พวงกุญแจที่ไม่รู้จักซึ่งถูกล็อคอยู่"
@@ -138,6 +140,7 @@ msgstr ""
 "โปรแกรมที่ไม่รู้จัก ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องเลือกรหัสผ่าน สำหรับพวงกุญแจนี้"
 
 #: gnome-keyring-ask.c:402
+#, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -174,6 +177,7 @@ msgstr ""
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:451
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -267,9 +271,11 @@ msgid "_Always Allow"
 msgstr "ยอม_ตลอดไป"
 
 #: gnome-keyring-ask.c:586
+#, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "คุณต้องบอกชนิดข้อร้องขอที่จะเรียกใช้\n"
 
 #: gnome-keyring-ask.c:599
+#, c-format
 msgid "Unknown request type\n"
 msgstr "ไม่รู้จักชนิดข้อร้องขอ\n"

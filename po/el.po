@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-14 17:16+0100\n"
+"POT-Creation-Date: 2006-02-13 11:16+0100\n"
 "PO-Revision-Date: 2004-01-26 12:32+0200\n"
 "Last-Translator: Kostas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -74,6 +74,7 @@ msgstr ""
 "κλειδωμένο."
 
 #: gnome-keyring-ask.c:307
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
@@ -90,6 +91,7 @@ msgstr ""
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:316
+#, c-format
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
@@ -160,6 +162,7 @@ msgstr ""
 "s'. Θα πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
 
 #: gnome-keyring-ask.c:402
+#, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -199,6 +202,7 @@ msgstr ""
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:451
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -305,9 +309,11 @@ msgid "_Always Allow"
 msgstr "Να επιτρέπεται πά_ντα"
 
 #: gnome-keyring-ask.c:586
+#, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Θα πρέπει να καθορίσετε τον τύπο της αίτησης για εκτέλεση\n"
 
 #: gnome-keyring-ask.c:599
+#, c-format
 msgid "Unknown request type\n"
 msgstr "Άγνωστος τύπος αίτησης\n"

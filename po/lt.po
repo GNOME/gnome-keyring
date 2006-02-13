@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-14 17:16+0100\n"
+"POT-Creation-Date: 2006-02-13 11:16+0100\n"
 "PO-Revision-Date: 2004-03-21 15:31+0200\n"
 "Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -72,6 +72,7 @@ msgstr ""
 "Programa '%s' nori priėjimo prie nežinomo raktų žiedo, bet jis yra užrakintas"
 
 #: gnome-keyring-ask.c:307
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
@@ -87,6 +88,7 @@ msgstr ""
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:316
+#, c-format
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
@@ -157,6 +159,7 @@ msgstr ""
 "pasirinkti jam naudojamą slaptažodį."
 
 #: gnome-keyring-ask.c:402
+#, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -194,6 +197,7 @@ msgstr ""
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:451
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -297,10 +301,12 @@ msgid "_Always Allow"
 msgstr "_Visada leisti"
 
 #: gnome-keyring-ask.c:586
+#, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Jūs turite nurodyti vykdomos užklausos tipą\n"
 
 #: gnome-keyring-ask.c:599
+#, c-format
 msgid "Unknown request type\n"
 msgstr "Nežinomas užklausos tipas\n"
 

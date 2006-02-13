@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-14 17:16+0100\n"
+"POT-Creation-Date: 2006-02-13 11:16+0100\n"
 "PO-Revision-Date: 2004-03-17 13:28+0000\n"
 "Last-Translator: Dafydd Tomos <l10n@da.fydd.org>\n"
 "Language-Team: Welsh <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -71,6 +71,7 @@ msgid ""
 msgstr "Mae'r rhaglen '%s' am gyrchu cylch allweddi anhysbys, ond mae ar glo"
 
 #: gnome-keyring-ask.c:307
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
@@ -84,6 +85,7 @@ msgstr "Mae rhaglen anhysbys am gyrchu'r cylch allweddi '%s', ond mae ar glo"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: gnome-keyring-ask.c:316
+#, c-format
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "Mae rhaglen anhysbys am gyrchu cylch allweddi anhysbys, ond mae ar glo"
@@ -152,6 +154,7 @@ msgstr ""
 "ddewis y cyfrinair yr ydych am ei ddefnyddio ar ei chyfer."
 
 #: gnome-keyring-ask.c:402
+#, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -191,6 +194,7 @@ msgstr ""
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: gnome-keyring-ask.c:451
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -297,9 +301,11 @@ msgid "_Always Allow"
 msgstr "Caniatau o _Hyd"
 
 #: gnome-keyring-ask.c:586
+#, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Rhaid nodi pa fath o gais i'w redeg\n"
 
 #: gnome-keyring-ask.c:599
+#, c-format
 msgid "Unknown request type\n"
 msgstr "Math cais anhysbys\n"

@@ -1,3 +1,7 @@
+Changes in version 0.4.7 are:
+* Fix --disable-nls
+* Translation updates
+
 Changes in version 0.4.6 are:
 * Confirm password when selecting new password
 
