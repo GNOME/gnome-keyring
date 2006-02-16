@@ -1,29 +1,29 @@
 # gnome-keyring's Portuguese translation.
-# Copyright © 2003, 2004 gnome-keyring
+# Copyright © 2003, 2004, 2006 gnome-keyring
 # This file is distributed under the same license as the gnome-keyring package.
-# Duarte Loreto <happyguy_pt@hotmail.com>, 2003, 2004.
+# Duarte Loreto <happyguy_pt@hotmail.com>, 2003, 2004, 2006.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 2.6\n"
+"Project-Id-Version: 2.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-13 11:16+0100\n"
-"PO-Revision-Date: 2004-01-22 01:05+0000\n"
+"POT-Creation-Date: 2006-02-16 01:32+0000\n"
+"PO-Revision-Date: 2006-02-16 01:35+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-keyring-ask.c:195
+#: ../gnome-keyring-ask.c:195
 msgid "Password cannot be blank."
-msgstr ""
+msgstr "Senha não pode ser vazia."
 
-#: gnome-keyring-ask.c:203
+#: ../gnome-keyring-ask.c:203
 msgid "Passwords do not match."
-msgstr ""
+msgstr "Senhas não coincidem."
 
-#: gnome-keyring-ask.c:262
+#: ../gnome-keyring-ask.c:262
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -32,7 +32,7 @@ msgstr ""
 "A aplicação '%s' (%s) deseja aceder ao chaveiro por omissão, mas este está "
 "trancado."
 
-#: gnome-keyring-ask.c:266
+#: ../gnome-keyring-ask.c:266
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -40,7 +40,7 @@ msgstr ""
 "A aplicação '%s' (%s) deseja aceder ao chaveiro '%s', mas este está trancado."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:271
+#: ../gnome-keyring-ask.c:271
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
@@ -49,7 +49,7 @@ msgstr ""
 "A aplicação '%s' (%s) deseja aceder a um chaveiro desconhecido, mas este "
 "está trancado"
 
-#: gnome-keyring-ask.c:277 gnome-keyring-ask.c:291
+#: ../gnome-keyring-ask.c:277 ../gnome-keyring-ask.c:291
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -57,14 +57,14 @@ msgstr ""
 "A aplicação '%s' deseja aceder ao chaveiro por omissão, mas este está "
 "trancado"
 
-#: gnome-keyring-ask.c:281 gnome-keyring-ask.c:296
+#: ../gnome-keyring-ask.c:281 ../gnome-keyring-ask.c:296
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "A aplicação '%s' deseja aceder ao chaveiro '%s', mas este está trancado"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:285 gnome-keyring-ask.c:301
+#: ../gnome-keyring-ask.c:285 ../gnome-keyring-ask.c:301
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
@@ -72,15 +72,14 @@ msgstr ""
 "A aplicação '%s' deseja aceder a um chaveiro desconhecido, mas este está "
 "trancado"
 
-#: gnome-keyring-ask.c:307
-#, c-format
+#: ../gnome-keyring-ask.c:307
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Uma aplicação desconhecida deseja aceder ao chaveiro por omissão, mas este "
 "está trancado"
 
-#: gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:311
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -89,33 +88,32 @@ msgstr ""
 "trancado"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:316
-#, c-format
+#: ../gnome-keyring-ask.c:316
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Uma aplicação desconhecida deseja aceder a um chaveiro desconhecido, mas "
 "este está trancado"
 
-#: gnome-keyring-ask.c:323
+#: ../gnome-keyring-ask.c:323
 msgid "Enter password for default keyring to unlock"
 msgstr "Introduza a senha para destracar o chaveiro por omissão"
 
-#: gnome-keyring-ask.c:325
+#: ../gnome-keyring-ask.c:325
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Introduza a senha para destrancar o chaveiro '%s'"
 
-#: gnome-keyring-ask.c:328
+#: ../gnome-keyring-ask.c:328
 msgid "Unlock Keyring"
 msgstr "Destrancar Chaveiro"
 
-#: gnome-keyring-ask.c:333 gnome-keyring-ask.c:413 gnome-keyring-ask.c:460
-#: gnome-keyring-ask.c:544
+#: ../gnome-keyring-ask.c:333 ../gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:460 ../gnome-keyring-ask.c:544
 msgid "_Deny"
 msgstr "_Negar"
 
-#: gnome-keyring-ask.c:368
+#: ../gnome-keyring-ask.c:368
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -124,7 +122,7 @@ msgstr ""
 "A aplicação '%s' (%s) deseja criar um novo chaveiro denominado '%s'. Terá de "
 "seleccionar a senha que deseja utilizar no chaveiro."
 
-#: gnome-keyring-ask.c:372
+#: ../gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -133,7 +131,7 @@ msgstr ""
 "A aplicação '%s' (%s) deseja criar um novo chaveiro por omissão. Terá de "
 "seleccionar a senha que deseja utilizar no chaveiro."
 
-#: gnome-keyring-ask.c:378 gnome-keyring-ask.c:388
+#: ../gnome-keyring-ask.c:378 ../gnome-keyring-ask.c:388
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -142,7 +140,7 @@ msgstr ""
 "A aplicação '%s' deseja criar um novo chaveiro denominado '%s'. Terá de "
 "seleccionar a senha que deseja utilizar no chaveiro."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: ../gnome-keyring-ask.c:382 ../gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -151,7 +149,7 @@ msgstr ""
 "A aplicação '%s' deseja criar um novo chaveiro por omissão. Terá de "
 "seleccionar a senha que deseja utilizar no chaveiro."
 
-#: gnome-keyring-ask.c:398
+#: ../gnome-keyring-ask.c:398
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -160,8 +158,7 @@ msgstr ""
 "Uma aplicação desconhecida deseja criar um novo chaveiro denominado '%s'. "
 "Terá de seleccionar a senha que deseja utilizar no chaveiro."
 
-#: gnome-keyring-ask.c:402
-#, c-format
+#: ../gnome-keyring-ask.c:402
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -169,15 +166,15 @@ msgstr ""
 "Uma aplicação desconhecida deseja criar um novo chaveiro por omissão. Terá "
 "de seleccionar a senha que deseja utilizar no chaveiro."
 
-#: gnome-keyring-ask.c:408
+#: ../gnome-keyring-ask.c:408
 msgid "New Keyring Password"
 msgstr "Senha de Novo Chaveiro"
 
-#: gnome-keyring-ask.c:409
+#: ../gnome-keyring-ask.c:409
 msgid "Choose password for new keyring"
 msgstr "Seleccione a senha para o novo chaveiro"
 
-#: gnome-keyring-ask.c:439
+#: ../gnome-keyring-ask.c:439
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -188,7 +185,7 @@ msgstr ""
 "omissão. Para criar um, tem de seleccionar a senha que deseja utilizar no "
 "chaveiro."
 
-#: gnome-keyring-ask.c:443 gnome-keyring-ask.c:447
+#: ../gnome-keyring-ask.c:443 ../gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -200,8 +197,7 @@ msgstr ""
 "chaveiro."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:451
-#, c-format
+#: ../gnome-keyring-ask.c:451
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -211,24 +207,24 @@ msgstr ""
 "chaveiro por omissão. Para criar um, tem de seleccionar a senha que deseja "
 "utilizar no chaveiro."
 
-#: gnome-keyring-ask.c:455
+#: ../gnome-keyring-ask.c:455
 msgid "Create Default Keyring"
 msgstr "Criar um Chaveiro por Omissão"
 
-#: gnome-keyring-ask.c:456
+#: ../gnome-keyring-ask.c:456
 msgid "Choose password for default keyring"
 msgstr "Seleccione a senha para o chaveiro por omissão"
 
-#: gnome-keyring-ask.c:493
+#: ../gnome-keyring-ask.c:493
 msgid "Allow application access to keyring?"
 msgstr "Permitir à aplicação o acesso ao chaveiro?"
 
-#: gnome-keyring-ask.c:496
+#: ../gnome-keyring-ask.c:496
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "A aplicação '%s' (%s) deseja aceder à senha para '%s' em %s."
 
-#: gnome-keyring-ask.c:499
+#: ../gnome-keyring-ask.c:499
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -238,7 +234,7 @@ msgstr ""
 "omissão."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:502
+#: ../gnome-keyring-ask.c:502
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -247,12 +243,12 @@ msgstr ""
 "A aplicação '%s' (%s) deseja aceder à senha para '%s' num chaveiro "
 "desconhecido."
 
-#: gnome-keyring-ask.c:507 gnome-keyring-ask.c:518
+#: ../gnome-keyring-ask.c:507 ../gnome-keyring-ask.c:518
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "A aplicação '%s' deseja aceder à senha para '%s' em %s."
 
-#: gnome-keyring-ask.c:510 gnome-keyring-ask.c:521
+#: ../gnome-keyring-ask.c:510 ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -261,7 +257,7 @@ msgstr ""
 "A aplicação '%s' deseja aceder à senha para '%s' no chaveiro por omissão."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:513 gnome-keyring-ask.c:524
+#: ../gnome-keyring-ask.c:513 ../gnome-keyring-ask.c:524
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -269,12 +265,12 @@ msgid ""
 msgstr ""
 "A aplicação '%s' deseja aceder à senha para '%s' num chaveiro desconhecido."
 
-#: gnome-keyring-ask.c:529
+#: ../gnome-keyring-ask.c:529
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Uma aplicação desconhecida deseja aceder à senha para '%s' em %s."
 
-#: gnome-keyring-ask.c:532
+#: ../gnome-keyring-ask.c:532
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -284,7 +280,7 @@ msgstr ""
 "omissão."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:535
+#: ../gnome-keyring-ask.c:535
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -293,24 +289,22 @@ msgstr ""
 "Uma aplicação desconhecida deseja aceder à senha para '%s' num chaveiro "
 "desconhecido."
 
-#: gnome-keyring-ask.c:540
+#: ../gnome-keyring-ask.c:540
 msgid "Allow access"
 msgstr "Permitir o acesso"
 
-#: gnome-keyring-ask.c:545
+#: ../gnome-keyring-ask.c:545
 msgid "Allow _Once"
 msgstr "Permitir _Uma Vez"
 
-#: gnome-keyring-ask.c:546
+#: ../gnome-keyring-ask.c:546
 msgid "_Always Allow"
 msgstr "Permitir _Sempre"
 
-#: gnome-keyring-ask.c:586
-#, c-format
+#: ../gnome-keyring-ask.c:586
 msgid "You must specify the type of request to run\n"
 msgstr "Tem de especificar o tipo de pedido a executar\n"
 
-#: gnome-keyring-ask.c:599
-#, c-format
+#: ../gnome-keyring-ask.c:599
 msgid "Unknown request type\n"
 msgstr "Tipo de pedido desconhecido\n"
