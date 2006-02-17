@@ -1,3 +1,9 @@
+2006-02-17  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-ask.c:
+	Fix crash when you deny without typing a password.
+	Patch from  Brent Smith
+
 2006-02-13  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

@@ -325,6 +325,7 @@ ask_for_keyring_password (void)
 		primary = g_strdup_printf (_("Enter password for keyring '%s' to unlock"), env_keyring_name);
 	}
 
+	password = NULL;
 	response = run_dialog (_("Unlock Keyring"),
 			       primary,
 			       message,
@@ -342,8 +343,11 @@ ask_for_keyring_password (void)
 		response = GNOME_KEYRING_ASK_RESPONSE_DENY;
 	}
 	
-	printf ("%d\n%s\n", response, password);
-	g_free (password);
+	if (password) {
+		printf ("%d\n%s\n", response, password);
+		g_free (password);
+	} else 
+		printf ("%d\n\n", response);
 }
 
 static void
@@ -405,6 +409,7 @@ ask_for_new_keyring_password (void)
 	}
 
 	
+	password = NULL;
 	response = run_dialog (_("New Keyring Password"),
 			       _("Choose password for new keyring"),
 			       message,
@@ -421,8 +426,11 @@ ask_for_new_keyring_password (void)
 		response = GNOME_KEYRING_ASK_RESPONSE_DENY;
 	}
 	
-	printf ("%d\n%s\n", response, password);
-	g_free (password);
+	if (password) {
+		printf ("%d\n%s\n", response, password);
+		g_free (password);
+	} else 
+		printf ("%d\n\n", response);
 }
 
 static void
@@ -452,6 +460,7 @@ ask_for_default_keyring (void)
 					     "To create one, you need to choose the password you wish to use for it."));
 	}
 
+	password = NULL;
 	response = run_dialog (_("Create Default Keyring"),
 			       _("Choose password for default keyring"),
 			       message,
@@ -468,8 +477,11 @@ ask_for_default_keyring (void)
 		response = GNOME_KEYRING_ASK_RESPONSE_DENY;
 	}
 	
-	printf ("%d\n%s\n", response, password);
-	g_free (password);
+	if (password) {
+		printf ("%d\n%s\n", response, password);
+		g_free (password);
+	} else
+		printf ("%d\n\n", response);
 }
 
 
