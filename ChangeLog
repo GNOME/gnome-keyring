@@ -1,5 +1,12 @@
 2006-02-27  Alexander Larsson  <alexl@redhat.com>
 
+	* configure.in:
+	post release version bump
+
+=== gnome-keyring 0.4.8 ===
+
+2006-02-27  Alexander Larsson  <alexl@redhat.com>
+
 	* NEWS:
 	Update for release
 
