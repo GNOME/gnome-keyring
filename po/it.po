@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-13 11:16+0100\n"
+"POT-Creation-Date: 2006-02-27 19:07+0100\n"
 "PO-Revision-Date: 2004-02-24 22:52+0100\n"
 "Last-Translator: Francesco Marletta <francesco.marletta@tiscali.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
@@ -111,16 +111,16 @@ msgstr "Inserire la password per sbloccare il portachiavi predefinito"
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Inserire la password per sbloccare il portachiavi \"%s\""
 
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:329
 msgid "Unlock Keyring"
 msgstr "Sblocca portachiavi"
 
-#: gnome-keyring-ask.c:333 gnome-keyring-ask.c:413 gnome-keyring-ask.c:460
-#: gnome-keyring-ask.c:544
+#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
+#: gnome-keyring-ask.c:556
 msgid "_Deny"
 msgstr "_Nega"
 
-#: gnome-keyring-ask.c:368
+#: gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -129,7 +129,7 @@ msgstr ""
 "L'applicazione \"%s\" (%s) vuole creare un nuovo portachiavi di nome \"%s\". "
 "Bisogna scegliere la password per poterlo usare."
 
-#: gnome-keyring-ask.c:372
+#: gnome-keyring-ask.c:376
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -138,7 +138,7 @@ msgstr ""
 "L'applicazione \"%s\" (%s) vuole creare un nuovo portachiavi predefinito. "
 "Bisogna scegliere la password per poterlo usare."
 
-#: gnome-keyring-ask.c:378 gnome-keyring-ask.c:388
+#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -147,7 +147,7 @@ msgstr ""
 "L'applicazione \"%s\" vuole creare un nuovo portachiavi di nome \"%s\". "
 "Bisogna scegliere la password per poterlo usare."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -156,7 +156,7 @@ msgstr ""
 "L'applicazione \"%s\" vuole creare un nuovo portachiavi predefinito. Bisogna "
 "scegliere la password per poterlo usare."
 
-#: gnome-keyring-ask.c:398
+#: gnome-keyring-ask.c:402
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -165,7 +165,7 @@ msgstr ""
 "Un'applicazione sconosciuta vuole creare un nuovo portachiavi di nome \"%s"
 "\". Bisogna scegliere la password per poterlo usare."
 
-#: gnome-keyring-ask.c:402
+#: gnome-keyring-ask.c:406
 #, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
@@ -174,15 +174,15 @@ msgstr ""
 "Un'applicazione sconosciuta vuole creare un nuovo portachiavi predefinito. "
 "Bisogna scegliere la password per poterlo usare."
 
-#: gnome-keyring-ask.c:408
+#: gnome-keyring-ask.c:413
 msgid "New Keyring Password"
 msgstr "Password del nuovo portachiavi"
 
-#: gnome-keyring-ask.c:409
+#: gnome-keyring-ask.c:414
 msgid "Choose password for new keyring"
 msgstr "Scegliere la password per il nuovo portachiavi"
 
-#: gnome-keyring-ask.c:439
+#: gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -193,7 +193,7 @@ msgstr ""
 "portachiavi predefinito. Per crearne uno bisogna scegliere la password per "
 "poterlo usare."
 
-#: gnome-keyring-ask.c:443 gnome-keyring-ask.c:447
+#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -205,7 +205,7 @@ msgstr ""
 "poterlo usare."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:451
+#: gnome-keyring-ask.c:459
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -217,25 +217,25 @@ msgstr ""
 "poterlo usare."
 
 # NdT: presumo sia il titolo di una finestra
-#: gnome-keyring-ask.c:455
+#: gnome-keyring-ask.c:464
 msgid "Create Default Keyring"
 msgstr "Creazione portachiavi predefinito"
 
-#: gnome-keyring-ask.c:456
+#: gnome-keyring-ask.c:465
 msgid "Choose password for default keyring"
 msgstr "Scegliere la password per il portachiavi predefinito"
 
-#: gnome-keyring-ask.c:493
+#: gnome-keyring-ask.c:505
 msgid "Allow application access to keyring?"
 msgstr "Consentire all'applicazione di accedere al portachiavi?"
 
-#: gnome-keyring-ask.c:496
+#: gnome-keyring-ask.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr ""
 "L'applicazione \"%s\" (%s) vuole accedere alla password per \"%s\" in %s."
 
-#: gnome-keyring-ask.c:499
+#: gnome-keyring-ask.c:511
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -245,7 +245,7 @@ msgstr ""
 "portachiavi predefinito."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:502
+#: gnome-keyring-ask.c:514
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -254,12 +254,12 @@ msgstr ""
 "L'applicazione \"%s\" (%s) vuole accedere alla password per \"%s\" in un "
 "portachiavi sconosciuto."
 
-#: gnome-keyring-ask.c:507 gnome-keyring-ask.c:518
+#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "L'applicazione \"%s\" vuole accedere alla password per \"%s\" in %s."
 
-#: gnome-keyring-ask.c:510 gnome-keyring-ask.c:521
+#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -269,7 +269,7 @@ msgstr ""
 "portachiavi predefinito."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:513 gnome-keyring-ask.c:524
+#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -278,13 +278,13 @@ msgstr ""
 "L'applicazione \"%s\" vuole accedere alla password per \"%s\" in un "
 "portachiavi sconosciuto."
 
-#: gnome-keyring-ask.c:529
+#: gnome-keyring-ask.c:541
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr ""
 "Un'applicazione sconosciuta vuole accedere alla password per \"%s\" in %s."
 
-#: gnome-keyring-ask.c:532
+#: gnome-keyring-ask.c:544
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -294,7 +294,7 @@ msgstr ""
 "portachiavi predefinito."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:535
+#: gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -303,24 +303,24 @@ msgstr ""
 "Un'applicazione sconosciuta vuole accedere alla password per \"%s\" in un "
 "portachiavi predefinito."
 
-#: gnome-keyring-ask.c:540
+#: gnome-keyring-ask.c:552
 msgid "Allow access"
 msgstr "Consentire l'accesso"
 
-#: gnome-keyring-ask.c:545
+#: gnome-keyring-ask.c:557
 msgid "Allow _Once"
 msgstr "Consenti sta_volta"
 
-#: gnome-keyring-ask.c:546
+#: gnome-keyring-ask.c:558
 msgid "_Always Allow"
 msgstr "Consenti _sempre"
 
-#: gnome-keyring-ask.c:586
+#: gnome-keyring-ask.c:598
 #, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Bisogna specificare il tipo di richiesta da soddisfare\n"
 
-#: gnome-keyring-ask.c:599
+#: gnome-keyring-ask.c:611
 #, c-format
 msgid "Unknown request type\n"
 msgstr "Tipo di richiesta sconosciuto\n"

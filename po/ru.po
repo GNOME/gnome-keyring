@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-27 06:52+0100\n"
+"POT-Creation-Date: 2006-02-27 19:07+0100\n"
 "PO-Revision-Date: 2006-02-27 16:00+0200\n"
 "Last-Translator: Leonid Kanter\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
@@ -15,87 +15,103 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.1\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../gnome-keyring-ask.c:195
+#: gnome-keyring-ask.c:195
 msgid "Password cannot be blank."
 msgstr "Пароль не может быть пустым."
 
-#: ../gnome-keyring-ask.c:203
+#: gnome-keyring-ask.c:203
 msgid "Passwords do not match."
 msgstr "Пароли не совпадают."
 
-#: ../gnome-keyring-ask.c:262
+#: gnome-keyring-ask.c:262
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "Приложение \"%s\" (%s) хочет получить доступ к основному брелоку, но он заблокирован"
+msgstr ""
+"Приложение \"%s\" (%s) хочет получить доступ к основному брелоку, но он "
+"заблокирован"
 
-#: ../gnome-keyring-ask.c:266
+#: gnome-keyring-ask.c:266
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Приложение \"%s\" (%s) хочет получить доступ к брелоку \"%s\", но он "
 "заблокирован"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:271
+#: gnome-keyring-ask.c:271
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
-msgstr "Приложение \"%s\" (%s) хочет получить доступ к брелоку, но он заблокирован"
+msgstr ""
+"Приложение \"%s\" (%s) хочет получить доступ к брелоку, но он заблокирован"
 
-#: ../gnome-keyring-ask.c:277 ../gnome-keyring-ask.c:291
+#: gnome-keyring-ask.c:277 gnome-keyring-ask.c:291
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "Приложение \"%s\" хочет получить доступ к основному брелоку, но он заблокирован"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"Приложение \"%s\" хочет получить доступ к основному брелоку, но он "
+"заблокирован"
 
-#: ../gnome-keyring-ask.c:281 ../gnome-keyring-ask.c:296
+#: gnome-keyring-ask.c:281 gnome-keyring-ask.c:296
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Приложение \"%s\" хочет получить доступ к брелоку \"%s\", но он заблокирован"
+msgstr ""
+"Приложение \"%s\" хочет получить доступ к брелоку \"%s\", но он заблокирован"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:285 ../gnome-keyring-ask.c:301
+#: gnome-keyring-ask.c:285 gnome-keyring-ask.c:301
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "Приложение \"%s\" хочет получить доступ к брелоку, но он заблокирован"
 
-#: ../gnome-keyring-ask.c:307
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "Приложение хочет получить доступ к основному брелоку, но он заблокирован"
-
-#: ../gnome-keyring-ask.c:311
+#: gnome-keyring-ask.c:307
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Приложение хочет получить доступ к основному брелоку, но он заблокирован"
+
+#: gnome-keyring-ask.c:311
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Приложение хочет получить доступ к брелоку \"%s\", но он заблокирован"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:316
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
+#: gnome-keyring-ask.c:316
+#, c-format
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "Приложение хочет получить доступ к брелоку, но он заблокирован"
 
-#: ../gnome-keyring-ask.c:323
+#: gnome-keyring-ask.c:323
 msgid "Enter password for default keyring to unlock"
 msgstr "Введите пароль для разблокирования основного брелока"
 
-#: ../gnome-keyring-ask.c:325
+#: gnome-keyring-ask.c:325
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Введите пароль для разблокировки брелока \"%s\""
 
-#: ../gnome-keyring-ask.c:329
+#: gnome-keyring-ask.c:329
 msgid "Unlock Keyring"
 msgstr "Разблокировать брелок"
 
-#: ../gnome-keyring-ask.c:334 ../gnome-keyring-ask.c:418
-#: ../gnome-keyring-ask.c:469 ../gnome-keyring-ask.c:556
+#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
+#: gnome-keyring-ask.c:556
 msgid "_Deny"
 msgstr "_Запретить"
 
-#: ../gnome-keyring-ask.c:372
+#: gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -104,7 +120,7 @@ msgstr ""
 "Приложение \"%s\" (%s) хочет создать новый брелок с именем \"%s\". "
 "Необходимо выбрать пароль для брелока."
 
-#: ../gnome-keyring-ask.c:376
+#: gnome-keyring-ask.c:376
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -113,7 +129,7 @@ msgstr ""
 "Приложение \"%s\" (%s) хочет создать новый основной брелок. Необходимо "
 "выбрать пароль для брелока."
 
-#: ../gnome-keyring-ask.c:382 ../gnome-keyring-ask.c:392
+#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -122,7 +138,7 @@ msgstr ""
 "Приложение \"%s\" хочет создать новый брелок с именем \"%s\". Необходимо "
 "выбрать пароль для брелока."
 
-#: ../gnome-keyring-ask.c:386 ../gnome-keyring-ask.c:396
+#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -131,7 +147,7 @@ msgstr ""
 "Приложение \"%s\" хочет создать новый основной брелок. Необходимо выбрать "
 "пароль для брелока."
 
-#: ../gnome-keyring-ask.c:402
+#: gnome-keyring-ask.c:402
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -140,23 +156,24 @@ msgstr ""
 "Приложение хочет создать новый брелок с именем \"%s\". Необходимо выбрать "
 "пароль для брелока."
 
-#: ../gnome-keyring-ask.c:406
+#: gnome-keyring-ask.c:406
+#, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Неизвестное приложение хочет создать новый брелок по умолчанию. Необходимо выбрать "
-"пароль для этого брелока."
+"Неизвестное приложение хочет создать новый брелок по умолчанию. Необходимо "
+"выбрать пароль для этого брелока."
 
-#: ../gnome-keyring-ask.c:413
+#: gnome-keyring-ask.c:413
 msgid "New Keyring Password"
 msgstr "Пароль для нового брелока"
 
-#: ../gnome-keyring-ask.c:414
+#: gnome-keyring-ask.c:414
 msgid "Choose password for new keyring"
 msgstr "Выберите пароль для нового брелока"
 
-#: ../gnome-keyring-ask.c:447
+#: gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -166,7 +183,7 @@ msgstr ""
 "Приложение \"%s\" (%s) хочет сохранить пароль, но основной брелок "
 "отсутствует. Для создания брелока необходимо выбрать пароль."
 
-#: ../gnome-keyring-ask.c:451 ../gnome-keyring-ask.c:455
+#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -177,7 +194,8 @@ msgstr ""
 "Для создания брелока необходимо выбрать пароль."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:459
+#: gnome-keyring-ask.c:459
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -186,95 +204,104 @@ msgstr ""
 "Приложение хочет сохранить пароль, но основной брелок отсутствует. Для "
 "создания брелока необходимо выбрать пароль."
 
-#: ../gnome-keyring-ask.c:464
+#: gnome-keyring-ask.c:464
 msgid "Create Default Keyring"
 msgstr "Создать основной брелок"
 
-#: ../gnome-keyring-ask.c:465
+#: gnome-keyring-ask.c:465
 msgid "Choose password for default keyring"
 msgstr "Выберите пароль для основного брелока"
 
-#: ../gnome-keyring-ask.c:505
+#: gnome-keyring-ask.c:505
 msgid "Allow application access to keyring?"
 msgstr "Разрешать приложениям доступ к брелоку?"
 
-#: ../gnome-keyring-ask.c:508
+#: gnome-keyring-ask.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Приложение \"%s\" (%s) хочет получить доступ к паролю для \"%s\" в брелке %s."
+msgstr ""
+"Приложение \"%s\" (%s) хочет получить доступ к паролю для \"%s\" в брелке %s."
 
-#: ../gnome-keyring-ask.c:511
+#: gnome-keyring-ask.c:511
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
-msgstr "Приложение \"%s\" (%s) хочет получить доступ к паролю для \"%s\" в основном брелоке."
+msgstr ""
+"Приложение \"%s\" (%s) хочет получить доступ к паролю для \"%s\" в основном "
+"брелоке."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:514
+#: gnome-keyring-ask.c:514
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
-msgstr "Приложение \"%s\" (%s) хочет получить доступ к паролю для \"%s\" в брелке."
+msgstr ""
+"Приложение \"%s\" (%s) хочет получить доступ к паролю для \"%s\" в брелке."
 
-#: ../gnome-keyring-ask.c:519 ../gnome-keyring-ask.c:530
+#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Приложение \"%s\" хочет получить доступ к паролю для \"%s\" в брелке %s."
+msgstr ""
+"Приложение \"%s\" хочет получить доступ к паролю для \"%s\" в брелке %s."
 
-#: ../gnome-keyring-ask.c:522 ../gnome-keyring-ask.c:533
+#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
-msgstr "Приложение \"%s\" хочет получить доступ к паролю для \"%s\" в основном брелоке."
+msgstr ""
+"Приложение \"%s\" хочет получить доступ к паролю для \"%s\" в основном "
+"брелоке."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:525 ../gnome-keyring-ask.c:536
+#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Приложение \"%s\" хочет получить доступ к паролю для \"%s\" в брелке."
 
-#: ../gnome-keyring-ask.c:541
+#: gnome-keyring-ask.c:541
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Приложение хочет получить доступ к паролю для \"%s\" в брелке %s."
 
-#: ../gnome-keyring-ask.c:544
+#: gnome-keyring-ask.c:544
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
-msgstr "Приложение хочет получить доступ к паролю для \"%s\" в основном брелоке."
+msgstr ""
+"Приложение хочет получить доступ к паролю для \"%s\" в основном брелоке."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:547
+#: gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Приложение хочет получить доступ к паролю для \"%s\" в брелке."
 
-#: ../gnome-keyring-ask.c:552
+#: gnome-keyring-ask.c:552
 msgid "Allow access"
 msgstr "Разрешить доступ"
 
-#: ../gnome-keyring-ask.c:557
+#: gnome-keyring-ask.c:557
 msgid "Allow _Once"
 msgstr "Разрешить _однократно"
 
-#: ../gnome-keyring-ask.c:558
+#: gnome-keyring-ask.c:558
 msgid "_Always Allow"
 msgstr "Разрешить _навсегда"
 
-#: ../gnome-keyring-ask.c:598
+#: gnome-keyring-ask.c:598
+#, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Для запуска необходимо указать тип запроса\n"
 
-#: ../gnome-keyring-ask.c:611
+#: gnome-keyring-ask.c:611
+#, c-format
 msgid "Unknown request type\n"
 msgstr "Тип запроса неизвестен\n"
-

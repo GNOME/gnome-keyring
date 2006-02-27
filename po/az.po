@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.az\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-13 11:16+0100\n"
+"POT-Creation-Date: 2006-02-27 19:07+0100\n"
 "PO-Revision-Date: 2004-02-13 13:19+0200\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani Turkish <translation-team-az@lists.sourceforge."
@@ -99,16 +99,16 @@ msgstr "Ön qurğulu şifrə kisəsini açmaq üçün şifrəni bildirin"
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Qıfılı açmaq üçün '%s' şifrə kisəsi şifrəsini bildirin"
 
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:329
 msgid "Unlock Keyring"
 msgstr "Şifrə Kisəsinin Qıfılını Aç"
 
-#: gnome-keyring-ask.c:333 gnome-keyring-ask.c:413 gnome-keyring-ask.c:460
-#: gnome-keyring-ask.c:544
+#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
+#: gnome-keyring-ask.c:556
 msgid "_Deny"
 msgstr "_Rədd Et"
 
-#: gnome-keyring-ask.c:368
+#: gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -117,7 +117,7 @@ msgstr ""
 "'%s' (%s) proqramı '%s' adında yeni bir şifrə kisəsi yaratmaq istəyir. Onun "
 "üçün işlətmək istədiyiniz şifrəni seçməlisiniz."
 
-#: gnome-keyring-ask.c:372
+#: gnome-keyring-ask.c:376
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -126,7 +126,7 @@ msgstr ""
 "'%s' (%s) proqramı yeni bir ön qurğulu şifrə kisəsi yaratmaq istəyir. Onun "
 "üçün işlətmək istədiyiniz şifrəni seçməlisiniz."
 
-#: gnome-keyring-ask.c:378 gnome-keyring-ask.c:388
+#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -135,7 +135,7 @@ msgstr ""
 "'%s' proqramı '%s' adında yeni bir şifrə kisəsi yaratmaq istəyir. Onun üçün "
 "işlətmək istədiyiniz şifrəni seçməlisiniz."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -144,7 +144,7 @@ msgstr ""
 "'%s' proqramı yeni bir ön qurğulu şifrə kisəsi yaratmaq istəyir. Onun üçün "
 "işlətmək istədiyiniz şifrəni seçməlisiniz."
 
-#: gnome-keyring-ask.c:398
+#: gnome-keyring-ask.c:402
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -153,7 +153,7 @@ msgstr ""
 "Namə'lum proqram '%s' adında yeni bir şifrə kisəsi yaratmaq istəyir. Onun "
 "üçün işlətmək istədiyiniz şifrəni seçməlisiniz."
 
-#: gnome-keyring-ask.c:402
+#: gnome-keyring-ask.c:406
 #, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
@@ -162,15 +162,15 @@ msgstr ""
 "Namə'lum proqram yeni bir ön qurğulu şifrə kisəsi yaratmaq istəyir. Onun "
 "üçün işlətmək istədiyiniz şifrəni seçməlisiniz."
 
-#: gnome-keyring-ask.c:408
+#: gnome-keyring-ask.c:413
 msgid "New Keyring Password"
 msgstr "Yeni Şifrə Kisəsi Şifrəsi"
 
-#: gnome-keyring-ask.c:409
+#: gnome-keyring-ask.c:414
 msgid "Choose password for new keyring"
 msgstr "Yeni şifrə kisəsi üçün şifrəni seçin"
 
-#: gnome-keyring-ask.c:439
+#: gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -181,7 +181,7 @@ msgstr ""
 "mövcud deyil. Birini yaratmaq üçün, onun üçün işlətmək istədiyiniz şifrəni "
 "seçməlisiniz."
 
-#: gnome-keyring-ask.c:443 gnome-keyring-ask.c:447
+#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -193,7 +193,7 @@ msgstr ""
 "seçməlisiniz."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:451
+#: gnome-keyring-ask.c:459
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -204,24 +204,24 @@ msgstr ""
 "mövcud deyil. Birini yaratmaq üçün, onun üçün işlətmək istədiyiniz şifrəni "
 "seçməlisiniz."
 
-#: gnome-keyring-ask.c:455
+#: gnome-keyring-ask.c:464
 msgid "Create Default Keyring"
 msgstr "Ön Qurğulu Şifrə Kisəsi Yarat"
 
-#: gnome-keyring-ask.c:456
+#: gnome-keyring-ask.c:465
 msgid "Choose password for default keyring"
 msgstr "Ön qurğulu şifrə kisəsi üçün şifrə seç"
 
-#: gnome-keyring-ask.c:493
+#: gnome-keyring-ask.c:505
 msgid "Allow application access to keyring?"
 msgstr "Proqrama şifrə kisəsinə yetişmə səlahiyyəti verilsin?"
 
-#: gnome-keyring-ask.c:496
+#: gnome-keyring-ask.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "'%s' (%s) proqramı '%s' şifrəsinə %s içindən yetişmək istəyir."
 
-#: gnome-keyring-ask.c:499
+#: gnome-keyring-ask.c:511
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -231,7 +231,7 @@ msgstr ""
 "istəyir."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:502
+#: gnome-keyring-ask.c:514
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -240,12 +240,12 @@ msgstr ""
 "'%s' (%s) proqramı '%s' şifrəsinə namə'lum şifrə kisəsi içindən yetişmək "
 "istəyir."
 
-#: gnome-keyring-ask.c:507 gnome-keyring-ask.c:518
+#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "'%s' proqramı '%s' şifrəsinə %s içindən yetişmək istəyir."
 
-#: gnome-keyring-ask.c:510 gnome-keyring-ask.c:521
+#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -255,7 +255,7 @@ msgstr ""
 "istəyir."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:513 gnome-keyring-ask.c:524
+#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -263,12 +263,12 @@ msgid ""
 msgstr ""
 "'%s' proqramı '%s' şifrəsinə namə'lum şifrə kisəsi içindən yetişmək istəyir."
 
-#: gnome-keyring-ask.c:529
+#: gnome-keyring-ask.c:541
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Namə'lum proqram '%s' şifrəsinə %s içindən yetişmək istəyir."
 
-#: gnome-keyring-ask.c:532
+#: gnome-keyring-ask.c:544
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -278,7 +278,7 @@ msgstr ""
 "istəyir."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:535
+#: gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -287,24 +287,24 @@ msgstr ""
 "Namə'lum proqram '%s' şifrəsinə namə'lum şifrə kisəsi içindən yetişmək "
 "istəyir."
 
-#: gnome-keyring-ask.c:540
+#: gnome-keyring-ask.c:552
 msgid "Allow access"
 msgstr "Yetişmə icazəsi"
 
-#: gnome-keyring-ask.c:545
+#: gnome-keyring-ask.c:557
 msgid "Allow _Once"
 msgstr "_Bir Dəfəyə Məxsus İcazə Ver"
 
-#: gnome-keyring-ask.c:546
+#: gnome-keyring-ask.c:558
 msgid "_Always Allow"
 msgstr "_Həmişə İcazə Ver"
 
-#: gnome-keyring-ask.c:586
+#: gnome-keyring-ask.c:598
 #, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "İcra ediləcək istəyin növünü bildirməlisiniz\n"
 
-#: gnome-keyring-ask.c:599
+#: gnome-keyring-ask.c:611
 #, c-format
 msgid "Unknown request type\n"
 msgstr "Namə'lum istək növü\n"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ne.po\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-13 11:16+0100\n"
+"POT-Creation-Date: 2006-02-27 19:07+0100\n"
 "PO-Revision-Date: 2005-01-11 21:58+0545\n"
 "Last-Translator: rajeev shrestha <rajeev_rajee01@hotmail.com.np>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -109,16 +109,16 @@ msgstr "पूर्वनिर्धारित किरिङ्गको �
 msgid "Enter password for keyring '%s' to unlock"
 msgstr " '%s' किरिङ्गको ताल्चा खोल्न संकेतशब्द प्रविष्ट गराउनुहोस्"
 
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:329
 msgid "Unlock Keyring"
 msgstr "किरिङ्गको ताल्चा खोल"
 
-#: gnome-keyring-ask.c:333 gnome-keyring-ask.c:413 gnome-keyring-ask.c:460
-#: gnome-keyring-ask.c:544
+#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
+#: gnome-keyring-ask.c:556
 msgid "_Deny"
 msgstr "अस्वीकार गर"
 
-#: gnome-keyring-ask.c:368
+#: gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -127,7 +127,7 @@ msgstr ""
 "'%s' (%s) अनुप्रयोगले '%s' नामको एउटा नयाँ किरिङ्ग सिर्जना गर्न खोजिरहेको छ। तपाईले "
 "प्रयोग गर्न चाहनु भएको संकेतशब्द तपाईले अवश्य छान्नु पर्छ।"
 
-#: gnome-keyring-ask.c:372
+#: gnome-keyring-ask.c:376
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -136,7 +136,7 @@ msgstr ""
 "'%s' (%s) अनुप्रयोगले एउटा नयाँ पूर्वनिर्धारित किरिङ्ग सिर्जना गर्न खोजिरहेको छ। तपाईले "
 "प्रयोग गर्न चाहनु भएको संकेतशब्द तपाईले अवश्य छान्नु पर्छ।"
 
-#: gnome-keyring-ask.c:378 gnome-keyring-ask.c:388
+#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -145,7 +145,7 @@ msgstr ""
 "'%s' अनुप्रयोगले '%s' नामको एउटा नयाँ किरिङ्ग सिर्जना गर्न खोजिरहेको छ। तपाईले प्रयोग "
 "गर्न चाहनु भएको संकेतशब्द तपाईले अवश्य छान्नु पर्छ।"
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -154,7 +154,7 @@ msgstr ""
 "'%s' अनुप्रयोगले एउटा नयाँ पूर्वनिर्धारित किरिङ्ग सिर्जना गर्न खोजिरहेको छ। तपाईले प्रयोग "
 "गर्न चाहनु भएको संकेतशब्द तपाईले अवश्य छान्नु पर्छ।"
 
-#: gnome-keyring-ask.c:398
+#: gnome-keyring-ask.c:402
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -163,7 +163,7 @@ msgstr ""
 "एउटा अज्ञात अनुप्रयोगले '%s' नामको एउटा नयाँ किरिङ्ग सिर्जना गर्न खोजिरहेको छ। तपाईले "
 "प्रयोग गर्न चाहनु भएको संकेतशब्द तपाईले अवश्य छान्नु पर्छ।"
 
-#: gnome-keyring-ask.c:402
+#: gnome-keyring-ask.c:406
 #, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
@@ -172,15 +172,15 @@ msgstr ""
 "एउटा अज्ञात अनुप्रयोगले एउटा नयाँ पूर्व‍निर्धारित किरिङ्ग सिर्जना गर्न खोजिरहेको छ। तपाईले "
 "प्रयोग गर्न चाहनु भएको संकेतशब्द तपाईले अवश्य छान्नु पर्छ।"
 
-#: gnome-keyring-ask.c:408
+#: gnome-keyring-ask.c:413
 msgid "New Keyring Password"
 msgstr "नयाँ किरिङ्ग संकेतशब्द"
 
-#: gnome-keyring-ask.c:409
+#: gnome-keyring-ask.c:414
 msgid "Choose password for new keyring"
 msgstr "नयाँ किरिङ्गको निम्ति संकतशब्द छान्नुहोस्"
 
-#: gnome-keyring-ask.c:439
+#: gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -191,7 +191,7 @@ msgstr ""
 "छैन। एउटा किरिङ्ग सिर्जना गर्नको निम्ति तपाईले योसंग प्रयोग गर्न खोज्नु भएको संकेतशब्द "
 "तपाईले छान्नुपर्छ।"
 
-#: gnome-keyring-ask.c:443 gnome-keyring-ask.c:447
+#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -203,7 +203,7 @@ msgstr ""
 "छान्नुपर्छ।"
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:451
+#: gnome-keyring-ask.c:459
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -214,24 +214,24 @@ msgstr ""
 "किरिङ्ग छैन। एउटा किरिङ्ग सिर्जना गर्नको निम्ति तपाईले योसंग प्रयोग गर्न खोज्नु भएको "
 "संकेतशब्द तपाईले छान्नुपर्छ।"
 
-#: gnome-keyring-ask.c:455
+#: gnome-keyring-ask.c:464
 msgid "Create Default Keyring"
 msgstr "पूर्वनिर्धारित किरिङ्ग सिर्जना गर"
 
-#: gnome-keyring-ask.c:456
+#: gnome-keyring-ask.c:465
 msgid "Choose password for default keyring"
 msgstr "पूर्वनिर्धारित किरिङ्गको संकेतशब्द छान्नुहोस्"
 
-#: gnome-keyring-ask.c:493
+#: gnome-keyring-ask.c:505
 msgid "Allow application access to keyring?"
 msgstr "के किरिङ्गमा अनुप्रयोगको पहुँचलाई अनुमति दिने?"
 
-#: gnome-keyring-ask.c:496
+#: gnome-keyring-ask.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "%sमा '%s' (%s) अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
-#: gnome-keyring-ask.c:499
+#: gnome-keyring-ask.c:511
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -239,19 +239,19 @@ msgid ""
 msgstr "पूर्वनिर्धारित किरिङ्गमा '%s' (%s) अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:502
+#: gnome-keyring-ask.c:514
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr "एउटा अज्ञात किरिङ्गमा '%s' (%s) अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
-#: gnome-keyring-ask.c:507 gnome-keyring-ask.c:518
+#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "%sमा '%s' अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
-#: gnome-keyring-ask.c:510 gnome-keyring-ask.c:521
+#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -259,19 +259,19 @@ msgid ""
 msgstr "पूर्वनिर्धारित किरिङ्गमा '%s' अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:513 gnome-keyring-ask.c:524
+#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "एउटा अज्ञात किरिङ्गमा '%s' अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
-#: gnome-keyring-ask.c:529
+#: gnome-keyring-ask.c:541
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "%sमा एउटा अज्ञात अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
-#: gnome-keyring-ask.c:532
+#: gnome-keyring-ask.c:544
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -280,31 +280,31 @@ msgstr ""
 "एउटा पूर्वनिर्धारित किरिङ्गमा एउटा अज्ञात अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:535
+#: gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "एउटा अज्ञात किरिङ्गमा एउटा अज्ञात अनुप्रयोगले '%s'को संकेतशब्द पाउन खोजिरहेको छ।"
 
-#: gnome-keyring-ask.c:540
+#: gnome-keyring-ask.c:552
 msgid "Allow access"
 msgstr "पहुँचको अनुमति देऊ"
 
-#: gnome-keyring-ask.c:545
+#: gnome-keyring-ask.c:557
 msgid "Allow _Once"
 msgstr "एक पटकमात्र अनुमति देऊ"
 
-#: gnome-keyring-ask.c:546
+#: gnome-keyring-ask.c:558
 msgid "_Always Allow"
 msgstr "सधै अनुमति देऊ"
 
-#: gnome-keyring-ask.c:586
+#: gnome-keyring-ask.c:598
 #, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "चालू गर्न तपाईले अनुरोधको प्रकार अवश्य निर्दष्ट गर्नु पर्छ\n"
 
-#: gnome-keyring-ask.c:599
+#: gnome-keyring-ask.c:611
 #, c-format
 msgid "Unknown request type\n"
 msgstr "अज्ञात अनुरोधको प्रकार\n"

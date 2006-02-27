@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-13 11:16+0100\n"
+"POT-Creation-Date: 2006-02-27 19:07+0100\n"
 "PO-Revision-Date: 2006-01-02 19:19+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -102,16 +102,16 @@ msgstr "Introduïu una contrasenya per a desblocar l'anell de claus per defecte"
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Introduïu una contrasenya per a desblocar l'anell de claus «%s»"
 
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:329
 msgid "Unlock Keyring"
 msgstr "Desbloca l'anell de claus"
 
-#: gnome-keyring-ask.c:333 gnome-keyring-ask.c:413 gnome-keyring-ask.c:460
-#: gnome-keyring-ask.c:544
+#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
+#: gnome-keyring-ask.c:556
 msgid "_Deny"
 msgstr "_Denega"
 
-#: gnome-keyring-ask.c:368
+#: gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -120,7 +120,7 @@ msgstr ""
 "L'aplicació «%s» (%s) vol crear un nou anell de claus anomenat «%s». Heu "
 "d'establir la contrasenya que hi vulgueu utilitzar."
 
-#: gnome-keyring-ask.c:372
+#: gnome-keyring-ask.c:376
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -129,7 +129,7 @@ msgstr ""
 "L'aplicació «%s» (%s) vol crear un nou anell de claus per defecte. Heu "
 "d'establir la contrasenya que hi vulgueu utilitzar."
 
-#: gnome-keyring-ask.c:378 gnome-keyring-ask.c:388
+#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -138,7 +138,7 @@ msgstr ""
 "L'aplicació «%s» vol crear un nou anell de claus anomenat «%s». Heu "
 "d'establir la contrasenya que hi vulgueu utilitzar."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -147,7 +147,7 @@ msgstr ""
 "L'aplicació «%s» vol crear un nou anell de claus per defecte. Heu d'establir "
 "la contrasenya que hi vulgueu utilitzar."
 
-#: gnome-keyring-ask.c:398
+#: gnome-keyring-ask.c:402
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -156,7 +156,7 @@ msgstr ""
 "Una aplicació desconeguda vol crear un nou anell de claus anomenat «%s». Heu "
 "d'establir la contrasenya que hi vulgueu utilitzar."
 
-#: gnome-keyring-ask.c:402
+#: gnome-keyring-ask.c:406
 #, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
@@ -165,15 +165,15 @@ msgstr ""
 "Una aplicació desconeguda vol crear un nou anell de claus per defecte. Heu "
 "d'establir la contrasenya que hi vulgueu utilitzar."
 
-#: gnome-keyring-ask.c:408
+#: gnome-keyring-ask.c:413
 msgid "New Keyring Password"
 msgstr "Contrasenya del nou anell de claus"
 
-#: gnome-keyring-ask.c:409
+#: gnome-keyring-ask.c:414
 msgid "Choose password for new keyring"
 msgstr "Seleccioneu una contrasenya per al nou anell de claus"
 
-#: gnome-keyring-ask.c:439
+#: gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -184,7 +184,7 @@ msgstr ""
 "anell de claus per defecte. Per crear-ne un, heu d'establir la contrasenya "
 "que hi vulgueu utilitzar."
 
-#: gnome-keyring-ask.c:443 gnome-keyring-ask.c:447
+#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -196,7 +196,7 @@ msgstr ""
 "vulgueu utilitzar."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:451
+#: gnome-keyring-ask.c:459
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -207,24 +207,24 @@ msgstr ""
 "cap anell de claus per defecte. Per crear-ne un, heu d'establir la "
 "contrasenya que hi vulgueu utilitzar."
 
-#: gnome-keyring-ask.c:455
+#: gnome-keyring-ask.c:464
 msgid "Create Default Keyring"
 msgstr "Crea l'anell de claus per defecte"
 
-#: gnome-keyring-ask.c:456
+#: gnome-keyring-ask.c:465
 msgid "Choose password for default keyring"
 msgstr "Estableix una contrasenya per a l'anell de claus per defecte"
 
-#: gnome-keyring-ask.c:493
+#: gnome-keyring-ask.c:505
 msgid "Allow application access to keyring?"
 msgstr "Voleu permetre que les aplicacions accedeixen a l'anell de claus?"
 
-#: gnome-keyring-ask.c:496
+#: gnome-keyring-ask.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "L'aplicació «%s» (%s) vol accedir a la contrasenya per a «%s» en %s."
 
-#: gnome-keyring-ask.c:499
+#: gnome-keyring-ask.c:511
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -234,7 +234,7 @@ msgstr ""
 "defecte."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:502
+#: gnome-keyring-ask.c:514
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -243,12 +243,12 @@ msgstr ""
 "L'aplicació «%s» (%s) vol accedir a la contrasenya per a «%s» d'un anell de "
 "claus desconegut."
 
-#: gnome-keyring-ask.c:507 gnome-keyring-ask.c:518
+#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "L'aplicació «%s» vol accedir a la contrasenya per a «%s» en %s."
 
-#: gnome-keyring-ask.c:510 gnome-keyring-ask.c:521
+#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -257,7 +257,7 @@ msgstr ""
 "L'aplicació «%s» vol accedir a la contrasenya de «%s» de l'anell per defecte."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:513 gnome-keyring-ask.c:524
+#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -266,13 +266,13 @@ msgstr ""
 "L'aplicació «%s» vol accedir a la contrasenya de «%s» d'un anell de claus "
 "desconegut."
 
-#: gnome-keyring-ask.c:529
+#: gnome-keyring-ask.c:541
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr ""
 "Una aplicació desconeguda vol accedir a la contrasenya per a «%s» en %s."
 
-#: gnome-keyring-ask.c:532
+#: gnome-keyring-ask.c:544
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -282,7 +282,7 @@ msgstr ""
 "de claus per defecte."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:535
+#: gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -291,24 +291,24 @@ msgstr ""
 "Una aplicació desconeguda vol accedir a la contrasenya per a «%s» de l'anell "
 "de claus per defecte."
 
-#: gnome-keyring-ask.c:540
+#: gnome-keyring-ask.c:552
 msgid "Allow access"
 msgstr "Permet l'accés"
 
-#: gnome-keyring-ask.c:545
+#: gnome-keyring-ask.c:557
 msgid "Allow _Once"
 msgstr "Permet _una vegada"
 
-#: gnome-keyring-ask.c:546
+#: gnome-keyring-ask.c:558
 msgid "_Always Allow"
 msgstr "Permet _sempre"
 
-#: gnome-keyring-ask.c:586
+#: gnome-keyring-ask.c:598
 #, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Heu d'especificar el tipus de petició a executar\n"
 
-#: gnome-keyring-ask.c:599
+#: gnome-keyring-ask.c:611
 #, c-format
 msgid "Unknown request type\n"
 msgstr "El tipus de petició és desconegut\n"

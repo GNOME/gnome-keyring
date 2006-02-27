@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-13 11:16+0100\n"
+"POT-Creation-Date: 2006-02-27 19:07+0100\n"
 "PO-Revision-Date: 2005-10-25 06:37+0100\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -103,16 +103,16 @@ msgstr "Zadajte heslo pre odomknutie štandardného zväzku kľúčov"
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Zadajte heslo pre odomknutie zväzku kľúčov '%s'"
 
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:329
 msgid "Unlock Keyring"
 msgstr "Odomknúť zväzok kľúčov"
 
-#: gnome-keyring-ask.c:333 gnome-keyring-ask.c:413 gnome-keyring-ask.c:460
-#: gnome-keyring-ask.c:544
+#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
+#: gnome-keyring-ask.c:556
 msgid "_Deny"
 msgstr "_Zamietnuť"
 
-#: gnome-keyring-ask.c:368
+#: gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -121,7 +121,7 @@ msgstr ""
 "Aplikácia '%s' (%s) chce vytvoriť nový zväzok kľúčov nazvaný '%s'. Musíte si "
 "vybrať heslo, ktoré chcete používať pri prístupe k nemu."
 
-#: gnome-keyring-ask.c:372
+#: gnome-keyring-ask.c:376
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -130,7 +130,7 @@ msgstr ""
 "Aplikácia '%s' (%s) chce vytvoriť nový štandardný zväzok kľúčov. Musíte si "
 "vybrať heslo, ktoré chcete používať pri prístupe k nemu."
 
-#: gnome-keyring-ask.c:378 gnome-keyring-ask.c:388
+#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -139,7 +139,7 @@ msgstr ""
 "Aplikácia '%s' chce vytvoriť nový zväzok kľúčov nazvaný '%s'. Musíte si "
 "vybrať heslo, ktoré chcete používať pri prístupe k nemu."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -148,7 +148,7 @@ msgstr ""
 "Aplikácia '%s' chce vytvoriť nový štandardný zväzok kľúčov. Musíte si vybrať "
 "heslo, ktoré chcete používať pri prístupe k nemu."
 
-#: gnome-keyring-ask.c:398
+#: gnome-keyring-ask.c:402
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -157,7 +157,7 @@ msgstr ""
 "Neznáma aplikácia chce vytvoriť nový zväzok kľúčov nazvaný '%s'. Musíte si "
 "vybrať heslo, ktoré chcete používať pri prístupe k nemu."
 
-#: gnome-keyring-ask.c:402
+#: gnome-keyring-ask.c:406
 #, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
@@ -166,15 +166,15 @@ msgstr ""
 "Neznáma aplikácia chce vytvoriť nový štandardný zväzok kľúčov. Musíte si "
 "vybrať heslo, ktoré chcete používať pri prístupe k nemu."
 
-#: gnome-keyring-ask.c:408
+#: gnome-keyring-ask.c:413
 msgid "New Keyring Password"
 msgstr "Nové heslo zväzku kľúčov"
 
-#: gnome-keyring-ask.c:409
+#: gnome-keyring-ask.c:414
 msgid "Choose password for new keyring"
 msgstr "Vybrať heslo pre nový zväzok kľúčov"
 
-#: gnome-keyring-ask.c:439
+#: gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -185,7 +185,7 @@ msgstr ""
 "neexistuje. Aby ste si ho mohli vytvoriť, musíte si vybrať heslo, ktoré "
 "chcete používať pri prístupe k nemu."
 
-#: gnome-keyring-ask.c:443 gnome-keyring-ask.c:447
+#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -197,7 +197,7 @@ msgstr ""
 "pri prístupe k nemu."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:451
+#: gnome-keyring-ask.c:459
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -208,24 +208,24 @@ msgstr ""
 "neexistuje. Aby ste si ho mohli vytvoriť, musíte si vybrať heslo, ktoré "
 "chcete používať pri prístupe k nemu."
 
-#: gnome-keyring-ask.c:455
+#: gnome-keyring-ask.c:464
 msgid "Create Default Keyring"
 msgstr "Vytvoriť štandardný zväzok kľúčov"
 
-#: gnome-keyring-ask.c:456
+#: gnome-keyring-ask.c:465
 msgid "Choose password for default keyring"
 msgstr "Vybrať heslo pre štandardný zväzok kľúčov"
 
-#: gnome-keyring-ask.c:493
+#: gnome-keyring-ask.c:505
 msgid "Allow application access to keyring?"
 msgstr "Povoliť aplikácií pristupovať ku zväzku kľúčov?"
 
-#: gnome-keyring-ask.c:496
+#: gnome-keyring-ask.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "Aplikácia '%s' (%s) chce pristupovať k heslu pre '%s' v %s."
 
-#: gnome-keyring-ask.c:499
+#: gnome-keyring-ask.c:511
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -235,7 +235,7 @@ msgstr ""
 "kľúčov."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:502
+#: gnome-keyring-ask.c:514
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -244,12 +244,12 @@ msgstr ""
 "Aplikácia '%s' (%s) chce pristupovať k heslu pre '%s' v neznámom zväzku "
 "kľúčov."
 
-#: gnome-keyring-ask.c:507 gnome-keyring-ask.c:518
+#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Aplikácia '%s' chce pristupovať k heslu pre '%s' v %s."
 
-#: gnome-keyring-ask.c:510 gnome-keyring-ask.c:521
+#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -258,7 +258,7 @@ msgstr ""
 "Aplikácia '%s' chce pristupovať k heslu pre '%s' v štandardnom zväzku kľúčov."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:513 gnome-keyring-ask.c:524
+#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -266,12 +266,12 @@ msgid ""
 msgstr ""
 "Aplikácia '%s' chce pristupovať k heslu pre '%s' v neznámom zväzku kľúčov."
 
-#: gnome-keyring-ask.c:529
+#: gnome-keyring-ask.c:541
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Neznáma aplikácia chce pristupovať k heslu pre '%s' v %s."
 
-#: gnome-keyring-ask.c:532
+#: gnome-keyring-ask.c:544
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -281,7 +281,7 @@ msgstr ""
 "kľúčov."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:535
+#: gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -289,24 +289,24 @@ msgid ""
 msgstr ""
 "Neznáma aplikácia chce pristupovať k heslu pre '%s' v neznámom zväzku kľúčov."
 
-#: gnome-keyring-ask.c:540
+#: gnome-keyring-ask.c:552
 msgid "Allow access"
 msgstr "Povoliť prístup"
 
-#: gnome-keyring-ask.c:545
+#: gnome-keyring-ask.c:557
 msgid "Allow _Once"
 msgstr "Povoliť _raz"
 
-#: gnome-keyring-ask.c:546
+#: gnome-keyring-ask.c:558
 msgid "_Always Allow"
 msgstr "Povoliť _vždy"
 
-#: gnome-keyring-ask.c:586
+#: gnome-keyring-ask.c:598
 #, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "Musíte zadať typ požiadavky, ktorú chcete vykonať\n"
 
-#: gnome-keyring-ask.c:599
+#: gnome-keyring-ask.c:611
 #, c-format
 msgid "Unknown request type\n"
 msgstr "Neznámy typ požiadavky\n"

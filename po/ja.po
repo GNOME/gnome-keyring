@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-13 11:16+0100\n"
+"POT-Creation-Date: 2006-02-27 19:07+0100\n"
 "PO-Revision-Date: 2005-11-19 22:04+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -108,16 +108,16 @@ msgstr "キーリング (デフォルト) のロックを解除するパスワ�
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "キーリング '%s' のロックを解除するパスワードを入力して下さい。"
 
-#: gnome-keyring-ask.c:328
+#: gnome-keyring-ask.c:329
 msgid "Unlock Keyring"
 msgstr "キーリングのロック解除"
 
-#: gnome-keyring-ask.c:333 gnome-keyring-ask.c:413 gnome-keyring-ask.c:460
-#: gnome-keyring-ask.c:544
+#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
+#: gnome-keyring-ask.c:556
 msgid "_Deny"
 msgstr "何もしない(_D)"
 
-#: gnome-keyring-ask.c:368
+#: gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -126,7 +126,7 @@ msgstr ""
 "アプリケーション '%s' (%s) が '%s' という新しいキーリングを生成しようとしてい"
 "ます。このキーリングのパスワードを選択して下さい。"
 
-#: gnome-keyring-ask.c:372
+#: gnome-keyring-ask.c:376
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -135,7 +135,7 @@ msgstr ""
 "アプリケーション '%s' (%s) が新しいデフォルトのキーリングを生成しようとしてい"
 "ます。このキーリングのパスワードを選択して下さい。"
 
-#: gnome-keyring-ask.c:378 gnome-keyring-ask.c:388
+#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -144,7 +144,7 @@ msgstr ""
 "アプリケーション '%s' が '%s' という新しいキーリングを生成しようとしていま"
 "す。このキーリングのパスワードを選択して下さい。"
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -153,7 +153,7 @@ msgstr ""
 "アプリケーション '%s' が新しいキーリングを生成しようとしています。このキーリ"
 "ングのパスワードを選択して下さい。"
 
-#: gnome-keyring-ask.c:398
+#: gnome-keyring-ask.c:402
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -162,7 +162,7 @@ msgstr ""
 "不明なアプリケーションが '%s' という新しいキーリングを生成しようとしていま"
 "す。このキーリングのパスワードを選択して下さい。"
 
-#: gnome-keyring-ask.c:402
+#: gnome-keyring-ask.c:406
 #, c-format
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
@@ -171,15 +171,15 @@ msgstr ""
 "不明なアプリケーションが新しいデフォルトのキーリングを生成しようとしていま"
 "す。このキーリングのパスワードを選択して下さい。"
 
-#: gnome-keyring-ask.c:408
+#: gnome-keyring-ask.c:413
 msgid "New Keyring Password"
 msgstr "新しいキーリングのパスワード"
 
-#: gnome-keyring-ask.c:409
+#: gnome-keyring-ask.c:414
 msgid "Choose password for new keyring"
 msgstr "新しいキーリングのパスワードの選択"
 
-#: gnome-keyring-ask.c:439
+#: gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -190,7 +190,7 @@ msgstr ""
 "のキーリングがありません。デフォルトのキーリングを生成する場合はパスワードを"
 "選択する必要があります。"
 
-#: gnome-keyring-ask.c:443 gnome-keyring-ask.c:447
+#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -202,7 +202,7 @@ msgstr ""
 "択する必要があります。"
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:451
+#: gnome-keyring-ask.c:459
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -213,26 +213,26 @@ msgstr ""
 "キーリングがありません。デフォルトのキーリングを生成する場合はパスワードを選"
 "択する必要があります。"
 
-#: gnome-keyring-ask.c:455
+#: gnome-keyring-ask.c:464
 msgid "Create Default Keyring"
 msgstr "キーリング (デフォルト) の生成"
 
-#: gnome-keyring-ask.c:456
+#: gnome-keyring-ask.c:465
 msgid "Choose password for default keyring"
 msgstr "キーリング (デフォルト) のパスワードの選択"
 
-#: gnome-keyring-ask.c:493
+#: gnome-keyring-ask.c:505
 msgid "Allow application access to keyring?"
 msgstr "アプリケーションにキーリングへのアクセスを許可しますか？"
 
-#: gnome-keyring-ask.c:496
+#: gnome-keyring-ask.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr ""
 "アプリケーション '%1$s' (%2$s) が %4$s にある '%3$s' のパスワードにアクセスし"
 "ようとしています。"
 
-#: gnome-keyring-ask.c:499
+#: gnome-keyring-ask.c:511
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -242,7 +242,7 @@ msgstr ""
 "アクセスしようとしています。"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:502
+#: gnome-keyring-ask.c:514
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -251,14 +251,14 @@ msgstr ""
 "アプリケーション '%s' (%s) が不明なキーリングにある '%s' のパスワードにアクセ"
 "スしようとしています。"
 
-#: gnome-keyring-ask.c:507 gnome-keyring-ask.c:518
+#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr ""
 "アプリケーション '%1$s' が %3$s にある '%2$s' のパスワードにアクセスしようと"
 "しています。"
 
-#: gnome-keyring-ask.c:510 gnome-keyring-ask.c:521
+#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -268,7 +268,7 @@ msgstr ""
 "セスしようとしています。"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:513 gnome-keyring-ask.c:524
+#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -277,14 +277,14 @@ msgstr ""
 "アプリケーション '%s' が不明なキーリングにある '%s' のパスワードにアクセスし"
 "ようとしています。"
 
-#: gnome-keyring-ask.c:529
+#: gnome-keyring-ask.c:541
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr ""
 "不明なアプリケーションが %2$s にある %1$s のパスワードにアクセスしようとして"
 "います。"
 
-#: gnome-keyring-ask.c:532
+#: gnome-keyring-ask.c:544
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -294,7 +294,7 @@ msgstr ""
 "セスしようとしています。"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:535
+#: gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -303,24 +303,24 @@ msgstr ""
 "不明なアプリケーションが不明なキーリングにある '%s' のパスワードにアクセスし"
 "ようとしています。"
 
-#: gnome-keyring-ask.c:540
+#: gnome-keyring-ask.c:552
 msgid "Allow access"
 msgstr "アクセスの許可"
 
-#: gnome-keyring-ask.c:545
+#: gnome-keyring-ask.c:557
 msgid "Allow _Once"
 msgstr "一度だけ許可する(_O)"
 
-#: gnome-keyring-ask.c:546
+#: gnome-keyring-ask.c:558
 msgid "_Always Allow"
 msgstr "常に許可する(_A)"
 
-#: gnome-keyring-ask.c:586
+#: gnome-keyring-ask.c:598
 #, c-format
 msgid "You must specify the type of request to run\n"
 msgstr "実行するリクエストの種類を指定して下さい\n"
 
-#: gnome-keyring-ask.c:599
+#: gnome-keyring-ask.c:611
 #, c-format
 msgid "Unknown request type\n"
 msgstr "リクエストの種類が不明です\n"
