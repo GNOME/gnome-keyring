@@ -1,3 +1,7 @@
+Changes in version 0.4.8 are:
+* Fix crash when asking for password
+* Translation updates
+
 Changes in version 0.4.7 are:
 * Fix --disable-nls
 * Translation updates
