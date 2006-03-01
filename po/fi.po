@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-27 19:07+0100\n"
-"PO-Revision-Date: 2006-02-24 13:07+0200\n"
+"POT-Creation-Date: 2006-03-01 19:07+0100\n"
+"PO-Revision-Date: 2006-03-01 19:21+0200\n"
 "Last-Translator: Tommi Vainikainen <Tommi.Vainikainen@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -104,12 +104,12 @@ msgstr ""
 
 #: gnome-keyring-ask.c:323
 msgid "Enter password for default keyring to unlock"
-msgstr "Syötä oletusavainnipun salasana avataksesi"
+msgstr "Avaa oletusavainnipun lukitus syöttämällä salasana"
 
 #: gnome-keyring-ask.c:325
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Syötä avainnipun \"%s\" salasana avataksesi"
+msgstr "Avaa avainnipun \"%s\" lukitus syöttämällä salasana"
 
 #: gnome-keyring-ask.c:329
 msgid "Unlock Keyring"

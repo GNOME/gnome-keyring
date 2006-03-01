@@ -1,8 +1,12 @@
+2006-03-01  Ilkka Tuohela  <hile@iki.fi>
+
+	* fi.po: Some fixes to Finnish translation.
+
 === gnome-keyring 0.4.8 ===
 
 2006-02-27  Leonid Kanter <leon@asplinux.ru>
 
-        * ru.po: Updated Russian translation
+	* ru.po: Updated Russian translation
 
 2006-02-24  Ilkka Tuohela  <hile@iki.fi>
 
