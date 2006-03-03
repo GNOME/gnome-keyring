@@ -9,24 +9,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-27 19:07+0100\n"
-"PO-Revision-Date: 2004-03-17 13:28+0000\n"
-"Last-Translator: Dafydd Tomos <l10n@da.fydd.org>\n"
+"POT-Creation-Date: 2006-03-03 08:53+0000\n"
+"PO-Revision-Date: 2006-03-03 08:47-0000\n"
+"Last-Translator: Rhys Jones <rhys@sucs.org>\n"
 "Language-Team: Welsh <gnome-cy@pengwyn.linux.org.uk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
 
-#: gnome-keyring-ask.c:195
+#: ../gnome-keyring-ask.c:195
 msgid "Password cannot be blank."
-msgstr ""
+msgstr "Gall cyfrinair ddim bod yn wag."
 
-#: gnome-keyring-ask.c:203
+#: ../gnome-keyring-ask.c:203
 msgid "Passwords do not match."
-msgstr ""
+msgstr "Cyfrineiriau ddim yr un fath."
 
-#: gnome-keyring-ask.c:262
+#: ../gnome-keyring-ask.c:262
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -35,7 +35,7 @@ msgstr ""
 "Mae'r rhaglen '%s' (%s) am gyrchu'r cylch allweddi rhagosodedig, ond mae ar "
 "glo"
 
-#: gnome-keyring-ask.c:266
+#: ../gnome-keyring-ask.c:266
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -43,7 +43,7 @@ msgstr ""
 "Mae'r rhaglen '%s' (%s) am gyrchu'r cylch allweddi '%s', ond mae ar glo"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:271
+#: ../gnome-keyring-ask.c:271
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
@@ -51,64 +51,62 @@ msgid ""
 msgstr ""
 "Mae'r rhaglen '%s' (%s) am gyrchu cylch allweddi anhysbys, ond mae ar glo"
 
-#: gnome-keyring-ask.c:277 gnome-keyring-ask.c:291
+#: ../gnome-keyring-ask.c:277 ../gnome-keyring-ask.c:291
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Mae'r rhaglen '%s' am gyrchu'r cylch allweddi ragosodedig, ond mae ar glo"
 
-#: gnome-keyring-ask.c:281 gnome-keyring-ask.c:296
+#: ../gnome-keyring-ask.c:281 ../gnome-keyring-ask.c:296
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Mae'r rhaglen '%s' am gyrchu'r cylch allweddi '%s', ond mae ar glo"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:285 gnome-keyring-ask.c:301
+#: ../gnome-keyring-ask.c:285 ../gnome-keyring-ask.c:301
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "Mae'r rhaglen '%s' am gyrchu cylch allweddi anhysbys, ond mae ar glo"
 
-#: gnome-keyring-ask.c:307
-#, c-format
+#: ../gnome-keyring-ask.c:307
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Mae rhaglen anhysbys am gyrchu'r cylch allweddi ragosodedig, ond mae ar glo"
 
-#: gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:311
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Mae rhaglen anhysbys am gyrchu'r cylch allweddi '%s', ond mae ar glo"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:316
-#, c-format
+#: ../gnome-keyring-ask.c:316
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "Mae rhaglen anhysbys am gyrchu cylch allweddi anhysbys, ond mae ar glo"
 
-#: gnome-keyring-ask.c:323
+#: ../gnome-keyring-ask.c:323
 msgid "Enter password for default keyring to unlock"
 msgstr "Rhowch gyfrinair y cylch allweddi ragosodedig er mwyn ei datgloi"
 
-#: gnome-keyring-ask.c:325
+#: ../gnome-keyring-ask.c:325
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Rhowch y cyfrinair i ddatgloi'r cylch allweddi '%s'"
 
-#: gnome-keyring-ask.c:329
+#: ../gnome-keyring-ask.c:329
 msgid "Unlock Keyring"
 msgstr "Datgloi Cylch Allweddi"
 
-#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
-#: gnome-keyring-ask.c:556
+#: ../gnome-keyring-ask.c:334 ../gnome-keyring-ask.c:418
+#: ../gnome-keyring-ask.c:469 ../gnome-keyring-ask.c:556
 msgid "_Deny"
 msgstr "_Gwrthod"
 
-#: gnome-keyring-ask.c:372
+#: ../gnome-keyring-ask.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -117,7 +115,7 @@ msgstr ""
 "Mae'r rhaglen '%s' (%s) am greu cylch allweddi newydd o'r enw '%s'. Rhaid i "
 "chi ddewis y cyfrinair yr ydych am ei ddefnyddio ar ei chyfer."
 
-#: gnome-keyring-ask.c:376
+#: ../gnome-keyring-ask.c:376
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -126,7 +124,7 @@ msgstr ""
 "Mae'r rhaglen '%s' (%s) am greu cylch allweddi ragosodedig newydd. Rhaid i "
 "chi ddewis y cyfrinair yr ydych am ei ddefnyddio ar ei chyfer."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: ../gnome-keyring-ask.c:382 ../gnome-keyring-ask.c:392
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -135,7 +133,7 @@ msgstr ""
 "Mae'r rhaglen '%s' am greu cylch allweddi newydd o'r enw '%s'. Rhaid i chi "
 "ddewis y cyfrinair yr ydych am ei ddefnyddio ar ei chyfer."
 
-#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
+#: ../gnome-keyring-ask.c:386 ../gnome-keyring-ask.c:396
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -144,7 +142,7 @@ msgstr ""
 "Mae'r rhaglen '%s' am greu cylch allweddi ragosodedig newydd. Rhaid i chi "
 "ddewis y cyfrinair yr ydych am ei ddefnyddio ar ei chyfer."
 
-#: gnome-keyring-ask.c:402
+#: ../gnome-keyring-ask.c:402
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -153,8 +151,7 @@ msgstr ""
 "Mae rhaglen anhysbys am greu cylch allweddi newydd o'r enw '%s'. Rhaid i chi "
 "ddewis y cyfrinair yr ydych am ei ddefnyddio ar ei chyfer."
 
-#: gnome-keyring-ask.c:406
-#, c-format
+#: ../gnome-keyring-ask.c:406
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -162,15 +159,15 @@ msgstr ""
 "Mae rhaglen anhysbys am greu cylch allweddi ragosodedig newydd. Rhaid i chi "
 "ddewis y cyfrinair yr ydych am ei ddefnyddio ar ei chyfer."
 
-#: gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:413
 msgid "New Keyring Password"
 msgstr "Cyfrinair y Cylch Allweddi Newydd"
 
-#: gnome-keyring-ask.c:414
+#: ../gnome-keyring-ask.c:414
 msgid "Choose password for new keyring"
 msgstr "Dewiswch gyfrinair ar gyfer y cylch allweddi newydd"
 
-#: gnome-keyring-ask.c:447
+#: ../gnome-keyring-ask.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -181,7 +178,7 @@ msgstr ""
 "allweddi ragosodedig. I greu cylch, rhaid i chi ddewis y cyfrinair yr ydych "
 "am ei ddefnyddio ar ei chyfer."
 
-#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
+#: ../gnome-keyring-ask.c:451 ../gnome-keyring-ask.c:455
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -193,8 +190,7 @@ msgstr ""
 "am ei ddefnyddio ar ei chyfer."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:459
-#, c-format
+#: ../gnome-keyring-ask.c:459
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -204,24 +200,24 @@ msgstr ""
 "allweddi ragosodedig. I greu cylch, rhaid i chi ddewis y cyfrinair yr ydych "
 "am ei ddefnyddio ar ei chyfer."
 
-#: gnome-keyring-ask.c:464
+#: ../gnome-keyring-ask.c:464
 msgid "Create Default Keyring"
 msgstr "Creu Cylch Allweddi Ragosodedig"
 
-#: gnome-keyring-ask.c:465
+#: ../gnome-keyring-ask.c:465
 msgid "Choose password for default keyring"
 msgstr "Dewiswch gyfrinair ar gyfer y cylch allweddi ragosodedig"
 
-#: gnome-keyring-ask.c:505
+#: ../gnome-keyring-ask.c:505
 msgid "Allow application access to keyring?"
-msgstr "Caniatau i raglenni gyrchu'r cylch allweddi?"
+msgstr "Caniatáu i raglenni gyrchu'r cylch allweddi?"
 
-#: gnome-keyring-ask.c:508
+#: ../gnome-keyring-ask.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "Mae'r rhaglen '%s' (%s) am gyrchu'r cyfrinair ar gyfer '%s' yn %s."
 
-#: gnome-keyring-ask.c:511
+#: ../gnome-keyring-ask.c:511
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -231,7 +227,7 @@ msgstr ""
 "allweddi ragosodedig."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:514
+#: ../gnome-keyring-ask.c:514
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -240,12 +236,12 @@ msgstr ""
 "Mae'r rhaglen '%s' (%s) am gyrchu'r cyfrinair ar gyfer '%s' mewn cylch "
 "allweddi anhysbys."
 
-#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
+#: ../gnome-keyring-ask.c:519 ../gnome-keyring-ask.c:530
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Mae'r rhaglen '%s' am gyrchu'r cyfrinair ar gyfer '%s' yn %s."
 
-#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
+#: ../gnome-keyring-ask.c:522 ../gnome-keyring-ask.c:533
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -255,7 +251,7 @@ msgstr ""
 "ragosodedig."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
+#: ../gnome-keyring-ask.c:525 ../gnome-keyring-ask.c:536
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -264,12 +260,12 @@ msgstr ""
 "Mae'r rhaglen '%s' am gyrchu'r cyfrinair ar gyfer '%s' mewn cylch allweddi "
 "anhysbys."
 
-#: gnome-keyring-ask.c:541
+#: ../gnome-keyring-ask.c:541
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Mae rhaglen anhysbys am gyrchu'r cyfrinair ar gyfer '%s' yn %s."
 
-#: gnome-keyring-ask.c:544
+#: ../gnome-keyring-ask.c:544
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -279,7 +275,7 @@ msgstr ""
 "ragosodedig."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:547
+#: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -288,24 +284,22 @@ msgstr ""
 "Mae rhaglen anhysbys am gyrchu'r cyfrinair ar gyfer '%s' mewn cylch allweddi "
 "anhysbys."
 
-#: gnome-keyring-ask.c:552
+#: ../gnome-keyring-ask.c:552
 msgid "Allow access"
 msgstr "Caniatau mynediad"
 
-#: gnome-keyring-ask.c:557
+#: ../gnome-keyring-ask.c:557
 msgid "Allow _Once"
 msgstr "Caniatau _Unwaith"
 
-#: gnome-keyring-ask.c:558
+#: ../gnome-keyring-ask.c:558
 msgid "_Always Allow"
 msgstr "Caniatau o _Hyd"
 
-#: gnome-keyring-ask.c:598
-#, c-format
+#: ../gnome-keyring-ask.c:598
 msgid "You must specify the type of request to run\n"
 msgstr "Rhaid nodi pa fath o gais i'w redeg\n"
 
-#: gnome-keyring-ask.c:611
-#, c-format
+#: ../gnome-keyring-ask.c:611
 msgid "Unknown request type\n"
 msgstr "Math cais anhysbys\n"
