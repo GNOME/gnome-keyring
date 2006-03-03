@@ -1,3 +1,9 @@
+2006-03-03  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring.c:
+	Get proper return values for some sync calls. (#332845)
+	Patch from Jon Nettleton
+
 2006-02-27  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

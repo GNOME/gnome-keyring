@@ -603,7 +603,16 @@ gnome_keyring_set_default_keyring_sync (const char *keyring)
 	receive = g_string_new (NULL);
 	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+	if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+ 	g_string_free (receive, TRUE);
 
 	return res;
 }
@@ -776,9 +785,18 @@ gnome_keyring_lock_all_sync (void)
  	receive = g_string_new (NULL);
 	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
-	
-	return res;
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+        if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
+                g_string_free (receive, TRUE);
+                return GNOME_KEYRING_RESULT_IO_ERROR;
+        }
+        g_string_free (receive, TRUE);
+
+        return res;
 }
 
 
@@ -828,9 +846,18 @@ gnome_keyring_create_sync (const char *keyring_name,
  	receive = g_string_new (NULL);
 	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
-	
-	return res;
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+        if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
+                g_string_free (receive, TRUE);
+                return GNOME_KEYRING_RESULT_IO_ERROR;
+        }
+        g_string_free (receive, TRUE);
+
+        return res;
 }
 
 gpointer
@@ -877,8 +904,17 @@ gnome_keyring_unlock_sync (const char *keyring,
  	receive = g_string_new (NULL);
 	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
-	
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+        if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
+                g_string_free (receive, TRUE);
+                return GNOME_KEYRING_RESULT_IO_ERROR;
+        }
+        g_string_free (receive, TRUE);
+
 	return res;
 }
 
@@ -924,9 +960,18 @@ gnome_keyring_lock_sync (const char *keyring)
  	receive = g_string_new (NULL);
 	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
-	
-	return res;
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+        if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
+                g_string_free (receive, TRUE);
+                return GNOME_KEYRING_RESULT_IO_ERROR;
+        }
+        g_string_free (receive, TRUE);
+
+        return res;
 }
 
 gpointer
@@ -971,9 +1016,18 @@ gnome_keyring_delete_sync (const char *keyring)
  	receive = g_string_new (NULL);
 	res = run_sync_operation (send, receive);
 	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
-	
-	return res;
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+        if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
+                g_string_free (receive, TRUE);
+                return GNOME_KEYRING_RESULT_IO_ERROR;
+        }
+        g_string_free (receive, TRUE);
+
+        return res;
 }
 
 static void
