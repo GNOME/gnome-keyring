@@ -1,3 +1,8 @@
+2006-03-13  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release
+
 2006-03-03  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring.c:

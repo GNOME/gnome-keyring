@@ -1,3 +1,7 @@
+Changes in version 0.4.9 are:
+* Fix return value for some sync calls
+* Translation updates
+
 Changes in version 0.4.8 are:
 * Fix crash when asking for password
 * Translation updates
