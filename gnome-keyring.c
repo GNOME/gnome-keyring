@@ -254,15 +254,17 @@ write_credentials_byte_sync (int socket)
 {
   char buf;
   int bytes_written;
-#if defined(HAVE_CMSGCRED) && !defined(LOCAL_CREDS)
-  char cmsgmem[CMSG_SPACE (sizeof (struct cmsgcred))];
-  struct cmsghdr *cmsg = (struct cmsghdr *) cmsgmem;
+#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
+  union {
+	  struct cmsghdr hdr;
+	  char cred[CMSG_SPACE (sizeof (struct cmsgcred))];
+  } cmsg;
   struct iovec iov;
   struct msghdr msg;
 #endif
 
   buf = 0;
-#if defined(HAVE_CMSGCRED) && !defined(LOCAL_CREDS)
+#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
   iov.iov_base = &buf;
   iov.iov_len = 1;
 
@@ -270,17 +272,17 @@ write_credentials_byte_sync (int socket)
   msg.msg_iov = &iov;
   msg.msg_iovlen = 1;
 
-  msg.msg_control = cmsg;
-  msg.msg_controllen = sizeof (cmsgmem);
-  memset (cmsg, 0, sizeof (cmsgmem));
-  cmsg->cmsg_len = sizeof (cmsgmem);
+  msg.msg_control = (caddr_t) &cmsg;
+  msg.msg_controllen = CMSG_SPACE (sizeof (struct cmsgcred));
+  memset (&cmsg, 0, sizeof (cmsg));
+  cmsg->cmsg_len = CMSG_LEN (sizeof (struct cmsgcred));
   cmsg->cmsg_level = SOL_SOCKET;
   cmsg->cmsg_type = SCM_CREDS;
 #endif
 
  again:
 
-#if defined(HAVE_CMSGCRED) && !defined(LOCAL_CREDS)
+#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
   bytes_written = sendmsg (socket, &msg, 0);
 #else
   bytes_written = write (socket, &buf, 1);
@@ -302,15 +304,17 @@ write_credentials_byte (GnomeKeyringOperation *op)
 {
   char buf;
   int bytes_written;
-#if defined(HAVE_CMSGCRED) && !defined(LOCAL_CREDS)
-  char cmsgmem[CMSG_SPACE (sizeof (struct cmsgcred))];
-  struct cmsghdr *cmsg = (struct cmsghdr *) cmsgmem;
+#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
+  union {
+	  struct cmsghdr hdr;
+	  char cred[CMSG_SPACE (sizeof (struct cmsgcred))];
+  } cmsg;
   struct iovec iov;
   struct msghdr msg;
 #endif
 
   buf = 0;
-#if defined(HAVE_CMSGCRED) && !defined(LOCAL_CREDS)
+#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
   iov.iov_base = &buf;
   iov.iov_len = 1;
 
@@ -318,17 +322,17 @@ write_credentials_byte (GnomeKeyringOperation *op)
   msg.msg_iov = &iov;
   msg.msg_iovlen = 1;
 
-  msg.msg_control = cmsg;
-  msg.msg_controllen = sizeof (cmsgmem);
-  memset (cmsg, 0, sizeof (cmsgmem));
-  cmsg->cmsg_len = sizeof (cmsgmem);
+  msg.msg_control = (caddr_t) &cmsg;
+  msg.msg_controllen = CMSG_SPACE (sizeof (struct cmsgcred));
+  memset (cmsg, 0, sizeof (cmsg));
+  cmsg->cmsg_len = CMSG_LEN (sizeof (struct cmsgcred));
   cmsg->cmsg_level = SOL_SOCKET;
   cmsg->cmsg_type = SCM_CREDS;
 #endif
 
  again:
 
-#if defined(HAVE_CMSGCRED) && !defined(LOCAL_CREDS)
+#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
   bytes_written = sendmsg (op->socket, &msg, 0);
 #else
   bytes_written = write (op->socket, &buf, 1);

@@ -1,5 +1,12 @@
 2006-04-03  Dan Williams  <dcbw@redhat.com>
 
+	* gnome-keyring-daemon-io.c
+	  gnome-keyring.c
+	    - Updates for FreeBSD / SCM_CREDS support, fix endian
+	    issues on non-i386 platforms.
+
+2006-04-03  Dan Williams  <dcbw@redhat.com>
+
 	Patch from Joe Marcus Clarke <marcus@freebsd.org>
 	
 	* gnome-keyring.c
