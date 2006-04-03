@@ -23,12 +23,33 @@ print_attributes (GnomeKeyringAttributeList *attributes)
 	}
 }
 
+static const gchar* result_msg[] = {
+	"GNOME_KEYRING_RESULT_OK",
+	"GNOME_KEYRING_RESULT_DENIED",
+	"GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON",
+	"GNOME_KEYRING_RESULT_ALREADY_UNLOCKED",
+	"GNOME_KEYRING_RESULT_NO_SUCH_KEYRING",
+	"GNOME_KEYRING_RESULT_BAD_ARGUMENTS",
+	"GNOME_KEYRING_RESULT_IO_ERROR",
+	"GNOME_KEYRING_RESULT_CANCELLED",
+	"GNOME_KEYRING_RESULT_ALREADY_EXISTS"
+};
+
+static const gchar*
+get_msg_for_keyring_result (GnomeKeyringResult result)
+{
+	if (result<=GNOME_KEYRING_RESULT_ALREADY_EXISTS) {
+		return result_msg[result];
+	} else {
+		return "Unknown GnomeKeyringResult";
+	}
+}
 
 static void
 ok_cb  (GnomeKeyringResult result,
 	gpointer           data)
 {
-	g_print ("%s: %d\n", (char *)data, result);
+	g_print ("%s: %d (%s)\n", (char *)data, result, get_msg_for_keyring_result (result));
 	g_main_loop_quit (loop);
 }
 
@@ -60,7 +81,7 @@ find_items_cb (GnomeKeyringResult result,
 	       GList *found_items,
 	       gpointer data)
 {
-	g_print ("found items: res: %d nr items: %d\n", result, g_list_length (found_items));
+	g_print ("found items: res: %d (%s) nr items: %d\n", result, get_msg_for_keyring_result (result), g_list_length (found_items));
 
 	if (found_items != NULL) {
 		GnomeKeyringFound *found = found_items->data;
@@ -87,7 +108,7 @@ creat_item_cb  (GnomeKeyringResult result,
 		guint32            id,
 		gpointer           data)
 {
-	g_print ("created item: res: %d id: %d\n", result, id);
+	g_print ("created item: res: %d (%s) id: %d\n", result, get_msg_for_keyring_result (result), id);
 	g_main_loop_quit (loop);
 }
 
@@ -123,7 +144,7 @@ show_item_cb (GnomeKeyringResult result,
 	char *secret;
 	char *name;
 	if (result != GNOME_KEYRING_RESULT_OK) {
-		g_print ("error getting item info: %d\n", result);
+		g_print ("error getting item info: %d (%s)\n", result, get_msg_for_keyring_result (result));
 	} else {
 		name = gnome_keyring_item_info_get_display_name (info);
 		secret = gnome_keyring_item_info_get_secret (info);
@@ -145,7 +166,7 @@ print_attributes_cb (GnomeKeyringResult result,
 		  gpointer           data)
 {
 	if (result != GNOME_KEYRING_RESULT_OK) {
-		g_print ("error getting item attributes: %d\n", result);
+		g_print ("error getting item attributes: %d (%s)\n", result, get_msg_for_keyring_result (result));
 	} else {
 		print_attributes (attributes);
 	}

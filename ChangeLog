@@ -1,9 +1,16 @@
 2006-04-03  Dan Williams  <dcbw@redhat.com>
 
+	Patch from Dave Malcolm <david@davemalcolm.demon.co.uk>
+
+	* test.c
+	  - More verbose error messages (Bug #141761)
+
+2006-04-03  Dan Williams  <dcbw@redhat.com>
+
 	Patch from Jon Nettleton <jon.nettleton@gmail.com>
 
 	* gnome-keyring.c
-	  - (gnome_keyring_get_info_sync): encode keyring name
+	  - (gnome_keyring_get_info_sync): encode keyring name (Bug #336893)
 
 2006-04-03  Dan Williams  <dcbw@redhat.com>
 
