@@ -1,3 +1,8 @@
+2006-04-03  Claudio Saavedra  <csaavedra@alumnos.utalca.cl>
+
+	* gnome-keyring-ask.c: (run_dialog): Added labels for the entries 
+	(#323269).
+
 2006-03-24  Tommi Vainikainen  <thv@iki.fi>
 
 	* configure.in (ALL_LINGUAS): Added Dzongkha (dz).

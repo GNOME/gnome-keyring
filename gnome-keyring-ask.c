@@ -91,6 +91,8 @@ run_dialog (const char *title,
 	char *notice_text;
 	GtkWidget *entry;
 	GtkWidget *confirm;
+	GtkWidget *label_entry;
+	GtkWidget *label_confirm;
 	gint response;
 	va_list args;
 	const char *text;
@@ -160,12 +162,19 @@ run_dialog (const char *title,
 
 	entry = NULL;
 	if (include_password) {
+		label_entry = gtk_label_new_with_mnemonic (_("_Password:"));
 		entry = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label_entry), 
+					       entry);
 		g_signal_connect_swapped (entry,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
+		gtk_table_attach_defaults (GTK_TABLE (table), 
+					   label_entry,
+					   0, 1, 2, 3);
+		gtk_misc_set_alignment (GTK_MISC (label_entry), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
 				    entry,
 				    1, 2, 2, 3);
@@ -174,12 +183,18 @@ run_dialog (const char *title,
 	confirm = NULL;
 	if (include_confirm) {
 		gtk_table_resize (GTK_TABLE (table),4,2);
+		label_confirm = gtk_label_new_with_mnemonic (_("_Confirm password:"));
 		confirm = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (confirm), FALSE);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label_confirm), confirm);
 		g_signal_connect_swapped (confirm,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
+		gtk_table_attach_defaults (GTK_TABLE (table), 
+				    label_confirm,
+				    0, 1, 3, 4);
+		gtk_misc_set_alignment (GTK_MISC (label_confirm), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
 				    confirm,
 				    1, 2, 3, 4);
