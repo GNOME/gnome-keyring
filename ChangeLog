@@ -1,5 +1,12 @@
 2006-04-03  Dan Williams  <dcbw@redhat.com>
 
+	Patch from Joe Marcus Clarke <marcus@freebsd.org>
+	
+	* gnome-keyring.c
+	  - Implement SCM_CREDS support (#142373)
+
+2006-04-03  Dan Williams  <dcbw@redhat.com>
+
 	Patch from Dave Malcolm <david@davemalcolm.demon.co.uk>
 
 	* test.c
