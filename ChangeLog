@@ -1,3 +1,8 @@
+2006-04-03  Dan Williams  <dcbw@redhat.com>
+
+	* gnome-keyring-daemon-file.c
+	  - (update_keyring_from_disk): fix leak (bug #319053)
+
 2006-04-03  Claudio Saavedra  <csaavedra@alumnos.utalca.cl>
 
 	* gnome-keyring-ask.c: (run_dialog): Added labels for the entries 

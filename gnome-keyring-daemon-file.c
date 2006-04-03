@@ -773,8 +773,9 @@ update_keyring_from_disk (GnomeKeyring *keyring,
 {
 	struct stat statbuf;
 	GString buffer;
-	char *contents;
+	char *contents = NULL;
 	gsize len;
+	gboolean success = FALSE;
 
 	if (keyring->file == NULL) {
 		return TRUE;
@@ -789,19 +790,17 @@ update_keyring_from_disk (GnomeKeyring *keyring,
 	}
 	keyring->file_mtime = statbuf.st_mtime;
 
-
 	if (!g_file_get_contents (keyring->file,
 				  &contents, &len, NULL)) {
 		return FALSE;
 	}
+
 	buffer.str = contents;
 	buffer.len = buffer.allocated_len = len;
+	success = update_keyring_from_data (keyring, &buffer);
+	g_free (contents);
 
-	if (!update_keyring_from_data (keyring, &buffer)) {
-		return FALSE;
-	}
-	
-	return TRUE;
+	return success;
 }
 
 void
