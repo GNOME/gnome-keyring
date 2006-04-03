@@ -1,5 +1,12 @@
 2006-04-03  Dan Williams  <dcbw@redhat.com>
 
+	Patch from Jon Nettleton <jon.nettleton@gmail.com>
+
+	* gnome-keyring.c
+	  - (gnome_keyring_get_info_sync): encode keyring name
+
+2006-04-03  Dan Williams  <dcbw@redhat.com>
+
 	* gnome-keyring-daemon-file.c
 	  - (update_keyring_from_disk): fix leak (bug #319053)
 

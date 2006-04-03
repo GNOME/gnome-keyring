@@ -1083,8 +1083,9 @@ gnome_keyring_get_info_sync (const char        *keyring,
 	
 	*info = NULL;
 
-	if (!gnome_keyring_proto_encode_op_only (send,
-						 GNOME_KEYRING_OP_GET_KEYRING_INFO)) {
+	if (!gnome_keyring_proto_encode_op_string (send,
+						   GNOME_KEYRING_OP_GET_KEYRING_INFO,
+						   keyring)) {
 		g_string_free (send, TRUE);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
