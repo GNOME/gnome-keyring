@@ -171,6 +171,7 @@ main (int argc, char *argv[])
 	gboolean locked;
 	guint32 item_id;
 	
+	g_set_application_name("list-keyrings");
 	loop = g_main_loop_new (NULL, FALSE);
 	
 	g_print ("Keyrings:\n");

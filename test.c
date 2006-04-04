@@ -322,6 +322,7 @@ main (int argc, char *argv[])
 {
 	char arg;
 
+	g_set_application_name("test-keyring");
 	loop = g_main_loop_new (NULL, FALSE);
 	
 	arg = 0;
