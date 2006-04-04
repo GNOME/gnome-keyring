@@ -337,22 +337,27 @@ gnome_keyring_application_ref_new_from_pid (pid_t pid)
 
 	app_ref = g_new0 (GnomeKeyringApplicationRef, 1);
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD__)
 	{
-		char buffer[1024];
+		char *buffer;
 		int len;
-		char *path;
+		char *path = NULL;
 		
-		path = g_strdup_printf ("/proc/%d/exe", pid); 
-		len = readlink (path, buffer, sizeof (buffer));
+#if defined(__linux__)
+		path = g_strdup_printf ("/proc/%d/exe", pid);
+#elif defined(__FreeBSD__)
+		path = g_strdup_printf ("/proc/%d/file", pid);
+#endif
+		buffer = g_file_read_link (path, NULL);
 		g_free (path);
 
+		len = (buffer != NULL) ? strlen (buffer) : 0;
 		if (len > 0) {
 			app_ref->pathname = g_malloc (len + 1);
 			memcpy (app_ref->pathname, buffer, len);
 			app_ref->pathname[len] = 0;
 		}
-		
+		g_free (buffer);
 	}
 #endif
 

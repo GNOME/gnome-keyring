@@ -1,5 +1,11 @@
 2006-04-03  Dan Williams  <dcbw@redhat.com>
 
+	* gnome-keyring-daemon.c
+	    - (gnome_keyring_application_ref_new_from_pid): use g_file_read_link(),
+	    and add code for reading app path on FreeBSD.  (Bug #141323)
+
+2006-04-03  Dan Williams  <dcbw@redhat.com>
+
 	* gnome-keyring-daemon-io.c
 	  gnome-keyring.c
 	    - Updates for FreeBSD / SCM_CREDS support, fix endian
