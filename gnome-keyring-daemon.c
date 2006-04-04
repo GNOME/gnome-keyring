@@ -119,23 +119,20 @@ static void
 init_salt (guchar salt[8])
 {
 	gboolean got_random;
-	int i;
+	int i, fd;
 
 	got_random = FALSE;
-#ifdef __linux__
-	{
-		int fd;
-
-		fd = open ("/dev/random", O_RDONLY);
-		if (fd != -1) {
+	fd = open ("/dev/random", O_RDONLY);
+	if (fd != -1) {
+		struct stat st;
+		/* Make sure it's a character device */
+		if ((fstat (fd, &st) == 0) && S_ISCHR (st.st_mode)) {
 			if (read (fd, salt, 8) == 8) {
 				got_random = TRUE;
 			}
-			close (fd);
 		}
-		
+		close (fd);			
 	}
-#endif
 	if (!got_random) {
 		for (i=0; i < 8; i++) {
 			salt[i] = (int) (256.0*rand()/(RAND_MAX+1.0));
