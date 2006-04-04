@@ -4,6 +4,7 @@
 	    - (init_salt): use fstat() on /dev/random after opening it to
 	    ensure that it's a character device.  Make general rather than just
 	    for Linux, since Solaris and FreeBSD also use this code.
+	    (Bug #141322)
 
 2006-04-03  Dan Williams  <dcbw@redhat.com>
 

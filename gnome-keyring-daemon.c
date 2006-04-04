@@ -133,6 +133,7 @@ init_salt (guchar salt[8])
 		}
 		close (fd);			
 	}
+
 	if (!got_random) {
 		for (i=0; i < 8; i++) {
 			salt[i] = (int) (256.0*rand()/(RAND_MAX+1.0));
