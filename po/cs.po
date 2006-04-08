@@ -1,15 +1,15 @@
 # Czech translation of gnome-keyring
-# Copyright (C) 2003, 2004, 2005 gnome-keyring'S COPYRIGHT HOLDER
-# Copyright (C) 2004, 2005 Miloslav Trmac <mitr@volny.cz>
+# Copyright (C) 2003, 2004, 2005, 2006 gnome-keyring'S COPYRIGHT HOLDER
+# Copyright (C) 2004, 2005, 2006 Miloslav Trmac <mitr@volny.cz>
 # This file is distributed under the same license as the gnome-keyring package.
-# Miloslav Trmac <mitr@volny.cz>, 2003 - 2005.
+# Miloslav Trmac <mitr@volny.cz>, 2003 - 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-04-08 13:31+0200\n"
-"PO-Revision-Date: 2005-11-02 23:09+0100\n"
+"PO-Revision-Date: 2006-04-08 16:41+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,11 +18,11 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:165
 msgid "_Password:"
-msgstr ""
+msgstr "_Heslo:"
 
 #: ../gnome-keyring-ask.c:186
 msgid "_Confirm password:"
-msgstr ""
+msgstr "_Potvrďte heslo:"
 
 #: ../gnome-keyring-ask.c:210
 msgid "Password cannot be blank."
