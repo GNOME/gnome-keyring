@@ -1443,6 +1443,17 @@ gnome_keyring_find_itemsv (GnomeKeyringItemType                  type,
 	return op;
 }
 
+/**
+ * gnome_keyring_find_items_sync:
+ * @type: a #GnomeKeyringItemType
+ * @attributes: a #GnomeKeyringAttributeList
+ * @found: a return location for the found items, must not be %NULL
+ *
+ * Find elements of type #GnomeKeyring by matching attributes and @type.
+ *
+ * Returns: a #GList of #GnomeKeyringFound, free with g_list_free() and
+ * gnome_keyring_found_free()
+ */
 GnomeKeyringResult
 gnome_keyring_find_items_sync (GnomeKeyringItemType        type,
 			       GnomeKeyringAttributeList  *attributes,

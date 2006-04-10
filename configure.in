@@ -25,6 +25,10 @@ AC_TYPE_SIGNAL
 AC_TYPE_SIZE_T
 AC_TYPE_UID_T
 
+GTK_DOC_CHECK
+DISTCHECK_CONFIGURE_FLAGS="--enable-gtk-doc"
+AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
+
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6.0)
 AC_SUBST(GLIB_CFLAGS)
@@ -164,6 +168,7 @@ fi
 AC_OUTPUT([
 Makefile
 po/Makefile.in
+reference/Makefile
 gnome-keyring-1.pc
 gnome-keyring-1-uninstalled.pc
 ])

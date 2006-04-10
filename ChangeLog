@@ -1,3 +1,17 @@
+2006-04-11  Sven Herzberg  <herzi@gnome-de.org>
+
+	reviewed by: Alex Larsson
+
+	* Makefile.am: added the reference subdirectory
+	* autogen.sh: enable gtk-doc for developer builds (necessary for dist)
+	* configure.in: check for gtk-doc, set distcheck flags, build the
+	Makefile
+	* gnome-keyring.c: documented gnome_keyring_find_items_sync()
+	* reference/Makefile.am: documentation build system
+	* reference/gnome-keyring-docs.sgml: rough documentation framework
+	* reference/gnome-keyring-sections.txt: some documentation
+	categorization (needs to be further split)
+
 2006-04-03  Dan Williams  <dcbw@redhat.com>
 
 	* gnome-keyring-daemon.c

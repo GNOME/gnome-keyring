@@ -1,5 +1,6 @@
 SUBDIRS = \
-	po
+	po \
+	reference
 
 libgnomekeyringincludedir = $(includedir)/gnome-keyring-1/
 
