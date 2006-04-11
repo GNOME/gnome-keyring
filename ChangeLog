@@ -1,5 +1,10 @@
 2006-04-11  Sven Herzberg  <herzi@gnome-de.org>
 
+	* autogen.sh: accept command line parameters
+	* reference/tmpl/empty.sgml: satisfy stupid make dependency
+
+2006-04-11  Sven Herzberg  <herzi@gnome-de.org>
+
 	reviewed by: Alex Larsson
 
 	* Makefile.am: added the reference subdirectory
