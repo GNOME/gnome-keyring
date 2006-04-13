@@ -30,3 +30,4 @@ gnome-keyring-daemon
 list-keyrings
 test-keyring
 gnome-keyring-1.pc
+gtk-doc.make

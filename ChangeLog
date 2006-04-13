@@ -1,3 +1,9 @@
+2006-04-13  Sven Herzberg  <herzi@gnome-de.org>
+
+	* .cvsignore,
+	* reference/.cvsignore,
+	* reference/tmpl/.cvsignore: silence
+
 2006-04-11  Sven Herzberg  <herzi@gnome-de.org>
 
 	* autogen.sh: accept command line parameters

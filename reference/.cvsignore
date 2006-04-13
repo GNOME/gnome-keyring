@@ -1,0 +1,14 @@
+Makefile
+Makefile.in
+gnome-keyring.args
+gnome-keyring.hierarchy
+gnome-keyring.interfaces
+gnome-keyring.prerequisites
+gnome-keyring.signals
+gnome-keyring-decl.txt
+gnome-keyring-decl-list.txt
+gnome-keyring-overrides.txt
+gnome-keyring-undocumented.txt
+gnome-keyring-unused.txt
+*.stamp
+xml
