@@ -1155,7 +1155,8 @@ op_create_item_collect (GString *packet,
 	
 	if (!gnome_keyring_proto_decode_create_item (packet,
 						     &keyring_name, NULL,
-						     &attributes, NULL, &type,
+						     &attributes, NULL,
+						     (GnomeKeyringItemType *) &type,
 						     &update_if_exists)) {
 		return FALSE;
 	}
@@ -1235,7 +1236,7 @@ op_create_item_execute (GString *packet,
 						     &display_name,
 						     &attributes,
 						     &secret,
-						     &type,
+						     (GnomeKeyringItemType *) &type,
 						     &update_if_exists)) {
 		return FALSE;
 	}
@@ -1753,7 +1754,7 @@ op_set_item_info_execute (GString *packet,
 	if (!gnome_keyring_proto_decode_set_item_info (packet,
 						       &keyring_name,
 						       &item_id,
-						       &type,
+						       (GnomeKeyringItemType *) &type,
 						       &item_name,
 						       &secret)) {
 		return FALSE;
