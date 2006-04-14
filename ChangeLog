@@ -1,6 +1,14 @@
 2006-04-14  Dan Williams  <dcbw@redhat.com>
 
 	* configure.in
+		- Check for getpeerucred
+
+	* gnome-keyring-daemon-io.c
+		- Use getpeerucred() if we have it (Solaris)
+
+2006-04-14  Dan Williams  <dcbw@redhat.com>
+
+	* configure.in
 		- Check for /dev/random
 
 	* gnome-keyring-daemon.c

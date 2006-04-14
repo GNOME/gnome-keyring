@@ -32,6 +32,9 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/uio.h>
+#if defined(HAVE_GETPEERUCRED)
+#include <ucred.h>
+#endif
 
 #include "gnome-keyring.h"
 #include "gnome-keyring-private.h"
@@ -174,6 +177,17 @@ read_unix_socket_credentials (int fd,
 		cred = (struct cmsgcred *) CMSG_DATA (&cmsg);
 		*pid = cred->cmcred_pid;
 		*uid = cred->cmcred_euid;
+#elif defined(HAVE_GETPEERUCRED)
+		ucred_t *uc = NULL;
+
+		if (getpeerucred (fd, &uc) == 0) {
+			*pid = ucred_getpid (uc);
+			*uid = ucred_geteuid (uc);
+			ucred_free (uc);
+		} else {
+			g_warning ("getpeerucred() failed: %s", strerror (errno));
+			return FALSE;
+		}
 #else /* !SO_PEERCRED && !HAVE_CMSGCRED */
 		g_warning ("Socket credentials not supported on this OS\n");
 		return FALSE;
