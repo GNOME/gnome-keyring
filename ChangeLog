@@ -1,5 +1,12 @@
 2006-04-14  Dan Williams  <dcbw@redhat.com>
 
+	* gnome-keyring-daemon-io.c
+		- (gnome_keyring_client_state_machine): if we get a null string
+		as the GNOME_CLIENT_STATE_READ_DISPLAYNAME for some reason,
+		ignore the request.  Part of patch from Bug #156860
+
+2006-04-14  Dan Williams  <dcbw@redhat.com>
+
 	* configure.in
 		- Check for getpeerucred
 

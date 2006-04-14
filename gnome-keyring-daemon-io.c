@@ -385,6 +385,10 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 				gnome_keyring_client_free (client);
 				return;
 			}
+			if (!str) {
+				gnome_keyring_client_free (client);
+				return;
+			}
 			debug_print (("got name: %s\n", str));
 			client->app_ref->display_name = str;
 			client->input_pos = 0;
