@@ -120,6 +120,10 @@ if test $have_socket = no; then
 	  break])
   done
 fi
+
+# Check for /dev/random
+#
+AC_CHECK_FILE(/dev/random, AC_DEFINE(HAVE_DEVRANDOM,1,[Have /dev/random]))
 		
 dnl ==========================================================================
 

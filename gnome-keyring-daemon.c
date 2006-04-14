@@ -122,6 +122,7 @@ init_salt (guchar salt[8])
 	int i, fd;
 
 	got_random = FALSE;
+#ifdef HAVE_DEVRANDOM
 	fd = open ("/dev/random", O_RDONLY);
 	if (fd != -1) {
 		struct stat st;
@@ -133,6 +134,7 @@ init_salt (guchar salt[8])
 		}
 		close (fd);			
 	}
+#endif
 
 	if (!got_random) {
 		for (i=0; i < 8; i++) {
