@@ -40,7 +40,7 @@ GETTEXT_PACKAGE=gnome-keyring
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [The gettext domain name])
 AC_SUBST(GETTEXT_PACKAGE)
 
-ALL_LINGUAS="ar az bg bn bs ca cs cy da de dz el en_CA en_GB es et eu fa fi fr gl hr hu id it is ja ka ko lt mn ms nb ne nl no pa pl pt pt_BR ro ru rw sk sq sr sr@Latn sv ta th tr uk xh zh_CN zh_HK zh_TW"
+ALL_LINGUAS="ar az bg bn bs ca cs cy da de dz el en_CA en_GB es et eu fa fi fr gl hr hu id it is ja ka ko lt mn ms nb ne nl pa pl pt pt_BR ro ru rw sk sq sr sr@Latn sv ta th tr uk xh zh_CN zh_HK zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 dnl check for socklen_t
