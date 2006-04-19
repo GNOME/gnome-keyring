@@ -1,5 +1,11 @@
 2006-04-19  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-daemon.c: (finish_ask_io):
+	Save keyring when ACL is added. (#326221)
+	Patch from Jon Nettleton
+
+2006-04-19  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-daemon-file.c (get_keyring_dir):
 	Create ~/.gnome2 if needed. (#143892)
 

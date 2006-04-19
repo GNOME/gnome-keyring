@@ -2306,12 +2306,14 @@ finish_ask_io (GnomeKeyringAsk *ask,
 			break;
 		case ASK_ITEM_READ_WRITE_ACCESS:
 			item = ask->current_request->item;
+			keyring = ask->current_request->item->keyring;
 			g_assert (item != NULL);
 			if (response == GNOME_KEYRING_ASK_RESPONSE_ALLOW_FOREVER) {
 				add_item_acl (item, ask->app_ref,
 					      GNOME_KEYRING_ACCESS_READ |
 					      GNOME_KEYRING_ACCESS_WRITE |
 					      GNOME_KEYRING_ACCESS_REMOVE);
+				save_keyring_to_disk (keyring);
 			}
 			ask->current_request->granted = TRUE;
 			/* ok */
