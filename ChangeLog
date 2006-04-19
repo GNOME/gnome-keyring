@@ -1,5 +1,14 @@
 2006-04-19  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-daemon.c: 
+	* gnome-keyring-proto.h:
+	* gnome-keyring.[ch]:
+	Add gnome_keyring_daemon_set_display_sync that lets you
+	set the DISPLAY if not already set. (#333653)
+	Patch from Jon Nettleton
+
+2006-04-19  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-daemon.c: (op_delete_item_execute):
 	Fix NULL check order. (#338594)
 	Patch from Pascal Terjan

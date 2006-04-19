@@ -1348,6 +1348,38 @@ gnome_keyring_list_item_ids_sync (const char  *keyring,
 	return res;
 }
 
+GnomeKeyringResult
+gnome_keyring_daemon_set_display_sync (const char *display)
+{
+	GString *send, *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+
+	if (!gnome_keyring_proto_encode_op_string (send,
+						   GNOME_KEYRING_OP_SET_DAEMON_DISPLAY,
+						   display)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+	if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+
+	return res;
+}
+
 void
 gnome_keyring_info_set_lock_on_idle (GnomeKeyringInfo *keyring_info,
 				     gboolean          value)

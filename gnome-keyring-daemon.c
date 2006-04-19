@@ -1963,6 +1963,41 @@ out:
 	return TRUE;
 }
 
+static gboolean
+op_set_daemon_display_execute (GString *packet,
+			       GString *result,
+			       GnomeKeyringApplicationRef *app_ref,
+			       GList *access_requests)
+{
+       char *display;
+       GnomeKeyringOpCode opcode;
+
+       if (!gnome_keyring_proto_decode_op_string (packet,
+						  &opcode,
+						  &display)) {
+               return FALSE;
+       }
+
+       if ( display == NULL ) {
+               gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+               goto out;
+       }
+
+       if (!have_display && (g_strrstr (display, ":") != NULL)) {
+               g_setenv ( "DISPLAY", display, TRUE );
+               have_display = TRUE;
+       } else {
+               gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+               goto out;
+       }
+
+       gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+
+out:
+    g_free (display);
+       return TRUE;
+}
+
 static int
 unmatched_attributes (GnomeKeyringAttributeList *attributes,
 		      GnomeKeyringAttributeList *matching)
@@ -2636,6 +2671,7 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ op_get_item_info_or_attributes_collect, op_get_item_acl_execute}, /* GET_ITEM_ACL */
 	{ op_set_item_info_or_attributes_collect, op_set_item_acl_execute}, /* SET_ITEM_ACL */
 	{ op_change_keyring_password_collect, op_change_keyring_password_execute }, /*CHANGE_KEYRING_PASSWORD*/
+ 	{ NULL, op_set_daemon_display_execute}, /* SET_DAEMON_DISPLAY */
 };
 
 static RETSIGTYPE

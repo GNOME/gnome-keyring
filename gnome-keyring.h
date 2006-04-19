@@ -204,6 +204,8 @@ gpointer           gnome_keyring_list_item_ids      (const char                 
 GnomeKeyringResult gnome_keyring_list_item_ids_sync (const char                                   *keyring,
 						     GList                                       **ids);
 
+GnomeKeyringResult gnome_keyring_daemon_set_display_sync (const char *display);
+
 
 void              gnome_keyring_info_free             (GnomeKeyringInfo *keyring_info);
 GnomeKeyringInfo *gnome_keyring_info_copy             (GnomeKeyringInfo *keyring_info);
