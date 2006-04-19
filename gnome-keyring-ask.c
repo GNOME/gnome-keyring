@@ -73,6 +73,72 @@ enum {
 	APPLICATION_NAME_UNKNOWN
 };
 
+static void
+on_password_changed (GtkEditable     *editable,
+		     gpointer         user_data)
+{
+	const char *password;
+	int length;
+	int i;
+	int upper, lower, digit, misc;
+	gdouble pwstrength;
+
+	password = gtk_entry_get_text (GTK_ENTRY (editable));
+
+	/*
+	 * This code is based on the Master Password dialog in Firefox
+	 * (pref-masterpass.js)
+	 * Original code triple-licensed under the MPL, GPL, and LGPL
+	 * so is license-compatible with this file
+	 */
+
+	length = strlen (password);
+	upper = 0;
+	lower = 0;
+	digit = 0;
+	misc = 0;
+
+	for ( i = 0; i < length ; i++) {
+		if (g_ascii_isdigit (password[i])) {
+			digit++;
+		} else if (g_ascii_islower (password[i])) {
+			lower++;
+		} else if (g_ascii_isupper (password[i])) {
+			upper++;
+		} else {
+			misc++;
+		}
+	}
+
+	if (length > 5) {
+		length = 5;
+	}
+	
+	if (digit > 3) {
+		digit = 3;
+	}
+	
+	if (upper > 3) {
+		upper = 3;
+	}
+	
+	if (misc > 3) {
+		misc = 3;
+	}
+	
+	pwstrength = ((length*0.1)-0.2) + (digit*0.1) + (misc*0.15) + (upper*0.1);
+
+	if (pwstrength < 0.0) {
+		pwstrength = 0.0;
+	}
+
+	if (pwstrength > 1.0) {
+		pwstrength = 1.0;
+	}
+
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (user_data), pwstrength);
+}
+
 static gint
 run_dialog (const char *title,
 	    const char *primary,
@@ -103,9 +169,12 @@ run_dialog (const char *title,
 	gint response_id;
 	GtkWidget *table;
 	GtkWidget *image;
+	GtkWidget *strength_bar;
+	GtkWidget *strength_bar_text;
 	const char *password;
 	const char *confirmation;
 	const char *original;
+	int row;
 
 	dialog = gtk_dialog_new_with_buttons (title , NULL, 0, NULL, NULL);
 	gtk_window_set_icon_name(GTK_WINDOW(dialog), "stock_lock");
@@ -157,13 +226,15 @@ run_dialog (const char *title,
 	gtk_label_set_justify (message_widget,
 			       GTK_JUSTIFY_LEFT);
 	gtk_table_attach_defaults (GTK_TABLE (table), 
-			    GTK_WIDGET (message_widget),
-			    1, 2, 0, 1);
+				   GTK_WIDGET (message_widget),
+				   1, 2, 0, 1);
 
 	notice = GTK_LABEL (gtk_label_new (NULL));
 	gtk_table_attach_defaults (GTK_TABLE (table), 
 			    GTK_WIDGET (notice),
 			    0, 2, 1, 2);
+
+	row = 2;
 
 	old = NULL;
 	if (include_original) {
@@ -178,11 +249,12 @@ run_dialog (const char *title,
 					  dialog);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
 					   label_old,
-					   0, 1, 2, 3);
+					   0, 1, row, row+1);
 		gtk_misc_set_alignment (GTK_MISC (label_old), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
-				    old,
-				    1, 2, 2, 3);
+					   old,
+					   1, 2, row, row+1);
+		row++;
 	}
 	
 	entry = NULL;
@@ -198,11 +270,12 @@ run_dialog (const char *title,
 					  dialog);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
 					   label_entry,
-					   0, 1, 3, 4);
+					   0, 1, row, row+1);
 		gtk_misc_set_alignment (GTK_MISC (label_entry), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
-				    entry,
-				    1, 2, 3, 4);
+					   entry,
+					   1, 2, row, row+1);
+		row++;
 	}
 
 	confirm = NULL;
@@ -217,12 +290,33 @@ run_dialog (const char *title,
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
-				    label_confirm,
-				    0, 1, 4, 5);
+					   label_confirm,
+					   0, 1, row, row+1);
 		gtk_misc_set_alignment (GTK_MISC (label_confirm), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
-				    confirm,
-				    1, 2, 4, 5);
+					   confirm,
+					   1, 2, row, row+1);
+		row++;
+
+		/* Strength bar: */
+		
+		strength_bar_text = gtk_label_new (_("<span weight=\"bold\">Password strength meter:</span>"));
+		gtk_label_set_use_markup (GTK_LABEL (strength_bar_text), TRUE);
+		gtk_misc_set_alignment (GTK_MISC (strength_bar_text), 0.0, 0.5);
+		gtk_label_set_justify (GTK_LABEL (strength_bar_text),
+				       GTK_JUSTIFY_LEFT);
+		gtk_table_attach_defaults (GTK_TABLE (table), 
+					   strength_bar_text,
+					   0, 1, row, row+1);
+		
+		strength_bar = gtk_progress_bar_new ();
+		g_signal_connect ((gpointer) entry, "changed",
+				  G_CALLBACK (on_password_changed),
+				  strength_bar);
+		gtk_table_attach_defaults (GTK_TABLE (table), 
+					   strength_bar,
+					   1, 2, row, row+1);
+		row++;
 	}
 
  retry:

@@ -1,5 +1,10 @@
 2006-04-19  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-ask.c:
+	Add password strength meter. (#166504)
+	Patch from Jorge Bernal
+
+2006-04-19  Alexander Larsson  <alexl@redhat.com>
 	* gnome-keyring-daemon.c: (finish_ask_io):
 	Save keyring when ACL is added. (#326221)
 	Patch from Jon Nettleton
