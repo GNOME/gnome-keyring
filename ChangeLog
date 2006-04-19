@@ -1,3 +1,10 @@
+2006-04-19  Alexander Larsson  <alexl@redhat.com>
+
+	* MAINTAINERS:
+	Added file
+
+=== Branched for 2.14 work on gnome-2-14 branch ==
+
 2006-04-17  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Remove obsolete entry for no_NO
