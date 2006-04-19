@@ -158,10 +158,16 @@ verify_decrypted_buffer (GString *buffer)
 static char *
 get_keyring_dir (void)
 {
-	char *dir;
+	char *dir, *gnome2_dir;
 	
 	dir = g_build_filename (g_get_home_dir (), ".gnome2/keyrings", NULL);
 	if (!g_file_test (dir, G_FILE_TEST_IS_DIR)) {
+		gnome2_dir = g_build_filename (g_get_home_dir (), ".gnome2", NULL);
+		if (!g_file_test (gnome2_dir, G_FILE_TEST_IS_DIR)) {
+			mkdir (gnome2_dir, S_IRWXU);
+		}
+		g_free (gnome2_dir);
+		
 		if (mkdir (dir, S_IRWXU) < 0) {
 			g_warning ("unable to create keyring dir");
 		}
