@@ -1087,6 +1087,65 @@ gnome_keyring_delete_sync (const char *keyring)
         return res;
 }
 
+gpointer
+gnome_keyring_change_password (const char                                  *keyring,
+		      const char                                  *original,
+		      const char                                  *password,
+		      GnomeKeyringOperationDoneCallback            callback,
+		      gpointer                                     data,
+		      GDestroyNotify                               destroy_data)
+{
+	GnomeKeyringOperation *op;
+	
+	op = start_operation (callback, CALLBACK_DONE, data, destroy_data);
+	if (op->state == STATE_FAILED) {
+		return op;
+	}
+	
+	if (!gnome_keyring_proto_encode_op_string_string_string (op->send_buffer,
+							  GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD,
+							  keyring, original, password)) {
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+	}
+
+	op->reply_handler = gnome_keyring_standard_reply;
+	
+	return op;
+}
+
+GnomeKeyringResult
+gnome_keyring_change_password_sync (const char *keyring_name,
+			   const char* original, const char *password)
+{
+	GString *send, *receive;
+	GnomeKeyringResult res;
+	
+	send = g_string_new (NULL);
+	
+	if (!gnome_keyring_proto_encode_op_string_string_string (send,
+							  GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD,
+							  keyring_name, original, password)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+ 	receive = g_string_new (NULL);
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+
+	if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+
+	return res;
+}
+
 static void
 gnome_keyring_get_keyring_info_reply (GnomeKeyringOperation *op)
 {

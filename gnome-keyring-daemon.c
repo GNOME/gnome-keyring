@@ -50,6 +50,8 @@ enum AskType {
 	ASK_KEYRING_PASSWORD,
 	ASK_ITEM_READ_WRITE_ACCESS,
 	ASK_NEW_KEYRING_PASSWORD,
+	ASK_ORIGINAL_CHANGE_KEYRING_PASSWORD,
+	ASK_CHANGE_KEYRING_PASSWORD,
 	ASK_DEFAULT_KEYRING
 };
 
@@ -570,6 +572,21 @@ access_request_for_new_keyring_password (const char *keyring_name)
 }
 
 static GnomeKeyringAccessRequest *
+access_request_for_change_keyring_password (const char *keyring_name,
+					    gboolean need_original)
+{
+	GnomeKeyringAccessRequest *access_request;
+	access_request = g_new0 (GnomeKeyringAccessRequest, 1);
+	if (need_original) {
+		access_request->request_type = GNOME_KEYRING_ACCESS_REQUEST_ORIGINAL_CHANGE_KEYRING_PASSWORD;
+	} else {
+		access_request->request_type = GNOME_KEYRING_ACCESS_REQUEST_CHANGE_KEYRING_PASSWORD;
+	}
+	access_request->new_keyring = g_strdup (keyring_name);
+	return access_request;
+}
+
+static GnomeKeyringAccessRequest *
 access_request_default_keyring (void)
 {
 	GnomeKeyringAccessRequest *access_request;
@@ -616,6 +633,19 @@ static GnomeKeyringItem *
 find_item (GnomeKeyring *keyring, guint32 id)
 {
 	return find_item_in_list (keyring->items, id);
+}
+
+
+static GnomeKeyringResult
+change_keyring_password (GnomeKeyring *keyring,  const char *password)
+{
+	if (keyring->locked) {
+		return GNOME_KEYRING_RESULT_DENIED;
+	} else { 
+		keyring->password = g_strdup (password);
+		save_keyring_to_disk (keyring);
+		return GNOME_KEYRING_RESULT_OK;
+	}
 }
 
 static GnomeKeyringResult
@@ -930,6 +960,7 @@ create_new_keyring (const char *keyring_name, const char *password)
 
 }
 
+
 static gboolean
 op_create_keyring_execute (GString *packet,
 			   GString *result,
@@ -1055,6 +1086,130 @@ op_delete_keyring_execute (GString *packet,
 	return TRUE;
 }
 
+static gboolean
+op_change_keyring_password_collect (GString *packet,
+				    GList **access_requests_out)
+{
+	GList *access_requests;
+	GnomeKeyringOpCode opcode;
+	char *keyring_name, *original, *password;
+	GnomeKeyring *keyring;
+	
+	if (!gnome_keyring_proto_decode_op_string_string_string (packet,
+							  &opcode,
+							  &keyring_name,
+							  &original,
+							  &password)) {
+		return FALSE;
+	}
+
+	access_requests = NULL;
+	
+	if (keyring_name == NULL) {
+		keyring_name = "default";
+	}
+	
+	keyring = find_keyring (keyring_name);
+	if (keyring == NULL) {
+		/* don't exist */
+		return FALSE;
+	}
+	
+	if (password == NULL) {
+		if (original == NULL ) {
+			/* Prompt for original and Let user pick password */
+			access_requests =
+				g_list_prepend (access_requests,
+						access_request_for_change_keyring_password (keyring_name, TRUE));
+		} else {
+			/* Use original given to us Let user pick password */
+			access_requests =
+				g_list_prepend (access_requests,
+						access_request_for_change_keyring_password (keyring_name, FALSE));
+		}
+	}
+
+	*access_requests_out = access_requests;
+	
+	g_free (keyring_name);
+	gnome_keyring_free_password (original);
+	gnome_keyring_free_password (password);
+	
+	return TRUE;
+}
+
+static gboolean
+op_change_keyring_password_execute (GString *packet,
+			   GString *result,
+			   GnomeKeyringApplicationRef *app_ref,
+			   GList *access_requests)
+{
+	char *keyring_name, *original, *password;
+	GnomeKeyring *keyring;
+	GnomeKeyringOpCode opcode;
+	GnomeKeyringAccessRequest *req;
+	
+	if (!gnome_keyring_proto_decode_op_string_string_string (packet,
+							  &opcode,
+							  &keyring_name,
+							  &original,
+							  &password)) {
+		return FALSE;
+	}
+	g_assert (opcode == GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD);
+	
+	if (keyring_name == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		goto out;
+	}
+	
+	keyring = find_keyring (keyring_name);
+	
+	if (keyring == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+	
+	if (original == NULL) {
+		if (access_requests != NULL) {
+			req = access_requests->data;
+			original = g_strdup (req->original);
+		}
+	}
+
+	if (original ==NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		goto out;
+	}
+	
+	lock_keyring(keyring);
+	
+	if ( unlock_keyring(keyring, original) != GNOME_KEYRING_RESULT_OK ) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+	
+	if (password == NULL) {
+		if (access_requests != NULL) {
+			req = access_requests->data;
+			password = g_strdup (req->password);
+		}
+	}
+	
+	if (password == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		goto out;
+	}
+	
+	gnome_keyring_proto_add_uint32 (result, change_keyring_password (keyring, password));
+	
+ out:
+	g_free (keyring_name);
+	gnome_keyring_free_password (original);
+	gnome_keyring_free_password (password);
+	
+	return TRUE;
+}
 
 static gboolean
 op_list_items_collect (GString *packet,
@@ -2039,6 +2194,7 @@ finish_ask_io (GnomeKeyringAsk *ask,
 	gchar **lines;
 	int response;
 	char *str;
+	char *str1;
 	GnomeKeyring *keyring;
 	GnomeKeyringItem *item;
 
@@ -2048,11 +2204,19 @@ finish_ask_io (GnomeKeyringAsk *ask,
 	/* default for failed requests */
 	response = GNOME_KEYRING_ASK_RESPONSE_FAILURE;
 	str = NULL;
+	str1 = NULL;
 
 	if (!failed) {
 		lines = g_strsplit (ask->buffer->str, "\n", 3);
-		response = atol (lines[0]);
-		str = g_strdup (lines[1]);
+		if (lines[0]) {
+			response = atol (lines[0]);
+			if (lines[1]) {
+				str = g_strdup (lines[1]);
+				if (lines[2]) {
+					str1 = g_strdup (lines[2]);
+				}
+			} 
+		}
 		g_strfreev (lines);
 	}
 
@@ -2061,10 +2225,9 @@ finish_ask_io (GnomeKeyringAsk *ask,
 			ask->access_requests = g_list_remove (ask->access_requests, ask->current_request);
 			gnome_keyring_access_request_free (ask->current_request);
 	} else {
-		
 		switch (ask->current_ask_type) {
 		case ASK_DEFAULT_KEYRING:
-			if (strlen (str) > 0) {
+			if (str && strlen (str) > 0) {
 				keyring = create_new_keyring ("default", str);
 				if (keyring != NULL) {
 					default_keyring = keyring;
@@ -2074,7 +2237,20 @@ finish_ask_io (GnomeKeyringAsk *ask,
 			}
 			break;
 		case ASK_NEW_KEYRING_PASSWORD:
-			if (strlen (str) > 0) {
+			if (str && strlen (str) > 0) {
+				ask->current_request->password = g_strdup (str);
+				ask->current_request->granted = TRUE;
+			}
+			break;
+		case ASK_ORIGINAL_CHANGE_KEYRING_PASSWORD:
+			if (str && strlen (str) > 0 && str1 && strlen (str1) > 0) {
+				ask->current_request->original = g_strdup (str);
+				ask->current_request->password = g_strdup (str1);
+				ask->current_request->granted = TRUE;
+			}
+			break;
+		case ASK_CHANGE_KEYRING_PASSWORD:
+			if (str && strlen (str) > 0) {
 				ask->current_request->password = g_strdup (str);
 				ask->current_request->granted = TRUE;
 			}
@@ -2199,6 +2375,10 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 		argv[1] = "-k";
 	} else if (ask_type == ASK_NEW_KEYRING_PASSWORD) {
 		argv[1] = "-n";
+	} else if (ask_type == ASK_CHANGE_KEYRING_PASSWORD) {
+		argv[1] = "-c";
+	} else if (ask_type == ASK_ORIGINAL_CHANGE_KEYRING_PASSWORD) {
+		argv[1] = "-o";
 	} else if (ask_type == ASK_ITEM_READ_WRITE_ACCESS) {
 		argv[1] = "-i";
 	} else if (ask_type == ASK_DEFAULT_KEYRING) {
@@ -2270,6 +2450,24 @@ schedule_ask (GnomeKeyringAsk *ask)
 		break;
 	case GNOME_KEYRING_ACCESS_REQUEST_NEW_KEYRING_PASSWORD:
 		if (!launch_ask_helper (ask, ASK_NEW_KEYRING_PASSWORD)) {
+			/* no way to allow request, denying */
+			ask->access_requests = g_list_remove (ask->access_requests, request);
+			gnome_keyring_access_request_free (request);
+			/* iterate */
+			gnome_keyring_ask_iterate (ask);
+		}
+		break;	
+	case GNOME_KEYRING_ACCESS_REQUEST_ORIGINAL_CHANGE_KEYRING_PASSWORD:
+		if (!launch_ask_helper (ask, ASK_ORIGINAL_CHANGE_KEYRING_PASSWORD)) {
+			/* no way to allow request, denying */
+			ask->access_requests = g_list_remove (ask->access_requests, request);
+			gnome_keyring_access_request_free (request);
+			/* iterate */
+			gnome_keyring_ask_iterate (ask);
+		}
+		break;
+	case GNOME_KEYRING_ACCESS_REQUEST_CHANGE_KEYRING_PASSWORD:
+		if (!launch_ask_helper (ask, ASK_CHANGE_KEYRING_PASSWORD)) {
 			/* no way to allow request, denying */
 			ask->access_requests = g_list_remove (ask->access_requests, request);
 			gnome_keyring_access_request_free (request);
@@ -2437,6 +2635,7 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ op_set_item_info_or_attributes_collect, op_set_item_attributes_execute}, /* SET_ITEM_ATTRIBUTES */
 	{ op_get_item_info_or_attributes_collect, op_get_item_acl_execute}, /* GET_ITEM_ACL */
 	{ op_set_item_info_or_attributes_collect, op_set_item_acl_execute}, /* SET_ITEM_ACL */
+	{ op_change_keyring_password_collect, op_change_keyring_password_execute }, /*CHANGE_KEYRING_PASSWORD*/
 };
 
 static RETSIGTYPE

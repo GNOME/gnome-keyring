@@ -175,6 +175,15 @@ gpointer           gnome_keyring_delete             (const char                 
 						     gpointer                                      data,
 						     GDestroyNotify                                destroy_data);
 GnomeKeyringResult gnome_keyring_delete_sync        (const char                                   *keyring);
+gpointer           gnome_keyring_change_password             (const char                                   *keyring,
+						     const char                                   *original,
+						     const char                                   *password,
+						     GnomeKeyringOperationDoneCallback             callback,
+						     gpointer                                      data,
+						     GDestroyNotify                                destroy_data);
+GnomeKeyringResult gnome_keyring_change_password_sync        (const char                                   *keyring,
+							 const char								   *original,
+						     const char                                   *password);
 gpointer           gnome_keyring_get_info           (const char                                   *keyring,
 						     GnomeKeyringOperationGetKeyringInfoCallback   callback,
 						     gpointer                                      data,

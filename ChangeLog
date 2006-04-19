@@ -1,5 +1,17 @@
 2006-04-19  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-ask.c:
+	* gnome-keyring-daemon.c:
+	* gnome-keyring-daemon.h:
+	* gnome-keyring-proto.c:
+	* gnome-keyring-proto.h:
+	* gnome-keyring.c:
+	* gnome-keyring.h:
+	Allow to change the password of a keyring.
+	Patch from Jon Nettleton
+
+2006-04-19  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Update version to 0.5.0
 

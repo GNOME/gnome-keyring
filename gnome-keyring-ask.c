@@ -79,7 +79,9 @@ run_dialog (const char *title,
 	    const char *secondary,
 	    gboolean include_password,
 	    gboolean include_confirm,
+	    gboolean include_original,
 	    char **password_out,
+	    char **original_out,
 	    guint default_response,
 	    const gchar *first_button_text,
 	    ...)
@@ -89,8 +91,10 @@ run_dialog (const char *title,
 	GtkLabel *notice;
 	char *message;
 	char *notice_text;
+	GtkWidget *old;
 	GtkWidget *entry;
 	GtkWidget *confirm;
+	GtkWidget *label_old;
 	GtkWidget *label_entry;
 	GtkWidget *label_confirm;
 	gint response;
@@ -101,6 +105,7 @@ run_dialog (const char *title,
 	GtkWidget *image;
 	const char *password;
 	const char *confirmation;
+	const char *original;
 
 	dialog = gtk_dialog_new_with_buttons (title , NULL, 0, NULL, NULL);
 	gtk_window_set_icon_name(GTK_WINDOW(dialog), "stock_lock");
@@ -160,6 +165,26 @@ run_dialog (const char *title,
 			    GTK_WIDGET (notice),
 			    0, 2, 1, 2);
 
+	old = NULL;
+	if (include_original) {
+		label_old = gtk_label_new_with_mnemonic (_("_Old password:"));
+		old = gtk_entry_new ();
+		gtk_entry_set_visibility (GTK_ENTRY (old), FALSE);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label_old), 
+					       old);
+		g_signal_connect_swapped (old,
+					  "activate",
+					  G_CALLBACK (gtk_window_activate_default),
+					  dialog);
+		gtk_table_attach_defaults (GTK_TABLE (table), 
+					   label_old,
+					   0, 1, 2, 3);
+		gtk_misc_set_alignment (GTK_MISC (label_old), 0.0, 0.5);
+		gtk_table_attach_defaults (GTK_TABLE (table), 
+				    old,
+				    1, 2, 2, 3);
+	}
+	
 	entry = NULL;
 	if (include_password) {
 		label_entry = gtk_label_new_with_mnemonic (_("_Password:"));
@@ -173,17 +198,17 @@ run_dialog (const char *title,
 					  dialog);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
 					   label_entry,
-					   0, 1, 2, 3);
+					   0, 1, 3, 4);
 		gtk_misc_set_alignment (GTK_MISC (label_entry), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
 				    entry,
-				    1, 2, 2, 3);
+				    1, 2, 3, 4);
 	}
 
 	confirm = NULL;
 	if (include_confirm) {
 		gtk_table_resize (GTK_TABLE (table),4,2);
-		label_confirm = gtk_label_new_with_mnemonic (_("_Confirm password:"));
+		label_confirm = gtk_label_new_with_mnemonic (_("_Confirm new password:"));
 		confirm = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (confirm), FALSE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label_confirm), confirm);
@@ -193,16 +218,27 @@ run_dialog (const char *title,
 					  dialog);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
 				    label_confirm,
-				    0, 1, 3, 4);
+				    0, 1, 4, 5);
 		gtk_misc_set_alignment (GTK_MISC (label_confirm), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (table), 
 				    confirm,
-				    1, 2, 3, 4);
+				    1, 2, 4, 5);
 	}
 
  retry:
 	gtk_widget_show_all (dialog);
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
+	
+	if (include_original && old !=NULL && response == GTK_RESPONSE_OK) {
+		original = gtk_entry_get_text (GTK_ENTRY (old));
+		if (*original == 0) {
+			notice_text = create_notice (_("Old password cannot be blank."));
+			gtk_label_set_markup (notice,  notice_text);
+			g_free (notice_text);			
+			goto retry;
+		}
+		*original_out = g_strdup (original);
+	}
 
 	if (include_password && entry != NULL && response == GTK_RESPONSE_OK) {
 		password = gtk_entry_get_text (GTK_ENTRY (entry));
@@ -344,7 +380,7 @@ ask_for_keyring_password (void)
 	response = run_dialog (_("Unlock Keyring"),
 			       primary,
 			       message,
-			       TRUE, FALSE, &password,
+			       TRUE, FALSE, FALSE, &password, NULL,
 			       GTK_RESPONSE_OK,
 			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -428,7 +464,7 @@ ask_for_new_keyring_password (void)
 	response = run_dialog (_("New Keyring Password"),
 			       _("Choose password for new keyring"),
 			       message,
-			       TRUE, TRUE, &password,
+			       TRUE, TRUE, FALSE, &password, NULL,
 			       GTK_RESPONSE_OK,
 			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -446,6 +482,103 @@ ask_for_new_keyring_password (void)
 		g_free (password);
 	} else 
 		printf ("%d\n\n", response);
+}
+
+static void
+ask_for_change_keyring_password (gboolean need_original)
+{
+	char *message;
+	char *title;
+	gint response;
+	int app;
+	int keyring;
+	char *password;
+	char *original;
+	
+	app = get_app_information ();
+	if (env_keyring_name == NULL) {
+		env_keyring_name = "";
+	}
+	keyring = get_keyring_information ();
+	g_assert (keyring != KEYRING_NAME_UNKNOWN);
+	
+	message = NULL;
+	if (app == APPLICATION_NAME_DISPLAY_AND_PATH) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' (%s) wants to change the password for the '%s' keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_display_name, env_app_pathname, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' (%s) wants to change the password for the default keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_display_name, env_app_pathname);
+		} 
+	} else if (app == APPLICATION_NAME_DISPLAY_ONLY) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' wants to change the password for the '%s' keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_display_name, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' wants to change the password for the default keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_display_name);
+		} 
+	} else if (app == APPLICATION_NAME_PATH_ONLY) {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("The application '%s' wants to change the password for the '%s' keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_pathname, env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("The application '%s' wants to change the password for the default keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_app_pathname);
+		} 
+	} else /* app == APPLICATION_NAME_UNKNOWN */ {
+		if (keyring == KEYRING_NAME_NORMAL) {
+			message = g_strdup_printf (_("An unkown application wants to change the password for the '%s' keyring. "
+						     "You have to choose the password you want to use for it."),
+						   env_keyring_name);
+		} else if (keyring == KEYRING_NAME_DEFAULT) {
+			message = g_strdup_printf (_("An unkown application wants to change the password for the default keyring. "
+						     "You have to choose the password you want to use for it."));
+		} 
+	}
+	
+	title = NULL;
+	if (keyring == KEYRING_NAME_NORMAL) {
+		title = g_strdup_printf (_("Choose a new password for the '%s' keyring. "), env_keyring_name);
+	} else if (keyring == KEYRING_NAME_DEFAULT) {
+		title = g_strdup_printf (_("Choose a new password for the default keyring. "));
+	}
+
+	original = NULL;	
+	password = NULL;	
+	response = run_dialog (_("Change Keyring Password"),
+			       _(title),
+			       message,
+			       TRUE, TRUE, need_original, &password, &original,
+			       GTK_RESPONSE_OK,
+			       _("_Deny"), GTK_RESPONSE_CANCEL,
+			       GTK_STOCK_OK, GTK_RESPONSE_OK,
+			       NULL);
+	g_free (message);
+	
+	if (response == GTK_RESPONSE_OK) {
+		response = GNOME_KEYRING_ASK_RESPONSE_ALLOW_ONCE;
+	} else {
+		response = GNOME_KEYRING_ASK_RESPONSE_DENY;
+	}
+	
+	if (password && original) {
+		printf ("%d\n%s\n%s\n", response, original, password);
+		g_free (original);
+		g_free (password);
+	} else if (password) {
+		printf ("%d\n%s\n", response, password);
+		g_free (password);
+	} else {
+		printf ("%d\n\n", response);
+	}
 }
 
 static void
@@ -479,7 +612,7 @@ ask_for_default_keyring (void)
 	response = run_dialog (_("Create Default Keyring"),
 			       _("Choose password for default keyring"),
 			       message,
-			       TRUE, TRUE, &password,
+			       TRUE, TRUE, FALSE, &password, NULL,
 			       GTK_RESPONSE_OK,
 			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -566,7 +699,7 @@ ask_for_item_read_write_acccess (void)
 
 	response = run_dialog (_("Allow access"),
 			       primary, secondary,
-			       FALSE, FALSE, NULL,
+			       FALSE, FALSE, FALSE, NULL, NULL,
 			       2,
 			       _("_Deny"), GTK_RESPONSE_CANCEL,
 			       _("Allow _Once"), 1,
@@ -618,6 +751,10 @@ main (int argc, char *argv[])
 		ask_for_keyring_password ();
 	} else if (strcmp (argv[1], "-n") == 0) {
 		ask_for_new_keyring_password ();
+	} else if (strcmp (argv[1], "-c") == 0) {
+		ask_for_change_keyring_password (FALSE);
+	} else if (strcmp (argv[1], "-o") == 0) {
+		ask_for_change_keyring_password (TRUE);
 	} else if (strcmp (argv[1], "-i") == 0) {
 		ask_for_item_read_write_acccess ();
 	} else if (strcmp (argv[1], "-d") == 0) {

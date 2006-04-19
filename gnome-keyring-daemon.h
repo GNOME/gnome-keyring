@@ -81,6 +81,8 @@ typedef enum {
 	GNOME_KEYRING_ACCESS_REQUEST_KEYRING,
 	GNOME_KEYRING_ACCESS_REQUEST_ITEM,
 	GNOME_KEYRING_ACCESS_REQUEST_NEW_KEYRING_PASSWORD,
+	GNOME_KEYRING_ACCESS_REQUEST_ORIGINAL_CHANGE_KEYRING_PASSWORD,
+	GNOME_KEYRING_ACCESS_REQUEST_CHANGE_KEYRING_PASSWORD,
 	GNOME_KEYRING_ACCESS_REQUEST_DEFAULT_KEYRING
 } GnomeKeyringAccessRequestType;
 
@@ -95,6 +97,7 @@ typedef struct {
 	
 	char *new_keyring;
 	/* filled out for password requests */
+	char *original;
 	char *password;
 	
 	gboolean granted;

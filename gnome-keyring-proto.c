@@ -401,6 +401,37 @@ gnome_keyring_proto_encode_op_string_string (GString                *buffer,
 }
 
 gboolean
+gnome_keyring_proto_encode_op_string_string_string (GString                *buffer,
+					     GnomeKeyringOpCode      op,
+					     const char             *str1,
+					     const char             *str2,
+					     const char             *str3)
+{
+	gsize op_start;
+
+	if (!gnome_keyring_proto_start_operation (buffer, op, &op_start)) {
+		return FALSE;
+	}
+	if (!gnome_keyring_proto_add_utf8_string (buffer,
+						  str1)) {
+		return FALSE;
+	}
+	if (!gnome_keyring_proto_add_utf8_string (buffer,
+						  str2)) {
+		return FALSE;
+	}
+	if (!gnome_keyring_proto_add_utf8_string (buffer,
+						  str3)) {
+		return FALSE;
+	}
+	if (!gnome_keyring_proto_end_operation (buffer,	op_start)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+gboolean
 gnome_keyring_proto_encode_find (GString *buffer,
 				 GnomeKeyringItemType type,
 				 GnomeKeyringAttributeList *attributes)
@@ -1109,7 +1140,6 @@ gnome_keyring_proto_decode_op_string_int (GString *buffer,
 	return FALSE;
 }
 
-
 gboolean
 gnome_keyring_proto_decode_op_string_string (GString *buffer,
 					     GnomeKeyringOpCode *op_out,
@@ -1148,6 +1178,61 @@ gnome_keyring_proto_decode_op_string_string (GString *buffer,
 	if (str2 != NULL) {
 		g_free (*str2);
 		*str2 = NULL;
+	}
+	return FALSE;
+}
+
+gboolean
+gnome_keyring_proto_decode_op_string_string_string (GString *buffer,
+					     GnomeKeyringOpCode *op_out,
+					     char **str1,
+					     char **str2,
+					     char **str3)
+{
+	gsize offset;
+
+	if (str1 != NULL) {
+		*str1 = NULL;
+	}
+	if (str2 != NULL) {
+		*str2 = NULL;
+	}
+	if (str3 != NULL) {
+		*str3 = NULL;
+	}
+	if (!gnome_keyring_proto_decode_packet_operation (buffer, op_out)) {
+		return FALSE;
+	}
+	offset = 8;
+	if (!gnome_keyring_proto_get_utf8_string (buffer,
+						  offset, &offset,
+						  str1)) {
+		goto bail;
+	}
+	if (!gnome_keyring_proto_get_utf8_string (buffer,
+						  offset, &offset,
+						  str2)) {
+		goto bail;
+	}
+	if (!gnome_keyring_proto_get_utf8_string (buffer,
+						  offset, &offset,
+						  str3)) {
+		goto bail;
+	}
+	
+	return TRUE;
+ bail:
+	if (str1 != NULL) {
+		g_free (*str1);
+		*str1 = NULL;
+	}
+	if (str2 != NULL) {
+		g_free (*str2);
+		*str2 = NULL;
+	}
+	if (str3 != NULL) {
+		g_free (*str3);
+		*str3 = NULL;
 	}
 	return FALSE;
 }

@@ -47,6 +47,7 @@ typedef enum {
 	GNOME_KEYRING_OP_SET_ITEM_ATTRIBUTES,
 	GNOME_KEYRING_OP_GET_ITEM_ACL,
 	GNOME_KEYRING_OP_SET_ITEM_ACL,
+	GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD,
 
 	/* Add new ops here */
 	
@@ -110,6 +111,11 @@ gboolean gnome_keyring_proto_encode_op_string_string (GString                   
 						      GnomeKeyringOpCode         op,
 						      const char                *str1,
 						      const char                *str2);
+gboolean gnome_keyring_proto_encode_op_string_string_string (GString                   *buffer,
+						      GnomeKeyringOpCode         op,
+						      const char                *str1,
+						      const char                *str2,
+						      const char                *str3);
 gboolean gnome_keyring_proto_encode_find             (GString                   *buffer,
 						      GnomeKeyringItemType       type,
 						      GnomeKeyringAttributeList *attributes);
@@ -165,6 +171,11 @@ gboolean gnome_keyring_proto_decode_op_string_string         (GString           
 							      GnomeKeyringOpCode         *op_out,
 							      char                      **str1_out,
 							      char                      **str2_out);
+gboolean gnome_keyring_proto_decode_op_string_string_string         (GString                    *buffer,
+							      GnomeKeyringOpCode         *op_out,
+							      char                      **str1_out,
+							      char                      **str2_out,
+							      char                      **str3_out);
 gboolean gnome_keyring_proto_decode_op_string_int            (GString                    *buffer,
 							      GnomeKeyringOpCode         *op_out,
 							      char                      **str1,
