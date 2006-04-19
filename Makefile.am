@@ -102,5 +102,12 @@ EXTRA_DIST = \
 	$(LIBADD_SOURCE) \
 	file-format.txt  \
 	keyring-intro.txt \
-	gnome-keyring-1-uninstalled.pc.in
+	gnome-keyring-1-uninstalled.pc.in \
+	intltool-extract.in \
+	intltool-merge.in \
+	intltool-update.in
 
+DISTCLEANFILES = \
+	intltool-extract \
+	intltool-merge \
+	intltool-update

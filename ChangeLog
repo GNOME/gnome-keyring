@@ -1,5 +1,12 @@
 2006-04-19  Alexander Larsson  <alexl@redhat.com>
 
+	* Makefile.am:
+	* configure.in:
+	Use po/LINGUAS
+	Patch from Przemyslaw Grzegorczyk
+
+2006-04-19  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-daemon.c (close_stdinout): 
 	Remove unnecessary closes (#141324)
 
