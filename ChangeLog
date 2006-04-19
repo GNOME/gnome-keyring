@@ -1,5 +1,11 @@
 2006-04-19  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-daemon.c: (op_delete_item_execute):
+	Fix NULL check order. (#338594)
+	Patch from Pascal Terjan
+	
+2006-04-19  Alexander Larsson  <alexl@redhat.com>
+
 	* Makefile.am:
 	* configure.in:
 	Use po/LINGUAS
