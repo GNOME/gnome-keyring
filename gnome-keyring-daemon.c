@@ -2664,12 +2664,10 @@ close_stdinout (void)
 	int fd;
 	
 	fd = open ("/dev/null", O_RDONLY);
-	close (0);
 	sane_dup2 (fd, 0);
 	close (fd);
 	
 	fd = open ("/dev/null", O_WRONLY);
-	close (1);
 	sane_dup2 (fd, 1);
 	close (fd);
 }

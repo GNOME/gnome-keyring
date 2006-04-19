@@ -1,5 +1,10 @@
 2006-04-19  Alexander Larsson  <alexl@redhat.com>
 
+	* gnome-keyring-daemon.c (close_stdinout): 
+	Remove unnecessary closes (#141324)
+
+2006-04-19  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-ask.c:
 	* gnome-keyring-daemon.c:
 	* gnome-keyring-daemon.h:
