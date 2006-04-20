@@ -1933,8 +1933,8 @@ op_set_item_info_execute (GString *packet,
 
 	access_request = access_requests->data;
 
-	if (access_request->item->keyring != keyring ||
-	    access_request->item == NULL ||
+	if (access_request->item == NULL ||
+	    access_request->item->keyring != keyring ||
 	    access_request->item->locked) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
@@ -2070,8 +2070,8 @@ op_set_item_attributes_execute (GString *packet,
 
 	access_request = access_requests->data;
 
-	if (access_request->item->keyring != keyring ||
-	    access_request->item == NULL ||
+	if (access_request->item == NULL ||
+	    access_request->item->keyring != keyring ||
 	    access_request->item->locked) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;

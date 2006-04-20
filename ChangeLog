@@ -1,3 +1,10 @@
+2006-04-20  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon.c: (op_set_item_info_execute),
+	(op_set_item_attributes_execute):
+	Fix more NULL check order. (#338594)
+	Patch from Pascal Terjan
+
 2006-04-19  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-ask.c:
