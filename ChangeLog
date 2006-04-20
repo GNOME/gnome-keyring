@@ -1,5 +1,10 @@
 2006-04-20  Alexander Larsson  <alexl@redhat.com>
 
+	* Makefile.am (DISTCHECK_CONFIGURE_FLAGS):
+	Add --enable-gtk-doc to distcheck flags
+
+2006-04-20  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-daemon.c: (op_set_item_info_execute),
 	(op_set_item_attributes_execute):
 	Fix more NULL check order. (#338594)

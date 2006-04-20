@@ -107,6 +107,8 @@ EXTRA_DIST = \
 	intltool-merge.in \
 	intltool-update.in
 
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+
 DISTCLEANFILES = \
 	intltool-extract \
 	intltool-merge \
