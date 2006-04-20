@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-03 22:38+0200\n"
-"PO-Revision-Date: 2006-04-04 09:47+0530\n"
+"POT-Creation-Date: 2006-04-20 06:26+0200\n"
+"PO-Revision-Date: 2006-04-20 12:59+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -17,92 +17,107 @@ msgstr ""
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
+"\n"
 
-#: ../gnome-keyring-ask.c:165
+#: ../gnome-keyring-ask.c:241
+msgid "_Old password:"
+msgstr "જૂનો પાસવર્ડ (_O):"
+
+#: ../gnome-keyring-ask.c:262
 msgid "_Password:"
 msgstr "પાસવર્ડ (_P):"
 
-#: ../gnome-keyring-ask.c:186
-msgid "_Confirm password:"
-msgstr "ખાતરી પાસવર્ડ (_C):"
+#: ../gnome-keyring-ask.c:284
+msgid "_Confirm new password:"
+msgstr "નવો ખાતરી પાસવર્ડ (_C):"
 
-#: ../gnome-keyring-ask.c:210
+#. Strength bar:
+#: ../gnome-keyring-ask.c:303
+msgid "<span weight=\"bold\">Password strength meter:</span>"
+msgstr "<span weight=\"bold\">પાસવર્ડ મજબૂતાઈ માપક:</span>"
+
+#: ../gnome-keyring-ask.c:329
+msgid "Old password cannot be blank."
+msgstr "જૂનો પાસવર્ડ ખાલી હોઈ શકે નહિં."
+
+#: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
 msgstr "પાસવર્ડ ખાલી હોઈ શકે નહિં."
 
-#: ../gnome-keyring-ask.c:218
+#: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
 msgstr "પાસવર્ડો બંધબેસતા નથી."
 
-#: ../gnome-keyring-ask.c:277
+#: ../gnome-keyring-ask.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "કાર્યક્રમ '%s' (%s) મૂળભુત કીરીંગને ચલાવવા માંગે છે, પરંતુ તેને તાળુ મરાયેલ છે"
 
-#: ../gnome-keyring-ask.c:281
+#: ../gnome-keyring-ask.c:411
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "કાર્યક્રમ '%s' (%s) એ કીરીંગ '%s' ને તાળુ લગાવવા માંગે છે, પરંતુ તેને તાળુ મરાયેલ છે"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:286
+#: ../gnome-keyring-ask.c:416
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr "કાર્યક્રમ '%s' (%s) એ અજ્ઞાત કીરીંગને ચલાવવા માંગે છે, પરંતુ તેને તાળુ મરાયેલ છે"
 
-#: ../gnome-keyring-ask.c:292 ../gnome-keyring-ask.c:306
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "કાર્યક્રમ '%s' મૂળભુત કીરીંગને ચલાવવા માંગે છે, પરંતુ તેને તાળુ મરાયેલ છે"
 
-#: ../gnome-keyring-ask.c:296 ../gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "કાર્યક્રમ '%s' એ કીરીંગ '%s' ને ચલાવવા માંગે છે, પરંતુ તેને તાળુ મરાયેલ છે"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:300 ../gnome-keyring-ask.c:316
+#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
 msgid "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "કાર્યક્રમ '%s' અજ્ઞાત કીરીંગને ચલાવવા માંગે છે, પરંતુ તેને તાળુ મરાયેલ છે"
 
-#: ../gnome-keyring-ask.c:322
+#: ../gnome-keyring-ask.c:452
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr "એક અજ્ઞાત કાર્યક્રમ મૂળભુત કીરીંગને ચલાવવા માંગે છે, પરંતુ તે તાળુ મરાયેલ છે"
 
-#: ../gnome-keyring-ask.c:326
+#: ../gnome-keyring-ask.c:456
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "એક અજ્ઞાત કાર્યક્રમ કીરીંગ '%s' ને ચલાવવા માંગે છે, પરંતુ તે તાળુ મરાયેલ છે"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:331
+#: ../gnome-keyring-ask.c:461
 msgid "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "એક અજ્ઞાત કાર્યક્રમ અજ્ઞાત કીરીંગને ચલાવવા માંગે છે, પરંતુ તે તાળુ મરાયેલ છે"
 
-#: ../gnome-keyring-ask.c:338
+#: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
 msgstr "મૂળભુત કીરીંગનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
-#: ../gnome-keyring-ask.c:340
+#: ../gnome-keyring-ask.c:470
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "કીરીંગ '%s' નું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
-#: ../gnome-keyring-ask.c:344
+#: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
 msgstr "કીરીંગનું તાળુ ખોલો"
 
-#: ../gnome-keyring-ask.c:349 ../gnome-keyring-ask.c:433
-#: ../gnome-keyring-ask.c:484 ../gnome-keyring-ask.c:571
+#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
 msgid "_Deny"
 msgstr "પરવાનગી નથી (_D)"
 
-#: ../gnome-keyring-ask.c:387
+#: ../gnome-keyring-ask.c:517
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -111,7 +126,7 @@ msgstr ""
 "કાર્યક્રમ '%s' (%s) એ '%s' તરીકે ઓળખાતી કીરીંગ બનાવવા માંગે છે. તેને વાપરવા માટે તમને જે "
 "પાસવર્ડ જોઈતો હોય તે તમારે પસંદ કરવો પડશે."
 
-#: ../gnome-keyring-ask.c:391
+#: ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -120,7 +135,7 @@ msgstr ""
 "કાર્યક્રમ '%s' (%s) નવી મૂળભુત કીરીંગ બનાવવા માંગે છે. તમારે તેને વાપરવા માટે જો જોઈતો "
 "હોય તે પાસવર્ડ પસંદ કરવો પડશે."
 
-#: ../gnome-keyring-ask.c:397 ../gnome-keyring-ask.c:407
+#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -129,7 +144,7 @@ msgstr ""
 "કાર્યક્રમ '%s' એ '%s' તરીકે ઓળખાતી નવી કીરીંગ બનાવવા માંગો છો. એને વાપરવા માટે તમારે "
 "પાસવર્ડ પસંદ કરવો પડશે."
 
-#: ../gnome-keyring-ask.c:401 ../gnome-keyring-ask.c:411
+#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -138,7 +153,7 @@ msgstr ""
 "કાર્યક્રમ '%s' નવી મૂળભુત કીરીંગ બનાવવા માંગે છે. તમારે એને વાપરવા માટે પાસવર્ડ પસંદ કરવો "
 "પડશે."
 
-#: ../gnome-keyring-ask.c:417
+#: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -147,7 +162,7 @@ msgstr ""
 "એક અજ્ઞાત કાર્યક્રમ '%s' તરીકે ઓળખાતી નવી કીરીંગ બનાવવા માંગે છે. તમારે એને વાપરવા માટે "
 "પાસવર્ડ દાખલ કરવો પડશે."
 
-#: ../gnome-keyring-ask.c:421
+#: ../gnome-keyring-ask.c:551
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -155,15 +170,69 @@ msgstr ""
 "એક અજ્ઞાત કાર્યક્રમ નવી મૂળભુત કીરીંગ બનાવવા માંગે છે. તમારે તેને વાપરવા માટે પાસવર્ડ પસંદ "
 "કરવો પડશે."
 
-#: ../gnome-keyring-ask.c:428
+#: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
 msgstr "નવો કીરીંગ પાસવર્ડ"
 
-#: ../gnome-keyring-ask.c:429
+#: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
 msgstr "નવી કીરીંગ માટે પાસવર્ડ પસંદ કરો"
 
-#: ../gnome-keyring-ask.c:462
+#: ../gnome-keyring-ask.c:602
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr "કાર્યક્રમ '%s' (%s) એ '%s' કીરીંગ માટે પાસવર્ડ બદલવા માંગે છે. તમારે તેની સાથે વાપરવા માટે પાસવર્ડ પસંદ કરવો પડશે."
+
+#: ../gnome-keyring-ask.c:606
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr "કાર્યક્રમ '%s' (%s) એ મૂળભૂત કીરીંગ માટે પાસવર્ડ બદલવા માંગે છે. તમારે તેની સાથે વાપરવા માટે પાસવર્ડ પસંદ કરવો પડશે."
+
+#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr "કાર્યક્રમ '%s' એ '%s' કીરીંગ માટે પાસવર્ડ બદલવા માંગે છે. તમારે તેની સાથે વાપરવા માટે પાસવર્ડ પસંદ કરવો પડશે."
+
+#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr "કાર્યક્રમ '%s' એ મૂળભૂક કીરીંગ માટે પાસવર્ડ બદલવા માંગે છે. તમારે તેની સાથે વાપરવા માટેનો પાસવર્ડ પસંદ કરવો પડશે."
+
+#: ../gnome-keyring-ask.c:632
+#, c-format
+msgid ""
+"An unkown application wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr "અજ્ઞાત કાર્યક્રમ '%s' કીરીંગ માટે પાસવર્ડ બદલવા માંગે છે. તમારે તેની સાથે વાપરવા માટે પાસવર્ડ પસંદ કરવો પડશે."
+
+#: ../gnome-keyring-ask.c:636
+msgid ""
+"An unkown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr "અજ્ઞાત કાર્યક્રમ મૂળભૂત કીરીંગ માટે પાસવર્ડ બદલવા માંગે છે. તમારે તેની સાથે વાપરવા માટે પાસવર્ડ પસંદ કરવો પડશે."
+
+#: ../gnome-keyring-ask.c:643
+#, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "'%s' કીરીંગ માટે નવો પાસવર્ડ પસંદ કરો. "
+
+#: ../gnome-keyring-ask.c:645
+msgid "Choose a new password for the default keyring. "
+msgstr "મૂળભૂત કીરીંગ માટે નવો પાસવર્ડ પસંદ કરો. "
+
+#: ../gnome-keyring-ask.c:650
+msgid "Change Keyring Password"
+msgstr "કીરીંગ પાસવર્ડ બદલો"
+
+#: ../gnome-keyring-ask.c:689
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -173,7 +242,7 @@ msgstr ""
 "કાર્યક્રમ '%s' (%s) પાસવર્ડ સંગ્રહવા માંગે છે, પરંતુ ત્યાં કોઈ મૂળભુત કીરીંગ નથી. એક બનાવવા "
 "માટે, તમારે પાસવર્ડ પસંદ કરવાની જરુર છે, કે જે તમે એના માટે વાપરવા માંગો છો."
 
-#: ../gnome-keyring-ask.c:466 ../gnome-keyring-ask.c:470
+#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -184,7 +253,7 @@ msgstr ""
 "તમારે પાસવર્ડ પસંદ કરવાની જરુર છે, કે જે તમે એના માટે વાપરવા માંગો છો."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:474
+#: ../gnome-keyring-ask.c:701
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -193,24 +262,24 @@ msgstr ""
 "એક અજ્ઞાત કાર્યક્રમ પાસવર્ડ સંગ્રહવા માંગે છે, પરંતુ ત્યાં કોઈ મૂળભુત કીરીંગ નથી. એક બનાવવા "
 "માટે, તમારે પાસવર્ડ પસંદ કરવાની જરુર છે, કે જે તમે એના માટે વાપરવા માંગો છો."
 
-#: ../gnome-keyring-ask.c:479
+#: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
 msgstr "મૂળભુત કીરીંગ બનાવો"
 
-#: ../gnome-keyring-ask.c:480
+#: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
 msgstr "મૂળભુત કીરીંગ માટે પાસવર્ડ પસંદ કરો"
 
-#: ../gnome-keyring-ask.c:520
+#: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
 msgstr "કીરીંગને કાર્યક્રમ ચલાવવાની પરવાનગી આપવી છે?"
 
-#: ../gnome-keyring-ask.c:523
+#: ../gnome-keyring-ask.c:750
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "કાર્યક્રમ '%s' (%s) એ '%s' માટે %s માં પાસવર્ડ વાપરવા માંગે છે."
 
-#: ../gnome-keyring-ask.c:526
+#: ../gnome-keyring-ask.c:753
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -218,19 +287,19 @@ msgid ""
 msgstr "કાર્યક્રમ '%s' (%s) એ '%s' માટે મૂળભુત કીરીંગમાં પાસવર્ડ ચલાવવા માંગે છે."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:529
+#: ../gnome-keyring-ask.c:756
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr "કાર્યક્રમ '%s' (%s) એ '%s' માટે અજ્ઞાત કીરીંગમાં પાસવર્ડ ચલાવવા માંગે છે."
 
-#: ../gnome-keyring-ask.c:534 ../gnome-keyring-ask.c:545
+#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "કાર્યક્રમ '%s' એ '%s' માટે %s માં પાસવર્ડ વાપરવા માંગે છે."
 
-#: ../gnome-keyring-ask.c:537 ../gnome-keyring-ask.c:548
+#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -238,19 +307,19 @@ msgid ""
 msgstr "કાર્યક્રમ '%s' એ '%s' માટે મૂળભુત કીરીંગમાં પાસવર્ડ વાપરવા માંગે છે."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:540 ../gnome-keyring-ask.c:551
+#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "કાર્યક્રમ '%s' એ '%s' માટે અજ્ઞાત કીરીંગમાં પાસવર્ડ વાપરવા માંગે છે."
 
-#: ../gnome-keyring-ask.c:556
+#: ../gnome-keyring-ask.c:783
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "એક અજ્ઞાત કાર્યક્રમ '%s' માટે %s માં પાસવર્ડ ચલાવવા માંગે છે."
 
-#: ../gnome-keyring-ask.c:559
+#: ../gnome-keyring-ask.c:786
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -258,30 +327,30 @@ msgid ""
 msgstr "એક અજ્ઞાત કાર્યક્રમ '%s' માટે મૂળભુત કીરીંગમાં પાસવર્ડ ચલાવવા માંગે છે."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:562
+#: ../gnome-keyring-ask.c:789
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "એક અજ્ઞાત કાર્યક્રમ '%s' માટે એક અજ્ઞાત કીરીંગમાં પાસવર્ડ ચલાવવા માંગે છે."
 
-#: ../gnome-keyring-ask.c:567
+#: ../gnome-keyring-ask.c:794
 msgid "Allow access"
 msgstr "વાપરવા દો"
 
-#: ../gnome-keyring-ask.c:572
+#: ../gnome-keyring-ask.c:799
 msgid "Allow _Once"
 msgstr "એક વાર પરવાનગી આપો (_O)"
 
-#: ../gnome-keyring-ask.c:573
+#: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
 msgstr "હંમેશા પરવાનગી આપો (_A)"
 
-#: ../gnome-keyring-ask.c:613
+#: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
 msgstr "તમારે ચલાવવા માટે માંગણીનો પ્રકાર સ્પષ્ટ કરવો જ પડશે\n"
 
-#: ../gnome-keyring-ask.c:626
+#: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "માંગણીનો અજ્ઞાત પ્રકાર\n"
 
