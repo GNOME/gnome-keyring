@@ -1,318 +1,236 @@
 # GNOME võtmerõnga eesti keele tõlge.
 # Estonian translation of GNOME-keyring.
 #
-# Copyright (C) 2005, 2006 Free Software Foundation, Inc.
+# Copyright (C) 2005 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 #
-# Ivar Smolin <okul@linux.ee>, 2005, 2006.
-# Priit Laes <amd@store20.com>, 2005.
+# Ivar Smolin <okul@linux.ee>, 2005
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring HEAD\n"
+"Project-Id-Version: gnome-keyring GNOME 2.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-05 05:57+0200\n"
-"PO-Revision-Date: 2006-04-05 10:03+0300\n"
-"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
+"POT-Creation-Date: 2005-10-26 05:50+0200\n"
+"PO-Revision-Date: 2005-10-26 09:30+0300\n"
+"Last-Translator: Priit Laes <amd@store20.com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../gnome-keyring-ask.c:165
-msgid "_Password:"
-msgstr "_Parool:"
-
-#: ../gnome-keyring-ask.c:186
-msgid "_Confirm password:"
-msgstr "Parooli _kinnitus:"
-
-#: ../gnome-keyring-ask.c:210
+#: ../gnome-keyring-ask.c:195
 msgid "Password cannot be blank."
-msgstr "Parool ei tohi olla tühi."
+msgstr "Parool ei saa olla tühi."
 
-#: ../gnome-keyring-ask.c:218
+#: ../gnome-keyring-ask.c:203
 msgid "Passwords do not match."
-msgstr "Paroolid pole vastavuses."
+msgstr "Paroolid ei oled võrdsed."
+
+#: ../gnome-keyring-ask.c:262
+#, c-format
+msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
+msgstr "Rakendus '%s' (%s) tahab ligipääsu lukusolevale vaikimisi võtmerõngale"
+
+#: ../gnome-keyring-ask.c:266
+#, c-format
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "Rakendus '%s' (%s) tahab ligipääsu lukusolevale võtmerõngale '%s'"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:271
+#, c-format
+msgid "The application '%s' (%s) wants access to an unknown keyring, but it is locked"
+msgstr "Rakendus '%s' (%s) tahab ligipääsu tundmatule lukusolevale võtmerõngale"
 
 #: ../gnome-keyring-ask.c:277
+#: ../gnome-keyring-ask.c:291
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"Rakendus '%s' (%s) tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "Rakendus '%s' tahab ligipääsu lukusolevale vaikimisi võtmerõngale"
 
 #: ../gnome-keyring-ask.c:281
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Rakendus '%s' (%s) tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:286
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"Rakendus '%s' (%s) tahab ligipääsu tundmatule võtmerõngale, kuid see on lukus"
-
-#: ../gnome-keyring-ask.c:292 ../gnome-keyring-ask.c:306
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"Rakendus '%s' tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
-
-#: ../gnome-keyring-ask.c:296 ../gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:296
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Rakendus '%s' tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+msgstr "Rakendus '%s' tahab ligipääsu lukusolevale võtmerõngale '%s'"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:300 ../gnome-keyring-ask.c:316
+#: ../gnome-keyring-ask.c:285
+#: ../gnome-keyring-ask.c:301
 #, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Rakendus '%s' tahab ligipääsu tundmatule võtmerõngale, kuid see on lukus"
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "Rakendus '%s' tahab ligipääsu tundmatule lukusolevale võtmerõngale"
 
-#: ../gnome-keyring-ask.c:322
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"Tundmatu rakendus tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
+#: ../gnome-keyring-ask.c:307
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "Tundmatu rakendus tahab ligipääsu lukusolevale vaikimisi võtmerõngale"
 
-#: ../gnome-keyring-ask.c:326
+#: ../gnome-keyring-ask.c:311
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "Tundmatu rakendus tahab ligipääsu lukusolevale võtmerõngale '%s'"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:331
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Tundmatu rakendus tahab ligipääsu tundmatule võtmerõngale, kuid see on lukus"
+#: ../gnome-keyring-ask.c:316
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "Tundmatu rakendus tahab ligipääsu tundmatule lukusolevale võtmerõngale"
 
-#: ../gnome-keyring-ask.c:338
+#: ../gnome-keyring-ask.c:323
 msgid "Enter password for default keyring to unlock"
-msgstr "Sisesta parool vaikimisi võtmerõnga lukust lahtivõtmiseks"
+msgstr "Sisesta parool vaikimisi võtmerõnga lahtilukustamiseks"
 
-#: ../gnome-keyring-ask.c:340
+#: ../gnome-keyring-ask.c:325
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Sisesta parool võtmerõnga '%s' lukust lahtivõtmiseks"
+msgstr "Sisesta parool võtmerõnga '%s' lahtilukustamiseks"
 
-#: ../gnome-keyring-ask.c:344
+#: ../gnome-keyring-ask.c:328
 msgid "Unlock Keyring"
-msgstr "Võtmerõnga lukust lahtivõtmine"
+msgstr "Võtmerõnga lahtilukustamine"
 
-#: ../gnome-keyring-ask.c:349 ../gnome-keyring-ask.c:433
-#: ../gnome-keyring-ask.c:484 ../gnome-keyring-ask.c:571
+#: ../gnome-keyring-ask.c:333
+#: ../gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:460
+#: ../gnome-keyring-ask.c:544
 msgid "_Deny"
 msgstr "_Keela"
 
-#: ../gnome-keyring-ask.c:387
+#: ../gnome-keyring-ask.c:368
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Rakendus '%s' (%s) tahab luua uut võtmerõngast nimega '%s'. Sa pead selle "
-"võtmerõnga jaoks parooli sisestama."
+msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Rakendus '%s' (%s) tahab luua uut võtmerõngast nimega '%s'. Sa pead selle võtmerõnga jaoks parooli sisestama."
 
-#: ../gnome-keyring-ask.c:391
+#: ../gnome-keyring-ask.c:372
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Rakendus '%s' (%s) tahab luua uut vaikimisi võtmerõngast. Sa pead selle "
-"võtmerõnga jaoks parooli sisestama."
+msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Rakendus '%s' (%s) tahab luua uut vaikimisi võtmerõngast. Sa pead selle võtmerõnga jaoks parooli sisestama."
 
-#: ../gnome-keyring-ask.c:397 ../gnome-keyring-ask.c:407
+#: ../gnome-keyring-ask.c:378
+#: ../gnome-keyring-ask.c:388
 #, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Rakendus '%s' tahab luua uut võtmerõngast nimega '%s'. Sa pead selle "
-"võtmerõnga jaoks parooli sisestama."
+msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Rakendus '%s' tahab luua uut võtmerõngast nimega '%s'. Sa pead selle võtmerõnga jaoks parooli sisestama."
 
-#: ../gnome-keyring-ask.c:401 ../gnome-keyring-ask.c:411
+#: ../gnome-keyring-ask.c:382
+#: ../gnome-keyring-ask.c:392
 #, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Rakendus '%s' tahab luua uut vaikimisi võtmerõngast. Sa pead selle "
-"võtmerõnga jaoks parooli sisestama."
+msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Rakendus '%s' tahab luua uut vaikimisi võtmerõngast. Sa pead selle võtmerõnga jaoks parooli sisestama."
 
-#: ../gnome-keyring-ask.c:417
+#: ../gnome-keyring-ask.c:398
 #, c-format
-msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Tundmatu rakendus tahab luua uut võtmerõngast nimega '%s'. Sa pead selle "
-"võtmerõnga jaoks parooli sisestama."
+msgid "An unkown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Tundmatu rakendus tahab luua uut võtmerõngast nimega '%s'. Sa pead selle võtmerõnga jaoks parooli sisestama."
 
-#: ../gnome-keyring-ask.c:421
-msgid ""
-"An unkown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Tundmatu rakendus tahab luua uut vaikimisi võtmerõngast. Sa pead selle "
-"võtmerõnga jaoks parooli sisestama."
+#: ../gnome-keyring-ask.c:402
+msgid "An unkown application wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Tundmatu rakendus tahab luua uut vaikimisi võtmerõngast. Sa pead selle võtmerõnga jaoks parooli sisestama."
 
-#: ../gnome-keyring-ask.c:428
+#: ../gnome-keyring-ask.c:408
 msgid "New Keyring Password"
 msgstr "Uue võtmerõnga parool"
 
-#: ../gnome-keyring-ask.c:429
+#: ../gnome-keyring-ask.c:409
 msgid "Choose password for new keyring"
 msgstr "Sisesta uue võtmerõnga parool"
 
-#: ../gnome-keyring-ask.c:462
+#: ../gnome-keyring-ask.c:439
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Rakendus '%s' (%s) soovib salvestada parooli aga siin pole vaikimisi "
-"võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
+msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Rakendus '%s' (%s) soovib salvestada parooli aga siin pole vaikimisi võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
-#: ../gnome-keyring-ask.c:466 ../gnome-keyring-ask.c:470
+#: ../gnome-keyring-ask.c:443
+#: ../gnome-keyring-ask.c:447
 #, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Rakendus '%s' soovib salvestada parooli aga siin pole vaikimisi "
-"võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
+msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Rakendus '%s' soovib salvestada parooli aga siin pole vaikimisi võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:474
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Tundmatu rakendus soovib salvestada parooli aga siin pole vaikimisi "
-"võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
+#: ../gnome-keyring-ask.c:451
+msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Tundmatu rakendus soovib salvestada parooli aga siin pole vaikimisi võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
-#: ../gnome-keyring-ask.c:479
+#: ../gnome-keyring-ask.c:455
 msgid "Create Default Keyring"
 msgstr "Vaikimisi võtmerõnga loomine"
 
-#: ../gnome-keyring-ask.c:480
+#: ../gnome-keyring-ask.c:456
 msgid "Choose password for default keyring"
 msgstr "Sisesta vaikimisi võtmerõnga parool"
 
-#: ../gnome-keyring-ask.c:520
+#: ../gnome-keyring-ask.c:493
 msgid "Allow application access to keyring?"
 msgstr "Kas lubada rakendusel võtmerõngale ligi pääseda?"
 
-#: ../gnome-keyring-ask.c:523
+#: ../gnome-keyring-ask.c:496
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr ""
-"Rakendus '%s' (%s) soovib '%s' jaoks kasutada parooli, mis asub võtmerõngas"
-"%s."
+msgstr "Rakendus '%s' (%s) soovib '%s' jaoks kasutada parooli võtmerõngast %s."
 
-#: ../gnome-keyring-ask.c:526
+#: ../gnome-keyring-ask.c:499
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"Rakendus '%s' (%s) soovib '%s' jaoks kasutada parooli, mis asub vaikimisi "
-"võtmerõngas."
+msgid "The application '%s' (%s) wants to access the password for '%s' in the default keyring."
+msgstr "Rakendus '%s' (%s) soovib '%s' jaoks kasutada parooli vaikimisi võtmerõngast."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:529
+#: ../gnome-keyring-ask.c:502
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"Rakendus '%s' (%s) soovib '%s' jaoks kasutada parooli, mis asub tundmatus "
-"võtmerõngas."
+msgid "The application '%s' (%s) wants to access the password for '%s' in an unknown keyring."
+msgstr "Rakendus '%s' (%s) soovib '%s' jaoks kasutada parooli tundmatust võtmerõngast."
 
-#: ../gnome-keyring-ask.c:534 ../gnome-keyring-ask.c:545
+#: ../gnome-keyring-ask.c:507
+#: ../gnome-keyring-ask.c:518
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr ""
-"Rakendus '%s' soovib '%s' jaoks kasutada parooli, mis asub võtmerõngas %s."
+msgstr "Rakendus '%s' soovib '%s' jaoks kasutada parooli võtmerõngast %s."
 
-#: ../gnome-keyring-ask.c:537 ../gnome-keyring-ask.c:548
+#: ../gnome-keyring-ask.c:510
+#: ../gnome-keyring-ask.c:521
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Rakendus '%s' soovib '%s' jaoks kasutada parooli, mis asub vaikimisi "
-"võtmerõngas."
+msgid "The application '%s' wants to access the password for '%s' in the default keyring."
+msgstr "Rakendus '%s' soovib '%s' jaoks kasutada parooli vaikimisi võtmerõngast."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:540 ../gnome-keyring-ask.c:551
+#: ../gnome-keyring-ask.c:513
+#: ../gnome-keyring-ask.c:524
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Rakendus '%s' soovib '%s' jaoks kasutada parooli, mis asub tundmatus "
-"võtmerõngas."
+msgid "The application '%s' wants to access the password for '%s' in an unknown keyring."
+msgstr "Rakendus '%s' soovib '%s' jaoks kasutada parooli tundmatust võtmerõngast."
 
-#: ../gnome-keyring-ask.c:556
+#: ../gnome-keyring-ask.c:529
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr ""
-"Tundmatu rakendus soovib '%s' jaoks kasutada parooli, mis asub võtmerõngas %s."
+msgstr "Tundmatu rakendus soovib '%s' jaoks kasutada parooli võtmerõngast %s."
 
-#: ../gnome-keyring-ask.c:559
+#: ../gnome-keyring-ask.c:532
 #, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Tundmatu rakendus soovib '%s' jaoks kasutada parooli, mis asub vaikimisi "
-"võtmerõngas."
+msgid "An unknown application wants to access the password for '%s' in the default keyring."
+msgstr "Tundmatu rakendus soovib '%s' jaoks kasutada parooli vaikimisi võtmerõngast."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:562
+#: ../gnome-keyring-ask.c:535
 #, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Tundmatu rakendus soovib '%s' jaoks kasutada parooli, mis asub tundmatus "
-"võtmerõngas."
+msgid "An unknown application wants to access the password for '%s' in an unknown keyring."
+msgstr "Tundmatu rakendus soovib '%s' jaoks kasutada parooli tundmatust võtmerõngast."
 
-#: ../gnome-keyring-ask.c:567
+#: ../gnome-keyring-ask.c:540
 msgid "Allow access"
 msgstr "Ligipääsu lubamine"
 
-#: ../gnome-keyring-ask.c:572
+#: ../gnome-keyring-ask.c:545
 msgid "Allow _Once"
 msgstr "Luba ainult _seekord"
 
-#: ../gnome-keyring-ask.c:573
+#: ../gnome-keyring-ask.c:546
 msgid "_Always Allow"
 msgstr "Luba _alati"
 
-#: ../gnome-keyring-ask.c:613
+#: ../gnome-keyring-ask.c:586
 msgid "You must specify the type of request to run\n"
 msgstr "Sa pead määrama käivitatava päringu tüübi\n"
 
-#: ../gnome-keyring-ask.c:626
+#: ../gnome-keyring-ask.c:599
 msgid "Unknown request type\n"
 msgstr "Tundmatu päringutüüp\n"
 
