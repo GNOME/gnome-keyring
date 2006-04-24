@@ -1115,7 +1115,7 @@ gnome_keyring_change_password (const char                                  *keyr
 
 GnomeKeyringResult
 gnome_keyring_change_password_sync (const char *keyring_name,
-			   const char* original, const char *password)
+			   const char *original, const char *password)
 {
 	GString *send, *receive;
 	GnomeKeyringResult res;
