@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.4.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-18 14:05+0200\n"
-"PO-Revision-Date: 2006-04-18 14:06+0200\n"
+"POT-Creation-Date: 2006-04-30 14:54+0200\n"
+"PO-Revision-Date: 2006-04-30 14:59+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -16,23 +16,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../gnome-keyring-ask.c:165
+#: ../gnome-keyring-ask.c:241
+msgid "_Old password:"
+msgstr "_Gammelt passord:"
+
+#: ../gnome-keyring-ask.c:262
 msgid "_Password:"
 msgstr "_Passord:"
 
-#: ../gnome-keyring-ask.c:186
-msgid "_Confirm password:"
-msgstr "_Bekreft passord:"
+#: ../gnome-keyring-ask.c:284
+msgid "_Confirm new password:"
+msgstr "_Bekreft nytt passord:"
 
-#: ../gnome-keyring-ask.c:210
+#. Strength bar:
+#: ../gnome-keyring-ask.c:303
+msgid "<span weight=\"bold\">Password strength meter:</span>"
+msgstr "<span weight=\"bold\">Måler for passordstyrke:</span>"
+
+#: ../gnome-keyring-ask.c:329
+msgid "Old password cannot be blank."
+msgstr "Gammelt passord kan ikke være tomt."
+
+#: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
 msgstr "Passordet kan ikke være tomt."
 
-#: ../gnome-keyring-ask.c:218
+#: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../gnome-keyring-ask.c:277
+#: ../gnome-keyring-ask.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -40,7 +53,7 @@ msgid ""
 msgstr ""
 "Programmet «%s» (%s) ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../gnome-keyring-ask.c:281
+#: ../gnome-keyring-ask.c:411
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -48,7 +61,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker tilgang til nøkkelring «%s», men den er låst"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:286
+#: ../gnome-keyring-ask.c:416
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
@@ -56,64 +69,65 @@ msgid ""
 msgstr ""
 "Programmet «%s» (%s) ønsker tilgang til en ukjent nøkkelring, men den er låst"
 
-#: ../gnome-keyring-ask.c:292 ../gnome-keyring-ask.c:306
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Programmet «%s» ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../gnome-keyring-ask.c:296 ../gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Programmet «%s» ønsker tilgang til nøkkelring «%s», men den er låst"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:300 ../gnome-keyring-ask.c:316
+#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Programmet «%s» ønsker tilgang til en ukjent nøkkelring, men den er låst"
 
-#: ../gnome-keyring-ask.c:322
+#: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Et ukjent program ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../gnome-keyring-ask.c:326
+#: ../gnome-keyring-ask.c:456
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Et ukjent program ønsker tilgang til nøkkelring «%s», men den er låst"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:331
+#: ../gnome-keyring-ask.c:461
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Et ukjent program ønsker tilgang til en ukjent nøkkelring, men den er låst"
 
-#: ../gnome-keyring-ask.c:338
+#: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
 msgstr "Oppgi passord for forvalgt nøkkelring for å låse opp"
 
-#: ../gnome-keyring-ask.c:340
+#: ../gnome-keyring-ask.c:470
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Oppgi passord for nøkkelring «%s» for å låse opp"
 
-#: ../gnome-keyring-ask.c:344
+#: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
 msgstr "Lås opp nøkkelring"
 
-#: ../gnome-keyring-ask.c:349 ../gnome-keyring-ask.c:433
-#: ../gnome-keyring-ask.c:484 ../gnome-keyring-ask.c:571
+#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
 msgid "_Deny"
 msgstr "_Nekt"
 
-#: ../gnome-keyring-ask.c:387
+#: ../gnome-keyring-ask.c:517
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -122,7 +136,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å opprette en ny nøkkelring kalt «%s». Du må "
 "velge passordet du ønsker å bruke for denne."
 
-#: ../gnome-keyring-ask.c:391
+#: ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -131,7 +145,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å opprette en ny forvalgt nøkkelring. Du må "
 "velge passordet du ønsker å bruke for denne."
 
-#: ../gnome-keyring-ask.c:397 ../gnome-keyring-ask.c:407
+#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -140,7 +154,7 @@ msgstr ""
 "Programmet «%s» ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../gnome-keyring-ask.c:401 ../gnome-keyring-ask.c:411
+#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -149,7 +163,7 @@ msgstr ""
 "Programmet «%s» ønsker å opprette en ny forvalgt nøkkelring. Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../gnome-keyring-ask.c:417
+#: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -158,7 +172,7 @@ msgstr ""
 "Et ukjent program ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../gnome-keyring-ask.c:421
+#: ../gnome-keyring-ask.c:551
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -166,15 +180,69 @@ msgstr ""
 "Et ukjent program ønsker å opprette en ny forvalgt nøkkelring. Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../gnome-keyring-ask.c:428
+#: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
 msgstr "Nytt passord for nøkkelring"
 
-#: ../gnome-keyring-ask.c:429
+#: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
 msgstr "Oppgi passord for ny nøkkelring"
 
-#: ../gnome-keyring-ask.c:462
+#: ../gnome-keyring-ask.c:602
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr "Programmet «%s» (%s) ønsker å bytte passord for nøkkelring «%s». Du må velge passordet du ønsker å bruke for denne."
+
+#: ../gnome-keyring-ask.c:606
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr "Programmet «%s» (%s) ønsker å bytte passord for forvalgt nøkkelring. Du må velge passordet du ønsker å bruke for denne."
+
+#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr "Programmet «%s» ønsker å bytte passord for nøkkelring «%s». Du må velge passordet du ønsker å bruke for denne."
+
+#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr "Programmet «%s» ønsker å bytte passord for forvalgt nøkkelring. Du må velge passordet du ønsker å bruke for denne."
+
+#: ../gnome-keyring-ask.c:632
+#, c-format
+msgid ""
+"An unkown application wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr "Et ukjent program ønsker å bytte passord for nøkkelring «%s». Du må velge passordet du ønsker å bruke for denne."
+
+#: ../gnome-keyring-ask.c:636
+msgid ""
+"An unkown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr "Et ukjent program ønsker å bytte passord for forvalgt nøkkelring. Du må velge passordet du ønsker å bruke for denne."
+
+#: ../gnome-keyring-ask.c:643
+#, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "Velg et nytt passord for nøkkelring «%s». "
+
+#: ../gnome-keyring-ask.c:645
+msgid "Choose a new password for the default keyring. "
+msgstr "Velg et nytt passord for forvalgt nøkkelring. "
+
+#: ../gnome-keyring-ask.c:650
+msgid "Change Keyring Password"
+msgstr "Endre passord for nøkkelring"
+
+#: ../gnome-keyring-ask.c:689
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -185,7 +253,7 @@ msgstr ""
 "forvalgt nøkkelring. For å opprette en må du lagre passordet du ønsker å "
 "bruke for den."
 
-#: ../gnome-keyring-ask.c:466 ../gnome-keyring-ask.c:470
+#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -197,7 +265,7 @@ msgstr ""
 "den."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:474
+#: ../gnome-keyring-ask.c:701
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -207,24 +275,24 @@ msgstr ""
 "nøkkelring. For å opprette en må du lagre passordet du ønsker å bruke for "
 "den."
 
-#: ../gnome-keyring-ask.c:479
+#: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
 msgstr "Opprett forvalgt nøkkelring"
 
-#: ../gnome-keyring-ask.c:480
+#: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
 msgstr "Oppgi passord for forvalgt nøkkelring"
 
-#: ../gnome-keyring-ask.c:520
+#: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
 msgstr "Gi program tilgang til nøkkelring?"
 
-#: ../gnome-keyring-ask.c:523
+#: ../gnome-keyring-ask.c:750
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "Programmet «%s» (%s) ønsker tilgang til passordet for «%s» i %s."
 
-#: ../gnome-keyring-ask.c:526
+#: ../gnome-keyring-ask.c:753
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -234,7 +302,7 @@ msgstr ""
 "nøkkelring."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:529
+#: ../gnome-keyring-ask.c:756
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -243,12 +311,12 @@ msgstr ""
 "Programmet «%s» (%s) ønsker tilgang til passordet for «%s» på en ukjent "
 "nøkkelring."
 
-#: ../gnome-keyring-ask.c:534 ../gnome-keyring-ask.c:545
+#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Programmet «%s» ønsker tilgang til passordet for «%s» på %s."
 
-#: ../gnome-keyring-ask.c:537 ../gnome-keyring-ask.c:548
+#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -257,7 +325,7 @@ msgstr ""
 "Programmet «%s» ønsker tilgang til passordet for «%s» på forvalgt nøkkelring."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:540 ../gnome-keyring-ask.c:551
+#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -266,12 +334,12 @@ msgstr ""
 "Programmet «%s» ønsker tilgang til passordet for «%s» på en ukjent "
 "nøkkelring."
 
-#: ../gnome-keyring-ask.c:556
+#: ../gnome-keyring-ask.c:783
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Et ukjent program ønsker tilgang til passordet for «%s» på %s."
 
-#: ../gnome-keyring-ask.c:559
+#: ../gnome-keyring-ask.c:786
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -281,7 +349,7 @@ msgstr ""
 "nøkkelring."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:562
+#: ../gnome-keyring-ask.c:789
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -290,22 +358,22 @@ msgstr ""
 "Et ukjent program ønsker tilgang til passordet for «%s» på en ukjent "
 "nøkkelring."
 
-#: ../gnome-keyring-ask.c:567
+#: ../gnome-keyring-ask.c:794
 msgid "Allow access"
 msgstr "Gi tilgang"
 
-#: ../gnome-keyring-ask.c:572
+#: ../gnome-keyring-ask.c:799
 msgid "Allow _Once"
 msgstr "Tillat én gang"
 
-#: ../gnome-keyring-ask.c:573
+#: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
 
-#: ../gnome-keyring-ask.c:613
+#: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
 msgstr "Du må oppgi type forespørsel som skal kjøres\n"
 
-#: ../gnome-keyring-ask.c:626
+#: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "Ukjent type forespørsel\n"
