@@ -8,24 +8,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-27 19:07+0100\n"
-"PO-Revision-Date: 2006-02-22 16:16+0100\n"
-"Last-Translator: Iñaki Larrañaga <dooteo@euskalgnu.org>\n"
+"POT-Creation-Date: 2006-05-10 19:22+0000\n"
+"PO-Revision-Date: 2006-05-10 19:22+0000\n"
+"Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.10.2\n"
+"Plural-Forms: Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gnome-keyring-ask.c:195
+#: ../gnome-keyring-ask.c:165
+msgid "_Password:"
+msgstr "_Pasahitza:"
+
+#: ../gnome-keyring-ask.c:186
+msgid "_Confirm password:"
+msgstr "Be_rretsi pasahitza:"
+
+#: ../gnome-keyring-ask.c:210
 msgid "Password cannot be blank."
 msgstr "Pasahitza ezin da hutsa izan"
 
-#: gnome-keyring-ask.c:203
+#: ../gnome-keyring-ask.c:218
 msgid "Passwords do not match."
 msgstr "Pasahitzak ez datoz bat"
 
-#: gnome-keyring-ask.c:262
+#: ../gnome-keyring-ask.c:277
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -34,15 +43,13 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta lehentsia atzitu nahi du, baina blokeatuta "
 "dago"
 
-#: gnome-keyring-ask.c:266
+#: ../gnome-keyring-ask.c:281
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"'%s' (%s) aplikazioak '%s' gako-sorta atzitu nahi du, baina blokeatuta dago"
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "'%s' (%s) aplikazioak '%s' gako-sorta atzitu nahi du, baina blokeatuta dago"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:271
+#: ../gnome-keyring-ask.c:286
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
@@ -51,70 +58,61 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta ezezaguna atzitu nahi du, baina blokeatuta "
 "dago"
 
-#: gnome-keyring-ask.c:277 gnome-keyring-ask.c:291
+#: ../gnome-keyring-ask.c:292 ../gnome-keyring-ask.c:306
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"'%s' aplikazioak gako-sorta lehentsia atzitu nahi du, baina blokeatuta dago"
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "'%s' aplikazioak gako-sorta lehentsia atzitu nahi du, baina blokeatuta dago"
 
-#: gnome-keyring-ask.c:281 gnome-keyring-ask.c:296
+#: ../gnome-keyring-ask.c:296 ../gnome-keyring-ask.c:311
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "'%s' aplikazioak '%s' gako-sorta atzitu nahi du, baina blokeatuta dago"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:285 gnome-keyring-ask.c:301
+#: ../gnome-keyring-ask.c:300 ../gnome-keyring-ask.c:316
 #, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"%s' aplikazioak gako-sorta ezezaguna atzitu nahi du, baina blokeatuta dago"
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "%s' aplikazioak gako-sorta ezezaguna atzitu nahi du, baina blokeatuta dago"
 
-#: gnome-keyring-ask.c:307
-#, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
+#: ../gnome-keyring-ask.c:322
+msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Aplikazio ezezagun batek gako-sorta lehentsia atzitu nahi du, baina "
 "blokeatuta dago"
 
-#: gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:326
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Aplikazio ezezagun batek '%s' gako-sorta atzitu nahi du, baina blokeatuta "
 "dago"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:316
-#, c-format
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
+#: ../gnome-keyring-ask.c:331
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Aplikazio ezezagun batek gako-sorta ezezaguna atzitu nahi du, baina "
 "blokeatuta dago"
 
-#: gnome-keyring-ask.c:323
+#: ../gnome-keyring-ask.c:338
 msgid "Enter password for default keyring to unlock"
 msgstr "Idatzi pasahitza, gako-sorta lehentsia desblokeatzeko"
 
-#: gnome-keyring-ask.c:325
+#: ../gnome-keyring-ask.c:340
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Idatzi pasahitza, '%s' gako-sorta desblokeatzeko"
 
-#: gnome-keyring-ask.c:329
+#: ../gnome-keyring-ask.c:344
 msgid "Unlock Keyring"
 msgstr "Desblokeatu gako-sorta"
 
-#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
-#: gnome-keyring-ask.c:556
+#: ../gnome-keyring-ask.c:349 ../gnome-keyring-ask.c:433
+#: ../gnome-keyring-ask.c:484 ../gnome-keyring-ask.c:571
 msgid "_Deny"
 msgstr "_Ukatu"
 
-#: gnome-keyring-ask.c:372
+#: ../gnome-keyring-ask.c:387
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -123,7 +121,7 @@ msgstr ""
 "'%s' (%s) aplikazioak '%s' izeneko gako-sorta berria sortu nahi du. Erabili "
 "nahi duzun pasahitza aukeratu behar duzu."
 
-#: gnome-keyring-ask.c:376
+#: ../gnome-keyring-ask.c:391
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -132,7 +130,7 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta lehentsi berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: ../gnome-keyring-ask.c:397 ../gnome-keyring-ask.c:407
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -141,7 +139,7 @@ msgstr ""
 "'%s' aplikazioak '%s' izeneko gako-sorta berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
+#: ../gnome-keyring-ask.c:401 ../gnome-keyring-ask.c:411
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -150,7 +148,7 @@ msgstr ""
 "'%s' aplikazioak gako-sorta lehentsi berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: gnome-keyring-ask.c:402
+#: ../gnome-keyring-ask.c:417
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -159,8 +157,7 @@ msgstr ""
 "Aplikazio ezezagun batek '%s' izeneko gako-sorta berria sortu nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: gnome-keyring-ask.c:406
-#, c-format
+#: ../gnome-keyring-ask.c:421
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -168,15 +165,15 @@ msgstr ""
 "Aplikazio ezezagun batek gako-sorta lehentsi berria sortu nahi du. Erabili "
 "nahi duzun pasahitza aukeratu behar duzu."
 
-#: gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:428
 msgid "New Keyring Password"
 msgstr "Gako-sorta berriaren pasahitza"
 
-#: gnome-keyring-ask.c:414
+#: ../gnome-keyring-ask.c:429
 msgid "Choose password for new keyring"
 msgstr "Aukeratu gako-sorta berriaren pasahitza"
 
-#: gnome-keyring-ask.c:447
+#: ../gnome-keyring-ask.c:462
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -186,7 +183,7 @@ msgstr ""
 "'%s' (%s) aplikazioak pasahitz bat gorde nahi du, baina ez dago gako-sorta "
 "lehenetsirik. Bat sortzeko, erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
+#: ../gnome-keyring-ask.c:466 ../gnome-keyring-ask.c:470
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -197,8 +194,7 @@ msgstr ""
 "lehentsirik. Bat sortzeko, erabili nahi duzun pasahitza aukeratu behar duzu."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:459
-#, c-format
+#: ../gnome-keyring-ask.c:474
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -208,24 +204,24 @@ msgstr ""
 "sorta lehentsirik. Bat sortzeko, erabili nahi duzun pasahitza aukeratu behar "
 "du."
 
-#: gnome-keyring-ask.c:464
+#: ../gnome-keyring-ask.c:479
 msgid "Create Default Keyring"
 msgstr "Sortu gako-sorta lehentsia"
 
-#: gnome-keyring-ask.c:465
+#: ../gnome-keyring-ask.c:480
 msgid "Choose password for default keyring"
 msgstr "Aukeratu gako-sorta lehentsiaren pasahitza"
 
-#: gnome-keyring-ask.c:505
+#: ../gnome-keyring-ask.c:520
 msgid "Allow application access to keyring?"
 msgstr "Baimendu aplikazioa gako-sorta atzi dezan?"
 
-#: gnome-keyring-ask.c:508
+#: ../gnome-keyring-ask.c:523
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "'%s' (%s) aplikazioak '%s'-(e)rako pasahitza atzitu nahi du %s-(e)an."
 
-#: gnome-keyring-ask.c:511
+#: ../gnome-keyring-ask.c:526
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -235,7 +231,7 @@ msgstr ""
 "lehentsian."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:514
+#: ../gnome-keyring-ask.c:529
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -244,21 +240,20 @@ msgstr ""
 "'%s' (%s) aplikazioak '%s'-(e)rako pasahitza atzitu nahi du gako-sorta "
 "ezezagun batean."
 
-#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
+#: ../gnome-keyring-ask.c:534 ../gnome-keyring-ask.c:545
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "'%s' aplikazioak '%s'(e)rako pasahitza atzitu nahi du %s(e)an."
 
-#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
+#: ../gnome-keyring-ask.c:537 ../gnome-keyring-ask.c:548
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
-msgstr ""
-"'%s' aplikazioak '%s'(e)rako pasahitza atzitu nahi du gako-sorta lehentsian."
+msgstr "'%s' aplikazioak '%s'(e)rako pasahitza atzitu nahi du gako-sorta lehentsian."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
+#: ../gnome-keyring-ask.c:540 ../gnome-keyring-ask.c:551
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -267,12 +262,12 @@ msgstr ""
 "'%s' aplikazioak '%s'(e)rako pasahitza atzitu nahi du gako-sorta ezezagun "
 "batean."
 
-#: gnome-keyring-ask.c:541
+#: ../gnome-keyring-ask.c:556
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Aplikazio ezezagun batek '%s'(e)rako pasahitza atzitu nahi du %s(e)an."
 
-#: gnome-keyring-ask.c:544
+#: ../gnome-keyring-ask.c:559
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -282,7 +277,7 @@ msgstr ""
 "lehentsian."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:547
+#: ../gnome-keyring-ask.c:562
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -291,24 +286,23 @@ msgstr ""
 "Aplikazio ezezagun batek '%s'(e)rako pasahitza atzitu nahi du gako-sorta "
 "ezezagun batean."
 
-#: gnome-keyring-ask.c:552
+#: ../gnome-keyring-ask.c:567
 msgid "Allow access"
 msgstr "Baimendu atzipena"
 
-#: gnome-keyring-ask.c:557
+#: ../gnome-keyring-ask.c:572
 msgid "Allow _Once"
 msgstr "Baimend_u behin"
 
-#: gnome-keyring-ask.c:558
+#: ../gnome-keyring-ask.c:573
 msgid "_Always Allow"
 msgstr "B_aimendu beti"
 
-#: gnome-keyring-ask.c:598
-#, c-format
+#: ../gnome-keyring-ask.c:613
 msgid "You must specify the type of request to run\n"
 msgstr "Eskaera mota zehaztu behar duzu exekutatzeko\n"
 
-#: gnome-keyring-ask.c:611
-#, c-format
+#: ../gnome-keyring-ask.c:626
 msgid "Unknown request type\n"
 msgstr "Eskaera mota ezezaguna\n"
+
