@@ -1,16 +1,14 @@
 # Vietnamese translation of Gnome Keyring.
-# Copyright © 2005 Gnome i18n Project for Vietnamese.
-# This file is distributed under the same license as the gnome-keyring package.
+# Copyright © 2006 Gnome i18n Project for Vietnamese.
 # Nguyễn Thái Ngọc Duy <pclouds@vnlinux.org>, 2004.
-# Clytie Siddall <clytie@riverland.net.au>, 2005.
-# 
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2006.
 # 
 msgid ""
 ""
 msgstr "Project-Id-Version: gnome-keyring 0.4.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-04 06:19+0200\n"
-"PO-Revision-Date: 2006-04-04 22:19+0930\n"
+"POT-Creation-Date: 2006-05-25 22:17+0200\n"
+"PO-Revision-Date: 2006-05-26 15:16+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -19,154 +17,231 @@ msgstr "Project-Id-Version: gnome-keyring 0.4.9\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: LocFactoryEditor 1.6b36\n"
 
-#:../gnome-keyring-ask.c:165
+#: ../gnome-keyring-ask.c:241
+msgid "_Old password:"
+msgstr "Mật khẩu _cũ :"
+
+#: ../gnome-keyring-ask.c:262
 msgid "_Password:"
 msgstr "_Mật khẩu :"
 
-#:../gnome-keyring-ask.c:186
-msgid "_Confirm password:"
-msgstr "_Xác nhận mật khẩu :"
+#: ../gnome-keyring-ask.c:284
+msgid "_Confirm new password:"
+msgstr "_Xác nhận mật khẩu mới:"
 
-#:../gnome-keyring-ask.c:210
+#.Strength bar:
+#: ../gnome-keyring-ask.c:303
+msgid "<span weight=\"bold\">Password strength meter:</span>"
+msgstr "<span weight=\"bold\">Cái đo độ mạnh mật khẩu :</span>"
+
+#: ../gnome-keyring-ask.c:329
+msgid "Old password cannot be blank."
+msgstr "Không cho phép mật khẩu cũ rỗng."
+
+#: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
 msgstr "Không cho phép mật khẩu rỗng."
 
-#:../gnome-keyring-ask.c:218
+#: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
 msgstr "Hai mật khẩu không trùng."
 
-#:../gnome-keyring-ask.c:277
-#,c-format
+#: ../gnome-keyring-ask.c:407
+#, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị "
 "khóa"
 
-#:../gnome-keyring-ask.c:281
-#,c-format
+#: ../gnome-keyring-ask.c:411
+#, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa « %s », nhưng vòng đã bị khóa"
 
 #.keyring == KEYRING_NAME_UNKNOWN
-#:../gnome-keyring-ask.c:286
-#,c-format
+#: ../gnome-keyring-ask.c:416
+#, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr "Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa lạ, nhưng vòng đã bị khóa"
 
-#:../gnome-keyring-ask.c:292 ../gnome-keyring-ask.c:306
-#,c-format
+#: ../gnome-keyring-ask.c:422
+#: ../gnome-keyring-ask.c:436
+#, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "Ứng dụng « %s » muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị khóa"
 
-#:../gnome-keyring-ask.c:296 ../gnome-keyring-ask.c:311
-#,c-format
+#: ../gnome-keyring-ask.c:426
+#: ../gnome-keyring-ask.c:441
+#, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Ứng dụng « %s » muốn truy cập vào vòng khóa « %s », nhưng vòng đã bị khóa"
 
 #.keyring == KEYRING_NAME_UNKNOWN
-#:../gnome-keyring-ask.c:300 ../gnome-keyring-ask.c:316
-#,c-format
+#: ../gnome-keyring-ask.c:430
+#: ../gnome-keyring-ask.c:446
+#, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "Ứng dụng « %s » muốn truy cập vào vòng khóa lạ, nhưng vòng đã bị khóa"
 
-#:../gnome-keyring-ask.c:322
+#: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "Ứng dụng lạ muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị khóa"
 
-#:../gnome-keyring-ask.c:326
-#,c-format
+#: ../gnome-keyring-ask.c:456
+#, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Ứng dụng lạ muốn truy cập vào vòng khóa « %s », nhưng vòng đã bị khóa"
 
 #.keyring == KEYRING_NAME_UNKNOWN
-#:../gnome-keyring-ask.c:331
+#: ../gnome-keyring-ask.c:461
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "Ứng dụng lạ muốn truy cập vào vòng khóa lạ, nhưng vòng đã bị khóa"
 
-#:../gnome-keyring-ask.c:338
+#: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
 msgstr "Hãy nhập mật khẩu cho vòng khóa mặc định để mở vòng khóa"
 
-#:../gnome-keyring-ask.c:340
-#,c-format
+#: ../gnome-keyring-ask.c:470
+#, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Hãy nhập mật khẩu cho vòng khóa « %s » để mở vòng khóa"
 
-#:../gnome-keyring-ask.c:344
+#: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
 msgstr "Mở vòng"
 
-#:../gnome-keyring-ask.c:349 ../gnome-keyring-ask.c:433
-#:../gnome-keyring-ask.c:484 ../gnome-keyring-ask.c:571
+#: ../gnome-keyring-ask.c:479
+#: ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655
+#: ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
 msgid "_Deny"
 msgstr "_Từ chối"
 
-#:../gnome-keyring-ask.c:387
-#,c-format
+#: ../gnome-keyring-ask.c:517
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr "Ứng dụng « %s » (%s) muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật "
 "khẩu bạn muốn dùng để mở vòng khóa này."
 
-#:../gnome-keyring-ask.c:391
-#,c-format
+#: ../gnome-keyring-ask.c:521
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "Ứng dụng « %s » (%s) muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu "
 "bạn muốn dùng để mở vòng khóa này."
 
-#:../gnome-keyring-ask.c:397 ../gnome-keyring-ask.c:407
-#,c-format
+#: ../gnome-keyring-ask.c:527
+#: ../gnome-keyring-ask.c:537
+#, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr "Ứng dụng « %s » muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật khẩu "
 "bạn muốn dùng để mở vòng khóa này."
 
-#:../gnome-keyring-ask.c:401 ../gnome-keyring-ask.c:411
-#,c-format
+#: ../gnome-keyring-ask.c:531
+#: ../gnome-keyring-ask.c:541
+#, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "Ứng dụng « %s » muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu bạn "
 "muốn dùng để mở vòng khóa này."
 
-#:../gnome-keyring-ask.c:417
-#,c-format
+#: ../gnome-keyring-ask.c:547
+#, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr "Ứng dụng lạ muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật khẩu bạn "
 "muốn dùng để mở vòng khóa này."
 
-#:../gnome-keyring-ask.c:421
+#: ../gnome-keyring-ask.c:551
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "Ứng dụng lạ muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu bạn muốn "
 "dùng để mở vòng khóa này."
 
-#:../gnome-keyring-ask.c:428
+#: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
 msgstr "Mật khẩu vòng khóa mới"
 
-#:../gnome-keyring-ask.c:429
+#: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
 msgstr "Hãy chọn mật khẩu cho vòng khóa mới"
 
-#:../gnome-keyring-ask.c:462
-#,c-format
+#: ../gnome-keyring-ask.c:602
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr "Ứng dụng « %s » (%s) muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần phải chọn mật khẩu cho nó."
+
+#: ../gnome-keyring-ask.c:606
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr "Ứng dụng « %s » (%s) muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần phải chọn mật khẩu cho nó."
+
+#: ../gnome-keyring-ask.c:612
+#: ../gnome-keyring-ask.c:622
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr "Ứng dụng « %s » muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần phải chọn mật khẩu cho nó."
+
+#: ../gnome-keyring-ask.c:616
+#: ../gnome-keyring-ask.c:626
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr "Ứng dụng « %s » muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần phải chọn mật khẩu cho nó."
+
+#: ../gnome-keyring-ask.c:632
+#, c-format
+msgid ""
+"An unkown application wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr "Ứng dụng lạ muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần phải chọn mật khẩu cho nó."
+
+#: ../gnome-keyring-ask.c:636
+msgid ""
+"An unkown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr "Ứng dụng lạ muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần phải chọn mật khẩu cho nó."
+
+#: ../gnome-keyring-ask.c:643
+#, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "Chọn mật khẩu mới cho vòng khóa « %s ». "
+
+#: ../gnome-keyring-ask.c:645
+msgid "Choose a new password for the default keyring. "
+msgstr "Chọn mật khẩu mới cho vòng khóa mặc định. "
+
+#: ../gnome-keyring-ask.c:650
+msgid "Change Keyring Password"
+msgstr "Đổi mật khẩu vòng khóa"
+
+#: ../gnome-keyring-ask.c:689
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -174,8 +249,9 @@ msgid ""
 msgstr "Ứng dụng « %s » (%s) muốn lưu mật khẩu, nhưng không có vòng khóa mặc định. "
 "Để tạo vòng, bạn cần chọn mật khẩu dùng để mở vòng khoá."
 
-#:../gnome-keyring-ask.c:466 ../gnome-keyring-ask.c:470
-#,c-format
+#: ../gnome-keyring-ask.c:693
+#: ../gnome-keyring-ask.c:697
+#, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -184,7 +260,7 @@ msgstr "Ứng dụng « %s » muốn lưu mật khẩu, nhưng không có vòng 
 "vòng, bạn cần chọn mật khẩu dùng để mở vòng khoá."
 
 #.app == APPLICATION_NAME_UNKNOWN
-#:../gnome-keyring-ask.c:474
+#: ../gnome-keyring-ask.c:701
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -192,25 +268,25 @@ msgid ""
 msgstr "Ứng dụng lạ muốn lưu mật khẩu, nhưng không có vòng khóa mặc định. Để tạo "
 "vòng, bạn cần chọn mật khẩu dùng để mở vòng khoá."
 
-#:../gnome-keyring-ask.c:479
+#: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
 msgstr "Tạo vòng khoá mặc định"
 
-#:../gnome-keyring-ask.c:480
+#: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
 msgstr "Chọn mật khẩu cho vòng khóa mặc định"
 
-#:../gnome-keyring-ask.c:520
+#: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
 msgstr "Cho phép ứng dụng truy xuất vòng khóa chứ?"
 
-#:../gnome-keyring-ask.c:523
-#,c-format
+#: ../gnome-keyring-ask.c:750
+#, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « %s » trong %s."
 
-#:../gnome-keyring-ask.c:526
-#,c-format
+#: ../gnome-keyring-ask.c:753
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
@@ -218,69 +294,72 @@ msgstr "Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « %s » t
 "định."
 
 #.keyring == KEYRING_NAME_UNKNOWN
-#:../gnome-keyring-ask.c:529
-#,c-format
+#: ../gnome-keyring-ask.c:756
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr "Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « %s » trong vòng khóa lạ."
 
-#:../gnome-keyring-ask.c:534 ../gnome-keyring-ask.c:545
-#,c-format
+#: ../gnome-keyring-ask.c:761
+#: ../gnome-keyring-ask.c:772
+#, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Ứng dụng « %s » muốn truy cập mật khẩu cho « %s » trong %s."
 
-#:../gnome-keyring-ask.c:537 ../gnome-keyring-ask.c:548
-#,c-format
+#: ../gnome-keyring-ask.c:764
+#: ../gnome-keyring-ask.c:775
+#, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
 msgstr "Ứng dụng « %s » muốn truy cập mật khẩu cho « %s » trong vòng khóa mặc định."
 
 #.keyring == KEYRING_NAME_UNKNOWN
-#:../gnome-keyring-ask.c:540 ../gnome-keyring-ask.c:551
-#,c-format
+#: ../gnome-keyring-ask.c:767
+#: ../gnome-keyring-ask.c:778
+#, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Ứng dụng « %s » muốn truy cập mật khẩu cho « %s » trong vòng khóa lạ."
 
-#:../gnome-keyring-ask.c:556
-#,c-format
+#: ../gnome-keyring-ask.c:783
+#, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Ứng dụng lạ muốn truy cập mật khẩu cho « %s » trong %s."
 
-#:../gnome-keyring-ask.c:559
-#,c-format
+#: ../gnome-keyring-ask.c:786
+#, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
 "keyring."
 msgstr "Ứng dụng lạ muốn truy cập mật khẩu cho « %s » trong vòng khóa mặc định."
 
 #.keyring == KEYRING_NAME_UNKNOWN
-#:../gnome-keyring-ask.c:562
-#,c-format
+#: ../gnome-keyring-ask.c:789
+#, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "Ứng dụng lạ muốn truy cập mật khẩu cho « %s » trong vòng khóa lạ."
 
-#:../gnome-keyring-ask.c:567
+#: ../gnome-keyring-ask.c:794
 msgid "Allow access"
 msgstr "Cho phép truy xuất"
 
-#:../gnome-keyring-ask.c:572
+#: ../gnome-keyring-ask.c:799
 msgid "Allow _Once"
 msgstr "Cho phép _một lần"
 
-#:../gnome-keyring-ask.c:573
+#: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
 msgstr "_Luôn cho phép"
 
-#:../gnome-keyring-ask.c:613
+#: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
 msgstr "Bạn phải xác định kiểu yêu cầu cần chạy\n"
 
-#:../gnome-keyring-ask.c:626
+#: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "Kiểu yêu cầu lạ\n"
