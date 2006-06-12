@@ -1,3 +1,10 @@
+Changes in version 0.5.1 are:
+* Support changing password of a keyring
+* Create ~/.gnome2 if needed
+* Save keyring when an ACL is added
+* Add password strength meter
+* Small bugfixes
+
 Changes in version 0.4.9 are:
 * Fix return value for some sync calls
 * Translation updates

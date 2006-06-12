@@ -1,3 +1,11 @@
+2006-06-12  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release.
+
+	* configure.in:
+	Update version to 0.5.1, better than .0 for an unstable branch.
+
 2006-04-24  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring.c (gnome_keyring_change_password_sync):
