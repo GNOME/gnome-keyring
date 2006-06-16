@@ -312,7 +312,21 @@ GnomeKeyringResult gnome_keyring_item_set_acl_sync        (const char           
 							   guint32                                     id,
 							   GList                                      *acl);
 
-
+/*
+ * Will grant the application access rights to the item, provided 
+ * callee has, or is granted, write access to said item.
+ *
+ * keyring      : Name of keyring to access or NULL for default keyring
+ * display_name : Display name of application to be granted access rights - As returned by g_get_application_name()
+ * full_path    : Full path of application to be granted access rights
+ * id           : ID of item to access in keyring
+ * rights       : Bitmask of rights to grant the application 
+ */
+GnomeKeyringResult gnome_keyring_item_grant_access_rights_sync (const char                   *keyring, 
+								const char                   *display_name,  
+								const char                   *full_path,  
+								const guint32                id, 
+								const GnomeKeyringAccessType rights); 
 
 void                  gnome_keyring_item_info_free             (GnomeKeyringItemInfo *item_info);
 GnomeKeyringItemInfo *gnome_keyring_item_info_new              (void);

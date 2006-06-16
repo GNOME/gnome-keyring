@@ -1,3 +1,12 @@
+2006-06-16  Jules Colding  <colding@omesc.com>
+
+	* gnome-keyring.c (gnome_keyring_item_grant_access_rights_sync): 
+	New function to explicitly set access rights to a keyring item 
+	for a specific application.
+
+	* gnome-keyring.h: Declared new function to set access rights to 
+	keyring item for specific application
+
 2006-06-12  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

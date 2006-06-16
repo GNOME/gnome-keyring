@@ -2126,6 +2126,43 @@ gnome_keyring_item_set_acl_sync (const char *keyring,
 	return res;
 }
 
+GnomeKeyringResult 
+gnome_keyring_item_grant_access_rights_sync (const char                   *keyring, 
+					     const char                   *display_name, 
+					     const char                   *full_path, 
+					     const guint32                id, 
+					     const GnomeKeyringAccessType rights) 
+{
+ 	GList *acl_list = NULL;
+ 	GnomeKeyringApplicationRef new_app_ref;
+ 	GnomeKeyringAccessControl acl;
+	GnomeKeyringResult res;
+
+	/* setup application structure */
+	new_app_ref.display_name = (char *) display_name;
+	new_app_ref.pathname = (char *) full_path;
+	acl.application = &new_app_ref; 
+	acl.types_allowed = rights; 
+
+	/* get the original acl list */
+	res = gnome_keyring_item_get_acl_sync (keyring,
+					       id,
+					       &acl_list);
+	if (GNOME_KEYRING_RESULT_OK != res)
+		goto out;
+
+	/* append access rights */
+	acl_list = g_list_append (acl_list, (gpointer) &acl);
+	res = gnome_keyring_item_set_acl_sync (keyring, 
+					       id,
+					       acl_list);
+out:
+	if (acl_list)
+		g_list_free (acl_list);
+
+	return res;
+}
+
 GnomeKeyringItemType
 gnome_keyring_item_info_get_type (GnomeKeyringItemInfo *item_info)
 {
