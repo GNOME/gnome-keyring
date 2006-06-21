@@ -266,6 +266,12 @@ gnome_keyring_proto_start_operation (GString *buffer,
 	if (name != NULL && !g_utf8_validate (name, -1, NULL)) {
 		g_warning ("g_application_name not utf8 encoded");
 		name = NULL;
+	} else if (name == NULL) {
+		g_warning ("g_set_application_name not set.");
+	}
+	if (name == NULL) {
+		/* General name if none set */
+		name = "Application";
 	}
 	if (!gnome_keyring_proto_add_utf8_string (buffer, name)) {
 		return FALSE;
