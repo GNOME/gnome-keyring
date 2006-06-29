@@ -2,14 +2,14 @@
 # translation of hi.po to Hindi
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
-# Rajesh Ranjan <rranjan@redhat.com>, 2005.
+# Rajesh Ranjan <rranjan@redhat.com>, 2005, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-02 06:36+0000\n"
-"PO-Revision-Date: 2005-08-02 13:47+0530\n"
+"POT-Creation-Date: 2006-06-29 07:27+0200\n"
+"PO-Revision-Date: 2006-06-29 12:06+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,166 +17,284 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
-#: ../gnome-keyring-ask.c:224
+#: ../gnome-keyring-ask.c:241
+msgid "_Old password:"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:262
+msgid "_Password:"
+msgstr "पासवर्ड: (_P)"
+
+#: ../gnome-keyring-ask.c:284
+msgid "_Confirm new password:"
+msgstr ""
+
+#. Strength bar:
+#: ../gnome-keyring-ask.c:303
+msgid "<span weight=\"bold\">Password strength meter:</span>"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:329
+msgid "Old password cannot be blank."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:340
+msgid "Password cannot be blank."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:348
+msgid "Passwords do not match."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "अनुप्रयोग '%s' (%s) मूलभूत कुंजी में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:228
+#: ../gnome-keyring-ask.c:411
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "अनुप्रयोग '%s' (%s) मूलभूत कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:233
+#: ../gnome-keyring-ask.c:416
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr "अनुप्रयोग '%s' (%s) अनजान कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:239 ../gnome-keyring-ask.c:253
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "अनुप्रयोग '%s' मूलभूत कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:243 ../gnome-keyring-ask.c:258
+#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "अनुप्रयोग '%s' कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:247 ../gnome-keyring-ask.c:263
+#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
 msgid "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "अनुप्रयोग '%s' अनजान कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:269
+#: ../gnome-keyring-ask.c:452
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr "अनजान अनुप्रयोग मूलभूत कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:273
+#: ../gnome-keyring-ask.c:456
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "अनजान अनुप्रयोग मूलभूत कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:278
+#: ../gnome-keyring-ask.c:461
 msgid "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "अनजान अनुप्रयोग अनजान कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:285
+#: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
 msgstr "मूलभूत कीरिंग को खोलने के लिये शब्दकूट डालें"
 
-#: ../gnome-keyring-ask.c:287
+#: ../gnome-keyring-ask.c:470
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "कीरिंग '%s' को खोलने के लिये शब्दकूट डालें"
 
-#: ../gnome-keyring-ask.c:290
+#: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
 msgstr "कीरिंग खोलें"
 
-#: ../gnome-keyring-ask.c:295 ../gnome-keyring-ask.c:375
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:506
+#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
 msgid "_Deny"
 msgstr "मना करें"
 
-#: ../gnome-keyring-ask.c:330
+#: ../gnome-keyring-ask.c:517
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "अनुप्रयोग '%s' (%s) '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+msgstr ""
+"अनुप्रयोग '%s' (%s) '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप "
+"इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:334
+#: ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "अनुप्रयोग '%s' (%s) नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+msgstr ""
+"अनुप्रयोग '%s' (%s) नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके "
+"लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:340 ../gnome-keyring-ask.c:350
+#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "अनुप्रयोग '%s' '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+msgstr ""
+"अनुप्रयोग '%s' '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके "
+"लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:344 ../gnome-keyring-ask.c:354
+#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "अनुप्रयोग '%s' नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+msgstr ""
+"अनुप्रयोग '%s' नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
+"प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:360
+#: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "एक अनजान अनुप्रयोग '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+msgstr ""
+"एक अनजान अनुप्रयोग '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप "
+"इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:364
+#: ../gnome-keyring-ask.c:551
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "अनजान अनुप्रयोग नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+msgstr ""
+"अनजान अनुप्रयोग नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
+"प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:370
+#: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
 msgstr "नया कीरिंग शब्दकूट"
 
-#: ../gnome-keyring-ask.c:371
+#: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
 msgstr "नये कीरिंग के लिये शब्दकूट चुनें"
 
-#: ../gnome-keyring-ask.c:401
+#: ../gnome-keyring-ask.c:602
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"अनुप्रयोग '%s' (%s) नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके "
+"लिये प्रयोग करना चाहते हैं."
+
+#: ../gnome-keyring-ask.c:606
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr ""
+"अनुप्रयोग '%s' (%s) नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके "
+"लिये प्रयोग करना चाहते हैं."
+
+#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"अनुप्रयोग '%s' नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
+"प्रयोग करना चाहते हैं."
+
+#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"अनुप्रयोग '%s' नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
+"प्रयोग करना चाहते हैं."
+
+#: ../gnome-keyring-ask.c:632
+#, fuzzy, c-format
+msgid ""
+"An unkown application wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"अनजान अनुप्रयोग नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
+"प्रयोग करना चाहते हैं."
+
+#: ../gnome-keyring-ask.c:636
+#, fuzzy
+msgid ""
+"An unkown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"अनजान अनुप्रयोग नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
+"प्रयोग करना चाहते हैं."
+
+#: ../gnome-keyring-ask.c:643
+#, fuzzy, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "नये कीरिंग के लिये शब्दकूट चुनें"
+
+#: ../gnome-keyring-ask.c:645
+#, fuzzy
+msgid "Choose a new password for the default keyring. "
+msgstr "डिफ़ॉल्ट कीरिंग के लिये शब्दकूट बदलें"
+
+#: ../gnome-keyring-ask.c:650
+#, fuzzy
+msgid "Change Keyring Password"
+msgstr "नया कीरिंग शब्दकूट"
+
+#: ../gnome-keyring-ask.c:689
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "अनुप्रयोग '%s' (%s) एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. ऐसा एक बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+msgstr ""
+"अनुप्रयोग '%s' (%s) एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. "
+"ऐसा एक बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:405 ../gnome-keyring-ask.c:409
+#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "अनुप्रयोग '%s' एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. ऐसा एक बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+msgstr ""
+"अनुप्रयोग '%s' एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. ऐसा एक "
+"बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:701
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "एक अनजान अनुप्रयोग एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. ऐसा एक बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये  प्रयोग करना चाहते हैं."
+msgstr ""
+"एक अनजान अनुप्रयोग एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. "
+"ऐसा एक बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये  प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:417
+#: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
 msgstr "बनाएँ डिफ़ॉल्ट कीरिंग"
 
-#: ../gnome-keyring-ask.c:418
+#: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
 msgstr "डिफ़ॉल्ट कीरिंग के लिये शब्दकूट बदलें"
 
-#: ../gnome-keyring-ask.c:455
+#: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
 msgstr "कीरिंग में अनुप्रयोग पहुंत स्वीकारें?"
 
-#: ../gnome-keyring-ask.c:458
+#: ../gnome-keyring-ask.c:750
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "अनुप्रयोग '%s' (%s) '%s' के लिये %s में शब्दकूट का पहुंच चाहता है."
 
-#: ../gnome-keyring-ask.c:461
+#: ../gnome-keyring-ask.c:753
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -184,19 +302,19 @@ msgid ""
 msgstr "अनुप्रयोग '%s' (%s) '%s' के लिये मूलभूत कीरिंग में शब्दकूट का पहुंच चाहता है."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:464
+#: ../gnome-keyring-ask.c:756
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr "अनुप्रयोग '%s' (%s) '%s' के लिये अनजान कीरिंग में शब्दकूट का पहुंच चाहता है."
 
-#: ../gnome-keyring-ask.c:469 ../gnome-keyring-ask.c:480
+#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "अनुप्रयोग '%s' '%s' के लिये %s में शब्दकूट का पहुंच चाहता है."
 
-#: ../gnome-keyring-ask.c:472 ../gnome-keyring-ask.c:483
+#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -204,19 +322,19 @@ msgid ""
 msgstr "अनुप्रयोग '%s' '%s' के लिये मूलभूत कीरिंग में शब्दकूट का पहुंच चाहता है."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:475 ../gnome-keyring-ask.c:486
+#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "अनुप्रयोग '%s' '%s' के लिये अनजान कीरिंग में शब्दकूट का पहुंच चाहता है."
 
-#: ../gnome-keyring-ask.c:491
+#: ../gnome-keyring-ask.c:783
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "अनजान अनुप्रयोग '%s' के लिये %s में शब्दकूट का पहुंच चाहता है."
 
-#: ../gnome-keyring-ask.c:494
+#: ../gnome-keyring-ask.c:786
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -224,30 +342,30 @@ msgid ""
 msgstr "अनजान अनुप्रयोग '%s' के लिये मूलभूत कीरिंग में शब्दकूट का पहुंच चाहता है."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:497
+#: ../gnome-keyring-ask.c:789
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "अनजान अनुप्रयोग '%s' के लिये अनजान कीरिंग में शब्दकूट का पहुंच चाहता है."
 
-#: ../gnome-keyring-ask.c:502
+#: ../gnome-keyring-ask.c:794
 msgid "Allow access"
 msgstr "अभिगम स्वीकारें"
 
-#: ../gnome-keyring-ask.c:507
+#: ../gnome-keyring-ask.c:799
 msgid "Allow _Once"
 msgstr "स्वीकारें एक बार"
 
-#: ../gnome-keyring-ask.c:508
+#: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
 msgstr "हमेशा स्वीकारें"
 
-#: ../gnome-keyring-ask.c:548
+#: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
 msgstr "आप आग्रह के प्रकार को चलाने के लिये जरूर निर्दिष्ट करें\n"
 
-#: ../gnome-keyring-ask.c:561
+#: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "अज्ञात आग्रह प्रकार\n"
 
