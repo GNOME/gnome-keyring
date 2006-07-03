@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-30 15:59+0200\n"
-"PO-Revision-Date: 2006-06-30 15:59+0200\n"
+"POT-Creation-Date: 2006-07-03 09:57+0300\n"
+"PO-Revision-Date: 2006-07-03 10:01+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -203,58 +203,57 @@ msgid "Choose password for new keyring"
 msgstr "Valitse uuden avainnipun salasana"
 
 #: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Sovellus \"%s\" (%s) tahtoo luoda uuden oletusavainnipun. Sinun täytyy "
-"valita avainnipulle salasana."
+"Sovellus \"%s\" (%s) tahtoo vaihtaa avainrenkaan \"%s\" salasanan. "
+"Sinun täytyy valita avainnipulle käyttettävä salasana."
 
 #: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"Sovellus \"%s\" (%s) tahtoo luoda uuden oletusavainnipun. Sinun täytyy "
-"valita avainnipulle salasana."
+"Sovellus \"%s\" (%s) tahtoo vaihtaa oletusavainnipun salasanan. "
+"Sinun täytyy valita oletusavainnipulle käytettävä salasana."
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Sovellus \"%s\" tahtoo luoda uuden oletusavainnipun. Sinun täytyy valita "
-"avainnipulle salasana."
+"Sovellus \"%s\" tahtoo vaihtaa avainnipun \"%s\" salasanan. Sinun täytyy "
+"valita avainnipulle käytettävä salasana."
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Sovellus \"%s\" tahtoo luoda uuden oletusavainnipun. Sinun täytyy valita "
-"avainnipulle salasana."
+"Sovellus \"%s\" tahtoo vaihtaa oletusavainnipun salasanan. Sinun täytyy "
+"valita oletusavainnipulle käytettävä salasana."
 
 #: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unkown application wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Tuntematon sovellus tahtoo luoda uuden oletusavainnipun. Sinun täytyy valita "
-"avainnipulle salasana."
+"Tuntematon sovellus tahtoo vaihtaa avainnipun \"%s\" salasanan. "
+"Sinun täytyy valita avainnipulle käytettävä salasana."
 
 #: ../gnome-keyring-ask.c:636
-#, fuzzy
 msgid ""
 "An unkown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Tuntematon sovellus tahtoo luoda uuden oletusavainnipun. Sinun täytyy valita "
-"avainnipulle salasana."
+"Tuntematon sovellus tahtoo vaihtaa oletusavainnipun salasanan. "
+"Sinun täytyy valita oletusavainnipulle käytettävä salasana."
 
 #: ../gnome-keyring-ask.c:643
 #, c-format
