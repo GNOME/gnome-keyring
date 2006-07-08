@@ -1,3 +1,8 @@
+2006-07-08  Raivis Dejus  <orvils@gmail.com>
+
+        * lv.po: Added Latvian translation.
+        * LINGUAS: Added 'lv'
+
 2006-07-07  Inaki Larranaga  <dooteo@euskalgnu.org>
 
 	* eu.po: Updated Basque translation.
