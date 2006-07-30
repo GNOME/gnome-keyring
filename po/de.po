@@ -3,36 +3,50 @@
 # This file is distributed under the same license as the gnome-keyring package.
 # Christian Neumair <chris@gnome-de.org>, 2003, 2004.
 # Hendrik Richter <hendrikr@gnome.org>, 2006.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-12 21:23+0200\n"
-"PO-Revision-Date: 2006-04-12 21:24+0200\n"
-"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
+"POT-Creation-Date: 2006-07-30 15:01+0200\n"
+"PO-Revision-Date: 2006-07-30 15:02+0200\n"
+"Last-Translator: Michael Kanis <mkanis@gmx.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gnome-keyring-ask.c:165
+# CHECK
+#: ../gnome-keyring-ask.c:241
+msgid "_Old password:"
+msgstr "_Altes Passwort:"
+
+#: ../gnome-keyring-ask.c:262
 msgid "_Password:"
 msgstr "_Passwort:"
 
-#: ../gnome-keyring-ask.c:186
-msgid "_Confirm password:"
-msgstr "Passwort _bestätigen:"
+#: ../gnome-keyring-ask.c:284
+msgid "_Confirm new password:"
+msgstr "Neues Passwort _bestätigen:"
 
-#: ../gnome-keyring-ask.c:210
+#. Strength bar:
+#: ../gnome-keyring-ask.c:303
+msgid "<span weight=\"bold\">Password strength meter:</span>"
+msgstr "<span weight=\"bold\">Passwortqualität:</span>"
+
+#: ../gnome-keyring-ask.c:329
+msgid "Old password cannot be blank."
+msgstr "Altes Passwort darf nicht leer sein."
+
+#: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
 msgstr "Passwort darf nicht leer sein."
 
-#: ../gnome-keyring-ask.c:218
+#: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
 msgstr "Passwörter stimmen nicht überein."
 
-#: ../gnome-keyring-ask.c:277
+#: ../gnome-keyring-ask.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -41,7 +55,7 @@ msgstr ""
 "Die Anwendung »%s« (%s) versucht, auf den Vorgabe-Schlüsselbund zuzugreifen. "
 "Dieser ist jedoch gesperrt."
 
-#: ../gnome-keyring-ask.c:281
+#: ../gnome-keyring-ask.c:411
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -50,7 +64,7 @@ msgstr ""
 "Dieser ist jedoch gesperrt."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:286
+#: ../gnome-keyring-ask.c:416
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
@@ -59,7 +73,7 @@ msgstr ""
 "Die Anwendung »%s« (%s) versucht, auf einen unbekannten Schlüsselbund "
 "zuzugreifen. Dieser ist jedoch gesperrt."
 
-#: ../gnome-keyring-ask.c:292 ../gnome-keyring-ask.c:306
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -67,7 +81,7 @@ msgstr ""
 "Die Anwendung »%s« versucht, auf den Vorgabe-Schlüsselbund zuzugreifen. "
 "Dieser ist jedoch gesperrt."
 
-#: ../gnome-keyring-ask.c:296 ../gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
@@ -75,7 +89,7 @@ msgstr ""
 "ist jedoch gesperrt."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:300 ../gnome-keyring-ask.c:316
+#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
@@ -83,14 +97,14 @@ msgstr ""
 "Die Anwendung »%s« versucht, auf einen unbekannten Schlüsselbund "
 "zuzugreifen. Dieser ist jedoch gesperrt."
 
-#: ../gnome-keyring-ask.c:322
+#: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Eine unbekannte Anwendung versucht, auf den Vorgabe-Schlüsselbund "
 "zuzugreifen. Dieser ist jedoch gesperrt."
 
-#: ../gnome-keyring-ask.c:326
+#: ../gnome-keyring-ask.c:456
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -99,35 +113,36 @@ msgstr ""
 "Dieser ist jedoch gesperrt."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:331
+#: ../gnome-keyring-ask.c:461
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Eine unbekannte Anwendung versucht, auf einen unbekannten Schlüsselbund "
 "zuzugreifen. Dieser ist jedoch gesperrt."
 
-#: ../gnome-keyring-ask.c:338
+#: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
 msgstr ""
 "Geben Sie das Passwort für den Vorgabe-Schlüsselbund ein, um diesen "
 "freizugeben."
 
-#: ../gnome-keyring-ask.c:340
+#: ../gnome-keyring-ask.c:470
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr ""
 "Geben Sie das Passwort für den Schlüsselbund »%s« ein, um diesen freizugeben."
 
-#: ../gnome-keyring-ask.c:344
+#: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
 msgstr "Schlüsselbund freigeben"
 
-#: ../gnome-keyring-ask.c:349 ../gnome-keyring-ask.c:433
-#: ../gnome-keyring-ask.c:484 ../gnome-keyring-ask.c:571
+#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
 msgid "_Deny"
 msgstr "_Verweigern"
 
-#: ../gnome-keyring-ask.c:387
+#: ../gnome-keyring-ask.c:517
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -137,7 +152,7 @@ msgstr ""
 "anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
 "werden soll."
 
-#: ../gnome-keyring-ask.c:391
+#: ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -147,7 +162,7 @@ msgstr ""
 "anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
 "werden soll."
 
-#: ../gnome-keyring-ask.c:397 ../gnome-keyring-ask.c:407
+#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -157,7 +172,7 @@ msgstr ""
 "anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
 "werden soll."
 
-#: ../gnome-keyring-ask.c:401 ../gnome-keyring-ask.c:411
+#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -166,7 +181,7 @@ msgstr ""
 "Die Anwendung »%s« versucht, einen neuen Vorgabe-Schlüsselbund anzulegen. "
 "Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
 
-#: ../gnome-keyring-ask.c:417
+#: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
 "An unkown application wants to create a new keyring called '%s'. You have to "
@@ -176,7 +191,7 @@ msgstr ""
 "anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
 "werden soll."
 
-#: ../gnome-keyring-ask.c:421
+#: ../gnome-keyring-ask.c:551
 msgid ""
 "An unkown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -185,15 +200,87 @@ msgstr ""
 "anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
 "werden soll."
 
-#: ../gnome-keyring-ask.c:428
+#: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
 msgstr "Passwort für neuen Schlüsselbund"
 
-#: ../gnome-keyring-ask.c:429
+#: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
 msgstr "Legen Sie ein Passwort für den neuen Schlüsselbund fest"
 
-#: ../gnome-keyring-ask.c:462
+#: ../gnome-keyring-ask.c:602
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, das Passwort für den Schlüsselbund »%s« zu "
+"ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet werden "
+"soll."
+
+#: ../gnome-keyring-ask.c:606
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr ""
+"Die Anwendung »%s« (%s) versucht, das Passwort für den Vorgabe-Schlüsselbund "
+"zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
+
+#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"Die Anwendung »%s« versucht, das Passwort für den Schlüsselbund »%s« zu "
+"ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet werden "
+"soll."
+
+#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"Die Anwendung »%s« versucht, das Passwort für den Vorgabe-Schlüsselbund zu "
+"ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet werden "
+"soll."
+
+#: ../gnome-keyring-ask.c:632
+#, c-format
+msgid ""
+"An unkown application wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"Eine unbekannte Anwendung versucht, das Passwort für den Schlüsselbund »%s« "
+"zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
+
+#: ../gnome-keyring-ask.c:636
+msgid ""
+"An unkown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"Eine unbekannte Anwendung versucht, das Passwort für den Vorgabe-"
+"Schlüsselbund zu ändern. Sie müssen ein Passwort festlegen, das für diesen "
+"verwendet werden soll."
+
+#: ../gnome-keyring-ask.c:643
+#, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "Legen Sie ein neues Passwort für den Schlüsselbund »%s« fest."
+
+#: ../gnome-keyring-ask.c:645
+msgid "Choose a new password for the default keyring. "
+msgstr "Legen Sie ein neues Passwort für den Vorgabe-Schlüsselbund fest."
+
+#: ../gnome-keyring-ask.c:650
+msgid "Change Keyring Password"
+msgstr "Passwort für Schlüsselbund ändern"
+
+#: ../gnome-keyring-ask.c:689
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -204,7 +291,7 @@ msgstr ""
 "jedoch kein Vorgabe-Schlüsselbund. Um einen anzulegen müssen Sie ein "
 "Passwort festlegen, das für diesen verwendet werden soll."
 
-#: ../gnome-keyring-ask.c:466 ../gnome-keyring-ask.c:470
+#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -216,7 +303,7 @@ msgstr ""
 "festlegen, das für diesen verwendet werden soll."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:474
+#: ../gnome-keyring-ask.c:701
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -226,26 +313,26 @@ msgstr ""
 "jedoch kein Vorgabe-Schlüsselbund. Um einen anzulegen müssen Sie ein "
 "Passwort festlegen, das für diesen verwendet werden soll."
 
-#: ../gnome-keyring-ask.c:479
+#: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
 msgstr "Vorgabe-Schlüsselbund anlegen"
 
-#: ../gnome-keyring-ask.c:480
+#: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
 msgstr "Legen Sie ein Passwort für den Vorgabe-Schlüsselbund fest"
 
-#: ../gnome-keyring-ask.c:520
+#: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
 msgstr "Der Anwendung Zugriff auf den Schlüsselbund gewähren?"
 
-#: ../gnome-keyring-ask.c:523
+#: ../gnome-keyring-ask.c:750
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr ""
 "Die Anwendung »%s« (%s) versucht, auf das Passwort für »%s« in %s "
 "zuzugreifen."
 
-#: ../gnome-keyring-ask.c:526
+#: ../gnome-keyring-ask.c:753
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -255,7 +342,7 @@ msgstr ""
 "Schlüsselbund zuzugreifen."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:529
+#: ../gnome-keyring-ask.c:756
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -264,13 +351,13 @@ msgstr ""
 "Die Anwendung »%s« (%s) versucht, auf das Passwort für »%s« in einem "
 "unbekannten Schlüsselbund zuzugreifen."
 
-#: ../gnome-keyring-ask.c:534 ../gnome-keyring-ask.c:545
+#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr ""
 "Die Anwendung »%s« versucht, auf das Passwort für »%s« in %s zuzugreifen."
 
-#: ../gnome-keyring-ask.c:537 ../gnome-keyring-ask.c:548
+#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -280,7 +367,7 @@ msgstr ""
 "Schlüsselbund zuzugreifen."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:540 ../gnome-keyring-ask.c:551
+#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -289,14 +376,14 @@ msgstr ""
 "Die Anwendung »%s« versucht, auf das Passwort für »%s« in einem unbekannten "
 "Schlüsselbund zuzugreifen."
 
-#: ../gnome-keyring-ask.c:556
+#: ../gnome-keyring-ask.c:783
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr ""
 "Eine unbekannte Anwendung versucht, auf das Passwort für »%s« in %s "
 "zuzugreifen."
 
-#: ../gnome-keyring-ask.c:559
+#: ../gnome-keyring-ask.c:786
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -306,7 +393,7 @@ msgstr ""
 "Schlüsselbund zuzugreifen."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:562
+#: ../gnome-keyring-ask.c:789
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -315,22 +402,22 @@ msgstr ""
 "Eine unbekannte Anwendung versucht, auf das Passwort für »%s« in einem "
 "unbekannten Schlüsselbund zuzugreifen."
 
-#: ../gnome-keyring-ask.c:567
+#: ../gnome-keyring-ask.c:794
 msgid "Allow access"
 msgstr "Zugriff gewähren"
 
-#: ../gnome-keyring-ask.c:572
+#: ../gnome-keyring-ask.c:799
 msgid "Allow _Once"
 msgstr "_Einmal gewähren"
 
-#: ../gnome-keyring-ask.c:573
+#: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
 msgstr "_Immer gewähren"
 
-#: ../gnome-keyring-ask.c:613
+#: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
 msgstr "Sie müssen den Typ der auszuführenden Abfrage angeben\n"
 
-#: ../gnome-keyring-ask.c:626
+#: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "Unbekannter Abfragetyp\n"
