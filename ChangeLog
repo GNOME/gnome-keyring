@@ -1,3 +1,8 @@
+2006-08-01  Arangel Angov <ufo@linux.net.mk>
+
+	* Added Slovenian Translation to LINGUAS
+	and added sl.po to /po directory.
+
 2006-06-21  Alexander Larsson  <alexl@redhat.com>
 
 	* gnome-keyring-proto.c (gnome_keyring_proto_start_operation):
