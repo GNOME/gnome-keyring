@@ -1,5 +1,11 @@
 2006-08-11  Alexander Larsson  <alexl@redhat.com>
 
+	* reference/gnome-keyring-docs.sgml:
+	Use sane title in docs (#348477)
+	Patch from Ed Catmur   
+	
+2006-08-11  Alexander Larsson  <alexl@redhat.com>
+
 	* gnome-keyring-daemon.c: (find_keyring):
 	* gnome-keyring.c: (gnome_keyring_find_network_password_sync):
 	Don't crash on deleting a NULL keyring (#350417)
