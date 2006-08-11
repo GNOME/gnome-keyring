@@ -1,3 +1,10 @@
+2006-08-11  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon.c: (find_keyring):
+	* gnome-keyring.c: (gnome_keyring_find_network_password_sync):
+	Don't crash on deleting a NULL keyring (#350417)
+	Patch from Gonzalo Paniagua Javier   
+
 2006-08-01  Arangel Angov <ufo@linux.net.mk>
 
 	* Added Slovenian Translation to LINGUAS

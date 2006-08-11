@@ -602,6 +602,9 @@ find_keyring (const char *name)
 	GList *l;
 	GnomeKeyring *keyring;
 
+	if (name == NULL)
+		return NULL;
+
 	for (l = keyrings; l != NULL; l = l->next) {
 		keyring = l->data;
 

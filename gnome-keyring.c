@@ -2483,6 +2483,7 @@ gnome_keyring_find_network_password_sync (const char                            
 	GnomeKeyringResult result;
 	GList *found;
 	
+	out_list = NULL;
 	attributes = make_attribute_list_for_network_password (user,
 							       domain,
 							       server,
