@@ -1,3 +1,9 @@
+Changes in version 0.5.2 are:
+* Translation updates
+* Better title in docs
+* Fixed crashes
+* New function: gnome_keyring_item_grant_access_rights_sync
+
 Changes in version 0.5.1 are:
 * Support changing password of a keyring
 * Create ~/.gnome2 if needed
