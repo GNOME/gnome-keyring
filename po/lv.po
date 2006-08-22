@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-08 12:56+0300\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2006-07-08 13:05+0300\n"
 "Last-Translator: Raivis Dejus <orvils@gmail.com>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
@@ -16,7 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
+"2);\n"
 
 #: ../gnome-keyring-ask.c:241
 msgid "_Old password:"
@@ -58,8 +59,10 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:411
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "Programma '%s' (%s) vēlas piekļūt atslēgu saišķim '%s', bet tas ir aizslēgts"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Programma '%s' (%s) vēlas piekļūt atslēgu saišķim '%s', bet tas ir aizslēgts"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:416
@@ -73,7 +76,8 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Programma '%s' vēlas piekļūt noklusētajam atslēgu saišķim, bet tas ir "
 "aizslēgts"
@@ -81,28 +85,35 @@ msgstr ""
 #: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Programma '%s' vēlas piekļūt atslēgu saišķim '%s', bet tas ir aizslēgts"
+msgstr ""
+"Programma '%s' vēlas piekļūt atslēgu saišķim '%s', bet tas ir aizslēgts"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "Programma '%s' vēlas piekļūt nezināmam atslēgu saišķim, bet tas ir aizslēgts"
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Programma '%s' vēlas piekļūt nezināmam atslēgu saišķim, bet tas ir aizslēgts"
 
 #: ../gnome-keyring-ask.c:452
-msgid "An unknown application wants access to the default keyring, but it is locked"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Nezināma programma vēlas piekļūt noklusētajam atslēgu saišķim, bet tas ir "
 "aizslēgts"
 
 #: ../gnome-keyring-ask.c:456
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "Nezināma programma vēlas piekļūt atslēgu saišķim '%s', bet tas ir aizslēgts"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Nezināma programma vēlas piekļūt atslēgu saišķim '%s', bet tas ir aizslēgts"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:461
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Nezināma programma vēlas piekļūt nezināmam atslēgu saišķim, bet tas ir "
 "aizslēgts"
@@ -165,15 +176,15 @@ msgstr ""
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "Nezināma programma vēlas izveidot jaunu atslēgu saišķi ar nosaukumu '%s'. "
 "Lūdzu izvēlieties tam paroli."
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "Nezināma programma vēlas izveidot jaunu noklusēto atslēgu saišķi. Lūdzu "
@@ -192,21 +203,27 @@ msgstr "Izvēlieties jaunu paroli atslēgu saišķim"
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "Programma '%s' (%s) vēlas mainīt atslēgu saišķa '%s' paroli. Lūdzu izvēlieties paroli šim nolūkam."
+msgstr ""
+"Programma '%s' (%s) vēlas mainīt atslēgu saišķa '%s' paroli. Lūdzu "
+"izvēlieties paroli šim nolūkam."
 
 #: ../gnome-keyring-ask.c:606
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
-msgstr "Programma '%s' (%s) vēlas mainīt noklusētā atslēgu saišķa paroli. Lūdzu izvēlieties paroli šim nolūkam."
+msgstr ""
+"Programma '%s' (%s) vēlas mainīt noklusētā atslēgu saišķa paroli. Lūdzu "
+"izvēlieties paroli šim nolūkam."
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
-msgstr "Programma '%s' vēlas mainīt atslēgu saišķa '%s' paroli. Lūdzu izvēlieties paroli šim nolūkam."
+msgstr ""
+"Programma '%s' vēlas mainīt atslēgu saišķa '%s' paroli. Lūdzu izvēlieties "
+"paroli šim nolūkam."
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
 #, c-format
@@ -220,13 +237,15 @@ msgstr ""
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr "Nezināma programma vēlas mainīt atslēgu saišķa '%s' paroli. Lūdzu izvēlieties paroli šim nolūkam."
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"Nezināma programma vēlas mainīt atslēgu saišķa '%s' paroli. Lūdzu "
+"izvēlieties paroli šim nolūkam."
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
 "Nezināma programma vēlas mainīt noklusētā atslēgu saišķa paroli. Lūdzu "
@@ -293,7 +312,8 @@ msgstr "Atļaut programmai pieeju atslēgu saišķim?"
 #: ../gnome-keyring-ask.c:750
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Programma '%s' (%s) vēlas piekļūt parolei priekš '%s', kura tiek glabāta %s."
+msgstr ""
+"Programma '%s' (%s) vēlas piekļūt parolei priekš '%s', kura tiek glabāta %s."
 
 #: ../gnome-keyring-ask.c:753
 #, c-format
@@ -317,7 +337,8 @@ msgstr ""
 #: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Programma '%s' vēlas piekļūt parolei priekš '%s', kura tiek glabāta %s."
+msgstr ""
+"Programma '%s' vēlas piekļūt parolei priekš '%s', kura tiek glabāta %s."
 
 #: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
 #, c-format
@@ -341,7 +362,8 @@ msgstr ""
 #: ../gnome-keyring-ask.c:783
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Nezināma programma vēlas piekļūt parolei priekš '%s', kura tiek glabāta %s."
+msgstr ""
+"Nezināma programma vēlas piekļūt parolei priekš '%s', kura tiek glabāta %s."
 
 #: ../gnome-keyring-ask.c:786
 #, c-format
@@ -381,4 +403,3 @@ msgstr "Lūdzu norādiet pieprasījuma veidu, lai palaistu\n"
 #: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "Nezināms pieprasījuma veids\n"
-

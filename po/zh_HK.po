@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-07 07:28+0200\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2006-07-04 21:09+0800\n"
 "Last-Translator: Woodman Tuen <wmtuen@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) <community@linuxhall.org>\n"
@@ -124,7 +124,8 @@ msgstr "禁止(_D)"
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "程式‘%s’(%s) 要求新增一個密碼匙圈，名為：‘%s’。你需要給它選用一個密碼。"
+msgstr ""
+"程式‘%s’(%s) 要求新增一個密碼匙圈，名為：‘%s’。你需要給它選用一個密碼。"
 
 #: ../gnome-keyring-ask.c:521
 #, c-format
@@ -150,13 +151,14 @@ msgstr "程式 ‘%s’要求新增一個預設密碼匙圈。你需要給它選
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr "不明的程式要求建立一個新的密碼匙圈，名為：‘%s’。你需要給它選用一個密碼。"
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
+msgstr ""
+"不明的程式要求建立一個新的密碼匙圈，名為：‘%s’。你需要給它選用一個密碼。"
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "不明的程式要求建立一個預設密碼匙圈。你需要給它選用一個密碼。"
 
@@ -199,13 +201,13 @@ msgstr "程式 ‘%s’要求更改預設密碼匙圈的密碼。你需要給它
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
 msgstr "一個不明的程式要求更改密碼匙圈‘%s’的密碼。你需要給它選用一個密碼。"
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr "一個不明的程式要求更改預設密碼匙圈的密碼。你需要給它選用一個密碼。"
 
@@ -239,8 +241,8 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"程式‘%s’要求儲存一個密碼，但是這裏並沒有預設密碼匙圈。要新增一個預設密碼匙圈，你"
-"需要給它選用一個密碼。"
+"程式‘%s’要求儲存一個密碼，但是這裏並沒有預設密碼匙圈。要新增一個預設密碼匙"
+"圈，你需要給它選用一個密碼。"
 
 #. app == APPLICATION_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:701
@@ -249,8 +251,8 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"不明的程式要求儲存一個密碼，但是這裏並沒有預設密碼匙圈。要新增一個預設密碼匙圈，"
-"你需要給它選用一個密碼。"
+"不明的程式要求儲存一個密碼，但是這裏並沒有預設密碼匙圈。要新增一個預設密碼匙"
+"圈，你需要給它選用一個密碼。"
 
 #: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"

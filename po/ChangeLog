@@ -1,3 +1,9 @@
+2006-08-22  Wouter Bolsterlee  <uws+gnome@xs4all.nl>
+
+	* po/*: Fix "unkown" typo in all .po files and run
+	"make update-po" to update all translations (to avoid
+	breaking string freeze). See main ChangeLog for details.
+
 === gnome-keyring 0.5.2 ===
 
 2006-08-18  Thierry Randrianiriana  <randrianiriana@gmail.com>

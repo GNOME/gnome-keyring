@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-17 23:34+0900\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2006-08-17 23:44+0900\n"
 "Last-Translator: Satoru SATOH <ss@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -177,15 +177,15 @@ msgstr ""
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "不明なアプリケーションが '%s' という新しいキーリングを生成しようとしていま"
 "す。このキーリングのパスワードを選択して下さい。"
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "不明なアプリケーションが新しいデフォルトのキーリングを生成しようとしていま"
@@ -204,49 +204,53 @@ msgstr "新しいキーリングのパスワードの選択"
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "アプリケーション '%s' (%s) はキーリング '%s' の"
-"パスワードの変更を求めています。それを使いたいのなら"
-"パスワードを選択して下さい。"
+msgstr ""
+"アプリケーション '%s' (%s) はキーリング '%s' のパスワードの変更を求めていま"
+"す。それを使いたいのならパスワードを選択して下さい。"
 
 #: ../gnome-keyring-ask.c:606
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
-msgstr "アプリケーション '%s' (%s) はデフォルトキーリングの"
-"パスワードの変更を求めています。それを使いたいのなら"
-"パスワードを選択して下さい。"
+msgstr ""
+"アプリケーション '%s' (%s) はデフォルトキーリングのパスワードの変更を求めてい"
+"ます。それを使いたいのならパスワードを選択して下さい。"
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
-msgstr "アプリケーション '%s' はキーリング '%s' のパスワードの変更を"
-"求めています。それを使いたいのならパスワードを選択して下さい。"
+msgstr ""
+"アプリケーション '%s' はキーリング '%s' のパスワードの変更を求めています。そ"
+"れを使いたいのならパスワードを選択して下さい。"
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr "アプリケーション '%s' はデフォルトキーリングのパスワードの変更を"
-"求めています。それを使いたいのならパスワードを選択して下さい。"
+msgstr ""
+"アプリケーション '%s' はデフォルトキーリングのパスワードの変更を求めていま"
+"す。それを使いたいのならパスワードを選択して下さい。"
 
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr "不明なアプリケーションがキーリング '%s' のパスワードの変更を"
-"求めています。それを使いたいのならパスワードを選択して下さい。"
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"不明なアプリケーションがキーリング '%s' のパスワードの変更を求めています。そ"
+"れを使いたいのならパスワードを選択して下さい。"
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr "不明なアプリケーションがデフォルトキーリングのパスワードの変更を"
-"求めています。それを使いたいのならパスワードを選択して下さい。"
+msgstr ""
+"不明なアプリケーションがデフォルトキーリングのパスワードの変更を求めていま"
+"す。それを使いたいのならパスワードを選択して下さい。"
 
 #: ../gnome-keyring-ask.c:643
 #, c-format

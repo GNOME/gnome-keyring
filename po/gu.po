@@ -156,7 +156,7 @@ msgstr ""
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
+"An unknown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "એક અજ્ઞાત કાર્યક્રમ '%s' તરીકે ઓળખાતી નવી કીરીંગ બનાવવા માંગે છે. તમારે એને વાપરવા માટે "
@@ -164,7 +164,7 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "એક અજ્ઞાત કાર્યક્રમ નવી મૂળભુત કીરીંગ બનાવવા માંગે છે. તમારે તેને વાપરવા માટે પાસવર્ડ પસંદ "
@@ -209,13 +209,13 @@ msgstr "કાર્યક્રમ '%s' એ મૂળભૂક કીરીં�
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
+"An unknown application wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr "અજ્ઞાત કાર્યક્રમ '%s' કીરીંગ માટે પાસવર્ડ બદલવા માંગે છે. તમારે તેની સાથે વાપરવા માટે પાસવર્ડ પસંદ કરવો પડશે."
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr "અજ્ઞાત કાર્યક્રમ મૂળભૂત કીરીંગ માટે પાસવર્ડ બદલવા માંગે છે. તમારે તેની સાથે વાપરવા માટે પાસવર્ડ પસંદ કરવો પડશે."
 

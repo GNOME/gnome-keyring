@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-09 22:12+0900\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2006-07-09 22:20+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
@@ -173,15 +173,15 @@ msgstr ""
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "알 수 없는 프로그램에서 '%s' 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠"
 "글을 지정해야 합니다."
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "알 수 없는 프로그램에서 기본 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠"
@@ -200,7 +200,9 @@ msgstr "새 키링에 대한 열쇠글을 지정하십시오"
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "'%s' (%s) 프로그램에서 '%s' 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+msgstr ""
+"'%s' (%s) 프로그램에서 '%s' 키링을 새로 만드려고 합니다. 여기에 사용할 열쇠글"
+"을 지정해야 합니다."
 
 #: ../gnome-keyring-ask.c:606
 #, c-format
@@ -216,27 +218,35 @@ msgstr ""
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
-msgstr "'%s' 프로그램에서 '%s' 키링에 대한 열쇠글을 바꾸려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+msgstr ""
+"'%s' 프로그램에서 '%s' 키링에 대한 열쇠글을 바꾸려고 합니다. 여기에 사용할 열"
+"쇠글을 지정해야 합니다."
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr "'%s' 프로그램에서 기본 키링을 열쇠글을 바꾸려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+msgstr ""
+"'%s' 프로그램에서 기본 키링을 열쇠글을 바꾸려고 합니다. 여기에 사용할 열쇠글"
+"을 지정해야 합니다."
 
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr "알 수 없는 프로그램에서 '%s' 키링의 열쇠글을 바꾸려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"알 수 없는 프로그램에서 '%s' 키링의 열쇠글을 바꾸려고 합니다. 여기에 사용할 "
+"열쇠글을 지정해야 합니다."
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr "알 수 없는 프로그램에서 기본 키링을 열쇠글을 바꾸려고 합니다. 여기에 사용할 열쇠글을 지정해야 합니다."
+msgstr ""
+"알 수 없는 프로그램에서 기본 키링을 열쇠글을 바꾸려고 합니다. 여기에 사용할 "
+"열쇠글을 지정해야 합니다."
 
 #: ../gnome-keyring-ask.c:643
 #, c-format

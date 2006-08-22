@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-23 19:55+0700\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2006-05-23 20:14+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <L10n@opentle.org>\n"
@@ -16,111 +16,111 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-keyring-ask.c:241
+#: ../gnome-keyring-ask.c:241
 msgid "_Old password:"
 msgstr "รหัสผ่านเ_ดิม:"
 
-#: gnome-keyring-ask.c:262
+#: ../gnome-keyring-ask.c:262
 msgid "_Password:"
 msgstr "_รหัสผ่าน:"
 
-#: gnome-keyring-ask.c:284
+#: ../gnome-keyring-ask.c:284
 msgid "_Confirm new password:"
 msgstr "_ยืนยันรหัสผ่านใหม่:"
 
 #. Strength bar:
-#: gnome-keyring-ask.c:303
+#: ../gnome-keyring-ask.c:303
 msgid "<span weight=\"bold\">Password strength meter:</span>"
 msgstr "<span weight=\"bold\">มาตรวัดความแน่นหนาของรหัสผ่าน:</span>"
 
-#: gnome-keyring-ask.c:329
+#: ../gnome-keyring-ask.c:329
 msgid "Old password cannot be blank."
 msgstr "รหัสผ่านเดิมเป็นค่าว่างเปล่าไม่ได้"
 
-#: gnome-keyring-ask.c:340
+#: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
 msgstr "รหัสผ่านเป็นค่าว่างเปล่าไม่ได้"
 
-#: gnome-keyring-ask.c:348
+#: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
 msgstr "รหัสผ่านไม่ตรงกัน"
 
-#: gnome-keyring-ask.c:407
+#: ../gnome-keyring-ask.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: gnome-keyring-ask.c:411
+#: ../gnome-keyring-ask.c:411
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจ %s ซึ่งถูกล็อคอยู่"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:416
+#: ../gnome-keyring-ask.c:416
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจไม่ทราบชื่อซึ่งถูกล็อคอยู่"
 
-#: gnome-keyring-ask.c:422 gnome-keyring-ask.c:436
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: gnome-keyring-ask.c:426 gnome-keyring-ask.c:441
+#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจ %s ซึ่งถูกล็อคอยู่"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:430 gnome-keyring-ask.c:446
+#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจไม่ทราบชื่อซึ่งถูกล็อคอยู่"
 
-#: gnome-keyring-ask.c:452
+#: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: gnome-keyring-ask.c:456
+#: ../gnome-keyring-ask.c:456
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรมที่ไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจ '%s' ซึ่งถูกล็อคอยู่"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:461
+#: ../gnome-keyring-ask.c:461
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจไม่ทราบชื่อซึ่งถูกล็อคอยู่"
 
-#: gnome-keyring-ask.c:468
+#: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
 msgstr "ใส่รหัสผ่านสำหรับเปิดล็อคพวงกุญแจปริยาย"
 
-#: gnome-keyring-ask.c:470
+#: ../gnome-keyring-ask.c:470
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "ใส่รหัสผ่านสำหรับเปิดล็อคพวงกุญแจ '%s'"
 
-#: gnome-keyring-ask.c:474
+#: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
 msgstr "เปิดล็อคพวงกุญแจ"
 
-#: gnome-keyring-ask.c:479 gnome-keyring-ask.c:563
-#: gnome-keyring-ask.c:655 gnome-keyring-ask.c:711
-#: gnome-keyring-ask.c:798
+#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
 msgid "_Deny"
 msgstr "_ปฏิเสธ"
 
-#: gnome-keyring-ask.c:517
+#: ../gnome-keyring-ask.c:517
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -128,7 +128,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:521
+#: ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -136,45 +136,43 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:527 gnome-keyring-ask.c:537
+#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr ""
-"โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
+msgstr "โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:531 gnome-keyring-ask.c:541
+#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:547
+#: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:551
+#: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr ""
-"โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
+msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:558
+#: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
 msgstr "รหัสผ่านพวงกุญแจใหม่"
 
-#: gnome-keyring-ask.c:559
+#: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
 msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจใหม่"
 
-#: gnome-keyring-ask.c:602
+#: ../gnome-keyring-ask.c:602
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -183,7 +181,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:606
+#: ../gnome-keyring-ask.c:606
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -192,7 +190,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:612 gnome-keyring-ask.c:622
+#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -200,7 +198,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:616 gnome-keyring-ask.c:626
+#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -208,37 +206,37 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:632
+#: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
 msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:636
+#: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: gnome-keyring-ask.c:643
+#: ../gnome-keyring-ask.c:643
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจ '%s'"
 
-#: gnome-keyring-ask.c:645
+#: ../gnome-keyring-ask.c:645
 msgid "Choose a new password for the default keyring. "
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจปริยาย"
 
-#: gnome-keyring-ask.c:650
+#: ../gnome-keyring-ask.c:650
 msgid "Change Keyring Password"
 msgstr "เปลี่ยนรหัสผ่านพวงกุญแจ"
 
-#: gnome-keyring-ask.c:689
+#: ../gnome-keyring-ask.c:689
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -248,7 +246,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการเก็บรหัสผ่าน แต่คุณไม่มีพวงกุญแจปริยาย ถ้าจะสร้างพวงกุญแจดังกล่าว "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
-#: gnome-keyring-ask.c:693 gnome-keyring-ask.c:697
+#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -259,7 +257,7 @@ msgstr ""
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:701
+#: ../gnome-keyring-ask.c:701
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -268,24 +266,24 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการเก็บรหัสผ่าน แต่คุณไม่มีพวงกุญแจปริยาย ถ้าจะสร้างพวงกุญแจดังกล่าว "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
-#: gnome-keyring-ask.c:706
+#: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
 msgstr "สร้างพวงกุญแจปริยาย"
 
-#: gnome-keyring-ask.c:707
+#: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
 msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจปริยาย"
 
-#: gnome-keyring-ask.c:747
+#: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
 msgstr "ยอมให้โปรแกรมใช้พวงกุญแจนี้ไหม?"
 
-#: gnome-keyring-ask.c:750
+#: ../gnome-keyring-ask.c:750
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '%s' จาก %s"
 
-#: gnome-keyring-ask.c:753
+#: ../gnome-keyring-ask.c:753
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -293,19 +291,19 @@ msgid ""
 msgstr "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '%s' จากพวงกุญแจปริยาย"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:756
+#: ../gnome-keyring-ask.c:756
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '%s' จากพวงกุญแจไม่ทราบชื่อ"
 
-#: gnome-keyring-ask.c:761 gnome-keyring-ask.c:772
+#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '%s' จาก %s"
 
-#: gnome-keyring-ask.c:764 gnome-keyring-ask.c:775
+#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -313,19 +311,19 @@ msgid ""
 msgstr "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '%s' จากพวงกุญแจปริยาย"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:767 gnome-keyring-ask.c:778
+#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '%s' จากพวงกุญแจไม่ทราบชื่อ"
 
-#: gnome-keyring-ask.c:783
+#: ../gnome-keyring-ask.c:783
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '%s' จาก %s"
 
-#: gnome-keyring-ask.c:786
+#: ../gnome-keyring-ask.c:786
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -333,29 +331,29 @@ msgid ""
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '%s' จากพวงกุญแจปริยาย"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:789
+#: ../gnome-keyring-ask.c:789
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '%s' จากพวงกุญแจไม่ทราบชื่อ"
 
-#: gnome-keyring-ask.c:794
+#: ../gnome-keyring-ask.c:794
 msgid "Allow access"
 msgstr "ยอมให้ใช้"
 
-#: gnome-keyring-ask.c:799
+#: ../gnome-keyring-ask.c:799
 msgid "Allow _Once"
 msgstr "ยอมแ_ค่ครั้งนี้"
 
-#: gnome-keyring-ask.c:800
+#: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
 msgstr "ยอม_ตลอดไป"
 
-#: gnome-keyring-ask.c:840
+#: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
 msgstr "คุณต้องบอกชนิดข้อร้องขอที่จะเรียกใช้\n"
 
-#: gnome-keyring-ask.c:857
+#: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "ไม่รู้จักชนิดข้อร้องขอ\n"

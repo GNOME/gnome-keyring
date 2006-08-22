@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-27 19:07+0100\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2004-09-13 18:59+0200\n"
 "Last-Translator: Arafat Medini <lumina@silverpen.de>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -17,15 +17,36 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-keyring-ask.c:195
+#: ../gnome-keyring-ask.c:241
+msgid "_Old password:"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:262
+msgid "_Password:"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:284
+msgid "_Confirm new password:"
+msgstr ""
+
+#. Strength bar:
+#: ../gnome-keyring-ask.c:303
+msgid "<span weight=\"bold\">Password strength meter:</span>"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:329
+msgid "Old password cannot be blank."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
 msgstr ""
 
-#: gnome-keyring-ask.c:203
+#: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
 msgstr ""
 
-#: gnome-keyring-ask.c:262
+#: ../gnome-keyring-ask.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -33,7 +54,7 @@ msgid ""
 msgstr ""
 "يريد التطبيق '%s'·(%s) النفاذ إلى طوق المفاتيح الإفتراضي لكن الطوق مقفول"
 
-#: gnome-keyring-ask.c:266
+#: ../gnome-keyring-ask.c:411
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -41,69 +62,68 @@ msgstr ""
 "يريد·التطبيق·'%s' (%s)·النفاذ·إلى·طوق·المفاتيح·الإفتراضي·'%s' لكن·الطوق مقفول"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:271
+#: ../gnome-keyring-ask.c:416
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr "يريد·التطبيق·'%s' (%s)·النفاذ·إلى·طوق·مفاتيح·مجهول·لكن·الطوق مقفول"
 
-#: gnome-keyring-ask.c:277 gnome-keyring-ask.c:291
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "يريد التطبيق '%s' النفاذ إلى طوق المفاتيح الإفتراضي لكن الطوق مقفول"
 
-#: gnome-keyring-ask.c:281 gnome-keyring-ask.c:296
+#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "يريد التطبيق '%s' النفاذ إلى طوق المفاتيح '%s' لكن الطوق مقفول"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:285 gnome-keyring-ask.c:301
+#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr "يريد التطبيق '%s' النفاذ إلى طوق مفاتيح مجهول لكن الطوق مقفول"
 
-#: gnome-keyring-ask.c:307
-#, c-format
+#: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "يريد تطبيق مجهول النفاذ إلى طوق المفاتيح الإفتراضي لكن الطوق مقفول"
 
-#: gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:456
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "يريد·تطبيق·مجهول·النفاذ·إلى·طوق·المفاتيح·'%s'·لكن·الطوق·مقفول"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:316
-#, c-format
+#: ../gnome-keyring-ask.c:461
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr "يريد·تطبيق·مجهول·النفاذ·إلى·طوق·مفاتيح·مجهول·لكن·الطوق·مقفول"
 
-#: gnome-keyring-ask.c:323
+#: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
 msgstr "إدخل كلمة السر لفك قفل طوق المفاتيح"
 
-#: gnome-keyring-ask.c:325
+#: ../gnome-keyring-ask.c:470
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "أدخل كلمة سر طوق المفاتيح '%s' لفك قفله"
 
-#: gnome-keyring-ask.c:329
+#: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
 msgstr "فك قفل طوق المفاتبح"
 
-#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
-#: gnome-keyring-ask.c:556
+#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
 msgid "_Deny"
 msgstr "_رفض"
 
-#: gnome-keyring-ask.c:372
+#: ../gnome-keyring-ask.c:517
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -112,7 +132,7 @@ msgstr ""
 "يريد التطبيق '%s'·(%s) إنشاء طوق مفاتيح جديد بإسم '%s'.يفترض أن تختار كلمة "
 "السر التي تريد استخدمها لهذا الغرض."
 
-#: gnome-keyring-ask.c:376
+#: ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -121,7 +141,7 @@ msgstr ""
 "يريد·التطبيق·'%s' (%s)·إنشاء·طوق·مفاتيح إفتراضي·جديد·بإسم."
 "يفترض·أن·تختار·كلمة·السر·التي·تريد·استخدمها·لهذا·الغرض."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -130,7 +150,7 @@ msgstr ""
 "يريد·التطبيق·'%s' ·إنشاء·طوق·مفاتيح·جديد·بإسم·'%s'."
 "يفترض·أن·تختار·كلمة·السر·التي·تريد·استخدمها·لهذا·الغرض."
 
-#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
+#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -139,33 +159,101 @@ msgstr ""
 "يريد التطبيق '%s'  إنشاء طوق مفاتيح إفتراضي جديد.يفترض أن تختار كلمة السر "
 "التي تريد استخدمها لهذا الغرض."
 
-#: gnome-keyring-ask.c:402
+#: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "يريد·تطبيق·مجهول·إنشاء·طوق·مفاتيح·جديد·بإسم·'%s'."
 "يفترض·أن·تختار·كلمة·السر·التي·تريد·استخدمها·لهذا·الغرض."
 
-#: gnome-keyring-ask.c:406
-#, c-format
+#: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "يريد تطبيق مجهول إنشاء طوق مفاتيح جديد.يفترض أن تختار كلمة السر التي تريد "
 "استخدمها لهذا الغرض."
 
-#: gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
 msgstr "كلمة سر طوق المفاتيح الجديد"
 
-#: gnome-keyring-ask.c:414
+#: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
 msgstr "أختر كلمة سر لطوق المفاتيح الجديد"
 
-#: gnome-keyring-ask.c:447
+#: ../gnome-keyring-ask.c:602
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"يريد·التطبيق·'%s' (%s)·إنشاء·طوق·مفاتيح إفتراضي·جديد·بإسم."
+"يفترض·أن·تختار·كلمة·السر·التي·تريد·استخدمها·لهذا·الغرض."
+
+#: ../gnome-keyring-ask.c:606
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr ""
+"يريد·التطبيق·'%s' (%s)·إنشاء·طوق·مفاتيح إفتراضي·جديد·بإسم."
+"يفترض·أن·تختار·كلمة·السر·التي·تريد·استخدمها·لهذا·الغرض."
+
+#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s'  إنشاء طوق مفاتيح إفتراضي جديد.يفترض أن تختار كلمة السر "
+"التي تريد استخدمها لهذا الغرض."
+
+#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s'  إنشاء طوق مفاتيح إفتراضي جديد.يفترض أن تختار كلمة السر "
+"التي تريد استخدمها لهذا الغرض."
+
+#: ../gnome-keyring-ask.c:632
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"يريد تطبيق مجهول إنشاء طوق مفاتيح جديد.يفترض أن تختار كلمة السر التي تريد "
+"استخدمها لهذا الغرض."
+
+#: ../gnome-keyring-ask.c:636
+#, fuzzy
+msgid ""
+"An unknown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"يريد تطبيق مجهول إنشاء طوق مفاتيح جديد.يفترض أن تختار كلمة السر التي تريد "
+"استخدمها لهذا الغرض."
+
+#: ../gnome-keyring-ask.c:643
+#, fuzzy, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "أختر كلمة سر لطوق المفاتيح الجديد"
+
+#: ../gnome-keyring-ask.c:645
+#, fuzzy
+msgid "Choose a new password for the default keyring. "
+msgstr "إختر كلمة سر للطوق الإفتراضي"
+
+#: ../gnome-keyring-ask.c:650
+#, fuzzy
+msgid "Change Keyring Password"
+msgstr "كلمة سر طوق المفاتيح الجديد"
+
+#: ../gnome-keyring-ask.c:689
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -175,7 +263,7 @@ msgstr ""
 "يريد التطبيق '%s'·(%s)·حفظ كلمة سر، لكنه لا يوجد طوق مفاتيح إفتراضيلهذه "
 "العملية. لإنشاء طوق يجب أن تختار كلمة سر تريد استخدامه معه."
 
-#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
+#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -186,8 +274,7 @@ msgstr ""
 "·لإنشاء·طوق·يجب·أن·تختار·كلمة·سر·تريد·استخدامه·معه."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:459
-#, c-format
+#: ../gnome-keyring-ask.c:701
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -196,24 +283,24 @@ msgstr ""
 "يريد·تطبيق·مجهول حفظ·كلمة·سر،·لكنه·لا·يوجد·طوق·مفاتيح·إفتراضيلهذه·العملية."
 "·لإنشاء·طوق·يجب·أن·تختار·كلمة·سر·تريد·استخدامه·معه."
 
-#: gnome-keyring-ask.c:464
+#: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
 msgstr "إنشاء طوق مفاتيح إفتراضي"
 
-#: gnome-keyring-ask.c:465
+#: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
 msgstr "إختر كلمة سر للطوق الإفتراضي"
 
-#: gnome-keyring-ask.c:505
+#: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
 msgstr "هل تريد السماح للتطبيق  النفاذ لطوق المفاتيح؟"
 
-#: gnome-keyring-ask.c:508
+#: ../gnome-keyring-ask.c:750
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "يريد التطبيق '%s'·(%s)·النفاذ إلى كلمة السر لـ '%s'في %s."
 
-#: gnome-keyring-ask.c:511
+#: ../gnome-keyring-ask.c:753
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -222,7 +309,7 @@ msgstr ""
 "يريد·التطبيق·'%s' (%s) النفاذ·إلى·كلمة·السر·لـ·'%s'في·طوق المفاتيح الإفتراضي."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:514
+#: ../gnome-keyring-ask.c:756
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -230,12 +317,12 @@ msgid ""
 msgstr ""
 "يريد·التطبيق·'%s' (%s) النفاذ·إلى·كلمة·السر·لـ·'%s'في·طوق مفاتيح مجهول."
 
-#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
+#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "يريد·التطبيق·'%s' النفاذ·إلى·كلمة·السر·لـ·'%s'في·%s."
 
-#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
+#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -244,19 +331,19 @@ msgstr ""
 "يريد·التطبيق·'%s' النفاذ·إلى·كلمة·السر·لـ·'%s'في·طوق المفاتيح الإفتراضي."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
+#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "يريدالتطبيق '%s'  النفاذ إلى كلمة السر لـ '%s' في طوق مفاتيح مجهول."
 
-#: gnome-keyring-ask.c:541
+#: ../gnome-keyring-ask.c:783
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "يريد·تطبيق·مجهول النفاذ·إلى·كلمة·السر·لـ·'%s'في·%s."
 
-#: gnome-keyring-ask.c:544
+#: ../gnome-keyring-ask.c:786
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -265,31 +352,29 @@ msgstr ""
 "يريد·تطبيق·مجهول النفاذ·إلى·كلمة·السر·لـ·'%s'في·طوق المفاتيح الإفتراضي."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:547
+#: ../gnome-keyring-ask.c:789
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr "يريد·تطبيق·مجهول النفاذ·إلى·كلمة·السر·لـ·'%s'في·طوق مفاتيح مجهول"
 
-#: gnome-keyring-ask.c:552
+#: ../gnome-keyring-ask.c:794
 msgid "Allow access"
 msgstr "السماح بالنفاذ"
 
-#: gnome-keyring-ask.c:557
+#: ../gnome-keyring-ask.c:799
 msgid "Allow _Once"
 msgstr "السماح مرة _واحدة"
 
-#: gnome-keyring-ask.c:558
+#: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
 msgstr "ال_سماح دائما"
 
-#: gnome-keyring-ask.c:598
-#, c-format
+#: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
 msgstr "يجب أن تأكد نوع الطلب الذي تريد تشغيله\n"
 
-#: gnome-keyring-ask.c:611
-#, c-format
+#: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "نوع الطلب مجهول\n"

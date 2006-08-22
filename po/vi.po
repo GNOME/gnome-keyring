@@ -164,14 +164,14 @@ msgstr "Ứng dụng « %s » muốn tạo vòng khóa mặc định mới. Bạ
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
+"An unknown application wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr "Ứng dụng lạ muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật khẩu bạn "
 "muốn dùng để mở vòng khóa này."
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "Ứng dụng lạ muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu bạn muốn "
 "dùng để mở vòng khóa này."
@@ -217,13 +217,13 @@ msgstr "Ứng dụng « %s » muốn thay đổi mật khẫu cho vòng khoá m�
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
+"An unknown application wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr "Ứng dụng lạ muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần phải chọn mật khẩu cho nó."
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr "Ứng dụng lạ muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần phải chọn mật khẩu cho nó."
 

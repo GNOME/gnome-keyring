@@ -183,15 +183,15 @@ msgstr ""
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "Een onbekend programma wil een nieuwe sleutelbos aanmaken genaamd ‘%s’. U "
 "kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "Een onbekend programma wil een nieuwe standaard sleutelbos aanmaken.U kunt "
@@ -244,15 +244,15 @@ msgstr ""
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
 msgstr ""
 "Een onbekend programma wil het wachtwoord voor de sleutelbos ‘%s’ wijzigen.U "
 "kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
 "Een onbekend programma wil het wachtwoord voor de standaard sleutelbos "

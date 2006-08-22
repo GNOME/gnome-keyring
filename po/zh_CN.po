@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-05 06:44+0200\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2006-05-05 17:31+0800\n"
 "Last-Translator: Neo Willis <willis@linux.net>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -153,13 +153,13 @@ msgstr "应用程序“%s”想要创建新的默认密钥环。您必须为该�
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr "未知应用程序想要创建名为“%s”的新密钥环。您必须为该密钥环选择一个密码。"
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "未知应用程序想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
 
@@ -176,14 +176,16 @@ msgstr "选择新密钥环的密码"
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "应用程序“%s”(%s)想要更改“%s”密钥环的密码。您必须为该密钥环选择一个密码。"
+msgstr ""
+"应用程序“%s”(%s)想要更改“%s”密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #: ../gnome-keyring-ask.c:606
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
-msgstr "应用程序“%s”(%s)想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
+msgstr ""
+"应用程序“%s”(%s)想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
 #, c-format
@@ -202,13 +204,13 @@ msgstr "应用程序“%s”想要更改默认密钥环的密码。您必须为�
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
 msgstr "未知应用程序想要更改“%s”密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr "未知应用程序想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
 

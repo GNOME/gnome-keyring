@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-19 13:59+0300\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2006-07-19 14:00+0300\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
@@ -56,7 +56,8 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:411
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Η εφαρμογή '%s' (%s)  επιθυμεί πρόσβαση στο keyring %s, αλλά είναι "
 "κλειδωμένο."
@@ -73,7 +74,8 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Η εφαρμογή %s επιθυμεί πρόσβαση στο προεπιλεγμένο keyring, αλλά είναι "
 "κλειδωμένο."
@@ -81,32 +83,37 @@ msgstr ""
 #: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Η εφαρμογή '%s' επιθυμεί πρόσβαση στο keyring %s, αλλά είναι κλειδωμένο."
+msgstr ""
+"Η εφαρμογή '%s' επιθυμεί πρόσβαση στο keyring %s, αλλά είναι κλειδωμένο."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Η εφαρμογή '%s' επιθυμεί πρόσβαση σε ένα άγνωστο keyring, αλλά είναι "
 "κλειδωμένο."
 
 #: ../gnome-keyring-ask.c:452
-msgid "An unknown application wants access to the default keyring, but it is locked"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Μια άγνωστη εφαρμογή επιθυμεί πρόσβαση στο προεπιλεγμένο keyring, αλλά είναι "
 "κλειδωμένο."
 
 #: ../gnome-keyring-ask.c:456
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Μια άγνωστη εφαρμογή  επιθυμεί πρόσβαση στο  keyring '%s', αλλά είναι "
 "κλειδωμένο."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:461
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Μια άγνωστη εφαρμογή επιθυμεί πρόσβαση σε ένα άγνωστο keyring, αλλά είναι "
 "κλειδωμένο."
@@ -169,15 +176,15 @@ msgstr ""
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "Μια άγνωστη εφαρμογή επιθυμεί να δημιουργήσει ένα νέο keyring με το όνομα '%"
 "s'. Θα πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "Μια άγνωστη εφαρμογή επιθυμεί να δημιουργήσει ένα νέο προεπιλεγμένο keyring. "
@@ -230,15 +237,15 @@ msgstr ""
 #: ../gnome-keyring-ask.c:632
 #, c-format
 msgid ""
-"An unkown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
 msgstr ""
-"Μια άγνωστη εφαρμογή επιθυμεί  να αλλάξει το κωδικό για το keyring '%s'. Θα πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για "
-"αυτό."
+"Μια άγνωστη εφαρμογή επιθυμεί  να αλλάξει το κωδικό για το keyring '%s'. Θα "
+"πρέπει να επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
 
 #: ../gnome-keyring-ask.c:636
 msgid ""
-"An unkown application wants to change the password for the default keyring. "
+"An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
 "Μια άγνωστη εφαρμογή επιθυμεί  να αλλάξει το κωδικό για το προεπιλεγμένο "
@@ -394,4 +401,3 @@ msgstr "Θα πρέπει να καθορίσετε τον τύπο της αί�
 #: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "Άγνωστος τύπος αίτησης\n"
-

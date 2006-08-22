@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-27 19:07+0100\n"
+"POT-Creation-Date: 2006-08-18 20:49+0200\n"
 "PO-Revision-Date: 2004-02-20 14:32+0200\n"
 "Last-Translator: Görkem Çetin <gorkem@gorkemcetin.com>\n"
 "Language-Team: Turkish\n"
@@ -20,15 +20,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 
-#: gnome-keyring-ask.c:195
+#: ../gnome-keyring-ask.c:241
+msgid "_Old password:"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:262
+msgid "_Password:"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:284
+msgid "_Confirm new password:"
+msgstr ""
+
+#. Strength bar:
+#: ../gnome-keyring-ask.c:303
+msgid "<span weight=\"bold\">Password strength meter:</span>"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:329
+msgid "Old password cannot be blank."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
 msgstr ""
 
-#: gnome-keyring-ask.c:203
+#: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
 msgstr ""
 
-#: gnome-keyring-ask.c:262
+#: ../gnome-keyring-ask.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -37,7 +58,7 @@ msgstr ""
 "'%s' (%s) uygulaması öntanımlı anahtar halkasına ulaşmak istiyor, fakat "
 "anahtar halkası kilitli"
 
-#: gnome-keyring-ask.c:266
+#: ../gnome-keyring-ask.c:411
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -46,7 +67,7 @@ msgstr ""
 "halkası kilitli"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:271
+#: ../gnome-keyring-ask.c:416
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
@@ -55,7 +76,7 @@ msgstr ""
 "'%s' (%s) uygulaması bilinmeyen anahtar halkasına ulaşmak istiyor, fakat "
 "anahtar halkası kilitli"
 
-#: gnome-keyring-ask.c:277 gnome-keyring-ask.c:291
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -63,7 +84,7 @@ msgstr ""
 "'%s' uygulaması öntanımlı anahtar halkasına ulaşmak istiyor, fakat anahtar "
 "halkası kilitli"
 
-#: gnome-keyring-ask.c:281 gnome-keyring-ask.c:296
+#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
@@ -71,7 +92,7 @@ msgstr ""
 "halkası kilitli"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:285 gnome-keyring-ask.c:301
+#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
 #, c-format
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
@@ -79,15 +100,14 @@ msgstr ""
 "'%s' uygulaması bilinmeyen anahtar halkasına ulaşmak istiyor, fakat anahtar "
 "halkası kilitli"
 
-#: gnome-keyring-ask.c:307
-#, c-format
+#: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama öntanımlı anahtar halkasına ulaşmak istiyor, fakat "
 "anahtar halkası kilitli"
 
-#: gnome-keyring-ask.c:311
+#: ../gnome-keyring-ask.c:456
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -96,33 +116,33 @@ msgstr ""
 "anahtar halkası kilitli"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:316
-#, c-format
+#: ../gnome-keyring-ask.c:461
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama bilinmeyen anahtar halkasına ulaşmak istiyor, fakat "
 "anahtar halkası kilitli"
 
-#: gnome-keyring-ask.c:323
+#: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
 msgstr "Öntanımlı anahtar halkasının kilidini açmak için şifre girin"
 
-#: gnome-keyring-ask.c:325
+#: ../gnome-keyring-ask.c:470
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' anahtar halkasının kilidini açmak için şifre girin"
 
-#: gnome-keyring-ask.c:329
+#: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
 msgstr "Anahtar Halkası Kilidini Aç"
 
-#: gnome-keyring-ask.c:334 gnome-keyring-ask.c:418 gnome-keyring-ask.c:469
-#: gnome-keyring-ask.c:556
+#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
 msgid "_Deny"
 msgstr "_Yasakla"
 
-#: gnome-keyring-ask.c:372
+#: ../gnome-keyring-ask.c:517
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -131,7 +151,7 @@ msgstr ""
 "'%s' (%s) uygulaması '%s' adında yeni bir anahtar halkası oluşturmak "
 "istiyor. Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
 
-#: gnome-keyring-ask.c:376
+#: ../gnome-keyring-ask.c:521
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -140,7 +160,7 @@ msgstr ""
 "'%s' (%s) uygulaması yeni bir öntanımlı anahtar halkası oluşturmak istiyor. "
 "Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
 
-#: gnome-keyring-ask.c:382 gnome-keyring-ask.c:392
+#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -149,7 +169,7 @@ msgstr ""
 "'%s' uygulaması '%s' adında yeni bir anahtar halkası oluşturmak istiyor. "
 "Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
 
-#: gnome-keyring-ask.c:386 gnome-keyring-ask.c:396
+#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -158,33 +178,101 @@ msgstr ""
 "'%s' uygulaması yeni bir öntanımlı anahtar halkası oluşturmak istiyor. Onun "
 "için kullanacağınız şifreyi seçmeniz gerekiyor."
 
-#: gnome-keyring-ask.c:402
+#: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unkown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "Bilinmeyen bir uygulama '%s' adında yeni bir anahtar halkası oluşturmak "
 "istiyor. Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
 
-#: gnome-keyring-ask.c:406
-#, c-format
+#: ../gnome-keyring-ask.c:551
 msgid ""
-"An unkown application wants to create a new default keyring. You have to "
+"An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
 "Bilinmeyen bir uygulama yeni bir öntanımlı anahtar halkası oluşturmak "
 "istiyor. Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
 
-#: gnome-keyring-ask.c:413
+#: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
 msgstr "Yeni Anahtar Halkası Şifresi"
 
-#: gnome-keyring-ask.c:414
+#: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
 msgstr "Yeni anahtar halkası için şifre seçin"
 
-#: gnome-keyring-ask.c:447
+#: ../gnome-keyring-ask.c:602
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"'%s' (%s) uygulaması yeni bir öntanımlı anahtar halkası oluşturmak istiyor. "
+"Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
+
+#: ../gnome-keyring-ask.c:606
+#, fuzzy, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr ""
+"'%s' (%s) uygulaması yeni bir öntanımlı anahtar halkası oluşturmak istiyor. "
+"Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
+
+#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"'%s' uygulaması yeni bir öntanımlı anahtar halkası oluşturmak istiyor. Onun "
+"için kullanacağınız şifreyi seçmeniz gerekiyor."
+
+#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"'%s' uygulaması yeni bir öntanımlı anahtar halkası oluşturmak istiyor. Onun "
+"için kullanacağınız şifreyi seçmeniz gerekiyor."
+
+#: ../gnome-keyring-ask.c:632
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"Bilinmeyen bir uygulama yeni bir öntanımlı anahtar halkası oluşturmak "
+"istiyor. Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
+
+#: ../gnome-keyring-ask.c:636
+#, fuzzy
+msgid ""
+"An unknown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"Bilinmeyen bir uygulama yeni bir öntanımlı anahtar halkası oluşturmak "
+"istiyor. Onun için kullanacağınız şifreyi seçmeniz gerekiyor."
+
+#: ../gnome-keyring-ask.c:643
+#, fuzzy, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "Yeni anahtar halkası için şifre seçin"
+
+#: ../gnome-keyring-ask.c:645
+#, fuzzy
+msgid "Choose a new password for the default keyring. "
+msgstr "Öntanımlı anahtar halkası için şifre seçin"
+
+#: ../gnome-keyring-ask.c:650
+#, fuzzy
+msgid "Change Keyring Password"
+msgstr "Yeni Anahtar Halkası Şifresi"
+
+#: ../gnome-keyring-ask.c:689
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -195,7 +283,7 @@ msgstr ""
 "yok. Bir tane yaratmak için, anahtar halkası için kullanacağınız şifreyi "
 "seçmeniz gerekiyor."
 
-#: gnome-keyring-ask.c:451 gnome-keyring-ask.c:455
+#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -207,8 +295,7 @@ msgstr ""
 "seçmeniz gerekiyor."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: gnome-keyring-ask.c:459
-#, c-format
+#: ../gnome-keyring-ask.c:701
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -218,24 +305,24 @@ msgstr ""
 "halkası yok. Bir tane yaratmak istiyorsanız, anahtar halkası için "
 "kullanacağınız şifreyi seçmeniz gerekiyor."
 
-#: gnome-keyring-ask.c:464
+#: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
 msgstr "Öntanımlı Anahtar Halkası Yarat"
 
-#: gnome-keyring-ask.c:465
+#: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
 msgstr "Öntanımlı anahtar halkası için şifre seçin"
 
-#: gnome-keyring-ask.c:505
+#: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
 msgstr "Uygulamanın anahtar halkasına ulaşmasına izin verilsin mi?"
 
-#: gnome-keyring-ask.c:508
+#: ../gnome-keyring-ask.c:750
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "'%s' (%s) uygulaması '%s' için %s 'daki şifreye ulaşmak istiyor."
 
-#: gnome-keyring-ask.c:511
+#: ../gnome-keyring-ask.c:753
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
@@ -245,7 +332,7 @@ msgstr ""
 "ulaşmak istiyor."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:514
+#: ../gnome-keyring-ask.c:756
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
@@ -254,12 +341,12 @@ msgstr ""
 "'%s' (%s) uygulaması '%s' için bilinmeyen anahtar halkasındaki şifreye "
 "ulaşmak istiyor."
 
-#: gnome-keyring-ask.c:519 gnome-keyring-ask.c:530
+#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "'%s' uygulaması '%s' için %s 'daki şifreye ulaşmak istiyor."
 
-#: gnome-keyring-ask.c:522 gnome-keyring-ask.c:533
+#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
@@ -269,7 +356,7 @@ msgstr ""
 "istiyor."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:525 gnome-keyring-ask.c:536
+#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
@@ -278,12 +365,12 @@ msgstr ""
 "'%s' uygulaması '%s' için bilinmeyen anahtar halkasındaki şifreye ulaşmak "
 "istiyor."
 
-#: gnome-keyring-ask.c:541
+#: ../gnome-keyring-ask.c:783
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Bilinmeyen bir uygulama '%s' için %s 'daki şifreye ulaşmak istiyor."
 
-#: gnome-keyring-ask.c:544
+#: ../gnome-keyring-ask.c:786
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in the default "
@@ -293,7 +380,7 @@ msgstr ""
 "ulaşmak istiyor."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: gnome-keyring-ask.c:547
+#: ../gnome-keyring-ask.c:789
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '%s' in an unknown "
@@ -302,24 +389,22 @@ msgstr ""
 "Bilinmeyen bir uygulama '%s' için bilinmeyen anahtar halkasındaki şifreye "
 "ulaşmak istiyor."
 
-#: gnome-keyring-ask.c:552
+#: ../gnome-keyring-ask.c:794
 msgid "Allow access"
 msgstr "Ulaşıma izin ver"
 
-#: gnome-keyring-ask.c:557
+#: ../gnome-keyring-ask.c:799
 msgid "Allow _Once"
 msgstr "Bir _Kereliğine İzin ver"
 
-#: gnome-keyring-ask.c:558
+#: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
 msgstr "_Herzaman İzin ver"
 
-#: gnome-keyring-ask.c:598
-#, c-format
+#: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
 msgstr "Çalıştırılacak isteğin türünü belirtmek zorundasınız\n"
 
-#: gnome-keyring-ask.c:611
-#, c-format
+#: ../gnome-keyring-ask.c:857
 msgid "Unknown request type\n"
 msgstr "Bilinmeyen istek türü\n"
