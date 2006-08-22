@@ -544,11 +544,11 @@ ask_for_new_keyring_password (void)
 		} 
 	} else /* app == APPLICATION_NAME_UNKNOWN */ {
 		if (keyring == KEYRING_NAME_NORMAL) {
-			message = g_strdup_printf (_("An unkown application wants to create a new keyring called '%s'. "
+			message = g_strdup_printf (_("An unknown application wants to create a new keyring called '%s'. "
 						     "You have to choose the password you want to use for it."),
 						   env_keyring_name);
 		} else if (keyring == KEYRING_NAME_DEFAULT) {
-			message = g_strdup_printf (_("An unkown application wants to create a new default keyring. "
+			message = g_strdup_printf (_("An unknown application wants to create a new default keyring. "
 						     "You have to choose the password you want to use for it."));
 		} 
 	}
@@ -629,11 +629,11 @@ ask_for_change_keyring_password (gboolean need_original)
 		} 
 	} else /* app == APPLICATION_NAME_UNKNOWN */ {
 		if (keyring == KEYRING_NAME_NORMAL) {
-			message = g_strdup_printf (_("An unkown application wants to change the password for the '%s' keyring. "
+			message = g_strdup_printf (_("An unknown application wants to change the password for the '%s' keyring. "
 						     "You have to choose the password you want to use for it."),
 						   env_keyring_name);
 		} else if (keyring == KEYRING_NAME_DEFAULT) {
-			message = g_strdup_printf (_("An unkown application wants to change the password for the default keyring. "
+			message = g_strdup_printf (_("An unknown application wants to change the password for the default keyring. "
 						     "You have to choose the password you want to use for it."));
 		} 
 	}

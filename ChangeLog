@@ -1,3 +1,12 @@
+2006-08-22  Wouter Bolsterlee  <uws+gnome@xs4all.nl>
+
+	* gnome-keyring-ask.c: (ask_for_new_keyring_password),
+	(ask_for_change_keyring_password): Fix ugly typo:
+	s/unkown/unknown/
+
+	* po/*: Fix the same typo in all .po files and run
+	"make update-po" to update all translations.
+
 2006-08-21  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
