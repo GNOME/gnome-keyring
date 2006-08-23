@@ -1,3 +1,8 @@
+2006-08-23  Dan Williams  <dcbw@redhat.com>
+
+	* gnome-keyring.c: (gnome_keyring_find_network_password_sync):
+	fix crash due to dereference of NULL (#352587)
+
 2006-08-22  Wouter Bolsterlee  <uws+gnome@xs4all.nl>
 
 	* gnome-keyring-ask.c: (ask_for_new_keyring_password),
