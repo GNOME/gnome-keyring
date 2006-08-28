@@ -93,6 +93,24 @@ static void gnome_keyring_client_state_machine (GnomeKeyringClient *client);
 
 
 static gboolean
+set_local_creds (int fd, gboolean on)
+{
+  gboolean retval = TRUE;
+
+#if defined(LOCAL_CREDS) && !defined(HAVE_CMSGCRED)
+  int val = on ? 1 : 0;
+  if (setsockopt (fd, 0, LOCAL_CREDS, &val, sizeof (val)) < 0)
+    {
+      g_warning ("Unable to set LOCAL_CREDS socket option on fd %d\n", fd);
+      retval = FALSE;
+    }
+#endif
+
+  return retval;
+}
+
+
+static gboolean
 read_unix_socket_credentials (int fd,
 			      pid_t *pid,
 			      uid_t *uid)
@@ -101,27 +119,30 @@ read_unix_socket_credentials (int fd,
 	struct iovec iov;
 	char buf;
 	
-#ifdef HAVE_CMSGCRED 
+#if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
+	/* Prefer CMSGCRED over LOCAL_CREDS because the former provides the
+	 * remote PID. */
+#if defined(HAVE_CMSGCRED)
 	struct cmsgcred *cred;
+	const size_t cmsglen = CMSG_LEN (sizeof (struct cmsgcred));
+	const size_t cmsgspace = CMSG_SPACE (sizeof (struct cmsgcred));
+#else /* defined(LOCAL_CREDS) */
+	struct sockcred *cred;
+	const size_t cmsglen = CMSG_LEN (sizeof (struct sockcred));
+	const size_t cmsgspace = CMSG_SPACE (sizeof (struct sockcred));
+#endif
 	union {
 		struct cmsghdr hdr;
-		char cred[CMSG_SPACE (sizeof (struct cmsgcred))];
+		char cred[cmsgspace];
 	} cmsg;
 #endif
 	
 	*pid = 0;
 	*uid = 0;
 	
-#if defined(LOCAL_CREDS) && defined(HAVE_CMSGCRED) && !defined(__FreeBSD__)
-	/* Set the socket to receive credentials on the next message */
-	{
-		int on = 1;
-		if (setsockopt (fd, 0, LOCAL_CREDS, &on, sizeof (on)) < 0) {
-			g_warning ("Unable to set LOCAL_CREDS socket option\n");
-			return FALSE;
-		}
-	}
-#endif
+	/* If LOCAL_CREDS are used in this platform, they have already been
+	 * initialized by init_connection prior to sending of the credentials
+	 * byte we receive below. */
 	
 	iov.iov_base = &buf;
 	iov.iov_len = 1;
@@ -130,10 +151,10 @@ read_unix_socket_credentials (int fd,
 	msg.msg_iov = &iov;
 	msg.msg_iovlen = 1;
 	
-#ifdef HAVE_CMSGCRED
+#if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
 	memset (&cmsg, 0, sizeof (cmsg));
 	msg.msg_control = (caddr_t) &cmsg;
-	msg.msg_controllen = CMSG_SPACE (sizeof (struct cmsgcred));
+	msg.msg_controllen = cmsgspace;
 #endif
 
  again:
@@ -151,9 +172,8 @@ read_unix_socket_credentials (int fd,
 		return FALSE;
 	}
 
-#ifdef HAVE_CMSGCRED
-	if (cmsg.hdr.cmsg_len < CMSG_LEN (sizeof (struct cmsgcred)) ||
-	    cmsg.hdr.cmsg_type != SCM_CREDS) {
+#if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
+	if (cmsg.hdr.cmsg_len < cmsglen || cmsg.hdr.cmsg_type != SCM_CREDS) {
 		g_warning ("Message from recvmsg() was not SCM_CREDS\n");
 		return FALSE;
 	}
@@ -177,6 +197,11 @@ read_unix_socket_credentials (int fd,
 		cred = (struct cmsgcred *) CMSG_DATA (&cmsg);
 		*pid = cred->cmcred_pid;
 		*uid = cred->cmcred_euid;
+#elif defined(LOCAL_CREDS)
+		cred = (struct sockcred *) CMSG_DATA (&cmsg);
+		*pid = 0;
+		*uid = cred->sc_euid;
+		set_local_creds(fd, FALSE);
 #elif defined(HAVE_GETPEERUCRED)
 		ucred_t *uc = NULL;
 
@@ -639,6 +664,12 @@ create_master_socket (const char **path)
 	
 	if (listen (sock, 128) < 0) {
 		perror ("listen");
+		cleanup_socket_dir ();
+		return FALSE;
+	}
+
+        if (!set_local_creds (sock, TRUE)) {
+		close (sock);
 		cleanup_socket_dir ();
 		return FALSE;
 	}

@@ -340,6 +340,7 @@ gnome_keyring_application_ref_new_from_pid (pid_t pid)
 	app_ref = g_new0 (GnomeKeyringApplicationRef, 1);
 
 #if defined(__linux__) || defined(__FreeBSD__)
+	g_assert (pid > 0);
 	{
 		char *buffer;
 		int len;
