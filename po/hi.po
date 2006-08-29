@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-29 07:27+0200\n"
-"PO-Revision-Date: 2006-06-29 12:06+0530\n"
+"POT-Creation-Date: 2006-08-29 08:27+0200\n"
+"PO-Revision-Date: 2006-08-29 16:29+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,10 +18,11 @@ msgstr ""
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
+"\n"
 
 #: ../gnome-keyring-ask.c:241
 msgid "_Old password:"
-msgstr ""
+msgstr "पुराना शब्दकूट (_O):"
 
 #: ../gnome-keyring-ask.c:262
 msgid "_Password:"
@@ -29,24 +30,24 @@ msgstr "पासवर्ड: (_P)"
 
 #: ../gnome-keyring-ask.c:284
 msgid "_Confirm new password:"
-msgstr ""
+msgstr "नया शब्दकूट सुनिश्चित करें (_C):"
 
 #. Strength bar:
 #: ../gnome-keyring-ask.c:303
 msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Password strength meter:</span>"
 
 #: ../gnome-keyring-ask.c:329
 msgid "Old password cannot be blank."
-msgstr ""
+msgstr "पुराना शब्दकूट नहीं खाली हो सकता है"
 
 #: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
-msgstr ""
+msgstr "शब्दकूट नहीं खाली हो सकता है"
 
 #: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
-msgstr ""
+msgstr "शब्दकूट मेल नहीं खाता है."
 
 #: ../gnome-keyring-ask.c:407
 #, c-format
@@ -156,8 +157,8 @@ msgstr ""
 #: ../gnome-keyring-ask.c:547
 #, c-format
 msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
 msgstr ""
 "एक अनजान अनुप्रयोग '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप "
 "इसके लिये प्रयोग करना चाहते हैं."
@@ -217,8 +218,8 @@ msgstr ""
 #: ../gnome-keyring-ask.c:632
 #, fuzzy, c-format
 msgid ""
-"An unknown application wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
 msgstr ""
 "अनजान अनुप्रयोग नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
 "प्रयोग करना चाहते हैं."
@@ -233,19 +234,17 @@ msgstr ""
 "प्रयोग करना चाहते हैं."
 
 #: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "नये कीरिंग के लिये शब्दकूट चुनें"
+msgstr "कीरिंग '%s' के लिये शब्दकूट चुनें"
 
 #: ../gnome-keyring-ask.c:645
-#, fuzzy
 msgid "Choose a new password for the default keyring. "
-msgstr "डिफ़ॉल्ट कीरिंग के लिये शब्दकूट बदलें"
+msgstr "मूलभूत कीरिंग के लिये शब्दकूट बदलें."
 
 #: ../gnome-keyring-ask.c:650
-#, fuzzy
 msgid "Change Keyring Password"
-msgstr "नया कीरिंग शब्दकूट"
+msgstr "कीरिंग शब्दकूट बदलें"
 
 #: ../gnome-keyring-ask.c:689
 #, c-format
