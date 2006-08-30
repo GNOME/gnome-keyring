@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 2.14\n"
+"Project-Id-Version: 2.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-02-16 01:35+0000\n"
+"POT-Creation-Date: 2006-08-31 00:05+0000\n"
+"PO-Revision-Date: 2006-08-31 00:15+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,25 +17,24 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:241
 msgid "_Old password:"
-msgstr ""
+msgstr "Senha _antiga:"
 
 #: ../gnome-keyring-ask.c:262
 msgid "_Password:"
-msgstr ""
+msgstr "_Senha:"
 
 #: ../gnome-keyring-ask.c:284
 msgid "_Confirm new password:"
-msgstr ""
+msgstr "_Confirme a nova senha:"
 
 #. Strength bar:
 #: ../gnome-keyring-ask.c:303
 msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Medidor de resistência da senha:</span>"
 
 #: ../gnome-keyring-ask.c:329
-#, fuzzy
 msgid "Old password cannot be blank."
-msgstr "Senha não pode ser vazia."
+msgstr "A senha antiga não pode ser vazia."
 
 #: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
@@ -198,73 +197,70 @@ msgid "Choose password for new keyring"
 msgstr "Seleccione a senha para o novo chaveiro"
 
 #: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"A aplicação '%s' (%s) deseja criar um novo chaveiro por omissão. Terá de "
+"A aplicação '%s' (%s) deseja alterar a senha do chaveiro '%s'. Terá de "
 "seleccionar a senha que deseja utilizar no chaveiro."
 
 #: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"A aplicação '%s' (%s) deseja criar um novo chaveiro por omissão. Terá de "
+"A aplicação '%s' (%s) deseja alterar a senha do chaveiro por omissão. Terá de "
 "seleccionar a senha que deseja utilizar no chaveiro."
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"A aplicação '%s' deseja criar um novo chaveiro por omissão. Terá de "
+"A aplicação '%s' deseja alterar a senha do chaveiro '%s'. Terá de "
 "seleccionar a senha que deseja utilizar no chaveiro."
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"A aplicação '%s' deseja criar um novo chaveiro por omissão. Terá de "
+"A aplicação '%s' deseja alterar a senha do chaveiro por omissão. Terá de "
 "seleccionar a senha que deseja utilizar no chaveiro."
 
 #: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Uma aplicação desconhecida deseja criar um novo chaveiro por omissão. Terá "
+"Uma aplicação desconhecida deseja alterar a senha do chaveiro '%s'. Terá "
 "de seleccionar a senha que deseja utilizar no chaveiro."
 
 #: ../gnome-keyring-ask.c:636
-#, fuzzy
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Uma aplicação desconhecida deseja criar um novo chaveiro por omissão. Terá "
+"Uma aplicação desconhecida deseja alterar a senha do chaveiro por omissão. Terá "
 "de seleccionar a senha que deseja utilizar no chaveiro."
 
 #: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Seleccione a senha para o novo chaveiro"
+msgstr "Seleccione uma nova senha para o chaveiro '%s'. "
 
 #: ../gnome-keyring-ask.c:645
-#, fuzzy
 msgid "Choose a new password for the default keyring. "
-msgstr "Seleccione a senha para o chaveiro por omissão"
+msgstr "Seleccione uma nova senha para o chaveiro por omissão. "
 
 #: ../gnome-keyring-ask.c:650
-#, fuzzy
 msgid "Change Keyring Password"
-msgstr "Senha de Novo Chaveiro"
+msgstr "Alterar a Senha do Chaveiro"
 
 #: ../gnome-keyring-ask.c:689
 #, c-format
