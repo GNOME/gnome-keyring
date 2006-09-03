@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-04-04 16:59+0200\n"
+"POT-Creation-Date: 2006-09-03 19:23+0200\n"
+"PO-Revision-Date: 2006-09-03 19:28+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,28 +16,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gnome-keyring-ask.c:241
-#, fuzzy
 msgid "_Old password:"
-msgstr "Contrasen_ya:"
+msgstr "C_ontrasenya antiga:"
 
 #: ../gnome-keyring-ask.c:262
 msgid "_Password:"
 msgstr "Contrasen_ya:"
 
 #: ../gnome-keyring-ask.c:284
-#, fuzzy
 msgid "_Confirm new password:"
-msgstr "_Confirmeu la contraseya:"
+msgstr "_Confirmeu la nova contraseya:"
 
 #. Strength bar:
 #: ../gnome-keyring-ask.c:303
 msgid "<span weight=\"bold\">Password strength meter:</span>"
 msgstr ""
+"<span weight=\"bold\">Mesurador de la fortesa de la contrasenya:</span>"
 
 #: ../gnome-keyring-ask.c:329
-#, fuzzy
 msgid "Old password cannot be blank."
-msgstr "La contrasenya no pot estar buida."
+msgstr "La contrasenya antiga no pot estar buida."
 
 #: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
@@ -196,73 +194,70 @@ msgid "Choose password for new keyring"
 msgstr "Seleccioneu una contrasenya per al nou anell de claus"
 
 #: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"L'aplicació «%s» (%s) vol crear un nou anell de claus per defecte. Heu "
-"d'establir la contrasenya que hi vulgueu utilitzar."
+"L'aplicació «%s» (%s) vol canviar la contrasenya de l'anell de claus «%s». "
+"Heu d'escollir la contrasenya que hi vulgueu utilitzar."
 
 #: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"L'aplicació «%s» (%s) vol crear un nou anell de claus per defecte. Heu "
-"d'establir la contrasenya que hi vulgueu utilitzar."
+"L'aplicació «%s» (%s) vol canviar la contrasenya de l'anell de claus per "
+"defecte. Heu d'escollir la contrasenya que hi vulgueu utilitzar."
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"L'aplicació «%s» vol crear un nou anell de claus per defecte. Heu d'establir "
-"la contrasenya que hi vulgueu utilitzar."
+"L'aplicació «%s» vol canviar la contrasenya de l'anell de claus «%s». Heu "
+"d'escollir la contrasenya que hi vulgueu utilitzar."
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"L'aplicació «%s» vol crear un nou anell de claus per defecte. Heu d'establir "
-"la contrasenya que hi vulgueu utilitzar."
+"L'aplicació «%s» vol canviar la contrasenya de l'anell de claus per defecte. "
+"Heu d'escollir la contrasenya que hi vulgueu utilitzar."
 
 #: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Una aplicació desconeguda vol crear un nou anell de claus per defecte. Heu "
-"d'establir la contrasenya que hi vulgueu utilitzar."
+"Una aplicació desconeguda vol canviar la contrasenya de l'anell de claus «%"
+"s». Heu d'escollir la contrasenya que hi vulgueu utilitzar."
 
 #: ../gnome-keyring-ask.c:636
-#, fuzzy
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Una aplicació desconeguda vol crear un nou anell de claus per defecte. Heu "
-"d'establir la contrasenya que hi vulgueu utilitzar."
+"Una aplicació desconeguda vol canviar l'anell de claus per defecte. Heu "
+"d'escollir la contrasenya que hi vulgueu utilitzar."
 
 #: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Seleccioneu una contrasenya per al nou anell de claus"
+msgstr "Escolliu una contrasenya per a l'anell de claus «%s». "
 
 #: ../gnome-keyring-ask.c:645
-#, fuzzy
 msgid "Choose a new password for the default keyring. "
-msgstr "Estableix una contrasenya per a l'anell de claus per defecte"
+msgstr "Escolliu una contrasenya per a l'anell de claus per defecte. "
 
 #: ../gnome-keyring-ask.c:650
-#, fuzzy
 msgid "Change Keyring Password"
-msgstr "Contrasenya del nou anell de claus"
+msgstr "Canvia la contrasenya de l'anell de claus"
 
 #: ../gnome-keyring-ask.c:689
 #, c-format
