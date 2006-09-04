@@ -1,3 +1,11 @@
+2006-09-04  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Bump version to 0.6.0 (for Gnome 2.16.0)
+
+	* NEWS:
+	Update for release.
+
 2006-08-28  Julio M. Merino Vidal  <jmmv@NetBSD.org>
 
 	* gnome-keyring-daemon.c, gnome-keyring-daemon-io.c: Add support for
