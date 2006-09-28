@@ -1,15 +1,15 @@
 # Traduzione italiana di gnome-keyring
 # Copyright (C) 2004 THE gnome-keyring'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-keyring package.
-# Francesco Marletta <francesco.marletta @ tiscali.it>, 2004.
+# Francesco Marletta <francesco.marletta @ tiscali.it>, 2004-2006.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-03-08 20:12+0100\n"
+"POT-Creation-Date: 2006-09-28 18:32+0200\n"
+"PO-Revision-Date: 2006-09-28 18:33+0200\n"
 "Last-Translator: Francesco Marletta <francesco.marletta@tiscali.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -18,25 +18,24 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:241
 msgid "_Old password:"
-msgstr ""
+msgstr "_Vecchia password:"
 
 #: ../gnome-keyring-ask.c:262
 msgid "_Password:"
-msgstr ""
+msgstr "_Password:"
 
 #: ../gnome-keyring-ask.c:284
 msgid "_Confirm new password:"
-msgstr ""
+msgstr "_Conferma nuova password:"
 
 #. Strength bar:
 #: ../gnome-keyring-ask.c:303
 msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Indicatore robustezza password:</span>"
 
 #: ../gnome-keyring-ask.c:329
-#, fuzzy
 msgid "Old password cannot be blank."
-msgstr "La password non può essere vuota."
+msgstr "La vecchia password non può essere vuota."
 
 #: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
@@ -203,73 +202,70 @@ msgid "Choose password for new keyring"
 msgstr "Scegliere la password per il nuovo portachiavi"
 
 #: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"L'applicazione \"%s\" (%s) vuole creare un nuovo portachiavi predefinito. "
-"Bisogna scegliere la password per poterlo usare."
+"L'applicazione '%s' (%s) vuole cambiare la password per il portachiavi '%s'. "
+"Bisogna scegliere la password da usare."
 
 #: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"L'applicazione \"%s\" (%s) vuole creare un nuovo portachiavi predefinito. "
-"Bisogna scegliere la password per poterlo usare."
+"L'applicazione \"%s\" (%s) vuole cambiare la password per il portachiavi "
+"predefinito. Bisogna scegliere la password da usare."
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"L'applicazione \"%s\" vuole creare un nuovo portachiavi predefinito. Bisogna "
-"scegliere la password per poterlo usare."
+"L'applicazione '%s' vuole cambiare la password per il portachiavi '%s'. "
+"Bisogna scegliere la password da usare."
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"L'applicazione \"%s\" vuole creare un nuovo portachiavi predefinito. Bisogna "
-"scegliere la password per poterlo usare."
+"L'applicazione '%s' vuole cambiare la password per il portachiavi "
+"predefinito. Bisogna scegliere la password da usare."
 
 #: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Un'applicazione sconosciuta vuole creare un nuovo portachiavi predefinito. "
-"Bisogna scegliere la password per poterlo usare."
+"Un'applicazione sconosciuta vuole cambiare la password per il portachiavi '%"
+"s'. Bisogna scegliere la password da usare."
 
 #: ../gnome-keyring-ask.c:636
-#, fuzzy
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Un'applicazione sconosciuta vuole creare un nuovo portachiavi predefinito. "
-"Bisogna scegliere la password per poterlo usare."
+"Un'applicazione sconosciuta vuole cambiare la password per il portachiavi "
+"predefinito. Bisogna scegliere la password da usare."
 
 #: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Scegliere la password per il nuovo portachiavi"
+msgstr "Scegliere la nuova password per il portachiavi '%s'. "
 
 #: ../gnome-keyring-ask.c:645
-#, fuzzy
 msgid "Choose a new password for the default keyring. "
-msgstr "Scegliere la password per il portachiavi predefinito"
+msgstr "Scegliere la nuova password per il portachiavi predefinito. "
 
 #: ../gnome-keyring-ask.c:650
-#, fuzzy
 msgid "Change Keyring Password"
-msgstr "Password del nuovo portachiavi"
+msgstr "Cambio password portachiavi"
 
 #: ../gnome-keyring-ask.c:689
 #, c-format
