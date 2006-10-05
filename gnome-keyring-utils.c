@@ -29,6 +29,14 @@
 
 /* Functions used by both the library and the daemon */
 
+/**
+ * gnome_keyring_free_password():
+ * @str: the password to be freed
+ *
+ * Clears the memory used by password by filling with '\0' and frees the memory
+ * after doing this. You should use this function instead of g_free() for
+ * secret information.
+ */
 void
 gnome_keyring_free_password (char *str)
 {
@@ -38,6 +46,15 @@ gnome_keyring_free_password (char *str)
 	}
 }
 
+/**
+ * gnome_keyring_found_free():
+ * @found: a #GnomeKeyringFound
+ * 
+ * Free the memory used by a #GnomeKeyringFound item.
+ *
+ * You usually want to use gnome_keyring_found_list_free() on the list of
+ * results.
+ */
 void
 gnome_keyring_found_free (GnomeKeyringFound *found)
 {
@@ -47,6 +64,12 @@ gnome_keyring_found_free (GnomeKeyringFound *found)
 	g_free (found);
 }
 
+/**
+ * gnome_keyring_found_list_free():
+ * @found_list: a #GList of #GnomeKeyringFound
+ *
+ * Free the memory used by the #GnomeKeyringFound items in @found_list.
+ */
 void
 gnome_keyring_found_list_free (GList *found_list)
 {
@@ -54,6 +77,12 @@ gnome_keyring_found_list_free (GList *found_list)
 	g_list_free (found_list);
 }
 
+/**
+ * gnome_keyring_attribute_list_free():
+ * @attributes: a #GnomeKeyringAttributeList
+ *
+ * Free the memory used by @attributes.
+ */
 void
 gnome_keyring_attribute_list_free (GnomeKeyringAttributeList *attributes)
 {

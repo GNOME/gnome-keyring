@@ -84,6 +84,21 @@ struct GnomeKeyringOperation {
 	KeyringHandleReply reply_handler;
 };
 
+/**
+ * GnomeKeyringAttributeList:
+ *
+ * A list of keyring item attributes. It's used to search for keyring items
+ * with eg. gnome_keyring_find_items_sync().
+ */
+
+/**
+ * gnome_keyring_attribute_list_new():
+ *
+ * Create a new #GnomeKeyringAttributeList.
+ *
+ * Returns an empty #GnomeKeyringAttributeList.
+ */
+
 static int
 connect_to_daemon (gboolean non_blocking)
 {
@@ -541,6 +556,14 @@ run_sync_operation (GString *buffer,
 	return GNOME_KEYRING_RESULT_OK;
 }
 
+/**
+ * gnome_keyring_is_available():
+ *
+ * Check whether you can communicate with a Gnome Keyring Daemon.
+ *
+ * Returns %FALSE if you can't communicate with the daemon (so you can't load
+ * and save passwords).
+ */
 gboolean
 gnome_keyring_is_available (void)
 {
@@ -1542,7 +1565,9 @@ gnome_keyring_find_itemsv (GnomeKeyringItemType                  type,
  *
  * Find elements of type #GnomeKeyring by matching attributes and @type.
  *
- * Returns: a #GList of #GnomeKeyringFound, free with g_list_free() and
+ * Returns: %GNOME_KEYRING_RESULT_OK if everythink went fine. A #GList of
+ * #GnomeKeyringFound will be returned into @found, free all results with
+ * gnome_keyring_found_list_free() or every single item with
  * gnome_keyring_found_free()
  */
 GnomeKeyringResult
@@ -1637,6 +1662,22 @@ gnome_keyring_item_create (const char                          *keyring,
 	return op;
 }
 
+/**
+ * gnome_keyring_item_create_sync():
+ * @keyring: the keyring name (%NULL for default)
+ * @type: the #GnomeKeyringItemType of the item to save
+ * @display_name: the name for this item to be used in the password manager
+ * @attributes: the attributes specifying the keyring item
+ * @secret: the secret information (password, passphrase, pin, etc) to be saved
+ * @update_if_exists: set to %TRUE to update an existing item, if found. Create
+ * a new one otherwise.
+ * @item_id: return location for the id of the created/updated keyring item.
+ *
+ * Create (or update of @update_if_exists is set) a keyring item with the
+ * specified type, attributes and secret.
+ *
+ * Returns %GNOME_KEYRING_RESULT_OK if everything went fine.
+ */
 GnomeKeyringResult
 gnome_keyring_item_create_sync    (const char                                 *keyring,
 				   GnomeKeyringItemType                        type,
@@ -1708,6 +1749,16 @@ gnome_keyring_item_delete (const char                                 *keyring,
 	return op;
 }
 
+/**
+ * gnome_keyring_item_delete_sync():
+ * @keyring: the keyring to work with (%NULL for the default keyring)
+ * @id: the keyring item id to delete
+ *
+ * Deletes an item from your keyring. Obtain @id by calling a function like
+ * gnome_keyring_find_items_sync() or gnome_keyring_item_create_sync().
+ *
+ * Returns %GNOME_KEYRING_RESULT_OK on success, the error code otherwise.
+ */
 GnomeKeyringResult
 gnome_keyring_item_delete_sync (const char *keyring,
 				guint32     id)
@@ -2365,6 +2416,14 @@ find_network_password_callback (GnomeKeyringResult result,
 	return;
 }
 
+/**
+ * gnome_keyring_attribute_list_append_string():
+ * @attributes: a #GnomeKeyringAttributeList
+ * @attributename: the name of the new attribute
+ * @value: the value to store in @attributes
+ *
+ * Store a key-value-pair with a string value in @attributes.
+ */
 void
 gnome_keyring_attribute_list_append_string (GnomeKeyringAttributeList *attributes,
 					    const char *attributename, const char *value)
@@ -2378,6 +2437,14 @@ gnome_keyring_attribute_list_append_string (GnomeKeyringAttributeList *attribute
 	g_array_append_val (attributes, attribute);
 }
 
+/**
+ * gnome_keyring_attribute_append_uint32:
+ * @attributes: a #GnomeKeyringAttributeList
+ * @attributename: the name of the new attribute
+ * @value: the value to store in @attributes
+ *
+ * Store a key-value-pair with an unsigned 32bit number value in @attributes.
+ */
 void
 gnome_keyring_attribute_list_append_uint32 (GnomeKeyringAttributeList *attributes,
 					    const char *attributename, guint32 value)
