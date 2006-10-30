@@ -1,3 +1,7 @@
+.*
+*.prj
+*.pws
+*.anjuta
 ABOUT-NLS
 Makefile
 Makefile.in
@@ -12,6 +16,7 @@ config.log
 config.status
 config.sub
 configure
+install-sh
 intltool-extract
 intltool-extract.in
 intltool-merge
@@ -21,6 +26,8 @@ intltool-update.in
 libtool
 ltconfig
 ltmain.sh
+missing
+mkinstalldirs
 obj
 stamp-h
 stamp-h1
@@ -29,5 +36,9 @@ gnome-keyring-ask
 gnome-keyring-daemon
 list-keyrings
 test-keyring
+test-keyring-two
 gnome-keyring-1.pc
+gnome-keyring-1-uninstalled.pc
 gtk-doc.make
+depcomp
+
