@@ -1,3 +1,9 @@
+2006-10-30  Nate Nielsen  <nielsen@memberwebs.com>
+
+	* MAINTAINERS: Added myself
+
+=== Branched for 2.16 work on gnome-2-16 branch ==
+
 2006-10-05  Sven Herzberg  <herzi@gnome-de.org>
 
 	* gnome-keyring-utils.c,
