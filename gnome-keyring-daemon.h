@@ -78,11 +78,21 @@ typedef struct {
 } GnomeKeyringItem;
 
 typedef enum {
+	/* Access a keyring at all */
 	GNOME_KEYRING_ACCESS_REQUEST_KEYRING,
+
+	/* Access basic info about an item, without secret (always read access) */
 	GNOME_KEYRING_ACCESS_REQUEST_ITEM,
+
+	/* Access, change or delete, all info for item, including a secret */
+	GNOME_KEYRING_ACCESS_REQUEST_ITEM_SECRET,
+
+	/* Set various passwords for keyrings */
 	GNOME_KEYRING_ACCESS_REQUEST_NEW_KEYRING_PASSWORD,
 	GNOME_KEYRING_ACCESS_REQUEST_ORIGINAL_CHANGE_KEYRING_PASSWORD,
 	GNOME_KEYRING_ACCESS_REQUEST_CHANGE_KEYRING_PASSWORD,
+
+	/* Access to change the default keyring */
 	GNOME_KEYRING_ACCESS_REQUEST_DEFAULT_KEYRING
 } GnomeKeyringAccessRequestType;
 

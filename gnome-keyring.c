@@ -1865,6 +1865,71 @@ gnome_keyring_item_get_info_sync (const char            *keyring,
 }
 
 gpointer
+gnome_keyring_item_get_info_full (const char                                 *keyring,
+				  guint32                                     id,
+				  guint32                                     flags,
+				  GnomeKeyringOperationGetItemInfoCallback    callback,
+				  gpointer                                    data,
+				  GDestroyNotify                              destroy_data)
+{
+	GnomeKeyringOperation *op;
+	
+	op = start_operation (callback, CALLBACK_GET_ITEM_INFO, data, destroy_data);
+	if (op->state == STATE_FAILED) {
+		return op;
+	}
+	
+	if (!gnome_keyring_proto_encode_op_string_int_int (op->send_buffer,
+							   GNOME_KEYRING_OP_GET_ITEM_INFO_FULL,
+							   keyring, id, flags)) {
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+	}
+	
+	op->reply_handler = gnome_keyring_get_item_info_reply;
+	
+	return op;
+}
+
+GnomeKeyringResult
+gnome_keyring_item_get_info_full_sync (const char              *keyring,
+				       guint32                  id,
+				       guint32                  flags,
+ 				       GnomeKeyringItemInfo   **info)
+{
+	GString *send;
+	GString *receive;
+	GnomeKeyringResult res;
+
+	send = g_string_new (NULL);
+
+	*info = NULL;
+	
+	if (!gnome_keyring_proto_encode_op_string_int_int (send, 
+							   GNOME_KEYRING_OP_GET_ITEM_INFO_FULL,
+							   keyring, id, flags)) {
+		g_string_free (send, TRUE);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+	
+	receive = g_string_new (NULL);
+
+	res = run_sync_operation (send, receive);
+	g_string_free (send, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		g_string_free (receive, TRUE);
+		return res;
+	}
+	
+	if (!gnome_keyring_proto_decode_get_item_info_reply (receive, &res, info)) {
+		g_string_free (receive, TRUE);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	g_string_free (receive, TRUE);
+	
+	return res;
+}
+
+gpointer
 gnome_keyring_item_set_info (const char                                 *keyring,
 			     guint32                                     id,
 			     GnomeKeyringItemInfo                       *info,

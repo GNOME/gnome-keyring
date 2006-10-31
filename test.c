@@ -175,10 +175,10 @@ print_attributes_cb (GnomeKeyringResult result,
 }
 
 static void
-show_item (char *keyring, guint32 item_id)
+show_item (char *keyring, guint32 item_id, guint32 parts)
 {
-	gnome_keyring_item_get_info (keyring, item_id,
-				     show_item_cb, NULL, NULL);
+	gnome_keyring_item_get_info_full (keyring, item_id, parts,
+				     	  show_item_cb, NULL, NULL);
 	g_main_loop_run (loop);
 	gnome_keyring_item_get_attributes (keyring, item_id,
 					   print_attributes_cb, NULL, NULL);
@@ -356,9 +356,19 @@ main (int argc, char *argv[])
 		} else {
 			g_print ("create item requires item name and attr value\n");
 		}
+
+	/* Show complete item information */
 	} else if (arg == 'i') {
 		if (argc >= 4) {
-			show_item (argv[2], atoi(argv[3]));
+			show_item (argv[2], atoi(argv[3]), GNOME_KEYRING_ITEM_INFO_SECRET);
+		} else {
+			g_print ("must give keyring & item id to show\n");
+		}
+
+	/* Show basic item information */
+	} else if (arg == 'b') {
+		if (argc >= 4) {
+			show_item (argv[2], atoi(argv[3]), GNOME_KEYRING_ITEM_INFO_BASICS);
 		} else {
 			g_print ("must give keyring & item id to show\n");
 		}

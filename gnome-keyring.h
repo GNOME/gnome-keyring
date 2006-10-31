@@ -70,6 +70,14 @@ typedef enum {
 	GNOME_KEYRING_ACCESS_REMOVE = 1<<2
 } GnomeKeyringAccessType;
 
+typedef enum {
+	GNOME_KEYRING_ITEM_INFO_BASICS = 0,
+	GNOME_KEYRING_ITEM_INFO_SECRET = 1<<0
+} GnomeKeyringItemInfoParts;
+
+/* Add flags here as they are added above */
+#define GNOME_KEYRING_ITEM_INFO_ALL (GNOME_KEYRING_ITEM_INFO_BASICS | GNOME_KEYRING_ITEM_INFO_SECRET)
+
 typedef struct GnomeKeyringInfo GnomeKeyringInfo;
 typedef struct GnomeKeyringItemInfo GnomeKeyringItemInfo;
 
@@ -268,6 +276,16 @@ gpointer           gnome_keyring_item_get_info            (const char           
 GnomeKeyringResult gnome_keyring_item_get_info_sync       (const char                                 *keyring,
 							   guint32                                     id,
 							   GnomeKeyringItemInfo                      **info);
+gpointer           gnome_keyring_item_get_info_full       (const char                                 *keyring,
+							   guint32                                     id,
+							   guint32                                     flags,
+							   GnomeKeyringOperationGetItemInfoCallback    callback,
+							   gpointer                                    data,
+							   GDestroyNotify                              destroy_data);
+GnomeKeyringResult gnome_keyring_item_get_info_full_sync  (const char                                 *keyring,
+							   guint32                                     id,
+							   guint32                                     flags,
+ 							   GnomeKeyringItemInfo                      **info);
 gpointer           gnome_keyring_item_set_info            (const char                                 *keyring,
 							   guint32                                     id,
 							   GnomeKeyringItemInfo                       *info,

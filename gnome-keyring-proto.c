@@ -381,6 +381,25 @@ gnome_keyring_proto_encode_op_string_int (GString                *buffer,
 }
 
 gboolean
+gnome_keyring_proto_encode_op_string_int_int (GString                 *buffer,
+					      GnomeKeyringOpCode       op,
+					      const char              *str,
+					      guint32                  integer1,
+					      guint32		       integer2)
+{
+	gsize op_start;
+	if (!gnome_keyring_proto_start_operation (buffer, op, &op_start))
+		return FALSE;
+	if (!gnome_keyring_proto_add_utf8_string (buffer, str))
+		return FALSE;
+	gnome_keyring_proto_add_uint32 (buffer,	integer1);
+	gnome_keyring_proto_add_uint32 (buffer,	integer2);
+	if (!gnome_keyring_proto_end_operation (buffer,	op_start))
+		return FALSE;
+	return TRUE;
+}
+
+gboolean
 gnome_keyring_proto_encode_op_string_string (GString                *buffer,
 					     GnomeKeyringOpCode      op,
 					     const char             *str1,
@@ -1143,6 +1162,37 @@ gnome_keyring_proto_decode_op_string_int (GString *buffer,
 		g_free (*str1);
 		*str1 = NULL;
 	}
+	return FALSE;
+}
+
+gboolean
+gnome_keyring_proto_decode_get_item_info (GString                    *buffer,
+					  GnomeKeyringOpCode         *op_out,
+					  char                      **keyring,
+					  guint32                    *item_id,
+					  guint32                    *flags)
+{
+	gsize offset = 8;
+	*keyring = NULL;
+	if (!gnome_keyring_proto_decode_packet_operation (buffer, op_out))
+		return FALSE;
+	if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset, keyring))
+		goto bail;
+	if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, item_id))
+		goto bail;
+	if (*op_out == GNOME_KEYRING_OP_GET_ITEM_INFO_FULL) {
+		/* Pull in lookup flags/parts, find out which ones */
+		if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, flags))
+			goto bail;
+	} else {
+		/* All parts of the item by default */
+		*flags = GNOME_KEYRING_ITEM_INFO_ALL;
+	}
+	
+	return TRUE;
+ bail:
+	g_free (*keyring);
+	*keyring = NULL;
 	return FALSE;
 }
 
