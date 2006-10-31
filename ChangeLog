@@ -1,4 +1,8 @@
 2006-10-31  Nate Nielsen  <nielsen@memberwebs.com>
+    
+    * configure.in: Bump version number.
+
+2006-10-31  Nate Nielsen  <nielsen@memberwebs.com>
 
     * gnome-keyring-daemon.c (request_allowed_for_app, access_request_from_item, 
     access_request_from_item_with_secret, op_get_item_info_collect, op_get_item_info_execute,
