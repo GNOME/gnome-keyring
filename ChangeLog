@@ -1,3 +1,10 @@
+=== gnome-keyring 0.7.1 ===
+
+2006-10-05  Nate Nielsen  <nielsen@memberwebs.com>
+
+	* configure.in: 
+	* NEWS: Prepare for release
+
 2006-10-05  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* gnome-keyring.h:

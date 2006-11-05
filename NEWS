@@ -1,3 +1,11 @@
+Changes in version 0.7.1 are: 
+* Added GNOME_KEYRING_ITEM_APPLICATION_SECRET which allows an item 
+  to be for a single application only with strict access controls.
+* New function gnome_keyring_item_get_info_full(_sync) which allow 
+  retrieval of item meta data without the secret, thus not incurring 
+  an ACL prompt. 
+* Translation updates
+
 Changes in version 0.6.0 are:
 * NetBSD fixes
 * Crash fix
