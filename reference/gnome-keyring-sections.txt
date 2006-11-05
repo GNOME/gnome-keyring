@@ -10,6 +10,7 @@ GnomeKeyringAttributeList
 GnomeKeyringAccessType
 GnomeKeyringInfo
 GnomeKeyringItemInfo
+GnomeKeyringItemInfoFlags
 GnomeKeyringAttribute
 GnomeKeyringFound
 GnomeKeyringOperationDoneCallback
@@ -70,6 +71,8 @@ gnome_keyring_item_create_sync
 gnome_keyring_item_delete
 gnome_keyring_item_delete_sync
 gnome_keyring_item_get_info
+gnome_keyring_item_get_info_full
+gnome_keyring_item_get_info_full_sync
 gnome_keyring_item_get_info_sync
 gnome_keyring_item_set_info
 gnome_keyring_item_set_info_sync

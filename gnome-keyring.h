@@ -79,7 +79,7 @@ typedef enum {
 typedef enum {
 	GNOME_KEYRING_ITEM_INFO_BASICS = 0,
 	GNOME_KEYRING_ITEM_INFO_SECRET = 1<<0
-} GnomeKeyringItemInfoParts;
+} GnomeKeyringItemInfoFlags;
 
 /* Add flags here as they are added above */
 #define GNOME_KEYRING_ITEM_INFO_ALL (GNOME_KEYRING_ITEM_INFO_BASICS | GNOME_KEYRING_ITEM_INFO_SECRET)
