@@ -40,13 +40,19 @@ typedef enum {
 } GnomeKeyringResult;
 
 typedef enum {
+	/* The item types */
 	GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
 	GNOME_KEYRING_ITEM_NOTE,
 	
+	/* Used internally */
 	GNOME_KEYRING_ITEM_LAST_TYPE,
+	GNOME_KEYRING_ITEM_TYPE_MASK = 0x0000ffff,
+	GNOME_KEYRING_ITEM_NO_TYPE = GNOME_KEYRING_ITEM_TYPE_MASK,
+
+	/* Makes a item only for applications in ACL */
+	GNOME_KEYRING_ITEM_APPLICATION_SECRET = 0x01000000,
 	
-	GNOME_KEYRING_ITEM_NO_TYPE = 0xffffffff,
 } GnomeKeyringItemType;
 
 typedef enum {

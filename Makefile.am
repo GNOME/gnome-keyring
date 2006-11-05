@@ -12,7 +12,8 @@ libexec_PROGRAMS= \
 
 noinst_PROGRAMS= \
 	list-keyrings \
-	test-keyring
+	test-keyring \
+	test-keyring-two
 
 lib_LTLIBRARIES=libgnome-keyring.la
 
@@ -92,6 +93,13 @@ test_keyring_SOURCES = \
 	test.c
 
 test_keyring_LDADD = \
+	libgnome-keyring.la \
+	$(GTK_LIBS)
+
+test_keyring_two_SOURCES = \
+	test.c
+
+test_keyring_two_LDADD = \
 	libgnome-keyring.la \
 	$(GTK_LIBS)
 

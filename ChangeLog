@@ -1,6 +1,16 @@
+2006-10-04  Nate Nielsen  <nielsen@memberwebs.com>
+
+   	* Makefile.am:
+	* gnome-keyring-daemon.c (request_allowed_for_app, op_list_items_execute,
+	op_create_item_collect, op_create_item_execute, op_set_item_info_execute,
+	op_find_execute, op_find_collect, schedule_ask): 
+	* gnome-keyring.h:
+	* test.c: Add ability to mark an item as 'application only' whereby only 
+	applications on the ACL will ever get access to the data. See bug #356670
+
 2006-10-31  Nate Nielsen  <nielsen@memberwebs.com>
     
-    * configure.in: Bump version number.
+	* configure.in: Bump version number.
 
 2006-10-31  Nate Nielsen  <nielsen@memberwebs.com>
 

@@ -137,6 +137,39 @@ create_item (char *name, char *attr_name, gboolean update_if_exists)
 }
 
 static void
+creat_application_item_cb  (GnomeKeyringResult result,
+			    guint32            id,
+			    gpointer           data)
+{
+	g_print ("created application item: res: %d (%s) id: %d\n", result, get_msg_for_keyring_result (result), id);
+	g_main_loop_quit (loop);
+}
+
+static void
+create_application_item (char *name, char *attr_name, gboolean update_if_exists)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attribute;
+
+	attribute.name = g_strdup ("testattribute");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup (attr_name);
+	
+	attributes = gnome_keyring_attribute_list_new ();
+	g_array_append_val (attributes, attribute);
+	
+	gnome_keyring_item_create (NULL,
+				   GNOME_KEYRING_ITEM_NOTE | GNOME_KEYRING_ITEM_APPLICATION_SECRET,
+				   name,
+				   attributes,
+				   "application secret text",
+				   update_if_exists,
+				   creat_application_item_cb, NULL, NULL);
+	gnome_keyring_attribute_list_free (attributes);
+	g_main_loop_run (loop);
+}
+
+static void
 show_item_cb (GnomeKeyringResult result,
 	      GnomeKeyringItemInfo  *info,
 	      gpointer           data)
@@ -317,6 +350,22 @@ find_network (char *server)
 	}
 }
 
+static void 
+list_items_cb (GnomeKeyringResult result, GList *list, gpointer data)
+{
+	g_print ("list items: res: %d (%s)\n", result, get_msg_for_keyring_result (result));
+	for ( ; list; list = list->next)
+		g_print ("   id: %d\n", GPOINTER_TO_UINT (list->data));
+	g_main_loop_quit (loop);
+}
+
+static void
+list_items (const char *keyring)
+{
+	gnome_keyring_list_item_ids (keyring, list_items_cb, NULL, NULL);
+	g_main_loop_run (loop);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -356,6 +405,13 @@ main (int argc, char *argv[])
 		} else {
 			g_print ("create item requires item name and attr value\n");
 		}
+
+ 	} else if (arg == 'A') {
+ 		if (argc >= 4) {
+ 			create_application_item (argv[2], argv[3], FALSE);
+ 		} else {
+ 			g_print ("create application item requires item name and attr value\n");
+ 		}
 
 	/* Show complete item information */
 	} else if (arg == 'i') {
@@ -431,6 +487,12 @@ main (int argc, char *argv[])
 	} else if (arg == 't') {
 		g_print ("gnome keyring is: %s\n",
 			 gnome_keyring_is_available ()?"available":"not available");
+	} else if (arg == 'I') {
+		if (argc >= 3) {
+			list_items(argv[2]);
+		} else {
+			g_print ("need keyring\n");
+		}
 	} else {
 		g_print ("unsupported test\n");
 	}

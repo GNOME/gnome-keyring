@@ -442,6 +442,7 @@ request_allowed_for_app (GnomeKeyringAccessRequest *request,
 		}
 		/* TODO: verify app ACL vs keyring?? */
 		return TRUE;
+
 	} else if (request->item != NULL) {
 		if (request->item->locked) {
 			return FALSE;
@@ -449,13 +450,16 @@ request_allowed_for_app (GnomeKeyringAccessRequest *request,
 
 		/* Is it only basic info read access (no secret)? */
 		if(request->request_type == GNOME_KEYRING_ACCESS_REQUEST_ITEM && 
-		   request->access_type == GNOME_KEYRING_ACCESS_READ)
-			return TRUE;
+		   request->access_type == GNOME_KEYRING_ACCESS_READ) {	
 
-		/* Otherwise full access to secret, or modify access, check the calling application */
+			/* If item is not marked as an application secret then automatic access */
+			if ((request->item->type & GNOME_KEYRING_ITEM_APPLICATION_SECRET) == 0)
+				return TRUE;
+		}
+			
+		/* Otherwise full access to secret, or modify access we check the calling application */
 		for (l = request->item->acl; l != NULL; l = l->next) {
 			ac = l->data;
-			
 			if (app_ref_match (app_ref, ac->application) &&
 			    (ac->types_allowed & request->access_type) == request->access_type) {
 				return TRUE;
@@ -1275,8 +1279,8 @@ op_list_items_execute (GString *packet,
 	char *keyring_name;
 	GnomeKeyringOpCode opcode;
 	GnomeKeyringItem *item;
-	GList *l;
-	GnomeKeyringAccessRequest *req;
+	GList *l, *items;
+	GnomeKeyringAccessRequest *req, *list_req;
 	
 	if (!gnome_keyring_proto_decode_op_string (packet,
 						   &opcode,
@@ -1303,11 +1307,32 @@ op_list_items_execute (GString *packet,
 			gnome_keyring_proto_add_uint32 (result, 0);
 		} else {
 			gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
-			gnome_keyring_proto_add_uint32 (result, g_list_length (keyring->items));
+
+			/* 
+			 * Request access to these items. This cannot be done earlier in 
+			 * op_list_items_collect because the keyring may have been locked.
+			 */
+			list_req = access_request_from_item (NULL);
+			
+			items = NULL;
 			for (l = keyring->items; l != NULL; l = l->next) {
+				list_req->item = l->data;
+				list_req->granted = FALSE;
+				if (request_allowed_for_app (list_req, app_ref, NULL))
+					items = g_list_prepend (items, list_req->item);
+			}
+			items = g_list_reverse (items);
+
+			gnome_keyring_access_request_free (list_req);
+
+			/* Send the results */			
+			gnome_keyring_proto_add_uint32 (result, g_list_length (items));
+			for (l = items; l != NULL; l = l->next) {
 				item = l->data;
 				gnome_keyring_proto_add_uint32 (result, item->id);
 			}
+
+			g_list_free (items);
 		}
 	}
 	
@@ -1359,7 +1384,7 @@ op_create_item_collect (GString *packet,
 
 		for (ilist = keyring->items; ilist != NULL; ilist = ilist->next) {
 			item = ilist->data;
-			if (item->type == type &&
+			if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) == (type & GNOME_KEYRING_ITEM_TYPE_MASK) &&
 			    match_attributes (item, keyring->locked ? hashed : attributes, TRUE)) {
 				found_existing = TRUE;
 				access_request =
@@ -1438,7 +1463,7 @@ op_create_item_execute (GString *packet,
 		goto bail;
 	}
 
-	if (type >= GNOME_KEYRING_ITEM_LAST_TYPE ||
+	if ((type & GNOME_KEYRING_ITEM_TYPE_MASK) >= GNOME_KEYRING_ITEM_LAST_TYPE ||
 	    display_name == NULL ||
 	    secret == NULL) {
 		res = GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
@@ -1462,6 +1487,9 @@ op_create_item_execute (GString *packet,
 		res = GNOME_KEYRING_RESULT_DENIED;
 		goto bail;
 	}
+
+	/* Copy in item type flags */
+	item->type |= (type & ~GNOME_KEYRING_ITEM_TYPE_MASK);
 
 	g_free (item->display_name);
 	item->display_name = g_strdup (display_name);
@@ -2010,7 +2038,7 @@ op_set_item_info_execute (GString *packet,
 
 	gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 
-	if (type != GNOME_KEYRING_ITEM_NO_TYPE) {
+	if ((type & GNOME_KEYRING_ITEM_TYPE_MASK) != GNOME_KEYRING_ITEM_NO_TYPE) {
 		item->type = type;
 	}
 	if (item_name != NULL) {
@@ -2217,7 +2245,7 @@ op_find_execute (GString *packet,
 		access_request = l->data;
 		item = access_request->item;
 		if (item != NULL &&
-		    item->type == type &&
+		    (item->type & GNOME_KEYRING_ITEM_TYPE_MASK) == (type & GNOME_KEYRING_ITEM_TYPE_MASK) &&
 		    !item->locked &&
 		    match_attributes (item, attributes, FALSE)) {
 			if (!gnome_keyring_proto_add_utf8_string (result, item->keyring->keyring_name)) {
@@ -2273,7 +2301,7 @@ op_find_collect (GString *packet,
 		keyring = klist->data;
 		for (ilist = keyring->items; ilist != NULL; ilist = ilist->next) {
 			item = ilist->data;
-			if (item->type == type &&
+			if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) == (type & GNOME_KEYRING_ITEM_TYPE_MASK) &&
 			    match_attributes (item, keyring->locked ? hashed : attributes, FALSE)) {
 				access_request =
 				  access_request_from_item_with_secret (item, GNOME_KEYRING_ACCESS_READ);
@@ -2520,93 +2548,82 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 static void
 schedule_ask (GnomeKeyringAsk *ask)
 {
-	GnomeKeyringAccessRequest *request;
+	GnomeKeyringAccessRequest *request = ask->current_request;
+	gboolean app_secret = FALSE;
+	gboolean deny = FALSE;
+	gboolean iterate = FALSE;
 
-	request = ask->current_request;
+	if(request->item) {
+		app_secret = (request->item->type & GNOME_KEYRING_ITEM_APPLICATION_SECRET) == 
+					GNOME_KEYRING_ITEM_APPLICATION_SECRET;
+	}
+
 	switch (request->request_type) {
 	case GNOME_KEYRING_ACCESS_REQUEST_KEYRING:
-		if (!launch_ask_helper (ask, ASK_KEYRING_PASSWORD)) {
-			/* no way to allow request, denying */
-			ask->access_requests = g_list_remove (ask->access_requests, request);
-			gnome_keyring_access_request_free (request);
-			/* iterate */
-			gnome_keyring_ask_iterate (ask);
-		}
+		if (!launch_ask_helper (ask, ASK_KEYRING_PASSWORD))
+			deny = iterate = TRUE;
 		break;
+
 	case GNOME_KEYRING_ACCESS_REQUEST_ITEM:
 		if (request->item->keyring->locked) {
-			if (!launch_ask_helper (ask, ASK_KEYRING_PASSWORD)) {
-				/* no way to allow request, denying */
-				ask->access_requests = g_list_remove (ask->access_requests, request);
-				gnome_keyring_access_request_free (request);
-				/* iterate */
-				gnome_keyring_ask_iterate (ask);
-			}
+			if (!launch_ask_helper (ask, ASK_KEYRING_PASSWORD)) 
+				deny = iterate = TRUE;
+
 		} else {
 			/* We never prompt for simple read requests, they're either allowed or not */
-			ask->access_requests = g_list_remove (ask->access_requests, request);
-			gnome_keyring_access_request_free (request);
-			gnome_keyring_ask_iterate (ask);
+			request->granted = !app_secret;
+			deny = app_secret;
+			iterate = TRUE;
 		}
 		break;
+
 	case GNOME_KEYRING_ACCESS_REQUEST_ITEM_SECRET:
 		if (request->item->keyring->locked) {
-			if (!launch_ask_helper (ask, ASK_KEYRING_PASSWORD)) {
-				/* no way to allow request, denying */
-				ask->access_requests = g_list_remove (ask->access_requests, request);
-				gnome_keyring_access_request_free (request);
-				/* iterate */
-				gnome_keyring_ask_iterate (ask);
-			}
+			if (!launch_ask_helper (ask, ASK_KEYRING_PASSWORD)) 
+				deny = iterate = TRUE;
+
+		} else if (app_secret) {
+			/* We never allow access to 'application' secrets from the wrong app */
+			deny = iterate = TRUE;
+
 		} else {
-			if (!launch_ask_helper (ask, ASK_ITEM_READ_WRITE_ACCESS)) {
-				/* no way to allow request, denying */
-				ask->access_requests = g_list_remove (ask->access_requests, request);
-				gnome_keyring_access_request_free (request);
-				/* iterate */
-				gnome_keyring_ask_iterate (ask);
-			}
+			if (!launch_ask_helper (ask, ASK_ITEM_READ_WRITE_ACCESS)) 
+				deny = iterate = TRUE;
 		}
 		break;
+
 	case GNOME_KEYRING_ACCESS_REQUEST_NEW_KEYRING_PASSWORD:
-		if (!launch_ask_helper (ask, ASK_NEW_KEYRING_PASSWORD)) {
-			/* no way to allow request, denying */
-			ask->access_requests = g_list_remove (ask->access_requests, request);
-			gnome_keyring_access_request_free (request);
-			/* iterate */
-			gnome_keyring_ask_iterate (ask);
-		}
+		if (!launch_ask_helper (ask, ASK_NEW_KEYRING_PASSWORD)) 
+			deny = iterate = TRUE;
 		break;	
+
 	case GNOME_KEYRING_ACCESS_REQUEST_ORIGINAL_CHANGE_KEYRING_PASSWORD:
-		if (!launch_ask_helper (ask, ASK_ORIGINAL_CHANGE_KEYRING_PASSWORD)) {
-			/* no way to allow request, denying */
-			ask->access_requests = g_list_remove (ask->access_requests, request);
-			gnome_keyring_access_request_free (request);
-			/* iterate */
-			gnome_keyring_ask_iterate (ask);
-		}
+		if (!launch_ask_helper (ask, ASK_ORIGINAL_CHANGE_KEYRING_PASSWORD))
+			deny = iterate = TRUE;
 		break;
+
 	case GNOME_KEYRING_ACCESS_REQUEST_CHANGE_KEYRING_PASSWORD:
-		if (!launch_ask_helper (ask, ASK_CHANGE_KEYRING_PASSWORD)) {
-			/* no way to allow request, denying */
-			ask->access_requests = g_list_remove (ask->access_requests, request);
-			gnome_keyring_access_request_free (request);
-			/* iterate */
-			gnome_keyring_ask_iterate (ask);
-		}
+		if (!launch_ask_helper (ask, ASK_CHANGE_KEYRING_PASSWORD))
+			deny = iterate = TRUE;
 		break;
+
 	case GNOME_KEYRING_ACCESS_REQUEST_DEFAULT_KEYRING:
-		if (!launch_ask_helper (ask, ASK_DEFAULT_KEYRING)) {
-			/* no way to allow request, denying */
-			ask->access_requests = g_list_remove (ask->access_requests, request);
-			gnome_keyring_access_request_free (request);
-			/* iterate */
-			gnome_keyring_ask_iterate (ask);
-		}
+		if (!launch_ask_helper (ask, ASK_DEFAULT_KEYRING))
+			deny = iterate = TRUE;
 		break;
+
 	default:
 		g_assert_not_reached ();
 	}
+
+	if (deny) {
+		ask->access_requests = g_list_remove (ask->access_requests, request);
+		gnome_keyring_access_request_free (request);
+	}
+
+	if (iterate) 
+		gnome_keyring_ask_iterate (ask);
+
 }
 
 static gboolean
