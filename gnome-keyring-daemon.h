@@ -40,6 +40,7 @@ typedef struct {
 	/* If known: */
 	char *password;
 	gboolean locked;
+	gboolean asking_password;
 
 	/* On disk data: */
 	guchar salt[8];

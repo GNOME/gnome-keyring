@@ -427,10 +427,15 @@ add_item_acl (GnomeKeyringItem *item,
 static gboolean
 request_allowed_for_app (GnomeKeyringAccessRequest *request,
 			 GnomeKeyringApplicationRef *app_ref,
-			 GList *denied_keyrings)
+			 GList *denied_keyrings,
+			 gboolean *currently_asking)
 {
 	GnomeKeyringAccessControl *ac;
 	GList *l;
+
+	if (currently_asking) {
+		*currently_asking = FALSE;
+	}
 
 	if (request->granted) {
 		return TRUE;
@@ -438,6 +443,9 @@ request_allowed_for_app (GnomeKeyringAccessRequest *request,
 	
 	if (request->keyring != NULL) {
 		if (request->keyring->locked) {
+			if (currently_asking) {
+				*currently_asking = request->keyring->asking_password;
+			}
 			return FALSE;
 		}
 		/* TODO: verify app ACL vs keyring?? */
@@ -445,6 +453,9 @@ request_allowed_for_app (GnomeKeyringAccessRequest *request,
 
 	} else if (request->item != NULL) {
 		if (request->item->locked) {
+			if (currently_asking) {
+				*currently_asking = request->item->keyring->asking_password;
+			}
 			return FALSE;
 		}
 
@@ -473,7 +484,21 @@ request_allowed_for_app (GnomeKeyringAccessRequest *request,
 static void
 gnome_keyring_ask_kill (GnomeKeyringAsk *ask)
 {
+	GnomeKeyring *keyring;
+	
 	if (ask->input_watch != 0) {
+
+		if (ask->current_ask_type == ASK_KEYRING_PASSWORD) {
+			if (ask->current_request->keyring != NULL) {
+				keyring = ask->current_request->keyring;
+			} else {
+				keyring = ask->current_request->item->keyring;
+			}
+			if (keyring) {
+				keyring->asking_password = FALSE;
+			}
+		}
+		
 		g_source_remove (ask->input_watch);
 		ask->input_watch = 0;
 	}
@@ -1318,7 +1343,7 @@ op_list_items_execute (GString *packet,
 			for (l = keyring->items; l != NULL; l = l->next) {
 				list_req->item = l->data;
 				list_req->granted = FALSE;
-				if (request_allowed_for_app (list_req, app_ref, NULL))
+				if (request_allowed_for_app (list_req, app_ref, NULL, NULL))
 					items = g_list_prepend (items, list_req->item);
 			}
 			items = g_list_reverse (items);
@@ -2328,6 +2353,17 @@ finish_ask_io (GnomeKeyringAsk *ask,
 	GnomeKeyring *keyring;
 	GnomeKeyringItem *item;
 
+	if (ask->current_ask_type == ASK_KEYRING_PASSWORD) {
+		if (ask->current_request->keyring != NULL) {
+			keyring = ask->current_request->keyring;
+		} else {
+			keyring = ask->current_request->item->keyring;
+		}
+		if (keyring) {
+			keyring->asking_password = FALSE;
+		}
+	}
+	    
 	ask->input_watch = 0;
 	ask->ask_pid = 0;
 	
@@ -2460,6 +2496,7 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 {
 	GnomeKeyringAccessRequest *request;
 	GnomeKeyringApplicationRef *app_ref;
+	GnomeKeyring *keyring;
 	GIOChannel *channel;
 	char **envp;
 	int i, n;
@@ -2491,11 +2528,15 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 	if (app_ref->pathname != NULL) {
 		envp[i++] = g_strdup_printf("KEYRING_APP_PATH=%s", ask->app_ref->pathname);
 	}
+	keyring = NULL;
 	if (request->item != NULL) {
 		envp[i++] = g_strdup_printf("KEYRING_NAME=%s", request->item->keyring->keyring_name);
 		envp[i++] = g_strdup_printf("ITEM_NAME=%s", request->item->display_name);
+		keyring = request->item->keyring;
 	} else if (request->keyring != NULL) {
 		envp[i++] = g_strdup_printf("KEYRING_NAME=%s", request->keyring->keyring_name);
+		request->keyring->asking_password = TRUE;
+		keyring = request->keyring;
 	} else  if (request->new_keyring != NULL) {
 		envp[i++] = g_strdup_printf("KEYRING_NAME=%s", request->new_keyring);
 	}
@@ -2533,6 +2574,9 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 				      &stdout_fd,
 				      NULL,
 				      &error)) {
+		if (keyring && ask_type == ASK_KEYRING_PASSWORD) {
+			keyring->asking_password = TRUE;
+		}
 		channel = g_io_channel_unix_new (stdout_fd);
 		ask->input_watch = g_io_add_watch (channel, G_IO_IN | G_IO_HUP,
 						   ask_io, ask);
@@ -2627,10 +2671,18 @@ schedule_ask (GnomeKeyringAsk *ask)
 }
 
 static gboolean
+idle_ask_iterate (gpointer data)
+{
+	gnome_keyring_ask_iterate ((GnomeKeyringAsk *)data);
+	return FALSE;
+}
+
+static gboolean
 gnome_keyring_ask_iterate (GnomeKeyringAsk *ask)
 {
 	GnomeKeyringAccessRequest *unfulfilled_request;
 	GnomeKeyringAccessRequest *request;
+	gboolean currently_asking;
 	GList *l;
 
  restart:
@@ -2641,7 +2693,12 @@ gnome_keyring_ask_iterate (GnomeKeyringAsk *ask)
 	for (l = ask->access_requests; l != NULL; l = l->next) {
 		request = l->data;
 
-		if (!request_allowed_for_app (request, ask->app_ref, ask->denied_keyrings)) {
+		if (!request_allowed_for_app (request, ask->app_ref, ask->denied_keyrings, &currently_asking)) {
+			if (currently_asking) {
+				/* Sleep until dialog is hopefully finished and try again */
+				g_timeout_add (400, idle_ask_iterate, ask);
+				return FALSE;
+			}
 			unfulfilled_request = request;
 			break;
 		}
@@ -2665,14 +2722,6 @@ gnome_keyring_ask_iterate (GnomeKeyringAsk *ask)
 		gnome_keyring_ask_free (ask);
 		return TRUE;
 	}
-}
-
-
-static gboolean
-idle_ask_iterate (gpointer data)
-{
-	gnome_keyring_ask_iterate ((GnomeKeyringAsk *)data);
-	return FALSE;
 }
 
 gpointer

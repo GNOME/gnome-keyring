@@ -1,3 +1,9 @@
+2006-12-14  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-keyring-daemon.[ch]:
+	Don't have multiple outstanding password requests for the
+	same keyring. (#331003)
+
 2006-11-30  Andre Klapper  <a9016009@gmx.de>
 
 	* MAINTAINERS: fixed wrong email address
