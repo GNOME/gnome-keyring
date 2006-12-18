@@ -1,3 +1,7 @@
+Changes in version 0.7.2 are:
+* Don't have multiple password dialogs presented for the same
+  keyring
+
 Changes in version 0.7.1 are: 
 * Added GNOME_KEYRING_ITEM_APPLICATION_SECRET which allows an item 
   to be for a single application only with strict access controls.
