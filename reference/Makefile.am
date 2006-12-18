@@ -84,8 +84,13 @@ expand_content_files=
 # e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 INCLUDES=\
+        -I$(top_srcdir)   \
+	-I$(top_builddir) \
+	$(GOBJECT_CFLAGS) \
 	$(NULL)
 GTKDOC_LIBS=\
+	$(top_builddir)/libgnome-keyring.la \
+	$(GOBJECT_LIBS) \
 	$(NULL)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.

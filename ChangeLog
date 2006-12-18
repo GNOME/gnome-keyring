@@ -1,5 +1,14 @@
 2006-12-18  Alexander Larsson  <alexl@redhat.com>
 
+	* Makefile.am:
+	Build lib before docs
+	
+	* configure.in:
+	* reference/Makefile.am:
+	Make docs build
+
+2006-12-18  Alexander Larsson  <alexl@redhat.com>
+
 	* NEWS:
 	Update for release
 
