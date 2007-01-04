@@ -370,9 +370,11 @@ remove_keyring_file_from_disk (GnomeKeyring *keyring)
 {
 	int res;
 
-	g_assert (keyring->file != NULL);
+	/* Cannot remove session or memory based keyring */
+	if (keyring->file == NULL)
+		return FALSE;
+
 	res = unlink (keyring->file);
-		
 	return (res == 0);
 }
 
