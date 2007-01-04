@@ -1,3 +1,10 @@
+Changes in version 0.7.3 are:
+* Fix endless loop when creating a keyring and a file by that name 
+  already exists. 
+* Fix crasher when deleting session keyring.
+* Fix crasher when doing find operation with NULL attribute string.
+* Sync files to disk after writing to keyring.
+
 Changes in version 0.7.2 are:
 * Don't have multiple password dialogs presented for the same
   keyring
