@@ -200,8 +200,9 @@ get_default_keyring_file_for_name (const char *keyring_name)
 		}
 		
 		path = g_build_filename (dir, filename, NULL);
-				
 		g_free (filename);
+
+		version++;
 	} while (g_file_test (path, G_FILE_TEST_EXISTS));
 
 	g_free (base);
