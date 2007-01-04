@@ -1670,7 +1670,7 @@ gnome_keyring_item_create (const char                          *keyring,
  * @attributes: the attributes specifying the keyring item
  * @secret: the secret information (password, passphrase, pin, etc) to be saved
  * @update_if_exists: set to %TRUE to update an existing item, if found. Create
- * a new one otherwise.
+ * a new one otherwise. Only item @attributes are matched.
  * @item_id: return location for the id of the created/updated keyring item.
  *
  * Create (or update of @update_if_exists is set) a keyring item with the

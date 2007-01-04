@@ -1,5 +1,9 @@
 2007-01-03  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* gnome-keyring.c: Update documentation. Fixes bug #359968
+
+2007-01-03  Nate Nielsen  <nielsen@memberwebs.com>
+
 	* gnome-keyring-daemon-file.c: Don't try and delete session 
 	keyrirng. Fixes bug #355414
 
