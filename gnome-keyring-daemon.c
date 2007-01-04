@@ -297,7 +297,10 @@ hash_int (guint32 x)
 static char *
 hash_string (const char *str)
 {
-        guchar digest[16];
+	guchar digest[16];
+
+	if (str == NULL)
+		return NULL;
 	
 	gnome_keyring_md5_string (str, digest);
 	return gnome_keyring_md5_digest_to_ascii (digest);
@@ -550,6 +553,10 @@ match_attributes (GnomeKeyringItem *item,
 				}
 				switch (attribute->type) {
 				case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
+					if ((attribute->value.string == NULL || item_attribute->value.string == NULL) && 
+					    attribute->value.string != item_attribute->value.string) {
+						return FALSE;
+					}
 					if (strcmp (attribute->value.string, item_attribute->value.string) != 0) {
 						return FALSE;
 					}

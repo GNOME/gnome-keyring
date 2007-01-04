@@ -1,5 +1,10 @@
 2007-01-03  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* gnome-keyring-daemon.c: Fix crasher for find operation with 
+	a NULL attribute string. Fixes #360007
+
+2007-01-03  Nate Nielsen  <nielsen@memberwebs.com>
+
     * configure.in: 
     * gnome-keyring-daemon-file.c: fsync() after writing to disk.
     See bug #347904
