@@ -1,3 +1,9 @@
+2007-01-03  Nate Nielsen  <nielsen@memberwebs.com>
+
+    * configure.in: 
+    * gnome-keyring-daemon-file.c: fsync() after writing to disk.
+    See bug #347904
+
 2006-12-18  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

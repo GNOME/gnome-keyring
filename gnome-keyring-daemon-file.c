@@ -429,6 +429,9 @@ save_keyring_to_disk (GnomeKeyring *keyring)
 		if (fd != -1) {
 			fchmod (fd, S_IRUSR | S_IWUSR);
 			if (write_all (fd, out->str, out->len) == 0) {
+#ifdef HAVE_FSYNC
+			fsync (fd);
+#endif
 				close (fd);
 				if (rename (template, keyring->file) == 0) {
 					if (stat (keyring->file, &statbuf) == 0) {
@@ -823,6 +826,9 @@ set_default_keyring (GnomeKeyring *keyring)
 		if (keyring != NULL && keyring->keyring_name != NULL) {
 			write_all (fd, keyring->keyring_name,
 				   strlen (keyring->keyring_name));
+#ifdef HAVE_FSYNC
+			fsync (fd);
+#endif
 		}
 		close (fd);
 	}

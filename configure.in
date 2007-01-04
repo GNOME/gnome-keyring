@@ -110,7 +110,7 @@ AC_STAT_MACROS_BROKEN
    and declares uintmax_t. ])
   fi
 AC_CHECK_HEADERS(fcntl.h sys/time.h time.h unistd.h)
-AC_CHECK_FUNCS(gettimeofday)
+AC_CHECK_FUNCS(gettimeofday fsync)
 	
 
 AC_CHECK_LIB(socket, socket)
