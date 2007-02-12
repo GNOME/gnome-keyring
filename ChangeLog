@@ -1,3 +1,16 @@
+2007-02-12  Nate Nielsen  <nielsen@memberwebs.com>
+
+	* Makefile.am: 
+	* README:
+	* configure.in: 
+	* gnome-keyring-daemon-dbus.c: (added)
+	* gnome-keyring-daemon.c: (main): 
+	* gnome-keyring-daemon.h:
+	* gnome-keyring-private.h: 
+	* gnome-keyring.c: (connect_to_daemon): 
+	Added secondary method for daemon discover: via DBus. Added dependency
+	on DBus. Fixes bug #400956
+	
 2007-01-04  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* configure.in: Bump version number

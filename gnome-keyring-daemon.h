@@ -182,4 +182,10 @@ extern GList *keyrings;
 extern GnomeKeyring *session_keyring;
 extern GnomeKeyring *default_keyring;
 
+/* Dbus Initialization/Cleanup */
+#ifdef WITH_DBUS
+void gnome_keyring_daemon_dbus_setup (GMainLoop *loop, const gchar* socket);
+void gnome_keyring_daemon_dbus_cleanup (void);
+#endif 
+
 #endif /* GNOME_KEYRING_DAEMON_H */

@@ -70,7 +70,8 @@ gnome_keyring_daemon_SOURCES = \
 	gnome-keyring-daemon.c \
 	gnome-keyring-daemon-file.c \
 	gnome-keyring-daemon.h \
-	gnome-keyring-daemon-io.c
+	gnome-keyring-daemon-io.c \
+	gnome-keyring-daemon-dbus.c
 
 gnome_keyring_daemon_LDADD = \
 	libgnome-keyring-common.la \

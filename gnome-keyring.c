@@ -40,6 +40,10 @@
 #include <sys/un.h>
 #include <stdarg.h>
 
+#ifdef WITH_DBUS
+#include <dbus/dbus.h>
+#endif
+
 typedef enum {
 	CALLBACK_DONE,
 	CALLBACK_GET_STRING,
@@ -84,37 +88,69 @@ struct GnomeKeyringOperation {
 	KeyringHandleReply reply_handler;
 };
 
-/**
- * GnomeKeyringAttributeList:
- *
- * A list of keyring item attributes. It's used to search for keyring items
- * with eg. gnome_keyring_find_items_sync().
- */
+#ifdef WITH_DBUS
 
-/**
- * gnome_keyring_attribute_list_new():
- *
- * Create a new #GnomeKeyringAttributeList.
- *
- * Returns an empty #GnomeKeyringAttributeList.
- */
-
-static int
-connect_to_daemon (gboolean non_blocking)
+static gchar* 
+find_daemon_via_dbus ()
 {
-	const char *socket_file;
-	struct sockaddr_un addr;
-	int sock;
-	int val;
+	DBusConnection *dconn;
+	DBusMessage *reply;
+	DBusMessage *msg;
+	DBusMessageIter args;
+	DBusError derr;
+	char* socket = NULL;
 
-	socket_file = g_getenv ("GNOME_KEYRING_SOCKET");
-	
-	if (socket_file == NULL) {
-		return -1;
+	dbus_error_init (&derr);
+	dconn = dbus_bus_get (DBUS_BUS_SESSION, &derr);
+	if (!dconn) {
+		g_warning ("couldn't connect to dbus session bus: %s", derr.message);
+		return NULL;
+	}	
+
+	msg = dbus_message_new_method_call (GNOME_KEYRING_DAEMON_SERVICE,
+	                                    GNOME_KEYRING_DAEMON_PATH,
+	                                    GNOME_KEYRING_DAEMON_INTERFACE,
+	                                    "GetSocketPath");
+	if (!msg) {
+		g_warning ("couldn't create dbus message");
+		dbus_connection_unref (dconn);
+		return NULL;
 	}
 
+	/* Send message and get a handle for a reply */
+	reply = dbus_connection_send_with_reply_and_block (dconn, msg, 1000, &derr);
+	dbus_message_unref (msg);
+	if (!reply) {
+		g_warning ("couldn't communicate with gnome keyring daemon via dbus: %s", derr.message);
+		dbus_connection_unref (dconn);
+		return NULL;
+	}
+
+	/* Read the return value */
+	if (!dbus_message_iter_init(reply, &args) || 
+	    dbus_message_iter_get_arg_type(&args) != DBUS_TYPE_STRING) {
+		g_warning ("gnome-keyring-daemon sent back an invalid reply");
+	} else {
+		dbus_message_iter_get_basic(&args, &socket);
+		socket = g_strdup (socket);
+	}
+
+	dbus_message_unref (reply);
+	dbus_connection_unref (dconn);
+
+	return socket;
+}
+
+#endif 
+
+static int 
+connect_to_daemon_at (const gchar *path)
+{
+	struct sockaddr_un addr;
+	int sock;
+
 	addr.sun_family = AF_UNIX;
-	strncpy (addr.sun_path, socket_file, sizeof (addr.sun_path));
+	strncpy (addr.sun_path, path, sizeof (addr.sun_path));
 	
 	sock = socket (AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -132,13 +168,52 @@ connect_to_daemon (gboolean non_blocking)
 		return -1;
 	}
 
-	val = fcntl (sock, F_GETFL, 0);
-	if (val < 0) {
-		close (sock);
-		return -1;
+	return sock;
+}
+
+static int
+connect_to_daemon (gboolean non_blocking)
+{
+	const gchar *epath = NULL;
+	int sock = -1;
+	int val;
+
+	/* Try using the environment variable */
+	epath = g_getenv ("GNOME_KEYRING_SOCKET");
+	if (epath && epath[0]) {
+		sock = connect_to_daemon_at (epath);
+		if (sock < 0) {
+			g_warning ("couldn't connect to daemon at $GNOME_KEYRING_SOCKET: %s: %s", 
+				     epath, g_strerror (errno));
+		}
 	}
 
+#ifdef WITH_DBUS
+	/* Try using DBus to find daemon */
+	if (sock < 0) {
+		gchar *dpath = find_daemon_via_dbus ();
+		if (dpath) {
+			sock = connect_to_daemon_at (dpath);
+			g_free (dpath);
+			if (sock < 0) {
+				g_warning ("couldn't connect to daemon at DBus discovered socket: %s: %s", 
+					     dpath, g_strerror (errno));
+			}
+		}
+	}
+#endif
+
+	if (sock < 0)
+		return -1;
+
+	/* Setup non blocking */
 	if (non_blocking) {
+		val = fcntl (sock, F_GETFL, 0);
+		if (val < 0) {
+			close (sock);
+			return -1;
+		}
+
 		if (fcntl (sock, F_SETFL, val | O_NONBLOCK) < 0) {
 			close (sock);
 			return -1;

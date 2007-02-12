@@ -2992,9 +2992,17 @@ main (int argc, char *argv[])
 		
 	}
 	
+#ifdef WITH_DBUS
+	gnome_keyring_daemon_dbus_setup (loop, path);
+#endif
 	
 	g_main_loop_run (loop);
+
+#ifdef WITH_DBUS
+	gnome_keyring_daemon_dbus_cleanup ();
+#endif
 	
 	cleanup_socket_dir ();
 	return 0;
 }
+
