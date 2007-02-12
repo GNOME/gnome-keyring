@@ -1,3 +1,8 @@
+Changes in version 0.7.91 are:
+* Add method for library to discover daemon via DBus. Adds soft 
+  DBus dependency.
+* Fixes for building on kFreeBSD.
+
 Changes in version 0.7.3 are:
 * Fix endless loop when creating a keyring and a file by that name 
   already exists. 
