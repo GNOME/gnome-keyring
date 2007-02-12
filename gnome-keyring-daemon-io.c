@@ -194,11 +194,11 @@ read_unix_socket_credentials (int fd,
 			return FALSE;
 		}
 #elif defined(HAVE_CMSGCRED)
-		cred = (struct cmsgcred *) CMSG_DATA (&cmsg);
+		cred = (struct cmsgcred *) CMSG_DATA (&cmsg.hdr);
 		*pid = cred->cmcred_pid;
 		*uid = cred->cmcred_euid;
 #elif defined(LOCAL_CREDS)
-		cred = (struct sockcred *) CMSG_DATA (&cmsg);
+		cred = (struct sockcred *) CMSG_DATA (&cmsg.hdr);
 		*pid = 0;
 		*uid = cred->sc_euid;
 		set_local_creds(fd, FALSE);

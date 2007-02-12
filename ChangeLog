@@ -1,5 +1,11 @@
 2007-02-12  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* gnome-keyring-daemon-io.c: (read_unix_socket_credentials): 
+	* gnome-keyring.c: (write_credentials_byte_sync): 
+	kFreeBSD build fixes. Patch by Petr Salinger. Fixes bug #382773
+
+2007-02-12  Nate Nielsen  <nielsen@memberwebs.com>
+
 	* Makefile.am: 
 	* README:
 	* configure.in: 
