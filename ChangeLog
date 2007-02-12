@@ -1,3 +1,8 @@
+2007-02-12  Pascal Terjan  <pterjan@linuxfr.org>
+
+	* gnome-keyring-daemon.c: (gnome_keyring_free): Don't crash on NULL
+	parameter. Part of #339137
+
 2007-02-12  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* configure.in: Bump version number

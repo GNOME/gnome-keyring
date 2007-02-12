@@ -94,6 +94,10 @@ gnome_keyring_free (GnomeKeyring *keyring)
 	GList *l;
 	GnomeKeyringItem *item;
 
+	if (keyring == NULL) {
+		return;
+	}
+
 	l = keyring->items;
 	while (l != NULL) {
 		item = l->data;
