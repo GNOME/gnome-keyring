@@ -24,6 +24,7 @@
 #define GNOME_KEYRING_DAEMON_H
 
 #include <time.h>
+#include <sys/types.h>
 #include <glib.h>
 
 #include "gnome-keyring.h"

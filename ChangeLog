@@ -1,3 +1,8 @@
+2007-02-13  Wouter Bolsterlee  <wbolster@svn.gnome.org>
+
+	* gnome-keyring-daemon.h: Include sys/types.h to fix the
+	build. Fixes bug #407160, patch by Jens Granseuer.
+
 2007-02-12  Pascal Terjan  <pterjan@linuxfr.org>
 
 	* gnome-keyring-daemon.c: (gnome_keyring_free): Don't crash on NULL
