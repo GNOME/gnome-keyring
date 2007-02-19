@@ -1,47 +1,49 @@
 # Danish translation of gnome-keyring.
-# Copyright (C) 2004 Free Software Foundation, Inc.
+# Copyright (C) 2004-07 Free Software Foundation, Inc.
 # Ole Laursen <olau@hardworking.dk>, 2004.
+# Peter Bach <bach.peter@gmail.com>, 2007.
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2004-01-30 22:11+0100\n"
-"Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
-"Language-Team: Danish <dansk@klid.dk>\n"
+"POT-Creation-Date: 2007-02-19 20:01+0100\n"
+"PO-Revision-Date: 2007-02-19 18:38+0200\n"
+"Last-Translator: Peter Bach <bach.peter@gmail.com>\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gnome-keyring-ask.c:241
 msgid "_Old password:"
-msgstr ""
+msgstr "_Gammel adgangskode:"
 
 #: ../gnome-keyring-ask.c:262
 msgid "_Password:"
-msgstr ""
+msgstr "_Adgangskode:"
 
 #: ../gnome-keyring-ask.c:284
 msgid "_Confirm new password:"
-msgstr ""
+msgstr "_Bekræft ny adgangskode:"
 
 #. Strength bar:
 #: ../gnome-keyring-ask.c:303
 msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Adgangskode-styrkemeter:</span>"
 
 #: ../gnome-keyring-ask.c:329
 msgid "Old password cannot be blank."
-msgstr ""
+msgstr "Gammel adgangskode kan ikke være tom"
 
 #: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
-msgstr ""
+msgstr "Adgangskode kan ikke være tom."
 
 #: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
-msgstr ""
+msgstr "Adgangskoder stemmer ikke overens."
 
 #: ../gnome-keyring-ask.c:407
 #, c-format
@@ -176,59 +178,58 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
-msgstr "Ny nøgleringskode"
+msgstr "Ny nøgleringsadgangskode"
 
 #: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
-msgstr "Vælg adgandskode til ny nøglering"
+msgstr "Vælg adgangskode til ny nøglering"
 
 #: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Programmet \"%s\" (%s) ønsker at oprette en ny standardnøglering. Du skal "
-"vælge en adgangskode du ønsker at bruge til nøgleringen."
+"Programmet \"%s\" (%s) ønsker at ændre adgangskoden for \"%s\"-nøgleringen. "
+"Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"Programmet \"%s\" (%s) ønsker at oprette en ny standardnøglering. Du skal "
-"vælge en adgangskode du ønsker at bruge til nøgleringen."
+"Programmet \"%s\" (%s) ønsker at ændre adgangskoden for standardnøgleringen. "
+"Du skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Programmet \"%s\" ønsker at oprette en ny standardnøglering. Du skal vælge "
-"en adgangskode du ønsker at bruge til nøgleringen."
+"Programmet \"%s\" ønsker at ændre adgangskoden for \"%s\"-nøgleringen. Du "
+"skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Programmet \"%s\" ønsker at oprette en ny standardnøglering. Du skal vælge "
-"en adgangskode du ønsker at bruge til nøgleringen."
+"Programmet \"%s\" ønsker at ændre adgangskoden for standardnøgleringen. Du "
+"skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Et ukendt program ønsker at oprette en ny standardnøglering. Du skal vælge "
-"en adgangskode du ønsker at bruge til nøgleringen."
+"Et ukendt program ønsker at ændre adgangskoden for \"%s\"-nøgleringen. Du "
+"skal vælge en adgangskode du ønsker at bruge til nøgleringen."
 
 #: ../gnome-keyring-ask.c:636
-#, fuzzy
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -237,19 +238,17 @@ msgstr ""
 "en adgangskode du ønsker at bruge til nøgleringen."
 
 #: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Vælg adgandskode til ny nøglering"
+msgstr "Vælg en ny adgangskode til \"%s\"-nøgleringen"
 
 #: ../gnome-keyring-ask.c:645
-#, fuzzy
 msgid "Choose a new password for the default keyring. "
-msgstr "Vælg adgangskode til standardnøglering"
+msgstr "Vælg en ny adgangskode til standardnøgleringen"
 
 #: ../gnome-keyring-ask.c:650
-#, fuzzy
 msgid "Change Keyring Password"
-msgstr "Ny nøgleringskode"
+msgstr "Ændre nøgleringsadgangskode"
 
 #: ../gnome-keyring-ask.c:689
 #, c-format
