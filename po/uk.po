@@ -1,14 +1,14 @@
 # Ukrainian translation for gnome-keyring
 # Copyright (C) 2003 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Maxim Dzumanenko <dziumanenko@gmail.com>, 2004-2006
+# Maxim Dzumanenko <dziumanenko@gmail.com>, 2004-2007
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-08-13 14:34+0200\n"
+"POT-Creation-Date: 2007-02-21 11:31+0200\n"
+"PO-Revision-Date: 2007-02-21 14:34+0200\n"
 "Last-Translator: Maxim Dzumanenko <dziumanenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -42,7 +42,7 @@ msgstr "Пароль не може бути порожнім."
 
 #: ../gnome-keyring-ask.c:348
 msgid "Passwords do not match."
-msgstr "Паролі не співпадають."
+msgstr "Паролі не збігаються."
 
 #: ../gnome-keyring-ask.c:407
 #, c-format
