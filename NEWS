@@ -1,3 +1,7 @@
+Changes in version 0.7.92 are:
+* Fix build by including sys/types.h
+* In gnome_keyring_free() don't crash on NULL parameter. 
+
 Changes in version 0.7.91 are:
 * Add method for library to discover daemon via DBus. Adds soft 
   DBus dependency.
