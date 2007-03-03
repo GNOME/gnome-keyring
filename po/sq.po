@@ -1,15 +1,16 @@
 # Albanian translation of gnome-keyring.
-# Copyright (C) 2004 THE gnome-keyring'S COPYRIGHT HOLDER
+# Copyright (C) 2004, 2007 THE gnome-keyring'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-keyring package.
-# Elian Myftiu <elian@alblinux.net>, 2004.
-#
+# Elian Myftiu <elian@alblinux.net>, 2004-2007
+# 
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2005-11-24 22:22+0100\n"
-"Last-Translator: Elian Myftiu <elian@alblinux.net>\n"
+"POT-Creation-Date: 2007-03-03 19:34+0100\n"
+"PO-Revision-Date: 2007-02-28 16:30+0100\n"
+"Last-Translator: Elian Myftiu <elian.myftiu@gmail.com>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,25 +18,24 @@ msgstr ""
 
 #: ../gnome-keyring-ask.c:241
 msgid "_Old password:"
-msgstr ""
+msgstr "Fjalëkalimi i _vjetër:"
 
 #: ../gnome-keyring-ask.c:262
 msgid "_Password:"
-msgstr ""
+msgstr "_Fjalëkalimi:"
 
 #: ../gnome-keyring-ask.c:284
 msgid "_Confirm new password:"
-msgstr ""
+msgstr "_Konfirmo fjalëkalimin e ri:"
 
 #. Strength bar:
 #: ../gnome-keyring-ask.c:303
 msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Matës fuqie fjalëkalimi:</span>"
 
 #: ../gnome-keyring-ask.c:329
-#, fuzzy
 msgid "Old password cannot be blank."
-msgstr "Fjalëkalimi nuk mund të jetë bosh."
+msgstr "Fjalëkalimi i vjetër nuk mund të jetë bosh."
 
 #: ../gnome-keyring-ask.c:340
 msgid "Password cannot be blank."
@@ -51,15 +51,16 @@ msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr ""
-"Programi '%s'·(%s) po kërkon të ekzekutojë keyring e prezgjedhur, por është "
-"i bllokuar"
+"Programi '%s'·(%s) po kërkon të punojë me organizuesin e parazgjedhur, por "
+"ky është i kyçur"
 
 #: ../gnome-keyring-ask.c:411
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Programi '%s' (%s) po kërkon të ekzekutojë keyring '%s', por është i bllokuar"
+"Programi '%s' (%s) po kërkon të punojë me organizuesin '%s', por ky është i "
+"kyçur"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:416
@@ -68,21 +69,22 @@ msgid ""
 "The application '%s' (%s) wants access to an unknown keyring, but it is "
 "locked"
 msgstr ""
-"Programi '%s' (%s) kërkon të ekzekutojë një keyring të panjohur, por është i "
-"bllokuar"
+"Programi '%s' (%s) kërkon të punojë me një organizues të panjohur, por ky "
+"është i kyçur"
 
 #: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
-"Programi '%s' kërkon të ekzekutojë keyring e prezgjedhur, por është i "
-"bllokuar"
+"Programi '%s' kërkon të punojë me organizuesin e parazgjedhur, por ky është "
+"i kyçur"
 
 #: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Programi '%s' kërkon të ekzekutojë keyring '%s', por është i bllokuar"
+msgstr ""
+"Programi '%s' kërkon të punojë me organizuesin '%s', por ky është i kyçur"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
@@ -90,44 +92,44 @@ msgstr "Programi '%s' kërkon të ekzekutojë keyring '%s', por është i blloku
 msgid ""
 "The application '%s' wants access to an unknown keyring, but it is locked"
 msgstr ""
-"Programi '%s' kërkonë të ekzekutojë një keyring të panjohur, por është i "
-"bllokuar"
+"Programi '%s' kërkon të punojë me një organizues  të panjohur, por ky është "
+"i kyçur"
 
 #: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
-"Një program i panjohur kërkon të ekzekutojë keyring e prezgjedhur, por është "
-"i bllokuar"
+"Një program i panjohur kërkon të punojë me organizuesin e parazgjedhur, por "
+"ky është i kyçur"
 
 #: ../gnome-keyring-ask.c:456
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Një program i panjohur kërkon të ekzekutojë keyring '%s', por është i "
-"bllokuar"
+"Një program i panjohur kërkon të punojë me organizuesin '%s', por ky është i "
+"kyçur"
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:461
 msgid ""
 "An unknown application wants access to an unknown keyring, but it is locked"
 msgstr ""
-"Një program i panjohur kërkon të ekzekutojë një keyring të panjohur, por "
-"është i bllokuar"
+"Një program i panjohur kërkon të punojë me një organizues të panjohur, por "
+"ky është i kyçur"
 
 #: ../gnome-keyring-ask.c:468
 msgid "Enter password for default keyring to unlock"
-msgstr "Shkruaj fjalëkalimin për zhbllokimin e keyring të prezgjedhur"
+msgstr "Fut fjalëkalimin për zhbllokimin e organizuesit të parazgjedhur"
 
 #: ../gnome-keyring-ask.c:470
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Shkruaj fjalëkalimin për zhbllokimin e keyring '%s'"
+msgstr "Fut fjalëkalimin për zhbllokimin e organizuesit '%s'"
 
 #: ../gnome-keyring-ask.c:474
 msgid "Unlock Keyring"
-msgstr "Zhblloko Keyring"
+msgstr "Zhblloko Organizuesin"
 
 #: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
 #: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
@@ -141,8 +143,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Programi '%s' (%s) po kërkon të krijojë një keyring të ri të quajtur '%s'. "
-"Duhet të zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+"Programi '%s' (%s) po kërkon të krijojë një organizues të ri të quajtur '%"
+"s'. Duhet të zgjedhësh fjalëkalimin që dëshiron të përdorësh për të."
 
 #: ../gnome-keyring-ask.c:521
 #, c-format
@@ -150,8 +152,9 @@ msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Programi '%s' (%s) po kërkon të krijojë një keyring të prezgjedhur. Duhet të "
-"zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+"Programi '%s' (%s) po kërkon të krijojë një organizues të ri të "
+"parazgjedhur. Duhet të zgjedhësh fjalëkalimin që dëshiron të përdorësh për "
+"të."
 
 #: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
 #, c-format
@@ -159,8 +162,8 @@ msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Programi '%s' po kërkon të krijojë një keyring të quajtur '%s'. Duhet të "
-"zgjedhësh fjalëkalimin e duhur nëse duhet ta përdorësh."
+"Programi '%s' po kërkon të krijojë një organizues të ri të quajtur '%s'. "
+"Duhet të zgjedhësh fjalëkalimin që dëshiron të përdorësh për të."
 
 #: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
 #, c-format
@@ -168,8 +171,8 @@ msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Programi '%s' po kërkon të krijojë një keyring të prezgjedhur. Duhet të "
-"zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+"Programi '%s' po kërkon të krijojë një organizues të ri të parazgjedhur. "
+"Duhet të zgjedhësh fjalëkalimin që dëshiron të përdorësh për të."
 
 #: ../gnome-keyring-ask.c:547
 #, c-format
@@ -177,93 +180,94 @@ msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
 msgstr ""
-"Një program i panjohur po kërkon të krijojë një keyring të quajtur '%s'. "
-"Duhet të zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+"Një program i panjohur po kërkon të krijojë një organizues të ri të quajtur "
+"'%s'. Duhet të zgjedhësh fjalëkalimin që dëshiron të përdorësh për të."
 
 #: ../gnome-keyring-ask.c:551
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Një program i panjohur po kërkon të krijojë një keyring të prezgjedhur. "
-"Duhet të zgjedhësh një fjalëkalim nëse dëshiron ta përdorësh."
+"Një program i panjohur po kërkon të krijojë një organizues të ri të "
+"parazgjedhur. Duhet të zgjedhësh fjalëkalimin që dëshiron të përdorësh për "
+"të."
 
 #: ../gnome-keyring-ask.c:558
 msgid "New Keyring Password"
-msgstr "Fjalëkalim i Ri"
+msgstr "Fjalëkalim Organizuesi të Ri"
 
 #: ../gnome-keyring-ask.c:559
 msgid "Choose password for new keyring"
-msgstr "Zgjidh një fjalëkalim për keyring e ri"
+msgstr "Zgjidh fjalëkalim organizuesi të ri"
 
 #: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Programi '%s' (%s) po kërkon të krijojë një keyring të prezgjedhur. Duhet të "
-"zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+"Programi '%s' (%s) kërkon të ndryshojë fjalëkalimin për organizuesin '%s'. "
+"Duhet të zgjedhësh fjalëkalimin që dëshiron ta përdorësh për të."
 
 #: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"Programi '%s' (%s) po kërkon të krijojë një keyring të prezgjedhur. Duhet të "
-"zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+"Programi '%s' (%s) kërkon të ndryshojë fjalëkalimin për organizuesin e "
+"parazgjedhur. Duhet të zgjedhësh fjalëkalimin që dëshiron të përdorësh për "
+"të."
 
 #: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Programi '%s' po kërkon të krijojë një keyring të prezgjedhur. Duhet të "
-"zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+"Programi '%s' kërkon të ndryshojë fjalëkalimin për organizuesin '%s'. Duhet "
+"të zgjedhësh fjalëkalimin që dëshiron ta përdorësh për të."
 
 #: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Programi '%s' po kërkon të krijojë një keyring të prezgjedhur. Duhet të "
-"zgjedhësh fjalëkalimin e duhur nëse dëshiron ta përdorësh."
+"Programi '%s' kërkon të ndryshojë fjalëkalimin për organizuesin e "
+"parazgjedhur. Duhet të zgjedhësh fjalëkalimin që dëshiron të përdorësh për "
+"të."
 
 #: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Një program i panjohur po kërkon të krijojë një keyring të prezgjedhur. "
-"Duhet të zgjedhësh një fjalëkalim nëse dëshiron ta përdorësh."
+"Një program i panjohur po kërkon të ndryshojë fjalëkalimin për organizuesin "
+"'%s'. Duhet të zgjedhësh fjalëkalimin që dëshiron ta përdorësh për të."
 
 #: ../gnome-keyring-ask.c:636
-#, fuzzy
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Një program i panjohur po kërkon të krijojë një keyring të prezgjedhur. "
-"Duhet të zgjedhësh një fjalëkalim nëse dëshiron ta përdorësh."
+"Një program i panjohur po kërkon të ndryshojë fjalëkalimin për organizuesin "
+"e parazgjedhur. Duhet të zgjedhësh fjalëkalimin që dëshiron ta përdorësh për "
+"të."
 
 #: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Zgjidh një fjalëkalim për keyring e ri"
+msgstr "Zgjidh një fjalëkalim të ri për organizuesin '%s'. "
 
 #: ../gnome-keyring-ask.c:645
-#, fuzzy
 msgid "Choose a new password for the default keyring. "
-msgstr "Zgjidh fjalëkalimin për keyring e prezgjedhur"
+msgstr "Zgjidh një fjalëkalim të ri për organizuesin e parazgjedhur. "
 
 #: ../gnome-keyring-ask.c:650
-#, fuzzy
 msgid "Change Keyring Password"
-msgstr "Fjalëkalim i Ri"
+msgstr "Ndrysho Fjalëkalimin e Organizuesit"
 
 #: ../gnome-keyring-ask.c:689
 #, c-format
@@ -273,7 +277,7 @@ msgid ""
 "it."
 msgstr ""
 "Programi '%s' (%s) po kërkon të ruajë një fjalëkalim, por nuk ekziston një "
-"keyring i prezgjedhur. Për të krijuar një të tillë, duhet të zgjedhësh "
+"organizues i parazgjedhur. Për të krijuar një të tillë, duhet të zgjedhësh "
 "fjalëkalimin për përdorim."
 
 #: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
@@ -284,7 +288,7 @@ msgid ""
 "it."
 msgstr ""
 "Programi '%s' po kërkon të ruajë një fjalëkalim, por nuk ekziston një "
-"·keyring i prezgjedhur. Për të krijuar një të tillë, duhet të zgjedhësh "
+"organizues i parazgjedhur. Për të krijuar një të tillë, duhet të zgjedhësh "
 "fjalëkalimin për përdorim."
 
 #. app == APPLICATION_NAME_UNKNOWN
@@ -295,20 +299,20 @@ msgid ""
 "it."
 msgstr ""
 "Një program i panjohur po kërkon të ruajë një fjalëkalim, por nuk ekziston "
-"një keyring i prezgjedhur. Për të krijuar një të tillë, duhet të zgjedhësh "
-"fjalëkalimin për përdorim."
+"një organizues i parazgjedhur. Për të krijuar një të tillë, duhet të "
+"zgjedhësh fjalëkalimin për përdorim."
 
 #: ../gnome-keyring-ask.c:706
 msgid "Create Default Keyring"
-msgstr "Krijo Keyring e Prezgjedhur"
+msgstr "Krijo Organizuesin e Prezgjedhur"
 
 #: ../gnome-keyring-ask.c:707
 msgid "Choose password for default keyring"
-msgstr "Zgjidh fjalëkalimin për keyring e prezgjedhur"
+msgstr "Zgjidh fjalëkalimin për organizuesin e parazgjedhur"
 
 #: ../gnome-keyring-ask.c:747
 msgid "Allow application access to keyring?"
-msgstr "A t'i lejoj programit përdorimin e keyring-ut?"
+msgstr "A t'i lejoj programit përdorimin e organizuesit?"
 
 #: ../gnome-keyring-ask.c:750
 #, c-format
@@ -321,8 +325,8 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in the "
 "default keyring."
 msgstr ""
-"Programi '%s' (%s) po kërkon të përdorë fjalëkalimin për '%s' në keyring-un "
-"e prezgjedhur."
+"Programi '%s' (%s) po kërkon të përdorë fjalëkalimin për '%s' në "
+"organizuesin e parazgjedhur."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:756
@@ -331,8 +335,8 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '%s' in an "
 "unknown keyring."
 msgstr ""
-"Programi '%s' (%s) po kërkon të përdorë fjalëkalimin për '%s' në një keyring "
-"të panjohur."
+"Programi '%s' (%s) po kërkon të përdorë fjalëkalimin për '%s' në një "
+"organizues të panjohur."
 
 #: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
 #, c-format
@@ -345,8 +349,8 @@ msgid ""
 "The application '%s' wants to access the password for '%s' in the default "
 "keyring."
 msgstr ""
-"Programi '%s' po kërkon të përdorë fjalëkalimin për '%s' në keyring e "
-"prezgjedhur."
+"Programi '%s' po kërkon të përdorë fjalëkalimin për '%s' në organizuesin e "
+"parazgjedhur."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
@@ -355,8 +359,8 @@ msgid ""
 "The application '%s' wants to access the password for '%s' in an unknown "
 "keyring."
 msgstr ""
-"Programi '%s' po kërkon të përdorë fjalëkalimin për '%s' në një keyring të "
-"panjohur."
+"Programi '%s' po kërkon të përdorë fjalëkalimin për '%s' në një organizues "
+"të panjohur."
 
 #: ../gnome-keyring-ask.c:783
 #, c-format
@@ -371,7 +375,7 @@ msgid ""
 "keyring."
 msgstr ""
 "Një programi i panjohur po kërkon të përdorë fjalëkalimin për '%s' në "
-"keyring e prezgjedhur."
+"organizuesin e parazgjedhur."
 
 #. keyring == KEYRING_NAME_UNKNOWN
 #: ../gnome-keyring-ask.c:789
@@ -381,7 +385,7 @@ msgid ""
 "keyring."
 msgstr ""
 "Një program i panjohur po kërkon të përdorë fjalëkalimin për '%s' në një "
-"keyring të panjohur."
+"organizues të panjohur."
 
 #: ../gnome-keyring-ask.c:794
 msgid "Allow access"
@@ -393,7 +397,7 @@ msgstr "Lejo _Një Herë"
 
 #: ../gnome-keyring-ask.c:800
 msgid "_Always Allow"
-msgstr "Lejo _Gjithmonë"
+msgstr "Lejo _Përherë"
 
 #: ../gnome-keyring-ask.c:840
 msgid "You must specify the type of request to run\n"
