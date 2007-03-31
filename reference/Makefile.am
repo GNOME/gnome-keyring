@@ -44,23 +44,14 @@ FIXXREF_OPTIONS=
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
-HFILE_GLOB=$(top_srcdir)/*.h
-CFILE_GLOB=$(top_srcdir)/*.c
+HFILE_GLOB=$(top_srcdir)/library/*.h
+CFILE_GLOB=$(top_srcdir)/library/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES=\
-	aes_be.h \
-	aes.h \
-	aes_le.h \
-	beecrypt_compat.h \
-	config.h \
-	gnome-keyring-daemon.h \
 	gnome-keyring-private.h \
 	gnome-keyring-proto.h \
-	md5.h \
-	mkdtemp.h \
-	sha256.h \
 	$(NULL)
 
 # Images to copy into HTML directory.

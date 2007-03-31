@@ -1,6 +1,6 @@
-AC_INIT(gnome-keyring.h)
+AC_INIT(library/gnome-keyring.h)
 
-AM_INIT_AUTOMAKE(gnome-keyring, 0.8)
+AM_INIT_AUTOMAKE(gnome-keyring, 0.9.1)
 AM_CONFIG_HEADER(config.h)
 	
 AM_SANITY_CHECK
@@ -191,8 +191,11 @@ fi
 			       
 AC_OUTPUT([
 Makefile
+daemon/Makefile
+doc/Makefile
+library/Makefile
 po/Makefile.in
 reference/Makefile
-gnome-keyring-1.pc
-gnome-keyring-1-uninstalled.pc
+library/gnome-keyring-1.pc
+library/gnome-keyring-1-uninstalled.pc
 ])

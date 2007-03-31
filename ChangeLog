@@ -1,3 +1,13 @@
+2007-03-31  Nate Nielsen  <nielsen@memberwebs.com> 
+	
+	* Reorganized file tree. 
+	* library/*: All library and common files
+	* daemon/*: All daemon files
+	* doc/*: Random documentation
+	* configure.in: Updated version number development version
+
+=== Branched for 2.18 work on gnome-2-18 branch ==
+
 2007-03-31  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* gnome-keyring-daemon.c: Fix null pointer crashes. 

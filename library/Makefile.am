@@ -1,0 +1,73 @@
+libgnomekeyringincludedir = $(includedir)/gnome-keyring-1/
+
+noinst_PROGRAMS= \
+	list-keyrings \
+	test-keyring \
+	test-keyring-two
+
+lib_LTLIBRARIES=libgnome-keyring.la
+
+noinst_LTLIBRARIES=libgnome-keyring-common.la
+
+INCLUDES=	\
+	-DPREFIX=\""$(prefix)"\" 			\
+	-DBINDIR=\""$(bindir)"\" 			\
+	-DLIBEXECDIR=\""$(libexecdir)"\"		\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-I$(top_srcdir) 				\
+	-I$(top_builddir) 				\
+	$(GTK_CFLAGS) 					\
+	$(GLIB_CFLAGS)
+
+libgnome_keyring_common_la_SOURCES = \
+	gnome-keyring-private.h \
+	gnome-keyring-proto.c \
+	gnome-keyring-proto.h \
+	gnome-keyring-utils.c
+
+libgnome_keyring_common_la_LIBADD = \
+	$(GLIB_LIBS)
+
+libgnome_keyring_la_SOURCES = \
+	gnome-keyring.c \
+	gnome-keyring.h
+
+libgnomekeyringinclude_HEADERS =		\
+	gnome-keyring.h
+
+
+libgnome_keyring_la_LIBADD = \
+	libgnome-keyring-common.la \
+	$(GLIB_LIBS)
+
+libgnome_keyring_la_LDFLAGS = \
+	-version-info $(LIB_GNOME_KEYRING_LT_VERSION) \
+	-no-undefined
+
+list_keyrings_SOURCES = \
+	list-keyrings.c
+
+list_keyrings_LDADD = \
+	libgnome-keyring.la \
+	$(GTK_LIBS)
+
+test_keyring_SOURCES = \
+	test.c
+
+test_keyring_LDADD = \
+	libgnome-keyring.la \
+	$(GTK_LIBS)
+
+test_keyring_two_SOURCES = \
+	test.c
+
+test_keyring_two_LDADD = \
+	libgnome-keyring.la \
+	$(GTK_LIBS)
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = gnome-keyring-1.pc
+
+EXTRA_DIST = \
+	gnome-keyring-1-uninstalled.pc.in 
+
