@@ -2541,11 +2541,14 @@ launch_ask_helper (GnomeKeyringAsk *ask,
 	}
 	keyring = NULL;
 	if (request->item != NULL) {
-		envp[i++] = g_strdup_printf("KEYRING_NAME=%s", request->item->keyring->keyring_name);
-		envp[i++] = g_strdup_printf("ITEM_NAME=%s", request->item->display_name);
+		envp[i++] = g_strdup_printf("KEYRING_NAME=%s", request->item->keyring->keyring_name ?
+		                                               request->item->keyring->keyring_name : "");
+		envp[i++] = g_strdup_printf("ITEM_NAME=%s", request->item->display_name ? 
+		                                            request->item->display_name : "");
 		keyring = request->item->keyring;
 	} else if (request->keyring != NULL) {
-		envp[i++] = g_strdup_printf("KEYRING_NAME=%s", request->keyring->keyring_name);
+		envp[i++] = g_strdup_printf("KEYRING_NAME=%s", request->keyring->keyring_name ? 
+                                                               request->keyring->keyring_name : "");
 		request->keyring->asking_password = TRUE;
 		keyring = request->keyring;
 	} else  if (request->new_keyring != NULL) {
