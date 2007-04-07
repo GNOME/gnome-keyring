@@ -1,3 +1,8 @@
+Changes in version 0.8.1 are:
+* Fixes some a null pointer crashes when called with a NULL 
+  keyring [Halton Huo]
+* Translations
+
 Changes in version 0.8 are: 
 * Translations
 
