@@ -40,7 +40,8 @@
 #include "gnome-keyring-private.h"
 #include "gnome-keyring-proto.h"
 #include "gnome-keyring-daemon.h"
-#include "md5.h"
+
+#include <gcrypt.h>
 
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
@@ -298,6 +299,25 @@ hash_int (guint32 x)
 	return 0x18273645 ^ x ^ (x << 16 | x >> 16);
 }
 
+static char*
+md5_digest_to_ascii (unsigned char digest[16])
+{
+  static char hex_digits[] = "0123456789abcdef";
+  char *res;
+  int i;
+  
+  res = g_malloc (33);
+  
+  for (i = 0; i < 16; i++) {
+    res[2*i] = hex_digits[digest[i] >> 4];
+    res[2*i+1] = hex_digits[digest[i] & 0xf];
+  }
+  
+  res[32] = 0;
+  
+  return res;
+}
+
 static char *
 hash_string (const char *str)
 {
@@ -305,9 +325,12 @@ hash_string (const char *str)
 
 	if (str == NULL)
 		return NULL;
+
+	/* In case the world changes on us... */
+	g_return_val_if_fail (gcry_md_get_algo_dlen (GCRY_MD_MD5) == sizeof (digest), NULL);
 	
-	gnome_keyring_md5_string (str, digest);
-	return gnome_keyring_md5_digest_to_ascii (digest);
+	gcry_md_hash_buffer (GCRY_MD_MD5, (void*)digest, str, strlen (str));
+	return md5_digest_to_ascii (digest);
 }
 
 GnomeKeyringAttributeList *
@@ -2894,6 +2917,9 @@ main (int argc, char *argv[])
 	gboolean daemon;
 	GIOChannel *channel;
 	int i;
+
+	/* We do not use gcrypt in a multi-threaded manner */
+	gcry_check_version (GCRYPT_VERSION);
 	
 	if (!create_master_socket (&path)) {
 		exit (1);

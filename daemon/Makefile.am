@@ -18,15 +18,6 @@ INCLUDES=	\
 LIBADD_SOURCE = mkdtemp.c mkdtemp.h
 
 gnome_keyring_daemon_SOURCES = \
-	aes.c \
-	aes.h \
-	aes_be.h \
-	aes_le.h \
-	beecrypt_compat.h \
-	md5.c \
-	md5.h \
-	sha256.c \
-	sha256.h \
 	gnome-keyring-daemon.c \
 	gnome-keyring-daemon-file.c \
 	gnome-keyring-daemon.h \

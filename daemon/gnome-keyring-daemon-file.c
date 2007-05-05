@@ -34,39 +34,58 @@
 
 #include "gnome-keyring-daemon.h"
 #include "gnome-keyring-proto.h"
-#include "md5.h"
-#include "sha256.h"
-#include "aes.h"
+
+#include <gcrypt.h>
 
 time_t keyring_dir_mtime = 0;
 
-static void
+static gboolean
 generate_key (const char *password,
 	      guchar salt[8],
 	      int iterations,
 	      guchar key[16],
 	      guchar iv[16])
 {
-	sha256Param sha;
+	gcry_md_hd_t mdh;
+	gcry_error_t gerr;
 	guchar digest[32];
+	guchar *digested;
 
 	g_assert (iterations >= 1);
 
-	sha256Reset (&sha);
-	sha256Update (&sha, (unsigned char *)password, strlen (password));
-	sha256Update (&sha, salt, 8);
-	sha256Digest (&sha, digest);
+	/* In case the world changes on us... */
+	g_return_val_if_fail (gcry_md_get_algo_dlen (GCRY_MD_SHA256) == sizeof (digest), FALSE);
+
+	gerr = gcry_md_open (&mdh, GCRY_MD_SHA256, 0);
+	if (gerr) {
+		g_warning ("couldn't create sha256 hash context: %s", 
+			   gcry_strerror (gerr));
+		return FALSE;
+	}
+
+	gcry_md_write (mdh, password, strlen (password));
+	gcry_md_write (mdh, salt, 8);
+	gcry_md_final (mdh);
+	digested = gcry_md_read (mdh, 0);
+	g_return_val_if_fail (digested, FALSE);
+	memcpy (digest, digested, sizeof (digest));
 	iterations--;
 
 	while (iterations != 0) {
-		sha256Reset (&sha);
-		sha256Update (&sha, digest, 32);
-		sha256Digest (&sha, digest);
+		gcry_md_reset (mdh);
+		gcry_md_write (mdh, digest, sizeof (digest));
+		gcry_md_final (mdh);
+		digested = gcry_md_read (mdh, 0);
+		g_return_val_if_fail (digested, FALSE);
+		memcpy (digest, digested, sizeof (digest));
 		iterations--;
 	}
 
 	memcpy (key, digest, 16);
 	memcpy (iv, digest+16, 16);
+
+	gcry_md_close (mdh);
+	return TRUE;
 }
 
 static gboolean
@@ -75,34 +94,39 @@ encrypt_buffer (GString *buffer,
 		guchar salt[8],
 		int iterations)
 {
+	gcry_cipher_hd_t cih;
+	gcry_error_t gerr;
         guchar key[16];
         guchar iv[16];
-	aesParam param;
-	guchar dst[16];
-	guchar src[16];
 	size_t pos;
-	int i;
 
 	g_assert (buffer->len % 16 == 0);
 
-	generate_key (password, salt, iterations,
-		      key, iv);
-	
-	if (aesSetup(&param, key, 128, ENCRYPT)) {
+	if (!generate_key (password, salt, iterations, key, iv))
+		return FALSE;
+
+	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
+	if (gerr) {
+		g_warning ("couldn't create aes cipher context: %s", 
+			   gcry_strerror (gerr));
 		return FALSE;
 	}
+
+	/* 16 = 128 bits */
+	gerr = gcry_cipher_setkey (cih, key, 16);
+	g_return_val_if_fail (!gerr, FALSE);
+
+	/* 16 = 128 bits */
+	gerr = gcry_cipher_setiv (cih, iv, 16);
+	g_return_val_if_fail (!gerr, FALSE);
+
 	for (pos = 0; pos < buffer->len; pos += 16) {
-		for (i = 0; i < 16; i++) {
-			src[i] = iv[i] ^ (guchar)buffer->str[pos+i];
-		}
-		
-		if (aesEncrypt (&param, (guint32*) dst, (guint32*) src)) {
-			return FALSE;
-		}
-		memcpy (iv, dst, 16);
-		memcpy (buffer->str + pos, dst, 16);
+		/* In place encryption */
+		gerr = gcry_cipher_encrypt (cih, buffer->str + pos, 16, NULL, 0);
+		g_return_val_if_fail (!gerr, FALSE);
 	}
 
+	gcry_cipher_close (cih);
 	return TRUE;
 }
 
@@ -112,45 +136,52 @@ decrypt_buffer (GString *buffer,
 		guchar salt[8],
 		int iterations)
 {
+	gcry_cipher_hd_t cih;
+	gcry_error_t gerr;
         guchar key[16];
         guchar iv[16];
-	aesParam param;
-	guchar dst[16];
 	size_t pos;
-	int i;
 
 	g_assert (buffer->len % 16 == 0);
 
-	generate_key (password, salt, iterations,
-		      key, iv);
+	if (!generate_key (password, salt, iterations, key, iv))
+		return FALSE;
 	
-	if (aesSetup(&param, key, 128, DECRYPT)) {
+	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
+	if (gerr) {
+		g_warning ("couldn't create aes cipher context: %s", 
+			   gcry_strerror (gerr));
 		return FALSE;
 	}
+
+	/* 16 = 128 bits */
+	gerr = gcry_cipher_setkey (cih, key, 16);
+	g_return_val_if_fail (!gerr, FALSE);
+
+	/* 16 = 128 bits */
+	gerr = gcry_cipher_setiv (cih, iv, 16);
+	g_return_val_if_fail (!gerr, FALSE);
+
 	for (pos = 0; pos < buffer->len; pos += 16) {
-		if (aesDecrypt (&param, (guint32*) dst, (guint32*) (buffer->str + pos))) {
-			return FALSE;
-		}
-		for (i = 0; i < 16; i++) {
-			dst[i] = iv[i] ^ dst[i];
-		}
-		memcpy (iv, buffer->str + pos, 16);
-		memcpy (buffer->str + pos, dst, 16);
+		/* In place encryption */
+		gerr = gcry_cipher_decrypt (cih, buffer->str + pos, 16, NULL, 0);
+		g_return_val_if_fail (!gerr, FALSE);
 	}
 
+	gcry_cipher_close (cih);
 	return TRUE;
 }
 
 static gboolean
 verify_decrypted_buffer (GString *buffer)
 {
-        struct GnomeKeyringMD5Context md5_context;
         guchar digest[16];
 	
-	gnome_keyring_md5_init (&md5_context);
-	gnome_keyring_md5_update (&md5_context,
-				  (guchar *)buffer->str + 16, buffer->len - 16);
-	gnome_keyring_md5_final (digest, &md5_context);
+	/* In case the world changes on us... */
+	g_return_val_if_fail (gcry_md_get_algo_dlen (GCRY_MD_MD5) == sizeof (digest), 0);
+	
+	gcry_md_hash_buffer (GCRY_MD_MD5, (void*)digest, 
+			     (guchar*)buffer->str + 16, buffer->len - 16);
 	
 	return memcmp (buffer->str, digest, 16) == 0;
 }
@@ -285,10 +316,12 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 	GnomeKeyringItem *item;
 	GnomeKeyringAttributeList *hashed;
 	GString *to_encrypt;
-        struct GnomeKeyringMD5Context md5_context;
         guchar digest[16];
 	int i;
 
+	/* In case the world changes on us... */
+	g_return_val_if_fail (gcry_md_get_algo_dlen (GCRY_MD_MD5) == sizeof (digest), FALSE);
+	
 	g_assert (!keyring->locked);
 		
 	g_string_append_len (buffer, KEYRING_FILE_HEADER, KEYRING_FILE_HEADER_LEN);
@@ -349,10 +382,8 @@ generate_file (GString *buffer, GnomeKeyring *keyring)
 		g_string_append_c (to_encrypt, 0);
 	}
 
-	gnome_keyring_md5_init (&md5_context);
-	gnome_keyring_md5_update (&md5_context,
-				  (guchar *)to_encrypt->str + 16, to_encrypt->len - 16);
-	gnome_keyring_md5_final (digest, &md5_context);
+	gcry_md_hash_buffer (GCRY_MD_MD5, (void*)digest, 
+			     (guchar*)to_encrypt->str + 16, to_encrypt->len - 16);
 	memcpy (to_encrypt->str, digest, 16);
 	
 	if (!encrypt_buffer (to_encrypt, keyring->password, keyring->salt, keyring->hash_iterations)) {
