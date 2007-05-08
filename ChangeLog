@@ -1,3 +1,8 @@
+2007-05-08  Nate Nielsen  <nielsen@memberwebs.com>
+
+	* configure.in: 
+	* daemon/gnome-keyring-daemon.c: Fix build problem with gcrypt
+
 2007-05-05  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* configure.in:
@@ -6,8 +11,8 @@
 	* daemon/beecrypt_compat.h: (removed)
 	* daemon/md5.[ch]: (removed)
 	* daemon/sha256.[ch]: (removed)
-	* gnome-keyring-daemon-file.c:
-	* gnome-keyring-daemon.c: Removed custom crypto code and 
+	* daemon/gnome-keyring-daemon-file.c:
+	* daemon/gnome-keyring-daemon.c: Removed custom crypto code and 
 	now depend on libgrcypt. Fixes legal issues with Solaris 
 	not distributing gnome-keyring. See bug #156860
 

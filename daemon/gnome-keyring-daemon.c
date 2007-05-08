@@ -2919,7 +2919,7 @@ main (int argc, char *argv[])
 	int i;
 
 	/* We do not use gcrypt in a multi-threaded manner */
-	gcry_check_version (GCRYPT_VERSION);
+	gcry_check_version (LIBGCRYPT_VERSION);
 	
 	if (!create_master_socket (&path)) {
 		exit (1);
