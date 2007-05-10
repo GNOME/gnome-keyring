@@ -300,7 +300,12 @@ run_dialog (const char *title,
 
 		/* Strength bar: */
 		
-		strength_bar_text = gtk_label_new (_("<span weight=\"bold\">Password strength meter:</span>"));
+		message = g_strconcat ("<span weight=\"bold\">",
+				       _("Password strength meter:"),
+				       "</span>",
+				       NULL);
+		strength_bar_text = gtk_label_new (message);
+		g_free (message);
 		gtk_label_set_use_markup (GTK_LABEL (strength_bar_text), TRUE);
 		gtk_misc_set_alignment (GTK_MISC (strength_bar_text), 0.0, 0.5);
 		gtk_label_set_justify (GTK_LABEL (strength_bar_text),
