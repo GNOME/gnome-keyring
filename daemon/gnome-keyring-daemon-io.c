@@ -392,7 +392,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		}
 		if (getuid() != uid) {
 			g_warning ("uid mismatch: %u, should be %u\n",
-				   uid, getuid());
+				   (guint)uid, (guint)getuid());
 			gnome_keyring_client_free (client);
 			return;
 		}

@@ -377,9 +377,9 @@ gnome_keyring_application_ref_new_from_pid (pid_t pid)
 		char *path = NULL;
 		
 #if defined(__linux__)
-		path = g_strdup_printf ("/proc/%d/exe", pid);
+		path = g_strdup_printf ("/proc/%d/exe", (gint)pid);
 #elif defined(__FreeBSD__)
-		path = g_strdup_printf ("/proc/%d/file", pid);
+		path = g_strdup_printf ("/proc/%d/file", (gint)pid);
 #endif
 		buffer = g_file_read_link (path, NULL);
 		g_free (path);
@@ -2966,7 +2966,7 @@ main (int argc, char *argv[])
 						 * The initial process will waitpid until we exit,
 						 * so there is no race */
 						g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
-						g_print ("GNOME_KEYRING_PID=%d\n", pid);
+						g_print ("GNOME_KEYRING_PID=%d\n", (gint)pid);
 						exit (0);
 					}
 				}
@@ -2988,14 +2988,14 @@ main (int argc, char *argv[])
 				}
 			} else {
 				g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
-				g_print ("GNOME_KEYRING_PID=%d\n", pid);
+				g_print ("GNOME_KEYRING_PID=%d\n", (gint)pid);
 			}
 			
 			exit (0);
 		}
 	} else {
 		g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
-		g_print ("GNOME_KEYRING_PID=%d\n", getpid ());
+		g_print ("GNOME_KEYRING_PID=%d\n", (gint)getpid ());
 	}
 
 	/* Daemon process continues here */

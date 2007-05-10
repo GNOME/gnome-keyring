@@ -1,3 +1,9 @@
+2007-05-10  Nate Nielsen  <nielsen@memberwebs.com>
+
+	* daemon/gnome-keyring-daemon-io.c:
+	* daemon/gnome-keyring-daemon.c: Cast uid_t and pid_t properly
+	to avoid compiler warnings. See bug #340117
+
 2007-05-09  Nate Nielsen  <nielsen@memberwebs.com>
 	
 	* configure.in: Bump version number to 2.19.1 to sync up 
