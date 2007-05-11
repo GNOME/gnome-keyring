@@ -1,3 +1,9 @@
+Changes in version 2.19.2 are: 
+* Sync up version number with GNOME release schedule
+* Use libgcrypt instead of hand-rolled encryption algorithms.
+* Internationalization fixes [Elijah Newren]
+* Solaris build fixes. 
+
 Changes in version 0.8 are: 
 * Translations
 

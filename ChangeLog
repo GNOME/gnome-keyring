@@ -1,3 +1,11 @@
+=== gnome-keyring 2.19.2 === 
+
+2007-05-11  Nate Nielsen  <nielsen@memberwebs.com>
+
+	* configure.in:
+	* NEWS:
+	* README: Release version 2.19.2
+
 2007-05-10  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* daemon/gnome-keyring-ask.c: Don't include markup in translatable
