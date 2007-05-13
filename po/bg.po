@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-07-07 13:41+0300\n"
+"POT-Creation-Date: 2007-05-13 12:55+0300\n"
+"PO-Revision-Date: 2007-05-13 12:55+0300\n"
 "Last-Translator: Rostislav \"zbrox\" Raykov <zbrox@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,12 +26,12 @@ msgstr "_Парола:"
 
 #: ../gnome-keyring-ask.c:284
 msgid "_Confirm new password:"
-msgstr "По_твърждаване на новата парола:"
+msgstr "По_твърждаване на паролата:"
 
 #. Strength bar:
 #: ../gnome-keyring-ask.c:303
 msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">Измерване на надеждността на паролата:</span>"
+msgstr "<span weight=\"bold\">Надеждност на паролата:</span>"
 
 #: ../gnome-keyring-ask.c:329
 msgid "Old password cannot be blank."
@@ -146,7 +146,7 @@ msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ (%s) иска да създаде нов набор ключове по подразбиране."
+"Програмата „%s“ (%s) иска да създаде нов набор ключове по подразбиране. "
 "Трябва да изберете парола за него."
 
 #: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
@@ -155,7 +155,7 @@ msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ иска да създаде нов набор ключове наречен „%s“. Трябвада "
+"Програмата „%s“ иска да създаде нов набор ключове наречен „%s“. Трябва да "
 "изберете парола за него."
 
 #: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
@@ -164,7 +164,7 @@ msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ иска да създаде нов набор ключове по подразбиране.Трябва да "
+"Програмата „%s“ иска да създаде нов набор ключове по подразбиране. Трябва да "
 "изберете парола за него."
 
 #: ../gnome-keyring-ask.c:547
@@ -181,7 +181,7 @@ msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Непозната програма иска да създаде нов набор ключове по подразбиране.Трябва "
+"Непозната програма иска да създаде нов набор ключове по подразбиране. Трябва "
 "да изберете парола за него."
 
 #: ../gnome-keyring-ask.c:558
