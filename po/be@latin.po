@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-12 21:21+0300\n"
-"PO-Revision-Date: 2007-04-12 21:20+0300\n"
+"POT-Creation-Date: 2007-05-14 05:31+0300\n"
+"PO-Revision-Date: 2007-05-14 05:31+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian Latin <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,361 +27,271 @@ msgstr "_Parol:"
 msgid "_Confirm new password:"
 msgstr "_Paćvierdź novy parol:"
 
-#. Strength bar:
-#: ../daemon/gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">Ličylnik mocy parolu:</span>"
+#: ../daemon/gnome-keyring-ask.c:304
+msgid "Password strength meter:"
+msgstr "Ličylnik mocy parolu:"
 
-#: ../daemon/gnome-keyring-ask.c:329
+#: ../daemon/gnome-keyring-ask.c:334
 msgid "Old password cannot be blank."
 msgstr "Stary parol nia moža być pustym."
 
-#: ../daemon/gnome-keyring-ask.c:340
+#: ../daemon/gnome-keyring-ask.c:345
 msgid "Password cannot be blank."
 msgstr "Parol nia moža być pustym."
 
-#: ../daemon/gnome-keyring-ask.c:348
+#: ../daemon/gnome-keyring-ask.c:353
 msgid "Passwords do not match."
 msgstr "Paroli adroźnivajucca."
 
-#: ../daemon/gnome-keyring-ask.c:407
+#: ../daemon/gnome-keyring-ask.c:412
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"Aplikacyja '%s' (%s) choča dastupicca da zmoŭčanaha klučnika, ale jon "
-"zablakavany"
+msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
+msgstr "Aplikacyja '%s' (%s) choča dastupicca da zmoŭčanaha klučnika, ale jon zablakavany"
 
-#: ../daemon/gnome-keyring-ask.c:411
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Aplikacyja '%s' (%s) choča dastupicca da klučnika '%s', ale jon zablakavany"
-
-#. keyring == KEYRING_NAME_UNKNOWN
 #: ../daemon/gnome-keyring-ask.c:416
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"Aplikacyja '%s' (%s) choča dastupicca da nieviadomaha klučnika, ale jon "
-"zablakavany"
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "Aplikacyja '%s' (%s) choča dastupicca da klučnika '%s', ale jon zablakavany"
 
-#: ../daemon/gnome-keyring-ask.c:422 ../daemon/gnome-keyring-ask.c:436
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../daemon/gnome-keyring-ask.c:421
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"Aplikacyja '%s' choča dastupicca da zmoŭčanaha klučnika, ale jon zablakavany"
+msgid "The application '%s' (%s) wants access to an unknown keyring, but it is locked"
+msgstr "Aplikacyja '%s' (%s) choča dastupicca da nieviadomaha klučnika, ale jon zablakavany"
 
-#: ../daemon/gnome-keyring-ask.c:426 ../daemon/gnome-keyring-ask.c:441
+#: ../daemon/gnome-keyring-ask.c:427
+#: ../daemon/gnome-keyring-ask.c:441
+#, c-format
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "Aplikacyja '%s' choča dastupicca da zmoŭčanaha klučnika, ale jon zablakavany"
+
+#: ../daemon/gnome-keyring-ask.c:431
+#: ../daemon/gnome-keyring-ask.c:446
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Aplikacyja '%s' choča dastupicca da klučnika '%s', ale jon zablakavany"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:430 ../daemon/gnome-keyring-ask.c:446
+#: ../daemon/gnome-keyring-ask.c:435
+#: ../daemon/gnome-keyring-ask.c:451
 #, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Aplikacyja '%s' choča dastupicca da nieviadomaha klučnika, ale jon "
-"zablakavany"
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "Aplikacyja '%s' choča dastupicca da nieviadomaha klučnika, ale jon zablakavany"
 
-#: ../daemon/gnome-keyring-ask.c:452
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"Nieviadomaja aplikacyja choča dastupicca da zmoŭčanaha klučnika, ale jon "
-"zablakavany"
+#: ../daemon/gnome-keyring-ask.c:457
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "Nieviadomaja aplikacyja choča dastupicca da zmoŭčanaha klučnika, ale jon zablakavany"
 
-#: ../daemon/gnome-keyring-ask.c:456
+#: ../daemon/gnome-keyring-ask.c:461
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Nieviadomaja aplikacyja choča dastupicca da klučnika '%s', ale jon "
-"zablakavany"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "Nieviadomaja aplikacyja choča dastupicca da klučnika '%s', ale jon zablakavany"
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Nieviadomaja aplikacyja choča dastupicca da nieviadomaha klučnika, ale jon "
-"zablakavany"
+#: ../daemon/gnome-keyring-ask.c:466
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "Nieviadomaja aplikacyja choča dastupicca da nieviadomaha klučnika, ale jon zablakavany"
 
-#: ../daemon/gnome-keyring-ask.c:468
+#: ../daemon/gnome-keyring-ask.c:473
 msgid "Enter password for default keyring to unlock"
 msgstr "Uviadzi parol zmoŭčanaha klučnika, kab razblakavać"
 
-#: ../daemon/gnome-keyring-ask.c:470
+#: ../daemon/gnome-keyring-ask.c:475
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Uviadzi parol klučnika '%s', kab razblakavać"
 
-#: ../daemon/gnome-keyring-ask.c:474
+#: ../daemon/gnome-keyring-ask.c:479
 msgid "Unlock Keyring"
 msgstr "Razblakuj klučnika"
 
-#: ../daemon/gnome-keyring-ask.c:479 ../daemon/gnome-keyring-ask.c:563
-#: ../daemon/gnome-keyring-ask.c:655 ../daemon/gnome-keyring-ask.c:711
-#: ../daemon/gnome-keyring-ask.c:798
+#: ../daemon/gnome-keyring-ask.c:484
+#: ../daemon/gnome-keyring-ask.c:568
+#: ../daemon/gnome-keyring-ask.c:660
+#: ../daemon/gnome-keyring-ask.c:716
+#: ../daemon/gnome-keyring-ask.c:803
 msgid "_Deny"
 msgstr "_Admaŭlaj"
 
-#: ../daemon/gnome-keyring-ask.c:517
+#: ../daemon/gnome-keyring-ask.c:522
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Aplikacyja '%s' (%s) choča stvaryć novaha klučnika z nazvaj '%s'. Ty musiš "
-"uvieści parol dla hetaha klučnika."
+msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Aplikacyja '%s' (%s) choča stvaryć novaha klučnika z nazvaj '%s'. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:521
+#: ../daemon/gnome-keyring-ask.c:526
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Aplikacyja '%s' (%s) choča stvaryć novaha zmoŭčanaha klučnika. Ty musiš "
-"uvieści parol dla hetaha klučnika."
+msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Aplikacyja '%s' (%s) choča stvaryć novaha zmoŭčanaha klučnika. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:527 ../daemon/gnome-keyring-ask.c:537
+#: ../daemon/gnome-keyring-ask.c:532
+#: ../daemon/gnome-keyring-ask.c:542
 #, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Aplikacyja '%s' choča stvaryć novaha klučnika z nazvaj '%s'. Ty musiš "
-"uvieści parol dla hetaha klučnika."
+msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Aplikacyja '%s' choča stvaryć novaha klučnika z nazvaj '%s'. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:531 ../daemon/gnome-keyring-ask.c:541
+#: ../daemon/gnome-keyring-ask.c:536
+#: ../daemon/gnome-keyring-ask.c:546
 #, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Aplikacyja '%s' choča stvaryć novaha zmoŭčanaha klučnika. Ty musiš uvieści "
-"parol dla hetaha klučnika."
+msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Aplikacyja '%s' choča stvaryć novaha zmoŭčanaha klučnika. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:547
+#: ../daemon/gnome-keyring-ask.c:552
 #, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"Nieviadomaja aplikacyja choča stvaryć novaha klučnika z nazvaj '%s'. Ty "
-"musiš uvieści parol dla hetaha klučnika."
+msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Nieviadomaja aplikacyja choča stvaryć novaha klučnika z nazvaj '%s'. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:551
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Nieviadomaja aplikacyja choča stvaryć novaha zmoŭčanaha klučnika. Ty musiš "
-"uvieści parol dla hetaha klučnika."
+#: ../daemon/gnome-keyring-ask.c:556
+msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Nieviadomaja aplikacyja choča stvaryć novaha zmoŭčanaha klučnika. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:558
+#: ../daemon/gnome-keyring-ask.c:563
 msgid "New Keyring Password"
 msgstr "Parol dla novaha klučnika"
 
-#: ../daemon/gnome-keyring-ask.c:559
+#: ../daemon/gnome-keyring-ask.c:564
 msgid "Choose password for new keyring"
 msgstr "Abiary parol dla novaha klučnika"
 
-#: ../daemon/gnome-keyring-ask.c:602
+#: ../daemon/gnome-keyring-ask.c:607
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Aplikacyja '%s' (%s) choča źmianić parol dla klučnika '%s'. Ty musiš uvieści "
-"parol dla hetaha klučnika."
+msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "Aplikacyja '%s' (%s) choča źmianić parol dla klučnika '%s'. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:606
+#: ../daemon/gnome-keyring-ask.c:611
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"Aplikacyja '%s' (%s) choča źmianić parol dla zmoŭčanaha klučnika. Ty musiš "
-"uvieści parol dla hetaha klučnika."
+msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "Aplikacyja '%s' (%s) choča źmianić parol dla zmoŭčanaha klučnika. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:612 ../daemon/gnome-keyring-ask.c:622
+#: ../daemon/gnome-keyring-ask.c:617
+#: ../daemon/gnome-keyring-ask.c:627
 #, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Aplikacyja '%s' choča źmianić parol dla klučnika '%s'. Ty musiš uvieści "
-"parol dla hetaha klučnika."
+msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "Aplikacyja '%s' choča źmianić parol dla klučnika '%s'. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:616 ../daemon/gnome-keyring-ask.c:626
+#: ../daemon/gnome-keyring-ask.c:621
+#: ../daemon/gnome-keyring-ask.c:631
 #, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Aplikacyja '%s' choča źmianić parol dla zmoŭčanaha klučnika. Ty musiš "
-"uvieści parol dla hetaha klučnika."
+msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "Aplikacyja '%s' choča źmianić parol dla zmoŭčanaha klučnika. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:632
+#: ../daemon/gnome-keyring-ask.c:637
 #, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Nieviadomaja aplikacyja choča źmianić parol dla klučnika '%s'. Ty musiš "
-"uvieści parol dla hetaha klučnika."
+msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "Nieviadomaja aplikacyja choča źmianić parol dla klučnika '%s'. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:636
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Nieviadomaja aplikacyja choča źmianić parol dla zmoŭčanaha klučnika. Ty "
-"musiš uvieści parol dla hetaha klučnika."
+#: ../daemon/gnome-keyring-ask.c:641
+msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "Nieviadomaja aplikacyja choča źmianić parol dla zmoŭčanaha klučnika. Ty musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:643
+#: ../daemon/gnome-keyring-ask.c:648
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Abiary novy parol dla klučnika '%s'. "
 
-#: ../daemon/gnome-keyring-ask.c:645
+#: ../daemon/gnome-keyring-ask.c:650
 msgid "Choose a new password for the default keyring. "
 msgstr "Abiary novy parol dla zmoŭčanaha klučnika. "
 
-#: ../daemon/gnome-keyring-ask.c:650
+#: ../daemon/gnome-keyring-ask.c:655
 msgid "Change Keyring Password"
 msgstr "Źmiani parol dla klučnika"
 
-#: ../daemon/gnome-keyring-ask.c:689
+#: ../daemon/gnome-keyring-ask.c:694
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Aplikacyja '%s' (%s) choča zachavać parol, ale zmoŭčanaha klučnika niama. "
-"Kab stvaryć jaho, treba ŭvieści parol dla jaho."
+msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Aplikacyja '%s' (%s) choča zachavać parol, ale zmoŭčanaha klučnika niama. Kab stvaryć jaho, treba ŭvieści parol dla jaho."
 
-#: ../daemon/gnome-keyring-ask.c:693 ../daemon/gnome-keyring-ask.c:697
+#: ../daemon/gnome-keyring-ask.c:698
+#: ../daemon/gnome-keyring-ask.c:702
 #, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Aplikacyja '%s' choča zachavać parol, ale zmoŭčanaha klučnika niama. Kab "
-"stvaryć jaho, treba ŭvieści parol dla jaho."
+msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Aplikacyja '%s' choča zachavać parol, ale zmoŭčanaha klučnika niama. Kab stvaryć jaho, treba ŭvieści parol dla jaho."
 
 #. app == APPLICATION_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:701
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Nieviadomaja aplikacyja choča zachavać parol, ale zmoŭčanaha klučnika niama. "
-"Kab stvaryć jaho, treba ŭvieści parol dla jaho."
-
 #: ../daemon/gnome-keyring-ask.c:706
+msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Nieviadomaja aplikacyja choča zachavać parol, ale zmoŭčanaha klučnika niama. Kab stvaryć jaho, treba ŭvieści parol dla jaho."
+
+#: ../daemon/gnome-keyring-ask.c:711
 msgid "Create Default Keyring"
 msgstr "Stvary zmoŭčanaha klučnika"
 
-#: ../daemon/gnome-keyring-ask.c:707
+#: ../daemon/gnome-keyring-ask.c:712
 msgid "Choose password for default keyring"
 msgstr "Abiary parol dla zmoŭčanaha klučnika"
 
-#: ../daemon/gnome-keyring-ask.c:747
+#: ../daemon/gnome-keyring-ask.c:752
 msgid "Allow application access to keyring?"
 msgstr "Dazvolić dostup aplikacyi da klučnika?"
 
-#: ../daemon/gnome-keyring-ask.c:750
+#: ../daemon/gnome-keyring-ask.c:755
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgstr "Aplikacyja '%s' (%s) choča atrymać parol dla '%s' z klučnika %s."
 
-#: ../daemon/gnome-keyring-ask.c:753
+#: ../daemon/gnome-keyring-ask.c:758
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"Aplikacyja '%s' (%s) choča atrymać parol dla '%s' sa zmoŭčanaha klučnika."
+msgid "The application '%s' (%s) wants to access the password for '%s' in the default keyring."
+msgstr "Aplikacyja '%s' (%s) choča atrymać parol dla '%s' sa zmoŭčanaha klučnika."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:756
+#: ../daemon/gnome-keyring-ask.c:761
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"Aplikacyja '%s' (%s) choča atrymać parol dla '%s' ź nieviadomaha klučnika."
+msgid "The application '%s' (%s) wants to access the password for '%s' in an unknown keyring."
+msgstr "Aplikacyja '%s' (%s) choča atrymać parol dla '%s' ź nieviadomaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:761 ../daemon/gnome-keyring-ask.c:772
+#: ../daemon/gnome-keyring-ask.c:766
+#: ../daemon/gnome-keyring-ask.c:777
 #, c-format
 msgid "The application '%s' wants to access the password for '%s' in %s."
 msgstr "Aplikacyja '%s' choča atrymać parol dla '%s' z klučnika %s."
 
-#: ../daemon/gnome-keyring-ask.c:764 ../daemon/gnome-keyring-ask.c:775
+#: ../daemon/gnome-keyring-ask.c:769
+#: ../daemon/gnome-keyring-ask.c:780
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
+msgid "The application '%s' wants to access the password for '%s' in the default keyring."
 msgstr "Aplikacyja '%s' choča atrymać parol dla '%s' sa zmoŭčanaha klučnika."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:767 ../daemon/gnome-keyring-ask.c:778
+#: ../daemon/gnome-keyring-ask.c:772
+#: ../daemon/gnome-keyring-ask.c:783
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
+msgid "The application '%s' wants to access the password for '%s' in an unknown keyring."
 msgstr "Aplikacyja '%s' choča atrymać parol dla '%s' ź nieviadomaha klučnika."
 
-#: ../daemon/gnome-keyring-ask.c:783
+#: ../daemon/gnome-keyring-ask.c:788
 #, c-format
 msgid "An unknown application wants to access the password for '%s' in %s."
 msgstr "Nieviadomaja aplikacyja choča atrymać parol dla '%s' z klučnika %s."
 
-#: ../daemon/gnome-keyring-ask.c:786
+#: ../daemon/gnome-keyring-ask.c:791
 #, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Nieviadomaja aplikacyja choča atrymać parol dla '%s' sa zmoŭčanaha klučnika."
+msgid "An unknown application wants to access the password for '%s' in the default keyring."
+msgstr "Nieviadomaja aplikacyja choča atrymać parol dla '%s' sa zmoŭčanaha klučnika."
 
 #. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Nieviadomaja aplikacyja choča atrymać parol dla '%s' ź nieviadomaha klučnika."
-
 #: ../daemon/gnome-keyring-ask.c:794
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in an unknown keyring."
+msgstr "Nieviadomaja aplikacyja choča atrymać parol dla '%s' ź nieviadomaha klučnika."
+
+#: ../daemon/gnome-keyring-ask.c:799
 msgid "Allow access"
 msgstr "Dazvol dostup"
 
-#: ../daemon/gnome-keyring-ask.c:799
+#: ../daemon/gnome-keyring-ask.c:804
 msgid "Allow _Once"
 msgstr "Dazvol _raz"
 
-#: ../daemon/gnome-keyring-ask.c:800
+#: ../daemon/gnome-keyring-ask.c:805
 msgid "_Always Allow"
 msgstr "_Zaŭsiody dazvalaj"
 
-#: ../daemon/gnome-keyring-ask.c:840
+#: ../daemon/gnome-keyring-ask.c:845
 msgid "You must specify the type of request to run\n"
 msgstr "Treba vyznačyć typ zapytu, kab vykanać\n"
 
-#: ../daemon/gnome-keyring-ask.c:857
+#: ../daemon/gnome-keyring-ask.c:862
 msgid "Unknown request type\n"
 msgstr "Nieviadomy typ zapytu\n"
+
