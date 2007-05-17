@@ -241,12 +241,13 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 else
 	AC_MSG_RESULT(no)
 fi
-			       
+
 AC_OUTPUT([
 Makefile
+library/Makefile
+keyrings/Makefile
 daemon/Makefile
 doc/Makefile
-library/Makefile
 po/Makefile.in
 reference/Makefile
 library/gnome-keyring-1.pc

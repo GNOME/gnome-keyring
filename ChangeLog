@@ -1,3 +1,19 @@
+2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>
+
+	* Makefile.am:
+	* configure.in:
+	* daemon/Makefile.am: 
+	* daemon/gnome-keyring-daemon-file.c:
+	* daemon/gnome-keyring-daemon-io.c:
+	* daemon/gnome-keyring-daemon.c:
+	* daemon/gnome-keyring-daemon.h:
+	* keyrings/Makefile.am: (added)
+	* keyrings/gkr-keyring-item.c (added):
+	* keyrings/gkr-keyring-item.h (added):
+	* keyrings/gkr-keyring.c (added):
+	* keyrings/gkr-keyring.h (added): Use GObject for internal objects
+	like keyrings and items. 
+
 2007-05-11  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* configure.in: Bump version number

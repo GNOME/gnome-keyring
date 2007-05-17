@@ -27,57 +27,11 @@
 #include <sys/types.h>
 #include <glib.h>
 
-#include "gnome-keyring.h"
-#include "gnome-keyring-private.h"
+#include "library/gnome-keyring.h"
+#include "library/gnome-keyring-private.h"
 
-#define KEYRING_FILE_HEADER "GnomeKeyring\n\r\0\n"
-#define KEYRING_FILE_HEADER_LEN 16
-
-typedef struct {
-	/* NULL if memory only */
-	char *file;
-	time_t file_mtime;
-
-	/* If known: */
-	char *password;
-	gboolean locked;
-	gboolean asking_password;
-
-	/* On disk data: */
-	guchar salt[8];
-	guint32 hash_iterations;
-	   
-	char *keyring_name;
-	GList *items;
-
-	time_t ctime;
-	time_t mtime;
-
-	gboolean lock_on_idle;
-	guint lock_timeout;
-} GnomeKeyring;
-
-typedef struct {
-	GnomeKeyring *keyring;
-
-	guint32 id;
-	
-	GnomeKeyringItemType type;
-
-	gboolean locked;
-
-	/* These are hashed if locked, normal if unlocked, encrypted on file: */
-
-	GArray *attributes;
-
-	/* Below is encrypted in file, invalid in memory if locked: */
-	
-	char *display_name;
-	char *secret;
-	GList *acl;
-	time_t ctime;
-	time_t mtime;
-} GnomeKeyringItem;
+#include "keyrings/gkr-keyring.h"
+#include "keyrings/gkr-keyring-item.h"
 
 typedef enum {
 	/* Access a keyring at all */
@@ -104,8 +58,8 @@ typedef struct {
 	GnomeKeyringAccessType access_type;
 
 	/* Only one is non-NULL */
-	GnomeKeyring *keyring;
-	GnomeKeyringItem *item;
+	GkrKeyring *keyring;
+	GkrKeyringItem *item;
 	
 	char *new_keyring;
 	/* filled out for password requests */
@@ -154,34 +108,24 @@ void                        gnome_keyring_acl_free                     (GList   
 void     cleanup_socket_dir   (void);
 gboolean create_master_socket (const char **path);
 
-void     set_default_keyring       (GnomeKeyring *keyring);
+void     set_default_keyring       (GkrKeyring *keyring);
 void     update_keyrings_from_disk (void);
-void     save_keyring_to_disk      (GnomeKeyring *keyring);
-gboolean update_keyring_from_disk  (GnomeKeyring *keyring,
-				    gboolean      force_reload);
-gboolean remove_keyring_file_from_disk  (GnomeKeyring *keyring);
 
 GnomeKeyringAttributeList *gnome_keyring_attributes_hash    (GnomeKeyringAttributeList        *attributes);
 GnomeKeyringAccessControl *gnome_keyring_access_control_new (const GnomeKeyringApplicationRef *application,
 							     GnomeKeyringAccessType            types_allowed);
 
-
-GnomeKeyringItem *find_item_in_list       (GList                *list,
-					   guint32               id);
-GnomeKeyring *    find_keyring            (const char           *name);
-void              gnome_keyring_item_free (GnomeKeyringItem     *item);
-GnomeKeyring *    gnome_keyring_new       (const char           *name,
-					   const char           *path);
-GnomeKeyringItem *gnome_keyring_item_new  (GnomeKeyring         *keyring,
-					   GnomeKeyringItemType  type);
-void              gnome_keyring_free      (GnomeKeyring         *keyring);
+GkrKeyring*    find_keyring            (const char           *name);
 
 char *get_default_keyring_file_for_name (const char *keyring_name);
-void gnome_keyring_client_fixup_for_deleted (GnomeKeyring *keyring, GnomeKeyringItem *item);
+void gnome_keyring_client_fixup_for_removed (gpointer keyring, gpointer item);
+
+void gkr_daemon_add_keyring (GkrKeyring *keyring);
+void gkr_daemon_remove_keyring (GkrKeyring *keyring);
 
 extern GList *keyrings;
-extern GnomeKeyring *session_keyring;
-extern GnomeKeyring *default_keyring;
+extern GkrKeyring *session_keyring;
+extern GkrKeyring *default_keyring;
 
 /* Dbus Initialization/Cleanup */
 #ifdef WITH_DBUS

@@ -9,10 +9,11 @@ INCLUDES=	\
 	-DBINDIR=\""$(bindir)"\" 			\
 	-DLIBEXECDIR=\""$(libexecdir)"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	-I$(top_srcdir) 					\
+	-I$(top_srcdir) 				\
 	-I$(top_srcdir)/library/			\
 	-I$(top_builddir) 				\
 	$(GTK_CFLAGS) 					\
+	$(GOBJECT_CFLAGS)				\
 	$(GLIB_CFLAGS)
 
 LIBADD_SOURCE = mkdtemp.c mkdtemp.h
@@ -26,7 +27,9 @@ gnome_keyring_daemon_SOURCES = \
 
 gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/library/libgnome-keyring-common.la \
+	$(top_builddir)/keyrings/libgnome-keyring-keyrings.la \
 	@LIBOBJS@ \
+	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)
 
 gnome_keyring_ask_SOURCES = \

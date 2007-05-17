@@ -1,6 +1,7 @@
 SUBDIRS = \
 	. \
 	library \
+	keyrings \
 	daemon \
 	doc \
 	po \

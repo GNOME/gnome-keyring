@@ -319,7 +319,7 @@ read_packet_with_size (GnomeKeyringClient *client)
 
 
 void
-gnome_keyring_client_fixup_for_deleted (GnomeKeyring *keyring, GnomeKeyringItem *item)
+gnome_keyring_client_fixup_for_removed (gpointer keyring, gpointer item)
 {
 	GList *l, *reql;
 	GnomeKeyringClient *client;
