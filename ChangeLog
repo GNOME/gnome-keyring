@@ -1,5 +1,12 @@
 2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* tests/Makefile.am:
+	* tests/unit-test-keyrings.c:
+	* tests/unit-test-keyring-prompt.c:
+	* tests/unit-test-other.c: Complete basic unit tests, including prompting tests
+	
+2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
+
 	* configure.in:
 	* Makefile.am:
 	* library/Makefile.am:
