@@ -20,7 +20,7 @@
 
    Author: Alexander Larsson <alexl@redhat.com>
 */
-#include "gnome-keyring.h"
+#include "library/gnome-keyring.h"
 
 static GMainLoop *loop = NULL;
 

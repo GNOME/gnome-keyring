@@ -1,3 +1,9 @@
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR = 
+endif
+
 SUBDIRS = \
 	. \
 	library \
@@ -6,7 +12,8 @@ SUBDIRS = \
 	daemon \
 	doc \
 	po \
-	reference
+	reference \
+	$(TESTS_DIR)
 
 EXTRA_DIST = \
 	intltool-extract.in \

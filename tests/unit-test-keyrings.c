@@ -23,10 +23,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
-#include <glib.h>
-#include <gnome-keyring.h>
-#include "CuTest.h"
+#include "unit-test-auto.h"
+#include "library/gnome-keyring.h"
 
 static GList* keyrings = NULL;
 #define PASSWORD "my-keyring-password"
@@ -45,7 +45,7 @@ void unit_test_list_keyrings (CuTest* cu)
 
 	printf("\t\tkeyrings:\n");
 	for (l = keyrings; l; l = g_list_next (l))
-		printf("\t\t  %s\n", l->data);
+		printf("\t\t  %s\n", (gchar*)l->data);
 }
 
 void unit_test_create_keyring (CuTest* cu)

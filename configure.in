@@ -65,6 +65,21 @@ else
 fi
 
 # --------------------------------------------------------------------
+# Tests and Unit Tests
+
+AC_ARG_ENABLE(tests, 
+	    AC_HELP_STRING([--enable-tests],
+	    [Build test tools and unit tests]))
+
+if test "$enable_tests" = "yes"; then
+  echo "building tests and unit tests"
+else 
+  echo "not building tests and unit tests"
+fi
+
+AM_CONDITIONAL(WITH_TESTS, test "$enable_tests" == "yes")
+
+# --------------------------------------------------------------------
 # Check for socklen_t
 # 
 
@@ -252,6 +267,7 @@ keyrings/Makefile
 library/Makefile
 po/Makefile.in
 reference/Makefile
+tests/Makefile
 ui/Makefile
 library/gnome-keyring-1.pc
 library/gnome-keyring-1-uninstalled.pc
