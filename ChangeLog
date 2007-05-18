@@ -1,3 +1,17 @@
+2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
+
+	* configure.in:
+	* Makefile.am:
+	* library/Makefile.am:
+	* library/test.c (moved to tests/):
+	* library/list-keyrings.c (moved to tests/):
+	* tests/Makefile.am (added):
+	* tests/list-keyrings.c (moved from library/):
+	* tests/test-keyrings.c (moved from library/):
+	* tests/unit-test-keyrings.c:
+	* tests/unit-tests-prep.sh:
+	* tests/Makefile (removed): Consolidate our testing and use proper make files.
+	
 2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* Makefile.am:
