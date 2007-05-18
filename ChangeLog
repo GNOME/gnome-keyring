@@ -1,5 +1,10 @@
 2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* ui/gkr-ask-request.h
+	* ui/gkr-ask-tool.c: Fix the ugliness that is the password prompt dialog.
+	
+2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon.c: Fix inconsistencies, such as using the 
 	default keyring when NULL keyring is used.
 	* ui/gkr-ask-request.c: 

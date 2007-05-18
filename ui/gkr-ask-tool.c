@@ -134,20 +134,14 @@ run_dialog (const char *title,
 	GtkLabel *notice;
 	char *message;
 	char *notice_text;
-	GtkWidget *old;
-	GtkWidget *entry;
-	GtkWidget *confirm;
-	GtkWidget *label_old;
-	GtkWidget *label_entry;
-	GtkWidget *label_confirm;
+	GtkWidget *old, *entry, *confirm;
+	GtkWidget *vbox;
 	gint response;
 	va_list args;
 	const char *text;
 	gint response_id;
-	GtkWidget *table;
+	GtkWidget *table, *ptable;
 	GtkWidget *image;
-	GtkWidget *strength_bar;
-	GtkWidget *strength_bar_text;
 	const char *password;
 	const char *confirmation;
 	const char *original;
@@ -158,7 +152,7 @@ run_dialog (const char *title,
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
  	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 12);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 12); 
  	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
 
 	va_start (args, first_button_text);
@@ -179,20 +173,22 @@ run_dialog (const char *title,
 	va_end (args);
 
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), default_response);
+	
+	vbox = gtk_vbox_new (FALSE, 12);
+	gtk_widget_show (vbox);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), vbox, TRUE, TRUE, 0);
 
-	table = gtk_table_new (3, 2, FALSE);
+	table = gtk_table_new (1, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 12);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 5);
-	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, 
-	                    FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, TRUE, 0);
 
 	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_AUTHENTICATION, GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
 
-	gtk_table_attach_defaults (GTK_TABLE (table), image, 
-	                    0, 1, 0 ,1);
+	gtk_table_attach (GTK_TABLE (table), image, 
+	                  0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	
 	message = create_markup (primary, secondary);
 	message_widget = GTK_LABEL (gtk_label_new (message));
@@ -205,16 +201,26 @@ run_dialog (const char *title,
 	gtk_table_attach_defaults (GTK_TABLE (table), 
 				   GTK_WIDGET (message_widget),
 				   1, 2, 0, 1);
-
+	
+	gtk_widget_show_all (table);
+	
+	/* The notice line, goes between the two tables */
 	notice = GTK_LABEL (gtk_label_new (NULL));
-	gtk_table_attach_defaults (GTK_TABLE (table), 
-			    GTK_WIDGET (notice),
-			    0, 2, 1, 2);
-
-	row = 2;
-
+	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (notice), FALSE, TRUE, 0);
+	
+	row = 0;
+			   
+	/* A new table for the passwords so they don't make top look strange */
+	ptable = gtk_table_new (0, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (ptable), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (ptable), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (ptable), 5);
+	gtk_box_pack_start (GTK_BOX (vbox), ptable, FALSE, TRUE, 0);
+	
 	old = NULL;
 	if (include_original) {
+		GtkWidget *label_old;
+	
 		label_old = gtk_label_new_with_mnemonic (_("_Old password:"));
 		old = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (old), FALSE);
@@ -224,18 +230,20 @@ run_dialog (const char *title,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
-		gtk_table_attach_defaults (GTK_TABLE (table), 
-					   label_old,
-					   0, 1, row, row+1);
+		gtk_table_attach (GTK_TABLE (ptable), label_old,
+				  0, 1, row, row+1,
+				  GTK_FILL, GTK_SHRINK, 0, 6);
 		gtk_misc_set_alignment (GTK_MISC (label_old), 0.0, 0.5);
-		gtk_table_attach_defaults (GTK_TABLE (table), 
-					   old,
-					   1, 2, row, row+1);
+		gtk_table_attach (GTK_TABLE (ptable), old,
+				  1, 2, row, row+1, 
+				  GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 6);
 		row++;
 	}
 	
 	entry = NULL;
 	if (include_password) {
+		GtkWidget *label_entry;
+		
 		label_entry = gtk_label_new_with_mnemonic (_("_Password:"));
 		entry = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
@@ -245,11 +253,11 @@ run_dialog (const char *title,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
-		gtk_table_attach_defaults (GTK_TABLE (table), 
-					   label_entry,
-					   0, 1, row, row+1);
+		gtk_table_attach (GTK_TABLE (ptable), label_entry,
+				  0, 1, row, row+1,
+				  GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_misc_set_alignment (GTK_MISC (label_entry), 0.0, 0.5);
-		gtk_table_attach_defaults (GTK_TABLE (table), 
+		gtk_table_attach_defaults (GTK_TABLE (ptable), 
 					   entry,
 					   1, 2, row, row+1);
 		row++;
@@ -257,8 +265,11 @@ run_dialog (const char *title,
 
 	confirm = NULL;
 	if (include_confirm) {
-		gtk_table_resize (GTK_TABLE (table),4,2);
-		label_confirm = gtk_label_new_with_mnemonic (_("_Confirm new password:"));
+		GtkWidget *label_confirm;
+		GtkWidget *strength_bar;
+	
+		gtk_table_resize (GTK_TABLE (ptable),4,2);
+		label_confirm = gtk_label_new_with_mnemonic (_("_Confirm password:"));
 		confirm = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (confirm), FALSE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label_confirm), confirm);
@@ -266,41 +277,32 @@ run_dialog (const char *title,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
-		gtk_table_attach_defaults (GTK_TABLE (table), 
-					   label_confirm,
-					   0, 1, row, row+1);
+		gtk_table_attach (GTK_TABLE (ptable), label_confirm,
+				  0, 1, row, row+1,
+				  GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_misc_set_alignment (GTK_MISC (label_confirm), 0.0, 0.5);
-		gtk_table_attach_defaults (GTK_TABLE (table), 
+		gtk_table_attach_defaults (GTK_TABLE (ptable), 
 					   confirm,
 					   1, 2, row, row+1);
 		row++;
 
 		/* Strength bar: */
-		
-		message = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
-		                                   _("Password strength meter:"));
-		strength_bar_text = gtk_label_new (message);
-		g_free (message);
-		gtk_label_set_use_markup (GTK_LABEL (strength_bar_text), TRUE);
-		gtk_misc_set_alignment (GTK_MISC (strength_bar_text), 0.0, 0.5);
-		gtk_label_set_justify (GTK_LABEL (strength_bar_text),
-				       GTK_JUSTIFY_LEFT);
-		gtk_table_attach_defaults (GTK_TABLE (table), 
-					   strength_bar_text,
-					   0, 1, row, row+1);
-		
 		strength_bar = gtk_progress_bar_new ();
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (strength_bar), _("New password strength"));
 		g_signal_connect ((gpointer) entry, "changed",
 				  G_CALLBACK (on_password_changed),
 				  strength_bar);
-		gtk_table_attach_defaults (GTK_TABLE (table), 
+		gtk_table_attach_defaults (GTK_TABLE (ptable), 
 					   strength_bar,
 					   1, 2, row, row+1);
 		row++;
 	}
+	
+	if (row > 0)
+		gtk_widget_show_all (ptable);
 
  retry:
-	gtk_widget_show_all (dialog);
+	gtk_widget_show (dialog);
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
 	
 	if (include_original && old !=NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
@@ -308,6 +310,7 @@ run_dialog (const char *title,
 		if (*original == 0) {
 			notice_text = create_notice (_("Old password cannot be blank."));
 			gtk_label_set_markup (notice,  notice_text);
+			gtk_widget_show (GTK_WIDGET (notice));
 			g_free (notice_text);			
 			goto retry;
 		}
@@ -319,6 +322,7 @@ run_dialog (const char *title,
 		if (*password == 0) {
 			notice_text = create_notice (_("Password cannot be blank."));
 			gtk_label_set_markup (notice,  notice_text);
+			gtk_widget_show (GTK_WIDGET (notice));
 			g_free (notice_text);			
 			goto retry;
 		}
@@ -327,6 +331,7 @@ run_dialog (const char *title,
 			if (strcmp(password, confirmation) != 0) {
 				notice_text = create_notice (_("Passwords do not match."));
 				gtk_label_set_markup (notice,  notice_text);
+				gtk_widget_show (GTK_WIDGET (notice));
 				g_free (notice_text);			
 				goto retry;
 			}
@@ -356,8 +361,8 @@ prepare_dialog (void)
 	
 	password = original = NULL;
 	
-	if (!env_flags) 
-		env_flags = GKR_ASK_REQUEST_OK_DENY_BUTTONS;
+	if (!(env_flags & GKR_ASK_REQUEST_BUTTONS_MASK)) 
+		env_flags |= GKR_ASK_REQUEST_OK_DENY_BUTTONS;
 	
 	/* In order of preference for default response */
 	if (env_flags & GKR_ASK_REQUEST_DENY_BUTTON) {
