@@ -215,7 +215,7 @@ acl_check_access (GkrKeyringItem* item, GnomeKeyringApplicationRef *app,
 	
 	/* Any app can list non application-secret items */
 	if (access_type == GNOME_KEYRING_ACCESS_LIST) {
-		if(item->type & GNOME_KEYRING_ITEM_APPLICATION_SECRET)
+		if((item->type & GNOME_KEYRING_ITEM_APPLICATION_SECRET) == 0)
 			return TRUE;
 	}
 	
@@ -829,11 +829,7 @@ op_lock_keyring_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		keyring = gkr_keyrings_get_default ();
-	} else {
-		keyring = gkr_keyrings_find (keyring_name);
-	}
+	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 	} else {
@@ -1210,18 +1206,13 @@ op_change_keyring_password_collect (GString *packet, GnomeKeyringApplicationRef 
 	}
 
 	access_requests = NULL;
+	keyring = NULL;
 	
-	if (keyring_name == NULL) {
-		keyring_name = "default";
-	}
-	
-	keyring = gkr_keyrings_find (keyring_name);
-	if (keyring == NULL) {
-		/* don't exist */
-		return FALSE;
-	}
-	
-	if (password == NULL) {
+	if (keyring_name != NULL)
+		keyring = gkr_keyrings_find (keyring_name);
+
+	/* Must specify a valid keyring */
+	if (keyring != NULL && password == NULL) {
 		if (original == NULL ) {
 			/* Prompt for original and Let user pick password */
 			access_requests = g_list_prepend (access_requests,
@@ -1282,7 +1273,7 @@ op_change_keyring_password_execute (GString *packet,
 	}
 
 	if (original ==NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
 	}
 	
@@ -1301,7 +1292,7 @@ op_change_keyring_password_execute (GString *packet,
 	}
 	
 	if (password == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
 	}
 	
@@ -1332,13 +1323,11 @@ op_list_items_collect (GString *packet, GnomeKeyringApplicationRef *app_ref,
 
 	access_requests = NULL;
 	
-	if (keyring_name != NULL) {
-		keyring = gkr_keyrings_find (keyring_name);
-		if (keyring != NULL) {
-			access_requests =
-				g_list_prepend (access_requests,
-						access_request_from_keyring (app_ref, keyring, GNOME_KEYRING_ACCESS_READ));
-		}
+	keyring = gkr_keyrings_find (keyring_name);
+	if (keyring != NULL) {
+		access_requests =
+			g_list_prepend (access_requests,
+					access_request_from_keyring (app_ref, keyring, GNOME_KEYRING_ACCESS_READ));
 	}
 	
 	g_free (keyring_name);
@@ -1366,10 +1355,8 @@ op_list_items_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-		gnome_keyring_proto_add_uint32 (result, 0);
-	} else if (gkr_keyrings_find (keyring_name) == NULL) {
+	/* Keyring name can be null for default keyring */
+	if (gkr_keyrings_find (keyring_name) == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 		gnome_keyring_proto_add_uint32 (result, 0);
 	} else if (access_requests == NULL) {
@@ -1512,12 +1499,8 @@ op_create_item_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		keyring = gkr_keyrings_get_default ();
-	} else {
-		keyring = gkr_keyrings_find (keyring_name);
-	}
-
+	/* Will return default keyring for NULL */
+	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		if (keyring_name == NULL) {
 			res = GNOME_KEYRING_RESULT_DENIED;
@@ -1614,14 +1597,12 @@ op_delete_item_collect (GString *packet, GnomeKeyringApplicationRef *app_ref,
 	}
 
 	access_requests = NULL;
-	if (keyring_name != NULL) {
-		keyring = gkr_keyrings_find (keyring_name);
-		if (keyring != NULL) {
-			item = gkr_keyring_find_item (keyring, item_id);
-			if (item != NULL) {
-				ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_REMOVE, TRUE);
-				access_requests = g_list_prepend (access_requests, ask);
-			}
+	keyring = gkr_keyrings_find (keyring_name);
+	if (keyring != NULL) {
+		item = gkr_keyring_find_item (keyring, item_id);
+		if (item != NULL) {
+			ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_REMOVE, TRUE);
+			access_requests = g_list_prepend (access_requests, ask);
 		}
 	}
 
@@ -1652,11 +1633,7 @@ op_delete_item_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-		goto out;
-	}
-		
+	/* Will return default keyring for null */		
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
@@ -1707,19 +1684,19 @@ op_get_item_info_collect (GString *packet, GnomeKeyringApplicationRef *app_ref,
 	}
 
 	access_requests = NULL;
-	if (keyring_name != NULL) {
-		keyring = gkr_keyrings_find (keyring_name);
-		if (keyring != NULL) {
-			item = gkr_keyring_find_item (keyring, item_id);
-			if (item != NULL) {
-				/* Request access based on what parts were desired */
-				if ((flags & GNOME_KEYRING_ITEM_INFO_SECRET) == GNOME_KEYRING_ITEM_INFO_SECRET) {
-					ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_READ, TRUE);
-				} else {
-					ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_READ, FALSE);
-				}
-				access_requests = g_list_prepend (access_requests, ask);
+	
+	/* NULL will return default keyring */
+	keyring = gkr_keyrings_find (keyring_name);
+	if (keyring != NULL) {
+		item = gkr_keyring_find_item (keyring, item_id);
+		if (item != NULL) {
+			/* Request access based on what parts were desired */
+			if ((flags & GNOME_KEYRING_ITEM_INFO_SECRET) == GNOME_KEYRING_ITEM_INFO_SECRET) {
+				ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_READ, TRUE);
+			} else {
+				ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_READ, FALSE);
 			}
+			access_requests = g_list_prepend (access_requests, ask);
 		}
 	}
 
@@ -1748,11 +1725,7 @@ op_get_item_info_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-		goto out;
-	}
-		
+	/* Will return default keyring for NULL */
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
@@ -1819,14 +1792,12 @@ op_get_item_acl_or_attributes_collect (GString *packet, GnomeKeyringApplicationR
 	}
 
 	access_requests = NULL;
-	if (keyring_name != NULL) {
-		keyring = gkr_keyrings_find (keyring_name);
-		if (keyring != NULL) {
-			item = gkr_keyring_find_item (keyring, item_id);
-			if (item != NULL) {
-				ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_READ, FALSE);
-				access_requests = g_list_prepend (access_requests, ask);
-			}
+	keyring = gkr_keyrings_find (keyring_name);
+	if (keyring != NULL) {
+		item = gkr_keyring_find_item (keyring, item_id);
+		if (item != NULL) {
+			ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_READ, FALSE);
+			access_requests = g_list_prepend (access_requests, ask);
 		}
 	}
 
@@ -1857,11 +1828,7 @@ op_get_item_attributes_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-		goto out;
-	}
-		
+	/* Will return default keyring for NULL */
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
@@ -1914,11 +1881,7 @@ op_get_item_acl_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-		goto out;
-	}
-		
+	/* Will return default keyring for NULL */
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
@@ -1971,11 +1934,7 @@ op_set_item_acl_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-		goto out;
-	}
-		
+	/* Will return default keyring for NULL */
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
@@ -2027,14 +1986,12 @@ op_set_item_info_or_attributes_collect (GString *packet, GnomeKeyringApplication
 	}
 
 	access_requests = NULL;
-	if (keyring_name != NULL) {
-		keyring = gkr_keyrings_find (keyring_name);
-		if (keyring != NULL) {
-			item = gkr_keyring_find_item (keyring, item_id);
-			if (item != NULL) {
-				ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_WRITE, TRUE);
-				access_requests = g_list_prepend (access_requests, ask);
-			}
+	keyring = gkr_keyrings_find (keyring_name);
+	if (keyring != NULL) {
+		item = gkr_keyring_find_item (keyring, item_id);
+		if (item != NULL) {
+			ask = access_request_from_item (app_ref, item, GNOME_KEYRING_ACCESS_WRITE, TRUE);
+			access_requests = g_list_prepend (access_requests, ask);
 		}
 	}
 
@@ -2067,11 +2024,7 @@ op_set_item_info_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-		goto out;
-	}
-		
+	/* Will return default keyring for NULL */
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
@@ -2201,11 +2154,7 @@ op_set_item_attributes_execute (GString *packet,
 		return FALSE;
 	}
 
-	if (keyring_name == NULL) {
-		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-		goto out;
-	}
-		
+	/* Will return default keyring for NULL */
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);

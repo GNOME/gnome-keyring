@@ -154,16 +154,20 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 	}
 	
 	/* Parse out all the information we have */
-	lines = g_strsplit (pv->buffer->str, "\n", 3);
+	lines = g_strsplit (pv->buffer->str, "\n", 4);
 	if (lines[0]) {
 		/* First line is the response */
 		ask->response = atol (lines[0]);
-		if (lines[1]) {
-			/* Next line is the typed password (if any) */
-			ask->typed_password = g_strdup (lines[1]);
-			if (lines[2]) {
-				/* Last line is the original password (if any) */
-				ask->original_password = g_strdup (lines[2]);
+		
+		/* Only use passwords if confirming */
+		if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
+			if (lines[1]) {
+				/* Next line is the typed password (if any) */
+				ask->typed_password = g_strdup (lines[1]);
+				if (lines[2]) {
+					/* Last line is the original password (if any) */
+					ask->original_password = g_strdup (lines[2]);
+				}
 			}
 		} 
 	}
@@ -175,12 +179,18 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 		return;
 	}
 	
+	/* Ref around these callbacks */
+	g_object_ref (ask);
+	
 	/* Check it and see if it really is completed */
 	gkr_ask_request_check (ask);
 	
 	/* And ask again if not finished */
 	if (!pv->completed)
 		gkr_ask_request_prompt (ask);
+		
+	/* Ref from eaclier up */
+	g_object_unref (ask);
 }
 
 static gboolean
@@ -195,18 +205,25 @@ ask_io (GIOChannel *channel, GIOCondition cond, gpointer data)
 	ask = GKR_ASK_REQUEST (data);
 	pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 
-	fd = g_io_channel_unix_get_fd (channel);
-	res = read (fd, buffer, sizeof (buffer));
-	if (res < 0) {
-		if (errno != EINTR && errno != EAGAIN) {
-			finish_ask_io (ask, TRUE);
-			return FALSE;
-		}
-	} else if (res == 0) {
+	if (cond & G_IO_IN) {
+		do 
+		{
+			fd = g_io_channel_unix_get_fd (channel);
+			res = read (fd, buffer, sizeof (buffer));
+			if (res < 0) {
+				if (errno != EINTR && errno != EAGAIN) {
+					finish_ask_io (ask, TRUE);
+					return FALSE;
+				}
+			} else if (res > 0) {
+				g_string_append_len (pv->buffer, buffer, res);
+			}
+		} while (res > 0);
+	}
+
+	if (cond & G_IO_HUP) {	
 		finish_ask_io (ask, FALSE);
 		return FALSE;
-	} else {
-		g_string_append_len (pv->buffer, buffer, res);
 	}
 	
 	return TRUE;
@@ -312,6 +329,7 @@ gkr_ask_request_init (GkrAskRequest *ask)
 	pv->title = g_strdup ("");
 	pv->primary = g_strdup ("");
 	pv->secondary = g_strdup ("");
+	pv->buffer = g_string_new ("");
 }
 
 static guint

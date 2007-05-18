@@ -303,7 +303,7 @@ run_dialog (const char *title,
 	gtk_widget_show_all (dialog);
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
 	
-	if (include_original && old !=NULL && response == GTK_RESPONSE_OK) {
+	if (include_original && old !=NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
 		original = gtk_entry_get_text (GTK_ENTRY (old));
 		if (*original == 0) {
 			notice_text = create_notice (_("Old password cannot be blank."));
@@ -314,7 +314,7 @@ run_dialog (const char *title,
 		*original_out = g_strdup (original);
 	}
 
-	if (include_password && entry != NULL && response == GTK_RESPONSE_OK) {
+	if (include_password && entry != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
 		password = gtk_entry_get_text (GTK_ENTRY (entry));
 		if (*password == 0) {
 			notice_text = create_notice (_("Password cannot be blank."));
@@ -408,13 +408,16 @@ prepare_dialog (void)
 	/* Send back the response */
 	printf ("%d\n", response);
 	
-	/* Send back the password */
-	if (env_flags & GKR_ASK_REQUEST_PASSWORD && password)
-		printf ("%s\n", password);
+	if (response >= GKR_ASK_RESPONSE_ALLOW) {
+		
+		/* Send back the password */
+		if ((env_flags & GKR_ASK_REQUEST_PASSWORD) && password)
+			printf ("%s\n", password);
 	
-	/* And the original */
-	if (env_flags & GKR_ASK_REQUEST_ORIGINAL_PASSWORD && original)
-		printf ("%s\n", original);
+		/* And the original */
+		if ((env_flags & GKR_ASK_REQUEST_ORIGINAL_PASSWORD) && original)
+			printf ("%s", original);
+	}
 }
 
 int
