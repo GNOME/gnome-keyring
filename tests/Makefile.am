@@ -1,5 +1,7 @@
 
-EXTRA_DIST = cu-test
+EXTRA_DIST = \
+	cu-test/ \
+	unit-tests-prep.sh
 
 INCLUDES=					\
 	-I$(top_srcdir) 		\
@@ -43,7 +45,7 @@ unit-test-auto.c: $(UNIT_TESTS_AUTO) unit-tests-prep.sh
 unit_test_auto_SOURCES = \
 	unit-test-auto.c \
 	unit-test-auto.h \
-	cu-test/CuTest.c \
+	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_AUTO) 
 
 # Propmting tests
@@ -57,5 +59,5 @@ unit-test-prompt.c: $(UNIT_TESTS_PROMPT) unit-tests-prep.sh
 unit_test_prompt_SOURCES = \
 	unit-test-prompt.c \
 	unit-test-prompt.h \
-	cu-test/CuTest.c \
+	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_PROMPT) 

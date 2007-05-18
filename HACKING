@@ -1,0 +1,27 @@
+
+HACKING GNOME KEYRING 
+
+Patches should be submitted to bugzilla:
+http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring
+
+Gnome Keyring is made up of several distinct parts working on concert with 
+each other. These parts generally live in different directories:
+
+cryptoki
+   The PKCS#11 provider code 
+   
+daemon 
+   The main daemon startup code and gnome-keyring password protocol operations. 
+   
+keyrings
+   Code that manages the user's password keyrings 
+   
+library
+   The gnome-keyring library for accessing passwords and secrets. 
+   
+tests  
+   Test tools and unit tests.
+   
+ui 
+   Prompting the user, asking for passwords. 
+   

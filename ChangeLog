@@ -1,5 +1,12 @@
 2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* tests/Makefile.am:
+	* Makefile.am: Pass make distcheck
+	* AUTHORS: Add myself as an author
+	* HACKING: Update info files about gnome-keyring
+	
+2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
+
 	* ui/gkr-ask-request.h
 	* ui/gkr-ask-tool.c: Fix the ugliness that is the password prompt dialog.
 	
