@@ -94,7 +94,7 @@ GList *clients = NULL;
 
 
 static void gnome_keyring_client_state_machine (GnomeKeyringClient *client);
-
+static void ask_result (GkrAskRequest *ask, gpointer data);
 
 static gboolean
 set_local_creds (int fd, gboolean on)
@@ -257,6 +257,7 @@ gnome_keyring_client_free (GnomeKeyringClient *client)
 	}
 
 	if (client->ask != NULL) {
+		g_signal_handlers_disconnect_by_func (client->ask, ask_result, client);
 		gkr_ask_daemon_cancel (client->ask);
 	}
 	

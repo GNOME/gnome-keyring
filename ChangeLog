@@ -1,5 +1,14 @@
 2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* daemon/gnome-keyring-daemon.c: Fix inconsistencies, such as using the 
+	default keyring when NULL keyring is used.
+	* ui/gkr-ask-request.c: 
+	* ui/gkr-ask-tool.c: Fix problems returning responses from the ask tool.
+	* daemon/gnome-keyring-daemon-io.c: 
+	* ui/gkr-ask-daemon.c: Fix problem killing client when in an ask request. 
+	
+2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
+
 	* tests/Makefile.am:
 	* tests/unit-test-keyrings.c:
 	* tests/unit-test-keyring-prompt.c:

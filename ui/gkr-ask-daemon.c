@@ -42,7 +42,8 @@ gkr_ask_daemon_cleanup (void)
 static void 
 completed_ask (GkrAskRequest *ask, gpointer unused)
 {
-	g_assert (ask == current_ask);
+	/* current_ask will be null if cancelled */
+	g_assert (current_ask == NULL || ask == current_ask);
 	
 	current_ask = NULL;
 	g_object_unref (ask);
