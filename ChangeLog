@@ -1,5 +1,26 @@
 2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* Makefile.am:
+	* configure.in:
+ 	* daemon/Makefile.am:
+	* daemon/gnome-keyring-ask.c (moved to ui/):
+	* daemon/gnome-keyring-daemon-file.c (removed):
+	* daemon/gnome-keyring-daemon-io.c: 
+	* daemon/gnome-keyring-daemon.c:
+	* daemon/gnome-keyring-daemon.h:
+	* keyrings/Makefile.am:
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyring.h:
+	* keyrings/gkr-keyrings.c (added):
+	* keyrings/gkr-keyrings.h (added):
+	* library/gnome-keyring-private.h:
+	* ui/Makefile.am:
+	* ui/gkr-ask-daemon.c (added):
+	* ui/gkr-ask-daemon.h (added):
+	* ui/gkr-ask-request.c (added):
+	* ui/gkr-ask-request.h (added):
+	* ui/gkr-ask-tool.c (moved from daemon/): Refactor prompting and keyring 
+	listing functionality into objects. 
 	* library/gnome-keyring-proto.c: Don't crash on null attributes.
 	
 2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>
