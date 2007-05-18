@@ -1,5 +1,9 @@
 2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* tests/* (added): Basics of unit testing 
+	
+2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>
+
 	* Makefile.am:
 	* configure.in:
 	* daemon/Makefile.am: 
