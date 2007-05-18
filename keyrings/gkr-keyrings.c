@@ -1,7 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gnome-keyring-daemon-file.c - loading and saving the keyring files
+/* gkr-keyrings.c - the global list of keyrings
 
    Copyright (C) 2003 Red Hat, Inc
+   Copyright (C) 2007 Nate Nielsen
 
    Gnome keyring is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -18,8 +19,14 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
    Author: Alexander Larsson <alexl@redhat.com>
+   Author: Nate Nielsen <nielsen@memberwebs.com>
 */
+
 #include "config.h"
+
+#include "gkr-keyrings.h"
+
+#include "library/gnome-keyring-proto.h"
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -32,67 +39,17 @@
 #include <sys/stat.h>
 #include <glib.h>
 
-#include "gnome-keyring-daemon.h"
-#include "gnome-keyring-proto.h"
 
-time_t keyring_dir_mtime = 0;
+static GList *keyrings = NULL;
 
+static GkrKeyring *session_keyring = NULL;
+static GkrKeyring *default_keyring = NULL;
 
-static char *
-get_keyring_dir (void)
-{
-	char *dir, *gnome2_dir;
-	
-	dir = g_build_filename (g_get_home_dir (), ".gnome2/keyrings", NULL);
-	if (!g_file_test (dir, G_FILE_TEST_IS_DIR)) {
-		gnome2_dir = g_build_filename (g_get_home_dir (), ".gnome2", NULL);
-		if (!g_file_test (gnome2_dir, G_FILE_TEST_IS_DIR)) {
-			mkdir (gnome2_dir, S_IRWXU);
-		}
-		g_free (gnome2_dir);
-		
-		if (mkdir (dir, S_IRWXU) < 0) {
-			g_warning ("unable to create keyring dir");
-		}
-	}
-	return dir;
-}
+static time_t keyring_dir_mtime = 0;
 
-char *
-get_default_keyring_file_for_name (const char *keyring_name)
-{
-	char *base;
-	char *filename;
-	int version;
-	char *path;
-	char *dir;
-
-	base = g_filename_from_utf8 (keyring_name, -1, NULL, NULL, NULL);
-	if (base == NULL) {
-		base = g_strdup ("keyring");
-	}
-
-	dir = get_keyring_dir ();
-	
-	version = 0;
-	do {
-		if (version == 0) {
-			filename = g_strdup_printf ("%s.keyring", base);
-		} else {
-			filename = g_strdup_printf ("%s%d.keyring", base, version);
-		}
-		
-		path = g_build_filename (dir, filename, NULL);
-		g_free (filename);
-
-		version++;
-	} while (g_file_test (path, G_FILE_TEST_EXISTS));
-
-	g_free (base);
-	g_free (dir);
-	
-	return path;
-}
+/* -----------------------------------------------------------------------------
+ * HELPERS
+ */
 
 static int
 write_all (int fd, const char *buf, size_t len)
@@ -116,35 +73,6 @@ write_all (int fd, const char *buf, size_t len)
 	return 0;
 }
 
-void
-set_default_keyring (GkrKeyring *keyring)
-{
-	char *dirname, *path;
-	int fd;
-	
-	if (keyring) {
-		dirname = get_keyring_dir ();
-		path = g_build_filename (dirname, "default", NULL);
-	
-		fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-		if (fd != -1) {
-			if (keyring != NULL && keyring->keyring_name != NULL) {
-				write_all (fd, keyring->keyring_name,
-				           strlen (keyring->keyring_name));
-#ifdef HAVE_FSYNC
-				fsync (fd);
-#endif
-			}
-			close (fd);
-		}
-	
-		g_free (path);
-		g_free (dirname);
-	}
-
-	default_keyring = keyring;
-}
-
 static void
 update_default (void)
 {
@@ -152,7 +80,7 @@ update_default (void)
 	char *contents;
 	GkrKeyring *keyring;
 	
-	dirname = get_keyring_dir ();
+	dirname = gkr_keyrings_get_dir ();
 	path = g_build_filename (dirname, "default", NULL);
 
 	keyring = NULL;
@@ -165,7 +93,7 @@ update_default (void)
 			*newline = 0;
 		}
 
-		keyring = find_keyring (contents);
+		keyring = gkr_keyrings_find (contents);
 		
 		g_free (contents);
 	}
@@ -173,15 +101,73 @@ update_default (void)
 	g_free (path);
 	g_free (dirname);
 
-	if (keyring == NULL) {
-		keyring = find_keyring ("default");
-	}
+	if (keyring == NULL)
+		keyring = gkr_keyrings_find ("default");
 	
 	default_keyring = keyring;
 }
 
+/* -----------------------------------------------------------------------------
+ * PUBLIC 
+ */
+
+gchar*
+gkr_keyrings_get_dir (void)
+{
+	char *dir, *gnome2_dir;
+	
+	dir = g_build_filename (g_get_home_dir (), ".gnome2/keyrings", NULL);
+	if (!g_file_test (dir, G_FILE_TEST_IS_DIR)) {
+		gnome2_dir = g_build_filename (g_get_home_dir (), ".gnome2", NULL);
+		if (!g_file_test (gnome2_dir, G_FILE_TEST_IS_DIR)) {
+			mkdir (gnome2_dir, S_IRWXU);
+		}
+		g_free (gnome2_dir);
+		
+		if (mkdir (dir, S_IRWXU) < 0) {
+			g_warning ("unable to create keyring dir");
+		}
+	}
+	return dir;
+}
+
+GkrKeyring*
+gkr_keyrings_get_default (void)
+{
+	if (!default_keyring)
+		update_default ();
+	return default_keyring;
+}
+
 void
-update_keyrings_from_disk (void)
+gkr_keyrings_set_default (GkrKeyring *keyring)
+{
+	char *dirname, *path;
+	int fd;
+	
+	dirname = gkr_keyrings_get_dir ();
+	path = g_build_filename (dirname, "default", NULL);
+	
+	fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	if (fd != -1) {
+		if (keyring != NULL && keyring->keyring_name != NULL) {
+			write_all (fd, keyring->keyring_name,
+			           strlen (keyring->keyring_name));
+#ifdef HAVE_FSYNC
+			fsync (fd);
+#endif
+		}
+		close (fd);
+	}
+	
+	g_free (path);
+	g_free (dirname);
+
+	default_keyring = keyring;
+}
+
+void
+gkr_keyrings_update (void)
 {
 	char *dirname, *path;
 	const char *filename;
@@ -191,7 +177,7 @@ update_keyrings_from_disk (void)
 	GkrKeyring *keyring;
 	GHashTable *checks = NULL;
 	
-	dirname = get_keyring_dir ();
+	dirname = gkr_keyrings_get_dir ();
 
 	if (stat (dirname, &statbuf) < 0) {
 		g_free (dirname);
@@ -239,7 +225,7 @@ update_keyrings_from_disk (void)
 			if (keyring == NULL) {
 				/* Make a new blank keyring and add it */
 				keyring = gkr_keyring_new (NULL, path);
-				gkr_daemon_add_keyring (keyring);
+				gkr_keyrings_add (keyring);
 				g_object_unref (keyring);
 			} else {
 				/* Make note of seeing a given keyring path */
@@ -249,7 +235,7 @@ update_keyrings_from_disk (void)
 			/* Try and update/load it */
 			if (!gkr_keyring_update_from_disk (keyring, FALSE) ||
 			    keyring->keyring_name == NULL) {
-				gkr_daemon_remove_keyring (keyring);
+				gkr_keyrings_remove (keyring);
 			} 
 			
 			g_free (path);
@@ -263,7 +249,7 @@ update_keyrings_from_disk (void)
 		if (!keyring->file)
 			continue;
 		if (g_hash_table_lookup (checks, keyring->file))
-			gkr_daemon_remove_keyring (keyring);
+			gkr_keyrings_remove (keyring);
 	}
 	g_hash_table_destroy (checks);
 
@@ -272,4 +258,103 @@ update_keyrings_from_disk (void)
 	keyring_dir_mtime = statbuf.st_mtime;
 
 	g_free (dirname);
+}
+
+
+void 
+gkr_keyrings_add (GkrKeyring *keyring)
+{
+	g_assert (GKR_IS_KEYRING (keyring));
+	
+	/* Can't add the same keyring twice */
+	g_assert (g_list_find (keyrings, keyring) == NULL);
+	
+	keyrings = g_list_prepend (keyrings, keyring);
+	g_object_ref (keyring);
+}
+
+void 
+gkr_keyrings_remove (GkrKeyring *keyring)
+{
+	g_assert (GKR_IS_KEYRING (keyring));
+	
+	if (g_list_find (keyrings, keyring)) {
+
+		if (keyring == default_keyring)
+			gkr_keyrings_set_default (NULL);
+		
+		keyrings = g_list_remove (keyrings, keyring);
+
+		g_object_unref (keyring);
+	}
+}
+
+GkrKeyring*
+gkr_keyrings_get_session (void)
+{
+	g_assert (session_keyring);
+	return session_keyring;
+}
+
+GkrKeyring*
+gkr_keyrings_find (const gchar *name)
+{
+	GkrKeyring *keyring;
+	GList *l;
+
+	if (name == NULL)
+		return gkr_keyrings_get_default ();
+
+	for (l = keyrings; l != NULL; l = l->next) {
+		keyring = GKR_KEYRING (l->data);
+		if (strcmp (keyring->keyring_name, name) == 0) {
+			return keyring;
+		}
+	}
+	
+	return NULL;
+}
+
+gboolean 
+gkr_keyrings_foreach (GkrKeyringEnumFunc func, gpointer data)
+{
+	GList *l;
+	
+	for (l = keyrings; l != NULL; l = l->next) {
+		if (!(func) (GKR_KEYRING (l->data), data))
+			return FALSE;
+	}
+	
+	return TRUE;
+}
+
+guint
+gkr_keyrings_get_count (void)
+{
+	return g_list_length (keyrings);
+}
+
+void
+gkr_keyrings_init (void)
+{
+	g_assert (!session_keyring);
+	session_keyring = gkr_keyring_new ("session", NULL);
+	gkr_keyrings_add (session_keyring);
+	
+	gkr_keyrings_update ();
+}
+
+void 
+gkr_keyrings_cleanup (void)
+{
+	GkrKeyring *keyring;
+	
+	while (keyrings) {
+		keyring = GKR_KEYRING (keyrings->data);
+		if (keyring == session_keyring)
+			session_keyring = NULL;
+		gkr_keyrings_remove (keyring);
+	}
+	
+	g_assert (session_keyring == NULL);
 }

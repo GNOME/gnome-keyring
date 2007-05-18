@@ -12,6 +12,7 @@ INCLUDES=	\
 
 libgnome_keyring_keyrings_la_SOURCES = \
 	gkr-keyring.c gkr-keyring.h \
+	gkr-keyrings.c gkr-keyrings.h \
 	gkr-keyring-item.c gkr-keyring-item.h
 
 libgnome_keyring_keyrings_la_LIBADD = \

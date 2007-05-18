@@ -882,6 +882,12 @@ gnome_keyring_proto_add_attribute_list (GString *buffer,
 	int i;
 	GnomeKeyringAttribute *array;
 
+	/* Null attributes = empty attribute array */
+	if (!attributes) {
+		gnome_keyring_proto_add_uint32 (buffer, 0);
+		return TRUE;
+	}
+		
 	array = (GnomeKeyringAttribute *)attributes->data;
 
 	i = 0;

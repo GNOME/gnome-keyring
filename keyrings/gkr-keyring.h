@@ -84,6 +84,8 @@ GType            gkr_keyring_get_type           (void) G_GNUC_CONST;
 
 GkrKeyring*      gkr_keyring_new                (const gchar* name, const gchar* path);
 
+GkrKeyring*      gkr_keyring_create             (const gchar* name, const gchar* password);
+
 guint            gkr_keyring_get_new_id         (GkrKeyring *keyring);
 
 GkrKeyringItem*  gkr_keyring_find_item          (GkrKeyring *keyring, guint id);

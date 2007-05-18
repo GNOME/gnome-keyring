@@ -52,13 +52,6 @@ struct GnomeKeyringItemInfo {
 	time_t ctime;
 };
 
-typedef enum {
-	GNOME_KEYRING_ASK_RESPONSE_FAILURE,
-	GNOME_KEYRING_ASK_RESPONSE_DENY,
-	GNOME_KEYRING_ASK_RESPONSE_ALLOW_ONCE,
-	GNOME_KEYRING_ASK_RESPONSE_ALLOW_FOREVER
-} GnomeKeyringAskResponse;
-
 #ifdef WITH_DBUS
 #define GNOME_KEYRING_DAEMON_SERVICE    "org.gnome.keyring"
 #define GNOME_KEYRING_DAEMON_PATH       "/org/gnome/keyring/daemon"

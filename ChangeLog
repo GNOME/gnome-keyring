@@ -1,5 +1,9 @@
 2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>
 
+	* library/gnome-keyring-proto.c: Don't crash on null attributes.
+	
+2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>
+
 	* tests/* (added): Basics of unit testing 
 	
 2007-05-17  Nate Nielsen  <nielsen@memberwebs.com>

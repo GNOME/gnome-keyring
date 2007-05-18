@@ -36,11 +36,14 @@
 #include <ucred.h>
 #endif
 
-#include "gnome-keyring.h"
-#include "gnome-keyring-private.h"
-#include "gnome-keyring-proto.h"
 #include "gnome-keyring-daemon.h"
 #include "mkdtemp.h"
+
+#include "library/gnome-keyring.h"
+#include "library/gnome-keyring-private.h"
+#include "library/gnome-keyring-proto.h"
+#include "keyrings/gkr-keyrings.h"
+#include "ui/gkr-ask-daemon.h"
 
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
@@ -69,9 +72,10 @@ typedef struct {
 	GString *input_buffer;
 	gint input_pos;
 
-	gpointer ask;
+	GkrAskRequest* ask;
 
-	GList *access_requests;
+	GList *ask_requests;
+	GList *granted_requests;
 
 	guint output_watch;
 	GString *output_buffer;
@@ -253,7 +257,7 @@ gnome_keyring_client_free (GnomeKeyringClient *client)
 	}
 
 	if (client->ask != NULL) {
-		gnome_keyring_cancel_ask (client->ask);
+		gkr_ask_daemon_cancel (client->ask);
 	}
 	
 	close (client->sock);
@@ -317,42 +321,35 @@ read_packet_with_size (GnomeKeyringClient *client)
 	return FALSE;
 }
 
-
-void
-gnome_keyring_client_fixup_for_removed (gpointer keyring, gpointer item)
+static void 
+ask_list_free (GList *asks)
 {
-	GList *l, *reql;
-	GnomeKeyringClient *client;
-	GnomeKeyringAccessRequest *request;
-
-	for (l = clients; l != NULL; l = l->next) {
-		client = l->data;
-
-		reql = client->access_requests;
-		while (reql != NULL) {
-			request = reql->data;
-			reql = reql->next;
-
-			if ((keyring != NULL && request->keyring == keyring) ||
-			    (item != NULL && request->item == item)) {
-				client->access_requests = g_list_remove (client->access_requests,
-									 request);
-				gnome_keyring_access_request_free (request);
-			}
-		}
-	}
+	GList *l;
+	
+	for (l = asks; l; l = g_list_next (l))
+		g_object_unref (l->data);
+	g_list_free (asks);
 }
 
 static void
-ask_result (GList *access_requests,
-	    gpointer data)
+ask_result (GkrAskRequest *ask, gpointer data)
 {
 	GnomeKeyringClient *client;
 
 	client = data;
+	
+	/* Should match up with the first one in the ask list */
+	g_assert (client->ask == ask);
+	
+	/* Move it to the granted list? */
+	if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
+		client->granted_requests = g_list_append (client->granted_requests, ask);
+		g_object_ref (ask);
+	}
+	
+	/* And discard it */
+	g_object_unref (client->ask);
 	client->ask = NULL;
-
-	client->access_requests = gnome_keyring_access_request_list_copy (access_requests);
 
 	gnome_keyring_client_state_machine (client);
 }
@@ -376,7 +373,6 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 	GnomeKeyringOpCode op;
 	GIOChannel *channel;
 	GList *access_requests;
-	gpointer ask;
 	pid_t pid;
 	uid_t uid;
 	int res;
@@ -401,6 +397,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		client->input_pos = 0;
 		client->state = GNOME_CLIENT_STATE_READ_DISPLAYNAME;
 		break;
+		
 	case GNOME_CLIENT_STATE_READ_DISPLAYNAME:
 		debug_print (("GNOME_CLIENT_STATE_READ_DISPLAYNAME %p\n", client));
 		if (read_packet_with_size (client)) {
@@ -420,6 +417,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 			client->state = GNOME_CLIENT_STATE_READ_PACKET;
 		}
 		break;
+		
 	case GNOME_CLIENT_STATE_READ_PACKET:
 		debug_print (("GNOME_CLIENT_STATE_READ_PACKET %p\n", client));
 		if (read_packet_with_size (client)) {
@@ -431,6 +429,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 			goto new_state;
 		}
 		break;
+		
 	case GNOME_CLIENT_STATE_COLLECT_INFO:
 		debug_print (("GNOME_CLIENT_STATE_COLLECT_INFO %p\n", client));
 		if (!gnome_keyring_proto_decode_packet_operation (client->input_buffer, &op)) {
@@ -448,35 +447,53 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		}
 		
 		/* Make sure keyrings in memory are up to date before asking for access */
-		update_keyrings_from_disk ();
+		gkr_keyrings_update ();
 		
 		access_requests = NULL;
-		if (!keyring_ops[op].collect_info (client->input_buffer,
+		if (!keyring_ops[op].collect_info (client->input_buffer, client->app_ref, 
 						   &access_requests)) {
 			gnome_keyring_client_free (client);
 			return;
 		}
+		
+		/* All the things we have to ask about */
+		client->ask_requests = access_requests;
 
 		/* request_access can reenter here if there is no need to
 		 * wait for access rights */
 		client->state = GNOME_CLIENT_STATE_REQUEST_ACCESS;
-		ask = gnome_keyring_ask (access_requests,
-					 client->app_ref,
-					 ask_result,
-					 client);
-		if (ask != NULL) {
-			/* Don't set this if NULL, because then the client can already be destroyed
-			 * in the ask_result callback. */
-			client->ask = ask;
-		}
-		gnome_keyring_access_request_list_free (access_requests);
-		break;
+		goto new_state;
+		
 	case GNOME_CLIENT_STATE_REQUEST_ACCESS:
 		debug_print (("GNOME_CLIENT_STATE_REQUEST_ACCESS %p\n", client));
-		/* Got all data now */
-		client->state = GNOME_CLIENT_STATE_EXECUTE_OP;
-		goto new_state;
+		
+		/* Nothing should currently be asking */
+		g_assert (!client->ask);
+		
+		/* Some access requests are processed right away, so loop */
+		if (!client->ask && client->ask_requests) {
+			
+			/* Go for first item in the list */
+			client->ask = GKR_ASK_REQUEST (client->ask_requests->data);
+			client->ask_requests = g_list_remove (client->ask_requests, client->ask);
+			g_signal_connect (client->ask, "completed", G_CALLBACK (ask_result), client);
+			gkr_ask_daemon_queue (client->ask);
+			
+			/* 
+			 * If it was processed immediately, then ask_result will have 
+			 * already been called and client->ask will be NULL.
+			 */
+			return;
+		}
+		
+		/* Got all data now? */
+		if (!client->ask) {
+			g_assert (!client->ask_requests);
+			client->state = GNOME_CLIENT_STATE_EXECUTE_OP;
+			goto new_state;
+		}
 		break;
+		
 	case GNOME_CLIENT_STATE_EXECUTE_OP:
 		debug_print (("GNOME_CLIENT_STATE_EXECUTE_OP %p\n", client));
 		if (!gnome_keyring_proto_decode_packet_operation (client->input_buffer, &op)) {
@@ -489,8 +506,11 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		/* Make sure keyrings in memory are up to date */
 		/* This call may remove items or keyrings, which change
 		   the client->access_requests list */
-		update_keyrings_from_disk ();
+		gkr_keyrings_update ();
 
+		/* Must have already processed all requests */
+		g_assert (!client->ask);
+		g_assert (!client->ask_requests);
 		
 		/* Add empty size */
 		gnome_keyring_proto_add_uint32 (client->output_buffer, 0);
@@ -498,12 +518,13 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		if (!keyring_ops[op].execute_op (client->input_buffer,
 						 client->output_buffer,
 						 client->app_ref,
-						 client->access_requests)) {
+						 client->granted_requests)) {
 			gnome_keyring_client_free (client);
 			return;
 		}
-		gnome_keyring_access_request_list_free (client->access_requests);
-		client->access_requests = NULL;
+		
+		ask_list_free (client->granted_requests);
+		client->granted_requests = NULL;
 
 		if (!gnome_keyring_proto_set_uint32 (client->output_buffer, 0,
 						     client->output_buffer->len)) {
@@ -520,6 +541,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		client->state = GNOME_CLIENT_STATE_WRITE_REPLY;
 		goto new_state;
 		break;
+		
 	case GNOME_CLIENT_STATE_WRITE_REPLY:
 		debug_print (("GNOME_CLIENT_STATE_WRITE_REPLY %p\n", client));
 		debug_print (("writing %d bytes\n", client->output_buffer->len));
@@ -540,6 +562,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 			gnome_keyring_client_free (client);
 		}
 		break;
+		
 	default:
 		break;
 	}

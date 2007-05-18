@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include "gkr-keyring.h"
+#include "gkr-keyrings.h"
 #include "gkr-keyring-item.h"
 
 #include "daemon/gnome-keyring-daemon.h"
@@ -759,6 +760,42 @@ write_all (int fd, const char *buf, size_t len)
 	return 0;
 }
 
+static char*
+get_default_keyring_file_for_name (const char *keyring_name)
+{
+	char *base;
+	char *filename;
+	int version;
+	char *path;
+	char *dir;
+
+	base = g_filename_from_utf8 (keyring_name, -1, NULL, NULL, NULL);
+	if (base == NULL) {
+		base = g_strdup ("keyring");
+	}
+
+	dir = gkr_keyrings_get_dir ();
+	
+	version = 0;
+	do {
+		if (version == 0) {
+			filename = g_strdup_printf ("%s.keyring", base);
+		} else {
+			filename = g_strdup_printf ("%s%d.keyring", base, version);
+		}
+		
+		path = g_build_filename (dir, filename, NULL);
+		g_free (filename);
+
+		version++;
+	} while (g_file_test (path, G_FILE_TEST_EXISTS));
+
+	g_free (base);
+	g_free (dir);
+	
+	return path;
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -844,6 +881,21 @@ gkr_keyring_new (const char *name, const char *path)
 	keyring->keyring_name = g_strdup (name);
 	keyring->file = g_strdup (path);
 
+	return keyring;
+}
+
+GkrKeyring*
+gkr_keyring_create (const gchar *keyring_name, const gchar *password)
+{
+	GkrKeyring *keyring;
+	
+	keyring = gkr_keyring_new (keyring_name, NULL);
+	if (keyring != NULL) {
+		keyring->file = get_default_keyring_file_for_name (keyring_name);
+		keyring->locked = FALSE;
+		keyring->password = g_strdup (password);
+		gkr_keyring_save_to_disk (keyring);
+	}
 	return keyring;
 }
 
@@ -1016,7 +1068,6 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 		g_free (dirname);
 	} else {
 		g_warning ("Internal error: Unable to generate data for keyring %s\n", keyring->keyring_name);
-		g_string_free (out, TRUE);
 		ret = FALSE;
 	}
 	

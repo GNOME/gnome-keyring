@@ -46,6 +46,8 @@ AC_SUBST(GETTEXT_PACKAGE)
 
 AM_GLIB_GNU_GETTEXT
 
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
 # --------------------------------------------------------------------
 # Debug mode
 
@@ -244,12 +246,13 @@ fi
 
 AC_OUTPUT([
 Makefile
-library/Makefile
-keyrings/Makefile
 daemon/Makefile
 doc/Makefile
+keyrings/Makefile
+library/Makefile
 po/Makefile.in
 reference/Makefile
+ui/Makefile
 library/gnome-keyring-1.pc
 library/gnome-keyring-1-uninstalled.pc
 ])
