@@ -1,4 +1,3 @@
-# translation of es.po to Spanish
 # Translation of gnome-keyring to Spanish.
 # This file is distributed under the same license as the gnome-keyring package.
 # Copyright (C) 2006 The Free Software Foundation.
@@ -9,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-11 03:30+0100\n"
-"PO-Revision-Date: 2007-05-11 09:29+0200\n"
+"POT-Creation-Date: 2007-05-19 03:52+0100\n"
+"PO-Revision-Date: 2007-05-22 18:50+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,35 +18,58 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../daemon/gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "Contraseña _antigua:"
+#: ../daemon/gnome-keyring-daemon.c:384
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en %s."
 
-#: ../daemon/gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "_Contraseña:"
+#: ../daemon/gnome-keyring-daemon.c:387
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en el "
+"depósito de claves predeterminado."
 
-#: ../daemon/gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "Con_firmar contraseña nueva:"
+#: ../daemon/gnome-keyring-daemon.c:392 ../daemon/gnome-keyring-daemon.c:400
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "La aplicación %s quiere acceder a la contraseña para «%s» en %s."
 
-#: ../daemon/gnome-keyring-ask.c:304
-msgid "Password strength meter:"
-msgstr "Medidor de fortaleza de la contraseña:"
+#: ../daemon/gnome-keyring-daemon.c:395 ../daemon/gnome-keyring-daemon.c:403
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"La aplicación «%s» quiere acceder a la contraseña para «%s» en el depósito "
+"predeterminado."
 
-#: ../daemon/gnome-keyring-ask.c:334
-msgid "Old password cannot be blank."
-msgstr "La contraseña antigua no puede estar en blanco."
+#: ../daemon/gnome-keyring-daemon.c:408
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "Una aplicación desconocida quiere acceder a la contraseña para «%s» en %s."
 
-#: ../daemon/gnome-keyring-ask.c:345
-msgid "Password cannot be blank."
-msgstr "La contraseña no puede estar en blanco."
+#: ../daemon/gnome-keyring-daemon.c:411
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Una aplicación desconocida quiere acceder a la contraseña para «%s» en el "
+"depósito de claves predeterminado."
 
-#: ../daemon/gnome-keyring-ask.c:353
-msgid "Passwords do not match."
-msgstr "Las contraseñas no coinciden."
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon.c:417
+msgid "Allow access"
+msgstr "Permitir acceso"
 
-#: ../daemon/gnome-keyring-ask.c:412
+#: ../daemon/gnome-keyring-daemon.c:417
+msgid "Allow application access to keyring?"
+msgstr "¿Permitir a la aplicación acceder al depósito?"
+
+#: ../daemon/gnome-keyring-daemon.c:490
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -56,85 +78,55 @@ msgstr ""
 "La aplicación «%s» (%s) quiere acceder al depósito de claves predeterminado, "
 "pero está bloqueado"
 
-#: ../daemon/gnome-keyring-ask.c:416
+#: ../daemon/gnome-keyring-daemon.c:494
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "La aplicación «%s» (%s) quiere acceder al depósito de claves «%s», pero está "
 "bloqueado"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:421
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"La aplicación «%s» (%s) quiere acceder a un depósito de claves desconocido, "
-"pero está bloqueado"
-
-#: ../daemon/gnome-keyring-ask.c:427 ../daemon/gnome-keyring-ask.c:441
+#: ../daemon/gnome-keyring-daemon.c:501 ../daemon/gnome-keyring-daemon.c:511
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "La aplicación «%s»  quiere acceder al depósito de claves predeterminado, "
 "pero está bloqueado"
 
-#: ../daemon/gnome-keyring-ask.c:431 ../daemon/gnome-keyring-ask.c:446
+#: ../daemon/gnome-keyring-daemon.c:505 ../daemon/gnome-keyring-daemon.c:516
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "La aplicación «%s» quiere acceder al depósito de claves «%s», pero está "
 "bloqueado"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:435 ../daemon/gnome-keyring-ask.c:451
-#, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"La aplicación «%s» quiere acceder a un depósito de claves desconocido, pero "
-"está bloqueado"
-
-#: ../daemon/gnome-keyring-ask.c:457
+#: ../daemon/gnome-keyring-daemon.c:522
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Una aplicación desconocida quiere acceder al depósito de claves "
 "predeterminado, pero está bloqueado"
 
-#: ../daemon/gnome-keyring-ask.c:461
+#: ../daemon/gnome-keyring-daemon.c:526
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Una aplicación desconocida quiere acceder al depósito de claves «%s», pero "
 "está bloqueado"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:466
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Una aplicación desconocida quiere acceder a un depósito de claves "
-"desconocido, pero está bloqueado"
-
-#: ../daemon/gnome-keyring-ask.c:473
+#: ../daemon/gnome-keyring-daemon.c:533
 msgid "Enter password for default keyring to unlock"
 msgstr "Introduzca la contraseña para desbloquear el depósito predeterminado"
 
-#: ../daemon/gnome-keyring-ask.c:475
+#: ../daemon/gnome-keyring-daemon.c:535
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Introduzca la contraseña para desbloquear el depósito «%s»"
 
-#: ../daemon/gnome-keyring-ask.c:479
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon.c:539
 msgid "Unlock Keyring"
 msgstr "Desbloquear depósito"
 
-#: ../daemon/gnome-keyring-ask.c:484 ../daemon/gnome-keyring-ask.c:568
-#: ../daemon/gnome-keyring-ask.c:660 ../daemon/gnome-keyring-ask.c:716
-#: ../daemon/gnome-keyring-ask.c:803
-msgid "_Deny"
-msgstr "_Denegar"
-
-#: ../daemon/gnome-keyring-ask.c:522
+#: ../daemon/gnome-keyring-daemon.c:567
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -143,7 +135,7 @@ msgstr ""
 "La aplicación «%s» (%s) quiere crear un depósito de claves nuevo llamado «%"
 "s». Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:526
+#: ../daemon/gnome-keyring-daemon.c:571
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -152,7 +144,7 @@ msgstr ""
 "La aplicación «%s» (%s) quiere crear un depósito de claves predeterminado "
 "nuevo. Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:532 ../daemon/gnome-keyring-ask.c:542
+#: ../daemon/gnome-keyring-daemon.c:577 ../daemon/gnome-keyring-daemon.c:587
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -161,7 +153,7 @@ msgstr ""
 "La aplicación «%s» quiere crear un depósito de claves nuevo llamado «%s». "
 "Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:536 ../daemon/gnome-keyring-ask.c:546
+#: ../daemon/gnome-keyring-daemon.c:581 ../daemon/gnome-keyring-daemon.c:591
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -170,7 +162,7 @@ msgstr ""
 "La aplicación «%s» quiere crear un depósito de claves predeterminado nuevo. "
 "Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:552
+#: ../daemon/gnome-keyring-daemon.c:597
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -179,7 +171,7 @@ msgstr ""
 "Una aplicación desconocida quiere crear un depósito de claves nuevo llamado "
 "«%s». Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:556
+#: ../daemon/gnome-keyring-daemon.c:601
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -187,15 +179,16 @@ msgstr ""
 "Una aplicación desconocida quiere crear un depósito de claves predeterminado "
 "nuevo. Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:563
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon.c:607
 msgid "New Keyring Password"
 msgstr "Contraseña nueva del depósito"
 
-#: ../daemon/gnome-keyring-ask.c:564
+#: ../daemon/gnome-keyring-daemon.c:608
 msgid "Choose password for new keyring"
 msgstr "Elija la contraseña para el depósito"
 
-#: ../daemon/gnome-keyring-ask.c:607
+#: ../daemon/gnome-keyring-daemon.c:635
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -204,7 +197,7 @@ msgstr ""
 "La aplicación «%s» (%s) quiere cambiar la contraseña para el depósito de "
 "claves «%s». Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:611
+#: ../daemon/gnome-keyring-daemon.c:639
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -213,7 +206,7 @@ msgstr ""
 "La aplicación «%s» (%s) quiere cambiar la contraseña para el depósito de "
 "claves predeterminado. Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:617 ../daemon/gnome-keyring-ask.c:627
+#: ../daemon/gnome-keyring-daemon.c:645 ../daemon/gnome-keyring-daemon.c:655
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -222,7 +215,7 @@ msgstr ""
 "La aplicación «%s» quiere cambiar la contraseña para el depósito de claves «%"
 "s». Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:621 ../daemon/gnome-keyring-ask.c:631
+#: ../daemon/gnome-keyring-daemon.c:649 ../daemon/gnome-keyring-daemon.c:659
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -231,7 +224,7 @@ msgstr ""
 "La aplicación «%s» quiere cambiar la contraseña para el depósito de claves "
 "predeterminado. Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:637
+#: ../daemon/gnome-keyring-daemon.c:665
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -240,7 +233,7 @@ msgstr ""
 "Una aplicación desconocida quiere cambiar la contraseña para el depósito de "
 "claves «%s».Tiene que elegir la contraseña que quiere usar con él."
 
-#: ../daemon/gnome-keyring-ask.c:641
+#: ../daemon/gnome-keyring-daemon.c:669
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -249,20 +242,21 @@ msgstr ""
 "claves predeterminado nuevo. Tiene que elegir la contraseña que quiere usar "
 "con él."
 
-#: ../daemon/gnome-keyring-ask.c:648
+#: ../daemon/gnome-keyring-daemon.c:679
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Elija una contraseña nueva para el depósito «%s»."
 
-#: ../daemon/gnome-keyring-ask.c:650
+#: ../daemon/gnome-keyring-daemon.c:681
 msgid "Choose a new password for the default keyring. "
 msgstr "Elija una contraseña nueva para el depósito de claves predeterminado. "
 
-#: ../daemon/gnome-keyring-ask.c:655
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon.c:685
 msgid "Change Keyring Password"
 msgstr "Cambia la contraseña del depósito"
 
-#: ../daemon/gnome-keyring-ask.c:694
+#: ../daemon/gnome-keyring-daemon.c:732
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -273,7 +267,7 @@ msgstr ""
 "depósito de claves predeterminado. Para crear uno debe elegir la contraseña "
 "que quiere usar en él."
 
-#: ../daemon/gnome-keyring-ask.c:698 ../daemon/gnome-keyring-ask.c:702
+#: ../daemon/gnome-keyring-daemon.c:736 ../daemon/gnome-keyring-daemon.c:740
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -284,8 +278,7 @@ msgstr ""
 "claves predeterminado. Para crear uno debe elegir la contraseña que quiere "
 "usar en él."
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:706
+#: ../daemon/gnome-keyring-daemon.c:744
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -295,107 +288,56 @@ msgstr ""
 "depósito de claves predeterminado. Para crear uno debe elegir la contraseña "
 "que quiere usar en él."
 
-#: ../daemon/gnome-keyring-ask.c:711
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon.c:749
 msgid "Create Default Keyring"
 msgstr "Crear depósito predeterminado"
 
-#: ../daemon/gnome-keyring-ask.c:712
+#: ../daemon/gnome-keyring-daemon.c:749
 msgid "Choose password for default keyring"
 msgstr "Elija una contraseña para el depósito de claves predeterminado"
 
-#: ../daemon/gnome-keyring-ask.c:752
-msgid "Allow application access to keyring?"
-msgstr "¿Permitir a la aplicación acceder al depósito?"
+#: ../ui/gkr-ask-tool.c:224
+msgid "_Old password:"
+msgstr "Contraseña _antigua:"
 
-#: ../daemon/gnome-keyring-ask.c:755
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en %s."
+#: ../ui/gkr-ask-tool.c:247
+msgid "_Password:"
+msgstr "_Contraseña:"
 
-#: ../daemon/gnome-keyring-ask.c:758
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en el "
-"depósito de claves predeterminado."
+#: ../ui/gkr-ask-tool.c:272
+msgid "_Confirm password:"
+msgstr "Con_firmar contraseña:"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:761
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en un "
-"depósito de claves desconocido."
+#: ../ui/gkr-ask-tool.c:291
+msgid "New password strength"
+msgstr "Fortaleza de la nueva contraseña"
 
-#: ../daemon/gnome-keyring-ask.c:766 ../daemon/gnome-keyring-ask.c:777
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "La aplicación %s quiere acceder a la contraseña para «%s» en %s."
+#: ../ui/gkr-ask-tool.c:311
+msgid "Old password cannot be blank."
+msgstr "La contraseña antigua no puede estar en blanco."
 
-#: ../daemon/gnome-keyring-ask.c:769 ../daemon/gnome-keyring-ask.c:780
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"La aplicación «%s» quiere acceder a la contraseña para «%s» en el depósito "
-"predeterminado."
+#: ../ui/gkr-ask-tool.c:323
+msgid "Password cannot be blank."
+msgstr "La contraseña no puede estar en blanco."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:772 ../daemon/gnome-keyring-ask.c:783
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"La aplicación «%s» quiere acceder a la contraseña para «%s» en un depósito "
-"desconocido."
+#: ../ui/gkr-ask-tool.c:332
+msgid "Passwords do not match."
+msgstr "Las contraseñas no coinciden."
 
-#: ../daemon/gnome-keyring-ask.c:788
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Una aplicación desconocida quiere acceder a la contraseña para «%s» en %s."
+#: ../ui/gkr-ask-tool.c:369
+msgid "Deny"
+msgstr "Denegar"
 
-#: ../daemon/gnome-keyring-ask.c:791
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Una aplicación desconocida quiere acceder a la contraseña para «%s» en el "
-"depósito de claves predeterminado."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:794
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Una aplicación desconocida quiere acceder a la contraseña para «%s» en un "
-"depósito desconocido."
-
-#: ../daemon/gnome-keyring-ask.c:799
-msgid "Allow access"
-msgstr "Permitir acceso"
-
-#: ../daemon/gnome-keyring-ask.c:804
+#: ../ui/gkr-ask-tool.c:381
 msgid "Allow _Once"
 msgstr "Permitir _una vez"
 
-#: ../daemon/gnome-keyring-ask.c:805
+#: ../ui/gkr-ask-tool.c:385
 msgid "_Always Allow"
 msgstr "Permitir _siempre"
 
-#: ../daemon/gnome-keyring-ask.c:845
-msgid "You must specify the type of request to run\n"
-msgstr "Debe especificar el tipo de solicitud a ejecutar\n"
-
-#: ../daemon/gnome-keyring-ask.c:862
-msgid "Unknown request type\n"
-msgstr "Tipo de solicitud desconocido\n"
+#: ../ui/gkr-ask-tool.c:439
+msgid "Must be run from gnome-keyring\n"
+msgstr "Debe ejecutarse desde gnome-keyring\n"
 
