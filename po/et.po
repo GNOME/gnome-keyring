@@ -9,9 +9,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring HEAD\n"
+"Project-Id-Version: gnome-keyring 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-01 23:49+0100\n"
+"POT-Creation-Date: 2007-04-03 03:33+0100\n"
 "PO-Revision-Date: 2006-11-05 10:17+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
