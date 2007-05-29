@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* unit-test-other.c: Test miscellaneous functionality
 
-   Copyright (C) 2007 Nate Nielsen
+   Copyright (C) 2007 Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #include <stdlib.h>

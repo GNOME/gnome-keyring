@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gkr-keyring.h - represents a keyring in memory, and functionality save/load
 
-   Copyright (C) 2007 Nate Nielsen
+   Copyright (C) 2007 Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #ifndef __GKR_KEYRING_H__

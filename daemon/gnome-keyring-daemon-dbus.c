@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gnome-keyring-daemon-dbus.c - daemon usage of dbus
 
-   Copyright (C) 2007, Nate Nielsen
+   Copyright (C) 2007, Stefan Walter
 
    Gnome keyring is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -17,7 +17,7 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #include "config.h"

@@ -2,7 +2,7 @@
 /* gkr-ask-request.c - represents a prompt for the user
 
    Copyright (C) 2003 Red Hat, Inc
-   Copyright (C) 2007 Nate Nielsen
+   Copyright (C) 2007 Stefan Walter
 
    Gnome keyring is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -19,7 +19,7 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
    Author: Alexander Larsson <alexl@redhat.com>
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #include "config.h"

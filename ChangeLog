@@ -1,3 +1,18 @@
+2007-05-29  Stef Walter  <stef@memberwebs.com>
+
+	* AUTHORS:
+	* MAINTAINERS:
+	* daemon/gnome-keyring-daemon-dbus.c:
+	* keyrings/gkr-keyring-item.c:
+	* keyrings/gkr-keyring-item.h:
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyring.h:
+	* keyrings/gkr-keyrings.c:
+	* keyrings/gkr-keyrings.h:
+	* tests/unit-test-keyrings.c:
+	* tests/unit-test-other.c: 
+	* ui/gkr-ask-request.c: Use my real name
+
 2007-05-18  Nate Nielsen  <nielsen@memberwebs.com>
 
 	* tests/Makefile.am:
