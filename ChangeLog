@@ -1,5 +1,13 @@
 2007-06-14  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gnome-keyring-daemon-io.c
+	* daemon/gnome-keyring-daemon.c:
+	* daemon/gnome-keyring-daemon.h:
+	* tests/unit-test-keyrings.c: Make a find operation that does not 
+	match any results, return OK instead of DENIED. Fixes bug #447315
+	
+2007-06-14  Stef Walter  <stef@memberwebs.com>
+
 	* library/gnome-keyring.h: Make -pedantic compatible
 	Patch from Sylvain Pasche. Fixes bug #445901
 

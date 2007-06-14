@@ -34,13 +34,17 @@
 #include "keyrings/gkr-keyring-item.h"
 
 typedef struct {
+	GnomeKeyringApplicationRef *app_ref;
+	GList *ask_requests;
+	gpointer data;
+} GkrKeyringRequest;	
+
+typedef struct {
 	gboolean (*collect_info) (GString *packet,
-				  GnomeKeyringApplicationRef *app_ref,
-				  GList **access_requests);
+				  GkrKeyringRequest *req);
 	gboolean (*execute_op) (GString *packet,
 				GString *result,
-				GnomeKeyringApplicationRef *app_ref,
-				GList *access_requests);
+				GkrKeyringRequest *req);
 } GnomeKeyringOperationImplementation;
 
 extern GnomeKeyringOperationImplementation keyring_ops[];

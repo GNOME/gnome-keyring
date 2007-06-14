@@ -76,6 +76,7 @@ typedef struct {
 
 	GList *ask_requests;
 	GList *granted_requests;
+	gpointer collect_data;
 
 	guint output_watch;
 	GString *output_buffer;
@@ -373,7 +374,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 {
 	GnomeKeyringOpCode op;
 	GIOChannel *channel;
-	GList *access_requests;
+	GkrKeyringRequest req;
 	pid_t pid;
 	uid_t uid;
 	int res;
@@ -450,15 +451,18 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		/* Make sure keyrings in memory are up to date before asking for access */
 		gkr_keyrings_update ();
 		
-		access_requests = NULL;
-		if (!keyring_ops[op].collect_info (client->input_buffer, client->app_ref, 
-						   &access_requests)) {
+		/* Setup for call */
+		memset (&req, 0, sizeof (req));
+		req.app_ref = client->app_ref;
+
+		if (!keyring_ops[op].collect_info (client->input_buffer, &req)) {
 			gnome_keyring_client_free (client);
 			return;
 		}
 		
 		/* All the things we have to ask about */
-		client->ask_requests = access_requests;
+		client->ask_requests = req.ask_requests;
+		client->collect_data = req.data;
 
 		/* request_access can reenter here if there is no need to
 		 * wait for access rights */
@@ -516,10 +520,15 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		/* Add empty size */
 		gnome_keyring_proto_add_uint32 (client->output_buffer, 0);
 		
+		/* Setup for call */
+		memset (&req, 0, sizeof (req));
+		req.app_ref = client->app_ref;
+		req.data = client->collect_data;
+		req.ask_requests = client->granted_requests;
+		
 		if (!keyring_ops[op].execute_op (client->input_buffer,
 						 client->output_buffer,
-						 client->app_ref,
-						 client->granted_requests)) {
+						 &req)) {
 			gnome_keyring_client_free (client);
 			return;
 		}
