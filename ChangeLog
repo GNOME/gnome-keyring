@@ -1,5 +1,9 @@
 2007-06-14  Stef Walter  <stef@memberwebs.com>
 
+	* ui/gkr-ask-request.c: Initialize GError properly.
+	
+2007-06-14  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon-io.c
 	* daemon/gnome-keyring-daemon.c:
 	* daemon/gnome-keyring-daemon.h:

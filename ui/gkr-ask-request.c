@@ -238,7 +238,7 @@ launch_ask_helper (GkrAskRequest *ask)
 	char **envp;
 	int i, n;
 	int stdout_fd;
-	GError *error;
+	GError *error = NULL;
 	char *argv[] = {
 		LIBEXECDIR "/gnome-keyring-ask",
 		NULL,
