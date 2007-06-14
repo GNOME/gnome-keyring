@@ -1,3 +1,8 @@
+2007-06-14  Stef Walter  <stef@memberwebs.com>
+
+	* library/gnome-keyring.h: Make -pedantic compatible
+	Patch from Sylvain Pasche. Fixes bug #445901
+
 2007-05-29  Stef Walter  <stef@memberwebs.com>
 
 	* AUTHORS:
