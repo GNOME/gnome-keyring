@@ -153,6 +153,12 @@ AC_STAT_MACROS_BROKEN
 AC_CHECK_HEADERS(fcntl.h sys/time.h time.h unistd.h)
 AC_CHECK_FUNCS(gettimeofday fsync)
 
+# --------------------------------------------------------------------
+# Memory locking
+#
+
+AC_CHECK_FUNCS(mlock)
+AC_CHECK_FUNCS(mlockall)
 
 # --------------------------------------------------------------------
 # socket()

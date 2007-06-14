@@ -1,5 +1,17 @@
 2007-06-14  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in:
+	* library/Makefile.am:
+	* library/gnome-keyring-memory.h:
+	* library/gnome-keyring-memory.c:
+	* library/gnome-keyring-private.h:
+	* tests/Makefile.am:
+	* tests/unit-test-memory.c:
+	* tests/unit-tests-prep.sh: Build basic implementation for 
+	non-pageable memory. See bug #419981
+	
+2007-06-14  Stef Walter  <stef@memberwebs.com>
+
 	* ui/gkr-ask-request.c: Initialize GError properly.
 	
 2007-06-14  Stef Walter  <stef@memberwebs.com>

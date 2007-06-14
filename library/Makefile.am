@@ -18,7 +18,9 @@ libgnome_keyring_common_la_SOURCES = \
 	gnome-keyring-private.h \
 	gnome-keyring-proto.c \
 	gnome-keyring-proto.h \
-	gnome-keyring-utils.c
+	gnome-keyring-utils.c \
+	gnome-keyring-memory.h \
+	gnome-keyring-memory.c 
 
 libgnome_keyring_common_la_LIBADD = \
 	$(GLIB_LIBS)

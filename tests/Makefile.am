@@ -37,7 +37,8 @@ test_keyring_two_SOURCES = \
 
 UNIT_TESTS_AUTO = \
 	unit-test-keyrings.c \
-	unit-test-other.c 
+	unit-test-other.c \
+	unit-test-memory.c
 
 unit-test-auto.c: $(UNIT_TESTS_AUTO) unit-tests-prep.sh
 	sh unit-tests-prep.sh -b unit-test-auto $(UNIT_TESTS_AUTO)

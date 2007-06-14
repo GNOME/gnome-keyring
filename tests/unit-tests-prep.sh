@@ -95,6 +95,7 @@ FILES=$*
 ) > $BASE.h
 
 (
+	echo "/* This is auto-generated code. Edit at your own peril. */"
 	echo "#include \"$BASE.h\""
 	source_top
 	cat $FILES | grep '^void unit_test_' | \
