@@ -33,6 +33,20 @@
  * IMPORTANT: This is pure vanila standard C, no glib. We need this 
  * because certain consumers of this protocol need to be built 
  * without linking in any special libraries. ie: the PKCS#11 module.
+ * 
+ * Memory Allocation
+ * 
+ * Callers can set their own allocator. If NULL is used then standard 
+ * C library heap memory is used and failures will not be fatal. Memory 
+ * failures will instead result in a zero return value or 
+ * gkr_buffer_has_error() returning one.
+ * 
+ * If you use something like g_realloc as the allocator, then memory 
+ * failures become fatal just like in a standard GTK program.
+ * 
+ * Don't change the allocator manually in the GkrBuffer structure. The 
+ * gkr_buffer_set_allocator() func will reallocate and handle things 
+ * properly.
  */
  
 /* The allocator for the GkrBuffer. This follows the realloc() syntax and logic */
@@ -46,17 +60,21 @@ typedef struct _GkrBuffer {
 	GkrBufferAllocator allocator;
 } GkrBuffer;
 
-GkrBuffer*      gkr_buffer_new                  (size_t reserve);
+#define 	GKR_BUFFER_EMPTY		{ NULL, 0, 0, 0, NULL }
 
-GkrBuffer*      gkr_buffer_new_full             (size_t reserve, 
+int             gkr_buffer_init                 (GkrBuffer *buffer, size_t reserve);
+
+int             gkr_buffer_init_full            (GkrBuffer *buffer, 
+                                                 size_t reserve, 
                                                  GkrBufferAllocator allocator);
                                                  
-GkrBuffer*      gkr_buffer_new_static           (unsigned char *buf, 
+void            gkr_buffer_init_static          (GkrBuffer *buffer, 
+                                                 unsigned char *buf, 
                                                  size_t len);
 
-void            gkr_buffer_free 		(GkrBuffer *buffer);
+void            gkr_buffer_uninit               (GkrBuffer *buffer);
 
-int             gkr_buffer_change_allocator     (GkrBuffer *buffer, 
+int             gkr_buffer_set_allocator        (GkrBuffer *buffer, 
                                                  GkrBufferAllocator allocator);
 
 void 		gkr_buffer_reset		(GkrBuffer *buffer);

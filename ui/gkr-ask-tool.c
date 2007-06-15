@@ -26,6 +26,8 @@
 #include <string.h>
 #include <locale.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <sys/mman.h>
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -114,6 +116,36 @@ on_password_changed (GtkEditable     *editable,
 	}
 
 	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (user_data), pwstrength);
+}
+
+static void
+unlock_memory (void)
+{
+#ifdef HAVE_MLOCKALL
+	munlockall ();
+#endif
+}
+
+static void
+lock_memory (void)
+{
+	int r = -1;
+
+	/* 
+	 * TODO: This is a copout, due to the fact that GTK, and the entry 
+	 * control in particular are hard to lock into memory. 
+	 * 
+	 * Since this is short lived process, should work for now. In the future
+	 * we need to make this more fine grained.
+	 */
+#ifdef HAVE_MLOCKALL
+	r = mlockall (MCL_CURRENT);
+#endif
+
+	if (r < 0)
+		g_warning ("couldn't lock process in memory: %s", strerror (errno));
+	else
+		g_atexit (unlock_memory);
 }
 
 static gint
@@ -300,6 +332,12 @@ run_dialog (const char *title,
 	
 	if (row > 0)
 		gtk_widget_show_all (ptable);
+
+	/*
+	 * We do this as late as possible, so all the memory the process needs is 
+	 * allocated in memory. This prevents mapping failures.
+	 */
+	lock_memory ();
 
  retry:
 	gtk_widget_show (dialog);

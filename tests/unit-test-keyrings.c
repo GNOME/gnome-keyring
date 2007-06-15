@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "unit-test-auto.h"
+#include "run-library-test.h"
 #include "library/gnome-keyring.h"
 
 static GList* keyrings = NULL;

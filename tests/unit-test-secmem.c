@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-memory.c: Test memory allocation functionality
+/* unit-test-secmem.c: Test low level secure memory allocation functionality
 
    Copyright (C) 2007 Stefan Walter
 
@@ -27,7 +27,7 @@
 
 #include "run-base-test.h"
 
-#include "library/gnome-keyring-memory.h"
+#include "common/gkr-secure-memory.h"
 
 /* 
  * Each test function must begin with (on the same line):
@@ -37,7 +37,7 @@
  */
  
 #define IS_ZERO ~0
- 
+
 static gsize
 find_non_zero (gpointer mem, gsize len)
 {
@@ -50,49 +50,80 @@ find_non_zero (gpointer mem, gsize len)
 	
 	return IS_ZERO;
 }
- 
-void unit_test_alloc_free (CuTest* cu)
+
+void unit_test_secmem_alloc_free (CuTest* cu)
 {
 	gpointer p;
 	gboolean ret;
 	
-	p = gnome_keyring_memory_alloc (512);
+	p = gkr_secure_memory_alloc (512);
 	CuAssertPtrNotNull (cu, p);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 512));
+	CuAssert (cu, "bad block size", gkr_secure_memory_size (p) >= 512);
 	
 	memset (p, 0x67, 512);
 	
-	ret = gnome_keyring_memory_is_secure (p);
+	ret = gkr_secure_memory_check (p);
 	CuAssertIntEquals (cu, ret, TRUE);
 	
-	gnome_keyring_memory_free (p);
+	gkr_secure_memory_free (p);
 }
 
-void unit_test_alloc_two (CuTest* cu)
+void unit_test_secmem_realloc_across (CuTest *cu)
+{
+	gpointer p, p2;
+	
+	/* Tiny allocation */
+	p = gkr_secure_memory_realloc (NULL, 88);
+	CuAssertPtrNotNull (cu, p);
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 88));
+	CuAssert (cu, "bad block size", gkr_secure_memory_size (p) >= 88);
+
+	/* Reallocate to a large one, will have to have changed blocks */	
+	p2 = gkr_secure_memory_realloc (p, 64000);
+	CuAssertPtrNotNull (cu, p2);
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 64000));
+	CuAssert (cu, "bad block size", gkr_secure_memory_size (p2) >= 64000);
+}
+
+void unit_test_secmem_alloc_two (CuTest* cu)
 {
 	gpointer p, p2;
 	gboolean ret;
 	
-	p2 = gnome_keyring_memory_alloc (4);
+	p2 = gkr_secure_memory_alloc (4);
 	CuAssertPtrNotNull (cu, p2);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 4));
-	
+	CuAssert (cu, "bad block size", gkr_secure_memory_size (p2) >= 4);
+
 	memset (p2, 0x67, 4);
 	
-	p = gnome_keyring_memory_alloc (64536);
+	p = gkr_secure_memory_alloc (64536);
 	CuAssertPtrNotNull (cu, p);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 64536));
+	CuAssert (cu, "bad block size", gkr_secure_memory_size (p) >= 64536);
 
 	memset (p, 0x67, 64536);
 	
-	ret = gnome_keyring_memory_is_secure (p);
+	ret = gkr_secure_memory_check (p);
 	CuAssertIntEquals (cu, ret, TRUE);
 	
-	gnome_keyring_memory_free (p2);
-	gnome_keyring_memory_free (p);
+	gkr_secure_memory_free (p2);
+	gkr_secure_memory_free (p);
 }
 
-void unit_test_realloc (CuTest* cu)
+void unit_test_secmem_alloc_insane (CuTest* cu)
+{
+	gpointer p2;
+	
+	p2 = gkr_secure_memory_alloc (G_MAXSIZE);
+	CuAssert (cu, "shouldn't have worked", p2 == NULL);
+		
+	p2 = gkr_secure_memory_alloc (G_MAXSIZE / 2);
+	CuAssert (cu, "shouldn't have worked", p2 == NULL);	
+}
+
+void unit_test_secmem_realloc (CuTest* cu)
 {
 	gchar *str = "a test string to see if realloc works properly";
 	gpointer p, p2;
@@ -101,35 +132,22 @@ void unit_test_realloc (CuTest* cu)
 	
 	len = strlen (str) + 1;
 	
-	p = gnome_keyring_memory_realloc (NULL, len);
+	p = gkr_secure_memory_realloc (NULL, len);
 	CuAssertPtrNotNull (cu, p);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, len));
+	CuAssert (cu, "bad block size", gkr_secure_memory_size (p) >= len);
 	
 	strcpy ((gchar*)p, str);
 	
-	p2 = gnome_keyring_memory_realloc (p, 512);
+	p2 = gkr_secure_memory_realloc (p, 512);
 	CuAssertPtrNotNull (cu, p2);
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (((gchar*)p2) + len, 512 - len));
+	CuAssert (cu, "bad block size", gkr_secure_memory_size (p2) >= 512);
 	
 	r = strcmp (p2, str);
 	CuAssert (cu, "strings not equal after realloc", r == 0);
 	
-	p = gnome_keyring_memory_realloc (p2, 0);
+	p = gkr_secure_memory_realloc (p2, 0);
 	CuAssert (cu, "should have freed memory", p == NULL);
 }
 
-void unit_test_realloc_across (CuTest *cu)
-{
-	gpointer p, p2;
-	
-	/* Tiny allocation */
-	p = gnome_keyring_memory_realloc (NULL, 88);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 88));
-
-	/* Reallocate to a large one, will have to have changed blocks */	
-	p2 = gnome_keyring_memory_realloc (p, 64000);
-	CuAssertPtrNotNull (cu, p2);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 64000));
-	
-	gnome_keyring_memory_free (p2);
-}

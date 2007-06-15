@@ -51,6 +51,8 @@ gnome_keyring_get_info
 gnome_keyring_get_info_sync
 gnome_keyring_set_info
 gnome_keyring_set_info_sync
+gnome_keyring_change_password
+gnome_keyring_change_password_sync
 gnome_keyring_list_item_ids
 gnome_keyring_list_item_ids_sync
 gnome_keyring_info_free
@@ -109,6 +111,7 @@ gnome_keyring_item_ac_get_path_name
 gnome_keyring_item_ac_set_path_name
 gnome_keyring_item_ac_get_access_type
 gnome_keyring_item_ac_set_access_type
+gnome_keyring_item_grant_access_rights_sync
 GnomeKeyringNetworkPasswordData
 gnome_keyring_network_password_free
 gnome_keyring_network_password_list_free
@@ -116,5 +119,16 @@ gnome_keyring_find_network_password
 gnome_keyring_find_network_password_sync
 gnome_keyring_set_network_password
 gnome_keyring_set_network_password_sync
+gnome_keyring_daemon_set_display_sync
 </SECTION>
-
+<SECTION>
+<FILE>gnome-keyring-memory</FILE>
+gnome_keyring_memory_new
+gnome_keyring_memory_alloc
+gnome_keyring_memory_try_alloc
+gnome_keyring_memory_realloc
+gnome_keyring_memory_try_realloc
+gnome_keyring_memory_free
+gnome_keyring_memory_is_secure
+gnome_keyring_memory_strdup
+</SECTION>

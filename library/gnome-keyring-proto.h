@@ -69,6 +69,8 @@ typedef enum {
    uint32 result
 */
 
+void     gnome_keyring_proto_go_secure (GkrBuffer *buffer);
+
 /* Core buffer ops */
 void     gnome_keyring_proto_add_uint32         (GkrBuffer                  *buffer,
 						 guint32                     val);
@@ -92,7 +94,18 @@ gboolean gnome_keyring_proto_get_time           (GkrBuffer                  *buf
 						 time_t                     *time);
 gboolean gnome_keyring_proto_add_utf8_string    (GkrBuffer                  *buffer,
 						 const char                 *str);
+gboolean gnome_keyring_proto_add_utf8_secret    (GkrBuffer                  *buffer,
+						 const char                 *str);
+gboolean gnome_keyring_proto_get_utf8_full      (GkrBuffer                  *buffer,
+						 gsize                       offset,
+						 gsize                      *next_offset,
+						 char                      **str_ret, 
+						 GkrBufferAllocator          allocator);
 gboolean gnome_keyring_proto_get_utf8_string    (GkrBuffer                  *buffer,
+						 gsize                       offset,
+						 gsize                      *next_offset,
+						 char                      **str_ret);
+gboolean gnome_keyring_proto_get_utf8_secret    (GkrBuffer                  *buffer,
 						 gsize                       offset,
 						 gsize                      *next_offset,
 						 char                      **str_ret);
@@ -117,11 +130,11 @@ gboolean gnome_keyring_proto_encode_op_string_int_int (GkrBuffer                
 						      const char                *str,
 						      guint32                    integer1,
 						      guint32                    integer2);
-gboolean gnome_keyring_proto_encode_op_string_string (GkrBuffer                 *buffer,
+gboolean gnome_keyring_proto_encode_op_string_secret (GkrBuffer                 *buffer,
 						      GnomeKeyringOpCode         op,
 						      const char                *str1,
 						      const char                *str2);
-gboolean gnome_keyring_proto_encode_op_string_string_string (GkrBuffer                 *buffer,
+gboolean gnome_keyring_proto_encode_op_string_secret_secret (GkrBuffer                 *buffer,
 						      GnomeKeyringOpCode         op,
 						      const char                *str1,
 						      const char                *str2,
@@ -177,11 +190,11 @@ gboolean gnome_keyring_proto_decode_result_string_list_reply (GkrBuffer         
 gboolean gnome_keyring_proto_decode_op_string                (GkrBuffer                  *buffer,
 							      GnomeKeyringOpCode         *op_out,
 							      char                      **str_out);
-gboolean gnome_keyring_proto_decode_op_string_string         (GkrBuffer                  *buffer,
+gboolean gnome_keyring_proto_decode_op_string_secret         (GkrBuffer                  *buffer,
 							      GnomeKeyringOpCode         *op_out,
 							      char                      **str1_out,
 							      char                      **str2_out);
-gboolean gnome_keyring_proto_decode_op_string_string_string  (GkrBuffer                  *buffer,
+gboolean gnome_keyring_proto_decode_op_string_secret_secret  (GkrBuffer                  *buffer,
 							      GnomeKeyringOpCode         *op_out,
 							      char                      **str1_out,
 							      char                      **str2_out,

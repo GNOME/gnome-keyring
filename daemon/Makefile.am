@@ -22,10 +22,10 @@ gnome_keyring_daemon_SOURCES = \
 	gnome-keyring-daemon-dbus.c
 
 gnome_keyring_daemon_LDADD = \
-	$(top_builddir)/common/libgkr-daemon-common.la \
 	$(top_builddir)/library/libgnome-keyring-common.la \
 	$(top_builddir)/keyrings/libgnome-keyring-keyrings.la \
 	$(top_builddir)/ui/libdaemon-ui-component.la \
+	$(top_builddir)/common/libgkr-daemon-common.la \
 	@LIBOBJS@ \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)

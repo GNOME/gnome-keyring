@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "unit-test-prompt.h"
+#include "run-prompt-test.h"
 #include "library/gnome-keyring.h"
 
 /* 

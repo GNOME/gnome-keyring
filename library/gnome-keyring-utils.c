@@ -26,11 +26,12 @@
 #include <glib.h>
 
 #include "gnome-keyring-private.h"
+#include "gnome-keyring-memory.h"
 
 /* Functions used by both the library and the daemon */
 
 /**
- * gnome_keyring_free_password():
+ * gnome_keyring_free_password:
  * @str: the password to be freed
  *
  * Clears the memory used by password by filling with '\0' and frees the memory
@@ -40,11 +41,8 @@
 void
 gnome_keyring_free_password (char *str)
 {
-	/* TODO: Secure memory str */
-	if (str != NULL) {
-		memset (str, 0, strlen (str));
-		g_free  (str);
-	}
+	memset (str, 0, strlen (str));
+	gnome_keyring_memory_free (str);
 }
 
 /**
@@ -60,8 +58,7 @@ void
 gnome_keyring_found_free (GnomeKeyringFound *found)
 {
 	g_free (found->keyring);
-	/* TODO: Secure memory found->secret */
-	g_free (found->secret);
+	gnome_keyring_memory_free (found->secret);
 	gnome_keyring_attribute_list_free (found->attributes);
 	g_free (found);
 }
@@ -155,12 +152,8 @@ gnome_keyring_item_info_free (GnomeKeyringItemInfo *item_info)
 {
 	if (item_info != NULL) {
 		g_free (item_info->display_name);
-		if (item_info->secret != NULL) {
-			/* TODO: Secure memory item_info->secret */
-			/* clear the secret on free */
-			memset (item_info->secret, 0, strlen (item_info->secret));
-			g_free (item_info->secret);
-		}
+		if (item_info->secret != NULL)
+			gnome_keyring_memory_free (item_info->secret);
 		g_free (item_info);
 	}
 }
@@ -186,8 +179,7 @@ gnome_keyring_item_info_copy (GnomeKeyringItemInfo *item_info)
 	memcpy (copy, item_info, sizeof (GnomeKeyringItemInfo));
 
 	copy->display_name = g_strdup (copy->display_name);
-	/* TODO: Secure memory copy->secret */
-	copy->secret = g_strdup (copy->secret);
+	copy->secret = gnome_keyring_memory_strdup (copy->secret);
 	
 	return copy;
 }

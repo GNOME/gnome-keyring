@@ -29,6 +29,7 @@
 #include "gkr-ask-daemon.h"
 
 #include "library/gnome-keyring.h"
+#include "library/gnome-keyring-memory.h"
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
 
@@ -134,7 +135,8 @@ static void
 finish_ask_io (GkrAskRequest *ask, gboolean failed)
 {
 	GkrAskRequestPrivate *pv;
-	gchar **lines;
+	gchar *line, *next;
+	int i;
 
 	pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	
@@ -142,9 +144,9 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 	pv->ask_pid = 0;
 
 	/* Cleanup for response processing */
-	g_free (ask->typed_password);
+	gnome_keyring_memory_free (ask->typed_password);
 	ask->typed_password = NULL;
-	g_free (ask->original_password);
+	gnome_keyring_memory_free (ask->original_password);
 	ask->original_password = NULL;
 	
 	/* A failed request */
@@ -153,30 +155,38 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 		return;
 	}
 	
-	/* Parse out all the information we have */
-	/* TODO: Secure memory pv->buffer */
+	/* 
+	 * Parse each of the lines. Try to keep memory allocations
+	 * to a minimum, for security reasons.
+	 */
 	gkr_buffer_add_byte (&pv->buffer, 0);
-	lines = g_strsplit ((gchar*)(pv->buffer.buf), "\n", 4);
-	/* TODO: Secure memory lines */
-	if (lines[0]) {
-		/* First line is the response */
-		ask->response = atol (lines[0]);
+	for (i = 0, line = (gchar*)pv->buffer.buf; i < 4; ++i) {
 		
-		/* Only use passwords if confirming */
-		if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
-			if (lines[1]) {
-				/* TODO: Secure memory ask->typed_password */
-				/* Next line is the typed password (if any) */
-				ask->typed_password = g_strdup (lines[1]);
-				if (lines[2]) {
-					/* TODO: Secure memory ask->original_password */
-					/* Last line is the original password (if any) */
-					ask->original_password = g_strdup (lines[2]);
-				}
-			}
-		} 
+		/* Break out the line */
+		next = strchr (line, '\n');
+		if (next) 
+			*next = 0;
+		
+		/* First line is the response */
+		if (i == 0) {
+			ask->response = atol (line);
+			if (ask->response < GKR_ASK_RESPONSE_ALLOW)
+				break;
+				
+		/* Next line is the typed password (if any) */
+		} else if (i == 1) {
+			ask->typed_password = gnome_keyring_memory_strdup (line);
+			
+		/* Last line is the original password (if any) */
+		} else if (i == 2) {
+			ask->original_password = gnome_keyring_memory_strdup (line);
+		}
+		
+		/* No more lines? */
+		if (!next)
+			break;
+		line = next + 1;
 	}
-	g_strfreev (lines);
 	
 	/* An invalid result from the ask tool */
 	if (!ask->response) {
@@ -203,37 +213,42 @@ ask_io (GIOChannel *channel, GIOCondition cond, gpointer data)
 {
 	GkrAskRequest *ask;
 	GkrAskRequestPrivate *pv;
-	/* TODO: Secure memory buffer */
-	guchar buffer[1024];
+	gboolean ret = TRUE;
+	guchar *buffer;
 	int res;
 	int fd;
 
 	ask = GKR_ASK_REQUEST (data);
 	pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	
+	/* Passwords come through this buffer */
+	buffer = gnome_keyring_memory_alloc (128);
 
-	if (cond & G_IO_IN) {
+	if (ret && (cond & G_IO_IN)) {
 		do 
 		{
 			fd = g_io_channel_unix_get_fd (channel);
-			res = read (fd, buffer, sizeof (buffer));
+			res = read (fd, buffer, 128);
 			if (res < 0) {
 				if (errno != EINTR && errno != EAGAIN) {
 					finish_ask_io (ask, TRUE);
-					return FALSE;
+					ret = FALSE;
+					break;
 				}
 			} else if (res > 0) {
-				/* TODO: Secure memory pv->buffer */
 				gkr_buffer_append (&pv->buffer, buffer, res);
 			}
 		} while (res > 0);
 	}
 
-	if (cond & G_IO_HUP) {	
+	if (ret && (cond & G_IO_HUP)) {	
 		finish_ask_io (ask, FALSE);
-		return FALSE;
+		ret = FALSE;
 	}
 	
-	return TRUE;
+	gnome_keyring_memory_free (buffer);
+	
+	return ret;
 }
 
 static gboolean
@@ -336,7 +351,9 @@ gkr_ask_request_init (GkrAskRequest *ask)
 	pv->title = g_strdup ("");
 	pv->primary = g_strdup ("");
 	pv->secondary = g_strdup ("");
-	gkr_buffer_init_full (&pv->buffer, 128, g_realloc);
+	
+	/* Use a secure memory buffer */
+	gkr_buffer_init_full (&pv->buffer, 128, gnome_keyring_memory_realloc);
 }
 
 static guint
@@ -354,12 +371,10 @@ gkr_ask_request_dispose (GObject *obj)
 	cancel_ask_if_active (ask);
 	g_assert (pv->ask_pid == 0);
 	
-	/* TODO: Secure memory ask->original_password */
-	gnome_keyring_free_password (ask->original_password);
+	gnome_keyring_memory_free (ask->original_password);
 	ask->original_password = NULL;
 	
-	/* TODO: Secure memory ask->typed_password */
-	gnome_keyring_free_password (ask->typed_password);
+	gnome_keyring_memory_free (ask->typed_password);
 	ask->typed_password = NULL;
 	
 	G_OBJECT_CLASS(gkr_ask_request_parent_class)->dispose (obj);

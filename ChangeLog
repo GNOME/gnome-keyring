@@ -1,5 +1,38 @@
 2007-06-15  Stef Walter  <stef@memberwebs.com>
 
+	* common/Makefile.am:
+	* common/gkr-buffer.c:
+	* common/gkr-buffer.h:
+	* common/gkr-secure-memory.c: (added)
+	* common/gkr-secure-memory.h: (added)
+	* daemon/Makefile.am:
+	* daemon/gnome-keyring-daemon-io.c:
+	* daemon/gnome-keyring-daemon.c:
+	* keyrings/gkr-keyring-item.c:
+	* keyrings/gkr-keyring.c:
+	* library/Makefile.am:
+	* library/gnome-keyring-memory.c:
+	* library/gnome-keyring-memory.h:
+	* library/gnome-keyring-proto.c:
+	* library/gnome-keyring-proto.h:
+	* library/gnome-keyring-utils.c:
+	* library/gnome-keyring.c:
+	* reference/Makefile.am:
+	* reference/gnome-keyring-docs.sgml:
+	* reference/gnome-keyring-sections.txt:
+	* tests/Makefile.am:
+	* tests/unit-test-keyrings-prompt.c:
+	* tests/unit-test-keyrings.c:
+	* tests/unit-test-memory.c:
+	* tests-unit-test-other.c:
+	* tests/unit-test-secmem.c:
+	* ui/gkr-ask-request.c:
+	* ui/gkr-ask-tool.c: gnome-keyring-daemon and libgnome-keyring
+	now use non-pageable secure memory for secrets and passwords.
+	Fixes bug #419981
+	
+2007-06-15  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-async.c: Fix uninitialized variable.
 	Fixes bug #448000
 	

@@ -28,6 +28,8 @@
 #include "gkr-keyring-item.h"
 #include "gkr-keyring.h"
 
+#include "library/gnome-keyring-memory.h"
+
 G_DEFINE_TYPE (GkrKeyringItem, gkr_keyring_item, G_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
@@ -63,9 +65,8 @@ gkr_keyring_item_finalize (GObject *obj)
 	gnome_keyring_attribute_list_free (item->attributes);
 	if (item->acl != NULL) 
 		gnome_keyring_acl_free (item->acl);
-	gnome_keyring_free_password (item->display_name);
-	/* TODO: Secure memory item->secret */ 
-	gnome_keyring_free_password (item->secret);
+	g_free (item->display_name);
+	gnome_keyring_memory_free (item->secret);
 
 	G_OBJECT_CLASS (gkr_keyring_item_parent_class)->finalize (obj);
 }

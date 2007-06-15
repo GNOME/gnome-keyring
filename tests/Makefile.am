@@ -17,8 +17,9 @@ noinst_PROGRAMS= \
 	list-keyrings \
 	test-keyring \
 	test-keyring-two \
-	unit-test-auto \
-	unit-test-prompt
+	run-library-test \
+	run-prompt-test \
+	run-base-test
 	
 # Simply list all the keyrings and whatever they have access to
 
@@ -32,33 +33,50 @@ test_keyring_SOURCES = \
 
 test_keyring_two_SOURCES = \
 	test-keyrings.c
+	
+# ------------------------------------------------------------------------------
+# Base tests
 
-# Automatic tests 
+UNIT_TESTS_BASE = \
+	unit-test-memory.c \
+	unit-test-secmem.c
 
-UNIT_TESTS_AUTO = \
-	unit-test-keyrings.c \
-	unit-test-other.c \
-	unit-test-memory.c
+run-base-test.c: $(UNIT_TESTS_BASE) unit-tests-prep.sh
+	sh unit-tests-prep.sh -b run-base-test $(UNIT_TESTS_BASE)
 
-unit-test-auto.c: $(UNIT_TESTS_AUTO) unit-tests-prep.sh
-	sh unit-tests-prep.sh -b unit-test-auto $(UNIT_TESTS_AUTO)
-
-unit_test_auto_SOURCES = \
-	unit-test-auto.c \
-	unit-test-auto.h \
+run_base_test_SOURCES = \
+	run-base-test.c \
+	run-base-test.h \
 	$(srcdir)/cu-test/CuTest.c \
-	$(UNIT_TESTS_AUTO) 
+	$(UNIT_TESTS_BASE) 
 
+# ------------------------------------------------------------------------------
+# Automatic library tests 
+
+UNIT_TESTS_LIBRARY = \
+	unit-test-keyrings.c \
+	unit-test-other.c 
+
+run-library-test.c: $(UNIT_TESTS_LIBRARY) unit-tests-prep.sh
+	sh unit-tests-prep.sh -b run-library-test $(UNIT_TESTS_LIBRARY)
+
+run_library_test_SOURCES = \
+	run-library-test.c \
+	run-library-test.h \
+	$(srcdir)/cu-test/CuTest.c \
+	$(UNIT_TESTS_LIBRARY) 
+
+# ------------------------------------------------------------------------------
 # Propmting tests
 
 UNIT_TESTS_PROMPT = \
 	unit-test-keyrings-prompt.c 
 
-unit-test-prompt.c: $(UNIT_TESTS_PROMPT) unit-tests-prep.sh
-	sh unit-tests-prep.sh -b unit-test-prompt $(UNIT_TESTS_PROMPT)
+run-prompt-test.c: $(UNIT_TESTS_PROMPT) unit-tests-prep.sh
+	sh unit-tests-prep.sh -b run-prompt-test $(UNIT_TESTS_PROMPT)
 
-unit_test_prompt_SOURCES = \
-	unit-test-prompt.c \
-	unit-test-prompt.h \
+run_prompt_test_SOURCES = \
+	run-prompt-test.c \
+	run-prompt-test.h \
 	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_PROMPT) 

@@ -29,29 +29,26 @@
 
 #define DEFAULT_ALLOCATOR  ((GkrBufferAllocator)realloc)
 
-GkrBuffer*
-gkr_buffer_new (size_t reserve)
+int
+gkr_buffer_init (GkrBuffer *buffer, size_t reserve)
 {
-	return gkr_buffer_new_full (reserve, NULL);
+	return gkr_buffer_init_full (buffer, reserve, NULL);
 }
 
-GkrBuffer*
-gkr_buffer_new_full (size_t reserve, GkrBufferAllocator allocator)
+int
+gkr_buffer_init_full (GkrBuffer *buffer, size_t reserve, GkrBufferAllocator allocator)
 {
-	GkrBuffer *buffer = calloc (1, sizeof (GkrBuffer));
-	if (!buffer)
-		return NULL;
-		
+	memset (buffer, 0, sizeof (*buffer));
+	
 	if (!allocator) 
 		allocator = DEFAULT_ALLOCATOR;
-
 	if (reserve == 0)
 		reserve = 64;
 
 	buffer->buf = (allocator) (NULL, reserve);
 	if (!buffer->buf) {
-		free (buffer);
-		return NULL;
+		buffer->failures++;
+		return 0;
 	}
 
 	buffer->len = 0;
@@ -59,15 +56,13 @@ gkr_buffer_new_full (size_t reserve, GkrBufferAllocator allocator)
 	buffer->failures = 0;
 	buffer->allocator = allocator;
 
-	return buffer;
+	return 1;
 }
 
-GkrBuffer*
-gkr_buffer_new_static (unsigned char *buf, size_t len)
+void
+gkr_buffer_init_static (GkrBuffer* buffer, unsigned char *buf, size_t len)
 {
-	GkrBuffer *buffer = calloc (1, sizeof (GkrBuffer));
-	if (!buffer)
-		return NULL;
+	memset (buffer, 0, sizeof (*buffer));
 		
 	buffer->buf = buf;
 	buffer->len = len;
@@ -75,9 +70,7 @@ gkr_buffer_new_static (unsigned char *buf, size_t len)
 	buffer->failures = 0;
 	
 	/* A null allocator, and the buffer can't change in size */
-	buffer->allocator = NULL;
-	
-	return buffer;	
+	buffer->allocator = NULL;	
 }
 
 
@@ -90,7 +83,7 @@ gkr_buffer_reset (GkrBuffer *buffer)
 }
 
 void
-gkr_buffer_free (GkrBuffer *buffer)
+gkr_buffer_uninit (GkrBuffer *buffer)
 {
 	if (!buffer)
 		return;
@@ -101,11 +94,12 @@ gkr_buffer_free (GkrBuffer *buffer)
 	 */
 	if (buffer->buf && buffer->allocator)
 		(buffer->allocator) (buffer->buf, 0);
-	free (buffer);
+		
+	memset (buffer, 0, sizeof (*buffer));
 }
 
 int
-gkr_buffer_change_allocator (GkrBuffer *buffer, GkrBufferAllocator allocator)
+gkr_buffer_set_allocator (GkrBuffer *buffer, GkrBufferAllocator allocator)
 {
 	unsigned char *buf;
 	
@@ -148,10 +142,10 @@ gkr_buffer_reserve (GkrBuffer *buffer, size_t len)
 
 	if (len < buffer->allocated_len)
 		return 1;
-
+		
 	/* Calculate a new length, minimize number of buffer allocations */
 	newlen = buffer->allocated_len * 2;
-	if (len < newlen)
+	if (len > newlen)
 		newlen += len;
 	
 	/* Memory owned elsewhere can't be reallocated */	
@@ -160,14 +154,13 @@ gkr_buffer_reserve (GkrBuffer *buffer, size_t len)
 		return 0;
 	}
 
-	/* Allocate built in buffer using allocator */
+	/* Reallocate built in buffer using allocator */
 	newbuf = (buffer->allocator) (buffer->buf, newlen);
 	if (!newbuf) {
 		buffer->failures++;
 		return 0;
 	}
 
-	memcpy (newbuf, buffer->buf, buffer->len);
 	buffer->buf = newbuf;
 	buffer->allocated_len = newlen;
 

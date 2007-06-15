@@ -44,6 +44,7 @@
 #include "keyrings/gkr-keyrings.h"
 
 #include "library/gnome-keyring.h"
+#include "library/gnome-keyring-memory.h"
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
 
@@ -280,8 +281,10 @@ read_packet_with_size (GnomeKeyringClient *client)
 		res = read (fd, client->input_buffer.buf + client->input_pos,
 			    4 - client->input_pos);
 		if (res <= 0) {
-			if (errno != EAGAIN &&
-			    errno != EINTR) {
+			if (errno != EAGAIN && errno != EINTR) {
+				if (res < 0)
+					g_warning ("couldn't read %u bytes from client: %s", 
+					           4, g_strerror (errno));
 				gnome_keyring_client_free (client);
 			}
 			return FALSE;
@@ -306,8 +309,10 @@ read_packet_with_size (GnomeKeyringClient *client)
 		res = read (fd, client->input_buffer.buf + client->input_pos,
 			    packet_size - client->input_pos);
 		if (res <= 0) {
-			if (errno != EAGAIN &&
-			    errno != EINTR) {
+			if (errno != EAGAIN && errno != EINTR) {
+				if (res < 0)
+					g_warning ("couldn't read %u bytes from client: %s", 
+					           packet_size - client->input_pos, g_strerror (errno));
 				gnome_keyring_client_free (client);
 			}
 			return FALSE;
@@ -423,7 +428,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 	case GNOME_CLIENT_STATE_READ_PACKET:
 		debug_print (("GNOME_CLIENT_STATE_READ_PACKET %p\n", client));
 		if (read_packet_with_size (client)) {
-			debug_print (("read packet, size: %d\n", client->input_buffer->len));
+			debug_print (("read packet, size: %d\n", client->input_buffer.len));
 			g_source_remove (client->input_watch);
 			client->input_watch = 0;
 			client->state = GNOME_CLIENT_STATE_COLLECT_INFO;
@@ -554,7 +559,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		
 	case GNOME_CLIENT_STATE_WRITE_REPLY:
 		debug_print (("GNOME_CLIENT_STATE_WRITE_REPLY %p\n", client));
-		debug_print (("writing %d bytes\n", client->output_buffer->len));
+		debug_print (("writing %d bytes\n", client->output_buffer.len));
 		res = write (client->sock,
 			     client->output_buffer.buf + client->output_pos,
 			     client->output_buffer.len - client->output_pos);
@@ -616,7 +621,13 @@ gnome_keyring_client_new (int fd)
 	client->sock = fd;
 	client->input_channel = channel;
 	client->input_pos = 0;
-	gkr_buffer_init_full (&client->input_buffer, 128, g_realloc);
+	
+	/* 
+	 * We really have no idea what operation the client will send, 
+	 * so we err on the side of caution and use secure memory in case
+	 * passwords or secrets are involved.
+	 */  
+	gkr_buffer_init_full (&client->input_buffer, 128, gnome_keyring_memory_realloc);
 
 	clients = g_list_prepend (clients, client);
 }

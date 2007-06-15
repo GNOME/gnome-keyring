@@ -9,5 +9,6 @@
   <chapter>
     <title>gnome-keyring API Reference</title>
     <xi:include href="xml/gnome-keyring.xml"/>
+    <xi:include href="xml/gnome-keyring-memory.xml"/>
   </chapter>
 </book>

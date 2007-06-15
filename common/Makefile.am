@@ -19,10 +19,10 @@ libgkr_daemon_common_la_CFLAGS = \
 	$(GLIB_CFLAGS)
 
 libgkr_daemon_common_la_SOURCES = \
-	gkr-async.c \
-	gkr-async.h \
 	gkr-buffer.c \
-	gkr-buffer.h
+	gkr-buffer.h \
+	gkr-secure-memory.c \
+	gkr-secure-memory.h
 
 libgkr_daemon_common_la_LIBADD = \
 	$(GLIB_LIBS)
@@ -32,6 +32,8 @@ libgkr_daemon_common_la_LIBADD = \
 
 libgkr_module_common_la_SOURCES = \
 	gkr-buffer.c \
-	gkr-buffer.h
+	gkr-buffer.h \
+	gkr-secure-memory.c \
+	gkr-secure-memory.h
 
 

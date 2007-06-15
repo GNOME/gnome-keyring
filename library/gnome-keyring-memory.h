@@ -26,14 +26,37 @@
 
 #include <glib.h>
 
-gpointer  gnome_keyring_memory_alloc          (gsize sz);
+/**
+ * gnome-keyring-memory:Short_Description:
+ * 
+ * Gnome Keyring uses memory that is locked in physical RAM for secrets and 
+ * passwords.  
+ */
 
-gpointer  gnome_keyring_memory_calloc         (gsize sz, gsize num);
+/**
+ * gnome_keyring_memory_new:
+ * @type: The C type of the objects to allocate
+ * @n_objects: The number of objects to allocate. 
+ *
+ * Allocate objects in non-pageable gnome-keyring memory.
+ * 
+ * Return value: The new block of memory.
+ **/
+#define   gnome_keyring_memory_new(type, n_objects) \
+		((type*)(gnome_keyring_memory_alloc (sizeof (type) * (n_objects))))
 
-gpointer  gnome_keyring_memory_realloc        (gpointer p, gsize sz);
+gpointer  gnome_keyring_memory_alloc          (gulong sz);
+
+gpointer  gnome_keyring_memory_try_alloc      (gulong sz);
+
+gpointer  gnome_keyring_memory_realloc        (gpointer p, gulong sz);
+
+gpointer  gnome_keyring_memory_try_realloc    (gpointer p, gulong sz);
 
 void      gnome_keyring_memory_free           (gpointer p); 
 
-gboolean  gnome_keyring_memory_check          (gpointer p); 
+gboolean  gnome_keyring_memory_is_secure      (gpointer p); 
+
+gchar*    gnome_keyring_memory_strdup         (const gchar* str);
 
 #endif /* GNOME_KEYRING_MEMORY_H */

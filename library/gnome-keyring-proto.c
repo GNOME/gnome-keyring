@@ -25,10 +25,17 @@
 #include <string.h>
 #include <stdarg.h>
 
+#include "gnome-keyring-memory.h"
 #include "gnome-keyring-proto.h"
 #include "gnome-keyring-private.h"
 
 #include "common/gkr-buffer.h"
+
+void 
+gnome_keyring_proto_go_secure (GkrBuffer *buffer)
+{
+	gkr_buffer_set_allocator (buffer, gnome_keyring_memory_realloc);
+}
 
 gboolean
 gnome_keyring_proto_set_uint32 (GkrBuffer *buffer, gsize offset, guint32 val)
@@ -144,6 +151,15 @@ gnome_keyring_proto_add_string (GkrBuffer *buffer, const char *str, gsize len)
 }
 
 gboolean
+gnome_keyring_proto_add_utf8_secret (GkrBuffer *buffer, const char *str)
+{
+	/* Make sure this buffer is using non-pageable memory */	
+	gnome_keyring_proto_go_secure (buffer);
+	
+	return gnome_keyring_proto_add_utf8_string (buffer, str);
+}
+
+gboolean
 gnome_keyring_proto_add_utf8_string (GkrBuffer *buffer, const char *str)
 {
 	gsize len;
@@ -183,7 +199,8 @@ static gboolean
 gnome_keyring_proto_get_string (GkrBuffer *buffer,
 				gsize offset,
 				gsize *next_offset,
-				char **str_ret, gsize *len_ret)
+				char **str_ret, gsize *len_ret,
+				GkrBufferAllocator allocator)
 {
 	guint32 len;
 	
@@ -204,8 +221,12 @@ gnome_keyring_proto_get_string (GkrBuffer *buffer,
 		return FALSE;
 	}
 	
-	/* TODO: Secure memory, could be a password  or secret */
-	*str_ret = g_memdup (buffer->buf + offset, len+1);
+	/* The passed allocator may be for non-pageable memory */
+	*str_ret = (allocator) (NULL, len + 1);
+	if (!*str_ret)
+		return FALSE;
+	memcpy (*str_ret, buffer->buf + offset, len + 1);
+
 	/* Always zero terminate */
 	(*str_ret)[len] = 0;
 	*len_ret = len;
@@ -220,26 +241,47 @@ gnome_keyring_proto_get_utf8_string (GkrBuffer *buffer,
 				     gsize *next_offset,
 				     char **str_ret)
 {
+	return gnome_keyring_proto_get_utf8_full (buffer, 
+	          offset, next_offset, str_ret, g_realloc);
+}
+
+gboolean
+gnome_keyring_proto_get_utf8_secret (GkrBuffer *buffer,
+                                     gsize offset,
+                                     gsize *next_offset,
+                                     char **str_ret)
+{
+	return gnome_keyring_proto_get_utf8_full (buffer, 
+	          offset, next_offset, str_ret, gnome_keyring_memory_realloc);
+}
+
+gboolean
+gnome_keyring_proto_get_utf8_full (GkrBuffer *buffer,
+                                   gsize offset,
+                                   gsize *next_offset,
+                                   char **str_ret, 
+                                   GkrBufferAllocator allocator)
+{
 	gsize len;
 	char *str;
 	
-	/* TODO: Secure memory, could be a password or secret */
 	if (!gnome_keyring_proto_get_string (buffer,
 					     offset,
 					     &offset,
 					     &str,
-					     &len)) {
+					     &len,
+					     allocator)) {
 		return FALSE;
 	}
 
 	if (str != NULL) {
 		if (memchr (str, 0, len) != NULL) {
-			g_free (str);
+			(allocator) (str, 0); /* frees memory */
 			return FALSE;
 		}
 	
 		if (!g_utf8_validate (str, len, NULL)) {
-			g_free (str);
+			(allocator) (str, 0); /* frees memory */
 			return FALSE;
 		}
 	}
@@ -250,7 +292,7 @@ gnome_keyring_proto_get_utf8_string (GkrBuffer *buffer,
 	if (str_ret != NULL) {
 		*str_ret = str;
 	} else {
-		g_free (str);
+		(allocator) (str, 0); /* frees memory */
 	}
 	return TRUE;
 }
@@ -404,12 +446,15 @@ gnome_keyring_proto_encode_op_string_int_int (GkrBuffer               *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_op_string_string (GkrBuffer              *buffer,
+gnome_keyring_proto_encode_op_string_secret (GkrBuffer              *buffer,
 					     GnomeKeyringOpCode      op,
 					     const char             *str1,
 					     const char             *str2)
 {
 	gsize op_start;
+	
+	/* Make sure we're using non-pageable memory */
+	gnome_keyring_proto_go_secure (buffer);
 
 	if (!gnome_keyring_proto_start_operation (buffer, op, &op_start)) {
 		return FALSE;
@@ -418,7 +463,7 @@ gnome_keyring_proto_encode_op_string_string (GkrBuffer              *buffer,
 						  str1)) {
 		return FALSE;
 	}
-	if (!gnome_keyring_proto_add_utf8_string (buffer,
+	if (!gnome_keyring_proto_add_utf8_secret (buffer,
 						  str2)) {
 		return FALSE;
 	}
@@ -430,13 +475,16 @@ gnome_keyring_proto_encode_op_string_string (GkrBuffer              *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_op_string_string_string (GkrBuffer              *buffer,
+gnome_keyring_proto_encode_op_string_secret_secret (GkrBuffer              *buffer,
 					     GnomeKeyringOpCode      op,
 					     const char             *str1,
 					     const char             *str2,
 					     const char             *str3)
 {
 	gsize op_start;
+
+	/* Make sure we're using non-pageable memory */
+	gnome_keyring_proto_go_secure (buffer);
 
 	if (!gnome_keyring_proto_start_operation (buffer, op, &op_start)) {
 		return FALSE;
@@ -445,11 +493,11 @@ gnome_keyring_proto_encode_op_string_string_string (GkrBuffer              *buff
 						  str1)) {
 		return FALSE;
 	}
-	if (!gnome_keyring_proto_add_utf8_string (buffer,
+	if (!gnome_keyring_proto_add_utf8_secret (buffer,
 						  str2)) {
 		return FALSE;
 	}
-	if (!gnome_keyring_proto_add_utf8_string (buffer,
+	if (!gnome_keyring_proto_add_utf8_secret (buffer,
 						  str3)) {
 		return FALSE;
 	}
@@ -499,6 +547,9 @@ gnome_keyring_proto_encode_create_item (GkrBuffer                 *buffer,
 {
 	gsize op_start;
 
+	/* Make sure this buffer is using non-pageable memory */	
+	gnome_keyring_proto_go_secure (buffer);
+
 	if (!gnome_keyring_proto_start_operation (buffer,
 						  GNOME_KEYRING_OP_CREATE_ITEM,
 						  &op_start)) {
@@ -512,8 +563,7 @@ gnome_keyring_proto_encode_create_item (GkrBuffer                 *buffer,
 						  display_name)) {
 		return FALSE;
 	}
-	/* TODO: Secure memory secret */
-	if (!gnome_keyring_proto_add_utf8_string (buffer,
+	if (!gnome_keyring_proto_add_utf8_secret (buffer,
 						  secret)) {
 		return FALSE;
 	}
@@ -574,8 +624,7 @@ gnome_keyring_proto_decode_create_item (GkrBuffer            *buffer,
 						  display_name)) {
 		goto bail;
 	}
-	/* TODO: Secure memory secret */
-	if (!gnome_keyring_proto_get_utf8_string (buffer,
+	if (!gnome_keyring_proto_get_utf8_secret (buffer,
 						  offset, &offset,
 						  secret)) {
 		goto bail;
@@ -613,7 +662,7 @@ gnome_keyring_proto_decode_create_item (GkrBuffer            *buffer,
 		g_free (*display_name);
 	}
 	if (secret != NULL) {
-		gnome_keyring_free_password (*secret);
+		gnome_keyring_memory_free (*secret);
 	}
 	return FALSE;
 	
@@ -688,6 +737,9 @@ gnome_keyring_proto_encode_set_item_info (GkrBuffer                 *buffer,
 					  GnomeKeyringItemInfo      *info)
 {
 	gsize op_start;
+	
+	/* Make sure this buffer is using non-pageable memory */	
+	gnome_keyring_proto_go_secure (buffer);
 
 	if (!gnome_keyring_proto_start_operation (buffer,
 						  GNOME_KEYRING_OP_SET_ITEM_INFO,
@@ -705,8 +757,7 @@ gnome_keyring_proto_encode_set_item_info (GkrBuffer                 *buffer,
 						  info->display_name)) {
 		return FALSE;
 	}
-	/* TODO: Secure memory secret */ 
-	if (!gnome_keyring_proto_add_utf8_string (buffer,
+	if (!gnome_keyring_proto_add_utf8_secret (buffer,
 						  info->secret)) {
 		return FALSE;
 	}
@@ -1069,8 +1120,7 @@ gnome_keyring_proto_decode_find_reply (GkrBuffer *buffer,
 		if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &found->item_id)) {
 			return FALSE;
 		}
-		/* TODO: Secure memory found->secret */
-		if (!gnome_keyring_proto_get_utf8_string (buffer,
+		if (!gnome_keyring_proto_get_utf8_secret (buffer,
 							  offset, &offset,
 							  &found->secret)) {
 			goto bail;
@@ -1211,7 +1261,7 @@ gnome_keyring_proto_decode_get_item_info (GkrBuffer                  *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_op_string_string (GkrBuffer *buffer,
+gnome_keyring_proto_decode_op_string_secret (GkrBuffer *buffer,
 					     GnomeKeyringOpCode *op_out,
 					     char **str1,
 					     char **str2)
@@ -1233,7 +1283,7 @@ gnome_keyring_proto_decode_op_string_string (GkrBuffer *buffer,
 						  str1)) {
 		goto bail;
 	}
-	if (!gnome_keyring_proto_get_utf8_string (buffer,
+	if (!gnome_keyring_proto_get_utf8_secret (buffer,
 						  offset, &offset,
 						  str2)) {
 		goto bail;
@@ -1253,7 +1303,7 @@ gnome_keyring_proto_decode_op_string_string (GkrBuffer *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_op_string_string_string (GkrBuffer *buffer,
+gnome_keyring_proto_decode_op_string_secret_secret (GkrBuffer *buffer,
 					     GnomeKeyringOpCode *op_out,
 					     char **str1,
 					     char **str2,
@@ -1279,12 +1329,12 @@ gnome_keyring_proto_decode_op_string_string_string (GkrBuffer *buffer,
 						  str1)) {
 		goto bail;
 	}
-	if (!gnome_keyring_proto_get_utf8_string (buffer,
+	if (!gnome_keyring_proto_get_utf8_secret (buffer,
 						  offset, &offset,
 						  str2)) {
 		goto bail;
 	}
-	if (!gnome_keyring_proto_get_utf8_string (buffer,
+	if (!gnome_keyring_proto_get_utf8_secret (buffer,
 						  offset, &offset,
 						  str3)) {
 		goto bail;
@@ -1389,8 +1439,7 @@ gnome_keyring_proto_decode_get_item_info_reply (GkrBuffer                  *buff
 							  &name)) {
 			return FALSE;
 		}
-		/* TODO: Secure memory secret */
-		if (!gnome_keyring_proto_get_utf8_string (buffer,
+		if (!gnome_keyring_proto_get_utf8_secret (buffer,
 							  offset, &offset,
 							  &secret)) {
 			g_free (name);
@@ -1400,13 +1449,13 @@ gnome_keyring_proto_decode_get_item_info_reply (GkrBuffer                  *buff
 		if (!gnome_keyring_proto_get_time (buffer, offset, &offset,
 						   &mtime)) {
 			g_free (name);
-			gnome_keyring_free_password (secret);
+			gnome_keyring_memory_free (secret);
 			return FALSE;
 		}
 		if (!gnome_keyring_proto_get_time (buffer, offset, &offset,
 						   &ctime)) {
 			g_free (name);
-			gnome_keyring_free_password (secret);
+			gnome_keyring_memory_free (secret);
 			return FALSE;
 		}
 		
@@ -1517,8 +1566,7 @@ gnome_keyring_proto_decode_set_item_info (GkrBuffer            *buffer,
 						  display_name)) {
 		goto bail;
 	}
-	/* TODO: Secure memory secret */
-	if (!gnome_keyring_proto_get_utf8_string (buffer,
+	if (!gnome_keyring_proto_get_utf8_secret (buffer,
 						  offset, &offset,
 						  secret)) {
 		goto bail;
@@ -1529,7 +1577,7 @@ gnome_keyring_proto_decode_set_item_info (GkrBuffer            *buffer,
  bail:
 	g_free (*keyring);
 	g_free (*display_name);
-	gnome_keyring_free_password (*secret);
+	gnome_keyring_memory_free (*secret);
 	return FALSE;
 }
 
