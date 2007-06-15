@@ -154,7 +154,9 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 	}
 	
 	/* Parse out all the information we have */
+	/* TODO: Secure memory pv->buffer */
 	lines = g_strsplit (pv->buffer->str, "\n", 4);
+	/* TODO: Secure memory lines */
 	if (lines[0]) {
 		/* First line is the response */
 		ask->response = atol (lines[0]);
@@ -162,9 +164,11 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 		/* Only use passwords if confirming */
 		if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
 			if (lines[1]) {
+				/* TODO: Secure memory ask->typed_password */
 				/* Next line is the typed password (if any) */
 				ask->typed_password = g_strdup (lines[1]);
 				if (lines[2]) {
+					/* TODO: Secure memory ask->original_password */
 					/* Last line is the original password (if any) */
 					ask->original_password = g_strdup (lines[2]);
 				}
@@ -198,6 +202,7 @@ ask_io (GIOChannel *channel, GIOCondition cond, gpointer data)
 {
 	GkrAskRequest *ask;
 	GkrAskRequestPrivate *pv;
+	/* TODO: Secure memory buffer */
 	char buffer[1024];
 	int res;
 	int fd;
@@ -216,6 +221,7 @@ ask_io (GIOChannel *channel, GIOCondition cond, gpointer data)
 					return FALSE;
 				}
 			} else if (res > 0) {
+				/* TODO: Secure memory pv->buffer */
 				g_string_append_len (pv->buffer, buffer, res);
 			}
 		} while (res > 0);
@@ -346,6 +352,14 @@ gkr_ask_request_dispose (GObject *obj)
 	
 	cancel_ask_if_active (ask);
 	g_assert (pv->ask_pid == 0);
+	
+	/* TODO: Secure memory ask->original_password */
+	gnome_keyring_free_password (ask->original_password);
+	ask->original_password = NULL;
+	
+	/* TODO: Secure memory ask->typed_password */
+	gnome_keyring_free_password (ask->typed_password);
+	ask->typed_password = NULL;
 	
 	G_OBJECT_CLASS(gkr_ask_request_parent_class)->dispose (obj);
 }

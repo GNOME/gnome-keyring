@@ -1,5 +1,15 @@
 2007-06-14  Stef Walter  <stef@memberwebs.com>
 
+	* keyrings/gkr-keyring-item.c:
+	* keyrings/gkr-keyring.c:
+	* library/gnome-keyring-proto.c:
+	* library/gnome-keyring-utils.c:
+	* library/gnome-keyring.c:
+	* ui/gkr-ask-request.c: Mark all locations that need to use 
+	non-pageable secure memory. See bug #419981
+	
+2007-06-14  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in:
 	* library/Makefile.am:
 	* library/gnome-keyring-memory.h:

@@ -120,6 +120,7 @@ generate_key (const char *password,
 {
 	gcry_md_hd_t mdh;
 	gcry_error_t gerr;
+	/* TODO: Secure memory digest */ 
 	guchar digest[32];
 	guchar *digested;
 
@@ -168,6 +169,7 @@ encrypt_buffer (GString *buffer,
 {
 	gcry_cipher_hd_t cih;
 	gcry_error_t gerr;
+	/* TODO: Secure memory key */ 
         guchar key[16];
         guchar iv[16];
 	size_t pos;
@@ -210,6 +212,7 @@ decrypt_buffer (GString *buffer,
 {
 	gcry_cipher_hd_t cih;
 	gcry_error_t gerr;
+	/* TODO: Secure memory key */ 
         guchar key[16];
         guchar iv[16];
 	size_t pos;
@@ -294,7 +297,7 @@ generate_encrypted_data (GString *buffer, GkrKeyring *keyring)
 	GList *l;
 	int i;
 	GkrKeyringItem *item;
-	
+	/* TODO: Secure memory buffer */
 	for (l = keyring->items; l != NULL; l = l->next) {
 		item = l->data;
 		if (!gnome_keyring_proto_add_utf8_string (buffer, item->display_name)) {
@@ -331,6 +334,7 @@ generate_file (GString *buffer, GkrKeyring *keyring)
 	GList *l;
 	GkrKeyringItem *item;
 	GnomeKeyringAttributeList *hashed;
+	/* TODO: Secure memory to_encrypt */
 	GString *to_encrypt;
         guchar digest[16];
 	int i;
@@ -385,6 +389,7 @@ generate_file (GString *buffer, GkrKeyring *keyring)
 	}
 
 	/* Encrypted data: */
+	/* TODO: Secure memory to_encrypt */
 	to_encrypt = g_string_new (NULL);
 	g_string_append_len (to_encrypt, (char *)digest, 16); /* Space for hash */
 
@@ -594,10 +599,13 @@ update_keyring_from_data (GkrKeyring *keyring, GString *buffer)
 	    buffer->len - offset != crypto_size) {
 		goto bail;
 	}
+	
+	/* TODO: secure memory to_decrypt */
 	to_decrypt.str = buffer->str + offset;
 	to_decrypt.len = to_decrypt.allocated_len = crypto_size;
 
 	locked = TRUE;
+	/* TODO: secure memory keyring->password */
 	if (keyring->password != NULL) {
 		if (!decrypt_buffer (&to_decrypt, keyring->password, salt, hash_iterations)) {
 			goto bail;
@@ -613,6 +621,7 @@ update_keyring_from_data (GkrKeyring *keyring, GString *buffer)
 									  &items[i].display_name)) {
 					goto bail;
 				}
+				/* TODO: secure memory items[i].secret */
 				if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset,
 									  &items[i].secret)) {
 					goto bail;
@@ -691,6 +700,7 @@ update_keyring_from_data (GkrKeyring *keyring, GString *buffer)
 
 		g_free (item->display_name);
 		item->display_name = NULL;
+		/* TODO: secure memory item->secret */
 		gnome_keyring_free_password (item->secret);
 		item->secret = NULL;
 		if (item->acl) {
@@ -708,6 +718,7 @@ update_keyring_from_data (GkrKeyring *keyring, GString *buffer)
 			item->attributes = items[i].attributes;
 			gnome_keyring_attribute_list_free (items[i].hashed_attributes);
 			item->display_name = items[i].display_name;
+			/* TODO: secure memory item->secret */
 			item->secret = items[i].secret;
 			item->acl = items[i].acl;
 			item->mtime = items[i].mtime;
@@ -727,6 +738,7 @@ update_keyring_from_data (GkrKeyring *keyring, GString *buffer)
 	if (items != NULL) {
 		for (i = 0; i < num_items; i++) {
 			g_free (items[i].display_name);
+			/* TODO: Secure memory items[i].secret */
 			g_free (items[i].secret);
 			gnome_keyring_attribute_list_free (items[i].hashed_attributes);
 			gnome_keyring_attribute_list_free (items[i].attributes);
@@ -828,6 +840,10 @@ gkr_keyring_dispose (GObject *obj)
 	
 	g_list_free (keyring->items);
 	keyring->items = NULL;
+	
+	/* TODO: Secure memory keyring->password */
+	gnome_keyring_free_password (keyring->password);
+	keyring->password = NULL;
 
 	G_OBJECT_CLASS (gkr_keyring_parent_class)->dispose (obj);
 }
@@ -839,8 +855,8 @@ gkr_keyring_finalize (GObject *obj)
 
 	g_free (keyring->keyring_name);
 	g_free (keyring->file);
-	gnome_keyring_free_password (keyring->password);
-
+	g_assert (keyring->password == NULL);
+	
 	G_OBJECT_CLASS (gkr_keyring_parent_class)->finalize (obj);
 }
 
@@ -893,6 +909,7 @@ gkr_keyring_create (const gchar *keyring_name, const gchar *password)
 	if (keyring != NULL) {
 		keyring->file = get_default_keyring_file_for_name (keyring_name);
 		keyring->locked = FALSE;
+		/* TODO: Secure Memory keyring->password */
 		keyring->password = g_strdup (password);
 		gkr_keyring_save_to_disk (keyring);
 	}

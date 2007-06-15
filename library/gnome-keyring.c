@@ -235,9 +235,11 @@ gnome_keyring_operation_free (GnomeKeyringOperation *op)
 		(*op->destroy_user_data) (op->user_data);
 	}
 	if (op->send_buffer != NULL) {
+		/* TODO: Secure memory op->send_buffer */
 		g_string_free (op->send_buffer, TRUE);
 	}
 	if (op->receive_buffer != NULL) {
+		/* TODO: Secure memory op->receive_buffer */
 		g_string_free (op->receive_buffer, TRUE);
 	}
 	close (op->socket);
@@ -515,6 +517,7 @@ operation_io (GIOChannel  *io_channel,
 			}
 		
 			g_assert (op->receive_pos <= packet_size);
+			/* TODO: Secure memory op->receive_buffer */
 			g_string_set_size (op->receive_buffer, packet_size);
 
 			res = read (op->socket, op->receive_buffer->str + op->receive_pos,
@@ -620,7 +623,7 @@ run_sync_operation (GString *buffer,
 		close (socket);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	
+	/* TODO: Secure memory receive_buffer */
 	g_string_set_size (receive_buffer, packet_size);
 	if (read_all (socket, receive_buffer->str + 4, packet_size - 4) < 0) {
 		close (socket);
@@ -970,7 +973,7 @@ gnome_keyring_create (const char                                  *keyring_name,
 	if (op->state == STATE_FAILED) {
 		return op;
 	}
-	
+	/* TODO: Secure memory password */
 	if (!gnome_keyring_proto_encode_op_string_string (op->send_buffer,
 							  GNOME_KEYRING_OP_CREATE_KEYRING,
 							  keyring_name, password)) {
@@ -991,6 +994,7 @@ gnome_keyring_create_sync (const char *keyring_name,
 	
 	send = g_string_new (NULL);
 	
+	/* TODO: Secure memory password */
 	if (!gnome_keyring_proto_encode_op_string_string (send,
 							  GNOME_KEYRING_OP_CREATE_KEYRING,
 							  keyring_name, password)) {
@@ -1024,6 +1028,7 @@ gnome_keyring_unlock (const char                                  *keyring,
 {
 	GnomeKeyringOperation *op;
 	
+	/* TODO: Secure memory password */
 	op = start_operation (callback, CALLBACK_DONE, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
@@ -1049,6 +1054,7 @@ gnome_keyring_unlock_sync (const char *keyring,
 	
 	send = g_string_new (NULL);
 	
+	/* TODO: Secure memory password */
 	if (!gnome_keyring_proto_encode_op_string_string (send,
 							  GNOME_KEYRING_OP_UNLOCK_KEYRING,
 							  keyring, password)) {
@@ -1195,6 +1201,7 @@ gnome_keyring_change_password (const char                                  *keyr
 {
 	GnomeKeyringOperation *op;
 	
+	/* TODO: Secure memory password, original */
 	op = start_operation (callback, CALLBACK_DONE, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
@@ -1220,6 +1227,7 @@ gnome_keyring_change_password_sync (const char *keyring_name,
 	
 	send = g_string_new (NULL);
 	
+	/* TODO: Secure memory original, password */
 	if (!gnome_keyring_proto_encode_op_string_string_string (send,
 							  GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD,
 							  keyring_name, original, password)) {
@@ -1548,6 +1556,7 @@ gnome_keyring_find_items  (GnomeKeyringItemType                  type,
 {
 	GnomeKeyringOperation *op;
 	
+	/* TODO: Secure memory response buffer */
 	op = start_operation (callback, CALLBACK_GET_LIST, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
@@ -1608,6 +1617,7 @@ gnome_keyring_find_itemsv (GnomeKeyringItemType                  type,
 	GnomeKeyringAttributeList *attributes;
 	va_list args;
 	
+	/* TODO: Secure memory response buffer */
 	op = start_operation (callback, CALLBACK_GET_LIST, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
@@ -1664,6 +1674,7 @@ gnome_keyring_find_items_sync (GnomeKeyringItemType        type,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
+	/* TODO: Secure memory receive */
 	receive = g_string_new (NULL);
 
 	res = run_sync_operation (send, receive);
@@ -1717,6 +1728,7 @@ gnome_keyring_item_create (const char                          *keyring,
 {
 	GnomeKeyringOperation *op;
 	
+	/* TODO: Secure memory secret, send */
 	op = start_operation (callback, CALLBACK_GET_INT, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
@@ -1770,6 +1782,7 @@ gnome_keyring_item_create_sync    (const char                                 *k
 
 	*item_id = 0;
 	
+	/* TODO: Secure memory send, secret */
 	if (!gnome_keyring_proto_encode_create_item (send,
 						     keyring,
 						     display_name,
@@ -1885,6 +1898,7 @@ gnome_keyring_item_get_info (const char                                 *keyring
 {
 	GnomeKeyringOperation *op;
 	
+	/* TODO: Secure memory receive */
 	op = start_operation (callback, CALLBACK_GET_ITEM_INFO, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
@@ -1920,7 +1934,8 @@ gnome_keyring_item_get_info_sync (const char            *keyring,
 		g_string_free (send, TRUE);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
-	
+
+	/* TODO: Secure memory receive */ 	
 	receive = g_string_new (NULL);
 
 	res = run_sync_operation (send, receive);
@@ -1949,6 +1964,7 @@ gnome_keyring_item_get_info_full (const char                                 *ke
 {
 	GnomeKeyringOperation *op;
 	
+	/* TODO: Secure memory receive buffer */ 
 	op = start_operation (callback, CALLBACK_GET_ITEM_INFO, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
@@ -1986,6 +2002,7 @@ gnome_keyring_item_get_info_full_sync (const char              *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
+	/* TODO: Secure memory receive */
 	receive = g_string_new (NULL);
 
 	res = run_sync_operation (send, receive);
@@ -2014,6 +2031,7 @@ gnome_keyring_item_set_info (const char                                 *keyring
 {
 	GnomeKeyringOperation *op;
 	
+	/* TODO: Secure memory info, send buffer */ 
 	op = start_operation (callback, CALLBACK_DONE, data, destroy_data);
 	if (op->state == STATE_FAILED) {
 		return op;
@@ -2037,6 +2055,7 @@ gnome_keyring_item_set_info_sync (const char           *keyring,
 	GString *send, *receive;
 	GnomeKeyringResult res;
 	
+	/* TODO: Secure memory info, send */
 	send = g_string_new (NULL);
 	
 	if (!gnome_keyring_proto_encode_set_item_info (send,
@@ -2483,6 +2502,7 @@ found_list_to_nework_password_list (GList *found_list)
 
 		data->keyring = g_strdup (found->keyring);
 		data->item_id = found->item_id;
+		/* TODO: Secure memory data->password */
 		data->password = g_strdup (found->secret);
 
 		attributes = (GnomeKeyringAttribute *) found->attributes->data;
@@ -2525,6 +2545,7 @@ gnome_keyring_network_password_free (GnomeKeyringNetworkPasswordData *data)
 	g_free (data->authtype);
 	g_free (data->user);
 	g_free (data->domain);
+	/* TODO: Secure memory data->password */
 	g_free (data->password);
 	
 	g_free (data);
@@ -2760,7 +2781,8 @@ gnome_keyring_set_network_password      (const char                            *
 	GnomeKeyringAttributeList *attributes;
 	gpointer req;
 	char *name;
-
+	
+	/* TODO: Secure memory password */
 	name = get_network_password_display_name (user, server, object, port);
 
 	attributes = make_attribute_list_for_network_password (user,
@@ -2800,7 +2822,8 @@ gnome_keyring_set_network_password_sync (const char                            *
 	GnomeKeyringAttributeList *attributes;
 	char *name;
 	GnomeKeyringResult res;
-
+	
+	/* TODO: Secure memory password */
 	name = get_network_password_display_name (user, server, object, port);
 	attributes = make_attribute_list_for_network_password (user,
 							       domain,

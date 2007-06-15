@@ -64,6 +64,7 @@ gkr_keyring_item_finalize (GObject *obj)
 	if (item->acl != NULL) 
 		gnome_keyring_acl_free (item->acl);
 	gnome_keyring_free_password (item->display_name);
+	/* TODO: Secure memory item->secret */ 
 	gnome_keyring_free_password (item->secret);
 
 	G_OBJECT_CLASS (gkr_keyring_item_parent_class)->finalize (obj);

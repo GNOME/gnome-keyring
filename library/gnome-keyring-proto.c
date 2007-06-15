@@ -201,7 +201,8 @@ gnome_keyring_proto_get_string (GString *buffer,
 	    offset > buffer->len - len) {
 		return FALSE;
 	}
-
+	
+	/* TODO: Secure memory, could be a password  or secret */
 	*str_ret = g_memdup (buffer->str + offset, len+1);
 	/* Always zero terminate */
 	(*str_ret)[len] = 0;
@@ -220,6 +221,7 @@ gnome_keyring_proto_get_utf8_string (GString *buffer,
 	gsize len;
 	char *str;
 	
+	/* TODO: Secure memory, could be a password or secret */
 	if (!gnome_keyring_proto_get_string (buffer,
 					     offset,
 					     &offset,
@@ -508,6 +510,7 @@ gnome_keyring_proto_encode_create_item (GString                   *buffer,
 						  display_name)) {
 		return FALSE;
 	}
+	/* TODO: Secure memory secret */
 	if (!gnome_keyring_proto_add_utf8_string (buffer,
 						  secret)) {
 		return FALSE;
@@ -569,6 +572,7 @@ gnome_keyring_proto_decode_create_item (GString              *buffer,
 						  display_name)) {
 		goto bail;
 	}
+	/* TODO: Secure memory secret */
 	if (!gnome_keyring_proto_get_utf8_string (buffer,
 						  offset, &offset,
 						  secret)) {
@@ -699,6 +703,7 @@ gnome_keyring_proto_encode_set_item_info (GString                   *buffer,
 						  info->display_name)) {
 		return FALSE;
 	}
+	/* TODO: Secure memory secret */ 
 	if (!gnome_keyring_proto_add_utf8_string (buffer,
 						  info->secret)) {
 		return FALSE;
@@ -1062,6 +1067,7 @@ gnome_keyring_proto_decode_find_reply (GString *buffer,
 		if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &found->item_id)) {
 			return FALSE;
 		}
+		/* TODO: Secure memory found->secret */
 		if (!gnome_keyring_proto_get_utf8_string (buffer,
 							  offset, &offset,
 							  &found->secret)) {
@@ -1381,6 +1387,7 @@ gnome_keyring_proto_decode_get_item_info_reply (GString                    *buff
 							  &name)) {
 			return FALSE;
 		}
+		/* TODO: Secure memory secret */
 		if (!gnome_keyring_proto_get_utf8_string (buffer,
 							  offset, &offset,
 							  &secret)) {
@@ -1508,6 +1515,7 @@ gnome_keyring_proto_decode_set_item_info (GString              *buffer,
 						  display_name)) {
 		goto bail;
 	}
+	/* TODO: Secure memory secret */
 	if (!gnome_keyring_proto_get_utf8_string (buffer,
 						  offset, &offset,
 						  secret)) {
