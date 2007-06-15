@@ -338,7 +338,7 @@ generate_file (GkrBuffer *buffer, GkrKeyring *keyring)
 	GkrKeyringItem *item;
 	GnomeKeyringAttributeList *hashed;
 	/* TODO: Secure memory to_encrypt */
-	GkrBuffer *to_encrypt;
+	GkrBuffer to_encrypt;
         guchar digest[16];
 	int i;
 
@@ -393,33 +393,31 @@ generate_file (GkrBuffer *buffer, GkrKeyring *keyring)
 
 	/* Encrypted data: */
 	/* TODO: Secure memory to_encrypt */
-	to_encrypt = gkr_buffer_new_full (4096, g_realloc);
-	if (!to_encrypt)
-		g_error ("couldn't create buffer, out of memory");
+	gkr_buffer_init_full (&to_encrypt, 4096, g_realloc);
 	
-	gkr_buffer_append (to_encrypt, (guchar*)digest, 16); /* Space for hash */
+	gkr_buffer_append (&to_encrypt, (guchar*)digest, 16); /* Space for hash */
 
-	if (!generate_encrypted_data (to_encrypt, keyring)) {
-		gkr_buffer_free (to_encrypt);
+	if (!generate_encrypted_data (&to_encrypt, keyring)) {
+		gkr_buffer_uninit (&to_encrypt);
 		return FALSE;
 	}
 
 	/* Pad with zeros to multiple of 16 bytes */
-	while (to_encrypt->len % 16 != 0) {
-		gkr_buffer_add_byte (to_encrypt, 0);
+	while (to_encrypt.len % 16 != 0) {
+		gkr_buffer_add_byte (&to_encrypt, 0);
 	}
 
 	gcry_md_hash_buffer (GCRY_MD_MD5, (void*)digest, 
-			     (guchar*)to_encrypt->buf + 16, to_encrypt->len - 16);
-	memcpy (to_encrypt->buf, digest, 16);
+			     (guchar*)to_encrypt.buf + 16, to_encrypt.len - 16);
+	memcpy (to_encrypt.buf, digest, 16);
 	
-	if (!encrypt_buffer (to_encrypt, keyring->password, keyring->salt, keyring->hash_iterations)) {
-		gkr_buffer_free (to_encrypt);
+	if (!encrypt_buffer (&to_encrypt, keyring->password, keyring->salt, keyring->hash_iterations)) {
+		gkr_buffer_uninit (&to_encrypt);
 		return FALSE;
 	}
-	gnome_keyring_proto_add_uint32 (buffer, to_encrypt->len);
-	gkr_buffer_append (buffer, to_encrypt->buf, to_encrypt->len);
-	gkr_buffer_free (to_encrypt);
+	gnome_keyring_proto_add_uint32 (buffer, to_encrypt.len);
+	gkr_buffer_append (buffer, to_encrypt.buf, to_encrypt.len);
+	gkr_buffer_uninit (&to_encrypt);
 	
 	return TRUE;
 }
@@ -515,7 +513,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	guint32 hash_iterations;
 	guchar salt[8];
 	ItemInfo *items;
-	GkrBuffer *to_decrypt = NULL;
+	GkrBuffer to_decrypt = GKR_BUFFER_EMPTY;
 	gboolean locked;
 	GList *l;
 	GHashTable *checks = NULL;
@@ -607,17 +605,15 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	}
 	
 	/* TODO: secure memory to_decrypt */
-	to_decrypt = gkr_buffer_new_static (buffer->buf + offset, crypto_size);
-	if (!to_decrypt)
-		g_error ("couldn't create buffer, out of memory");
+	gkr_buffer_init_static (&to_decrypt, buffer->buf + offset, crypto_size);
 
 	locked = TRUE;
 	/* TODO: secure memory keyring->password */
 	if (keyring->password != NULL) {
-		if (!decrypt_buffer (to_decrypt, keyring->password, salt, hash_iterations)) {
+		if (!decrypt_buffer (&to_decrypt, keyring->password, salt, hash_iterations)) {
 			goto bail;
 		}
-		if (!verify_decrypted_buffer (to_decrypt)) {
+		if (!verify_decrypted_buffer (&to_decrypt)) {
 			g_free (keyring->password);
 			keyring->password = NULL;
 		} else {
@@ -738,8 +734,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 
 	return TRUE;
  bail:
- 	if (to_decrypt)
- 		gkr_buffer_free (to_decrypt);
+	gkr_buffer_uninit (&to_decrypt);
 	if (checks)
 		g_hash_table_destroy (checks);
 	g_free (display_name);
@@ -1002,7 +997,7 @@ gboolean
 gkr_keyring_update_from_disk (GkrKeyring *keyring, gboolean force_reload)
 {
 	struct stat statbuf;
-	GkrBuffer *buffer;
+	GkrBuffer buffer;
 	char *contents = NULL;
 	gsize len;
 	gboolean success = FALSE;
@@ -1020,12 +1015,10 @@ gkr_keyring_update_from_disk (GkrKeyring *keyring, gboolean force_reload)
 	if (!g_file_get_contents (keyring->file, &contents, &len, NULL))
 		return FALSE;
 
-	buffer = gkr_buffer_new_static ((guchar*)contents, len);
-	if (!buffer)
-		g_error ("couldn't create buffer, out of memory");
+	gkr_buffer_init_static (&buffer, (guchar*)contents, len);
 	
-	success = update_keyring_from_data (keyring, buffer);
-	gkr_buffer_free (buffer);
+	success = update_keyring_from_data (keyring, &buffer);
+	gkr_buffer_uninit (&buffer);
 	g_free (contents);
 
 	return success;
@@ -1048,7 +1041,7 @@ gboolean
 gkr_keyring_save_to_disk (GkrKeyring *keyring)
 {
 	struct stat statbuf;
-	GkrBuffer *out;
+	GkrBuffer out;
 	int fd;
 	char *dirname;
 	char *template;
@@ -1064,19 +1057,16 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 		return TRUE;
 	}
 	
-	out = gkr_buffer_new (4096);
-	if (!out)
-		g_error ("couldn't create buffer, out of memory");
-	
+	gkr_buffer_init_full (&out, 4096, g_realloc);
 
-	if (generate_file (out, keyring)) {
+	if (generate_file (&out, keyring)) {
 		dirname = g_path_get_dirname (keyring->file);
 		template = g_build_filename (dirname, ".keyringXXXXXX", NULL);
 		
 		fd = g_mkstemp (template);
 		if (fd != -1) {
 			fchmod (fd, S_IRUSR | S_IWUSR);
-			if (write_all (fd, out->buf, out->len) == 0) {
+			if (write_all (fd, out.buf, out.len) == 0) {
 #ifdef HAVE_FSYNC
 			fsync (fd);
 #endif
@@ -1103,7 +1093,7 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 		ret = FALSE;
 	}
 	
-	gkr_buffer_free (out);
+	gkr_buffer_uninit (&out);
 	return ret;
 }
 

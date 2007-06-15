@@ -1,3 +1,22 @@
+2007-06-15  Stef Walter  <stef@memberwebs.com>
+
+	* Makefile.am:
+	* configure.in:
+	* common/gkr-buffer.c: (from cryptoki branch)
+	* common/gkr-buffer.h: (from cryptoki branch)
+	* daemon/Makefile.am:
+	* daemon/gnome-keyring-daemon-io.c:
+	* daemon/gnome-keyring-daemon.c:
+	* daemon/gnome-keyring-daemon.h:
+	* keyrings/gkr-keyring.c:
+	* library/Makefile.am:
+	* library/gnome-keyring-proto.c:
+	* library/gnome-keyring-proto.h:
+	* library/gnome-keyring.c:
+	* ui/gkr-ask-request.c: Use GkrBuffer instead of GString which
+	will facilitate swapping out to a non-pageable memory allocator.
+	See bug #419981
+	
 2007-06-14  Stef Walter  <stef@memberwebs.com>
 
 	* keyrings/gkr-keyring-item.c:

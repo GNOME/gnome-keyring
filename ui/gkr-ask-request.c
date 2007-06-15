@@ -74,7 +74,7 @@ struct _GkrAskRequestPrivate {
 	guint flags;
 	
 	gint ask_pid;
-	GkrBuffer *buffer;
+	GkrBuffer buffer;
 	guint input_watch;
 };
 
@@ -155,8 +155,8 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 	
 	/* Parse out all the information we have */
 	/* TODO: Secure memory pv->buffer */
-	gkr_buffer_add_byte (pv->buffer, 0);
-	lines = g_strsplit ((gchar*)(pv->buffer->buf), "\n", 4);
+	gkr_buffer_add_byte (&pv->buffer, 0);
+	lines = g_strsplit ((gchar*)(pv->buffer.buf), "\n", 4);
 	/* TODO: Secure memory lines */
 	if (lines[0]) {
 		/* First line is the response */
@@ -223,7 +223,7 @@ ask_io (GIOChannel *channel, GIOCondition cond, gpointer data)
 				}
 			} else if (res > 0) {
 				/* TODO: Secure memory pv->buffer */
-				gkr_buffer_append (pv->buffer, buffer, res);
+				gkr_buffer_append (&pv->buffer, buffer, res);
 			}
 		} while (res > 0);
 	}
@@ -273,7 +273,7 @@ launch_ask_helper (GkrAskRequest *ask)
 	envp[i++] = g_strdup_printf ("ASK_FLAGS=%d", pv->flags);
 	envp[i++] = NULL;
 
-	gkr_buffer_resize (pv->buffer, 0);
+	gkr_buffer_resize (&pv->buffer, 0);
 	
 	if (!g_spawn_async_with_pipes (NULL, argv, envp, 0, NULL, NULL, &pv->ask_pid, 
 	                               NULL, &stdout_fd, NULL, &error)) {
@@ -336,9 +336,7 @@ gkr_ask_request_init (GkrAskRequest *ask)
 	pv->title = g_strdup ("");
 	pv->primary = g_strdup ("");
 	pv->secondary = g_strdup ("");
-	pv->buffer = gkr_buffer_new_full (128, g_realloc);
-	if (!pv->buffer)
-		g_error ("couldn't create buffer, out of memory");
+	gkr_buffer_init_full (&pv->buffer, 128, g_realloc);
 }
 
 static guint
@@ -383,9 +381,7 @@ gkr_ask_request_finalize (GObject *obj)
 	
 	g_assert (pv->ask_pid == 0);
 	
-	if (pv->buffer)
-		gkr_buffer_free (pv->buffer);
-	pv->buffer = NULL;
+	gkr_buffer_uninit (&pv->buffer);
 	
 	if (pv->input_watch) 
 		g_source_remove (pv->input_watch);
