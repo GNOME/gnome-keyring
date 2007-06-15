@@ -1,3 +1,8 @@
+2007-06-16  Stef Walter  <stef@memberwebs.com>
+
+	* library/Makefile.am: Make gnome-keyring-memory.h a public
+	header file.
+
 2007-06-15  Stef Walter  <stef@memberwebs.com>
 
 	* common/Makefile.am:
