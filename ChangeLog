@@ -1,5 +1,10 @@
 2007-06-15  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-async.c: Fix uninitialized variable.
+	Fixes bug #448000
+	
+2007-06-15  Stef Walter  <stef@memberwebs.com>
+
 	* Makefile.am:
 	* configure.in:
 	* common/gkr-buffer.c: (from cryptoki branch)

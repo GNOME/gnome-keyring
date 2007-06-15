@@ -88,7 +88,7 @@ async_queue_watch (GAsyncQueue *queue, GkrAsyncQueueFunc func, gpointer data)
 	g_assert (func);
 
     	src = g_source_new (&thread_events_functions, sizeof(AsyncQueueWatch));
-	aqw = (AsyncQueueWatch*)aqw;
+	aqw = (AsyncQueueWatch*)queue;
 	aqw->queue = queue;
 	g_async_queue_ref (queue);
 	
