@@ -27,6 +27,8 @@
 #include "gnome-keyring-private.h"
 #include "gnome-keyring-proto.h"
 
+#include "common/gkr-buffer.h"
+
 #include <time.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -74,10 +76,10 @@ struct GnomeKeyringOperation {
 
 	guint io_watch;
 	
-	GString *send_buffer;
+	GkrBuffer *send_buffer;
 	gsize send_pos;
 
-	GString *receive_buffer;
+	GkrBuffer *receive_buffer;
 	gsize receive_pos;
 	
 	KeyringCallbackType user_callback_type;
@@ -224,6 +226,15 @@ connect_to_daemon (gboolean non_blocking)
 }
 
 
+static GkrBuffer*
+create_packet_buffer (void)
+{
+	GkrBuffer *buffer = gkr_buffer_new_full (128, g_realloc);
+	if (!buffer)
+		g_error ("couldn't allocate buffer, out of memory");
+	return buffer;
+}
+
 static void
 gnome_keyring_operation_free (GnomeKeyringOperation *op)
 {
@@ -236,11 +247,11 @@ gnome_keyring_operation_free (GnomeKeyringOperation *op)
 	}
 	if (op->send_buffer != NULL) {
 		/* TODO: Secure memory op->send_buffer */
-		g_string_free (op->send_buffer, TRUE);
+		gkr_buffer_free (op->send_buffer);
 	}
 	if (op->receive_buffer != NULL) {
 		/* TODO: Secure memory op->receive_buffer */
-		g_string_free (op->receive_buffer, TRUE);
+		gkr_buffer_free (op->receive_buffer);
 	}
 	close (op->socket);
 	g_free (op);
@@ -300,7 +311,7 @@ schedule_op_failed (GnomeKeyringOperation *op,
 }
 
 static int
-read_all (int fd, char *buf, size_t len)
+read_all (int fd, guchar *buf, size_t len)
 {
 	size_t bytes;
 	ssize_t res;
@@ -320,7 +331,7 @@ read_all (int fd, char *buf, size_t len)
 
 
 static int
-write_all (int fd, const char *buf, size_t len)
+write_all (int fd, const guchar *buf, size_t len)
 {
 	size_t bytes;
 	ssize_t res;
@@ -468,7 +479,7 @@ operation_io (GIOChannel  *io_channel,
 	}
 	if (op->state == STATE_WRITING_PACKET && (cond & G_IO_OUT)) {
 		res = write (op->socket,
-			     op->send_buffer->str + op->send_pos,
+			     op->send_buffer->buf + op->send_pos,
 			     op->send_buffer->len - op->send_pos);
 		if (res <= 0) {
 			if (errno != EAGAIN &&
@@ -480,7 +491,7 @@ operation_io (GIOChannel  *io_channel,
 
 			if (op->send_pos == op->send_buffer->len) {
 				op->state = STATE_READING_REPLY;
-				op->receive_buffer = g_string_new (NULL);
+				op->receive_buffer = create_packet_buffer ();
 				op->receive_pos = 0;
 				
 				g_source_remove (op->io_watch);
@@ -495,9 +506,9 @@ operation_io (GIOChannel  *io_channel,
 
 	if (op->state == STATE_READING_REPLY && (cond & G_IO_IN)) {
 		if (op->receive_pos < 4) {
-			g_string_set_size (op->receive_buffer, 4);
+			gkr_buffer_resize (op->receive_buffer, 4);
 			res = read (op->socket,
-				    op->receive_buffer->str + op->receive_pos,
+				    op->receive_buffer->buf + op->receive_pos,
 				    4 - op->receive_pos);
 			if (res <= 0) {
 				if (errno != EAGAIN &&
@@ -518,9 +529,9 @@ operation_io (GIOChannel  *io_channel,
 		
 			g_assert (op->receive_pos <= packet_size);
 			/* TODO: Secure memory op->receive_buffer */
-			g_string_set_size (op->receive_buffer, packet_size);
+			gkr_buffer_resize (op->receive_buffer, packet_size);
 
-			res = read (op->socket, op->receive_buffer->str + op->receive_pos,
+			res = read (op->socket, op->receive_buffer->buf + op->receive_pos,
 				    packet_size - op->receive_pos);
 			if (res <= 0) {
 				if (errno != EAGAIN &&
@@ -571,7 +582,7 @@ start_operation (gpointer callback, KeyringCallbackType callback_type,
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON);
 	} else  {
 		op->state = STATE_WRITING_CREDS;
-		op->send_buffer = g_string_new (NULL);
+		op->send_buffer = create_packet_buffer ();
 		op->send_pos = 0;
 		
 		channel = g_io_channel_unix_new (op->socket);
@@ -585,8 +596,8 @@ start_operation (gpointer callback, KeyringCallbackType callback_type,
 }
 
 static GnomeKeyringResult
-run_sync_operation (GString *buffer,
-		    GString *receive_buffer)
+run_sync_operation (GkrBuffer *buffer,
+		    GkrBuffer *receive_buffer)
 {
 	GnomeKeyringResult res;
 	int socket;
@@ -606,13 +617,13 @@ run_sync_operation (GString *buffer,
 	}
 
 	if (write_all (socket,
-		       buffer->str, buffer->len) < 0) {
+		       buffer->buf, buffer->len) < 0) {
 		close (socket);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
 
-	g_string_set_size (receive_buffer, 4);
-	if (read_all (socket, receive_buffer->str, 4) < 0) {
+	gkr_buffer_resize (receive_buffer, 4);
+	if (read_all (socket, receive_buffer->buf, 4) < 0) {
 		close (socket);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
@@ -624,8 +635,8 @@ run_sync_operation (GString *buffer,
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
 	/* TODO: Secure memory receive_buffer */
-	g_string_set_size (receive_buffer, packet_size);
-	if (read_all (socket, receive_buffer->str + 4, packet_size - 4) < 0) {
+	gkr_buffer_resize (receive_buffer, packet_size);
+	if (read_all (socket, receive_buffer->buf + 4, packet_size - 4) < 0) {
 		close (socket);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
@@ -746,31 +757,31 @@ gnome_keyring_set_default_keyring (const char                             *keyri
 GnomeKeyringResult 
 gnome_keyring_set_default_keyring_sync (const char *keyring)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	if (!gnome_keyring_proto_encode_op_string (send,
 						   GNOME_KEYRING_OP_SET_DEFAULT_KEYRING,
 						   keyring)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
 	if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
- 	g_string_free (receive, TRUE);
+ 	gkr_buffer_free (receive);
 
 	return res;
 }
@@ -799,34 +810,34 @@ gnome_keyring_get_default_keyring (GnomeKeyringOperationGetStringCallback  callb
 GnomeKeyringResult 
 gnome_keyring_get_default_keyring_sync (char **keyring)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	*keyring = NULL;
 
 	if (!gnome_keyring_proto_encode_op_only (send,
 						 GNOME_KEYRING_OP_GET_DEFAULT_KEYRING)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
 	if (!gnome_keyring_proto_decode_result_string_reply (receive, &res, keyring)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -873,34 +884,34 @@ gnome_keyring_list_keyring_names  (GnomeKeyringOperationGetListCallback    callb
 GnomeKeyringResult 
 gnome_keyring_list_keyring_names_sync (GList **keyrings)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	*keyrings = NULL;
 
 	if (!gnome_keyring_proto_encode_op_only (send,
 						 GNOME_KEYRING_OP_LIST_KEYRINGS)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
 	if (!gnome_keyring_proto_decode_result_string_list_reply (receive, &res, keyrings)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -929,30 +940,30 @@ gnome_keyring_lock_all (GnomeKeyringOperationDoneCallback       callback,
 GnomeKeyringResult 
 gnome_keyring_lock_all_sync (void)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 
 	if (!gnome_keyring_proto_encode_op_only (send,
 						 GNOME_KEYRING_OP_LOCK_ALL)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
         if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
-                g_string_free (receive, TRUE);
+                gkr_buffer_free (receive);
                 return GNOME_KEYRING_RESULT_IO_ERROR;
         }
-        g_string_free (receive, TRUE);
+        gkr_buffer_free (receive);
 
         return res;
 }
@@ -989,32 +1000,32 @@ GnomeKeyringResult
 gnome_keyring_create_sync (const char *keyring_name,
 			   const char *password)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	/* TODO: Secure memory password */
 	if (!gnome_keyring_proto_encode_op_string_string (send,
 							  GNOME_KEYRING_OP_CREATE_KEYRING,
 							  keyring_name, password)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
         if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
-                g_string_free (receive, TRUE);
+                gkr_buffer_free (receive);
                 return GNOME_KEYRING_RESULT_IO_ERROR;
         }
-        g_string_free (receive, TRUE);
+        gkr_buffer_free (receive);
 
         return res;
 }
@@ -1049,32 +1060,32 @@ GnomeKeyringResult
 gnome_keyring_unlock_sync (const char *keyring,
 			   const char *password)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	/* TODO: Secure memory password */
 	if (!gnome_keyring_proto_encode_op_string_string (send,
 							  GNOME_KEYRING_OP_UNLOCK_KEYRING,
 							  keyring, password)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
         if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
-                g_string_free (receive, TRUE);
+                gkr_buffer_free (receive);
                 return GNOME_KEYRING_RESULT_IO_ERROR;
         }
-        g_string_free (receive, TRUE);
+        gkr_buffer_free (receive);
 
 	return res;
 }
@@ -1106,31 +1117,31 @@ gnome_keyring_lock (const char                                  *keyring,
 GnomeKeyringResult
 gnome_keyring_lock_sync (const char *keyring)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	if (!gnome_keyring_proto_encode_op_string (send,
 						   GNOME_KEYRING_OP_LOCK_KEYRING,
 						   keyring)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
         if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
-                g_string_free (receive, TRUE);
+                gkr_buffer_free (receive);
                 return GNOME_KEYRING_RESULT_IO_ERROR;
         }
-        g_string_free (receive, TRUE);
+        gkr_buffer_free (receive);
 
         return res;
 }
@@ -1162,31 +1173,31 @@ gnome_keyring_delete (const char                                  *keyring,
 GnomeKeyringResult
 gnome_keyring_delete_sync (const char *keyring)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	if (!gnome_keyring_proto_encode_op_string (send,
 						   GNOME_KEYRING_OP_DELETE_KEYRING,
 						   keyring)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
         if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
-                g_string_free (receive, TRUE);
+                gkr_buffer_free (receive);
                 return GNOME_KEYRING_RESULT_IO_ERROR;
         }
-        g_string_free (receive, TRUE);
+        gkr_buffer_free (receive);
 
         return res;
 }
@@ -1222,32 +1233,32 @@ GnomeKeyringResult
 gnome_keyring_change_password_sync (const char *keyring_name,
 			   const char *original, const char *password)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	/* TODO: Secure memory original, password */
 	if (!gnome_keyring_proto_encode_op_string_string_string (send,
 							  GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD,
 							  keyring_name, original, password)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
 	if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 
 	return res;
 }
@@ -1297,35 +1308,35 @@ GnomeKeyringResult
 gnome_keyring_get_info_sync (const char        *keyring,
 			     GnomeKeyringInfo **info)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	*info = NULL;
 
 	if (!gnome_keyring_proto_encode_op_string (send,
 						   GNOME_KEYRING_OP_GET_KEYRING_INFO,
 						   keyring)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
 	if (!gnome_keyring_proto_decode_get_keyring_info_reply (receive, &res, info)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -1358,21 +1369,21 @@ GnomeKeyringResult
 gnome_keyring_set_info_sync (const char       *keyring,
 			     GnomeKeyringInfo *info)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	if (!gnome_keyring_proto_encode_set_keyring_info (send,
 							  keyring, info)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (send);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -1421,35 +1432,35 @@ GnomeKeyringResult
 gnome_keyring_list_item_ids_sync (const char  *keyring,
 				  GList      **ids)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	*ids = NULL;
 
 	if (!gnome_keyring_proto_encode_op_string (send,
 						   GNOME_KEYRING_OP_LIST_ITEMS,
 						   keyring)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
 	if (!gnome_keyring_proto_decode_result_int_list_reply (receive, &res, ids)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -1457,31 +1468,31 @@ gnome_keyring_list_item_ids_sync (const char  *keyring,
 GnomeKeyringResult
 gnome_keyring_daemon_set_display_sync (const char *display)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 
 	if (!gnome_keyring_proto_encode_op_string (send,
 						   GNOME_KEYRING_OP_SET_DAEMON_DISPLAY,
 						   display)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
 	if (!gnome_keyring_proto_decode_result_reply (receive, &res)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 
 	return res;
 }
@@ -1660,35 +1671,35 @@ gnome_keyring_find_items_sync (GnomeKeyringItemType        type,
 			       GnomeKeyringAttributeList  *attributes,
 			       GList                     **found)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 
 	*found = NULL;
 	
 	if (!gnome_keyring_proto_encode_find (send, type,
 					      attributes)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
 	/* TODO: Secure memory receive */
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 	
 	if (!gnome_keyring_proto_decode_find_reply (receive, &res, found)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -1774,11 +1785,11 @@ gnome_keyring_item_create_sync    (const char                                 *k
 				   gboolean                                    update_if_exists,
 				   guint32                                    *item_id)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 
 	*item_id = 0;
 	
@@ -1790,24 +1801,24 @@ gnome_keyring_item_create_sync    (const char                                 *k
 						     secret,
 						     type,
 						     update_if_exists)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 
 	if (!gnome_keyring_proto_decode_result_integer_reply (receive, &res, item_id)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -1851,23 +1862,23 @@ GnomeKeyringResult
 gnome_keyring_item_delete_sync (const char *keyring,
 				guint32     id)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	if (!gnome_keyring_proto_encode_op_string_int (send,
 						       GNOME_KEYRING_OP_DELETE_ITEM,
 						       keyring,
 						       id)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (send);
+	gkr_buffer_free (receive);
 
 	return res;
 }
@@ -1920,36 +1931,36 @@ gnome_keyring_item_get_info_sync (const char            *keyring,
 				  guint32                id,
 				  GnomeKeyringItemInfo **info)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 
 	*info = NULL;
 	
 	if (!gnome_keyring_proto_encode_op_string_int (send, 
 						       GNOME_KEYRING_OP_GET_ITEM_INFO,
 						       keyring, id)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
 	/* TODO: Secure memory receive */ 	
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 	
 	if (!gnome_keyring_proto_decode_get_item_info_reply (receive, &res, info)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -1987,36 +1998,36 @@ gnome_keyring_item_get_info_full_sync (const char              *keyring,
 				       guint32                  flags,
  				       GnomeKeyringItemInfo   **info)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 
 	*info = NULL;
 	
 	if (!gnome_keyring_proto_encode_op_string_int_int (send, 
 							   GNOME_KEYRING_OP_GET_ITEM_INFO_FULL,
 							   keyring, id, flags)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
 	/* TODO: Secure memory receive */
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 	
 	if (!gnome_keyring_proto_decode_get_item_info_reply (receive, &res, info)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -2052,22 +2063,22 @@ gnome_keyring_item_set_info_sync (const char           *keyring,
 				  guint32               id,
 				  GnomeKeyringItemInfo *info)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
 	/* TODO: Secure memory info, send */
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	if (!gnome_keyring_proto_encode_set_item_info (send,
 						       keyring, id, info)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (send);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -2137,35 +2148,35 @@ gnome_keyring_item_get_attributes_sync (const char                 *keyring,
 					guint32                     id,
 					GnomeKeyringAttributeList **attributes)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 
 	*attributes = NULL;
 	
 	if (!gnome_keyring_proto_encode_op_string_int (send, 
 						       GNOME_KEYRING_OP_GET_ITEM_ATTRIBUTES,
 						       keyring, id)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 	
 	if (!gnome_keyring_proto_decode_get_attributes_reply (receive, &res, attributes)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -2201,22 +2212,22 @@ gnome_keyring_item_set_attributes_sync (const char                *keyring,
 					guint32                    id,
 					GnomeKeyringAttributeList *attributes)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	if (!gnome_keyring_proto_encode_set_attributes (send,
 							keyring, id, 
 							attributes)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (send);
+	gkr_buffer_free (receive);
 	
 	return res;
 
@@ -2252,35 +2263,35 @@ gnome_keyring_item_get_acl_sync (const char  *keyring,
 				 guint32      id,
 				 GList      **acl)
 {
-	GString *send;
-	GString *receive;
+	GkrBuffer *send;
+	GkrBuffer *receive;
 	GnomeKeyringResult res;
 
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 
 	*acl = NULL;
 	
 	if (!gnome_keyring_proto_encode_op_string_int (send, 
 						       GNOME_KEYRING_OP_GET_ITEM_ACL,
 						       keyring, id)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	receive = g_string_new (NULL);
+	receive = create_packet_buffer ();
 
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
+	gkr_buffer_free (send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return res;
 	}
 	
 	if (!gnome_keyring_proto_decode_get_acl_reply (receive, &res, acl)) {
-		g_string_free (receive, TRUE);
+		gkr_buffer_free (receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (receive);
 	
 	return res;
 }
@@ -2316,22 +2327,22 @@ gnome_keyring_item_set_acl_sync (const char *keyring,
 				 guint32     id,
 				 GList      *acl)
 {
-	GString *send, *receive;
+	GkrBuffer *send, *receive;
 	GnomeKeyringResult res;
 	
-	send = g_string_new (NULL);
+	send = create_packet_buffer ();
 	
 	if (!gnome_keyring_proto_encode_set_acl (send,
 						 keyring, id, 
 						 acl)) {
-		g_string_free (send, TRUE);
+		gkr_buffer_free (send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	receive = g_string_new (NULL);
+ 	receive = create_packet_buffer ();
 	res = run_sync_operation (send, receive);
-	g_string_free (send, TRUE);
-	g_string_free (receive, TRUE);
+	gkr_buffer_free (send);
+	gkr_buffer_free (receive);
 	
 	return res;
 }

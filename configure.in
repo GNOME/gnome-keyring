@@ -267,6 +267,7 @@ fi
 
 AC_OUTPUT([
 Makefile
+common/Makefile
 daemon/Makefile
 doc/Makefile
 keyrings/Makefile

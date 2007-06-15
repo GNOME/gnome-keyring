@@ -28,8 +28,10 @@
 #include "gnome-keyring-proto.h"
 #include "gnome-keyring-private.h"
 
+#include "common/gkr-buffer.h"
+
 gboolean
-gnome_keyring_proto_set_uint32 (GString *buffer, gsize offset, guint32 val)
+gnome_keyring_proto_set_uint32 (GkrBuffer *buffer, gsize offset, guint32 val)
 {
 	unsigned char *ptr;
 
@@ -38,7 +40,7 @@ gnome_keyring_proto_set_uint32 (GString *buffer, gsize offset, guint32 val)
 		return FALSE;
 	}
 
-	ptr = (unsigned char *)buffer->str + offset;
+	ptr = (unsigned char *)buffer->buf + offset;
 	ptr[0] = (val >> 24) & 0xff;
 	ptr[1] = (val >> 16) & 0xff;
 	ptr[2] = (val >> 8) & 0xff;
@@ -48,16 +50,16 @@ gnome_keyring_proto_set_uint32 (GString *buffer, gsize offset, guint32 val)
 }
 
 void
-gnome_keyring_proto_add_uint32 (GString *buffer, guint32 val)
+gnome_keyring_proto_add_uint32 (GkrBuffer *buffer, guint32 val)
 {
-	g_string_append_c (buffer, (val >> 24) & 0xff);
-	g_string_append_c (buffer, (val >> 16) & 0xff);
-	g_string_append_c (buffer, (val >> 8) & 0xff);
-	g_string_append_c (buffer, (val >> 0) & 0xff);
+	gkr_buffer_add_byte (buffer, (val >> 24) & 0xff);
+	gkr_buffer_add_byte (buffer, (val >> 16) & 0xff);
+	gkr_buffer_add_byte (buffer, (val >> 8) & 0xff);
+	gkr_buffer_add_byte (buffer, (val >> 0) & 0xff);
 }
 
 void
-gnome_keyring_proto_add_time (GString *buffer, time_t time)
+gnome_keyring_proto_add_time (GkrBuffer *buffer, time_t time)
 {
 	guint64 val;
 
@@ -67,7 +69,7 @@ gnome_keyring_proto_add_time (GString *buffer, time_t time)
 }
 
 gboolean
-gnome_keyring_proto_get_uint32 (GString *buffer,
+gnome_keyring_proto_get_uint32 (GkrBuffer *buffer,
 			       gsize offset,
 			       gsize *next_offset,
 			       guint32 *val)
@@ -79,7 +81,7 @@ gnome_keyring_proto_get_uint32 (GString *buffer,
 		return FALSE;
 	}
 
-	ptr = (unsigned char *)buffer->str + offset;
+	ptr = (unsigned char *)buffer->buf + offset;
 	if (val != NULL) {
 		*val = ptr[0] << 24 |
 			ptr[1] << 16 |
@@ -95,7 +97,7 @@ gnome_keyring_proto_get_uint32 (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_get_time (GString *buffer,
+gnome_keyring_proto_get_time (GkrBuffer *buffer,
 			      gsize offset,
 			      gsize *next_offset,
 			      time_t *time)
@@ -122,7 +124,7 @@ gnome_keyring_proto_get_time (GString *buffer,
 
 
 static gboolean
-gnome_keyring_proto_add_string (GString *buffer, const char *str, gsize len)
+gnome_keyring_proto_add_string (GkrBuffer *buffer, const char *str, gsize len)
 {
 	if (len >= 0x7fffffff) {
 		return FALSE;
@@ -136,13 +138,13 @@ gnome_keyring_proto_add_string (GString *buffer, const char *str, gsize len)
 		gnome_keyring_proto_add_uint32 (buffer, 0xffffffff);
 	} else {
 		gnome_keyring_proto_add_uint32 (buffer, len);
-		g_string_append_len (buffer, str, len);
+		gkr_buffer_append (buffer, (guchar*)str, len);
 	}
 	return TRUE;
 }
 
 gboolean
-gnome_keyring_proto_add_utf8_string (GString *buffer, const char *str)
+gnome_keyring_proto_add_utf8_string (GkrBuffer *buffer, const char *str)
 {
 	gsize len;
 
@@ -160,7 +162,7 @@ gnome_keyring_proto_add_utf8_string (GString *buffer, const char *str)
 }
 
 gboolean
-gnome_keyring_proto_get_bytes (GString *buffer,
+gnome_keyring_proto_get_bytes (GkrBuffer *buffer,
 			       gsize offset,
 			       gsize *next_offset,
 			       guchar *out, gsize n_bytes)
@@ -170,7 +172,7 @@ gnome_keyring_proto_get_bytes (GString *buffer,
 		return FALSE;
 	}
 
-	memcpy (out, buffer->str + offset, n_bytes);
+	memcpy (out, buffer->buf + offset, n_bytes);
 	*next_offset = offset + n_bytes;
 	
 	return TRUE;
@@ -178,7 +180,7 @@ gnome_keyring_proto_get_bytes (GString *buffer,
 
 
 static gboolean
-gnome_keyring_proto_get_string (GString *buffer,
+gnome_keyring_proto_get_string (GkrBuffer *buffer,
 				gsize offset,
 				gsize *next_offset,
 				char **str_ret, gsize *len_ret)
@@ -203,7 +205,7 @@ gnome_keyring_proto_get_string (GString *buffer,
 	}
 	
 	/* TODO: Secure memory, could be a password  or secret */
-	*str_ret = g_memdup (buffer->str + offset, len+1);
+	*str_ret = g_memdup (buffer->buf + offset, len+1);
 	/* Always zero terminate */
 	(*str_ret)[len] = 0;
 	*len_ret = len;
@@ -213,7 +215,7 @@ gnome_keyring_proto_get_string (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_get_utf8_string (GString *buffer,
+gnome_keyring_proto_get_utf8_string (GkrBuffer *buffer,
 				     gsize offset,
 				     gsize *next_offset,
 				     char **str_ret)
@@ -254,7 +256,7 @@ gnome_keyring_proto_get_utf8_string (GString *buffer,
 }
 
 static gboolean
-gnome_keyring_proto_start_operation (GString *buffer,
+gnome_keyring_proto_start_operation (GkrBuffer *buffer,
 				     GnomeKeyringOpCode op,
 				     gsize *op_start)
 {
@@ -294,7 +296,7 @@ gnome_keyring_proto_start_operation (GString *buffer,
 }
 
 static gboolean
-gnome_keyring_proto_end_operation (GString *buffer,
+gnome_keyring_proto_end_operation (GkrBuffer *buffer,
 				   gsize op_start)
 {
 	if (!gnome_keyring_proto_set_uint32 (buffer, op_start, buffer->len - op_start)) {
@@ -304,14 +306,14 @@ gnome_keyring_proto_end_operation (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_packet_size (GString *buffer,
+gnome_keyring_proto_decode_packet_size (GkrBuffer *buffer,
 					guint32 *size)
 {
 	return gnome_keyring_proto_get_uint32 (buffer, 0, NULL, size);
 }
 
 gboolean
-gnome_keyring_proto_decode_packet_operation (GString *buffer,
+gnome_keyring_proto_decode_packet_operation (GkrBuffer *buffer,
 					     GnomeKeyringOpCode *op)
 {
 	guint32 op_nr;
@@ -323,7 +325,7 @@ gnome_keyring_proto_decode_packet_operation (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_op_only (GString *buffer,
+gnome_keyring_proto_encode_op_only (GkrBuffer *buffer,
 				    GnomeKeyringOpCode op)
 {
 	gsize op_start;
@@ -339,7 +341,7 @@ gnome_keyring_proto_encode_op_only (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_op_string (GString                *buffer,
+gnome_keyring_proto_encode_op_string (GkrBuffer              *buffer,
 				      GnomeKeyringOpCode      op,
 				      const char             *str)
 {
@@ -360,7 +362,7 @@ gnome_keyring_proto_encode_op_string (GString                *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_op_string_int (GString                *buffer,
+gnome_keyring_proto_encode_op_string_int (GkrBuffer              *buffer,
 					  GnomeKeyringOpCode      op,
 					  const char             *str,
 					  guint32                 val)
@@ -383,7 +385,7 @@ gnome_keyring_proto_encode_op_string_int (GString                *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_op_string_int_int (GString                 *buffer,
+gnome_keyring_proto_encode_op_string_int_int (GkrBuffer               *buffer,
 					      GnomeKeyringOpCode       op,
 					      const char              *str,
 					      guint32                  integer1,
@@ -402,7 +404,7 @@ gnome_keyring_proto_encode_op_string_int_int (GString                 *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_op_string_string (GString                *buffer,
+gnome_keyring_proto_encode_op_string_string (GkrBuffer              *buffer,
 					     GnomeKeyringOpCode      op,
 					     const char             *str1,
 					     const char             *str2)
@@ -428,7 +430,7 @@ gnome_keyring_proto_encode_op_string_string (GString                *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_op_string_string_string (GString                *buffer,
+gnome_keyring_proto_encode_op_string_string_string (GkrBuffer              *buffer,
 					     GnomeKeyringOpCode      op,
 					     const char             *str1,
 					     const char             *str2,
@@ -459,7 +461,7 @@ gnome_keyring_proto_encode_op_string_string_string (GString                *buff
 }
 
 gboolean
-gnome_keyring_proto_encode_find (GString *buffer,
+gnome_keyring_proto_encode_find (GkrBuffer *buffer,
 				 GnomeKeyringItemType type,
 				 GnomeKeyringAttributeList *attributes)
 {
@@ -482,12 +484,12 @@ gnome_keyring_proto_encode_find (GString *buffer,
 	return TRUE;
 	
  bail:
-	g_string_set_size (buffer, op_start);
+ 	gkr_buffer_resize (buffer, op_start);
 	return FALSE;
 }
 
 gboolean
-gnome_keyring_proto_encode_create_item (GString                   *buffer,
+gnome_keyring_proto_encode_create_item (GkrBuffer                 *buffer,
 					const char                *keyring,
 					const char                *display_name,
 					GnomeKeyringAttributeList *attributes,
@@ -530,7 +532,7 @@ gnome_keyring_proto_encode_create_item (GString                   *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_create_item (GString              *buffer,
+gnome_keyring_proto_decode_create_item (GkrBuffer            *buffer,
 					char                **keyring,
 					char                **display_name,
 					GnomeKeyringAttributeList **attributes,
@@ -619,7 +621,7 @@ gnome_keyring_proto_decode_create_item (GString              *buffer,
 
 
 gboolean
-gnome_keyring_proto_encode_set_attributes (GString                   *buffer,
+gnome_keyring_proto_encode_set_attributes (GkrBuffer                 *buffer,
 					   const char                *keyring,
 					   guint32                    id,
 					   GnomeKeyringAttributeList *attributes)
@@ -649,7 +651,7 @@ gnome_keyring_proto_encode_set_attributes (GString                   *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_set_acl (GString                   *buffer,
+gnome_keyring_proto_encode_set_acl (GkrBuffer                 *buffer,
 				    const char                *keyring,
 				    guint32                    id,
 				    GList                     *acl)
@@ -680,7 +682,7 @@ gnome_keyring_proto_encode_set_acl (GString                   *buffer,
 
 
 gboolean
-gnome_keyring_proto_encode_set_item_info (GString                   *buffer,
+gnome_keyring_proto_encode_set_item_info (GkrBuffer                 *buffer,
 					  const char                *keyring,
 					  guint32                    id,
 					  GnomeKeyringItemInfo      *info)
@@ -717,7 +719,7 @@ gnome_keyring_proto_encode_set_item_info (GString                   *buffer,
 }
 
 gboolean
-gnome_keyring_proto_encode_set_keyring_info (GString                   *buffer,
+gnome_keyring_proto_encode_set_keyring_info (GkrBuffer                 *buffer,
 					     const char                *keyring,
 					     GnomeKeyringInfo          *info)
 {
@@ -745,7 +747,7 @@ gnome_keyring_proto_encode_set_keyring_info (GString                   *buffer,
 
 
 gboolean
-gnome_keyring_proto_decode_attribute_list (GString *buffer,
+gnome_keyring_proto_decode_attribute_list (GkrBuffer *buffer,
 					   gsize offset, gsize *next_offset,
 					   GnomeKeyringAttributeList **attributes_out)
 {
@@ -820,7 +822,7 @@ gnome_keyring_proto_decode_attribute_list (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_acl (GString *buffer,
+gnome_keyring_proto_decode_acl (GkrBuffer *buffer,
 				gsize offset, gsize *next_offset,
 				GList **acl_out)
 {
@@ -881,7 +883,7 @@ gnome_keyring_proto_decode_acl (GString *buffer,
 
 
 gboolean
-gnome_keyring_proto_add_attribute_list (GString *buffer,
+gnome_keyring_proto_add_attribute_list (GkrBuffer *buffer,
 					GnomeKeyringAttributeList *attributes)
 {
 	int i;
@@ -923,7 +925,7 @@ gnome_keyring_proto_add_attribute_list (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_add_acl (GString *buffer,
+gnome_keyring_proto_add_acl (GkrBuffer *buffer,
 			     GList *acl)
 {
 	int length;
@@ -953,7 +955,7 @@ gnome_keyring_proto_add_acl (GString *buffer,
 
 
 gboolean
-gnome_keyring_proto_decode_result_reply (GString *buffer,
+gnome_keyring_proto_decode_result_reply (GkrBuffer *buffer,
 					 GnomeKeyringResult *result)
 {
 	gsize offset;
@@ -970,7 +972,7 @@ gnome_keyring_proto_decode_result_reply (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_result_string_reply  (GString                *buffer,
+gnome_keyring_proto_decode_result_string_reply  (GkrBuffer              *buffer,
 						 GnomeKeyringResult     *result,
 						 char                  **str)
 {
@@ -993,7 +995,7 @@ gnome_keyring_proto_decode_result_string_reply  (GString                *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_result_string_list_reply  (GString                *buffer,
+gnome_keyring_proto_decode_result_string_list_reply  (GkrBuffer              *buffer,
 						      GnomeKeyringResult     *result,
 						      GList                 **list)
 {
@@ -1035,7 +1037,7 @@ gnome_keyring_proto_decode_result_string_list_reply  (GString                *bu
 }
 
 gboolean
-gnome_keyring_proto_decode_find_reply (GString *buffer,
+gnome_keyring_proto_decode_find_reply (GkrBuffer *buffer,
 				       GnomeKeyringResult *result,
 				       GList **list_out)
 {
@@ -1088,7 +1090,7 @@ gnome_keyring_proto_decode_find_reply (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_find (GString *buffer,
+gnome_keyring_proto_decode_find (GkrBuffer *buffer,
 				 GnomeKeyringItemType  *type,
 				 GnomeKeyringAttributeList **attributes)
 {
@@ -1114,7 +1116,7 @@ gnome_keyring_proto_decode_find (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_op_string (GString *buffer,
+gnome_keyring_proto_decode_op_string (GkrBuffer *buffer,
 				      GnomeKeyringOpCode *op_out,
 				      char **str1)
 {
@@ -1143,7 +1145,7 @@ gnome_keyring_proto_decode_op_string (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_op_string_int (GString *buffer,
+gnome_keyring_proto_decode_op_string_int (GkrBuffer *buffer,
 					  GnomeKeyringOpCode *op_out,
 					  char **str1,
 					  guint32 *val)
@@ -1178,7 +1180,7 @@ gnome_keyring_proto_decode_op_string_int (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_get_item_info (GString                    *buffer,
+gnome_keyring_proto_decode_get_item_info (GkrBuffer                  *buffer,
 					  GnomeKeyringOpCode         *op_out,
 					  char                      **keyring,
 					  guint32                    *item_id,
@@ -1209,7 +1211,7 @@ gnome_keyring_proto_decode_get_item_info (GString                    *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_op_string_string (GString *buffer,
+gnome_keyring_proto_decode_op_string_string (GkrBuffer *buffer,
 					     GnomeKeyringOpCode *op_out,
 					     char **str1,
 					     char **str2)
@@ -1251,7 +1253,7 @@ gnome_keyring_proto_decode_op_string_string (GString *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_op_string_string_string (GString *buffer,
+gnome_keyring_proto_decode_op_string_string_string (GkrBuffer *buffer,
 					     GnomeKeyringOpCode *op_out,
 					     char **str1,
 					     char **str2,
@@ -1307,7 +1309,7 @@ gnome_keyring_proto_decode_op_string_string_string (GString *buffer,
 
 
 gboolean
-gnome_keyring_proto_decode_get_attributes_reply (GString                    *buffer,
+gnome_keyring_proto_decode_get_attributes_reply (GkrBuffer                  *buffer,
 						 GnomeKeyringResult         *result,
 						 GnomeKeyringAttributeList **attributes)
 {
@@ -1333,7 +1335,7 @@ gnome_keyring_proto_decode_get_attributes_reply (GString                    *buf
 }
 
 gboolean
-gnome_keyring_proto_decode_get_acl_reply (GString                    *buffer,
+gnome_keyring_proto_decode_get_acl_reply (GkrBuffer                  *buffer,
 					  GnomeKeyringResult         *result,
 					  GList                     **acl)
 {
@@ -1360,7 +1362,7 @@ gnome_keyring_proto_decode_get_acl_reply (GString                    *buffer,
 
 
 gboolean
-gnome_keyring_proto_decode_get_item_info_reply (GString                    *buffer,
+gnome_keyring_proto_decode_get_item_info_reply (GkrBuffer                  *buffer,
 						GnomeKeyringResult         *result,
 						GnomeKeyringItemInfo      **info_out)
 {
@@ -1423,7 +1425,7 @@ gnome_keyring_proto_decode_get_item_info_reply (GString                    *buff
 }
 
 gboolean
-gnome_keyring_proto_decode_get_keyring_info_reply (GString                    *buffer,
+gnome_keyring_proto_decode_get_keyring_info_reply (GkrBuffer                  *buffer,
 						   GnomeKeyringResult         *result,
 						   GnomeKeyringInfo          **info_out)
 {
@@ -1475,7 +1477,7 @@ gnome_keyring_proto_decode_get_keyring_info_reply (GString                    *b
 }
 
 gboolean
-gnome_keyring_proto_decode_set_item_info (GString              *buffer,
+gnome_keyring_proto_decode_set_item_info (GkrBuffer            *buffer,
 					  char                **keyring,
 					  guint32              *item_id,
 					  GnomeKeyringItemType *type,
@@ -1532,7 +1534,7 @@ gnome_keyring_proto_decode_set_item_info (GString              *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_set_keyring_info (GString   *buffer,
+gnome_keyring_proto_decode_set_keyring_info (GkrBuffer *buffer,
 					     char     **keyring,
 					     gboolean  *lock_on_idle,
 					     guint32   *lock_timeout)
@@ -1573,7 +1575,7 @@ gnome_keyring_proto_decode_set_keyring_info (GString   *buffer,
 }
 
 gboolean
-gnome_keyring_proto_decode_set_attributes (GString              *buffer,
+gnome_keyring_proto_decode_set_attributes (GkrBuffer            *buffer,
 					   char                **keyring,
 					   guint32              *item_id,
 					   GnomeKeyringAttributeList **attributes)
@@ -1615,7 +1617,7 @@ gnome_keyring_proto_decode_set_attributes (GString              *buffer,
 
 
 gboolean
-gnome_keyring_proto_decode_set_acl (GString              *buffer,
+gnome_keyring_proto_decode_set_acl (GkrBuffer            *buffer,
 				    char                **keyring,
 				    guint32              *item_id,
 				    GList               **acl)
@@ -1658,7 +1660,7 @@ gnome_keyring_proto_decode_set_acl (GString              *buffer,
 
 
 gboolean
-gnome_keyring_proto_decode_result_int_list_reply (GString                    *buffer,
+gnome_keyring_proto_decode_result_int_list_reply (GkrBuffer                  *buffer,
 						  GnomeKeyringResult         *result,
 						  GList                     **list)
 {
@@ -1692,7 +1694,7 @@ gnome_keyring_proto_decode_result_int_list_reply (GString                    *bu
 }
 
 gboolean
-gnome_keyring_proto_decode_result_integer_reply (GString                    *buffer,
+gnome_keyring_proto_decode_result_integer_reply (GkrBuffer                  *buffer,
 						 GnomeKeyringResult         *result,
 						 guint32                    *integer)
 {

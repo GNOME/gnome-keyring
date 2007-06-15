@@ -25,9 +25,13 @@
 #include "gnome-keyring.h"
 #include "gnome-keyring-daemon.h"
 
+#include "common/gkr-buffer.h"
+
 #include "keyrings/gkr-keyrings.h"
+
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
+
 #include "ui/gkr-ask-request.h"
 #include "ui/gkr-ask-daemon.h"
 
@@ -814,8 +818,8 @@ lock_keyring (GkrKeyring *keyring)
 }
 
 static gboolean
-op_lock_keyring_execute (GString *packet,
-			 GString *result,
+op_lock_keyring_execute (GkrBuffer *packet,
+			 GkrBuffer *result,
 			 GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -847,8 +851,8 @@ lock_each_keyring (GkrKeyring* keyring, gpointer unused)
 }
 
 static gboolean
-op_lock_all_execute (GString *packet,
-		     GString *result,
+op_lock_all_execute (GkrBuffer *packet,
+		     GkrBuffer *result,
 		     GkrKeyringRequest *req)
 {
 	gkr_keyrings_foreach (lock_each_keyring, NULL);
@@ -857,8 +861,8 @@ op_lock_all_execute (GString *packet,
 }
 
 static gboolean
-op_set_default_keyring_execute (GString *packet,
-				GString *result,
+op_set_default_keyring_execute (GkrBuffer *packet,
+				GkrBuffer *result,
 				GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -890,8 +894,8 @@ op_set_default_keyring_execute (GString *packet,
 }
 
 static gboolean
-op_get_default_keyring_execute (GString *packet,
-				GString *result,
+op_get_default_keyring_execute (GkrBuffer *packet,
+				GkrBuffer *result,
 				GkrKeyringRequest *req)
 {
 	GkrKeyring* keyring;
@@ -915,13 +919,13 @@ op_get_default_keyring_execute (GString *packet,
 static gboolean
 add_name_to_result (GkrKeyring* keyring, gpointer result)
 {
-	return gnome_keyring_proto_add_utf8_string ((GString*)result, 
+	return gnome_keyring_proto_add_utf8_string ((GkrBuffer*)result, 
 	                                            keyring->keyring_name);
 }
 
 static gboolean
-op_list_keyrings_execute (GString *packet,
-			  GString *result,
+op_list_keyrings_execute (GkrBuffer *packet,
+			  GkrBuffer *result,
 			  GkrKeyringRequest *req)
 {
 	gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
@@ -935,8 +939,8 @@ op_list_keyrings_execute (GString *packet,
 
 
 static gboolean
-op_set_keyring_info_execute (GString *packet,
-			     GString *result,
+op_set_keyring_info_execute (GkrBuffer *packet,
+			     GkrBuffer *result,
 			     GkrKeyringRequest *req)
 {
 	char    *keyring_name;
@@ -967,8 +971,8 @@ op_set_keyring_info_execute (GString *packet,
 }
 
 static gboolean
-op_get_keyring_info_execute (GString *packet,
-			     GString *result,
+op_get_keyring_info_execute (GkrBuffer *packet,
+			     GkrBuffer *result,
 			     GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1000,7 +1004,7 @@ op_get_keyring_info_execute (GString *packet,
 }
 
 static gboolean
-op_create_keyring_collect (GString *packet, GkrKeyringRequest *req)
+op_create_keyring_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	GnomeKeyringOpCode opcode;
 	char *keyring_name, *password;
@@ -1038,8 +1042,8 @@ op_create_keyring_collect (GString *packet, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_create_keyring_execute (GString *packet,
-			   GString *result,
+op_create_keyring_execute (GkrBuffer *packet,
+			   GkrBuffer *result,
 			   GkrKeyringRequest *req)
 {
 	char *keyring_name, *password;
@@ -1101,8 +1105,8 @@ op_create_keyring_execute (GString *packet,
 
 
 static gboolean
-op_unlock_keyring_execute (GString *packet,
-			   GString *result,
+op_unlock_keyring_execute (GkrBuffer *packet,
+			   GkrBuffer *result,
 			   GkrKeyringRequest *req)
 {
 	char *keyring_name, *password;
@@ -1137,8 +1141,8 @@ op_unlock_keyring_execute (GString *packet,
 
 
 static gboolean
-op_delete_keyring_execute (GString *packet,
-			   GString *result,
+op_delete_keyring_execute (GkrBuffer *packet,
+			   GkrBuffer *result,
 			   GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1173,7 +1177,7 @@ op_delete_keyring_execute (GString *packet,
 }
 
 static gboolean
-op_change_keyring_password_collect (GString *packet, GkrKeyringRequest *req)
+op_change_keyring_password_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	GnomeKeyringOpCode opcode;
 	char *keyring_name, *original, *password;
@@ -1213,8 +1217,8 @@ op_change_keyring_password_collect (GString *packet, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_change_keyring_password_execute (GString *packet,
-			   GString *result,
+op_change_keyring_password_execute (GkrBuffer *packet,
+			   GkrBuffer *result,
 			   GkrKeyringRequest *req)
 {
 	char *keyring_name, *original, *password;
@@ -1285,7 +1289,7 @@ op_change_keyring_password_execute (GString *packet,
 }
 
 static gboolean
-op_list_items_collect (GString *packet, GkrKeyringRequest *req)
+op_list_items_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	char *keyring_name;
 	GkrKeyring *keyring;
@@ -1309,8 +1313,8 @@ op_list_items_collect (GString *packet, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_list_items_execute (GString *packet,
-		       GString *result,
+op_list_items_execute (GkrBuffer *packet,
+		       GkrBuffer *result,
 		       GkrKeyringRequest *req)
 {
 	GkrKeyring *keyring;
@@ -1366,7 +1370,7 @@ op_list_items_execute (GString *packet,
 }
 
 static gboolean
-op_create_item_collect (GString *packet, GkrKeyringRequest *req)
+op_create_item_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	char *keyring_name;
 	GkrKeyring *keyring;
@@ -1431,8 +1435,8 @@ op_create_item_collect (GString *packet, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_create_item_execute (GString *packet,
-			GString *result,
+op_create_item_execute (GkrBuffer *packet,
+			GkrBuffer *result,
 			GkrKeyringRequest *req)
 {
 	char *keyring_name, *display_name, *secret;
@@ -1540,7 +1544,7 @@ op_create_item_execute (GString *packet,
 
 
 static gboolean
-op_delete_item_collect (GString *packet, GkrKeyringRequest *req)
+op_delete_item_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	char *keyring_name;
 	GkrKeyring *keyring;
@@ -1572,8 +1576,8 @@ op_delete_item_collect (GString *packet, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_delete_item_execute (GString *packet,
-			GString *result,
+op_delete_item_execute (GkrBuffer *packet,
+			GkrBuffer *result,
 			GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1624,7 +1628,7 @@ op_delete_item_execute (GString *packet,
 
 
 static gboolean
-op_get_item_info_collect (GString *packet, GkrKeyringRequest *req)
+op_get_item_info_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	char *keyring_name;
 	GkrKeyring *keyring;
@@ -1660,8 +1664,8 @@ op_get_item_info_collect (GString *packet, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_get_item_info_execute (GString *packet,
-			  GString *result,
+op_get_item_info_execute (GkrBuffer *packet,
+			  GkrBuffer *result,
 			  GkrKeyringRequest *req)
 {
 	char *keyring_name, *secret;
@@ -1723,7 +1727,7 @@ out:
 }
 
 static gboolean
-op_get_item_acl_or_attributes_collect (GString *packet, GkrKeyringRequest *req)
+op_get_item_acl_or_attributes_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	char *keyring_name;
 	GkrKeyring *keyring;
@@ -1755,8 +1759,8 @@ op_get_item_acl_or_attributes_collect (GString *packet, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_get_item_attributes_execute (GString *packet,
-				GString *result,
+op_get_item_attributes_execute (GkrBuffer *packet,
+				GkrBuffer *result,
 				GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1807,8 +1811,8 @@ out:
 }
 
 static gboolean
-op_get_item_acl_execute (GString *packet,
-			 GString *result,
+op_get_item_acl_execute (GkrBuffer *packet,
+			 GkrBuffer *result,
 			 GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1859,8 +1863,8 @@ out:
 }
 
 static gboolean
-op_set_item_acl_execute (GString *packet,
-			 GString *result,
+op_set_item_acl_execute (GkrBuffer *packet,
+			 GkrBuffer *result,
 			 GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1909,7 +1913,7 @@ out:
 }
 
 static gboolean
-op_set_item_info_or_attributes_collect (GString *packet, GkrKeyringRequest *req)
+op_set_item_info_or_attributes_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	char *keyring_name;
 	GkrKeyring *keyring;
@@ -1941,8 +1945,8 @@ op_set_item_info_or_attributes_collect (GString *packet, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_set_item_info_execute (GString *packet,
-			  GString *result,
+op_set_item_info_execute (GkrBuffer *packet,
+			  GkrBuffer *result,
 			  GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -2004,8 +2008,8 @@ out:
 }
 
 static gboolean
-op_set_daemon_display_execute (GString *packet,
-			       GString *result,
+op_set_daemon_display_execute (GkrBuffer *packet,
+			       GkrBuffer *result,
 			       GkrKeyringRequest *req)
 {
        char *display;
@@ -2071,8 +2075,8 @@ unmatched_attributes (GnomeKeyringAttributeList *attributes,
 }
 
 static gboolean
-op_set_item_attributes_execute (GString *packet,
-				GString *result,
+op_set_item_attributes_execute (GkrBuffer *packet,
+				GkrBuffer *result,
 				GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -2151,8 +2155,8 @@ sort_found (gconstpointer  a,
 
 
 static gboolean
-op_find_execute (GString *packet,
-		 GString *result,
+op_find_execute (GkrBuffer *packet,
+		 GkrBuffer *result,
 		 GkrKeyringRequest *req)
 {
 	GList *l;
@@ -2243,7 +2247,7 @@ find_in_each_keyring (GkrKeyring* keyring, gpointer data)
 }
 
 static gboolean
-op_find_collect (GString *packet, GkrKeyringRequest *req)
+op_find_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 {
 	FindContext ctx;
 	

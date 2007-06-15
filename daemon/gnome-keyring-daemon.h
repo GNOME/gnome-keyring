@@ -27,11 +27,14 @@
 #include <sys/types.h>
 #include <glib.h>
 
-#include "library/gnome-keyring.h"
-#include "library/gnome-keyring-private.h"
+#include "common/gkr-buffer.h"
 
 #include "keyrings/gkr-keyring.h"
 #include "keyrings/gkr-keyring-item.h"
+
+#include "library/gnome-keyring.h"
+#include "library/gnome-keyring-private.h"
+
 
 typedef struct {
 	GnomeKeyringApplicationRef *app_ref;
@@ -40,10 +43,10 @@ typedef struct {
 } GkrKeyringRequest;	
 
 typedef struct {
-	gboolean (*collect_info) (GString *packet,
+	gboolean (*collect_info) (GkrBuffer *packet,
 				  GkrKeyringRequest *req);
-	gboolean (*execute_op) (GString *packet,
-				GString *result,
+	gboolean (*execute_op) (GkrBuffer *packet,
+				GkrBuffer *result,
 				GkrKeyringRequest *req);
 } GnomeKeyringOperationImplementation;
 

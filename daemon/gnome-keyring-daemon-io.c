@@ -39,10 +39,14 @@
 #include "gnome-keyring-daemon.h"
 #include "mkdtemp.h"
 
+#include "common/gkr-buffer.h"
+
+#include "keyrings/gkr-keyrings.h"
+
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
-#include "keyrings/gkr-keyrings.h"
+
 #include "ui/gkr-ask-daemon.h"
 
 #ifndef HAVE_SOCKLEN_T
@@ -69,7 +73,7 @@ typedef struct {
 	
 	guint input_watch;
 	GIOChannel *input_channel;
-	GString *input_buffer;
+	GkrBuffer *input_buffer;
 	gint input_pos;
 
 	GkrAskRequest* ask;
@@ -79,7 +83,7 @@ typedef struct {
 	gpointer collect_data;
 
 	guint output_watch;
-	GString *output_buffer;
+	GkrBuffer *output_buffer;
 	gint output_pos;
 } GnomeKeyringClient;
 
@@ -235,10 +239,10 @@ gnome_keyring_client_free (GnomeKeyringClient *client)
 
 
 	if (client->input_buffer != NULL) {
-		g_string_free (client->input_buffer, TRUE);
+		gkr_buffer_free (client->input_buffer);
 	}
 	if (client->output_buffer != NULL) {
-		g_string_free (client->output_buffer, TRUE);
+		gkr_buffer_free (client->output_buffer);
 	}
 
 	if (client->app_ref != NULL) {
@@ -276,8 +280,8 @@ read_packet_with_size (GnomeKeyringClient *client)
 	fd = client->sock;
 	
 	if (client->input_pos < 4) {
-		g_string_set_size (client->input_buffer, 4);
-		res = read (fd, client->input_buffer->str + client->input_pos,
+		gkr_buffer_resize (client->input_buffer, 4);
+		res = read (fd, client->input_buffer->buf + client->input_pos,
 			    4 - client->input_pos);
 		if (res <= 0) {
 			if (errno != EAGAIN &&
@@ -301,9 +305,9 @@ read_packet_with_size (GnomeKeyringClient *client)
 		}
 		
 		g_assert (client->input_pos < packet_size);
-		g_string_set_size (client->input_buffer, packet_size);
+		gkr_buffer_resize (client->input_buffer, packet_size);
 
-		res = read (fd, client->input_buffer->str + client->input_pos,
+		res = read (fd, client->input_buffer->buf + client->input_pos,
 			    packet_size - client->input_pos);
 		if (res <= 0) {
 			if (errno != EAGAIN &&
@@ -506,7 +510,9 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 			return;
 		}
 
-		client->output_buffer = g_string_new (NULL);
+		client->output_buffer = gkr_buffer_new_full (128, g_realloc);
+		if (!client->output_buffer)
+			g_error ("couldn't create buffer, out of memory");
 
 		/* Make sure keyrings in memory are up to date */
 		/* This call may remove items or keyrings, which change
@@ -556,7 +562,7 @@ gnome_keyring_client_state_machine (GnomeKeyringClient *client)
 		debug_print (("GNOME_CLIENT_STATE_WRITE_REPLY %p\n", client));
 		debug_print (("writing %d bytes\n", client->output_buffer->len));
 		res = write (client->sock,
-			     client->output_buffer->str + client->output_pos,
+			     client->output_buffer->buf + client->output_pos,
 			     client->output_buffer->len - client->output_pos);
 		if (res <= 0) {
 			if (errno != EAGAIN &&
@@ -615,8 +621,11 @@ gnome_keyring_client_new (int fd)
 	client->state = GNOME_CLIENT_STATE_CREDENTIALS;
 	client->sock = fd;
 	client->input_channel = channel;
-	client->input_buffer = g_string_new (NULL);
 	client->input_pos = 0;
+
+	client->input_buffer = gkr_buffer_new_full (128, g_realloc);
+	if (!client->input_buffer)
+		g_error ("couldn't create buffer, out of memory");
 
 	clients = g_list_prepend (clients, client);
 }

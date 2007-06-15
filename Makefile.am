@@ -6,6 +6,7 @@ endif
 
 SUBDIRS = \
 	. \
+	common \
 	library \
 	keyrings \
 	ui \
