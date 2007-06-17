@@ -18,8 +18,9 @@ LIBADD_SOURCE = mkdtemp.c mkdtemp.h
 gnome_keyring_daemon_SOURCES = \
 	gnome-keyring-daemon.c \
 	gnome-keyring-daemon.h \
+	gnome-keyring-daemon-dbus.c \
 	gnome-keyring-daemon-io.c \
-	gnome-keyring-daemon-dbus.c
+	gnome-keyring-daemon-ops.c
 
 gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/library/libgnome-keyring-common.la \
