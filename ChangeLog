@@ -1,6 +1,10 @@
+2007-06-17  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in: Bump version number
+
 === gnome-keyring 2.19.4 === 
 
-2007-06-17  Nate Nielsen  <nielsen@memberwebs.com>
+2007-06-17  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in:
 	* NEWS: Release version 2.19.4
