@@ -37,6 +37,7 @@
 #include <string.h>
 #include <signal.h>
 #include <locale.h>
+#include <syslog.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -53,6 +54,64 @@ static GMainLoop *loop = NULL;
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
 #endif
+
+static void
+log_handler (const gchar *log_domain, GLogLevelFlags log_level, 
+             const gchar *message, gpointer user_data)
+{
+    int level;
+
+    /* Note that crit and err are the other way around in syslog */
+        
+    switch (G_LOG_LEVEL_MASK & log_level) {
+    case G_LOG_LEVEL_ERROR:
+        level = LOG_CRIT;
+        break;
+    case G_LOG_LEVEL_CRITICAL:
+        level = LOG_ERR;
+        break;
+    case G_LOG_LEVEL_WARNING:
+        level = LOG_WARNING;
+        break;
+    case G_LOG_LEVEL_MESSAGE:
+        level = LOG_NOTICE;
+        break;
+    case G_LOG_LEVEL_INFO:
+        level = LOG_INFO;
+        break;
+    case G_LOG_LEVEL_DEBUG:
+        level = LOG_DEBUG;
+        break;
+    default:
+        level = LOG_ERR;
+        break;
+    }
+    
+    /* Log to syslog first */
+    if (log_domain)
+        syslog (level, "%s: %s", log_domain, message);
+    else
+        syslog (level, "%s", message);
+ 
+    /* And then to default handler for aborting and stuff like that */
+    g_log_default_handler (log_domain, log_level, message, user_data); 
+}
+
+static void
+prepare_logging ()
+{
+    GLogLevelFlags flags = G_LOG_FLAG_FATAL | G_LOG_LEVEL_ERROR | 
+                G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING | 
+                G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO;
+                
+    openlog ("gnome-keyring-daemon", LOG_PID, LOG_AUTH);
+    
+    g_log_set_handler (NULL, flags, log_handler, NULL);
+    g_log_set_handler ("Glib", flags, log_handler, NULL);
+    g_log_set_handler ("Gtk", flags, log_handler, NULL);
+    g_log_set_handler ("Gnome", flags, log_handler, NULL);
+    g_log_set_default_handler (log_handler, NULL);
+}
 
 static RETSIGTYPE
 cleanup_handler (int sig)
@@ -205,7 +264,11 @@ main (int argc, char *argv[])
 	signal (SIGINT, cleanup_handler);
         signal (SIGHUP, cleanup_handler);
         signal (SIGTERM, cleanup_handler);
-
+        
+        /* Send all warning or error messages to syslog, if a daemon */
+        if (!foreground)
+	        prepare_logging();
+        
 	loop = g_main_loop_new (NULL, FALSE);
 
 	fd_str = getenv ("GNOME_KEYRING_LIFETIME_FD");

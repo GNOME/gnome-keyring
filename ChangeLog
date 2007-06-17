@@ -1,5 +1,10 @@
 2007-06-17  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gnome-keyring-daemon.c: Sends logs to syslog when not running 
+	in the foreground.
+	
+2007-06-17  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/Makefile.am:
 	* daemon/gnome-keyring-daemon-ops.c: (copied from gnome-keyring-daemon.c)
 	* daemon/gnome-keyring-daemon.c: Seperate keyring operations into a 
