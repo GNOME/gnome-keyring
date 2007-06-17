@@ -1,3 +1,12 @@
+Changes in version 2.19.4 are:
+* Fixed problem where zero find results returned 'denied'.
+* Fixed ugly password prompt for making a new keyring.
+* Consistent use of NULL in the API to represent the default keyring.
+* Use non-pageable memory for secrets and passwords.
+* Log warning and error messages to syslog when running as a daemon.
+* Added unit tests for the gnome-keyring API.
+* Refactored and reorganized the code.
+
 Changes in version 2.19.2 are: 
 * Sync up version number with GNOME release schedule
 * Use libgcrypt instead of hand-rolled encryption algorithms.
