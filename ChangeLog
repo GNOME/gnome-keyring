@@ -1,3 +1,9 @@
+=== gnome-keyring 2.19.4.1 === 
+
+2007-06-17  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS: Release version 2.19.4.1
+
 2007-06-18  Stef Walter  <stef@memberwebs.com>
 
 	* Makefile.am:

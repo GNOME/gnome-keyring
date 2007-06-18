@@ -1,3 +1,6 @@
+Changes in version 2.19.4.1 are:
+* Build fix for unit tests
+
 Changes in version 2.19.4 are:
 * Fixed problem where zero find results returned 'denied'.
 * Fixed ugly password prompt for making a new keyring.
