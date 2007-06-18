@@ -1,3 +1,10 @@
+2007-06-18  Stef Walter  <stef@memberwebs.com>
+
+	* Makefile.am:
+	* configure.in:
+	* tests/Makefile.am: Fix building problems with tests.
+	Fixes bug #448643
+
 2007-06-17  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number
