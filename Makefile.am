@@ -22,7 +22,7 @@ EXTRA_DIST = \
 	intltool-update.in \
 	HACKING
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-tests
 
 DISTCLEANFILES = \
 	intltool-extract \

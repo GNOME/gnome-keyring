@@ -1,6 +1,6 @@
 
 EXTRA_DIST = \
-	cu-test/ \
+	cu-test/license.txt \
 	unit-tests-prep.sh
 
 INCLUDES=					\
@@ -47,6 +47,7 @@ run-base-test.c: $(UNIT_TESTS_BASE) unit-tests-prep.sh
 run_base_test_SOURCES = \
 	run-base-test.c \
 	run-base-test.h \
+	$(srcdir)/cu-test/CuTest.h \
 	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_BASE) 
 
@@ -63,6 +64,7 @@ run-library-test.c: $(UNIT_TESTS_LIBRARY) unit-tests-prep.sh
 run_library_test_SOURCES = \
 	run-library-test.c \
 	run-library-test.h \
+	$(srcdir)/cu-test/CuTest.h \
 	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_LIBRARY) 
 
@@ -78,5 +80,7 @@ run-prompt-test.c: $(UNIT_TESTS_PROMPT) unit-tests-prep.sh
 run_prompt_test_SOURCES = \
 	run-prompt-test.c \
 	run-prompt-test.h \
+	$(srcdir)/cu-test/CuTest.h \
 	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_PROMPT) 
+
