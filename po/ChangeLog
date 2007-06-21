@@ -1,5 +1,9 @@
 === gnome-keyring 2.19.4 === 
 
+2007-06-21  I Felix  <ifelix25@gmail.com>
+
+	* ta.po: Updated Tamil Translation.
+
 2007-06-17  Stef Walter  <stef@memberwebs.com>
 
 	* POTFILES.in: Added daemon/gnome-keyring-daemon-ops.c
