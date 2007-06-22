@@ -32,3 +32,13 @@ DISTCLEANFILES = \
 # Clean up any EXTRA_DIST we're distributing
 dist-hook:
 	rm -rf `find $(distdir)/ -name .svn`
+
+distcheck-hook: 
+	@echo "RUNNING AUTOMATIC UNIT TESTS ---------------------------"
+	@echo
+	@echo
+	$(MAKE) -C tests run-auto-tests
+	@echo
+	@echo
+	@echo "DONE AUTOMATIC UNIT TESTS ------------------------------"
+

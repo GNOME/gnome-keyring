@@ -28,6 +28,19 @@
 #include "run-library-test.h"
 #include "library/gnome-keyring.h"
 
+/* 
+ * Each test looks like (on one line):
+ *     void unit_test_xxxxx (CuTest* cu)
+ * 
+ * Each setup looks like (on one line):
+ *     void unit_setup_xxxxx (void);
+ * 
+ * Each teardown looks like (on one line):
+ *     void unit_teardown_xxxxx (void);
+ * 
+ * Tests be run in the order specified here.
+ */
+ 
 static GList* keyrings = NULL;
 gchar* default_keyring = NULL;
 
@@ -37,31 +50,11 @@ gchar* default_keyring = NULL;
 #define DISPLAY_NAME "Item Display Name"
 #define SECRET "item-secret"
 
-/* 
- * Each test function must begin with (on the same line):
- *   void unit_test_
- * 
- * Tests will be run in the order specified here.
- */
- 
 void unit_test_stash_default (CuTest* cu)
 {
 	GnomeKeyringResult res;
 	res = gnome_keyring_get_default_keyring_sync (&default_keyring);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
-}
-
-void unit_test_list_keyrings (CuTest* cu)
-{
-	GnomeKeyringResult res;
-	GList *l;
-	
-	res = gnome_keyring_list_keyring_names_sync (&keyrings);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-
-	printf("\t\tkeyrings:\n");
-	for (l = keyrings; l; l = g_list_next (l))
-		printf("\t\t  %s\n", (gchar*)l->data);
 }
 
 void unit_test_create_keyring (CuTest* cu)
@@ -297,6 +290,19 @@ void unit_test_keyring_info (CuTest* cu)
 
 	res = gnome_keyring_set_info_sync (NULL, info);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+}
+
+void unit_test_list_keyrings (CuTest* cu)
+{
+	GnomeKeyringResult res;
+	GList *l;
+	
+	res = gnome_keyring_list_keyring_names_sync (&keyrings);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+
+	printf("\t\tkeyrings:\n");
+	for (l = keyrings; l; l = g_list_next (l))
+		printf("\t\t  %s\n", (gchar*)l->data);
 }
 
 void unit_test_cleaup (CuTest* cu)

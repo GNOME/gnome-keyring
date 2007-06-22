@@ -1,3 +1,21 @@
+2007-06-22  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* Makefile.am:
+	* daemon/gonme-keyring-daemon-dbus.c:
+	* daemon/gnome-keyring-daemon-io.c:
+	* keyrings/gkr-keyrings.c:
+	* tests/Makefile.am:
+	* tests/unit-test-daemon-setup.c: (added)
+	* tests/unit-test-keyrings.c:
+	* tests/unit-test-keyrings-prompt.c:
+	* tests/unit-test-memory.c:
+	* tests/unit-test-other.c:
+	* tests/unit-test-secmem.c:
+	* tests/unit-test-prep.sh: Automatic unit testing on distcheck,
+	modified daemon so it behaves slightly differently (where it 
+	creates sockets, keyrings) when testing.
+
 === gnome-keyring 2.19.4.1 === 
 
 2007-06-17  Stef Walter  <stef@memberwebs.com>

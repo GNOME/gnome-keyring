@@ -453,6 +453,13 @@ gnome_keyring_daemon_dbus_setup (GMainLoop *loop, const gchar *socket)
 {
 	dbus_uint32_t res = 0;
 	DBusError derr = { 0 };
+	
+#ifdef WITH_TESTS
+	/* If running as a test, don't do DBUS stuff */
+	const gchar *env = g_getenv ("GNOME_KEYRING_TEST_PATH");
+	if (env && *env) 
+		return;
+#endif
 
 	socket_path = socket;
 	dbus_error_init (&derr); 

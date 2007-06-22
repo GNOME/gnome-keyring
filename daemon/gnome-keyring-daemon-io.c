@@ -88,9 +88,9 @@ typedef struct {
 	gint output_pos;
 } GnomeKeyringClient;
 
-char tmp_dir[1024];
-char socket_path[1024];
-GList *clients = NULL;
+static char tmp_dir[1024] = { 0, };
+static char socket_path[1024] = { 0, };
+static GList *clients = NULL;
 
 #if 0
 #define debug_print(x) g_print x
@@ -670,25 +670,44 @@ new_client (GIOChannel  *channel,
 void
 cleanup_socket_dir (void)
 {
-	unlink (socket_path);
-	rmdir (tmp_dir);
+	if(*socket_path)
+		unlink (socket_path);
+	if(*tmp_dir)
+		rmdir (tmp_dir);
 }
 
 gboolean
 create_master_socket (const char **path)
 {
+	gboolean have_path = FALSE;
 	int sock;
 	struct sockaddr_un addr;
 	GIOChannel *channel;
-	gchar *tmp_tmp_dir;
+	gchar *tmp_tmp_dir = NULL;
 	
-	/* Create private directory for agent socket */
-	tmp_tmp_dir = g_build_filename (g_get_tmp_dir (), "keyring-XXXXXX", NULL);
-	strncpy (tmp_dir, tmp_tmp_dir, sizeof (tmp_dir));
-	if (mkdtemp (tmp_dir) == NULL) {
-		perror ("mkdtemp: socket dir");
-		return FALSE;
+	/* 
+	 * When run under control of unit tests, we let the parent process
+	 * pass in the socket path that we're going to create our main socket on.
+	 */
+	
+#ifdef WITH_TESTS
+	const gchar* env = g_getenv ("GNOME_KEYRING_TEST_PATH");
+	if (env && *env) {
+		g_strlcpy (tmp_dir, env, sizeof (tmp_dir));
+		have_path = TRUE;
+	} 
+#endif /* WITH_TESTS */	
+	
+	if (!have_path) {
+		/* Create private directory for agent socket */
+		tmp_tmp_dir = g_build_filename (g_get_tmp_dir (), "keyring-XXXXXX", NULL);
+		strncpy (tmp_dir, tmp_tmp_dir, sizeof (tmp_dir));
+		if (mkdtemp (tmp_dir) == NULL) {
+			perror ("mkdtemp: socket dir");
+			return FALSE;
+		}
 	}
+
 	snprintf (socket_path, sizeof (socket_path), "%s/socket", tmp_dir);
 	
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);

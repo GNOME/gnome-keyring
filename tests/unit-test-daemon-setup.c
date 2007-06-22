@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-other.c: Test miscellaneous functionality
+/* unit-test-keyrings.c: Test basic keyring functionality
 
    Copyright (C) 2007 Stefan Walter
 
@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
+#include <unistd.h>
 
 #include "run-library-test.h"
 #include "library/gnome-keyring.h"
@@ -41,11 +43,39 @@
  * Tests be run in the order specified here.
  */
  
-void unit_test_set_display (CuTest* cu)
+#define TEST_PATH "/tmp/test-gnome-keyring-daemon"
+
+static GPid daemon_pid;
+
+void unit_setup_daemon (void)
 {
-	GnomeKeyringResult res;
+	GError *err = NULL;
+	gchar *args[3];
 	
-	/* Shouldn't work */
-	res = gnome_keyring_daemon_set_display_sync ("WOOF");
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);	
+	if (g_mkdir_with_parents (TEST_PATH, 0777) < 0) 
+		g_error ("couldn't create test directory");
+	
+	g_setenv ("GNOME_KEYRING_SOCKET", TEST_PATH "/socket", TRUE);
+	g_setenv ("GNOME_KEYRING_TEST_PATH", TEST_PATH, TRUE);
+	
+	args[0] = "../daemon/gnome-keyring-daemon";
+	args[1] = "-f";
+	args[2] = NULL;
+	
+	if (!g_spawn_async (NULL, args, NULL, G_SPAWN_LEAVE_DESCRIPTORS_OPEN | G_SPAWN_DO_NOT_REAP_CHILD, 
+	                    NULL, NULL, &daemon_pid, &err)) {
+		g_error ("couldn't start gnome-keyring-daemon for testing: %s", 
+		         err && err->message ? err->message : "");
+		g_assert_not_reached ();
+	}
+	
+	/* Let it startup properly */
+	sleep (2);
+}
+
+void unit_teardown_daemon (void)
+{
+	if (daemon_pid)
+		kill (daemon_pid, SIGTERM);
+	/* We're exiting soon anyway, no need to wait */
 }

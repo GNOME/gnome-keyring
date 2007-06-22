@@ -56,7 +56,8 @@ run_base_test_SOURCES = \
 
 UNIT_TESTS_LIBRARY = \
 	unit-test-keyrings.c \
-	unit-test-other.c 
+	unit-test-other.c \
+	unit-test-daemon-setup.c
 
 run-library-test.c: $(UNIT_TESTS_LIBRARY) unit-tests-prep.sh
 	sh unit-tests-prep.sh -b run-library-test $(UNIT_TESTS_LIBRARY)
@@ -72,7 +73,8 @@ run_library_test_SOURCES = \
 # Propmting tests
 
 UNIT_TESTS_PROMPT = \
-	unit-test-keyrings-prompt.c 
+	unit-test-keyrings-prompt.c \
+	unit-test-daemon-setup.c
 
 run-prompt-test.c: $(UNIT_TESTS_PROMPT) unit-tests-prep.sh
 	sh unit-tests-prep.sh -b run-prompt-test $(UNIT_TESTS_PROMPT)
@@ -83,4 +85,16 @@ run_prompt_test_SOURCES = \
 	$(srcdir)/cu-test/CuTest.h \
 	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_PROMPT) 
+
+# -----------------------------------------------------------------------------
+# Run the tests
+
+run-auto-tests: $(noinst_PROGRAMS)
+	./run-base-test 
+	./run-library-test
+
+run: $(noinst_PROGRAMS)
+	./run-base-test
+	./run-library-test
+	./run-prompt-test
 

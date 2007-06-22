@@ -31,6 +31,8 @@ END
 source_top()
 {
 cat << END
+/* This is auto-generated code. Edit at your own peril. */
+#include "$BASE.h"
 static void RunAllTests(void) 
 {
     CuString *output = CuStringNew();
@@ -39,13 +41,19 @@ static void RunAllTests(void)
 END
 }
 
-source_bottom()
+source_middle()
 {
 cat << END
     CuSuiteRun(suite);
     CuSuiteSummary(suite, output);
     CuSuiteDetails(suite, output);
     printf("%s\\n", output->buffer);
+END
+}
+
+source_bottom()
+{
+cat << END
 }
 
 int main(int argc, char* argv[])
@@ -90,17 +98,26 @@ FILES=$*
 
 (
 	header_top
+	cat $FILES | grep '^void unit_setup_' | sed -e 's/$/;/'
 	cat $FILES | grep '^void unit_test_' | sed -e 's/$/;/'
+	cat $FILES | grep '^void unit_teardown_' | sed -e 's/$/;/'
 	header_bottom
 ) > $BASE.h
 
 (
-	echo "/* This is auto-generated code. Edit at your own peril. */"
-	echo "#include \"$BASE.h\""
 	source_top
+	cat $FILES | grep '^void unit_setup_' | \
+		sed -e 's/^void //' -e 's/(.*$//' -e 's/$/();/'
+
 	cat $FILES | grep '^void unit_test_' | \
 		sed -e 's/^void //' -e 's/(.*$//' \
-                     -e 's/^/    SUITE_ADD_TEST(suite, /' -e 's/$/);/'
+                     -e 's/^/SUITE_ADD_TEST(suite, /' -e 's/$/);/'
+
+	source_middle
+                     
+	cat $FILES | grep '^void unit_teardown_' | \
+		sed -e 's/^void //' -e 's/(.*$//' -e 's/$/();/'
+		
 	source_bottom
 ) > $BASE.c
 

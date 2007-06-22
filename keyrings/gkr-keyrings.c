@@ -46,6 +46,7 @@ static GkrKeyring *session_keyring = NULL;
 static GkrKeyring *default_keyring = NULL;
 
 static time_t keyring_dir_mtime = 0;
+static gboolean dirs_created = FALSE;
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -114,20 +115,24 @@ update_default (void)
 gchar*
 gkr_keyrings_get_dir (void)
 {
-	char *dir, *gnome2_dir;
+	gchar *dir = NULL;
 	
-	dir = g_build_filename (g_get_home_dir (), ".gnome2/keyrings", NULL);
-	if (!g_file_test (dir, G_FILE_TEST_IS_DIR)) {
-		gnome2_dir = g_build_filename (g_get_home_dir (), ".gnome2", NULL);
-		if (!g_file_test (gnome2_dir, G_FILE_TEST_IS_DIR)) {
-			mkdir (gnome2_dir, S_IRWXU);
-		}
-		g_free (gnome2_dir);
+#ifdef WITH_TESTS
+	const gchar* env = g_getenv ("GNOME_KEYRING_TEST_PATH");
+	if (env && *env)
+		dir = g_build_filename (env, "keyrings", NULL);
+#endif 
+	
+	if (!dir)
+		dir = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
 		
-		if (mkdir (dir, S_IRWXU) < 0) {
+	if (!dirs_created) {
+		if (g_mkdir_with_parents (dir, S_IRWXU) < 0)
 			g_warning ("unable to create keyring dir");
-		}
+		else
+			dirs_created = TRUE;
 	}
+	
 	return dir;
 }
 

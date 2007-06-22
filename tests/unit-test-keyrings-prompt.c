@@ -8,10 +8,16 @@
 #include "library/gnome-keyring.h"
 
 /* 
- * Each test function must begin with (on the same line):
- *   void unit_test_
+ * Each test looks like (on one line):
+ *     void unit_test_xxxxx (CuTest* cu)
  * 
- * Tests will be run in the order specified here.
+ * Each setup looks like (on one line):
+ *     void unit_setup_xxxxx (void);
+ * 
+ * Each teardown looks like (on one line):
+ *     void unit_teardown_xxxxx (void);
+ * 
+ * Tests be run in the order specified here.
  */
  
 static void 
