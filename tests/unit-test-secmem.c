@@ -124,9 +124,6 @@ void unit_test_secmem_alloc_insane (CuTest* cu)
 	
 	p2 = gkr_secure_memory_alloc (G_MAXSIZE);
 	CuAssert (cu, "shouldn't have worked", p2 == NULL);
-		
-	p2 = gkr_secure_memory_alloc (G_MAXSIZE / 2);
-	CuAssert (cu, "shouldn't have worked", p2 == NULL);	
 }
 
 void unit_test_secmem_realloc (CuTest* cu)
