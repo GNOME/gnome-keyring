@@ -1,5 +1,10 @@
 2007-06-25  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring-memory.c: Fixed dumb problem with memory
+	being freed twice. Fixes bug #450953
+	
+2007-06-25  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon-ops.c:
 	* keyrings/gkr-keyring-item.c:
 	* keyrings/gkr-keyring.c:

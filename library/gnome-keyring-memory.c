@@ -217,8 +217,8 @@ gnome_keyring_memory_free (gpointer p)
 		return;
 	else if (!gkr_secure_memory_check (p))
 		g_free (p);
-		
-	gkr_secure_memory_free (p);
+	else 
+		gkr_secure_memory_free (p);
 }
 
 
