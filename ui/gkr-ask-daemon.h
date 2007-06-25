@@ -6,10 +6,6 @@
 
 #include "gkr-ask-request.h"
 
-void           gkr_ask_daemon_init        (void);
-
-void           gkr_ask_daemon_cleanup     (void);
-
 void           gkr_ask_daemon_queue       (GkrAskRequest* ask);
 
 void           gkr_ask_daemon_cancel      (GkrAskRequest* ask);

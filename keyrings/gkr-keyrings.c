@@ -26,6 +26,8 @@
 
 #include "gkr-keyrings.h"
 
+#include "common/gkr-cleanup.h"
+
 #include "library/gnome-keyring-proto.h"
 
 #include <unistd.h>
@@ -39,6 +41,7 @@
 #include <sys/stat.h>
 #include <glib.h>
 
+static gboolean keyrings_inited = FALSE;
 
 static GList *keyrings = NULL;
 
@@ -108,6 +111,41 @@ update_default (void)
 	default_keyring = keyring;
 }
 
+static void 
+keyrings_cleanup (gpointer unused)
+{
+	GkrKeyring *keyring;
+	
+	g_assert (keyrings_inited);
+	keyrings_inited = FALSE;
+	
+	while (keyrings) {
+		keyring = GKR_KEYRING (keyrings->data);
+		if (keyring == session_keyring)
+			session_keyring = NULL;
+		gkr_keyrings_remove (keyring);
+	}
+	
+	g_assert (session_keyring == NULL);
+}
+
+static void
+keyrings_init (void)
+{
+	if (keyrings_inited)
+		return;
+	keyrings_inited = TRUE;
+
+	g_assert (!session_keyring);
+	session_keyring = gkr_keyring_new ("session", NULL);
+	gkr_keyrings_add (session_keyring);
+	
+	gkr_keyrings_update ();
+	
+	gkr_cleanup_register (keyrings_cleanup, NULL);	
+}
+
+
 /* -----------------------------------------------------------------------------
  * PUBLIC 
  */
@@ -139,6 +177,8 @@ gkr_keyrings_get_dir (void)
 GkrKeyring*
 gkr_keyrings_get_default (void)
 {
+	keyrings_init ();
+	
 	if (!default_keyring)
 		update_default ();
 	return default_keyring;
@@ -149,6 +189,8 @@ gkr_keyrings_set_default (GkrKeyring *keyring)
 {
 	char *dirname, *path;
 	int fd;
+	
+	keyrings_init ();
 	
 	dirname = gkr_keyrings_get_dir ();
 	path = g_build_filename (dirname, "default", NULL);
@@ -181,6 +223,8 @@ gkr_keyrings_update (void)
 	GList *l;
 	GkrKeyring *keyring;
 	GHashTable *checks = NULL;
+	
+	keyrings_init ();
 	
 	dirname = gkr_keyrings_get_dir ();
 
@@ -269,6 +313,8 @@ gkr_keyrings_update (void)
 void 
 gkr_keyrings_add (GkrKeyring *keyring)
 {
+	keyrings_init ();
+	
 	g_assert (GKR_IS_KEYRING (keyring));
 	
 	/* Can't add the same keyring twice */
@@ -281,6 +327,8 @@ gkr_keyrings_add (GkrKeyring *keyring)
 void 
 gkr_keyrings_remove (GkrKeyring *keyring)
 {
+	keyrings_init ();
+	
 	g_assert (GKR_IS_KEYRING (keyring));
 	
 	if (g_list_find (keyrings, keyring)) {
@@ -297,6 +345,7 @@ gkr_keyrings_remove (GkrKeyring *keyring)
 GkrKeyring*
 gkr_keyrings_get_session (void)
 {
+	keyrings_init ();
 	g_assert (session_keyring);
 	return session_keyring;
 }
@@ -306,6 +355,8 @@ gkr_keyrings_find (const gchar *name)
 {
 	GkrKeyring *keyring;
 	GList *l;
+	
+	keyrings_init ();
 
 	if (name == NULL)
 		return gkr_keyrings_get_default ();
@@ -325,6 +376,8 @@ gkr_keyrings_foreach (GkrKeyringEnumFunc func, gpointer data)
 {
 	GList *l;
 	
+	keyrings_init ();
+	
 	for (l = keyrings; l != NULL; l = l->next) {
 		if (!(func) (GKR_KEYRING (l->data), data))
 			return FALSE;
@@ -336,30 +389,6 @@ gkr_keyrings_foreach (GkrKeyringEnumFunc func, gpointer data)
 guint
 gkr_keyrings_get_count (void)
 {
+	keyrings_init ();
 	return g_list_length (keyrings);
-}
-
-void
-gkr_keyrings_init (void)
-{
-	g_assert (!session_keyring);
-	session_keyring = gkr_keyring_new ("session", NULL);
-	gkr_keyrings_add (session_keyring);
-	
-	gkr_keyrings_update ();
-}
-
-void 
-gkr_keyrings_cleanup (void)
-{
-	GkrKeyring *keyring;
-	
-	while (keyrings) {
-		keyring = GKR_KEYRING (keyrings->data);
-		if (keyring == session_keyring)
-			session_keyring = NULL;
-		gkr_keyrings_remove (keyring);
-	}
-	
-	g_assert (session_keyring == NULL);
 }

@@ -25,6 +25,8 @@
 #include "gnome-keyring.h"
 #include "gnome-keyring-daemon.h"
 
+#include "common/gkr-cleanup.h"
+
 #include "keyrings/gkr-keyrings.h"
 
 #include "ui/gkr-ask-daemon.h"
@@ -113,9 +115,16 @@ prepare_logging ()
     g_log_set_default_handler (log_handler, NULL);
 }
 
+static void
+cleanup_socket (gpointer unused)
+{
+        cleanup_socket_dir ();	
+}
+
 static RETSIGTYPE
 cleanup_handler (int sig)
 {
+	/* TODO: Use proper signal handling */
         cleanup_socket_dir ();
         _exit (2);
 }
@@ -176,6 +185,8 @@ main (int argc, char *argv[])
 	if (!create_master_socket (&path)) {
 		exit (1);
 	}
+	
+	gkr_cleanup_register (cleanup_socket, NULL); 
 	
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */
@@ -284,23 +295,15 @@ main (int argc, char *argv[])
 		
 	}
 	
-	gkr_ask_daemon_init ();
-	gkr_keyrings_init ();
-	
 #ifdef WITH_DBUS
 	gnome_keyring_daemon_dbus_setup (loop, path);
 #endif
 	
 	g_main_loop_run (loop);
 
-#ifdef WITH_DBUS
-	gnome_keyring_daemon_dbus_cleanup ();
-#endif
-	
-	gkr_keyrings_cleanup ();
-	gkr_ask_daemon_cleanup ();
+	/* This wraps everything up in order */
+	gkr_cleanup_perform ();
 
-	cleanup_socket_dir ();
 	return 0;
 }
 

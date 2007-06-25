@@ -28,6 +28,8 @@
 #include "gnome-keyring-private.h"
 #include "gnome-keyring-daemon.h"
 
+#include "common/gkr-cleanup.h"
+
 #include <dbus/dbus.h>
 
 static DBusConnection *dbus_conn = NULL;
@@ -448,6 +450,18 @@ static DBusObjectPathVTable object_vtable  = {
 	NULL, 
 };
 
+
+static void 
+daemon_dbus_cleanup (gpointer unused)
+{
+	if (dbus_conn) {
+		dbus_connection_unregister_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH);
+		disconnect_dbus_from_glib (dbus_conn, NULL);
+		dbus_connection_unref (dbus_conn);
+		dbus_conn = NULL;
+	}
+}
+
 void 
 gnome_keyring_daemon_dbus_setup (GMainLoop *loop, const gchar *socket)
 {
@@ -471,6 +485,8 @@ gnome_keyring_daemon_dbus_setup (GMainLoop *loop, const gchar *socket)
 		dbus_error_free (&derr);
 		return;
 	}
+	
+	gkr_cleanup_register (daemon_dbus_cleanup, NULL);
 
 	connect_dbus_with_glib (dbus_conn, NULL);
 
@@ -511,16 +527,5 @@ gnome_keyring_daemon_dbus_setup (GMainLoop *loop, const gchar *socket)
 	}
 }
 
-void 
-gnome_keyring_daemon_dbus_cleanup (void)
-{
-	if (dbus_conn) {
-		dbus_connection_unregister_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH);
-		disconnect_dbus_from_glib (dbus_conn, NULL);
-		dbus_connection_unref (dbus_conn);
-		dbus_conn = NULL;
-	}
-}
 
-#endif
-
+#endif /* WITH_DBUS */

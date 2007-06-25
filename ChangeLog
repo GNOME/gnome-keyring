@@ -1,4 +1,20 @@
-2007-06-24  Stef Walter  <stef@memberwebs.com>
+2007-06-25  Stef Walter  <stef@memberwebs.com>
+
+	* common/Makefile.am: 
+	* common/gkr-cleanup.c: (added)
+	* common/gkr-cleanup.h: (added)
+	* daemon/gnome-keyring-daemon-dbus.c:
+	* daemon/gnome-keyring-daemon.c:
+	* daemon/gnome-keyring-daemon.h:
+	* keyrings/gkr-keyrings.c:
+	* keyrings/gkr-keyrings.h:
+	* tests/Makefile.am:
+	* tests/unit-test-cleanup.c:
+	* ui/gkr-ask-daemon.c:
+	* ui/gkr-ask-daemon.h: Use registered cleanup callbacks instead of a 
+	myriad of special functions to cleanup each different part of the daemon.
+	
+2007-06-25  Stef Walter  <stef@memberwebs.com>
 
 	* tests/unit-test-secmem.c: Don't crash during testing by 
 	allocating too much memory. 

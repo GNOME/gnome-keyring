@@ -4,7 +4,11 @@
 #include "gkr-ask-daemon.h"
 #include "gkr-ask-request.h"
 
+#include "common/gkr-cleanup.h"
+
 #include <glib.h>
+
+static gboolean ask_daemon_inited = FALSE;
 
 static GkrAskRequest* current_ask = NULL;
 static GList *outstanding_asks = NULL;
@@ -13,20 +17,14 @@ static gchar *the_display = NULL;
 
 static void prompt_next (void);
 
-void
-gkr_ask_daemon_init (void)
-{
-	const gchar* display;
-	
-	display = g_getenv ("DISPLAY");
-	if (display && display[0])
-		gkr_ask_daemon_set_display (display);
-}
-
-void 
-gkr_ask_daemon_cleanup (void)
+static void 
+ask_daemon_cleanup (gpointer unused)
 {
 	GkrAskRequest *ask;
+	
+	g_assert (ask_daemon_inited);
+	ask_daemon_inited = FALSE;
+
 	if (current_ask)
 		gkr_ask_daemon_cancel (current_ask);
 	
@@ -37,6 +35,23 @@ gkr_ask_daemon_cleanup (void)
 	
 	g_free (the_display);
 	the_display = NULL;
+}
+
+static void
+ask_daemon_init (void)
+{
+	const gchar* display;
+
+	if (ask_daemon_inited)
+		return;
+
+	ask_daemon_inited = TRUE;
+	
+	display = g_getenv ("DISPLAY");
+	if (display && display[0])
+		display = g_strdup (display);
+		
+	gkr_cleanup_register (ask_daemon_cleanup, NULL);
 }
 
 static void 
@@ -76,6 +91,8 @@ prompt_next (void)
 void
 gkr_ask_daemon_queue (GkrAskRequest* ask)
 {
+	ask_daemon_init ();
+	
 	g_assert (GKR_IS_ASK_REQUEST (ask));
 	g_assert (!gkr_ask_request_is_complete (ask));
 	
@@ -94,6 +111,8 @@ gkr_ask_daemon_queue (GkrAskRequest* ask)
 void
 gkr_ask_daemon_cancel (GkrAskRequest* ask)
 {
+	ask_daemon_init ();
+	
 	if (gkr_ask_request_is_complete (ask))
 		return;
 	
@@ -119,6 +138,8 @@ gkr_ask_daemon_cancel (GkrAskRequest* ask)
 void 
 gkr_ask_daemon_set_display (const gchar* display)
 {
+	ask_daemon_init ();
+	
 	g_free (the_display);
 	the_display = g_strdup (display);
 }

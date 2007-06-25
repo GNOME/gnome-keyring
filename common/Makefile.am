@@ -21,6 +21,8 @@ libgkr_daemon_common_la_CFLAGS = \
 libgkr_daemon_common_la_SOURCES = \
 	gkr-buffer.c \
 	gkr-buffer.h \
+	gkr-cleanup.c \
+	gkr-cleanup.h \
 	gkr-secure-memory.c \
 	gkr-secure-memory.h
 

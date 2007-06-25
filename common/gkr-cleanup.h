@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-keyrings.h - the global list of keyrings
+/* gkr-cleanup.h - for data cleanup at end of program
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,31 +21,15 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef __GKR_KEYRINGS_H__
-#define __GKR_KEYRINGS_H__
+#ifndef GKRCLEANUP_H_
+#define GKRCLEANUP_H_
 
-#include "gkr-keyring.h"
+#include <glib.h>
 
-gchar*          gkr_keyrings_get_dir       (void);
+void    gkr_cleanup_register        (GDestroyNotify notify, gpointer user_data);
 
-void            gkr_keyrings_update        (void);
+void    gkr_cleanup_unregister      (GDestroyNotify notify, gpointer user_data);
 
-GkrKeyring*     gkr_keyrings_get_default   (void);
+void    gkr_cleanup_perform         (void);
 
-void            gkr_keyrings_set_default   (GkrKeyring *keyring);
-
-void            gkr_keyrings_add           (GkrKeyring *keyring);
-
-void            gkr_keyrings_remove        (GkrKeyring *keyring);
-
-GkrKeyring*     gkr_keyrings_find          (const gchar *name);
-
-GkrKeyring*     gkr_keyrings_get_session   (void);
-
-guint           gkr_keyrings_get_count     (void);
-
-typedef gboolean (*GkrKeyringEnumFunc)     (GkrKeyring* keyring, gpointer data);
-gboolean        gkr_keyrings_foreach       (GkrKeyringEnumFunc func, gpointer data);
-
-#endif /* __GKR_KEYRINGS_H__ */
-
+#endif /* GKRCLEANUP_H_ */
