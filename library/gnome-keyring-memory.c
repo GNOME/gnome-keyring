@@ -88,7 +88,7 @@ gnome_keyring_memory_alloc (gulong sz)
 	}
 	
 	if (do_warning) {
-		g_warning (WARNING);
+		g_message (WARNING);
 		do_warning = FALSE;
 	}
 	
@@ -157,7 +157,7 @@ gnome_keyring_memory_realloc (gpointer p, gulong sz)
 	}
 	
 	if (do_warning) {
-		g_warning (WARNING);
+		g_message (WARNING);
 		do_warning = FALSE;
 	}
 	
@@ -200,8 +200,6 @@ gnome_keyring_memory_try_realloc (gpointer p, gulong sz)
 	else
 		return g_try_realloc (p, sz);
 }
-
-gpointer  gnome_keyring_memory_try_realloc    (gpointer p, gulong sz);
 
 /**
  * gnome_keyring_memory_free:

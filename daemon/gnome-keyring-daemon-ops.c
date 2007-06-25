@@ -772,7 +772,7 @@ unlock_keyring (GkrKeyring *keyring, const char *password)
 		
 		keyring->password = gnome_keyring_memory_strdup (password);
 		if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
-			gnome_keyring_memory_free (keyring->password);
+			gnome_keyring_free_password (keyring->password);
 			keyring->password = NULL;
 		}
 		if (keyring->locked) {
@@ -797,7 +797,7 @@ lock_keyring (GkrKeyring *keyring)
 	}
 	g_assert (keyring->password != NULL);
 	
-	gnome_keyring_memory_free (keyring->password);
+	gnome_keyring_free_password (keyring->password);
 	keyring->password = NULL;
 	if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
 		/* Failed to re-read, remove the keyring */
@@ -1025,7 +1025,7 @@ op_create_keyring_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 
  out:
 	g_free (keyring_name);
-	gnome_keyring_memory_free (password);
+	gnome_keyring_free_password (password);
 	
 	return TRUE;
 }
@@ -1087,7 +1087,7 @@ op_create_keyring_execute (GkrBuffer *packet,
 	
  out:
 	g_free (keyring_name);
-	gnome_keyring_memory_free (password);
+	gnome_keyring_free_password (password);
 
 	return TRUE;
 }
@@ -1123,7 +1123,7 @@ op_unlock_keyring_execute (GkrBuffer *packet,
 	}
 	
 	g_free (keyring_name);
-	gnome_keyring_memory_free (password);
+	gnome_keyring_free_password (password);
 
 	return TRUE;
 }
@@ -1199,8 +1199,8 @@ op_change_keyring_password_collect (GkrBuffer *packet, GkrKeyringRequest *req)
 	}
 
 	g_free (keyring_name);
-	gnome_keyring_memory_free (original);
-	gnome_keyring_memory_free (password);
+	gnome_keyring_free_password (original);
+	gnome_keyring_free_password (password);
 	
 	return TRUE;
 }
@@ -1271,8 +1271,8 @@ op_change_keyring_password_execute (GkrBuffer *packet,
 	
  out:
 	g_free (keyring_name);
-	gnome_keyring_memory_free (original);
-	gnome_keyring_memory_free (password);
+	gnome_keyring_free_password (original);
+	gnome_keyring_free_password (password);
 	
 	return TRUE;
 }
@@ -1505,7 +1505,7 @@ op_create_item_execute (GkrBuffer *packet,
 
 	g_free (item->display_name);
 	item->display_name = g_strdup (display_name);
-	gnome_keyring_memory_free (item->secret);
+	gnome_keyring_free_password (item->secret);
 	item->secret = gnome_keyring_memory_strdup (secret);
 	if (item->attributes != NULL) {
 		gnome_keyring_attribute_list_free (item->attributes);
@@ -1523,7 +1523,7 @@ op_create_item_execute (GkrBuffer *packet,
  bail:	
 	g_free (keyring_name);
 	g_free (display_name);
-	gnome_keyring_memory_free (secret);
+	gnome_keyring_free_password (secret);
 	gnome_keyring_attribute_list_free (attributes);
 	
 	gnome_keyring_proto_add_uint32 (result, res);
@@ -1984,7 +1984,7 @@ op_set_item_info_execute (GkrBuffer *packet,
 		item->display_name = g_strdup (item_name);
 	}
 	if (secret != NULL) {
-		gnome_keyring_memory_free (item->secret);
+		gnome_keyring_free_password (item->secret);
 		item->secret = gnome_keyring_memory_strdup (secret);
 	}
 	
@@ -1992,7 +1992,7 @@ out:
 	
 	g_free (keyring_name);
 	g_free (item_name);
-	gnome_keyring_memory_free (secret);
+	gnome_keyring_free_password (secret);
 	return TRUE;
 }
 

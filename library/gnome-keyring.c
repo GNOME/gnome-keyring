@@ -2388,7 +2388,7 @@ void
 gnome_keyring_item_info_set_secret (GnomeKeyringItemInfo *item_info,
 				    const char           *value)
 {
-	gnome_keyring_memory_free (item_info->secret);
+	gnome_keyring_free_password (item_info->secret);
 	item_info->secret = gnome_keyring_memory_strdup (value);
 }
 
@@ -2536,7 +2536,7 @@ gnome_keyring_network_password_free (GnomeKeyringNetworkPasswordData *data)
 	g_free (data->authtype);
 	g_free (data->user);
 	g_free (data->domain);
-	gnome_keyring_memory_free (data->password);
+	gnome_keyring_free_password (data->password);
 	
 	g_free (data);
 }

@@ -39,9 +39,28 @@
  * secret information.
  */
 void
-gnome_keyring_free_password (char *str)
+gnome_keyring_free_password (gchar *str)
 {
-	memset (str, 0, strlen (str));
+	volatile char *vp;
+	size_t len;
+	
+	if (!str)
+		return;
+		
+	/*
+	 * If we're using unpageable 'secure' memory, then the free call
+	 * should zero out the memory, but because on certain platforms 
+	 * we may be using normal memory, zero it out here just in case.
+	 */
+		
+        vp = (volatile char*)str;
+       	len = strlen (str);
+        while (len) { 
+        	*vp = 0xAA;
+        	vp++;
+        	len--; 
+        } 
+	
 	gnome_keyring_memory_free (str);
 }
 
@@ -58,7 +77,7 @@ void
 gnome_keyring_found_free (GnomeKeyringFound *found)
 {
 	g_free (found->keyring);
-	gnome_keyring_memory_free (found->secret);
+	gnome_keyring_free_password (found->secret);
 	gnome_keyring_attribute_list_free (found->attributes);
 	g_free (found);
 }
@@ -152,8 +171,7 @@ gnome_keyring_item_info_free (GnomeKeyringItemInfo *item_info)
 {
 	if (item_info != NULL) {
 		g_free (item_info->display_name);
-		if (item_info->secret != NULL)
-			gnome_keyring_memory_free (item_info->secret);
+		gnome_keyring_free_password (item_info->secret);
 		g_free (item_info);
 	}
 }

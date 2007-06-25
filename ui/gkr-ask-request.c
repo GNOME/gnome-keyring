@@ -144,9 +144,9 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 	pv->ask_pid = 0;
 
 	/* Cleanup for response processing */
-	gnome_keyring_memory_free (ask->typed_password);
+	gnome_keyring_free_password (ask->typed_password);
 	ask->typed_password = NULL;
-	gnome_keyring_memory_free (ask->original_password);
+	gnome_keyring_free_password (ask->original_password);
 	ask->original_password = NULL;
 	
 	/* A failed request */
@@ -371,10 +371,10 @@ gkr_ask_request_dispose (GObject *obj)
 	cancel_ask_if_active (ask);
 	g_assert (pv->ask_pid == 0);
 	
-	gnome_keyring_memory_free (ask->original_password);
+	gnome_keyring_free_password (ask->original_password);
 	ask->original_password = NULL;
 	
-	gnome_keyring_memory_free (ask->typed_password);
+	gnome_keyring_free_password (ask->typed_password);
 	ask->typed_password = NULL;
 	
 	G_OBJECT_CLASS(gkr_ask_request_parent_class)->dispose (obj);

@@ -1,5 +1,20 @@
 2007-06-25  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gnome-keyring-daemon-ops.c:
+	* keyrings/gkr-keyring-item.c:
+	* keyrings/gkr-keyring.c:
+	* library/gnome-keyring-proto.c: 
+	* library/gnome-keyring-utils.c:
+	* library/gnome-keyring.c:
+	* library/gnome-keyring.h:
+	* ui/gkr-ask-request.c: Use gnome_keyring_free_password() to zero out 
+	passwords even when not using nonpageable memory.
+	* library/gnome-keyring-memory.c: Make warnings about memory be simple
+	messages, so that they don't abort the program even when running a 
+	beta version of GNOME. Fixes bug #450953
+	
+2007-06-25  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in:
 	* common/Makefile.am: 
 	* common/gkr-async.c: (from cryptoki branch)

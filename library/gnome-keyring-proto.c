@@ -662,7 +662,7 @@ gnome_keyring_proto_decode_create_item (GkrBuffer            *buffer,
 		g_free (*display_name);
 	}
 	if (secret != NULL) {
-		gnome_keyring_memory_free (*secret);
+		gnome_keyring_free_password (*secret);
 	}
 	return FALSE;
 	
@@ -1449,13 +1449,13 @@ gnome_keyring_proto_decode_get_item_info_reply (GkrBuffer                  *buff
 		if (!gnome_keyring_proto_get_time (buffer, offset, &offset,
 						   &mtime)) {
 			g_free (name);
-			gnome_keyring_memory_free (secret);
+			gnome_keyring_free_password (secret);
 			return FALSE;
 		}
 		if (!gnome_keyring_proto_get_time (buffer, offset, &offset,
 						   &ctime)) {
 			g_free (name);
-			gnome_keyring_memory_free (secret);
+			gnome_keyring_free_password (secret);
 			return FALSE;
 		}
 		
@@ -1577,7 +1577,7 @@ gnome_keyring_proto_decode_set_item_info (GkrBuffer            *buffer,
  bail:
 	g_free (*keyring);
 	g_free (*display_name);
-	gnome_keyring_memory_free (*secret);
+	gnome_keyring_free_password (*secret);
 	return FALSE;
 }
 

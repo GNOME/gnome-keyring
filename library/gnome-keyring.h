@@ -138,7 +138,7 @@ GnomeKeyringAttributeList *gnome_keyring_attribute_list_copy          (GnomeKeyr
 
 gboolean gnome_keyring_is_available (void);
 
-void gnome_keyring_free_password (char *password);
+void gnome_keyring_free_password (gchar *password);
 
 void gnome_keyring_found_free (GnomeKeyringFound *found);
 void gnome_keyring_found_list_free (GList *found_list);

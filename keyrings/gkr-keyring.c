@@ -635,7 +635,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 			goto bail;
 		}
 		if (!verify_decrypted_buffer (&to_decrypt)) {
-			gnome_keyring_memory_free (keyring->password);
+			gnome_keyring_free_password (keyring->password);
 			keyring->password = NULL;
 		} else {
 			locked = FALSE;
@@ -723,7 +723,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 
 		g_free (item->display_name);
 		item->display_name = NULL;
-		gnome_keyring_memory_free (item->secret);
+		gnome_keyring_free_password (item->secret);
 		item->secret = NULL;
 		if (item->acl) {
 			gnome_keyring_acl_free (item->acl);
@@ -760,7 +760,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	if (items != NULL) {
 		for (i = 0; i < num_items; i++) {
 			g_free (items[i].display_name);
-			gnome_keyring_memory_free (items[i].secret);
+			gnome_keyring_free_password (items[i].secret);
 			gnome_keyring_attribute_list_free (items[i].hashed_attributes);
 			gnome_keyring_attribute_list_free (items[i].attributes);
 			gnome_keyring_acl_free (items[i].acl);
@@ -862,7 +862,7 @@ gkr_keyring_dispose (GObject *obj)
 	g_list_free (keyring->items);
 	keyring->items = NULL;
 	
-	gnome_keyring_memory_free (keyring->password);
+	gnome_keyring_free_password (keyring->password);
 	keyring->password = NULL;
 
 	G_OBJECT_CLASS (gkr_keyring_parent_class)->dispose (obj);
