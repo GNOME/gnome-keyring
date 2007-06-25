@@ -58,7 +58,11 @@ cat << END
 
 int main(int argc, char* argv[])
 {
-    gtk_init(&argc, &argv);
+    GLogLevelFlags fatal_mask;
+    gtk_init (&argc, &argv);
+    fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
+    fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
+    g_log_set_always_fatal (fatal_mask);
     RunAllTests();
     return 0;
 }

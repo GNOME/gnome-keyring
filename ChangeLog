@@ -1,5 +1,22 @@
 2007-06-25  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in:
+	* common/Makefile.am: 
+	* common/gkr-async.c: (from cryptoki branch)
+	* common/gkr-async.h: (from cyrptoki branch)
+	* common/gkr-unix-signal.c: (added)
+	* common/gkr-unix-signal.h: (added)
+	* common/gkr-wakeup.c: (added)
+	* common/gkr-wakeup.h: (added)
+	* daemon/gnome-keyring-daemon.c:
+	* tests/Makefile.am:
+	* tests/unit-test-async.c: (from cryptoki branch)
+	* tests/unit-test-signal.c: (added)
+	* tests/unit-tests-prep.sh: Properly handle unix signals. Quit main 
+	loop gracefully.
+	
+2007-06-25  Stef Walter  <stef@memberwebs.com>
+
 	* common/Makefile.am: 
 	* common/gkr-cleanup.c: (added)
 	* common/gkr-cleanup.h: (added)

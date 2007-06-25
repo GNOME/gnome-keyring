@@ -26,6 +26,7 @@
 #include "gnome-keyring-daemon.h"
 
 #include "common/gkr-cleanup.h"
+#include "common/gkr-unix-signal.h"
 
 #include "keyrings/gkr-keyrings.h"
 
@@ -121,12 +122,11 @@ cleanup_socket (gpointer unused)
         cleanup_socket_dir ();	
 }
 
-static RETSIGTYPE
-cleanup_handler (int sig)
+static gboolean
+signal_handler (guint sig, gpointer unused)
 {
-	/* TODO: Use proper signal handling */
-        cleanup_socket_dir ();
-        _exit (2);
+	g_main_loop_quit (loop);
+	return TRUE;
 }
 
 static int
@@ -271,15 +271,15 @@ main (int argc, char *argv[])
 
 	/* Daemon process continues here */
 
-	signal (SIGPIPE, SIG_IGN);
-	signal (SIGINT, cleanup_handler);
-        signal (SIGHUP, cleanup_handler);
-        signal (SIGTERM, cleanup_handler);
-        
         /* Send all warning or error messages to syslog, if a daemon */
         if (!foreground)
 	        prepare_logging();
-        
+	        
+	signal (SIGPIPE, SIG_IGN);
+	gkr_unix_signal_connect (SIGINT, signal_handler, NULL);
+	gkr_unix_signal_connect (SIGHUP, signal_handler, NULL);
+	gkr_unix_signal_connect (SIGTERM, signal_handler, NULL);
+             
 	loop = g_main_loop_new (NULL, FALSE);
 
 	fd_str = getenv ("GNOME_KEYRING_LIFETIME_FD");

@@ -38,9 +38,11 @@ test_keyring_two_SOURCES = \
 # Base tests
 
 UNIT_TESTS_BASE = \
-	unit-test-memory.c \
+	unit-test-cleanup.c \
 	unit-test-secmem.c \
-	unit-test-cleanup.c
+	unit-test-memory.c \
+	unit-test-async.c \
+	unit-test-signal.c
 
 run-base-test.c: $(UNIT_TESTS_BASE) unit-tests-prep.sh
 	sh unit-tests-prep.sh -b run-base-test $(UNIT_TESTS_BASE)
@@ -51,9 +53,11 @@ run_base_test_SOURCES = \
 	$(srcdir)/cu-test/CuTest.h \
 	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_BASE) 
-	
+
 run_base_test_LDADD = \
-	$(top_builddir)/common/libgkr-daemon-common.la
+	$(top_builddir)/common/libgkr-daemon-common.la \
+	$(GTHREAD_LIBS) \
+	$(GLIB_LIBS)
 
 # ------------------------------------------------------------------------------
 # Automatic library tests 

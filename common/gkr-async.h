@@ -26,33 +26,67 @@
 
 #include <glib.h>
 
+/* -----------------------------------------------------------------------------
+ * ASYNCHRONOUS CALLS
+ */
+
 struct _GkrAsyncCalls;
 typedef struct _GkrAsyncCalls GkrAsyncCalls;
 
-struct _GkrAsyncReply;
-typedef struct _GkrAsyncReply GkrAsyncReply;
+struct _GkrAsyncCall;
+typedef struct _GkrAsyncCall GkrAsyncCall;
 
-typedef void (*GkrAsyncFunc) (GkrAsyncReply* reply, gpointer message);
+typedef void (*GkrAsyncFunc) (GkrAsyncCall* reply, gpointer message);
 
-/* Called from the helper thread */
+/* Called from a worker thread */
 
-gpointer           gkr_async_call               (GkrAsyncCalls* context, 
+GkrAsyncCall*      gkr_async_call_send          (GkrAsyncCalls* calls, 
                                                  GkrAsyncFunc callback,
                                                  gpointer data);
 
-GkrAsyncReply*     gkr_async_call_send          (GkrAsyncCalls* context, 
-                                                 GkrAsyncFunc callback,
-                                                 gpointer data);
-
-gpointer           gkr_async_call_wait          (GkrAsyncReply* reply);
+gpointer           gkr_async_call_wait          (GkrAsyncCall* call);
 
 /* Called on the main thread */
 
-GkrAsyncCalls*     gkr_async_call_new_context   (void);
-
-void               gkr_async_call_free_context  (GkrAsyncCalls* context);
-
-void               gkr_async_call_reply         (GkrAsyncReply* reply,
+void               gkr_async_call_reply         (GkrAsyncCall* reply,
                                                  gpointer data);
+
+GkrAsyncCalls*     gkr_async_calls_new          (void);
+
+void               gkr_async_calls_free         (GkrAsyncCalls* calls);
+
+
+/* -----------------------------------------------------------------------------
+ * WORKER THREADS
+ */  
+
+struct _GkrAsyncWorker;
+typedef struct _GkrAsyncWorker GkrAsyncWorker;
+
+typedef void (*GkrAsyncWorkerCallback) (GkrAsyncWorker* worker, gpointer result, gpointer user_data);
+
+/* Called on the main thread */
+
+GkrAsyncWorker*    gkr_async_worker_start        (GThreadFunc worker,
+                                                  GkrAsyncWorkerCallback callback,
+                                                  gpointer user_data);
+
+void               gkr_async_worker_cancel       (GkrAsyncWorker *worker);
+
+void               gkr_async_worker_stop         (GkrAsyncWorker *worker);
+
+gboolean           gkr_async_worker_is_valid     (GkrAsyncWorker *worker);
+
+void               gkr_async_workers_stop_all    (void);
+
+guint              gkr_async_workers_get_n       (void);
+
+/* Called on the worker thread */
+
+gboolean           gkr_async_worker_is_cancelled (void);
+
+
+gpointer           gkr_async_worker_call_main    (GkrAsyncFunc callback,
+                                                  gpointer data);
 
 #endif /* __GKR_ASYNC_H__ */
