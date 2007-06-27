@@ -51,13 +51,29 @@ void unit_setup_daemon (void)
 {
 	GError *err = NULL;
 	gchar *args[3];
-	
-	if (g_mkdir_with_parents (TEST_PATH, 0777) < 0) 
+	const gchar *path;
+	gboolean start = FALSE;
+	gchar *socket;
+
+	/* If already setup somewhere else, then don't start daemon here */
+	path = g_getenv ("GNOME_KEYRING_TEST_PATH");
+	if (!path || !path[0]) {
+		start = TRUE;
+		path = TEST_PATH;
+		g_setenv ("GNOME_KEYRING_TEST_PATH", path, TRUE);
+	}
+
+	if (g_mkdir_with_parents (path, 0777) < 0) 
 		g_error ("couldn't create test directory");
 	
-	g_setenv ("GNOME_KEYRING_SOCKET", TEST_PATH "/socket", TRUE);
-	g_setenv ("GNOME_KEYRING_TEST_PATH", TEST_PATH, TRUE);
+	socket = g_strdup_printf ("%s/socket", TEST_PATH);
+	g_setenv ("GNOME_KEYRING_SOCKET", socket, TRUE);
 	
+	if (!start)
+		return;
+		
+	g_printerr ("Starting gnome-keyring-daemon...\n");
+
 	args[0] = "../daemon/gnome-keyring-daemon";
 	args[1] = "-f";
 	args[2] = NULL;

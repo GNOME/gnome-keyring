@@ -1,4 +1,9 @@
-2007-06-25  Stef Walter  <stef@memberwebs.com>
+2007-06-27  Stef Walter  <stef@memberwebs.com>
+
+	* tests/unit-test-daemon-setup.c: Don't start gnome-keyring-daemon 
+	in tests if the GNOME_KEYRING_TEST_PATH environment variable is set.
+	
+2007-06-27  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring-proto.c: Fix memory leaks. Patch from 
 	Alexander Sack. Fixes bug #451543
