@@ -1116,9 +1116,10 @@ gnome_keyring_proto_decode_find_reply (GkrBuffer *buffer,
 		if (!gnome_keyring_proto_get_utf8_string (buffer,
 							  offset, &offset,
 							  &found->keyring)) {
+			goto bail;
 		}
 		if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset, &found->item_id)) {
-			return FALSE;
+			goto bail;
 		}
 		if (!gnome_keyring_proto_get_utf8_secret (buffer,
 							  offset, &offset,
@@ -1217,7 +1218,7 @@ gnome_keyring_proto_decode_op_string_int (GkrBuffer *buffer,
 
 	if (!gnome_keyring_proto_get_uint32 (buffer, offset, &offset,
 					     val)) {
-		return FALSE;
+		goto bail;
 	}
 	
 	return TRUE;

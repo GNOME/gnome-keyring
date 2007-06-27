@@ -1,5 +1,10 @@
 2007-06-25  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring-proto.c: Fix memory leaks. Patch from 
+	Alexander Sack. Fixes bug #451543
+
+2007-06-25  Stef Walter  <stef@memberwebs.com>
+
 	* library/gnome-keyring-memory.c: Fixed dumb problem with memory
 	being freed twice. Fixes bug #450953
 	
