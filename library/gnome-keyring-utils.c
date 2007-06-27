@@ -24,7 +24,9 @@
 
 #include <string.h>
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
+#include "gnome-keyring.h"
 #include "gnome-keyring-private.h"
 #include "gnome-keyring-memory.h"
 
@@ -63,6 +65,58 @@ gnome_keyring_free_password (gchar *str)
 	
 	gnome_keyring_memory_free (str);
 }
+
+/**
+ * gnome_keyring_result_to_message:
+ * @res: A #GnomeKeyringResult
+ * 
+ * The #GNOME_KEYRING_RESULT_OK and #GNOME_KEYRING_RESULT_CANCELLED
+ * codes will return an empty string. 
+ * 
+ * Note that there are some results for which the application will need to 
+ * take appropriate action rather than just display an error message to 
+ * the user.
+ * 
+ * Return value: a string suitable for display to the user for a given 
+ * #GnomeKeyringResult, or an empty string if the message wouldn't make 
+ * sense to a user.
+ **/
+const gchar* 
+gnome_keyring_result_to_message (GnomeKeyringResult res)
+{
+	switch (res) {
+		
+	/* If the caller asks for messages for these, they get what they deserve */
+	case GNOME_KEYRING_RESULT_OK:
+	case GNOME_KEYRING_RESULT_CANCELLED:
+		return "";
+		
+	/* Valid displayable error messages */
+	case GNOME_KEYRING_RESULT_DENIED:
+		return _("Access Denied");
+	case GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON:
+		return _("The gnome-keyring-daemon application is not running.");
+	case GNOME_KEYRING_RESULT_NO_SUCH_KEYRING:
+		return _("The keyring has already been unlocked.");
+	case GNOME_KEYRING_RESULT_IO_ERROR:
+		return _("Error communicating with gnome-keyring-daemon");
+	case GNOME_KEYRING_RESULT_ALREADY_EXISTS:
+		return _("A keyring with that name already exists");	
+	case GNOME_KEYRING_RESULT_BAD_ARGUMENTS:
+		return _("Programmer error: The application sent invalid data.");
+	
+	/* 
+	 * This would be a dumb message to display to the user, we never return 
+	 * this from the daemon, only here for compatibility 
+	 */
+	case GNOME_KEYRING_RESULT_ALREADY_UNLOCKED:
+		return _("The keyring has already been unlocked.");
+	
+	default:
+		g_return_val_if_reached (NULL);	
+	};
+}
+
 
 /**
  * gnome_keyring_found_free():

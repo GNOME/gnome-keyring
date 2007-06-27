@@ -1,6 +1,5 @@
 <SECTION>
 <FILE>gnome-keyring</FILE>
-GnomeKeyringResult
 GnomeKeyringItemType
 GnomeKeyringAccessRestriction
 GnomeKeyringAttributeType
@@ -131,4 +130,9 @@ gnome_keyring_memory_try_realloc
 gnome_keyring_memory_free
 gnome_keyring_memory_is_secure
 gnome_keyring_memory_strdup
+</SECTION>
+<SECTION>
+<FILE>gnome-keyring-result</FILE>
+gnome_keyring_result_to_string
+GnomeKeyringResult
 </SECTION>

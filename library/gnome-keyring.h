@@ -36,8 +36,11 @@ typedef enum {
 	GNOME_KEYRING_RESULT_BAD_ARGUMENTS,
 	GNOME_KEYRING_RESULT_IO_ERROR,
 	GNOME_KEYRING_RESULT_CANCELLED,
-	GNOME_KEYRING_RESULT_ALREADY_EXISTS
+	GNOME_KEYRING_RESULT_KEYRING_ALREADY_EXISTS
 } GnomeKeyringResult;
+
+#define GNOME_KEYRING_RESULT_ALREADY_EXISTS \
+	GNOME_KEYRING_RESULT_KEYRING_ALREADY_EXISTS
 
 typedef enum {
 	/* The item types */
@@ -135,6 +138,8 @@ void                       gnome_keyring_attribute_list_append_uint32 (GnomeKeyr
 void                       gnome_keyring_attribute_list_free          (GnomeKeyringAttributeList *attributes);
 GnomeKeyringAttributeList *gnome_keyring_attribute_list_copy          (GnomeKeyringAttributeList *attributes);
 
+
+const gchar*               gnome_keyring_result_to_message            (GnomeKeyringResult res);
 
 gboolean gnome_keyring_is_available (void);
 

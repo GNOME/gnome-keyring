@@ -1,4 +1,5 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 daemon/gnome-keyring-daemon-ops.c
+library/gnome-keyring-utils.c
 ui/gkr-ask-tool.c

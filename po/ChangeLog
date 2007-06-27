@@ -1,3 +1,7 @@
+2007-06-27  Stef Walter  <stef@memberwebs.com>
+
+	* POTFILES.in: Added library/gnome-keyring-utils.c
+	
 2007-06-26  Clytie Siddall <clytie@riverland.net.au>
 
 	* vi.po: Updated Vietnamese translation.

@@ -49,3 +49,32 @@ void unit_test_set_display (CuTest* cu)
 	res = gnome_keyring_daemon_set_display_sync ("WOOF");
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);	
 }
+
+void unit_test_result_string (CuTest* cu)
+{
+	const gchar *msg;
+	
+	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_OK);	
+	CuAssert (cu, "should return an empty string", msg && !msg[0]);
+
+	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_CANCELLED); 	
+	CuAssert (cu, "should return an empty string", msg && !msg[0]);
+	
+	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_DENIED);
+	CuAssert (cu, "should return a valid message", msg && msg[0]);
+
+	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON); 	
+	CuAssert (cu, "should return a valid message", msg && msg[0]);
+
+	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+	CuAssert (cu, "should return a valid message", msg && msg[0]);
+
+	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_BAD_ARGUMENTS); 	
+	CuAssert (cu, "should return a valid message", msg && msg[0]);
+
+	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_IO_ERROR);
+	CuAssert (cu, "should return a valid message", msg && msg[0]);
+
+	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_KEYRING_ALREADY_EXISTS); 	
+	CuAssert (cu, "should return a valid message", msg && msg[0]);
+}

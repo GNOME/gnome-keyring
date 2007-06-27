@@ -1,5 +1,12 @@
 2007-06-27  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring.h
+	* library/gnome-keyring-utils.c:
+	* tests/unit-test-other.c: Added strerror() like functionality for 
+	GnomeKeyringResult. Fixes bug #151084
+	
+2007-06-27  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon-ops.c: 
 	* tests/unit-test-keyrings.c:
 	* tests/unit-test-keyrings-prompt.c: Allow passing NULL as a password
