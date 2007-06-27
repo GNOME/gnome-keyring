@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "unit-test-private.h"
 #include "run-library-test.h"
 #include "library/gnome-keyring.h"
 
@@ -311,6 +312,61 @@ void unit_test_list_keyrings (CuTest* cu)
 	for (l = keyrings; l; l = g_list_next (l))
 		printf("\t\t  %s\n", (gchar*)l->data);
 }
+
+static GnomeKeyringResult grant_access_result = GNOME_KEYRING_RESULT_CANCELLED;
+
+static void done_grant_access (GnomeKeyringResult res, gpointer data)
+{
+	grant_access_result = res;
+	test_mainloop_quit ();
+} 
+
+void unit_test_keyring_grant_access (CuTest *cu)
+{
+	GList *acl, *l;
+	GnomeKeyringResult res;
+	gpointer op;
+	gboolean found;
+	guint id;
+
+	/* Create teh item */
+	res = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
+	                                      "Barnyard", NULL, SECRET, FALSE, &id);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	
+	/* Grant strange program access (async) */
+	grant_access_result = GNOME_KEYRING_RESULT_CANCELLED;
+	op = gnome_keyring_item_grant_access_rights (NULL, "Strange Application", 
+	                                             "/usr/bin/strangeness", id, 
+	                                             GNOME_KEYRING_ACCESS_READ, 
+	                                             done_grant_access, NULL, NULL); 
+	CuAssert(cu, "return null op", op != NULL);
+	CuAssert(cu, "callback already called", grant_access_result == GNOME_KEYRING_RESULT_CANCELLED);
+		
+	test_mainloop_run (2000);
+	
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	
+	/* Now list the stuff */
+	res = gnome_keyring_item_get_acl_sync (NULL, id, &acl);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+
+	/* Make sure it's in the list */
+	found = FALSE;	
+	for (l = acl; l; l = g_list_next (l)) {
+		GnomeKeyringAccessControl *ac = (GnomeKeyringAccessControl*)l->data;
+		CuAssert(cu, "null access control", ac != NULL);
+		CuAssert(cu, "null access control pathname", gnome_keyring_item_ac_get_path_name (ac) != NULL);
+		
+		if (strcmp (gnome_keyring_item_ac_get_path_name (ac), "/usr/bin/strangeness") == 0)
+			found = TRUE;
+	}
+	
+	CuAssert(cu, "couldn't find acces granted", found == TRUE);
+
+	gnome_keyring_acl_free (acl);
+}
+
 
 void unit_test_cleaup (CuTest* cu)
 {

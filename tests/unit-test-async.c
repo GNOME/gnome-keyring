@@ -28,6 +28,7 @@
 
 #include <glib.h>
 
+#include "unit-test-private.h"
 #include "run-base-test.h"
 
 #include "common/gkr-async.h"
@@ -45,18 +46,6 @@
  * Tests be run in the order specified here.
  */
  
-void unit_setup_threading (void)
-{
-	g_thread_init (NULL);
-}
- 
-static GMainLoop *mainloop = NULL;
-
-void unit_setup_mainloop (void)
-{
-	mainloop = g_main_loop_new (NULL, FALSE);
-}
-
 static gboolean 
 cancel_worker (gpointer data)
 {
@@ -98,7 +87,7 @@ simple_done (GkrAsyncWorker* worker, gpointer result, gpointer user_data)
 {
 	SimpleParams *params = (SimpleParams*)user_data;
 	CuAssert (params->cu, "result didn't get passed through", result == &params->value);
-	g_main_loop_quit (mainloop);
+	test_mainloop_quit ();
 }
 
 void unit_test_worker_simple (CuTest* cu)
@@ -113,7 +102,7 @@ void unit_test_worker_simple (CuTest* cu)
 	CuAssertPtrNotNull (cu, worker);
 	 	
 	/* Run the main loop */
-	g_main_loop_run (mainloop);
+	test_mainloop_run (20000);
 	
 	CuAssertIntEquals (cu, 0, gkr_async_workers_get_n ());
 	CuAssertIntEquals (cu, SIMPLE_N, params.value);	 
@@ -149,7 +138,7 @@ cancel_done (GkrAsyncWorker* worker, gpointer result, gpointer user_data)
 	CancelParams *params = (CancelParams*)user_data;
 	CuAssert (params->cu, "result didn't get passed through", result == user_data);	
 	CuAssert (params->cu, "completing worker is not valid", gkr_async_worker_is_valid (worker));
-	g_main_loop_quit (mainloop);
+	test_mainloop_quit ();
 }
 
 void unit_test_worker_cancel (CuTest* cu)
@@ -168,7 +157,7 @@ void unit_test_worker_cancel (CuTest* cu)
 	g_timeout_add (1800, cancel_worker, worker);
 	 	
 	/* Run the main loop */
-	g_main_loop_run (mainloop);
+	test_mainloop_run (20000);
 	
 	/* Two seconds should have elapsed in other thread */
 	CuAssertIntEquals (cu, 2, params.value); 
@@ -224,10 +213,9 @@ void unit_test_worker_five (CuTest* cu)
 	}
 	
 	CuAssertIntEquals (cu, 5, gkr_async_workers_get_n ());
-	g_timeout_add (1900, (GSourceFunc)g_main_loop_quit, mainloop);
 	 	
 	/* Run the main loop */
-	g_main_loop_run (mainloop);
+	test_mainloop_run (1900); 
 
 	CuAssert (cu, "last worker should still be valid 2 seconds later", gkr_async_worker_is_valid (worker));
 	gkr_async_worker_stop (worker);

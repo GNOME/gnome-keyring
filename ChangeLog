@@ -1,5 +1,17 @@
 2007-06-27  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring.c:
+	* library/gnome-keyring.h:
+	* tests/Makefile.am:
+	* tests/unit-test-async.c:
+	* tests/unit-test-keyrings.c:
+	* tests/unit-test-mainloop-setup.c: (added)
+	* tests/unit-test-private.h: (added)
+	* tests/unit-test-signal.c: Added support for async version of 
+	gnome_keyring_item_grant_access_rights_sync(). Fixes bug #345141
+	
+2007-06-27  Stef Walter  <stef@memberwebs.com>
+
 	* library/gnome-keyring.h
 	* library/gnome-keyring-utils.c:
 	* tests/unit-test-other.c: Added strerror() like functionality for 

@@ -67,7 +67,7 @@ typedef enum {
 
 typedef struct GnomeKeyringOperation GnomeKeyringOperation;
 
-typedef void (*KeyringHandleReply) (GnomeKeyringOperation *op);
+typedef gboolean (*KeyringHandleReply) (GnomeKeyringOperation *op);
 
 struct GnomeKeyringOperation {
 	int socket;
@@ -89,6 +89,8 @@ struct GnomeKeyringOperation {
 	GDestroyNotify destroy_user_data;
 
 	KeyringHandleReply reply_handler;
+	gpointer reply_data;
+	GDestroyNotify destroy_reply_data;
 };
 
 #ifdef WITH_DBUS
@@ -233,9 +235,10 @@ gnome_keyring_operation_free (GnomeKeyringOperation *op)
 		g_source_remove (op->io_watch);
 		op->io_watch = 0;
 	}
-	if (op->destroy_user_data != NULL) {
+	if (op->destroy_user_data != NULL && op->user_data != NULL)
 		(*op->destroy_user_data) (op->user_data);
-	}
+	if (op->destroy_reply_data != NULL && op->reply_data != NULL)
+		(*op->destroy_reply_data) (op->reply_data);	
 	gkr_buffer_uninit (&op->send_buffer);
 	gkr_buffer_uninit (&op->receive_buffer);
 	close (op->socket);
@@ -531,12 +534,14 @@ operation_io (GIOChannel  *io_channel,
 				op->receive_pos += res;
 				
 				if (op->receive_pos == packet_size) {
-					g_source_remove (op->io_watch);
-					op->io_watch = 0;
 					op->result = GNOME_KEYRING_RESULT_OK;
 					
-					(*op->reply_handler) (op);
-					gnome_keyring_operation_free (op);
+					/* Only cleanup if the handler says we're done */
+					if ((*op->reply_handler) (op)) {
+						g_source_remove (op->io_watch);
+						op->io_watch = 0;
+						gnome_keyring_operation_free (op);
+					}
 				}
 			}
 		}
@@ -585,6 +590,40 @@ start_operation (gboolean receive_secure, gpointer callback,
 	} 
 	
 	return op;
+}
+
+static void
+reset_operation (GnomeKeyringOperation *op)
+{
+	GIOChannel *channel;
+
+	/* Start in failed mode */
+	op->state = STATE_FAILED;
+	op->result = GNOME_KEYRING_RESULT_OK;
+	
+	if (op->io_watch != 0) {
+		g_source_remove (op->io_watch);
+		op->io_watch = 0;
+	}
+	close (op->socket);
+
+	gkr_buffer_reset (&op->send_buffer);
+	gkr_buffer_reset (&op->receive_buffer);
+
+	op->socket = connect_to_daemon (TRUE);
+	if (op->socket < 0) {
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON);
+	} else  {
+		op->state = STATE_WRITING_CREDS;
+		gkr_buffer_init_full (&op->send_buffer, 128, g_realloc);
+		op->send_pos = 0;
+		
+		channel = g_io_channel_unix_new (op->socket);
+		op->io_watch = g_io_add_watch (channel,
+					       G_IO_OUT | G_IO_HUP,
+					       operation_io, op);
+		g_io_channel_unref (channel);
+	} 
 }
 
 static GnomeKeyringResult
@@ -668,7 +707,7 @@ gnome_keyring_cancel_request (gpointer request)
 	schedule_op_failed (op, GNOME_KEYRING_RESULT_CANCELLED);
 }
 
-static void
+static gboolean
 gnome_keyring_standard_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -683,9 +722,12 @@ gnome_keyring_standard_reply (GnomeKeyringOperation *op)
 	} else {
 		(*callback) (result, op->user_data);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
 
-static void
+static gboolean
 gnome_keyring_string_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -702,9 +744,12 @@ gnome_keyring_string_reply (GnomeKeyringOperation *op)
 		(*callback) (result, string, op->user_data);
 		g_free (string);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
 
-static void
+static gboolean
 gnome_keyring_int_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -720,6 +765,9 @@ gnome_keyring_int_reply (GnomeKeyringOperation *op)
 	} else {
 		(*callback) (result, integer, op->user_data);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
 
 gpointer
@@ -832,7 +880,7 @@ gnome_keyring_get_default_keyring_sync (char **keyring)
 	return res;
 }
 
-static void
+static gboolean
 gnome_keyring_list_keyring_names_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -848,6 +896,9 @@ gnome_keyring_list_keyring_names_reply (GnomeKeyringOperation *op)
 		g_list_foreach (names, (GFunc) g_free, NULL);
 		g_list_free (names);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
 
 gpointer
@@ -1251,7 +1302,7 @@ gnome_keyring_change_password_sync (const char *keyring_name,
 	return res;
 }
 
-static void
+static gboolean
 gnome_keyring_get_keyring_info_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -1266,6 +1317,9 @@ gnome_keyring_get_keyring_info_reply (GnomeKeyringOperation *op)
 		(*callback) (result, info, op->user_data);
 		gnome_keyring_info_free (info);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
 
 gpointer
@@ -1375,7 +1429,7 @@ gnome_keyring_set_info_sync (const char       *keyring,
 	return res;
 }
 
-static void
+static gboolean
 gnome_keyring_list_item_ids_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -1390,6 +1444,9 @@ gnome_keyring_list_item_ids_reply (GnomeKeyringOperation *op)
 		(*callback) (result, items, op->user_data);
 		g_list_free (items);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
 
 gpointer
@@ -1527,7 +1584,7 @@ gnome_keyring_info_get_is_locked (GnomeKeyringInfo *keyring_info)
 	return keyring_info->is_locked;
 }
 
-static void
+static gboolean
 gnome_keyring_find_items_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -1542,6 +1599,9 @@ gnome_keyring_find_items_reply (GnomeKeyringOperation *op)
 		(*callback) (result, found_items, op->user_data);
 		gnome_keyring_found_list_free (found_items);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
      
 gpointer
@@ -1867,7 +1927,7 @@ gnome_keyring_item_delete_sync (const char *keyring,
 	return res;
 }
 
-static void
+static gboolean
 gnome_keyring_get_item_info_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -1882,6 +1942,9 @@ gnome_keyring_get_item_info_reply (GnomeKeyringOperation *op)
 		(*callback) (result, info, op->user_data);
 		gnome_keyring_item_info_free (info);
 	}
+
+	/* Operation is done */
+	return TRUE;
 }
 
 gpointer
@@ -2065,7 +2128,7 @@ gnome_keyring_item_set_info_sync (const char           *keyring,
 	return res;
 }
 
-static void
+static gboolean
 gnome_keyring_get_attributes_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -2080,9 +2143,12 @@ gnome_keyring_get_attributes_reply (GnomeKeyringOperation *op)
 		(*callback) (result, attributes, op->user_data);
 		gnome_keyring_attribute_list_free (attributes);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
 
-static void
+static gboolean
 gnome_keyring_get_acl_reply (GnomeKeyringOperation *op)
 {
 	GnomeKeyringResult result;
@@ -2097,6 +2163,9 @@ gnome_keyring_get_acl_reply (GnomeKeyringOperation *op)
 		(*callback) (result, acl, op->user_data);
 		g_list_free (acl);
 	}
+	
+	/* Operation is done */
+	return TRUE;
 }
 
 
@@ -2327,6 +2396,136 @@ gnome_keyring_item_set_acl_sync (const char *keyring,
 	return res;
 }
 
+typedef struct _GrantAccessRights {
+	GnomeKeyringApplicationRef app_ref;
+	GnomeKeyringAccessControl acl;
+	gchar *keyring_name;
+	guint32 id;
+} GrantAccessRights;
+
+static void
+destroy_grant_access_rights (gpointer data)
+{
+	GrantAccessRights *gar = (GrantAccessRights*)data;
+	g_free (gar->app_ref.display_name);
+	g_free (gar->app_ref.pathname);
+	g_free (gar->keyring_name);
+	g_free (gar);
+}
+
+static gboolean
+gnome_keyring_item_grant_access_rights_reply (GnomeKeyringOperation *op)
+{
+	GrantAccessRights *gar;
+	GnomeKeyringResult result;
+	GnomeKeyringOperationDoneCallback callback;
+	gboolean ret;
+	GList *acl;
+
+	callback = op->user_callback;
+	
+	/* Parse the old access rights */
+	if (!gnome_keyring_proto_decode_get_acl_reply (&op->receive_buffer, &result, &acl)) {
+		(*callback) (GNOME_KEYRING_RESULT_IO_ERROR, op->user_data);
+		return TRUE;
+	} 
+	
+	gar = (GrantAccessRights*)op->reply_data;
+	g_assert (gar);
+	
+	/* Send off the new access rights */
+	reset_operation (op);
+	
+	/* Append our ACL to the list */
+	acl = g_list_append (acl, &gar->acl);
+	ret = gnome_keyring_proto_encode_set_acl (&op->send_buffer, gar->keyring_name, 
+	                                          gar->id, acl);
+	                  
+	/* A bit of cleanup */                        
+	acl = g_list_remove (acl, &gar->acl);
+	g_list_free (acl); 
+	                                          
+	if (!ret) {
+		(*callback) (GNOME_KEYRING_RESULT_BAD_ARGUMENTS, op->user_data);
+		return TRUE;
+	}
+	
+	op->reply_handler = gnome_keyring_standard_reply;
+	
+	/* Not done yet */
+	return FALSE;
+}
+
+/**
+ * gnome_keyring_item_grant_access_rights:
+ * @keyring: The keyring name, or NULL for the default keyring.
+ * @display_name: The display name for the application, as returned by g_get_application_name().
+ * @full_path: The full filepath to the application.
+ * @id: The id of the item to grant access to.
+ * @rights: The type of rights to grant.
+ * @callback: Callback which is called when the operation completes
+ * @data: Data to be passed to callback
+ * @destroy_data: Function to be called when data is no longer needed.
+ * 
+ * Will grant the application access rights to the item, provided 
+ * callee has write access to said item.
+ * 
+ * Return value: The operation
+ **/
+gpointer 
+gnome_keyring_item_grant_access_rights (const gchar *keyring, 
+                                        const gchar *display_name, 
+                                        const gchar *full_path, 
+                                        const guint32 id, 
+                                        const GnomeKeyringAccessType rights,
+                                        GnomeKeyringOperationDoneCallback callback,
+                                        gpointer data,
+                                        GDestroyNotify destroy_data)
+{    
+	GnomeKeyringOperation *op;
+	GrantAccessRights *gar;
+	
+	/* First get current ACL */
+	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
+	if (op->state == STATE_FAILED)
+		return op;
+	
+	if (!gnome_keyring_proto_encode_op_string_int (&op->send_buffer,
+						       GNOME_KEYRING_OP_GET_ITEM_ACL,
+						       keyring, id)) {
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+	}
+	
+	op->reply_handler = gnome_keyring_item_grant_access_rights_reply;
+
+	/* Copy information that the reply callback needs */
+	gar = g_new0 (GrantAccessRights, 1); 
+	gar->app_ref.display_name = g_strdup (display_name);
+	gar->app_ref.pathname = g_strdup (full_path);
+	gar->acl.application = &gar->app_ref;
+	gar->acl.types_allowed = rights;
+	gar->keyring_name = g_strdup (keyring);
+	gar->id = id;
+	
+	op->reply_data = gar;
+	op->destroy_reply_data = destroy_grant_access_rights;
+	
+	return op;
+}
+
+/**
+ * gnome_keyring_item_grant_access_rights_sync:
+ * @keyring: The keyring name, or NULL for the default keyring.
+ * @display_name: The display name for the application, as returned by g_get_application_name().
+ * @full_path: The full filepath to the application.
+ * @id: The id of the item to grant access to.
+ * @rights: The type of rights to grant.
+ * 
+ * Will grant the application access rights to the item, provided 
+ * callee has write access to said item.
+ * 
+ * Return value: The result of the operation
+ **/
 GnomeKeyringResult 
 gnome_keyring_item_grant_access_rights_sync (const char                   *keyring, 
 					     const char                   *display_name, 

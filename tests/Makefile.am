@@ -42,7 +42,9 @@ UNIT_TESTS_BASE = \
 	unit-test-secmem.c \
 	unit-test-memory.c \
 	unit-test-async.c \
-	unit-test-signal.c
+	unit-test-signal.c \
+	unit-test-mainloop-setup.c \
+	unit-test-private.h
 
 run-base-test.c: $(UNIT_TESTS_BASE) unit-tests-prep.sh
 	sh unit-tests-prep.sh -b run-base-test $(UNIT_TESTS_BASE)
@@ -65,7 +67,9 @@ run_base_test_LDADD = \
 UNIT_TESTS_LIBRARY = \
 	unit-test-keyrings.c \
 	unit-test-other.c \
-	unit-test-daemon-setup.c
+	unit-test-daemon-setup.c \
+	unit-test-mainloop-setup.c \
+	unit-test-private.h
 
 run-library-test.c: $(UNIT_TESTS_LIBRARY) unit-tests-prep.sh
 	sh unit-tests-prep.sh -b run-library-test $(UNIT_TESTS_LIBRARY)
