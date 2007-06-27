@@ -270,6 +270,13 @@ void unit_test_lock_keyrings (CuTest* cu)
 	
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, PASSWORD);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+
+	/* An unlock when already unlocked is fine */
+	res = gnome_keyring_unlock_sync (KEYRING_NAME, PASSWORD);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+
+	res = gnome_keyring_unlock_sync ("boooyaaah", PASSWORD);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, res);
 }
 
 void unit_test_change_password (CuTest* cu)

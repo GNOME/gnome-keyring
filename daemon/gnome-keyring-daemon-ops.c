@@ -765,23 +765,22 @@ change_keyring_password (GkrKeyring *keyring,  const char *password)
 static GnomeKeyringResult
 unlock_keyring (GkrKeyring *keyring, const char *password)
 {
-	if (!keyring->locked) {
-		return GNOME_KEYRING_RESULT_ALREADY_UNLOCKED;
-	} else {
-		g_assert (keyring->password == NULL);
+	if (!keyring->locked)
+		return GNOME_KEYRING_RESULT_OK;
 		
-		keyring->password = gnome_keyring_memory_strdup (password);
-		if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
-			gnome_keyring_free_password (keyring->password);
-			keyring->password = NULL;
-		}
-		if (keyring->locked) {
-			g_assert (keyring->password == NULL);
-			return GNOME_KEYRING_RESULT_DENIED;
-		} else {
-			g_assert (keyring->password != NULL);
-			return GNOME_KEYRING_RESULT_OK;
-		}
+	g_assert (keyring->password == NULL);
+		
+	keyring->password = gnome_keyring_memory_strdup (password);
+	if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
+		gnome_keyring_free_password (keyring->password);
+		keyring->password = NULL;
+	}
+	if (keyring->locked) {
+		g_assert (keyring->password == NULL);
+		return GNOME_KEYRING_RESULT_DENIED;
+	} else {
+		g_assert (keyring->password != NULL);
+		return GNOME_KEYRING_RESULT_OK;
 	}
 }
 
@@ -1092,6 +1091,37 @@ op_create_keyring_execute (GkrBuffer *packet,
 	return TRUE;
 }
 
+static gboolean
+op_unlock_keyring_collect (GkrBuffer *packet, GkrKeyringRequest *req)
+{
+	GnomeKeyringOpCode opcode;
+	char *keyring_name, *password;
+	GkrKeyring *keyring;
+	
+	if (!gnome_keyring_proto_decode_op_string_secret (packet,
+							  &opcode,
+							  &keyring_name,
+							  &password)) {
+		return FALSE;
+	}
+
+	keyring = gkr_keyrings_find (keyring_name);
+	if (keyring == NULL)
+		goto out;
+
+	if (keyring->locked && password == NULL) {
+		/* Let user type password */
+		req->ask_requests = g_list_prepend (req->ask_requests,
+					access_request_from_keyring (req->app_ref, keyring, 
+		                                                     GNOME_KEYRING_ACCESS_READ));
+	}
+
+ out:
+	g_free (keyring_name);
+	gnome_keyring_free_password (password);
+	
+	return TRUE;
+}
 
 static gboolean
 op_unlock_keyring_execute (GkrBuffer *packet,
@@ -1101,6 +1131,7 @@ op_unlock_keyring_execute (GkrBuffer *packet,
 	char *keyring_name, *password;
 	GkrKeyring *keyring;
 	GnomeKeyringOpCode opcode;
+	GkrAskRequest *ask;
 	
 	if (!gnome_keyring_proto_decode_op_string_secret (packet,
 							  &opcode,
@@ -1110,18 +1141,34 @@ op_unlock_keyring_execute (GkrBuffer *packet,
 	}
 	g_assert (opcode == GNOME_KEYRING_OP_UNLOCK_KEYRING);
 	
-	if (keyring_name == NULL) {
-		keyring = gkr_keyrings_get_default ();
-	} else {
-		keyring = gkr_keyrings_find (keyring_name);
-	}
-	if (keyring == NULL) {
+	keyring = gkr_keyrings_find (keyring_name);
+
+	if (!keyring) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
-	} else {
-		gnome_keyring_proto_add_uint32 (result,
-						unlock_keyring (keyring, password));
-	}
+		goto out;
+
+	} 
+
+	/* If the keyring is unlocked, as done by the ask request, then good to go */
+	if (!keyring->locked) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		goto out;
+	} 
 	
+	/* See if a password prompt got put up */
+	if (password == NULL && req->ask_requests != NULL) {
+		ask = req->ask_requests->data;
+		password = gnome_keyring_memory_strdup (ask->typed_password);
+	}
+
+	if (password == NULL) {
+		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		goto out;
+	}
+
+	gnome_keyring_proto_add_uint32 (result, unlock_keyring (keyring, password));
+	
+ out:
 	g_free (keyring_name);
 	gnome_keyring_free_password (password);
 
@@ -2279,7 +2326,7 @@ GnomeKeyringOperationImplementation keyring_ops[] = {
 	{ NULL, op_list_keyrings_execute}, /* LIST_KEYRINGS */
 	{ op_create_keyring_collect, op_create_keyring_execute}, /* CREATE_KEYRING */
 	{ NULL, op_lock_keyring_execute}, /* LOCK_KEYRING */
-	{ NULL, op_unlock_keyring_execute}, /* UNLOCK_KEYRING */
+	{ op_unlock_keyring_collect, op_unlock_keyring_execute}, /* UNLOCK_KEYRING */
 	{ NULL, op_delete_keyring_execute}, /* DELETE_KEYRING */
 	{ NULL, op_get_keyring_info_execute}, /* GET_KEYRING_INFO */
 	{ NULL, op_set_keyring_info_execute}, /* SET_KEYRING_INFO */

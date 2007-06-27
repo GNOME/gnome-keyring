@@ -58,6 +58,7 @@ void unit_test_create_prompt_keyring (CuTest* cu)
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_ALREADY_EXISTS, res);
 }
 
+
 void unit_test_change_prompt_keyring (CuTest* cu)
 {
 	GnomeKeyringResult res;
@@ -163,6 +164,22 @@ void unit_test_application_secret (CuTest* cu)
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
 	sleep(2);
+}
+
+void unit_test_unlock_prompt (CuTest *cu)
+{
+	GnomeKeyringResult res;
+	
+	res = gnome_keyring_lock_all_sync ();
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+
+	TELL("press 'DENY' here");
+	res = gnome_keyring_unlock_sync (KEYRING_NAME, NULL);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
+
+	TELL("type in keyring password and click 'OK'");
+	res = gnome_keyring_unlock_sync (KEYRING_NAME, NULL);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
 }
 
 void unit_test_cleaup (CuTest* cu)
