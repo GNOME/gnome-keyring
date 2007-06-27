@@ -46,6 +46,11 @@
  * Tests be run in the order specified here.
  */
  
+void unit_setup_threading (void) 	 
+{ 	 
+	g_thread_init (NULL); 	 
+}
+	 
 static gboolean 
 cancel_worker (gpointer data)
 {
