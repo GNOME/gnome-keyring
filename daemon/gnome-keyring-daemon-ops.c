@@ -374,35 +374,35 @@ access_request_from_item (GnomeKeyringApplicationRef *app, GkrKeyringItem *item,
 	
 	if (app->display_name && app->pathname) {
 		if (is_default) {
-			secondary = g_strdup_printf (_("The application '%s' (%s) wants to access the password for '%s' in %s."),
-						     app->display_name, app->pathname, item_name, keyring_name);
-		} else {
 			secondary = g_strdup_printf (_("The application '%s' (%s) wants to access the password for '%s' in the default keyring."),
 						     app->display_name, app->pathname, item_name);
+		} else {
+			secondary = g_strdup_printf (_("The application '%s' (%s) wants to access the password for '%s' in %s."),
+						     app->display_name, app->pathname, item_name, keyring_name);
 		} 
 	} else if (app->display_name) {
 		if (is_default) {
-			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in %s."),
-						     app->display_name, item_name, keyring_name);
-		} else {
 			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in the default keyring."),
 						     app->display_name, item_name);
+		} else {
+			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in %s."),
+						     app->display_name, item_name, keyring_name);
 		} 
 	} else if (app->pathname) {
 		if (is_default) {
-			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in %s."),
-						     app->pathname, item_name, keyring_name);
-		} else {
 			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in the default keyring."),
 						     app->pathname, item_name);
+		} else {
+			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in %s."),
+						     app->pathname, item_name, keyring_name);
 		} 
 	} else  {
 		if (is_default) {
-			secondary = g_strdup_printf (_("An unknown application wants to access the password for '%s' in %s."),
-						     item_name, keyring_name);
-		} else {
 			secondary = g_strdup_printf (_("An unknown application wants to access the password for '%s' in the default keyring."),
 						     item_name);
+		} else {
+			secondary = g_strdup_printf (_("An unknown application wants to access the password for '%s' in %s."),
+						     item_name, keyring_name);
 		} 
 	}
 

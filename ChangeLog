@@ -1,3 +1,9 @@
+2007-06-27  Jürg Billeter  <j@bitron.ch>
+
+	* daemon/gnome-keyring-daemon-ops.c: (access_request_from_item):
+	Display appropriate message when using default keyring.
+	Fixes bug #451703
+
 2007-06-27  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring.c:
