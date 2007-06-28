@@ -30,6 +30,11 @@
 
 #include "library/gnome-keyring-memory.h"
 
+enum {
+    PROP_0,
+    PROP_NAME
+};
+
 G_DEFINE_TYPE (GkrKeyringItem, gkr_keyring_item, G_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
@@ -40,6 +45,19 @@ static void
 gkr_keyring_item_init (GkrKeyringItem *item)
 {
 
+}
+
+static void
+gkr_keyring_item_get_property (GObject *obj, guint prop_id, GValue *value, 
+                               GParamSpec *pspec)
+{
+	GkrKeyringItem *item = GKR_KEYRING_ITEM (obj);
+
+	switch (prop_id) {
+	case PROP_NAME:
+		g_value_set_string (value, item->display_name ? item->display_name : "");
+		break;
+	}
 }
 
 static void 
@@ -78,8 +96,13 @@ gkr_keyring_item_class_init (GkrKeyringItemClass *klass)
 
 	gkr_keyring_item_parent_class = g_type_class_peek_parent (klass);
 
+	gobject_class->get_property = gkr_keyring_item_get_property;
 	gobject_class->dispose = gkr_keyring_item_dispose;
 	gobject_class->finalize = gkr_keyring_item_finalize;
+	
+	g_object_class_install_property (gobject_class, PROP_NAME,
+		g_param_spec_string ("name", "Name", "Item Name",
+		                     NULL, G_PARAM_READABLE));
 }
 
 /* -----------------------------------------------------------------------------

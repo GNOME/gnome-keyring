@@ -1,3 +1,14 @@
+2007-06-27  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gnome-keyring-daemon-ops.c:
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyring-item.c:
+	* tests/unit-test-keyrings-prompt.c:
+	* ui/gkr-ask-request.c:
+	* ui/gkr-ask-tool.c: Properly unlock keyrings when finding, and 
+	display item names by looking them up after the keyring is 
+	unlocked. Fixes bug #451710
+	
 2007-06-27  Jürg Billeter  <j@bitron.ch>
 
 	* daemon/gnome-keyring-daemon-ops.c: (access_request_from_item):

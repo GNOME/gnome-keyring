@@ -58,6 +58,11 @@ enum {
     LAST_SIGNAL
 };
 
+enum {
+    PROP_0,
+    PROP_NAME
+};
+
 static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (GkrKeyring, gkr_keyring, G_TYPE_OBJECT);
@@ -846,6 +851,19 @@ gkr_keyring_init (GkrKeyring *keyring)
 	init_salt (keyring->salt);
 }
 
+static void
+gkr_keyring_get_property (GObject *obj, guint prop_id, GValue *value, 
+                          GParamSpec *pspec)
+{
+	GkrKeyring *keyring = GKR_KEYRING (obj);
+
+	switch (prop_id) {
+	case PROP_NAME:
+		g_value_set_string (value, keyring->keyring_name);
+		break;
+	}
+}
+
 static void 
 gkr_keyring_dispose (GObject *obj)
 {
@@ -887,8 +905,13 @@ gkr_keyring_class_init (GkrKeyringClass *klass)
 
 	gkr_keyring_parent_class  = g_type_class_peek_parent (klass);
 	
+	gobject_class->get_property = gkr_keyring_get_property;
 	gobject_class->dispose = gkr_keyring_dispose;
 	gobject_class->finalize = gkr_keyring_finalize;
+	
+	g_object_class_install_property (gobject_class, PROP_NAME,
+		g_param_spec_string ("name", "Name", "Keyring Name",
+		                     NULL, G_PARAM_READABLE));
 	
 	signals[ITEM_ADDED] = g_signal_new ("item-added", GKR_TYPE_KEYRING, 
 			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrKeyringClass, item_added),

@@ -42,8 +42,9 @@ static guint env_flags = 0;
 static gchar*
 create_markup (const gchar *primary, const gchar *secondary)
 {
-	return g_markup_printf_escaped ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s", 
-	                                primary, secondary);
+	/* We're passed markup for both of these */
+	return g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s", 
+	                        primary, secondary);
 }
 
 static gchar*

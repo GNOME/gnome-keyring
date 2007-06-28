@@ -87,6 +87,144 @@ G_DEFINE_TYPE (GkrAskRequest, gkr_ask_request, G_TYPE_OBJECT);
 static guint signals[LAST_SIGNAL] = { 0 }; 
 
 /* -----------------------------------------------------------------------------
+ * OBJECT MARKUP
+ */
+ 
+typedef struct _ObjectMarkupCtx {
+	GString *res;
+	GObject *object;
+} ObjectMarkupCtx;
+ 
+static void
+insert_object_property (GString *res, GObject *object, const gchar *property)
+{
+	GParamSpec *spec;
+	GValue value;
+	GValue svalue;
+	gchar *str;
+
+	g_return_if_fail (property && property[0]);
+
+	memset (&value, 0, sizeof (value));
+	memset (&svalue, 0, sizeof (value));
+    
+	spec = g_object_class_find_property (G_OBJECT_GET_CLASS (object), property);
+	if (!spec) 
+		return;
+
+	g_value_init (&value, spec->value_type);
+	g_object_get_property (object, property, &value);
+	g_value_init (&svalue, G_TYPE_STRING);
+	
+	if (g_value_transform (&value, &svalue)) {
+		str = g_markup_escape_text (g_value_get_string (&svalue), -1);
+		g_string_append (res, str);
+		g_free (str);
+        }
+        
+        g_value_unset (&svalue);
+        g_value_unset (&value);
+}
+
+static void
+format_start_element (GMarkupParseContext *ctx, const gchar *element_name,
+                      const gchar **attribute_names, const gchar **attribute_values,
+                      gpointer user_data, GError **error)
+{
+	ObjectMarkupCtx *omc = (ObjectMarkupCtx*)user_data;
+	gchar *t;
+    
+	if (strcmp (element_name, "outer") == 0) 
+		return;
+
+	if (strcmp (element_name, "object") == 0) {
+        
+		const gchar *property = NULL;
+        
+		for (; *attribute_names && *attribute_values; attribute_names++, attribute_values++) {
+			if (strcmp (*attribute_names, "prop") == 0)
+				property = *attribute_values;
+		}
+        
+		if (!property)
+			g_warning ("key text <object> element requires the following attributes\n"
+			           "     <object prop=\"xxxxx\"/>");
+		else 
+			insert_object_property (omc->res, omc->object, property);
+        
+		return;
+	}
+
+	/* Just pass through any other elements */
+	g_string_append_printf (omc->res, "<%s", element_name);
+	for (; *attribute_names && *attribute_values; attribute_names++, attribute_values++) {
+		t = g_markup_printf_escaped ("%s", *attribute_values);
+		g_string_append_printf (omc->res, " %s=\"%s\"", *attribute_names, t);
+		g_free (t);
+	}
+	g_string_append (omc->res, ">");
+}
+
+static void 
+format_end_element (GMarkupParseContext *ctx, const gchar *element_name, 
+                    gpointer user_data, GError **error)
+{
+	ObjectMarkupCtx *omc = (ObjectMarkupCtx*)user_data;
+
+	if (strcmp (element_name, "outer") == 0 || 
+	    strcmp (element_name, "object") == 0)
+		return;
+    
+	/* Just pass through any other elements */;
+	g_string_append_printf (omc->res, "</%s>", element_name);
+}
+
+static void 
+format_text (GMarkupParseContext *ctx, const gchar *text, gsize text_len,
+             gpointer user_data, GError **error)
+{
+	ObjectMarkupCtx *omc = (ObjectMarkupCtx*)user_data;
+	g_string_append_len (omc->res, text, text_len);
+}
+
+static gchar*
+format_object_markup (GObject *object, const gchar *str1, const gchar *str2)
+{
+	ObjectMarkupCtx omc;
+	GError *err = NULL;
+	GMarkupParseContext *ctx;
+	GMarkupParser parser;
+	gboolean ret;
+    
+	memset (&parser, 0, sizeof (parser));
+	parser.start_element = format_start_element;
+	parser.end_element = format_end_element;
+	parser.text = format_text;
+	parser.passthrough = format_text;
+    
+	omc.res = g_string_new (NULL);
+	omc.object = object;
+    
+	/* We need an outer tag in order to parse */
+	ctx = g_markup_parse_context_new (&parser, 0, &omc, NULL);
+	ret = g_markup_parse_context_parse (ctx, "<outer>", strlen ("<outer>"), &err) && 
+	      (!str1 || g_markup_parse_context_parse (ctx, str1, strlen (str1), &err)) && 
+	      (!str2 || g_markup_parse_context_parse (ctx, str2, strlen (str2), &err)) && 
+	      g_markup_parse_context_parse (ctx, "</outer>", strlen ("</outer>"), &err); 
+
+	g_markup_parse_context_free (ctx);
+
+	if (!ret) {
+		g_warning ("couldn't parse markup: %s%s: %s", str1 ? str1 : "",
+		           str2 ? str2 : "", err && err->message ? err->message : "");
+		g_string_free (omc.res, TRUE);
+		return NULL;
+	}
+	
+	return g_string_free (omc.res, FALSE);
+}
+
+/* -----------------------------------------------------------------------------
  * HELPERS 
  */
 
@@ -282,9 +420,9 @@ launch_ask_helper (GkrAskRequest *ask)
 	display = gkr_ask_daemon_get_display ();
 	if (display && display[0])
 		envp[i++] = g_strdup_printf ("DISPLAY=%s", display);
-	envp[i++] = g_strdup_printf ("ASK_TITLE=%s", pv->title);
-	envp[i++] = g_strdup_printf ("ASK_PRIMARY=%s", pv->primary);
-	envp[i++] = g_strdup_printf ("ASK_SECONDARY=%s", pv->secondary);
+	envp[i++] = format_object_markup (pv->object, "ASK_TITLE=", pv->title);
+	envp[i++] = format_object_markup (pv->object, "ASK_PRIMARY=", pv->primary);
+	envp[i++] = format_object_markup (pv->object, "ASK_SECONDARY=", pv->secondary);
 	envp[i++] = g_strdup_printf ("ASK_FLAGS=%d", pv->flags);
 	envp[i++] = NULL;
 

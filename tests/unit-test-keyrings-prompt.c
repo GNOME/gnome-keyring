@@ -45,7 +45,6 @@ void unit_test_create_prompt_keyring (CuTest* cu)
 	GnomeKeyringResult res;
 
 	TELL("press 'DENY'");
-	
 	res = gnome_keyring_create_sync (KEYRING_NAME, NULL);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
 	
@@ -56,6 +55,9 @@ void unit_test_create_prompt_keyring (CuTest* cu)
 
 	res = gnome_keyring_create_sync (KEYRING_NAME, NULL);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_ALREADY_EXISTS, res);
+	
+	res = gnome_keyring_set_default_keyring_sync (KEYRING_NAME);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
 }
 
 
@@ -180,6 +182,43 @@ void unit_test_unlock_prompt (CuTest *cu)
 	TELL("type in keyring password and click 'OK'");
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, NULL);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+}
+
+void unit_test_find_locked (CuTest *cu)
+{
+	GnomeKeyringResult res;
+	GnomeKeyringAttributeList* attrs;
+	guint id;
+	GList *found;
+	
+	GTimeVal tv;
+	guint32 unique;
+	
+	/* Make a unique value */
+	g_get_current_time (&tv);
+	unique = ((guint32)tv.tv_sec) ^ ((guint32)tv.tv_usec);
+	
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs, "dog", "barks");
+	gnome_keyring_attribute_list_append_string (attrs, "bird", "tweets");
+	gnome_keyring_attribute_list_append_string (attrs, "iguana", "silence");
+	gnome_keyring_attribute_list_append_uint32 (attrs, "num", unique);
+
+	/* Create teh item */
+	res = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
+	                                      "Yay!", attrs, SECRET, FALSE, &id);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	
+	/* Lock the keyring ... */
+	res = gnome_keyring_lock_all_sync ();
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+
+	/* Now, try to access the item */	
+	TELL("type in keyring password and click 'OK'");
+	res = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, attrs, &found);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+
+	CuAssert(cu, "Wrong number of items found", g_list_length (found) == 1);
 }
 
 void unit_test_cleaup (CuTest* cu)

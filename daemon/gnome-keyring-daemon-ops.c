@@ -304,25 +304,34 @@ match_attributes (GkrKeyringItem *item,
 	return TRUE;
 }
 
-static guint
-check_grant_ask_request (GkrAskRequest* ask, GnomeKeyringApplicationRef *app)
-{
-	/* Just let it through */
-	ask->response = GKR_ASK_RESPONSE_ALLOW;
-	return GKR_ASK_STOP_REQUEST;
-}
-
-static gboolean 
+static guint 
 check_acl_ask_request (GkrAskRequest* ask, GnomeKeyringApplicationRef *app)
 {
 	GkrKeyringItem *item;
+	gboolean secret;
+	GnomeKeyringAccessType access_type;
 	
+	/* Pull out information from the ask request */
 	item = GKR_KEYRING_ITEM (gkr_ask_request_get_object (ask));
 	g_assert (GKR_IS_KEYRING_ITEM (item));
+	secret = g_object_get_data (G_OBJECT (ask), "access-secret") ? TRUE : FALSE;
+	access_type = (GnomeKeyringAccessType)GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (ask), "access-type")); 
 	
 	/* Don't deal with straglers */
 	if (!item->keyring) {
 		ask->response = GKR_ASK_RESPONSE_FAILURE;
+		return GKR_ASK_STOP_REQUEST;
+	}
+	
+	/* Don't deal with locked keyrings */
+	if (item->locked) {
+		ask->response = GKR_ASK_RESPONSE_DENY;
+		return GKR_ASK_STOP_REQUEST;
+	}
+	
+	/* See if this application already has access to this item */
+	if (acl_check_access (item, app, access_type, secret)) {
+		ask->response = GKR_ASK_RESPONSE_ALLOW;
 		return GKR_ASK_STOP_REQUEST;
 	}
 	
@@ -355,8 +364,8 @@ access_request_from_item (GnomeKeyringApplicationRef *app, GkrKeyringItem *item,
 {
 	const gchar *keyring_name = NULL;
 	GkrAskRequest *ask;
-	gboolean is_default, acl_allowed;
-	gchar *secondary, *item_name;
+	gboolean is_default;
+	gchar *secondary;
 	
 	/* Simpler messages for the default keyring */
 	is_default = !item->keyring || (item->keyring == gkr_keyrings_get_default ());
@@ -365,44 +374,36 @@ access_request_from_item (GnomeKeyringApplicationRef *app, GkrKeyringItem *item,
 	if (!is_default)
 		keyring_name = item->keyring->keyring_name;
 	
-	/* Figure out the item name */
-	item_name = NULL;
-	if (!item->locked)
-		item_name = item->display_name;
-	if (item_name == NULL)
-		item_name = "";
-	
 	if (app->display_name && app->pathname) {
 		if (is_default) {
-			secondary = g_strdup_printf (_("The application '%s' (%s) wants to access the password for '%s' in the default keyring."),
-						     app->display_name, app->pathname, item_name);
+			secondary = g_markup_printf_escaped (_("The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."),
+						             app->display_name, app->pathname);
 		} else {
-			secondary = g_strdup_printf (_("The application '%s' (%s) wants to access the password for '%s' in %s."),
-						     app->display_name, app->pathname, item_name, keyring_name);
+			secondary = g_markup_printf_escaped (_("The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."),
+						             app->display_name, app->pathname, keyring_name);
 		} 
 	} else if (app->display_name) {
 		if (is_default) {
-			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in the default keyring."),
-						     app->display_name, item_name);
+			secondary = g_markup_printf_escaped (_("The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."),
+						             app->display_name);
 		} else {
-			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in %s."),
-						     app->display_name, item_name, keyring_name);
+			secondary = g_markup_printf_escaped (_("The application '%s' wants to access the password for '<object prop='name'/>' in %s."),
+						             app->display_name, keyring_name);
 		} 
 	} else if (app->pathname) {
 		if (is_default) {
-			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in the default keyring."),
-						     app->pathname, item_name);
+			secondary = g_markup_printf_escaped (_("The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."),
+						             app->pathname);
 		} else {
-			secondary = g_strdup_printf (_("The application '%s' wants to access the password for '%s' in %s."),
-						     app->pathname, item_name, keyring_name);
+			secondary = g_markup_printf_escaped (_("The application '%s' wants to access the password for '<object prop='name'/>' in %s."),
+						             app->pathname, keyring_name);
 		} 
 	} else  {
 		if (is_default) {
-			secondary = g_strdup_printf (_("An unknown application wants to access the password for '%s' in the default keyring."),
-						     item_name);
+			secondary = g_strdup (_("An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."));
 		} else {
-			secondary = g_strdup_printf (_("An unknown application wants to access the password for '%s' in %s."),
-						     item_name, keyring_name);
+			secondary = g_markup_printf_escaped (_("An unknown application wants to access the password for '<object prop='name'/>' in %s."),
+						             keyring_name);
 		} 
 	}
 
@@ -411,26 +412,17 @@ access_request_from_item (GnomeKeyringApplicationRef *app, GkrKeyringItem *item,
 	                           GKR_ASK_REQUEST_ACCESS_SOMETHING);
 	
 	gkr_ask_request_set_secondary (ask, secondary);
-	gkr_ask_request_set_object (ask, G_OBJECT (item));
-	
-	/* See if this application has access to this item */
-	acl_allowed = acl_check_access (item, app, access_type, secret);
-	
-	/* A copy for the signal handler */
-	app = gnome_keyring_application_ref_copy (app);
-
-	/* We don't need to prompt, intercept request, and grant */
-	if (acl_allowed) {
-		g_signal_connect_data (ask, "check-request", G_CALLBACK (check_grant_ask_request), 
-		                       app, (GClosureNotify)gnome_keyring_application_ref_free, 0);
-	
-	/* Any other request, probably need to prompt */
-	} else {
-		g_signal_connect_data (ask, "check-request", G_CALLBACK (check_acl_ask_request),
-		                       app, (GClosureNotify)gnome_keyring_application_ref_free, 0);
-	}
-	
 	g_free (secondary);
+	
+	/* Save data away for our handlers to use */
+	gkr_ask_request_set_object (ask, G_OBJECT (item));
+	g_object_set_data (G_OBJECT (ask), "access-secret", GUINT_TO_POINTER (secret));
+	g_object_set_data (G_OBJECT (ask), "access-type", GUINT_TO_POINTER (access_type)); 
+	
+	g_signal_connect_data (ask, "check-request", G_CALLBACK (check_acl_ask_request), 
+	                       gnome_keyring_application_ref_copy (app), 
+	                       (GClosureNotify)gnome_keyring_application_ref_free, 0);
+	
 	return ask;
 }
 
@@ -480,52 +472,51 @@ access_request_from_keyring (GnomeKeyringApplicationRef *app, GkrKeyring *keyrin
 	
 	if (app->display_name && app->pathname) {
 		if (is_default) {
-			message = g_strdup_printf (_("The application '%s' (%s) wants access to "
-						     "the default keyring, but it is locked"),
-						   app->display_name, app->pathname);
+			message = g_markup_printf_escaped (_("The application '%s' (%s) wants access to "
+						           "the default keyring, but it is locked"),
+						           app->display_name, app->pathname);
 		} else {
-			message = g_strdup_printf (_("The application '%s' (%s) wants access to "
-						     "the keyring '%s', but it is locked"),
-						   app->display_name, app->pathname,
-						   keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' (%s) wants access to "
+						           "the keyring '%s', but it is locked"),
+						           app->display_name, app->pathname, keyring_name);
 		}
 	} else if (app->display_name) {
 		if (is_default) {
-			message = g_strdup_printf (_("The application '%s' wants access to the "
-						     "default keyring, but it is locked"),
-						   app->display_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants access to the "
+						           "default keyring, but it is locked"),
+						           app->display_name);
 		} else {
-			message = g_strdup_printf (_("The application '%s' wants access to the "
-						     "keyring '%s', but it is locked"),
-						   app->display_name, keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants access to the "
+						           "keyring '%s', but it is locked"),
+						           app->display_name, keyring_name);
 		} 
 	} else if (app->pathname) {
 		if (is_default) {
-			message = g_strdup_printf (_("The application '%s' wants access to the "
-						     "default keyring, but it is locked"),
-						   app->pathname);
+			message = g_markup_printf_escaped (_("The application '%s' wants access to the "
+						           "default keyring, but it is locked"),
+						           app->pathname);
 		}
 		else {
-			message = g_strdup_printf (_("The application '%s' wants access to the "
-						     "keyring '%s', but it is locked"),
-						   app->pathname, keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants access to the "
+						           "keyring '%s', but it is locked"),
+						           app->pathname, keyring_name);
 		}
 	} else { 
 		if (is_default) {
-			message = g_strdup_printf (_("An unknown application wants access to the "
-						     "default keyring, but it is locked"));
+			message = g_markup_printf_escaped (_("An unknown application wants access to the "
+						           "default keyring, but it is locked"));
 		}
 		else {
-			message = g_strdup_printf (_("An unknown application wants access to the "
-						     "keyring '%s', but it is locked"),
-						   keyring_name);
+			message = g_markup_printf_escaped (_("An unknown application wants access to the "
+						           "keyring '%s', but it is locked"),
+						           keyring_name);
 		}
 	}
 	
 	if (is_default) {
 		primary = g_strdup (_("Enter password for default keyring to unlock"));
 	} else {
-		primary = g_strdup_printf (_("Enter password for keyring '%s' to unlock"), keyring_name);
+		primary = g_markup_printf_escaped (_("Enter password for keyring '%s' to unlock"), keyring_name);
 	}
 
 	/* And put together the ask request */
@@ -557,42 +548,42 @@ access_request_for_new_keyring_password (GnomeKeyringApplicationRef *app,
 
 	if (app->display_name && app->pathname) {
 		if (!is_default) {
-			message = g_strdup_printf (_("The application '%s' (%s) wants to create a new keyring called '%s'. "
-						     "You have to choose the password you want to use for it."),
-						   app->display_name, app->pathname, keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' (%s) wants to create a new keyring called '%s'. "
+						           "You have to choose the password you want to use for it."),
+						           app->display_name, app->pathname, keyring_name);
 		} else {
-			message = g_strdup_printf (_("The application '%s' (%s) wants to create a new default keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->display_name, app->pathname);
+			message = g_markup_printf_escaped (_("The application '%s' (%s) wants to create a new default keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->display_name, app->pathname);
 		} 
 	} else if (app->display_name) {
 		if (!is_default) {
-			message = g_strdup_printf (_("The application '%s' wants to create a new keyring called '%s'. "
-						     "You have to choose the password you want to use for it."),
-						   app->display_name, keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants to create a new keyring called '%s'. "
+						           "You have to choose the password you want to use for it."),
+						           app->display_name, keyring_name);
 		} else {
-			message = g_strdup_printf (_("The application '%s' wants to create a new default keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->display_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants to create a new default keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->display_name);
 		} 
 	} else if (app->pathname) {
 		if (!is_default) {
-			message = g_strdup_printf (_("The application '%s' wants to create a new keyring called '%s'. "
-						     "You have to choose the password you want to use for it."),
-						   app->pathname, keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants to create a new keyring called '%s'. "
+						           "You have to choose the password you want to use for it."),
+						           app->pathname, keyring_name);
 		} else {
-			message = g_strdup_printf (_("The application '%s' wants to create a new default keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->pathname);
+			message = g_markup_printf_escaped (_("The application '%s' wants to create a new default keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->pathname);
 		} 
 	} else {
 		if (!is_default) {
-			message = g_strdup_printf (_("An unknown application wants to create a new keyring called '%s'. "
-						     "You have to choose the password you want to use for it."),
-						   keyring_name);
+			message = g_markup_printf_escaped (_("An unknown application wants to create a new keyring called '%s'. "
+						           "You have to choose the password you want to use for it."),
+						           keyring_name);
 		} else {
-			message = g_strdup_printf (_("An unknown application wants to create a new default keyring. "
-						     "You have to choose the password you want to use for it."));
+			message = g_markup_printf_escaped (_("An unknown application wants to create a new default keyring. "
+						           "You have to choose the password you want to use for it."));
 		} 
 	}
 
@@ -625,42 +616,42 @@ access_request_for_change_keyring_password (GnomeKeyringApplicationRef *app,
 	
 	if (app->display_name && app->pathname) {
 		if (!is_default) {
-			message = g_strdup_printf (_("The application '%s' (%s) wants to change the password for the '%s' keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->display_name, app->pathname, keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' (%s) wants to change the password for the '%s' keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->display_name, app->pathname, keyring_name);
 		} else {
-			message = g_strdup_printf (_("The application '%s' (%s) wants to change the password for the default keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->display_name, app->pathname);
+			message = g_markup_printf_escaped (_("The application '%s' (%s) wants to change the password for the default keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->display_name, app->pathname);
 		} 
 	} else if (app->display_name) {
 		if (!is_default) {
-			message = g_strdup_printf (_("The application '%s' wants to change the password for the '%s' keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->display_name, keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants to change the password for the '%s' keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->display_name, keyring_name);
 		} else {
-			message = g_strdup_printf (_("The application '%s' wants to change the password for the default keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->display_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants to change the password for the default keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->display_name);
 		} 
 	} else if (app->pathname) {
 		if (!is_default) {
-			message = g_strdup_printf (_("The application '%s' wants to change the password for the '%s' keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->pathname, keyring_name);
+			message = g_markup_printf_escaped (_("The application '%s' wants to change the password for the '%s' keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->pathname, keyring_name);
 		} else {
-			message = g_strdup_printf (_("The application '%s' wants to change the password for the default keyring. "
-						     "You have to choose the password you want to use for it."),
-						   app->pathname);
+			message = g_markup_printf_escaped (_("The application '%s' wants to change the password for the default keyring. "
+						           "You have to choose the password you want to use for it."),
+						           app->pathname);
 		} 
 	} else {
 		if (!is_default) {
-			message = g_strdup_printf (_("An unknown application wants to change the password for the '%s' keyring. "
-						     "You have to choose the password you want to use for it."),
-						   keyring_name);
+			message = g_markup_printf_escaped (_("An unknown application wants to change the password for the '%s' keyring. "
+						           "You have to choose the password you want to use for it."),
+						           keyring_name);
 		} else {
-			message = g_strdup_printf (_("An unknown application wants to change the password for the default keyring. "
-						     "You have to choose the password you want to use for it."));
+			message = g_markup_printf_escaped (_("An unknown application wants to change the password for the default keyring. "
+						           "You have to choose the password you want to use for it."));
 		} 
 	}
 	
@@ -669,9 +660,9 @@ access_request_for_change_keyring_password (GnomeKeyringApplicationRef *app,
 		flags |= GKR_ASK_REQUEST_ORIGINAL_PASSWORD;
 
 	if (is_default) {
-		primary = g_strdup_printf (_("Choose a new password for the '%s' keyring. "), keyring_name);
+		primary = g_markup_printf_escaped (_("Choose a new password for the '%s' keyring. "), keyring_name);
 	} else {
-		primary = g_strdup_printf (_("Choose a new password for the default keyring. "));
+		primary = g_markup_printf_escaped (_("Choose a new password for the default keyring. "));
 	}
 	
 	/* And put together the ask request */
@@ -722,20 +713,20 @@ access_request_default_keyring (GnomeKeyringApplicationRef *app)
 	
 	/* Build an appropriate message */
 	if (app->display_name && app->pathname) {
-		message = g_strdup_printf (_("The application '%s' (%s) wants to store a password, but there is no default keyring. "
-					     "To create one, you need to choose the password you wish to use for it."),
-					   app->display_name, app->pathname);
+		message = g_markup_printf_escaped (_("The application '%s' (%s) wants to store a password, but there is no default keyring. "
+					           "To create one, you need to choose the password you wish to use for it."),
+					           app->display_name, app->pathname);
 	} else if (app->display_name) {
-		message = g_strdup_printf (_("The application '%s' wants to store a password, but there is no default keyring. "
-					     "To create one, you need to choose the password you wish to use for it."),
-					   app->display_name);
+		message = g_markup_printf_escaped (_("The application '%s' wants to store a password, but there is no default keyring. "
+					           "To create one, you need to choose the password you wish to use for it."),
+					           app->display_name);
 	} else if (app->pathname) {
-		message = g_strdup_printf (_("The application '%s' wants to store a password, but there is no default keyring. "
-					     "To create one, you need to choose the password you wish to use for it."),
-					   app->pathname);
+		message = g_markup_printf_escaped (_("The application '%s' wants to store a password, but there is no default keyring. "
+					           "To create one, you need to choose the password you wish to use for it."),
+					           app->pathname);
 	} else {
-		message = g_strdup_printf (_("An unknown application wants to store a password, but there is no default keyring. "
-					     "To create one, you need to choose the password you wish to use for it."));
+		message = g_markup_printf_escaped (_("An unknown application wants to store a password, but there is no default keyring. "
+					           "To create one, you need to choose the password you wish to use for it."));
 	}
 	
 	/* And put together the ask request */
@@ -2167,17 +2158,33 @@ sort_found (gconstpointer  a,
 {
 	GnomeKeyringAttributeList *matching;
 	int a_unmatched, b_unmatched;
-	GkrAskRequest *ask;
 	GkrKeyringItem *item;
+	GObject *a_obj, *b_obj;
+	GType a_type, b_type;
 	
 	matching = user_data;
 
-	ask = GKR_ASK_REQUEST (a);
-	item = GKR_KEYRING_ITEM (gkr_ask_request_get_object (ask));
+	a_obj = gkr_ask_request_get_object (GKR_ASK_REQUEST (a));
+	b_obj = gkr_ask_request_get_object (GKR_ASK_REQUEST (b));
+	
+	g_assert (a_obj && b_obj);
+	
+	a_type = G_OBJECT_TYPE (a_obj);
+	b_type = G_OBJECT_TYPE (b_obj);
+	
+	if (a_type < b_type)
+		return -1;
+	else if (a_type > b_type)
+		return 1;
+		
+	/* If it's not an item, we don't care */
+	else if (!GKR_IS_KEYRING_ITEM (a_obj))
+		return 0;
+		
+	item = GKR_KEYRING_ITEM (a_obj);
 	a_unmatched = unmatched_attributes (item->attributes, matching);
 	
-	ask = GKR_ASK_REQUEST (b);
-	item = GKR_KEYRING_ITEM (gkr_ask_request_get_object (ask));
+	item = GKR_KEYRING_ITEM (b_obj);
 	b_unmatched = unmatched_attributes (item->attributes, matching);
 
 	if (a_unmatched < b_unmatched) {
@@ -2201,6 +2208,7 @@ op_find_execute (GkrBuffer *packet,
 	gboolean return_val;
 	GkrKeyringItem *item;
 	GnomeKeyringItemType type;
+	GObject *obj;
 	
 	/* No items matched? */
 	if (GPOINTER_TO_UINT (req->data) == 0)
@@ -2228,9 +2236,16 @@ op_find_execute (GkrBuffer *packet,
 	return_val = TRUE;
 	for (l = req->ask_requests; l != NULL; l = l->next) {
 		ask = l->data;
-		item = GKR_KEYRING_ITEM (gkr_ask_request_get_object (ask));
-		if (item != NULL &&
-		    (item->type & GNOME_KEYRING_ITEM_TYPE_MASK) == (type & GNOME_KEYRING_ITEM_TYPE_MASK) &&
+		
+		obj = gkr_ask_request_get_object (ask);
+		g_assert (obj);
+		
+		/* We also have keyring unlock requests mixed in here, so ignore those */
+		if (!GKR_IS_KEYRING_ITEM (obj))
+			continue;
+			
+		item = GKR_KEYRING_ITEM (obj); 
+		if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) == (type & GNOME_KEYRING_ITEM_TYPE_MASK) &&
 		    !item->locked &&
 		    match_attributes (item, attributes, FALSE)) {
 			if (!gnome_keyring_proto_add_utf8_string (result, item->keyring->keyring_name)) {
@@ -2269,14 +2284,23 @@ find_in_each_keyring (GkrKeyring* keyring, gpointer data)
 	GkrAskRequest *ask;
 	GkrKeyringItem *item;
 	GList *ilist;
+	gboolean ask_keyring = FALSE;
 	
 	for (ilist = keyring->items; ilist != NULL; ilist = ilist->next) {
 		item = ilist->data;
-		if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) == (ctx->type & GNOME_KEYRING_ITEM_TYPE_MASK) &&
-		    match_attributes (item, keyring->locked ? ctx->hashed : ctx->attributes, FALSE)) {
-			ask = access_request_from_item (ctx->app_ref, item, GNOME_KEYRING_ACCESS_READ, TRUE);
+		if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) != (ctx->type & GNOME_KEYRING_ITEM_TYPE_MASK) ||
+		    !match_attributes (item, keyring->locked ? ctx->hashed : ctx->attributes, FALSE))
+			continue;
+			
+		if (keyring->locked && !ask_keyring) {
+			ask = access_request_from_keyring (ctx->app_ref, keyring, GNOME_KEYRING_ACCESS_READ);
 			ctx->access_requests = g_list_prepend (ctx->access_requests, ask);
+			ask_keyring = TRUE;
 		}
+		
+		    	
+		ask = access_request_from_item (ctx->app_ref, item, GNOME_KEYRING_ACCESS_READ, TRUE);
+		ctx->access_requests = g_list_append (ctx->access_requests, ask);
 	}
 	
 	return TRUE;
