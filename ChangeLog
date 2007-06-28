@@ -1,5 +1,11 @@
 2007-06-27  Stef Walter  <stef@memberwebs.com>
 
+	* keyrings/gkr-keyrings.c:
+	* ui/gkr-ask-daemon.c: Fix inited flag so it we don't try to 
+	reinitialize when performing cleanup.
+	
+2007-06-27  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon-ops.c:
 	* keyrings/gkr-keyring.c:
 	* keyrings/gkr-keyring-item.c:

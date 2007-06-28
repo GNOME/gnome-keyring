@@ -23,7 +23,6 @@ ask_daemon_cleanup (gpointer unused)
 	GkrAskRequest *ask;
 	
 	g_assert (ask_daemon_inited);
-	ask_daemon_inited = FALSE;
 
 	if (current_ask)
 		gkr_ask_daemon_cancel (current_ask);
@@ -35,6 +34,8 @@ ask_daemon_cleanup (gpointer unused)
 	
 	g_free (the_display);
 	the_display = NULL;
+	
+	ask_daemon_inited = FALSE;
 }
 
 static void
@@ -44,7 +45,6 @@ ask_daemon_init (void)
 
 	if (ask_daemon_inited)
 		return;
-
 	ask_daemon_inited = TRUE;
 	
 	display = g_getenv ("DISPLAY");

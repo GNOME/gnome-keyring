@@ -117,7 +117,6 @@ keyrings_cleanup (gpointer unused)
 	GkrKeyring *keyring;
 	
 	g_assert (keyrings_inited);
-	keyrings_inited = FALSE;
 	
 	while (keyrings) {
 		keyring = GKR_KEYRING (keyrings->data);
@@ -127,6 +126,7 @@ keyrings_cleanup (gpointer unused)
 	}
 	
 	g_assert (session_keyring == NULL);
+	keyrings_inited = FALSE;
 }
 
 static void
