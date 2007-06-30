@@ -43,17 +43,18 @@ typedef enum {
 	GNOME_KEYRING_RESULT_KEYRING_ALREADY_EXISTS
 
 typedef enum {
-	/* The item types */
-	GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
-	GNOME_KEYRING_ITEM_NOTE,
-	
-	/* Used internally */
-	GNOME_KEYRING_ITEM_LAST_TYPE,
 	GNOME_KEYRING_ITEM_TYPE_MASK = 0x0000ffff,
 	GNOME_KEYRING_ITEM_NO_TYPE = GNOME_KEYRING_ITEM_TYPE_MASK,
 
-	/* Makes a item only for applications in ACL */
+	/* The item types */
+	GNOME_KEYRING_ITEM_GENERIC_SECRET = 0,
+	GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
+	GNOME_KEYRING_ITEM_NOTE,
+	
+	/*< private >*/
+	GNOME_KEYRING_ITEM_LAST_TYPE,
+
+	/* Makes a item only for application that created it */
 	GNOME_KEYRING_ITEM_APPLICATION_SECRET = 0x01000000
 	
 } GnomeKeyringItemType;
@@ -106,6 +107,8 @@ typedef struct {
 	char *secret;
 } GnomeKeyringFound;
 
+void gnome_keyring_string_list_free (GList *strings);
+
 typedef void (*GnomeKeyringOperationDoneCallback)           (GnomeKeyringResult result,
 							     gpointer           data);
 typedef void (*GnomeKeyringOperationGetStringCallback)      (GnomeKeyringResult result,
@@ -130,10 +133,10 @@ typedef void (*GnomeKeyringOperationGetAttributesCallback)  (GnomeKeyringResult 
 #define gnome_keyring_attribute_list_index(a, i) g_array_index ((a), GnomeKeyringAttribute, (i))
 #define gnome_keyring_attribute_list_new() (g_array_new (FALSE, FALSE, sizeof (GnomeKeyringAttribute)))
 void                       gnome_keyring_attribute_list_append_string (GnomeKeyringAttributeList *attributes,
-								       const char                *attribute,
+								       const char                *name,
 								       const char                *value);
 void                       gnome_keyring_attribute_list_append_uint32 (GnomeKeyringAttributeList *attributes,
-								       const char                *attribute,
+								       const char                *name,
 								       guint32                    value);
 void                       gnome_keyring_attribute_list_free          (GnomeKeyringAttributeList *attributes);
 GnomeKeyringAttributeList *gnome_keyring_attribute_list_copy          (GnomeKeyringAttributeList *attributes);

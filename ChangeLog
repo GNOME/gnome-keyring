@@ -1,3 +1,23 @@
+2007-06-30  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gnome-keyring-daemon-ops.c:
+	* library/gnome-keyring.c:
+	* library/gnome-keyring.h:
+	* library/gnome-keyring-utils.c:
+	* reference/gnome-keyring-docs.sgml:
+	* reference/gnome-keyring-sections.txt:
+	* reference/tmpl/gnome-keyring-acl.sgml:
+	* reference/tmpl/gnome-keyring-attributes.sgml:
+	* reference/tmpl/gnome-keyring-find.sgml:
+	* reference/tmpl/gnome-keyring-generic-callbacks.sgml:
+	* reference/tmpl/gnome-keyring-item-info.sgml:
+	* reference/tmpl/gnome-keyring-items.sgml:
+	* reference/tmpl/gnome-keyring-keyring-info.sgml:
+	* reference/tmpl/gnome-keyring-keyrings.sgml:
+	* reference/tmpl/gnome-keyring-memory.sgml:
+	* reference/tmpl/gnome-keyring-misc.sgml:
+	* reference/tmpl/gnome-keyring-result.sgml: Add basic API reference documentation 
+	
 2007-06-27  Stef Walter  <stef@memberwebs.com>
 
 	* keyrings/gkr-keyrings.c:

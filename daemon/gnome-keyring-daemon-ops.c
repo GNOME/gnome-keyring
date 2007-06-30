@@ -1184,14 +1184,18 @@ op_delete_keyring_execute (GkrBuffer *packet,
 	}
 	g_assert (opcode == GNOME_KEYRING_OP_DELETE_KEYRING);
 	
-	keyring = gkr_keyrings_find (keyring_name);
-	if (keyring == NULL) {
-		res = GNOME_KEYRING_RESULT_NO_SUCH_KEYRING;
+	if (keyring_name == NULL) {
+		res = GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	} else {
-		if (!gkr_keyring_remove_from_disk (keyring)) 
-			res = GNOME_KEYRING_RESULT_DENIED;
-		else
-			res = GNOME_KEYRING_RESULT_OK;
+		keyring = gkr_keyrings_find (keyring_name);
+		if (keyring == NULL) {
+			res = GNOME_KEYRING_RESULT_NO_SUCH_KEYRING;
+		} else {
+			if (!gkr_keyring_remove_from_disk (keyring)) 
+				res = GNOME_KEYRING_RESULT_DENIED;
+			else
+				res = GNOME_KEYRING_RESULT_OK;
+		}
 	}
 	
 	gnome_keyring_proto_add_uint32 (result, res);

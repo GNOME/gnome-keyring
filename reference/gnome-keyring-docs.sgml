@@ -8,8 +8,17 @@
 
   <chapter>
     <title>gnome-keyring API Reference</title>
-    <xi:include href="xml/gnome-keyring.xml"/>
+    <xi:include href="xml/gnome-keyring-keyrings.xml"/>
+    <xi:include href="xml/gnome-keyring-keyring-info.xml"/>
+    <xi:include href="xml/gnome-keyring-items.xml"/>
+    <xi:include href="xml/gnome-keyring-item-info.xml"/>
+    <xi:include href="xml/gnome-keyring-attributes.xml"/>
+    <xi:include href="xml/gnome-keyring-acl.xml"/>
+    <xi:include href="xml/gnome-keyring-find.xml"/>
+    <xi:include href="xml/gnome-keyring-network.xml"/>
     <xi:include href="xml/gnome-keyring-memory.xml"/>
     <xi:include href="xml/gnome-keyring-result.xml"/>
+    <xi:include href="xml/gnome-keyring-misc.xml"/>
+    <xi:include href="xml/gnome-keyring-generic-callbacks.xml"/>
   </chapter>
 </book>

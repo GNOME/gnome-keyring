@@ -1,0 +1,52 @@
+<!-- ##### SECTION Title ##### -->
+gnome-keyring-misc
+
+<!-- ##### SECTION Short_Description ##### -->
+Miscellaneous Functions
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gnome_keyring_is_available ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_keyring_cancel_request ##### -->
+<para>
+
+</para>
+
+@request: 
+
+
+<!-- ##### FUNCTION gnome_keyring_string_list_free ##### -->
+<para>
+
+</para>
+
+@strings: 
+
+
+<!-- ##### FUNCTION gnome_keyring_daemon_set_display_sync ##### -->
+<para>
+
+</para>
+
+@display: 
+@Returns: 
+
+

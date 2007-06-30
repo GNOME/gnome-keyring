@@ -34,19 +34,19 @@
 
 /**
  * gnome_keyring_free_password:
- * @str: the password to be freed
+ * @password: the password to be freed
  *
  * Clears the memory used by password by filling with '\0' and frees the memory
  * after doing this. You should use this function instead of g_free() for
  * secret information.
  */
 void
-gnome_keyring_free_password (gchar *str)
+gnome_keyring_free_password (gchar *password)
 {
 	volatile char *vp;
 	size_t len;
 	
-	if (!str)
+	if (!password)
 		return;
 		
 	/*
@@ -55,15 +55,28 @@ gnome_keyring_free_password (gchar *str)
 	 * we may be using normal memory, zero it out here just in case.
 	 */
 		
-        vp = (volatile char*)str;
-       	len = strlen (str);
+        vp = (volatile char*)password;
+       	len = strlen (password);
         while (len) { 
         	*vp = 0xAA;
         	vp++;
         	len--; 
         } 
 	
-	gnome_keyring_memory_free (str);
+	gnome_keyring_memory_free (password);
+}
+
+/**
+ * gnome_keyring_string_list_free:
+ * @strings: A %GList of string pointers. 
+ * 
+ * Free a list of string pointers.
+ */
+void 
+gnome_keyring_string_list_free (GList *strings)
+{
+	g_list_foreach (strings, (GFunc) g_free, NULL);
+	g_list_free (strings);
 }
 
 /**
@@ -137,7 +150,7 @@ gnome_keyring_found_free (GnomeKeyringFound *found)
 }
 
 /**
- * gnome_keyring_found_list_free():
+ * gnome_keyring_found_list_free:
  * @found_list: a #GList of #GnomeKeyringFound
  *
  * Free the memory used by the #GnomeKeyringFound items in @found_list.
@@ -150,11 +163,13 @@ gnome_keyring_found_list_free (GList *found_list)
 }
 
 /**
- * gnome_keyring_attribute_list_free():
- * @attributes: a #GnomeKeyringAttributeList
+ * gnome_keyring_attribute_list_free:
+ * @attributes: A #GnomeKeyringAttributeList
  *
  * Free the memory used by @attributes.
- */
+ * 
+ * If a %NULL pointer is passed, it is ignored.
+ **/
 void
 gnome_keyring_attribute_list_free (GnomeKeyringAttributeList *attributes)
 {
@@ -176,6 +191,14 @@ gnome_keyring_attribute_list_free (GnomeKeyringAttributeList *attributes)
 	g_array_free (attributes, TRUE);
 }
 
+/**
+ * gnome_keyring_attribute_list_copy:
+ * @attributes: A #GnomeKeyringAttributeList to copy.
+ * 
+ * Copy a list of item attributes.
+ * 
+ * Return value: The new #GnomeKeyringAttributeList
+ **/
 GnomeKeyringAttributeList *
 gnome_keyring_attribute_list_copy (GnomeKeyringAttributeList *attributes)
 {
@@ -202,12 +225,28 @@ gnome_keyring_attribute_list_copy (GnomeKeyringAttributeList *attributes)
 	return copy;
 }
 
+/**
+ * gnome_keyring_info_free:
+ * @keyring_info: The keyring info to free.
+ * 
+ * Free a #GnomeKeyringInfo object. If a %NULL pointer is passed
+ * nothing occurs. 
+ */
 void
 gnome_keyring_info_free (GnomeKeyringInfo *keyring_info)
 {
 	g_free (keyring_info);
 }
 
+/**
+ * gnome_keyring_info_copy:
+ * @keyring_info: The keyring info to copy.
+ *
+ * Copy a #GnomeKeyringInfo object. 
+ * 
+ * Return value: The newly allocated #GnomeKeyringInfo. This must be freed with 
+ * gnome_keyring_info_free()
+ */
 GnomeKeyringInfo *
 gnome_keyring_info_copy (GnomeKeyringInfo *keyring_info)
 {
@@ -219,7 +258,14 @@ gnome_keyring_info_copy (GnomeKeyringInfo *keyring_info)
 	return copy;
 }
 
-
+/**
+ * gnome_keyring_item_info_free:
+ * @item_info: The keyring item info pointer.
+ * 
+ * Free the #GnomeKeyringItemInfo object. 
+ * 
+ * A %NULL pointer may be passed, in which case it will be ignored.
+ **/
 void
 gnome_keyring_item_info_free (GnomeKeyringItemInfo *item_info)
 {
@@ -230,6 +276,14 @@ gnome_keyring_item_info_free (GnomeKeyringItemInfo *item_info)
 	}
 }
 
+/**
+ * gnome_keyring_item_info_new:
+ * 
+ * Create a new #GnomeKeyringItemInfo object.
+ * Free the #GnomeKeyringItemInfo object. 
+ * 
+ * Return value: A keyring item info pointer.
+ **/
 GnomeKeyringItemInfo *
 gnome_keyring_item_info_new (void)
 {
@@ -242,6 +296,14 @@ gnome_keyring_item_info_new (void)
 	return info;
 }
 
+/**
+ * gnome_keyring_item_info_copy:
+ * @item_info: A keyring item info pointer.
+ * 
+ * Copy a #GnomeKeyringItemInfo object.
+ * 
+ * Return value: A keyring item info pointer.
+ **/
 GnomeKeyringItemInfo *
 gnome_keyring_item_info_copy (GnomeKeyringItemInfo *item_info)
 {
@@ -256,6 +318,13 @@ gnome_keyring_item_info_copy (GnomeKeyringItemInfo *item_info)
 	return copy;
 }
 
+/**
+ * gnome_keyring_application_ref_new:
+ * 
+ * Create a new application reference.
+ * 
+ * Return value: A new #GnomeKeyringApplicationRef pointer.
+ **/
 GnomeKeyringApplicationRef *
 gnome_keyring_application_ref_new (void)
 {
@@ -266,14 +335,30 @@ gnome_keyring_application_ref_new (void)
 	return app_ref;
 }
 
+/**
+ * gnome_keyring_application_ref_free:
+ * @app: A #GnomeKeyringApplicationRef pointer
+ * 
+ * Free an application reference.
+ **/
 void
-gnome_keyring_application_ref_free (GnomeKeyringApplicationRef *app_ref)
+gnome_keyring_application_ref_free (GnomeKeyringApplicationRef *app)
 {
-	g_free (app_ref->display_name);
-	g_free (app_ref->pathname);
-	g_free (app_ref);
+	if (app) {
+		g_free (app->display_name);
+		g_free (app->pathname);
+		g_free (app);
+	}
 }
 
+/**
+ * gnome_keyring_application_ref_copy:
+ * @app: A #GnomeKeyringApplicationRef pointer
+ * 
+ * Copy an application reference.
+ * 
+ * Return value: A new #GnomeKeyringApplicationRef pointer.
+ **/
 GnomeKeyringApplicationRef *
 gnome_keyring_application_ref_copy (const GnomeKeyringApplicationRef *app)
 {
@@ -286,6 +371,17 @@ gnome_keyring_application_ref_copy (const GnomeKeyringApplicationRef *app)
 	return copy;
 }
 
+/**
+ * gnome_keyring_access_control_new:
+ * @application: A #GnomeKeyringApplicationRef pointer
+ * @types_allowed: Access types allowed.
+ * 
+ * Create a new access control for an item. Combine the various access
+ * rights allowed.
+ * 
+ * Return value: The new #GnomeKeyringAccessControl pointer. Use 
+ * gnome_keyring_access_control_free() to free the memory.
+ **/
 GnomeKeyringAccessControl *
 gnome_keyring_access_control_new (const GnomeKeyringApplicationRef *application,
                                   GnomeKeyringAccessType types_allowed)
@@ -299,6 +395,12 @@ gnome_keyring_access_control_new (const GnomeKeyringApplicationRef *application,
 	return ac;
 }
 
+/**
+ * gnome_keyring_access_control_free:
+ * @ac: A #GnomeKeyringAccessControl pointer
+ *
+ * Free an access control for an item. 
+ **/
 void
 gnome_keyring_access_control_free (GnomeKeyringAccessControl *ac)
 {
@@ -306,6 +408,15 @@ gnome_keyring_access_control_free (GnomeKeyringAccessControl *ac)
 	g_free (ac);
 }
 
+/**
+ * gnome_keyring_access_control_copy:
+ * @ac: A #GnomeKeyringAcessControl pointer
+ * 
+ * Copy an access control for an item.
+ * 
+ * Return value: The new #GnomeKeyringAccessControl pointer. Use 
+ * gnome_keyring_access_control_free() to free the memory.
+ **/
 GnomeKeyringAccessControl *
 gnome_keyring_access_control_copy (GnomeKeyringAccessControl *ac)
 {
@@ -316,6 +427,15 @@ gnome_keyring_access_control_copy (GnomeKeyringAccessControl *ac)
 	return ret;
 }
 
+/**
+ * gnome_keyring_acl_copy:
+ * @list: A list of #GnomeKeyringAccessControl pointers.
+ * 
+ * Copy an access control list.
+ * 
+ * Return value: A new list of #GnomeKeyringAccessControl items. Use 
+ * gnome_keyring_acl_free() to free the memory.
+ */
 GList *
 gnome_keyring_acl_copy (GList *list)
 {
@@ -329,6 +449,12 @@ gnome_keyring_acl_copy (GList *list)
 	return ret;
 }
 
+/**
+ * gnome_keyring_acl_free:
+ * @acl: A list of #GnomeKeyringAccessControl pointers.
+ * 
+ * Free an access control list.
+ */
 void
 gnome_keyring_acl_free (GList *acl)
 {

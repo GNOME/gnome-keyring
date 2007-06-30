@@ -1,0 +1,108 @@
+<!-- ##### SECTION Title ##### -->
+gnome-keyring-memory
+
+<!-- ##### SECTION Short_Description ##### -->
+Secure Non-pageable Memory
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+Normal allocated memory can be paged to disk at the whim of the operating system. 
+This is a serious problems for sensitive information like passwords, keys and secrets.
+</para>
+
+<para>GNOME Keyring holds passwords in non-pageable, or locked memory. This happens
+both in the daemon and in the library. This is only possible if the OS contains
+support for it.</para>
+
+<para>These functions allow applications to use to hold passwords and other 
+sensitive information.</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO gnome_keyring_memory_new ##### -->
+<para>
+
+</para>
+
+@type: 
+@n_objects: 
+
+
+<!-- ##### FUNCTION gnome_keyring_memory_alloc ##### -->
+<para>
+
+</para>
+
+@sz: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_keyring_memory_try_alloc ##### -->
+<para>
+
+</para>
+
+@sz: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_keyring_memory_realloc ##### -->
+<para>
+
+</para>
+
+@p: 
+@sz: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_keyring_memory_try_realloc ##### -->
+<para>
+
+</para>
+
+@p: 
+@sz: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_keyring_memory_free ##### -->
+<para>
+
+</para>
+
+@p: 
+
+
+<!-- ##### FUNCTION gnome_keyring_memory_is_secure ##### -->
+<para>
+
+</para>
+
+@p: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_keyring_memory_strdup ##### -->
+<para>
+
+</para>
+
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_keyring_free_password ##### -->
+<para>
+
+</para>
+
+@password: 
+
+

@@ -1,0 +1,43 @@
+<!-- ##### SECTION Title ##### -->
+gnome-keyring-result
+
+<!-- ##### SECTION Short_Description ##### -->
+Result Codes
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+Result codes used through out GNOME Keyring.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gnome_keyring_result_to_message ##### -->
+<para>
+
+</para>
+
+@res: 
+@Returns: 
+
+
+<!-- ##### ENUM GnomeKeyringResult ##### -->
+<para>
+Results returned from various functions.
+</para>
+
+@GNOME_KEYRING_RESULT_OK: The operation completed successfully
+@GNOME_KEYRING_RESULT_DENIED: The operation was denied by the user, or by an access control.
+@GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON: The daemon is not running or couldn't be connected to.
+@GNOME_KEYRING_RESULT_ALREADY_UNLOCKED: Unused
+@GNOME_KEYRING_RESULT_NO_SUCH_KEYRING: The keyring does not exist with the given name.
+@GNOME_KEYRING_RESULT_BAD_ARGUMENTS: Bad arguments were passed to a function.
+@GNOME_KEYRING_RESULT_IO_ERROR: A problem occurred when communicating with the daemon.
+@GNOME_KEYRING_RESULT_CANCELLED: The operation was cancelled with gnome_keyring_cancel_request().
+@GNOME_KEYRING_RESULT_KEYRING_ALREADY_EXISTS: A keyring with that name already exist.
+
