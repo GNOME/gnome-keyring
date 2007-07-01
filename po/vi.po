@@ -8,7 +8,7 @@ msgid ""
 msgstr "Project-Id-Version: gnome-keyring 2.19.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-06-28 03:34+0100\n"
-"PO-Revision-Date: 2007-06-28 15:55+0930\n"
+"PO-Revision-Date: 2007-07-01 11:39-0400\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -285,7 +285,7 @@ msgstr "Truy cập bị từ chối"
 
 #: ../library/gnome-keyring-utils.c:98
 msgid "The gnome-keyring-daemon application is not running."
-msgstr "Trình nền gnome-keyring-daemon không đang chạy."
+msgstr "Trình nền gnome-keyring-daemon chưa chạy."
 
 #: ../library/gnome-keyring-utils.c:100
 #: ../library/gnome-keyring-utils.c:113
