@@ -574,7 +574,7 @@ gkr_secure_memory_realloc (void *p, unsigned long sz)
 	MemBlock *bl = NULL;
 	unsigned long oldsz = 0;
 	int donew = 0;
-	void *n;	
+	void *n = NULL;	
 	
 	if (sz > 0xFFFFFFFF / 2) {
 		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", sz);   

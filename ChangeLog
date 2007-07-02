@@ -1,3 +1,8 @@
+2007-07-02  Christian Kirbach  <Christian.Kirbach@googlemail.com>
+
+	* common/gkr-secure-memory.c:
+	Fix gcc4 compiler warning that breaks build (bug #452202).
+
 2007-06-30  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gnome-keyring-daemon-ops.c:
