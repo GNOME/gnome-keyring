@@ -10,10 +10,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-06-28 03:34+0100\n"
-"PO-Revision-Date: 2007-06-28 11:41+0200\n"
-"Last-Translator: Jorge Gonzalez <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Español <traductores@es.gnome.org>\n"
+"POT-Creation-Date: 2007-06-29 03:38+0100\n"
+"PO-Revision-Date: 2007-07-04 16:50+0200\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,54 +21,47 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: ../daemon/gnome-keyring-daemon-ops.c:379
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
-msgstr ""
-"La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en el "
-"depósito de claves predeterminado."
+msgstr "La aplicación «%s» (%s) quiere acceder a la contraseña para «<object prop='name'/>» en el depósito de claves predeterminado."
 
 #: ../daemon/gnome-keyring-daemon-ops.c:382
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
-msgstr "La aplicación «%s» (%s) quiere acceder a la contraseña para «%s» en %s."
+msgstr "La aplicación «%s» (%s) quiere acceder a la contraseña para «<object prop='name'/>» en %s."
 
 #: ../daemon/gnome-keyring-daemon-ops.c:387
 #: ../daemon/gnome-keyring-daemon-ops.c:395
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr ""
-"La aplicación «%s» quiere acceder a la contraseña para «%s» en el depósito "
-"predeterminado."
+msgstr "La aplicación «%s» quiere acceder a la contraseña para «<object prop='name'/>» en el depósito predeterminado."
 
 #: ../daemon/gnome-keyring-daemon-ops.c:390
 #: ../daemon/gnome-keyring-daemon-ops.c:398
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "La aplicación %s quiere acceder a la contraseña para «%s» en %s."
+msgstr "La aplicación «%s» quiere acceder a la contraseña para «<object prop='name'/>» en %s."
 
 #: ../daemon/gnome-keyring-daemon-ops.c:403
-#, fuzzy
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr ""
-"Una aplicación desconocida quiere acceder a la contraseña para «%s» en el "
-"depósito de claves predeterminado."
+msgstr "Una aplicación desconocida quiere acceder a la contraseña para «<object prop='name'/>» en el depósito de claves predeterminado."
 
 #: ../daemon/gnome-keyring-daemon-ops.c:405
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "Una aplicación desconocida quiere acceder a la contraseña para «%s» en %s."
+msgstr "Una aplicación desconocida quiere acceder a la contraseña para «<object prop='name'/>» en %s."
 
 #. And put together the ask request
 #: ../daemon/gnome-keyring-daemon-ops.c:411
