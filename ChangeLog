@@ -1,3 +1,9 @@
+2007-07-05  Olav Vitters  <olav@bkor.dhs.org>
+
+	* common/gkr-secure-memory.c: (suba_print_cell):
+	* library/gnome-keyring.c: (read_all): Fix build fail: ambiguous
+	fprintf() arguments Fixes bug #452498 (Theppitak Karoonboonyanan).
+
 2007-07-02  Christian Kirbach  <Christian.Kirbach@googlemail.com>
 
 	* common/gkr-secure-memory.c:

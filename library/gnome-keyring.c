@@ -314,7 +314,7 @@ read_all (int fd, guchar *buf, size_t len)
 				continue;
 			else 
 				g_warning ("couldn't read %u bytes from gnome-keyring socket: %s", 
-					   len, g_strerror (errno));
+					   (unsigned int)len, g_strerror (errno));
 			return res;
 		}
 		bytes += res;
