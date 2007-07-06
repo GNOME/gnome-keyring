@@ -1,3 +1,16 @@
+Changes in version 2.19.5 are:
+* Allow passing NULL as a password to gnome_keyring_unlock()
+* Added strerror() like functionality for GnomeKeyringResult
+* Added support for async version of gnome_keyring_item_grant_access_rights_sync()
+* Handle unix signals properly, quit gracefully.
+* Fix memory leaks [Alexander Sack]
+* Make unit tests automatic when building a distribution tarball
+* Fix prompt messages [Jürg Billeter]
+* Fix problems prompting for access to items when the keyring is locked.
+* Non-pageable memory degrades gracefully on Solaris, FreeBSD
+* Build fixes [Theppitak Karoonboonyanan, Christian Kirbach]
+* API Documentation
+
 Changes in version 2.19.4.1 are:
 * Build fix for unit tests
 
