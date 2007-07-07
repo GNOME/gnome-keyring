@@ -1,5 +1,10 @@
 2007-07-06  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring-memory.c: Return NULL from 
+	gnome_keyring_memory_strdup when called with NULL. Fixes bug #453138
+	
+2007-07-06  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Bump version number
 
 === gnome-keyring 2.19.4 === 

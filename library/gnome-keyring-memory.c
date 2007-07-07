@@ -240,14 +240,20 @@ gnome_keyring_memory_is_secure (gpointer p)
  * gnome_keyring_memory_strdup:
  * @str: The null terminated string to copy 
  * 
- * Copy a string into non-pageable memory.
+ * Copy a string into non-pageable memory. If the input string is %NULL, then 
+ * %NULL will be returned.
  * 
  * Return value: The copied string, should be freed with gnome_keyring_memory_free()
  */
 gchar*
 gnome_keyring_memory_strdup (const gchar* str)
 {
-	unsigned long len = strlen (str) + 1;	
+	unsigned long len;
+	
+	if (!str)
+		return NULL;
+	
+	len = strlen (str) + 1;	
 	gchar *res = (gchar*)gnome_keyring_memory_alloc (len);
 	strcpy (res, str);
 	return res;
