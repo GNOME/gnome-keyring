@@ -41,10 +41,10 @@
 GStaticPrivate thread_private = G_STATIC_PRIVATE_INIT;
 
 #define ASSERT_IS_MAIN() \
-	(g_assert (g_static_private_get (&thread_private) == NULL))
+	g_assert (g_static_private_get (&thread_private) == NULL)
 	
 #define ASSERT_IS_WORKER() \
-	(g_assert (g_static_private_get (&thread_private) != NULL))
+	g_assert (g_static_private_get (&thread_private) != NULL)
 
 
 /* -----------------------------------------------------------------------------
