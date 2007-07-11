@@ -221,6 +221,27 @@ void unit_test_find_locked (CuTest *cu)
 	CuAssert(cu, "Wrong number of items found", g_list_length (found) == 1);
 }
 
+void unit_test_get_info_locked (CuTest *cu)
+{
+	GnomeKeyringResult res;
+	GnomeKeyringItemInfo *info;
+	guint id;
+	
+	/* Create teh item */
+	res = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
+	                                      "My test locked", NULL, SECRET, FALSE, &id);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	
+	/* Lock the keyring ... */
+	res = gnome_keyring_lock_all_sync ();
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+
+	/* Now, try to access the item */	
+	TELL("type in keyring password and click 'OK'");
+	res = gnome_keyring_item_get_info_sync (NULL, id, &info);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+}
+
 void unit_test_cleaup (CuTest* cu)
 {
 	GnomeKeyringResult res;
