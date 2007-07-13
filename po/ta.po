@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-19 03:52+0100\n"
-"PO-Revision-Date: 2007-06-21 14:50+0530\n"
+"POT-Creation-Date: 2007-06-28 03:34+0100\n"
+"PO-Revision-Date: 2007-07-12 15:09+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: TAMIL <ubuntu-l10n-tam@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,281 +18,267 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"\n"
-"\n"
 
-#: ../daemon/gnome-keyring-daemon.c:384
+#: ../daemon/gnome-keyring-daemon-ops.c:379
 #, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "பயன்பாடு '%s' (%s) '%s' இல் உள்ள %s  கடவுச்சொல்லை அணுக விரும்புகிறது"
+msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தில் '<object prop='name'/>' க்கான  கடவுச்சொல்லை அணுக விரும்புகிறது"
 
-#: ../daemon/gnome-keyring-daemon.c:387
+#: ../daemon/gnome-keyring-daemon-ops.c:382
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr "பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தில் '%s' க்கான  கடவுச்சொல்லை அணுக விரும்புகிறது"
+msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."
+msgstr "பயன்பாடு '%s' (%s) '%s' இல் உள்ள '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக விரும்புகிறது"
 
-#: ../daemon/gnome-keyring-daemon.c:392 ../daemon/gnome-keyring-daemon.c:400
+#: ../daemon/gnome-keyring-daemon-ops.c:387
+#: ../daemon/gnome-keyring-daemon-ops.c:395
 #, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "பயன்பாடு '%s' '%s' இல் உள்ள %s  கடவுச்சொல்லை அணுக விரும்புகிறது"
+msgid "The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "பயன்பாடு '%s' இயல்பான விசை வளையத்தில் '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக விரும்புகிறது"
 
-#: ../daemon/gnome-keyring-daemon.c:395 ../daemon/gnome-keyring-daemon.c:403
+#: ../daemon/gnome-keyring-daemon-ops.c:390
+#: ../daemon/gnome-keyring-daemon-ops.c:398
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr "பயன்பாடு '%s' இயல்பான விசை வளையத்தில் %s  கடவுச்சொல்லை அணுக விரும்புகிறது"
+msgid "The application '%s' wants to access the password for '<object prop='name'/>' in %s."
+msgstr "பயன்பாடு '%s' '%s' இல் உள்ள '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக விரும்புகிறது"
 
-#: ../daemon/gnome-keyring-daemon.c:408
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "தெரியாத பயன்பாடு '%s' க்கு %s இல் உள்ள கடவுச்சொல்லை அணுக விரும்புகிறது"
+#: ../daemon/gnome-keyring-daemon-ops.c:403
+msgid "An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "தெரியாத பயன்பாடு '<object prop='name'/>' க்கு கடவுச்சொல்லை இயல்பான விசை வளையத்திலிருந்து அணுக விரும்புகிறது"
 
-#: ../daemon/gnome-keyring-daemon.c:411
+#: ../daemon/gnome-keyring-daemon-ops.c:405
 #, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr "தெரியாத பயன்பாடு .'%s' க்கு கடவுச்சொல்லை இயல்பான விசை வளையத்திலிருந்து அணுக விரும்புகிறது"
+msgid "An unknown application wants to access the password for '<object prop='name'/>' in %s."
+msgstr "தெரியாத பயன்பாடு '<object prop='name'/>' க்கு %s இல் உள்ள கடவுச்சொல்லை அணுக விரும்புகிறது"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon.c:417
+#: ../daemon/gnome-keyring-daemon-ops.c:411
 msgid "Allow access"
 msgstr "அணுக அனுமதிக்கவும்"
 
-#: ../daemon/gnome-keyring-daemon.c:417
+#: ../daemon/gnome-keyring-daemon-ops.c:411
 msgid "Allow application access to keyring?"
 msgstr "பயன்பாடுகள் விசை வளையத்தை அணுக அனுமதிக்கவா?"
 
-#: ../daemon/gnome-keyring-daemon.c:490
+#: ../daemon/gnome-keyring-daemon-ops.c:475
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
+msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
 msgstr "பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/gnome-keyring-daemon.c:494
+#: ../daemon/gnome-keyring-daemon-ops.c:479
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "பயன்பாடு '%s' (%s) விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/gnome-keyring-daemon.c:501 ../daemon/gnome-keyring-daemon.c:511
+#: ../daemon/gnome-keyring-daemon-ops.c:485
+#: ../daemon/gnome-keyring-daemon-ops.c:495
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "பயன்பாடு '%s' இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/gnome-keyring-daemon.c:505 ../daemon/gnome-keyring-daemon.c:516
+#: ../daemon/gnome-keyring-daemon-ops.c:489
+#: ../daemon/gnome-keyring-daemon-ops.c:500
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "பயன்பாடு '%s' விசை வளையம்  '%s' ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/gnome-keyring-daemon.c:522
+#: ../daemon/gnome-keyring-daemon-ops.c:506
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr "தெரியாத பயன்பாடு இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது ஆனால் அது பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/gnome-keyring-daemon.c:526
+#: ../daemon/gnome-keyring-daemon-ops.c:510
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "தெரியாத பயன்பாடு இயல்பான விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது ஆனால் அது பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/gnome-keyring-daemon.c:533
+#: ../daemon/gnome-keyring-daemon-ops.c:517
 msgid "Enter password for default keyring to unlock"
 msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../daemon/gnome-keyring-daemon.c:535
+#: ../daemon/gnome-keyring-daemon-ops.c:519
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "பூட்டைத்திறக்க '%s' விசை வளையத்தின் கடவுச்சொல்லை உள்ளிடவும்"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon.c:539
+#: ../daemon/gnome-keyring-daemon-ops.c:523
 msgid "Unlock Keyring"
 msgstr "விசை வளையத்தின் பூட்டை திற"
 
-#: ../daemon/gnome-keyring-daemon.c:567
+#: ../daemon/gnome-keyring-daemon-ops.c:551
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
+msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "பயன்பாடு '%s' (%s) புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:571
+#: ../daemon/gnome-keyring-daemon-ops.c:555
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
+msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "பயன்பாடு '%s' (%s) புதிய இயல்பான விசை வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:577 ../daemon/gnome-keyring-daemon.c:587
+#: ../daemon/gnome-keyring-daemon-ops.c:561
+#: ../daemon/gnome-keyring-daemon-ops.c:571
 #, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "பயன்பாடு '%s' புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:581 ../daemon/gnome-keyring-daemon.c:591
+#: ../daemon/gnome-keyring-daemon-ops.c:565
+#: ../daemon/gnome-keyring-daemon-ops.c:575
 #, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s'  புதிய இயல்பான விசை  ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் "
-"கடவுச்சொல்லை உள்ளிடவும்."
+msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "பயன்பாடு '%s'  புதிய இயல்பான விசை  ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:597
+#: ../daemon/gnome-keyring-daemon-ops.c:581
 #, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"தெரியாத பயன்பாடு புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த "
-"விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "தெரியாத பயன்பாடு புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:601
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
+#: ../daemon/gnome-keyring-daemon-ops.c:585
+msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "தெரியாத பயன்பாடு புதிய இயல்பான விசை வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon.c:607
+#: ../daemon/gnome-keyring-daemon-ops.c:591
 msgid "New Keyring Password"
 msgstr "புதிய விசை வளைய கடவுச்சொல்"
 
-#: ../daemon/gnome-keyring-daemon.c:608
+#: ../daemon/gnome-keyring-daemon-ops.c:592
 msgid "Choose password for new keyring"
 msgstr "புதிய விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
 
-#: ../daemon/gnome-keyring-daemon.c:635
+#: ../daemon/gnome-keyring-daemon-ops.c:619
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
+msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "பயன்பாடு '%s' (%s) '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:639
+#: ../daemon/gnome-keyring-daemon-ops.c:623
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
+msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "பயன்பாடு '%s' (%s) முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:645 ../daemon/gnome-keyring-daemon.c:655
+#: ../daemon/gnome-keyring-daemon-ops.c:629
+#: ../daemon/gnome-keyring-daemon-ops.c:639
 #, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "பயன்பாடு '%s' '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:649 ../daemon/gnome-keyring-daemon.c:659
+#: ../daemon/gnome-keyring-daemon-ops.c:633
+#: ../daemon/gnome-keyring-daemon-ops.c:643
 #, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
+msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "பயன்பாடு '%s' முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:665
+#: ../daemon/gnome-keyring-daemon-ops.c:649
 #, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
+msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "தெரியாத பயன்பாடு '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:669
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
+#: ../daemon/gnome-keyring-daemon-ops.c:653
+msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "தெரியாத பயன்பாடு முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
 
-#: ../daemon/gnome-keyring-daemon.c:679
+#: ../daemon/gnome-keyring-daemon-ops.c:663
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "'%s' விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
 
-#: ../daemon/gnome-keyring-daemon.c:681
+#: ../daemon/gnome-keyring-daemon-ops.c:665
 msgid "Choose a new password for the default keyring. "
 msgstr "முன்னிருப்பு விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon.c:685
+#: ../daemon/gnome-keyring-daemon-ops.c:669
 msgid "Change Keyring Password"
 msgstr "விசை வளைய கடவுச்சொல்லை மாற்றவும்"
 
-#: ../daemon/gnome-keyring-daemon.c:732
+#: ../daemon/gnome-keyring-daemon-ops.c:716
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
+msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "பயன்பாடு '%s' (%s) கடவுச்சொல்லை சேமிக்க விரும்புகிறது ஆனால் இயல்பான விசை வளையம் இல்லை. அதை உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../daemon/gnome-keyring-daemon.c:736 ../daemon/gnome-keyring-daemon.c:740
+#: ../daemon/gnome-keyring-daemon-ops.c:720
+#: ../daemon/gnome-keyring-daemon-ops.c:724
 #, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
+msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "பயன்பாடு '%s' கடவுச்சொல்லை சேமிக்க விரும்புகிறது ஆனால் இயல்பான கடவுச்சொல் இல்லை. உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../daemon/gnome-keyring-daemon.c:744
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
+#: ../daemon/gnome-keyring-daemon-ops.c:728
+msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "தெரியாத பயன்பாடு கடவுச்சொல்லை சேமிக்க விரும்புகிறதும் ஆனால் இயல்பான கடவுச்சொல் இல்லை. அதை உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon.c:749
+#: ../daemon/gnome-keyring-daemon-ops.c:733
 msgid "Create Default Keyring"
 msgstr "புதிய இயல்பான விசை வளையத்தை உருவாக்கவும்"
 
-#: ../daemon/gnome-keyring-daemon.c:749
+#: ../daemon/gnome-keyring-daemon-ops.c:733
 msgid "Choose password for default keyring"
 msgstr "இயல்பான விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
 
-#: ../ui/gkr-ask-tool.c:224
+#: ../library/gnome-keyring-utils.c:96
+msgid "Access Denied"
+msgstr "அணுகல் மறுக்கப்பட்டது"
+
+#: ../library/gnome-keyring-utils.c:98
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "க்னோம் விசை வளைய கிங்கரன் இயங்கவில்லை"
+
+#: ../library/gnome-keyring-utils.c:100
+#: ../library/gnome-keyring-utils.c:113
+msgid "The keyring has already been unlocked."
+msgstr "விசைவளைய ஏற்கெனவே பூட்டு திறக்கப்பட்டு விட்டது."
+
+#: ../library/gnome-keyring-utils.c:102
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "க்னோம் விசை வளைய கிங்கரன் உடன் தொடர்பு கொள்வதில் பிழை"
+
+#: ../library/gnome-keyring-utils.c:104
+msgid "A keyring with that name already exists"
+msgstr "அந்த பெயருடன் விசை வளையம் ஏற்கெனவே இருப்பில் உள்ளது."
+
+#: ../library/gnome-keyring-utils.c:106
+msgid "Programmer error: The application sent invalid data."
+msgstr "நிரல் பிழை: நிரல் பிழையான தரவை அனுப்பியது."
+
+#: ../ui/gkr-ask-tool.c:257
 msgid "_Old password:"
 msgstr "பழைய கடவுச்சொல் (_O):"
 
-#: ../ui/gkr-ask-tool.c:247
+#: ../ui/gkr-ask-tool.c:280
 msgid "_Password:"
 msgstr "கடவுச்சொல் (_P):"
 
-#: ../ui/gkr-ask-tool.c:272
+#: ../ui/gkr-ask-tool.c:305
 msgid "_Confirm password:"
 msgstr "கடவுச்சொல்லை _உறுதிபடுத்துக:"
 
-#: ../ui/gkr-ask-tool.c:291
+#: ../ui/gkr-ask-tool.c:324
 msgid "New password strength"
 msgstr "புதிய கடவுச்சொல்லின் பலம்"
 
-#: ../ui/gkr-ask-tool.c:311
+#: ../ui/gkr-ask-tool.c:350
 msgid "Old password cannot be blank."
 msgstr "பழைய கடவுச்சொல் வெறுமையாக இருக்க முடியாது"
 
-#: ../ui/gkr-ask-tool.c:323
+#: ../ui/gkr-ask-tool.c:362
 msgid "Password cannot be blank."
 msgstr "கடவுச்சொல் வெறுமையாக இருக்க முடியாது"
 
-#: ../ui/gkr-ask-tool.c:332
+#: ../ui/gkr-ask-tool.c:371
 msgid "Passwords do not match."
 msgstr "கடவுச்சொற்கள் பொருந்தவில்லை"
 
-#: ../ui/gkr-ask-tool.c:369
+#: ../ui/gkr-ask-tool.c:408
 msgid "Deny"
 msgstr "மறுக்கவும்"
 
-#: ../ui/gkr-ask-tool.c:381
+#: ../ui/gkr-ask-tool.c:420
 msgid "Allow _Once"
 msgstr "(_O) ஒரு முறை அனுமதி"
 
-#: ../ui/gkr-ask-tool.c:385
+#: ../ui/gkr-ask-tool.c:424
 msgid "_Always Allow"
 msgstr "(_A)எப்போதும் அனுமதி"
 
-#: ../ui/gkr-ask-tool.c:439
+#: ../ui/gkr-ask-tool.c:478
 msgid "Must be run from gnome-keyring\n"
 msgstr "க்னோம் விசை வளையத்திலிருந்து இயக்கப்பட வேண்டும்\n"
 
