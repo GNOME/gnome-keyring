@@ -28,6 +28,7 @@
 
 typedef gboolean (*GkrUnixSignalHandler)     (guint sig, gpointer user_data);
 
-guint    gkr_unix_signal_connect             (guint sig, GkrUnixSignalHandler handler, gpointer user_data);
+guint    gkr_unix_signal_connect             (GMainContext *ctx, guint sig, 
+                                              GkrUnixSignalHandler handler, gpointer user_data);
 
 #endif /* GKRUNIXSIGNAL_H_ */

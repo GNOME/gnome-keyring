@@ -24,7 +24,10 @@
 #ifndef UNITTESTPRIVATE_H_
 #define UNITTESTPRIVATE_H_
 
+#include <glib.h>
+
 void test_mainloop_quit (void);
 void test_mainloop_run (int timeout);
+GMainLoop* test_mainloop_get (void);
 
 #endif /*UNITTESTPRIVATE_H_*/

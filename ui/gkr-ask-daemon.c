@@ -4,36 +4,31 @@
 #include "gkr-ask-daemon.h"
 #include "gkr-ask-request.h"
 
+#include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
 
 #include <glib.h>
 
 static gboolean ask_daemon_inited = FALSE;
 
-static GkrAskRequest* current_ask = NULL;
-static GList *outstanding_asks = NULL;
-
+static GkrAsyncWait *wait_condition = NULL;
+static GkrAskRequest *current_ask = NULL;
 static gchar *the_display = NULL;
-
-static void prompt_next (void);
 
 static void 
 ask_daemon_cleanup (gpointer unused)
 {
-	GkrAskRequest *ask;
-	
 	g_assert (ask_daemon_inited);
 
 	if (current_ask)
-		gkr_ask_daemon_cancel (current_ask);
-	
-	while (outstanding_asks) {
-		ask = GKR_ASK_REQUEST (outstanding_asks->data);
-		gkr_ask_daemon_cancel (ask);
-	}
+		gkr_ask_request_cancel (current_ask);
 	
 	g_free (the_display);
 	the_display = NULL;
+	
+	g_assert (wait_condition);
+	gkr_async_wait_free (wait_condition);
+	wait_condition = NULL;
 	
 	ask_daemon_inited = FALSE;
 }
@@ -47,6 +42,8 @@ ask_daemon_init (void)
 		return;
 	ask_daemon_inited = TRUE;
 	
+	wait_condition = gkr_async_wait_new ();
+	
 	display = g_getenv ("DISPLAY");
 	if (display && display[0])
 		display = g_strdup (display);
@@ -54,42 +51,8 @@ ask_daemon_init (void)
 	gkr_cleanup_register (ask_daemon_cleanup, NULL);
 }
 
-static void 
-completed_ask (GkrAskRequest *ask, gpointer unused)
-{
-	/* current_ask will be null if cancelled */
-	g_assert (current_ask == NULL || ask == current_ask);
-	
-	current_ask = NULL;
-	g_object_unref (ask);
-	
-	prompt_next ();
-}
-
-static void 
-prompt_next (void)
-{
-	while (outstanding_asks) {
-		
-		g_assert (!current_ask);
-		current_ask = GKR_ASK_REQUEST (outstanding_asks->data);
-		
-		outstanding_asks = g_list_remove (outstanding_asks, current_ask);
-		g_signal_connect (current_ask, "completed", G_CALLBACK (completed_ask), NULL);
-		
-		/* This can immediately call the completed handler */
-		if (!gkr_ask_request_check (current_ask)) {
-			
-			/* Needs to be prompted for */
-			g_assert (current_ask);
-			gkr_ask_request_prompt (current_ask);
-			return;
-		}
-	}
-}
-
 void
-gkr_ask_daemon_queue (GkrAskRequest* ask)
+gkr_ask_daemon_process (GkrAskRequest* ask)
 {
 	ask_daemon_init ();
 	
@@ -98,41 +61,33 @@ gkr_ask_daemon_queue (GkrAskRequest* ask)
 	
 	/* See if it'll complete without a prompt */
 	if (gkr_ask_request_check (ask))
-		return;
+		goto done;
 	
-	/* Put it in the queue and prompt */
-	outstanding_asks = g_list_append (outstanding_asks, ask);
+	if (gkr_async_is_stopping ()) {
+		gkr_ask_request_cancel (ask);
+		goto done;
+	}
+	
+	/* Wait until no other asks are prompting */
+	while (current_ask)
+		gkr_async_wait (wait_condition);
+	
+	g_assert (ask_daemon_inited);
+	
 	g_object_ref (ask);
+	current_ask = ask;
 	
-	if (!current_ask)
-		prompt_next ();
-}
+	if (!gkr_ask_request_check (ask))
+		gkr_ask_request_prompt (ask);
 
-void
-gkr_ask_daemon_cancel (GkrAskRequest* ask)
-{
-	ask_daemon_init ();
-	
-	if (gkr_ask_request_is_complete (ask))
-		return;
-	
-	/* Keep a reference during this function */
-	g_object_ref (ask);
-	
-	if (ask == current_ask) {
-		g_object_unref (ask);
-		current_ask = NULL;
-	}
-	
-	if (g_list_find (outstanding_asks, ask)) {
-		g_object_unref (ask);
-		outstanding_asks = g_list_remove (outstanding_asks, ask);
-	}
-	
-	gkr_ask_request_cancel (ask);
-	
-	/* Function reference */
+	current_ask = NULL;
 	g_object_unref (ask);
+	
+	g_assert (wait_condition);
+	gkr_async_notify (wait_condition);
+	
+done:
+	g_assert (gkr_ask_request_is_complete (ask));
 }
 
 void 

@@ -38,19 +38,13 @@
 
 typedef struct {
 	GnomeKeyringApplicationRef *app_ref;
-	GList *ask_requests;
-	gpointer data;
 } GkrKeyringRequest;	
 
-typedef struct {
-	gboolean (*collect_info) (GkrBuffer *packet,
-				  GkrKeyringRequest *req);
-	gboolean (*execute_op) (GkrBuffer *packet,
-				GkrBuffer *result,
-				GkrKeyringRequest *req);
-} GnomeKeyringOperationImplementation;
+typedef gboolean (*GnomeKeyringOperation) (GkrBuffer *packet, GkrBuffer *result,
+                                           GkrKeyringRequest *req);
 
-extern GnomeKeyringOperationImplementation keyring_ops[];
+extern GnomeKeyringOperation keyring_ops[];
+
 GList *                     gnome_keyring_acl_copy (GList *list);
 
 

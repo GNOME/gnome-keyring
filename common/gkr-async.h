@@ -27,66 +27,133 @@
 #include <glib.h>
 
 /* -----------------------------------------------------------------------------
- * ASYNCHRONOUS CALLS
+ * ASYNC WAIT CONDITIONS
  */
 
-struct _GkrAsyncCalls;
-typedef struct _GkrAsyncCalls GkrAsyncCalls;
+struct _GkrAsyncWait;
+typedef struct _GkrAsyncWait GkrAsyncWait;
 
-struct _GkrAsyncCall;
-typedef struct _GkrAsyncCall GkrAsyncCall;
+/* 
+ * Create a new wait condition 
+ */
+GkrAsyncWait*      gkr_async_wait_new            (void);
 
-typedef void (*GkrAsyncFunc) (GkrAsyncCall* reply, gpointer message);
+/* 
+ * Free a wait condition 
+ */
+void               gkr_async_wait_free           (GkrAsyncWait *wait);
 
-/* Called from a worker thread */
+/* 
+ * Wait on a condition, this should be done in a loop, as with GCond 
+ */
+void               gkr_async_wait                (GkrAsyncWait *wait);
 
-GkrAsyncCall*      gkr_async_call_send          (GkrAsyncCalls* calls, 
-                                                 GkrAsyncFunc callback,
-                                                 gpointer data);
+/* 
+ * Notify that a condition has been satisfied 
+ */
+void               gkr_async_notify              (GkrAsyncWait *wait);
 
-gpointer           gkr_async_call_wait          (GkrAsyncCall* call);
+/* -----------------------------------------------------------------------------
+ * GENERAL ASYNC CALLS
+ */
 
-/* Called on the main thread */
+/* 
+ * Yield the current thread (main thread or worker). Returns FALSE
+ * if the current thread is supposed to stop. 
+ */
+gboolean           gkr_async_yield               (void);
 
-void               gkr_async_call_reply         (GkrAsyncCall* reply,
-                                                 gpointer data);
+/* 
+ * Enable concurrent execution of the current thread in the process 
+ */
+void               gkr_async_begin_concurrent    (void);
 
-GkrAsyncCalls*     gkr_async_calls_new          (void);
+/* 
+ * Put current thread back into cooperative execution 
+ */
+void               gkr_async_end_concurrent      (void);
 
-void               gkr_async_calls_free         (GkrAsyncCalls* calls);
+/* 
+ * See if current thread is supposed to stop 
+ */
+gboolean           gkr_async_is_stopping         (void);
 
+/* 
+ * Register a cancellation function which is called when the current
+ * thread is supposed to stop. This is often used to close a socket
+ * or satisfy some other condition that the thread is blocking on.
+ * 
+ * The GDestroyNotify function is run from an arbitary thread.
+ */
+void               gkr_async_register_cancel     (GDestroyNotify cancel, gpointer data);
+
+/* 
+ * Unregister a cancellation function.
+ */
+void               gkr_async_unregister_cancel   (GDestroyNotify cancel, gpointer data);
+
+/*
+ * The current thread should yield and sleep.
+ */
+void               gkr_async_usleep              (gulong microseconds);
+
+/*
+ * The current thread should yield and sleep.
+ */
+void               gkr_async_sleep               (glong seconds);
 
 /* -----------------------------------------------------------------------------
  * WORKER THREADS
- */  
+ */
 
 struct _GkrAsyncWorker;
 typedef struct _GkrAsyncWorker GkrAsyncWorker;
 
-typedef void (*GkrAsyncWorkerCallback) (GkrAsyncWorker* worker, gpointer result, gpointer user_data);
+typedef void (*GkrAsyncWorkerCallback) (GkrAsyncWorker *worker, gpointer result, gpointer user_data);
 
-/* Called on the main thread */
+/*
+ * Called before using any async functionality or workers.
+ */
+void               gkr_async_workers_init        (GMainLoop *mainloop);
 
+/*
+ * Called at end of application.
+ */
+void               gkr_async_workers_uninit      (void);
+
+/*
+ * Stop all running workers and wait for them to finish.
+ */
+void               gkr_async_workers_stop_all    (void);
+
+/*
+ * Get number of worker threads.
+ */
+guint              gkr_async_workers_get_n       (void);
+
+/*
+ * Start a new worker thread. callback is run when the worker 
+ * ends, whether cancelled or not. The returned pointer is 
+ * only valid while worker is running.
+ */
 GkrAsyncWorker*    gkr_async_worker_start        (GThreadFunc worker,
                                                   GkrAsyncWorkerCallback callback,
                                                   gpointer user_data);
 
+/*
+ * Send a notification to a worker thread to stop. 
+ */
 void               gkr_async_worker_cancel       (GkrAsyncWorker *worker);
 
+/*
+ * Send a notification to a worker thread to stop, and wait for 
+ * it to finish.
+ */
 void               gkr_async_worker_stop         (GkrAsyncWorker *worker);
 
+/*
+ * Check if a given worker pointer is still valid.
+ */
 gboolean           gkr_async_worker_is_valid     (GkrAsyncWorker *worker);
-
-void               gkr_async_workers_stop_all    (void);
-
-guint              gkr_async_workers_get_n       (void);
-
-/* Called on the worker thread */
-
-gboolean           gkr_async_worker_is_cancelled (void);
-
-
-gpointer           gkr_async_worker_call_main    (GkrAsyncFunc callback,
-                                                  gpointer data);
 
 #endif /* __GKR_ASYNC_H__ */

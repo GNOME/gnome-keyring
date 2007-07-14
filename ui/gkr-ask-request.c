@@ -33,6 +33,8 @@
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
 
+#include "common/gkr-async.h"
+
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -76,7 +78,6 @@ struct _GkrAskRequestPrivate {
 	
 	gint ask_pid;
 	GkrBuffer buffer;
-	guint input_watch;
 };
 
 #define GKR_ASK_REQUEST_GET_PRIVATE(o)  \
@@ -236,7 +237,6 @@ mark_completed (GkrAskRequest *ask, GkrAskResponse resp)
 		if (resp)
 			ask->response = resp;
 		pv->completed = TRUE;
-		g_signal_emit (ask, signals[COMPLETED], 0);
 	}
 }
 
@@ -245,11 +245,6 @@ kill_ask_process (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	
-	if (pv->input_watch != 0) {
-
-		g_source_remove (pv->input_watch);
-		pv->input_watch = 0;
-	}
 	if (pv->ask_pid != 0) {
 		kill (pv->ask_pid, SIGKILL);
 		pv->ask_pid = 0;
@@ -270,7 +265,7 @@ cancel_ask_if_active (GkrAskRequest *ask)
 }
 
 static void
-finish_ask_io (GkrAskRequest *ask, gboolean failed)
+finish_ask_io (GkrAskRequest *ask, gboolean success)
 {
 	GkrAskRequestPrivate *pv;
 	gchar *line, *next;
@@ -278,7 +273,6 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 
 	pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	
-	pv->input_watch = 0;
 	pv->ask_pid = 0;
 
 	/* Cleanup for response processing */
@@ -288,7 +282,7 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 	ask->original_password = NULL;
 	
 	/* A failed request */
-	if (failed) {
+	if (!success) {
 		mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
 		return;
 	}
@@ -346,54 +340,65 @@ finish_ask_io (GkrAskRequest *ask, gboolean failed)
 	g_object_unref (ask);
 }
 
-static gboolean
-ask_io (GIOChannel *channel, GIOCondition cond, gpointer data)
+static void
+close_fd (gpointer data)
 {
-	GkrAskRequest *ask;
-	GkrAskRequestPrivate *pv;
-	gboolean ret = TRUE;
-	guchar *buffer;
-	int res;
-	int fd;
-
-	ask = GKR_ASK_REQUEST (data);
-	pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
-	
-	/* Passwords come through this buffer */
-	buffer = gnome_keyring_memory_alloc (128);
-
-	if (ret && (cond & G_IO_IN)) {
-		do 
-		{
-			fd = g_io_channel_unix_get_fd (channel);
-			res = read (fd, buffer, 128);
-			if (res < 0) {
-				if (errno != EINTR && errno != EAGAIN) {
-					finish_ask_io (ask, TRUE);
-					ret = FALSE;
-					break;
-				}
-			} else if (res > 0) {
-				gkr_buffer_append (&pv->buffer, buffer, res);
-			}
-		} while (res > 0);
-	}
-
-	if (ret && (cond & G_IO_HUP)) {	
-		finish_ask_io (ask, FALSE);
-		ret = FALSE;
-	}
-	
-	gnome_keyring_memory_free (buffer);
-	
-	return ret;
+	int *fd = (int*)data;
+	g_assert (fd);
+	close (*fd);
+	*fd = -1;
 }
 
 static gboolean
+read_until_end (GkrAskRequest *ask, int fd)
+{
+	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	gboolean ret = FALSE;
+	guchar *buf;
+	int res;
+	
+	/* Passwords come through this buffer */
+	buf = gnome_keyring_memory_alloc (128);
+
+	gkr_async_register_cancel (close_fd, &fd);
+
+	for (;;) {
+
+		if (gkr_async_is_stopping ())
+			break;
+
+		gkr_async_begin_concurrent ();
+			res = read (fd, buf, 128);
+		gkr_async_end_concurrent ();
+
+		/* Got an error */
+		if (res < 0) {
+			if (errno == EINTR && errno == EAGAIN) 
+				continue;
+			g_warning ("couldn't read from ask tool: %s", g_strerror (errno));
+			break;
+			
+		/* Got some data */
+		} else if (res > 0) {
+			gkr_buffer_append (&pv->buffer, buf, res);
+			
+		/* End of data */
+		} else if (res == 0) {
+			ret = TRUE;
+			break;
+		}
+	}
+	
+	gnome_keyring_memory_free (buf);
+	gkr_async_unregister_cancel (close_fd, &fd);
+
+	return ret;
+}
+
+static int
 launch_ask_helper (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
-	GIOChannel *channel;
 	const gchar* display;
 	char **envp;
 	int i, n;
@@ -403,7 +408,6 @@ launch_ask_helper (GkrAskRequest *ask)
 		LIBEXECDIR "/gnome-keyring-ask",
 		NULL,
 	};
-	gboolean res;
 
 	/* Calculate us some environment */
 	i = 0;
@@ -432,16 +436,11 @@ launch_ask_helper (GkrAskRequest *ask)
 	                               NULL, &stdout_fd, NULL, &error)) {
 		g_warning ("couldn't spawn gnome-keyring-ask tool: %s", 
 		           error && error->message ? error->message : "unknown error");
-		res = FALSE;
-	} else {
-		channel = g_io_channel_unix_new (stdout_fd);
-		pv->input_watch = g_io_add_watch (channel, G_IO_IN | G_IO_HUP, ask_io, ask);
-		g_io_channel_unref (channel);
-		res = TRUE;
-	}
+		stdout_fd = -1;
+	} 
 	
 	g_strfreev (envp);
-	return res;
+	return stdout_fd;
 }
 
 static void 
@@ -535,10 +534,6 @@ gkr_ask_request_finalize (GObject *obj)
 	g_assert (pv->ask_pid == 0);
 	
 	gkr_buffer_uninit (&pv->buffer);
-	
-	if (pv->input_watch) 
-		g_source_remove (pv->input_watch);
-	pv->input_watch = 0;
 
 	G_OBJECT_CLASS(gkr_ask_request_parent_class)->finalize (obj);
 }
@@ -561,11 +556,6 @@ gkr_ask_request_class_init (GkrAskRequestClass *klass)
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GkrAskRequestClass, check_request),
 			accumulate_checks, NULL, gkr_ask_marshal_UINT__VOID, 
 			G_TYPE_UINT, 0);
-
-	signals[COMPLETED] = g_signal_new ("completed", GKR_TYPE_ASK_REQUEST, 
-			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrAskRequestClass, completed),
-			NULL, NULL, g_cclosure_marshal_VOID__VOID, 
-			G_TYPE_NONE, 0);
 }
 
 /* -----------------------------------------------------------------------------
@@ -673,6 +663,8 @@ void
 gkr_ask_request_prompt (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	gboolean ret;
+	int outfd;
 	
 	g_assert (GKR_IS_ASK_REQUEST (ask));
 	
@@ -680,15 +672,22 @@ gkr_ask_request_prompt (GkrAskRequest *ask)
 	if (pv->completed) 
 		return;
 	
-	launch_ask_helper (ask);
+	outfd = launch_ask_helper (ask);
+	
+	ret = read_until_end (ask, outfd);
+	
+	finish_ask_io (ask, ret);
 }
 
 void
 gkr_ask_request_cancel (GkrAskRequest *ask)
 {
+	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	g_assert (GKR_IS_ASK_REQUEST (ask));
 	
 	cancel_ask_if_active (ask);
+	if (!pv->completed)
+		mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
 }
 
 gboolean

@@ -67,8 +67,6 @@ struct _GkrAskRequestClass {
 	
 	/* A callback called before and after request to check if still valid */
 	GkrAskCheckAction (*check_request) (GkrAskRequest *ask);
-	
-	void (*completed) (GkrAskRequest *ask);
 };
 
 GType              gkr_ask_request_get_type         (void)G_GNUC_CONST;

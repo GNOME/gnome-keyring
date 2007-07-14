@@ -39,6 +39,7 @@
 #include "gnome-keyring-daemon.h"
 #include "mkdtemp.h"
 
+#include "common/gkr-async.h"
 #include "common/gkr-buffer.h"
 
 #include "keyrings/gkr-keyrings.h"
@@ -65,42 +66,23 @@ typedef enum {
 } GnomeKeyringClientStates;
 
 typedef struct {
-	GnomeKeyringClientStates state;
+	GkrAsyncWorker *worker;
 	int sock;
 
 	GnomeKeyringApplicationRef *app_ref;
 
-	guint hup_watch;
-	
-	guint input_watch;
-	GIOChannel *input_channel;
 	GkrBuffer input_buffer;
-	gint input_pos;
-
-	GkrAskRequest* ask;
-
-	GList *ask_requests;
-	GList *granted_requests;
-	gpointer collect_data;
-
-	guint output_watch;
 	GkrBuffer output_buffer;
-	gint output_pos;
 } GnomeKeyringClient;
 
 static char tmp_dir[1024] = { 0, };
 static char socket_path[1024] = { 0, };
-static GList *clients = NULL;
 
 #if 0
 #define debug_print(x) g_print x
 #else
 #define debug_print(x)
 #endif
-
-
-static void gnome_keyring_client_state_machine (GnomeKeyringClient *client);
-static void ask_result (GkrAskRequest *ask, gpointer data);
 
 static gboolean
 set_local_creds (int fd, gboolean on)
@@ -128,6 +110,7 @@ read_unix_socket_credentials (int fd,
 	struct msghdr msg;
 	struct iovec iov;
 	char buf;
+	int ret;
 	
 #if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
 	/* Prefer CMSGCRED over LOCAL_CREDS because the former provides the
@@ -168,7 +151,13 @@ read_unix_socket_credentials (int fd,
 #endif
 
  again:
-	if (recvmsg (fd, &msg, 0) < 0) {
+ 	gkr_async_begin_concurrent ();
+ 	
+ 		ret = recvmsg (fd, &msg, 0);
+ 	
+ 	gkr_async_end_concurrent ();
+ 	
+ 	if (ret < 0) {
 		if (errno == EINTR) {
 			goto again;
 		}
@@ -232,12 +221,197 @@ read_unix_socket_credentials (int fd,
 	return TRUE;
 }
 
+static gboolean
+yield_and_read_all (int fd, guchar *buf, int len)
+{
+	int all = len;
+	int res;
+	
+	while (len > 0) {
+		
+		/* Is this worker stopping? */
+		if (gkr_async_is_stopping ())
+			return -1;
+			
+		/* Don't block other threads during the read */
+		gkr_async_begin_concurrent ();
+		
+			res = read (fd, buf, len);
+			
+		gkr_async_end_concurrent ();
+		
+		if (res <= 0) {
+			if (errno == EAGAIN && errno == EINTR)
+				continue;
+
+			g_warning ("couldn't read %u bytes from client: %s", all, 
+			           res < 0 ? g_strerror (errno) : "");
+			return FALSE;
+		} else  {
+			len -= res;
+			buf += res;
+		}
+	}
+	
+	return TRUE;
+}
+
+static gboolean
+yield_and_write_all (int fd, const guchar *buf, int len)
+{
+	int all = len;
+	int res;
+	
+	while (len > 0) {
+		
+		/* Is this worker stopping? */
+		if (gkr_async_is_stopping ())
+			return -1;
+			
+		/* Don't block other threads during the read */
+		gkr_async_begin_concurrent ();
+
+			res = write (fd, buf, len);
+			
+		gkr_async_end_concurrent ();
+		
+		if (res <= 0) {
+			if (errno == EAGAIN && errno == EINTR)
+				continue;
+
+			g_warning ("couldn't write %u bytes to client: %s", all, 
+			           res < 0 ? g_strerror (errno) : "");
+			return FALSE;
+		} else  {
+			len -= res;
+			buf += res;
+		}
+	}
+	
+	return TRUE;
+}
+
+static gboolean
+read_packet_with_size (GnomeKeyringClient *client)
+{
+	int fd;
+	guint32 packet_size;
+
+	fd = client->sock;
+	
+	gkr_buffer_resize (&client->input_buffer, 4);
+	if (!yield_and_read_all (fd, client->input_buffer.buf, 4))
+		return FALSE;
+
+	if (!gnome_keyring_proto_decode_packet_size (&client->input_buffer, &packet_size) ||
+	    packet_size < 4) {
+	    	g_warning ("invalid packet size from client");
+		return FALSE;
+	}
+
+	gkr_buffer_resize (&client->input_buffer, packet_size + 4);
+	if (!yield_and_read_all (fd, client->input_buffer.buf + 4, packet_size - 4))
+		return FALSE;
+
+	return TRUE;
+}
 
 static void
-gnome_keyring_client_free (GnomeKeyringClient *client)
+close_fd (gpointer data)
 {
-	clients = g_list_remove (clients, client);
+	int *fd = (int*)data;
+	g_assert (fd);
 
+	/* If we're waiting anywhere this makes the thread stop */
+	shutdown (*fd, SHUT_RDWR);
+}
+
+static gpointer
+client_worker_main (gpointer user_data)
+{
+	GnomeKeyringClient *client = (GnomeKeyringClient*)user_data;
+	GnomeKeyringOpCode op;
+	GkrKeyringRequest req;
+	pid_t pid;
+	uid_t uid;
+	char *str;
+
+	/* This helps any reads wakeup when this worker is stopping */
+	gkr_async_register_cancel (close_fd, &client->sock);
+	
+	/* 1. First we read and verify the client's user credentials */	
+	debug_print (("GNOME_CLIENT_STATE_CREDENTIALS %p\n", client));
+	if (!read_unix_socket_credentials (client->sock, &pid, &uid))
+		return NULL;
+	if (getuid() != uid) {
+		g_warning ("uid mismatch: %u, should be %u\n", (guint)uid, (guint)getuid());
+		return NULL;
+	}
+	client->app_ref = gnome_keyring_application_ref_new_from_pid (pid);
+
+
+	/* 2. Read the connecting application display name */
+	debug_print (("GNOME_CLIENT_STATE_READ_DISPLAYNAME %p\n", client));
+	if (!read_packet_with_size (client))
+		return NULL;
+	debug_print (("read packet\n"));
+	if (!gnome_keyring_proto_get_utf8_string (&client->input_buffer, 4, NULL, &str))
+		return NULL;
+	if (!str)
+		return NULL;
+	debug_print (("got name: %s\n", str));
+	client->app_ref->display_name = str;
+
+
+	/* 3. Now read the actual packet of the operation */	
+	debug_print (("GNOME_CLIENT_STATE_READ_PACKET %p\n", client));
+	if (!read_packet_with_size (client))
+		return NULL;
+	debug_print (("read packet, size: %d\n", client->input_buffer.len));
+
+
+	/* 4. Next decode the operation, and execute the operation */	
+	debug_print (("GNOME_CLIENT_STATE_EXECUTE_OP %p\n", client));
+	if (!gnome_keyring_proto_decode_packet_operation (&client->input_buffer, &op))
+		return NULL;
+	if (op < 0 || op >= GNOME_KEYRING_NUM_OPS)
+		return NULL;
+	g_assert (keyring_ops[op]);
+
+	/* Make sure keyrings in memory are up to date before doing anything */
+	gkr_keyrings_update ();
+
+	gkr_buffer_init_full (&client->output_buffer, 128, g_realloc);
+	
+	/* Add empty size */
+	gnome_keyring_proto_add_uint32 (&client->output_buffer, 0);
+		
+	memset (&req, 0, sizeof (req));
+	req.app_ref = client->app_ref;
+		
+	if (!(keyring_ops[op])(&client->input_buffer, &client->output_buffer, &req))
+		return NULL;
+		
+	if (!gnome_keyring_proto_set_uint32 (&client->output_buffer, 0,
+					     client->output_buffer.len))
+		return NULL;
+
+
+	/* 5. Write the reply back out */
+	debug_print (("GNOME_CLIENT_STATE_WRITE_REPLY %p\n", client));
+	debug_print (("writing %d bytes\n", client->output_buffer.len));
+	if (!yield_and_write_all (client->sock, client->output_buffer.buf,
+                                  client->output_buffer.len))
+		return NULL;
+
+	/* All done */
+	return NULL;
+}
+
+static void
+client_worker_done (GkrAsyncWorker *worker, gpointer result, gpointer user_data)
+{
+	GnomeKeyringClient *client = (GnomeKeyringClient*)user_data;
 
 	gkr_buffer_uninit (&client->input_buffer);
 	gkr_buffer_uninit (&client->output_buffer);
@@ -246,381 +420,19 @@ gnome_keyring_client_free (GnomeKeyringClient *client)
 		gnome_keyring_application_ref_free (client->app_ref);
 	}
 
-	if (client->input_watch != 0) {
-		g_source_remove (client->input_watch);
-	}
-
-	if (client->output_watch != 0) {
-		g_source_remove (client->output_watch);
-	}
-
-	if (client->hup_watch != 0) {
-		g_source_remove (client->hup_watch);
-	}
-
-	if (client->ask != NULL) {
-		g_signal_handlers_disconnect_by_func (client->ask, ask_result, client);
-		gkr_ask_daemon_cancel (client->ask);
-	}
-	
 	close (client->sock);
 	g_free (client);
 }
 
-static gboolean
-read_packet_with_size (GnomeKeyringClient *client)
-{
-	int fd;
-	guint32 packet_size;
-	int res;
-
-	fd = client->sock;
-	
-	if (client->input_pos < 4) {
-		gkr_buffer_resize (&client->input_buffer, 4);
-		res = read (fd, client->input_buffer.buf + client->input_pos,
-			    4 - client->input_pos);
-		if (res <= 0) {
-			if (errno != EAGAIN && errno != EINTR) {
-				if (res < 0)
-					g_warning ("couldn't read %u bytes from client: %s", 
-					           4, g_strerror (errno));
-				gnome_keyring_client_free (client);
-			}
-			return FALSE;
-		}
-		
-		client->input_pos += res;
-	}
-
-	if (client->input_pos >= 4) {
-		if (!gnome_keyring_proto_decode_packet_size (&client->input_buffer, &packet_size)) {
-			gnome_keyring_client_free (client);
-			return FALSE;
-		}
-		if (packet_size < 4) {
-			gnome_keyring_client_free (client);
-			return FALSE;
-		}
-		
-		g_assert (client->input_pos < packet_size);
-		gkr_buffer_resize (&client->input_buffer, packet_size);
-
-		res = read (fd, client->input_buffer.buf + client->input_pos,
-			    packet_size - client->input_pos);
-		if (res <= 0) {
-			if (errno != EAGAIN && errno != EINTR) {
-				if (res < 0)
-					g_warning ("couldn't read %u bytes from client: %s", 
-					           packet_size - client->input_pos, g_strerror (errno));
-				gnome_keyring_client_free (client);
-			}
-			return FALSE;
-		}
-				
-		client->input_pos += res;
-		
-		if (client->input_pos == packet_size) {
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-static void 
-ask_list_free (GList *asks)
-{
-	GList *l;
-	
-	for (l = asks; l; l = g_list_next (l))
-		g_object_unref (l->data);
-	g_list_free (asks);
-}
-
 static void
-ask_result (GkrAskRequest *ask, gpointer data)
+client_new (int fd)
 {
 	GnomeKeyringClient *client;
-
-	client = data;
-	
-	/* Should match up with the first one in the ask list */
-	g_assert (client->ask == ask);
-	
-	/* Move it to the granted list? */
-	if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
-		client->granted_requests = g_list_append (client->granted_requests, ask);
-		g_object_ref (ask);
-	}
-	
-	/* And discard it */
-	g_object_unref (client->ask);
-	client->ask = NULL;
-
-	gnome_keyring_client_state_machine (client);
-}
-
-static gboolean
-gnome_keyring_client_io (GIOChannel  *channel,
-			 GIOCondition cond,
-			 gpointer     callback_data)
-{
-	GnomeKeyringClient *client;
-
-	client = callback_data;
-	gnome_keyring_client_state_machine (client);
-	
-	return TRUE;
-}
-
-static void
-gnome_keyring_client_state_machine (GnomeKeyringClient *client)
-{
-	GnomeKeyringOpCode op;
-	GIOChannel *channel;
-	GkrKeyringRequest req;
-	pid_t pid;
-	uid_t uid;
-	int res;
-	char *str;
-	
- new_state:
-	switch (client->state) {
-	case GNOME_CLIENT_STATE_CREDENTIALS:
-		debug_print (("GNOME_CLIENT_STATE_CREDENTIALS %p\n", client));
-		if (!read_unix_socket_credentials (client->sock, &pid, &uid)) {
-			gnome_keyring_client_free (client);
-			return;
-		}
-		if (getuid() != uid) {
-			g_warning ("uid mismatch: %u, should be %u\n",
-				   (guint)uid, (guint)getuid());
-			gnome_keyring_client_free (client);
-			return;
-		}
-		client->app_ref = gnome_keyring_application_ref_new_from_pid (pid);
-
-		client->input_pos = 0;
-		client->state = GNOME_CLIENT_STATE_READ_DISPLAYNAME;
-		break;
-		
-	case GNOME_CLIENT_STATE_READ_DISPLAYNAME:
-		debug_print (("GNOME_CLIENT_STATE_READ_DISPLAYNAME %p\n", client));
-		if (read_packet_with_size (client)) {
-			debug_print (("read packet\n"));
-			if (!gnome_keyring_proto_get_utf8_string (&client->input_buffer,
-								  4, NULL, &str)) {
-				gnome_keyring_client_free (client);
-				return;
-			}
-			if (!str) {
-				gnome_keyring_client_free (client);
-				return;
-			}
-			debug_print (("got name: %s\n", str));
-			client->app_ref->display_name = str;
-			client->input_pos = 0;
-			client->state = GNOME_CLIENT_STATE_READ_PACKET;
-		}
-		break;
-		
-	case GNOME_CLIENT_STATE_READ_PACKET:
-		debug_print (("GNOME_CLIENT_STATE_READ_PACKET %p\n", client));
-		if (read_packet_with_size (client)) {
-			debug_print (("read packet, size: %d\n", client->input_buffer.len));
-			g_source_remove (client->input_watch);
-			client->input_watch = 0;
-			client->state = GNOME_CLIENT_STATE_COLLECT_INFO;
-			
-			goto new_state;
-		}
-		break;
-		
-	case GNOME_CLIENT_STATE_COLLECT_INFO:
-		debug_print (("GNOME_CLIENT_STATE_COLLECT_INFO %p\n", client));
-		if (!gnome_keyring_proto_decode_packet_operation (&client->input_buffer, &op)) {
-			gnome_keyring_client_free (client);
-			return;
-		}
-		if (op < 0 || op >= GNOME_KEYRING_NUM_OPS) {
-			gnome_keyring_client_free (client);
-			return;
-		}
-
-		if (keyring_ops[op].collect_info == NULL) {
-			client->state = GNOME_CLIENT_STATE_EXECUTE_OP;
-			goto new_state;
-		}
-		
-		/* Make sure keyrings in memory are up to date before asking for access */
-		gkr_keyrings_update ();
-		
-		/* Setup for call */
-		memset (&req, 0, sizeof (req));
-		req.app_ref = client->app_ref;
-
-		if (!keyring_ops[op].collect_info (&client->input_buffer, &req)) {
-			gnome_keyring_client_free (client);
-			return;
-		}
-		
-		/* All the things we have to ask about */
-		client->ask_requests = req.ask_requests;
-		client->collect_data = req.data;
-
-		/* request_access can reenter here if there is no need to
-		 * wait for access rights */
-		client->state = GNOME_CLIENT_STATE_REQUEST_ACCESS;
-		goto new_state;
-		
-	case GNOME_CLIENT_STATE_REQUEST_ACCESS:
-		debug_print (("GNOME_CLIENT_STATE_REQUEST_ACCESS %p\n", client));
-		
-		/* Nothing should currently be asking */
-		g_assert (!client->ask);
-		
-		/* Some access requests are processed right away, so loop */
-		if (!client->ask && client->ask_requests) {
-			
-			/* Go for first item in the list */
-			client->ask = GKR_ASK_REQUEST (client->ask_requests->data);
-			client->ask_requests = g_list_remove (client->ask_requests, client->ask);
-			g_signal_connect (client->ask, "completed", G_CALLBACK (ask_result), client);
-			gkr_ask_daemon_queue (client->ask);
-			
-			/* 
-			 * If it was processed immediately, then ask_result will have 
-			 * already been called and client->ask will be NULL.
-			 */
-			return;
-		}
-		
-		/* Got all data now? */
-		if (!client->ask) {
-			g_assert (!client->ask_requests);
-			client->state = GNOME_CLIENT_STATE_EXECUTE_OP;
-			goto new_state;
-		}
-		break;
-		
-	case GNOME_CLIENT_STATE_EXECUTE_OP:
-		debug_print (("GNOME_CLIENT_STATE_EXECUTE_OP %p\n", client));
-		if (!gnome_keyring_proto_decode_packet_operation (&client->input_buffer, &op)) {
-			gnome_keyring_client_free (client);
-			return;
-		}
-
-		gkr_buffer_init_full (&client->output_buffer, 128, g_realloc);
-
-		/* Make sure keyrings in memory are up to date */
-		/* This call may remove items or keyrings, which change
-		   the client->access_requests list */
-		gkr_keyrings_update ();
-
-		/* Must have already processed all requests */
-		g_assert (!client->ask);
-		g_assert (!client->ask_requests);
-		
-		/* Add empty size */
-		gnome_keyring_proto_add_uint32 (&client->output_buffer, 0);
-		
-		/* Setup for call */
-		memset (&req, 0, sizeof (req));
-		req.app_ref = client->app_ref;
-		req.data = client->collect_data;
-		req.ask_requests = client->granted_requests;
-		
-		if (!keyring_ops[op].execute_op (&client->input_buffer,
-						 &client->output_buffer,
-						 &req)) {
-			gnome_keyring_client_free (client);
-			return;
-		}
-		
-		ask_list_free (client->granted_requests);
-		client->granted_requests = NULL;
-
-		if (!gnome_keyring_proto_set_uint32 (&client->output_buffer, 0,
-						     client->output_buffer.len)) {
-			gnome_keyring_client_free (client);
-			return;
-		}
-
-		client->output_pos = 0;
-		channel = g_io_channel_unix_new (client->sock);
-		client->output_watch = g_io_add_watch (channel, G_IO_OUT,
-						      gnome_keyring_client_io, client);
-		g_io_channel_unref (channel);
-		
-		client->state = GNOME_CLIENT_STATE_WRITE_REPLY;
-		goto new_state;
-		break;
-		
-	case GNOME_CLIENT_STATE_WRITE_REPLY:
-		debug_print (("GNOME_CLIENT_STATE_WRITE_REPLY %p\n", client));
-		debug_print (("writing %d bytes\n", client->output_buffer.len));
-		res = write (client->sock,
-			     client->output_buffer.buf + client->output_pos,
-			     client->output_buffer.len - client->output_pos);
-		if (res <= 0) {
-			if (errno != EAGAIN &&
-			    errno != EINTR) {
-				gnome_keyring_client_free (client);
-			}
-			return;
-		}
-		client->output_pos += res;
-
-		if (client->output_pos == client->output_buffer.len) {
-			/* Finished operation */
-			gnome_keyring_client_free (client);
-		}
-		break;
-		
-	default:
-		break;
-	}
-}
-
-static gboolean
-gnome_keyring_client_hup (GIOChannel  *channel,
-			  GIOCondition cond,
-			  gpointer     callback_data)
-{
-	GnomeKeyringClient *client;
-
-	client = callback_data;
-	
-	gnome_keyring_client_free (client);
-	
-	return TRUE;
-}
-
-static void
-gnome_keyring_client_new (int fd)
-{
-	GnomeKeyringClient *client;
-	GIOChannel *channel;
-
-	client = g_new0 (GnomeKeyringClient, 1);
 
 	debug_print (("gnome_keyring_client_new(fd:%d) -> %p\n", fd, client));
 	
-	channel = g_io_channel_unix_new (fd);
-	client->input_watch = g_io_add_watch (channel, G_IO_IN,
-					      gnome_keyring_client_io, client);
-	g_io_channel_unref (channel);
-	
-	channel = g_io_channel_unix_new (fd);
-	client->hup_watch = g_io_add_watch (channel, G_IO_HUP,
-					      gnome_keyring_client_hup, client);
-	g_io_channel_unref (channel);
-
-	client->state = GNOME_CLIENT_STATE_CREDENTIALS;
+	client = g_new0 (GnomeKeyringClient, 1);
 	client->sock = fd;
-	client->input_channel = channel;
-	client->input_pos = 0;
 	
 	/* 
 	 * We really have no idea what operation the client will send, 
@@ -629,41 +441,32 @@ gnome_keyring_client_new (int fd)
 	 */  
 	gkr_buffer_init_full (&client->input_buffer, 128, gnome_keyring_memory_realloc);
 
-	clients = g_list_prepend (clients, client);
+	client->worker = gkr_async_worker_start (client_worker_main, 
+	                                         client_worker_done, client);
+	g_assert (client->worker);
+	
+	/* 
+	 * The worker thread is tracked in a global list, and is guaranteed to 
+	 * be cleaned up, either when it exits, or when the application closes.
+	 */
 }
 
-
 static gboolean
-new_client (GIOChannel  *channel,
-	    GIOCondition cond,
-	    gpointer     callback_data)
+accept_client (GIOChannel *channel, GIOCondition cond,
+               gpointer callback_data)
 {
 	int fd;
 	int new_fd;
 	struct sockaddr_un addr;
 	socklen_t addrlen;
-	int val;
   
 	fd = g_io_channel_unix_get_fd (channel);
 	
 	addrlen = sizeof (addr);
 	new_fd = accept(fd, (struct sockaddr *) &addr, &addrlen);
-
-	val = fcntl (new_fd, F_GETFL, 0);
-	if (val < 0) {
-		g_warning ("Cant get client fd flags");
-		close (new_fd);
-		return TRUE;
-	}
-	if (fcntl (new_fd, F_SETFL, val | O_NONBLOCK) < 0) {
-		g_warning ("Cant set client fd nonblocking");
-		close (new_fd);
-		return TRUE;
-	}
 	
-	if (new_fd >= 0) {
-		gnome_keyring_client_new (new_fd);
-	}
+	if (new_fd >= 0) 
+		client_new (new_fd);
 	return TRUE;
 }
 
@@ -739,7 +542,7 @@ create_master_socket (const char **path)
 
 	g_free (tmp_tmp_dir);
 	channel = g_io_channel_unix_new (sock);
-	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, new_client, NULL);
+	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_client, NULL);
 	g_io_channel_unref (channel);
 	
 	*path = socket_path;

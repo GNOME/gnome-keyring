@@ -48,7 +48,6 @@ signal_handler (int sig)
 
 typedef struct _SignalWatch {
 	GSource source;
-	GPollFD poll;
 	guint signal;
 } SignalWatch;
 
@@ -92,8 +91,7 @@ static void
 signal_events_finalize (GSource *source)
 {
 	SignalWatch *sw = (SignalWatch*)source;
-	sw->poll.fd = -1;
-	sw->poll.events = 0;
+	
 	gkr_wakeup_unregister ();
 	
 	g_assert (sw->signal < MAX_SIGNAL);
@@ -111,7 +109,8 @@ static GSourceFuncs signal_events_functions = {
 };
 
 guint 
-gkr_unix_signal_connect (guint sig, GkrUnixSignalHandler func, gpointer user_data)
+gkr_unix_signal_connect (GMainContext *ctx, guint sig, 
+                         GkrUnixSignalHandler func, gpointer user_data)
 {
 	SignalWatch *sw;
 	GSource *src;
@@ -129,12 +128,10 @@ gkr_unix_signal_connect (guint sig, GkrUnixSignalHandler func, gpointer user_dat
 	sw = (SignalWatch*)src;
 	sw->signal = sig;
 
-	sw->poll.fd = gkr_wakeup_register ();
-	sw->poll.events = G_IO_IN;
-	g_source_add_poll (src, &sw->poll);
+	gkr_wakeup_register (ctx);
 
 	g_source_set_callback (src, (GSourceFunc)func, user_data, NULL);
-	id = g_source_attach (src, NULL);
+	id = g_source_attach (src, ctx);
 	g_source_unref (src);
 	
 	handled_signals[sig] = TRUE;

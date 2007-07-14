@@ -70,12 +70,14 @@ handle_signal (guint sig, gpointer data)
 void unit_test_unix_signal (CuTest* cu)
 {
 	SignalParam param;
+	GMainContext *ctx;
 	
 	param.cu = cu;
 	param.argument = test_arg;
 	
-	gkr_unix_signal_connect (SIGHUP, handle_signal, &param);
-	gkr_unix_signal_connect (SIGINT, handle_signal, &param);
+	ctx = g_main_loop_get_context (test_mainloop_get ());
+	gkr_unix_signal_connect (ctx, SIGHUP, handle_signal, &param);
+	gkr_unix_signal_connect (ctx, SIGINT, handle_signal, &param);
 
 	raise (SIGHUP);
 	test_mainloop_run (2000);
@@ -85,7 +87,7 @@ void unit_test_unix_signal (CuTest* cu)
 	test_mainloop_run (2000);
 	CuAssert (cu, "signal not handled", last_signal == SIGINT);
 
-	gkr_unix_signal_connect (SIGTERM, handle_signal, &param);
+	gkr_unix_signal_connect (ctx, SIGTERM, handle_signal, &param);
 	raise (SIGTERM);
 	test_mainloop_run (2000);
 	CuAssert (cu, "signal not handled", last_signal == SIGTERM);
@@ -99,7 +101,8 @@ void unit_test_unix_sig_remove (CuTest* cu)
 	param.cu = cu;
 	param.argument = test_arg;
 		
-	id = gkr_unix_signal_connect (SIGCONT, handle_signal, &param);
+	id = gkr_unix_signal_connect (g_main_loop_get_context (test_mainloop_get ()),
+	                              SIGCONT, handle_signal, &param);
 	raise (SIGCONT);
 	test_mainloop_run (2000);
 	CuAssert (cu, "signal not handled", last_signal == SIGCONT);

@@ -24,7 +24,9 @@
 #ifndef GKRWAKEUP_H_
 #define GKRWAKEUP_H_
 
-int    gkr_wakeup_register          (void);
+#include <glib.h>
+
+void   gkr_wakeup_register          (GMainContext *ctx);
 
 void   gkr_wakeup_unregister        (void);
 

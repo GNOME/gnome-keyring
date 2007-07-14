@@ -25,7 +25,6 @@
 
 #include "unit-test-private.h"
 #include "run-library-test.h"
-#include "library/gnome-keyring.h"
 
 /* 
  * Each test looks like (on one line):
@@ -44,7 +43,8 @@ static GMainLoop *mainloop = NULL;
 
 void unit_setup_signal_mainloop (void)
 {
-	mainloop = g_main_loop_new (NULL, FALSE);
+	if (!mainloop)
+		mainloop = g_main_loop_new (NULL, FALSE);
 }
 
 static gboolean
@@ -67,3 +67,11 @@ test_mainloop_run (int timeout)
 	g_main_loop_run (mainloop);
 	g_source_remove (id); 
 } 
+
+GMainLoop* 
+test_mainloop_get (void)
+{
+	if (!mainloop)
+		mainloop = g_main_loop_new (NULL, FALSE);
+	return mainloop;
+}

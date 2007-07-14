@@ -1,3 +1,26 @@
+2007-07-14  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-async.c:
+	* common/gkr-async.h:
+	* common/gkr-unix-signal.c:
+	* common/gkr-unix-signal.h:
+	* common/gkr-wakeup.c:
+	* common/gkr-wakeup.h:
+	* daemon/gnome-keyring-daemon.c:
+	* daemon/gnome-keyring-daemon.h:
+	* daemon/gnome-keyring-daemon-io.c:
+	* daemon/gnome-keyring-daemon-ops.c:
+	* tests/unit-test-async.c:
+	* tests/unit-test-mainloop-setup.c:
+	* tests/unit-test-private.h:
+	* tests/unit-test-signal.c:
+	* ui/gkr-ask-daemon.c:
+	* ui/gkr-ask-daemon.h:
+	* ui/gkr-ask-request.c:
+	* ui/gkr-ask-request.h: Move to a cooperative threading model for the 
+	daemon, this simplifies a lot of code and will make adding in the other
+	parts of the daemon (PKCS#11 and SSH, etc...) far easier.
+	
 2007-07-11  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gnome-keyring-daemon-ops.c:

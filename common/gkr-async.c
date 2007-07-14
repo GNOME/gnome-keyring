@@ -30,8 +30,24 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <string.h>
 
+#define DEBUG_LOCKS 0
 
+#if DEBUG_LOCKS
+#define DO_LOCK(mtx) G_STMT_START { \
+		g_printerr ("%s LOCK %s\n", __func__, G_STRINGIFY(mtx));  \
+		g_mutex_lock (mtx);  \
+        } G_STMT_END
+#define DO_UNLOCK(mtx) G_STMT_START { \
+		g_printerr ("%s UNLOCK %s\n", __func__, G_STRINGIFY(mtx));  \
+		g_mutex_unlock (mtx);  \
+        } G_STMT_END
+#else
+#define DO_LOCK(mtx) g_mutex_lock (mtx)
+#define DO_UNLOCK(mtx) g_mutex_unlock (mtx)
+#endif  
+	
 /* 
  * Private data for the async calls to be used on a worker thread, for making 
  * calls to the main thread. 
@@ -47,255 +63,103 @@ GStaticPrivate thread_private = G_STATIC_PRIVATE_INIT;
 	g_assert (g_static_private_get (&thread_private) != NULL)
 
 
+static GMainLoop *main_loop = NULL;		/* The main loop we're operating on */
+static GMutex *async_mutex = NULL;		/* The mutex which is used for cooperative multitasking */
+static GPollFunc orig_poll_func = NULL;		/* The system poll function, which we wrap */
+static GQueue *done_queue = NULL;		/* The queue of completed worker threads */ 
+static GHashTable *running_workers = NULL;	/* A set of running worker threads */
+
+static void cleanup_done_threads (void);
+
 /* -----------------------------------------------------------------------------
- * ASYNC QUEUE MAIN LOOP INTEGRATION
+ * ASYNC MAINLOOP FUNCTIONS
  */
-
-typedef gboolean (*GkrAsyncQueueFunc) (gpointer message, gpointer user_data);
-
-typedef struct _AsyncQueueWatch {
-	GSource source;
-	GPollFD poll;
-	GAsyncQueue *queue;
-} AsyncQueueWatch;
-
-static gboolean
-thread_events_prepare (GSource *source, gint *timeout)
+ 
+static gint
+lock_step_poll_func (GPollFD *ufds, guint nfsd, gint timeout)
 {
-	AsyncQueueWatch *aqw = (AsyncQueueWatch*)source;
-	*timeout = -1;
-	return g_async_queue_length (aqw->queue) > 0;
-}
-
-static gboolean
-thread_events_check (GSource *source)
-{
-	AsyncQueueWatch *aqw = (AsyncQueueWatch*)source;
-	return g_async_queue_length (aqw->queue) > 0;
-}
-
-static gboolean
-thread_events_dispatch (GSource *source, GSourceFunc callback, gpointer user_data)
-{
-	AsyncQueueWatch *aqw = (AsyncQueueWatch*)source;
-	GkrAsyncQueueFunc func = (GkrAsyncQueueFunc)callback;
-	gpointer message;
-	gkr_wakeup_drain ();
-	message = g_async_queue_pop (aqw->queue);
-	return (func) (message, user_data);
-}
-
-static void 
-thread_events_finalize (GSource *source)
-{
-	AsyncQueueWatch *aqw = (AsyncQueueWatch*)source;
-	g_async_queue_unref (aqw->queue);
-	aqw->queue = NULL;
-	gkr_wakeup_unregister ();
-}
-
-static GSourceFuncs thread_events_functions = {
-	thread_events_prepare,
-	thread_events_check,
-	thread_events_dispatch,
-	thread_events_finalize
-};
-
-static guint 
-async_queue_watch (GAsyncQueue *queue, GkrAsyncQueueFunc func, gpointer data)
-{
-	AsyncQueueWatch *aqw;
-	GSource *src;
-	guint id;
+	gint ret;
 	
-	ASSERT_IS_MAIN ();
+	g_assert (orig_poll_func);
 	
-	g_assert (queue);
-	g_assert (func);
-
-    	src = g_source_new (&thread_events_functions, sizeof(AsyncQueueWatch));
-	aqw = (AsyncQueueWatch*)src;
-	aqw->queue = queue;
-	g_async_queue_ref (queue);
+	/* Unlock while polling so workers can run */
+	DO_UNLOCK (async_mutex);
+	ret = (orig_poll_func) (ufds, nfsd, timeout);			
+	DO_LOCK (async_mutex);
 	
-	aqw->poll.fd = gkr_wakeup_register ();
-	aqw->poll.events = G_IO_IN;
-	g_source_add_poll (src, &aqw->poll);
-
-	g_source_set_callback (src, (GSourceFunc)func, data, NULL);
-	id = g_source_attach (src, NULL);
-	g_source_unref (src);
+	if (done_queue && !g_queue_is_empty (done_queue))
+		cleanup_done_threads ();
 	
-	return id;
-}
-
-static void
-async_queue_unwatch (guint id)
-{
-	GSource* source;
-
-	ASSERT_IS_MAIN ();
-
-	if (!id)
-		return;
-
-	source = g_main_context_find_source_by_id (NULL, id);
-	g_source_remove (id);
-	if (source)
-		g_source_destroy (source);
-}
-
-/* -------------------------------------------------------------------
- * ASYNC CALLS
- */
-
-struct _GkrAsyncCalls {
-	GAsyncQueue* queue;
-	gint source;
-};
-
-struct _GkrAsyncCall {
-	GMutex *mutex;
-	GCond *ready;
-	GkrAsyncFunc callback;
-	gpointer input;
-	gpointer output;
-};
-
-GkrAsyncCall*
-gkr_async_call_send (GkrAsyncCalls* ctx, GkrAsyncFunc callback, gpointer data)
-{
-	GkrAsyncCall* call = g_slice_new0 (GkrAsyncCall);
-
-	ASSERT_IS_WORKER ();
-
-	call->mutex = g_mutex_new ();
-	call->ready = g_cond_new ();
-	call->callback = callback;
-	call->input = data;
-	call->output = NULL;
-
-	g_async_queue_push (ctx->queue, call);
-	gkr_wakeup_now ();
-
-	return call;
-}
-
-gpointer
-gkr_async_call_wait (GkrAsyncCall* call)
-{
-	gpointer data;
-	g_assert (call);
-	
-	ASSERT_IS_WORKER ();
-
-	gkr_wakeup_now ();
-
-	g_mutex_lock (call->mutex);
-	
-		/* This unlocks reply->mutex while waiting */
-		while (call->output == NULL)
-			g_cond_wait (call->ready, call->mutex);
-	
-		data = call->output;
-		call->output = NULL;
-	
-	g_mutex_unlock (call->mutex);
-	
-	g_mutex_free (call->mutex);
-	g_cond_free (call->ready);
-	g_slice_free (GkrAsyncCall, call);
-
-	return data;
+	return ret;
 }
 
 void
-gkr_async_call_reply (GkrAsyncCall *call, gpointer data)
+gkr_async_workers_init (GMainLoop *mainloop)
 {
-	g_assert(call);
+	GMainContext *ctx;
 	
-	ASSERT_IS_MAIN ();
+	g_assert (mainloop);
 	
-	/* And return the result */
-	g_mutex_lock (call->mutex);
+	async_mutex = g_mutex_new ();
+
+	g_assert (!main_loop);
+	main_loop = mainloop;
+	g_main_loop_ref (main_loop);
 	
-		g_assert (call->output == NULL);
-		call->output = data;
-	
-	g_mutex_unlock (call->mutex);
-	
-	g_cond_signal (call->ready);
-}	
+	/* Swap in our poll func which unlocks at each iteration */	
+	ctx = g_main_loop_get_context (main_loop);
+	orig_poll_func = g_main_context_get_poll_func (ctx);
+	g_assert (orig_poll_func);
+	g_main_context_set_poll_func (ctx, lock_step_poll_func);	
 
-static gboolean
-process_call (gpointer message, gpointer user_data)
-{
-	GkrAsyncCall *call = (GkrAsyncCall*)message;
-	GkrAsyncCalls *ctx = (GkrAsyncCalls*)user_data;
-	GkrAsyncFunc func;
-	gpointer input;
-
-	g_assert (call);
-	g_assert (ctx);
-	
-	ASSERT_IS_MAIN ();
-
-	/* Get information about call */
-	g_mutex_lock (call->mutex);
-
-		g_assert (call->callback);
-		g_assert (call->input);
-
-		func = call->callback;
-		input = call->input;
-
-	g_mutex_unlock (call->mutex);
-
-	/* Perform call outside of any locks */
-	(func) (call, input);
-
-	/* Don't remove this source */
-	return TRUE;
+	/* 
+	 * The mutex gets locked each time the main loop is waiting 
+	 * for input. See lock_step_poll_func() 
+	 */	
+	DO_LOCK (async_mutex);
 }
 
-GkrAsyncCalls*
-gkr_async_calls_new (void)
+void 
+gkr_async_workers_uninit (void)
 {
-	GkrAsyncCalls* ctx = g_new0 (GkrAsyncCalls, 1);
+	GMainContext *ctx;
+
+	gkr_async_workers_stop_all ();
+
+	DO_UNLOCK (async_mutex);
 	
-	ASSERT_IS_MAIN ();
-
-	ctx->queue = g_async_queue_new ();
-	ctx->source = async_queue_watch (ctx->queue, process_call, ctx);
-	return ctx;
-}
-
-void
-gkr_async_calls_free (GkrAsyncCalls* ctx)
-{
-	ASSERT_IS_MAIN ();
-
-	async_queue_unwatch (ctx->source);
-
-	if (ctx->queue)
-		g_async_queue_unref (ctx->queue);
-	g_free (ctx);
+	/* Swap back in original poll func */
+	ctx = g_main_loop_get_context (main_loop);
+	g_assert (orig_poll_func);
+	g_main_context_set_poll_func (ctx, orig_poll_func);
+		
+	if (main_loop) {
+		g_main_loop_unref (main_loop);
+		main_loop = NULL;
+	}	
+	
+	if (async_mutex) {
+		g_mutex_free (async_mutex);
+		async_mutex = NULL;
+	}
 }
 
 /* -----------------------------------------------------------------------------
  * ASYNC WORKER FUNCTIONS
  */
- 
-static GkrAsyncCalls *call_context = NULL;
-static GAsyncQueue *done_queue = NULL;
-static gint done_queue_source = 0;
-static GHashTable *running_workers = NULL;
+
+
+typedef struct _GkrCancelCallback {
+	GDestroyNotify cancel_func;
+	gpointer user_data;
+} GkrCancelCallback;
  
 struct _GkrAsyncWorker {
 	GThread *thread;
 	
 	GThreadFunc func;
 	GkrAsyncWorkerCallback callback;
+	GQueue *cancel_funcs;
 	
 	/* The current status */
 	gint cancelled;
@@ -303,7 +167,6 @@ struct _GkrAsyncWorker {
 
 	/* Arguments for callbacks and worker calls */
 	gpointer user_data;
-	GkrAsyncCalls *calls;
 };
 
 static gpointer 
@@ -322,16 +185,24 @@ async_worker_thread (gpointer data)
 	
 	ASSERT_IS_WORKER ();
 	
-	/* Call the actual thread function */
-	result = (worker->func) (worker->user_data);
+	/* 
+	 * Call the actual thread function. This mutex is unlocked by workers
+	 * when they yield, or by the main loop when it is waiting for input. 
+	 */
+	DO_LOCK (async_mutex);
+	
+		result = (worker->func) (worker->user_data);
+
+		/* We're all done yay, let main thread know about it */
+		g_atomic_int_inc (&worker->stopped);
+		
+		g_assert (done_queue);
+		g_queue_push_tail (done_queue, worker);
+		
+	DO_UNLOCK (async_mutex);
 	
 	g_static_private_set (&thread_private, NULL, NULL);
 	
-	g_atomic_int_inc (&worker->stopped);
-	
-	g_assert (done_queue);
-	g_async_queue_push (done_queue, worker);
-
 	gkr_wakeup_now ();
 	
 	g_thread_exit (result);
@@ -342,33 +213,42 @@ static gboolean
 cleanup_done_thread (gpointer message, gpointer data)
 {
 	GkrAsyncWorker *worker = (GkrAsyncWorker*)message;
+	GkrCancelCallback *cb;
 	gpointer result;
 
 	ASSERT_IS_MAIN ();
 	
 	g_assert (g_atomic_int_get (&worker->stopped));
 		
+	/* This shouldn't block, because worker->stopped is set */
 	g_assert (worker->thread);
 	result = g_thread_join (worker->thread);
 		
 	if (worker->callback)
 		(worker->callback) (worker, result, worker->user_data);
+
+	/* Free all the cancel funcs */		
+	for (;;) {
+		cb = g_queue_pop_tail (worker->cancel_funcs);
+		if (!cb)
+			break;
+		g_slice_free (GkrCancelCallback, cb);
+	}
+	g_queue_free (worker->cancel_funcs);
 			
 	g_hash_table_remove (running_workers, worker); 
 	g_free (worker);	
 	
 	/* Cleanup all related stuff */
 	if (!g_hash_table_size (running_workers)) {
-		g_async_queue_unref (done_queue);
-		async_queue_unwatch (done_queue_source);
+		g_queue_free (done_queue);
 		done_queue = NULL;
-		
-		gkr_async_calls_free (call_context);
-		call_context = NULL;
 		
 		g_hash_table_destroy (running_workers);
 		running_workers = NULL;
 		
+		g_assert (main_loop);
+		gkr_wakeup_register (g_main_loop_get_context (main_loop));
 		return FALSE;
 	}
 	
@@ -376,18 +256,13 @@ cleanup_done_thread (gpointer message, gpointer data)
 }
 
 static void 
-cleanup_done_threads ()
+cleanup_done_threads (void)
 {
 	gpointer message;
 	
-	ASSERT_IS_MAIN ();
-	
-	g_assert (done_queue);
-	g_assert (running_workers);
-	
-	while (done_queue && g_async_queue_length (done_queue) > 0)
+	while (done_queue && !g_queue_is_empty (done_queue))
 	{
-		message = g_async_queue_pop (done_queue);
+		message = g_queue_pop_head (done_queue);
 		g_assert (message);
 		
 		cleanup_done_thread (message, NULL);
@@ -404,21 +279,21 @@ gkr_async_worker_start (GThreadFunc func, GkrAsyncWorkerCallback callback,
 	ASSERT_IS_MAIN ();	
 	
 	if (!done_queue) {
-		done_queue = g_async_queue_new ();
-		done_queue_source = async_queue_watch (done_queue, cleanup_done_thread, NULL);
-	}
-	if (!call_context)
-		call_context = gkr_async_calls_new ();
-	if (!running_workers)
+		g_assert (main_loop);
+		gkr_wakeup_register (g_main_loop_get_context (main_loop));
+		
+		done_queue = g_queue_new ();
+		g_assert (!running_workers);
 		running_workers = g_hash_table_new (g_direct_hash, g_direct_equal);
+	}
 	
 	worker = g_new0 (GkrAsyncWorker, 1);
 	worker->func = func;
 	worker->callback = callback;
+	worker->cancel_funcs = g_queue_new ();
 	worker->user_data = user_data;
 	worker->cancelled = 0;
 	worker->stopped = 0;
-	worker->calls = call_context;
 	
 	worker->thread = g_thread_create (async_worker_thread, worker, TRUE, &err);
 	if (!worker->thread) {
@@ -435,8 +310,18 @@ gkr_async_worker_start (GThreadFunc func, GkrAsyncWorkerCallback callback,
 void
 gkr_async_worker_cancel (GkrAsyncWorker *worker)
 {
+	GkrCancelCallback *cb;
+	
 	g_assert (gkr_async_worker_is_valid (worker));
 	g_atomic_int_inc (&worker->cancelled);
+	
+	for (;;) {
+		cb = g_queue_pop_tail (worker->cancel_funcs);
+		if (!cb)
+			break;
+		(cb->cancel_func) (cb->user_data);
+		g_slice_free (GkrCancelCallback, cb);
+	}
 }
 
 void
@@ -451,7 +336,7 @@ gkr_async_worker_stop (GkrAsyncWorker *worker)
 	while (!g_atomic_int_get (&worker->stopped)) {
 		g_assert (running_workers && g_hash_table_size (running_workers) > 0);
 		cleanup_done_threads ();
-		g_thread_yield ();
+		gkr_async_yield ();
 	}
 
 	cleanup_done_threads ();
@@ -497,34 +382,172 @@ gkr_async_workers_stop_all (void)
 	while (running_workers) {
 		g_assert (g_hash_table_size (running_workers) > 0);
 		cleanup_done_threads ();
-		g_thread_yield ();
+		gkr_async_yield ();
 	}
 }
 
+/* -----------------------------------------------------------------------------
+ * ASYNC FUNCTIONS FOR ANY THREAD
+ */
+
 gboolean
-gkr_async_worker_is_cancelled ()
+gkr_async_yield (void)
 {
 	GkrAsyncWorker *worker;
+
+	g_assert (async_mutex);
 	
 	worker = (GkrAsyncWorker*)g_static_private_get (&thread_private);
-	g_assert (worker);
-	
-	return g_atomic_int_get (&worker->cancelled) ? TRUE : FALSE;
+	if (worker && g_atomic_int_get (&worker->cancelled))
+		return FALSE;
+
+	/* Let another worker or the main loop run */
+	DO_UNLOCK (async_mutex);
+	g_thread_yield ();
+	DO_LOCK (async_mutex);
+
+	if (worker && g_atomic_int_get (&worker->cancelled))
+		return FALSE;
+		
+	return TRUE;
 }
 
-gpointer
-gkr_async_worker_call_main (GkrAsyncFunc callback, gpointer data)
+gboolean
+gkr_async_is_stopping (void)
 {
-	GkrAsyncCall *call;
 	GkrAsyncWorker *worker;
+
+	worker = (GkrAsyncWorker*)g_static_private_get (&thread_private);
+	if (worker && g_atomic_int_get (&worker->cancelled))
+		return TRUE;
 	
-	ASSERT_IS_WORKER ();
+	return FALSE;
+}
+
+void
+gkr_async_begin_concurrent (void)
+{
+	g_assert (async_mutex);
+	
+	/* Let another worker or the main loop run */
+	DO_UNLOCK (async_mutex);
+}
+
+void
+gkr_async_end_concurrent (void)
+{
+	g_assert (async_mutex);
+	
+	/* Make sure only one thread is running */
+	DO_LOCK (async_mutex);
+}
+
+void
+gkr_async_register_cancel (GDestroyNotify cancel, gpointer data)
+{
+	GkrCancelCallback *cb;
+	GkrAsyncWorker *worker;
+
+	g_assert (cancel);
 	
 	worker = (GkrAsyncWorker*)g_static_private_get (&thread_private);
-	g_assert (worker);
-	g_assert (worker->calls);
 	
-	call = gkr_async_call_send (worker->calls, callback, data);
-	g_assert (call);
-	return gkr_async_call_wait (call);
+	/* We don't support cancellation funcs for main thread */	
+	if (!worker)
+		return;
+
+	cb = g_slice_new (GkrCancelCallback);
+	cb->cancel_func = cancel;
+	cb->user_data = data;
+	
+	g_queue_push_tail (worker->cancel_funcs, cb);
+}
+
+static gint
+match_cancel_func (gconstpointer a, gconstpointer b)
+{
+	return memcmp (a, b, sizeof (GkrCancelCallback));
+}
+
+void
+gkr_async_unregister_cancel (GDestroyNotify cancel, gpointer data)
+{
+	GkrCancelCallback match;
+	GkrAsyncWorker *worker;
+	GList *l;
+	
+	g_assert (cancel);
+	
+	worker = (GkrAsyncWorker*)g_static_private_get (&thread_private);
+	
+	/* We don't support cancellation funcs for main thread */	
+	if (!worker)
+		return;
+		
+	match.cancel_func = cancel;
+	match.user_data = data;
+		
+	l = g_queue_find_custom (worker->cancel_funcs, &match, match_cancel_func);
+	if (l) {
+		g_slice_free (GkrCancelCallback, l->data);
+		g_queue_delete_link (worker->cancel_funcs, l);
+	} 
+}
+
+/* -----------------------------------------------------------------------------
+ * ASYNC WAITS
+ */
+ 
+GkrAsyncWait* 
+gkr_async_wait_new (void)
+{
+	return (GkrAsyncWait*)g_cond_new ();
+}
+
+void
+gkr_async_wait_free (GkrAsyncWait *wait)
+{
+	if (!wait)
+		return;
+	g_cond_free ((GCond*)wait);
+}
+
+void
+gkr_async_wait (GkrAsyncWait *wait)
+{
+	g_assert (wait);
+	g_cond_wait ((GCond*)wait, async_mutex);
+}
+
+void
+gkr_async_notify (GkrAsyncWait *wait)
+{
+	g_assert (wait);
+	g_cond_signal ((GCond*)wait);
+}
+
+void
+gkr_async_usleep (gulong microseconds)
+{
+	g_assert (async_mutex);
+	
+	/* Let another worker or the main loop run */
+	DO_UNLOCK (async_mutex);
+	
+		g_usleep (G_USEC_PER_SEC);
+		
+	DO_LOCK (async_mutex);
+}
+
+void
+gkr_async_sleep (glong seconds)
+{
+	g_assert (async_mutex);
+	
+	/* Let another worker or the main loop run */
+	DO_UNLOCK (async_mutex);
+	
+		g_usleep (G_USEC_PER_SEC * seconds);
+		
+	DO_LOCK (async_mutex);
 }

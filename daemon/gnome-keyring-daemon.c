@@ -25,6 +25,7 @@
 #include "gnome-keyring.h"
 #include "gnome-keyring-daemon.h"
 
+#include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
 #include "common/gkr-unix-signal.h"
 
@@ -175,9 +176,11 @@ main (int argc, char *argv[])
 	gboolean foreground;
 	gboolean daemon;
 	GIOChannel *channel;
+	GMainContext *ctx;
 	int i;
 	
 	g_type_init ();
+	g_thread_init (NULL);
 
 	/* We do not use gcrypt in a multi-threaded manner */
 	gcry_check_version (LIBGCRYPT_VERSION);
@@ -274,14 +277,15 @@ main (int argc, char *argv[])
         /* Send all warning or error messages to syslog, if a daemon */
         if (!foreground)
 	        prepare_logging();
-	        
-	signal (SIGPIPE, SIG_IGN);
-	gkr_unix_signal_connect (SIGINT, signal_handler, NULL);
-	gkr_unix_signal_connect (SIGHUP, signal_handler, NULL);
-	gkr_unix_signal_connect (SIGTERM, signal_handler, NULL);
-             
-	loop = g_main_loop_new (NULL, FALSE);
 
+	loop = g_main_loop_new (NULL, FALSE);
+	ctx = g_main_loop_get_context (loop);
+	
+	signal (SIGPIPE, SIG_IGN);
+	gkr_unix_signal_connect (ctx, SIGINT, signal_handler, NULL);
+	gkr_unix_signal_connect (ctx, SIGHUP, signal_handler, NULL);
+	gkr_unix_signal_connect (ctx, SIGTERM, signal_handler, NULL);
+             
 	fd_str = getenv ("GNOME_KEYRING_LIFETIME_FD");
 	if (fd_str != NULL && fd_str[0] != 0) {
 		fd = atoi (fd_str);
@@ -295,15 +299,22 @@ main (int argc, char *argv[])
 		
 	}
 	
+	gkr_async_workers_init (loop);
+	
 #ifdef WITH_DBUS
 	gnome_keyring_daemon_dbus_setup (loop, path);
 #endif
 	
 	g_main_loop_run (loop);
 
+	/* Make sure no other threads are running */
+	gkr_async_workers_stop_all ();
+	
 	/* This wraps everything up in order */
 	gkr_cleanup_perform ();
+	
+	/* Final shutdown of anything workers running about */
+	gkr_async_workers_uninit ();
 
 	return 0;
 }
-

@@ -49,6 +49,7 @@
 void unit_setup_threading (void) 	 
 { 	 
 	g_thread_init (NULL); 	 
+	gkr_async_workers_init (test_mainloop_get ());
 }
 	 
 static gboolean 
@@ -79,7 +80,7 @@ simple_thread (gpointer data)
 	
 	for (i = 0; i < SIMPLE_N; ++i) {
 		++params->value;
-		g_usleep(G_USEC_PER_SEC / 5);
+		gkr_async_usleep (G_USEC_PER_SEC / 5);
 		g_printerr("+");
 	}
 	
@@ -127,10 +128,10 @@ cancel_thread (gpointer data)
 {
 	CancelParams *params = (CancelParams*)data;
 
-	while (!gkr_async_worker_is_cancelled ()) {
+	while (gkr_async_yield ()) {
 		++params->value;
 		g_printerr("+");
-		g_usleep (G_USEC_PER_SEC);
+		gkr_async_usleep (G_USEC_PER_SEC);
 	}
 	
 	g_printerr("!\n");
@@ -185,10 +186,10 @@ five_thread (gpointer data)
 {
 	FiveParams *params = (FiveParams*)data;
 
-	while (!gkr_async_worker_is_cancelled ()) {
+	while (gkr_async_yield ()) {
 		++params->value;
 		g_printerr("%d", params->number);
-		g_usleep (G_USEC_PER_SEC);
+		gkr_async_sleep (1);
 	}
 	
 	g_printerr("!\n");

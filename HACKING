@@ -7,9 +7,6 @@ http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring
 Gnome Keyring is made up of several distinct parts working on concert with 
 each other. These parts generally live in different directories:
 
-cryptoki
-   The PKCS#11 provider code 
-   
 daemon 
    The main daemon startup code and gnome-keyring password protocol operations. 
    
@@ -25,3 +22,21 @@ tests
 ui 
    Prompting the user, asking for passwords. 
    
+
+USE OF THREADS
+
+Gnome Keyring uses threads in a limited manner, as state machines, or execution
+stacks. Only one thread runs at any given time, each thread hands off execution
+to another thread. 
+
+The *only* use of threading and/or synchronization primitives should be in:
+ 
+   common/gkr-async.c
+   
+Worker threads are created by using gkr_async_worker_start(). Each worker needs 
+to call gkr_async_yield() regularly, to give other threads a chance to run.
+
+If a thread needs perform a blocking syscall, or do something that takes a long 
+time (like create a key) it can use the gkr_async_begin_concurrent() and 
+gkr_async_end_concurrent() functions. While running 'concurrent' no global
+functions and/or data should be accessed.

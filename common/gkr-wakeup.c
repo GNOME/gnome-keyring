@@ -34,23 +34,30 @@
 
 static int wakeup_fds[2] = { -1, -1 };
 static guint wakeup_n = 0;
+static GPollFD poll_fd;
+static GMainContext *main_ctx;
 
-int
-gkr_wakeup_register (void)
+void
+gkr_wakeup_register (GMainContext *ctx)
 {
 	if (wakeup_n++ == 0) {
-		if (pipe (wakeup_fds)) {
+		if (pipe (wakeup_fds))
 			g_critical ("can't create wakeup pipe: %s", g_strerror (errno));
-			return -1;
-		}
 		
 		/* Non blocking to prevent deadlock */
         	fcntl (wakeup_fds[0], F_SETFL, fcntl (wakeup_fds[0], F_GETFL) | O_NONBLOCK);
         	fcntl (wakeup_fds[1], F_SETFL, fcntl (wakeup_fds[1], F_GETFL) | O_NONBLOCK);
+        	
+        	/* Register poll fd with main context */
+        	poll_fd.fd = wakeup_fds[0];
+        	poll_fd.events = G_IO_IN;
+        	poll_fd.revents = 0;
+        	
+        	g_main_context_add_poll (ctx, &poll_fd, G_PRIORITY_HIGH_IDLE);
+        	main_ctx = ctx;
         }
         
         g_assert (wakeup_fds[0] >= 0);
-        return wakeup_fds[0];
 }
 
 void
@@ -65,7 +72,11 @@ gkr_wakeup_unregister (void)
 
 	g_assert (wakeup_fds[1] >= 0);
 	close (wakeup_fds[1]);
-	wakeup_fds[1] = -1;	
+	wakeup_fds[1] = -1;
+	
+	g_assert (main_ctx);
+	g_main_context_remove_poll (main_ctx, &poll_fd);
+	main_ctx = NULL;
 }
 
 void
