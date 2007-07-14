@@ -1,5 +1,13 @@
 2007-07-14  Stef Walter  <stef@memberwebs.com>
 
+	* tests/test-keyrings.c:
+	* tests/unit-test-keyrings-prompt.c:
+	* ui/gkr-ask-daemon.c:
+	* ui/gkr-ask-daemon.h:
+	* ui/gkr-ask-daemon.h: Added misssing license headers
+	
+2007-07-14  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-async.c:
 	* common/gkr-async.h:
 	* common/gkr-unix-signal.c:
