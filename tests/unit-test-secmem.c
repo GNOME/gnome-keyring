@@ -42,6 +42,25 @@
  * Tests be run in the order specified here.
  */
  
+static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
+
+/* 
+ * These are called from gkr-secure-memory.c to provide appropriate
+ * locking for memory between threads
+ */ 
+
+void
+gkr_memory_lock (void)
+{
+	g_static_mutex_lock (&memory_mutex);
+}
+
+void 
+gkr_memory_unlock (void)
+{
+	g_static_mutex_unlock (&memory_mutex);
+}
+
 #define IS_ZERO ~0
 
 static gsize

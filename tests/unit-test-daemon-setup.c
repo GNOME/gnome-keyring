@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-keyrings.c: Test basic keyring functionality
+/* unit-test-daemon-setup.c: Start a gnome-keyring-daemon process for testing
 
    Copyright (C) 2007 Stefan Walter
 

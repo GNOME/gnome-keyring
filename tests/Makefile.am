@@ -1,6 +1,7 @@
 
 EXTRA_DIST = \
-	cu-test/license.txt \
+	cu-test \
+	test-helpers.c \
 	unit-tests-prep.sh
 
 INCLUDES=					\
@@ -10,8 +11,9 @@ INCLUDES=					\
 	$(GLIB_CFLAGS) 
 	
 LIBS = \
-	$(top_builddir)/library/libgnome-keyring.la \
-	$(GTK_LIBS)
+	$(GTK_LIBS) \
+	$(GLIB_LIBS) \
+	$(GTHREAD_LIBS)
 	
 noinst_PROGRAMS= \
 	list-keyrings \
@@ -26,60 +28,66 @@ noinst_PROGRAMS= \
 list_keyrings_SOURCES = \
 	list-keyrings.c
 
+list_keyrings_LDADD = \
+	$(top_builddir)/library/libgnome-keyring.la
+
 # A generic testing program
 
 test_keyring_SOURCES = \
 	test-keyrings.c
 
+test_keyring_LDADD = \
+	$(top_builddir)/library/libgnome-keyring.la
+
 test_keyring_two_SOURCES = \
 	test-keyrings.c
+
+test_keyring_two_LDADD = \
+	$(top_builddir)/library/libgnome-keyring.la
 	
 # ------------------------------------------------------------------------------
 # Base tests
 
 UNIT_TESTS_BASE = \
-	unit-test-cleanup.c \
 	unit-test-secmem.c \
-	unit-test-memory.c \
 	unit-test-async.c \
+	unit-test-cleanup.c \
 	unit-test-signal.c \
 	unit-test-mainloop-setup.c \
 	unit-test-private.h
 
-run-base-test.c: $(UNIT_TESTS_BASE) unit-tests-prep.sh
+run-base-test.c: $(UNIT_TESTS_BASE) unit-tests-prep.sh Makefile.am
 	sh unit-tests-prep.sh -b run-base-test $(UNIT_TESTS_BASE)
 
 run_base_test_SOURCES = \
 	run-base-test.c \
 	run-base-test.h \
-	$(srcdir)/cu-test/CuTest.h \
-	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_BASE) 
 
 run_base_test_LDADD = \
-	$(top_builddir)/common/libgkr-daemon-common.la \
-	$(GTHREAD_LIBS) \
-	$(GLIB_LIBS)
+	$(top_builddir)/common/libgkr-daemon-common.la
 
 # ------------------------------------------------------------------------------
 # Automatic library tests 
 
 UNIT_TESTS_LIBRARY = \
+	unit-test-memory.c \
 	unit-test-keyrings.c \
 	unit-test-other.c \
 	unit-test-daemon-setup.c \
 	unit-test-mainloop-setup.c \
 	unit-test-private.h
 
-run-library-test.c: $(UNIT_TESTS_LIBRARY) unit-tests-prep.sh
+run-library-test.c: $(UNIT_TESTS_LIBRARY) unit-tests-prep.sh Makefile.am
 	sh unit-tests-prep.sh -b run-library-test $(UNIT_TESTS_LIBRARY)
 
 run_library_test_SOURCES = \
 	run-library-test.c \
 	run-library-test.h \
-	$(srcdir)/cu-test/CuTest.h \
-	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_LIBRARY) 
+
+run_library_test_LDADD = \
+	$(top_builddir)/library/libgnome-keyring.la
 
 # ------------------------------------------------------------------------------
 # Propmting tests
@@ -88,15 +96,16 @@ UNIT_TESTS_PROMPT = \
 	unit-test-keyrings-prompt.c \
 	unit-test-daemon-setup.c
 
-run-prompt-test.c: $(UNIT_TESTS_PROMPT) unit-tests-prep.sh
+run-prompt-test.c: $(UNIT_TESTS_PROMPT) unit-tests-prep.sh Makefile.am
 	sh unit-tests-prep.sh -b run-prompt-test $(UNIT_TESTS_PROMPT)
 
 run_prompt_test_SOURCES = \
 	run-prompt-test.c \
 	run-prompt-test.h \
-	$(srcdir)/cu-test/CuTest.h \
-	$(srcdir)/cu-test/CuTest.c \
 	$(UNIT_TESTS_PROMPT) 
+
+run_prompt_test_LDADD = \
+	$(top_builddir)/library/libgnome-keyring.la
 
 # -----------------------------------------------------------------------------
 # Run the tests

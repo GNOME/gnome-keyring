@@ -1,5 +1,16 @@
 2007-07-14  Stef Walter  <stef@memberwebs.com>
 
+	* tests/Makefile.am:
+	* tests/test-helpers.c: (added)
+	* tests/unit-test-async.c:
+	* tests/unit-test-daemon-setup.c:
+	* tests/unit-test-mainloop-setup.c:
+	* tests/unit-test-memory.c:
+	* tests/unit-test-secmem.c:
+	* tests/unit-tests-prep.sh: Fix up unit tests
+	
+2007-07-14  Stef Walter  <stef@memberwebs.com>
+
 	* tests/test-keyrings.c:
 	* tests/unit-test-keyrings-prompt.c:
 	* ui/gkr-ask-daemon.c:

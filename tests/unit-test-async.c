@@ -48,7 +48,6 @@
  
 void unit_setup_threading (void) 	 
 { 	 
-	g_thread_init (NULL); 	 
 	gkr_async_workers_init (test_mainloop_get ());
 }
 	 

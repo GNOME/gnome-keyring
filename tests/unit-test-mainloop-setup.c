@@ -63,9 +63,13 @@ test_mainloop_quit (void)
 void
 test_mainloop_run (int timeout)
 {
-	guint id = g_timeout_add (timeout, quit_loop, NULL);
+	guint id = 0;
+	
+	if (timeout)
+		id = g_timeout_add (timeout, quit_loop, NULL);
 	g_main_loop_run (mainloop);
-	g_source_remove (id); 
+	if (timeout)
+		g_source_remove (id); 
 } 
 
 GMainLoop* 
