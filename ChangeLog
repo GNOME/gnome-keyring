@@ -1,3 +1,10 @@
+2007-07-16  Wouter Bolsterlee  <wbolster@svn.gnome.org>
+
+	reviewed by: Olav Vitters <ovitters@gnome.org>
+
+	* daemon/gnome-keyring-daemon-ops.c: (op_create_item):
+	Initialize item to NULL to fix -Werror crap.
+
 2007-07-14  Stef Walter  <stef@memberwebs.com>
 
 	* tests/Makefile.am:

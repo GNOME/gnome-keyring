@@ -1324,6 +1324,7 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
 	GList *l;
 
 	keyring_name = display_name = secret = NULL;
+	item = NULL;
 	attributes = hashed = NULL;
 
 	res = GNOME_KEYRING_RESULT_OK;
