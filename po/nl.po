@@ -5,7 +5,7 @@
 #
 # Daniel van Eeden <daniel_e@dds.nl>, 2004.
 # Tino Meinen <a.t.meinen@chello.nl>, 2005.
-# Wouter Bolsterlee <uws+gnome@xs4all.nl>, 2006.
+# Wouter Bolsterlee <wbolster@gnome.org>, 2006, 2007
 #
 # Keyring vertalen we als sleutelbos (Wouter Bolsterlee, Tino Meinen)
 #
@@ -13,46 +13,76 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring cvs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-08-18 20:49+0200 \n"
-"Last-Translator: Wouter Bolsterlee <uws+gnome@xs4all.nl>\n"
+"POT-Creation-Date: 2007-07-17 18:13+0200\n"
+"PO-Revision-Date: 2007-07-17 18:21+0200 \n"
+"Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "_Oud wachtwoord:"
+#: ../daemon/gnome-keyring-daemon-ops.c:380
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr ""
+"Het programma ‘%s’ (%s) wil toegang tot het wachtwoord voor ‘<object prop='name'/>’ uit de "
+"standaardsleutelbos."
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "_Wachtwoord:"
+#: ../daemon/gnome-keyring-daemon-ops.c:383
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr ""
+"Het programma ‘%s’ (%s) wil toegang tot het wachtwoord voor ‘<object prop='name'/>’ in %s."
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "Wachtwoord be_vestigen:"
+#: ../daemon/gnome-keyring-daemon-ops.c:388
+#: ../daemon/gnome-keyring-daemon-ops.c:396
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Het programma ‘%s’ wil toegang tot het wachtwoord voor ‘<object prop='name'/>’ uit de standaard "
+"sleutelbos."
 
-#  Strength bar:
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">Wachtwoordsterktemeter:</span>"
+#: ../daemon/gnome-keyring-daemon-ops.c:391
+#: ../daemon/gnome-keyring-daemon-ops.c:399
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr "Het programma ‘%s’ wil toegang tot het wachtwoord voor ‘<object prop='name'/>’ uit %s."
 
-#: ../gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr "Oude wachtwoord kan niet leeg zijn."
+#: ../daemon/gnome-keyring-daemon-ops.c:404
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Een onbekend programma wil toegang tot het wachtwoord voor ‘<object prop='name'/>’ uit de "
+"standaard sleutelbos."
 
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "Wachtwoord mag niet leeg zijn."
+#: ../daemon/gnome-keyring-daemon-ops.c:406
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"Een onbekend programma wil toegang tot het wachtwoord voor ‘<object prop='name'/>’ uit %s."
 
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr "Wachtwoorden komen niet overeen."
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon-ops.c:412
+msgid "Allow access"
+msgstr "Toegang toestaan"
+
+#: ../daemon/gnome-keyring-daemon-ops.c:412
+msgid "Allow application access to keyring?"
+msgstr "Programma toegang tot sleutelbos verlenen?"
 
 # besloten/gesloten/beveiligd
-#: ../gnome-keyring-ask.c:407
+#: ../daemon/gnome-keyring-daemon-ops.c:481
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -61,7 +91,7 @@ msgstr ""
 "Het programma ‘%s’ (%s) wil toegang tot de standaard sleutelbos maar deze is "
 "gesloten."
 
-#: ../gnome-keyring-ask.c:411
+#: ../daemon/gnome-keyring-daemon-ops.c:485
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -69,17 +99,8 @@ msgstr ""
 "Het programma ‘%s’ (%s) wil toegang tot de sleutelbos ‘%s’, maar deze is "
 "gesloten"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"Het programma ‘%s’ (%s) wil toegang tot een onbekende sleutelbos, maar deze "
-"is gesloten."
-
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
+#: ../daemon/gnome-keyring-daemon-ops.c:491
+#: ../daemon/gnome-keyring-daemon-ops.c:501
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -87,29 +108,21 @@ msgstr ""
 "Het programma ‘%s’ wil toegang tot de standaard sleutelbos, maar deze is "
 "gesloten"
 
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
+#: ../daemon/gnome-keyring-daemon-ops.c:495
+#: ../daemon/gnome-keyring-daemon-ops.c:506
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Het programma ‘%s’ wil toegang tot de sleutelbos ‘%s’, maar deze is gesloten."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
-#, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Het programma ‘%s’ wil toegang tot een onbekende sleutelbos, maar deze is "
-"gesloten."
-
-#: ../gnome-keyring-ask.c:452
+#: ../daemon/gnome-keyring-daemon-ops.c:512
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Een onbekend programma wil toegang tot de standaard sleutelbos, maar deze is "
 "gesloten."
 
-#: ../gnome-keyring-ask.c:456
+#: ../daemon/gnome-keyring-daemon-ops.c:516
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -117,34 +130,21 @@ msgstr ""
 "Een onbekend programma wil toegang tot de sleutelbos ‘%s’, maar deze is "
 "gesloten"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Een onbekend programma wil toegang tot een onbekende sleutelbos, maar deze "
-"is gesloten"
-
-#: ../gnome-keyring-ask.c:468
+#: ../daemon/gnome-keyring-daemon-ops.c:523
 msgid "Enter password for default keyring to unlock"
 msgstr "Voer wachtwoord in voor het openen van de standaard sleutelbos"
 
-#: ../gnome-keyring-ask.c:470
+#: ../daemon/gnome-keyring-daemon-ops.c:525
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Voer wachtwoord in voor het openen van sleutelbos ‘%s’"
 
-#: ../gnome-keyring-ask.c:474
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon-ops.c:529
 msgid "Unlock Keyring"
 msgstr "Openen sleutelbos"
 
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "Ne_geer"
-
-#: ../gnome-keyring-ask.c:517
+#: ../daemon/gnome-keyring-daemon-ops.c:569
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -153,7 +153,7 @@ msgstr ""
 "Het programma ‘%s’ (%s) wil een nieuwe sleutelbos aanmaken genaamd ‘%s’. U "
 "kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:521
+#: ../daemon/gnome-keyring-daemon-ops.c:573
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -162,7 +162,8 @@ msgstr ""
 "Het programma ‘%s’ (%s) wil een nieuwe standaard sleutelbos aanmaken. U kunt "
 "het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
+#: ../daemon/gnome-keyring-daemon-ops.c:579
+#: ../daemon/gnome-keyring-daemon-ops.c:589
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -171,7 +172,8 @@ msgstr ""
 "Het programma ‘%s’ wil een nieuwe sleutelbos aanmaken genaamd ‘%s’ U kunt "
 "het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
+#: ../daemon/gnome-keyring-daemon-ops.c:583
+#: ../daemon/gnome-keyring-daemon-ops.c:593
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -180,7 +182,7 @@ msgstr ""
 "Het programma ‘%s’ wil een nieuwe standaard sleutelbos aanmaken. U kunt het "
 "wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:547
+#: ../daemon/gnome-keyring-daemon-ops.c:599
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -189,7 +191,7 @@ msgstr ""
 "Een onbekend programma wil een nieuwe sleutelbos aanmaken genaamd ‘%s’. U "
 "kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:551
+#: ../daemon/gnome-keyring-daemon-ops.c:603
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -197,15 +199,16 @@ msgstr ""
 "Een onbekend programma wil een nieuwe standaard sleutelbos aanmaken.U kunt "
 "het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:558
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon-ops.c:609
 msgid "New Keyring Password"
 msgstr "Nieuw sleutelbos-wachtwoord"
 
-#: ../gnome-keyring-ask.c:559
+#: ../daemon/gnome-keyring-daemon-ops.c:610
 msgid "Choose password for new keyring"
 msgstr "Kies wachtwoord voor de nieuwe sleutelbos"
 
-#: ../gnome-keyring-ask.c:602
+#: ../daemon/gnome-keyring-daemon-ops.c:655
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -214,7 +217,7 @@ msgstr ""
 "Het programma ‘%s’ (%s) wil het wachtwoord voor de sleutelbos ‘%s’ wijzigen. "
 "U kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:606
+#: ../daemon/gnome-keyring-daemon-ops.c:659
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -223,7 +226,8 @@ msgstr ""
 "Het programma ‘%s’ (%s) wil het wachtwoord voor de standaard sleutelbos "
 "wijzigen. U kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#: ../daemon/gnome-keyring-daemon-ops.c:665
+#: ../daemon/gnome-keyring-daemon-ops.c:675
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -232,7 +236,8 @@ msgstr ""
 "Het programma ‘%s’ wil het wachtwoord voor de sleutelbos ‘%s’ wijzigen. U "
 "kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#: ../daemon/gnome-keyring-daemon-ops.c:669
+#: ../daemon/gnome-keyring-daemon-ops.c:679
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -241,7 +246,7 @@ msgstr ""
 "Het programma ‘%s’ wil het wachtwoord voor de standaard sleutelbos wijzigen. "
 "U kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:632
+#: ../daemon/gnome-keyring-daemon-ops.c:685
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -250,7 +255,7 @@ msgstr ""
 "Een onbekend programma wil het wachtwoord voor de sleutelbos ‘%s’ wijzigen.U "
 "kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:636
+#: ../daemon/gnome-keyring-daemon-ops.c:689
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -258,20 +263,21 @@ msgstr ""
 "Een onbekend programma wil het wachtwoord voor de standaard sleutelbos "
 "wijzigen.U kunt het wachtwoord kiezen wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:643
+#: ../daemon/gnome-keyring-daemon-ops.c:699
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Kies wachtwoord voor de sleutelbos ‘%s’."
 
-#: ../gnome-keyring-ask.c:645
+#: ../daemon/gnome-keyring-daemon-ops.c:701
 msgid "Choose a new password for the default keyring. "
 msgstr "Kies nieuw wachtwoord voor standaard sleutelbos."
 
-#: ../gnome-keyring-ask.c:650
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon-ops.c:705
 msgid "Change Keyring Password"
 msgstr "Sleutelbos-wachtwoord wijzigen"
 
-#: ../gnome-keyring-ask.c:689
+#: ../daemon/gnome-keyring-daemon-ops.c:771
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -282,7 +288,8 @@ msgstr ""
 "standaard sleutelbos. Om er een te creëren, zal een wachtwoord gekozen "
 "moeten worden wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
+#: ../daemon/gnome-keyring-daemon-ops.c:775
+#: ../daemon/gnome-keyring-daemon-ops.c:779
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -293,8 +300,7 @@ msgstr ""
 "sleutelbos. Om er een te creëren, zal een wachtwoord gekozen moeten worden "
 "wat u er voor wilt gebruiken."
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
+#: ../daemon/gnome-keyring-daemon-ops.c:783
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -304,108 +310,130 @@ msgstr ""
 "sleutelbos. Om er een te creëren, zal een wachtwoord gekozen moeten worden "
 "wat u er voor wilt gebruiken."
 
-#: ../gnome-keyring-ask.c:706
+#. And put together the ask request
+#: ../daemon/gnome-keyring-daemon-ops.c:788
 msgid "Create Default Keyring"
 msgstr "Aanmaken standaard-sleutelbos"
 
-#: ../gnome-keyring-ask.c:707
+#: ../daemon/gnome-keyring-daemon-ops.c:788
 msgid "Choose password for default keyring"
 msgstr "Kies wachtwoord voor standaard sleutelbos"
 
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "Programma toegang tot sleutelbos verlenen?"
+#: ../library/gnome-keyring-utils.c:109
+msgid "Access Denied"
+msgstr "Geen toegang"
 
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr ""
-"Het programma ‘%s’ (%s) wil toegang tot het wachtwoord voor ‘%s’ in %s."
+#: ../library/gnome-keyring-utils.c:111
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "De toepassing ‘gnome-keyring-daemon’ is niet actief."
 
-#: ../gnome-keyring-ask.c:753
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"Het programma ‘%s’ (%s) wil toegang tot het wachtwoord voor ‘%s’ uitde "
-"standaard sleutelbos."
+#: ../library/gnome-keyring-utils.c:113 ../library/gnome-keyring-utils.c:126
+msgid "The keyring has already been unlocked."
+msgstr "De sleutelbos is al geopend."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"Het programma ‘%s’ (%s) wil toegang tot het wachtwoord voor ‘%s’ uit een "
-"onbekende sleutelbos."
+#: ../library/gnome-keyring-utils.c:115
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "Fout bij communicatie met ‘gnome-keyring-daemon’"
 
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Het programma ‘%s’ wil toegang tot het wachtwoord voor ‘%s’ uit %s."
+#: ../library/gnome-keyring-utils.c:117
+msgid "A keyring with that name already exists"
+msgstr "Er bestaat al een sleutelbos met deze naam"
 
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Het programma ‘%s’ wil toegang tot het wachtwoord voor ‘%s’ uit de standaard "
-"sleutelbos."
+#: ../library/gnome-keyring-utils.c:119
+msgid "Programmer error: The application sent invalid data."
+msgstr "Programeerfout: de toepassing stuurde ongeldige gegevens."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Het programma ‘%s’ wil toegang tot het wachtwoord voor ‘%s’ uit een "
-"onbekende sleutelbos."
+#: ../ui/gkr-ask-tool.c:257
+msgid "_Old password:"
+msgstr "_Oud wachtwoord:"
 
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr ""
-"Een onbekend programma wil toegang tot het wachtwoord voor ‘%s’ uit %s."
+#: ../ui/gkr-ask-tool.c:280
+msgid "_Password:"
+msgstr "_Wachtwoord:"
 
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Een onbekend programma wil toegang tot het wachtwoord voor ‘%s’ uit de "
-"standaard sleutelbos."
+#: ../ui/gkr-ask-tool.c:305
+msgid "_Confirm password:"
+msgstr "Wachtwoord be_vestigen:"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Een onbekend programma wil toegang tot het wachtwoord voor ‘%s’ in "
-"eenonbekende sleutelbos."
+#: ../ui/gkr-ask-tool.c:324
+msgid "New password strength"
+msgstr "Veiligheid wachtwoord"
 
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "Toegang toestaan"
+#: ../ui/gkr-ask-tool.c:350
+msgid "Old password cannot be blank."
+msgstr "Oude wachtwoord kan niet leeg zijn."
 
-#: ../gnome-keyring-ask.c:799
+#: ../ui/gkr-ask-tool.c:362
+msgid "Password cannot be blank."
+msgstr "Wachtwoord mag niet leeg zijn."
+
+#: ../ui/gkr-ask-tool.c:371
+msgid "Passwords do not match."
+msgstr "Wachtwoorden komen niet overeen."
+
+#: ../ui/gkr-ask-tool.c:408
+msgid "Deny"
+msgstr "Niet toestaan"
+
+#: ../ui/gkr-ask-tool.c:420
 msgid "Allow _Once"
 msgstr "Een keer t_oestaan"
 
-#: ../gnome-keyring-ask.c:800
+#: ../ui/gkr-ask-tool.c:424
 msgid "_Always Allow"
 msgstr "_Altijd toestaan"
 
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "U moet het type aanvraag aangeven om uit te voeren\n"
+#: ../ui/gkr-ask-tool.c:478
+msgid "Must be run from gnome-keyring\n"
+msgstr "Moet vanuit gnome-keyring gestart worden\n"
 
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "Onbekend aanvraag type\n"
+#  Strength bar:
+#~ msgid "<span weight=\"bold\">Password strength meter:</span>"
+#~ msgstr "<span weight=\"bold\">Wachtwoordsterktemeter:</span>"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Het programma ‘%s’ (%s) wil toegang tot een onbekende sleutelbos, maar "
+#~ "deze is gesloten."
+
+#~ msgid ""
+#~ "The application '%s' wants access to an unknown keyring, but it is locked"
+#~ msgstr ""
+#~ "Het programma ‘%s’ wil toegang tot een onbekende sleutelbos, maar deze is "
+#~ "gesloten."
+
+#~ msgid ""
+#~ "An unknown application wants access to an unknown keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Een onbekend programma wil toegang tot een onbekende sleutelbos, maar "
+#~ "deze is gesloten"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '%s' in an "
+#~ "unknown keyring."
+#~ msgstr ""
+#~ "Het programma ‘%s’ (%s) wil toegang tot het wachtwoord voor ‘%s’ uit een "
+#~ "onbekende sleutelbos."
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '%s' in an unknown "
+#~ "keyring."
+#~ msgstr ""
+#~ "Het programma ‘%s’ wil toegang tot het wachtwoord voor ‘%s’ uit een "
+#~ "onbekende sleutelbos."
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '%s' in an "
+#~ "unknown keyring."
+#~ msgstr ""
+#~ "Een onbekend programma wil toegang tot het wachtwoord voor ‘%s’ in "
+#~ "eenonbekende sleutelbos."
+
+#~ msgid "You must specify the type of request to run\n"
+#~ msgstr "U moet het type aanvraag aangeven om uit te voeren\n"
+
+#~ msgid "Unknown request type\n"
+#~ msgstr "Onbekend aanvraag type\n"

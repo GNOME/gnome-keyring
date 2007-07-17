@@ -1,3 +1,7 @@
+2007-07-17  Wouter Bolsterlee  <wbolster@svn.gnome.org>
+
+	* nl.po: Dutch translation updated by Wouter Bolsterlee.
+
 2007-07-16  Ilkka Tuohela  <hile@iki.fi>
 
 	* fi.po: Updated Finnish translation.
@@ -31,7 +35,7 @@
 
 2007-07-04  Jorge Gonzalez <jorgegonz@svn.gnome.org>
 
-        * es.po: Updated Spanish translation    
+	* es.po: Updated Spanish translation
 
 2007-07-01  Nguyễn Thái Ngọc Duy <pclouds@gmail.com>
 
@@ -47,7 +51,7 @@
 
 2007-06-28  Jorge Gonzalez <jorgegonz@svn.gnome.org>
 
-        * es.po: Updated Spanish translation
+	* es.po: Updated Spanish translation
 
 2007-06-28  Clytie Siddall <clytie@riverland.net.au>
 
@@ -170,7 +174,7 @@
 
 2007-02-21  Maxim Dziumanenko <dziumanenko@gmail.com>
 
-        * uk.po: Updated Ukrainian translation.
+	* uk.po: Updated Ukrainian translation.
 
 2007-02-19  Lasse Bang Mikkelsen  <lbm@fatalerror.dk>
 
@@ -180,7 +184,7 @@
 
 2007-02-03  Ihar Hrachyshka <iharh@gnome.org> 
 
-        * be.po: Updated Belarusian Translation.
+	* be.po: Updated Belarusian Translation.
 
 === gnome-keyring 0.7.3 ===
 
@@ -304,7 +308,7 @@
 
 2006-08-14  Sanlig Badral  <badral@openmn.org>
 
-        * mn.po: Updated Mongolian translation.
+	* mn.po: Updated Mongolian translation.
 
 2006-08-14  Žygimantas Beručka  <zygis@gnome.org>
 
@@ -312,7 +316,7 @@
 
 2006-08-14  Maxim Dziumanenko <dziumanenko@gmail.com>
 
-        * uk.po: Update Ukrainian translation.
+	* uk.po: Update Ukrainian translation.
 
 2006-08-07  Inaki Larranaga  <dooteo@euskalgnu.org>
 
@@ -339,15 +343,15 @@
 2006-07-30  Hendrik Richter  <hendrikr@gnome.org>
 
 	* de.po: Updated German translation, by
-	         Michael Kanis <mkanis@gmx.de>
+		 Michael Kanis <mkanis@gmx.de>
 
 2006-07-19  Kostas Papadimas <pkst@gnome.org>
 
-         * el.po: Updated Greek translation.
+	 * el.po: Updated Greek translation.
 
 2006-07-16  Daniel Nylander  <po@danielnylander.se>
 
-        * sv.po: Updated Swedish translation.
+	* sv.po: Updated Swedish translation.
 
 2006-07-09  Changwoo Ryu  <cwryu@debian.org>
 
@@ -369,8 +373,8 @@
 
 2006-07-08  Raivis Dejus  <orvils@gmail.com>
 
-        * lv.po: Added Latvian translation.
-        * LINGUAS: Added 'lv'
+	* lv.po: Added Latvian translation.
+	* LINGUAS: Added 'lv'
 
 2006-07-07  Inaki Larranaga  <dooteo@euskalgnu.org>
 
@@ -378,8 +382,8 @@
 
 2006-07-03  Runa Bhattacharjee <runabh@gmail.com>
 
-        * bn_IN.po: Added Bengali India Translation
-        * LINGUAS: Added Bengali India (bn_IN) to the list of languages.
+	* bn_IN.po: Added Bengali India Translation
+	* LINGUAS: Added Bengali India (bn_IN) to the list of languages.
 
 2006-07-03  Simos Xenitellis  <simos@gnome.org>
 
@@ -399,7 +403,7 @@
 
 2006-06-29  Rajesh Ranjan <rajeshkajha@yahoo.com>
 
-        * hi.po: Updated Hindi Translation.
+	* hi.po: Updated Hindi Translation.
 
 === gnome-keyring 0.5.1 ===
 
@@ -458,7 +462,7 @@
 
 2006-04-20  Ankit Patel  <ankit644@yahoo.com>
 
-        * gu.po: Updated Gujarati Translation.
+	* gu.po: Updated Gujarati Translation.
 
 2006-04-18  Kjartan Maraas  <kmaraas@gnome.org>
 
@@ -482,7 +486,7 @@
 
 2006-04-09  Kostas Papadimas <pkst@gnome.org>
 
-          *el.po Updated Greek Translatio
+	* el.po Updated Greek Translatio
 
 2006-04-08  Miloslav Trmac  <mitr@volny.cz>
 
@@ -531,7 +535,7 @@
 
 2006-04-04  Ankit Patel  <ankit644@yahoo.com>
 
-        * gu.po: Updated Gujarati Translation.
+	* gu.po: Updated Gujarati Translation.
 
 2006-04-04  Ignacio Casal Quinteiro  <nacho.resa@gmail.com>
 
@@ -553,7 +557,7 @@
 
 2006-03-06  Daniel Nylander <po@danielnylander.se>
 
-        * sv.po: Updated Swedish translation.
+	* sv.po: Updated Swedish translation.
 
 2006-03-05  Mugurel Tudor  <mugurelu@gnome.ro>
 
@@ -565,7 +569,7 @@
 
 2006-03-03  Maxim Dziumanenko <mvd@mylinux.ua>
 
-        * uk.po: Updated Ukrainian translation.
+	* uk.po: Updated Ukrainian translation.
 
 2006-03-03  Rhys Jones  <rhys@sucs.org>
 
@@ -647,7 +651,7 @@
 
 2005-12-11  Ankit Patel  <ankit644@yahoo.com>
 
-        * gu.po: Updated Gujarati Translation.
+	* gu.po: Updated Gujarati Translation.
 
 2005-11-25  Laurent Dhima  <laurenti@alblinux.net>
 
@@ -768,7 +772,7 @@
 
 2005-03-31  Steve Murphy  <murf@e-tools.com>
 
-        * rw.po: Added Kinyarwanda translation.
+	* rw.po: Added Kinyarwanda translation.
 
 2005-03-30  Wang Jian <lark@linux.net.cn>
 
@@ -864,7 +868,7 @@
 
 2004-05-27  Mohammad DAMT  <mdamt@bisnisweb.com>
 
-        * id.po: Added Indonesian translation done by Ahmad Riza H Nst <rizahnst@eriagempita.co.id>
+	* id.po: Added Indonesian translation done by Ahmad Riza H Nst <rizahnst@eriagempita.co.id>
 
 2004-05-26  Alexander Shopov <ash@contact.bg>
 
@@ -892,8 +896,8 @@
 
 2004-03-24  Guntupalli Karunakar  <karunakar@freedomink.org>
 
-        * pa.po: Added Punjabi translation by
-        Jaswinder Singh Phulewala <jaswinderlinux@netscape.net>.
+	* pa.po: Added Punjabi translation by
+	Jaswinder Singh Phulewala <jaswinderlinux@netscape.net>.
 
 === gnome-keyring 0.2.0 ===
 
@@ -974,7 +978,7 @@
 
 2004-02-11  Arafat Medini  <lumina@silverpen.de>
 
-        * ar.po: Added Arabic translation.
+	* ar.po: Added Arabic translation.
 
 2004-02-11  Pauli Virtanen  <pauli.virtanen@hut.fi>
 
@@ -997,11 +1001,11 @@
 
 2004-02-02  Hasbullah Bin Pit <sebol@my-penguin.org>
 
-        * ms.po: Updated Malay translation.
+	* ms.po: Updated Malay translation.
 
 2004-01-31  Sanlig Badral  <badral@openmn.org>
 
-        * mn.po: Added Mongolian translation by Tamir.
+	* mn.po: Added Mongolian translation by Tamir.
 
 2004-01-31  Kjartan Maraas  <kmaraas@gnome.org>
 
@@ -1116,7 +1120,7 @@
 
 2003-12-27  Hasbullah Bin Pit <sebol@ikhlas.com>
 
-        * ms.po: Added Malay Translation.
+	* ms.po: Added Malay Translation.
 
 2003-12-24  Duarte Loreto <happyguy_pt@hotmail.com>
 
