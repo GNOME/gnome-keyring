@@ -1,5 +1,11 @@
 2007-07-21  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-module.c: Don't use pid file to mark running 
+	gnome-keyring-daemon process. This causes problems with 
+	multiple logins.
+	
+2007-07-21  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon.c: Don't call glib functions in forked
 	processes. Wait on child properly.
 	

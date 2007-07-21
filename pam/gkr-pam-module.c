@@ -48,6 +48,13 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#define USE_PID_FILE 0
+
+#if USE_PID_FILE
+/* Although this starts with a slash, it is relative to the home dir */
+#define HOME_PID_LOCATION	"/.gnome2/keyrings/run/pam-gnome-keyring.pid"
+#endif
+
 enum {
 	FLAG_DEBUG =     0x0100,
 	FLAG_TRY_FIRST = 0x0100,
@@ -59,9 +66,6 @@ enum {
 
 #define ENV_SOCKET 		"GNOME_KEYRING_SOCKET"
 #define ENV_PID    		"GNOME_KEYRING_PID"
-
-/* Although this starts with a slash, it is relative to the home dir */
-#define HOME_PID_LOCATION	"/.gnome2/keyrings/run/pam-gnome-keyring.pid"
 
 /* read & write ends of a pipe */
 #define  READ_END   0
@@ -132,6 +136,8 @@ foreach_line (char *lines, line_cb cb, void *arg)
 	return PAM_SUCCESS;
 }
 
+#if USE_PID_FILE
+
 static int
 mkdir_parents (const char *file)
 {
@@ -172,6 +178,8 @@ mkdir_parents (const char *file)
 	free (path);
 	return ret;
 }
+
+#endif /* USE_PID_FILE */
 
 static char*
 read_all (int fd)
@@ -276,6 +284,7 @@ cleanup_free (pam_handle_t *ph, void *data, int pam_end_status)
 	free_safe (data);
 }
 
+#if USE_PID_FILE
 static void
 write_create_pid (struct passwd *pwd, const char *spid)
 {
@@ -361,6 +370,8 @@ read_delete_pid (struct passwd *pwd)
 	free (path);
 	return spid;
 }
+
+#endif /* USE_PID_FILE */
 
 static void
 setup_child (int inp[2], int outp[2], int errp[2], struct passwd *pwd)
@@ -465,7 +476,6 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	int errp[2] = { -1, -1 };
 	int ret = PAM_SERVICE_ERR;
 	pid_t pid;
-	const char *spid;
 	char *output = NULL;
 	char *outerr = NULL;
 	int failed, status;
@@ -562,10 +572,15 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	/* Yay, all done */
 	ret = foreach_line (output, setup_environment, ph);
 
-	/* Store this away in in the user's home directory if possible */
-	if (pam_get_data (ph, "gkr-pam-pid", (const void**)&spid) == PAM_SUCCESS && spid)
-		write_create_pid (pwd, spid);
-	
+#if USE_PID_FILE
+	{
+		const char *spid;
+		/* Store this away in in the user's home directory if possible */
+		if (pam_get_data (ph, "gkr-pam-pid", (const void**)&spid) == PAM_SUCCESS && spid)
+			write_create_pid (pwd, spid);
+	}
+#endif
+
 done:
 	/* Restore old handler */
 	sigaction (SIGCHLD, &oldsact, NULL);
@@ -592,20 +607,26 @@ stop_daemon (pam_handle_t *ph, struct passwd *pwd, void *unused)
 	
 	assert (pwd);
 
-	/* Read and delete the pid file */
-	apid = read_delete_pid (pwd);
-	
 	/* Try and read it from the pam handle */
 	spid = NULL;
 	pam_get_data (ph, "gkr-pam-pid", (const void**)&spid);
 	
+#if USE_PID_FILE
+	/* Read and delete the pid file */
+	apid = read_delete_pid (pwd);
 	if (!spid)
 		spid = apid;
-	if (!spid) {
-		syslog (GKR_LOG_ERR, "couldn't find the process id of " 
-		        "the gnome-keyring daemon stop it");
+#endif
+
+	/* 
+	 * No pid, no worries, maybe we didn't start gnome-keyring-daemon
+	 * Or this the calling (PAM using) application is hopeless and 
+	 * wants to call different PAM callbacks from different functions.
+	 * 
+	 * In any case we live and let live.
+	 */
+	if (!spid)
 		goto done;
-	}
 	
 	/* Make sure it parses out nicely */
 	pid = (pid_t)atoi (spid);
@@ -614,7 +635,7 @@ stop_daemon (pam_handle_t *ph, struct passwd *pwd, void *unused)
 		goto done;
 	}
 	
-    	if (kill (pid, SIGTERM) < 0) {
+    	if (kill (pid, SIGTERM) < 0 && errno != ESRCH) {
     		syslog (GKR_LOG_ERR, "gkr-pam: couldn't kill gnome-keyring-daemon process %d: %s", 
     		        (int)pid, strerror (errno));
     		goto done;
