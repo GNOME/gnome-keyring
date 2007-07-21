@@ -458,6 +458,7 @@ setup_environment (char *line, void *arg)
 static int
 start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 {
+	struct sigaction defsact, oldsact;
 	const char *password = (const char*)arg;
 	int inp[2] = { -1, -1 };
 	int outp[2] = { -1, -1 };
@@ -471,6 +472,12 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	
 	assert (pwd);
 	assert (password);
+
+	/* Make sure that SIGCHLD occurs */
+	memset (&defsact, 0, sizeof (defsact));
+	memset (&oldsact, 0, sizeof (oldsact));
+	defsact.sa_handler = SIG_DFL;
+	sigaction (SIGCHLD, &defsact, &oldsact);
 	
 	/* Create the necessary pipes */
 	if (pipe (inp) < 0 || pipe (outp) < 0 || pipe (errp) < 0) {
@@ -536,19 +543,19 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	}
 	
 	/* Wait for the initial process to exit */
-	if (!waitpid (pid, &status, 0)) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't wait on gnome-keyring-process: %s",
+	if (waitpid (pid, &status, 0) < 0) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't wait on gnome-keyring-daemon process: %s",
 		        strerror (errno));
 		goto done;
 	}
 	
-	failed = WIFSIGNALED (status) || WEXITSTATUS (status) != 0;
+	failed = !WIFEXITED (status) || WEXITSTATUS (status) != 0;
 	if (outerr && outerr[0])
 		foreach_line (outerr, log_problem, &failed);
 	
-	/* Failed but no messages */
+	/* Failure from process */
 	if (failed) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't start gnome-keyring-daemon properly");
+		syslog (GKR_LOG_ERR, "gkr-pam: gnome-keyring-daemon didn't start properly properly");
 		goto done;
 	}
 		
@@ -560,6 +567,9 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 		write_create_pid (pwd, spid);
 	
 done:
+	/* Restore old handler */
+	sigaction (SIGCHLD, &oldsact, NULL);
+	
 	close_safe (inp[0]);
 	close_safe (inp[1]);
 	close_safe (outp[0]);

@@ -1,5 +1,10 @@
 2007-07-21  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-module.c: Wait on child process properly, even when 
+	SIGCHLD is being ignored.
+
+2007-07-21  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon-io.c:
 	* daemon/gnome-keyring-daemon-ops.c:
 	* keyrings/gkr-keyring.c:
