@@ -72,15 +72,6 @@ typedef enum {
 void     gnome_keyring_proto_go_secure (GkrBuffer *buffer);
 
 /* Core buffer ops */
-void     gnome_keyring_proto_add_uint32         (GkrBuffer                  *buffer,
-						 guint32                     val);
-gboolean gnome_keyring_proto_set_uint32         (GkrBuffer                  *buffer,
-						 gsize                       offset,
-						 guint32                     val);
-gboolean gnome_keyring_proto_get_uint32         (GkrBuffer                  *buffer,
-						 gsize                       offset,
-						 gsize                      *next_offset,
-						 guint32                    *val);
 gboolean gnome_keyring_proto_get_bytes          (GkrBuffer                  *buffer,
 						 gsize                       offset,
 						 gsize                      *next_offset,

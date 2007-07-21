@@ -384,7 +384,7 @@ client_worker_main (gpointer user_data)
 	gkr_buffer_init_full (&client->output_buffer, 128, g_realloc);
 	
 	/* Add empty size */
-	gnome_keyring_proto_add_uint32 (&client->output_buffer, 0);
+	gkr_buffer_add_uint32 (&client->output_buffer, 0);
 		
 	memset (&req, 0, sizeof (req));
 	req.app_ref = client->app_ref;
@@ -392,8 +392,8 @@ client_worker_main (gpointer user_data)
 	if (!(keyring_ops[op])(&client->input_buffer, &client->output_buffer, &req))
 		return NULL;
 		
-	if (!gnome_keyring_proto_set_uint32 (&client->output_buffer, 0,
-					     client->output_buffer.len))
+	if (!gkr_buffer_set_uint32 (&client->output_buffer, 0,
+	                            client->output_buffer.len))
 		return NULL;
 
 
