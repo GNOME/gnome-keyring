@@ -1135,3 +1135,47 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 	return ret;
 }
 
+gboolean
+gkr_keyring_lock (GkrKeyring *keyring)
+{
+	if (keyring->locked)
+		return TRUE;
+
+	/* Never lock the session keyring */
+	if (keyring->file == NULL)
+		return TRUE;
+
+	g_assert (keyring->password != NULL);
+	
+	gnome_keyring_free_password (keyring->password);
+	keyring->password = NULL;
+	if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
+		/* Failed to re-read, remove the keyring */
+		g_warning ("Couldn't re-read keyring %s\n", keyring->keyring_name);
+		gkr_keyrings_remove (keyring);
+	}
+	
+	return TRUE;
+}
+
+gboolean
+gkr_keyring_unlock (GkrKeyring *keyring, const gchar *password)
+{
+	if (!keyring->locked)
+		return TRUE;
+		
+	g_assert (keyring->password == NULL);
+		
+	keyring->password = gnome_keyring_memory_strdup (password);
+	if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
+		gnome_keyring_free_password (keyring->password);
+		keyring->password = NULL;
+	}
+	if (keyring->locked) {
+		g_assert (keyring->password == NULL);
+		return FALSE;
+	} else {
+		g_assert (keyring->password != NULL);
+		return TRUE;
+	}
+}

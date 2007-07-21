@@ -1,3 +1,20 @@
+2007-07-20  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gnome-keyring-daemon.c:
+	* daemon/gnome-keyring-daemon-ops.c:
+	* daemon/Makefile.am:
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyring.h:
+	* library/Makefile.am:
+	* pam/gkr-pam-module.c: (added)
+	* pam/Makefile.am: (added) 
+	* tests/Makefile.am:
+	* tests/unit-test-pam.c: (added)
+	* tests/unit-test-pam-setup.c: (added)
+	* configure.in
+	* Makefile.am: Added basic PAM support. Unlock default keyring
+	on login if the password matches.
+	
 2007-07-16  Wouter Bolsterlee  <wbolster@svn.gnome.org>
 
 	reviewed by: Olav Vitters <ovitters@gnome.org>

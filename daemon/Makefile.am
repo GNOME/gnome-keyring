@@ -9,7 +9,7 @@ INCLUDES=	\
 	-I$(top_srcdir) 				\
 	-I$(top_srcdir)/library/			\
 	-I$(top_builddir) 				\
-	$(GTK_CFLAGS) 					\
+	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS)				\
 	$(GLIB_CFLAGS)
 
@@ -28,6 +28,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/ui/libdaemon-ui-component.la \
 	$(top_builddir)/common/libgkr-daemon-common.la \
 	@LIBOBJS@ \
+	$(DAEMON_LIBS) \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)
 

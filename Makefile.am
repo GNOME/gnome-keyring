@@ -1,3 +1,9 @@
+if WITH_PAM
+PAM_DIR = pam
+else
+PAM_DIR = 
+endif
+
 if WITH_TESTS
 TESTS_DIR = tests
 else
@@ -14,7 +20,8 @@ SUBDIRS = \
 	doc \
 	po \
 	reference \
-	$(TESTS_DIR)
+	$(TESTS_DIR) \
+	$(PAM_DIR)
 
 EXTRA_DIST = \
 	intltool-extract.in \
@@ -41,4 +48,10 @@ distcheck-hook:
 	@echo
 	@echo
 	@echo "DONE AUTOMATIC UNIT TESTS ------------------------------"
+
+install-pam:
+	$(MAKE) -C pam install-pam
+	
+uninstall-pam:
+	$(MAKE) -C pam uninstall-pam
 

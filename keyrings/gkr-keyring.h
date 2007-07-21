@@ -100,6 +100,10 @@ gboolean         gkr_keyring_remove_from_disk   (GkrKeyring *keyring);
 
 gboolean         gkr_keyring_save_to_disk       (GkrKeyring *keyring);
 
+gboolean         gkr_keyring_lock               (GkrKeyring *keyring);
+
+gboolean         gkr_keyring_unlock             (GkrKeyring *keyring, const gchar *password);
+
 G_END_DECLS
 
 #endif /* __GKR_KEYRING_H__ */

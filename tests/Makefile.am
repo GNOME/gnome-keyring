@@ -15,14 +15,22 @@ LIBS = \
 	$(GLIB_LIBS) \
 	$(GTHREAD_LIBS)
 	
+if WITH_PAM
+PAM_TEST = run-pam-test
+else
+PAM_TEST = 
+endif
+	
 noinst_PROGRAMS= \
 	list-keyrings \
 	test-keyring \
 	test-keyring-two \
 	run-library-test \
 	run-prompt-test \
-	run-base-test
+	run-base-test \
+	$(PAM_TEST)
 	
+# ------------------------------------------------------------------------------
 # Simply list all the keyrings and whatever they have access to
 
 list_keyrings_SOURCES = \
@@ -31,6 +39,7 @@ list_keyrings_SOURCES = \
 list_keyrings_LDADD = \
 	$(top_builddir)/library/libgnome-keyring.la
 
+# ------------------------------------------------------------------------------
 # A generic testing program
 
 test_keyring_SOURCES = \
@@ -107,7 +116,25 @@ run_prompt_test_SOURCES = \
 run_prompt_test_LDADD = \
 	$(top_builddir)/library/libgnome-keyring.la
 
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# PAM tests
+
+UNIT_TESTS_PAM = \
+	unit-test-pam-setup.c \
+	unit-test-pam.c
+	
+run-pam-test.c: $(UNIT_TESTS_PAM) unit-tests-prep.sh Makefile.am
+	sh unit-tests-prep.sh -b run-pam-test $(UNIT_TESTS_PAM)
+	
+run_pam_test_SOURCES = \
+	run-pam-test.c \
+	run-pam-test.h \
+	$(UNIT_TESTS_PAM)
+	
+run_pam_test_LDADD = \
+	-lpam 
+
+# ------------------------------------------------------------------------------
 # Run the tests
 
 run-auto-tests: $(noinst_PROGRAMS)

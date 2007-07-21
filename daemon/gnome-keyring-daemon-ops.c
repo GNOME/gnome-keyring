@@ -52,8 +52,6 @@
 /* for requesting list access to items */
 #define  GNOME_KEYRING_ACCESS_LIST 0
 
-static GnomeKeyringResult unlock_keyring (GkrKeyring *keyring, const char *password);
-
 static guint32
 hash_int (guint32 x)
 {
@@ -450,7 +448,7 @@ check_keyring_ask_request (GkrAskRequest* ask)
 	if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
 		
 		g_assert (ask->typed_password);
-		unlock_keyring (keyring, ask->typed_password);
+		gkr_keyring_unlock (keyring, ask->typed_password);
 		if (keyring->locked) {
 			/* Not happy, try again */
 			ask->response = GKR_ASK_RESPONSE_NONE;
@@ -849,49 +847,6 @@ change_keyring_password (GkrKeyring *keyring,  const char *password)
 	}
 }
 
-static GnomeKeyringResult
-unlock_keyring (GkrKeyring *keyring, const char *password)
-{
-	if (!keyring->locked)
-		return GNOME_KEYRING_RESULT_OK;
-		
-	g_assert (keyring->password == NULL);
-		
-	keyring->password = gnome_keyring_memory_strdup (password);
-	if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
-		gnome_keyring_free_password (keyring->password);
-		keyring->password = NULL;
-	}
-	if (keyring->locked) {
-		g_assert (keyring->password == NULL);
-		return GNOME_KEYRING_RESULT_DENIED;
-	} else {
-		g_assert (keyring->password != NULL);
-		return GNOME_KEYRING_RESULT_OK;
-	}
-}
-
-static void
-lock_keyring (GkrKeyring *keyring)
-{
-	if (keyring->locked) {
-		return;
-	}
-	if (keyring->file == NULL) {
-		/* Never lock the session keyring */
-		return;
-	}
-	g_assert (keyring->password != NULL);
-	
-	gnome_keyring_free_password (keyring->password);
-	keyring->password = NULL;
-	if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
-		/* Failed to re-read, remove the keyring */
-		g_warning ("Couldn't re-read keyring %s\n", keyring->keyring_name);
-		gkr_keyrings_remove (keyring);
-	}
-}
-
 static gboolean
 op_lock_keyring (GkrBuffer *packet, GkrBuffer *result,
                  GkrKeyringRequest *req)
@@ -910,7 +865,7 @@ op_lock_keyring (GkrBuffer *packet, GkrBuffer *result,
 	if (keyring == NULL) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 	} else {
-		lock_keyring (keyring);
+		gkr_keyring_lock (keyring);
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	}
 	
@@ -920,7 +875,7 @@ op_lock_keyring (GkrBuffer *packet, GkrBuffer *result,
 static gboolean
 lock_each_keyring (GkrKeyring* keyring, gpointer unused)
 {
-	lock_keyring (keyring);
+	gkr_keyring_lock (keyring);
 	return TRUE;
 }
 
@@ -1133,6 +1088,7 @@ op_unlock_keyring (GkrBuffer *packet, GkrBuffer *result,
 	char *keyring_name, *password;
 	GkrKeyring *keyring;
 	GnomeKeyringOpCode opcode;
+	GnomeKeyringResult res;
 	
 	if (!gnome_keyring_proto_decode_op_string_secret (packet,
 							  &opcode,
@@ -1158,7 +1114,11 @@ op_unlock_keyring (GkrBuffer *packet, GkrBuffer *result,
 			
 	/* Password specified */
 	} else {
-		gnome_keyring_proto_add_uint32 (result, unlock_keyring (keyring, password));
+		if (gkr_keyring_unlock (keyring, password))
+			res = GNOME_KEYRING_RESULT_OK;
+		else
+			res = GNOME_KEYRING_RESULT_DENIED;
+		gnome_keyring_proto_add_uint32 (result, res);
 	} 
 
  out:
@@ -1243,9 +1203,9 @@ op_change_keyring_password (GkrBuffer *packet, GkrBuffer *result,
 		goto out;
 	}
 	
-	lock_keyring (keyring);
+	gkr_keyring_lock (keyring);
 	
-	if (unlock_keyring (keyring, original) != GNOME_KEYRING_RESULT_OK) {
+	if (!gkr_keyring_unlock (keyring, original)) {
 		gnome_keyring_proto_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
 	}

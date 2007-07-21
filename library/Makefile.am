@@ -11,7 +11,7 @@ INCLUDES=	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
-	$(GTK_CFLAGS) 					\
+	$(LIBRARY_CFLAGS)				\
 	$(GLIB_CFLAGS)
 
 libgnome_keyring_common_la_SOURCES = \
@@ -23,6 +23,7 @@ libgnome_keyring_common_la_SOURCES = \
 	gnome-keyring-memory.c 
 
 libgnome_keyring_common_la_LIBADD = \
+	$(LIBRARY_LIBS) \
 	$(GLIB_LIBS)
 
 libgnome_keyring_la_SOURCES = \
