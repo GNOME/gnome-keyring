@@ -1,5 +1,12 @@
 2007-07-21  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gnome-keyring-daemon.c:
+	* pam/gkr-pam-module.c: Make the 'input password' argument even
+	more scary. It's an interim implementation for 2.19 and 2.20 
+	releases only.
+
+2007-07-21  Stef Walter  <stef@memberwebs.com>
+
 	* pam/gkr-pam-module.c: Don't use pid file to mark running 
 	gnome-keyring-daemon process. This causes problems with 
 	multiple logins.

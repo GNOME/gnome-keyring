@@ -376,7 +376,8 @@ read_delete_pid (struct passwd *pwd)
 static void
 setup_child (int inp[2], int outp[2], int errp[2], struct passwd *pwd)
 {
-	char *args[] = { GNOME_KEYRING_DAEMON, "-d",  "--unsupported-magic", NULL};
+	char *args[] = { GNOME_KEYRING_DAEMON, "-d",  
+	                 "--unsupported-version-specific-magic", NULL};
 	
 	assert (pwd);
 	assert (pwd->pw_dir);

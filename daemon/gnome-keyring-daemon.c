@@ -253,7 +253,7 @@ main (int argc, char *argv[])
 				daemon = TRUE;
 				
 			/* TODO: This needs work */
-			if (strcmp (argv[i], "--unsupported-magic") == 0)
+			if (strcmp (argv[i], "--unsupported-version-specific-magic") == 0)
 				input_unlock = TRUE;
 		}
 	}
