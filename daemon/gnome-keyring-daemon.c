@@ -282,14 +282,12 @@ main (int argc, char *argv[])
 						/* This is where we know the pid of the daemon.
 						 * The initial process will waitpid until we exit,
 						 * so there is no race */
-						g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
-						g_print ("GNOME_KEYRING_PID=%d\n", (gint)pid);
+						printf ("GNOME_KEYRING_SOCKET=%s\n", path);
+						printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
 						exit (0);
 					}
 				}
 			}
-			
-			close_stdinout ();
 			
 			/* final child continues here */
 		} else {
@@ -300,12 +298,12 @@ main (int argc, char *argv[])
 					exit (1);
 				}
 				waitpid (pid, &status, 0);
-				if (status != 0) {
-					exit (status);
+				if (WEXITSTATUS (status) != 0) {
+					exit (WEXITSTATUS (status));
 				}
 			} else {
-				g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
-				g_print ("GNOME_KEYRING_PID=%d\n", (gint)pid);
+				printf ("GNOME_KEYRING_SOCKET=%s\n", path);
+				printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
 			}
 			
 			exit (0);
