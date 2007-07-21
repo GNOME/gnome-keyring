@@ -76,6 +76,7 @@ enum {
 #define  STDOUT  1
 #define  STDERR  2
 
+/* Linux/BSD compatibility */
 #ifndef PAM_AUTHTOK_RECOVERY_ERR
 #define PAM_AUTHTOK_RECOVERY_ERR PAM_AUTHTOK_RECOVER_ERR
 #endif
@@ -84,7 +85,6 @@ enum {
  * HELPERS 
  */
  
-
 static void
 close_safe (int fd)
 {
@@ -127,6 +127,7 @@ foreach_line (char *lines, line_cb cb, void *arg)
 	
 	assert (lines);
 	
+	/* Call cb for each line in the text block */
 	while ((line = strsep (&lines, "\n")) != NULL) {
 		 ret = (cb) (line, arg);
 		 if (ret != PAM_SUCCESS)
@@ -430,7 +431,12 @@ static int
 log_problem (char *line, void *arg)
 {
 	int *failed;
-	
+
+	/* 
+	 * Called for each stderr output line from the daemon.
+	 * Send it all to the log. 
+	 */
+		
 	assert (line);
 	assert (arg);
 	
@@ -446,15 +452,19 @@ setup_environment (char *line, void *arg)
 	char *x;
 	int ret;
 	
+	/* 
+	 * Called for each stdout output line from the daemon
+	 * presumably environment variables.
+	 */
+	
 	assert (line);
 	assert (arg);
 	
+	/* Make sure it is in fact an environment variable */
 	if (!strchr (line, '='))
 		return PAM_SUCCESS;
 			
-	/* Trim the start and end of the line */
 	line = strbtrim (line);
-	
 	ret = pam_putenv (ph, line);
 	
 	/* If it's the PID line then we're interested in it */
@@ -484,7 +494,11 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	assert (pwd);
 	assert (password);
 
-	/* Make sure that SIGCHLD occurs */
+	/* 
+	 * Make sure that SIGCHLD occurs. Otherwise our waitpid below
+	 * doesn't work properly. We need to wait on the process to 
+	 * get the daemon exit status.
+	 */
 	memset (&defsact, 0, sizeof (defsact));
 	memset (&oldsact, 0, sizeof (oldsact));
 	defsact.sa_handler = SIG_DFL;
@@ -497,7 +511,7 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	    	goto done;
 	}
 
-
+	/* Start up daemon child process */
 	switch (pid = fork ()) {
 	case -1:
 		syslog (GKR_LOG_ERR, "gkr-pam: couldn't fork: %s", 
@@ -522,8 +536,8 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	inp[READ_END] = outp[WRITE_END] = errp[WRITE_END] = -1; 
 	
 	/* 
-	 * Note that we're not using select or any such. We know how the daemon
-	 * expects and processes data.
+	 * Note that we're not using select() or any such. We know how the 
+	 * daemon expects and sends its data.
 	 */
 	 
 	/* Send the password */
@@ -570,7 +584,6 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 		goto done;
 	}
 		
-	/* Yay, all done */
 	ret = foreach_line (output, setup_environment, ph);
 
 #if USE_PID_FILE
@@ -602,18 +615,15 @@ done:
 static int
 stop_daemon (pam_handle_t *ph, struct passwd *pwd, void *unused)
 {
-	const char *spid;
+	const char *spid = NULL;
 	char *apid = NULL;
 	pid_t pid;
 	
 	assert (pwd);
 
-	/* Try and read it from the pam handle */
-	spid = NULL;
 	pam_get_data (ph, "gkr-pam-pid", (const void**)&spid);
 	
 #if USE_PID_FILE
-	/* Read and delete the pid file */
 	apid = read_delete_pid (pwd);
 	if (!spid)
 		spid = apid;
@@ -682,14 +692,13 @@ prompt_password (pam_handle_t *ph)
 	if (ret != PAM_SUCCESS)
 		return ret;
 	
-	/* Yay the password */	
 	password = resp[0].resp;
 	free (resp);
 	
 	if (password == NULL) 
 		return PAM_CONV_ERR;
 		
-	/* Store it away */
+	/* Store it away for later use */
 	ret = pam_set_item (ph, PAM_AUTHTOK, password);
 	free_password (password);
 
@@ -713,6 +722,7 @@ run_as_user (pam_handle_t *ph, struct passwd *pwd, action_func func, void *arg)
 	egid = getegid ();
 	euid = geteuid ();
 	
+	/* Change effective UID as specified user */
 	if (setegid (pwd->pw_gid) < 0 || seteuid (pwd->pw_uid) < 0) {
 	    	syslog (GKR_LOG_ERR, "couldn't change to user credentials: %s: %s",
 	    	        pwd->pw_name, strerror (errno));
