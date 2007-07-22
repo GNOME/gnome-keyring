@@ -177,7 +177,6 @@ async_worker_thread (gpointer data)
 	
 	g_assert (worker);
 	g_assert (worker->func);
-	g_assert (worker->thread == g_thread_self ());
 
 	/* The marks this as a worker thread, setup async calls to main thread */
 	g_assert (g_static_private_get (&thread_private) == NULL);

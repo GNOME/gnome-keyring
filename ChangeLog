@@ -1,3 +1,7 @@
+2007-07-22  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-async.c: Fix race condition.
+	
 2007-07-21  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gnome-keyring-daemon.c:
