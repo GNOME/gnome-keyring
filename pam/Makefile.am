@@ -6,8 +6,14 @@ INCLUDES = \
 lib_LTLIBRARIES = pam_gnome_keyring.la
 
 pam_gnome_keyring_la_SOURCES = \
-	gkr-pam-module.c
+	gkr-pam.h \
+	gkr-pam-client.c \
+	gkr-pam-module.c \
+	gkr-pam-stubs.c
 
+pam_gnome_keyring_la_LIBADD = \
+	$(top_builddir)/common/libgkr-module-common.la
+	
 pam_gnome_keyring_la_LDFLAGS = -module -avoid-version
 
 install-pam: install

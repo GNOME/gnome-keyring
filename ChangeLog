@@ -1,5 +1,21 @@
 2007-07-22  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gnome-keyring-daemon.c:
+	* library/gnome-keyring.h:
+	* library/gnome-kerying-opcodes.h: (added)
+	* library/gnome-keyring-proto.h:
+	* library/gnome-keyring-result.h: (added)
+	* pam/gkr-pam.h: (added)
+	* pam/gkr-pam-client.c: (added)
+	* pam/gkr-pam-module.c:
+	* pam/gkr-pam-stubs.c: (added)
+	* pam/Makefile.am: Now uses the 'login' keyring instead of the 
+	default. Added support for unlocking an already running  keyring. 
+	Fixes bug #459071. Added initial support for changing passwords on the 
+	'login' keyring. See bug #459069
+	
+2007-07-22  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-async.c: Fix race condition.
 	
 2007-07-21  Stef Walter  <stef@memberwebs.com>

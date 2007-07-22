@@ -15,6 +15,7 @@ INCLUDES=	\
 	$(GLIB_CFLAGS)
 
 libgnome_keyring_common_la_SOURCES = \
+	gnome-keyring-opcodes.h \
 	gnome-keyring-private.h \
 	gnome-keyring-proto.c \
 	gnome-keyring-proto.h \
@@ -28,11 +29,13 @@ libgnome_keyring_common_la_LIBADD = \
 
 libgnome_keyring_la_SOURCES = \
 	gnome-keyring.c \
-	gnome-keyring.h
+	gnome-keyring.h \
+	gnome-keyring-result.h
 
 libgnomekeyringinclude_HEADERS = \
 	gnome-keyring.h \
-	gnome-keyring-memory.h
+	gnome-keyring-memory.h \
+	gnome-keyring-result.h
 
 libgnome_keyring_la_LIBADD = \
 	libgnome-keyring-common.la \

@@ -171,48 +171,17 @@ lifetime_slave_pipe_io (GIOChannel  *channel,
         _exit (2);
 }
 
-static gchar*
-read_input_main_passwd (void)
-{
-	gchar *passwd, *at;
-	gsize len = 1024;
-	int r;
-
-	len = 1024;	
-	passwd = at = gnome_keyring_memory_alloc (len);
-		
-	len--; /* guarantee a null terminator */
-	while (len > 0) {
-		r = read (0, at, len);
-		if (r < 0) {
-			if (errno == EAGAIN || errno == EINTR)
-				continue;
-			g_warning ("couldn't read main password from input: %s",
-			           g_strerror (errno));
-		} 
-		if (r == 0)
-			break;
-		at += r;
-		len -= r;
-	}
-	
-	return passwd;
-}
-
 int
 main (int argc, char *argv[])
 {
 	const char *path;
-	char *main_passwd;
 	char *fd_str;
 	int fd;
 	pid_t pid;
 	gboolean foreground;
 	gboolean daemon;
-	gboolean input_unlock;
 	GIOChannel *channel;
 	GMainContext *ctx;
-	GkrKeyring *keyring;
 	int i;
 	
 	g_type_init ();
@@ -243,7 +212,6 @@ main (int argc, char *argv[])
 
 	foreground = FALSE;
 	daemon = FALSE;
-	input_unlock = FALSE;
 
 	if (argc > 1) {
 		for (i = 1; i < argc; i++) {
@@ -251,17 +219,9 @@ main (int argc, char *argv[])
 				foreground = TRUE;
 			if (strcmp (argv[i], "-d") == 0)
 				daemon = TRUE;
-				
-			/* TODO: This needs work */
-			if (strcmp (argv[i], "--unsupported-version-specific-magic") == 0)
-				input_unlock = TRUE;
 		}
 	}
 	
-	/* Read in the password */
-	if (input_unlock)
-		main_passwd = read_input_main_passwd ();
-		
 	if (!foreground) {
 		pid = fork ();
 		if (pid == 0) {
@@ -349,16 +309,6 @@ main (int argc, char *argv[])
 	gnome_keyring_daemon_dbus_setup (loop, path);
 #endif
 
-	/* Unlock the main keyring if so desired */
-	if (input_unlock) {
-		keyring = gkr_keyrings_get_default ();
-		if (!keyring)
-			g_message ("no default keyring to unlock");
-		else if (!gkr_keyring_unlock (keyring, main_passwd))
-			g_message ("couldn't unlock default keyring with user password");
-		gnome_keyring_free_password (main_passwd);
-	}
-	
 	g_main_loop_run (loop);
 
 	/* Make sure no other threads are running */

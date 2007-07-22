@@ -29,6 +29,11 @@
 
 #include "config.h"
 
+#include "gkr-pam.h"
+
+#include "library/gnome-keyring-result.h"
+#include "library/gnome-keyring-opcodes.h"
+
 #include <security/pam_modules.h>
 
 #include <sys/types.h>
@@ -48,21 +53,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
-#define USE_PID_FILE 0
-
-#if USE_PID_FILE
-/* Although this starts with a slash, it is relative to the home dir */
-#define HOME_PID_LOCATION	"/.gnome2/keyrings/run/pam-gnome-keyring.pid"
-#endif
-
-enum {
-	FLAG_DEBUG =     0x0100,
-	FLAG_TRY_FIRST = 0x0100,
-	FLAG_USE_FIRST = 0x0200
-};
-
-#define GKR_LOG_ERR   (LOG_ERR | LOG_AUTHPRIV)
-#define GKR_LOG_WARN  (LOG_WARNING | LOG_AUTHPRIV)
+#define LOGIN_KEYRING		"login"
 
 #define ENV_SOCKET 		"GNOME_KEYRING_SOCKET"
 #define ENV_PID    		"GNOME_KEYRING_PID"
@@ -137,51 +128,6 @@ foreach_line (char *lines, line_cb cb, void *arg)
 	return PAM_SUCCESS;
 }
 
-#if USE_PID_FILE
-
-static int
-mkdir_parents (const char *file)
-{
-	struct stat st;
-	const char *pos;
-	char *path;
-	int ret = -1;
-	
-	assert (file);
-	
-	path = malloc (strlen (file) + 1);
-	if (!path) {
-		errno = ENOMEM;
-		return -1;
-	}
-	
-	path[0] = 0;
-	for (;;) {
-	
-		pos = strchr (file, '/');
-		if (!pos) {
-			ret = 0;
-			break;
-		}
-	
-		strncat (path, file, pos - file);
-		if (path[0] && stat (path, &st) < 0) {
-			if (errno != ENOENT && errno != ENOTDIR)
-				break;
-			if (mkdir (path, 0700) < 0)
-				break;
-		}
-			
-		file = pos + 1;
-		strcat (path, "/");
-	}
-	
-	free (path);
-	return ret;
-}
-
-#endif /* USE_PID_FILE */
-
 static char*
 read_all (int fd)
 {
@@ -218,41 +164,6 @@ read_all (int fd)
 	return ret;
 }
 
-static int
-write_all (int fd, const char *data)
-{
-	struct sigaction ignoresact, oldsact;
-	int len, all, r;
-	
-	assert (data);
-	
-	memset (&ignoresact, 0, sizeof (ignoresact));
-	memset (&oldsact, 0, sizeof (oldsact));
-	ignoresact.sa_handler = SIG_IGN;
-	
-	all = len = strlen (data);
-
-	/* Don't let SIGPIPE occur */
-	if (sigaction (SIGPIPE, &ignoresact, &oldsact) < 0)
-		return -1;
-
-	while (len > 0) {
-		r = write (fd, data, len);
-		if (r < 0) {
-			if (errno == EAGAIN) 
-				continue;
-			return -1;
-		}
-		data += r;
-		len -= r;
-	}
-			
-	/* Restore old handler */
-	sigaction (SIGPIPE, &oldsact, NULL);
-	
-	return all;
-}
-
 /* -----------------------------------------------------------------------------
  * DAEMON MANAGEMENT 
  */
@@ -279,113 +190,46 @@ setup_pam_env (pam_handle_t *ph, const char *name, const char *val)
 	return ret;
 }
 
+static const char*
+get_any_env (pam_handle_t *ph, const char *name)
+{
+	const char *env;
+	
+	assert (name);
+	
+	/* We only return non-empty variables */
+	
+	/* 
+	 * Some PAMs decide to strdup the return value, not sure 
+	 * how we can detect this.
+	 */
+	env = pam_getenv (ph, name);
+	if (env && env[0]) 
+		return env;
+		
+	env = getenv (name);
+	if (env && env[0])
+		return env;
+		
+	return NULL;
+}
+
 static void
 cleanup_free (pam_handle_t *ph, void *data, int pam_end_status)
 {
 	free_safe (data);
 }
 
-#if USE_PID_FILE
 static void
-write_create_pid (struct passwd *pwd, const char *spid)
+setup_child (int outp[2], int errp[2], struct passwd *pwd)
 {
-	char *path;
-	int fd, r;
-	
-	assert (pwd);
-	assert (pwd->pw_dir);
-	assert (spid);
-	
-	/* All strings strcat'd below must fit in 1024 */
-	path = malloc (strlen (HOME_PID_LOCATION) + strlen (pwd->pw_dir) + 1);
-	if (!path) {
-		syslog (GKR_LOG_ERR, "gkr-pam: out of memory");
-		return;
-	}
-	
-	strcpy (path, pwd->pw_dir);
-	strcat (path, HOME_PID_LOCATION);
-	
-	if (mkdir_parents (path) < 0) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't create directory");
-		free (path);
-		return;
-	}
-
-	fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-	if (fd == -1) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't open pid file: %s: %s", 
-		        path, strerror (errno));
-
-	} else {
-		r = write_all (fd, spid);
-		close (fd);
-	
-		if (r < 0) {
-			syslog (GKR_LOG_ERR, "gkr-pam: couldn't write to pid file: %s: %s",
-		        	path, strerror (errno));
-		}
-	}
-	
-	free (path);
-}
-
-static char*
-read_delete_pid (struct passwd *pwd)
-{
-	char *spid = NULL;
-	char *path;
-	int fd;
-	
-	assert (pwd);
-	assert (pwd->pw_dir);
-	
-	path = malloc (strlen (HOME_PID_LOCATION) + strlen (pwd->pw_dir) + 1);
-	if (!path) {
-		syslog (GKR_LOG_ERR, "gkr-pam: out of memory");
-		return NULL;
-	}
-	
-	strcpy (path, pwd->pw_dir);
-	strcat (path, HOME_PID_LOCATION);
-	
-	fd = open (path, O_RDONLY);
-	if (fd == -1) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't open pid file: %s: %s",
-		        path, strerror (errno));
-	
-	} else {
-		
-		spid = read_all (fd);
-		if (!spid) {
-			syslog (GKR_LOG_ERR, "gkr-pam: couldn't read pid file: %s: %s",
-			        path, strerror (errno));
-		}
-		
-		close (fd);
-		
-		/* Delete the file now that we no longer need it */
-		unlink (path);
-	}
-	
-	free (path);
-	return spid;
-}
-
-#endif /* USE_PID_FILE */
-
-static void
-setup_child (int inp[2], int outp[2], int errp[2], struct passwd *pwd)
-{
-	char *args[] = { GNOME_KEYRING_DAEMON, "-d",  
-	                 "--unsupported-version-specific-magic", NULL};
+	char *args[] = { GNOME_KEYRING_DAEMON, "-d", NULL};
 	
 	assert (pwd);
 	assert (pwd->pw_dir);
 	
 	/* Fix up our end of the pipes */
-	if (dup2 (inp[READ_END], STDIN) < 0 || 
-	    dup2 (outp[WRITE_END], STDOUT) < 0 || 
+	if (dup2 (outp[WRITE_END], STDOUT) < 0 || 
 	    dup2 (errp[WRITE_END], STDERR) < 0) {
 	    	syslog (GKR_LOG_ERR, "gkr-pam: couldn't setup pipes: %s",
 		        strerror (errno));
@@ -393,8 +237,6 @@ setup_child (int inp[2], int outp[2], int errp[2], struct passwd *pwd)
 	}
 	    
 	/* Close unnecessary file descriptors */
-	close (inp[READ_END]);
-	close (inp[WRITE_END]);
 	close (outp[READ_END]);
 	close (outp[WRITE_END]);
 	close (errp[READ_END]);
@@ -478,11 +320,9 @@ setup_environment (char *line, void *arg)
 }
 
 static int
-start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
+start_daemon (pam_handle_t *ph, struct passwd *pwd)
 {
 	struct sigaction defsact, oldsact;
-	const char *password = (const char*)arg;
-	int inp[2] = { -1, -1 };
 	int outp[2] = { -1, -1 };
 	int errp[2] = { -1, -1 };
 	int ret = PAM_SERVICE_ERR;
@@ -492,7 +332,6 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	int failed, status;
 	
 	assert (pwd);
-	assert (password);
 
 	/* 
 	 * Make sure that SIGCHLD occurs. Otherwise our waitpid below
@@ -505,7 +344,7 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	sigaction (SIGCHLD, &defsact, &oldsact);
 	
 	/* Create the necessary pipes */
-	if (pipe (inp) < 0 || pipe (outp) < 0 || pipe (errp) < 0) {
+	if (pipe (outp) < 0 || pipe (errp) < 0) {
 	    	syslog (GKR_LOG_ERR, "gkr-pam: couldn't create pipes: %s", 
 	    	        strerror (errno));
 	    	goto done;
@@ -520,7 +359,7 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 		
 	/* This is the child */
 	case 0:
-		setup_child (inp, outp, errp, pwd);
+		setup_child (outp, errp, pwd);
 		/* Should never be reached */
 		break;
 		
@@ -530,43 +369,24 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 	};
 	
 	/* Close our unneeded ends of the pipes */
-	close (inp[READ_END]);
 	close (outp[WRITE_END]);
 	close (errp[WRITE_END]);
-	inp[READ_END] = outp[WRITE_END] = errp[WRITE_END] = -1; 
+	outp[WRITE_END] = errp[WRITE_END] = -1; 
 	
 	/* 
 	 * Note that we're not using select() or any such. We know how the 
-	 * daemon expects and sends its data.
+	 * daemon sends its data.
 	 */
-	 
-	/* Send the password */
-	if (write_all (inp[WRITE_END], password) < 0) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't write password to gnome-keyring-daemon: %s", 
-		        strerror (errno));
-		goto done;
-	}
-	
-	/* Tell daemon that's the end of the password */
-	close (inp[WRITE_END]);
-	inp[WRITE_END] = -1;
-	
-	/* Read any stdout data */
+
+	/* Read any stdout and stderr data */
 	output = read_all (outp[READ_END]);
-	if (!output) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't read environment variables from gnome-keyring-daemon: %s", 
+	outerr = read_all (errp[READ_END]);
+	if (!output || !outerr) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't read data from gnome-keyring-daemon: %s", 
 		        strerror (errno));
 		goto done;
 	}
 
-	/* Read any stderr data */
-	outerr = read_all (errp[READ_END]);
-	if (!outerr) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't read environment variables from gnome-keyring-daemon: %s", 
-		        strerror (errno));
-		goto done;
-	}
-	
 	/* Wait for the initial process to exit */
 	if (waitpid (pid, &status, 0) < 0) {
 		syslog (GKR_LOG_ERR, "gkr-pam: couldn't wait on gnome-keyring-daemon process: %s",
@@ -586,21 +406,10 @@ start_unlock_daemon (pam_handle_t *ph, struct passwd *pwd, void *arg)
 		
 	ret = foreach_line (output, setup_environment, ph);
 
-#if USE_PID_FILE
-	{
-		const char *spid;
-		/* Store this away in in the user's home directory if possible */
-		if (pam_get_data (ph, "gkr-pam-pid", (const void**)&spid) == PAM_SUCCESS && spid)
-			write_create_pid (pwd, spid);
-	}
-#endif
-
 done:
 	/* Restore old handler */
 	sigaction (SIGCHLD, &oldsact, NULL);
 	
-	close_safe (inp[0]);
-	close_safe (inp[1]);
 	close_safe (outp[0]);
 	close_safe (outp[1]);
 	close_safe (errp[0]);
@@ -613,7 +422,31 @@ done:
 }
 
 static int
-stop_daemon (pam_handle_t *ph, struct passwd *pwd, void *unused)
+start_daemon_if_necessary (pam_handle_t *ph, struct passwd *pwd)
+{
+	const char *socket;
+	int ret;
+	
+	/* See if it's already running, and transfer env variables */
+	socket = get_any_env (ph, ENV_SOCKET);
+	if (socket) {
+		ret = setup_pam_env (ph, ENV_SOCKET, socket);
+		if (ret != PAM_SUCCESS) {
+			syslog (GKR_LOG_ERR, "gkr-pam: couldn't set environment variables: %s",
+			        pam_strerror (ph, ret));
+			return ret;
+		}
+		
+		/* Daemon is already running */
+		return PAM_SUCCESS;
+	}		
+
+	/* Not running, start process */
+	return start_daemon (ph, pwd);
+}
+
+static int
+stop_daemon (pam_handle_t *ph, struct passwd *pwd)
 {
 	const char *spid = NULL;
 	char *apid = NULL;
@@ -623,12 +456,6 @@ stop_daemon (pam_handle_t *ph, struct passwd *pwd, void *unused)
 
 	pam_get_data (ph, "gkr-pam-pid", (const void**)&spid);
 	
-#if USE_PID_FILE
-	apid = read_delete_pid (pwd);
-	if (!spid)
-		spid = apid;
-#endif
-
 	/* 
 	 * No pid, no worries, maybe we didn't start gnome-keyring-daemon
 	 * Or this the calling (PAM using) application is hopeless and 
@@ -651,11 +478,91 @@ stop_daemon (pam_handle_t *ph, struct passwd *pwd, void *unused)
     		        (int)pid, strerror (errno));
     		goto done;
     	}    		
-	
+
 done:
 	free_safe (apid);
 	
 	/* Don't bother user when daemon can't be stopped */
+	return PAM_SUCCESS;
+}
+
+static int
+unlock_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
+{
+	const char *socket;
+	GnomeKeyringResult res;
+	const char *argv[2];
+	
+	assert (pwd);
+	assert (password);
+	
+	socket = get_any_env (ph, ENV_SOCKET);
+	if (!socket) {
+		syslog (GKR_LOG_WARN, "gkr-pam: couldn't unlock '%s' keyring: %s", 
+		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
+		return PAM_SERVICE_ERR;
+	}
+	
+	argv[0] = LOGIN_KEYRING;
+	argv[1] = password;
+	
+	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_UNLOCK_KEYRING, 2, argv);
+
+	/* 'login' keyring doesn't exist, create it */
+	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
+		syslog (GKR_LOG_WARN, "gkr-pam: '%s' keyring does not exist, creating", LOGIN_KEYRING); 
+		res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
+	}
+
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't create '%s' keyring: %d", LOGIN_KEYRING, res);
+		return PAM_SERVICE_ERR;
+	}
+	
+	return PAM_SUCCESS;
+}
+
+static int
+change_password_daemon (pam_handle_t *ph, struct passwd *pwd, 
+                        const char *password, const char *original)
+{
+	const char *socket;
+	GnomeKeyringResult res;
+	const char *argv[2];
+	
+	assert (pwd);
+	assert (password);
+	
+	socket = get_any_env (ph, ENV_SOCKET);
+	if (!socket) {
+		syslog (GKR_LOG_WARN, "gkr-pam: couldn't change password on '%s' keyring: %s", 
+		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
+		return PAM_SERVICE_ERR;
+	}
+	
+	argv[0] = LOGIN_KEYRING;
+	argv[1] = password;
+	argv[2] = original;	
+	
+	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
+	
+	/* Wrong original password, try again prompting the user */
+	if (res == GNOME_KEYRING_RESULT_DENIED && original != NULL) {
+		syslog (GKR_LOG_WARN, "gkr-pam: original password was wrong for '%s' keyring, prompting", LOGIN_KEYRING);
+		argv[2] = NULL; 
+		res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
+		
+	/* 'login' keyring doesn't exist, create it */
+	} else if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
+		syslog (GKR_LOG_WARN, "gkr-pam: '%s' keyring does not exist, creating", LOGIN_KEYRING); 
+		res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
+	}
+
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't change password for '%s' keyring: %d", LOGIN_KEYRING, res);
+		return PAM_SERVICE_ERR;
+	}
+	
 	return PAM_SUCCESS;
 }
  
@@ -708,64 +615,13 @@ prompt_password (pam_handle_t *ph)
 	return ret;
 }
 
-typedef int (*action_func) (pam_handle_t *ph, struct passwd *pwd, void *arg);
-
-static int
-run_as_user (pam_handle_t *ph, struct passwd *pwd, action_func func, void *arg)
-{
-	uid_t egid, euid;
-	int ret;
-	
-	assert (pwd);
-	assert (func);
-	
-	egid = getegid ();
-	euid = geteuid ();
-	
-	/* Change effective UID as specified user */
-	if (setegid (pwd->pw_gid) < 0 || seteuid (pwd->pw_uid) < 0) {
-	    	syslog (GKR_LOG_ERR, "couldn't change to user credentials: %s: %s",
-	    	        pwd->pw_name, strerror (errno));
-	    	        
-		/* Try our best to switch back */
-		seteuid (euid);
-		setegid (egid);
-		return PAM_SYSTEM_ERR;
-	}
-		
-	/* Run the action */
-	ret = (func) (ph, pwd, arg);
-	
-	/* Switch back */
-	if (seteuid (euid) < 0 || setegid (egid) < 0) {
-		syslog (GKR_LOG_ERR, "couldn't revert from user credentials: %s: %s", 
-		        pwd->pw_name, strerror (errno));
-		return PAM_SYSTEM_ERR;
-	}
-
-	return ret;
-} 
-	
 PAM_EXTERN int
 pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 {
-	uint args = 0;
 	struct passwd *pwd;
-	const char *user, *password, *env;
+	const char *user, *password;
 	int ret;
 		
-	/* Parse the arguments */
-	for (; argc-- > 0; ++argv) {
-		if (strcasecmp (argv[0], "debug") == 0)
-			args |= FLAG_DEBUG;
-		else if (strcasecmp (argv[0], "use_first_pass") == 0)
-			args |= FLAG_USE_FIRST;
-		else if (strcasecmp (argv[0], "try_first_pass") == 0)
-			args |= FLAG_TRY_FIRST;
-		else
-			syslog (GKR_LOG_WARN, "gkr-pam: invalid option: %s", argv[0]);
-	}
-	
 	/* Figure out and/or prompt for the user name */
 	ret = pam_get_user (ph, &user, NULL);
 	if (ret != PAM_SUCCESS) {
@@ -780,60 +636,33 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 		return PAM_SERVICE_ERR;
 	}
 		
-	/* Prompt for a password if necessary */
-	if (!(args & FLAG_TRY_FIRST) && !(args & FLAG_USE_FIRST)) {
+	/* Look up the password */
+	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
+	if (ret != PAM_SUCCESS || password == NULL) {
 		ret = prompt_password (ph);
 		if (ret != PAM_SUCCESS) {
-			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s",
+			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
 			        pam_strerror (ph, ret));
 			return PAM_AUTH_ERR;
 		}
-	}
-	
-	/* Now look up the password */
-	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
-	if (ret != PAM_SUCCESS || password == NULL) {
-		if (!(args & FLAG_TRY_FIRST)) {
-			ret = prompt_password (ph);
-			if (ret != PAM_SUCCESS) {
-				syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
-				        pam_strerror (ph, ret));
-				return PAM_AUTH_ERR;
-			}
-			ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
-		} 
+		ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
 		if (ret != PAM_SUCCESS || password == NULL) {
 			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
 			        ret == PAM_SUCCESS ? "password was null" : pam_strerror (ph, ret));
 			return PAM_AUTHTOK_RECOVERY_ERR;
 		}
 	}
-	
-	/* See if it's already running, and transfer env variables */
-	env = getenv (ENV_SOCKET);
-	if (env && env[0]) {
-		ret = setup_pam_env (ph, ENV_SOCKET, env);
-		if (ret == PAM_SUCCESS) {
-			env = getenv (ENV_PID);
-			if (env && env[0])
-				ret = setup_pam_env (ph, ENV_PID, env);
-		}
-		
-		if (ret != PAM_SUCCESS) {
-			syslog (GKR_LOG_ERR, "gkr-pam: couldn't set environment variables: %s",
-			        pam_strerror (ph, ret));
-			return ret;
-		}
-			 
-		syslog (GKR_LOG_WARN, "gkr-pam: gnome-keyring-daemon already running");
-		return PAM_SUCCESS;
-	}
-	
-	/* Change effective user id for process */
-	ret = run_as_user (ph, pwd, start_unlock_daemon, (void*)password);
+
+
+	/* Should we start the daemon?*/
+	ret = start_daemon_if_necessary (ph, pwd);
 	if (ret != PAM_SUCCESS)
 		return ret;
-	 
+	
+	ret = unlock_daemon (ph, pwd, password);
+	if (ret != PAM_SUCCESS)
+		return ret;
+
 	return PAM_SUCCESS;
 }
 
@@ -863,7 +692,7 @@ pam_sm_close_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 		return PAM_SERVICE_ERR;
 	}
 
-	run_as_user (ph, pwd, stop_daemon, NULL);
+	stop_daemon (ph, pwd);
 	
 	/* Don't bother user when daemon can't be stopped */
 	return PAM_SUCCESS; 
@@ -875,13 +704,98 @@ pam_sm_setcred (pam_handle_t * ph, int flags, int argc, const char **argv)
 	return PAM_SUCCESS;	
 }
 
-#if 0
+static int
+pam_chauthtok_preliminary (pam_handle_t *ph, struct passwd *pwd)
+{
+	int ret;
+	
+	/* 
+	 * If a super-user is changing a user's password then pam_unix.so
+	 * doesn't prompt for the user's current password, which means we 
+	 * won't have access to that password to change the keyring password.
+	 * 
+	 * So we could prompt for the current user's password except that 
+	 * most software is broken in this regard, and doesn't use the 
+	 * prompts properly. 
+	 * 
+	 * In addition how would we verify the user's password? We could 
+	 * verify it against the Gnome Keyring, but if it is mismatched
+	 * from teh UNIX password then that would be super confusing.
+	 * 
+	 * So we opt, just to send NULL along with the change password 
+	 * request and have the user type in their current GNOME Keyring
+	 * password at an explanatory prompt.
+	 */
+
+	ret = start_daemon_if_necessary (ph, pwd);
+	if (ret != PAM_SUCCESS)
+		return ret;
+
+	return PAM_IGNORE;
+}
+
+static int
+pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd)
+{
+	const char *password, *original;
+	int ret;
+	
+	ret = pam_get_item (ph, PAM_OLDAUTHTOK, (const void**)&original);
+	if (ret != PAM_SUCCESS)
+		original = NULL;
+		
+	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
+	if (ret != PAM_SUCCESS)
+		password = NULL;
+		
+	/* No password was entered, prompt for it */
+	if (password == NULL) {
+		ret = prompt_password (ph);
+		if (ret != PAM_SUCCESS) {
+			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
+			        pam_strerror (ph, ret));
+			return PAM_AUTH_ERR;
+		}
+		ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
+		if (ret != PAM_SUCCESS || password == NULL) {
+			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
+			        ret == PAM_SUCCESS ? "password was null" : pam_strerror (ph, ret));
+			return PAM_AUTHTOK_RECOVERY_ERR;
+		}
+	}
+	
+	ret = change_password_daemon (ph, pwd, password, original);
+	if (ret != PAM_SUCCESS)
+		return ret;
+		
+	return PAM_SUCCESS;
+}
 
 PAM_EXTERN int
 pam_sm_chauthtok (pam_handle_t *ph, int flags, int argc, const char **argv)
 {
-	/* TODO: Implement properly */
-	return PAM_SUCCESS;
-}
+	const char *user;
+	struct passwd *pwd;
+	int ret;
+	
+	/* Figure out and/or prompt for the user name */
+	ret = pam_get_user (ph, &user, NULL);
+	if (ret != PAM_SUCCESS) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the user name: %s", 
+		        pam_strerror (ph, ret));
+		return PAM_SERVICE_ERR;
+	}
+	
+	pwd = getpwnam (user);
+	if (!pwd) {
+		syslog (GKR_LOG_ERR, "gkr-pam: error looking up user information for: %s", user);
+		return PAM_SERVICE_ERR;
+	}
 
-#endif
+	if (flags & PAM_PRELIM_CHECK) 
+		return pam_chauthtok_preliminary (ph, pwd);
+	else if (flags & PAM_UPDATE_AUTHTOK)
+		return pam_chauthtok_update (ph, pwd);
+	else 
+		return PAM_IGNORE;
+}
