@@ -1,5 +1,10 @@
 2007-07-22  Stef Walter  <stef@memberwebs.com>
 
+	* keyrings/gkr-keyrings.c: The first keyring automatically becomes
+	the default. This helps the 'login' keyring become default.
+	
+2007-07-22  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon.c:
 	* library/gnome-keyring.h:
 	* library/gnome-kerying-opcodes.h: (added)

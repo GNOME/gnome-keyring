@@ -322,6 +322,13 @@ gkr_keyrings_add (GkrKeyring *keyring)
 	
 	keyrings = g_list_prepend (keyrings, keyring);
 	g_object_ref (keyring);
+	
+	/* 
+	 * The first 'file' based keyring automatically 
+	 * becomes the default 
+	 */
+	if (keyring->file && gkr_keyrings_get_default () == NULL)
+		gkr_keyrings_set_default (keyring);
 }
 
 void 
