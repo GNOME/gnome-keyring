@@ -29,8 +29,9 @@
 #include "library/gnome-keyring-opcodes.h"
 #include "library/gnome-keyring-result.h"
 
-#define GKR_LOG_ERR   (LOG_ERR | LOG_AUTHPRIV)
-#define GKR_LOG_WARN  (LOG_WARNING | LOG_AUTHPRIV)
+#define GKR_LOG_ERR     (LOG_ERR | LOG_AUTHPRIV)
+#define GKR_LOG_WARN    (LOG_WARNING | LOG_AUTHPRIV)
+#define GKR_LOG_NOTICE  (LOG_NOTICE | LOG_AUTHPRIV)
 
 GnomeKeyringResult   gkr_pam_client_run_operation (struct passwd *pwd, const char *socket, 
                                                    GnomeKeyringOpCode op, int argc, const char* argv[]);

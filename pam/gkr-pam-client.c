@@ -282,7 +282,8 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *socket,
 	defchld.sa_handler = SIG_DFL;
 	sigaction (SIGCHLD, &defchld, &oldchld);
 
-	if (pwd->pw_uid == getuid () && pwd->pw_gid == getgid ()) {
+	if (pwd->pw_uid == getuid () && pwd->pw_gid == getgid () && 
+	    pwd->pw_uid == geteuid () && pwd->pw_gid == getegid ()) {
 
 		/* Already running as the right user, simple */
 		res = keyring_daemon_op (socket, op, argc, argv);

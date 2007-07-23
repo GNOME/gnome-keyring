@@ -1,5 +1,12 @@
 2007-07-23  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam.h:
+	* pam/gkr-pam-client.c:
+	* pam/gkr-pam-module.c: Fix bugs with changing passwords via 
+	/usr/bin/passwd
+	
+2007-07-23  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gnome-keyring-daemon.c:
 	* daemon/gnome-keyring-daemon-ops.c:
 	* keyrings/gkr-keyring.c:

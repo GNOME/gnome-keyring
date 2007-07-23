@@ -510,7 +510,7 @@ unlock_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
 
 	/* 'login' keyring doesn't exist, create it */
 	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-		syslog (GKR_LOG_WARN, "gkr-pam: '%s' keyring does not exist, creating", LOGIN_KEYRING); 
+		syslog (GKR_LOG_NOTICE, "gkr-pam: '%s' keyring does not exist, creating", LOGIN_KEYRING); 
 		res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
 	}
 
@@ -528,10 +528,11 @@ change_password_daemon (pam_handle_t *ph, struct passwd *pwd,
 {
 	const char *socket;
 	GnomeKeyringResult res;
-	const char *argv[2];
+	const char *argv[3];
 	
 	assert (pwd);
 	assert (password);
+	assert (original);
 	
 	socket = get_any_env (ph, ENV_SOCKET);
 	if (!socket) {
@@ -541,20 +542,16 @@ change_password_daemon (pam_handle_t *ph, struct passwd *pwd,
 	}
 	
 	argv[0] = LOGIN_KEYRING;
-	argv[1] = password;
-	argv[2] = original;	
+	argv[1] = original;
+	argv[2] = password;	
 	
 	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
-	
-	/* Wrong original password, try again prompting the user */
-	if (res == GNOME_KEYRING_RESULT_DENIED && original != NULL) {
-		syslog (GKR_LOG_WARN, "gkr-pam: original password was wrong for '%s' keyring, prompting", LOGIN_KEYRING);
-		argv[2] = NULL; 
-		res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
+	if (res == GNOME_KEYRING_RESULT_OK) {
+		syslog (GKR_LOG_NOTICE, "gkr-pam: changed password for '%s' keyring", LOGIN_KEYRING);
 		
 	/* 'login' keyring doesn't exist, create it */
 	} else if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-		syslog (GKR_LOG_WARN, "gkr-pam: '%s' keyring does not exist, creating", LOGIN_KEYRING); 
+		syslog (GKR_LOG_NOTICE, "gkr-pam: '%s' keyring does not exist, creating", LOGIN_KEYRING); 
 		res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
 	}
 
@@ -741,8 +738,11 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd)
 	int ret;
 	
 	ret = pam_get_item (ph, PAM_OLDAUTHTOK, (const void**)&original);
-	if (ret != PAM_SUCCESS)
-		original = NULL;
+	if (ret != PAM_SUCCESS || original == NULL) {
+		syslog (GKR_LOG_WARN, "gkr-pam: couldn't update the '%s' keyring password: %s", 
+		        LOGIN_KEYRING, "no old password was entered");
+		return PAM_IGNORE;
+	}
 		
 	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
 	if (ret != PAM_SUCCESS)
