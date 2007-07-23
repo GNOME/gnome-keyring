@@ -83,6 +83,11 @@ GkrKeyringItem*    gkr_keyring_item_new         (GkrKeyring* keyring, guint id,
 GkrKeyringItem*    gkr_keyring_item_create      (GkrKeyring* keyring, 
                                                  GnomeKeyringItemType type);
 
+gboolean           gkr_keyring_item_match       (GkrKeyringItem *item, 
+                                                 GnomeKeyringItemType type, 
+                                                 GnomeKeyringAttributeList *attributes, 
+                                                 gboolean match_all);
+                                                 
 G_END_DECLS
 
 #endif /* __GKR_KEYRING_ITEM_H__ */

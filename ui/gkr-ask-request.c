@@ -69,9 +69,10 @@ typedef struct _GkrAskRequestPrivate GkrAskRequestPrivate;
 struct _GkrAskRequestPrivate {
 	GObject* object;
 	
-	gchar* title;
-	gchar* primary;
-	gchar* secondary;
+	gchar *title;
+	gchar *primary;
+	gchar *secondary;
+	gchar *checktext;
 	
 	gboolean completed;
 	guint flags;
@@ -301,6 +302,8 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 		
 		/* First line is the response */
 		if (i == 0) {
+			if (pv->checktext) 
+				ask->checked = g_strrstr (line, "checked") ? TRUE : FALSE;
 			ask->response = atol (line);
 			if (ask->response < GKR_ASK_RESPONSE_ALLOW)
 				break;
@@ -427,6 +430,8 @@ launch_ask_helper (GkrAskRequest *ask)
 	envp[i++] = format_object_markup (pv->object, "ASK_TITLE=", pv->title);
 	envp[i++] = format_object_markup (pv->object, "ASK_PRIMARY=", pv->primary);
 	envp[i++] = format_object_markup (pv->object, "ASK_SECONDARY=", pv->secondary);
+	if (pv->checktext)
+		envp[i++] = g_strdup_printf ("ASK_CHECK=%s", pv->checktext);
 	envp[i++] = g_strdup_printf ("ASK_FLAGS=%d", pv->flags);
 	envp[i++] = NULL;
 
@@ -488,6 +493,7 @@ gkr_ask_request_init (GkrAskRequest *ask)
 	pv->title = g_strdup ("");
 	pv->primary = g_strdup ("");
 	pv->secondary = g_strdup ("");
+	pv->checktext = NULL;
 	
 	/* Use a secure memory buffer */
 	gkr_buffer_init_full (&pv->buffer, 128, gnome_keyring_memory_realloc);
@@ -529,7 +535,8 @@ gkr_ask_request_finalize (GObject *obj)
 	g_free (pv->title);
 	g_free (pv->primary);
 	g_free (pv->secondary);
-	pv->title = pv->primary = pv->secondary = NULL;
+	g_free (pv->checktext);
+	pv->title = pv->primary = pv->secondary = pv->checktext = NULL;
 	
 	g_assert (pv->ask_pid == 0);
 	
@@ -592,6 +599,17 @@ gkr_ask_request_set_secondary (GkrAskRequest *ask, const gchar *secondary)
 	
 	g_free (pv->secondary);
 	pv->secondary = g_strdup (secondary);
+}
+
+void
+gkr_ask_request_set_check_option (GkrAskRequest *ask, const gchar *check_text)
+{
+	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	
+	g_assert (GKR_IS_ASK_REQUEST (ask));
+	
+	g_free (pv->checktext);
+	pv->checktext = g_strdup (check_text);
 }
 
 GObject*

@@ -81,6 +81,7 @@ struct _GkrAskRequest {
 
 	/* Results */
 	GkrAskResponse response;
+	gboolean checked;
 	gchar* original_password;
 	gchar* typed_password;
 };
@@ -100,6 +101,9 @@ GkrAskRequest*     gkr_ask_request_new              (const gchar *title,
 
 void               gkr_ask_request_set_secondary    (GkrAskRequest *ask, 
                                                      const gchar *secondary);
+                                                     
+void               gkr_ask_request_set_check_option (GkrAskRequest *ask,
+                                                     const gchar *check_text);
 
 GObject*           gkr_ask_request_get_object       (GkrAskRequest *ask);
 

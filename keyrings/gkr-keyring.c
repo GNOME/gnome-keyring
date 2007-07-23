@@ -515,7 +515,7 @@ remove_unavailable_item (gpointer key, gpointer dummy, GkrKeyring *keyring)
 	
 	g_assert (GKR_IS_KEYRING (keyring));
 	
-	item = gkr_keyring_find_item (keyring, id);
+	item = gkr_keyring_get_item (keyring, id);
 	if (item)
 		gkr_keyring_remove_item (keyring, item);
 }
@@ -717,7 +717,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 		/* We've seen this id */
 		g_hash_table_remove (checks, GUINT_TO_POINTER (items[i].id));
 		
-		item = gkr_keyring_find_item (keyring, items[i].id);
+		item = gkr_keyring_get_item (keyring, items[i].id);
 		if (item == NULL) {
 			item = gkr_keyring_item_new (keyring, items[i].id, items[i].type);
 			gkr_keyring_add_item (keyring, item);
@@ -982,7 +982,7 @@ gkr_keyring_get_new_id (GkrKeyring *keyring)
 }
 
 GkrKeyringItem*
-gkr_keyring_find_item (GkrKeyring *keyring, guint id)
+gkr_keyring_get_item (GkrKeyring *keyring, guint id)
 {
 	GkrKeyringItem *item;
 	GList *l;
@@ -990,6 +990,22 @@ gkr_keyring_find_item (GkrKeyring *keyring, guint id)
 	for (l = keyring->items; l; l = g_list_next (l)) {
 		item = GKR_KEYRING_ITEM (l->data);
 		if (item->id == id)
+			return item;
+	}
+	
+	return NULL;
+}
+
+GkrKeyringItem*  
+gkr_keyring_find_item (GkrKeyring *keyring, GnomeKeyringItemType type, 
+                       GnomeKeyringAttributeList *attrs)
+{    
+	GkrKeyringItem *item;
+	GList *l;
+	
+	for (l = keyring->items; l; l = g_list_next (l)) {
+		item = GKR_KEYRING_ITEM (l->data);
+		if (gkr_keyring_item_match (item, type, attrs, TRUE))
 			return item;
 	}
 	

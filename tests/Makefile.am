@@ -102,6 +102,7 @@ run_library_test_LDADD = \
 # Propmting tests
 
 UNIT_TESTS_PROMPT = \
+	unit-test-login-prompt.c \
 	unit-test-keyrings-prompt.c \
 	unit-test-daemon-setup.c
 

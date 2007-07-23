@@ -3711,47 +3711,6 @@ find_network_password_callback (GnomeKeyringResult result,
 	return;
 }
 
-/**
- * gnome_keyring_attribute_list_append_string:
- * @attributes: A #GnomeKeyringAttributeList
- * @name: The name of the new attribute
- * @value: The value to store in @attributes
- *
- * Store a key-value-pair with a string value in @attributes.
- */
-void
-gnome_keyring_attribute_list_append_string (GnomeKeyringAttributeList *attributes,
-					    const char *name, const char *value)
-{
-	GnomeKeyringAttribute attribute;
-
-	attribute.name = g_strdup (name);
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = g_strdup (value);
-	
-	g_array_append_val (attributes, attribute);
-}
-
-/**
- * gnome_keyring_attribute_list_append_uint32:
- * @attributes: A #GnomeKeyringAttributeList
- * @name: The name of the new attribute
- * @value: The value to store in @attributes
- *
- * Store a key-value-pair with an unsigned 32bit number value in @attributes.
- */
-void
-gnome_keyring_attribute_list_append_uint32 (GnomeKeyringAttributeList *attributes,
-					    const char *name, guint32 value)
-{
-	GnomeKeyringAttribute attribute;
-	
-	attribute.name = g_strdup (name);
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32;
-	attribute.value.integer = value;
-	g_array_append_val (attributes, attribute);
-}
-
 static GnomeKeyringAttributeList *
 make_attribute_list_for_network_password (const char                            *user,
 					  const char                            *domain,

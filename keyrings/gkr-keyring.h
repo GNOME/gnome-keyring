@@ -88,7 +88,10 @@ GkrKeyring*      gkr_keyring_create             (const gchar* name, const gchar*
 
 guint            gkr_keyring_get_new_id         (GkrKeyring *keyring);
 
-GkrKeyringItem*  gkr_keyring_find_item          (GkrKeyring *keyring, guint id);
+GkrKeyringItem*  gkr_keyring_get_item           (GkrKeyring *keyring, guint id);
+
+GkrKeyringItem*  gkr_keyring_find_item          (GkrKeyring *keyring, GnomeKeyringItemType type, 
+                                                 GnomeKeyringAttributeList *attrs);
 
 void             gkr_keyring_add_item           (GkrKeyring* keyring, GkrKeyringItem* item);
 

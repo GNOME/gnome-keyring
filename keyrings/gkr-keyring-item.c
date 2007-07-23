@@ -23,12 +23,14 @@
 
 #include "config.h"
 
-#include <glib.h>
-
 #include "gkr-keyring-item.h"
 #include "gkr-keyring.h"
 
 #include "library/gnome-keyring-memory.h"
+
+#include <glib.h>
+
+#include <string.h>
 
 enum {
     PROP_0,
@@ -145,4 +147,64 @@ gkr_keyring_item_create (GkrKeyring* keyring, GnomeKeyringItemType type)
 	item->type = type;
 	
 	return item;
+}
+
+gboolean
+gkr_keyring_item_match (GkrKeyringItem *item, GnomeKeyringItemType type, 
+                        GnomeKeyringAttributeList *attributes, gboolean match_all)
+{
+	int i, j;
+	GnomeKeyringAttribute *item_attribute;
+	GnomeKeyringAttribute *attribute;
+	gboolean found;
+	int attributes_matching;
+
+	if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) != (type & GNOME_KEYRING_ITEM_TYPE_MASK))
+		return FALSE;
+
+	attributes_matching = 0;
+	for (i = 0; i < attributes->len; i++) {
+		found = FALSE;
+		attribute = &g_array_index (attributes,
+					    GnomeKeyringAttribute,
+					    i);
+		for (j = 0; j < item->attributes->len; j++) {
+			item_attribute = &g_array_index (item->attributes,
+							 GnomeKeyringAttribute,
+							 j);
+			if (strcmp (attribute->name, item_attribute->name) == 0) {
+				found = TRUE;
+				attributes_matching++;
+				if (attribute->type != item_attribute->type) {
+					return FALSE;
+				}
+				switch (attribute->type) {
+				case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
+					if ((attribute->value.string == NULL || item_attribute->value.string == NULL) && 
+					    attribute->value.string != item_attribute->value.string) {
+						return FALSE;
+					}
+					if (strcmp (attribute->value.string, item_attribute->value.string) != 0) {
+						return FALSE;
+					}
+					break;
+				case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
+					if (attribute->value.integer != item_attribute->value.integer) {
+						return FALSE;
+					}
+					break;
+				default:
+					g_assert_not_reached ();
+				}
+			}
+		}
+		if (!found) {
+			return FALSE;
+		}
+	}
+	if (match_all) {
+		return attributes_matching == attributes->len;
+	}
+	
+	return TRUE;
 }

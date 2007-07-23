@@ -34,6 +34,8 @@ GkrKeyring*     gkr_keyrings_get_default   (void);
 
 void            gkr_keyrings_set_default   (GkrKeyring *keyring);
 
+GkrKeyring*     gkr_keyrings_get_login     (void);
+
 void            gkr_keyrings_add           (GkrKeyring *keyring);
 
 void            gkr_keyrings_remove        (GkrKeyring *keyring);

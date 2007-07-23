@@ -157,6 +157,86 @@ gnome_keyring_application_ref_new_from_pid (pid_t pid)
 	return app_ref;
 }
 
+static void
+save_keyring_password_in_login (GkrKeyring *keyring, const gchar *password)
+{
+	GkrKeyring *login;
+	GnomeKeyringAttributeList *attrs;
+	GkrKeyringItem *item;
+	
+	login = gkr_keyrings_get_login ();
+	if (!login || login->locked)
+		return;
+		
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs, "keyring", keyring->keyring_name);
+		
+	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_AUTO_UNLOCK_KEYRING, attrs);
+	
+	if (!item) {
+		item = gkr_keyring_item_create (login, GNOME_KEYRING_ITEM_AUTO_UNLOCK_KEYRING);
+		gkr_keyring_add_item (login, item);
+	}
+	
+	g_free (item->display_name);
+	/* TRANSLATORS: this is the title for an item */
+	item->display_name = g_strdup_printf (_("Unlock password for %s keyring"), 
+	                                      keyring->keyring_name);
+	gnome_keyring_free_password (item->secret);
+	item->secret = gnome_keyring_memory_strdup (password);
+	
+	gnome_keyring_attribute_list_free (item->attributes);
+	item->attributes = attrs;
+	
+	gkr_keyring_save_to_disk (login);
+}
+
+static const gchar*
+lookup_keyring_password_in_login (GkrKeyring *keyring)
+{
+	GkrKeyring *login;
+	GkrKeyringItem *item;
+	GnomeKeyringAttributeList *attrs;
+	
+	login = gkr_keyrings_get_login ();
+	if (!login || login->locked)
+		return NULL;
+		
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs, "keyring", keyring->keyring_name);
+		
+	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_AUTO_UNLOCK_KEYRING, attrs);
+	gnome_keyring_attribute_list_free (attrs);
+	
+	if (item)
+		return item->secret;
+		
+	return NULL;
+}
+
+static void
+remove_keyring_password_from_login (GkrKeyring *keyring)
+{
+	GkrKeyring *login;
+	GkrKeyringItem *item;
+	GnomeKeyringAttributeList *attrs;
+	
+	login = gkr_keyrings_get_login ();
+	if (!login || login->locked)
+		return;
+		
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs, "keyring", keyring->keyring_name);
+		
+	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_AUTO_UNLOCK_KEYRING, attrs);
+	gnome_keyring_attribute_list_free (attrs);
+	
+	if (item) {
+		gkr_keyring_remove_item (login, item);
+		gkr_keyring_save_to_disk (login);
+	}	
+}
+
 static gboolean
 app_ref_match (GnomeKeyringApplicationRef *app1,
 	       GnomeKeyringApplicationRef *app2)
@@ -243,63 +323,6 @@ add_item_acl (GkrKeyringItem *item,
 						       types_allowed);
 		item->acl = g_list_prepend (item->acl, ac);
 	} 
-}
-
-static gboolean
-match_attributes (GkrKeyringItem *item,
-		  GnomeKeyringAttributeList *attributes,
-		  gboolean match_all)
-{
-	int i, j;
-	GnomeKeyringAttribute *item_attribute;
-	GnomeKeyringAttribute *attribute;
-	gboolean found;
-	int attributes_matching;
-
-	attributes_matching = 0;
-	for (i = 0; i < attributes->len; i++) {
-		found = FALSE;
-		attribute = &g_array_index (attributes,
-					    GnomeKeyringAttribute,
-					    i);
-		for (j = 0; j < item->attributes->len; j++) {
-			item_attribute = &g_array_index (item->attributes,
-							 GnomeKeyringAttribute,
-							 j);
-			if (strcmp (attribute->name, item_attribute->name) == 0) {
-				found = TRUE;
-				attributes_matching++;
-				if (attribute->type != item_attribute->type) {
-					return FALSE;
-				}
-				switch (attribute->type) {
-				case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
-					if ((attribute->value.string == NULL || item_attribute->value.string == NULL) && 
-					    attribute->value.string != item_attribute->value.string) {
-						return FALSE;
-					}
-					if (strcmp (attribute->value.string, item_attribute->value.string) != 0) {
-						return FALSE;
-					}
-					break;
-				case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
-					if (attribute->value.integer != item_attribute->value.integer) {
-						return FALSE;
-					}
-					break;
-				default:
-					g_assert_not_reached ();
-				}
-			}
-		}
-		if (!found) {
-			return FALSE;
-		}
-	}
-	if (match_all) {
-		return attributes_matching == attributes->len;
-	}
-	return TRUE;
 }
 
 static guint 
@@ -434,11 +457,11 @@ static gboolean
 check_keyring_ask_request (GkrAskRequest* ask)
 {
 	GkrKeyring *keyring;
+	const gchar *password;
 	
 	keyring = GKR_KEYRING (gkr_ask_request_get_object (ask));
 	g_assert (GKR_IS_KEYRING (keyring));
-	
-	/* If the keyring is unlocked then no need to continue */
+
 	if (!keyring->locked) {
 		ask->response = GKR_ASK_RESPONSE_ALLOW;
 		return GKR_ASK_STOP_REQUEST;
@@ -448,12 +471,40 @@ check_keyring_ask_request (GkrAskRequest* ask)
 	if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
 		
 		g_assert (ask->typed_password);
-		gkr_keyring_unlock (keyring, ask->typed_password);
-		if (keyring->locked) {
-			/* Not happy, try again */
+		if (!gkr_keyring_unlock (keyring, ask->typed_password)) {
+			/* Bad password, try again */
 			ask->response = GKR_ASK_RESPONSE_NONE;
 			return GKR_ASK_CONTINUE_REQUEST;
 		}
+		
+		/* Did they ask us to remember the password? */
+		if (ask->checked)
+			save_keyring_password_in_login (keyring, ask->typed_password);
+	}
+	
+	/* 
+	 * We can automatically unlock keyrings that have their password
+	 * stored in the 'login' keyring.
+	 */
+	password = lookup_keyring_password_in_login (keyring);
+	if (password) {
+		if (gkr_keyring_unlock (keyring, password)) {
+			
+			/* A good password, unlocked, all done */
+			ask->response = GKR_ASK_RESPONSE_ALLOW;
+			return GKR_ASK_STOP_REQUEST;
+			
+		} else {
+			
+			/* A bad internal password */
+			remove_keyring_password_from_login (keyring);
+		}
+	}	
+
+	/* If the keyring is unlocked then no need to continue */
+	if (!keyring->locked) {
+		ask->response = GKR_ASK_RESPONSE_ALLOW;
+		return GKR_ASK_STOP_REQUEST;
 	}
 	
 	return GKR_ASK_DONT_CARE;
@@ -467,6 +518,7 @@ request_keyring_access (GkrKeyringRequest *req, GkrKeyring *keyring)
 	const gchar *keyring_name;
 	gboolean is_default, ret;
 	gchar *message, *primary;
+	GkrKeyring *login;
 	
 	keyring_name = keyring->keyring_name;
 	g_assert (keyring_name);
@@ -529,6 +581,14 @@ request_keyring_access (GkrKeyringRequest *req, GkrKeyring *keyring)
 	
 	gkr_ask_request_set_secondary (ask, message);
 	gkr_ask_request_set_object (ask, G_OBJECT (keyring));
+	
+	/* 
+	 * If it's not the login keyring, and we have a login keyring, we can offer 
+	 * to unlock automatically next time. 
+	 */
+	login = gkr_keyrings_get_login ();
+	if (login && login != keyring)
+		gkr_ask_request_set_check_option (ask, _("Automatically unlock this kerying when I log in."));
 	
 	/* Intercept item access requests to see if we still need to prompt */
 	g_signal_connect (ask, "check-request", G_CALLBACK (check_keyring_ask_request), NULL);
@@ -818,7 +878,7 @@ lookup_and_request_item_access (GkrKeyringRequest *req, gchar *keyring_name,
 	
 	g_object_ref (keyring);
 	
-	item = gkr_keyring_find_item (keyring, item_id);
+	item = gkr_keyring_get_item (keyring, item_id);
 	if (item != NULL) {
 
 		g_object_ref (item);
@@ -1281,7 +1341,6 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
 	GnomeKeyringResult res;
 	guint32 id;
 	gboolean update_if_exists;
-	GList *l;
 
 	keyring_name = display_name = secret = NULL;
 	item = NULL;
@@ -1331,19 +1390,12 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
 	}
 	
 	if (update_if_exists) {
-		for (l = keyring->items; l; l = g_list_next (l)) {
-			item = GKR_KEYRING_ITEM (l->data);
-			if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) == (type & GNOME_KEYRING_ITEM_TYPE_MASK) &&
-			    match_attributes (item, keyring->locked ? hashed : attributes, TRUE)) {
-							
-				/* Make sure we have access to the previous item */
-				if (!request_item_access (req, item, GNOME_KEYRING_ACCESS_WRITE, TRUE))
-					item = NULL;
-					
-				break;
-			}
+		item = gkr_keyring_find_item (keyring, type, keyring->locked ? hashed : attributes);
+		if (item) {
+			/* Make sure we have access to the previous item */
+			if (!request_item_access (req, item, GNOME_KEYRING_ACCESS_WRITE, TRUE))
+				item = NULL;
 		}
-		
 	}
 
 	if (!item) {
@@ -1770,8 +1822,7 @@ find_in_each_keyring (GkrKeyring* keyring, gpointer data)
 	
 	for (ilist = keyring->items; ilist != NULL; ilist = ilist->next) {
 		item = ilist->data;
-		if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) != (ctx->type & GNOME_KEYRING_ITEM_TYPE_MASK) ||
-		    !match_attributes (item, keyring->locked ? ctx->hashed : ctx->attributes, FALSE))
+		if (!gkr_keyring_item_match (item, ctx->type, keyring->locked ? ctx->hashed : ctx->attributes, FALSE))
 			continue;
 
 		++ctx->nfound;
@@ -1835,8 +1886,7 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 	for (l = ctx.items; l; l = g_list_next (l)) {
 		GkrKeyringItem *item = GKR_KEYRING_ITEM (l->data);
 		
-		if ((item->type & GNOME_KEYRING_ITEM_TYPE_MASK) == (ctx.type & GNOME_KEYRING_ITEM_TYPE_MASK) &&
-	    	    !item->locked && match_attributes (item, ctx.attributes, FALSE)) {
+		if (!item->locked && gkr_keyring_item_match (item, ctx.type, ctx.attributes, FALSE)) {
 			
 			/* Add it to the output */
 			if (!gnome_keyring_proto_add_utf8_string (result, item->keyring->keyring_name)) {

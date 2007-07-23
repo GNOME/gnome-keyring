@@ -105,6 +105,18 @@ update_default (void)
 	g_free (path);
 	g_free (dirname);
 
+	/* 
+	 * We prefer to make the 'login' keyring the default
+	 * keyring when nothing else is setup.
+	 */
+	if (keyring == NULL)
+		keyring = gkr_keyrings_get_login ();
+		
+	/* 
+	 * Otherwise fall back to the 'default' keyring setup 
+	 * if PAM integration is borked, and the user had to 
+	 * create a new keyring.
+	 */
 	if (keyring == NULL)
 		keyring = gkr_keyrings_find ("default");
 	
@@ -213,6 +225,12 @@ gkr_keyrings_set_default (GkrKeyring *keyring)
 	default_keyring = keyring;
 }
 
+GkrKeyring*
+gkr_keyrings_get_login (void)
+{
+	return gkr_keyrings_find ("login");
+}
+
 void
 gkr_keyrings_update (void)
 {
@@ -273,7 +291,7 @@ gkr_keyrings_update (void)
 			keyring = g_hash_table_lookup (checks, path);
 			if (keyring == NULL) {
 				/* Make a new blank keyring and add it */
-				keyring = gkr_keyring_new (NULL, path);
+				keyring = gkr_keyring_new ("", path);
 				gkr_keyrings_add (keyring);
 				g_object_unref (keyring);
 			} else {
@@ -283,7 +301,7 @@ gkr_keyrings_update (void)
 
 			/* Try and update/load it */
 			if (!gkr_keyring_update_from_disk (keyring, FALSE) ||
-			    keyring->keyring_name == NULL) {
+			    !keyring->keyring_name || !keyring->keyring_name[0]) {
 				gkr_keyrings_remove (keyring);
 			} 
 			

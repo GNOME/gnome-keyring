@@ -43,7 +43,6 @@
  */
  
 static GList* keyrings = NULL;
-gchar* default_keyring = NULL;
 
 #define PASSWORD "my-keyring-password"
 #define KEYRING_NAME "unit-test-keyring"
@@ -51,19 +50,32 @@ gchar* default_keyring = NULL;
 #define DISPLAY_NAME "Item Display Name"
 #define SECRET "item-secret"
 
-void unit_test_stash_default (CuTest* cu)
+void unit_test_remove_incomplete (CuTest* cu)
 {
 	GnomeKeyringResult res;
-	res = gnome_keyring_get_default_keyring_sync (&default_keyring);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	
+	res = gnome_keyring_delete_sync (KEYRING_NAME);
+	if (res != GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) 	
+		CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
 }
 
 void unit_test_create_keyring (CuTest* cu)
 {
 	GnomeKeyringResult res;
+	char *default_keyring;
+	
+	/* No default keyring */
+	res = gnome_keyring_set_default_keyring_sync (NULL);	
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
 	
 	res = gnome_keyring_create_sync (KEYRING_NAME, PASSWORD);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	
+	/* It should become the default keyring */
+	res = gnome_keyring_get_default_keyring_sync (&default_keyring);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	CuAssert (cu, "No default keyring set when creating keyring", default_keyring != NULL);
+	CuAssert (cu, "Wrong keyring is the default", strcmp (default_keyring, KEYRING_NAME) == 0); 
 
 	res = gnome_keyring_create_sync (KEYRING_NAME, PASSWORD);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_ALREADY_EXISTS, res);
@@ -374,9 +386,4 @@ void unit_test_cleaup (CuTest* cu)
 	
 	res = gnome_keyring_delete_sync (KEYRING_NAME);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
-
-	if (default_keyring) {
-		res = gnome_keyring_set_default_keyring_sync (default_keyring);
-		CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	}	
 }
