@@ -588,7 +588,7 @@ request_keyring_access (GkrKeyringRequest *req, GkrKeyring *keyring)
 	 */
 	login = gkr_keyrings_get_login ();
 	if (login && login != keyring)
-		gkr_ask_request_set_check_option (ask, _("Automatically unlock this kerying when I log in."));
+		gkr_ask_request_set_check_option (ask, _("Automatically unlock this keyring when I log in."));
 	
 	/* Intercept item access requests to see if we still need to prompt */
 	g_signal_connect (ask, "check-request", G_CALLBACK (check_keyring_ask_request), NULL);
