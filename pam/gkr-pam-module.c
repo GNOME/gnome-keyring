@@ -53,6 +53,10 @@
 #include <syslog.h>
 #include <unistd.h>
 
+enum {
+	ARG_AUTO_START          = 0x0010
+};
+
 #define LOGIN_KEYRING		"login"
 
 #define ENV_SOCKET 		"GNOME_KEYRING_SOCKET"
@@ -439,7 +443,7 @@ start_daemon_if_necessary (pam_handle_t *ph, struct passwd *pwd)
 		
 		/* Daemon is already running */
 		return PAM_SUCCESS;
-	}		
+	}
 
 	/* Not running, start process */
 	return start_daemon (ph, pwd);
@@ -487,7 +491,38 @@ done:
 }
 
 static int
-unlock_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
+create_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
+{
+	const char *socket;
+	GnomeKeyringResult res;
+	const char *argv[2];
+	
+	assert (pwd);
+	assert (password);
+	
+	socket = get_any_env (ph, ENV_SOCKET);
+	if (!socket) {
+		syslog (GKR_LOG_WARN, "gkr-pam: couldn't create '%s' keyring: %s", 
+		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
+		return PAM_SERVICE_ERR;
+	}
+	
+	argv[0] = LOGIN_KEYRING;
+	argv[1] = password;
+	
+	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't create '%s' keyring: %d", LOGIN_KEYRING, res);
+		return PAM_SERVICE_ERR;
+	}
+	
+	
+	syslog (GKR_LOG_NOTICE, "gkr-pam: created '%s' keyring", LOGIN_KEYRING);
+	return PAM_SUCCESS; 
+}
+
+static int
+unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
 	const char *socket;
 	GnomeKeyringResult res;
@@ -510,21 +545,21 @@ unlock_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
 
 	/* 'login' keyring doesn't exist, create it */
 	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-		syslog (GKR_LOG_NOTICE, "gkr-pam: '%s' keyring does not exist, creating", LOGIN_KEYRING); 
-		res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
-	}
+		return create_keyring (ph, pwd, password);
 
-	if (res != GNOME_KEYRING_RESULT_OK) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't create '%s' keyring: %d", LOGIN_KEYRING, res);
+	/* An error unlocking */
+	} else if (res != GNOME_KEYRING_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't unlock '%s' keyring: %d", LOGIN_KEYRING, res);
 		return PAM_SERVICE_ERR;
-	}
-	
+	} 	
+		
+	syslog (GKR_LOG_INFO, "gkr-pam: unlocked '%s' keyring", LOGIN_KEYRING);
 	return PAM_SUCCESS;
 }
 
 static int
-change_password_daemon (pam_handle_t *ph, struct passwd *pwd, 
-                        const char *password, const char *original)
+change_keyring_password (pam_handle_t *ph, struct passwd *pwd, 
+                         const char *password, const char *original)
 {
 	const char *socket;
 	GnomeKeyringResult res;
@@ -546,20 +581,18 @@ change_password_daemon (pam_handle_t *ph, struct passwd *pwd,
 	argv[2] = password;	
 	
 	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
-	if (res == GNOME_KEYRING_RESULT_OK) {
-		syslog (GKR_LOG_NOTICE, "gkr-pam: changed password for '%s' keyring", LOGIN_KEYRING);
-		
-	/* 'login' keyring doesn't exist, create it */
-	} else if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-		syslog (GKR_LOG_NOTICE, "gkr-pam: '%s' keyring does not exist, creating", LOGIN_KEYRING); 
-		res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
-	}
 
-	if (res != GNOME_KEYRING_RESULT_OK) {
+	/* 'login' keyring doesn't exist, create it */
+	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
+		return create_keyring (ph, pwd, password);
+		
+	/* An error occured unlocking */
+	} else if (res != GNOME_KEYRING_RESULT_OK) {
 		syslog (GKR_LOG_ERR, "gkr-pam: couldn't change password for '%s' keyring: %d", LOGIN_KEYRING, res);
 		return PAM_SERVICE_ERR;
 	}
 	
+	syslog (GKR_LOG_NOTICE, "gkr-pam: changed password for '%s' keyring", LOGIN_KEYRING);
 	return PAM_SUCCESS;
 }
  
@@ -612,12 +645,31 @@ prompt_password (pam_handle_t *ph)
 	return ret;
 }
 
+static uint 
+parse_args (int argc, const char **argv)
+{
+	uint args;
+	
+	/* Parse the arguments */
+	for (; argc-- > 0; ++argv) {
+		if (strcmp (argv[0], "auto_start") == 0)
+			args |= ARG_AUTO_START;
+		else
+			syslog (GKR_LOG_WARN, "gkr-pam: invalid option: %s", argv[0]);
+	}
+	
+	return args;
+}
+
 PAM_EXTERN int
 pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 {
 	struct passwd *pwd;
 	const char *user, *password;
+	uint args;
 	int ret;
+	
+	args = parse_args (argc, argv);
 		
 	/* Figure out and/or prompt for the user name */
 	ret = pam_get_user (ph, &user, NULL);
@@ -651,12 +703,14 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 	}
 
 
-	/* Should we start the daemon?*/
-	ret = start_daemon_if_necessary (ph, pwd);
-	if (ret != PAM_SUCCESS)
-		return ret;
+	/* Should we start the daemon? */
+	if (args & ARG_AUTO_START) {
+		ret = start_daemon_if_necessary (ph, pwd);
+		if (ret != PAM_SUCCESS)
+			return ret;
+	}
 	
-	ret = unlock_daemon (ph, pwd, password);
+	ret = unlock_keyring (ph, pwd, password);
 	if (ret != PAM_SUCCESS)
 		return ret;
 
@@ -704,8 +758,6 @@ pam_sm_setcred (pam_handle_t * ph, int flags, int argc, const char **argv)
 static int
 pam_chauthtok_preliminary (pam_handle_t *ph, struct passwd *pwd)
 {
-	int ret;
-	
 	/* 
 	 * If a super-user is changing a user's password then pam_unix.so
 	 * doesn't prompt for the user's current password, which means we 
@@ -723,10 +775,6 @@ pam_chauthtok_preliminary (pam_handle_t *ph, struct passwd *pwd)
 	 * request and have the user type in their current GNOME Keyring
 	 * password at an explanatory prompt.
 	 */
-
-	ret = start_daemon_if_necessary (ph, pwd);
-	if (ret != PAM_SUCCESS)
-		return ret;
 
 	return PAM_IGNORE;
 }
@@ -764,7 +812,16 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd)
 		}
 	}
 	
-	ret = change_password_daemon (ph, pwd, password, original);
+	/* 
+	 * We always start the daemon here, and don't respect the auto_start
+	 * argument. Because if the password is being changed, then making 
+	 * the 'login' keyring match it is a priority. 
+	 */
+	ret = start_daemon_if_necessary (ph, pwd);
+	if (ret != PAM_SUCCESS)
+		return ret;
+	
+	ret = change_keyring_password (ph, pwd, password, original);
 	if (ret != PAM_SUCCESS)
 		return ret;
 		
