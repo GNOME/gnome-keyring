@@ -174,8 +174,7 @@ lifetime_slave_pipe_io (GIOChannel  *channel,
 int
 main (int argc, char *argv[])
 {
-	const char *path;
-	char *fd_str;
+	const char *path, *env;
 	int fd;
 	pid_t pid;
 	gboolean foreground;
@@ -290,9 +289,9 @@ main (int argc, char *argv[])
 	gkr_unix_signal_connect (ctx, SIGHUP, signal_handler, NULL);
 	gkr_unix_signal_connect (ctx, SIGTERM, signal_handler, NULL);
              
-	fd_str = getenv ("GNOME_KEYRING_LIFETIME_FD");
-	if (fd_str != NULL && fd_str[0] != 0) {
-		fd = atoi (fd_str);
+	env = getenv ("GNOME_KEYRING_LIFETIME_FD");
+	if (env && env[0]) {
+		fd = atoi (env);
 		if (fd != 0) {
 			channel = g_io_channel_unix_new (fd);
 			g_io_add_watch (channel,
@@ -306,7 +305,14 @@ main (int argc, char *argv[])
 	gkr_async_workers_init (loop);
 	
 #ifdef WITH_DBUS
-	gnome_keyring_daemon_dbus_setup (loop, path);
+	/* 
+	 * We may be launched before the DBUS session, (ie: via PAM) 
+	 * and DBus tries to launch itself somehow, so double check 
+	 * that it has really started.
+	 */ 
+	env = getenv ("DBUS_SESSION_BUS_ADDRESS");
+	if (env && env[0])
+		gnome_keyring_daemon_dbus_setup (loop, path);
 #endif
 
 	g_main_loop_run (loop);

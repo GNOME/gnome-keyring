@@ -1,3 +1,8 @@
+2007-07-24  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gnome-keyring-daemon.c: Don't try to launch DBus if the 
+	environment variable doesn't exist. 
+	
 2007-07-23  Stef Walter  <stef@memberwebs.com>
 
 	* pam/gkr-pam.h:
