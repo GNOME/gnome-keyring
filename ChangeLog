@@ -1,3 +1,8 @@
+2007-07-25  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gnome-keyring-daemon.c: Close standard file descriptors
+	properly when not running in the foreground. Fixes bug #460313
+	
 2007-07-24  Stef Walter  <stef@memberwebs.com>
 
 	* pam/gkr-pam.h:

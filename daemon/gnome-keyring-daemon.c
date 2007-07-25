@@ -246,8 +246,6 @@ main (int argc, char *argv[])
 						exit (0);
 					}
 				}
-				
-				close_stdinout ();
 			}
 			
 			/* final child continues here */
@@ -269,6 +267,8 @@ main (int argc, char *argv[])
 			
 			exit (0);
 		}
+		
+		close_stdinout ();
 
 	} else {
 		g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
