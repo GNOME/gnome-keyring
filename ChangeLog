@@ -1,3 +1,26 @@
+2007-07-26  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-dbus.c: (split from daemon/gnome-keyring-daemon-dbus.c)
+	* common/gkr-dbus.h: (added)
+	* common/gkr-location.c: (added)
+	* common/gkr-location.h: (added)
+	* common/Makefile.am:
+	* daemon/gnome-keyring-daemon-dbus.c:
+	* daemon/gnome-keyring-daemon-io.c:
+	* daemon/gnome-keyring-daemon-ops.c:
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyring.h:
+	* keyrings/gkr-keyrings.c:
+	* keyrings/gkr-keyrings.h:
+	* library/gnome-keyring.h:
+	* tests/Makefile.am:
+	* tests/unit-test-async.c:
+	* tests/unit-test-keyrings.c:
+	* tests/unit-test-location.c: (added)
+	* configure.in:
+	* HACKING: Added support for using keyrings on removable drives
+	Fixes bug #454390
+	
 2007-07-26  Wouter Bolsterlee  <wbolster@svn.gnome.org>
 
 	* pam/gkr-pam-module.c: (parse_args): Initialise args
