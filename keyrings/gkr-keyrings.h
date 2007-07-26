@@ -26,8 +26,6 @@
 
 #include "gkr-keyring.h"
 
-gchar*          gkr_keyrings_get_dir       (void);
-
 void            gkr_keyrings_update        (void);
 
 GkrKeyring*     gkr_keyrings_get_default   (void);

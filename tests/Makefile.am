@@ -61,6 +61,7 @@ UNIT_TESTS_BASE = \
 	unit-test-secmem.c \
 	unit-test-async.c \
 	unit-test-cleanup.c \
+	unit-test-location.c \
 	unit-test-signal.c \
 	unit-test-mainloop-setup.c \
 	unit-test-private.h
@@ -74,7 +75,8 @@ run_base_test_SOURCES = \
 	$(UNIT_TESTS_BASE) 
 
 run_base_test_LDADD = \
-	$(top_builddir)/common/libgkr-daemon-common.la
+	$(top_builddir)/common/libgkr-daemon-common.la \
+	$(DAEMON_LIBS)
 
 # ------------------------------------------------------------------------------
 # Automatic library tests 

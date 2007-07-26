@@ -26,6 +26,7 @@
 #include "gnome-keyring-daemon.h"
 
 #include "common/gkr-buffer.h"
+#include "common/gkr-location.h"
 
 #include "keyrings/gkr-keyrings.h"
 
@@ -168,13 +169,17 @@ save_keyring_password_in_login (GkrKeyring *keyring, const gchar *password)
 	if (!login || login->locked)
 		return;
 		
-	attrs = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attrs, "keyring", keyring->keyring_name);
+	if (!keyring->location)
+		return;
 		
-	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_AUTO_UNLOCK_KEYRING, attrs);
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs, "keyring", 
+	                                            gkr_location_to_string (keyring->location));
+		
+	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, attrs);
 	
 	if (!item) {
-		item = gkr_keyring_item_create (login, GNOME_KEYRING_ITEM_AUTO_UNLOCK_KEYRING);
+		item = gkr_keyring_item_create (login, GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD);
 		gkr_keyring_add_item (login, item);
 	}
 	
@@ -201,11 +206,15 @@ lookup_keyring_password_in_login (GkrKeyring *keyring)
 	login = gkr_keyrings_get_login ();
 	if (!login || login->locked)
 		return NULL;
-		
+
+	if (!keyring->location)
+		return NULL;
+				
 	attrs = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attrs, "keyring", keyring->keyring_name);
+	gnome_keyring_attribute_list_append_string (attrs, "keyring", 
+	                                            gkr_location_to_string (keyring->location));
 		
-	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_AUTO_UNLOCK_KEYRING, attrs);
+	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, attrs);
 	gnome_keyring_attribute_list_free (attrs);
 	
 	if (item)
@@ -225,10 +234,14 @@ remove_keyring_password_from_login (GkrKeyring *keyring)
 	if (!login || login->locked)
 		return;
 		
+	if (!keyring->location)
+		return;
+
 	attrs = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attrs, "keyring", keyring->keyring_name);
+	gnome_keyring_attribute_list_append_string (attrs, "keyring", 
+	                                            gkr_location_to_string (keyring->location));
 		
-	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_AUTO_UNLOCK_KEYRING, attrs);
+	item = gkr_keyring_find_item (login, GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, attrs);
 	gnome_keyring_attribute_list_free (attrs);
 	
 	if (item) {

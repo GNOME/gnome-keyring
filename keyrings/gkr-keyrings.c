@@ -27,6 +27,7 @@
 #include "gkr-keyrings.h"
 
 #include "common/gkr-cleanup.h"
+#include "common/gkr-location.h"
 
 #include "library/gnome-keyring-proto.h"
 
@@ -41,15 +42,21 @@
 #include <sys/stat.h>
 #include <glib.h>
 
+#define LOC_DEFAULT_FILE    (gkr_location_from_string ("LOCAL:/keyrings/default"))
+
 static gboolean keyrings_inited = FALSE;
 
 static GList *keyrings = NULL;
 
 static GkrKeyring *session_keyring = NULL;
-static GkrKeyring *default_keyring = NULL;
+static gchar *default_keyring = NULL;
 
-static time_t keyring_dir_mtime = 0;
-static gboolean dirs_created = FALSE;
+typedef struct _LocationInfo {
+	GQuark keyring_loc;
+	time_t dir_mtime;
+} LocationInfo;
+
+static GHashTable *keyring_locations = NULL;
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -77,50 +84,160 @@ write_all (int fd, const char *buf, size_t len)
 	return 0;
 }
 
-static void
-update_default (void)
+static gboolean
+ends_with (const gchar *haystack, const gchar *needle)
 {
-	char *dirname, *path, *newline;
-	char *contents;
-	GkrKeyring *keyring;
-	
-	dirname = gkr_keyrings_get_dir ();
-	path = g_build_filename (dirname, "default", NULL);
+	gsize lhaystack = strlen (haystack);
+	gsize lneedle = strlen (needle);
+	if (lneedle > lhaystack)
+		return FALSE;
+	return strcmp (haystack + (lhaystack - lneedle), needle) == 0;
+}
 
-	keyring = NULL;
-	
-	if (g_file_get_contents (path,
-				 &contents, NULL, NULL)) {
-		/* remove any final newlines */
-		newline = strchr (contents, '\n');
-		if (newline != NULL) {
-			*newline = 0;
-		}
+static void
+location_free (LocationInfo *info)
+{
+	g_slice_free (LocationInfo, info);
+}
 
-		keyring = gkr_keyrings_find (contents);
-		
-		g_free (contents);
+static void 
+location_added (GkrLocationManager *locmgr, GQuark loc, gpointer unused)
+{
+	LocationInfo *info;
+	GQuark keyring_loc;
+	gchar *path;
+
+	g_return_if_fail (keyring_locations);
+	
+	keyring_loc = gkr_location_from_child (loc, "keyrings");
+	path = gkr_location_to_path (keyring_loc);
+	
+	if (g_file_test (path, G_FILE_TEST_IS_DIR)) {
+		info = g_slice_new0 (LocationInfo);
+		info->keyring_loc = keyring_loc;
+		info->dir_mtime = 0;
+		g_hash_table_replace (keyring_locations, GUINT_TO_POINTER (loc), info);
 	}
 	
 	g_free (path);
-	g_free (dirname);
+}
 
-	/* 
-	 * We prefer to make the 'login' keyring the default
-	 * keyring when nothing else is setup.
-	 */
-	if (keyring == NULL)
-		keyring = gkr_keyrings_get_login ();
-		
-	/* 
-	 * Otherwise fall back to the 'default' keyring setup 
-	 * if PAM integration is borked, and the user had to 
-	 * create a new keyring.
-	 */
-	if (keyring == NULL)
-		keyring = gkr_keyrings_find ("default");
+static void
+location_removed (GkrLocationManager *locmgr, GQuark loc, gpointer unused)
+{
+	g_return_if_fail (keyring_locations);
+	g_hash_table_remove (keyring_locations, GUINT_TO_POINTER (loc));
+}
+
+static void
+update_default (void)
+{
+	gchar *path;
+	gchar *contents;
+
+	path = gkr_location_to_path (LOC_DEFAULT_FILE);
+	if (g_file_get_contents (path, &contents, NULL, NULL)) {
+		g_strstrip (contents);
+		if (!contents[0]) {
+			g_free (contents);
+			contents = NULL;
+		}
+		g_free (default_keyring);
+		default_keyring = contents;
+	}
 	
-	default_keyring = keyring;
+	g_free (path);
+}
+
+static gboolean
+update_keyring_location (gpointer key, LocationInfo *locinfo, GHashTable *checks)
+{
+	char *dirname;
+	const char *filename;
+	struct stat statbuf;
+	GDir *dir;
+	GList *l;
+	GQuark loc;
+	GError *error = NULL;
+	GkrKeyring *keyring;
+	
+	dirname = gkr_location_to_path (locinfo->keyring_loc);
+	
+	/* Can't resolve the location? Remove it. */
+	if (!dirname)
+		return TRUE;
+
+	if (stat (dirname, &statbuf) < 0) {
+		g_free (dirname);
+		return TRUE;
+	}
+	
+	if (statbuf.st_mtime == locinfo->dir_mtime) {
+
+		/* Still need to check for file updates */
+		for (l = keyrings; l != NULL; l = l->next) { 
+			keyring = GKR_KEYRING (l->data);
+			if (!gkr_location_is_descendant (locinfo->keyring_loc, keyring->location))
+				continue;
+			gkr_keyring_update_from_disk (keyring, FALSE);
+			
+			/* Make note of seeing a given keyring path */
+			g_hash_table_remove (checks, GUINT_TO_POINTER (keyring->location));
+		}
+
+		g_free (dirname);		
+
+		/* Don't remove this location */
+		return FALSE;
+	}
+
+	/* Make note of the last modification time */
+	locinfo->dir_mtime = statbuf.st_mtime;
+
+	dir = g_dir_open (dirname, 0, &error);
+	
+	if (dir == NULL) {
+		g_message ("couldn't list keyrings at: %s: %s",
+		           dirname, error->message);
+		g_error_free (error);  
+		g_free (dirname);
+		
+		/* Remove this location from the list */
+		return TRUE;
+	}
+		
+	while ((filename = g_dir_read_name (dir)) != NULL) {
+		if (filename[0] == '.')
+			continue;
+		if (!ends_with (filename, ".keyring"))
+			continue;
+
+		loc = gkr_location_from_child (locinfo->keyring_loc, filename);
+		g_assert (loc);
+		
+		keyring = g_hash_table_lookup (checks, GUINT_TO_POINTER (loc));
+		if (keyring == NULL) {
+			/* Make a new blank keyring and add it */
+			keyring = gkr_keyring_new ("", loc);
+			gkr_keyrings_add (keyring);
+			g_object_unref (keyring);
+		} else {
+			/* Make note of seeing a given keyring path */
+			g_hash_table_remove (checks, GUINT_TO_POINTER (loc));
+		}
+
+		/* Try and update/load it */
+		if (!gkr_keyring_update_from_disk (keyring, FALSE) ||
+		    !keyring->keyring_name || !keyring->keyring_name[0]) {
+			gkr_keyrings_remove (keyring);
+		} 
+	}
+
+	g_dir_close (dir);
+	g_free (dirname);
+	
+	/* Don't remove location */
+	return FALSE;
 }
 
 static void 
@@ -137,6 +254,8 @@ keyrings_cleanup (gpointer unused)
 		gkr_keyrings_remove (keyring);
 	}
 	
+	g_free (default_keyring);
+	
 	g_assert (session_keyring == NULL);
 	keyrings_inited = FALSE;
 }
@@ -144,13 +263,43 @@ keyrings_cleanup (gpointer unused)
 static void
 keyrings_init (void)
 {
+	GkrLocationManager *locmgr;
+	GSList *locations, *l;
+	GQuark loc;
+	gchar *path;
+	
 	if (keyrings_inited)
 		return;
 	keyrings_inited = TRUE;
+	
+	g_assert (!keyring_locations);
+	keyring_locations = g_hash_table_new_full (g_direct_hash, g_direct_equal, 
+	                                           NULL, (GDestroyNotify)location_free); 
 
+	/* Make the local keyrings directory */
+	loc = gkr_location_from_string ("LOCAL:/keyrings");
+	g_assert (loc);
+	path = gkr_location_to_path (loc);
+	if (g_mkdir_with_parents (path, S_IRWXU) < 0)
+		g_warning ("unable to create keyring dir");
+	g_free (path);
+
+	/* Create the session keyring */
 	g_assert (!session_keyring);
-	session_keyring = gkr_keyring_new ("session", NULL);
+	session_keyring = gkr_keyring_new ("session", 0);
 	gkr_keyrings_add (session_keyring);
+	
+	/* 
+	 * Hook into all the loaded locations, and watch for more 
+	 * added and/or removed.
+	 */
+	locmgr = gkr_location_manager_get ();
+	g_signal_connect (locmgr, "location-added", G_CALLBACK (location_added), NULL);
+	g_signal_connect (locmgr, "location-removed", G_CALLBACK (location_removed), NULL);
+	locations = gkr_location_manager_get_locations (locmgr);
+	for (l = locations; l; l = g_slist_next (l))
+		location_added (locmgr, GPOINTER_TO_UINT (l->data), NULL);
+	g_slist_free (locations);
 	
 	gkr_keyrings_update ();
 	
@@ -162,67 +311,59 @@ keyrings_init (void)
  * PUBLIC 
  */
 
-gchar*
-gkr_keyrings_get_dir (void)
-{
-	gchar *dir = NULL;
-	
-#ifdef WITH_TESTS
-	const gchar* env = g_getenv ("GNOME_KEYRING_TEST_PATH");
-	if (env && *env)
-		dir = g_build_filename (env, "keyrings", NULL);
-#endif 
-	
-	if (!dir)
-		dir = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
-		
-	if (!dirs_created) {
-		if (g_mkdir_with_parents (dir, S_IRWXU) < 0)
-			g_warning ("unable to create keyring dir");
-		else
-			dirs_created = TRUE;
-	}
-	
-	return dir;
-}
-
 GkrKeyring*
 gkr_keyrings_get_default (void)
 {
-	keyrings_init ();
+	GkrKeyring *keyring = NULL;
 	
+	keyrings_init ();
 	if (!default_keyring)
 		update_default ();
-	return default_keyring;
+		
+	if (default_keyring != NULL)
+		keyring = gkr_keyrings_find (default_keyring);
+		
+	/* 
+	 * We prefer to make the 'login' keyring the default
+	 * keyring when nothing else is setup.
+	 */
+	if (keyring == NULL)
+		keyring = gkr_keyrings_get_login ();
+		
+	/* 
+	 * Otherwise fall back to the 'default' keyring setup 
+	 * if PAM integration is borked, and the user had to 
+	 * create a new keyring.
+	 */
+	if (keyring == NULL)
+		keyring = gkr_keyrings_find ("default");
+
+	return keyring;
 }
 
 void
 gkr_keyrings_set_default (GkrKeyring *keyring)
 {
-	char *dirname, *path;
+	char *path;
+	const gchar *data;
 	int fd;
 	
 	keyrings_init ();
 	
-	dirname = gkr_keyrings_get_dir ();
-	path = g_build_filename (dirname, "default", NULL);
-	
+	path = gkr_location_to_path (LOC_DEFAULT_FILE);
 	fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd != -1) {
-		if (keyring != NULL && keyring->keyring_name != NULL) {
-			write_all (fd, keyring->keyring_name,
-			           strlen (keyring->keyring_name));
+		data = (keyring && keyring->keyring_name) ? keyring->keyring_name : "";
+		write_all (fd, data, strlen (data));
 #ifdef HAVE_FSYNC
-			fsync (fd);
+		fsync (fd);
 #endif
-		}
 		close (fd);
 	}
 	
 	g_free (path);
-	g_free (dirname);
 
-	default_keyring = keyring;
+	default_keyring = keyring ? g_strdup (keyring->keyring_name) : NULL;
 }
 
 GkrKeyring*
@@ -234,97 +375,39 @@ gkr_keyrings_get_login (void)
 void
 gkr_keyrings_update (void)
 {
-	char *dirname, *path;
-	const char *filename;
-	struct stat statbuf;
-	GDir *dir;
 	GList *l;
 	GkrKeyring *keyring;
 	GHashTable *checks = NULL;
 	
 	keyrings_init ();
 	
-	dirname = gkr_keyrings_get_dir ();
-
-	if (stat (dirname, &statbuf) < 0) {
-		g_free (dirname);
-		return;
-	}
-	if (statbuf.st_mtime == keyring_dir_mtime) {
-		/* Still need to check for file updates */
-
-		for (l = keyrings; l != NULL; l = l->next) {
-			gkr_keyring_update_from_disk (l->data, FALSE);
-		}
-		
-		update_default ();
-		
-		return;
-	}
-
 	/* 
 	 * A hash table for tracking which loaded keyrings no longer 
 	 * exist. A keyring that has the same file is considered 
 	 * identical. Keyrings without files aren't considered. 
 	 */
-	checks = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	checks = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
 	for (l = keyrings; l; l = g_list_next (l)) {
 		keyring = GKR_KEYRING (l->data);
-		if (keyring->file) {
-			g_hash_table_insert (checks, g_strdup (keyring->file), 
-			                     keyring);
-		}
+		if (!keyring->location)
+			continue;
+		g_hash_table_insert (checks, GUINT_TO_POINTER (keyring->location), keyring);
 	}
 	
-	dir = g_dir_open (dirname, 0, NULL);
-	if (dir != NULL) {
-		while ((filename = g_dir_read_name (dir)) != NULL) {
-			if (filename[0] == '.') {
-				continue;
-			}
-			if (strcmp (filename, "default") == 0) {
-				continue;
-			}
-			path = g_build_filename (dirname, filename, NULL);
-			keyring = NULL;
-			
-			keyring = g_hash_table_lookup (checks, path);
-			if (keyring == NULL) {
-				/* Make a new blank keyring and add it */
-				keyring = gkr_keyring_new ("", path);
-				gkr_keyrings_add (keyring);
-				g_object_unref (keyring);
-			} else {
-				/* Make note of seeing a given keyring path */
-				g_hash_table_remove (checks, path);
-			}
-
-			/* Try and update/load it */
-			if (!gkr_keyring_update_from_disk (keyring, FALSE) ||
-			    !keyring->keyring_name || !keyring->keyring_name[0]) {
-				gkr_keyrings_remove (keyring);
-			} 
-			
-			g_free (path);
-		}
-		g_dir_close (dir);
-	}
+	/* Update each and every one */
+	g_hash_table_foreach_remove (keyring_locations, (GHRFunc)update_keyring_location, checks);
 	
 	/* Find any keyrings whose paths we didn't see */
 	for (l = keyrings; l; l = g_list_next (l)) {
 		keyring = GKR_KEYRING (l->data);
-		if (!keyring->file)
+		if (!keyring->location)
 			continue;
-		if (g_hash_table_lookup (checks, keyring->file))
+		if (g_hash_table_lookup (checks, GUINT_TO_POINTER (keyring->location)))
 			gkr_keyrings_remove (keyring);
 	}
 	g_hash_table_destroy (checks);
 
 	update_default ();
-	
-	keyring_dir_mtime = statbuf.st_mtime;
-
-	g_free (dirname);
 }
 
 
@@ -340,13 +423,6 @@ gkr_keyrings_add (GkrKeyring *keyring)
 	
 	keyrings = g_list_prepend (keyrings, keyring);
 	g_object_ref (keyring);
-	
-	/* 
-	 * The first 'file' based keyring automatically 
-	 * becomes the default 
-	 */
-	if (keyring->file && gkr_keyrings_get_default () == NULL)
-		gkr_keyrings_set_default (keyring);
 }
 
 void 
@@ -358,7 +434,8 @@ gkr_keyrings_remove (GkrKeyring *keyring)
 	
 	if (g_list_find (keyrings, keyring)) {
 
-		if (keyring == default_keyring)
+		if (default_keyring && 
+		    strcmp (keyring->keyring_name, default_keyring) == 0)
 			gkr_keyrings_set_default (NULL);
 		
 		keyrings = g_list_remove (keyrings, keyring);

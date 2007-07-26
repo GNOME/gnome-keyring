@@ -62,7 +62,6 @@ void unit_test_remove_incomplete (CuTest* cu)
 void unit_test_create_keyring (CuTest* cu)
 {
 	GnomeKeyringResult res;
-	char *default_keyring;
 	
 	/* No default keyring */
 	res = gnome_keyring_set_default_keyring_sync (NULL);	
@@ -71,12 +70,6 @@ void unit_test_create_keyring (CuTest* cu)
 	res = gnome_keyring_create_sync (KEYRING_NAME, PASSWORD);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
 	
-	/* It should become the default keyring */
-	res = gnome_keyring_get_default_keyring_sync (&default_keyring);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert (cu, "No default keyring set when creating keyring", default_keyring != NULL);
-	CuAssert (cu, "Wrong keyring is the default", strcmp (default_keyring, KEYRING_NAME) == 0); 
-
 	res = gnome_keyring_create_sync (KEYRING_NAME, PASSWORD);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_ALREADY_EXISTS, res);
 }

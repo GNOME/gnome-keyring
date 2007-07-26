@@ -512,6 +512,8 @@ create_master_socket (const char **path)
 	}
 
 	snprintf (socket_path, sizeof (socket_path), "%s/socket", tmp_dir);
+	if (have_path)
+		unlink (socket_path);
 	
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {

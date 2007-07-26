@@ -29,6 +29,7 @@
 #include "gkr-keyring-item.h"
 
 #include "common/gkr-buffer.h"
+#include "common/gkr-location.h"
 
 #include "daemon/gnome-keyring-daemon.h"
 
@@ -798,40 +799,41 @@ write_all (int fd, const guchar *buf, size_t len)
 	return 0;
 }
 
-static char*
-get_default_keyring_file_for_name (const char *keyring_name)
+static GQuark
+get_default_location_for_name (const char *keyring_name)
 {
-	char *base;
-	char *filename;
+	gchar *path = NULL;
+	gchar *base, *filename;
 	int version;
-	char *path;
-	char *dir;
+	GQuark loc;
 
 	base = g_filename_from_utf8 (keyring_name, -1, NULL, NULL, NULL);
-	if (base == NULL) {
+	if (base == NULL)
 		base = g_strdup ("keyring");
-	}
 
-	dir = gkr_keyrings_get_dir ();
-	
 	version = 0;
 	do {
-		if (version == 0) {
-			filename = g_strdup_printf ("%s.keyring", base);
-		} else {
-			filename = g_strdup_printf ("%s%d.keyring", base, version);
-		}
+		g_free (path);
 		
-		path = g_build_filename (dir, filename, NULL);
+		if (version == 0) 
+			filename = g_strdup_printf ("LOCAL:/keyrings/%s.keyring", base);
+		else
+			filename = g_strdup_printf ("LOCAL:/keyrings/%s%d.keyring", base, version);
+
+		loc = gkr_location_from_string (filename);
 		g_free (filename);
+		
+		path = gkr_location_to_path (loc);
+		g_return_val_if_fail (path, 0);
 
 		version++;
 	} while (g_file_test (path, G_FILE_TEST_EXISTS));
 
 	g_free (base);
-	g_free (dir);
 	
-	return path;
+	loc = gkr_location_from_path (path);
+	g_free (path);
+	return loc;
 }
 
 /* -----------------------------------------------------------------------------
@@ -892,7 +894,6 @@ gkr_keyring_finalize (GObject *obj)
 	GkrKeyring *keyring = GKR_KEYRING (obj);
 
 	g_free (keyring->keyring_name);
-	g_free (keyring->file);
 	g_assert (keyring->password == NULL);
 	
 	G_OBJECT_CLASS (gkr_keyring_parent_class)->finalize (obj);
@@ -929,7 +930,7 @@ gkr_keyring_class_init (GkrKeyringClass *klass)
  */
 
 GkrKeyring*
-gkr_keyring_new (const char *name, const char *path)
+gkr_keyring_new (const char *name, GQuark location)
 {
 	GkrKeyring *keyring;
 	
@@ -938,7 +939,7 @@ gkr_keyring_new (const char *name, const char *path)
 	keyring = g_object_new (GKR_TYPE_KEYRING, NULL);
 	
 	keyring->keyring_name = g_strdup (name);
-	keyring->file = g_strdup (path);
+	keyring->location = location;
 
 	return keyring;
 }
@@ -948,9 +949,9 @@ gkr_keyring_create (const gchar *keyring_name, const gchar *password)
 {
 	GkrKeyring *keyring;
 	
-	keyring = gkr_keyring_new (keyring_name, NULL);
+	keyring = gkr_keyring_new (keyring_name, 0);
 	if (keyring != NULL) {
-		keyring->file = get_default_keyring_file_for_name (keyring_name);
+		keyring->location = get_default_location_for_name (keyring_name);
 		keyring->locked = FALSE;
 		keyring->password = gnome_keyring_memory_strdup (password);
 		gkr_keyring_save_to_disk (keyring);
@@ -1055,39 +1056,58 @@ gkr_keyring_update_from_disk (GkrKeyring *keyring, gboolean force_reload)
 	char *contents = NULL;
 	gsize len;
 	gboolean success = FALSE;
+	gchar *file = NULL;
 
-	if (keyring->file == NULL)
-		return TRUE;
+	if (!keyring->location) {
+		success = TRUE;
+		goto done;
+	}
 
-	if (stat (keyring->file, &statbuf) < 0)
+	file = gkr_location_to_path (keyring->location);
+	if (!file)
+		goto done;
+		
+	if (stat (file, &statbuf) < 0) {
+		g_free (file);
 		return FALSE;
+	}
 
-	if (!force_reload && statbuf.st_mtime == keyring->file_mtime)
-		return TRUE;
+	if (!force_reload && statbuf.st_mtime == keyring->file_mtime) {
+		success = TRUE;
+		goto done;
+	}
 	keyring->file_mtime = statbuf.st_mtime;
 
-	if (!g_file_get_contents (keyring->file, &contents, &len, NULL))
-		return FALSE;
-
-	gkr_buffer_init_static (&buffer, (guchar*)contents, len);
+	if (!g_file_get_contents (file, &contents, &len, NULL))
+		goto done;
 	
+	gkr_buffer_init_static (&buffer, (guchar*)contents, len);
 	success = update_keyring_from_data (keyring, &buffer);
 	gkr_buffer_uninit (&buffer);
-	g_free (contents);
 
+done:
+	g_free (contents);
+	g_free (file);
 	return success;
 }
 
 gboolean 
 gkr_keyring_remove_from_disk (GkrKeyring *keyring)
 {
+	gchar *file;
 	int res;
 
 	/* Cannot remove session or memory based keyring */
-	if (keyring->file == NULL)
+	if (!keyring->location)
 		return FALSE;
-
-	res = unlink (keyring->file);
+		
+	file = gkr_location_to_path (keyring->location);
+	if (!file)
+		return FALSE;
+		
+	res = unlink (file);
+	g_free (file);
+	
 	return (res == 0);
 }
 
@@ -1100,21 +1120,24 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 	char *dirname;
 	char *template;
 	gboolean ret = TRUE;
+	gchar *file = NULL;
 	
-	if (keyring->locked) {
-		/* Can't save locked keyrings */
+	/* Can't save locked keyrings */
+	if (keyring->locked)
 		return FALSE;
-	}
 
-	if (keyring->file == NULL) {
-		/* Not file backed */
+	/* Not file backed */
+	if (!keyring->location)
 		return TRUE;
-	}
+		
+	file = gkr_location_to_path (keyring->location);
+	if (!file)
+		return FALSE;
 	
 	gkr_buffer_init_full (&out, 4096, g_realloc);
 
 	if (generate_file (&out, keyring)) {
-		dirname = g_path_get_dirname (keyring->file);
+		dirname = g_path_get_dirname (file);
 		template = g_build_filename (dirname, ".keyringXXXXXX", NULL);
 		
 		fd = g_mkstemp (template);
@@ -1125,10 +1148,9 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 			fsync (fd);
 #endif
 				close (fd);
-				if (rename (template, keyring->file) == 0) {
-					if (stat (keyring->file, &statbuf) == 0) {
+				if (rename (template, file) == 0) {
+					if (stat (file, &statbuf) == 0)
 						keyring->file_mtime = statbuf.st_mtime;
-					}
 				} else {
 					unlink (template);
 				}
@@ -1148,6 +1170,7 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 	}
 	
 	gkr_buffer_uninit (&out);
+	g_free (file);
 	return ret;
 }
 
@@ -1158,7 +1181,7 @@ gkr_keyring_lock (GkrKeyring *keyring)
 		return TRUE;
 
 	/* Never lock the session keyring */
-	if (keyring->file == NULL)
+	if (!keyring->location)
 		return TRUE;
 
 	g_assert (keyring->password != NULL);

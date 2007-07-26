@@ -23,10 +23,32 @@ ui
    Prompting the user, asking for passwords. 
    
 
-USE OF THREADS
+--------------------------------------------------------------------------------
+                    USING 'LOCATIONS' INSTEAD OF FILE PATHS
 
-Gnome Keyring uses threads in a limited manner, as state machines, or execution
-stacks. Only one thread runs at any given time, each thread hands off execution
+Gnome Keyring supports having keyrings on removable media. Because removable
+media can be mounted in different mount-points, and for other related reasons,
+what's called a 'location' is used instead of a file point.
+
+Locations are like paths relative to a base. For example certain locations 
+might be relative to a home directory, and others might be relative to a USB
+drive.
+
+Location functionality:
+
+   common/gkr-location.h
+   
+Common functions:
+
+   gkr_location_from_path ()
+   gkr_location_from_child ()
+   gkr_location_to_path ()
+   
+--------------------------------------------------------------------------------
+                            USE OF WORKER THREADS
+
+Gnome Keyring uses threads in a limited manner, as state machines, (ie: execution
+stacks). Only one thread runs at any given time, each thread hands off execution
 to another thread. 
 
 The *only* use of threading and/or synchronization primitives should be in:
@@ -40,3 +62,4 @@ If a thread needs perform a blocking syscall, or do something that takes a long
 time (like create a key) it can use the gkr_async_begin_concurrent() and 
 gkr_async_end_concurrent() functions. While running 'concurrent' no global
 functions and/or data should be accessed.
+

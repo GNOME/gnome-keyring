@@ -50,7 +50,7 @@ struct _GkrKeyring {
 	GObject parent;
 	
 	/* NULL if memory only */
-	char *file;
+	GQuark location;
 	time_t file_mtime;
 
 	/* If known: */
@@ -82,7 +82,7 @@ struct _GkrKeyringClass {
 
 GType            gkr_keyring_get_type           (void) G_GNUC_CONST;
 
-GkrKeyring*      gkr_keyring_new                (const gchar* name, const gchar* path);
+GkrKeyring*      gkr_keyring_new                (const gchar* name, GQuark location);
 
 GkrKeyring*      gkr_keyring_create             (const gchar* name, const gchar* password);
 

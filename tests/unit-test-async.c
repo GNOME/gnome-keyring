@@ -127,7 +127,7 @@ cancel_thread (gpointer data)
 {
 	CancelParams *params = (CancelParams*)data;
 
-	while (gkr_async_yield ()) {
+	while (!gkr_async_is_stopping ()) {
 		++params->value;
 		g_printerr("+");
 		gkr_async_usleep (G_USEC_PER_SEC);

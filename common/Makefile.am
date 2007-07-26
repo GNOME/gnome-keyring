@@ -15,6 +15,7 @@ libgkr_daemon_common_la_CFLAGS = \
 	-DBINDIR=\""$(bindir)"\" 			\
 	-DLIBEXECDIR=\""$(libexecdir)"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	$(DAEMON_CFLAGS)				\
 	$(GTK_CFLAGS) 					\
 	$(GLIB_CFLAGS)
 
@@ -25,6 +26,10 @@ libgkr_daemon_common_la_SOURCES = \
 	gkr-buffer.h \
 	gkr-cleanup.c \
 	gkr-cleanup.h \
+	gkr-dbus.c \
+	gkr-dbus.h \
+	gkr-location.c \
+	gkr-location.h \
 	gkr-secure-memory.c \
 	gkr-secure-memory.h \
 	gkr-unix-signal.c \
