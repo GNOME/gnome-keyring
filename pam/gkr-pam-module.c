@@ -648,7 +648,7 @@ prompt_password (pam_handle_t *ph)
 static uint 
 parse_args (int argc, const char **argv)
 {
-	uint args;
+	uint args = 0;
 	
 	/* Parse the arguments */
 	for (; argc-- > 0; ++argv) {

@@ -1,3 +1,8 @@
+2007-07-26  Wouter Bolsterlee  <wbolster@svn.gnome.org>
+
+	* pam/gkr-pam-module.c: (parse_args): Initialise args
+	variable to 0 to silence the compiler with -Werror.
+
 2007-07-25  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gnome-keyring-daemon.c: Close standard file descriptors
