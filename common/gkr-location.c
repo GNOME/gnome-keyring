@@ -34,15 +34,24 @@
 #endif 
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
 #include <string.h>
 
-#define DEFAULT_NAME    "FILE"
-#define HOME_NAME       "HOME"
-#define GNOME_NAME      "LOCAL"
+#define FILE_NAME      "FILE"
+#define HOME_NAME      "HOME"
+
 #define LOC_DELIMITER   ":"
 #define LOC_DELIMITER_C ':'
 #define CHILD_DELIMITER "-"
+
+typedef struct _GkrLocationVolume {
+	GQuark base_loc;
+	gchar *name;
+	gchar *prefix;
+	gchar *friendly;
+	gboolean hidden;
+} GkrLocationVolume;
 
 enum {
     LOCATION_ADDED,
@@ -60,14 +69,13 @@ typedef struct _GkrLocationManagerPrivate GkrLocationManagerPrivate;
 struct _GkrLocationManagerPrivate {
 	LibHalContext *hal_ctx;
 	GHashTable *volumes_by_name;
-	GHashTable *volumes_by_prefix;	
+	GHashTable *volumes_by_loc;
+	GHashTable *volumes_by_prefix;
+	
+	/* Some special locations, that we don't advertize, but support */
+	GkrLocationVolume file_volume;
+	GkrLocationVolume home_volume;
 };
-
-typedef struct _GkrLocationVolume {
-	GQuark base_loc;
-	gchar *name;
-	gchar *prefix;
-} GkrLocationVolume;
 
 #define GKR_LOCATION_MANAGER_GET_PRIVATE(o)  \
 	(G_TYPE_INSTANCE_GET_PRIVATE((o), GKR_TYPE_LOCATION_MANAGER, GkrLocationManagerPrivate))
@@ -89,17 +97,53 @@ cleanup_location_manager (void *unused)
 static void
 list_locations (const gchar *name, GkrLocationVolume *locvol, GSList **l)
 {
-	*l = g_slist_append (*l, GUINT_TO_POINTER (locvol->base_loc));
+	if (!locvol->hidden)
+		*l = g_slist_append (*l, GUINT_TO_POINTER (locvol->base_loc));
 }
 
 static void
 free_location_volume (GkrLocationVolume *locvol) 
 {
 	if (locvol) {
+		/* Hidden volumes are freed elsewhere */
+		if (locvol->hidden)
+			return;
 		g_free (locvol->name);
 		g_free (locvol->prefix);
 		g_slice_free (GkrLocationVolume, locvol);
 	}
+}
+
+static GQuark
+make_base_location (const gchar *name)
+{
+	gchar *sloc;
+	GQuark loc;
+	
+	sloc = g_strdup_printf ("%s:", name);
+	loc = gkr_location_from_string (sloc);
+	g_free (sloc);
+	
+	return loc;
+}
+
+static void
+make_hidden_volume (GkrLocationManager *locmgr, GkrLocationVolume *locvol, 
+                      const gchar *name, const gchar *prefix)
+{
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	GQuark base_loc = make_base_location (name);
+	
+	locvol->name = (gchar*)name;
+	locvol->base_loc = base_loc;
+	locvol->prefix = (gchar*)prefix; 
+	locvol->hidden = TRUE;
+	locvol->friendly = NULL;
+	
+	g_hash_table_replace (pv->volumes_by_name, locvol->name, locvol);
+	g_hash_table_replace (pv->volumes_by_prefix, locvol->prefix, locvol);
+	g_hash_table_replace (pv->volumes_by_loc, GUINT_TO_POINTER (base_loc), locvol);
+	
 }
 
 #ifdef WITH_HAL
@@ -195,6 +239,8 @@ hal_device_property (LibHalContext *hal_ctx, const char *udi, const char *key,
 	char *drive_udi = NULL;
 	char *mount = NULL;
 	char *name = NULL;
+	char *friendly = NULL;
+	char *product = NULL;
 	DBusError error;
 	gboolean removable, is_mounted;
 
@@ -236,9 +282,15 @@ hal_device_property (LibHalContext *hal_ctx, const char *udi, const char *key,
 	
 		if (!mount[0])
 			goto done;
+			
+		product = libhal_device_get_property_string (hal_ctx, udi, "info.product", &error);
+		if (product && product)
+			friendly = g_strdup_printf (_("Removable Disk: %s"), product);
+		else 
+			friendly = g_strdup (_("Removable Disk"));
 		
 		g_message ("adding removable location: %s at %s", name, mount); 
-		gkr_location_manager_register (locmgr, name, mount);
+		gkr_location_manager_register (locmgr, name, mount, friendly);
 
 	/* A mount was removed? */		
 	} else if (!is_mounted && g_hash_table_lookup (pv->volumes_by_name, name)) {
@@ -253,6 +305,9 @@ done:
 		libhal_free_string (drive_udi);
 	if (mount)
 		libhal_free_string (mount);
+	if (product)
+		libhal_free_string (product);
+	g_free (friendly);
 	g_free (name);
 
 }
@@ -353,23 +408,27 @@ gkr_location_manager_init (GkrLocationManager *locmgr)
 	pv->volumes_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, 
 	                                             NULL, (GDestroyNotify)free_location_volume);
 	pv->volumes_by_prefix = g_hash_table_new (g_str_hash, g_str_equal);
-	
-	/* We always register the home directory */
+	pv->volumes_by_loc = g_hash_table_new (g_direct_hash, g_direct_equal);
+
 	home = g_get_home_dir ();
-	if (home)
-		gkr_location_manager_register (locmgr, HOME_NAME, home);
-		
+	g_return_if_fail (home && home[0]);
+	
+	/* Hidden location relative to file system and home directory */
+	make_hidden_volume (locmgr, &pv->file_volume, FILE_NAME, "/");
+	make_hidden_volume (locmgr, &pv->home_volume, HOME_NAME, home);
+
+	
+	/* We always register the .gnome2 local directory */		
 #ifdef WITH_TESTS
 	env = g_getenv ("GNOME_KEYRING_TEST_PATH");
 	if (env && *env)
 		local = g_strdup (env);
 #endif 
-	if (!local && home)
+	if (!local)
 		local = g_build_filename (home, ".gnome2", NULL);
-	
-	if (local)
-		gkr_location_manager_register (locmgr, GNOME_NAME, local);
 
+	g_assert (local);
+	gkr_location_manager_register (locmgr, GKR_LOCATION_NAME_LOCAL, local, _("Home"));
 	g_free (local);
 	
 #ifdef WITH_HAL
@@ -395,6 +454,8 @@ gkr_location_manager_finalize (GObject *obj)
 	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (obj);
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
 
+	g_hash_table_destroy (pv->volumes_by_loc);
+	pv->volumes_by_loc = NULL;
 	g_hash_table_destroy (pv->volumes_by_prefix);
 	pv->volumes_by_prefix = NULL;
 	g_hash_table_destroy (pv->volumes_by_name);
@@ -442,12 +503,12 @@ gkr_location_manager_get (void)
 }
 
 void
-gkr_location_manager_register (GkrLocationManager *locmgr, const gchar *name, const gchar *prefix)
+gkr_location_manager_register (GkrLocationManager *locmgr, const gchar *name, 
+                               const gchar *prefix, const gchar *friendly)
 {
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
 	GkrLocationVolume *locvol;
 	GQuark base_loc;
-	gchar *sloc;
 
 	g_return_if_fail (GKR_IS_LOCATION_MANAGER (locmgr));	
 	g_return_if_fail (name && name[0]);
@@ -467,20 +528,21 @@ gkr_location_manager_register (GkrLocationManager *locmgr, const gchar *name, co
 		return;
 	}
 
-	sloc = g_strdup_printf ("%s:/", name);
-	base_loc = gkr_location_from_string (sloc);
-	g_free (sloc);
-		
+	base_loc = make_base_location (name);
+			
 	locvol = g_slice_new (GkrLocationVolume);
 	locvol->name = g_strdup (name);
 	locvol->prefix = g_strdup (prefix);
+	locvol->friendly = g_strdup (friendly);
 	locvol->base_loc = base_loc;
+	locvol->hidden = FALSE;
 	
 	/* TODO: What about trailing slashes? */
 	
 	g_hash_table_replace (pv->volumes_by_name, locvol->name, locvol);
 	g_hash_table_replace (pv->volumes_by_prefix, locvol->prefix, locvol);
-	
+	g_hash_table_replace (pv->volumes_by_loc, GUINT_TO_POINTER (base_loc), locvol);
+	 
 	g_signal_emit (locmgr, signals[LOCATION_ADDED], 0, base_loc);
 }
 
@@ -501,6 +563,7 @@ gkr_location_manager_unregister (GkrLocationManager *locmgr, const gchar *name)
 	}
 	
 	base_loc = locvol->base_loc;
+	g_hash_table_remove (pv->volumes_by_loc, GUINT_TO_POINTER (base_loc));
 	g_hash_table_remove (pv->volumes_by_prefix, locvol->prefix);
 	g_hash_table_remove (pv->volumes_by_name, name);
 	
@@ -508,7 +571,7 @@ gkr_location_manager_unregister (GkrLocationManager *locmgr, const gchar *name)
 }
 
 GSList*
-gkr_location_manager_get_locations (GkrLocationManager *locmgr)
+gkr_location_manager_get_base_locations (GkrLocationManager *locmgr)
 {
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
 	GSList *ret = NULL;	
@@ -519,6 +582,20 @@ gkr_location_manager_get_locations (GkrLocationManager *locmgr)
 	return ret; 
 }
 
+const gchar*
+gkr_location_manager_get_base_display (GkrLocationManager *locmgr, GQuark base_loc)
+{
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	GkrLocationVolume *locvol;
+	
+	locvol = g_hash_table_lookup (pv->volumes_by_loc, GUINT_TO_POINTER (base_loc));
+	if (!locvol) {
+		g_warning ("'%s' is not a valid base location", g_quark_to_string (base_loc));
+		return NULL;
+	}
+	
+	return locvol->friendly;
+}
 
 /* -----------------------------------------------------------------------------
  * GLOBAL FUNCTIONS
@@ -531,18 +608,17 @@ typedef struct _FindClosestName {
 } FindClosestName;
 
 static void
-find_closest_name (const gchar* name, GkrLocationVolume *locvol, FindClosestName *ctx)
+find_closest_name (gpointer unused, GkrLocationVolume *locvol, FindClosestName *ctx)
 {
 	guint len;
 	
-	g_assert (name && name[0]);
 	g_assert (locvol);
 	
 	len = strlen (locvol->prefix);
 	if (strncmp (ctx->search, locvol->prefix, len) == 0) {
 		if (!ctx->matched || strlen (ctx->matched) < len)
 			ctx->matched = locvol->prefix;
-			ctx->name = name;
+			ctx->name = locvol->name;
 	} 
 }
 
@@ -564,16 +640,26 @@ gkr_location_from_path (const gchar *path)
 	FindClosestName ctx = { path, NULL, NULL };
 	GQuark res;
 	gchar *loc;
+	const gchar *c;
 	
 	g_assert (path && path[0]);
 	g_assert (g_path_is_absolute (path));
+	
+	/* We don't allow a colon in our paths */
+	for (c = path; *c; ++c) {
+		if (*c == ':') {
+			g_warning ("path has a colon in it. It cannot be used as a location: %s", path);
+			g_return_val_if_reached (0);
+		}
+	}
 
 	g_hash_table_foreach (pv->volumes_by_name, (GHFunc)find_closest_name, &ctx); 
 	
+	/* Manually use filesystem if nothing matched */
 	if (!ctx.name) {
-		ctx.name = DEFAULT_NAME;
+		ctx.name = pv->file_volume.name;
 		ctx.matched = "";
-	}		
+	} 
 	
 	/* Take off the prefix */
 	path += strlen (ctx.matched);
@@ -587,62 +673,82 @@ gkr_location_from_path (const gchar *path)
 GQuark
 gkr_location_from_child (GQuark parent, const gchar *child)
 {
+	const gchar *c;
 	gchar *path;
 	GQuark loc;
 	
 	g_assert (parent);
 	
+	/* We don't allow a colon in our paths */
+	for (c = child; *c; ++c) {
+		if (*c == ':') {
+			g_warning ("path has a colon in it. It cannot be used as a location: %s", path);
+			g_return_val_if_reached (0);
+		}
+	}
+
 	path = g_build_path (G_DIR_SEPARATOR_S, g_quark_to_string (parent), child, NULL);
 	loc = g_quark_from_string (path);
 	g_free (path);
 	return loc;
 }
 
-gchar* 
-gkr_location_to_path (GQuark location)
+static GkrLocationVolume*
+location_to_volume (GQuark loc, const gchar **remainder)
 {
 	GkrLocationManager *locmgr = gkr_location_manager_get ();
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
 	GkrLocationVolume *locvol;
-	const gchar *current;
-	const gchar *bdelim, *edelim;
-	gchar *name, *res;
-	guint l;
+	const gchar *bdelim, *sloc;
+	gchar *name;
 	
-	g_assert (location);
+	g_assert (loc);
 
-	current = g_quark_to_string (location);
-	g_assert (current);
-	
-	bdelim = strchr (current, LOC_DELIMITER_C);
-	edelim = strrchr (current, LOC_DELIMITER_C);
-	if (edelim == bdelim)
-		edelim = current + strlen (current);
-	
-	if (!bdelim || !edelim) {
-		g_warning ("The '%s' location is invalid", current);
-		g_assert_not_reached ();
+	sloc = g_quark_to_string (loc);
+	g_assert (sloc);
+
+	bdelim = strchr (sloc, LOC_DELIMITER_C);
+	if (!bdelim) {
+		g_warning ("The '%s' location is invalid", sloc);
 		return NULL;
 	}
 	
-	g_assert (bdelim < edelim);
+	name = g_strndup (sloc, bdelim - sloc);
 	
-	name = g_strndup (current, bdelim - current);
 	locvol = g_hash_table_lookup (pv->volumes_by_name, name);
-	g_free (name);
-	
 	if (!locvol) {
-		g_warning ("The '%s' location is invalid or no longer exists", current);		
+		g_warning ("The '%s' location is invalid or no longer exists", sloc);		
+		g_free (name);
 		return NULL;
 	}
 
-	++bdelim;
+	g_free (name);
+	if (remainder)
+		*remainder = bdelim + 1;
+	return locvol;
+} 
+
+gchar* 
+gkr_location_to_path (GQuark loc)
+{
+	GkrLocationVolume *locvol;
+	const gchar *edelim, *path;
+	gsize l;
+	gchar *res;
 	
+	locvol = location_to_volume (loc, &path);
+	if (!locvol)
+		return NULL;
+
+	edelim = strrchr (path, LOC_DELIMITER_C);
+	if (edelim == NULL)
+		edelim = path + strlen (path);
+
 	/* Assemble carefully */
 	l = strlen (locvol->prefix);
-	res = g_malloc0 (l + (edelim - bdelim) + 1);
+	res = g_malloc0 (l + (edelim - path) + 2);
 	memcpy (res, locvol->prefix, l);
-	memcpy (res + l, bdelim, (edelim - bdelim));
+	memcpy (res + l, path, (edelim - path));
 	return res;
 }
 
@@ -662,4 +768,16 @@ gkr_location_is_descendant (GQuark parent, GQuark descendant)
 	if (!sparent || !sdescendant)
 		return FALSE;
 	return memcmp (sparent, sdescendant, strlen (sparent)) == 0;
+}
+
+GQuark
+gkr_location_get_base (GQuark loc)
+{
+	GkrLocationVolume *locvol;
+	
+	locvol = location_to_volume (loc, NULL);
+	if (!locvol)
+		return 0;
+		
+	return locvol->base_loc;
 }

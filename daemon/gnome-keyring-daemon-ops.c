@@ -619,7 +619,7 @@ request_keyring_access (GkrKeyringRequest *req, GkrKeyring *keyring)
 
 static gboolean
 request_new_keyring_password (GkrKeyringRequest *req, const char *keyring_name, 
-                              gchar **password)
+                              gchar **password, GQuark *base_loc)
 {
 	GnomeKeyringApplicationRef *app = req->app_ref;
 	GkrAskRequest* ask;
@@ -682,8 +682,9 @@ request_new_keyring_password (GkrKeyringRequest *req, const char *keyring_name,
 	                           GKR_ASK_REQUEST_NEW_PASSWORD);
 	
 	gkr_ask_request_set_secondary (ask, message);
-	
 	g_free (message);
+
+	gkr_ask_request_set_location_selector (ask, TRUE);
 
 	gkr_ask_daemon_process (ask);
 	
@@ -691,6 +692,7 @@ request_new_keyring_password (GkrKeyringRequest *req, const char *keyring_name,
 	if (ret) {
 		g_free (*password);
 		*password = gnome_keyring_memory_strdup (ask->typed_password);
+		*base_loc = ask->location_selected;
 	}
 	
 	g_object_unref (ask);
@@ -812,7 +814,8 @@ check_keyring_default_request (GkrAskRequest* ask)
 		g_assert (ask->typed_password);
 		
 		/* Create the new keyring */
-		keyring = gkr_keyring_create ("default", ask->typed_password);
+		keyring = gkr_keyring_create (GKR_LOCATION_BASE_LOCAL, "default", 
+		                              ask->typed_password);
 		if (keyring == NULL) {
 			g_warning ("couldn't create default keyring");
 			ask->response = GKR_ASK_RESPONSE_FAILURE;
@@ -1103,6 +1106,7 @@ static gboolean
 op_create_keyring (GkrBuffer *packet, GkrBuffer *result,
                    GkrKeyringRequest *req)
 {
+	GQuark base_loc = GKR_LOCATION_BASE_LOCAL;
 	char *keyring_name, *password;
 	GkrKeyring *keyring;
 	GnomeKeyringOpCode opcode;
@@ -1127,12 +1131,12 @@ op_create_keyring (GkrBuffer *packet, GkrBuffer *result,
 	}
 	
 	/* Let user pick password if necessary*/
-	if (!request_new_keyring_password (req, keyring_name, &password)) {
+	if (!request_new_keyring_password (req, keyring_name, &password, &base_loc)) {
 		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
 	}
 	
-	keyring = gkr_keyring_create (keyring_name, password);
+	keyring = gkr_keyring_create (base_loc, keyring_name, password);
 	if (keyring == NULL) {
 		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;

@@ -25,6 +25,10 @@
 
 #include <glib.h>
 
+#define        GKR_LOCATION_NAME_LOCAL     "LOCAL"
+
+#define        GKR_LOCATION_BASE_LOCAL     (gkr_location_from_string (GKR_LOCATION_NAME_LOCAL ":"))
+
 GQuark         gkr_location_from_path      (const gchar *path);
 
 GQuark         gkr_location_from_string    (const gchar *str);
@@ -35,7 +39,9 @@ const gchar*   gkr_location_to_string      (GQuark loc);
  
 gchar*         gkr_location_to_path        (GQuark loc);
 
-gboolean       gkr_location_is_descendant (GQuark parent, GQuark descendant);
+gboolean       gkr_location_is_descendant  (GQuark parent, GQuark descendant);
+
+GQuark         gkr_location_get_base       (GQuark loc);
 
 #include <glib-object.h>
 
@@ -69,12 +75,16 @@ GkrLocationManager*      gkr_location_manager_get                (void);
 
 void                     gkr_location_manager_register           (GkrLocationManager *locmgr, 
                                                                   const gchar *name, 
-                                                                  const gchar *prefix);
+                                                                  const gchar *prefix, 
+                                                                  const gchar *friendly);
 
 void                     gkr_location_manager_unregister         (GkrLocationManager *locmgr, 
                                                                   const gchar *name);
 
-GSList*	                 gkr_location_manager_get_locations      (GkrLocationManager *locmgr);
+GSList*	                 gkr_location_manager_get_base_locations (GkrLocationManager *locmgr);
+
+const gchar*             gkr_location_manager_get_base_display   (GkrLocationManager *locmgr,
+                                                                  GQuark base_loc);
 
 G_END_DECLS
 

@@ -82,6 +82,7 @@ struct _GkrAskRequest {
 	/* Results */
 	GkrAskResponse response;
 	gboolean checked;
+	GQuark location_selected;
 	gchar* original_password;
 	gchar* typed_password;
 };
@@ -104,6 +105,12 @@ void               gkr_ask_request_set_secondary    (GkrAskRequest *ask,
                                                      
 void               gkr_ask_request_set_check_option (GkrAskRequest *ask,
                                                      const gchar *check_text);
+
+void               gkr_ask_request_set_location_selector (GkrAskRequest *ask,
+                                                          gboolean have);
+                                                          
+void               gkr_ask_requset_set_location     (GkrAskRequest *ask,
+                                                     GQuark loc);
 
 GObject*           gkr_ask_request_get_object       (GkrAskRequest *ask);
 

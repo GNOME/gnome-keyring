@@ -169,6 +169,12 @@ update_keyring_location (gpointer key, LocationInfo *locinfo, GHashTable *checks
 
 	if (stat (dirname, &statbuf) < 0) {
 		g_free (dirname);
+		
+		/* If it doesn't yet exist, then keep checking */
+		if (errno == ENOENT || errno == ENOTDIR)
+			return FALSE;
+		
+		/* Otherwise, some other error, remove from list */
 		return TRUE;
 	}
 	
@@ -296,7 +302,7 @@ keyrings_init (void)
 	locmgr = gkr_location_manager_get ();
 	g_signal_connect (locmgr, "location-added", G_CALLBACK (location_added), NULL);
 	g_signal_connect (locmgr, "location-removed", G_CALLBACK (location_removed), NULL);
-	locations = gkr_location_manager_get_locations (locmgr);
+	locations = gkr_location_manager_get_base_locations (locmgr);
 	for (l = locations; l; l = g_slist_next (l))
 		location_added (locmgr, GPOINTER_TO_UINT (l->data), NULL);
 	g_slist_free (locations);

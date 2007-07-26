@@ -13,7 +13,9 @@ INCLUDES=	\
 	$(GLIB_CFLAGS)
 
 gnome_keyring_ask_SOURCES = \
-	gkr-ask-tool.c gkr-ask-request.h
+	gkr-ask-tool.c gkr-ask-tool.h \
+	gkr-ask-tool-widgets.c \
+	gkr-ask-request.h
 	
 gnome_keyring_ask_CFLAGS = \
 	$(GTK_CFLAGS)

@@ -1,3 +1,7 @@
+2007-07-26  Stef Walter  <stef@memberwebs.com>
+
+	* POTFILES.in: Added common/gkr-location.c
+	
 2007-07-25  Theppitak Karoonboonyanan  <thep@linux.thai.net>
 
 	* th.po: Updated Thai translation.

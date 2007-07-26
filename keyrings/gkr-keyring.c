@@ -61,7 +61,8 @@ enum {
 
 enum {
     PROP_0,
-    PROP_NAME
+    PROP_NAME,
+    PROP_LOCATION
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -800,7 +801,7 @@ write_all (int fd, const guchar *buf, size_t len)
 }
 
 static GQuark
-get_default_location_for_name (const char *keyring_name)
+get_default_location_for_name (GQuark base_loc, const char *keyring_name)
 {
 	gchar *path = NULL;
 	gchar *base, *filename;
@@ -816,9 +817,11 @@ get_default_location_for_name (const char *keyring_name)
 		g_free (path);
 		
 		if (version == 0) 
-			filename = g_strdup_printf ("LOCAL:/keyrings/%s.keyring", base);
+			filename = g_strdup_printf ("%s/keyrings/%s.keyring", 
+			                            g_quark_to_string (base_loc), base);
 		else
-			filename = g_strdup_printf ("LOCAL:/keyrings/%s%d.keyring", base, version);
+			filename = g_strdup_printf ("%s/keyrings/%s%d.keyring", 
+			                            g_quark_to_string (base_loc), base, version);
 
 		loc = gkr_location_from_string (filename);
 		g_free (filename);
@@ -862,6 +865,9 @@ gkr_keyring_get_property (GObject *obj, guint prop_id, GValue *value,
 	switch (prop_id) {
 	case PROP_NAME:
 		g_value_set_string (value, keyring->keyring_name);
+		break;
+	case PROP_LOCATION:
+		g_value_set_uint (value, keyring->location);
 		break;
 	}
 }
@@ -913,6 +919,10 @@ gkr_keyring_class_init (GkrKeyringClass *klass)
 	g_object_class_install_property (gobject_class, PROP_NAME,
 		g_param_spec_string ("name", "Name", "Keyring Name",
 		                     NULL, G_PARAM_READABLE));
+		                     
+	g_object_class_install_property (gobject_class, PROP_LOCATION,
+		g_param_spec_uint ("location", "Location", "File Location",
+		                   0, G_MAXUINT, 0, G_PARAM_READABLE));
 	
 	signals[ITEM_ADDED] = g_signal_new ("item-added", GKR_TYPE_KEYRING, 
 			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrKeyringClass, item_added),
@@ -945,13 +955,13 @@ gkr_keyring_new (const char *name, GQuark location)
 }
 
 GkrKeyring*
-gkr_keyring_create (const gchar *keyring_name, const gchar *password)
+gkr_keyring_create (GQuark base_loc, const gchar *keyring_name, const gchar *password)
 {
 	GkrKeyring *keyring;
 	
 	keyring = gkr_keyring_new (keyring_name, 0);
 	if (keyring != NULL) {
-		keyring->location = get_default_location_for_name (keyring_name);
+		keyring->location = get_default_location_for_name (base_loc, keyring_name);
 		keyring->locked = FALSE;
 		keyring->password = gnome_keyring_memory_strdup (password);
 		gkr_keyring_save_to_disk (keyring);
@@ -1138,6 +1148,8 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 
 	if (generate_file (&out, keyring)) {
 		dirname = g_path_get_dirname (file);
+		if (g_mkdir_with_parents (dirname, S_IRWXU) < 0)
+			g_warning ("unable to create keyring dir");
 		template = g_build_filename (dirname, ".keyringXXXXXX", NULL);
 		
 		fd = g_mkstemp (template);

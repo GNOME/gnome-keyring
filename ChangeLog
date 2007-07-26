@@ -1,5 +1,22 @@
 2007-07-26  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location.c:
+	* common/gkr-location.h:
+	* daemon/gnome-keyring-daemon-ops.c:
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyring.h:
+	* keyrings/gkr-keyrings.c:
+	* tests/unit-test-location.c:
+	* ui/gkr-ask-request.c:
+	* ui/gkr-ask-request.h:
+	* ui/gkr-ask-tool.c:
+	* ui/gkr-ask-tool.h: (added)
+	* ui/gkr-ask-tool-widgets.c: (added)
+	* ui/Makefile.am: Add indications in the UI when a keyring is on 
+	a removable drive. Add option to create keyrings on a non-local drive.
+	
+2007-07-26  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-dbus.c: (split from daemon/gnome-keyring-daemon-dbus.c)
 	* common/gkr-dbus.h: (added)
 	* common/gkr-location.c: (added)

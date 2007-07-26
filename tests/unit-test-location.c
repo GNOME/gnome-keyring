@@ -81,7 +81,8 @@ void unit_test_location_media (CuTest* cu)
 	GQuark loc;
 	
 	/* Device is inserted */
-	gkr_location_manager_register (gkr_location_manager_get (), MEDIA_SERIAL, MEDIA_DEVICE);
+	gkr_location_manager_register (gkr_location_manager_get (), 
+	                               MEDIA_SERIAL, MEDIA_DEVICE, "Test Media");
 	
 	loc = gkr_location_from_path (path);
 	CuAssert (cu, "should return a non-zero loc quark", loc != 0);
@@ -97,7 +98,8 @@ void unit_test_location_media (CuTest* cu)
 	CuAssert (cu, "should return a null path", path2 == NULL);
 		
 	/* Device is inserted at another path */
-	gkr_location_manager_register (gkr_location_manager_get (), MEDIA_SERIAL, MEDIA_DEVICE2);
+	gkr_location_manager_register (gkr_location_manager_get (), 
+	                               MEDIA_SERIAL, MEDIA_DEVICE2, "Test Media");
 	
 	path2 = gkr_location_to_path (loc);
 	CuAssert (cu, "should return non-null path", path2 != NULL);

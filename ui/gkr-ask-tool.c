@@ -22,30 +22,30 @@
 
 #include "config.h"
 
+#include "gkr-ask-tool.h"
+#include "gkr-ask-request.h"
+
+#include <gtk/gtk.h>
+#include <glib/gi18n.h>
+
+#include <err.h>
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-
-#include "gkr-ask-request.h"
-
-static const gchar *env_title = NULL;
-static const gchar *env_primary = NULL;
-static const gchar *env_secondary = NULL;
-static const gchar *env_checktext = NULL;
-static guint env_flags = 0;
+static GKeyFile *input_data = NULL;
+static GKeyFile *output_data = NULL;
 
 static gchar*
 create_markup (const gchar *primary, const gchar *secondary)
 {
 	/* We're passed markup for both of these */
 	return g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s", 
-	                        primary, secondary);
+	                        primary, secondary ? secondary : "");
 }
 
 static gchar*
@@ -131,7 +131,7 @@ unlock_memory (void)
 static void
 lock_memory (void)
 {
-	int r = -1;
+	int r = 0;
 
 	/* 
 	 * TODO: This is a copout, due to the fact that GTK, and the entry 
@@ -156,7 +156,6 @@ run_dialog (gboolean include_password,
 	    gboolean include_original,
 	    char **password_out,
 	    char **original_out,
-	    gboolean *check_out,
 	    guint default_response,
 	    const gchar *first_button_text,
 	    ...)
@@ -164,22 +163,27 @@ run_dialog (gboolean include_password,
 	GtkWidget *dialog;
 	GtkLabel *message_widget;
 	GtkLabel *notice;
-	char *message;
+	char *message, *value, *value2;
 	char *notice_text;
 	GtkWidget *old, *entry, *confirm;
-	GtkWidget *vbox;
+	GtkWidget *vbox, *label;
 	gint response;
 	va_list args;
 	const char *text;
 	gint response_id;
 	GtkWidget *table, *ptable;
-	GtkWidget *image, *check;
+	GtkWidget *image, *check, *location;
 	const char *password;
 	const char *confirmation;
 	const char *original;
 	int row;
 
-	dialog = gtk_dialog_new_with_buttons (env_title , NULL, 0, NULL, NULL);
+	value = g_key_file_get_value (input_data, "general", "title", NULL);
+	if (!value)
+		err (1, "no 'title' field in input data");
+	dialog = gtk_dialog_new_with_buttons (value, NULL, 0, NULL, NULL);
+	g_free (value);
+	
 	gtk_window_set_icon_name(GTK_WINDOW(dialog), "stock_lock");
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
  	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
@@ -222,7 +226,15 @@ run_dialog (gboolean include_password,
 	gtk_table_attach (GTK_TABLE (table), image, 
 	                  0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	
-	message = create_markup (env_primary, env_secondary);
+	value = g_key_file_get_value (input_data, "general", "primary", NULL);
+	if (!value)
+		err (1, "no 'primary' field in input data");
+	value2 = g_key_file_get_value (input_data, "general", "secondary", NULL);
+
+	message = create_markup (value, value2);
+	g_free (value);
+	g_free (value2);
+	
 	message_widget = GTK_LABEL (gtk_label_new (message));
 	g_free (message);
 	gtk_label_set_use_markup (message_widget, TRUE);
@@ -248,25 +260,35 @@ run_dialog (gboolean include_password,
 	gtk_table_set_col_spacings (GTK_TABLE (ptable), 12);
 	gtk_container_set_border_width (GTK_CONTAINER (ptable), 5);
 	gtk_box_pack_start (GTK_BOX (vbox), ptable, FALSE, TRUE, 0);
-	
+
+	location = gkr_ask_tool_create_location (input_data);
+	if (location) {
+		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);
+		label = gtk_label_new_with_mnemonic (_("_Location:"));
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), location);
+		gtk_table_attach (GTK_TABLE (ptable), label,
+				  0, 1, row - 1, row,
+				  GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+		gtk_table_attach_defaults (GTK_TABLE (ptable), location,
+		                           1, 2, row - 1, row);
+	}
+		
 	old = NULL;
 	if (include_original) {
-		GtkWidget *label_old;
-
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
-		label_old = gtk_label_new_with_mnemonic (_("_Old password:"));
+		label = gtk_label_new_with_mnemonic (_("_Old password:"));
 		old = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (old), FALSE);
-		gtk_label_set_mnemonic_widget (GTK_LABEL (label_old), 
-					       old);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), old);
 		g_signal_connect_swapped (old,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
-		gtk_table_attach (GTK_TABLE (ptable), label_old,
+		gtk_table_attach (GTK_TABLE (ptable), label,
 				  0, 1, row - 1, row,
 				  GTK_FILL, GTK_SHRINK, 0, 6);
-		gtk_misc_set_alignment (GTK_MISC (label_old), 0.0, 0.5);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_table_attach (GTK_TABLE (ptable), old,
 				  1, 2, row - 1, row, 
 				  GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 6);
@@ -274,22 +296,19 @@ run_dialog (gboolean include_password,
 	
 	entry = NULL;
 	if (include_password) {
-		GtkWidget *label_entry;
-		
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
-		label_entry = gtk_label_new_with_mnemonic (_("_Password:"));
+		label = gtk_label_new_with_mnemonic (_("_Password:"));
 		entry = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
-		gtk_label_set_mnemonic_widget (GTK_LABEL (label_entry), 
-					       entry);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 		g_signal_connect_swapped (entry,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
-		gtk_table_attach (GTK_TABLE (ptable), label_entry,
+		gtk_table_attach (GTK_TABLE (ptable), label,
 				  0, 1, row - 1, row,
 				  GTK_FILL, GTK_SHRINK, 0, 0);
-		gtk_misc_set_alignment (GTK_MISC (label_entry), 0.0, 0.5);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (ptable), 
 					   entry,
 					   1, 2, row - 1, row);
@@ -297,22 +316,21 @@ run_dialog (gboolean include_password,
 
 	confirm = NULL;
 	if (include_confirm) {
-		GtkWidget *label_confirm;
 		GtkWidget *strength_bar;
 	
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
-		label_confirm = gtk_label_new_with_mnemonic (_("_Confirm password:"));
+		label = gtk_label_new_with_mnemonic (_("_Confirm password:"));
 		confirm = gtk_entry_new ();
 		gtk_entry_set_visibility (GTK_ENTRY (confirm), FALSE);
-		gtk_label_set_mnemonic_widget (GTK_LABEL (label_confirm), confirm);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), confirm);
 		g_signal_connect_swapped (confirm,
 					  "activate",
 					  G_CALLBACK (gtk_window_activate_default),
 					  dialog);
-		gtk_table_attach (GTK_TABLE (ptable), label_confirm,
+		gtk_table_attach (GTK_TABLE (ptable), label,
 				  0, 1, row - 1, row,
 				  GTK_FILL, GTK_SHRINK, 0, 0);
-		gtk_misc_set_alignment (GTK_MISC (label_confirm), 0.0, 0.5);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_table_attach_defaults (GTK_TABLE (ptable), 
 					   confirm,
 					   1, 2, row - 1, row);
@@ -330,11 +348,15 @@ run_dialog (gboolean include_password,
 	}
 	
 	check = NULL;
-	if (env_checktext) {
+	if (g_key_file_get_boolean (input_data, "check", "check-enable", NULL)) {
+		value = g_key_file_get_value (input_data, "check", "check-text", NULL);
+		if (!value)
+			err (1, "'check-enable' set, but no 'check-text'");
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);
-		check = gtk_check_button_new_with_mnemonic (env_checktext);
+		check = gtk_check_button_new_with_mnemonic (value);
 		gtk_table_attach_defaults (GTK_TABLE (ptable), check,  
 		                           1, 2, row - 1, row);
+		g_free (value);
 	}
 	
 	if (row > 0)
@@ -384,12 +406,16 @@ run_dialog (gboolean include_password,
 		*password_out = g_strdup (password);
 	}
 	
-	if (check_out) {
-		if (check != NULL && response >= GKR_ASK_RESPONSE_ALLOW)
-			*check_out = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check));
-		else
-			*check_out = FALSE;
+	if (check != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
+		g_key_file_set_boolean (output_data, "check", "check-active", 
+		                        gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check)));
 	}
+	
+	if (location != NULL) {
+		text = gkr_ask_tool_get_location (location);
+		if (text != NULL)
+			g_key_file_set_value (output_data, "location", "location-selected", text);
+	}		                      
 
 	gtk_widget_destroy (dialog);
 	
@@ -399,42 +425,42 @@ run_dialog (gboolean include_password,
 static void 
 prepare_dialog (void)
 {
-	gchar *password, *original;
+	gchar *password = NULL;
+	gchar *original = NULL;
 	const gchar* buttons[6];
 	guint resps[6];
 	int i = 0;
 	guint response;
-	gboolean checked;
-	
-	g_assert (env_title);
-	g_assert (env_primary);
+	guint flags;
 	
 	memset (buttons, 0, sizeof (buttons));
 	memset (resps, 0, sizeof (resps));
 	
 	password = original = NULL;
 	
-	if (!(env_flags & GKR_ASK_REQUEST_BUTTONS_MASK)) 
-		env_flags |= GKR_ASK_REQUEST_OK_DENY_BUTTONS;
+	flags = g_key_file_get_integer (input_data, "general", "flags", NULL);
+	
+	if (!(flags & GKR_ASK_REQUEST_BUTTONS_MASK)) 
+		flags |= GKR_ASK_REQUEST_OK_DENY_BUTTONS;
 	
 	/* In order of preference for default response */
-	if (env_flags & GKR_ASK_REQUEST_DENY_BUTTON) {
+	if (flags & GKR_ASK_REQUEST_DENY_BUTTON) {
 		buttons[i] = _("Deny");
 		resps[i++] = GKR_ASK_RESPONSE_DENY;
 	}
-	if (env_flags & GKR_ASK_REQUEST_CANCEL_BUTTON) {
+	if (flags & GKR_ASK_REQUEST_CANCEL_BUTTON) {
 		buttons[i] = GTK_STOCK_CANCEL;
 		resps[i++] = GKR_ASK_RESPONSE_DENY;
 	}
-	if (env_flags & GKR_ASK_REQUEST_OK_BUTTON) {
+	if (flags & GKR_ASK_REQUEST_OK_BUTTON) {
 		buttons[i] = GTK_STOCK_OK;
 		resps[i++] = GKR_ASK_RESPONSE_ALLOW;
 	}
-	if (env_flags & GKR_ASK_REQUEST_ALLOW_BUTTON) {
+	if (flags & GKR_ASK_REQUEST_ALLOW_BUTTON) {
 		buttons[i] = _("Allow _Once");
 		resps[i++] = GKR_ASK_RESPONSE_ALLOW;
 	}
-	if (env_flags & GKR_ASK_REQUEST_ALLOW_FOREVER_BUTTON) {
+	if (flags & GKR_ASK_REQUEST_ALLOW_FOREVER_BUTTON) {
 		buttons[i] = _("_Always Allow");
 		resps[i++] = GKR_ASK_RESPONSE_ALLOW_FOREVER;
 	}
@@ -442,10 +468,10 @@ prepare_dialog (void)
 	g_assert (i > 0);
 	
 	password = NULL;
-	response = run_dialog (env_flags & GKR_ASK_REQUEST_PASSWORD, 
-	                       env_flags & GKR_ASK_REQUEST_CONFIRM_PASSWORD,
-	                       env_flags & GKR_ASK_REQUEST_ORIGINAL_PASSWORD,
-	                       &password, &original, &checked,
+	response = run_dialog (flags & GKR_ASK_REQUEST_PASSWORD, 
+	                       flags & GKR_ASK_REQUEST_CONFIRM_PASSWORD,
+	                       flags & GKR_ASK_REQUEST_ORIGINAL_PASSWORD,
+	                       &password, &original, 
 	                       resps[i - 1], /* default response, last one added */
 	                       buttons[0], resps[0],
 	                       buttons[1], resps[1],
@@ -462,42 +488,84 @@ prepare_dialog (void)
 		response = GKR_ASK_RESPONSE_FAILURE;
 	}
 	
-	/* Send back the response */
-	printf ("%d %s\n", response, checked ? "checked" : "");
+	if (!password)
+		password = g_strdup ("");
+	if (!original)
+		original = g_strdup ("");
+
+	/* First two lines of the response are always the passwords */
+	if (response < GKR_ASK_RESPONSE_ALLOW || !(flags & GKR_ASK_REQUEST_PASSWORD))
+		password[0] = 0;
+	printf ("%s\n", password);
 		
-	if (response >= GKR_ASK_RESPONSE_ALLOW) {
-		
-		/* Send back the password */
-		if ((env_flags & GKR_ASK_REQUEST_PASSWORD) && password)
-			printf ("%s\n", password);
+	if (response < GKR_ASK_RESPONSE_ALLOW || !(flags & GKR_ASK_REQUEST_ORIGINAL_PASSWORD))
+		original[0] = 0;
+	printf ("%s\n", original);
 	
-		/* And the original */
-		if ((env_flags & GKR_ASK_REQUEST_ORIGINAL_PASSWORD) && original)
-			printf ("%s", original);
+	fflush (stdout);
+	
+	/* Send back the response */
+	g_key_file_set_integer (output_data, "general", "response", response);
+	
+	g_free (password);
+	g_free (original);
+}
+
+static gchar*
+read_all_input (void)
+{
+	GString *data = g_string_new ("");
+	gchar buf[256];
+	int r;
+
+	for (;;) {
+		r = read (0, buf, sizeof (buf));
+		if (r < 0) {
+			if (errno == EAGAIN || errno == EINTR)
+				continue;
+			g_warning ("couldn't read dialog instructions from input: %s",
+			           g_strerror (errno));
+			exit (1);
+		} 
+		if (r == 0)
+			break;
+		g_string_append_len (data, buf, r);
+	}
+	
+	return g_string_free (data, FALSE);
+}
+
+static void
+write_all_output (const gchar *data, gsize len)
+{
+	int res;
+	
+	while (len > 0) {
+		res = write (1, data, len);
+		if (res <= 0) {
+			if (errno == EAGAIN && errno == EINTR)
+				continue;
+			g_warning ("couldn't write dialog response to output: %s",
+			           g_strerror (errno));
+			exit (1);
+		} else  {
+			len -= res;
+			data += res;
+		}
 	}
 }
 
 int
 main (int argc, char *argv[])
 {
-	const gchar *flags;
+	GError *error = NULL;
+	gchar *data;
+	gboolean ret;
+	gsize length;
 	
-	env_title = g_getenv ("ASK_TITLE");
-	env_primary = g_getenv ("ASK_PRIMARY");
-	env_secondary = g_getenv ("ASK_SECONDARY");
-	env_checktext = g_getenv ("ASK_CHECK");
-	flags = g_getenv ("ASK_FLAGS");
+	input_data = g_key_file_new ();
+	output_data = g_key_file_new ();
 	
-	if (!env_title || !env_primary || !env_secondary || !flags) {
-		g_printerr (_("Must be run from gnome-keyring\n"));
-		return 1;
-	}
-	
-	env_flags = atoi (flags);
-	
-	if (env_checktext && !env_checktext[0])
-		env_checktext = NULL;
-
 	gtk_init (&argc, &argv);
 
 #ifdef HAVE_LOCALE_H
@@ -511,7 +579,26 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
+	data = read_all_input ();
+	g_assert (data);
+	
+	ret = g_key_file_load_from_data (input_data, data, strlen (data), G_KEY_FILE_NONE, &error);
+	g_free (data);
+
+	if (!ret) 
+		err (1, "couldn't parse dialog instructions: %s", error->message);
+
 	prepare_dialog ();
+	
+	g_key_file_free (input_data);
+	data = g_key_file_to_data (output_data, &length, &error);
+	g_key_file_free (output_data);
+	
+	if (!data)
+		err (1, "couldn't format dialog response: %s", error->message); 
+	
+	write_all_output (data, length);
+	g_free (data);
 	
 	return 0;
 }

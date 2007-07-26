@@ -34,6 +34,7 @@
 #include "library/gnome-keyring-proto.h"
 
 #include "common/gkr-async.h"
+#include "common/gkr-location.h"
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -68,16 +69,20 @@ typedef struct _GkrAskRequestPrivate GkrAskRequestPrivate;
 
 struct _GkrAskRequestPrivate {
 	GObject* object;
+	GQuark location;
 	
 	gchar *title;
 	gchar *primary;
 	gchar *secondary;
 	gchar *checktext;
+	gboolean location_selector;
 	
 	gboolean completed;
 	guint flags;
 	
 	gint ask_pid;
+	gint in_fd;
+	gint out_fd;
 	GkrBuffer buffer;
 };
 
@@ -269,7 +274,9 @@ static void
 finish_ask_io (GkrAskRequest *ask, gboolean success)
 {
 	GkrAskRequestPrivate *pv;
-	gchar *line, *next;
+	gchar *line, *next, *value;
+	GError *error = NULL;
+	GKeyFile *key_file;
 	int i;
 
 	pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
@@ -293,36 +300,43 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 	 * to a minimum, for security reasons.
 	 */
 	gkr_buffer_add_byte (&pv->buffer, 0);
-	for (i = 0, line = (gchar*)pv->buffer.buf; i < 4; ++i) {
+	for (i = 0, line = (gchar*)pv->buffer.buf; i < 2; ++i) {
 		
 		/* Break out the line */
 		next = strchr (line, '\n');
 		if (next) 
 			*next = 0;
 		
-		/* First line is the response */
-		if (i == 0) {
-			if (pv->checktext) 
-				ask->checked = g_strrstr (line, "checked") ? TRUE : FALSE;
-			ask->response = atol (line);
-			if (ask->response < GKR_ASK_RESPONSE_ALLOW)
-				break;
-				
-		/* Next line is the typed password (if any) */
-		} else if (i == 1) {
+		/* First line is the password */
+		if (i == 0)
 			ask->typed_password = gnome_keyring_memory_strdup (line);
-			
-		/* Last line is the original password (if any) */
-		} else if (i == 2) {
-			ask->original_password = gnome_keyring_memory_strdup (line);
-		}
 		
-		/* No more lines? */
-		if (!next)
-			break;
+		/* Second line is the original password (if any)*/
+		else if (i == 1)
+			ask->original_password = gnome_keyring_memory_strdup (line);
+			
 		line = next + 1;
 	}
 	
+	/* The remainder is a GKeyFile */
+	key_file = g_key_file_new ();
+	if (!g_key_file_load_from_data (key_file, line, strlen (line), G_KEY_FILE_NONE, &error)) {
+		g_warning ("couldn't parse dialog response from ask tool: %s", error->message);
+		g_error_free (error);
+		g_key_file_free (key_file);
+		mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
+		return;
+	}
+	
+	/* Pull out some values */
+	ask->checked = g_key_file_get_boolean (key_file, "check", "check-active", NULL);
+	ask->response = g_key_file_get_integer (key_file, "general", "response", NULL);
+	value = g_key_file_get_value (key_file, "location", "location-selected", NULL);
+	if (value)
+		ask->location_selected = gkr_location_from_string (value);
+	g_free (value);
+	g_key_file_free (key_file);
+		
 	/* An invalid result from the ask tool */
 	if (!ask->response) {
 		mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
@@ -352,18 +366,111 @@ close_fd (gpointer data)
 	*fd = -1;
 }
 
+static gchar*
+prep_dialog_data (GkrAskRequest *ask)
+{
+	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	GkrLocationManager *locmgr;
+	gboolean need_locations = FALSE;
+	GKeyFile *key_file;
+	gchar *value, *data;
+	GArray *array;
+	GSList *locations, *l;
+	GParamSpec *spec;
+	GQuark loc;
+	const gchar *t;
+	
+	key_file = g_key_file_new ();
+	
+	value = format_object_markup (pv->object, pv->title, NULL);
+	g_key_file_set_value (key_file, "general", "title", value);
+	g_free (value);
+	
+	value = format_object_markup (pv->object, pv->primary, NULL);
+	g_key_file_set_value (key_file, "general", "primary", value);
+	g_free (value);
+	
+	value = format_object_markup (pv->object, pv->secondary, NULL);
+	g_key_file_set_value (key_file, "general", "secondary", value);
+	g_free (value);
+	
+	g_key_file_set_integer (key_file, "general", "flags", pv->flags);
+
+	if (pv->checktext) {
+		g_key_file_set_boolean (key_file, "check", "check-enable", TRUE);
+		g_key_file_set_value (key_file, "check", "check-text", pv->checktext);
+	}
+	
+	/* Display the location drop down selector */	
+	if (pv->location_selector) {
+		g_key_file_set_boolean (key_file, "location", "location-selector", TRUE);
+		need_locations = TRUE;
+	}
+
+	if (!pv->location && pv->object) {
+		spec = g_object_class_find_property (G_OBJECT_GET_CLASS (pv->object), "location");
+		if (spec)
+			g_object_get (pv->object, "location", &pv->location, NULL);
+	}
+
+	/* See if we should send a location to display */
+	if (pv->location) {
+		loc = gkr_location_get_base (pv->location);
+		
+		/* Suppress local stuff unless displying the selector */ 
+		if (!need_locations && loc == GKR_LOCATION_BASE_LOCAL)
+			loc = 0;
+			
+		if (loc) {
+			g_key_file_set_value (key_file, "location", "location", 
+			                      gkr_location_to_string (loc));
+			need_locations = TRUE;
+		}
+	}
+	
+	if (need_locations) {
+		locmgr = gkr_location_manager_get ();
+		array = g_array_new (TRUE, TRUE, sizeof (gchar*));
+		locations = gkr_location_manager_get_base_locations (locmgr);
+			
+		/* Send all the locations and all the display names */
+		for (l = locations; l; l = g_slist_next (l)) {
+		 	t = gkr_location_to_string (GPOINTER_TO_UINT (l->data)); 
+			g_array_append_val (array, t);
+		}
+		g_key_file_set_string_list (key_file, "location", "names", (const gchar**)array->data, array->len);
+		
+		g_array_set_size (array, 0);
+		for (l = locations; l; l = g_slist_next (l)) {
+			t = gkr_location_manager_get_base_display (locmgr, GPOINTER_TO_UINT (l->data)); 
+			g_array_append_val (array, t);
+		}
+		g_key_file_set_string_list (key_file, "location", "display-names", (const gchar**)array->data, array->len);
+
+		g_array_free (array, TRUE);
+		g_slist_free (locations);
+	}
+
+	data = g_key_file_to_data (key_file, NULL, NULL);
+	g_return_val_if_fail (data, NULL);
+	
+	return data;
+}
+
 static gboolean
-read_until_end (GkrAskRequest *ask, int fd)
+read_until_end (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	gboolean ret = FALSE;
 	guchar *buf;
 	int res;
 	
+	g_return_val_if_fail (pv->out_fd >= 0, FALSE);
+	
 	/* Passwords come through this buffer */
 	buf = gnome_keyring_memory_alloc (128);
 
-	gkr_async_register_cancel (close_fd, &fd);
+	gkr_async_register_cancel (close_fd, &pv->out_fd);
 
 	for (;;) {
 
@@ -371,7 +478,7 @@ read_until_end (GkrAskRequest *ask, int fd)
 			break;
 
 		gkr_async_begin_concurrent ();
-			res = read (fd, buf, 128);
+			res = read (pv->out_fd, buf, 128);
 		gkr_async_end_concurrent ();
 
 		/* Got an error */
@@ -393,19 +500,20 @@ read_until_end (GkrAskRequest *ask, int fd)
 	}
 	
 	gnome_keyring_memory_free (buf);
-	gkr_async_unregister_cancel (close_fd, &fd);
+	gkr_async_unregister_cancel (close_fd, &pv->out_fd);
+	
+	close_fd (&pv->out_fd);
 
 	return ret;
 }
 
-static int
+static gboolean
 launch_ask_helper (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	const gchar* display;
 	char **envp;
 	int i, n;
-	int stdout_fd;
 	GError *error = NULL;
 	char *argv[] = {
 		LIBEXECDIR "/gnome-keyring-ask",
@@ -419,7 +527,7 @@ launch_ask_helper (GkrAskRequest *ask)
 	n = i;
 	
 	/* Any environment we have */
-	envp = g_new (char*, n + 1 + 6);
+	envp = g_new (char*, n + 2);
 	for (i = 0; i < n; i++)
 		envp[i] = g_strdup (environ[i]);
 	
@@ -427,25 +535,69 @@ launch_ask_helper (GkrAskRequest *ask)
 	display = gkr_ask_daemon_get_display ();
 	if (display && display[0])
 		envp[i++] = g_strdup_printf ("DISPLAY=%s", display);
-	envp[i++] = format_object_markup (pv->object, "ASK_TITLE=", pv->title);
-	envp[i++] = format_object_markup (pv->object, "ASK_PRIMARY=", pv->primary);
-	envp[i++] = format_object_markup (pv->object, "ASK_SECONDARY=", pv->secondary);
-	if (pv->checktext)
-		envp[i++] = g_strdup_printf ("ASK_CHECK=%s", pv->checktext);
-	envp[i++] = g_strdup_printf ("ASK_FLAGS=%d", pv->flags);
 	envp[i++] = NULL;
 
 	gkr_buffer_resize (&pv->buffer, 0);
 	
 	if (!g_spawn_async_with_pipes (NULL, argv, envp, 0, NULL, NULL, &pv->ask_pid, 
-	                               NULL, &stdout_fd, NULL, &error)) {
+	                               &pv->in_fd, &pv->out_fd, NULL, &error)) {
 		g_warning ("couldn't spawn gnome-keyring-ask tool: %s", 
 		           error && error->message ? error->message : "unknown error");
-		stdout_fd = -1;
+		pv->out_fd = -1;
+		pv->in_fd = -1;
+		return FALSE;
 	} 
 	
 	g_strfreev (envp);
-	return stdout_fd;
+	return TRUE;
+}
+
+static gboolean
+send_all_data (GkrAskRequest *ask, const gchar *buf, gsize len)
+{
+	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	gboolean ret = FALSE;
+	int res;
+	
+	g_return_val_if_fail (pv->in_fd >= 0, FALSE);
+	
+	gkr_async_register_cancel (close_fd, &pv->in_fd);
+
+	while (len > 0) {
+
+		if (gkr_async_is_stopping ())
+			break;
+
+		gkr_async_begin_concurrent ();
+			res = write (pv->in_fd, buf, len);
+		gkr_async_end_concurrent ();
+
+		/* Got an error */
+		if (res < 0) {
+			if (errno == EINTR && errno == EAGAIN) 
+				continue;
+			g_warning ("couldn't write data to ask tool: %s", g_strerror (errno));
+			break;
+			
+		/* Got some data */
+		} else if (res > 0) {
+			len -= res;
+			buf += res;
+			
+		/* Eh? */
+		} else if (res == 0) {
+			g_warning ("couldn't write data to ask tool");
+			break;
+		}
+	}
+	
+	if (len == 0)
+		ret = TRUE;
+	
+	gkr_async_unregister_cancel (close_fd, &pv->in_fd);
+	
+	close_fd (&pv->in_fd);
+	return ret;
 }
 
 static void 
@@ -495,6 +647,9 @@ gkr_ask_request_init (GkrAskRequest *ask)
 	pv->secondary = g_strdup ("");
 	pv->checktext = NULL;
 	
+	pv->out_fd = -1;
+	pv->in_fd = -1;
+	
 	/* Use a secure memory buffer */
 	gkr_buffer_init_full (&pv->buffer, 128, gnome_keyring_memory_realloc);
 }
@@ -520,6 +675,11 @@ gkr_ask_request_dispose (GObject *obj)
 	gnome_keyring_free_password (ask->typed_password);
 	ask->typed_password = NULL;
 	
+	if (pv->in_fd >= 0)
+		close_fd (&pv->in_fd);
+	if (pv->out_fd >= 0)
+		close_fd (&pv->out_fd);
+	
 	G_OBJECT_CLASS(gkr_ask_request_parent_class)->dispose (obj);
 }
 
@@ -539,6 +699,8 @@ gkr_ask_request_finalize (GObject *obj)
 	pv->title = pv->primary = pv->secondary = pv->checktext = NULL;
 	
 	g_assert (pv->ask_pid == 0);
+	g_assert (pv->in_fd < 0);
+	g_assert (pv->out_fd < 0);
 	
 	gkr_buffer_uninit (&pv->buffer);
 
@@ -682,7 +844,7 @@ gkr_ask_request_prompt (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	gboolean ret;
-	int outfd;
+	gchar *data;
 	
 	g_assert (GKR_IS_ASK_REQUEST (ask));
 	
@@ -690,10 +852,15 @@ gkr_ask_request_prompt (GkrAskRequest *ask)
 	if (pv->completed) 
 		return;
 	
-	outfd = launch_ask_helper (ask);
-	
-	ret = read_until_end (ask, outfd);
-	
+	ret = launch_ask_helper (ask);
+	if (ret) {
+		data = prep_dialog_data (ask);
+		g_return_if_fail (data);
+		ret = send_all_data (ask, data, strlen (data));
+		g_free (data);
+	}
+	if (ret)
+		ret = read_until_end (ask);
 	finish_ask_io (ask, ret);
 }
 
@@ -714,4 +881,20 @@ gkr_ask_request_is_complete (GkrAskRequest *ask)
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	g_assert (GKR_IS_ASK_REQUEST (ask));
 	return pv->completed;
+}
+
+void
+gkr_ask_request_set_location_selector (GkrAskRequest *ask, gboolean have)
+{
+	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	g_assert (GKR_IS_ASK_REQUEST (ask));
+	pv->location_selector = have;
+}
+                                                          
+void
+gkr_ask_requset_set_location (GkrAskRequest *ask, GQuark loc)
+{
+	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	g_assert (GKR_IS_ASK_REQUEST (ask));
+	pv->location = loc;
 }
