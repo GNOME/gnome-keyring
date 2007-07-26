@@ -3,8 +3,8 @@ standardized way across all GNOME applications.
 
 A keyring stores a collection of encrypted passwords and encrypted information
 about those passwords. A user can have multiple keyrings, each for a different
-use, but there is a "default" one. There is also a special "session" keyring
-which is not stored on disk and goes away when you log out.
+use, but there is a default one, called 'login'. There is also a special "session" 
+keyring which is not stored on disk and goes away when you log out.
 
 When a user logs into GNOME, the keyrings are locked and a master keyring
 password has to be provided in order to unlock each of them. A keyring can be
@@ -29,18 +29,6 @@ Attributes can be integers or strings.
 
 Storing a password in a keyring
 -------------------------------
-
-Applications should provide the user an opportunity to select the keyring in
-which to store the password. The default keyring can be obtained by calling
-
-	gnome_keyring_get_default_keyring
-
-while a list of all available keyrings can be obtained by calling the
-
-	gnome_keyring_list_keyring_names
-
-function. Passing NULL for keyring parameter in any gnome-keyring function
-will use the default one.
 
 The example code below demonstrates how to add the new password (and associated
 data) into the selected keyring:
@@ -135,6 +123,20 @@ given to the application.
 Note that multiple ways of approving key usage are provided to the user, such
 as "Deny", "Allow this time", "Allow always".
 
+Using multiple keyrings
+-----------------------
+
+Applications should provide the user an opportunity to select the keyring in
+which to store the password. The default keyring can be obtained by calling
+
+	gnome_keyring_get_default_keyring
+
+while a list of all available keyrings can be obtained by calling the
+
+	gnome_keyring_list_keyring_names
+
+function. Passing NULL for keyring parameter in any gnome-keyring function
+will use the default one.
 
 Some notes about gnome-keyring API
 ----------------------------------

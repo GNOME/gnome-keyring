@@ -1,5 +1,9 @@
 2007-07-26  Stef Walter  <stef@memberwebs.com>
 
+	* doc/keyring-intro.txt: Updated docs to match wiki
+	
+2007-07-26  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-location.c:
 	* common/gkr-location.h:
 	* daemon/gnome-keyring-daemon-ops.c:
