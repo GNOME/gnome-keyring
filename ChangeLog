@@ -1,5 +1,11 @@
 2007-07-27  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location.c: Fix warning when building with 
+	WITH_TESTS not enabled. Patch from Claudio Saavedra
+	Fixes bug #461011
+
+2007-07-27  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Bump version
 	
 === gnome-keyring 2.19.6 === 

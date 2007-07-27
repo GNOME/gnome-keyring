@@ -402,7 +402,10 @@ static void
 gkr_location_manager_init (GkrLocationManager *locmgr)
 {
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	const gchar *home, *env;
+	const gchar *home;
+#ifdef WITH_TESTS
+	const gchar *env;
+#endif
 	gchar *local = NULL;
 
 	pv->volumes_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, 
