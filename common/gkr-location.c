@@ -67,7 +67,9 @@ struct _GkrLocationManagerPrivate;
 typedef struct _GkrLocationManagerPrivate GkrLocationManagerPrivate;
 
 struct _GkrLocationManagerPrivate {
+#ifdef WITH_HAL
 	LibHalContext *hal_ctx;
+#endif
 	GHashTable *volumes_by_name;
 	GHashTable *volumes_by_loc;
 	GHashTable *volumes_by_prefix;

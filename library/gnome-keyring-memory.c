@@ -249,12 +249,13 @@ gchar*
 gnome_keyring_memory_strdup (const gchar* str)
 {
 	unsigned long len;
+	gchar *res;
 	
 	if (!str)
 		return NULL;
 	
 	len = strlen (str) + 1;	
-	gchar *res = (gchar*)gnome_keyring_memory_alloc (len);
+	res = (gchar*)gnome_keyring_memory_alloc (len);
 	strcpy (res, str);
 	return res;
 }

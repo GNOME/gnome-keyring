@@ -1,5 +1,11 @@
 2007-07-27  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location.c:
+	* library/gnome-keyring-memory.c: Build fixes from Jens
+	Granseuer. Fixes bug #461025
+
+2007-07-27  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-location.c: Fix warning when building with 
 	WITH_TESTS not enabled. Patch from Claudio Saavedra
 	Fixes bug #461011
