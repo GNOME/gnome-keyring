@@ -1,3 +1,8 @@
+2007-07-27  Stef Walter  <stef@memberwebs.com>
+
+	* ui/gkr-ask-tool.c: Grab the keyboard properly when prompting
+	for a password. Fixes bug #349729
+
 2007-07-26  Stef Walter  <stef@memberwebs.com>
 
 	* doc/keyring-intro.txt: Updated docs to match wiki

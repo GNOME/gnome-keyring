@@ -39,6 +39,7 @@
 
 static GKeyFile *input_data = NULL;
 static GKeyFile *output_data = NULL;
+static gboolean grabbed = FALSE;
 
 static gchar*
 create_markup (const gchar *primary, const gchar *secondary)
@@ -148,6 +149,41 @@ lock_memory (void)
 		g_warning ("couldn't lock process in memory: %s", strerror (errno));
 	else
 		g_atexit (unlock_memory);
+}
+
+static gboolean
+grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
+{
+	if (!grabbed)
+		if (gdk_keyboard_grab (win->window, FALSE, gdk_event_get_time (event)))
+			g_message ("could not grab keyboard");
+	grabbed = TRUE;
+	return FALSE;
+}
+
+static gboolean
+ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
+{
+	if (!grabbed)
+		gdk_keyboard_ungrab (gdk_event_get_time (event));
+	grabbed = FALSE;
+	return FALSE;
+}
+
+static gboolean
+window_state_changed (GtkWidget *win, GdkEventWindowState *event, gpointer data)
+{
+	GdkWindowState state = gdk_window_get_state (win->window);
+	
+	if (state & GDK_WINDOW_STATE_WITHDRAWN ||
+	    state & GDK_WINDOW_STATE_ICONIFIED ||
+	    state & GDK_WINDOW_STATE_FULLSCREEN ||
+	    state & GDK_WINDOW_STATE_MAXIMIZED)
+	    	ungrab_keyboard (win, (GdkEvent*)event, data);
+	else
+		grab_keyboard (win, (GdkEvent*)event, data);
+		
+	return FALSE;
 }
 
 static gint
@@ -362,6 +398,25 @@ run_dialog (gboolean include_password,
 	if (row > 0)
 		gtk_widget_show_all (ptable);
 
+	/* 
+	 * When passwords are involved we grab the keyboard so that people
+	 * don't accidentally type their passwords in other windows.
+	 */
+	if (include_password || include_confirm || include_original) { 
+		g_signal_connect (dialog, "map-event", G_CALLBACK (grab_keyboard), NULL);
+		g_signal_connect (dialog, "unmap-event", G_CALLBACK (ungrab_keyboard), NULL);
+		g_signal_connect (dialog, "window-state-event", G_CALLBACK (window_state_changed), NULL); 
+	}
+
+	/* 
+	 * We do this to guarantee the dialog comes up on top. Since the code that
+	 * that prompted this dialog is many processes away, we can't figure out 
+	 * a window to be transient for. 
+	 */
+	gtk_window_set_keep_above (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+	gtk_window_set_type_hint (GTK_WINDOW (dialog), GDK_WINDOW_TYPE_HINT_NORMAL);
+	
 	/*
 	 * We do this as late as possible, so all the memory the process needs is 
 	 * allocated in memory. This prevents mapping failures.
