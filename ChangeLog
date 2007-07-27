@@ -1,5 +1,10 @@
 2007-07-27  Stef Walter  <stef@memberwebs.com>
 
+	* tests/unit-test-location.c: Choose dummy mount names less likely
+	to interfere with real mounts.
+	
+2007-07-27  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-location.c: 
 	* ui/gkr-ask-tool-widgets.c: Fix compiler warnings
 	

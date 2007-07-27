@@ -41,8 +41,8 @@
  * Tests be run in the order specified here.
  */
  
-#define MEDIA_DEVICE "/media/TravelDrive"
-#define MEDIA_DEVICE2 "/media/TravelDrive2"
+#define MEDIA_DEVICE "/media/DummyMount"
+#define MEDIA_DEVICE2 "/media/DummyMount2"
 #define MEDIA_SERIAL "MEDIA-0239482093"
 
 
