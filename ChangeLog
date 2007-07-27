@@ -1,3 +1,10 @@
+=== gnome-keyring 2.19.6 === 
+
+2007-07-27  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS:
+	* configure.in: Released version 2.19.6
+	
 2007-07-27  Stef Walter  <stef@memberwebs.com>
 
 	* tests/unit-test-location.c: Choose dummy mount names less likely

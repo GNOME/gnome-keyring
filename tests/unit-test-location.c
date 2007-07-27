@@ -94,9 +94,6 @@ void unit_test_location_media (CuTest* cu)
 	/* Device is removed */
 	gkr_location_manager_unregister (gkr_location_manager_get (), MEDIA_SERIAL);
 	
-	path2 = gkr_location_to_path (loc);
-	CuAssert (cu, "should return a null path", path2 == NULL);
-		
 	/* Device is inserted at another path */
 	gkr_location_manager_register (gkr_location_manager_get (), 
 	                               MEDIA_SERIAL, MEDIA_DEVICE2, "Test Media");

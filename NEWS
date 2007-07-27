@@ -1,3 +1,11 @@
+Changes in version 2.19.6 are:
+* Grab the keyboard when prompting for passwords, and always put the prompt
+  window above other windows.
+* Now supports use of keyrings on removable drives. 
+* PAM module to automatically unlock keyrings on login, or unlocking
+* Simplify daemon code (now uses cooperative threading) and get it ready for
+  other PKCS#11, SSH and other stuff running in same process.
+
 Changes in version 2.19.5 are:
 * Allow passing NULL as a password to gnome_keyring_unlock()
 * Added strerror() like functionality for GnomeKeyringResult
