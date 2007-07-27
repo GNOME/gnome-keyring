@@ -22,7 +22,7 @@ create_location_label (GKeyFile *input_data)
 {
 	GtkWidget *widget = NULL;
 	GtkWidget *label, *image;
-	const gchar *display;
+	const gchar *display = NULL;
 	gchar *location = NULL;
 	gchar **loc_names = NULL;
 	gsize i, n_loc_names, n_loc_displays;

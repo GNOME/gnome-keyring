@@ -1,5 +1,10 @@
 2007-07-27  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location.c: 
+	* ui/gkr-ask-tool-widgets.c: Fix compiler warnings
+	
+2007-07-27  Stef Walter  <stef@memberwebs.com>
+
 	* ui/gkr-ask-tool.c: Grab the keyboard properly when prompting
 	for a password. Fixes bug #349729
 
@@ -240,7 +245,7 @@
 
 	* configure.in: Bump version number
 
-=== gnome-keyring 2.19.4 === 
+=== gnome-keyring 2.19.5 === 
 
 2007-07-06  Stef Walter  <stef@memberwebs.com>
 

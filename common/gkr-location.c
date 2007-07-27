@@ -682,7 +682,7 @@ gkr_location_from_child (GQuark parent, const gchar *child)
 	/* We don't allow a colon in our paths */
 	for (c = child; *c; ++c) {
 		if (*c == ':') {
-			g_warning ("path has a colon in it. It cannot be used as a location: %s", path);
+			g_warning ("path has a colon in it. It cannot be used as a location: %s", child);
 			g_return_val_if_reached (0);
 		}
 	}
