@@ -1,5 +1,11 @@
 2007-07-27  Stef Walter  <stef@memberwebs.com>
 
+	* pam/Makefile.am:
+	* configure.in: Better installing of PAM module.
+	Patch from Matthias Clasen. See bug #461045
+
+2007-07-27  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-location.c:
 	* library/gnome-keyring-memory.c: Build fixes from Jens
 	Granseuer. Fixes bug #461025
