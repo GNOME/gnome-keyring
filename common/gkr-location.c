@@ -444,9 +444,8 @@ gkr_location_manager_init (GkrLocationManager *locmgr)
 static void 
 gkr_location_manager_dispose (GObject *obj)
 {
-	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (obj);
-
 #ifdef WITH_HAL
+	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (obj);
 	location_manager_hal_uninit (locmgr);
 #endif	
 	

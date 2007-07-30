@@ -10,16 +10,14 @@ INCLUDES=	\
 	-I$(top_srcdir)/library/			\
 	-I$(top_builddir) 				\
 	$(GOBJECT_CFLAGS) 				\
-	$(GLIB_CFLAGS)
-
+	$(GLIB_CFLAGS)					\
+	$(GTK_CFLAGS)
+	
 gnome_keyring_ask_SOURCES = \
 	gkr-ask-tool.c gkr-ask-tool.h \
 	gkr-ask-tool-widgets.c \
 	gkr-ask-request.h
 	
-gnome_keyring_ask_CFLAGS = \
-	$(GTK_CFLAGS)
-
 gnome_keyring_ask_LDADD = \
 	$(GTK_LIBS)
 

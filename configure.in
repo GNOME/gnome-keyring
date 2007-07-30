@@ -222,7 +222,7 @@ if test "$enable_hal" != "no"; then
 	fi
 fi
 
-AM_CONDITIONAL(WITH_PAM, test "$have_pam" = "yes")
+AM_CONDITIONAL(WITH_HAL, test "$have_hal" = "yes")
 
 # --------------------------------------------------------------------
 # PAM Checks
