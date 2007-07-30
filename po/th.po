@@ -8,21 +8,34 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-25 14:57+0700\n"
-"PO-Revision-Date: 2007-07-25 15:00+0700\n"
+"POT-Creation-Date: 2007-07-30 14:58+0700\n"
+"PO-Revision-Date: 2007-07-30 15:04+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: common/gkr-location.c:290
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "ดิสก์ถอดเสียบ: %s"
+
+#: common/gkr-location.c:292
+msgid "Removable Disk"
+msgstr "ดิสก์ถอดเสียบ"
+
+#: common/gkr-location.c:436
+msgid "Home"
+msgstr "บ้าน"
+
 #. TRANSLATORS: this is the title for an item
-#: daemon/gnome-keyring-daemon-ops.c:183
+#: daemon/gnome-keyring-daemon-ops.c:188
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "ปลดรหัสผ่านสำหรับพวงกุญแจ %s"
 
-#: daemon/gnome-keyring-daemon-ops.c:401
+#: daemon/gnome-keyring-daemon-ops.c:414
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -30,14 +43,14 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
-#: daemon/gnome-keyring-daemon-ops.c:404
+#: daemon/gnome-keyring-daemon-ops.c:417
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
 msgstr "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
-#: daemon/gnome-keyring-daemon-ops.c:409 daemon/gnome-keyring-daemon-ops.c:417
+#: daemon/gnome-keyring-daemon-ops.c:422 daemon/gnome-keyring-daemon-ops.c:430
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -45,21 +58,21 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
-#: daemon/gnome-keyring-daemon-ops.c:412 daemon/gnome-keyring-daemon-ops.c:420
+#: daemon/gnome-keyring-daemon-ops.c:425 daemon/gnome-keyring-daemon-ops.c:433
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
 msgstr "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
-#: daemon/gnome-keyring-daemon-ops.c:425
+#: daemon/gnome-keyring-daemon-ops.c:438
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
 msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
-#: daemon/gnome-keyring-daemon-ops.c:427
+#: daemon/gnome-keyring-daemon-ops.c:440
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -67,69 +80,69 @@ msgid ""
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
 #. And put together the ask request
-#: daemon/gnome-keyring-daemon-ops.c:433
+#: daemon/gnome-keyring-daemon-ops.c:446
 msgid "Allow access"
 msgstr "ยอมให้ใช้"
 
-#: daemon/gnome-keyring-daemon-ops.c:433
+#: daemon/gnome-keyring-daemon-ops.c:446
 msgid "Allow application access to keyring?"
 msgstr "ยอมให้โปรแกรมใช้พวงกุญแจนี้ไหม?"
 
-#: daemon/gnome-keyring-daemon-ops.c:531
+#: daemon/gnome-keyring-daemon-ops.c:544
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gnome-keyring-daemon-ops.c:535
+#: daemon/gnome-keyring-daemon-ops.c:548
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจ %s ซึ่งถูกล็อคอยู่"
 
-#: daemon/gnome-keyring-daemon-ops.c:541 daemon/gnome-keyring-daemon-ops.c:551
+#: daemon/gnome-keyring-daemon-ops.c:554 daemon/gnome-keyring-daemon-ops.c:564
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gnome-keyring-daemon-ops.c:545 daemon/gnome-keyring-daemon-ops.c:556
+#: daemon/gnome-keyring-daemon-ops.c:558 daemon/gnome-keyring-daemon-ops.c:569
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจ %s ซึ่งถูกล็อคอยู่"
 
-#: daemon/gnome-keyring-daemon-ops.c:562
+#: daemon/gnome-keyring-daemon-ops.c:575
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gnome-keyring-daemon-ops.c:566
+#: daemon/gnome-keyring-daemon-ops.c:579
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรมที่ไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/gnome-keyring-daemon-ops.c:573
+#: daemon/gnome-keyring-daemon-ops.c:586
 msgid "Enter password for default keyring to unlock"
 msgstr "ใส่รหัสผ่านสำหรับเปิดล็อคพวงกุญแจปริยาย"
 
-#: daemon/gnome-keyring-daemon-ops.c:575
+#: daemon/gnome-keyring-daemon-ops.c:588
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "ใส่รหัสผ่านสำหรับเปิดล็อคพวงกุญแจ '%s'"
 
 #. And put together the ask request
-#: daemon/gnome-keyring-daemon-ops.c:579
+#: daemon/gnome-keyring-daemon-ops.c:592
 msgid "Unlock Keyring"
 msgstr "เปิดล็อคพวงกุญแจ"
 
-#: daemon/gnome-keyring-daemon-ops.c:591
+#: daemon/gnome-keyring-daemon-ops.c:604
 msgid "Automatically unlock this keyring when I log in."
 msgstr "ปลดล็อคพวงกุญแจนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
 
-#: daemon/gnome-keyring-daemon-ops.c:627
+#: daemon/gnome-keyring-daemon-ops.c:640
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -137,7 +150,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:631
+#: daemon/gnome-keyring-daemon-ops.c:644
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -145,21 +158,21 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:637 daemon/gnome-keyring-daemon-ops.c:647
+#: daemon/gnome-keyring-daemon-ops.c:650 daemon/gnome-keyring-daemon-ops.c:660
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr "โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:641 daemon/gnome-keyring-daemon-ops.c:651
+#: daemon/gnome-keyring-daemon-ops.c:654 daemon/gnome-keyring-daemon-ops.c:664
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:657
+#: daemon/gnome-keyring-daemon-ops.c:670
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -167,7 +180,7 @@ msgid ""
 msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:661
+#: daemon/gnome-keyring-daemon-ops.c:674
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -175,15 +188,15 @@ msgid ""
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
 #. And put together the ask request
-#: daemon/gnome-keyring-daemon-ops.c:667
+#: daemon/gnome-keyring-daemon-ops.c:680
 msgid "New Keyring Password"
 msgstr "รหัสผ่านพวงกุญแจใหม่"
 
-#: daemon/gnome-keyring-daemon-ops.c:668
+#: daemon/gnome-keyring-daemon-ops.c:681
 msgid "Choose password for new keyring"
 msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจใหม่"
 
-#: daemon/gnome-keyring-daemon-ops.c:713
+#: daemon/gnome-keyring-daemon-ops.c:728
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -192,7 +205,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:717
+#: daemon/gnome-keyring-daemon-ops.c:732
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -201,7 +214,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:723 daemon/gnome-keyring-daemon-ops.c:733
+#: daemon/gnome-keyring-daemon-ops.c:738 daemon/gnome-keyring-daemon-ops.c:748
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -209,7 +222,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:727 daemon/gnome-keyring-daemon-ops.c:737
+#: daemon/gnome-keyring-daemon-ops.c:742 daemon/gnome-keyring-daemon-ops.c:752
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -217,7 +230,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:743
+#: daemon/gnome-keyring-daemon-ops.c:758
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -226,7 +239,7 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:747
+#: daemon/gnome-keyring-daemon-ops.c:762
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -235,22 +248,22 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gnome-keyring-daemon-ops.c:757
+#: daemon/gnome-keyring-daemon-ops.c:772
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจ '%s'"
 
-#: daemon/gnome-keyring-daemon-ops.c:759
+#: daemon/gnome-keyring-daemon-ops.c:774
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจปริยาย"
 
 #. And put together the ask request
-#: daemon/gnome-keyring-daemon-ops.c:763
+#: daemon/gnome-keyring-daemon-ops.c:778
 msgid "Change Keyring Password"
 msgstr "เปลี่ยนรหัสผ่านพวงกุญแจ"
 
-#: daemon/gnome-keyring-daemon-ops.c:829
+#: daemon/gnome-keyring-daemon-ops.c:845
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -260,7 +273,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการเก็บรหัสผ่าน แต่คุณไม่มีพวงกุญแจปริยาย ถ้าจะสร้างพวงกุญแจดังกล่าว "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
-#: daemon/gnome-keyring-daemon-ops.c:833 daemon/gnome-keyring-daemon-ops.c:837
+#: daemon/gnome-keyring-daemon-ops.c:849 daemon/gnome-keyring-daemon-ops.c:853
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -270,7 +283,7 @@ msgstr ""
 "โปรแกรม '%s' ต้องการเก็บรหัสผ่าน แต่คุณไม่มีพวงกุญแจปริยาย ถ้าจะสร้างพวงกุญแจดังกล่าว "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
-#: daemon/gnome-keyring-daemon-ops.c:841
+#: daemon/gnome-keyring-daemon-ops.c:857
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -281,11 +294,11 @@ msgstr ""
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
 #. And put together the ask request
-#: daemon/gnome-keyring-daemon-ops.c:846
+#: daemon/gnome-keyring-daemon-ops.c:862
 msgid "Create Default Keyring"
 msgstr "สร้างพวงกุญแจปริยาย"
 
-#: daemon/gnome-keyring-daemon-ops.c:846
+#: daemon/gnome-keyring-daemon-ops.c:862
 msgid "Choose password for default keyring"
 msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจปริยาย"
 
@@ -313,50 +326,52 @@ msgstr "มีพวงกุญแจชื่อนี้อยู่ก่อ
 msgid "Programmer error: The application sent invalid data."
 msgstr "ข้อผิดพลาดของผู้เขียนโปรแกรม: โปรแกรมส่งข้อมูลผิดพลาด"
 
-#: ui/gkr-ask-tool.c:257
+#: ui/gkr-ask-tool.c:303
+msgid "_Location:"
+msgstr "_ตำแหน่งเก็บ:"
+
+#: ui/gkr-ask-tool.c:316
 msgid "_Old password:"
 msgstr "รหัสผ่านเ_ดิม:"
 
-#: ui/gkr-ask-tool.c:280
+#: ui/gkr-ask-tool.c:336
 msgid "_Password:"
 msgstr "_รหัสผ่าน:"
 
-#: ui/gkr-ask-tool.c:304
+#: ui/gkr-ask-tool.c:358
 msgid "_Confirm password:"
 msgstr "_ยืนยันรหัสผ่าน:"
 
-#: ui/gkr-ask-tool.c:323
+#: ui/gkr-ask-tool.c:377
 msgid "New password strength"
 msgstr "ความแน่นหนาของรหัสผ่าน"
 
-#: ui/gkr-ask-tool.c:356
+#: ui/gkr-ask-tool.c:433
 msgid "Old password cannot be blank."
 msgstr "รหัสผ่านเดิมเป็นค่าว่างเปล่าไม่ได้"
 
-#: ui/gkr-ask-tool.c:368
+#: ui/gkr-ask-tool.c:445
 msgid "Password cannot be blank."
 msgstr "รหัสผ่านเป็นค่าว่างเปล่าไม่ได้"
 
-#: ui/gkr-ask-tool.c:377
+#: ui/gkr-ask-tool.c:454
 msgid "Passwords do not match."
 msgstr "รหัสผ่านไม่ตรงกัน"
 
-#: ui/gkr-ask-tool.c:422
+#: ui/gkr-ask-tool.c:503
 msgid "Deny"
 msgstr "ปฏิเสธ"
 
-#: ui/gkr-ask-tool.c:434
+#: ui/gkr-ask-tool.c:515
 msgid "Allow _Once"
 msgstr "ยอมแ_ค่ครั้งนี้"
 
-#: ui/gkr-ask-tool.c:438
+#: ui/gkr-ask-tool.c:519
 msgid "_Always Allow"
 msgstr "ยอม_ตลอดไป"
 
-#: ui/gkr-ask-tool.c:492
-#, c-format
-msgid "Must be run from gnome-keyring\n"
-msgstr "ต้องเรียกจาก gnome-keyring\n"
+#~ msgid "Must be run from gnome-keyring\n"
+#~ msgstr "ต้องเรียกจาก gnome-keyring\n"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
