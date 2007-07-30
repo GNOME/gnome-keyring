@@ -1,3 +1,10 @@
+=== gnome-keyring 2.19.6.1 === 
+
+2007-07-30  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS:
+	* configure.in: Released version 2.19.6.1
+
 2007-07-30  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-location.c:

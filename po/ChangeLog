@@ -1,3 +1,5 @@
+=== gnome-keyring 2.19.6.1 === 
+
 2007-07-30  Theppitak Karoonboonyanan  <thep@linux.thai.net>
 
 	* th.po: Updated Thai translation.
@@ -13,6 +15,8 @@
 2007-07-28  Takeshi AIHANA <takeshi.aihana@gmail.com>
 
 	* ja.po: Updated Japanese translation.
+
+=== gnome-keyring 2.19.6 === 
 
 2007-07-27  Jorge Gonzalez <jorgegonz@svn.gnome.org>
 

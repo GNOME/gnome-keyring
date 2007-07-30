@@ -1,3 +1,8 @@
+Changes in version 2.19.6.1 are:
+* Fix uninitialized variable in 'get_item_info' operation
+* Better installing of PAM module on Fedora. [Matthias Clasen]
+* Build fixes [Jens Granseuer, Claudio Saavedra]
+
 Changes in version 2.19.6 are:
 * Grab the keyboard when prompting for passwords, and always put the prompt
   window above other windows.
