@@ -1,3 +1,8 @@
+2007-07-30  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gnome-keyring-daemon-ops.c: Fix uninitialized variable
+	in op_get_item_info(). Fixes bug #461342
+	
 2007-07-27  Stef Walter  <stef@memberwebs.com>
 
 	* pam/Makefile.am:

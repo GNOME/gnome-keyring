@@ -1495,7 +1495,7 @@ op_get_item_info (GkrBuffer *packet, GkrBuffer *result,
 	GkrKeyringItem *item;
 	GnomeKeyringOpCode opcode;
 	guint32 item_id, flags;
-	gboolean ret;
+	gboolean ret = TRUE;
 	GnomeKeyringResult res;
 	
 	if (!gnome_keyring_proto_decode_get_item_info (packet, &opcode, &keyring_name,
