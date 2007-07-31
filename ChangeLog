@@ -1,3 +1,8 @@
+2007-07-31  Stef Walter  <stef@memberwebs.com>
+
+	* tests/unit-test-location.c: Fix wrong test with regards to 
+	location children.
+	
 === gnome-keyring 2.19.6.1 === 
 
 2007-07-30  Stef Walter  <stef@memberwebs.com>

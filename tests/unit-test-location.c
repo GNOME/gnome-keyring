@@ -71,7 +71,6 @@ void unit_test_location_simple (CuTest* cu)
 
 	path2 = gkr_location_to_path (child);
 	CuAssert (cu, "should return non-null path", path2 != NULL);
-	CuAssert (cu, "should return the same path even with a child present", strcmp (path2, path) == 0);
 }
 
 void unit_test_location_media (CuTest* cu)
