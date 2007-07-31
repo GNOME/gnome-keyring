@@ -28,7 +28,6 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
-#include <err.h>
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
@@ -40,6 +39,18 @@
 static GKeyFile *input_data = NULL;
 static GKeyFile *output_data = NULL;
 static gboolean grabbed = FALSE;
+
+/* Because Solaris doesn't have err() :( */
+static void 
+fatal (const char *msg1, const char *msg2)
+{
+	fprintf (stderr, "%s: %s%s%s\n", 
+	         g_get_prgname (),
+	         msg1 ? msg1 : "", 
+	         msg1 && msg2 ? ": " : "",
+	         msg2 ? msg2 : "");
+	exit (1);
+}
 
 static gchar*
 create_markup (const gchar *primary, const gchar *secondary)
@@ -216,7 +227,7 @@ run_dialog (gboolean include_password,
 
 	value = g_key_file_get_value (input_data, "general", "title", NULL);
 	if (!value)
-		err (1, "no 'title' field in input data");
+		fatal ("no 'title' field in input data", NULL);
 	dialog = gtk_dialog_new_with_buttons (value, NULL, 0, NULL, NULL);
 	g_free (value);
 	
@@ -264,7 +275,7 @@ run_dialog (gboolean include_password,
 	
 	value = g_key_file_get_value (input_data, "general", "primary", NULL);
 	if (!value)
-		err (1, "no 'primary' field in input data");
+		fatal ("no 'primary' field in input data", NULL);
 	value2 = g_key_file_get_value (input_data, "general", "secondary", NULL);
 
 	message = create_markup (value, value2);
@@ -387,7 +398,7 @@ run_dialog (gboolean include_password,
 	if (g_key_file_get_boolean (input_data, "check", "check-enable", NULL)) {
 		value = g_key_file_get_value (input_data, "check", "check-text", NULL);
 		if (!value)
-			err (1, "'check-enable' set, but no 'check-text'");
+			fatal ("'check-enable' set, but no 'check-text'", NULL);
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);
 		check = gtk_check_button_new_with_mnemonic (value);
 		gtk_table_attach_defaults (GTK_TABLE (ptable), check,  
@@ -637,11 +648,14 @@ main (int argc, char *argv[])
 	data = read_all_input ();
 	g_assert (data);
 	
+	if (!data[0])
+		fatal ("no dialog instructions", NULL);	
+	
 	ret = g_key_file_load_from_data (input_data, data, strlen (data), G_KEY_FILE_NONE, &error);
 	g_free (data);
 
-	if (!ret) 
-		err (1, "couldn't parse dialog instructions: %s", error->message);
+	if (!ret)
+		fatal ("couldn't parse dialog instructions", error->message);
 
 	prepare_dialog ();
 	
@@ -650,7 +664,7 @@ main (int argc, char *argv[])
 	g_key_file_free (output_data);
 	
 	if (!data)
-		err (1, "couldn't format dialog response: %s", error->message); 
+		fatal ("couldn't format dialog response", error->message); 
 	
 	write_all_output (data, length);
 	g_free (data);

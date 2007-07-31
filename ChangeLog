@@ -1,6 +1,11 @@
 2007-07-31  Stef Walter  <stef@memberwebs.com>
 
-    * pam/Makefile.am:
+	* ui/gkr-ask-tool.c: Don't use err () because of Solaris.
+	Fixes bug #462114
+	
+2007-07-31  Stef Walter  <stef@memberwebs.com>
+
+	* pam/Makefile.am:
 	* configure.in: Configurable option for PAM library directory.
 	Patch from Matthias Clasen. Fixes bug #461045
 	
