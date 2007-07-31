@@ -31,9 +31,8 @@
 #include "common/gkr-buffer.h"
 #include "common/gkr-location.h"
 
-#include "daemon/gnome-keyring-daemon.h"
-
 #include "library/gnome-keyring-memory.h"
+#include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
 
 #include <glib.h>
@@ -301,14 +300,14 @@ generate_acl_data (GkrBuffer *buffer,
 		ac = l->data;
 		
 		gkr_buffer_add_uint32 (buffer, ac->types_allowed);
-		if (!gnome_keyring_proto_add_utf8_string (buffer, ac->application->display_name)) {
+		if (!gkr_proto_add_utf8_string (buffer, ac->application->display_name)) {
 			return FALSE;
 		}
-		if (!gnome_keyring_proto_add_utf8_string (buffer, ac->application->pathname)) {
+		if (!gkr_proto_add_utf8_string (buffer, ac->application->pathname)) {
 			return FALSE;
 		}
 		/* Reserved: */
-		if (!gnome_keyring_proto_add_utf8_string (buffer, NULL)) {
+		if (!gkr_proto_add_utf8_string (buffer, NULL)) {
 			return FALSE;
 		}
 		gkr_buffer_add_uint32 (buffer, 0);
@@ -326,28 +325,28 @@ generate_encrypted_data (GkrBuffer *buffer, GkrKeyring *keyring)
 	GkrKeyringItem *item;
 	
 	/* Make sure we're using non-pageable memory */
-	gnome_keyring_proto_go_secure (buffer);
+	gkr_proto_go_secure (buffer);
 	
 	for (l = keyring->items; l != NULL; l = l->next) {
 		item = l->data;
-		if (!gnome_keyring_proto_add_utf8_string (buffer, item->display_name)) {
+		if (!gkr_proto_add_utf8_string (buffer, item->display_name)) {
 			return FALSE;
 		}
-		if (!gnome_keyring_proto_add_utf8_secret (buffer, item->secret)) {
+		if (!gkr_proto_add_utf8_secret (buffer, item->secret)) {
 			return FALSE;
 		}
-		gnome_keyring_proto_add_time (buffer, item->ctime);
-		gnome_keyring_proto_add_time (buffer, item->mtime);
+		gkr_proto_add_time (buffer, item->ctime);
+		gkr_proto_add_time (buffer, item->mtime);
 
 		/* reserved: */
-		if (!gnome_keyring_proto_add_utf8_string (buffer, NULL)) {
+		if (!gkr_proto_add_utf8_string (buffer, NULL)) {
 			return FALSE;
 		}
 		for (i = 0; i < 4; i++) {
 			gkr_buffer_add_uint32 (buffer, 0);
 		}
 
-		if (!gnome_keyring_proto_add_attribute_list (buffer, item->attributes)) {
+		if (!gkr_proto_add_attribute_list (buffer, item->attributes)) {
 			return FALSE;
 		}
 		if (!generate_acl_data (buffer, item->acl)) {
@@ -379,12 +378,12 @@ generate_file (GkrBuffer *buffer, GkrKeyring *keyring)
 	gkr_buffer_add_byte (buffer, 0); /* crypto (0 == AEL) */
 	gkr_buffer_add_byte (buffer, 0); /* hash (0 == MD5) */
 
-	if (!gnome_keyring_proto_add_utf8_string (buffer, keyring->keyring_name)) {
+	if (!gkr_proto_add_utf8_string (buffer, keyring->keyring_name)) {
 		return FALSE;
 	}
 
-	gnome_keyring_proto_add_time (buffer, keyring->mtime);
-	gnome_keyring_proto_add_time (buffer, keyring->ctime);
+	gkr_proto_add_time (buffer, keyring->mtime);
+	gkr_proto_add_time (buffer, keyring->ctime);
 	
 	flags = 0;
 	if (keyring->lock_on_idle) {
@@ -408,9 +407,9 @@ generate_file (GkrBuffer *buffer, GkrKeyring *keyring)
 		gkr_buffer_add_uint32 (buffer, item->id);
 		gkr_buffer_add_uint32 (buffer, item->type);
 		
-		hashed = gnome_keyring_attributes_hash (item->attributes);
+		hashed = gkr_keyring_item_attributes_hash (item->attributes);
 
-		if (!gnome_keyring_proto_add_attribute_list (buffer, hashed)) {
+		if (!gkr_proto_add_attribute_list (buffer, hashed)) {
 			gnome_keyring_attribute_list_free (hashed);
 			return FALSE;
 		}
@@ -466,17 +465,14 @@ decode_acl (GkrBuffer *buffer, gsize offset, gsize *offset_out, GList **out)
 		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &x)) {
 			goto bail;
 		}
-		if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset,
-							  &name)) {
+		if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &name)) {
 			goto bail;
 		}
-		if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset,
-							  &path)) {
+		if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &path)) {
 			g_free (name);
 			goto bail;
 		}
-		if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset,
-							  &reserved) ||
+		if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &reserved) ||
 		    reserved != NULL) {
 			g_free (name);
 			g_free (path);
@@ -569,14 +565,13 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 		return FALSE;
 	}
 
-	if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset,
-						  &display_name)) {
+	if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &display_name)) {
 		goto bail;
 	}
-	if (!gnome_keyring_proto_get_time (buffer, offset, &offset, &ctime)) {
+	if (!gkr_proto_get_time (buffer, offset, &offset, &ctime)) {
 		goto bail;
 	}
-	if (!gnome_keyring_proto_get_time (buffer, offset, &offset, &mtime)) {
+	if (!gkr_proto_get_time (buffer, offset, &offset, &mtime)) {
 		goto bail;
 	}
 	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &flags)) {
@@ -588,7 +583,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &hash_iterations)) {
 		goto bail;
 	}
-	if (!gnome_keyring_proto_get_bytes (buffer, offset, &offset, salt, 8)) {
+	if (!gkr_proto_get_bytes (buffer, offset, &offset, salt, 8)) {
 		goto bail;
 	}
 	
@@ -616,8 +611,8 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 						     &items[i].type)) {
 			goto bail;
 		}
-		if (!gnome_keyring_proto_decode_attribute_list (buffer, offset, &offset,
-								&items[i].hashed_attributes)) {
+		if (!gkr_proto_decode_attribute_list (buffer, offset, &offset,
+		                                      &items[i].hashed_attributes)) {
 			goto bail;
 		}
 	}
@@ -648,25 +643,25 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 			locked = FALSE;
 			offset += 16; /* Skip hash */
 			for (i = 0; i < num_items; i++) {
-				if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset,
-									  &items[i].display_name)) {
+				if (!gkr_proto_get_utf8_string (buffer, offset, &offset,
+				                                &items[i].display_name)) {
 					goto bail;
 				}
-				if (!gnome_keyring_proto_get_utf8_secret (buffer, offset, &offset,
-									  &items[i].secret)) {
+				if (!gkr_proto_get_utf8_secret (buffer, offset, &offset,
+				                                &items[i].secret)) {
 					goto bail;
 				}
-				if (!gnome_keyring_proto_get_time (buffer, offset, &offset,
-								   &items[i].ctime)) {
+				if (!gkr_proto_get_time (buffer, offset, &offset,
+				                         &items[i].ctime)) {
 					goto bail;
 				}
-				if (!gnome_keyring_proto_get_time (buffer, offset, &offset,
-								   &items[i].mtime)) {
+				if (!gkr_proto_get_time (buffer, offset, &offset,
+				                         &items[i].mtime)) {
 					goto bail;
 				}
 				reserved = NULL;
-				if (!gnome_keyring_proto_get_utf8_string (buffer, offset, &offset,
-									  &reserved) ||
+				if (!gkr_proto_get_utf8_string (buffer, offset, &offset,
+				                                &reserved) ||
 				    reserved != NULL) {
 					g_free (reserved);
 					goto bail;
@@ -681,8 +676,8 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 						goto bail;
 					}
 				}
-				if (!gnome_keyring_proto_decode_attribute_list (buffer, offset, &offset,
-										&items[i].attributes)) {
+				if (!gkr_proto_decode_attribute_list (buffer, offset, &offset,
+				                                      &items[i].attributes)) {
 					goto bail;
 				}
 				

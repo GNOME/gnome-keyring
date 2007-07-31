@@ -28,6 +28,8 @@
 
 #include "library/gnome-keyring-memory.h"
 
+#include <gcrypt.h>
+
 #include <glib.h>
 
 #include <string.h>
@@ -38,6 +40,50 @@ enum {
 };
 
 G_DEFINE_TYPE (GkrKeyringItem, gkr_keyring_item, G_TYPE_OBJECT);
+
+/* -----------------------------------------------------------------------------
+ * HELPERS
+ */
+ 
+static guint32
+hash_int (guint32 x)
+{
+	/* Just random 32bit hash. Security here is not very important */
+	return 0x18273645 ^ x ^ (x << 16 | x >> 16);
+}
+
+static char*
+md5_digest_to_ascii (unsigned char digest[16])
+{
+	static char hex_digits[] = "0123456789abcdef";
+	char *res;
+	int i;
+  
+	res = g_malloc (33);
+  
+	for (i = 0; i < 16; i++) {
+		res[2*i] = hex_digits[digest[i] >> 4];
+		res[2*i+1] = hex_digits[digest[i] & 0xf];
+	}
+  
+	res[32] = 0;
+	return res;
+}
+
+static char *
+hash_string (const char *str)
+{
+	guchar digest[16];
+
+	if (str == NULL)
+		return NULL;
+
+	/* In case the world changes on us... */
+	g_return_val_if_fail (gcry_md_get_algo_dlen (GCRY_MD_MD5) == sizeof (digest), NULL);
+	
+	gcry_md_hash_buffer (GCRY_MD_MD5, (void*)digest, str, strlen (str));
+	return md5_digest_to_ascii (digest);
+}
 
 /* -----------------------------------------------------------------------------
  * OBJECT 
@@ -207,4 +253,33 @@ gkr_keyring_item_match (GkrKeyringItem *item, GnomeKeyringItemType type,
 	}
 	
 	return TRUE;
+}
+
+GnomeKeyringAttributeList *
+gkr_keyring_item_attributes_hash (GnomeKeyringAttributeList *attributes)
+{
+	GnomeKeyringAttributeList *hashed;
+	GnomeKeyringAttribute *orig_attribute;
+	GnomeKeyringAttribute attribute;
+	int i;
+
+	hashed = g_array_new (FALSE, FALSE, sizeof (GnomeKeyringAttribute));
+	for (i = 0; i < attributes->len; i++) {
+		orig_attribute = &gnome_keyring_attribute_list_index (attributes, i);
+		attribute.name = g_strdup (orig_attribute->name);
+		attribute.type = orig_attribute->type;
+		switch (attribute.type) {
+		case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
+			attribute.value.string = hash_string (orig_attribute->value.string);
+			break;
+		case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
+			attribute.value.integer = hash_int (orig_attribute->value.integer);
+			break;
+		default:
+			g_assert_not_reached ();
+		}
+		g_array_append_val (hashed, attribute);
+	}
+
+	return hashed;
 }

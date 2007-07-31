@@ -22,14 +22,14 @@
 
 #include "config.h"
 
-#include "gnome-keyring.h"
-#include "gnome-keyring-daemon.h"
+#include "gkr-daemon.h"
 
 #include "common/gkr-buffer.h"
 #include "common/gkr-location.h"
 
 #include "keyrings/gkr-keyrings.h"
 
+#include "library/gnome-keyring.h"
 #include "library/gnome-keyring-memory.h"
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
@@ -52,111 +52,6 @@
 
 /* for requesting list access to items */
 #define  GNOME_KEYRING_ACCESS_LIST 0
-
-static guint32
-hash_int (guint32 x)
-{
-	/* Just random 32bit hash. Security here is not very important */
-	return 0x18273645 ^ x ^ (x << 16 | x >> 16);
-}
-
-static char*
-md5_digest_to_ascii (unsigned char digest[16])
-{
-  static char hex_digits[] = "0123456789abcdef";
-  char *res;
-  int i;
-  
-  res = g_malloc (33);
-  
-  for (i = 0; i < 16; i++) {
-    res[2*i] = hex_digits[digest[i] >> 4];
-    res[2*i+1] = hex_digits[digest[i] & 0xf];
-  }
-  
-  res[32] = 0;
-  
-  return res;
-}
-
-static char *
-hash_string (const char *str)
-{
-	guchar digest[16];
-
-	if (str == NULL)
-		return NULL;
-
-	/* In case the world changes on us... */
-	g_return_val_if_fail (gcry_md_get_algo_dlen (GCRY_MD_MD5) == sizeof (digest), NULL);
-	
-	gcry_md_hash_buffer (GCRY_MD_MD5, (void*)digest, str, strlen (str));
-	return md5_digest_to_ascii (digest);
-}
-
-GnomeKeyringAttributeList *
-gnome_keyring_attributes_hash (GnomeKeyringAttributeList *attributes)
-{
-	GnomeKeyringAttributeList *hashed;
-	GnomeKeyringAttribute *orig_attribute;
-	GnomeKeyringAttribute attribute;
-	int i;
-
-	hashed = g_array_new (FALSE, FALSE, sizeof (GnomeKeyringAttribute));
-	for (i = 0; i < attributes->len; i++) {
-		orig_attribute = &gnome_keyring_attribute_list_index (attributes, i);
-		attribute.name = g_strdup (orig_attribute->name);
-		attribute.type = orig_attribute->type;
-		switch (attribute.type) {
-		case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
-			attribute.value.string = hash_string (orig_attribute->value.string);
-			break;
-		case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
-			attribute.value.integer = hash_int (orig_attribute->value.integer);
-			break;
-		default:
-			g_assert_not_reached ();
-		}
-		g_array_append_val (hashed, attribute);
-	}
-
-	return hashed;
-}
-
-GnomeKeyringApplicationRef *
-gnome_keyring_application_ref_new_from_pid (pid_t pid)
-{
-	GnomeKeyringApplicationRef *app_ref;
-
-	app_ref = g_new0 (GnomeKeyringApplicationRef, 1);
-
-#if defined(__linux__) || defined(__FreeBSD__)
-	g_assert (pid > 0);
-	{
-		char *buffer;
-		int len;
-		char *path = NULL;
-		
-#if defined(__linux__)
-		path = g_strdup_printf ("/proc/%d/exe", (gint)pid);
-#elif defined(__FreeBSD__)
-		path = g_strdup_printf ("/proc/%d/file", (gint)pid);
-#endif
-		buffer = g_file_read_link (path, NULL);
-		g_free (path);
-
-		len = (buffer != NULL) ? strlen (buffer) : 0;
-		if (len > 0) {
-			app_ref->pathname = g_malloc (len + 1);
-			memcpy (app_ref->pathname, buffer, len);
-			app_ref->pathname[len] = 0;
-		}
-		g_free (buffer);
-	}
-#endif
-
-	return app_ref;
-}
 
 static void
 save_keyring_password_in_login (GkrKeyring *keyring, const gchar *password)
@@ -931,11 +826,8 @@ op_lock_keyring (GkrBuffer *packet, GkrBuffer *result,
 	GnomeKeyringOpCode opcode;
 	GkrKeyring *keyring;
 	
-	if (!gnome_keyring_proto_decode_op_string (packet,
-						   &opcode,
-						   &keyring_name)) {
+	if (!gkr_proto_decode_op_string (packet, &opcode, &keyring_name))
 		return FALSE;
-	}
 
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
@@ -972,11 +864,8 @@ op_set_default_keyring (GkrBuffer *packet, GkrBuffer *result,
 	GnomeKeyringOpCode opcode;
 	GkrKeyring *keyring;
 
-	if (!gnome_keyring_proto_decode_op_string (packet,
-						   &opcode,
-						   &keyring_name)) {
+	if (!gkr_proto_decode_op_string (packet, &opcode, &keyring_name))
 		return FALSE;
-	}
 
 	if (keyring_name == NULL) {
 		gkr_keyrings_set_default (NULL);
@@ -1011,9 +900,8 @@ op_get_default_keyring (GkrBuffer *packet, GkrBuffer *result,
 	if (keyring) 
 		name = keyring->keyring_name;
 
-	if (!gnome_keyring_proto_add_utf8_string (result, name)) {
+	if (!gkr_proto_add_utf8_string (result, name))
 		return FALSE;
-	}
 	
 	return TRUE;
 }
@@ -1021,8 +909,8 @@ op_get_default_keyring (GkrBuffer *packet, GkrBuffer *result,
 static gboolean
 add_name_to_result (GkrKeyring* keyring, gpointer result)
 {
-	return gnome_keyring_proto_add_utf8_string ((GkrBuffer*)result, 
-	                                            keyring->keyring_name);
+	return gkr_proto_add_utf8_string ((GkrBuffer*)result, 
+	                                  keyring->keyring_name);
 }
 
 static gboolean
@@ -1048,10 +936,10 @@ op_set_keyring_info (GkrBuffer *packet, GkrBuffer *result,
 	guint32  lock_timeout;
 	GkrKeyring *keyring;
 	
-	if (!gnome_keyring_proto_decode_set_keyring_info (packet,
-							  &keyring_name,
-							  &lock_on_idle,
-							  &lock_timeout)) {
+	if (!gkr_proto_decode_set_keyring_info (packet,
+	                                        &keyring_name,
+	                                        &lock_on_idle,
+	                                        &lock_timeout)) {
 		return FALSE;
 	}
 	
@@ -1078,11 +966,8 @@ op_get_keyring_info (GkrBuffer *packet, GkrBuffer *result,
 	GkrKeyring *keyring;
 	GnomeKeyringOpCode opcode;
 	
-	if (!gnome_keyring_proto_decode_op_string (packet,
-						   &opcode,
-						   &keyring_name)) {
+	if (!gkr_proto_decode_op_string (packet, &opcode, &keyring_name))
 		return FALSE;
-	}
 	
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
@@ -1092,8 +977,8 @@ op_get_keyring_info (GkrBuffer *packet, GkrBuffer *result,
 		
 		gkr_buffer_add_uint32 (result, keyring->lock_on_idle);
 		gkr_buffer_add_uint32 (result, keyring->lock_timeout);
-		gnome_keyring_proto_add_time (result, keyring->mtime);
-		gnome_keyring_proto_add_time (result, keyring->ctime);
+		gkr_proto_add_time (result, keyring->mtime);
+		gkr_proto_add_time (result, keyring->ctime);
 		gkr_buffer_add_uint32 (result, keyring->locked);
 	}
 	
@@ -1111,10 +996,10 @@ op_create_keyring (GkrBuffer *packet, GkrBuffer *result,
 	GkrKeyring *keyring;
 	GnomeKeyringOpCode opcode;
 	
-	if (!gnome_keyring_proto_decode_op_string_secret (packet,
-							  &opcode,
-							  &keyring_name,
-							  &password)) {
+	if (!gkr_proto_decode_op_string_secret (packet,
+	                                        &opcode,
+	                                        &keyring_name,
+	                                        &password)) {
 		return FALSE;
 	}
 	g_assert (opcode == GNOME_KEYRING_OP_CREATE_KEYRING);
@@ -1167,10 +1052,10 @@ op_unlock_keyring (GkrBuffer *packet, GkrBuffer *result,
 	GnomeKeyringOpCode opcode;
 	GnomeKeyringResult res;
 	
-	if (!gnome_keyring_proto_decode_op_string_secret (packet,
-							  &opcode,
-							  &keyring_name,
-							  &password)) {
+	if (!gkr_proto_decode_op_string_secret (packet,
+	                                        &opcode,
+	                                        &keyring_name,
+	                                        &password)) {
 		return FALSE;
 	}
 	g_assert (opcode == GNOME_KEYRING_OP_UNLOCK_KEYRING);
@@ -1215,11 +1100,8 @@ op_delete_keyring (GkrBuffer *packet, GkrBuffer *result,
 	GnomeKeyringOpCode opcode;
 	GnomeKeyringResult res;
 	
-	if (!gnome_keyring_proto_decode_op_string (packet,
-						   &opcode,
-						   &keyring_name)) {
+	if (!gkr_proto_decode_op_string (packet, &opcode, &keyring_name))
 		return FALSE;
-	}
 	
 	g_assert (opcode == GNOME_KEYRING_OP_DELETE_KEYRING);
 	
@@ -1254,11 +1136,11 @@ op_change_keyring_password (GkrBuffer *packet, GkrBuffer *result,
 	GkrKeyring *keyring;
 	GnomeKeyringOpCode opcode;
 	
-	if (!gnome_keyring_proto_decode_op_string_secret_secret (packet,
-							  &opcode,
-							  &keyring_name,
-							  &original,
-							  &password)) {
+	if (!gkr_proto_decode_op_string_secret_secret (packet,
+	                                               &opcode,
+	                                               &keyring_name,
+	                                               &original,
+	                                               &password)) {
 		return FALSE;
 	}
 	g_assert (opcode == GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD);
@@ -1307,11 +1189,8 @@ op_list_items (GkrBuffer *packet, GkrBuffer *result,
 	GkrKeyringItem *item;
 	GList *l, *items;
 	
-	if (!gnome_keyring_proto_decode_op_string (packet,
-						   &opcode,
-						   &keyring_name)) {
+	if (!gkr_proto_decode_op_string (packet, &opcode, &keyring_name))
 		return FALSE;
-	}
 	
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
@@ -1366,13 +1245,13 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
 	res = GNOME_KEYRING_RESULT_OK;
 	id = 0;
 	
-	if (!gnome_keyring_proto_decode_create_item (packet,
-						     &keyring_name,
-						     &display_name,
-						     &attributes,
-						     &secret,
-						     (GnomeKeyringItemType *) &type,
-						     &update_if_exists)) {
+	if (!gkr_proto_decode_create_item (packet,
+	                                   &keyring_name,
+	                                   &display_name,
+	                                   &attributes,
+	                                   &secret,
+	                                   (GnomeKeyringItemType*)&type,
+	                                   &update_if_exists)) {
 		return FALSE;
 	}
 
@@ -1460,10 +1339,10 @@ op_delete_item (GkrBuffer *packet, GkrBuffer *result,
 	guint32 item_id;
 	GnomeKeyringResult res;
 	
-	if (!gnome_keyring_proto_decode_op_string_int (packet,
-						       &opcode,
-						       &keyring_name,
-						       &item_id)) {
+	if (!gkr_proto_decode_op_string_int (packet,
+	                                     &opcode,
+	                                     &keyring_name,
+	                                     &item_id)) {
 		return FALSE;
 	}
 
@@ -1498,8 +1377,8 @@ op_get_item_info (GkrBuffer *packet, GkrBuffer *result,
 	gboolean ret = TRUE;
 	GnomeKeyringResult res;
 	
-	if (!gnome_keyring_proto_decode_get_item_info (packet, &opcode, &keyring_name,
-						       &item_id, &flags)) {
+	if (!gkr_proto_decode_get_item_info (packet, &opcode, &keyring_name,
+	                                     &item_id, &flags)) {
 		return FALSE;
 	}
 
@@ -1514,7 +1393,7 @@ op_get_item_info (GkrBuffer *packet, GkrBuffer *result,
 	gkr_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
 		gkr_buffer_add_uint32 (result, item->type);
-		if (!gnome_keyring_proto_add_utf8_string (result, item->display_name))
+		if (!gkr_proto_add_utf8_string (result, item->display_name))
 			ret = FALSE;
 
 		/* Only return the secret if it was requested */
@@ -1523,11 +1402,11 @@ op_get_item_info (GkrBuffer *packet, GkrBuffer *result,
 			secret = item->secret;
 
 		/* Always put the secret string or NULL in the results for compatibility */
-		if (!gnome_keyring_proto_add_utf8_secret (result, secret))
+		if (!gkr_proto_add_utf8_secret (result, secret))
 			ret = FALSE;
 
-		gnome_keyring_proto_add_time (result, item->mtime);
-		gnome_keyring_proto_add_time (result, item->ctime);
+		gkr_proto_add_time (result, item->mtime);
+		gkr_proto_add_time (result, item->ctime);
 	}
 
 	g_free (keyring_name);
@@ -1545,10 +1424,10 @@ op_get_item_attributes (GkrBuffer *packet, GkrBuffer *result,
 	gboolean ret = TRUE;
 	GnomeKeyringResult res;
 	
-	if (!gnome_keyring_proto_decode_op_string_int (packet,
-						       &opcode,
-						       &keyring_name,
-						       &item_id)) {
+	if (!gkr_proto_decode_op_string_int (packet,
+	                                     &opcode,
+	                                     &keyring_name,
+	                                     &item_id)) {
 		return FALSE;
 	}
 
@@ -1561,7 +1440,7 @@ op_get_item_attributes (GkrBuffer *packet, GkrBuffer *result,
 
 	gkr_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		if (!gnome_keyring_proto_add_attribute_list (result, item->attributes))
+		if (!gkr_proto_add_attribute_list (result, item->attributes))
 			ret = FALSE;
 	}
 	
@@ -1580,10 +1459,10 @@ op_get_item_acl (GkrBuffer *packet, GkrBuffer *result,
 	gboolean ret = TRUE;
 	GnomeKeyringResult res;
 
-	if (!gnome_keyring_proto_decode_op_string_int (packet,
-						       &opcode,
-						       &keyring_name,
-						       &item_id)) {
+	if (!gkr_proto_decode_op_string_int (packet,
+	                                     &opcode,
+	                                     &keyring_name,
+	                                     &item_id)) {
 		return FALSE;
 	}
 
@@ -1596,7 +1475,7 @@ op_get_item_acl (GkrBuffer *packet, GkrBuffer *result,
 
 	gkr_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		if (!gnome_keyring_proto_add_acl (result, item->acl)) 
+		if (!gkr_proto_add_acl (result, item->acl)) 
 			ret = FALSE;
 	}
 
@@ -1614,10 +1493,10 @@ op_set_item_acl (GkrBuffer *packet, GkrBuffer *result,
 	GList *acl;
 	GnomeKeyringResult res;
 	
-	if (!gnome_keyring_proto_decode_set_acl (packet,
-						 &keyring_name,
-						 &item_id,
-						 &acl)) {
+	if (!gkr_proto_decode_set_acl (packet,
+	                               &keyring_name,
+	                               &item_id,
+	                               &acl)) {
 		return FALSE;
 	}
 	
@@ -1653,12 +1532,12 @@ op_set_item_info (GkrBuffer *packet, GkrBuffer *result,
 	char *item_name, *secret;
 	GnomeKeyringResult res;
 	
-	if (!gnome_keyring_proto_decode_set_item_info (packet,
-						       &keyring_name,
-						       &item_id,
-						       (GnomeKeyringItemType *) &type,
-						       &item_name,
-						       &secret)) {
+	if (!gkr_proto_decode_set_item_info (packet,
+	                                     &keyring_name,
+	                                     &item_id,
+	                                     (GnomeKeyringItemType*)&type,
+	                                     &item_name,
+	                                     &secret)) {
 		return FALSE;
 	}
 	
@@ -1700,11 +1579,8 @@ op_set_daemon_display (GkrBuffer *packet, GkrBuffer *result,
        char *display;
        GnomeKeyringOpCode opcode;
 
-       if (!gnome_keyring_proto_decode_op_string (packet,
-						  &opcode,
-						  &display)) {
+       if (!gkr_proto_decode_op_string (packet, &opcode, &display))
                return FALSE;
-       }
 
        if ( display == NULL ) {
                gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
@@ -1735,10 +1611,10 @@ op_set_item_attributes (GkrBuffer *packet, GkrBuffer *result,
 	GnomeKeyringResult res;
 	GnomeKeyringAttributeList *attributes;
 
-	if (!gnome_keyring_proto_decode_set_attributes (packet,
-							&keyring_name,
-							&item_id,
-							&attributes)) {
+	if (!gkr_proto_decode_set_attributes (packet,
+	                                      &keyring_name,
+	                                      &item_id,
+	                                      &attributes)) {
 		return FALSE;
 	}
 
@@ -1873,15 +1749,15 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 	
 	memset (&ctx, 0, sizeof (ctx));
 	
-	if (!gnome_keyring_proto_decode_find (packet,
-					      &ctx.type,
-					      &ctx.attributes)) {
+	if (!gkr_proto_decode_find (packet,
+	                            &ctx.type,
+	                            &ctx.attributes)) {
 		return FALSE;
 	}
 
 	/* Need at least one attribute to match on */
 	if (ctx.attributes->len > 0) {
-		ctx.hashed = gnome_keyring_attributes_hash (ctx.attributes);
+		ctx.hashed = gkr_keyring_item_attributes_hash (ctx.attributes);
 		ctx.nfound = 0;
 		ctx.req = req;
 		ctx.items = NULL;
@@ -1906,15 +1782,15 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 		if (!item->locked && gkr_keyring_item_match (item, ctx.type, ctx.attributes, FALSE)) {
 			
 			/* Add it to the output */
-			if (!gnome_keyring_proto_add_utf8_string (result, item->keyring->keyring_name)) {
+			if (!gkr_proto_add_utf8_string (result, item->keyring->keyring_name)) {
 				return_val = FALSE;
 				break;
 			}
 	    	        
 			gkr_buffer_add_uint32 (result, item->id);
 			
-			if (!gnome_keyring_proto_add_utf8_secret (result, item->secret) ||
-			    !gnome_keyring_proto_add_attribute_list (result, item->attributes)) {
+			if (!gkr_proto_add_utf8_secret (result, item->secret) ||
+			    !gkr_proto_add_attribute_list (result, item->attributes)) {
 				return_val = FALSE;
 				break;
 			}
@@ -1930,7 +1806,7 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 	return return_val;
 }
 
-GnomeKeyringOperation keyring_ops[] = {
+GkrDaemonOperation keyring_ops[] = {
 	op_lock_all, 			/* LOCK_ALL */
 	op_set_default_keyring, 	/* SET_DEFAULT_KEYRING */
 	op_get_default_keyring, 	/* GET_DEFAULT_KEYRING */

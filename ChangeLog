@@ -1,5 +1,25 @@
 2007-07-31  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c: (moved from gnome-keyring-daemon.c)
+	* daemon/gkr-daemon.h: (moved from gnome-keyring-daemon.h)
+	* daemon/gkr-daemon-io.c: (moved from gnome-keyring-daemon-io.c)
+	* daemon/gkr-daemon-ops.c: (moved from gnome-keyring-daemon-ops.c)
+	* daemon/Makefile.am:
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyring-item.c:
+	* keyrings/gkr-keyring-item.h:
+	* library/gnome-keyring.c:
+	* library/gnome-keyring-export.map: (added)
+	* library/gnome-keyring-private.h:
+	* library/gnome-keyring-proto.c:
+	* library/gnome-keyring-proto.h: 
+	* pam/gkr-pam-export.map
+	* pam/Makefile.am: Only export the functions from shared libraries 
+	that we want to export. Prefix all exportable functions with
+	gnome_keyring_ and vice versa. 
+	
+2007-07-31  Stef Walter  <stef@memberwebs.com>
+
 	* tests/unit-test-location.c: Fix wrong test with regards to 
 	location children.
 	

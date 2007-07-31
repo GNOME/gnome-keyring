@@ -24,12 +24,13 @@
 
 #ifdef WITH_DBUS
 
-#include "gnome-keyring.h"
-#include "gnome-keyring-private.h"
-#include "gnome-keyring-daemon.h"
+#include "gkr-daemon.h"
 
 #include "common/gkr-cleanup.h"
 #include "common/gkr-dbus.h"
+
+#include "library/gnome-keyring.h"
+#include "library/gnome-keyring-private.h"
 
 #include <dbus/dbus.h>
 
@@ -83,7 +84,7 @@ daemon_dbus_cleanup (gpointer unused)
 }
 
 void 
-gnome_keyring_daemon_dbus_setup (GMainLoop *loop, const gchar *socket)
+gkr_daemon_dbus_setup (GMainLoop *loop, const gchar *socket)
 {
 	dbus_uint32_t res = 0;
 	DBusError derr = { 0 };

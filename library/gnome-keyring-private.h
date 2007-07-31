@@ -58,7 +58,7 @@ struct GnomeKeyringItemInfo {
 #define GNOME_KEYRING_DAEMON_INTERFACE  "org.gnome.keyring.Daemon"
 #endif
 
-void 	gnome_keyring_memory_dump (void);
+void 	_gnome_keyring_memory_dump (void);
 
 #endif /* GNOME_KEYRING_PRIVATE_H */
 

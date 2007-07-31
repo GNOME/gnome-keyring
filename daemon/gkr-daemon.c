@@ -22,15 +22,16 @@
 
 #include "config.h"
 
-#include "gnome-keyring.h"
-#include "gnome-keyring-memory.h"
-#include "gnome-keyring-daemon.h"
+#include "gkr-daemon.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
 #include "common/gkr-unix-signal.h"
 
 #include "keyrings/gkr-keyrings.h"
+
+#include "library/gnome-keyring.h"
+#include "library/gnome-keyring-memory.h"
 
 #include "ui/gkr-ask-daemon.h"
 
@@ -121,7 +122,7 @@ prepare_logging ()
 static void
 cleanup_socket (gpointer unused)
 {
-        cleanup_socket_dir ();	
+        gkr_daemon_io_cleanup_socket_dir ();	
 }
 
 static gboolean
@@ -167,7 +168,7 @@ lifetime_slave_pipe_io (GIOChannel  *channel,
 			GIOCondition cond,
 			gpointer     callback_data)
 {
-        cleanup_socket_dir ();
+        gkr_daemon_io_cleanup_socket_dir ();
         _exit (2);
 }
 
@@ -189,9 +190,8 @@ main (int argc, char *argv[])
 	/* We do not use gcrypt in a multi-threaded manner */
 	gcry_check_version (LIBGCRYPT_VERSION);
 	
-	if (!create_master_socket (&path)) {
+	if (!gkr_daemon_io_create_master_socket (&path))
 		exit (1);
-	}
 	
 	gkr_cleanup_register (cleanup_socket, NULL); 
 	
@@ -312,7 +312,7 @@ main (int argc, char *argv[])
 	 */ 
 	env = getenv ("DBUS_SESSION_BUS_ADDRESS");
 	if (env && env[0])
-		gnome_keyring_daemon_dbus_setup (loop, path);
+		gkr_daemon_dbus_setup (loop, path);
 #endif
 
 	g_main_loop_run (loop);

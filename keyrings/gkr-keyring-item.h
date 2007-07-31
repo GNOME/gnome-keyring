@@ -87,6 +87,9 @@ gboolean           gkr_keyring_item_match       (GkrKeyringItem *item,
                                                  GnomeKeyringItemType type, 
                                                  GnomeKeyringAttributeList *attributes, 
                                                  gboolean match_all);
+
+
+GnomeKeyringAttributeList*  gkr_keyring_item_attributes_hash (GnomeKeyringAttributeList *attributes);
                                                  
 G_END_DECLS
 

@@ -7,7 +7,6 @@ INCLUDES=	\
 	-DLIBEXECDIR=\""$(libexecdir)"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(top_srcdir) 				\
-	-I$(top_srcdir)/library/			\
 	-I$(top_builddir) 				\
 	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS)				\
@@ -16,11 +15,11 @@ INCLUDES=	\
 LIBADD_SOURCE = mkdtemp.c mkdtemp.h
 
 gnome_keyring_daemon_SOURCES = \
-	gnome-keyring-daemon.c \
-	gnome-keyring-daemon.h \
-	gnome-keyring-daemon-dbus.c \
-	gnome-keyring-daemon-io.c \
-	gnome-keyring-daemon-ops.c
+	gkr-daemon.c \
+	gkr-daemon.h \
+	gkr-daemon-dbus.c \
+	gkr-daemon-io.c \
+	gkr-daemon-ops.c
 
 gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/library/libgnome-keyring-common.la \

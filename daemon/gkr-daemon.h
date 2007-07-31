@@ -40,34 +40,17 @@ typedef struct {
 	GnomeKeyringApplicationRef *app_ref;
 } GkrKeyringRequest;	
 
-typedef gboolean (*GnomeKeyringOperation) (GkrBuffer *packet, GkrBuffer *result,
-                                           GkrKeyringRequest *req);
+typedef gboolean (*GkrDaemonOperation) (GkrBuffer *packet, GkrBuffer *result,
+                                        GkrKeyringRequest *req);
 
-extern GnomeKeyringOperation keyring_ops[];
+extern GkrDaemonOperation keyring_ops[];
 
-GList *                     gnome_keyring_acl_copy (GList *list);
-
-
-GnomeKeyringApplicationRef *gnome_keyring_application_ref_new_from_pid (pid_t                             pid);
-GnomeKeyringApplicationRef *gnome_keyring_application_ref_copy         (const GnomeKeyringApplicationRef *app);
-void                        gnome_keyring_application_ref_free         (GnomeKeyringApplicationRef       *app);
-
-void gnome_keyring_access_control_free (GnomeKeyringAccessControl *ac);
-void                        gnome_keyring_acl_free                     (GList                            *acl);
-
-
-void     cleanup_socket_dir   (void);
-gboolean create_master_socket (const char **path);
-
-GnomeKeyringAttributeList *gnome_keyring_attributes_hash    (GnomeKeyringAttributeList        *attributes);
-GnomeKeyringAccessControl *gnome_keyring_access_control_new (const GnomeKeyringApplicationRef *application,
-							     GnomeKeyringAccessType            types_allowed);
-
-void gnome_keyring_client_fixup_for_removed (gpointer keyring, gpointer item);
+void     gkr_daemon_io_cleanup_socket_dir   (void);
+gboolean gkr_daemon_io_create_master_socket (const char **path);
 
 /* Dbus Initialization/Cleanup */
 #ifdef WITH_DBUS
-void gnome_keyring_daemon_dbus_setup (GMainLoop *loop, const gchar* socket);
+void gkr_daemon_dbus_setup (GMainLoop *loop, const gchar* socket);
 #endif 
 
 #endif /* GNOME_KEYRING_DAEMON_H */

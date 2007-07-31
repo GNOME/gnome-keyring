@@ -36,7 +36,7 @@
 #include <ucred.h>
 #endif
 
-#include "gnome-keyring-daemon.h"
+#include "gkr-daemon.h"
 #include "mkdtemp.h"
 
 #include "common/gkr-async.h"
@@ -101,6 +101,40 @@ set_local_creds (int fd, gboolean on)
   return retval;
 }
 
+static GnomeKeyringApplicationRef*
+application_ref_new_from_pid (pid_t pid)
+{
+	GnomeKeyringApplicationRef *app_ref;
+
+	app_ref = g_new0 (GnomeKeyringApplicationRef, 1);
+
+#if defined(__linux__) || defined(__FreeBSD__)
+	g_assert (pid > 0);
+	{
+		char *buffer;
+		int len;
+		char *path = NULL;
+		
+#if defined(__linux__)
+		path = g_strdup_printf ("/proc/%d/exe", (gint)pid);
+#elif defined(__FreeBSD__)
+		path = g_strdup_printf ("/proc/%d/file", (gint)pid);
+#endif
+		buffer = g_file_read_link (path, NULL);
+		g_free (path);
+
+		len = (buffer != NULL) ? strlen (buffer) : 0;
+		if (len > 0) {
+			app_ref->pathname = g_malloc (len + 1);
+			memcpy (app_ref->pathname, buffer, len);
+			app_ref->pathname[len] = 0;
+		}
+		g_free (buffer);
+	}
+#endif
+
+	return app_ref;
+}
 
 static gboolean
 read_unix_socket_credentials (int fd,
@@ -303,7 +337,7 @@ read_packet_with_size (GnomeKeyringClient *client)
 	if (!yield_and_read_all (fd, client->input_buffer.buf, 4))
 		return FALSE;
 
-	if (!gnome_keyring_proto_decode_packet_size (&client->input_buffer, &packet_size) ||
+	if (!gkr_proto_decode_packet_size (&client->input_buffer, &packet_size) ||
 	    packet_size < 4) {
 	    	g_warning ("invalid packet size from client");
 		return FALSE;
@@ -347,7 +381,7 @@ client_worker_main (gpointer user_data)
 		g_warning ("uid mismatch: %u, should be %u\n", (guint)uid, (guint)getuid());
 		return NULL;
 	}
-	client->app_ref = gnome_keyring_application_ref_new_from_pid (pid);
+	client->app_ref = application_ref_new_from_pid (pid);
 
 
 	/* 2. Read the connecting application display name */
@@ -355,7 +389,7 @@ client_worker_main (gpointer user_data)
 	if (!read_packet_with_size (client))
 		return NULL;
 	debug_print (("read packet\n"));
-	if (!gnome_keyring_proto_get_utf8_string (&client->input_buffer, 4, NULL, &str))
+	if (!gkr_proto_get_utf8_string (&client->input_buffer, 4, NULL, &str))
 		return NULL;
 	if (!str)
 		return NULL;
@@ -372,7 +406,7 @@ client_worker_main (gpointer user_data)
 
 	/* 4. Next decode the operation, and execute the operation */	
 	debug_print (("GNOME_CLIENT_STATE_EXECUTE_OP %p\n", client));
-	if (!gnome_keyring_proto_decode_packet_operation (&client->input_buffer, &op))
+	if (!gkr_proto_decode_packet_operation (&client->input_buffer, &op))
 		return NULL;
 	if (op < 0 || op >= GNOME_KEYRING_NUM_OPS)
 		return NULL;
@@ -429,7 +463,7 @@ client_new (int fd)
 {
 	GnomeKeyringClient *client;
 
-	debug_print (("gnome_keyring_client_new(fd:%d) -> %p\n", fd, client));
+	debug_print (("client_new(fd:%d) -> %p\n", fd, client));
 	
 	client = g_new0 (GnomeKeyringClient, 1);
 	client->sock = fd;
@@ -471,7 +505,7 @@ accept_client (GIOChannel *channel, GIOCondition cond,
 }
 
 void
-cleanup_socket_dir (void)
+gkr_daemon_io_cleanup_socket_dir (void)
 {
 	if(*socket_path)
 		unlink (socket_path);
@@ -480,7 +514,7 @@ cleanup_socket_dir (void)
 }
 
 gboolean
-create_master_socket (const char **path)
+gkr_daemon_io_create_master_socket (const char **path)
 {
 	gboolean have_path = FALSE;
 	int sock;
@@ -518,7 +552,7 @@ create_master_socket (const char **path)
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
 		perror("socket");
-		cleanup_socket_dir ();
+		gkr_daemon_io_cleanup_socket_dir ();
 		return FALSE;
 	}
 	memset(&addr, 0, sizeof(addr));
@@ -526,19 +560,19 @@ create_master_socket (const char **path)
 	strncpy (addr.sun_path, socket_path, sizeof (addr.sun_path));
 	if (bind (sock, (struct sockaddr *) & addr, sizeof (addr)) < 0) {
 		perror ("bind");
-		cleanup_socket_dir ();
+		gkr_daemon_io_cleanup_socket_dir ();
 		return FALSE;
 	}
 	
 	if (listen (sock, 128) < 0) {
 		perror ("listen");
-		cleanup_socket_dir ();
+		gkr_daemon_io_cleanup_socket_dir ();
 		return FALSE;
 	}
 
         if (!set_local_creds (sock, TRUE)) {
 		close (sock);
-		cleanup_socket_dir ();
+		gkr_daemon_io_cleanup_socket_dir ();
 		return FALSE;
 	}
 
