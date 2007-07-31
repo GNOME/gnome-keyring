@@ -236,20 +236,14 @@ if test "$enable_pam" != "no"; then
 	if test "$enable_pam" = "yes" -a "$have_pam" = "no"; then
 		AC_MSG_ERROR(The PAM headers are missing)
 	fi
-	
-	case "$host" in
-	*-redhat-linux-gnu)
-		PAM_DEST_DIR="/lib/security"
-		;;
-	*-*-linux*)
-	 	PAM_DEST_DIR="\$(prefix)/../lib/security"
-		;;
-	*)
-		PAM_DEST_DIR="/usr/lib"
-		;;
-	esac
-	AC_SUBST(PAM_DEST_DIR)
 fi
+
+AC_ARG_WITH([pam-dir],
+            [AC_HELP_STRING([--with-pam-dir=DIR],
+                             [directory to install pam modules in])],
+             [], [with_pam_dir="/usr/lib"])
+PAM_DEST_DIR="$with_pam_dir"
+AC_SUBST(PAM_DEST_DIR)
 	
 AM_CONDITIONAL(WITH_PAM, test "$have_pam" = "yes")
 

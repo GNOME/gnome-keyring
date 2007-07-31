@@ -21,13 +21,13 @@ pam_gnome_keyring_la_LDFLAGS = \
 	-Wl,--version-script=$(srcdir)/gkr-pam-export.map
 
 install-pam: install
-	$(mkinstalldirs) $(DESTDIR)$(PAM_DEST_DIR)
-	cp $(DESTDIR)$(libdir)/pam_gnome_keyring.so $(DESTDIR)$(PAM_DEST_DIR)
-	( cd $(DESTDIR)$(PAM_DEST_DIR); $(LN_S) -f pam_gnome_keyring.so pam_gnome_keyring_auth.so )
-	( cd $(DESTDIR)$(PAM_DEST_DIR); $(LN_S) -f pam_gnome_keyring.so pam_gnome_keyring_session.so )
+	$(mkinstalldirs) "$(DESTDIR)$(PAM_DEST_DIR)"
+	cp "$(DESTDIR)$(libdir)/pam_gnome_keyring.so" "$(DESTDIR)$(PAM_DEST_DIR)"
+	( cd "$(DESTDIR)$(PAM_DEST_DIR)"; $(LN_S) -f pam_gnome_keyring.so pam_gnome_keyring_auth.so )
+	( cd "$(DESTDIR)$(PAM_DEST_DIR)"; $(LN_S) -f pam_gnome_keyring.so pam_gnome_keyring_session.so )
 	
 uninstall-pam: 
-	rm -f $(PAM_DEST_DIR)/pam_gnome_keyring.so
-	rm -f $(PAM_DEST_DIR)/pam_gnome_keyring_auth.so
-	rm -f $(PAM_DEST_DIR)/pam_gnome_keyring_session.so
+	rm -f "$(DESTDIR)$(PAM_DEST_DIR)/pam_gnome_keyring.so"
+	rm -f "$(DESTDIR)$(PAM_DEST_DIR)/pam_gnome_keyring_auth.so"
+	rm -f "$(DESTDIR)$(PAM_DEST_DIR)/pam_gnome_keyring_session.so"
 	
