@@ -1,4 +1,6 @@
 
+EXTRA_DIST = gkr-pam-export.map
+
 INCLUDES = \
 	-I$(top_srcdir) \
 	-DGNOME_KEYRING_DAEMON=\""$(bindir)/gnome-keyring-daemon"\" 

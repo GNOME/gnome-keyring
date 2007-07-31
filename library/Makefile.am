@@ -50,5 +50,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-keyring-1.pc
 
 EXTRA_DIST = \
-	gnome-keyring-1-uninstalled.pc.in 
+	gnome-keyring-1-uninstalled.pc.in \
+	gnome-keyring-export.map
 
