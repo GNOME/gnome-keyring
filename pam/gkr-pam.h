@@ -29,6 +29,10 @@
 #include "library/gnome-keyring-opcodes.h"
 #include "library/gnome-keyring-result.h"
 
+#ifndef LOG_AUTHPRIV
+#define LOG_AUTHPRIV    LOG_AUTH
+#endif
+
 #define GKR_LOG_ERR     (LOG_ERR | LOG_AUTHPRIV)
 #define GKR_LOG_WARN    (LOG_WARNING | LOG_AUTHPRIV)
 #define GKR_LOG_NOTICE  (LOG_NOTICE | LOG_AUTHPRIV)

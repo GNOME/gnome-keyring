@@ -34,6 +34,7 @@
 #include "library/gnome-keyring-result.h"
 #include "library/gnome-keyring-opcodes.h"
 
+#include <security/pam_appl.h>
 #include <security/pam_modules.h>
 
 #include <sys/types.h>

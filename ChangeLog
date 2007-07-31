@@ -1,5 +1,12 @@
 2007-07-31  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-client.c:
+	* pam/gkr-pam-module.c:
+	* pam/gkr-pam.h: Include headers and defines necessary for 
+	building on Solaris. Patch by Damien Carbery. Fixes bug #462118
+	
+2007-07-31  Stef Walter  <stef@memberwebs.com>
+
 	* ui/gkr-ask-tool.c: Don't use err () because of Solaris.
 	Fixes bug #462114
 	
