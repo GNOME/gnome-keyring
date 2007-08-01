@@ -118,13 +118,14 @@ typedef int (*line_cb) (char *line, void *arg);
 static int
 foreach_line (char *lines, line_cb cb, void *arg)
 {
-	char *line;
+	char *line, *ctx;
 	int ret;
 	
 	assert (lines);
 	
 	/* Call cb for each line in the text block */
-	while ((line = strsep (&lines, "\n")) != NULL) {
+	for (line = strtok_r (lines, "\n", &ctx); line != NULL; 
+	     line = strtok_r (NULL, "\n", &ctx)) {
 		 ret = (cb) (line, arg);
 		 if (ret != PAM_SUCCESS)
 		 	return ret;

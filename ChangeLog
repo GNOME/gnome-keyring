@@ -1,5 +1,10 @@
 2007-08-01  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-module.c: Use strtok_r instead of strsep so that 
+	we can build on Solaris. Fixes bug #462122
+	
+2007-08-01  Stef Walter  <stef@memberwebs.com>
+
 	* library/gnome-keyring-export.map: (removed)
 	* library/Makefile.am:
 	* pam/gkr-pam-export.map: (removed)
