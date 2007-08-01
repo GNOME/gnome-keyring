@@ -1,4 +1,0 @@
-{
-	global: gnome_keyring_* ;
-	local: *;
-};

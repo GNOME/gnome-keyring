@@ -1,6 +1,4 @@
 
-EXTRA_DIST = gkr-pam-export.map
-
 INCLUDES = \
 	-I$(top_srcdir) \
 	-DGNOME_KEYRING_DAEMON=\""$(bindir)/gnome-keyring-daemon"\" 
@@ -18,7 +16,7 @@ pam_gnome_keyring_la_LIBADD = \
 	
 pam_gnome_keyring_la_LDFLAGS = \
 	-module -avoid-version \
-	-Wl,--version-script=$(srcdir)/gkr-pam-export.map
+	-export-symbols-regex 'pam_sm_'
 
 install-pam: install
 	$(mkinstalldirs) "$(DESTDIR)$(PAM_DEST_DIR)"

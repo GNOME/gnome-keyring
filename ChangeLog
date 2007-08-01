@@ -1,3 +1,12 @@
+2007-08-01  Stef Walter  <stef@memberwebs.com>
+
+	* library/gnome-keyring-export.map: (removed)
+	* library/Makefile.am:
+	* pam/gkr-pam-export.map: (removed)
+	* pam/Makefile.am: Use -export-symbols-regex to mark with symbols
+	to export instead of a GNU LD --version-script. This allows us to 
+	build on Solaris' linker. Fixes bug #462349
+
 2007-07-31  Stef Walter  <stef@memberwebs.com>
 
 	* pam/gkr-pam-client.c:

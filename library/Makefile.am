@@ -44,12 +44,10 @@ libgnome_keyring_la_LIBADD = \
 
 libgnome_keyring_la_LDFLAGS = \
 	-version-info $(LIB_GNOME_KEYRING_LT_VERSION) \
-	-no-undefined -Wl,--version-script=$(srcdir)/gnome-keyring-export.map
+	-no-undefined -export-symbols-regex 'gnome_keyring_'
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-keyring-1.pc
 
 EXTRA_DIST = \
-	gnome-keyring-1-uninstalled.pc.in \
-	gnome-keyring-export.map
-
+	gnome-keyring-1-uninstalled.pc.in
