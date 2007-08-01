@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.4.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-06-23 11:35+0200\n"
-"PO-Revision-Date: 2007-06-23 11:36+0200\n"
+"POT-Creation-Date: 2007-08-01 15:47+0200\n"
+"PO-Revision-Date: 2007-08-01 15:48+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -16,59 +16,82 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:377
+#: ../common/gkr-location.c:290
 #, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Programmet «%s» (%s) ønsker tilgang til passordet for «%s» i %s."
+msgid "Removable Disk: %s"
+msgstr "Avtagbar disk: %s"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:380
+#: ../common/gkr-location.c:292
+msgid "Removable Disk"
+msgstr "Avtagbar disk"
+
+#: ../common/gkr-location.c:436
+msgid "Home"
+msgstr "Hjem"
+
+#. TRANSLATORS: this is the title for an item
+#: ../daemon/gkr-daemon-ops.c:83
 #, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Lås opp passord for %s nøkkelring"
+
+#: ../daemon/gkr-daemon-ops.c:309
+#, fuzzy, c-format
 msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
 msgstr ""
 "Programmet «%s» (%s) ønsker tilgang til passordet for «%s» på forvalgt "
 "nøkkelring."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:385
-#: ../daemon/gnome-keyring-daemon-ops.c:393
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Programmet «%s» ønsker tilgang til passordet for «%s» på %s."
-
-#: ../daemon/gnome-keyring-daemon-ops.c:388
-#: ../daemon/gnome-keyring-daemon-ops.c:396
-#, c-format
+#: ../daemon/gkr-daemon-ops.c:312
+#, fuzzy, c-format
 msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr "Programmet «%s» (%s) ønsker tilgang til passordet for «%s» i %s."
+
+#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:325
+#, fuzzy, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
 msgstr ""
 "Programmet «%s» ønsker tilgang til passordet for «%s» på forvalgt nøkkelring."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:401
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Et ukjent program ønsker tilgang til passordet for «%s» på %s."
-
-#: ../daemon/gnome-keyring-daemon-ops.c:404
-#, c-format
+#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:328
+#, fuzzy, c-format
 msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr "Programmet «%s» ønsker tilgang til passordet for «%s» på %s."
+
+#: ../daemon/gkr-daemon-ops.c:333
+#, fuzzy
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
 msgstr ""
 "Et ukjent program ønsker tilgang til passordet for «%s» på forvalgt "
 "nøkkelring."
 
+#: ../daemon/gkr-daemon-ops.c:335
+#, fuzzy, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr "Et ukjent program ønsker tilgang til passordet for «%s» på %s."
+
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:410
+#: ../daemon/gkr-daemon-ops.c:341
 msgid "Allow access"
 msgstr "Gi tilgang"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:410
+#: ../daemon/gkr-daemon-ops.c:341
 msgid "Allow application access to keyring?"
 msgstr "Gi program tilgang til nøkkelring?"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:483
+#: ../daemon/gkr-daemon-ops.c:439
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -76,54 +99,56 @@ msgid ""
 msgstr ""
 "Programmet «%s» (%s) ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:487
+#: ../daemon/gkr-daemon-ops.c:443
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Programmet «%s» (%s) ønsker tilgang til nøkkelring «%s», men den er låst"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:494
-#: ../daemon/gnome-keyring-daemon-ops.c:504
+#: ../daemon/gkr-daemon-ops.c:449 ../daemon/gkr-daemon-ops.c:459
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Programmet «%s» ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:498
-#: ../daemon/gnome-keyring-daemon-ops.c:509
+#: ../daemon/gkr-daemon-ops.c:453 ../daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Programmet «%s» ønsker tilgang til nøkkelring «%s», men den er låst"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:470
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Et ukjent program ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:519
+#: ../daemon/gkr-daemon-ops.c:474
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Et ukjent program ønsker tilgang til nøkkelring «%s», men den er låst"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:526
+#: ../daemon/gkr-daemon-ops.c:481
 msgid "Enter password for default keyring to unlock"
 msgstr "Oppgi passord for forvalgt nøkkelring for å låse opp"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:528
+#: ../daemon/gkr-daemon-ops.c:483
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Oppgi passord for nøkkelring «%s» for å låse opp"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:532
+#: ../daemon/gkr-daemon-ops.c:487
 msgid "Unlock Keyring"
 msgstr "Lås opp nøkkelring"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:560
+#: ../daemon/gkr-daemon-ops.c:499
+msgid "Automatically unlock this keyring when I log in."
+msgstr "Lås opp denne nøkkelringen automatisk når jeg logger inn."
+
+#: ../daemon/gkr-daemon-ops.c:535
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -132,7 +157,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å opprette en ny nøkkelring kalt «%s». Du må "
 "velge passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:564
+#: ../daemon/gkr-daemon-ops.c:539
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -141,8 +166,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å opprette en ny forvalgt nøkkelring. Du må "
 "velge passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:570
-#: ../daemon/gnome-keyring-daemon-ops.c:580
+#: ../daemon/gkr-daemon-ops.c:545 ../daemon/gkr-daemon-ops.c:555
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -151,8 +175,7 @@ msgstr ""
 "Programmet «%s» ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:574
-#: ../daemon/gnome-keyring-daemon-ops.c:584
+#: ../daemon/gkr-daemon-ops.c:549 ../daemon/gkr-daemon-ops.c:559
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -161,7 +184,7 @@ msgstr ""
 "Programmet «%s» ønsker å opprette en ny forvalgt nøkkelring. Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:590
+#: ../daemon/gkr-daemon-ops.c:565
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -170,7 +193,7 @@ msgstr ""
 "Et ukjent program ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:594
+#: ../daemon/gkr-daemon-ops.c:569
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -179,15 +202,15 @@ msgstr ""
 "passordet du ønsker å bruke for denne."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:600
+#: ../daemon/gkr-daemon-ops.c:575
 msgid "New Keyring Password"
 msgstr "Nytt passord for nøkkelring"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:601
+#: ../daemon/gkr-daemon-ops.c:576
 msgid "Choose password for new keyring"
 msgstr "Oppgi passord for ny nøkkelring"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:623
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -196,7 +219,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å bytte passord for nøkkelring «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:632
+#: ../daemon/gkr-daemon-ops.c:627
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -205,8 +228,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å bytte passord for forvalgt nøkkelring. Du må "
 "velge passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:638
-#: ../daemon/gnome-keyring-daemon-ops.c:648
+#: ../daemon/gkr-daemon-ops.c:633 ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -215,8 +237,7 @@ msgstr ""
 "Programmet «%s» ønsker å bytte passord for nøkkelring «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:642
-#: ../daemon/gnome-keyring-daemon-ops.c:652
+#: ../daemon/gkr-daemon-ops.c:637 ../daemon/gkr-daemon-ops.c:647
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -225,7 +246,7 @@ msgstr ""
 "Programmet «%s» ønsker å bytte passord for forvalgt nøkkelring. Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:658
+#: ../daemon/gkr-daemon-ops.c:653
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -234,7 +255,7 @@ msgstr ""
 "Et ukjent program ønsker å bytte passord for nøkkelring «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:662
+#: ../daemon/gkr-daemon-ops.c:657
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -242,21 +263,21 @@ msgstr ""
 "Et ukjent program ønsker å bytte passord for forvalgt nøkkelring. Du må "
 "velge passordet du ønsker å bruke for denne."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:672
+#: ../daemon/gkr-daemon-ops.c:667
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Velg et nytt passord for nøkkelring «%s». "
 
-#: ../daemon/gnome-keyring-daemon-ops.c:674
+#: ../daemon/gkr-daemon-ops.c:669
 msgid "Choose a new password for the default keyring. "
 msgstr "Velg et nytt passord for forvalgt nøkkelring. "
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:678
+#: ../daemon/gkr-daemon-ops.c:673
 msgid "Change Keyring Password"
 msgstr "Endre passord for nøkkelring"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:725
+#: ../daemon/gkr-daemon-ops.c:740
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -267,8 +288,7 @@ msgstr ""
 "forvalgt nøkkelring. For å opprette en må du lagre passordet du ønsker å "
 "bruke for den."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:729
-#: ../daemon/gnome-keyring-daemon-ops.c:733
+#: ../daemon/gkr-daemon-ops.c:744 ../daemon/gkr-daemon-ops.c:748
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -279,7 +299,7 @@ msgstr ""
 "nøkkelring. For å opprette en må du lagre passordet du ønsker å bruke for "
 "den."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:737
+#: ../daemon/gkr-daemon-ops.c:752
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -290,54 +310,78 @@ msgstr ""
 "den."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:742
+#: ../daemon/gkr-daemon-ops.c:757
 msgid "Create Default Keyring"
 msgstr "Opprett forvalgt nøkkelring"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:742
+#: ../daemon/gkr-daemon-ops.c:757
 msgid "Choose password for default keyring"
 msgstr "Oppgi passord for forvalgt nøkkelring"
 
-#: ../ui/gkr-ask-tool.c:256
+#: ../library/gnome-keyring-utils.c:109
+msgid "Access Denied"
+msgstr "Tilgang nektet"
+
+#: ../library/gnome-keyring-utils.c:111
+msgid "The gnome-keyring-daemon application is not running."
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:113 ../library/gnome-keyring-utils.c:126
+msgid "The keyring has already been unlocked."
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:115
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:117
+msgid "A keyring with that name already exists"
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:119
+msgid "Programmer error: The application sent invalid data."
+msgstr ""
+
+#: ../ui/gkr-ask-tool.c:314
+msgid "_Location:"
+msgstr "_Lokasjon:"
+
+#: ../ui/gkr-ask-tool.c:327
 msgid "_Old password:"
 msgstr "_Gammelt passord:"
 
-#: ../ui/gkr-ask-tool.c:279
+#: ../ui/gkr-ask-tool.c:347
 msgid "_Password:"
 msgstr "_Passord:"
 
-#: ../ui/gkr-ask-tool.c:304
+#: ../ui/gkr-ask-tool.c:369
 msgid "_Confirm password:"
 msgstr "_Bekreft passord:"
 
-#: ../ui/gkr-ask-tool.c:323
+#: ../ui/gkr-ask-tool.c:388
 msgid "New password strength"
 msgstr "Styrke for nytt passord"
 
-#: ../ui/gkr-ask-tool.c:349
+#: ../ui/gkr-ask-tool.c:444
 msgid "Old password cannot be blank."
 msgstr "Gammelt passord kan ikke være tomt."
 
-#: ../ui/gkr-ask-tool.c:361
+#: ../ui/gkr-ask-tool.c:456
 msgid "Password cannot be blank."
 msgstr "Passordet kan ikke være tomt."
 
-#: ../ui/gkr-ask-tool.c:370
+#: ../ui/gkr-ask-tool.c:465
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../ui/gkr-ask-tool.c:407
+#: ../ui/gkr-ask-tool.c:514
 msgid "Deny"
 msgstr "Nekt"
 
-#: ../ui/gkr-ask-tool.c:419
+#: ../ui/gkr-ask-tool.c:526
 msgid "Allow _Once"
 msgstr "Tillat én gang"
 
-#: ../ui/gkr-ask-tool.c:423
+#: ../ui/gkr-ask-tool.c:530
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
-
-#: ../ui/gkr-ask-tool.c:477
-msgid "Must be run from gnome-keyring\n"
-msgstr "Må kjøres fra gnome-keyring\n"
