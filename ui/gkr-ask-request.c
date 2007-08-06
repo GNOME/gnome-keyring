@@ -300,12 +300,14 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 	 * to a minimum, for security reasons.
 	 */
 	gkr_buffer_add_byte (&pv->buffer, 0);
-	for (i = 0, line = (gchar*)pv->buffer.buf; i < 2; ++i) {
+	for (i = 0, line = (gchar*)pv->buffer.buf; line && i < 2; ++i) {
 		
 		/* Break out the line */
 		next = strchr (line, '\n');
-		if (next) 
+		if (next) {
 			*next = 0;
+			++next;
+		}
 		
 		/* First line is the password */
 		if (i == 0)
@@ -315,7 +317,13 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 		else if (i == 1)
 			ask->original_password = gnome_keyring_memory_strdup (line);
 			
-		line = next + 1;
+		line = next;
+	}
+	
+	if (!line) {
+		g_warning ("missing dialog response from ask tool");
+		mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
+		return;
 	}
 	
 	/* The remainder is a GKeyFile */

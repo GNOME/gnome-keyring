@@ -2,6 +2,8 @@
 
 	* ui/gkr-ask-tool.c: Fix possible crash in ask tool from 
 	dereferencing a NULL error. Fixes bug #464051
+	* ui/gkr-ask-request.c: Fix crash when gnome-keyring-ask
+	gives an invalid response back to the daemon. Fixes bug #464055
 	
 2007-08-01  Stef Walter  <stef@memberwebs.com>
 
