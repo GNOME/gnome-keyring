@@ -624,7 +624,7 @@ write_all_output (const gchar *data, gsize len)
 int
 main (int argc, char *argv[])
 {
-	GError *error = NULL;
+	GError *err = NULL;
 	gchar *data;
 	gboolean ret;
 	gsize length;
@@ -651,20 +651,20 @@ main (int argc, char *argv[])
 	if (!data[0])
 		fatal ("no dialog instructions", NULL);	
 	
-	ret = g_key_file_load_from_data (input_data, data, strlen (data), G_KEY_FILE_NONE, &error);
+	ret = g_key_file_load_from_data (input_data, data, strlen (data), G_KEY_FILE_NONE, &err);
 	g_free (data);
 
 	if (!ret)
-		fatal ("couldn't parse dialog instructions", error->message);
+		fatal ("couldn't parse dialog instructions", err ? err->message : "");
 
 	prepare_dialog ();
 	
 	g_key_file_free (input_data);
-	data = g_key_file_to_data (output_data, &length, &error);
+	data = g_key_file_to_data (output_data, &length, &err);
 	g_key_file_free (output_data);
 	
 	if (!data)
-		fatal ("couldn't format dialog response", error->message); 
+		fatal ("couldn't format dialog response: %s", err ? err->message : ""); 
 	
 	write_all_output (data, length);
 	g_free (data);
