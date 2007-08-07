@@ -802,6 +802,9 @@ get_default_location_for_name (GQuark base_loc, const char *keyring_name)
 	gchar *base, *filename;
 	int version;
 	GQuark loc;
+	
+	g_assert (base_loc);
+	g_assert (keyring_name && keyring_name[0]);
 
 	base = g_filename_from_utf8 (keyring_name, -1, NULL, NULL, NULL);
 	if (base == NULL)
@@ -953,6 +956,12 @@ GkrKeyring*
 gkr_keyring_create (GQuark base_loc, const gchar *keyring_name, const gchar *password)
 {
 	GkrKeyring *keyring;
+
+	g_return_val_if_fail (keyring_name && keyring_name[0], NULL);
+	g_return_val_if_fail (password, NULL);
+		
+	if (!base_loc)
+		base_loc = GKR_LOCATION_BASE_LOCAL;
 	
 	keyring = gkr_keyring_new (keyring_name, 0);
 	if (keyring != NULL) {

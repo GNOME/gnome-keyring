@@ -1,3 +1,8 @@
+2007-08-07  Stef Walter  <stef@memberwebs.com>
+
+	* keyrings/gkr-keyring.c: Always default to a proper volume
+	when none is selected or returned by ask request.
+	
 2007-08-06  Stef Walter  <stef@memberwebs.com>
 
 	* ui/gkr-ask-tool.c: Fix possible crash in ask tool from 
