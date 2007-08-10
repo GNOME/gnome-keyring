@@ -837,6 +837,8 @@ op_lock_keyring (GkrBuffer *packet, GkrBuffer *result,
 		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	}
 	
+	g_free (keyring_name);
+	
 	return TRUE;
 }
 
@@ -1221,6 +1223,8 @@ op_list_items (GkrBuffer *packet, GkrBuffer *result,
 
 		g_list_free (items);
 	}
+	
+	g_free (keyring_name);
 	
 	return TRUE;
 }
@@ -1633,7 +1637,8 @@ op_set_item_attributes (GkrBuffer *packet, GkrBuffer *result,
 		if (item->keyring)
 			gkr_keyring_save_to_disk (item->keyring);
 	}
-	
+
+	g_free (keyring_name);	
 	gnome_keyring_attribute_list_free (attributes);
 	return TRUE;
 }

@@ -261,6 +261,7 @@ keyrings_cleanup (gpointer unused)
 	}
 	
 	g_free (default_keyring);
+	default_keyring = NULL;
 	
 	g_assert (session_keyring == NULL);
 	keyrings_inited = FALSE;
@@ -369,6 +370,7 @@ gkr_keyrings_set_default (GkrKeyring *keyring)
 	
 	g_free (path);
 
+	g_free (default_keyring);
 	default_keyring = keyring ? g_strdup (keyring->keyring_name) : NULL;
 }
 

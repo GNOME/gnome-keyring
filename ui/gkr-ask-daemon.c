@@ -68,7 +68,7 @@ ask_daemon_init (void)
 	
 	display = g_getenv ("DISPLAY");
 	if (display && display[0])
-		display = g_strdup (display);
+		the_display = g_strdup (display);
 		
 	gkr_cleanup_register (ask_daemon_cleanup, NULL);
 }

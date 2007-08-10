@@ -1,5 +1,12 @@
 2007-08-10  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon-ops.c: 
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyrings.c:
+	* ui/gkr-ask-daemon.c: Fix memory leaks
+	
+2007-08-10  Stef Walter  <stef@memberwebs.com>
+
 	* pam/gkr-pam-module.c: Put an upper limit on the amount of data
 	the daemon can send to us.
 	

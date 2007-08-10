@@ -540,6 +540,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	GHashTable *checks = NULL;
 	GkrKeyringItem *item;
 	char *reserved;
+	gboolean ret = FALSE;
 
 	display_name = NULL;
 	items = 0;
@@ -695,6 +696,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	keyring->locked = locked;
 	g_free (keyring->keyring_name);
 	keyring->keyring_name = display_name;
+	display_name = NULL;
 	keyring->mtime = mtime;
 	keyring->ctime = ctime;
 	keyring->lock_on_idle = !!(flags & LOCK_ON_IDLE_FLAG);
@@ -750,16 +752,16 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	}
 	
 	g_hash_table_foreach (checks, (GHFunc)remove_unavailable_item, keyring);
-	g_hash_table_destroy (checks);
 
-	return TRUE;
+	ret = TRUE;
+
  bail:
 	gkr_buffer_uninit (&to_decrypt);
 	if (checks)
 		g_hash_table_destroy (checks);
 	g_free (display_name);
 
-	if (items != NULL) {
+	if (items != NULL && !ret) {
 		for (i = 0; i < num_items; i++) {
 			g_free (items[i].display_name);
 			gnome_keyring_free_password (items[i].secret);
@@ -767,10 +769,10 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 			gnome_keyring_attribute_list_free (items[i].attributes);
 			gnome_keyring_acl_free (items[i].acl);
 		}
-		g_free (items);
 	}
+	g_free (items);
 	
-	return FALSE;
+	return ret;
 }
 
 
