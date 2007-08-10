@@ -137,6 +137,9 @@ foreach_line (char *lines, line_cb cb, void *arg)
 static char*
 read_all (int fd)
 {
+	/* We only accept a max of 8K from the daemon */
+	#define MAX_LENGTH 8192
+	
 	char buf[256];
 	char *ret = NULL;
 	int r, len = 0;
@@ -163,7 +166,7 @@ read_all (int fd)
 			strncat (ret, buf, r);
 		}
 		
-		if (r == 0)
+		if (r == 0 || len > MAX_LENGTH)
 			break;
 	}
 	

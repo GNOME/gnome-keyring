@@ -1,3 +1,13 @@
+2007-08-10  Stef Walter  <stef@memberwebs.com>
+
+	* pam/gkr-pam-module.c: Put an upper limit on the amount of data
+	the daemon can send to us.
+	
+2007-08-10  Stef Walter  <stef@memberwebs.com>
+
+	* pam/gkr-pam-client.c: Make sure the daemon is running as the 
+	same user as us before passing passwords to it.
+	
 2007-08-07  Stef Walter  <stef@memberwebs.com>
 
 	* keyrings/gkr-keyring.c: Always default to a proper volume
