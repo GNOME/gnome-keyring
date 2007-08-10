@@ -51,7 +51,74 @@
 #define PAM_APP_NAME_LEN  (sizeof (PAM_APP_NAME) - 1)
 
 static int
-connect_to_daemon (const char *path)
+check_peer_same_uid (int sock)
+{
+	uid_t uid = -1;
+	
+	/* 
+	 * Certain OS require a message to be sent over the unix socket for the 
+	 * otherside to get the process credentials. Most uncool.
+	 * 
+	 * The normal gnome-keyring protocol accomodates this and the client
+	 * sends a message/byte before sending anything else. This only works
+	 * for the daemon verifying the client. 
+	 * 
+	 * This code here is used by a client to verify the daemon is running
+	 * as the right user. Since we cannot modify the protocol, this only
+	 * works on OSs that can do this credentials lookup transparently.
+	 */
+
+/* Linux */
+#if defined(SO_PEERCRED)
+	struct ucred cr;   
+	socklen_t cr_len = sizeof (cr);
+		
+	if (getsockopt (sock, SOL_SOCKET, SO_PEERCRED, &cr, &cr_len) == 0 &&
+	    cr_len == sizeof (cr)) {
+	    	uid = cr.uid;
+	} else {
+		syslog (GKR_LOG_ERR, "could not get gnome-keyring-daemon socket credentials, "
+		        "(returned len %d/%d)\n", cr_len, (int) sizeof (cr));
+		return -1;
+	}
+
+
+/* The BSDs */
+#elif defined(LOCAL_PEERCRED)
+	uid_t gid;
+        struct xucred xuc;
+        socklen_t xuc_len = sizeof (xuc);
+
+	if (getsockopt (sock, SOL_SOCKET, LOCAL_PEERCRED, &xuc, &xuc_len) == 0 && 
+	    xuc_len == sizeof (xuc) {
+	    	uid = xuc.cr_uid;
+	} else {
+		syslog (GKR_LOG_ERR, "could not get gnome-keyring-daemon socket credentials, "
+		        "(returned len %d/%d)\n", xuc_len, (int)sizeof (xuc));
+		return -1;   
+	}
+	
+	
+/* NOTE: Add more here */
+#else
+	syslog (GKR_LOG_WARN, "Cannot verify that the process to which we are passing the login"
+	        " password is genuinely running as the same user login: not supported on this OS.");
+	uid = geteuid ();
+	
+	
+#endif
+
+	if (uid != geteuid ()) {
+		syslog (GKR_LOG_ERR, "The gnome keyring socket is not running with the same "
+		        "credentials as the user login. Disconnecting.");
+		return 0;
+	}
+	
+	return 1;
+}
+
+static int
+write_credentials_byte (int sock)
 {
 #if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
 	union {
@@ -62,9 +129,55 @@ connect_to_daemon (const char *path)
 	struct msghdr msg;
 #endif
 
+	int bytes_written;
+  	char buf = 0;
+
+	/*
+	 * All this fuss is for certain OS's, as a byte needs to have 
+	 * gone through the socket before they know who is on the 
+	 * other side. :( 
+	 */
+
+#if !defined(HAVE_GETPEEREID) && defined(HAVE_CMSGCRED)
+	iov.iov_base = &buf;
+	iov.iov_len = 1;
+
+	memset (&msg, 0, sizeof (msg));
+	msg.msg_iov = &iov;
+	msg.msg_iovlen = 1;
+
+	msg.msg_control = (caddr_t) &cmsg;
+	msg.msg_controllen = CMSG_SPACE (sizeof (struct cmsgcred));
+	memset (&cmsg, 0, sizeof (cmsg));
+	cmsg.hdr.cmsg_len = CMSG_LEN (sizeof (struct cmsgcred));
+	cmsg.hdr.cmsg_level = SOL_SOCKET;
+	cmsg.hdr.cmsg_type = SCM_CREDS;
+#endif
+
+again:
+
+#if !defined(HAVE_GETPEEREID) && defined(HAVE_CMSGCRED)
+	bytes_written = sendmsg (sock, &msg, 0);
+#else
+	bytes_written = write (sock, &buf, 1);
+#endif
+
+	if (bytes_written < 0) {
+		if (errno == EINTR || errno == EAGAIN)
+			goto again;
+		syslog (GKR_LOG_ERR, "couldn't send credentials to daemon: %s", 
+		        strerror (errno));
+		return -1;
+	}
+	
+	return 0;
+}
+
+static int
+connect_to_daemon (const char *path)
+{
 	struct sockaddr_un addr;
-	int sock, bytes_written;
-  	char buf;
+	int sock;
 
 	addr.sun_family = AF_UNIX;
 	strncpy (addr.sun_path, path, sizeof (addr.sun_path));
@@ -85,41 +198,18 @@ connect_to_daemon (const char *path)
 		return -1;
 	}
 	
-	/* Write the credentials byte */
-	buf = 0;
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-	iov.iov_base = &buf;
-	iov.iov_len = 1;
-
-	memset (&msg, 0, sizeof (msg));
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
-
-	msg.msg_control = (caddr_t) &cmsg;
-	msg.msg_controllen = CMSG_SPACE (sizeof (struct cmsgcred));
-	memset (&cmsg, 0, sizeof (cmsg));
-	cmsg.hdr.cmsg_len = CMSG_LEN (sizeof (struct cmsgcred));
-	cmsg.hdr.cmsg_level = SOL_SOCKET;
-	cmsg.hdr.cmsg_type = SCM_CREDS;
-#endif
-
-again:
-
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-	bytes_written = sendmsg (sock, &msg, 0);
-#else
-	bytes_written = write (sock, &buf, 1);
-#endif
-
-	if (bytes_written < 0) {
-		if (errno == EINTR || errno == EAGAIN)
-			goto again;
-		syslog (GKR_LOG_ERR, "couldn't send credentials to: %s: %s", 
-		        path, strerror (errno));
+	/* Verify the server is running as the right user */
+	if (check_peer_same_uid (sock) <= 0) {
 		close (sock);
 		return -1;
 	}
-
+	
+	/* This lets the server verify us */
+	if (write_credentials_byte (sock) < 0) {
+		close (sock);
+		return -1;
+	}
+	
 	return sock;
 }
 
