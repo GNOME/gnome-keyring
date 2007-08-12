@@ -620,9 +620,10 @@ find_closest_name (gpointer unused, GkrLocationVolume *locvol, FindClosestName *
 	
 	len = strlen (locvol->prefix);
 	if (strncmp (ctx->search, locvol->prefix, len) == 0) {
-		if (!ctx->matched || strlen (ctx->matched) < len)
+		if (!ctx->matched || strlen (ctx->matched) < len) {
 			ctx->matched = locvol->prefix;
 			ctx->name = locvol->name;
+		}
 	} 
 }
 

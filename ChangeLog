@@ -1,3 +1,8 @@
+2007-08-12  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-location.c: Create keyrings in the right directory.
+	Patch from Nathaniel McCallum. Fixes bug #465157
+	
 2007-08-10  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon-ops.c: 
