@@ -73,8 +73,8 @@ enum {
 #define  STDERR  2
 
 /* Linux/BSD compatibility */
-#ifndef PAM_AUTHTOK_RECOVERY_ERR
-#define PAM_AUTHTOK_RECOVERY_ERR PAM_AUTHTOK_RECOVER_ERR
+#ifndef PAM_AUTHTOK_RECOVER_ERR
+#define PAM_AUTHTOK_RECOVER_ERR PAM_AUTHTOK_RECOVERY_ERR
 #endif
 
 /* -----------------------------------------------------------------------------
@@ -703,7 +703,7 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 		if (ret != PAM_SUCCESS || password == NULL) {
 			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
 			        ret == PAM_SUCCESS ? "password was null" : pam_strerror (ph, ret));
-			return PAM_AUTHTOK_RECOVERY_ERR;
+			return PAM_AUTHTOK_RECOVER_ERR;
 		}
 	}
 
@@ -813,7 +813,7 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd)
 		if (ret != PAM_SUCCESS || password == NULL) {
 			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
 			        ret == PAM_SUCCESS ? "password was null" : pam_strerror (ph, ret));
-			return PAM_AUTHTOK_RECOVERY_ERR;
+			return PAM_AUTHTOK_RECOVER_ERR;
 		}
 	}
 	

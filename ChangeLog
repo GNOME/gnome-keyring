@@ -1,3 +1,10 @@
+2007-08-15  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-secure-memory.c:
+	* pam/gkr-pam-client.c:
+	* pam/gkr-pam-module.c: Build fixes for FreeBSD. Patch by
+	Joe Marcus Clarke. Fixes bug #466060
+	
 2007-08-12  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number
