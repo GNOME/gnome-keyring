@@ -54,14 +54,16 @@ gnome_keyring_free_password (gchar *password)
 	 * should zero out the memory, but because on certain platforms 
 	 * we may be using normal memory, zero it out here just in case.
 	 */
-		
+	 
+	/* Defeats some optimizations */		
+	len = strlen (password);
+	memset (password, 0xAA, len);
+	memset (password, 0xBB, len);
+
+	/* Defeats others */
         vp = (volatile char*)password;
-       	len = strlen (password);
-        while (len) { 
-        	*vp = 0xAA;
-        	vp++;
-        	len--; 
-        } 
+        while (*vp) 
+        	*(vp++) = 0xAA;
 	
 	gnome_keyring_memory_free (password);
 }

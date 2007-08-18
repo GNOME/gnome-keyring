@@ -1,6 +1,12 @@
 2007-08-18  Stef Walter  <stef@memberwebs.com>
 
-	* common/gkr-pam-client.c: Reorder the inclusion of headers
+	* pam/gkr-pam-module.c: 
+	* library/gnome-keyring-utils.c: Get around more optimizations that 
+	cancel out wiping of strings before freeing.
+	
+2007-08-18  Stef Walter  <stef@memberwebs.com>
+
+	* pam/gkr-pam-client.c: Reorder the inclusion of headers
 	necessary for compiling on FreeBSD. See bug #466060
 	
 2007-08-15  Stef Walter  <stef@memberwebs.com>

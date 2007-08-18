@@ -98,10 +98,23 @@ free_safe (void *data)
 static void
 free_password (char *password)
 {
-        volatile char *vp = (volatile char*)password;
-        while (password && *vp) 
+	volatile char *vp;
+	size_t len;
+	
+	if (!password)
+		return;
+
+	/* Defeats some optimizations */		
+	len = strlen (password);
+	memset (password, 0xAA, len);
+	memset (password, 0xBB, len);
+
+	/* Defeats others */
+        vp = (volatile char*)password;
+        while (*vp) 
         	*(vp++) = 0xAA;
-	free_safe (password);
+
+	free (password);
 }
 
 static char* 
