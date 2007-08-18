@@ -29,10 +29,6 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
-#if defined(LOCAL_PEERCRED)
-#include <sys/param.h>
-#include <sys/ucred.h>
-#endif
 #include <sys/un.h>
 #include <sys/uio.h>
 #include <sys/wait.h>
@@ -49,6 +45,11 @@
 
 #if defined(HAVE_GETPEERUCRED)
 #include <ucred.h>
+#endif
+
+#if defined(LOCAL_PEERCRED)
+#include <sys/param.h>
+#include <sys/ucred.h>
 #endif
 
 #define PAM_APP_NAME      "Auto Login (PAM)"

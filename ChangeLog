@@ -1,3 +1,8 @@
+2007-08-18  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-pam-client.c: Reorder the inclusion of headers
+	necessary for compiling on FreeBSD. See bug #466060
+	
 2007-08-15  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-secure-memory.c:
