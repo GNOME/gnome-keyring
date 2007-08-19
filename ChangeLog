@@ -1,5 +1,10 @@
 2007-08-19  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-dbus.c: Fix building with newer versions of DBus.
+	Fixes bug #465936. Patch by Theppitak Karoonboonyanan
+	
+2007-08-19  Stef Walter  <stef@memberwebs.com>
+
 	* pam/gkr-pam-module.c: Correctly start the daemon from PAM's
 	pam_sm_open_session callback rather than the pam_sm_authenticate,
 	when the 'auto_start' flag is set on the 'session' line.

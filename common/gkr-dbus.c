@@ -30,6 +30,17 @@
 
 #include <dbus/dbus.h>
 
+/* 
+ * dbus_watch_get_unix_fd() is introduced in dbus 1.1.1, deprecating
+ * dbus_watch_get_fd(). We still need to use the old function for official
+ * GNOME 2.20, anyway. See Bug #465936.
+ */
+#define VER_LESS_THAN(MAJOR, MINOR, MICRO, J, N, C) \
+    (MAJOR < J || (MAJOR == J && (MINOR < N || (MINOR == N && MICRO < C))))
+#if VER_LESS_THAN(DBUS_MAJOR_VERSION, DBUS_MINOR_VERSION, DBUS_MICRO_VERSION, 1, 1, 1)
+# define dbus_watch_get_unix_fd dbus_watch_get_fd
+#endif
+
 /* ------------------------------------------------------------------------
  * DBUS GLIB MAIN LOOP INTEGRATION
  * 
@@ -203,7 +214,7 @@ connection_setup_add_watch (ConnectionSetup *cs, DBusWatch *watch)
 	handler->cs = cs;
 	handler->watch = watch;
   
-	channel = g_io_channel_unix_new (dbus_watch_get_fd (watch));
+	channel = g_io_channel_unix_new (dbus_watch_get_unix_fd (watch));
   
 	handler->source = g_io_create_watch (channel, condition);
 	g_source_set_callback (handler->source, (GSourceFunc) io_handler_dispatch, handler,
