@@ -435,6 +435,9 @@ generate_file (GkrBuffer *buffer, GkrKeyring *keyring)
 			     (guchar*)to_encrypt.buf + 16, to_encrypt.len - 16);
 	memcpy (to_encrypt.buf, digest, 16);
 	
+	/* This is either set by gnome_keyring_create, or when reading from disk */
+	g_assert (keyring->hash_iterations);
+	
 	if (!encrypt_buffer (&to_encrypt, keyring->password, keyring->salt, keyring->hash_iterations)) {
 		gkr_buffer_uninit (&to_encrypt);
 		return FALSE;
@@ -851,9 +854,6 @@ gkr_keyring_init (GkrKeyring *keyring)
 	/* Default values: */
 	keyring->lock_on_idle = FALSE;
 	keyring->lock_timeout = 0;
-
-	keyring->hash_iterations = 1000 + (int) (1000.0 * rand() / (RAND_MAX + 1.0));
-	init_salt (keyring->salt);
 }
 
 static void
@@ -970,6 +970,8 @@ gkr_keyring_create (GQuark base_loc, const gchar *keyring_name, const gchar *pas
 		keyring->location = get_default_location_for_name (base_loc, keyring_name);
 		keyring->locked = FALSE;
 		keyring->password = gnome_keyring_memory_strdup (password);
+		keyring->hash_iterations = 1000 + (int) (1000.0 * rand() / (RAND_MAX + 1.0));
+		init_salt (keyring->salt);
 		gkr_keyring_save_to_disk (keyring);
 	}
 	return keyring;
