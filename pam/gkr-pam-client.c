@@ -29,6 +29,7 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/un.h>
 #include <sys/uio.h>
 #include <sys/wait.h>
@@ -182,7 +183,30 @@ static int
 connect_to_daemon (const char *path)
 {
 	struct sockaddr_un addr;
+	struct stat st;
 	int sock;
+	
+	/* First a bunch of checks to make sure nothing funny is going on */
+	
+	if (lstat (path, &st) < 0) {
+		syslog (GKR_LOG_ERR, "Couldn't access gnome keyring socket: %s: %s", 
+		        path, strerror (errno));
+		return -1;
+	}
+	
+	if (st.st_uid != geteuid ()) {
+		syslog (GKR_LOG_ERR, "The gnome keyring socket is not owned with the same "
+		        "credentials as the user login: %s", path);
+		return -1;
+	}
+	
+	if (S_ISLNK(st.st_mode) || !S_ISSOCK(st.st_mode)) {
+		syslog (GKR_LOG_ERR, "The gnome keyring socket is not a valid simple "
+		        "non-linked socket");
+		return -1;
+	}	
+	
+	/* Now we connect */
 
 	addr.sun_family = AF_UNIX;
 	strncpy (addr.sun_path, path, sizeof (addr.sun_path));
@@ -204,12 +228,14 @@ connect_to_daemon (const char *path)
 	}
 	
 	/* Verify the server is running as the right user */
+	
 	if (check_peer_same_uid (sock) <= 0) {
 		close (sock);
 		return -1;
 	}
 	
 	/* This lets the server verify us */
+	
 	if (write_credentials_byte (sock) < 0) {
 		close (sock);
 		return -1;

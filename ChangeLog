@@ -1,5 +1,11 @@
 2007-08-19  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-client.c: stat the socket and check for correct 
+	user before connecting to it from the PAM module, and sending 
+	password there. 
+	
+2007-08-19  Stef Walter  <stef@memberwebs.com>
+
 	* keyrings/gkr-keyring.c: Don't read from /dev/random when not
 	needed. This makes startup faster in many cases, as it won't 
 	block for entropy.
