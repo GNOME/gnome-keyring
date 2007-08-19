@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-06-29 22:23+0200\n"
-"PO-Revision-Date: 2007-06-29 18:32+0100\n"
+"POT-Creation-Date: 2007-08-19 15:25+0200\n"
+"PO-Revision-Date: 2007-08-10 22:01+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Polish <translators@gnomepl.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,26 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:379
+#: ../common/gkr-location.c:290
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Dysk wymienny: %s"
+
+#: ../common/gkr-location.c:292
+msgid "Removable Disk"
+msgstr "Dysk wymienny"
+
+#: ../common/gkr-location.c:436
+msgid "Home"
+msgstr "Dom"
+
+#. TRANSLATORS: this is the title for an item
+#: ../daemon/gkr-daemon-ops.c:83
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Hasło odblokowywujące bazę kluczy %s"
+
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -32,7 +51,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) wymaga hasła dostępu dla \"<object prop='name'/>\" w "
 "domyślnej bazie kluczy."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:382
+#: ../daemon/gkr-daemon-ops.c:312
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -41,8 +60,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) wymaga hasła dostępu dla \"<object prop='name'/>\" w %"
 "s."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:387
-#: ../daemon/gnome-keyring-daemon-ops.c:395
+#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:325
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -51,8 +69,7 @@ msgstr ""
 "Aplikacja \"%s\" wymaga hasła dostępu dla \"<object prop='name'/>\" w "
 "domyślnej bazie kluczy."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:390
-#: ../daemon/gnome-keyring-daemon-ops.c:398
+#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:328
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -60,7 +77,7 @@ msgid ""
 msgstr ""
 "Aplikacja \"%s\" wymaga hasła dostępu dla \"<object prop='name'/>\" w %s."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:403
+#: ../daemon/gkr-daemon-ops.c:333
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -68,7 +85,7 @@ msgstr ""
 "Nieznana aplikacja wymaga hasła dostępu dla \"<object prop='name'/>\" w "
 "domyślnej bazie kluczy."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:405
+#: ../daemon/gkr-daemon-ops.c:335
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -77,15 +94,15 @@ msgstr ""
 "Nieznana aplikacja wymaga hasła dostępu dla \"<object prop='name'/>\" w %s."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:411
+#: ../daemon/gkr-daemon-ops.c:341
 msgid "Allow access"
 msgstr "Zezwolenie na dostęp"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:411
+#: ../daemon/gkr-daemon-ops.c:341
 msgid "Allow application access to keyring?"
 msgstr "Zezwolić aplikacji na dostęp do bazy kluczy?"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:475
+#: ../daemon/gkr-daemon-ops.c:439
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -94,7 +111,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) wymaga dostępu do domyślnej bazy kluczy, ale baza jest "
 "zablokowana"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:479
+#: ../daemon/gkr-daemon-ops.c:443
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -102,8 +119,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
 "zablokowana"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:485
-#: ../daemon/gnome-keyring-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:449 ../daemon/gkr-daemon-ops.c:459
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -111,22 +127,22 @@ msgstr ""
 "Aplikacja \"%s\" wymaga dostępu do domyślnej bazy kluczy, ale baza jest "
 "zablokowana"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:489
-#: ../daemon/gnome-keyring-daemon-ops.c:500
+#: ../daemon/gkr-daemon-ops.c:453 ../daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Aplikacja \"%s\" wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
 "zablokowana"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:506
+#: ../daemon/gkr-daemon-ops.c:470
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Nieznana aplikacja wymaga dostępu do domyślnej bazy kluczy, ale baza jest "
 "zablokowana"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:510
+#: ../daemon/gkr-daemon-ops.c:474
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -134,21 +150,25 @@ msgstr ""
 "Nieznana aplikacja wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
 "zablokowana"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:517
+#: ../daemon/gkr-daemon-ops.c:481
 msgid "Enter password for default keyring to unlock"
 msgstr "Podaj hasło do domyślnej bazy kluczy aby ją odblokować"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:519
+#: ../daemon/gkr-daemon-ops.c:483
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Podaj hasło do bazy kluczy \"%s\" aby ją odblokować"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:523
+#: ../daemon/gkr-daemon-ops.c:487
 msgid "Unlock Keyring"
 msgstr "Odblokowanie bazy kluczy"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:551
+#: ../daemon/gkr-daemon-ops.c:499
+msgid "Automatically unlock this keyring when I log in."
+msgstr "Automatyczne odblokowywanie tej bazy kluczy po zalogowaniu."
+
+#: ../daemon/gkr-daemon-ops.c:535
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -157,7 +177,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". "
 "Należy podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:555
+#: ../daemon/gkr-daemon-ops.c:539
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -166,8 +186,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) wymaga utworzenia nowej domyślnej bazy kluczy. Należy "
 "podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:561
-#: ../daemon/gnome-keyring-daemon-ops.c:571
+#: ../daemon/gkr-daemon-ops.c:545 ../daemon/gkr-daemon-ops.c:555
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -176,8 +195,7 @@ msgstr ""
 "Aplikacja \"%s\" wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". Należy "
 "podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:565
-#: ../daemon/gnome-keyring-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:549 ../daemon/gkr-daemon-ops.c:559
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -186,7 +204,7 @@ msgstr ""
 "Aplikacja \"%s\" wymaga utworzenia nowej domyślnej bazy kluczy. Należy podać "
 "hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:581
+#: ../daemon/gkr-daemon-ops.c:565
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -195,7 +213,8 @@ msgstr ""
 "Nieznana aplikacja wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". "
 "Należy podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:585
+#: ../daemon/gkr-daemon-ops.c:569
+#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -204,15 +223,15 @@ msgstr ""
 "podać hasło jakie będzie z nią używane."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:591
+#: ../daemon/gkr-daemon-ops.c:575
 msgid "New Keyring Password"
 msgstr "Hasło nowej bazy kluczy"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:592
+#: ../daemon/gkr-daemon-ops.c:576
 msgid "Choose password for new keyring"
 msgstr "Podaj hasło dla nowej bazy kluczy"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:619
+#: ../daemon/gkr-daemon-ops.c:623
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -221,7 +240,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) chce zmienić hasło dla bazy kluczy \"%s\". Należy "
 "podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:627
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -230,8 +249,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) chce zmienić hasło dla domyślnej bazy kluczy. Należy "
 "podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:629
-#: ../daemon/gnome-keyring-daemon-ops.c:639
+#: ../daemon/gkr-daemon-ops.c:633 ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -240,8 +258,7 @@ msgstr ""
 "Aplikacja \"%s\" chce zmienić hasło dla bazy kluczy \"%s\". Należy podać "
 "hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:633
-#: ../daemon/gnome-keyring-daemon-ops.c:643
+#: ../daemon/gkr-daemon-ops.c:637 ../daemon/gkr-daemon-ops.c:647
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -250,7 +267,7 @@ msgstr ""
 "Aplikacja \"%s\" chce zmienić hasło dla domyślnej bazy kluczy. Należy podać "
 "hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:649
+#: ../daemon/gkr-daemon-ops.c:653
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -259,7 +276,8 @@ msgstr ""
 "Nieznana aplikacja chce zmienić hasło dla bazy kluczy \"%s\". Należy podać "
 "hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:653
+#: ../daemon/gkr-daemon-ops.c:657
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -267,21 +285,22 @@ msgstr ""
 "Nieznana aplikacja chce zmienić hasło dla domyślnej bazy kluczy. Należy "
 "podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:663
+#: ../daemon/gkr-daemon-ops.c:667
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Podaj nowe hasło dla bazy kluczy \"%s\". "
 
-#: ../daemon/gnome-keyring-daemon-ops.c:665
+#: ../daemon/gkr-daemon-ops.c:669
+#, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Podaj nowe hasło dla domyślnej bazy kluczy. "
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:669
+#: ../daemon/gkr-daemon-ops.c:673
 msgid "Change Keyring Password"
 msgstr "Zmiana hasła bazy kluczy"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:716
+#: ../daemon/gkr-daemon-ops.c:740
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -291,8 +310,7 @@ msgstr ""
 "Aplikacja \"%s\" (%s) potrzebuje zachować hasło, ale brak domyślnej bazy "
 "kluczy. Aby ją utworzyć, należy podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:720
-#: ../daemon/gnome-keyring-daemon-ops.c:724
+#: ../daemon/gkr-daemon-ops.c:744 ../daemon/gkr-daemon-ops.c:748
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -302,7 +320,8 @@ msgstr ""
 "Aplikacja \"%s\" potrzebuje zachować hasło, ale brak domyślnej bazy kluczy. "
 "Aby ją utworzyć, należy podać hasło jakie będzie z nią używane."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:728
+#: ../daemon/gkr-daemon-ops.c:752
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -312,81 +331,84 @@ msgstr ""
 "kluczy. Aby ją utworzyć, należy podać hasło jakie będzie z nią używane."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:733
+#: ../daemon/gkr-daemon-ops.c:757
 msgid "Create Default Keyring"
 msgstr "Tworzenie domyślnej bazy kluczy"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:733
+#: ../daemon/gkr-daemon-ops.c:757
 msgid "Choose password for default keyring"
 msgstr "Podaj hasło dla domyślnej bazy kluczy"
 
-#: ../library/gnome-keyring-utils.c:96
+#: ../library/gnome-keyring-utils.c:111
 msgid "Access Denied"
 msgstr "Dostęp zabroniony"
 
-#: ../library/gnome-keyring-utils.c:98
+#: ../library/gnome-keyring-utils.c:113
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Aplikacja gnome-keyring-deamon nie jest uruchomiona."
 
-#: ../library/gnome-keyring-utils.c:100 ../library/gnome-keyring-utils.c:113
+#: ../library/gnome-keyring-utils.c:115 ../library/gnome-keyring-utils.c:128
 msgid "The keyring has already been unlocked."
 msgstr "Baza kluczy jest już odblokowana"
 
-#: ../library/gnome-keyring-utils.c:102
+#: ../library/gnome-keyring-utils.c:117
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Błąd podczas komunikacji z gnome-keyring-deamon"
 
-#: ../library/gnome-keyring-utils.c:104
+#: ../library/gnome-keyring-utils.c:119
 msgid "A keyring with that name already exists"
 msgstr "Baza kluczy o takiej nazwie już istnieje"
 
-#: ../library/gnome-keyring-utils.c:106
+#: ../library/gnome-keyring-utils.c:121
 msgid "Programmer error: The application sent invalid data."
 msgstr "Błąd programisty: aplikacja wysłała błędne dane."
 
-#: ../ui/gkr-ask-tool.c:257
+#: ../ui/gkr-ask-tool.c:314
+msgid "_Location:"
+msgstr "_Położenie:"
+
+#: ../ui/gkr-ask-tool.c:327
 msgid "_Old password:"
 msgstr "_Stare hasło:"
 
-#: ../ui/gkr-ask-tool.c:280
+#: ../ui/gkr-ask-tool.c:347
 msgid "_Password:"
 msgstr "_Hasło:"
 
-#: ../ui/gkr-ask-tool.c:305
+#: ../ui/gkr-ask-tool.c:369
 msgid "_Confirm password:"
 msgstr "_Potwierdź hasło:"
 
-#: ../ui/gkr-ask-tool.c:324
+#: ../ui/gkr-ask-tool.c:388
 msgid "New password strength"
 msgstr "Nowa siła hasła"
 
-#: ../ui/gkr-ask-tool.c:350
+#: ../ui/gkr-ask-tool.c:444
 msgid "Old password cannot be blank."
 msgstr "Stare hasło nie może być puste."
 
-#: ../ui/gkr-ask-tool.c:362
+#: ../ui/gkr-ask-tool.c:456
 msgid "Password cannot be blank."
 msgstr "Hasło nie może być puste."
 
-#: ../ui/gkr-ask-tool.c:371
+#: ../ui/gkr-ask-tool.c:465
 msgid "Passwords do not match."
 msgstr "Hasła nie są zgodne."
 
-#: ../ui/gkr-ask-tool.c:408
+#: ../ui/gkr-ask-tool.c:514
 msgid "Deny"
 msgstr "Odmowa"
 
-#: ../ui/gkr-ask-tool.c:420
+#: ../ui/gkr-ask-tool.c:526
 msgid "Allow _Once"
 msgstr "Zezwolenie jedn_okrotne"
 
-#: ../ui/gkr-ask-tool.c:424
+#: ../ui/gkr-ask-tool.c:530
 msgid "_Always Allow"
 msgstr "Zezwolenie st_ałe"
 
-#: ../ui/gkr-ask-tool.c:478
-msgid "Must be run from gnome-keyring\n"
-msgstr "Musi być uruchomione z gnome-keyring\n"
+#~ msgid "Must be run from gnome-keyring\n"
+#~ msgstr "Musi być uruchomione z gnome-keyring\n"
 
 #~ msgid "_Confirm new password:"
 #~ msgstr "_Potwierdź nowe hasło:"
