@@ -243,6 +243,12 @@ cleanup_free (pam_handle_t *ph, void *data, int pam_end_status)
 }
 
 static void
+cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
+{
+	free_password (data);
+}
+
+static void
 setup_child (int outp[2], int errp[2], struct passwd *pwd)
 {
 	char *args[] = { GNOME_KEYRING_DAEMON, "-d", NULL};
@@ -481,7 +487,7 @@ stop_daemon (pam_handle_t *ph, struct passwd *pwd)
 	/* 
 	 * No pid, no worries, maybe we didn't start gnome-keyring-daemon
 	 * Or this the calling (PAM using) application is hopeless and 
-	 * wants to call different PAM callbacks from different functions.
+	 * wants to call different PAM callbacks from different processes.
 	 * 
 	 * In any case we live and let live.
 	 */
@@ -684,6 +690,7 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 {
 	struct passwd *pwd;
 	const char *user, *password;
+	const char *socket;
 	uint args;
 	int ret;
 	
@@ -728,9 +735,22 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 			return ret;
 	}
 	
-	ret = unlock_keyring (ph, pwd, password);
-	if (ret != PAM_SUCCESS)
-		return ret;
+	socket = get_any_env (ph, ENV_SOCKET);
+
+	/* If gnome keyring is running, then unlock now */
+	if (socket) {
+		ret = unlock_keyring (ph, pwd, password);
+		if (ret != PAM_SUCCESS)
+			return ret;
+			
+	/* Otherwise start in open session, store password */
+	} else {
+		if (pam_set_data (ph, "gkr_system_authtok", strdup (password),
+		                  cleanup_free_password) != PAM_SUCCESS) {
+			syslog (GKR_LOG_ERR, "gkr-pam: error storing authtok");
+			return PAM_AUTHTOK_RECOVER_ERR;
+		}
+ 	}
 
 	return PAM_SUCCESS;
 }
@@ -738,6 +758,47 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 PAM_EXTERN int
 pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 {
+	const char *user = NULL, *password = NULL;
+	struct passwd *pwd;
+	int ret;
+	uint args = parse_args (argc, argv);
+
+	/* Figure out the user name */
+	if (pam_get_user (ph, &user, NULL) != PAM_SUCCESS) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the user name: %s", 
+		        pam_strerror (ph, ret));
+		return PAM_SERVICE_ERR;
+	}
+
+	pwd = getpwnam (user);
+	if (!pwd) {
+		syslog (GKR_LOG_ERR, "gkr-pam: error looking up user information for: %s", user);
+		return PAM_SERVICE_ERR;
+	}
+
+	/* Should we start the daemon? */
+	if (args & ARG_AUTO_START) {
+		ret = start_daemon_if_necessary (ph, pwd);
+		if (ret != PAM_SUCCESS)
+			return ret;
+	}
+
+	/* Get the stored authtok here */
+	if (pam_get_data (ph, "gkr_system_authtok", (const void**)&password) != PAM_SUCCESS) {
+		
+		/* 
+		 * No password, no worries, maybe this (PAM using) application 
+		 * didn't do authentication, or is hopeless and wants to call 
+		 * different PAM callbacks from different processes.
+		 * 
+		 * No use complaining
+		 */ 
+		return PAM_SUCCESS;
+	}
+	
+	if (unlock_keyring (ph, pwd, password) != PAM_SUCCESS)
+		return PAM_SERVICE_ERR;
+
 	return PAM_SUCCESS;
 }
 

@@ -1,5 +1,13 @@
 2007-08-19  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-module.c: Correctly start the daemon from PAM's
+	pam_sm_open_session callback rather than the pam_sm_authenticate,
+	when the 'auto_start' flag is set on the 'session' line.
+	This makes us more solid and sane with GDM and well behaved PAM 
+	using applications. Fixes bug #467852. Patch from Chris Rivera
+	
+2007-08-19  Stef Walter  <stef@memberwebs.com>
+
 	* pam/gkr-pam-client.c: stat the socket and check for correct 
 	user before connecting to it from the PAM module, and sending 
 	password there. 
