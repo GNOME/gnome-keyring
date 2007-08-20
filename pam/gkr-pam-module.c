@@ -764,7 +764,8 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 	uint args = parse_args (argc, argv);
 
 	/* Figure out the user name */
-	if (pam_get_user (ph, &user, NULL) != PAM_SUCCESS) {
+	ret = pam_get_user (ph, &user, NULL);
+	if (ret != PAM_SUCCESS) {
 		syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the user name: %s", 
 		        pam_strerror (ph, ret));
 		return PAM_SERVICE_ERR;

@@ -1,3 +1,8 @@
+2007-08-20  Stef Walter  <stef@memberwebs.com>
+
+	* pam/gkr-pam-module.c: Fix use of uninitialized return value.
+	Fixes bug #468393
+	
 2007-08-19  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-dbus.c: Fix building with newer versions of DBus.
