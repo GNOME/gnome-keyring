@@ -1,3 +1,17 @@
+Changes in version 2.19.91 are:
+* Builds with newer versions of DBus [Theppitak Karoonboonyanan]
+* In the PAM module we now support starting gnome-keyring-daemon when 
+  the user's session actually starts, rather than during password validation.
+  This makes us more solid and sane with GDM and well behaved PAM using
+  applications. [Chris Rivera]
+* In the PAM module check that the socket is owned by the same user, before
+  sending the login password there.
+* Don't read from /dev/random when not needed. This makes startup faster 
+  in many cases, as it won't block for entropy.
+* Get around more optimizations that cancel out wiping of strings in 
+  memory before freeing.
+* Now builds on FreeBSD [Joe Marcus Clarke]
+	
 Changes in version 2.19.90 are:
 * Fix problem where keyrings are created in wrong directory [Nathaniel McCallum]
 * Incorporated security fixes from Novell

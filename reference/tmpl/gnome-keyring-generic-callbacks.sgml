@@ -19,11 +19,11 @@ gnome-keyring-generic-callbacks
 
 <!-- ##### USER_FUNCTION GnomeKeyringOperationDoneCallback ##### -->
 <para>
-A simple callback with the result of an operation.
+
 </para>
 
-@result: The result of the operation.
-@data: A pointer to arbitrary data passed in when starting the operation.
+@result: 
+@data: 
 
 
 <!-- ##### USER_FUNCTION GnomeKeyringOperationGetIntCallback ##### -->
@@ -31,9 +31,9 @@ A simple callback with the result of an operation.
 
 </para>
 
-@result: The result of the operation.
-@val: An unsigned integer.
-@data: A pointer to arbitrary data passed in when starting the operation.
+@result: 
+@val: 
+@data: 
 
 
 <!-- ##### USER_FUNCTION GnomeKeyringOperationGetListCallback ##### -->
@@ -41,9 +41,9 @@ A simple callback with the result of an operation.
 
 </para>
 
-@result: The result of the operation.
-@list: A %GList, possibly empty. Do not free this list.
-@data: A pointer to arbitrary data passed in when starting the operation.
+@result: 
+@list: 
+@data: 
 
 
 <!-- ##### USER_FUNCTION GnomeKeyringOperationGetStringCallback ##### -->
@@ -51,8 +51,8 @@ A simple callback with the result of an operation.
 
 </para>
 
-@result: The result of the operation.
-@string: A null-terminated string, or %NULL. Do not free this memory.
-@data: A pointer to arbitrary data passed in when starting the operation.
+@result: 
+@string: 
+@data: 
 
 
