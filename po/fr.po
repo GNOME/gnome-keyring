@@ -1,54 +1,108 @@
-# French translation of gnomekeyring.
-# Copyright (C) 2004-2006 Free Software Foundation, Inc.
+# French translation of gnome-keyring.
+# Copyright (C) 2004-2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Sébastien Bacher <seb128@debian.org>, 2004.
-# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2004.
+# Christophe Merlet <redfox@redfoxcenter.org>, 2004.
 # Laurent Richard <laurent.richard@ael.be>, 2006.
 # Jonathan Ernst <jonathan@ernstfamily.ch>, 2006.
+# Yann Simon <yann.simon.fr@gmail.com>, 2007.
+# Claude Paroz <claude@2xlibre.net>, 2007.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-05-11 12:20+0100\n"
-"Last-Translator: Jonathan Ernst <jonathan@ernstfamily.ch>\n"
+"POT-Creation-Date: 2007-08-29 23:23+0200\n"
+"PO-Revision-Date: 2007-08-29 23:26+0200\n"
+"Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "_Ancien mot de passe :"
+#: ../common/gkr-location.c:290
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Disque amovible : %s"
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "_Mot de passe :"
+#: ../common/gkr-location.c:292
+msgid "Removable Disk"
+msgstr "Disque amovible"
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "_Confirmation du nouveau mot de passe :"
+#: ../common/gkr-location.c:436
+msgid "Home"
+msgstr "Dossier personnel"
 
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">Niveau de sécurité du mot de passe :</span>"
+#. TRANSLATORS: this is the title for an item
+#: ../daemon/gkr-daemon-ops.c:83
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Mot de passe pour déverrouiller le trousseau de clés %s"
 
-#: ../gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr "L'ancien mot de passe ne peut pas être vide."
+#: ../daemon/gkr-daemon-ops.c:309
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr ""
+"L'application « %s » (%s) veut accéder au mot de passe de « <object "
+"prop='name'/> » dans le trousseau de clés par défaut."
 
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "Le mot de passe ne peut pas être vide."
+#: ../daemon/gkr-daemon-ops.c:312
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr ""
+"L'application « %s » (%s) veut accéder au mot de passe de « <object "
+"prop='name'/> » dans %s."
 
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr "Les mots de passe ne sont pas identiques."
+#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:325
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"L'application « %s » veut accéder au mot de passe de « <object prop='name'/"
+"> » dans le trousseau de clés par défaut."
 
-#: ../gnome-keyring-ask.c:407
+#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:328
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"L'application « %s » veut accéder au mot de passe de « <object prop='name'/"
+"> » dans %s."
+
+#: ../daemon/gkr-daemon-ops.c:333
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Une application inconnue veut accéder au mot de passe de « <object "
+"prop='name'/> » dans le trousseau de clés par défaut."
+
+#: ../daemon/gkr-daemon-ops.c:335
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"Une application inconnue veut accéder au mot de passe de « <object "
+"prop='name'/> » dans %s."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:341
+msgid "Allow access"
+msgstr "Autoriser l'accès"
+
+#: ../daemon/gkr-daemon-ops.c:341
+msgid "Allow application access to keyring?"
+msgstr "Autoriser l'application à accéder au trousseau de clés ?"
+
+#: ../daemon/gkr-daemon-ops.c:439
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -57,7 +111,7 @@ msgstr ""
 "L'application « %s » (%s) veut accéder au trousseau de clés par défaut, mais "
 "il est verrouillé"
 
-#: ../gnome-keyring-ask.c:411
+#: ../daemon/gkr-daemon-ops.c:443
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -65,17 +119,7 @@ msgstr ""
 "L'application « %s » (%s) veut accéder au trousseau de clés « %s », mais il "
 "est verrouillé"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"L'application « %s » (%s) veut accéder à un trousseau de clés inconnu, mais "
-"il est verrouillé"
-
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
+#: ../daemon/gkr-daemon-ops.c:449 ../daemon/gkr-daemon-ops.c:459
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -83,30 +127,21 @@ msgstr ""
 "L'application « %s » veut accéder au trousseau de clés par défaut, mais il "
 "est verrouillé"
 
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
+#: ../daemon/gkr-daemon-ops.c:453 ../daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "L'application « %s » veut accéder au trousseau de clés « %s », mais il est "
 "verrouillé"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
-#, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"L'application « %s » veut accéder à un trousseau de clés inconnu, mais il "
-"est verrouillé"
-
-#: ../gnome-keyring-ask.c:452
+#: ../daemon/gkr-daemon-ops.c:470
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Une application inconnue veut accéder au trousseau de clés par défaut, mais "
 "il est verrouillé"
 
-#: ../gnome-keyring-ask.c:456
+#: ../daemon/gkr-daemon-ops.c:474
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -114,37 +149,28 @@ msgstr ""
 "Une application inconnue veut accéder au trousseau de clés « %s », mais il "
 "est verrouillé"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Une application inconnue veut accéder à un trousseau de clés inconnu, mais "
-"il est verrouillé"
-
-#: ../gnome-keyring-ask.c:468
+#: ../daemon/gkr-daemon-ops.c:481
 msgid "Enter password for default keyring to unlock"
 msgstr ""
 "Saisissez le mot de passe du trousseau de clés par défaut pour le "
 "déverrouiller"
 
-#: ../gnome-keyring-ask.c:470
+#: ../daemon/gkr-daemon-ops.c:483
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr ""
 "Saisissez le mot de passe du trousseau de clés « %s » pour le déverrouiller"
 
-#: ../gnome-keyring-ask.c:474
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:487
 msgid "Unlock Keyring"
 msgstr "Déverrouiller le trousseau de clés"
 
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "_Interdire"
+#: ../daemon/gkr-daemon-ops.c:499
+msgid "Automatically unlock this keyring when I log in."
+msgstr "Déverrouiller automatiquement ce trousseau de clés quand je me connecte."
 
-#: ../gnome-keyring-ask.c:517
+#: ../daemon/gkr-daemon-ops.c:535
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -153,7 +179,7 @@ msgstr ""
 "L'application « %s » (%s) veut créer un nouveau trousseau de clés nommé « %"
 "s ». Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:521
+#: ../daemon/gkr-daemon-ops.c:539
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -162,7 +188,7 @@ msgstr ""
 "L'application « %s » (%s) veut créer un nouveau trousseau de clés. "
 "Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
+#: ../daemon/gkr-daemon-ops.c:545 ../daemon/gkr-daemon-ops.c:555
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -171,7 +197,7 @@ msgstr ""
 "L'application « %s » veut créer un nouveau trousseau de clés nommé « %s ». "
 "Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
+#: ../daemon/gkr-daemon-ops.c:549 ../daemon/gkr-daemon-ops.c:559
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -180,7 +206,7 @@ msgstr ""
 "L'application « %s » veut créer un nouveau trousseau de clés par défaut. "
 "Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:547
+#: ../daemon/gkr-daemon-ops.c:565
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -189,7 +215,7 @@ msgstr ""
 "Une application inconnue veut créer un nouveau trousseau de clés nommé « %"
 "s ». Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:551
+#: ../daemon/gkr-daemon-ops.c:569
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -197,15 +223,16 @@ msgstr ""
 "Une application inconnue veut créer un nouveau trousseau de clés par défaut. "
 "Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:558
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:575
 msgid "New Keyring Password"
 msgstr "Mot de passe du nouveau trousseau de clés"
 
-#: ../gnome-keyring-ask.c:559
+#: ../daemon/gkr-daemon-ops.c:576
 msgid "Choose password for new keyring"
 msgstr "Choisissez le mot de passe du nouveau trousseau de clés"
 
-#: ../gnome-keyring-ask.c:602
+#: ../daemon/gkr-daemon-ops.c:623
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -214,7 +241,7 @@ msgstr ""
 "L'application « %s » (%s) veut modifier le mot de passe du trousseau de clés "
 "« %s ». Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:606
+#: ../daemon/gkr-daemon-ops.c:627
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -223,7 +250,7 @@ msgstr ""
 "L'application « %s » (%s) veut modifier le mot de passe du trousseau de clés "
 "par défaut. Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#: ../daemon/gkr-daemon-ops.c:633 ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -232,7 +259,7 @@ msgstr ""
 "L'application « %s » veut modifier le mot de passe du trousseau de clés « %"
 "s ». Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#: ../daemon/gkr-daemon-ops.c:637 ../daemon/gkr-daemon-ops.c:647
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -241,7 +268,7 @@ msgstr ""
 "L'application « %s » veut modifier le mot de passe du trousseau de clés par "
 "défaut. Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:632
+#: ../daemon/gkr-daemon-ops.c:653
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -250,7 +277,7 @@ msgstr ""
 "Une application inconnue veut modifier le mot de passe du trousseau de clés "
 "« %s ». Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:636
+#: ../daemon/gkr-daemon-ops.c:657
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -258,20 +285,21 @@ msgstr ""
 "Une application inconnue « %s » veut modifier le mot de passe du trousseau "
 "de clés par défaut. Choisissez le mot de passe que vous voulez lui associer."
 
-#: ../gnome-keyring-ask.c:643
+#: ../daemon/gkr-daemon-ops.c:667
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Choisissez le nouveau mot de passe du trousseau de clés « %s »."
 
-#: ../gnome-keyring-ask.c:645
+#: ../daemon/gkr-daemon-ops.c:669
 msgid "Choose a new password for the default keyring. "
 msgstr "Choisissez le nouveau mot de passe du trousseau de clés par défaut."
 
-#: ../gnome-keyring-ask.c:650
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:673
 msgid "Change Keyring Password"
 msgstr "Modifie le mot de passe du trousseau de clés"
 
-#: ../gnome-keyring-ask.c:689
+#: ../daemon/gkr-daemon-ops.c:740
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -282,7 +310,7 @@ msgstr ""
 "pas de trousseau de clés par défaut. Pour en créer un, vous avez besoin de "
 "choisir le mot de passe que vous désirez lui associer."
 
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
+#: ../daemon/gkr-daemon-ops.c:744 ../daemon/gkr-daemon-ops.c:748
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -293,8 +321,7 @@ msgstr ""
 "trousseau de clés par défaut. Pour en créer un, vous avez besoin de choisir "
 "le mot de passe que vous désirez lui associer."
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
+#: ../daemon/gkr-daemon-ops.c:752
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -304,108 +331,80 @@ msgstr ""
 "de trousseau de clés par défaut. Pour en créer un, vous avez besoin de "
 "choisir le mot de passe que vous désirez lui associer."
 
-#: ../gnome-keyring-ask.c:706
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:757
 msgid "Create Default Keyring"
 msgstr "Créer le trousseau de clés par défaut"
 
-#: ../gnome-keyring-ask.c:707
+#: ../daemon/gkr-daemon-ops.c:757
 msgid "Choose password for default keyring"
 msgstr "Choisissez un mot de passe pour le trousseau de clés par défaut"
 
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "Autoriser l'application à accéder au trousseau de clés ?"
+#: ../library/gnome-keyring-utils.c:111
+msgid "Access Denied"
+msgstr "Accès refusé"
 
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+#: ../library/gnome-keyring-utils.c:113
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "Le démon de gestion de trousseau de clés n'est pas lancé."
+
+#: ../library/gnome-keyring-utils.c:115 ../library/gnome-keyring-utils.c:128
+msgid "The keyring has already been unlocked."
+msgstr "Le trousseau de clés a déjà été déverrouillé."
+
+#: ../library/gnome-keyring-utils.c:117
+msgid "Error communicating with gnome-keyring-daemon"
 msgstr ""
-"L'application « %s » (%s) veut accéder au mot de passe de « %s » dans « %s »."
+"Erreur lors de la communication avec le démon de gestion de trousseau de clés"
 
-#: ../gnome-keyring-ask.c:753
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"L'application « %s » (%s) veut accéder au mot de passe de « %s » dans le "
-"trousseau de clés par défaut."
+#: ../library/gnome-keyring-utils.c:119
+msgid "A keyring with that name already exists"
+msgstr "Un trousseau de clés portant ce nom existe déjà"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"L'application « %s » (%s) veut accéder au mot de passe de « %s » dans un "
-"trousseau de clés inconnu."
+#: ../library/gnome-keyring-utils.c:121
+msgid "Programmer error: The application sent invalid data."
+msgstr "Erreur programmeur : l'application a envoyé des données non valides."
 
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "L'application « %s » veut accéder au mot de passe de « %s » dans %s."
+#: ../ui/gkr-ask-tool.c:314
+msgid "_Location:"
+msgstr "_Emplacement :"
 
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"L'application « %s » veut accéder au mot de passe de « %s » dans le "
-"trousseau de clés par défaut."
+#: ../ui/gkr-ask-tool.c:327
+msgid "_Old password:"
+msgstr "_Ancien mot de passe :"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"L'application « %s » veut accéder au mot de passe de « %s » dans un "
-"trousseau de clés inconnu."
+#: ../ui/gkr-ask-tool.c:347
+msgid "_Password:"
+msgstr "_Mot de passe :"
 
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr ""
-"Une application inconnue veut accéder au mot de passe de « %s » dans %s."
+#: ../ui/gkr-ask-tool.c:369
+msgid "_Confirm password:"
+msgstr "_Confirmation du mot de passe :"
 
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Une application inconnue veut accéder au mot de passe de « %s » dans le "
-"trousseau de clés par défaut."
+#: ../ui/gkr-ask-tool.c:388
+msgid "New password strength"
+msgstr "Robustesse du nouveau mot de passe"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Une application inconnue veut accéder au mot de passe de « %s » dans un "
-"trousseau de clés inconnu."
+#: ../ui/gkr-ask-tool.c:444
+msgid "Old password cannot be blank."
+msgstr "L'ancien mot de passe ne peut pas être vide."
 
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "Autoriser l'accès"
+#: ../ui/gkr-ask-tool.c:456
+msgid "Password cannot be blank."
+msgstr "Le mot de passe ne peut pas être vide."
 
-#: ../gnome-keyring-ask.c:799
+#: ../ui/gkr-ask-tool.c:465
+msgid "Passwords do not match."
+msgstr "Les mots de passe ne sont pas identiques."
+
+#: ../ui/gkr-ask-tool.c:514
+msgid "Deny"
+msgstr "Refuser"
+
+#: ../ui/gkr-ask-tool.c:526
 msgid "Allow _Once"
 msgstr "Autoriser _une seule fois"
 
-#: ../gnome-keyring-ask.c:800
+#: ../ui/gkr-ask-tool.c:530
 msgid "_Always Allow"
 msgstr "_Toujours autoriser"
-
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "Spécifiez le type de requête à lancer\n"
-
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "Type de requête inconnu\n"
