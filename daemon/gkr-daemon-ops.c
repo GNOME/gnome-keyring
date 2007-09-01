@@ -306,32 +306,40 @@ request_item_access (GkrKeyringRequest *req, GkrKeyringItem *item,
 	
 	if (app->display_name && app->pathname) {
 		if (is_default) {
+			/* TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags) */
 			secondary = g_markup_printf_escaped (_("The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."),
 						             app->display_name, app->pathname);
 		} else {
+			/* TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags) */
 			secondary = g_markup_printf_escaped (_("The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."),
 						             app->display_name, app->pathname, keyring_name);
 		} 
 	} else if (app->display_name) {
 		if (is_default) {
+			/* TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags) */
 			secondary = g_markup_printf_escaped (_("The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."),
 						             app->display_name);
 		} else {
+			/* TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags) */
 			secondary = g_markup_printf_escaped (_("The application '%s' wants to access the password for '<object prop='name'/>' in %s."),
 						             app->display_name, keyring_name);
 		} 
 	} else if (app->pathname) {
 		if (is_default) {
+			/* TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags) */
 			secondary = g_markup_printf_escaped (_("The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."),
 						             app->pathname);
 		} else {
+			/* TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags) */
 			secondary = g_markup_printf_escaped (_("The application '%s' wants to access the password for '<object prop='name'/>' in %s."),
 						             app->pathname, keyring_name);
 		} 
 	} else  {
 		if (is_default) {
+			/* TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags) */
 			secondary = g_strdup (_("An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."));
 		} else {
+			/* TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags) */
 			secondary = g_markup_printf_escaped (_("An unknown application wants to access the password for '<object prop='name'/>' in %s."),
 						             keyring_name);
 		} 

@@ -1,3 +1,8 @@
+2007-09-01  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon-ops.c: Put in comments for translators,
+	suggested by Claude Paroz
+	
 2007-08-26  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number
