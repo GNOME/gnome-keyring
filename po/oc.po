@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-17 16:56+0100\n"
+"POT-Creation-Date: 2007-08-21 12:04+0100\n"
 "PO-Revision-Date: 2007-08-21 00:01+0200\n"
 "Last-Translator: Yannig MARCHEGAY (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../common/gkr-location.c:290
 #, c-format
@@ -276,27 +276,27 @@ msgstr ""
 msgid "Choose password for default keyring"
 msgstr ""
 
-#: ../library/gnome-keyring-utils.c:109
+#: ../library/gnome-keyring-utils.c:111
 msgid "Access Denied"
 msgstr ""
 
-#: ../library/gnome-keyring-utils.c:111
+#: ../library/gnome-keyring-utils.c:113
 msgid "The gnome-keyring-daemon application is not running."
 msgstr ""
 
-#: ../library/gnome-keyring-utils.c:113 ../library/gnome-keyring-utils.c:126
+#: ../library/gnome-keyring-utils.c:115 ../library/gnome-keyring-utils.c:128
 msgid "The keyring has already been unlocked."
 msgstr ""
 
-#: ../library/gnome-keyring-utils.c:115
+#: ../library/gnome-keyring-utils.c:117
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr ""
 
-#: ../library/gnome-keyring-utils.c:117
+#: ../library/gnome-keyring-utils.c:119
 msgid "A keyring with that name already exists"
 msgstr ""
 
-#: ../library/gnome-keyring-utils.c:119
+#: ../library/gnome-keyring-utils.c:121
 msgid "Programmer error: The application sent invalid data."
 msgstr ""
 
@@ -343,4 +343,3 @@ msgstr ""
 #: ../ui/gkr-ask-tool.c:530
 msgid "_Always Allow"
 msgstr ""
-
