@@ -1,3 +1,9 @@
+2007-09-06  Stef Walter  <stef@memberwebs.com>
+
+	* library/gnome-keyring-1-uninstalled.pc.in: Don't include 
+	libgnome-keyring-common internal library in stuff we 
+	advertize. Patch by Halton Huo. Fixes bug #473796
+
 2007-09-01  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon-ops.c: Put in comments for translators,

@@ -7,5 +7,5 @@ Name: gnome-keyring
 Description: The GNOME keyring libraries
 Version: @VERSION@
 Requires: glib-2.0
-Libs: ${pc_top_builddir}/${pcfiledir}/libgnome-keyring-common.la ${pc_top_builddir}/${pcfiledir}/libgnome-keyring.la
+Libs: ${pc_top_builddir}/${pcfiledir}/libgnome-keyring.la
 Cflags: -I${pc_top_builddir}/${pcfiledir}
