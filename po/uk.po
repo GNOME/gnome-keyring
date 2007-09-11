@@ -7,44 +7,105 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-21 11:31+0200\n"
-"PO-Revision-Date: 2007-02-21 14:34+0200\n"
+"POT-Creation-Date: 2007-09-11 16:25+0300\n"
+"PO-Revision-Date: 2007-09-11 14:34+0200\n"
 "Last-Translator: Maxim Dzumanenko <dziumanenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "_Старий пароль:"
+#: ../common/gkr-location.c:290
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Змінний диск: %s"
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "_Пароль:"
+#: ../common/gkr-location.c:292
+msgid "Removable Disk"
+msgstr "Змінний диск"
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "П_ідтвердження паролю:"
+#: ../common/gkr-location.c:436
+msgid "Home"
+msgstr "Домашній каталог"
 
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">Перевірка складності паролю:</span>"
+#. TRANSLATORS: this is the title for an item
+#: ../daemon/gkr-daemon-ops.c:83
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Розблокуйте пароль для в'язки ключів %s"
 
-#: ../gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr "Старий пароль не може бути порожнім."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:310
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr ""
+"Програма \"%s\" (%s) бажає отримати доступ до паролю для '<object "
+"prop='name'/>' у типовій "
+"в'язці ключів."
 
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "Пароль не може бути порожнім."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:314
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr ""
+"Програма \"%s\" (%s) бажає отримати доступ до паролю для '<object "
+"prop='name'/>' у в'язці ключів %s."
 
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr "Паролі не збігаються."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:330
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Програма \"%s\" бажає отримати доступ до паролю для '<object "
+"prop='name'/>' у типовій в'язці ключів."
 
-#: ../gnome-keyring-ask.c:407
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:324 ../daemon/gkr-daemon-ops.c:334
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"Програма \"%s\" бажає отримати доступ до паролю для '<object "
+"prop='name'/>' у в'язці ключів %s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:340
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Невідома програма бажає отримати доступ до паролю для '<object "
+"prop='name'/>' у типовій в'язці "
+"ключів."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:343
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"Невідома програма бажає отримати доступ до паролю для '<object "
+"prop='name'/>' у в'язці ключів %"
+"s."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:349
+msgid "Allow access"
+msgstr "Дозволити доступ"
+
+#: ../daemon/gkr-daemon-ops.c:349
+msgid "Allow application access to keyring?"
+msgstr "Дозволити програмам доступ до в'язки ключів?"
+
+#: ../daemon/gkr-daemon-ops.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -53,7 +114,7 @@ msgstr ""
 "Програма \"%s\" (%s) бажає отримати доступ до типової в'язки ключів, але "
 "вона заблокована"
 
-#: ../gnome-keyring-ask.c:411
+#: ../daemon/gkr-daemon-ops.c:451
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -61,17 +122,7 @@ msgstr ""
 "Програма \"%s\" (%s) бажає отримати доступ до в'язки ключів \"%s\", але вона "
 "заблокована"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до невідомої в'язки ключів, але "
-"вона заблокована"
-
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
+#: ../daemon/gkr-daemon-ops.c:457 ../daemon/gkr-daemon-ops.c:467
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -79,63 +130,45 @@ msgstr ""
 "Програма \"%s\" бажає отримати доступ до типової в'язки ключів, але вона "
 "заблокована"
 
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
+#: ../daemon/gkr-daemon-ops.c:461 ../daemon/gkr-daemon-ops.c:472
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Програма \"%s\" бажає отримати доступ до в'язки ключів \"%s\", але вона "
 "заблокована"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
-#, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Програма \"%s\" бажає отримати доступ до невідомої в'язки ключів, але вона "
-"заблокована"
-
-#: ../gnome-keyring-ask.c:452
+#: ../daemon/gkr-daemon-ops.c:478
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Програма бажає отримати доступ до типової в'язки ключів, але вона заблокована"
 
-#: ../gnome-keyring-ask.c:456
+#: ../daemon/gkr-daemon-ops.c:482
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Програма бажає отримати доступ до в'язки ключів \"%s\", але вона заблокована"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Невідома програма бажає отримати доступ до в'язки ключів, але вона "
-"заблокована"
-
-#: ../gnome-keyring-ask.c:468
+#: ../daemon/gkr-daemon-ops.c:489
 msgid "Enter password for default keyring to unlock"
 msgstr "Введіть пароль для розблокування типової в'язки ключів"
 
-#: ../gnome-keyring-ask.c:470
+#: ../daemon/gkr-daemon-ops.c:491
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Введіть пароль для розблокування в'язки ключів '%s'"
 
-#: ../gnome-keyring-ask.c:474
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:495
 msgid "Unlock Keyring"
 msgstr "Розблокувати в'язку ключів"
 
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "_Заборонити"
+#: ../daemon/gkr-daemon-ops.c:507
+msgid "Automatically unlock this keyring when I log in."
+msgstr "Автоматично розблоковувати цю в'язку ключів, коли я входжу у сеанс."
 
-#: ../gnome-keyring-ask.c:517
+#: ../daemon/gkr-daemon-ops.c:543
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -144,7 +177,7 @@ msgstr ""
 "Програма \"%s\" (%s) бажає створити нову в'язку ключів з назвою '%s'. "
 "Необхідно вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:521
+#: ../daemon/gkr-daemon-ops.c:547
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -153,7 +186,7 @@ msgstr ""
 "Програма \"%s\" (%s) бажає створити нову типову в'язку ключів. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
+#: ../daemon/gkr-daemon-ops.c:553 ../daemon/gkr-daemon-ops.c:563
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -162,7 +195,7 @@ msgstr ""
 "Програма \"%s\" бажає створити нову в'язку ключів з назвою '%s'. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
+#: ../daemon/gkr-daemon-ops.c:557 ../daemon/gkr-daemon-ops.c:567
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -171,7 +204,7 @@ msgstr ""
 "Програма \"%s\" бажає створити нову типову в'язку ключів. Необхідно вибрати "
 "пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:547
+#: ../daemon/gkr-daemon-ops.c:573
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -180,7 +213,7 @@ msgstr ""
 "Невідома програма бажає створити нову в'язку ключів з назвою '%s'. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:551
+#: ../daemon/gkr-daemon-ops.c:577
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -188,15 +221,16 @@ msgstr ""
 "Невідома програма бажає створити нову типову в'язку ключів. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:558
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:583
 msgid "New Keyring Password"
 msgstr "Пароль для нової в'язки ключів"
 
-#: ../gnome-keyring-ask.c:559
+#: ../daemon/gkr-daemon-ops.c:584
 msgid "Choose password for new keyring"
 msgstr "Виберіть пароль для нової в'язки ключів"
 
-#: ../gnome-keyring-ask.c:602
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -205,7 +239,7 @@ msgstr ""
 "Програма \"%s\" (%s) хоче змінити пароль в'язки ключів '%s'. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:606
+#: ../daemon/gkr-daemon-ops.c:635
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -214,7 +248,7 @@ msgstr ""
 "Програма \"%s\" (%s) бажає змінити пароль типової в'язки ключів. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#: ../daemon/gkr-daemon-ops.c:641 ../daemon/gkr-daemon-ops.c:651
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -223,7 +257,7 @@ msgstr ""
 "Програма \"%s\" бажає змінити пароль в'язки ключів '%s'. Необхідно вибрати "
 "пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#: ../daemon/gkr-daemon-ops.c:645 ../daemon/gkr-daemon-ops.c:655
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -232,7 +266,7 @@ msgstr ""
 "Програма \"%s\" бажає змінити пароль типової в'язки ключів. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:632
+#: ../daemon/gkr-daemon-ops.c:661
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -241,7 +275,7 @@ msgstr ""
 "Невідома програма бажає змінити пароль в'язки ключів '%s'. Необхідно вибрати "
 "пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:636
+#: ../daemon/gkr-daemon-ops.c:665
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -249,20 +283,21 @@ msgstr ""
 "Невідома програма бажає змінити пароль типової в'язки ключів. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../gnome-keyring-ask.c:643
+#: ../daemon/gkr-daemon-ops.c:675
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Виберіть пароль для в'язки ключів '%s'."
 
-#: ../gnome-keyring-ask.c:645
+#: ../daemon/gkr-daemon-ops.c:677
 msgid "Choose a new password for the default keyring. "
 msgstr "Виберіть новий пароль для типової в'язки ключів."
 
-#: ../gnome-keyring-ask.c:650
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:681
 msgid "Change Keyring Password"
 msgstr "Зміна паролю в'язки ключів"
 
-#: ../gnome-keyring-ask.c:689
+#: ../daemon/gkr-daemon-ops.c:748
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -272,7 +307,7 @@ msgstr ""
 "Програма \"%s\" (%s) бажає зберегти пароль, але типова в'язка ключів "
 "відсутня. Для створення в'язки необхідно вибрати пароль."
 
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
+#: ../daemon/gkr-daemon-ops.c:752 ../daemon/gkr-daemon-ops.c:756
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -282,8 +317,7 @@ msgstr ""
 "Програма \"%s\" бажає зберегти пароль, але типова в'язка ключів відсутня. "
 "Для створення в'язки необхідно вибрати пароль."
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
+#: ../daemon/gkr-daemon-ops.c:760
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -292,111 +326,81 @@ msgstr ""
 "Невідома програма бажає зберегти пароль, але типова в'язка ключів відсутня. "
 "Для створення в'язки необхідно вибрати пароль."
 
-#: ../gnome-keyring-ask.c:706
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:765
 msgid "Create Default Keyring"
 msgstr "Створення типової в'язки ключів"
 
-#: ../gnome-keyring-ask.c:707
+#: ../daemon/gkr-daemon-ops.c:765
 msgid "Choose password for default keyring"
 msgstr "Виберіть пароль для типової в'язки ключів"
 
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "Дозволити програмам доступ до в'язки ключів?"
+#: ../library/gnome-keyring-utils.c:111
+msgid "Access Denied"
+msgstr "Доступ заборонено"
 
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у в'язці "
-"ключів %s."
+#: ../library/gnome-keyring-utils.c:113
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "Не запущено програму The gnome-keyring-daemon."
 
-#: ../gnome-keyring-ask.c:753
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у типовій "
-"в'язці ключів."
+#: ../library/gnome-keyring-utils.c:115 ../library/gnome-keyring-utils.c:128
+msgid "The keyring has already been unlocked."
+msgstr "В'язку ключів вже розблоковано."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"Програма \"%s\" (%s) бажає отримати доступ до паролю для '%s' у типовій "
-"в'язці ключів."
+#: ../library/gnome-keyring-utils.c:117
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "Помилка при обміні з gnome-keyring-daemon"
 
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr ""
-"Програма \"%s\" бажає отримати доступ до паролю для '%s' у в'язці ключів %s."
+#: ../library/gnome-keyring-utils.c:119
+msgid "A keyring with that name already exists"
+msgstr "В'язка з цією назвою вже існує"
 
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Програма \"%s\" бажає отримати доступ до паролю для '%s' у типовій в'язці "
-"ключів."
+#: ../library/gnome-keyring-utils.c:121
+msgid "Programmer error: The application sent invalid data."
+msgstr "Помилка програми: програма надіслала некоректні дані."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Програма \"%s\" бажає отримати доступ до паролю для '%s' у невідомий в'язці "
-"ключів."
+#: ../ui/gkr-ask-tool.c:314
+msgid "_Location:"
+msgstr "_Розташування:"
 
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr ""
-"Невідома програма бажає отримати доступ до паролю для '%s' у в'язці ключів %"
-"s."
+#: ../ui/gkr-ask-tool.c:327
+msgid "_Old password:"
+msgstr "_Старий пароль:"
 
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Невідома програма бажає отримати доступ до паролю для '%s' у типовій в'язці "
-"ключів."
+#: ../ui/gkr-ask-tool.c:347
+msgid "_Password:"
+msgstr "_Пароль:"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Невідома програма бажає отримати доступ до паролю для '%s' у невідомій "
-"в'язці ключів."
+#: ../ui/gkr-ask-tool.c:369
+msgid "_Confirm password:"
+msgstr "П_ідтвердження паролю:"
 
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "Дозволити доступ"
+#: ../ui/gkr-ask-tool.c:388
+msgid "New password strength"
+msgstr "Міцність нового паролю"
 
-#: ../gnome-keyring-ask.c:799
+#: ../ui/gkr-ask-tool.c:444
+msgid "Old password cannot be blank."
+msgstr "Старий пароль не може бути порожнім."
+
+#: ../ui/gkr-ask-tool.c:456
+msgid "Password cannot be blank."
+msgstr "Пароль не може бути порожнім."
+
+#: ../ui/gkr-ask-tool.c:465
+msgid "Passwords do not match."
+msgstr "Паролі не збігаються."
+
+#: ../ui/gkr-ask-tool.c:514
+msgid "Deny"
+msgstr "Заборонити"
+
+#: ../ui/gkr-ask-tool.c:526
 msgid "Allow _Once"
 msgstr "Дозволити _одноразово"
 
-#: ../gnome-keyring-ask.c:800
+#: ../ui/gkr-ask-tool.c:530
 msgid "_Always Allow"
 msgstr "Дозволити _назавжди"
 
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "Для запуску необхідно вказати тип запиту\n"
 
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "Тип запиту невідомий\n"
