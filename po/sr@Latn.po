@@ -3,52 +3,97 @@
 #
 # This file is distributed under the same license as the gnome-keyring package.
 #
-# Maintainer: Danilo Šegan <dsegan@gmx.net>
+# Maintainer: Danilo Šegan <danilo@gnome.org>
 # Reviewed on 2005-08-08 by: Igor Nestorović <igor@prevod.org>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-01-31 00:46+0100\n"
-"Last-Translator: Slobodan D. Sredojević <slobo@akrep.be>\n"
+"POT-Creation-Date: 2007-09-12 01:12+0200\n"
+"PO-Revision-Date: 2007-09-12 01:19+0200\n"
+"Last-Translator: Danilo Šegan <danilo@gnome.org>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr ""
+#: ../common/gkr-location.c:290
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Uklonjivi disk: %s"
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr ""
+#: ../common/gkr-location.c:292
+msgid "Removable Disk"
+msgstr "Uklonjivi disk"
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr ""
+#: ../common/gkr-location.c:436
+msgid "Home"
+msgstr "Lično"
 
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
+#. TRANSLATORS: this is the title for an item
+#: ../daemon/gkr-daemon-ops.c:83
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Otključaj lozinku za privezak %s"
 
-#: ../gnome-keyring-ask.c:329
-#, fuzzy
-msgid "Old password cannot be blank."
-msgstr "Lozinka ne može biti ostavljena prazna."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:310
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr "Program „%s“ (%s) želi da koristi lozinku za „<object prop='name'/>“ u podrazumevanom privesku."
 
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "Lozinka ne može biti ostavljena prazna."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:314
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr "Program „%s“ (%s) želi da koristi lozinku za „<object prop='name'/>“ u %s."
 
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr "Lozinke se ne podudaraju."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:330
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr "Program „%s“ želi da koristi lozinku za „<object prop='name'/>“ u podrazumevanom privesku."
 
-#: ../gnome-keyring-ask.c:407
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:324 ../daemon/gkr-daemon-ops.c:334
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr "Program „%s“ želi da koristi lozinku za „<object prop='name'/>“ u %s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:340
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr "Nepoznat program želi da koristi lozinku za „<object prop='name'/>“ u podrazumevanom privesku."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:343
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr "Nepoznat program želi da koristi lozinku za „<object prop='name'/>“ u %s."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:349
+msgid "Allow access"
+msgstr "Dozvoli pristup"
+
+#: ../daemon/gkr-daemon-ops.c:349
+msgid "Allow application access to keyring?"
+msgstr "Dozvoli programu pristup privesku?"
+
+#: ../daemon/gkr-daemon-ops.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -57,80 +102,57 @@ msgstr ""
 "Program „%s“ (%s) želi da pristupi podrazumevanom privesku, ali je on "
 "zaključan"
 
-#: ../gnome-keyring-ask.c:411
+#: ../daemon/gkr-daemon-ops.c:451
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Program „%s“ (%s) želi da pristupi privesku „%s“, ali je on zaključan"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"Program „%s“ (%s) želi da pristupi nepoznatom privesku, ali je on zaključan"
-
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
+#: ../daemon/gkr-daemon-ops.c:457 ../daemon/gkr-daemon-ops.c:467
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Program „%s“ želi da pristupi podrazumevanom privesku, ali je on zaključan"
 
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
+#: ../daemon/gkr-daemon-ops.c:461 ../daemon/gkr-daemon-ops.c:472
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Program „%s“ želi da pristupi privesku „%s“, ali je on zaključan"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
+#: ../daemon/gkr-daemon-ops.c:478
 #, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "Program „%s“ želi da pristupi nepoznatom privesku, ali je on zaključan"
-
-#: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Nepoznati program želi da pristupi podrazumevanom privesku, ali je on "
 "zaključan"
 
-#: ../gnome-keyring-ask.c:456
+#: ../daemon/gkr-daemon-ops.c:482
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Nepoznati program želi da pristupi privesku „%s“, ali je on zaključan"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Nepoznati program želi da pristupi nepoznatom privesku, ali je on zaključan"
-
-#: ../gnome-keyring-ask.c:468
+#: ../daemon/gkr-daemon-ops.c:489
 msgid "Enter password for default keyring to unlock"
 msgstr "Unesite lozinku za podrazumevani privezak radi otključavanja"
 
-#: ../gnome-keyring-ask.c:470
+#: ../daemon/gkr-daemon-ops.c:491
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Unesite lozinku za privezak „%s“ radi otključavanja"
 
-#: ../gnome-keyring-ask.c:474
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:495
 msgid "Unlock Keyring"
 msgstr "Otključaj privezak"
 
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "O_dbij"
+#: ../daemon/gkr-daemon-ops.c:507
+msgid "Automatically unlock this keyring when I log in."
+msgstr "Sam otključaj ovaj privezak kada se prijavim."
 
-#: ../gnome-keyring-ask.c:517
+#: ../daemon/gkr-daemon-ops.c:543
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -139,7 +161,7 @@ msgstr ""
 "Program „%s“ (%s) želi da napravi novi privezak imena „%s“. Morate izabrati "
 "lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:521
+#: ../daemon/gkr-daemon-ops.c:547
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -148,7 +170,7 @@ msgstr ""
 "Program „%s“ (%s) želi da napravi novi podrazumevani privezak. Morate "
 "izabrati lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
+#: ../daemon/gkr-daemon-ops.c:553 ../daemon/gkr-daemon-ops.c:563
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -157,7 +179,7 @@ msgstr ""
 "Program „%s“ želi da napravi novi privezak imena „%s“. Morate izabrati "
 "lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
+#: ../daemon/gkr-daemon-ops.c:557 ../daemon/gkr-daemon-ops.c:567
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -166,7 +188,7 @@ msgstr ""
 "Program „%s“ želi da napravi novi podrazumevani privezak. Morate izabrati "
 "lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:547
+#: ../daemon/gkr-daemon-ops.c:573
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -175,7 +197,8 @@ msgstr ""
 "Nepoznati program želi da napravi novi privezak imena „%s“. Morate izabrati "
 "lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:551
+#: ../daemon/gkr-daemon-ops.c:577
+#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -183,84 +206,73 @@ msgstr ""
 "Nepoznati program želi da napravi novi podrazumevani privezak. Morate "
 "izabrati lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:558
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:583
 msgid "New Keyring Password"
 msgstr "Nova lozinka za privezak"
 
-#: ../gnome-keyring-ask.c:559
+#: ../daemon/gkr-daemon-ops.c:584
 msgid "Choose password for new keyring"
 msgstr "Unesite lozinku za novi privezak"
 
-#: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
+#: ../daemon/gkr-daemon-ops.c:631
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr ""
-"Program „%s“ (%s) želi da napravi novi podrazumevani privezak. Morate "
-"izabrati lozinku koju želite da koristite za njega."
+msgstr "Program „%s“ (%s) želi da promeni lozinku za privezak „%s“. Morate izabrati lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
+#: ../daemon/gkr-daemon-ops.c:635
+#, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
-msgstr ""
-"Program „%s“ (%s) želi da napravi novi podrazumevani privezak. Morate "
-"izabrati lozinku koju želite da koristite za njega."
+msgstr "Program „%s“ (%s) želi da promeni lozinku za podrazumevani privezak. Morate izabrati lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
+#: ../daemon/gkr-daemon-ops.c:641 ../daemon/gkr-daemon-ops.c:651
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
-msgstr ""
-"Program „%s“ želi da napravi novi podrazumevani privezak. Morate izabrati "
-"lozinku koju želite da koristite za njega."
+msgstr "Program „%s“ želi da promeni lozinku za privezak „%s“. Morate izabrati lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
+#: ../daemon/gkr-daemon-ops.c:645 ../daemon/gkr-daemon-ops.c:655
+#, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr ""
-"Program „%s“ želi da napravi novi podrazumevani privezak. Morate izabrati "
-"lozinku koju želite da koristite za njega."
+msgstr "Program „%s“ želi da promeni lozinku za podrazumevani privezak. Morate izabrati lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
+#: ../daemon/gkr-daemon-ops.c:661
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr ""
-"Nepoznati program želi da napravi novi podrazumevani privezak. Morate "
-"izabrati lozinku koju želite da koristite za njega."
+msgstr "Nepoznat program želi da promeni lozinku za privezak „%s“. Morate izabrati lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:636
-#, fuzzy
+#: ../daemon/gkr-daemon-ops.c:665
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr ""
-"Nepoznati program želi da napravi novi podrazumevani privezak. Morate "
-"izabrati lozinku koju želite da koristite za njega."
+msgstr "Nepoznat program želi da promeni lozinku za podrazumevani privezak. Morate izabrati lozinku koju želite da koristite za njega."
 
-#: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
+#: ../daemon/gkr-daemon-ops.c:675
+#, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Unesite lozinku za novi privezak"
+msgstr "Unesite lozinku za privezak „%s“."
 
-#: ../gnome-keyring-ask.c:645
-#, fuzzy
+#: ../daemon/gkr-daemon-ops.c:677
+#, c-format
 msgid "Choose a new password for the default keyring. "
-msgstr "Unesite lozinku za podrazumevani privezak za ključeve"
+msgstr "Unesite lozinku za podrazumevani privezak."
 
-#: ../gnome-keyring-ask.c:650
-#, fuzzy
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:681
 msgid "Change Keyring Password"
-msgstr "Nova lozinka za privezak"
+msgstr "Promeni lozinku priveska"
 
-#: ../gnome-keyring-ask.c:689
+#: ../daemon/gkr-daemon-ops.c:748
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -271,7 +283,7 @@ msgstr ""
 "priveska. Da biste napravili jedan, izaberite lozinku koju želite da "
 "koristite za njega."
 
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
+#: ../daemon/gkr-daemon-ops.c:752 ../daemon/gkr-daemon-ops.c:756
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -279,11 +291,10 @@ msgid ""
 "it."
 msgstr ""
 "Program „%s“ želi da uskladišti lozinku, ali nema podrazumevanog priveska. "
-"Da biste napravili jedan, izaberite lozinku koju želite da koristite za "
-"njega."
+"Da biste napravili jedan, izaberite lozinku koju želite da koristite za njega."
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
+#: ../daemon/gkr-daemon-ops.c:760
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -293,102 +304,122 @@ msgstr ""
 "priveska. Da biste napravili jedan, izaberite lozinku koju želite da "
 "koristite za njega."
 
-#: ../gnome-keyring-ask.c:706
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:765
 msgid "Create Default Keyring"
 msgstr "Napravi podrazumevani privezak za ključeve"
 
-#: ../gnome-keyring-ask.c:707
+#: ../daemon/gkr-daemon-ops.c:765
 msgid "Choose password for default keyring"
 msgstr "Unesite lozinku za podrazumevani privezak za ključeve"
 
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "Dozvoli programu pristup privesku?"
+#: ../library/gnome-keyring-utils.c:111
+msgid "Access Denied"
+msgstr "Odbijen pristup"
 
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Program „%s“ (%s) želi da koristi lozinku za „%s“ u privesku %s."
+#: ../library/gnome-keyring-utils.c:113
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "Program gnome-keyring-daemon nije pokrenut."
 
-#: ../gnome-keyring-ask.c:753
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"Program „%s“ (%s) želi da koristi lozinku za „%s“ u podrazumevanom privesku."
+#: ../library/gnome-keyring-utils.c:115 ../library/gnome-keyring-utils.c:128
+msgid "The keyring has already been unlocked."
+msgstr "Privezak je već otključan."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"Program „%s“ (%s) želi da koristi lozinku za „%s“ u nepoznatom privesku."
+#: ../library/gnome-keyring-utils.c:117
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "Greška pri komunikaciji sa gnome-keyring-daemon"
 
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Program „%s“ želi da koristi lozinku za „%s“ u privesku %s."
+#: ../library/gnome-keyring-utils.c:119
+msgid "A keyring with that name already exists"
+msgstr "Privezak tog imena već postoji"
 
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Program „%s“ želi da koristi lozinku za „%s“ u podrazumevanom privesku."
+#: ../library/gnome-keyring-utils.c:121
+msgid "Programmer error: The application sent invalid data."
+msgstr "Greška programera: program je poslao neispravne podatke."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr "Program „%s“ želi da koristi lozinku za „%s“ u nepoznatom privesku."
+#: ../ui/gkr-ask-tool.c:314
+msgid "_Location:"
+msgstr "_Mesto:"
 
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Nepoznati program želi da koristi lozinku za „%s“ u privesku „%s“."
+#: ../ui/gkr-ask-tool.c:327
+msgid "_Old password:"
+msgstr "S_tara lozinka:"
 
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Nepoznati program želi da koristi lozinku za „%s“ u podrazumevanom privesku."
+#: ../ui/gkr-ask-tool.c:347
+msgid "_Password:"
+msgstr "_Lozinka:"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Nepoznati program želi da koristi lozinku za „%s“ u nepoznatom privesku."
+#: ../ui/gkr-ask-tool.c:369
+msgid "_Confirm password:"
+msgstr "_Potvrdi lozinku:"
 
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "Dozvoli pristup"
+#: ../ui/gkr-ask-tool.c:388
+msgid "New password strength"
+msgstr "Težina nove lozinke"
 
-#: ../gnome-keyring-ask.c:799
+#: ../ui/gkr-ask-tool.c:444
+msgid "Old password cannot be blank."
+msgstr "Stare lozinke ne mogu biti prazne."
+
+#: ../ui/gkr-ask-tool.c:456
+msgid "Password cannot be blank."
+msgstr "Lozinka ne može biti ostavljena prazna."
+
+#: ../ui/gkr-ask-tool.c:465
+msgid "Passwords do not match."
+msgstr "Lozinke se ne podudaraju."
+
+#: ../ui/gkr-ask-tool.c:514
+msgid "Deny"
+msgstr "Odbij"
+
+#: ../ui/gkr-ask-tool.c:526
 msgid "Allow _Once"
 msgstr "Dozvoli _jednom"
 
-#: ../gnome-keyring-ask.c:800
+#: ../ui/gkr-ask-tool.c:530
 msgid "_Always Allow"
 msgstr "_Uvek dozvoli"
 
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "Morate navesti vrstu zahteva za pokretanje\n"
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Program „%s“ (%s) želi da pristupi nepoznatom privesku, ali je on zaključan"
 
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "Nepoznata vrsta zahteva\n"
+#~ msgid ""
+#~ "The application '%s' wants access to an unknown keyring, but it is locked"
+#~ msgstr ""
+#~ "Program „%s“ želi da pristupi nepoznatom privesku, ali je on zaključan"
+
+#~ msgid ""
+#~ "An unknown application wants access to an unknown keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Nepoznati program želi da pristupi nepoznatom privesku, ali je on zaključan"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '%s' in an "
+#~ "unknown keyring."
+#~ msgstr ""
+#~ "Program „%s“ (%s) želi da koristi lozinku za „%s“ u nepoznatom privesku."
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '%s' in an unknown "
+#~ "keyring."
+#~ msgstr "Program „%s“ želi da koristi lozinku za „%s“ u nepoznatom privesku."
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '%s' in an "
+#~ "unknown keyring."
+#~ msgstr ""
+#~ "Nepoznati program želi da koristi lozinku za „%s“ u nepoznatom privesku."
+
+#~ msgid "You must specify the type of request to run\n"
+#~ msgstr "Morate navesti vrstu zahteva za pokretanje\n"
+
+#~ msgid "Unknown request type\n"
+#~ msgstr "Nepoznata vrsta zahteva\n"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to create a new keyring with an unknown "
