@@ -1,390 +1,397 @@
-# Bulgarian translation of gnome-keyring.
-# Copyright (C) 2004, 2005, 2006 THE gnome-keyring'S COPYRIGHT HOLDER
+# Bulgarian translation of gnome-keyring po-file.
+# Copyright (C) 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 # Rostislav "zbrox" Raykov <zbrox@i-space.org>, 2004, 2005, 2006.
-# 
+# Alexander Shopov <ash@contact.bg>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring\n"
+"Project-Id-Version: gnome-keyring trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-13 12:57+0300\n"
-"PO-Revision-Date: 2006-07-07 13:41+0300\n"
-"Last-Translator: Rostislav \"zbrox\" Raykov <zbrox@i-space.org>\n"
+"POT-Creation-Date: 2007-09-17 22:50+0300\n"
+"PO-Revision-Date: 2007-09-17 22:49+0300\n"
+"Last-Translator: Alexander Shopov <ash@contact.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../daemon/gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "_Стара парола:"
+#: ../common/gkr-location.c:290
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Преносим диск: %s"
 
-#: ../daemon/gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "_Парола:"
+#: ../common/gkr-location.c:292
+msgid "Removable Disk"
+msgstr "Преносим диск"
 
-#: ../daemon/gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "По_твърждаване на паролата:"
+#: ../common/gkr-location.c:436
+msgid "Home"
+msgstr "Домашна папка"
 
-#: ../daemon/gnome-keyring-ask.c:304
-msgid "Password strength meter:"
-msgstr "Надеждност на паролата:"
+#. TRANSLATORS: this is the title for an item
+#: ../daemon/gkr-daemon-ops.c:83
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Паролата за ключодържателя „%s“"
 
-#: ../daemon/gnome-keyring-ask.c:334
-msgid "Old password cannot be blank."
-msgstr "Старата парола не може да е празна."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:310
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr ""
+"Програмата „%s“ (%s) иска достъп до паролата за „<object prop='name'/>“ в "
+"стандартния ключодържател."
 
-#: ../daemon/gnome-keyring-ask.c:345
-msgid "Password cannot be blank."
-msgstr "Паролата не може да бъде празна."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:314
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr ""
+"Програмата „%s“ (%s) иска достъп до паролата за „<object prop='name'/>“ в %s."
 
-#: ../daemon/gnome-keyring-ask.c:353
-msgid "Passwords do not match."
-msgstr "Паролите не съвпадат."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:330
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Програмата „%s“ иска достъп до паролата за „<object prop='name'/>“ в "
+"стандартния ключодържател."
 
-#: ../daemon/gnome-keyring-ask.c:412
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:324 ../daemon/gkr-daemon-ops.c:334
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"Програмата „%s“ иска достъп до паролата за „<object prop='name'/>“ в %s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:340
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Непозната програма иска достъп до паролата за „<object prop='name'/>“ в "
+"стандартния ключодържател."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:343
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"Непозната програма иска достъп до паролата за „<object prop='name'/>“ в %s."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:349
+msgid "Allow access"
+msgstr "Позволяване на достъп"
+
+#: ../daemon/gkr-daemon-ops.c:349
+msgid "Allow application access to keyring?"
+msgstr "Да се позволи ли достъп на програмата до ключодържателя?"
+
+#: ../daemon/gkr-daemon-ops.c:447
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr ""
-"Програмата „%s“ (%s) иска достъп до подразбиращия се набор ключове, но той е "
+"Програмата „%s“ (%s) иска достъп до стандартния ключодържател, но той е "
 "заключен"
 
-#: ../daemon/gnome-keyring-ask.c:416
+#: ../daemon/gkr-daemon-ops.c:451
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Програмата „%s“ (%s) иска достъп до набора от ключове „%s“, но той е заключен"
+"Програмата „%s“ (%s) иска достъп до ключодържателя „%s“, но той е заключен"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:421
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"Програмата „%s“ (%s) иска достъп до непознат набор ключове, но той е заключен"
-
-#: ../daemon/gnome-keyring-ask.c:427 ../daemon/gnome-keyring-ask.c:441
+#: ../daemon/gkr-daemon-ops.c:457 ../daemon/gkr-daemon-ops.c:467
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
-"Програмата „%s“ иска достъп до подразбиращия се набор ключове, но той е "
-"заключен"
+"Програмата „%s“ иска достъп до стандартния ключодържател, но той е заключен"
 
-#: ../daemon/gnome-keyring-ask.c:431 ../daemon/gnome-keyring-ask.c:446
+#: ../daemon/gkr-daemon-ops.c:461 ../daemon/gkr-daemon-ops.c:472
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Програмата „%s“ иска достъп до набора ключове „%s“, но той е заключен"
+msgstr "Програмата „%s“ иска достъп до ключодържателя „%s“, но той е заключен"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:435 ../daemon/gnome-keyring-ask.c:451
-#, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Програмата „%s“ иска достъп до непознат набор ключове, но той е заключен"
-
-#: ../daemon/gnome-keyring-ask.c:457
+#: ../daemon/gkr-daemon-ops.c:478
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
-"Непозната програма иска достъп до подразбиращия се набор ключове, но той е "
+"Непозната програма иска достъп до стандартния ключодържател, но той е "
 "заключен"
 
-#: ../daemon/gnome-keyring-ask.c:461
+#: ../daemon/gkr-daemon-ops.c:482
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Непозната програма иска достъп до набора ключове „%s“, но той е заключен"
+"Непозната програма иска достъп до ключодържателя „%s“, но той е заключен"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:466
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Непозната програма иска достъп до непознат набор ключове, но той е заключен"
-
-#: ../daemon/gnome-keyring-ask.c:473
+#: ../daemon/gkr-daemon-ops.c:489
 msgid "Enter password for default keyring to unlock"
-msgstr "Въведете парола за подразбиращия се набор ключове, за да го отключите"
+msgstr "Въведете парола за стандартния ключодържател, за да го отключите"
 
-#: ../daemon/gnome-keyring-ask.c:475
+#: ../daemon/gkr-daemon-ops.c:491
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Въведете парола за набора ключове „%s“, за да го отключите"
+msgstr "Въведете парола за ключодържателя „%s“, за да го отключите"
 
-#: ../daemon/gnome-keyring-ask.c:479
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:495
 msgid "Unlock Keyring"
-msgstr "Отключва набор ключове"
+msgstr "Отключване на ключодържател"
 
-#: ../daemon/gnome-keyring-ask.c:484 ../daemon/gnome-keyring-ask.c:568
-#: ../daemon/gnome-keyring-ask.c:660 ../daemon/gnome-keyring-ask.c:716
-#: ../daemon/gnome-keyring-ask.c:803
-msgid "_Deny"
-msgstr "Отказва"
+#: ../daemon/gkr-daemon-ops.c:507
+msgid "Automatically unlock this keyring when I log in."
+msgstr "Автоматично отключване на ключодържателя при влизане"
 
-#: ../daemon/gnome-keyring-ask.c:522
+#: ../daemon/gkr-daemon-ops.c:543
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ (%s) иска да създаде нов набор ключове наречен „%s“. Трябва "
+"Програмата „%s“ (%s) иска да създаде нов ключодържател наречен „%s“. Трябва "
 "да изберете паролата, която искате да използвате за него."
 
-#: ../daemon/gnome-keyring-ask.c:526
+#: ../daemon/gkr-daemon-ops.c:547
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ (%s) иска да създаде нов набор ключове по подразбиране. "
-"Трябва да изберете парола за него."
+"Програмата „%s“ (%s) иска да създаде нов стандартен ключодържател. Трябва да "
+"изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:532 ../daemon/gnome-keyring-ask.c:542
+#: ../daemon/gkr-daemon-ops.c:553 ../daemon/gkr-daemon-ops.c:563
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ иска да създаде нов набор ключове наречен „%s“. Трябва да "
+"Програмата „%s“ иска да създаде нов ключодържател наречен „%s“. Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:536 ../daemon/gnome-keyring-ask.c:546
+#: ../daemon/gkr-daemon-ops.c:557 ../daemon/gkr-daemon-ops.c:567
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ иска да създаде нов набор ключове по подразбиране. Трябва да "
+"Програмата „%s“ иска да създаде нов стандартен ключодържател. Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:552
+#: ../daemon/gkr-daemon-ops.c:573
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
 msgstr ""
-"Непозната програма иска да създаде нов набор ключове наречен „%s“.Трябва да "
+"Непозната програма иска да създаде нов ключодържател наречен „%s“.Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:556
+#: ../daemon/gkr-daemon-ops.c:577
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Непозната програма иска да създаде нов набор ключове по подразбиране. Трябва "
-"да изберете парола за него."
+"Непозната програма иска да създаде нов стандартен ключодържател. Трябва да "
+"изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:563
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:583
 msgid "New Keyring Password"
-msgstr "Нова парола за набор ключове"
+msgstr "Нова парола за ключодържател"
 
-#: ../daemon/gnome-keyring-ask.c:564
+#: ../daemon/gkr-daemon-ops.c:584
 msgid "Choose password for new keyring"
-msgstr "Изберете паролата за новия набор ключове"
+msgstr "Изберете паролата за новия ключодържател"
 
-#: ../daemon/gnome-keyring-ask.c:607
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ (%s) иска да промени паролата за набора ключове „%s“. Трябва "
+"Програмата „%s“ (%s) иска да промени паролата за ключодържателя „%s“. Трябва "
 "да изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:611
+#: ../daemon/gkr-daemon-ops.c:635
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ (%s) иска да промени паролата за набора ключове по "
-"подразбиране. Трябва да изберете парола за него."
+"Програмата „%s“ (%s) иска да промени паролата за стандартния ключодържател. "
+"Трябва да изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:617 ../daemon/gnome-keyring-ask.c:627
+#: ../daemon/gkr-daemon-ops.c:641 ../daemon/gkr-daemon-ops.c:651
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ иска да промени паролата за набора ключове „%s“. Трябва да "
+"Програмата „%s“ иска да промени паролата за ключодържателя „%s“. Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:621 ../daemon/gnome-keyring-ask.c:631
+#: ../daemon/gkr-daemon-ops.c:645 ../daemon/gkr-daemon-ops.c:655
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Програмата „%s“ иска да промени паролата за набора ключове по подразбиране. "
+"Програмата „%s“ иска да промени паролата за стандартния ключодържател. "
 "Трябва да изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:637
+#: ../daemon/gkr-daemon-ops.c:661
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Непозната програма иска да промени паролата за набора ключове „%s“. Трябва "
+"Непозната програма иска да промени паролата за ключодържателя „%s“. Трябва "
 "да изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:641
+#: ../daemon/gkr-daemon-ops.c:665
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Непозната програма иска да промени паролата за набора ключове по "
-"подразбиране. Трябва да изберете парола за него."
+"Непозната програма иска да промени паролата за стандартния ключодържател. "
+"Трябва да изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:648
+#: ../daemon/gkr-daemon-ops.c:675
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Изберете нова парола за набора ключове „%s“. "
+msgstr "Изберете нова парола за ключодържателя „%s“. "
 
-#: ../daemon/gnome-keyring-ask.c:650
+#: ../daemon/gkr-daemon-ops.c:677
 msgid "Choose a new password for the default keyring. "
-msgstr "Изберете нова парола за подразбиращия се набор ключове. "
+msgstr "Изберете нова парола за стандартния ключодържател. "
 
-#: ../daemon/gnome-keyring-ask.c:655
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:681
 msgid "Change Keyring Password"
-msgstr "Нова парола за набора ключове"
+msgstr "Нова парола за ключодържателя"
 
-#: ../daemon/gnome-keyring-ask.c:694
+#: ../daemon/gkr-daemon-ops.c:748
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Програмата „%s“ (%s) иска да запази парола, но няма подразбиращ се набор "
-"ключове.За да създадете такъв, трябва да изберете парола за него."
+"Програмата „%s“ (%s) иска да запази парола, но няма стандартен "
+"ключодържател. За да създадете такъв, трябва да изберете парола за него."
 
-#: ../daemon/gnome-keyring-ask.c:698 ../daemon/gnome-keyring-ask.c:702
+#: ../daemon/gkr-daemon-ops.c:752 ../daemon/gkr-daemon-ops.c:756
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Програмата „%s“ иска да запази парола, но няма подразбиращ се набор ключове."
-"За да създадете такъв, трябва да изберете парола за него."
+"Програмата „%s“ иска да запази парола, но няма стандартен ключодържател.За "
+"да създадете такъв, трябва да изберете парола за него."
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:706
+#: ../daemon/gkr-daemon-ops.c:760
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Непозната програма иска да запази парола, но няма подразбиращ се набор "
-"ключове.За да създадете такъв, трябва да изберете парола, която да "
-"използвате за него."
+"Непозната програма иска да запази парола, но няма стандартен ключодържател. "
+"За да създадете такъв, трябва да изберете парола, която да използвате за "
+"него."
 
-#: ../daemon/gnome-keyring-ask.c:711
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:765
 msgid "Create Default Keyring"
-msgstr "Създава подразбиращ се набор ключове"
+msgstr "Създаване на стандартен ключодържател"
 
-#: ../daemon/gnome-keyring-ask.c:712
+#: ../daemon/gkr-daemon-ops.c:765
 msgid "Choose password for default keyring"
-msgstr "Изберете парола за подразбиращия се набор ключове"
+msgstr "Изберете парола за стандартния ключодържател"
 
-#: ../daemon/gnome-keyring-ask.c:752
-msgid "Allow application access to keyring?"
-msgstr "Да се позволи ли достъп до набора ключове на програмата?"
+#: ../library/gnome-keyring-utils.c:111
+msgid "Access Denied"
+msgstr "Достъпът е отказан"
 
-#: ../daemon/gnome-keyring-ask.c:755
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Програмата „%s“ (%s) иска достъп до паролата за „%s“ в %s."
+#: ../library/gnome-keyring-utils.c:113
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "Програмата gnome-keyring-daemon не е пусната."
 
-#: ../daemon/gnome-keyring-ask.c:758
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"Програмата „%s“ (%s) иска достъп до паролата за „%s“ в подразбиращия се "
-"набор ключове."
+#: ../library/gnome-keyring-utils.c:115 ../library/gnome-keyring-utils.c:128
+msgid "The keyring has already been unlocked."
+msgstr "Ключодържателят вече е отключен."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:761
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"Програмта „%s“ (%s) иска достъп до паролата за „%s“ в непознат набор ключове."
+#: ../library/gnome-keyring-utils.c:117
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "Грешка в комуникацията с gnome-keyring-daemon"
 
-#: ../daemon/gnome-keyring-ask.c:766 ../daemon/gnome-keyring-ask.c:777
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Програмата „%s“ иска достъп до паролата за „%s“ в %s."
+#: ../library/gnome-keyring-utils.c:119
+msgid "A keyring with that name already exists"
+msgstr "Вече съществува ключодържател с това име"
 
-#: ../daemon/gnome-keyring-ask.c:769 ../daemon/gnome-keyring-ask.c:780
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Програмата „%s“ иска достъп до паролата за „%s“ в подразбиращия се набор "
-"ключове."
+#: ../library/gnome-keyring-utils.c:121
+msgid "Programmer error: The application sent invalid data."
+msgstr "Програмна грешка: приложението изпрати неправилни данни."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:772 ../daemon/gnome-keyring-ask.c:783
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Програмата „%s“ иска достъп до паролата за „%s“ в непознат набор ключове."
+#: ../ui/gkr-ask-tool.c:314
+msgid "_Location:"
+msgstr "_Местоположение"
 
-#: ../daemon/gnome-keyring-ask.c:788
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Непозната програма иска достъп до паролата за „%s“ в %s."
+#: ../ui/gkr-ask-tool.c:327
+msgid "_Old password:"
+msgstr "_Стара парола:"
 
-#: ../daemon/gnome-keyring-ask.c:791
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Непозната програма иска достъп до паролата за „%s“ в подразбиращия се набор "
-"ключове."
+#: ../ui/gkr-ask-tool.c:347
+msgid "_Password:"
+msgstr "_Парола:"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:794
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Непозната програма иска достъп до паролата за „%s“ в непознат набор ключове."
+#: ../ui/gkr-ask-tool.c:369
+msgid "_Confirm password:"
+msgstr "По_твърждаване на паролата:"
 
-#: ../daemon/gnome-keyring-ask.c:799
-msgid "Allow access"
-msgstr "Позволява достъп"
+#: ../ui/gkr-ask-tool.c:388
+msgid "New password strength"
+msgstr "Надеждност на новата парола"
 
-#: ../daemon/gnome-keyring-ask.c:804
+#: ../ui/gkr-ask-tool.c:444
+msgid "Old password cannot be blank."
+msgstr "Старата парола не може да е празна."
+
+#: ../ui/gkr-ask-tool.c:456
+msgid "Password cannot be blank."
+msgstr "Паролата не може да бъде празна."
+
+#: ../ui/gkr-ask-tool.c:465
+msgid "Passwords do not match."
+msgstr "Паролите не съвпадат."
+
+#: ../ui/gkr-ask-tool.c:514
+msgid "Deny"
+msgstr "Отказ"
+
+#: ../ui/gkr-ask-tool.c:526
 msgid "Allow _Once"
-msgstr "Позволява веднъж"
+msgstr "Позволяване _веднъж"
 
-#: ../daemon/gnome-keyring-ask.c:805
+#: ../ui/gkr-ask-tool.c:530
 msgid "_Always Allow"
-msgstr "Позволява винаги"
-
-#: ../daemon/gnome-keyring-ask.c:845
-msgid "You must specify the type of request to run\n"
-msgstr "Трябва да определите вида на пусканата заявка\n"
-
-#: ../daemon/gnome-keyring-ask.c:862
-msgid "Unknown request type\n"
-msgstr "Непознат вид заявка\n"
+msgstr "_Позволяване винаги"
