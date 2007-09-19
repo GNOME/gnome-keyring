@@ -1,3 +1,7 @@
+2007-09-18  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in: Release with proper version number 2.20.0
+
 === gnome-keyring 2.20 ===
 
 2007-09-17  Stef Walter  <stef@memberwebs.com>
