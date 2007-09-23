@@ -723,6 +723,9 @@ check_keyring_default_request (GkrAskRequest* ask)
 			g_warning ("couldn't create default keyring");
 			ask->response = GKR_ASK_RESPONSE_FAILURE;
 		} else {
+			/* Add to our main list */
+			gkr_keyrings_add (keyring);
+
 			/* Set our newly created keyring as the default */
 			gkr_keyrings_set_default (keyring);
 		}
