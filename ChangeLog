@@ -1,3 +1,8 @@
+2007-09-23  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon-ops.c: Add newly created keyrings to our 
+	list of loaded keyrings. Patch by Darren Kenny. Fixes bug #476644
+	
 2007-09-18  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Release with proper version number 2.20.0
