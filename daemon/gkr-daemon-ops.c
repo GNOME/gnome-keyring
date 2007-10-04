@@ -1784,8 +1784,12 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 	if (ctx.nfound > 0 && ctx.items == NULL)
 		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		
-	/* Zero or more items matched and given access to */
-	else
+	/* Zero items matched  */
+	else if (ctx.nfound == 0)
+		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_MATCH);
+
+	/* More than one item found and given access to */
+	else	
 		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 
 	ctx.items = g_list_sort_with_data (ctx.items, sort_found, ctx.attributes);

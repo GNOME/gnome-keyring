@@ -1,5 +1,18 @@
 2007-10-03  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon-ops.c:
+	* library/gnome-keyring-result.h:
+	* library/gnome-keyring-utils.c:
+	* tests/unit-test-keyrings.c: Add a NO_MATCH result code and 
+	return it when 'find' has zero results. We do this because 
+	it seems that several poorly coded applications don't know how
+	to handle empty lists. gnome-keyring-daemon used to return 
+	'access denied' in this case, which is clearly bogus. So since
+	we don't want to break ABI, we need to return another failure
+	result code. Fixes bug #476682
+	
+2007-10-03  Stef Walter  <stef@memberwebs.com>
+
 	* keyrings/gkr-keyrings.c: Don't remove keyrings on exit which 
 	clears the 'default' file. Just free them.
 	

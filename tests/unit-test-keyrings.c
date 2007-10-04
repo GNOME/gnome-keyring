@@ -249,8 +249,8 @@ void unit_test_find_keyrings (CuTest* cu)
 }
 
 /* 
- * A find that does not match should return zero results, not some error message:
- * http://bugzilla.gnome.org/show_bug.cgi?id=447315
+ * A find that does not match should return 'Not Found':
+ * http://bugzilla.gnome.org/show_bug.cgi?id=476682
  */
 void unit_test_find_invalid (CuTest* cu)
 {
@@ -263,8 +263,7 @@ void unit_test_find_invalid (CuTest* cu)
 	
 	/* Now try to find it */
 	res = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, attrs, &found);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "Shouldn't have matched any items", g_list_length (found) == 0);
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_NO_MATCH, res);
 }
 
 void unit_test_lock_keyrings (CuTest* cu)
