@@ -257,7 +257,8 @@ keyrings_cleanup (gpointer unused)
 		keyring = GKR_KEYRING (keyrings->data);
 		if (keyring == session_keyring)
 			session_keyring = NULL;
-		gkr_keyrings_remove (keyring);
+		keyrings = g_list_remove (keyrings, keyring);
+		g_object_unref (keyring);
 	}
 	
 	g_free (default_keyring);

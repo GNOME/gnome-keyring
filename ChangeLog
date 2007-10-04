@@ -1,3 +1,8 @@
+2007-10-03  Stef Walter  <stef@memberwebs.com>
+
+	* keyrings/gkr-keyrings.c: Don't remove keyrings on exit which 
+	clears the 'default' file. Just free them.
+	
 2007-09-23  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon-ops.c: Add newly created keyrings to our 
