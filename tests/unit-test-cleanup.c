@@ -53,7 +53,8 @@ static void
 cleanup_callback (gpointer user_data)
 {	
 	CleanupParam *param = (CleanupParam*)user_data;
-	CuAssert (param->cu, "invalid user_data passed to callback", param->value == DATA);
+	CuAssert (param->cu, "invalid user_data passed to callback", 
+	          param->value && strcmp(param->value, DATA) == 0);
 	param->value = NULL;
 }
 

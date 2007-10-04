@@ -1,5 +1,9 @@
 2007-10-03  Stef Walter  <stef@memberwebs.com>
 
+	* tests/unit-test-cleanup.c: Appease dumb GCC error. 
+	
+2007-10-03  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon-ops.c:
 	* library/gnome-keyring-result.h:
 	* library/gnome-keyring-utils.c:
