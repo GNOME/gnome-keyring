@@ -50,8 +50,4 @@ distcheck-hook:
 	@echo "DONE AUTOMATIC UNIT TESTS ------------------------------"
 
 install-pam:
-	$(MAKE) -C pam install-pam
-	
-uninstall-pam:
-	$(MAKE) -C pam uninstall-pam
-
+	@echo "WARNING: install-pam is no longer used, use the --with-pam-dir configure option instead"

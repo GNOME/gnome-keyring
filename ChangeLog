@@ -1,4 +1,11 @@
-2007-10-03  Stef Walter  <stef@memberwebs.com>
+2007-10-04  Stef Walter  <stef@memberwebs.com>
+
+	* pam/Makefile.am:
+	* configure.in:
+	* Makefile.am: Remove 'install-pam' make target and just use
+	--with-pam-dir Patch by Rémi Cardona. Fixes bug #474219.
+	
+2007-10-04  Stef Walter  <stef@memberwebs.com>
 
 	* tests/unit-test-cleanup.c: Appease dumb GCC error. 
 	

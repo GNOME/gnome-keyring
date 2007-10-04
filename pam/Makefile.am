@@ -3,7 +3,8 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	-DGNOME_KEYRING_DAEMON=\""$(bindir)/gnome-keyring-daemon"\" 
 
-lib_LTLIBRARIES = pam_gnome_keyring.la
+pamlibdir = $(PAM_DEST_DIR)
+pamlib_LTLIBRARIES = pam_gnome_keyring.la
 
 pam_gnome_keyring_la_SOURCES = \
 	gkr-pam.h \
@@ -19,13 +20,5 @@ pam_gnome_keyring_la_LDFLAGS = \
 	-export-symbols-regex 'pam_sm_'
 
 install-pam: install
-	$(mkinstalldirs) "$(DESTDIR)$(PAM_DEST_DIR)"
-	cp "$(DESTDIR)$(libdir)/pam_gnome_keyring.so" "$(DESTDIR)$(PAM_DEST_DIR)"
-	( cd "$(DESTDIR)$(PAM_DEST_DIR)"; $(LN_S) -f pam_gnome_keyring.so pam_gnome_keyring_auth.so )
-	( cd "$(DESTDIR)$(PAM_DEST_DIR)"; $(LN_S) -f pam_gnome_keyring.so pam_gnome_keyring_session.so )
-	
-uninstall-pam: 
-	rm -f "$(DESTDIR)$(PAM_DEST_DIR)/pam_gnome_keyring.so"
-	rm -f "$(DESTDIR)$(PAM_DEST_DIR)/pam_gnome_keyring_auth.so"
-	rm -f "$(DESTDIR)$(PAM_DEST_DIR)/pam_gnome_keyring_session.so"
+	@echo "WARNING: install-pam is no longer used, use the --with-pam-dir configure option instead"
 	
