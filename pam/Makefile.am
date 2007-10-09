@@ -13,7 +13,8 @@ pam_gnome_keyring_la_SOURCES = \
 	gkr-pam-stubs.c
 
 pam_gnome_keyring_la_LIBADD = \
-	$(top_builddir)/common/libgkr-module-common.la
+	$(top_builddir)/common/libgkr-module-common.la \
+	-lpam
 	
 pam_gnome_keyring_la_LDFLAGS = \
 	-module -avoid-version \

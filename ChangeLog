@@ -1,3 +1,9 @@
+2007-10-09  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* pam/Makefile.am: Link pam module with libpam.
+	Patch by Sebastian Dröge. Fixes bug #484629
+
 2007-10-04  Stef Walter  <stef@memberwebs.com>
 
 	* pam/Makefile.am:
