@@ -1,3 +1,11 @@
+Changes in version 2.20.1 are:
+* Link pam module properly with libpam [Sebastian Dröge]
+* Remove 'install-pam' make target [Rémi Cardona]
+* Return a 'not found' result when no results are returned 
+  from a find operation.
+* Don't remove 'default' file on exit. [Alex Larrson]
+* Recognize newly created keyrings properly. [Darren Kenny]
+
 Changes in version 2.20 are:
 * Build fixes [Halton Huo]
 * Translation fixes [Claude Paroz]

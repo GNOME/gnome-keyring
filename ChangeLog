@@ -1,3 +1,10 @@
+=== gnome-keyring 2.20.1 ===
+
+2007-10-15  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* NEWS: Release gnome-keyring 2.20.1
+
 2007-10-09  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in:
