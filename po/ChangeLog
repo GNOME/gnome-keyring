@@ -1,5 +1,9 @@
 === gnome-keyring 2.20.1 ===
 
+2007-10-15  Matej Urbančič  <mateju@svn.gnome.org>
+
+	* sl.po: Updated Slovenian translation.
+
 2007-10-10  Jakub Friedl  <jfriedl@suse.cz>
 
 	* cs.po: Updated Czech translation. 
