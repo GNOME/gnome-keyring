@@ -1,3 +1,8 @@
+2007-10-25  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-secure-memory.c: Include header necessary
+	for building on OpenBSD. Patch by Jasper Lievisse Adriaanse
+
 2007-10-15  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number
