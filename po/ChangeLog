@@ -1,3 +1,8 @@
+2007-11-13  Leonardo Ferreira Fontenelle  <leonardof@svn.gnome.org>
+
+	* pt_BR.po: Fix in Brazilian Portuguese translation, by Vladimir Melo.
+	Thanks for N3RD3X for spotting the issue.
+
 2007-11-04  Ignacio Casal Quinteiro  <nacho.resa@gmail.com>
 
 	* gl.po: Updated Galician Translation.
