@@ -1,4 +1,3 @@
-# Copyright (C) 2005-2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the program package.
 #
 # Slovenian maintainer: Matej Urbančič <matej.urban@gmail.com>.
@@ -11,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-02 04:17+0000\n"
-"PO-Revision-Date: 2007-10-16 16:32+0100\n"
-"Last-Translator: Matej Urbančič <matej.urban@gmail.com>\n"
+"POT-Creation-Date: 2007-10-17 04:14+0100\n"
+"PO-Revision-Date: 2007-11-14 14:36+0100\n"
+"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-Language: Slovenian\n"
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
@@ -288,7 +287,7 @@ msgstr "_Potrdi geslo:"
 
 #: ../ui/gkr-ask-tool.c:388
 msgid "New password strength"
-msgstr "Nova moč gesla"
+msgstr "Varnost novega gesla"
 
 #: ../ui/gkr-ask-tool.c:444
 msgid "Old password cannot be blank."
