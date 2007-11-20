@@ -1,21 +1,24 @@
+# translation of oc.po to Occitan
 # Occitan translation of gnomekeyring.
-# Copyright (C) 2004-2006 Free Software Foundation, Inc.
+# Copyright (C) 2004-2006, 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Yannig MARCHEGAY (yannig@marchegay.org) - 2006-2007
 #
+# Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 0.5.2\n"
+"Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-08-21 12:04+0100\n"
-"PO-Revision-Date: 2007-08-21 00:01+0200\n"
-"Last-Translator: Yannig MARCHEGAY (Kokoyaya) <yannig@marchegay.org>\n"
-"Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
+"PO-Revision-Date: 2007-11-20 14:31+0100\n"
+"Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
+"Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: ../common/gkr-location.c:290
 #, c-format
@@ -95,14 +98,12 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:443
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:449 ../daemon/gkr-daemon-ops.c:459
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
+msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:453 ../daemon/gkr-daemon-ops.c:464
@@ -111,14 +112,12 @@ msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:470
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
+msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:474
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:481
@@ -343,3 +342,4 @@ msgstr ""
 #: ../ui/gkr-ask-tool.c:530
 msgid "_Always Allow"
 msgstr ""
+
