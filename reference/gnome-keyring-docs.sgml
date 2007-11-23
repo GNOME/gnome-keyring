@@ -8,6 +8,7 @@
 
   <chapter>
     <title>gnome-keyring API Reference</title>
+    <xi:include href="xml/gnome-keyring-password.xml"/>
     <xi:include href="xml/gnome-keyring-keyrings.xml"/>
     <xi:include href="xml/gnome-keyring-keyring-info.xml"/>
     <xi:include href="xml/gnome-keyring-items.xml"/>
