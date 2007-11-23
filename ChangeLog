@@ -1,3 +1,14 @@
+2007-11-22  Stef Walter  <stef@memberwebs.com>
+
+	* library/gnome-keyring.c:
+	* library/gnome-keyring.h:
+	* reference/gnome-keyring-sections.txt:
+	* reference/tmpl/gnome-keyring-item-info.sgml:
+	* reference/tmpl/gnome-keyring-memory.sgml:
+	* reference/tmpl/gnome-keyring-password.sgml:
+	* reference/tmpl/gnome-keyring-unused.sgml:
+	* tests/unit-test-keyrings.c: Add new simpler password storage APIs.
+
 2007-10-25  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-secure-memory.c: Include header necessary

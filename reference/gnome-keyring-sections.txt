@@ -1,4 +1,16 @@
 <SECTION>
+<FILE>gnome-keyring-password</FILE>
+GNOME_KEYRING_DEFAULT
+GNOME_KEYRING_SESSION
+gnome_keyring_store_password
+gnome_keyring_store_password_sync
+gnome_keyring_find_password
+gnome_keyring_find_password_sync
+gnome_keyring_delete_password
+gnome_keyring_delete_password_sync
+gnome_keyring_free_password
+</SECTION>
+<SECTION>
 <FILE>gnome-keyring-keyrings</FILE>
 GnomeKeyringOperationGetKeyringInfoCallback
 gnome_keyring_set_default_keyring
@@ -150,7 +162,6 @@ gnome_keyring_memory_try_realloc
 gnome_keyring_memory_free
 gnome_keyring_memory_is_secure
 gnome_keyring_memory_strdup
-gnome_keyring_free_password
 </SECTION>
 <SECTION>
 <FILE>gnome-keyring-result</FILE>

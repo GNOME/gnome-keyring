@@ -3236,6 +3236,7 @@ item_grant_access_rights_reply (GnomeKeyringOperation *op)
  * For a synchronous version of this function see gnome_keyring_item_grant_access_rights(). 
  * 
  * Return value: The asychronous request, which can be passed to gnome_keyring_cancel_request().
+ * Since: 2.20
  **/
 gpointer 
 gnome_keyring_item_grant_access_rights (const gchar *keyring, 
@@ -3530,6 +3531,9 @@ gnome_keyring_item_ac_set_access_type (GnomeKeyringAccessControl *ac,
 	ac->types_allowed = value;
 }
 
+/* ------------------------------------------------------------------------------
+ * NETWORK PASSWORD APIS
+ */
 
 struct FindNetworkPasswordInfo {
 	GnomeKeyringOperationGetListCallback callback;
@@ -3975,5 +3979,486 @@ gnome_keyring_set_network_password_sync (const char                            *
 	gnome_keyring_attribute_list_free (attributes);
 	g_free (name);
 	
+	return res;
+}
+
+/* ------------------------------------------------------------------------------
+ * SIMPLE PASSWORD APIS
+ */
+
+/**
+ * gnome_keyring_store_password:
+ * @type: The item type.
+ * @keyring: The keyring to store the password in. Specify %NULL for the default keyring. 
+ *           Use %GNOME_KEYRING_SESSION to store the password in memory only.
+ * @display_name: A human readable description of what the password is for.
+ * @password: The password to store.
+ * @callback: A callback which will be called when the request completes or fails.
+ * @data: A pointer to arbitrary data that will be passed to the @callback.
+ * @destroy_data: A function to free @data when it's no longer needed.
+ *
+ * Store a password associated with a given set of attributes.
+ * 
+ * Attributes which identify this password must be passed as additional 
+ * arguments.
+ * 
+ * The variable argument list should contain a) The attribute name as a null 
+ * terminated string, followed by b) The attribute type, either 
+ * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
+ * and then the c) attribute value, either a character string, or 32-bit 
+ * unsigned int. The list should be terminated with a NULL. 
+ *
+ * If a password exists in the keyring that already has all the same arguments,
+ * then the password will be updated. 
+ * 
+ * Another more complex way to create a keyring item is using gnome_keyring_item_create().
+ *   
+ * Return value: The asychronous request, which can be passed to gnome_keyring_cancel_request().
+ * Since: 2.22
+ */
+gpointer
+gnome_keyring_store_password (GnomeKeyringItemType type, const gchar *keyring,  
+                              const gchar *display_name, const gchar *password, 
+                              GnomeKeyringOperationDoneCallback callback,
+                              gpointer data, GDestroyNotify destroy_data, ...)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringOperation *op;
+	va_list args;
+	
+	va_start (args, destroy_data);
+	attributes = make_attribute_list_va (args);
+	va_end (args);
+	
+	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
+	if (op->state == STATE_FAILED)
+		return op;
+	
+	/* Automatically secures buffer */
+	if (!attributes || !attributes->len ||
+	    !gkr_proto_encode_create_item (&op->send_buffer, keyring, display_name,
+	                                   attributes, password, type, TRUE))
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+
+	op->reply_handler = standard_reply;
+	g_array_free (attributes, TRUE);
+	
+	return op;
+}
+
+/**
+ * gnome_keyring_store_password_sync:
+ * @type: The item type.
+ * @keyring: The keyring to store the password in. Specify %NULL for the default keyring. 
+ *           Use %GNOME_KEYRING_SESSION to store the password in memory only.
+ * @display_name: A human readable description of what the password is for.
+ * @password: The password to store.
+ * 
+ * Store a password associated with a given set of attributes.
+ * 
+ * Attributes which identify this password must be passed as additional 
+ * arguments.
+ * 
+ * The variable argument list should contain a) The attribute name as a null 
+ * terminated string, followed by b) The attribute type, either 
+ * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
+ * and then the c) attribute value, either a character string, or 32-bit 
+ * unsigned int. The list should be terminated with a NULL.
+ * 
+ * This function may block for an unspecified period. If your application must
+ * remain responsive to the user, then use gnome_keyring_store_password(). 
+ *
+ * If a password exists in the keyring that already has all the same arguments,
+ * then the password will be updated. 
+ * 
+ * Another more complex way to create a keyring item is using 
+ * gnome_keyring_item_create_sync().
+ *   
+ * Return value: %GNOME_KEYRING_RESULT_OK if the operation was succcessful or 
+ * an error result otherwise. 
+ * Since: 2.22
+ */
+GnomeKeyringResult
+gnome_keyring_store_password_sync (GnomeKeyringItemType type, const gchar *keyring,  
+                                   const gchar *display_name, const gchar *password, ...)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringResult res;
+	guint32 item_id;
+	va_list args;
+	
+	va_start (args, password);
+	attributes = make_attribute_list_va (args);
+	va_end (args);
+	
+	if (!attributes || !attributes->len)
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	
+	res = gnome_keyring_item_create_sync (keyring, type, display_name, attributes, 
+	                                      password, TRUE, &item_id);
+	
+	g_array_free (attributes, TRUE);
+	return res;
+}
+
+static gboolean
+find_password_reply (GnomeKeyringOperation *op)
+{
+	GnomeKeyringResult result;
+	GnomeKeyringOperationGetStringCallback callback;
+	GList *found_items;
+	const gchar *password;
+
+	g_assert (op->user_callback_type == CALLBACK_GET_STRING);
+	callback = op->user_callback;
+	
+	if (!gkr_proto_decode_find_reply (&op->receive_buffer, &result, &found_items)) {
+		(*callback) (GNOME_KEYRING_RESULT_IO_ERROR, NULL, op->user_data);
+	} else {
+		password = NULL;
+		if (found_items)
+			password = ((GnomeKeyringFound*)(found_items->data))->secret;
+		(*callback) (result, password, op->user_data);
+		gnome_keyring_found_list_free (found_items);
+	}
+	
+	/* Operation is done */
+	return TRUE;
+}
+
+/**
+ * gnome_keyring_find_password:
+ * @type: The item type.
+ * @callback: A callback which will be called when the request completes or fails.
+ * @data: A pointer to arbitrary data that will be passed to the @callback.
+ * @destroy_data: A function to free @data when it's no longer needed.
+ * 
+ * Find a password that matches a given set of attributes.
+ * 
+ * Attributes which identify this password must be passed as additional 
+ * arguments.
+ * 
+ * The variable argument list should contain a) The attribute name as a null 
+ * terminated string, followed by b) The attribute type, either 
+ * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
+ * and then the c) attribute value, either a character string, or 32-bit 
+ * unsigned int. The list should be terminated with a NULL.
+ * 
+ * The string that is passed to @callback is automatically freed when the 
+ * function returns.
+ * 
+ * Another more complex way to find items in the keyrings is using 
+ * gnome_keyring_find_items().
+ *   
+ * Return value: The asychronous request, which can be passed to gnome_keyring_cancel_request().
+ * Since: 2.22
+ */
+gpointer
+gnome_keyring_find_password (GnomeKeyringItemType type, 
+                             GnomeKeyringOperationGetStringCallback callback,
+                             gpointer data, GDestroyNotify destroy_data, ...)
+{
+	GnomeKeyringOperation *op;
+	GnomeKeyringAttributeList *attributes;
+	va_list args;
+	
+	op = start_operation (TRUE, callback, CALLBACK_GET_STRING, data, destroy_data);
+	if (op->state == STATE_FAILED)
+		return op;
+
+	va_start (args, destroy_data);
+	attributes = make_attribute_list_va (args);
+	va_end (args);
+	
+	if (!attributes || !attributes->len || 
+	    !gkr_proto_encode_find (&op->send_buffer, type, attributes)) 
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+
+	g_array_free (attributes, TRUE);
+
+	op->reply_handler = find_password_reply;
+	return op;
+	
+}
+
+/**
+ * gnome_keyring_find_password_sync:
+ * @type: The item type.
+ * @password: An address to store password that was found. The password must 
+ *            be freed with gnome_keyring_free_password().
+ * @Since: 2.22
+ * Find a password that matches a given set of attributes.
+ * 
+ * Attributes which identify this password must be passed as additional 
+ * arguments.
+ * 
+ * The variable argument list should contain a) The attribute name as a null 
+ * terminated string, followed by b) The attribute type, either 
+ * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
+ * and then the c) attribute value, either a character string, or 32-bit 
+ * unsigned int. The list should be terminated with a NULL.
+ * 
+ * This function may block for an unspecified period. If your application must
+ * remain responsive to the user, then use gnome_keyring_find_password(). 
+ *
+ * Another more complex way to find items in the keyrings is using 
+ * gnome_keyring_find_items_sync().
+ *   
+ * Return value: %GNOME_KEYRING_RESULT_OK if the operation was succcessful or 
+ * an error result otherwise. 
+ * Since: 2.22
+ */
+GnomeKeyringResult
+gnome_keyring_find_password_sync(GnomeKeyringItemType type, gchar **password, ...)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringResult res;
+	GnomeKeyringFound *f;
+	GList* found = NULL;
+	va_list args;
+
+	va_start (args, password);
+	attributes = make_attribute_list_va (args);
+	va_end (args);
+	
+	if (!attributes || !attributes->len)
+		res = GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	else
+		res = gnome_keyring_find_items_sync (type, attributes, &found);
+		
+	g_array_free (attributes, TRUE);
+
+	if (password && res == GNOME_KEYRING_RESULT_OK) {
+		*password = NULL;
+		if (g_list_length (found) > 0) {
+			f = (GnomeKeyringFound*)(found->data);
+			*password = f->secret;
+			f->secret = NULL;
+		}
+	}
+
+	gnome_keyring_found_list_free (found);
+	return res;
+}
+
+typedef struct _DeletePassword {
+	GList *found;
+	GList *at;
+	guint non_session;
+	guint deleted;
+} DeletePassword;
+
+static void
+delete_password_destroy (gpointer data)
+{
+	DeletePassword *dp = (DeletePassword*)data;
+	gnome_keyring_found_list_free (dp->found);
+	g_free (dp);
+}
+
+static gboolean
+delete_password_reply (GnomeKeyringOperation *op)
+{
+	GnomeKeyringResult result;
+	GnomeKeyringOperationDoneCallback callback;
+	GnomeKeyringFound *f;
+	DeletePassword *dp;
+
+	g_assert (op->user_callback_type == CALLBACK_DONE);
+	callback = op->user_callback;
+	
+	dp = op->reply_data;
+	g_assert (dp);
+	
+	/* The result of the find */
+	if (!dp->found) {
+		if (!gkr_proto_decode_find_reply (&op->receive_buffer, &result, &dp->found))
+			result = GNOME_KEYRING_RESULT_IO_ERROR;
+		
+		/* On the first item */
+		dp->at = dp->found;
+		
+	/* The result of a delete */
+	} else {
+		if (!gkr_proto_decode_find_reply (&op->receive_buffer, &result, &dp->found)) 
+			result = GNOME_KEYRING_RESULT_IO_ERROR;
+
+		++dp->deleted;
+	}
+
+	/* Stop on any failure */
+	if (result != GNOME_KEYRING_RESULT_OK) {
+		(*callback) (result, op->user_data);
+		return TRUE; /* Operation is done */
+	}
+			
+	/* Iterate over list and find next item to delete */
+	while (dp->at) {
+		f = (GnomeKeyringFound*)(dp->at->data);
+		dp->at = g_list_next (dp->at);
+		
+		/* If not an item in the session keyring ... */
+		if (!f->keyring || strcmp (f->keyring, GNOME_KEYRING_SESSION) != 0) {
+
+			++dp->non_session;
+			
+			/* ... then we only delete one of those */
+			if (dp->non_session > 1)
+				continue;
+		}
+
+		/* Reset the operation into a delete */
+		reset_operation (op);
+	
+		if (!gkr_proto_encode_op_string_int (&op->send_buffer, GNOME_KEYRING_OP_DELETE_ITEM,
+                                                     f->keyring, f->item_id)) {
+			/*
+			 * This would happen if the server somehow sent us an invalid
+			 * keyring and item_id. Very unlikely, and it seems this is 
+			 * the best error code in this case.
+			 */
+			(*callback) (GNOME_KEYRING_RESULT_IO_ERROR, op->user_data);
+			return TRUE;
+		}
+
+		/* 
+		 * The delete operation is ready for processing, by returning 
+		 * FALSE we indicate that the operation is not complete.
+		 */
+		return FALSE;
+	} 
+		
+	/* Nothing more to find */
+	g_assert (!dp->at);
+	
+	/* Operation is done */
+	(*callback) (GNOME_KEYRING_RESULT_IO_ERROR, op->user_data);
+	return TRUE;
+}
+
+/**
+ * gnome_keyring_delete_password:
+ * @type: The item type.
+ * @callback: A callback which will be called when the request completes or fails.
+ * @data: A pointer to arbitrary data that will be passed to the @callback.
+ * @destroy_data: A function to free @data when it's no longer needed.
+ * @Since: 2.22
+ *
+ * Delete a password that matches a given set of attributes.
+ * 
+ * Attributes which identify this password must be passed as additional 
+ * arguments.
+ * 
+ * The variable argument list should contain a) The attribute name as a null 
+ * terminated string, followed by b) The attribute type, either 
+ * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
+ * and then the c) attribute value, either a character string, or 32-bit 
+ * unsigned int. The list should be terminated with a NULL.
+ * 
+ * Another more complex way to find items in the keyrings is using 
+ * gnome_keyring_item_delete().
+ *   
+ * Return value: The asychronous request, which can be passed to gnome_keyring_cancel_request().
+ * Since: 2.22
+ */
+gpointer
+gnome_keyring_delete_password (GnomeKeyringItemType type, 
+                               GnomeKeyringOperationDoneCallback callback,
+                               gpointer data, GDestroyNotify destroy_data, ...)
+{
+	GnomeKeyringOperation *op;
+	GnomeKeyringAttributeList *attributes;
+	va_list args;
+	
+	op = start_operation (TRUE, callback, CALLBACK_DONE, data, destroy_data);
+	if (op->state == STATE_FAILED)
+		return op;
+
+	va_start (args, destroy_data);
+	attributes = make_attribute_list_va (args);
+	va_end (args);
+	if (!attributes || !attributes->len ||
+	    !gkr_proto_encode_find (&op->send_buffer, type, attributes)) 
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+
+	g_array_free (attributes, TRUE);
+
+	op->reply_handler = delete_password_reply;
+	op->reply_data = g_new0 (DeletePassword, 1);
+	op->destroy_reply_data = delete_password_destroy;
+
+	return op;
+}
+
+/**
+ * gnome_keyring_delete_password_sync:
+ * @type: The item type.
+ * 
+ * Delete a password that matches a given set of attributes.
+ * 
+ * Attributes which identify this password must be passed as additional 
+ * arguments.
+ * 
+ * The variable argument list should contain a) The attribute name as a null 
+ * terminated string, followed by b) The attribute type, either 
+ * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
+ * and then the c) attribute value, either a character string, or 32-bit 
+ * unsigned int. The list should be terminated with a NULL.
+ * 
+ * This function may block for an unspecified period. If your application must
+ * remain responsive to the user, then use gnome_keyring_delete_password(). 
+ *
+ * Another more complex way to find items in the keyrings is using 
+ * gnome_keyring_item_delete_sync().
+ *
+ * Return value: %GNOME_KEYRING_RESULT_OK if the operation was succcessful or 
+ * an error result otherwise. 
+ * Since: 2.22
+ */
+GnomeKeyringResult
+gnome_keyring_delete_password_sync (GnomeKeyringItemType type, ...)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringResult res;
+	GnomeKeyringFound *f;
+	GList *found, *l;
+	va_list args;
+	guint non_session;
+
+	va_start (args, type);
+	attributes = make_attribute_list_va (args);
+	va_end (args);
+	
+	if (!attributes || !attributes->len)
+		res = GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+
+	/* Find the item(s) in question */
+	else
+		res = gnome_keyring_find_items_sync (type, attributes, &found);
+		
+	g_array_free (attributes, TRUE);
+	if (res != GNOME_KEYRING_RESULT_OK)
+		return res;
+
+	non_session = 0;
+	for (l = found; l; l = g_list_next (l)) {
+		f = (GnomeKeyringFound*)(l->data);
+		
+		/* If not an item in the session keyring ... */
+		if (!f->keyring || strcmp (f->keyring, GNOME_KEYRING_SESSION) != 0) {
+
+			++non_session;
+			
+			/* ... then we only delete one of those */
+			if (non_session > 1)
+				continue;
+		}
+
+		res = gnome_keyring_item_delete_sync (f->keyring, f->item_id);
+		if (res != GNOME_KEYRING_RESULT_OK)
+			break;
+	}
+	
+	gnome_keyring_found_list_free (found);
 	return res;
 }

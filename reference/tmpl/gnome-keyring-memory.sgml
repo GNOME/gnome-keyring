@@ -98,11 +98,3 @@ sensitive information.</para>
 @Returns: 
 
 
-<!-- ##### FUNCTION gnome_keyring_free_password ##### -->
-<para>
-
-</para>
-
-@password: 
-
-
