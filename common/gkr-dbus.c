@@ -37,7 +37,7 @@
  */
 #define VER_LESS_THAN(MAJOR, MINOR, MICRO, J, N, C) \
     (MAJOR < J || (MAJOR == J && (MINOR < N || (MINOR == N && MICRO < C))))
-#if VER_LESS_THAN(DBUS_MAJOR_VERSION, DBUS_MINOR_VERSION, DBUS_MICRO_VERSION, 1, 1, 1)
+#if VER_LESS_THAN(GKR_DBUS_MAJOR_VERSION, GKR_DBUS_MINOR_VERSION, GKR_DBUS_MICRO_VERSION, 1, 1, 1)
 # define dbus_watch_get_unix_fd dbus_watch_get_fd
 #endif
 
