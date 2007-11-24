@@ -148,7 +148,7 @@ foreach_line (char *lines, line_cb cb, void *arg)
 }
 
 static char*
-read_all (int fd)
+read_string (int fd)
 {
 	/* We only accept a max of 8K from the daemon */
 	#define MAX_LENGTH 8192
@@ -184,6 +184,25 @@ read_all (int fd)
 	}
 	
 	return ret;
+}
+
+static int
+write_string (int fd, const char* buf)
+{
+	size_t bytes = 0;
+	int res, len = strlen (buf);
+
+	while (bytes < len) {
+		res = write (fd, buf + bytes, len - bytes);
+		if (res < 0) {
+			if (errno != EINTR && errno != EAGAIN)
+				return -1;
+		} else {
+			bytes += res;
+		}
+	}
+	
+	return 0;
 }
 
 /* -----------------------------------------------------------------------------
@@ -249,15 +268,21 @@ cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
 }
 
 static void
-setup_child (int outp[2], int errp[2], struct passwd *pwd)
+setup_child (int inp[2], int outp[2], int errp[2], 
+             struct passwd *pwd, const char *password)
 {
-	char *args[] = { GNOME_KEYRING_DAEMON, "-d", NULL};
-	
+	char *args[] = { GNOME_KEYRING_DAEMON, "-d", "--login", NULL};
+
 	assert (pwd);
 	assert (pwd->pw_dir);
-	
+
+	/* If no password, don't pas in --login */
+	if (password == NULL)
+		args[2] = NULL;
+
 	/* Fix up our end of the pipes */
-	if (dup2 (outp[WRITE_END], STDOUT) < 0 || 
+	if (dup2 (inp[READ_END], STDIN) < 0 ||
+	    dup2 (outp[WRITE_END], STDOUT) < 0 || 
 	    dup2 (errp[WRITE_END], STDERR) < 0) {
 	    	syslog (GKR_LOG_ERR, "gkr-pam: couldn't setup pipes: %s",
 		        strerror (errno));
@@ -265,6 +290,8 @@ setup_child (int outp[2], int errp[2], struct passwd *pwd)
 	}
 	    
 	/* Close unnecessary file descriptors */
+	close (inp[READ_END]);
+	close (inp[WRITE_END]);
 	close (outp[READ_END]);
 	close (outp[WRITE_END]);
 	close (errp[READ_END]);
@@ -348,9 +375,10 @@ setup_environment (char *line, void *arg)
 }
 
 static int
-start_daemon (pam_handle_t *ph, struct passwd *pwd)
+start_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
-	struct sigaction defsact, oldsact;
+	struct sigaction defsact, oldsact, ignpipe, oldpipe;
+	int inp[2] = { -1, -1 };
 	int outp[2] = { -1, -1 };
 	int errp[2] = { -1, -1 };
 	int ret = PAM_SERVICE_ERR;
@@ -371,8 +399,17 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd)
 	defsact.sa_handler = SIG_DFL;
 	sigaction (SIGCHLD, &defsact, &oldsact);
 	
+	/*
+	 * Make sure we don't exit with a SIGPIPE while doing this, that 
+	 * would be very annoying to a user trying to log in.
+	 */	
+	memset (&ignpipe, 0, sizeof (ignpipe));
+	memset (&oldpipe, 0, sizeof (oldpipe));
+	ignpipe.sa_handler = SIG_IGN;
+	sigaction (SIGPIPE, &ignpipe, &oldpipe);
+	
 	/* Create the necessary pipes */
-	if (pipe (outp) < 0 || pipe (errp) < 0) {
+	if (pipe (inp) < 0 || pipe (outp) < 0 || pipe (errp) < 0) {
 	    	syslog (GKR_LOG_ERR, "gkr-pam: couldn't create pipes: %s", 
 	    	        strerror (errno));
 	    	goto done;
@@ -387,7 +424,7 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd)
 		
 	/* This is the child */
 	case 0:
-		setup_child (outp, errp, pwd);
+		setup_child (inp, outp, errp, pwd, password);
 		/* Should never be reached */
 		break;
 		
@@ -397,9 +434,16 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd)
 	};
 	
 	/* Close our unneeded ends of the pipes */
+	close (inp[READ_END]);
 	close (outp[WRITE_END]);
 	close (errp[WRITE_END]);
-	outp[WRITE_END] = errp[WRITE_END] = -1; 
+	inp[READ_END] = outp[WRITE_END] = errp[WRITE_END] = -1; 
+
+	if (password) {
+		/* Write the login keyring password */
+		write_string (inp[WRITE_END], password);
+		close (inp[WRITE_END]);
+	}
 	
 	/* 
 	 * Note that we're not using select() or any such. We know how the 
@@ -407,8 +451,8 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd)
 	 */
 
 	/* Read any stdout and stderr data */
-	output = read_all (outp[READ_END]);
-	outerr = read_all (errp[READ_END]);
+	output = read_string (outp[READ_END]);
+	outerr = read_string (errp[READ_END]);
 	if (!output || !outerr) {
 		syslog (GKR_LOG_ERR, "gkr-pam: couldn't read data from gnome-keyring-daemon: %s", 
 		        strerror (errno));
@@ -437,7 +481,10 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd)
 done:
 	/* Restore old handler */
 	sigaction (SIGCHLD, &oldsact, NULL);
+	sigaction (SIGPIPE, &oldpipe, NULL);
 	
+	close_safe (inp[0]);
+	close_safe (inp[1]);
 	close_safe (outp[0]);
 	close_safe (outp[1]);
 	close_safe (errp[0]);
@@ -450,10 +497,13 @@ done:
 }
 
 static int
-start_daemon_if_necessary (pam_handle_t *ph, struct passwd *pwd)
+start_daemon_if_necessary (pam_handle_t *ph, struct passwd *pwd, 
+                           const char *password, int* started)
 {
 	const char *socket;
 	int ret;
+	
+	*started = 0;
 	
 	/* See if it's already running, and transfer env variables */
 	socket = get_any_env (ph, ENV_SOCKET);
@@ -470,7 +520,9 @@ start_daemon_if_necessary (pam_handle_t *ph, struct passwd *pwd)
 	}
 
 	/* Not running, start process */
-	return start_daemon (ph, pwd);
+	ret = start_daemon (ph, pwd, password);
+	*started = (ret == PAM_SUCCESS);
+	return ret;
 }
 
 static int
@@ -691,6 +743,7 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 	struct passwd *pwd;
 	const char *user, *password;
 	const char *socket;
+	int started_daemon;
 	uint args;
 	int ret;
 	
@@ -728,9 +781,11 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 	}
 
 
+	started_daemon = 0;
+
 	/* Should we start the daemon? */
 	if (args & ARG_AUTO_START) {
-		ret = start_daemon_if_necessary (ph, pwd);
+		ret = start_daemon_if_necessary (ph, pwd, password, &started_daemon);
 		if (ret != PAM_SUCCESS)
 			return ret;
 	}
@@ -739,11 +794,14 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 
 	/* If gnome keyring is running, then unlock now */
 	if (socket) {
-		ret = unlock_keyring (ph, pwd, password);
-		if (ret != PAM_SUCCESS)
-			return ret;
-			
-	/* Otherwise start in open session, store password */
+		/* If we started the daemon, its already unlocked, since we passed the password */
+		if (!started_daemon) {
+			ret = unlock_keyring (ph, pwd, password);
+			if (ret != PAM_SUCCESS)
+				return ret;
+		}
+		
+	/* Otherwise start later in open session, store password */
 	} else {
 		if (pam_set_data (ph, "gkr_system_authtok", strdup (password),
 		                  cleanup_free_password) != PAM_SUCCESS) {
@@ -762,6 +820,7 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 	struct passwd *pwd;
 	int ret;
 	uint args = parse_args (argc, argv);
+	int started_daemon;
 
 	/* Figure out the user name */
 	ret = pam_get_user (ph, &user, NULL);
@@ -777,29 +836,32 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 		return PAM_SERVICE_ERR;
 	}
 
-	/* Should we start the daemon? */
-	if (args & ARG_AUTO_START) {
-		ret = start_daemon_if_necessary (ph, pwd);
-		if (ret != PAM_SUCCESS)
-			return ret;
-	}
-
 	/* Get the stored authtok here */
 	if (pam_get_data (ph, "gkr_system_authtok", (const void**)&password) != PAM_SUCCESS) {
-		
 		/* 
 		 * No password, no worries, maybe this (PAM using) application 
 		 * didn't do authentication, or is hopeless and wants to call 
 		 * different PAM callbacks from different processes.
 		 * 
 		 * No use complaining
-		 */ 
-		return PAM_SUCCESS;
+		 */
+		password = NULL;
 	}
 	
-	if (unlock_keyring (ph, pwd, password) != PAM_SUCCESS)
-		return PAM_SERVICE_ERR;
+	started_daemon = 0;
+	
+	/* Should we start the daemon? */
+	if (args & ARG_AUTO_START) {
+		ret = start_daemon_if_necessary (ph, pwd, password, &started_daemon);
+		if (ret != PAM_SUCCESS)
+			return ret;
+	}
 
+	if (!started_daemon && password != NULL) {
+		if (unlock_keyring (ph, pwd, password) != PAM_SUCCESS)
+			return PAM_SERVICE_ERR;
+	}
+	
 	return PAM_SUCCESS;
 }
 
@@ -863,7 +925,7 @@ static int
 pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd)
 {
 	const char *password, *original;
-	int ret;
+	int ret, started_daemon = 0;
 	
 	ret = pam_get_item (ph, PAM_OLDAUTHTOK, (const void**)&original);
 	if (ret != PAM_SUCCESS || original == NULL) {
@@ -897,7 +959,7 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd)
 	 * argument. Because if the password is being changed, then making 
 	 * the 'login' keyring match it is a priority. 
 	 */
-	ret = start_daemon_if_necessary (ph, pwd);
+	ret = start_daemon_if_necessary (ph, pwd, original, &started_daemon);
 	if (ret != PAM_SUCCESS)
 		return ret;
 	

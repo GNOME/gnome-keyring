@@ -1,5 +1,12 @@
 2007-11-24  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c:
+	* pam/gkr-pam-module.c: Make PAM module work withe SELinux
+	by passing the login password to the daemon over stdin. 
+	Patch by Alexander Larrson. Fixes bug #484612
+	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
 	* library/gnome-keyring.c:
 	* library/gnome-keyring.h:
 	* reference/gnome-keyring-sections.txt:

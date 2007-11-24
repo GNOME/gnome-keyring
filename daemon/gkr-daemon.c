@@ -27,6 +27,8 @@
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
 #include "common/gkr-unix-signal.h"
+#include "common/gkr-location.h"
+#include "common/gkr-secure-memory.h"
 
 #include "keyrings/gkr-keyrings.h"
 
@@ -54,6 +56,11 @@
 #include <glib/gi18n.h>
 
 #include <gcrypt.h>
+
+/* preset file descriptors */
+#define  STDIN   0
+#define  STDOUT  1
+#define  STDERR  2
 
 static GMainLoop *loop = NULL;
 
@@ -145,6 +152,43 @@ sane_dup2 (int fd1, int fd2)
 	return ret;
 }
 
+static gchar*
+read_login_password (int fd)
+{
+	/* We only accept a max of 8K as the login password */
+	#define MAX_LENGTH 8192
+	#define MAX_BLOCK 256
+	
+	gchar *buf = gkr_secure_memory_alloc (MAX_BLOCK);
+	gchar *ret = NULL;
+	int r, len = 0;
+	
+	for (;;) {
+		r = read (fd, buf, sizeof (buf));
+		if (r < 0) {
+			if (errno == EAGAIN)
+				continue;
+			gkr_secure_memory_free (ret);
+			gkr_secure_memory_free (buf);
+			return NULL;
+			
+		} else  { 
+			char *n = gkr_secure_memory_realloc (ret, len + r + 1);
+			memset(n + len, 0, r + 1); 
+			ret = n;
+			len = len + r;
+			
+			strncat (ret, buf, r);
+		}
+		
+		if (r == 0 || len > MAX_LENGTH)
+			break;
+	}
+	
+	gkr_secure_memory_free (buf);
+	return ret;
+}
+
 static void
 close_stdinout (void)
 {
@@ -176,13 +220,15 @@ int
 main (int argc, char *argv[])
 {
 	const char *path, *env;
-	int fd;
+	int fd, i;
 	pid_t pid;
 	gboolean foreground;
 	gboolean daemon;
 	GIOChannel *channel;
 	GMainContext *ctx;
-	int i;
+	gboolean login;
+	gchar *login_password;
+	GkrKeyring *login_keyring;
 	
 	g_type_init ();
 	g_thread_init (NULL);
@@ -211,6 +257,7 @@ main (int argc, char *argv[])
 
 	foreground = FALSE;
 	daemon = FALSE;
+	login = FALSE;
 
 	if (argc > 1) {
 		for (i = 1; i < argc; i++) {
@@ -218,18 +265,32 @@ main (int argc, char *argv[])
 				foreground = TRUE;
 			if (strcmp (argv[i], "-d") == 0)
 				daemon = TRUE;
+			if (strcmp (argv[i], "--login") == 0)
+				login = TRUE;
 		}
 	}
+
+	/* 
+	 * When --login is specified then the login password is passed 
+	 * in on stdin. All data (including newlines) are part of the 
+	 * password.
+	 */
+	login_password = login ? read_login_password (STDIN) : NULL;
 	
+	/* 
+	 * The whole forking and daemonizing dance starts here.
+	 */
 	if (!foreground) {
 		pid = fork ();
+		
+		/* An intermediate child */
 		if (pid == 0) {
-			/* intermediated child */
 			if (daemon) {
 				pid = fork ();
 				
+				/* Still in the intermedate child */
 				if (pid != 0) {
-					/* still intermediated child */
+					gkr_secure_memory_free (login_password);
 					
 					/* This process exits, so that the
 					 * final child will inherit init as parent
@@ -249,17 +310,22 @@ main (int argc, char *argv[])
 			}
 			
 			/* final child continues here */
+			
+		/* The initial process */
 		} else {
+			gkr_secure_memory_free (login_password);
+			
 			if (daemon) {
 				int status;
+				
 				/* Initial process, waits for intermediate child */
-				if (pid == -1) {
+				if (pid == -1)
 					exit (1);
-				}
+
 				waitpid (pid, &status, 0);
-				if (WEXITSTATUS (status) != 0) {
+				if (WEXITSTATUS (status) != 0)
 					exit (WEXITSTATUS (status));
-				}
+				
 			} else {
 				printf ("GNOME_KEYRING_SOCKET=%s\n", path);
 				printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
@@ -268,6 +334,7 @@ main (int argc, char *argv[])
 			exit (0);
 		}
 		
+		/* The final child ... */
 		close_stdinout ();
 
 	} else {
@@ -315,6 +382,27 @@ main (int argc, char *argv[])
 		gkr_daemon_dbus_setup (loop, path);
 #endif
 
+	/*
+	 * Unlock the login keyring if we were given a password on STDIN.
+	 * If it does not exist. We create it. 
+	 */
+	if (login_password) {
+		login_keyring = gkr_keyrings_get_login ();
+		if (login_keyring) {
+			if (!gkr_keyring_unlock (login_keyring, login_password))
+				g_warning ("Failed to unlock login keyring");
+		} else {
+			login_keyring = gkr_keyring_create (GKR_LOCATION_BASE_LOCAL,
+			                                    "login", login_password);
+			if (!login_keyring) {
+				gkr_keyrings_add (login_keyring);
+				g_object_unref (login_keyring);
+			}
+		}
+		
+		gkr_secure_memory_free (login_password);
+	}
+	
 	g_main_loop_run (loop);
 
 	/* Make sure no other threads are running */
