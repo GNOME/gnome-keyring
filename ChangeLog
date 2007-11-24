@@ -1,5 +1,10 @@
 2007-11-24  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in: Define GNU_SOURCE for systems that require
+	it. Patch by christopher taylor. Fixes bug #491021
+	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
 	* reference/tmpl/gnome-keyring-result.sgml: Note about 
 	additional error codes that might be added from time to time.
 	See bug #488851
