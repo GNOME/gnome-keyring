@@ -1,5 +1,11 @@
 2007-11-24  Stef Walter  <stef@memberwebs.com>
 
+	* reference/tmpl/gnome-keyring-result.sgml: Note about 
+	additional error codes that might be added from time to time.
+	See bug #488851
+	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-dbus.c:
 	* configure.in: Fix building with the latest DBUS. 
 	Patch by Owen Taylor. Fixes bug #487590
