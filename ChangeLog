@@ -1,3 +1,11 @@
+=== gnome-keyring 2.20.2 ===
+
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* README: 
+	* NEWS: Release version 2.20.2
+	
 2007-11-24  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Define GNU_SOURCE for systems that require
