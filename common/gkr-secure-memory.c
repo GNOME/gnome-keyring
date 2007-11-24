@@ -424,10 +424,11 @@ get_locked_pages (unsigned long *sz)
 	}
 	
 	if (mlock (pages, *sz) < 0) {
-		if (lock_warning)
+		if (lock_warning && errno != EPERM) {
 			fprintf (stderr, "couldn't lock %lu bytes of private memory: %s\n", 
 			         *sz, strerror (errno));
-		lock_warning = 0;
+			lock_warning = 0;
+		}
 		munmap (pages, *sz);
 		return NULL;
 	}

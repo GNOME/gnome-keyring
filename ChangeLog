@@ -1,3 +1,13 @@
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-secure-memory.c: 
+	* daemon/gkr-daemon.c:
+	* library/gnome-keyring-memory.c:
+	* library/gnome-keyring-private.h: When running an application
+	that uses libgnome-keyring don't warn about not being able to 
+	use secure memory. Only print that warning for the daemon. 
+	Fixes bug #484976.
+	
 2007-10-25  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-secure-memory.c: Include header necessary

@@ -59,6 +59,7 @@ struct GnomeKeyringItemInfo {
 #endif
 
 void 	_gnome_keyring_memory_dump (void);
-
+extern  gboolean gnome_keyring_memory_warning;
+ 
 #endif /* GNOME_KEYRING_PRIVATE_H */
 

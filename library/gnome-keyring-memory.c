@@ -54,7 +54,9 @@ gkr_memory_unlock (void)
  * PUBLIC FUNCTIONS
  */
 
+gboolean gnome_keyring_memory_warning = FALSE;
 static gboolean do_warning = TRUE;
+
 #define WARNING  "couldn't allocate secure memory to keep passwords " \
 		 "and or keys from being written to the disk"
 		 
@@ -87,7 +89,7 @@ gnome_keyring_memory_alloc (gulong sz)
 		return p;
 	}
 	
-	if (do_warning) {
+	if (do_warning && gnome_keyring_memory_warning) {
 		g_message (WARNING);
 		do_warning = FALSE;
 	}
@@ -156,7 +158,7 @@ gnome_keyring_memory_realloc (gpointer p, gulong sz)
 		return n;
 	}
 	
-	if (do_warning) {
+	if (do_warning && gnome_keyring_memory_warning) {
 		g_message (WARNING);
 		do_warning = FALSE;
 	}
