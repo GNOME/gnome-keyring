@@ -117,19 +117,10 @@ gnome_keyring_result_to_message (GnomeKeyringResult res)
 		return _("A keyring with that name already exists");	
 	case GNOME_KEYRING_RESULT_BAD_ARGUMENTS:
 		return _("Programmer error: The application sent invalid data.");
-		
-	/* 
-	 * TODO: These needs to be better messages, and translated in next 
-	 * release. This was added late because poorly written programs 
-	 * were assuming incorrect things about our result codes, and ABI
-	 * compatibility and all that. 
-	 * 
-	 * http://bugzilla.gnome.org/show_bug.cgi?id=476682
-	 */
 	case GNOME_KEYRING_RESULT_NO_MATCH:
-		return "No Results"; 
+		return _("No matching results"); 
 	case GNOME_KEYRING_RESULT_NO_SUCH_KEYRING:
-		return "No such keyring exists";
+		return _("A keyring with that name does not exist.");
 	
 	/* 
 	 * This would be a dumb message to display to the user, we never return 

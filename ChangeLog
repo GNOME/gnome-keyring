@@ -1,5 +1,10 @@
 2007-11-24  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring-utils.c: Add better result messages.
+	See bug #476682
+	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon.c:
 	* pam/gkr-pam-module.c: Make PAM module work withe SELinux
 	by passing the login password to the daemon over stdin. 
