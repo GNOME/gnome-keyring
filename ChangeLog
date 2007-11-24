@@ -1,5 +1,11 @@
 2007-11-24  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring.c: Make library more thread friendly
+	by not scheduling IO callbacks until after our internal state
+	is all in order. See bug #474695
+	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
 	* library/gnome-keyring-utils.c: Add better result messages.
 	See bug #476682
 	

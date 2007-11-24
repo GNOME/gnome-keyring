@@ -78,6 +78,7 @@ struct GnomeKeyringOperation {
 	GnomeKeyringResult result;
 
 	guint io_watch;
+	guint idle_watch;
 	
 	GkrBuffer send_buffer;
 	gsize send_pos;
@@ -233,6 +234,10 @@ connect_to_daemon (gboolean non_blocking)
 static void
 operation_free (GnomeKeyringOperation *op)
 {
+	if (op->idle_watch != 0) {
+		g_source_remove (op->idle_watch);
+		op->idle_watch = 0;
+	}
 	if (op->io_watch != 0) {
 		g_source_remove (op->io_watch);
 		op->io_watch = 0;
@@ -253,6 +258,7 @@ op_failed (gpointer data)
 	GnomeKeyringOperation *op;
 
 	op = data;
+	op->idle_watch = 0;
 
 	switch (op->user_callback_type) {
 	case CALLBACK_DONE:
@@ -283,6 +289,7 @@ op_failed (gpointer data)
 
 	operation_free (op);
 	
+	/* Don't run idle handler again */
 	return FALSE;
 }
 
@@ -297,7 +304,9 @@ schedule_op_failed (GnomeKeyringOperation *op,
 	}
 	op->state = STATE_FAILED;
 	op->result = result;
-	g_idle_add (op_failed, op);
+	
+	if (op->idle_watch == 0)
+		op->idle_watch = g_idle_add (op_failed, op);
 }
 
 static int
@@ -553,13 +562,12 @@ operation_io (GIOChannel  *io_channel,
 }
 
 
-static GnomeKeyringOperation *
-start_operation (gboolean receive_secure, gpointer callback, 
-                 KeyringCallbackType callback_type, gpointer user_data, 
-                 GDestroyNotify destroy_user_data)
+static GnomeKeyringOperation*
+create_operation (gboolean receive_secure, gpointer callback, 
+                  KeyringCallbackType callback_type, gpointer user_data, 
+                  GDestroyNotify destroy_user_data)
 {
 	GnomeKeyringOperation *op;
-	GIOChannel *channel;
 
 	op = g_new0 (GnomeKeyringOperation, 1);
 
@@ -571,30 +579,17 @@ start_operation (gboolean receive_secure, gpointer callback,
 	op->user_callback = callback;
 	op->user_data = user_data;
 	op->destroy_user_data = destroy_user_data;
+	op->socket = -1;
 	
-	op->socket = connect_to_daemon (TRUE);
+	gkr_buffer_init_full (&op->send_buffer, 128, g_realloc);
 	gkr_buffer_init_full (&op->receive_buffer, 128, 
 		receive_secure ? gnome_keyring_memory_realloc : g_realloc);
-
-	if (op->socket < 0) {
-		schedule_op_failed (op, GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON);
-	} else  {
-		op->state = STATE_WRITING_CREDS;
-		gkr_buffer_init_full (&op->send_buffer, 128, g_realloc);
-		op->send_pos = 0;
 		
-		channel = g_io_channel_unix_new (op->socket);
-		op->io_watch = g_io_add_watch (channel,
-					       G_IO_OUT | G_IO_HUP,
-					       operation_io, op);
-		g_io_channel_unref (channel);
-	} 
-	
 	return op;
 }
 
 static void
-reset_operation (GnomeKeyringOperation *op)
+start_operation (GnomeKeyringOperation *op)
 {
 	GIOChannel *channel;
 
@@ -606,17 +601,16 @@ reset_operation (GnomeKeyringOperation *op)
 		g_source_remove (op->io_watch);
 		op->io_watch = 0;
 	}
-	close (op->socket);
-
-	gkr_buffer_reset (&op->send_buffer);
-	gkr_buffer_reset (&op->receive_buffer);
+	if (op->socket >= 0)
+		close (op->socket);
 
 	op->socket = connect_to_daemon (TRUE);
 	if (op->socket < 0) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON);
 	} else  {
 		op->state = STATE_WRITING_CREDS;
-		gkr_buffer_init_full (&op->send_buffer, 128, g_realloc);
+		
+		gkr_buffer_reset (&op->receive_buffer);
 		op->send_pos = 0;
 		
 		channel = g_io_channel_unix_new (op->socket);
@@ -799,17 +793,14 @@ gnome_keyring_set_default_keyring (const gchar                             *keyr
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
-
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	if (!gkr_proto_encode_op_string (&op->send_buffer, GNOME_KEYRING_OP_SET_DEFAULT_KEYRING,
 	                                 keyring)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 
 	op->reply_handler = standard_reply;
+	start_operation (op);
 	return op;
 }
 
@@ -876,16 +867,13 @@ gnome_keyring_get_default_keyring (GnomeKeyringOperationGetStringCallback  callb
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_GET_STRING, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
-
+	op = create_operation (FALSE, callback, CALLBACK_GET_STRING, data, destroy_data);
 	if (!gkr_proto_encode_op_only (&op->send_buffer, GNOME_KEYRING_OP_GET_DEFAULT_KEYRING)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 
 	op->reply_handler = string_reply;
+	start_operation (op);
 	return op;
 }
 
@@ -978,17 +966,14 @@ gnome_keyring_list_keyring_names  (GnomeKeyringOperationGetListCallback    callb
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_GET_LIST, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
-
+	op = create_operation (FALSE, callback, CALLBACK_GET_LIST, data, destroy_data);
 	if (!gkr_proto_encode_op_only (&op->send_buffer,
 						 GNOME_KEYRING_OP_LIST_KEYRINGS)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 
 	op->reply_handler = list_keyring_names_reply;
+	start_operation (op);
 	return op;
 }
 
@@ -1059,16 +1044,13 @@ gnome_keyring_lock_all (GnomeKeyringOperationDoneCallback       callback,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
-
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	if (!gkr_proto_encode_op_only (&op->send_buffer, GNOME_KEYRING_OP_LOCK_ALL)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 
 	op->reply_handler = standard_reply;
+	start_operation (op);
 	return op;
 }
 
@@ -1138,11 +1120,8 @@ gnome_keyring_create (const char                                  *keyring_name,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
-	
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
+
 	/* Automatically secures buffer */
 	if (!gkr_proto_encode_op_string_secret (&op->send_buffer, GNOME_KEYRING_OP_CREATE_KEYRING,
 	                                        keyring_name, password)) {
@@ -1150,7 +1129,7 @@ gnome_keyring_create (const char                                  *keyring_name,
 	}
 
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);
 	return op;
 }
 
@@ -1228,10 +1207,7 @@ gnome_keyring_unlock (const char                                  *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	/* Automatically secures buffer */
 	if (!gkr_proto_encode_op_string_secret (&op->send_buffer, GNOME_KEYRING_OP_UNLOCK_KEYRING,
@@ -1240,7 +1216,7 @@ gnome_keyring_unlock (const char                                  *keyring,
 	}
 
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -1319,10 +1295,7 @@ gnome_keyring_lock (const char                                  *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string (&op->send_buffer, GNOME_KEYRING_OP_LOCK_KEYRING,
 	                                 keyring)) {
@@ -1330,7 +1303,7 @@ gnome_keyring_lock (const char                                  *keyring,
 	}
 	
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);
 	return op;
 }
 
@@ -1402,10 +1375,7 @@ gnome_keyring_delete (const char                                  *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string (&op->send_buffer, GNOME_KEYRING_OP_DELETE_KEYRING,
 	                                 keyring)) {
@@ -1413,7 +1383,7 @@ gnome_keyring_delete (const char                                  *keyring,
 	}
 	
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);
 	return op;
 }
 
@@ -1487,10 +1457,7 @@ gnome_keyring_change_password (const char                                  *keyr
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 
 	/* Automatically secures buffer */	
 	if (!gkr_proto_encode_op_string_secret_secret (&op->send_buffer,
@@ -1500,6 +1467,7 @@ gnome_keyring_change_password (const char                                  *keyr
 	}
 
 	op->reply_handler = standard_reply;
+	start_operation (op);
 	
 	return op;
 }
@@ -1595,10 +1563,7 @@ gnome_keyring_get_info (const char                                  *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_GET_KEYRING_INFO, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_GET_KEYRING_INFO, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string (&op->send_buffer, GNOME_KEYRING_OP_GET_KEYRING_INFO,
 	                                 keyring)) {
@@ -1606,7 +1571,7 @@ gnome_keyring_get_info (const char                                  *keyring,
 	}
 	
 	op->reply_handler = get_keyring_info_reply;
-	
+	start_operation (op);
 	return op;
 }
 
@@ -1684,17 +1649,14 @@ gnome_keyring_set_info (const char                                  *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	if (!gkr_proto_encode_set_keyring_info (&op->send_buffer, keyring, info)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 	
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);
 	return op;
 }
 
@@ -1780,10 +1742,7 @@ gnome_keyring_list_item_ids (const char                                  *keyrin
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_GET_LIST, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_GET_LIST, data, destroy_data);
 
 	if (!gkr_proto_encode_op_string (&op->send_buffer, GNOME_KEYRING_OP_LIST_ITEMS,
 	                                 keyring)) {
@@ -1791,6 +1750,7 @@ gnome_keyring_list_item_ids (const char                                  *keyrin
 	}
 
 	op->reply_handler = list_item_ids_reply;
+	start_operation (op);
 	return op;
 }
 
@@ -2042,16 +2002,14 @@ gnome_keyring_find_items  (GnomeKeyringItemType                  type,
 	GnomeKeyringOperation *op;
 	
 	/* Use a secure receive buffer */
-	op = start_operation (TRUE, callback, CALLBACK_GET_LIST, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (TRUE, callback, CALLBACK_GET_LIST, data, destroy_data);
 
 	if (!gkr_proto_encode_find (&op->send_buffer, type, attributes)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 
 	op->reply_handler = find_items_reply;
+	start_operation (op);
 	return op;
 }
 
@@ -2126,10 +2084,7 @@ gnome_keyring_find_itemsv (GnomeKeyringItemType                  type,
 	va_list args;
 	
 	/* Use a secure receive buffer */
-	op = start_operation (TRUE, callback, CALLBACK_GET_LIST, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (TRUE, callback, CALLBACK_GET_LIST, data, destroy_data);
 
 	va_start (args, destroy_data);
 	attributes = make_attribute_list_va (args);
@@ -2145,6 +2100,7 @@ gnome_keyring_find_itemsv (GnomeKeyringItemType                  type,
 	g_array_free (attributes, TRUE);
 
 	op->reply_handler = find_items_reply;
+	start_operation (op);
 	return op;
 }
 
@@ -2297,10 +2253,7 @@ gnome_keyring_item_create (const char                          *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_GET_INT, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_GET_INT, data, destroy_data);
 	
 	/* Automatically secures buffer */
 	if (!gkr_proto_encode_create_item (&op->send_buffer, keyring, display_name,
@@ -2309,7 +2262,7 @@ gnome_keyring_item_create (const char                          *keyring,
 	}
 
 	op->reply_handler = int_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -2408,10 +2361,7 @@ gnome_keyring_item_delete (const char                                 *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string_int (&op->send_buffer, GNOME_KEYRING_OP_DELETE_ITEM,
 	                                     keyring, id)) {
@@ -2419,7 +2369,7 @@ gnome_keyring_item_delete (const char                                 *keyring,
 	}
 	
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);
 	return op;
 }
 
@@ -2511,10 +2461,7 @@ gnome_keyring_item_get_info (const char                                 *keyring
 	GnomeKeyringOperation *op;
 	
 	/* Use a secure receive buffer */
-	op = start_operation (TRUE, callback, CALLBACK_GET_ITEM_INFO, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (TRUE, callback, CALLBACK_GET_ITEM_INFO, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string_int (&op->send_buffer, GNOME_KEYRING_OP_GET_ITEM_INFO,
 	                                     keyring, id)) {
@@ -2522,7 +2469,7 @@ gnome_keyring_item_get_info (const char                                 *keyring
 	}
 	
 	op->reply_handler = get_item_info_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -2616,10 +2563,7 @@ gnome_keyring_item_get_info_full (const char                                 *ke
 	GnomeKeyringOperation *op;
 	
 	/* Use a secure receive buffer */ 
-	op = start_operation (TRUE, callback, CALLBACK_GET_ITEM_INFO, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (TRUE, callback, CALLBACK_GET_ITEM_INFO, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string_int_int (&op->send_buffer,
 	                                         GNOME_KEYRING_OP_GET_ITEM_INFO_FULL,
@@ -2628,7 +2572,7 @@ gnome_keyring_item_get_info_full (const char                                 *ke
 	}
 	
 	op->reply_handler = get_item_info_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -2720,10 +2664,7 @@ gnome_keyring_item_set_info (const char                                 *keyring
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	/* Automatically secures buffer */
 	if (!gkr_proto_encode_set_item_info (&op->send_buffer, keyring, id, info)) {
@@ -2731,7 +2672,7 @@ gnome_keyring_item_set_info (const char                                 *keyring
 	}
 	
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -2841,10 +2782,7 @@ gnome_keyring_item_get_attributes (const char                                 *k
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_GET_ATTRIBUTES, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_GET_ATTRIBUTES, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string_int (&op->send_buffer, GNOME_KEYRING_OP_GET_ITEM_ATTRIBUTES,
 	                                     keyring, id)) {
@@ -2852,7 +2790,7 @@ gnome_keyring_item_get_attributes (const char                                 *k
 	}
 	
 	op->reply_handler = get_attributes_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -2934,10 +2872,7 @@ gnome_keyring_item_set_attributes (const char                                 *k
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	if (!gkr_proto_encode_set_attributes (&op->send_buffer, keyring, id,
 	                                      attributes)) {
@@ -2945,7 +2880,7 @@ gnome_keyring_item_set_attributes (const char                                 *k
 	}
 	
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -3013,10 +2948,7 @@ gnome_keyring_item_get_acl (const char                                 *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_GET_ACL, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_GET_ACL, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string_int (&op->send_buffer,
 	                                     GNOME_KEYRING_OP_GET_ITEM_ACL,
@@ -3025,7 +2957,7 @@ gnome_keyring_item_get_acl (const char                                 *keyring,
 	}
 	
 	op->reply_handler = get_acl_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -3107,17 +3039,14 @@ gnome_keyring_item_set_acl (const char                                 *keyring,
 {
 	GnomeKeyringOperation *op;
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED) {
-		return op;
-	}
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	if (!gkr_proto_encode_set_acl (&op->send_buffer, keyring, id, acl)) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 	}
 	
 	op->reply_handler = standard_reply;
-	
+	start_operation (op);	
 	return op;
 }
 
@@ -3196,9 +3125,10 @@ item_grant_access_rights_reply (GnomeKeyringOperation *op)
 	g_assert (gar);
 	
 	/* Send off the new access rights */
-	reset_operation (op);
+	start_operation (op);
 	
 	/* Append our ACL to the list */
+	gkr_buffer_reset (&op->send_buffer);
 	acl = g_list_append (acl, &gar->acl);
 	ret = gkr_proto_encode_set_acl (&op->send_buffer, gar->keyring_name, 
 	                                          gar->id, acl);
@@ -3254,9 +3184,7 @@ gnome_keyring_item_grant_access_rights (const gchar *keyring,
 	GrantAccessRights *gar;
 	
 	/* First get current ACL */
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED)
-		return op;
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	if (!gkr_proto_encode_op_string_int (&op->send_buffer,
 	                                     GNOME_KEYRING_OP_GET_ITEM_ACL,
@@ -3277,6 +3205,7 @@ gnome_keyring_item_grant_access_rights (const gchar *keyring,
 	
 	op->reply_data = gar;
 	op->destroy_reply_data = destroy_grant_access_rights;
+	start_operation (op);
 	
 	return op;
 }
@@ -4098,9 +4027,7 @@ gnome_keyring_store_password (const GnomeKeyringPasswordSchema* schema, const gc
 	attributes = schema_attribute_list_va (schema, args);
 	va_end (args);
 	
-	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED)
-		return op;
+	op = create_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
 	
 	/* Automatically secures buffer */
 	if (!attributes || !attributes->len ||
@@ -4110,7 +4037,7 @@ gnome_keyring_store_password (const GnomeKeyringPasswordSchema* schema, const gc
 
 	op->reply_handler = standard_reply;
 	g_array_free (attributes, TRUE);
-	
+	start_operation (op);
 	return op;
 }
 
@@ -4226,9 +4153,7 @@ gnome_keyring_find_password (const GnomeKeyringPasswordSchema* schema,
 	GnomeKeyringAttributeList *attributes;
 	va_list args;
 	
-	op = start_operation (TRUE, callback, CALLBACK_GET_STRING, data, destroy_data);
-	if (op->state == STATE_FAILED)
-		return op;
+	op = create_operation (TRUE, callback, CALLBACK_GET_STRING, data, destroy_data);
 
 	va_start (args, destroy_data);
 	attributes = schema_attribute_list_va (schema, args);
@@ -4241,6 +4166,7 @@ gnome_keyring_find_password (const GnomeKeyringPasswordSchema* schema,
 	g_array_free (attributes, TRUE);
 
 	op->reply_handler = find_password_reply;
+	start_operation (op);
 	return op;
 	
 }
@@ -4370,8 +4296,9 @@ delete_password_reply (GnomeKeyringOperation *op)
 		}
 
 		/* Reset the operation into a delete */
-		reset_operation (op);
+		start_operation (op);
 	
+		gkr_buffer_reset (&op->send_buffer);
 		if (!gkr_proto_encode_op_string_int (&op->send_buffer, GNOME_KEYRING_OP_DELETE_ITEM,
                                                      f->keyring, f->item_id)) {
 			/*
@@ -4429,9 +4356,7 @@ gnome_keyring_delete_password (const GnomeKeyringPasswordSchema* schema,
 	GnomeKeyringAttributeList *attributes;
 	va_list args;
 	
-	op = start_operation (TRUE, callback, CALLBACK_DONE, data, destroy_data);
-	if (op->state == STATE_FAILED)
-		return op;
+	op = create_operation (TRUE, callback, CALLBACK_DONE, data, destroy_data);
 
 	va_start (args, destroy_data);
 	attributes = schema_attribute_list_va (schema, args);
@@ -4446,6 +4371,7 @@ gnome_keyring_delete_password (const GnomeKeyringPasswordSchema* schema,
 	op->reply_data = g_new0 (DeletePassword, 1);
 	op->destroy_reply_data = delete_password_destroy;
 
+	start_operation (op);
 	return op;
 }
 
