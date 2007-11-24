@@ -392,8 +392,23 @@ void                   gnome_keyring_item_ac_set_access_type   (GnomeKeyringAcce
 /* ------------------------------------------------------------------------------
  * A Simpler API
  */
+ 
+typedef struct {
+	GnomeKeyringItemType item_type;
+	struct {
+		const gchar* name;
+		GnomeKeyringAttributeType type;
+	} attributes[32];
+	
+	/* <private> */
+	gpointer reserved1;
+	gpointer reserved2;	
+	gpointer reserved3;	
+} GnomeKeyringPasswordSchema;
 
-gpointer                 gnome_keyring_store_password         (GnomeKeyringItemType type,
+extern const GnomeKeyringPasswordSchema* GNOME_KEYRING_NETWORK_PASSWORD; 
+
+gpointer                 gnome_keyring_store_password         (const GnomeKeyringPasswordSchema* schema,
                                                                const gchar *keyring,
                                                                const gchar *display_name,
                                                                const gchar *password, 
@@ -402,29 +417,29 @@ gpointer                 gnome_keyring_store_password         (GnomeKeyringItemT
                                                                GDestroyNotify destroy_data,
                                                                ...) G_GNUC_NULL_TERMINATED;
 
-GnomeKeyringResult       gnome_keyring_store_password_sync    (GnomeKeyringItemType type,
+GnomeKeyringResult       gnome_keyring_store_password_sync    (const GnomeKeyringPasswordSchema* schema,
                                                                const gchar *keyring,
                                                                const gchar *display_name,
                                                                const gchar *password, 
                                                                ...) G_GNUC_NULL_TERMINATED;
 
-gpointer                 gnome_keyring_find_password          (GnomeKeyringItemType type,
+gpointer                 gnome_keyring_find_password          (const GnomeKeyringPasswordSchema* schema,
                                                                GnomeKeyringOperationGetStringCallback callback,
                                                                gpointer data,
                                                                GDestroyNotify destroy_data,
                                                                ...) G_GNUC_NULL_TERMINATED;
 
-GnomeKeyringResult       gnome_keyring_find_password_sync     (GnomeKeyringItemType type,
+GnomeKeyringResult       gnome_keyring_find_password_sync     (const GnomeKeyringPasswordSchema* schema,
                                                                gchar **password,
                                                                ...) G_GNUC_NULL_TERMINATED;
 
-gpointer                 gnome_keyring_delete_password        (GnomeKeyringItemType type,
+gpointer                 gnome_keyring_delete_password        (const GnomeKeyringPasswordSchema* schema,
                                                                GnomeKeyringOperationDoneCallback callback,
                                                                gpointer data,
                                                                GDestroyNotify destroy_data,
                                                                ...) G_GNUC_NULL_TERMINATED;
 
-GnomeKeyringResult       gnome_keyring_delete_password_sync   (GnomeKeyringItemType type,
+GnomeKeyringResult       gnome_keyring_delete_password_sync   (const GnomeKeyringPasswordSchema* schema,
                                                                ...) G_GNUC_NULL_TERMINATED;
 
 void                     gnome_keyring_free_password          (gchar *password);

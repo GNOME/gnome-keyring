@@ -1,3 +1,13 @@
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
+	* library/gnome-keyring.c:
+	* library/gnome-keyring.h:
+	* reference/gnome-keyring-sections.txt:
+	* reference/tmpl/gnome-keyring-password.sgml:
+	* tests/unit-test-keyrings.c: Change password API to use schemas, 
+	which both define reduce typing and encourage developers to use 
+	the same set of attribute names for similar purposes.
+	
 2007-11-22  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring.c:

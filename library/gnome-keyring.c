@@ -2,6 +2,7 @@
 /* gnome-keyring.c - library for talking to the keyring daemon.
 
    Copyright (C) 2003 Red Hat, Inc
+   Copyright (C) 2007 Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -19,6 +20,7 @@
    Boston, MA 02111-1307, USA.
 
    Author: Alexander Larsson <alexl@redhat.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #include "config.h"
@@ -3986,9 +3988,77 @@ gnome_keyring_set_network_password_sync (const char                            *
  * SIMPLE PASSWORD APIS
  */
 
+static const GnomeKeyringPasswordSchema network_password_schema = {
+	GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
+	{
+		{  "user", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+		{  "domain", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+		{  "object", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+		{  "protocol", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+		{  "port", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32 },
+		{  "NULL", 0 },
+	}
+};
+
+/* Declared in gnome-keyring.h */
+const GnomeKeyringPasswordSchema *GNOME_KEYRING_NETWORK_PASSWORD = &network_password_schema;
+
+static GnomeKeyringAttributeList*
+schema_attribute_list_va (const GnomeKeyringPasswordSchema *schema, va_list args)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttributeType type;
+	GnomeKeyringAttribute attribute;
+	gboolean type_found;
+	char *str;
+	guint32 i, val;
+	
+	attributes = g_array_new (FALSE, FALSE, sizeof (GnomeKeyringAttribute));
+	
+	while ((attribute.name = va_arg (args, char *)) != NULL) {
+		
+		type_found = FALSE;
+		for (i = 0; i < G_N_ELEMENTS (schema->attributes); ++i) {
+			if (!schema->attributes[i].name)
+				break;
+			if (strcmp (schema->attributes[i].name, attribute.name) == 0) {
+				type_found = TRUE;
+				type = schema->attributes[i].type;
+				break;
+			}
+		}
+		
+		if (!type_found) {
+			g_warning ("The password attribute '%s' was not found in the password schema.", attribute.name);
+			g_array_free (attributes, TRUE);
+			return NULL;
+		}
+		
+		attribute.type = type;
+		switch (type) {
+		case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
+			str = va_arg (args, char *);
+			attribute.value.string = str;
+			g_array_append_val (attributes, attribute);
+			break;
+		case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
+			val = va_arg (args, guint32);
+			attribute.value.integer = val;
+			g_array_append_val (attributes, attribute);
+			break;
+		default:
+			g_warning ("The password attribute '%s' has an invalid type in the password schema.", attribute.name);
+			g_array_free (attributes, TRUE);
+			return NULL;
+		}
+	}
+	
+	return attributes;
+}
+
 /**
  * gnome_keyring_store_password:
- * @type: The item type.
+ * @schema: The password schema.
  * @keyring: The keyring to store the password in. Specify %NULL for the default keyring. 
  *           Use %GNOME_KEYRING_SESSION to store the password in memory only.
  * @display_name: A human readable description of what the password is for.
@@ -3996,17 +4066,15 @@ gnome_keyring_set_network_password_sync (const char                            *
  * @callback: A callback which will be called when the request completes or fails.
  * @data: A pointer to arbitrary data that will be passed to the @callback.
  * @destroy_data: A function to free @data when it's no longer needed.
- *
+ * @...: The variable argument list should contain pairs of a) The attribute name as a null 
+ *       terminated string, followed by b) attribute value, either a character string, 
+ *       or 32-bit unsigned int, as defined in the password @schema. The list of attribtues
+ *       should be terminated with a %NULL. 
+ * 
  * Store a password associated with a given set of attributes.
  * 
  * Attributes which identify this password must be passed as additional 
- * arguments.
- * 
- * The variable argument list should contain a) The attribute name as a null 
- * terminated string, followed by b) The attribute type, either 
- * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
- * and then the c) attribute value, either a character string, or 32-bit 
- * unsigned int. The list should be terminated with a NULL. 
+ * arguments. Attributes passed must be defined in the schema.
  *
  * If a password exists in the keyring that already has all the same arguments,
  * then the password will be updated. 
@@ -4017,7 +4085,7 @@ gnome_keyring_set_network_password_sync (const char                            *
  * Since: 2.22
  */
 gpointer
-gnome_keyring_store_password (GnomeKeyringItemType type, const gchar *keyring,  
+gnome_keyring_store_password (const GnomeKeyringPasswordSchema* schema, const gchar *keyring,  
                               const gchar *display_name, const gchar *password, 
                               GnomeKeyringOperationDoneCallback callback,
                               gpointer data, GDestroyNotify destroy_data, ...)
@@ -4027,7 +4095,7 @@ gnome_keyring_store_password (GnomeKeyringItemType type, const gchar *keyring,
 	va_list args;
 	
 	va_start (args, destroy_data);
-	attributes = make_attribute_list_va (args);
+	attributes = schema_attribute_list_va (schema, args);
 	va_end (args);
 	
 	op = start_operation (FALSE, callback, CALLBACK_DONE, data, destroy_data);
@@ -4037,7 +4105,7 @@ gnome_keyring_store_password (GnomeKeyringItemType type, const gchar *keyring,
 	/* Automatically secures buffer */
 	if (!attributes || !attributes->len ||
 	    !gkr_proto_encode_create_item (&op->send_buffer, keyring, display_name,
-	                                   attributes, password, type, TRUE))
+	                                   attributes, password, schema->item_type, TRUE))
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 
 	op->reply_handler = standard_reply;
@@ -4048,22 +4116,20 @@ gnome_keyring_store_password (GnomeKeyringItemType type, const gchar *keyring,
 
 /**
  * gnome_keyring_store_password_sync:
- * @type: The item type.
+ * @schema: The password schema.
  * @keyring: The keyring to store the password in. Specify %NULL for the default keyring. 
  *           Use %GNOME_KEYRING_SESSION to store the password in memory only.
  * @display_name: A human readable description of what the password is for.
  * @password: The password to store.
+ * @...: The variable argument list should contain pairs of a) The attribute name as a null 
+ *       terminated string, followed by b) attribute value, either a character string, 
+ *       or 32-bit unsigned int, as defined in the password @schema. The list of attribtues
+ *       should be terminated with a %NULL. 
  * 
  * Store a password associated with a given set of attributes.
  * 
  * Attributes which identify this password must be passed as additional 
- * arguments.
- * 
- * The variable argument list should contain a) The attribute name as a null 
- * terminated string, followed by b) The attribute type, either 
- * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
- * and then the c) attribute value, either a character string, or 32-bit 
- * unsigned int. The list should be terminated with a NULL.
+ * arguments. Attributes passed must be defined in the schema.
  * 
  * This function may block for an unspecified period. If your application must
  * remain responsive to the user, then use gnome_keyring_store_password(). 
@@ -4079,7 +4145,7 @@ gnome_keyring_store_password (GnomeKeyringItemType type, const gchar *keyring,
  * Since: 2.22
  */
 GnomeKeyringResult
-gnome_keyring_store_password_sync (GnomeKeyringItemType type, const gchar *keyring,  
+gnome_keyring_store_password_sync (const GnomeKeyringPasswordSchema* schema, const gchar *keyring,  
                                    const gchar *display_name, const gchar *password, ...)
 {
 	GnomeKeyringAttributeList *attributes;
@@ -4088,14 +4154,14 @@ gnome_keyring_store_password_sync (GnomeKeyringItemType type, const gchar *keyri
 	va_list args;
 	
 	va_start (args, password);
-	attributes = make_attribute_list_va (args);
+	attributes = schema_attribute_list_va (schema, args);
 	va_end (args);
 	
 	if (!attributes || !attributes->len)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	
-	res = gnome_keyring_item_create_sync (keyring, type, display_name, attributes, 
-	                                      password, TRUE, &item_id);
+	res = gnome_keyring_item_create_sync (keyring, schema->item_type, display_name, 
+	                                      attributes, password, TRUE, &item_id);
 	
 	g_array_free (attributes, TRUE);
 	return res;
@@ -4128,21 +4194,19 @@ find_password_reply (GnomeKeyringOperation *op)
 
 /**
  * gnome_keyring_find_password:
- * @type: The item type.
+ * @schema: The password schema.
  * @callback: A callback which will be called when the request completes or fails.
  * @data: A pointer to arbitrary data that will be passed to the @callback.
  * @destroy_data: A function to free @data when it's no longer needed.
+ * @...: The variable argument list should contain pairs of a) The attribute name as a null 
+ *       terminated string, followed by b) attribute value, either a character string, 
+ *       or 32-bit unsigned int, as defined in the password @schema. The list of attribtues
+ *       should be terminated with a %NULL. 
  * 
  * Find a password that matches a given set of attributes.
  * 
  * Attributes which identify this password must be passed as additional 
- * arguments.
- * 
- * The variable argument list should contain a) The attribute name as a null 
- * terminated string, followed by b) The attribute type, either 
- * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
- * and then the c) attribute value, either a character string, or 32-bit 
- * unsigned int. The list should be terminated with a NULL.
+ * arguments. Attributes passed must be defined in the schema.
  * 
  * The string that is passed to @callback is automatically freed when the 
  * function returns.
@@ -4154,7 +4218,7 @@ find_password_reply (GnomeKeyringOperation *op)
  * Since: 2.22
  */
 gpointer
-gnome_keyring_find_password (GnomeKeyringItemType type, 
+gnome_keyring_find_password (const GnomeKeyringPasswordSchema* schema,
                              GnomeKeyringOperationGetStringCallback callback,
                              gpointer data, GDestroyNotify destroy_data, ...)
 {
@@ -4167,11 +4231,11 @@ gnome_keyring_find_password (GnomeKeyringItemType type,
 		return op;
 
 	va_start (args, destroy_data);
-	attributes = make_attribute_list_va (args);
+	attributes = schema_attribute_list_va (schema, args);
 	va_end (args);
 	
 	if (!attributes || !attributes->len || 
-	    !gkr_proto_encode_find (&op->send_buffer, type, attributes)) 
+	    !gkr_proto_encode_find (&op->send_buffer, schema->item_type, attributes)) 
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 
 	g_array_free (attributes, TRUE);
@@ -4183,20 +4247,18 @@ gnome_keyring_find_password (GnomeKeyringItemType type,
 
 /**
  * gnome_keyring_find_password_sync:
- * @type: The item type.
+ * @schema: The password schema.
  * @password: An address to store password that was found. The password must 
  *            be freed with gnome_keyring_free_password().
- * @Since: 2.22
+ * @...: The variable argument list should contain pairs of a) The attribute name as a null 
+ *       terminated string, followed by b) attribute value, either a character string, 
+ *       or 32-bit unsigned int, as defined in the password @schema. The list of attribtues
+ *       should be terminated with a %NULL. 
+ * 
  * Find a password that matches a given set of attributes.
  * 
  * Attributes which identify this password must be passed as additional 
- * arguments.
- * 
- * The variable argument list should contain a) The attribute name as a null 
- * terminated string, followed by b) The attribute type, either 
- * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
- * and then the c) attribute value, either a character string, or 32-bit 
- * unsigned int. The list should be terminated with a NULL.
+ * arguments. Attributes passed must be defined in the schema.
  * 
  * This function may block for an unspecified period. If your application must
  * remain responsive to the user, then use gnome_keyring_find_password(). 
@@ -4209,7 +4271,7 @@ gnome_keyring_find_password (GnomeKeyringItemType type,
  * Since: 2.22
  */
 GnomeKeyringResult
-gnome_keyring_find_password_sync(GnomeKeyringItemType type, gchar **password, ...)
+gnome_keyring_find_password_sync(const GnomeKeyringPasswordSchema* schema, gchar **password, ...)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringResult res;
@@ -4218,13 +4280,13 @@ gnome_keyring_find_password_sync(GnomeKeyringItemType type, gchar **password, ..
 	va_list args;
 
 	va_start (args, password);
-	attributes = make_attribute_list_va (args);
+	attributes = schema_attribute_list_va (schema, args);
 	va_end (args);
 	
 	if (!attributes || !attributes->len)
 		res = GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	else
-		res = gnome_keyring_find_items_sync (type, attributes, &found);
+		res = gnome_keyring_find_items_sync (schema->item_type, attributes, &found);
 		
 	g_array_free (attributes, TRUE);
 
@@ -4332,28 +4394,25 @@ delete_password_reply (GnomeKeyringOperation *op)
 	g_assert (!dp->at);
 	
 	/* Operation is done */
-	(*callback) (GNOME_KEYRING_RESULT_IO_ERROR, op->user_data);
+	(*callback) (dp->deleted > 0 ? GNOME_KEYRING_RESULT_OK : GNOME_KEYRING_RESULT_NO_MATCH, op->user_data);
 	return TRUE;
 }
 
 /**
  * gnome_keyring_delete_password:
- * @type: The item type.
+ * @schema: The password schema.
  * @callback: A callback which will be called when the request completes or fails.
  * @data: A pointer to arbitrary data that will be passed to the @callback.
  * @destroy_data: A function to free @data when it's no longer needed.
- * @Since: 2.22
- *
+ * @...: The variable argument list should contain pairs of a) The attribute name as a null 
+ *       terminated string, followed by b) attribute value, either a character string, 
+ *       or 32-bit unsigned int, as defined in the password @schema. The list of attribtues
+ *       should be terminated with a %NULL. 
+ * 
  * Delete a password that matches a given set of attributes.
  * 
  * Attributes which identify this password must be passed as additional 
- * arguments.
- * 
- * The variable argument list should contain a) The attribute name as a null 
- * terminated string, followed by b) The attribute type, either 
- * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
- * and then the c) attribute value, either a character string, or 32-bit 
- * unsigned int. The list should be terminated with a NULL.
+ * arguments. Attributes passed must be defined in the schema.
  * 
  * Another more complex way to find items in the keyrings is using 
  * gnome_keyring_item_delete().
@@ -4362,7 +4421,7 @@ delete_password_reply (GnomeKeyringOperation *op)
  * Since: 2.22
  */
 gpointer
-gnome_keyring_delete_password (GnomeKeyringItemType type, 
+gnome_keyring_delete_password (const GnomeKeyringPasswordSchema* schema,
                                GnomeKeyringOperationDoneCallback callback,
                                gpointer data, GDestroyNotify destroy_data, ...)
 {
@@ -4375,10 +4434,10 @@ gnome_keyring_delete_password (GnomeKeyringItemType type,
 		return op;
 
 	va_start (args, destroy_data);
-	attributes = make_attribute_list_va (args);
+	attributes = schema_attribute_list_va (schema, args);
 	va_end (args);
 	if (!attributes || !attributes->len ||
-	    !gkr_proto_encode_find (&op->send_buffer, type, attributes)) 
+	    !gkr_proto_encode_find (&op->send_buffer, schema->item_type, attributes)) 
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 
 	g_array_free (attributes, TRUE);
@@ -4392,18 +4451,16 @@ gnome_keyring_delete_password (GnomeKeyringItemType type,
 
 /**
  * gnome_keyring_delete_password_sync:
- * @type: The item type.
+ * @schema: The password schema.
+ * @...: The variable argument list should contain pairs of a) The attribute name as a null 
+ *       terminated string, followed by b) attribute value, either a character string, 
+ *       or 32-bit unsigned int, as defined in the password @schema. The list of attribtues
+ *       should be terminated with a %NULL. 
  * 
  * Delete a password that matches a given set of attributes.
  * 
  * Attributes which identify this password must be passed as additional 
- * arguments.
- * 
- * The variable argument list should contain a) The attribute name as a null 
- * terminated string, followed by b) The attribute type, either 
- * %GNOME_KEYRING_ATTRIBUTE_TYPE_STRING or %GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
- * and then the c) attribute value, either a character string, or 32-bit 
- * unsigned int. The list should be terminated with a NULL.
+ * arguments. Attributes passed must be defined in the schema.
  * 
  * This function may block for an unspecified period. If your application must
  * remain responsive to the user, then use gnome_keyring_delete_password(). 
@@ -4416,7 +4473,7 @@ gnome_keyring_delete_password (GnomeKeyringItemType type,
  * Since: 2.22
  */
 GnomeKeyringResult
-gnome_keyring_delete_password_sync (GnomeKeyringItemType type, ...)
+gnome_keyring_delete_password_sync (const GnomeKeyringPasswordSchema* schema, ...)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringResult res;
@@ -4425,8 +4482,8 @@ gnome_keyring_delete_password_sync (GnomeKeyringItemType type, ...)
 	va_list args;
 	guint non_session;
 
-	va_start (args, type);
-	attributes = make_attribute_list_va (args);
+	va_start (args, schema);
+	attributes = schema_attribute_list_va (schema, args);
 	va_end (args);
 	
 	if (!attributes || !attributes->len)
@@ -4434,7 +4491,7 @@ gnome_keyring_delete_password_sync (GnomeKeyringItemType type, ...)
 
 	/* Find the item(s) in question */
 	else
-		res = gnome_keyring_find_items_sync (type, attributes, &found);
+		res = gnome_keyring_find_items_sync (schema->item_type, attributes, &found);
 		
 	g_array_free (attributes, TRUE);
 	if (res != GNOME_KEYRING_RESULT_OK)

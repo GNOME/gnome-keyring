@@ -375,6 +375,15 @@ void unit_test_keyring_grant_access (CuTest *cu)
  * SIMPLE PASSWORD API
  */
  
+static GnomeKeyringPasswordSchema our_schema = {
+	GNOME_KEYRING_ITEM_GENERIC_SECRET, 
+	{
+		{ "dog", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+		{ "legs", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32 },
+		{ NULL, 0 }
+	},
+};
+
 static void 
 done_store_password (GnomeKeyringResult res, gpointer data)
 {
@@ -388,26 +397,26 @@ void unit_test_store_password (CuTest *cu)
 	gpointer op;
 	
 	/* Synchronous, bad arguments */
-	res = gnome_keyring_store_password_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, NULL,
+	res = gnome_keyring_store_password_sync (&our_schema, NULL,
 	                                         "Display name", "password", 
 	                                         NULL);
 	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_BAD_ARGUMENTS, res);
 	
 	/* Synchronous, save to default keyring */
-	res = gnome_keyring_store_password_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, NULL,
+	res = gnome_keyring_store_password_sync (&our_schema, NULL,
 	                                         "Display name", "password", 
-	                                         "dog", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, "woof", 
-	                                         "legs", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32, 4,
+	                                         "dog", "woof", 
+	                                         "legs", 4,
 	                                         NULL);
 	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_OK, res);
 
 	/* Asynchronous, save to session */
 	res = GNOME_KEYRING_RESULT_CANCELLED;
-	op = gnome_keyring_store_password (GNOME_KEYRING_ITEM_GENERIC_SECRET, GNOME_KEYRING_SESSION,
+	op = gnome_keyring_store_password (&our_schema, GNOME_KEYRING_SESSION,
 	                                   "Display name", "password",
 	                                   done_store_password, &res, NULL,  
-                                           "dog", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, "woof", 
-	                                   "legs", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32, 4,
+                                           "dog", "woof", 
+	                                   "legs", 4,
 	                                   NULL);
 	CuAssert(cu, "async operation is NULL", op != NULL);
 	CuAssert(cu, "callback already called", res == GNOME_KEYRING_RESULT_CANCELLED);
@@ -440,14 +449,14 @@ void unit_test_find_password (CuTest *cu)
 	gpointer op;
 	
 	/* Synchronous, bad arguments */
-	res = gnome_keyring_find_password_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, &password,
+	res = gnome_keyring_find_password_sync (&our_schema, &password,
 	                                        NULL);
 	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_BAD_ARGUMENTS, res);
 	
 	/* Synchronous, valid*/
-	res = gnome_keyring_find_password_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, &password,
-	                                        "dog", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, "woof", 
-	                                        "legs", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32, 4,
+	res = gnome_keyring_find_password_sync (&our_schema, &password,
+	                                        "dog", "woof", 
+	                                        "legs", 4,
 	                                        NULL);
 	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_OK, res);
 	CuAssert(cu, "Null password returned", password != NULL);
@@ -456,9 +465,9 @@ void unit_test_find_password (CuTest *cu)
 
 	/* Asynchronous, less arguments */
 	find_password_result = GNOME_KEYRING_RESULT_CANCELLED;
-	op = gnome_keyring_find_password (GNOME_KEYRING_ITEM_GENERIC_SECRET, 
+	op = gnome_keyring_find_password (&our_schema, 
 	                                  done_find_password, cu, NULL,  
-	                                  "legs", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32, 4,
+	                                  "legs", 4,
 	                                  NULL);
 	CuAssert(cu, "async operation is NULL", op != NULL);
 	CuAssert(cu, "callback already called", find_password_result == GNOME_KEYRING_RESULT_CANCELLED);
@@ -481,22 +490,21 @@ void unit_test_delete_password (CuTest *cu)
 	gpointer op;
 	
 	/* Synchronous, bad arguments */
-	res = gnome_keyring_delete_password_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, 
-	                                          NULL);
+	res = gnome_keyring_delete_password_sync (&our_schema, NULL);
 	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_BAD_ARGUMENTS, res);
 	
 	/* Synchronous, no match */
-	res = gnome_keyring_delete_password_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, 
-	                                          "dog", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, "waoof", 
-	                                          "legs", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32, 5,
+	res = gnome_keyring_delete_password_sync (&our_schema, 
+	                                          "dog", "waoof", 
+	                                          "legs", 5,
 	                                          NULL);
 	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_NO_MATCH, res);
 
 	/* Asynchronous, less arguments */
 	res = GNOME_KEYRING_RESULT_CANCELLED;
-	op = gnome_keyring_delete_password (GNOME_KEYRING_ITEM_GENERIC_SECRET, 
+	op = gnome_keyring_delete_password (&our_schema, 
 	                                    done_delete_password, &res, NULL,  
-	                                    "legs", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32, 4,
+	                                    "legs", 4,
 	                                    NULL);
 	CuAssert(cu, "async operation is NULL", op != NULL);
 	CuAssert(cu, "callback already called", res == GNOME_KEYRING_RESULT_CANCELLED);
