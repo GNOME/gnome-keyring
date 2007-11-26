@@ -1,3 +1,7 @@
+2007-11-25  Stef Walter  <stef@memberwebs.com>
+
+	* Merge revisions from gnome-2-20 branch. 860 - 878
+  
 2007-11-24  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring.c: Make library more thread friendly
@@ -26,6 +30,33 @@
 	which both define reduce typing and encourage developers to use 
 	the same set of attribute names for similar purposes.
 	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in: Define GNU_SOURCE for systems that require
+	it. Patch by christopher taylor. Fixes bug #491021
+	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
+	* reference/tmpl/gnome-keyring-result.sgml: Note about 
+	additional error codes that might be added from time to time.
+	See bug #488851
+	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-dbus.c:
+	* configure.in: Fix building with the latest DBUS. 
+	Patch by Owen Taylor. Fixes bug #487590
+	
+2007-11-24  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-secure-memory.c: 
+	* daemon/gkr-daemon.c:
+	* library/gnome-keyring-memory.c:
+	* library/gnome-keyring-private.h: When running an application
+	that uses libgnome-keyring don't warn about not being able to 
+	use secure memory. Only print that warning for the daemon. 
+	Fixes bug #484976.
+	
 2007-11-22  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring.c:
@@ -37,7 +68,7 @@
 	* reference/tmpl/gnome-keyring-unused.sgml:
 	* tests/unit-test-keyrings.c: Add new simpler password storage APIs.
 
-2007-10-25  Stef Walter  <stef@memberwebs.com>
+2007-10-15  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-secure-memory.c: Include header necessary
 	for building on OpenBSD. Patch by Jasper Lievisse Adriaanse

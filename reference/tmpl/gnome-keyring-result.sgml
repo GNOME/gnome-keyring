@@ -6,7 +6,8 @@ Result Codes
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Result codes used through out GNOME Keyring.
+Result codes used through out GNOME Keyring. Additional result codes may be 
+added from time to time and these should be handled gracefully.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->

@@ -233,6 +233,9 @@ main (int argc, char *argv[])
 	g_type_init ();
 	g_thread_init (NULL);
 
+	/* We want to see memory warnings in the daemon */
+	gnome_keyring_memory_warning = TRUE;
+
 	/* We do not use gcrypt in a multi-threaded manner */
 	gcry_check_version (LIBGCRYPT_VERSION);
 	

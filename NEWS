@@ -1,3 +1,10 @@
+Changes in version 2.20.2 are:
+* Build fixes for systems that require GNU_SOURCE to be defined. [Christopher Taylor]
+* Builds with the latest DBus [Owen Taylor]
+* Build fix for OpenBSD [Jasper Lievisse Adriaanse]
+* Don't print out a warning message in applications using libgnome-keyring when 
+  non-pageable memory cannot be allocated.
+
 Changes in version 2.20.1 are:
 * Link pam module properly with libpam [Sebastian Dröge]
 * Remove 'install-pam' make target [Rémi Cardona]
