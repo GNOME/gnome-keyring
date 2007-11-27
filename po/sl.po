@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-17 04:14+0100\n"
-"PO-Revision-Date: 2007-11-14 14:36+0100\n"
+"PO-Revision-Date: 2007-11-27 14:59+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -265,7 +265,15 @@ msgstr "Zbirka ključev s tem imenom že obstaja"
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programska napaka: Program je poslal neveljavne podatke."
 
-#: ../library/gnome-keyring-utils.c:139
+#: ../library/gnome-keyring-utils.c:121
+msgid "No matching results"
+msgstr "Ni zadetkov iskanja"
+
+#: ../library/gnome-keyring-utils.c:123
+msgid "A keyring with that name does not exist."
+msgstr "Zbirka ključev s tem imenom ne obstaja."
+
+#: ../library/gnome-keyring-utils.c:130
 msgid "The keyring has already been unlocked."
 msgstr "Zbirka ključev je že odklenjena."
 
