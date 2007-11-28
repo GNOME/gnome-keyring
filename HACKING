@@ -7,9 +7,6 @@ http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring
 Gnome Keyring is made up of several distinct parts working on concert with 
 each other. These parts generally live in different directories:
 
-cryptoki
-   The PKCS#11 provider code 
-   
 daemon 
    The main daemon startup code and gnome-keyring password protocol operations. 
    
@@ -18,7 +15,16 @@ keyrings
    
 library
    The gnome-keyring library for accessing passwords and secrets. 
-   
+
+pk 
+   General public key / certificate code, management of objects.
+
+pkcs11
+   The PKCS#11 module, provider and headers.
+
+pkix
+   Nitty gritty handling of various PKCS#?? standards, parsing, ASN.1 stuff.
+      
 tests  
    Test tools and unit tests.
    

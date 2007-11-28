@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-cryptoki-daemon-session.c - cryptoki session in daemon
+/* gkr-pkcs11-daemon-session.c - PKCS#11 session in daemon
 
    Copyright (C) 2007, Nate Nielsen
 
@@ -23,14 +23,13 @@
 
 #include <glib.h>
 
-#include "gkr-cryptoki-message.h"
-#include "gkr-cryptoki-calls.h"
-#include "gkr-cryptoki-daemon.h"
+#include "gkr-pkcs11-message.h"
+#include "gkr-pkcs11-calls.h"
+#include "gkr-pkcs11-daemon.h"
+#include "pkcs11.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-buffer.h"
-
-#include "pkcs11/pkcs11.h"
 
 #include "pk/gkr-pk-object.h"
 #include "pk/gkr-pk-object-manager.h"
@@ -92,7 +91,7 @@ session_find_objects (SessionInfo *sinfo, GArray *attrs, GList **objects)
  */
 
 static GArray*
-read_attribute_array (GkrCryptokiMessage* msg)
+read_attribute_array (GkrPkcs11Message* msg)
 {
 	CK_ATTRIBUTE attr;
 	GArray* attrs;
@@ -102,7 +101,7 @@ read_attribute_array (GkrCryptokiMessage* msg)
 	gsize n_value;
 
 	g_assert (msg);
-	g_assert (gkr_cryptoki_message_verify_part (msg, "aA"));
+	g_assert (gkr_pkcs11_message_verify_part (msg, "aA"));
 
 	/* Get the number of items. We need this value to be correct */
 	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, 
@@ -148,13 +147,13 @@ read_attribute_array (GkrCryptokiMessage* msg)
 }
 
 static gboolean
-read_byte_array (GkrCryptokiMessage *msg, CK_BYTE_PTR *val, CK_ULONG *vlen)
+read_byte_array (GkrPkcs11Message *msg, CK_BYTE_PTR *val, CK_ULONG *vlen)
 {
 	const unsigned char* v;
 	uint32_t l; 
 	
 	g_assert (msg && val && vlen);
-	g_assert (gkr_cryptoki_message_verify_part (msg, "ay"));
+	g_assert (gkr_pkcs11_message_verify_part (msg, "ay"));
 
 	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed,
 	                                &(msg->parsed), &v, &l))
@@ -166,11 +165,11 @@ read_byte_array (GkrCryptokiMessage *msg, CK_BYTE_PTR *val, CK_ULONG *vlen)
 }
 
 static void
-write_session_info (GkrCryptokiMessage *msg, CK_ULONG slot, CK_ULONG state, 
+write_session_info (GkrPkcs11Message *msg, CK_ULONG slot, CK_ULONG state, 
                     CK_ULONG flags, CK_ULONG deverror)
 {
 	g_assert (msg);
-	g_assert (gkr_cryptoki_message_verify_part (msg, "I"));
+	g_assert (gkr_pkcs11_message_verify_part (msg, "I"));
 
 	/* The slot id */
 	gkr_buffer_add_uint32 (&msg->buffer, slot);
@@ -190,23 +189,23 @@ write_session_info (GkrCryptokiMessage *msg, CK_ULONG slot, CK_ULONG state,
  */
 
 static CK_RV
-session_C_OpenSession (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                       GkrCryptokiMessage *resp)
+session_C_OpenSession (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
 {
 	CK_BYTE_PTR sig = NULL;
 	CK_ULONG siglen, slotid, flags;
 	
 	if (!read_byte_array (req, &sig, &siglen))
 		return PROTOCOL_ERROR;
-	if (!gkr_cryptoki_message_read_uint32 (req, &slotid))
+	if (!gkr_pkcs11_message_read_uint32 (req, &slotid))
 		return PROTOCOL_ERROR;
-	if (!gkr_cryptoki_message_read_uint32 (req, &flags))
+	if (!gkr_pkcs11_message_read_uint32 (req, &flags))
 		return PROTOCOL_ERROR;
 	
 	/* Verify that the module signature matches */
-	if (siglen != GKR_CRYPTOKI_HANDSHAKE_LEN || 
-	    memcmp (sig, GKR_CRYPTOKI_HANDSHAKE, siglen) != 0) {
-		g_warning ("cryptoki module is not speaking correct protocol");
+	if (siglen != GKR_PKCS11_HANDSHAKE_LEN || 
+	    memcmp (sig, GKR_PKCS11_HANDSHAKE, siglen) != 0) {
+		g_warning ("pkcs11 module is not speaking correct protocol");
 		return CKR_DEVICE_ERROR;
 	}
 	
@@ -218,8 +217,8 @@ session_C_OpenSession (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV 
-session_C_GetSessionInfo (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                          GkrCryptokiMessage *resp)
+session_C_GetSessionInfo (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                          GkrPkcs11Message *resp)
 {
 	uint32_t flags, state;
 
@@ -239,16 +238,16 @@ session_C_GetSessionInfo (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_InitPIN (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                   GkrCryptokiMessage *resp)
+session_C_InitPIN (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                   GkrPkcs11Message *resp)
 {
 	/* We don't support this stuff. We don't support 'SO' logins. */
 	return CKR_USER_NOT_LOGGED_IN;
 }
 
 static CK_RV
-session_C_SetPIN (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                  GkrCryptokiMessage *resp)
+session_C_SetPIN (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                  GkrPkcs11Message *resp)
 {
 	/* 
 	 * TODO: We may support this in the future. Since we are a 
@@ -259,24 +258,24 @@ session_C_SetPIN (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_GetOperationState (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                             GkrCryptokiMessage *resp)
+session_C_GetOperationState (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                             GkrPkcs11Message *resp)
 {
 	/* Nope, We don't bend that way */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_SetOperationState (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                             GkrCryptokiMessage *resp)
+session_C_SetOperationState (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                             GkrPkcs11Message *resp)
 {
 	/* Nope. We don't bend that way */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_Login (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                 GkrCryptokiMessage *resp)
+session_C_Login (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                 GkrPkcs11Message *resp)
 {
 	CK_BYTE_PTR pin = NULL;
 	CK_ULONG user_type, pin_len;
@@ -294,7 +293,7 @@ session_C_Login (SessionInfo *sinfo, GkrCryptokiMessage *req,
 		/* PKCS#11 QUESTION: What should we really be returning here? */
 		return CKR_USER_TYPE_INVALID;
 	
-	if (!gkr_cryptoki_message_read_uint32 (req, &user_type))
+	if (!gkr_pkcs11_message_read_uint32 (req, &user_type))
 		return PROTOCOL_ERROR;
 	if (!read_byte_array (req, &pin, &pin_len))
 		return PROTOCOL_ERROR;
@@ -313,8 +312,8 @@ session_C_Login (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_Logout (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                  GkrCryptokiMessage *resp)
+session_C_Logout (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                  GkrPkcs11Message *resp)
 {
 	if (!sinfo->loggedin)
 		return CKR_USER_NOT_LOGGED_IN;
@@ -332,8 +331,8 @@ session_C_Logout (SessionInfo *sinfo, GkrCryptokiMessage *req,
  */
 
 static CK_RV
-session_C_CreateObject (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                        GkrCryptokiMessage *resp)
+session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                        GkrPkcs11Message *resp)
 {
 	/* 
 	 * TODO: We need to implement this, initially perhaps only 
@@ -343,8 +342,8 @@ session_C_CreateObject (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_CopyObject (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                      GkrCryptokiMessage *resp)
+session_C_CopyObject (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                      GkrPkcs11Message *resp)
 {
 	/* 
 	 * TODO: We need to implement this, initially perhaps only 
@@ -354,8 +353,8 @@ session_C_CopyObject (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_DestroyObject (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                         GkrCryptokiMessage *resp)
+session_C_DestroyObject (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                         GkrPkcs11Message *resp)
 {
 	/* 
 	 * TODO: We need to implement this, initially perhaps only 
@@ -365,16 +364,16 @@ session_C_DestroyObject (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_GetObjectSize (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                         GkrCryptokiMessage *resp)
+session_C_GetObjectSize (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                         GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this */
 	return CKR_OBJECT_HANDLE_INVALID;
 }
 
 static CK_RV
-session_C_GetAttributeValue (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                             GkrCryptokiMessage *resp)
+session_C_GetAttributeValue (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                             GkrPkcs11Message *resp)
 {
 	GkrPkObject *object;
 	GArray* attrs;
@@ -382,7 +381,7 @@ session_C_GetAttributeValue (SessionInfo *sinfo, GkrCryptokiMessage *req,
 	CK_RV soft_ret = CKR_OK;
 	CK_RV ret = CKR_OK;
 	
-	if (!gkr_cryptoki_message_read_uint32 (req, &obj))
+	if (!gkr_pkcs11_message_read_uint32 (req, &obj))
 		return PROTOCOL_ERROR;
 	
 	if (!(attrs = read_attribute_array (req)))
@@ -412,9 +411,9 @@ session_C_GetAttributeValue (SessionInfo *sinfo, GkrCryptokiMessage *req,
 	};
 	
 	if (ret == CKR_OK) {
-		gkr_cryptoki_message_write_attribute_array (resp, (CK_ATTRIBUTE_PTR)attrs->data, 
+		gkr_pkcs11_message_write_attribute_array (resp, (CK_ATTRIBUTE_PTR)attrs->data, 
 		                                                 attrs->len);
-		gkr_cryptoki_message_write_uint32 (resp, soft_ret);
+		gkr_pkcs11_message_write_uint32 (resp, soft_ret);
 	}
 	
 	/* Attributes have been filled in with allocated values, so deep free */
@@ -424,8 +423,8 @@ session_C_GetAttributeValue (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_SetAttributeValue (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                             GkrCryptokiMessage *resp)
+session_C_SetAttributeValue (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                             GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this */
 	return CKR_FUNCTION_NOT_SUPPORTED;
@@ -447,8 +446,8 @@ cleanup_find_operation (SessionInfo *sinfo)
 }
 
 static CK_RV
-session_C_FindObjectsInit (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                           GkrCryptokiMessage *resp)
+session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                           GkrPkcs11Message *resp)
 {
 	CK_BBOOL *token = NULL;
 	GList *l, *objects = NULL;
@@ -489,8 +488,8 @@ session_C_FindObjectsInit (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_FindObjects (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                       GkrCryptokiMessage *resp)
+session_C_FindObjects (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
 {
 	GkrPkObject *obj;
 	GList* objects;
@@ -499,17 +498,17 @@ session_C_FindObjects (SessionInfo *sinfo, GkrCryptokiMessage *req,
 	if (sinfo->operation_type != OPERATION_FIND)
 		return CKR_OPERATION_NOT_INITIALIZED;
 	
-	if (!gkr_cryptoki_message_read_uint32 (req, &max))
+	if (!gkr_pkcs11_message_read_uint32 (req, &max))
 		return PROTOCOL_ERROR;
 	
 	objects = (GList*)sinfo->operation_data;
 	
 	/* Write out an array of ulongs */
-	g_assert (gkr_cryptoki_message_verify_part (resp, "au"));
+	g_assert (gkr_pkcs11_message_verify_part (resp, "au"));
 	
 	/* First the number returned */
 	n_objects = MIN(max, g_list_length (objects));
-	gkr_cryptoki_message_write_uint32 (resp, n_objects);
+	gkr_pkcs11_message_write_uint32 (resp, n_objects);
 	
 	/* Now each of them */
 	for (i = 0; i < n_objects; ++i) {
@@ -519,7 +518,7 @@ session_C_FindObjects (SessionInfo *sinfo, GkrCryptokiMessage *req,
 		g_assert (obj);
 		g_assert (obj->handle);
 		
-		gkr_cryptoki_message_write_uint32 (resp, obj->handle);
+		gkr_pkcs11_message_write_uint32 (resp, obj->handle);
 		g_object_unref (obj);
 	}
 	
@@ -527,8 +526,8 @@ session_C_FindObjects (SessionInfo *sinfo, GkrCryptokiMessage *req,
 }
 
 static CK_RV
-session_C_FindObjectsFinal (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                            GkrCryptokiMessage *resp)
+session_C_FindObjectsFinal (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                            GkrPkcs11Message *resp)
 {
 	if (sinfo->operation_type != OPERATION_FIND)
 		return CKR_OPERATION_NOT_INITIALIZED;
@@ -542,272 +541,272 @@ session_C_FindObjectsFinal (SessionInfo *sinfo, GkrCryptokiMessage *req,
  */
 
 static CK_RV
-session_C_EncryptInit (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                       GkrCryptokiMessage *resp)
+session_C_EncryptInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this. */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_Encrypt (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                   GkrCryptokiMessage *resp)
+session_C_Encrypt (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                   GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this. */
 	return CKR_OPERATION_NOT_INITIALIZED;
 }
 
 static CK_RV
-session_C_EncryptUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                         GkrCryptokiMessage *resp)
+session_C_EncryptUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                         GkrPkcs11Message *resp)
 {
 	/* RSA keys don't support this incremental encryption */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_EncryptFinal (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                        GkrCryptokiMessage *resp)
+session_C_EncryptFinal (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                        GkrPkcs11Message *resp)
 {
 	/* RSA keys don't support this incremental encryption */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DecryptInit (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                       GkrCryptokiMessage *resp)
+session_C_DecryptInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this. */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_Decrypt (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                   GkrCryptokiMessage *resp)
+session_C_Decrypt (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                   GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this. */
 	return CKR_OPERATION_NOT_INITIALIZED;	
 }
 
 static CK_RV
-session_C_DecryptUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                         GkrCryptokiMessage *resp)
+session_C_DecryptUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                         GkrPkcs11Message *resp)
 {
 	/* RSA keys don't support this incremental decryption */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DecryptFinal (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                        GkrCryptokiMessage *resp)
+session_C_DecryptFinal (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                        GkrPkcs11Message *resp)
 {
 	/* RSA keys don't support this incremental decryption */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DigestInit (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                      GkrCryptokiMessage *resp)
+session_C_DigestInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                      GkrPkcs11Message *resp)
 {
 	/* We don't do digests */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_Digest (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                  GkrCryptokiMessage *resp)
+session_C_Digest (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                  GkrPkcs11Message *resp)
 {
 	/* We don't do digests */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DigestUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                        GkrCryptokiMessage *resp)
+session_C_DigestUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                        GkrPkcs11Message *resp)
 {
 	/* We don't do digests */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DigestKey (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                     GkrCryptokiMessage *resp)
+session_C_DigestKey (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                     GkrPkcs11Message *resp)
 {
 	/* We don't do digests */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DigestFinal (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                       GkrCryptokiMessage *resp)
+session_C_DigestFinal (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
 {
 	/* We don't do digests */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_SignInit (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                    GkrCryptokiMessage *resp)
+session_C_SignInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                    GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this. */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_Sign (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                GkrCryptokiMessage *resp)
-{
-	/* TODO: We need to implement this. */
-	return CKR_OPERATION_NOT_INITIALIZED;
-}
-
-static CK_RV
-session_C_SignUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                      GkrCryptokiMessage *resp)
-{
-	/* RSA keys don't support this incremental signing */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
-}
-
-static CK_RV
-session_C_SignFinal (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                     GkrCryptokiMessage *resp)
-{
-	/* RSA keys don't support this incremental signing */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
-}
-
-static CK_RV
-session_C_SignRecoverInit (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                           GkrCryptokiMessage *resp)
-{
-	/* RSA keys don't support this recoverable signing */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
-}
-
-static CK_RV
-session_C_SignRecover (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                       GkrCryptokiMessage *resp)
-{
-	/* RSA keys don't support this recoverable signing */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
-}
-
-static CK_RV
-session_C_VerifyInit (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                      GkrCryptokiMessage *resp)
-{
-	/* TODO: We need to implement this. */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
-}
-
-static CK_RV
-session_C_Verify (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                  GkrCryptokiMessage *resp)
+session_C_Sign (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this. */
 	return CKR_OPERATION_NOT_INITIALIZED;
 }
 
 static CK_RV
-session_C_VerifyUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                        GkrCryptokiMessage *resp)
+session_C_SignUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                      GkrPkcs11Message *resp)
 {
-	/* RSA keys don't support this incremental verifying */
+	/* RSA keys don't support this incremental signing */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_VerifyFinal (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                       GkrCryptokiMessage *resp)
+session_C_SignFinal (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                     GkrPkcs11Message *resp)
 {
-	/* RSA keys don't support this incremental verifying */
+	/* RSA keys don't support this incremental signing */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_VerifyRecoverInit (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                             GkrCryptokiMessage *resp)
-{
-	/* RSA keys don't support this recoverable signing */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
-}
-
-static CK_RV
-session_C_VerifyRecover (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                         GkrCryptokiMessage *resp)
+session_C_SignRecoverInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                           GkrPkcs11Message *resp)
 {
 	/* RSA keys don't support this recoverable signing */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DigestEncryptUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                               GkrCryptokiMessage *resp)
+session_C_SignRecover (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
+{
+	/* RSA keys don't support this recoverable signing */
+ 	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+static CK_RV
+session_C_VerifyInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                      GkrPkcs11Message *resp)
+{
+	/* TODO: We need to implement this. */
+ 	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+static CK_RV
+session_C_Verify (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                  GkrPkcs11Message *resp)
+{
+	/* TODO: We need to implement this. */
+	return CKR_OPERATION_NOT_INITIALIZED;
+}
+
+static CK_RV
+session_C_VerifyUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                        GkrPkcs11Message *resp)
+{
+	/* RSA keys don't support this incremental verifying */
+ 	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+static CK_RV
+session_C_VerifyFinal (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
+{
+	/* RSA keys don't support this incremental verifying */
+ 	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+static CK_RV
+session_C_VerifyRecoverInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                             GkrPkcs11Message *resp)
+{
+	/* RSA keys don't support this recoverable signing */
+ 	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+static CK_RV
+session_C_VerifyRecover (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                         GkrPkcs11Message *resp)
+{
+	/* RSA keys don't support this recoverable signing */
+ 	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+static CK_RV
+session_C_DigestEncryptUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                               GkrPkcs11Message *resp)
 {
 	/* We don't do digests */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DecryptDigestUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                               GkrCryptokiMessage *resp)
+session_C_DecryptDigestUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                               GkrPkcs11Message *resp)
 {
 	/* We don't do digests */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_SignEncryptUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                             GkrCryptokiMessage *resp)
+session_C_SignEncryptUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                             GkrPkcs11Message *resp)
 {
 	/* Can't do this with an RSA key */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DecryptVerifyUpdate (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                               GkrCryptokiMessage *resp)
+session_C_DecryptVerifyUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                               GkrPkcs11Message *resp)
 {
 	/* Can't do this with an RSA key */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_GenerateKey (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                       GkrCryptokiMessage *resp)
+session_C_GenerateKey (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_GenerateKeyPair (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                           GkrCryptokiMessage *resp)
+session_C_GenerateKeyPair (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                           GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_WrapKey (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                   GkrCryptokiMessage *resp)
+session_C_WrapKey (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                   GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_UnwrapKey (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                     GkrCryptokiMessage *resp)
+session_C_UnwrapKey (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                     GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
-session_C_DeriveKey (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                     GkrCryptokiMessage *resp)
+session_C_DeriveKey (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                     GkrPkcs11Message *resp)
 {
 	/* RSA keys don't support derivation */
  	return CKR_FUNCTION_NOT_SUPPORTED;
@@ -818,16 +817,16 @@ session_C_DeriveKey (SessionInfo *sinfo, GkrCryptokiMessage *req,
  */
 
 static CK_RV
-session_C_SeedRandom (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                      GkrCryptokiMessage *resp)
+session_C_SeedRandom (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                      GkrPkcs11Message *resp)
 {
 	/* We don't have a RNG */
  	return CKR_RANDOM_NO_RNG;
 }
 
 static CK_RV
-session_C_GenerateRandom (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                          GkrCryptokiMessage *resp)
+session_C_GenerateRandom (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                          GkrPkcs11Message *resp)
 {
 	/* We don't have a RNG */
  	return CKR_RANDOM_NO_RNG;
@@ -852,23 +851,22 @@ session_info_free (SessionInfo *sinfo)
 }
 
 static gboolean
-session_process (SessionInfo *sinfo, GkrCryptokiMessage *req, 
-                 GkrCryptokiMessage *resp)
+session_process (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                 GkrPkcs11Message *resp)
 {
 	CK_RV ret = CKR_OK;
 	
 	/* This should have been checked by the parsing code */
-	g_assert (req->call_id > CRYPTOKI_CALL_ERROR);
-	g_assert (req->call_id < CRYPTOKI_CALL_MAX);
+	g_assert (req->call_id > PKCS11_CALL_ERROR);
+	g_assert (req->call_id < PKCS11_CALL_MAX);
 	
 	/* Prepare a response for the function to fill in */
-	gkr_cryptoki_message_prep (resp, req->call_id, 
-	                                GKR_CRYPTOKI_RESPONSE);
+	gkr_pkcs11_message_prep (resp, req->call_id, GKR_PKCS11_RESPONSE);
 	
 	switch(req->call_id) {
 	
 	#define CASE_CALL(name) \
-		case CRYPTOKI_CALL_##name: \
+		case PKCS11_CALL_##name: \
 			ret = session_##name (sinfo, req, resp); \
 			break; 
 	CASE_CALL(C_OpenSession)
@@ -933,13 +931,13 @@ session_process (SessionInfo *sinfo, GkrCryptokiMessage *req,
 	};
 
 	/* Parsing errors? */
-	if (gkr_cryptoki_message_buffer_error (req)) {
+	if (gkr_pkcs11_message_buffer_error (req)) {
 		g_warning ("invalid request from module, probably too short");
 		ret = PROTOCOL_ERROR;
 	}
 
 	/* Out of memory errors? */
-	if (gkr_cryptoki_message_buffer_error (resp)) {
+	if (gkr_pkcs11_message_buffer_error (resp)) {
 		g_warning ("out of memory error putting together message");
 		ret = CKR_DEVICE_MEMORY;
 	}
@@ -953,21 +951,20 @@ session_process (SessionInfo *sinfo, GkrCryptokiMessage *req,
 		 * does what it's supposed to.
 		 */
 
-		g_assert (gkr_cryptoki_message_is_verified (resp));
-		g_assert (resp->call_type == GKR_CRYPTOKI_RESPONSE);
+		g_assert (gkr_pkcs11_message_is_verified (resp));
+		g_assert (resp->call_type == GKR_PKCS11_RESPONSE);
 		g_assert (resp->call_id == req->call_id);
-		g_assert (gkr_cryptoki_calls[resp->call_id].response);
-		g_assert (strcmp (gkr_cryptoki_calls[resp->call_id].response, 
+		g_assert (gkr_pkcs11_calls[resp->call_id].response);
+		g_assert (strcmp (gkr_pkcs11_calls[resp->call_id].response, 
 		                  resp->signature) == 0);
 		
 	/* Fill in an error respnose */
 	} else {
-		gkr_cryptoki_message_prep (resp, CRYPTOKI_CALL_ERROR, 
-		                                GKR_CRYPTOKI_RESPONSE);
+		gkr_pkcs11_message_prep (resp, PKCS11_CALL_ERROR, GKR_PKCS11_RESPONSE);
 		gkr_buffer_add_uint32 (&resp->buffer, (uint32_t)ret);
 
 		/* Out of memory errors? */
-		g_assert (!gkr_cryptoki_message_buffer_error (resp));
+		g_assert (!gkr_pkcs11_message_buffer_error (resp));
 	}
 	
 	return TRUE;
@@ -1039,10 +1036,10 @@ session_write (int sock, guchar* data, size_t len)
 }
 
 gpointer
-gkr_cryptoki_daemon_session_thread (gpointer user_data)
+gkr_pkcs11_daemon_session_thread (gpointer user_data)
 {
 	SessionInfo *sinfo;
-	GkrCryptokiMessage *req, *resp;
+	GkrPkcs11Message *req, *resp;
 	guchar buf[4];
 	CK_RV ret;
 	uint32_t len;
@@ -1054,8 +1051,8 @@ gkr_cryptoki_daemon_session_thread (gpointer user_data)
 	
 	/* Setup our buffers */
 	/* TODO: Do these need to be secure buffers? */
-	req = gkr_cryptoki_message_new (g_realloc);
-	resp = gkr_cryptoki_message_new (g_realloc);
+	req = gkr_pkcs11_message_new (g_realloc);
+	resp = gkr_pkcs11_message_new (g_realloc);
 	if (!req || !resp)
 		g_error ("out of memory");
 	
@@ -1067,8 +1064,8 @@ gkr_cryptoki_daemon_session_thread (gpointer user_data)
 		if (gkr_async_is_stopping ())
 			break;
 		
-		gkr_cryptoki_message_reset (req);
-		gkr_cryptoki_message_reset (resp);
+		gkr_pkcs11_message_reset (req);
+		gkr_pkcs11_message_reset (resp);
 		
 		/* Read the number of bytes ... */
 		if (!session_read (sock, buf, 4))
@@ -1087,7 +1084,7 @@ gkr_cryptoki_daemon_session_thread (gpointer user_data)
 		if (!session_read (sock, req->buffer.buf, len))
 			break;
 		gkr_buffer_add_empty (&req->buffer, len);
-		ret = gkr_cryptoki_message_parse (req, GKR_CRYPTOKI_REQUEST);
+		ret = gkr_pkcs11_message_parse (req, GKR_PKCS11_REQUEST);
 		if (ret != CKR_OK)
 			break;
 			

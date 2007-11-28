@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-cryptoki-daemon-test.c - a test daemon for running cryptoki code
+/* gkr-pkcs11-daemon-test.c - a test daemon for running PKCS#11 code
 
    Copyright (C) 2007, Nate Nielsen
 
@@ -24,7 +24,7 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "gkr-cryptoki-daemon.h"
+#include "gkr-pkcs11-daemon.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-secure-memory.h"
@@ -141,12 +141,12 @@ main (int argc, char *argv[])
 	/* Don't do this for real daemons, boys and girls */
 	g_timeout_add (200, check_quit, NULL);
 	
-	gkr_cryptoki_daemon_setup (path);
+	gkr_pkcs11_daemon_setup (path);
 	
 	g_main_loop_run (loop);
 	
 	gkr_async_workers_stop_all ();
-	gkr_cryptoki_daemon_cleanup ();
+	gkr_pkcs11_daemon_cleanup ();
 	
 	g_main_loop_unref (loop);
 	loop = NULL;

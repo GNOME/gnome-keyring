@@ -365,9 +365,7 @@ AC_SUBST(LIBRARY_LIBS)
 AC_OUTPUT([
 Makefile
 common/Makefile
-cryptoki/Makefile
 daemon/Makefile
-doc/Makefile
 keyrings/Makefile
 library/Makefile
 pam/Makefile

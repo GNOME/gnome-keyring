@@ -14,15 +14,13 @@ SUBDIRS = \
 	. \
 	common \
 	library \
-	pkcs11 \
 	keyrings \
 	ui \
 	pkix \
 	pk \
 	ssh \
 	daemon \
-	cryptoki \
-	doc \
+	pkcs11 \
 	po \
 	reference \
 	$(TESTS_DIR) \
@@ -32,6 +30,7 @@ EXTRA_DIST = \
 	intltool-extract.in \
 	intltool-merge.in \
 	intltool-update.in \
+	keyring-intro.txt \
 	HACKING
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-tests

@@ -19,3 +19,6 @@ libgkr_keyrings_la_SOURCES = \
 libgkr_keyrings_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
+
+EXTRA_DIST = \
+	file-format.txt 

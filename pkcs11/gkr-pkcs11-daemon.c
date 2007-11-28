@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-cryptoki-daemon.c - main connection/thread handling
+/* gkr-pkcs11-daemon.c - main connection/thread handling
 
    Copyright (C) 2007, Nate Nielsen
 
@@ -23,9 +23,9 @@
 
 #include <glib.h>
 
-#include "gkr-cryptoki-calls.h"
-#include "gkr-cryptoki-message.h"
-#include "gkr-cryptoki-daemon.h"
+#include "gkr-pkcs11-calls.h"
+#include "gkr-pkcs11-message.h"
+#include "gkr-pkcs11-daemon.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-secure-memory.h"
@@ -48,7 +48,7 @@
  */
  
 void 
-gkr_cryptoki_warn (const char* msg, ...)
+gkr_pkcs11_warn (const char* msg, ...)
 {
 	va_list va;
 	va_start (va, msg);
@@ -57,13 +57,13 @@ gkr_cryptoki_warn (const char* msg, ...)
 }
 
 /* -----------------------------------------------------------------------------
- * CRYPTOKI DAEMON 
+ * PKCS#11 DAEMON 
  */
 
 /* The socket path on which we're listening */
-static gchar *cryptoki_socket_path = NULL;
-static int cryptoki_socket_fd = -1;
-static GIOChannel *cryptoki_socket_channel = NULL;
+static gchar *pkcs11_socket_path = NULL;
+static int pkcs11_socket_fd = -1;
+static GIOChannel *pkcs11_socket_channel = NULL;
 static GHashTable *session_workers = NULL;
 
 static void 
@@ -110,12 +110,12 @@ handle_new_connection (GIOChannel *channel, GIOCondition cond, gpointer callback
 	addrlen = sizeof (addr);
 	new_fd = accept (fd, (struct sockaddr *) &addr, &addrlen);
 	if (new_fd < 0) {
-		g_warning ("cannot accept cryptoki connection: %s", strerror (errno));
+		g_warning ("cannot accept pkcs11 connection: %s", strerror (errno));
 		return TRUE;
 	}
 	
 	/* And create a new thread */
-	worker = gkr_async_worker_start (gkr_cryptoki_daemon_session_thread, 
+	worker = gkr_async_worker_start (gkr_pkcs11_daemon_session_thread, 
 	                                 completed_connection, GINT_TO_POINTER (new_fd));
 	if (!worker) {
 		g_warning ("couldn't create new connection session thread");
@@ -129,50 +129,49 @@ handle_new_connection (GIOChannel *channel, GIOCondition cond, gpointer callback
 }
 
 gboolean
-gkr_cryptoki_daemon_setup (const gchar* socket_path)
+gkr_pkcs11_daemon_setup (const gchar* socket_path)
 {
 	struct sockaddr_un addr;
 	int sock;
 	
 #ifdef _DEBUG
-	GKR_CRYPTOKI_CHECK_CALLS ();
+	GKR_PKCS11_CHECK_CALLS ();
 #endif
 	
 	g_assert (socket_path);
 	
 	/* cannot be called more than once */
-	g_assert (!cryptoki_socket_path);
-	g_assert (cryptoki_socket_fd == -1);
-	g_assert (!cryptoki_socket_channel);
+	g_assert (!pkcs11_socket_path);
+	g_assert (pkcs11_socket_fd == -1);
+	g_assert (!pkcs11_socket_channel);
 	
-	cryptoki_socket_path = g_strjoin (NULL, socket_path, 
-	                                  GKR_CRYPTOKI_SOCKET_EXT, NULL);
+	pkcs11_socket_path = g_strjoin (NULL, socket_path, GKR_PKCS11_SOCKET_EXT, NULL);
 	
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
-		g_warning ("couldn't create cryptoki socket: %s", strerror (errno));
+		g_warning ("couldn't create pkcs11 socket: %s", strerror (errno));
 		return FALSE;
 	}
 	
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
-	strncpy (addr.sun_path, cryptoki_socket_path, sizeof (addr.sun_path));
+	strncpy (addr.sun_path, pkcs11_socket_path, sizeof (addr.sun_path));
 	if (bind (sock, (struct sockaddr*)&addr, sizeof (addr)) < 0) {
-		g_warning ("couldn't bind to cryptoki socket: %s: %s", 
-		           cryptoki_socket_path, strerror (errno));
+		g_warning ("couldn't bind to pkcs11 socket: %s: %s", 
+		           pkcs11_socket_path, strerror (errno));
 		return FALSE;
 	}
 	
 	if (listen (sock, 128) < 0) {
-		g_warning ("couldn't listen on cryptoki socket: %s: %s", 
-		           cryptoki_socket_path, strerror (errno));
+		g_warning ("couldn't listen on pkcs11 socket: %s: %s", 
+		           pkcs11_socket_path, strerror (errno));
 		return FALSE;
 	}
 	
 	/* TODO: Socket credentials */
 
-	cryptoki_socket_channel = g_io_channel_unix_new (sock);
-	g_io_add_watch (cryptoki_socket_channel, G_IO_IN | G_IO_HUP, 
+	pkcs11_socket_channel = g_io_channel_unix_new (sock);
+	g_io_add_watch (pkcs11_socket_channel, G_IO_IN | G_IO_HUP, 
 	                handle_new_connection, NULL);
 	
 	/* Prep for sessions (ie: connections) */
@@ -182,18 +181,18 @@ gkr_cryptoki_daemon_setup (const gchar* socket_path)
 }
 
 void 
-gkr_cryptoki_daemon_cleanup (void)
+gkr_pkcs11_daemon_cleanup (void)
 {	
-	if (cryptoki_socket_channel)
-		g_io_channel_unref (cryptoki_socket_channel);
-	cryptoki_socket_channel = NULL;
+	if (pkcs11_socket_channel)
+		g_io_channel_unref (pkcs11_socket_channel);
+	pkcs11_socket_channel = NULL;
 	
-	if (cryptoki_socket_fd != -1)
-		close (cryptoki_socket_fd);
-	cryptoki_socket_fd = -1;
+	if (pkcs11_socket_fd != -1)
+		close (pkcs11_socket_fd);
+	pkcs11_socket_fd = -1;
 	
-	g_free (cryptoki_socket_path);
-	cryptoki_socket_path = NULL;
+	g_free (pkcs11_socket_path);
+	pkcs11_socket_path = NULL;
 	
 	if (session_workers) {
 		

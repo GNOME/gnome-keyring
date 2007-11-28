@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-cryptoki-daemon.h - entry points for daemon cryptoki functionality
+/* gkr-pkcs11-mechanisms.h - the PKCS#11 mechanisms we support
 
    Copyright (C) 2007, Nate Nielsen
 
@@ -21,20 +21,26 @@
    Author: Nate Nielsen <nielsen@memberwebs.com>
 */
 
-#ifndef __GKR_CRYPTOKI_DAEMON_H__
-#define __GKR_CRYPTOKI_DAEMON_H__
+#ifndef GKR_PKCS11_MECHANISMS_H
+#define GKR_PKCS11_MECHANISMS_H
 
-/* -----------------------------------------------------------------------------
- * GENERAL FUNCTIONS 
+/* 
+ * IMPORTANT: Keep these two arrays in sync.
  */
  
-gboolean        gkr_cryptoki_daemon_setup               (const gchar* socket_path);
-void            gkr_cryptoki_daemon_cleanup             (void);
+const static CK_MECHANISM_TYPE gkr_pkcs11_mechanisms[] = {
+	/* TODO: CKM_RSA_PKCS_KEY_PAIR_GEN, */
+	CKM_RSA_PKCS
+};
 
-/* -----------------------------------------------------------------------------
- * Used by gkr-cryptoki-daemon.c and gkr-cryptoki-daemon-session.c 
- */
+const static CK_MECHANISM_INFO gkr_pkcs11_mechanism_info[] = {
+	/* TODO: CKM_RSA_PKCS_KEY_PAIR_GEN, */
+	/* 
+	 * CKM_RSA_PKCS
+	 * For RSA, min and max are the minimum and maximum modulus in bits 
+	 */
+	/* TODO: Vet the numbers min/max key leng below.  */
+	{256, 32768, CKF_ENCRYPT | CKF_DECRYPT | CKF_SIGN | CKF_VERIFY | CKF_WRAP | CKF_UNWRAP}
+};
 
-gpointer        gkr_cryptoki_daemon_session_thread      (gpointer user_data);
-
-#endif /* __GKR_CRYPTOKI_DAEMON_H__ */
+#endif /* GKR_PKCS11_MECHANISMS_H */

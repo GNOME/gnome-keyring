@@ -1,5 +1,14 @@
 2007-11-28  Stef Walter  <stef@memberwebs.com>
 
+	* cryptoki/*: (moved to pkcs11/, renamed to *pkcs11*)
+	* doc/file-format.txt: (moved to keyrings/)
+	* doc/keyring-intro.txt: (moved to /)
+	* HACKING:
+	* Makefile.am: Move cryptoki stuff into pkcs11/ directory and rename 
+	the namespace prefixes. Move the doc/ files into other locations.
+	
+2007-11-28  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-daemon-util.[ch]:
 	* common/gkr-dbus.[ch]:
 	* common/gkr-location.h:

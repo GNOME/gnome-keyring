@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-cryptoki-message.c - our marshalled cryptoki protocol.
+/* gkr-pkcs11-message.c - our marshalled PKCS#11 protocol.
 
    Copyright (C) 2007, Nate Nielsen
 
@@ -23,8 +23,8 @@
 
 #include "config.h"
 
-#include "gkr-cryptoki-message.h"
-#include "gkr-cryptoki-calls.h"
+#include "gkr-pkcs11-message.h"
+#include "gkr-pkcs11-calls.h"
 
 #include <string.h>
 
@@ -37,14 +37,14 @@
 #  endif 
 #endif
 
-GkrCryptokiMessage*
-gkr_cryptoki_message_new (GkrBufferAllocator allocator)
+GkrPkcs11Message*
+gkr_pkcs11_message_new (GkrBufferAllocator allocator)
 {
-	GkrCryptokiMessage *msg;
+	GkrPkcs11Message *msg;
 	
 	ASSERT (allocator);
 	
-	msg = (GkrCryptokiMessage*) (allocator)(NULL, sizeof (GkrCryptokiMessage));
+	msg = (GkrPkcs11Message*) (allocator)(NULL, sizeof (GkrPkcs11Message));
 	if (!msg)
 		return NULL;
 	memset (msg, 0, sizeof (*msg));
@@ -54,13 +54,13 @@ gkr_cryptoki_message_new (GkrBufferAllocator allocator)
 		return NULL;
 	}
 	
-	gkr_cryptoki_message_reset (msg);
+	gkr_pkcs11_message_reset (msg);
 	
 	return msg;
 }
 
 void 
-gkr_cryptoki_message_free (GkrCryptokiMessage *msg)
+gkr_pkcs11_message_free (GkrPkcs11Message *msg)
 {
 	GkrBufferAllocator allocator;
 	
@@ -75,7 +75,7 @@ gkr_cryptoki_message_free (GkrCryptokiMessage *msg)
 }
 
 void 
-gkr_cryptoki_message_reset (GkrCryptokiMessage *msg)
+gkr_pkcs11_message_reset (GkrPkcs11Message *msg)
 {
 	ASSERT (msg);
 	
@@ -89,24 +89,23 @@ gkr_cryptoki_message_reset (GkrCryptokiMessage *msg)
 }
 
 CK_RV
-gkr_cryptoki_message_prep (GkrCryptokiMessage *msg, int call_id, 
-                                GkrCryptokiMessageType type)
+gkr_pkcs11_message_prep (GkrPkcs11Message *msg, int call_id, GkrPkcs11MessageType type)
 {
 	int len;
 
 	ASSERT (type);
-	ASSERT (call_id >= CRYPTOKI_CALL_ERROR);
-	ASSERT (call_id < CRYPTOKI_CALL_MAX);
+	ASSERT (call_id >= PKCS11_CALL_ERROR);
+	ASSERT (call_id < PKCS11_CALL_MAX);
 	
-	gkr_cryptoki_message_reset (msg);
+	gkr_pkcs11_message_reset (msg);
 
-	if (call_id != CRYPTOKI_CALL_ERROR) {
+	if (call_id != PKCS11_CALL_ERROR) {
 
 		/* The call id and signature */
-		if (type == GKR_CRYPTOKI_REQUEST) 
-			msg->signature = gkr_cryptoki_calls[call_id].request;
-		else if (type == GKR_CRYPTOKI_RESPONSE)
-			msg->signature = gkr_cryptoki_calls[call_id].response;
+		if (type == GKR_PKCS11_REQUEST) 
+			msg->signature = gkr_pkcs11_calls[call_id].request;
+		else if (type == GKR_PKCS11_RESPONSE)
+			msg->signature = gkr_pkcs11_calls[call_id].response;
 		else
 			ASSERT (0 && "invalid message type");
 		msg->sigverify = msg->signature;
@@ -127,8 +126,7 @@ gkr_cryptoki_message_prep (GkrCryptokiMessage *msg, int call_id,
 }
 
 CK_RV 
-gkr_cryptoki_message_parse (GkrCryptokiMessage *msg, 
-                                 GkrCryptokiMessageType type)
+gkr_pkcs11_message_parse (GkrPkcs11Message *msg, GkrPkcs11MessageType type)
 {
 	const unsigned char *val;
 	size_t len;
@@ -138,30 +136,30 @@ gkr_cryptoki_message_parse (GkrCryptokiMessage *msg,
 
 	/* Pull out the call identifier */
 	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &(msg->parsed), &call_id)) {
-		gkr_cryptoki_warn ("invalid message: couldn't read call identifier");
+		gkr_pkcs11_warn ("invalid message: couldn't read call identifier");
 		return CKR_DEVICE_ERROR;
 	}
 
 	msg->signature = msg->sigverify = NULL;
 
 	/* If it's an error code then no more processing */
-	if (call_id == CRYPTOKI_CALL_ERROR) {
-		if (type == GKR_CRYPTOKI_REQUEST) {
-			gkr_cryptoki_warn ("invalid message: error code in request");
+	if (call_id == PKCS11_CALL_ERROR) {
+		if (type == GKR_PKCS11_REQUEST) {
+			gkr_pkcs11_warn ("invalid message: error code in request");
 			return CKR_DEVICE_ERROR;
 		}
 		return CKR_OK;
 	}
 
 	/* The call id and signature */
-	if (call_id <= 0 || call_id >= CRYPTOKI_CALL_MAX) {
-		gkr_cryptoki_warn ("invalid message: bad call id: %d", call_id);
+	if (call_id <= 0 || call_id >= PKCS11_CALL_MAX) {
+		gkr_pkcs11_warn ("invalid message: bad call id: %d", call_id);
 		return CKR_DEVICE_ERROR;
 	}
-	if (type == GKR_CRYPTOKI_REQUEST) 
-		msg->signature = gkr_cryptoki_calls[call_id].request;
-	else if (type == GKR_CRYPTOKI_RESPONSE)
-		msg->signature = gkr_cryptoki_calls[call_id].response;
+	if (type == GKR_PKCS11_REQUEST) 
+		msg->signature = gkr_pkcs11_calls[call_id].request;
+	else if (type == GKR_PKCS11_RESPONSE)
+		msg->signature = gkr_pkcs11_calls[call_id].response;
 	else
 		ASSERT (0 && "invalid message type");
 	msg->call_id = call_id;
@@ -170,12 +168,12 @@ gkr_cryptoki_message_parse (GkrCryptokiMessage *msg,
 
 	/* Verify the incoming signature */
 	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &(msg->parsed), &val, &len)) {
-		gkr_cryptoki_warn ("invalid message: couldn't read signature");
+		gkr_pkcs11_warn ("invalid message: couldn't read signature");
 		return CKR_DEVICE_ERROR;
 	}
 	
 	if ((strlen (msg->signature) != len) || (memcmp (val, msg->signature, len) != 0)) {
-		gkr_cryptoki_warn ("invalid message: signature doesn't match");
+		gkr_pkcs11_warn ("invalid message: signature doesn't match");
 		return CKR_DEVICE_ERROR;
 	}
 	
@@ -183,7 +181,7 @@ gkr_cryptoki_message_parse (GkrCryptokiMessage *msg,
 }
 
 int
-gkr_cryptoki_message_equals (GkrCryptokiMessage *m1, GkrCryptokiMessage *m2)
+gkr_pkcs11_message_equals (GkrPkcs11Message *m1, GkrPkcs11Message *m2)
 {
 	ASSERT (m1 && m2);
 	
@@ -209,7 +207,7 @@ gkr_cryptoki_message_equals (GkrCryptokiMessage *m1, GkrCryptokiMessage *m2)
 }
 
 int 
-gkr_cryptoki_message_verify_part (GkrCryptokiMessage *msg, const char* part)
+gkr_pkcs11_message_verify_part (GkrPkcs11Message *msg, const char* part)
 {
 	int len, ok;
 	
@@ -224,8 +222,8 @@ gkr_cryptoki_message_verify_part (GkrCryptokiMessage *msg, const char* part)
 }
 
 CK_RV
-gkr_cryptoki_message_write_attribute_array (GkrCryptokiMessage *msg, 
-                                                 CK_ATTRIBUTE_PTR arr, CK_ULONG num)
+gkr_pkcs11_message_write_attribute_array (GkrPkcs11Message *msg, 
+                                          CK_ATTRIBUTE_PTR arr, CK_ULONG num)
 {
 	CK_ULONG i;
 	CK_ATTRIBUTE_PTR attr;
@@ -235,7 +233,7 @@ gkr_cryptoki_message_write_attribute_array (GkrCryptokiMessage *msg,
 	ASSERT (msg);
 
 	/* Make sure this is in the rigth order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "aA"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "aA"));
 	
 	/* Write the number of items */
 	gkr_buffer_add_uint32 (&msg->buffer, num);
@@ -259,14 +257,14 @@ gkr_cryptoki_message_write_attribute_array (GkrCryptokiMessage *msg,
 }
 
 CK_RV
-gkr_cryptoki_message_read_boolean (GkrCryptokiMessage *msg, CK_BBOOL *val)
+gkr_pkcs11_message_read_boolean (GkrPkcs11Message *msg, CK_BBOOL *val)
 {
 	unsigned char v;
 	
 	ASSERT (msg);
 
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "b"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "b"));
 	
 	if (!gkr_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &v))
 		return CKR_GENERAL_ERROR;
@@ -276,13 +274,13 @@ gkr_cryptoki_message_read_boolean (GkrCryptokiMessage *msg, CK_BBOOL *val)
 }
 
 CK_RV
-gkr_cryptoki_message_write_boolean (GkrCryptokiMessage *msg, CK_BBOOL val)
+gkr_pkcs11_message_write_boolean (GkrPkcs11Message *msg, CK_BBOOL val)
 {
 	unsigned char v;
 	ASSERT (msg);
 
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "b"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "b"));
 	
 	v = CK_TRUE ? 1 : 0;
 	if (!gkr_buffer_add_byte (&msg->buffer, v))
@@ -292,14 +290,14 @@ gkr_cryptoki_message_write_boolean (GkrCryptokiMessage *msg, CK_BBOOL val)
 }
 
 CK_RV
-gkr_cryptoki_message_write_byte_array (GkrCryptokiMessage *msg, 
-                                            CK_BYTE_PTR arr, CK_ULONG num)
+gkr_pkcs11_message_write_byte_array (GkrPkcs11Message *msg, 
+                                     CK_BYTE_PTR arr, CK_ULONG num)
 {
 	ASSERT (arr);
 	ASSERT (msg);
 
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "ay"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "ay"));
 	
 	if (!gkr_buffer_add_byte_array (&msg->buffer, arr, num))
 		return CKR_HOST_MEMORY;
@@ -308,13 +306,13 @@ gkr_cryptoki_message_write_byte_array (GkrCryptokiMessage *msg,
 }
 
 CK_RV 
-gkr_cryptoki_message_read_uint32 (GkrCryptokiMessage *msg, CK_ULONG *val)
+gkr_pkcs11_message_read_uint32 (GkrPkcs11Message *msg, CK_ULONG *val)
 {
 	uint32_t v;
 	ASSERT (msg);
 	
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "u"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "u"));
 
 	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &v))
 		return CKR_GENERAL_ERROR;
@@ -324,12 +322,12 @@ gkr_cryptoki_message_read_uint32 (GkrCryptokiMessage *msg, CK_ULONG *val)
 }
 
 CK_RV
-gkr_cryptoki_message_write_uint32 (GkrCryptokiMessage *msg, CK_ULONG val)
+gkr_pkcs11_message_write_uint32 (GkrPkcs11Message *msg, CK_ULONG val)
 {
 	ASSERT (msg);
 
 	/* Make sure this is in the rigth order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "u"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "u"));
 	
 	if (!gkr_buffer_add_uint32 (&msg->buffer, val))
 		return CKR_HOST_MEMORY;

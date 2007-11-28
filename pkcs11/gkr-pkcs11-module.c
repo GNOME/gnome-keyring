@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-cryptoki-module.c - a PKCS#11 module which communicates with gnome-keyring
+/* gkr-pkcs11-module.c - a PKCS#11 module which communicates with gnome-keyring
 
    Copyright (C) 2007, Nate Nielsen
 
@@ -23,14 +23,13 @@
 
 #include "config.h"
 
-#include "gkr-cryptoki-message.h"
-#include "gkr-cryptoki-calls.h"
-#include "gkr-cryptoki-mechanisms.h"
+#include "gkr-pkcs11-message.h"
+#include "gkr-pkcs11-calls.h"
+#include "gkr-pkcs11-mechanisms.h"
+#include "pkcs11.h"
 
 #include "common/gkr-buffer.h"
 #include "common/gkr-secure-memory.h"
-
-#include "pkcs11/pkcs11.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -87,7 +86,7 @@ static pthread_mutex_t global_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t memory_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Whether we've been initialized, and on what process id it happened */
-static int cryptoki_initialized = 0;
+static int pkcs11_initialized = 0;
 static pid_t crypto_pid = 0;
 static char socket_path[1024] = { 0, };
 static int slot_id = 0;
@@ -101,9 +100,9 @@ static int slot_id = 0;
 #  endif 
 #endif
 
-#define WARN(x) 	gkr_cryptoki_warn x
+#define WARN(x) 	gkr_pkcs11_warn x
 #define PREREQ(x, v) \
-	if (!(x)) { gkr_cryptoki_warn ("'%s' not true at %s", #x, __func__); return v; } 
+	if (!(x)) { gkr_pkcs11_warn ("'%s' not true at %s", #x, __func__); return v; } 
 
 /* -----------------------------------------------------------------------------
  * LOGGING and DEBUGGING
@@ -112,13 +111,13 @@ static int slot_id = 0;
 static void 
 printva (const char* pref, const char* msg, va_list va)
 {
-	fprintf (stderr, "gnome-keyring-cryptoki %s: ", pref);
+	fprintf (stderr, "gnome-keyring-pkcs11 %s: ", pref);
 	vfprintf (stderr, msg, va);
 	fputc ('\n', stderr);
 }
 
 void 
-gkr_cryptoki_warn (const char* msg, ...)
+gkr_pkcs11_warn (const char* msg, ...)
 {
 	va_list va;
 	va_start (va, msg);
@@ -129,7 +128,7 @@ gkr_cryptoki_warn (const char* msg, ...)
 #ifdef _DEBUG 
 
 static void 
-gkr_cryptoki_debug (const char* msg, ...)
+gkr_pkcs11_debug (const char* msg, ...)
 {
 	va_list va;
 	va_start (va, msg);
@@ -137,7 +136,7 @@ gkr_cryptoki_debug (const char* msg, ...)
 	va_end (va);
 }
 
-#define DBG(x) 	gkr_cryptoki_debug x
+#define DBG(x) 	gkr_pkcs11_debug x
 
 #else /* !_DEBUG */
 
@@ -188,10 +187,10 @@ typedef struct _CallSession {
 	int call_state;                 /* Whether a call is happening or not */
 	int socket;                     /* The connection we're sending on */
 
-	GkrCryptokiMessage *req;      /* The current request */
-	GkrCryptokiMessage *resp;     /* The current response */
+	GkrPkcs11Message *req;      /* The current request */
+	GkrPkcs11Message *resp;     /* The current response */
 	
-	GkrCryptokiMessage *overflow; /* The last request which overflowed */
+	GkrPkcs11Message *overflow; /* The last request which overflowed */
 	int overflowed;                 /* Flag used by response parsing code */
 
 	CK_NOTIFY notify_callback;      /* Application specified callback */
@@ -241,9 +240,9 @@ call_session_destroy (CallSession* cs)
 	call_session_disconnect (cs);
 	ASSERT (cs->socket == -1);
 	
-	gkr_cryptoki_message_free (cs->req);
-	gkr_cryptoki_message_free (cs->resp);
-	gkr_cryptoki_message_free (cs->overflow);
+	gkr_pkcs11_message_free (cs->req);
+	gkr_pkcs11_message_free (cs->resp);
+	gkr_pkcs11_message_free (cs->overflow);
 	
 	pthread_mutex_destroy (&cs->mutex);
 	
@@ -293,7 +292,7 @@ call_session_connect (CallSession *cs)
 	ASSERT (cs);
 	ASSERT (cs->socket == -1);
 	ASSERT (cs->call_state == CALL_INVALID);
-	ASSERT (cryptoki_initialized);
+	ASSERT (pkcs11_initialized);
 	
 	/* Yup, no environment variable == no token */
 	if (!socket_path || !socket_path[0]) {
@@ -364,7 +363,7 @@ call_session_prep_call (CallSession *cs, int call_id)
 	/* Allocate a new request if we've lost the old one */
 	if (!cs->req) {
 		/* TODO: Do passwords or secrets ever pass through here? */
-		cs->req = gkr_cryptoki_message_new (call_session_allocator);
+		cs->req = gkr_pkcs11_message_new (call_session_allocator);
 		if (!cs->req) {
 			WARN (("S%d: cannot allocate request buffer: out of memory", cs->id));
 			return CKR_HOST_MEMORY;
@@ -372,8 +371,8 @@ call_session_prep_call (CallSession *cs, int call_id)
 	}
 	
 	/* Put in the Call ID and signature */
-	gkr_cryptoki_message_reset (cs->req);
-	ret = gkr_cryptoki_message_prep (cs->req, call_id, GKR_CRYPTOKI_REQUEST);
+	gkr_pkcs11_message_reset (cs->req);
+	ret = gkr_pkcs11_message_prep (cs->req, call_id, GKR_PKCS11_REQUEST);
 	if (ret != CKR_OK)
 		return ret;
 	
@@ -485,7 +484,7 @@ call_session_read (CallSession *cs, unsigned char* data, size_t len)
 static CK_RV
 call_session_send_recv (CallSession *cs)
 {
-	GkrCryptokiMessage *req, *resp;
+	GkrPkcs11Message *req, *resp;
 	unsigned char buf[4];
 	uint32_t len;
 	CK_RV ret;
@@ -499,13 +498,13 @@ call_session_send_recv (CallSession *cs)
 	/* Setup the response buffer properly */
 	if (!cs->resp) {
 		/* TODO: Do secrets or passwords ever flow through here? */
-		cs->resp = gkr_cryptoki_message_new (call_session_allocator);
+		cs->resp = gkr_pkcs11_message_new (call_session_allocator);
 		if (!cs->resp) {
 			WARN (("S%d: couldn't allocate response buffer: out of memory", cs->id));
 			return CKR_HOST_MEMORY;
 		}
 	}
-	gkr_cryptoki_message_reset (cs->resp);
+	gkr_pkcs11_message_reset (cs->resp);
 	
 	/* 
 	 * Now as an additional check to make sure nothing nasty will
@@ -542,7 +541,7 @@ call_session_send_recv (CallSession *cs)
 		goto cleanup;
 	
 	gkr_buffer_add_empty (&resp->buffer, len);
-	ret = gkr_cryptoki_message_parse (resp, GKR_CRYPTOKI_RESPONSE);
+	ret = gkr_pkcs11_message_parse (resp, GKR_PKCS11_RESPONSE);
 	if (ret != CKR_OK)
 		goto cleanup;
 	
@@ -576,7 +575,7 @@ call_session_do_call (CallSession *cs)
 	ASSERT (!cs->overflowed);
 
 	/* Did building the call fail? */
-	if (gkr_cryptoki_message_buffer_error (cs->req)) {
+	if (gkr_pkcs11_message_buffer_error (cs->req)) {
 		WARN (("S%d: couldn't allocate request area: out of memory", cs->id));
 		return CKR_HOST_MEMORY;
 	}
@@ -587,18 +586,18 @@ call_session_do_call (CallSession *cs)
 	}
 
 	/* Make sure that the signature is valid */
-	ASSERT (gkr_cryptoki_message_is_verified (cs->req));
+	ASSERT (gkr_pkcs11_message_is_verified (cs->req));
 
 	if (cs->overflow) {
 		
 		/* See if this is the same as the call that overflowed */
-		if (gkr_cryptoki_message_equals (cs->req, cs->overflow)) {
+		if (gkr_pkcs11_message_equals (cs->req, cs->overflow)) {
 			ASSERT (cs->resp);
 			reuse = 1;
 		}
 		
 		/* We have no further use for this... */
-		gkr_cryptoki_message_free (cs->overflow); 
+		gkr_pkcs11_message_free (cs->overflow); 
 		cs->overflow = NULL;
 	}
 
@@ -612,9 +611,9 @@ call_session_do_call (CallSession *cs)
 		return ret;
 
 	/* If it's an error code then return it */
-	if (cs->resp->call_id == CRYPTOKI_CALL_ERROR) {
+	if (cs->resp->call_id == PKCS11_CALL_ERROR) {
 
-		ret = gkr_cryptoki_message_read_uint32 (cs->resp, &ckerr);
+		ret = gkr_pkcs11_message_read_uint32 (cs->resp, &ckerr);
 		if (ret != CKR_OK) {
 			WARN (("S%d: invalid error response from gnome-keyring-daemon: too short", cs->id));
 			return ret;
@@ -635,7 +634,7 @@ call_session_do_call (CallSession *cs)
 		return CKR_DEVICE_ERROR;
 	}
 
-	ASSERT (!gkr_cryptoki_message_buffer_error (cs->resp));
+	ASSERT (!gkr_pkcs11_message_buffer_error (cs->resp));
 	ASSERT (!cs->overflowed);
 	
 	DBG (("S%d: parsing response values", cs->id));
@@ -654,13 +653,13 @@ call_session_done_call (CallSession *cs, CK_RV ret)
 		/* Check for parsing errors that were not caught elsewhere */
 		if (ret == CKR_OK) {
 
-			if (gkr_cryptoki_message_buffer_error (cs->resp)) {
+			if (gkr_pkcs11_message_buffer_error (cs->resp)) {
 				WARN (("S%d: invalid response from gnome-keyring-daemon: bad argument data", cs->id));
 				return CKR_GENERAL_ERROR;
 			}
 
 			/* Double check that the signature matched our decoding */
-			ASSERT (gkr_cryptoki_message_is_verified (cs->resp));
+			ASSERT (gkr_pkcs11_message_is_verified (cs->resp));
 
 		/* Caller didn't supply enough space, ... */
 		} else if (cs->overflowed || ret == CKR_BUFFER_TOO_SMALL) {
@@ -769,7 +768,7 @@ call_session_find_lock_and_ref (CK_ULONG id, int remove, CallSession **cs)
 	CK_RV ret = CKR_OK;
 
 	ASSERT (cs);
-	ASSERT (cryptoki_initialized);
+	ASSERT (pkcs11_initialized);
 	
 	if (id <= 0) {
 		WARN (("invalid session id passed: %d", id));
@@ -822,7 +821,7 @@ call_session_register (CallSession *cs)
 	CK_ULONG id = 0;
 	size_t i;
 
-	ASSERT (cryptoki_initialized);
+	ASSERT (pkcs11_initialized);
 
 	ASSERT (cs);
 	ASSERT (cs->id == 0 && cs->refs == 0);
@@ -959,7 +958,7 @@ call_session_close_all ()
  */
 
 static CK_RV
-proto_read_attribute_array (GkrCryptokiMessage *msg, CK_ATTRIBUTE_PTR arr, 
+proto_read_attribute_array (GkrPkcs11Message *msg, CK_ATTRIBUTE_PTR arr, 
                             CK_ULONG_PTR len, CK_ULONG max)
 {
 	uint32_t i, num, val;
@@ -973,7 +972,7 @@ proto_read_attribute_array (GkrCryptokiMessage *msg, CK_ATTRIBUTE_PTR arr,
 	ASSERT (msg);
 
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "aA"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "aA"));
 
 	/* Get the number of items. We need this value to be correct */
 	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, 
@@ -1043,7 +1042,7 @@ proto_read_attribute_array (GkrCryptokiMessage *msg, CK_ATTRIBUTE_PTR arr,
 }
 
 static CK_RV
-proto_read_byte_array (GkrCryptokiMessage *msg, CK_BYTE_PTR arr,
+proto_read_byte_array (GkrPkcs11Message *msg, CK_BYTE_PTR arr,
                        CK_ULONG_PTR len, CK_ULONG max)
 {
 	const unsigned char *val;
@@ -1053,7 +1052,7 @@ proto_read_byte_array (GkrCryptokiMessage *msg, CK_BYTE_PTR arr,
 	ASSERT (msg);
 
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "ay"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "ay"));
 
 
 	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed,
@@ -1076,7 +1075,7 @@ proto_read_byte_array (GkrCryptokiMessage *msg, CK_BYTE_PTR arr,
 
 
 static CK_RV
-proto_read_uint32_array (GkrCryptokiMessage *msg, CK_ULONG_PTR arr,
+proto_read_uint32_array (GkrPkcs11Message *msg, CK_ULONG_PTR arr,
                          CK_ULONG_PTR len, CK_ULONG max)
 {
 	uint32_t i, num, val;
@@ -1085,7 +1084,7 @@ proto_read_uint32_array (GkrCryptokiMessage *msg, CK_ULONG_PTR arr,
 	ASSERT (msg);
 
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "au"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "au"));
 
 	/* Get the number of items. We need this value to be correct */
 	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, 
@@ -1109,13 +1108,13 @@ proto_read_uint32_array (GkrCryptokiMessage *msg, CK_ULONG_PTR arr,
 }
 
 static CK_RV
-proto_write_mechanism (GkrCryptokiMessage *msg, CK_MECHANISM_PTR mech)
+proto_write_mechanism (GkrPkcs11Message *msg, CK_MECHANISM_PTR mech)
 {
 	ASSERT (msg);
 	ASSERT (mech);
 
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "M"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "M"));
 	
 	/* The mechanism type */
 	gkr_buffer_add_uint32 (&msg->buffer, mech->mechanism);
@@ -1128,7 +1127,7 @@ proto_write_mechanism (GkrCryptokiMessage *msg, CK_MECHANISM_PTR mech)
 }
 
 static CK_RV
-proto_read_sesssion_info (GkrCryptokiMessage *msg, CK_SESSION_INFO_PTR info)
+proto_read_sesssion_info (GkrPkcs11Message *msg, CK_SESSION_INFO_PTR info)
 {
 	uint32_t val;
 
@@ -1136,7 +1135,7 @@ proto_read_sesssion_info (GkrCryptokiMessage *msg, CK_SESSION_INFO_PTR info)
 	ASSERT (info);
 
 	/* Make sure this is in the right order */
-	ASSERT (!msg->signature || gkr_cryptoki_message_verify_part (msg, "I"));
+	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "I"));
 	
 	/* The slot id (we ignore) */
 	gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &val);
@@ -1179,7 +1178,7 @@ gkr_C_Initialize (CK_VOID_PTR init_args)
 	 */
 	
 #ifdef _DEBUG 
-	GKR_CRYPTOKI_CHECK_CALLS();
+	GKR_PKCS11_CHECK_CALLS();
 #endif
 
 	if (init_args != NULL) {
@@ -1209,7 +1208,7 @@ gkr_C_Initialize (CK_VOID_PTR init_args)
 	pthread_mutex_lock (&global_mutex);
 
 		initialize_pid = getpid ();
-		if (cryptoki_initialized) {
+		if (pkcs11_initialized) {
 
 			/* This process has called C_Initialize already */
 			if (initialize_pid == crypto_pid) {
@@ -1224,19 +1223,19 @@ gkr_C_Initialize (CK_VOID_PTR init_args)
 			   the slot by slot id. */
 			slot_id = rand ();
 
-			cryptoki_initialized = 1;
+			pkcs11_initialized = 1;
 			crypto_pid = initialize_pid;
 			
-			/* Lookup the socket path, append '.cryptoki' */
+			/* Lookup the socket path, append '.pkcs11' */
 			socket_path[0] = 0;
 			path = getenv ("GNOME_KEYRING_SOCKET");
 			if (path && path[0]) {
 				l = sizeof (socket_path) - 1;
 				strncpy (socket_path, path, l);
-				strncat (socket_path, ".cryptoki", l);
+				strncat (socket_path, ".pkcs11", l);
 				socket_path[l] = 0;
 				
-				DBG (("gnome-keyring cryptoki socket is: %s", socket_path));
+				DBG (("gnome-keyring pkcs11 socket is: %s", socket_path));
 			}
 		}
 
@@ -1256,13 +1255,13 @@ static CK_RV
 gkr_C_Finalize (CK_VOID_PTR reserved)
 {
 	DBG (("C_Finalize: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (!reserved, CKR_ARGUMENTS_BAD);
 
 	pthread_mutex_lock (&global_mutex);
 	
 		/* This should stop all other calls in */
-		cryptoki_initialized = 0;
+		pkcs11_initialized = 0;
 	
 		slot_id = -1;
 		crypto_pid = 0;
@@ -1280,7 +1279,7 @@ static CK_RV
 gkr_C_GetInfo (CK_INFO_PTR info)
 {
 	DBG (("C_GetInfo: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (info, CKR_ARGUMENTS_BAD);
 
 	ASSERT (strlen (MANUFACTURER_ID) == 32);
@@ -1312,7 +1311,7 @@ gkr_C_GetSlotList (CK_BBOOL tokenPresent, CK_SLOT_ID_PTR slot_list, CK_ULONG_PTR
 	int have;
 
 	DBG (("C_GetSlotList: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (count, CKR_ARGUMENTS_BAD);
 	
 	/* The environment variable is our token */
@@ -1348,7 +1347,7 @@ gkr_C_GetSlotInfo (CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 	CK_RV ret = CKR_OK;
 	
 	DBG (("C_GetSlotInfo: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (info, CKR_ARGUMENTS_BAD);
 
 	/* Make sure the slot ID is valid */
@@ -1384,7 +1383,7 @@ gkr_C_GetTokenInfo (CK_SLOT_ID id, CK_TOKEN_INFO_PTR info)
 	CK_RV ret = CKR_OK;
 	
 	DBG (("C_GetTokenInfo: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (info, CKR_ARGUMENTS_BAD);
 
 	/* Make sure the slot ID is valid */
@@ -1439,7 +1438,7 @@ gkr_C_GetMechanismList (CK_SLOT_ID id, CK_MECHANISM_TYPE_PTR mechanism_list,
 	CK_RV ret = CKR_OK;
 
 	DBG (("C_GetMechanismList: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (count, CKR_ARGUMENTS_BAD);
 
 	if (id != slot_id) {
@@ -1451,7 +1450,7 @@ gkr_C_GetMechanismList (CK_SLOT_ID id, CK_MECHANISM_TYPE_PTR mechanism_list,
 		goto cleanup;
 	}
 
-	mechnum = sizeof (gkr_cryptoki_mechanisms) / sizeof (CK_MECHANISM_TYPE);
+	mechnum = sizeof (gkr_pkcs11_mechanisms) / sizeof (CK_MECHANISM_TYPE);
 
 	if (mechanism_list == NULL) {
 		*count = mechnum;
@@ -1465,7 +1464,7 @@ gkr_C_GetMechanismList (CK_SLOT_ID id, CK_MECHANISM_TYPE_PTR mechanism_list,
 	}
 
 	for (i = 0; i < mechnum; i++)
-		mechanism_list[i] = gkr_cryptoki_mechanisms[i];
+		mechanism_list[i] = gkr_pkcs11_mechanisms[i];
 	*count = mechnum;
 
 cleanup:
@@ -1481,7 +1480,7 @@ gkr_C_GetMechanismInfo (CK_SLOT_ID id, CK_MECHANISM_TYPE type,
 	CK_RV ret = CKR_OK;
 
 	DBG (("C_GetMechanismInfo: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (info, CKR_ARGUMENTS_BAD);
 
 	if (id != slot_id) {
@@ -1493,9 +1492,9 @@ gkr_C_GetMechanismInfo (CK_SLOT_ID id, CK_MECHANISM_TYPE type,
 		goto cleanup;
 	}
 
-	mechnum = sizeof (gkr_cryptoki_mechanisms) / sizeof (CK_MECHANISM_TYPE);
+	mechnum = sizeof (gkr_pkcs11_mechanisms) / sizeof (CK_MECHANISM_TYPE);
 	for (i = 0; i < mechnum; i++) {
-		if (gkr_cryptoki_mechanisms[i] == type)
+		if (gkr_pkcs11_mechanisms[i] == type)
 			break;
 	}
 
@@ -1505,9 +1504,9 @@ gkr_C_GetMechanismInfo (CK_SLOT_ID id, CK_MECHANISM_TYPE type,
 		goto cleanup;
 	}
 
-	info->ulMinKeySize = gkr_cryptoki_mechanism_info[i].ulMinKeySize;
-	info->ulMaxKeySize = gkr_cryptoki_mechanism_info[i].ulMaxKeySize;
-	info->flags = gkr_cryptoki_mechanism_info[i].flags;
+	info->ulMinKeySize = gkr_pkcs11_mechanism_info[i].ulMinKeySize;
+	info->ulMaxKeySize = gkr_pkcs11_mechanism_info[i].ulMaxKeySize;
+	info->flags = gkr_pkcs11_mechanism_info[i].flags;
 
 cleanup:
 	DBG (("C_GetMechanismInfo: %d", ret));
@@ -1519,7 +1518,7 @@ gkr_C_InitToken (CK_SLOT_ID id, CK_UTF8CHAR_PTR pin, CK_ULONG pinLen,
                  CK_UTF8CHAR_PTR label)
 {
 	DBG (("C_InitToken: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	DBG (("C_InitToken: %d", CKR_FUNCTION_NOT_SUPPORTED));
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
@@ -1528,7 +1527,7 @@ static CK_RV
 gkr_C_WaitForSlotEvent (CK_FLAGS flags, CK_SLOT_ID_PTR pSlot, CK_VOID_PTR pRserved)
 {
 	DBG (("C_WaitForSlotEvent: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	
 	/* 
 	 * PKCS#11 GRAY AREA: What happens when we know we'll *never* 
@@ -1556,7 +1555,7 @@ gkr_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data,
 	CK_RV ret = CKR_OK;
 
 	DBG (("C_OpenSession: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (session, CKR_ARGUMENTS_BAD);
 	PREREQ (flags & CKF_SERIAL_SESSION, CKR_FUNCTION_NOT_PARALLEL);
 
@@ -1586,15 +1585,15 @@ gkr_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data,
 	 */
 	pthread_mutex_lock (&cs->mutex);
 	
-		ret = call_session_prep_call (cs, CRYPTOKI_CALL_C_OpenSession);
+		ret = call_session_prep_call (cs, PKCS11_CALL_C_OpenSession);
 		if (ret == CKR_OK)
-			ret = gkr_cryptoki_message_write_byte_array (cs->req, 
-			                            (unsigned char*)GKR_CRYPTOKI_HANDSHAKE, 
-		                                    GKR_CRYPTOKI_HANDSHAKE_LEN);
+			ret = gkr_pkcs11_message_write_byte_array (cs->req, 
+			                            (unsigned char*)GKR_PKCS11_HANDSHAKE, 
+		                                    GKR_PKCS11_HANDSHAKE_LEN);
 		if (ret == CKR_OK) /* We don't use the slot id yet */
-			ret = gkr_cryptoki_message_write_uint32 (cs->req, 0); 
+			ret = gkr_pkcs11_message_write_uint32 (cs->req, 0); 
 		if (ret == CKR_OK)
-			ret = gkr_cryptoki_message_write_uint32 (cs->req, flags);
+			ret = gkr_pkcs11_message_write_uint32 (cs->req, flags);
 		if (ret == CKR_OK)
 			ret = call_session_do_call (cs);
 		ret = call_session_done_call (cs, ret);
@@ -1629,7 +1628,7 @@ gkr_C_CloseSession (CK_SESSION_HANDLE session)
 	CK_RV ret = CKR_OK;
 	
 	DBG (("C_OpenSession: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 
 	/* The 'remove' flag removes it from the main session list */
 	ret = call_session_find_lock_and_ref (session, 1, &cs);
@@ -1666,7 +1665,7 @@ gkr_C_CloseAllSessions (CK_SLOT_ID id)
 	CK_RV ret = CKR_OK;
 	
 	DBG (("C_CloseAllSessions: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 
 	if (id == slot_id) 
 		call_session_close_all ();
@@ -1681,7 +1680,7 @@ static CK_RV
 gkr_C_GetFunctionStatus (CK_SESSION_HANDLE hSession)
 {
 	DBG (("C_GetFunctionStatus: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	DBG (("C_CancelFunction: %d", CKR_FUNCTION_NOT_PARALLEL));
 	return CKR_FUNCTION_NOT_PARALLEL;
 }
@@ -1690,7 +1689,7 @@ static CK_RV
 gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 {
 	DBG (("C_CancelFunction: enter"));
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	DBG (("C_CancelFunction: %d", CKR_FUNCTION_NOT_PARALLEL));
 	return CKR_FUNCTION_NOT_PARALLEL;
 }
@@ -1700,13 +1699,13 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 
 #define BEGIN_CALL(session, call_id) \
 	DBG ((#call_id ": enter")); \
-	PREREQ (cryptoki_initialized, CKR_CRYPTOKI_NOT_INITIALIZED); \
+	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED); \
 	{  \
 		CallSession *_cs; \
 		CK_RV _ret = CKR_OK; \
 		_ret = call_session_find_lock_and_ref (session, 0, &_cs); \
 		if (_ret != CKR_OK) return _ret; \
-		_ret = call_session_prep_call (_cs, CRYPTOKI_CALL_##call_id); \
+		_ret = call_session_prep_call (_cs, PKCS11_CALL_##call_id); \
 		if (_ret != CKR_OK) goto _cleanup;
 
 #define PROCESS_CALL \
@@ -1722,15 +1721,15 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	} 
 
 #define IN_ATTRIBUTE_ARRAY(arr, num) \
-	_ret = gkr_cryptoki_message_write_attribute_array (_cs->req, (arr), (num)); \
+	_ret = gkr_pkcs11_message_write_attribute_array (_cs->req, (arr), (num)); \
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define IN_BYTE_ARRAY(arr, len) \
-	_ret = gkr_cryptoki_message_write_byte_array (_cs->req, arr, len); \
+	_ret = gkr_pkcs11_message_write_byte_array (_cs->req, arr, len); \
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define IN_HANDLE(val) \
-	_ret = gkr_cryptoki_message_write_uint32 (_cs->req, val); \
+	_ret = gkr_pkcs11_message_write_uint32 (_cs->req, val); \
 	if (_ret != CKR_OK) goto _cleanup;
 	
 #define IN_MECHANISM(val) \
@@ -1738,7 +1737,7 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define IN_ULONG(val) \
-	_ret = gkr_cryptoki_message_write_uint32 (_cs->req, val);  \
+	_ret = gkr_pkcs11_message_write_uint32 (_cs->req, val);  \
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_ATTRIBUTE_ARRAY(arr, num, max) \
@@ -1752,7 +1751,7 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_HANDLE(val) \
-	_ret = gkr_cryptoki_message_read_uint32 (_cs->resp, val); \
+	_ret = gkr_pkcs11_message_read_uint32 (_cs->resp, val); \
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_HANDLE_ARRAY(a, n, mx) \
@@ -1761,7 +1760,7 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_RETURN_CODE() \
-	_ret = gkr_cryptoki_message_read_uint32 (_cs->resp, (_ret == CKR_OK) ? &_ret : NULL); \
+	_ret = gkr_pkcs11_message_read_uint32 (_cs->resp, (_ret == CKR_OK) ? &_ret : NULL); \
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_SESSION_INFO(info) \
@@ -1769,7 +1768,7 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	if (_ret != CKR_OK) goto _cleanup;
 	
 #define OUT_ULONG(val) \
-	_ret = gkr_cryptoki_message_read_uint32 (_cs->resp, val); \
+	_ret = gkr_pkcs11_message_read_uint32 (_cs->resp, val); \
 	if (_ret != CKR_OK) goto _cleanup;
 
 
