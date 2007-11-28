@@ -223,8 +223,8 @@ gkr_pkix_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		
 	case CKA_ID:
 		if(!cert->data->keyid) {
-			data = gkr_pkix_asn1_encode(cert->data->asn1, "tbsCertificate.subjectPublicKeyInfo",
-			                            &n_data, NULL);
+			data = gkr_pkix_asn1_encode (cert->data->asn1, "tbsCertificate.subjectPublicKeyInfo",
+			                             &n_data, NULL);
 			g_return_val_if_fail (data, CKR_GENERAL_ERROR);
 			
 			cert->data->n_keyid = gcry_md_get_algo_dlen (GCRY_MD_SHA1);
@@ -342,9 +342,9 @@ gkr_pkix_cert_class_init (GkrPkixCertClass *klass)
 	
 	gobject_class = (GObjectClass*)klass;
 
-	parent_class = g_type_class_peek_parent (klass);
-	gkr_pkix_cert_parent_class = parent_class;
+	gkr_pkix_cert_parent_class = g_type_class_peek_parent (klass);
 	
+	parent_class = GKR_PK_OBJECT_CLASS (klass);
 	parent_class->get_bool_attribute = gkr_pkix_cert_get_bool_attribute;
 	parent_class->get_ulong_attribute = gkr_pkix_cert_get_ulong_attribute;
 	parent_class->get_data_attribute = gkr_pkix_cert_get_data_attribute;
@@ -355,8 +355,10 @@ gkr_pkix_cert_class_init (GkrPkixCertClass *klass)
 	gobject_class->finalize = gkr_pkix_cert_finalize;
 	
 	g_object_class_install_property (gobject_class, PROP_ASN1_TREE,
-	g_param_spec_pointer ("asn1-tree", "ASN1 Certificate", "Raw Certificate Object",
+		g_param_spec_pointer ("asn1-tree", "ASN1 Certificate", "Raw Certificate Object",
 		              G_PARAM_READWRITE));
+
+	g_type_class_add_private (gobject_class, sizeof (GkrPkixCertData));
 }
 
 GkrPkixCert*

@@ -52,9 +52,9 @@ enum
 typedef void (*OperationCleanup) (SessionInfo* sinfo);
 
 struct _SessionInfo {
-	gboolean loggedin : 1;          /* Session has a user logged in */
-	gboolean valid : 1;             /* Session is valid */
-	gboolean readonly : 1;          /* Session is readonly */
+	gboolean loggedin;          /* Session has a user logged in */
+	gboolean valid;             /* Session is valid */
+	gboolean readonly;          /* Session is readonly */
 
 	guint operation_type;
 	OperationCleanup operation_cleanup;
@@ -287,20 +287,22 @@ session_C_Login (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (sinfo->loggedin) 
 		return CKR_USER_ALREADY_LOGGED_IN;
 	
-	/* Readonly session, SO can't log in */
-	if (sinfo->readonly)
-		return CKR_SESSION_READ_ONLY_EXISTS;
-		
-	/* Actually SO can't log in at all ... */
-	if (user_type != CKU_USER) 
-		/* PKCS#11 QUESTION: What should we really be returning here? */
-		return CKR_USER_TYPE_INVALID;
-	
 	if (gkr_pkcs11_message_read_uint32 (req, &user_type) != CKR_OK)
 		return PROTOCOL_ERROR;
 	if (!read_byte_array (req, &pin, &pin_len))
 		return PROTOCOL_ERROR;
 
+	if (user_type != CKU_USER) {
+
+		/* Readonly session, SO can't log in */
+		if (sinfo->readonly)
+			return CKR_SESSION_READ_ONLY_EXISTS;
+		
+		/* Actually SO can't log in at all ... */
+		/* PKCS#11 QUESTION: What should we really be returning here? */
+		return CKR_USER_TYPE_INVALID;
+	}
+	
 	/* 
 	 * TODO: Implement by unlocking gnome-keyring default keyring, since we 
 	 * a CKF_PROTECTED_AUTHENTICATION_PATH type token, we would 
@@ -510,7 +512,7 @@ session_C_FindObjects (SessionInfo *sinfo, GkrPkcs11Message *req,
 	g_assert (gkr_pkcs11_message_verify_part (resp, "au"));
 	
 	/* First the number returned */
-	n_objects = MIN(max, g_list_length (objects));
+	n_objects = MIN (max, g_list_length (objects));
 	gkr_buffer_add_uint32 (&resp->buffer, n_objects);
 	
 	/* Now each of them */
@@ -524,6 +526,9 @@ session_C_FindObjects (SessionInfo *sinfo, GkrPkcs11Message *req,
 		gkr_buffer_add_uint32 (&resp->buffer, obj->handle);
 		g_object_unref (obj);
 	}
+
+	/* In case we get called again, or there are leftovers */
+	sinfo->operation_data = objects;
 	
 	return CKR_OK;
 }
@@ -1110,8 +1115,7 @@ gkr_pkcs11_daemon_session_thread (gpointer user_data)
 	
 	session_info_free (sinfo);
 	
-	/* We're all done */
-	close (sock);
+	/* socket is closed elsewhere */
 	
 	return NULL;
 }

@@ -1,5 +1,15 @@
 2007-11-28  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location-watch.c:
+	* common/gkr-location-watch.h:
+	* keyrings/gkr-keyrings.c: 
+	* pk/gkr-pk-object-manager.c: 
+	* tests/unit-test-location-watch.c: Allow excluding files from location watch
+	
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* pkix/gkr-pkix-asn1.c:
+	* pkix/gkr-pkix-cert.c: Fix problems listing certificates
+	
 	* pk/gkr-pk-object.c:
 	* pk/gkr-pk-util.c:
 	* pkcs11/gkr-pkcs11-daemon.c:

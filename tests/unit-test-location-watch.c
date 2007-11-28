@@ -94,7 +94,7 @@ void unit_test_location_watch (CuTest *cu)
 {
 	GQuark loc;
 	
-	the_watch = gkr_location_watch_new (NULL, 0, SUBDIR, WILDCARD);
+	the_watch = gkr_location_watch_new (NULL, 0, SUBDIR, WILDCARD, NULL);
 	g_signal_connect (the_watch, "location-added", G_CALLBACK (location_added), cu); 
 	g_signal_connect (the_watch, "location-removed", G_CALLBACK (location_removed), cu); 
 	g_signal_connect (the_watch, "location-changed", G_CALLBACK (location_changed), cu);

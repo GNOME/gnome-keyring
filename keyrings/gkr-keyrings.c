@@ -192,7 +192,7 @@ keyrings_init (void)
 	gkr_keyrings_add (session_keyring);
 	
 	g_assert (!location_watch);
-	location_watch = gkr_location_watch_new (NULL, 0, "keyrings", "*.keyring");
+	location_watch = gkr_location_watch_new (NULL, 0, "keyrings", "*.keyring", NULL);
 	g_signal_connect (location_watch, "location-added", G_CALLBACK (load_keyring), NULL);
 	g_signal_connect (location_watch, "location-changed", G_CALLBACK (load_keyring), NULL);
 	g_signal_connect (location_watch, "location-removed", G_CALLBACK (remove_keyring), NULL);

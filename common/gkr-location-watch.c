@@ -47,7 +47,8 @@ typedef struct {
 typedef struct _GkrLocationWatchPrivate GkrLocationWatchPrivate;
 struct _GkrLocationWatchPrivate {
 	/* Specification */
-	GPatternSpec *pattern;
+	GPatternSpec *include;
+	GPatternSpec *exclude;
 	gchar *subdir;
 	GQuark only_volume;
 	
@@ -187,7 +188,9 @@ update_volume (GkrLocationWatch *watch, GQuark volume, gboolean force_all,
 	while ((filename = g_dir_read_name (dir)) != NULL) {
 		if (filename[0] == '.')
 			continue;
-		if (!g_pattern_match_string (pv->pattern, filename))
+		if (pv->include && !g_pattern_match_string (pv->include, filename))
+			continue;
+		if (pv->exclude && g_pattern_match_string (pv->exclude, filename))
 			continue;
 
 		loc = gkr_location_from_child (dirloc, filename);
@@ -238,7 +241,10 @@ gkr_location_watch_finalize (GObject *obj)
 	GkrLocationWatch *watch = GKR_LOCATION_WATCH (obj);
 	GkrLocationWatchPrivate *pv = GKR_LOCATION_WATCH_GET_PRIVATE (watch);
 	 
-	g_pattern_spec_free (pv->pattern);
+	if (pv->include)
+		g_pattern_spec_free (pv->include);
+	if (pv->exclude)
+		g_pattern_spec_free (pv->exclude);
 	g_free (pv->subdir);
 	
 	g_hash_table_destroy (pv->locations);
@@ -276,7 +282,7 @@ gkr_location_watch_class_init (GkrLocationWatchClass *klass)
 
 GkrLocationWatch* 
 gkr_location_watch_new (GkrLocationManager *locmgr, GQuark only_volume, 
-                        const gchar *subdir, const gchar *pattern)
+                        const gchar *subdir, const gchar *include, const gchar *exclude)
 {
 	GkrLocationWatch *watch = g_object_new (GKR_TYPE_LOCATION_WATCH, NULL);
 	GkrLocationWatchPrivate *pv = GKR_LOCATION_WATCH_GET_PRIVATE (watch);
@@ -287,7 +293,8 @@ gkr_location_watch_new (GkrLocationManager *locmgr, GQuark only_volume,
 	g_return_val_if_fail (GKR_IS_LOCATION_MANAGER (locmgr), NULL);
 		
 	/* TODO: Use properties */	
-	pv->pattern = pattern ? g_pattern_spec_new (pattern) : NULL;
+	pv->include = include ? g_pattern_spec_new (include) : NULL;
+	pv->exclude = exclude ? g_pattern_spec_new (exclude) : NULL;
 	pv->subdir = g_strdup (subdir);
 	pv->only_volume = only_volume;
 	

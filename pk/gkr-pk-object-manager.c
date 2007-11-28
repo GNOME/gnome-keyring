@@ -506,13 +506,13 @@ gkr_pk_object_manager_init (GkrPkObjectManager *objmgr)
  	pv->objects_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_array);
 	pv->specific_load_requests = g_hash_table_new_full (gkr_unique_hash, gkr_unique_equals, gkr_unique_free, NULL);
 	
-	pv->watch = gkr_location_watch_new (NULL, 0, "keyrings/pk", "*");
+	pv->watch = gkr_location_watch_new (NULL, 0, "keyrings/pk", "*", "*.gkr");
  	g_signal_connect (pv->watch, "location-added", G_CALLBACK (location_load), objmgr);
  	g_signal_connect (pv->watch, "location-changed", G_CALLBACK (location_load), objmgr);
  	g_signal_connect (pv->watch, "location-removed", G_CALLBACK (location_remove), objmgr);
  	
  	/* Only match id_rsa and id_dsa SSH key files */
- 	pv->ssh_watch = gkr_location_watch_new (NULL, GKR_LOCATION_VOLUME_HOME, ".ssh", "id_?sa");
+ 	pv->ssh_watch = gkr_location_watch_new (NULL, GKR_LOCATION_VOLUME_HOME, ".ssh", "id_?sa", NULL);
  	g_signal_connect (pv->ssh_watch, "location-added", G_CALLBACK (location_load), objmgr);
  	g_signal_connect (pv->ssh_watch, "location-changed", G_CALLBACK (location_load), objmgr);
  	g_signal_connect (pv->ssh_watch, "location-removed", G_CALLBACK (location_remove), objmgr);

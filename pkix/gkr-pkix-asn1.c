@@ -128,7 +128,7 @@ gkr_pkix_asn1_encode (ASN1_TYPE asn, const gchar* part, gsize *n_data,
 	data = (alloc) (NULL, len);
 	g_return_val_if_fail (data != NULL, NULL);
 	
-	res = asn1_der_coding (asn, "", data, &len, NULL);
+	res = asn1_der_coding (asn, part, data, &len, NULL);
 	if (res != ASN1_SUCCESS) {
 		(alloc) (data, 0);
 		return NULL;

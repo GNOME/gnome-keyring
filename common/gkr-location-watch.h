@@ -58,7 +58,8 @@ GType                    gkr_location_watch_get_type             (void) G_GNUC_C
 GkrLocationWatch*        gkr_location_watch_new                  (GkrLocationManager *locmgr,
                                                                   GQuark only_volume, 
                                                                   const gchar *subdir,
-                                                                  const gchar *pattern);
+                                                                  const gchar *include_pattern,
+                                                                  const gchar *exclude_pattern);
 
 void                     gkr_location_watch_refresh              (GkrLocationWatch *watch, 
                                                                   gboolean force_all);
