@@ -1,3 +1,97 @@
+
+#include "config.h"
+
+#include "common/gkr-daemon-util.h"
+#include "common/gkr-cleanup.h"
+
+#include <glib.h>
+
+#include <sys/stat.h>
+#include <errno.h>
+#include <unistd.h>
+
+static gchar* master_directory = NULL;
+static gchar* published_environ = NULL;
+
+/* Forward declaration, see gnu libc code lower down in this file */
+static char* do_mkdtemp (char *template);
+
+static void
+uninit_master_directory (gpointer data)
+{
+	g_assert (master_directory);
+	rmdir (master_directory);
+	g_free (master_directory);
+	master_directory = NULL;
+}
+
+static void
+init_master_directory (void)
+{
+	gboolean have_path = FALSE;
+
+	/* 
+	 * When run under control of unit tests, we let the parent process
+	 * pass in the socket path that we're going to create our main socket on.
+ 	 */
+	
+#ifdef WITH_TESTS
+	const gchar* env = g_getenv ("GNOME_KEYRING_TEST_PATH");
+	if (env && *env) {
+		master_directory = g_strdup (env);
+		if (g_mkdir_with_parents (master_directory, S_IRUSR | S_IWUSR | S_IXUSR) < 0)
+			g_warning ("couldn't create socket directory: %s", g_strerror (errno));
+		have_path = TRUE;
+	} 
+#endif /* WITH_TESTS */	
+	
+	/* Create private directory for agent socket */
+	if (!have_path) {
+		master_directory = g_build_filename (g_get_tmp_dir (), "keyring-XXXXXX", NULL);
+		if (do_mkdtemp (master_directory) == NULL)
+			g_warning ("couldn't create socket directory: %s", g_strerror (errno));
+	}
+	
+	gkr_cleanup_register (uninit_master_directory, NULL);
+}
+		
+const gchar*
+gkr_daemon_util_get_master_directory (void)
+{
+	if (!master_directory) 
+		init_master_directory ();
+	
+	return master_directory;
+}
+
+static void
+uninit_environment (gpointer data)
+{
+	g_free (published_environ);
+	published_environ = NULL;
+}
+
+void
+gkr_daemon_util_push_environment (const gchar *name, const gchar *value)
+{
+	gchar *env;
+	
+	if (!published_environ)
+		gkr_cleanup_register (uninit_environment, NULL);
+		
+	env = g_strdup_printf ("%s%s=%s\n", 
+	                       published_environ ? published_environ : "",
+	                       name, value);
+	g_free (published_environ);
+	published_environ = env;
+}
+
+const gchar*
+gkr_daemon_util_get_environment (void)
+{
+	return published_environ ? published_environ : "";
+}
+
 /* Copyright (C) 1999, 2001-2002 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -21,9 +115,6 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
-
-/* Specification.  */
-#include "mkdtemp.h"
 
 #include <errno.h>
 #ifndef __set_errno
@@ -190,8 +281,8 @@ gen_tempname (tmpl)
    they are replaced with a string that makes the filename unique.
    The directory is created, mode 700, and its name is returned.
    (This function comes from OpenBSD.) */
-char *
-mkdtemp (template)
+static char *
+do_mkdtemp (template)
      char *template;
 {
   if (gen_tempname (template))

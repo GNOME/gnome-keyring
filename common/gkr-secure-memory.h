@@ -42,22 +42,44 @@ extern void   gkr_memory_lock (void);
 
 extern void   gkr_memory_unlock (void);
 
+/*
+ * Allocation Fallbacks
+ * 
+ * If we cannot allocate secure memory, then this function
+ * (defined elsewhere) will be called which has a chance to 
+ * allocate other memory abort or do whatever.
+ * 
+ * Same call semantics as realloc with regard to NULL and zeros 
+ */
+extern void*  gkr_memory_fallback (void *p, unsigned long sz);
+
+
 /* 
  * Main functionality
  *  
  * Allocations return NULL on failure.
  */ 
+ 
+#define GKR_SECURE_USE_FALLBACK     0x0001
 
-void*  gkr_secure_memory_alloc        (unsigned long sz);
+void*  gkr_secure_alloc        (unsigned long sz);
 
-void*  gkr_secure_memory_realloc      (void* p, unsigned long sz);
+void*  gkr_secure_alloc_full   (unsigned long, int flags);
 
-void   gkr_secure_memory_free         (void* p); 
+void*  gkr_secure_realloc      (void *p, unsigned long sz);
 
-int    gkr_secure_memory_check        (void* p); 
+void*  gkr_secure_realloc_full (void *p, unsigned long sz, int fallback);
 
-unsigned long    gkr_secure_memory_size         (void* p);
+void   gkr_secure_free         (void* p); 
 
-void   gkr_secure_memory_dump         (void);
+void   gkr_secure_free_full    (void* p, int fallback); 
+
+int    gkr_secure_check        (const void* p); 
+
+void   gkr_secure_dump_blocks  (void);
+
+char*  gkr_secure_strdup       (const char *str);
+
+void   gkr_secure_strfree      (char *str);
 
 #endif /* GKR_SECURE_MEMORY_H */

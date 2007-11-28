@@ -40,6 +40,13 @@
 #include <unistd.h>
 #include <assert.h>
 
+/*
+ * Use this to force all memory through malloc
+ * for use with valgrind and the like 
+ */
+#define FORCE_MALLOC_MEMORY 0
+#define FORCE_FALLBACK_MEMORY 0
+
 #define DEBUG_SECURE_MEMORY 0
 
 #if DEBUG_SECURE_MEMORY 
@@ -407,13 +414,14 @@ get_locked_pages (unsigned long *sz)
 	/* Make sure sz is a multiple of the page size */
 	pgsize = getpagesize ();
 	*sz = (*sz + pgsize -1) & ~(pgsize - 1);
-		
-#ifndef HAVE_MLOCK
-	if (lock_warning)
-		fprintf (stderr, "your system does not support private memory");
-	lock_warning = 0;
-	return NULL;
-#else
+	
+#if FORCE_MALLOC_MEMORY
+	pages = malloc (*sz);
+	memset (pages, 0, *sz);
+	lock_warning = 1;
+	return pages;
+	
+#elif defined(HAVE_MLOCK)
 	pages = mmap (0, *sz, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
 	if (pages == MAP_FAILED) {
 		if (lock_warning)
@@ -437,7 +445,14 @@ get_locked_pages (unsigned long *sz)
 	
 	lock_warning = 1;
 	return pages;
+	
+#else
+	if (lock_warning)
+		fprintf (stderr, "your system does not support private memory");
+	lock_warning = 0;
+	return NULL;
 #endif
+
 }
 
 static void 
@@ -446,9 +461,10 @@ rel_locked_pages (void *pages, unsigned long sz)
 	ASSERT (pages);
 	ASSERT (sz % getpagesize () == 0);
 	
-#ifndef HAVE_MLOCK
-	ASSERT (FALSE);
-#else
+#if FORCE_MALLOC_MEMORY
+	free (pages);
+	
+#elif defined(HAVE_MLOCK)
 	if (munlock (pages, sz) < 0)
 		fprintf (stderr, "couldn't unlock private memory: %s\n", strerror (errno));
 		
@@ -456,6 +472,9 @@ rel_locked_pages (void *pages, unsigned long sz)
 		fprintf (stderr, "couldn't unmap private anonymous memory: %s\n", strerror (errno));
 		
 	DEBUG_ALLOC ("gkr-secure-memory: freed block ", sz);
+	
+#else
+	ASSERT (FALSE);
 #endif
 }
 
@@ -476,6 +495,11 @@ block_create (unsigned long size)
 {
 	MemBlock *bl;
 	void *blmem;
+
+#if FORCE_FALLBACK_MEMORY
+	/* We can force all all memory to be malloced */
+	return NULL;
+#endif
 	
 	size += sizeof (MemBlock);
 	
@@ -528,7 +552,7 @@ block_destroy (MemBlock *bl)
 }
 
 static int
-block_belongs (MemBlock *bl, void *p)
+block_belongs (MemBlock *bl, const void *p)
 {
 	ASSERT (bl);
 	ASSERT (bl->size > 0);
@@ -539,7 +563,13 @@ block_belongs (MemBlock *bl, void *p)
 }
 
 void*
-gkr_secure_memory_alloc (unsigned long sz)
+gkr_secure_alloc (unsigned long sz)
+{
+	return gkr_secure_alloc_full (sz, GKR_SECURE_USE_FALLBACK);
+}
+
+void*
+gkr_secure_alloc_full (unsigned long sz, int flags)
 {
 	MemBlock *bl;
 	void *p = NULL;
@@ -568,6 +598,12 @@ gkr_secure_memory_alloc (unsigned long sz)
 	
 	DO_UNLOCK ();
 	
+	if (!p && (flags & GKR_SECURE_USE_FALLBACK)) {
+		p = gkr_memory_fallback (NULL, sz);
+		if (p) /* Our returned memory is always zeroed */
+			memset (p, 0, sz);
+	}
+	
 	if (!p)
 		errno = ENOMEM;
 	
@@ -575,7 +611,13 @@ gkr_secure_memory_alloc (unsigned long sz)
 }
 
 void*
-gkr_secure_memory_realloc (void *p, unsigned long sz)
+gkr_secure_realloc (void *p, unsigned long sz)
+{
+	return gkr_secure_realloc_full (p, sz, GKR_SECURE_USE_FALLBACK);
+}
+
+void*
+gkr_secure_realloc_full (void *p, unsigned long sz, int flags)
 {
 	MemBlock *bl = NULL;
 	unsigned long oldsz = 0;
@@ -583,14 +625,15 @@ gkr_secure_memory_realloc (void *p, unsigned long sz)
 	void *n = NULL;	
 	
 	if (sz > 0xFFFFFFFF / 2) {
-		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", sz);   
+		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", sz);
+		ASSERT (0 && "tried to allocate an insane amount of memory");
 		return NULL;
 	}
 	
 	if (p == NULL)
-		return gkr_secure_memory_alloc (sz);
+		return gkr_secure_alloc_full (sz, flags);
 	if (!sz) {
-		gkr_secure_memory_free (p);
+		gkr_secure_free_full (p, flags);
 		return NULL;
 	}
 	
@@ -615,16 +658,24 @@ gkr_secure_memory_realloc (void *p, unsigned long sz)
 	DO_UNLOCK ();		
 	
 	if (!bl) {
-		fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)p);
-		ASSERT (0 && "memory does does not belong to gnome-keyring");
-		return NULL;
+		if ((flags & GKR_SECURE_USE_FALLBACK)) {
+			/* 
+			 * In this case we can't zero the returned memory, 
+			 * because we don't know what the block size was.
+			 */
+			return gkr_memory_fallback (p, sz);
+		} else {
+			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)p);
+			ASSERT (0 && "memory does does not belong to gnome-keyring");
+			return NULL;
+		}
 	}
 		
 	if (donew) {
-		n = gkr_secure_memory_alloc (sz);
+		n = gkr_secure_alloc_full (sz, flags);
 		if (n) {
 			memcpy (n, p, oldsz);
-			gkr_secure_memory_free (p);
+			gkr_secure_free_full (p, flags);
 		}
 	}
 	
@@ -635,7 +686,13 @@ gkr_secure_memory_realloc (void *p, unsigned long sz)
 }
 
 void
-gkr_secure_memory_free (void *p)
+gkr_secure_free (void *p)
+{
+	gkr_secure_free_full (p, GKR_SECURE_USE_FALLBACK);
+}
+
+void
+gkr_secure_free_full (void *p, int flags)
 {
 	MemBlock *bl = NULL;
 	
@@ -655,13 +712,17 @@ gkr_secure_memory_free (void *p)
 	DO_UNLOCK ();
 	
 	if (!bl) {
-		fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)p);
-		ASSERT (0 && "memory does does not belong to gnome-keyring");
+		if ((flags & GKR_SECURE_USE_FALLBACK)) {
+			gkr_memory_fallback (p, 0);
+		} else {
+			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)p);
+			ASSERT (0 && "memory does does not belong to gnome-keyring");
+		}
 	}
 } 
 
 int  
-gkr_secure_memory_check (void *p)
+gkr_secure_check (const void *p)
 {
 	MemBlock *bl = NULL;
 
@@ -678,34 +739,8 @@ gkr_secure_memory_check (void *p)
 	return bl == NULL ? 0 : 1;
 } 
 
-unsigned long
-gkr_secure_memory_size (void* p)
-{
-	MemBlock *bl = NULL;
-	unsigned long sz;
-
-	DO_LOCK ();
-	
-		/* Find out where it belongs to */
-		for (bl = most_recent_block; bl; bl = bl->next) {
-			if (block_belongs (bl, p)) {
-				sz = suba_allocation_size (bl->suba, p); 
-				break;
-			}
-		}
-		
-	DO_UNLOCK ();
-	
-	if (!bl) {
-		fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)p);
-		ASSERT (0 && "memory does does not belong to gnome-keyring");
-	}
-	
-	return sz;
-}
-
 void
-gkr_secure_memory_dump (void)
+gkr_secure_dump_blocks (void)
 {
 	MemBlock *bl = NULL;
 
@@ -720,4 +755,45 @@ gkr_secure_memory_dump (void)
 		}
 		
 	DO_UNLOCK ();
+}
+
+char*
+gkr_secure_strdup (const char *str)
+{
+	unsigned long len;
+	char *res;
+	
+	if (!str)
+		return NULL;
+	
+	len = strlen (str) + 1;	
+	res = (char*)gkr_secure_alloc (len);
+	strcpy (res, str);
+	return res;
+}
+
+void
+gkr_secure_strfree (char *str)
+{
+	volatile char *vp;
+	size_t len;
+	
+	if (!str)
+		return;
+		
+	/*
+	 * If we're using unpageable 'secure' memory, then the free call
+	 * should zero out the memory, but because on certain platforms 
+	 * we may be using normal memory, zero it out here just in case.
+	 */
+		
+        vp = (volatile char*)str;
+       	len = strlen (str);
+        while (len) { 
+        	*vp = 0xAA;
+        	vp++;
+        	len--; 
+        } 
+	
+	gkr_secure_free_full (str, GKR_SECURE_USE_FALLBACK);
 }

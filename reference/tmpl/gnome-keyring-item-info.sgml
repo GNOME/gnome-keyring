@@ -25,6 +25,7 @@ Use gnome_keyring_item_get_info() or gnome_keyring_item_set_info().</para>
 @GNOME_KEYRING_ITEM_NETWORK_PASSWORD: 
 @GNOME_KEYRING_ITEM_NOTE: 
 @GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD: 
+@GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD: 
 @GNOME_KEYRING_ITEM_LAST_TYPE: 
 
 <!-- ##### TYPEDEF GnomeKeyringItemInfo ##### -->

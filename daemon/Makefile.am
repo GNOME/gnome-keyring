@@ -10,9 +10,8 @@ INCLUDES=	\
 	-I$(top_builddir) 				\
 	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS)				\
+	$(GTHREAD_CFLAGS)				\
 	$(GLIB_CFLAGS)
-
-LIBADD_SOURCE = mkdtemp.c mkdtemp.h
 
 gnome_keyring_daemon_SOURCES = \
 	gkr-daemon.c \
@@ -22,15 +21,15 @@ gnome_keyring_daemon_SOURCES = \
 	gkr-daemon-ops.c
 
 gnome_keyring_daemon_LDADD = \
+	$(top_builddir)/ssh/libgkr-ssh.la \
+	$(top_builddir)/pk/libgkr-pk.la \
+	$(top_builddir)/keyrings/libgkr-keyrings.la \
+	$(top_builddir)/ui/libgkr-ui.la \
 	$(top_builddir)/library/libgnome-keyring-common.la \
-	$(top_builddir)/keyrings/libgnome-keyring-keyrings.la \
-	$(top_builddir)/ui/libdaemon-ui-component.la \
-	$(top_builddir)/common/libgkr-daemon-common.la \
-	@LIBOBJS@ \
+	$(top_builddir)/common/libgkr-common.la \
+	$(DAEMON_LIBS) \
+	$(GOBJECT_LIBS) \
+	$(GTHREAD_LIBS) \
 	$(DAEMON_LIBS) \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)
-
-EXTRA_DIST = \
-	$(LIBADD_SOURCE) 
-

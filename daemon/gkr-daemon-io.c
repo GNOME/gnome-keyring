@@ -37,15 +37,16 @@
 #endif
 
 #include "gkr-daemon.h"
-#include "mkdtemp.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-buffer.h"
+#include "common/gkr-cleanup.h"
+#include "common/gkr-daemon-util.h"
+#include "common/gkr-secure-memory.h"
 
 #include "keyrings/gkr-keyrings.h"
 
 #include "library/gnome-keyring.h"
-#include "library/gnome-keyring-memory.h"
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
 
@@ -75,7 +76,6 @@ typedef struct {
 	GkrBuffer output_buffer;
 } GnomeKeyringClient;
 
-static char tmp_dir[1024] = { 0, };
 static char socket_path[1024] = { 0, };
 
 #if 0
@@ -265,7 +265,7 @@ yield_and_read_all (int fd, guchar *buf, int len)
 		
 		/* Is this worker stopping? */
 		if (gkr_async_is_stopping ())
-			return -1;
+			return FALSE;
 			
 		/* Don't block other threads during the read */
 		gkr_async_begin_concurrent ();
@@ -300,7 +300,7 @@ yield_and_write_all (int fd, const guchar *buf, int len)
 		
 		/* Is this worker stopping? */
 		if (gkr_async_is_stopping ())
-			return -1;
+			return FALSE;
 			
 		/* Don't block other threads during the read */
 		gkr_async_begin_concurrent ();
@@ -473,7 +473,7 @@ client_new (int fd)
 	 * so we err on the side of caution and use secure memory in case
 	 * passwords or secrets are involved.
 	 */  
-	gkr_buffer_init_full (&client->input_buffer, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&client->input_buffer, 128, gkr_secure_realloc);
 
 	client->worker = gkr_async_worker_start (client_worker_main, 
 	                                         client_worker_done, client);
@@ -504,55 +504,42 @@ accept_client (GIOChannel *channel, GIOCondition cond,
 	return TRUE;
 }
 
-void
-gkr_daemon_io_cleanup_socket_dir (void)
+static void
+cleanup_socket_dir (gpointer data)
 {
 	if(*socket_path)
 		unlink (socket_path);
-	if(*tmp_dir)
-		rmdir (tmp_dir);
+}
+
+const gchar*
+gkr_daemon_io_get_socket_path (void)
+{
+	return socket_path[0] ? socket_path : NULL;
 }
 
 gboolean
-gkr_daemon_io_create_master_socket (const char **path)
+gkr_daemon_io_create_master_socket (void)
 {
-	gboolean have_path = FALSE;
+	const gchar *tmp_dir;
 	int sock;
 	struct sockaddr_un addr;
 	GIOChannel *channel;
-	gchar *tmp_tmp_dir = NULL;
-	
-	/* 
-	 * When run under control of unit tests, we let the parent process
-	 * pass in the socket path that we're going to create our main socket on.
-	 */
+
+	tmp_dir = gkr_daemon_util_get_master_directory ();
+	g_return_val_if_fail (tmp_dir, FALSE);
+		
+	snprintf (socket_path, sizeof (socket_path), "%s/socket", tmp_dir);
 	
 #ifdef WITH_TESTS
-	const gchar* env = g_getenv ("GNOME_KEYRING_TEST_PATH");
-	if (env && *env) {
-		g_strlcpy (tmp_dir, env, sizeof (tmp_dir));
-		have_path = TRUE;
-	} 
-#endif /* WITH_TESTS */	
-	
-	if (!have_path) {
-		/* Create private directory for agent socket */
-		tmp_tmp_dir = g_build_filename (g_get_tmp_dir (), "keyring-XXXXXX", NULL);
-		strncpy (tmp_dir, tmp_tmp_dir, sizeof (tmp_dir));
-		if (mkdtemp (tmp_dir) == NULL) {
-			perror ("mkdtemp: socket dir");
-			return FALSE;
-		}
-	}
-
-	snprintf (socket_path, sizeof (socket_path), "%s/socket", tmp_dir);
-	if (have_path)
+	if (g_getenv ("GNOME_KEYRING_TEST_PATH"))
 		unlink (socket_path);
+#endif
+
+	gkr_cleanup_register (cleanup_socket_dir, NULL);
 	
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
 		perror("socket");
-		gkr_daemon_io_cleanup_socket_dir ();
 		return FALSE;
 	}
 	memset(&addr, 0, sizeof(addr));
@@ -560,28 +547,23 @@ gkr_daemon_io_create_master_socket (const char **path)
 	strncpy (addr.sun_path, socket_path, sizeof (addr.sun_path));
 	if (bind (sock, (struct sockaddr *) & addr, sizeof (addr)) < 0) {
 		perror ("bind");
-		gkr_daemon_io_cleanup_socket_dir ();
 		return FALSE;
 	}
 	
 	if (listen (sock, 128) < 0) {
 		perror ("listen");
-		gkr_daemon_io_cleanup_socket_dir ();
 		return FALSE;
 	}
 
         if (!set_local_creds (sock, TRUE)) {
 		close (sock);
-		gkr_daemon_io_cleanup_socket_dir ();
 		return FALSE;
 	}
 
-	g_free (tmp_tmp_dir);
 	channel = g_io_channel_unix_new (sock);
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_client, NULL);
 	g_io_channel_unref (channel);
 	
-	*path = socket_path;
+	gkr_daemon_util_push_environment ("GNOME_KEYRING_SOCKET", socket_path);
 	return TRUE;
 }
-

@@ -41,25 +41,6 @@
  * 
  * Tests be run in the order specified here.
  */
- 
-static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
-
-/* 
- * These are called from gkr-secure-memory.c to provide appropriate
- * locking for memory between threads
- */ 
-
-void
-gkr_memory_lock (void)
-{
-	g_static_mutex_lock (&memory_mutex);
-}
-
-void 
-gkr_memory_unlock (void)
-{
-	g_static_mutex_unlock (&memory_mutex);
-}
 
 #define IS_ZERO ~0
 
@@ -81,17 +62,16 @@ void unit_test_secmem_alloc_free (CuTest* cu)
 	gpointer p;
 	gboolean ret;
 	
-	p = gkr_secure_memory_alloc (512);
+	p = gkr_secure_alloc_full (512, 0);
 	CuAssertPtrNotNull (cu, p);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 512));
-	CuAssert (cu, "bad block size", gkr_secure_memory_size (p) >= 512);
 	
 	memset (p, 0x67, 512);
 	
-	ret = gkr_secure_memory_check (p);
+	ret = gkr_secure_check (p);
 	CuAssertIntEquals (cu, ret, TRUE);
 	
-	gkr_secure_memory_free (p);
+	gkr_secure_free_full (p, 0);
 }
 
 void unit_test_secmem_realloc_across (CuTest *cu)
@@ -99,16 +79,14 @@ void unit_test_secmem_realloc_across (CuTest *cu)
 	gpointer p, p2;
 	
 	/* Tiny allocation */
-	p = gkr_secure_memory_realloc (NULL, 88);
+	p = gkr_secure_realloc_full (NULL, 88, 0);
 	CuAssertPtrNotNull (cu, p);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 88));
-	CuAssert (cu, "bad block size", gkr_secure_memory_size (p) >= 88);
 
 	/* Reallocate to a large one, will have to have changed blocks */	
-	p2 = gkr_secure_memory_realloc (p, 64000);
+	p2 = gkr_secure_realloc_full (p, 64000, 0);
 	CuAssertPtrNotNull (cu, p2);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 64000));
-	CuAssert (cu, "bad block size", gkr_secure_memory_size (p2) >= 64000);
 }
 
 void unit_test_secmem_alloc_two (CuTest* cu)
@@ -116,33 +94,23 @@ void unit_test_secmem_alloc_two (CuTest* cu)
 	gpointer p, p2;
 	gboolean ret;
 	
-	p2 = gkr_secure_memory_alloc (4);
+	p2 = gkr_secure_alloc_full (4, 0);
 	CuAssertPtrNotNull (cu, p2);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 4));
-	CuAssert (cu, "bad block size", gkr_secure_memory_size (p2) >= 4);
 
 	memset (p2, 0x67, 4);
 	
-	p = gkr_secure_memory_alloc (64536);
+	p = gkr_secure_alloc_full (64536, 0);
 	CuAssertPtrNotNull (cu, p);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 64536));
-	CuAssert (cu, "bad block size", gkr_secure_memory_size (p) >= 64536);
 
 	memset (p, 0x67, 64536);
 	
-	ret = gkr_secure_memory_check (p);
+	ret = gkr_secure_check (p);
 	CuAssertIntEquals (cu, ret, TRUE);
 	
-	gkr_secure_memory_free (p2);
-	gkr_secure_memory_free (p);
-}
-
-void unit_test_secmem_alloc_insane (CuTest* cu)
-{
-	gpointer p2;
-	
-	p2 = gkr_secure_memory_alloc (G_MAXSIZE);
-	CuAssert (cu, "shouldn't have worked", p2 == NULL);
+	gkr_secure_free_full (p2, 0);
+	gkr_secure_free_full (p, 0);
 }
 
 void unit_test_secmem_realloc (CuTest* cu)
@@ -154,22 +122,20 @@ void unit_test_secmem_realloc (CuTest* cu)
 	
 	len = strlen (str) + 1;
 	
-	p = gkr_secure_memory_realloc (NULL, len);
+	p = gkr_secure_realloc_full (NULL, len, 0);
 	CuAssertPtrNotNull (cu, p);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, len));
-	CuAssert (cu, "bad block size", gkr_secure_memory_size (p) >= len);
 	
 	strcpy ((gchar*)p, str);
 	
-	p2 = gkr_secure_memory_realloc (p, 512);
+	p2 = gkr_secure_realloc_full (p, 512, 0);
 	CuAssertPtrNotNull (cu, p2);
 	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (((gchar*)p2) + len, 512 - len));
-	CuAssert (cu, "bad block size", gkr_secure_memory_size (p2) >= 512);
 	
 	r = strcmp (p2, str);
 	CuAssert (cu, "strings not equal after realloc", r == 0);
 	
-	p = gkr_secure_memory_realloc (p2, 0);
+	p = gkr_secure_realloc_full (p2, 0, 0);
 	CuAssert (cu, "should have freed memory", p == NULL);
 }
 

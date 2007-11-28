@@ -26,7 +26,7 @@
 #include "gkr-keyring-item.h"
 #include "gkr-keyring.h"
 
-#include "library/gnome-keyring-memory.h"
+#include "common/gkr-secure-memory.h"
 
 #include <gcrypt.h>
 
@@ -132,7 +132,7 @@ gkr_keyring_item_finalize (GObject *obj)
 	if (item->acl != NULL) 
 		gnome_keyring_acl_free (item->acl);
 	g_free (item->display_name);
-	gnome_keyring_free_password (item->secret);
+	gkr_secure_strfree (item->secret);
 
 	G_OBJECT_CLASS (gkr_keyring_item_parent_class)->finalize (obj);
 }

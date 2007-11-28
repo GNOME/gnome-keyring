@@ -21,17 +21,17 @@ gnome_keyring_ask_SOURCES = \
 gnome_keyring_ask_LDADD = \
 	$(GTK_LIBS)
 
-noinst_LTLIBRARIES=libdaemon-ui-component.la
+noinst_LTLIBRARIES=libgkr-ui.la
 
 BUILT_SOURCES = \
 	gkr-ask-marshal.c gkr-ask-marshal.h
 
-libdaemon_ui_component_la_SOURCES = \
+libgkr_ui_la_SOURCES = \
 	gkr-ask-request.c gkr-ask-request.h \
 	gkr-ask-daemon.c gkr-ask-daemon.h \
 	$(BUILT_SOURCES)
 
-libdaemon_ui_component_la_LIBADD = \
+libgkr_ui_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 

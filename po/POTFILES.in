@@ -3,4 +3,5 @@
 common/gkr-location.c
 daemon/gkr-daemon-ops.c
 library/gnome-keyring-utils.c
+pki/gkr-pki-object-manager.c
 ui/gkr-ask-tool.c

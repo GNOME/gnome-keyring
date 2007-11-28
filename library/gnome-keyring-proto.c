@@ -25,16 +25,16 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "gnome-keyring-memory.h"
 #include "gnome-keyring-proto.h"
 #include "gnome-keyring-private.h"
 
 #include "common/gkr-buffer.h"
+#include "common/gkr-secure-memory.h"
 
 void 
 gkr_proto_go_secure (GkrBuffer *buffer)
 {
-	gkr_buffer_set_allocator (buffer, gnome_keyring_memory_realloc);
+	gkr_buffer_set_allocator (buffer, gkr_secure_realloc);
 }
 
 void
@@ -69,27 +69,6 @@ gkr_proto_get_time (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 	return TRUE;
 }
 
-
-static gboolean
-gkr_proto_add_string (GkrBuffer *buffer, const char *str, gsize len)
-{
-	if (len >= 0x7fffffff) {
-		return FALSE;
-	}
-
-	if (str != NULL && memchr(str, 0, len) != NULL) {
-		return FALSE;
-	}
-	
-	if (str == NULL) {
-		gkr_buffer_add_uint32 (buffer, 0xffffffff);
-	} else {
-		gkr_buffer_add_uint32 (buffer, len);
-		gkr_buffer_append (buffer, (guchar*)str, len);
-	}
-	return TRUE;
-}
-
 gboolean
 gkr_proto_add_utf8_secret (GkrBuffer *buffer, const char *str)
 {
@@ -114,7 +93,7 @@ gkr_proto_add_utf8_string (GkrBuffer *buffer, const char *str)
 		len = 0;
 	} 
 
-	return 	gkr_proto_add_string (buffer, str, len);
+	return 	gkr_buffer_add_string (buffer, str);
 }
 
 gboolean
@@ -132,44 +111,6 @@ gkr_proto_get_bytes (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 	return TRUE;
 }
 
-
-static gboolean
-gkr_proto_get_string (GkrBuffer *buffer, gsize offset, gsize *next_offset,
-                      char **str_ret, gsize *len_ret, GkrBufferAllocator allocator)
-{
-	guint32 len;
-	
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &len)) {
-		return FALSE;
-	}
-	if (len == 0xffffffff) {
-		*next_offset = offset;
-		*len_ret = 0;
-		*str_ret = NULL;
-		return TRUE;
-	} else if (len >= 0x7fffffff) {
-		return FALSE;
-	}
-	
-	if (buffer->len < len ||
-	    offset > buffer->len - len) {
-		return FALSE;
-	}
-	
-	/* The passed allocator may be for non-pageable memory */
-	*str_ret = (allocator) (NULL, len + 1);
-	if (!*str_ret)
-		return FALSE;
-	memcpy (*str_ret, buffer->buf + offset, len + 1);
-
-	/* Always zero terminate */
-	(*str_ret)[len] = 0;
-	*len_ret = len;
-	*next_offset = offset + len;
-	
-	return TRUE;
-}
-
 gboolean
 gkr_proto_get_utf8_string (GkrBuffer *buffer, gsize offset, gsize *next_offset,
                            char **str_ret)
@@ -183,7 +124,7 @@ gkr_proto_get_utf8_secret (GkrBuffer *buffer, gsize offset, gsize *next_offset,
                            char **str_ret)
 {
 	return gkr_proto_get_utf8_full (buffer, offset, next_offset, 
-	                                str_ret, gnome_keyring_memory_realloc);
+	                                str_ret, gkr_secure_realloc);
 }
 
 gboolean
@@ -193,17 +134,11 @@ gkr_proto_get_utf8_full (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 	gsize len;
 	char *str;
 	
-	if (!gkr_proto_get_string (buffer, offset, &offset, &str,
-	                           &len, allocator)) {
+	if (!gkr_buffer_get_string (buffer, offset, &offset, &str, allocator))
 		return FALSE;
-	}
+	len = str ? strlen (str) : 0;
 
 	if (str != NULL) {
-		if (memchr (str, 0, len) != NULL) {
-			(allocator) (str, 0); /* frees memory */
-			return FALSE;
-		}
-	
 		if (!g_utf8_validate (str, len, NULL)) {
 			(allocator) (str, 0); /* frees memory */
 			return FALSE;
@@ -543,7 +478,7 @@ gkr_proto_decode_create_item (GkrBuffer *buffer, char **keyring, char **display_
 		g_free (*display_name);
 	}
 	if (secret != NULL) {
-		gnome_keyring_free_password (*secret);
+		gkr_secure_strfree (*secret);
 	}
 	return FALSE;
 	
@@ -1249,12 +1184,12 @@ gkr_proto_decode_get_item_info_reply (GkrBuffer *buffer, GnomeKeyringResult *res
 		
 		if (!gkr_proto_get_time (buffer, offset, &offset, &mtime)) {
 			g_free (name);
-			gnome_keyring_free_password (secret);
+			gkr_secure_strfree (secret);
 			return FALSE;
 		}
 		if (!gkr_proto_get_time (buffer, offset, &offset, &ctime)) {
 			g_free (name);
-			gnome_keyring_free_password (secret);
+			gkr_secure_strfree (secret);
 			return FALSE;
 		}
 		
@@ -1364,7 +1299,7 @@ gkr_proto_decode_set_item_info (GkrBuffer *buffer, char **keyring, guint32 *item
  bail:
 	g_free (*keyring);
 	g_free (*display_name);
-	gnome_keyring_free_password (*secret);
+	gkr_secure_strfree (*secret);
 	return FALSE;
 }
 

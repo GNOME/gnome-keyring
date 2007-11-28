@@ -19,9 +19,7 @@ libgnome_keyring_common_la_SOURCES = \
 	gnome-keyring-private.h \
 	gnome-keyring-proto.c \
 	gnome-keyring-proto.h \
-	gnome-keyring-utils.c \
-	gnome-keyring-memory.h \
-	gnome-keyring-memory.c 
+	gnome-keyring-utils.c
 
 libgnome_keyring_common_la_LIBADD = \
 	$(LIBRARY_LIBS) \
@@ -30,6 +28,8 @@ libgnome_keyring_common_la_LIBADD = \
 libgnome_keyring_la_SOURCES = \
 	gnome-keyring.c \
 	gnome-keyring.h \
+	gnome-keyring-memory.h \
+	gnome-keyring-memory.c \
 	gnome-keyring-result.h
 
 libgnomekeyringinclude_HEADERS = \

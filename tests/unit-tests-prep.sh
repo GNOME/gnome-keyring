@@ -11,6 +11,66 @@ usage()
 	exit 2
 }
 
+header_top()
+{
+cat << END
+/* This is auto-generated code. Edit at your own peril. */
+
+#include "tests/cu-test/CuTest.h"
+#include <stdio.h>
+#include <gtk/gtk.h>
+
+END
+}
+
+header_bottom()
+{
+cat << END
+END
+}
+
+source_top()
+{
+cat << END
+/* This is auto-generated code. Edit at your own peril. */
+#include "$BASE.h"
+static void RunAllTests(void) 
+{
+    CuString *output = CuStringNew();
+    CuSuite* suite = CuSuiteNew();
+
+END
+}
+
+source_middle()
+{
+cat << END
+    CuSuiteRun(suite);
+    CuSuiteSummary(suite, output);
+    CuSuiteDetails(suite, output);
+    printf("%s\\n", output->buffer);
+END
+}
+
+source_bottom()
+{
+cat << END
+}
+
+int main(int argc, char* argv[])
+{
+    GLogLevelFlags fatal_mask;
+    g_thread_init (NULL);
+    gtk_init(&argc, &argv);
+    fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
+    fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
+    g_log_set_always_fatal (fatal_mask);
+    RunAllTests();
+    return 0;
+}
+END
+}
+
 # --------------------------------------------------------------------
 # ARGUMENT PARSING
 
@@ -51,7 +111,7 @@ FILES=$*
 # HEADER TOP 
 cat << END
 /* This is auto-generated code. Edit at your own peril. */
-#include "cu-test/CuTest.h"
+#include "tests/cu-test/CuTest.h"
 #include <stdio.h>
 #include <gtk/gtk.h>
 
@@ -102,8 +162,8 @@ END
 cat << END
 }
 
-#include "test-helpers.c"
-#include "cu-test/CuTest.c"
+#include "tests/test-helpers.c"
+#include "tests/cu-test/CuTest.c"
 END
 ) > $BASE.c
 

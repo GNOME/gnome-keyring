@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include "gnome-keyring-memory.h"
+#include "gnome-keyring-private.h"
 
 #include "common/gkr-secure-memory.h"
 
@@ -32,6 +33,13 @@
 #include <string.h>
 
 static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
+
+#define WARNING  "couldn't allocate secure memory to keep passwords " \
+		 "and or keys from being written to the disk"
+		 
+#define ABORTMSG "The GNOME_KEYRING_PARANOID environment variable was set. " \
+                 "Exiting..."
+
 
 /* 
  * These are called from gkr-secure-memory.c to provide appropriate
@@ -50,18 +58,42 @@ gkr_memory_unlock (void)
 	g_static_mutex_unlock (&memory_mutex);
 }
 
+void*
+gkr_memory_fallback (void *p, unsigned long sz)
+{
+	const gchar *env;
+	
+	/* We were asked to free memory */
+	if (!sz) {
+		g_free (p);
+		return NULL;
+	}
+	
+	/* We were asked to allocate */
+	if (!p) {
+		env = g_getenv ("GNOME_KEYRING_PARANOID");
+		if (env && *env) {
+			g_message (WARNING);
+			g_error (ABORTMSG);
+		}
+			
+		return g_malloc0 (sz);
+	}
+	
+	/* 
+	 * Reallocation is a bit of a gray area, as we can be asked 
+	 * by external libraries (like libgcrypt) to reallocate a 
+	 * non-secure block into secure memory. We cannot satisfy 
+	 * this request (as we don't know the size of the original 
+	 * block) so we just try our best here.
+	 */
+			 
+	return g_realloc (p, sz);
+}
+
 /* -----------------------------------------------------------------------------
  * PUBLIC FUNCTIONS
  */
-
-gboolean gnome_keyring_memory_warning = FALSE;
-static gboolean do_warning = TRUE;
-
-#define WARNING  "couldn't allocate secure memory to keep passwords " \
-		 "and or keys from being written to the disk"
-		 
-#define ABORTMSG "The GNOME_KEYRING_PARANOID environment variable was set. " \
-                 "Exiting..."
 
 /**
  * gnome_keyring_memory_alloc:
@@ -78,27 +110,15 @@ static gboolean do_warning = TRUE;
 gpointer
 gnome_keyring_memory_alloc (gulong sz)
 {
-	const gchar *env;
 	gpointer p;
 	
 	/* Try to allocate secure memory */
-	p = gkr_secure_memory_alloc (sz);
+	p = gkr_secure_alloc_full (sz, GKR_SECURE_USE_FALLBACK);
+
+	/* Our fallback will always allocate */
+	g_assert (p);
 	
-	if (p) {
-		do_warning = TRUE;
-		return p;
-	}
-	
-	if (do_warning && gnome_keyring_memory_warning) {
-		g_message (WARNING);
-		do_warning = FALSE;
-	}
-	
-	env = g_getenv ("GNOME_KEYRING_PARANOID");
-	if (env && *env) 
-		 g_error (ABORTMSG);
-			 
-	return g_malloc0 (sz);
+	return p;
 }
 
 /**
@@ -115,7 +135,7 @@ gnome_keyring_memory_alloc (gulong sz)
 gpointer
 gnome_keyring_memory_try_alloc (gulong sz)
 {
-	return gkr_secure_memory_alloc (sz);
+	return gkr_secure_alloc_full (sz, 0);
 }
 
 /**
@@ -138,41 +158,21 @@ gnome_keyring_memory_try_alloc (gulong sz)
 gpointer
 gnome_keyring_memory_realloc (gpointer p, gulong sz)
 {
-	gsize oldsz;
 	gpointer n;
-	const gchar *env;
 
 	if (!p) { 
 		return gnome_keyring_memory_alloc (sz);
 	} else if (!sz) {
 		 gnome_keyring_memory_free (p);
 		 return NULL;
-	} else if (!gkr_secure_memory_check (p)) {
+	} else if (!gkr_secure_check (p)) {
 		return g_realloc (p, sz);
 	}
 		
 	/* First try and ask secure memory to reallocate */
-	n = gkr_secure_memory_realloc (p, sz);
-	if (n) {
-		do_warning = TRUE;
-		return n;
-	}
-	
-	if (do_warning && gnome_keyring_memory_warning) {
-		g_message (WARNING);
-		do_warning = FALSE;
-	}
-	
-	env = g_getenv ("GNOME_KEYRING_PARANOID");
-	if (env && *env) 
-		g_error (ABORTMSG);
-		
-	oldsz = gkr_secure_memory_size (p);
-	g_assert (oldsz);
-	
-	n = g_malloc0 (sz);
-	memcpy (n, p, oldsz);
-	gkr_secure_memory_free (p);
+	n = gkr_secure_realloc_full (p, sz, GKR_SECURE_USE_FALLBACK);
+
+	g_assert (n);
 	
 	return n;
 }
@@ -197,10 +197,23 @@ gnome_keyring_memory_realloc (gpointer p, gulong sz)
 gpointer
 gnome_keyring_memory_try_realloc (gpointer p, gulong sz)
 {
-	if (gkr_secure_memory_check (p))
-		return gkr_secure_memory_realloc (p, sz);
-	else
+	gpointer n;
+
+	if (!p) { 
+		return gnome_keyring_memory_try_alloc (sz);
+	} else if (!sz) {
+		 gnome_keyring_memory_free (p);
+		 return NULL;
+	} else if (!gkr_secure_check (p)) {
 		return g_try_realloc (p, sz);
+	}
+		
+	/* First try and ask secure memory to reallocate */
+	n = gkr_secure_realloc_full (p, sz, 0);
+
+	g_assert (n);
+	
+	return n;
 }
 
 /**
@@ -217,10 +230,7 @@ gnome_keyring_memory_free (gpointer p)
 {
 	if (!p)
 		return;
-	else if (!gkr_secure_memory_check (p))
-		g_free (p);
-	else 
-		gkr_secure_memory_free (p);
+	gkr_secure_free_full (p, GKR_SECURE_USE_FALLBACK);
 }
 
 
@@ -235,7 +245,7 @@ gnome_keyring_memory_free (gpointer p)
 gboolean  
 gnome_keyring_memory_is_secure (gpointer p)
 {
-	return gkr_secure_memory_check (p) ? TRUE : FALSE;
+	return gkr_secure_check (p) ? TRUE : FALSE;
 }
 
 /**
@@ -250,14 +260,5 @@ gnome_keyring_memory_is_secure (gpointer p)
 gchar*
 gnome_keyring_memory_strdup (const gchar* str)
 {
-	unsigned long len;
-	gchar *res;
-	
-	if (!str)
-		return NULL;
-	
-	len = strlen (str) + 1;	
-	res = (gchar*)gnome_keyring_memory_alloc (len);
-	strcpy (res, str);
-	return res;
+	return gkr_secure_strdup (str);
 }

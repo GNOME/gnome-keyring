@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gkr-buffer.h - helper code for the keyring daemon protocol
 
-   Copyright (C) 2007, Nate Nielsen
+   Copyright (C) 2007, Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #ifndef GKR_BUFFER_H
@@ -47,6 +47,11 @@
  * Don't change the allocator manually in the GkrBuffer structure. The 
  * gkr_buffer_set_allocator() func will reallocate and handle things 
  * properly.
+ * 
+ * Pointers into the Buffer
+ * 
+ * Any write operation has the posibility of reallocating memory
+ * and invalidating any direct pointers into the buffer.
  */
  
 /* The allocator for the GkrBuffer. This follows the realloc() syntax and logic */
@@ -88,11 +93,11 @@ int             gkr_buffer_reserve              (GkrBuffer *buffer,
 int             gkr_buffer_resize               (GkrBuffer *buffer,
                                                  size_t len);
 
-int		gkr_buffer_bump			(GkrBuffer *buffer,
-						 size_t len);
-
 int		gkr_buffer_append 		(GkrBuffer *buffer,
 						 const unsigned char *val,
+						 size_t len);
+
+int		gkr_buffer_add_empty	        (GkrBuffer *buffer,
 						 size_t len);
 
 int 		gkr_buffer_add_byte		(GkrBuffer *buffer,
@@ -130,6 +135,18 @@ int		gkr_buffer_get_byte_array	(GkrBuffer *buffer,
 						 const unsigned char **val,
 						 size_t *vlen);
 
+unsigned char*  gkr_buffer_add_byte_array_empty (GkrBuffer *buffer,
+                                                 size_t vlen);						 
+
+int             gkr_buffer_add_string           (GkrBuffer *buffer, 
+                                                 const char *str);
+                                                 
+int             gkr_buffer_get_string           (GkrBuffer *buffer, 
+                                                 size_t offset, 
+                                                 size_t *next_offset, 
+                                                 char **str_ret, 
+                                                 GkrBufferAllocator allocator);
+                                                 
 int		gkr_buffer_add_uint64		(GkrBuffer *buffer,
 						 uint64_t val);
 

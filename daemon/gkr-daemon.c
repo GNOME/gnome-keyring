@@ -26,6 +26,9 @@
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
+#include "common/gkr-crypto.h"
+#include "common/gkr-daemon-util.h"
+#include "common/gkr-secure-memory.h"
 #include "common/gkr-unix-signal.h"
 #include "common/gkr-location.h"
 #include "common/gkr-secure-memory.h"
@@ -33,7 +36,8 @@
 #include "keyrings/gkr-keyrings.h"
 
 #include "library/gnome-keyring.h"
-#include "library/gnome-keyring-memory.h"
+
+#include "ssh/gkr-ssh-daemon.h"
 
 #include "ui/gkr-ask-daemon.h"
 
@@ -67,6 +71,75 @@ static GMainLoop *loop = NULL;
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
 #endif
+
+/* -----------------------------------------------------------------------------
+ * MEMORY
+ */
+
+static gboolean do_warning = TRUE;
+#define WARNING  "couldn't allocate secure memory to keep passwords " \
+		 "and or keys from being written to the disk"
+		 
+#define ABORTMSG "The GNOME_KEYRING_PARANOID environment variable was set. " \
+                 "Exiting..."
+
+
+/* 
+ * These are called from gkr-secure-memory.c to provide appropriate
+ * locking for memory between threads
+ */ 
+
+void
+gkr_memory_lock (void)
+{
+	/* The daemon uses cooperative threading, and doesn't need locking */
+}
+
+void 
+gkr_memory_unlock (void)
+{
+	/* The daemon uses cooperative threading, and doesn't need locking */
+}
+
+void*
+gkr_memory_fallback (void *p, unsigned long sz)
+{
+	const gchar *env;
+	
+	/* We were asked to free memory */
+	if (!sz) {
+		g_free (p);
+		return NULL;
+	}
+	
+	/* We were asked to allocate */
+	if (!p) {
+		if (do_warning) {
+			g_message (WARNING);
+			do_warning = FALSE;
+		}
+		
+		env = g_getenv ("GNOME_KEYRING_PARANOID");
+		if (env && *env) 
+			g_error (ABORTMSG);
+			
+		return g_malloc0 (sz);
+	}
+	
+	/* 
+	 * Reallocation is a bit of a gray area, as we can be asked 
+	 * by external libraries (like libgcrypt) to reallocate a 
+	 * non-secure block into secure memory. We cannot satisfy 
+	 * this request (as we don't know the size of the original 
+	 * block) so we just try our best here.
+	 */
+			 
+	return g_realloc (p, sz);
+}
+
+/* -----------------------------------------------------------------------------
+ * LOGS
+ */
 
 static void
 log_handler (const gchar *log_domain, GLogLevelFlags log_level, 
@@ -126,12 +199,6 @@ prepare_logging ()
     g_log_set_default_handler (log_handler, NULL);
 }
 
-static void
-cleanup_socket (gpointer unused)
-{
-        gkr_daemon_io_cleanup_socket_dir ();	
-}
-
 static gboolean
 signal_handler (guint sig, gpointer unused)
 {
@@ -159,7 +226,7 @@ read_login_password (int fd)
 	#define MAX_LENGTH 8192
 	#define MAX_BLOCK 256
 	
-	gchar *buf = gkr_secure_memory_alloc (MAX_BLOCK);
+	gchar *buf = gkr_secure_alloc (MAX_BLOCK);
 	gchar *ret = NULL;
 	int r, len = 0;
 	
@@ -168,12 +235,12 @@ read_login_password (int fd)
 		if (r < 0) {
 			if (errno == EAGAIN)
 				continue;
-			gkr_secure_memory_free (ret);
-			gkr_secure_memory_free (buf);
+			gkr_secure_free (ret);
+			gkr_secure_free (buf);
 			return NULL;
 			
 		} else  { 
-			char *n = gkr_secure_memory_realloc (ret, len + r + 1);
+			char *n = gkr_secure_realloc (ret, len + r + 1);
 			memset(n + len, 0, r + 1); 
 			ret = n;
 			len = len + r;
@@ -185,7 +252,7 @@ read_login_password (int fd)
 			break;
 	}
 	
-	gkr_secure_memory_free (buf);
+	gkr_secure_free (buf);
 	return ret;
 }
 
@@ -212,14 +279,14 @@ lifetime_slave_pipe_io (GIOChannel  *channel,
 			GIOCondition cond,
 			gpointer     callback_data)
 {
-        gkr_daemon_io_cleanup_socket_dir ();
+        gkr_cleanup_perform ();
         _exit (2);
 }
 
 int
 main (int argc, char *argv[])
 {
-	const char *path, *env;
+	const char *env;
 	int fd, i;
 	pid_t pid;
 	gboolean foreground;
@@ -232,17 +299,15 @@ main (int argc, char *argv[])
 	
 	g_type_init ();
 	g_thread_init (NULL);
+	gkr_crypto_setup ();
 
-	/* We want to see memory warnings in the daemon */
-	gnome_keyring_memory_warning = TRUE;
-
-	/* We do not use gcrypt in a multi-threaded manner */
-	gcry_check_version (LIBGCRYPT_VERSION);
-	
-	if (!gkr_daemon_io_create_master_socket (&path))
+	/* 
+	 * TODO: We need some way to be able to select which parts of 
+	 * the daemon should run.
+	 */
+	if (!gkr_daemon_io_create_master_socket () ||
+	    !gkr_daemon_ssh_io_initialize ())
 		exit (1);
-	
-	gkr_cleanup_register (cleanup_socket, NULL); 
 	
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */
@@ -293,7 +358,7 @@ main (int argc, char *argv[])
 				
 				/* Still in the intermedate child */
 				if (pid != 0) {
-					gkr_secure_memory_free (login_password);
+					gkr_secure_free (login_password);
 					
 					/* This process exits, so that the
 					 * final child will inherit init as parent
@@ -305,7 +370,7 @@ main (int argc, char *argv[])
 						/* This is where we know the pid of the daemon.
 						 * The initial process will waitpid until we exit,
 						 * so there is no race */
-						printf ("GNOME_KEYRING_SOCKET=%s\n", path);
+						printf ("%s", gkr_daemon_util_get_environment ());
 						printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
 						exit (0);
 					}
@@ -316,7 +381,7 @@ main (int argc, char *argv[])
 			
 		/* The initial process */
 		} else {
-			gkr_secure_memory_free (login_password);
+			gkr_secure_free (login_password);
 			
 			if (daemon) {
 				int status;
@@ -330,7 +395,7 @@ main (int argc, char *argv[])
 					exit (WEXITSTATUS (status));
 				
 			} else {
-				printf ("GNOME_KEYRING_SOCKET=%s\n", path);
+				printf ("%s", gkr_daemon_util_get_environment ());
 				printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
 			}
 			
@@ -341,7 +406,7 @@ main (int argc, char *argv[])
 		close_stdinout ();
 
 	} else {
-		g_print ("GNOME_KEYRING_SOCKET=%s\n", path);
+		g_print ("%s", gkr_daemon_util_get_environment ());
 		g_print ("GNOME_KEYRING_PID=%d\n", (gint)getpid ());
 	}
 
@@ -382,7 +447,7 @@ main (int argc, char *argv[])
 	 */ 
 	env = getenv ("DBUS_SESSION_BUS_ADDRESS");
 	if (env && env[0])
-		gkr_daemon_dbus_setup (loop, path);
+		gkr_daemon_dbus_setup (loop);
 #endif
 
 	/*
@@ -395,7 +460,7 @@ main (int argc, char *argv[])
 			if (!gkr_keyring_unlock (login_keyring, login_password))
 				g_warning ("Failed to unlock login keyring");
 		} else {
-			login_keyring = gkr_keyring_create (GKR_LOCATION_BASE_LOCAL,
+			login_keyring = gkr_keyring_create (GKR_LOCATION_VOLUME_LOCAL,
 			                                    "login", login_password);
 			if (!login_keyring) {
 				gkr_keyrings_add (login_keyring);
@@ -403,7 +468,7 @@ main (int argc, char *argv[])
 			}
 		}
 		
-		gkr_secure_memory_free (login_password);
+		gkr_secure_free (login_password);
 	}
 	
 	g_main_loop_run (loop);

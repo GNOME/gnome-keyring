@@ -39,14 +39,13 @@
 #include <string.h>
 
 #define FILE_NAME      "FILE"
-#define HOME_NAME      "HOME"
 
 #define LOC_DELIMITER   ":"
 #define LOC_DELIMITER_C ':'
-#define CHILD_DELIMITER "-"
+#define PART_DELIMITER  "-"
 
 typedef struct _GkrLocationVolume {
-	GQuark base_loc;
+	GQuark volume_loc;
 	gchar *name;
 	gchar *prefix;
 	gchar *friendly;
@@ -54,8 +53,8 @@ typedef struct _GkrLocationVolume {
 } GkrLocationVolume;
 
 enum {
-    LOCATION_ADDED,
-    LOCATION_REMOVED,
+    VOLUME_ADDED,
+    VOLUME_REMOVED,
     LAST_SIGNAL
 };
 
@@ -77,6 +76,9 @@ struct _GkrLocationManagerPrivate {
 	/* Some special locations, that we don't advertize, but support */
 	GkrLocationVolume file_volume;
 	GkrLocationVolume home_volume;
+	
+	/* Last modified time of locations */
+	GHashTable *last_modified;
 };
 
 #define GKR_LOCATION_MANAGER_GET_PRIVATE(o)  \
@@ -96,11 +98,28 @@ cleanup_location_manager (void *unused)
 	location_manager_singleton = NULL;
 }
 
+#if 0
+static gboolean
+purge_last_modified (gpointer key, gpointer unused, gpointer user_data)
+{
+	GQuark loc = GPOINTER_TO_UINT (key);
+	GQuark volume = GPOINTER_TO_UINT (user_data);
+	return gkr_location_is_descendant (volume, loc);
+}
+#endif
+
 static void
 list_locations (const gchar *name, GkrLocationVolume *locvol, GSList **l)
 {
 	if (!locvol->hidden)
-		*l = g_slist_append (*l, GUINT_TO_POINTER (locvol->base_loc));
+		*l = g_slist_append (*l, GUINT_TO_POINTER (locvol->volume_loc));
+}
+
+static void
+free_mtime (time_t *mtime)
+{
+	if (mtime)
+		g_slice_free (time_t, mtime);
 }
 
 static void
@@ -117,7 +136,7 @@ free_location_volume (GkrLocationVolume *locvol)
 }
 
 static GQuark
-make_base_location (const gchar *name)
+make_volume_location (const gchar *name)
 {
 	gchar *sloc;
 	GQuark loc;
@@ -131,20 +150,20 @@ make_base_location (const gchar *name)
 
 static void
 make_hidden_volume (GkrLocationManager *locmgr, GkrLocationVolume *locvol, 
-                      const gchar *name, const gchar *prefix)
+                    const gchar *name, const gchar *prefix, const gchar *friendly)
 {
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	GQuark base_loc = make_base_location (name);
+	GQuark volume_loc = make_volume_location (name);
 	
 	locvol->name = (gchar*)name;
-	locvol->base_loc = base_loc;
+	locvol->volume_loc = volume_loc;
 	locvol->prefix = (gchar*)prefix; 
 	locvol->hidden = TRUE;
-	locvol->friendly = NULL;
+	locvol->friendly = friendly ? g_strdup (friendly) : NULL;
 	
 	g_hash_table_replace (pv->volumes_by_name, locvol->name, locvol);
 	g_hash_table_replace (pv->volumes_by_prefix, locvol->prefix, locvol);
-	g_hash_table_replace (pv->volumes_by_loc, GUINT_TO_POINTER (base_loc), locvol);
+	g_hash_table_replace (pv->volumes_by_loc, GUINT_TO_POINTER (volume_loc), locvol);
 	
 }
 
@@ -415,12 +434,15 @@ gkr_location_manager_init (GkrLocationManager *locmgr)
 	pv->volumes_by_prefix = g_hash_table_new (g_str_hash, g_str_equal);
 	pv->volumes_by_loc = g_hash_table_new (g_direct_hash, g_direct_equal);
 
+	pv->last_modified = g_hash_table_new_full (g_direct_hash, g_direct_equal, 
+	                                           NULL, (GDestroyNotify)free_mtime);
+
 	home = g_get_home_dir ();
 	g_return_if_fail (home && home[0]);
 	
 	/* Hidden location relative to file system and home directory */
-	make_hidden_volume (locmgr, &pv->file_volume, FILE_NAME, "/");
-	make_hidden_volume (locmgr, &pv->home_volume, HOME_NAME, home);
+	make_hidden_volume (locmgr, &pv->file_volume, FILE_NAME, "/", NULL);
+	make_hidden_volume (locmgr, &pv->home_volume, GKR_LOCATION_NAME_HOME, home, _("Home"));
 
 	
 	/* We always register the .gnome2 local directory */		
@@ -444,10 +466,18 @@ gkr_location_manager_init (GkrLocationManager *locmgr)
 static void 
 gkr_location_manager_dispose (GObject *obj)
 {
-#ifdef WITH_HAL
 	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (obj);
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+
+#ifdef WITH_HAL
 	location_manager_hal_uninit (locmgr);
-#endif	
+#endif
+
+	g_hash_table_remove_all (pv->volumes_by_loc);
+	g_hash_table_remove_all (pv->volumes_by_prefix);
+	g_hash_table_remove_all (pv->volumes_by_name);
+	
+	g_hash_table_remove_all (pv->last_modified);
 	
 	G_OBJECT_CLASS (gkr_location_manager_parent_class)->dispose (obj);
 }
@@ -464,6 +494,9 @@ gkr_location_manager_finalize (GObject *obj)
 	pv->volumes_by_prefix = NULL;
 	g_hash_table_destroy (pv->volumes_by_name);
 	pv->volumes_by_name = NULL;
+	
+	g_hash_table_destroy (pv->last_modified);
+	pv->last_modified = NULL;
 
 	G_OBJECT_CLASS (gkr_location_manager_parent_class)->finalize (obj);
 }
@@ -478,13 +511,13 @@ gkr_location_manager_class_init (GkrLocationManagerClass *klass)
 	gobject_class->dispose = gkr_location_manager_dispose;
 	gobject_class->finalize = gkr_location_manager_finalize;
 	
-	signals[LOCATION_ADDED] = g_signal_new ("location-added", GKR_TYPE_LOCATION_MANAGER, 
-			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrLocationManagerClass, location_added),
+	signals[VOLUME_ADDED] = g_signal_new ("volume-added", GKR_TYPE_LOCATION_MANAGER, 
+			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrLocationManagerClass, volume_added),
 			NULL, NULL, g_cclosure_marshal_VOID__UINT, 
 			G_TYPE_NONE, 1, G_TYPE_UINT);
 
-	signals[LOCATION_REMOVED] = g_signal_new ("location-removed", GKR_TYPE_LOCATION_MANAGER, 
-			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrLocationManagerClass, location_removed),
+	signals[VOLUME_REMOVED] = g_signal_new ("volume-removed", GKR_TYPE_LOCATION_MANAGER, 
+			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrLocationManagerClass, volume_removed),
 			NULL, NULL, g_cclosure_marshal_VOID__UINT, 
 			G_TYPE_NONE, 1, G_TYPE_UINT);
 			
@@ -510,11 +543,16 @@ void
 gkr_location_manager_register (GkrLocationManager *locmgr, const gchar *name, 
                                const gchar *prefix, const gchar *friendly)
 {
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	GkrLocationManagerPrivate *pv;
 	GkrLocationVolume *locvol;
-	GQuark base_loc;
+	GQuark volume_loc;
 
+	if (!locmgr)
+		locmgr = gkr_location_manager_get ();
+	
 	g_return_if_fail (GKR_IS_LOCATION_MANAGER (locmgr));	
+ 	pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+
 	g_return_if_fail (name && name[0]);
 	g_return_if_fail (prefix && prefix[0]);
 	
@@ -532,32 +570,36 @@ gkr_location_manager_register (GkrLocationManager *locmgr, const gchar *name,
 		return;
 	}
 
-	base_loc = make_base_location (name);
+	volume_loc = make_volume_location (name);
 			
 	locvol = g_slice_new (GkrLocationVolume);
 	locvol->name = g_strdup (name);
 	locvol->prefix = g_strdup (prefix);
 	locvol->friendly = g_strdup (friendly);
-	locvol->base_loc = base_loc;
+	locvol->volume_loc = volume_loc;
 	locvol->hidden = FALSE;
 	
 	/* TODO: What about trailing slashes? */
 	
 	g_hash_table_replace (pv->volumes_by_name, locvol->name, locvol);
 	g_hash_table_replace (pv->volumes_by_prefix, locvol->prefix, locvol);
-	g_hash_table_replace (pv->volumes_by_loc, GUINT_TO_POINTER (base_loc), locvol);
+	g_hash_table_replace (pv->volumes_by_loc, GUINT_TO_POINTER (volume_loc), locvol);
 	 
-	g_signal_emit (locmgr, signals[LOCATION_ADDED], 0, base_loc);
+	g_signal_emit (locmgr, signals[VOLUME_ADDED], 0, volume_loc);
 }
 
 void
 gkr_location_manager_unregister (GkrLocationManager *locmgr, const gchar *name)
 {
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	GkrLocationManagerPrivate *pv;
 	GkrLocationVolume *locvol;
-	GQuark base_loc;
+	GQuark volume_loc;
+	
+	if (!locmgr)
+		locmgr = gkr_location_manager_get ();
 	
 	g_return_if_fail (GKR_IS_LOCATION_MANAGER (locmgr));	
+ 	pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr); 	
 	g_return_if_fail (name && name[0]);
 	
 	locvol = g_hash_table_lookup (pv->volumes_by_name, name);
@@ -566,39 +608,96 @@ gkr_location_manager_unregister (GkrLocationManager *locmgr, const gchar *name)
 		return;
 	}
 	
-	base_loc = locvol->base_loc;
-	g_hash_table_remove (pv->volumes_by_loc, GUINT_TO_POINTER (base_loc));
+	volume_loc = locvol->volume_loc;
+	g_hash_table_remove (pv->volumes_by_loc, GUINT_TO_POINTER (volume_loc));
 	g_hash_table_remove (pv->volumes_by_prefix, locvol->prefix);
 	g_hash_table_remove (pv->volumes_by_name, name);
 	
-	g_signal_emit (locmgr, signals[LOCATION_REMOVED], 0, base_loc);
+	g_signal_emit (locmgr, signals[VOLUME_REMOVED], 0, volume_loc);
+}
+
+gboolean 
+gkr_location_manager_has_volume (GkrLocationManager *locmgr, GQuark volume)
+{
+	GkrLocationManagerPrivate *pv;
+
+	if (!locmgr)
+		locmgr = gkr_location_manager_get ();
+	
+	g_return_val_if_fail (GKR_IS_LOCATION_MANAGER (locmgr), FALSE);	
+ 	pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+
+	return g_hash_table_lookup (pv->volumes_by_loc, GUINT_TO_POINTER (volume)) ? TRUE : FALSE;
 }
 
 GSList*
-gkr_location_manager_get_base_locations (GkrLocationManager *locmgr)
+gkr_location_manager_get_volumes (GkrLocationManager *locmgr)
 {
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	GkrLocationManagerPrivate *pv;
 	GSList *ret = NULL;	
 
+	if (!locmgr)
+		locmgr = gkr_location_manager_get ();
+	
 	g_return_val_if_fail (GKR_IS_LOCATION_MANAGER (locmgr), NULL);	
+ 	pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
 
 	g_hash_table_foreach (pv->volumes_by_name, (GHFunc)list_locations, &ret);
 	return ret; 
 }
 
 const gchar*
-gkr_location_manager_get_base_display (GkrLocationManager *locmgr, GQuark base_loc)
+gkr_location_manager_get_volume_display (GkrLocationManager *locmgr, GQuark volume_loc)
 {
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	GkrLocationManagerPrivate *pv;
 	GkrLocationVolume *locvol;
+
+	if (!locmgr)
+		locmgr = gkr_location_manager_get ();
 	
-	locvol = g_hash_table_lookup (pv->volumes_by_loc, GUINT_TO_POINTER (base_loc));
+	g_return_val_if_fail (GKR_IS_LOCATION_MANAGER (locmgr), NULL);	
+ 	pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	
+	locvol = g_hash_table_lookup (pv->volumes_by_loc, GUINT_TO_POINTER (volume_loc));
 	if (!locvol) {
-		g_warning ("'%s' is not a valid base location", g_quark_to_string (base_loc));
+		g_warning ("'%s' is not a valid volume location", g_quark_to_string (volume_loc));
 		return NULL;
 	}
 	
 	return locvol->friendly;
+}
+
+gboolean
+gkr_location_manager_note_mtime (GkrLocationManager *locmgr, GQuark location, time_t mtime)
+{
+	GkrLocationManagerPrivate *pv;
+	gboolean ret;
+	gpointer key;
+	time_t *last;
+	
+	if (!locmgr)
+		locmgr = gkr_location_manager_get ();
+	if (mtime <= 0)
+		mtime = time (NULL);
+			
+	g_return_val_if_fail (GKR_IS_LOCATION_MANAGER (locmgr), FALSE);	
+ 	pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+ 	g_return_val_if_fail (mtime > 0, FALSE);
+
+	key = GUINT_TO_POINTER (location);
+	last = g_hash_table_lookup (pv->last_modified, key);
+	
+	ret = (!last || *last < mtime);
+	
+	if (!last) {
+		last = g_slice_new0 (time_t);
+		g_hash_table_replace (pv->last_modified, key, last);
+	}
+	
+	if (*last != mtime)
+		*last = mtime;
+		
+	return ret;
 }
 
 /* -----------------------------------------------------------------------------
@@ -722,7 +821,6 @@ location_to_volume (GQuark loc, const gchar **remainder)
 	
 	locvol = g_hash_table_lookup (pv->volumes_by_name, name);
 	if (!locvol) {
-		g_warning ("The '%s' location is invalid or no longer exists", sloc);		
 		g_free (name);
 		return NULL;
 	}
@@ -776,7 +874,7 @@ gkr_location_is_descendant (GQuark parent, GQuark descendant)
 }
 
 GQuark
-gkr_location_get_base (GQuark loc)
+gkr_location_get_volume (GQuark loc)
 {
 	GkrLocationVolume *locvol;
 	
@@ -784,5 +882,69 @@ gkr_location_get_base (GQuark loc)
 	if (!locvol)
 		return 0;
 		
-	return locvol->base_loc;
+	return locvol->volume_loc;
+}
+
+gboolean
+gkr_location_test_file (GQuark loc, GFileTest test)
+{
+	gboolean ret;
+	gchar *path;
+
+	g_return_val_if_fail (loc != 0, FALSE);
+	
+	path = gkr_location_to_path (loc);
+	if (!path)
+		return FALSE;
+	
+	ret = g_file_test (path, test);
+	g_free (path);
+	
+	return ret;
+}
+ 
+gboolean
+gkr_location_read_file (GQuark loc, guchar **data, gsize *len, GError **err)
+{
+	gboolean ret;
+	gchar *path;
+	
+	g_return_val_if_fail (loc != 0, FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+	
+	path = gkr_location_to_path (loc);
+	if (!path) {
+		g_set_error (err, G_FILE_ERROR, G_FILE_ERROR_NODEV, "%s",  
+		             _("The disk or drive this file is located on is not present"));
+		return FALSE;
+	}
+
+	ret = g_file_get_contents (path, (gchar**)data, len, err);
+	g_free (path);
+	
+	return ret;
+}
+
+gboolean
+gkr_location_write_file (GQuark loc, const guchar *data, gssize len, GError **err)
+{
+	gboolean ret;
+	gchar *path;
+	
+	g_return_val_if_fail (loc != 0, FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+	
+	path = gkr_location_to_path (loc);
+	if (!path) {
+		g_set_error (err, G_FILE_ERROR, G_FILE_ERROR_NODEV, "%s",  
+		             _("The disk or drive this file is located on is not present"));
+		return FALSE;
+	}
+
+	ret = g_file_set_contents (path, (const gchar*)data, len, err);
+	g_free (path);
+	
+	return ret;
 }

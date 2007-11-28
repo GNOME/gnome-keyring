@@ -51,7 +51,6 @@ struct _GkrKeyring {
 	
 	/* NULL if memory only */
 	GQuark location;
-	time_t file_mtime;
 
 	/* If known: */
 	char *password;
@@ -84,7 +83,7 @@ GType            gkr_keyring_get_type           (void) G_GNUC_CONST;
 
 GkrKeyring*      gkr_keyring_new                (const gchar* name, GQuark location);
 
-GkrKeyring*      gkr_keyring_create             (GQuark base_loc, const gchar* name, const gchar* password);
+GkrKeyring*      gkr_keyring_create             (GQuark volume, const gchar* name, const gchar* password);
 
 guint            gkr_keyring_get_new_id         (GkrKeyring *keyring);
 
@@ -97,7 +96,7 @@ void             gkr_keyring_add_item           (GkrKeyring* keyring, GkrKeyring
 
 void             gkr_keyring_remove_item        (GkrKeyring* keyring, GkrKeyringItem* item);
 
-gboolean         gkr_keyring_update_from_disk   (GkrKeyring *keyring, gboolean force_reload);
+gboolean         gkr_keyring_update_from_disk   (GkrKeyring *keyring);
 
 gboolean         gkr_keyring_remove_from_disk   (GkrKeyring *keyring);
 
@@ -106,6 +105,10 @@ gboolean         gkr_keyring_save_to_disk       (GkrKeyring *keyring);
 gboolean         gkr_keyring_lock               (GkrKeyring *keyring);
 
 gboolean         gkr_keyring_unlock             (GkrKeyring *keyring, const gchar *password);
+
+void             gkr_keyrings_set_item          (GkrKeyring *keyring, GnomeKeyringItemType type,
+                                                 const gchar *display_name, const gchar *secret,
+                                                 GnomeKeyringAttributeList *attrs);
 
 G_END_DECLS
 

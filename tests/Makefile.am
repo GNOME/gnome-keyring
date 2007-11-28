@@ -59,11 +59,16 @@ test_keyring_two_LDADD = \
 
 UNIT_TESTS_BASE = \
 	unit-test-secmem.c \
+	unit-test-unique.c \
+	unit-test-crypto.c \
 	unit-test-async.c \
+	unit-test-async-setup.c \
 	unit-test-cleanup.c \
 	unit-test-location.c \
+	unit-test-location-watch.c \
 	unit-test-signal.c \
 	unit-test-mainloop-setup.c \
+	unit-test-memory-stubs.c \
 	unit-test-private.h
 
 run-base-test.c: $(UNIT_TESTS_BASE) unit-tests-prep.sh Makefile.am
@@ -73,9 +78,9 @@ run_base_test_SOURCES = \
 	run-base-test.c \
 	run-base-test.h \
 	$(UNIT_TESTS_BASE) 
-
+	
 run_base_test_LDADD = \
-	$(top_builddir)/common/libgkr-daemon-common.la \
+	$(top_builddir)/common/libgkr-common.la \
 	$(DAEMON_LIBS)
 
 # ------------------------------------------------------------------------------
@@ -119,12 +124,13 @@ run_prompt_test_SOURCES = \
 run_prompt_test_LDADD = \
 	$(top_builddir)/library/libgnome-keyring.la
 
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # PAM tests
 
 UNIT_TESTS_PAM = \
 	unit-test-pam-setup.c \
-	unit-test-pam.c
+	unit-test-pam.c \
+	unit-test-memory-stubs.c
 	
 run-pam-test.c: $(UNIT_TESTS_PAM) unit-tests-prep.sh Makefile.am
 	sh unit-tests-prep.sh -b run-pam-test $(UNIT_TESTS_PAM)

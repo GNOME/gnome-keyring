@@ -1,6 +1,6 @@
 
 noinst_LTLIBRARIES = \
-	libgkr-daemon-common.la \
+	libgkr-common.la \
 	libgkr-module-common.la
 
 INCLUDES = \
@@ -8,9 +8,9 @@ INCLUDES = \
 	-I$(top_builddir) 
 
 # --------------------------------------------------------------------
-# COMMON STUFF COMPILED INTO DAEMON 
+# COMMON STUFF COMPILED INTO DAEMON COMPONENTS
 
-libgkr_daemon_common_la_CFLAGS = \
+libgkr_common_la_CFLAGS = \
 	-DPREFIX=\""$(prefix)"\" 			\
 	-DBINDIR=\""$(bindir)"\" 			\
 	-DLIBEXECDIR=\""$(libexecdir)"\"		\
@@ -19,25 +19,21 @@ libgkr_daemon_common_la_CFLAGS = \
 	$(GTK_CFLAGS) 					\
 	$(GLIB_CFLAGS)
 
-libgkr_daemon_common_la_SOURCES = \
-	gkr-async.c \
-	gkr-async.h \
-	gkr-buffer.c \
-	gkr-buffer.h \
-	gkr-cleanup.c \
-	gkr-cleanup.h \
-	gkr-dbus.c \
-	gkr-dbus.h \
-	gkr-location.c \
-	gkr-location.h \
-	gkr-secure-memory.c \
-	gkr-secure-memory.h \
-	gkr-unix-signal.c \
-	gkr-unix-signal.h \
-	gkr-wakeup.c \
-	gkr-wakeup.h 
+libgkr_common_la_SOURCES = \
+	gkr-async.c gkr-async.h \
+	gkr-buffer.c gkr-buffer.h \
+	gkr-cleanup.c gkr-cleanup.h \
+	gkr-crypto.c gkr-crypto.h \
+	gkr-daemon-util.c gkr-daemon-util.h \
+	gkr-dbus.c gkr-dbus.h \
+	gkr-location.c gkr-location.h \
+	gkr-location-watch.c gkr-location-watch.h \
+	gkr-secure-memory.c gkr-secure-memory.h \
+	gkr-unique.c gkr-unique.h \
+	gkr-unix-signal.c gkr-unix-signal.h \
+	gkr-wakeup.c gkr-wakeup.h 
 
-libgkr_daemon_common_la_LIBADD = \
+libgkr_common_la_LIBADD = \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS)
 

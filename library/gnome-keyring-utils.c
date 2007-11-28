@@ -30,6 +30,8 @@
 #include "gnome-keyring-private.h"
 #include "gnome-keyring-memory.h"
 
+#include "common/gkr-secure-memory.h"
+
 /* Functions used by both the library and the daemon */
 
 /**
@@ -43,29 +45,7 @@
 void
 gnome_keyring_free_password (gchar *password)
 {
-	volatile char *vp;
-	size_t len;
-	
-	if (!password)
-		return;
-		
-	/*
-	 * If we're using unpageable 'secure' memory, then the free call
-	 * should zero out the memory, but because on certain platforms 
-	 * we may be using normal memory, zero it out here just in case.
-	 */
-	 
-	/* Defeats some optimizations */		
-	len = strlen (password);
-	memset (password, 0xAA, len);
-	memset (password, 0xBB, len);
-
-	/* Defeats others */
-        vp = (volatile char*)password;
-        while (*vp) 
-        	*(vp++) = 0xAA;
-	
-	gnome_keyring_memory_free (password);
+	gkr_secure_strfree (password);
 }
 
 /**
@@ -358,7 +338,7 @@ gnome_keyring_item_info_copy (GnomeKeyringItemInfo *item_info)
 	memcpy (copy, item_info, sizeof (GnomeKeyringItemInfo));
 
 	copy->display_name = g_strdup (copy->display_name);
-	copy->secret = gnome_keyring_memory_strdup (copy->secret);
+	copy->secret = gkr_secure_strdup (copy->secret);
 	
 	return copy;
 }

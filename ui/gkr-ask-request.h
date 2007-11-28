@@ -109,7 +109,7 @@ void               gkr_ask_request_set_check_option (GkrAskRequest *ask,
 void               gkr_ask_request_set_location_selector (GkrAskRequest *ask,
                                                           gboolean have);
                                                           
-void               gkr_ask_requset_set_location     (GkrAskRequest *ask,
+void               gkr_ask_request_set_location     (GkrAskRequest *ask,
                                                      GQuark loc);
 
 GObject*           gkr_ask_request_get_object       (GkrAskRequest *ask);

@@ -28,13 +28,13 @@
 #include "gkr-ask-marshal.h"
 #include "gkr-ask-daemon.h"
 
-#include "library/gnome-keyring.h"
-#include "library/gnome-keyring-memory.h"
-#include "library/gnome-keyring-private.h"
-#include "library/gnome-keyring-proto.h"
-
 #include "common/gkr-async.h"
 #include "common/gkr-location.h"
+#include "common/gkr-secure-memory.h"
+
+#include "library/gnome-keyring.h"
+#include "library/gnome-keyring-private.h"
+#include "library/gnome-keyring-proto.h"
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -51,6 +51,8 @@
 #include <glib.h>
 
 #include <gcrypt.h>
+
+#define DEBUG_COMMUNICATION 1
 
 /* -----------------------------------------------------------------------------
  * DECLARATIONS 
@@ -284,9 +286,9 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 	pv->ask_pid = 0;
 
 	/* Cleanup for response processing */
-	gnome_keyring_free_password (ask->typed_password);
+	gkr_secure_strfree (ask->typed_password);
 	ask->typed_password = NULL;
-	gnome_keyring_free_password (ask->original_password);
+	gkr_secure_strfree (ask->original_password);
 	ask->original_password = NULL;
 	
 	/* A failed request */
@@ -299,7 +301,6 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 	 * Parse each of the lines. Try to keep memory allocations
 	 * to a minimum, for security reasons.
 	 */
-	gkr_buffer_add_byte (&pv->buffer, 0);
 	for (i = 0, line = (gchar*)pv->buffer.buf; line && i < 2; ++i) {
 		
 		/* Break out the line */
@@ -311,11 +312,11 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 		
 		/* First line is the password */
 		if (i == 0)
-			ask->typed_password = gnome_keyring_memory_strdup (line);
+			ask->typed_password = gkr_secure_strdup (line);
 		
 		/* Second line is the original password (if any)*/
 		else if (i == 1)
-			ask->original_password = gnome_keyring_memory_strdup (line);
+			ask->original_password = gkr_secure_strdup (line);
 			
 		line = next;
 	}
@@ -385,7 +386,7 @@ prep_dialog_data (GkrAskRequest *ask)
 	GArray *array;
 	GSList *locations, *l;
 	GParamSpec *spec;
-	GQuark loc;
+	GQuark loc, loc_volume;
 	const gchar *t;
 	
 	key_file = g_key_file_new ();
@@ -422,16 +423,17 @@ prep_dialog_data (GkrAskRequest *ask)
 	}
 
 	/* See if we should send a location to display */
+	loc_volume = 0;
 	if (pv->location) {
-		loc = gkr_location_get_base (pv->location);
+		loc_volume = gkr_location_get_volume (pv->location);
 		
 		/* Suppress local stuff unless displying the selector */ 
-		if (!need_locations && loc == GKR_LOCATION_BASE_LOCAL)
-			loc = 0;
+		if (!need_locations && loc_volume == GKR_LOCATION_VOLUME_LOCAL)
+			loc_volume = 0;
 			
-		if (loc) {
+		if (loc_volume) {
 			g_key_file_set_value (key_file, "location", "location", 
-			                      gkr_location_to_string (loc));
+			                      gkr_location_to_string (loc_volume));
 			need_locations = TRUE;
 		}
 	}
@@ -439,18 +441,33 @@ prep_dialog_data (GkrAskRequest *ask)
 	if (need_locations) {
 		locmgr = gkr_location_manager_get ();
 		array = g_array_new (TRUE, TRUE, sizeof (gchar*));
-		locations = gkr_location_manager_get_base_locations (locmgr);
+		locations = gkr_location_manager_get_volumes (locmgr);
 			
 		/* Send all the locations and all the display names */
 		for (l = locations; l; l = g_slist_next (l)) {
-		 	t = gkr_location_to_string (GPOINTER_TO_UINT (l->data)); 
+			loc = GPOINTER_TO_UINT (l->data);
+		 	t = gkr_location_to_string (loc); 
 			g_array_append_val (array, t);
+			
+			/* Did we see the location of the item? */
+			if (loc == loc_volume)
+				loc_volume = 0;
 		}
+		
+		/* If we didn't see the location of the item, include it in the list */
+		if (loc_volume) {
+			locations = g_slist_append (locations, GUINT_TO_POINTER (loc_volume));
+			t = gkr_location_to_string (loc_volume);
+			g_array_append_val (array, t); 
+		}
+		
 		g_key_file_set_string_list (key_file, "location", "names", (const gchar**)array->data, array->len);
 		
 		g_array_set_size (array, 0);
 		for (l = locations; l; l = g_slist_next (l)) {
-			t = gkr_location_manager_get_base_display (locmgr, GPOINTER_TO_UINT (l->data)); 
+			t = gkr_location_manager_get_volume_display (locmgr, GPOINTER_TO_UINT (l->data));
+			if (!t)
+				t = "";
 			g_array_append_val (array, t);
 		}
 		g_key_file_set_string_list (key_file, "location", "display-names", (const gchar**)array->data, array->len);
@@ -476,7 +493,7 @@ read_until_end (GkrAskRequest *ask)
 	g_return_val_if_fail (pv->out_fd >= 0, FALSE);
 	
 	/* Passwords come through this buffer */
-	buf = gnome_keyring_memory_alloc (128);
+	buf = gkr_secure_alloc (128);
 
 	gkr_async_register_cancel (close_fd, &pv->out_fd);
 
@@ -507,7 +524,10 @@ read_until_end (GkrAskRequest *ask)
 		}
 	}
 	
-	gnome_keyring_memory_free (buf);
+	/* Always null terminate */
+	gkr_buffer_add_byte (&pv->buffer, 0);
+
+	gkr_secure_free (buf);
 	gkr_async_unregister_cancel (close_fd, &pv->out_fd);
 	
 	close_fd (&pv->out_fd);
@@ -659,7 +679,7 @@ gkr_ask_request_init (GkrAskRequest *ask)
 	pv->in_fd = -1;
 	
 	/* Use a secure memory buffer */
-	gkr_buffer_init_full (&pv->buffer, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&pv->buffer, 128, gkr_secure_realloc);
 }
 
 static guint
@@ -677,10 +697,10 @@ gkr_ask_request_dispose (GObject *obj)
 	cancel_ask_if_active (ask);
 	g_assert (pv->ask_pid == 0);
 	
-	gnome_keyring_free_password (ask->original_password);
+	gkr_secure_strfree (ask->original_password);
 	ask->original_password = NULL;
 	
-	gnome_keyring_free_password (ask->typed_password);
+	gkr_secure_strfree (ask->typed_password);
 	ask->typed_password = NULL;
 	
 	if (pv->in_fd >= 0)
@@ -864,11 +884,19 @@ gkr_ask_request_prompt (GkrAskRequest *ask)
 	if (ret) {
 		data = prep_dialog_data (ask);
 		g_return_if_fail (data);
+#if DEBUG_COMMUNICATION
+		g_printerr ("TO DIALOG:\n%s\n", data);
+#endif
 		ret = send_all_data (ask, data, strlen (data));
 		g_free (data);
 	}
-	if (ret)
+	if (ret) {
 		ret = read_until_end (ask);
+#if DEBUG_COMMUNICATION
+		if (ret)
+			g_printerr ("FROM DIALOG:\n%s\n", pv->buffer.buf);
+#endif
+	}		
 	finish_ask_io (ask, ret);
 }
 
@@ -900,7 +928,7 @@ gkr_ask_request_set_location_selector (GkrAskRequest *ask, gboolean have)
 }
                                                           
 void
-gkr_ask_requset_set_location (GkrAskRequest *ask, GQuark loc)
+gkr_ask_request_set_location (GkrAskRequest *ask, GQuark loc)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	g_assert (GKR_IS_ASK_REQUEST (ask));

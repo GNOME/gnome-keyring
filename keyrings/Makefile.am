@@ -1,4 +1,4 @@
-noinst_LTLIBRARIES=libgnome-keyring-keyrings.la
+noinst_LTLIBRARIES=libgkr-keyrings.la
 
 INCLUDES=	\
 	-DPREFIX=\""$(prefix)"\" 			\
@@ -10,11 +10,12 @@ INCLUDES=	\
 	$(GOBJECT_CFLAGS) 				\
 	$(GLIB_CFLAGS)
 
-libgnome_keyring_keyrings_la_SOURCES = \
+libgkr_keyrings_la_SOURCES = \
 	gkr-keyring.c gkr-keyring.h \
+	gkr-keyring-item.c gkr-keyring-item.h \
 	gkr-keyrings.c gkr-keyrings.h \
-	gkr-keyring-item.c gkr-keyring-item.h
+	gkr-keyrings-auto-unlock.c gkr-keyrings-auto-unlock.h 
 
-libgnome_keyring_keyrings_la_LIBADD = \
+libgkr_keyrings_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)

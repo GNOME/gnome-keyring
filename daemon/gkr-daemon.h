@@ -45,12 +45,12 @@ typedef gboolean (*GkrDaemonOperation) (GkrBuffer *packet, GkrBuffer *result,
 
 extern GkrDaemonOperation keyring_ops[];
 
-void     gkr_daemon_io_cleanup_socket_dir   (void);
-gboolean gkr_daemon_io_create_master_socket (const char **path);
+gboolean       gkr_daemon_io_create_master_socket (void);
+const gchar*   gkr_daemon_io_get_socket_path      (void);
 
 /* Dbus Initialization/Cleanup */
 #ifdef WITH_DBUS
-void gkr_daemon_dbus_setup (GMainLoop *loop, const gchar* socket);
+void gkr_daemon_dbus_setup (GMainLoop *loop);
 #endif 
 
 #endif /* GNOME_KEYRING_DAEMON_H */

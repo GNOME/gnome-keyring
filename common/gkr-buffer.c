@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gkr-buffer.c - helper code for the keyring daemon protocol
 
-   Copyright (C) 2007 Nate Nielsen
+   Copyright (C) 2007 Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 #include "config.h"
 
@@ -178,7 +178,7 @@ gkr_buffer_resize (GkrBuffer *buffer, size_t len)
 }
 
 int
-gkr_buffer_bump (GkrBuffer *buffer, size_t len)
+gkr_buffer_add_empty (GkrBuffer *buffer, size_t len)
 {
 	if (!gkr_buffer_reserve (buffer, buffer->len + len))
 		return 0;
@@ -320,6 +320,23 @@ gkr_buffer_add_byte_array (GkrBuffer *buffer, const unsigned char *val,
 	return gkr_buffer_append (buffer, val, len);
 }
 
+unsigned char*
+gkr_buffer_add_byte_array_empty (GkrBuffer *buffer, size_t vlen)
+{
+	size_t pos;
+	if (vlen >= 0x7fffffff) {
+		buffer->failures++;
+		return NULL; 
+	}
+	if (!gkr_buffer_add_uint32 (buffer, vlen))
+		return NULL;
+	pos = buffer->len;
+	/* This, as any gkr_buffer_add_* can reallocate */
+	if (!gkr_buffer_add_empty (buffer, vlen))
+		return NULL;
+	return buffer->buf + pos;
+}
+
 int
 gkr_buffer_get_byte_array (GkrBuffer *buffer, size_t offset,
                                       size_t *next_offset, const unsigned char **val,
@@ -356,4 +373,60 @@ gkr_buffer_get_byte_array (GkrBuffer *buffer, size_t offset,
 	return 1;
 }
 
+int
+gkr_buffer_add_string (GkrBuffer *buffer, const char *str)
+{
+	size_t len = strlen (str);
+	if (len >= 0x7fffffff) {
+		return 0;
+	}
+	if (str == NULL) {
+		gkr_buffer_add_uint32 (buffer, 0xffffffff);
+	} else {
+		gkr_buffer_add_uint32 (buffer, len);
+		gkr_buffer_append (buffer, (unsigned char*)str, len);
+	}
+	return 1;
+}
 
+int
+gkr_buffer_get_string (GkrBuffer *buffer, size_t offset, size_t *next_offset,
+                       char **str_ret, GkrBufferAllocator allocator)
+{
+	uint32_t len;
+	
+	if (!allocator)
+		allocator = buffer->allocator;
+	
+	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &len)) {
+		return 0;
+	}
+	if (len == 0xffffffff) {
+		*next_offset = offset;
+		*str_ret = NULL;
+		return 1;
+	} else if (len >= 0x7fffffff) {
+		return 0;
+	}
+	
+	if (buffer->len < len ||
+	    offset > buffer->len - len) {
+		return 0;
+	}
+	
+	/* Make sure no null characters in string */
+	if (memchr (buffer->buf + offset, 0, len) != NULL)
+		return 0;
+	
+	/* The passed allocator may be for non-pageable memory */
+	*str_ret = (allocator) (NULL, len + 1);
+	if (!*str_ret)
+		return 0;
+	memcpy (*str_ret, buffer->buf + offset, len + 1);
+
+	/* Always zero terminate */
+	(*str_ret)[len] = 0;
+	*next_offset = offset + len;
+	
+	return 1;
+}

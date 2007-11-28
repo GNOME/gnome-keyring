@@ -14,9 +14,14 @@ SUBDIRS = \
 	. \
 	common \
 	library \
+	pkcs11 \
 	keyrings \
 	ui \
+	pkix \
+	pk \
+	ssh \
 	daemon \
+	cryptoki \
 	doc \
 	po \
 	reference \

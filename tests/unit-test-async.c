@@ -45,12 +45,7 @@
  * 
  * Tests be run in the order specified here.
  */
- 
-void unit_setup_threading (void) 	 
-{ 	 
-	gkr_async_workers_init (test_mainloop_get ());
-}
-	 
+  
 static gboolean 
 cancel_worker (gpointer data)
 {

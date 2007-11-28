@@ -1,6 +1,6 @@
 AC_INIT(library/gnome-keyring.h)
 
-AM_INIT_AUTOMAKE(gnome-keyring, 2.20.3)
+AM_INIT_AUTOMAKE(gnome-keyring, 2.21.3)
 AM_CONFIG_HEADER(config.h)
 	
 AM_SANITY_CHECK
@@ -32,13 +32,18 @@ DISTCHECK_CONFIGURE_FLAGS="--enable-gtk-doc"
 AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
-PKG_CHECK_MODULES(GTHREAD, gthread-2.0 >= 2.6.0)
-PKG_CHECK_MODULES(GOBJECT, glib-2.0 >= 2.6.0 gobject-2.0 >= 2.6.0)
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
+
+PKG_CHECK_MODULES(GTHREAD, gthread-2.0 >= 2.6.0)
+AC_SUBST(GTHREAD_CFLAGS)
+AC_SUBST(GTHREAD_LIBS)
+
+PKG_CHECK_MODULES(GOBJECT, glib-2.0 >= 2.6.0 gobject-2.0 >= 2.6.0)
 AC_SUBST(GOBJECT_CFLAGS)
 AC_SUBST(GOBJECT_LIBS)
+
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6.0)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
@@ -289,7 +294,24 @@ AC_DEFINE_UNQUOTED(LIBGCRYPT_VERSION, "$GCRYPT_VERSION", [Version of GCRYPT we e
 
 DAEMON_CFLAGS="$DAEMON_CFLAGS $LIBGCRYPT_CFLAGS"
 DAEMON_LIBS="$DAEMON_LIBS $LIBGCRYPT_LIBS"
-	
+
+# -------------------------------------------------------------------
+# libtasn1
+# 
+
+GKR_LIBTASN1_VERSION=0.3.4
+
+AM_PATH_LIBTASN1($GKR_LIBTASN1_VERSION,,
+	AC_MSG_ERROR([[
+*** 
+*** LibtASN1 ${GKR_LIBTASN1_VERSION} was not found. 
+]]))
+libtasn=yes
+AC_DEFINE_UNQUOTED(GKR_LIBGCRYPT_VERSION, "$GKR_LIBTASN1_VERSION", [Version of libtasn1 we expect])
+
+DAEMON_CFLAGS="$DAEMON_CFLAGS $LIBTASN1_CFLAGS"
+DAEMON_LIBS="$DAEMON_LIBS $LIBTASN1_LIBS"
+
 dnl ==========================================================================
 
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
@@ -343,13 +365,20 @@ AC_SUBST(LIBRARY_LIBS)
 AC_OUTPUT([
 Makefile
 common/Makefile
+cryptoki/Makefile
 daemon/Makefile
 doc/Makefile
 keyrings/Makefile
 library/Makefile
 pam/Makefile
+pk/Makefile
+pk/tests/Makefile
+pkcs11/Makefile
+pkix/Makefile
+pkix/tests/Makefile
 po/Makefile.in
 reference/Makefile
+ssh/Makefile
 tests/Makefile
 ui/Makefile
 library/gnome-keyring-1.pc

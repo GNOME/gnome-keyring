@@ -84,7 +84,7 @@ daemon_dbus_cleanup (gpointer unused)
 }
 
 void 
-gkr_daemon_dbus_setup (GMainLoop *loop, const gchar *socket)
+gkr_daemon_dbus_setup (GMainLoop *loop)
 {
 	dbus_uint32_t res = 0;
 	DBusError derr = { 0 };
@@ -96,7 +96,7 @@ gkr_daemon_dbus_setup (GMainLoop *loop, const gchar *socket)
 		return;
 #endif
 
-	socket_path = socket;
+	socket_path = gkr_daemon_io_get_socket_path ();
 	dbus_error_init (&derr); 
 
 	/* Get the dbus bus and hook up */

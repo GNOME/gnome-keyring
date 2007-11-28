@@ -29,9 +29,10 @@
 #include "gkr-keyring-item.h"
 
 #include "common/gkr-buffer.h"
+#include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
+#include "common/gkr-secure-memory.h"
 
-#include "library/gnome-keyring-memory.h"
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
 
@@ -122,60 +123,6 @@ init_salt (guchar salt[8])
 }
 
 static gboolean
-generate_key (const char *password,
-	      guchar salt[8],
-	      int iterations,
-	      guchar key[16],
-	      guchar iv[16])
-{
-	gcry_md_hd_t mdh;
-	gcry_error_t gerr;
-	guchar *digest;
-	guchar *digested;
-	guint n_digest;
-
-	g_assert (iterations >= 1);
-	
-	gerr = gcry_md_open (&mdh, GCRY_MD_SHA256, 0);
-	if (gerr) {
-		g_warning ("couldn't create sha256 hash context: %s", 
-			   gcry_strerror (gerr));
-		return FALSE;
-	}
-
-	n_digest = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
-	g_return_val_if_fail (n_digest >= 32, FALSE);
-	
-	digest = gnome_keyring_memory_new (guchar, n_digest);
-
-	gcry_md_write (mdh, password, strlen (password));
-	gcry_md_write (mdh, salt, 8);
-	gcry_md_final (mdh);
-	digested = gcry_md_read (mdh, 0);
-	g_return_val_if_fail (digested, FALSE);
-	memcpy (digest, digested, n_digest);
-	iterations--;
-
-	while (iterations != 0) {
-		gcry_md_reset (mdh);
-		gcry_md_write (mdh, digest, n_digest);
-		gcry_md_final (mdh);
-		digested = gcry_md_read (mdh, 0);
-		g_return_val_if_fail (digested, FALSE);
-		memcpy (digest, digested, n_digest);
-		iterations--;
-	}
-
-	memcpy (key, digest, 16);
-	memcpy (iv, digest+16, 16);
-
-	gnome_keyring_memory_free (digest);
-	gcry_md_close (mdh);
-	
-	return TRUE;
-}
-
-static gboolean
 encrypt_buffer (GkrBuffer *buffer,
 		const char *password,
 		guchar salt[8],
@@ -183,34 +130,35 @@ encrypt_buffer (GkrBuffer *buffer,
 {
 	gcry_cipher_hd_t cih;
 	gcry_error_t gerr;
-        guchar *key;
-        guchar iv[16];
+        guchar *key, *iv;
 	size_t pos;
 
 	g_assert (buffer->len % 16 == 0);
+	g_assert (16 == gcry_cipher_get_algo_blklen (GCRY_CIPHER_AES128));
+	g_assert (16 == gcry_cipher_get_algo_keylen (GCRY_CIPHER_AES128));
 	
-	key = gnome_keyring_memory_new (guchar, 16);
-
-	if (!generate_key (password, salt, iterations, key, iv)) {
-		gnome_keyring_memory_free (key);
+	if (!gkr_crypto_generate_symkey_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
+	                                        password, salt, 8, iterations, &key, &iv))
 		return FALSE;
-	}
 
 	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
 	if (gerr) {
 		g_warning ("couldn't create aes cipher context: %s", 
 			   gcry_strerror (gerr));
-		gnome_keyring_memory_free (key);
+		gkr_secure_free (key);
+		g_free (iv);
 		return FALSE;
 	}
 
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setkey (cih, key, 16);
 	g_return_val_if_fail (!gerr, FALSE);
+	gkr_secure_free (key);
 
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setiv (cih, iv, 16);
 	g_return_val_if_fail (!gerr, FALSE);
+	g_free (iv);
 
 	for (pos = 0; pos < buffer->len; pos += 16) {
 		/* In place encryption */
@@ -218,7 +166,6 @@ encrypt_buffer (GkrBuffer *buffer,
 		g_return_val_if_fail (!gerr, FALSE);
 	}
 
-	gnome_keyring_memory_free (key);
 	gcry_cipher_close (cih);
 	
 	return TRUE;
@@ -232,34 +179,35 @@ decrypt_buffer (GkrBuffer *buffer,
 {
 	gcry_cipher_hd_t cih;
 	gcry_error_t gerr;
-        guchar *key;
-        guchar iv[16];
+        guchar *key, *iv;
 	size_t pos;
 
 	g_assert (buffer->len % 16 == 0);
+	g_assert (16 == gcry_cipher_get_algo_blklen (GCRY_CIPHER_AES128));
+	g_assert (16 == gcry_cipher_get_algo_keylen (GCRY_CIPHER_AES128));
 	
-	key = gnome_keyring_memory_new (guchar, 16);	
-
-	if (!generate_key (password, salt, iterations, key, iv)) {
-		gnome_keyring_memory_free (key);
+	if (!gkr_crypto_generate_symkey_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
+	                                        password, salt, 8, iterations, &key, &iv))
 		return FALSE;
-	}
 	
 	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
 	if (gerr) {
 		g_warning ("couldn't create aes cipher context: %s", 
 			   gcry_strerror (gerr));
-		gnome_keyring_memory_free (key);
+		gkr_secure_free (key);
+		g_free (iv);
 		return FALSE;
 	}
 
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setkey (cih, key, 16);
 	g_return_val_if_fail (!gerr, FALSE);
+	gkr_secure_free (key);
 
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setiv (cih, iv, 16);
 	g_return_val_if_fail (!gerr, FALSE);
+	g_free (iv);
 
 	for (pos = 0; pos < buffer->len; pos += 16) {
 		/* In place encryption */
@@ -267,7 +215,6 @@ decrypt_buffer (GkrBuffer *buffer,
 		g_return_val_if_fail (!gerr, FALSE);
 	}
 
-	gnome_keyring_memory_free (key);
 	gcry_cipher_close (cih);
 	
 	return TRUE;
@@ -417,7 +364,7 @@ generate_file (GkrBuffer *buffer, GkrKeyring *keyring)
 	}
 
 	/* Encrypted data. Use non-pageable memory */
-	gkr_buffer_init_full (&to_encrypt, 4096, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&to_encrypt, 4096, gkr_secure_realloc);
 	
 	gkr_buffer_append (&to_encrypt, (guchar*)digest, 16); /* Space for hash */
 
@@ -543,13 +490,12 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	GHashTable *checks = NULL;
 	GkrKeyringItem *item;
 	char *reserved;
-	gboolean ret = FALSE;
 
 	display_name = NULL;
 	items = 0;
 
 	/* We're decrypting this, so use secure memory */
-	gkr_buffer_set_allocator (&to_decrypt, gnome_keyring_memory_realloc);	
+	gkr_buffer_set_allocator (&to_decrypt, gkr_secure_realloc);	
 
 	if (buffer->len < KEYRING_FILE_HEADER_LEN) {
 		return FALSE;
@@ -641,7 +587,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 			goto bail;
 		}
 		if (!verify_decrypted_buffer (&to_decrypt)) {
-			gnome_keyring_free_password (keyring->password);
+			gkr_secure_strfree (keyring->password);
 			keyring->password = NULL;
 		} else {
 			locked = FALSE;
@@ -699,7 +645,6 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	keyring->locked = locked;
 	g_free (keyring->keyring_name);
 	keyring->keyring_name = display_name;
-	display_name = NULL;
 	keyring->mtime = mtime;
 	keyring->ctime = ctime;
 	keyring->lock_on_idle = !!(flags & LOCK_ON_IDLE_FLAG);
@@ -730,7 +675,7 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 
 		g_free (item->display_name);
 		item->display_name = NULL;
-		gnome_keyring_free_password (item->secret);
+		gkr_secure_strfree (item->secret);
 		item->secret = NULL;
 		if (item->acl) {
 			gnome_keyring_acl_free (item->acl);
@@ -755,27 +700,27 @@ update_keyring_from_data (GkrKeyring *keyring, GkrBuffer *buffer)
 	}
 	
 	g_hash_table_foreach (checks, (GHFunc)remove_unavailable_item, keyring);
+	g_hash_table_destroy (checks);
 
-	ret = TRUE;
-
+	return TRUE;
  bail:
 	gkr_buffer_uninit (&to_decrypt);
 	if (checks)
 		g_hash_table_destroy (checks);
 	g_free (display_name);
 
-	if (items != NULL && !ret) {
+	if (items != NULL) {
 		for (i = 0; i < num_items; i++) {
 			g_free (items[i].display_name);
-			gnome_keyring_free_password (items[i].secret);
+			gkr_secure_strfree (items[i].secret);
 			gnome_keyring_attribute_list_free (items[i].hashed_attributes);
 			gnome_keyring_attribute_list_free (items[i].attributes);
 			gnome_keyring_acl_free (items[i].acl);
 		}
+		g_free (items);
 	}
-	g_free (items);
 	
-	return ret;
+	return FALSE;
 }
 
 
@@ -801,14 +746,14 @@ write_all (int fd, const guchar *buf, size_t len)
 }
 
 static GQuark
-get_default_location_for_name (GQuark base_loc, const char *keyring_name)
+get_default_location_for_name (GQuark volume, const char *keyring_name)
 {
 	gchar *path = NULL;
 	gchar *base, *filename;
 	int version;
 	GQuark loc;
 	
-	g_assert (base_loc);
+	g_assert (volume);
 	g_assert (keyring_name && keyring_name[0]);
 
 	base = g_filename_from_utf8 (keyring_name, -1, NULL, NULL, NULL);
@@ -821,10 +766,10 @@ get_default_location_for_name (GQuark base_loc, const char *keyring_name)
 		
 		if (version == 0) 
 			filename = g_strdup_printf ("%s/keyrings/%s.keyring", 
-			                            g_quark_to_string (base_loc), base);
+			                            g_quark_to_string (volume), base);
 		else
 			filename = g_strdup_printf ("%s/keyrings/%s%d.keyring", 
-			                            g_quark_to_string (base_loc), base, version);
+			                            g_quark_to_string (volume), base, version);
 
 		loc = gkr_location_from_string (filename);
 		g_free (filename);
@@ -888,7 +833,7 @@ gkr_keyring_dispose (GObject *obj)
 	g_list_free (keyring->items);
 	keyring->items = NULL;
 	
-	gnome_keyring_free_password (keyring->password);
+	gkr_secure_strfree (keyring->password);
 	keyring->password = NULL;
 
 	G_OBJECT_CLASS (gkr_keyring_parent_class)->dispose (obj);
@@ -955,21 +900,18 @@ gkr_keyring_new (const char *name, GQuark location)
 }
 
 GkrKeyring*
-gkr_keyring_create (GQuark base_loc, const gchar *keyring_name, const gchar *password)
+gkr_keyring_create (GQuark volume, const gchar *keyring_name, const gchar *password)
 {
 	GkrKeyring *keyring;
-
-	g_return_val_if_fail (keyring_name && keyring_name[0], NULL);
-	g_return_val_if_fail (password, NULL);
-		
-	if (!base_loc)
-		base_loc = GKR_LOCATION_BASE_LOCAL;
+	
+	if (!volume)
+		volume = GKR_LOCATION_VOLUME_LOCAL;
 	
 	keyring = gkr_keyring_new (keyring_name, 0);
 	if (keyring != NULL) {
-		keyring->location = get_default_location_for_name (base_loc, keyring_name);
+		keyring->location = get_default_location_for_name (volume, keyring_name);
 		keyring->locked = FALSE;
-		keyring->password = gnome_keyring_memory_strdup (password);
+		keyring->password = gkr_secure_strdup (password);
 		keyring->hash_iterations = 1000 + (int) (1000.0 * rand() / (RAND_MAX + 1.0));
 		init_salt (keyring->salt);
 		gkr_keyring_save_to_disk (keyring);
@@ -1067,45 +1009,31 @@ gkr_keyring_remove_item (GkrKeyring* keyring, GkrKeyringItem* item)
 }
 
 gboolean
-gkr_keyring_update_from_disk (GkrKeyring *keyring, gboolean force_reload)
+gkr_keyring_update_from_disk (GkrKeyring *keyring)
 {
-	struct stat statbuf;
 	GkrBuffer buffer;
-	char *contents = NULL;
+	GError *err = NULL;
+	guchar *contents = NULL;
 	gsize len;
 	gboolean success = FALSE;
-	gchar *file = NULL;
 
 	if (!keyring->location) {
 		success = TRUE;
 		goto done;
 	}
-
-	file = gkr_location_to_path (keyring->location);
-	if (!file)
-		goto done;
-		
-	if (stat (file, &statbuf) < 0) {
-		g_free (file);
-		return FALSE;
-	}
-
-	if (!force_reload && statbuf.st_mtime == keyring->file_mtime) {
-		success = TRUE;
-		goto done;
-	}
-	keyring->file_mtime = statbuf.st_mtime;
-
-	if (!g_file_get_contents (file, &contents, &len, NULL))
-		goto done;
 	
-	gkr_buffer_init_static (&buffer, (guchar*)contents, len);
+	if (gkr_location_read_file (keyring->location, &contents, &len, &err)) {
+		g_warning ("couldn't read keyring: %s", err && err->message ? err->message : NULL);
+		goto done;
+	}
+	
+	gkr_buffer_init_static (&buffer, contents, len);
 	success = update_keyring_from_data (keyring, &buffer);
 	gkr_buffer_uninit (&buffer);
 
 done:
+	g_error_free (err);
 	g_free (contents);
-	g_free (file);
 	return success;
 }
 
@@ -1170,7 +1098,8 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 				close (fd);
 				if (rename (template, file) == 0) {
 					if (stat (file, &statbuf) == 0)
-						keyring->file_mtime = statbuf.st_mtime;
+						gkr_location_manager_note_mtime (NULL, 
+						              keyring->location, statbuf.st_mtime);
 				} else {
 					unlink (template);
 				}
@@ -1206,9 +1135,9 @@ gkr_keyring_lock (GkrKeyring *keyring)
 
 	g_assert (keyring->password != NULL);
 	
-	gnome_keyring_free_password (keyring->password);
+	gkr_secure_strfree (keyring->password);
 	keyring->password = NULL;
-	if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
+	if (!gkr_keyring_update_from_disk (keyring)) {
 		/* Failed to re-read, remove the keyring */
 		g_warning ("Couldn't re-read keyring %s\n", keyring->keyring_name);
 		gkr_keyrings_remove (keyring);
@@ -1225,9 +1154,9 @@ gkr_keyring_unlock (GkrKeyring *keyring, const gchar *password)
 		
 	g_assert (keyring->password == NULL);
 		
-	keyring->password = gnome_keyring_memory_strdup (password);
-	if (!gkr_keyring_update_from_disk (keyring, TRUE)) {
-		gnome_keyring_free_password (keyring->password);
+	keyring->password = gkr_secure_strdup (password);
+	if (!gkr_keyring_update_from_disk (keyring)) {
+		gkr_secure_strfree (keyring->password);
 		keyring->password = NULL;
 	}
 	if (keyring->locked) {

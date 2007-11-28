@@ -24,10 +24,21 @@
 #define GKRLOCATION_H_
 
 #include <glib.h>
+#include <glib-object.h>
+
+G_BEGIN_DECLS
+
+/* -----------------------------------------------------------------------------
+ * GENERAL LOCATION FUNCTIONS
+ */
 
 #define        GKR_LOCATION_NAME_LOCAL     "LOCAL"
 
-#define        GKR_LOCATION_BASE_LOCAL     (gkr_location_from_string (GKR_LOCATION_NAME_LOCAL ":"))
+#define        GKR_LOCATION_VOLUME_LOCAL   (gkr_location_from_string (GKR_LOCATION_NAME_LOCAL ":"))
+
+#define        GKR_LOCATION_NAME_HOME      "HOME"
+
+#define        GKR_LOCATION_VOLUME_HOME    (gkr_location_from_string (GKR_LOCATION_NAME_HOME ":"))
 
 GQuark         gkr_location_from_path      (const gchar *path);
 
@@ -41,11 +52,19 @@ gchar*         gkr_location_to_path        (GQuark loc);
 
 gboolean       gkr_location_is_descendant  (GQuark parent, GQuark descendant);
 
-GQuark         gkr_location_get_base       (GQuark loc);
+GQuark         gkr_location_get_volume     (GQuark loc);
 
-#include <glib-object.h>
+/* -----------------------------------------------------------------------------
+ * UTILITIES
+ */
+ 
+gboolean       gkr_location_test_file      (GQuark loc, GFileTest test);
+ 
+gboolean       gkr_location_read_file      (GQuark loc, guchar **data, gsize *len, GError **err);
 
-G_BEGIN_DECLS
+gboolean       gkr_location_write_file     (GQuark loc, const guchar *data, gssize len, GError **err);
+
+/* -------------------------------------------------------------------------- */
 
 #define GKR_TYPE_LOCATION_MANAGER             (gkr_location_manager_get_type ())
 #define GKR_LOCATION_MANAGER(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKR_TYPE_LOCATION_MANAGER, GkrLocationManager))
@@ -64,9 +83,9 @@ struct _GkrLocationManager {
 struct _GkrLocationManagerClass {
 	GObjectClass parent_class;
 
-	void (*location_added) (GkrLocationManager *locmgr, const gchar *prefix);
+	void (*volume_added) (GkrLocationManager *locmgr, GQuark volume);
 	
-	void (*location_removed) (GkrLocationManager *locmgr, const gchar *prefix);
+	void (*volume_removed) (GkrLocationManager *locmgr, GQuark volume);
 };
 
 GType                    gkr_location_manager_get_type           (void) G_GNUC_CONST;
@@ -81,10 +100,17 @@ void                     gkr_location_manager_register           (GkrLocationMan
 void                     gkr_location_manager_unregister         (GkrLocationManager *locmgr, 
                                                                   const gchar *name);
 
-GSList*	                 gkr_location_manager_get_base_locations (GkrLocationManager *locmgr);
+gboolean                 gkr_location_manager_has_volume         (GkrLocationManager *locmgr, 
+                                                                  GQuark volume);
+                                                                  
+GSList*	                 gkr_location_manager_get_volumes        (GkrLocationManager *locmgr);
 
-const gchar*             gkr_location_manager_get_base_display   (GkrLocationManager *locmgr,
-                                                                  GQuark base_loc);
+const gchar*             gkr_location_manager_get_volume_display (GkrLocationManager *locmgr,
+                                                                  GQuark volume);
+
+gboolean                 gkr_location_manager_note_mtime         (GkrLocationManager *locmgr,
+                                                                  GQuark location, 
+                                                                  time_t mtime);
 
 G_END_DECLS
 
