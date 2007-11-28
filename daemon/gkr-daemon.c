@@ -37,6 +37,8 @@
 
 #include "library/gnome-keyring.h"
 
+#include "pkcs11/gkr-pkcs11-daemon.h"
+
 #include "ssh/gkr-ssh-daemon.h"
 
 #include "ui/gkr-ask-daemon.h"
@@ -71,6 +73,62 @@ static GMainLoop *loop = NULL;
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
 #endif
+
+/* -----------------------------------------------------------------------------
+ * COMMAND LINE
+ */
+
+/* All the components to run on startup */
+#define DEFAULT_COMPONENTS  "ssh,pkcs11,keyring"
+ 
+static gboolean run_foreground = FALSE;
+static gboolean run_daemonized = FALSE;
+static gboolean unlock_with_login = FALSE;
+static const gchar* run_components = NULL;  
+
+static GOptionEntry option_entries[] = {
+	{ "foreground", 'f', 0, G_OPTION_ARG_NONE, &run_foreground, 
+	  "Run in the foreground", NULL }, 
+	{ "daemonize", 'd', 0, G_OPTION_ARG_NONE, &run_daemonized, 
+	  "Run as a daemon", NULL }, 
+	{ "login", 'l', 0, G_OPTION_ARG_NONE, &unlock_with_login, 
+	  "Use login password from stdin", NULL },
+	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
+	  "The components to enable", "ssh,keyring" },
+	{ NULL }
+};
+
+static void
+parse_arguments (int *argc, char** argv[])
+{
+	GError *err = NULL;
+	GOptionContext *context;
+	
+	context = g_option_context_new ("- The Gnome Keyring Daemon");
+	g_option_context_add_main_entries (context, option_entries, GETTEXT_PACKAGE);
+	
+	if (!g_option_context_parse (context, argc, argv, &err)) {
+		g_printerr ("gnome-keyring-daemon: %s", err && err->message ? err->message : "");
+		g_clear_error (&err);
+	}
+	
+	g_option_context_free (context);
+}
+
+static gboolean
+check_run_component (const char* component)
+{
+	const char* run = run_components;
+	if (!run)
+		run = DEFAULT_COMPONENTS;
+	g_assert (component);
+	
+	/* 
+	 * Note that this assumes that no components are substrings of 
+	 * one another. Which makes things quick, and simple.
+	 */
+	return strstr (run, component) ? TRUE : FALSE;
+}
 
 /* -----------------------------------------------------------------------------
  * MEMORY
@@ -274,41 +332,40 @@ close_stdinout (void)
 	close (fd);
 }
 
+static void
+cleanup_and_exit (int code)
+{
+	gkr_cleanup_perform ();
+	_exit (code);
+}
+
 static gboolean
 lifetime_slave_pipe_io (GIOChannel  *channel,
 			GIOCondition cond,
 			gpointer     callback_data)
 {
-        gkr_cleanup_perform ();
-        _exit (2);
+	cleanup_and_exit (2);
+	return FALSE;
 }
+
 
 int
 main (int argc, char *argv[])
 {
 	const char *env;
-	int fd, i;
+	int fd;
 	pid_t pid;
-	gboolean foreground;
-	gboolean daemon;
 	GIOChannel *channel;
 	GMainContext *ctx;
-	gboolean login;
 	gchar *login_password;
 	GkrKeyring *login_keyring;
 	
 	g_type_init ();
 	g_thread_init (NULL);
-	gkr_crypto_setup ();
-
-	/* 
-	 * TODO: We need some way to be able to select which parts of 
-	 * the daemon should run.
-	 */
-	if (!gkr_daemon_io_create_master_socket () ||
-	    !gkr_daemon_ssh_io_initialize ())
-		exit (1);
+	srand (time (NULL));
 	
+	parse_arguments (&argc, &argv);
+
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */
 	setlocale (LC_ALL, "");
@@ -320,40 +377,40 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
+	gkr_crypto_setup ();
 
-	srand (time (NULL));
-
-	foreground = FALSE;
-	daemon = FALSE;
-	login = FALSE;
-
-	if (argc > 1) {
-		for (i = 1; i < argc; i++) {
-			if (strcmp (argv[i], "-f") == 0)
-				foreground = TRUE;
-			if (strcmp (argv[i], "-d") == 0)
-				daemon = TRUE;
-			if (strcmp (argv[i], "--login") == 0)
-				login = TRUE;
-		}
+	/* Initialize the appropriate components */
+	if (check_run_component ("keyring")) {
+		if (!gkr_daemon_io_create_master_socket ())
+			cleanup_and_exit (1);
 	}
-
+	
+	if (check_run_component ("ssh")) {
+		if (!gkr_daemon_ssh_io_initialize ())
+			cleanup_and_exit (1);
+	}
+	
+	if (check_run_component ("pkcs11")) {
+		if (!gkr_pkcs11_daemon_setup ())
+			cleanup_and_exit (1);
+	}	
+	 
 	/* 
 	 * When --login is specified then the login password is passed 
 	 * in on stdin. All data (including newlines) are part of the 
 	 * password.
 	 */
-	login_password = login ? read_login_password (STDIN) : NULL;
+	login_password = unlock_with_login ? read_login_password (STDIN) : NULL;
 	
 	/* 
 	 * The whole forking and daemonizing dance starts here.
 	 */
-	if (!foreground) {
+	if (!run_foreground) {
 		pid = fork ();
 		
 		/* An intermediate child */
 		if (pid == 0) {
-			if (daemon) {
+			if (run_daemonized) {
 				pid = fork ();
 				
 				/* Still in the intermedate child */
@@ -383,7 +440,7 @@ main (int argc, char *argv[])
 		} else {
 			gkr_secure_free (login_password);
 			
-			if (daemon) {
+			if (run_daemonized) {
 				int status;
 				
 				/* Initial process, waits for intermediate child */
@@ -413,7 +470,7 @@ main (int argc, char *argv[])
 	/* Daemon process continues here */
 
         /* Send all warning or error messages to syslog, if a daemon */
-        if (!foreground)
+        if (!run_foreground)
 	        prepare_logging();
 
 	loop = g_main_loop_new (NULL, FALSE);
@@ -454,7 +511,7 @@ main (int argc, char *argv[])
 	 * Unlock the login keyring if we were given a password on STDIN.
 	 * If it does not exist. We create it. 
 	 */
-	if (login_password) {
+	if (unlock_with_login) {
 		login_keyring = gkr_keyrings_get_login ();
 		if (login_keyring) {
 			if (!gkr_keyring_unlock (login_keyring, login_password))

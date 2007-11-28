@@ -1,4 +1,9 @@
 
+EXTRA_DIST = \
+	gkr-pkcs11-module-export.map \
+	pkcs11.h \
+	pkcs11n.h 
+
 # ------------------------------------------------------------------------------
 # The pkcs11 module 
 
@@ -24,16 +29,16 @@ gnome_keyring_pkcs11_la_SOURCES = $(MODULE_SRCS)
 gnome_keyring_pkcs11_la_LIBADD = \
 	$(top_builddir)/common/libgkr-module-common.la 
 
-EXTRA_DIST = \
-	gkr-pkcs11-module-export.map \
-	pkcs11.h \
-	pkcs11n.h 
-
-
 # ------------------------------------------------------------------------------
 # The pkcs11 parts in the daemon. Currently these are built into 
 # their own binary for testing purposes.
 # 
+
+INCLUDES = \
+	-I$(top_srcdir) 				\
+	-I$(top_builddir) 				\
+	$(GOBJECT_CFLAGS) 				\
+	$(GLIB_CFLAGS)
 
 DAEMON_SRCS = \
 	gkr-pkcs11-calls.h \
@@ -42,26 +47,10 @@ DAEMON_SRCS = \
 	gkr-pkcs11-mechanisms.h \
 	gkr-pkcs11-message.c gkr-pkcs11-message.h 
 
-noinst_PROGRAMS = gnome-keyring-pkcs11-test-daemon
+noinst_LTLIBRARIES = libgkr-pkcs11.la
 
-gnome_keyring_pkcs11_test_daemon_CFLAGS = \
-	-I. \
-	-I$(top_srcdir) \
-	$(GLIB_CFLAGS) \
-	$(GOBJECT_CFLAGS) \
-	$(GTHREAD_CFLAGS)
-gnome_keyring_pkcs11_test_daemon_SOURCES = \
-	$(DAEMON_SRCS) \
-	gkr-pkcs11-daemon-test.c
-gnome_keyring_pkcs11_test_daemon_LDADD = \
-	$(top_builddir)/pk/libgkr-pk.la \
-	$(top_builddir)/pkix/libgkr-pkix.la \
-	$(top_builddir)/ui/libgkr-ui.la \
-	$(top_builddir)/keyrings/libgkr-keyrings.la \
-	$(top_builddir)/library/libgnome-keyring-common.la \
-	$(top_builddir)/common/libgkr-common.la \
-	$(DAEMON_LIBS) \
+libgkr_pkcs11_la_SOURCES = $(DAEMON_SRCS)
+
+libgkr_pkcs11_la_LIBADD = \
 	$(GLIB_LIBS) \
-	$(GOBJECT_CFLAGS) \
-	$(GTHREAD_LIBS)
-
+	$(GOBJECT_LIBS)

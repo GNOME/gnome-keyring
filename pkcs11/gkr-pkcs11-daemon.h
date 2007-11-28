@@ -28,8 +28,7 @@
  * GENERAL FUNCTIONS 
  */
  
-gboolean        gkr_pkcs11_daemon_setup               (const gchar* socket_path);
-void            gkr_pkcs11_daemon_cleanup             (void);
+gboolean        gkr_pkcs11_daemon_setup               (void);
 
 /* -----------------------------------------------------------------------------
  * Used by gkr-pkcs11-daemon.c and gkr-pkcs11-daemon-session.c 

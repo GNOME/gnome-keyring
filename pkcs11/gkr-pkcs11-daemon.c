@@ -28,6 +28,8 @@
 #include "gkr-pkcs11-daemon.h"
 
 #include "common/gkr-async.h"
+#include "common/gkr-cleanup.h"
+#include "common/gkr-daemon-util.h"
 #include "common/gkr-secure-memory.h"
 
 #include <sys/types.h>
@@ -128,24 +130,57 @@ handle_new_connection (GIOChannel *channel, GIOCondition cond, gpointer callback
 	return TRUE;
 }
 
+static void 
+pkcs11_daemon_cleanup (gpointer unused)
+{
+	if (pkcs11_socket_channel)
+		g_io_channel_unref (pkcs11_socket_channel);
+	pkcs11_socket_channel = NULL;
+	
+	if (pkcs11_socket_fd != -1)
+		close (pkcs11_socket_fd);
+	pkcs11_socket_fd = -1;
+	
+	if(pkcs11_socket_path) {
+		unlink (pkcs11_socket_path);
+		g_free (pkcs11_socket_path);
+		pkcs11_socket_path = NULL;
+	}
+	
+	if (session_workers) {
+		
+		/* Swap out the hash table, so that completed_connection doesn't remove from it */
+		GHashTable *workers = session_workers;
+		session_workers = NULL;
+		
+		g_hash_table_foreach (workers, (GHFunc)stop_connection, NULL);
+		g_hash_table_destroy (workers);
+	}
+}
+
 gboolean
-gkr_pkcs11_daemon_setup (const gchar* socket_path)
+gkr_pkcs11_daemon_setup (void)
 {
 	struct sockaddr_un addr;
+	const gchar *tmp_dir;
 	int sock;
 	
 #ifdef _DEBUG
 	GKR_PKCS11_CHECK_CALLS ();
 #endif
 	
-	g_assert (socket_path);
-	
 	/* cannot be called more than once */
 	g_assert (!pkcs11_socket_path);
 	g_assert (pkcs11_socket_fd == -1);
 	g_assert (!pkcs11_socket_channel);
 	
-	pkcs11_socket_path = g_strjoin (NULL, socket_path, GKR_PKCS11_SOCKET_EXT, NULL);
+	gkr_cleanup_register (pkcs11_daemon_cleanup, NULL);
+	
+	tmp_dir = gkr_daemon_util_get_master_directory ();
+	g_return_val_if_fail (tmp_dir, FALSE);
+		
+	pkcs11_socket_path = g_strjoin (NULL, tmp_dir, G_DIR_SEPARATOR_S, "socket", 
+	                                GKR_PKCS11_SOCKET_EXT, NULL);
 	
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -179,29 +214,3 @@ gkr_pkcs11_daemon_setup (const gchar* socket_path)
 
 	return TRUE;
 }
-
-void 
-gkr_pkcs11_daemon_cleanup (void)
-{	
-	if (pkcs11_socket_channel)
-		g_io_channel_unref (pkcs11_socket_channel);
-	pkcs11_socket_channel = NULL;
-	
-	if (pkcs11_socket_fd != -1)
-		close (pkcs11_socket_fd);
-	pkcs11_socket_fd = -1;
-	
-	g_free (pkcs11_socket_path);
-	pkcs11_socket_path = NULL;
-	
-	if (session_workers) {
-		
-		/* Swap out the hash table, so that completed_connection doesn't remove from it */
-		GHashTable *workers = session_workers;
-		session_workers = NULL;
-		
-		g_hash_table_foreach (workers, (GHFunc)stop_connection, NULL);
-		g_hash_table_destroy (workers);
-	}
-}
-

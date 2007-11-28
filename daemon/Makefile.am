@@ -22,6 +22,7 @@ gnome_keyring_daemon_SOURCES = \
 
 gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/ssh/libgkr-ssh.la \
+	$(top_builddir)/pkcs11/libgkr-pkcs11.la \
 	$(top_builddir)/pk/libgkr-pk.la \
 	$(top_builddir)/keyrings/libgkr-keyrings.la \
 	$(top_builddir)/ui/libgkr-ui.la \

@@ -19,8 +19,8 @@ SUBDIRS = \
 	pkix \
 	pk \
 	ssh \
-	daemon \
 	pkcs11 \
+	daemon \
 	po \
 	reference \
 	$(TESTS_DIR) \

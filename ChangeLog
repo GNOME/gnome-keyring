@@ -1,5 +1,14 @@
 2007-11-28  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c:
+	* daemon/Makefile.am:
+	* pkcs11/gkr-pkcs11-daemon.c:
+	* pkcs11/gkr-pkcs11-daemon.h:
+	* pkcs11/gkr-pkcs11-daemon-test.c: (removed)
+	* Makefile.am: Integrate PKCS#11 daemon code into the main daemon.
+	
+2007-11-28  Stef Walter  <stef@memberwebs.com>
+
 	* cryptoki/*: (moved to pkcs11/, renamed to *pkcs11*)
 	* doc/file-format.txt: (moved to keyrings/)
 	* doc/keyring-intro.txt: (moved to /)
