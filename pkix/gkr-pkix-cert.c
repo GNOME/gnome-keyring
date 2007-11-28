@@ -27,7 +27,11 @@
 #include "gkr-pkix-cert.h"
 #include "gkr-pkix-der.h"
 
+#include "common/gkr-crypto.h"
+
+#include "pk/gkr-pk-pubkey.h"
 #include "pk/gkr-pk-object.h"
+#include "pk/gkr-pk-object-manager.h"
 #include "pk/gkr-pk-util.h"
 
 #include <glib.h>
@@ -50,8 +54,7 @@ enum {
 
 struct _GkrPkixCertData {
 	ASN1_TYPE asn1;
-	guchar *keyid;
-	gsize n_keyid;
+	gkrunique keyid;
 	guchar *raw;
 	gsize n_raw;
 };
@@ -73,6 +76,71 @@ init_quarks (void)
  	QUARK (OID_BASIC_CONSTRAINTS, "2.5.29.19");
 	
 	#undef QUARK
+}
+
+static GkrPkObject* 
+get_public_key (GkrPkixCert *cert)
+{
+	gcry_sexp_t s_key = NULL;
+	GkrPkObject *pub = NULL;
+	GkrPkObject *obj;
+	GkrParseResult res;
+	guchar *data;
+	gsize n_data;
+
+	g_return_val_if_fail (cert->data->asn1, NULL);
+
+	obj = GKR_PK_OBJECT (cert);
+	
+	/*
+	 * First see if we can just get a key from the object 
+	 * manager, simply and easily.
+	 */
+	if (cert->data->keyid) {
+		pub = gkr_pk_object_manager_find_by_id (obj->manager, GKR_TYPE_PK_PUBKEY, 
+		                                        cert->data->keyid);
+		if (pub != NULL)
+			return pub;
+	}
+	
+	/* Generate a raw public key from our certificate */
+	data = gkr_pkix_asn1_encode (cert->data->asn1, "tbsCertificate.subjectPublicKeyInfo", &n_data, NULL);
+	g_return_val_if_fail (data, NULL);
+	
+	res = gkr_pkix_der_read_public_key_info (data, n_data, &s_key);
+	g_free (data);
+	
+	if (res != GKR_PARSE_SUCCESS) {
+		g_warning ("invalid public-key in certificate: %s", g_quark_to_string (obj->location));
+		return NULL;
+	}
+	
+	g_return_val_if_fail (s_key, NULL);
+	
+	/* Make sure we have the keyid properly */
+	gkr_unique_free (cert->data->keyid);
+	cert->data->keyid = gkr_crypto_skey_make_id (s_key);
+	g_return_val_if_fail (cert->data->keyid, NULL);
+	
+	/* Try the lookup again */
+	pub = gkr_pk_object_manager_find_by_id (obj->manager, GKR_TYPE_PK_PUBKEY, 
+	                                        cert->data->keyid);
+	if (pub == NULL) {
+		pub = gkr_pk_pubkey_new (obj->location, s_key);
+		
+		/* public key took ownership */
+		s_key = NULL;
+
+		if (!gkr_unique_equals (gkr_pk_pubkey_get_keyid (GKR_PK_PUBKEY (pub)), cert->data->keyid))
+			g_warning ("certificate public key ended up with a different key id");
+		
+		gkr_pk_object_manager_register (obj->manager, pub);
+	}
+	
+	if (s_key)
+		gcry_sexp_release (s_key);
+	
+	return pub;
 }
 
 /* -----------------------------------------------------------------------------
@@ -110,7 +178,7 @@ gkr_pkix_cert_set_property (GObject *obj, guint prop_id, const GValue *value,
 		if (cert->data->asn1)
 			asn1_delete_structure (&cert->data->asn1);
 		g_free(cert->data->raw);
-		g_free(cert->data->keyid);
+		gkr_unique_free (cert->data->keyid);
 		cert->data->raw = cert->data->keyid = NULL;
 		cert->data->n_raw = 0;
 		/* TODO: Verify the certificate */
@@ -201,10 +269,10 @@ static CK_RV
 gkr_pkix_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
-	guchar *data = NULL;
 	const guchar *cdata = NULL;
-	gsize n_data;
 	gchar *label;
+	guchar *data;
+	gsize n_data;
 	
 	g_assert (!attr->pValue);
 	
@@ -223,20 +291,14 @@ gkr_pkix_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		
 	case CKA_ID:
 		if(!cert->data->keyid) {
-			data = gkr_pkix_asn1_encode (cert->data->asn1, "tbsCertificate.subjectPublicKeyInfo",
-			                             &n_data, NULL);
-			g_return_val_if_fail (data, CKR_GENERAL_ERROR);
-			
-			cert->data->n_keyid = gcry_md_get_algo_dlen (GCRY_MD_SHA1);
-			g_return_val_if_fail (cert->data->n_keyid, CKR_GENERAL_ERROR);
-			
-			cert->data->keyid = g_new0 (guchar, cert->data->n_keyid);
-			gcry_md_hash_buffer (GCRY_MD_SHA1, cert->data->keyid, data, n_data);
-			
-			g_free (data);	
+			/* This should fill in the key id */
+			if (!get_public_key (cert))
+				return CKR_GENERAL_ERROR;
+			g_return_val_if_fail (cert->data->keyid, CKR_GENERAL_ERROR);
 		}
-		
-		gkr_pk_attribute_set_data (attr, cert->data->keyid, cert->data->n_keyid);
+
+		cdata = (CK_VOID_PTR)gkr_unique_get_raw (cert->data->keyid, &n_data);
+		gkr_pk_attribute_set_data (attr, cdata, n_data);
 		return CKR_OK;
 
 	case CKA_SUBJECT:

@@ -38,6 +38,10 @@
  */
 
 static gboolean quarks_inited = FALSE;
+
+static GQuark OID_PKIX1_RSA;
+static GQuark OID_PKIX1_DSA;
+
 static GQuark OID_PBE_MD2_DES_CBC;
 static GQuark OID_PBE_MD5_DES_CBC;
 static GQuark OID_PBE_MD2_RC2_CBC;
@@ -46,10 +50,12 @@ static GQuark OID_PBE_SHA1_DES_CBC;
 static GQuark OID_PBE_SHA1_RC2_CBC;
 static GQuark OID_PBES2;
 static GQuark OID_PBKDF2;
+
 static GQuark OID_DES_CBC;
 static GQuark OID_DES_RC2_CBC;
 static GQuark OID_DES_EDE3_CBC;
 static GQuark OID_DES_RC5_CBC;
+
 static GQuark OID_PKCS12_PBE_ARCFOUR_SHA1;
 static GQuark OID_PKCS12_PBE_RC4_40_SHA1;
 static GQuark OID_PKCS12_PBE_3DES_SHA1;
@@ -66,6 +72,9 @@ init_quarks (void)
 	quarks_inited = TRUE;
 	#define QUARK(name, value) \
 		name = g_quark_from_static_string(value)
+
+	QUARK (OID_PKIX1_RSA, "1.2.840.113549.1.1.1");
+	QUARK (OID_PKIX1_DSA, "1.2.840.10040.4.1");
 
 	QUARK (OID_PBE_MD2_DES_CBC, "1.2.840.113549.1.5.1");
 	QUARK (OID_PBE_MD5_DES_CBC, "1.2.840.113549.1.5.3");
@@ -263,6 +272,57 @@ done:
 	return ret;	
 }
 
+GkrParseResult
+gkr_pkix_der_read_public_key_dsa_parts (const guchar *keydata, gsize n_keydata,
+                                        const guchar *params, gsize n_params,
+                                        gcry_sexp_t *s_key)
+{
+	gcry_mpi_t p, q, g, y;
+	GkrParseResult ret = GKR_PARSE_UNRECOGNIZED;
+	ASN1_TYPE asn_params = ASN1_TYPE_EMPTY;
+	ASN1_TYPE asn_key = ASN1_TYPE_EMPTY;
+	int res;
+
+	p = q = g = y = NULL;
+	
+	asn_params = gkr_pkix_asn1_decode ("PK.DSAParameters", params, n_params);
+	asn_key = gkr_pkix_asn1_decode ("PK.DSAPublicPart", keydata, n_keydata);
+	if (!asn_params || !asn_key)
+		goto done;
+	
+	ret = GKR_PARSE_FAILURE;
+    
+	if (!gkr_pkix_asn1_read_mpi (asn_params, "p", &p) || 
+	    !gkr_pkix_asn1_read_mpi (asn_params, "q", &q) ||
+	    !gkr_pkix_asn1_read_mpi (asn_params, "g", &g))
+	    	goto done;
+	    	
+	if (!gkr_pkix_asn1_read_mpi (asn_key, "", &y))
+		goto done;
+
+	res = gcry_sexp_build (s_key, NULL, SEXP_PUBLIC_DSA, p, q, g, y);
+	if (res)
+		goto done;
+		
+	g_assert (*s_key);
+	ret = GKR_PARSE_SUCCESS;
+	
+done:
+	if (asn_key)
+		asn1_delete_structure (&asn_key);
+	if (asn_params)
+		asn1_delete_structure (&asn_params);
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (g);
+	gcry_mpi_release (y);
+	
+	if (ret == GKR_PARSE_FAILURE) 
+		g_message ("invalid DSA key");
+		
+	return ret;	
+}
+
 
 #define SEXP_PRIVATE_DSA  \
 	"(private-key"   \
@@ -384,6 +444,63 @@ gkr_pkix_der_read_public_key (const guchar *data, gsize n_data, gcry_sexp_t *s_k
 		res = gkr_pkix_der_read_public_key_dsa (data, n_data, s_key);
 		
 	return res;
+}
+
+GkrParseResult
+gkr_pkix_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t* s_key)
+{
+	GkrParseResult ret = GKR_PARSE_UNRECOGNIZED;
+	GQuark oid;
+	ASN1_TYPE asn;
+	gsize n_key, n_params;
+	const guchar *params;
+	guchar *key = NULL;
+	
+	init_quarks ();
+
+	asn = gkr_pkix_asn1_decode ("PKIX1.SubjectPublicKeyInfo", data, n_data);
+	if (!asn)
+		goto done;
+	
+	ret = GKR_PARSE_FAILURE;
+    
+	/* Figure out the algorithm */
+	oid = gkr_pkix_asn1_read_quark (asn, "algorithm.algorithm");
+	if (!oid)
+		goto done;
+		
+	/* A bit string so we cannot process in place */
+	key = gkr_pkix_asn1_read_value (asn, "subjectPublicKey", &n_key, NULL);
+	if (!key)
+		goto done;
+	n_key /= 8;
+		
+	/* An RSA key is simple */
+	if (oid == OID_PKIX1_RSA) {
+		ret = gkr_pkix_der_read_public_key_rsa (key, n_key, s_key);
+		
+	/* A DSA key paramaters are stored separately */
+	} else if (oid == OID_PKIX1_DSA) {
+		params = gkr_pkix_asn1_read_content (asn, data, n_data, "algorithm.parameters", &n_params);
+		if (!params)
+			goto done;
+		ret = gkr_pkix_der_read_public_key_dsa_parts (key, n_key, params, n_params, s_key);
+		
+	} else {
+		g_message ("unsupported key algorithm in certificate: %s", g_quark_to_string (oid));
+		goto done;
+	}
+	
+done:
+	if (asn)
+		asn1_delete_structure (&asn);
+	
+	g_free (key);
+		
+	if (ret == GKR_PARSE_FAILURE)
+		g_message ("invalid subject public-key info");
+		
+	return ret;
 }
 
 GkrParseResult

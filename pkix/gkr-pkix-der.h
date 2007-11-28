@@ -56,7 +56,14 @@ GkrParseResult  gkr_pkix_der_read_public_key_rsa        (const guchar *data, gsi
 GkrParseResult  gkr_pkix_der_read_public_key_dsa        (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
 
+GkrParseResult  gkr_pkix_der_read_public_key_dsa_parts  (const guchar *keydata, gsize n_keydata,
+                                                         const guchar *params, gsize n_params,
+                                                         gcry_sexp_t *s_key);
+                                                         
 GkrParseResult  gkr_pkix_der_read_public_key            (const guchar *data, gsize n_data, 
+                                                         gcry_sexp_t *s_key);
+
+GkrParseResult  gkr_pkix_der_read_public_key_info       (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
 
 guchar*         gkr_pkix_der_write_public_key_rsa       (gcry_sexp_t s_key, gsize *len);
@@ -64,6 +71,7 @@ guchar*         gkr_pkix_der_write_public_key_rsa       (gcry_sexp_t s_key, gsiz
 guchar*         gkr_pkix_der_write_public_key_dsa       (gcry_sexp_t s_key, gsize *len);
 
 guchar*         gkr_pkix_der_write_public_key           (gcry_sexp_t s_key, gsize *len);
+
 
 /* -----------------------------------------------------------------------------
  * CERTIFICATES

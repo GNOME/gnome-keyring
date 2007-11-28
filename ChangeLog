@@ -1,5 +1,10 @@
 2007-11-28  Stef Walter  <stef@memberwebs.com>
 
+	* pkix/gkr-pkix-cert.c:
+	* pkix/gkr-pkix-der.c: 
+	* pkix/gkr-pkix-der.h: Parse the certificate public key properly and 
+	use the correct ID for the public key.
+	
 	* common/gkr-location-watch.c:
 	* common/gkr-location-watch.h:
 	* keyrings/gkr-keyrings.c: 
