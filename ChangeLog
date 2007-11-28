@@ -1,5 +1,14 @@
 2007-11-28  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-util.c:
+	* pkcs11/gkr-pkcs11-daemon.c:
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* pkcs11/gkr-pkcs11-module.c: Fix problems that prevent listing of 
+	objects via PKCS#11. 
+	 
+2007-11-28  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon.c:
 	* daemon/Makefile.am:
 	* pkcs11/gkr-pkcs11-daemon.c:

@@ -112,11 +112,13 @@ read_attribute_array (GkrPkcs11Message* msg)
 
 	/* We need to go ahead and read everything in all cases */
 	for (i = 0; i < num; ++i) {
+
+		memset (&attr, 0, sizeof (attr));
 	
 		/* The attribute type */
 		gkr_buffer_get_uint32 (&msg->buffer, msg->parsed,
 		                       &msg->parsed, (guint32*)(&attr.type));
-
+		
 		/* Attribute validity */
 		gkr_buffer_get_byte (&msg->buffer, msg->parsed,
 		                     &msg->parsed, &validity);
@@ -135,6 +137,7 @@ read_attribute_array (GkrPkcs11Message* msg)
 		else
 			attr.ulValueLen = (CK_ULONG)-1;
 		
+		/* Transfer ownership of the attribute to the array */
 		g_array_append_val (attrs, attr);
 	}
 	
@@ -197,9 +200,9 @@ session_C_OpenSession (SessionInfo *sinfo, GkrPkcs11Message *req,
 	
 	if (!read_byte_array (req, &sig, &siglen))
 		return PROTOCOL_ERROR;
-	if (!gkr_pkcs11_message_read_uint32 (req, &slotid))
+	if (gkr_pkcs11_message_read_uint32 (req, &slotid) != CKR_OK)
 		return PROTOCOL_ERROR;
-	if (!gkr_pkcs11_message_read_uint32 (req, &flags))
+	if (gkr_pkcs11_message_read_uint32 (req, &flags) != CKR_OK)
 		return PROTOCOL_ERROR;
 	
 	/* Verify that the module signature matches */
@@ -210,7 +213,7 @@ session_C_OpenSession (SessionInfo *sinfo, GkrPkcs11Message *req,
 	}
 	
 	/* Mark session as valid and ready for action */
-	sinfo->readonly = !(flags & CKF_RW_SESSION);
+	sinfo->readonly = (flags & CKF_RW_SESSION) ? FALSE : TRUE;
 	sinfo->valid = TRUE;
 	
 	return CKR_OK;
@@ -293,7 +296,7 @@ session_C_Login (SessionInfo *sinfo, GkrPkcs11Message *req,
 		/* PKCS#11 QUESTION: What should we really be returning here? */
 		return CKR_USER_TYPE_INVALID;
 	
-	if (!gkr_pkcs11_message_read_uint32 (req, &user_type))
+	if (gkr_pkcs11_message_read_uint32 (req, &user_type) != CKR_OK)
 		return PROTOCOL_ERROR;
 	if (!read_byte_array (req, &pin, &pin_len))
 		return PROTOCOL_ERROR;
@@ -381,7 +384,7 @@ session_C_GetAttributeValue (SessionInfo *sinfo, GkrPkcs11Message *req,
 	CK_RV soft_ret = CKR_OK;
 	CK_RV ret = CKR_OK;
 	
-	if (!gkr_pkcs11_message_read_uint32 (req, &obj))
+	if (gkr_pkcs11_message_read_uint32 (req, &obj) != CKR_OK)
 		return PROTOCOL_ERROR;
 	
 	if (!(attrs = read_attribute_array (req)))
@@ -498,7 +501,7 @@ session_C_FindObjects (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (sinfo->operation_type != OPERATION_FIND)
 		return CKR_OPERATION_NOT_INITIALIZED;
 	
-	if (!gkr_pkcs11_message_read_uint32 (req, &max))
+	if (gkr_pkcs11_message_read_uint32 (req, &max) != CKR_OK)
 		return PROTOCOL_ERROR;
 	
 	objects = (GList*)sinfo->operation_data;
@@ -508,7 +511,7 @@ session_C_FindObjects (SessionInfo *sinfo, GkrPkcs11Message *req,
 	
 	/* First the number returned */
 	n_objects = MIN(max, g_list_length (objects));
-	gkr_pkcs11_message_write_uint32 (resp, n_objects);
+	gkr_buffer_add_uint32 (&resp->buffer, n_objects);
 	
 	/* Now each of them */
 	for (i = 0; i < n_objects; ++i) {
@@ -518,7 +521,7 @@ session_C_FindObjects (SessionInfo *sinfo, GkrPkcs11Message *req,
 		g_assert (obj);
 		g_assert (obj->handle);
 		
-		gkr_pkcs11_message_write_uint32 (resp, obj->handle);
+		gkr_buffer_add_uint32 (&resp->buffer, obj->handle);
 		g_object_unref (obj);
 	}
 	

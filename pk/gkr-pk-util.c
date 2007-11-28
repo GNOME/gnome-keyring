@@ -154,8 +154,6 @@ gkr_pk_attribute_new (CK_ATTRIBUTE_TYPE type)
 {
 	CK_ATTRIBUTE_PTR attr;
 	
-	g_assert (type);
-	
 	attr = g_slice_new0 (CK_ATTRIBUTE);
 	attr->type = type;
 	

@@ -258,9 +258,7 @@ gkr_pk_object_match_one (GkrPkObject *object, CK_ATTRIBUTE_PTR rattr)
 	CK_RV rv;
 	
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), CKR_GENERAL_ERROR);
-	
 	g_return_val_if_fail (rattr->pValue, FALSE);
-	g_return_val_if_fail (rattr->type, FALSE);
 	
 	rv = lookup_attribute (object, rattr->type, &attr);
 	if (rv != CKR_OK)

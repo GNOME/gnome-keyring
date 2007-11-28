@@ -376,7 +376,7 @@ call_session_prep_call (CallSession *cs, int call_id)
 	if (ret != CKR_OK)
 		return ret;
 	
-	DBG (("S%d: prepared call", cs->id));
+	DBG (("S%d: prepared call: %d", cs->id, call_id));
 
 	/* Ready to fill in arguments */
 	cs->call_state = CALL_PREP;

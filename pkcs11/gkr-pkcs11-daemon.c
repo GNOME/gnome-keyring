@@ -181,7 +181,12 @@ gkr_pkcs11_daemon_setup (void)
 		
 	pkcs11_socket_path = g_strjoin (NULL, tmp_dir, G_DIR_SEPARATOR_S, "socket", 
 	                                GKR_PKCS11_SOCKET_EXT, NULL);
-	
+
+#ifdef WITH_TESTS
+	if (g_getenv ("GNOME_KEYRING_TEST_PATH"))
+		unlink (pkcs11_socket_path);
+#endif
+
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
 		g_warning ("couldn't create pkcs11 socket: %s", strerror (errno));
