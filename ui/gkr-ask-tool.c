@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gnome-keyring-ask.c - Handles graphical authentication for the keyring daemon.
+/* gkr-ask-tool.c - Handles graphical authentication for the keyring daemon.
 
    Copyright (C) 2003 Red Hat, Inc
 
