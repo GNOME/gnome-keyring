@@ -628,7 +628,7 @@ gkr_pkix_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
 	#define MAX_TIME 1024
 	gchar ttime[MAX_TIME];
 	gchar *name;
-	int len, result, res;
+	int len, res;
 
 	len = sizeof (ttime) - 1;
 	res = asn1_read_value (asn, part, ttime, &len);
@@ -652,7 +652,7 @@ gkr_pkix_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
 		len = sizeof (ttime) - 1;
 		res = asn1_read_value (asn, name, ttime, &len);
 		g_free (name);
-		if (result != ASN1_SUCCESS)
+		if (res != ASN1_SUCCESS)
 			return FALSE;
 	
 		*val = gkr_pkix_asn1_parse_utc_time (ttime);

@@ -503,7 +503,7 @@ gkr_pk_privkey_new (GQuark location, gcry_sexp_t s_key)
 	guchar hash[20];
 	gkrunique unique; 
 	
-	g_return_val_if_fail (key != NULL, NULL);
+	g_return_val_if_fail (s_key != NULL, NULL);
 	
 	if (!gcry_pk_get_keygrip (s_key, hash))
 		g_return_val_if_reached (NULL);
@@ -512,7 +512,7 @@ gkr_pk_privkey_new (GQuark location, gcry_sexp_t s_key)
 	unique = gkr_unique_new_digestv ((const guchar*)"private-key", 11, hash, 20, NULL);
 	
 	key = g_object_new (GKR_TYPE_PK_PRIVKEY, "location", location, 
-	                    "gcrypt-sexp", key, "unique", unique, NULL);
+	                    "gcrypt-sexp", s_key, "unique", unique, NULL);
 	                    
 	gkr_unique_free (unique);
 	

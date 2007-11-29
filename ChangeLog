@@ -1,3 +1,9 @@
+2007-11-29  Stef Walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-privkey.c:
+	* pkix/gkr-pkix-asn1.c: Fix uninitialized variable usage. 
+	Fixes bug #500380
+	
 2007-11-28  Stef Walter  <stef@memberwebs.com>
 
 	* pkix/gkr-pkix-cert.c:
