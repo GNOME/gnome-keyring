@@ -23,6 +23,8 @@
 
 #include "common/gkr-secure-memory.h"
 
+#include <stdlib.h>
+
 /* 
  * These are called from gkr-secure-memory.c to provide appropriate
  * locking for memory between threads
@@ -38,4 +40,11 @@ void
 gkr_memory_unlock (void)
 {
 	/* No threads in PAM, no locking */
+}
+
+void*
+gkr_memory_fallback (void *p, unsigned long sz)
+{
+	/* Handles allocation, reallocation and freeing */
+	return realloc (p, sz);
 }
