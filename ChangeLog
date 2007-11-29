@@ -1,5 +1,16 @@
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location-watch.c:
+	* common/tests/unit-test-crypto.c:
+	* common/tests/unit-test-location-watch.c:
+	* library/tests/unit-test-daemon-setup.c:
+	* pam/tests/Makefile.am:
+	* pam/tests/unit-test-pam.c:
+	* pam/tests/unit-test-pam-setup.c:
+	* tests/run-tests.sh: Fix bugs in tests and regression bugs exposed
+	
+2007-11-29  Stef Walter  <stef@memberwebs.com>
+
 	* common/Makefile.am:
 	* common/tests/*: 
 	* keyrings/tests/*:

@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "run-auto-test.h"
 
@@ -95,6 +96,9 @@ void unit_test_location_watch (CuTest *cu)
 {
 	GQuark loc;
 	
+	/* Mtime must change so wait between tests */
+	sleep (1);
+
 	the_watch = gkr_location_watch_new (NULL, 0, SUBDIR, WILDCARD, NULL);
 	g_signal_connect (the_watch, "location-added", G_CALLBACK (location_added), cu); 
 	g_signal_connect (the_watch, "location-removed", G_CALLBACK (location_removed), cu); 
@@ -128,8 +132,13 @@ void unit_test_location_file (CuTest *cu)
 {
 	gboolean ret;
 	GQuark loc;
+	
+	/* Mtime must change so wait between tests */
+	sleep (1);
 
-
+	/* Make sure things are clean */
+	g_unlink (test_file);
+	gkr_location_watch_refresh (the_watch, FALSE);
 	
 	n_locations_added = n_locations_changed = n_locations_removed = 0;
 	last_location_added = last_location_changed = last_location_removed = 0;
@@ -147,12 +156,14 @@ void unit_test_location_file (CuTest *cu)
 	/* The added one should match our file */
 	loc = gkr_location_from_path (test_file);
 	CuAssert (cu, "returned zero location", loc != 0);
-	CuAssert (cu, "wrong location was signalled", loc != last_location_added);
+	CuAssert (cu, "wrong location was signalled", loc == last_location_added);
 	
 	
 	
 	n_locations_added = n_locations_changed = n_locations_removed = 0;
 	last_location_added = last_location_changed = last_location_removed = 0;
+	
+	sleep (1);
 	
 	/* Shouldn't find the file again */
 	gkr_location_watch_refresh (the_watch, FALSE);
@@ -165,7 +176,7 @@ void unit_test_location_file (CuTest *cu)
 	CuAssertIntEquals(cu, 0, n_locations_added);
 	CuAssertIntEquals(cu, 1, n_locations_changed);
 	CuAssertIntEquals(cu, 0, n_locations_removed);
-	CuAssert (cu, "wrong location was signalled", loc != last_location_changed);	
+	CuAssert (cu, "wrong location was signalled", loc == last_location_changed);	
 
 
 
@@ -180,7 +191,7 @@ void unit_test_location_file (CuTest *cu)
 	CuAssertIntEquals(cu, 0, n_locations_added);
 	CuAssertIntEquals(cu, 1, n_locations_changed);
 	CuAssertIntEquals(cu, 0, n_locations_removed);
-	CuAssert (cu, "wrong location was signalled", loc != last_location_changed);
+	CuAssert (cu, "wrong location was signalled", loc == last_location_changed);
 	
 	
 	
@@ -195,13 +206,16 @@ void unit_test_location_file (CuTest *cu)
 	CuAssertIntEquals(cu, 0, n_locations_added);
 	CuAssertIntEquals(cu, 0, n_locations_changed);
 	CuAssertIntEquals(cu, 1, n_locations_removed);	
-	CuAssert (cu, "wrong location was signalled", loc != last_location_removed);		
+	CuAssert (cu, "wrong location was signalled", loc == last_location_removed);		
 }
 
 void unit_test_location_nomatch (CuTest *cu)
 {
 	gchar *file = g_build_filename (test_dir, "my-file.toot", NULL);
 	gboolean ret;
+
+	/* Mtime must change so wait between tests */
+	sleep (1);
 	
 	ret = g_file_set_contents (file, DATA, strlen (DATA), NULL);
 	CuAssertIntEquals (cu, ret, TRUE);

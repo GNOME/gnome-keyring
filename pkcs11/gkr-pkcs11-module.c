@@ -125,7 +125,7 @@ gkr_pkcs11_warn (const char* msg, ...)
 	va_end (va);
 }
 
-#ifdef _DEBUG 
+#ifdef _xDEBUG 
 
 static void 
 gkr_pkcs11_debug (const char* msg, ...)

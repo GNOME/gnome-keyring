@@ -75,7 +75,7 @@ void unit_setup_daemon (void)
 		
 	g_printerr ("Starting gnome-keyring-daemon...\n");
 
-	args[0] = "../daemon/gnome-keyring-daemon";
+	args[0] = "../../daemon/gnome-keyring-daemon";
 	args[1] = "-f";
 	args[2] = NULL;
 	

@@ -26,7 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "run-auto-test.h"
+#include "run-prompt-test.h"
 
 #include <security/pam_appl.h>
 

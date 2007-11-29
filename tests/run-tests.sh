@@ -15,7 +15,6 @@ for component in *; do
 	if [ -f "$component/tests/$PRG" ]; then
 		echo "<<<<< Running tests in '$component' >>>>>" 
 		$component/tests/$PRG
-		echo "$?"
 	fi
 done
 

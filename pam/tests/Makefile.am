@@ -1,8 +1,8 @@
 
-UNIT_AUTO = unit-test-pam-setup.c \
-	unit-test-pam.c
+UNIT_AUTO = 
 
-UNIT_PROMPT = 
+UNIT_PROMPT = unit-test-pam-setup.c \
+	unit-test-pam.c
 
 UNIT_LIBS = \
 	-lpam

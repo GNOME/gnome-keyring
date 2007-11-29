@@ -75,10 +75,13 @@ copy_key_value (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-remove_key_value (gpointer key, gpointer value, gpointer data)
+remove_locations (gpointer key, gpointer value, gpointer data)
 {
-	GHashTable *dest = (GHashTable*)data;
-	g_hash_table_remove (dest, key);
+	GkrLocationWatch *watch = GKR_LOCATION_WATCH (data);
+	GkrLocationWatchPrivate *pv = GKR_LOCATION_WATCH_GET_PRIVATE (watch);
+
+	g_hash_table_remove (pv->locations, key);
+	g_signal_emit (watch, signals[LOCATION_REMOVED], 0, GPOINTER_TO_UINT(key));
 } 
 
 static gboolean
@@ -138,6 +141,7 @@ update_volume (GkrLocationWatch *watch, GQuark volume, gboolean force_all,
 	const char *filename;
 	gpointer key;
 	gchar *path;
+	gchar *file;
 	GDir *dir;
 	GQuark loc;
 
@@ -200,6 +204,14 @@ update_volume (GkrLocationWatch *watch, GQuark volume, gboolean force_all,
 		key = GUINT_TO_POINTER (loc);
 		if (!g_hash_table_remove (checks, key)) {
 			g_hash_table_replace (pv->locations, key, key);
+			
+			/* Get the last modified time for this one */
+			file = gkr_location_to_path (loc);
+			g_assert (file);
+			if (stat (file, &sb) >= 0) 
+				gkr_location_manager_note_mtime (watch->manager, loc, sb.st_mtime);
+			g_free (file);
+				
 			g_signal_emit (watch, signals[LOCATION_ADDED], 0, loc);
 			
 		/* Otherwise we already had it, see if it needs updating */
@@ -333,6 +345,6 @@ gkr_location_watch_refresh (GkrLocationWatch *watch, gboolean force_all)
 	}
 	
 	/* Find any keyrings whose paths we didn't see */
-	g_hash_table_foreach (checks, remove_key_value, pv->locations); 
+	g_hash_table_foreach (checks, remove_locations, watch); 
 	g_hash_table_destroy (checks);
 }
