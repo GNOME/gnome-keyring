@@ -103,7 +103,5 @@ main (int argc, char* argv[])
 	fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
 	g_log_set_always_fatal (fatal_mask);
 	
-	RunAllTests();
-	
-	return 0;
+	return RunAllTests();
 } 

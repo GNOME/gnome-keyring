@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-pkix-test.h"
+#include "run-auto-test.h"
 
 #include "common/gkr-crypto.h"
 

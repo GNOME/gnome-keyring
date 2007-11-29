@@ -14,8 +14,8 @@ SUBDIRS = \
 	. \
 	common \
 	library \
-	keyrings \
 	ui \
+	keyrings \
 	pkix \
 	pk \
 	ssh \
@@ -48,7 +48,7 @@ distcheck-hook:
 	@echo "RUNNING AUTOMATIC UNIT TESTS ---------------------------"
 	@echo
 	@echo
-	$(MAKE) -C tests run-auto-tests
+	$(MAKE) -C tests run-auto
 	@echo
 	@echo
 	@echo "DONE AUTOMATIC UNIT TESTS ------------------------------"

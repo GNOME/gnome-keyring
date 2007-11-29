@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-pkix-test.h"
+#include "run-auto-test.h"
 
 #include "pkix/gkr-pkix-asn1.h"
 

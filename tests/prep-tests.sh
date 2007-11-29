@@ -72,7 +72,7 @@ cat << END
 /* This is auto-generated code. Edit at your own peril. */
 #include "$BASE.h"
 
-static void RunAllTests(void) 
+static int RunAllTests(void) 
 {
     CuString *output = CuStringNew();
     CuSuite* suite = CuSuiteNew();
@@ -104,6 +104,8 @@ END
 
 # END RUNNER FUNCTION 
 cat << END
+
+	return suite->failCount;
 }
 
 #include "tests/test-helpers.c"
