@@ -7,7 +7,10 @@
 	sign operation.
 	
 	* pkcs11/gkr-pkcs11-module.c: Properly reuse previous message when 
-	its output buffers were too short.	
+	its output buffers were too short.
+	
+	* pkcs11/gkr-pkcs11-daemon-session.c: Don't block other tasks during 
+	reads and writes.
 
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 

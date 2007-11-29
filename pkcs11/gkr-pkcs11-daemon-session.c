@@ -1100,7 +1100,13 @@ session_read (int sock, guchar* data, size_t len)
 
 	while (len > 0) {
 	
-		r = read (sock, data, len);
+		/* Don't block other threads during the read */
+		gkr_async_begin_concurrent ();
+
+			r = read (sock, data, len);
+			
+		gkr_async_end_concurrent ();
+		
 		if (r == 0) {
 			/* Connection was closed on client */
 			return FALSE;
@@ -1132,7 +1138,12 @@ session_write (int sock, guchar* data, size_t len)
 
 	while (len > 0) {
 	
-		r = write (sock, data, len);
+		/* Don't block other threads during the read */
+		gkr_async_begin_concurrent ();
+	
+			r = write (sock, data, len);
+		
+		gkr_async_end_concurrent ();
 		
 		if (r == -1) {
 			if (errno == EPIPE) {
@@ -1227,6 +1238,7 @@ gkr_pkcs11_daemon_session_thread (gpointer user_data)
 	session_info_free (sinfo);
 	
 	/* socket is closed elsewhere */
+	shutdown (sock, SHUT_RDWR);
 	
 	return NULL;
 }
