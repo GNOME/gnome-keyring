@@ -203,7 +203,7 @@ gkr_pk_attribute_set_data (CK_ATTRIBUTE_PTR attr, gconstpointer value, gsize n_v
 	attr->ulValueLen = n_value;
 	if (n_value > 0) {
 		g_assert (value);
-		attr->pValue = g_slice_alloc (n_value);
+		attr->pValue = g_malloc (n_value);
 		memcpy (attr->pValue, value, n_value);
 	}
 }
@@ -223,7 +223,7 @@ gkr_pk_attribute_set_boolean (CK_ATTRIBUTE_PTR attr, gboolean value)
 	g_assert (attr);
 	
 	gkr_pk_attribute_clear (attr);
-	attr->pValue = g_slice_new (CK_BBOOL);
+	attr->pValue = g_new (CK_BBOOL, 1);
 	*((CK_BBOOL*)attr->pValue) = value ? CK_TRUE : CK_FALSE;
 	attr->ulValueLen = sizeof (CK_BBOOL);
 }
@@ -274,7 +274,7 @@ gkr_pk_attribute_set_uint (CK_ATTRIBUTE_PTR attr, guint value)
 	g_assert (attr);
 	
 	gkr_pk_attribute_clear (attr);
-	attr->pValue = g_slice_new (CK_ULONG);
+	attr->pValue = g_new (CK_ULONG, 1);
 	*((CK_ULONG*)attr->pValue) = value;
 	attr->ulValueLen = sizeof (CK_ULONG);	
 }
@@ -297,7 +297,7 @@ gkr_pk_attribute_set_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi)
 	if (!len)
 		return;
 
-	attr->pValue = g_slice_alloc (len);
+	attr->pValue = g_malloc (len);
 	attr->ulValueLen = len;
 	
 	/* Write in directly to attribute */
@@ -311,7 +311,7 @@ gkr_pk_attribute_clear (CK_ATTRIBUTE_PTR attr)
 	if (attr->pValue) {
 		g_assert (attr->ulValueLen > 0);
 		g_assert (attr->ulValueLen != (CK_ULONG)-1);
-		g_slice_free1 (attr->ulValueLen, attr->pValue);
+		g_free (attr->pValue);
 		attr->pValue = NULL;
 	}
 	attr->ulValueLen = 0;

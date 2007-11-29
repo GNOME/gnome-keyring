@@ -14,6 +14,9 @@
 	
 	* tests/unit-test-daemon-setup.c: Use correct path for connection to 
 	daemon in tests when the daemon is already running.
+	
+	* pk/gkr-pk-util.c: Don't use g_slice for random sizes of data found
+	in attributes.
 
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
