@@ -1022,8 +1022,8 @@ gkr_keyring_update_from_disk (GkrKeyring *keyring)
 		goto done;
 	}
 	
-	if (gkr_location_read_file (keyring->location, &contents, &len, &err)) {
-		g_warning ("couldn't read keyring: %s", err && err->message ? err->message : NULL);
+	if (!gkr_location_read_file (keyring->location, &contents, &len, &err)) {
+		g_warning ("couldn't read keyring: %s", err && err->message ? err->message : "");
 		goto done;
 	}
 	
@@ -1032,7 +1032,7 @@ gkr_keyring_update_from_disk (GkrKeyring *keyring)
 	gkr_buffer_uninit (&buffer);
 
 done:
-	g_error_free (err);
+	g_clear_error (&err);
 	g_free (contents);
 	return success;
 }

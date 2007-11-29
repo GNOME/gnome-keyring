@@ -1,7 +1,9 @@
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
 	* pam/gkr-pam-stubs.c: Fix missing symbol in PAM module.
-	
+
+	* library/gkr-keyring.c: Fix dumb errors loading keyrings.
+
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-privkey.c:
