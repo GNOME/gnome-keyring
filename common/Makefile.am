@@ -47,3 +47,10 @@ libgkr_module_common_la_SOURCES = \
 	gkr-secure-memory.h
 
 
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR = 
+endif
+
+SUBDIRS = . $(TESTS_DIR)

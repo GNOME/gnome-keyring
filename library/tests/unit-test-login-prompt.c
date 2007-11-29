@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include "run-prompt-test.h"
+
 #include "library/gnome-keyring.h"
 
 /* 

@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-async-setup.c: Setup async system
+/* test-helpers.h: Declarations for common functions called from unit tests
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,33 +21,13 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+#ifndef TEST_HELPERS_H_
+#define TEST_HELPERS_H_
 
 #include <glib.h>
 
-#include "unit-test-private.h"
-#include "run-base-test.h"
+void test_mainloop_quit (void);
+void test_mainloop_run (int timeout);
+GMainLoop* test_mainloop_get (void);
 
-#include "common/gkr-async.h"
-
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
- 
-void unit_setup_threading (void) 	 
-{ 	 
-	gkr_async_workers_init (test_mainloop_get ());
-}
-	 
+#endif /*TEST_HELPERS_H_*/

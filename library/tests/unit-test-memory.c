@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "run-library-test.h"
+#include "run-auto-test.h"
 
 #include "library/gnome-keyring-memory.h"
 

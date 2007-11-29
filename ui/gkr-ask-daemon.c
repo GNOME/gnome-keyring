@@ -37,6 +37,9 @@ static GkrAsyncWait *wait_condition = NULL;
 static GkrAskRequest *current_ask = NULL;
 static gchar *the_display = NULL;
 
+static GkrAskHook ask_daemon_hook = NULL;
+static gpointer ask_daemon_hook_data = NULL;
+
 static void 
 ask_daemon_cleanup (gpointer unused)
 {
@@ -80,6 +83,13 @@ gkr_ask_daemon_process (GkrAskRequest* ask)
 	
 	g_assert (GKR_IS_ASK_REQUEST (ask));
 	g_assert (!gkr_ask_request_is_complete (ask));
+	
+	/* 
+	 * Hand it off to the hook. This is used in the test harnesses
+	 * to verify that a prompt or no prompt was run.
+	 */
+	if (ask_daemon_hook)
+		(ask_daemon_hook) (ask, ask_daemon_hook_data);
 	
 	/* See if it'll complete without a prompt */
 	if (gkr_ask_request_check (ask))
@@ -125,4 +135,11 @@ const gchar*
 gkr_ask_daemon_get_display (void)
 {
 	return the_display;
+}
+
+void
+gkr_ask_daemon_set_hook (GkrAskHook hook, gpointer data)
+{
+	ask_daemon_hook = hook;
+	ask_daemon_hook_data = data;
 }

@@ -25,8 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "unit-test-private.h"
-#include "run-library-test.h"
+#include "run-auto-test.h"
+
 #include "library/gnome-keyring.h"
 
 /* 

@@ -31,8 +31,7 @@
 
 #include <glib.h>
 
-#include "unit-test-private.h"
-#include "run-base-test.h"
+#include "run-auto-test.h"
 
 #include "common/gkr-unix-signal.h"
 

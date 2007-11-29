@@ -1,5 +1,21 @@
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
+	* common/Makefile.am:
+	* common/tests/*: 
+	* keyrings/tests/*:
+	* library/Makefile.am:
+	* library/tests/*:
+	* pam/Makefile.am:
+	* pam/tests/*:
+	* pkix/tests/*:
+	* tests/*:
+	* ui/gkr-ask-daemon.c:
+	* ui/gkr-ask-daemon.h:
+	* configure.in: Cleanup and organize tests to be with the components
+	that they test.
+	
+2007-11-29  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon.c:
 	* daemon/gkr-daemon-ops.c:
 	* keyrings/gkr-keyring-login.c: (added)

@@ -51,3 +51,11 @@ pkgconfig_DATA = gnome-keyring-1.pc
 
 EXTRA_DIST = \
 	gnome-keyring-1-uninstalled.pc.in
+
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR = 
+endif
+
+SUBDIRS = . $(TESTS_DIR)

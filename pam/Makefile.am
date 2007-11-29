@@ -23,3 +23,10 @@ pam_gnome_keyring_la_LDFLAGS = \
 install-pam: install
 	@echo "WARNING: install-pam is no longer used, use the --with-pam-dir configure option instead"
 	
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR = 
+endif
+
+SUBDIRS = . $(TESTS_DIR)

@@ -34,4 +34,8 @@ void           gkr_ask_daemon_set_display (const gchar* display);
 
 const gchar*   gkr_ask_daemon_get_display (void);
 
+typedef void (*GkrAskHook) (GkrAskRequest* ask, gpointer data);
+
+void           gkr_ask_daemon_set_hook    (GkrAskHook hook, gpointer data);
+
 #endif /* _GKR_ASK_DAEMON_H_ */

@@ -11,6 +11,7 @@ AC_C_CONST
 AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -365,10 +366,14 @@ AC_SUBST(LIBRARY_LIBS)
 AC_OUTPUT([
 Makefile
 common/Makefile
+common/tests/Makefile
 daemon/Makefile
 keyrings/Makefile
+keyrings/tests/Makefile
 library/Makefile
+library/tests/Makefile
 pam/Makefile
+pam/tests/Makefile
 pk/Makefile
 pk/tests/Makefile
 pkcs11/Makefile

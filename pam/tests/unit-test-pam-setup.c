@@ -28,7 +28,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include "run-pam-test.h"
+#include "run-auto-test.h"
 
 #include <security/pam_appl.h>
 

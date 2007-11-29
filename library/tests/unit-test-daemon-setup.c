@@ -27,7 +27,8 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include "run-library-test.h"
+#include "run-auto-test.h"
+
 #include "library/gnome-keyring.h"
 
 /* 

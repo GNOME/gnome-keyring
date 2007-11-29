@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-pk-test.h"
+#include "run-auto-test.h"
 
 #include "pk/gkr-pk-index.h"
 

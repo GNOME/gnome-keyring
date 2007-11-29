@@ -52,7 +52,7 @@
 
 #include <gcrypt.h>
 
-#define DEBUG_COMMUNICATION 1
+#define DEBUG_COMMUNICATION 0
 
 /* -----------------------------------------------------------------------------
  * DECLARATIONS 
