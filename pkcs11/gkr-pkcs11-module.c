@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gkr-pkcs11-module.c - a PKCS#11 module which communicates with gnome-keyring
 
-   Copyright (C) 2007, Nate Nielsen
+   Copyright (C) 2007, Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #include "config.h"
@@ -594,6 +594,15 @@ call_session_do_call (CallSession *cs)
 		if (gkr_pkcs11_message_equals (cs->req, cs->overflow)) {
 			ASSERT (cs->resp);
 			reuse = 1;
+
+			/* Prepare to reparse this message */			
+			ret = gkr_pkcs11_message_parse (cs->resp, GKR_PKCS11_RESPONSE);
+			if (ret != CKR_OK) {
+				WARN (("S%d: reparsing overflowed response failed: %d", ret));
+				return ret;
+			}
+			
+			DBG (("S%d: last message overflowed, using same response"));
 		}
 		
 		/* We have no further use for this... */
@@ -660,9 +669,10 @@ call_session_done_call (CallSession *cs, CK_RV ret)
 
 			/* Double check that the signature matched our decoding */
 			ASSERT (gkr_pkcs11_message_is_verified (cs->resp));
-
+		} 
+		
 		/* Caller didn't supply enough space, ... */
-		} else if (cs->overflowed || ret == CKR_BUFFER_TOO_SMALL) {
+		if (cs->overflowed || ret == CKR_BUFFER_TOO_SMALL) {
 
 			DBG (("S%d: not enough space to store response values", cs->id));
 

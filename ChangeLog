@@ -5,6 +5,9 @@
 	* pkcs11/gkr-pkcs11-rsa.c:
 	* pkcs11/gkr-pkcs11-rsa.h: A first whack at implementing the PKCS#11
 	sign operation.
+	
+	* pkcs11/gkr-pkcs11-module.c: Properly reuse previous message when 
+	its output buffers were too short.	
 
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
