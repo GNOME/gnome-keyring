@@ -4,6 +4,9 @@
 
 	* library/gkr-keyring.c: Fix dumb errors loading keyrings.
 
+	* ssh/gkr-ssh-daemon-io.c: Cleaner shutdown for SSH agent 
+	connections.
+
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-privkey.c:

@@ -181,31 +181,32 @@ client_worker_main (gpointer user_data)
 		
 		/* 1. Read in the request */
 		if (!read_packet_with_size (client))
-			return NULL;
+			break;
 
 		/* 2. Now decode the operation */
 		if (!gkr_buffer_get_byte (&client->input_buffer, 4, NULL, &op))
-			return NULL; 
+			break; 
 		if (op >= GKR_SSH_OP_MAX)
-			return NULL;
+			break;
 		g_assert (gkr_ssh_operations[op]);
 		
 		/* 3. Execute the right operation */
 		gkr_buffer_reset (&client->output_buffer);
 		gkr_buffer_add_uint32 (&client->output_buffer, 0);
 		if (!(gkr_ssh_operations[op]) (&client->input_buffer, &client->output_buffer))
-			return NULL;
+			break;
 		if (!gkr_buffer_set_uint32 (&client->output_buffer, 0,
 		                            client->output_buffer.len - 4))
-			return NULL;
+			break;
 
 		/* 4. Write the reply back out */
 		if (!yield_and_write_all (client->sock, client->output_buffer.buf,
 		                          client->output_buffer.len))
-			return NULL;
+			break;
 	} 
 
 	/* All done */
+	shutdown (client->sock, SHUT_RDWR);
 	return NULL;
 }
 
