@@ -9,7 +9,9 @@
 	
 	* common/gkr-async.c: A better async worker task switching location
 	is from a GSource rather than from the poll function.
-
+	
+	* common/gkr-buffer.c: Fix crasher when serializing null strings. 
+	
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-privkey.c:

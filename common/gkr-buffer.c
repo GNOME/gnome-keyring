@@ -376,13 +376,12 @@ gkr_buffer_get_byte_array (GkrBuffer *buffer, size_t offset,
 int
 gkr_buffer_add_string (GkrBuffer *buffer, const char *str)
 {
-	size_t len = strlen (str);
-	if (len >= 0x7fffffff) {
-		return 0;
-	}
 	if (str == NULL) {
 		gkr_buffer_add_uint32 (buffer, 0xffffffff);
 	} else {
+		size_t len = strlen (str);
+		if (len >= 0x7fffffff)
+			return 0;
 		gkr_buffer_add_uint32 (buffer, len);
 		gkr_buffer_append (buffer, (unsigned char*)str, len);
 	}
