@@ -30,10 +30,8 @@
 #include "common/gkr-daemon-util.h"
 #include "common/gkr-secure-memory.h"
 #include "common/gkr-unix-signal.h"
-#include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
 
-#include "keyrings/gkr-keyrings.h"
+#include "keyrings/gkr-keyring-login.h"
 
 #include "library/gnome-keyring.h"
 
@@ -358,7 +356,6 @@ main (int argc, char *argv[])
 	GIOChannel *channel;
 	GMainContext *ctx;
 	gchar *login_password;
-	GkrKeyring *login_keyring;
 	
 	g_type_init ();
 	g_thread_init (NULL);
@@ -511,20 +508,9 @@ main (int argc, char *argv[])
 	 * Unlock the login keyring if we were given a password on STDIN.
 	 * If it does not exist. We create it. 
 	 */
-	if (unlock_with_login) {
-		login_keyring = gkr_keyrings_get_login ();
-		if (login_keyring) {
-			if (!gkr_keyring_unlock (login_keyring, login_password))
-				g_warning ("Failed to unlock login keyring");
-		} else {
-			login_keyring = gkr_keyring_create (GKR_LOCATION_VOLUME_LOCAL,
-			                                    "login", login_password);
-			if (!login_keyring) {
-				gkr_keyrings_add (login_keyring);
-				g_object_unref (login_keyring);
-			}
-		}
-		
+	if (unlock_with_login && login_password) {
+		if (!gkr_keyring_login_unlock (login_password))
+			g_warning ("Failed to unlock login on startup");
 		gkr_secure_free (login_password);
 	}
 	

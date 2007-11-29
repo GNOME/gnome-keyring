@@ -1,5 +1,16 @@
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c:
+	* daemon/gkr-daemon-ops.c:
+	* keyrings/gkr-keyring-login.c: (added)
+	* keyrings/gkr-keyring-login.h: (added)
+	* keyrings/gkr-keyrings-auto-unlock.c: (removed)
+	* keyrings/gkr-keyrings-auto-unlock.h: (removed)
+	* keyrings/Makefile.am:
+	* pk/gkr-pk-object-manager.c:
+	* pkcs11/gkr-pkcs11-daemon-session.c: Prompt for main login when a PKCS#11
+	client tries to log in.
+
 	* pkcs11/gkr-pkcs11-daemon-session.c:
 	* pkcs11/gkr-pkcs11-mechanisms.h:
 	* pkcs11/gkr-pkcs11-rsa.c:

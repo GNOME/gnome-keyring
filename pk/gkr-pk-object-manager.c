@@ -32,7 +32,7 @@
 #include "common/gkr-location-watch.h"
 #include "common/gkr-secure-memory.h"
 
-#include "keyrings/gkr-keyrings-auto-unlock.h"
+#include "keyrings/gkr-keyring-login.h"
 
 #include "pkcs11/pkcs11.h"
 
@@ -113,12 +113,12 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 	
 	/* See if we can find a valid password for this location */
 	if (failures == 0) {
-		password = gkr_keyrings_auto_unlock_lookup (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
+		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 		                                            "pk-object", gkr_location_to_string (loc), NULL);
 		if (password != NULL)
 			return gkr_secure_strdup (password);
 	} else {
-		gkr_keyrings_auto_unlock_remove (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
+		gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 		                                 "pk-object", gkr_location_to_string (loc), NULL); 
 	}
 
@@ -157,7 +157,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 	g_free (primary);
 	g_free (secondary);
 		
-	if (gkr_keyrings_auto_unlock_check ()) {
+	if (gkr_keyring_login_check ()) {
 		label = g_strdup_printf (_("Automatically unlock this %s when I log in."), display_type);
 		gkr_ask_request_set_check_option (ask, label);
 		g_free (label);
@@ -171,9 +171,9 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 		ret = gkr_secure_strdup (ask->typed_password);
 		if (ask->checked) {
 			display_name =  g_strdup_printf (_("Unlock password for %s"), orig_label);
-			gkr_keyrings_auto_unlock_save (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
-			                               display_name, ret,
-			                               "pk-object", gkr_location_to_string (loc), NULL);
+			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
+			                                 display_name, ret,
+			                                 "pk-object", gkr_location_to_string (loc), NULL);
 		} 
 	}	
 		

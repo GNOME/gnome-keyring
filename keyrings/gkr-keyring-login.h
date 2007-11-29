@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-keyrings-auto-unlock.h - get secrets to automatically unlock keyrings or keys
+/* gkr-keyrings-login.h - get secrets to automatically unlock keyrings or keys
 
    Copyright (C) 2007 Stefan Walter
 
@@ -26,17 +26,21 @@
 
 #include "library/gnome-keyring.h"
 
-gboolean        gkr_keyrings_auto_unlock_check  (void);
+gboolean        gkr_keyring_login_check          (void);
 
-void            gkr_keyrings_auto_unlock_save   (GnomeKeyringItemType type, 
-                                                 const gchar *display_name, 
-                                                 const gchar *secret,
-                                                 ...);
+gboolean        gkr_keyring_login_unlock         (const gchar *secret);
 
-const gchar*    gkr_keyrings_auto_unlock_lookup (GnomeKeyringItemType type,
-                                                 ...);
+void            gkr_keyring_login_lock           (void);
+
+void            gkr_keyring_login_attach_secret  (GnomeKeyringItemType type, 
+                                                  const gchar *display_name, 
+                                                  const gchar *secret,
+                                                  ...);
+
+const gchar*    gkr_keyring_login_lookup_secret  (GnomeKeyringItemType type,
+                                                  ...);
                                                  
-void            gkr_keyrings_auto_unlock_remove (GnomeKeyringItemType type,
-                                                 ...);
+void            gkr_keyring_login_remove_secret  (GnomeKeyringItemType type,
+                                                  ...);
 
 #endif /*GKRKEYRINGSAUTOUNLOCK_H_*/

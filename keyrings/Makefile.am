@@ -14,7 +14,7 @@ libgkr_keyrings_la_SOURCES = \
 	gkr-keyring.c gkr-keyring.h \
 	gkr-keyring-item.c gkr-keyring-item.h \
 	gkr-keyrings.c gkr-keyrings.h \
-	gkr-keyrings-auto-unlock.c gkr-keyrings-auto-unlock.h 
+	gkr-keyring-login.c gkr-keyring-login.h 
 
 libgkr_keyrings_la_LIBADD = \
 	$(GLIB_LIBS) \
@@ -22,3 +22,12 @@ libgkr_keyrings_la_LIBADD = \
 
 EXTRA_DIST = \
 	file-format.txt 
+
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR = 
+endif
+
+SUBDIRS = . $(TESTS_DIR)
+	

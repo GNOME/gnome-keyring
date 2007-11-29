@@ -31,7 +31,7 @@
 #include "keyrings/gkr-keyring.h"
 #include "keyrings/gkr-keyring-item.h"
 #include "keyrings/gkr-keyrings.h"
-#include "keyrings/gkr-keyrings-auto-unlock.h"
+#include "keyrings/gkr-keyring-login.h"
 
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-private.h"
@@ -309,9 +309,9 @@ check_keyring_ask_request (GkrAskRequest* ask)
 		if (ask->checked) {
 			display = g_strdup_printf (_("Unlock password for %s keyring"), 
 			                           keyring->keyring_name);
-			gkr_keyrings_auto_unlock_save (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
-			                               display, ask->typed_password, 
-			                               "keyring", gkr_location_to_string (keyring->location), NULL);
+			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
+			                                 display, ask->typed_password, 
+			                                 "keyring", gkr_location_to_string (keyring->location), NULL);
 			g_free (display);
 		}
 	}
@@ -320,7 +320,7 @@ check_keyring_ask_request (GkrAskRequest* ask)
 	 * We can automatically unlock keyrings that have their password
 	 * stored in the 'login' keyring.
 	 */
-	password = gkr_keyrings_auto_unlock_lookup (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
+	password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
 	                                            "keyring", gkr_location_to_string (keyring->location), NULL);
 	if (password) {
 		if (gkr_keyring_unlock (keyring, password)) {
@@ -332,7 +332,7 @@ check_keyring_ask_request (GkrAskRequest* ask)
 		} else {
 			
 			/* A bad internal password */
-			gkr_keyrings_auto_unlock_remove (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
+			gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
 			                                 "keyring", gkr_location_to_string (keyring->location), NULL);
 		}
 	}	

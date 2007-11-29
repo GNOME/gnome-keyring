@@ -32,6 +32,8 @@
 #include "common/gkr-async.h"
 #include "common/gkr-buffer.h"
 
+#include "keyrings/gkr-keyring-login.h"
+
 #include "pk/gkr-pk-object.h"
 #include "pk/gkr-pk-object-manager.h"
 #include "pk/gkr-pk-util.h"
@@ -54,7 +56,6 @@ enum
 typedef void (*OperationCleanup) (SessionInfo* sinfo);
 
 struct _SessionInfo {
-	gboolean loggedin;          /* Session has a user logged in */
 	gboolean valid;             /* Session is valid */
 	gboolean readonly;          /* Session is readonly */
 
@@ -283,7 +284,7 @@ session_C_GetSessionInfo (SessionInfo *sinfo, GkrPkcs11Message *req,
 
 	/* No in arguments */
 
-	if (sinfo->loggedin)
+	if (gkr_keyring_login_check ())
 		state = sinfo->readonly ? CKS_RO_USER_FUNCTIONS : CKS_RW_USER_FUNCTIONS;
 	else 
 		state = sinfo->readonly ? CKS_RO_PUBLIC_SESSION : CKS_RW_PUBLIC_SESSION;
@@ -339,10 +340,6 @@ session_C_Login (SessionInfo *sinfo, GkrPkcs11Message *req,
 	CK_BYTE_PTR pin = NULL;
 	CK_ULONG user_type, pin_len;
 	
-	/* Already logged in */
-	if (sinfo->loggedin) 
-		return CKR_USER_ALREADY_LOGGED_IN;
-	
 	if (gkr_pkcs11_message_read_uint32 (req, &user_type) != CKR_OK)
 		return PROTOCOL_ERROR;
 	if (!read_byte_array (req, &pin, &pin_len))
@@ -360,15 +357,13 @@ session_C_Login (SessionInfo *sinfo, GkrPkcs11Message *req,
 	}
 	
 	/* 
-	 * TODO: Implement by unlocking gnome-keyring default keyring, since we 
+	 * Implement by unlocking gnome-keyring default keyring, since we 
 	 * a CKF_PROTECTED_AUTHENTICATION_PATH type token, we would 
 	 * not accept a PIN, but instead prompt for it. 
 	 */
+	if (!gkr_keyring_login_unlock (NULL))
+		return CKR_GENERAL_ERROR;
 
-	/* TODO:  Initialize structures for session objects */
-	
-	sinfo->loggedin = TRUE;
-	
 	return CKR_OK;
 }
 
@@ -376,13 +371,13 @@ static CK_RV
 session_C_Logout (SessionInfo *sinfo, GkrPkcs11Message *req, 
                   GkrPkcs11Message *resp)
 {
-	if (!sinfo->loggedin)
+	if (!gkr_keyring_login_check ())
 		return CKR_USER_NOT_LOGGED_IN;
 	
-	/* TODO: Remove all private token objects from our cache */
-	/* TODO: Remove all session objects */
-	
-	sinfo->loggedin = FALSE;
+	/* 
+	 * TODO: What do we do here. I don't think we actually want to
+	 * lock the login keyring.
+	 */ 
 	
 	return CKR_OK;
 }
