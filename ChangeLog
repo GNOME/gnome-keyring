@@ -6,6 +6,9 @@
 
 	* ssh/gkr-ssh-daemon-io.c: Cleaner shutdown for SSH agent 
 	connections.
+	
+	* common/gkr-async.c: A better async worker task switching location
+	is from a GSource rather than from the poll function.
 
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 

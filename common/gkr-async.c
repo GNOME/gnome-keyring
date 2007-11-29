@@ -37,15 +37,24 @@
 #if DEBUG_LOCKS
 #define DO_LOCK(mtx) G_STMT_START { \
 		g_printerr ("%s LOCK %s\n", __func__, G_STRINGIFY(mtx));  \
+		g_atomic_int_inc (&waiting_on_lock); \
+		if (g_atomic_int_get (&waiting_on_poll)) gkr_wakeup_now (); \
 		g_mutex_lock (mtx);  \
+		g_atomic_int_dec_and_test (&waiting_on_lock); \
         } G_STMT_END
 #define DO_UNLOCK(mtx) G_STMT_START { \
 		g_printerr ("%s UNLOCK %s\n", __func__, G_STRINGIFY(mtx));  \
 		g_mutex_unlock (mtx);  \
         } G_STMT_END
 #else
-#define DO_LOCK(mtx) g_mutex_lock (mtx)
-#define DO_UNLOCK(mtx) g_mutex_unlock (mtx)
+#define DO_LOCK(mtx) G_STMT_START { \
+		g_atomic_int_inc (&waiting_on_lock); \
+		if (g_atomic_int_get (&waiting_on_poll)) gkr_wakeup_now (); \
+		g_mutex_lock (mtx); \
+		g_atomic_int_dec_and_test (&waiting_on_lock); \
+	} G_STMT_END
+#define DO_UNLOCK(mtx) \
+	g_mutex_unlock (mtx)
 #endif  
 	
 /* 
@@ -66,37 +75,76 @@ GStaticPrivate thread_private = G_STATIC_PRIVATE_INIT;
 static GMainLoop *main_loop = NULL;		/* The main loop we're operating on */
 static GMutex *async_mutex = NULL;		/* The mutex which is used for cooperative multitasking */
 static GPollFunc orig_poll_func = NULL;		/* The system poll function, which we wrap */
+static gint async_source_id = 0;              	/* Our GSource id for the main loop */
 static GQueue *done_queue = NULL;		/* The queue of completed worker threads */ 
 static GHashTable *running_workers = NULL;	/* A set of running worker threads */
+static gint waiting_on_lock = 0;		/* Number of threads waiting on lock */ 
+static gint waiting_on_poll = 0;		/* Whether we're waiting on the poll or not */
 
 static void cleanup_done_threads (void);
 
 /* -----------------------------------------------------------------------------
  * ASYNC MAINLOOP FUNCTIONS
  */
- 
+
 static gint
-lock_step_poll_func (GPollFD *ufds, guint nfsd, gint timeout)
+async_poll_func (GPollFD *ufds, guint nfsd, gint timeout)
 {
 	gint ret;
 	
 	g_assert (orig_poll_func);
+	g_atomic_int_set (&waiting_on_poll, 1);
+	ret = (orig_poll_func) (ufds, nfsd, timeout);
+	g_atomic_int_set (&waiting_on_poll, 0);
 	
-	/* Unlock while polling so workers can run */
-	DO_UNLOCK (async_mutex);
-	ret = (orig_poll_func) (ufds, nfsd, timeout);			
-	DO_LOCK (async_mutex);
-	
-	if (done_queue && !g_queue_is_empty (done_queue))
-		cleanup_done_threads ();
-	
-	return ret;
+ 	if (done_queue && !g_queue_is_empty (done_queue))
+ 		cleanup_done_threads ();
+ 	
+ 	return ret;
 }
+
+static gboolean
+async_source_prepare(GSource* source, gint *timeout)
+{
+	gboolean have = g_atomic_int_get (&waiting_on_lock) > 0;
+	*timeout = have ? 0 : -1;
+	return have ? TRUE : FALSE;
+}
+
+static gboolean
+async_source_check(GSource* source)
+{
+	return g_atomic_int_get (&waiting_on_lock) > 0;
+}
+
+static gboolean
+async_source_dispatch(GSource* source, GSourceFunc callback, gpointer user_data)
+{
+	/* Let a worker run */
+	DO_UNLOCK (async_mutex);
+	g_thread_yield ();
+	DO_LOCK (async_mutex);
+	return TRUE;
+}
+
+static void
+async_source_finalize(GSource* source)
+{
+
+}
+
+static GSourceFuncs async_source_functions = {
+	async_source_prepare,
+	async_source_check,
+	async_source_dispatch,
+	async_source_finalize
+};
 
 void
 gkr_async_workers_init (GMainLoop *mainloop)
 {
 	GMainContext *ctx;
+	GSource *src;
 	
 	g_assert (mainloop);
 	
@@ -105,12 +153,20 @@ gkr_async_workers_init (GMainLoop *mainloop)
 	g_assert (!main_loop);
 	main_loop = mainloop;
 	g_main_loop_ref (main_loop);
-	
-	/* Swap in our poll func which unlocks at each iteration */	
 	ctx = g_main_loop_get_context (main_loop);
-	orig_poll_func = g_main_context_get_poll_func (ctx);
-	g_assert (orig_poll_func);
-	g_main_context_set_poll_func (ctx, lock_step_poll_func);	
+	
+	/* Add our idle handler which processes other tasks */
+	g_assert(!async_source_id);
+	src = g_source_new (&async_source_functions, sizeof (GSource));
+	async_source_id = g_source_attach (src, ctx);
+	g_source_unref (src);
+
+	/* Swap in our poll func */
+ 	orig_poll_func = g_main_context_get_poll_func (ctx);
+ 	g_assert (orig_poll_func);
+ 	g_main_context_set_poll_func (ctx, async_poll_func);
+
+	gkr_wakeup_register (ctx);
 
 	/* 
 	 * The mutex gets locked each time the main loop is waiting 
@@ -123,13 +179,23 @@ void
 gkr_async_workers_uninit (void)
 {
 	GMainContext *ctx;
-
+	GSource* src;
+	
 	gkr_async_workers_stop_all ();
 
 	DO_UNLOCK (async_mutex);
 	
-	/* Swap back in original poll func */
+	gkr_wakeup_unregister ();
 	ctx = g_main_loop_get_context (main_loop);
+	
+	/* Take out the source */
+	g_assert (async_source_id);
+	src = g_main_context_find_source_by_id(ctx, async_source_id);
+	g_assert (src);
+	g_source_destroy (src);
+	async_source_id = 0;
+		
+	/* Swap back in original poll func */
 	g_assert (orig_poll_func);
 	g_main_context_set_poll_func (ctx, orig_poll_func);
 		
