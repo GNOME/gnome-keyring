@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gkr-pkcs11-daemon-session.c - PKCS#11 session in daemon
 
-   Copyright (C) 2007, Nate Nielsen
+   Copyright (C) 2007, Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #include <glib.h>
@@ -26,6 +26,7 @@
 #include "gkr-pkcs11-message.h"
 #include "gkr-pkcs11-calls.h"
 #include "gkr-pkcs11-daemon.h"
+#include "gkr-pkcs11-rsa.h"
 #include "pkcs11.h"
 
 #include "common/gkr-async.h"
@@ -46,7 +47,8 @@ typedef struct _SessionInfo SessionInfo;
 enum
 {
 	OPERATION_NONE = 0,
-	OPERATION_FIND
+	OPERATION_FIND,
+	OPERATION_SIGN_RECOVER
 };
 
 typedef void (*OperationCleanup) (SessionInfo* sinfo);
@@ -57,7 +59,7 @@ struct _SessionInfo {
 	gboolean readonly;          /* Session is readonly */
 
 	guint operation_type;
-	OperationCleanup operation_cleanup;
+	GDestroyNotify operation_cleanup;
 	gpointer operation_data;
 	
 	guint deverror;                 /* The 'device' error code */
@@ -84,6 +86,35 @@ static void
 session_find_objects (SessionInfo *sinfo, GArray *attrs, GList **objects)
 {
 	/* TODO: For now we don't have any session objects */
+}
+
+/* -----------------------------------------------------------------------------
+ * HELPERS
+ */
+ 
+static void
+begin_operation (SessionInfo *sinfo, guint type, gpointer data, GDestroyNotify cleanup)
+{
+	g_assert (sinfo);
+	g_assert (type != OPERATION_NONE);
+	g_assert (sinfo->operation_type == OPERATION_NONE);
+	
+	sinfo->operation_type = type;
+	sinfo->operation_data = data;
+	sinfo->operation_cleanup = cleanup;
+}
+
+static void
+finish_operation (SessionInfo *sinfo)
+{
+	if (sinfo->operation_data) {
+		if (sinfo->operation_cleanup)
+			(sinfo->operation_cleanup) (sinfo->operation_data);
+		sinfo->operation_data = NULL;
+	}
+	
+	sinfo->operation_cleanup = NULL;
+	sinfo->operation_type = OPERATION_NONE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -164,6 +195,31 @@ read_byte_array (GkrPkcs11Message *msg, CK_BYTE_PTR *val, CK_ULONG *vlen)
 	
 	*val = (CK_BYTE_PTR)v;
 	*vlen = l;
+	return TRUE;
+}
+
+static gboolean
+read_mechanism (GkrPkcs11Message* msg, CK_MECHANISM_PTR mech)
+{
+	const guchar *value;
+	gsize n_value;
+	guint32 num;
+	
+	g_assert (msg);
+	g_assert (gkr_pkcs11_message_verify_part (msg, "M"));
+	
+	/* Get the mechanism type */
+	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, 
+	                            &num))
+		return FALSE; /* parse error */
+		
+	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, 
+	                                &value, &n_value))
+		return FALSE; /* parse error */
+		
+	mech->mechanism = num;
+	mech->pParameter = (CK_VOID_PTR)value;
+	mech->ulParameterLen = n_value;
 	return TRUE;
 }
 
@@ -436,18 +492,12 @@ session_C_SetAttributeValue (SessionInfo *sinfo, GkrPkcs11Message *req,
 }
 
 static void 
-cleanup_find_operation (SessionInfo *sinfo)
+free_object_list (gpointer data)
 {
-	GList *l, *objects;
-	g_assert (sinfo->operation_type == OPERATION_FIND);
-	
-	objects = sinfo->operation_data;
+	GList *l, *objects = data;
 	for (l = objects; l; l = g_list_next (l)) 
 		g_object_unref (l);
 	g_list_free (objects);
-	sinfo->operation_type = OPERATION_NONE;
-	sinfo->operation_data = NULL;
-	sinfo->operation_cleanup = NULL;
 }
 
 static CK_RV
@@ -479,9 +529,7 @@ session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (ret == CKR_OK) {
 		for (l = objects; l; l = g_list_next (l))
 			g_object_ref (GKR_PK_OBJECT (l->data));
-		sinfo->operation_type = OPERATION_FIND;
-		sinfo->operation_cleanup = cleanup_find_operation;
-		sinfo->operation_data = objects;
+		begin_operation (sinfo, OPERATION_FIND, objects, free_object_list);
 	} else {
 		g_list_free (objects);
 	}
@@ -540,7 +588,7 @@ session_C_FindObjectsFinal (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (sinfo->operation_type != OPERATION_FIND)
 		return CKR_OPERATION_NOT_INITIALIZED;
 	
-	cleanup_find_operation (sinfo);
+	finish_operation (sinfo);
 	return CKR_OK;
 }
 
@@ -688,16 +736,71 @@ static CK_RV
 session_C_SignRecoverInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                            GkrPkcs11Message *resp)
 {
-	/* RSA keys don't support this recoverable signing */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	GkrPkObject *key;
+	CK_MECHANISM mech;
+	CK_OBJECT_HANDLE obj;
+	CK_RV ret;
+	
+	if (sinfo->operation_type)
+		return CKR_OPERATION_ACTIVE;
+
+	if (!read_mechanism (req, &mech))
+		return PROTOCOL_ERROR;
+		
+	if (gkr_pkcs11_message_read_uint32 (req, &obj) != CKR_OK)
+		return PROTOCOL_ERROR;
+	
+	/* Find the object in question */
+	if (obj & GKR_PK_OBJECT_IS_PERMANENT)
+		key = gkr_pk_object_manager_lookup (NULL, obj);
+	else 
+		key = session_lookup_object (sinfo, obj);
+	if (!key)
+		return CKR_OBJECT_HANDLE_INVALID;
+		
+	/* This is only supported for RSA */
+	if (mech.mechanism != CKM_RSA_PKCS)
+		return CKR_MECHANISM_INVALID;
+		
+	/* And only supported on RSA keys */
+	ret = gkr_pkcs11_rsa_sign_recover (key, NULL, 0, NULL, 0);
+	if (ret != CKR_OK)
+		return ret;
+	
+	g_object_ref (key);
+	begin_operation (sinfo, OPERATION_SIGN_RECOVER, key, g_object_unref);
+ 	return CKR_OK;
 }
 
 static CK_RV
 session_C_SignRecover (SessionInfo *sinfo, GkrPkcs11Message *req, 
                        GkrPkcs11Message *resp)
 {
-	/* RSA keys don't support this recoverable signing */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	GkrPkObject *key;
+	CK_BYTE_PTR data;
+	CK_ULONG n_data;
+	gsize n_signature;
+	guchar *signature;
+	CK_RV ret;
+	
+	if (sinfo->operation_type != OPERATION_SIGN_RECOVER)
+		return CKR_OPERATION_NOT_INITIALIZED;
+
+	if (!read_byte_array (req, &data, &n_data))
+		return PROTOCOL_ERROR;
+		
+	key = GKR_PK_OBJECT (sinfo->operation_data);
+
+	ret = gkr_pkcs11_rsa_sign_recover (key, data, n_data, 
+	                                   &signature, &n_signature);
+	if (ret != CKR_OK)
+		return ret;
+		
+	ret = gkr_pkcs11_message_write_byte_array (resp, signature, n_signature);
+	g_free (signature);
+	
+	finish_operation (sinfo);
+	return ret;
 }
 
 static CK_RV
@@ -736,6 +839,8 @@ static CK_RV
 session_C_VerifyRecoverInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                              GkrPkcs11Message *resp)
 {
+/* 	gkr_pkcs11_rsa_can_verify_recover (object); */
+	
 	/* RSA keys don't support this recoverable signing */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
@@ -744,6 +849,9 @@ static CK_RV
 session_C_VerifyRecover (SessionInfo *sinfo, GkrPkcs11Message *req, 
                          GkrPkcs11Message *resp)
 {
+/*	gkr_pkcs11_rsa_verify_recover (object, signature, n_signature, 
+	                               &data, &n_data); */
+	
 	/* RSA keys don't support this recoverable signing */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
@@ -968,6 +1076,9 @@ session_process (SessionInfo *sinfo, GkrPkcs11Message *req,
 		
 	/* Fill in an error respnose */
 	} else {
+		/* When there's an error any operation automatically done */
+		finish_operation (sinfo);
+		
 		gkr_pkcs11_message_prep (resp, PKCS11_CALL_ERROR, GKR_PKCS11_RESPONSE);
 		gkr_buffer_add_uint32 (&resp->buffer, (uint32_t)ret);
 

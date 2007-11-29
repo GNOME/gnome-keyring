@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-pkcs11-mechanisms.h - the PKCS#11 mechanisms we support
+/* gkr-pkcs11-rsa.h - RSA mechanism code for PKCS#11
 
    Copyright (C) 2007, Stefan Walter
 
@@ -18,29 +18,18 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Stef Walter <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKR_PKCS11_MECHANISMS_H
-#define GKR_PKCS11_MECHANISMS_H
+#ifndef GKRPKCS11RSA_H_
+#define GKRPKCS11RSA_H_
 
-/* 
- * IMPORTANT: Keep these two arrays in sync.
- */
- 
-const static CK_MECHANISM_TYPE gkr_pkcs11_mechanisms[] = {
-	/* TODO: CKM_RSA_PKCS_KEY_PAIR_GEN, */
-	CKM_RSA_PKCS
-};
+#include "pkcs11.h"
 
-const static CK_MECHANISM_INFO gkr_pkcs11_mechanism_info[] = {
-	/* TODO: CKM_RSA_PKCS_KEY_PAIR_GEN, */
-	/* 
-	 * CKM_RSA_PKCS
-	 * For RSA, min and max are the minimum and maximum modulus in bits 
-	 */
-	/* TODO: Vet the numbers min/max key leng below.  */
-	{256, 32768, CKF_ENCRYPT | CKF_DECRYPT | CKF_SIGN | CKF_VERIFY | CKF_WRAP | CKF_UNWRAP}
-};
+#include "pk/gkr-pk-object.h"
 
-#endif /* GKR_PKCS11_MECHANISMS_H */
+CK_RV                 gkr_pkcs11_rsa_sign_recover               (GkrPkObject *key, 
+                                                                 const guchar *input, gsize n_input, 
+                                                                 guchar **output, gsize *n_output);
+
+#endif /*GKRPKCS11RSA_H_*/

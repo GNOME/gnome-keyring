@@ -1,5 +1,13 @@
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* pkcs11/gkr-pkcs11-mechanisms.h:
+	* pkcs11/gkr-pkcs11-rsa.c:
+	* pkcs11/gkr-pkcs11-rsa.h: A first whack at implementing the PKCS#11
+	sign operation.
+
+2007-11-29  Stef Walter  <stef@memberwebs.com>
+
 	* pam/gkr-pam-stubs.c: Fix missing symbol in PAM module.
 
 	* library/gkr-keyring.c: Fix dumb errors loading keyrings.

@@ -45,7 +45,8 @@ DAEMON_SRCS = \
 	gkr-pkcs11-daemon.c gkr-pkcs11-daemon.h \
 	gkr-pkcs11-daemon-session.c \
 	gkr-pkcs11-mechanisms.h \
-	gkr-pkcs11-message.c gkr-pkcs11-message.h 
+	gkr-pkcs11-message.c gkr-pkcs11-message.h \
+	gkr-pkcs11-rsa.c gkr-pkcs11-rsa.h
 
 noinst_LTLIBRARIES = libgkr-pkcs11.la
 
