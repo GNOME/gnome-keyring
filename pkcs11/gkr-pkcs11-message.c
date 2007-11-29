@@ -293,7 +293,6 @@ CK_RV
 gkr_pkcs11_message_write_byte_array (GkrPkcs11Message *msg, 
                                      CK_BYTE_PTR arr, CK_ULONG num)
 {
-	ASSERT (arr);
 	ASSERT (msg);
 
 	/* Make sure this is in the right order */

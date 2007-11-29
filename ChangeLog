@@ -11,6 +11,8 @@
 	* pkcs11/gkr-pkcs11-daemon-session.c: Prompt for main login when a PKCS#11
 	client tries to log in.
 
+	* pkcs11/gkr-pkcs11-message.c: Allow sending of null byte arrays
+
 	* pkcs11/gkr-pkcs11-daemon-session.c:
 	* pkcs11/gkr-pkcs11-mechanisms.h:
 	* pkcs11/gkr-pkcs11-rsa.c:
