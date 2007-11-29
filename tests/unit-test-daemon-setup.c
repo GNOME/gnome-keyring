@@ -66,7 +66,7 @@ void unit_setup_daemon (void)
 	if (g_mkdir_with_parents (path, 0777) < 0) 
 		g_error ("couldn't create test directory");
 	
-	socket = g_strdup_printf ("%s/socket", TEST_PATH);
+	socket = g_strdup_printf ("%s/socket", path);
 	g_setenv ("GNOME_KEYRING_SOCKET", socket, TRUE);
 	
 	if (!start)

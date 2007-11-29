@@ -12,6 +12,9 @@
 	
 	* common/gkr-buffer.c: Fix crasher when serializing null strings. 
 	
+	* tests/unit-test-daemon-setup.c: Use correct path for connection to 
+	daemon in tests when the daemon is already running.
+
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-privkey.c:
