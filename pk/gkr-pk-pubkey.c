@@ -163,6 +163,32 @@ extract_key_mpi (GkrPkPubkey *key, int algorithm, const char *part, CK_ATTRIBUTE
 	return CKR_OK;
 }
 
+static CK_RV
+extract_key_value (GkrPkPubkey *key, CK_ATTRIBUTE_PTR attr)
+{
+	guchar *data;
+	gsize n_data;
+	
+	if (!load_public_key (key))
+		return CKR_GENERAL_ERROR;
+	
+	switch (gkr_pk_pubkey_get_algorithm (key)) {
+	case GCRY_PK_RSA:
+		data = gkr_pkix_der_write_public_key_rsa (key->pub->s_key, &n_data);
+		g_return_val_if_fail (data, CKR_GENERAL_ERROR);
+		
+		gkr_pk_attribute_set_data (attr, data, n_data);
+		g_free (data);
+		return CKR_OK;
+		
+	case GCRY_PK_DSA:
+		return extract_key_mpi (key, GCRY_PK_DSA, "y", attr);
+			
+	default:
+		return CKR_ATTRIBUTE_TYPE_INVALID;
+	};
+}
+
 /* -------------------------------------------------------------------------------------
  * OBJECT
  */
@@ -348,7 +374,7 @@ gkr_pk_pubkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return extract_key_mpi (key, GCRY_PK_DSA, "g", attr);
 	
 	case CKA_VALUE:
-		return extract_key_mpi (key, GCRY_PK_DSA, "y", attr);
+		return extract_key_value (key, attr);
 	
 	/* TODO: We need to implement this: ARRAY[1] (CKM_RSA_PKCS) */
 	case CKA_ALLOWED_MECHANISMS:

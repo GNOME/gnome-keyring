@@ -1120,6 +1120,8 @@ proto_read_uint32_array (GkrPkcs11Message *msg, CK_ULONG_PTR arr,
 static CK_RV
 proto_write_mechanism (GkrPkcs11Message *msg, CK_MECHANISM_PTR mech)
 {
+	int use_parameter = 0;
+	
 	ASSERT (msg);
 	ASSERT (mech);
 
@@ -1129,9 +1131,28 @@ proto_write_mechanism (GkrPkcs11Message *msg, CK_MECHANISM_PTR mech)
 	/* The mechanism type */
 	gkr_buffer_add_uint32 (&msg->buffer, mech->mechanism);
 	
-	/* The attribute value */
-	gkr_buffer_add_byte_array (&msg->buffer, mech->pParameter, 
-	                           mech->ulParameterLen);
+	/*
+	 * Some callers of PKCS11 expect us not to access the parameter
+	 * if it's not required for the mechanims, and leave it 
+	 * uninitialized and full of strange values which we could 
+	 * crash trying to access. Yuck.
+	 * 
+	 * This list is incomplete. As we add mechanims which have parameters
+	 * to gnome-keyring, we should add those here. 
+	 */
+	switch (mech->mechanism) {
+	case CKM_RSA_PKCS_OAEP:
+	case CKM_RSA_PKCS_PSS:
+		use_parameter = 1;
+		break;
+	};
+	
+	/* The parameter value */
+	if (use_parameter)
+		gkr_buffer_add_byte_array (&msg->buffer, mech->pParameter, 
+		                           mech->ulParameterLen);
+	else
+		gkr_buffer_add_byte_array (&msg->buffer, NULL, 0);
 
 	return gkr_buffer_has_error (&msg->buffer) ? CKR_HOST_MEMORY : CKR_OK;
 }

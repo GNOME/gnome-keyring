@@ -28,6 +28,10 @@
 
 #include "pk/gkr-pk-object.h"
 
+CK_RV                 gkr_pkcs11_rsa_raw_decrypt                (GkrPkObject *key, 
+                                                                 const guchar *encrypted, gsize n_encrypted, 
+                                                                 guchar **plain, gsize *n_plain);
+
 CK_RV                 gkr_pkcs11_rsa_raw_sign                   (GkrPkObject *key, 
                                                                  const guchar *data, gsize n_data, 
                                                                  guchar **signature, gsize *n_signature);

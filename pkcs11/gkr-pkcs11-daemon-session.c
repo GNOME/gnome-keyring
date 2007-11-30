@@ -50,6 +50,7 @@ enum
 {
 	OPERATION_NONE = 0,
 	OPERATION_FIND,
+	OPERATION_DECRYPT,
 	OPERATION_SIGN,
 	OPERATION_VERIFY
 };
@@ -608,7 +609,7 @@ session_C_FindObjectsFinal (SessionInfo *sinfo, GkrPkcs11Message *req,
 }
 
 /* -----------------------------------------------------------------------------
- * CRYPTO OPERATIONS
+ * ENCRYPTION OPERATIONS
  */
 
 static CK_RV
@@ -643,20 +644,105 @@ session_C_EncryptFinal (SessionInfo *sinfo, GkrPkcs11Message *req,
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
+/* -----------------------------------------------------------------------------
+ * DECRYPTION OPERATIONS
+ */
+
+typedef struct _DecryptContext {
+	CK_MECHANISM_TYPE mechanism;	
+	GkrPkObject *key;
+} DecryptContext;
+
+static DecryptContext*
+new_decrypt_context (CK_MECHANISM_TYPE mech, GkrPkObject *key)
+{
+	g_assert (key);
+	DecryptContext *ctx = g_new0 (DecryptContext, 1);
+	ctx->mechanism = mech;
+	ctx->key = key;
+	g_object_ref (key);
+	return ctx;
+}
+
+static void
+free_decrypt_context (gpointer data)
+{
+	DecryptContext *ctx = (DecryptContext*)data;
+	if (ctx->key)
+		g_object_unref (ctx->key);
+	g_free (ctx);
+}
+
 static CK_RV
 session_C_DecryptInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                        GkrPkcs11Message *resp)
 {
-	/* TODO: We need to implement this. */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	GkrPkObject *key;
+	CK_MECHANISM mech;
+	CK_RV ret;
+	
+	if (sinfo->operation_type)
+		return CKR_OPERATION_ACTIVE;
+
+	if (!read_mechanism (req, &mech))
+		return PROTOCOL_ERROR;
+	ret = read_object (req, sinfo, &key);
+	if (ret != CKR_OK)
+		return ret;
+		
+	switch (mech.mechanism) {
+	case CKM_RSA_X_509:
+		ret = gkr_pkcs11_rsa_raw_decrypt (key, NULL, 0, NULL, 0);
+		break;
+	default:
+		ret = CKR_MECHANISM_INVALID;
+		break;
+	};
+		
+	if (ret == CKR_OK)
+		begin_operation (sinfo, OPERATION_DECRYPT, 
+		                 new_decrypt_context (mech.mechanism, key), 
+		                 free_decrypt_context);
+	
+ 	return ret;
 }
 
 static CK_RV
 session_C_Decrypt (SessionInfo *sinfo, GkrPkcs11Message *req, 
                    GkrPkcs11Message *resp)
 {
-	/* TODO: We need to implement this. */
-	return CKR_OPERATION_NOT_INITIALIZED;	
+	DecryptContext *ctx;
+	CK_BYTE_PTR encrypted;
+	CK_ULONG n_encrypted;
+	gsize n_data;
+	guchar *data;
+	CK_RV ret;
+	
+	if (sinfo->operation_type != OPERATION_DECRYPT)
+		return CKR_OPERATION_NOT_INITIALIZED;
+
+	if (!read_byte_array (req, &encrypted, &n_encrypted))
+		return PROTOCOL_ERROR;
+	
+	ctx = (DecryptContext*)sinfo->operation_data;
+	switch (ctx->mechanism) {
+	case CKM_RSA_X_509:
+		ret = gkr_pkcs11_rsa_raw_decrypt (ctx->key, encrypted, n_encrypted, 
+	                                          &data, &n_data);
+		break;
+	default:
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+		break;
+	};
+	
+	if (ret == CKR_OK) {
+		g_return_val_if_fail (data, CKR_GENERAL_ERROR);
+		ret = gkr_pkcs11_message_write_byte_array (resp, data, n_data);
+		g_free (data);
+	}
+	
+	finish_operation (sinfo);
+	return ret;
 }
 
 static CK_RV

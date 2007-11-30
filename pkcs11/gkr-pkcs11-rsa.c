@@ -31,6 +31,81 @@
 #include "pk/gkr-pk-privkey.h"
 
 CK_RV
+gkr_pkcs11_rsa_raw_decrypt (GkrPkObject *object, const guchar *encrypted, gsize n_encrypted, 
+                            guchar **plain, gsize *n_plain)
+{
+	gcry_sexp_t s_key, splain, sdata;
+	GkrPkPrivkey *key;
+	gcry_error_t gcry;
+	gcry_mpi_t mpi;
+	gboolean res;
+	guint nbits, zeroes;
+	
+	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
+
+	/* Validate and extract the key */
+	if (!GKR_IS_PK_PRIVKEY (object))
+		return CKR_KEY_HANDLE_INVALID;
+		
+	key = GKR_PK_PRIVKEY (object);
+	if (gkr_pk_privkey_get_algorithm (key) != GCRY_PK_RSA)
+		return CKR_KEY_TYPE_INCONSISTENT;
+
+	s_key = gkr_pk_privkey_get_key (key);
+	if (!s_key) {
+		g_warning ("couldn't get private decrypting key");
+		return CKR_GENERAL_ERROR;
+	}
+	
+	/* If no output, then don't process */
+	if (!plain)
+		return CKR_OK;
+		
+	/* Prepare the input s expression */
+	g_return_val_if_fail (encrypted, CKR_GENERAL_ERROR);
+	gcry = gcry_mpi_scan (&mpi, GCRYMPI_FMT_USG, encrypted, n_encrypted, NULL);
+	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+	gcry = gcry_sexp_build (&sdata, NULL, "(enc-val (flags no-blinding) (rsa (a %m)))", mpi);
+	gcry_mpi_release (mpi);
+	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+	
+	/* Do the magic */
+	gcry = gcry_pk_decrypt (&splain, sdata, s_key);
+	gcry_sexp_release (sdata);
+	
+	/* TODO: Certain codes should be returned (data too big etc... ) */
+	if (gcry) {
+		g_warning ("decrypting of the data failed: %s", gcry_strerror (gcry));
+		return CKR_GENERAL_ERROR;
+	}
+
+	/* Now extract and send it back out */
+	res = gkr_crypto_sexp_extract_mpi (splain, &mpi, "value", NULL);
+	gcry_sexp_release (splain);
+	g_return_val_if_fail (res, CKR_GENERAL_ERROR);
+
+	/* The key size */
+	nbits = gcry_pk_get_nbits (s_key);
+	g_return_val_if_fail (nbits > 0, CKR_GENERAL_ERROR);
+
+	/* Get the size */
+	gcry = gcry_mpi_print (GCRYMPI_FMT_STD, NULL, 0, n_plain, mpi);
+	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+	zeroes = (*n_plain < nbits / 8) ? (nbits / 8) - *n_plain : 0;
+	*plain = g_malloc0 (*n_plain + zeroes);
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, *plain + zeroes, *n_plain, n_plain, mpi);	
+	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+
+	*n_plain += zeroes;
+	g_assert (*n_plain >= nbits / 8);
+	g_assert (*plain);
+
+	gcry_mpi_release (mpi);
+	
+	return CKR_OK;
+}
+
+CK_RV
 gkr_pkcs11_rsa_raw_sign (GkrPkObject *object, const guchar *input, gsize n_input, 
                          guchar **output, gsize *n_output)
 {

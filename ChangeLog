@@ -1,3 +1,15 @@
+2007-11-30  Stef Walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-pubkey.c: Implement RSA public key CK_VALUE
+
+	* pkcs11/gkr-pkcs11-daemon-module.c: Don't access mechanism 
+	parameters unless the mechanism is definied to have a parameter.
+	
+	* pkcs11/gkr-pkcs11-daemon-session.c: 
+	* pkcs11/gkr-pkcs11-gkr-pkcs11-rsa.c:
+	* pkcs11/gkr-pkcs11-gkr-pkcs11-rsa.h: Implement decrypt operation
+	for CKM_RSA_X_509.
+	
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-location.c:
