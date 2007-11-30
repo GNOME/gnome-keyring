@@ -29,18 +29,18 @@
  */
  
 const static CK_MECHANISM_TYPE gkr_pkcs11_mechanisms[] = {
-	/* TODO: CKM_RSA_PKCS_KEY_PAIR_GEN, */
-	CKM_RSA_PKCS
+	CKM_RSA_X_509
 };
 
 const static CK_MECHANISM_INFO gkr_pkcs11_mechanism_info[] = {
 	/* TODO: CKM_RSA_PKCS_KEY_PAIR_GEN, */
+	
 	/* 
-	 * CKM_RSA_PKCS
+	 * CKM_RSA_X509
 	 * For RSA, min and max are the minimum and maximum modulus in bits 
 	 */
-	/* TODO: Vet the numbers min/max key leng below.  */
-	{256, 32768, CKF_ENCRYPT | CKF_DECRYPT | CKF_SIGN | CKF_VERIFY | CKF_WRAP | CKF_UNWRAP}
+	{ 256, 32768, CKF_ENCRYPT | CKF_DECRYPT | CKF_SIGN | CKF_SIGN_RECOVER | 
+		      CKF_VERIFY_RECOVER | CKF_VERIFY | CKF_WRAP | CKF_UNWRAP }
 };
 
 #endif /* GKR_PKCS11_MECHANISMS_H */

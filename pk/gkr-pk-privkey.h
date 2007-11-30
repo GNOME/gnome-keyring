@@ -25,6 +25,7 @@
 #define __GKR_PK_PRIVKEY_H__
 
 #include "gkr-pk-object.h"
+#include "gkr-pk-pubkey.h"
 
 #include "common/gkr-unique.h"
 
@@ -64,7 +65,7 @@ gcry_sexp_t         gkr_pk_privkey_get_key            (GkrPkPrivkey *pkey);
 
 int                 gkr_pk_privkey_get_algorithm      (GkrPkPrivkey *key);
 
-GkrPkObject*        gkr_pk_privkey_get_public         (GkrPkPrivkey *key);
+GkrPkPubkey*        gkr_pk_privkey_get_public         (GkrPkPrivkey *key);
 
 G_END_DECLS
 

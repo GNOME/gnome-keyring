@@ -1,5 +1,31 @@
 2007-11-29  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location.c:
+	* common/gkr-location.h:
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object.h:
+	* pk/gkr-pk-object-manager.c:
+	* pk/gkr-pk-object-manager.h:
+	* pk/gkr-pk-object-storage.c:
+	* pk/gkr-pk-object-storage.h:
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-privkey.h:
+	* pk/gkr-pk-pubkey.c:
+	* pk/gkr-pk-pubkey.h:
+	* pk/Makefile.am:
+	* pkix/gkr-pkix-cert.c:
+	* pkix/gkr-pkix-cert.h:
+	* pkix/gkr-pkix-parser.c:
+	* ssh/gkr-ssh-daemon.c: Rework how objects are loaded and keep 
+	them in the object manager as long as they are referenced.
+
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* pkcs11/gkr-pkcs11-mechanisms.h:
+	* pkcs11/gkr-pkcs11-rsa.c:
+	* pkcs11/gkr-pkcs11-rsa.h: Implement CKM_RSA_X_509 Sign and Verify
+	
+2007-11-29  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-location-watch.c:
 	* common/tests/unit-test-crypto.c:
 	* common/tests/unit-test-location-watch.c:

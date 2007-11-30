@@ -50,7 +50,8 @@ enum
 {
 	OPERATION_NONE = 0,
 	OPERATION_FIND,
-	OPERATION_SIGN_RECOVER
+	OPERATION_SIGN,
+	OPERATION_VERIFY
 };
 
 typedef void (*OperationCleanup) (SessionInfo* sinfo);
@@ -222,6 +223,25 @@ read_mechanism (GkrPkcs11Message* msg, CK_MECHANISM_PTR mech)
 	mech->pParameter = (CK_VOID_PTR)value;
 	mech->ulParameterLen = n_value;
 	return TRUE;
+}
+
+static CK_RV
+read_object (GkrPkcs11Message *msg, SessionInfo *sinfo, GkrPkObject **res)
+{
+	CK_OBJECT_HANDLE obj;
+	
+	if (gkr_pkcs11_message_read_uint32 (msg, &obj) != CKR_OK)
+		return PROTOCOL_ERROR;
+	
+	/* Find the object in question */
+	if (obj & GKR_PK_OBJECT_IS_PERMANENT)
+		*res = gkr_pk_object_manager_lookup (NULL, obj);
+	else 
+		*res = session_lookup_object (sinfo, obj);
+	if (!*res)
+		return CKR_OBJECT_HANDLE_INVALID;
+		
+	return CKR_OK;
 }
 
 static void
@@ -491,7 +511,7 @@ free_object_list (gpointer data)
 {
 	GList *l, *objects = data;
 	for (l = objects; l; l = g_list_next (l)) 
-		g_object_unref (l);
+		g_object_unref (l->data);
 	g_list_free (objects);
 }
 
@@ -695,20 +715,105 @@ session_C_DigestFinal (SessionInfo *sinfo, GkrPkcs11Message *req,
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
+/* -----------------------------------------------------------------------------
+ * SIGN OPERATIONS
+ */
+
+typedef struct _SignContext {
+	CK_MECHANISM_TYPE mechanism;	
+	GkrPkObject *key;
+} SignContext;
+
+static SignContext*
+new_sign_context (CK_MECHANISM_TYPE mech, GkrPkObject *key)
+{
+	g_assert (key);
+	SignContext *ctx = g_new0 (SignContext, 1);
+	ctx->mechanism = mech;
+	ctx->key = key;
+	g_object_ref (key);
+	return ctx;
+}
+
+static void
+free_sign_context (gpointer data)
+{
+	SignContext *ctx = (SignContext*)data;
+	if (ctx->key)
+		g_object_unref (ctx->key);
+	g_free (ctx);
+}
+
 static CK_RV
 session_C_SignInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                     GkrPkcs11Message *resp)
 {
-	/* TODO: We need to implement this. */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	GkrPkObject *key;
+	CK_MECHANISM mech;
+	CK_RV ret;
+	
+	if (sinfo->operation_type)
+		return CKR_OPERATION_ACTIVE;
+
+	if (!read_mechanism (req, &mech))
+		return PROTOCOL_ERROR;
+	ret = read_object (req, sinfo, &key);
+	if (ret != CKR_OK)
+		return ret;
+		
+	switch (mech.mechanism) {
+	case CKM_RSA_X_509:
+		ret = gkr_pkcs11_rsa_raw_sign (key, NULL, 0, NULL, 0);
+		break;
+	default:
+		ret = CKR_MECHANISM_INVALID;
+		break;
+	};
+		
+	if (ret == CKR_OK)
+		begin_operation (sinfo, OPERATION_SIGN, 
+		                 new_sign_context (mech.mechanism, key), 
+		                 free_sign_context);
+	
+ 	return ret;
 }
 
 static CK_RV
 session_C_Sign (SessionInfo *sinfo, GkrPkcs11Message *req, 
                 GkrPkcs11Message *resp)
 {
-	/* TODO: We need to implement this. */
-	return CKR_OPERATION_NOT_INITIALIZED;
+	SignContext *ctx;
+	CK_BYTE_PTR data;
+	CK_ULONG n_data;
+	gsize n_signature;
+	guchar *signature;
+	CK_RV ret;
+	
+	if (sinfo->operation_type != OPERATION_SIGN)
+		return CKR_OPERATION_NOT_INITIALIZED;
+
+	if (!read_byte_array (req, &data, &n_data))
+		return PROTOCOL_ERROR;
+	
+	ctx = (SignContext*)sinfo->operation_data;
+	switch (ctx->mechanism) {
+	case CKM_RSA_X_509:
+		ret = gkr_pkcs11_rsa_raw_sign (ctx->key, data, n_data, 
+	                                       &signature, &n_signature);
+		break;
+	default:
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+		break;
+	};
+	
+	if (ret == CKR_OK) {
+		g_return_val_if_fail (signature, CKR_GENERAL_ERROR);
+		ret = gkr_pkcs11_message_write_byte_array (resp, signature, n_signature);
+		g_free (signature);
+	}
+	
+	finish_operation (sinfo);
+	return ret;
 }
 
 static CK_RV
@@ -731,9 +836,53 @@ static CK_RV
 session_C_SignRecoverInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                            GkrPkcs11Message *resp)
 {
+	/* TODO: Need to implement */
+ 	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+static CK_RV
+session_C_SignRecover (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                       GkrPkcs11Message *resp)
+{
+	/* TODO: Need to implement */
+ 	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+/* -----------------------------------------------------------------------------
+ * VERIFY OPERATIONS
+ */
+
+typedef struct _VerifyContext {
+	CK_MECHANISM_TYPE mechanism;	
+	GkrPkObject *key;
+} VerifyContext;
+
+static VerifyContext*
+new_verify_context (CK_MECHANISM_TYPE mech, GkrPkObject *key)
+{
+	g_assert (key);
+	VerifyContext *ctx = g_new0 (VerifyContext, 1);
+	ctx->mechanism = mech;
+	ctx->key = key;
+	g_object_ref (key);
+	return ctx;
+}
+
+static void
+free_verify_context (gpointer data)
+{
+	VerifyContext *ctx = (VerifyContext*)data;
+	if (ctx->key)
+		g_object_unref (ctx->key);
+	g_free (ctx);
+}
+
+static CK_RV
+session_C_VerifyInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
+                      GkrPkcs11Message *resp)
+{
 	GkrPkObject *key;
 	CK_MECHANISM mech;
-	CK_OBJECT_HANDLE obj;
 	CK_RV ret;
 	
 	if (sinfo->operation_type)
@@ -741,77 +890,57 @@ session_C_SignRecoverInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 
 	if (!read_mechanism (req, &mech))
 		return PROTOCOL_ERROR;
-		
-	if (gkr_pkcs11_message_read_uint32 (req, &obj) != CKR_OK)
-		return PROTOCOL_ERROR;
-	
-	/* Find the object in question */
-	if (obj & GKR_PK_OBJECT_IS_PERMANENT)
-		key = gkr_pk_object_manager_lookup (NULL, obj);
-	else 
-		key = session_lookup_object (sinfo, obj);
-	if (!key)
-		return CKR_OBJECT_HANDLE_INVALID;
-		
-	/* This is only supported for RSA */
-	if (mech.mechanism != CKM_RSA_PKCS)
-		return CKR_MECHANISM_INVALID;
-		
-	/* And only supported on RSA keys */
-	ret = gkr_pkcs11_rsa_sign_recover (key, NULL, 0, NULL, 0);
-	if (ret != CKR_OK)
-		return ret;
-	
-	g_object_ref (key);
-	begin_operation (sinfo, OPERATION_SIGN_RECOVER, key, g_object_unref);
- 	return CKR_OK;
-}
-
-static CK_RV
-session_C_SignRecover (SessionInfo *sinfo, GkrPkcs11Message *req, 
-                       GkrPkcs11Message *resp)
-{
-	GkrPkObject *key;
-	CK_BYTE_PTR data;
-	CK_ULONG n_data;
-	gsize n_signature;
-	guchar *signature;
-	CK_RV ret;
-	
-	if (sinfo->operation_type != OPERATION_SIGN_RECOVER)
-		return CKR_OPERATION_NOT_INITIALIZED;
-
-	if (!read_byte_array (req, &data, &n_data))
-		return PROTOCOL_ERROR;
-		
-	key = GKR_PK_OBJECT (sinfo->operation_data);
-
-	ret = gkr_pkcs11_rsa_sign_recover (key, data, n_data, 
-	                                   &signature, &n_signature);
+	ret = read_object (req, sinfo, &key);
 	if (ret != CKR_OK)
 		return ret;
 		
-	ret = gkr_pkcs11_message_write_byte_array (resp, signature, n_signature);
-	g_free (signature);
+	switch (mech.mechanism) {
+	case CKM_RSA_X_509:
+		ret = gkr_pkcs11_rsa_raw_verify (key, NULL, 0, NULL, 0);
+		break;
+	default:
+		ret = CKR_MECHANISM_INVALID;
+		break;
+	};
+		
+	if (ret == CKR_OK)
+		begin_operation (sinfo, OPERATION_VERIFY, 
+		                 new_verify_context (mech.mechanism, key), 
+		                 free_verify_context);
 	
-	finish_operation (sinfo);
-	return ret;
-}
-
-static CK_RV
-session_C_VerifyInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
-                      GkrPkcs11Message *resp)
-{
-	/* TODO: We need to implement this. */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+ 	return ret;
 }
 
 static CK_RV
 session_C_Verify (SessionInfo *sinfo, GkrPkcs11Message *req, 
                   GkrPkcs11Message *resp)
 {
-	/* TODO: We need to implement this. */
-	return CKR_OPERATION_NOT_INITIALIZED;
+	VerifyContext *ctx;
+	CK_BYTE_PTR signature, data;
+	CK_ULONG n_signature, n_data;
+	CK_RV ret;
+	
+	if (sinfo->operation_type != OPERATION_VERIFY)
+		return CKR_OPERATION_NOT_INITIALIZED;
+
+	if (!read_byte_array (req, &data, &n_data))
+		return PROTOCOL_ERROR;
+	if (!read_byte_array (req, &signature, &n_signature))
+		return PROTOCOL_ERROR;
+	
+	ctx = (VerifyContext*)sinfo->operation_data;
+	switch (ctx->mechanism) {
+	case CKM_RSA_X_509:
+		ret = gkr_pkcs11_rsa_raw_verify (ctx->key, data, n_data, 
+	                                         signature, n_signature);
+		break;
+	default:
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+		break;
+	};
+	
+	finish_operation (sinfo);
+	return ret;
 }
 
 static CK_RV

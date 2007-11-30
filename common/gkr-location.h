@@ -55,6 +55,8 @@ gboolean       gkr_location_is_descendant  (GQuark parent, GQuark descendant);
 
 GQuark         gkr_location_get_volume     (GQuark loc);
 
+gchar*         gkr_location_to_display     (GQuark loc);
+
 /* -----------------------------------------------------------------------------
  * UTILITIES
  */

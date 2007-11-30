@@ -42,7 +42,7 @@
 #include "common/gkr-daemon-util.h"
 #include "common/gkr-secure-memory.h"
 
-#include "pk/gkr-pk-object-manager.h"
+#include "pk/gkr-pk-object-storage.h"
 
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
@@ -175,7 +175,7 @@ client_worker_main (gpointer user_data)
 	gkr_async_register_cancel (close_fd, &client->sock);
 	
 	/* Make sure everything is in sync for this connection */
-	gkr_pk_object_manager_refresh (NULL);
+	gkr_pk_object_storage_refresh (NULL);
 	
 	while (!gkr_async_is_stopping ()) {
 		

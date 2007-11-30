@@ -26,11 +26,13 @@
 #include "gkr-pk-index.h"
 #include "gkr-pk-object.h"
 #include "gkr-pk-object-manager.h"
+#include "gkr-pk-object-storage.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-pubkey.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
+#include "common/gkr-location.h"
 #include "common/gkr-unique.h"
 
 #include "pkix/gkr-pkix-der.h"
@@ -54,7 +56,7 @@ enum {
 
 struct _GkrPkPrivkeyData {
 	int algorithm;
-	gkrunique keyid;
+	GkrPkPubkey *pubkey;
 	gcry_sexp_t s_key;
 	gcry_sexp_t numbers;
 };
@@ -75,8 +77,8 @@ load_private_key (GkrPkPrivkey *key, GkrPkObjectReason reason)
 		return TRUE;
 		
 	obj = GKR_PK_OBJECT (key);
-		
-	if (!gkr_pk_object_manager_load_complete (obj->manager, obj, reason, &err)) {
+	
+	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, reason, &err)) {
 		g_message ("couldn't load private key for: %s: %s", 
 		           g_quark_to_string (obj->location),
 		           err && err->message ? err->message : "");
@@ -91,42 +93,27 @@ load_private_key (GkrPkPrivkey *key, GkrPkObjectReason reason)
 	return TRUE;
 }
  
-static GkrPkObject*
+static GkrPkPubkey*
 get_public_key (GkrPkPrivkey *key, gboolean force)
 {
 	gcry_sexp_t s_key = NULL;
-	GkrPkObject *pub = NULL;
 	GkrPkObject *obj;
 	GkrParseResult res;
-	gkrconstunique keyid;
 	guchar *data;
 	gsize n_data;
-	
+
+	if (key->priv->pubkey)
+		goto done;
+		
 	obj = GKR_PK_OBJECT (key);
-	
-	/* Try and find the matching public key */
-	if (key->priv->keyid) {
-		pub = gkr_pk_object_manager_find_by_id (obj->manager, GKR_TYPE_PK_PUBKEY, 
-		                                        key->priv->keyid);
-		if (pub != NULL)
-			return pub;
-	}
 	
 	/* Do we have a public key in the indexes? */
 	data = gkr_pk_index_get_binary (obj->location, obj->unique, "public-key", &n_data);
 	if (data) {
 		res = gkr_pkix_der_read_public_key (data, n_data, &s_key);
 		if (res == GKR_PARSE_SUCCESS) {
-			pub = gkr_pk_pubkey_new (obj->location, s_key);
-			
-			/* Fill in our keyid, so we have that at least */
-			if (!key->priv->keyid) {
-				keyid = gkr_pk_pubkey_get_keyid (GKR_PK_PUBKEY (pub));
-				key->priv->keyid = gkr_unique_dup (keyid);
-			}
-			
-			gkr_pk_object_manager_register (obj->manager, pub);
-			return pub;
+			key->priv->pubkey = gkr_pk_pubkey_instance (obj->location, s_key);
+			goto done;
 		} 
 
 		gkr_pk_index_delete (obj->location, obj->unique, "public-key");	
@@ -136,7 +123,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 	/* 'Import' the public key from the private key */
 	if (force && !key->priv->s_key) {
 		if (!load_private_key (key, GKR_PK_OBJECT_REASON_IMPORT))
-			return NULL;
+			goto done;
 	}
 
 	/* Create one from the private key */
@@ -154,12 +141,12 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 		if (!gkr_pk_index_set_binary (obj->location, obj->unique, "public-key", data, n_data))
 			g_warning ("couldn't write public key to index for: %s", g_quark_to_string (obj->location));
 		
-		pub = gkr_pk_pubkey_new (0, s_key);
-		gkr_pk_object_manager_register (obj->manager, pub);
-		return pub;
+		key->priv->pubkey = gkr_pk_pubkey_instance (0, s_key);
+		goto done;
 	}
 	
-	return NULL;
+done:
+	return key->priv->pubkey;
 }
 
 static void
@@ -171,9 +158,6 @@ initialize_from_key (GkrPkPrivkey *key)
 	
 	gcry_sexp_release (key->priv->numbers);
 	key->priv->numbers = NULL;
-	
-	gkr_unique_free (key->priv->keyid);
-	key->priv->keyid = NULL;
 	
 	key->priv->algorithm = 0; 
 	
@@ -190,7 +174,6 @@ initialize_from_key (GkrPkPrivkey *key)
 	
 	key->priv->numbers = numbers;
 	key->priv->algorithm = algorithm;
-	key->priv->keyid = gkr_crypto_skey_make_id (key->priv->s_key);
 	
 	/* The the chance to try and make sure the public key exists */
 	get_public_key (key, FALSE);
@@ -202,11 +185,10 @@ initialize_from_key (GkrPkPrivkey *key)
 static CK_RV
 attribute_from_public (GkrPkPrivkey *key, CK_ATTRIBUTE_PTR attr)
 {
-	GkrPkObject *pub;
-	pub = get_public_key (key, TRUE);
+	GkrPkPubkey *pub = get_public_key (key, TRUE);
 	if (pub == NULL)
 		return CKR_GENERAL_ERROR;
-	return gkr_pk_object_get_attribute (pub, attr);
+	return gkr_pk_object_get_attribute (GKR_PK_OBJECT (pub), attr);
 }
 
 static CK_RV
@@ -222,7 +204,7 @@ attribute_from_certificate (GkrPkPrivkey *key, CK_ATTRIBUTE_PTR attr)
 	obj = GKR_PK_OBJECT (key);
 	crt = gkr_pk_object_manager_find_by_id (obj->manager, CKO_CERTIFICATE, keyid); 
 	if (crt == NULL)
-		return CKR_GENERAL_ERROR;
+		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
 	return gkr_pk_object_get_attribute (crt, attr);
 }
@@ -371,9 +353,11 @@ static CK_RV
 gkr_pk_privkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
+	gkrconstunique keyid;
 	gchar *label;
 	guchar *value;
 	gsize len;
+	CK_RV ret;
 	
 	switch (attr->type)
 	{
@@ -385,12 +369,21 @@ gkr_pk_privkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 			return CKR_OK;
 		}
 		
-		return attribute_from_certificate (key, attr);
+		ret = attribute_from_certificate (key, attr);
+		if (ret == CKR_ATTRIBUTE_TYPE_INVALID) {
+			label = gkr_location_to_display (obj->location);
+			gkr_pk_attribute_set_string (attr, label);
+			g_free (label);
+			ret = CKR_OK;
+		}
+		
+		return ret;
 		
 	case CKA_ID:
-		if (!key->priv->s_key)
-			return attribute_from_public (key, attr);
-		value = (CK_VOID_PTR)gkr_unique_get_raw (key->priv->keyid, &len);
+		keyid = gkr_pk_privkey_get_keyid (key);
+		if (!keyid) 
+			return CKR_GENERAL_ERROR;
+		value = (CK_VOID_PTR)gkr_unique_get_raw (keyid, &len);
 		gkr_pk_attribute_set_data (attr, value, len);
 		return CKR_OK;
 
@@ -455,6 +448,19 @@ gkr_pk_privkey_get_date_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 }
 
 static void
+gkr_pk_privkey_dispose (GObject *obj)
+{
+	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
+
+	if (key->priv->pubkey) {
+		g_object_unref (key->priv->pubkey);
+		key->priv->pubkey = NULL;
+	}
+	
+	G_OBJECT_CLASS (gkr_pk_privkey_parent_class)->dispose (obj);
+}
+
+static void
 gkr_pk_privkey_finalize (GObject *obj)
 {
 	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
@@ -464,8 +470,8 @@ gkr_pk_privkey_finalize (GObject *obj)
 	
 	initialize_from_key (key);
 	
+	g_assert (!key->priv->pubkey);
 	g_assert (!key->priv->numbers);
-	g_assert (!key->priv->keyid);
 	
 	G_OBJECT_CLASS (gkr_pk_privkey_parent_class)->finalize (obj);
 }
@@ -487,6 +493,7 @@ gkr_pk_privkey_class_init (GkrPkPrivkeyClass *klass)
 	gobject_class = (GObjectClass*)klass;
 	gobject_class->get_property = gkr_pk_privkey_get_property;
 	gobject_class->set_property = gkr_pk_privkey_set_property;
+	gobject_class->dispose = gkr_pk_privkey_dispose;
 	gobject_class->finalize = gkr_pk_privkey_finalize;
 	
 	g_object_class_install_property (gobject_class, PROP_GCRYPT_SEXP,
@@ -522,17 +529,13 @@ gkr_pk_privkey_new (GQuark location, gcry_sexp_t s_key)
 gkrconstunique
 gkr_pk_privkey_get_keyid (GkrPkPrivkey *key)
 {
-	GkrPkObject *pub;
+	GkrPkPubkey *pub;
 	
 	g_return_val_if_fail (GKR_IS_PK_PRIVKEY (key), NULL);
 	
-	/* If we have it access directly */
-	if (key->priv->keyid)
-		return key->priv->keyid;
-	
-	/* Otherwise access via public key */
+	/* Access via public key */
 	pub = get_public_key (key, TRUE);
-	return gkr_pk_pubkey_get_keyid (GKR_PK_PUBKEY (pub));
+	return gkr_pk_pubkey_get_keyid (pub);
 }
 
 gcry_sexp_t 
@@ -547,7 +550,7 @@ gkr_pk_privkey_get_key (GkrPkPrivkey *key)
 int
 gkr_pk_privkey_get_algorithm (GkrPkPrivkey *key)
 {
-	GkrPkObject *pub;
+	GkrPkPubkey *pub;
 	
 	g_return_val_if_fail (GKR_IS_PK_PRIVKEY (key), 0);
 
@@ -560,7 +563,7 @@ gkr_pk_privkey_get_algorithm (GkrPkPrivkey *key)
 	return gkr_pk_pubkey_get_algorithm (GKR_PK_PUBKEY (pub));
 }
 
-GkrPkObject*
+GkrPkPubkey*
 gkr_pk_privkey_get_public (GkrPkPrivkey *key)
 {
 	g_return_val_if_fail (GKR_IS_PK_PRIVKEY (key), NULL);

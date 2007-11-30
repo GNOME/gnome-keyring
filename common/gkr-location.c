@@ -863,6 +863,24 @@ gkr_location_to_string (GQuark loc)
 	return g_quark_to_string (loc);
 }
 
+gchar* 
+gkr_location_to_display (GQuark loc)
+{
+	gchar *filename;
+	gchar *display;
+	
+	filename = gkr_location_to_path (loc);
+	if (!filename)
+		return g_strdup ("");
+	
+	display = g_filename_display_basename (filename);
+	g_free (filename);
+	if (!display)
+		return g_strdup ("");
+		
+	return display;
+}
+
 gboolean
 gkr_location_is_descendant (GQuark parent, GQuark descendant)
 {

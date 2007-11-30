@@ -28,6 +28,7 @@
 #include "gkr-pkix-der.h"
 
 #include "common/gkr-crypto.h"
+#include "common/gkr-location.h"
 
 #include "pk/gkr-pk-pubkey.h"
 #include "pk/gkr-pk-object.h"
@@ -54,7 +55,7 @@ enum {
 
 struct _GkrPkixCertData {
 	ASN1_TYPE asn1;
-	gkrunique keyid;
+	GkrPkPubkey *pubkey;
 	guchar *raw;
 	gsize n_raw;
 };
@@ -78,30 +79,21 @@ init_quarks (void)
 	#undef QUARK
 }
 
-static GkrPkObject* 
+static GkrPkPubkey* 
 get_public_key (GkrPkixCert *cert)
 {
 	gcry_sexp_t s_key = NULL;
-	GkrPkObject *pub = NULL;
 	GkrPkObject *obj;
 	GkrParseResult res;
 	guchar *data;
 	gsize n_data;
 
 	g_return_val_if_fail (cert->data->asn1, NULL);
+	
+	if (cert->data->pubkey)
+		return cert->data->pubkey;
 
 	obj = GKR_PK_OBJECT (cert);
-	
-	/*
-	 * First see if we can just get a key from the object 
-	 * manager, simply and easily.
-	 */
-	if (cert->data->keyid) {
-		pub = gkr_pk_object_manager_find_by_id (obj->manager, GKR_TYPE_PK_PUBKEY, 
-		                                        cert->data->keyid);
-		if (pub != NULL)
-			return pub;
-	}
 	
 	/* Generate a raw public key from our certificate */
 	data = gkr_pkix_asn1_encode (cert->data->asn1, "tbsCertificate.subjectPublicKeyInfo", &n_data, NULL);
@@ -116,31 +108,9 @@ get_public_key (GkrPkixCert *cert)
 	}
 	
 	g_return_val_if_fail (s_key, NULL);
+	cert->data->pubkey = gkr_pk_pubkey_instance (obj->location, s_key);
 	
-	/* Make sure we have the keyid properly */
-	gkr_unique_free (cert->data->keyid);
-	cert->data->keyid = gkr_crypto_skey_make_id (s_key);
-	g_return_val_if_fail (cert->data->keyid, NULL);
-	
-	/* Try the lookup again */
-	pub = gkr_pk_object_manager_find_by_id (obj->manager, GKR_TYPE_PK_PUBKEY, 
-	                                        cert->data->keyid);
-	if (pub == NULL) {
-		pub = gkr_pk_pubkey_new (obj->location, s_key);
-		
-		/* public key took ownership */
-		s_key = NULL;
-
-		if (!gkr_unique_equals (gkr_pk_pubkey_get_keyid (GKR_PK_PUBKEY (pub)), cert->data->keyid))
-			g_warning ("certificate public key ended up with a different key id");
-		
-		gkr_pk_object_manager_register (obj->manager, pub);
-	}
-	
-	if (s_key)
-		gcry_sexp_release (s_key);
-	
-	return pub;
+	return cert->data->pubkey;
 }
 
 /* -----------------------------------------------------------------------------
@@ -178,8 +148,7 @@ gkr_pkix_cert_set_property (GObject *obj, guint prop_id, const GValue *value,
 		if (cert->data->asn1)
 			asn1_delete_structure (&cert->data->asn1);
 		g_free(cert->data->raw);
-		gkr_unique_free (cert->data->keyid);
-		cert->data->raw = cert->data->keyid = NULL;
+		cert->data->raw = NULL;
 		cert->data->n_raw = 0;
 		/* TODO: Verify the certificate */
 		cert->data->asn1 = g_value_get_pointer (value);
@@ -270,6 +239,7 @@ gkr_pkix_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
 	const guchar *cdata = NULL;
+	gkrconstunique keyid;
 	gchar *label;
 	guchar *data;
 	gsize n_data;
@@ -280,26 +250,20 @@ gkr_pkix_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	{
 	case CKA_LABEL:
 		g_object_get (obj, "label", &label, NULL);
-		if (label) {
-			gkr_pk_attribute_set_string (attr, label);
-			g_free (label);
-			return CKR_OK;
-		}
-		
-		gkr_pk_attribute_set_string (attr, "");
-		break;
+		if (!label)
+			label = gkr_location_to_display (obj->location);
+		gkr_pk_attribute_set_string (attr, label);
+		g_free (label);
+		return CKR_OK;
 		
 	case CKA_ID:
-		if(!cert->data->keyid) {
-			/* This should fill in the key id */
-			if (!get_public_key (cert))
-				return CKR_GENERAL_ERROR;
-			g_return_val_if_fail (cert->data->keyid, CKR_GENERAL_ERROR);
-		}
-
-		cdata = (CK_VOID_PTR)gkr_unique_get_raw (cert->data->keyid, &n_data);
-		gkr_pk_attribute_set_data (attr, cdata, n_data);
+		keyid = gkr_pkix_cert_get_keyid (cert);
+		if (!keyid) 
+			return CKR_GENERAL_ERROR;
+		data = (CK_VOID_PTR)gkr_unique_get_raw (keyid, &n_data);
+		gkr_pk_attribute_set_data (attr, data, n_data);
 		return CKR_OK;
+
 
 	case CKA_SUBJECT:
 		cdata = gkr_pkix_asn1_read_element (cert->data->asn1, cert->data->raw, cert->data->n_raw, 
@@ -382,9 +346,8 @@ gkr_pkix_cert_finalize (GObject *obj)
 {
 	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
 
-	g_free (cert->data->keyid);
 	g_free (cert->data->raw);
-	cert->data->keyid = cert->data->raw = NULL;
+	cert->data->raw = NULL;
 
 	if (cert->data->asn1)
 		asn1_delete_structure (&cert->data->asn1);
@@ -484,4 +447,16 @@ gkr_pkix_cert_get_extension (GkrPkixCert *cert, GQuark oid, gsize *n_extension,
 	}
 	
 	return NULL;	
+}
+
+gkrconstunique
+gkr_pkix_cert_get_keyid (GkrPkixCert *cert)
+{
+	GkrPkPubkey *pub;
+	
+	g_return_val_if_fail (GKR_IS_PKIX_CERT (cert), NULL);
+	
+	/* Access via public key */
+	pub = get_public_key (cert);
+	return gkr_pk_pubkey_get_keyid (pub);
 }

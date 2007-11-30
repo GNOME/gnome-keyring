@@ -26,10 +26,12 @@
 #include "gkr-pk-index.h"
 #include "gkr-pk-object.h"
 #include "gkr-pk-object-manager.h"
+#include "gkr-pk-object-storage.h"
 #include "gkr-pk-pubkey.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
+#include "common/gkr-location.h"
 #include "common/gkr-unique.h"
 
 #include "pkix/gkr-pkix-der.h"
@@ -108,7 +110,8 @@ load_public_key (GkrPkPubkey *key)
 		return TRUE;
 		
 	obj = GKR_PK_OBJECT (key);
-	if (!gkr_pk_object_manager_load_complete (obj->manager, obj, GKR_PK_OBJECT_REASON_UNKNOWN, &err)) {
+	
+	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, GKR_PK_OBJECT_REASON_UNKNOWN, &err)) {
 		g_message ("couldn't load public key for: %s: %s", 
 		           g_quark_to_string (obj->location),
 		           err && err->message ? err->message : "");
@@ -307,14 +310,10 @@ gkr_pk_pubkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	{
 	case CKA_LABEL:
 		g_object_get (obj, "label", &label, NULL);
-		if (label) {
-			gkr_pk_attribute_set_string (attr, label);
-			g_free (label);
-			return CKR_OK;
-		}
-			
-		/* Empty label */
-		gkr_pk_attribute_clear (attr);
+		if (!label)
+			label = gkr_location_to_display (obj->location);
+		gkr_pk_attribute_set_string (attr, label);
+		g_free (label);
 		return CKR_OK;
 		
 	case CKA_ID:
@@ -441,6 +440,31 @@ gkr_pk_pubkey_new (GQuark location, gcry_sexp_t s_key)
 	                    
 	gkr_unique_free (unique);
 	return key;
+}
+
+GkrPkPubkey*
+gkr_pk_pubkey_instance (GQuark location, gcry_sexp_t s_key)
+{
+	GkrPkObject *pub;
+	gkrunique keyid;
+	
+	g_return_val_if_fail (s_key, NULL);
+	
+	/* Make sure we have the keyid properly */
+	keyid = gkr_crypto_skey_make_id (s_key);
+	g_return_val_if_fail (keyid, NULL);
+	
+	/* Try the lookup */
+	pub = gkr_pk_object_manager_find_by_id (NULL, GKR_TYPE_PK_PUBKEY, keyid);
+	gkr_unique_free (keyid);
+	
+	if (pub != NULL) {
+		gcry_sexp_release (s_key);
+		g_object_ref (pub);
+		return GKR_PK_PUBKEY (pub);
+	}
+	
+	return GKR_PK_PUBKEY (gkr_pk_pubkey_new (location, s_key));
 }
 
 gkrconstunique

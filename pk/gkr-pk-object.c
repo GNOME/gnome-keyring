@@ -25,6 +25,7 @@
 
 #include "gkr-pk-index.h"
 #include "gkr-pk-object.h"
+#include "gkr-pk-object-manager.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-location.h"
@@ -146,6 +147,15 @@ gkr_pk_object_init (GkrPkObject *obj)
 	                                        NULL, gkr_pk_attribute_free);
 }
 
+static GObject*
+gkr_pk_object_constructor (GType type, guint n_properties, GObjectConstructParam *properties)
+{
+	GObject *obj = G_OBJECT_CLASS (gkr_pk_object_parent_class)->constructor (type, n_properties, properties);
+	if (obj)
+		gkr_pk_object_manager_register (NULL, GKR_PK_OBJECT (obj));
+	return obj;
+}
+
 static void
 gkr_pk_object_get_property (GObject *obj, guint prop_id, GValue *value, 
                              GParamSpec *pspec)
@@ -205,6 +215,8 @@ gkr_pk_object_finalize (GObject *obj)
 	g_free (pv->orig_label);
 	g_free (pv->data_path);
 	g_free (pv->data_section);
+	
+	gkr_pk_object_manager_unregister (NULL, xobj);
 
 	G_OBJECT_CLASS (gkr_pk_object_parent_class)->finalize (obj);
 }
@@ -216,6 +228,7 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 	gobject_class = (GObjectClass*) klass;
 
 	gkr_pk_object_parent_class = g_type_class_peek_parent (klass);
+	gobject_class->constructor = gkr_pk_object_constructor;
 	gobject_class->get_property = gkr_pk_object_get_property;
 	gobject_class->set_property = gkr_pk_object_set_property;
 	gobject_class->finalize = gkr_pk_object_finalize;

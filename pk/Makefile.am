@@ -14,6 +14,7 @@ libgkr_pk_la_SOURCES = \
 	gkr-pk-index.c gkr-pk-index.h \
 	gkr-pk-object.c gkr-pk-object.h \
 	gkr-pk-object-manager.c gkr-pk-object-manager.h \
+	gkr-pk-object-storage.c gkr-pk-object-storage.h \
 	gkr-pk-privkey.c gkr-pk-privkey.h \
 	gkr-pk-pubkey.c gkr-pk-pubkey.h \
 	gkr-pk-util.c gkr-pk-util.h

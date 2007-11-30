@@ -27,11 +27,12 @@
 
 #include "common/gkr-crypto.h"
 
+#include "pk/gkr-pk-pubkey.h"
 #include "pk/gkr-pk-privkey.h"
 
 CK_RV
-gkr_pkcs11_rsa_sign_recover (GkrPkObject *object, const guchar *input, gsize n_input, 
-                             guchar **output, gsize *n_output)
+gkr_pkcs11_rsa_raw_sign (GkrPkObject *object, const guchar *input, gsize n_input, 
+                         guchar **output, gsize *n_output)
 {
 	gcry_sexp_t s_key, ssig, sdata;
 	GkrPkPrivkey *key;
@@ -40,7 +41,7 @@ gkr_pkcs11_rsa_sign_recover (GkrPkObject *object, const guchar *input, gsize n_i
 	gboolean res;
 	
 	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
-	
+
 	/* Validate and extract the key */
 	if (!GKR_IS_PK_PRIVKEY (object))
 		return CKR_KEY_HANDLE_INVALID;
@@ -72,6 +73,7 @@ gkr_pkcs11_rsa_sign_recover (GkrPkObject *object, const guchar *input, gsize n_i
 	gcry = gcry_pk_sign (&ssig, sdata, s_key);
 	gcry_sexp_release (sdata);
 	
+	/* TODO: Certain codes should be returned (data too big etc... ) */
 	if (gcry) {
 		g_warning ("signing of the data failed: %s", gcry_strerror (gcry));
 		return CKR_GENERAL_ERROR;
@@ -93,5 +95,66 @@ gkr_pkcs11_rsa_sign_recover (GkrPkObject *object, const guchar *input, gsize n_i
 	
 	g_return_val_if_fail (*output, CKR_GENERAL_ERROR);
 	
+	return CKR_OK;
+}
+
+CK_RV
+gkr_pkcs11_rsa_raw_verify (GkrPkObject *object, const guchar *data, gsize n_data, 
+                           const guchar *signature, gsize n_signature)
+{
+	gcry_sexp_t s_key, ssig, sdata;
+	GkrPkPubkey *key;
+	gcry_error_t gcry;
+	gcry_mpi_t mpi;
+	
+	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
+	
+	/* Validate and extract the key */
+	if (!GKR_IS_PK_PUBKEY (object))
+		return CKR_KEY_HANDLE_INVALID;
+		
+	key = GKR_PK_PUBKEY (object);
+	if (gkr_pk_pubkey_get_algorithm (key) != GCRY_PK_RSA)
+		return CKR_KEY_TYPE_INCONSISTENT;
+
+	s_key = gkr_pk_pubkey_get_key (key);
+	if (!s_key) {
+		g_warning ("couldn't get public verifying key");
+		return CKR_GENERAL_ERROR;
+	}
+		
+	/* If no data, then don't process */
+	if (!data)
+		return CKR_OK;
+
+	g_return_val_if_fail (data, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (signature, CKR_GENERAL_ERROR);
+		
+	/* Prepare the input s expressions */
+	gcry = gcry_mpi_scan (&mpi, GCRYMPI_FMT_USG, data, n_data, NULL);
+	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+	gcry = gcry_sexp_build (&sdata, NULL, "(data (flags raw) (value %m))", mpi);
+	gcry_mpi_release (mpi);
+	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+
+	gcry = gcry_mpi_scan (&mpi, GCRYMPI_FMT_USG, signature, n_signature, NULL);
+	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+	gcry = gcry_sexp_build (&ssig, NULL, "(sig-val (rsa (s %m)))", mpi);
+	gcry_mpi_release (mpi);
+	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+	
+	/* Do the magic */
+	gcry = gcry_pk_verify (ssig, sdata, s_key);
+	gcry_sexp_release (sdata);
+	gcry_sexp_release (ssig);
+	
+	/* TODO: See if any other codes should be mapped */
+	if (gcry == GPG_ERR_BAD_SIGNATURE) {
+		return CKR_SIGNATURE_INVALID;
+	} else if (gcry) {
+		g_warning ("signing of the data failed: %s", gcry_strerror (gcry));
+		return CKR_GENERAL_ERROR;
+	}
+
 	return CKR_OK;
 }

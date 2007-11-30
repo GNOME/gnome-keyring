@@ -72,11 +72,9 @@ GList*                  gkr_pk_object_manager_findv              (GkrPkObjectMan
 
 GkrPkObject*            gkr_pk_object_manager_find_by_id         (GkrPkObjectManager *objmgr,
                                                                   GType gtype, gkrconstunique id);
-                                                                  
-void                    gkr_pk_object_manager_refresh            (GkrPkObjectManager *objmgr);
 
-gboolean                gkr_pk_object_manager_load_complete      (GkrPkObjectManager *objmgr, GkrPkObject *obj, 
-                                                                  GkrPkObjectReason reason, GError **err);
+GkrPkObject*            gkr_pk_object_manager_find_by_unique     (GkrPkObjectManager *objmgr,
+                                                                  gkrconstunique unique);
 
 G_END_DECLS
 

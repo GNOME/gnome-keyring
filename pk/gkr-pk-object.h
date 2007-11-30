@@ -51,6 +51,7 @@ typedef enum {
 typedef struct _GkrPkObject      GkrPkObject;
 typedef struct _GkrPkObjectClass GkrPkObjectClass;
 
+typedef struct _GkrPkObjectStorage GkrPkObjectStorage;
 typedef struct _GkrPkObjectManager GkrPkObjectManager;
 
 struct _GkrPkObject {
@@ -59,7 +60,9 @@ struct _GkrPkObject {
 	GQuark location;
 	gkrunique unique;
 	CK_OBJECT_HANDLE handle;
+	
 	GkrPkObjectManager *manager;
+	GkrPkObjectStorage *storage;
 };
 
 struct _GkrPkObjectClass {

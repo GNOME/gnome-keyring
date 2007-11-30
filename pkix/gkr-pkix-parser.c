@@ -141,24 +141,6 @@ static guint signals[LAST_SIGNAL] = { 0 };
  * HELPERS
  */
  
-static gchar* 
-display_label_from_location (GQuark loc)
-{
-	gchar *filename;
-	gchar *display;
-	
-	filename = gkr_location_to_path (loc);
-	if (!filename)
-		return g_strdup ("");
-	
-	display = g_filename_display_basename (filename);
-	g_free (filename);
-	if (!display)
-		return g_strdup ("");
-		
-	return display;
-}
-
 static const gchar*
 enum_next_password (GkrPkixParser *parser, GQuark loc, gkrunique unique, 
                     GkrParsedType type, const gchar *label, PasswordState *state)
@@ -232,7 +214,7 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 	 */
 	 
 	if (!label) 
-		label = display = display_label_from_location (loc);
+		label = display = gkr_location_to_display (loc);
 	
 	g_signal_emit (parser, signals[ASK_PASSWORD], 0, 
 	               loc, unique, type, label, state->n_prompts, &password);

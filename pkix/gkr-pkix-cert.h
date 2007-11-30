@@ -56,7 +56,9 @@ GkrPkixCert*        gkr_pkix_cert_new                (GQuark location, ASN1_TYPE
 
 guchar*             gkr_pkix_cert_get_extension      (GkrPkixCert *cert, GQuark oid, 
                                                       gsize *n_extension, gboolean *critical);
-                                                    
+
+gkrconstunique      gkr_pkix_cert_get_keyid          (GkrPkixCert *cert);
+
 G_END_DECLS
 
 #endif /* __GKR_PKIX_CERT_H__ */

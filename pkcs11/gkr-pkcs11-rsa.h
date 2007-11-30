@@ -28,8 +28,12 @@
 
 #include "pk/gkr-pk-object.h"
 
-CK_RV                 gkr_pkcs11_rsa_sign_recover               (GkrPkObject *key, 
-                                                                 const guchar *input, gsize n_input, 
-                                                                 guchar **output, gsize *n_output);
+CK_RV                 gkr_pkcs11_rsa_raw_sign                   (GkrPkObject *key, 
+                                                                 const guchar *data, gsize n_data, 
+                                                                 guchar **signature, gsize *n_signature);
+
+CK_RV                 gkr_pkcs11_rsa_raw_verify                 (GkrPkObject *key, 
+                                                                 const guchar *data, gsize n_data, 
+                                                                 const guchar *signature, gsize n_signature);
 
 #endif /*GKRPKCS11RSA_H_*/
