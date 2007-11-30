@@ -249,9 +249,11 @@ cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
 }
 
 static void
-setup_child (int outp[2], int errp[2], struct passwd *pwd)
+setup_child (int outp[2], int errp[2], pam_handle_t *ph, struct passwd *pwd)
 {
 	char *args[] = { GNOME_KEYRING_DAEMON, "-d", NULL};
+	const char* display;
+	int ret;
 	
 	assert (pwd);
 	assert (pwd->pw_dir);
@@ -283,14 +285,22 @@ setup_child (int outp[2], int errp[2], struct passwd *pwd)
 	}
 	
 	/* Setup environment variables */
-	if (setenv ("HOME", pwd->pw_dir, 1) < 0) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't setup environment: %s", 
-		        strerror (errno));
-		exit (EXIT_FAILURE);
+	ret = setup_pam_env (ph, "HOME", pwd->pw_dir);
+	if (ret == PAM_SUCCESS && !pam_getenv (ph, "DISPLAY")) {
+		display = getenv ("DISPLAY");
+		if (display)
+			ret = setup_pam_env (ph, "DISPLAY", display);
 	}
-
+	
+	/* Make sure that worked */
+	if (ret != PAM_SUCCESS) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't setup environment: %s", 
+ 		        pam_strerror (ph, ret));
+ 		exit (EXIT_FAILURE);
+	}
+	
 	/* Now actually execute the process */
-	execv (args[0], args);
+	execve (args[0], args, pam_getenvlist (ph));
 	syslog (GKR_LOG_ERR, "gkr-pam: couldn't run gnome-keyring-daemon: %s", 
 	        strerror (errno));
 	exit (EXIT_FAILURE);
@@ -387,7 +397,7 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd)
 		
 	/* This is the child */
 	case 0:
-		setup_child (outp, errp, pwd);
+		setup_child (outp, errp, ph, pwd);
 		/* Should never be reached */
 		break;
 		
