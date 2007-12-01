@@ -1,8 +1,10 @@
 
 EXTRA_DIST = \
 	cu-test \
-	test-helpers.c \
-	unit-tests-prep.sh
+	test-helpers.c test-helpers.h \
+	prep-tests.sh \
+	run-tests.sh \
+	test.make 
 
 INCLUDES=					\
 	-I$(top_srcdir) 		\
@@ -54,4 +56,4 @@ run-auto:
 	sh run-tests.sh $(top_srcdir) run-auto-test
 
 run-prompt: 
-	sh run-test.sh $(top_srcdir) run-prompt-test
+	sh run-tests.sh $(top_srcdir) run-prompt-test

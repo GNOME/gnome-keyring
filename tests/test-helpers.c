@@ -86,8 +86,17 @@ int
 main (int argc, char* argv[])
 {
 	GLogLevelFlags fatal_mask;
+	const gchar* envi;
 
 	g_thread_init (NULL);
+
+	envi = getenv ("GNOME_KEYRING_TEST_PATH");
+	if (envi) {
+		setenv ("GNOME_KEYRING_OUTSIDE_TEST", "TRUE", 1);
+	} else {
+		setenv ("GNOME_KEYRING_TEST_PATH", "/tmp/test-gnome-keyring", 1);
+		g_mkdir_with_parents ("/tmp/test-gnome-keyring", 0777);
+	}
 
 	chdir_base_dir (argv[0]);
 	gtk_init(&argc, &argv);

@@ -44,29 +44,25 @@
  * Tests be run in the order specified here.
  */
  
-#define TEST_PATH "/tmp/test-gnome-keyring-daemon"
-
 static GPid daemon_pid;
 
 void unit_setup_daemon (void)
 {
 	GError *err = NULL;
 	gchar *args[3];
-	const gchar *path;
+	const gchar *outside, *path;
 	gboolean start = FALSE;
 	gchar *socket;
 
 	/* If already setup somewhere else, then don't start daemon here */
-	path = g_getenv ("GNOME_KEYRING_TEST_PATH");
-	if (!path || !path[0]) {
+	outside = g_getenv ("GNOME_KEYRING_OUTSIDE_TEST");
+	if (!outside || !outside[0]) {
 		start = TRUE;
-		path = TEST_PATH;
-		g_setenv ("GNOME_KEYRING_TEST_PATH", path, TRUE);
 	}
 
-	if (g_mkdir_with_parents (path, 0777) < 0) 
-		g_error ("couldn't create test directory");
-	
+	path = g_getenv ("GNOME_KEYRING_TEST_PATH");
+	g_assert (path && path[0]);
+
 	socket = g_strdup_printf ("%s/socket", path);
 	g_setenv ("GNOME_KEYRING_SOCKET", socket, TRUE);
 	
