@@ -71,7 +71,7 @@
 #define LIBRARY_DESCRIPTION     "GNOME Keyring User Keys         "
 #define LIBRARY_VERSION_MAJOR   1
 #define LIBRARY_VERSION_MINOR   1
-#define SLOT_DESCRIPTION        "GNOME Keyring User Keys Token                                   "
+#define SLOT_DESCRIPTION        "Keyring                                                         "
 #define HARDWARE_VERSION_MAJOR  0
 #define HARDWARE_VERSION_MINOR  0
 #define FIRMWARE_VERSION_MAJOR  0

@@ -105,8 +105,8 @@ index_path_for_location (GkrPkIndex *index, GQuark loc)
 			return NULL;
 		}
 		
-		/* Our index files have a .gkr extension */
-		path = g_strconcat (locpath, ".gkr", NULL);
+		/* Our index files have a .keystore extension */
+		path = g_strconcat (locpath, ".keystore", NULL);
 		g_free (locpath);
 		
 		g_hash_table_replace (index->path_by_location, location_to_key (loc), path);

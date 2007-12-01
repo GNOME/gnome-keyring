@@ -464,7 +464,7 @@ gkr_pk_object_storage_init (GkrPkObjectStorage *storage)
  	pv->objects_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_array);
 	pv->specific_load_requests = g_hash_table_new_full (gkr_unique_hash, gkr_unique_equals, gkr_unique_free, NULL);
 	
-	pv->watch = gkr_location_watch_new (NULL, 0, "keyrings/pk", "*", "*.gkr");
+	pv->watch = gkr_location_watch_new (NULL, 0, "keystore", "*", "*.keystore");
  	g_signal_connect (pv->watch, "location-added", G_CALLBACK (location_load), storage);
  	g_signal_connect (pv->watch, "location-changed", G_CALLBACK (location_load), storage);
  	g_signal_connect (pv->watch, "location-removed", G_CALLBACK (location_remove), storage);

@@ -1,5 +1,12 @@
 2007-12-01  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-index.c: 
+	* pk/gkr-pk-object-storage.c: Store index files in *.keystore, and 
+	look for keys/certificates in ~/.gnome2/keystore
+	
+	* pkcs11/gkr-pkcs11-module.c: A simpler name for the PKCS#11 token 
+	since it gets displayed all over the place.
+	
 	* common/gkr-unique.c: Fix passing of heap memory to g_slice
 	
 	* pkcs11/gkr-pkcs11-dsa.c:
