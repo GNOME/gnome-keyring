@@ -121,6 +121,7 @@ gkr_pkcs11_dsa_sign (GkrPkObject *object, const guchar *plain, gsize n_plain,
 	}
 
 	*signature = g_new0 (guchar, 40);
+	*n_signature = 40;
 	
 	res = gkr_crypto_sexp_extract_mpi_aligned (ssig, *signature, 20, "dsa", "r", NULL) && 
 	      gkr_crypto_sexp_extract_mpi_aligned (ssig, *signature + 20, 20, "dsa", "s", NULL);

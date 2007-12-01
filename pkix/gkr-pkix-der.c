@@ -481,7 +481,7 @@ gkr_pkix_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t
 		
 	/* A DSA key paramaters are stored separately */
 	} else if (oid == OID_PKIX1_DSA) {
-		params = gkr_pkix_asn1_read_content (asn, data, n_data, "algorithm.parameters", &n_params);
+		params = gkr_pkix_asn1_read_element (asn, data, n_data, "algorithm.parameters", &n_params);
 		if (!params)
 			goto done;
 		ret = gkr_pkix_der_read_public_key_dsa_parts (key, n_key, params, n_params, s_key);

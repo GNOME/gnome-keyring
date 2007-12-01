@@ -1,5 +1,8 @@
 2007-12-01  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gkr-pkcs11-dsa.c:
+	* pkix/gkr-pkix-der.c: Fix some DSA bugs.
+	
 	* pk/gkr-pk-object.c:
 	* pk/gkr-pk-object-manager.c:
 	* pk/gkr-pk-object-manager.h:
