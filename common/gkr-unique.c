@@ -33,7 +33,14 @@
  * 
  * - 32-bit uint length, including itself
  * - length bytes
+ * - 
  */
+
+#define DEBUG_HEADER 1
+
+#ifdef DEBUG_HEADER
+#define HEADER_V 0xABABABAB
+#endif 
 
 GType
 gkr_unique_get_boxed_type (void)
@@ -60,9 +67,21 @@ gkr_unique_new (const guchar *data, gsize n_data)
 	g_assert (n_data < GKR_UNIQUE_MAX_LENGTH);
 	
 	len = sizeof (guint) + n_data;
+	
+#ifdef DEBUG_HEADER
+	len += sizeof (guint);
+#endif
+
 	uni = g_slice_alloc (len);
+	
+#ifdef DEBUG_HEADER
+	len -= sizeof (guint);
+	uni[0] = HEADER_V;
+	++uni;
+#endif
+
+	uni[0] = len;
 	memcpy (uni + 1, data, n_data);
-	*uni = len;
 	return uni;
 }
 
@@ -74,11 +93,24 @@ gkr_unique_new_digest (const guchar *data, gsize n_data)
 	
 	g_assert (data != NULL);
 	g_assert (n_data > 0);
-	
+
 	len = sizeof (guint) + 16;
+	
+#ifdef DEBUG_HEADER
+	len += sizeof (guint);
+#endif
+
 	uni = g_slice_alloc (len);
+	
+#ifdef DEBUG_HEADER
+	len -= sizeof (guint);
+	uni[0] = HEADER_V;
+	++uni;
+#endif
+
+	uni[0] = len;	
 	gcry_md_hash_buffer (GCRY_MD_MD5, uni + 1, data, n_data);
-	*uni = len;
+
 	return uni;
 }
 
@@ -148,11 +180,30 @@ gkrunique
 gkr_unique_dup (gkrconstunique v)
 {
 	const guint *uni = (guint*)v;
+	guint *nuni;
+	guint len;
+	
 	if (!uni)
 		return NULL;
+
 	g_assert (*uni > 0);
 	g_assert (*uni < GKR_UNIQUE_MAX_LENGTH);
-	return g_memdup (uni, *uni);
+	len = uni[0];
+	
+#ifdef DEBUG_HEADER
+	len += sizeof (guint);
+#endif
+	
+	nuni = g_slice_alloc (len);
+	
+#ifdef DEBUG_HEADER
+	nuni[0] = HEADER_V;
+	len -= sizeof (guint);
+	nuni++;
+#endif
+
+	memcpy (nuni, uni, len);
+	return nuni;
 }
 
 gconstpointer
@@ -172,9 +223,20 @@ void
 gkr_unique_free (gkrunique v)
 {
 	guint *uni = (guint*)v;
-	if (!v)
+	guint len;
+	
+	if (!uni)
 		return;
-	g_assert (*uni > 0);
-	g_assert (*uni < GKR_UNIQUE_MAX_LENGTH);
-	g_slice_free1 (*uni, uni);
+
+	g_assert (uni[0] > 0);
+	g_assert (uni[0] < GKR_UNIQUE_MAX_LENGTH);
+	len = uni[0]; 
+	
+#ifdef DEBUG_HEADER
+	--uni;
+	g_assert (uni[0] == HEADER_V);
+	len += sizeof (guint);
+#endif
+	
+	g_slice_free1 (len, uni);
 }

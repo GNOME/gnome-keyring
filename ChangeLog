@@ -1,5 +1,7 @@
 2007-12-01  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-unique.c: Fix passing of heap memory to g_slice
+	
 	* pkcs11/gkr-pkcs11-dsa.c:
 	* pkix/gkr-pkix-der.c: Fix some DSA bugs.
 	
