@@ -130,6 +130,12 @@ gkr_keyring_login_unlock (const gchar *password)
 	GkrKeyring *login = gkr_keyrings_get_login ();
 	gchar *new_password = NULL;
 	
+	/* Make sure its loaded */
+	if (!login) {
+		gkr_keyrings_update ();
+		login = gkr_keyrings_get_login ();
+	}
+	
 	if (login && !login->locked)
 		return TRUE;
 
