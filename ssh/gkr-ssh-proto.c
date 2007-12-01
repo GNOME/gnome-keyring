@@ -410,34 +410,15 @@ gboolean
 gkr_ssh_proto_write_signature_dsa (GkrBuffer *resp, gcry_sexp_t ssig)
 {
 	guchar buffer[GKR_SSH_DSA_SIGNATURE_PADDING * 2];
-	guchar *buf = NULL;
-	size_t len;
-  	gcry_error_t gcry;
-  	gcry_mpi_t mpi;
 	gboolean ret;
 
-	ret = gkr_crypto_sexp_extract_mpi (ssig, &mpi, "dsa", "r", NULL);
+	ret = gkr_crypto_sexp_extract_mpi_aligned (ssig, buffer, GKR_SSH_DSA_SIGNATURE_PADDING, 
+	                                           "dsa", "r", NULL);
 	g_return_val_if_fail (ret, FALSE);
-	
-	gcry = gcry_mpi_aprint (GCRYMPI_FMT_USG, &buf, &len, mpi);
-	gcry_mpi_release (mpi);
 
-	g_return_val_if_fail (gcry == 0, FALSE);
-	g_return_val_if_fail (len <= GKR_SSH_DSA_SIGNATURE_PADDING, FALSE);
-
-	memset (buffer, 0, GKR_SSH_DSA_SIGNATURE_PADDING - len);
-	memcpy (buffer + (GKR_SSH_DSA_SIGNATURE_PADDING - len), buf, len);
-	gcry_free (buf);
-	
-	ret = gkr_crypto_sexp_extract_mpi (ssig, &mpi, "dsa", "s", NULL);
+	ret = gkr_crypto_sexp_extract_mpi_aligned (ssig, buffer + GKR_SSH_DSA_SIGNATURE_PADDING, 
+	                                           GKR_SSH_DSA_SIGNATURE_PADDING, "dsa", "s", NULL);
 	g_return_val_if_fail (ret, FALSE);
-	
-	gcry = gcry_mpi_aprint (GCRYMPI_FMT_USG, &buf, &len, mpi);
-	gcry_mpi_release (mpi);
-
-	memset (buffer + GKR_SSH_DSA_SIGNATURE_PADDING, 0, GKR_SSH_DSA_SIGNATURE_PADDING - len);
-	memcpy (buffer + GKR_SSH_DSA_SIGNATURE_PADDING + (GKR_SSH_DSA_SIGNATURE_PADDING - len), buf, len);
-	gcry_free (buf);
 	
 	return gkr_buffer_add_byte_array (resp, buffer, sizeof (buffer));
 }

@@ -26,6 +26,7 @@
 #include "gkr-pkcs11-message.h"
 #include "gkr-pkcs11-calls.h"
 #include "gkr-pkcs11-daemon.h"
+#include "gkr-pkcs11-dsa.h"
 #include "gkr-pkcs11-rsa.h"
 #include "pkcs11.h"
 
@@ -50,6 +51,7 @@ enum
 {
 	OPERATION_NONE = 0,
 	OPERATION_FIND,
+	OPERATION_ENCRYPT,
 	OPERATION_DECRYPT,
 	OPERATION_SIGN,
 	OPERATION_VERIFY
@@ -612,20 +614,108 @@ session_C_FindObjectsFinal (SessionInfo *sinfo, GkrPkcs11Message *req,
  * ENCRYPTION OPERATIONS
  */
 
+typedef struct _CryptContext {
+	CK_MECHANISM_TYPE mechanism;	
+	GkrPkObject *key;
+} CryptContext;
+
+static CryptContext*
+new_crypt_context (CK_MECHANISM_TYPE mech, GkrPkObject *key)
+{
+	g_assert (key);
+	CryptContext *ctx = g_new0 (CryptContext, 1);
+	ctx->mechanism = mech;
+	ctx->key = key;
+	g_object_ref (key);
+	return ctx;
+}
+
+static void
+free_crypt_context (gpointer data)
+{
+	CryptContext *ctx = (CryptContext*)data;
+	if (ctx->key)
+		g_object_unref (ctx->key);
+	g_free (ctx);
+}
+
 static CK_RV
 session_C_EncryptInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                        GkrPkcs11Message *resp)
 {
-	/* TODO: We need to implement this. */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	GkrPkObject *key;
+	CK_MECHANISM mech;
+	CK_RV ret;
+	
+	if (sinfo->operation_type)
+		return CKR_OPERATION_ACTIVE;
+
+	if (!read_mechanism (req, &mech))
+		return PROTOCOL_ERROR;
+	ret = read_object (req, sinfo, &key);
+	if (ret != CKR_OK)
+		return ret;
+		
+	switch (mech.mechanism) {
+	case CKM_RSA_PKCS:
+	case CKM_RSA_X_509:
+		ret = gkr_pkcs11_rsa_encrypt (key, NULL, NULL, 0, NULL, 0);
+		break;
+	default:
+		ret = CKR_MECHANISM_INVALID;
+		break;
+	};
+		
+	if (ret == CKR_OK)
+		begin_operation (sinfo, OPERATION_ENCRYPT, 
+		                 new_crypt_context (mech.mechanism, key), 
+		                 free_crypt_context);
+	
+ 	return ret;
 }
 
 static CK_RV
 session_C_Encrypt (SessionInfo *sinfo, GkrPkcs11Message *req, 
                    GkrPkcs11Message *resp)
 {
-	/* TODO: We need to implement this. */
-	return CKR_OPERATION_NOT_INITIALIZED;
+	CryptContext *ctx;
+	CK_BYTE_PTR plain;
+	CK_ULONG n_plain;
+	gsize n_encrypted;
+	guchar *encrypted;
+	CK_RV ret;
+	
+	if (sinfo->operation_type != OPERATION_ENCRYPT)
+		return CKR_OPERATION_NOT_INITIALIZED;
+
+	if (!read_byte_array (req, &plain, &n_plain))
+		return PROTOCOL_ERROR;
+	
+	ctx = (CryptContext*)sinfo->operation_data;
+	switch (ctx->mechanism) {
+	case CKM_RSA_PKCS:
+		ret = gkr_pkcs11_rsa_encrypt (ctx->key, gkr_pkcs11_rsa_pad_two, 
+		                              plain, n_plain, 
+	                                      &encrypted, &n_encrypted);
+		break;
+	case CKM_RSA_X_509:
+		ret = gkr_pkcs11_rsa_encrypt (ctx->key, gkr_pkcs11_rsa_pad_raw, 
+		                              plain, n_plain, 
+	                                      &encrypted, &n_encrypted);
+		break;
+	default:
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+		break;
+	};
+	
+	if (ret == CKR_OK) {
+		g_return_val_if_fail (encrypted, CKR_GENERAL_ERROR);
+		ret = gkr_pkcs11_message_write_byte_array (resp, encrypted, n_encrypted);
+		g_free (encrypted);
+	}
+	
+	finish_operation (sinfo);
+	return ret;
 }
 
 static CK_RV
@@ -648,31 +738,6 @@ session_C_EncryptFinal (SessionInfo *sinfo, GkrPkcs11Message *req,
  * DECRYPTION OPERATIONS
  */
 
-typedef struct _DecryptContext {
-	CK_MECHANISM_TYPE mechanism;	
-	GkrPkObject *key;
-} DecryptContext;
-
-static DecryptContext*
-new_decrypt_context (CK_MECHANISM_TYPE mech, GkrPkObject *key)
-{
-	g_assert (key);
-	DecryptContext *ctx = g_new0 (DecryptContext, 1);
-	ctx->mechanism = mech;
-	ctx->key = key;
-	g_object_ref (key);
-	return ctx;
-}
-
-static void
-free_decrypt_context (gpointer data)
-{
-	DecryptContext *ctx = (DecryptContext*)data;
-	if (ctx->key)
-		g_object_unref (ctx->key);
-	g_free (ctx);
-}
-
 static CK_RV
 session_C_DecryptInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                        GkrPkcs11Message *resp)
@@ -691,8 +756,9 @@ session_C_DecryptInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 		return ret;
 		
 	switch (mech.mechanism) {
+	case CKM_RSA_PKCS:
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_raw_decrypt (key, NULL, 0, NULL, 0);
+		ret = gkr_pkcs11_rsa_decrypt (key, NULL, NULL, 0, NULL, 0);
 		break;
 	default:
 		ret = CKR_MECHANISM_INVALID;
@@ -701,8 +767,8 @@ session_C_DecryptInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 		
 	if (ret == CKR_OK)
 		begin_operation (sinfo, OPERATION_DECRYPT, 
-		                 new_decrypt_context (mech.mechanism, key), 
-		                 free_decrypt_context);
+		                 new_crypt_context (mech.mechanism, key), 
+		                 free_crypt_context);
 	
  	return ret;
 }
@@ -711,7 +777,7 @@ static CK_RV
 session_C_Decrypt (SessionInfo *sinfo, GkrPkcs11Message *req, 
                    GkrPkcs11Message *resp)
 {
-	DecryptContext *ctx;
+	CryptContext *ctx;
 	CK_BYTE_PTR encrypted;
 	CK_ULONG n_encrypted;
 	gsize n_data;
@@ -724,11 +790,17 @@ session_C_Decrypt (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (!read_byte_array (req, &encrypted, &n_encrypted))
 		return PROTOCOL_ERROR;
 	
-	ctx = (DecryptContext*)sinfo->operation_data;
+	ctx = (CryptContext*)sinfo->operation_data;
 	switch (ctx->mechanism) {
+	case CKM_RSA_PKCS:
+		ret = gkr_pkcs11_rsa_decrypt (ctx->key, gkr_pkcs11_rsa_unpad_two, 
+		                              encrypted, n_encrypted, 
+	                                      &data, &n_data);
+		break;
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_raw_decrypt (ctx->key, encrypted, n_encrypted, 
-	                                          &data, &n_data);
+		ret = gkr_pkcs11_rsa_decrypt (ctx->key, NULL, 
+		                              encrypted, n_encrypted, 
+	                                      &data, &n_data);
 		break;
 	default:
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
@@ -760,6 +832,10 @@ session_C_DecryptFinal (SessionInfo *sinfo, GkrPkcs11Message *req,
 	/* RSA keys don't support this incremental decryption */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
+
+/* -----------------------------------------------------------------------------
+ * DIGEST OPERATIONS
+ */
 
 static CK_RV
 session_C_DigestInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
@@ -805,31 +881,6 @@ session_C_DigestFinal (SessionInfo *sinfo, GkrPkcs11Message *req,
  * SIGN OPERATIONS
  */
 
-typedef struct _SignContext {
-	CK_MECHANISM_TYPE mechanism;	
-	GkrPkObject *key;
-} SignContext;
-
-static SignContext*
-new_sign_context (CK_MECHANISM_TYPE mech, GkrPkObject *key)
-{
-	g_assert (key);
-	SignContext *ctx = g_new0 (SignContext, 1);
-	ctx->mechanism = mech;
-	ctx->key = key;
-	g_object_ref (key);
-	return ctx;
-}
-
-static void
-free_sign_context (gpointer data)
-{
-	SignContext *ctx = (SignContext*)data;
-	if (ctx->key)
-		g_object_unref (ctx->key);
-	g_free (ctx);
-}
-
 static CK_RV
 session_C_SignInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                     GkrPkcs11Message *resp)
@@ -848,8 +899,12 @@ session_C_SignInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 		return ret;
 		
 	switch (mech.mechanism) {
+	case CKM_RSA_PKCS:
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_raw_sign (key, NULL, 0, NULL, 0);
+		ret = gkr_pkcs11_rsa_sign (key, NULL, NULL, 0, NULL, 0);
+		break;
+	case CKM_DSA:
+		ret = gkr_pkcs11_dsa_sign (key, NULL, 0, NULL, 0);
 		break;
 	default:
 		ret = CKR_MECHANISM_INVALID;
@@ -858,8 +913,8 @@ session_C_SignInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 		
 	if (ret == CKR_OK)
 		begin_operation (sinfo, OPERATION_SIGN, 
-		                 new_sign_context (mech.mechanism, key), 
-		                 free_sign_context);
+		                 new_crypt_context (mech.mechanism, key), 
+		                 free_crypt_context);
 	
  	return ret;
 }
@@ -868,7 +923,7 @@ static CK_RV
 session_C_Sign (SessionInfo *sinfo, GkrPkcs11Message *req, 
                 GkrPkcs11Message *resp)
 {
-	SignContext *ctx;
+	CryptContext *ctx;
 	CK_BYTE_PTR data;
 	CK_ULONG n_data;
 	gsize n_signature;
@@ -881,11 +936,21 @@ session_C_Sign (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (!read_byte_array (req, &data, &n_data))
 		return PROTOCOL_ERROR;
 	
-	ctx = (SignContext*)sinfo->operation_data;
+	ctx = (CryptContext*)sinfo->operation_data;
 	switch (ctx->mechanism) {
+	case CKM_RSA_PKCS:
+		ret = gkr_pkcs11_rsa_sign (ctx->key, gkr_pkcs11_rsa_pad_one, 
+		                           data, n_data, 
+		                           &signature, &n_signature);
+		break;
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_raw_sign (ctx->key, data, n_data, 
-	                                       &signature, &n_signature);
+		ret = gkr_pkcs11_rsa_sign (ctx->key, gkr_pkcs11_rsa_pad_raw,
+		                           data, n_data, 
+	                                   &signature, &n_signature);
+		break;
+	case CKM_DSA:
+		ret = gkr_pkcs11_dsa_sign (ctx->key, data, n_data, 
+		                           &signature, &n_signature);
 		break;
 	default:
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
@@ -938,31 +1003,6 @@ session_C_SignRecover (SessionInfo *sinfo, GkrPkcs11Message *req,
  * VERIFY OPERATIONS
  */
 
-typedef struct _VerifyContext {
-	CK_MECHANISM_TYPE mechanism;	
-	GkrPkObject *key;
-} VerifyContext;
-
-static VerifyContext*
-new_verify_context (CK_MECHANISM_TYPE mech, GkrPkObject *key)
-{
-	g_assert (key);
-	VerifyContext *ctx = g_new0 (VerifyContext, 1);
-	ctx->mechanism = mech;
-	ctx->key = key;
-	g_object_ref (key);
-	return ctx;
-}
-
-static void
-free_verify_context (gpointer data)
-{
-	VerifyContext *ctx = (VerifyContext*)data;
-	if (ctx->key)
-		g_object_unref (ctx->key);
-	g_free (ctx);
-}
-
 static CK_RV
 session_C_VerifyInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                       GkrPkcs11Message *resp)
@@ -981,8 +1021,12 @@ session_C_VerifyInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 		return ret;
 		
 	switch (mech.mechanism) {
+	case CKM_RSA_PKCS:
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_raw_verify (key, NULL, 0, NULL, 0);
+		ret = gkr_pkcs11_rsa_verify (key, NULL, NULL, 0, NULL, 0);
+		break;
+	case CKM_DSA:
+		ret = gkr_pkcs11_dsa_verify (key, NULL, 0, NULL, 0);
 		break;
 	default:
 		ret = CKR_MECHANISM_INVALID;
@@ -991,8 +1035,8 @@ session_C_VerifyInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 		
 	if (ret == CKR_OK)
 		begin_operation (sinfo, OPERATION_VERIFY, 
-		                 new_verify_context (mech.mechanism, key), 
-		                 free_verify_context);
+		                 new_crypt_context (mech.mechanism, key), 
+		                 free_crypt_context);
 	
  	return ret;
 }
@@ -1001,7 +1045,7 @@ static CK_RV
 session_C_Verify (SessionInfo *sinfo, GkrPkcs11Message *req, 
                   GkrPkcs11Message *resp)
 {
-	VerifyContext *ctx;
+	CryptContext *ctx;
 	CK_BYTE_PTR signature, data;
 	CK_ULONG n_signature, n_data;
 	CK_RV ret;
@@ -1014,11 +1058,21 @@ session_C_Verify (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (!read_byte_array (req, &signature, &n_signature))
 		return PROTOCOL_ERROR;
 	
-	ctx = (VerifyContext*)sinfo->operation_data;
+	ctx = (CryptContext*)sinfo->operation_data;
 	switch (ctx->mechanism) {
+	case CKM_RSA_PKCS:
+		ret = gkr_pkcs11_rsa_verify (ctx->key, gkr_pkcs11_rsa_pad_one, 
+		                             data, n_data, 
+	                                     signature, n_signature);
+		break;
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_raw_verify (ctx->key, data, n_data, 
-	                                         signature, n_signature);
+		ret = gkr_pkcs11_rsa_verify (ctx->key, gkr_pkcs11_rsa_pad_raw, 
+		                             data, n_data, 
+	                                     signature, n_signature);
+		break;
+	case CKM_DSA:
+		ret = gkr_pkcs11_dsa_verify (ctx->key, data, n_data, 
+		                             signature, n_signature);
 		break;
 	default:
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
@@ -1049,8 +1103,6 @@ static CK_RV
 session_C_VerifyRecoverInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                              GkrPkcs11Message *resp)
 {
-/* 	gkr_pkcs11_rsa_can_verify_recover (object); */
-	
 	/* RSA keys don't support this recoverable signing */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
@@ -1059,12 +1111,13 @@ static CK_RV
 session_C_VerifyRecover (SessionInfo *sinfo, GkrPkcs11Message *req, 
                          GkrPkcs11Message *resp)
 {
-/*	gkr_pkcs11_rsa_verify_recover (object, signature, n_signature, 
-	                               &data, &n_data); */
-	
 	/* RSA keys don't support this recoverable signing */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
+
+/* -----------------------------------------------------------------------------
+ * COMPOUND OPERATIONS
+ */
 
 static CK_RV
 session_C_DigestEncryptUpdate (SessionInfo *sinfo, GkrPkcs11Message *req, 
@@ -1097,6 +1150,10 @@ session_C_DecryptVerifyUpdate (SessionInfo *sinfo, GkrPkcs11Message *req,
 	/* Can't do this with an RSA key */
  	return CKR_FUNCTION_NOT_SUPPORTED;
 }
+
+/* -----------------------------------------------------------------------------
+ * KEY OPERATIONS
+ */
 
 static CK_RV
 session_C_GenerateKey (SessionInfo *sinfo, GkrPkcs11Message *req, 
@@ -1139,7 +1196,7 @@ session_C_DeriveKey (SessionInfo *sinfo, GkrPkcs11Message *req,
 }
 
 /* -----------------------------------------------------------------------------
- * Random Operations
+ * RANDOM OPERATIONS
  */
 
 static CK_RV
@@ -1286,8 +1343,12 @@ session_process (SessionInfo *sinfo, GkrPkcs11Message *req,
 		
 	/* Fill in an error respnose */
 	} else {
-		/* When there's an error any operation automatically done */
-		finish_operation (sinfo);
+		/*
+		 * When there's an error any operation automatically done.
+		 * We make an exception for functions which we don't implement. 
+		 */
+		if (ret != CKR_FUNCTION_NOT_SUPPORTED)
+			finish_operation (sinfo);
 		
 		gkr_pkcs11_message_prep (resp, PKCS11_CALL_ERROR, GKR_PKCS11_RESPONSE);
 		gkr_buffer_add_uint32 (&resp->buffer, (uint32_t)ret);

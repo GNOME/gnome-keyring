@@ -28,16 +28,38 @@
 
 #include "pk/gkr-pk-object.h"
 
-CK_RV                 gkr_pkcs11_rsa_raw_decrypt                (GkrPkObject *key, 
-                                                                 const guchar *encrypted, gsize n_encrypted, 
-                                                                 guchar **plain, gsize *n_plain);
+typedef guchar* (*GkrPkcs11RsaPadding) (guint n_modulus, const guchar* raw, 
+                                        gsize n_raw, gsize *n_padded);
 
-CK_RV                 gkr_pkcs11_rsa_raw_sign                   (GkrPkObject *key, 
-                                                                 const guchar *data, gsize n_data, 
-                                                                 guchar **signature, gsize *n_signature);
+guchar*	              gkr_pkcs11_rsa_pad_raw                (guint n_modulus, const guchar* raw,
+                                                             gsize n_raw, gsize *n_padded);
 
-CK_RV                 gkr_pkcs11_rsa_raw_verify                 (GkrPkObject *key, 
-                                                                 const guchar *data, gsize n_data, 
-                                                                 const guchar *signature, gsize n_signature);
+guchar*               gkr_pkcs11_rsa_pad_one                (guint n_modulus, const guchar* raw, 
+                                                             gsize n_raw, gsize *n_padded);
+
+guchar*               gkr_pkcs11_rsa_pad_two                (guint n_modulus, const guchar* raw, 
+                                                             gsize n_raw, gsize *n_padded);
+
+guchar*               gkr_pkcs11_rsa_unpad_one              (guint n_modulus, const guchar* padded, 
+                                                             gsize n_padded, gsize *n_raw);
+
+guchar*               gkr_pkcs11_rsa_unpad_two              (guint n_modulus, const guchar* padded, 
+                                                             gsize n_padded, gsize *n_raw);
+
+CK_RV                 gkr_pkcs11_rsa_encrypt                (GkrPkObject *key, GkrPkcs11RsaPadding padfunc,
+                                                             const guchar *plain, gsize n_plain, 
+                                                             guchar **encrypted, gsize *n_encrypted);
+
+CK_RV                 gkr_pkcs11_rsa_decrypt                (GkrPkObject *key, GkrPkcs11RsaPadding padfunc,
+                                                             const guchar *encrypted, gsize n_encrypted, 
+                                                             guchar **plain, gsize *n_plain);
+
+CK_RV                 gkr_pkcs11_rsa_sign                  (GkrPkObject *key, GkrPkcs11RsaPadding padfunc,
+                                                            const guchar *data, gsize n_data, 
+                                                            guchar **signature, gsize *n_signature);
+
+CK_RV                 gkr_pkcs11_rsa_verify                 (GkrPkObject *key, GkrPkcs11RsaPadding padfunc,
+                                                             const guchar *data, gsize n_data, 
+                                                             const guchar *signature, gsize n_signature);
 
 #endif /*GKRPKCS11RSA_H_*/

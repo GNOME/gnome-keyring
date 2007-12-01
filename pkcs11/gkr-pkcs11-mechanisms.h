@@ -29,18 +29,31 @@
  */
  
 const static CK_MECHANISM_TYPE gkr_pkcs11_mechanisms[] = {
-	CKM_RSA_X_509
+	CKM_RSA_PKCS,
+	CKM_RSA_X_509,
+	CKM_DSA
 };
 
 const static CK_MECHANISM_INFO gkr_pkcs11_mechanism_info[] = {
-	/* TODO: CKM_RSA_PKCS_KEY_PAIR_GEN, */
-	
+	/* 
+	 * CKM_RSA_PKCS
+	 * For RSA, min and max are the minimum and maximum modulus in bits
+	 * TODO: CKF_SIGN_RECOVER | CKF_VERIFY_RECOVER 
+	 */
+	{ 256, 32768, CKF_ENCRYPT | CKF_DECRYPT | CKF_SIGN | CKF_VERIFY | CKF_HW },
+
 	/* 
 	 * CKM_RSA_X509
-	 * For RSA, min and max are the minimum and maximum modulus in bits 
+	 * For RSA, min and max are the minimum and maximum modulus in bits
+	 * TODO: CKF_SIGN_RECOVER | CKF_VERIFY_RECOVER 
 	 */
-	{ 256, 32768, CKF_ENCRYPT | CKF_DECRYPT | CKF_SIGN | CKF_SIGN_RECOVER | 
-		      CKF_VERIFY_RECOVER | CKF_VERIFY | CKF_WRAP | CKF_UNWRAP }
+	{ 256, 32768, CKF_ENCRYPT | CKF_DECRYPT | CKF_SIGN | CKF_VERIFY | CKF_HW },
+	
+	/*
+	 * CKM_DSA
+	 * For DSA, min and max are the minimum and maximum modulus in bits
+	 */
+	{ 512, 1024, CKF_SIGN | CKF_VERIFY | CKF_HW }
 };
 
 #endif /* GKR_PKCS11_MECHANISMS_H */

@@ -703,7 +703,58 @@ gkr_crypto_sexp_extract_mpi (gcry_sexp_t sexp, gcry_mpi_t *mpi, ...)
 	return (*mpi) ? TRUE : FALSE;
 }
 
+gboolean
+gkr_crypto_sexp_extract_mpi_aligned (gcry_sexp_t sexp, guchar* block, gsize n_block, ...)
+{
+	gcry_sexp_t at = NULL;
+	gcry_error_t gcry;
+	gboolean ret;
+	gcry_mpi_t mpi;
+	va_list va;
+	gsize len;
+	
+	g_assert (sexp);
+	g_assert (block);
+	g_assert (n_block);
+	
+	va_start (va, n_block);
+	at = sexp_get_childv (sexp, va);
+	va_end (va);
+	
+	if (!at)
+		return FALSE;
 
+	/* Parse out the MPI */
+	mpi = gcry_sexp_nth_mpi (at ? at : sexp, 1, GCRYMPI_FMT_USG);
+	gcry_sexp_release (at);
+	
+	if (!mpi)
+		return FALSE;
+	
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &len, mpi);
+	g_return_val_if_fail (gcry == 0, FALSE);
+	
+	ret = FALSE;
+	
+	/* Is it too long? */
+	if (len <= n_block) {
+		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, block, n_block, &len, mpi);
+		g_return_val_if_fail (gcry == 0, FALSE);
+		g_return_val_if_fail (len <= n_block, FALSE);
+		
+		/* Now align it if necessary */
+		if (len < n_block) {
+			memmove (block + (n_block - len), block, len);
+			memset (block, 0, (n_block - len));
+		}
+		
+		ret = TRUE;
+	}
+	
+	gcry_mpi_release (mpi);
+	return ret;
+}
+                                                         
 void
 gkr_crypto_sexp_dump (gcry_sexp_t sexp)
 {

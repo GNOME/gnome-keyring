@@ -63,6 +63,9 @@ gcry_sexp_t        gkr_crypto_sexp_get_child            (gcry_sexp_t sexp, ...)
 gboolean           gkr_crypto_sexp_extract_mpi          (gcry_sexp_t sexp, gcry_mpi_t *mpi, ...)
                                                          G_GNUC_NULL_TERMINATED;
 
+gboolean           gkr_crypto_sexp_extract_mpi_aligned  (gcry_sexp_t sexp, guchar* block, gsize n_block, ...)
+                                                         G_GNUC_NULL_TERMINATED;
+
 void               gkr_crypto_sexp_dump                 (gcry_sexp_t sexp);
 
 gboolean           gkr_crypto_skey_parse                (gcry_sexp_t s_key, int *algorithm, 
