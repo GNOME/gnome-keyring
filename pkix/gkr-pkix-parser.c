@@ -488,6 +488,8 @@ gkr_pkix_parsed_type_to_string (GkrParsedType type)
 	switch (type) {
 	case GKR_PARSED_PRIVATE_KEY:
 		return _("key");
+	case GKR_PARSED_CERTIFICATE:
+		return _("certificate");
 	default:
 		g_return_val_if_reached ("");
 	};	

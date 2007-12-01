@@ -1,3 +1,7 @@
+2007-12-01  Stef Walter <stef@memberwebs.com>
+
+	* POTFILES.in: Update translatable files
+	
 2007-11-29  Yair Hershkovitz  <yairhr@gmail.com>
 
 	* he.po, LINGUAS: Added Hebrew translation.

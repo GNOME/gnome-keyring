@@ -3,6 +3,7 @@
 common/gkr-location.c
 daemon/gkr-daemon-ops.c
 library/gnome-keyring-utils.c
-keyrings/gkr-keyrings-login.c
-pki/gkr-pki-object-manager.c
+keyrings/gkr-keyring-login.c
+pk/gkr-pk-object-storage.c
+pkix/gkr-pkix-parser.c:
 ui/gkr-ask-tool.c
