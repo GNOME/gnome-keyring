@@ -95,7 +95,7 @@ typedef struct _GkrPkcs11CallInfo {
 
 const static GkrPkcs11CallInfo gkr_pkcs11_calls[] = {
 	{ PKCS11_CALL_ERROR,                  "ERROR",                  NULL,      NULL     },
-	{ PKCS11_CALL_C_OpenSession,          "C_OpenSession",          "ayuu",    ""       },
+	{ PKCS11_CALL_C_OpenSession,          "C_OpenSession",          "ayuuu",   ""       },
 	{ PKCS11_CALL_C_GetSessionInfo,       "C_GetSessionInfo",       "",        "I"      },
 	{ PKCS11_CALL_C_InitPIN,              "C_InitPIN",              "ay",      ""       },
 	{ PKCS11_CALL_C_SetPIN,               "C_SetPIN",               "ayay",    ""       },

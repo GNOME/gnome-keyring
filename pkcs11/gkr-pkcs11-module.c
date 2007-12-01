@@ -1621,6 +1621,8 @@ gkr_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data,
 			ret = gkr_pkcs11_message_write_byte_array (cs->req, 
 			                            (unsigned char*)GKR_PKCS11_HANDSHAKE, 
 		                                    GKR_PKCS11_HANDSHAKE_LEN);
+		if (ret == CKR_OK)
+			ret = gkr_pkcs11_message_write_uint32 (cs->req, crypto_pid);
 		if (ret == CKR_OK) /* We don't use the slot id yet */
 			ret = gkr_pkcs11_message_write_uint32 (cs->req, 0); 
 		if (ret == CKR_OK)

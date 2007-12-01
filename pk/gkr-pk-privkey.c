@@ -112,7 +112,8 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 	if (data) {
 		res = gkr_pkix_der_read_public_key (data, n_data, &s_key);
 		if (res == GKR_PARSE_SUCCESS) {
-			key->priv->pubkey = gkr_pk_pubkey_instance (obj->location, s_key);
+			key->priv->pubkey = gkr_pk_pubkey_instance (obj->manager, 
+			                                            obj->location, s_key);
 			goto done;
 		} 
 
@@ -141,7 +142,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 		if (!gkr_pk_index_set_binary (obj->location, obj->unique, "public-key", data, n_data))
 			g_warning ("couldn't write public key to index for: %s", g_quark_to_string (obj->location));
 		
-		key->priv->pubkey = gkr_pk_pubkey_instance (0, s_key);
+		key->priv->pubkey = gkr_pk_pubkey_instance (obj->manager, 0, s_key);
 		goto done;
 	}
 	

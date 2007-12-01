@@ -56,7 +56,8 @@ GType               gkr_pk_pubkey_get_type           (void) G_GNUC_CONST;
 
 GkrPkObject*        gkr_pk_pubkey_new                (GQuark location, gcry_sexp_t s_key);
 
-GkrPkPubkey*        gkr_pk_pubkey_instance           (GQuark location, gcry_sexp_t s_key);
+GkrPkPubkey*        gkr_pk_pubkey_instance           (GkrPkObjectManager* manager, 
+                                                      GQuark location, gcry_sexp_t s_key);
 
 gkrconstunique      gkr_pk_pubkey_get_keyid          (GkrPkPubkey *key);
 

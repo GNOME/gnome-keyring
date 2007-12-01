@@ -469,7 +469,7 @@ gkr_pk_pubkey_new (GQuark location, gcry_sexp_t s_key)
 }
 
 GkrPkPubkey*
-gkr_pk_pubkey_instance (GQuark location, gcry_sexp_t s_key)
+gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_key)
 {
 	GkrPkObject *pub;
 	gkrunique keyid;
@@ -481,7 +481,7 @@ gkr_pk_pubkey_instance (GQuark location, gcry_sexp_t s_key)
 	g_return_val_if_fail (keyid, NULL);
 	
 	/* Try the lookup */
-	pub = gkr_pk_object_manager_find_by_id (NULL, GKR_TYPE_PK_PUBKEY, keyid);
+	pub = gkr_pk_object_manager_find_by_id (manager, GKR_TYPE_PK_PUBKEY, keyid);
 	gkr_unique_free (keyid);
 	
 	if (pub != NULL) {

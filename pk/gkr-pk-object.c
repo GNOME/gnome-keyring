@@ -147,19 +147,6 @@ gkr_pk_object_init (GkrPkObject *obj)
 	                                        NULL, gkr_pk_attribute_free);
 }
 
-static GObject*
-gkr_pk_object_constructor (GType type, guint n_properties, GObjectConstructParam *properties)
-{
-	GObject *obj = G_OBJECT_CLASS (gkr_pk_object_parent_class)->constructor (type, n_properties, properties);
-	if (obj) {
-		GkrPkObject *xobj = GKR_PK_OBJECT (obj);
-		if (xobj->location)
-			gkr_pk_object_manager_register (NULL, xobj);
-	}
-	
-	return obj;
-}
-
 static void
 gkr_pk_object_get_property (GObject *obj, guint prop_id, GValue *value, 
                              GParamSpec *pspec)
@@ -233,7 +220,6 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 	gobject_class = (GObjectClass*) klass;
 
 	gkr_pk_object_parent_class = g_type_class_peek_parent (klass);
-	gobject_class->constructor = gkr_pk_object_constructor;
 	gobject_class->get_property = gkr_pk_object_get_property;
 	gobject_class->set_property = gkr_pk_object_set_property;
 	gobject_class->finalize = gkr_pk_object_finalize;
@@ -242,7 +228,7 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
 		g_param_spec_uint ("location", "Location", "Location of Data",
-		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                   0, G_MAXUINT, 0, G_PARAM_READWRITE));
 		                   
 	g_object_class_install_property (gobject_class, PROP_UNIQUE,
 		g_param_spec_boxed ("unique", "Unique", "Unique Identifier for Data",

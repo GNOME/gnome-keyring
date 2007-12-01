@@ -83,8 +83,8 @@ find_private_key (gcry_sexp_t s_key, gboolean manager)
 		data = gkr_unique_get_raw (keyid, &n_data);
 		g_assert (data && n_data);
 		
-		objects = gkr_pk_object_manager_findv (NULL, GKR_TYPE_PK_PRIVKEY, 
-		                                       CKA_ID, data, n_data, NULL);
+		objects = gkr_pk_object_manager_findv (gkr_pk_object_manager_for_token (), 
+		                                       GKR_TYPE_PK_PRIVKEY, CKA_ID, data, n_data, NULL);
 		if (objects) {
 			key = GKR_PK_PRIVKEY (objects->data);
 			g_list_free (objects);
@@ -218,7 +218,8 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 	const gchar *label;
 	
 	/* TODO: We should only find the keys that have usage = ssh */
-	objects = gkr_pk_object_manager_find (NULL, GKR_TYPE_PK_PRIVKEY, NULL);
+	objects = gkr_pk_object_manager_find (gkr_pk_object_manager_for_token (), 
+	                                      GKR_TYPE_PK_PRIVKEY, NULL);
 	
 	pubkeys = NULL;
 	get_public_keys (ssh_session_keys, &pubkeys);

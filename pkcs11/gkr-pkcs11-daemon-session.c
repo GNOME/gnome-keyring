@@ -60,6 +60,7 @@ enum
 typedef void (*OperationCleanup) (SessionInfo* sinfo);
 
 struct _SessionInfo {
+	pid_t pid;		    /* Process ID of client */
 	gboolean valid;             /* Session is valid */
 	gboolean readonly;          /* Session is readonly */
 	
@@ -69,8 +70,8 @@ struct _SessionInfo {
 	
 	guint deverror;                 /* The 'device' error code */
 	
-	GHashTable *objects;		/* Session objects */
-	CK_OBJECT_HANDLE next_handle;	/* Increasing counter for session object handles */
+	GkrPkObjectManager *manager;	/* The object manager for this session */
+	GHashTable *objects;		/* Objects owned by the session */
 };
 
 /* 
@@ -84,51 +85,18 @@ struct _SessionInfo {
  */
 
 static void
-session_add_object (SessionInfo *sinfo, GkrPkObject *object)
+session_take_object (SessionInfo *sinfo, GkrPkObject *object)
 {
-	gpointer k;
 	g_assert (sinfo);
 	
 	g_return_if_fail (object->handle == 0);
 	g_return_if_fail (object->location == 0);
 	
-	object->handle = ++sinfo->next_handle;
-	k = GUINT_TO_POINTER (object->handle);
-	
-	g_assert (!g_hash_table_lookup (sinfo->objects, k));
-	g_hash_table_insert (sinfo->objects, k, object);
-	g_object_ref (object);
-}
+	gkr_pk_object_manager_register (sinfo->manager, object);
 
-static GkrPkObject*
-session_lookup_object (SessionInfo *sinfo, CK_OBJECT_HANDLE obj)
-{
-	return GKR_PK_OBJECT (g_hash_table_lookup (sinfo->objects, GUINT_TO_POINTER (obj)));
-}
-
-typedef struct _SessionFindObjects {
-	GArray *attrs;
-	GList *found;
-} SessionFindObjects;
-
-static void 
-find_each_object (gpointer key, gpointer value, gpointer user_data)
-{
-	GkrPkObject* obj = GKR_PK_OBJECT (value);
-	SessionFindObjects *find = (SessionFindObjects*)user_data;
-
-	if (gkr_pk_object_match (obj, find->attrs))
-		find->found = g_list_prepend (find->found, obj);
-}
-
-static void
-session_find_objects (SessionInfo *sinfo, GArray *attrs, GList **found)
-{
-	SessionFindObjects find;
-	find.attrs = attrs;
-	find.found = NULL;
-	g_hash_table_foreach (sinfo->objects, find_each_object, &find);
-	*found = find.found;
+	/* We assume the ownership */
+	g_assert (object->handle);
+	g_hash_table_insert (sinfo->objects, GUINT_TO_POINTER (object->handle), object);
 }
 
 /* -----------------------------------------------------------------------------
@@ -270,15 +238,18 @@ static CK_RV
 read_object (GkrPkcs11Message *msg, SessionInfo *sinfo, GkrPkObject **res)
 {
 	CK_OBJECT_HANDLE obj;
+	GkrPkObjectManager *manager;
 	
 	if (gkr_pkcs11_message_read_uint32 (msg, &obj) != CKR_OK)
 		return PROTOCOL_ERROR;
 	
 	/* Find the object in question */
 	if (obj & GKR_PK_OBJECT_IS_PERMANENT)
-		*res = gkr_pk_object_manager_lookup (NULL, obj);
-	else 
-		*res = session_lookup_object (sinfo, obj);
+		manager = gkr_pk_object_manager_for_token ();
+	else
+		manager = sinfo->manager;
+		
+	*res = gkr_pk_object_manager_lookup (manager, obj);
 	if (!*res)
 		return CKR_OBJECT_HANDLE_INVALID;
 		
@@ -314,9 +285,11 @@ session_C_OpenSession (SessionInfo *sinfo, GkrPkcs11Message *req,
                        GkrPkcs11Message *resp)
 {
 	CK_BYTE_PTR sig = NULL;
-	CK_ULONG siglen, slotid, flags;
+	CK_ULONG siglen, slotid, flags, pid;
 	
 	if (!read_byte_array (req, &sig, &siglen))
+		return PROTOCOL_ERROR;
+	if (gkr_pkcs11_message_read_uint32 (req, &pid) != CKR_OK)
 		return PROTOCOL_ERROR;
 	if (gkr_pkcs11_message_read_uint32 (req, &slotid) != CKR_OK)
 		return PROTOCOL_ERROR;
@@ -333,6 +306,14 @@ session_C_OpenSession (SessionInfo *sinfo, GkrPkcs11Message *req,
 	/* Mark session as valid and ready for action */
 	sinfo->readonly = (flags & CKF_RW_SESSION) ? FALSE : TRUE;
 	sinfo->valid = TRUE;
+	
+	/* 
+	 * TODO: Once we have support for actually pulling out the
+	 * peer's user/pid, we should use that instead of what the
+	 * client tells us.
+	 */ 
+	sinfo->pid = pid;
+	sinfo->manager = gkr_pk_object_manager_instance_for_client (pid);
 	
 	return CKR_OK;
 }
@@ -522,10 +503,9 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 		 * TODO: Eventually we will store and write to the token
 		 * storage here, but for now just the session.
 		 */
-		session_add_object (sinfo, object);
 		
+		session_take_object (sinfo, object);
 		gkr_pkcs11_message_write_uint32 (resp, object->handle);
-		g_object_unref (object);
 	}
 	
 done:
@@ -569,26 +549,17 @@ session_C_GetAttributeValue (SessionInfo *sinfo, GkrPkcs11Message *req,
 {
 	GkrPkObject *object;
 	GArray* attrs;
-	CK_OBJECT_HANDLE obj;
 	CK_RV soft_ret = CKR_OK;
 	CK_RV ret = CKR_OK;
 	
-	if (gkr_pkcs11_message_read_uint32 (req, &obj) != CKR_OK)
-		return PROTOCOL_ERROR;
-	
+	ret = read_object (req, sinfo, &object);
+	if (ret != CKR_OK)
+		return ret;
+
 	if (!(attrs = read_attribute_array (req)))
 		return PROTOCOL_ERROR;
 		
-	/* If it's a token object then pass handle it elsewhere */
-	if (obj & GKR_PK_OBJECT_IS_PERMANENT)
-		object = gkr_pk_object_manager_lookup (NULL, obj);
-	else 
-		object = session_lookup_object (sinfo, obj);
-		
-	if (!object)
-		ret = CKR_OBJECT_HANDLE_INVALID;
-	else
-		ret = gkr_pk_object_get_attributes (object, attrs);
+	ret = gkr_pk_object_get_attributes (object, attrs);
 
 	/* Certain ones aren't real failures */
 	switch (ret) {
@@ -639,7 +610,6 @@ session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	GList *l, *objects = NULL;
 	GArray *attrs;
 	gboolean all;
-	CK_RV ret = CKR_OK;
 	
 	if (sinfo->operation_type)
 		return CKR_OPERATION_ACTIVE;
@@ -648,28 +618,28 @@ session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 		return PROTOCOL_ERROR;
 	
 	all = !gkr_pk_attributes_boolean (attrs, CKA_TOKEN, &token);
-
+	objects = NULL;
+	
 	/* All or only token objects? */
-	if(all || token)
-		objects = gkr_pk_object_manager_find (NULL, 0, attrs);
+	if(all || token) {
+		l = gkr_pk_object_manager_find (gkr_pk_object_manager_for_token (), 0, attrs);
+		objects = g_list_concat (objects, l);
+	}
 	
 	/* All or only session objects? */
-	if (all || !token)
-		session_find_objects (sinfo, attrs, &objects);
-	
-	
-	if (ret == CKR_OK) {
-		for (l = objects; l; l = g_list_next (l))
-			g_object_ref (GKR_PK_OBJECT (l->data));
-		begin_operation (sinfo, OPERATION_FIND, objects, free_object_list);
-	} else {
-		g_list_free (objects);
+	if (all || !token) {
+		l = gkr_pk_object_manager_find (sinfo->manager, 0, attrs);
+		objects = g_list_concat (objects, l);
 	}
+	
+	for (l = objects; l; l = g_list_next (l))
+		g_object_ref (GKR_PK_OBJECT (l->data));
+	begin_operation (sinfo, OPERATION_FIND, objects, free_object_list);
 	
 	gkr_pk_attributes_free (attrs);
 	
 	/* No response */
-	return ret;
+	return CKR_OK;
 }
 
 static CK_RV
@@ -1344,6 +1314,8 @@ session_info_new ()
 static void 
 session_info_free (SessionInfo *sinfo)
 {
+	if (sinfo->manager)
+		g_object_unref (sinfo->manager);
 	g_hash_table_destroy (sinfo->objects);
 	g_free (sinfo);
 }

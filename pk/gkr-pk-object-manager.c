@@ -48,16 +48,12 @@
 
 #include <stdarg.h>
 
-/* list my signals  */
-enum {
-	/* MY_SIGNAL_1, */
-	/* MY_SIGNAL_2, */
-	LAST_SIGNAL
-};
-
 typedef struct _GkrPkObjectManagerPrivate GkrPkObjectManagerPrivate;
 
 struct _GkrPkObjectManagerPrivate {
+	pid_t for_pid;
+	gboolean is_token;
+	
 	GHashTable *object_by_handle;
 	GHashTable *object_by_unique;
 };
@@ -67,13 +63,14 @@ struct _GkrPkObjectManagerPrivate {
 
 G_DEFINE_TYPE(GkrPkObjectManager, gkr_pk_object_manager, G_TYPE_OBJECT);
 
-static GkrPkObjectManager *object_manager_singleton = NULL; 
+static GkrPkObjectManager *object_manager_for_token = NULL; 
+static GHashTable *object_managers_by_pid = NULL;
 
 /* 
  * Constantly increasing counter for the token object handles. Starting at 
  * a non-zero offset so that apps will be well behaved.
  */
-static CK_OBJECT_HANDLE next_object_handle = 0x000000F0;
+static CK_OBJECT_HANDLE next_object_handle = 0x00000010;
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -82,9 +79,9 @@ static CK_OBJECT_HANDLE next_object_handle = 0x000000F0;
 static void 
 cleanup_object_manager (void *unused)
 {
-	g_assert (object_manager_singleton);
-	g_object_unref (object_manager_singleton);
-	object_manager_singleton = NULL;
+	g_assert (object_manager_for_token);
+	g_object_unref (object_manager_for_token);
+	object_manager_for_token = NULL;
 }
 
 static void
@@ -101,7 +98,8 @@ add_object_for_unique (GkrPkObjectManager *objmgr, gkrconstunique unique, GkrPkO
 	if (!object->handle) {
 		/* Make a new handle */
 		object->handle = (++next_object_handle & GKR_PK_OBJECT_HANDLE_MASK);
-		object->handle |= GKR_PK_OBJECT_IS_PERMANENT;
+		if (pv->is_token)
+			object->handle |= GKR_PK_OBJECT_IS_PERMANENT;
 	}
 	
 	/* Mapping of objects by PKCS#11 'handle' */
@@ -166,12 +164,28 @@ gkr_pk_object_manager_dispose (GObject *obj)
 {
 	GkrPkObjectManager *objmgr = GKR_PK_OBJECT_MANAGER (obj);
  	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (obj);
+ 	gpointer k;
  	
  	g_hash_table_remove_all (pv->object_by_handle);
  	g_hash_table_remove_all (pv->object_by_unique);
  	
  	g_list_free (objmgr->objects);
  	objmgr->objects = NULL;
+ 	
+ 	if (pv->for_pid) {
+ 		g_assert (object_managers_by_pid);
+ 		
+ 		k =  GUINT_TO_POINTER (pv->for_pid);
+ 		pv->for_pid = 0; 
+
+		/* Remove us from the hash table */
+ 		g_assert (g_hash_table_lookup (object_managers_by_pid, k) == objmgr);
+ 		g_hash_table_remove (object_managers_by_pid, k);
+ 		
+ 		/* Destroy the table if its empty */
+ 		if (g_hash_table_size (object_managers_by_pid) == 0)
+ 			g_hash_table_destroy (object_managers_by_pid); 
+ 	}
 
 	G_OBJECT_CLASS (gkr_pk_object_manager_parent_class)->dispose (obj);
 }
@@ -185,6 +199,7 @@ gkr_pk_object_manager_finalize (GObject *obj)
 	g_hash_table_destroy (pv->object_by_handle);
 	g_hash_table_destroy (pv->object_by_unique);
 	g_assert (!man->objects);
+	g_assert (!pv->for_pid);
 
 	G_OBJECT_CLASS (gkr_pk_object_manager_parent_class)->finalize (obj);
 }
@@ -203,24 +218,54 @@ gkr_pk_object_manager_class_init (GkrPkObjectManagerClass *klass)
 }
 
 GkrPkObjectManager*
-gkr_pk_object_manager_get (void)
+gkr_pk_object_manager_for_token (void)
 {
-	if (!object_manager_singleton) {
-		object_manager_singleton = g_object_new (GKR_TYPE_PK_OBJECT_MANAGER, NULL);
+	if (!object_manager_for_token) {
+		object_manager_for_token = g_object_new (GKR_TYPE_PK_OBJECT_MANAGER, NULL);
+		GKR_PK_OBJECT_MANAGER_GET_PRIVATE (object_manager_for_token)->is_token = TRUE;
 		gkr_cleanup_register (cleanup_object_manager, NULL);
 	}
 	
-	return object_manager_singleton;
-}	
+	return object_manager_for_token;
+}
+
+GkrPkObjectManager*
+gkr_pk_object_manager_for_client (pid_t pid)
+{
+	if (!object_managers_by_pid)
+		return NULL;
+	return GKR_PK_OBJECT_MANAGER (g_hash_table_lookup (object_managers_by_pid, 
+	                                                   GUINT_TO_POINTER (pid)));
+}
+
+GkrPkObjectManager*
+gkr_pk_object_manager_instance_for_client (pid_t pid)
+{
+	GkrPkObjectManager *manager;
+	
+	manager = gkr_pk_object_manager_for_client (pid);
+	if (manager) {
+		g_object_ref (manager);
+		return manager;
+	}
+	
+	manager = g_object_new (GKR_TYPE_PK_OBJECT_MANAGER, NULL);
+	GKR_PK_OBJECT_MANAGER_GET_PRIVATE (manager)->for_pid = pid;
+		
+	/* The first client? */
+	if (!object_managers_by_pid)
+		object_managers_by_pid = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	/* Note us in the table */
+	g_hash_table_insert (object_managers_by_pid, GUINT_TO_POINTER (pid), manager);
+	return manager;
+}
 
 void
 gkr_pk_object_manager_register (GkrPkObjectManager *objmgr, GkrPkObject *object)
 {
 	GkrPkObjectManagerPrivate *pv;
 	
-	if (!objmgr)
-		objmgr = gkr_pk_object_manager_get ();
-		
 	g_return_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr));
 	g_return_if_fail (GKR_IS_PK_OBJECT (object));
 	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
@@ -236,9 +281,6 @@ gkr_pk_object_manager_unregister (GkrPkObjectManager *objmgr, GkrPkObject *objec
 {
 	GkrPkObjectManagerPrivate *pv;
 	
-	if (!objmgr)
-		objmgr = gkr_pk_object_manager_get ();
-		
 	g_return_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr));
 	g_return_if_fail (GKR_IS_PK_OBJECT (object));
 	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
@@ -254,9 +296,6 @@ gkr_pk_object_manager_lookup (GkrPkObjectManager *man, CK_OBJECT_HANDLE obj)
 {
 	GkrPkObjectManagerPrivate *pv;
 	
-	if (!man)
-		man = gkr_pk_object_manager_get ();
-		
 	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (man), NULL);
 	g_return_val_if_fail (obj != 0, NULL);
 	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (man);
@@ -338,9 +377,6 @@ gkr_pk_object_manager_find (GkrPkObjectManager *man, GType gtype, GArray *attrs)
 	gboolean do_refresh = TRUE;
 	GList *l, *objects = NULL;
 	
-	if (!man)
-		man = gkr_pk_object_manager_get ();
-		
 	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (man), NULL);
 
 	/* Figure out the class of objects we're loading */
@@ -386,9 +422,6 @@ gkr_pk_object_manager_find_by_id (GkrPkObjectManager *objmgr, GType gtype,
 	gsize len;
 	GList *l;
 	
-	if (!objmgr)
-		objmgr = gkr_pk_object_manager_get ();
-		
 	g_return_val_if_fail (id, NULL);
 	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr), NULL);
 
@@ -414,9 +447,6 @@ gkr_pk_object_manager_find_by_unique (GkrPkObjectManager *objmgr, gkrconstunique
 	GkrPkObjectManagerPrivate *pv;
 	GkrPkObject *object;
 	
-	if (!objmgr)
-		objmgr = gkr_pk_object_manager_get ();
-		
 	g_return_val_if_fail (unique, NULL);
 	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr), NULL);
 	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);

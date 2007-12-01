@@ -260,10 +260,12 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
                 gkrconstunique unique, GkrParsedType type)
 {
 	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
+	GkrPkObjectManager *manager;
 	GkrPkObject *object;
 	GType gtype;
 	
-	object = gkr_pk_object_manager_find_by_unique (NULL, unique);
+	manager = gkr_pk_object_manager_for_token ();
+	object = gkr_pk_object_manager_find_by_unique (manager, unique);
 	
 	/* The object already exists just reference it */
 	if (object) {
@@ -285,6 +287,7 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 	}
 	
 	object = g_object_new (gtype, "location", location, "unique", unique, NULL);
+	gkr_pk_object_manager_register (manager, object);
 	add_object (storage, object);
 	
 	/* Object was reffed */

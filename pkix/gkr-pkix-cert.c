@@ -108,7 +108,7 @@ get_public_key (GkrPkixCert *cert)
 	}
 	
 	g_return_val_if_fail (s_key, NULL);
-	cert->data->pubkey = gkr_pk_pubkey_instance (obj->location, s_key);
+	cert->data->pubkey = gkr_pk_pubkey_instance (obj->manager, obj->location, s_key);
 	
 	return cert->data->pubkey;
 }

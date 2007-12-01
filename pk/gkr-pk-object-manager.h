@@ -29,6 +29,25 @@
 
 #include "gkr-pk-object.h"
 
+/* 
+ * GkrPkObjectManager
+ * 
+ * A GkrPkObjectManager tracks a set of GkrPkObject objects. It does not own 
+ * those objects. Once an object is registered with the manager it gets 
+ * an identifier.  
+ * 
+ * An object will unregister itself from the manager when it is destroyed or 
+ * it can be done explicitely.  
+ * 
+ * A singleton GkrPkObjectManager exists for token objects, those stored in 
+ * persistent storage. This manager lasts for the lifetime of the daemon.
+ * 
+ * Other GkrPkObjectManager objects can exist per client for session or 
+ * temporary objects. Multiple requests for a manager for the same client
+ * will return the same manager. Once all references dissappear this 
+ * manager will go away.
+ */
+
 G_BEGIN_DECLS
 
 #define GKR_TYPE_PK_OBJECT_MANAGER             (gkr_pk_object_manager_get_type ())
@@ -49,11 +68,15 @@ struct _GkrPkObjectManagerClass {
 	GObjectClass parent_class;
 };
 
-GType                   gkr_pk_object_manager_get_type           (void) G_GNUC_CONST;
+GType                   gkr_pk_object_manager_get_type            (void) G_GNUC_CONST;
 
-GType                   gkr_pk_object_manager_type_from_string   (const gchar *type);
+GType                   gkr_pk_object_manager_type_from_string    (const gchar *type);
 
-GkrPkObjectManager*     gkr_pk_object_manager_get                (void);
+GkrPkObjectManager*     gkr_pk_object_manager_for_token           (void);
+
+GkrPkObjectManager*     gkr_pk_object_manager_for_client          (pid_t pid);
+
+GkrPkObjectManager*     gkr_pk_object_manager_instance_for_client (pid_t pid);
 
 void                    gkr_pk_object_manager_register           (GkrPkObjectManager *objmgr, 
                                                                   GkrPkObject *object);
