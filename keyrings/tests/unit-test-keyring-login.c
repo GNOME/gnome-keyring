@@ -25,6 +25,8 @@
 
 #include "run-auto-test.h"
 
+#include "common/gkr-location.h"
+
 #include "keyrings/gkr-keyrings.h"
 #include "keyrings/gkr-keyring-login.h"
 
@@ -48,10 +50,16 @@
 
 void unit_setup_keyrings_login (void)
 {
+	gkr_keyrings_update();
+
 	/* Remove the current login keyring */
 	GkrKeyring *login = gkr_keyrings_get_login ();
-	if (login)
+	if (login) {
+		g_printerr ("removing old login keyring: %s\n", 
+                            gkr_location_to_path (login->location));
+		gkr_keyring_remove_from_disk (login);
 		gkr_keyrings_remove (login);
+	}
 }
 
 static void 

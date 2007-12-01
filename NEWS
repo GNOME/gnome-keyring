@@ -1,3 +1,10 @@
+Changes in version 2.21.3 are:
+* Added basic X.509 certificate and key store 
+* PKCS#11 module for accessing certificates and keys
+* Now includes an SSH agent
+* PAM module now works with SELinux
+* Add a simpler API for accessing and storing passwords.
+
 Changes in version 2.20.2 are:
 * Build fixes for systems that require GNU_SOURCE to be defined. [Christopher Taylor]
 * Builds with the latest DBus [Owen Taylor]

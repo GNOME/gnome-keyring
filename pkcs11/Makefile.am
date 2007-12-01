@@ -44,7 +44,7 @@ DAEMON_SRCS = \
 	gkr-pkcs11-calls.h \
 	gkr-pkcs11-daemon.c gkr-pkcs11-daemon.h \
 	gkr-pkcs11-daemon-session.c \
-	gkr-pkcs11-dsa.c gkr-pkcs11-rsa.h \
+	gkr-pkcs11-dsa.c gkr-pkcs11-dsa.h \
 	gkr-pkcs11-mechanisms.h \
 	gkr-pkcs11-message.c gkr-pkcs11-message.h \
 	gkr-pkcs11-rsa.c gkr-pkcs11-rsa.h

@@ -11,9 +11,10 @@ INCLUDES=	\
 	$(GLIB_CFLAGS)
 
 libgkr_ssh_la_SOURCES = \
-	gkr-ssh-private.h \
+	gkr-ssh-daemon.h \
 	gkr-ssh-daemon-io.c \
 	gkr-ssh-daemon-ops.c \
+	gkr-ssh-private.h \
 	gkr-ssh-proto.c
 
 libgkr_ssh_la_LIBADD = \

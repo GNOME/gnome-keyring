@@ -37,7 +37,9 @@ asn1-def-pk.h: pk.asn
 asn1-def-pkix.h: pkix.asn
 	asn1Parser -o asn1-def-pkix.h pkix.asn 
 
-EXTRA_DIST = gkr-pkix-marshal.list
+EXTRA_DIST = gkr-pkix-marshal.list \
+	pkix.asn \
+	pk.asn
 
 if WITH_TESTS
 TESTS_DIR = tests

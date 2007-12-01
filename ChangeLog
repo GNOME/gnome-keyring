@@ -1,7 +1,19 @@
+=== gnome-keyring 2.21.3 ===
+
 2007-12-01  Stef Walter  <stef@memberwebs.com>
 
+	* NEWS: 
+	* pkcs11/Makefile.am:
+	* pkix/Makefile.am:
+	* pkix/tests/Makefile.am:
+	* ssh/Makefile.am:
+	* tests/Makefile.am: Release gnome-keyring 2.21.3
+
+2007-12-01  Stef Walter  <stef@memberwebs.com>
+
+	* common/tests/unit-test-async.c:
+	* keyrings/tests/unit-test-keyring-login.c:
 	* library/tests/unit-test-daemon-setup.c:
-	* tests/Makefile.am:
 	* tests/test-helpers.c: Fix tests so they run properly when
 	automatically run.
 

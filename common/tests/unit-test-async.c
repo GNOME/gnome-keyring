@@ -152,8 +152,8 @@ void unit_test_worker_cancel (CuTest* cu)
 	CuAssertPtrNotNull (cu, worker);
 	CuAssert (cu, "worker just started is not valid", gkr_async_worker_is_valid (worker));
 
-	/* A little less than two seconds later, cancel it */
-	g_timeout_add (1800, cancel_worker, worker);
+	/* A less than two seconds later, cancel it */
+	g_timeout_add (1600, cancel_worker, worker);
 	 	
 	/* Run the main loop */
 	test_mainloop_run (20000);
