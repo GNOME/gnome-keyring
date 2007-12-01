@@ -1,5 +1,9 @@
 2007-12-01  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-object-manager.c: 
+	* pk/gkr-pk-object-storage.c:
+	* pk/gkr-pk-pubkey.c: Fix object finalizing bugs.
+	
 	* pk/gkr-pk-index.c: 
 	* pk/gkr-pk-object-storage.c: Store index files in *.keystore, and 
 	look for keys/certificates in ~/.gnome2/keystore

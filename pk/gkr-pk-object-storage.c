@@ -217,6 +217,7 @@ add_object (GkrPkObjectStorage *storage, GkrPkObject *object)
 	gpointer k;
 	
 	g_assert (object);
+	g_assert (GKR_IS_PK_OBJECT (object));
 	g_assert (object->location);
 	g_assert (!g_hash_table_lookup (pv->objects, object));
 		
@@ -239,6 +240,7 @@ remove_object (GkrPkObjectStorage *storage, GkrPkObject *object)
 	gpointer k;
 
 	g_assert (object);
+	g_assert (GKR_IS_PK_OBJECT (object));
 	g_assert (object->location);
 	g_assert (g_hash_table_lookup (pv->objects, object));
 		
@@ -422,7 +424,6 @@ location_remove (GkrLocationWatch *watch, GQuark loc, GkrPkObjectStorage *storag
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
 	GArray *objs, *copy;
-	GkrPkObject *object;
 	gpointer k;
 	guint i;
 	
@@ -439,7 +440,7 @@ location_remove (GkrLocationWatch *watch, GQuark loc, GkrPkObjectStorage *storag
 	copy = g_array_sized_new (FALSE, FALSE, sizeof (GkrPkObject*), objs->len);
 	g_array_append_vals (copy, objs->data, objs->len);
 	for (i = 0; i < copy->len; ++i)
-		remove_object (storage, object);
+		remove_object (storage, g_array_index (copy, GkrPkObject*, i));
 	 
 	g_array_free (copy, TRUE);
 }

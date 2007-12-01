@@ -285,7 +285,7 @@ gkr_pk_object_manager_unregister (GkrPkObjectManager *objmgr, GkrPkObject *objec
 	g_return_if_fail (GKR_IS_PK_OBJECT (object));
 	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
 	
-	g_return_if_fail (object->manager != objmgr);
+	g_return_if_fail (object->manager == objmgr);
 	g_return_if_fail (object->unique);
 
 	remove_object_at_unique (objmgr, object->unique);

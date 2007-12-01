@@ -490,7 +490,9 @@ gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_
 		return GKR_PK_PUBKEY (pub);
 	}
 	
-	return GKR_PK_PUBKEY (gkr_pk_pubkey_new (location, s_key));
+	pub = gkr_pk_pubkey_new (location, s_key);
+	gkr_pk_object_manager_register (manager, pub);
+	return GKR_PK_PUBKEY (pub);
 }
 
 gkrconstunique
