@@ -62,12 +62,15 @@ typedef void (*OperationCleanup) (SessionInfo* sinfo);
 struct _SessionInfo {
 	gboolean valid;             /* Session is valid */
 	gboolean readonly;          /* Session is readonly */
-
+	
 	guint operation_type;
 	GDestroyNotify operation_cleanup;
 	gpointer operation_data;
 	
 	guint deverror;                 /* The 'device' error code */
+	
+	GHashTable *objects;		/* Session objects */
+	CK_OBJECT_HANDLE next_handle;	/* Increasing counter for session object handles */
 };
 
 /* 
@@ -80,17 +83,52 @@ struct _SessionInfo {
  * SESSION OBJECTS 
  */
 
+static void
+session_add_object (SessionInfo *sinfo, GkrPkObject *object)
+{
+	gpointer k;
+	g_assert (sinfo);
+	
+	g_return_if_fail (object->handle == 0);
+	g_return_if_fail (object->location == 0);
+	
+	object->handle = ++sinfo->next_handle;
+	k = GUINT_TO_POINTER (object->handle);
+	
+	g_assert (!g_hash_table_lookup (sinfo->objects, k));
+	g_hash_table_insert (sinfo->objects, k, object);
+	g_object_ref (object);
+}
+
 static GkrPkObject*
 session_lookup_object (SessionInfo *sinfo, CK_OBJECT_HANDLE obj)
 {
-	/* TODO: For now we don't support session objects */
-	return NULL;
+	return GKR_PK_OBJECT (g_hash_table_lookup (sinfo->objects, GUINT_TO_POINTER (obj)));
+}
+
+typedef struct _SessionFindObjects {
+	GArray *attrs;
+	GList *found;
+} SessionFindObjects;
+
+static void 
+find_each_object (gpointer key, gpointer value, gpointer user_data)
+{
+	GkrPkObject* obj = GKR_PK_OBJECT (value);
+	SessionFindObjects *find = (SessionFindObjects*)user_data;
+
+	if (gkr_pk_object_match (obj, find->attrs))
+		find->found = g_list_prepend (find->found, obj);
 }
 
 static void
-session_find_objects (SessionInfo *sinfo, GArray *attrs, GList **objects)
+session_find_objects (SessionInfo *sinfo, GArray *attrs, GList **found)
 {
-	/* TODO: For now we don't have any session objects */
+	SessionFindObjects find;
+	find.attrs = attrs;
+	find.found = NULL;
+	g_hash_table_foreach (sinfo->objects, find_each_object, &find);
+	*found = find.found;
 }
 
 /* -----------------------------------------------------------------------------
@@ -144,7 +182,7 @@ read_attribute_array (GkrPkcs11Message* msg)
 	                            &msg->parsed, &num))
 		return NULL; /* parse error */
 	
-	attrs = gkr_pk_attribute_array_new ();
+	attrs = gkr_pk_attributes_new ();
 
 	/* We need to go ahead and read everything in all cases */
 	for (i = 0; i < num; ++i) {
@@ -178,7 +216,7 @@ read_attribute_array (GkrPkcs11Message* msg)
 	}
 	
 	if (gkr_buffer_has_error (&msg->buffer)) {
-		gkr_pk_attribute_array_free (attrs);
+		gkr_pk_attributes_free (attrs);
 		attrs = NULL;
 	}
 	
@@ -409,15 +447,90 @@ session_C_Logout (SessionInfo *sinfo, GkrPkcs11Message *req,
  * OBJECT OPERATIONS
  */
 
+static CK_RV 
+create_key_object (GArray *attrs, GkrPkObject **key)
+{
+	CK_KEY_TYPE type;
+	
+	if (!gkr_pk_attributes_ulong (attrs, CKA_KEY_TYPE, &type))
+		return CKR_TEMPLATE_INCOMPLETE;
+		
+	switch (type) {
+	/* TODO: Support RSA key creation */
+	case CKK_DSA:
+		return gkr_pkcs11_dsa_create_key (attrs, key);
+	default:
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+	};
+}
+
 static CK_RV
 session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req, 
                         GkrPkcs11Message *resp)
 {
+	GkrPkObject *object;
+	GArray *attrs = NULL;
+	CK_OBJECT_CLASS cls;
+	CK_BBOOL token;
+	CK_RV ret;
+	
+	if (sinfo->operation_type)
+		return CKR_OPERATION_ACTIVE;
+
+	if (!(attrs = read_attribute_array (req)))
+		return PROTOCOL_ERROR;
+
+	if (!gkr_pk_attributes_ulong (attrs, CKA_CLASS, &cls)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}
+	
+	/* Can only create public objects unless logged in */
+	if (!gkr_keyring_login_check () && gkc_pk_class_is_private (cls)) {
+		ret = CKR_USER_NOT_LOGGED_IN;
+		goto done;
+	}
+	
 	/* 
-	 * TODO: We need to implement this, initially perhaps only 
-	 * only for session objects.
+	 * Can only create session objects
+	 * TODO: Support token objects.
+	 * TODO: Take readonly session into account, once we support 
+	 * token objects. CKR_SESSION_READ_ONLY
 	 */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	if (gkr_pk_attributes_boolean (attrs, CKA_TOKEN, &token) && token) {
+		 ret = CKR_TOKEN_WRITE_PROTECTED;
+		 goto done;
+	}
+	
+	switch (cls) {
+	case CKO_PUBLIC_KEY:
+	case CKO_PRIVATE_KEY:
+		ret = create_key_object (attrs, &object);
+		break;
+	default:
+		/* TODO: What's a better error code here? */
+		ret = CKR_FUNCTION_NOT_SUPPORTED;
+		break;
+	};
+
+	if (ret == CKR_OK) {
+
+		g_return_val_if_fail (object, CKR_GENERAL_ERROR);
+		
+		/* 
+		 * Store it appropriately. 
+		 * TODO: Eventually we will store and write to the token
+		 * storage here, but for now just the session.
+		 */
+		session_add_object (sinfo, object);
+		
+		gkr_pkcs11_message_write_uint32 (resp, object->handle);
+		g_object_unref (object);
+	}
+	
+done:
+	gkr_pk_attributes_free (attrs);
+	return ret;
 }
 
 static CK_RV
@@ -496,7 +609,7 @@ session_C_GetAttributeValue (SessionInfo *sinfo, GkrPkcs11Message *req,
 	}
 	
 	/* Attributes have been filled in with allocated values, so deep free */
-	gkr_pk_attribute_array_free (attrs);
+	gkr_pk_attributes_free (attrs);
 	
 	return ret;
 }
@@ -522,9 +635,10 @@ static CK_RV
 session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req, 
                            GkrPkcs11Message *resp)
 {
-	CK_BBOOL *token = NULL;
+	CK_BBOOL token;
 	GList *l, *objects = NULL;
 	GArray *attrs;
+	gboolean all;
 	CK_RV ret = CKR_OK;
 	
 	if (sinfo->operation_type)
@@ -533,14 +647,14 @@ session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (!(attrs = read_attribute_array (req)))
 		return PROTOCOL_ERROR;
 	
-	token = (CK_BBOOL*)gkr_pk_attribute_array_find (attrs, CKA_TOKEN);
+	all = !gkr_pk_attributes_boolean (attrs, CKA_TOKEN, &token);
 
 	/* All or only token objects? */
-	if(!token || *token)
+	if(all || token)
 		objects = gkr_pk_object_manager_find (NULL, 0, attrs);
 	
 	/* All or only session objects? */
-	if (!token || !*token)
+	if (all || !token)
 		session_find_objects (sinfo, attrs, &objects);
 	
 	
@@ -552,7 +666,7 @@ session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 		g_list_free (objects);
 	}
 	
-	gkr_pk_attribute_array_free (attrs);
+	gkr_pk_attributes_free (attrs);
 	
 	/* No response */
 	return ret;
@@ -1223,13 +1337,14 @@ static SessionInfo*
 session_info_new ()
 {
 	SessionInfo *sinfo = g_new0 (SessionInfo, 1);
-	
+	sinfo->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	return sinfo;
 }
 
 static void 
 session_info_free (SessionInfo *sinfo)
 {
+	g_hash_table_destroy (sinfo->objects);
 	g_free (sinfo);
 }
 

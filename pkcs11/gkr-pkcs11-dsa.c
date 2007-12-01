@@ -29,6 +29,7 @@
 
 #include "pk/gkr-pk-pubkey.h"
 #include "pk/gkr-pk-privkey.h"
+#include "pk/gkr-pk-util.h"
 
 static CK_RV
 object_to_public_key (GkrPkObject *object, gcry_sexp_t *s_key)
@@ -184,5 +185,86 @@ gkr_pkcs11_dsa_verify (GkrPkObject *object, const guchar *plain, gsize n_plain,
 		return CKR_GENERAL_ERROR;
 	}
 
+	return CKR_OK;
+}
+
+CK_RV
+gkr_pkcs11_dsa_create_key (const GArray* attrs, GkrPkObject **key)
+{
+	CK_OBJECT_CLASS cls;
+	gcry_sexp_t skey;
+	gcry_error_t gcry;
+	gcry_mpi_t p = NULL;
+	gcry_mpi_t q = NULL;
+	gcry_mpi_t g = NULL;
+	gcry_mpi_t value = NULL;
+	gcry_mpi_t y = NULL;
+	gboolean priv;
+	CK_RV ret;
+	
+	g_return_val_if_fail (attrs, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (key, CKR_GENERAL_ERROR);
+	
+	/* Figure out if it's public or private */
+	if (!gkr_pk_attributes_ulong (attrs, CKA_CLASS, &cls)) {
+		ret = CKR_TEMPLATE_INCOMPLETE;
+		goto done;
+	}
+	if (cls == CKO_PRIVATE_KEY)
+		priv = TRUE;
+	else if (cls == CKO_PUBLIC_KEY)
+		priv = FALSE;
+	else {
+		ret = CKR_ATTRIBUTE_VALUE_INVALID;
+		goto done;
+	}
+	
+	if (!gkr_pk_attributes_mpi (attrs, CKA_PRIME, &p) ||
+	    !gkr_pk_attributes_mpi (attrs, CKA_SUBPRIME, &q) || 
+	    !gkr_pk_attributes_mpi (attrs, CKA_BASE, &g) ||
+	    !gkr_pk_attributes_mpi (attrs, CKA_VALUE, &value)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	} 
+	    	
+	/* Create a private key */
+	if (priv) {
+	    		
+		/* Calculate the public part from the private */
+		y = gcry_mpi_snew (gcry_mpi_get_nbits (value));
+  		gcry_mpi_powm (y, g, value, p);
+  			
+		gcry = gcry_sexp_build (&skey, NULL, "(private-key (dsa (p %m) (q %m) (g %m) (y %m) (x %m)))",
+		                        p, q, g, value);
+	    		
+	/* Create a public key */
+	} else {
+	    		
+		gcry = gcry_sexp_build (&skey, NULL, "(public-key (dsa (p %m) (q %m) (g %m) (y %m)))",
+		                        p, q, g, value);	    		
+    	}
+	
+	/* TODO: We should be mapping better return codes */
+	if (gcry != 0) {
+		g_message ("couldn't create DSA key from passed attributes");
+		ret = CKR_GENERAL_ERROR;
+		goto done;
+	}
+	
+	if (priv) 
+		*key = gkr_pk_privkey_new (0, skey);
+	else
+		*key = gkr_pk_pubkey_new (0, skey); 
+
+	/* TODO: We should verify remainder of attributes */
+	ret = CKR_OK;
+		
+done:
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (g);
+	gcry_mpi_release (y);
+	gcry_mpi_release (value);
+	
 	return CKR_OK;
 }

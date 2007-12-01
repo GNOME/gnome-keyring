@@ -70,11 +70,21 @@ void               gkr_pk_attribute_set_uint              (CK_ATTRIBUTE_PTR attr
 
 void               gkr_pk_attribute_set_mpi               (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi);
 
-#define            gkr_pk_attribute_array_new()           (g_array_new (0, 1, sizeof (CK_ATTRIBUTE)))
+#define            gkr_pk_attributes_new()                (g_array_new (0, 1, sizeof (CK_ATTRIBUTE)))
  
-gpointer           gkr_pk_attribute_array_find            (const GArray* attrs, CK_ATTRIBUTE_TYPE type);
+CK_ATTRIBUTE_PTR   gkr_pk_attributes_find                 (const GArray* attrs, CK_ATTRIBUTE_TYPE type);
 
-void               gkr_pk_attribute_array_free            (GArray *attrs);
+gboolean           gkr_pk_attributes_ulong                (const GArray* attrs, CK_ATTRIBUTE_TYPE type, 
+                                                           CK_ULONG *value);
 
+gboolean           gkr_pk_attributes_boolean              (const GArray* attrs, CK_ATTRIBUTE_TYPE type, 
+                                                           CK_BBOOL *value);
+
+gboolean           gkr_pk_attributes_mpi                  (const GArray* attrs, CK_ATTRIBUTE_TYPE type, 
+                                                           gcry_mpi_t *mpi);
+
+void               gkr_pk_attributes_free                 (GArray *attrs);
+
+gboolean           gkc_pk_class_is_private                (CK_OBJECT_CLASS cls);
 
 #endif /*GKRPKUTIL_H_*/

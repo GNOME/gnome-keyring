@@ -151,8 +151,12 @@ static GObject*
 gkr_pk_object_constructor (GType type, guint n_properties, GObjectConstructParam *properties)
 {
 	GObject *obj = G_OBJECT_CLASS (gkr_pk_object_parent_class)->constructor (type, n_properties, properties);
-	if (obj)
-		gkr_pk_object_manager_register (NULL, GKR_PK_OBJECT (obj));
+	if (obj) {
+		GkrPkObject *xobj = GKR_PK_OBJECT (obj);
+		if (xobj->location)
+			gkr_pk_object_manager_register (NULL, xobj);
+	}
+	
 	return obj;
 }
 
@@ -216,7 +220,8 @@ gkr_pk_object_finalize (GObject *obj)
 	g_free (pv->data_path);
 	g_free (pv->data_section);
 	
-	gkr_pk_object_manager_unregister (NULL, xobj);
+	if (xobj->manager)
+		gkr_pk_object_manager_unregister (xobj->manager, xobj);
 
 	G_OBJECT_CLASS (gkr_pk_object_parent_class)->finalize (obj);
 }
@@ -237,7 +242,7 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
 		g_param_spec_uint ("location", "Location", "Location of Data",
-		                   0, G_MAXUINT, 0, G_PARAM_READWRITE));
+		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 		                   
 	g_object_class_install_property (gobject_class, PROP_UNIQUE,
 		g_param_spec_boxed ("unique", "Unique", "Unique Identifier for Data",

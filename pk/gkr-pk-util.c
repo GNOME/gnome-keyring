@@ -327,8 +327,8 @@ gkr_pk_attribute_free (gpointer v)
 	}
 }
 
-gpointer
-gkr_pk_attribute_array_find (const GArray* attrs, CK_ATTRIBUTE_TYPE type)
+CK_ATTRIBUTE_PTR
+gkr_pk_attributes_find (const GArray* attrs, CK_ATTRIBUTE_TYPE type)
 {
 	CK_ATTRIBUTE_PTR attr;
 	guint i;
@@ -336,15 +336,50 @@ gkr_pk_attribute_array_find (const GArray* attrs, CK_ATTRIBUTE_TYPE type)
 	for (i = 0; i < attrs->len; ++i) {
 		attr = &(g_array_index (attrs, CK_ATTRIBUTE, i));
 		if (attr->type == type)
-			return attr->pValue;
+			return attr;
 	}
 
 	return NULL;
 }
 
- 
+gboolean
+gkr_pk_attributes_ulong (const GArray* attrs, CK_ATTRIBUTE_TYPE type, CK_ULONG *value)
+{
+	CK_ATTRIBUTE_PTR attr = gkr_pk_attributes_find (attrs, type);
+	if (attr && attr->pValue && attr->ulValueLen == sizeof (CK_ULONG)) {
+		*value = *((CK_ULONG*)attr->pValue);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+gboolean
+gkr_pk_attributes_boolean (const GArray* attrs, CK_ATTRIBUTE_TYPE type, CK_BBOOL *value)
+{
+	CK_ATTRIBUTE_PTR attr = gkr_pk_attributes_find (attrs, type);
+	if (attr && attr->pValue && attr->ulValueLen == sizeof (CK_BBOOL)) {
+		*value = *((CK_BBOOL*)attr->pValue);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+gboolean
+gkr_pk_attributes_mpi (const GArray* attrs, CK_ATTRIBUTE_TYPE type, gcry_mpi_t *mpi)
+{
+	CK_ATTRIBUTE_PTR attr;
+	gcry_error_t gcry;
+	
+	attr = gkr_pk_attributes_find (attrs, type);
+	if (attr && attr->pValue && attr->ulValueLen) {
+		gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_USG, attr->pValue, attr->ulValueLen, NULL);
+		return gcry == 0;
+	}
+	return FALSE;
+}
+
 void
-gkr_pk_attribute_array_free (GArray *attrs)
+gkr_pk_attributes_free (GArray *attrs)
 {
 	CK_ATTRIBUTE_PTR attr;
 	guint i;
@@ -358,4 +393,16 @@ gkr_pk_attribute_array_free (GArray *attrs)
 	}
 
 	g_array_free (attrs, TRUE);
+}
+
+gboolean
+gkc_pk_class_is_private (CK_OBJECT_CLASS cls)
+{
+	switch (cls) {
+	case CKO_PRIVATE_KEY:
+	case CKO_SECRET_KEY:
+		return TRUE;
+	default:
+		return FALSE;
+	}
 }

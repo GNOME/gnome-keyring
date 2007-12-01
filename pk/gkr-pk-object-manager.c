@@ -320,13 +320,13 @@ gkr_pk_object_manager_findv (GkrPkObjectManager *objmgr, GType gtype, ...)
 		};
 		
 		if (!attrs)
-			attrs = gkr_pk_attribute_array_new ();
+			attrs = gkr_pk_attributes_new ();
 		g_array_append_val (attrs, attr);
 	}
 
 	va_end (va);
 	
-	gkr_pk_attribute_array_free (attrs);
+	gkr_pk_attributes_free (attrs);
 	return ret;
 }
 
@@ -345,7 +345,7 @@ gkr_pk_object_manager_find (GkrPkObjectManager *man, GType gtype, GArray *attrs)
 
 	/* Figure out the class of objects we're loading */
 	if (attrs)
-		ocls = (CK_OBJECT_CLASS*)gkr_pk_attribute_array_find (attrs, CKA_CLASS);
+		ocls = (CK_OBJECT_CLASS*)gkr_pk_attributes_find (attrs, CKA_CLASS);
 	if (ocls) {
 		switch (*ocls) {
 		/* TODO: Add here classes for which we don't want to refresh */

@@ -1,5 +1,15 @@
 2007-12-01  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object-manager.c:
+	* pk/gkr-pk-util.c:
+	* pk/gkr-pk-util.h:
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* pkcs11/gkr-pkcs11-dsa.c:
+	* pkcs11/gkr-pkcs11-dsa.h: Implement creation of DSA key objects.
+	
+2007-12-01  Stef Walter  <stef@memberwebs.com>
+
 	* keyrings/gkr-keyring-login.c: Refresh keyrings before trying 
 	to create a login keyring, so we don't create it over and over.
 	
