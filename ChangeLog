@@ -1,3 +1,8 @@
+2007-12-03  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-secure-memory.c: Add header necessary for 
+	building on OpenBSD. Patch by Martynas Venckus
+
 2007-11-30  Stef Walter  <stef@memberwebs.com>
 
 	* pam/gkr-pam-module.c: Use correct environment to start up
