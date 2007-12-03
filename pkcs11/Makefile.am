@@ -7,12 +7,14 @@ EXTRA_DIST = \
 # ------------------------------------------------------------------------------
 # The pkcs11 module 
 
+moduledir = $(libdir)/gnome-keyring/
+
 MODULE_SRCS = \
 	gkr-pkcs11-module.c \
 	gkr-pkcs11-message.c gkr-pkcs11-message.h \
 	gkr-pkcs11-mechanisms.h gkr-pkcs11-calls.h 
 
-lib_LTLIBRARIES = gnome-keyring-pkcs11.la
+module_LTLIBRARIES = gnome-keyring-pkcs11.la
 
 gnome_keyring_pkcs11_la_LDFLAGS = \
 	-module \
@@ -56,3 +58,4 @@ libgkr_pkcs11_la_SOURCES = $(DAEMON_SRCS)
 libgkr_pkcs11_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
+
