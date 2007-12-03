@@ -109,7 +109,7 @@ gkr_unique_new_digest (const guchar *data, gsize n_data)
 #endif
 
 	uni[0] = len;	
-	gcry_md_hash_buffer (GCRY_MD_MD5, uni + 1, data, n_data);
+	gcry_md_hash_buffer (GCRY_MD_SHA1, uni + 1, data, n_data);
 
 	return uni;
 }
@@ -125,7 +125,7 @@ gkr_unique_new_digestv (const guchar *data, gsize n_data, ...)
 	g_assert (data);
 	g_assert (n_data > 0);
 	
-	gcry = gcry_md_open (&mdh, GCRY_MD_MD5, 0);
+	gcry = gcry_md_open (&mdh, GCRY_MD_SHA1, 0);
 	g_return_val_if_fail (gcry == 0, NULL);
 	
 	gcry_md_write (mdh, data, n_data);

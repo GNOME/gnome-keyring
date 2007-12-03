@@ -1,5 +1,9 @@
 2007-12-03  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-unique.c: Use SHA1 for unique hashes instead of MD5.
+	 
+2007-12-03  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/Makefile.am: Install PKCS#11 module into 
 	$(prefix)lib/gnome-keyring. 
 
