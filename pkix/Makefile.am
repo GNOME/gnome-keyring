@@ -8,6 +8,7 @@ INCLUDES=	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
+	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS) 				\
 	$(GLIB_CFLAGS)
 

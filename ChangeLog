@@ -1,3 +1,8 @@
+2007-12-04  Stef Walter  <stef@memberwebs.com>
+
+	* pkix/Makefile.am: Make sure we add the appropriate 
+	include directories when compiling.
+
 2007-12-03  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-unique.c: Use SHA1 for unique hashes instead of MD5.
