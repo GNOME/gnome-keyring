@@ -1,5 +1,8 @@
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-unique.c: Fix buffer sizes when using SHA1, and 
+	close hashing context.
+
 	* pkcs11/Makefile.am: Remove -version-info for PKCS#11 module
 
 	* pkix/Makefile.am: Make sure we add the appropriate 

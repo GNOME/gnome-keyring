@@ -94,7 +94,7 @@ gkr_unique_new_digest (const guchar *data, gsize n_data)
 	g_assert (data != NULL);
 	g_assert (n_data > 0);
 
-	len = sizeof (guint) + 16;
+	len = sizeof (guint) + 20;
 	
 #ifdef DEBUG_HEADER
 	len += sizeof (guint);
@@ -120,6 +120,7 @@ gkr_unique_new_digestv (const guchar *data, gsize n_data, ...)
 	gcry_md_hd_t mdh;
 	gcry_error_t gcry;
 	const guchar *digest;
+	gkrunique uni;
 	va_list va;
 	
 	g_assert (data);
@@ -147,7 +148,10 @@ gkr_unique_new_digestv (const guchar *data, gsize n_data, ...)
 	digest = gcry_md_read (mdh, 0);
 	g_return_val_if_fail (digest != NULL, NULL);
 	
-	return gkr_unique_new (digest, 16);
+	uni = gkr_unique_new (digest, 20);
+
+	gcry_md_close (mdh);
+	return uni;
 }
 
 guint
