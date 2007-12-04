@@ -1,3 +1,10 @@
+=== gnome-keyring 2.21.3.1 ===
+
+2007-12-04  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS:
+	* configure.in: Release gnome-keyring 2.21.3.1
+
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-unique.c: Fix buffer sizes when using SHA1, and 

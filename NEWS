@@ -1,3 +1,8 @@
+Changes in version 2.21.3.1 are:
+* Build fixes
+* Use SHA1 instead of MD5 where possible.
+* Install PKCS#11 module to a better prefix
+
 Changes in version 2.21.3 are:
 * Added basic X.509 certificate and key store 
 * PKCS#11 module for accessing certificates and keys
