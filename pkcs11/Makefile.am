@@ -18,7 +18,6 @@ module_LTLIBRARIES = gnome-keyring-pkcs11.la
 
 gnome_keyring_pkcs11_la_LDFLAGS = \
 	-module \
-	-version-info 0:0:0 \
 	-Wl,--no-undefined \
 	-Wl,--version-script=$(srcdir)/gkr-pkcs11-module-export.map
 
