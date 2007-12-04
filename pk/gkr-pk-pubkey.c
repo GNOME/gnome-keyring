@@ -278,7 +278,7 @@ gkr_pk_pubkey_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	GkrPkPubkey *key = GKR_PK_PUBKEY (obj);
 	gcry_mpi_t mpi;
 	gboolean ret;
-	guint val;
+	gulong val;
 	
 	switch (attr->type)
 	{
@@ -322,7 +322,7 @@ gkr_pk_pubkey_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	};
 	
-	gkr_pk_attribute_set_uint (attr, val);
+	gkr_pk_attribute_set_ulong (attr, val);
 	return CKR_OK;
 }
 

@@ -194,7 +194,7 @@ static CK_RV
 gkr_pkix_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
-	guint val;
+	gulong val;
 	guchar *extension;
 	gsize n_extension;
 	gboolean is_ca;
@@ -230,7 +230,7 @@ gkr_pkix_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	};
 	
-	gkr_pk_attribute_set_uint (attr, val);
+	gkr_pk_attribute_set_ulong (attr, val);
 	return CKR_OK;
 }
 

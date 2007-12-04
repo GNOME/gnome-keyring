@@ -51,7 +51,8 @@ static int
 no_mem_handler (gpointer unused, size_t sz, unsigned int unknown)
 {
 	/* TODO: Figure out additional arguments */
-	g_error ("couldn't allocate %d bytes of memory", sz);
+	g_error ("couldn't allocate %lu bytes of memory", 
+	         (unsigned long int)sz);
 	return 0;
 }
 

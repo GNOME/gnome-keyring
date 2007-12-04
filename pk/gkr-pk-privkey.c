@@ -323,7 +323,7 @@ static CK_RV
 gkr_pk_privkey_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
-	guint val;
+	gulong val;
 	
 	switch (attr->type)
 	{
@@ -346,7 +346,7 @@ gkr_pk_privkey_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	};
 	
-	gkr_pk_attribute_set_uint (attr, val);
+	gkr_pk_attribute_set_ulong (attr, val);
 	return CKR_OK;
 }
 

@@ -833,7 +833,7 @@ setup_pkcs5_rc2_params (GkrPkixParser *parser, const guchar *data, guchar n_data
 	gcry = gcry_cipher_setiv (cih, iv, n_iv);
 			
 	if (gcry != 0) {
-		g_message ("couldn't set %d byte iv on cipher", n_iv);
+		g_message ("couldn't set %lu byte iv on cipher", (gulong)n_iv);
 		return GKR_PARSE_FAILURE;
 	}
 	
@@ -866,7 +866,7 @@ setup_pkcs5_des_params (GkrPkixParser *parser, const guchar *data, guchar n_data
 	gcry = gcry_cipher_setiv (cih, iv, n_iv);
 			
 	if (gcry != 0) {
-		g_message ("couldn't set %d byte iv on cipher", n_iv);
+		g_message ("couldn't set %lu byte iv on cipher", (gulong)n_iv);
 		return GKR_PARSE_FAILURE;
 	}
 	
@@ -912,7 +912,7 @@ setup_pkcs5_pbkdf2_params (GkrPkixParser *parser, const gchar *password, const g
 	
 	gcry = gcry_cipher_setkey (cih, key, n_key);
 	if (gcry != 0) {
-		g_message ("couldn't set %d byte key on cipher", n_key);
+		g_message ("couldn't set %lu byte key on cipher", (gulong)n_key);
 		goto done;
 	}
 	

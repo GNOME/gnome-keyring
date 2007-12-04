@@ -66,7 +66,7 @@ void               gkr_pk_attribute_set_boolean           (CK_ATTRIBUTE_PTR attr
 
 void               gkr_pk_attribute_set_date              (CK_ATTRIBUTE_PTR attr, time_t time);
 
-void               gkr_pk_attribute_set_uint              (CK_ATTRIBUTE_PTR attr, guint value);
+void               gkr_pk_attribute_set_ulong             (CK_ATTRIBUTE_PTR attr, gulong value);
 
 void               gkr_pk_attribute_set_mpi               (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi);
 

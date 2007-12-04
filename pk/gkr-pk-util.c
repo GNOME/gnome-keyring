@@ -269,7 +269,7 @@ gkr_pk_attribute_set_unique (CK_ATTRIBUTE_PTR attr, gkrconstunique uni)
 }
 
 void
-gkr_pk_attribute_set_uint (CK_ATTRIBUTE_PTR attr, guint value)
+gkr_pk_attribute_set_ulong (CK_ATTRIBUTE_PTR attr, gulong value)
 {
 	g_assert (attr);
 	

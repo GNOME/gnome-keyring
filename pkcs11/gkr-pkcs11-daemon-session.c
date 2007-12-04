@@ -195,7 +195,7 @@ static gboolean
 read_byte_array (GkrPkcs11Message *msg, CK_BYTE_PTR *val, CK_ULONG *vlen)
 {
 	const unsigned char* v;
-	uint32_t l; 
+	size_t l; 
 	
 	g_assert (msg && val && vlen);
 	g_assert (gkr_pkcs11_message_verify_part (msg, "ay"));

@@ -1,5 +1,17 @@
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-crypto.c:
+	* pk/gkr-pk-object-manager.c:
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-pubkey.c:
+	* pk/gkr-pk-util.c:
+	* pk/gkr-pk-util.h:
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* pkix/gkr-pkix-cert.c:
+	* pkix/gkr-pkix-der.c: x86_64 build fixes. Patch by Dan Winship
+	
+2007-12-04  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Bump version number
 
 === gnome-keyring 2.21.3.1 ===

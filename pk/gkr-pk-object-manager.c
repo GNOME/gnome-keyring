@@ -337,7 +337,7 @@ gkr_pk_object_manager_findv (GkrPkObjectManager *objmgr, GType gtype, ...)
 		switch (gkr_pk_attribute_data_type (attr.type)) {
 		case GKR_PK_DATA_ULONG:
 			uval = va_arg (va, CK_ULONG);
-			gkr_pk_attribute_set_uint (&attr, uval);
+			gkr_pk_attribute_set_ulong (&attr, uval);
 			spacer = va_arg (va, CK_ULONG);
 			break;
 		
