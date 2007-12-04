@@ -17,9 +17,8 @@ MODULE_SRCS = \
 module_LTLIBRARIES = gnome-keyring-pkcs11.la
 
 gnome_keyring_pkcs11_la_LDFLAGS = \
-	-module \
-	-Wl,--no-undefined \
-	-Wl,--version-script=$(srcdir)/gkr-pkcs11-module-export.map
+	-module -avoid-version \
+	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
 gnome_keyring_pkcs11_la_CFLAGS = \
 	-I. \
@@ -38,6 +37,7 @@ gnome_keyring_pkcs11_la_LIBADD = \
 INCLUDES = \
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
+	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS) 				\
 	$(GLIB_CFLAGS)
 
