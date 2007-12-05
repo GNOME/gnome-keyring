@@ -36,6 +36,7 @@
 #include "common/gkr-unique.h"
 
 #include "pkix/gkr-pkix-der.h"
+#include "pkix/gkr-pkix-cert.h"
 
 #include <glib.h>
 #include <glib-object.h>
@@ -203,7 +204,7 @@ attribute_from_certificate (GkrPkPrivkey *key, CK_ATTRIBUTE_PTR attr)
 		return CKR_GENERAL_ERROR;
 		
 	obj = GKR_PK_OBJECT (key);
-	crt = gkr_pk_object_manager_find_by_id (obj->manager, CKO_CERTIFICATE, keyid); 
+	crt = gkr_pk_object_manager_find_by_id (obj->manager, GKR_TYPE_PKIX_CERT, keyid); 
 	if (crt == NULL)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		

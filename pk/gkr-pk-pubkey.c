@@ -35,6 +35,7 @@
 #include "common/gkr-unique.h"
 
 #include "pkix/gkr-pkix-der.h"
+#include "pkix/gkr-pkix-cert.h"
 
 #include <glib.h>
 #include <glib-object.h>
@@ -127,7 +128,7 @@ load_public_key (GkrPkPubkey *key)
 }
 
 static CK_RV
-attribute_from_related (GkrPkPubkey *key, CK_OBJECT_CLASS cls, CK_ATTRIBUTE_PTR attr)
+attribute_from_related (GkrPkPubkey *key, GType type, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkObject *crt, *obj;
 	
@@ -135,7 +136,7 @@ attribute_from_related (GkrPkPubkey *key, CK_OBJECT_CLASS cls, CK_ATTRIBUTE_PTR 
 		return CKR_GENERAL_ERROR;
 	
 	obj = GKR_PK_OBJECT (key);	
-	crt = gkr_pk_object_manager_find_by_id (obj->manager, cls, key->pub->keyid);
+	crt = gkr_pk_object_manager_find_by_id (obj->manager, type, key->pub->keyid);
 	
 	if (crt == NULL)
 		return CKR_GENERAL_ERROR;
@@ -351,7 +352,7 @@ gkr_pk_pubkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 
 	case CKA_SUBJECT:
 		/* The subject of a related certificate */
-		if (attribute_from_related (key, CKO_CERTIFICATE, attr) == CKR_OK)
+		if (attribute_from_related (key, GKR_TYPE_PKIX_CERT, attr) == CKR_OK)
 			return CKR_OK;
 			
 		/* Empty subject */

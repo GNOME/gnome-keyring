@@ -21,6 +21,9 @@
 	
 	* pk/gkr-pk-util.c: Proper formating of a date into a PKCS#11 CK_DATE
 	
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-pubkey.c: Lookup related certificates properly using GType 
+	
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-crypto.c:
