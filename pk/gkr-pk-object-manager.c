@@ -183,8 +183,10 @@ gkr_pk_object_manager_dispose (GObject *obj)
  		g_hash_table_remove (object_managers_by_pid, k);
  		
  		/* Destroy the table if its empty */
- 		if (g_hash_table_size (object_managers_by_pid) == 0)
- 			g_hash_table_destroy (object_managers_by_pid); 
+ 		if (g_hash_table_size (object_managers_by_pid) == 0) {
+ 			g_hash_table_destroy (object_managers_by_pid);
+ 			object_managers_by_pid = NULL;
+ 		} 
  	}
 
 	G_OBJECT_CLASS (gkr_pk_object_manager_parent_class)->dispose (obj);

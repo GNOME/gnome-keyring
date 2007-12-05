@@ -3,6 +3,8 @@
 	* pkcs11/Makefile.am: Don't append version numbers to 
 	the PKCS #11 module, and use simpler linking options.
 	
+	* pk/gkr-pk-object-manager.c: Fix dangling pointer.
+	
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-crypto.c:
