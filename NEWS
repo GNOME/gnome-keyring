@@ -1,3 +1,12 @@
+Changes in version 2.21.3.2 are:
+* x86_64 build fixes
+* Build and install fixes
+* Fix problems with assertions when not in debug mode.
+* Fix some crashers
+* Better ASN.1 and PKCS#11 date parsing and handling
+* Fix return results from C_GetAttributeValue
+* Lookup certificates related to keys properly.
+
 Changes in version 2.21.3.1 are:
 * Build fixes
 * Use SHA1 instead of MD5 where possible.

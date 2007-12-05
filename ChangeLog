@@ -1,3 +1,18 @@
+=== gnome-keyring 2.21.3.2 ===
+
+2007-12-05  Stef Walter  <stef@memberwebs.com>
+
+	* keyrings/Makefile.am:
+	* pk/Makefile.am:
+	* pkcs11/Makefile.am:
+	* pkcs11/gkr-pkcs11-module-export.map: (removed)
+	* ssh/Makefile.am:
+	* ui/Makefile.am:
+	* NEWS:
+	* configure.in: Release gnome-keyring 2.21.3.2 with more build
+	fixes so it builds in jhbuild
+
+
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/Makefile.am: Don't append version numbers to 

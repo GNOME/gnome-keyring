@@ -1,6 +1,5 @@
 
 EXTRA_DIST = \
-	gkr-pkcs11-module-export.map \
 	pkcs11.h \
 	pkcs11n.h 
 

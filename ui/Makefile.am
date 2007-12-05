@@ -9,6 +9,7 @@ INCLUDES=	\
 	-I$(top_srcdir) 				\
 	-I$(top_srcdir)/library/			\
 	-I$(top_builddir) 				\
+	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS) 				\
 	$(GLIB_CFLAGS)					\
 	$(GTK_CFLAGS)
