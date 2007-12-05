@@ -408,6 +408,48 @@ atoin (const char *p, int digits)
 	return ret;
 }
 
+static int
+two_to_four_digit_year (int year)
+{
+	time_t now;
+	struct tm tm;
+	int century, current;
+	
+	g_return_val_if_fail (year > 0 && year <= 99, -1);
+	
+	/* Get the current year */
+	now = time (NULL);
+	g_return_val_if_fail (now >= 0, -1);
+	if (!gmtime_r (&now, &tm))
+		g_return_val_if_reached (-1);
+
+	current = (tm.tm_year % 100);
+	century = (tm.tm_year + 1900) - current;
+
+	/* 
+	 * Check if it's within 40 years before the 
+	 * current date. 
+	 */
+	if (current < 40) {
+		if (year < current)
+			return century + year;
+		if (year > 100 - (40 - current))
+			return (century - 100) + year;
+	} else {
+		if (year < current && year > (current - 40))
+			return century + year;
+	}
+	
+	/* 
+	 * If it's after then adjust for overflows to
+	 * the next century.
+	 */
+	if (year < current)
+		return century + 100 + year;
+	else
+		return century + year;
+}
+
 time_t
 gkr_pkix_asn1_parse_utc_time (const gchar *time)
 {
@@ -415,6 +457,7 @@ gkr_pkix_asn1_parse_utc_time (const gchar *time)
 	guint n_time;
 	time_t result;
 	const char *p, *e;
+	int year;
 
 	g_assert (time);	
 	n_time = strlen (time);
@@ -432,8 +475,14 @@ gkr_pkix_asn1_parse_utc_time (const gchar *time)
 	for (e = p; *e >= '0' && *e <= '9'; ++e);
 	
 	if (p + 2 <= e) {
-		when.tm_year = atoin (p, 2);
+		year = atoin (p, 2);
 		p += 2;
+		
+		/* 
+		 * 40 years in the past is our century. 60 years
+		 * in the future is the next century. 
+		 */
+		when.tm_year = two_to_four_digit_year (year) - 1900;
 	}
 	if (p + 2 <= e) {
 		when.tm_mon = atoin (p, 2) - 1;

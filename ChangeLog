@@ -10,6 +10,10 @@
 	assertions are in place. Prevents confusion with half the assertions
 	disabled.
 	
+	* pkix/gkr-pkix-asn1.c: 
+	* pkix/tests/unit-tests-pkix-asn1.c: Proper parsing of two digit 
+	dates in the UTCTime type. 40 years into the past, 60 into the future.
+	
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-crypto.c:

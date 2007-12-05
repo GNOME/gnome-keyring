@@ -149,6 +149,24 @@ static const TimeTestData generalized_time_test_data[] = {
 	{ NULL, 0 }
 };
 
+static const TimeTestData utc_time_test_data[] = {
+	/* Test the Y2K style wrap arounds */
+	{ "070725130528Z", 1185368728 },  /* The year 2007 */
+	{ "020725130528Z", 1027602328 },  /* The year 2002 */
+	{ "970725130528Z", 869835928 },	  /* The year 1997 */
+	{ "370725130528Z", 2132139928 },  /* The year 2037 */
+	
+	/* Test the time zones and other formats */
+	{ "070725130528.2134Z", 1185368728 },
+	{ "070725140528-0100", 1185368728 },
+	{ "070725040528+0900", 1185368728 },
+	{ "070725013528+1130", 1185368728 },
+	{ "070725Z", 1185321600 },
+	{ "070725+0000", 1185321600 },
+	
+	{ NULL, 0 }
+};
+
 void unit_test_asn1_general_time (CuTest* cu)
 {
 	time_t when;
@@ -156,6 +174,24 @@ void unit_test_asn1_general_time (CuTest* cu)
 	
 	for (data = generalized_time_test_data; data->value; ++data) {
 		when = gkr_pkix_asn1_parse_general_time (data->value);
+		if (data->ref != when) {
+			printf ("%s", data->value);
+			printf ("%s != ", ctime (&when));
+			printf ("%s\n", ctime (&data->ref));
+			fflush (stdout);
+		}
+			
+		CuAssert (cu, "decoded time doesn't match reference", data->ref == when);
+	}
+}
+
+void unit_test_asn1_utc_time (CuTest* cu)
+{
+	time_t when;
+	const TimeTestData *data;
+	
+	for (data = utc_time_test_data; data->value; ++data) {
+		when = gkr_pkix_asn1_parse_utc_time (data->value);
 		if (data->ref != when) {
 			printf ("%s", data->value);
 			printf ("%s != ", ctime (&when));
