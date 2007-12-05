@@ -1792,9 +1792,12 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	_ret = proto_read_uint32_array (_cs->resp, (a), (n), (mx)); \
 	if (_ret != CKR_OK) goto _cleanup;
 
-#define OUT_RETURN_CODE() \
-	_ret = gkr_pkcs11_message_read_uint32 (_cs->resp, (_ret == CKR_OK) ? &_ret : NULL); \
-	if (_ret != CKR_OK) goto _cleanup;
+#define OUT_RETURN_CODE() { \
+	CK_RV r; \
+	_ret = gkr_pkcs11_message_read_uint32 (_cs->resp, (_ret == CKR_OK) ? &r : NULL); \
+	if (_ret == CKR_OK) _ret = r; \
+	if (_ret != CKR_OK) goto _cleanup; \
+	}
 
 #define OUT_SESSION_INFO(info) \
 	_ret = proto_read_sesssion_info (_cs->resp, info); \

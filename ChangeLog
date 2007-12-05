@@ -14,6 +14,9 @@
 	* pkix/tests/unit-tests-pkix-asn1.c: Proper parsing of two digit 
 	dates in the UTCTime type. 40 years into the past, 60 into the future.
 	
+	* pkcs11/gkr-pkcs11-module.c: Return soft failures from 
+	C_GetAttributeValue properly.
+	
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-crypto.c:
