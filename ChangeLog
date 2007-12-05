@@ -5,6 +5,11 @@
 	
 	* pk/gkr-pk-object-manager.c: Fix dangling pointer.
 	
+	* pkcs11/gkr-pkcs11-message.c:
+	* pkcs11/gkr-pkcs11-module.c: Use G_DISABLE_ASSERT to control whether
+	assertions are in place. Prevents confusion with half the assertions
+	disabled.
+	
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-crypto.c:

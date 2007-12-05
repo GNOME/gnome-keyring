@@ -92,11 +92,11 @@ static char socket_path[1024] = { 0, };
 static int slot_id = 0;
 
 #ifndef ASSERT
-#  ifdef _DEBUG
+#  ifdef G_DISABLE_ASSERT
+#    define ASSERT(x)
+#  else
 #    include <assert.h>
 #    define ASSERT(x) assert(x)
-#  else
-#    define ASSERT(x)
 #  endif 
 #endif
 

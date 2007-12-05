@@ -29,11 +29,11 @@
 #include <string.h>
 
 #ifndef ASSERT
-#  ifdef _DEBUG
+#  ifdef G_DISABLE_ASSERT
+#    define ASSERT(x)
+#  else
 #    include <assert.h>
 #    define ASSERT(x) assert(x)
-#  else
-#    define ASSERT(x)
 #  endif 
 #endif
 
