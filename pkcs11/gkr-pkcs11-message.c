@@ -229,7 +229,7 @@ gkr_pkcs11_message_write_attribute_array (GkrPkcs11Message *msg,
 	CK_ATTRIBUTE_PTR attr;
 	unsigned char validity;
 
-	ASSERT (arr);
+	ASSERT (!num || arr);
 	ASSERT (msg);
 
 	/* Make sure this is in the rigth order */
@@ -294,6 +294,7 @@ gkr_pkcs11_message_write_byte_array (GkrPkcs11Message *msg,
                                      CK_BYTE_PTR arr, CK_ULONG num)
 {
 	ASSERT (msg);
+	ASSERT (!num || arr);
 
 	/* Make sure this is in the right order */
 	ASSERT (!msg->signature || gkr_pkcs11_message_verify_part (msg, "ay"));
