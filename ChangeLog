@@ -19,6 +19,8 @@
 	
 	* pkcs11/gkr-pkcs11-message.c: Fix some erroneous assertions.
 	
+	* pk/gkr-pk-util.c: Proper formating of a date into a PKCS#11 CK_DATE
+	
 2007-12-04  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-crypto.c:
