@@ -295,7 +295,7 @@ call_session_connect (CallSession *cs)
 	ASSERT (pkcs11_initialized);
 	
 	/* Yup, no environment variable == no token */
-	if (!socket_path || !socket_path[0]) {
+	if (!socket_path[0]) {
 		WARN (("S%d: no socket available to connect session to"));
 		return CKR_TOKEN_NOT_PRESENT;
 	}

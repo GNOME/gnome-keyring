@@ -1,3 +1,8 @@
+2007-12-06  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/gkr-pkcs11-module.c: Fix compiler warning. 
+	See bug #500588
+	
 === gnome-keyring 2.21.3.2 ===
 
 2007-12-05  Stef Walter  <stef@memberwebs.com>
