@@ -1,3 +1,10 @@
+2007-12-06  Halton Huo <halton.huo@sun.com>
+
+	Fix bug #501996
+	* configure.in: check flock and timegm existence.
+	* pk/gkr-pk-index.c: (flock): Implement flock if flock not found.
+	* pkix/gkr-pkix-asn1.c: (timegm): Implement timegm if timegm not found.
+
 2007-12-06  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/Makefile.am:

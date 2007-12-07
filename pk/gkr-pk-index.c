@@ -68,6 +68,39 @@ static GQuark no_location = 0;
  * HELPERS
  */
  
+#ifndef HAVE_FLOCK
+#define LOCK_SH 1
+#define LOCK_EX 2
+#define LOCK_NB 4
+#define LOCK_UN 8
+
+static int flock(int fd, int operation)
+{
+	struct flock flock;
+
+	switch (operation & ~LOCK_NB) {
+	case LOCK_SH:
+		flock.l_type = F_RDLCK;
+		break;
+	case LOCK_EX:
+		flock.l_type = F_WRLCK;
+		break;
+	case LOCK_UN:
+		flock.l_type = F_UNLCK;
+		break;
+	default:
+		errno = EINVAL;
+		return -1;
+	}
+
+	flock.l_whence = 0;
+	flock.l_start = 0;
+	flock.l_len = 0;
+
+	return fcntl(fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &flock);
+}
+#endif //NOT_HAVE_FLOCK
+
 static void 
 free_mtime (gpointer v)
 {
