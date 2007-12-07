@@ -1,3 +1,9 @@
+2007-12-07  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* daemon/Makefile.am: Only install system DBus service file if 
+	DBus is in use. Patch from Tom Parker. See bug #421554
+		
 2007-12-06  Halton Huo <halton.huo@sun.com>
 
 	Fix bug #501996

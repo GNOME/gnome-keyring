@@ -226,7 +226,7 @@ if test "$enable_dbus" = "yes"; then
 
 	AC_ARG_WITH(dbus-services,
 			  [AC_HELP_STRING([--with-dbus-services=<dir>],
-			  [where D-BUS system-services directory is])])
+			  [where D-BUS session services directory is])])
 	if ! test -z "$with_dbus_services" ; then
 		DBUS_SERVICES_DIR="$with_dbus_services"
 	else
@@ -234,6 +234,7 @@ if test "$enable_dbus" = "yes"; then
 	fi
 	AC_SUBST(DBUS_SERVICES_DIR)
 fi
+AM_CONDITIONAL(WITH_DBUS, test "$enable_dbus" == "yes")
 
 # --------------------------------------------------------------------
 # HAL Checks
