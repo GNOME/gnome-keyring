@@ -1,5 +1,16 @@
 2007-12-07  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-cert.[ch]: (moved from pkix/)
+	* pk/gkr-pk-object-manager.c:
+	* pk/gkr-pk-object-storage.c:
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-pubkey.c:
+	* pk/Makefile.am:
+	* pkix/gkr-pkix-cert.[ch]: (moved to pk/)
+	* pkix/Makefile.am: Move the GkrPkixCert class from pkix to pk
+	
+2007-12-07  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in:
 	* daemon/Makefile.am: Only install system DBus service file if 
 	DBus is in use. Patch from Tom Parker. See bug #421554

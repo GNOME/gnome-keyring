@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-pkix-cert.c - An x509 certificate
+/* gkr-pk-cert.c - An x509 certificate
 
    Copyright (C) 2007 Stefan Walter
 
@@ -23,17 +23,17 @@
 
 #include "config.h"
 
-#include "gkr-pkix-asn1.h"
-#include "gkr-pkix-cert.h"
-#include "gkr-pkix-der.h"
+#include "gkr-pk-cert.h"
+#include "gkr-pk-pubkey.h"
+#include "gkr-pk-object.h"
+#include "gkr-pk-object-manager.h"
+#include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
 
-#include "pk/gkr-pk-pubkey.h"
-#include "pk/gkr-pk-object.h"
-#include "pk/gkr-pk-object-manager.h"
-#include "pk/gkr-pk-util.h"
+#include "pkix/gkr-pkix-asn1.h"
+#include "pkix/gkr-pkix-der.h"
 
 #include <glib.h>
 #include <glib-object.h>
@@ -53,14 +53,14 @@ enum {
 	PROP_ASN1_TREE
 };
 
-struct _GkrPkixCertData {
+struct _GkrPkCertData {
 	ASN1_TYPE asn1;
 	GkrPkPubkey *pubkey;
 	guchar *raw;
 	gsize n_raw;
 };
 
-G_DEFINE_TYPE (GkrPkixCert, gkr_pkix_cert, GKR_TYPE_PK_OBJECT);
+G_DEFINE_TYPE (GkrPkCert, gkr_pk_cert, GKR_TYPE_PK_OBJECT);
 
 static GQuark OID_BASIC_CONSTRAINTS;
 
@@ -80,7 +80,7 @@ init_quarks (void)
 }
 
 static GkrPkPubkey* 
-get_public_key (GkrPkixCert *cert)
+get_public_key (GkrPkCert *cert)
 {
 	gcry_sexp_t s_key = NULL;
 	GkrPkObject *obj;
@@ -118,17 +118,17 @@ get_public_key (GkrPkixCert *cert)
  */
 
 static void
-gkr_pkix_cert_init (GkrPkixCert *cert)
+gkr_pk_cert_init (GkrPkCert *cert)
 {
-	cert->data = G_TYPE_INSTANCE_GET_PRIVATE (cert, GKR_TYPE_PKIX_CERT, GkrPkixCertData);
-	memset (cert->data, 0, sizeof (GkrPkixCertData));
+	cert->data = G_TYPE_INSTANCE_GET_PRIVATE (cert, GKR_TYPE_PK_CERT, GkrPkCertData);
+	memset (cert->data, 0, sizeof (GkrPkCertData));
 }
 
 static void
-gkr_pkix_cert_get_property (GObject *obj, guint prop_id, GValue *value, 
+gkr_pk_cert_get_property (GObject *obj, guint prop_id, GValue *value, 
                           GParamSpec *pspec)
 {
-	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
+	GkrPkCert *cert = GKR_PK_CERT (obj);
 
 	switch (prop_id) {
 	case PROP_ASN1_TREE:
@@ -138,10 +138,10 @@ gkr_pkix_cert_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gkr_pkix_cert_set_property (GObject *obj, guint prop_id, const GValue *value, 
+gkr_pk_cert_set_property (GObject *obj, guint prop_id, const GValue *value, 
                           GParamSpec *pspec)
 {
-	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
+	GkrPkCert *cert = GKR_PK_CERT (obj);
 
 	switch (prop_id) {
 	case PROP_ASN1_TREE:
@@ -162,7 +162,7 @@ gkr_pkix_cert_set_property (GObject *obj, guint prop_id, const GValue *value,
 }
             
 static CK_RV 
-gkr_pkix_cert_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
+gkr_pk_cert_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	gboolean val;
 	
@@ -191,9 +191,9 @@ gkr_pkix_cert_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 }
 
 static CK_RV 
-gkr_pkix_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
+gkr_pk_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
-	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
+	GkrPkCert *cert = GKR_PK_CERT (obj);
 	gulong val;
 	guchar *extension;
 	gsize n_extension;
@@ -211,7 +211,7 @@ gkr_pkix_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		break;
 		
 	case CKA_CERTIFICATE_CATEGORY:
-		extension = gkr_pkix_cert_get_extension (cert, OID_BASIC_CONSTRAINTS, &n_extension, NULL);
+		extension = gkr_pk_cert_get_extension (cert, OID_BASIC_CONSTRAINTS, &n_extension, NULL);
 		if (!extension)
 			return CKR_GENERAL_ERROR;
 		
@@ -235,9 +235,9 @@ gkr_pkix_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 }
 
 static CK_RV
-gkr_pkix_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
+gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
-	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
+	GkrPkCert *cert = GKR_PK_CERT (obj);
 	const guchar *cdata = NULL;
 	gkrconstunique keyid;
 	gchar *label;
@@ -257,7 +257,7 @@ gkr_pkix_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_OK;
 		
 	case CKA_ID:
-		keyid = gkr_pkix_cert_get_keyid (cert);
+		keyid = gkr_pk_cert_get_keyid (cert);
 		if (!keyid) 
 			return CKR_GENERAL_ERROR;
 		data = (CK_VOID_PTR)gkr_unique_get_raw (keyid, &n_data);
@@ -316,9 +316,9 @@ gkr_pkix_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 }
 
 static CK_RV 
-gkr_pkix_cert_get_date_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
+gkr_pk_cert_get_date_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
-	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
+	GkrPkCert *cert = GKR_PK_CERT (obj);
 	time_t time;
 	
 	switch (attr->type) 
@@ -342,9 +342,9 @@ gkr_pkix_cert_get_date_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 }
 
 static void
-gkr_pkix_cert_finalize (GObject *obj)
+gkr_pk_cert_finalize (GObject *obj)
 {
-	GkrPkixCert *cert = GKR_PKIX_CERT (obj);
+	GkrPkCert *cert = GKR_PK_CERT (obj);
 
 	g_free (cert->data->raw);
 	cert->data->raw = NULL;
@@ -353,12 +353,12 @@ gkr_pkix_cert_finalize (GObject *obj)
 		asn1_delete_structure (&cert->data->asn1);
 	cert->data->asn1 = NULL;
 	
-	G_OBJECT_CLASS (gkr_pkix_cert_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gkr_pk_cert_parent_class)->finalize (obj);
 }
 
 
 static void
-gkr_pkix_cert_class_init (GkrPkixCertClass *klass)
+gkr_pk_cert_class_init (GkrPkCertClass *klass)
 {
 	GObjectClass *gobject_class;
 	GkrPkObjectClass *parent_class;
@@ -367,34 +367,34 @@ gkr_pkix_cert_class_init (GkrPkixCertClass *klass)
 	
 	gobject_class = (GObjectClass*)klass;
 
-	gkr_pkix_cert_parent_class = g_type_class_peek_parent (klass);
+	gkr_pk_cert_parent_class = g_type_class_peek_parent (klass);
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
-	parent_class->get_bool_attribute = gkr_pkix_cert_get_bool_attribute;
-	parent_class->get_ulong_attribute = gkr_pkix_cert_get_ulong_attribute;
-	parent_class->get_data_attribute = gkr_pkix_cert_get_data_attribute;
-	parent_class->get_date_attribute = gkr_pkix_cert_get_date_attribute;
+	parent_class->get_bool_attribute = gkr_pk_cert_get_bool_attribute;
+	parent_class->get_ulong_attribute = gkr_pk_cert_get_ulong_attribute;
+	parent_class->get_data_attribute = gkr_pk_cert_get_data_attribute;
+	parent_class->get_date_attribute = gkr_pk_cert_get_date_attribute;
 	
-	gobject_class->get_property = gkr_pkix_cert_get_property;
-	gobject_class->set_property = gkr_pkix_cert_set_property;
-	gobject_class->finalize = gkr_pkix_cert_finalize;
+	gobject_class->get_property = gkr_pk_cert_get_property;
+	gobject_class->set_property = gkr_pk_cert_set_property;
+	gobject_class->finalize = gkr_pk_cert_finalize;
 	
 	g_object_class_install_property (gobject_class, PROP_ASN1_TREE,
 		g_param_spec_pointer ("asn1-tree", "ASN1 Certificate", "Raw Certificate Object",
 		              G_PARAM_READWRITE));
 
-	g_type_class_add_private (gobject_class, sizeof (GkrPkixCertData));
+	g_type_class_add_private (gobject_class, sizeof (GkrPkCertData));
 }
 
-GkrPkixCert*
-gkr_pkix_cert_new (GQuark location, ASN1_TYPE asn1)
+GkrPkCert*
+gkr_pk_cert_new (GQuark location, ASN1_TYPE asn1)
 {
-	return g_object_new (GKR_TYPE_PKIX_CERT, "location", location, "asn1-tree", asn1, NULL);
+	return g_object_new (GKR_TYPE_PK_CERT, "location", location, "asn1-tree", asn1, NULL);
 }
 
 guchar*
-gkr_pkix_cert_get_extension (GkrPkixCert *cert, GQuark oid, gsize *n_extension, 
-                             gboolean *critical)
+gkr_pk_cert_get_extension (GkrPkCert *cert, GQuark oid, gsize *n_extension, 
+                           gboolean *critical)
 {
 	GQuark exoid;
 	gchar *name;
@@ -403,7 +403,7 @@ gkr_pkix_cert_get_extension (GkrPkixCert *cert, GQuark oid, gsize *n_extension,
 	guint i;
 	int len, res;
 	
-	g_return_val_if_fail (GKR_IS_PKIX_CERT (cert), NULL);
+	g_return_val_if_fail (GKR_IS_PK_CERT (cert), NULL);
 	g_return_val_if_fail (oid, NULL);
 	g_return_val_if_fail (n_extension, NULL);
 	
@@ -450,11 +450,11 @@ gkr_pkix_cert_get_extension (GkrPkixCert *cert, GQuark oid, gsize *n_extension,
 }
 
 gkrconstunique
-gkr_pkix_cert_get_keyid (GkrPkixCert *cert)
+gkr_pk_cert_get_keyid (GkrPkCert *cert)
 {
 	GkrPkPubkey *pub;
 	
-	g_return_val_if_fail (GKR_IS_PKIX_CERT (cert), NULL);
+	g_return_val_if_fail (GKR_IS_PK_CERT (cert), NULL);
 	
 	/* Access via public key */
 	pub = get_public_key (cert);

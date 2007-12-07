@@ -12,6 +12,7 @@ INCLUDES=	\
 	$(GLIB_CFLAGS)
 
 libgkr_pk_la_SOURCES = \
+	gkr-pk-cert.c gkr-pk-cert.h \
 	gkr-pk-index.c gkr-pk-index.h \
 	gkr-pk-object.c gkr-pk-object.h \
 	gkr-pk-object-manager.c gkr-pk-object-manager.h \

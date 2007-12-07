@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+#include "gkr-pk-cert.h"
 #include "gkr-pk-object-manager.h"
 #include "gkr-pk-object-storage.h"
 #include "gkr-pk-privkey.h"
@@ -37,7 +38,6 @@
 
 #include "pkcs11/pkcs11.h"
 
-#include "pkix/gkr-pkix-cert.h"
 #include "pkix/gkr-pkix-parser.h"
 
 #include "ui/gkr-ask-daemon.h"
@@ -281,7 +281,7 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 		gtype = GKR_TYPE_PK_PRIVKEY;
 		break;
 	case GKR_PARSED_CERTIFICATE:
-		gtype = GKR_TYPE_PKIX_CERT;
+		gtype = GKR_TYPE_PK_CERT;
 		break;
 	default:
 		g_return_val_if_reached (NULL);

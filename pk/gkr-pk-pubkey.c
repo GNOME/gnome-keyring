@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+#include "gkr-pk-cert.h"
 #include "gkr-pk-index.h"
 #include "gkr-pk-object.h"
 #include "gkr-pk-object-manager.h"
@@ -35,7 +36,6 @@
 #include "common/gkr-unique.h"
 
 #include "pkix/gkr-pkix-der.h"
-#include "pkix/gkr-pkix-cert.h"
 
 #include <glib.h>
 #include <glib-object.h>
@@ -352,7 +352,7 @@ gkr_pk_pubkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 
 	case CKA_SUBJECT:
 		/* The subject of a related certificate */
-		if (attribute_from_related (key, GKR_TYPE_PKIX_CERT, attr) == CKR_OK)
+		if (attribute_from_related (key, GKR_TYPE_PK_CERT, attr) == CKR_OK)
 			return CKR_OK;
 			
 		/* Empty subject */

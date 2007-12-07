@@ -18,7 +18,6 @@ BUILT_SOURCES = \
 	
 libgkr_pkix_la_SOURCES = \
 	gkr-pkix-asn1.c gkr-pkix-asn1.h \
-	gkr-pkix-cert.c gkr-pkix-cert.h \
 	gkr-pkix-der.c gkr-pkix-der.h \
 	gkr-pkix-openssl.c gkr-pkix-openssl.h \
 	gkr-pkix-parser.c gkr-pkix-parser.h \
