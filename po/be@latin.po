@@ -7,68 +7,74 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-01 07:59+0300\n"
-"PO-Revision-Date: 2007-05-27 23:46+0300\n"
+"POT-Creation-Date: 2007-12-08 10:53+0200\n"
+"PO-Revision-Date: 2007-12-08 11:00+0200\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian Latin <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gkr-location.c:290
+#: ../common/gkr-location.c:309
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Pieranosny dysk: %s"
 
-#: ../common/gkr-location.c:292
+#: ../common/gkr-location.c:311
 msgid "Removable Disk"
 msgstr "Pieranosny dysk"
 
-#: ../common/gkr-location.c:436
+#: ../common/gkr-location.c:445 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "Dadomu"
 
-#. TRANSLATORS: this is the title for an item
-#: ../daemon/gkr-daemon-ops.c:83
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Parol, kab adčynić klučnika %s"
+#: ../common/gkr-location.c:937 ../common/gkr-location.c:960
+#: ../pkix/gkr-pkix-parser.c:514
+msgid "The disk or drive this file is located on is not present"
+msgstr "Dysk ci pryłada, dzie źmieščany hety fajł, nia ŭklučanaja"
 
-#: ../daemon/gkr-daemon-ops.c:309
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:221
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
 msgstr ""
-"Aplikacyja '%s' (%s) choča atrymać parol dla '<object prop='name'/>' "
-"sa zmoŭčanaha klučnika."
+"Aplikacyja '%s' (%s) choča atrymać parol dla '<object prop='name'/>' sa "
+"zmoŭčanaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:312
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:225
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
-msgstr "Aplikacyja '%s' (%s) choča atrymać parol dla '<object prop="
-"'name'/>' z klučnika %s."
+msgstr ""
+"Aplikacyja '%s' (%s) choča atrymać parol dla '<object prop='name'/>' z "
+"klučnika %s."
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:325
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:231 ../daemon/gkr-daemon-ops.c:241
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "Aplikacyja '%s' choča atrymać parol dla '<object prop='name'/>' sa "
+msgstr ""
+"Aplikacyja '%s' choča atrymać parol dla '<object prop='name'/>' sa "
 "zmoŭčanaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:328
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:235 ../daemon/gkr-daemon-ops.c:245
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
 msgstr ""
-"Aplikacyja '%s' choča atrymać parol dla '<object prop='name'/>' z klučnika "
-"%s."
+"Aplikacyja '%s' choča atrymać parol dla '<object prop='name'/>' z klučnika %"
+"s."
 
-#: ../daemon/gkr-daemon-ops.c:333
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:251
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -76,24 +82,31 @@ msgstr ""
 "Nieviadomaja aplikacyja choča atrymać parol dla '<object prop='name'/>' sa "
 "zmoŭčanaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:335
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:254
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "Nieviadomaja aplikacyja choča atrymać parol dla '<object prop='name'/>'"
-" z klučnika %s."
+msgstr ""
+"Nieviadomaja aplikacyja choča atrymać parol dla '<object prop='name'/>' z "
+"klučnika %s."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:341
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow access"
 msgstr "Dazvol dostup"
 
-#: ../daemon/gkr-daemon-ops.c:341
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow application access to keyring?"
 msgstr "Dazvolić dostup aplikacyi da klučnika?"
 
-#: ../daemon/gkr-daemon-ops.c:439
+#: ../daemon/gkr-daemon-ops.c:310
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Parol, kab adčynić klučnika %s"
+
+#: ../daemon/gkr-daemon-ops.c:367
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -102,33 +115,34 @@ msgstr ""
 "Aplikacyja '%s' (%s) choča dastupicca da zmoŭčanaha klučnika, ale jon "
 "zablakavany"
 
-#: ../daemon/gkr-daemon-ops.c:443
+#: ../daemon/gkr-daemon-ops.c:371
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Aplikacyja '%s' (%s) choča dastupicca da klučnika '%s', ale jon zablakavany"
 
-#: ../daemon/gkr-daemon-ops.c:449 ../daemon/gkr-daemon-ops.c:459
+#: ../daemon/gkr-daemon-ops.c:377 ../daemon/gkr-daemon-ops.c:387
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Aplikacyja '%s' choča dastupicca da zmoŭčanaha klučnika, ale jon zablakavany"
 
-#: ../daemon/gkr-daemon-ops.c:453 ../daemon/gkr-daemon-ops.c:464
+#: ../daemon/gkr-daemon-ops.c:381 ../daemon/gkr-daemon-ops.c:392
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Aplikacyja '%s' choča dastupicca da klučnika '%s', ale jon zablakavany"
 
-#: ../daemon/gkr-daemon-ops.c:470
+#: ../daemon/gkr-daemon-ops.c:398
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Nieviadomaja aplikacyja choča dastupicca da zmoŭčanaha klučnika, ale jon "
 "zablakavany"
 
-#: ../daemon/gkr-daemon-ops.c:474
+#: ../daemon/gkr-daemon-ops.c:402
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -136,25 +150,25 @@ msgstr ""
 "Nieviadomaja aplikacyja choča dastupicca da klučnika '%s', ale jon "
 "zablakavany"
 
-#: ../daemon/gkr-daemon-ops.c:481
+#: ../daemon/gkr-daemon-ops.c:409
 msgid "Enter password for default keyring to unlock"
 msgstr "Uviadzi parol zmoŭčanaha klučnika, kab razblakavać"
 
-#: ../daemon/gkr-daemon-ops.c:483
+#: ../daemon/gkr-daemon-ops.c:411
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Uviadzi parol klučnika '%s', kab razblakavać"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:487
+#: ../daemon/gkr-daemon-ops.c:415
 msgid "Unlock Keyring"
 msgstr "Razblakuj klučnika"
 
-#: ../daemon/gkr-daemon-ops.c:499
+#: ../daemon/gkr-daemon-ops.c:427
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Aŭtamatyčna razblakuj hetaha klučnika pry ŭvachodzie."
 
-#: ../daemon/gkr-daemon-ops.c:535
+#: ../daemon/gkr-daemon-ops.c:463
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -163,7 +177,7 @@ msgstr ""
 "Aplikacyja '%s' (%s) choča stvaryć novaha klučnika z nazvaj '%s'. Ty musiš "
 "uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:539
+#: ../daemon/gkr-daemon-ops.c:467
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -172,7 +186,7 @@ msgstr ""
 "Aplikacyja '%s' (%s) choča stvaryć novaha zmoŭčanaha klučnika. Ty musiš "
 "uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:545 ../daemon/gkr-daemon-ops.c:555
+#: ../daemon/gkr-daemon-ops.c:473 ../daemon/gkr-daemon-ops.c:483
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -181,7 +195,7 @@ msgstr ""
 "Aplikacyja '%s' choča stvaryć novaha klučnika z nazvaj '%s'. Ty musiš "
 "uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:549 ../daemon/gkr-daemon-ops.c:559
+#: ../daemon/gkr-daemon-ops.c:477 ../daemon/gkr-daemon-ops.c:487
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -190,7 +204,7 @@ msgstr ""
 "Aplikacyja '%s' choča stvaryć novaha zmoŭčanaha klučnika. Ty musiš uvieści "
 "parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:565
+#: ../daemon/gkr-daemon-ops.c:493
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -199,7 +213,8 @@ msgstr ""
 "Nieviadomaja aplikacyja choča stvaryć novaha klučnika z nazvaj '%s'. Ty "
 "musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:569
+#: ../daemon/gkr-daemon-ops.c:497
+#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -208,15 +223,15 @@ msgstr ""
 "uvieści parol dla hetaha klučnika."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:503
 msgid "New Keyring Password"
 msgstr "Parol dla novaha klučnika"
 
-#: ../daemon/gkr-daemon-ops.c:576
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "Choose password for new keyring"
 msgstr "Abiary parol dla novaha klučnika"
 
-#: ../daemon/gkr-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:551
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -225,7 +240,7 @@ msgstr ""
 "Aplikacyja '%s' (%s) choča źmianić parol dla klučnika '%s'. Ty musiš uvieści "
 "parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:627
+#: ../daemon/gkr-daemon-ops.c:555
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -234,7 +249,7 @@ msgstr ""
 "Aplikacyja '%s' (%s) choča źmianić parol dla zmoŭčanaha klučnika. Ty musiš "
 "uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:633 ../daemon/gkr-daemon-ops.c:643
+#: ../daemon/gkr-daemon-ops.c:561 ../daemon/gkr-daemon-ops.c:571
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -243,7 +258,7 @@ msgstr ""
 "Aplikacyja '%s' choča źmianić parol dla klučnika '%s'. Ty musiš uvieści "
 "parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:637 ../daemon/gkr-daemon-ops.c:647
+#: ../daemon/gkr-daemon-ops.c:565 ../daemon/gkr-daemon-ops.c:575
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -252,7 +267,7 @@ msgstr ""
 "Aplikacyja '%s' choča źmianić parol dla zmoŭčanaha klučnika. Ty musiš "
 "uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:653
+#: ../daemon/gkr-daemon-ops.c:581
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -261,7 +276,8 @@ msgstr ""
 "Nieviadomaja aplikacyja choča źmianić parol dla klučnika '%s'. Ty musiš "
 "uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:657
+#: ../daemon/gkr-daemon-ops.c:585
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -269,21 +285,22 @@ msgstr ""
 "Nieviadomaja aplikacyja choča źmianić parol dla zmoŭčanaha klučnika. Ty "
 "musiš uvieści parol dla hetaha klučnika."
 
-#: ../daemon/gkr-daemon-ops.c:667
+#: ../daemon/gkr-daemon-ops.c:595
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Abiary novy parol dla klučnika '%s'. "
 
-#: ../daemon/gkr-daemon-ops.c:669
+#: ../daemon/gkr-daemon-ops.c:597
+#, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Abiary novy parol dla zmoŭčanaha klučnika. "
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:673
+#: ../daemon/gkr-daemon-ops.c:601
 msgid "Change Keyring Password"
 msgstr "Źmiani parol dla klučnika"
 
-#: ../daemon/gkr-daemon-ops.c:740
+#: ../daemon/gkr-daemon-ops.c:671
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -293,7 +310,7 @@ msgstr ""
 "Aplikacyja '%s' (%s) choča zachavać parol, ale zmoŭčanaha klučnika niama. "
 "Kab stvaryć jaho, treba ŭvieści parol dla jaho."
 
-#: ../daemon/gkr-daemon-ops.c:744 ../daemon/gkr-daemon-ops.c:748
+#: ../daemon/gkr-daemon-ops.c:675 ../daemon/gkr-daemon-ops.c:679
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -303,7 +320,8 @@ msgstr ""
 "Aplikacyja '%s' choča zachavać parol, ale zmoŭčanaha klučnika niama. Kab "
 "stvaryć jaho, treba ŭvieści parol dla jaho."
 
-#: ../daemon/gkr-daemon-ops.c:752
+#: ../daemon/gkr-daemon-ops.c:683
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -313,37 +331,125 @@ msgstr ""
 "Kab stvaryć jaho, treba ŭvieści parol dla jaho."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:757
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Create Default Keyring"
 msgstr "Stvary zmoŭčanaha klučnika"
 
-#: ../daemon/gkr-daemon-ops.c:757
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "Abiary parol dla zmoŭčanaha klučnika"
 
-#: ../library/gnome-keyring-utils.c:109
+#: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
 msgstr "Dostup zabaronieny"
 
-#: ../library/gnome-keyring-utils.c:111
+#: ../library/gnome-keyring-utils.c:93
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Aplikacyja gnome-keyring-daemon nia dziejničaje."
 
-#: ../library/gnome-keyring-utils.c:113 ../library/gnome-keyring-utils.c:126
-msgid "The keyring has already been unlocked."
-msgstr "Klučnik užo razblakavany."
-
-#: ../library/gnome-keyring-utils.c:115
+#: ../library/gnome-keyring-utils.c:95
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Pamyłka suviazi z gnome-keyring-daemonam"
 
-#: ../library/gnome-keyring-utils.c:117
+#: ../library/gnome-keyring-utils.c:97
 msgid "A keyring with that name already exists"
 msgstr "Klučnik z takoj nazvaj užo isnuje"
 
-#: ../library/gnome-keyring-utils.c:119
+#: ../library/gnome-keyring-utils.c:99
 msgid "Programmer error: The application sent invalid data."
 msgstr "Pamyłka ŭ prahramie: aplikacyja dasłała niapravilnyja źviestki."
+
+#: ../library/gnome-keyring-utils.c:101
+msgid "No matching results"
+msgstr "Niama adpaviednych vynikaŭ"
+
+#: ../library/gnome-keyring-utils.c:103
+msgid "A keyring with that name does not exist."
+msgstr "Klučnik z takoj nazvaj nie isnuje."
+
+#: ../library/gnome-keyring-utils.c:110
+msgid "The keyring has already been unlocked."
+msgstr "Klučnik užo razblakavany."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:87
+msgid "Unlock Login Keyring"
+msgstr "Razblakuj uvachodnaha klučnika"
+
+#: ../keyrings/gkr-keyring-login.c:87
+msgid "Enter login password to unlock keyring"
+msgstr "Uviadzi ŭvachodny parol, kab adblakavać klučnika"
+
+#: ../keyrings/gkr-keyring-login.c:89
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr ""
+"Tvoj uvachodny klučnik nia byŭ aŭtamatyčna adčynieny, kali ty ŭvajšoŭ."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:113
+msgid "Create Login Keyring"
+msgstr "Stvary ŭvachodnaha klučnika"
+
+#: ../keyrings/gkr-keyring-login.c:113
+msgid "Enter your login password"
+msgstr "Uviadzi svoj parol dziela ŭvachodu"
+
+#: ../keyrings/gkr-keyring-login.c:115
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+"Tvoj uvachodny klučnik nia byŭ aŭtamatyčna stvorany, kali ty ŭvajšoŭ. Zaraz "
+"jon budzie stvorany."
+
+#: ../pk/gkr-pk-object-storage.c:126
+#, c-format
+msgid "Unlock %s"
+msgstr "Razblakuj %s"
+
+#: ../pk/gkr-pk-object-storage.c:127
+#, c-format
+msgid "Enter password for the %s to unlock"
+msgstr "Uviadzi parol dla %s, kab adblakavać"
+
+#: ../pk/gkr-pk-object-storage.c:131
+#, c-format
+msgid "The system wants to import the %s '%s', but it is locked."
+msgstr "Systema choča zimpartavać %s \"%s\", ale jon zablakavany."
+
+#: ../pk/gkr-pk-object-storage.c:135
+#, c-format
+msgid "An application wants access to the %s '%s', but it is locked"
+msgstr ""
+"Aplikacyja choča dastupicca da %s \"%s\", ale jon zablakavany"
+
+#: ../pk/gkr-pk-object-storage.c:149
+#, c-format
+msgid "Automatically unlock this %s when I log in."
+msgstr "Aŭtamatyčna adblakuj hetaha %s pry ŭvachodzie."
+
+#: ../pk/gkr-pk-object-storage.c:161
+#, c-format
+msgid "Unlock password for %s"
+msgstr "Adblakuj parol dla %s"
+
+#: ../pkix/gkr-pkix-parser.c:431
+msgid "Unrecognized or unsupported file."
+msgstr "Nieviadomy ci niaŭzhodnieny fajł."
+
+#: ../pkix/gkr-pkix-parser.c:435
+msgid "Could not parse invalid or corrupted file."
+msgstr "Niemahčyma razabrać niapravilny ci paškodžany fajł."
+
+#: ../pkix/gkr-pkix-parser.c:490
+msgid "key"
+msgstr "kluč"
+
+#: ../pkix/gkr-pkix-parser.c:492
+msgid "certificate"
+msgstr "sertyfikat"
 
 #: ../ui/gkr-ask-tool.c:314
 msgid "_Location:"
