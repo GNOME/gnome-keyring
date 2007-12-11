@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-17 04:14+0100\n"
-"PO-Revision-Date: 2007-11-27 14:59+0100\n"
+"PO-Revision-Date: 2007-12-11 18:22+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,260 +22,338 @@ msgstr ""
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../common/gkr-location.c:290
+#: ../common/gkr-location.c:309
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Odstranljiva naprava: %s"
 
-#: ../common/gkr-location.c:292
+#: ../common/gkr-location.c:311
 msgid "Removable Disk"
 msgstr "Odstranljiva naprava"
 
-#: ../common/gkr-location.c:436
+#: ../common/gkr-location.c:445
+#: ../common/gkr-location.c:458
 msgid "Home"
 msgstr "Domov"
 
-#. TRANSLATORS: this is the title for an item
-#: ../daemon/gkr-daemon-ops.c:83
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Izberite geslo za zbirko ključev %s"
+#: ../common/gkr-location.c:937
+#: ../common/gkr-location.c:960
+#: ../pkix/gkr-pkix-parser.c:514
+msgid "The disk or drive this file is located on is not present"
+msgstr "Disk ali pogon na katerem je ta datoteka, ni na voljo"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:310
+#: ../daemon/gkr-daemon-ops.c:221
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "Program '%s' (%s) želi dostop do gesla za'<object prop='name'/>'' v privzeti zbirki ključev."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:314
+#: ../daemon/gkr-daemon-ops.c:225
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."
 msgstr "Program '%s' (%s) želi dostop do gesla za '<object prop='name'/>' v %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:320
-#: ../daemon/gkr-daemon-ops.c:330
+#: ../daemon/gkr-daemon-ops.c:231
+#: ../daemon/gkr-daemon-ops.c:241
 #, c-format
 msgid "The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "Program '%s' želi dostop do gesla za '<object prop='name'/>' v privzeti zbirki ključev."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:324
-#: ../daemon/gkr-daemon-ops.c:334
+#: ../daemon/gkr-daemon-ops.c:235
+#: ../daemon/gkr-daemon-ops.c:245
 #, c-format
 msgid "The application '%s' wants to access the password for '<object prop='name'/>' in %s."
 msgstr "Program '%s' želi dostop do gesla za '<object prop='name'/>' v %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:340
+#: ../daemon/gkr-daemon-ops.c:251
 msgid "An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "Neznan program želi dostop do gesla za '<object prop='name'/>' v privzeti zbirki ključev."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:343
+#: ../daemon/gkr-daemon-ops.c:254
 #, c-format
 msgid "An unknown application wants to access the password for '<object prop='name'/>' in %s."
 msgstr "Neznan program želi dostop do gesla za '<object prop='name'/>' v %s."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow access"
 msgstr "Dovoli dostop"
 
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow application access to keyring?"
 msgstr "Naj dovolim programom dostop do zbirke ključev?"
 
-#: ../daemon/gkr-daemon-ops.c:447
+#: ../daemon/gkr-daemon-ops.c:310
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Izberite geslo za zbirko ključev %s"
+
+#: ../daemon/gkr-daemon-ops.c:367
 #, c-format
 msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
 msgstr "Program '%s' (%s) želi dostop do privzete zbirke ključev, vendar je zaklenjena"
 
-#: ../daemon/gkr-daemon-ops.c:451
+#: ../daemon/gkr-daemon-ops.c:371
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Program '%s' (%s) želi dostop do zbirke ključev '%s', vendar je zaklenjena"
 
-#: ../daemon/gkr-daemon-ops.c:457
-#: ../daemon/gkr-daemon-ops.c:467
+#: ../daemon/gkr-daemon-ops.c:377
+#: ../daemon/gkr-daemon-ops.c:387
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "Program '%s' želi dostop do privzete zbirke ključev, vendar je zaklenjena"
 
-#: ../daemon/gkr-daemon-ops.c:461
-#: ../daemon/gkr-daemon-ops.c:472
+#: ../daemon/gkr-daemon-ops.c:381
+#: ../daemon/gkr-daemon-ops.c:392
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Program '%s' želi dostop do zbirke ključev '%s', vendar je zaklenjena"
 
-#: ../daemon/gkr-daemon-ops.c:478
+#: ../daemon/gkr-daemon-ops.c:398
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr "Neznani program želi dostop do privzete zbirke ključev, vendar je zaklenjena"
 
-#: ../daemon/gkr-daemon-ops.c:482
+#: ../daemon/gkr-daemon-ops.c:402
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Neznan program želi dostop do zbirke ključev '%s',vendar je zaklenjena"
 
-#: ../daemon/gkr-daemon-ops.c:489
+#: ../daemon/gkr-daemon-ops.c:409
 msgid "Enter password for default keyring to unlock"
 msgstr "Vnesite geslo za dostop do privzete zbirke ključev"
 
-#: ../daemon/gkr-daemon-ops.c:491
+#: ../daemon/gkr-daemon-ops.c:411
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Vnesite geslo za dostop do '%s' zbirke ključev"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:415
 msgid "Unlock Keyring"
 msgstr "Odklenite zbirko ključev"
 
-#: ../daemon/gkr-daemon-ops.c:507
+#: ../daemon/gkr-daemon-ops.c:427
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Samodejno odkleni zbirko ključev ob prijavi."
 
-#: ../daemon/gkr-daemon-ops.c:543
+#: ../daemon/gkr-daemon-ops.c:463
 #, c-format
 msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "Program '%s' (%s) želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:547
+#: ../daemon/gkr-daemon-ops.c:467
 #, c-format
 msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "Program '%s' (%s) želi ustvariti novo privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:553
-#: ../daemon/gkr-daemon-ops.c:563
+#: ../daemon/gkr-daemon-ops.c:473
+#: ../daemon/gkr-daemon-ops.c:483
 #, c-format
 msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "Program '%s' želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:557
-#: ../daemon/gkr-daemon-ops.c:567
+#: ../daemon/gkr-daemon-ops.c:477
+#: ../daemon/gkr-daemon-ops.c:487
 #, c-format
 msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "Program '%s' želi ustvariti novo privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:573
+#: ../daemon/gkr-daemon-ops.c:493
 #, c-format
 msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "Program želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:577
+#: ../daemon/gkr-daemon-ops.c:497
 msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "Neznan program želi ustvariti novo privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:583
+#: ../daemon/gkr-daemon-ops.c:503
 msgid "New Keyring Password"
 msgstr "Novo geslo za zbirko ključev"
 
-#: ../daemon/gkr-daemon-ops.c:584
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "Choose password for new keyring"
 msgstr "Izberite geslo za novo zbirko ključev"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:551
 #, c-format
 msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "Program '%s' (%s) želi spremeniti geslo za zbirko ključev '%s'. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:635
+#: ../daemon/gkr-daemon-ops.c:555
 #, c-format
 msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "Program '%s' (%s) želi spremeniti geslo za privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:641
-#: ../daemon/gkr-daemon-ops.c:651
+#: ../daemon/gkr-daemon-ops.c:561
+#: ../daemon/gkr-daemon-ops.c:571
 #, c-format
 msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "Program '%s' želi spremeniti geslo za zbirko ključev '%s'. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:645
-#: ../daemon/gkr-daemon-ops.c:655
+#: ../daemon/gkr-daemon-ops.c:565
+#: ../daemon/gkr-daemon-ops.c:575
 #, c-format
 msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "Program '%s' želi spremeniti geslo za privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:661
+#: ../daemon/gkr-daemon-ops.c:581
 #, c-format
 msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "Neznan program želi spremeniti geslo za zbirko ključev '%s'. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:665
+#: ../daemon/gkr-daemon-ops.c:585
 msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "Neznan program želi spremeniti geslo za privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:675
+#: ../daemon/gkr-daemon-ops.c:595
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Izberite novo geslo za zbirko ključev '%s'."
 
-#: ../daemon/gkr-daemon-ops.c:677
+#: ../daemon/gkr-daemon-ops.c:597
 msgid "Choose a new password for the default keyring. "
 msgstr "Izberite novo geslo za privzeto zbirko ključev."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:681
+#: ../daemon/gkr-daemon-ops.c:601
 msgid "Change Keyring Password"
 msgstr "Spremeni geslo zbirke ključev"
 
-#: ../daemon/gkr-daemon-ops.c:751
+#: ../daemon/gkr-daemon-ops.c:671
 #, c-format
 msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "Program '%s' (%s) želi shraniti geslo, vendar ni privzete zbirke ključev. Da jo ustvarite, morate izbrati geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:755
-#: ../daemon/gkr-daemon-ops.c:759
+#: ../daemon/gkr-daemon-ops.c:675
+#: ../daemon/gkr-daemon-ops.c:679
 #, c-format
 msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "Program '%s' želi shraniti geslo, vendar ni privzete zbirke ključev. Da jo ustvarite, morate izbrati geslo za to zbirko."
 
-#: ../daemon/gkr-daemon-ops.c:763
+#: ../daemon/gkr-daemon-ops.c:683
 msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "Neznan program želi shraniti geslo, vendar ni privzete zbirke ključev. Da jo ustvarite, morate izbrati geslo za to zbirko."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:768
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Create Default Keyring"
 msgstr "Ustvari privzeto zbirko ključev"
 
-#: ../daemon/gkr-daemon-ops.c:768
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "Izberite geslo za privzeto zbirko ključev"
 
-#: ../library/gnome-keyring-utils.c:111
+#: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
 msgstr "Dostop zavrnjen"
 
-#: ../library/gnome-keyring-utils.c:113
+#: ../library/gnome-keyring-utils.c:93
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Demn zbirke ključev ne teče."
 
-#: ../library/gnome-keyring-utils.c:115
+#: ../library/gnome-keyring-utils.c:95
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Napaka med povezovanjem z demonom zbirke ključev"
 
-#: ../library/gnome-keyring-utils.c:117
+#: ../library/gnome-keyring-utils.c:97
 msgid "A keyring with that name already exists"
 msgstr "Zbirka ključev s tem imenom že obstaja"
 
-#: ../library/gnome-keyring-utils.c:119
+#: ../library/gnome-keyring-utils.c:99
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programska napaka: Program je poslal neveljavne podatke."
 
-#: ../library/gnome-keyring-utils.c:121
+#: ../library/gnome-keyring-utils.c:101
 msgid "No matching results"
 msgstr "Ni zadetkov iskanja"
 
-#: ../library/gnome-keyring-utils.c:123
+#: ../library/gnome-keyring-utils.c:103
 msgid "A keyring with that name does not exist."
 msgstr "Zbirka ključev s tem imenom ne obstaja."
 
-#: ../library/gnome-keyring-utils.c:130
+#: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "Zbirka ključev je že odklenjena."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:87
+msgid "Unlock Login Keyring"
+msgstr "Odklenite prijavno zbirko ključev"
+
+#: ../keyrings/gkr-keyring-login.c:87
+msgid "Enter login password to unlock keyring"
+msgstr "Vnesite prijavno geslo za odklepanje zbirke ključev"
+
+#: ../keyrings/gkr-keyring-login.c:89
+msgid "Your login keyring was not automatically unlocked when you logged into this computer."
+msgstr "Prijavna zbirka ključev ni bila samodejno odklenjena ob prijavi na ta računalnik."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:113
+msgid "Create Login Keyring"
+msgstr "Ustvari zbirko ključev prijave"
+
+#: ../keyrings/gkr-keyring-login.c:113
+msgid "Enter your login password"
+msgstr "Vnesite geslo za prijavo"
+
+#: ../keyrings/gkr-keyring-login.c:115
+msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
+msgstr "Prijavna zbirka ključev ni bila samodejno ustvarjena ob prijavi na ta računalnik. Sedaj bo ustvarjena."
+
+#: ../pk/gkr-pk-object-storage.c:126
+#, c-format
+msgid "Unlock %s"
+msgstr "Odkleni %s"
+
+#: ../pk/gkr-pk-object-storage.c:127
+#, c-format
+msgid "Enter password for the %s to unlock"
+msgstr "Vnesite geslo za odklepanje %s"
+
+#: ../pk/gkr-pk-object-storage.c:131
+#, c-format
+msgid "The system wants to import the %s '%s', but it is locked."
+msgstr "Sistem želi uvoziti %s '%s', vendar je zaklenjena"
+
+#: ../pk/gkr-pk-object-storage.c:135
+#, c-format
+msgid "An application wants access to the %s '%s', but it is locked"
+msgstr "Program želi dostop do %s '%s',vendar je zaklenjena"
+
+#: ../pk/gkr-pk-object-storage.c:149
+#, c-format
+msgid "Automatically unlock this %s when I log in."
+msgstr "Samodejno odkleni %s prijavi."
+
+#: ../pk/gkr-pk-object-storage.c:161
+#, c-format
+msgid "Unlock password for %s"
+msgstr "Odkleni geslo za %s"
+
+#: ../pkix/gkr-pkix-parser.c:431
+msgid "Unrecognized or unsupported file."
+msgstr "Neznana ali nepodprta datoteka."
+
+#: ../pkix/gkr-pkix-parser.c:435
+msgid "Could not parse invalid or corrupted file."
+msgstr "Ni mogoče razčleniti neveljavne ali pokvarjene datoteke."
+
+#: ../pkix/gkr-pkix-parser.c:490
+msgid "key"
+msgstr "ključ"
+
+#: ../pkix/gkr-pkix-parser.c:492
+msgid "certificate"
+msgstr "certifikat"
 
 #: ../ui/gkr-ask-tool.c:314
 msgid "_Location:"
