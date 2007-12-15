@@ -2,6 +2,8 @@
 
 	* common/tests/unit-test-crypto.c: Don't generate key and empty
 	entropy pool just for tests.
+	
+	* common/gkr-secure-memory.c: x64 fixes to the secure memory allocator.
 
 2007-12-07  Stef Walter  <stef@memberwebs.com>
 

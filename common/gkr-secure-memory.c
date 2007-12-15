@@ -72,6 +72,7 @@
 #define DO_UNLOCK() \
 	gkr_memory_unlock ();
 
+#define MEM_ALIGN	(sizeof(void*) > sizeof(long) ? sizeof(void*) : sizeof(long))
 
 /* -----------------------------------------------------------------------------
  * BLOCK SUBALLOCATION
@@ -105,8 +106,7 @@ typedef size_t ref_t;  /* suba offset from start of memory to object */
 
 #define SUBA_MAGIC "\xFF\x15\x15\x15SUBA"
 #define CELL_MAGIC 0x7777CE11
-#define ALIGNMASK 1U
-#define ALIGN(s) (((s) + ALIGNMASK) & ~ALIGNMASK)
+#define ALIGN(s)  ((((s) / MEM_ALIGN) + (((s) % MEM_ALIGN) ? 1 : 0)) * MEM_ALIGN)
 #define POFF (ALIGN(sizeof(size_t)) + ALIGN(sizeof(unsigned int)))
 #define C2P(c) ((char *)(c) + POFF)
 #define P2C(p) ((struct cell *)((char *)(p) - POFF))
