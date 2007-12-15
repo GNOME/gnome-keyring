@@ -1,3 +1,8 @@
+2007-12-15  Stef Walter  <stef@memberwebs.com>
+
+	* common/tests/unit-test-crypto.c: Don't generate key and empty
+	entropy pool just for tests.
+
 2007-12-07  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-cert.[ch]: (moved from pkix/)

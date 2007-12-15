@@ -211,11 +211,20 @@ void unit_test_generate_key_pbe (CuTest* cu)
 	}
 }
 
+#define TEST_KEY \
+"(private-key (rsa " \
+"(n  #00B78758D55EBFFAB61D07D0DC49B5309A6F1DA2AE51C275DFC2370959BB81AC0C39093B1C618E396161A0DECEB8768D0FFB14F197B96C3DA14190EE0F20D51315#)" \
+"(e #010001#)" \
+"(d #108BCAC5FDD35812981E6EC5957D98E2AB76E4064C47B861D27C2CC322C50792313C852B4164A035B42D261F1A09F9FFE8F477F9F78FF2EABBDA6BA875C671D7#)" \
+"(p #00C357F11B19A18C66573D25D1E466D9AB8BCDDCDFE0B2E80BD46712C4BEC18EB7#)" \
+"(q #00F0843B90A60EF7034CA4BE80414ED9497CABCC685143B388013FF989CBB0E093#)" \
+"(u #12F2555F52EB56329A991CF0404B51C68AC921AD370A797860F550415FF987BD#)" \
+"))"
+
 gcry_sexp_t thekey = NULL;
 
 void unit_test_parse_key (CuTest *cu)
 {
-	gcry_sexp_t params = NULL;
 	gcry_sexp_t sexp = NULL;
 	gcry_error_t gcry;
 	gcry_mpi_t mpi = NULL;
@@ -223,10 +232,7 @@ void unit_test_parse_key (CuTest *cu)
 	gboolean is_priv = FALSE;
 	int algorithm = 0;
 	
-	gcry = gcry_sexp_build (&params, NULL, "(genkey (rsa (nbits 3:512)))");
-	g_return_if_fail (gcry == 0);
-	
-	gcry = gcry_pk_genkey (&sexp, params);
+	gcry = gcry_sexp_new (&sexp, TEST_KEY, strlen (TEST_KEY), 1);
 	g_return_if_fail (gcry == 0);
 	
 	/* Get the private key out */
