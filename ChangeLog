@@ -1,5 +1,10 @@
 2007-12-15  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-object.c: Fix uninitialized variable. Patch by Cosimo Cecchi.
+	Fixes bug # 503737
+	
+2007-12-15  Stef Walter  <stef@memberwebs.com>
+
 	* common/tests/unit-test-crypto.c: Don't generate key and empty
 	entropy pool just for tests.
 	

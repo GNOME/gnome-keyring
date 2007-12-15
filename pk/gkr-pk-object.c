@@ -75,7 +75,7 @@ lookup_attribute (GkrPkObject *object, CK_ATTRIBUTE_TYPE type, CK_ATTRIBUTE_PTR 
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE(object);
 	GkrPkObjectClass *klass;
 	CK_ATTRIBUTE cattr;
-	CK_RV ret;
+	CK_RV ret = 0;
 	
 	*attr = g_hash_table_lookup (pv->attr_cache, GUINT_TO_POINTER (type));
 	if(*attr)
