@@ -83,6 +83,12 @@ GkrParseResult  gkr_pkix_der_read_certificate           (const guchar *data, gsi
 GkrParseResult  gkr_pkix_der_read_basic_constraints     (const guchar *data, gsize n_data, 
                                                          gboolean *is_ca, guint *path_len);
 
+GkrParseResult  gkr_pkix_der_read_key_usage             (const guchar *data, gsize n_data, 
+                                                         guint *key_usage);
+
+GkrParseResult  gkr_pkix_der_read_enhanced_usage        (const guchar *data, gsize n_data, 
+                                                         GSList **usage_oids);
+
 /* -----------------------------------------------------------------------------
  * CIPHERS
  */

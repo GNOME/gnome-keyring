@@ -1,5 +1,15 @@
 2007-12-15  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-cert.h:
+	* pk/gkr-pk-purpose.c:
+	* pk/gkr-pk-purpose.h:
+	* pkix/gkr-pkix-constants.h:
+	* pkix/gkr-pkix-der.c:
+	* pkix/gkr-pkix-der.h: Add the PKCS#11 'purpose' object which exposes 
+	trust and usage. 
+	
+2007-12-15  Stef Walter  <stef@memberwebs.com>
+
 	* pk/gkr-pk-object.c: Fix uninitialized variable. Patch by Cosimo Cecchi.
 	Fixes bug # 503737
 	

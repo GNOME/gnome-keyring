@@ -663,6 +663,72 @@ done:
 	return ret;
 }
 
+GkrParseResult
+gkr_pkix_der_read_key_usage (const guchar *data, gsize n_data, guint *key_usage)
+{
+	GkrParseResult ret = GKR_PARSE_UNRECOGNIZED;
+	ASN1_TYPE asn;
+	guchar buf[4];
+	int res, len;
+	
+	asn = gkr_pkix_asn1_decode ("PKIX1.KeyUsage", data, n_data);
+	if (!asn)
+		goto done;
+		
+	ret = GKR_PARSE_FAILURE;
+
+	memset (buf, 0, sizeof (buf));
+	len = sizeof (buf);
+  	res = asn1_read_value (asn, "", buf, &len);
+  	if (res != ASN1_SUCCESS)
+  		goto done;
+
+	*key_usage = buf[0] || (buf[1] << 8);
+	ret = GKR_PARSE_SUCCESS;
+	
+done:
+	if (asn)
+		asn1_delete_structure (&asn);		
+	return ret;
+}
+
+GkrParseResult
+gkr_pkix_der_read_enhanced_usage (const guchar *data, gsize n_data, GSList **usage_oids)
+{
+	GkrParseResult ret = GKR_PARSE_UNRECOGNIZED;
+	ASN1_TYPE asn;
+	GSList *results;
+	gchar *part;
+	GQuark oid;
+	int i;
+	
+	asn = gkr_pkix_asn1_decode ("PKIX1.ExtKeyUsageSyntax", data, n_data);
+	if (!asn)
+		goto done;
+		
+	ret = GKR_PARSE_FAILURE;
+	
+	results = NULL;
+	for (i = 0; TRUE; ++i) {
+		part = g_strdup_printf ("?%d", i + 1);
+		oid = gkr_pkix_asn1_read_quark (asn, part);
+		g_free (part);
+		
+		if (!oid) 
+			break;
+		
+		results = g_slist_prepend (results, GUINT_TO_POINTER (oid));
+	}
+	
+	*usage_oids = g_slist_reverse (results);
+	ret = GKR_PARSE_SUCCESS;
+	
+done:
+	if (asn)
+		asn1_delete_structure (&asn);
+	return ret;
+}
+
 /* -----------------------------------------------------------------------------
  * CIPHER/KEY DESCRIPTIONS 
  */

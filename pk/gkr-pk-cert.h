@@ -55,7 +55,7 @@ GType               gkr_pk_cert_get_type           (void) G_GNUC_CONST;
 GkrPkCert*          gkr_pk_cert_new                (GQuark location, ASN1_TYPE asn1);
 
 guchar*             gkr_pk_cert_get_extension      (GkrPkCert *cert, GQuark oid, 
-                                                      gsize *n_extension, gboolean *critical);
+                                                    gsize *n_extension, gboolean *critical);
 
 gkrconstunique      gkr_pk_cert_get_keyid          (GkrPkCert *cert);
 
