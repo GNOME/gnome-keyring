@@ -1,3 +1,11 @@
+=== gnome-keyring 2.21.4 ===
+
+2007-12-17  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/Makefile.am:
+	* NEWS:
+	* configure.in: Release version 2.21.4
+
 2007-12-15  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-cert.h:
