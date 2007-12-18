@@ -1,3 +1,8 @@
+2007-12-18  Stef Walter  <stef@memberwebs.com>
+
+	* gkr-location.c: Initialize Dbus error structure properly.
+	Fixes crash on shutdown. Patch by Jeff Cai. Fixes bug #504239
+	
 2007-12-17  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number
