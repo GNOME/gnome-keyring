@@ -386,9 +386,13 @@ location_manager_hal_uninit (GkrLocationManager *locmgr)
 	DBusError error;
 
 	if (pv->hal_ctx) {
-		if (!libhal_ctx_shutdown (pv->hal_ctx, &error))
+		dbus_error_init (&error);
+		if (!libhal_ctx_shutdown (pv->hal_ctx, &error)) {
 			g_warning ("failed to shutdown HAL context: %s\n", error.message);
-		else if (!libhal_ctx_free (pv->hal_ctx)) 
+			dbus_error_free (&error);
+		} 
+		
+		if (!libhal_ctx_free (pv->hal_ctx)) 
 			g_warning ("failed to free HAL context");
 		pv->hal_ctx = NULL;
 	}
