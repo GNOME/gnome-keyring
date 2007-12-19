@@ -1,6 +1,12 @@
 2007-12-18  Stef Walter  <stef@memberwebs.com>
 
-	* gkr-location.c: Initialize Dbus error structure properly.
+	* keyrings/gkr-keyring-item.c: Fix null pointer dereference and 
+	crash when comparing item attributes. Patch by Sam Morris. 
+	Fixes bug #504314
+	
+2007-12-18  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-location.c: Initialize Dbus error structure properly.
 	Fixes crash on shutdown. Patch by Jeff Cai. Fixes bug #504239
 	
 2007-12-03  Stef Walter  <stef@memberwebs.com>

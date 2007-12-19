@@ -226,12 +226,11 @@ gkr_keyring_item_match (GkrKeyringItem *item, GnomeKeyringItemType type,
 				}
 				switch (attribute->type) {
 				case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
-					if ((attribute->value.string == NULL || item_attribute->value.string == NULL) && 
-					    attribute->value.string != item_attribute->value.string) {
-						return FALSE;
-					}
-					if (strcmp (attribute->value.string, item_attribute->value.string) != 0) {
-						return FALSE;
+					if (attribute->value.string != item_attribute->value.string) {
+						if (attribute->value.string == NULL || item_attribute->value.string == NULL)
+							return FALSE;
+						if (strcmp (attribute->value.string, item_attribute->value.string) != 0)
+							return FALSE;
 					}
 					break;
 				case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
