@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-17 13:26+0100\n"
-"PO-Revision-Date: 2007-12-17 13:31+0100\n"
+"POT-Creation-Date: 2007-12-19 20:42+0100\n"
+"PO-Revision-Date: 2007-12-19 20:44+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -24,13 +24,13 @@ msgstr "Flyttbar disk: %s"
 msgid "Removable Disk"
 msgstr "Flyttbar disk"
 
-#: ../common/gkr-location.c:445
-#: ../common/gkr-location.c:458
+#: ../common/gkr-location.c:449
+#: ../common/gkr-location.c:462
 msgid "Home"
 msgstr "Hem"
 
-#: ../common/gkr-location.c:937
-#: ../common/gkr-location.c:960
+#: ../common/gkr-location.c:941
+#: ../common/gkr-location.c:964
 #: ../pkix/gkr-pkix-parser.c:514
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller enheten som den här filen finns på är inte tillgänglig"
@@ -282,28 +282,28 @@ msgid "The keyring has already been unlocked."
 msgstr "Nyckelringen har redan låsts upp."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
 msgstr "Lås upp inloggningsnyckelring"
 
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Enter login password to unlock keyring"
 msgstr "Ange inloggningslösenordet för att låsa upp nyckelringen"
 
-#: ../keyrings/gkr-keyring-login.c:89
+#: ../keyrings/gkr-keyring-login.c:100
 msgid "Your login keyring was not automatically unlocked when you logged into this computer."
 msgstr "Din inloggningsnyckelring låstes inte upp automatiskt när du loggade in på denna dator."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
 msgstr "Skapa nyckelring för inloggning"
 
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
 msgstr "Ange ditt inloggningslösenord"
 
-#: ../keyrings/gkr-keyring-login.c:115
+#: ../keyrings/gkr-keyring-login.c:126
 msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
 msgstr "Din inloggningsnyckelring skapades inte automatiskt när du loggade in på denna dator. Den kommer nu att skapas."
 
@@ -353,50 +353,60 @@ msgstr "nyckel"
 msgid "certificate"
 msgstr "certifikat"
 
-#: ../ui/gkr-ask-tool.c:314
+#: ../ui/gkr-ask-tool.c:79
+msgid "Store passwords unencrypted?"
+msgstr "Lagra lösenord okrypterade?"
+
+#: ../ui/gkr-ask-tool.c:80
+msgid "By choosing to use a blank password, your stored passwords not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Genom att välja att använda ett blankt lösenord kommer dina lagrade lösenord inte att vara krypterade på ett säkert sätt. De kommer att vara åtkomliga för alla som har tillgång till dina filer."
+
+#: ../ui/gkr-ask-tool.c:87
+msgid "Use Unsafe Storage"
+msgstr "Använd osäker lagring"
+
+#: ../ui/gkr-ask-tool.c:340
 msgid "_Location:"
 msgstr "_Plats:"
 
-#: ../ui/gkr-ask-tool.c:327
+#: ../ui/gkr-ask-tool.c:353
 msgid "_Old password:"
 msgstr "_Gammalt lösenord:"
 
-#: ../ui/gkr-ask-tool.c:347
+#: ../ui/gkr-ask-tool.c:373
 msgid "_Password:"
 msgstr "_Lösenord:"
 
-#: ../ui/gkr-ask-tool.c:369
+#: ../ui/gkr-ask-tool.c:395
 msgid "_Confirm password:"
 msgstr "_Bekräfta lösenordet:"
 
-#: ../ui/gkr-ask-tool.c:388
+#: ../ui/gkr-ask-tool.c:414
 msgid "New password strength"
 msgstr "Styrka för nytt lösenord"
 
-#: ../ui/gkr-ask-tool.c:444
-msgid "Old password cannot be blank."
-msgstr "Gamla lösenord får inte vara blanka."
-
-#: ../ui/gkr-ask-tool.c:456
-msgid "Password cannot be blank."
-msgstr "Lösenord får inte vara blanka."
-
-#: ../ui/gkr-ask-tool.c:465
+#: ../ui/gkr-ask-tool.c:481
 msgid "Passwords do not match."
 msgstr "Lösenorden stämde inte överens."
 
-#: ../ui/gkr-ask-tool.c:514
+#: ../ui/gkr-ask-tool.c:497
+msgid "Password cannot be blank"
+msgstr "Lösenord får inte vara blanka"
+
+#: ../ui/gkr-ask-tool.c:548
 msgid "Deny"
 msgstr "Neka"
 
-#: ../ui/gkr-ask-tool.c:526
+#: ../ui/gkr-ask-tool.c:560
 msgid "Allow _Once"
 msgstr "Tillåt _denna gång"
 
-#: ../ui/gkr-ask-tool.c:530
+#: ../ui/gkr-ask-tool.c:564
 msgid "_Always Allow"
 msgstr "Tillåt _alltid"
 
+#~ msgid "Old password cannot be blank."
+#~ msgstr "Gamla lösenord får inte vara blanka."
 #~ msgid "Must be run from gnome-keyring\n"
 #~ msgstr "Måste köras från gnome-keyring\n"
 #~ msgid ""
