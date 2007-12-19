@@ -8,12 +8,12 @@
 # Jorge Gonzalez <jorgegonz@svn.gnome.org>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.HEAD.es\n"
+"Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-01 21:32+0000\n"
-"PO-Revision-Date: 2007-12-06 16:17+0100\n"
+"POT-Creation-Date: 2007-12-19 04:06+0000\n"
+"PO-Revision-Date: 2007-12-19 08:44+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"Language-Team: Spanish <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -29,11 +29,11 @@ msgstr "Disco extraíble: %s"
 msgid "Removable Disk"
 msgstr "Disco extraíble"
 
-#: ../common/gkr-location.c:445 ../common/gkr-location.c:458
+#: ../common/gkr-location.c:449 ../common/gkr-location.c:462
 msgid "Home"
 msgstr "Inicio"
 
-#: ../common/gkr-location.c:937 ../common/gkr-location.c:960
+#: ../common/gkr-location.c:941 ../common/gkr-location.c:964
 #: ../pkix/gkr-pkix-parser.c:514
 msgid "The disk or drive this file is located on is not present"
 msgstr "El disco o la unidad en la que está ubicado este archivo no está presente."
@@ -376,36 +376,38 @@ msgid "The keyring has already been unlocked."
 msgstr "El depósito de claves ya se ha desbloquedao."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
 msgstr "Desbloquear el depósito de inicio"
 
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Enter login password to unlock keyring"
 msgstr "Introduzca la contraseña de inicio para desbloquear el depósito"
 
-#: ../keyrings/gkr-keyring-login.c:89
+#: ../keyrings/gkr-keyring-login.c:100
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr "Al iniciar sesión en este equipo no se creó automáticamente su depósito de inicio."
+msgstr ""
+"Al iniciar sesión en este equipo no se creó automáticamente su depósito de "
+"inicio."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
 msgstr "Crear depósito de inicio"
 
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
 msgstr "Introduzca su contraseña de inicio"
 
-#: ../keyrings/gkr-keyring-login.c:115
+#: ../keyrings/gkr-keyring-login.c:126
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
 msgstr ""
-"Al iniciar sesión en este equipo no se creó automáticamente su depósito de inicio. "
-"Se creará ahora."
+"Al iniciar sesión en este equipo no se creó automáticamente su depósito de "
+"inicio. Se creará ahora."
 
 #: ../pk/gkr-pk-object-storage.c:126
 #, c-format
@@ -453,47 +455,59 @@ msgstr "clave"
 msgid "certificate"
 msgstr "certificado"
 
-#: ../ui/gkr-ask-tool.c:314
+#: ../ui/gkr-ask-tool.c:79
+msgid "Store passwords unencrypted?"
+msgstr "¿Almacenar sus contraseñan sin cifrarlas?"
+
+#: ../ui/gkr-ask-tool.c:80
+msgid ""
+"By choosing to use a blank password, your stored passwords not be safely "
+"encrypted. They will be accessible by anyone with access to your files."
+msgstr ""
+"Al elegir usar una contraseña en blanco, sus contraseñas almacenadas no estarán "
+"cifradas de forma segura. Serán accesibles por cualquiera que tenga acceso a sus archivos."
+
+#: ../ui/gkr-ask-tool.c:87
+msgid "Use Unsafe Storage"
+msgstr "Usar almacenamiento inseguro"
+
+#: ../ui/gkr-ask-tool.c:340
 msgid "_Location:"
 msgstr "_Lugar:"
 
-#: ../ui/gkr-ask-tool.c:327
+#: ../ui/gkr-ask-tool.c:353
 msgid "_Old password:"
 msgstr "Contraseña _antigua:"
 
-#: ../ui/gkr-ask-tool.c:347
+#: ../ui/gkr-ask-tool.c:373
 msgid "_Password:"
 msgstr "_Contraseña:"
 
-#: ../ui/gkr-ask-tool.c:369
+#: ../ui/gkr-ask-tool.c:395
 msgid "_Confirm password:"
 msgstr "Con_firmar contraseña:"
 
-#: ../ui/gkr-ask-tool.c:388
+#: ../ui/gkr-ask-tool.c:414
 msgid "New password strength"
 msgstr "Fortaleza de la nueva contraseña"
 
-#: ../ui/gkr-ask-tool.c:444
-msgid "Old password cannot be blank."
-msgstr "La contraseña antigua no puede estar en blanco."
-
-#: ../ui/gkr-ask-tool.c:456
-msgid "Password cannot be blank."
-msgstr "La contraseña no puede estar en blanco."
-
-#: ../ui/gkr-ask-tool.c:465
+#: ../ui/gkr-ask-tool.c:481
 msgid "Passwords do not match."
 msgstr "Las contraseñas no coinciden."
 
-#: ../ui/gkr-ask-tool.c:514
+#: ../ui/gkr-ask-tool.c:497
+msgid "Password cannot be blank"
+msgstr "La contraseña no puede estar vacía"
+
+#: ../ui/gkr-ask-tool.c:548
 msgid "Deny"
 msgstr "Denegar"
 
-#: ../ui/gkr-ask-tool.c:526
+#: ../ui/gkr-ask-tool.c:560
 msgid "Allow _Once"
 msgstr "Permitir _una vez"
 
-#: ../ui/gkr-ask-tool.c:530
+#: ../ui/gkr-ask-tool.c:564
 msgid "_Always Allow"
 msgstr "Permitir _siempre"
 
