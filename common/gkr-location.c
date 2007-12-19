@@ -38,11 +38,8 @@
 
 #include <string.h>
 
-#define FILE_NAME      "FILE"
-
 #define LOC_DELIMITER   ":"
 #define LOC_DELIMITER_C ':'
-#define PART_DELIMITER  "-"
 
 typedef struct _GkrLocationVolume {
 	GQuark volume_loc;
@@ -445,7 +442,7 @@ gkr_location_manager_init (GkrLocationManager *locmgr)
 	g_return_if_fail (home && home[0]);
 	
 	/* Hidden location relative to file system and home directory */
-	make_hidden_volume (locmgr, &pv->file_volume, FILE_NAME, "/", NULL);
+	make_hidden_volume (locmgr, &pv->file_volume, GKR_LOCATION_NAME_FILE, "/", NULL);
 	make_hidden_volume (locmgr, &pv->home_volume, GKR_LOCATION_NAME_HOME, home, _("Home"));
 
 	
@@ -782,7 +779,7 @@ GQuark
 gkr_location_from_child (GQuark parent, const gchar *child)
 {
 	const gchar *c;
-	gchar *path;
+	gchar *path, *p;
 	GQuark loc;
 	
 	g_assert (parent);
@@ -796,6 +793,16 @@ gkr_location_from_child (GQuark parent, const gchar *child)
 	}
 
 	path = g_build_path (G_DIR_SEPARATOR_S, g_quark_to_string (parent), child, NULL);
+	
+	/* Strip out trailing slashes */
+	p = path + strlen (path);
+	while (p > path + 1) {
+		*(p--) = 0;
+		if (!G_IS_DIR_SEPARATOR (*p))
+			break;
+	}
+	
+	/* Strip out any trailing slashes */
 	loc = g_quark_from_string (path);
 	g_free (path);
 	return loc;
@@ -833,6 +840,32 @@ location_to_volume (GQuark loc, const gchar **remainder)
 	if (remainder)
 		*remainder = bdelim + 1;
 	return locvol;
+} 
+
+GQuark
+gkr_location_to_parent (GQuark parent)
+{
+	const gchar *del, *sloc, *part;
+	GQuark ret;
+	gchar *str;
+	
+	g_return_val_if_fail (parent, 0);
+
+	sloc = g_quark_to_string (parent);
+	g_assert (sloc);
+
+	del = strchr (sloc, LOC_DELIMITER_C);
+	if (!del) {
+		g_warning ("The '%s' location is invalid", sloc);
+		return 0;
+	}
+	
+	part = strrchr (del + 1, G_DIR_SEPARATOR);
+	str = g_strndup (sloc, (part ? part : del) - sloc);
+	ret = g_quark_from_string (str);
+	g_free (str);
+	
+	return ret;
 } 
 
 gchar* 

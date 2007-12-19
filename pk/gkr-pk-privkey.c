@@ -36,6 +36,9 @@
 #include "common/gkr-location.h"
 #include "common/gkr-unique.h"
 
+#include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11g.h"
+
 #include "pkix/gkr-pkix-der.h"
 
 #include <glib.h>
@@ -45,6 +48,8 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#define SSH_AUTHENTICATION (g_quark_from_static_string ("ssh-authentication"))
 
 /* -------------------------------------------------------------------------------------
  * DECLARATIONS
@@ -279,6 +284,7 @@ gkr_pk_privkey_set_property (GObject *obj, guint prop_id, const GValue *value,
 static CK_RV 
 gkr_pk_privkey_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
+	GQuark *quarks;
 	gboolean val;
 	
 	switch (attr->type)
@@ -298,6 +304,12 @@ gkr_pk_privkey_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_MODIFIABLE:
 	case CKA_UNWRAP:
 		val = FALSE; 
+		break;
+
+	case CKA_PURPOSE_SSH_AUTHENTICATION:
+		quarks = gkr_pk_index_get_quarks (obj->location, obj->unique, "purposes");
+		val = quarks && gkr_pk_index_quarks_has (quarks, SSH_AUTHENTICATION);
+		gkr_pk_index_quarks_free (quarks);
 		break;
 
 	/* TODO: Perhaps we can detect this in some way */

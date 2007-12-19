@@ -40,6 +40,9 @@ gchar*              gkr_pk_index_get_string            (GQuark loc, gkrconstuniq
 
 guchar*             gkr_pk_index_get_binary            (GQuark loc, gkrconstunique unique, 
                                                         const gchar *field, gsize *n_data);
+                                                        
+GQuark*             gkr_pk_index_get_quarks            (GQuark loc, gkrconstunique unique,
+                                                        const gchar *field);
 
 gboolean            gkr_pk_index_set_boolean           (GQuark loc, gkrconstunique uni, 
                                                         const gchar *field, gboolean val);
@@ -54,7 +57,20 @@ gboolean            gkr_pk_index_set_binary            (GQuark loc, gkrconstuniq
                                                         const gchar *field, const guchar *data,
                                                         gsize n_data);
 
+gboolean            gkr_pk_index_set_quarks            (GQuark loc, gkrconstunique unique,
+                                                        const gchar *field, GQuark *quarks);
+
 gboolean            gkr_pk_index_delete                (GQuark loc, gkrconstunique unique, 
                                                         const gchar *field);
+
+/* -----------------------------------------------------------------------------
+ * LISTS OF QUARKS
+ */
+
+gboolean            gkr_pk_index_quarks_has            (GQuark *quarks, GQuark check);
+
+GQuark*             gkr_pk_index_quarks_dup            (GQuark *quarks);
+
+void                gkr_pk_index_quarks_free           (GQuark *quarks);
 
 #endif /*GKRPKINDEX_H_*/

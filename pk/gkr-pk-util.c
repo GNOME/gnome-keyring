@@ -26,6 +26,7 @@
 #include "gkr-pk-util.h"
 
 #include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11g.h"
 #include "pkcs11/pkcs11n.h"
 
 #include <glib.h>
@@ -93,6 +94,7 @@ gkr_pk_attribute_data_type (CK_ATTRIBUTE_TYPE type)
 	case CKA_HAS_RESET:
 	case CKA_COLOR:
 	case CKA_TRUST_STEP_UP_APPROVED:
+	case CKA_PURPOSE_SSH_AUTHENTICATION:
 		return GKR_PK_DATA_BOOL;
 
 	/* Raw or string data */

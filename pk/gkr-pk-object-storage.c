@@ -26,6 +26,7 @@
 #include "gkr-pk-cert.h"
 #include "gkr-pk-object-manager.h"
 #include "gkr-pk-object-storage.h"
+#include "gkr-pk-places.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-util.h"
 
@@ -54,9 +55,8 @@ struct _GkrPkObjectStoragePrivate {
 	GHashTable *objects;
 	GHashTable *objects_by_location;
 	GHashTable *specific_load_requests;
-	
-	GkrLocationWatch *watch;
-	GkrLocationWatch *ssh_watch;
+
+	GSList *watches;
 };
 
 #define GKR_PK_OBJECT_STORAGE_GET_PRIVATE(o) \
@@ -460,21 +460,33 @@ static void
 gkr_pk_object_storage_init (GkrPkObjectStorage *storage)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
+ 	GkrLocationWatch *watch;
+ 	const GkrPkPlace *place;
+ 	GQuark volume;
+ 	guint i;
  	
  	pv->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
  	pv->objects_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_array);
 	pv->specific_load_requests = g_hash_table_new_full (gkr_unique_hash, gkr_unique_equals, gkr_unique_free, NULL);
 	
-	pv->watch = gkr_location_watch_new (NULL, 0, "keystore", "*", "*.keystore");
- 	g_signal_connect (pv->watch, "location-added", G_CALLBACK (location_load), storage);
- 	g_signal_connect (pv->watch, "location-changed", G_CALLBACK (location_load), storage);
- 	g_signal_connect (pv->watch, "location-removed", G_CALLBACK (location_remove), storage);
- 	
- 	/* Only match id_rsa and id_dsa SSH key files */
- 	pv->ssh_watch = gkr_location_watch_new (NULL, GKR_LOCATION_VOLUME_HOME, ".ssh", "id_?sa", NULL);
- 	g_signal_connect (pv->ssh_watch, "location-added", G_CALLBACK (location_load), storage);
- 	g_signal_connect (pv->ssh_watch, "location-changed", G_CALLBACK (location_load), storage);
- 	g_signal_connect (pv->ssh_watch, "location-removed", G_CALLBACK (location_remove), storage);
+	for (i = 0; i < G_N_ELEMENTS (gkr_pk_places); ++i) {
+		place = &gkr_pk_places[i];
+		g_return_if_fail (place->directory);
+		
+		/* A null means any active volume */
+		volume = place->volume ? gkr_location_from_string (place->volume) : 0;
+		
+		watch = gkr_location_watch_new (NULL, volume, place->directory, 
+		                                place->include, place->exclude);
+		g_return_if_fail (watch); 
+
+ 		g_signal_connect (watch, "location-added", G_CALLBACK (location_load), storage);
+ 		g_signal_connect (watch, "location-changed", G_CALLBACK (location_load), storage);
+ 		g_signal_connect (watch, "location-removed", G_CALLBACK (location_remove), storage);
+
+		/* Assumes ownership */		
+		pv->watches = g_slist_prepend (pv->watches, watch);
+	}
 }
 
 static void
@@ -482,15 +494,18 @@ gkr_pk_object_storage_dispose (GObject *obj)
 {
 	GkrPkObjectStorage *storage = GKR_PK_OBJECT_STORAGE (obj);
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (obj);
+ 	GkrLocationWatch *watch;
+ 	GSList *l;
  	
  	g_hash_table_remove_all (pv->objects_by_location);
  	g_hash_table_remove_all (pv->specific_load_requests);
  	g_hash_table_remove_all (pv->objects);
-
-	g_signal_handlers_disconnect_by_func (pv->watch, location_load, storage);
-	g_signal_handlers_disconnect_by_func (pv->watch, location_remove, storage);
-	g_signal_handlers_disconnect_by_func (pv->ssh_watch, location_load, storage);
-	g_signal_handlers_disconnect_by_func (pv->ssh_watch, location_remove, storage);
+ 	
+ 	for (l = pv->watches; l; l = g_slist_next (l)) {
+		watch = GKR_LOCATION_WATCH (l->data);
+		g_signal_handlers_disconnect_by_func (watch, location_load, storage);
+		g_signal_handlers_disconnect_by_func (watch, location_remove, storage);
+ 	}
  	
 	G_OBJECT_CLASS (gkr_pk_object_storage_parent_class)->dispose (obj);
 }
@@ -499,13 +514,19 @@ static void
 gkr_pk_object_storage_finalize (GObject *obj)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (obj);
+ 	GkrLocationWatch *watch;
+ 	GSList *l;
  	
  	g_hash_table_destroy (pv->objects);
 	g_hash_table_destroy (pv->objects_by_location);
 	g_hash_table_destroy (pv->specific_load_requests);
 
-	g_object_unref (pv->watch);
-	g_object_unref (pv->ssh_watch);
+ 	for (l = pv->watches; l; l = g_slist_next (l)) {
+		watch = GKR_LOCATION_WATCH (l->data);
+		g_object_unref (watch);
+ 	}
+ 	g_slist_free (pv->watches);
+ 	pv->watches = NULL;
 	
 	G_OBJECT_CLASS (gkr_pk_object_storage_parent_class)->finalize (obj);
 }
@@ -539,18 +560,16 @@ void
 gkr_pk_object_storage_refresh (GkrPkObjectStorage *storage)
 {
 	GkrPkObjectStoragePrivate *pv;
+	GSList *l;
 	
 	if (!storage)
 		storage = gkr_pk_object_storage_get ();
 		
 	g_return_if_fail (GKR_IS_PK_OBJECT_STORAGE (storage));
 	pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
-		
-	g_assert (pv->watch);
-	gkr_location_watch_refresh (pv->watch, FALSE);
-
-	g_assert (pv->ssh_watch);
-	gkr_location_watch_refresh (pv->ssh_watch, FALSE);
+	
+	for (l = pv->watches; l; l = g_slist_next (l)) 
+		gkr_location_watch_refresh (GKR_LOCATION_WATCH (l->data), FALSE);
 }
 
 gboolean

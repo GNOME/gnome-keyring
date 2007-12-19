@@ -121,6 +121,34 @@ void unit_test_index_boolean (CuTest *cu)
 	CuAssert (cu, "get_boolean didn't return default", val == TRUE);
 }
 
+void unit_test_index_quarks (CuTest *cu)
+{
+	GQuark *quarks;
+	GQuark *output;
+	gboolean ret;
+	gint i;
+	
+	quarks = g_new0 (GQuark, 5);
+	for (i = 0; i < 4; ++i)
+		quarks[i] = g_quark_from_static_string ("blah");
+	
+	ret = gkr_pk_index_set_quarks (location, unique, "quarks", quarks);
+	CuAssert (cu, "set_quarks returned false", ret);
+	
+	/* A second time which exercises internals to not write same value twice */
+	ret = gkr_pk_index_set_quarks (location, unique, "quarks", quarks);
+	CuAssert (cu, "set_quarks returned false", ret);
+	
+	output = gkr_pk_index_get_quarks (location, unique, "quarks"); 
+	CuAssert (cu, "get_quarks returned null", output != NULL);
+	
+	for (i = 0; i < 4; ++i)
+		CuAssert (cu, "returned quark is different", quarks[i] == output[i]);
+	
+	output = gkr_pk_index_get_quarks (location, unique, "nonexistant");
+	CuAssert (cu, "get_quarks didn't return null", output == NULL);
+}
+
 void unit_test_index_delete (CuTest *cu)
 {
 	gboolean ret;

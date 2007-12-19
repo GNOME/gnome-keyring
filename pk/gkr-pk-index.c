@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include "gkr-pk-index.h"
+#include "gkr-pk-places.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
@@ -52,6 +53,7 @@ struct _GkrPkIndex {
 	 GHashTable *path_by_location;
 	 GHashTable *mtime_by_location;
 	 GHashTable *file_by_location;
+	 GHashTable *defaults_by_parent;
 };
 
 struct _GkrPkIndexClass {
@@ -63,6 +65,8 @@ G_DEFINE_TYPE (GkrPkIndex, gkr_pk_index, G_TYPE_OBJECT);
 
 static GkrPkIndex *index_singleton = NULL; 
 static GQuark no_location = 0;
+
+static GType type_boxed_gquarks = 0;
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -105,6 +109,56 @@ static void
 free_mtime (gpointer v)
 {
 	g_slice_free (time_t, v);
+}
+
+static GQuark* 
+quarks_from_strings (const gchar **strv, gsize *n_quarks)
+{
+	GArray *arr;
+	GQuark quark;
+	
+	arr = g_array_new (TRUE, TRUE, sizeof (GQuark));
+	while (*strv) {
+		quark = g_quark_from_string (*strv);
+		g_array_append_val (arr, quark);
+		++strv;
+	}
+	
+	if (n_quarks)
+		*n_quarks = arr->len;
+	
+	return (GQuark*)g_array_free (arr, FALSE);
+}
+
+static gchar**
+quarks_to_strings (const GQuark* quarks, gsize *n_strings)
+{
+	const gchar *value;
+	GArray *arr;
+	
+	arr = g_array_new (TRUE, TRUE, sizeof (const gchar*));
+	while (*quarks) {
+		value = g_quark_to_string (*quarks);
+		g_array_append_val (arr, value);
+		++quarks;
+	}
+	
+	if (n_strings)
+		*n_strings = arr->len;
+	return (gchar**)g_array_free (arr, FALSE);
+}
+
+static gboolean
+strings_are_equal (const gchar **one, const gchar **two)
+{
+	while (*one && *two) {
+		if (!g_str_equal (*one, *two))
+			return FALSE;
+		++one;
+		++two;
+	}
+	
+	return *one == *two;
 }
 
 static gpointer
@@ -190,65 +244,64 @@ unique_to_group (gkrconstunique uni)
 	return group;
 }
 
-static gboolean
-get_keyfile_value (GKeyFile *key_file, gkrconstunique uni, 
+static gint
+get_keyfile_value (GKeyFile *key_file, const gchar *group, 
                    const gchar *field, GValue *value)
 {
 	GError *err = NULL;
-	gchar *group;
-
+	GType type;
+	
 	g_assert (key_file);
-	g_assert (uni);
+	g_assert (group);
 	g_assert (field);
 	g_assert (value);
 
-	/* TODO: Cache this somehow? */
-	group = unique_to_group (uni);
+	type = G_VALUE_TYPE (value);
+	if (type == G_TYPE_BOOLEAN) {
+		gboolean v = g_key_file_get_boolean (key_file, group, field, &err);
+		if (err == NULL)
+			g_value_set_boolean (value, v);
+			
+			
+	} else if (type == G_TYPE_INT) {
+		gint v = g_key_file_get_integer (key_file, group, field, &err);
+		if (err == NULL)
+			g_value_set_int (value, v);
+			
+	} else if (type == G_TYPE_STRING) {
+		gchar *v = g_key_file_get_string (key_file, group, field, &err);
+		if (v != NULL) {
+			g_assert (err == NULL);
+			g_value_take_string (value, v);
+		}
 
-	switch (G_VALUE_TYPE (value)) {
-	case G_TYPE_BOOLEAN:
-		{
-			gboolean v = g_key_file_get_boolean (key_file, group, field, &err);
-			if (err == NULL)
-				g_value_set_boolean (value, v);
+	} else if (type == type_boxed_gquarks) {	
+		gchar **vals = g_key_file_get_string_list (key_file, group, field, NULL, &err);
+		if (vals != NULL) {
+			g_assert (err == NULL);
+			g_value_take_boxed (value, quarks_from_strings ((const gchar**)vals, NULL));
+			g_strfreev (vals);
 		}
-		break;
 		
-	case G_TYPE_INT:
-		{
-			gint v = g_key_file_get_integer (key_file, group, field, &err);
-			if (err == NULL)
-				g_value_set_int (value, v);
-		}
-		break;
-		
-	case G_TYPE_STRING:
-		{
-			gchar *v = g_key_file_get_string (key_file, group, field, &err);
-			if (v != NULL) {
-				g_assert (err == NULL);
-				g_value_take_string (value, v);
-			}
-		}
-		break;
-		
-	default:
+	} else {
 		g_assert_not_reached();
-		break;
-	}
-	
-	g_free (group);
-	
-	if (err != NULL) {
-		if (err->code != G_KEY_FILE_ERROR_GROUP_NOT_FOUND &&
-		    err->code != G_KEY_FILE_ERROR_KEY_NOT_FOUND)
-		    	g_warning ("couldn't read field '%s' from index: %s", 
-		    	           field, err->message ? err->message : "");
-		g_error_free (err);
 		return FALSE;
 	}
 	
-	return TRUE;
+	if (err != NULL) {
+		if (err->code != G_KEY_FILE_ERROR_GROUP_NOT_FOUND &&
+		    err->code != G_KEY_FILE_ERROR_KEY_NOT_FOUND) {
+		    	g_warning ("couldn't read field '%s' from index: %s", 
+		    	           field, err->message ? err->message : "");
+			g_error_free (err);
+			return -1;
+		}
+		
+		g_error_free (err);
+		return 0;
+	}
+	
+	return 1;
 }
 
 static void
@@ -258,6 +311,7 @@ set_keyfile_value (GKeyFile *key_file, gkrconstunique uni,
 {
 	GError *err = NULL;
 	gchar *group;
+	GType type;
 	
 	g_assert (key_file);
 	g_assert (uni);
@@ -266,56 +320,65 @@ set_keyfile_value (GKeyFile *key_file, gkrconstunique uni,
 	g_assert (updated);
 	
 	*updated = FALSE;
+	type = G_VALUE_TYPE (value);
 	
 	/* TODO: Cache this somehow? */
 	group = unique_to_group (uni);
 	
-	switch (G_VALUE_TYPE (value)) {
-	case G_TYPE_POINTER:
-		/* GValue can't be set to NULL, so for us empty pointer means delete */
+	/* GValue can't be set to NULL, so for us empty pointer means delete */
+	if (type == G_TYPE_POINTER) {
 		g_assert (g_value_get_pointer (value) == NULL);
 		if (g_key_file_has_key (key_file, group, field, NULL)) {
 			g_key_file_remove_key (key_file, group, field, NULL);
 			*updated = TRUE;
 		}
-		break;
 		
-	case G_TYPE_BOOLEAN:
-		{
-			gboolean v = g_value_get_boolean (value);
-			if (g_key_file_get_boolean (key_file, group, field, &err) != v || err != NULL) {
-				g_key_file_set_boolean (key_file, group, field, v);
-				*updated = TRUE;
-			}
+	} else if (type == G_TYPE_BOOLEAN) {
+		gboolean v = g_value_get_boolean (value);
+		if (g_key_file_get_boolean (key_file, group, field, &err) != v || err != NULL) {
+			g_key_file_set_boolean (key_file, group, field, v);
+			*updated = TRUE;
 		}
-		break;
+			
+	} else if (type == G_TYPE_INT) { 
+		gint v = g_value_get_int (value);
+		if (g_key_file_get_integer (key_file, group, field, &err) != v || err != NULL) {
+			g_key_file_set_integer (key_file, group, field, v);
+			*updated = TRUE;
+		}
+
+	} else if (type == G_TYPE_STRING) {
+		const gchar *v = g_value_get_string (value);
+		gchar *o = g_key_file_get_value (key_file, group, field, &err);
+			
+		g_assert (v != NULL);
+		if (!o || !g_str_equal (o, v)) {
+			g_key_file_set_string (key_file, group, field, v);
+			*updated = TRUE;
+		}
+			
+		g_free (o);
 		
-	case G_TYPE_INT:
-		{
-			gint v = g_value_get_int (value);
-			if (g_key_file_get_integer (key_file, group, field, &err) != v || err != NULL) {
-				g_key_file_set_integer (key_file, group, field, v);
-				*updated = TRUE;
-			}
+	} else if (type == type_boxed_gquarks) {
+		GQuark *quarks;
+		gsize n_strings;
+		gchar **strings, **o;
+		
+		quarks = g_value_get_boxed (value);
+		strings = quarks_to_strings (quarks, &n_strings);
+		o = g_key_file_get_string_list (key_file, group, field, NULL, &err);
+		
+		if (!o || !strings_are_equal ((const gchar**)strings, (const gchar**)o)) {
+			g_key_file_set_string_list (key_file, group, field, (const gchar**)strings, n_strings);
+			*updated = TRUE;
 		}
-		break;
-	case G_TYPE_STRING:
-		{
-			const gchar *v = g_value_get_string (value);
-			gchar *o = g_key_file_get_value (key_file, group, field, &err);
-			
-			g_assert (v != NULL);
-			if (!o || !g_str_equal (o, v)) {
-				g_key_file_set_string (key_file, group, field, v);
-				*updated = TRUE;
-			}
-			
-			g_free (o);
-		}
-		break;
-	default:
+		
+		g_strfreev (o);
+		g_free (strings);
+	
+	} else {
 		g_assert_not_reached();
-		break;
+		return;
 	}
 	
 	if (err)
@@ -432,6 +495,77 @@ load_index_key_file (GkrPkIndex *index, GQuark loc, int fd, gboolean force)
 	return key_file;
 }
 
+static const gchar*
+find_parent_defaults (GQuark parent)
+{
+	const GkrPkPlace *place;
+	const gchar *defaults = NULL;
+	GSList *volumes, *l;
+	GQuark loc;
+	guint i;
+	
+	for (i = 0; i < G_N_ELEMENTS (gkr_pk_places); ++i) {
+		place = &(gkr_pk_places[i]);
+		
+		/* With a specific volume */
+		if (place->volume) {
+			loc = gkr_location_from_string (place->volume);
+			loc = gkr_location_from_child (loc, place->directory);
+			if (loc == parent)
+				defaults = place->defaults;
+				
+		/* With any volume */
+		} else {
+			volumes = gkr_location_manager_get_volumes (NULL);
+			for (l = volumes; l; l = g_slist_next (l)) {
+				loc = gkr_location_from_child (GPOINTER_TO_UINT (l->data), 
+				                               place->directory);
+				if (loc == parent) {
+					defaults = place->defaults;
+					break;
+				}
+			}
+			g_slist_free (volumes);
+		}
+		
+		/* Found something? */
+		if (defaults)
+			return defaults;
+	}
+	
+	return NULL;	
+}
+
+static GKeyFile*
+load_parent_key_file (GkrPkIndex *index, GQuark loc)
+{
+	GKeyFile *file;
+	GQuark parent;
+	const gchar *defaults;
+	
+	parent = gkr_location_to_parent (loc);
+	if (!parent)
+		return NULL;
+		
+	file = g_hash_table_lookup (index->defaults_by_parent, GUINT_TO_POINTER (parent));
+	if (!file) {
+		file = g_key_file_new ();
+		g_hash_table_insert (index->defaults_by_parent, GUINT_TO_POINTER (parent), file);	
+
+		/* 
+		 * Look in the places list and load any default index data 
+		 * from there. 
+		 */
+		defaults = find_parent_defaults (parent);
+		if (defaults) {
+			if (!g_key_file_load_from_data (file, defaults, strlen (defaults), 
+			                                G_KEY_FILE_NONE, NULL))
+				g_warning ("couldn't parse builtin parent defaults");
+		}
+	}
+	
+	return file;
+}
 
 static gboolean
 read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstunique uni, 
@@ -441,6 +575,8 @@ read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstunique uni,
 	struct stat sb;
 	gboolean force = FALSE;
 	GKeyFile *key_file = NULL;
+	gchar *group;
+	gint ret;
 
 	if (loc) {
 		path = index_path_for_location (index, loc);
@@ -454,11 +590,24 @@ read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstunique uni,
 	key_file = load_index_key_file (index, loc, -1, force);
 	if (!key_file)
 		return FALSE;
+		
+	/* Try the actual item first */
+	group = unique_to_group (uni);
+	ret = get_keyfile_value (key_file, group, field, value);
+	g_free (group);
 	
-	if (!get_keyfile_value (key_file, uni, field, value))
-		return FALSE;
+	/* If not found, look in the default section */
+	if (ret == 0)
+		ret = get_keyfile_value (key_file, "default", field, value);
+		
+	/* Look in the parent directory defaults */
+	if (ret == 0) {
+		key_file = load_parent_key_file (index, loc);
+		if (key_file) 
+			ret = get_keyfile_value (key_file, "default", field, value);
+	}
 	
-	return TRUE;
+	return ret == 1;
 }
 
 static gboolean
@@ -595,6 +744,8 @@ flush_caches (GkrLocationManager *locmgr, GQuark volume, GkrPkIndex *index)
 	                             GUINT_TO_POINTER (volume));
 	g_hash_table_foreach_remove (index->mtime_by_location, remove_descendent_locations, 
 	                             GUINT_TO_POINTER (volume));
+	g_hash_table_foreach_remove (index->defaults_by_parent, remove_descendent_locations,
+	                             GUINT_TO_POINTER (volume));
 }
 
 /* -----------------------------------------------------------------------------
@@ -610,6 +761,8 @@ gkr_pk_index_init (GkrPkIndex *index)
 	index->mtime_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_mtime);
 	index->file_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, 
 	                                                 (GDestroyNotify)g_key_file_free);
+	index->defaults_by_parent = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL,
+	                                                   (GDestroyNotify)g_key_file_free);
 	
 	locmgr = gkr_location_manager_get ();
 	g_signal_connect (locmgr, "volume-removed", G_CALLBACK (flush_caches), index);
@@ -627,7 +780,9 @@ gkr_pk_index_finalize (GObject *obj)
 	g_hash_table_destroy (index->path_by_location);
 	g_hash_table_destroy (index->mtime_by_location);
 	g_hash_table_destroy (index->file_by_location);
-	index->path_by_location = index->mtime_by_location = index->file_by_location = NULL;
+	g_hash_table_destroy (index->defaults_by_parent);
+	index->path_by_location = index->mtime_by_location = NULL;
+	index->file_by_location = index->defaults_by_parent = NULL;
 	
 	G_OBJECT_CLASS (gkr_pk_index_parent_class)->finalize (obj);
 }
@@ -644,6 +799,11 @@ gkr_pk_index_class_init (GkrPkIndexClass *klass)
 	
 	/* A special quark that denotes stored in memory */
 	no_location = g_quark_from_static_string ("MEMORY");
+	
+	/* A boxed types for null terminated C array of quarks */ 
+	type_boxed_gquarks = g_boxed_type_register_static ("GQuarks", 
+	                                                   (GBoxedCopyFunc)gkr_pk_index_quarks_dup, 
+	                                                   (GBoxedFreeFunc)gkr_pk_index_quarks_free);
 }
 
 /* -----------------------------------------------------------------------------
@@ -738,6 +898,30 @@ gkr_pk_index_get_binary (GQuark loc, gkrconstunique unique, const gchar *field, 
 	return data;	
 }
 
+GQuark* 
+gkr_pk_index_get_quarks (GQuark loc, gkrconstunique unique, const gchar *field)
+{
+	GkrPkIndex *index;
+	GValue value;
+	GQuark *ret = NULL;
+	
+	g_return_val_if_fail (unique != NULL, NULL);
+	g_return_val_if_fail (field != NULL, NULL);	
+	
+	/* Do this first so boxed types are registered */
+	index = get_index_singleton ();
+	
+	memset (&value, 0, sizeof (value));
+	g_value_init (&value, type_boxed_gquarks);
+	
+	if (read_pk_index_value (index, loc, unique, field, &value)) {
+		/* No way to steal value's string, so just don't unset it */
+		ret = (GQuark*)g_value_get_boxed (&value);
+	}
+	
+	return ret;
+}
+
 gboolean
 gkr_pk_index_set_boolean (GQuark loc, gkrconstunique uni, 
                           const gchar *field, gboolean val)
@@ -823,6 +1007,31 @@ gkr_pk_index_set_binary (GQuark loc, gkrconstunique unique, const gchar *field,
 }
 
 gboolean
+gkr_pk_index_set_quarks (GQuark loc, gkrconstunique unique, const gchar *field, 
+                         GQuark *quarks)
+{
+	GValue value;
+	GkrPkIndex *index;
+	gboolean ret;
+
+	g_return_val_if_fail (unique != NULL, FALSE);	
+	g_return_val_if_fail (field != NULL, FALSE);
+	g_return_val_if_fail (quarks != NULL, FALSE);
+	
+	/* Do this first so boxed type is registered */
+	index = get_index_singleton ();
+		
+	memset (&value, 0, sizeof (value));
+	g_value_init (&value, type_boxed_gquarks);
+	g_value_set_boxed (&value, quarks);
+	
+	ret = update_pk_index_value (index, loc, unique, field, &value);
+	g_value_unset (&value);
+	
+	return ret;
+}
+
+gboolean
 gkr_pk_index_delete (GQuark loc, gkrconstunique uni, const gchar *field)
 {
 	GValue value;
@@ -840,4 +1049,36 @@ gkr_pk_index_delete (GQuark loc, gkrconstunique uni, const gchar *field)
 	g_value_unset (&value);
 
 	return ret;	
+}
+
+gboolean
+gkr_pk_index_quarks_has (GQuark *quarks, GQuark check)
+{
+	while (*quarks) {
+		if (*quarks == check)
+			return TRUE;
+		++quarks;
+	}
+	
+	return FALSE;
+}
+
+GQuark*
+gkr_pk_index_quarks_dup (GQuark *quarks)
+{
+	GQuark *last = quarks;
+	
+	/* Figure out how many there are */	
+	while (*last)
+		++last;
+		
+	/* Include the null termination */
+	++last;
+	return g_memdup (quarks, (last - quarks) * sizeof (GQuark));
+}
+
+void
+gkr_pk_index_quarks_free (GQuark *quarks)
+{
+	g_free (quarks);
 }

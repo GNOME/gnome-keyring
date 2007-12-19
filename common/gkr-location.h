@@ -34,18 +34,24 @@ G_BEGIN_DECLS
  */
 
 #define        GKR_LOCATION_NAME_LOCAL     "LOCAL"
-
-#define        GKR_LOCATION_VOLUME_LOCAL   (gkr_location_from_string (GKR_LOCATION_NAME_LOCAL ":"))
+#define	       GKR_LOCATION_VOLUME_LOCAL_S "LOCAL:" 
+#define        GKR_LOCATION_VOLUME_LOCAL   (gkr_location_from_string (GKR_LOCATION_VOLUME_LOCAL_S))
 
 #define        GKR_LOCATION_NAME_HOME      "HOME"
+#define        GKR_LOCATION_VOLUME_HOME_S  "HOME:"
+#define        GKR_LOCATION_VOLUME_HOME    (gkr_location_from_string (GKR_LOCATION_VOLUME_LOCAL_S))
 
-#define        GKR_LOCATION_VOLUME_HOME    (gkr_location_from_string (GKR_LOCATION_NAME_HOME ":"))
+#define        GKR_LOCATION_NAME_FILE      "FILE"
+#define        GKR_LOCATION_VOLUME_FILE_S  "FILE:"
+#define        GKR_LOCATION_VOLUME_FILE    (gkr_location_from_string (GKR_LOCATION_VOLUME_FILE_S))
 
 GQuark         gkr_location_from_path      (const gchar *path);
 
 GQuark         gkr_location_from_string    (const gchar *str);
 
 GQuark         gkr_location_from_child     (GQuark parent, const gchar *child);
+
+GQuark         gkr_location_to_parent      (GQuark parent);
 
 const gchar*   gkr_location_to_string      (GQuark loc);
  

@@ -74,6 +74,44 @@ void unit_test_location_simple (CuTest* cu)
 	CuAssert (cu, "should return non-null path", path2 != NULL);
 }
 
+void unit_test_location_trailing (CuTest* cu)
+{
+	GQuark one, two, ref;
+	
+	one = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "/blah/");
+	CuAssert (cu, "should return a non-zero quark", one != 0);
+
+	two = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "blah//");
+	CuAssert (cu, "should return a non-zero quark", two != 0);
+
+	ref = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "blah");
+	CuAssert (cu, "should return a non-zero quark", ref != 0);
+
+	/* Should all be identical */
+	CuAssert (cu, "stripping of leading and trailing slashes did not work", ref == one);
+	CuAssert (cu, "stripping of leading and trailing slashes did not work", ref == two);
+}
+
+void unit_test_location_parent (CuTest* cu)
+{
+	GQuark child, ref, parent;
+
+	ref = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "first");
+	CuAssert (cu, "should return a non-zero quark", ref != 0);
+	
+	child = gkr_location_from_child (ref, "second");
+	CuAssert (cu, "should return a non-zero quark", child != 0);
+	
+	parent = gkr_location_to_parent (child);
+	CuAssert (cu, "should return a non-zero quark", parent != 0);
+	CuAssert (cu, "parent location does not equal original", parent == ref);
+	
+	/* Should return the volume */
+	parent = gkr_location_to_parent (parent);
+	CuAssert (cu, "should return a non-zero quark", parent != 0);
+	CuAssert (cu, "parent of parent location does not equal volume", parent == GKR_LOCATION_VOLUME_LOCAL);
+}
+
 void unit_test_location_media (CuTest* cu)
 {
 	gchar *path = g_build_filename (MEDIA_DEVICE, "testo", NULL);
