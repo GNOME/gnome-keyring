@@ -1,14 +1,14 @@
 # Norwegian translations for gnome-keyring.
 # Copyright (C) 2003 Red Hat Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Kjartan Maraas <kmaraas@gnome.org>, 2003-2006.
+# Kjartan Maraas <kmaraas@gnome.org>, 2003-2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 0.4.6\n"
+"Project-Id-Version: gnome-keyring 2.21.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-07 08:44+0100\n"
-"PO-Revision-Date: 2007-12-07 08:49+0100\n"
+"POT-Creation-Date: 2007-12-19 12:13+0100\n"
+"PO-Revision-Date: 2007-12-19 12:15+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -25,11 +25,11 @@ msgstr "Avtagbar disk: %s"
 msgid "Removable Disk"
 msgstr "Avtagbar disk"
 
-#: ../common/gkr-location.c:445 ../common/gkr-location.c:458
+#: ../common/gkr-location.c:449 ../common/gkr-location.c:462
 msgid "Home"
 msgstr "Hjem"
 
-#: ../common/gkr-location.c:937 ../common/gkr-location.c:960
+#: ../common/gkr-location.c:941 ../common/gkr-location.c:964
 #: ../pkix/gkr-pkix-parser.c:514
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller stasjonen denne filen er plassert på er ikke tilstede"
@@ -372,34 +372,38 @@ msgid "The keyring has already been unlocked."
 msgstr "Nøkkelringen er allerede låst opp."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
 msgstr "Lås opp nøkkelring for pålogging"
 
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Enter login password to unlock keyring"
 msgstr "Oppgi påloggingspassord for å låse opp nøkkelring"
 
-#: ../keyrings/gkr-keyring-login.c:89
+#: ../keyrings/gkr-keyring-login.c:100
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr "Din påloggingsnøkkelring ble ikke låst opp automatisk når du logget på denne datamaskinen."
+msgstr ""
+"Din påloggingsnøkkelring ble ikke låst opp automatisk når du logget på denne "
+"datamaskinen."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
 msgstr "Opprett nøkkelring for pålogging"
 
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
 msgstr "Oppgi påloggingspassord"
 
-#: ../keyrings/gkr-keyring-login.c:115
+#: ../keyrings/gkr-keyring-login.c:126
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
-msgstr "Din påloggingsnøkkelring ble ikke opprettet automatisk når du logget på denne datamaskinen. Den vil bli opprettet nå."
+msgstr ""
+"Din påloggingsnøkkelring ble ikke opprettet automatisk når du logget på "
+"denne datamaskinen. Den vil bli opprettet nå."
 
 #: ../pk/gkr-pk-object-storage.c:126
 #, c-format
@@ -447,46 +451,56 @@ msgstr "nøkkel"
 msgid "certificate"
 msgstr "sertifikat"
 
-#: ../ui/gkr-ask-tool.c:314
+#: ../ui/gkr-ask-tool.c:79
+msgid "Store passwords unencrypted?"
+msgstr "Lagre passord ukryptert?"
+
+#: ../ui/gkr-ask-tool.c:80
+msgid ""
+"By choosing to use a blank password, your stored passwords not be safely "
+"encrypted. They will be accessible by anyone with access to your files."
+msgstr "Hvis du velger å bruke et tomt passord kan ikke dine lagrede passord krypteres på en trygg måte. De vil være tilgjengelig for alle med tilgang til dine filer."
+
+#: ../ui/gkr-ask-tool.c:87
+msgid "Use Unsafe Storage"
+msgstr "Bruk utrygg lagring"
+
+#: ../ui/gkr-ask-tool.c:340
 msgid "_Location:"
 msgstr "_Lokasjon:"
 
-#: ../ui/gkr-ask-tool.c:327
+#: ../ui/gkr-ask-tool.c:353
 msgid "_Old password:"
 msgstr "_Gammelt passord:"
 
-#: ../ui/gkr-ask-tool.c:347
+#: ../ui/gkr-ask-tool.c:373
 msgid "_Password:"
 msgstr "_Passord:"
 
-#: ../ui/gkr-ask-tool.c:369
+#: ../ui/gkr-ask-tool.c:395
 msgid "_Confirm password:"
 msgstr "_Bekreft passord:"
 
-#: ../ui/gkr-ask-tool.c:388
+#: ../ui/gkr-ask-tool.c:414
 msgid "New password strength"
 msgstr "Styrke for nytt passord"
 
-#: ../ui/gkr-ask-tool.c:444
-msgid "Old password cannot be blank."
-msgstr "Gammelt passord kan ikke være tomt."
-
-#: ../ui/gkr-ask-tool.c:456
-msgid "Password cannot be blank."
-msgstr "Passordet kan ikke være tomt."
-
-#: ../ui/gkr-ask-tool.c:465
+#: ../ui/gkr-ask-tool.c:481
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../ui/gkr-ask-tool.c:514
+#: ../ui/gkr-ask-tool.c:497
+msgid "Password cannot be blank"
+msgstr "Passordet kan ikke være tomt"
+
+#: ../ui/gkr-ask-tool.c:548
 msgid "Deny"
 msgstr "Nekt"
 
-#: ../ui/gkr-ask-tool.c:526
+#: ../ui/gkr-ask-tool.c:560
 msgid "Allow _Once"
 msgstr "Tillat én gang"
 
-#: ../ui/gkr-ask-tool.c:530
+#: ../ui/gkr-ask-tool.c:564
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
