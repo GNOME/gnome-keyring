@@ -13,6 +13,7 @@ INCLUDES=	\
 
 libgkr_keyrings_la_SOURCES = \
 	gkr-keyring.c gkr-keyring.h \
+	gkr-keyring-binary.c gkr-keyring-textual.c \
 	gkr-keyring-item.c gkr-keyring-item.h \
 	gkr-keyrings.c gkr-keyrings.h \
 	gkr-keyring-login.c gkr-keyring-login.h 

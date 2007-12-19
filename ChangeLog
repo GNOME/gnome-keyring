@@ -1,5 +1,27 @@
 2007-12-18  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-buffer.c:
+	* common/gkr-buffer.h:
+	* daemon/gkr-daemon-ops.c:
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyring.h:
+	* keyrings/gkr-keyring-binary.c:
+	* keyrings/gkr-keyring-login.c:
+	* keyrings/gkr-keyring-login.h:
+	* keyrings/gkr-keyring-textual.c:
+	* keyrings/Makefile.am:
+	* keyrings/tests/Makefile.am:
+	* keyrings/unit-test-keyring-file.c: (added)
+	* keyrings/unit-test-keyring-login.c:
+	* keyrings/unit-test-login-prompt.c:
+	* keyrings/tests/test-data/*.keyring: (added)
+	* pk/gkr-pk-object-storage.c:
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* ui/gkr-ask-tool.c: Add support for unencrypted keyrings when 
+	the user specifies a blank password. Fixes bug #386866
+	
+2007-12-18  Stef Walter  <stef@memberwebs.com>
+
 	* gkr-location.c: Initialize Dbus error structure properly.
 	Fixes crash on shutdown. Patch by Jeff Cai. Fixes bug #504239
 	

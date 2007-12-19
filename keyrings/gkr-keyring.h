@@ -33,6 +33,8 @@
 
 #include "gkr-keyring-item.h"
 
+#include "common/gkr-buffer.h"
+
 #include "library/gnome-keyring.h"
 
 G_BEGIN_DECLS
@@ -56,6 +58,9 @@ struct _GkrKeyring {
 	char *password;
 	gboolean locked;
 	gboolean asking_password;
+
+	/* Whether the salt and hash_iterations members are populated */
+	gboolean salt_valid; 
 
 	/* On disk data: */
 	guchar salt[8];
@@ -109,6 +114,25 @@ gboolean         gkr_keyring_unlock             (GkrKeyring *keyring, const gcha
 void             gkr_keyrings_set_item          (GkrKeyring *keyring, GnomeKeyringItemType type,
                                                  const gchar *display_name, const gchar *secret,
                                                  GnomeKeyringAttributeList *attrs);
+
+gboolean         gkr_keyring_is_insecure        (GkrKeyring *keyring);
+
+/* -----------------------------------------------------------------------------
+ * FILE FORMATS
+ * 
+ * gint return value: 
+ *   -1 : error
+ *    0 : unrecognized
+ *    1 : successful 
+ */
+
+gboolean         gkr_keyring_textual_generate (GkrKeyring *keyring, GkrBuffer *buffer);
+
+gboolean         gkr_keyring_binary_generate  (GkrKeyring *keyring, GkrBuffer *buffer);
+
+gint             gkr_keyring_textual_parse    (GkrKeyring *keyring, GkrBuffer *buffer); 
+
+gint             gkr_keyring_binary_parse     (GkrKeyring *keyring, GkrBuffer *buffer); 
 
 G_END_DECLS
 

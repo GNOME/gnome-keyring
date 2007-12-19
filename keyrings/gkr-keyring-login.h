@@ -26,7 +26,9 @@
 
 #include "library/gnome-keyring.h"
 
-gboolean        gkr_keyring_login_check          (void);
+gboolean        gkr_keyring_login_is_unlocked    (void);
+
+gboolean        gkr_keyring_login_is_usable      (void);
 
 gboolean        gkr_keyring_login_unlock         (const gchar *secret);
 

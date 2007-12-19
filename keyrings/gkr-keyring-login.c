@@ -44,10 +44,21 @@
 #include <unistd.h>
 
 gboolean
-gkr_keyring_login_check (void)
+gkr_keyring_login_is_unlocked (void)
 {
 	GkrKeyring *login = gkr_keyrings_get_login ();
 	return (login && !login->locked);
+}
+
+gboolean
+gkr_keyring_login_is_usable (void)
+{
+	/*
+	 * We only flag this as usable by our internals if the keyring will
+	 * be encrypted when on disk. 
+	 */
+	GkrKeyring *login = gkr_keyrings_get_login ();
+	return (login && !login->locked && !gkr_keyring_is_insecure (login));	
 }
 
 static gboolean 

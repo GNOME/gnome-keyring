@@ -75,7 +75,7 @@ void unit_test_keyrings_login (CuTest* cu)
 
 	gkr_ask_daemon_set_hook (verify_ask, cu);
 
-	CuAssert (cu, "login not marked locked", !gkr_keyring_login_check ());
+	CuAssert (cu, "login not marked locked", !gkr_keyring_login_is_unlocked ());
 	
 	/* cancel the prompt */
 	TELL("Press 'DENY'");
@@ -83,7 +83,7 @@ void unit_test_keyrings_login (CuTest* cu)
 	ret = gkr_keyring_login_unlock (NULL);
 	CuAssert (cu, "no prompt appeared", had_prompt);
 	CuAssert (cu, "gkr_keyring_login_unlock() return TRUE", !ret);
-	CuAssert (cu, "login not marked locked", !gkr_keyring_login_check ());
+	CuAssert (cu, "login not marked locked", !gkr_keyring_login_is_unlocked ());
 	
 	/* Now create a keyring */
 	TELL("Type 'blah' and press 'OK'");
@@ -91,11 +91,11 @@ void unit_test_keyrings_login (CuTest* cu)
 	ret = gkr_keyring_login_unlock (NULL);
 	CuAssert (cu, "no prompt appeared", had_prompt);
 	CuAssert (cu, "gkr_keyring_login_unlock() return FALSE", ret);
-	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_check ());
+	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_is_unlocked ());
 	
 	/* Now lock it */
 	gkr_keyring_login_lock ();
-	CuAssert (cu, "didn't lock right keyring", !gkr_keyring_login_check ());
+	CuAssert (cu, "didn't lock right keyring", !gkr_keyring_login_is_unlocked ());
 	
 	/* cancel the prompt */
 	TELL("Press 'DENY'");
@@ -103,7 +103,7 @@ void unit_test_keyrings_login (CuTest* cu)
 	ret = gkr_keyring_login_unlock (NULL);
 	CuAssert (cu, "no prompt appeared", had_prompt);
 	CuAssert (cu, "gkr_keyring_login_unlock() return TRUE", !ret);
-	CuAssert (cu, "login not marked locked", !gkr_keyring_login_check ());
+	CuAssert (cu, "login not marked locked", !gkr_keyring_login_is_unlocked ());
 	
 	/* Now create a keyring */
 	TELL("Type 'blah' and press 'OK'");
@@ -111,5 +111,5 @@ void unit_test_keyrings_login (CuTest* cu)
 	ret = gkr_keyring_login_unlock (NULL);
 	CuAssert (cu, "no prompt appeared", had_prompt);
 	CuAssert (cu, "gkr_keyring_login_unlock() return FALSE", ret);
-	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_check ());
+	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_is_unlocked ());
 }

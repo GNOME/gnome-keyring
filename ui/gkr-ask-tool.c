@@ -66,6 +66,33 @@ create_notice (const gchar *text)
 	return g_markup_printf_escaped ("<span style=\"italic\">%s</span>", text);
 }
 
+static gboolean
+confirm_blank_password (GtkWindow *parent)
+{
+	GtkWidget *dialog;
+	gchar *markup;
+	gint ret;
+	
+	dialog = gtk_message_dialog_new (parent, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING,
+	                                 GTK_BUTTONS_NONE, NULL);
+	
+	markup = create_markup (_("Store passwords unencrypted?"), 
+	                        _("By choosing to use a blank password, your stored passwords not be safely encrypted. "
+	                          "They will be accessible by anyone with access to your files."));
+	gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), markup);
+	g_free (markup);
+	
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog), 
+	                        GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+	                        _("Use Unsafe Storage"), GTK_RESPONSE_ACCEPT,
+	                        NULL);
+ 
+ 	ret = gtk_dialog_run (GTK_DIALOG (dialog));
+ 	gtk_widget_destroy (dialog);
+ 	
+ 	return ret == GTK_RESPONSE_ACCEPT;
+}
+
 static void
 on_password_changed (GtkEditable     *editable,
 		     gpointer         user_data)
@@ -220,9 +247,8 @@ run_dialog (gboolean include_password,
 	gint response_id;
 	GtkWidget *table, *ptable;
 	GtkWidget *image, *check, *location;
-	const char *password;
-	const char *confirmation;
-	const char *original;
+	const char *password, *original, *confirmation;
+	const char *env;
 	int row;
 
 	value = g_key_file_get_value (input_data, "general", "title", NULL);
@@ -438,27 +464,17 @@ run_dialog (gboolean include_password,
 	gtk_widget_show (dialog);
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
 	
-	if (include_original && old !=NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
+	password = original = NULL;
+	
+	/* Get the original password */
+	if (include_original && old != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
 		original = gtk_entry_get_text (GTK_ENTRY (old));
-		if (*original == 0) {
-			notice_text = create_notice (_("Old password cannot be blank."));
-			gtk_label_set_markup (notice,  notice_text);
-			gtk_widget_show (GTK_WIDGET (notice));
-			g_free (notice_text);			
-			goto retry;
-		}
 		*original_out = g_strdup (original);
 	}
 
+	/* Get the main password entry, and confirmation */
 	if (include_password && entry != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
 		password = gtk_entry_get_text (GTK_ENTRY (entry));
-		if (*password == 0) {
-			notice_text = create_notice (_("Password cannot be blank."));
-			gtk_label_set_markup (notice,  notice_text);
-			gtk_widget_show (GTK_WIDGET (notice));
-			g_free (notice_text);			
-			goto retry;
-		}
 		if (include_confirm && confirm != NULL) {
 			confirmation = gtk_entry_get_text (GTK_ENTRY (confirm));
 			if (strcmp(password, confirmation) != 0) {
@@ -470,6 +486,24 @@ run_dialog (gboolean include_password,
 			}
 		}
 		*password_out = g_strdup (password);
+	}
+	
+	/* When it's a new password and blank, double check */
+	if (include_confirm && password && !password[0]) {
+		
+		/* Don't allow blank passwords if in paranoid mode */
+		env = g_getenv ("GNOME_KEYRING_PARANOID");
+		if (env && *env) {
+			notice_text = create_notice (_("Password cannot be blank"));
+			gtk_label_set_markup (notice, notice_text);
+			gtk_widget_show (GTK_WIDGET (notice));
+			g_free (notice_text);
+			goto retry;
+			
+		/* Double check with the user */ 
+		} else if (!confirm_blank_password (GTK_WINDOW (dialog))) {
+			goto retry;
+		}
 	}
 	
 	if (check != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {

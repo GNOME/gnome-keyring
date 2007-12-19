@@ -79,7 +79,7 @@ void unit_test_keyrings_login (CuTest* cu)
 	/* Unlock and create a new login keyring */
 	ret = gkr_keyring_login_unlock ("blah");
 	CuAssert (cu, "gkr_keyring_login_unlock() return FALSE", ret);
-	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_check ());
+	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_is_unlocked ());
 	
 	/* Make sure it worked */
 	login = gkr_keyrings_get_login ();
@@ -88,7 +88,7 @@ void unit_test_keyrings_login (CuTest* cu)
 	/* Now lock it */
 	gkr_keyring_login_lock ();
 	CuAssert (cu, "didn't lock right keyring", login->locked);
-	CuAssert (cu, "login not marked locked", !gkr_keyring_login_check ());
+	CuAssert (cu, "login not marked locked", !gkr_keyring_login_is_unlocked ());
 	
 	/* And unlock it again */
 	ret = gkr_keyring_login_unlock ("blah");

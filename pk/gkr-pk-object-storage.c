@@ -145,7 +145,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 	g_free (primary);
 	g_free (secondary);
 		
-	if (gkr_keyring_login_check ()) {
+	if (gkr_keyring_login_is_usable ()) {
 		label = g_strdup_printf (_("Automatically unlock this %s when I log in."), display_type);
 		gkr_ask_request_set_check_option (ask, label);
 		g_free (label);

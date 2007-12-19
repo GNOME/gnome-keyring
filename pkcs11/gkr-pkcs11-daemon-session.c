@@ -326,7 +326,7 @@ session_C_GetSessionInfo (SessionInfo *sinfo, GkrPkcs11Message *req,
 
 	/* No in arguments */
 
-	if (gkr_keyring_login_check ())
+	if (gkr_keyring_login_is_unlocked ())
 		state = sinfo->readonly ? CKS_RO_USER_FUNCTIONS : CKS_RW_USER_FUNCTIONS;
 	else 
 		state = sinfo->readonly ? CKS_RO_PUBLIC_SESSION : CKS_RW_PUBLIC_SESSION;
@@ -413,7 +413,7 @@ static CK_RV
 session_C_Logout (SessionInfo *sinfo, GkrPkcs11Message *req, 
                   GkrPkcs11Message *resp)
 {
-	if (!gkr_keyring_login_check ())
+	if (!gkr_keyring_login_is_unlocked ())
 		return CKR_USER_NOT_LOGGED_IN;
 	
 	/* 
@@ -467,7 +467,7 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 	}
 	
 	/* Can only create public objects unless logged in */
-	if (!gkr_keyring_login_check () && gkc_pk_class_is_private (cls)) {
+	if (!gkr_keyring_login_is_unlocked () && gkc_pk_class_is_private (cls)) {
 		ret = CKR_USER_NOT_LOGGED_IN;
 		goto done;
 	}

@@ -73,6 +73,21 @@ gkr_buffer_init_static (GkrBuffer* buffer, unsigned char *buf, size_t len)
 	buffer->allocator = NULL;	
 }
 
+void
+gkr_buffer_init_allocated (GkrBuffer *buffer, unsigned char *buf, size_t len,
+                           GkrBufferAllocator allocator)
+{
+	memset (buffer, 0, sizeof (*buffer));
+	
+	if (!allocator) 
+		allocator = DEFAULT_ALLOCATOR;
+
+	buffer->buf = buf;
+	buffer->len = len;
+	buffer->allocated_len = len;
+	buffer->failures = 0;
+	buffer->allocator = allocator;
+}
 
 void 
 gkr_buffer_reset (GkrBuffer *buffer)

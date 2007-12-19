@@ -423,7 +423,7 @@ request_keyring_access (GkrKeyringRequest *req, GkrKeyring *keyring)
 	 * to unlock automatically next time. 
 	 */
 	login = gkr_keyrings_get_login ();
-	if (login && !login->locked && login != keyring)
+	if (login != keyring && gkr_keyring_login_is_usable ())
 		gkr_ask_request_set_check_option (ask, _("Automatically unlock this keyring when I log in."));
 	
 	/* Intercept item access requests to see if we still need to prompt */

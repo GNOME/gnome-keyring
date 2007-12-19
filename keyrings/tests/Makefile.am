@@ -1,6 +1,7 @@
 
 UNIT_AUTO = \
-	unit-test-keyring-login.c 
+	unit-test-keyring-login.c \
+	unit-test-keyring-file.c
 
 UNIT_PROMPT = \
 	unit-test-login-prompt.c 

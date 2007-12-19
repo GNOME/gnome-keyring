@@ -77,6 +77,11 @@ void            gkr_buffer_init_static          (GkrBuffer *buffer,
                                                  unsigned char *buf, 
                                                  size_t len);
 
+void            gkr_buffer_init_allocated       (GkrBuffer *buffer, 
+                                                 unsigned char *buf, 
+                                                 size_t len,
+                                                 GkrBufferAllocator allocator);
+                                                 
 void            gkr_buffer_uninit               (GkrBuffer *buffer);
 
 int             gkr_buffer_set_allocator        (GkrBuffer *buffer, 
