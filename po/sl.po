@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-17 04:14+0100\n"
-"PO-Revision-Date: 2007-12-11 18:22+0100\n"
+"PO-Revision-Date: 2007-12-20 14:44+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,22 +22,22 @@ msgstr ""
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../common/gkr-location.c:309
+#: ../common/gkr-location.c:306
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Odstranljiva naprava: %s"
 
-#: ../common/gkr-location.c:311
+#: ../common/gkr-location.c:308
 msgid "Removable Disk"
 msgstr "Odstranljiva naprava"
 
-#: ../common/gkr-location.c:445
-#: ../common/gkr-location.c:458
+#: ../common/gkr-location.c:446
+#: ../common/gkr-location.c:459
 msgid "Home"
 msgstr "Domov"
 
-#: ../common/gkr-location.c:937
-#: ../common/gkr-location.c:960
+#: ../common/gkr-location.c:974
+#: ../common/gkr-location.c:997
 #: ../pkix/gkr-pkix-parser.c:514
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disk ali pogon na katerem je ta datoteka, ni na voljo"
@@ -284,28 +284,28 @@ msgid "The keyring has already been unlocked."
 msgstr "Zbirka ključev je že odklenjena."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
 msgstr "Odklenite prijavno zbirko ključev"
 
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Enter login password to unlock keyring"
 msgstr "Vnesite prijavno geslo za odklepanje zbirke ključev"
 
-#: ../keyrings/gkr-keyring-login.c:89
+#: ../keyrings/gkr-keyring-login.c:100
 msgid "Your login keyring was not automatically unlocked when you logged into this computer."
 msgstr "Prijavna zbirka ključev ni bila samodejno odklenjena ob prijavi na ta računalnik."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
 msgstr "Ustvari zbirko ključev prijave"
 
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
 msgstr "Vnesite geslo za prijavo"
 
-#: ../keyrings/gkr-keyring-login.c:115
+#: ../keyrings/gkr-keyring-login.c:126
 msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
 msgstr "Prijavna zbirka ključev ni bila samodejno ustvarjena ob prijavi na ta računalnik. Sedaj bo ustvarjena."
 
@@ -355,47 +355,55 @@ msgstr "ključ"
 msgid "certificate"
 msgstr "certifikat"
 
-#: ../ui/gkr-ask-tool.c:314
+#: ../ui/gkr-ask-tool.c:79
+msgid "Store passwords unencrypted?"
+msgstr "Shranim gesla nešifrirana?"
+
+#: ../ui/gkr-ask-tool.c:80
+msgid "By choosing to use a blank password, your stored passwords not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Z izborom uporabe praznega gesla ostanejo ostala gesla nezaščitena in nešifrirana. Dostop to takih gesel ima vsakdo, ki ima tudi dostop do računalnika."
+
+#: ../ui/gkr-ask-tool.c:87
+msgid "Use Unsafe Storage"
+msgstr "Uporabi nevarno shranjevanje"
+
+#: ../ui/gkr-ask-tool.c:340
 msgid "_Location:"
 msgstr "_Položaj:"
 
-#: ../ui/gkr-ask-tool.c:327
+#: ../ui/gkr-ask-tool.c:353
 msgid "_Old password:"
 msgstr "_Staro geslo:"
 
-#: ../ui/gkr-ask-tool.c:347
+#: ../ui/gkr-ask-tool.c:373
 msgid "_Password:"
 msgstr "_Geslo:"
 
-#: ../ui/gkr-ask-tool.c:369
+#: ../ui/gkr-ask-tool.c:395
 msgid "_Confirm password:"
 msgstr "_Potrdi geslo:"
 
-#: ../ui/gkr-ask-tool.c:388
+#: ../ui/gkr-ask-tool.c:414
 msgid "New password strength"
 msgstr "Varnost novega gesla"
 
-#: ../ui/gkr-ask-tool.c:444
-msgid "Old password cannot be blank."
-msgstr "Staro geslo ne more biti prazno."
-
-#: ../ui/gkr-ask-tool.c:456
-msgid "Password cannot be blank."
-msgstr "Geslo ne more biti prazno."
-
-#: ../ui/gkr-ask-tool.c:465
+#: ../ui/gkr-ask-tool.c:481
 msgid "Passwords do not match."
 msgstr "Gesli se ne ujemata."
 
-#: ../ui/gkr-ask-tool.c:514
+#: ../ui/gkr-ask-tool.c:497
+msgid "Password cannot be blank"
+msgstr "Geslo ne sme biti prazno."
+
+#: ../ui/gkr-ask-tool.c:548
 msgid "Deny"
 msgstr "Zavrni"
 
-#: ../ui/gkr-ask-tool.c:526
+#: ../ui/gkr-ask-tool.c:560
 msgid "Allow _Once"
 msgstr "Dovoli enkrat"
 
-#: ../ui/gkr-ask-tool.c:530
+#: ../ui/gkr-ask-tool.c:564
 msgid "_Always Allow"
 msgstr "Vedno dovoli"
 
