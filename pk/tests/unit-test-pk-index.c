@@ -26,6 +26,7 @@
 #include "run-auto-test.h"
 
 #include "pk/gkr-pk-index.h"
+#include "pk/gkr-pk-object.h"
 
 #include "common/gkr-location.h"
 #include "common/gkr-unique.h"
@@ -51,14 +52,15 @@
 
 #define STR "a test string"
 
-static gkrunique unique = NULL;
-static GQuark location = 0;
+static GkrPkObject *object = NULL;
 
 void unit_setup_index (void)
 {
 	/* This is just any arbitrary data */
-	unique = gkr_unique_new (DATA, DATA_L);
-	location = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "woof");
+	gkrunique unique = gkr_unique_new (DATA, DATA_L);
+	GQuark location = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "woof");
+	
+	object = g_object_new (GKR_TYPE_PK_OBJECT, "location", location, "unique", unique, NULL);
 }
 
 void unit_test_index_binary (CuTest* cu)
@@ -68,10 +70,10 @@ void unit_test_index_binary (CuTest* cu)
 	gsize n_data;
 	
 	/* Test binary */
-	ret = gkr_pk_index_set_binary (0, unique, "field", DATA, DATA_L);
+	ret = gkr_pk_index_set_binary (object, "field", DATA, DATA_L);
 	CuAssert (cu, "set_binary returned false", ret);
 
-	data = gkr_pk_index_get_binary (0, unique, "field", &n_data);
+	data = gkr_pk_index_get_binary (object, "field", &n_data);
 	CuAssert (cu, "get_binary returned no data", data != NULL);
 	CuAssert (cu, "get_binary returned bad length data", n_data == DATA_L);
 	CuAssert (cu, "get_binary returned wrong data", memcmp (data, DATA, DATA_L) == 0);
@@ -83,10 +85,10 @@ void unit_test_index_string (CuTest *cu)
 	gboolean ret;
 	
 	/* Test strings */
-	ret = gkr_pk_index_set_string (location, unique, "string", STR);
+	ret = gkr_pk_index_set_string (object, "string", STR);
 	CuAssert (cu, "set_string returned false", ret);
 
-	str = gkr_pk_index_get_string (location, unique, "string");
+	str = gkr_pk_index_get_string (object, "string");
 	CuAssert (cu, "get_string returned no string", str != NULL);
 	CuAssert (cu, "get_string returned wrong string", strcmp (str, STR) == 0);
 }
@@ -96,13 +98,13 @@ void unit_test_index_int (CuTest *cu)
 	gint val;
 	gboolean ret;
 	
-	ret = gkr_pk_index_set_int (location, unique, "intval", 23423523);
+	ret = gkr_pk_index_set_int (object, "intval", 23423523);
 	CuAssert (cu, "set_int returned false", ret);
 
-	val = gkr_pk_index_get_int (location, unique, "intval", 0);
+	val = gkr_pk_index_get_int (object, "intval", 0);
 	CuAssert (cu, "get_int returned wrong value", val == 23423523);
 
-	val = gkr_pk_index_get_int (location, unique, "nonexistant", 35);
+	val = gkr_pk_index_get_int (object, "nonexistant", 35);
 	CuAssert (cu, "get_int didn't return default", val == 35);
 }
 
@@ -111,13 +113,13 @@ void unit_test_index_boolean (CuTest *cu)
 	gboolean val;
 	gboolean ret;
 	
-	ret = gkr_pk_index_set_boolean (location, unique, "boolval", TRUE);
+	ret = gkr_pk_index_set_boolean (object, "boolval", TRUE);
 	CuAssert (cu, "set_boolean returned false", ret);
 
-	val = gkr_pk_index_get_boolean (location, unique, "boolval", 0);
+	val = gkr_pk_index_get_boolean (object, "boolval", 0);
 	CuAssert (cu, "get_boolean returned wrong value", val == TRUE);
 
-	val = gkr_pk_index_get_boolean (location, unique, "nonexistant", TRUE);
+	val = gkr_pk_index_get_boolean (object, "nonexistant", TRUE);
 	CuAssert (cu, "get_boolean didn't return default", val == TRUE);
 }
 
@@ -132,20 +134,20 @@ void unit_test_index_quarks (CuTest *cu)
 	for (i = 0; i < 4; ++i)
 		quarks[i] = g_quark_from_static_string ("blah");
 	
-	ret = gkr_pk_index_set_quarks (location, unique, "quarks", quarks);
+	ret = gkr_pk_index_set_quarks (object, "quarks", quarks);
 	CuAssert (cu, "set_quarks returned false", ret);
 	
 	/* A second time which exercises internals to not write same value twice */
-	ret = gkr_pk_index_set_quarks (location, unique, "quarks", quarks);
+	ret = gkr_pk_index_set_quarks (object, "quarks", quarks);
 	CuAssert (cu, "set_quarks returned false", ret);
 	
-	output = gkr_pk_index_get_quarks (location, unique, "quarks"); 
+	output = gkr_pk_index_get_quarks (object, "quarks"); 
 	CuAssert (cu, "get_quarks returned null", output != NULL);
 	
 	for (i = 0; i < 4; ++i)
 		CuAssert (cu, "returned quark is different", quarks[i] == output[i]);
 	
-	output = gkr_pk_index_get_quarks (location, unique, "nonexistant");
+	output = gkr_pk_index_get_quarks (object, "nonexistant");
 	CuAssert (cu, "get_quarks didn't return null", output == NULL);
 }
 
@@ -154,12 +156,12 @@ void unit_test_index_delete (CuTest *cu)
 	gboolean ret;
 	gboolean val;
 	
-	ret = gkr_pk_index_delete (location, unique, "boolval");
+	ret = gkr_pk_index_delete (object, "boolval");
 	CuAssert (cu, "delete returned false", ret);
 	
-	val = gkr_pk_index_get_boolean (location, unique, "boolval", FALSE);
+	val = gkr_pk_index_get_boolean (object, "boolval", FALSE);
 	CuAssert (cu, "delete didn't work", val == FALSE);
 	
-	ret = gkr_pk_index_delete (location, unique, "nonexistant");
+	ret = gkr_pk_index_delete (object, "nonexistant");
 	CuAssert (cu, "delete returned false", ret);
 }

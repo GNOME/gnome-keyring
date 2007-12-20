@@ -54,7 +54,8 @@ struct _GkrPkPubkeyClass {
 
 GType               gkr_pk_pubkey_get_type           (void) G_GNUC_CONST;
 
-GkrPkObject*        gkr_pk_pubkey_new                (GQuark location, gcry_sexp_t s_key);
+GkrPkObject*        gkr_pk_pubkey_new                (GkrPkObjectManager *manager, 
+                                                      GQuark location, gcry_sexp_t s_key);
 
 GkrPkPubkey*        gkr_pk_pubkey_instance           (GkrPkObjectManager* manager, 
                                                       GQuark location, gcry_sexp_t s_key);

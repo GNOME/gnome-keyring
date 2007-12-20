@@ -38,6 +38,7 @@
 
 enum {
 	PROP_0,
+	PROP_MANAGER,
 	PROP_LOCATION,
 	PROP_UNIQUE,
 	PROP_ORIG_LABEL,
@@ -147,6 +148,35 @@ gkr_pk_object_init (GkrPkObject *obj)
 	                                        NULL, gkr_pk_attribute_free);
 }
 
+static GObject*
+gkr_pk_object_constructor (GType type, guint n_props, GObjectConstructParam *props)
+{
+	GkrPkObjectManager *mgr;
+	GkrPkObject *xobj;
+	GObject *obj;
+	guint i;
+	
+	obj = G_OBJECT_CLASS (gkr_pk_object_parent_class)->constructor (type, n_props, props);
+	if (!obj) 
+		return NULL;
+		
+	xobj = GKR_PK_OBJECT (obj);
+	
+	/* Find the object manager and register */
+	for (i = 0; i < n_props; ++i) {
+		if (props[i].pspec->name && g_str_equal (props[i].pspec->name, "manager")) {
+			mgr = g_value_get_object (props[i].value);
+			if (mgr) {
+				gkr_pk_object_manager_register (mgr, xobj);
+				g_return_val_if_fail (xobj->manager == mgr, obj);
+			}
+			break;
+		}
+	}
+	
+	return obj;
+}
+
 static void
 gkr_pk_object_get_property (GObject *obj, guint prop_id, GValue *value, 
                              GParamSpec *pspec)
@@ -155,6 +185,9 @@ gkr_pk_object_get_property (GObject *obj, guint prop_id, GValue *value,
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
 
 	switch (prop_id) {
+	case PROP_MANAGER:
+		g_value_set_object (value, xobj->manager);
+		break;
 	case PROP_LOCATION:
 		g_value_set_uint (value, xobj->location);
 		break;
@@ -178,6 +211,13 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
 	
 	switch (prop_id) {
+	case PROP_MANAGER:
+		g_assert (!xobj->manager);
+		/* 
+		 * We set this up in the constructor after all other props have
+		 * taken effect. See above.
+		 */
+		break; 
 	case PROP_LOCATION:
 		xobj->location = g_value_get_uint (value);
 		break;
@@ -209,6 +249,7 @@ gkr_pk_object_finalize (GObject *obj)
 	
 	if (xobj->manager)
 		gkr_pk_object_manager_unregister (xobj->manager, xobj);
+	g_return_if_fail (xobj->manager == NULL);
 
 	G_OBJECT_CLASS (gkr_pk_object_parent_class)->finalize (obj);
 }
@@ -220,11 +261,16 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 	gobject_class = (GObjectClass*) klass;
 
 	gkr_pk_object_parent_class = g_type_class_peek_parent (klass);
+	gobject_class->constructor = gkr_pk_object_constructor;
 	gobject_class->get_property = gkr_pk_object_get_property;
 	gobject_class->set_property = gkr_pk_object_set_property;
 	gobject_class->finalize = gkr_pk_object_finalize;
 
 	g_type_class_add_private (gobject_class, sizeof (GkrPkObjectPrivate));
+	
+	g_object_class_install_property (gobject_class, PROP_MANAGER, 
+		g_param_spec_object ("manager", "Manager", "Object Manager",
+		                     GKR_TYPE_PK_OBJECT_MANAGER, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
 		g_param_spec_uint ("location", "Location", "Location of Data",
@@ -312,7 +358,7 @@ gkr_pk_object_get_attribute (GkrPkObject *object, CK_ATTRIBUTE_PTR attr)
 	CK_RV ret;
 
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), CKR_GENERAL_ERROR);
-	g_return_val_if_fail (attr && attr->type, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
 		
 	ret = lookup_attribute (object, attr->type, &cattr);
 	if (ret == CKR_OK)
@@ -352,7 +398,7 @@ gchar*
 gkr_pk_object_get_label (GkrPkObject *xobj)
 {
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (xobj), NULL);
-	return gkr_pk_index_get_string (xobj->location, xobj->unique, "label");
+	return gkr_pk_index_get_string (xobj, "label");
 }
 
 void
@@ -360,7 +406,7 @@ gkr_pk_object_set_label (GkrPkObject *xobj, const gchar *label)
 {
 	g_return_if_fail (GKR_IS_PK_OBJECT (xobj));
 	if (!label)
-		gkr_pk_index_delete (xobj->location, xobj->unique, "label");
+		gkr_pk_index_delete (xobj, "label");
 	else
-		gkr_pk_index_set_string (xobj->location, xobj->unique, "label", label);
+		gkr_pk_index_set_string (xobj, "label", label);
 }

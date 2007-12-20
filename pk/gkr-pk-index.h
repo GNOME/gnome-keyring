@@ -27,41 +27,41 @@
 
 #include <glib.h>
 
-#include "common/gkr-unique.h"
+#include "gkr-pk-object.h"
 
-gboolean            gkr_pk_index_get_boolean           (GQuark loc, gkrconstunique uni,
-                                                        const gchar *field, gboolean defvalue);
+gboolean            gkr_pk_index_get_boolean           (GkrPkObject *object, const gchar *field, 
+                                                        gboolean defvalue);
 
-gint                gkr_pk_index_get_int               (GQuark loc, gkrconstunique uni,
-                                                        const gchar *field, gint defvalue);
+gint                gkr_pk_index_get_int               (GkrPkObject *object, const gchar *field, 
+                                                        gint defvalue);
                                                                   
-gchar*              gkr_pk_index_get_string            (GQuark loc, gkrconstunique uni, 
-                                                        const gchar *field);
+gchar*              gkr_pk_index_get_string            (GkrPkObject *object, const gchar *field);
 
-guchar*             gkr_pk_index_get_binary            (GQuark loc, gkrconstunique unique, 
-                                                        const gchar *field, gsize *n_data);
+guchar*             gkr_pk_index_get_binary            (GkrPkObject *object, const gchar *field, 
+                                                        gsize *n_data);
                                                         
-GQuark*             gkr_pk_index_get_quarks            (GQuark loc, gkrconstunique unique,
-                                                        const gchar *field);
+GQuark*             gkr_pk_index_get_quarks            (GkrPkObject *object, const gchar *field);
 
-gboolean            gkr_pk_index_set_boolean           (GQuark loc, gkrconstunique uni, 
-                                                        const gchar *field, gboolean val);
+gboolean            gkr_pk_index_set_boolean           (GkrPkObject *object, const gchar *field, 
+                                                        gboolean val);
 
-gboolean            gkr_pk_index_set_int               (GQuark loc, gkrconstunique uni, 
-                                                        const gchar *field, gint val);
+gboolean            gkr_pk_index_set_int               (GkrPkObject *object, const gchar *field, 
+                                                        gint val);
                                                         
-gboolean            gkr_pk_index_set_string            (GQuark loc, gkrconstunique uni, 
-                                                        const gchar *field, const gchar *val);
+gboolean            gkr_pk_index_set_string            (GkrPkObject *object, const gchar *field, 
+                                                        const gchar *val);
                                                         
-gboolean            gkr_pk_index_set_binary            (GQuark loc, gkrconstunique unique, 
-                                                        const gchar *field, const guchar *data,
-                                                        gsize n_data);
+gboolean            gkr_pk_index_set_binary            (GkrPkObject *object, const gchar *field, 
+                                                        const guchar *data, gsize n_data);
 
-gboolean            gkr_pk_index_set_quarks            (GQuark loc, gkrconstunique unique,
-                                                        const gchar *field, GQuark *quarks);
+gboolean            gkr_pk_index_set_quarks            (GkrPkObject *object, const gchar *field, 
+                                                        GQuark *quarks);
 
-gboolean            gkr_pk_index_delete                (GQuark loc, gkrconstunique unique, 
-                                                        const gchar *field);
+gboolean            gkr_pk_index_has_value             (GkrPkObject *object, const gchar *field);
+                                                        
+gboolean            gkr_pk_index_delete                (GkrPkObject *object, const gchar *field);
+
+gboolean            gkr_pk_index_clear                 (GkrPkObject *object);
 
 /* -----------------------------------------------------------------------------
  * LISTS OF QUARKS

@@ -190,7 +190,7 @@ gkr_pkcs11_dsa_verify (GkrPkObject *object, const guchar *plain, gsize n_plain,
 }
 
 CK_RV
-gkr_pkcs11_dsa_create_key (const GArray* attrs, GkrPkObject **key)
+gkr_pkcs11_dsa_create_key (GkrPkObjectManager *mgr, const GArray* attrs, GkrPkObject **key)
 {
 	CK_OBJECT_CLASS cls;
 	gcry_sexp_t skey;
@@ -253,9 +253,9 @@ gkr_pkcs11_dsa_create_key (const GArray* attrs, GkrPkObject **key)
 	}
 	
 	if (priv) 
-		*key = gkr_pk_privkey_new (0, skey);
+		*key = gkr_pk_privkey_new (mgr, 0, skey);
 	else
-		*key = gkr_pk_pubkey_new (0, skey); 
+		*key = gkr_pk_pubkey_new (mgr, 0, skey); 
 
 	/* TODO: We should verify remainder of attributes */
 	ret = CKR_OK;

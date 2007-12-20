@@ -87,7 +87,7 @@ GkrParseResult  gkr_pkix_der_read_key_usage             (const guchar *data, gsi
                                                          guint *key_usage);
 
 GkrParseResult  gkr_pkix_der_read_enhanced_usage        (const guchar *data, gsize n_data, 
-                                                         GSList **usage_oids);
+                                                         GQuark **oids);
 
 /* -----------------------------------------------------------------------------
  * CIPHERS

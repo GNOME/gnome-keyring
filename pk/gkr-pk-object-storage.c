@@ -288,8 +288,8 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 		break;
 	}
 	
-	object = g_object_new (gtype, "location", location, "unique", unique, NULL);
-	gkr_pk_object_manager_register (manager, object);
+	object = g_object_new (gtype, "manager", manager, "location", location, 
+	                       "unique", unique, NULL);
 	add_object (storage, object);
 	
 	/* Object was reffed */

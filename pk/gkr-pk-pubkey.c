@@ -448,7 +448,7 @@ gkr_pk_pubkey_class_init (GkrPkPubkeyClass *klass)
 }
 
 GkrPkObject*
-gkr_pk_pubkey_new (GQuark location, gcry_sexp_t s_key)
+gkr_pk_pubkey_new (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_key)
 {
 	GkrPkObject *key;
 	guchar hash[20];
@@ -462,7 +462,7 @@ gkr_pk_pubkey_new (GQuark location, gcry_sexp_t s_key)
 	/* We need to create a unique for this key */
 	unique = gkr_unique_new_digestv ((const guchar*)"public-key", 10, hash, 20, NULL);
 	
-	key = g_object_new (GKR_TYPE_PK_PUBKEY, "location", location, 
+	key = g_object_new (GKR_TYPE_PK_PUBKEY, "manager", manager, "location", location, 
 	                    "gcrypt-sexp", s_key, "unique", unique, NULL);
 	                    
 	gkr_unique_free (unique);
@@ -491,8 +491,7 @@ gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_
 		return GKR_PK_PUBKEY (pub);
 	}
 	
-	pub = gkr_pk_pubkey_new (location, s_key);
-	gkr_pk_object_manager_register (manager, pub);
+	pub = gkr_pk_pubkey_new (manager, location, s_key);
 	return GKR_PK_PUBKEY (pub);
 }
 

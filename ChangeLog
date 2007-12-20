@@ -1,3 +1,48 @@
+2007-12-20  Stef Walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-index.c:
+	* pk/gkr-pk-index.h: Access indexes on an object basis and flush
+	the object caches when something in the index changes.
+
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object-manager.c:
+	* pk/gkr-pk-object-storage.c:
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-privkey.h:
+	* pk/gkr-pk-pubkey.c:
+	* pk/gkr-pk-pubkey.h:
+	* pkcs11/gkr-pkcs11-daemon-session.c: 
+	* pkcs11/gkr-pkcs11-dsa.c:
+	* pkcs11/gkr-pkcs11-dsa.h: 
+	* ssh/gkr-ssh-daemon-ops.c: Change how objects are added into a manager.
+
+	* pk/gkr-pk-cert.c:
+	* pk/gkr-pk-cert.h:
+	* pk/gkr-pk-netscape-trust.c: (added)
+	* pk/gkr-pk-netscape-trust.h: (added)
+	* pk/gkr-pk-places.h:
+	* pk/gkr-pk-purpose.c: (removed)
+	* pk/gkr-pk-purpose.h: (removed)
+	* pk/gkr-pk-util.c: 
+	* pk/Makefile.am:
+	* pk/tests/check-attribute.c: (added)
+	* pk/tests/Makefile.am:
+	* pk/tests/unit-test-pk-cert.c: (added)
+	* pk/tests/unit-test-pk-index.c: 
+	* pk/tests/unit-test-pk-netscape-trust.c: (added)
+	* pk/tests/test-data/*: (added)
+	* pkcs11/pkcs11g.h: Add purpose and trust to certificates and fix a 
+	number of certificate attribute bugs. Add Netscape trust object.  
+	Add unit tests for certificates and trust objects.
+
+	* pkix/gkr-pkix-asn1.c: ASN.1 boolean can be missing and be false
+	
+	* pkix/gkr-pkix-der.c: 
+	* pkix/gkr-pkix-der.h: Fix parsing bugs in basic constraints, key usage 
+	and enhanced key usage.
+
+	* tests/ca-example/*: Add test CA and test certificates.
+	
 2007-12-19  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-location.c:

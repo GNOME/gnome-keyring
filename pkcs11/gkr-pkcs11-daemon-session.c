@@ -91,8 +91,7 @@ session_take_object (SessionInfo *sinfo, GkrPkObject *object)
 	
 	g_return_if_fail (object->handle == 0);
 	g_return_if_fail (object->location == 0);
-	
-	gkr_pk_object_manager_register (sinfo->manager, object);
+	g_return_if_fail (object->manager == sinfo->manager);
 
 	/* We assume the ownership */
 	g_assert (object->handle);
@@ -429,7 +428,7 @@ session_C_Logout (SessionInfo *sinfo, GkrPkcs11Message *req,
  */
 
 static CK_RV 
-create_key_object (GArray *attrs, GkrPkObject **key)
+create_key_object (GkrPkObjectManager *manager, GArray *attrs, GkrPkObject **key)
 {
 	CK_KEY_TYPE type;
 	
@@ -439,7 +438,7 @@ create_key_object (GArray *attrs, GkrPkObject **key)
 	switch (type) {
 	/* TODO: Support RSA key creation */
 	case CKK_DSA:
-		return gkr_pkcs11_dsa_create_key (attrs, key);
+		return gkr_pkcs11_dsa_create_key (manager, attrs, key);
 	default:
 		return CKR_ATTRIBUTE_VALUE_INVALID;
 	};
@@ -486,7 +485,7 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 	switch (cls) {
 	case CKO_PUBLIC_KEY:
 	case CKO_PRIVATE_KEY:
-		ret = create_key_object (attrs, &object);
+		ret = create_key_object (sinfo->manager, attrs, &object);
 		break;
 	default:
 		/* TODO: What's a better error code here? */

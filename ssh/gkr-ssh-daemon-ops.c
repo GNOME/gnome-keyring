@@ -115,7 +115,7 @@ add_session_key (gcry_sexp_t s_key, const gchar *comment)
 {
 	GkrPkPrivkey *key, *prev;
 	
-	key = GKR_PK_PRIVKEY (gkr_pk_privkey_new (0, s_key));
+	key = GKR_PK_PRIVKEY (gkr_pk_privkey_new (NULL, 0, s_key));
 	g_return_if_fail (key != NULL);
 	
 	if (comment)
@@ -222,7 +222,7 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 	
 	/* Only find the keys that have usage = ssh */
 	objects = gkr_pk_object_manager_findv (gkr_pk_object_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
-	                                       CKA_PURPOSE_SSH_AUTHENTICATION, CK_TRUE, 0, NULL);
+	                                       CKA_GNOME_PURPOSE_SSH_AUTH, CK_TRUE, 0, NULL);
 	
 	pubkeys = NULL;
 	get_public_keys (ssh_session_keys, &pubkeys);

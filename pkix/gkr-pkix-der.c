@@ -683,7 +683,7 @@ gkr_pkix_der_read_key_usage (const guchar *data, gsize n_data, guint *key_usage)
   	if (res != ASN1_SUCCESS)
   		goto done;
 
-	*key_usage = buf[0] || (buf[1] << 8);
+	*key_usage = buf[0] | (buf[1] << 8);
 	ret = GKR_PARSE_SUCCESS;
 	
 done:
@@ -693,12 +693,12 @@ done:
 }
 
 GkrParseResult
-gkr_pkix_der_read_enhanced_usage (const guchar *data, gsize n_data, GSList **usage_oids)
+gkr_pkix_der_read_enhanced_usage (const guchar *data, gsize n_data, GQuark **usage_oids)
 {
 	GkrParseResult ret = GKR_PARSE_UNRECOGNIZED;
 	ASN1_TYPE asn;
-	GSList *results;
 	gchar *part;
+	GArray *array;
 	GQuark oid;
 	int i;
 	
@@ -708,7 +708,7 @@ gkr_pkix_der_read_enhanced_usage (const guchar *data, gsize n_data, GSList **usa
 		
 	ret = GKR_PARSE_FAILURE;
 	
-	results = NULL;
+	array = g_array_new (TRUE, TRUE, sizeof (GQuark));
 	for (i = 0; TRUE; ++i) {
 		part = g_strdup_printf ("?%d", i + 1);
 		oid = gkr_pkix_asn1_read_quark (asn, part);
@@ -717,10 +717,10 @@ gkr_pkix_der_read_enhanced_usage (const guchar *data, gsize n_data, GSList **usa
 		if (!oid) 
 			break;
 		
-		results = g_slist_prepend (results, GUINT_TO_POINTER (oid));
+		g_array_append_val (array, oid);
 	}
 	
-	*usage_oids = g_slist_reverse (results);
+	*usage_oids = (GQuark*)g_array_free (array, FALSE);
 	ret = GKR_PARSE_SUCCESS;
 	
 done:

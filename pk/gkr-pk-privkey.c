@@ -114,7 +114,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 	obj = GKR_PK_OBJECT (key);
 	
 	/* Do we have a public key in the indexes? */
-	data = gkr_pk_index_get_binary (obj->location, obj->unique, "public-key", &n_data);
+	data = gkr_pk_index_get_binary (obj, "public-key", &n_data);
 	if (data) {
 		res = gkr_pkix_der_read_public_key (data, n_data, &s_key);
 		if (res == GKR_PARSE_SUCCESS) {
@@ -123,7 +123,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 			goto done;
 		} 
 
-		gkr_pk_index_delete (obj->location, obj->unique, "public-key");	
+		gkr_pk_index_delete (obj, "public-key");	
 		g_warning ("invalid public-key in indexes for: %s", g_quark_to_string (obj->location));
 	}
 	
@@ -145,7 +145,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 		g_return_val_if_fail (data != NULL, NULL);
 		
 		/* Write the public key out to the indexes */
-		if (!gkr_pk_index_set_binary (obj->location, obj->unique, "public-key", data, n_data))
+		if (!gkr_pk_index_set_binary (obj, "public-key", data, n_data))
 			g_warning ("couldn't write public key to index for: %s", g_quark_to_string (obj->location));
 		
 		key->priv->pubkey = gkr_pk_pubkey_instance (obj->manager, 0, s_key);
@@ -306,8 +306,8 @@ gkr_pk_privkey_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		val = FALSE; 
 		break;
 
-	case CKA_PURPOSE_SSH_AUTHENTICATION:
-		quarks = gkr_pk_index_get_quarks (obj->location, obj->unique, "purposes");
+	case CKA_GNOME_PURPOSE_SSH_AUTH:
+		quarks = gkr_pk_index_get_quarks (obj, "purposes");
 		val = quarks && gkr_pk_index_quarks_has (quarks, SSH_AUTHENTICATION);
 		gkr_pk_index_quarks_free (quarks);
 		break;
@@ -518,7 +518,7 @@ gkr_pk_privkey_class_init (GkrPkPrivkeyClass *klass)
 }
 
 GkrPkObject*
-gkr_pk_privkey_new (GQuark location, gcry_sexp_t s_key)
+gkr_pk_privkey_new (GkrPkObjectManager *mgr, GQuark location, gcry_sexp_t s_key)
 {
 	GkrPkObject *key;
 	guchar hash[20];
@@ -532,7 +532,7 @@ gkr_pk_privkey_new (GQuark location, gcry_sexp_t s_key)
 	/* We need to create a unique for this key */
 	unique = gkr_unique_new_digestv ((const guchar*)"private-key", 11, hash, 20, NULL);
 	
-	key = g_object_new (GKR_TYPE_PK_PRIVKEY, "location", location, 
+	key = g_object_new (GKR_TYPE_PK_PRIVKEY, "manager", mgr, "location", location, 
 	                    "gcrypt-sexp", s_key, "unique", unique, NULL);
 	                    
 	gkr_unique_free (unique);

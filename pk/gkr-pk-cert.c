@@ -24,13 +24,19 @@
 #include "config.h"
 
 #include "gkr-pk-cert.h"
-#include "gkr-pk-pubkey.h"
+#include "gkr-pk-index.h"
+#include "gkr-pk-netscape-trust.h"
 #include "gkr-pk-object.h"
 #include "gkr-pk-object-manager.h"
+#include "gkr-pk-privkey.h"
+#include "gkr-pk-pubkey.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
+
+#include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11g.h"
 
 #include "pkix/gkr-pkix-asn1.h"
 #include "pkix/gkr-pkix-der.h"
@@ -55,14 +61,29 @@ enum {
 
 struct _GkrPkCertData {
 	ASN1_TYPE asn1;
-	GkrPkPubkey *pubkey;
 	guchar *raw;
 	gsize n_raw;
+	
+	GkrPkPubkey *pubkey;
+	GkrPkNetscapeTrust *netscape_trust;
 };
 
 G_DEFINE_TYPE (GkrPkCert, gkr_pk_cert, GKR_TYPE_PK_OBJECT);
 
 static GQuark OID_BASIC_CONSTRAINTS;
+static GQuark OID_ENHANCED_USAGE;
+
+static GQuark OID_USAGE_SSH_AUTH;
+static GQuark OID_USAGE_SERVER_AUTH;
+static GQuark OID_USAGE_CLIENT_AUTH;
+static GQuark OID_USAGE_CODE_SIGNING;
+static GQuark OID_USAGE_EMAIL;
+static GQuark OID_USAGE_TIME_STAMPING;
+static GQuark OID_USAGE_IPSEC_ENDPOINT;	
+static GQuark OID_USAGE_IPSEC_TUNNEL;
+static GQuark OID_USAGE_IPSEC_USER;
+static GQuark OID_USAGE_IKE_INTERMEDIATE;
+
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -75,7 +96,19 @@ init_quarks (void)
 		name = g_quark_from_static_string(value)
  
  	QUARK (OID_BASIC_CONSTRAINTS, "2.5.29.19");
-	
+ 	QUARK (OID_ENHANCED_USAGE, "2.5.29.37");
+ 	
+ 	QUARK (OID_USAGE_SSH_AUTH, "ssh-authentication");
+	QUARK (OID_USAGE_SERVER_AUTH, "1.3.6.1.5.5.7.3.1");
+	QUARK (OID_USAGE_CLIENT_AUTH, "1.3.6.1.5.5.7.3.2");
+	QUARK (OID_USAGE_CODE_SIGNING, "1.3.6.1.5.5.7.3.3");
+	QUARK (OID_USAGE_EMAIL, "1.3.6.1.5.5.7.3.4");
+	QUARK (OID_USAGE_TIME_STAMPING, "1.3.6.1.5.5.7.3.8");
+	QUARK (OID_USAGE_IPSEC_ENDPOINT, "1.3.6.1.5.5.7.3.5");
+	QUARK (OID_USAGE_IPSEC_TUNNEL, "1.3.6.1.5.5.7.3.6");
+	QUARK (OID_USAGE_IPSEC_USER, "1.3.6.1.5.5.7.3.7");
+	QUARK (OID_USAGE_IKE_INTERMEDIATE, "1.3.6.1.5.5.8.2.2");
+
 	#undef QUARK
 }
 
@@ -113,6 +146,180 @@ get_public_key (GkrPkCert *cert)
 	return cert->data->pubkey;
 }
 
+static void
+initialize_certificate (GkrPkCert *cert, ASN1_TYPE asn1)
+{
+	GkrPkCertData *data = cert->data;
+
+	g_free(data->raw);
+	data->raw = NULL;
+	data->n_raw = 0;
+	
+	if (data->pubkey)
+		g_object_unref (data->pubkey);
+	data->pubkey = NULL;
+	
+	if (data->netscape_trust)
+		g_object_unref (data->netscape_trust);
+	data->netscape_trust = NULL;
+
+	if (data->asn1)
+		asn1_delete_structure (&data->asn1);
+	data->asn1 = asn1;
+			
+	if (!asn1)
+		return;
+
+	/* The raw certificate data */
+	data->raw = gkr_pkix_asn1_encode (data->asn1, "", &data->n_raw, NULL);
+	g_return_if_fail (data->raw);
+			
+	/* We always have a companion netscape trust object */
+	data->netscape_trust = gkr_pk_netscape_trust_new (GKR_PK_OBJECT (cert)->manager, cert);
+
+	/* Try and initialize the public key object */
+	get_public_key (cert);
+}
+
+static gboolean
+has_private_key (GkrPkCert *cert)
+{
+	gkrconstunique uni;
+	
+	uni = gkr_pk_cert_get_keyid (cert);
+	g_return_val_if_fail (uni, FALSE);
+	
+	return gkr_pk_object_manager_find_by_id (GKR_PK_OBJECT (cert)->manager, GKR_TYPE_PK_PRIVKEY, uni) != NULL;	
+}
+
+static gboolean 
+has_certificate_purposes (GkrPkCert *cert)
+{
+	GkrPkObject *obj = GKR_PK_OBJECT (cert);
+	
+	/* Check if the index has such a value */
+	if (gkr_pk_index_has_value (obj, "purposes"))
+		return TRUE;
+
+	if (gkr_pk_cert_has_extension (cert, OID_ENHANCED_USAGE, NULL))
+		return TRUE;
+		
+	return FALSE;
+}
+
+static CK_RV
+lookup_certificate_purposes (GkrPkCert *cert, GQuark **oids)
+{
+	GkrPkObject *obj = GKR_PK_OBJECT (cert);
+	GkrParseResult res;
+	guchar *extension;
+	gsize n_extension;
+	
+	*oids = NULL;
+	
+	/* Look in the index if the purposes have been overridden there */	
+	if (gkr_pk_index_has_value (obj, "purposes")) {
+		*oids = gkr_pk_index_get_quarks (obj, "purposes");
+
+	/* Otherwise look in the certificate */		
+	} else {	
+		extension = gkr_pk_cert_get_extension (cert, OID_ENHANCED_USAGE, &n_extension, NULL);
+	
+		/* No enhanced usage noted, any are allowed */
+		if (!extension)
+			return CKR_OK;
+
+		res = gkr_pkix_der_read_enhanced_usage (extension, n_extension, oids);
+		g_free (extension);
+	
+		if (res != GKR_PARSE_SUCCESS) {
+			g_warning ("invalid enhanced usage in certificate");
+			return CKR_GENERAL_ERROR;
+		}
+	}
+	
+	return CKR_OK;
+}
+
+
+static gboolean
+check_certificate_purpose (GkrPkCert *cert, GQuark oid)
+{
+	GQuark* usages;
+	gboolean ret;
+	
+	if (lookup_certificate_purposes (cert, &usages) != CKR_OK)
+		return FALSE;
+		
+	/* No usages noted, any are allowed */
+	if (!usages)
+		return TRUE;
+		
+	ret = gkr_pk_index_quarks_has (usages, oid);
+	gkr_pk_index_quarks_free (usages);
+	
+	return ret;
+}
+
+static CK_RV
+read_certificate_purposes (GkrPkCert *cert, CK_ATTRIBUTE_PTR attr)
+{
+	GQuark *quarks, *q;
+	GString *result;
+	CK_RV ret;
+	
+	ret = lookup_certificate_purposes (cert, &quarks);
+	if (ret != CKR_OK)
+		return ret;
+		
+	/* Convert into a space delimited string */
+	result = g_string_sized_new (128);
+	for (q = quarks; q && *q; ++q) {
+		g_string_append (result, g_quark_to_string (*q));
+		g_string_append_c (result, ' ');
+	}
+	
+	gkr_pk_index_quarks_free (quarks);
+	
+	attr->ulValueLen = result->len;
+	attr->pValue = g_string_free (result, FALSE);
+	return CKR_OK;
+}
+
+static gint
+find_certificate_extension (GkrPkCert *cert, GQuark oid)
+{
+	GQuark exoid;
+	gchar *name;
+	guint i;
+	int res, len;
+	
+	g_return_val_if_fail (GKR_IS_PK_CERT (cert), -1);
+	g_return_val_if_fail (cert->data->asn1, -1);
+	g_return_val_if_fail (oid, -1);
+	
+	for(i = 1; TRUE; ++i) {
+		
+		/* Make sure it is present */
+		len = 0;
+		name = g_strdup_printf ("tbsCertificate.extensions.?%u", i);
+		res = asn1_read_value (cert->data->asn1, name, NULL, &len);
+		g_free (name);
+		if (res == ASN1_ELEMENT_NOT_FOUND)
+			break;
+
+		/* See if it's the same */
+		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", i);
+		exoid = gkr_pkix_asn1_read_quark (cert->data->asn1, name);
+		g_free (name);
+
+		if(exoid == oid)
+			return i;		
+	}
+	
+	return 0;
+} 
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -145,18 +352,7 @@ gkr_pk_cert_set_property (GObject *obj, guint prop_id, const GValue *value,
 
 	switch (prop_id) {
 	case PROP_ASN1_TREE:
-		if (cert->data->asn1)
-			asn1_delete_structure (&cert->data->asn1);
-		g_free(cert->data->raw);
-		cert->data->raw = NULL;
-		cert->data->n_raw = 0;
-		/* TODO: Verify the certificate */
-		cert->data->asn1 = g_value_get_pointer (value);
-		if (cert->data->asn1) {
-			cert->data->raw = gkr_pkix_asn1_encode (cert->data->asn1, "", 
-			                                        &cert->data->n_raw, NULL);
-			g_return_if_fail (cert->data->raw);			
-		}
+		initialize_certificate (cert, g_value_get_pointer (value));
 		break;
 	}
 }
@@ -164,6 +360,7 @@ gkr_pk_cert_set_property (GObject *obj, guint prop_id, const GValue *value,
 static CK_RV 
 gkr_pk_cert_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
+	GkrPkCert *cert = GKR_PK_CERT (obj);
 	gboolean val;
 	
 	switch (attr->type)
@@ -176,7 +373,47 @@ gkr_pk_cert_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_MODIFIABLE:
 		val = FALSE;
 		break;
-
+		
+	case CKA_GNOME_PURPOSE_RESTRICTED:
+		val = has_certificate_purposes (cert);
+		break;
+		
+	case CKA_GNOME_PURPOSE_SSH_AUTH:
+		val = check_certificate_purpose (cert, OID_USAGE_SSH_AUTH);
+		break;
+		
+	case CKA_GNOME_PURPOSE_SERVER_AUTH:
+		val = check_certificate_purpose (cert, OID_USAGE_SERVER_AUTH);
+		break;
+		
+	case CKA_GNOME_PURPOSE_CLIENT_AUTH:
+		val = check_certificate_purpose (cert, OID_USAGE_CLIENT_AUTH);
+		break;
+		
+	case CKA_GNOME_PURPOSE_CODE_SIGNING:
+		val = check_certificate_purpose (cert, OID_USAGE_CODE_SIGNING);
+		break;
+		
+	case CKA_GNOME_PURPOSE_EMAIL_PROTECTION:
+		val = check_certificate_purpose (cert, OID_USAGE_EMAIL);
+		break;
+		
+	case CKA_GNOME_PURPOSE_IPSEC_END_SYSTEM:
+		val = check_certificate_purpose (cert, OID_USAGE_IPSEC_ENDPOINT);
+		break;
+		
+	case CKA_GNOME_PURPOSE_IPSEC_TUNNEL:
+		val = check_certificate_purpose (cert, OID_USAGE_IPSEC_TUNNEL);
+		break;
+		
+	case CKA_GNOME_PURPOSE_IPSEC_USER:
+		val = check_certificate_purpose (cert, OID_USAGE_IPSEC_USER);
+		break;
+		
+	case CKA_GNOME_PURPOSE_TIME_STAMPING:
+		val = check_certificate_purpose (cert, OID_USAGE_TIME_STAMPING);
+		break;
+		
 	/* TODO: Until we can figure out a trust system */
 	case CKA_TRUSTED:
 		val = FALSE;
@@ -195,6 +432,7 @@ gkr_pk_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkCert *cert = GKR_PK_CERT (obj);
 	gulong val;
+	gchar *value;
 	guchar *extension;
 	gsize n_extension;
 	gboolean is_ca;
@@ -225,7 +463,26 @@ gkr_pk_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		else 
 			val = 0; /* unknown */
 		break;
+	
+	case CKA_GNOME_USER_TRUST:
+		val = CKT_GNOME_UNKNOWN;
 		
+		/* Explicity set? */
+		value = gkr_pk_index_get_string (obj, "user-trust");
+		if (value) {
+			if (g_str_equal (value, "trusted"))
+				val = CKT_GNOME_TRUSTED;
+			else if (g_str_equal (value, "untrusted"))
+				val = CKT_GNOME_UNTRUSTED;
+			g_free (value);
+
+		/* With a private key it's trusted by default */				
+		} else if (has_private_key (cert)) {
+			val = CKT_GNOME_TRUSTED;
+				
+		} 
+		break;		
+	
 	default:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	};
@@ -307,6 +564,8 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_HASH_OF_ISSUER_PUBLIC_KEY:
 		return CKR_ATTRIBUTE_TYPE_INVALID;	
 
+	case CKA_GNOME_PURPOSE_OIDS:
+		return read_certificate_purposes (cert, attr);
 
 	default:
 		break;
@@ -387,66 +646,95 @@ gkr_pk_cert_class_init (GkrPkCertClass *klass)
 }
 
 GkrPkCert*
-gkr_pk_cert_new (GQuark location, ASN1_TYPE asn1)
+gkr_pk_cert_new (GkrPkObjectManager *manager, GQuark location, ASN1_TYPE asn1)
 {
-	return g_object_new (GKR_TYPE_PK_CERT, "location", location, "asn1-tree", asn1, NULL);
+	gkrunique unique = NULL;
+	GkrPkCert *cert;
+	guchar *raw;
+	gsize n_raw;
+	
+	/* TODO: A more efficient way? */
+	if (asn1) {
+		raw = gkr_pkix_asn1_encode (asn1, "", &n_raw, NULL);
+		g_return_val_if_fail (raw, NULL);
+		unique = gkr_unique_new_digest (raw, n_raw);
+	}
+	
+	cert = g_object_new (GKR_TYPE_PK_CERT, "location", location, 
+	                     "unique", unique, "manager", manager,  
+	                     "asn1-tree", asn1, NULL);
+	                     
+	gkr_unique_free (unique);
+	return cert;
+}
+
+gboolean
+gkr_pk_cert_has_extension (GkrPkCert *cert, GQuark oid, gboolean *critical)
+{
+	gchar *name;
+	guchar *val;
+	gsize n_val;
+	gint i;
+	
+	g_return_val_if_fail (GKR_IS_PK_CERT (cert), FALSE);
+	g_return_val_if_fail (cert->data->asn1, FALSE);
+	g_return_val_if_fail (oid, FALSE);
+
+	i = find_certificate_extension (cert, oid);
+	if (i <= 0)
+		return FALSE;
+			
+	/* Read the critical status */
+	if(critical) {
+		name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", i);
+		val = gkr_pkix_asn1_read_value (cert->data->asn1, name, &n_val, NULL);
+		g_free (name);
+		if (!val || n_val < 1 || val[0] != 'T')
+			*critical = FALSE;
+		else
+			*critical = TRUE;
+		g_free (val);
+	}
+	
+	return TRUE;
 }
 
 guchar*
 gkr_pk_cert_get_extension (GkrPkCert *cert, GQuark oid, gsize *n_extension, 
                            gboolean *critical)
 {
-	GQuark exoid;
 	gchar *name;
 	guchar *val;
 	gsize n_val;
-	guint i;
-	int len, res;
+	gint i;
 	
 	g_return_val_if_fail (GKR_IS_PK_CERT (cert), NULL);
+	g_return_val_if_fail (cert->data->asn1, NULL);
 	g_return_val_if_fail (oid, NULL);
 	g_return_val_if_fail (n_extension, NULL);
 	
-	
-	for(i = 0; TRUE; ++i)
-	{
-		/* Make sure it is present */
-		len = 0;
-		name = g_strdup_printf ("tbsCertificate.extensions.?%u", i);
-		res = asn1_read_value (cert->data->asn1, name, NULL, &len);
-		g_free (name);
-		if (res == ASN1_ELEMENT_NOT_FOUND)
-			break;
-
-		/* See if it's the same */
-		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", i);
-		exoid = gkr_pkix_asn1_read_quark (cert->data->asn1, name);
-		g_free (name);
-
-		if(exoid != oid)
-			continue;
-			
-		/* Read the critical status */
-		if(critical) {
-			name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", i);
-			val = gkr_pkix_asn1_read_value (cert->data->asn1, name, &n_val, NULL);
-			g_free (name);
-			if (!val || n_val < 1 || val[0] != 'T')
-				*critical = FALSE;
-			else
-				*critical = TRUE;
-			g_free (val);
-		}
+	i = find_certificate_extension (cert, oid);
+	if (i <= 0)
+		return NULL;
 		
-		/* And the extension value */
-		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", i);
-		val = gkr_pkix_asn1_read_value (cert->data->asn1, name, n_extension, NULL);
+	/* Read the critical status */
+	if(critical) {
+		name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", i);
+		val = gkr_pkix_asn1_read_value (cert->data->asn1, name, &n_val, NULL);
 		g_free (name);
-		
-		return val;
+		if (!val || n_val < 1 || val[0] != 'T')
+			*critical = FALSE;
+		else
+			*critical = TRUE;
+		g_free (val);
 	}
-	
-	return NULL;	
+		
+	/* And the extension value */
+	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", i);
+	val = gkr_pkix_asn1_read_value (cert->data->asn1, name, n_extension, NULL);
+	g_free (name);
+		
+	return val;
 }
 
 gkrconstunique
@@ -459,4 +747,12 @@ gkr_pk_cert_get_keyid (GkrPkCert *cert)
 	/* Access via public key */
 	pub = get_public_key (cert);
 	return gkr_pk_pubkey_get_keyid (pub);
+}
+
+const guchar*
+gkr_pk_cert_get_raw (GkrPkCert *cert, gsize *n_raw)
+{
+	g_return_val_if_fail (GKR_IS_PK_CERT (cert), NULL);
+	*n_raw = cert->data->n_raw;
+	return cert->data->raw;	
 }

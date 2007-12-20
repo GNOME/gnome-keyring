@@ -165,12 +165,17 @@ gkr_pk_object_manager_dispose (GObject *obj)
 	GkrPkObjectManager *objmgr = GKR_PK_OBJECT_MANAGER (obj);
  	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (obj);
  	gpointer k;
- 	
- 	g_hash_table_remove_all (pv->object_by_handle);
- 	g_hash_table_remove_all (pv->object_by_unique);
- 	
- 	g_list_free (objmgr->objects);
- 	objmgr->objects = NULL;
+ 	GList *objects, *l;
+
+	/* Unregister all objects */
+	objects = g_list_copy (objmgr->objects);
+	for (l = objects; l; l = g_list_next (l)) 
+		gkr_pk_object_manager_unregister (objmgr, GKR_PK_OBJECT (l->data));
+	g_list_free (objects);
+	
+	g_return_if_fail (objmgr->objects == NULL);
+ 	g_return_if_fail (g_hash_table_size (pv->object_by_handle) == 0);
+ 	g_return_if_fail (g_hash_table_size (pv->object_by_unique) == 0);
  	
  	if (pv->for_pid) {
  		g_assert (object_managers_by_pid);
