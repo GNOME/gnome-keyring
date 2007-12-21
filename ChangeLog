@@ -1,3 +1,10 @@
+2007-12-21  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon.c:
+	* pk/gkr-pk-places.h:
+	* configure.in: Add configure options for startup components 
+	and root certificate directory.
+	
 2007-12-20  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-index.c:

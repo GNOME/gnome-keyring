@@ -76,8 +76,8 @@ static GMainLoop *loop = NULL;
  * COMMAND LINE
  */
 
-/* All the components to run on startup */
-#define DEFAULT_COMPONENTS  "ssh,pkcs11,keyring"
+/* All the components to run on startup (default comes from configure) */
+#define DEFAULT_COMPONENTS  STARTUP_COMPONENTS
  
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
