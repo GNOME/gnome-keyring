@@ -587,7 +587,7 @@ read_pk_index_value (GkrPkIndex *index, GkrPkObject *obj, const gchar *field,
 	gboolean force = FALSE;
 	GKeyFile *key_file = NULL;
 	gchar *group;
-	gint ret;
+	gint ret = 0;
 	
 	g_return_val_if_fail (obj->unique, FALSE);
 
@@ -601,19 +601,19 @@ read_pk_index_value (GkrPkIndex *index, GkrPkObject *obj, const gchar *field,
 	}
 	
 	key_file = load_index_key_file (index, obj->location, -1, force);
-	if (!key_file)
-		return FALSE;
-		
+	
 	/* Try the actual item first */
-	group = unique_to_group (obj->unique);
-	g_return_val_if_fail (group, FALSE);
+	if (key_file) {
+		group = unique_to_group (obj->unique);
+		g_return_val_if_fail (group, FALSE);
 	
-	ret = get_keyfile_value (key_file, group, field, value);
-	g_free (group);
-	
-	/* If not found, look in the default section */
-	if (ret == 0)
-		ret = get_keyfile_value (key_file, "default", field, value);
+		ret = get_keyfile_value (key_file, group, field, value);
+		g_free (group);
+
+		/* If not found, look in the default section */
+		if (ret == 0)
+			ret = get_keyfile_value (key_file, "default", field, value);
+	}
 		
 	/* Look in the parent directory defaults */
 	if (ret == 0) {

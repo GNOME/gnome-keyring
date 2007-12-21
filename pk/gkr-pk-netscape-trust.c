@@ -117,53 +117,52 @@ has_key_usage (GkrPkNetscapeTrust *trust, guint check, gulong *val)
 static CK_RV
 has_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, gulong *val)
 {
-	CK_ATTRIBUTE attr;
 	CK_RV ret;
-	gboolean has;
+	CK_BBOOL bval;
+	CK_ULONG nval;
 
 	g_return_val_if_fail (trust->certificate, CKR_GENERAL_ERROR);
 
-	memset (&attr, 0, sizeof (attr));
-	attr.type = CKA_GNOME_PURPOSE_RESTRICTED;
-	ret = certificate_attribute (trust, &attr);
+	/* Check if we have the purpose setup */
+	ret = gkr_pk_object_get_bool (GKR_PK_OBJECT (trust->certificate),
+	                              type, &bval);
 	if (ret != CKR_OK)
 		return ret;
 		
-	/* Has any purposes? */
-	g_return_val_if_fail (attr.ulValueLen == sizeof (CK_BBOOL), CKR_GENERAL_ERROR);
-	has = *((CK_BBOOL*)attr.pValue) ? TRUE : FALSE;
-	gkr_pk_attribute_clear (&attr);
-	
-	if (!has) {
-		*val = CKT_NETSCAPE_TRUST_UNKNOWN;
+	/* Don't have the purpose */
+	if (!bval) {
+		*val = CKT_NETSCAPE_UNTRUSTED;
 		return CKR_OK;
-	}
-	
-	/* Has this purpose? */
-	attr.type = type;
-	ret = certificate_attribute (trust, &attr);
+	}	
+		
+	/* Ascertain the trust in this certificate */
+	ret = gkr_pk_object_get_ulong (GKR_PK_OBJECT (trust->certificate), 
+	                               CKA_GNOME_USER_TRUST, &nval);
 	if (ret != CKR_OK)
 		return ret;
+		
+	switch (nval) {
+	case CKT_GNOME_UNKNOWN:
+		*val = CKT_NETSCAPE_TRUST_UNKNOWN;
+		return CKR_OK;
+	case CKT_GNOME_UNTRUSTED:
+		*val = CKT_NETSCAPE_UNTRUSTED;
+		return CKR_OK;
+	case CKT_GNOME_TRUSTED:
+		break;
+	default:
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+		break;
+	};
 	
-	g_return_val_if_fail (attr.ulValueLen == sizeof (CK_BBOOL), CKR_GENERAL_ERROR);
-	has = *((CK_BBOOL*)attr.pValue) ? TRUE : FALSE;
-	gkr_pk_attribute_clear (&attr);
-
-	/* Has the purpose set */	
-	if (has) {
-		attr.type = CKA_CERTIFICATE_CATEGORY;
-		ret = certificate_attribute (trust, &attr);
-		/* 2 is the PKCS#11 value for Certificate Authority */
-		if (ret == CKR_OK)
-			*val = (*((CK_ULONG*)attr.pValue) == 2) ? 
-				CKT_NETSCAPE_TRUSTED_DELEGATOR : 
-				CKT_NETSCAPE_TRUSTED;
-		gkr_pk_attribute_clear (&attr);
+	/* See if we can delegate the purpase (ie: CA) */
+	ret = gkr_pk_object_get_ulong (GKR_PK_OBJECT (trust->certificate),
+	                               CKA_CERTIFICATE_CATEGORY, &nval);
+	if (ret != CKR_OK)
 		return ret;
-	} 
-	
-	
-	*val = CKT_NETSCAPE_UNTRUSTED;
+
+	/* 2 is a certificate authority in PKCS#11 */
+	*val = (nval == 2) ? CKT_NETSCAPE_TRUSTED_DELEGATOR : CKT_NETSCAPE_TRUSTED;
 	return CKR_OK;
 }
 

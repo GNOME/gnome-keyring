@@ -78,6 +78,10 @@ void unit_test_create_trust (CuTest* cu)
 	g_assert (res == GKR_PARSE_SUCCESS);
 	certificate_1 = gkr_pk_cert_new (manager, 0, asn1);
 	CuAssert (cu, "gkr_pk_cert_new returned bad object", GKR_IS_PK_CERT (certificate_1));
+
+	/* Make sure this is trusted */
+	gkr_pk_index_set_string (GKR_PK_OBJECT (certificate_1), "user-trust", "trusted");
+	gkr_pk_index_delete (GKR_PK_OBJECT (certificate_1), "purposes");
 	
 	/* Should have created netscape trust companion object */
 	keyid = gkr_pk_cert_get_keyid (certificate_1);
@@ -90,7 +94,10 @@ void unit_test_create_trust (CuTest* cu)
 	g_assert (res == GKR_PARSE_SUCCESS);
 	certificate_2 = gkr_pk_cert_new (manager, 0, asn1);
 	CuAssert (cu, "gkr_pk_cert_new returned bad object", GKR_IS_PK_CERT (certificate_2));
-	gkr_pk_index_delete (GKR_PK_OBJECT (certificate_2), "purposes"); /* just in case */
+
+	/* Make sure this is not trusted */
+	gkr_pk_index_delete (GKR_PK_OBJECT (certificate_2), "user-trust");
+	gkr_pk_index_delete (GKR_PK_OBJECT (certificate_2), "purposes");
 	
 	/* Should have created netscape trust companion object */
 	keyid = gkr_pk_cert_get_keyid (certificate_2);

@@ -449,19 +449,16 @@ gkr_pk_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		break;
 		
 	case CKA_CERTIFICATE_CATEGORY:
+		val = 0; /* unknown */
 		extension = gkr_pk_cert_get_extension (cert, OID_BASIC_CONSTRAINTS, &n_extension, NULL);
-		if (!extension)
-			return CKR_GENERAL_ERROR;
-		
-		res = gkr_pkix_der_read_basic_constraints (extension, n_extension, &is_ca, NULL);
-		g_free (extension);
-		if(res != GKR_PARSE_SUCCESS)
-			return CKR_GENERAL_ERROR;
-		
-		if(is_ca)
-			val = 2; /* authority */
-		else 
-			val = 0; /* unknown */
+		if (extension) {
+			res = gkr_pkix_der_read_basic_constraints (extension, n_extension, &is_ca, NULL);
+			g_free (extension);
+			if (res != GKR_PARSE_SUCCESS)
+				return CKR_GENERAL_ERROR;
+			if (is_ca)
+				val = 2; /* authority */
+		}
 		break;
 	
 	case CKA_GNOME_USER_TRUST:

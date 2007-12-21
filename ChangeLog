@@ -7,6 +7,24 @@
 	
 	* pk/gkr-pk-netscape-trust.c: Fix uninitialized variable.
 	
+	* pk/gkr-pk-cert.c: 
+	* pkix/gkr-pkix-asn1.c:
+	* pkix/gkr-pkix-der.c: Calculate the CA certificate category properly.
+	
+	* pk/gkr-pk-netscape-trust.c: 
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object.h: 
+	* pk/tests/unit-test-pk-netscape-trust.c: Calculate the trust/purpose properly.
+	
+	* pk/gkr-pk-index.c: 
+	* pk/gkr-pk-places.h: Load values properly from defaults even when 
+	when no index file exists for the object.
+	
+	* pk/Makefile.am:
+	* pk/tests/Makefile.am:
+	* pkcs11/Makefile.am:
+	* pkix/Makefile.am: Build and install fixes
+	
 2007-12-20  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-index.c:

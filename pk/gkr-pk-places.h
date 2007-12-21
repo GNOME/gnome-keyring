@@ -48,7 +48,7 @@ static const GkrPkPlace gkr_pk_places[] = {
 
 #ifdef ROOT_CERTIFICATES
 	/* The root certificates directory, mark as trusted anchors */
-	{ GKR_LOCATION_VOLUME_FILE_S, ROOT_CERTIFICATES, "*", "*.0"
+	{ GKR_LOCATION_VOLUME_FILE_S, ROOT_CERTIFICATES, "*", "*.0",
 		"[default]\nuser-trust=trusted" }
 #endif
 };

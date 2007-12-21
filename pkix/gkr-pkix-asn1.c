@@ -271,7 +271,10 @@ gkr_pkix_asn1_read_boolean (ASN1_TYPE asn, const gchar *part, gboolean *val)
 	memset (buffer, 0, sizeof (buffer));
 	
 	res = asn1_read_value (asn, part, buffer, &n_buffer);
-	if (res == ASN1_SUCCESS && g_ascii_strcasecmp (buffer, "TRUE"))
+	if (res != ASN1_SUCCESS)
+		return FALSE;
+		
+	if (g_ascii_strcasecmp (buffer, "TRUE") == 0)
 		*val = TRUE;
 	else
 		*val = FALSE;

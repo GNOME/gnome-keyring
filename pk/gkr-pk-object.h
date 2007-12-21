@@ -93,6 +93,14 @@ GkrPkObjectManager* gkr_pk_object_get_manager      (GkrPkObject *object);
 CK_RV               gkr_pk_object_get_attribute    (GkrPkObject *object,
                                                     CK_ATTRIBUTE_PTR attr);
                                                     
+CK_RV               gkr_pk_object_get_ulong        (GkrPkObject *object,
+                                                    CK_ATTRIBUTE_TYPE type,
+                                                    CK_ULONG *value);
+                                                    
+CK_RV               gkr_pk_object_get_bool         (GkrPkObject *object,
+                                                    CK_ATTRIBUTE_TYPE type,
+                                                    CK_BBOOL *value);
+                                                    
 CK_RV               gkr_pk_object_get_attributes   (GkrPkObject *object,
                                                     GArray *attrs);
 

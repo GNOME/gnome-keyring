@@ -367,7 +367,53 @@ gkr_pk_object_get_attribute (GkrPkObject *object, CK_ATTRIBUTE_PTR attr)
 		gkr_pk_attribute_set_invalid (attr);
 	
 	return ret;
-}                  
+}
+
+CK_RV
+gkr_pk_object_get_ulong (GkrPkObject *object, CK_ATTRIBUTE_TYPE type,
+                         CK_ULONG *value)
+{
+	CK_ATTRIBUTE_PTR cattr;
+	CK_RV ret;
+	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), CKR_GENERAL_ERROR);
+
+	ret = lookup_attribute (object, type, &cattr);
+	if (ret != CKR_OK)
+		return ret;
+		
+	g_return_val_if_fail (cattr->type == type, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (cattr->ulValueLen == sizeof (CK_ULONG), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (cattr->pValue, CKR_GENERAL_ERROR);
+	 
+	if (value) 
+		*value = *((CK_ULONG*)cattr->pValue);
+		
+	return CKR_OK;
+}
+
+CK_RV
+gkr_pk_object_get_bool (GkrPkObject *object, CK_ATTRIBUTE_TYPE type,
+                        CK_BBOOL *value)
+{
+	CK_ATTRIBUTE_PTR cattr;
+	CK_RV ret;
+	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), CKR_GENERAL_ERROR);
+
+	ret = lookup_attribute (object, type, &cattr);
+	if (ret != CKR_OK)
+		return ret;
+		
+	g_return_val_if_fail (cattr->type == type, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (cattr->ulValueLen == sizeof (CK_BBOOL), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (cattr->pValue, CKR_GENERAL_ERROR);
+	 
+	if (value) 
+		*value = *((CK_BBOOL*)cattr->pValue);
+		
+	return CKR_OK;
+}
 
 CK_RV
 gkr_pk_object_get_attributes (GkrPkObject *object, GArray *attrs)

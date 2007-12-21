@@ -646,9 +646,8 @@ gkr_pkix_der_read_basic_constraints (const guchar *data, gsize n_data,
     	}
     	
     	if (is_ca) {
-    		*is_ca = FALSE;
     		if (!gkr_pkix_asn1_read_boolean (asn, "cA", is_ca))
-    			goto done;
+    			*is_ca = FALSE;
     	}
     	
 	ret = GKR_PARSE_SUCCESS;
