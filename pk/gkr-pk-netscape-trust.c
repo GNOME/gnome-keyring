@@ -118,7 +118,6 @@ static CK_RV
 has_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, gulong *val)
 {
 	CK_ATTRIBUTE attr;
-	CK_ULONG value;
 	CK_RV ret;
 	gboolean has;
 
@@ -156,7 +155,9 @@ has_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, gulong *v
 		ret = certificate_attribute (trust, &attr);
 		/* 2 is the PKCS#11 value for Certificate Authority */
 		if (ret == CKR_OK)
-			*val = (value == 2) ? CKT_NETSCAPE_TRUSTED_DELEGATOR : CKT_NETSCAPE_TRUSTED;
+			*val = (*((CK_ULONG*)attr.pValue) == 2) ? 
+				CKT_NETSCAPE_TRUSTED_DELEGATOR : 
+				CKT_NETSCAPE_TRUSTED;
 		gkr_pk_attribute_clear (&attr);
 		return ret;
 	} 

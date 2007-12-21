@@ -5,6 +5,8 @@
 	* configure.in: Add configure options for startup components 
 	and root certificate directory.
 	
+	* pk/gkr-pk-netscape-trust.c: Fix uninitialized variable.
+	
 2007-12-20  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-index.c:
