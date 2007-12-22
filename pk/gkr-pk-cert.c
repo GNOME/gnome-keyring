@@ -28,6 +28,7 @@
 #include "gkr-pk-netscape-trust.h"
 #include "gkr-pk-object.h"
 #include "gkr-pk-object-manager.h"
+#include "gkr-pk-object-storage.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-pubkey.h"
 #include "gkr-pk-util.h"
@@ -112,6 +113,33 @@ init_quarks (void)
 	#undef QUARK
 }
 
+static CK_RV
+load_certificate (GkrPkCert *cert)
+{
+	GkrPkObject *obj;
+	GError *err = NULL;
+
+	if (cert->data->asn1)
+		return CKR_OK;
+		
+	obj = GKR_PK_OBJECT (cert);
+	
+	g_return_val_if_fail (obj->storage, CKR_GENERAL_ERROR);	
+	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, &err)) {
+		g_message ("couldn't load certificate at: %s: %s", 
+		           g_quark_to_string (obj->location),
+		           err && err->message ? err->message : "");
+		g_error_free (err);
+		return CKR_GENERAL_ERROR;
+	}
+
+	/* This can happen if the user cancels out of a dialog */
+	if (!cert->data->asn1)
+		return CKR_FUNCTION_CANCELED;
+
+	return CKR_OK;
+}
+
 static GkrPkPubkey* 
 get_public_key (GkrPkCert *cert)
 {
@@ -121,11 +149,12 @@ get_public_key (GkrPkCert *cert)
 	guchar *data;
 	gsize n_data;
 
-	g_return_val_if_fail (cert->data->asn1, NULL);
-	
 	if (cert->data->pubkey)
 		return cert->data->pubkey;
 
+	if (load_certificate (cert) != CKR_OK)
+		return NULL;
+		
 	obj = GKR_PK_OBJECT (cert);
 	
 	/* Generate a raw public key from our certificate */
@@ -214,7 +243,11 @@ lookup_certificate_purposes (GkrPkCert *cert, GQuark **oids)
 	GkrParseResult res;
 	guchar *extension;
 	gsize n_extension;
+	CK_RV ret;
 	
+	if ((ret = load_certificate (cert)) != CKR_OK)
+		return ret;
+			
 	*oids = NULL;
 	
 	/* Look in the index if the purposes have been overridden there */	
@@ -268,6 +301,9 @@ read_certificate_purposes (GkrPkCert *cert, CK_ATTRIBUTE_PTR attr)
 	GString *result;
 	CK_RV ret;
 	
+	if ((ret = load_certificate (cert)) != CKR_OK)
+		return ret;
+	
 	ret = lookup_certificate_purposes (cert, &quarks);
 	if (ret != CKR_OK)
 		return ret;
@@ -294,9 +330,9 @@ find_certificate_extension (GkrPkCert *cert, GQuark oid)
 	guint i;
 	int res, len;
 	
-	g_return_val_if_fail (GKR_IS_PK_CERT (cert), -1);
-	g_return_val_if_fail (cert->data->asn1, -1);
-	g_return_val_if_fail (oid, -1);
+	g_assert (oid);
+	g_assert (GKR_IS_PK_CERT (cert));
+	g_assert (cert->data->asn1);
 	
 	for(i = 1; TRUE; ++i) {
 		
@@ -436,6 +472,7 @@ gkr_pk_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	guchar *extension;
 	gsize n_extension;
 	gboolean is_ca;
+	CK_RV ret;
 	int res;
 	
 	switch (attr->type)
@@ -449,6 +486,8 @@ gkr_pk_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		break;
 		
 	case CKA_CERTIFICATE_CATEGORY:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		val = 0; /* unknown */
 		extension = gkr_pk_cert_get_extension (cert, OID_BASIC_CONSTRAINTS, &n_extension, NULL);
 		if (extension) {
@@ -497,6 +536,7 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	gchar *label;
 	guchar *data;
 	gsize n_data;
+	CK_RV ret;
 	
 	g_assert (!attr->pValue);
 	
@@ -511,6 +551,8 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_OK;
 		
 	case CKA_ID:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		keyid = gkr_pk_cert_get_keyid (cert);
 		if (!keyid) 
 			return CKR_GENERAL_ERROR;
@@ -520,6 +562,8 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 
 
 	case CKA_SUBJECT:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		cdata = gkr_pkix_asn1_read_element (cert->data->asn1, cert->data->raw, cert->data->n_raw, 
 		                                    "tbsCertificate.subject", &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
@@ -527,6 +571,8 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_OK;
 		
 	case CKA_ISSUER:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		cdata = gkr_pkix_asn1_read_element (cert->data->asn1, cert->data->raw, cert->data->n_raw, 
 		                                    "tbsCertificate.issuer", &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
@@ -534,6 +580,8 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_OK;
 		
 	case CKA_SERIAL_NUMBER:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		data = gkr_pkix_asn1_read_value (cert->data->asn1, "tbsCertificate.serialNumber", &n_data, NULL);
 		g_return_val_if_fail (data, CKR_GENERAL_ERROR);
 		gkr_pk_attribute_set_data (attr, data, n_data);
@@ -541,10 +589,14 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_OK;
 		
 	case CKA_VALUE:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		gkr_pk_attribute_set_data (attr, cert->data->raw, cert->data->n_raw);
 		return CKR_OK;
 
 	case CKA_CHECK_VALUE:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		n_data = gcry_md_get_algo_dlen (GCRY_MD_SHA1);
 		g_return_val_if_fail (n_data && n_data > 3, CKR_GENERAL_ERROR);
 		
@@ -576,15 +628,20 @@ gkr_pk_cert_get_date_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkCert *cert = GKR_PK_CERT (obj);
 	time_t time;
+	CK_RV ret;
 	
 	switch (attr->type) 
 	{
 	case CKA_START_DATE:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		if (!gkr_pkix_asn1_read_time (cert->data->asn1, "tbsCertificate.validity.notBefore", &time))
 			g_return_val_if_reached (CKR_GENERAL_ERROR);
 		break;
 	
 	case CKA_END_DATE:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
 		if (!gkr_pkix_asn1_read_time (cert->data->asn1, "tbsCertificate.validity.notAfter", &time))
 			g_return_val_if_reached (CKR_GENERAL_ERROR);
 		break;
@@ -674,8 +731,10 @@ gkr_pk_cert_has_extension (GkrPkCert *cert, GQuark oid, gboolean *critical)
 	gint i;
 	
 	g_return_val_if_fail (GKR_IS_PK_CERT (cert), FALSE);
-	g_return_val_if_fail (cert->data->asn1, FALSE);
 	g_return_val_if_fail (oid, FALSE);
+
+	if (load_certificate (cert) != CKR_OK)
+		return FALSE;
 
 	i = find_certificate_extension (cert, oid);
 	if (i <= 0)

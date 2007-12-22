@@ -31,12 +31,6 @@
 
 G_BEGIN_DECLS
 
-/* A reason for accessing and/or loading an object */
-typedef enum {
-	GKR_PK_OBJECT_REASON_UNKNOWN,
-	GKR_PK_OBJECT_REASON_IMPORT
-} GkrPkObjectReason;
-
 #define GKR_PK_OBJECT_HANDLE_MASK      0x0FFFFFFF
 #define GKR_PK_OBJECT_IS_PERMANENT	0x10000000
 #define GKR_PK_OBJECT_IS_TEMPORARY	0x00000000

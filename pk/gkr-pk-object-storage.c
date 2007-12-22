@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include "gkr-pk-cert.h"
+#include "gkr-pk-index.h"
 #include "gkr-pk-object-manager.h"
 #include "gkr-pk-object-storage.h"
 #include "gkr-pk-places.h"
@@ -67,9 +68,10 @@ G_DEFINE_TYPE(GkrPkObjectStorage, gkr_pk_object_storage, G_TYPE_OBJECT);
 static GkrPkObjectStorage *object_storage_singleton = NULL; 
 
 typedef struct {
-	GkrPkObjectStorage *storage;	/* The object storage to parse into */
-	GHashTable *checks;		/* The set that existed before parse */
-	GkrPkObjectReason reason;	/* The reason we're doing this parse */
+	GkrPkObjectStorage *storage;       /* The object storage to parse into */
+	GQuark location;                   /* The location being parsed */
+	GHashTable *checks;                /* The set of objects that existed before parse */
+	GHashTable *types_by_unique;       /* The parse types for every object prompted for or seen */ 
 } ParseContext;
 
 #define NO_VALUE GUINT_TO_POINTER (TRUE)
@@ -88,16 +90,29 @@ cleanup_object_storage (void *unused)
 
 static gchar* 
 parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique, 
-                     GkrParsedType type, const gchar *orig_label, guint failures,
+                     GkrParsedType type, const gchar *label, guint failures,
                      ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
 	GkrAskRequest *ask;
-	gchar *title, *primary, *secondary;
-	gchar *label, *ret;
-	gchar *display_name;
+	gchar *title, *primary, *secondary, *check;
+	gchar *custom_label, *ret, *display_name, *stype;
 	const gchar *password;
 	const gchar *display_type;
+	gboolean have_indexed = FALSE;
+	
+	g_return_val_if_fail (loc == ctx->location, NULL);
+	
+	/*
+	 * The password prompting is somewhat convoluted with the end goal of 
+	 * not prompting the user more than necessary. 
+	 * 
+	 *  - Check and see if we have a password on record for this.
+	 *  - Don't prompt unless the user is specifically requesting 
+	 *    this object *or* we've never seen it before. 
+	 *  - Make note of everything we've prompted for so that later 
+	 *    we can note having seen it.
+	 */ 
 	
 	/* See if we can find a valid password for this location */
 	if (failures == 0) {
@@ -110,32 +125,65 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 		                                 "pk-object", gkr_location_to_string (loc), NULL); 
 	}
 
-	/* We never prompt for passwords unless the object is being specifically loaded */
-	if (!g_hash_table_lookup (pv->specific_load_requests, unique))
+	/*
+	 * If we've parsed this before, then we can lookup in our index as to what 
+	 * exactly this is we're talking about here.  
+	 */
+	stype = gkr_pk_index_get_string_full (loc, unique, "parsed-type");
+	if (stype) {
+		if (type == GKR_PARSED_UNKNOWN)
+			type = gkr_pkix_parsed_type_from_string (stype);
+		have_indexed = TRUE;
+		g_free (stype);
+	}
+
+	/*
+	 * If we've indexed this before, and the user isn't specifically requesting it 
+	 * to be loaded then we don't need to prompt for the password 
+	 */
+	if (have_indexed && !g_hash_table_lookup (pv->specific_load_requests, unique))
 		return NULL;
 	
 	/* TODO: Load a better label if we have one */
-	label = NULL;
+	custom_label = NULL;
 	
-	/* 
-	 * TRANSLATORS: 
-	 *  display_type will be the type of the object like 'certificate' or 'key'
-	 *  details will the name of the object to unlock.
-	 */
-	display_type = gkr_pkix_parsed_type_to_string (type);
-	title = g_strdup_printf (_("Unlock %s"), display_type);
-	primary = g_strdup_printf (_("Enter password for the %s to unlock"), display_type);
+	/* We have no idea what kind of data it is, poor user */
+	if (type == GKR_PARSED_UNKNOWN) {
+		display_type = NULL;
+		title = g_strdup (_("Unlock"));
+		primary = g_strdup (_("Enter password to unlock"));
+		
+	/* We know the type so add that to the strings */
+	} else {
+		/* 
+		 * TRANSLATORS: 
+	 	 *  display_type will be the type of the object like 'certificate' or 'key'
+	 	 *  details will the name of the object to unlock.
+	 	 */
+		display_type = gkr_pkix_parsed_type_to_display (type);
+		title = g_strdup_printf (_("Unlock %s"), display_type);
+		primary = g_strdup_printf (_("Enter password for the %s to unlock"), display_type);
+	}
 	
-	switch (ctx->reason) {
-	case GKR_PK_OBJECT_REASON_IMPORT:
-		secondary = g_strdup_printf(_("The system wants to import the %s '%s', but it is locked."),
-		                            display_type, label ? label : orig_label);
-		break;
-	default:
-		secondary = g_strdup_printf (_("An application wants access to the %s '%s', but it is locked"), 
-		                             display_type, label ? label : orig_label);
-		break;
-	};
+	if (custom_label != NULL)
+		label = custom_label;
+	
+	/* When we've already indexed this data */
+	if (have_indexed) {
+		if (display_type)
+			secondary = g_strdup_printf (_("An application wants access to the %s '%s', but it is locked"), 
+			                             display_type, label);
+		else
+			secondary = g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
+			
+	/* Never before seen this data */ 
+	} else {
+		if (display_type)
+			secondary = g_strdup_printf(_("The system wants to import the %s '%s', but it is locked."),
+			                            display_type, label);
+		else
+			secondary = g_strdup_printf(_("The system wants to import '%s', but it is locked."), label);
+	}
 	
 	ask = gkr_ask_request_new (title, primary, GKR_ASK_REQUEST_PROMPT_PASSWORD);
 	gkr_ask_request_set_secondary (ask, secondary);
@@ -146,9 +194,9 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 	g_free (secondary);
 		
 	if (gkr_keyring_login_is_usable ()) {
-		label = g_strdup_printf (_("Automatically unlock this %s when I log in."), display_type);
-		gkr_ask_request_set_check_option (ask, label);
-		g_free (label);
+		check = g_strdup_printf (_("Automatically unlock this %s when I log in."), display_type);
+		gkr_ask_request_set_check_option (ask, check);
+		g_free (check);
 	}
 	
 	gkr_ask_daemon_process (ask);
@@ -158,13 +206,18 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 	} else {
 		ret = gkr_secure_strdup (ask->typed_password);
 		if (ask->checked) {
-			display_name =  g_strdup_printf (_("Unlock password for %s"), orig_label);
+			display_name =  g_strdup_printf (_("Unlock password for %s"), label);
 			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 			                                 display_name, ret,
 			                                 "pk-object", gkr_location_to_string (loc), NULL);
 		} 
+		
+		/* Track that we prompted for this */
+		g_hash_table_insert (ctx->types_by_unique, gkr_unique_dup (unique), 
+		                     GUINT_TO_POINTER (type));
 	}	
 		
+	g_free (custom_label);
 	return ret;
 }
 
@@ -291,7 +344,9 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 	object = g_object_new (gtype, "manager", manager, "location", location, 
 	                       "unique", unique, NULL);
 	add_object (storage, object);
-g_printerr ("parsed %s at %s\n", G_OBJECT_TYPE_NAME (object), g_quark_to_string (location));	
+
+g_printerr ("parsed %s at %s\n", G_OBJECT_TYPE_NAME (object), g_quark_to_string (location));
+	
 	/* Object was reffed */
 	g_object_unref (object);
 	
@@ -304,15 +359,30 @@ parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrunique unique,
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
  	GkrPkObject *object;
+ 	gchar *stype;
  	
- 	object = prepare_object (ctx->storage, location, unique, type);
- 	g_return_if_fail (object != NULL);
+	/* If we don't know the type then look it up */
+	if (type == GKR_PARSED_UNKNOWN) {
+		stype = gkr_pk_index_get_string_full (location, unique, "parsed-type");
+		if (stype)
+			type = gkr_pkix_parsed_type_from_string (stype);
+		g_free (stype);
+	}
+	
+	if (type != GKR_PARSED_UNKNOWN) { 
+	 	object = prepare_object (ctx->storage, location, unique, type);
+ 		g_return_if_fail (object != NULL);
  	
-	/* Make note of having seen this object in load requests */
-	g_hash_table_remove (pv->specific_load_requests, unique);
+		/* Make note of having seen this object in load requests */
+		g_hash_table_remove (pv->specific_load_requests, unique);
 
-	/* Make note of having seen this one */
-	g_hash_table_remove (ctx->checks, object);
+		/* Make note of having seen this one */
+		g_hash_table_remove (ctx->checks, object);
+	}
+	
+	/* Track the type for this unique */
+	g_hash_table_insert (ctx->types_by_unique, gkr_unique_dup (unique), 
+		             GUINT_TO_POINTER (type));
 }
 
 static void
@@ -321,6 +391,8 @@ parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrunique unique,
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
  	GkrPkObject *object;
+ 	
+ 	g_return_if_fail (type != GKR_PARSED_UNKNOWN);
  	
  	object = prepare_object (ctx->storage, location, unique, type);
  	g_return_if_fail (object != NULL);
@@ -331,6 +403,10 @@ parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrunique unique,
 	/* Make note of having seen this one */
 	g_hash_table_remove (ctx->checks, object);
 		
+	/* Track the type for this unique */
+	g_hash_table_insert (ctx->types_by_unique, gkr_unique_dup (unique), 
+		             GUINT_TO_POINTER (type));
+	
 	/* Setup the sexp, probably a key on this object */
 	g_object_set (object, "gcrypt-sexp", sexp, NULL);
 }
@@ -342,6 +418,8 @@ parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique uniqu
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
 	GkrPkObject *object;
 	
+ 	g_return_if_fail (type != GKR_PARSED_UNKNOWN);
+ 	
 	object = prepare_object (ctx->storage, location, unique, type);
 	g_return_if_fail (object != NULL);
 
@@ -350,6 +428,10 @@ parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique uniqu
 	
 	/* Make note of having seen this one */
 	g_hash_table_remove (ctx->checks, object);
+	
+	/* Track the type for this unique */
+	g_hash_table_insert (ctx->types_by_unique, gkr_unique_dup (unique), 
+		             GUINT_TO_POINTER (type));
 
 	/* Setup the asn1, probably a certificate on this object */
 	g_object_set (object, "asn1-tree", asn1, NULL); 
@@ -363,9 +445,19 @@ remove_each_object (GkrPkObject *object, gpointer unused, GkrPkObjectStorage *st
 		remove_object (storage, object);
 }
 
+static void
+index_each_unique (gkrunique unique, gpointer value, gpointer data)
+{
+	GQuark location = GPOINTER_TO_UINT (data);
+	GkrParsedType type = GPOINTER_TO_UINT (value);
+	
+	/* Stash away the parsed type, in case we need it when prompting for a password */
+	gkr_pk_index_set_string_full (location, unique, "parsed-type", 
+	                              gkr_pkix_parsed_type_to_string (type));
+}
+
 static gboolean
-load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, 
-                          GkrPkObjectReason reason, GError **err)
+load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, GError **err)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
  	GkrPkixParser *parser;
@@ -375,12 +467,16 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc,
 	GArray *objs;
 	gpointer k;
 	guint i;
+	
+	g_return_val_if_fail (loc != 0, FALSE);
 
+	ctx.location = loc;
 	ctx.storage = storage;
-	ctx.reason = reason;
 	ctx.checks = g_hash_table_new_full (g_direct_hash, g_direct_equal, 
 	                                    g_object_unref, NULL);
-	 		
+	ctx.types_by_unique = g_hash_table_new_full (gkr_unique_hash, gkr_unique_equals, 
+	                                             gkr_unique_free, NULL);
+
 	/* Create a table of what is at the location */
 	k = GUINT_TO_POINTER (loc);
 	objs = (GArray*)g_hash_table_lookup (pv->objects_by_location, k);
@@ -404,6 +500,13 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc,
 	g_hash_table_foreach (ctx.checks, (GHFunc)remove_each_object, storage);
 	g_hash_table_destroy (ctx.checks);
 	
+	/* 
+	 * Note any in the index that we prompted for but didn't actually 
+	 * get an object out about.
+	 */  
+	g_hash_table_foreach (ctx.types_by_unique, (GHFunc)index_each_unique, k);
+	g_hash_table_destroy (ctx.types_by_unique);
+	
 	return ret;
 }
 
@@ -412,7 +515,7 @@ location_load (GkrLocationWatch *watch, GQuark loc, GkrPkObjectStorage *storage)
 {
 	GError *err = NULL;
 	
-	if (!load_objects_at_location (storage, loc, 0, &err)) {
+	if (!load_objects_at_location (storage, loc, &err)) {
 		g_message ("couldn't parse data: %s: %s", g_quark_to_string (loc),
 		           err && err->message ? err->message : "");
 		g_error_free (err);
@@ -574,7 +677,7 @@ gkr_pk_object_storage_refresh (GkrPkObjectStorage *storage)
 
 gboolean
 gkr_pk_object_storage_load_complete (GkrPkObjectStorage *storage, GkrPkObject *obj, 
-                                     GkrPkObjectReason reason, GError **err)
+                                     GError **err)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
 	gboolean ret = FALSE;
@@ -592,7 +695,7 @@ gkr_pk_object_storage_load_complete (GkrPkObjectStorage *storage, GkrPkObject *o
 	
 	/* Make note of the specific load request */
 	g_hash_table_replace (pv->specific_load_requests, gkr_unique_dup (obj->unique), NO_VALUE); 
-	ret = load_objects_at_location (storage, obj->location, reason, err);
+	ret = load_objects_at_location (storage, obj->location, err);
 
 	if (!ret) 
 		goto done;

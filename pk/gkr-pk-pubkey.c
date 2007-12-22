@@ -112,7 +112,7 @@ load_public_key (GkrPkPubkey *key)
 		
 	obj = GKR_PK_OBJECT (key);
 	
-	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, GKR_PK_OBJECT_REASON_UNKNOWN, &err)) {
+	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, &err)) {
 		g_message ("couldn't load public key for: %s: %s", 
 		           g_quark_to_string (obj->location),
 		           err && err->message ? err->message : "");

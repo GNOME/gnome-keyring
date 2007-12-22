@@ -1,5 +1,24 @@
 2007-12-21  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-index.c:
+	* pk/gkr-pk-index.h: Refactor index value writing and reading code.
+
+	* pk/gkr-pk-cert.c:
+	* pk/gkr-pk-object.h:
+	* pk/gkr-pk-object-storage.c:
+	* pk/gkr-pk-object-storage.h:
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-pubkey.c:
+	* pk/tests/unit-test-pk-index.c:
+	* pkix/gkr-pkix-parser.c:
+	* pkix/gkr-pkix-parser.h: 
+	* pkix/tests/test-data/email.p12: Fix up object parsing so that we 
+	track the type of object in the index. This helps with partial parses
+	of things like certificates from PKCS#12 files. Also fix certificate
+	object so it can handle delayed loaded certificates.
+	
+2007-12-21  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon.c:
 	* pk/gkr-pk-places.h:
 	* configure.in: Add configure options for startup components 

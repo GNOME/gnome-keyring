@@ -54,8 +54,8 @@ GkrPkObjectStorage*     gkr_pk_object_storage_get                (void);
 
 void                    gkr_pk_object_storage_refresh            (GkrPkObjectStorage *storage);
 
-gboolean                gkr_pk_object_storage_load_complete      (GkrPkObjectStorage *storage, GkrPkObject *obj, 
-                                                                  GkrPkObjectReason reason, GError **err);
+gboolean                gkr_pk_object_storage_load_complete      (GkrPkObjectStorage *storage, 
+                                                                  GkrPkObject *obj, GError **err);
 
 G_END_DECLS
 

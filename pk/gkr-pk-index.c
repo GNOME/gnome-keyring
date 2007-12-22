@@ -66,7 +66,11 @@ G_DEFINE_TYPE (GkrPkIndex, gkr_pk_index, G_TYPE_OBJECT);
 static GkrPkIndex *index_singleton = NULL; 
 static GQuark no_location = 0;
 
-static GType type_boxed_gquarks = 0;
+typedef gboolean (*ReadValueFunc) (GKeyFile *file, const gchar *group, const gchar *field, 
+                                   GError **err, gpointer user_data);
+                                   
+typedef gboolean (*WriteValueFunc) (GKeyFile *file, const gchar *group, const gchar *field, 
+                                    GError **err, gpointer user_data);
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -246,54 +250,87 @@ unique_to_group (gkrconstunique uni)
 	return group;
 }
 
+static gboolean
+read_exists_any_value (GKeyFile *file, const gchar *group, const gchar *field,
+                       GError **err, gboolean *value)
+{
+	g_assert (value);
+	*value = g_key_file_has_group (file, group);
+	return TRUE;
+}
+
+static gboolean
+read_exists_value (GKeyFile *file, const gchar *group, const gchar *field, 
+                   GError **err, gboolean *value)
+{
+	g_assert (value);
+	g_assert (field);
+	*value = g_key_file_has_key (file, group, field, err);
+	return *err == NULL;	
+}
+
+static gboolean
+read_boolean_value (GKeyFile *file, const gchar *group, const gchar *field, 
+                    GError **err, gboolean *value)
+{
+	g_assert (value);
+	g_assert (field);
+	*value = g_key_file_get_boolean (file, group, field, err);
+	return *err == NULL;
+}
+
+static gboolean
+read_int_value (GKeyFile *file, const gchar *group, const gchar *field,
+                GError **err, gint *value)
+{
+	g_assert (value);
+	g_assert (field);
+	*value = g_key_file_get_integer (file, group, field, err);
+	return *err == NULL;
+}
+
+static gboolean
+read_string_value (GKeyFile *file, const gchar *group, const gchar *field,
+                   GError **err, gchar **value)
+{
+	g_assert (value);
+	g_assert (field);
+	*value = g_key_file_get_string (file, group, field, err);
+	return *value != NULL;
+}
+
+static gboolean
+read_quarks_value (GKeyFile *file, const gchar *group, const gchar *field,
+                   GError **err, GQuark **value)
+{
+	gchar **vals;
+	
+	g_assert (value);
+	g_assert (field);
+	
+	vals = g_key_file_get_string_list (file, group, field, NULL, err);
+	if (vals != NULL) {
+		g_assert (*err == NULL);
+		*value = quarks_from_strings ((const gchar**)vals, NULL);
+		g_strfreev (vals);
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+	
 static gint
 get_keyfile_value (GKeyFile *key_file, const gchar *group, 
-                   const gchar *field, GValue *value)
+                   const gchar *field, ReadValueFunc func, gpointer data)
 {
 	GError *err = NULL;
-	GType type;
 	
 	g_assert (key_file);
 	g_assert (group);
-	g_assert (field);
-	g_assert (value);
-
-	type = G_VALUE_TYPE (value);
+	g_assert (func);
 	
-	/* Just someone checking if a value exists */
-	if (type == G_TYPE_POINTER) {
-		return g_key_file_has_key (key_file, group, field, NULL) ? 1 : 0;
-		
-	} else if (type == G_TYPE_BOOLEAN) {
-		gboolean v = g_key_file_get_boolean (key_file, group, field, &err);
-		if (err == NULL)
-			g_value_set_boolean (value, v);
-			
-			
-	} else if (type == G_TYPE_INT) {
-		gint v = g_key_file_get_integer (key_file, group, field, &err);
-		if (err == NULL)
-			g_value_set_int (value, v);
-			
-	} else if (type == G_TYPE_STRING) {
-		gchar *v = g_key_file_get_string (key_file, group, field, &err);
-		if (v != NULL) {
-			g_assert (err == NULL);
-			g_value_take_string (value, v);
-		}
-
-	} else if (type == type_boxed_gquarks) {	
-		gchar **vals = g_key_file_get_string_list (key_file, group, field, NULL, &err);
-		if (vals != NULL) {
-			g_assert (err == NULL);
-			g_value_take_boxed (value, quarks_from_strings ((const gchar**)vals, NULL));
-			g_strfreev (vals);
-		}
-		
-	} else {
-		g_assert_not_reached();
-		return FALSE;
-	}
+	if ((func) (key_file, group, field, &err, data))
+		return 1;
 	
 	if (err != NULL) {
 		if (err->code != G_KEY_FILE_ERROR_GROUP_NOT_FOUND &&
@@ -305,92 +342,141 @@ get_keyfile_value (GKeyFile *key_file, const gchar *group,
 		}
 		
 		g_error_free (err);
-		return 0;
+	}
+
+	return 0;
+}
+
+static gboolean
+write_clear (GKeyFile *file, const gchar *group, const gchar *field,
+             GError **err, gpointer user_data)
+{
+	if (!g_key_file_has_group (file, group))
+		return FALSE;
+	g_key_file_remove_group (file, group, err);
+	return TRUE; 	
+}
+
+static gboolean 
+write_delete (GKeyFile *file, const gchar *group, const gchar *field, 
+              GError **err, gpointer user_data)
+{
+	g_assert (field);
+	
+	if (g_key_file_has_key (file, group, field, err)) {
+		g_key_file_remove_key (file, group, field, err);
+		return TRUE;
 	}
 	
-	return 1;
+	return FALSE;
+}
+
+static gboolean 
+write_boolean_value (GKeyFile *file, const gchar *group, const gchar *field, 
+                     GError **err, gboolean *value)
+{
+	g_assert (value);
+	g_assert (field);
+	
+	if (g_key_file_get_boolean (file, group, field, err) != *value || err != NULL) {
+		g_clear_error (err);
+		g_key_file_set_boolean (file, group, field, *value);
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+static gboolean
+write_int_value (GKeyFile *file, const gchar *group, const gchar *field, 
+                 GError **err, gint *value)
+{
+	g_assert (value);
+	g_assert (field);
+	
+	if (g_key_file_get_integer (file, group, field, err) != *value || err != NULL) {
+		g_clear_error (err);
+		g_key_file_set_integer (file, group, field, *value);
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+static gboolean
+write_string_value (GKeyFile *file, const gchar *group, const gchar *field, 
+                    GError **err, const gchar **value)
+{
+	gboolean ret = FALSE;
+	gchar *o;
+	
+	g_assert (value);
+	g_assert (*value);
+	g_assert (field);
+	
+	o = g_key_file_get_value (file, group, field, NULL);
+
+	if (!o || !g_str_equal (o, *value)) {
+		g_key_file_set_string (file, group, field, *value);
+		ret = TRUE;
+	}
+			
+	g_free (o);
+	return ret;
+}
+
+static gboolean
+write_quarks_value (GKeyFile *file, const gchar *group, const gchar *field, 
+                    GError **err, GQuark **value)
+{
+	GQuark *quarks;
+	gsize n_strings;
+	gchar **strings, **o;
+	gboolean ret = FALSE;
+	
+	g_assert (value);
+	g_assert (*value);
+	g_assert (field);
+	
+	quarks = *value;
+	strings = quarks_to_strings (quarks, &n_strings);
+	o = g_key_file_get_string_list (file, group, field, NULL, NULL);
+		
+	if (!o || !strings_are_equal ((const gchar**)strings, (const gchar**)o)) {
+		g_key_file_set_string_list (file, group, field, (const gchar**)strings, n_strings);
+		ret = TRUE;
+	}
+		
+	g_strfreev (o);
+	g_free (strings);
+	return ret;
 }
 
 static void
 set_keyfile_value (GKeyFile *key_file, gkrconstunique uni, 
-                   const gchar *field, const GValue *value,
-                   gboolean *updated)
+                   const gchar *field, WriteValueFunc func, 
+                   gpointer data, gboolean *updated)
 {
 	GError *err = NULL;
 	gchar *group;
-	GType type;
 	
 	g_assert (key_file);
 	g_assert (uni);
-	g_assert (field);
-	g_assert (value);
+	g_assert (func);
 	g_assert (updated);
-	
-	*updated = FALSE;
-	type = G_VALUE_TYPE (value);
 	
 	/* TODO: Cache this somehow? */
 	group = unique_to_group (uni);
 	g_return_if_fail (group);
 	
-	/* GValue can't be set to NULL, so for us empty pointer means delete */
-	if (type == G_TYPE_POINTER) {
-		g_assert (g_value_get_pointer (value) == NULL);
-		if (g_key_file_has_key (key_file, group, field, NULL)) {
-			g_key_file_remove_key (key_file, group, field, NULL);
-			*updated = TRUE;
-		}
-		
-	} else if (type == G_TYPE_BOOLEAN) {
-		gboolean v = g_value_get_boolean (value);
-		if (g_key_file_get_boolean (key_file, group, field, &err) != v || err != NULL) {
-			g_key_file_set_boolean (key_file, group, field, v);
-			*updated = TRUE;
-		}
-			
-	} else if (type == G_TYPE_INT) { 
-		gint v = g_value_get_int (value);
-		if (g_key_file_get_integer (key_file, group, field, &err) != v || err != NULL) {
-			g_key_file_set_integer (key_file, group, field, v);
-			*updated = TRUE;
-		}
+	*updated = (func) (key_file, group, field, &err, data);
 
-	} else if (type == G_TYPE_STRING) {
-		const gchar *v = g_value_get_string (value);
-		gchar *o = g_key_file_get_value (key_file, group, field, &err);
-			
-		g_assert (v != NULL);
-		if (!o || !g_str_equal (o, v)) {
-			g_key_file_set_string (key_file, group, field, v);
-			*updated = TRUE;
-		}
-			
-		g_free (o);
-		
-	} else if (type == type_boxed_gquarks) {
-		GQuark *quarks;
-		gsize n_strings;
-		gchar **strings, **o;
-		
-		quarks = g_value_get_boxed (value);
-		strings = quarks_to_strings (quarks, &n_strings);
-		o = g_key_file_get_string_list (key_file, group, field, NULL, &err);
-		
-		if (!o || !strings_are_equal ((const gchar**)strings, (const gchar**)o)) {
-			g_key_file_set_string_list (key_file, group, field, (const gchar**)strings, n_strings);
-			*updated = TRUE;
-		}
-		
-		g_strfreev (o);
-		g_free (strings);
-	
-	} else {
-		g_assert_not_reached();
-		return;
+	if (err) {
+	    	g_warning ("couldn't write field '%s' to index: %s", 
+	    	           field, err->message ? err->message : "");
+		g_error_free (err);
 	}
 	
-	if (err)
-		g_error_free (err);
 	g_free (group);
 }	
 
@@ -579,8 +665,9 @@ load_parent_key_file (GkrPkIndex *index, GQuark loc)
 }
 
 static gboolean
-read_pk_index_value (GkrPkIndex *index, GkrPkObject *obj, const gchar *field, 
-                     GValue *value)
+read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstunique uni, 
+                     const gchar *field, GkrPkObject *object, 
+                     ReadValueFunc func, gpointer data)
 {
 	const gchar *path = NULL;
 	struct stat sb;
@@ -589,69 +676,70 @@ read_pk_index_value (GkrPkIndex *index, GkrPkObject *obj, const gchar *field,
 	gchar *group;
 	gint ret = 0;
 	
-	g_return_val_if_fail (obj->unique, FALSE);
+	g_return_val_if_fail (uni, FALSE);
 
-	if (obj->location) {
-		path = index_path_for_location (index, obj->location);
+	if (loc) {
+		path = index_path_for_location (index, loc);
 		if (!path) 
 			return FALSE;
 
 		/* TODO: Any way to do this less often? */
-		force = (stat (path, &sb) < 0 || check_index_mtime (index, obj->location, sb.st_mtime));
+		force = (stat (path, &sb) < 0 || check_index_mtime (index, loc, sb.st_mtime));
 	}
 	
-	key_file = load_index_key_file (index, obj->location, -1, force);
+	key_file = load_index_key_file (index, loc, -1, force);
 	
 	/* Try the actual item first */
 	if (key_file) {
-		group = unique_to_group (obj->unique);
+		group = unique_to_group (uni);
 		g_return_val_if_fail (group, FALSE);
 	
-		ret = get_keyfile_value (key_file, group, field, value);
+		ret = get_keyfile_value (key_file, group, field, func, data);
 		g_free (group);
 
 		/* If not found, look in the default section */
 		if (ret == 0)
-			ret = get_keyfile_value (key_file, "default", field, value);
+			ret = get_keyfile_value (key_file, "default", field, func, data);
 	}
 		
 	/* Look in the parent directory defaults */
 	if (ret == 0) {
-		key_file = load_parent_key_file (index, obj->location);
+		key_file = load_parent_key_file (index, loc);
 		if (key_file) 
-			ret = get_keyfile_value (key_file, "default", field, value);
+			ret = get_keyfile_value (key_file, "default", field, func, data);
 	}
 
 	/* 
 	 * If we saw that the file was changed, then tell the object
 	 * to flush all of its caches and etc...
 	 */ 
-	if (force)
-		gkr_pk_object_flush (obj);
+	if (force && object)
+		gkr_pk_object_flush (object);
 	
 	return ret == 1;
 }
 
 static gboolean
-update_pk_index_value (GkrPkIndex *index, GkrPkObject *obj, const gchar *field, 
-                       GValue *value)
+update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstunique uni, 
+                       const gchar *field, GkrPkObject *object, 
+                       WriteValueFunc func, gpointer data)
 {
 	const gchar *path = NULL;
-	gchar *data = NULL;
+	gchar *contents = NULL;
 	gboolean ret = FALSE;
 	gboolean force = FALSE;
 	gboolean updated = FALSE;
 	GError *err = NULL;
 	GKeyFile *key_file = NULL;
-	gsize n_data;
+	gsize n_contents;
 	struct stat sb;
 	int tries = 0;
 	int fd = -1;
 	
-	g_return_val_if_fail (obj->unique, FALSE);
+	g_return_val_if_fail (uni, FALSE);
 	
-	if (obj->location) {
-		path = index_path_for_location (index, obj->location);
+	if (loc) {
+		path = index_path_for_location (index, loc);
 		if (!path) 
 			return FALSE;
 	
@@ -687,19 +775,19 @@ update_pk_index_value (GkrPkIndex *index, GkrPkObject *obj, const gchar *field,
 
 	
 		/* See if file needs updating */
-		force = (fstat (fd, &sb) < 0 || check_index_mtime (index, obj->location, sb.st_mtime));
+		force = (fstat (fd, &sb) < 0 || check_index_mtime (index, loc, sb.st_mtime));
 	}
 	
-	key_file = load_index_key_file (index, obj->location, -1, force);
+	key_file = load_index_key_file (index, loc, -1, force);
 	if (!key_file)
 		goto done;
 
-	set_keyfile_value (key_file, obj->unique, field, value, &updated);
-	if (updated && obj->location) {
+	set_keyfile_value (key_file, uni, field, func, data, &updated);
+	if (updated && loc) {
 		
 		/* Serialize the key file into memory */
-		data = g_key_file_to_data (key_file, &n_data, &err);
-		if (!data) {
+		contents = g_key_file_to_data (key_file, &n_contents, &err);
+		if (!contents) {
 			g_warning ("couldn't serialize index file: %s", 
 			           err && err->message ? err->message : "");
 			g_error_free (err);
@@ -709,7 +797,7 @@ update_pk_index_value (GkrPkIndex *index, GkrPkObject *obj, const gchar *field,
 		g_assert (path);
 		
 		/* And write that memory to disk atomically */
-		if (!g_file_set_contents (path, data, n_data, &err)) {
+		if (!g_file_set_contents (path, contents, n_contents, &err)) {
 			g_message ("couldn't write index file to disk: %s: %s", 
 			           path, err && err->message ? err->message : "");
 			g_error_free (err);
@@ -721,15 +809,15 @@ update_pk_index_value (GkrPkIndex *index, GkrPkObject *obj, const gchar *field,
 	 * If the file was updated then tell the object to flush all of 
 	 * its caches and other optimizations...
 	 */
-	if (force || updated)
-		gkr_pk_object_flush (obj);
+	if ((force || updated) && object)
+		gkr_pk_object_flush (object);
 		
 	ret = TRUE;
 	
 done:
 	if (fd != -1)
 		close (fd);
-	g_free (data);
+	g_free (contents);
 	
 	return ret;	
 }
@@ -830,11 +918,6 @@ gkr_pk_index_class_init (GkrPkIndexClass *klass)
 	
 	/* A special quark that denotes stored in memory */
 	no_location = g_quark_from_static_string ("MEMORY");
-	
-	/* A boxed types for null terminated C array of quarks */ 
-	type_boxed_gquarks = g_boxed_type_register_static ("GQuarks", 
-	                                                   (GBoxedCopyFunc)gkr_pk_index_quarks_dup, 
-	                                                   (GBoxedFreeFunc)gkr_pk_index_quarks_free);
 }
 
 /* -----------------------------------------------------------------------------
@@ -844,59 +927,62 @@ gkr_pk_index_class_init (GkrPkIndexClass *klass)
 gboolean
 gkr_pk_index_get_boolean (GkrPkObject *obj, const gchar *field, gboolean defvalue)
 {
-	GValue value;
 	gboolean ret = defvalue;
 	
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), ret);
 	g_return_val_if_fail (field != NULL, ret);	
 	
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, G_TYPE_BOOLEAN);
-	
-	if (read_pk_index_value (get_index_singleton (), obj, field, &value))
-		ret = g_value_get_boolean (&value);
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	                          field, obj, (ReadValueFunc)read_boolean_value, &ret))
+		ret = defvalue;
 
-	g_value_unset (&value);	
 	return ret;
 }
 
 gint
 gkr_pk_index_get_int (GkrPkObject *obj, const gchar *field, gint defvalue)
 {
-	GValue value;
 	gint ret = defvalue;
 	
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), ret);	
 	g_return_val_if_fail (field != NULL, ret);	
-	
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, G_TYPE_INT);
-	
-	if (read_pk_index_value (get_index_singleton (), obj, field, &value))
-		ret = g_value_get_int (&value);
 
-	g_value_unset (&value);	
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	                          field, obj, (ReadValueFunc)read_int_value, &ret))
+		ret = defvalue;
+
 	return ret;	
 }                                                                 
 
 gchar*
 gkr_pk_index_get_string (GkrPkObject *obj, const gchar *field)
 {
-	GValue value;
 	gchar *ret = NULL;
 	
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), NULL);
 	g_return_val_if_fail (field != NULL, NULL);	
 	
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, G_TYPE_STRING);
-	
-	if (read_pk_index_value (get_index_singleton (), obj, field, &value)) {
-		/* No way to steal value's string, so just don't unset it */
-		ret = (gchar*)g_value_get_string (&value);
-	}
-	
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	                          field, obj, (ReadValueFunc)read_string_value, &ret))
+		ret = NULL;
+
 	return ret;
+}
+
+gchar*
+gkr_pk_index_get_string_full (GQuark location, gkrconstunique uni, 
+                              const gchar *field)
+{
+	gchar *ret = NULL;
+	
+	g_return_val_if_fail (uni, NULL);
+	g_return_val_if_fail (field != NULL, NULL);	
+	
+	if (!read_pk_index_value (get_index_singleton (), location, uni, field,
+	                          NULL, (ReadValueFunc)read_string_value, &ret))
+		ret = NULL;
+
+	return ret;	
 }
 
 guchar*
@@ -930,24 +1016,15 @@ gkr_pk_index_get_binary (GkrPkObject *obj, const gchar *field, gsize *n_data)
 GQuark* 
 gkr_pk_index_get_quarks (GkrPkObject *obj, const gchar *field)
 {
-	GkrPkIndex *index;
-	GValue value;
 	GQuark *ret = NULL;
 	
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), NULL);
 	g_return_val_if_fail (field != NULL, NULL);	
 	
-	/* Do this first so boxed types are registered */
-	index = get_index_singleton ();
-	
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, type_boxed_gquarks);
-	
-	if (read_pk_index_value (index, obj, field, &value)) {
-		/* No way to steal value's string, so just don't unset it */
-		ret = (GQuark*)g_value_get_boxed (&value);
-	}
-	
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	                          field, obj, (ReadValueFunc)read_quarks_value, &ret))
+		ret = NULL;
+		
 	return ret;
 }
 
@@ -955,76 +1032,84 @@ gboolean
 gkr_pk_index_has_value (GkrPkObject *obj, const gchar *field)
 {
 	gboolean ret;
-	GValue value; 
 
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 	
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, G_TYPE_POINTER);
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	                          field, obj, (ReadValueFunc)read_exists_value, &ret))
+		ret = FALSE;
+
+	return ret;
+}
+
+gboolean
+gkr_pk_index_have (GkrPkObject *obj)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	
-	ret = read_pk_index_value (get_index_singleton (), obj, field, &value);
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	                          NULL, obj, (ReadValueFunc)read_exists_any_value, &ret))
+		ret = FALSE;
+
+	return ret;
+}
+
+gboolean
+gkr_pk_index_have_full (GQuark location, gkrconstunique uni)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (uni, FALSE);
 	
-	g_value_unset (&value);
+	if (!read_pk_index_value (get_index_singleton (), location, uni, NULL,
+	                          NULL, (ReadValueFunc)read_exists_any_value, &ret))
+		ret = FALSE;
+
 	return ret;
 }
 
 gboolean
 gkr_pk_index_set_boolean (GkrPkObject *obj, const gchar *field, gboolean val)
 {
-	GValue value;
-	gboolean ret;
-
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 		
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, G_TYPE_BOOLEAN);
-	g_value_set_boolean (&value, val);
-	
-	ret = update_pk_index_value (get_index_singleton (), obj, field, &value);
-	g_value_unset (&value);
-	
-	return ret;
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	                              field, obj, (WriteValueFunc)write_boolean_value, &val);
 }
 
 gboolean
 gkr_pk_index_set_int (GkrPkObject *obj, const gchar *field, gint val)
 {
-	GValue value;
-	gboolean ret;
-
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
-		
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, G_TYPE_INT);
-	g_value_set_int (&value, val);
-	
-	ret = update_pk_index_value (get_index_singleton (), obj, field, &value);
-	g_value_unset (&value);
-	
-	return ret;
+
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	                              field, obj, (WriteValueFunc)write_int_value, &val);
 }                                                       
                                                         
 gboolean 
 gkr_pk_index_set_string (GkrPkObject *obj, const gchar *field, const gchar *val)
 {
-	GValue value;
-	gboolean ret;
-
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
-	g_return_val_if_fail (val != NULL, FALSE);
-		
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, G_TYPE_STRING);
-	g_value_set_string (&value, val);
-	
-	ret = update_pk_index_value (get_index_singleton (), obj, field, &value);
-	g_value_unset (&value);
-	
-	return ret;
+
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	                              field, obj, (WriteValueFunc)write_string_value, &val);
+}
+
+gboolean
+gkr_pk_index_set_string_full (GQuark location, gkrconstunique uni, const gchar *field, 
+                              const gchar *val)
+{
+	g_return_val_if_fail (uni, FALSE);
+	g_return_val_if_fail (field != NULL, FALSE);
+
+	return update_pk_index_value (get_index_singleton (), location, uni, field, 
+	                              NULL, (WriteValueFunc)write_string_value, &val);	
 }
 
 gboolean
@@ -1054,45 +1139,32 @@ gkr_pk_index_set_binary (GkrPkObject *obj, const gchar *field,
 gboolean
 gkr_pk_index_set_quarks (GkrPkObject *obj, const gchar *field, GQuark *quarks)
 {
-	GValue value;
-	GkrPkIndex *index;
-	gboolean ret;
-
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
-	g_return_val_if_fail (quarks != NULL, FALSE);
-	
-	/* Do this first so boxed type is registered */
-	index = get_index_singleton ();
-		
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, type_boxed_gquarks);
-	g_value_set_boxed (&value, quarks);
-	
-	ret = update_pk_index_value (index, obj, field, &value);
-	g_value_unset (&value);
-	
-	return ret;
+
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	                              field, obj, (WriteValueFunc)write_quarks_value, &quarks);
 }
 
 gboolean
 gkr_pk_index_delete (GkrPkObject *obj, const gchar *field)
 {
-	GValue value;
-	gboolean ret;
-
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
-	
-	/* Values can't be set to NULL, so for us an empty pointer means delete */
-	memset (&value, 0, sizeof (value));
-	g_value_init (&value, G_TYPE_POINTER);
-	g_value_set_pointer (&value, NULL);
-	
-	ret = update_pk_index_value (get_index_singleton (), obj, field, &value);
-	g_value_unset (&value);
 
-	return ret;	
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	                              field, obj, (WriteValueFunc)write_delete, NULL);
+
+}
+
+gboolean
+gkr_pk_index_clear (GkrPkObject *obj)
+{
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
+
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	                              NULL, obj, (WriteValueFunc)write_clear, NULL);
+
 }
 
 gboolean

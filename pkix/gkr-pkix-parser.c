@@ -235,7 +235,6 @@ fire_parsed_partial (GkrPkixParser *parser, GQuark location,
 	gboolean owned = FALSE;
 	
 	g_assert (location);
-	g_assert (type);
 	
 	if (!gkr_async_is_stopping ())
 		g_signal_emit (parser, signals[PARSED_PARTIAL], 0, location, unique, type, &owned);
@@ -481,18 +480,45 @@ done:
 	return ret;
 }
 
-
 const gchar*
 gkr_pkix_parsed_type_to_string (GkrParsedType type)
 {
 	switch (type) {
 	case GKR_PARSED_PRIVATE_KEY:
-		return _("key");
+		return "private-key";
+	case GKR_PARSED_CERTIFICATE:
+		return "certificate";
+	case GKR_PARSED_UNKNOWN:
+		return "";
+	default:
+		g_return_val_if_reached ("");
+	};	
+}
+
+const gchar*
+gkr_pkix_parsed_type_to_display (GkrParsedType type)
+{
+	switch (type) {
+	case GKR_PARSED_PRIVATE_KEY:
+		return _("private key");
 	case GKR_PARSED_CERTIFICATE:
 		return _("certificate");
 	default:
 		g_return_val_if_reached ("");
 	};	
+}
+
+GkrParsedType
+gkr_pkix_parsed_type_from_string (const gchar *string)
+{
+	if (!string || !string[0])
+		return GKR_PARSED_UNKNOWN;
+	else if (g_str_equal ("private-key", string))
+		return GKR_PARSED_PRIVATE_KEY;
+	else if (g_str_equal ("certificate", string))
+		return GKR_PARSED_CERTIFICATE;
+	else
+		g_return_val_if_reached (GKR_PARSED_UNKNOWN);
 }
 
 gboolean
@@ -964,6 +990,7 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni,
 		
 	        password = enum_next_password (parser, loc, uni, GKR_PARSED_UNKNOWN, NULL, &pstate);
 	        if (!password) {
+	        	fire_parsed_partial (parser, loc, uni, GKR_PARSED_UNKNOWN);
 	        	ret = GKR_PARSE_SUCCESS;
 	        	goto done; 
 	        }

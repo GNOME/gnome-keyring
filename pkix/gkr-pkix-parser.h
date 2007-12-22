@@ -93,6 +93,10 @@ GkrPkixParser*      gkr_pkix_parser_new                     (void);
 
 const gchar*        gkr_pkix_parsed_type_to_string          (GkrParsedType type);
 
+const gchar*        gkr_pkix_parsed_type_to_display         (GkrParsedType type);
+
+GkrParsedType       gkr_pkix_parsed_type_from_string        (const gchar *string);
+
 gboolean            gkr_pkix_parser_parse                   (GkrPkixParser *parser, GQuark loc,
                                                              const guchar *data, gsize n_data, 
                                                              GError **err);

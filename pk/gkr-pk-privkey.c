@@ -74,7 +74,7 @@ G_DEFINE_TYPE (GkrPkPrivkey, gkr_pk_privkey, GKR_TYPE_PK_OBJECT);
  */
 
 static gboolean
-load_private_key (GkrPkPrivkey *key, GkrPkObjectReason reason)
+load_private_key (GkrPkPrivkey *key)
 {
 	GError *err = NULL;
 	GkrPkObject *obj;
@@ -84,7 +84,8 @@ load_private_key (GkrPkPrivkey *key, GkrPkObjectReason reason)
 		
 	obj = GKR_PK_OBJECT (key);
 	
-	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, reason, &err)) {
+	g_return_val_if_fail (obj->storage, CKR_GENERAL_ERROR);
+	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, &err)) {
 		g_message ("couldn't load private key for: %s: %s", 
 		           g_quark_to_string (obj->location),
 		           err && err->message ? err->message : "");
@@ -129,7 +130,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 	
 	/* 'Import' the public key from the private key */
 	if (force && !key->priv->s_key) {
-		if (!load_private_key (key, GKR_PK_OBJECT_REASON_IMPORT))
+		if (!load_private_key (key))
 			goto done;
 	}
 
@@ -227,7 +228,7 @@ extract_key_mpi (GkrPkPrivkey *key, int algorithm, const char *part, CK_ATTRIBUT
 		return CKR_OK;
 		
 	/* Load our key */
-	if (!load_private_key (key, GKR_PK_OBJECT_REASON_UNKNOWN))
+	if (!load_private_key (key))
 		return CKR_GENERAL_ERROR;
 	
 	if (key->priv->algorithm != algorithm)
@@ -556,7 +557,7 @@ gcry_sexp_t
 gkr_pk_privkey_get_key (GkrPkPrivkey *key)
 {
 	g_return_val_if_fail (GKR_IS_PK_PRIVKEY (key), NULL);
-	if (!load_private_key (key, GKR_PK_OBJECT_REASON_UNKNOWN))
+	if (!load_private_key (key))
 		return NULL;
 	return key->priv->s_key;
 }

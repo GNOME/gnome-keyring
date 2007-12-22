@@ -61,6 +61,7 @@ void unit_setup_index (void)
 	GQuark location = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "woof");
 	
 	object = g_object_new (GKR_TYPE_PK_OBJECT, "location", location, "unique", unique, NULL);
+	gkr_pk_index_clear (object);
 }
 
 void unit_test_index_binary (CuTest* cu)
@@ -164,4 +165,17 @@ void unit_test_index_delete (CuTest *cu)
 	
 	ret = gkr_pk_index_delete (object, "nonexistant");
 	CuAssert (cu, "delete returned false", ret);
+}
+
+void unit_test_index_all (CuTest *cu)
+{
+	gboolean ret;
+	
+	ret = gkr_pk_index_have (object);
+	CuAssert (cu, "didn't find anything for object", ret);
+	
+	gkr_pk_index_clear (object);
+	
+	ret = gkr_pk_index_have (object);
+	CuAssert (cu, "clear didn't work", !ret);
 }
