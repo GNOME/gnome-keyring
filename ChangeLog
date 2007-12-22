@@ -25,6 +25,9 @@
 	* pkcs11/Makefile.am:
 	* pkix/Makefile.am: Build and install fixes
 	
+	* common/gkr-location.c: Use preconditions instead of asserts for 
+	validating arguments.
+		
 2007-12-20  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-index.c:

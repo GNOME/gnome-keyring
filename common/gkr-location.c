@@ -237,7 +237,7 @@ hal_device_removed (LibHalContext *hal_ctx, const char *udi)
 	}
 
 	name = udi_to_location_name (hal_ctx, udi);
-	g_assert (name && name[0]);
+	g_return_if_fail (name && name[0]);
 	
 	if (g_hash_table_lookup (pv->volumes_by_name, name)) {
 		g_message ("removing removable location: %s", name); 
@@ -276,7 +276,7 @@ hal_device_property (LibHalContext *hal_ctx, const char *udi, const char *key,
 		goto done;
 
 	name = udi_to_location_name (hal_ctx, udi);
-	g_assert (name && name[0]);
+	g_return_if_fail (name && name[0]);
 	
 	/* A mount was added? */
 	if (is_mounted &&  !g_hash_table_lookup (pv->volumes_by_name, name)) {
@@ -455,7 +455,6 @@ gkr_location_manager_init (GkrLocationManager *locmgr)
 	if (!local)
 		local = g_build_filename (home, ".gnome2", NULL);
 
-	g_assert (local);
 	gkr_location_manager_register (locmgr, GKR_LOCATION_NAME_LOCAL, local, _("Home"));
 	g_free (local);
 	
@@ -730,7 +729,7 @@ find_closest_name (gpointer unused, GkrLocationVolume *locvol, FindClosestName *
 GQuark
 gkr_location_from_string (const gchar *str)
 {
-	g_assert (str && str[0]);
+	g_return_val_if_fail (str && str[0], 0);
 	
 	/* TODO: Some sort of validation? */
 	
@@ -747,8 +746,8 @@ gkr_location_from_path (const gchar *path)
 	gchar *loc;
 	const gchar *c;
 	
-	g_assert (path && path[0]);
-	g_assert (g_path_is_absolute (path));
+	g_return_val_if_fail (path && path[0], 0);
+	g_return_val_if_fail (g_path_is_absolute (path), 0);
 	
 	/* We don't allow a colon in our paths */
 	for (c = path; *c; ++c) {
@@ -782,7 +781,7 @@ gkr_location_from_child (GQuark parent, const gchar *child)
 	gchar *path, *p;
 	GQuark loc;
 	
-	g_assert (parent);
+	g_return_val_if_fail (parent, 0);
 	
 	/* We don't allow a colon in our paths */
 	for (c = child; *c; ++c) {
@@ -817,10 +816,10 @@ location_to_volume (GQuark loc, const gchar **remainder)
 	const gchar *bdelim, *sloc;
 	gchar *name;
 	
-	g_assert (loc);
+	g_return_val_if_fail (loc, NULL);
 
 	sloc = g_quark_to_string (loc);
-	g_assert (sloc);
+	g_return_val_if_fail (sloc, NULL);
 
 	bdelim = strchr (sloc, LOC_DELIMITER_C);
 	if (!bdelim) {
@@ -852,7 +851,7 @@ gkr_location_to_parent (GQuark parent)
 	g_return_val_if_fail (parent, 0);
 
 	sloc = g_quark_to_string (parent);
-	g_assert (sloc);
+	g_return_val_if_fail (sloc, 0);
 
 	del = strchr (sloc, LOC_DELIMITER_C);
 	if (!del) {
@@ -875,6 +874,8 @@ gkr_location_to_path (GQuark loc)
 	const gchar *edelim, *path;
 	gsize l;
 	gchar *res;
+	
+	g_return_val_if_fail (loc, NULL);
 	
 	locvol = location_to_volume (loc, &path);
 	if (!locvol)
@@ -906,6 +907,9 @@ gkr_location_to_display (GQuark loc)
 	gchar *filename;
 	gchar *display;
 	
+	if (!loc)
+		return g_strdup ("");
+	
 	filename = gkr_location_to_path (loc);
 	if (!filename)
 		return g_strdup ("");
@@ -932,6 +936,8 @@ GQuark
 gkr_location_get_volume (GQuark loc)
 {
 	GkrLocationVolume *locvol;
+	
+	g_return_val_if_fail (loc, 0);
 	
 	locvol = location_to_volume (loc, NULL);
 	if (!locvol)
