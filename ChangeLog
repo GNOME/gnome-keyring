@@ -27,6 +27,8 @@
 	
 	* common/gkr-location.c: Use preconditions instead of asserts for 
 	validating arguments.
+	
+	* common/gkr-location-watch.c: Don't list directories from the watch.
 		
 2007-12-20  Stef Walter  <stef@memberwebs.com>
 

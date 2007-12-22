@@ -26,6 +26,7 @@
 #include "gkr-location-watch.h"
 
 #include <glib.h>
+#include <glib/gstdio.h>
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -144,6 +145,7 @@ update_volume (GkrLocationWatch *watch, GQuark volume, gboolean force_all,
 	gchar *file;
 	GDir *dir;
 	GQuark loc;
+	int ret, lasterr;
 
 	g_assert (volume);
 	g_assert (checks);
@@ -196,22 +198,33 @@ update_volume (GkrLocationWatch *watch, GQuark volume, gboolean force_all,
 			continue;
 		if (pv->exclude && g_pattern_match_string (pv->exclude, filename))
 			continue;
-
+			
 		loc = gkr_location_from_child (dirloc, filename);
 		g_assert (loc);
 
 		/* If we hadn't yet seen this, then add it */
 		key = GUINT_TO_POINTER (loc);
 		if (!g_hash_table_remove (checks, key)) {
-			g_hash_table_replace (pv->locations, key, key);
 			
 			/* Get the last modified time for this one */
 			file = gkr_location_to_path (loc);
 			g_assert (file);
-			if (stat (file, &sb) >= 0) 
-				gkr_location_manager_note_mtime (watch->manager, loc, sb.st_mtime);
+			ret = g_stat (file, &sb);
+			lasterr = errno;
 			g_free (file);
-				
+			
+			/* Couldn't access the file */
+			if (ret < 0) {
+				g_message ("couldn't stat file: %s: %s", path, g_strerror (lasterr));
+				continue;
+			}
+			
+			/* We don't do directories */
+			if (sb.st_mode & S_IFDIR)
+				continue;
+
+			g_hash_table_replace (pv->locations, key, key);				
+			gkr_location_manager_note_mtime (watch->manager, loc, sb.st_mtime);
 			g_signal_emit (watch, signals[LOCATION_ADDED], 0, loc);
 			
 		/* Otherwise we already had it, see if it needs updating */

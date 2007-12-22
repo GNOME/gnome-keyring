@@ -291,7 +291,7 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 	object = g_object_new (gtype, "manager", manager, "location", location, 
 	                       "unique", unique, NULL);
 	add_object (storage, object);
-	
+g_printerr ("parsed %s at %s\n", G_OBJECT_TYPE_NAME (object), g_quark_to_string (location));	
 	/* Object was reffed */
 	g_object_unref (object);
 	
