@@ -7,31 +7,31 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-19 20:42+0100\n"
-"PO-Revision-Date: 2007-12-19 20:44+0100\n"
+"POT-Creation-Date: 2007-12-28 19:02+0100\n"
+"PO-Revision-Date: 2007-12-28 19:05+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gkr-location.c:309
+#: ../common/gkr-location.c:306
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Flyttbar disk: %s"
 
-#: ../common/gkr-location.c:311
+#: ../common/gkr-location.c:308
 msgid "Removable Disk"
 msgstr "Flyttbar disk"
 
-#: ../common/gkr-location.c:449
-#: ../common/gkr-location.c:462
+#: ../common/gkr-location.c:446
+#: ../common/gkr-location.c:458
 msgid "Home"
 msgstr "Hem"
 
-#: ../common/gkr-location.c:941
-#: ../common/gkr-location.c:964
-#: ../pkix/gkr-pkix-parser.c:514
+#: ../common/gkr-location.c:980
+#: ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:540
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller enheten som den här filen finns på är inte tillgänglig"
 
@@ -307,49 +307,67 @@ msgstr "Ange ditt inloggningslösenord"
 msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
 msgstr "Din inloggningsnyckelring skapades inte automatiskt när du loggade in på denna dator. Den kommer nu att skapas."
 
-#: ../pk/gkr-pk-object-storage.c:126
+#: ../pk/gkr-pk-object-storage.c:153
+msgid "Unlock"
+msgstr "Lås upp"
+
+#: ../pk/gkr-pk-object-storage.c:154
+msgid "Enter password to unlock"
+msgstr "Ange lösenordet för att låsa upp"
+
+#: ../pk/gkr-pk-object-storage.c:164
 #, c-format
 msgid "Unlock %s"
 msgstr "Lås upp %s"
 
-#: ../pk/gkr-pk-object-storage.c:127
+#: ../pk/gkr-pk-object-storage.c:165
 #, c-format
 msgid "Enter password for the %s to unlock"
 msgstr "Ange lösenordet för %s för att låsa upp"
 
-#: ../pk/gkr-pk-object-storage.c:131
-#, c-format
-msgid "The system wants to import the %s '%s', but it is locked."
-msgstr "Systemet vill importera %s \"%s\", men den är låst."
-
-#: ../pk/gkr-pk-object-storage.c:135
+#: ../pk/gkr-pk-object-storage.c:174
 #, c-format
 msgid "An application wants access to the %s '%s', but it is locked"
 msgstr "Ett program vill komma åt %s \"%s\", men den är låst"
 
-#: ../pk/gkr-pk-object-storage.c:149
+#: ../pk/gkr-pk-object-storage.c:177
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Ett program vill komma åt \"%s\", men den är låst"
+
+#: ../pk/gkr-pk-object-storage.c:182
+#, c-format
+msgid "The system wants to import the %s '%s', but it is locked."
+msgstr "Systemet vill importera %s \"%s\", men den är låst."
+
+#: ../pk/gkr-pk-object-storage.c:185
+#, c-format
+msgid "The system wants to import '%s', but it is locked."
+msgstr "Systemet vill importera \"%s\", men den är låst."
+
+#: ../pk/gkr-pk-object-storage.c:197
 #, c-format
 msgid "Automatically unlock this %s when I log in."
 msgstr "Lås automatiskt upp %s när jag loggar in."
 
-#: ../pk/gkr-pk-object-storage.c:161
+#: ../pk/gkr-pk-object-storage.c:209
 #, c-format
 msgid "Unlock password for %s"
 msgstr "Lås upp lösenordet för %s"
 
-#: ../pkix/gkr-pkix-parser.c:431
+#: ../pkix/gkr-pkix-parser.c:430
 msgid "Unrecognized or unsupported file."
 msgstr "Filen är okänd eller stöds inte."
 
-#: ../pkix/gkr-pkix-parser.c:435
+#: ../pkix/gkr-pkix-parser.c:434
 msgid "Could not parse invalid or corrupted file."
 msgstr "Kunde inte tolka ogiltig eller skadad fil."
 
-#: ../pkix/gkr-pkix-parser.c:490
-msgid "key"
-msgstr "nyckel"
+#: ../pkix/gkr-pkix-parser.c:503
+msgid "private key"
+msgstr "privat nyckel"
 
-#: ../pkix/gkr-pkix-parser.c:492
+#: ../pkix/gkr-pkix-parser.c:505
 msgid "certificate"
 msgstr "certifikat"
 
@@ -405,6 +423,8 @@ msgstr "Tillåt _denna gång"
 msgid "_Always Allow"
 msgstr "Tillåt _alltid"
 
+#~ msgid "key"
+#~ msgstr "nyckel"
 #~ msgid "Old password cannot be blank."
 #~ msgstr "Gamla lösenord får inte vara blanka."
 #~ msgid "Must be run from gnome-keyring\n"
