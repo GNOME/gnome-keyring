@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-30 21:26+0100\n"
-"PO-Revision-Date: 2007-07-31 22:20+0300\n"
+"POT-Creation-Date: 2007-12-22 17:44+0000\n"
+"PO-Revision-Date: 2007-12-30 13:50+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -21,26 +21,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gkr-location.c:290
+#: ../common/gkr-location.c:306
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Eemaldatav ketas: %s"
 
-#: ../common/gkr-location.c:292
+#: ../common/gkr-location.c:308
 msgid "Removable Disk"
-msgstr "Eemaldatav ketas:"
+msgstr "Eemaldatav ketas"
 
-#: ../common/gkr-location.c:436
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "Kodu"
 
-#. TRANSLATORS: this is the title for an item
-#: ../daemon/gnome-keyring-daemon-ops.c:188
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:540
+msgid "The disk or drive this file is located on is not present"
+msgstr ""
 
-#: ../daemon/gnome-keyring-daemon-ops.c:414
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:221
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -49,7 +49,8 @@ msgstr ""
 "Rakendus '%s' (%s) soovib '<object prop='name'/>' jaoks kasutada parooli, "
 "mis asub vaikimisi võtmerõngas."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:417
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:225
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -58,8 +59,8 @@ msgstr ""
 "Rakendus '%s' (%s) soovib '<object prop='name'/>' jaoks kasutada parooli, "
 "mis asub võtmerõngas %s."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:422
-#: ../daemon/gnome-keyring-daemon-ops.c:430
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:231 ../daemon/gkr-daemon-ops.c:241
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -68,8 +69,8 @@ msgstr ""
 "Rakendus '%s' soovib '<object prop='name'/>' jaoks kasutada vaikimisi "
 "võtmerõngas asuvat parooli."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:425
-#: ../daemon/gnome-keyring-daemon-ops.c:433
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:235 ../daemon/gkr-daemon-ops.c:245
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -78,7 +79,8 @@ msgstr ""
 "Rakendus '%s' soovib '<object prop='name'/>' jaoks kasutada võtmerõngas %s "
 "asuvat parooli."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:438
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:251
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -86,7 +88,8 @@ msgstr ""
 "Tundmatu rakendus soovib '<object prop='name'/>' jaoks kasutada vaikimisi "
 "võtmerõngas asuvat parooli."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:440
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:254
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -96,15 +99,20 @@ msgstr ""
 "s asuvat parooli."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:446
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow access"
 msgstr "Ligipääsu lubamine"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:446
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow application access to keyring?"
 msgstr "Kas lubada rakendusel võtmerõngale ligi pääseda?"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:544
+#: ../daemon/gkr-daemon-ops.c:310
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
+
+#: ../daemon/gkr-daemon-ops.c:367
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -112,58 +120,56 @@ msgid ""
 msgstr ""
 "Rakendus '%s' (%s) tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:548
+#: ../daemon/gkr-daemon-ops.c:371
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Rakendus '%s' (%s) tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:554
-#: ../daemon/gnome-keyring-daemon-ops.c:564
+#: ../daemon/gkr-daemon-ops.c:377 ../daemon/gkr-daemon-ops.c:387
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Rakendus '%s' tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:558
-#: ../daemon/gnome-keyring-daemon-ops.c:569
+#: ../daemon/gkr-daemon-ops.c:381 ../daemon/gkr-daemon-ops.c:392
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Rakendus '%s' tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:398
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Tundmatu rakendus tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:579
+#: ../daemon/gkr-daemon-ops.c:402
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:586
+#: ../daemon/gkr-daemon-ops.c:409
 msgid "Enter password for default keyring to unlock"
 msgstr "Sisesta parool vaikimisi võtmerõnga avamiseks"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:588
+#: ../daemon/gkr-daemon-ops.c:411
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Sisesta parool võtmerõnga '%s' avamiseks"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:592
+#: ../daemon/gkr-daemon-ops.c:415
 msgid "Unlock Keyring"
 msgstr "Võtmerõnga avamine"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:604
+#: ../daemon/gkr-daemon-ops.c:427
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Võtmerõngas võetakse sisselogimisel automaatselt lukust lahti."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:640
+#: ../daemon/gkr-daemon-ops.c:463
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -172,7 +178,7 @@ msgstr ""
 "Rakendus '%s' (%s) tahab luua uut võtmerõngast nimega '%s'. Sa pead selle "
 "võtmerõnga jaoks parooli sisestama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:644
+#: ../daemon/gkr-daemon-ops.c:467
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -181,8 +187,7 @@ msgstr ""
 "Rakendus '%s' (%s) tahab luua uut vaikimisi võtmerõngast. Sa pead selle "
 "võtmerõnga jaoks parooli sisestama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:650
-#: ../daemon/gnome-keyring-daemon-ops.c:660
+#: ../daemon/gkr-daemon-ops.c:473 ../daemon/gkr-daemon-ops.c:483
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -191,8 +196,7 @@ msgstr ""
 "Rakendus '%s' tahab luua uut võtmerõngast nimega '%s'. Sa pead selle "
 "võtmerõnga jaoks parooli sisestama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:654
-#: ../daemon/gnome-keyring-daemon-ops.c:664
+#: ../daemon/gkr-daemon-ops.c:477 ../daemon/gkr-daemon-ops.c:487
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -201,7 +205,7 @@ msgstr ""
 "Rakendus '%s' tahab luua uut vaikimisi võtmerõngast. Sa pead selle "
 "võtmerõnga jaoks parooli sisestama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:670
+#: ../daemon/gkr-daemon-ops.c:493
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -210,7 +214,7 @@ msgstr ""
 "Tundmatu rakendus tahab luua uut võtmerõngast nimega '%s'. Kui sa tahad seda "
 "võtmerõngast kasutada, siis pead sa selle jaoks parooli määrama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:674
+#: ../daemon/gkr-daemon-ops.c:497
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -219,15 +223,15 @@ msgstr ""
 "võtmerõngast kasutada, siis pead sa selle jaoks parooli määrama."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:680
+#: ../daemon/gkr-daemon-ops.c:503
 msgid "New Keyring Password"
 msgstr "Uue võtmerõnga parool"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:681
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "Choose password for new keyring"
 msgstr "Sisesta uue võtmerõnga parool"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:728
+#: ../daemon/gkr-daemon-ops.c:551
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -236,7 +240,7 @@ msgstr ""
 "Rakendus '%s' (%s) tahab muuta võtmerõnga '%s' parooli. Sa pead selle "
 "võtmerõnga jaoks parooli sisestama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:732
+#: ../daemon/gkr-daemon-ops.c:555
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -245,8 +249,7 @@ msgstr ""
 "Rakendus '%s' (%s) tahab muuta vaikimisi võtmerõnga parooli. Sa pead selle "
 "võtmerõnga jaoks parooli sisestama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:738
-#: ../daemon/gnome-keyring-daemon-ops.c:748
+#: ../daemon/gkr-daemon-ops.c:561 ../daemon/gkr-daemon-ops.c:571
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -255,8 +258,7 @@ msgstr ""
 "Rakendus '%s' tahab muuta võtmerõnga '%s' parooli. Sa pead selle võtmerõnga "
 "jaoks parooli sisestama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:742
-#: ../daemon/gnome-keyring-daemon-ops.c:752
+#: ../daemon/gkr-daemon-ops.c:565 ../daemon/gkr-daemon-ops.c:575
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -265,7 +267,7 @@ msgstr ""
 "Rakendus '%s' tahab muuta vaikimisi võtmerõnga parooli. Sa pead selle "
 "võtmerõnga jaoks parooli sisestama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:758
+#: ../daemon/gkr-daemon-ops.c:581
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -274,7 +276,7 @@ msgstr ""
 "Tundmatu rakendus tahab muuta võtmerõnga '%s' parooli. Kui sa tahad seda "
 "võtmerõngast kasutada, siis pead sa selle jaoks parooli määrama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:762
+#: ../daemon/gkr-daemon-ops.c:585
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -282,21 +284,21 @@ msgstr ""
 "Tundmatu rakendus tahab muuta vaikimisi võtmerõnga parooli. Kui sa tahad "
 "seda võtmerõngast kasutada, siis pead sa selle jaoks parooli määrama."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:772
+#: ../daemon/gkr-daemon-ops.c:595
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Sisesta uus parool võtmerõngale '%s'."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:774
+#: ../daemon/gkr-daemon-ops.c:597
 msgid "Choose a new password for the default keyring. "
 msgstr "Sisesta uus parool vaikimisi võtmerõngale."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:778
+#: ../daemon/gkr-daemon-ops.c:601
 msgid "Change Keyring Password"
 msgstr "Võtmerõnga parooli vahetamine"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:845
+#: ../daemon/gkr-daemon-ops.c:671
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -306,8 +308,7 @@ msgstr ""
 "Rakendus '%s' (%s) soovib salvestada parooli aga siin pole vaikimisi "
 "võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:849
-#: ../daemon/gnome-keyring-daemon-ops.c:853
+#: ../daemon/gkr-daemon-ops.c:675 ../daemon/gkr-daemon-ops.c:679
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -317,7 +318,7 @@ msgstr ""
 "Rakendus '%s' soovib salvestada parooli aga siin pole vaikimisi "
 "võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
-#: ../daemon/gnome-keyring-daemon-ops.c:857
+#: ../daemon/gkr-daemon-ops.c:683
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -327,78 +328,196 @@ msgstr ""
 "võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:862
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Create Default Keyring"
 msgstr "Vaikimisi võtmerõnga loomine"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:862
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "Sisesta vaikimisi võtmerõnga parool"
 
-#: ../library/gnome-keyring-utils.c:109
+#: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
 msgstr "Ligipääs keelatud"
 
-#: ../library/gnome-keyring-utils.c:111
+#: ../library/gnome-keyring-utils.c:93
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Rakendus gnome-keyring-daemon ei tööta."
 
-#: ../library/gnome-keyring-utils.c:113 ../library/gnome-keyring-utils.c:126
-msgid "The keyring has already been unlocked."
-msgstr "Võtmerõngas on juba lukust lahti võetud."
-
-#: ../library/gnome-keyring-utils.c:115
+#: ../library/gnome-keyring-utils.c:95
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Viga rakenduseg gnome-keyring-daemon suhtlemisel"
 
-#: ../library/gnome-keyring-utils.c:117
+#: ../library/gnome-keyring-utils.c:97
 msgid "A keyring with that name already exists"
 msgstr "Selle nimega võtmerõngas on juba olemas"
 
-#: ../library/gnome-keyring-utils.c:119
+#: ../library/gnome-keyring-utils.c:99
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programmeerija viga: Rakendus saatis vigased andmed."
 
-#: ../ui/gkr-ask-tool.c:303
+#: ../library/gnome-keyring-utils.c:101
+msgid "No matching results"
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:103
+msgid "A keyring with that name does not exist."
+msgstr "Selle nimega võtmerõngast pole olemas."
+
+#: ../library/gnome-keyring-utils.c:110
+msgid "The keyring has already been unlocked."
+msgstr "Võtmerõngas on juba lukust lahti võetud."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:98
+#, fuzzy
+msgid "Unlock Login Keyring"
+msgstr "Võtmerõnga avamine"
+
+#: ../keyrings/gkr-keyring-login.c:98
+#, fuzzy
+msgid "Enter login password to unlock keyring"
+msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
+
+#: ../keyrings/gkr-keyring-login.c:100
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr ""
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:124
+#, fuzzy
+msgid "Create Login Keyring"
+msgstr "Vaikimisi võtmerõnga loomine"
+
+#: ../keyrings/gkr-keyring-login.c:124
+#, fuzzy
+msgid "Enter your login password"
+msgstr "Võtmerõnga parooli vahetamine"
+
+#: ../keyrings/gkr-keyring-login.c:126
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+
+#: ../pk/gkr-pk-object-storage.c:153
+#, fuzzy
+msgid "Unlock"
+msgstr "Võtmerõnga avamine"
+
+#: ../pk/gkr-pk-object-storage.c:154
+#, fuzzy
+msgid "Enter password to unlock"
+msgstr "Sisesta lukust lahtivõtmise parool"
+
+#: ../pk/gkr-pk-object-storage.c:164
+#, c-format
+msgid "Unlock %s"
+msgstr ""
+
+#: ../pk/gkr-pk-object-storage.c:165
+#, fuzzy, c-format
+msgid "Enter password for the %s to unlock"
+msgstr "Sisesta parool võtmerõnga '%s' avamiseks"
+
+#: ../pk/gkr-pk-object-storage.c:174
+#, fuzzy, c-format
+msgid "An application wants access to the %s '%s', but it is locked"
+msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+
+#: ../pk/gkr-pk-object-storage.c:177
+#, fuzzy, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+
+#: ../pk/gkr-pk-object-storage.c:182
+#, fuzzy, c-format
+msgid "The system wants to import the %s '%s', but it is locked."
+msgstr "Rakendus '%s' tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+
+#: ../pk/gkr-pk-object-storage.c:185
+#, fuzzy, c-format
+msgid "The system wants to import '%s', but it is locked."
+msgstr "Rakendus '%s' tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+
+#: ../pk/gkr-pk-object-storage.c:197
+#, fuzzy, c-format
+msgid "Automatically unlock this %s when I log in."
+msgstr "Võtmerõngas võetakse sisselogimisel automaatselt lukust lahti."
+
+#: ../pk/gkr-pk-object-storage.c:209
+#, fuzzy, c-format
+msgid "Unlock password for %s"
+msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
+
+#: ../pkix/gkr-pkix-parser.c:430
+msgid "Unrecognized or unsupported file."
+msgstr ""
+
+#: ../pkix/gkr-pkix-parser.c:434
+msgid "Could not parse invalid or corrupted file."
+msgstr "Vigast või rikutud faili pole võimalik analüüsida."
+
+#: ../pkix/gkr-pkix-parser.c:503
+msgid "private key"
+msgstr "salajane võti"
+
+#: ../pkix/gkr-pkix-parser.c:505
+msgid "certificate"
+msgstr "sertifikaat"
+
+#: ../ui/gkr-ask-tool.c:79
+msgid "Store passwords unencrypted?"
+msgstr ""
+
+#: ../ui/gkr-ask-tool.c:80
+msgid ""
+"By choosing to use a blank password, your stored passwords not be safely "
+"encrypted. They will be accessible by anyone with access to your files."
+msgstr ""
+
+#: ../ui/gkr-ask-tool.c:87
+msgid "Use Unsafe Storage"
+msgstr ""
+
+#: ../ui/gkr-ask-tool.c:340
 msgid "_Location:"
 msgstr "_Asukoht:"
 
-#: ../ui/gkr-ask-tool.c:316
+#: ../ui/gkr-ask-tool.c:353
 msgid "_Old password:"
 msgstr "_Vana parool:"
 
-#: ../ui/gkr-ask-tool.c:336
+#: ../ui/gkr-ask-tool.c:373
 msgid "_Password:"
 msgstr "_Parool:"
 
-#: ../ui/gkr-ask-tool.c:358
+#: ../ui/gkr-ask-tool.c:395
 msgid "_Confirm password:"
 msgstr "Parooli _kinnitus:"
 
-#: ../ui/gkr-ask-tool.c:377
+#: ../ui/gkr-ask-tool.c:414
 msgid "New password strength"
 msgstr "Uue parooli tugevus"
 
-#: ../ui/gkr-ask-tool.c:433
-msgid "Old password cannot be blank."
-msgstr "Vana parool ei tohi olla tühi."
-
-#: ../ui/gkr-ask-tool.c:445
-msgid "Password cannot be blank."
-msgstr "Parool ei tohi olla tühi."
-
-#: ../ui/gkr-ask-tool.c:454
+#: ../ui/gkr-ask-tool.c:481
 msgid "Passwords do not match."
 msgstr "Paroolid pole vastavuses."
 
-#: ../ui/gkr-ask-tool.c:503
+#: ../ui/gkr-ask-tool.c:497
+msgid "Password cannot be blank"
+msgstr "Parool ei tohi olla tühi"
+
+#: ../ui/gkr-ask-tool.c:548
 msgid "Deny"
 msgstr "Keela"
 
-#: ../ui/gkr-ask-tool.c:515
+#: ../ui/gkr-ask-tool.c:560
 msgid "Allow _Once"
 msgstr "Luba ainult _seekord"
 
-#: ../ui/gkr-ask-tool.c:519
+#: ../ui/gkr-ask-tool.c:564
 msgid "_Always Allow"
 msgstr "Luba _alati"
