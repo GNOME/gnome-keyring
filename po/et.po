@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring 2.20\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-11-24 17:47+0000\n"
-"PO-Revision-Date: 2007-07-31 22:20+0300\n"
+"PO-Revision-Date: 2007-12-30 13:50+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Eemaldatav ketas: %s"
 
 #: ../common/gkr-location.c:292
 msgid "Removable Disk"
-msgstr "Eemaldatav ketas:"
+msgstr "Eemaldatav ketas"
 
 #: ../common/gkr-location.c:436
 msgid "Home"
