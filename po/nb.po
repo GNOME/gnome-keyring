@@ -1,14 +1,14 @@
 # Norwegian translations for gnome-keyring.
 # Copyright (C) 2003 Red Hat Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Kjartan Maraas <kmaraas@gnome.org>, 2003-2007.
+# Kjartan Maraas <kmaraas@gnome.org>, 2003-2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.21.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-19 12:13+0100\n"
-"PO-Revision-Date: 2007-12-19 12:15+0100\n"
+"POT-Creation-Date: 2008-01-03 22:25+0100\n"
+"PO-Revision-Date: 2008-01-03 22:26+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -16,21 +16,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gkr-location.c:309
+#: ../common/gkr-location.c:306
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Avtagbar disk: %s"
 
-#: ../common/gkr-location.c:311
+#: ../common/gkr-location.c:308
 msgid "Removable Disk"
 msgstr "Avtagbar disk"
 
-#: ../common/gkr-location.c:449 ../common/gkr-location.c:462
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "Hjem"
 
-#: ../common/gkr-location.c:941 ../common/gkr-location.c:964
-#: ../pkix/gkr-pkix-parser.c:514
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:540
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller stasjonen denne filen er plassert på er ikke tilstede"
 
@@ -405,49 +405,67 @@ msgstr ""
 "Din påloggingsnøkkelring ble ikke opprettet automatisk når du logget på "
 "denne datamaskinen. Den vil bli opprettet nå."
 
-#: ../pk/gkr-pk-object-storage.c:126
+#: ../pk/gkr-pk-object-storage.c:153
+msgid "Unlock"
+msgstr "Lås opp"
+
+#: ../pk/gkr-pk-object-storage.c:154
+msgid "Enter password to unlock"
+msgstr "Oppgi passord for for å låse opp"
+
+#: ../pk/gkr-pk-object-storage.c:164
 #, c-format
 msgid "Unlock %s"
 msgstr "Lås opp %s"
 
-#: ../pk/gkr-pk-object-storage.c:127
+#: ../pk/gkr-pk-object-storage.c:165
 #, c-format
 msgid "Enter password for the %s to unlock"
 msgstr "Oppgi passord for for å låse opp «%s»"
 
-#: ../pk/gkr-pk-object-storage.c:131
-#, c-format
-msgid "The system wants to import the %s '%s', but it is locked."
-msgstr "Systemet ønsker å importere %s «%s», men den er låst."
-
-#: ../pk/gkr-pk-object-storage.c:135
+#: ../pk/gkr-pk-object-storage.c:174
 #, c-format
 msgid "An application wants access to the %s '%s', but it is locked"
 msgstr "Et program ønsker tilgang til %s «%s», men den er låst"
 
-#: ../pk/gkr-pk-object-storage.c:149
+#: ../pk/gkr-pk-object-storage.c:177
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Et program ønsker tilgang til «%s», men den er låst"
+
+#: ../pk/gkr-pk-object-storage.c:182
+#, c-format
+msgid "The system wants to import the %s '%s', but it is locked."
+msgstr "Systemet ønsker å importere %s «%s», men den er låst."
+
+#: ../pk/gkr-pk-object-storage.c:185
+#, c-format
+msgid "The system wants to import '%s', but it is locked."
+msgstr "Systemet ønsker å importere «%s», men den er låst."
+
+#: ../pk/gkr-pk-object-storage.c:197
 #, c-format
 msgid "Automatically unlock this %s when I log in."
 msgstr "Lås opp denne %s automatisk når jeg logger inn."
 
-#: ../pk/gkr-pk-object-storage.c:161
+#: ../pk/gkr-pk-object-storage.c:209
 #, c-format
 msgid "Unlock password for %s"
 msgstr "Lås opp passord for %s"
 
-#: ../pkix/gkr-pkix-parser.c:431
+#: ../pkix/gkr-pkix-parser.c:430
 msgid "Unrecognized or unsupported file."
 msgstr "Ikke gjenkjent eller støttet fil."
 
-#: ../pkix/gkr-pkix-parser.c:435
+#: ../pkix/gkr-pkix-parser.c:434
 msgid "Could not parse invalid or corrupted file."
 msgstr "Kunne ikke lese ugyldig eller korrupt fil."
 
-#: ../pkix/gkr-pkix-parser.c:490
-msgid "key"
-msgstr "nøkkel"
+#: ../pkix/gkr-pkix-parser.c:503
+msgid "private key"
+msgstr "privat nøkkel"
 
-#: ../pkix/gkr-pkix-parser.c:492
+#: ../pkix/gkr-pkix-parser.c:505
 msgid "certificate"
 msgstr "sertifikat"
 
@@ -459,7 +477,10 @@ msgstr "Lagre passord ukryptert?"
 msgid ""
 "By choosing to use a blank password, your stored passwords not be safely "
 "encrypted. They will be accessible by anyone with access to your files."
-msgstr "Hvis du velger å bruke et tomt passord kan ikke dine lagrede passord krypteres på en trygg måte. De vil være tilgjengelig for alle med tilgang til dine filer."
+msgstr ""
+"Hvis du velger å bruke et tomt passord kan ikke dine lagrede passord "
+"krypteres på en trygg måte. De vil være tilgjengelig for alle med tilgang "
+"til dine filer."
 
 #: ../ui/gkr-ask-tool.c:87
 msgid "Use Unsafe Storage"
