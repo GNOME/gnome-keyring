@@ -1,3 +1,8 @@
+2008-01-04  Stef Walter  <stef@memberwebs.com>
+
+	* keyrings/gkr-keyring-textual.c: Fix compiler warning.
+	Fixes bug #506128
+	
 2007-12-21  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-index.c:

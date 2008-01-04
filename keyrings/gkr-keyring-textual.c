@@ -42,7 +42,8 @@ key_file_set_uint64 (GKeyFile *file, const gchar *group,
                      const gchar *key, guint64 value)
 {
 	gchar buffer[64];
-	g_snprintf (buffer, sizeof (buffer), "%llu", value);
+	g_snprintf (buffer, sizeof (buffer), "%llu", 
+	            (long long unsigned int)value);
 	g_key_file_set_value (file, group, key, buffer);
 }
 
