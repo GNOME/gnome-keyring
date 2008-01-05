@@ -59,6 +59,9 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
+
 #include <gcrypt.h>
 
 /* preset file descriptors */
@@ -76,13 +79,13 @@ static GMainLoop *loop = NULL;
  * COMMAND LINE
  */
 
-/* All the components to run on startup (default comes from configure) */
-#define DEFAULT_COMPONENTS  STARTUP_COMPONENTS
+/* All the components to run on startup if not set in gconf */
+#define DEFAULT_COMPONENTS  "ssh,keyring,pkcs11"
  
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
 static gboolean unlock_with_login = FALSE;
-static const gchar* run_components = NULL;  
+static gchar* run_components = NULL;
 
 static GOptionEntry option_entries[] = {
 	{ "foreground", 'f', 0, G_OPTION_ARG_NONE, &run_foreground, 
@@ -92,7 +95,7 @@ static GOptionEntry option_entries[] = {
 	{ "login", 'l', 0, G_OPTION_ARG_NONE, &unlock_with_login, 
 	  "Use login password from stdin", NULL },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
-	  "The components to enable", "ssh,keyring" },
+	  "The components to run", "ssh,keyring" },
 	{ NULL }
 };
 
@@ -110,16 +113,72 @@ parse_arguments (int *argc, char** argv[])
 		g_clear_error (&err);
 	}
 	
+	/* Take ownership of the string */
+	if (run_components) {
+		run_components = g_strdup (run_components);
+		gkr_cleanup_register (g_free, run_components);
+	}
+	
 	g_option_context_free (context);
+}
+
+static gboolean
+check_conf_component (const gchar* component, gboolean *enabled)
+{
+	GConfClient *client;
+	GConfValue *value;
+	GError *err = NULL;
+	gchar *key; 
+
+	*enabled = FALSE;
+
+	client = gconf_client_get_default ();
+	g_return_val_if_fail (client, FALSE);
+	
+	key = g_strdup_printf ("/apps/gnome-keyring/daemon-components/%s", component);
+	value = gconf_client_get (client, key, &err);
+	g_free (key);
+	g_object_unref (client);
+	
+	if (err) {
+		g_printerr ("gnome-keyring-daemon: couldn't lookup %s component setting: %s", 
+		            component, err->message ? err->message : "");
+		g_clear_error (&err);
+		return FALSE;
+	}
+	
+	/* Value is unset */
+	if (!value)
+		return FALSE;		
+	
+	/* Should be a list of type string */
+	if (value->type != GCONF_VALUE_BOOL) {
+	    	g_printerr ("gnome-keyring-daemon: bad gconf value type for daemon-components");
+	    	g_clear_error (&err);
+	    	gconf_value_free (value);
+	    	return FALSE;
+	}
+	
+	*enabled = gconf_value_get_bool (value);
+	gconf_value_free (value);
+	return TRUE;
 }
 
 static gboolean
 check_run_component (const char* component)
 {
-	const char* run = run_components;
-	if (!run)
+	const gchar *run = run_components;
+	gboolean enabled;
+
+	if (run == NULL) {
+
+		/* Use gconf to determine whether the component should be enabled */	
+		if (check_conf_component (component, &enabled))
+			return enabled;
+			
+		/* No gconf, error or unset, use built in defaults */
 		run = DEFAULT_COMPONENTS;
-	g_assert (component);
+	}
 	
 	/* 
 	 * Note that this assumes that no components are substrings of 

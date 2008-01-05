@@ -2,6 +2,7 @@
 # Please keep this file sorted alphabetically.
 common/gkr-location.c
 daemon/gkr-daemon-ops.c
+data/gnome-keyring.schemas.in
 library/gnome-keyring-utils.c
 keyrings/gkr-keyring-login.c
 pk/gkr-pk-object-storage.c

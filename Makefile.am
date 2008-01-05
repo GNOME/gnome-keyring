@@ -21,6 +21,7 @@ SUBDIRS = \
 	ssh \
 	pkcs11 \
 	daemon \
+	data \
 	po \
 	reference \
 	$(TESTS_DIR) \

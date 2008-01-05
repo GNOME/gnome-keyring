@@ -1,3 +1,12 @@
+2008-01-05  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon.c:
+	* data/gnome-keyring.schemas.in: (added)
+	* data/Makefile.am: (added)
+	* configure.in:
+	* Makefile.am: Added gconf configuration of which components
+	are run at startup. Fixes bug #502437
+	
 2008-01-04  Stef Walter  <stef@memberwebs.com>
 
 	* keyrings/gkr-keyring-textual.c: Fix compiler warning.
