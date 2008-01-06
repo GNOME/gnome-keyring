@@ -4,13 +4,13 @@
 # Copyright (C) 2006 The Free Software Foundation.
 #
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-22 17:44+0000\n"
-"PO-Revision-Date: 2007-12-23 15:07+0100\n"
+"POT-Creation-Date: 2008-01-05 18:17+0000\n"
+"PO-Revision-Date: 2008-01-06 12:19+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <<gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -341,6 +341,38 @@ msgstr "Crear depósito predeterminado"
 #: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "Elija una contraseña para el depósito de claves predeterminado"
+
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr ""
+"Esta opción activa el componente PKCS#11 en el demonio del Depósito de claves. Sólo "
+"toma efecto cuando se inicia gnome-keyring-daemon, (ej: cuando el usuario "
+"entra en el sistema). Este ajuste se puede sobreescribir al pasar ciertos parámetros "
+"al demonio a través de la línea de comandos."
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr ""
+"Esta opción activa el agente SSH en el demonio del Depósito de claves. Sólo toma "
+"efecto cuando se inicia gnome-keyring-daemon, (ej: cuando el usuario entra en el "
+"sistema). Este ajuste se puede sobreescribir al pasar ciertos parámetros "
+"al demonio a traes de la línea de comandos."
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Indica si el componente PKCS#11 del depósito de claves está activado."
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Indica si el agente SSH del depósito de claves está activado."
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
