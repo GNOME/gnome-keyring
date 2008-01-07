@@ -1,3 +1,10 @@
+=== gnome-keyring 2.20.3 ===
+
+2008-01-07  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* NEWS: Release version 2.20.3
+
 2007-12-18  Stef Walter  <stef@memberwebs.com>
 
 	* keyrings/gkr-keyring-item.c: Fix null pointer dereference and 
