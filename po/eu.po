@@ -1,44 +1,44 @@
-# translation of eu.po to Basque
+# translation of gnome-keyring.HEAD.po  to Basque
 # Copyright (C) 2004 THE eu'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the eu package.
 #
 # Alberto Fernández <afernn@euskalnet.net>, 2004.
-# Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2004, 2006.
+# Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2004, 2006, 2008.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: eu\n"
+"Project-Id-Version: gnome-keyring.HEAD.po\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-04 11:17+0200\n"
-"PO-Revision-Date: 2007-08-04 11:23+0200\n"
-"Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
-"Language-Team: Basque <eu@li.org>\n"
+"POT-Creation-Date: 2008-01-07 16:51+0100\n"
+"PO-Revision-Date: 2008-01-07 16:56+0100\n"
+"Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
+"Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gkr-location.c:290
+#: ../common/gkr-location.c:306
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Disko aldagarria: %s"
 
-#: ../common/gkr-location.c:292
+#: ../common/gkr-location.c:308
 msgid "Removable Disk"
 msgstr "Disko aldagarria"
 
-#: ../common/gkr-location.c:436
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "Etxea"
 
-#. TRANSLATORS: this is the title for an item
-#: ../daemon/gkr-daemon-ops.c:83
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Desblokeatu %s gako-sortaren pasahitza"
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:540
+msgid "The disk or drive this file is located on is not present"
+msgstr "Fitxategia kokatuta dagoen diskoa edo unitatea ez dago"
 
-#: ../daemon/gkr-daemon-ops.c:309
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:221
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -47,52 +47,70 @@ msgstr ""
 "'%s' (%s) aplikazioak '<object prop='name'/>'(r)en pasahitza atzitu nahi du "
 "gako-sorta lehentsian."
 
-#: ../daemon/gkr-daemon-ops.c:312
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:225
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
-msgstr "'%s' (%s) aplikazioak '<object prop='name'/>'(r)en pasahitza atzitu nahi du %s-(e)an."
+msgstr ""
+"'%s' (%s) aplikazioak '<object prop='name'/>'(r)en pasahitza atzitu nahi du %"
+"s-(e)an."
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:325
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:231 ../daemon/gkr-daemon-ops.c:241
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "'%s' aplikazioak '<object prop='name'/>'(r)en pasahitza atzitu nahi du gako-sorta lehentsian."
+msgstr ""
+"'%s' aplikazioak '<object prop='name'/>'(r)en pasahitza atzitu nahi du gako-"
+"sorta lehentsian."
 
-#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:328
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:235 ../daemon/gkr-daemon-ops.c:245
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
 msgstr ""
-"'%s' aplikazioak '<object prop='name'/>'(r)en pasahitza atzitu nahi "
-"du %s(e)an."
+"'%s' aplikazioak '<object prop='name'/>'(r)en pasahitza atzitu nahi du %s(e)"
+"an."
 
-#: ../daemon/gkr-daemon-ops.c:333
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:251
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "Aplikazio ezezagun batek '<object prop='name'/>'(r)en pasahitza atzitu nahi du gako-sorta lehentsian."
+msgstr ""
+"Aplikazio ezezagun batek '<object prop='name'/>'(r)en pasahitza atzitu nahi "
+"du gako-sorta lehentsian."
 
-#: ../daemon/gkr-daemon-ops.c:335
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:254
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "Aplikazio ezezagun batek '<object prop='name'/>'(r)en pasahitza atzitu nahi du %s(e)an."
+msgstr ""
+"Aplikazio ezezagun batek '<object prop='name'/>'(r)en pasahitza atzitu nahi "
+"du %s(e)an."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:341
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow access"
 msgstr "Baimendu atzipena"
 
-#: ../daemon/gkr-daemon-ops.c:341
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow application access to keyring?"
 msgstr "Baimendu aplikazioa gako-sorta atzi dezan?"
 
-#: ../daemon/gkr-daemon-ops.c:439
+#: ../daemon/gkr-daemon-ops.c:310
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Desblokeatu %s gako-sortaren pasahitza"
+
+#: ../daemon/gkr-daemon-ops.c:367
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -101,53 +119,53 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta lehentsia atzitu nahi du, baina blokeatuta "
 "dago"
 
-#: ../daemon/gkr-daemon-ops.c:443
+#: ../daemon/gkr-daemon-ops.c:371
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "'%s' (%s) aplikazioak '%s' gako-sorta atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/gkr-daemon-ops.c:449 ../daemon/gkr-daemon-ops.c:459
+#: ../daemon/gkr-daemon-ops.c:377 ../daemon/gkr-daemon-ops.c:387
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "'%s' aplikazioak gako-sorta lehentsia atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/gkr-daemon-ops.c:453 ../daemon/gkr-daemon-ops.c:464
+#: ../daemon/gkr-daemon-ops.c:381 ../daemon/gkr-daemon-ops.c:392
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "'%s' aplikazioak '%s' gako-sorta atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/gkr-daemon-ops.c:470
+#: ../daemon/gkr-daemon-ops.c:398
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Aplikazio ezezagun batek gako-sorta lehentsia atzitu nahi du, baina "
 "blokeatuta dago"
 
-#: ../daemon/gkr-daemon-ops.c:474
+#: ../daemon/gkr-daemon-ops.c:402
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Aplikazio ezezagun batek '%s' gako-sorta atzitu nahi du, baina blokeatuta "
 "dago"
 
-#: ../daemon/gkr-daemon-ops.c:481
+#: ../daemon/gkr-daemon-ops.c:409
 msgid "Enter password for default keyring to unlock"
 msgstr "Idatzi pasahitza, gako-sorta lehentsia desblokeatzeko"
 
-#: ../daemon/gkr-daemon-ops.c:483
+#: ../daemon/gkr-daemon-ops.c:411
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Idatzi pasahitza, '%s' gako-sorta desblokeatzeko"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:487
+#: ../daemon/gkr-daemon-ops.c:415
 msgid "Unlock Keyring"
 msgstr "Desblokeatu gako-sorta"
 
-#: ../daemon/gkr-daemon-ops.c:499
+#: ../daemon/gkr-daemon-ops.c:427
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Desblokeatu automatikoki gako-sorta saioa hastean."
 
-#: ../daemon/gkr-daemon-ops.c:535
+#: ../daemon/gkr-daemon-ops.c:463
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -156,7 +174,7 @@ msgstr ""
 "'%s' (%s) aplikazioak '%s' izeneko gako-sorta berria sortu nahi du. Erabili "
 "nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:539
+#: ../daemon/gkr-daemon-ops.c:467
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -165,7 +183,7 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta lehentsi berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:545 ../daemon/gkr-daemon-ops.c:555
+#: ../daemon/gkr-daemon-ops.c:473 ../daemon/gkr-daemon-ops.c:483
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -174,7 +192,7 @@ msgstr ""
 "'%s' aplikazioak '%s' izeneko gako-sorta berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:549 ../daemon/gkr-daemon-ops.c:559
+#: ../daemon/gkr-daemon-ops.c:477 ../daemon/gkr-daemon-ops.c:487
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -183,7 +201,7 @@ msgstr ""
 "'%s' aplikazioak gako-sorta lehentsi berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:565
+#: ../daemon/gkr-daemon-ops.c:493
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -192,7 +210,7 @@ msgstr ""
 "Aplikazio ezezagun batek '%s' izeneko gako-sorta berria sortu nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:569
+#: ../daemon/gkr-daemon-ops.c:497
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -201,15 +219,15 @@ msgstr ""
 "nahi duzun pasahitza aukeratu behar duzu."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:503
 msgid "New Keyring Password"
 msgstr "Gako-sorta berriaren pasahitza"
 
-#: ../daemon/gkr-daemon-ops.c:576
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "Choose password for new keyring"
 msgstr "Aukeratu gako-sorta berriaren pasahitza"
 
-#: ../daemon/gkr-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:551
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -218,7 +236,7 @@ msgstr ""
 "'%s' (%s) aplikazioak '%s' gako-sortaren pasahitza aldatzea nahi du. Erabili "
 "nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:627
+#: ../daemon/gkr-daemon-ops.c:555
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -227,7 +245,7 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta lehentsiaren pasahitza aldatzea nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:633 ../daemon/gkr-daemon-ops.c:643
+#: ../daemon/gkr-daemon-ops.c:561 ../daemon/gkr-daemon-ops.c:571
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -236,7 +254,7 @@ msgstr ""
 "'%s' aplikazioak '%s' gako-sortaren pasahitza aldatzea nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:637 ../daemon/gkr-daemon-ops.c:647
+#: ../daemon/gkr-daemon-ops.c:565 ../daemon/gkr-daemon-ops.c:575
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -245,7 +263,7 @@ msgstr ""
 "'%s' aplikazioak gako-sorta lehentsiaren pasahitza aldatzea nahi du. Erabili "
 "nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:653
+#: ../daemon/gkr-daemon-ops.c:581
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -254,7 +272,7 @@ msgstr ""
 "Aplikazio ezezagun batek '%s' gako-sortaren pasahitza aldatzea nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:657
+#: ../daemon/gkr-daemon-ops.c:585
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -262,21 +280,21 @@ msgstr ""
 "Aplikazio ezezagun batek gako-sorta lehentsiaren pasahitza aldatzea nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:667
+#: ../daemon/gkr-daemon-ops.c:595
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Aukeratu '%s' gako-sortaren pasahitz berria. "
 
-#: ../daemon/gkr-daemon-ops.c:669
+#: ../daemon/gkr-daemon-ops.c:597
 msgid "Choose a new password for the default keyring. "
 msgstr "Aukeratu gako-sorta lehentsiaren pasahitz berria. "
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:673
+#: ../daemon/gkr-daemon-ops.c:601
 msgid "Change Keyring Password"
 msgstr "Aldatu gako-sortaren pasahitza"
 
-#: ../daemon/gkr-daemon-ops.c:740
+#: ../daemon/gkr-daemon-ops.c:671
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -286,7 +304,7 @@ msgstr ""
 "'%s' (%s) aplikazioak pasahitz bat gorde nahi du, baina ez dago gako-sorta "
 "lehenetsirik. Bat sortzeko, erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:744 ../daemon/gkr-daemon-ops.c:748
+#: ../daemon/gkr-daemon-ops.c:675 ../daemon/gkr-daemon-ops.c:679
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -296,7 +314,7 @@ msgstr ""
 "'%s' aplikazioak pasahitz bat gorde nahi du, baina ez dago gako-sorta "
 "lehentsirik. Bat sortzeko, erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:752
+#: ../daemon/gkr-daemon-ops.c:683
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -307,79 +325,230 @@ msgstr ""
 "du."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:757
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Create Default Keyring"
 msgstr "Sortu gako-sorta lehentsia"
 
-#: ../daemon/gkr-daemon-ops.c:757
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "Aukeratu gako-sorta lehentsiaren pasahitza"
 
-#: ../library/gnome-keyring-utils.c:109
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr ""
+"Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemonean. "
+"gnome-keyring-daemon abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
+"saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu "
+"batzuk daemonari ematean."
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr ""
+"Aukera honek SSH agentea gaitzen du gnome-keyring daemonean. "
+"gnome-keyring-daemon abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
+"saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu "
+"batzuk daemonari ematean."
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "'Gnome-keyring'-en PKCS#11 osagaia gaitu behar den ala ez."
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "'Gnome-keyring'-en SSH agentea gaitu behar den ala ez."
+
+#: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
 msgstr "Sarbidea ukatuta"
 
-#: ../library/gnome-keyring-utils.c:111
+#: ../library/gnome-keyring-utils.c:93
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "gnome-keyring-daemon aplikazioa ez da exekutatzen ari."
 
-#: ../library/gnome-keyring-utils.c:113 ../library/gnome-keyring-utils.c:126
-msgid "The keyring has already been unlocked."
-msgstr "Gako-sorta jadanik desblokeatuta dago."
-
-#: ../library/gnome-keyring-utils.c:115
+#: ../library/gnome-keyring-utils.c:95
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Errorea gnome-keyring-daemon programarekin komunikatzean"
 
-#: ../library/gnome-keyring-utils.c:117
+#: ../library/gnome-keyring-utils.c:97
 msgid "A keyring with that name already exists"
 msgstr "Izen bereko gako-sorta badago lehendik ere"
 
-#: ../library/gnome-keyring-utils.c:119
+#: ../library/gnome-keyring-utils.c:99
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programatzailearen errorea: aplikazioak baliogabe datuak bidali ditu."
 
-#: ../ui/gkr-ask-tool.c:314
+#: ../library/gnome-keyring-utils.c:101
+msgid "No matching results"
+msgstr "Ez dago bat datorren emaitzik"
+
+#: ../library/gnome-keyring-utils.c:103
+msgid "A keyring with that name does not exist."
+msgstr "Ez dago izen horretako gako-sortarik."
+
+#: ../library/gnome-keyring-utils.c:110
+msgid "The keyring has already been unlocked."
+msgstr "Gako-sorta jadanik desblokeatuta dago."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:98
+msgid "Unlock Login Keyring"
+msgstr "Desblokeatu saioaren gako-sorta"
+
+#: ../keyrings/gkr-keyring-login.c:98
+msgid "Enter login password to unlock keyring"
+msgstr "Sartu saio-hasierako pasahitza gako-sorta desblokeatzeko"
+
+#: ../keyrings/gkr-keyring-login.c:100
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr ""
+"Zure saioaren gako-sorta ez da automatikoki desblokeatu (ordenagailuan saioa "
+"hastean)."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:124
+msgid "Create Login Keyring"
+msgstr "Sortu saioaren gako-sorta"
+
+#: ../keyrings/gkr-keyring-login.c:124
+msgid "Enter your login password"
+msgstr "Idatzi saioaren pasahitza"
+
+#: ../keyrings/gkr-keyring-login.c:126
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+"Zure saioaren gako-sorta ez da automatikoki sortu ordenagailuan saioa "
+"hastean. Oraintxe sortuko da."
+
+#: ../pk/gkr-pk-object-storage.c:153
+msgid "Unlock"
+msgstr "Desblokeatu"
+
+#: ../pk/gkr-pk-object-storage.c:154
+msgid "Enter password to unlock"
+msgstr "Idatzi pasahitza desblokeatzeko"
+
+#: ../pk/gkr-pk-object-storage.c:164
+#, c-format
+msgid "Unlock %s"
+msgstr "Desblokeatu %s"
+
+#: ../pk/gkr-pk-object-storage.c:165
+#, c-format
+msgid "Enter password for the %s to unlock"
+msgstr "Idatzi %s(r)en pasahitza desblokeatzeko"
+
+#: ../pk/gkr-pk-object-storage.c:174
+#, c-format
+msgid "An application wants access to the %s '%s', but it is locked"
+msgstr "Aplikazio batek %s '%s' atzitu nahi du, baina blokeatuta dago"
+
+#: ../pk/gkr-pk-object-storage.c:177
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Aplikazio batek '%s' atzitu nahi du, baina blokeatuta dago"
+
+#: ../pk/gkr-pk-object-storage.c:182
+#, c-format
+msgid "The system wants to import the %s '%s', but it is locked."
+msgstr "Sistemak %s '%s' inportatu nahi du, baina blokeatuta dago."
+
+#: ../pk/gkr-pk-object-storage.c:185
+#, c-format
+msgid "The system wants to import '%s', but it is locked."
+msgstr "Sistemak '%s' inportatu nahi du, baina blokeatuta dago."
+
+#: ../pk/gkr-pk-object-storage.c:197
+#, c-format
+msgid "Automatically unlock this %s when I log in."
+msgstr "Desblokeatu %s automatikoki saioa hastean."
+
+#: ../pk/gkr-pk-object-storage.c:209
+#, c-format
+msgid "Unlock password for %s"
+msgstr "Desblokeatu %s(r)en pasahitza"
+
+#: ../pkix/gkr-pkix-parser.c:430
+msgid "Unrecognized or unsupported file."
+msgstr "Fitxategi ezezaguna edo onartu gabea."
+
+#: ../pkix/gkr-pkix-parser.c:434
+msgid "Could not parse invalid or corrupted file."
+msgstr "Ezin izan da hondatutako edo baliogabea den fitxategia."
+
+#: ../pkix/gkr-pkix-parser.c:503
+msgid "private key"
+msgstr "gako pribatua"
+
+#: ../pkix/gkr-pkix-parser.c:505
+msgid "certificate"
+msgstr "ziurtagiria"
+
+#: ../ui/gkr-ask-tool.c:79
+msgid "Store passwords unencrypted?"
+msgstr "Gorde pasahitzak enkriptatu gabe?"
+
+#: ../ui/gkr-ask-tool.c:80
+msgid ""
+"By choosing to use a blank password, your stored passwords not be safely "
+"encrypted. They will be accessible by anyone with access to your files."
+msgstr ""
+"Pasahitz hutsa erabiltzea aukeratzean, gordetako pasahitzak ez dira "
+"segurtasunez enkriptatuko. Zure fitxategiak atzitu ditzakeen edonork "
+"pasahitz hauek atzi ditzake."
+
+#: ../ui/gkr-ask-tool.c:87
+msgid "Use Unsafe Storage"
+msgstr "Erabili segurtasun gabeko biltegia"
+
+#: ../ui/gkr-ask-tool.c:340
 msgid "_Location:"
 msgstr "_Kokalekua:"
 
-#: ../ui/gkr-ask-tool.c:327
+#: ../ui/gkr-ask-tool.c:353
 msgid "_Old password:"
 msgstr "_Pasahitz zaharra:"
 
-#: ../ui/gkr-ask-tool.c:347
+#: ../ui/gkr-ask-tool.c:373
 msgid "_Password:"
 msgstr "_Pasahitza:"
 
-#: ../ui/gkr-ask-tool.c:369
+#: ../ui/gkr-ask-tool.c:395
 msgid "_Confirm password:"
 msgstr "_Berretsi pasahitza:"
 
-#: ../ui/gkr-ask-tool.c:388
+#: ../ui/gkr-ask-tool.c:414
 msgid "New password strength"
 msgstr "Pasahitz berriaren indarra"
 
-#: ../ui/gkr-ask-tool.c:444
-msgid "Old password cannot be blank."
-msgstr "Pasahitz zaharra ezin da hutsa izan."
-
-#: ../ui/gkr-ask-tool.c:456
-msgid "Password cannot be blank."
-msgstr "Pasahitza ezin da hutsa izan"
-
-#: ../ui/gkr-ask-tool.c:465
+#: ../ui/gkr-ask-tool.c:481
 msgid "Passwords do not match."
 msgstr "Pasahitzak ez datoz bat"
 
-#: ../ui/gkr-ask-tool.c:514
+#: ../ui/gkr-ask-tool.c:497
+msgid "Password cannot be blank"
+msgstr "Pasahitza ezin da hutsa izan"
+
+#: ../ui/gkr-ask-tool.c:548
 msgid "Deny"
 msgstr "Ukatu"
 
-#: ../ui/gkr-ask-tool.c:526
+#: ../ui/gkr-ask-tool.c:560
 msgid "Allow _Once"
 msgstr "Baimend_u behin"
 
-#: ../ui/gkr-ask-tool.c:530
+#: ../ui/gkr-ask-tool.c:564
 msgid "_Always Allow"
 msgstr "B_aimendu beti"
 
