@@ -1,3 +1,9 @@
+2007-01-11  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-async.c: Drain the wakeup FD properly, so that we 
+	don't hang in strange ways. Fixes part of bug #502603, see 
+	backtrace in comment #21
+
 2008-01-05  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon.c:

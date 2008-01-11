@@ -121,6 +121,7 @@ static gboolean
 async_source_dispatch(GSource* source, GSourceFunc callback, gpointer user_data)
 {
 	/* Let a worker run */
+	gkr_wakeup_drain ();
 	DO_UNLOCK (async_mutex);
 	g_thread_yield ();
 	DO_LOCK (async_mutex);
