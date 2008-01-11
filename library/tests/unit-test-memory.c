@@ -85,11 +85,11 @@ void unit_test_alloc_two (CuTest* cu)
 	
 	memset (p2, 0x67, 4);
 	
-	p = gnome_keyring_memory_alloc (64536);
+	p = gnome_keyring_memory_alloc (16200);
 	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 64536));
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 16200));
 
-	memset (p, 0x67, 64536);
+	memset (p, 0x67, 16200);
 	
 	ret = gnome_keyring_memory_is_secure (p);
 	CuAssertIntEquals (cu, ret, TRUE);
@@ -128,14 +128,14 @@ void unit_test_realloc_across (CuTest *cu)
 	gpointer p, p2;
 	
 	/* Tiny allocation */
-	p = gnome_keyring_memory_realloc (NULL, 88);
+	p = gnome_keyring_memory_realloc (NULL, 1088);
 	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 88));
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 1088));
 
 	/* Reallocate to a large one, will have to have changed blocks */	
-	p2 = gnome_keyring_memory_realloc (p, 64000);
+	p2 = gnome_keyring_memory_realloc (p, 16200);
 	CuAssertPtrNotNull (cu, p2);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 64000));
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 16200));
 	
 	gnome_keyring_memory_free (p2);
 }

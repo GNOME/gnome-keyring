@@ -79,14 +79,14 @@ void unit_test_secmem_realloc_across (CuTest *cu)
 	gpointer p, p2;
 	
 	/* Tiny allocation */
-	p = gkr_secure_realloc_full (NULL, 88, 0);
+	p = gkr_secure_realloc_full (NULL, 1088, 0);
 	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 88));
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 1088));
 
 	/* Reallocate to a large one, will have to have changed blocks */	
-	p2 = gkr_secure_realloc_full (p, 64000, 0);
+	p2 = gkr_secure_realloc_full (p, 16200, 0);
 	CuAssertPtrNotNull (cu, p2);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 64000));
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 16200));
 }
 
 void unit_test_secmem_alloc_two (CuTest* cu)
@@ -100,11 +100,11 @@ void unit_test_secmem_alloc_two (CuTest* cu)
 
 	memset (p2, 0x67, 4);
 	
-	p = gkr_secure_alloc_full (64536, 0);
+	p = gkr_secure_alloc_full (16200, 0);
 	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 64536));
+	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 16200));
 
-	memset (p, 0x67, 64536);
+	memset (p, 0x67, 16200);
 	
 	ret = gkr_secure_check (p);
 	CuAssertIntEquals (cu, ret, TRUE);
