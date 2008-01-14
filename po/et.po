@@ -2,18 +2,18 @@
 # Estonian translation of GNOME-keyring.
 #
 # Copyright (C) 2005, 2006 Free Software Foundation, Inc.
-# Copyright (C) 2007 The GNOME Project.
+# Copyright (C) 2007, 2008 The GNOME Project.
 # This file is distributed under the same license as the gnome-keyring package.
 #
-# Ivar Smolin <okul@linux.ee>, 2005-2007.
+# Ivar Smolin <okul@linux.ee>, 2005-2008.
 # Priit Laes <amd@store20.com>, 2005, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-22 17:44+0000\n"
-"PO-Revision-Date: 2007-12-30 13:50+0200\n"
+"POT-Creation-Date: 2008-01-05 18:17+0000\n"
+"PO-Revision-Date: 2008-01-11 09:50+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -336,6 +336,38 @@ msgstr "Vaikimisi võtmerõnga loomine"
 msgid "Choose password for default keyring"
 msgstr "Sisesta vaikimisi võtmerõnga parool"
 
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr ""
+"Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemonis "
+"PKCS#11 komponenti. See mõjub ainult gnome-keyring-daemon'i käivitamisel, "
+"(ehk siis, kui kasutaja sisse logib). Seda sätet on võimalik mõnede "
+"deemonile antud käsureaargumentidega eirata."
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr ""
+"Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemonis "
+"SSH komponenti. See mõjub ainult gnome-keyring-daemon'i käivitamisel, (ehk "
+"siis, kui kasutaja sisse logib). Seda sätet on võimalik mõnede deemonile "
+"antud käsureaargumentidega eirata."
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Kas gnome võtmerõnga PKCS#11 komponent on lubatud või mitte."
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Kas gnome võtmerõnga SSH komponent on lubatud või mitte."
+
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
 msgstr "Ligipääs keelatud"
@@ -358,7 +390,7 @@ msgstr "Programmeerija viga: Rakendus saatis vigased andmed."
 
 #: ../library/gnome-keyring-utils.c:101
 msgid "No matching results"
-msgstr ""
+msgstr "Vastavusi pole"
 
 #: ../library/gnome-keyring-utils.c:103
 msgid "A keyring with that name does not exist."
@@ -370,9 +402,8 @@ msgstr "Võtmerõngas on juba lukust lahti võetud."
 
 #. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:98
-#, fuzzy
 msgid "Unlock Login Keyring"
-msgstr "Võtmerõnga avamine"
+msgstr ""
 
 #: ../keyrings/gkr-keyring-login.c:98
 #, fuzzy
@@ -384,6 +415,8 @@ msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
 msgstr ""
+"Sinu sisselogimise võtmerõngast ei võetud automaatselt lukust lahti, kui sa "
+"sellesse arvutisse sisse logisid."
 
 #. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:124
@@ -401,6 +434,8 @@ msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
 msgstr ""
+"Sinu sisselogimise võtmerõngast ei loodud, kui sa sellesse arvutisse sisse "
+"logisid. See luuakse nüüd."
 
 #: ../pk/gkr-pk-object-storage.c:153
 #, fuzzy
@@ -454,7 +489,7 @@ msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
 
 #: ../pkix/gkr-pkix-parser.c:430
 msgid "Unrecognized or unsupported file."
-msgstr ""
+msgstr "Arusaamatu või toetamata fail."
 
 #: ../pkix/gkr-pkix-parser.c:434
 msgid "Could not parse invalid or corrupted file."
