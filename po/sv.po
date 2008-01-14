@@ -1,14 +1,14 @@
 # Swedish messages for gnome-keyring.
-# Copyright (C) 2003-2007 Free Software Foundation, Inc.
-# Daniel Nylander <po@danielnylander.se>, 2006, 2007.
+# Copyright (C) 2003-2008 Free Software Foundation, Inc.
+# Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008.
 # Christian Rose <menthos@menthos.com>, 2003, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-28 19:02+0100\n"
-"PO-Revision-Date: 2007-12-28 19:05+0100\n"
+"POT-Creation-Date: 2008-01-14 18:48+0100\n"
+"PO-Revision-Date: 2008-01-14 18:55+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -248,6 +248,22 @@ msgstr "Skapa standardnyckelring"
 #: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "Välj lösenord för standardnyckelringen"
+
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "Detta alternativ aktiverar PKCS#11-komponenten i gnome-keyring-demonen. Den blir endast aktiverad när gnome-keyring-daemon startar, (alltså när användaren loggar in). Denna inställning kan åsidosättas när vissa kommandoradsflaggor skickas till demonen."
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "Detta alternativ aktiverar SSH-agenten i gnome-keyring-demonen. Den blir endast aktiverad när gnome-keyring-daemon startar, (alltså när användaren loggar in). Denna inställning kan åsidosättas när vissa kommandoradsflaggor skickas till demonen."
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Huruvida PKCS#11-komponenten i gnome-keyring är aktiverad."
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Huruvida SSH-agenten i gnome-keyring är aktiverad."
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
