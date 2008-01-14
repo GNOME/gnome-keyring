@@ -26,6 +26,12 @@ Changes in version 2.21.3 are:
 * PAM module now works with SELinux
 * Add a simpler API for accessing and storing passwords.
 
+Changes in version 2.20.3 are:
+* Use correct environment to startup gnome-keyring-daemon from PAM.
+* Fix crash when comparing item attributes. [Sam Morris]
+* Fix crash on shutdown. [Jeff Cai]
+* Build fix for OpenBSD [Martynas Venckus]
+
 Changes in version 2.20.2 are:
 * Build fixes for systems that require GNU_SOURCE to be defined. [Christopher Taylor]
 * Builds with the latest DBus [Owen Taylor]
