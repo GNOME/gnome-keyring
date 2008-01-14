@@ -1,8 +1,14 @@
-2007-01-14  Stef Walter  <stef@memberwebs.com>
+=== gnome-keyring 2.21.5 ===
+
+2008-01-14  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS: Release version 2.21.5
+
+2008-01-14  Stef Walter  <stef@memberwebs.com>
 
 	* Merged revisions 924 - 1006 from gnome-2-20 branch
 
-2007-01-13  Stef Walter  <stef@memberwebs.com>
+2008-01-13  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-cert.c:
 	* pk/gkr-pk-cert.h:
@@ -30,13 +36,13 @@
 	objects through PKCS#11 (no token save functionality yet). Also proper
 	infrastructure for setting of attributes.
 	
-2007-01-11  Stef Walter  <stef@memberwebs.com>
+2008-01-11  Stef Walter  <stef@memberwebs.com>
 
 	* common/tests/unit-test-secmem.c:
 	* library/tests/unit-test-memory.c: Fix memory tests so they can 
 	operate in 32K of lockable memory.
 	
-2007-01-11  Stef Walter  <stef@memberwebs.com>
+2008-01-11  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-async.c: Drain the wakeup FD properly, so that we 
 	don't hang in strange ways. Fixes part of bug #502603, see 

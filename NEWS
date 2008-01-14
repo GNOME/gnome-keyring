@@ -1,3 +1,18 @@
+Changes in version 2.21.5 are:
+* Proper support for creating and destroying objects through PKCS#11.
+* Support for setting PKCS#11 attributes.
+* Fix hanging of daemon under certain conditions.
+* Add gconf setting for determining which components of the daemon 
+  (such as SSH) are run at startup.
+* Better parsing of objects and prompting for passwords in PKCS#12 files.
+* Calculate trust and purpose/usage of certificates.
+* Mark certain key/certificate directories as special requiring certain
+  special treatment (such as the CA root store, SSH keys etc...)
+* Add support for unencrypted keyrings which are used when the user 
+  specifies a blank password.
+* Fix crasher [Jeff Cai]
+* Build fixes.
+
 Changes in version 2.21.4 are:
 * x86_64 memory alignment fixes
 * Other build and install fixes
