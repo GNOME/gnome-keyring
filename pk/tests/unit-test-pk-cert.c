@@ -82,8 +82,8 @@ void unit_test_create_certificate (CuTest* cu)
 	certificate_1 = gkr_pk_cert_new (manager, 0, asn1);
 	CuAssert (cu, "gkr_pk_cert_new returned bad object", GKR_IS_PK_CERT (certificate_1));
 	
-	if (!g_file_get_contents ("test-data/privkey-1.crt", &data, &n_data, NULL))
-		g_error ("couldn't read privkey-1.crt");
+	if (!g_file_get_contents ("test-data/privkey-1.key", &data, &n_data, NULL))
+		g_error ("couldn't read privkey-1.key");
 	res = gkr_pkix_der_read_private_key ((const guchar*)data, n_data, &sexp);
 	g_assert (res == GKR_PARSE_SUCCESS);
 	
@@ -108,9 +108,15 @@ void unit_test_create_certificate (CuTest* cu)
 		 
 void unit_test_certificate_static (CuTest *cu)
 {
-	CHECK_BOOL_ATTRIBUTE (cu, certificate_1, CKA_TOKEN, CK_TRUE);
+	CHECK_DATE_ATTRIBUTE (cu, certificate_1, CKA_START_DATE, "2007-12-20");
+	CHECK_DATE_ATTRIBUTE (cu, certificate_1, CKA_END_DATE, "2008-01-19");
+	CHECK_BOOL_ATTRIBUTE (cu, certificate_1, CKA_TOKEN, CK_FALSE);
+	CHECK_BOOL_ATTRIBUTE (cu, certificate_1, CKA_MODIFIABLE, CK_TRUE);
+	CHECK_BOOL_ATTRIBUTE (cu, certificate_1, CKA_PRIVATE, CK_FALSE);
+	CHECK_BOOL_ATTRIBUTE (cu, certificate_1, CKA_TRUSTED, CK_FALSE);
 	CHECK_ULONG_ATTRIBUTE (cu, certificate_1, CKA_CLASS, CKO_CERTIFICATE);
 	CHECK_ULONG_ATTRIBUTE (cu, certificate_1, CKA_CERTIFICATE_CATEGORY, 0);
+	CHECK_ULONG_ATTRIBUTE (cu, certificate_1, CKA_CERTIFICATE_TYPE, CKC_X_509);
 }
 
 void unit_test_certificate_related (CuTest *cu)
@@ -235,4 +241,86 @@ void unit_test_certificate_purpose (CuTest *cu)
 	result = g_strndup (attr.pValue, attr.ulValueLen);
 	g_strstrip (result);
 	CuAssert (cu, "Returned invalid oid in purpose", g_str_equal (result, "some-purpose"));
+}
+
+void unit_test_certificate_set_attribute (CuTest *cu)
+{
+	GkrPkObject *obj = GKR_PK_OBJECT (certificate_1);
+	CK_RV ret;
+	
+	/* Should succeed if twe change class to itself */
+	ret = gkr_pk_object_set_ulong (obj, CKA_CLASS, CKO_CERTIFICATE);
+	CuAssert (cu, "Should allow setting readonly attribute to same value", ret == CKR_OK);
+
+	/* Shouldn't succeed if twe change class to different */
+	ret = gkr_pk_object_set_ulong (obj, CKA_CLASS, CKO_PRIVATE_KEY);
+	CuAssert (cu, "Shouldn't allow changing readonly attribute", ret == CKR_ATTRIBUTE_READ_ONLY);
+
+	/* Should return readonly when no setter exists on object */
+	ret = gkr_pk_object_set_ulong (obj, CKA_CERTIFICATE_TYPE, CKC_WTLS);
+	CuAssert (cu, "Shouldn't allow changing readonly attribute", ret == CKR_ATTRIBUTE_READ_ONLY);	
+
+	/* Should return invalid when no getter or setter exists on object */
+	ret = gkr_pk_object_set_ulong (obj, CKA_PIXEL_X, 5);
+	CuAssert (cu, "Shouldn't allow changing readonly attribute", ret == CKR_ATTRIBUTE_TYPE_INVALID);	
+
+	/* Should return value invalid when setting wrong type data */
+	ret = gkr_pk_object_set_ulong (obj, CKA_PRIVATE, 5);
+	CuAssert (cu, "Shouldn't allow changing readonly attribute", ret == CKR_ATTRIBUTE_VALUE_INVALID);
+}
+
+void unit_test_certificate_create (CuTest *cu)
+{
+	CK_ATTRIBUTE attr;
+	GkrPkObject *object;
+	GArray *attrs;
+	const guchar *raw;
+	gsize n_raw;
+	CK_RV ret;
+	
+	attrs = gkr_pk_attributes_new ();
+
+	memset (&attr, 0, sizeof (attr));
+	attr.type = CKA_CLASS;
+	gkr_pk_attribute_set_ulong (&attr, CKO_CERTIFICATE);
+	gkr_pk_attributes_append (attrs, &attr);
+
+	/* Try to create as with a set of invalid attributes */
+	ret = gkr_pk_object_create (manager, attrs, &object);
+	CuAssert (cu, "Certificate creation succeeded wrongly", ret == CKR_TEMPLATE_INCOMPLETE);
+
+	gkr_pk_attributes_free (attrs);
+	attrs = gkr_pk_attributes_new ();
+	
+	attr.type = CKA_TOKEN; 
+	gkr_pk_attribute_set_boolean (&attr, CK_FALSE);
+	gkr_pk_attributes_append (attrs, &attr);
+	
+	attr.type = CKA_LABEL;
+	gkr_pk_attribute_set_string (&attr, "A test label");
+	gkr_pk_attributes_append (attrs, &attr);
+	
+	attr.type = CKA_VALUE;
+	raw = gkr_pk_cert_get_raw (certificate_1, &n_raw);
+	gkr_pk_attribute_set_data (&attr, raw, n_raw);
+	gkr_pk_attributes_append (attrs, &attr);
+	
+	attr.type = CKA_CLASS;
+	gkr_pk_attribute_set_ulong (&attr, CKO_CERTIFICATE);
+	gkr_pk_attributes_append (attrs, &attr);
+	
+	attr.type = CKA_CERTIFICATE_TYPE;
+	gkr_pk_attribute_set_ulong (&attr, CKC_X_509);
+	gkr_pk_attributes_append (attrs, &attr);
+		
+	/* Now try with a proper set of attributes */
+	ret = gkr_pk_object_create (manager, attrs, &object);
+	CuAssert (cu, "Certificate creation failed", ret == CKR_OK);
+	CuAssert (cu, "Returned invalid object", GKR_IS_PK_CERT (object));
+	
+	gkr_pk_attributes_free (attrs);
+	
+	/* Free the certificate */
+	g_object_unref (object);
+	
 }

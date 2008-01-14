@@ -1946,8 +1946,8 @@ gkr_C_SetAttributeValue (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object,
 {
 	BEGIN_CALL (session, C_SetAttributeValue);
 		IN_HANDLE (object);
-	PROCESS_CALL;
 		IN_ATTRIBUTE_ARRAY (template, count);
+	PROCESS_CALL;
 	END_CALL;
 }
 

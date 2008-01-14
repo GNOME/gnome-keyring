@@ -60,6 +60,9 @@ GkrPkObject*        gkr_pk_pubkey_new                (GkrPkObjectManager *manage
 GkrPkPubkey*        gkr_pk_pubkey_instance           (GkrPkObjectManager* manager, 
                                                       GQuark location, gcry_sexp_t s_key);
 
+CK_RV               gkr_pk_pubkey_create             (GkrPkObjectManager* manager, 
+                                                      GArray* array, GkrPkObject **object);
+                                                      
 gkrconstunique      gkr_pk_pubkey_get_keyid          (GkrPkPubkey *key);
 
 gcry_sexp_t         gkr_pk_pubkey_get_key            (GkrPkPubkey *key);

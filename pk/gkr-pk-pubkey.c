@@ -128,6 +128,80 @@ load_public_key (GkrPkPubkey *key)
 }
 
 static CK_RV
+create_rsa_public (GArray *attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t n = NULL;
+	gcry_mpi_t e = NULL;
+	CK_RV ret;
+	
+	if (!gkr_pk_attributes_mpi (attrs, CKA_MODULUS, &n) ||
+	    !gkr_pk_attributes_mpi (attrs, CKA_PUBLIC_EXPONENT, &e)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}		
+	
+	gcry = gcry_sexp_build (skey, NULL, 
+	                        "(public-key (rsa (n %m) (e %m)))", n, e);
+
+	/* TODO: We should be mapping better return codes */
+	if (gcry != 0) {
+		g_message ("couldn't create RSA key from passed attributes");
+		ret = CKR_GENERAL_ERROR;
+		goto done;
+	}
+	
+	gkr_pk_attributes_consume (attrs, CKA_MODULUS, CKA_PUBLIC_EXPONENT, -1);
+	ret = CKR_OK;
+
+done:
+	gcry_mpi_release (n);
+	gcry_mpi_release (e);
+	return ret;	
+}
+
+static CK_RV
+create_dsa_public (GArray *attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t p = NULL;
+	gcry_mpi_t q = NULL;
+	gcry_mpi_t g = NULL;
+	gcry_mpi_t value = NULL;
+	CK_RV ret;
+	
+	if (!gkr_pk_attributes_mpi (attrs, CKA_PRIME, &p) ||
+	    !gkr_pk_attributes_mpi (attrs, CKA_SUBPRIME, &q) || 
+	    !gkr_pk_attributes_mpi (attrs, CKA_BASE, &g) ||
+	    !gkr_pk_attributes_mpi (attrs, CKA_VALUE, &value)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}
+	    
+	gcry = gcry_sexp_build (skey, NULL, 
+	                        "(public-key (dsa (p %m) (q %m) (g %m) (y %m)))",
+	                        p, q, g, value);	    		
+
+	/* TODO: We should be mapping better return codes */
+	if (gcry != 0) {
+		g_message ("couldn't create DSA key from passed attributes");
+		ret = CKR_GENERAL_ERROR;
+		goto done;
+	}
+	
+	gkr_pk_attributes_consume (attrs, CKA_PRIME, CKA_SUBPRIME, 
+	                           CKA_BASE, CKA_VALUE, -1);
+	ret = CKR_OK;
+	
+done:
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (g);
+	gcry_mpi_release (value);
+	return ret;
+}
+
+static CK_RV
 attribute_from_related (GkrPkPubkey *key, GType type, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkObject *crt, *obj;
@@ -230,78 +304,60 @@ gkr_pk_pubkey_set_property (GObject *obj, guint prop_id, const GValue *value,
 	}
 }
 
-static CK_RV 
-gkr_pk_pubkey_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
+static CK_RV
+gkr_pk_pubkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
-	gboolean val;
+	GkrPkPubkey *key = GKR_PK_PUBKEY (obj);
+	gcry_mpi_t mpi;
+	CK_RV ret;
 	
 	switch (attr->type)
 	{
-	case CKA_ALWAYS_AUTHENTICATE:
 	case CKA_ENCRYPT:
 	case CKA_EXTRACTABLE:
-	case CKA_TOKEN:
 	case CKA_VERIFY:
 	case CKA_VERIFY_RECOVER:
-		val = TRUE;
-		break;
+		gkr_pk_attribute_set_boolean (attr, CK_TRUE);
+		return CKR_OK;
 	
+	case CKA_ALWAYS_AUTHENTICATE:
 	case CKA_DERIVE:
-	case CKA_MODIFIABLE:
 	case CKA_PRIVATE:
 	case CKA_SENSITIVE:
 	case CKA_WRAP:
 	case CKA_WRAP_WITH_TRUSTED:
-		val = FALSE;
-		break;
+		gkr_pk_attribute_set_boolean (attr, CK_FALSE);
+		return CKR_OK;
 		
 	/* TODO: Use our definition of trusted */
 	case CKA_TRUSTED:
-		val = FALSE;
-		break;
+		gkr_pk_attribute_set_boolean (attr, CK_FALSE);
+		return CKR_OK;
 		
 	/* TODO: Perhaps we can detect this in some way */
 	case CKA_LOCAL:
-		val = FALSE;	
-		break;
+		gkr_pk_attribute_set_boolean (attr, CK_FALSE);
+		return CKR_OK;
 		
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	gkr_pk_attribute_set_boolean (attr, val);
-	return CKR_OK;
-}
-
-static CK_RV 
-gkr_pk_pubkey_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	GkrPkPubkey *key = GKR_PK_PUBKEY (obj);
-	gcry_mpi_t mpi;
-	gboolean ret;
-	gulong val;
-	
-	switch (attr->type)
-	{
 	case CKA_CLASS:
-		val = CKO_PUBLIC_KEY;
-		break;
+		gkr_pk_attribute_set_ulong (attr, CKO_PUBLIC_KEY);
+		return CKR_OK;
 		
 	case CKA_KEY_TYPE:
 		if (!load_public_key (key))
 			return CKR_GENERAL_ERROR;
 		switch (key->pub->algorithm) {
 		case GCRY_PK_RSA:
-			val = CKK_RSA;
+			gkr_pk_attribute_set_ulong (attr, CKK_RSA);
 			break;
 		case GCRY_PK_DSA:
-			val = CKK_DSA;
+			gkr_pk_attribute_set_ulong (attr, CKK_DSA);
 			break;
 		default:
 			g_return_val_if_reached (CKR_GENERAL_ERROR);
 			break;
 		}
-		break;
+		return CKR_OK;
 	
 	case CKA_MODULUS_BITS:
 		if (!load_public_key (key))
@@ -311,37 +367,13 @@ gkr_pk_pubkey_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		g_assert (key->pub->numbers);
 		ret = gkr_crypto_sexp_extract_mpi (key->pub->numbers, &mpi, "n", NULL);
 		g_return_val_if_fail (ret, CKR_GENERAL_ERROR);
-		val = gcry_mpi_get_nbits (mpi);
+		gkr_pk_attribute_set_ulong (attr, gcry_mpi_get_nbits (mpi));
 		gcry_mpi_release (mpi);
-		break;
+		return CKR_OK;
 		
 	/* TODO: Once we can generate keys, this should change */
 	case CKA_KEY_GEN_MECHANISM:
 		return CK_UNAVAILABLE_INFORMATION;
-		
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	gkr_pk_attribute_set_ulong (attr, val);
-	return CKR_OK;
-}
-
-static CK_RV
-gkr_pk_pubkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	GkrPkPubkey *key = GKR_PK_PUBKEY (obj);
-	gchar *label;
-	
-	switch (attr->type)
-	{
-	case CKA_LABEL:
-		g_object_get (obj, "label", &label, NULL);
-		if (!label)
-			label = gkr_location_to_display (obj->location);
-		gkr_pk_attribute_set_string (attr, label);
-		g_free (label);
-		return CKR_OK;
 		
 	case CKA_ID:
 		/* Always a SHA-1 hash output buffer */
@@ -384,26 +416,16 @@ gkr_pk_pubkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_UNWRAP_TEMPLATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
-	default:
-		break;
-	};
-
-	return CKR_ATTRIBUTE_TYPE_INVALID;
-}
-
-static CK_RV 
-gkr_pk_pubkey_get_date_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	switch (attr->type)
-	{
 	/* We don't support these */
 	case CKA_START_DATE:
 	case CKA_END_DATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	
 	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
+		break;
 	};
+
+	return GKR_PK_OBJECT_CLASS (gkr_pk_pubkey_parent_class)->get_attribute (obj, attr);
 }
 
 static void
@@ -430,10 +452,7 @@ gkr_pk_pubkey_class_init (GkrPkPubkeyClass *klass)
 	gkr_pk_pubkey_parent_class = g_type_class_peek_parent (klass);
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
-	parent_class->get_bool_attribute = gkr_pk_pubkey_get_bool_attribute;
-	parent_class->get_ulong_attribute = gkr_pk_pubkey_get_ulong_attribute;
-	parent_class->get_data_attribute = gkr_pk_pubkey_get_data_attribute;
-	parent_class->get_date_attribute = gkr_pk_pubkey_get_date_attribute;
+	parent_class->get_attribute = gkr_pk_pubkey_get_attribute;
 	
 	gobject_class = (GObjectClass*)klass;
 	gobject_class->get_property = gkr_pk_pubkey_get_property;
@@ -493,6 +512,44 @@ gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_
 	
 	pub = gkr_pk_pubkey_new (manager, location, s_key);
 	return GKR_PK_PUBKEY (pub);
+}
+
+CK_RV
+gkr_pk_pubkey_create (GkrPkObjectManager* manager, GArray* array, 
+                      GkrPkObject **object)
+{
+ 	CK_KEY_TYPE type;
+ 	gcry_sexp_t sexp;
+ 	CK_RV ret;
+ 	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (manager), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (array, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
+	
+	*object = NULL;
+	
+	if (!gkr_pk_attributes_ulong (array, CKA_KEY_TYPE, &type))
+ 		return CKR_TEMPLATE_INCOMPLETE;
+ 	gkr_pk_attributes_consume (array, CKA_KEY_TYPE, -1);
+
+ 	switch (type) {
+	case CKK_RSA:
+		ret = create_rsa_public (array, &sexp);
+		break;
+	case CKK_DSA:
+		ret = create_dsa_public (array, &sexp);
+		break;
+	default:
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+ 	};
+
+	if (ret != CKR_OK)
+		return ret;
+	
+	g_return_val_if_fail (sexp, CKR_GENERAL_ERROR);	
+	*object = gkr_pk_pubkey_new (manager, 0, sexp);
+	
+	return CKR_OK;
 }
 
 gkrconstunique

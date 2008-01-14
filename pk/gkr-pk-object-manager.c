@@ -85,14 +85,13 @@ cleanup_object_manager (void *unused)
 }
 
 static void
-add_object_for_unique (GkrPkObjectManager *objmgr, gkrconstunique unique, GkrPkObject *object)
+add_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
 {
  	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
 	gpointer k;
 	
-	g_assert (unique);
-	g_assert (object);
-	g_assert (gkr_unique_equals (object->unique, unique));
+	g_assert (GKR_IS_PK_OBJECT (object));
+	g_assert (object->unique);
 	g_assert (object->manager == NULL);
 	
 	if (!object->handle) {
@@ -108,9 +107,11 @@ add_object_for_unique (GkrPkObjectManager *objmgr, gkrconstunique unique, GkrPkO
 	g_assert (g_hash_table_lookup (pv->object_by_handle, k) == NULL); 
 	g_hash_table_replace (pv->object_by_handle, k, object);
 	
-	/* Mapping of objects by index key */
+	/* 
+	 * Mapping of objects by unique key. There may be multiple objects
+	 * with a given unique key.
+	 */
 	g_assert (object->unique);
-	g_assert (g_hash_table_lookup (pv->object_by_unique, object->unique) == NULL); 
 	g_hash_table_replace (pv->object_by_unique, object->unique, object);
 	
 	/* Note objects is being managed */
@@ -119,27 +120,25 @@ add_object_for_unique (GkrPkObjectManager *objmgr, gkrconstunique unique, GkrPkO
 }
 
 static void
-remove_object_at_unique (GkrPkObjectManager *objmgr, gkrconstunique unique)
+remove_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
 {
  	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
- 	GkrPkObject *object;
 	gpointer k;
 	
-	g_assert (unique);
-	
-	/* Get the object referred to */
-	object = (GkrPkObject*)g_hash_table_lookup (pv->object_by_unique, unique);
 	g_assert (GKR_IS_PK_OBJECT (object));
 	g_assert (object->manager == objmgr);
-
+	
 	/* Mapping of objects by PKCS#11 'handle' */	
 	k = GUINT_TO_POINTER (object->handle);
 	g_assert (g_hash_table_lookup (pv->object_by_handle, k) == object); 
 	g_hash_table_remove (pv->object_by_handle, k);
 	
-	/* Mapping of objects by index key */
-	g_assert (gkr_unique_equals (object->unique, unique));
-	g_hash_table_remove (pv->object_by_unique, unique); 
+	/* 
+	 * Mapping of objects by unique key. There may be multiple objects
+	 * with a given unique, so just remove if it matches this one.
+	 */
+	if (g_hash_table_lookup (pv->object_by_unique, object->unique) == object)
+		g_hash_table_remove (pv->object_by_unique, object->unique); 
 	
 	/* Release object management */		
 	objmgr->objects = g_list_remove (objmgr->objects, object);
@@ -280,7 +279,7 @@ gkr_pk_object_manager_register (GkrPkObjectManager *objmgr, GkrPkObject *object)
 	g_return_if_fail (object->manager == NULL);
 	g_return_if_fail (object->unique);
 
-	add_object_for_unique (objmgr, object->unique, object);
+	add_object (objmgr, object);
 }
 
 void
@@ -295,7 +294,7 @@ gkr_pk_object_manager_unregister (GkrPkObjectManager *objmgr, GkrPkObject *objec
 	g_return_if_fail (object->manager == objmgr);
 	g_return_if_fail (object->unique);
 
-	remove_object_at_unique (objmgr, object->unique);
+	remove_object (objmgr, object);
 }
 
 GkrPkObject*

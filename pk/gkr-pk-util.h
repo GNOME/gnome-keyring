@@ -35,7 +35,6 @@ typedef enum {
 	GKR_PK_DATA_UNKNOWN = 0,
 	GKR_PK_DATA_BOOL,
 	GKR_PK_DATA_ULONG,
-	GKR_PK_DATA_DATE,
 	GKR_PK_DATA_BYTES
 } GkrPkDataType;
 
@@ -44,6 +43,9 @@ GkrPkDataType      gkr_pk_attribute_data_type             (CK_ATTRIBUTE_TYPE typ
 CK_ATTRIBUTE_PTR   gkr_pk_attribute_new                   (CK_ATTRIBUTE_TYPE type);
 
 CK_ATTRIBUTE_PTR   gkr_pk_attribute_dup                   (const CK_ATTRIBUTE_PTR attr);
+
+gint               gkr_pk_attribute_equal                 (const CK_ATTRIBUTE_PTR one, 
+                                                           const CK_ATTRIBUTE_PTR two);
 
 void               gkr_pk_attribute_free                  (gpointer attr);
 
@@ -62,14 +64,18 @@ void               gkr_pk_attribute_set_string            (CK_ATTRIBUTE_PTR attr
 
 void               gkr_pk_attribute_set_unique            (CK_ATTRIBUTE_PTR attr, gkrconstunique uni);
 
-void               gkr_pk_attribute_set_boolean           (CK_ATTRIBUTE_PTR attr, gboolean value);
+void               gkr_pk_attribute_set_boolean           (CK_ATTRIBUTE_PTR attr, CK_BBOOL value);
 
 void               gkr_pk_attribute_set_date              (CK_ATTRIBUTE_PTR attr, time_t time);
 
-void               gkr_pk_attribute_set_ulong             (CK_ATTRIBUTE_PTR attr, gulong value);
+void               gkr_pk_attribute_set_ulong             (CK_ATTRIBUTE_PTR attr, CK_ULONG value);
 
 void               gkr_pk_attribute_set_mpi               (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi);
 
+gboolean           gkr_pk_attribute_get_boolean           (const CK_ATTRIBUTE_PTR attr, CK_BBOOL *value);
+
+gboolean           gkr_pk_attribute_get_ulong             (const CK_ATTRIBUTE_PTR attr, CK_ULONG *value);
+ 
 #define            gkr_pk_attributes_new()                (g_array_new (0, 1, sizeof (CK_ATTRIBUTE)))
  
 CK_ATTRIBUTE_PTR   gkr_pk_attributes_find                 (const GArray* attrs, CK_ATTRIBUTE_TYPE type);
@@ -83,8 +89,22 @@ gboolean           gkr_pk_attributes_boolean              (const GArray* attrs, 
 gboolean           gkr_pk_attributes_mpi                  (const GArray* attrs, CK_ATTRIBUTE_TYPE type, 
                                                            gcry_mpi_t *mpi);
 
+void               gkr_pk_attributes_append               (GArray *attrs, CK_ATTRIBUTE_PTR attr);
+
 void               gkr_pk_attributes_free                 (GArray *attrs);
 
+/* 
+ * 'Consumption' of attributes is used during setting of a set of attributes 
+ * on an object, those that have been handled somewhere are marked consumed. 
+ * This is useful for fallback handling. See gkr_pk_object_set_attribute().
+ */ 
+gboolean           gkr_pk_attribute_is_consumed           (const CK_ATTRIBUTE_PTR attr);
+
+void               gkr_pk_attribute_consume               (CK_ATTRIBUTE_PTR attr);
+
+void               gkr_pk_attributes_consume              (GArray *attrs, ...);
+
+/* Certain object classes are intrinsically private */
 gboolean           gkc_pk_class_is_private                (CK_OBJECT_CLASS cls);
 
 #endif /*GKRPKUTIL_H_*/

@@ -57,6 +57,12 @@ void                    gkr_pk_object_storage_refresh            (GkrPkObjectSto
 gboolean                gkr_pk_object_storage_load_complete      (GkrPkObjectStorage *storage, 
                                                                   GkrPkObject *obj, GError **err);
 
+gboolean                gkr_pk_object_storage_add                (GkrPkObjectStorage *storage,
+                                                                  GkrPkObject *obj, GError **err);
+
+gboolean                gkr_pk_object_storage_remove             (GkrPkObjectStorage *storage,
+                                                                  GkrPkObject *obj, GError **err);
+
 G_END_DECLS
 
 #endif /* __GKR_PK_OBJECT_STORAGE_H__ */

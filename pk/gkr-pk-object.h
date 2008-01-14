@@ -62,14 +62,16 @@ struct _GkrPkObject {
 struct _GkrPkObjectClass {
 	GObjectClass parent_class;
 
-	CK_RV (*get_bool_attribute) (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr);
-	CK_RV (*get_ulong_attribute) (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr);
-	CK_RV (*get_data_attribute) (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr);
-	CK_RV (*get_date_attribute) (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr);
+	/* The attribute getter and setter */
+	CK_RV (*get_attribute) (GkrPkObject *obj, CK_ATTRIBUTE_PTR attr);
+	CK_RV (*set_attribute) (GkrPkObject *obj, CK_ATTRIBUTE_PTR attr); 
 };
 
 GType               gkr_pk_object_get_type         (void) G_GNUC_CONST;
 
+CK_RV               gkr_pk_object_create           (GkrPkObjectManager *manager, 
+                                                    GArray *attrs, GkrPkObject **object);
+                                                    
 void                gkr_pk_object_refresh          (GkrPkObject *object);
 
 void                gkr_pk_object_flush            (GkrPkObject *object);
@@ -96,6 +98,20 @@ CK_RV               gkr_pk_object_get_bool         (GkrPkObject *object,
                                                     CK_BBOOL *value);
                                                     
 CK_RV               gkr_pk_object_get_attributes   (GkrPkObject *object,
+                                                    GArray *attrs);
+
+CK_RV               gkr_pk_object_set_attribute    (GkrPkObject *object,
+                                                    CK_ATTRIBUTE_PTR attr);
+                                                    
+CK_RV               gkr_pk_object_set_ulong        (GkrPkObject *object, 
+                                                    CK_ATTRIBUTE_TYPE type,
+                                                    CK_ULONG value);
+
+CK_RV               gkr_pk_object_set_bool         (GkrPkObject *object, 
+                                                    CK_ATTRIBUTE_TYPE type,
+                                                    CK_BBOOL value);
+                                                    
+CK_RV               gkr_pk_object_set_attributes   (GkrPkObject *object, 
                                                     GArray *attrs);
 
 gchar*              gkr_pk_object_get_label        (GkrPkObject *object);

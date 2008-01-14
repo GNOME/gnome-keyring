@@ -108,7 +108,7 @@ const static GkrPkcs11CallInfo gkr_pkcs11_calls[] = {
 	{ PKCS11_CALL_C_DestroyObject,        "C_DestroyObject",        "u",       ""       },
 	{ PKCS11_CALL_C_GetObjectSize,        "C_GetObjectSize",        "u",       "u"      },
 	{ PKCS11_CALL_C_GetAttributeValue,    "C_GetAttributeValue",    "uaA",     "aAu"    },
-	{ PKCS11_CALL_C_SetAttributeValue,    "C_SetAttributeValue",    "u",       "aA"     },
+	{ PKCS11_CALL_C_SetAttributeValue,    "C_SetAttributeValue",    "uaA",     ""       },
 	{ PKCS11_CALL_C_FindObjectsInit,      "C_FindObjectsInit",      "aA",      ""       },
 	{ PKCS11_CALL_C_FindObjects,          "C_FindObjects",          "u",       "au"     },
 	{ PKCS11_CALL_C_FindObjectsFinal,     "C_FindObjectsFinal",     "",        ""       },

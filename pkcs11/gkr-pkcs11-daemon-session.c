@@ -37,6 +37,7 @@
 
 #include "pk/gkr-pk-object.h"
 #include "pk/gkr-pk-object-manager.h"
+#include "pk/gkr-pk-object-storage.h"
 #include "pk/gkr-pk-util.h"
 
 #include <stdlib.h>
@@ -85,16 +86,16 @@ struct _SessionInfo {
  */
 
 static void
-session_take_object (SessionInfo *sinfo, GkrPkObject *object)
+session_add_object (SessionInfo *sinfo, GkrPkObject *object)
 {
 	g_assert (sinfo);
 	
-	g_return_if_fail (object->handle == 0);
+	g_return_if_fail (object->handle != 0);
 	g_return_if_fail (object->location == 0);
 	g_return_if_fail (object->manager == sinfo->manager);
 
 	/* We assume the ownership */
-	g_assert (object->handle);
+	g_object_ref (object);
 	g_hash_table_insert (sinfo->objects, GUINT_TO_POINTER (object->handle), object);
 }
 
@@ -427,31 +428,19 @@ session_C_Logout (SessionInfo *sinfo, GkrPkcs11Message *req,
  * OBJECT OPERATIONS
  */
 
-static CK_RV 
-create_key_object (GkrPkObjectManager *manager, GArray *attrs, GkrPkObject **key)
-{
-	CK_KEY_TYPE type;
-	
-	if (!gkr_pk_attributes_ulong (attrs, CKA_KEY_TYPE, &type))
-		return CKR_TEMPLATE_INCOMPLETE;
-		
-	switch (type) {
-	/* TODO: Support RSA key creation */
-	case CKK_DSA:
-		return gkr_pkcs11_dsa_create_key (manager, attrs, key);
-	default:
-		return CKR_ATTRIBUTE_VALUE_INVALID;
-	};
-}
-
 static CK_RV
 session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req, 
                         GkrPkcs11Message *resp)
 {
+	GkrPkObjectManager *manager;
+	CK_ATTRIBUTE_PTR attr;
+	CK_OBJECT_CLASS cls;
 	GkrPkObject *object;
 	GArray *attrs = NULL;
-	CK_OBJECT_CLASS cls;
 	CK_BBOOL token;
+	GError *err = NULL;
+	gboolean res;
+	guint i;
 	CK_RV ret;
 	
 	if (sinfo->operation_type)
@@ -463,7 +452,7 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (!gkr_pk_attributes_ulong (attrs, CKA_CLASS, &cls)) {
 	    	ret = CKR_TEMPLATE_INCOMPLETE;
 	    	goto done;
-	}
+	} 
 	
 	/* Can only create public objects unless logged in */
 	if (!gkr_keyring_login_is_unlocked () && gkc_pk_class_is_private (cls)) {
@@ -471,43 +460,57 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 		goto done;
 	}
 	
-	/* 
-	 * Can only create session objects
-	 * TODO: Support token objects.
-	 * TODO: Take readonly session into account, once we support 
-	 * token objects. CKR_SESSION_READ_ONLY
-	 */
-	if (gkr_pk_attributes_boolean (attrs, CKA_TOKEN, &token) && token) {
-		 ret = CKR_TOKEN_WRITE_PROTECTED;
-		 goto done;
+	/* Find out if its a token object or not */
+	token = CK_FALSE;
+	for (i = 0; i < attrs->len; ++i) {
+		attr = &(g_array_index (attrs, CK_ATTRIBUTE, i));
+		if (attr->type == CKA_TOKEN) {
+			if (attr && attr->pValue && attr->ulValueLen == sizeof (CK_BBOOL))
+				token = *((CK_BBOOL*)attr->pValue);
+				
+			/* Mark that attribute as used */
+			gkr_pk_attribute_consume (attr);
+			break;
+		}
 	}
 	
-	switch (cls) {
-	case CKO_PUBLIC_KEY:
-	case CKO_PRIVATE_KEY:
-		ret = create_key_object (sinfo->manager, attrs, &object);
-		break;
-	default:
-		/* TODO: What's a better error code here? */
-		ret = CKR_FUNCTION_NOT_SUPPORTED;
-		break;
-	};
-
-	if (ret == CKR_OK) {
-
-		g_return_val_if_fail (object, CKR_GENERAL_ERROR);
-		
-		/* 
-		 * Store it appropriately. 
-		 * TODO: Eventually we will store and write to the token
-		 * storage here, but for now just the session.
-		 */
-		
-		session_take_object (sinfo, object);
-		gkr_pkcs11_message_write_uint32 (resp, object->handle);
+	/* A readonly session cannot create token objects */
+	if (token && sinfo->readonly) {
+		ret = CKR_SESSION_READ_ONLY;
+		goto done;
 	}
+
+	/* Create the object with the right object manager */
+	manager = token ? gkr_pk_object_manager_for_token () : sinfo->manager;
+	ret = gkr_pk_object_create (manager, attrs, &object);
+	                 		
+	if (ret != CKR_OK) 
+		goto done;
+
+	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
+		
+	/* Token objects get stored in the main object storage */
+	if (token) {
+		g_return_val_if_fail (object->storage != NULL, CKR_GENERAL_ERROR);
+		res = gkr_pk_object_storage_add (gkr_pk_object_storage_get (), object, &err);
+		if (!res) {
+			g_warning ("couldn't write created object to disk: %s", 
+			           err && err->message ? err->message : "");
+			g_clear_error (&err);
+			ret = CKR_GENERAL_ERROR;
+			goto done;
+		}
+			
+	/* Session objects are owned by the session */
+	} else {
+		session_add_object (sinfo, object);
+	}
+
+	gkr_pkcs11_message_write_uint32 (resp, object->handle);
+	ret = CKR_OK;
 	
 done:
+	g_object_unref (object);
 	gkr_pk_attributes_free (attrs);
 	return ret;
 }
@@ -527,11 +530,65 @@ static CK_RV
 session_C_DestroyObject (SessionInfo *sinfo, GkrPkcs11Message *req, 
                          GkrPkcs11Message *resp)
 {
-	/* 
-	 * TODO: We need to implement this, initially perhaps only 
-	 * only for session objects.
-	 */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	CK_OBJECT_HANDLE obj;
+	GkrPkObjectManager *manager;
+	GkrPkObject *object;
+	CK_RV ret = CKR_OK;
+	gboolean res;
+	GError *err = NULL;
+	CK_BBOOL priv;
+	
+	if (gkr_pkcs11_message_read_uint32 (req, &obj) != CKR_OK)
+		return PROTOCOL_ERROR;
+	
+	/* Find the object in question */
+	if (obj & GKR_PK_OBJECT_IS_PERMANENT)
+		manager = gkr_pk_object_manager_for_token ();
+	else
+		manager = sinfo->manager;
+		
+	object = gkr_pk_object_manager_lookup (manager, obj);
+	if (!object)
+		return CKR_OBJECT_HANDLE_INVALID;
+		
+	/* We can only destroy public objects unless logged in */
+	if (!gkr_keyring_login_is_unlocked ()) {
+		ret = gkr_pk_object_get_bool (object, CKA_PRIVATE, &priv);
+		g_return_val_if_fail (ret == CKR_OK, CKR_GENERAL_ERROR);
+		
+		if (priv)
+			return CKR_USER_NOT_LOGGED_IN;
+	}
+	
+	/* A token object */
+	if (obj & GKR_PK_OBJECT_IS_PERMANENT) {
+
+		/* A readonly session cannot destroy token objects */
+		if (sinfo->readonly)
+			return CKR_SESSION_READ_ONLY;
+			
+		g_return_val_if_fail (object->storage, CKR_GENERAL_ERROR);
+		res = gkr_pk_object_storage_remove (object->storage, object, &err);
+		if (!res) {
+			g_warning ("couldn't remove object from disk: %s", 
+			           err && err->message ? err->message : "");
+			g_clear_error (&err);
+			ret = CKR_GENERAL_ERROR;
+		}
+	
+	/* A session object */
+	} else {
+		/* 
+		 * TODO: This just hides the object, does not destroy. 
+		 * The problem is that we need to locate the actual
+		 * session where this is owned, which we currently 
+		 * don't track.
+		 */
+		gkr_pk_object_manager_unregister (manager, object);
+		ret = CKR_OK;
+	}
+		 
+	return ret;
 }
 
 static CK_RV
@@ -539,7 +596,7 @@ session_C_GetObjectSize (SessionInfo *sinfo, GkrPkcs11Message *req,
                          GkrPkcs11Message *resp)
 {
 	/* TODO: We need to implement this */
-	return CKR_OBJECT_HANDLE_INVALID;
+	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
@@ -588,8 +645,21 @@ static CK_RV
 session_C_SetAttributeValue (SessionInfo *sinfo, GkrPkcs11Message *req, 
                              GkrPkcs11Message *resp)
 {
-	/* TODO: We need to implement this */
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	GkrPkObject *object;
+	GArray* attrs;
+	CK_RV ret;
+	
+	ret = read_object (req, sinfo, &object);
+	if (ret != CKR_OK)
+		return ret;
+
+	if (!(attrs = read_attribute_array (req)))
+		return PROTOCOL_ERROR;
+		
+	ret = gkr_pk_object_set_attributes (object, attrs);
+	gkr_pk_attributes_free (attrs);
+	
+	return ret;
 }
 
 static void 

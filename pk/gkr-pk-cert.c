@@ -295,6 +295,14 @@ check_certificate_purpose (GkrPkCert *cert, GQuark oid)
 }
 
 static CK_RV
+read_certificate_purpose (GkrPkCert *cert, GQuark oid, CK_ATTRIBUTE_PTR attr)
+{
+	gboolean value = check_certificate_purpose (cert, oid);
+	gkr_pk_attribute_set_boolean (attr, value);
+	return CKR_OK;
+}
+
+static CK_RV
 read_certificate_purposes (GkrPkCert *cert, CK_ATTRIBUTE_PTR attr)
 {
 	GQuark *quarks, *q;
@@ -392,162 +400,104 @@ gkr_pk_cert_set_property (GObject *obj, guint prop_id, const GValue *value,
 		break;
 	}
 }
-            
-static CK_RV 
-gkr_pk_cert_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	GkrPkCert *cert = GKR_PK_CERT (obj);
-	gboolean val;
-	
-	switch (attr->type)
-	{
-	case CKA_TOKEN:
-		val = TRUE;
-		break;
-	
-	case CKA_PRIVATE:
-	case CKA_MODIFIABLE:
-		val = FALSE;
-		break;
-		
-	case CKA_GNOME_PURPOSE_RESTRICTED:
-		val = has_certificate_purposes (cert);
-		break;
-		
-	case CKA_GNOME_PURPOSE_SSH_AUTH:
-		val = check_certificate_purpose (cert, OID_USAGE_SSH_AUTH);
-		break;
-		
-	case CKA_GNOME_PURPOSE_SERVER_AUTH:
-		val = check_certificate_purpose (cert, OID_USAGE_SERVER_AUTH);
-		break;
-		
-	case CKA_GNOME_PURPOSE_CLIENT_AUTH:
-		val = check_certificate_purpose (cert, OID_USAGE_CLIENT_AUTH);
-		break;
-		
-	case CKA_GNOME_PURPOSE_CODE_SIGNING:
-		val = check_certificate_purpose (cert, OID_USAGE_CODE_SIGNING);
-		break;
-		
-	case CKA_GNOME_PURPOSE_EMAIL_PROTECTION:
-		val = check_certificate_purpose (cert, OID_USAGE_EMAIL);
-		break;
-		
-	case CKA_GNOME_PURPOSE_IPSEC_END_SYSTEM:
-		val = check_certificate_purpose (cert, OID_USAGE_IPSEC_ENDPOINT);
-		break;
-		
-	case CKA_GNOME_PURPOSE_IPSEC_TUNNEL:
-		val = check_certificate_purpose (cert, OID_USAGE_IPSEC_TUNNEL);
-		break;
-		
-	case CKA_GNOME_PURPOSE_IPSEC_USER:
-		val = check_certificate_purpose (cert, OID_USAGE_IPSEC_USER);
-		break;
-		
-	case CKA_GNOME_PURPOSE_TIME_STAMPING:
-		val = check_certificate_purpose (cert, OID_USAGE_TIME_STAMPING);
-		break;
-		
-	/* TODO: Until we can figure out a trust system */
-	case CKA_TRUSTED:
-		val = FALSE;
-		break;
-		
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	gkr_pk_attribute_set_boolean (attr, val);
-	return CKR_OK;
-}
-
-static CK_RV 
-gkr_pk_cert_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	GkrPkCert *cert = GKR_PK_CERT (obj);
-	gulong val;
-	gchar *value;
-	guchar *extension;
-	gsize n_extension;
-	gboolean is_ca;
-	CK_RV ret;
-	int res;
-	
-	switch (attr->type)
-	{
-	case CKA_CLASS:
-		val = CKO_CERTIFICATE;
-		break;
-		
-	case CKA_CERTIFICATE_TYPE:
-		val = CKC_X_509;
-		break;
-		
-	case CKA_CERTIFICATE_CATEGORY:
-		if ((ret = load_certificate (cert)) != CKR_OK)
-			return ret;
-		val = 0; /* unknown */
-		extension = gkr_pk_cert_get_extension (cert, OID_BASIC_CONSTRAINTS, &n_extension, NULL);
-		if (extension) {
-			res = gkr_pkix_der_read_basic_constraints (extension, n_extension, &is_ca, NULL);
-			g_free (extension);
-			if (res != GKR_PARSE_SUCCESS)
-				return CKR_GENERAL_ERROR;
-			if (is_ca)
-				val = 2; /* authority */
-		}
-		break;
-	
-	case CKA_GNOME_USER_TRUST:
-		val = CKT_GNOME_UNKNOWN;
-		
-		/* Explicity set? */
-		value = gkr_pk_index_get_string (obj, "user-trust");
-		if (value) {
-			if (g_str_equal (value, "trusted"))
-				val = CKT_GNOME_TRUSTED;
-			else if (g_str_equal (value, "untrusted"))
-				val = CKT_GNOME_UNTRUSTED;
-			g_free (value);
-
-		/* With a private key it's trusted by default */				
-		} else if (has_private_key (cert)) {
-			val = CKT_GNOME_TRUSTED;
-				
-		} 
-		break;		
-	
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	gkr_pk_attribute_set_ulong (attr, val);
-	return CKR_OK;
-}
 
 static CK_RV
-gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
+gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkCert *cert = GKR_PK_CERT (obj);
 	const guchar *cdata = NULL;
 	gkrconstunique keyid;
-	gchar *label;
+	CK_ULONG value;
+	gchar *index;
 	guchar *data;
 	gsize n_data;
+	time_t time;
 	CK_RV ret;
 	
 	g_assert (!attr->pValue);
 	
 	switch (attr->type)
 	{
-	case CKA_LABEL:
-		g_object_get (obj, "label", &label, NULL);
-		if (!label)
-			label = gkr_location_to_display (obj->location);
-		gkr_pk_attribute_set_string (attr, label);
-		g_free (label);
+	case CKA_GNOME_PURPOSE_RESTRICTED:
+		gkr_pk_attribute_set_boolean (attr, has_certificate_purposes (cert));
+		return CKR_OK;
+		
+	case CKA_GNOME_PURPOSE_SSH_AUTH:
+		return read_certificate_purpose (cert, OID_USAGE_SSH_AUTH, attr);
+		
+	case CKA_GNOME_PURPOSE_SERVER_AUTH:
+		return read_certificate_purpose (cert, OID_USAGE_SERVER_AUTH, attr);
+		
+	case CKA_GNOME_PURPOSE_CLIENT_AUTH:
+		return read_certificate_purpose (cert, OID_USAGE_CLIENT_AUTH, attr);
+		
+	case CKA_GNOME_PURPOSE_CODE_SIGNING:
+		return read_certificate_purpose (cert, OID_USAGE_CODE_SIGNING, attr);
+		
+	case CKA_GNOME_PURPOSE_EMAIL_PROTECTION:
+		return read_certificate_purpose (cert, OID_USAGE_EMAIL, attr);
+		
+	case CKA_GNOME_PURPOSE_IPSEC_END_SYSTEM:
+		return read_certificate_purpose (cert, OID_USAGE_IPSEC_ENDPOINT, attr);
+		
+	case CKA_GNOME_PURPOSE_IPSEC_TUNNEL:
+		return read_certificate_purpose (cert, OID_USAGE_IPSEC_TUNNEL, attr);
+		
+	case CKA_GNOME_PURPOSE_IPSEC_USER:
+		return read_certificate_purpose (cert, OID_USAGE_IPSEC_USER, attr);
+		
+	case CKA_GNOME_PURPOSE_TIME_STAMPING:
+		return read_certificate_purpose (cert, OID_USAGE_TIME_STAMPING, attr);
+		
+	/* TODO: Until we can figure out a trust system */
+	case CKA_TRUSTED:
+		gkr_pk_attribute_set_boolean (attr, CK_FALSE);
+		return CKR_OK;
+		
+	case CKA_CLASS:
+		gkr_pk_attribute_set_ulong (attr, CKO_CERTIFICATE);
+		return CKR_OK;
+		
+	case CKA_CERTIFICATE_TYPE:
+		gkr_pk_attribute_set_ulong (attr, CKC_X_509);
+		return CKR_OK;
+		
+	case CKA_CERTIFICATE_CATEGORY:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
+		value = 0; /* unknown */
+		data = gkr_pk_cert_get_extension (cert, OID_BASIC_CONSTRAINTS, &n_data, NULL);
+		if (data) {
+			GkrParseResult res;
+			gboolean is_ca;
+
+			res = gkr_pkix_der_read_basic_constraints (data, n_data, &is_ca, NULL);
+			g_free (data);
+			if (res != GKR_PARSE_SUCCESS)
+				return CKR_GENERAL_ERROR;
+			if (is_ca)
+				value = 2; /* authority */
+		}
+		gkr_pk_attribute_set_ulong (attr, value);
+		return CKR_OK;
+	
+	case CKA_GNOME_USER_TRUST:
+		value = CKT_GNOME_UNKNOWN;
+		
+		/* Explicity set? */
+		index = gkr_pk_index_get_string (obj, "user-trust");
+		if (index) {
+			if (g_str_equal (index, "trusted"))
+				value = CKT_GNOME_TRUSTED;
+			else if (g_str_equal (index, "untrusted"))
+				value = CKT_GNOME_UNTRUSTED;
+			g_free (index);
+
+		/* With a private key it's trusted by default */				
+		} else if (has_private_key (cert)) {
+			value = CKT_GNOME_TRUSTED;	
+		} 
+		gkr_pk_attribute_set_ulong (attr, value);
 		return CKR_OK;
 		
 	case CKA_ID:
@@ -606,6 +556,19 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		gkr_pk_attribute_set_data (attr, data, 3);
 		g_free (data);
 		return CKR_OK;
+		
+	case CKA_START_DATE:
+	case CKA_END_DATE:
+		if ((ret = load_certificate (cert)) != CKR_OK)
+			return ret;
+		if (!gkr_pkix_asn1_read_time (cert->data->asn1, 
+		                              attr->type == CKA_START_DATE ? 
+		                                       "tbsCertificate.validity.notBefore" : 
+		                                       "tbsCertificate.validity.notAfter",
+		                              &time))
+			g_return_val_if_reached (CKR_GENERAL_ERROR);
+		gkr_pk_attribute_set_date (attr, time);
+		return CKR_OK;
 	
 	/* These are only used for strange online certificates which we don't support */	
 	case CKA_URL:
@@ -620,38 +583,7 @@ gkr_pk_cert_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		break;
 	};
 
-	return CKR_ATTRIBUTE_TYPE_INVALID;
-}
-
-static CK_RV 
-gkr_pk_cert_get_date_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	GkrPkCert *cert = GKR_PK_CERT (obj);
-	time_t time;
-	CK_RV ret;
-	
-	switch (attr->type) 
-	{
-	case CKA_START_DATE:
-		if ((ret = load_certificate (cert)) != CKR_OK)
-			return ret;
-		if (!gkr_pkix_asn1_read_time (cert->data->asn1, "tbsCertificate.validity.notBefore", &time))
-			g_return_val_if_reached (CKR_GENERAL_ERROR);
-		break;
-	
-	case CKA_END_DATE:
-		if ((ret = load_certificate (cert)) != CKR_OK)
-			return ret;
-		if (!gkr_pkix_asn1_read_time (cert->data->asn1, "tbsCertificate.validity.notAfter", &time))
-			g_return_val_if_reached (CKR_GENERAL_ERROR);
-		break;
-	
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	gkr_pk_attribute_set_date (attr, time);
-	return CKR_OK;
+	return GKR_PK_OBJECT_CLASS (gkr_pk_cert_parent_class)->get_attribute (obj, attr);
 }
 
 static void
@@ -683,10 +615,7 @@ gkr_pk_cert_class_init (GkrPkCertClass *klass)
 	gkr_pk_cert_parent_class = g_type_class_peek_parent (klass);
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
-	parent_class->get_bool_attribute = gkr_pk_cert_get_bool_attribute;
-	parent_class->get_ulong_attribute = gkr_pk_cert_get_ulong_attribute;
-	parent_class->get_data_attribute = gkr_pk_cert_get_data_attribute;
-	parent_class->get_date_attribute = gkr_pk_cert_get_date_attribute;
+	parent_class->get_attribute = gkr_pk_cert_get_attribute;
 	
 	gobject_class->get_property = gkr_pk_cert_get_property;
 	gobject_class->set_property = gkr_pk_cert_set_property;
@@ -720,6 +649,43 @@ gkr_pk_cert_new (GkrPkObjectManager *manager, GQuark location, ASN1_TYPE asn1)
 	                     
 	gkr_unique_free (unique);
 	return cert;
+}
+
+CK_RV
+gkr_pk_cert_create (GkrPkObjectManager* manager, GArray* array, 
+                    GkrPkObject **object)
+{
+	ASN1_TYPE asn;
+	CK_ATTRIBUTE_PTR attr;
+ 	CK_KEY_TYPE type;
+ 	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (manager), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (array, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
+	
+	*object = NULL;
+	
+	if (!gkr_pk_attributes_ulong (array, CKA_CERTIFICATE_TYPE, &type))
+ 		return CKR_TEMPLATE_INCOMPLETE;
+
+	if (type != CKC_X_509)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	attr = gkr_pk_attributes_find (array, CKA_VALUE);
+	if (!attr)
+		return CKR_TEMPLATE_INCOMPLETE;
+		
+	g_return_val_if_fail (attr->pValue, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (attr->ulValueLen, CKR_GENERAL_ERROR);
+	
+	if (gkr_pkix_der_read_certificate (attr->pValue, attr->ulValueLen, &asn) != GKR_PARSE_SUCCESS)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+	
+	/* All the attributes that we used up */	
+	gkr_pk_attributes_consume (array, CKA_CERTIFICATE_TYPE, CKA_VALUE, -1);
+	
+	*object = GKR_PK_OBJECT (gkr_pk_cert_new (manager, 0, asn));
+	return CKR_OK;
 }
 
 gboolean

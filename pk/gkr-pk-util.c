@@ -153,12 +153,9 @@ gkr_pk_attribute_data_type (CK_ATTRIBUTE_TYPE type)
 	case CKA_CERT_SHA1_HASH:
 	case CKA_CERT_MD5_HASH:
 	case CKA_GNOME_PURPOSE_OIDS: 
-		return GKR_PK_DATA_BYTES;
-
-	/* CK_DATE data */
 	case CKA_START_DATE:
 	case CKA_END_DATE:
-		return GKR_PK_DATA_DATE;
+		return GKR_PK_DATA_BYTES;
 
 	/* Arrays are nasty */
 	case CKA_WRAP_TEMPLATE:
@@ -186,6 +183,21 @@ gkr_pk_attribute_dup (const CK_ATTRIBUTE_PTR attr)
 	CK_ATTRIBUTE_PTR nattr = gkr_pk_attribute_new (attr->type);
 	gkr_pk_attribute_copy (nattr, attr);
 	return nattr;
+}
+
+gboolean
+gkr_pk_attribute_equal (const CK_ATTRIBUTE_PTR one, const CK_ATTRIBUTE_PTR two)
+{
+	if (one->type != two->type)
+		return FALSE;
+
+	if (one->ulValueLen != two->ulValueLen)
+		return FALSE;
+	if (one->pValue == two->pValue)
+		return TRUE;
+	if (!one->pValue || !two->pValue)
+		return FALSE;
+	return memcmp (one->pValue, two->pValue, one->ulValueLen) == 0;	
 }
 
 void
@@ -238,13 +250,13 @@ gkr_pk_attribute_set_string (CK_ATTRIBUTE_PTR attr, const gchar *str)
 }
 
 void
-gkr_pk_attribute_set_boolean (CK_ATTRIBUTE_PTR attr, gboolean value)
+gkr_pk_attribute_set_boolean (CK_ATTRIBUTE_PTR attr, CK_BBOOL value)
 {
 	g_assert (attr);
 	
 	gkr_pk_attribute_clear (attr);
 	attr->pValue = g_new (CK_BBOOL, 1);
-	*((CK_BBOOL*)attr->pValue) = value ? CK_TRUE : CK_FALSE;
+	*((CK_BBOOL*)attr->pValue) = value;
 	attr->ulValueLen = sizeof (CK_BBOOL);
 }
 
@@ -273,7 +285,7 @@ gkr_pk_attribute_set_date (CK_ATTRIBUTE_PTR attr, time_t time)
 	memcpy (date->year, buf, 4);
 	 
 	g_assert (sizeof (date->month) == 2);
-	snprintf ((char*)buf, 3, "%02d", tm.tm_mon);
+	snprintf ((char*)buf, 3, "%02d", tm.tm_mon + 1);
 	memcpy (date->month, buf, 2);
 	
 	g_assert (sizeof (date->day) == 2);
@@ -299,7 +311,7 @@ gkr_pk_attribute_set_unique (CK_ATTRIBUTE_PTR attr, gkrconstunique uni)
 }
 
 void
-gkr_pk_attribute_set_ulong (CK_ATTRIBUTE_PTR attr, gulong value)
+gkr_pk_attribute_set_ulong (CK_ATTRIBUTE_PTR attr, CK_ULONG value)
 {
 	g_assert (attr);
 	
@@ -333,6 +345,24 @@ gkr_pk_attribute_set_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi)
 	/* Write in directly to attribute */
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, attr->pValue, len, &len, mpi);	
 	g_return_if_fail (gcry == 0);
+}
+
+gboolean
+gkr_pk_attribute_get_boolean (const CK_ATTRIBUTE_PTR attr, CK_BBOOL *value)
+{
+	if (attr->ulValueLen != sizeof (CK_BBOOL))
+		return FALSE;
+	*value = *((const CK_BBOOL*)attr->pValue);
+	return TRUE;
+}
+
+gboolean
+gkr_pk_attribute_get_ulong (const CK_ATTRIBUTE_PTR attr, CK_ULONG *value)
+{
+	if (attr->ulValueLen != sizeof (CK_ULONG))
+		return FALSE;
+	*value = *((const CK_ULONG*)attr->pValue);
+	return TRUE;
 }
 
 void
@@ -409,6 +439,13 @@ gkr_pk_attributes_mpi (const GArray* attrs, CK_ATTRIBUTE_TYPE type, gcry_mpi_t *
 }
 
 void
+gkr_pk_attributes_append (GArray *attrs, CK_ATTRIBUTE_PTR attr)
+{
+	g_array_append_vals (attrs, attr, 1);
+	memset (attr, 0, sizeof (*attr));
+}
+
+void
 gkr_pk_attributes_free (GArray *attrs)
 {
 	CK_ATTRIBUTE_PTR attr;
@@ -423,6 +460,50 @@ gkr_pk_attributes_free (GArray *attrs)
 	}
 
 	g_array_free (attrs, TRUE);
+}
+
+gboolean
+gkr_pk_attribute_is_consumed (CK_ATTRIBUTE_PTR attr)
+{
+	return attr->type == (CK_ULONG)-1;
+}
+
+void
+gkr_pk_attribute_consume (CK_ATTRIBUTE_PTR attr)
+{
+	attr->type = (CK_ULONG)-1;
+} 
+
+void
+gkr_pk_attributes_consume (GArray *attrs, ...)
+{
+	CK_ATTRIBUTE_TYPE type;
+	CK_ATTRIBUTE_PTR attr;
+	GArray *types;
+	guint i, j;
+	va_list va;
+
+	/* Convert the var args into an array */
+	types = g_array_new (FALSE, TRUE, sizeof (CK_ATTRIBUTE_TYPE));
+	va_start (va, attrs);
+	while ((type = va_arg (va, CK_ATTRIBUTE_TYPE)) != (CK_ULONG)-1)
+		 g_array_append_val (types, type);
+	va_end (va);
+	
+	/* Consume each attribute whose type was in the var args */
+	for (i = 0; i < attrs->len; ++i) {
+		attr = &(g_array_index (attrs, CK_ATTRIBUTE, i));
+		if (gkr_pk_attribute_is_consumed (attr))
+			continue;
+		for (j = 0; j < types->len; ++j) {
+			if (attr->type == g_array_index (types, CK_ATTRIBUTE_TYPE, j)) {
+				gkr_pk_attribute_consume (attr);
+				break;
+			}
+		}
+	}
+	
+	g_array_free (types, TRUE);
 }
 
 gboolean

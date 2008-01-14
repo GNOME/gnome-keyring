@@ -714,3 +714,19 @@ done:
 	g_object_unref (obj);
 	return ret;
 }
+
+gboolean
+gkr_pk_object_storage_add (GkrPkObjectStorage *storage, GkrPkObject *obj, 
+                           GError **err)
+{
+	/* TODO: Need to implement */
+	g_return_val_if_reached (FALSE);
+}
+
+gboolean
+gkr_pk_object_storage_remove (GkrPkObjectStorage *storage, GkrPkObject *obj, 
+                              GError **err)
+{
+	/* TODO: Need to implement */
+	g_return_val_if_reached (FALSE);
+}

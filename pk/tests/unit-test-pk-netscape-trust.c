@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-pk-cert.c: Test a certificate
+/* unit-test-pk-netscape-trust.c: Test a netscape trust object
 
    Copyright (C) 2007 Stefan Walter
 
@@ -109,7 +109,7 @@ void unit_test_create_trust (CuTest* cu)
 
 void unit_test_trust_static (CuTest *cu)
 {
-	CHECK_BOOL_ATTRIBUTE (cu, trust_1, CKA_TOKEN, CK_TRUE);
+	CHECK_BOOL_ATTRIBUTE (cu, trust_1, CKA_TOKEN, CK_FALSE);
 	CHECK_BOOL_ATTRIBUTE (cu, trust_1, CKA_TRUST_STEP_UP_APPROVED, CK_FALSE);
 	CHECK_ULONG_ATTRIBUTE (cu, trust_1, CKA_CLASS, CKO_NETSCAPE_TRUST);
 }

@@ -157,6 +157,110 @@ done:
 	return key->priv->pubkey;
 }
 
+static CK_RV
+create_rsa_private (GArray *attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t n = NULL;
+	gcry_mpi_t e = NULL;
+	gcry_mpi_t d = NULL;
+	gcry_mpi_t p = NULL;
+	gcry_mpi_t q = NULL;
+	gcry_mpi_t u = NULL;
+	CK_RV ret;
+	
+	if (!gkr_pk_attributes_mpi (attrs, CKA_MODULUS, &n) ||
+	    !gkr_pk_attributes_mpi (attrs, CKA_PUBLIC_EXPONENT, &e) || 
+	    !gkr_pk_attributes_mpi (attrs, CKA_PRIVATE_EXPONENT, &d) || 
+	    !gkr_pk_attributes_mpi (attrs, CKA_PRIME_1, &p) || 
+	    !gkr_pk_attributes_mpi (attrs, CKA_PRIME_2, &q)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}		
+	
+	/* Fix up the incoming key so gcrypt likes it */    	
+	if (gcry_mpi_cmp (p, q) > 0)
+		gcry_mpi_swap (p, q);
+
+	/* Compute U.  */
+	u = gcry_mpi_snew (gcry_mpi_get_nbits (n));
+	gcry_mpi_invm (u, p, q);
+	
+	gcry = gcry_sexp_build (skey, NULL, 
+	                        "(private-key (rsa (n %m) (e %m) (d %m) (p %m) (q %m) (u %m)))", 
+	                        n, e, d, p, q, u);
+
+	/* TODO: We should be mapping better return codes */
+	if (gcry != 0) {
+		g_message ("couldn't create RSA key from passed attributes");
+		ret = CKR_GENERAL_ERROR;
+		goto done;
+	}
+	
+	gkr_pk_attributes_consume (attrs, CKA_MODULUS, CKA_PUBLIC_EXPONENT, 
+	                           CKA_PRIVATE_EXPONENT, CKA_PRIME_1, CKA_PRIME_2, 
+	                           CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT, -1);
+	ret = CKR_OK;
+
+done:
+	gcry_mpi_release (n);
+	gcry_mpi_release (e);
+	gcry_mpi_release (d);
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (u);
+	return ret;	
+}
+
+static CK_RV
+create_dsa_private (GArray *attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t p = NULL;
+	gcry_mpi_t q = NULL;
+	gcry_mpi_t g = NULL;
+	gcry_mpi_t y = NULL;
+	gcry_mpi_t value = NULL;
+	CK_RV ret;
+	
+	if (!gkr_pk_attributes_mpi (attrs, CKA_PRIME, &p) ||
+	    !gkr_pk_attributes_mpi (attrs, CKA_SUBPRIME, &q) || 
+	    !gkr_pk_attributes_mpi (attrs, CKA_BASE, &g) ||
+	    !gkr_pk_attributes_mpi (attrs, CKA_VALUE, &value)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}
+	
+	/* Calculate the public part from the private */
+	y = gcry_mpi_snew (gcry_mpi_get_nbits (value));
+	g_return_val_if_fail (y, CKR_GENERAL_ERROR);
+  	gcry_mpi_powm (y, g, value, p);
+
+	gcry = gcry_sexp_build (skey, NULL, 
+	                        "(private-key (dsa (p %m) (q %m) (g %m) (y %m) (x %m)))",
+	                        p, q, g, y, value);
+
+	/* TODO: We should be mapping better return codes */
+	if (gcry != 0) {
+		g_message ("couldn't create DSA key from passed attributes");
+		ret = CKR_GENERAL_ERROR;
+		goto done;
+	}
+
+	gkr_pk_attributes_consume (attrs, CKA_PRIME, CKA_SUBPRIME, 
+	                           CKA_BASE, CKA_VALUE, -1);
+	ret = CKR_OK;
+
+done:
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (g);
+	gcry_mpi_release (y);
+	gcry_mpi_release (value);
+	return ret;
+}
+
+
 static void
 initialize_from_key (GkrPkPrivkey *key)
 {
@@ -282,11 +386,14 @@ gkr_pk_privkey_set_property (GObject *obj, guint prop_id, const GValue *value,
 	}
 }
 
-static CK_RV 
-gkr_pk_privkey_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
+static CK_RV
+gkr_pk_privkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
+	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
+	gkrconstunique keyid;
 	GQuark *quarks;
-	gboolean val;
+	guchar *value;
+	gsize len;
 	
 	switch (attr->type)
 	{
@@ -295,104 +402,48 @@ gkr_pk_privkey_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_SENSITIVE:
 	case CKA_SIGN:
 	case CKA_SIGN_RECOVER:
-	case CKA_TOKEN:
 	case CKA_WRAP_WITH_TRUSTED:
-		val = TRUE;
-		break;
+		gkr_pk_attribute_set_boolean (attr, CK_TRUE);
+		return CKR_OK;
 	
 	case CKA_DERIVE:
 	case CKA_EXTRACTABLE:
-	case CKA_MODIFIABLE:
 	case CKA_UNWRAP:
-		val = FALSE; 
-		break;
+		gkr_pk_attribute_set_boolean (attr, CK_FALSE);
+		return CKR_OK;
 
 	case CKA_GNOME_PURPOSE_SSH_AUTH:
 		quarks = gkr_pk_index_get_quarks (obj, "purposes");
-		val = quarks && gkr_pk_index_quarks_has (quarks, SSH_AUTHENTICATION);
+		gkr_pk_attribute_set_boolean (attr, quarks && 
+				gkr_pk_index_quarks_has (quarks, SSH_AUTHENTICATION));
 		gkr_pk_index_quarks_free (quarks);
-		break;
+		return CKR_OK;
 
 	/* TODO: Perhaps we can detect this in some way */
 	case CKA_ALWAYS_SENSITIVE:
 	case CKA_LOCAL:
 	case CKA_NEVER_EXTRACTABLE:
-		val = FALSE;	
-		break;
+		gkr_pk_attribute_set_boolean (attr, CK_FALSE);
+		return CKR_OK;
 		
 	/* TODO: We may be able to detect this for certain keys */
 	case CKA_ALWAYS_AUTHENTICATE:
-		val = FALSE;
-		break;
+		gkr_pk_attribute_set_boolean (attr, CK_FALSE);
+		return CKR_OK;
 		
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	gkr_pk_attribute_set_boolean (attr, val);
-	return CKR_OK;
-}
-
-static CK_RV 
-gkr_pk_privkey_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
-	gulong val;
-	
-	switch (attr->type)
-	{
 	case CKA_CLASS:
-		val = CKO_PRIVATE_KEY;
-		break;
+		gkr_pk_attribute_set_ulong (attr, CKO_PRIVATE_KEY);
+		return CKR_OK;
 		
 	case CKA_KEY_TYPE:
-		if (attribute_from_public (key, attr) == CKR_OK)
-			return CKR_OK;
-		val = CK_UNAVAILABLE_INFORMATION;
-		break;
+		if (attribute_from_public (key, attr) != CKR_OK)
+			gkr_pk_attribute_set_ulong (attr, CK_UNAVAILABLE_INFORMATION);
+		return CKR_OK;
 		
 	/* TODO: Once we can generate keys, this should change */
 	case CKA_KEY_GEN_MECHANISM:
-		val = CK_UNAVAILABLE_INFORMATION;
-		break;
-		
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	gkr_pk_attribute_set_ulong (attr, val);
-	return CKR_OK;
-}
-
-static CK_RV
-gkr_pk_privkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
-	gkrconstunique keyid;
-	gchar *label;
-	guchar *value;
-	gsize len;
-	CK_RV ret;
-	
-	switch (attr->type)
-	{
-	case CKA_LABEL:
-		g_object_get (obj, "label", &label, NULL);
-		if (label) {
-			gkr_pk_attribute_set_string (attr, label);
-			g_free (label);
-			return CKR_OK;
-		}
-		
-		ret = attribute_from_certificate (key, attr);
-		if (ret == CKR_ATTRIBUTE_TYPE_INVALID) {
-			label = gkr_location_to_display (obj->location);
-			gkr_pk_attribute_set_string (attr, label);
-			g_free (label);
-			ret = CKR_OK;
-		}
-		
-		return ret;
+		gkr_pk_attribute_set_ulong (attr, CK_UNAVAILABLE_INFORMATION);
+		return CKR_OK;
 		
 	case CKA_ID:
 		keyid = gkr_pk_privkey_get_keyid (key);
@@ -440,26 +491,16 @@ gkr_pk_privkey_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_UNWRAP_TEMPLATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
-	default:
-		break;
-	};
-
-	return CKR_ATTRIBUTE_TYPE_INVALID;
-}
-
-static CK_RV 
-gkr_pk_privkey_get_date_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	switch (attr->type)
-	{
 	/* We don't support these */
 	case CKA_START_DATE:
 	case CKA_END_DATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
-	
+
 	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
+		break;
 	};
+
+	return GKR_PK_OBJECT_CLASS (gkr_pk_privkey_parent_class)->get_attribute (obj, attr);
 }
 
 static void
@@ -500,10 +541,7 @@ gkr_pk_privkey_class_init (GkrPkPrivkeyClass *klass)
 	gkr_pk_privkey_parent_class = g_type_class_peek_parent (klass);
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
-	parent_class->get_bool_attribute = gkr_pk_privkey_get_bool_attribute;
-	parent_class->get_ulong_attribute = gkr_pk_privkey_get_ulong_attribute;
-	parent_class->get_data_attribute = gkr_pk_privkey_get_data_attribute;
-	parent_class->get_date_attribute = gkr_pk_privkey_get_date_attribute;
+	parent_class->get_attribute = gkr_pk_privkey_get_attribute;
 	
 	gobject_class = (GObjectClass*)klass;
 	gobject_class->get_property = gkr_pk_privkey_get_property;
@@ -539,6 +577,44 @@ gkr_pk_privkey_new (GkrPkObjectManager *mgr, GQuark location, gcry_sexp_t s_key)
 	gkr_unique_free (unique);
 	
 	return key;
+}
+
+CK_RV
+gkr_pk_privkey_create (GkrPkObjectManager* manager, GArray* array, 
+                       GkrPkObject **object)
+{
+ 	CK_KEY_TYPE type;
+ 	gcry_sexp_t sexp;
+ 	CK_RV ret;
+ 	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (manager), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (array, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
+	
+	*object = NULL;
+	
+	if (!gkr_pk_attributes_ulong (array, CKA_KEY_TYPE, &type))
+ 		return CKR_TEMPLATE_INCOMPLETE;
+ 	gkr_pk_attributes_consume (array, CKA_KEY_TYPE, -1);
+
+ 	switch (type) {
+	case CKK_RSA:
+		ret = create_rsa_private (array, &sexp);
+		break;
+	case CKK_DSA:
+		ret = create_dsa_private (array, &sexp);
+		break;
+	default:
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+ 	};
+
+	if (ret != CKR_OK)
+		return ret;
+	
+	g_return_val_if_fail (sexp, CKR_GENERAL_ERROR);	
+	*object = gkr_pk_privkey_new (manager, 0, sexp);
+	
+	return CKR_OK;
 }
 
 gkrconstunique

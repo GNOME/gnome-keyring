@@ -82,7 +82,7 @@ certificate_attribute (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_PTR result)
 }
 
 static CK_RV
-has_key_usage (GkrPkNetscapeTrust *trust, guint check, gulong *val)
+has_key_usage (GkrPkNetscapeTrust *trust, guint check, CK_ULONG *val)
 {
 	GkrParseResult res;
 	guchar *extension;
@@ -115,7 +115,17 @@ has_key_usage (GkrPkNetscapeTrust *trust, guint check, gulong *val)
 }
 
 static CK_RV
-has_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, gulong *val)
+read_key_usage (GkrPkNetscapeTrust *trust, guint check, CK_ATTRIBUTE_PTR attr)
+{
+	CK_ULONG value;
+	CK_RV ret = has_key_usage (trust, check, &value);
+	if (ret == CKR_OK)
+		gkr_pk_attribute_set_ulong (attr, value);
+	return ret;
+}
+
+static CK_RV
+has_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, CK_ULONG *val)
 {
 	CK_RV ret;
 	CK_BBOOL bval;
@@ -164,6 +174,17 @@ has_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, gulong *v
 	/* 2 is a certificate authority in PKCS#11 */
 	*val = (nval == 2) ? CKT_NETSCAPE_TRUSTED_DELEGATOR : CKT_NETSCAPE_TRUSTED;
 	return CKR_OK;
+}
+
+static CK_RV
+read_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, 
+                     CK_ATTRIBUTE_PTR attr)
+{
+	CK_ULONG value;
+	CK_RV ret = has_enhanced_usage (trust, type, &value);
+	if (ret == CKR_OK)
+		gkr_pk_attribute_set_ulong (attr, value);
+	return ret;
 }
 
 static CK_RV
@@ -229,113 +250,72 @@ gkr_pk_netscape_trust_set_property (GObject *obj, guint prop_id, const GValue *v
 		break;
 	}
 }
-            
-static CK_RV 
-gkr_pk_netscape_trust_get_bool_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	gboolean val;
-	
-	switch (attr->type)
-	{
-	case CKA_TOKEN:
-	case CKA_MODIFIABLE:
-		val = TRUE;
-		break;
-		
-	case CKA_PRIVATE:
-	case CKA_TRUST_STEP_UP_APPROVED:
-		val = FALSE;
-		break;
-	
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	gkr_pk_attribute_set_boolean (attr, val);
-	return CKR_OK;
-}
-
-static CK_RV 
-gkr_pk_netscape_trust_get_ulong_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
-{
-	GkrPkNetscapeTrust *trust = GKR_PK_NETSCAPE_TRUST (obj);
-	CK_RV ret = CKR_OK;
-	gulong val;
-	
-	switch (attr->type)
-	{
-	case CKA_CLASS:
-		val = CKO_NETSCAPE_TRUST;
-		break;
-		
-	/* Key restrictions */
-	case CKA_TRUST_DIGITAL_SIGNATURE:
-		ret = has_key_usage (trust, PKIX_KEY_USAGE_DIGITAL_SIGNATURE, &val);
-		break;
-	case CKA_TRUST_NON_REPUDIATION:
-		ret = has_key_usage (trust, PKIX_KEY_USAGE_NON_REPUDIATION, &val);
-		break;
-	case CKA_TRUST_KEY_ENCIPHERMENT:
-		ret = has_key_usage (trust, PKIX_KEY_USAGE_KEY_ENCIPHERMENT, &val);
-		break;
-	case CKA_TRUST_DATA_ENCIPHERMENT:
-		ret = has_key_usage (trust, PKIX_KEY_USAGE_DATA_ENCIPHERMENT, &val);
-		break;
-	case CKA_TRUST_KEY_AGREEMENT:
-		ret = has_key_usage (trust, PKIX_KEY_USAGE_KEY_AGREEMENT, &val);
-		break;
-	case CKA_TRUST_KEY_CERT_SIGN:
-		ret = has_key_usage (trust, PKIX_KEY_USAGE_KEY_CERT_SIGN, &val);
-		break;
-	case CKA_TRUST_CRL_SIGN:
-		ret = has_key_usage (trust, PKIX_KEY_USAGE_CRL_SIGN, &val);
-		break;
-
-	/* Various trust flags */
-	case CKA_TRUST_SERVER_AUTH:
-		ret = has_enhanced_usage (trust, CKA_GNOME_PURPOSE_SERVER_AUTH, &val);
-		break;
-	case CKA_TRUST_CLIENT_AUTH:
-		ret = has_enhanced_usage (trust, CKA_GNOME_PURPOSE_CLIENT_AUTH, &val);
-		break;
-	case CKA_TRUST_CODE_SIGNING:
-		ret = has_enhanced_usage (trust, CKA_GNOME_PURPOSE_CODE_SIGNING, &val);
-		break;
-	case CKA_TRUST_EMAIL_PROTECTION:
-		ret = has_enhanced_usage (trust, CKA_GNOME_PURPOSE_EMAIL_PROTECTION, &val);
-		break;
-	case CKA_TRUST_IPSEC_END_SYSTEM:
-		ret = has_enhanced_usage (trust, CKA_GNOME_PURPOSE_IPSEC_END_SYSTEM, &val);
-		break;
-	case CKA_TRUST_IPSEC_TUNNEL:
-		ret = has_enhanced_usage (trust, CKA_GNOME_PURPOSE_IPSEC_TUNNEL, &val);
-		break;
-	case CKA_TRUST_IPSEC_USER:
-		ret = has_enhanced_usage (trust, CKA_GNOME_PURPOSE_IPSEC_USER, &val);
-		break;
-	case CKA_TRUST_TIME_STAMPING:
-		ret = has_enhanced_usage (trust, CKA_GNOME_PURPOSE_TIME_STAMPING, &val);
-		break;
-
-	default:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-	};
-	
-	if (ret == CKR_OK)
-		gkr_pk_attribute_set_ulong (attr, val);
-	return ret;
-}
 
 static CK_RV
-gkr_pk_netscape_trust_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
+gkr_pk_netscape_trust_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkNetscapeTrust *trust = GKR_PK_NETSCAPE_TRUST (obj);
 	
 	g_assert (!attr->pValue);
 	switch (attr->type)
 	{
+	case CKA_PRIVATE:
+	case CKA_TRUST_STEP_UP_APPROVED:
+		gkr_pk_attribute_set_boolean (attr, CK_FALSE);
+		return CKR_OK;
+
+	case CKA_CLASS:
+		gkr_pk_attribute_set_ulong (attr, CKO_NETSCAPE_TRUST);
+		return CKR_OK;
+		
+	/* Key restrictions */
+	case CKA_TRUST_DIGITAL_SIGNATURE:
+		return read_key_usage (trust, PKIX_KEY_USAGE_DIGITAL_SIGNATURE, attr);
+
+	case CKA_TRUST_NON_REPUDIATION:
+		return read_key_usage (trust, PKIX_KEY_USAGE_NON_REPUDIATION, attr);
+
+	case CKA_TRUST_KEY_ENCIPHERMENT:
+		return read_key_usage (trust, PKIX_KEY_USAGE_KEY_ENCIPHERMENT, attr);
+
+	case CKA_TRUST_DATA_ENCIPHERMENT:
+		return read_key_usage (trust, PKIX_KEY_USAGE_DATA_ENCIPHERMENT, attr);
+
+	case CKA_TRUST_KEY_AGREEMENT:
+		return read_key_usage (trust, PKIX_KEY_USAGE_KEY_AGREEMENT, attr);
+
+	case CKA_TRUST_KEY_CERT_SIGN:
+		return read_key_usage (trust, PKIX_KEY_USAGE_KEY_CERT_SIGN, attr);
+
+	case CKA_TRUST_CRL_SIGN:
+		return read_key_usage (trust, PKIX_KEY_USAGE_CRL_SIGN, attr);
+
+	/* Various trust flags */
+	case CKA_TRUST_SERVER_AUTH:
+		return read_enhanced_usage (trust, CKA_GNOME_PURPOSE_SERVER_AUTH, attr);
+
+	case CKA_TRUST_CLIENT_AUTH:
+		return read_enhanced_usage (trust, CKA_GNOME_PURPOSE_CLIENT_AUTH, attr);
+
+	case CKA_TRUST_CODE_SIGNING:
+		return read_enhanced_usage (trust, CKA_GNOME_PURPOSE_CODE_SIGNING, attr);
+
+	case CKA_TRUST_EMAIL_PROTECTION:
+		return read_enhanced_usage (trust, CKA_GNOME_PURPOSE_EMAIL_PROTECTION, attr);
+
+	case CKA_TRUST_IPSEC_END_SYSTEM:
+		return read_enhanced_usage (trust, CKA_GNOME_PURPOSE_IPSEC_END_SYSTEM, attr);
+
+	case CKA_TRUST_IPSEC_TUNNEL:
+		return read_enhanced_usage (trust, CKA_GNOME_PURPOSE_IPSEC_TUNNEL, attr);
+
+	case CKA_TRUST_IPSEC_USER:
+		return read_enhanced_usage (trust, CKA_GNOME_PURPOSE_IPSEC_USER, attr);
+
+	case CKA_TRUST_TIME_STAMPING:
+		return read_enhanced_usage (trust, CKA_GNOME_PURPOSE_TIME_STAMPING, attr);
+
 	case CKA_ID:
-	case CKA_LABEL:
 	case CKA_SUBJECT:
 	case CKA_SERIAL_NUMBER:
 	case CKA_ISSUER:
@@ -350,7 +330,7 @@ gkr_pk_netscape_trust_get_data_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR att
 		break;
 	};
 
-	return CKR_ATTRIBUTE_TYPE_INVALID;
+	return GKR_PK_OBJECT_CLASS (gkr_pk_netscape_trust_parent_class)->get_attribute (obj, attr);
 }
 
 static void
@@ -379,9 +359,7 @@ gkr_pk_netscape_trust_class_init (GkrPkNetscapeTrustClass *klass)
 	gkr_pk_netscape_trust_parent_class = g_type_class_peek_parent (klass);
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
-	parent_class->get_bool_attribute = gkr_pk_netscape_trust_get_bool_attribute;
-	parent_class->get_ulong_attribute = gkr_pk_netscape_trust_get_ulong_attribute;
-	parent_class->get_data_attribute = gkr_pk_netscape_trust_get_data_attribute;
+	parent_class->get_attribute = gkr_pk_netscape_trust_get_attribute;
 	
 	gobject_class->get_property = gkr_pk_netscape_trust_get_property;
 	gobject_class->set_property = gkr_pk_netscape_trust_set_property;

@@ -55,8 +55,12 @@ struct _GkrPkPrivkeyClass {
 
 GType               gkr_pk_privkey_get_type           (void) G_GNUC_CONST;
 
-GkrPkObject*        gkr_pk_privkey_new                (GkrPkObjectManager *mgr, GQuark location, gcry_sexp_t skey);
+GkrPkObject*        gkr_pk_privkey_new                (GkrPkObjectManager *mgr, 
+                                                       GQuark location, gcry_sexp_t skey);
 
+CK_RV               gkr_pk_privkey_create             (GkrPkObjectManager* manager, 
+                                                       GArray* array, GkrPkObject **object);
+                                                       
 gkrconstunique      gkr_pk_privkey_get_keyid          (GkrPkPrivkey *pkey);
 
 gkrunique           gkr_pk_privkey_make_keyid         (gcry_sexp_t skey);
