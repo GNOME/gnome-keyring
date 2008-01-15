@@ -1,5 +1,10 @@
 2008-01-14  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-async.c: Fix race condition that is causing 
+	a deadlock in bug #502603.
+
+2008-01-14  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Bump version number.
 
 === gnome-keyring 2.21.5 ===

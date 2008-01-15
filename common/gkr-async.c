@@ -34,6 +34,10 @@
 
 #define DEBUG_LOCKS 0
 
+/* 
+ * See comments on async_poll_func() on the order of the various
+ * gets and sets of waiting_on_* flags.
+ */
 #if DEBUG_LOCKS
 #define DO_LOCK(mtx) G_STMT_START { \
 		g_printerr ("%s LOCK %s\n", __func__, G_STRINGIFY(mtx));  \
@@ -93,8 +97,18 @@ async_poll_func (GPollFD *ufds, guint nfsd, gint timeout)
 	gint ret;
 	
 	g_assert (orig_poll_func);
+
+	/* 
+	 * These two atomic variables are interlocked in the 
+	 * opposite order from those in DO_LOCK which prevents
+	 * race conditions in the if statements.
+	 */
 	g_atomic_int_set (&waiting_on_poll, 1);
+	if (g_atomic_int_get (&waiting_on_lock))
+		timeout = 0;
+
 	ret = (orig_poll_func) (ufds, nfsd, timeout);
+
 	g_atomic_int_set (&waiting_on_poll, 0);
 	
  	if (done_queue && !g_queue_is_empty (done_queue))
@@ -314,7 +328,6 @@ cleanup_done_thread (gpointer message, gpointer data)
 		running_workers = NULL;
 		
 		g_assert (main_loop);
-		gkr_wakeup_register (g_main_loop_get_context (main_loop));
 		return FALSE;
 	}
 	
@@ -346,7 +359,6 @@ gkr_async_worker_start (GThreadFunc func, GkrAsyncWorkerCallback callback,
 	
 	if (!done_queue) {
 		g_assert (main_loop);
-		gkr_wakeup_register (g_main_loop_get_context (main_loop));
 		
 		done_queue = g_queue_new ();
 		g_assert (!running_workers);
