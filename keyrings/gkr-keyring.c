@@ -547,5 +547,5 @@ gkr_keyring_is_insecure (GkrKeyring *keyring)
 	if (!keyring->password || !keyring->password[0])
 		return TRUE;
 		
-	return TRUE;
+	return FALSE;
 }

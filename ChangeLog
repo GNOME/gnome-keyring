@@ -1,3 +1,9 @@
+2008-01-22  Stef Walter  <stef@memberwebs.com>
+
+	* keyring/gkr-keyring-login.c: Fix problem where most keyrings
+	were being treated as insecure from the point of view of 
+	storing passwords for keys or certificates.
+	
 2008-01-14  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-async.c: Fix race condition that is causing 
