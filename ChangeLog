@@ -1,5 +1,9 @@
 2008-01-22  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in: Remove 'startup components' message.
+	
+2008-01-22  Stef Walter  <stef@memberwebs.com>
+
 	* keyring/gkr-keyring-login.c: Fix problem where most keyrings
 	were being treated as insecure from the point of view of 
 	storing passwords for keys or certificates.

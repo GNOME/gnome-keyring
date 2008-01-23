@@ -458,7 +458,6 @@ echo "  DBus:          $dbus_status"
 echo "  HAL:           $hal_status"
 echo
 echo "CONFIGURATION"
-echo "  Startup Components:   $components_status"
 echo "  Root Certificates:    $root_status"
 echo
 echo "BUILD"
