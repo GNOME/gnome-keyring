@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.21.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-03 22:25+0100\n"
-"PO-Revision-Date: 2008-01-03 22:26+0100\n"
+"POT-Creation-Date: 2008-01-27 15:19+0100\n"
+"PO-Revision-Date: 2008-01-21 21:33+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -41,8 +41,8 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
 msgstr ""
-"Programmet «%s» (%s) ønsker tilgang til passordet for «<object prop='name'/"
-">» på forvalgt nøkkelring."
+"Programmet «%s» (%s) ønsker tilgang til passordet for «<object prop='name'/>» "
+"på forvalgt nøkkelring."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:225
@@ -51,8 +51,8 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
 msgstr ""
-"Programmet «%s» (%s) ønsker tilgang til passordet for «<object prop='name'/"
-">» i %s."
+"Programmet «%s» (%s) ønsker tilgang til passordet for «<object prop='name'/>» "
+"i %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:231 ../daemon/gkr-daemon-ops.c:241
@@ -71,8 +71,7 @@ msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
 msgstr ""
-"Programmet «%s» ønsker tilgang til passordet for «<object prop='name'/>» på %"
-"s."
+"Programmet «%s» ønsker tilgang til passordet for «<object prop='name'/>» på %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:251
@@ -80,8 +79,8 @@ msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
 msgstr ""
-"Et ukjent program ønsker tilgang til passordet for «<object prop='name'/>» "
-"på forvalgt nøkkelring."
+"Et ukjent program ønsker tilgang til passordet for «<object prop='name'/>» på "
+"forvalgt nøkkelring."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:254
@@ -119,15 +118,13 @@ msgstr ""
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Programmet «%s» (%s) ønsker tilgang til nøkkelring «%s», men den er låst"
+msgstr "Programmet «%s» (%s) ønsker tilgang til nøkkelring «%s», men den er låst"
 
 #: ../daemon/gkr-daemon-ops.c:377 ../daemon/gkr-daemon-ops.c:387
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"Programmet «%s» ønsker tilgang til forvalgt nøkkelring, men den er låst"
+msgstr "Programmet «%s» ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
 #: ../daemon/gkr-daemon-ops.c:381 ../daemon/gkr-daemon-ops.c:392
 #, c-format
@@ -171,8 +168,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"Programmet «%s» (%s) ønsker å opprette en ny nøkkelring kalt «%s». Du må "
-"velge passordet du ønsker å bruke for denne."
+"Programmet «%s» (%s) ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
+"passordet du ønsker å bruke for denne."
 
 #: ../daemon/gkr-daemon-ops.c:467
 #, c-format
@@ -180,8 +177,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Programmet «%s» (%s) ønsker å opprette en ny forvalgt nøkkelring. Du må "
-"velge passordet du ønsker å bruke for denne."
+"Programmet «%s» (%s) ønsker å opprette en ny forvalgt nøkkelring. Du må velge "
+"passordet du ønsker å bruke for denne."
 
 #: ../daemon/gkr-daemon-ops.c:473 ../daemon/gkr-daemon-ops.c:483
 #, c-format
@@ -304,9 +301,9 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Programmet «%s» (%s) ønsker å lagre et passord, men det finnes ingen "
-"forvalgt nøkkelring. For å opprette en må du lagre passordet du ønsker å "
-"bruke for den."
+"Programmet «%s» (%s) ønsker å lagre et passord, men det finnes ingen forvalgt "
+"nøkkelring. For å opprette en må du lagre passordet du ønsker å bruke for "
+"den."
 
 #: ../daemon/gkr-daemon-ops.c:675 ../daemon/gkr-daemon-ops.c:679
 #, c-format
@@ -338,6 +335,38 @@ msgstr "Opprett forvalgt nøkkelring"
 #: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "Oppgi passord for forvalgt nøkkelring"
+
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr ""
+"Dette alternativet aktiverer PKCS#11-komponenten for gnome-keyring-"
+"tjenesten. Dette trer kun i kraft når gnome-keyring-daemon starter. Altså "
+"når brukeren logger inn. Denne innstillingen kan overstyres med spesifikke "
+"kommandolinjeargumenter gis til tjenesten."
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr ""
+"Dette alternativet aktiverer SSH-komponenten for gnome-keyring-tjenesten. "
+"Dette trer kun i kraft når gnome-keyring-daemon starter. Altså når brukeren "
+"logger inn. Denne innstillingen kan overstyres med spesifikke "
+"kommandolinjeargumenter gis til tjenesten."
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Om PKCS#11-komponenten for gnome-keyring er aktivert."
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Om SSH-agenten for gnome-keyring er aktivert."
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
