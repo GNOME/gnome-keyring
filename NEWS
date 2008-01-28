@@ -1,3 +1,10 @@
+Changes in version 2.21.90 are:
+* Fix problem where most keyrings were being treated as insecure 
+from the point of view of storing passwords for keys or certificates.
+* Fix race condition that is causing deadlocks and freezes.
+
+2008-01-14  Stef Walter  <stef@memberwebs.com>
+
 Changes in version 2.21.5 are:
 * Proper support for creating and destroying objects through PKCS#11.
 * Support for setting PKCS#11 attributes.
@@ -16,7 +23,7 @@ Changes in version 2.21.5 are:
 Changes in version 2.21.4 are:
 * x86_64 memory alignment fixes
 * Other build and install fixes
-* Solaris build fixes
+* Solaris build fixes [Halton Huo]
 * Automatically activate keyring daemon via DBus if it is not already 
   running. [Tom Parker]
 
