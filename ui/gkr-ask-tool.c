@@ -77,7 +77,7 @@ confirm_blank_password (GtkWindow *parent)
 	                                 GTK_BUTTONS_NONE, NULL);
 	
 	markup = create_markup (_("Store passwords unencrypted?"), 
-	                        _("By choosing to use a blank password, your stored passwords not be safely encrypted. "
+	                        _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
 	                          "They will be accessible by anyone with access to your files."));
 	gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), markup);
 	g_free (markup);
