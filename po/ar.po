@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-07 17:39+0000\n"
+"POT-Creation-Date: 2008-01-31 08:07+0000\n"
 "PO-Revision-Date: 2008-01-12 21:05+0100\n"
 "Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -20,7 +20,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : 3\n"
+"Plural-Forms: Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && "
+"n<=10 ? 2 : 3\n"
 
 #: ../common/gkr-location.c:306
 #, c-format
@@ -31,13 +32,11 @@ msgstr "قرص قابل للإزالة: %s"
 msgid "Removable Disk"
 msgstr "قرص قابل للإزالة"
 
-#: ../common/gkr-location.c:446
-#: ../common/gkr-location.c:458
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "الموطن"
 
-#: ../common/gkr-location.c:980
-#: ../common/gkr-location.c:1003
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
 #: ../pkix/gkr-pkix-parser.c:540
 msgid "The disk or drive this file is located on is not present"
 msgstr ""
@@ -45,39 +44,58 @@ msgstr ""
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:221
 #, c-format
-msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."
-msgstr "يريد التطبيق '%s' (%s) الوصول إلى كلمة السر لـ '<object prop='name'/>' في حلقة المفاتيح الافتراضية."
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr ""
+"يريد التطبيق '%s' (%s) الوصول إلى كلمة السر لـ '<object prop='name'/>' في "
+"حلقة المفاتيح الافتراضية."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:225
 #, c-format
-msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."
-msgstr "يريد التطبيق '%s' (%s) الوصول إلى كلمة السر لـ '<object prop='name'/>' في %s."
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr ""
+"يريد التطبيق '%s' (%s) الوصول إلى كلمة السر لـ '<object prop='name'/>' في %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231
-#: ../daemon/gkr-daemon-ops.c:241
+#: ../daemon/gkr-daemon-ops.c:231 ../daemon/gkr-daemon-ops.c:241
 #, c-format
-msgid "The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."
-msgstr "يريد التطبيق '%s' الوصول إلى كلمة السر لـ '<object prop='name'/>' في حلقة المفاتيح الإفتراضية."
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"يريد التطبيق '%s' الوصول إلى كلمة السر لـ '<object prop='name'/>' في حلقة "
+"المفاتيح الإفتراضية."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:235
-#: ../daemon/gkr-daemon-ops.c:245
+#: ../daemon/gkr-daemon-ops.c:235 ../daemon/gkr-daemon-ops.c:245
 #, c-format
-msgid "The application '%s' wants to access the password for '<object prop='name'/>' in %s."
-msgstr "يريد التطبيق (%s) الوصول إلى كلمة السر لـ '<object prop='name'/>' في %s."
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"يريد التطبيق (%s) الوصول إلى كلمة السر لـ '<object prop='name'/>' في %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:251
-msgid "An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."
-msgstr "يريد تطبيق مجهول الوصول إلى كلمة السر لـ  '<object prop='name'/>' في حلقة المفاتيح الإفتراضية."
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"يريد تطبيق مجهول الوصول إلى كلمة السر لـ  '<object prop='name'/>' في حلقة "
+"المفاتيح الإفتراضية."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:254
 #, c-format
-msgid "An unknown application wants to access the password for '<object prop='name'/>' in %s."
-msgstr "يريد تطبيق مجهول الوصول إلى كلمة السر لـ  '<object prop='name'/>' في %s."
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"يريد تطبيق مجهول الوصول إلى كلمة السر لـ  '<object prop='name'/>' في %s."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:260
@@ -95,34 +113,41 @@ msgstr "افتح كلمة السر لحلقة المفاتيح %s"
 
 #: ../daemon/gkr-daemon-ops.c:367
 #, c-format
-msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
-msgstr "يريد التطبيق '%s' (%s) الوصول إلى حلقة المفاتيح الإفتراضية لكن الحلقة مقفلة"
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"يريد التطبيق '%s' (%s) الوصول إلى حلقة المفاتيح الإفتراضية لكن الحلقة مقفلة"
 
 #: ../daemon/gkr-daemon-ops.c:371
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "يريد التطبيق '%s' (%s) الوصول إلى حلقة المفاتيح الإفتراضية '%s' لكن الحلقة مقفلة"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"يريد التطبيق '%s' (%s) الوصول إلى حلقة المفاتيح الإفتراضية '%s' لكن الحلقة "
+"مقفلة"
 
-#: ../daemon/gkr-daemon-ops.c:377
-#: ../daemon/gkr-daemon-ops.c:387
+#: ../daemon/gkr-daemon-ops.c:377 ../daemon/gkr-daemon-ops.c:387
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr "يريد التطبيق '%s' الوصول إلى حلقة المفاتيح الإفتراضية لكن الحلقة مقفلة"
 
-#: ../daemon/gkr-daemon-ops.c:381
-#: ../daemon/gkr-daemon-ops.c:392
+#: ../daemon/gkr-daemon-ops.c:381 ../daemon/gkr-daemon-ops.c:392
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "يريد التطبيق '%s' الوصول إلى حلقة المفاتيح '%s' لكن الحلقة مقفلة"
 
 #: ../daemon/gkr-daemon-ops.c:398
 #, c-format
-msgid "An unknown application wants access to the default keyring, but it is locked"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
 msgstr "يريد تطبيق مجهول الوصول إلى حلقة المفاتيح الإفتراضية لكن الحلقة مقفلة"
 
 #: ../daemon/gkr-daemon-ops.c:402
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "يريد تطبيق مجهول الوصول إلى حلقة المفاتيح '%s' لكن الحلقة مقفلة"
 
 #: ../daemon/gkr-daemon-ops.c:409
@@ -145,35 +170,57 @@ msgstr "افتح تلقائياً حلقة المفاتيح هذه عندما أ
 
 #: ../daemon/gkr-daemon-ops.c:463
 #, c-format
-msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "يريد التطبيق '%s' (%s) إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s' (%s) إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة "
+"السر التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:467
 #, c-format
-msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "يريد التطبيق '%s' (%s) إنشاء حلقة مفاتيح إفتراضية جديدة. يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s' (%s) إنشاء حلقة مفاتيح إفتراضية جديدة. يفترض أن تختار كلمة "
+"السر التي تريد استخدمها لهذا الغرض."
 
-#: ../daemon/gkr-daemon-ops.c:473
-#: ../daemon/gkr-daemon-ops.c:483
+#: ../daemon/gkr-daemon-ops.c:473 ../daemon/gkr-daemon-ops.c:483
 #, c-format
-msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "يريد التطبيق '%s'  إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s'  إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة "
+"السر التي تريد استخدمها لهذا الغرض."
 
-#: ../daemon/gkr-daemon-ops.c:477
-#: ../daemon/gkr-daemon-ops.c:487
+#: ../daemon/gkr-daemon-ops.c:477 ../daemon/gkr-daemon-ops.c:487
 #, c-format
-msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "يريد التطبيق '%s'  إنشاء حلقة مفاتيح إفتراضية جديدة. يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s'  إنشاء حلقة مفاتيح إفتراضية جديدة. يفترض أن تختار كلمة "
+"السر التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:493
 #, c-format
-msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "يريد تطبيق مجهول إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
+msgstr ""
+"يريد تطبيق مجهول إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة السر "
+"التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:497
 #, c-format
-msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "يريد تطبيق مجهول إنشاء حلقة مفاتيح جديدة.يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"An unknown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"يريد تطبيق مجهول إنشاء حلقة مفاتيح جديدة.يفترض أن تختار كلمة السر التي تريد "
+"استخدمها لهذا الغرض."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:503
@@ -186,35 +233,57 @@ msgstr "إختر كلمة سر لحلقة المفاتيح الجديدة"
 
 #: ../daemon/gkr-daemon-ops.c:551
 #, c-format
-msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
-msgstr "يريد التطبيق '%s' (%s)  تغيير كلمة السر لحلقة المفاتيح  '%s'. يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s' (%s)  تغيير كلمة السر لحلقة المفاتيح  '%s'. يفترض أن تختار "
+"كلمة السر التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:555
 #, c-format
-msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
-msgstr "يريد التطبيق '%s' (%s) إنشاء حلقة مفاتيح إفتراضية جديدة . يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s' (%s) إنشاء حلقة مفاتيح إفتراضية جديدة . يفترض أن تختار "
+"كلمة السر التي تريد استخدمها لهذا الغرض."
 
-#: ../daemon/gkr-daemon-ops.c:561
-#: ../daemon/gkr-daemon-ops.c:571
+#: ../daemon/gkr-daemon-ops.c:561 ../daemon/gkr-daemon-ops.c:571
 #, c-format
-msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
-msgstr "يريد التطبيق '%s'  تغيير كلمة السر لحلقة مفاتيح  '%s'. يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s'  تغيير كلمة السر لحلقة مفاتيح  '%s'. يفترض أن تختار كلمة "
+"السر التي تريد استخدمها لهذا الغرض."
 
-#: ../daemon/gkr-daemon-ops.c:565
-#: ../daemon/gkr-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:565 ../daemon/gkr-daemon-ops.c:575
 #, c-format
-msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
-msgstr "يريد التطبيق '%s'  إنشاء حلقة مفاتيح إفتراضية جديدة. يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"يريد التطبيق '%s'  إنشاء حلقة مفاتيح إفتراضية جديدة. يفترض أن تختار كلمة "
+"السر التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:581
 #, c-format
-msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
-msgstr "يريد تطبيق مجهول تغيير كلمة السر لحلقة مفاتيح  '%s'. يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"يريد تطبيق مجهول تغيير كلمة السر لحلقة مفاتيح  '%s'. يفترض أن تختار كلمة "
+"السر التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:585
 #, c-format
-msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
-msgstr "يريد تطبيق مجهول تغيير كلمة مرور حلقة المفتاح الإفتراضية.يفترض أن تختار كلمة السر التي تريد استخدمها لهذا الغرض."
+msgid ""
+"An unknown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"يريد تطبيق مجهول تغيير كلمة مرور حلقة المفتاح الإفتراضية.يفترض أن تختار كلمة "
+"السر التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:595
 #, c-format
@@ -233,19 +302,33 @@ msgstr "غيّر كلمة سر حلقة المفاتيح"
 
 #: ../daemon/gkr-daemon-ops.c:671
 #, c-format
-msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "يريد التطبيق '%s' (%s) حفظ كلمة سر، لكنه لا يوجد حلقة مفاتيح إفتراضية لهذه العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"يريد التطبيق '%s' (%s) حفظ كلمة سر، لكنه لا يوجد حلقة مفاتيح إفتراضية لهذه "
+"العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
 
-#: ../daemon/gkr-daemon-ops.c:675
-#: ../daemon/gkr-daemon-ops.c:679
+#: ../daemon/gkr-daemon-ops.c:675 ../daemon/gkr-daemon-ops.c:679
 #, c-format
-msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "يريد التطبيق '%s' حفظ كلمة سر، لكنه لا يوجد حلقة مفاتيح إفتراضية لهذه العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"يريد التطبيق '%s' حفظ كلمة سر، لكنه لا يوجد حلقة مفاتيح إفتراضية لهذه "
+"العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
 
 #: ../daemon/gkr-daemon-ops.c:683
 #, c-format
-msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "يريد تطبيق مجهول حفظ كلمة سر، لكنه لا يوجد حلقة مفاتيح إفتراضية لهذه العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"يريد تطبيق مجهول حفظ كلمة سر، لكنه لا يوجد حلقة مفاتيح إفتراضية لهذه "
+"العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:688
@@ -257,11 +340,19 @@ msgid "Choose password for default keyring"
 msgstr "اختر كلمة سر للحلقة الإفتراضية"
 
 #: ../data/gnome-keyring.schemas.in.h:1
-msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
 msgstr ""
 
 #: ../data/gnome-keyring.schemas.in.h:2
-msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
 msgstr ""
 
 #: ../data/gnome-keyring.schemas.in.h:3
@@ -317,7 +408,9 @@ msgid "Enter login password to unlock keyring"
 msgstr "افتح كلمة السر لحلقة المفاتيح %s"
 
 #: ../keyrings/gkr-keyring-login.c:100
-msgid "Your login keyring was not automatically unlocked when you logged into this computer."
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
 msgstr ""
 
 #. And put together the ask request
@@ -331,7 +424,9 @@ msgid "Enter your login password"
 msgstr "ادخل كلمة سرّ ولوجك"
 
 #: ../keyrings/gkr-keyring-login.c:126
-msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
 msgstr ""
 
 #: ../pk/gkr-pk-object-storage.c:153
@@ -403,7 +498,10 @@ msgid "Store passwords unencrypted?"
 msgstr ""
 
 #: ../ui/gkr-ask-tool.c:80
-msgid "By choosing to use a blank password, your stored passwords not be safely encrypted. They will be accessible by anyone with access to your files."
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
 msgstr ""
 
 #: ../ui/gkr-ask-tool.c:87
@@ -452,36 +550,44 @@ msgstr "ا_سمح دائماً"
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "كلمة السر القديمة لا يمكن أن تكون فارغة."
+
 #~ msgid "<span weight=\"bold\">Password strength meter:</span>"
 #~ msgstr "<span weight=\"bold\">مقياس قوة كلمة السر:</span>"
+
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
 #~ "locked"
 #~ msgstr ""
 #~ "يريد التطبيق '%s' (%s) الوصول إلى حلقة مفاتيح مجهولة لكن الحلقة مقفلة"
+
 #~ msgid ""
 #~ "The application '%s' wants access to an unknown keyring, but it is locked"
 #~ msgstr "يريد التطبيق '%s' الوصول إلى حلقة مفاتيح مجهولة لكن الحلقة مقفلة"
+
 #~ msgid ""
 #~ "An unknown application wants access to an unknown keyring, but it is "
 #~ "locked"
 #~ msgstr "يريد تطبيق مجهول الوصول إلى حلقة مفاتيح مجهولة لكن الحلقة مقفلة"
+
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '%s' in an "
 #~ "unknown keyring."
 #~ msgstr ""
 #~ "يريد التطبيق '%s' (%s) الوصول إلى كلمة السر لـ '%s'في حلقة مفاتيح مجهولة."
+
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '%s' in an unknown "
 #~ "keyring."
 #~ msgstr ""
 #~ "يريدالتطبيق '%s'  الوصول إلى كلمة السر لـ '%s' في حلقة مفاتيح مجهولة."
+
 #~ msgid ""
 #~ "An unknown application wants to access the password for '%s' in an "
 #~ "unknown keyring."
 #~ msgstr "يريد تطبيق مجهول الوصول إلى كلمة السر لـ '%s'في حلقة مفاتيح مجهولة."
+
 #~ msgid "You must specify the type of request to run\n"
 #~ msgstr "يجب أن تأكد نوع الطلب الذي تريد تشغيله\n"
+
 #~ msgid "Unknown request type\n"
 #~ msgstr "نوع الطلب مجهول\n"
-
