@@ -415,7 +415,7 @@ client_worker_main (gpointer user_data)
 	/* Make sure keyrings in memory are up to date before doing anything */
 	gkr_keyrings_update ();
 
-	gkr_buffer_init_full (&client->output_buffer, 128, g_realloc);
+	gkr_buffer_init_full (&client->output_buffer, 128, (GkrBufferAllocator)g_realloc);
 	
 	/* Add empty size */
 	gkr_buffer_add_uint32 (&client->output_buffer, 0);

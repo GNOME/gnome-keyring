@@ -168,7 +168,7 @@ op_add_identity (GkrBuffer *req, GkrBuffer *resp)
 	int algo;
 	gsize offset;
 	
-	if (!gkr_buffer_get_string (req, 5, &offset, &stype, g_realloc))
+	if (!gkr_buffer_get_string (req, 5, &offset, &stype, (GkrBufferAllocator)g_realloc))
 		return FALSE;
 		
 	algo = gkr_ssh_proto_keytype_to_algo (stype);
@@ -200,7 +200,7 @@ op_add_identity (GkrBuffer *req, GkrBuffer *resp)
 	/* TODO: Blinding? See ssh-agent.c */
 
 	/* Get the comment */
-	if (!gkr_buffer_get_string (req, offset, &offset, &comment, g_realloc)) {
+	if (!gkr_buffer_get_string (req, offset, &offset, &comment, (GkrBufferAllocator)g_realloc)) {
 		gcry_sexp_release (key);
 		return FALSE;
 	}

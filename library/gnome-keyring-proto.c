@@ -116,7 +116,7 @@ gkr_proto_get_utf8_string (GkrBuffer *buffer, gsize offset, gsize *next_offset,
                            char **str_ret)
 {
 	return gkr_proto_get_utf8_full (buffer, offset, next_offset, 
-	                                str_ret, g_realloc);
+	                                str_ret, (GkrBufferAllocator)g_realloc);
 }
 
 gboolean

@@ -123,7 +123,7 @@ gkr_pkix_asn1_encode (ASN1_TYPE asn, const gchar* part, gsize *n_data,
 	g_return_val_if_fail (res == ASN1_MEM_ERROR, NULL);
 	
 	if (!alloc)
-		alloc = g_realloc;
+		alloc = (GkrBufferAllocator)g_realloc;
 
 	data = (alloc) (NULL, len);
 	g_return_val_if_fail (data != NULL, NULL);
@@ -235,7 +235,7 @@ gkr_pkix_asn1_read_value (ASN1_TYPE asn, const gchar *part, gsize *len,
 	g_return_val_if_fail (len != NULL, NULL);
 	
 	if (allocator == NULL)
-		allocator = g_realloc;
+		allocator = (GkrBufferAllocator)g_realloc;
 	
 	*len = 0;
 

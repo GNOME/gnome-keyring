@@ -238,7 +238,7 @@ client_new (int fd)
 	 */
 	/* TODO: Switch to gkr_secure_memory */
 	gkr_buffer_init_full (&client->input_buffer, 128, gkr_secure_realloc);
-	gkr_buffer_init_full (&client->output_buffer, 128, g_realloc);
+	gkr_buffer_init_full (&client->output_buffer, 128, (GkrBufferAllocator)g_realloc);
 
 	client->worker = gkr_async_worker_start (client_worker_main, 
 	                                         client_worker_done, client);

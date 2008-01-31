@@ -106,7 +106,7 @@ gkr_ssh_proto_read_public (GkrBuffer *req, gsize *offset, gcry_sexp_t *key, int 
 		return FALSE;
 	
 	/* The string algorithm */
-	if (!gkr_buffer_get_string (req, *offset, offset, &stype, g_realloc))
+	if (!gkr_buffer_get_string (req, *offset, offset, &stype, (GkrBufferAllocator)g_realloc))
 		return FALSE;
 	
 	alg = gkr_ssh_proto_keytype_to_algo (stype);

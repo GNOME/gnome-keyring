@@ -1608,8 +1608,8 @@ gkr_pkcs11_daemon_session_thread (gpointer user_data)
 	
 	/* Setup our buffers */
 	/* TODO: Do these need to be secure buffers? */
-	req = gkr_pkcs11_message_new (g_realloc);
-	resp = gkr_pkcs11_message_new (g_realloc);
+	req = gkr_pkcs11_message_new ((GkrBufferAllocator)g_realloc);
+	resp = gkr_pkcs11_message_new ((GkrBufferAllocator)g_realloc);
 	if (!req || !resp)
 		g_error ("out of memory");
 	

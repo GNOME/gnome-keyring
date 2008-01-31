@@ -1,3 +1,15 @@
+2008-01-31  Stef Walter  <stef@memberwebs.com>
+
+	* keyrings/gkr-keyring.c:
+	* ssh/gkr-ssh-daemon-ops.c:
+	* ssh/gkr-ssh-proto.c:
+	* ssh/gkr-ssh-daemon-io.c:
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* daemon/gkr-daemon-io.c:
+	* library/gnome-keyring-proto.c:
+	* pkix/gkr-pkix-asn1.c: Fix more compile problems due to 
+	glib changing signature of g_realloc.
+
 2008-01-30  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring.c: Fix compile problem on 
