@@ -69,6 +69,9 @@ typedef enum {
 
 typedef struct GnomeKeyringOperation GnomeKeyringOperation;
 
+#define NORMAL_ALLOCATOR  ((GkrBufferAllocator)g_realloc)
+#define SECURE_ALLOCATOR  ((GkrBufferAllocator)gnome_keyring_memory_realloc)
+
 typedef gboolean (*KeyringHandleReply) (GnomeKeyringOperation *op);
 
 struct GnomeKeyringOperation {
@@ -581,9 +584,9 @@ create_operation (gboolean receive_secure, gpointer callback,
 	op->destroy_user_data = destroy_user_data;
 	op->socket = -1;
 	
-	gkr_buffer_init_full (&op->send_buffer, 128, g_realloc);
+	gkr_buffer_init_full (&op->send_buffer, 128, NORMAL_ALLOCATOR);
 	gkr_buffer_init_full (&op->receive_buffer, 128, 
-		receive_secure ? gnome_keyring_memory_realloc : g_realloc);
+		receive_secure ? SECURE_ALLOCATOR : NORMAL_ALLOCATOR);
 		
 	return op;
 }
@@ -821,7 +824,7 @@ gnome_keyring_set_default_keyring_sync (const char *keyring)
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	if (!gkr_proto_encode_op_string (&send, GNOME_KEYRING_OP_SET_DEFAULT_KEYRING,
 	                                 keyring)) {
@@ -829,7 +832,7 @@ gnome_keyring_set_default_keyring_sync (const char *keyring)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
@@ -896,7 +899,7 @@ gnome_keyring_get_default_keyring_sync (char **keyring)
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	*keyring = NULL;
 
@@ -905,7 +908,7 @@ gnome_keyring_get_default_keyring_sync (char **keyring)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -997,7 +1000,7 @@ gnome_keyring_list_keyring_names_sync (GList **keyrings)
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	*keyrings = NULL;
 
@@ -1006,7 +1009,7 @@ gnome_keyring_list_keyring_names_sync (GList **keyrings)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -1071,14 +1074,14 @@ gnome_keyring_lock_all_sync (void)
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	if (!gkr_proto_encode_op_only (&send, GNOME_KEYRING_OP_LOCK_ALL)) {
 		gkr_buffer_uninit (&send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
@@ -1154,7 +1157,7 @@ gnome_keyring_create_sync (const char *keyring_name,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 	
-	gkr_buffer_init_full (&send, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&send, 128, SECURE_ALLOCATOR);
 
 	if (!gkr_proto_encode_op_string_secret (&send, GNOME_KEYRING_OP_CREATE_KEYRING,
 	                                        keyring_name, password)) {
@@ -1162,7 +1165,7 @@ gnome_keyring_create_sync (const char *keyring_name,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
@@ -1245,7 +1248,7 @@ gnome_keyring_unlock_sync (const char *keyring,
 	GnomeKeyringResult res;
 
 	/* Use secure non-pageable buffer */	
-	gkr_buffer_init_full (&send, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&send, 128, SECURE_ALLOCATOR);
 	
 	if (!gkr_proto_encode_op_string_secret (&send, GNOME_KEYRING_OP_UNLOCK_KEYRING,
 	                                        keyring, password)) {
@@ -1253,7 +1256,7 @@ gnome_keyring_unlock_sync (const char *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
@@ -1328,7 +1331,7 @@ gnome_keyring_lock_sync (const char *keyring)
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 	
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	if (!gkr_proto_encode_op_string (&send, GNOME_KEYRING_OP_LOCK_KEYRING,
 	                                 keyring)) {
@@ -1336,7 +1339,7 @@ gnome_keyring_lock_sync (const char *keyring)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
@@ -1405,7 +1408,7 @@ gnome_keyring_delete_sync (const char *keyring)
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 	
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	if (!gkr_proto_encode_op_string (&send, GNOME_KEYRING_OP_DELETE_KEYRING,
 	                                 keyring)) {
@@ -1413,7 +1416,7 @@ gnome_keyring_delete_sync (const char *keyring)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
@@ -1495,7 +1498,7 @@ gnome_keyring_change_password_sync (const char *keyring_name,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 	
-	gkr_buffer_init_full (&send, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&send, 128, SECURE_ALLOCATOR);
 	
 	if (!gkr_proto_encode_op_string_secret_secret (&send,
 	                                               GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD,
@@ -1504,7 +1507,7 @@ gnome_keyring_change_password_sync (const char *keyring_name,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
@@ -1597,7 +1600,7 @@ gnome_keyring_get_info_sync (const char        *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	*info = NULL;
 
@@ -1607,7 +1610,7 @@ gnome_keyring_get_info_sync (const char        *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -1680,14 +1683,14 @@ gnome_keyring_set_info_sync (const char       *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 	
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	if (!gkr_proto_encode_set_keyring_info (&send, keyring, info)) {
 		gkr_buffer_uninit (&send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	gkr_buffer_uninit (&receive);
@@ -1776,7 +1779,7 @@ gnome_keyring_list_item_ids_sync (const char  *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	*ids = NULL;
 
@@ -1786,7 +1789,7 @@ gnome_keyring_list_item_ids_sync (const char  *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -1820,7 +1823,7 @@ gnome_keyring_daemon_set_display_sync (const char *display)
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	if (!gkr_proto_encode_op_string (&send, GNOME_KEYRING_OP_SET_DAEMON_DISPLAY,
 	                                 display)) {
@@ -1828,7 +1831,7 @@ gnome_keyring_daemon_set_display_sync (const char *display)
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
@@ -2133,7 +2136,7 @@ gnome_keyring_find_items_sync (GnomeKeyringItemType        type,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	*found = NULL;
 	
@@ -2143,7 +2146,7 @@ gnome_keyring_find_items_sync (GnomeKeyringItemType        type,
 	}
 	
 	/* Use a secure receive buffer */
-	gkr_buffer_init_full (&receive, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&receive, 128, SECURE_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -2307,7 +2310,7 @@ gnome_keyring_item_create_sync    (const char                                 *k
 	GnomeKeyringResult res;
 
 	/* Use a secure buffer */
-	gkr_buffer_init_full (&send, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&send, 128, SECURE_ALLOCATOR);
 
 	*item_id = 0;
 	
@@ -2317,7 +2320,7 @@ gnome_keyring_item_create_sync    (const char                                 *k
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -2395,7 +2398,7 @@ gnome_keyring_item_delete_sync (const char *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	if (!gkr_proto_encode_op_string_int (&send, GNOME_KEYRING_OP_DELETE_ITEM,
 	                                     keyring, id)) {
@@ -2403,7 +2406,7 @@ gnome_keyring_item_delete_sync (const char *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	gkr_buffer_uninit (&receive);
@@ -2500,7 +2503,7 @@ gnome_keyring_item_get_info_sync (const char            *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	*info = NULL;
 	
@@ -2511,7 +2514,7 @@ gnome_keyring_item_get_info_sync (const char            *keyring,
 	}
 
 	/* Use a secure buffer */ 	
-	gkr_buffer_init_full (&receive, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&receive, 128, SECURE_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -2607,7 +2610,7 @@ gnome_keyring_item_get_info_full_sync (const char              *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	*info = NULL;
 	
@@ -2618,7 +2621,7 @@ gnome_keyring_item_get_info_full_sync (const char              *keyring,
 	}
 	
 	/* Use a secure buffer */
-	gkr_buffer_init_full (&receive, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&receive, 128, SECURE_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -2701,14 +2704,14 @@ gnome_keyring_item_set_info_sync (const char           *keyring,
 	GnomeKeyringResult res;
 	
 	/* Use a secure memory buffer */
-	gkr_buffer_init_full (&send, 128, gnome_keyring_memory_realloc);
+	gkr_buffer_init_full (&send, 128, SECURE_ALLOCATOR);
 	
 	if (!gkr_proto_encode_set_item_info (&send, keyring, id, info)) {
 		gkr_buffer_uninit (&send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	gkr_buffer_uninit (&receive);
@@ -2818,7 +2821,7 @@ gnome_keyring_item_get_attributes_sync (const char                 *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	*attributes = NULL;
 	
@@ -2828,7 +2831,7 @@ gnome_keyring_item_get_attributes_sync (const char                 *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -2906,14 +2909,14 @@ gnome_keyring_item_set_attributes_sync (const char                *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 	
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	if (!gkr_proto_encode_set_attributes (&send, keyring, id, attributes)) {
 		gkr_buffer_uninit (&send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	gkr_buffer_uninit (&receive);
@@ -2985,7 +2988,7 @@ gnome_keyring_item_get_acl_sync (const char  *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	*acl = NULL;
 	
@@ -2995,7 +2998,7 @@ gnome_keyring_item_get_acl_sync (const char  *keyring,
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
@@ -3072,14 +3075,14 @@ gnome_keyring_item_set_acl_sync (const char *keyring,
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 	
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 	
 	if (!gkr_proto_encode_set_acl (&send, keyring, id, acl)) {
 		gkr_buffer_uninit (&send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 	
- 	gkr_buffer_init_full (&receive, 128, g_realloc);
+ 	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	gkr_buffer_uninit (&receive);
