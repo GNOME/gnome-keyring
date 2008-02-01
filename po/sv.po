@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-14 18:48+0100\n"
-"PO-Revision-Date: 2008-01-14 18:55+0100\n"
+"POT-Creation-Date: 2008-02-01 01:24+0100\n"
+"PO-Revision-Date: 2008-02-01 01:26+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -392,7 +392,7 @@ msgid "Store passwords unencrypted?"
 msgstr "Lagra lösenord okrypterade?"
 
 #: ../ui/gkr-ask-tool.c:80
-msgid "By choosing to use a blank password, your stored passwords not be safely encrypted. They will be accessible by anyone with access to your files."
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Genom att välja att använda ett blankt lösenord kommer dina lagrade lösenord inte att vara krypterade på ett säkert sätt. De kommer att vara åtkomliga för alla som har tillgång till dina filer."
 
 #: ../ui/gkr-ask-tool.c:87
