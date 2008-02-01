@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-05 18:17+0000\n"
-"PO-Revision-Date: 2008-01-11 09:50+0200\n"
+"PO-Revision-Date: 2008-01-27 12:15+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -406,9 +406,8 @@ msgid "Unlock Login Keyring"
 msgstr ""
 
 #: ../keyrings/gkr-keyring-login.c:98
-#, fuzzy
 msgid "Enter login password to unlock keyring"
-msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
+msgstr "Võtmerõnga lukust lahtivõtmiseks sisesta sisselogimise parool "
 
 #: ../keyrings/gkr-keyring-login.c:100
 msgid ""
@@ -420,14 +419,12 @@ msgstr ""
 
 #. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:124
-#, fuzzy
 msgid "Create Login Keyring"
-msgstr "Vaikimisi võtmerõnga loomine"
+msgstr ""
 
 #: ../keyrings/gkr-keyring-login.c:124
-#, fuzzy
 msgid "Enter your login password"
-msgstr "Võtmerõnga parooli vahetamine"
+msgstr "Sisesta oma sisselogimise parool"
 
 #: ../keyrings/gkr-keyring-login.c:126
 msgid ""
@@ -438,12 +435,10 @@ msgstr ""
 "logisid. See luuakse nüüd."
 
 #: ../pk/gkr-pk-object-storage.c:153
-#, fuzzy
 msgid "Unlock"
-msgstr "Võtmerõnga avamine"
+msgstr ""
 
 #: ../pk/gkr-pk-object-storage.c:154
-#, fuzzy
 msgid "Enter password to unlock"
 msgstr "Sisesta lukust lahtivõtmise parool"
 
@@ -505,7 +500,7 @@ msgstr "sertifikaat"
 
 #: ../ui/gkr-ask-tool.c:79
 msgid "Store passwords unencrypted?"
-msgstr ""
+msgstr "Kas salvestada paroolid krüptimata kujul?"
 
 #: ../ui/gkr-ask-tool.c:80
 msgid ""
