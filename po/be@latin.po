@@ -7,29 +7,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-08 10:53+0200\n"
-"PO-Revision-Date: 2007-12-08 11:00+0200\n"
+"POT-Creation-Date: 2008-02-02 12:42+0200\n"
+"PO-Revision-Date: 2008-02-02 12:50+0200\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian Latin <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gkr-location.c:309
+#: ../common/gkr-location.c:306
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Pieranosny dysk: %s"
 
-#: ../common/gkr-location.c:311
+#: ../common/gkr-location.c:308
 msgid "Removable Disk"
 msgstr "Pieranosny dysk"
 
-#: ../common/gkr-location.c:445 ../common/gkr-location.c:458
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "Dadomu"
 
-#: ../common/gkr-location.c:937 ../common/gkr-location.c:960
-#: ../pkix/gkr-pkix-parser.c:514
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:540
 msgid "The disk or drive this file is located on is not present"
 msgstr "Dysk ci pryłada, dzie źmieščany hety fajł, nia ŭklučanaja"
 
@@ -135,7 +135,6 @@ msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Aplikacyja '%s' choča dastupicca da klučnika '%s', ale jon zablakavany"
 
 #: ../daemon/gkr-daemon-ops.c:398
-#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
@@ -214,7 +213,6 @@ msgstr ""
 "musiš uvieści parol dla hetaha klučnika."
 
 #: ../daemon/gkr-daemon-ops.c:497
-#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -277,7 +275,6 @@ msgstr ""
 "uvieści parol dla hetaha klučnika."
 
 #: ../daemon/gkr-daemon-ops.c:585
-#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -291,7 +288,6 @@ msgid "Choose a new password for the '%s' keyring. "
 msgstr "Abiary novy parol dla klučnika '%s'. "
 
 #: ../daemon/gkr-daemon-ops.c:597
-#, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Abiary novy parol dla zmoŭčanaha klučnika. "
 
@@ -321,7 +317,6 @@ msgstr ""
 "stvaryć jaho, treba ŭvieści parol dla jaho."
 
 #: ../daemon/gkr-daemon-ops.c:683
-#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -338,6 +333,38 @@ msgstr "Stvary zmoŭčanaha klučnika"
 #: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "Abiary parol dla zmoŭčanaha klučnika"
+
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr ""
+"Hetaja opcyja ŭklučaje kampanent PKCS#11 dla demana gnome-keyring. Opcyja "
+"ŭździejničaje tolki pry ŭruchamleńni demana gnome-keyring-daemon, h.zn. kali "
+"karystalnik uvachodzić u systemu. Hetaja nałada moža być źmieniena z "
+"dapamohaj peŭnych arhumentaŭ zahadnaha radka, pieradadzienych demanu."
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr ""
+"Hetaja opcyja ŭklučaje agenta SSH dla demana gnome-keyring. Opcyja "
+"ŭździejničaje tolki pry ŭruchamleńni demana gnome-keyring-daemon, h.zn. kali "
+"karystalnik uvachodzić u systemu. Hetaja nałada moža być źmieniena z "
+"dapamohaj peŭnych arhumentaŭ zahadnaha radka, pieradadzienych demanu."
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Ci ŭklučać kampanent PKCS#11 dla klučnika."
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Ci ŭklučać agenta SSH dla klučnika."
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
@@ -372,31 +399,30 @@ msgid "The keyring has already been unlocked."
 msgstr "Klučnik užo razblakavany."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
 msgstr "Razblakuj uvachodnaha klučnika"
 
-#: ../keyrings/gkr-keyring-login.c:87
+#: ../keyrings/gkr-keyring-login.c:98
 msgid "Enter login password to unlock keyring"
 msgstr "Uviadzi ŭvachodny parol, kab adblakavać klučnika"
 
-#: ../keyrings/gkr-keyring-login.c:89
+#: ../keyrings/gkr-keyring-login.c:100
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr ""
-"Tvoj uvachodny klučnik nia byŭ aŭtamatyčna adčynieny, kali ty ŭvajšoŭ."
+msgstr "Tvoj uvachodny klučnik nia byŭ aŭtamatyčna adčynieny, kali ty ŭvajšoŭ."
 
 #. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
 msgstr "Stvary ŭvachodnaha klučnika"
 
-#: ../keyrings/gkr-keyring-login.c:113
+#: ../keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
 msgstr "Uviadzi svoj parol dziela ŭvachodu"
 
-#: ../keyrings/gkr-keyring-login.c:115
+#: ../keyrings/gkr-keyring-login.c:126
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
@@ -404,93 +430,130 @@ msgstr ""
 "Tvoj uvachodny klučnik nia byŭ aŭtamatyčna stvorany, kali ty ŭvajšoŭ. Zaraz "
 "jon budzie stvorany."
 
-#: ../pk/gkr-pk-object-storage.c:126
+#: ../pk/gkr-pk-object-storage.c:153
+msgid "Unlock"
+msgstr "Razblakuj"
+
+#: ../pk/gkr-pk-object-storage.c:154
+msgid "Enter password to unlock"
+msgstr "Uviadzi parol, kab adblakavać"
+
+#: ../pk/gkr-pk-object-storage.c:164
 #, c-format
 msgid "Unlock %s"
 msgstr "Razblakuj %s"
 
-#: ../pk/gkr-pk-object-storage.c:127
+#: ../pk/gkr-pk-object-storage.c:165
 #, c-format
 msgid "Enter password for the %s to unlock"
 msgstr "Uviadzi parol dla %s, kab adblakavać"
 
-#: ../pk/gkr-pk-object-storage.c:131
+#: ../pk/gkr-pk-object-storage.c:174
+#, c-format
+msgid "An application wants access to the %s '%s', but it is locked"
+msgstr "Aplikacyja choča dastupicca da %s \"%s\", ale jon zablakavany"
+
+#: ../pk/gkr-pk-object-storage.c:177
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Aplikacyja choča dastupicca da \"%s\", ale jon zablakavany"
+
+#: ../pk/gkr-pk-object-storage.c:182
 #, c-format
 msgid "The system wants to import the %s '%s', but it is locked."
 msgstr "Systema choča zimpartavać %s \"%s\", ale jon zablakavany."
 
-#: ../pk/gkr-pk-object-storage.c:135
+#: ../pk/gkr-pk-object-storage.c:185
 #, c-format
-msgid "An application wants access to the %s '%s', but it is locked"
-msgstr ""
-"Aplikacyja choča dastupicca da %s \"%s\", ale jon zablakavany"
+msgid "The system wants to import '%s', but it is locked."
+msgstr "Systema choča zimpartavać \"%s\", ale jon zablakavany."
 
-#: ../pk/gkr-pk-object-storage.c:149
+#: ../pk/gkr-pk-object-storage.c:197
 #, c-format
 msgid "Automatically unlock this %s when I log in."
 msgstr "Aŭtamatyčna adblakuj hetaha %s pry ŭvachodzie."
 
-#: ../pk/gkr-pk-object-storage.c:161
+#: ../pk/gkr-pk-object-storage.c:209
 #, c-format
 msgid "Unlock password for %s"
 msgstr "Adblakuj parol dla %s"
 
-#: ../pkix/gkr-pkix-parser.c:431
+#: ../pkix/gkr-pkix-parser.c:430
 msgid "Unrecognized or unsupported file."
 msgstr "Nieviadomy ci niaŭzhodnieny fajł."
 
-#: ../pkix/gkr-pkix-parser.c:435
+#: ../pkix/gkr-pkix-parser.c:434
 msgid "Could not parse invalid or corrupted file."
 msgstr "Niemahčyma razabrać niapravilny ci paškodžany fajł."
 
-#: ../pkix/gkr-pkix-parser.c:490
-msgid "key"
-msgstr "kluč"
+#: ../pkix/gkr-pkix-parser.c:503
+msgid "private key"
+msgstr "pryvatny kluč"
 
-#: ../pkix/gkr-pkix-parser.c:492
+#: ../pkix/gkr-pkix-parser.c:505
 msgid "certificate"
 msgstr "sertyfikat"
 
-#: ../ui/gkr-ask-tool.c:314
+#: ../ui/gkr-ask-tool.c:79
+msgid "Store passwords unencrypted?"
+msgstr "Zachoŭvać paroli niezašyfravanymi?"
+
+#: ../ui/gkr-ask-tool.c:80
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Kali ty abiareš pusty parol, tady ŭsie zachoŭvanyja klučnikam paroli nia "
+"buduć šyfravacca. Ich zmoža pračytać lubaja asoba, jakaja maje dostup da "
+"tvaich fajłaŭ."
+
+#: ../ui/gkr-ask-tool.c:87
+msgid "Use Unsafe Storage"
+msgstr "Užyj niebiaśpiečnaje schovišča"
+
+#: ../ui/gkr-ask-tool.c:340
 msgid "_Location:"
 msgstr "_Pałažeńnie:"
 
-#: ../ui/gkr-ask-tool.c:327
+#: ../ui/gkr-ask-tool.c:353
 msgid "_Old password:"
 msgstr "_Stary parol:"
 
-#: ../ui/gkr-ask-tool.c:347
+#: ../ui/gkr-ask-tool.c:373
 msgid "_Password:"
 msgstr "_Parol:"
 
-#: ../ui/gkr-ask-tool.c:369
+#: ../ui/gkr-ask-tool.c:395
 msgid "_Confirm password:"
 msgstr "_Paćvierdź parol:"
 
-#: ../ui/gkr-ask-tool.c:388
+#: ../ui/gkr-ask-tool.c:414
 msgid "New password strength"
 msgstr "Ličylnik mocy novaha parolu"
 
-#: ../ui/gkr-ask-tool.c:444
-msgid "Old password cannot be blank."
-msgstr "Stary parol nia moža być pustym."
-
-#: ../ui/gkr-ask-tool.c:456
-msgid "Password cannot be blank."
-msgstr "Parol nia moža być pustym."
-
-#: ../ui/gkr-ask-tool.c:465
+#: ../ui/gkr-ask-tool.c:481
 msgid "Passwords do not match."
 msgstr "Paroli adroźnivajucca."
 
-#: ../ui/gkr-ask-tool.c:514
+#: ../ui/gkr-ask-tool.c:497
+msgid "Password cannot be blank"
+msgstr "Parol nia moža być pustym"
+
+#: ../ui/gkr-ask-tool.c:548
 msgid "Deny"
 msgstr "Admaŭlaj"
 
-#: ../ui/gkr-ask-tool.c:526
+#: ../ui/gkr-ask-tool.c:560
 msgid "Allow _Once"
 msgstr "Dazvol _raz"
 
-#: ../ui/gkr-ask-tool.c:530
+#: ../ui/gkr-ask-tool.c:564
 msgid "_Always Allow"
 msgstr "_Zaŭsiody dazvalaj"
+
+#~ msgid "key"
+#~ msgstr "kluč"
+
+#~ msgid "Old password cannot be blank."
+#~ msgstr "Stary parol nia moža być pustym."
