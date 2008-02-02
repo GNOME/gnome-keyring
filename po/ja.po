@@ -1,41 +1,41 @@
 # gnome-keyring ja.po.
-# Copyright (C) 2003-2007 Free Software Foundation, Inc.
+# Copyright (C) 2003-2008 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Takeshi AIHANA <takeshi.aihana@gmail.com>, 2003-2007.
+# Takeshi AIHANA <takeshi.aihana@gmail.com>, 2003-2008.
 # Satoru SATOH <ss@gnome.gr.jp>, 2006.
 #  	   
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-28 21:58+0900\n"
-"PO-Revision-Date: 2007-07-28 19:57+0900\n"
+"POT-Creation-Date: 2008-02-02 23:57+0900\n"
+"PO-Revision-Date: 2008-02-02 23:57+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gkr-location.c:290
+#: ../common/gkr-location.c:306
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "リムーバブルなディスク: %s"
 
-#: ../common/gkr-location.c:292
+#: ../common/gkr-location.c:308
 msgid "Removable Disk"
 msgstr "リムーバブルなディスク"
 
-#: ../common/gkr-location.c:436
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "ホーム"
 
-#. TRANSLATORS: this is the title for an item
-#: ../daemon/gnome-keyring-daemon-ops.c:188
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "キーリング %s のロックを解除するパスワード"
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:540
+msgid "The disk or drive this file is located on is not present"
+msgstr "このファイルが格納されているディスクまたはドライブが存在しません"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:414
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:221
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -44,7 +44,8 @@ msgstr ""
 "アプリケーション '%s' (%s) がデフォルトのキーリングにある '<object "
 "prop='name'/>' のパスワードにアクセスしようとしています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:417
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:225
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -53,8 +54,8 @@ msgstr ""
 "アプリケーション '%s' (%s) が %s にある '<object prop='name'/>' のパスワード"
 "にアクセスしようとしています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:422
-#: ../daemon/gnome-keyring-daemon-ops.c:430
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:231 ../daemon/gkr-daemon-ops.c:241
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -63,8 +64,8 @@ msgstr ""
 "アプリケーション '%s' がデフォルトのキーリングにある '<object prop='name'/>' "
 "のパスワードにアクセスしようとしています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:425
-#: ../daemon/gnome-keyring-daemon-ops.c:433
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:235 ../daemon/gkr-daemon-ops.c:245
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -73,7 +74,8 @@ msgstr ""
 "アプリケーション '%s' が %s にある '<object prop='name'/>' のパスワードにアク"
 "セスしようとしています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:438
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:251
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -81,7 +83,8 @@ msgstr ""
 "不明なアプリケーションがデフォルトのキーリングにある '<object prop='name'/>' "
 "のパスワードにアクセスしようとしています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:440
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:254
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -91,15 +94,20 @@ msgstr ""
 "セスしようとしています。"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:446
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow access"
 msgstr "アクセスの許可"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:446
+#: ../daemon/gkr-daemon-ops.c:260
 msgid "Allow application access to keyring?"
 msgstr "アプリケーションにキーリングへのアクセスを許可しますか？"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:544
+#: ../daemon/gkr-daemon-ops.c:310
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "キーリング %s のロックを解除するパスワード"
+
+#: ../daemon/gkr-daemon-ops.c:367
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -108,7 +116,7 @@ msgstr ""
 "アプリケーション '%s' (%s) がデフォルトのキーリングへアクセスしようとしていま"
 "すが、ロックされています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:548
+#: ../daemon/gkr-daemon-ops.c:371
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -116,8 +124,7 @@ msgstr ""
 "アプリケーション '%s' (%s) がキーリング '%s' へアクセスしようとしていますが、"
 "ロックされています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:554
-#: ../daemon/gnome-keyring-daemon-ops.c:564
+#: ../daemon/gkr-daemon-ops.c:377 ../daemon/gkr-daemon-ops.c:387
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -125,22 +132,22 @@ msgstr ""
 "アプリケーション '%s' がデフォルトのキーリングへアクセスしようとしています"
 "が、ロックされています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:558
-#: ../daemon/gnome-keyring-daemon-ops.c:569
+#: ../daemon/gkr-daemon-ops.c:381 ../daemon/gkr-daemon-ops.c:392
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "アプリケーション '%s' がキーリング '%s' へアクセスしようとしていますが、ロッ"
 "クされています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:398
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "不明なアプリケーションがデフォルトのキーリングへアクセスしようとしています"
 "が、ロックされています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:579
+#: ../daemon/gkr-daemon-ops.c:402
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -148,25 +155,25 @@ msgstr ""
 "不明なアプリケーションがキーリング '%s' へアクセスしようとしていますが、ロッ"
 "クされています。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:586
+#: ../daemon/gkr-daemon-ops.c:409
 msgid "Enter password for default keyring to unlock"
 msgstr "キーリング (デフォルト) のロックを解除するパスワードを入力して下さい"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:588
+#: ../daemon/gkr-daemon-ops.c:411
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "キーリング '%s' のロックを解除するパスワードを入力して下さい"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:592
+#: ../daemon/gkr-daemon-ops.c:415
 msgid "Unlock Keyring"
 msgstr "キーリングのロック解除"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:604
+#: ../daemon/gkr-daemon-ops.c:427
 msgid "Automatically unlock this keyring when I log in."
 msgstr "ログインしたら、このキーリングのロックを自動的に解除する"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:640
+#: ../daemon/gkr-daemon-ops.c:463
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -175,7 +182,7 @@ msgstr ""
 "アプリケーション '%s' (%s) が '%s' という新しいキーリングを生成しようとしてい"
 "ます。このキーリングのパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:644
+#: ../daemon/gkr-daemon-ops.c:467
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -184,8 +191,7 @@ msgstr ""
 "アプリケーション '%s' (%s) が新しいデフォルトのキーリングを生成しようとしてい"
 "ます。このキーリングのパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:650
-#: ../daemon/gnome-keyring-daemon-ops.c:660
+#: ../daemon/gkr-daemon-ops.c:473 ../daemon/gkr-daemon-ops.c:483
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -194,8 +200,7 @@ msgstr ""
 "アプリケーション '%s' が '%s' という新しいキーリングを生成しようとしていま"
 "す。このキーリングのパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:654
-#: ../daemon/gnome-keyring-daemon-ops.c:664
+#: ../daemon/gkr-daemon-ops.c:477 ../daemon/gkr-daemon-ops.c:487
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -204,7 +209,7 @@ msgstr ""
 "アプリケーション '%s' が新しいキーリングを生成しようとしています。このキーリ"
 "ングのパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:670
+#: ../daemon/gkr-daemon-ops.c:493
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -213,7 +218,8 @@ msgstr ""
 "不明なアプリケーションが '%s' という新しいキーリングを生成しようとしていま"
 "す。このキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:674
+#: ../daemon/gkr-daemon-ops.c:497
+#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -222,15 +228,15 @@ msgstr ""
 "す。このキーリングで使用するパスワードを選択して下さい。"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:680
+#: ../daemon/gkr-daemon-ops.c:503
 msgid "New Keyring Password"
 msgstr "新しいキーリングのパスワード"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:681
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "Choose password for new keyring"
 msgstr "新しいキーリングのパスワードの選択"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:728
+#: ../daemon/gkr-daemon-ops.c:551
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -239,7 +245,7 @@ msgstr ""
 "アプリケーション '%s' (%s) がキーリング '%s' のパスワードを変更しようとしてい"
 "ます。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:732
+#: ../daemon/gkr-daemon-ops.c:555
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -248,8 +254,7 @@ msgstr ""
 "アプリケーション '%s' (%s) がデフォルトのキーリングのパスワードを変更しようと"
 "しています。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:738
-#: ../daemon/gnome-keyring-daemon-ops.c:748
+#: ../daemon/gkr-daemon-ops.c:561 ../daemon/gkr-daemon-ops.c:571
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -258,8 +263,7 @@ msgstr ""
 "アプリケーション '%s' がキーリング '%s' のパスワードを生成しようとしていま"
 "す。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:742
-#: ../daemon/gnome-keyring-daemon-ops.c:752
+#: ../daemon/gkr-daemon-ops.c:565 ../daemon/gkr-daemon-ops.c:575
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -268,7 +272,7 @@ msgstr ""
 "アプリケーション '%s' がデフォルトのキーリングのパスワードを変更しようとして"
 "います。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:758
+#: ../daemon/gkr-daemon-ops.c:581
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -277,7 +281,8 @@ msgstr ""
 "不明なアプリケーションが '%s' というキーリングのパスワードを変更しようとして"
 "います。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:762
+#: ../daemon/gkr-daemon-ops.c:585
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -285,21 +290,22 @@ msgstr ""
 "不明なアプリケーションが新しいデフォルト・キーリングのパスワードを変更しよう"
 "としています。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:772
+#: ../daemon/gkr-daemon-ops.c:595
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "キーリング '%s' の新しいパスワードを選択して下さい"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:774
+#: ../daemon/gkr-daemon-ops.c:597
+#, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "デフォルトのキーリングの新しいパスワードを選択して下さい"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:778
+#: ../daemon/gkr-daemon-ops.c:601
 msgid "Change Keyring Password"
 msgstr "キーリングのパスワードの変更"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:845
+#: ../daemon/gkr-daemon-ops.c:671
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -310,8 +316,7 @@ msgstr ""
 "のキーリングがありません。デフォルトのキーリングを生成する場合はパスワードを"
 "選択する必要があります。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:849
-#: ../daemon/gnome-keyring-daemon-ops.c:853
+#: ../daemon/gkr-daemon-ops.c:675 ../daemon/gkr-daemon-ops.c:679
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -322,7 +327,8 @@ msgstr ""
 "キーリングがありません。デフォルトのキーリングを生成する場合はパスワードを選"
 "択する必要があります。"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:857
+#: ../daemon/gkr-daemon-ops.c:683
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -333,78 +339,234 @@ msgstr ""
 "択する必要があります。"
 
 #. And put together the ask request
-#: ../daemon/gnome-keyring-daemon-ops.c:862
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Create Default Keyring"
 msgstr "キーリング (デフォルト) の生成"
 
-#: ../daemon/gnome-keyring-daemon-ops.c:862
+#: ../daemon/gkr-daemon-ops.c:688
 msgid "Choose password for default keyring"
 msgstr "キーリング (デフォルト) のパスワードの選択"
 
-#: ../library/gnome-keyring-utils.c:109
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr ""
+"このオプションは gnome-keyring デーモンの PKCS#11 コンポーネントを有効にしま"
+"す。gnome-keyring デーモンを起動した時 (すなわちユーザがログインしている場"
+"合) にのみ効果があります。ここで設定した内容はコマンドラインから上書きするこ"
+"とができます。"
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr ""
+"このオプションは gnome-keyring デーモンの SSH コンポーネントを有効にします。"
+"gnome-keyring デーモンを起動した時 (すなわちユーザがログインしている場合) に"
+"のみ効果があります。ここで設定した内容はコマンドラインから上書きすることがで"
+"きます。"
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "PKCS#11 コンポーネントを有効にするかどうか"
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "SSH エージェントを有効にするかどうか"
+
+#: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
 msgstr "アクセスが拒否されました"
 
-#: ../library/gnome-keyring-utils.c:111
+#: ../library/gnome-keyring-utils.c:93
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "'gnome-keyring-daemon' が起動されていません"
 
-#: ../library/gnome-keyring-utils.c:113 ../library/gnome-keyring-utils.c:126
-msgid "The keyring has already been unlocked."
-msgstr "キーリングが既にロックされています"
-
-#: ../library/gnome-keyring-utils.c:115
+#: ../library/gnome-keyring-utils.c:95
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "gnome-keyring-daemon への接続に失敗しました"
 
-#: ../library/gnome-keyring-utils.c:117
+#: ../library/gnome-keyring-utils.c:97
 msgid "A keyring with that name already exists"
 msgstr "その名前のキーリングが既に存在します"
 
-#: ../library/gnome-keyring-utils.c:119
+#: ../library/gnome-keyring-utils.c:99
 msgid "Programmer error: The application sent invalid data."
 msgstr "致命的なエラー: アプリケーションがおかしなデータを送信しました"
 
-#: ../ui/gkr-ask-tool.c:303
+#: ../library/gnome-keyring-utils.c:101
+msgid "No matching results"
+msgstr "一致する結果はありません"
+
+#: ../library/gnome-keyring-utils.c:103
+msgid "A keyring with that name does not exist."
+msgstr "その名前のキーリングは存在しません"
+
+#: ../library/gnome-keyring-utils.c:110
+msgid "The keyring has already been unlocked."
+msgstr "キーリングが既にロックされています"
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:98
+msgid "Unlock Login Keyring"
+msgstr "ログイン用キーリングのロック解除"
+
+#: ../keyrings/gkr-keyring-login.c:98
+msgid "Enter login password to unlock keyring"
+msgstr "ログイン・パスワードを入力して、キーリングのロックを解除して下さい"
+
+#: ../keyrings/gkr-keyring-login.c:100
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr ""
+"このコンピュータにログインした際に、ログイン用キーリングのロックが自動的には"
+"解除されませんでした。"
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:124
+msgid "Create Login Keyring"
+msgstr "ログイン用キーリングの生成"
+
+#: ../keyrings/gkr-keyring-login.c:124
+msgid "Enter your login password"
+msgstr "ログイン・パスワードを入力して下さい"
+
+#: ../keyrings/gkr-keyring-login.c:126
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+"このコンピュータにログインした際にログイン用キーリングが自動的には生成されな"
+"かったので、今から生成します。"
+
+#: ../pk/gkr-pk-object-storage.c:153
+msgid "Unlock"
+msgstr "ロックの解除"
+
+#: ../pk/gkr-pk-object-storage.c:154
+msgid "Enter password to unlock"
+msgstr "パスワードを入力してロックを解除して下さい"
+
+#: ../pk/gkr-pk-object-storage.c:164
+#, c-format
+msgid "Unlock %s"
+msgstr "%s のロックの解除"
+
+#: ../pk/gkr-pk-object-storage.c:165
+#, c-format
+msgid "Enter password for the %s to unlock"
+msgstr "パスワードを入力して %s のロックを解除して下さい"
+
+#: ../pk/gkr-pk-object-storage.c:174
+#, c-format
+msgid "An application wants access to the %s '%s', but it is locked"
+msgstr ""
+"アプリケーションが %s '%s' にアクセスしようとしていますが、ロックされていま"
+"す。"
+
+#: ../pk/gkr-pk-object-storage.c:177
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr ""
+"アプリケーションが '%s' にアクセスしようとしていますが、ロックされています。"
+
+#: ../pk/gkr-pk-object-storage.c:182
+#, c-format
+msgid "The system wants to import the %s '%s', but it is locked."
+msgstr ""
+"アプリケーションが %s '%s' をインポートしようとしていますが、ロックされていま"
+"す。"
+
+#: ../pk/gkr-pk-object-storage.c:185
+#, c-format
+msgid "The system wants to import '%s', but it is locked."
+msgstr "システムが '%s' をインポートしようとしていますが、ロックされています。"
+
+#: ../pk/gkr-pk-object-storage.c:197
+#, c-format
+msgid "Automatically unlock this %s when I log in."
+msgstr "ログインしたら、この %s のロックを自動的に解除する"
+
+#: ../pk/gkr-pk-object-storage.c:209
+#, c-format
+msgid "Unlock password for %s"
+msgstr "%s のロックを解除するパスワード"
+
+#: ../pkix/gkr-pkix-parser.c:430
+msgid "Unrecognized or unsupported file."
+msgstr "認識できないファイルかサポートしていないファイルです"
+
+#: ../pkix/gkr-pkix-parser.c:434
+msgid "Could not parse invalid or corrupted file."
+msgstr "不正なファイルまたはファイルが壊れているようなので解析できませんでした"
+
+#: ../pkix/gkr-pkix-parser.c:503
+msgid "private key"
+msgstr "秘密鍵"
+
+#: ../pkix/gkr-pkix-parser.c:505
+msgid "certificate"
+msgstr "証明"
+
+#: ../ui/gkr-ask-tool.c:79
+msgid "Store passwords unencrypted?"
+msgstr "暗号化していないパスワードを保存しますか？"
+
+#: ../ui/gkr-ask-tool.c:80
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"空のパスワードを利用する場合、保存しておいたパスワードは完全には暗号化されま"
+"せん。他の人達がこれらのパスワードを利用する可能性があります。"
+
+#: ../ui/gkr-ask-tool.c:87
+msgid "Use Unsafe Storage"
+msgstr "安全ではないストレージを使う"
+
+#: ../ui/gkr-ask-tool.c:340
 msgid "_Location:"
 msgstr "場所(_L):"
 
-#: ../ui/gkr-ask-tool.c:316
+#: ../ui/gkr-ask-tool.c:353
 msgid "_Old password:"
 msgstr "古いパスワード(_O):"
 
-#: ../ui/gkr-ask-tool.c:336
+#: ../ui/gkr-ask-tool.c:373
 msgid "_Password:"
 msgstr "パスワード(_P):"
 
-#: ../ui/gkr-ask-tool.c:358
+#: ../ui/gkr-ask-tool.c:395
 msgid "_Confirm password:"
 msgstr "パスワードの確認(_C):"
 
-#: ../ui/gkr-ask-tool.c:377
+#: ../ui/gkr-ask-tool.c:414
 msgid "New password strength"
 msgstr "新しいパスワードの強度"
 
-#: ../ui/gkr-ask-tool.c:433
-msgid "Old password cannot be blank."
-msgstr "古いパスワードは空にできません。"
-
-#: ../ui/gkr-ask-tool.c:445
-msgid "Password cannot be blank."
-msgstr "パスワードは空にできません。"
-
-#: ../ui/gkr-ask-tool.c:454
+#: ../ui/gkr-ask-tool.c:481
 msgid "Passwords do not match."
 msgstr "パスワードが一致しません。"
 
-#: ../ui/gkr-ask-tool.c:503
+#: ../ui/gkr-ask-tool.c:497
+msgid "Password cannot be blank"
+msgstr "パスワードを空にしないで下さい"
+
+#: ../ui/gkr-ask-tool.c:548
 msgid "Deny"
 msgstr "拒否する"
 
-#: ../ui/gkr-ask-tool.c:515
+#: ../ui/gkr-ask-tool.c:560
 msgid "Allow _Once"
 msgstr "一度だけ許可する(_O)"
 
-#: ../ui/gkr-ask-tool.c:519
+#: ../ui/gkr-ask-tool.c:564
 msgid "_Always Allow"
 msgstr "常に許可する(_A)"
