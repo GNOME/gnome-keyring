@@ -71,7 +71,7 @@ void unit_setup_keys (void)
 
 void unit_test_create_keys (CuTest* cu)
 {
-	GkrParseResult res;
+	GkrPkixResult res;
 	gcry_sexp_t sexp;
 	gchar *data;
 	gsize n_data;
@@ -79,7 +79,7 @@ void unit_test_create_keys (CuTest* cu)
 	if (!g_file_get_contents ("test-data/privkey-1.key", &data, &n_data, NULL))
 		g_error ("couldn't read privkey-1.key");
 	res = gkr_pkix_der_read_private_key ((const guchar*)data, n_data, &sexp);
-	g_assert (res == GKR_PARSE_SUCCESS);
+	g_assert (res == GKR_PKIX_SUCCESS);
 	
 	privkey_1 = gkr_pk_privkey_new (manager, 0, sexp);
 	g_assert (GKR_IS_PK_PRIVKEY (privkey_1));
@@ -92,7 +92,7 @@ void unit_test_create_keys (CuTest* cu)
 	if (!g_file_get_contents ("test-data/privkey-3.key", &data, &n_data, NULL))
 		g_error ("couldn't read privkey-3.key");
 	res = gkr_pkix_der_read_private_key ((const guchar*)data, n_data, &sexp);
-	g_assert (res == GKR_PARSE_SUCCESS);
+	g_assert (res == GKR_PKIX_SUCCESS);
 	
 	privkey_3 = gkr_pk_privkey_new (manager, 0, sexp);
 	g_assert (GKR_IS_PK_PRIVKEY (privkey_3));

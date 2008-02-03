@@ -67,7 +67,7 @@ void unit_setup_trust (void)
 void unit_test_create_trust (CuTest* cu)
 {
 	gkrconstunique keyid;
-	GkrParseResult res;
+	GkrPkixResult res;
 	ASN1_TYPE asn1;
 	gchar *data;
 	gsize n_data;
@@ -75,7 +75,7 @@ void unit_test_create_trust (CuTest* cu)
 	if (!g_file_get_contents ("test-data/certificate-1.crt", &data, &n_data, NULL))
 		g_error ("couldn't read certificate-1.crt");
 	res = gkr_pkix_der_read_certificate ((const guchar*)data, n_data, &asn1);
-	g_assert (res == GKR_PARSE_SUCCESS);
+	g_assert (res == GKR_PKIX_SUCCESS);
 	certificate_1 = gkr_pk_cert_new (manager, 0, asn1);
 	CuAssert (cu, "gkr_pk_cert_new returned bad object", GKR_IS_PK_CERT (certificate_1));
 
@@ -91,7 +91,7 @@ void unit_test_create_trust (CuTest* cu)
 	if (!g_file_get_contents ("test-data/certificate-2.crt", &data, &n_data, NULL))
 		g_error ("couldn't read certificate-2.crt");
 	res = gkr_pkix_der_read_certificate ((const guchar*)data, n_data, &asn1);
-	g_assert (res == GKR_PARSE_SUCCESS);
+	g_assert (res == GKR_PKIX_SUCCESS);
 	certificate_2 = gkr_pk_cert_new (manager, 0, asn1);
 	CuAssert (cu, "gkr_pk_cert_new returned bad object", GKR_IS_PK_CERT (certificate_2));
 

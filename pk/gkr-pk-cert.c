@@ -145,7 +145,7 @@ get_public_key (GkrPkCert *cert)
 {
 	gcry_sexp_t s_key = NULL;
 	GkrPkObject *obj;
-	GkrParseResult res;
+	GkrPkixResult res;
 	guchar *data;
 	gsize n_data;
 
@@ -164,7 +164,7 @@ get_public_key (GkrPkCert *cert)
 	res = gkr_pkix_der_read_public_key_info (data, n_data, &s_key);
 	g_free (data);
 	
-	if (res != GKR_PARSE_SUCCESS) {
+	if (res != GKR_PKIX_SUCCESS) {
 		g_warning ("invalid public-key in certificate: %s", g_quark_to_string (obj->location));
 		return NULL;
 	}
@@ -240,7 +240,7 @@ static CK_RV
 lookup_certificate_purposes (GkrPkCert *cert, GQuark **oids)
 {
 	GkrPkObject *obj = GKR_PK_OBJECT (cert);
-	GkrParseResult res;
+	GkrPkixResult res;
 	guchar *extension;
 	gsize n_extension;
 	CK_RV ret;
@@ -265,7 +265,7 @@ lookup_certificate_purposes (GkrPkCert *cert, GQuark **oids)
 		res = gkr_pkix_der_read_enhanced_usage (extension, n_extension, oids);
 		g_free (extension);
 	
-		if (res != GKR_PARSE_SUCCESS) {
+		if (res != GKR_PKIX_SUCCESS) {
 			g_warning ("invalid enhanced usage in certificate");
 			return CKR_GENERAL_ERROR;
 		}
@@ -354,7 +354,7 @@ find_certificate_extension (GkrPkCert *cert, GQuark oid)
 
 		/* See if it's the same */
 		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", i);
-		exoid = gkr_pkix_asn1_read_quark (cert->data->asn1, name);
+		exoid = gkr_pkix_asn1_read_oid (cert->data->asn1, name);
 		g_free (name);
 
 		if(exoid == oid)
@@ -468,12 +468,12 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		value = 0; /* unknown */
 		data = gkr_pk_cert_get_extension (cert, OID_BASIC_CONSTRAINTS, &n_data, NULL);
 		if (data) {
-			GkrParseResult res;
+			GkrPkixResult res;
 			gboolean is_ca;
 
 			res = gkr_pkix_der_read_basic_constraints (data, n_data, &is_ca, NULL);
 			g_free (data);
-			if (res != GKR_PARSE_SUCCESS)
+			if (res != GKR_PKIX_SUCCESS)
 				return CKR_GENERAL_ERROR;
 			if (is_ca)
 				value = 2; /* authority */
@@ -586,6 +586,21 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	return GKR_PK_OBJECT_CLASS (gkr_pk_cert_parent_class)->get_attribute (obj, attr);
 }
 
+static guchar*
+gkr_pk_cert_serialize (GkrPkObject *obj, const gchar *password, gsize *n_data)
+{
+	GkrPkCert *cert = GKR_PK_CERT (obj);
+
+	if (load_certificate (cert) != CKR_OK)
+		return NULL;
+
+	g_return_val_if_fail (cert->data->raw, NULL);
+	g_return_val_if_fail (cert->data->n_raw, NULL);
+	
+	*n_data = cert->data->n_raw;
+	return g_memdup	(cert->data->raw, cert->data->n_raw);
+}
+
 static void
 gkr_pk_cert_finalize (GObject *obj)
 {
@@ -616,6 +631,7 @@ gkr_pk_cert_class_init (GkrPkCertClass *klass)
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
 	parent_class->get_attribute = gkr_pk_cert_get_attribute;
+	parent_class->serialize = gkr_pk_cert_serialize;
 	
 	gobject_class->get_property = gkr_pk_cert_get_property;
 	gobject_class->set_property = gkr_pk_cert_set_property;
@@ -678,7 +694,7 @@ gkr_pk_cert_create (GkrPkObjectManager* manager, GArray* array,
 	g_return_val_if_fail (attr->pValue, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (attr->ulValueLen, CKR_GENERAL_ERROR);
 	
-	if (gkr_pkix_der_read_certificate (attr->pValue, attr->ulValueLen, &asn) != GKR_PARSE_SUCCESS)
+	if (gkr_pkix_der_read_certificate (attr->pValue, attr->ulValueLen, &asn) != GKR_PKIX_SUCCESS)
 		return CKR_ATTRIBUTE_VALUE_INVALID;
 	
 	/* All the attributes that we used up */	

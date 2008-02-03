@@ -40,6 +40,7 @@
 #include "pkcs11/pkcs11g.h"
 
 #include "pkix/gkr-pkix-der.h"
+#include "pkix/gkr-pkix-serialize.h"
 
 #include <glib.h>
 #include <glib-object.h>
@@ -105,7 +106,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 {
 	gcry_sexp_t s_key = NULL;
 	GkrPkObject *obj;
-	GkrParseResult res;
+	GkrPkixResult res;
 	guchar *data;
 	gsize n_data;
 
@@ -118,7 +119,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 	data = gkr_pk_index_get_binary (obj, "public-key", &n_data);
 	if (data) {
 		res = gkr_pkix_der_read_public_key (data, n_data, &s_key);
-		if (res == GKR_PARSE_SUCCESS) {
+		if (res == GKR_PKIX_SUCCESS) {
 			key->priv->pubkey = gkr_pk_pubkey_instance (obj->manager, 
 			                                            obj->location, s_key);
 			goto done;
@@ -503,6 +504,20 @@ gkr_pk_privkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	return GKR_PK_OBJECT_CLASS (gkr_pk_privkey_parent_class)->get_attribute (obj, attr);
 }
 
+static guchar*
+gkr_pk_privkey_serialize (GkrPkObject *obj, const gchar *password, gsize *n_data)
+{
+	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
+	
+	if (!load_private_key (key))
+		return NULL;
+		
+	g_return_val_if_fail (key->priv->s_key, NULL);
+	
+	/* Write it out */
+	return gkr_pkix_serialize_private_key_pkcs8 (key->priv->s_key, password, n_data);
+}
+
 static void
 gkr_pk_privkey_dispose (GObject *obj)
 {
@@ -542,6 +557,7 @@ gkr_pk_privkey_class_init (GkrPkPrivkeyClass *klass)
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
 	parent_class->get_attribute = gkr_pk_privkey_get_attribute;
+	parent_class->serialize = gkr_pk_privkey_serialize;
 	
 	gobject_class = (GObjectClass*)klass;
 	gobject_class->get_property = gkr_pk_privkey_get_property;

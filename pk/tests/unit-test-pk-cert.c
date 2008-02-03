@@ -67,7 +67,7 @@ void unit_setup_certificate (void)
 
 void unit_test_create_certificate (CuTest* cu)
 {
-	GkrParseResult res;
+	GkrPkixResult res;
 	ASN1_TYPE asn1;
 	gcry_sexp_t sexp;
 	gchar *data;
@@ -77,7 +77,7 @@ void unit_test_create_certificate (CuTest* cu)
 	if (!g_file_get_contents ("test-data/certificate-1.crt", &data, &n_data, NULL))
 		g_error ("couldn't read certificate-1.crt");
 	res = gkr_pkix_der_read_certificate ((const guchar*)data, n_data, &asn1);
-	g_assert (res == GKR_PARSE_SUCCESS);
+	g_assert (res == GKR_PKIX_SUCCESS);
 	
 	certificate_1 = gkr_pk_cert_new (manager, 0, asn1);
 	CuAssert (cu, "gkr_pk_cert_new returned bad object", GKR_IS_PK_CERT (certificate_1));
@@ -85,7 +85,7 @@ void unit_test_create_certificate (CuTest* cu)
 	if (!g_file_get_contents ("test-data/privkey-1.key", &data, &n_data, NULL))
 		g_error ("couldn't read privkey-1.key");
 	res = gkr_pkix_der_read_private_key ((const guchar*)data, n_data, &sexp);
-	g_assert (res == GKR_PARSE_SUCCESS);
+	g_assert (res == GKR_PKIX_SUCCESS);
 	
 	privkey_1 = gkr_pk_privkey_new (manager, 0, sexp);
 	g_assert (GKR_IS_PK_PRIVKEY (privkey_1));
@@ -93,7 +93,7 @@ void unit_test_create_certificate (CuTest* cu)
 	if (!g_file_get_contents ("test-data/certificate-2.crt", &data, &n_data, NULL))
 		g_error ("couldn't read certificate-2.crt");
 	res = gkr_pkix_der_read_certificate ((const guchar*)data, n_data, &asn1);
-	g_assert (res == GKR_PARSE_SUCCESS);
+	g_assert (res == GKR_PKIX_SUCCESS);
 	
 	certificate_2 = gkr_pk_cert_new (manager, 0, asn1);
 	CuAssert (cu, "gkr_pk_cert_new returned bad object", GKR_IS_PK_CERT (certificate_2));

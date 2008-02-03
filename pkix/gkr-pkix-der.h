@@ -26,44 +26,56 @@
 
 #include <glib.h>
 #include <gcrypt.h>
+#include <libtasn1.h>
 
-#include "gkr-pkix-parser.h"
+#include "gkr-pkix-types.h"
 
 /* -----------------------------------------------------------------------------
  * PRIVATE KEYS 
  */
  
-GkrParseResult  gkr_pkix_der_read_private_key_rsa       (const guchar *data, gsize n_data, 
+GkrPkixResult gkr_pkix_der_read_private_key_rsa         (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
 
-GkrParseResult  gkr_pkix_der_read_private_key_dsa       (const guchar *data, gsize n_data, 
+GkrPkixResult gkr_pkix_der_read_private_key_dsa         (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
 
-GkrParseResult  gkr_pkix_der_read_private_key_dsa_parts (const guchar *keydata, gsize n_keydata,
-							 const guchar *params, gsize n_params, 
+GkrPkixResult gkr_pkix_der_read_private_key_dsa_parts   (const guchar *keydata, gsize n_keydata,
+                                                         const guchar *params, gsize n_params, 
                                                          gcry_sexp_t *s_key);
 
-GkrParseResult  gkr_pkix_der_read_private_key           (const guchar *data, gsize n_data, 
+GkrPkixResult gkr_pkix_der_read_private_key             (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
-                                                         
+
+guchar*       gkr_pkix_der_write_private_key_rsa        (gcry_sexp_t s_key, gsize *n_data);
+
+guchar*       gkr_pkix_der_write_private_key_dsa        (gcry_sexp_t s_key, gsize *len);
+
+guchar*       gkr_pkix_der_write_private_key_dsa_part   (gcry_sexp_t skey, gsize *n_key);
+
+guchar*       gkr_pkix_der_write_private_key_dsa_params (gcry_sexp_t skey, gsize *n_params);
+
+guchar*       gkr_pkix_der_write_private_key            (gcry_sexp_t s_key, gsize *n_data);
+
+
 /* -----------------------------------------------------------------------------
  * PUBLIC KEYS
  */
 
-GkrParseResult  gkr_pkix_der_read_public_key_rsa        (const guchar *data, gsize n_data, 
+GkrPkixResult   gkr_pkix_der_read_public_key_rsa        (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
 
-GkrParseResult  gkr_pkix_der_read_public_key_dsa        (const guchar *data, gsize n_data, 
+GkrPkixResult   gkr_pkix_der_read_public_key_dsa        (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
 
-GkrParseResult  gkr_pkix_der_read_public_key_dsa_parts  (const guchar *keydata, gsize n_keydata,
+GkrPkixResult   gkr_pkix_der_read_public_key_dsa_parts  (const guchar *keydata, gsize n_keydata,
                                                          const guchar *params, gsize n_params,
                                                          gcry_sexp_t *s_key);
                                                          
-GkrParseResult  gkr_pkix_der_read_public_key            (const guchar *data, gsize n_data, 
+GkrPkixResult   gkr_pkix_der_read_public_key            (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
 
-GkrParseResult  gkr_pkix_der_read_public_key_info       (const guchar *data, gsize n_data, 
+GkrPkixResult   gkr_pkix_der_read_public_key_info       (const guchar *data, gsize n_data, 
                                                          gcry_sexp_t *s_key);
 
 guchar*         gkr_pkix_der_write_public_key_rsa       (gcry_sexp_t s_key, gsize *len);
@@ -77,38 +89,38 @@ guchar*         gkr_pkix_der_write_public_key           (gcry_sexp_t s_key, gsiz
  * CERTIFICATES
  */
 
-GkrParseResult  gkr_pkix_der_read_certificate           (const guchar *data, gsize n_data, 
+GkrPkixResult   gkr_pkix_der_read_certificate           (const guchar *data, gsize n_data, 
                                                          ASN1_TYPE *asn1);
                                                          
-GkrParseResult  gkr_pkix_der_read_basic_constraints     (const guchar *data, gsize n_data, 
+GkrPkixResult   gkr_pkix_der_read_basic_constraints     (const guchar *data, gsize n_data, 
                                                          gboolean *is_ca, guint *path_len);
 
-GkrParseResult  gkr_pkix_der_read_key_usage             (const guchar *data, gsize n_data, 
+GkrPkixResult   gkr_pkix_der_read_key_usage             (const guchar *data, gsize n_data, 
                                                          guint *key_usage);
 
-GkrParseResult  gkr_pkix_der_read_enhanced_usage        (const guchar *data, gsize n_data, 
+GkrPkixResult   gkr_pkix_der_read_enhanced_usage        (const guchar *data, gsize n_data, 
                                                          GQuark **oids);
+
+guchar*         gkr_pkix_der_write_certificate          (ASN1_TYPE asn1, gsize *n_data);
 
 /* -----------------------------------------------------------------------------
  * CIPHERS
  */
  
-GkrParseResult     gkr_pkix_der_read_cipher                 (GkrPkixParser *parser, GQuark oid_scheme, 
-                                                             const gchar *password, const guchar *data, 
+GkrPkixResult      gkr_pkix_der_read_cipher                 (GQuark oid_scheme, const gchar *password, 
+                                                             const guchar *data, gsize n_data, 
+                                                             gcry_cipher_hd_t *cih);
+
+GkrPkixResult      gkr_pkix_der_read_cipher_pkcs5_pbe       (int cipher_algo, int cipher_mode, 
+                                                             int hash_algo, const gchar *password, 
+                                                             const guchar *data, gsize n_data, 
+                                                             gcry_cipher_hd_t *cih);
+
+GkrPkixResult      gkr_pkix_der_read_cipher_pkcs5_pbes2     (const gchar *password, const guchar *data, 
                                                              gsize n_data, gcry_cipher_hd_t *cih);
 
-GkrParseResult     gkr_pkix_der_read_cipher_pkcs5_pbe       (GkrPkixParser *parser, int cipher_algo, 
-                                                             int cipher_mode, int hash_algo, 
-		                                             const gchar *password, const guchar *data, 
-		                                             gsize n_data, gcry_cipher_hd_t *cih);
-
-GkrParseResult     gkr_pkix_der_read_cipher_pkcs5_pbes2     (GkrPkixParser *parser, const gchar *password, 
-                                                             const guchar *data, gsize n_data, 
-                                                             gcry_cipher_hd_t *cih);
-
-GkrParseResult     gkr_pkix_der_read_cipher_pkcs12_pbe      (GkrPkixParser *parser, int cipher_algo, 
-                                                             int cipher_mode, const gchar *password,
-                                                             const guchar *data, gsize n_data, 
-                                                             gcry_cipher_hd_t *cih);
+GkrPkixResult      gkr_pkix_der_read_cipher_pkcs12_pbe      (int cipher_algo, int cipher_mode, 
+                                                             const gchar *password, const guchar *data, 
+                                                             gsize n_data, gcry_cipher_hd_t *cih);
 
 #endif /*GKRPKIXDER_H_*/

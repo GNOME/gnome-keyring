@@ -90,7 +90,7 @@ cleanup_object_storage (void *unused)
 
 static gchar* 
 parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique, 
-                     GkrParsedType type, const gchar *label, guint failures,
+                     GQuark type, const gchar *label, guint failures,
                      ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
@@ -131,8 +131,8 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 	 */
 	stype = gkr_pk_index_get_string_full (loc, unique, "parsed-type");
 	if (stype) {
-		if (type == GKR_PARSED_UNKNOWN)
-			type = gkr_pkix_parsed_type_from_string (stype);
+		if (!type && stype[0])
+			type = g_quark_from_string (stype);
 		have_indexed = TRUE;
 		g_free (stype);
 	}
@@ -148,7 +148,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 	custom_label = NULL;
 	
 	/* We have no idea what kind of data it is, poor user */
-	if (type == GKR_PARSED_UNKNOWN) {
+	if (!type) {
 		display_type = NULL;
 		title = g_strdup (_("Unlock"));
 		primary = g_strdup (_("Enter password to unlock"));
@@ -312,7 +312,7 @@ remove_object (GkrPkObjectStorage *storage, GkrPkObject *object)
 
 static GkrPkObject*
 prepare_object (GkrPkObjectStorage *storage, GQuark location, 
-                gkrconstunique unique, GkrParsedType type)
+                gkrconstunique unique, GQuark type)
 {
 	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
 	GkrPkObjectManager *manager;
@@ -329,17 +329,14 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 		return object;
 	} 
 	
-	switch (type) {
-	case GKR_PARSED_PRIVATE_KEY:
+	if (type == GKR_PKIX_PRIVATE_KEY) 
 		gtype = GKR_TYPE_PK_PRIVKEY;
-		break;
-	case GKR_PARSED_CERTIFICATE:
+	else if (type == GKR_PKIX_PUBLIC_KEY) 
+		gtype = GKR_TYPE_PK_PUBKEY;
+	else if (type == GKR_PKIX_CERTIFICATE)
 		gtype = GKR_TYPE_PK_CERT;
-		break;
-	default:
+	else 
 		g_return_val_if_reached (NULL);
-		break;
-	}
 	
 	object = g_object_new (gtype, "manager", manager, "location", location, 
 	                       "unique", unique, NULL);
@@ -355,21 +352,21 @@ g_printerr ("parsed %s at %s\n", G_OBJECT_TYPE_NAME (object), g_quark_to_string 
 
 static void 
 parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrunique unique,
-                       GkrParsedType type, ParseContext *ctx)
+                       GQuark type, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
  	GkrPkObject *object;
  	gchar *stype;
  	
 	/* If we don't know the type then look it up */
-	if (type == GKR_PARSED_UNKNOWN) {
+	if (!type) {
 		stype = gkr_pk_index_get_string_full (location, unique, "parsed-type");
-		if (stype)
-			type = gkr_pkix_parsed_type_from_string (stype);
+		if (stype && stype[0])
+			type = g_quark_from_string (stype);
 		g_free (stype);
 	}
 	
-	if (type != GKR_PARSED_UNKNOWN) { 
+	if (type) { 
 	 	object = prepare_object (ctx->storage, location, unique, type);
  		g_return_if_fail (object != NULL);
  	
@@ -387,12 +384,12 @@ parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrunique unique,
 
 static void
 parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrunique unique,
-	            GkrParsedType type, gcry_sexp_t sexp, ParseContext *ctx)
+	                GQuark type, gcry_sexp_t sexp, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
  	GkrPkObject *object;
  	
- 	g_return_if_fail (type != GKR_PARSED_UNKNOWN);
+ 	g_return_if_fail (type != 0);
  	
  	object = prepare_object (ctx->storage, location, unique, type);
  	g_return_if_fail (object != NULL);
@@ -413,12 +410,12 @@ parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrunique unique,
 
 static void
 parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique unique, 
-                    GkrParsedType type, ASN1_TYPE asn1, ParseContext *ctx)
+                    GQuark type, ASN1_TYPE asn1, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
 	GkrPkObject *object;
 	
- 	g_return_if_fail (type != GKR_PARSED_UNKNOWN);
+ 	g_return_if_fail (type != 0);
  	
 	object = prepare_object (ctx->storage, location, unique, type);
 	g_return_if_fail (object != NULL);
@@ -449,11 +446,11 @@ static void
 index_each_unique (gkrunique unique, gpointer value, gpointer data)
 {
 	GQuark location = GPOINTER_TO_UINT (data);
-	GkrParsedType type = GPOINTER_TO_UINT (value);
+	GQuark type = GPOINTER_TO_UINT (value);
 	
 	/* Stash away the parsed type, in case we need it when prompting for a password */
 	gkr_pk_index_set_string_full (location, unique, "parsed-type", 
-	                              gkr_pkix_parsed_type_to_string (type));
+	                              g_quark_to_string (type));
 }
 
 static gboolean
@@ -461,7 +458,7 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, GError **err)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
  	GkrPkixParser *parser;
- 	GkrParseResult ret;
+ 	GkrPkixResult ret;
  	GkrPkObject *object;
 	ParseContext ctx;
 	GArray *objs;

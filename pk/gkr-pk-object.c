@@ -214,6 +214,16 @@ gkr_pk_object_set_attribute_common (GkrPkObject *obj, CK_ATTRIBUTE_PTR attr)
 	};
 }
 
+static guchar*
+gkr_pk_object_serialize (GkrPkObject *obj, const gchar *password, gsize *n_data)
+{
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), NULL);
+	g_return_val_if_fail (n_data, NULL);
+	
+	*n_data = 0;
+	return NULL;
+}
+
 static void
 gkr_pk_object_get_property (GObject *obj, guint prop_id, GValue *value, 
                              GParamSpec *pspec)
@@ -305,6 +315,7 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 	
 	klass->get_attribute = gkr_pk_object_get_attribute_common;
 	klass->set_attribute = gkr_pk_object_set_attribute_common;
+	klass->serialize = gkr_pk_object_serialize;
 
 	g_type_class_add_private (gobject_class, sizeof (GkrPkObjectPrivate));
 	

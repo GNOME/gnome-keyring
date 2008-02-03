@@ -36,6 +36,7 @@
 #include "common/gkr-unique.h"
 
 #include "pkix/gkr-pkix-der.h"
+#include "pkix/gkr-pkix-serialize.h"
 
 #include <glib.h>
 #include <glib-object.h>
@@ -428,6 +429,20 @@ gkr_pk_pubkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	return GKR_PK_OBJECT_CLASS (gkr_pk_pubkey_parent_class)->get_attribute (obj, attr);
 }
 
+static guchar*
+gkr_pk_pubkey_serialize (GkrPkObject *obj, const gchar *password, gsize *n_data)
+{
+	GkrPkPubkey *key = GKR_PK_PUBKEY (obj);
+	
+	if (!load_public_key (key))
+		return NULL;
+		
+	g_return_val_if_fail (key->pub->s_key, NULL);
+	
+	/* Write it to the indexes */
+	return gkr_pkix_serialize_public_key (key->pub->s_key, n_data);
+}
+
 static void
 gkr_pk_pubkey_finalize (GObject *obj)
 {
@@ -453,6 +468,7 @@ gkr_pk_pubkey_class_init (GkrPkPubkeyClass *klass)
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
 	parent_class->get_attribute = gkr_pk_pubkey_get_attribute;
+	parent_class->serialize = gkr_pk_pubkey_serialize;
 	
 	gobject_class = (GObjectClass*)klass;
 	gobject_class->get_property = gkr_pk_pubkey_get_property;

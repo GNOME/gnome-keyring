@@ -30,7 +30,7 @@
 
 int               gkr_pkix_openssl_parse_algo       (const gchar *name, int *mode);
 
-GkrParseResult    gkr_pkix_openssl_decrypt_block    (const gchar *dekinfo, const gchar *password, 
+GkrPkixResult    gkr_pkix_openssl_decrypt_block    (const gchar *dekinfo, const gchar *password, 
                                                      const guchar *data, gsize n_data, 
                                                      guchar **decrypted, gsize *n_decrypted);
 

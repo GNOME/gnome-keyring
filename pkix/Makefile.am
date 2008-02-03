@@ -23,6 +23,8 @@ libgkr_pkix_la_SOURCES = \
 	gkr-pkix-openssl.c gkr-pkix-openssl.h \
 	gkr-pkix-parser.c gkr-pkix-parser.h \
 	gkr-pkix-pem.c gkr-pkix-pem.h \
+	gkr-pkix-serialize.c gkr-pkix-serialize.h \
+	gkr-pkix-types.h \
 	$(BUILT_SOURCES)
 
 gkr-pkix-marshal.h: gkr-pkix-marshal.list $(GLIB_GENMARSHAL)

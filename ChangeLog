@@ -1,3 +1,35 @@
+2008-01-02  Stef Walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-cert.c:
+	* pk/gkr-pk-netscape-trust.c:
+	* pk/gkr-pk-object-storage.c:
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object.h:
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-pubkey.c:
+	* pk/tests/unit-test-pk-cert.c:
+	* pk/tests/unit-test-pk-key.c:
+	* pk/tests/unit-test-pk-netscape-trust.c:
+	* pkix/Makefile.am:
+	* pkix/gkr-pkix-asn1.c:
+	* pkix/gkr-pkix-asn1.h:
+	* pkix/gkr-pkix-der.c:
+	* pkix/gkr-pkix-der.h:
+	* pkix/gkr-pkix-openssl.c:
+	* pkix/gkr-pkix-openssl.h:
+	* pkix/gkr-pkix-parser.c:
+	* pkix/gkr-pkix-parser.h:
+	* pkix/gkr-pkix-serialize.c: (added)
+	* pkix/gkr-pkix-serialize.h: (added)
+	* pkix/gkr-pkix-types.h: (added)
+	* pkix/tests/Makefile.am:
+	* pkix/tests/unit-test-pkix-der.c:
+	* pkix/tests/unit-test-pkix-parser.c:
+	* pkix/tests/unit-test-pkix-serialize.c: (added)
+	* pkix/tests/test-data/der-certificate.crt: (added) Reworked pkix parsing
+	and added some serializing capabilities. Add basic infrastructure for
+	serializing of objects like certificates and keys.
+
 2008-01-31  Stef Walter  <stef@memberwebs.com>
 
 	* keyrings/gkr-keyring.c:

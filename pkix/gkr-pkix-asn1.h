@@ -43,7 +43,12 @@ guchar*            gkr_pkix_asn1_encode                        (ASN1_TYPE asn, c
 guchar*            gkr_pkix_asn1_read_value                    (ASN1_TYPE asn, const gchar *part, 
                                                                 gsize *len, GkrBufferAllocator alloc);
 
-GQuark             gkr_pkix_asn1_read_quark                    (ASN1_TYPE asn, const gchar *part);
+gboolean           gkr_pkix_asn1_write_value                   (ASN1_TYPE asn, const gchar *part, 
+		                                                        const guchar* value, gsize len); 
+
+GQuark             gkr_pkix_asn1_read_oid                      (ASN1_TYPE asn, const gchar *part);
+
+gboolean           gkr_pkix_asn1_write_oid                     (ASN1_TYPE asn, const gchar *part, GQuark val);
 
 gboolean           gkr_pkix_asn1_read_boolean                  (ASN1_TYPE asn, const gchar *part, gboolean *val);
 

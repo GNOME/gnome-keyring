@@ -62,9 +62,23 @@ struct _GkrPkObject {
 struct _GkrPkObjectClass {
 	GObjectClass parent_class;
 
-	/* The attribute getter and setter */
+	/* 
+	 * The attribute getter and setter for PKCS#11 attributes.
+	 * The base class getters and setters provide access to common
+	 * attributes, and derived classes override. 
+	 */
 	CK_RV (*get_attribute) (GkrPkObject *obj, CK_ATTRIBUTE_PTR attr);
 	CK_RV (*set_attribute) (GkrPkObject *obj, CK_ATTRIBUTE_PTR attr); 
+	
+	/* 
+	 * Overridden by derived classes to provide the serialized 
+	 * representation of the object, minus modifiable attributes, and 
+	 * things that go in the index. 
+	 * 
+	 * Objects may choose to use the 'password' to encrypt and/or MAC 
+	 * the data, as long as the representation is later decryptable. 
+	 */
+	guchar* (*serialize) (GkrPkObject *obj, const gchar* password, gsize *n_data);
 };
 
 GType               gkr_pk_object_get_type         (void) G_GNUC_CONST;

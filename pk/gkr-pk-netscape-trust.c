@@ -84,7 +84,7 @@ certificate_attribute (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_PTR result)
 static CK_RV
 has_key_usage (GkrPkNetscapeTrust *trust, guint check, CK_ULONG *val)
 {
-	GkrParseResult res;
+	GkrPkixResult res;
 	guchar *extension;
 	gsize n_extension;
 	guint usage;
@@ -101,7 +101,7 @@ has_key_usage (GkrPkNetscapeTrust *trust, guint check, CK_ULONG *val)
 	res = gkr_pkix_der_read_key_usage (extension, n_extension, &usage);
 	g_free (extension);
 	
-	if (res != GKR_PARSE_SUCCESS) {
+	if (res != GKR_PKIX_SUCCESS) {
 		g_warning ("invalid key usage in certificate");
 		return CKR_GENERAL_ERROR;
 	}

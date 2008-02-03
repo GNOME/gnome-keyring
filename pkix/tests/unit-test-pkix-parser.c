@@ -54,7 +54,7 @@
 
 static GkrPkixParser *parser = NULL;
 
-static GkrParsedType last_type_parsed = 0;
+static GQuark last_type_parsed = 0;
 static gcry_sexp_t last_sexp_parsed = NULL;
 static ASN1_TYPE last_asn1_parsed = NULL;
 static guint n_parsed = 0;
@@ -63,7 +63,7 @@ static CuTest *the_cu = NULL;
 
 static gboolean
 parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstunique unique, 
-                GkrParsedType type, gpointer user_data)
+                GQuark type, gpointer user_data)
 {
 	CuTest *cu = the_cu;
 	g_assert (cu);
@@ -83,7 +83,7 @@ parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
 
 static gboolean
 parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstunique unique, 
-             GkrParsedType type, gcry_sexp_t sexp, gpointer user_data)
+             GQuark type, gcry_sexp_t sexp, gpointer user_data)
 {
 	CuTest *cu = the_cu;
 	g_assert (cu);
@@ -105,7 +105,7 @@ parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
 
 static gboolean
 parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
-             GkrParsedType type, ASN1_TYPE asn1, gpointer user_data)
+             GQuark type, ASN1_TYPE asn1, gpointer user_data)
 {
 	CuTest *cu = the_cu;
 	g_assert (cu);
@@ -127,7 +127,7 @@ parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
 
 static gchar*
 ask_password (GkrPkixParser *parser, GQuark loc, gkrconstunique unique, 
-              GkrParsedType type, const gchar *details, guint n_prompts, 
+              GQuark type, const gchar *details, guint n_prompts, 
               gpointer user_data) 
 {
 	CuTest *cu = the_cu;
@@ -183,7 +183,7 @@ void unit_test_start_parser (CuTest *cu)
 void unit_test_pkix_parse_der_keys (CuTest* cu)
 {
 	guchar *contents;
-	GkrParseResult result;
+	GkrPkixResult result;
 	GQuark location;
 	gsize len;
 	
@@ -194,7 +194,7 @@ void unit_test_pkix_parse_der_keys (CuTest* cu)
 	
 	last_sexp_parsed = NULL;
 	result = gkr_pkix_parser_der_private_key (parser, location, contents, len);
-	CuAssert (cu, "couldn't parse RSA key", result == GKR_PARSE_SUCCESS);
+	CuAssert (cu, "couldn't parse RSA key", result == GKR_PKIX_SUCCESS);
 	CuAssert (cu, "parsed object is invalid", last_sexp_parsed != NULL);
 	
 	gkr_crypto_sexp_dump (last_sexp_parsed);
@@ -204,7 +204,7 @@ void unit_test_pkix_parse_der_keys (CuTest* cu)
 	
 	last_sexp_parsed = NULL;
 	result = gkr_pkix_parser_der_private_key (parser, location, contents, len);
-	CuAssert (cu, "couldn't parse DSA key", result == GKR_PARSE_SUCCESS);
+	CuAssert (cu, "couldn't parse DSA key", result == GKR_PKIX_SUCCESS);
 	CuAssert (cu, "parsed object is invalid", last_sexp_parsed != NULL);
 	
 	gkr_crypto_sexp_dump (last_sexp_parsed);
@@ -213,7 +213,7 @@ void unit_test_pkix_parse_der_keys (CuTest* cu)
 void unit_test_pkix_parse_der_pkcs8 (CuTest* cu)
 {
 	guchar *contents;
-	GkrParseResult result;
+	GkrPkixResult result;
 	GQuark location;
 	gsize len;
 	
@@ -224,7 +224,7 @@ void unit_test_pkix_parse_der_pkcs8 (CuTest* cu)
 	
 	last_sexp_parsed = NULL;
 	result = gkr_pkix_parser_der_pkcs8_plain (parser, location, contents, len);
-	CuAssert (cu, "couldn't parse PKCS8 key", result == GKR_PARSE_SUCCESS);
+	CuAssert (cu, "couldn't parse PKCS8 key", result == GKR_PKIX_SUCCESS);
 	CuAssert (cu, "parsed object is invalid", last_sexp_parsed != NULL);
 	
 	gkr_crypto_sexp_dump (last_sexp_parsed);
@@ -234,7 +234,7 @@ void unit_test_pkix_parse_der_pkcs8 (CuTest* cu)
 	
 	last_sexp_parsed = NULL;
 	result = gkr_pkix_parser_der_pkcs8_encrypted (parser, location, contents, len);
-	CuAssert (cu, "couldn't parse PKCS8 key", result == GKR_PARSE_SUCCESS);
+	CuAssert (cu, "couldn't parse PKCS8 key", result == GKR_PKIX_SUCCESS);
 	CuAssert (cu, "parsed object is invalid", last_sexp_parsed != NULL);
 	
 	gkr_crypto_sexp_dump (last_sexp_parsed);	
@@ -243,7 +243,7 @@ void unit_test_pkix_parse_der_pkcs8 (CuTest* cu)
 void unit_test_pkix_parse_pem (CuTest *cu)
 {
 	guchar *contents;
-	GkrParseResult result;
+	GkrPkixResult result;
 	GQuark location;
 	gsize len;
 	
@@ -254,7 +254,7 @@ void unit_test_pkix_parse_pem (CuTest *cu)
 	
 	n_parsed = 0;
 	result = gkr_pkix_parser_pem (parser, location, contents, len);
-	CuAssert (cu, "couldn't parse PEM data", result == GKR_PARSE_SUCCESS);
+	CuAssert (cu, "couldn't parse PEM data", result == GKR_PKIX_SUCCESS);
 
 	CuAssert (cu, "invalid number of items parsed", n_parsed == 1);
 	CuAssert (cu, "invalid type of data parsed", last_sexp_parsed != NULL);

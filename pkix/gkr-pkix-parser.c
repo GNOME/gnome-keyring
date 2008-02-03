@@ -143,7 +143,7 @@ static guint signals[LAST_SIGNAL] = { 0 };
  
 static const gchar*
 enum_next_password (GkrPkixParser *parser, GQuark loc, gkrunique unique, 
-                    GkrParsedType type, const gchar *label, PasswordState *state)
+                    GQuark type, const gchar *label, PasswordState *state)
 {
 	GkrPkixParserPrivate *pv = GKR_PKIX_PARSER_GET_PRIVATE (parser);
 	gboolean first = FALSE;
@@ -230,7 +230,7 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 
 static void
 fire_parsed_partial (GkrPkixParser *parser, GQuark location, 
-                     gkrconstunique unique, GkrParsedType type)
+                     gkrconstunique unique, GQuark type)
 {
 	gboolean owned = FALSE;
 	
@@ -242,11 +242,10 @@ fire_parsed_partial (GkrPkixParser *parser, GQuark location,
 
 static void
 fire_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstunique unique, 
-                  GkrParsedType type, gcry_sexp_t sexp)
+                  GQuark type, gcry_sexp_t sexp)
 {
 	gboolean owned = FALSE;
 	
-	g_assert (location);
 	g_assert (sexp);
 	g_assert (type);
 	
@@ -258,11 +257,10 @@ fire_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
 
 static void
 fire_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique unique, 
-                  GkrParsedType type, ASN1_TYPE asn1)
+                  GQuark type, ASN1_TYPE asn1)
 {
 	gboolean owned = FALSE;
 	
-	g_assert (location);
 	g_assert (asn1);
 	g_assert (type);
 	
@@ -300,7 +298,7 @@ gkr_pkix_parser_init (GkrPkixParser *parser)
 
 static gboolean 
 gkr_pkix_parser_parsed_partial (GkrPkixParser *parser, GQuark loc, gkrconstunique unique, 
-                                GkrParsedType type)
+                                GQuark type)
 {
 	/* Didn't take ownership of the data */
 	return FALSE;
@@ -308,7 +306,7 @@ gkr_pkix_parser_parsed_partial (GkrPkixParser *parser, GQuark loc, gkrconstuniqu
 
 static gboolean 
 gkr_pkix_parser_parsed_asn1 (GkrPkixParser *parser, GQuark loc, gkrconstunique unique, 
-                             GkrParsedType type, ASN1_TYPE asn1)
+                             GQuark type, ASN1_TYPE asn1)
 {
 	/* Didn't take ownership of the data */
 	return FALSE;
@@ -316,7 +314,7 @@ gkr_pkix_parser_parsed_asn1 (GkrPkixParser *parser, GQuark loc, gkrconstunique u
 
 static gboolean 
 gkr_pkix_parser_parsed_sexp (GkrPkixParser *parser, GQuark loc, gkrconstunique unique, 
-                             GkrParsedType type, gcry_sexp_t sexp)
+                             GQuark type, gcry_sexp_t sexp)
 {
 	/* Didn't take ownership of the data */
 	return FALSE;
@@ -324,7 +322,7 @@ gkr_pkix_parser_parsed_sexp (GkrPkixParser *parser, GQuark loc, gkrconstunique u
 
 static gchar*
 gkr_pkix_parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstunique unique,
-                              GkrParsedType type, const gchar *details, guint n_prompts)
+                              GQuark type, const gchar *details, guint n_prompts)
 {
 	return NULL;
 }
@@ -406,30 +404,30 @@ gboolean
 gkr_pkix_parser_parse (GkrPkixParser *parser, GQuark loc, const guchar *data, 
                        gsize n_data, GError **err)
 {
-	GkrParseResult ret;
+	GkrPkixResult ret;
 
 	g_return_val_if_fail (GKR_IS_PKIX_PARSER (parser), FALSE);
 	g_return_val_if_fail (loc != 0, FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 	g_return_val_if_fail (!err || !*err, FALSE);
 	
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	if (n_data > 0) {
 		ret = gkr_pkix_parser_der (parser, loc, data, n_data);
-		if (ret == GKR_PARSE_UNRECOGNIZED)
+		if (ret == GKR_PKIX_UNRECOGNIZED)
 			ret = gkr_pkix_parser_pem (parser, loc, data, n_data);
 	}
 	
-	if (ret == GKR_PARSE_SUCCESS)
+	if (ret == GKR_PKIX_SUCCESS)
 		return TRUE;
 		
 	switch (ret) {
-	case GKR_PARSE_UNRECOGNIZED:
+	case GKR_PKIX_UNRECOGNIZED:
 		g_set_error (err, GKR_PKIX_PARSE_ERROR, ret, "%s",
 		             _("Unrecognized or unsupported file."));
 		return FALSE;
-	case GKR_PARSE_FAILURE:
+	case GKR_PKIX_FAILURE:
 		g_set_error (err, GKR_PKIX_PARSE_ERROR, ret, "%s",
 		             _("Could not parse invalid or corrupted file."));
 		return FALSE;
@@ -440,11 +438,11 @@ gkr_pkix_parser_parse (GkrPkixParser *parser, GQuark loc, const guchar *data,
 }
 
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_der (GkrPkixParser *parser, GQuark loc, 
                      const guchar *data, gsize n_data)
 {
-	GkrParseResult ret = GKR_PARSE_UNRECOGNIZED;
+	GkrPkixResult ret = GKR_PKIX_UNRECOGNIZED;
 	
 	/*
 	 * It's pretty much impossible to know what DER data belongs to 
@@ -457,23 +455,23 @@ gkr_pkix_parser_der (GkrPkixParser *parser, GQuark loc,
 	 */
 	
 	ret = gkr_pkix_parser_der_pkcs12 (parser, loc, data, n_data);
-	if (ret != GKR_PARSE_UNRECOGNIZED)
+	if (ret != GKR_PKIX_UNRECOGNIZED)
 		goto done;
 
 	ret = gkr_pkix_parser_der_certificate (parser, loc, data, n_data);
-	if (ret != GKR_PARSE_UNRECOGNIZED)
+	if (ret != GKR_PKIX_UNRECOGNIZED)
 		goto done;
 
 	ret = gkr_pkix_parser_der_private_key (parser, loc, data, n_data);
-	if (ret != GKR_PARSE_UNRECOGNIZED)
+	if (ret != GKR_PKIX_UNRECOGNIZED)
 		goto done;
 		
 	ret = gkr_pkix_parser_der_pkcs8 (parser, loc, data, n_data);
-	if (ret != GKR_PARSE_UNRECOGNIZED)
+	if (ret != GKR_PKIX_UNRECOGNIZED)
 		goto done;
 		
 	ret = gkr_pkix_parser_der_pkcs7 (parser, loc, data, n_data);
-	if (ret != GKR_PARSE_UNRECOGNIZED)
+	if (ret != GKR_PKIX_UNRECOGNIZED)
 		goto done;
 		
 done:
@@ -481,44 +479,16 @@ done:
 }
 
 const gchar*
-gkr_pkix_parsed_type_to_string (GkrParsedType type)
+gkr_pkix_parsed_type_to_display (GQuark type)
 {
-	switch (type) {
-	case GKR_PARSED_PRIVATE_KEY:
-		return "private-key";
-	case GKR_PARSED_CERTIFICATE:
-		return "certificate";
-	case GKR_PARSED_UNKNOWN:
-		return "";
-	default:
-		g_return_val_if_reached ("");
-	};	
-}
-
-const gchar*
-gkr_pkix_parsed_type_to_display (GkrParsedType type)
-{
-	switch (type) {
-	case GKR_PARSED_PRIVATE_KEY:
+	if (type == GKR_PKIX_PRIVATE_KEY)
 		return _("private key");
-	case GKR_PARSED_CERTIFICATE:
+	else if (type == GKR_PKIX_CERTIFICATE)
 		return _("certificate");
-	default:
-		g_return_val_if_reached ("");
-	};	
-}
-
-GkrParsedType
-gkr_pkix_parsed_type_from_string (const gchar *string)
-{
-	if (!string || !string[0])
-		return GKR_PARSED_UNKNOWN;
-	else if (g_str_equal ("private-key", string))
-		return GKR_PARSED_PRIVATE_KEY;
-	else if (g_str_equal ("certificate", string))
-		return GKR_PARSED_CERTIFICATE;
+	else if (type == GKR_PKIX_PUBLIC_KEY)
+		return _("public key");
 	else
-		g_return_val_if_reached (GKR_PARSED_UNKNOWN);
+		g_return_val_if_reached ("");
 }
 
 gboolean
@@ -563,33 +533,33 @@ gkr_pkix_parser_parse_location (GkrPkixParser *parser, GQuark loc, GError **err)
  * PRIVATE KEYS
  */
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_der_private_key (GkrPkixParser *parser, GQuark loc,
                                  const guchar *data, gsize n_data)
 {
 	gkrunique unique;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	gcry_sexp_t s_key = NULL;
 	
 	unique = gkr_unique_new_digest (data, n_data);
 	
 	ret = gkr_pkix_der_read_private_key_rsa (data, n_data, &s_key);
-	if (ret == GKR_PARSE_UNRECOGNIZED)
+	if (ret == GKR_PKIX_UNRECOGNIZED)
 		ret = gkr_pkix_der_read_private_key_dsa (data, n_data, &s_key);
-	if (ret == GKR_PARSE_SUCCESS)
-		fire_parsed_sexp (parser, loc, unique, GKR_PARSED_PRIVATE_KEY, s_key);
+	if (ret == GKR_PKIX_SUCCESS)
+		fire_parsed_sexp (parser, loc, unique, GKR_PKIX_PRIVATE_KEY, s_key);
 		
 	gkr_unique_free (unique);
 	
 	return ret;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_der_pkcs8_plain (GkrPkixParser *parser, GQuark loc, 
                        gkrunique unique, const guchar *data, gsize n_data)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	int algorithm;
 	GQuark key_algo;
 	const guchar *keydata;
@@ -598,16 +568,16 @@ parse_der_pkcs8_plain (GkrPkixParser *parser, GQuark loc,
 	gsize n_params;
 	gcry_sexp_t s_key = NULL;
 	
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-8-PrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
-	ret = GKR_PARSE_FAILURE;
+	ret = GKR_PKIX_FAILURE;
 	algorithm = 0;
 		
-	key_algo = gkr_pkix_asn1_read_quark (asn, "privateKeyAlgorithm.algorithm");
+	key_algo = gkr_pkix_asn1_read_oid (asn, "privateKeyAlgorithm.algorithm");
   	if (!key_algo)
   		goto done;
   	else if (key_algo == OID_PKIX1_RSA)
@@ -616,7 +586,7 @@ parse_der_pkcs8_plain (GkrPkixParser *parser, GQuark loc,
   		algorithm = GCRY_PK_DSA;
   		
   	if (!algorithm) {
-  		ret = GKR_PARSE_UNRECOGNIZED;
+  		ret = GKR_PKIX_UNRECOGNIZED;
   		goto done;
   	}
 
@@ -627,10 +597,10 @@ parse_der_pkcs8_plain (GkrPkixParser *parser, GQuark loc,
 	params = gkr_pkix_asn1_read_element (asn, data, n_data, "privateKeyAlgorithm.parameters", 
 	                                     &n_params);
 		
-	ret = GKR_PARSE_SUCCESS;
+	ret = GKR_PKIX_SUCCESS;
 	
 done:
-	if (ret == GKR_PARSE_SUCCESS) {		
+	if (ret == GKR_PKIX_SUCCESS) {		
 		switch (algorithm) {
 		case GCRY_PK_RSA:
 			ret = gkr_pkix_der_read_private_key_rsa (keydata, n_keydata, &s_key);
@@ -639,22 +609,22 @@ done:
 			/* Try the normal sane format */
 			ret = gkr_pkix_der_read_private_key_dsa (keydata, n_keydata, &s_key);
 			
-			/* Otherwise try the strange freaky format, everyone seems to like */
-			if (ret == GKR_PARSE_UNRECOGNIZED && params && n_params)
+			/* Otherwise try the two part format that everyone seems to like */
+			if (ret == GKR_PKIX_UNRECOGNIZED && params && n_params)
 				ret = gkr_pkix_der_read_private_key_dsa_parts (keydata, n_keydata, 
 				                                               params, n_params, &s_key);
 			
 			break;
 		default:
 			g_message ("invalid or unsupported key type in PKCS#8 key");
-			ret = GKR_PARSE_UNRECOGNIZED;
+			ret = GKR_PKIX_UNRECOGNIZED;
 			break;
 		};
 		
-		if (ret == GKR_PARSE_SUCCESS)
-			fire_parsed_sexp (parser, loc, unique, GKR_PARSED_PRIVATE_KEY, s_key);
+		if (ret == GKR_PKIX_SUCCESS)
+			fire_parsed_sexp (parser, loc, unique, GKR_PKIX_PRIVATE_KEY, s_key);
 		
-	} else if (ret == GKR_PARSE_FAILURE) {
+	} else if (ret == GKR_PKIX_FAILURE) {
 		g_message ("invalid PKCS#8 key");
 	}
 	
@@ -663,12 +633,12 @@ done:
 	return ret;
 }
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_der_pkcs8_plain (GkrPkixParser *parser, GQuark location, 
                                  const guchar *data, gsize n_data)
 {
 	gkrunique unique;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	
 	unique = gkr_unique_new_digest (data, n_data);
 	ret = parse_der_pkcs8_plain (parser, location, unique, data, n_data);
@@ -677,7 +647,7 @@ gkr_pkix_parser_der_pkcs8_plain (GkrPkixParser *parser, GQuark location,
 	return ret;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location, 
                            gkrunique unique, const guchar *data, gsize n_data)
 {
@@ -685,7 +655,7 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
 	gcry_cipher_hd_t cih = NULL;
 	gcry_error_t gcry;
-	GkrParseResult ret, r;
+	GkrPkixResult ret, r;
 	GQuark scheme;
 	guchar *crypted = NULL;
 	const guchar *params;
@@ -693,16 +663,16 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 	const gchar *password;
 	gint l;
 
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
-	ret = GKR_PARSE_FAILURE;
+	ret = GKR_PKIX_FAILURE;
 
 	/* Figure out the type of encryption */
-	scheme = gkr_pkix_asn1_read_quark (asn, "encryptionAlgorithm.algorithm");
+	scheme = gkr_pkix_asn1_read_oid (asn, "encryptionAlgorithm.algorithm");
 	if (!scheme)
 		goto done;
 		
@@ -713,24 +683,23 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 		
 		g_assert (cih == NULL);
 		
-	        password = enum_next_password (parser, location, unique, GKR_PARSED_PRIVATE_KEY, NULL, &pstate);
+	        password = enum_next_password (parser, location, unique, GKR_PKIX_PRIVATE_KEY, NULL, &pstate);
 
         	/* If no password is available, we still know it's a key, so 'partial' parse */
 	        if (!password) {
-	        	fire_parsed_partial (parser, location, unique, GKR_PARSED_PRIVATE_KEY);
-	        	ret = GKR_PARSE_SUCCESS;
+	        	fire_parsed_partial (parser, location, unique, GKR_PKIX_PRIVATE_KEY);
+	        	ret = GKR_PKIX_SUCCESS;
 	        	goto done; 
 	        }
 	        
 		/* 
 		 * Parse the encryption stuff into a cipher. 
 		 */
-		r = gkr_pkix_der_read_cipher (parser, scheme, password, 
-		                              params, n_params, &cih);
-		if (r == GKR_PARSE_UNRECOGNIZED) {
-			ret = GKR_PARSE_FAILURE;
+		r = gkr_pkix_der_read_cipher (scheme, password, params, n_params, &cih);
+		if (r == GKR_PKIX_UNRECOGNIZED) {
+			ret = GKR_PKIX_FAILURE;
 			goto done;
-		} else if (r != GKR_PARSE_SUCCESS) {
+		} else if (r != GKR_PKIX_SUCCESS) {
 			ret = r;
 			goto done;
 		}
@@ -759,7 +728,7 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 		gkr_secure_free (crypted);
 		crypted = NULL;
 		
-		if (r != GKR_PARSE_UNRECOGNIZED) {
+		if (r != GKR_PKIX_UNRECOGNIZED) {
 			ret = r;
 			break;
 		}
@@ -777,12 +746,12 @@ done:
 	return ret;
 }
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location, 
                                      const guchar *data, gsize n_data)
 {
 	gkrunique unique;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	
 	unique = gkr_unique_new_digest (data, n_data);
 	ret = parse_der_pkcs8_encrypted (parser, location, unique, data, n_data);
@@ -791,16 +760,16 @@ gkr_pkix_parser_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 	return ret;
 }
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_der_pkcs8 (GkrPkixParser *parser, GQuark loc, const guchar *data, 
                            gsize n_data)
 {
 	gkrunique unique;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	
 	unique = gkr_unique_new_digest (data, n_data);
 	ret = parse_der_pkcs8_plain (parser, loc, unique, data, n_data);
-	if (ret == GKR_PARSE_UNRECOGNIZED)
+	if (ret == GKR_PKIX_UNRECOGNIZED)
 		ret = parse_der_pkcs8_encrypted (parser, loc, unique, data, n_data);
 	gkr_unique_free (unique);
 	
@@ -811,19 +780,19 @@ gkr_pkix_parser_der_pkcs8 (GkrPkixParser *parser, GQuark loc, const guchar *data
  * X509 stuff
  */
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_der_certificate (GkrPkixParser *parser, GQuark loc, 
                                  const guchar *data, gsize n_data)
 {
 	gkrunique unique;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	ASN1_TYPE asn1;
 	
 	unique = gkr_unique_new_digest (data, n_data);
 
 	ret = gkr_pkix_der_read_certificate (data, n_data, &asn1);	
-	if(ret == GKR_PARSE_SUCCESS)
-		fire_parsed_asn1 (parser, loc, unique, GKR_PARSED_CERTIFICATE, asn1);
+	if(ret == GKR_PKIX_SUCCESS)
+		fire_parsed_asn1 (parser, loc, unique, GKR_PKIX_CERTIFICATE, asn1);
 	gkr_unique_free (unique);
 	
 	return ret;
@@ -833,22 +802,22 @@ gkr_pkix_parser_der_certificate (GkrPkixParser *parser, GQuark loc,
  * CONTAINER FORMATS
  */
 
-static GkrParseResult
+static GkrPkixResult
 parse_pkcs12_cert_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni, const guchar *data, gsize n_data)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
 	ASN1_TYPE casn = ASN1_TYPE_EMPTY;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	const guchar *certificate;
 	gsize n_certificate;
 
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-12-CertBag", data, n_data);
 	if (!asn)
 		goto done;
 		
-	ret = GKR_PARSE_FAILURE;
+	ret = GKR_PKIX_FAILURE;
 	
 	certificate = gkr_pkix_asn1_read_content (asn, data, n_data, "certValue", &n_certificate);
 	if (!certificate)
@@ -863,8 +832,8 @@ parse_pkcs12_cert_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni, const g
 		goto done;
 	
 	ret = gkr_pkix_der_read_certificate (certificate, n_certificate, &casn);
-	if(ret == GKR_PARSE_SUCCESS)
-		fire_parsed_asn1 (parser, loc, uni, GKR_PARSED_CERTIFICATE, casn);
+	if(ret == GKR_PKIX_SUCCESS)
+		fire_parsed_asn1 (parser, loc, uni, GKR_PKIX_CERTIFICATE, casn);
 		
 done:
 	if (asn)
@@ -873,11 +842,11 @@ done:
 	return ret;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_pkcs12_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni, const guchar *data, gsize n_data)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
-	GkrParseResult ret, r;
+	GkrPkixResult ret, r;
 	int count = 0;
 	GQuark oid;
 	gchar *part;
@@ -885,13 +854,13 @@ parse_pkcs12_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni, const guchar
 	gsize n_element;
 	int res, i;
 	
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-12-SafeContents", data, n_data);
 	if (!asn)
 		goto done;
 		
-	ret = GKR_PARSE_FAILURE;
+	ret = GKR_PKIX_FAILURE;
 	
 	/* Get the number of elements in this bag */
 	res = asn1_number_of_elements (asn, "", &count);
@@ -905,7 +874,7 @@ parse_pkcs12_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni, const guchar
 	for (i = 0; i < count; ++i)
 	{
 		part = g_strdup_printf ("?%u.bagId", i + 1);
-		oid = gkr_pkix_asn1_read_quark (asn, part);
+		oid = gkr_pkix_asn1_read_oid (asn, part);
 		g_free (part);
 		
 		if (!oid)
@@ -932,16 +901,16 @@ parse_pkcs12_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni, const guchar
 								
 		/* TODO: OID_PKCS12_BAG_CRL */
 		} else {
-			r = GKR_PARSE_UNRECOGNIZED;
+			r = GKR_PKIX_UNRECOGNIZED;
 		}
 		 
-		if (r == GKR_PARSE_FAILURE) {
+		if (r == GKR_PKIX_FAILURE) {
 			ret = r;
 			goto done;
 		}
 	}
 
-	ret = GKR_PARSE_SUCCESS;	
+	ret = GKR_PKIX_SUCCESS;	
 		
 done:
 	if (asn)
@@ -950,7 +919,7 @@ done:
 	return ret;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni, 
                             const guchar *data, gsize n_data)
 {
@@ -958,7 +927,7 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni,
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
 	gcry_cipher_hd_t cih = NULL;
 	gcry_error_t gcry;
-	GkrParseResult ret, r;
+	GkrPkixResult ret, r;
 	guchar *crypted = NULL;
 	const guchar *params;
 	gsize n_params, n_crypted;
@@ -966,16 +935,16 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni,
 	GQuark scheme;
 	gint l;
 	
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-7-EncryptedData", data, n_data);
 	if (!asn)
 		goto done;
 	
-	ret = GKR_PARSE_FAILURE;
+	ret = GKR_PKIX_FAILURE;
 		
 	/* Check the encryption schema OID */
-	scheme = gkr_pkix_asn1_read_quark (asn, "encryptedContentInfo.contentEncryptionAlgorithm.algorithm");
+	scheme = gkr_pkix_asn1_read_oid (asn, "encryptedContentInfo.contentEncryptionAlgorithm.algorithm");
 	if (!scheme) 
 		goto done;	
 
@@ -988,20 +957,19 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni,
 		
 		g_assert (cih == NULL);
 		
-	        password = enum_next_password (parser, loc, uni, GKR_PARSED_UNKNOWN, NULL, &pstate);
+	        password = enum_next_password (parser, loc, uni, 0, NULL, &pstate);
 	        if (!password) {
-	        	fire_parsed_partial (parser, loc, uni, GKR_PARSED_UNKNOWN);
-	        	ret = GKR_PARSE_SUCCESS;
+	        	fire_parsed_partial (parser, loc, uni, 0);
+	        	ret = GKR_PKIX_SUCCESS;
 	        	goto done; 
 	        }
 	        
 		/* Parse the encryption stuff into a cipher. */
-		r = gkr_pkix_der_read_cipher (parser, scheme, password, 
-		                              params, n_params, &cih);
-		if (r == GKR_PARSE_UNRECOGNIZED) {
-			ret = GKR_PARSE_FAILURE;
+		r = gkr_pkix_der_read_cipher (scheme, password, params, n_params, &cih);
+		if (r == GKR_PKIX_UNRECOGNIZED) {
+			ret = GKR_PKIX_FAILURE;
 			goto done;
-		} else if (r != GKR_PARSE_SUCCESS) {
+		} else if (r != GKR_PKIX_SUCCESS) {
 			ret = r;
 			goto done;
 		}
@@ -1030,7 +998,7 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrunique uni,
 		gkr_secure_free (crypted);
 		crypted = NULL;
 		
-		if (r != GKR_PARSE_UNRECOGNIZED) {
+		if (r != GKR_PKIX_UNRECOGNIZED) {
 			ret = r;
 			break;
 		}
@@ -1048,11 +1016,11 @@ done:
 	return ret;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_pkcs12_safe (GkrPkixParser *parser, GQuark loc, const guchar *data, gsize n_data)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
-	GkrParseResult ret, r;
+	GkrPkixResult ret, r;
 	const guchar *bag;
 	gkrunique uni = NULL;
 	gsize n_bag;
@@ -1060,13 +1028,13 @@ parse_pkcs12_safe (GkrPkixParser *parser, GQuark loc, const guchar *data, gsize 
 	GQuark oid;
 	guint i;
 	
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-12-AuthenticatedSafe", data, n_data);
 	if (!asn)
 		goto done;
 		
-	ret = GKR_PARSE_FAILURE;
+	ret = GKR_PKIX_FAILURE;
 	
 	/*
 	 * Inside each PKCS12 safe there are multiple bags. 
@@ -1074,7 +1042,7 @@ parse_pkcs12_safe (GkrPkixParser *parser, GQuark loc, const guchar *data, gsize 
 	for (i = 0; TRUE; ++i) {
 		
 		part = g_strdup_printf ("?%u.contentType", i + 1);
-		oid = gkr_pkix_asn1_read_quark (asn, part);
+		oid = gkr_pkix_asn1_read_oid (asn, part);
 		g_free (part);
 		
 		/* All done? no more bags */
@@ -1111,16 +1079,16 @@ parse_pkcs12_safe (GkrPkixParser *parser, GQuark loc, const guchar *data, gsize 
 		/* Hmmmm, not sure what this is */
 		} else {
 			g_warning ("unrecognized type of safe content in pkcs12: %s", g_quark_to_string (oid));
-			r = GKR_PARSE_UNRECOGNIZED;
+			r = GKR_PKIX_UNRECOGNIZED;
 		}
 		
-		if (r == GKR_PARSE_FAILURE) {
+		if (r == GKR_PKIX_FAILURE) {
 			ret = r;
 			goto done;
 		}
 	}
 	
-	ret = GKR_PARSE_SUCCESS;
+	ret = GKR_PKIX_SUCCESS;
 	
 done:
 	if (asn)
@@ -1131,22 +1099,22 @@ done:
 	return ret;
 }
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_der_pkcs12 (GkrPkixParser *parser, GQuark loc, const guchar *data, gsize n_data)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	const guchar* content = NULL;
 	gsize n_content;
 	GQuark oid;
 	
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-12-PFX", data, n_data);
 	if (!asn)
 		goto done;
 
-	oid = gkr_pkix_asn1_read_quark (asn, "authSafe.contentType");
+	oid = gkr_pkix_asn1_read_oid (asn, "authSafe.contentType");
 	if (!oid)
 		goto done;
 		
@@ -1176,25 +1144,25 @@ done:
 	return ret;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_pkcs7_signed_data (GkrPkixParser *parser, GQuark loc, gkrunique uni, 
                          const guchar *data, gsize n_data)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
 	ASN1_TYPE casn = ASN1_TYPE_EMPTY;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	gchar *part;
 	const guchar *certificate;
 	gsize n_certificate;
 	int i;
 	
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-7-SignedData", data, n_data);
 	if (!asn)
 		goto done;
 
-	ret = GKR_PARSE_FAILURE;
+	ret = GKR_PKIX_FAILURE;
 	
 	for (i = 0; TRUE; ++i) {
 			
@@ -1207,15 +1175,15 @@ parse_pkcs7_signed_data (GkrPkixParser *parser, GQuark loc, gkrunique uni,
 			break;
 	
 		ret = gkr_pkix_der_read_certificate (certificate, n_certificate, &casn);
-		if (ret == GKR_PARSE_SUCCESS)
-			fire_parsed_asn1 (parser, loc, uni, GKR_PARSED_CERTIFICATE, casn);
-		if (ret == GKR_PARSE_FAILURE)
+		if (ret == GKR_PKIX_SUCCESS)
+			fire_parsed_asn1 (parser, loc, uni, GKR_PKIX_CERTIFICATE, casn);
+		if (ret == GKR_PKIX_FAILURE)
 			goto done;
 	}
 	
 	/* TODO: Parse out all the CRLs */
 	
-	ret = GKR_PARSE_SUCCESS;
+	ret = GKR_PKIX_SUCCESS;
 	
 done:
 	if (asn)
@@ -1223,25 +1191,25 @@ done:
 	return ret;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_der_pkcs7 (GkrPkixParser *parser, GQuark loc, gkrunique uni, 
                  const guchar *data, gsize n_data)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	const guchar* content = NULL;
 	gsize n_content;
 	GQuark oid;
 	
-	ret = GKR_PARSE_UNRECOGNIZED;
+	ret = GKR_PKIX_UNRECOGNIZED;
 	
 	asn = gkr_pkix_asn1_decode ("PKIX1.pkcs-7-ContentInfo", data, n_data);
 	if (!asn)
 		goto done;
 
-	ret = GKR_PARSE_FAILURE;
+	ret = GKR_PKIX_FAILURE;
 
-	oid = gkr_pkix_asn1_read_quark (asn, "contentType");
+	oid = gkr_pkix_asn1_read_oid (asn, "contentType");
 	if (!oid)
 		goto done;
 
@@ -1263,10 +1231,10 @@ done:
 	return ret;
 }
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_der_pkcs7 (GkrPkixParser *parser, GQuark loc, const guchar *data, gsize n_data)
 {
-	GkrParseResult ret;
+	GkrPkixResult ret;
 	gkrunique uni;
 	
 	uni = gkr_unique_new_digest (data, n_data);
@@ -1279,10 +1247,10 @@ gkr_pkix_parser_der_pkcs7 (GkrPkixParser *parser, GQuark loc, const guchar *data
 typedef struct {
 	GkrPkixParser *parser;
 	GQuark location;
-	GkrParseResult result;
+	GkrPkixResult result;
 } ParserCtx;
 
-static GkrParsedType
+static GQuark
 pem_to_parsed_type (gint type)
 {
 	if (type == PEM_RSA_PRIVATE_KEY ||
@@ -1290,37 +1258,37 @@ pem_to_parsed_type (gint type)
 	    type == PEM_ANY_PRIVATE_KEY ||
 	    type == PEM_PRIVATE_KEY ||
 	    type == PEM_ENCRYPTED_PRIVATE_KEY)
-	    	return GKR_PARSED_PRIVATE_KEY;
+	    	return GKR_PKIX_PRIVATE_KEY;
 
 	else if (type == PEM_CERTIFICATE)
-		return GKR_PARSED_CERTIFICATE;
+		return GKR_PKIX_CERTIFICATE;
 		
 	else if (type == PEM_PKCS7 ||
 	         type == PEM_PKCS12)
-		return GKR_PARSED_UNKNOWN;
+		return 0;
 
 	return 0;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_plain_pem (GkrPkixParser *parser, GQuark location, gkrunique unique, 
                  GQuark type, const guchar *data, gsize n_data)
 {
-	GkrParseResult res;
+	GkrPkixResult res;
 	gcry_sexp_t s_key = NULL;
 	ASN1_TYPE asn1 = NULL;
-	GkrParsedType parsed = GKR_PARSED_UNKNOWN;
+	GQuark parsed = 0;
 	
 	if (type == PEM_RSA_PRIVATE_KEY) {
-		parsed = GKR_PARSED_PRIVATE_KEY;
+		parsed = GKR_PKIX_PRIVATE_KEY;
 		res = gkr_pkix_der_read_private_key_rsa (data, n_data, &s_key);
 
 	} else if (type == PEM_DSA_PRIVATE_KEY) {
-		parsed = GKR_PARSED_PRIVATE_KEY;
+		parsed = GKR_PKIX_PRIVATE_KEY;
 		res = gkr_pkix_der_read_private_key_dsa (data, n_data, &s_key);
 
 	} else if (type == PEM_ANY_PRIVATE_KEY) {
-		parsed = GKR_PARSED_PRIVATE_KEY;
+		parsed = GKR_PKIX_PRIVATE_KEY;
 		res = gkr_pkix_der_read_private_key (data, n_data, &s_key);
 	
 	} else if (type == PEM_PRIVATE_KEY) {
@@ -1330,7 +1298,7 @@ parse_plain_pem (GkrPkixParser *parser, GQuark location, gkrunique unique,
 		return parse_der_pkcs8_encrypted (parser, location, unique, data, n_data);
 		
 	} else if (type == PEM_CERTIFICATE) {
-		parsed = GKR_PARSED_CERTIFICATE;
+		parsed = GKR_PKIX_CERTIFICATE;
 		res = gkr_pkix_der_read_certificate (data, n_data, &asn1);
 		
 	} else if (type == PEM_PKCS7) {
@@ -1340,10 +1308,10 @@ parse_plain_pem (GkrPkixParser *parser, GQuark location, gkrunique unique,
 		return gkr_pkix_parser_der_pkcs12 (parser, location, data, n_data);
 		
 	} else {
-		res = GKR_PARSE_UNRECOGNIZED;
+		res = GKR_PKIX_UNRECOGNIZED;
 	}
 	
-	if (res == GKR_PARSE_SUCCESS) {
+	if (res == GKR_PKIX_SUCCESS) {
 		g_assert (s_key || asn1);
 		g_assert (parsed);
 		
@@ -1356,13 +1324,13 @@ parse_plain_pem (GkrPkixParser *parser, GQuark location, gkrunique unique,
 	return res;
 }
 
-static GkrParseResult
+static GkrPkixResult
 parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrunique unique, 
                      GQuark type, GHashTable *headers, const guchar *data, gsize n_data)
 {
 	PasswordState pstate = PASSWORD_STATE_INIT;
-	GkrParsedType parsed;
-	GkrParseResult ret;
+	GQuark parsed;
+	GkrPkixResult ret;
 	const gchar *val;
 	const gchar *password;
 	guchar *decrypted;
@@ -1377,12 +1345,12 @@ parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrunique unique,
 	val = g_hash_table_lookup (headers, "DEK-Info");
 	if (!val) {
 		g_message ("missing encryption header");
-		return GKR_PARSE_FAILURE;
+		return GKR_PKIX_FAILURE;
 	}
 	
 	parsed = pem_to_parsed_type (type);
 	if (!parsed) 
-		return GKR_PARSE_UNRECOGNIZED;
+		return GKR_PKIX_UNRECOGNIZED;
 		
 	while (!gkr_async_is_stopping ()) {
 
@@ -1391,7 +1359,7 @@ parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrunique unique,
         	/* If no password is available, we still know what it was, so 'partial' parse */
 	        if (!password) {
 	        	fire_parsed_partial (parser, location, unique, parsed);
-	        	return GKR_PARSE_SUCCESS;
+	        	return GKR_PKIX_SUCCESS;
 	        }
 		
 		decrypted = NULL;
@@ -1401,7 +1369,7 @@ parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrunique unique,
 		res = gkr_pkix_openssl_decrypt_block (val, password, data, n_data, 
 		                                      &decrypted, &n_decrypted);
 		if (!res)
-			return GKR_PARSE_FAILURE;
+			return GKR_PKIX_FAILURE;
 			
 		g_assert (decrypted);
 		
@@ -1414,11 +1382,11 @@ parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrunique unique,
 		ret = parse_plain_pem (parser, location, unique, type, decrypted, n_decrypted);
 		gkr_secure_free (decrypted);
 
-		if (ret != GKR_PARSE_UNRECOGNIZED)
+		if (ret != GKR_PKIX_UNRECOGNIZED)
 			return ret;		
 	}
 	
-	return GKR_PARSE_FAILURE;
+	return GKR_PKIX_FAILURE;
 }
 
 static void
@@ -1426,7 +1394,7 @@ handle_pem_data (GQuark type, const guchar *data, gsize n_data,
                  GHashTable *headers, gpointer user_data)
 {
 	ParserCtx *ctx = (ParserCtx*)user_data;
-	GkrParseResult res = GKR_PARSE_FAILURE;
+	GkrPkixResult res = GKR_PKIX_FAILURE;
 	gboolean encrypted = FALSE;
 	gkrunique unique;
 	const gchar *val;
@@ -1448,27 +1416,27 @@ handle_pem_data (GQuark type, const guchar *data, gsize n_data,
 		                       type, data, n_data);
 	}
 	
-	if (res == GKR_PARSE_FAILURE) {
+	if (res == GKR_PKIX_FAILURE) {
 		ctx->result = res;
-	} else if (ctx->result == GKR_PARSE_UNRECOGNIZED)
+	} else if (ctx->result == GKR_PKIX_UNRECOGNIZED)
 		ctx->result = res;
 		
 	gkr_unique_free (unique);
 }
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_parser_pem (GkrPkixParser *parser, GQuark loc, const guchar *data, gsize n_data)
 {
-	ParserCtx ctx = { parser, loc, GKR_PARSE_UNRECOGNIZED };
+	ParserCtx ctx = { parser, loc, GKR_PKIX_UNRECOGNIZED };
 	guint found;
 	
 	if (n_data == 0)
-		return GKR_PARSE_UNRECOGNIZED;
+		return GKR_PKIX_UNRECOGNIZED;
 	
 	found = gkr_pkix_pem_parse (data, n_data, handle_pem_data, &ctx);
 	
 	if (found == 0)
-		return GKR_PARSE_UNRECOGNIZED;
+		return GKR_PKIX_UNRECOGNIZED;
 		
 	return ctx.result;
 }

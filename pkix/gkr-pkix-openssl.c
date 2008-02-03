@@ -203,7 +203,7 @@ done:
 	return success;
 }
 
-GkrParseResult
+GkrPkixResult
 gkr_pkix_openssl_decrypt_block (const gchar *dekinfo, const gchar *password, 
                                 const guchar *data, gsize n_data, 
                                 guchar **decrypted, gsize *n_decrypted)
@@ -214,7 +214,7 @@ gkr_pkix_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
 	int gcry, ivlen;
 	
 	if (!parse_dekinfo (dekinfo, &algo, &mode, &iv))
-		return GKR_PARSE_UNRECOGNIZED;
+		return GKR_PKIX_UNRECOGNIZED;
 		
 	ivlen = gcry_cipher_get_algo_blklen (algo);
 
@@ -225,20 +225,20 @@ gkr_pkix_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
 	if (!gkr_crypto_generate_symkey_simple (algo, GCRY_MD_MD5, password, 
 	                                        iv, 8, 1, &key, NULL)) {
 		g_free (iv);
-		return GKR_PARSE_FAILURE;
+		return GKR_PKIX_FAILURE;
 	}
 	
 	/* TODO: Use secure memory */
 	gcry = gcry_cipher_open (&ch, algo, mode, 0);
-	g_return_val_if_fail (!gcry, GKR_PARSE_FAILURE);
+	g_return_val_if_fail (!gcry, GKR_PKIX_FAILURE);
 		
 	gcry = gcry_cipher_setkey (ch, key, gcry_cipher_get_algo_keylen (algo));
-	g_return_val_if_fail (!gcry, GKR_PARSE_UNRECOGNIZED);
+	g_return_val_if_fail (!gcry, GKR_PKIX_UNRECOGNIZED);
 	gkr_secure_free (key);
 
 	/* 16 = 128 bits */
 	gcry = gcry_cipher_setiv (ch, iv, ivlen);
-	g_return_val_if_fail (!gcry, GKR_PARSE_UNRECOGNIZED);
+	g_return_val_if_fail (!gcry, GKR_PKIX_UNRECOGNIZED);
 	g_free (iv);
 	
 	/* Allocate output area */
@@ -248,10 +248,10 @@ gkr_pkix_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
 	gcry = gcry_cipher_decrypt (ch, *decrypted, *n_decrypted, (void*)data, n_data);
 	if (gcry) {
 		gkr_secure_free (*decrypted);
-		g_return_val_if_reached (GKR_PARSE_FAILURE);
+		g_return_val_if_reached (GKR_PKIX_FAILURE);
 	}
 	
 	gcry_cipher_close (ch);
 	
-	return GKR_PARSE_SUCCESS;
+	return GKR_PKIX_SUCCESS;
 }

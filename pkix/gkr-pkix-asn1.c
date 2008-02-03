@@ -262,6 +262,20 @@ gkr_pkix_asn1_read_value (ASN1_TYPE asn, const gchar *part, gsize *len,
 }
 
 gboolean
+gkr_pkix_asn1_write_value (ASN1_TYPE asn, const gchar *part, 
+		                   const guchar* value, gsize len)
+{
+	int res;
+
+	g_return_val_if_fail (asn, FALSE);
+	g_return_val_if_fail (part, FALSE);
+	g_return_val_if_fail (!len || value, FALSE);
+	
+	res = asn1_write_value (asn, part, (const void*)value, (int)len);
+	return res == ASN1_SUCCESS;
+}
+
+gboolean
 gkr_pkix_asn1_read_boolean (ASN1_TYPE asn, const gchar *part, gboolean *val)
 {
 	gchar buffer[32];
@@ -327,7 +341,7 @@ gkr_pkix_asn1_write_uint (ASN1_TYPE asn, const gchar *part, guint32 val)
 }
 
 GQuark
-gkr_pkix_asn1_read_quark (ASN1_TYPE asn, const gchar *part)
+gkr_pkix_asn1_read_oid (ASN1_TYPE asn, const gchar *part)
 {
 	GQuark quark;
 	guchar *buf;
@@ -344,6 +358,20 @@ gkr_pkix_asn1_read_quark (ASN1_TYPE asn, const gchar *part)
 }
 
 gboolean
+gkr_pkix_asn1_write_oid (ASN1_TYPE asn, const gchar *part, GQuark val)
+{
+	const gchar* oid;
+	
+	g_return_val_if_fail (val, FALSE);
+	
+	oid = g_quark_to_string (val);
+	g_return_val_if_fail (oid, FALSE);
+	
+	return gkr_pkix_asn1_write_value (asn, part, (const guchar*)oid, 
+			                          1 /* any non-null value for OID */);
+}
+
+gboolean
 gkr_pkix_asn1_read_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi)
 {
   	gcry_error_t gcry;
@@ -354,7 +382,7 @@ gkr_pkix_asn1_read_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi)
 	if (!buf)
 		return FALSE;
 	
-	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_USG, buf, sz, &sz);
+	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_STD, buf, sz, &sz);
 	gkr_secure_free (buf);
 
 	if (gcry != 0)
@@ -376,13 +404,13 @@ gkr_pkix_asn1_write_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t mpi)
 	g_assert (mpi);
 	
 	/* Get the size */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &len, mpi);
+	gcry = gcry_mpi_print (GCRYMPI_FMT_STD, NULL, 0, &len, mpi);
 	g_return_val_if_fail (gcry == 0, FALSE);
 	g_return_val_if_fail (len > 0, FALSE); 
 
 	buf = gkr_secure_alloc (len);
 	
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, buf, len, &len, mpi);	
+	gcry = gcry_mpi_print (GCRYMPI_FMT_STD, buf, len, &len, mpi);	
 	g_return_val_if_fail (gcry == 0, FALSE);
 	
 	res = asn1_write_value (asn, part, buf, len);
