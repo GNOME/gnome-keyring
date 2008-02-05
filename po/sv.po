@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-01 01:24+0100\n"
-"PO-Revision-Date: 2008-02-01 01:26+0100\n"
+"POT-Creation-Date: 2008-02-05 09:09+0100\n"
+"PO-Revision-Date: 2008-02-05 09:09+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,8 @@ msgstr "Hem"
 
 #: ../common/gkr-location.c:980
 #: ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:540
+#: ../pkix/gkr-pkix-parser.c:510
+#: ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller enheten som den här filen finns på är inte tillgänglig"
 
@@ -371,21 +372,25 @@ msgstr "Lås automatiskt upp %s när jag loggar in."
 msgid "Unlock password for %s"
 msgstr "Lås upp lösenordet för %s"
 
-#: ../pkix/gkr-pkix-parser.c:430
+#: ../pkix/gkr-pkix-parser.c:428
 msgid "Unrecognized or unsupported file."
 msgstr "Filen är okänd eller stöds inte."
 
-#: ../pkix/gkr-pkix-parser.c:434
+#: ../pkix/gkr-pkix-parser.c:432
 msgid "Could not parse invalid or corrupted file."
 msgstr "Kunde inte tolka ogiltig eller skadad fil."
 
-#: ../pkix/gkr-pkix-parser.c:503
+#: ../pkix/gkr-pkix-parser.c:485
 msgid "private key"
-msgstr "privat nyckel"
+msgstr "privata nyckeln"
 
-#: ../pkix/gkr-pkix-parser.c:505
+#: ../pkix/gkr-pkix-parser.c:487
 msgid "certificate"
-msgstr "certifikat"
+msgstr "certifikatet"
+
+#: ../pkix/gkr-pkix-parser.c:489
+msgid "public key"
+msgstr "publika nyckeln"
 
 #: ../ui/gkr-ask-tool.c:79
 msgid "Store passwords unencrypted?"
