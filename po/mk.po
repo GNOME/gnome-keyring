@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-30 02:39+0000\n"
-"PO-Revision-Date: 2008-02-03 19:13+0100\n"
+"POT-Creation-Date: 2008-02-05 21:41+0000\n"
+"PO-Revision-Date: 2008-02-06 21:27+0100\n"
 "Last-Translator: Arangel Angov <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgid "Home"
 msgstr "Дома"
 
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:540
+#: ../pkix/gkr-pkix-parser.c:510 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Дискот или уредот на кој што се наоѓа оваа датотека не е присутен"
 
@@ -476,21 +476,25 @@ msgstr "Автоматски отклучи го овој %s кога ќе се 
 msgid "Unlock password for %s"
 msgstr "Отклучи ја лозинката за %s"
 
-#: ../pkix/gkr-pkix-parser.c:430
+#: ../pkix/gkr-pkix-parser.c:428
 msgid "Unrecognized or unsupported file."
 msgstr "Непозната и неподдржана датотека."
 
-#: ../pkix/gkr-pkix-parser.c:434
+#: ../pkix/gkr-pkix-parser.c:432
 msgid "Could not parse invalid or corrupted file."
 msgstr "Не можам да го ја парсирам невалидната расипана датотека."
 
-#: ../pkix/gkr-pkix-parser.c:503
+#: ../pkix/gkr-pkix-parser.c:485
 msgid "private key"
 msgstr "приватен клуч"
 
-#: ../pkix/gkr-pkix-parser.c:505
+#: ../pkix/gkr-pkix-parser.c:487
 msgid "certificate"
 msgstr "сертификат"
+
+#: ../pkix/gkr-pkix-parser.c:489
+msgid "public key"
+msgstr "јавен клуч"
 
 #: ../ui/gkr-ask-tool.c:79
 msgid "Store passwords unencrypted?"
