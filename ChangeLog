@@ -1,3 +1,14 @@
+2008-01-05  Stef Walter  <stef@memberwebs.com>
+
+	* ui/gkr-ask-entry.c: (added)
+	* ui/gkr-ask-entry.h: (added)
+	* ui/gkr-ask-tool.c: 
+	* ui/Makefile.am:
+	* ui/test-input.txt: (added)
+	* configure.in: Don't lock the entire gnome-keyring-ask process into 
+	memory. This allows it to work properly on systems where there is 
+	limited lockable memory available.
+	
 2008-01-02  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-cert.c:

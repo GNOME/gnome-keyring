@@ -22,8 +22,11 @@
 
 #include "config.h"
 
+#include "gkr-ask-entry.h"
 #include "gkr-ask-tool.h"
 #include "gkr-ask-request.h"
+
+#include "common/gkr-secure-memory.h"
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -40,6 +43,74 @@ static GKeyFile *input_data = NULL;
 static GKeyFile *output_data = NULL;
 static gboolean grabbed = FALSE;
 
+/* -----------------------------------------------------------------------------
+ * MEMORY
+ */
+
+static gboolean do_warning = TRUE;
+#define WARNING  "couldn't allocate secure memory to keep passwords " \
+		 "and or keys from being written to the disk"
+		 
+#define ABORTMSG "The GNOME_KEYRING_PARANOID environment variable was set. " \
+                 "Exiting..."
+
+/* 
+ * These are called from gkr-secure-memory.c to provide appropriate
+ * locking for memory between threads
+ */ 
+
+void
+gkr_memory_lock (void)
+{
+	/* No threads used in ask tool, doesn't need locking */
+}
+
+void 
+gkr_memory_unlock (void)
+{
+	/* No threads used in ask tool, doesn't need locking */
+}
+
+void*
+gkr_memory_fallback (void *p, unsigned long sz)
+{
+	const gchar *env;
+	
+	/* We were asked to free memory */
+	if (!sz) {
+		g_free (p);
+		return NULL;
+	}
+	
+	/* We were asked to allocate */
+	if (!p) {
+		if (do_warning) {
+			g_message (WARNING);
+			do_warning = FALSE;
+		}
+		
+		env = g_getenv ("GNOME_KEYRING_PARANOID");
+		if (env && *env) 
+			g_error (ABORTMSG);
+			
+		return g_malloc0 (sz);
+	}
+	
+	/* 
+	 * Reallocation is a bit of a gray area, as we can be asked 
+	 * by external libraries (like libgcrypt) to reallocate a 
+	 * non-secure block into secure memory. We cannot satisfy 
+	 * this request (as we don't know the size of the original 
+	 * block) so we just try our best here.
+	 */
+			 
+	return g_realloc (p, sz);
+}
+
+/* -------------------------------------------------------------------------
+ * HELPERS 
+ */
+
 /* Because Solaris doesn't have err() :( */
 static void 
 fatal (const char *msg1, const char *msg2)
@@ -51,6 +122,28 @@ fatal (const char *msg1, const char *msg2)
 	         msg2 ? msg2 : "");
 	exit (1);
 }
+
+static void
+write_output (const gchar *data, gsize len)
+{
+	int res;
+	
+	while (len > 0) {
+		res = write (1, data, len);
+		if (res <= 0) {
+			if (errno == EAGAIN && errno == EINTR)
+				continue;
+			g_warning ("couldn't write dialog response to output: %s",
+			           g_strerror (errno));
+			exit (1);
+		} else  {
+			len -= res;
+			data += res;
+		}
+	}
+}
+
+/* ------------------------------------------------------------------------------ */
 
 static gchar*
 create_markup (const gchar *primary, const gchar *secondary)
@@ -103,7 +196,7 @@ on_password_changed (GtkEditable     *editable,
 	int upper, lower, digit, misc;
 	gdouble pwstrength;
 
-	password = gtk_entry_get_text (GTK_ENTRY (editable));
+	password = gkr_ask_entry_get_text (GKR_ASK_ENTRY (editable));
 
 	/*
 	 * This code is based on the Master Password dialog in Firefox
@@ -157,36 +250,6 @@ on_password_changed (GtkEditable     *editable,
 	}
 
 	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (user_data), pwstrength);
-}
-
-static void
-unlock_memory (void)
-{
-#ifdef HAVE_MLOCKALL
-	munlockall ();
-#endif
-}
-
-static void
-lock_memory (void)
-{
-	int r = 0;
-
-	/* 
-	 * TODO: This is a copout, due to the fact that GTK, and the entry 
-	 * control in particular are hard to lock into memory. 
-	 * 
-	 * Since this is short lived process, should work for now. In the future
-	 * we need to make this more fine grained.
-	 */
-#ifdef HAVE_MLOCKALL
-	r = mlockall (MCL_CURRENT);
-#endif
-
-	if (r < 0)
-		g_warning ("couldn't lock process in memory: %s", strerror (errno));
-	else
-		g_atexit (unlock_memory);
 }
 
 static gboolean
@@ -351,8 +414,8 @@ run_dialog (gboolean include_password,
 	if (include_original) {
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
 		label = gtk_label_new_with_mnemonic (_("_Old password:"));
-		old = gtk_entry_new ();
-		gtk_entry_set_visibility (GTK_ENTRY (old), FALSE);
+		old = gkr_ask_entry_new ();
+		gkr_ask_entry_set_visibility (GKR_ASK_ENTRY (old), FALSE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), old);
 		g_signal_connect_swapped (old,
 					  "activate",
@@ -371,8 +434,8 @@ run_dialog (gboolean include_password,
 	if (include_password) {
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
 		label = gtk_label_new_with_mnemonic (_("_Password:"));
-		entry = gtk_entry_new ();
-		gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
+		entry = gkr_ask_entry_new ();
+		gkr_ask_entry_set_visibility (GKR_ASK_ENTRY (entry), FALSE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 		g_signal_connect_swapped (entry,
 					  "activate",
@@ -393,8 +456,8 @@ run_dialog (gboolean include_password,
 	
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
 		label = gtk_label_new_with_mnemonic (_("_Confirm password:"));
-		confirm = gtk_entry_new ();
-		gtk_entry_set_visibility (GTK_ENTRY (confirm), FALSE);
+		confirm = gkr_ask_entry_new ();
+		gkr_ask_entry_set_visibility (GKR_ASK_ENTRY (confirm), FALSE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), confirm);
 		g_signal_connect_swapped (confirm,
 					  "activate",
@@ -409,15 +472,13 @@ run_dialog (gboolean include_password,
 					   1, 2, row - 1, row);
 
 		/* Strength bar: */
-		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);
-		strength_bar = gtk_progress_bar_new ();
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (strength_bar), _("New password strength"));
-		g_signal_connect ((gpointer) entry, "changed",
-				  G_CALLBACK (on_password_changed),
-				  strength_bar);
-		gtk_table_attach_defaults (GTK_TABLE (ptable), 
-					   strength_bar,
-					   1, 2, row - 1, row);
+		if (entry) {
+			gtk_table_resize (GTK_TABLE (ptable), ++row, 2);
+			strength_bar = gtk_progress_bar_new ();
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR (strength_bar), _("New password strength"));
+			g_signal_connect ((gpointer) entry, "changed", G_CALLBACK (on_password_changed), strength_bar);
+			gtk_table_attach_defaults (GTK_TABLE (ptable), strength_bar, 1, 2, row - 1, row);
+		}
 	}
 	
 	check = NULL;
@@ -454,12 +515,6 @@ run_dialog (gboolean include_password,
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_window_set_type_hint (GTK_WINDOW (dialog), GDK_WINDOW_TYPE_HINT_NORMAL);
 	
-	/*
-	 * We do this as late as possible, so all the memory the process needs is 
-	 * allocated in memory. This prevents mapping failures.
-	 */
-	lock_memory ();
-
  retry:
 	gtk_widget_show (dialog);
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -468,16 +523,16 @@ run_dialog (gboolean include_password,
 	
 	/* Get the original password */
 	if (include_original && old != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
-		original = gtk_entry_get_text (GTK_ENTRY (old));
-		*original_out = g_strdup (original);
+		original = gkr_ask_entry_get_text (GKR_ASK_ENTRY (old));
+		*original_out = gkr_secure_strdup (original);
 	}
 
 	/* Get the main password entry, and confirmation */
 	if (include_password && entry != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
-		password = gtk_entry_get_text (GTK_ENTRY (entry));
+		password = gkr_ask_entry_get_text (GKR_ASK_ENTRY (entry));
 		if (include_confirm && confirm != NULL) {
-			confirmation = gtk_entry_get_text (GTK_ENTRY (confirm));
-			if (strcmp(password, confirmation) != 0) {
+			confirmation = gkr_ask_entry_get_text (GKR_ASK_ENTRY (confirm));
+			if (strcmp (password, confirmation) != 0) {
 				notice_text = create_notice (_("Passwords do not match."));
 				gtk_label_set_markup (notice,  notice_text);
 				gtk_widget_show (GTK_WIDGET (notice));
@@ -485,7 +540,7 @@ run_dialog (gboolean include_password,
 				goto retry;
 			}
 		}
-		*password_out = g_strdup (password);
+		*password_out = gkr_secure_strdup (password);
 	}
 	
 	/* When it's a new password and blank, double check */
@@ -589,26 +644,26 @@ prepare_dialog (void)
 	}
 	
 	if (!password)
-		password = g_strdup ("");
+		password = gkr_secure_strdup ("");
 	if (!original)
-		original = g_strdup ("");
+		original = gkr_secure_strdup ("");
 
 	/* First two lines of the response are always the passwords */
 	if (response < GKR_ASK_RESPONSE_ALLOW || !(flags & GKR_ASK_REQUEST_PASSWORD))
 		password[0] = 0;
-	printf ("%s\n", password);
+	write_output (password, strlen (password));
+	write_output ("\n", 1);
 		
 	if (response < GKR_ASK_RESPONSE_ALLOW || !(flags & GKR_ASK_REQUEST_ORIGINAL_PASSWORD))
 		original[0] = 0;
-	printf ("%s\n", original);
-	
-	fflush (stdout);
+	write_output (original, strlen (original));
+	write_output ("\n", 1);
 	
 	/* Send back the response */
 	g_key_file_set_integer (output_data, "general", "response", response);
 	
-	g_free (password);
-	g_free (original);
+	gkr_secure_free (password);
+	gkr_secure_free (original);
 }
 
 static gchar*
@@ -633,26 +688,6 @@ read_all_input (void)
 	}
 	
 	return g_string_free (data, FALSE);
-}
-
-static void
-write_all_output (const gchar *data, gsize len)
-{
-	int res;
-	
-	while (len > 0) {
-		res = write (1, data, len);
-		if (res <= 0) {
-			if (errno == EAGAIN && errno == EINTR)
-				continue;
-			g_warning ("couldn't write dialog response to output: %s",
-			           g_strerror (errno));
-			exit (1);
-		} else  {
-			len -= res;
-			data += res;
-		}
-	}
 }
 
 int
@@ -700,7 +735,7 @@ main (int argc, char *argv[])
 	if (!data)
 		fatal ("couldn't format dialog response: %s", err ? err->message : ""); 
 	
-	write_all_output (data, length);
+	write_output (data, length);
 	g_free (data);
 	
 	return 0;

@@ -188,7 +188,6 @@ AC_CHECK_FUNCS(gettimeofday fsync)
 #
 
 AC_CHECK_FUNCS(mlock)
-AC_CHECK_FUNCS(mlockall)
 
 # --------------------------------------------------------------------
 # socket()

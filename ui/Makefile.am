@@ -15,11 +15,13 @@ INCLUDES=	\
 	$(GTK_CFLAGS)
 	
 gnome_keyring_ask_SOURCES = \
+	gkr-ask-entry.c gkr-ask-entry.h \
 	gkr-ask-tool.c gkr-ask-tool.h \
 	gkr-ask-tool-widgets.c \
 	gkr-ask-request.h
 	
 gnome_keyring_ask_LDADD = \
+	$(top_builddir)/common/libgkr-module-common.la \
 	$(GTK_LIBS)
 
 noinst_LTLIBRARIES=libgkr-ui.la
