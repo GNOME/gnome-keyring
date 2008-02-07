@@ -1,5 +1,12 @@
 2008-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-index.c:
+	* pk/gkr-pk-object-storage.c:
+	* pkix/tests/unit-test-pkix-parser.c: Fix assertions for an unknown
+	parsed type (ie: zero). 
+	
+2008-02-07  Stef Walter  <stef@memberwebs.com>
+
 	* common/Makefile.am:
 	* common/gkr-daemon-util.h:
 	* common/gkr-unix-credentials.c: (added)

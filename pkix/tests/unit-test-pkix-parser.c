@@ -143,7 +143,6 @@ ask_password (GkrPkixParser *parser, GQuark loc, gkrconstunique unique,
 	}
 	
 	CuAssert (cu, "location is empty", loc != 0);
-	CuAssert (cu, "type is zero", type != 0);
 	CuAssert (cu, "details is null", details != NULL);
 	
 	g_print ("getting password 'booo' for: %s\n", details); 	

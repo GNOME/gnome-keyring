@@ -1096,6 +1096,7 @@ gkr_pk_index_set_string (GkrPkObject *obj, const gchar *field, const gchar *val)
 {
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
+	g_return_val_if_fail (val, FALSE);
 
 	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
 	                              field, obj, (WriteValueFunc)write_string_value, &val);
@@ -1107,6 +1108,7 @@ gkr_pk_index_set_string_full (GQuark location, gkrconstunique uni, const gchar *
 {
 	g_return_val_if_fail (uni, FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
+	g_return_val_if_fail (val, FALSE);
 
 	return update_pk_index_value (get_index_singleton (), location, uni, field, 
 	                              NULL, (WriteValueFunc)write_string_value, &val);	

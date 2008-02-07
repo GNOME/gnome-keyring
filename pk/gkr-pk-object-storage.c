@@ -448,6 +448,9 @@ index_each_unique (gkrunique unique, gpointer value, gpointer data)
 	GQuark location = GPOINTER_TO_UINT (data);
 	GQuark type = GPOINTER_TO_UINT (value);
 	
+	if (!type)
+		return;
+
 	/* Stash away the parsed type, in case we need it when prompting for a password */
 	gkr_pk_index_set_string_full (location, unique, "parsed-type", 
 	                              g_quark_to_string (type));
