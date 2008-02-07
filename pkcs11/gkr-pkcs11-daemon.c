@@ -208,8 +208,6 @@ gkr_pkcs11_daemon_setup (void)
 		return FALSE;
 	}
 	
-	/* TODO: Socket credentials */
-
 	pkcs11_socket_channel = g_io_channel_unix_new (sock);
 	g_io_add_watch (pkcs11_socket_channel, G_IO_IN | G_IO_HUP, 
 	                handle_new_connection, NULL);

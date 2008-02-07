@@ -32,6 +32,7 @@
 
 #include "common/gkr-async.h"
 #include "common/gkr-buffer.h"
+#include "common/gkr-unix-credentials.h"
 
 #include "keyrings/gkr-keyring-login.h"
 
@@ -1592,6 +1593,20 @@ session_write (int sock, guchar* data, size_t len)
 	return TRUE;
 }
 
+static gboolean
+session_read_credentials (int sock, pid_t *pid, uid_t *uid)
+{
+	gboolean ret;
+	
+	gkr_async_begin_concurrent ();
+	
+		ret = gkr_unix_credentials_read (sock, pid, uid) >= 0;
+		
+	gkr_async_end_concurrent ();
+	
+	return ret;
+}
+
 gpointer
 gkr_pkcs11_daemon_session_thread (gpointer user_data)
 {
@@ -1601,10 +1616,20 @@ gkr_pkcs11_daemon_session_thread (gpointer user_data)
 	CK_RV ret;
 	uint32_t len;
 	int sock;
+	uid_t uid;
+	pid_t pid;
 	
 	/* The argument to the worker thread is the socket */
 	sock = GPOINTER_TO_INT (user_data);
 	g_assert (sock >= 0);
+	
+	/* Make sure the credentials are appropriate */
+	if (!session_read_credentials (sock, &pid, &uid))
+		return NULL;
+	if (getuid() != uid) {
+		g_warning ("uid mismatch: %u, should be %u\n", (guint)uid, (guint)getuid());
+		return NULL;
+	}
 	
 	/* Setup our buffers */
 	/* TODO: Do these need to be secure buffers? */

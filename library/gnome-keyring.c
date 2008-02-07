@@ -31,6 +31,7 @@
 #include "gnome-keyring-proto.h"
 
 #include "common/gkr-buffer.h"
+#include "common/gkr-unix-credentials.h"
 
 #include <time.h>
 #include <unistd.h>
@@ -362,108 +363,23 @@ write_all (int fd, const guchar *buf, size_t len)
 static GnomeKeyringResult
 write_credentials_byte_sync (int socket)
 {
-  char buf;
-  int bytes_written;
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-  union {
-	  struct cmsghdr hdr;
-	  char cred[CMSG_SPACE (sizeof (struct cmsgcred))];
-  } cmsg;
-  struct iovec iov;
-  struct msghdr msg;
-#endif
-
-  buf = 0;
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-  iov.iov_base = &buf;
-  iov.iov_len = 1;
-
-  memset (&msg, 0, sizeof (msg));
-  msg.msg_iov = &iov;
-  msg.msg_iovlen = 1;
-
-  msg.msg_control = (caddr_t) &cmsg;
-  msg.msg_controllen = CMSG_SPACE (sizeof (struct cmsgcred));
-  memset (&cmsg, 0, sizeof (cmsg));
-  cmsg.hdr.cmsg_len = CMSG_LEN (sizeof (struct cmsgcred));
-  cmsg.hdr.cmsg_level = SOL_SOCKET;
-  cmsg.hdr.cmsg_type = SCM_CREDS;
-#endif
-
- again:
-
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-  bytes_written = sendmsg (socket, &msg, 0);
-#else
-  bytes_written = write (socket, &buf, 1);
-#endif
-
-  if (bytes_written < 0 && errno == EINTR)
-    goto again;
-
-  if (bytes_written <= 0) {
-	  return GNOME_KEYRING_RESULT_IO_ERROR;
-  } else {
-	  return GNOME_KEYRING_RESULT_OK;
-  }
+	if (gkr_unix_credentials_write (socket) < 0)
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	return GNOME_KEYRING_RESULT_OK;
 }
-  
 
 static void
 write_credentials_byte (GnomeKeyringOperation *op)
 {
-  char buf;
-  int bytes_written;
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-  union {
-	  struct cmsghdr hdr;
-	  char cred[CMSG_SPACE (sizeof (struct cmsgcred))];
-  } cmsg;
-  struct iovec iov;
-  struct msghdr msg;
-#endif
-
-  buf = 0;
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-  iov.iov_base = &buf;
-  iov.iov_len = 1;
-
-  memset (&msg, 0, sizeof (msg));
-  msg.msg_iov = &iov;
-  msg.msg_iovlen = 1;
-
-  msg.msg_control = (caddr_t) &cmsg;
-  msg.msg_controllen = CMSG_SPACE (sizeof (struct cmsgcred));
-  memset (&cmsg, 0, sizeof (cmsg));
-  cmsg.hdr.cmsg_len = CMSG_LEN (sizeof (struct cmsgcred));
-  cmsg.hdr.cmsg_level = SOL_SOCKET;
-  cmsg.hdr.cmsg_type = SCM_CREDS;
-#endif
-
- again:
-
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-  bytes_written = sendmsg (op->socket, &msg, 0);
-#else
-  bytes_written = write (op->socket, &buf, 1);
-#endif
-
-  if (bytes_written < 0 && errno == EINTR)
-    goto again;
-
-  if (bytes_written <= 0) {
-	  if (errno == EAGAIN) {
-		  return;
-	  }
-	  schedule_op_failed (op, GNOME_KEYRING_RESULT_IO_ERROR);
-	  return;
-  } else {
-	  op->state = STATE_WRITING_PACKET;
-	  return;
-  }
+	if (gkr_unix_credentials_write (op->socket) < 0) {
+		if (errno == EAGAIN)
+			return;
+		schedule_op_failed (op, GNOME_KEYRING_RESULT_IO_ERROR);
+		return;
+	}
+	
+	op->state = STATE_WRITING_PACKET;
 }
-
-
 
 static gboolean
 operation_io (GIOChannel  *io_channel,

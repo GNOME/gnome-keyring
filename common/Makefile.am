@@ -30,6 +30,7 @@ libgkr_common_la_SOURCES = \
 	gkr-location-watch.c gkr-location-watch.h \
 	gkr-secure-memory.c gkr-secure-memory.h \
 	gkr-unique.c gkr-unique.h \
+	gkr-unix-credentials.c gkr-unix-credentials.h \
 	gkr-unix-signal.c gkr-unix-signal.h \
 	gkr-wakeup.c gkr-wakeup.h 
 
@@ -41,11 +42,9 @@ libgkr_common_la_LIBADD = \
 # COMMON STUFF COMPILED INTO LOADABLE MODULES
 
 libgkr_module_common_la_SOURCES = \
-	gkr-buffer.c \
-	gkr-buffer.h \
-	gkr-secure-memory.c \
-	gkr-secure-memory.h
-
+	gkr-buffer.c gkr-buffer.h \
+	gkr-secure-memory.c gkr-secure-memory.h \
+	gkr-unix-credentials.c gkr-unix-credentials.h
 
 if WITH_TESTS
 TESTS_DIR = tests

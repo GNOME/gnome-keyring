@@ -1,4 +1,18 @@
-2008-01-05  Stef Walter  <stef@memberwebs.com>
+2008-02-07  Stef Walter  <stef@memberwebs.com>
+
+	* common/Makefile.am:
+	* common/gkr-daemon-util.h:
+	* common/gkr-unix-credentials.c: (added)
+	* common/gkr-unix-credentials.h: (added)
+	* daemon/gkr-daemon-io.c:
+	* library/gnome-keyring.c:
+	* pam/gkr-pam-client.c:
+	* pam/gkr-pkcs11-daemon-session.c:
+	* pam/gkr-pkcs11-daemon.c:
+	* pam/gkr-pkcs11-module.c: Add checking that PKCS#11 socket 
+	connections come from the appropriate uid.
+	
+2008-02-05  Stef Walter  <stef@memberwebs.com>
 
 	* ui/gkr-ask-entry.c: (added)
 	* ui/gkr-ask-entry.h: (added)
@@ -9,7 +23,7 @@
 	memory. This allows it to work properly on systems where there is 
 	limited lockable memory available.
 	
-2008-01-02  Stef Walter  <stef@memberwebs.com>
+2008-02-02  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-cert.c:
 	* pk/gkr-pk-netscape-trust.c:

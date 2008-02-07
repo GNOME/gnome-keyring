@@ -26,6 +26,7 @@
 #include "gkr-pam.h"
 
 #include "common/gkr-buffer.h"
+#include "common/gkr-unix-credentials.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -126,54 +127,16 @@ check_peer_same_uid (int sock)
 static int
 write_credentials_byte (int sock)
 {
-#if defined(HAVE_CMSGCRED) && (!defined(LOCAL_CREDS) || defined(__FreeBSD__))
-	union {
-		struct cmsghdr hdr;
-		char cred[CMSG_SPACE (sizeof (struct cmsgcred))];
-	} cmsg;
-	struct iovec iov;
-	struct msghdr msg;
-#endif
-
-	int bytes_written;
-  	char buf = 0;
-
-	/*
-	 * All this fuss is for certain OS's, as a byte needs to have 
-	 * gone through the socket before they know who is on the 
-	 * other side. :( 
-	 */
-
-#if !defined(HAVE_GETPEEREID) && defined(HAVE_CMSGCRED)
-	iov.iov_base = &buf;
-	iov.iov_len = 1;
-
-	memset (&msg, 0, sizeof (msg));
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
-
-	msg.msg_control = (caddr_t) &cmsg;
-	msg.msg_controllen = CMSG_SPACE (sizeof (struct cmsgcred));
-	memset (&cmsg, 0, sizeof (cmsg));
-	cmsg.hdr.cmsg_len = CMSG_LEN (sizeof (struct cmsgcred));
-	cmsg.hdr.cmsg_level = SOL_SOCKET;
-	cmsg.hdr.cmsg_type = SCM_CREDS;
-#endif
-
-again:
-
-#if !defined(HAVE_GETPEEREID) && defined(HAVE_CMSGCRED)
-	bytes_written = sendmsg (sock, &msg, 0);
-#else
-	bytes_written = write (sock, &buf, 1);
-#endif
-
-	if (bytes_written < 0) {
-		if (errno == EINTR || errno == EAGAIN)
-			goto again;
-		syslog (GKR_LOG_ERR, "couldn't send credentials to daemon: %s", 
-		        strerror (errno));
-		return -1;
+	for (;;) {
+		if (gkr_unix_credentials_write (sock) < 0) {
+			if (errno == EINTR || errno == EAGAIN)
+				continue;
+			syslog (GKR_LOG_ERR, "couldn't send credentials to daemon: %s", 
+			        strerror (errno));
+			return -1;
+		}
+		
+		break;
 	}
 	
 	return 0;

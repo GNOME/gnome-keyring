@@ -30,6 +30,7 @@
 
 #include "common/gkr-buffer.h"
 #include "common/gkr-secure-memory.h"
+#include "common/gkr-unix-credentials.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -125,7 +126,7 @@ gkr_pkcs11_warn (const char* msg, ...)
 	va_end (va);
 }
 
-#ifdef _xDEBUG 
+#ifdef _DEBUG 
 
 static void 
 gkr_pkcs11_debug (const char* msg, ...)
@@ -327,10 +328,17 @@ call_session_connect (CallSession *cs)
 		return CKR_DEVICE_ERROR;
 	}
 
+	if (gkr_unix_credentials_write (sock) < 0) {
+		close (sock);
+		WARN (("S%d: couldn't send socket credentials: %s", 
+		       cs->id, strerror (errno)));
+		return CKR_DEVICE_ERROR;
+	}
+
 	cs->socket = sock;
 	cs->call_state = CALL_READY;
-	
 	DBG (("S%d: connected", cs->id));
+	
 	return CKR_OK;
 }
 

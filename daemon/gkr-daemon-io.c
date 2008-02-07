@@ -31,10 +31,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <sys/uio.h>
-#if defined(HAVE_GETPEERUCRED)
-#include <ucred.h>
-#endif
 
 #include "gkr-daemon.h"
 
@@ -43,6 +39,7 @@
 #include "common/gkr-cleanup.h"
 #include "common/gkr-daemon-util.h"
 #include "common/gkr-secure-memory.h"
+#include "common/gkr-unix-credentials.h"
 
 #include "keyrings/gkr-keyrings.h"
 
@@ -134,125 +131,6 @@ application_ref_new_from_pid (pid_t pid)
 #endif
 
 	return app_ref;
-}
-
-static gboolean
-read_unix_socket_credentials (int fd,
-			      pid_t *pid,
-			      uid_t *uid)
-{
-	struct msghdr msg;
-	struct iovec iov;
-	char buf;
-	int ret;
-	
-#if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
-	/* Prefer CMSGCRED over LOCAL_CREDS because the former provides the
-	 * remote PID. */
-#if defined(HAVE_CMSGCRED)
-	struct cmsgcred *cred;
-	const size_t cmsglen = CMSG_LEN (sizeof (struct cmsgcred));
-	const size_t cmsgspace = CMSG_SPACE (sizeof (struct cmsgcred));
-#else /* defined(LOCAL_CREDS) */
-	struct sockcred *cred;
-	const size_t cmsglen = CMSG_LEN (sizeof (struct sockcred));
-	const size_t cmsgspace = CMSG_SPACE (sizeof (struct sockcred));
-#endif
-	union {
-		struct cmsghdr hdr;
-		char cred[cmsgspace];
-	} cmsg;
-#endif
-	
-	*pid = 0;
-	*uid = 0;
-	
-	/* If LOCAL_CREDS are used in this platform, they have already been
-	 * initialized by init_connection prior to sending of the credentials
-	 * byte we receive below. */
-	
-	iov.iov_base = &buf;
-	iov.iov_len = 1;
-	
-	memset (&msg, 0, sizeof (msg));
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
-	
-#if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
-	memset (&cmsg, 0, sizeof (cmsg));
-	msg.msg_control = (caddr_t) &cmsg;
-	msg.msg_controllen = cmsgspace;
-#endif
-
- again:
- 	gkr_async_begin_concurrent ();
- 	
- 		ret = recvmsg (fd, &msg, 0);
- 	
- 	gkr_async_end_concurrent ();
- 	
- 	if (ret < 0) {
-		if (errno == EINTR) {
-			goto again;
-		}
-		
-		g_warning ("Failed to read credentials byte");
-		return FALSE;
-	}
-	
-	if (buf != '\0') {
-		g_warning ("Credentials byte was not nul");
-		return FALSE;
-	}
-
-#if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
-	if (cmsg.hdr.cmsg_len < cmsglen || cmsg.hdr.cmsg_type != SCM_CREDS) {
-		g_warning ("Message from recvmsg() was not SCM_CREDS\n");
-		return FALSE;
-	}
-#endif
-
-	{
-#ifdef SO_PEERCRED
-		struct ucred cr;   
-		socklen_t cr_len = sizeof (cr);
-		
-		if (getsockopt (fd, SOL_SOCKET, SO_PEERCRED, &cr, &cr_len) == 0 &&
-		    cr_len == sizeof (cr)) {
-			*pid = cr.pid;
-			*uid = cr.uid;
-		} else {
-			g_warning ("Failed to getsockopt() credentials, returned len %d/%d\n",
-				   cr_len, (int) sizeof (cr));
-			return FALSE;
-		}
-#elif defined(HAVE_CMSGCRED)
-		cred = (struct cmsgcred *) CMSG_DATA (&cmsg.hdr);
-		*pid = cred->cmcred_pid;
-		*uid = cred->cmcred_euid;
-#elif defined(LOCAL_CREDS)
-		cred = (struct sockcred *) CMSG_DATA (&cmsg.hdr);
-		*pid = 0;
-		*uid = cred->sc_euid;
-		set_local_creds(fd, FALSE);
-#elif defined(HAVE_GETPEERUCRED)
-		ucred_t *uc = NULL;
-
-		if (getpeerucred (fd, &uc) == 0) {
-			*pid = ucred_getpid (uc);
-			*uid = ucred_geteuid (uc);
-			ucred_free (uc);
-		} else {
-			g_warning ("getpeerucred() failed: %s", strerror (errno));
-			return FALSE;
-		}
-#else /* !SO_PEERCRED && !HAVE_CMSGCRED */
-		g_warning ("Socket credentials not supported on this OS\n");
-		return FALSE;
-#endif
-	}
-
-	return TRUE;
 }
 
 static gboolean
@@ -350,6 +228,20 @@ read_packet_with_size (GnomeKeyringClient *client)
 	return TRUE;
 }
 
+static gboolean
+yield_and_read_credentials (int sock, pid_t *pid, uid_t *uid)
+{
+	gboolean ret;
+	
+	gkr_async_begin_concurrent ();
+	
+		ret = gkr_unix_credentials_read (sock, pid, uid) >= 0;
+		
+	gkr_async_end_concurrent ();
+	
+	return ret;
+}
+
 static void
 close_fd (gpointer data)
 {
@@ -375,7 +267,7 @@ client_worker_main (gpointer user_data)
 	
 	/* 1. First we read and verify the client's user credentials */	
 	debug_print (("GNOME_CLIENT_STATE_CREDENTIALS %p\n", client));
-	if (!read_unix_socket_credentials (client->sock, &pid, &uid))
+	if (!yield_and_read_credentials (client->sock, &pid, &uid))
 		return NULL;
 	if (getuid() != uid) {
 		g_warning ("uid mismatch: %u, should be %u\n", (guint)uid, (guint)getuid());
