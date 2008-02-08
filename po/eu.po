@@ -1,3 +1,4 @@
+# translation of eu.po to Basque
 # translation of gnome-keyring.HEAD.po  to Basque
 # Copyright (C) 2004 THE eu'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the eu package.
@@ -7,10 +8,10 @@
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.HEAD.po\n"
+"Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-07 16:51+0100\n"
-"PO-Revision-Date: 2008-01-07 16:56+0100\n"
+"POT-Creation-Date: 2008-02-08 18:24+0100\n"
+"PO-Revision-Date: 2008-02-08 18:24+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +34,7 @@ msgid "Home"
 msgstr "Etxea"
 
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:540
+#: ../pkix/gkr-pkix-parser.c:510 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Fitxategia kokatuta dagoen diskoa edo unitatea ez dago"
 
@@ -340,8 +341,8 @@ msgid ""
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
-"Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemonean. "
-"gnome-keyring-daemon abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
+"Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemonean. gnome-"
+"keyring-daemon abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
 "saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu "
 "batzuk daemonari ematean."
 
@@ -352,10 +353,10 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"Aukera honek SSH agentea gaitzen du gnome-keyring daemonean. "
-"gnome-keyring-daemon abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
-"saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu "
-"batzuk daemonari ematean."
+"Aukera honek SSH agentea gaitzen du gnome-keyring daemonean. gnome-keyring-"
+"daemon abiaraztean soilik hartzen da eragina (adib. erabiltzaileak saioa "
+"hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu batzuk "
+"daemonari ematean."
 
 #: ../data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -479,76 +480,81 @@ msgstr "Desblokeatu %s automatikoki saioa hastean."
 msgid "Unlock password for %s"
 msgstr "Desblokeatu %s(r)en pasahitza"
 
-#: ../pkix/gkr-pkix-parser.c:430
+#: ../pkix/gkr-pkix-parser.c:428
 msgid "Unrecognized or unsupported file."
 msgstr "Fitxategi ezezaguna edo onartu gabea."
 
-#: ../pkix/gkr-pkix-parser.c:434
+#: ../pkix/gkr-pkix-parser.c:432
 msgid "Could not parse invalid or corrupted file."
 msgstr "Ezin izan da hondatutako edo baliogabea den fitxategia."
 
-#: ../pkix/gkr-pkix-parser.c:503
+#: ../pkix/gkr-pkix-parser.c:485
 msgid "private key"
 msgstr "gako pribatua"
 
-#: ../pkix/gkr-pkix-parser.c:505
+#: ../pkix/gkr-pkix-parser.c:487
 msgid "certificate"
 msgstr "ziurtagiria"
 
-#: ../ui/gkr-ask-tool.c:79
+#: ../pkix/gkr-pkix-parser.c:489
+msgid "public key"
+msgstr "gako publikoa"
+
+#: ../ui/gkr-ask-tool.c:172
 msgid "Store passwords unencrypted?"
 msgstr "Gorde pasahitzak enkriptatu gabe?"
 
-#: ../ui/gkr-ask-tool.c:80
+#: ../ui/gkr-ask-tool.c:173
 msgid ""
-"By choosing to use a blank password, your stored passwords not be safely "
-"encrypted. They will be accessible by anyone with access to your files."
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
 msgstr ""
 "Pasahitz hutsa erabiltzea aukeratzean, gordetako pasahitzak ez dira "
 "segurtasunez enkriptatuko. Zure fitxategiak atzitu ditzakeen edonork "
 "pasahitz hauek atzi ditzake."
 
-#: ../ui/gkr-ask-tool.c:87
+#: ../ui/gkr-ask-tool.c:180
 msgid "Use Unsafe Storage"
 msgstr "Erabili segurtasun gabeko biltegia"
 
-#: ../ui/gkr-ask-tool.c:340
+#: ../ui/gkr-ask-tool.c:403
 msgid "_Location:"
 msgstr "_Kokalekua:"
 
-#: ../ui/gkr-ask-tool.c:353
+#: ../ui/gkr-ask-tool.c:416
 msgid "_Old password:"
 msgstr "_Pasahitz zaharra:"
 
-#: ../ui/gkr-ask-tool.c:373
+#: ../ui/gkr-ask-tool.c:436
 msgid "_Password:"
 msgstr "_Pasahitza:"
 
-#: ../ui/gkr-ask-tool.c:395
+#: ../ui/gkr-ask-tool.c:458
 msgid "_Confirm password:"
 msgstr "_Berretsi pasahitza:"
 
-#: ../ui/gkr-ask-tool.c:414
+#: ../ui/gkr-ask-tool.c:478
 msgid "New password strength"
 msgstr "Pasahitz berriaren indarra"
 
-#: ../ui/gkr-ask-tool.c:481
+#: ../ui/gkr-ask-tool.c:536
 msgid "Passwords do not match."
 msgstr "Pasahitzak ez datoz bat"
 
-#: ../ui/gkr-ask-tool.c:497
+#: ../ui/gkr-ask-tool.c:552
 msgid "Password cannot be blank"
 msgstr "Pasahitza ezin da hutsa izan"
 
-#: ../ui/gkr-ask-tool.c:548
+#: ../ui/gkr-ask-tool.c:603
 msgid "Deny"
 msgstr "Ukatu"
 
-#: ../ui/gkr-ask-tool.c:560
+#: ../ui/gkr-ask-tool.c:615
 msgid "Allow _Once"
 msgstr "Baimend_u behin"
 
-#: ../ui/gkr-ask-tool.c:564
+#: ../ui/gkr-ask-tool.c:619
 msgid "_Always Allow"
 msgstr "B_aimendu beti"
 
