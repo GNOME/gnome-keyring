@@ -830,7 +830,7 @@ done:
 	return ret;
 }
 
-gkrunique
+gkrid
 gkr_crypto_skey_make_id (gcry_sexp_t s_key)
 {
 	guchar hash[20];
@@ -838,7 +838,7 @@ gkr_crypto_skey_make_id (gcry_sexp_t s_key)
 	if (!gcry_pk_get_keygrip (s_key, hash))
 		g_return_val_if_reached (NULL);
 	
-	return gkr_unique_new (hash, sizeof (hash));
+	return gkr_id_new (hash, sizeof (hash));
 }
 
 static gcry_sexp_t

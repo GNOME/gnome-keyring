@@ -64,7 +64,7 @@ gboolean            gkr_pk_cert_has_extension      (GkrPkCert *cert, GQuark oid,
 guchar*             gkr_pk_cert_get_extension      (GkrPkCert *cert, GQuark oid, 
                                                     gsize *n_extension, gboolean *critical);
 
-gkrconstunique      gkr_pk_cert_get_keyid          (GkrPkCert *cert);
+gkrconstid      gkr_pk_cert_get_keyid          (GkrPkCert *cert);
 
 const guchar*       gkr_pk_cert_get_raw            (GkrPkCert *cert, gsize *n_raw);
 

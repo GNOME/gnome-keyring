@@ -155,7 +155,7 @@ gkr_pk_object_manager_init (GkrPkObjectManager *objmgr)
  	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
  	
  	pv->object_by_handle = g_hash_table_new (g_direct_hash, g_direct_equal);
- 	pv->object_by_unique = g_hash_table_new (gkr_unique_hash, gkr_unique_equals);
+ 	pv->object_by_unique = g_hash_table_new (gkr_id_hash, gkr_id_equals);
 }
 
 static void
@@ -421,7 +421,7 @@ gkr_pk_object_manager_find (GkrPkObjectManager *man, GType gtype, GArray *attrs)
 
 GkrPkObject*
 gkr_pk_object_manager_find_by_id (GkrPkObjectManager *objmgr, GType gtype, 
-                                  gkrconstunique id)
+                                  gkrconstid id)
 {
 	CK_ATTRIBUTE attr;
 	GkrPkObject *object;
@@ -431,7 +431,7 @@ gkr_pk_object_manager_find_by_id (GkrPkObjectManager *objmgr, GType gtype,
 	g_return_val_if_fail (id, NULL);
 	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr), NULL);
 
-	attr.pValue = (CK_VOID_PTR)gkr_unique_get_raw (id, &len);
+	attr.pValue = (CK_VOID_PTR)gkr_id_get_raw (id, &len);
 	attr.ulValueLen = len;
 	attr.type = CKA_ID; 
 
@@ -448,7 +448,7 @@ gkr_pk_object_manager_find_by_id (GkrPkObjectManager *objmgr, GType gtype,
 }
 
 GkrPkObject*
-gkr_pk_object_manager_find_by_unique (GkrPkObjectManager *objmgr, gkrconstunique unique)
+gkr_pk_object_manager_find_by_unique (GkrPkObjectManager *objmgr, gkrconstid unique)
 {
 	GkrPkObjectManagerPrivate *pv;
 	GkrPkObject *object;

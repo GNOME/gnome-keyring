@@ -297,14 +297,14 @@ gkr_pk_attribute_set_date (CK_ATTRIBUTE_PTR attr, time_t time)
 }
 
 void
-gkr_pk_attribute_set_unique (CK_ATTRIBUTE_PTR attr, gkrconstunique uni)
+gkr_pk_attribute_set_id (CK_ATTRIBUTE_PTR attr, gkrconstid id)
 {
 	const guchar* data;
 	gsize n_data;
 	
 	g_assert (attr);
 	
-	data = gkr_unique_get_raw (uni, &n_data);
+	data = gkr_id_get_raw (id, &n_data);
 	g_return_if_fail (data && n_data);
 	
 	gkr_pk_attribute_set_data (attr, data, n_data);

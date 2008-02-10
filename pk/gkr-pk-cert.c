@@ -213,12 +213,12 @@ initialize_certificate (GkrPkCert *cert, ASN1_TYPE asn1)
 static gboolean
 has_private_key (GkrPkCert *cert)
 {
-	gkrconstunique uni;
+	gkrconstid id;
 	
-	uni = gkr_pk_cert_get_keyid (cert);
-	g_return_val_if_fail (uni, FALSE);
+	id = gkr_pk_cert_get_keyid (cert);
+	g_return_val_if_fail (id, FALSE);
 	
-	return gkr_pk_object_manager_find_by_id (GKR_PK_OBJECT (cert)->manager, GKR_TYPE_PK_PRIVKEY, uni) != NULL;	
+	return gkr_pk_object_manager_find_by_id (GKR_PK_OBJECT (cert)->manager, GKR_TYPE_PK_PRIVKEY, id) != NULL;	
 }
 
 static gboolean 
@@ -406,7 +406,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkCert *cert = GKR_PK_CERT (obj);
 	const guchar *cdata = NULL;
-	gkrconstunique keyid;
+	gkrconstid keyid;
 	CK_ULONG value;
 	gchar *index;
 	guchar *data;
@@ -506,7 +506,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		keyid = gkr_pk_cert_get_keyid (cert);
 		if (!keyid) 
 			return CKR_GENERAL_ERROR;
-		data = (CK_VOID_PTR)gkr_unique_get_raw (keyid, &n_data);
+		data = (CK_VOID_PTR)gkr_id_get_raw (keyid, &n_data);
 		gkr_pk_attribute_set_data (attr, data, n_data);
 		return CKR_OK;
 
@@ -647,7 +647,7 @@ gkr_pk_cert_class_init (GkrPkCertClass *klass)
 GkrPkCert*
 gkr_pk_cert_new (GkrPkObjectManager *manager, GQuark location, ASN1_TYPE asn1)
 {
-	gkrunique unique = NULL;
+	gkrid id = NULL;
 	GkrPkCert *cert;
 	guchar *raw;
 	gsize n_raw;
@@ -656,14 +656,14 @@ gkr_pk_cert_new (GkrPkObjectManager *manager, GQuark location, ASN1_TYPE asn1)
 	if (asn1) {
 		raw = gkr_pkix_asn1_encode (asn1, "", &n_raw, NULL);
 		g_return_val_if_fail (raw, NULL);
-		unique = gkr_unique_new_digest (raw, n_raw);
+		id = gkr_id_new_digest (raw, n_raw);
 	}
 	
 	cert = g_object_new (GKR_TYPE_PK_CERT, "location", location, 
-	                     "unique", unique, "manager", manager,  
+	                     "unique", id, "manager", manager,  
 	                     "asn1-tree", asn1, NULL);
 	                     
-	gkr_unique_free (unique);
+	gkr_id_free (id);
 	return cert;
 }
 
@@ -775,7 +775,7 @@ gkr_pk_cert_get_extension (GkrPkCert *cert, GQuark oid, gsize *n_extension,
 	return val;
 }
 
-gkrconstunique
+gkrconstid
 gkr_pk_cert_get_keyid (GkrPkCert *cert)
 {
 	GkrPkPubkey *pub;

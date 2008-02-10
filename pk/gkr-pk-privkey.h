@@ -27,7 +27,7 @@
 #include "gkr-pk-object.h"
 #include "gkr-pk-pubkey.h"
 
-#include "common/gkr-unique.h"
+#include "common/gkr-id.h"
 
 #include <gcrypt.h>
 
@@ -61,9 +61,9 @@ GkrPkObject*        gkr_pk_privkey_new                (GkrPkObjectManager *mgr,
 CK_RV               gkr_pk_privkey_create             (GkrPkObjectManager* manager, 
                                                        GArray* array, GkrPkObject **object);
                                                        
-gkrconstunique      gkr_pk_privkey_get_keyid          (GkrPkPrivkey *pkey);
+gkrconstid      gkr_pk_privkey_get_keyid          (GkrPkPrivkey *pkey);
 
-gkrunique           gkr_pk_privkey_make_keyid         (gcry_sexp_t skey);
+gkrid               gkr_pk_privkey_make_keyid         (gcry_sexp_t skey);
 
 gcry_sexp_t         gkr_pk_privkey_get_key            (GkrPkPrivkey *pkey);
 

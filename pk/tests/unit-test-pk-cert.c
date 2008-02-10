@@ -122,8 +122,8 @@ void unit_test_certificate_static (CuTest *cu)
 void unit_test_certificate_related (CuTest *cu)
 {
 	GkrPkObject *obj;
-	gkrconstunique keyid;
-	gkrconstunique pubid;
+	gkrconstid keyid;
+	gkrconstid pubid;
 	
 	keyid = gkr_pk_cert_get_keyid (certificate_1);
 	CuAssert (cu, "No key id returned from certificate", keyid != NULL);
@@ -134,7 +134,7 @@ void unit_test_certificate_related (CuTest *cu)
 	pubid = gkr_pk_pubkey_get_keyid (GKR_PK_PUBKEY (obj));
 	CuAssert (cu, "No key id returned from public key", pubid != NULL);
 	
-	CuAssert (cu, "certificate and public key ids do not match", gkr_unique_equals (keyid, pubid));
+	CuAssert (cu, "certificate and public key ids do not match", gkr_id_equals (keyid, pubid));
 }
 
 void unit_test_certificate_extension (CuTest *cu)

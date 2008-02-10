@@ -94,10 +94,10 @@ GList*                  gkr_pk_object_manager_findv              (GkrPkObjectMan
                                                                   GType gtype, ...) G_GNUC_NULL_TERMINATED;
 
 GkrPkObject*            gkr_pk_object_manager_find_by_id         (GkrPkObjectManager *objmgr,
-                                                                  GType gtype, gkrconstunique id);
+                                                                  GType gtype, gkrconstid id);
 
 GkrPkObject*            gkr_pk_object_manager_find_by_unique     (GkrPkObjectManager *objmgr,
-                                                                  gkrconstunique unique);
+                                                                  gkrconstid unique);
 
 G_END_DECLS
 

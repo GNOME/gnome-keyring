@@ -33,8 +33,8 @@
 #include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
+#include "common/gkr-id.h"
 #include "common/gkr-location.h"
-#include "common/gkr-unique.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -308,7 +308,7 @@ static CK_RV
 attribute_from_certificate (GkrPkPrivkey *key, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkObject *crt, *obj;
-	gkrconstunique keyid;
+	gkrconstid keyid;
 	
 	keyid = gkr_pk_privkey_get_keyid (key);
 	if (!keyid)
@@ -391,7 +391,7 @@ static CK_RV
 gkr_pk_privkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
-	gkrconstunique keyid;
+	gkrconstid keyid;
 	GQuark *quarks;
 	guchar *value;
 	gsize len;
@@ -450,7 +450,7 @@ gkr_pk_privkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		keyid = gkr_pk_privkey_get_keyid (key);
 		if (!keyid) 
 			return CKR_GENERAL_ERROR;
-		value = (CK_VOID_PTR)gkr_unique_get_raw (keyid, &len);
+		value = (CK_VOID_PTR)gkr_id_get_raw (keyid, &len);
 		gkr_pk_attribute_set_data (attr, value, len);
 		return CKR_OK;
 
@@ -577,7 +577,7 @@ gkr_pk_privkey_new (GkrPkObjectManager *mgr, GQuark location, gcry_sexp_t s_key)
 {
 	GkrPkObject *key;
 	guchar hash[20];
-	gkrunique unique; 
+	gkrid unique; 
 	
 	g_return_val_if_fail (s_key != NULL, NULL);
 	
@@ -585,12 +585,12 @@ gkr_pk_privkey_new (GkrPkObjectManager *mgr, GQuark location, gcry_sexp_t s_key)
 		g_return_val_if_reached (NULL);
 	
 	/* We need to create a unique for this key */
-	unique = gkr_unique_new_digestv ((const guchar*)"private-key", 11, hash, 20, NULL);
+	unique = gkr_id_new_digestv ((const guchar*)"private-key", 11, hash, 20, NULL);
 	
 	key = g_object_new (GKR_TYPE_PK_PRIVKEY, "manager", mgr, "location", location, 
 	                    "gcrypt-sexp", s_key, "unique", unique, NULL);
 	                    
-	gkr_unique_free (unique);
+	gkr_id_free (unique);
 	
 	return key;
 }
@@ -633,7 +633,7 @@ gkr_pk_privkey_create (GkrPkObjectManager* manager, GArray* array,
 	return CKR_OK;
 }
 
-gkrconstunique
+gkrconstid
 gkr_pk_privkey_get_keyid (GkrPkPrivkey *key)
 {
 	GkrPkPubkey *pub;

@@ -68,7 +68,7 @@ read_file (CuTest *cu, const gchar *filename, guchar **contents, gsize *len)
 }
 
 static gchar*
-ask_password (GkrPkixParser *parser, GQuark loc, gkrconstunique unique, 
+ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid unique, 
               GQuark type, const gchar *details, guint n_prompts, 
               gpointer user_data) 
 {

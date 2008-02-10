@@ -27,7 +27,7 @@
 #include <glib-object.h>
 #include <pkcs11/pkcs11.h>
 
-#include "common/gkr-unique.h"
+#include "common/gkr-id.h"
 
 G_BEGIN_DECLS
 
@@ -52,7 +52,7 @@ struct _GkrPkObject {
 	GObject parent;
 	
 	GQuark location;
-	gkrunique unique;
+	gkrid unique;
 	CK_OBJECT_HANDLE handle;
 	
 	GkrPkObjectManager *manager;

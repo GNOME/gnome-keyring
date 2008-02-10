@@ -147,8 +147,8 @@ void unit_test_pubkey_static (CuTest *cu)
 void unit_test_privkey_related (CuTest *cu)
 {
 	GkrPkObject *obj;
-	gkrconstunique keyid;
-	gkrconstunique pubid;
+	gkrconstid keyid;
+	gkrconstid pubid;
 	
 	keyid = gkr_pk_privkey_get_keyid (GKR_PK_PRIVKEY (privkey_1));
 	CuAssert (cu, "No key id returned from private key", keyid != NULL);
@@ -159,7 +159,7 @@ void unit_test_privkey_related (CuTest *cu)
 	pubid = gkr_pk_pubkey_get_keyid (GKR_PK_PUBKEY (obj));
 	CuAssert (cu, "No key id returned from public key", pubid != NULL);
 	
-	CuAssert (cu, "private and public key ids do not match", gkr_unique_equals (keyid, pubid));
+	CuAssert (cu, "private and public key ids do not match", gkr_id_equals (keyid, pubid));
 }
 
 void unit_test_privkey_rsa_create (CuTest *cu)

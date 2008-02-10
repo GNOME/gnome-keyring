@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <gcrypt.h>
 
-#include "gkr-unique.h"
+#include "gkr-id.h"
 
 void               gkr_crypto_setup                     (void);
 
@@ -71,7 +71,7 @@ void               gkr_crypto_sexp_dump                 (gcry_sexp_t sexp);
 gboolean           gkr_crypto_skey_parse                (gcry_sexp_t s_key, int *algorithm, 
                                                          gboolean *is_priv, gcry_sexp_t *numbers);
 
-gkrunique          gkr_crypto_skey_make_id              (gcry_sexp_t s_key);
+gkrid              gkr_crypto_skey_make_id              (gcry_sexp_t s_key);
 
 gboolean           gkr_crypto_skey_private_to_public    (gcry_sexp_t privkey, gcry_sexp_t *pubkey);
 

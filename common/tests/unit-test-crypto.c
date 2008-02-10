@@ -253,17 +253,17 @@ void unit_test_parse_key (CuTest *cu)
 void unit_test_make_keyid (CuTest *cu)
 {
 	guchar hash[20];
-	gkrunique uni;
+	gkrid id;
 	const guchar *p;
 	gsize n;
 	
 	p = gcry_pk_get_keygrip (thekey, hash);
 	g_return_if_fail (p == hash);
 	
-	uni = gkr_crypto_skey_make_id (thekey);
-	CuAssert (cu, "no unique returned as key id", uni != NULL);
+	id = gkr_crypto_skey_make_id (thekey);
+	CuAssert (cu, "null returned as key id", id != NULL);
 	
-	p = gkr_unique_get_raw (uni, &n);
+	p = gkr_id_get_raw (id, &n);
 	CuAssert (cu, "key id is of wrong length", n == sizeof (hash));
 	CuAssert (cu, "key grip doesn't match key id", memcmp (hash, p, n) == 0);	
 }
@@ -272,7 +272,7 @@ void unit_test_key_to_public (CuTest *cu)
 {
 	gcry_sexp_t pubkey = NULL;
 	gboolean ret;
-	gkrunique u1, u2;
+	gkrid u1, u2;
 	
 	ret = gkr_crypto_skey_private_to_public (thekey, &pubkey);
 	CuAssert (cu, "couldn't make public key", ret);
@@ -281,6 +281,6 @@ void unit_test_key_to_public (CuTest *cu)
 	u1 = gkr_crypto_skey_make_id (thekey);
 	u2 = gkr_crypto_skey_make_id (pubkey);
 	CuAssert (cu, "public and private keys are not equivalent", 
-	          gkr_unique_equals (u1, u2)); 
+	          gkr_id_equals (u1, u2)); 
 }	
 

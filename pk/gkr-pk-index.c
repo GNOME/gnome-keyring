@@ -230,7 +230,7 @@ check_index_mtime (GkrPkIndex *index, GQuark loc, time_t mtime)
 }
 
 static gchar*
-unique_to_group (gkrconstunique uni)
+unique_to_group (gkrconstid uni)
 {
 	const guchar *unidata;
 	gsize n_group, n_unidata;
@@ -239,7 +239,7 @@ unique_to_group (gkrconstunique uni)
 	
 	g_return_val_if_fail (uni, NULL);
 		
-	unidata = gkr_unique_get_raw (uni, &n_unidata);
+	unidata = gkr_id_get_raw (uni, &n_unidata);
 	g_assert (unidata);
 	n_group = (n_unidata * 2) + 1;
 	group = g_malloc0 (n_group);
@@ -453,7 +453,7 @@ write_quarks_value (GKeyFile *file, const gchar *group, const gchar *field,
 }
 
 static void
-set_keyfile_value (GKeyFile *key_file, gkrconstunique uni, 
+set_keyfile_value (GKeyFile *key_file, gkrconstid uni, 
                    const gchar *field, WriteValueFunc func, 
                    gpointer data, gboolean *updated)
 {
@@ -665,7 +665,7 @@ load_parent_key_file (GkrPkIndex *index, GQuark loc)
 }
 
 static gboolean
-read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstunique uni, 
+read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni, 
                      const gchar *field, GkrPkObject *object, 
                      ReadValueFunc func, gpointer data)
 {
@@ -720,7 +720,7 @@ read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstunique uni,
 }
 
 static gboolean
-update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstunique uni, 
+update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni, 
                        const gchar *field, GkrPkObject *object, 
                        WriteValueFunc func, gpointer data)
 {
@@ -970,7 +970,7 @@ gkr_pk_index_get_string (GkrPkObject *obj, const gchar *field)
 }
 
 gchar*
-gkr_pk_index_get_string_full (GQuark location, gkrconstunique uni, 
+gkr_pk_index_get_string_full (GQuark location, gkrconstid uni, 
                               const gchar *field)
 {
 	gchar *ret = NULL;
@@ -1058,7 +1058,7 @@ gkr_pk_index_have (GkrPkObject *obj)
 }
 
 gboolean
-gkr_pk_index_have_full (GQuark location, gkrconstunique uni)
+gkr_pk_index_have_full (GQuark location, gkrconstid uni)
 {
 	gboolean ret;
 
@@ -1103,7 +1103,7 @@ gkr_pk_index_set_string (GkrPkObject *obj, const gchar *field, const gchar *val)
 }
 
 gboolean
-gkr_pk_index_set_string_full (GQuark location, gkrconstunique uni, const gchar *field, 
+gkr_pk_index_set_string_full (GQuark location, gkrconstid uni, const gchar *field, 
                               const gchar *val)
 {
 	g_return_val_if_fail (uni, FALSE);

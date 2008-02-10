@@ -66,7 +66,7 @@ void unit_setup_trust (void)
 
 void unit_test_create_trust (CuTest* cu)
 {
-	gkrconstunique keyid;
+	gkrconstid keyid;
 	GkrPkixResult res;
 	ASN1_TYPE asn1;
 	gchar *data;
@@ -117,7 +117,7 @@ void unit_test_trust_static (CuTest *cu)
 void unit_test_trust_related (CuTest *cu)
 {
 	CK_ATTRIBUTE attr;
-	gkrconstunique keyid;
+	gkrconstid keyid;
 	const guchar *id;
 	gsize n_id;
 	CK_RV ret;
@@ -125,7 +125,7 @@ void unit_test_trust_related (CuTest *cu)
 	keyid = gkr_pk_cert_get_keyid (certificate_1);
 	CuAssert (cu, "No key id returned from certificate", keyid != NULL);
 	
-	id = gkr_unique_get_raw (keyid, &n_id);
+	id = gkr_id_get_raw (keyid, &n_id);
 	
 	memset (&attr, 0, sizeof (attr));
 	attr.type = CKA_ID;

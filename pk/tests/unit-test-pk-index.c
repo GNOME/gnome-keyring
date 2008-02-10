@@ -28,8 +28,8 @@
 #include "pk/gkr-pk-index.h"
 #include "pk/gkr-pk-object.h"
 
+#include "common/gkr-id.h"
 #include "common/gkr-location.h"
-#include "common/gkr-unique.h"
 
 #include <glib.h>
 #include <memory.h>
@@ -57,10 +57,10 @@ static GkrPkObject *object = NULL;
 void unit_setup_index (void)
 {
 	/* This is just any arbitrary data */
-	gkrunique unique = gkr_unique_new (DATA, DATA_L);
+	gkrid id = gkr_id_new (DATA, DATA_L);
 	GQuark location = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "woof");
 	
-	object = g_object_new (GKR_TYPE_PK_OBJECT, "location", location, "unique", unique, NULL);
+	object = g_object_new (GKR_TYPE_PK_OBJECT, "location", location, "unique", id, NULL);
 	gkr_pk_index_clear (object);
 }
 

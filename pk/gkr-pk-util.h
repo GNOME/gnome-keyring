@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <gcrypt.h>
 
-#include "common/gkr-unique.h"
+#include "common/gkr-id.h"
 
 #include "pkcs11/pkcs11.h"
 
@@ -62,7 +62,7 @@ void               gkr_pk_attribute_set_data              (CK_ATTRIBUTE_PTR attr
 
 void               gkr_pk_attribute_set_string            (CK_ATTRIBUTE_PTR attr, const gchar *str);
 
-void               gkr_pk_attribute_set_unique            (CK_ATTRIBUTE_PTR attr, gkrconstunique uni);
+void               gkr_pk_attribute_set_id                (CK_ATTRIBUTE_PTR attr, gkrconstid id);
 
 void               gkr_pk_attribute_set_boolean           (CK_ATTRIBUTE_PTR attr, CK_BBOOL value);
 

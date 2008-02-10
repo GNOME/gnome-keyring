@@ -33,7 +33,7 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-unique.h"
+#include "common/gkr-id.h"
 
 /* 
  * Each test looks like (on one line):
@@ -50,48 +50,48 @@
 void unit_test_unique_basics (CuTest* cu)
 {
 	gchar test[] = "my big test";
-	gkrunique uni, uni2;
+	gkrid id, id2;
 	const guchar *data;
 	gsize n_data;
 	
-	uni = gkr_unique_new ((guchar*)test, strlen (test));
-	CuAssert (cu, "didn't create unique", uni != NULL);
+	id = gkr_id_new ((guchar*)test, strlen (test));
+	CuAssert (cu, "didn't create id", id != NULL);
 	
-	data = gkr_unique_get_raw (uni, &n_data);
+	data = gkr_id_get_raw (id, &n_data);
 	CuAssert (cu, "raw returned null", data != NULL);
 	CuAssert (cu, "length has changed", n_data == strlen (test));
 	CuAssert (cu, "unique data is wrong", memcmp (data, test, n_data) == 0);
 	
-	uni2 = gkr_unique_new ((guchar*)test, strlen(test));
-	CuAssert (cu, "didn't create unique", uni != NULL);
-	CuAssert (cu, "two identically created uniques are different", 
-	          gkr_unique_equals (uni, uni2));
+	id2 = gkr_id_new ((guchar*)test, strlen(test));
+	CuAssert (cu, "didn't create id", id != NULL);
+	CuAssert (cu, "two identically created ids are different", 
+	          gkr_id_equals (id, id2));
 
-	uni2 = gkr_unique_dup (uni);
-	CuAssert (cu, "didn't dup unique", uni != NULL);
-	CuAssert (cu, "two duped created uniques are different", 
-	          gkr_unique_equals (uni, uni2));
+	id2 = gkr_id_dup (id);
+	CuAssert (cu, "didn't dup id", id != NULL);
+	CuAssert (cu, "two duped created ids are different", 
+	          gkr_id_equals (id, id2));
 	          
-	gkr_unique_free (uni);
+	gkr_id_free (id);
 }		
 
-void unit_test_unique_digest (CuTest* cu)
+void unit_test_id_digest (CuTest* cu)
 {
 	guchar test[40];
-	gkrunique uni, uni2;
+	gkrid id, id2;
 	
 	memset (test, 'h', 40);
 	
-	uni = gkr_unique_new_digest (test, 40);
-	CuAssert (cu, "didn't create unique", uni != NULL);
+	id = gkr_id_new_digest (test, 40);
+	CuAssert (cu, "didn't create id", id != NULL);
 
-	uni2 = gkr_unique_new_digest (test, 40);
-	CuAssert (cu, "didn't create unique", uni != NULL);
-	CuAssert (cu, "two identically digested uniques are different", 
-	          gkr_unique_equals (uni, uni2));
+	id2 = gkr_id_new_digest (test, 40);
+	CuAssert (cu, "didn't create id", id != NULL);
+	CuAssert (cu, "two identically digested ids are different", 
+	          gkr_id_equals (id, id2));
 	
-	uni2 = gkr_unique_new_digestv (test, 20, test + 20, 20, NULL);
-	CuAssert (cu, "didn't create unique", uni != NULL);
-	CuAssert (cu, "block digested unique is different", 
-	          gkr_unique_equals (uni, uni2));
+	id2 = gkr_id_new_digestv (test, 20, test + 20, 20, NULL);
+	CuAssert (cu, "didn't create id", id != NULL);
+	CuAssert (cu, "block digested id is different", 
+	          gkr_id_equals (id, id2));
 }

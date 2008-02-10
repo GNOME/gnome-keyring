@@ -37,7 +37,7 @@ gint                gkr_pk_index_get_int               (GkrPkObject *object, con
                                                                   
 gchar*              gkr_pk_index_get_string            (GkrPkObject *object, const gchar *field);
 
-gchar*              gkr_pk_index_get_string_full       (GQuark location, gkrconstunique uni, const gchar *field);
+gchar*              gkr_pk_index_get_string_full       (GQuark location, gkrconstid uni, const gchar *field);
 
 guchar*             gkr_pk_index_get_binary            (GkrPkObject *object, const gchar *field, 
                                                         gsize *n_data);
@@ -53,7 +53,7 @@ gboolean            gkr_pk_index_set_int               (GkrPkObject *object, con
 gboolean            gkr_pk_index_set_string            (GkrPkObject *object, const gchar *field, 
                                                         const gchar *val);
                                          
-gboolean            gkr_pk_index_set_string_full       (GQuark location, gkrconstunique uni, 
+gboolean            gkr_pk_index_set_string_full       (GQuark location, gkrconstid uni, 
                                                         const gchar *field, const gchar *val);
                                                         
 gboolean            gkr_pk_index_set_binary            (GkrPkObject *object, const gchar *field, 
@@ -68,7 +68,7 @@ gboolean            gkr_pk_index_delete                (GkrPkObject *object, con
 
 gboolean            gkr_pk_index_have                  (GkrPkObject *object);
 
-gboolean            gkr_pk_index_have_full             (GQuark location, gkrconstunique uni);
+gboolean            gkr_pk_index_have_full             (GQuark location, gkrconstid uni);
 
 gboolean            gkr_pk_index_clear                 (GkrPkObject *object);
 

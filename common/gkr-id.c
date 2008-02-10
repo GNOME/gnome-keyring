@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-unique.c - Unique binary identifiers
+/* gkr-id.c - Unique binary identifiers
 
    Copyright (C) 2007 Stefan Walter
 
@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "gkr-unique.h"
+#include "gkr-id.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -43,28 +43,28 @@
 #endif 
 
 GType
-gkr_unique_get_boxed_type (void)
+gkr_id_get_boxed_type (void)
 {
 	static GType type = 0;
 	
 	if (!type) {
-		type = g_boxed_type_register_static ("gkrunique", 
-	                                             (GBoxedCopyFunc)gkr_unique_dup,
-	                                             gkr_unique_free);
+		type = g_boxed_type_register_static ("gkrid", 
+		                                     (GBoxedCopyFunc)gkr_id_dup,
+		                                     gkr_id_free);
 	}
 	
 	return type;
 }
 
-gkrunique  
-gkr_unique_new (const guchar *data, gsize n_data)
+gkrid  
+gkr_id_new (const guchar *data, gsize n_data)
 {
-	guint *uni;
+	guint *id;
 	guint len;
 
 	g_assert (data != NULL);
 	g_assert (n_data > 0);
-	g_assert (n_data < GKR_UNIQUE_MAX_LENGTH);
+	g_assert (n_data < GKR_ID_MAX_LENGTH);
 	
 	len = sizeof (guint) + n_data;
 	
@@ -72,23 +72,23 @@ gkr_unique_new (const guchar *data, gsize n_data)
 	len += sizeof (guint);
 #endif
 
-	uni = g_slice_alloc (len);
+	id = g_slice_alloc (len);
 	
 #ifdef DEBUG_HEADER
 	len -= sizeof (guint);
-	uni[0] = HEADER_V;
-	++uni;
+	id[0] = HEADER_V;
+	++id;
 #endif
 
-	uni[0] = len;
-	memcpy (uni + 1, data, n_data);
-	return uni;
+	id[0] = len;
+	memcpy (id + 1, data, n_data);
+	return id;
 }
 
-gkrunique
-gkr_unique_new_digest (const guchar *data, gsize n_data)
+gkrid
+gkr_id_new_digest (const guchar *data, gsize n_data)
 {
-	guint *uni;
+	guint *id;
 	guint len;
 	
 	g_assert (data != NULL);
@@ -100,27 +100,27 @@ gkr_unique_new_digest (const guchar *data, gsize n_data)
 	len += sizeof (guint);
 #endif
 
-	uni = g_slice_alloc (len);
+	id = g_slice_alloc (len);
 	
 #ifdef DEBUG_HEADER
 	len -= sizeof (guint);
-	uni[0] = HEADER_V;
-	++uni;
+	id[0] = HEADER_V;
+	++id;
 #endif
 
-	uni[0] = len;	
-	gcry_md_hash_buffer (GCRY_MD_SHA1, uni + 1, data, n_data);
+	id[0] = len;	
+	gcry_md_hash_buffer (GCRY_MD_SHA1, id + 1, data, n_data);
 
-	return uni;
+	return id;
 }
 
-gkrunique
-gkr_unique_new_digestv (const guchar *data, gsize n_data, ...)
+gkrid
+gkr_id_new_digestv (const guchar *data, gsize n_data, ...)
 {
 	gcry_md_hd_t mdh;
 	gcry_error_t gcry;
 	const guchar *digest;
-	gkrunique uni;
+	gkrid id;
 	va_list va;
 	
 	g_assert (data);
@@ -148,99 +148,99 @@ gkr_unique_new_digestv (const guchar *data, gsize n_data, ...)
 	digest = gcry_md_read (mdh, 0);
 	g_return_val_if_fail (digest != NULL, NULL);
 	
-	uni = gkr_unique_new (digest, 20);
+	id = gkr_id_new (digest, 20);
 
 	gcry_md_close (mdh);
-	return uni;
+	return id;
 }
 
 guint
-gkr_unique_hash (gkrconstunique v)
+gkr_id_hash (gkrconstid v)
 {
-	const guint *uni = (guint*)v;
+	const guint *id = (guint*)v;
 	const guchar *p;
 	guint hash, i;
 
 	hash = 0;	
-	for (p = (guchar*)uni, i = *uni; i; i--, p++)
+	for (p = (guchar*)id, i = *id; i; i--, p++)
 		 hash = hash * 33 + *p;
 		 
 	return hash;
 }
 
 gboolean
-gkr_unique_equals (gkrconstunique v1, gkrconstunique v2)
+gkr_id_equals (gkrconstid v1, gkrconstid v2)
 {
 	const guint *u1 = (guint*)v1;
 	const guint *u2 = (guint*)v2;
 	if (!u1 || !u2)
 		return FALSE;
 	g_assert (*u1 > 0 && *u2 > 0);
-	g_assert (*u1 < GKR_UNIQUE_MAX_LENGTH && *u2 < GKR_UNIQUE_MAX_LENGTH);
+	g_assert (*u1 < GKR_ID_MAX_LENGTH && *u2 < GKR_ID_MAX_LENGTH);
 	return (*u1 == *u2 && memcmp (u1, u2, *u1) == 0);
 }
 
-gkrunique
-gkr_unique_dup (gkrconstunique v)
+gkrid
+gkr_id_dup (gkrconstid v)
 {
-	const guint *uni = (guint*)v;
-	guint *nuni;
+	const guint *id = (guint*)v;
+	guint *nid;
 	guint len;
 	
-	if (!uni)
+	if (!id)
 		return NULL;
 
-	g_assert (*uni > 0);
-	g_assert (*uni < GKR_UNIQUE_MAX_LENGTH);
-	len = uni[0];
+	g_assert (*id > 0);
+	g_assert (*id < GKR_ID_MAX_LENGTH);
+	len = id[0];
 	
 #ifdef DEBUG_HEADER
 	len += sizeof (guint);
 #endif
 	
-	nuni = g_slice_alloc (len);
+	nid = g_slice_alloc (len);
 	
 #ifdef DEBUG_HEADER
-	nuni[0] = HEADER_V;
+	nid[0] = HEADER_V;
 	len -= sizeof (guint);
-	nuni++;
+	nid++;
 #endif
 
-	memcpy (nuni, uni, len);
-	return nuni;
+	memcpy (nid, id, len);
+	return nid;
 }
 
 gconstpointer
-gkr_unique_get_raw (gkrconstunique v, gsize *len)
+gkr_id_get_raw (gkrconstid v, gsize *len)
 {
-	const guint *uni = (guint*)v;
-	if (!uni)
+	const guint *id = (guint*)v;
+	if (!id)
 		return NULL;
-	g_assert (*uni > 0);
-	g_assert (*uni < GKR_UNIQUE_MAX_LENGTH);
+	g_assert (*id > 0);
+	g_assert (*id < GKR_ID_MAX_LENGTH);
 	if (len)
-		*len = *uni - sizeof (guint);
-	return (uni + 1);	
+		*len = *id - sizeof (guint);
+	return (id + 1);	
 }
 
 void
-gkr_unique_free (gkrunique v)
+gkr_id_free (gkrid v)
 {
-	guint *uni = (guint*)v;
+	guint *id = (guint*)v;
 	guint len;
 	
-	if (!uni)
+	if (!id)
 		return;
 
-	g_assert (uni[0] > 0);
-	g_assert (uni[0] < GKR_UNIQUE_MAX_LENGTH);
-	len = uni[0]; 
+	g_assert (id[0] > 0);
+	g_assert (id[0] < GKR_ID_MAX_LENGTH);
+	len = id[0]; 
 	
 #ifdef DEBUG_HEADER
-	--uni;
-	g_assert (uni[0] == HEADER_V);
+	--id;
+	g_assert (id[0] == HEADER_V);
 	len += sizeof (guint);
 #endif
 	
-	g_slice_free1 (len, uni);
+	g_slice_free1 (len, id);
 }

@@ -29,7 +29,7 @@ libgkr_common_la_SOURCES = \
 	gkr-location.c gkr-location.h \
 	gkr-location-watch.c gkr-location-watch.h \
 	gkr-secure-memory.c gkr-secure-memory.h \
-	gkr-unique.c gkr-unique.h \
+	gkr-id.c gkr-id.h \
 	gkr-unix-credentials.c gkr-unix-credentials.h \
 	gkr-unix-signal.c gkr-unix-signal.h \
 	gkr-wakeup.c gkr-wakeup.h 

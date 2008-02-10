@@ -65,7 +65,7 @@ static GkrPkPrivkey*
 find_private_key (gcry_sexp_t s_key, gboolean manager)
 {
 	GkrPkPrivkey *key = NULL;
-	gkrunique keyid;
+	gkrid keyid;
 	const guchar *data;
 	gsize n_data;
 	GList *l, *objects;
@@ -75,7 +75,7 @@ find_private_key (gcry_sexp_t s_key, gboolean manager)
 	
 	for (l = ssh_session_keys; l; l = g_list_next (l)) {
 		key = GKR_PK_PRIVKEY (l->data);
-		if (gkr_unique_equals (keyid, gkr_pk_privkey_get_keyid (key)))
+		if (gkr_id_equals (keyid, gkr_pk_privkey_get_keyid (key)))
 			break;
 	}
 	
@@ -83,7 +83,7 @@ find_private_key (gcry_sexp_t s_key, gboolean manager)
 		key = NULL;
 	
 	if (!key && manager) {
-		data = gkr_unique_get_raw (keyid, &n_data);
+		data = gkr_id_get_raw (keyid, &n_data);
 		g_assert (data && n_data);
 		
 		objects = gkr_pk_object_manager_findv (gkr_pk_object_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
@@ -94,7 +94,7 @@ find_private_key (gcry_sexp_t s_key, gboolean manager)
 		}
 	}
 
-	gkr_unique_free (keyid);
+	gkr_id_free (keyid);
 	
 	return key;
 }

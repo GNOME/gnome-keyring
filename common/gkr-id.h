@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-unique.h - Unique binary identifiers
+/* gkr-id.h - Unique binary identifiers
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,36 +21,36 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKRUNIQUE_H_
-#define GKRUNIQUE_H_
+#ifndef GKRID_H_
+#define GKRID_H_
 
 #include <glib.h>
 #include <glib-object.h>
 
-#define GKR_UNIQUE_MAX_LENGTH       1024 * 64
+#define GKR_ID_MAX_LENGTH       1024 * 64
 
-typedef gpointer gkrunique;
-typedef gconstpointer gkrconstunique;
+typedef gpointer gkrid;
+typedef gconstpointer gkrconstid;
 
-#define GKR_UNIQUE_BOXED_TYPE        (gkr_unique_get_boxed_type ())
+#define GKR_ID_BOXED_TYPE        (gkr_id_get_boxed_type ())
 
-GType          gkr_unique_get_boxed_type (void);
+GType          gkr_id_get_boxed_type (void);
 
-gkrunique      gkr_unique_new            (const guchar *data, gsize len);
+gkrid          gkr_id_new            (const guchar *data, gsize len);
 
-gkrunique      gkr_unique_new_digest     (const guchar *data, gsize len);
+gkrid          gkr_id_new_digest     (const guchar *data, gsize len);
 
-gkrunique      gkr_unique_new_digestv    (const guchar *data, gsize len, ...)
+gkrid          gkr_id_new_digestv    (const guchar *data, gsize len, ...)
                                          G_GNUC_NULL_TERMINATED;
 
-guint          gkr_unique_hash           (gkrconstunique v);
+guint          gkr_id_hash           (gkrconstid v);
 
-gboolean       gkr_unique_equals         (gkrconstunique u1, gkrconstunique u2);
+gboolean       gkr_id_equals         (gkrconstid u1, gkrconstid u2);
 
-gkrunique      gkr_unique_dup            (gkrconstunique uni);
+gkrid          gkr_id_dup            (gkrconstid id);
 
-gconstpointer  gkr_unique_get_raw        (gkrconstunique uni, gsize *len);
+gconstpointer  gkr_id_get_raw        (gkrconstid id, gsize *len);
 
-void           gkr_unique_free           (gpointer v); 
+void           gkr_id_free           (gpointer v); 
 
-#endif /*GKRUNIQUE_H_*/
+#endif /*GKRID_H_*/

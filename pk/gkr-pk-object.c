@@ -269,8 +269,8 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		xobj->location = g_value_get_uint (value);
 		break;
 	case PROP_UNIQUE:
-		gkr_unique_free (xobj->unique);
-		xobj->unique = gkr_unique_dup (g_value_get_boxed (value));
+		gkr_id_free (xobj->unique);
+		xobj->unique = gkr_id_dup (g_value_get_boxed (value));
 		break;
 	case PROP_ORIG_LABEL:
 		g_free (pv->orig_label);
@@ -329,7 +329,7 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 		                   
 	g_object_class_install_property (gobject_class, PROP_UNIQUE,
 		g_param_spec_boxed ("unique", "Unique", "Unique Identifier for Data",
-		                    GKR_UNIQUE_BOXED_TYPE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                    GKR_ID_BOXED_TYPE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 		                    
 	g_object_class_install_property (gobject_class, PROP_ORIG_LABEL,
 		g_param_spec_string ("orig-label", "Original Label", "Original Label",

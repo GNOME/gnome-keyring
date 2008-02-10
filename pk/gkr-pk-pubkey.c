@@ -32,8 +32,8 @@
 #include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
+#include "common/gkr-id.h"
 #include "common/gkr-location.h"
-#include "common/gkr-unique.h"
 
 #include "pkix/gkr-pkix-der.h"
 #include "pkix/gkr-pkix-serialize.h"
@@ -57,7 +57,7 @@ enum {
 
 struct _GkrPkPubkeyData {
 	int algorithm;
-	gkrunique keyid;
+	gkrid keyid;
 	gcry_sexp_t s_key;
 	gcry_sexp_t numbers;
 };
@@ -78,7 +78,7 @@ initialize_from_key (GkrPkPubkey *key)
 	gcry_sexp_release (key->pub->numbers);
 	key->pub->numbers = NULL;
 	
-	gkr_unique_free (key->pub->keyid);
+	gkr_id_free (key->pub->keyid);
 	key->pub->keyid = NULL;
 	
 	key->pub->algorithm = 0; 
@@ -380,7 +380,7 @@ gkr_pk_pubkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		/* Always a SHA-1 hash output buffer */
 		if (!load_public_key (key) || !key->pub->keyid)
 			return CKR_GENERAL_ERROR;
-		gkr_pk_attribute_set_unique (attr, key->pub->keyid);
+		gkr_pk_attribute_set_id (attr, key->pub->keyid);
 		return CKR_OK;
 
 	case CKA_SUBJECT:
@@ -487,7 +487,7 @@ gkr_pk_pubkey_new (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_k
 {
 	GkrPkObject *key;
 	guchar hash[20];
-	gkrunique unique; 
+	gkrid unique; 
 	
 	g_return_val_if_fail (s_key != NULL, NULL);
 	
@@ -495,12 +495,12 @@ gkr_pk_pubkey_new (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_k
 		g_return_val_if_reached (NULL);
 	
 	/* We need to create a unique for this key */
-	unique = gkr_unique_new_digestv ((const guchar*)"public-key", 10, hash, 20, NULL);
+	unique = gkr_id_new_digestv ((const guchar*)"public-key", 10, hash, 20, NULL);
 	
 	key = g_object_new (GKR_TYPE_PK_PUBKEY, "manager", manager, "location", location, 
 	                    "gcrypt-sexp", s_key, "unique", unique, NULL);
 	                    
-	gkr_unique_free (unique);
+	gkr_id_free (unique);
 	return key;
 }
 
@@ -508,7 +508,7 @@ GkrPkPubkey*
 gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_key)
 {
 	GkrPkObject *pub;
-	gkrunique keyid;
+	gkrid keyid;
 	
 	g_return_val_if_fail (s_key, NULL);
 	
@@ -518,7 +518,7 @@ gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_
 	
 	/* Try the lookup */
 	pub = gkr_pk_object_manager_find_by_id (manager, GKR_TYPE_PK_PUBKEY, keyid);
-	gkr_unique_free (keyid);
+	gkr_id_free (keyid);
 	
 	if (pub != NULL) {
 		gcry_sexp_release (s_key);
@@ -568,7 +568,7 @@ gkr_pk_pubkey_create (GkrPkObjectManager* manager, GArray* array,
 	return CKR_OK;
 }
 
-gkrconstunique
+gkrconstid
 gkr_pk_pubkey_get_keyid (GkrPkPubkey *key)
 {
 	g_return_val_if_fail (GKR_IS_PK_PUBKEY (key), NULL);

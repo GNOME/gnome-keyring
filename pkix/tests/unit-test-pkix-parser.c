@@ -62,7 +62,7 @@ static guint n_parsed = 0;
 static CuTest *the_cu = NULL;
 
 static gboolean
-parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstunique unique, 
+parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstid unique, 
                 GQuark type, gpointer user_data)
 {
 	CuTest *cu = the_cu;
@@ -82,7 +82,7 @@ parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
 }
 
 static gboolean
-parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstunique unique, 
+parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstid unique, 
              GQuark type, gcry_sexp_t sexp, gpointer user_data)
 {
 	CuTest *cu = the_cu;
@@ -104,7 +104,7 @@ parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
 }
 
 static gboolean
-parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
+parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid unique,
              GQuark type, ASN1_TYPE asn1, gpointer user_data)
 {
 	CuTest *cu = the_cu;
@@ -126,7 +126,7 @@ parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique unique,
 }
 
 static gchar*
-ask_password (GkrPkixParser *parser, GQuark loc, gkrconstunique unique, 
+ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid unique, 
               GQuark type, const gchar *details, guint n_prompts, 
               gpointer user_data) 
 {

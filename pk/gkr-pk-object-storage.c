@@ -89,7 +89,7 @@ cleanup_object_storage (void *unused)
 }
 
 static gchar* 
-parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique, 
+parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique, 
                      GQuark type, const gchar *label, guint failures,
                      ParseContext *ctx)
 {
@@ -213,7 +213,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrunique unique,
 		} 
 		
 		/* Track that we prompted for this */
-		g_hash_table_insert (ctx->types_by_unique, gkr_unique_dup (unique), 
+		g_hash_table_insert (ctx->types_by_unique, gkr_id_dup (unique), 
 		                     GUINT_TO_POINTER (type));
 	}	
 		
@@ -312,7 +312,7 @@ remove_object (GkrPkObjectStorage *storage, GkrPkObject *object)
 
 static GkrPkObject*
 prepare_object (GkrPkObjectStorage *storage, GQuark location, 
-                gkrconstunique unique, GQuark type)
+                gkrconstid unique, GQuark type)
 {
 	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
 	GkrPkObjectManager *manager;
@@ -351,7 +351,7 @@ g_printerr ("parsed %s at %s\n", G_OBJECT_TYPE_NAME (object), g_quark_to_string 
 }
 
 static void 
-parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrunique unique,
+parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrid unique,
                        GQuark type, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
@@ -378,12 +378,12 @@ parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrunique unique,
 	}
 	
 	/* Track the type for this unique */
-	g_hash_table_insert (ctx->types_by_unique, gkr_unique_dup (unique), 
+	g_hash_table_insert (ctx->types_by_unique, gkr_id_dup (unique), 
 		             GUINT_TO_POINTER (type));
 }
 
 static void
-parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrunique unique,
+parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrid unique,
 	                GQuark type, gcry_sexp_t sexp, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
@@ -401,7 +401,7 @@ parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrunique unique,
 	g_hash_table_remove (ctx->checks, object);
 		
 	/* Track the type for this unique */
-	g_hash_table_insert (ctx->types_by_unique, gkr_unique_dup (unique), 
+	g_hash_table_insert (ctx->types_by_unique, gkr_id_dup (unique), 
 		             GUINT_TO_POINTER (type));
 	
 	/* Setup the sexp, probably a key on this object */
@@ -409,7 +409,7 @@ parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrunique unique,
 }
 
 static void
-parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique unique, 
+parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid unique, 
                     GQuark type, ASN1_TYPE asn1, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
@@ -427,7 +427,7 @@ parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstunique uniqu
 	g_hash_table_remove (ctx->checks, object);
 	
 	/* Track the type for this unique */
-	g_hash_table_insert (ctx->types_by_unique, gkr_unique_dup (unique), 
+	g_hash_table_insert (ctx->types_by_unique, gkr_id_dup (unique), 
 		             GUINT_TO_POINTER (type));
 
 	/* Setup the asn1, probably a certificate on this object */
@@ -443,7 +443,7 @@ remove_each_object (GkrPkObject *object, gpointer unused, GkrPkObjectStorage *st
 }
 
 static void
-index_each_unique (gkrunique unique, gpointer value, gpointer data)
+index_each_unique (gkrid unique, gpointer value, gpointer data)
 {
 	GQuark location = GPOINTER_TO_UINT (data);
 	GQuark type = GPOINTER_TO_UINT (value);
@@ -474,8 +474,8 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, GError **err)
 	ctx.storage = storage;
 	ctx.checks = g_hash_table_new_full (g_direct_hash, g_direct_equal, 
 	                                    g_object_unref, NULL);
-	ctx.types_by_unique = g_hash_table_new_full (gkr_unique_hash, gkr_unique_equals, 
-	                                             gkr_unique_free, NULL);
+	ctx.types_by_unique = g_hash_table_new_full (gkr_id_hash, gkr_id_equals, 
+	                                             gkr_id_free, NULL);
 
 	/* Create a table of what is at the location */
 	k = GUINT_TO_POINTER (loc);
@@ -570,7 +570,7 @@ gkr_pk_object_storage_init (GkrPkObjectStorage *storage)
  	
  	pv->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
  	pv->objects_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_array);
-	pv->specific_load_requests = g_hash_table_new_full (gkr_unique_hash, gkr_unique_equals, gkr_unique_free, NULL);
+	pv->specific_load_requests = g_hash_table_new_full (gkr_id_hash, gkr_id_equals, gkr_id_free, NULL);
 	
 	for (i = 0; i < G_N_ELEMENTS (gkr_pk_places); ++i) {
 		place = &gkr_pk_places[i];
@@ -694,7 +694,7 @@ gkr_pk_object_storage_load_complete (GkrPkObjectStorage *storage, GkrPkObject *o
 
 	
 	/* Make note of the specific load request */
-	g_hash_table_replace (pv->specific_load_requests, gkr_unique_dup (obj->unique), NO_VALUE); 
+	g_hash_table_replace (pv->specific_load_requests, gkr_id_dup (obj->unique), NO_VALUE); 
 	ret = load_objects_at_location (storage, obj->location, err);
 
 	if (!ret) 

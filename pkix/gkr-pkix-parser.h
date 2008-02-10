@@ -32,7 +32,7 @@
 #include <libtasn1.h>
 
 #include "common/gkr-async.h"
-#include "common/gkr-unique.h"
+#include "common/gkr-id.h"
 
 G_BEGIN_DECLS
 
@@ -57,21 +57,21 @@ struct _GkrPkixParserClass {
 
 	/* When an object is not fully parsed because of restrictions */	
 	gboolean (*parsed_partial) (GkrPkixParser *parser, GQuark location, 
-	                            gkrconstunique unique, GQuark type);
+	                            gkrconstid unique, GQuark type);
 
 	/* When an ASN.1 type object is parsed */
 	gboolean (*parsed_asn1) (GkrPkixParser *parser, GQuark location, 
-	                         gkrconstunique unique, GQuark type,
+	                         gkrconstid unique, GQuark type,
 	                         ASN1_TYPE asn1);
 
 	/* When a gcrypt sexp is parsed */
 	gboolean (*parsed_sexp) (GkrPkixParser *parser, GQuark location, 
-	                         gkrconstunique unique, GQuark type,
+	                         gkrconstid unique, GQuark type,
 	                         gcry_sexp_t sexp);
 	
 	/* A callback for each password needed */
 	gchar* (*ask_password) (GkrPkixParser *parser, GQuark location, 
-	                        gkrconstunique unique, GQuark type,
+	                        gkrconstid unique, GQuark type,
 				const gchar *orig_label, guint failed);
 };
 
