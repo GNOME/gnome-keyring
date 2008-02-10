@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.21.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-02 21:25+0100\n"
-"PO-Revision-Date: 2008-02-02 21:25+0100\n"
+"POT-Creation-Date: 2008-02-10 22:56+0100\n"
+"PO-Revision-Date: 2008-02-10 22:57+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgid "Home"
 msgstr "Hjem"
 
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:540
+#: ../pkix/gkr-pkix-parser.c:510 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller stasjonen denne filen er plassert på er ikke tilstede"
 
@@ -442,113 +442,154 @@ msgstr "Lås opp"
 msgid "Enter password to unlock"
 msgstr "Oppgi passord for for å låse opp"
 
-#: ../pk/gkr-pk-object-storage.c:164
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#.
+#: ../pk/gkr-pk-object-storage.c:168
 #, c-format
 msgid "Unlock %s"
 msgstr "Lås opp %s"
 
-#: ../pk/gkr-pk-object-storage.c:165
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#.
+#: ../pk/gkr-pk-object-storage.c:174
 #, c-format
 msgid "Enter password for the %s to unlock"
 msgstr "Oppgi passord for for å låse opp «%s»"
 
-#: ../pk/gkr-pk-object-storage.c:174
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#. *  label is replaced with the name of the locked object.
+#.
+#: ../pk/gkr-pk-object-storage.c:188
 #, c-format
 msgid "An application wants access to the %s '%s', but it is locked"
 msgstr "Et program ønsker tilgang til %s «%s», men den er låst"
 
-#: ../pk/gkr-pk-object-storage.c:177
+#.
+#. * TRANSLATORS:
+#. *  label is replaced with the name of the locked object.
+#.
+#: ../pk/gkr-pk-object-storage.c:195
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Et program ønsker tilgang til «%s», men den er låst"
 
-#: ../pk/gkr-pk-object-storage.c:182
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#. *  label is replaced with the name of the locked object.
+#.
+#: ../pk/gkr-pk-object-storage.c:206
 #, c-format
 msgid "The system wants to import the %s '%s', but it is locked."
 msgstr "Systemet ønsker å importere %s «%s», men den er låst."
 
-#: ../pk/gkr-pk-object-storage.c:185
+#.
+#. * TRANSLATORS:
+#. *  label is replaced with the name of the locked object.
+#.
+#: ../pk/gkr-pk-object-storage.c:213
 #, c-format
 msgid "The system wants to import '%s', but it is locked."
 msgstr "Systemet ønsker å importere «%s», men den er låst."
 
-#: ../pk/gkr-pk-object-storage.c:197
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#.
+#: ../pk/gkr-pk-object-storage.c:230
 #, c-format
 msgid "Automatically unlock this %s when I log in."
 msgstr "Lås opp denne %s automatisk når jeg logger inn."
 
-#: ../pk/gkr-pk-object-storage.c:209
+#.
+#. * TRANSLATORS:
+#. *  label is the name of the object to unlock.
+#.
+#: ../pk/gkr-pk-object-storage.c:246
 #, c-format
 msgid "Unlock password for %s"
 msgstr "Lås opp passord for %s"
 
-#: ../pkix/gkr-pkix-parser.c:430
+#: ../pkix/gkr-pkix-parser.c:428
 msgid "Unrecognized or unsupported file."
 msgstr "Ikke gjenkjent eller støttet fil."
 
-#: ../pkix/gkr-pkix-parser.c:434
+#: ../pkix/gkr-pkix-parser.c:432
 msgid "Could not parse invalid or corrupted file."
 msgstr "Kunne ikke lese ugyldig eller korrupt fil."
 
-#: ../pkix/gkr-pkix-parser.c:503
+#: ../pkix/gkr-pkix-parser.c:485
 msgid "private key"
 msgstr "privat nøkkel"
 
-#: ../pkix/gkr-pkix-parser.c:505
+#: ../pkix/gkr-pkix-parser.c:487
 msgid "certificate"
 msgstr "sertifikat"
 
-#: ../ui/gkr-ask-tool.c:79
+#: ../pkix/gkr-pkix-parser.c:489
+msgid "public key"
+msgstr "offentlig nøkkel"
+
+#: ../ui/gkr-ask-tool.c:172
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../ui/gkr-ask-tool.c:80
+#: ../ui/gkr-ask-tool.c:173
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
-msgstr "Hvis du velger å bruke et tomt passord kan ikke dine lagrede passord krypteres på en trygg måte. De vil være tilgjengelig for alle som har tilgang til dine filer."
+msgstr ""
+"Hvis du velger å bruke et tomt passord kan ikke dine lagrede passord "
+"krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
+"tilgang til dine filer."
 
-#: ../ui/gkr-ask-tool.c:87
+#: ../ui/gkr-ask-tool.c:180
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../ui/gkr-ask-tool.c:340
+#: ../ui/gkr-ask-tool.c:403
 msgid "_Location:"
 msgstr "_Lokasjon:"
 
-#: ../ui/gkr-ask-tool.c:353
+#: ../ui/gkr-ask-tool.c:416
 msgid "_Old password:"
 msgstr "_Gammelt passord:"
 
-#: ../ui/gkr-ask-tool.c:373
+#: ../ui/gkr-ask-tool.c:436
 msgid "_Password:"
 msgstr "_Passord:"
 
-#: ../ui/gkr-ask-tool.c:395
+#: ../ui/gkr-ask-tool.c:458
 msgid "_Confirm password:"
 msgstr "_Bekreft passord:"
 
-#: ../ui/gkr-ask-tool.c:414
+#: ../ui/gkr-ask-tool.c:478
 msgid "New password strength"
 msgstr "Styrke for nytt passord"
 
-#: ../ui/gkr-ask-tool.c:481
+#: ../ui/gkr-ask-tool.c:536
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../ui/gkr-ask-tool.c:497
+#: ../ui/gkr-ask-tool.c:552
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 
-#: ../ui/gkr-ask-tool.c:548
+#: ../ui/gkr-ask-tool.c:603
 msgid "Deny"
 msgstr "Nekt"
 
-#: ../ui/gkr-ask-tool.c:560
+#: ../ui/gkr-ask-tool.c:615
 msgid "Allow _Once"
 msgstr "Tillat én gang"
 
-#: ../ui/gkr-ask-tool.c:564
+#: ../ui/gkr-ask-tool.c:619
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
