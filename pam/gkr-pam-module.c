@@ -776,20 +776,13 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 	/* Look up the password */
 	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
 	if (ret != PAM_SUCCESS || password == NULL) {
-		ret = prompt_password (ph);
-		if (ret != PAM_SUCCESS) {
-			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
+		if (ret == PAM_SUCCESS)
+			syslog (GKR_LOG_WARN, "gkr-pam: no password is available for user");
+		else
+			syslog (GKR_LOG_WARN, "gkr-pam: no password is available for user: %s", 
 			        pam_strerror (ph, ret));
-			return PAM_AUTH_ERR;
-		}
-		ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
-		if (ret != PAM_SUCCESS || password == NULL) {
-			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
-			        ret == PAM_SUCCESS ? "password was null" : pam_strerror (ph, ret));
-			return PAM_AUTHTOK_RECOVER_ERR;
-		}
+		return PAM_SUCCESS;
 	}
-
 
 	started_daemon = 0;
 

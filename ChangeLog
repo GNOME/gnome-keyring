@@ -1,5 +1,10 @@
 2008-02-10  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-module.c: Don't ask PAM to prompt for password
+	if no password is available. Fixes bug #514862. Patch by Ray Strode
+	
+2008-02-10  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-crypto.c:
 	* common/gkr-crypto.h:
 	* common/gkr-unique.c: (moved to gkr-id.c)
