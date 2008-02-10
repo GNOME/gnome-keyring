@@ -158,10 +158,19 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 		/* 
 		 * TRANSLATORS: 
 	 	 *  display_type will be the type of the object like 'certificate' or 'key'
-	 	 *  details will the name of the object to unlock.
 	 	 */
 		display_type = gkr_pkix_parsed_type_to_display (type);
+
+		/* 
+		 * TRANSLATORS: 
+	 	 *  display_type will be the type of the object like 'certificate' or 'key'
+	 	 */
 		title = g_strdup_printf (_("Unlock %s"), display_type);
+
+		/* 
+		 * TRANSLATORS: 
+	 	 *  display_type will be the type of the object like 'certificate' or 'key'
+	 	 */
 		primary = g_strdup_printf (_("Enter password for the %s to unlock"), display_type);
 	}
 	
@@ -170,19 +179,39 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 	
 	/* When we've already indexed this data */
 	if (have_indexed) {
-		if (display_type)
+		if (display_type) {
+			/* 
+			 * TRANSLATORS: 
+	 		 *  display_type will be the type of the object like 'certificate' or 'key'
+		 	 *  label is replaced with the name of the locked object.
+		 	 */
 			secondary = g_strdup_printf (_("An application wants access to the %s '%s', but it is locked"), 
 			                             display_type, label);
-		else
+		} else {
+			/* 
+			 * TRANSLATORS: 
+	 		 *  label is replaced with the name of the locked object.
+		 	 */
 			secondary = g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
+		}
 			
 	/* Never before seen this data */ 
 	} else {
-		if (display_type)
+		if (display_type) {
+			/* 
+			 * TRANSLATORS: 
+	 		 *  display_type will be the type of the object like 'certificate' or 'key'
+		 	 *  label is replaced with the name of the locked object.
+		 	 */
 			secondary = g_strdup_printf(_("The system wants to import the %s '%s', but it is locked."),
 			                            display_type, label);
-		else
+		} else {
+			/* 
+			 * TRANSLATORS: 
+	 		 *  label is replaced with the name of the locked object.
+		 	 */			
 			secondary = g_strdup_printf(_("The system wants to import '%s', but it is locked."), label);
+		}
 	}
 	
 	ask = gkr_ask_request_new (title, primary, GKR_ASK_REQUEST_PROMPT_PASSWORD);
@@ -194,6 +223,10 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 	g_free (secondary);
 		
 	if (gkr_keyring_login_is_usable ()) {
+		/* 
+		 * TRANSLATORS: 
+ 		 *  display_type will be the type of the object like 'certificate' or 'key'
+		 */
 		check = g_strdup_printf (_("Automatically unlock this %s when I log in."), display_type);
 		gkr_ask_request_set_check_option (ask, check);
 		g_free (check);
@@ -206,6 +239,10 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 	} else {
 		ret = gkr_secure_strdup (ask->typed_password);
 		if (ask->checked) {
+			/* 
+			 * TRANSLATORS: 
+		 	 *  label is the name of the object to unlock.
+		 	 */
 			display_name =  g_strdup_printf (_("Unlock password for %s"), label);
 			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 			                                 display_name, ret,

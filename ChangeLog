@@ -1,5 +1,10 @@
 2008-02-10  Stef Walter  <stef@memberwebs.com>
 
+	* pk/gkr-pk-object-storage.c: Fix translater comments. 
+	See bug #515119
+	
+2008-02-10  Stef Walter  <stef@memberwebs.com>
+
 	* pam/gkr-pam-module.c: Don't ask PAM to prompt for password
 	if no password is available. Fixes bug #514862. Patch by Ray Strode
 	
