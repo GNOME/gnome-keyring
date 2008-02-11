@@ -1,3 +1,9 @@
+=== gnome-keyring 2.21.91 ===
+
+2008-02-11  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS: Release version 2.21.91
+
 2008-02-10  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-object-storage.c: Fix translater comments. 

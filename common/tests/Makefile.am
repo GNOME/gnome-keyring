@@ -1,4 +1,3 @@
-
 UNIT_AUTO = \
 	unit-test-secmem.c \
 	unit-test-unique.c \

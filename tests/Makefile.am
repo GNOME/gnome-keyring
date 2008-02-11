@@ -1,5 +1,6 @@
 
 EXTRA_DIST = \
+	ca-example \
 	cu-test \
 	test-helpers.c test-helpers.h \
 	prep-tests.sh \

@@ -19,6 +19,9 @@ UNIT_LIBS =  \
 	$(top_builddir)/pkix/libgkr-pkix.la \
 	$(top_builddir)/common/libgkr-common.la
 
-EXTRA_DIST = test.asn
+EXTRA_DIST = \
+	test.asn \
+	test-data
 
 include $(top_srcdir)/tests/test.make
+

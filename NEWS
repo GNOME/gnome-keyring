@@ -1,6 +1,17 @@
+Changes in version 2.21.91 are:
+* Don't prompt for a password from the PAM module since  
+  gnome-keyring is not an authenticator. [Ray Strode]
+* Check that PKCS#11 socket connections come from same user.
+* Don't lock the entire gnome-keyring-ask process in memory.
+  Just the password text. Works better when less non-pageable
+  memory is available.
+* Basic serializing of certificates and keys.
+* Build fixes.
+* Translation fixes.
+
 Changes in version 2.21.90 are:
 * Fix problem where most keyrings were being treated as insecure 
-from the point of view of storing passwords for keys or certificates.
+  from the point of view of storing passwords for keys or certificates.
 * Fix race condition that is causing deadlocks and freezes.
 
 2008-01-14  Stef Walter  <stef@memberwebs.com>

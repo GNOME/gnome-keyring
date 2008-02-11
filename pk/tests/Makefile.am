@@ -13,6 +13,8 @@ UNIT_LIBS =  \
 	$(top_builddir)/library/libgnome-keyring-common.la \
 	$(top_builddir)/common/libgkr-common.la
 
-EXTRA_DIST = check-attribute.c
+EXTRA_DIST = \
+	check-attribute.c \
+	test-data
 
 include $(top_srcdir)/tests/test.make

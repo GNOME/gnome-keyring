@@ -12,4 +12,6 @@ UNIT_LIBS =  \
 	$(top_builddir)/ui/libgkr-ui.la \
 	$(top_builddir)/common/libgkr-common.la
 
+EXTRA_DIST = test-data
+
 include $(top_srcdir)/tests/test.make
