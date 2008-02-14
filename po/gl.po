@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-27 11:19+0100\n"
-"PO-Revision-Date: 2008-01-27 11:32+0100\n"
+"POT-Creation-Date: 2008-02-14 13:01+0100\n"
+"PO-Revision-Date: 2008-02-14 13:01+0100\n"
 "Last-Translator: Ignacio Casal Quinteiro <icq@svn.gnome.org>\n"
 "Language-Team: Galego <proxecto@trasno.net>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgid "Home"
 msgstr "Inicio"
 
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:540
+#: ../pkix/gkr-pkix-parser.c:510 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "O disco ou a unidade na que está ubicado este ficheiro non está presente"
 
@@ -346,7 +346,11 @@ msgid ""
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
-msgstr "Esta opción activa a compoñente PKCS#11 no daemon gnome-keyring. Só é efectivo cando se inicia gnome-keyring-daemon, (ex: cando o usuario entra no sistema). Este axuste pódese substituír ao pasar certos parámetros ao daemon por medio da liña de comandos."
+msgstr ""
+"Esta opción activa a compoñente PKCS#11 no daemon gnome-keyring. Só é "
+"efectivo cando se inicia gnome-keyring-daemon, (ex: cando o usuario entra no "
+"sistema). Este axuste pódese substituír ao pasar certos parámetros ao daemon "
+"por medio da liña de comandos."
 
 #: ../data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -354,7 +358,11 @@ msgid ""
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
-msgstr "Esta opción activa o axente SSH no daemon do gnome-keyring. Só é efectivo cando se inicia gnome-keyring-daemon, (ex: cando o usuario entra no sistema). Este axuste pódese substituír ao pasar certos parámetros ao daemon por medio da liña de comandos."
+msgstr ""
+"Esta opción activa o axente SSH no daemon do gnome-keyring. Só é efectivo "
+"cando se inicia gnome-keyring-daemon, (ex: cando o usuario entra no "
+"sistema). Este axuste pódese substituír ao pasar certos parámetros ao daemon "
+"por medio da liña de comandos."
 
 #: ../data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -409,7 +417,9 @@ msgstr "Contrasinal de desbloqueo para o anel de chaves de inicio"
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr "Ao iniciar sesión neste computado non se desbloqueou automaticamente o seu anel de chaves."
+msgstr ""
+"Ao iniciar sesión neste computado non se desbloqueou automaticamente o seu "
+"anel de chaves."
 
 #. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:124
@@ -424,7 +434,9 @@ msgstr "Introduza o contrasinal de inicio"
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
-msgstr "Ao iniciar sesión neste computador non se creou automaticamente o seu anel de chaves. Crearase agora."
+msgstr ""
+"Ao iniciar sesión neste computador non se creou automaticamente o seu anel "
+"de chaves. Crearase agora."
 
 #: ../pk/gkr-pk-object-storage.c:153
 msgid "Unlock"
@@ -434,117 +446,155 @@ msgstr "Desbloquear"
 msgid "Enter password to unlock"
 msgstr "Introduza o contrasinal para desbloquear"
 
-#: ../pk/gkr-pk-object-storage.c:164
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#.
+#: ../pk/gkr-pk-object-storage.c:168
 #, c-format
 msgid "Unlock %s"
 msgstr "Desbloquear %s"
 
-#: ../pk/gkr-pk-object-storage.c:165
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#.
+#: ../pk/gkr-pk-object-storage.c:174
 #, c-format
 msgid "Enter password for the %s to unlock"
 msgstr "Introduza o contrasinal para desbloquear %s"
 
-#: ../pk/gkr-pk-object-storage.c:174
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#. *  label is replaced with the name of the locked object.
+#.
+#: ../pk/gkr-pk-object-storage.c:188
 #, c-format
 msgid "An application wants access to the %s '%s', but it is locked"
-msgstr ""
-"Unha aplicación quere acceder ao %s %s mais está "
-"bloqueado"
+msgstr "Unha aplicación quere acceder ao %s %s mais está bloqueado"
 
-#: ../pk/gkr-pk-object-storage.c:177
+#.
+#. * TRANSLATORS:
+#. *  label is replaced with the name of the locked object.
+#.
+#: ../pk/gkr-pk-object-storage.c:195
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr ""
-"Unha aplicación quere acceder ao %s mais está "
-"bloqueado"
+msgstr "Unha aplicación quere acceder ao %s mais está bloqueado"
 
-#: ../pk/gkr-pk-object-storage.c:182
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#. *  label is replaced with the name of the locked object.
+#.
+#: ../pk/gkr-pk-object-storage.c:206
 #, c-format
 msgid "The system wants to import the %s '%s', but it is locked."
 msgstr "O sistema quere importar o %s '%s' mais está bloqueado"
 
-#: ../pk/gkr-pk-object-storage.c:185
+#.
+#. * TRANSLATORS:
+#. *  label is replaced with the name of the locked object.
+#.
+#: ../pk/gkr-pk-object-storage.c:213
 #, c-format
 msgid "The system wants to import '%s', but it is locked."
 msgstr "O sistema quere importar '%s' mais está bloqueado."
 
-#: ../pk/gkr-pk-object-storage.c:197
+#.
+#. * TRANSLATORS:
+#. *  display_type will be the type of the object like 'certificate' or 'key'
+#.
+#: ../pk/gkr-pk-object-storage.c:230
 #, c-format
 msgid "Automatically unlock this %s when I log in."
 msgstr "Desbloquear automaticamente este %s ao iniciar sesión."
 
-#: ../pk/gkr-pk-object-storage.c:209
+#.
+#. * TRANSLATORS:
+#. *  label is the name of the object to unlock.
+#.
+#: ../pk/gkr-pk-object-storage.c:246
 #, c-format
 msgid "Unlock password for %s"
 msgstr "Contrasinal de desbloqueo para o %s"
 
-#: ../pkix/gkr-pkix-parser.c:430
+#: ../pkix/gkr-pkix-parser.c:428
 msgid "Unrecognized or unsupported file."
 msgstr "Ficheiro non recoñecido ou non soportado."
 
-#: ../pkix/gkr-pkix-parser.c:434
+#: ../pkix/gkr-pkix-parser.c:432
 msgid "Could not parse invalid or corrupted file."
 msgstr "Non se puido analizar o ficheiro inválido ou corrupto."
 
-#: ../pkix/gkr-pkix-parser.c:503
+#: ../pkix/gkr-pkix-parser.c:485
 msgid "private key"
 msgstr "chave privada"
 
-#: ../pkix/gkr-pkix-parser.c:505
+#: ../pkix/gkr-pkix-parser.c:487
 msgid "certificate"
 msgstr "certificado\t"
 
-#: ../ui/gkr-ask-tool.c:79
+#: ../pkix/gkr-pkix-parser.c:489
+msgid "public key"
+msgstr "chave pública"
+
+#: ../ui/gkr-ask-tool.c:172
 msgid "Store passwords unencrypted?"
 msgstr "Quere almacenar contrasinais sen cifrar?"
 
-#: ../ui/gkr-ask-tool.c:80
+#: ../ui/gkr-ask-tool.c:173
 msgid ""
-"By choosing to use a blank password, your stored passwords not be safely "
-"encrypted. They will be accessible by anyone with access to your files."
-msgstr "Ao escoller usar un contrasinal en branco, os seus contrasinais almacenados non estarán cifrados de maneira segura. Serán accesibles por calquera que teña acceso aos seus ficheiros."
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Ao escoller usar un contrasinal en branco, os seus contrasinais almacenados "
+"non estarán cifrados de maneira segura. Serán accesibles por calquera que "
+"teña acceso aos seus ficheiros."
 
-#: ../ui/gkr-ask-tool.c:87
+#: ../ui/gkr-ask-tool.c:180
 msgid "Use Unsafe Storage"
 msgstr "Usar almacenamento inseguro"
 
-#: ../ui/gkr-ask-tool.c:340
+#: ../ui/gkr-ask-tool.c:403
 msgid "_Location:"
 msgstr "_Ubicación:"
 
-#: ../ui/gkr-ask-tool.c:353
+#: ../ui/gkr-ask-tool.c:416
 msgid "_Old password:"
 msgstr "Contrasinal anti_go:"
 
-#: ../ui/gkr-ask-tool.c:373
+#: ../ui/gkr-ask-tool.c:436
 msgid "_Password:"
 msgstr "_Contrasinal:"
 
-#: ../ui/gkr-ask-tool.c:395
+#: ../ui/gkr-ask-tool.c:458
 msgid "_Confirm password:"
 msgstr "_Confirmar contrasinal:"
 
-#: ../ui/gkr-ask-tool.c:414
+#: ../ui/gkr-ask-tool.c:478
 msgid "New password strength"
 msgstr "Fortaleza do novo contrasinal"
 
-#: ../ui/gkr-ask-tool.c:481
+#: ../ui/gkr-ask-tool.c:536
 msgid "Passwords do not match."
 msgstr "Os contrasinais non coinciden."
 
-#: ../ui/gkr-ask-tool.c:497
+#: ../ui/gkr-ask-tool.c:552
 msgid "Password cannot be blank"
 msgstr "O contrasinal non pode estar en branco."
 
-#: ../ui/gkr-ask-tool.c:548
+#: ../ui/gkr-ask-tool.c:603
 msgid "Deny"
 msgstr "Denegar"
 
-#: ../ui/gkr-ask-tool.c:560
+#: ../ui/gkr-ask-tool.c:615
 msgid "Allow _Once"
 msgstr "Permitir _unha vez"
 
-#: ../ui/gkr-ask-tool.c:564
+#: ../ui/gkr-ask-tool.c:619
 msgid "_Always Allow"
 msgstr "_Permitir sempre"
 
