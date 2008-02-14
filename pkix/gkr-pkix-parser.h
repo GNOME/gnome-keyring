@@ -81,8 +81,6 @@ GQuark 	            gkr_pkix_parser_get_error_domain        (void) G_GNUC_CONST;
 
 GkrPkixParser*      gkr_pkix_parser_new                     (void);
 
-const gchar*        gkr_pkix_parsed_type_to_display         (GQuark type);
-
 gboolean            gkr_pkix_parser_parse                   (GkrPkixParser *parser, GQuark loc,
                                                              const guchar *data, gsize n_data, 
                                                              GError **err);

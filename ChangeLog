@@ -1,3 +1,10 @@
+2008-02-14  Stef walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-object-storage.c:
+	* pkix/gkr-pkix-parser.c:
+	* pkix/gkr-pkix-parser.h:
+	* pkix/gkr-pkix-types.h: Make strings more easily translateble. Fixes bug #515119
+	
 2008-02-14  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring.c: Fix build problem. Fixes bug #516526

@@ -88,6 +88,91 @@ cleanup_object_storage (void *unused)
 	object_storage_singleton = NULL;
 }
 
+static const gchar*
+prepare_ask_title (GQuark type)
+{
+	/*
+	 * Yes this is unmaintainable and stupid, but is required 
+	 * for translations to work properly.
+	 */
+	if (type == GKR_PKIX_PRIVATE_KEY)
+		return _("Unlock private key");
+	else if (type == GKR_PKIX_CERTIFICATE)
+		return _("Unlock certificate");
+	else if (type == GKR_PKIX_PUBLIC_KEY)
+		return _("Unlock public key");
+	else 
+		return _("Unlock");
+}
+
+static const gchar*
+prepare_ask_primary (GQuark type)
+{
+	/*
+	 * Yes this is unmaintainable and stupid, but is required 
+	 * for translations to work properly.
+	 */
+	if (type == GKR_PKIX_PRIVATE_KEY)
+		return _("Enter password to unlock the private key");
+	else if (type == GKR_PKIX_CERTIFICATE)
+		return _("Enter password to unlock the certificate");
+	else if (type == GKR_PKIX_PUBLIC_KEY)
+		return _("Enter password to unlock the public key");
+	else 
+		return _("Enter password to unlock");
+}
+
+static const gchar*
+prepare_ask_check (GQuark type)
+{
+	/*
+	 * Yes this is unmaintainable and stupid, but is required 
+	 * for translations to work properly.
+	 */
+	if (type == GKR_PKIX_PRIVATE_KEY)
+		return _("Automatically unlock this private key when I log in.");
+	else if (type == GKR_PKIX_CERTIFICATE)
+		return _("Automatically unlock this certificate when I log in.");
+	else if (type == GKR_PKIX_PUBLIC_KEY)
+		return _("Automatically unlock this public key when I log in.");
+	else 
+		return _("Automatically unlock this when I log in");
+}
+
+static gchar*
+prepare_ask_secondary (GQuark type, gboolean indexed, const gchar *label)
+{
+	/*
+	 * Yes this is unmaintainable and stupid, but is required 
+	 * for translations to work properly.
+	 */
+
+	/* When we've already indexed this data */
+	if (indexed) {
+
+		if (type == GKR_PKIX_PRIVATE_KEY)
+			return g_strdup_printf (_("An application wants access to the private key '%s', but it is locked"), label);
+		else if (type == GKR_PKIX_CERTIFICATE)
+			return g_strdup_printf (_("An application wants access to the certificate '%s', but it is locked"), label);
+		else if (type == GKR_PKIX_PUBLIC_KEY)
+			return g_strdup_printf (_("An application wants access to the public key '%s', but it is locked"), label);
+		else 
+			return g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
+	
+	/* Never before seen this data */ 
+	} else {
+
+		if (type == GKR_PKIX_PRIVATE_KEY)
+			return g_strdup_printf (_("The system wants to import the private key '%s', but it is locked"), label);
+		else if (type == GKR_PKIX_CERTIFICATE)
+			return g_strdup_printf (_("The system wants to import the certificate '%s', but it is locked"), label);
+		else if (type == GKR_PKIX_PUBLIC_KEY)
+			return g_strdup_printf (_("The system wants to import the public key '%s', but it is locked"), label);
+		else 
+			return g_strdup_printf (_("The system wants to import '%s', but it is locked"), label);
+	}
+}
+
 static gchar* 
 parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique, 
                      GQuark type, const gchar *label, guint failures,
@@ -95,10 +180,8 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
 	GkrAskRequest *ask;
-	gchar *title, *primary, *secondary, *check;
-	gchar *custom_label, *ret, *display_name, *stype;
+	gchar *custom_label, *ret, *display_name, *stype, *secondary;
 	const gchar *password;
-	const gchar *display_type;
 	gboolean have_indexed = FALSE;
 	
 	g_return_val_if_fail (loc == ctx->location, NULL);
@@ -147,103 +230,32 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 	/* TODO: Load a better label if we have one */
 	custom_label = NULL;
 	
-	/* We have no idea what kind of data it is, poor user */
-	if (!type) {
-		display_type = NULL;
-		title = g_strdup (_("Unlock"));
-		primary = g_strdup (_("Enter password to unlock"));
-		
-	/* We know the type so add that to the strings */
-	} else {
-		/* 
-		 * TRANSLATORS: 
-	 	 *  display_type will be the type of the object like 'certificate' or 'key'
-	 	 */
-		display_type = gkr_pkix_parsed_type_to_display (type);
-
-		/* 
-		 * TRANSLATORS: 
-	 	 *  display_type will be the type of the object like 'certificate' or 'key'
-	 	 */
-		title = g_strdup_printf (_("Unlock %s"), display_type);
-
-		/* 
-		 * TRANSLATORS: 
-	 	 *  display_type will be the type of the object like 'certificate' or 'key'
-	 	 */
-		primary = g_strdup_printf (_("Enter password for the %s to unlock"), display_type);
-	}
-	
 	if (custom_label != NULL)
 		label = custom_label;
 	
-	/* When we've already indexed this data */
-	if (have_indexed) {
-		if (display_type) {
-			/* 
-			 * TRANSLATORS: 
-	 		 *  display_type will be the type of the object like 'certificate' or 'key'
-		 	 *  label is replaced with the name of the locked object.
-		 	 */
-			secondary = g_strdup_printf (_("An application wants access to the %s '%s', but it is locked"), 
-			                             display_type, label);
-		} else {
-			/* 
-			 * TRANSLATORS: 
-	 		 *  label is replaced with the name of the locked object.
-		 	 */
-			secondary = g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
-		}
-			
-	/* Never before seen this data */ 
-	} else {
-		if (display_type) {
-			/* 
-			 * TRANSLATORS: 
-	 		 *  display_type will be the type of the object like 'certificate' or 'key'
-		 	 *  label is replaced with the name of the locked object.
-		 	 */
-			secondary = g_strdup_printf(_("The system wants to import the %s '%s', but it is locked."),
-			                            display_type, label);
-		} else {
-			/* 
-			 * TRANSLATORS: 
-	 		 *  label is replaced with the name of the locked object.
-		 	 */			
-			secondary = g_strdup_printf(_("The system wants to import '%s', but it is locked."), label);
-		}
-	}
-	
-	ask = gkr_ask_request_new (title, primary, GKR_ASK_REQUEST_PROMPT_PASSWORD);
-	gkr_ask_request_set_secondary (ask, secondary);
-	gkr_ask_request_set_location (ask, loc);
+	ask = gkr_ask_request_new (prepare_ask_title (type), prepare_ask_primary (type), 
+			                   GKR_ASK_REQUEST_PROMPT_PASSWORD);
 
-	g_free (title);
-	g_free (primary);
+	secondary = prepare_ask_secondary (type, have_indexed, label); 
+	gkr_ask_request_set_secondary (ask, secondary);
 	g_free (secondary);
+
+	gkr_ask_request_set_location (ask, loc);
 		
-	if (gkr_keyring_login_is_usable ()) {
-		/* 
-		 * TRANSLATORS: 
- 		 *  display_type will be the type of the object like 'certificate' or 'key'
-		 */
-		check = g_strdup_printf (_("Automatically unlock this %s when I log in."), display_type);
-		gkr_ask_request_set_check_option (ask, check);
-		g_free (check);
-	}
+	if (gkr_keyring_login_is_usable ())
+		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 	
 	gkr_ask_daemon_process (ask);
 	
+	/* User denied or cancelled */
 	if (ask->response < GKR_ASK_RESPONSE_ALLOW) {
 		ret = NULL;
+		
+	/* Successful response */
 	} else {
 		ret = gkr_secure_strdup (ask->typed_password);
 		if (ask->checked) {
-			/* 
-			 * TRANSLATORS: 
-		 	 *  label is the name of the object to unlock.
-		 	 */
-			display_name =  g_strdup_printf (_("Unlock password for %s"), label);
+			display_name =  g_strdup_printf (_("Unlock password for '%s'"), label);
 			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 			                                 display_name, ret,
 			                                 "pk-object", gkr_location_to_string (loc), NULL);

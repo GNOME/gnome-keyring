@@ -478,19 +478,6 @@ done:
 	return ret;
 }
 
-const gchar*
-gkr_pkix_parsed_type_to_display (GQuark type)
-{
-	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("private key");
-	else if (type == GKR_PKIX_CERTIFICATE)
-		return _("certificate");
-	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return _("public key");
-	else
-		g_return_val_if_reached ("");
-}
-
 gboolean
 gkr_pkix_parser_parse_location (GkrPkixParser *parser, GQuark loc, GError **err)
 {
