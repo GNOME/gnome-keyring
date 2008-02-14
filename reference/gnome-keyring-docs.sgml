@@ -20,6 +20,7 @@
     <xi:include href="xml/gnome-keyring-memory.xml"/>
     <xi:include href="xml/gnome-keyring-result.xml"/>
     <xi:include href="xml/gnome-keyring-misc.xml"/>
+    <xi:include href="xml/gnome-keyring-daemon.xml"/>
     <xi:include href="xml/gnome-keyring-generic-callbacks.xml"/>
   </chapter>
 </book>
