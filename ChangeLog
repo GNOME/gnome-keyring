@@ -1,5 +1,9 @@
 2008-02-14  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring.c: Fix build problem. Fixes bug #516526
+	
+2008-02-14  Stef Walter  <stef@memberwebs.com>
+
 	* library/gnome-keyring.c: Fix problem setting environment variables.
 
 2008-02-14  Stef Walter  <stef@memberwebs.com>

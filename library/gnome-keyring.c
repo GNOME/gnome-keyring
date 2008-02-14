@@ -1783,14 +1783,14 @@ gnome_keyring_daemon_prepare_environment_sync (void)
 	gchar **daemonenv, **e;
 	gchar **parts;
 
-	gkr_buffer_init_full (&send, 128, g_realloc);
+	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	if (!gkr_proto_encode_prepare_environment (&send, (const gchar**)environ)) {
 		gkr_buffer_uninit (&send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
 
-	gkr_buffer_init_full (&receive, 128, g_realloc);
+	gkr_buffer_init_full (&receive, 128, NORMAL_ALLOCATOR);
 	res = run_sync_operation (&send, &receive);
 	gkr_buffer_uninit (&send);
 	if (res != GNOME_KEYRING_RESULT_OK) {
