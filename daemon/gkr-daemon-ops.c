@@ -25,6 +25,7 @@
 #include "gkr-daemon.h"
 
 #include "common/gkr-buffer.h"
+#include "common/gkr-daemon-util.h"
 #include "common/gkr-location.h"
 #include "common/gkr-secure-memory.h"
 
@@ -1511,29 +1512,21 @@ static gboolean
 op_set_daemon_display (GkrBuffer *packet, GkrBuffer *result,
                        GkrKeyringRequest *req)
 {
-       char *display;
-       GnomeKeyringOpCode opcode;
+	char *display;
+	GnomeKeyringOpCode opcode;
 
-       if (!gkr_proto_decode_op_string (packet, &opcode, &display))
-               return FALSE;
+	if (!gkr_proto_decode_op_string (packet, &opcode, &display))
+		return FALSE;
 
-       if ( display == NULL ) {
-               gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
-               goto out;
-       }
+	if (display == NULL) {
+		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+	} else {
+		g_setenv ("DISPLAY", display, FALSE);
+		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+	}
 
-       if (gkr_ask_daemon_get_display () == NULL && (g_strrstr (display, ":") != NULL)) {
-               gkr_ask_daemon_set_display (display);
-       } else {
-               gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
-               goto out;
-       }
-
-       gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
-
-out:
-    g_free (display);
-       return TRUE;
+	g_free (display);
+	return TRUE;
 }
 
 static gboolean
@@ -1746,6 +1739,45 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 	return return_val;
 }
 
+static gboolean
+op_prepare_daemon_environment (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
+{
+	const gchar **daemonenv;
+	gchar **environment, **e;
+	gchar *x;
+
+	if (!gkr_proto_decode_prepare_environment (packet, &environment))
+		return FALSE;
+
+	/* Accept environment from outside */
+	for (e = environment; *e; ++e) {
+		x = strchr (*e, '=');
+		if (x) {
+			*(x++) = 0;
+			
+			/* We're only interested in these guys */
+			if (g_str_equal (*e, "DISPLAY")) 
+				g_setenv ("DISPLAY", x, FALSE);
+			else if (g_str_equal (*e, "DBUS_SESSION_BUS_ADDRESS"))
+				g_setenv ("DBUS_SESSION_BUS_ADDRESS", x, FALSE);
+			else if (g_str_equal (*e, "XAUTHORITY"))
+				g_setenv ("XAUTHORITY", x, FALSE);
+			else if (g_str_equal (*e, "XDG_SESSION_COOKIE"))
+				g_setenv ("XDG_SESSION_COOKIE", x, FALSE);
+		}
+	}
+	
+	g_strfreev (environment);
+
+	gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+
+	daemonenv = gkr_daemon_util_get_environment ();
+	g_return_val_if_fail (daemonenv, FALSE);
+	
+	gkr_buffer_add_stringv (result, daemonenv);
+	return TRUE;
+}
+
 GkrDaemonOperation keyring_ops[] = {
 	op_lock_all, 			/* LOCK_ALL */
 	op_set_default_keyring, 	/* SET_DEFAULT_KEYRING */
@@ -1770,4 +1802,5 @@ GkrDaemonOperation keyring_ops[] = {
 	op_change_keyring_password,     /* CHANGE_KEYRING_PASSWORD */
  	op_set_daemon_display,          /* SET_DAEMON_DISPLAY */
 	op_get_item_info,               /* GET_ITEM_INFO_PARTIAL */
+	op_prepare_daemon_environment,	/* PREPARE_DAEMON_ENVIRONMENT */
 };

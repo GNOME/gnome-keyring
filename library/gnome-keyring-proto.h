@@ -126,6 +126,8 @@ gboolean gkr_proto_encode_set_item_info              (GkrBuffer                 
 gboolean gkr_proto_encode_set_keyring_info           (GkrBuffer                 *buffer,
                                                       const char                *keyring,
                                                       GnomeKeyringInfo          *info);
+gboolean gkr_proto_encode_prepare_environment        (GkrBuffer                 *buffer, 
+                                                      const gchar              **environment);
 
 
 /* demarshallers */
@@ -219,7 +221,10 @@ gboolean gkr_proto_decode_set_acl                    (GkrBuffer                 
                                                       char                      **keyring,
                                                       guint32                    *item_id,
                                                       GList                     **acl);
-
-
+gboolean gkr_proto_decode_prepare_environment        (GkrBuffer                  *buffer, 
+                                                      char                     ***environment);
+gboolean gkr_proto_decode_prepare_environment_reply  (GkrBuffer                  *buffer,
+                                                      GnomeKeyringResult         *res,
+                                                      char                     ***environment);
    
 #endif /* GNOME_KEYRING_PROTO_H */

@@ -33,7 +33,7 @@
 #include <unistd.h>
 
 static gchar* master_directory = NULL;
-static gchar* published_environ = NULL;
+static GArray* published_environ = NULL;
 
 /* Forward declaration, see gnu libc code lower down in this file */
 static char* do_mkdtemp (char *template);
@@ -89,29 +89,42 @@ gkr_daemon_util_get_master_directory (void)
 static void
 uninit_environment (gpointer data)
 {
-	g_free (published_environ);
+	guint i;
+	
+	if (published_environ) {
+		for (i = 0; i < published_environ->len; ++i)
+			g_free (g_array_index (published_environ, gchar*, i));
+		g_array_free (published_environ, TRUE);
+	}
+	
 	published_environ = NULL;
+}
+
+static void 
+init_environment ()
+{
+	if (published_environ)
+		return;
+	published_environ = g_array_new (TRUE, TRUE, sizeof (gchar*)); 
+	gkr_cleanup_register (uninit_environment, NULL);
 }
 
 void
 gkr_daemon_util_push_environment (const gchar *name, const gchar *value)
 {
 	gchar *env;
-	
-	if (!published_environ)
-		gkr_cleanup_register (uninit_environment, NULL);
+
+	init_environment ();
 		
-	env = g_strdup_printf ("%s%s=%s\n", 
-	                       published_environ ? published_environ : "",
-	                       name, value);
-	g_free (published_environ);
-	published_environ = env;
+	env = g_strdup_printf ("%s=%s", name, value);
+	g_array_append_val (published_environ, env);
 }
 
-const gchar*
+const gchar**
 gkr_daemon_util_get_environment (void)
 {
-	return published_environ ? published_environ : "";
+	init_environment ();
+	return (const gchar**)published_environ->data;
 }
 
 /* Copyright (C) 1999, 2001-2002 Free Software Foundation, Inc.

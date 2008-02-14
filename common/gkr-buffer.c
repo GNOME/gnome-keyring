@@ -444,3 +444,70 @@ gkr_buffer_get_string (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 	
 	return 1;
 }
+
+int
+gkr_buffer_add_stringv (GkrBuffer *buffer, const char** strv)
+{
+	const char **v;
+	uint32_t n = 0;
+	
+	if (!strv)
+		return 0;
+	
+	/* Add the number of strings coming */
+	for (v = strv; *v; ++v)
+		++n;
+	if (!gkr_buffer_add_uint32 (buffer, n))
+		return 0;
+	
+	/* Add the individual strings */
+	for (v = strv; *v; ++v) {
+		if (!gkr_buffer_add_string (buffer, *v))
+			return 0;
+	}
+	
+	return 1;
+}
+
+int
+gkr_buffer_get_stringv (GkrBuffer *buffer, size_t offset, size_t *next_offset,
+		                char ***strv_ret, GkrBufferAllocator allocator)
+{
+	uint32_t n, i, j;
+	size_t len;
+	
+	if (!allocator)
+		allocator = buffer->allocator;
+	
+	/* First the number of environment variable lines */
+	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &n))
+		return 0;
+	
+	/* Then that number of strings */
+	len = (n + 1) * sizeof (char*);
+	*strv_ret = (char**)(allocator) (NULL, len);
+	if (!*strv_ret)
+		return 0;
+	
+	/* All null strings */
+	memset (*strv_ret, 0, len);
+	
+	for (i = 0; i < n; ++i) {
+		if (!gkr_buffer_get_string (buffer, offset, &offset, 
+		                            &((*strv_ret)[i]), allocator)) {
+			
+			/* Free all the strings on failure */
+			for (j = 0; j < i; ++j) {
+				if ((*strv_ret)[j])
+					(allocator) ((*strv_ret)[j], 0);
+			}
+			
+			return 0;
+		}
+	}
+	
+	if (next_offset != NULL)
+		*next_offset = offset;
+	
+	return 1;
+}

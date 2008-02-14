@@ -35,7 +35,6 @@ static gboolean ask_daemon_inited = FALSE;
 
 static GkrAsyncWait *wait_condition = NULL;
 static GkrAskRequest *current_ask = NULL;
-static gchar *the_display = NULL;
 
 static GkrAskHook ask_daemon_hook = NULL;
 static gpointer ask_daemon_hook_data = NULL;
@@ -48,9 +47,6 @@ ask_daemon_cleanup (gpointer unused)
 	if (current_ask)
 		gkr_ask_request_cancel (current_ask);
 	
-	g_free (the_display);
-	the_display = NULL;
-	
 	g_assert (wait_condition);
 	gkr_async_wait_free (wait_condition);
 	wait_condition = NULL;
@@ -61,18 +57,12 @@ ask_daemon_cleanup (gpointer unused)
 static void
 ask_daemon_init (void)
 {
-	const gchar* display;
-
 	if (ask_daemon_inited)
 		return;
 	ask_daemon_inited = TRUE;
 	
 	wait_condition = gkr_async_wait_new ();
 	
-	display = g_getenv ("DISPLAY");
-	if (display && display[0])
-		the_display = g_strdup (display);
-		
 	gkr_cleanup_register (ask_daemon_cleanup, NULL);
 }
 
@@ -120,21 +110,6 @@ gkr_ask_daemon_process (GkrAskRequest* ask)
 	
 done:
 	g_assert (gkr_ask_request_is_complete (ask));
-}
-
-void 
-gkr_ask_daemon_set_display (const gchar* display)
-{
-	ask_daemon_init ();
-	
-	g_free (the_display);
-	the_display = g_strdup (display);
-}
-
-const gchar*
-gkr_ask_daemon_get_display (void)
-{
-	return the_display;
 }
 
 void

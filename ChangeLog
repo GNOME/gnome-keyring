@@ -1,3 +1,26 @@
+2008-02-14  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-buffer.c:
+	* common/gkr-buffer.h:
+	* common/gkr-daemon-util.c:
+	* common/gkr-daemon-util.h:
+	* daemon/gkr-daemon.c:
+	* daemon/gkr-daemon-ops.c:
+	* library/gnome-keyring.c:
+	* library/gnome-keyring.h:
+	* library/gnome-keyring-opcodes.h:
+	* library/gnome-keyring-proto.c:
+	* library/gnome-keyring-proto.h:
+	* library/tests/unit-test-other.c:
+	* reference/gnome-keyring-sections.txt:
+	* reference/tmpl/gnome-keyring-daemon.sgml: (added)
+	* reference/tmpl/gnome-keyring-misc.sgml:
+	* ui/gkr-ask-daemon.c:
+	* ui/gkr-ask-daemon.h:
+	* ui/gkr-ask-request.c:
+	* ui/gkr-ask-tool.c: Add API to sync up environment between session manager
+	and the daemon. 
+	
 2008-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-privkey.c: Add null pointer check when 

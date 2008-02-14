@@ -405,6 +405,14 @@ lifetime_slave_pipe_io (GIOChannel  *channel,
 	return FALSE;
 }
 
+static void
+print_environment (pid_t pid)
+{
+	const gchar **env;
+	for (env = gkr_daemon_util_get_environment (); *env; ++env)
+		printf ("%s\n", *env);
+	printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
+}
 
 int
 main (int argc, char *argv[])
@@ -483,8 +491,7 @@ main (int argc, char *argv[])
 						/* This is where we know the pid of the daemon.
 						 * The initial process will waitpid until we exit,
 						 * so there is no race */
-						printf ("%s", gkr_daemon_util_get_environment ());
-						printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
+						print_environment (pid);
 						exit (0);
 					}
 				}
@@ -508,8 +515,7 @@ main (int argc, char *argv[])
 					exit (WEXITSTATUS (status));
 				
 			} else {
-				printf ("%s", gkr_daemon_util_get_environment ());
-				printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
+				print_environment (pid);
 			}
 			
 			exit (0);
@@ -519,8 +525,7 @@ main (int argc, char *argv[])
 		close_stdinout ();
 
 	} else {
-		g_print ("%s", gkr_daemon_util_get_environment ());
-		g_print ("GNOME_KEYRING_PID=%d\n", (gint)getpid ());
+		print_environment (getpid ());
 	}
 
 	/* Daemon process continues here */

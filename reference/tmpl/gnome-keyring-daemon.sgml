@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+Daemon Management Functions
+
+<!-- ##### SECTION Short_Description ##### -->
+Functions used by session managers to manage the Gnome Keyring Daemon.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+These functions are not used by most applications using Gnome Keyring.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gnome_keyring_daemon_set_display_sync ##### -->
+<para>
+
+</para>
+
+@display: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_keyring_daemon_prepare_environment_sync ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

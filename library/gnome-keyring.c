@@ -1725,13 +1725,9 @@ gnome_keyring_list_item_ids_sync (const char  *keyring,
 
 /**
  * gnome_keyring_daemon_set_display_sync:
- * @display: The X display string.
+ * @display: Deprecated 
  * 
- * Set the display that should be used to display GNOME Keyring dialogs
- * and prompts.
- * 
- * Return value: %GNOME_KEYRING_RESULT_OK if the operation was succcessful or 
- * an error result otherwise.
+ * Deprecated. Use gnome_keyring_daemon_prepare_environment_sync()
  **/ 
 GnomeKeyringResult
 gnome_keyring_daemon_set_display_sync (const char *display)
@@ -1760,6 +1756,59 @@ gnome_keyring_daemon_set_display_sync (const char *display)
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
 	gkr_buffer_uninit (&receive);
+
+	return res;
+}
+
+/**
+ * gnome_keyring_daemon_prepare_environment_sync:
+ * 
+ * Used by session managers or applications that manage the gnome-keyring-daemon
+ * process. Prepares the environment of both the daemon and the application
+ * for successful communication. 
+ * 
+ * This includes telling the daemon the DBUS addresses, X display and related 
+ * information to use for communication and display. This information is only 
+ * used by the daemon if it does not already have it. For example the X display
+ * of the daemon cannot be changed using this call.  
+ * 
+ * Return value: %GNOME_KEYRING_RESULT_OK if the operation was succcessful or 
+ * an error result otherwise. 
+ **/ 
+GnomeKeyringResult
+gnome_keyring_daemon_prepare_environment_sync (void)
+{
+	GkrBuffer send, receive;
+	GnomeKeyringResult res;
+	gchar **daemonenv, **e;
+
+	gkr_buffer_init_full (&send, 128, g_realloc);
+
+	if (!gkr_proto_encode_prepare_environment (&send, (const gchar**)environ)) {
+		gkr_buffer_uninit (&send);
+		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	}
+
+	gkr_buffer_init_full (&receive, 128, g_realloc);
+	res = run_sync_operation (&send, &receive);
+	gkr_buffer_uninit (&send);
+	if (res != GNOME_KEYRING_RESULT_OK) {
+		gkr_buffer_uninit (&receive);
+		return res;
+	}
+
+	if (!gkr_proto_decode_prepare_environment_reply (&receive, &res, &daemonenv)) {
+		gkr_buffer_uninit (&receive);
+		return GNOME_KEYRING_RESULT_IO_ERROR;
+	}
+	gkr_buffer_uninit (&receive);
+	
+	if (res == GNOME_KEYRING_RESULT_OK) {
+		for (e = daemonenv; *e; ++e)
+			putenv (*e);
+	}
+	
+	g_strfreev (daemonenv);
 
 	return res;
 }

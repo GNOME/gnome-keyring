@@ -595,6 +595,23 @@ gkr_proto_encode_set_keyring_info (GkrBuffer *buffer, const char *keyring,
 	return TRUE;
 }
 
+gboolean
+gkr_proto_encode_prepare_environment (GkrBuffer *buffer, const gchar **environment)
+{
+	gsize op_start;
+	
+	if (!gkr_proto_start_operation (buffer, GNOME_KEYRING_OP_PREPARE_ENVIRONMENT,
+	                                &op_start))
+		return FALSE;
+		
+	if (!gkr_buffer_add_stringv (buffer, environment))
+		return FALSE;
+
+	if (!gkr_proto_end_operation (buffer, op_start))
+		return FALSE;
+
+	return TRUE;
+}
 
 gboolean
 gkr_proto_decode_attribute_list (GkrBuffer *buffer, gsize offset, gsize *next_offset,
@@ -1411,7 +1428,45 @@ gkr_proto_decode_set_acl (GkrBuffer *buffer, char **keyring, guint32 *item_id,
 	return FALSE;
 }
 
+gboolean
+gkr_proto_decode_prepare_environment (GkrBuffer *buffer, gchar ***environment)
+{
+	GnomeKeyringOpCode op;
+	gsize offset;
+	
+	if (!gkr_proto_decode_packet_operation (buffer, &op))
+		return FALSE;
+	if (op != GNOME_KEYRING_OP_PREPARE_ENVIRONMENT)
+		return FALSE;
+		
+	offset = 8;
+	
+	if (!gkr_buffer_get_stringv (buffer, offset, &offset, environment, g_realloc))
+		return FALSE; 
+	
+	return TRUE;
+}
 
+gboolean 
+gkr_proto_decode_prepare_environment_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+                                            char ***environment)
+{
+	gsize offset;
+	guint32 res;
+
+	offset = 4;
+
+	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res))
+		return FALSE;
+	*result = res;
+
+	if (res == GNOME_KEYRING_RESULT_OK) {
+		if (!gkr_buffer_get_stringv (buffer, offset, &offset, environment, NULL))
+			return FALSE; 
+	}		
+	
+	return TRUE;
+}
 
 gboolean
 gkr_proto_decode_result_int_list_reply (GkrBuffer *buffer, GnomeKeyringResult *result,

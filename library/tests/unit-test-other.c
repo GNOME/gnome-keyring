@@ -46,9 +46,16 @@ void unit_test_set_display (CuTest* cu)
 {
 	GnomeKeyringResult res;
 	
-	/* Shouldn't work */
-	res = gnome_keyring_daemon_set_display_sync ("WOOF");
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);	
+	res = gnome_keyring_daemon_set_display_sync (":0.0");
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+}
+
+void unit_test_setup_environment (CuTest* cu)
+{
+	GnomeKeyringResult res;
+
+	res = gnome_keyring_daemon_prepare_environment_sync ();
+	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
 }
 
 void unit_test_result_string (CuTest* cu)

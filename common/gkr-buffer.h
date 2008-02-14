@@ -151,7 +151,16 @@ int             gkr_buffer_get_string           (GkrBuffer *buffer,
                                                  size_t *next_offset, 
                                                  char **str_ret, 
                                                  GkrBufferAllocator allocator);
-                                                 
+
+int             gkr_buffer_add_stringv          (GkrBuffer *buffer, 
+                                                 const char** strv);
+
+int             gkr_buffer_get_stringv          (GkrBuffer *buffer,
+                                                 size_t offset,
+                                                 size_t *next_offset,
+		                                         char ***strv_ret, 
+		                                         GkrBufferAllocator allocator);
+
 int		gkr_buffer_add_uint64		(GkrBuffer *buffer,
 						 uint64_t val);
 

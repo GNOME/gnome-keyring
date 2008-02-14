@@ -41,12 +41,3 @@ Miscellaneous Functions
 @strings: 
 
 
-<!-- ##### FUNCTION gnome_keyring_daemon_set_display_sync ##### -->
-<para>
-
-</para>
-
-@display: 
-@Returns: 
-
-

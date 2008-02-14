@@ -539,7 +539,6 @@ static gboolean
 launch_ask_helper (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
-	const gchar* display;
 	char **envp;
 	int i, n;
 	GError *error = NULL;
@@ -558,11 +557,6 @@ launch_ask_helper (GkrAskRequest *ask)
 	envp = g_new (char*, n + 2);
 	for (i = 0; i < n; i++)
 		envp[i] = g_strdup (environ[i]);
-	
-	/* And add in the stuff we need */
-	display = gkr_ask_daemon_get_display ();
-	if (display && display[0])
-		envp[i++] = g_strdup_printf ("DISPLAY=%s", display);
 	envp[i++] = NULL;
 
 	gkr_buffer_resize (&pv->buffer, 0);

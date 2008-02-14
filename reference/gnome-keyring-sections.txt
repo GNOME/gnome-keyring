@@ -152,7 +152,11 @@ gnome_keyring_set_network_password_sync
 gnome_keyring_is_available
 gnome_keyring_cancel_request
 gnome_keyring_string_list_free
+</SECTION>
+<SECTION>
+<FILE>gnome-keyring-daemon</FILE>
 gnome_keyring_daemon_set_display_sync
+gnome_keyring_daemon_prepare_environment_sync
 </SECTION>
 <SECTION>
 <FILE>gnome-keyring-memory</FILE>

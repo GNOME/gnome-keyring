@@ -215,9 +215,6 @@ gpointer           gnome_keyring_list_item_ids      (const char                 
 GnomeKeyringResult gnome_keyring_list_item_ids_sync (const char                                   *keyring,
 						     GList                                       **ids);
 
-GnomeKeyringResult gnome_keyring_daemon_set_display_sync (const char *display);
-
-
 void              gnome_keyring_info_free             (GnomeKeyringInfo *keyring_info);
 GnomeKeyringInfo *gnome_keyring_info_copy             (GnomeKeyringInfo *keyring_info);
 void              gnome_keyring_info_set_lock_on_idle (GnomeKeyringInfo *keyring_info,
@@ -508,5 +505,13 @@ GnomeKeyringResult gnome_keyring_set_network_password_sync  (const char         
 							     const char                            *password,
 							     guint32                               *item_id);
 
+/* -----------------------------------------------------------------------------
+ * USED ONLY BY THE SESSION
+ */
+ 
+/* Deprecated */
+GnomeKeyringResult    gnome_keyring_daemon_set_display_sync         (const char *display);
+
+GnomeKeyringResult    gnome_keyring_daemon_prepare_environment_sync (void);
 
 #endif /* GNOME_KEYRING_H */

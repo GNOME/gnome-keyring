@@ -38,10 +38,13 @@
 #include <errno.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <syslog.h>
 
 static GKeyFile *input_data = NULL;
 static GKeyFile *output_data = NULL;
 static gboolean grabbed = FALSE;
+
+#define LOG_ERRORS 1
 
 /* -----------------------------------------------------------------------------
  * MEMORY
@@ -120,6 +123,13 @@ fatal (const char *msg1, const char *msg2)
 	         msg1 ? msg1 : "", 
 	         msg1 && msg2 ? ": " : "",
 	         msg2 ? msg2 : "");
+#if LOG_ERRORS
+	syslog (LOG_AUTH | LOG_ERR, "%s: %s%s%s\n", 
+	         g_get_prgname (),
+	         msg1 ? msg1 : "", 
+	         msg1 && msg2 ? ": " : "",
+	         msg2 ? msg2 : "");
+#endif
 	exit (1);
 }
 
