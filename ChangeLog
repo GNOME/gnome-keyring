@@ -1,3 +1,8 @@
+2008-02-13  Stef Walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-privkey.c: Add null pointer check when 
+	getting key id.
+	
 2008-02-11  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number.

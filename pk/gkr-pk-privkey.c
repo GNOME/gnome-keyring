@@ -642,6 +642,9 @@ gkr_pk_privkey_get_keyid (GkrPkPrivkey *key)
 	
 	/* Access via public key */
 	pub = get_public_key (key, TRUE);
+	if(!pub)
+		return NULL;
+	
 	return gkr_pk_pubkey_get_keyid (pub);
 }
 
