@@ -1781,6 +1781,7 @@ gnome_keyring_daemon_prepare_environment_sync (void)
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
 	gchar **daemonenv, **e;
+	gchar **parts;
 
 	gkr_buffer_init_full (&send, 128, g_realloc);
 
@@ -1804,8 +1805,12 @@ gnome_keyring_daemon_prepare_environment_sync (void)
 	gkr_buffer_uninit (&receive);
 	
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		for (e = daemonenv; *e; ++e)
-			putenv (*e);
+		for (e = daemonenv; *e; ++e) {
+			parts = g_strsplit (*e, "=", 2);
+			if (parts && parts[0] && parts[1])
+				g_setenv (parts[0], parts[1], TRUE);
+			g_strfreev (parts);
+}
 	}
 	
 	g_strfreev (daemonenv);
