@@ -1,5 +1,10 @@
 2008-02-14  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring-proto.c: Build fix due to glib 
+	g_realloc signature change.
+
+2008-02-14  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-crypto.c:
 	* common/tests/unit-test-crypto.c:
 	* pkix/gkr-pkix-der.c:

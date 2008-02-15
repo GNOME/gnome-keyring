@@ -536,7 +536,7 @@ load_index_key_file (GkrPkIndex *index, GQuark loc, int fd, gboolean force)
 	if (force) {
 		path = index_path_for_location (index, loc);
 		if (path) {
-			fd = open (path, O_RDONLY, S_IRUSR | S_IWUSR);
+			fd = open (path, O_RDONLY);
 			if (fd == -1) {
 				if (errno != ENOTDIR && errno != ENOENT) {
 					g_message ("couldn't open index file: %s: %s", 
@@ -753,7 +753,7 @@ update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid digest,
 			
 			fd = open (path, O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
 			if (fd == -1) {
-				g_message ("couldn't open index file: %s: %s", path, g_strerror (errno));
+				g_message ("couldn't create index file: %s: %s", path, g_strerror (errno));
 				goto done;
 			}
 			

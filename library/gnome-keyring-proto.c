@@ -1441,7 +1441,8 @@ gkr_proto_decode_prepare_environment (GkrBuffer *buffer, gchar ***environment)
 		
 	offset = 8;
 	
-	if (!gkr_buffer_get_stringv (buffer, offset, &offset, environment, g_realloc))
+	if (!gkr_buffer_get_stringv (buffer, offset, &offset, environment, 
+	                             (GkrBufferAllocator)g_realloc))
 		return FALSE; 
 	
 	return TRUE;
