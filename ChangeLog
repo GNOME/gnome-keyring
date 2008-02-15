@@ -1,5 +1,14 @@
 2008-02-14  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-crypto.c:
+	* common/tests/unit-test-crypto.c:
+	* pkix/gkr-pkix-der.c:
+	* pkix/gkr-pkix-parser.c:
+	* pkix/tests/test-data/unclient.p12: Try NULL passwords in addition to 
+	empty passwords when parsing encrypted files. Fixes bug #514761
+	
+2008-02-14  Stef Walter  <stef@memberwebs.com>
+
 	* common/tests/unit-test-unique.c:
 	* pk/gkr-pk-cert.c:
 	* pk/gkr-pk-index.c:

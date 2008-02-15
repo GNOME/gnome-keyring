@@ -962,7 +962,6 @@ gkr_pkix_der_read_cipher (GQuark oid_scheme, const gchar *password,
 	g_return_val_if_fail (oid_scheme != 0, GKR_PKIX_FAILURE);
 	g_return_val_if_fail (cih != NULL, GKR_PKIX_FAILURE);
 	g_return_val_if_fail (data != NULL && n_data != 0, GKR_PKIX_FAILURE);
-	g_return_val_if_fail (password != NULL, GKR_PKIX_FAILURE);
 	
 	init_quarks ();
 	
@@ -1037,7 +1036,6 @@ gkr_pkix_der_read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode,
 	g_return_val_if_fail (cipher_algo != 0 && cipher_mode != 0, GKR_PKIX_FAILURE);
 	g_return_val_if_fail (cih != NULL, GKR_PKIX_FAILURE);
 	g_return_val_if_fail (data != NULL && n_data != 0, GKR_PKIX_FAILURE);
-	g_return_val_if_fail (password != NULL, GKR_PKIX_FAILURE);
 
 	*cih = NULL;	
 	ret = GKR_PKIX_UNRECOGNIZED;
@@ -1167,7 +1165,6 @@ setup_pkcs5_pbkdf2_params (const gchar *password, const guchar *data,
 	gsize n_salt, n_key;
 	guint iterations;
 	
-	g_assert (password);
 	g_assert (cipher_algo);
 	g_assert (data);
 	
@@ -1220,7 +1217,6 @@ gkr_pkix_der_read_cipher_pkcs5_pbes2 (const gchar *password, const guchar *data,
 
 	g_return_val_if_fail (cih != NULL, GKR_PKIX_FAILURE);
 	g_return_val_if_fail (data != NULL && n_data != 0, GKR_PKIX_FAILURE);
-	g_return_val_if_fail (password != NULL, GKR_PKIX_FAILURE);
 	
 	init_quarks ();
 	
@@ -1330,7 +1326,6 @@ gkr_pkix_der_read_cipher_pkcs12_pbe (int cipher_algo, int cipher_mode, const gch
 	g_return_val_if_fail (cipher_algo != 0 && cipher_mode != 0, GKR_PKIX_FAILURE);
 	g_return_val_if_fail (cih != NULL, GKR_PKIX_FAILURE);
 	g_return_val_if_fail (data != NULL && n_data != 0, GKR_PKIX_FAILURE);
-	g_return_val_if_fail (password != NULL, GKR_PKIX_FAILURE);
 	
 	*cih = NULL;
 	ret = GKR_PKIX_UNRECOGNIZED;

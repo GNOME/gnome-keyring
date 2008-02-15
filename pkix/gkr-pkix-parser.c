@@ -141,19 +141,20 @@ static guint signals[LAST_SIGNAL] = { 0 };
  * HELPERS
  */
  
-static const gchar*
+static gboolean
 enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest, 
-                    GQuark type, const gchar *label, PasswordState *state)
+                    GQuark type, const gchar *label, PasswordState *state, 
+                    const gchar **password)
 {
 	GkrPkixParserPrivate *pv = GKR_PKIX_PARSER_GET_PRIVATE (parser);
 	gboolean first = FALSE;
 	gchar *display = NULL;
-	gchar *password;
 	guint passes;
+	gchar *prompted;
 	GSList *l;
 
 	if (gkr_async_is_stopping ())
-		return NULL;
+		return FALSE;
 
 	/* Is it a new location, reset stuff */
 	if (loc != state->location) {
@@ -167,19 +168,27 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	++state->n_passes;
 		
 	/* 
-	 * On the first pass always try an empty password. This helps with 
-	 * two things.
+	 * On the first pass always try a NULL and then an empty password. 
+	 * This helps with two things.
 	 *  
 	 * 1. Often code will call this function, without actually parsing
 	 *    any data yet. So this prevents us prompting the user without
 	 *    knowing it will parse. 
 	 *  
 	 * 2. In case it is actually an empty password, we don't want to 
-	 *    prompt the user, just 'decrypt' it.
+	 *    prompt the user, just 'decrypt' it. Note that some systems
+	 *    use the null password instead of empty, so we try both.
 	 */
-	if (passes == 0) 
-		return "";
-		
+	if (passes == 0) {
+		*password = "";
+		return TRUE;
+	}
+	
+	if (passes == 1) {
+		*password = NULL;
+		return TRUE;
+	}
+	
 	/* 
 	 * Next passes we look through all the passwords that the parser 
 	 * has seen so far. This is because different parts of a encrypted
@@ -198,14 +207,18 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	l = state->seen;
 	
 	/* Return first seen password? */
-	if (first && l && l->data)
-		return (const gchar*)l->data;
+	if (first && l && l->data) {
+		*password = (const gchar*)l->data;
+		return TRUE;
+	}
 	
 	/* Return next seen password? */
 	if (l && l->next) {
 		l = state->seen = state->seen->next;
-		if (l->data)
-			return (const gchar*)l->data;
+		if (l->data) {
+			*password = (const gchar*)l->data;
+			return TRUE;
+		}
 	}
 	
 	/* 
@@ -217,15 +230,19 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 		label = display = gkr_location_to_display (loc);
 	
 	g_signal_emit (parser, signals[ASK_PASSWORD], 0, 
-	               loc, digest, type, label, state->n_prompts, &password);
+	               loc, digest, type, label, state->n_prompts, &prompted);
 	               
 	++state->n_prompts;
 	g_free (display);
 	
 	/* Stash away any password */
-	if (password)
-		pv->seen_passwords = g_slist_prepend (pv->seen_passwords, password);	
-	return password;
+	if (prompted) {
+		pv->seen_passwords = g_slist_prepend (pv->seen_passwords, prompted);
+		*password = prompted;
+		return TRUE;
+	}
+	
+	return FALSE;
 }
 
 static void
@@ -670,14 +687,12 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 		
 		g_assert (cih == NULL);
 		
-	        password = enum_next_password (parser, location, digest, GKR_PKIX_PRIVATE_KEY, NULL, &pstate);
-
-        	/* If no password is available, we still know it's a key, so 'partial' parse */
-	        if (!password) {
-	        	fire_parsed_partial (parser, location, digest, GKR_PKIX_PRIVATE_KEY);
-	        	ret = GKR_PKIX_SUCCESS;
-	        	goto done; 
-	        }
+    	/* If no password is available, we still know it's a key, so 'partial' parse */
+        if (!enum_next_password (parser, location, digest, GKR_PKIX_PRIVATE_KEY, NULL, &pstate, &password)) {
+        	fire_parsed_partial (parser, location, digest, GKR_PKIX_PRIVATE_KEY);
+        	ret = GKR_PKIX_SUCCESS;
+        	goto done; 
+        }
 	        
 		/* 
 		 * Parse the encryption stuff into a cipher. 
@@ -942,8 +957,7 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrid digest,
 		
 		g_assert (cih == NULL);
 		
-	        password = enum_next_password (parser, loc, digest, 0, NULL, &pstate);
-	        if (!password) {
+	        if (!enum_next_password (parser, loc, digest, 0, NULL, &pstate, &password)) {
 	        	fire_parsed_partial (parser, loc, digest, 0);
 	        	ret = GKR_PKIX_SUCCESS;
 	        	goto done; 
@@ -1339,13 +1353,11 @@ parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrid digest,
 		
 	while (!gkr_async_is_stopping ()) {
 
-		password = enum_next_password (parser, location, digest, parsed, NULL, &pstate);
-
-        	/* If no password is available, we still know what it was, so 'partial' parse */
-	        if (!password) {
-	        	fire_parsed_partial (parser, location, digest, parsed);
-	        	return GKR_PKIX_SUCCESS;
-	        }
+    	/* If no password is available, we still know what it was, so 'partial' parse */
+		if (!enum_next_password (parser, location, digest, parsed, NULL, &pstate, &password)) {
+        	fire_parsed_partial (parser, location, digest, parsed);
+        	return GKR_PKIX_SUCCESS;
+        }
 		
 		decrypted = NULL;
 		n_decrypted = 0;

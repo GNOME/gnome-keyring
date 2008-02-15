@@ -383,15 +383,11 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 		p += 64;
 	}
 	
-	/* Empty password is treated as a NULL password */
-	if(!utf8_password[0])
-		utf8_password = NULL;
-	
 	/* Bring in the password, as 16bits per character BMP string, ie: UCS2 */
 	if (utf8_password) {
 		p2 = utf8_password;
 		for (i = 0; i < 64; i += 2) {
-			unich = g_utf8_get_char (p2);
+			unich = *p2 ? g_utf8_get_char (p2) : 0;
 			*(p++) = (unich & 0xFF00) >> 8;
 			*(p++) = (unich & 0xFF);
 			if (*p2) /* Loop back to beginning if more bytes are needed */
@@ -468,13 +464,12 @@ gkr_crypto_generate_symkey_pkcs12 (int cipher_algo, int hash_algo, const gchar *
 	
 	g_return_val_if_fail (cipher_algo, FALSE);
 	g_return_val_if_fail (hash_algo, FALSE);
-	g_return_val_if_fail (password, FALSE);
 	g_return_val_if_fail (iterations > 0, FALSE);
 	
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
 	
-	if (!g_utf8_validate (password, -1, NULL)) {
+	if (password && !g_utf8_validate (password, -1, NULL)) {
 		g_warning ("invalid non-UTF8 password");
 		g_return_val_if_reached (FALSE);
 	}
@@ -601,7 +596,6 @@ gkr_crypto_generate_symkey_pbkdf2 (int cipher_algo, int hash_algo,
 	
 	g_return_val_if_fail (hash_algo, FALSE);
 	g_return_val_if_fail (cipher_algo, FALSE);
-	g_return_val_if_fail (password, FALSE);
 	g_return_val_if_fail (iterations > 0, FALSE);
 	
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
