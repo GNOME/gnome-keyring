@@ -60,7 +60,7 @@ void unit_setup_index (void)
 	gkrid id = gkr_id_new (DATA, DATA_L);
 	GQuark location = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "woof");
 	
-	object = g_object_new (GKR_TYPE_PK_OBJECT, "location", location, "unique", id, NULL);
+	object = g_object_new (GKR_TYPE_PK_OBJECT, "location", location, "digest", id, NULL);
 	gkr_pk_index_clear (object);
 }
 

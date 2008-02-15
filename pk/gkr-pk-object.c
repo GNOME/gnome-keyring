@@ -43,7 +43,7 @@ enum {
 	PROP_0,
 	PROP_MANAGER,
 	PROP_LOCATION,
-	PROP_UNIQUE,
+	PROP_DIGEST,
 	PROP_ORIG_LABEL,
 	PROP_LABEL
 };
@@ -238,8 +238,8 @@ gkr_pk_object_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_LOCATION:
 		g_value_set_uint (value, xobj->location);
 		break;
-	case PROP_UNIQUE:
-		g_value_set_boxed (value, xobj->unique);
+	case PROP_DIGEST:
+		g_value_set_boxed (value, xobj->digest);
 		break;
 	case PROP_ORIG_LABEL:
 		g_value_set_string (value, pv->orig_label);
@@ -268,9 +268,9 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_LOCATION:
 		xobj->location = g_value_get_uint (value);
 		break;
-	case PROP_UNIQUE:
-		gkr_id_free (xobj->unique);
-		xobj->unique = gkr_id_dup (g_value_get_boxed (value));
+	case PROP_DIGEST:
+		gkr_id_free (xobj->digest);
+		xobj->digest = gkr_id_dup (g_value_get_boxed (value));
 		break;
 	case PROP_ORIG_LABEL:
 		g_free (pv->orig_label);
@@ -327,8 +327,8 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 		g_param_spec_uint ("location", "Location", "Location of Data",
 		                   0, G_MAXUINT, 0, G_PARAM_READWRITE));
 		                   
-	g_object_class_install_property (gobject_class, PROP_UNIQUE,
-		g_param_spec_boxed ("unique", "Unique", "Unique Identifier for Data",
+	g_object_class_install_property (gobject_class, PROP_DIGEST,
+		g_param_spec_boxed ("digest", "Digest", "Digest Identifier for Data",
 		                    GKR_ID_BOXED_TYPE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 		                    
 	g_object_class_install_property (gobject_class, PROP_ORIG_LABEL,

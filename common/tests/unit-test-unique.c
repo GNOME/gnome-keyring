@@ -47,7 +47,7 @@
  * 
  * Tests be run in the order specified here.
  */
-void unit_test_unique_basics (CuTest* cu)
+void unit_test_id_basics (CuTest* cu)
 {
 	gchar test[] = "my big test";
 	gkrid id, id2;
@@ -60,7 +60,7 @@ void unit_test_unique_basics (CuTest* cu)
 	data = gkr_id_get_raw (id, &n_data);
 	CuAssert (cu, "raw returned null", data != NULL);
 	CuAssert (cu, "length has changed", n_data == strlen (test));
-	CuAssert (cu, "unique data is wrong", memcmp (data, test, n_data) == 0);
+	CuAssert (cu, "id data is wrong", memcmp (data, test, n_data) == 0);
 	
 	id2 = gkr_id_new ((guchar*)test, strlen(test));
 	CuAssert (cu, "didn't create id", id != NULL);

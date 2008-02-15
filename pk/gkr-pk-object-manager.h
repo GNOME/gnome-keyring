@@ -96,8 +96,8 @@ GList*                  gkr_pk_object_manager_findv              (GkrPkObjectMan
 GkrPkObject*            gkr_pk_object_manager_find_by_id         (GkrPkObjectManager *objmgr,
                                                                   GType gtype, gkrconstid id);
 
-GkrPkObject*            gkr_pk_object_manager_find_by_unique     (GkrPkObjectManager *objmgr,
-                                                                  gkrconstid unique);
+GkrPkObject*            gkr_pk_object_manager_find_by_digest     (GkrPkObjectManager *objmgr,
+                                                                  gkrconstid digest);
 
 G_END_DECLS
 

@@ -374,7 +374,7 @@ GkrPkNetscapeTrust*
 gkr_pk_netscape_trust_new (GkrPkObjectManager *mgr, GkrPkCert *cert)
 {
 	GkrPkNetscapeTrust *trust;
-	gkrid unique = NULL;
+	gkrid digest = NULL;
 	GkrPkObject *obj;
 	const guchar *raw;
 	gsize n_raw;
@@ -382,16 +382,16 @@ gkr_pk_netscape_trust_new (GkrPkObjectManager *mgr, GkrPkCert *cert)
 	g_return_val_if_fail (GKR_IS_PK_CERT (cert), NULL);
 	obj = GKR_PK_OBJECT (cert);
 	
-	/* Make a new unique based on the certificate */
-	if (obj->unique) {
-		raw = gkr_id_get_raw (obj->unique, &n_raw);
+	/* Make a new digest based on the certificate */
+	if (obj->digest) {
+		raw = gkr_id_get_raw (obj->digest, &n_raw);
 		g_return_val_if_fail (raw, NULL);
-		unique = gkr_id_new_digestv ((guchar*)"trust", 5, raw, n_raw, NULL);
+		digest = gkr_id_new_digestv ((guchar*)"trust", 5, raw, n_raw, NULL);
 	}
 	
 	trust = g_object_new (GKR_TYPE_PK_NETSCAPE_TRUST, "manager", mgr, 
-	                      "unique", unique, "certificate", cert, NULL);
+	                      "digest", digest, "certificate", cert, NULL);
 	                      
-	gkr_id_free (unique);
+	gkr_id_free (digest);
 	return trust;
 }

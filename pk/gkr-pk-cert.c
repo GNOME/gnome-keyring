@@ -660,7 +660,7 @@ gkr_pk_cert_new (GkrPkObjectManager *manager, GQuark location, ASN1_TYPE asn1)
 	}
 	
 	cert = g_object_new (GKR_TYPE_PK_CERT, "location", location, 
-	                     "unique", id, "manager", manager,  
+	                     "digest", id, "manager", manager,  
 	                     "asn1-tree", asn1, NULL);
 	                     
 	gkr_id_free (id);

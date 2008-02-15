@@ -62,7 +62,7 @@ static guint n_parsed = 0;
 static CuTest *the_cu = NULL;
 
 static gboolean
-parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstid unique, 
+parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstid digest, 
                 GQuark type, gpointer user_data)
 {
 	CuTest *cu = the_cu;
@@ -70,7 +70,7 @@ parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstid unique,
 		
 	CuAssert (cu, "location is empty", location != 0);
 	CuAssert (cu, "location is invalid", gkr_location_to_path (location) != NULL);
-	CuAssert (cu, "unique is empty", unique != NULL);
+	CuAssert (cu, "digest is empty", digest != NULL);
 	CuAssert (cu, "type is invalid", type != 0);
 	
 	g_print ("parsed partial at: %s\n", g_quark_to_string (location));
@@ -82,7 +82,7 @@ parsed_partial (GkrPkixParser *parser, GQuark location, gkrconstid unique,
 }
 
 static gboolean
-parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstid unique, 
+parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstid digest, 
              GQuark type, gcry_sexp_t sexp, gpointer user_data)
 {
 	CuTest *cu = the_cu;
@@ -90,7 +90,7 @@ parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstid unique,
 
 	CuAssert (cu, "location is empty", location != 0);
 	CuAssert (cu, "location is invalid", gkr_location_to_path (location) != NULL);
-	CuAssert (cu, "unique is empty", unique != NULL);
+	CuAssert (cu, "digest is empty", digest != NULL);
 	CuAssert (cu, "type is invalid", type != 0);
 	CuAssert (cu, "sexp is invalid", sexp != NULL);
 
@@ -104,7 +104,7 @@ parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstid unique,
 }
 
 static gboolean
-parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid unique,
+parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest,
              GQuark type, ASN1_TYPE asn1, gpointer user_data)
 {
 	CuTest *cu = the_cu;
@@ -112,7 +112,7 @@ parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid unique,
 
 	CuAssert (cu, "location is empty", location != 0);
 	CuAssert (cu, "location is invalid", gkr_location_to_path (location) != NULL);
-	CuAssert (cu, "unique is empty", unique != NULL);
+	CuAssert (cu, "digest is empty", digest != NULL);
 	CuAssert (cu, "type is invalid", type != 0);
 	CuAssert (cu, "asn1 is invalid", asn1 != NULL);
 
@@ -126,7 +126,7 @@ parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid unique,
 }
 
 static gchar*
-ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid unique, 
+ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest, 
               GQuark type, const gchar *details, guint n_prompts, 
               gpointer user_data) 
 {

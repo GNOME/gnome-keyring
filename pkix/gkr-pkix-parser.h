@@ -57,22 +57,22 @@ struct _GkrPkixParserClass {
 
 	/* When an object is not fully parsed because of restrictions */	
 	gboolean (*parsed_partial) (GkrPkixParser *parser, GQuark location, 
-	                            gkrconstid unique, GQuark type);
+	                            gkrconstid digest, GQuark type);
 
 	/* When an ASN.1 type object is parsed */
 	gboolean (*parsed_asn1) (GkrPkixParser *parser, GQuark location, 
-	                         gkrconstid unique, GQuark type,
+	                         gkrconstid digest, GQuark type,
 	                         ASN1_TYPE asn1);
 
 	/* When a gcrypt sexp is parsed */
 	gboolean (*parsed_sexp) (GkrPkixParser *parser, GQuark location, 
-	                         gkrconstid unique, GQuark type,
+	                         gkrconstid digest, GQuark type,
 	                         gcry_sexp_t sexp);
 	
 	/* A callback for each password needed */
 	gchar* (*ask_password) (GkrPkixParser *parser, GQuark location, 
-	                        gkrconstid unique, GQuark type,
-				const gchar *orig_label, guint failed);
+	                        gkrconstid digest, GQuark type,
+	                        const gchar *orig_label, guint failed);
 };
 
 GType               gkr_pkix_parser_get_type                (void) G_GNUC_CONST;

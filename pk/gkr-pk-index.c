@@ -230,21 +230,21 @@ check_index_mtime (GkrPkIndex *index, GQuark loc, time_t mtime)
 }
 
 static gchar*
-unique_to_group (gkrconstid uni)
+digest_to_group (gkrconstid digest)
 {
-	const guchar *unidata;
-	gsize n_group, n_unidata;
+	const guchar *digdata;
+	gsize n_group, n_digdata;
 	gboolean r;
 	gchar *group;
 	
-	g_return_val_if_fail (uni, NULL);
+	g_return_val_if_fail (digest, NULL);
 		
-	unidata = gkr_id_get_raw (uni, &n_unidata);
-	g_assert (unidata);
-	n_group = (n_unidata * 2) + 1;
+	digdata = gkr_id_get_raw (digest, &n_digdata);
+	g_assert (digdata);
+	n_group = (n_digdata * 2) + 1;
 	group = g_malloc0 (n_group);
 	
-	r = gkr_crypto_hex_encode (unidata, n_unidata, group, &n_group);
+	r = gkr_crypto_hex_encode (digdata, n_digdata, group, &n_group);
 	g_assert (r == TRUE);
 	
 	return group;
@@ -453,7 +453,7 @@ write_quarks_value (GKeyFile *file, const gchar *group, const gchar *field,
 }
 
 static void
-set_keyfile_value (GKeyFile *key_file, gkrconstid uni, 
+set_keyfile_value (GKeyFile *key_file, gkrconstid digest, 
                    const gchar *field, WriteValueFunc func, 
                    gpointer data, gboolean *updated)
 {
@@ -461,12 +461,12 @@ set_keyfile_value (GKeyFile *key_file, gkrconstid uni,
 	gchar *group;
 	
 	g_assert (key_file);
-	g_assert (uni);
+	g_assert (digest);
 	g_assert (func);
 	g_assert (updated);
 	
 	/* TODO: Cache this somehow? */
-	group = unique_to_group (uni);
+	group = digest_to_group (digest);
 	g_return_if_fail (group);
 	
 	*updated = (func) (key_file, group, field, &err, data);
@@ -665,7 +665,7 @@ load_parent_key_file (GkrPkIndex *index, GQuark loc)
 }
 
 static gboolean
-read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni, 
+read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid digest, 
                      const gchar *field, GkrPkObject *object, 
                      ReadValueFunc func, gpointer data)
 {
@@ -676,7 +676,7 @@ read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni,
 	gchar *group;
 	gint ret = 0;
 	
-	g_return_val_if_fail (uni, FALSE);
+	g_return_val_if_fail (digest, FALSE);
 
 	if (loc) {
 		path = index_path_for_location (index, loc);
@@ -691,7 +691,7 @@ read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni,
 	
 	/* Try the actual item first */
 	if (key_file) {
-		group = unique_to_group (uni);
+		group = digest_to_group (digest);
 		g_return_val_if_fail (group, FALSE);
 	
 		ret = get_keyfile_value (key_file, group, field, func, data);
@@ -720,7 +720,7 @@ read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni,
 }
 
 static gboolean
-update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni, 
+update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid digest, 
                        const gchar *field, GkrPkObject *object, 
                        WriteValueFunc func, gpointer data)
 {
@@ -736,7 +736,7 @@ update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni,
 	int tries = 0;
 	int fd = -1;
 	
-	g_return_val_if_fail (uni, FALSE);
+	g_return_val_if_fail (digest, FALSE);
 	
 	if (loc) {
 		path = index_path_for_location (index, loc);
@@ -782,7 +782,7 @@ update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid uni,
 	if (!key_file)
 		goto done;
 
-	set_keyfile_value (key_file, uni, field, func, data, &updated);
+	set_keyfile_value (key_file, digest, field, func, data, &updated);
 	if (updated && loc) {
 		
 		/* Serialize the key file into memory */
@@ -932,7 +932,7 @@ gkr_pk_index_get_boolean (GkrPkObject *obj, const gchar *field, gboolean defvalu
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), ret);
 	g_return_val_if_fail (field != NULL, ret);	
 	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
 	                          field, obj, (ReadValueFunc)read_boolean_value, &ret))
 		ret = defvalue;
 
@@ -947,7 +947,7 @@ gkr_pk_index_get_int (GkrPkObject *obj, const gchar *field, gint defvalue)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), ret);	
 	g_return_val_if_fail (field != NULL, ret);	
 
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
 	                          field, obj, (ReadValueFunc)read_int_value, &ret))
 		ret = defvalue;
 
@@ -962,7 +962,7 @@ gkr_pk_index_get_string (GkrPkObject *obj, const gchar *field)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), NULL);
 	g_return_val_if_fail (field != NULL, NULL);	
 	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
 	                          field, obj, (ReadValueFunc)read_string_value, &ret))
 		ret = NULL;
 
@@ -970,15 +970,15 @@ gkr_pk_index_get_string (GkrPkObject *obj, const gchar *field)
 }
 
 gchar*
-gkr_pk_index_get_string_full (GQuark location, gkrconstid uni, 
+gkr_pk_index_get_string_full (GQuark location, gkrconstid digest, 
                               const gchar *field)
 {
 	gchar *ret = NULL;
 	
-	g_return_val_if_fail (uni, NULL);
+	g_return_val_if_fail (digest, NULL);
 	g_return_val_if_fail (field != NULL, NULL);	
 	
-	if (!read_pk_index_value (get_index_singleton (), location, uni, field,
+	if (!read_pk_index_value (get_index_singleton (), location, digest, field,
 	                          NULL, (ReadValueFunc)read_string_value, &ret))
 		ret = NULL;
 
@@ -1021,7 +1021,7 @@ gkr_pk_index_get_quarks (GkrPkObject *obj, const gchar *field)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), NULL);
 	g_return_val_if_fail (field != NULL, NULL);	
 	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
 	                          field, obj, (ReadValueFunc)read_quarks_value, &ret))
 		ret = NULL;
 		
@@ -1036,7 +1036,7 @@ gkr_pk_index_has_value (GkrPkObject *obj, const gchar *field)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
 	                          field, obj, (ReadValueFunc)read_exists_value, &ret))
 		ret = FALSE;
 
@@ -1050,7 +1050,7 @@ gkr_pk_index_have (GkrPkObject *obj)
 
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->unique,
+	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
 	                          NULL, obj, (ReadValueFunc)read_exists_any_value, &ret))
 		ret = FALSE;
 
@@ -1058,13 +1058,13 @@ gkr_pk_index_have (GkrPkObject *obj)
 }
 
 gboolean
-gkr_pk_index_have_full (GQuark location, gkrconstid uni)
+gkr_pk_index_have_full (GQuark location, gkrconstid digest)
 {
 	gboolean ret;
 
-	g_return_val_if_fail (uni, FALSE);
+	g_return_val_if_fail (digest, FALSE);
 	
-	if (!read_pk_index_value (get_index_singleton (), location, uni, NULL,
+	if (!read_pk_index_value (get_index_singleton (), location, digest, NULL,
 	                          NULL, (ReadValueFunc)read_exists_any_value, &ret))
 		ret = FALSE;
 
@@ -1077,7 +1077,7 @@ gkr_pk_index_set_boolean (GkrPkObject *obj, const gchar *field, gboolean val)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 		
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
 	                              field, obj, (WriteValueFunc)write_boolean_value, &val);
 }
 
@@ -1087,7 +1087,7 @@ gkr_pk_index_set_int (GkrPkObject *obj, const gchar *field, gint val)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
 	                              field, obj, (WriteValueFunc)write_int_value, &val);
 }                                                       
                                                         
@@ -1098,19 +1098,19 @@ gkr_pk_index_set_string (GkrPkObject *obj, const gchar *field, const gchar *val)
 	g_return_val_if_fail (field != NULL, FALSE);
 	g_return_val_if_fail (val, FALSE);
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
 	                              field, obj, (WriteValueFunc)write_string_value, &val);
 }
 
 gboolean
-gkr_pk_index_set_string_full (GQuark location, gkrconstid uni, const gchar *field, 
+gkr_pk_index_set_string_full (GQuark location, gkrconstid digest, const gchar *field, 
                               const gchar *val)
 {
-	g_return_val_if_fail (uni, FALSE);
+	g_return_val_if_fail (digest, FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 	g_return_val_if_fail (val, FALSE);
 
-	return update_pk_index_value (get_index_singleton (), location, uni, field, 
+	return update_pk_index_value (get_index_singleton (), location, digest, field, 
 	                              NULL, (WriteValueFunc)write_string_value, &val);	
 }
 
@@ -1144,7 +1144,7 @@ gkr_pk_index_set_quarks (GkrPkObject *obj, const gchar *field, GQuark *quarks)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
 	                              field, obj, (WriteValueFunc)write_quarks_value, &quarks);
 }
 
@@ -1154,7 +1154,7 @@ gkr_pk_index_delete (GkrPkObject *obj, const gchar *field)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
 	                              field, obj, (WriteValueFunc)write_delete, NULL);
 
 }
@@ -1164,7 +1164,7 @@ gkr_pk_index_clear (GkrPkObject *obj)
 {
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->unique, 
+	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
 	                              NULL, obj, (WriteValueFunc)write_clear, NULL);
 
 }

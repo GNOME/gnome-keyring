@@ -55,7 +55,7 @@ struct _GkrPkObjectManagerPrivate {
 	gboolean is_token;
 	
 	GHashTable *object_by_handle;
-	GHashTable *object_by_unique;
+	GHashTable *object_by_digest;
 };
 
 #define GKR_PK_OBJECT_MANAGER_GET_PRIVATE(o) \
@@ -91,7 +91,7 @@ add_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
 	gpointer k;
 	
 	g_assert (GKR_IS_PK_OBJECT (object));
-	g_assert (object->unique);
+	g_assert (object->digest);
 	g_assert (object->manager == NULL);
 	
 	if (!object->handle) {
@@ -108,11 +108,11 @@ add_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
 	g_hash_table_replace (pv->object_by_handle, k, object);
 	
 	/* 
-	 * Mapping of objects by unique key. There may be multiple objects
-	 * with a given unique key.
+	 * Mapping of objects by digest key. There may be multiple objects
+	 * with a given digest key.
 	 */
-	g_assert (object->unique);
-	g_hash_table_replace (pv->object_by_unique, object->unique, object);
+	g_assert (object->digest);
+	g_hash_table_replace (pv->object_by_digest, object->digest, object);
 	
 	/* Note objects is being managed */
 	objmgr->objects = g_list_prepend (objmgr->objects, object);
@@ -134,11 +134,11 @@ remove_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
 	g_hash_table_remove (pv->object_by_handle, k);
 	
 	/* 
-	 * Mapping of objects by unique key. There may be multiple objects
-	 * with a given unique, so just remove if it matches this one.
+	 * Mapping of objects by digest key. There may be multiple objects
+	 * with a given digest, so just remove if it matches this one.
 	 */
-	if (g_hash_table_lookup (pv->object_by_unique, object->unique) == object)
-		g_hash_table_remove (pv->object_by_unique, object->unique); 
+	if (g_hash_table_lookup (pv->object_by_digest, object->digest) == object)
+		g_hash_table_remove (pv->object_by_digest, object->digest); 
 	
 	/* Release object management */		
 	objmgr->objects = g_list_remove (objmgr->objects, object);
@@ -155,7 +155,7 @@ gkr_pk_object_manager_init (GkrPkObjectManager *objmgr)
  	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
  	
  	pv->object_by_handle = g_hash_table_new (g_direct_hash, g_direct_equal);
- 	pv->object_by_unique = g_hash_table_new (gkr_id_hash, gkr_id_equals);
+ 	pv->object_by_digest = g_hash_table_new (gkr_id_hash, gkr_id_equals);
 }
 
 static void
@@ -174,7 +174,7 @@ gkr_pk_object_manager_dispose (GObject *obj)
 	
 	g_return_if_fail (objmgr->objects == NULL);
  	g_return_if_fail (g_hash_table_size (pv->object_by_handle) == 0);
- 	g_return_if_fail (g_hash_table_size (pv->object_by_unique) == 0);
+ 	g_return_if_fail (g_hash_table_size (pv->object_by_digest) == 0);
  	
  	if (pv->for_pid) {
  		g_assert (object_managers_by_pid);
@@ -203,7 +203,7 @@ gkr_pk_object_manager_finalize (GObject *obj)
  	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (obj);
  	
 	g_hash_table_destroy (pv->object_by_handle);
-	g_hash_table_destroy (pv->object_by_unique);
+	g_hash_table_destroy (pv->object_by_digest);
 	g_assert (!man->objects);
 	g_assert (!pv->for_pid);
 
@@ -277,7 +277,7 @@ gkr_pk_object_manager_register (GkrPkObjectManager *objmgr, GkrPkObject *object)
 	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
 
 	g_return_if_fail (object->manager == NULL);
-	g_return_if_fail (object->unique);
+	g_return_if_fail (object->digest);
 
 	add_object (objmgr, object);
 }
@@ -292,7 +292,7 @@ gkr_pk_object_manager_unregister (GkrPkObjectManager *objmgr, GkrPkObject *objec
 	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
 	
 	g_return_if_fail (object->manager == objmgr);
-	g_return_if_fail (object->unique);
+	g_return_if_fail (object->digest);
 
 	remove_object (objmgr, object);
 }
@@ -448,15 +448,15 @@ gkr_pk_object_manager_find_by_id (GkrPkObjectManager *objmgr, GType gtype,
 }
 
 GkrPkObject*
-gkr_pk_object_manager_find_by_unique (GkrPkObjectManager *objmgr, gkrconstid unique)
+gkr_pk_object_manager_find_by_digest (GkrPkObjectManager *objmgr, gkrconstid digest)
 {
 	GkrPkObjectManagerPrivate *pv;
 	GkrPkObject *object;
 	
-	g_return_val_if_fail (unique, NULL);
+	g_return_val_if_fail (digest, NULL);
 	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr), NULL);
 	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
 
-	object = GKR_PK_OBJECT (g_hash_table_lookup (pv->object_by_unique, unique));
+	object = GKR_PK_OBJECT (g_hash_table_lookup (pv->object_by_digest, digest));
 	return object;
 }

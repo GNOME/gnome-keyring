@@ -71,7 +71,7 @@ typedef struct {
 	GkrPkObjectStorage *storage;       /* The object storage to parse into */
 	GQuark location;                   /* The location being parsed */
 	GHashTable *checks;                /* The set of objects that existed before parse */
-	GHashTable *types_by_unique;       /* The parse types for every object prompted for or seen */ 
+	GHashTable *types_by_digest;       /* The parse types for every object prompted for or seen */ 
 } ParseContext;
 
 #define NO_VALUE GUINT_TO_POINTER (TRUE)
@@ -174,7 +174,7 @@ prepare_ask_secondary (GQuark type, gboolean indexed, const gchar *label)
 }
 
 static gchar* 
-parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique, 
+parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid digest, 
                      GQuark type, const gchar *label, guint failures,
                      ParseContext *ctx)
 {
@@ -212,7 +212,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 	 * If we've parsed this before, then we can lookup in our index as to what 
 	 * exactly this is we're talking about here.  
 	 */
-	stype = gkr_pk_index_get_string_full (loc, unique, "parsed-type");
+	stype = gkr_pk_index_get_string_full (loc, digest, "parsed-type");
 	if (stype) {
 		if (!type && stype[0])
 			type = g_quark_from_string (stype);
@@ -224,7 +224,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 	 * If we've indexed this before, and the user isn't specifically requesting it 
 	 * to be loaded then we don't need to prompt for the password 
 	 */
-	if (have_indexed && !g_hash_table_lookup (pv->specific_load_requests, unique))
+	if (have_indexed && !g_hash_table_lookup (pv->specific_load_requests, digest))
 		return NULL;
 	
 	/* TODO: Load a better label if we have one */
@@ -262,7 +262,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid unique,
 		} 
 		
 		/* Track that we prompted for this */
-		g_hash_table_insert (ctx->types_by_unique, gkr_id_dup (unique), 
+		g_hash_table_insert (ctx->types_by_digest, gkr_id_dup (digest), 
 		                     GUINT_TO_POINTER (type));
 	}	
 		
@@ -361,7 +361,7 @@ remove_object (GkrPkObjectStorage *storage, GkrPkObject *object)
 
 static GkrPkObject*
 prepare_object (GkrPkObjectStorage *storage, GQuark location, 
-                gkrconstid unique, GQuark type)
+                gkrconstid digest, GQuark type)
 {
 	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
 	GkrPkObjectManager *manager;
@@ -369,7 +369,7 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 	GType gtype;
 	
 	manager = gkr_pk_object_manager_for_token ();
-	object = gkr_pk_object_manager_find_by_unique (manager, unique);
+	object = gkr_pk_object_manager_find_by_digest (manager, digest);
 	
 	/* The object already exists just reference it */
 	if (object) {
@@ -388,11 +388,9 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 		g_return_val_if_reached (NULL);
 	
 	object = g_object_new (gtype, "manager", manager, "location", location, 
-	                       "unique", unique, NULL);
+	                       "digest", digest, NULL);
 	add_object (storage, object);
 
-g_printerr ("parsed %s at %s\n", G_OBJECT_TYPE_NAME (object), g_quark_to_string (location));
-	
 	/* Object was reffed */
 	g_object_unref (object);
 	
@@ -400,7 +398,7 @@ g_printerr ("parsed %s at %s\n", G_OBJECT_TYPE_NAME (object), g_quark_to_string 
 }
 
 static void 
-parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrid unique,
+parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrid digest,
                        GQuark type, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
@@ -409,30 +407,30 @@ parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrid unique,
  	
 	/* If we don't know the type then look it up */
 	if (!type) {
-		stype = gkr_pk_index_get_string_full (location, unique, "parsed-type");
+		stype = gkr_pk_index_get_string_full (location, digest, "parsed-type");
 		if (stype && stype[0])
 			type = g_quark_from_string (stype);
 		g_free (stype);
 	}
 	
 	if (type) { 
-	 	object = prepare_object (ctx->storage, location, unique, type);
+	 	object = prepare_object (ctx->storage, location, digest, type);
  		g_return_if_fail (object != NULL);
  	
 		/* Make note of having seen this object in load requests */
-		g_hash_table_remove (pv->specific_load_requests, unique);
+		g_hash_table_remove (pv->specific_load_requests, digest);
 
 		/* Make note of having seen this one */
 		g_hash_table_remove (ctx->checks, object);
 	}
 	
-	/* Track the type for this unique */
-	g_hash_table_insert (ctx->types_by_unique, gkr_id_dup (unique), 
-		             GUINT_TO_POINTER (type));
+	/* Track the type of this digest */
+	g_hash_table_insert (ctx->types_by_digest, gkr_id_dup (digest), 
+		                 GUINT_TO_POINTER (type));
 }
 
 static void
-parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrid unique,
+parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrid digest,
 	                GQuark type, gcry_sexp_t sexp, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
@@ -440,25 +438,25 @@ parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrid unique,
  	
  	g_return_if_fail (type != 0);
  	
- 	object = prepare_object (ctx->storage, location, unique, type);
+ 	object = prepare_object (ctx->storage, location, digest, type);
  	g_return_if_fail (object != NULL);
 	
 	/* Make note of having seen this object in load requests */
-	g_hash_table_remove (pv->specific_load_requests, unique);
+	g_hash_table_remove (pv->specific_load_requests, digest);
 	
 	/* Make note of having seen this one */
 	g_hash_table_remove (ctx->checks, object);
 		
-	/* Track the type for this unique */
-	g_hash_table_insert (ctx->types_by_unique, gkr_id_dup (unique), 
-		             GUINT_TO_POINTER (type));
+	/* Track the type of this digest */
+	g_hash_table_insert (ctx->types_by_digest, gkr_id_dup (digest),
+		                 GUINT_TO_POINTER (type));
 	
 	/* Setup the sexp, probably a key on this object */
 	g_object_set (object, "gcrypt-sexp", sexp, NULL);
 }
 
 static void
-parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid unique, 
+parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest, 
                     GQuark type, ASN1_TYPE asn1, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
@@ -466,18 +464,18 @@ parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid unique,
 	
  	g_return_if_fail (type != 0);
  	
-	object = prepare_object (ctx->storage, location, unique, type);
+	object = prepare_object (ctx->storage, location, digest, type);
 	g_return_if_fail (object != NULL);
 
 	/* Make note of having seen this object in load requests */
-	g_hash_table_remove (pv->specific_load_requests, unique);
+	g_hash_table_remove (pv->specific_load_requests, digest);
 	
 	/* Make note of having seen this one */
 	g_hash_table_remove (ctx->checks, object);
 	
-	/* Track the type for this unique */
-	g_hash_table_insert (ctx->types_by_unique, gkr_id_dup (unique), 
-		             GUINT_TO_POINTER (type));
+	/* Track the type for this digest */
+	g_hash_table_insert (ctx->types_by_digest, gkr_id_dup (digest), 
+		                 GUINT_TO_POINTER (type));
 
 	/* Setup the asn1, probably a certificate on this object */
 	g_object_set (object, "asn1-tree", asn1, NULL); 
@@ -492,7 +490,7 @@ remove_each_object (GkrPkObject *object, gpointer unused, GkrPkObjectStorage *st
 }
 
 static void
-index_each_unique (gkrid unique, gpointer value, gpointer data)
+index_each_digest (gkrid digest, gpointer value, gpointer data)
 {
 	GQuark location = GPOINTER_TO_UINT (data);
 	GQuark type = GPOINTER_TO_UINT (value);
@@ -501,7 +499,7 @@ index_each_unique (gkrid unique, gpointer value, gpointer data)
 		return;
 
 	/* Stash away the parsed type, in case we need it when prompting for a password */
-	gkr_pk_index_set_string_full (location, unique, "parsed-type", 
+	gkr_pk_index_set_string_full (location, digest, "parsed-type", 
 	                              g_quark_to_string (type));
 }
 
@@ -523,7 +521,7 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, GError **err)
 	ctx.storage = storage;
 	ctx.checks = g_hash_table_new_full (g_direct_hash, g_direct_equal, 
 	                                    g_object_unref, NULL);
-	ctx.types_by_unique = g_hash_table_new_full (gkr_id_hash, gkr_id_equals, 
+	ctx.types_by_digest = g_hash_table_new_full (gkr_id_hash, gkr_id_equals, 
 	                                             gkr_id_free, NULL);
 
 	/* Create a table of what is at the location */
@@ -553,8 +551,8 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, GError **err)
 	 * Note any in the index that we prompted for but didn't actually 
 	 * get an object out about.
 	 */  
-	g_hash_table_foreach (ctx.types_by_unique, (GHFunc)index_each_unique, k);
-	g_hash_table_destroy (ctx.types_by_unique);
+	g_hash_table_foreach (ctx.types_by_digest, (GHFunc)index_each_digest, k);
+	g_hash_table_destroy (ctx.types_by_digest);
 	
 	return ret;
 }
@@ -743,14 +741,14 @@ gkr_pk_object_storage_load_complete (GkrPkObjectStorage *storage, GkrPkObject *o
 
 	
 	/* Make note of the specific load request */
-	g_hash_table_replace (pv->specific_load_requests, gkr_id_dup (obj->unique), NO_VALUE); 
+	g_hash_table_replace (pv->specific_load_requests, gkr_id_dup (obj->digest), NO_VALUE); 
 	ret = load_objects_at_location (storage, obj->location, err);
 
 	if (!ret) 
 		goto done;
 	 
 	/* See if it was seen */
-	if (g_hash_table_lookup (pv->specific_load_requests, obj->unique)) {
+	if (g_hash_table_lookup (pv->specific_load_requests, obj->digest)) {
 		g_set_error (err, GKR_PKIX_PARSE_ERROR, 0, "the object was not found at: %s",
 		             g_quark_to_string (obj->location));
 		goto done;
@@ -759,7 +757,7 @@ gkr_pk_object_storage_load_complete (GkrPkObjectStorage *storage, GkrPkObject *o
 	ret = TRUE;
 
 done:
-	g_hash_table_remove (pv->specific_load_requests, obj->unique);
+	g_hash_table_remove (pv->specific_load_requests, obj->digest);
 	g_object_unref (obj);
 	return ret;
 }

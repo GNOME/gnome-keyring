@@ -487,20 +487,20 @@ gkr_pk_pubkey_new (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_k
 {
 	GkrPkObject *key;
 	guchar hash[20];
-	gkrid unique; 
+	gkrid digest; 
 	
 	g_return_val_if_fail (s_key != NULL, NULL);
 	
 	if (!gcry_pk_get_keygrip (s_key, hash))
 		g_return_val_if_reached (NULL);
 	
-	/* We need to create a unique for this key */
-	unique = gkr_id_new_digestv ((const guchar*)"public-key", 10, hash, 20, NULL);
+	/* We need to create a digest for this key */
+	digest = gkr_id_new_digestv ((const guchar*)"public-key", 10, hash, 20, NULL);
 	
 	key = g_object_new (GKR_TYPE_PK_PUBKEY, "manager", manager, "location", location, 
-	                    "gcrypt-sexp", s_key, "unique", unique, NULL);
+	                    "gcrypt-sexp", s_key, "digest", digest, NULL);
 	                    
-	gkr_id_free (unique);
+	gkr_id_free (digest);
 	return key;
 }
 

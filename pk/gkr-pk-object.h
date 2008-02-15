@@ -52,7 +52,7 @@ struct _GkrPkObject {
 	GObject parent;
 	
 	GQuark location;
-	gkrid unique;
+	gkrid digest;
 	CK_OBJECT_HANDLE handle;
 	
 	GkrPkObjectManager *manager;
