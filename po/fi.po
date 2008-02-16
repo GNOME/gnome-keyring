@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-13 11:35+0300\n"
+"POT-Creation-Date: 2008-02-16 09:10+0300\n"
 "PO-Revision-Date: 2006-07-03 10:01+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -33,12 +33,12 @@ msgid "Home"
 msgstr "Koti"
 
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:510 ../pkix/gkr-pkix-serialize.c:58
+#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Levy tai asema, jossa tämä tiedosto on, ei ole saatavilla"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:221
+#: ../daemon/gkr-daemon-ops.c:222
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -48,7 +48,7 @@ msgstr ""
 ">' oletusavainnipussa."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:225
+#: ../daemon/gkr-daemon-ops.c:226
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -58,7 +58,7 @@ msgstr ""
 ">' avainnipussa %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231 ../daemon/gkr-daemon-ops.c:241
+#: ../daemon/gkr-daemon-ops.c:232 ../daemon/gkr-daemon-ops.c:242
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -68,7 +68,7 @@ msgstr ""
 "oletusavainnipussa."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:235 ../daemon/gkr-daemon-ops.c:245
+#: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -78,7 +78,7 @@ msgstr ""
 "avainnipussa %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:252
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -87,7 +87,7 @@ msgstr ""
 "oletusavainnipussa."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:254
+#: ../daemon/gkr-daemon-ops.c:255
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -97,20 +97,20 @@ msgstr ""
 "avainnipussa %s."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 msgid "Allow access"
 msgstr "Salli päästä käsiksi"
 
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 msgid "Allow application access to keyring?"
 msgstr "Salli sovelluksien päästä käsiksi avainnippuun?"
 
-#: ../daemon/gkr-daemon-ops.c:310
+#: ../daemon/gkr-daemon-ops.c:311
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "Avainrenkaan %s avaava salasana"
 
-#: ../daemon/gkr-daemon-ops.c:367
+#: ../daemon/gkr-daemon-ops.c:368
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -119,7 +119,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo päästä käsiksi oletusavainnippuun, mutta "
 "avainnippu on lukittu"
 
-#: ../daemon/gkr-daemon-ops.c:371
+#: ../daemon/gkr-daemon-ops.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -127,7 +127,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo päästä käsiksi avainnippuun \"%s\", mutta "
 "avainnippu on lukittu"
 
-#: ../daemon/gkr-daemon-ops.c:377 ../daemon/gkr-daemon-ops.c:387
+#: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -135,14 +135,14 @@ msgstr ""
 "Sovellus \"%s\" tahtoo päästä käsiksi oletusavainnippuun, mutta avainnippu "
 "on lukittu"
 
-#: ../daemon/gkr-daemon-ops.c:381 ../daemon/gkr-daemon-ops.c:392
+#: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Sovellus \"%s\" tahtoo päästä käsiksi avainnippuun \"%s\", mutta avainnippu "
 "on lukittu"
 
-#: ../daemon/gkr-daemon-ops.c:398
+#: ../daemon/gkr-daemon-ops.c:399
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
@@ -150,7 +150,7 @@ msgstr ""
 "Tuntematon sovellus tahtoo päästä käsiksi oletusavainnippuun, mutta "
 "avainnippu on lukittu"
 
-#: ../daemon/gkr-daemon-ops.c:402
+#: ../daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -158,25 +158,25 @@ msgstr ""
 "Tuntematon sovellus tahtoo päästä käsiksi avainnippuun \"%s\", mutta "
 "avainnippu on lukittu"
 
-#: ../daemon/gkr-daemon-ops.c:409
+#: ../daemon/gkr-daemon-ops.c:410
 msgid "Enter password for default keyring to unlock"
 msgstr "Avaa oletusavainnipun lukitus syöttämällä salasana"
 
-#: ../daemon/gkr-daemon-ops.c:411
+#: ../daemon/gkr-daemon-ops.c:412
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Avaa avainnipun \"%s\" lukitus syöttämällä salasana"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:415
+#: ../daemon/gkr-daemon-ops.c:416
 msgid "Unlock Keyring"
 msgstr "Avaa avainnippu"
 
-#: ../daemon/gkr-daemon-ops.c:427
+#: ../daemon/gkr-daemon-ops.c:428
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Avaa tämä avainrengas automaattisesti sisäänkirjauduttaessa."
 
-#: ../daemon/gkr-daemon-ops.c:463
+#: ../daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -185,7 +185,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo luoda uuden avainnipun nimellä \"%s\". Sinun "
 "täytyy valita avainnipulle salasana."
 
-#: ../daemon/gkr-daemon-ops.c:467
+#: ../daemon/gkr-daemon-ops.c:468
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -194,7 +194,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo luoda uuden oletusavainnipun. Sinun täytyy "
 "valita avainnipulle salasana."
 
-#: ../daemon/gkr-daemon-ops.c:473 ../daemon/gkr-daemon-ops.c:483
+#: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -203,7 +203,7 @@ msgstr ""
 "Sovellus \"%s\" tahtoo luoda uuden avainnipun nimellä \"%s\". Sinun täytyy "
 "valita avainnipulle salasana."
 
-#: ../daemon/gkr-daemon-ops.c:477 ../daemon/gkr-daemon-ops.c:487
+#: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -212,7 +212,7 @@ msgstr ""
 "Sovellus \"%s\" tahtoo luoda uuden oletusavainnipun. Sinun täytyy valita "
 "avainnipulle salasana."
 
-#: ../daemon/gkr-daemon-ops.c:493
+#: ../daemon/gkr-daemon-ops.c:494
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -221,7 +221,7 @@ msgstr ""
 "Tuntematon sovellus tahtoo luoda uuden avainnipun nimellä \"%s\". Sinun "
 "täytyy valita avainnipulle salasana."
 
-#: ../daemon/gkr-daemon-ops.c:497
+#: ../daemon/gkr-daemon-ops.c:498
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -231,15 +231,15 @@ msgstr ""
 "avainnipulle salasana."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:503
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "New Keyring Password"
 msgstr "Uuden avainnipun salasana"
 
-#: ../daemon/gkr-daemon-ops.c:504
+#: ../daemon/gkr-daemon-ops.c:505
 msgid "Choose password for new keyring"
 msgstr "Valitse uuden avainnipun salasana"
 
-#: ../daemon/gkr-daemon-ops.c:551
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -248,7 +248,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo vaihtaa avainrenkaan \"%s\" salasanan. Sinun "
 "täytyy valita avainnipulle käyttettävä salasana."
 
-#: ../daemon/gkr-daemon-ops.c:555
+#: ../daemon/gkr-daemon-ops.c:556
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -257,7 +257,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo vaihtaa oletusavainnipun salasanan. Sinun täytyy "
 "valita oletusavainnipulle käytettävä salasana."
 
-#: ../daemon/gkr-daemon-ops.c:561 ../daemon/gkr-daemon-ops.c:571
+#: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -266,7 +266,7 @@ msgstr ""
 "Sovellus \"%s\" tahtoo vaihtaa avainnipun \"%s\" salasanan. Sinun täytyy "
 "valita avainnipulle käytettävä salasana."
 
-#: ../daemon/gkr-daemon-ops.c:565 ../daemon/gkr-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -275,7 +275,7 @@ msgstr ""
 "Sovellus \"%s\" tahtoo vaihtaa oletusavainnipun salasanan. Sinun täytyy "
 "valita oletusavainnipulle käytettävä salasana."
 
-#: ../daemon/gkr-daemon-ops.c:581
+#: ../daemon/gkr-daemon-ops.c:582
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -284,7 +284,7 @@ msgstr ""
 "Tuntematon sovellus tahtoo vaihtaa avainnipun \"%s\" salasanan. Sinun täytyy "
 "valita avainnipulle käytettävä salasana."
 
-#: ../daemon/gkr-daemon-ops.c:585
+#: ../daemon/gkr-daemon-ops.c:586
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -293,22 +293,22 @@ msgstr ""
 "Tuntematon sovellus tahtoo vaihtaa oletusavainnipun salasanan. Sinun täytyy "
 "valita oletusavainnipulle käytettävä salasana."
 
-#: ../daemon/gkr-daemon-ops.c:595
+#: ../daemon/gkr-daemon-ops.c:596
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Valitse uusi salasana avainnipulle \"%s\"."
 
-#: ../daemon/gkr-daemon-ops.c:597
+#: ../daemon/gkr-daemon-ops.c:598
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Valitse uusi salasana oletusavainnipulle."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:601
+#: ../daemon/gkr-daemon-ops.c:602
 msgid "Change Keyring Password"
 msgstr "Vaihda avainnipun salasana"
 
-#: ../daemon/gkr-daemon-ops.c:671
+#: ../daemon/gkr-daemon-ops.c:672
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -318,7 +318,7 @@ msgstr ""
 "Sovellus \"%s\" (%s) tahtoo tallentaa salasanan, mutta oletusavainnippua ei "
 "ole luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
 
-#: ../daemon/gkr-daemon-ops.c:675 ../daemon/gkr-daemon-ops.c:679
+#: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -328,7 +328,7 @@ msgstr ""
 "Sovellus \"%s\" tahtoo tallentaa salasanan, mutta oletusavainnippua ei ole "
 "luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
 
-#: ../daemon/gkr-daemon-ops.c:683
+#: ../daemon/gkr-daemon-ops.c:684
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -339,11 +339,11 @@ msgstr ""
 "ole luotu. Luodaksesi sellaisen sinun täytyy valita avainnipulle salasana."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:688
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Create Default Keyring"
 msgstr "Luo oletusavainnippu"
 
-#: ../daemon/gkr-daemon-ops.c:688
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Choose password for default keyring"
 msgstr "Valitse oletusavainnipun salasana"
 
@@ -366,8 +366,8 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"Tämä valinta ottaa käyttöön gnome-keyring-palvelimen SSH-agentin. "
-"Muutos tulee voimaan, kun gnome-keyring-palvelin käynnistetään uudestaan, "
+"Tämä valinta ottaa käyttöön gnome-keyring-palvelimen SSH-agentin. Muutos "
+"tulee voimaan, kun gnome-keyring-palvelin käynnistetään uudestaan, "
 "esimerkiksi sisäänkirjauduttaessa. Tämä asetus voidaan ohittaa palvelimelle "
 "annetuilla komentorivivalitsimilla."
 
@@ -445,163 +445,170 @@ msgstr ""
 "Oletusavainnippua ei luotu automaattisesti, kun kirjauduit tälle "
 "tietokoneelle. Se luodaan nyt."
 
-#: ../pk/gkr-pk-object-storage.c:153
+#: ../pk/gkr-pk-object-storage.c:99
+msgid "Unlock private key"
+msgstr "Avaa salainen avain"
+
+#: ../pk/gkr-pk-object-storage.c:101
+msgid "Unlock certificate"
+msgstr "Avaa varmenne"
+
+#: ../pk/gkr-pk-object-storage.c:103
+msgid "Unlock public key"
+msgstr "Avaa julkinen avain"
+
+#: ../pk/gkr-pk-object-storage.c:105
 msgid "Unlock"
 msgstr "Avaa lukitus"
 
-#: ../pk/gkr-pk-object-storage.c:154
+#: ../pk/gkr-pk-object-storage.c:116
+msgid "Enter password to unlock the private key"
+msgstr "Avaa salaisen avaimen lukitus syöttämällä salasana"
+
+#: ../pk/gkr-pk-object-storage.c:118
+msgid "Enter password to unlock the certificate"
+msgstr "Avaa varmenteen lukitus syöttämällä salasana"
+
+#: ../pk/gkr-pk-object-storage.c:120
+msgid "Enter password to unlock the public key"
+msgstr "Avaa julkisen avaimen lukitus syöttämällä salasana"
+
+#: ../pk/gkr-pk-object-storage.c:122
 msgid "Enter password to unlock"
 msgstr "Avaa syöttämällä salasana"
 
-#.
-#. * TRANSLATORS:
-#. *  display_type will be the type of the object like 'certificate' or 'key'
-#.
-#: ../pk/gkr-pk-object-storage.c:168
-#, c-format
-msgid "Unlock %s"
-msgstr "Avaa %s"
+#: ../pk/gkr-pk-object-storage.c:133
+msgid "Automatically unlock this private key when I log in."
+msgstr "Avaa tämä salainen avain automaattisesti sisäänkirjauduttaessa."
 
-#.
-#. * TRANSLATORS:
-#. *  display_type will be the type of the object like 'certificate' or 'key'
-#.
-#: ../pk/gkr-pk-object-storage.c:174
-#, c-format
-msgid "Enter password for the %s to unlock"
-msgstr "Avaa \"%s\" syöttämällä salasana"
+#: ../pk/gkr-pk-object-storage.c:135
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Avaa tämä varmenne automaattisesti sisäänkirjauduttaessa."
 
-#.
-#. * TRANSLATORS:
-#. *  display_type will be the type of the object like 'certificate' or 'key'
-#. *  label is replaced with the name of the locked object.
-#.
-#: ../pk/gkr-pk-object-storage.c:188
-#, c-format
-msgid "An application wants access to the %s '%s', but it is locked"
-msgstr "Sovellus tahtoo päästä käsiksi %s kohteeseen \"%s\", mutta se on lukittu"
+#: ../pk/gkr-pk-object-storage.c:137
+msgid "Automatically unlock this public key when I log in."
+msgstr "Avaa tämä julkinen avain automaattisesti sisäänkirjauduttaessa."
 
-#.
-#. * TRANSLATORS:
-#. *  label is replaced with the name of the locked object.
-#.
-#: ../pk/gkr-pk-object-storage.c:195
+#: ../pk/gkr-pk-object-storage.c:139
+msgid "Automatically unlock this when I log in"
+msgstr "Avaa tämä automaattisesti sisäänkirjauduttaessa."
+
+#: ../pk/gkr-pk-object-storage.c:154
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Sovellus tahtoo päästä käsiksi salaiseen avaimeen \"%s\", mutta se on lukittu"
+
+#: ../pk/gkr-pk-object-storage.c:156
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"Sovellus tahtoo päästä käsiksi varmenteeseen \"%s\", mutta se on lukittu"
+
+#: ../pk/gkr-pk-object-storage.c:158
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Sovellus tahtoo päästä käsiksi julkiseen avaimeen \"%s\", mutta se on lukittu"
+
+#: ../pk/gkr-pk-object-storage.c:160
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Sovellus tahtoo päästä käsiksi kohteeseen \"%s\", mutta se on lukittu"
 
-#.
-#. * TRANSLATORS:
-#. *  display_type will be the type of the object like 'certificate' or 'key'
-#. *  label is replaced with the name of the locked object.
-#.
-#: ../pk/gkr-pk-object-storage.c:206
+#: ../pk/gkr-pk-object-storage.c:166
 #, c-format
-msgid "The system wants to import the %s '%s', but it is locked."
-msgstr "Järjestelmä haluaa tuoda \"%s\" \"%s\", mutta se on lukittu."
+msgid "The system wants to import the private key '%s', but it is locked"
+msgstr "Järjestelmä haluaa tuoda salaisen avaimen \"%s\", mutta se on lukittu."
 
-#.
-#. * TRANSLATORS:
-#. *  label is replaced with the name of the locked object.
-#.
-#: ../pk/gkr-pk-object-storage.c:213
+#: ../pk/gkr-pk-object-storage.c:168
 #, c-format
-msgid "The system wants to import '%s', but it is locked."
+msgid "The system wants to import the certificate '%s', but it is locked"
+msgstr "Järjestelmä haluaa tuoda varmenteen \"%s\", mutta se on lukittu."
+
+#: ../pk/gkr-pk-object-storage.c:170
+#, c-format
+msgid "The system wants to import the public key '%s', but it is locked"
+msgstr "Järjestelmä haluaa tuoda julkisen avaimen \"%s\", mutta se on lukittu."
+
+#: ../pk/gkr-pk-object-storage.c:172
+#, c-format
+msgid "The system wants to import '%s', but it is locked"
 msgstr "Järjestelmä haluaa tuoda kohteen \"%s\", mutta se on lukittu."
 
-#.
-#. * TRANSLATORS:
-#. *  display_type will be the type of the object like 'certificate' or 'key'
-#.
-#: ../pk/gkr-pk-object-storage.c:230
+#: ../pk/gkr-pk-object-storage.c:258
 #, c-format
-msgid "Automatically unlock this %s when I log in."
-msgstr "Avaa tämä %s automaattisesti sisäänkirjauduttaessa."
+msgid "Unlock password for '%s'"
+msgstr "Kohteen \"%s\" salasana"
 
-#.
-#. * TRANSLATORS:
-#. *  label is the name of the object to unlock.
-#.
-#: ../pk/gkr-pk-object-storage.c:246
-#, c-format
-msgid "Unlock password for %s"
-msgstr "Kohteen %s salasana"
-
-#: ../pkix/gkr-pkix-parser.c:428
+#: ../pkix/gkr-pkix-parser.c:445
 msgid "Unrecognized or unsupported file."
 msgstr "Tuntematon tai ei tuettu tiedosto."
 
-#: ../pkix/gkr-pkix-parser.c:432
+#: ../pkix/gkr-pkix-parser.c:449
 msgid "Could not parse invalid or corrupted file."
 msgstr "Virheellistä tai viallista tiedostoa ei voitu tulkita."
 
-#: ../pkix/gkr-pkix-parser.c:485
-msgid "private key"
-msgstr "salainen avain"
-
-#: ../pkix/gkr-pkix-parser.c:487
-msgid "certificate"
-msgstr "varmenne"
-
-#: ../pkix/gkr-pkix-parser.c:489
-msgid "public key"
-msgstr "julkinen avain"
-
-#: ../ui/gkr-ask-tool.c:172
+#: ../ui/gkr-ask-tool.c:182
 msgid "Store passwords unencrypted?"
 msgstr "Tallennetaanko salasanat salaamattomassa muodossa?"
 
-#: ../ui/gkr-ask-tool.c:173
+#: ../ui/gkr-ask-tool.c:183
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
 "Jos valitse tyhjän salasanan, tallennettuja salasanoja ei salata "
-"turvallisesti. Kuka tahansa, joka pääsee käsiksi tiedostoihisi, "
-"pääsee käsiksi myös salasanoihin."
+"turvallisesti. Kuka tahansa, joka pääsee käsiksi tiedostoihisi, pääsee "
+"käsiksi myös salasanoihin."
 
-#: ../ui/gkr-ask-tool.c:180
+#: ../ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
 msgstr "Käytä turvatonta tallennusta"
 
-#: ../ui/gkr-ask-tool.c:403
+#: ../ui/gkr-ask-tool.c:413
 msgid "_Location:"
 msgstr "_Sijainti:"
 
-#: ../ui/gkr-ask-tool.c:416
+#: ../ui/gkr-ask-tool.c:426
 msgid "_Old password:"
 msgstr "_Vanha salasana:"
 
-#: ../ui/gkr-ask-tool.c:436
+#: ../ui/gkr-ask-tool.c:446
 msgid "_Password:"
 msgstr "_Salasana:"
 
-#: ../ui/gkr-ask-tool.c:458
+#: ../ui/gkr-ask-tool.c:468
 msgid "_Confirm password:"
 msgstr "_Vahvista salasana:"
 
-#: ../ui/gkr-ask-tool.c:478
+#: ../ui/gkr-ask-tool.c:488
 msgid "New password strength"
 msgstr "Uuden salasanan vahvuus"
 
-#: ../ui/gkr-ask-tool.c:536
+#: ../ui/gkr-ask-tool.c:546
 msgid "Passwords do not match."
 msgstr "Salasanat eivät täsmää."
 
-#: ../ui/gkr-ask-tool.c:552
+#: ../ui/gkr-ask-tool.c:562
 msgid "Password cannot be blank"
 msgstr "Salasana ei voi olla tyhjä"
 
-#: ../ui/gkr-ask-tool.c:603
+#: ../ui/gkr-ask-tool.c:613
 msgid "Deny"
 msgstr "Estä"
 
-#: ../ui/gkr-ask-tool.c:615
+#: ../ui/gkr-ask-tool.c:625
 msgid "Allow _Once"
 msgstr "Salli _kerran"
 
-#: ../ui/gkr-ask-tool.c:619
+#: ../ui/gkr-ask-tool.c:629
 msgid "_Always Allow"
 msgstr "Salli _aina"
 
+#~ msgid "Unlock %s"
+#~ msgstr "Avaa %s"
+
+#~ msgid "Enter password for the %s to unlock"
+#~ msgstr "Avaa \"%s\" syöttämällä salasana"
