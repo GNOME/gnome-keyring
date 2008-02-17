@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-06 17:26+0700\n"
-"PO-Revision-Date: 2008-02-06 17:27+0700\n"
+"POT-Creation-Date: 2008-02-17 08:53+0700\n"
+"PO-Revision-Date: 2008-02-17 09:12+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -30,12 +30,12 @@ msgid "Home"
 msgstr "บ้าน"
 
 #: common/gkr-location.c:980 common/gkr-location.c:1003
-#: pkix/gkr-pkix-parser.c:510 pkix/gkr-pkix-serialize.c:58
+#: pkix/gkr-pkix-parser.c:514 pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "ดิสก์หรือไดรว์ที่เก็บแฟ้มนี้ไม่มีอยู่"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:221
+#: daemon/gkr-daemon-ops.c:222
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -44,7 +44,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:225
+#: daemon/gkr-daemon-ops.c:226
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -52,7 +52,7 @@ msgid ""
 msgstr "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:231 daemon/gkr-daemon-ops.c:241
+#: daemon/gkr-daemon-ops.c:232 daemon/gkr-daemon-ops.c:242
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -61,7 +61,7 @@ msgstr ""
 "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:235 daemon/gkr-daemon-ops.c:245
+#: daemon/gkr-daemon-ops.c:236 daemon/gkr-daemon-ops.c:246
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -69,7 +69,7 @@ msgid ""
 msgstr "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:251
+#: daemon/gkr-daemon-ops.c:252
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -77,7 +77,7 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:254
+#: daemon/gkr-daemon-ops.c:255
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -85,74 +85,74 @@ msgid ""
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:260
+#: daemon/gkr-daemon-ops.c:261
 msgid "Allow access"
 msgstr "ยอมให้ใช้"
 
-#: daemon/gkr-daemon-ops.c:260
+#: daemon/gkr-daemon-ops.c:261
 msgid "Allow application access to keyring?"
 msgstr "ยอมให้โปรแกรมใช้พวงกุญแจนี้ไหม?"
 
-#: daemon/gkr-daemon-ops.c:310
+#: daemon/gkr-daemon-ops.c:311
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "ปลดรหัสผ่านสำหรับพวงกุญแจ %s"
 
-#: daemon/gkr-daemon-ops.c:367
+#: daemon/gkr-daemon-ops.c:368
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:371
+#: daemon/gkr-daemon-ops.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจ %s ซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:377 daemon/gkr-daemon-ops.c:387
+#: daemon/gkr-daemon-ops.c:378 daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:381 daemon/gkr-daemon-ops.c:392
+#: daemon/gkr-daemon-ops.c:382 daemon/gkr-daemon-ops.c:393
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจ %s ซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:398
+#: daemon/gkr-daemon-ops.c:399
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:402
+#: daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรมที่ไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:409
+#: daemon/gkr-daemon-ops.c:410
 msgid "Enter password for default keyring to unlock"
 msgstr "ป้อนรหัสผ่านสำหรับปลดล็อคพวงกุญแจปริยาย"
 
-#: daemon/gkr-daemon-ops.c:411
+#: daemon/gkr-daemon-ops.c:412
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "ป้อนรหัสผ่านสำหรับปลดล็อคพวงกุญแจ '%s'"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:415
+#: daemon/gkr-daemon-ops.c:416
 msgid "Unlock Keyring"
 msgstr "ปลดล็อคพวงกุญแจ"
 
-#: daemon/gkr-daemon-ops.c:427
+#: daemon/gkr-daemon-ops.c:428
 msgid "Automatically unlock this keyring when I log in."
 msgstr "ปลดล็อคพวงกุญแจนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
 
-#: daemon/gkr-daemon-ops.c:463
+#: daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -160,7 +160,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:467
+#: daemon/gkr-daemon-ops.c:468
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -168,21 +168,21 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:473 daemon/gkr-daemon-ops.c:483
+#: daemon/gkr-daemon-ops.c:474 daemon/gkr-daemon-ops.c:484
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr "โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:477 daemon/gkr-daemon-ops.c:487
+#: daemon/gkr-daemon-ops.c:478 daemon/gkr-daemon-ops.c:488
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:493
+#: daemon/gkr-daemon-ops.c:494
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -190,7 +190,7 @@ msgid ""
 msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:497
+#: daemon/gkr-daemon-ops.c:498
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -198,15 +198,15 @@ msgid ""
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:503
+#: daemon/gkr-daemon-ops.c:504
 msgid "New Keyring Password"
 msgstr "รหัสผ่านพวงกุญแจใหม่"
 
-#: daemon/gkr-daemon-ops.c:504
+#: daemon/gkr-daemon-ops.c:505
 msgid "Choose password for new keyring"
 msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจใหม่"
 
-#: daemon/gkr-daemon-ops.c:551
+#: daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -215,7 +215,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:555
+#: daemon/gkr-daemon-ops.c:556
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -224,7 +224,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:561 daemon/gkr-daemon-ops.c:571
+#: daemon/gkr-daemon-ops.c:562 daemon/gkr-daemon-ops.c:572
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -232,7 +232,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:565 daemon/gkr-daemon-ops.c:575
+#: daemon/gkr-daemon-ops.c:566 daemon/gkr-daemon-ops.c:576
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -240,7 +240,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:581
+#: daemon/gkr-daemon-ops.c:582
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -249,7 +249,7 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:585
+#: daemon/gkr-daemon-ops.c:586
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -258,22 +258,22 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:595
+#: daemon/gkr-daemon-ops.c:596
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจ '%s'"
 
-#: daemon/gkr-daemon-ops.c:597
+#: daemon/gkr-daemon-ops.c:598
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจปริยาย"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:601
+#: daemon/gkr-daemon-ops.c:602
 msgid "Change Keyring Password"
 msgstr "เปลี่ยนรหัสผ่านพวงกุญแจ"
 
-#: daemon/gkr-daemon-ops.c:671
+#: daemon/gkr-daemon-ops.c:672
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -283,7 +283,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการเก็บรหัสผ่าน แต่คุณไม่มีพวงกุญแจปริยาย ถ้าจะสร้างพวงกุญแจดังกล่าว "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
-#: daemon/gkr-daemon-ops.c:675 daemon/gkr-daemon-ops.c:679
+#: daemon/gkr-daemon-ops.c:676 daemon/gkr-daemon-ops.c:680
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -293,7 +293,7 @@ msgstr ""
 "โปรแกรม '%s' ต้องการเก็บรหัสผ่าน แต่คุณไม่มีพวงกุญแจปริยาย ถ้าจะสร้างพวงกุญแจดังกล่าว "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
-#: daemon/gkr-daemon-ops.c:683
+#: daemon/gkr-daemon-ops.c:684
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -304,11 +304,11 @@ msgstr ""
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:688
+#: daemon/gkr-daemon-ops.c:689
 msgid "Create Default Keyring"
 msgstr "สร้างพวงกุญแจปริยาย"
 
-#: daemon/gkr-daemon-ops.c:688
+#: daemon/gkr-daemon-ops.c:689
 msgid "Choose password for default keyring"
 msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจปริยาย"
 
@@ -404,79 +404,112 @@ msgid ""
 "computer. It will now be created."
 msgstr "ยังไม่มีการสร้างพวงกุญแจเข้าระบบของคุณโดยอัตโนมัติเมื่อคุณเข้าสู่ระบบนี้ และจะสร้างเดี๋ยวนี้"
 
-#: pk/gkr-pk-object-storage.c:153
+#: pk/gkr-pk-object-storage.c:99
+msgid "Unlock private key"
+msgstr "ปลดล็อคกุญแจส่วนตัว"
+
+#: pk/gkr-pk-object-storage.c:101
+msgid "Unlock certificate"
+msgstr "ปลดล็อคใบรับรอง"
+
+#: pk/gkr-pk-object-storage.c:103
+msgid "Unlock public key"
+msgstr "ปลดล็อคกุญแจสาธารณะ"
+
+#: pk/gkr-pk-object-storage.c:105
 msgid "Unlock"
 msgstr "ปลดล็อค"
 
-#: pk/gkr-pk-object-storage.c:154
+#: pk/gkr-pk-object-storage.c:116
+msgid "Enter password to unlock the private key"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจส่วนตัว"
+
+#: pk/gkr-pk-object-storage.c:118
+msgid "Enter password to unlock the certificate"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคใบรับรอง"
+
+#: pk/gkr-pk-object-storage.c:120
+msgid "Enter password to unlock the public key"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจสาธารณะ"
+
+#: pk/gkr-pk-object-storage.c:122
 msgid "Enter password to unlock"
 msgstr "ป้อนรหัสผ่านเพื่อปลดล็อค"
 
-#: pk/gkr-pk-object-storage.c:164
-#, c-format
-msgid "Unlock %s"
-msgstr "ปลดล็อค %s"
+#: pk/gkr-pk-object-storage.c:133
+msgid "Automatically unlock this private key when I log in."
+msgstr "ปลดล็อคกุญแจส่วนตัวนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
 
-#: pk/gkr-pk-object-storage.c:165
-#, c-format
-msgid "Enter password for the %s to unlock"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อค '%s'"
+#: pk/gkr-pk-object-storage.c:135
+msgid "Automatically unlock this certificate when I log in."
+msgstr "ปลดล็อคใบรับรองนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
 
-#: pk/gkr-pk-object-storage.c:174
-#, c-format
-msgid "An application wants access to the %s '%s', but it is locked"
-msgstr "มีโปรแกรมต้องการจะใช้ %s '%s' ซึ่งถูกล็อคอยู่"
+#: pk/gkr-pk-object-storage.c:137
+msgid "Automatically unlock this public key when I log in."
+msgstr "ปลดล็อคกุญแจสาธารณะนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
 
-#: pk/gkr-pk-object-storage.c:177
+#: pk/gkr-pk-object-storage.c:139
+msgid "Automatically unlock this when I log in"
+msgstr "ปลดล็อครายการนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
+
+#: pk/gkr-pk-object-storage.c:154
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "มีโปรแกรมต้องการจะใช้กุญแจส่วนตัว '%s' ซึ่งถูกล็อคอยู่"
+
+#: pk/gkr-pk-object-storage.c:156
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "มีโปรแกรมต้องการจะใช้ใบรับรอง '%s' ซึ่งถูกล็อคอยู่"
+
+#: pk/gkr-pk-object-storage.c:158
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "มีโปรแกรมต้องการจะใช้กุญแจสาธารณะ '%s' ซึ่งถูกล็อคอยู่"
+
+#: pk/gkr-pk-object-storage.c:160
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้ '%s' ซึ่งถูกล็อคอยู่"
 
-#: pk/gkr-pk-object-storage.c:182
+#: pk/gkr-pk-object-storage.c:166
 #, c-format
-msgid "The system wants to import the %s '%s', but it is locked."
-msgstr "ระบบต้องการจะนำเข้า %s '%s' ซึ่งถูกล็อคอยู่"
+msgid "The system wants to import the private key '%s', but it is locked"
+msgstr "ระบบต้องการจะนำเข้ากุญแจส่วนตัว '%s' ซึ่งถูกล็อคอยู่"
 
-#: pk/gkr-pk-object-storage.c:185
+#: pk/gkr-pk-object-storage.c:168
 #, c-format
-msgid "The system wants to import '%s', but it is locked."
+msgid "The system wants to import the certificate '%s', but it is locked"
+msgstr "ระบบต้องการจะนำเข้าใบรับรอง '%s' ซึ่งถูกล็อคอยู่"
+
+#: pk/gkr-pk-object-storage.c:170
+#, c-format
+msgid "The system wants to import the public key '%s', but it is locked"
+msgstr "ระบบต้องการจะนำเข้ากุญแจสาธารณะ '%s' ซึ่งถูกล็อคอยู่"
+
+#: pk/gkr-pk-object-storage.c:172
+#, c-format
+msgid "The system wants to import '%s', but it is locked"
 msgstr "ระบบต้องการจะนำเข้า '%s' ซึ่งถูกล็อคอยู่"
 
-#: pk/gkr-pk-object-storage.c:197
+#: pk/gkr-pk-object-storage.c:258
 #, c-format
-msgid "Automatically unlock this %s when I log in."
-msgstr "ปลดล็อค %s นี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
+msgid "Unlock password for '%s'"
+msgstr "รหัสผ่านสำหรับปลดล็อค '%s'"
 
-#: pk/gkr-pk-object-storage.c:209
-#, c-format
-msgid "Unlock password for %s"
-msgstr "รหัสผ่านสำหรับปลดล็อค %s"
-
-#: pkix/gkr-pkix-parser.c:428
+#: pkix/gkr-pkix-parser.c:445
 msgid "Unrecognized or unsupported file."
 msgstr "แฟ้มที่ไม่รู้จักหรือไม่รองรับ"
 
-#: pkix/gkr-pkix-parser.c:432
+#: pkix/gkr-pkix-parser.c:449
 msgid "Could not parse invalid or corrupted file."
 msgstr "ไม่สามารถแจงแฟ้มที่ผิดรูปแบบหรือข้อมูลเสียหาย"
 
-#: pkix/gkr-pkix-parser.c:485
-msgid "private key"
-msgstr "กุญแจส่วนตัว"
-
-#: pkix/gkr-pkix-parser.c:487
-msgid "certificate"
-msgstr "ใบรับรอง"
-
-#: pkix/gkr-pkix-parser.c:489
-msgid "public key"
-msgstr "กุญแจสาธารณะ"
-
-#: ui/gkr-ask-tool.c:172
+#: ui/gkr-ask-tool.c:182
 msgid "Store passwords unencrypted?"
 msgstr "จะเก็บรหัสผ่านโดยไม่เข้ารหัสลับจริงหรือ?"
 
-#: ui/gkr-ask-tool.c:173
+#: ui/gkr-ask-tool.c:183
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -485,49 +518,55 @@ msgstr ""
 "การใช้รหัสผ่านว่างเปล่า จะทำให้รหัสผ่านไม่มีการเข้ารหัสลับอย่างปลอดภัย "
 "และใครก็ตามที่เข้าถึงแฟ้มของคุณได้ก็จะได้รหัสผ่านของคุณไป"
 
-#: ui/gkr-ask-tool.c:180
+#: ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
 msgstr "เก็บแบบไม่ปลอดภัย"
 
-#: ui/gkr-ask-tool.c:403
+#: ui/gkr-ask-tool.c:413
 msgid "_Location:"
 msgstr "_ตำแหน่งเก็บ:"
 
-#: ui/gkr-ask-tool.c:416
+#: ui/gkr-ask-tool.c:426
 msgid "_Old password:"
 msgstr "รหัสผ่านเ_ดิม:"
 
-#: ui/gkr-ask-tool.c:436
+#: ui/gkr-ask-tool.c:446
 msgid "_Password:"
 msgstr "_รหัสผ่าน:"
 
-#: ui/gkr-ask-tool.c:458
+#: ui/gkr-ask-tool.c:468
 msgid "_Confirm password:"
 msgstr "_ยืนยันรหัสผ่าน:"
 
-#: ui/gkr-ask-tool.c:478
+#: ui/gkr-ask-tool.c:488
 msgid "New password strength"
 msgstr "ความแน่นหนาของรหัสผ่าน"
 
-#: ui/gkr-ask-tool.c:536
+#: ui/gkr-ask-tool.c:546
 msgid "Passwords do not match."
 msgstr "รหัสผ่านไม่ตรงกัน"
 
-#: ui/gkr-ask-tool.c:552
+#: ui/gkr-ask-tool.c:562
 msgid "Password cannot be blank"
 msgstr "รหัสผ่านเป็นค่าว่างเปล่าไม่ได้"
 
-#: ui/gkr-ask-tool.c:603
+#: ui/gkr-ask-tool.c:613
 msgid "Deny"
 msgstr "ปฏิเสธ"
 
-#: ui/gkr-ask-tool.c:615
+#: ui/gkr-ask-tool.c:625
 msgid "Allow _Once"
 msgstr "ยอมแ_ค่ครั้งนี้"
 
-#: ui/gkr-ask-tool.c:619
+#: ui/gkr-ask-tool.c:629
 msgid "_Always Allow"
 msgstr "ยอม_ตลอดไป"
+
+#~ msgid "Unlock %s"
+#~ msgstr "ปลดล็อค %s"
+
+#~ msgid "Enter password for the %s to unlock"
+#~ msgstr "ป้อนรหัสผ่านเพื่อปลดล็อค '%s'"
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "รหัสผ่านเดิมเป็นค่าว่างเปล่าไม่ได้"
