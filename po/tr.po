@@ -1,55 +1,118 @@
-# translation of tr.po to Turkish
+# translation of gnome-keyring.HEAD.tr.po to Turkish
 # Turkish translation of gnome-keyring.
 # Copyright (C) 2004 THE gnome-keyring'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-keyring package.
-# Gorkem Cetin <gorkem@bahcesehir.edu.tr>, 2004.
+#
+#
 # Gorkem Cetin <gorkem@bahcesehir.edu.tr>, 2004.
 # Görkem Çetin <gorkem@gorkemcetin.com>, 2004.
-#
-#
+# Serdar CICEK <serdar@nerd.com.tr>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: tr\n"
+"Project-Id-Version: gnome-keyring.HEAD.tr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-05 00:22+0300\n"
-"PO-Revision-Date: 2004-02-20 14:32+0200\n"
-"Last-Translator: Görkem Çetin <gorkem@gorkemcetin.com>\n"
-"Language-Team: Turkish\n"
+"POT-Creation-Date: 2008-02-18 19:29+0200\n"
+"PO-Revision-Date: 2008-02-18 20:47+0200\n"
+"Last-Translator: Serdar CICEK <serdar@nerd.com.tr>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=1; plural=0;\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "_Eski parola:"
+#: ../common/gkr-location.c:306
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Taşınabilir Disk: %s"
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "_Parola"
+#: ../common/gkr-location.c:308
+msgid "Removable Disk"
+msgstr "Taşınabilir Disk"
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "_Yeni parolayı onayla:"
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
+msgid "Home"
+msgstr "Ana Sayfa"
 
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">Parola gücü ölçer:</span>"
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
+msgid "The disk or drive this file is located on is not present"
+msgstr "Bu dosyanın bulunduğu disk ya da sürücü mevcut değil"
 
-#: ../gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr "Eski parola boş olamaz."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:222
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr ""
+"'%s' (%s) uygulaması '<object prop='name'/>' için öntanımlı anahtarlıktaki "
+"parolaya ulaşmak istiyor."
 
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "Parola boş olamaz."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:226
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr ""
+"'%s' (%s) uygulaması ''<object prop='name'/>' için %s içindeki parolaya "
+"ulaşmak istiyor."
 
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr "Parolalar eşleşmedi."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:232 ../daemon/gkr-daemon-ops.c:242
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"'%s' uygulaması '<object prop='name'/>' için öntanımlı anahtarlıktaki "
+"parolaya ulaşmak istiyor."
 
-#: ../gnome-keyring-ask.c:407
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"'%s' uygulaması '<object prop='name'/>' için %s içindeki parolaya ulaşmak "
+"istiyor."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:252
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Bilinmeyen bir uygulama '<object prop='name'/>' için öntanımlı "
+"anahtarlıktaki parolaya ulaşmak istiyor."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:255
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"Bilinmeyen bir uygulama '<object prop='name'/>' için %s içindeki parolaya "
+"ulaşmak istiyor."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:261
+msgid "Allow access"
+msgstr "Erişime izin ver"
+
+#: ../daemon/gkr-daemon-ops.c:261
+msgid "Allow application access to keyring?"
+msgstr "Uygulamanın anahtarlığa erişebilmesine izin verilsin mi?"
+
+#: ../daemon/gkr-daemon-ops.c:311
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "%s anahtarlığı için parolayı girin "
+
+#: ../daemon/gkr-daemon-ops.c:368
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -58,25 +121,15 @@ msgstr ""
 "'%s' (%s) uygulaması öntanımlı anahtarlığa ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#: ../gnome-keyring-ask.c:411
+#: ../daemon/gkr-daemon-ops.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
-"'%s' (%s) uygulaması '%s' anahtarlığa ulaşmak istiyor, fakat anahtarlık "
+"'%s' (%s) uygulaması '%s' anahtarlığına ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"'%s' (%s) uygulaması bilinmeyen anahtarlığa ulaşmak istiyor, fakat "
-"anahtarlık kilitli"
-
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
+#: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -84,64 +137,47 @@ msgstr ""
 "'%s' uygulaması öntanımlı anahtarlığa ulaşmak istiyor, fakat anahtarlık  "
 "kilitli"
 
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
+#: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
-"'%s' uygulaması '%s' anahtarlığa ulaşmak istiyor, fakat anahtarlık kilitli"
+"'%s' uygulaması '%s' anahtarlığına ulaşmak istiyor, fakat anahtarlık kilitli"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
+#: ../daemon/gkr-daemon-ops.c:399
 #, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"'%s' uygulaması bilinmeyen anahtarlığa ulaşmak istiyor, fakat anahtarlık "
-"kilitli"
-
-#: ../gnome-keyring-ask.c:452
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama öntanımlı anahtarlığa ulaşmak istiyor, fakat "
 "anahtarlık kilitli"
 
-#: ../gnome-keyring-ask.c:456
+#: ../daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Bilinmeyen bir uygulama '%s' anahtarlığa ulaşmak istiyor, fakat anahtarlık "
+"Bilinmeyen bir uygulama '%s' anahtarlığına ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"Bilinmeyen bir uygulama bilinmeyen anahtarlığa ulaşmak istiyor, fakat "
-"anahtarlık kilitli"
-
-#: ../gnome-keyring-ask.c:468
+#: ../daemon/gkr-daemon-ops.c:410
 msgid "Enter password for default keyring to unlock"
 msgstr "Öntanımlı anahtarlık kilidini açmak için parola girin"
 
-#: ../gnome-keyring-ask.c:470
+#: ../daemon/gkr-daemon-ops.c:412
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' anahtarlık kilidini açmak için parola girin"
 
-#: ../gnome-keyring-ask.c:474
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:416
 msgid "Unlock Keyring"
 msgstr "Anahtarlık Kilidini Aç"
 
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "_Yasakla"
+#: ../daemon/gkr-daemon-ops.c:428
+msgid "Automatically unlock this keyring when I log in."
+msgstr "Giriş yaptığımda anahtarlığı kendiliğinden aç."
 
-#: ../gnome-keyring-ask.c:517
+#: ../daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -150,7 +186,7 @@ msgstr ""
 "'%s' (%s) uygulaması '%s' adında yeni bir anahtarlık oluşturmak istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:521
+#: ../daemon/gkr-daemon-ops.c:468
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -159,7 +195,7 @@ msgstr ""
 "'%s' (%s) uygulaması yeni bir öntanımlı anahtarlık oluşturmak istiyor. Onun "
 "için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
+#: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -168,7 +204,7 @@ msgstr ""
 "'%s' uygulaması '%s' adında yeni bir anahtarlık oluşturmak istiyor. Onun "
 "için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
+#: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -177,7 +213,7 @@ msgstr ""
 "'%s' uygulaması yeni bir öntanımlı anahtarlık oluşturmak istiyor. Onun için "
 "kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:547
+#: ../daemon/gkr-daemon-ops.c:494
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -186,7 +222,8 @@ msgstr ""
 "Bilinmeyen bir uygulama '%s' adında yeni bir anahtarlık oluşturmak istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:551
+#: ../daemon/gkr-daemon-ops.c:498
+#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -194,15 +231,16 @@ msgstr ""
 "Bilinmeyen bir uygulama yeni bir öntanımlı anahtarlık oluşturmak istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:558
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "New Keyring Password"
 msgstr "Yeni Anahtarlık Parolası"
 
-#: ../gnome-keyring-ask.c:559
+#: ../daemon/gkr-daemon-ops.c:505
 msgid "Choose password for new keyring"
 msgstr "Yeni anahtarlık için parola seçin"
 
-#: ../gnome-keyring-ask.c:602
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -211,7 +249,7 @@ msgstr ""
 "'%s' (%s) uygulaması '%s' anahtarlığının parolasını değiştirmek istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:606
+#: ../daemon/gkr-daemon-ops.c:556
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -220,7 +258,7 @@ msgstr ""
 "'%s' (%s) uygulaması yeni bir öntanımlı anahtarlığın parolasını değiştirmek "
 "istiyor. Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -229,7 +267,7 @@ msgstr ""
 "'%s' uygulaması '%s' anahtarlığının parolasını değiştirmek istiyor. Onun "
 "için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -238,7 +276,7 @@ msgstr ""
 "'%s' uygulaması öntanımlı anahtarlığın parolasını değiştirmek istiyor. Onun "
 "için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:632
+#: ../daemon/gkr-daemon-ops.c:582
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -247,7 +285,8 @@ msgstr ""
 "Bilinmeyen bir uygulama '%s' anahtarlığının parolasını değiştirmek istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:636
+#: ../daemon/gkr-daemon-ops.c:586
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -255,20 +294,22 @@ msgstr ""
 "Bilinmeyen bir uygulama öntanımlı anahtarlığın parolasını değiştirmek "
 "istiyor. Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:643
+#: ../daemon/gkr-daemon-ops.c:596
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "'%s' anahtarlığı için yeni bir parola seçin. "
 
-#: ../gnome-keyring-ask.c:645
+#: ../daemon/gkr-daemon-ops.c:598
+#, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Öntanımlı anahtarlık için yeni bir parola seçin."
 
-#: ../gnome-keyring-ask.c:650
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:602
 msgid "Change Keyring Password"
 msgstr "Anahtarlık Parolası Değiştir"
 
-#: ../gnome-keyring-ask.c:689
+#: ../daemon/gkr-daemon-ops.c:672
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -279,7 +320,7 @@ msgstr ""
 "yok. Bir tane oluşturmak için, anahtarlık için kullanacağınız parolayı "
 "seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
+#: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -290,8 +331,8 @@ msgstr ""
 "tane oluşturmak istiyorsanız, anahtarlık için kullanacağınız parolayı "
 "seçmeniz gerekiyor."
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
+#: ../daemon/gkr-daemon-ops.c:684
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -301,106 +342,280 @@ msgstr ""
 "yok. Bir tane oluşturmak istiyorsanız, anahtarlık için kullanacağınız "
 "parolayı seçmeniz gerekiyor."
 
-#: ../gnome-keyring-ask.c:706
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Create Default Keyring"
 msgstr "Öntanımlı Anahtarlık Oluştur"
 
-#: ../gnome-keyring-ask.c:707
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Choose password for default keyring"
 msgstr "Öntanımlı anahtarlık için parola seçin"
 
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "Uygulamanın anahtarlığa erişebilmesine izin verilsin mi?"
-
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "'%s' (%s) uygulaması '%s' için %s içindeki parolaya ulaşmak istiyor."
-
-#: ../gnome-keyring-ask.c:753
-#, c-format
+#: ../data/gnome-keyring.schemas.in.h:1
 msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
 msgstr ""
-"'%s' (%s) uygulaması '%s' için öntanımlı anahtarlıktaki parolaya ulaşmak "
-"istiyor."
+"Bu özellik gnome-keyring servisi içindeki PKCS#11 eklentisini etkinleştirir. "
+"Bu sadece gnome-keyring-daemon başladığında etkili olur, (örn: kullanıcı "
+"giriş yaptığında). Kesin komut parametleri servise geçildiğinde bu ayarın "
+"yerine geçer."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
+#: ../data/gnome-keyring.schemas.in.h:2
 msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
 msgstr ""
-"'%s' (%s) uygulaması '%s' için bilinmeyen anahtarlıktaki parolaya ulaşmak "
-"istiyor."
+"Bu özellik gnome-keyring servisi içindeki SSH aracını etkinleştirir. Bu "
+"sadece gnome-keyring-daemon başladığında etkili olur, (örn: kullanıcı giriş "
+"yaptığında). Kesin komut parametleri servise geçildiğinde bu ayarın yerine "
+"geçer."
 
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "'%s' uygulaması '%s' için %s içindeki parolaya ulaşmak istiyor."
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Gnome-keyring PKCS#11 bileşeninin etkin olmaması."
 
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Gnome-keyring SSH aracının etkin olmaması."
+
+#: ../library/gnome-keyring-utils.c:91
+msgid "Access Denied"
+msgstr "Giriş Reddedildi"
+
+#: ../library/gnome-keyring-utils.c:93
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "Gnome-keyring-daemon uygulaması çalışmıyor."
+
+#: ../library/gnome-keyring-utils.c:95
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "Gnome-keyring-daemon ile iletişim hatası"
+
+#: ../library/gnome-keyring-utils.c:97
+msgid "A keyring with that name already exists"
+msgstr "Bu isimdeki anahtarlık zaten mevcut"
+
+#: ../library/gnome-keyring-utils.c:99
+msgid "Programmer error: The application sent invalid data."
+msgstr "Programcı hatası. Uygulama geçersiz veri gönderdi."
+
+#: ../library/gnome-keyring-utils.c:101
+msgid "No matching results"
+msgstr "Uyumsuz sonuç"
+
+#: ../library/gnome-keyring-utils.c:103
+msgid "A keyring with that name does not exist."
+msgstr "Bu isimde bir anahtarlık yok."
+
+#: ../library/gnome-keyring-utils.c:110
+msgid "The keyring has already been unlocked."
+msgstr "Anahtarlığın kilidi zaten açılmış."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:98
+msgid "Unlock Login Keyring"
+msgstr "Giriş Anahtarlık Kilidini Kaldır"
+
+#: ../keyrings/gkr-keyring-login.c:98
+msgid "Enter login password to unlock keyring"
+msgstr "Anahtarlığı açmak için giriş parolasını gir"
+
+#: ../keyrings/gkr-keyring-login.c:100
 msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
 msgstr ""
-"'%s' uygulaması '%s' için öntanımlı anahtarlıktaki parolaya ulaşmak istiyor."
+"Bu bilgisayarda giriş yaptığınızda giriş anahtarlığınız kendiliğinden "
+"açılmadı."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:124
+msgid "Create Login Keyring"
+msgstr "Giriş Anahtarlığı Oluştur"
+
+#: ../keyrings/gkr-keyring-login.c:124
+msgid "Enter your login password"
+msgstr "Giriş parolanızı girin"
+
+#: ../keyrings/gkr-keyring-login.c:126
 msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
 msgstr ""
-"'%s' uygulaması '%s' için bilinmeyen anahtarlıktarki parolaya ulaşmak "
-"istiyor."
+"Giriş anahtarlığınız bu bilgisayarda girdiğinizde kendiliğinden "
+"oluşturulamadı. Şimdi oluşturulacak."
 
-#: ../gnome-keyring-ask.c:783
+#: ../pk/gkr-pk-object-storage.c:99
+msgid "Unlock private key"
+msgstr "Özel anahtarın kilidini kaldır"
+
+#: ../pk/gkr-pk-object-storage.c:101
+msgid "Unlock certificate"
+msgstr "Sertifikanın kilidini kaldır"
+
+#: ../pk/gkr-pk-object-storage.c:103
+msgid "Unlock public key"
+msgstr "Genel anahtarın kilidini kaldır"
+
+#: ../pk/gkr-pk-object-storage.c:105
+msgid "Unlock"
+msgstr "Kilidini kaldır"
+
+#: ../pk/gkr-pk-object-storage.c:116
+msgid "Enter password to unlock the private key"
+msgstr "Özel anahtarlık kilidini açmak için parola girin"
+
+#: ../pk/gkr-pk-object-storage.c:118
+msgid "Enter password to unlock the certificate"
+msgstr "Sertifikanın kilidini açmak için parola girin"
+
+#: ../pk/gkr-pk-object-storage.c:120
+msgid "Enter password to unlock the public key"
+msgstr "Genel anahtarlık kilidini açmak için parola girin"
+
+#: ../pk/gkr-pk-object-storage.c:122
+msgid "Enter password to unlock"
+msgstr "Kilidini açmak için parola girin"
+
+#: ../pk/gkr-pk-object-storage.c:133
+msgid "Automatically unlock this private key when I log in."
+msgstr "Giriş yaptığımda özel anahtarın kendiliğinden kilidini aç."
+
+#: ../pk/gkr-pk-object-storage.c:135
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Giriş yaptığımda sertifikanın kendiliğinden kilidini aç."
+
+#: ../pk/gkr-pk-object-storage.c:137
+msgid "Automatically unlock this public key when I log in."
+msgstr "Giriş yaptığımda genel anahtarın kilidini aç."
+
+#: ../pk/gkr-pk-object-storage.c:139
+msgid "Automatically unlock this when I log in"
+msgstr "Giriş yaptığımda bunun kendiliğinden kilidini aç"
+
+#: ../pk/gkr-pk-object-storage.c:154
 #, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
+msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
-"Bilinmeyen bir uygulama '%s' için %s içindeki parolaya ulaşmak istiyor."
+"Bilinmeyen bir uygulama '%s' özel anahtarlığına ulaşmak istiyor, fakat "
+"anahtarlık kilitli"
 
-#: ../gnome-keyring-ask.c:786
+#: ../pk/gkr-pk-object-storage.c:156
 #, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"Bilinmeyen bir uygulama '%s' sertifikasına ulaşmak istiyor, fakat sertifika "
+"kilitli"
+
+#: ../pk/gkr-pk-object-storage.c:158
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Bilinmeyen bir uygulama '%s' genel anahtarlığın ulaşmak istiyor, fakat "
+"anahtarlık kilitli"
+
+#: ../pk/gkr-pk-object-storage.c:160
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr ""
+"Bilinmeyen bir uygulama '%s' anahtarlığa ulaşmak istiyor, fakat anahtarlık "
+"kilitli"
+
+#: ../pk/gkr-pk-object-storage.c:166
+#, c-format
+msgid "The system wants to import the private key '%s', but it is locked"
+msgstr ""
+"Sistem '%s' özel anahtarlığını içeri aktarmak istiyor, fakat anahtarlık "
+"kilitli"
+
+#: ../pk/gkr-pk-object-storage.c:168
+#, c-format
+msgid "The system wants to import the certificate '%s', but it is locked"
+msgstr ""
+"Sistem '%s' sertifikasını içeri aktarmak istiyor, fakat sertifika kilitli"
+
+#: ../pk/gkr-pk-object-storage.c:170
+#, c-format
+msgid "The system wants to import the public key '%s', but it is locked"
+msgstr ""
+"Sistem '%s' genel anahtarlığını içeri aktarmak istiyor, fakat anahtarlık "
+"kilitli"
+
+#: ../pk/gkr-pk-object-storage.c:172
+#, c-format
+msgid "The system wants to import '%s', but it is locked"
+msgstr "Sistem '%s' için içe aktarım istiyor, fakat '%s' kilitli"
+
+#: ../pk/gkr-pk-object-storage.c:258
+#, c-format
+msgid "Unlock password for '%s'"
+msgstr "'%s' için parolanın kilidini kaldır"
+
+#: ../pkix/gkr-pkix-parser.c:445
+msgid "Unrecognized or unsupported file."
+msgstr "Tanınmamış ya da desteklenmeyen dosya."
+
+#: ../pkix/gkr-pkix-parser.c:449
+msgid "Could not parse invalid or corrupted file."
+msgstr "Geçersiz yada bozuk dosya ayrıştırılamadı."
+
+#: ../ui/gkr-ask-tool.c:182
+msgid "Store passwords unencrypted?"
+msgstr "Parolalar şifrelenmeden depolansın mı?"
+
+#: ../ui/gkr-ask-tool.c:183
 msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
 msgstr ""
-"Bilinmeyen bir uygulama '%s' için öntanımlı anahtarlıktaki parolaya ulaşmak "
-"istiyor."
+"Parolayı boş kullanmak seçildiğinde, depolanan parolalarınız güvenli olarak "
+"şifrelenmeyecek. Parolalarınıza dosyalarınıza erişebilen kişiler erişecek."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Bilinmeyen bir uygulama '%s' için bilinmeyen anahtarlıktaki parolaya ulaşmak "
-"istiyor."
+#: ../ui/gkr-ask-tool.c:190
+msgid "Use Unsafe Storage"
+msgstr "Güvenliksiz Depolama Kullan"
 
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "Erişime izin ver"
+#: ../ui/gkr-ask-tool.c:413
+msgid "_Location:"
+msgstr "_Konum:"
 
-#: ../gnome-keyring-ask.c:799
+#: ../ui/gkr-ask-tool.c:426
+msgid "_Old password:"
+msgstr "_Eski parola:"
+
+#: ../ui/gkr-ask-tool.c:446
+msgid "_Password:"
+msgstr "_Parola:"
+
+#: ../ui/gkr-ask-tool.c:468
+msgid "_Confirm password:"
+msgstr "Parolayı _onayla:"
+
+#: ../ui/gkr-ask-tool.c:488
+msgid "New password strength"
+msgstr "Yeni parola gücü"
+
+#: ../ui/gkr-ask-tool.c:546
+msgid "Passwords do not match."
+msgstr "Parolalar eşleşmedi."
+
+#: ../ui/gkr-ask-tool.c:562
+msgid "Password cannot be blank"
+msgstr "Parola boş olamaz"
+
+#: ../ui/gkr-ask-tool.c:613
+msgid "Deny"
+msgstr "Reddet"
+
+#: ../ui/gkr-ask-tool.c:625
 msgid "Allow _Once"
 msgstr "Bir _Kereliğine İzin ver"
 
-#: ../gnome-keyring-ask.c:800
+#: ../ui/gkr-ask-tool.c:629
 msgid "_Always Allow"
 msgstr "_Herzaman İzin ver"
-
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "Çalıştırılacak isteğin türünü belirtmek zorundasınız\n"
-
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "Bilinmeyen istek türü\n"
