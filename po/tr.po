@@ -548,7 +548,7 @@ msgstr ""
 #: ../pk/gkr-pk-object-storage.c:172
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
-msgstr "Sistem '%s' için içe aktarım istiyor, fakat '%s' kilitli"
+msgstr "Sistem '%s' için içe aktarım istiyor, fakat o kilitli"
 
 #: ../pk/gkr-pk-object-storage.c:258
 #, c-format
