@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-17 04:14+0100\n"
-"PO-Revision-Date: 2008-02-17 22:03+0100\n"
+"PO-Revision-Date: 2008-02-19 16:19+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -262,11 +262,11 @@ msgstr ""
 
 #: ../data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr ""
+msgstr "Ali je gnome-keyring PKCS#11 enota omogočena."
 
 #: ../data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr ""
+msgstr "Ali je gnome-keyring SSH agent omogočen."
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
@@ -363,64 +363,61 @@ msgid "Automatically unlock this private key when I log in."
 msgstr "Samodejno odkleni osebni ključ ob prijavi."
 
 #: ../pk/gkr-pk-object-storage.c:135
-#, fuzzy
 msgid "Automatically unlock this certificate when I log in."
-msgstr "Samodejno odkleni zbirko ključev ob prijavi."
+msgstr "Samodejno odkleni certifikat ob prijavi."
 
 #: ../pk/gkr-pk-object-storage.c:137
-#, fuzzy
 msgid "Automatically unlock this public key when I log in."
-msgstr "Samodejno odkleni zbirko ključev ob prijavi."
+msgstr "Samodejno odkleni javni ključ ob prijavi."
 
 #: ../pk/gkr-pk-object-storage.c:139
-#, fuzzy
 msgid "Automatically unlock this when I log in"
-msgstr "Samodejno odkleni %s prijavi."
+msgstr "Samodejno odkleni prijavi."
 
 #: ../pk/gkr-pk-object-storage.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Program želi dostop do %s '%s',vendar je zaklenjena"
+msgstr "Program želi dostop do osebnega ključa '%s', vendar je ta zaklenjen"
 
 #: ../pk/gkr-pk-object-storage.c:156
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Program želi dostop do %s '%s',vendar je zaklenjena"
+msgstr "Program želi dostop do certifikata '%s', vendar je ta zaklenjen"
 
 #: ../pk/gkr-pk-object-storage.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Program želi dostop do %s '%s',vendar je zaklenjena"
+msgstr "Program želi dostop do javnega ključa '%s', vendar je ta zaklenjen"
 
 #: ../pk/gkr-pk-object-storage.c:160
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "Program želi dostop do %s '%s',vendar je zaklenjena"
+msgstr "Program želi dostop do '%s', vendar je ta zaklenjen"
 
 #: ../pk/gkr-pk-object-storage.c:166
-#, fuzzy, c-format
+#, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "Sistem želi uvoziti %s '%s', vendar je zaklenjena"
+msgstr "Sistem želi uvoziti osebni ključ '%s', vendar je ta zaklenjen"
 
 #: ../pk/gkr-pk-object-storage.c:168
-#, fuzzy, c-format
+#, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "Sistem želi uvoziti %s '%s', vendar je zaklenjena"
+msgstr "Sistem želi uvoziti certifikat '%s', vendar je ta zaklenjen"
 
 #: ../pk/gkr-pk-object-storage.c:170
-#, fuzzy, c-format
+#, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "Sistem želi uvoziti %s '%s', vendar je zaklenjena"
+msgstr "Sistem želi uvoziti javni ključ '%s', vendar je ta zaklenjen"
 
 #: ../pk/gkr-pk-object-storage.c:172
-#, fuzzy, c-format
+#, c-format
 msgid "The system wants to import '%s', but it is locked"
-msgstr "Sistem želi uvoziti %s '%s', vendar je zaklenjena"
+msgstr "Sistem želi uvoziti '%s', vendar je ta zaklenjen"
 
 #: ../pk/gkr-pk-object-storage.c:258
-#, fuzzy, c-format
+#, c-format
 msgid "Unlock password for '%s'"
-msgstr "Odkleni geslo za %s"
+msgstr "Geslo za odklepanje '%s'"
 
 #: ../pkix/gkr-pkix-parser.c:445
 msgid "Unrecognized or unsupported file."
@@ -435,9 +432,8 @@ msgid "Store passwords unencrypted?"
 msgstr "Shranim gesla nešifrirana?"
 
 #: ../ui/gkr-ask-tool.c:183
-#, fuzzy
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "Z izborom uporabe praznega gesla ostanejo ostala gesla nezaščitena in nešifrirana. Dostop to takih gesel ima vsakdo, ki ima tudi dostop do računalnika."
+msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop to takih gesel ima vsak, ki ima tudi dostop do računalnika."
 
 #: ../ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
