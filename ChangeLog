@@ -1,3 +1,9 @@
+2008-02-21  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon-io.c:
+	* library/gnome-keyring.c: Shutdown socket connections properly. 
+	This may fix the hang problems described in bug #503278
+
 2008-02-14  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring-proto.c: Build fix due to glib 

@@ -346,6 +346,7 @@ client_worker_done (GkrAsyncWorker *worker, gpointer result, gpointer user_data)
 		gnome_keyring_application_ref_free (client->app_ref);
 	}
 
+	shutdown (client->sock, SHUT_RDWR);
 	close (client->sock);
 	g_free (client);
 }

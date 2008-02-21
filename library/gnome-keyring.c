@@ -252,6 +252,8 @@ operation_free (GnomeKeyringOperation *op)
 		(*op->destroy_reply_data) (op->reply_data);	
 	gkr_buffer_uninit (&op->send_buffer);
 	gkr_buffer_uninit (&op->receive_buffer);
+	
+	shutdown (op->socket, SHUT_RDWR);
 	close (op->socket);
 	g_free (op);
 }
@@ -520,8 +522,10 @@ start_operation (GnomeKeyringOperation *op)
 		g_source_remove (op->io_watch);
 		op->io_watch = 0;
 	}
-	if (op->socket >= 0)
+	if (op->socket >= 0) {
+		shutdown (op->socket, SHUT_RDWR);
 		close (op->socket);
+	}
 
 	op->socket = connect_to_daemon (TRUE);
 	if (op->socket < 0) {
