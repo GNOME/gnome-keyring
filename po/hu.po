@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-14 23:37+0000\n"
-"PO-Revision-Date: 2008-02-21 01:00+0100\n"
+"POT-Creation-Date: 2008-02-21 04:03+0000\n"
+"PO-Revision-Date: 2008-02-23 22:50+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@fsf.hu>\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgid "Home"
 msgstr "Saját mappa"
 
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:497 ../pkix/gkr-pkix-serialize.c:58
+#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Nem érhető el a lemez vagy meghajtó, amelyen a fájl található"
 
@@ -45,8 +45,8 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás hozzá akar férni az alapértelmezett "
-"kulcstartóban „<object prop='name'/>〞 jelszavához."
+"A(z) „%s” (%s) alkalmazás hozzá akar férni az alapértelmezett kulcstartóban "
+"„<object prop='name'/>” jelszavához."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:226
@@ -55,7 +55,7 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás hozzá akar férni „<object prop='name'/>〞 "
+"A(z) „%s” (%s) alkalmazás hozzá akar férni „<object prop='name'/>” "
 "jelszavához ebben: %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
@@ -64,7 +64,9 @@ msgstr ""
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "A(z) „%s〞 alkalmazás hozzá akar férni az alapértelmezett kulcstartóban „<object prop='name'/>〞 jelszavához."
+msgstr ""
+"A(z) „%s” alkalmazás hozzá akar férni az alapértelmezett kulcstartóban "
+"„<object prop='name'/>” jelszavához."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
@@ -73,15 +75,17 @@ msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
 msgstr ""
-"A(z) „%s〞 alkalmazás hozzá akar férni „<object prop='name'/>〞 "
-"jelszavához ebben: %s."
+"A(z) „%s” alkalmazás hozzá akar férni „<object prop='name'/>” jelszavához "
+"ebben: %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:252
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "Egy ismeretlen alkalmazás hozzá akar férni az alapértelmezett kulcstartóban „<object prop='name'/>〞 jelszavához."
+msgstr ""
+"Egy ismeretlen alkalmazás hozzá akar férni az alapértelmezett kulcstartóban "
+"„<object prop='name'/>” jelszavához."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:255
@@ -90,7 +94,7 @@ msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in %s."
 msgstr ""
-"Egy ismeretlen alkalmazás hozzá akar férni „<object prop='name'/>〞 "
+"Egy ismeretlen alkalmazás hozzá akar férni „<object prop='name'/>” "
 "jelszavához ebben: %s."
 
 #. And put together the ask request
@@ -113,28 +117,28 @@ msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás nem tud hozzáférni az alapértelmezett "
+"A(z) „%s” (%s) alkalmazás nem tud hozzáférni az alapértelmezett "
 "kulcstartóhoz, mert zárolva van"
 
 #: ../daemon/gkr-daemon-ops.c:372
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás nem tud hozzáférni a(z) „%s〞 kulcstartóhoz, "
-"mert zárolva van"
+"A(z) „%s” (%s) alkalmazás nem tud hozzáférni a(z) „%s” kulcstartóhoz, mert "
+"zárolva van"
 
 #: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
-"A(z) „%s〞 alkalmazás nem tud hozzáférni az alapértelmezett kulcstartóhoz, "
+"A(z) „%s” alkalmazás nem tud hozzáférni az alapértelmezett kulcstartóhoz, "
 "mert zárolva van"
 
 #: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
-"A(z) „%s〞 alkalmazás nem tud hozzáférni a(z) „%s〞 kulcstartóhoz, mert "
+"A(z) „%s” alkalmazás nem tud hozzáférni a(z) „%s” kulcstartóhoz, mert "
 "zárolva van"
 
 #: ../daemon/gkr-daemon-ops.c:399
@@ -147,7 +151,7 @@ msgstr ""
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Egy ismeretlen alkalmazás nem tud hozzáférni a(z) „%s〞 kulcstartóhoz, mert "
+"Egy ismeretlen alkalmazás nem tud hozzáférni a(z) „%s” kulcstartóhoz, mert "
 "zárolva van"
 
 #: ../daemon/gkr-daemon-ops.c:410
@@ -157,7 +161,7 @@ msgstr "Adja meg a jelszót az alapértelmezett kulcstartó nyitásához"
 #: ../daemon/gkr-daemon-ops.c:412
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Adja meg a jelszót a(z) „%s〞 kulcstartó nyitásához"
+msgstr "Adja meg a jelszót a(z) „%s” kulcstartó nyitásához"
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:416
@@ -174,8 +178,8 @@ msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás új kulcstartót akar létrehozni „%s〞 néven. "
-"Ehhez meg kell adnia egy jelszót."
+"A(z) „%s” (%s) alkalmazás új kulcstartót akar létrehozni „%s” néven. Ehhez "
+"meg kell adnia egy jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:468
 #, c-format
@@ -183,7 +187,7 @@ msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás új alapértelmezett kulcstartót akar létrehozni. "
+"A(z) „%s” (%s) alkalmazás új alapértelmezett kulcstartót akar létrehozni. "
 "Ehhez meg kell adnia egy jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
@@ -192,8 +196,8 @@ msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"A(z) „%s〞 alkalmazás új kulcstartót akar létrehozni „%s〞 néven. Ehhez "
-"meg kell adnia egy jelszót."
+"A(z) „%s” alkalmazás új kulcstartót akar létrehozni „%s” néven. Ehhez meg "
+"kell adnia egy jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
 #, c-format
@@ -201,7 +205,7 @@ msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"A(z) „%s〞 alkalmazás új alapértelmezett kulcstartót akar létrehozni. Ehhez "
+"A(z) „%s” alkalmazás új alapértelmezett kulcstartót akar létrehozni. Ehhez "
 "meg kell adnia egy jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:494
@@ -210,7 +214,7 @@ msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
 msgstr ""
-"Egy ismeretlen alkalmazás új kulcstartót akar létrehozni „%s〞 néven. Ehhez "
+"Egy ismeretlen alkalmazás új kulcstartót akar létrehozni „%s” néven. Ehhez "
 "meg kell adnia egy jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:498
@@ -236,7 +240,7 @@ msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás módosítani akarja a(z) „%s〞 kulcstartó "
+"A(z) „%s” (%s) alkalmazás módosítani akarja a(z) „%s” kulcstartó "
 "jelszavát. Ki kell választania az ehhez használandó jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:556
@@ -245,7 +249,7 @@ msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás módosítani akarja az alapértelmezett kulcstartó "
+"A(z) „%s” (%s) alkalmazás módosítani akarja az alapértelmezett kulcstartó "
 "jelszavát. Ki kell választania az ehhez használandó jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
@@ -254,8 +258,8 @@ msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"A(z) „%s〞 alkalmazás módosítani akarja a(z) „%s〞 kulcstartó jelszavát. "
-"Ki kell választania az ehhez használandó jelszót. "
+"A(z) „%s” alkalmazás módosítani akarja a(z) „%s” kulcstartó jelszavát. Ki "
+"kell választania az ehhez használandó jelszót. "
 
 #: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
 #, c-format
@@ -263,7 +267,7 @@ msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"A(z) „%s〞 alkalmazás módosítani akarja az alapértelmezett kulcstartó "
+"A(z) „%s” alkalmazás módosítani akarja az alapértelmezett kulcstartó "
 "jelszavát. Ki kell választania az ehhez használandó jelszót. "
 
 #: ../daemon/gkr-daemon-ops.c:582
@@ -272,8 +276,8 @@ msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Egy ismeretlen alkalmazás módosítani akarja a(z) „%s〞 kulcstartó "
-"jelszavát. Ki kell választania az ehhez használandó jelszót. "
+"Egy ismeretlen alkalmazás módosítani akarja a(z) „%s” kulcstartó jelszavát. "
+"Ki kell választania az ehhez használandó jelszót. "
 
 #: ../daemon/gkr-daemon-ops.c:586
 msgid ""
@@ -286,7 +290,7 @@ msgstr ""
 #: ../daemon/gkr-daemon-ops.c:596
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Válasszon új jelszót a(z) „%s〞 kulcstartóhoz. "
+msgstr "Válasszon új jelszót a(z) „%s” kulcstartóhoz. "
 
 #: ../daemon/gkr-daemon-ops.c:598
 msgid "Choose a new password for the default keyring. "
@@ -304,7 +308,7 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"A(z) „%s〞 (%s) alkalmazás egy jelszót akar eltárolni, de nincs "
+"A(z) „%s” (%s) alkalmazás egy jelszót akar eltárolni, de nincs "
 "alapértelmezett kulcstartó. A létrehozásához meg kell adnia egy jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
@@ -314,7 +318,7 @@ msgid ""
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"A(z) „%s〞 alkalmazás egy jelszót akar eltárolni, de nincs alapértelmezett "
+"A(z) „%s” alkalmazás egy jelszót akar eltárolni, de nincs alapértelmezett "
 "kulcstartó. A létrehozásához meg kell adnia egy jelszót."
 
 #: ../daemon/gkr-daemon-ops.c:684
@@ -341,7 +345,11 @@ msgid ""
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
-msgstr "Ez a lehetőség engedélyezi a PKCS#11 összetevőt a gnome-keyring démonban. Csak a gnome-keyring démonnal együtt indul el, például ha a felhasználó bejelentkezik. Ezt a beállítást felülbírálhatják a démonnak átadott bizonyos parancssori argumentumok."
+msgstr ""
+"Ez a lehetőség engedélyezi a PKCS#11 összetevőt a gnome-keyring démonban. "
+"Csak a gnome-keyring démonnal együtt indul el, például ha a felhasználó "
+"bejelentkezik. Ezt a beállítást felülbírálhatják a démonnak átadott bizonyos "
+"parancssori argumentumok."
 
 #: ../data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -349,7 +357,11 @@ msgid ""
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
-msgstr "Ez a lehetőség engedélyezi az SSH ügynököt a gnome-keyring démonban. Csak a gnome-keyring démonnal együtt indul el, például ha a felhasználó bejelentkezik. Ezt a beállítást felülbírálhatják a démonnak átadott bizonyos parancssori argumentumok."
+msgstr ""
+"Ez a lehetőség engedélyezi az SSH ügynököt a gnome-keyring démonban. Csak a "
+"gnome-keyring démonnal együtt indul el, például ha a felhasználó "
+"bejelentkezik. Ezt a beállítást felülbírálhatják a démonnak átadott bizonyos "
+"parancssori argumentumok."
 
 #: ../data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -404,7 +416,9 @@ msgstr "Adja meg a bejelentkezési jelszót a kulcstartó feloldásához"
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr "A bejelentkezési kulcstartója nem lett automatikusa feloldva a számítógépre való bejelentkezéskor."
+msgstr ""
+"A bejelentkezési kulcstartója nem lett automatikusa feloldva a számítógépre "
+"való bejelentkezéskor."
 
 #. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:124
@@ -419,7 +433,9 @@ msgstr "Adja meg a bejelentkezési jelszavát"
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
-msgstr "A bejelentkezési kulcstartója nem lett automatikusa létrehozva a számítógépre való bejelentkezéskor. Most kerül létrehozásra."
+msgstr ""
+"A bejelentkezési kulcstartója nem lett automatikusa létrehozva a "
+"számítógépre való bejelentkezéskor. Most kerül létrehozásra."
 
 #: ../pk/gkr-pk-object-storage.c:99
 msgid "Unlock private key"
@@ -472,53 +488,55 @@ msgstr "Automatikus feloldás bejelentkezéskor"
 #: ../pk/gkr-pk-object-storage.c:154
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s〞 magánkulcshoz, de az zárolva van"
+msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” magánkulcshoz, de az zárolva van"
 
 #: ../pk/gkr-pk-object-storage.c:156
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s〞 tanúsítványhoz, de az zárolva van"
+msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz, de az zárolva van"
 
 #: ../pk/gkr-pk-object-storage.c:158
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s〞 nyilvános kulcshoz, de az zárolva van"
+msgstr ""
+"Egy alkalmazás hozzá kíván férni a(z) „%s” nyilvános kulcshoz, de az "
+"zárolva van"
 
 #: ../pk/gkr-pk-object-storage.c:160
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s〞 elemhez, de az zárolva van"
+msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” elemhez, de az zárolva van"
 
 #: ../pk/gkr-pk-object-storage.c:166
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "A rendszer importálni kívánja a(z) „%s〞 magánkulcsot, de az zárolva van"
+msgstr "A rendszer importálni kívánja a(z) „%s” magánkulcsot, de az zárolva van"
 
 #: ../pk/gkr-pk-object-storage.c:168
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "A rendszer importálni kívánja a(z) „%s〞 tanúsítványt, de az zárolva van"
+msgstr "A rendszer importálni kívánja a(z) „%s” tanúsítványt, de az zárolva van"
 
 #: ../pk/gkr-pk-object-storage.c:170
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "A rendszer importálni kívánja a(z) „%s〞 nyilvános kulcsot, de az zárolva van"
+msgstr "A rendszer importálni kívánja a(z) „%s” nyilvános kulcsot, de az zárolva van"
 
 #: ../pk/gkr-pk-object-storage.c:172
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
-msgstr "A rendszer importálni kívánja a(z) „%s〞 elemet, de az zárolva van"
+msgstr "A rendszer importálni kívánja a(z) „%s” elemet, de az zárolva van"
 
 #: ../pk/gkr-pk-object-storage.c:258
 #, c-format
 msgid "Unlock password for '%s'"
-msgstr "„%s〞 jelszavának feloldása"
+msgstr "„%s” jelszavának feloldása"
 
-#: ../pkix/gkr-pkix-parser.c:428
+#: ../pkix/gkr-pkix-parser.c:445
 msgid "Unrecognized or unsupported file."
 msgstr "Ismeretlen vagy nem támogatott fájl."
 
-#: ../pkix/gkr-pkix-parser.c:432
+#: ../pkix/gkr-pkix-parser.c:449
 msgid "Could not parse invalid or corrupted file."
 msgstr "Nem sikerült feldolgozni az érvénytelen vagy hibás fájlt."
 
@@ -531,7 +549,9 @@ msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
-msgstr "Ha üres jelszót választ, az eltárolt jelszavai nem lesznek biztonságosan titkosítva. Bárki számára elérhetőek lesznek, aki hozzáfér a fájljaihoz."
+msgstr ""
+"Ha üres jelszót választ, az eltárolt jelszavai nem lesznek biztonságosan "
+"titkosítva. Bárki számára elérhetőek lesznek, aki hozzáfér a fájljaihoz."
 
 #: ../ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
