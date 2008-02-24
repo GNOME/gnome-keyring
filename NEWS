@@ -1,3 +1,13 @@
+Changes in version 2.21.92 are:
+* Sync up user's session environment with the daemon, so that 
+  things like X authentication, DBUS etc... work properly.
+* Shutdown socket connections properly, so things don't hang, when 
+  wrong versions of daemon/library are used.
+* Limit PKCS#12 parsing to a clearly defined subset of the format.
+* Decrypt PKCS#12 with empty passwords properly.
+* Build fixes.
+* Translation fixes.
+
 Changes in version 2.21.91 are:
 * Don't prompt for a password from the PAM module since  
   gnome-keyring is not an authenticator. [Ray Strode]
