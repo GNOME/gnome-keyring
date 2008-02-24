@@ -366,10 +366,10 @@ msgid ""
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
-"Diese Option aktiviert die PKCS #11-Komponente im gnome-keyring-Dämon. Sie "
-"tritt nur in Kraft, wenn der gnome-keyring-Dämon gestartet wird (also der "
+"Diese Option aktiviert die PKCS #11-Komponente im GNOME-Schlüsselbunddienst. "
+"Sie tritt nur in Kraft, wenn der Schlüsselbunddienst gestartet wird (also der "
 "Benutzer sich anmeldet). Diese Einstellung kann von bestimmten "
-"Kommandozeilenargumenten, die dem Dämon übergeben werden, überschrieben "
+"Befehlszeilenargumenten, die dem Dienst übergeben werden, überschrieben "
 "werden."
 
 #: ../data/gnome-keyring.schemas.in.h:2
@@ -379,18 +379,22 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"Diese Option aktiviert den SSH-Agenten im gnome-keyring-Dämon. Sie tritt nur "
-"in Kraft, wenn der gnome-keyring-Dämon gestartet wird (also der Benutzer sich "
-"anmeldet). Diese Einstellung kann von bestimmten Kommandozeilenargumenten, "
-"die dem Dämon übergeben werden, überschrieben werden."
+"Diese Option aktiviert den SSH-Agenten des GNOME-Schlüsselbunddienstes. Sie "
+"tritt nur in Kraft, wenn der Schlüsselbunddienst gestartet wird (also der "
+"Benutzer sich anmeldet). Diese Einstellung kann von bestimmten "
+"Befehlszeilenargumenten, die dem Dienst übergeben werden, überschrieben "
+"werden."
 
 #: ../data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Legt fest, ob die gnome-keyring PKCS #11-Komponente aktiviert ist."
+msgstr ""
+"Legt fest, ob die PKCS #11-Komponente des GNOME-Schlüsselbunddienstes "
+"aktiviert ist."
 
 #: ../data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Legt fest, ob der gnome-keyring SSH-Agent aktiviert ist."
+msgstr ""
+"Legt fest, ob der SSH-Agent des GNOME-Schlüsselbunddienstes aktiviert ist."
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
@@ -444,7 +448,7 @@ msgstr ""
 #. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
-msgstr "Anemldeschlüsselbund erstellen"
+msgstr "Anmeldeschlüsselbund erstellen"
 
 #: ../keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
@@ -492,7 +496,7 @@ msgstr "Geben Sie das Passwort zum Freigeben ein"
 
 #: ../pk/gkr-pk-object-storage.c:133
 msgid "Automatically unlock this private key when I log in."
-msgstr "Diesen privaten Schlüsssel beim Anmelden automatisch freigeben."
+msgstr "Diesen privaten Schlüssel beim Anmelden automatisch freigeben."
 
 #: ../pk/gkr-pk-object-storage.c:135
 msgid "Automatically unlock this certificate when I log in."
@@ -566,7 +570,7 @@ msgstr "Freigabepasswort für »%s«"
 
 #: ../pkix/gkr-pkix-parser.c:445
 msgid "Unrecognized or unsupported file."
-msgstr "Unbekannte oder nicht unterstütze Datei."
+msgstr "Unbekannte oder nicht unterstüzte Datei."
 
 #: ../pkix/gkr-pkix-parser.c:449
 msgid "Could not parse invalid or corrupted file."
@@ -582,7 +586,7 @@ msgid ""
 "encrypted. They will be accessible by anyone with access to your files."
 msgstr ""
 "Wenn Sie ein leeres Passwort auswählen, werden Ihre gespeicherten Passwörter "
-"nicht sicher verschlüsselt werden. Sie werden für Jeden mit Zugriff auf Ihre "
+"nicht sicher verschlüsselt werden. Sie werden für jeden mit Zugriff auf Ihre "
 "Dateien zugreifbar sein."
 
 #: ../ui/gkr-ask-tool.c:190
