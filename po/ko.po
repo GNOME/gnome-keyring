@@ -1,95 +1,111 @@
 # This file is distributed under the same license as the PACKAGE package.
-# Changwoo Ryu <cwryu@debian.org>, 2004, 2006, 2007.
+# Changwoo Ryu <cwryu@debian.org>, 2004, 2006, 2007, 2008.
 # Young-Ho Cha <ganadist@gmail.com>, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-23 12:05+0900\n"
-"PO-Revision-Date: 2007-09-23 12:16+0900\n"
+"POT-Creation-Date: 2008-02-25 04:30+0900\n"
+"PO-Revision-Date: 2008-02-25 11:28+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gkr-location.c:290
+#: ../common/gkr-location.c:306
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "이동식 디스크: %s"
 
-#: ../common/gkr-location.c:292
+#: ../common/gkr-location.c:308
 msgid "Removable Disk"
 msgstr "이동식 디스크"
 
-#: ../common/gkr-location.c:436
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "홈"
 
-#. TRANSLATORS: this is the title for an item
-#: ../daemon/gkr-daemon-ops.c:83
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "%s 키 모음의 잠금 풀기 암호"
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
+msgid "The disk or drive this file is located on is not present"
+msgstr "파일이 들어 있는 디스크나 드라이브가 없습니다"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:310
+#: ../daemon/gkr-daemon-ops.c:222
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
-msgstr "'%s' (%s) 프로그램에서 '<object prop='name'/>'에 대한 암호를 기본 키 모음에서 접근하려 합니다."
+msgstr ""
+"'%s' (%s) 프로그램에서 '<object prop='name'/>'에 대한 암호를 기본 키 모음에"
+"서 접근하려 합니다."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:314
+#: ../daemon/gkr-daemon-ops.c:226
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
-msgstr "'%s' (%s) 프로그램에서 '<object prop='name'/>'에 대한 암호를 %s에서 접근하려 합니다."
+msgstr ""
+"'%s' (%s) 프로그램에서 '<object prop='name'/>'에 대한 암호를 %s에서 접근하려 "
+"합니다."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:320 ../daemon/gkr-daemon-ops.c:330
+#: ../daemon/gkr-daemon-ops.c:232 ../daemon/gkr-daemon-ops.c:242
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "'%s' 프로그램에서 '<object prop='name'/>'에 대한 암호를 기본 키 모음에서 접근하려 합니다."
+msgstr ""
+"'%s' 프로그램에서 '<object prop='name'/>'에 대한 암호를 기본 키 모음에서 접근"
+"하려 합니다."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:324 ../daemon/gkr-daemon-ops.c:334
+#: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "'%s' 프로그램에서 '<object prop='name'/>'에 대한 암호를 %s에서 접근하려 합니다."
+msgstr ""
+"'%s' 프로그램에서 '<object prop='name'/>'에 대한 암호를 %s에서 접근하려 합니"
+"다."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:340
+#: ../daemon/gkr-daemon-ops.c:252
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "알 수 없는 프로그램에서 '<object prop='name'/>'에 대한 암호를 기본 키 모음에서 접근하려 합니다."
+msgstr ""
+"알 수 없는 프로그램에서 '<object prop='name'/>'에 대한 암호를 기본 키 모음에"
+"서 접근하려 합니다."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:343
+#: ../daemon/gkr-daemon-ops.c:255
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "알 수 없는 프로그램에서 '<object prop='name'/>'에 대한 암호를 %s에서 접근하려 합니다."
+msgstr ""
+"알 수 없는 프로그램에서 '<object prop='name'/>'에 대한 암호를 %s에서 접근하"
+"려 합니다."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:261
 msgid "Allow access"
 msgstr "접근 허용"
 
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:261
 msgid "Allow application access to keyring?"
 msgstr "프로그램에 키 모음 접근을 허용합니까?"
 
-#: ../daemon/gkr-daemon-ops.c:447
+#: ../daemon/gkr-daemon-ops.c:311
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "%s 키 모음의 잠금 풀기 암호"
+
+#: ../daemon/gkr-daemon-ops.c:368
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -98,7 +114,7 @@ msgstr ""
 "프로그램 '%s'(%s)에서 기본 키 모음에 접근하려 합니다. 하지만 키 모음이 잠겨 "
 "있습니다"
 
-#: ../daemon/gkr-daemon-ops.c:451
+#: ../daemon/gkr-daemon-ops.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -106,7 +122,7 @@ msgstr ""
 "프로그램 '%s'(%s)에서 키 모음 '%s'에 접근하려 합니다. 하지만 키 모음이 잠겨 "
 "있습니다"
 
-#: ../daemon/gkr-daemon-ops.c:457 ../daemon/gkr-daemon-ops.c:467
+#: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -114,14 +130,14 @@ msgstr ""
 "프로그램 '%s'에서 기본 키 모음에 접근하려 합니다. 하지만 키 모음이 잠겨 있습"
 "니다"
 
-#: ../daemon/gkr-daemon-ops.c:461 ../daemon/gkr-daemon-ops.c:472
+#: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "프로그램 '%s'에서 키 모음 '%s'에 접근하려 합니다. 하지만 키 모음이 잠겨 있습"
 "니다"
 
-#: ../daemon/gkr-daemon-ops.c:478
+#: ../daemon/gkr-daemon-ops.c:399
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
@@ -129,7 +145,7 @@ msgstr ""
 "알 수 없는 프로그램에서 기본 키 모음에 접근하려 합니다. 하지만 키 모음이 잠"
 "겨 있습니다"
 
-#: ../daemon/gkr-daemon-ops.c:482
+#: ../daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -137,161 +153,177 @@ msgstr ""
 "알 수 없는 프로그램에서 키 모음 '%s'에 접근하려 합니다. 하지만 키 모음이 잠"
 "겨 있습니다"
 
-#: ../daemon/gkr-daemon-ops.c:489
+#: ../daemon/gkr-daemon-ops.c:410
 msgid "Enter password for default keyring to unlock"
 msgstr "기본 키 모음의 잠금을 풀 암호를 입력하십시오"
 
-#: ../daemon/gkr-daemon-ops.c:491
+#: ../daemon/gkr-daemon-ops.c:412
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "키 모음 '%s'의 잠금을 풀 암호를 입력하십시오"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:416
 msgid "Unlock Keyring"
 msgstr "키 모음 잠금 풀기"
 
-#: ../daemon/gkr-daemon-ops.c:507
+#: ../daemon/gkr-daemon-ops.c:428
 msgid "Automatically unlock this keyring when I log in."
 msgstr "로그인할 때 자동으로 이 키 모음 잠금 풉니다."
 
-#: ../daemon/gkr-daemon-ops.c:543
+#: ../daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "'%s' (%s) 프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정해야 합니다."
+msgstr ""
+"'%s' (%s) 프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암"
+"호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:547
+#: ../daemon/gkr-daemon-ops.c:468
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "'%s' (%s) 프로그램에서 기본 키 모음을 새로 만드려고 합니다. 여기에 사용할 암홀흘 지정해야 합니다."
+msgstr ""
+"'%s' (%s) 프로그램에서 기본 키 모음을 새로 만드려고 합니다. 여기에 사용할 암"
+"홀흘 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:553 ../daemon/gkr-daemon-ops.c:563
+#: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "'%s' 프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정해야 합니다."
+msgstr ""
+"'%s' 프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 "
+"지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:557 ../daemon/gkr-daemon-ops.c:567
+#: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "'%s' 프로그램에서 기본 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정해야 합니다."
+msgstr ""
+"'%s' 프로그램에서 기본 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 "
+"지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:573
+#: ../daemon/gkr-daemon-ops.c:494
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
-msgstr "알 수 없는 프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정해야 합니다."
+msgstr ""
+"알 수 없는 프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암"
+"호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:577
+#: ../daemon/gkr-daemon-ops.c:498
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "알 수 없는 프로그램에서 기본 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정해야 합니다."
+msgstr ""
+"알 수 없는 프로그램에서 기본 키 모음을 새로 만드려고 합니다. 여기에 사용할 암"
+"호를 지정해야 합니다."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:583
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "New Keyring Password"
 msgstr "새 키 모음 암호"
 
-#: ../daemon/gkr-daemon-ops.c:584
+#: ../daemon/gkr-daemon-ops.c:505
 msgid "Choose password for new keyring"
 msgstr "새 키 모음에 대한 암호를 지정하십시오"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "'%s' (%s) 프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정해야 합니다."
+msgstr ""
+"'%s' (%s) 프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암"
+"호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:635
+#: ../daemon/gkr-daemon-ops.c:556
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
-msgstr "'%s' (%s) 프로그램에서 기본 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정해야 합니다."
+msgstr ""
+"'%s' (%s) 프로그램에서 기본 키 모음을 새로 만드려고 합니다. 여기에 사용할 암"
+"호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:641 ../daemon/gkr-daemon-ops.c:651
+#: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"'%s' 프로그램에서 '%s' 키 모음에 대한 암호를 바꾸려고 합니다. 여기에 사용"
-"할 암호를 지정해야 합니다."
+"'%s' 프로그램에서 '%s' 키 모음에 대한 암호를 바꾸려고 합니다. 여기에 사용할 "
+"암호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:645 ../daemon/gkr-daemon-ops.c:655
+#: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"'%s' 프로그램에서 기본 키 모음을 암호를 바꾸려고 합니다. 여기에 사용할 열쇠"
-"글을 지정해야 합니다."
+"'%s' 프로그램에서 기본 키 모음을 암호를 바꾸려고 합니다. 여기에 사용할 열쇠글"
+"을 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:661
+#: ../daemon/gkr-daemon-ops.c:582
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"알 수 없는 프로그램에서 '%s' 키 모음의 암호를 바꾸려고 합니다. 여기에 사용"
-"할 암호를 지정해야 합니다."
+"알 수 없는 프로그램에서 '%s' 키 모음의 암호를 바꾸려고 합니다. 여기에 사용할 "
+"암호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:665
+#: ../daemon/gkr-daemon-ops.c:586
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"알 수 없는 프로그램에서 기본 키 모음을 암호를 바꾸려고 합니다. 여기에 사용"
-"할 암호를 지정해야 합니다."
+"알 수 없는 프로그램에서 기본 키 모음을 암호를 바꾸려고 합니다. 여기에 사용할 "
+"암호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:675
+#: ../daemon/gkr-daemon-ops.c:596
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "'%s' 키 모음에 대한 암호를 지정하십시오"
 
-#: ../daemon/gkr-daemon-ops.c:677
+#: ../daemon/gkr-daemon-ops.c:598
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "기본 키 모음에 대한 암호를 지정하십시오"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:681
+#: ../daemon/gkr-daemon-ops.c:602
 msgid "Change Keyring Password"
 msgstr "키 모음 암호 바꾸기"
 
-#: ../daemon/gkr-daemon-ops.c:748
+#: ../daemon/gkr-daemon-ops.c:672
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"'%s' (%s) 프로그램에서 암호를 저장하려 하지만, 기본 키 모음이 없습니다. 기"
-"본 키 모음을 만드려면 여기에 사용할 암호를 지정해야 합니다."
+"'%s' (%s) 프로그램에서 암호를 저장하려 하지만, 기본 키 모음이 없습니다. 기본 "
+"키 모음을 만드려면 여기에 사용할 암호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:752 ../daemon/gkr-daemon-ops.c:756
+#: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"'%s' 프로그램에서 암호를 저장하려 하지만, 기본 키 모음이 없습니다. 기본 키 "
-"모음을 만드려면 여기에 사용할 암호를 지정해야 합니다."
+"'%s' 프로그램에서 암호를 저장하려 하지만, 기본 키 모음이 없습니다. 기본 키 모"
+"음을 만드려면 여기에 사용할 암호를 지정해야 합니다."
 
-#: ../daemon/gkr-daemon-ops.c:760
+#: ../daemon/gkr-daemon-ops.c:684
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -302,128 +334,252 @@ msgstr ""
 "본 키 모음을 만드려면 여기에 사용할 암호를 지정해야 합니다."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:765
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Create Default Keyring"
 msgstr "기본 키 모음 만들기"
 
-#: ../daemon/gkr-daemon-ops.c:765
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Choose password for default keyring"
 msgstr "기본 키 모음에 대한 암호를 지정하십시오"
 
-#: ../library/gnome-keyring-utils.c:111
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr "이 옵션은 gnome-keyring 데몬에서 PKCS#11 컴포넌트를 사용합니다. 이 옵션은 gnome-keyring-daemon이 시작했을 경우에만, 즉 사용자가 로그인했을 경우에만 효과가 있습니다. 데몬에 특정 명령행 인자를 넘겼을 경우에 이 설정보다 우선할 수 있습니다."
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr "이 옵션은 gnome-keyring 데몬에서 SSH 에이전트를 사용합니다. 이 옵션은 gnome-keyring-daemon이 시작했을 경우에만, 즉 사용자가 로그인했을 경우에만 효과가 있습니다. 데몬에 특정 명령행 인자를 넘겼을 경우에 이 설정보다 우선할 수 있습니다."
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "그놈 키 모음의 PKCS#11 컴포넌트를 사용할 지 여부."
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "그놈 키 모음의 SSH 에이전트를 사용할 지 여부."
+
+#: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
 msgstr "접근이 거부되었습니다"
 
-#: ../library/gnome-keyring-utils.c:113
+#: ../library/gnome-keyring-utils.c:93
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "gnome-keyring-daemon 프로그램이 동작하는 중이 아닙니다."
 
-#: ../library/gnome-keyring-utils.c:115 ../library/gnome-keyring-utils.c:128
-msgid "The keyring has already been unlocked."
-msgstr "키 모음의 잠금이 이미 풀려 있습니다."
-
-#: ../library/gnome-keyring-utils.c:117
+#: ../library/gnome-keyring-utils.c:95
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "gnome-keyring-daemon과 통신하는 데 오류가 발생했습니다"
 
-#: ../library/gnome-keyring-utils.c:119
+#: ../library/gnome-keyring-utils.c:97
 msgid "A keyring with that name already exists"
 msgstr "그 이름의 키 모음이 이미 있습니다"
 
-#: ../library/gnome-keyring-utils.c:121
+#: ../library/gnome-keyring-utils.c:99
 msgid "Programmer error: The application sent invalid data."
 msgstr "프로그램 오류: 응용 프로그램에서 잘못된 데이터를 보냈습니다."
 
-#: ../ui/gkr-ask-tool.c:314
+#: ../library/gnome-keyring-utils.c:101
+msgid "No matching results"
+msgstr "해당하는 사항 없음"
+
+#: ../library/gnome-keyring-utils.c:103
+msgid "A keyring with that name does not exist."
+msgstr "그 이름의 키 모음이 없습니다."
+
+#: ../library/gnome-keyring-utils.c:110
+msgid "The keyring has already been unlocked."
+msgstr "키 모음의 잠금이 이미 풀려 있습니다."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:98
+msgid "Unlock Login Keyring"
+msgstr "로그인 키 모음 잠금 풀기"
+
+#: ../keyrings/gkr-keyring-login.c:98
+msgid "Enter login password to unlock keyring"
+msgstr "키 모음의 잠금을 푸는 로그인 암호 입력"
+
+#: ../keyrings/gkr-keyring-login.c:100
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr "전에 이 컴퓨터에 로그인했을 때 로그인 키 모음을 자동으로 만들지 않았습니다."
+
+#. And put together the ask request
+#: ../keyrings/gkr-keyring-login.c:124
+msgid "Create Login Keyring"
+msgstr "로그인 키 모음 만들기"
+
+#: ../keyrings/gkr-keyring-login.c:124
+msgid "Enter your login password"
+msgstr "로그인 암호 입력"
+
+#: ../keyrings/gkr-keyring-login.c:126
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr "전에 이 컴퓨터에 로그인했을 때 로그인 키 모음을 자동으로 만들지 않았습니다. 지금 만듭니다."
+
+#: ../pk/gkr-pk-object-storage.c:99
+msgid "Unlock private key"
+msgstr "개인 키 잠금 풀기"
+
+#: ../pk/gkr-pk-object-storage.c:101
+msgid "Unlock certificate"
+msgstr "인증서 잠금 풀기"
+
+#: ../pk/gkr-pk-object-storage.c:103
+msgid "Unlock public key"
+msgstr "공개 키 잠금 풀기"
+
+#: ../pk/gkr-pk-object-storage.c:105
+msgid "Unlock"
+msgstr "잠금 풀기"
+
+#: ../pk/gkr-pk-object-storage.c:116
+msgid "Enter password to unlock the private key"
+msgstr "개인 키의 잠금을 풀 암호를 입력하십시오"
+
+#: ../pk/gkr-pk-object-storage.c:118
+msgid "Enter password to unlock the certificate"
+msgstr "인증서의 잠금을 풀 암호를 입력하십시오"
+
+#: ../pk/gkr-pk-object-storage.c:120
+msgid "Enter password to unlock the public key"
+msgstr "공개 키의 잠금을 풀 암호를 입력하십시오"
+
+#: ../pk/gkr-pk-object-storage.c:122
+msgid "Enter password to unlock"
+msgstr "잠금을 풀 암호를 입력하십시오"
+
+#: ../pk/gkr-pk-object-storage.c:133
+msgid "Automatically unlock this private key when I log in."
+msgstr "로그인할 때 자동으로 이 개인 키의 잠금을 풉니다."
+
+#: ../pk/gkr-pk-object-storage.c:135
+msgid "Automatically unlock this certificate when I log in."
+msgstr "로그인할 때 자동으로 이 인증서의 잠금을 풉니다."
+
+#: ../pk/gkr-pk-object-storage.c:137
+msgid "Automatically unlock this public key when I log in."
+msgstr "로그인할 때 자동으로 이 공개 키의 잠금을 풉니다."
+
+#: ../pk/gkr-pk-object-storage.c:139
+msgid "Automatically unlock this when I log in"
+msgstr "로그인할 때 자동으로 잠금을 풉니다"
+
+#: ../pk/gkr-pk-object-storage.c:154
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "어떤 프로그램에서 개인 키 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pk/gkr-pk-object-storage.c:156
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "어떤 프로그램에서 인증서 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pk/gkr-pk-object-storage.c:158
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "어떤 프로그램에서 공개 키 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pk/gkr-pk-object-storage.c:160
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "어떤 프로그램에서 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pk/gkr-pk-object-storage.c:166
+#, c-format
+msgid "The system wants to import the private key '%s', but it is locked"
+msgstr "시스템에서 '%s' 개인 키를 가져오려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pk/gkr-pk-object-storage.c:168
+#, c-format
+msgid "The system wants to import the certificate '%s', but it is locked"
+msgstr "시스템에서 '%s' 인증서를 가져오려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pk/gkr-pk-object-storage.c:170
+#, c-format
+msgid "The system wants to import the public key '%s', but it is locked"
+msgstr "시스템에서 '%s' 공개 키를 가져오려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pk/gkr-pk-object-storage.c:172
+#, c-format
+msgid "The system wants to import '%s', but it is locked"
+msgstr "시스템에서 '%s'을(를) 가져오려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pk/gkr-pk-object-storage.c:258
+#, c-format
+msgid "Unlock password for '%s'"
+msgstr "%s의 잠금 풀기 암호"
+
+#: ../pkix/gkr-pkix-parser.c:445
+msgid "Unrecognized or unsupported file."
+msgstr "알지 못하거나 지원하지 않는 파일."
+
+#: ../pkix/gkr-pkix-parser.c:449
+msgid "Could not parse invalid or corrupted file."
+msgstr "잘못되었거나 손상된 파일을 파싱할 수 없습니다."
+
+#: ../ui/gkr-ask-tool.c:182
+msgid "Store passwords unencrypted?"
+msgstr "암호를 압호화하지 않은 상태로 저장하시겠습니까?"
+
+#: ../ui/gkr-ask-tool.c:183
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr "암호를 비워 놓으면 암호화하지 않은 상태로 암호를 저장합니다. 그러면 파일을 볼 수 있는 사람이면 암호를 알아낼 수 있습니다."
+
+#: ../ui/gkr-ask-tool.c:190
+msgid "Use Unsafe Storage"
+msgstr "안전하지 않은 저장소 사용"
+
+#: ../ui/gkr-ask-tool.c:413
 msgid "_Location:"
 msgstr "위치(_L):"
 
-#: ../ui/gkr-ask-tool.c:327
+#: ../ui/gkr-ask-tool.c:426
 msgid "_Old password:"
 msgstr "과거 암호(_O):"
 
-#: ../ui/gkr-ask-tool.c:347
+#: ../ui/gkr-ask-tool.c:446
 msgid "_Password:"
 msgstr "암호(_P):"
 
-#: ../ui/gkr-ask-tool.c:369
+#: ../ui/gkr-ask-tool.c:468
 msgid "_Confirm password:"
 msgstr "암호 확인(_C):"
 
-#: ../ui/gkr-ask-tool.c:388
+#: ../ui/gkr-ask-tool.c:488
 msgid "New password strength"
 msgstr "새 암호 품질"
 
-#: ../ui/gkr-ask-tool.c:444
-msgid "Old password cannot be blank."
-msgstr "과거 암호가 비워져 있으면 안 됩니다."
-
-#: ../ui/gkr-ask-tool.c:456
-msgid "Password cannot be blank."
-msgstr "암호는 비워져 있으면 안 됩니다."
-
-#: ../ui/gkr-ask-tool.c:465
+#: ../ui/gkr-ask-tool.c:546
 msgid "Passwords do not match."
 msgstr "암호가 맞지 않습니다."
 
-#: ../ui/gkr-ask-tool.c:514
+#: ../ui/gkr-ask-tool.c:562
+msgid "Password cannot be blank"
+msgstr "암호는 비워져 있으면 안 됩니다"
+
+#: ../ui/gkr-ask-tool.c:613
 msgid "Deny"
 msgstr "거부"
 
-#: ../ui/gkr-ask-tool.c:526
+#: ../ui/gkr-ask-tool.c:625
 msgid "Allow _Once"
 msgstr "한 번만 허용(_O)"
 
-#: ../ui/gkr-ask-tool.c:530
+#: ../ui/gkr-ask-tool.c:629
 msgid "_Always Allow"
 msgstr "항상 허용(_A)"
-
-#~ msgid "<span weight=\"bold\">Password strength meter:</span>"
-#~ msgstr "<span weight=\"bold\">열쇠글 길이:</span>"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "프로그램 '%s'(%s)에서 알 수 없는 키 모음에 접근하려 합니다. 하지만 키 모음"
-#~ "이 잠겨 있습니다"
-
-#~ msgid ""
-#~ "The application '%s' wants access to an unknown keyring, but it is locked"
-#~ msgstr ""
-#~ "프로그램 '%s'에서 알 수 없는 키 모음에 접근하려 합니다. 하지만 키 모음이 "
-#~ "잠겨 있습니다"
-
-#~ msgid ""
-#~ "An unknown application wants access to an unknown keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "알 수 없는 프로그램에서 알 수 없는 키 모음에 접근하려 합니다. 하지만 키 모"
-#~ "음이 잠겨 있습니다"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '%s' in an "
-#~ "unknown keyring."
-#~ msgstr ""
-#~ "'%s' (%s) 프로그램에서 '%s'에 대한 암호를 알 수 없는 키 모음에서 접근하"
-#~ "려 합니다."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '%s' in an unknown "
-#~ "keyring."
-#~ msgstr ""
-#~ "'%s' 프로그램에서 '%s'에 대한 암호를 알 수 없는 키 모음에서 접근하려 합"
-#~ "니다."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '%s' in an "
-#~ "unknown keyring."
-#~ msgstr ""
-#~ "알 수 없는 프로그램에서 '%s'에 대한 암호를 알 수 없는 키 모음에서 접근하"
-#~ "려 합니다."
-
-#~ msgid "You must specify the type of request to run\n"
-#~ msgstr "실행할 요청의 종류를 지정해야 합니다\n"
-
-#~ msgid "Unknown request type\n"
-#~ msgstr "요청 종류를 알 수 없습니다\n"
