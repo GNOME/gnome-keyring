@@ -776,8 +776,9 @@ typedef struct _CryptContext {
 static CryptContext*
 new_crypt_context (CK_MECHANISM_TYPE mech, GkrPkObject *key)
 {
+	CryptContext *ctx;
 	g_assert (key);
-	CryptContext *ctx = g_new0 (CryptContext, 1);
+	ctx = g_new0 (CryptContext, 1);
 	ctx->mechanism = mech;
 	ctx->key = key;
 	g_object_ref (key);
