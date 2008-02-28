@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-29 03:58+0000\n"
-"PO-Revision-Date: 2007-12-29 20:24-0200\n"
+"POT-Creation-Date: 2007-12-29 22:27+0000\n"
+"PO-Revision-Date: 2008-02-28 00:40-0300\n"
 "Last-Translator: Hugo Doria <hugodoria@gmail.com>\n"
 "Language-Team: GNOME-BR <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
@@ -385,9 +385,8 @@ msgid "Old password cannot be blank."
 msgstr "Senha antiga não pode estar em branco."
 
 #: ../ui/gkr-ask-tool.c:456
-#, fuzzy
 msgid "Password cannot be blank."
-msgstr "A senha não pode ser em branco"
+msgstr "A senha não pode ser em branco."
 
 #: ../ui/gkr-ask-tool.c:465
 msgid "Passwords do not match."
