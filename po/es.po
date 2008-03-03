@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-14 23:37+0000\n"
-"PO-Revision-Date: 2008-02-15 11:54+0100\n"
+"POT-Creation-Date: 2008-02-15 10:56+0000\n"
+"PO-Revision-Date: 2008-03-02 17:00+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,9 +33,9 @@ msgid "Home"
 msgstr "Inicio"
 
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:497 ../pkix/gkr-pkix-serialize.c:58
+#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
-msgstr "El disco o la unidad en la que está ubicado este archivo no está presente."
+msgstr "El disco o la unidad en la que está ubicado este archivo no está presente"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:222
@@ -533,11 +533,11 @@ msgstr "El sistema quiere importar «%s», pero está bloqueado"
 msgid "Unlock password for '%s'"
 msgstr "Desbloquear contraseña para «%s»"
 
-#: ../pkix/gkr-pkix-parser.c:428
+#: ../pkix/gkr-pkix-parser.c:445
 msgid "Unrecognized or unsupported file."
 msgstr "Archivo no reconocido o no soportado."
 
-#: ../pkix/gkr-pkix-parser.c:432
+#: ../pkix/gkr-pkix-parser.c:449
 msgid "Could not parse invalid or corrupted file."
 msgstr "No se pudo analizar el archivo inválido o corrupto."
 
