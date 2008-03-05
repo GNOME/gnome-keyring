@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-14 23:37+0000\n"
-"PO-Revision-Date: 2008-02-18 09:39+0200\n"
+"PO-Revision-Date: 2008-03-04 18:11+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -37,7 +37,7 @@ msgstr "Kodu"
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
 #: ../pkix/gkr-pkix-parser.c:497 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
-msgstr ""
+msgstr "Selle faili asukohaks määratud ketas või seade pole kättesaadav"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:222
@@ -118,38 +118,38 @@ msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr ""
-"Rakendus '%s' (%s) tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
+"Rakendus '%s' (%s) tahab kasutada vaikimisi võtmerõngast, kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Rakendus '%s' (%s) tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+"Rakendus '%s' (%s) tahab kasutada võtmerõngast '%s', kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
-"Rakendus '%s' tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
+"Rakendus '%s' tahab kasutada vaikimisi võtmerõngast, kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Rakendus '%s' tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+msgstr "Rakendus '%s' tahab kasutada võtmerõngast '%s', kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:399
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
-"Tundmatu rakendus tahab ligipääsu vaikimisi võtmerõngale, kuid see on lukus"
+"Tundmatu rakendus tahab kasutada vaikimisi võtmerõngast, kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+msgstr "Tundmatu rakendus tahab kasutada võtmerõngast '%s', kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:410
 msgid "Enter password for default keyring to unlock"
@@ -403,7 +403,7 @@ msgstr "Võtmerõngas on juba lukust lahti võetud."
 #. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
-msgstr ""
+msgstr "Sisselogimise võtmerõnga lukust lahtivõtmine"
 
 #: ../keyrings/gkr-keyring-login.c:98
 msgid "Enter login password to unlock keyring"
@@ -420,7 +420,7 @@ msgstr ""
 #. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
-msgstr ""
+msgstr "Sisselogimise võtmerõnga loomine"
 
 #: ../keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
@@ -436,19 +436,19 @@ msgstr ""
 
 #: ../pk/gkr-pk-object-storage.c:99
 msgid "Unlock private key"
-msgstr ""
+msgstr "Võta salajane võti lukust lahti"
 
 #: ../pk/gkr-pk-object-storage.c:101
 msgid "Unlock certificate"
-msgstr ""
+msgstr "Võta sertifikaat lukust lahti"
 
 #: ../pk/gkr-pk-object-storage.c:103
 msgid "Unlock public key"
-msgstr ""
+msgstr "Võta avalik võti lukust lahti"
 
 #: ../pk/gkr-pk-object-storage.c:105
 msgid "Unlock"
-msgstr ""
+msgstr "Võta lukust lahti"
 
 #: ../pk/gkr-pk-object-storage.c:116
 msgid "Enter password to unlock the private key"
@@ -487,24 +487,24 @@ msgstr ""
 "See võetakse minu sisselogimisel automaatselt lukust lahti."
 
 #: ../pk/gkr-pk-object-storage.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+msgstr "Rakendus tahab kasutada salajast võtit '%s', kuid see on lukus"
 
 #: ../pk/gkr-pk-object-storage.c:156
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+msgstr "Rakendus tahab kasutada sertifikaati '%s', kuid see on lukus"
 
 #: ../pk/gkr-pk-object-storage.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+msgstr "Rakendus tahab kasutada avalikku võtit '%s', kuid see on lukus"
 
 #: ../pk/gkr-pk-object-storage.c:160
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "Tundmatu rakendus tahab ligipääsu võtmerõngale '%s', kuid see on lukus"
+msgstr "Rakendus tahab kasutada '%s', kuid see on lukus"
 
 #: ../pk/gkr-pk-object-storage.c:166
 #, c-format
@@ -549,10 +549,12 @@ msgid ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
+"Tühja parooli valimise korral pole sul võimalik salvestatud paroole ohtult "
+"kaitsta. Need jäävad avatuks igaühele, kel on sinu failidele ligipääs."
 
 #: ../ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
-msgstr ""
+msgstr "Kasuta mitteohutut hoidlat"
 
 #: ../ui/gkr-ask-tool.c:413
 msgid "_Location:"
