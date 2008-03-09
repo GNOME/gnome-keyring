@@ -1,3 +1,6 @@
+Changes in version 2.22.0 are:
+* Build fix. [Jens Granseuer]
+
 Changes in version 2.21.92 are:
 * Sync up user's session environment with the daemon, so that 
   things like X authentication, DBUS etc... work properly.
@@ -23,8 +26,6 @@ Changes in version 2.21.90 are:
 * Fix problem where most keyrings were being treated as insecure 
   from the point of view of storing passwords for keys or certificates.
 * Fix race condition that is causing deadlocks and freezes.
-
-2008-01-14  Stef Walter  <stef@memberwebs.com>
 
 Changes in version 2.21.5 are:
 * Proper support for creating and destroying objects through PKCS#11.
@@ -66,7 +67,7 @@ Changes in version 2.21.3 are:
 * Added basic X.509 certificate and key store 
 * PKCS#11 module for accessing certificates and keys
 * Now includes an SSH agent
-* PAM module now works with SELinux
+* PAM module now works with SELinux [Alexander Larrson]
 * Add a simpler API for accessing and storing passwords.
 
 Changes in version 2.20.3 are:
