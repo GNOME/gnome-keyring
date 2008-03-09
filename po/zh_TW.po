@@ -7,13 +7,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.21.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-07 20:23+0800\n"
-"PO-Revision-Date: 2008-02-05 21:09+0800\n"
+"POT-Creation-Date: 2008-03-09 20:00+0800\n"
+"PO-Revision-Date: 2008-03-09 20:07+0800\n"
 "Last-Translator: Woodman Tuen <wmtuen@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: ../common/gkr-location.c:306
 #, c-format
@@ -29,12 +29,12 @@ msgid "Home"
 msgstr "家"
 
 #: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:510 ../pkix/gkr-pkix-serialize.c:58
+#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "這個檔案所在的磁碟或裝置尚未掛載"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:221
+#: ../daemon/gkr-daemon-ops.c:222
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -42,7 +42,7 @@ msgid ""
 msgstr "程式‘%s’(%s) 要求存取在預設鑰匙圈中的‘<object prop='name'/>’密碼。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:225
+#: ../daemon/gkr-daemon-ops.c:226
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -50,7 +50,7 @@ msgid ""
 msgstr "程式 ‘%s’(%s) 要求存取在‘%s’中‘<object prop='name'/>’的密碼 。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231 ../daemon/gkr-daemon-ops.c:241
+#: ../daemon/gkr-daemon-ops.c:232 ../daemon/gkr-daemon-ops.c:242
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -58,7 +58,7 @@ msgid ""
 msgstr "程式‘%s’要求存取在預設鑰匙圈中‘<object prop='name'/>’的密碼。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:235 ../daemon/gkr-daemon-ops.c:245
+#: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -66,14 +66,14 @@ msgid ""
 msgstr "程式‘%s’要求存取在‘%s’中‘<object prop='name'/>’的密碼。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:252
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
 msgstr "一個不明的程式要求存取在預設鑰匙圈中‘<object prop='name'/>’的密碼。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:254
+#: ../daemon/gkr-daemon-ops.c:255
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -81,109 +81,109 @@ msgid ""
 msgstr "一個不明的程式要求存取在‘%s’中‘<object prop='name'/>’的密碼。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 msgid "Allow access"
 msgstr "允許存取"
 
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 msgid "Allow application access to keyring?"
 msgstr "允許程式存取鑰匙圈？"
 
-#: ../daemon/gkr-daemon-ops.c:310
+#: ../daemon/gkr-daemon-ops.c:311
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "解鎖 %s 鑰匙圈的密碼"
 
-#: ../daemon/gkr-daemon-ops.c:367
+#: ../daemon/gkr-daemon-ops.c:368
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "程式‘%s’(%s) 要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
 
-#: ../daemon/gkr-daemon-ops.c:371
+#: ../daemon/gkr-daemon-ops.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "程式‘%s’(%s) 要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
 
-#: ../daemon/gkr-daemon-ops.c:377 ../daemon/gkr-daemon-ops.c:387
+#: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "程式‘%s’要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
 
-#: ../daemon/gkr-daemon-ops.c:381 ../daemon/gkr-daemon-ops.c:392
+#: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "程式 ‘%s’要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
 
-#: ../daemon/gkr-daemon-ops.c:398
+#: ../daemon/gkr-daemon-ops.c:399
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "一個不明的程式要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
 
-#: ../daemon/gkr-daemon-ops.c:402
+#: ../daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "一個不明的程式要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
 
-#: ../daemon/gkr-daemon-ops.c:409
+#: ../daemon/gkr-daemon-ops.c:410
 msgid "Enter password for default keyring to unlock"
 msgstr "輸入預設鑰匙圈的密碼，作為開鎖之用"
 
-#: ../daemon/gkr-daemon-ops.c:411
+#: ../daemon/gkr-daemon-ops.c:412
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "輸入鑰匙圈‘%s’的密碼，作為開鎖之用"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:415
+#: ../daemon/gkr-daemon-ops.c:416
 msgid "Unlock Keyring"
 msgstr "解開鑰匙圈"
 
-#: ../daemon/gkr-daemon-ops.c:427
+#: ../daemon/gkr-daemon-ops.c:428
 msgid "Automatically unlock this keyring when I log in."
 msgstr "當我登入時自動解鎖鑰匙圈。"
 
-#: ../daemon/gkr-daemon-ops.c:463
+#: ../daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr "程式‘%s’(%s) 要求新增一個鑰匙圈，名為：‘%s’。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:467
+#: ../daemon/gkr-daemon-ops.c:468
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "程式‘%s’(%s) 要求新增一個預設鑰匙圈。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:473 ../daemon/gkr-daemon-ops.c:483
+#: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr "程式‘%s’要求新增一個鑰匙圈，名為：‘%s’。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:477 ../daemon/gkr-daemon-ops.c:487
+#: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "程式 ‘%s’要求新增一個預設鑰匙圈。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:493
+#: ../daemon/gkr-daemon-ops.c:494
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
 msgstr "不明的程式要求建立一個新的鑰匙圈，名為：‘%s’。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:497
+#: ../daemon/gkr-daemon-ops.c:498
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -191,72 +191,72 @@ msgid ""
 msgstr "不明的程式要求建立一個預設鑰匙圈。您需要給它選用一個密碼。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:503
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "New Keyring Password"
 msgstr "新增鑰匙圈密碼"
 
-#: ../daemon/gkr-daemon-ops.c:504
+#: ../daemon/gkr-daemon-ops.c:505
 msgid "Choose password for new keyring"
 msgstr "輸入新鑰匙圈的密碼"
 
-#: ../daemon/gkr-daemon-ops.c:551
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr "程式‘%s’(%s) 要求更改鑰匙圈‘%s’的密碼。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:555
+#: ../daemon/gkr-daemon-ops.c:556
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr "程式‘%s’(%s) 要求更改預設鑰匙圈的密碼。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:561 ../daemon/gkr-daemon-ops.c:571
+#: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
 msgstr "程式 ‘%s’要求更改鑰匙圈‘%s’的密碼。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:565 ../daemon/gkr-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr "程式 ‘%s’要求更改預設鑰匙圈的密碼。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:581
+#: ../daemon/gkr-daemon-ops.c:582
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
 msgstr "一個不明的程式要求更改鑰匙圈‘%s’的密碼。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:585
+#: ../daemon/gkr-daemon-ops.c:586
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr "一個不明的程式要求更改預設鑰匙圈的密碼。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:595
+#: ../daemon/gkr-daemon-ops.c:596
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "給‘%s’匙圈選用一個新的密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:597
+#: ../daemon/gkr-daemon-ops.c:598
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "給預設鑰匙圈選用一個新的密碼。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:601
+#: ../daemon/gkr-daemon-ops.c:602
 msgid "Change Keyring Password"
 msgstr "更改鑰匙圈密碼"
 
-#: ../daemon/gkr-daemon-ops.c:671
+#: ../daemon/gkr-daemon-ops.c:672
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -266,7 +266,7 @@ msgstr ""
 "程式‘%s’(%s) 要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙"
 "圈，您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:675 ../daemon/gkr-daemon-ops.c:679
+#: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -276,7 +276,7 @@ msgstr ""
 "程式‘%s’要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙圈，您"
 "需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:683
+#: ../daemon/gkr-daemon-ops.c:684
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -287,11 +287,11 @@ msgstr ""
 "您需要給它選用一個密碼。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:688
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Create Default Keyring"
 msgstr "建立預設鑰匙圈"
 
-#: ../daemon/gkr-daemon-ops.c:688
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Choose password for default keyring"
 msgstr "輸入預設鑰匙圈的密碼"
 
@@ -387,79 +387,112 @@ msgid ""
 "computer. It will now be created."
 msgstr "您的登入鑰匙圈並未在登入這台電腦時自動建立。現在將會建立它。"
 
-#: ../pk/gkr-pk-object-storage.c:153
+#: ../pk/gkr-pk-object-storage.c:99
+msgid "Unlock private key"
+msgstr "解鎖私密金鑰"
+
+#: ../pk/gkr-pk-object-storage.c:101
+msgid "Unlock certificate"
+msgstr "解鎖憑證"
+
+#: ../pk/gkr-pk-object-storage.c:103
+msgid "Unlock public key"
+msgstr "解鎖公開金鑰"
+
+#: ../pk/gkr-pk-object-storage.c:105
 msgid "Unlock"
 msgstr "解鎖"
 
-#: ../pk/gkr-pk-object-storage.c:154
+#: ../pk/gkr-pk-object-storage.c:116
+msgid "Enter password to unlock the private key"
+msgstr "輸入解鎖私密金鑰的密碼"
+
+#: ../pk/gkr-pk-object-storage.c:118
+msgid "Enter password to unlock the certificate"
+msgstr "輸入解鎖憑證的密碼"
+
+#: ../pk/gkr-pk-object-storage.c:120
+msgid "Enter password to unlock the public key"
+msgstr "輸入解鎖公開金鑰的密碼"
+
+#: ../pk/gkr-pk-object-storage.c:122
 msgid "Enter password to unlock"
 msgstr "輸入解鎖的密碼"
 
-#: ../pk/gkr-pk-object-storage.c:164
-#, c-format
-msgid "Unlock %s"
-msgstr "解鎖 %s"
+#: ../pk/gkr-pk-object-storage.c:133
+msgid "Automatically unlock this private key when I log in."
+msgstr "當我登入時自動解鎖私密金鑰。"
 
-#: ../pk/gkr-pk-object-storage.c:165
-#, c-format
-msgid "Enter password for the %s to unlock"
-msgstr "輸入鑰匙圈‘%s’的密碼，作為開鎖之用"
+#: ../pk/gkr-pk-object-storage.c:135
+msgid "Automatically unlock this certificate when I log in."
+msgstr "當我登入時自動解鎖憑證。"
 
-#: ../pk/gkr-pk-object-storage.c:174
-#, c-format
-msgid "An application wants access to the %s '%s', but it is locked"
-msgstr "一個不明的程式要求存取 %s‘%s’，但它已被鎖上"
+#: ../pk/gkr-pk-object-storage.c:137
+msgid "Automatically unlock this public key when I log in."
+msgstr "當我登入時自動解鎖公開金鑰。"
 
-#: ../pk/gkr-pk-object-storage.c:177
+#: ../pk/gkr-pk-object-storage.c:139
+msgid "Automatically unlock this when I log in"
+msgstr "當我登入時自動解鎖此項"
+
+#: ../pk/gkr-pk-object-storage.c:154
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "一個程式要求存取私密金鑰‘%s’，但它已被鎖上"
+
+#: ../pk/gkr-pk-object-storage.c:156
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "一個程式要求存取憑證‘%s’，但它已被鎖上"
+
+#: ../pk/gkr-pk-object-storage.c:158
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "一個程式要求存取公開金鑰‘%s’，但它已被鎖上"
+
+#: ../pk/gkr-pk-object-storage.c:160
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "一個不明的程式要求存取‘%s’，但它已被鎖上"
 
-#: ../pk/gkr-pk-object-storage.c:182
+#: ../pk/gkr-pk-object-storage.c:166
 #, c-format
-msgid "The system wants to import the %s '%s', but it is locked."
-msgstr "系統要求匯入 %s‘%s’，但它已被鎖上。"
+msgid "The system wants to import the private key '%s', but it is locked"
+msgstr "系統要求匯入私密金鑰‘%s’，但它已被鎖上。"
 
-#: ../pk/gkr-pk-object-storage.c:185
+#: ../pk/gkr-pk-object-storage.c:168
 #, c-format
-msgid "The system wants to import '%s', but it is locked."
-msgstr "系統要求匯入‘%s’，但它已被鎖上。"
+msgid "The system wants to import the certificate '%s', but it is locked"
+msgstr "系統要求匯入憑證‘%s’，但它已被鎖上。"
 
-#: ../pk/gkr-pk-object-storage.c:197
+#: ../pk/gkr-pk-object-storage.c:170
 #, c-format
-msgid "Automatically unlock this %s when I log in."
-msgstr "當我登入時自動解鎖這個 %s。"
+msgid "The system wants to import the public key '%s', but it is locked"
+msgstr "系統要求匯入公開金鑰‘%s’，但它已被鎖上。"
 
-#: ../pk/gkr-pk-object-storage.c:209
+#: ../pk/gkr-pk-object-storage.c:172
 #, c-format
-msgid "Unlock password for %s"
-msgstr "%s 的解鎖密碼"
+msgid "The system wants to import '%s', but it is locked"
+msgstr "系統要求匯入‘%s’，但它已被鎖上"
 
-#: ../pkix/gkr-pkix-parser.c:428
+#: ../pk/gkr-pk-object-storage.c:258
+#, c-format
+msgid "Unlock password for '%s'"
+msgstr "‘%s’的解鎖密碼"
+
+#: ../pkix/gkr-pkix-parser.c:445
 msgid "Unrecognized or unsupported file."
 msgstr "無法辨識或不支援的檔案。"
 
-#: ../pkix/gkr-pkix-parser.c:432
+#: ../pkix/gkr-pkix-parser.c:449
 msgid "Could not parse invalid or corrupted file."
 msgstr "無法解析無效或損毀的檔案。"
 
-#: ../pkix/gkr-pkix-parser.c:485
-msgid "private key"
-msgstr "私密金鑰"
-
-#: ../pkix/gkr-pkix-parser.c:487
-msgid "certificate"
-msgstr "憑證"
-
-#: ../pkix/gkr-pkix-parser.c:489
-msgid "public key"
-msgstr "公開金鑰"
-
-#: ../ui/gkr-ask-tool.c:172
+#: ../ui/gkr-ask-tool.c:182
 msgid "Store passwords unencrypted?"
 msgstr "是否儲存不加密的密碼？"
 
-#: ../ui/gkr-ask-tool.c:173
+#: ../ui/gkr-ask-tool.c:183
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -468,87 +501,47 @@ msgstr ""
 "若選擇使用空白密碼，您所儲存的密碼將不會被安全的加密。任何能存取您的檔案的人"
 "都將能看到這些密碼。"
 
-#: ../ui/gkr-ask-tool.c:180
+#: ../ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
 msgstr "使用不安全的儲存"
 
-#: ../ui/gkr-ask-tool.c:403
+#: ../ui/gkr-ask-tool.c:413
 msgid "_Location:"
 msgstr "位置(_L):"
 
-#: ../ui/gkr-ask-tool.c:416
+#: ../ui/gkr-ask-tool.c:426
 msgid "_Old password:"
 msgstr "舊密碼(_O)："
 
-#: ../ui/gkr-ask-tool.c:436
+#: ../ui/gkr-ask-tool.c:446
 msgid "_Password:"
 msgstr "密碼(_P)："
 
-#: ../ui/gkr-ask-tool.c:458
+#: ../ui/gkr-ask-tool.c:468
 msgid "_Confirm password:"
 msgstr "確認新密碼(_C):"
 
-#: ../ui/gkr-ask-tool.c:478
+#: ../ui/gkr-ask-tool.c:488
 msgid "New password strength"
 msgstr "新密碼的強度"
 
-#: ../ui/gkr-ask-tool.c:536
+#: ../ui/gkr-ask-tool.c:546
 msgid "Passwords do not match."
 msgstr "密碼不相符。"
 
-#: ../ui/gkr-ask-tool.c:552
+#: ../ui/gkr-ask-tool.c:562
 msgid "Password cannot be blank"
 msgstr "密碼不能空白"
 
-#: ../ui/gkr-ask-tool.c:603
+#: ../ui/gkr-ask-tool.c:613
 msgid "Deny"
 msgstr "禁止"
 
-#: ../ui/gkr-ask-tool.c:615
+#: ../ui/gkr-ask-tool.c:625
 msgid "Allow _Once"
 msgstr "只允許一次(_O)"
 
-#: ../ui/gkr-ask-tool.c:619
+#: ../ui/gkr-ask-tool.c:629
 msgid "_Always Allow"
 msgstr "永遠允許(_A)"
 
-#~ msgid "<span weight=\"bold\">Password strength meter:</span>"
-#~ msgstr "<span weight=\"bold\">密碼強度計：</span>"
-
-#~ msgid "Old password cannot be blank."
-#~ msgstr "舊密碼不能空白。"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
-#~ "locked"
-#~ msgstr "程式‘%s’(%s) 要求存取一個不明的鑰匙圈，但該鑰匙圈已被鎖上"
-
-#~ msgid ""
-#~ "The application '%s' wants access to an unknown keyring, but it is locked"
-#~ msgstr "程式‘%s’要求存取一個不明的鑰匙圈，但該鑰匙圈已被鎖上"
-
-#~ msgid ""
-#~ "An unknown application wants access to an unknown keyring, but it is "
-#~ "locked"
-#~ msgstr "一個不明的程式要求存取一個不明的鑰匙圈，但該鑰匙圈已被鎖上"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '%s' in an "
-#~ "unknown keyring."
-#~ msgstr "程式‘%s’(%s) 要求存取在不明的鑰匙圈中‘%s’的密碼。"
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '%s' in an unknown "
-#~ "keyring."
-#~ msgstr "程式‘%s’要求存取在一個不明的鑰匙圈中‘%s’的密碼。"
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '%s' in an "
-#~ "unknown keyring."
-#~ msgstr "一個不明的程式要求存取在一個不明的鑰匙圈中‘%s’的密碼。"
-
-#~ msgid "You must specify the type of request to run\n"
-#~ msgstr "您必須指定一個請求的類型來執行\n"
-
-#~ msgid "Unknown request type\n"
-#~ msgstr "不明的請求類型\n"
