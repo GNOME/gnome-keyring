@@ -539,30 +539,38 @@ static gboolean
 launch_ask_helper (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
-	char **envp;
+	gchar **names, **envp;
 	int i, n;
 	GError *error = NULL;
+	gboolean ret;
+	
 	char *argv[] = {
 		LIBEXECDIR "/gnome-keyring-ask",
 		NULL,
 	};
 
 	/* Calculate us some environment */
-	i = 0;
-	while (environ[i])
+	names = g_listenv ();
+	g_return_val_if_fail (names, FALSE);
+	i = 0; 
+	while (names[i])
 		++i;
 	n = i;
 	
 	/* Any environment we have */
 	envp = g_new (char*, n + 2);
 	for (i = 0; i < n; i++)
-		envp[i] = g_strdup (environ[i]);
+		envp[i] = g_strdup_printf ("%s=%s", names[i], g_getenv (names[i]));
 	envp[i++] = NULL;
+	g_strfreev (names);
 
 	gkr_buffer_resize (&pv->buffer, 0);
 	
-	if (!g_spawn_async_with_pipes (NULL, argv, envp, 0, NULL, NULL, &pv->ask_pid, 
-	                               &pv->in_fd, &pv->out_fd, NULL, &error)) {
+	ret = g_spawn_async_with_pipes (NULL, argv, envp, 0, NULL, NULL, &pv->ask_pid, 
+	                                &pv->in_fd, &pv->out_fd, NULL, &error);
+	g_strfreev (envp);
+	
+	if (!ret) {
 		g_warning ("couldn't spawn gnome-keyring-ask tool: %s", 
 		           error && error->message ? error->message : "unknown error");
 		pv->out_fd = -1;
@@ -570,7 +578,6 @@ launch_ask_helper (GkrAskRequest *ask)
 		return FALSE;
 	} 
 	
-	g_strfreev (envp);
 	return TRUE;
 }
 

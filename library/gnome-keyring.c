@@ -1784,12 +1784,27 @@ gnome_keyring_daemon_prepare_environment_sync (void)
 {
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
-	gchar **daemonenv, **e;
+	gchar **envp, **e, *name;
 	gchar **parts;
+	gboolean ret;
 
 	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
-	if (!gkr_proto_encode_prepare_environment (&send, (const gchar**)environ)) {
+	/* Get all the environment names */
+	envp = g_listenv ();
+	g_return_val_if_fail (envp, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+	
+	/* Transform them into NAME=VALUE pairs */
+	for (e = envp; *e; ++e) {
+		name = *e;
+		*e = g_strdup_printf ("%s=%s", name, g_getenv (name));
+		g_free (name);
+	}
+
+	ret = gkr_proto_encode_prepare_environment (&send, (const gchar**)envp);
+	g_strfreev (envp);
+	
+	if (!ret) {
 		gkr_buffer_uninit (&send);
 		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 	}
@@ -1802,22 +1817,23 @@ gnome_keyring_daemon_prepare_environment_sync (void)
 		return res;
 	}
 
-	if (!gkr_proto_decode_prepare_environment_reply (&receive, &res, &daemonenv)) {
+	if (!gkr_proto_decode_prepare_environment_reply (&receive, &res, &envp)) {
 		gkr_buffer_uninit (&receive);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
 	gkr_buffer_uninit (&receive);
 	
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		for (e = daemonenv; *e; ++e) {
+		g_return_val_if_fail (envp, GNOME_KEYRING_RESULT_IO_ERROR);
+		for (e = envp; *e; ++e) {
 			parts = g_strsplit (*e, "=", 2);
 			if (parts && parts[0] && parts[1])
 				g_setenv (parts[0], parts[1], TRUE);
 			g_strfreev (parts);
-}
+		}
 	}
 	
-	g_strfreev (daemonenv);
+	g_strfreev (envp);
 
 	return res;
 }

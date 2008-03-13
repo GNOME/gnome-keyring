@@ -1,5 +1,11 @@
 2008-03-13  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring.c: 
+	* ui/gkr-ask-request.c: Avoid usage of the 'environ' global
+	variable and use g_list_env() instead. Fixes bug #522027
+	
+2008-03-13  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon.c: Log to syslog even when running in 
 	the foreground. This helps starting from DBus. Patch by 
 	Tony Espy. Fixes bug #522253
