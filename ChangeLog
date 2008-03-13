@@ -1,3 +1,9 @@
+2008-03-13  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon.c: Log to syslog even when running in 
+	the foreground. This helps starting from DBus. Patch by 
+	Tony Espy. Fixes bug #522253
+	
 === gnome-keyring 2.22.0 ===
 
 2008-03-09  Stef Walter  <stef@memberwebs.com>

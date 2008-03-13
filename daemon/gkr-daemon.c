@@ -530,9 +530,8 @@ main (int argc, char *argv[])
 
 	/* Daemon process continues here */
 
-        /* Send all warning or error messages to syslog, if a daemon */
-        if (!run_foreground)
-	        prepare_logging();
+        /* Send all warning or error messages to syslog */
+	prepare_logging();
 
 	loop = g_main_loop_new (NULL, FALSE);
 	ctx = g_main_loop_get_context (loop);
