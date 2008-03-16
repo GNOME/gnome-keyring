@@ -1,3 +1,9 @@
+2008-03-16  Stef Walter  <stef@memberwebs.com>
+
+	* library/Makefile.am: Include GNOME_KEYRING_NETWORK_PASSWORD 
+	exported in libgnome-keyring.so. Patch by Andrea Del Signore.
+	Fixes bug #522651
+
 2008-03-13  Stef Walter  <stef@memberwebs.com>
 
 	* library/gnome-keyring.c: 

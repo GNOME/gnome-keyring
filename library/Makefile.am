@@ -44,7 +44,7 @@ libgnome_keyring_la_LIBADD = \
 
 libgnome_keyring_la_LDFLAGS = \
 	-version-info $(LIB_GNOME_KEYRING_LT_VERSION) \
-	-no-undefined -export-symbols-regex 'gnome_keyring_'
+	-no-undefined -export-symbols-regex 'gnome_keyring_|GNOME_KEYRING_'
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-keyring-1.pc
