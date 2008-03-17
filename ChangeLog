@@ -1,5 +1,24 @@
 2008-03-16  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-crypto.c:
+	* common/gkr-crypto.h:
+	* pk/gkr-pkcs11-daemon-session.c:
+	* pk/gkr-pkcs11-rsa.c:
+	* pk/gkr-pkcs11-rsa.h: Move RSA padding functionality into a 
+	more accessible location.  
+
+	* common/gkr-buffer.c:
+	* common/gkr-buffer.h:
+	* pk/gkr-pk-object-manager.c:
+	* pk/gkr-pk-object-manager.h:
+	* pk/gkr-pk-pubkey.c:
+	* ssh/gkr-ssh-daemon-ops.c:
+	* ssh/gkr-ssh-private.h:
+	* ssh/gkr-ssh-proto.c: Add SSH agent protocol version 1 support.
+	Cleanup how session keys are managed. Fixes bug #520860
+	
+2008-03-16  Stef Walter  <stef@memberwebs.com>
+
 	* library/Makefile.am: Include GNOME_KEYRING_NETWORK_PASSWORD 
 	exported in libgnome-keyring.so. Patch by Andrea Del Signore.
 	Fixes bug #522651

@@ -72,6 +72,8 @@ GType                   gkr_pk_object_manager_get_type            (void) G_GNUC_
 
 GType                   gkr_pk_object_manager_type_from_string    (const gchar *type);
 
+GkrPkObjectManager*     gkr_pk_object_manager_new                 (void);
+
 GkrPkObjectManager*     gkr_pk_object_manager_for_token           (void);
 
 GkrPkObjectManager*     gkr_pk_object_manager_for_client          (pid_t pid);

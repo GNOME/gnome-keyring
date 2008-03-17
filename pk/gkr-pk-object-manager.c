@@ -224,6 +224,12 @@ gkr_pk_object_manager_class_init (GkrPkObjectManagerClass *klass)
 }
 
 GkrPkObjectManager*
+gkr_pk_object_manager_new (void)
+{
+	return g_object_new (GKR_TYPE_PK_OBJECT_MANAGER, NULL);
+}
+
+GkrPkObjectManager*
 gkr_pk_object_manager_for_token (void)
 {
 	if (!object_manager_for_token) {

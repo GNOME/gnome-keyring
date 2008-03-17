@@ -48,101 +48,125 @@
  * SESSION KEYS
  */
 
-static gboolean had_session_keys = FALSE;
-static GList *ssh_session_keys = NULL;
+static GkrPkObjectManager *session_manager = NULL;
 
 static void
-cleanup_session_keys (gpointer unused)
+mark_v1_key (GkrPkPrivkey *key)
 {
-	GList *l;
-	for (l = ssh_session_keys; l; l = g_list_next (l))
-		g_object_unref (l->data);
-	g_list_free (ssh_session_keys);
-	ssh_session_keys = NULL;	
+	/* Track the version of the SSH protocol that this came in on */
+	g_object_set_data (G_OBJECT (key), "ssh-protocol-version", GUINT_TO_POINTER (1));
+}
+
+static gboolean
+check_v1_key (GkrPkPrivkey *key)
+{
+	return g_object_get_data (G_OBJECT (key), "ssh-protocol-version") == GUINT_TO_POINTER (1);
+}
+
+static void
+cleanup_session_manager (gpointer unused)
+{
+	g_return_if_fail (session_manager);
+	g_object_unref (session_manager);
+	session_manager = NULL;
 }
 
 static GkrPkPrivkey*
-find_private_key (gcry_sexp_t s_key, gboolean manager)
+find_private_key_in_manager (GkrPkObjectManager *manager, const gkrid keyid, guint version)
 {
 	GkrPkPrivkey *key = NULL;
-	gkrid keyid;
+	GList *l, *objects;
 	const guchar *data;
 	gsize n_data;
-	GList *l, *objects;
+
+	data = gkr_id_get_raw (keyid, &n_data);
+	g_assert (data && n_data);
+
+	objects = gkr_pk_object_manager_findv (manager, GKR_TYPE_PK_PRIVKEY, 
+	                                       CKA_ID, data, n_data, NULL);
 	
-	keyid = gkr_crypto_skey_make_id (s_key);
-	g_return_val_if_fail (keyid != NULL, NULL);
-	
-	for (l = ssh_session_keys; l; l = g_list_next (l)) {
-		key = GKR_PK_PRIVKEY (l->data);
-		if (gkr_id_equals (keyid, gkr_pk_privkey_get_keyid (key)))
-			break;
+	for (l = objects; l; l = g_list_next (l)) {
+		key = GKR_PK_PRIVKEY (objects->data);
+		if ((version == 1) != check_v1_key (key))
+			continue;
+		break;
 	}
+
+	g_list_free (objects);
 	
 	if (l == NULL)
 		key = NULL;
-	
-	if (!key && manager) {
-		data = gkr_id_get_raw (keyid, &n_data);
-		g_assert (data && n_data);
-		
-		objects = gkr_pk_object_manager_findv (gkr_pk_object_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
-		                                       CKA_ID, data, n_data, NULL);
-		if (objects) {
-			key = GKR_PK_PRIVKEY (objects->data);
-			g_list_free (objects);
-		}
-	}
 
-	gkr_id_free (keyid);
+	return key;
+}
+
+static GkrPkPrivkey*
+find_private_key (gcry_sexp_t skey, gboolean global, guint version)
+{
+	GkrPkPrivkey *key = NULL;
+	gkrid keyid;
 	
+	keyid = gkr_crypto_skey_make_id (skey);
+	g_return_val_if_fail (keyid != NULL, NULL);
+
+	/* Search through the  session keys */
+	if (session_manager)
+		key = find_private_key_in_manager (session_manager, keyid, version);
+		
+	/* Search through the global keys */
+	if (!key && global) 
+		key = find_private_key_in_manager (gkr_pk_object_manager_for_token (), keyid, version);
+	
+	gkr_id_free (keyid);
 	return key;
 }
 
 static void
 remove_session_key (GkrPkPrivkey *key)
 {
-	GList *link = g_list_find (ssh_session_keys, key);
-	if (!link)
-		return;
-	ssh_session_keys = g_list_remove_link (ssh_session_keys, link);
-	g_object_unref (key);
-	g_list_free_1 (link);
+	if (session_manager)
+		gkr_pk_object_manager_unregister (session_manager, GKR_PK_OBJECT (key));
 }
 
 static void
-add_session_key (gcry_sexp_t s_key, const gchar *comment)
+add_session_key (gcry_sexp_t skey, const gchar *comment, guint version)
 {
 	GkrPkPrivkey *key, *prev;
+
+	if (!session_manager) {
+		session_manager = gkr_pk_object_manager_new ();
+		gkr_cleanup_register (cleanup_session_manager, NULL);
+	}
+
+	prev = find_private_key (skey, FALSE, version);
+	if (prev)
+		remove_session_key (prev);
 	
-	key = GKR_PK_PRIVKEY (gkr_pk_privkey_new (NULL, 0, s_key));
+	key = GKR_PK_PRIVKEY (gkr_pk_privkey_new (session_manager, 0, skey));
 	g_return_if_fail (key != NULL);
 	
 	if (comment)
 		g_object_set (key, "label", comment, NULL);
 	
-	prev = find_private_key (s_key, FALSE);
-	if (prev)
-		remove_session_key (prev);
-		
-	ssh_session_keys = g_list_prepend (ssh_session_keys, key);
-	
-	if (!had_session_keys) {
-		had_session_keys = TRUE;
-		gkr_cleanup_register (cleanup_session_keys, NULL);
-	}
+	if (version == 1)
+		mark_v1_key (key);
 }
 
 static void
-get_public_keys (GList *privates, GList** publics) 
+get_public_keys (GList *objects, GList** publics, guint version) 
 {
 	GkrPkPrivkey *key;
 	GkrPkPubkey *pub;
 	
-	for (; privates; privates = g_list_next (privates)) {
+	for (; objects; objects = g_list_next (objects)) {
 		
-		key = GKR_PK_PRIVKEY (privates->data);
-		g_return_if_fail (GKR_IS_PK_PRIVKEY (key));
+		if (!GKR_IS_PK_PRIVKEY (objects->data))
+			continue;
+		key = GKR_PK_PRIVKEY (objects->data);
+		
+		/* When getting version one keys skip over any that aren't marked that way. */
+		if ((version == 1) != check_v1_key (key))
+			continue;
 		
 		pub = GKR_PK_PUBKEY (gkr_pk_privkey_get_public (key));
 		if (!pub) {
@@ -205,8 +229,31 @@ op_add_identity (GkrBuffer *req, GkrBuffer *resp)
 		return FALSE;
 	}
 		
-	add_session_key (key, comment);
+	add_session_key (key, comment, 2);
 	g_free (comment);
+	
+	gkr_buffer_add_byte (resp, GKR_SSH_RES_SUCCESS);
+	return TRUE;	
+}
+
+static gboolean
+op_v1_add_identity (GkrBuffer *req, GkrBuffer *resp)
+{
+	gcry_sexp_t key;
+	gboolean ret;
+	gsize offset = 5;	
+	guint32 unused;
+	
+	if (!gkr_buffer_get_uint32 (req, offset, &offset, &unused))
+		return FALSE;
+	
+	ret = gkr_ssh_proto_read_private_v1 (req, &offset, &key);
+	if (!ret || !key) {
+		g_warning ("couldn't read incoming SSH private key");
+		return FALSE;		
+	}
+	
+	add_session_key (key, "SSH1 RSA key", 1);
 	
 	gkr_buffer_add_byte (resp, GKR_SSH_RES_SUCCESS);
 	return TRUE;	
@@ -215,7 +262,6 @@ op_add_identity (GkrBuffer *req, GkrBuffer *resp)
 static gboolean
 op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 {
-	gboolean ret = TRUE;
 	GList *objects, *pubkeys, *l;
 	GkrPkPubkey *pub;
 	const gchar *label;
@@ -225,8 +271,9 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 	                                       CKA_GNOME_PURPOSE_SSH_AUTH, CK_TRUE, 0, NULL);
 	
 	pubkeys = NULL;
-	get_public_keys (ssh_session_keys, &pubkeys);
-	get_public_keys (objects, &pubkeys);
+	if (session_manager)
+		get_public_keys (session_manager->objects, &pubkeys, 2);
+	get_public_keys (objects, &pubkeys, 2);
 	
 	g_list_free (objects);
 	
@@ -249,7 +296,37 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 	
 	g_list_free (pubkeys);
 	
-	return ret;
+	return TRUE;
+}
+
+static gboolean
+op_v1_request_identities (GkrBuffer *req, GkrBuffer *resp)
+{
+	GList *l, *pubkeys = NULL;
+	GkrPkPubkey *pub;
+	const gchar *label;
+	
+	if (session_manager)
+		get_public_keys (session_manager->objects, &pubkeys, 1);
+	
+	gkr_buffer_add_byte (resp, GKR_SSH_RES_RSA_IDENTITIES_ANSWER);
+	gkr_buffer_add_uint32 (resp, g_list_length (pubkeys));
+	      
+	for (l = pubkeys; l; l = g_list_next (l)) {
+		
+		pub = GKR_PK_PUBKEY (l->data);
+		g_return_val_if_fail (GKR_IS_PK_PUBKEY (pub), FALSE);
+		
+		if (!gkr_ssh_proto_write_public_v1 (resp, gkr_pk_pubkey_get_key (pub)))
+			return FALSE;
+		
+		/* And now a per key comment */
+		label = gkr_pk_object_get_label (GKR_PK_OBJECT (pub));
+		gkr_buffer_add_string (resp, label ? label : "");
+	}
+	
+	g_list_free (pubkeys);
+	return TRUE;
 }
 
 static gboolean
@@ -326,7 +403,7 @@ op_sign_request (GkrBuffer *req, GkrBuffer *resp)
 	}
 
 	/* Lookup the key */
-	key = find_private_key (s_key, TRUE);
+	key = find_private_key (s_key, TRUE, 2);
 	gcry_sexp_release (s_key);
 	
 	if (!key) {
@@ -358,8 +435,9 @@ op_sign_request (GkrBuffer *req, GkrBuffer *resp)
 		
 	s_key = gkr_pk_privkey_get_key (key);
 	if (!s_key) {
-		g_warning ("couldn't get private signing key");
-		return FALSE;
+		g_message ("couldn't get private signing key");
+		gkr_buffer_add_byte (resp, GKR_SSH_RES_FAILURE);
+		return TRUE;
 	}
 		
 	/* Do the magic */
@@ -404,6 +482,145 @@ op_sign_request (GkrBuffer *req, GkrBuffer *resp)
 	return TRUE; 
 }
 
+static gboolean
+make_decrypt_sexp (gcry_mpi_t mpi, gcry_sexp_t *sexp)
+{
+	gcry_error_t gcry;
+	
+	gcry = gcry_sexp_build (sexp, NULL, "(enc-val (flags) (rsa (a %m)))", mpi);
+	g_return_val_if_fail (gcry == 0, FALSE);
+	
+	return TRUE;
+}
+
+static gboolean 
+op_v1_challenge (GkrBuffer *req, GkrBuffer *resp)
+{
+	guchar session_id[16];
+	gcry_error_t gcry;
+	gcry_md_hd_t hd = NULL;
+	gcry_sexp_t skey;
+	gcry_sexp_t splain = NULL;
+	gcry_sexp_t sdata = NULL;
+	GkrPkPrivkey *key;
+	const guchar *hash;
+	gcry_mpi_t challenge = NULL;
+	guchar *raw = NULL;
+	gsize offset, n_raw;
+	guint32 resp_type;
+	gboolean ret;
+	guint i, bits;
+	guchar b;
+	
+	ret = FALSE;
+	offset = 5;
+	
+	if (!gkr_ssh_proto_read_public_v1 (req, &offset, &skey))
+		return FALSE;
+	
+	/* Lookup the key */
+	key = find_private_key (skey, TRUE, 1);
+	gcry_sexp_release (skey);
+	
+	/* Read the entire challenge */
+	if (!gkr_ssh_proto_read_mpi_v1 (req, &offset, &challenge))
+		goto cleanup;
+	
+	/* Only protocol 1.1 is supported */
+	if (req->len <= offset) {
+		gkr_buffer_add_byte (resp, GKR_SSH_RES_FAILURE);
+		ret = TRUE;
+		goto cleanup;
+	}
+		
+	/* Read out the session id, raw, unbounded */
+	for (i = 0; i < 16; ++i) {
+		if (!gkr_buffer_get_byte (req, offset, &offset, &b))
+			goto cleanup;
+		session_id[i] = b;
+	}
+		
+	/* And the response type */
+	if (!gkr_buffer_get_uint32 (req, offset, &offset, &resp_type))
+		goto cleanup;
+	
+	/* Not supported request type */
+	if (resp_type != 1) {
+		gkr_buffer_add_byte (resp, GKR_SSH_RES_FAILURE);
+		ret = TRUE;
+		goto cleanup;
+	}	
+
+	/* Didn't find a key earlier */
+	if (!key) {
+		gkr_buffer_add_byte (resp, GKR_SSH_RES_FAILURE);
+		ret = TRUE;
+		goto cleanup;
+	}
+
+	skey = gkr_pk_privkey_get_key (key);
+	if (!skey) {
+		g_message ("couldn't get private decryption key");
+		gkr_buffer_add_byte (resp, GKR_SSH_RES_FAILURE);
+		ret = TRUE;
+		goto cleanup;
+	}
+	
+	/* Make our data sexpression */
+	if (!make_decrypt_sexp (challenge, &sdata))
+		return FALSE;
+
+gkr_crypto_sexp_dump (sdata);
+
+	/* Do the magic */
+	gcry = gcry_pk_decrypt (&splain, sdata, skey);
+
+	if (gcry) {
+		g_warning ("decryption of the data failed: %s", gcry_strerror (gcry));
+		gkr_buffer_add_byte (resp, GKR_SSH_RES_FAILURE);
+		ret = TRUE;
+		goto cleanup;
+	}
+	
+gkr_crypto_sexp_dump (splain);
+
+	/* Number of bits in the key */
+	bits = gcry_pk_get_nbits (skey);
+	g_return_val_if_fail (bits, FALSE);
+
+	/* Get out the value */
+	raw = gkr_crypto_sexp_extract_mpi_padded (splain, bits, &n_raw, 
+	                                          gkr_crypto_rsa_unpad_pkcs1, "value", NULL);
+	g_return_val_if_fail (raw, FALSE);
+
+	/* Now build up a hash of this and the session_id */
+	gcry = gcry_md_open (&hd, GCRY_MD_MD5, 0);
+	g_return_val_if_fail (gcry == 0, FALSE);
+	gcry_md_write (hd, raw, n_raw);
+	gcry_md_write (hd, session_id, sizeof (session_id));
+	hash = gcry_md_read (hd, 0);
+	g_return_val_if_fail (hash, FALSE);
+	
+	gkr_buffer_add_byte (resp, GKR_SSH_RES_RSA_RESPONSE);
+	gkr_buffer_append (resp, hash, 16);
+	
+	ret = TRUE;
+	
+cleanup:
+	if (hd)
+		gcry_md_close (hd);
+	if (challenge)
+		gcry_mpi_release (challenge);
+	if (sdata)
+		gcry_sexp_release (sdata);
+	if (splain)
+		gcry_sexp_release (splain);
+	if (raw)
+		g_free (raw);
+	
+	return ret;
+}
+
 static gboolean 
 op_remove_identity (GkrBuffer *req, GkrBuffer *resp)
 {
@@ -415,7 +632,28 @@ op_remove_identity (GkrBuffer *req, GkrBuffer *resp)
 	if (!gkr_ssh_proto_read_public (req, &offset, &skey, NULL))
 		return FALSE;
 	
-	key = find_private_key (skey, FALSE);
+	key = find_private_key (skey, FALSE, 2);
+	gcry_sexp_release (skey);
+
+	if (key)
+		remove_session_key (key);
+	gkr_buffer_add_byte (resp, GKR_SSH_RES_SUCCESS);
+
+	return TRUE;	
+}
+
+static gboolean 
+op_v1_remove_identity (GkrBuffer *req, GkrBuffer *resp)
+{
+	GkrPkPrivkey *key;
+	gcry_sexp_t skey;
+	gsize offset;
+	
+	offset = 5;
+	if (!gkr_ssh_proto_read_public_v1 (req, &offset, &skey))
+		return FALSE;
+	
+	key = find_private_key (skey, FALSE, 1);
 	gcry_sexp_release (skey);
 
 	if (key)
@@ -429,11 +667,44 @@ static gboolean
 op_remove_all_identities (GkrBuffer *req, GkrBuffer *resp)
 {
 	GkrPkPrivkey *key;
+	GList *l, *removes = NULL;
 	
-	while (ssh_session_keys != NULL) {
-		key = GKR_PK_PRIVKEY (ssh_session_keys->data);
-		g_assert (GKR_IS_PK_PRIVKEY (key));	
-		remove_session_key (key);
+	if (session_manager) {
+		for (l = session_manager->objects; l; l = g_list_next (l)) {
+			if (!GKR_IS_PK_PRIVKEY (l->data))
+				continue;
+			key = GKR_PK_PRIVKEY (l->data);
+			if (!check_v1_key (key))
+				removes = g_list_prepend (removes, key);
+		}
+
+		for (l = removes; l; l = g_list_next (l))
+			remove_session_key (GKR_PK_PRIVKEY (l->data));
+		g_list_free (removes);
+	}
+	
+	gkr_buffer_add_byte (resp, GKR_SSH_RES_SUCCESS);
+	return TRUE;
+}
+
+static gboolean 
+op_v1_remove_all_identities (GkrBuffer *req, GkrBuffer *resp)
+{
+	GkrPkPrivkey *key;
+	GList *l, *removes = NULL;
+	
+	if (session_manager) {
+		for (l = session_manager->objects; l; l = g_list_next (l)) {
+			if (!GKR_IS_PK_PRIVKEY (l->data))
+				continue;
+			key = GKR_PK_PRIVKEY (l->data);
+			if (check_v1_key (key))
+				removes = g_list_prepend (removes, key);
+		}
+		
+		for (l = removes; l; l = g_list_next (l))
+			remove_session_key (GKR_PK_PRIVKEY (l->data));
+		g_list_free (removes);
 	}
 	
 	gkr_buffer_add_byte (resp, GKR_SSH_RES_SUCCESS);
@@ -464,15 +735,15 @@ op_invalid (GkrBuffer *req, GkrBuffer *resp)
 
 const GkrSshOperation gkr_ssh_operations[GKR_SSH_OP_MAX] = {
      op_invalid,                                 /* 0 */
-     op_not_implemented_failure,                 /* GKR_SSH_OP_REQUEST_RSA_IDENTITIES */
+     op_v1_request_identities,                   /* GKR_SSH_OP_REQUEST_RSA_IDENTITIES */
      op_invalid,                                 /* 2 */
-     op_not_implemented_failure,                 /* GKR_SSH_OP_RSA_CHALLENGE */
+     op_v1_challenge,                            /* GKR_SSH_OP_RSA_CHALLENGE */
      op_invalid,                                 /* 4 */
      op_invalid,                                 /* 5 */
      op_invalid,                                 /* 6 */
-     op_not_implemented_failure,                 /* GKR_SSH_OP_ADD_RSA_IDENTITY */
-     op_not_implemented_failure,                 /* GKR_SSH_OP_REMOVE_RSA_IDENTITY */
-     op_not_implemented_success,                 /* GKR_SSH_OP_REMOVE_ALL_RSA_IDENTITIES */
+     op_v1_add_identity,                         /* GKR_SSH_OP_ADD_RSA_IDENTITY */
+     op_v1_remove_identity,                      /* GKR_SSH_OP_REMOVE_RSA_IDENTITY */
+     op_v1_remove_all_identities,                /* GKR_SSH_OP_REMOVE_ALL_RSA_IDENTITIES */
      op_invalid,                                 /* 10 */     
      op_request_identities,                      /* GKR_SSH_OP_REQUEST_IDENTITIES */
      op_invalid,                                 /* 12 */
@@ -487,7 +758,7 @@ const GkrSshOperation gkr_ssh_operations[GKR_SSH_OP_MAX] = {
      op_not_implemented_failure,                 /* GKR_SSH_OP_REMOVE_SMARTCARD_KEY */
      op_not_implemented_success,                 /* GKR_SSH_OP_LOCK */
      op_not_implemented_success,                 /* GKR_SSH_OP_UNLOCK */
-     op_not_implemented_failure,                 /* GKR_SSH_OP_ADD_RSA_ID_CONSTRAINED */
+     op_v1_add_identity,                         /* GKR_SSH_OP_ADD_RSA_ID_CONSTRAINED */
      op_not_implemented_failure,                 /* GKR_SSH_OP_ADD_ID_CONSTRAINED */
      op_not_implemented_failure,                 /* GKR_SSH_OP_ADD_SMARTCARD_KEY_CONSTRAINED */
 };

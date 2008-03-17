@@ -102,8 +102,8 @@ int		gkr_buffer_append 		(GkrBuffer *buffer,
 						 const unsigned char *val,
 						 size_t len);
 
-int		gkr_buffer_add_empty	        (GkrBuffer *buffer,
-						 size_t len);
+unsigned char*  gkr_buffer_add_empty            (GkrBuffer *buffer,
+                                                 size_t len);
 
 int 		gkr_buffer_add_byte		(GkrBuffer *buffer,
 						 unsigned char val);
@@ -129,6 +129,23 @@ int		gkr_buffer_get_uint32		(GkrBuffer *buffer,
 						 size_t offset,
 						 size_t *next_offset,
 						 uint32_t *val);
+
+void 		gkr_buffer_encode_uint16	(unsigned char* buf, 
+						 uint16_t val);
+
+uint16_t	gkr_buffer_decode_uint16	(unsigned char* buf);
+
+int 		gkr_buffer_add_uint16		(GkrBuffer *buffer,
+						 uint16_t val);
+
+int		gkr_buffer_set_uint16		(GkrBuffer *buffer,
+						 size_t offset, 
+						 uint16_t val);
+
+int		gkr_buffer_get_uint16		(GkrBuffer *buffer,
+						 size_t offset,
+						 size_t *next_offset,
+						 uint16_t *val);
 
 int		gkr_buffer_add_byte_array	(GkrBuffer *buffer,
 						 const unsigned char *val,
@@ -158,8 +175,8 @@ int             gkr_buffer_add_stringv          (GkrBuffer *buffer,
 int             gkr_buffer_get_stringv          (GkrBuffer *buffer,
                                                  size_t offset,
                                                  size_t *next_offset,
-		                                         char ***strv_ret, 
-		                                         GkrBufferAllocator allocator);
+                                                 char ***strv_ret, 
+                                                 GkrBufferAllocator allocator);
 
 int		gkr_buffer_add_uint64		(GkrBuffer *buffer,
 						 uint64_t val);

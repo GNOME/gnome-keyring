@@ -32,6 +32,7 @@
 
 #include "common/gkr-async.h"
 #include "common/gkr-buffer.h"
+#include "common/gkr-crypto.h"
 #include "common/gkr-unix-credentials.h"
 
 #include "keyrings/gkr-keyring-login.h"
@@ -849,12 +850,12 @@ session_C_Encrypt (SessionInfo *sinfo, GkrPkcs11Message *req,
 	ctx = (CryptContext*)sinfo->operation_data;
 	switch (ctx->mechanism) {
 	case CKM_RSA_PKCS:
-		ret = gkr_pkcs11_rsa_encrypt (ctx->key, gkr_pkcs11_rsa_pad_two, 
+		ret = gkr_pkcs11_rsa_encrypt (ctx->key, gkr_crypto_rsa_pad_two, 
 		                              plain, n_plain, 
 	                                      &encrypted, &n_encrypted);
 		break;
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_encrypt (ctx->key, gkr_pkcs11_rsa_pad_raw, 
+		ret = gkr_pkcs11_rsa_encrypt (ctx->key, gkr_crypto_rsa_pad_raw, 
 		                              plain, n_plain, 
 	                                      &encrypted, &n_encrypted);
 		break;
@@ -948,7 +949,7 @@ session_C_Decrypt (SessionInfo *sinfo, GkrPkcs11Message *req,
 	ctx = (CryptContext*)sinfo->operation_data;
 	switch (ctx->mechanism) {
 	case CKM_RSA_PKCS:
-		ret = gkr_pkcs11_rsa_decrypt (ctx->key, gkr_pkcs11_rsa_unpad_two, 
+		ret = gkr_pkcs11_rsa_decrypt (ctx->key, gkr_crypto_rsa_unpad_two, 
 		                              encrypted, n_encrypted, 
 	                                      &data, &n_data);
 		break;
@@ -1094,12 +1095,12 @@ session_C_Sign (SessionInfo *sinfo, GkrPkcs11Message *req,
 	ctx = (CryptContext*)sinfo->operation_data;
 	switch (ctx->mechanism) {
 	case CKM_RSA_PKCS:
-		ret = gkr_pkcs11_rsa_sign (ctx->key, gkr_pkcs11_rsa_pad_one, 
+		ret = gkr_pkcs11_rsa_sign (ctx->key, gkr_crypto_rsa_pad_one, 
 		                           data, n_data, 
 		                           &signature, &n_signature);
 		break;
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_sign (ctx->key, gkr_pkcs11_rsa_pad_raw,
+		ret = gkr_pkcs11_rsa_sign (ctx->key, gkr_crypto_rsa_pad_raw,
 		                           data, n_data, 
 	                                   &signature, &n_signature);
 		break;
@@ -1216,12 +1217,12 @@ session_C_Verify (SessionInfo *sinfo, GkrPkcs11Message *req,
 	ctx = (CryptContext*)sinfo->operation_data;
 	switch (ctx->mechanism) {
 	case CKM_RSA_PKCS:
-		ret = gkr_pkcs11_rsa_verify (ctx->key, gkr_pkcs11_rsa_pad_one, 
+		ret = gkr_pkcs11_rsa_verify (ctx->key, gkr_crypto_rsa_pad_one, 
 		                             data, n_data, 
 	                                     signature, n_signature);
 		break;
 	case CKM_RSA_X_509:
-		ret = gkr_pkcs11_rsa_verify (ctx->key, gkr_pkcs11_rsa_pad_raw, 
+		ret = gkr_pkcs11_rsa_verify (ctx->key, gkr_crypto_rsa_pad_raw, 
 		                             data, n_data, 
 	                                     signature, n_signature);
 		break;

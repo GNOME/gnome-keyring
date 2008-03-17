@@ -511,6 +511,7 @@ gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_
 	gkrid keyid;
 	
 	g_return_val_if_fail (s_key, NULL);
+	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (manager), NULL);
 	
 	/* Make sure we have the keyid properly */
 	keyid = gkr_crypto_skey_make_id (s_key);

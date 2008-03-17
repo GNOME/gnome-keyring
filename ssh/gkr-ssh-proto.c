@@ -71,6 +71,36 @@ gkr_ssh_proto_read_mpi (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
 }
 
 gboolean
+gkr_ssh_proto_read_mpi_v1 (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
+{
+	const guchar *data;
+	gsize bytes;
+	gcry_error_t gcry;
+	guint16 bits;
+	
+	/* Get the number of bits */
+	if (!gkr_buffer_get_uint16 (req, *offset, offset, &bits))
+		return FALSE;
+	
+	/* Figure out the number of binary bytes following */
+	bytes = (bits + 7) / 8;
+	if (bytes > 8 * 1024)
+		return FALSE;
+	
+	/* Pull these out directly */
+	if (req->len < *offset + bytes)
+		return FALSE;
+	data = req->buf + *offset;
+	*offset += bytes;
+	
+	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_USG, data, bytes, NULL);
+	if (gcry)
+		return FALSE;
+		
+	return TRUE;
+}
+
+gboolean
 gkr_ssh_proto_write_mpi (GkrBuffer *resp, gcry_mpi_t mpi, int format)
 {
 	guchar *buf;
@@ -88,6 +118,39 @@ gkr_ssh_proto_write_mpi (GkrBuffer *resp, gcry_mpi_t mpi, int format)
 
 	/* Write in directly to buffer */
 	gcry = gcry_mpi_print (format, buf, len, &len, mpi);	
+	g_return_val_if_fail (gcry == 0, FALSE);
+
+	return TRUE;
+}
+
+gboolean
+gkr_ssh_proto_write_mpi_v1 (GkrBuffer *resp, gcry_mpi_t mpi)
+{
+  	gcry_error_t gcry;
+	guchar *buf;
+	gsize bits;
+	gsize bytes, len;
+	
+	bits = gcry_mpi_get_nbits (mpi);
+	g_return_val_if_fail (bits <= G_MAXUSHORT, FALSE);
+
+	bytes = (bits + 7) / 8;
+	
+	/* Get the size */
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &len, mpi);
+	g_return_val_if_fail (gcry == 0, FALSE);
+	g_return_val_if_fail (bytes == len, FALSE);
+	
+	if (!gkr_buffer_add_uint16 (resp, bits))
+		return FALSE;
+	
+	/* Make a space for it in the buffer */
+	buf = gkr_buffer_add_empty (resp, len);
+	if (!buf)
+		return FALSE;
+	
+	/* Write in directly to buffer */
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, buf, bytes, &len, mpi);	
 	g_return_val_if_fail (gcry == 0, FALSE);
 
 	return TRUE;
@@ -191,6 +254,48 @@ gkr_ssh_proto_read_private_rsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp
 	return TRUE;
 }
 
+gboolean
+gkr_ssh_proto_read_private_v1 (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+{
+	gcry_mpi_t n, e, d, p, q, u;
+	gcry_mpi_t tmp;
+	int gcry;
+	
+	if (!gkr_ssh_proto_read_mpi_v1 (req, offset, &n) ||
+	    !gkr_ssh_proto_read_mpi_v1 (req, offset, &e) ||
+	    !gkr_ssh_proto_read_mpi_v1 (req, offset, &d) ||
+	    !gkr_ssh_proto_read_mpi_v1 (req, offset, &u) ||
+	    !gkr_ssh_proto_read_mpi_v1 (req, offset, &p) ||
+	    !gkr_ssh_proto_read_mpi_v1 (req, offset, &q))
+	    	return FALSE;
+	
+	/* Fix up the incoming key so gcrypt likes it */    	
+	if (gcry_mpi_cmp (p, q) > 0) {
+		/* P shall be smaller then Q!  Swap primes.  iqmp becomes u.  */
+		tmp = p;
+		p = q;
+		q = tmp;
+	} else {
+    		/* U needs to be recomputed.  */
+		gcry_mpi_invm (u, p, q);
+	}
+
+	gcry = gcry_sexp_build (sexp, NULL, SEXP_PRIVATE_RSA, n, e, d, p, q, u);
+	if (gcry) {
+		g_warning ("couldn't parse incoming private RSA key: %s", gcry_strerror (gcry));
+		return FALSE;
+	}
+
+	gcry_mpi_release (n);
+	gcry_mpi_release (e);
+	gcry_mpi_release (d);
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (u);
+		
+	return TRUE;
+}
+
 #define SEXP_PUBLIC_RSA  \
 	"(public-key"    \
 	"  (rsa"         \
@@ -217,6 +322,32 @@ gkr_ssh_proto_read_public_rsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 	gcry_mpi_release (e);
 		
 	return TRUE;
+}
+
+gboolean
+gkr_ssh_proto_read_public_v1 (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+{
+	gcry_mpi_t n, e;
+	guint32 bits;
+	int gcry;
+	
+	if (!gkr_buffer_get_uint32 (req, *offset, offset, &bits))
+		return FALSE;
+	
+	if (!gkr_ssh_proto_read_mpi_v1 (req, offset, &e) ||
+	    !gkr_ssh_proto_read_mpi_v1 (req, offset, &n))
+	    	return FALSE;
+
+	gcry = gcry_sexp_build (sexp, NULL, SEXP_PUBLIC_RSA, n, e);
+	if (gcry) {
+		g_warning ("couldn't parse incoming public RSA key: %s", gcry_strerror (gcry));
+		return FALSE;
+	}
+
+	gcry_mpi_release (n);
+	gcry_mpi_release (e);
+	
+	return TRUE;	
 }
 
 #define SEXP_PRIVATE_DSA \
@@ -386,6 +517,38 @@ gkr_ssh_proto_write_public_dsa (GkrBuffer *resp, gcry_sexp_t key)
 	g_return_val_if_fail (ret, FALSE);
 	
 	ret = gkr_ssh_proto_write_mpi (resp, mpi, GCRYMPI_FMT_STD);
+	gcry_mpi_release (mpi);
+	
+	return ret;
+}
+
+gboolean
+gkr_ssh_proto_write_public_v1 (GkrBuffer *resp, gcry_sexp_t key)
+{
+	gboolean ret = FALSE;
+	gcry_mpi_t mpi;
+	unsigned int bits;
+	
+	/* This is always an RSA key. */
+	
+	/* Write out the number of bits of the key */
+	bits = gcry_pk_get_nbits (key);
+	g_return_val_if_fail (bits > 0, FALSE);
+	gkr_buffer_add_uint32 (resp, bits);
+
+	/* Write out the exponent */
+	ret = gkr_crypto_sexp_extract_mpi (key, &mpi, "rsa", "e", NULL);
+	g_return_val_if_fail (ret, FALSE);
+	ret = gkr_ssh_proto_write_mpi_v1 (resp, mpi);
+	gcry_mpi_release (mpi);
+	
+	if (!ret)
+		return ret;
+
+	/* Write out the public value */
+	ret = gkr_crypto_sexp_extract_mpi (key, &mpi, "rsa", "n", NULL);
+	g_return_val_if_fail (ret, FALSE);
+	ret = gkr_ssh_proto_write_mpi_v1 (resp, mpi);
 	gcry_mpi_release (mpi);
 	
 	return ret;

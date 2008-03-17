@@ -30,165 +30,6 @@
 #include "pk/gkr-pk-pubkey.h"
 #include "pk/gkr-pk-privkey.h"
 
-/* -------------------------------------------------------------------
- * RSA PADDING
- */
-
-guchar*
-gkr_pkcs11_rsa_pad_raw (guint n_modulus, const guchar* raw,
-                        gsize n_raw, gsize *n_padded)
-{
-	gint total, n_pad;
-	guchar *padded;
-
-	/*
-	 * 0x00 0x00 0x00 ... 0x?? 0x?? 0x?? ...
-         *   padding               data
-         */
-
-	total = n_modulus / 8;
-	n_pad = total - n_raw;
-	if (n_pad < 0) /* minumum padding */
-		return NULL;
-
-	padded = g_new0 (guchar, total);
-	memset (padded, 0x00, n_pad);
-	memcpy (padded + n_pad, raw, n_raw);
-	
-	*n_padded = total;
-	return padded;
-}
-
-guchar*
-gkr_pkcs11_rsa_pad_one (guint n_modulus, const guchar* raw, 
-                        gsize n_raw, gsize *n_padded)
-{
-	gint total, n_pad;
-	guchar *padded;
-
-	/*
-	 * 0x00 0x01 0xFF 0xFF ... 0x00 0x?? 0x?? 0x?? ...
-         *      type  padding              data
-         */
-
-	total = n_modulus / 8;
-	n_pad = total - 3 - n_raw;
-	if (n_pad < 8) /* minumum padding */
-		return NULL;
-
-	padded = g_new0 (guchar, total);
-	padded[1] = 1; /* Block type */
-	memset (padded + 2, 0xff, n_pad);
-	memcpy (padded + 3 + n_pad, raw, n_raw); 
-	
-	*n_padded = total;
-	return padded;
-}
-
-static void
-fill_random_nonzero (guchar *data, gsize n_data)
-{
-	guchar *rnd;
-	guint n_zero, i, j;
-	
-	gcry_randomize (data, n_data, GCRY_STRONG_RANDOM);
-
-	/* Find any zeros in random data */
-	n_zero = 0;
-	for (i = 0; i < n_data; ++i) {
-		if (data[i] == 0x00)
-			++n_zero;
-	}
-
-	while (n_zero > 0) {
-		rnd = gcry_random_bytes (n_zero, GCRY_STRONG_RANDOM);
-		n_zero = 0;
-		for (i = 0, j = 0; i < n_data; ++i) {
-			if (data[i] != 0x00)
-				continue;
-				
-			/* Use some of the replacement data */
-			data[i] = rnd[j];
-			++j;
-			
-			/* It's zero again :( */
-			if (data[i] == 0x00)
-				n_zero++;
-		}
-		
-		gcry_free (rnd);
-	}
-}
-
-guchar*
-gkr_pkcs11_rsa_pad_two (guint n_modulus, const guchar* raw, 
-                        gsize n_raw, gsize *n_padded)
-{
-	gint total, n_pad;
-	guchar *padded;
-
-	/*
-	 * 0x00 0x01 0x?? 0x?? ... 0x00 0x?? 0x?? 0x?? ...
-         *      type  padding              data
-         */
-
-	total = n_modulus / 8;
-	n_pad = total - 3 - n_raw;
-	if (n_pad < 8) /* minumum padding */
-		return NULL;
-
-	padded = g_new0 (guchar, total);
-	padded[1] = 2; /* Block type */
-	fill_random_nonzero (padded + 2, n_pad);
-	memcpy (padded + 3 + n_pad, raw, n_raw); 
-	
-	*n_padded = total;
-	return padded;
-}
-
-static guchar*
-unpad_rsa_pkcs1 (guchar bt, guint n_modulus, const guchar* padded,
-                 gsize n_padded, gsize *n_raw)
-{ 
-	const guchar *at;
-	guchar *raw;
-	
-	/* The absolute minimum size including padding */
-	g_return_val_if_fail (n_modulus / 8 >= 3 + 8, NULL);
-	
-	if (n_padded != n_modulus / 8)
-		return NULL;
-		
-	/* Check the header */
-	if (padded[0] != 0x00 || padded[1] != bt)
-		return NULL;
-	
-	/* The first zero byte after the header */
-	at = memchr (padded + 2, 0x00, n_padded - 2);
-	if (!at)
-		return NULL;
-		
-	++at;
-	*n_raw = n_padded - (at - padded);
-	raw = g_new0 (guchar, *n_raw);
-	memcpy (raw, at, *n_raw);
-	return raw;
-}
-
-guchar* 
-gkr_pkcs11_rsa_unpad_one (guint n_modulus, const guchar *raw, 
-                          gsize n_raw, gsize *n_padded)
-{
-	return unpad_rsa_pkcs1 (0x01, n_modulus, raw, n_raw, n_padded);
-}
-
-guchar* 
-gkr_pkcs11_rsa_unpad_two (guint n_modulus, const guchar *raw, 
-                          gsize n_raw, gsize *n_padded)
-{
-	return unpad_rsa_pkcs1 (0x02, n_modulus, raw, n_raw, n_padded);
-}
-
 static CK_RV
 object_to_public_key (GkrPkObject *object, gcry_sexp_t *s_key)
 {
@@ -236,7 +77,7 @@ object_to_private_key (GkrPkObject *object, gcry_sexp_t *s_key)
 }
 
 static CK_RV
-data_to_sexp (const gchar *format, guint nbits, GkrPkcs11RsaPadding padfunc, 
+data_to_sexp (const gchar *format, guint nbits, GkrCryptoPadding padfunc, 
               const guchar *data, gsize n_data, gcry_sexp_t *sexp)
 {
 	guchar *padded = NULL;
@@ -274,46 +115,24 @@ data_to_sexp (const gchar *format, guint nbits, GkrPkcs11RsaPadding padfunc,
 
 static CK_RV
 sexp_to_data (const gchar* format1, const gchar *format2, const gchar *format3,
-              guint nbits, GkrPkcs11RsaPadding padfunc, gcry_sexp_t sexp, 
+              guint nbits, GkrCryptoPadding padfunc, gcry_sexp_t sexp, 
               guchar **data, gsize *n_data)
 {
-	guchar *raw;
-	gsize n_raw;
-	gboolean res;
-	
 	g_assert (format1);
 	g_assert (sexp);
 	g_assert (data);
 	g_assert (n_data);
 
-	*n_data = nbits / 8;
-	*data = g_malloc0 (*n_data);
-	
 	/* Now extract and send it back out */
-	res = gkr_crypto_sexp_extract_mpi_aligned (sexp, *data, *n_data, 
-	                                           format1, format2, format3, NULL);
-	g_return_val_if_fail (res, CKR_GENERAL_ERROR);
+	*data = gkr_crypto_sexp_extract_mpi_padded (sexp, nbits, n_data, padfunc,
+	                                            format1, format2, format3, NULL);
+	g_return_val_if_fail (*data, CKR_GENERAL_ERROR);
 
-	/* Now we unpad it if necessary */
-	if (padfunc) {
-		raw = (padfunc) (nbits, *data, *n_data, &n_raw);
-		
-		/* 
-		 * If the unpadding failed, then it's probably 
-		 * invalid data sent for decryption. Ignore.
-		 */
-		if (raw) {
-			g_free (*data); 
-			*data = raw;
-			*n_data = n_raw;
-		}
-	}
-	
 	return CKR_OK;  
 } 
 
 CK_RV
-gkr_pkcs11_rsa_encrypt (GkrPkObject *key, GkrPkcs11RsaPadding padfunc,
+gkr_pkcs11_rsa_encrypt (GkrPkObject *key, GkrCryptoPadding padfunc,
                         const guchar *plain, gsize n_plain, 
                         guchar **encrypted, gsize *n_encrypted)
 {
@@ -360,7 +179,7 @@ gkr_pkcs11_rsa_encrypt (GkrPkObject *key, GkrPkcs11RsaPadding padfunc,
 }
 
 CK_RV
-gkr_pkcs11_rsa_decrypt (GkrPkObject *object, GkrPkcs11RsaPadding padfunc, 
+gkr_pkcs11_rsa_decrypt (GkrPkObject *object, GkrCryptoPadding padfunc, 
                         const guchar *encrypted, gsize n_encrypted, 
                         guchar **plain, gsize *n_plain)
 {
@@ -412,7 +231,7 @@ gkr_crypto_sexp_dump (splain);
 }
 
 CK_RV
-gkr_pkcs11_rsa_sign (GkrPkObject *object, GkrPkcs11RsaPadding padfunc, 
+gkr_pkcs11_rsa_sign (GkrPkObject *object, GkrCryptoPadding padfunc, 
                      const guchar *input, gsize n_input, 
                      guchar **signature, gsize *n_signature)
 {
@@ -459,7 +278,7 @@ gkr_pkcs11_rsa_sign (GkrPkObject *object, GkrPkcs11RsaPadding padfunc,
 }
 
 CK_RV
-gkr_pkcs11_rsa_verify (GkrPkObject *object, GkrPkcs11RsaPadding padfunc, 
+gkr_pkcs11_rsa_verify (GkrPkObject *object, GkrCryptoPadding padfunc, 
                        const guchar *data, gsize n_data, 
                        const guchar *signature, gsize n_signature)
 {

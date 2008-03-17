@@ -192,14 +192,14 @@ gkr_buffer_resize (GkrBuffer *buffer, size_t len)
 	return 1;
 }
 
-int
+unsigned char*
 gkr_buffer_add_empty (GkrBuffer *buffer, size_t len)
 {
+	size_t pos = buffer->len;
 	if (!gkr_buffer_reserve (buffer, buffer->len + len))
-		return 0;
-	
+		return NULL;
 	buffer->len += len;
-	return 1;
+	return buffer->buf + pos;
 }
 
 int 
@@ -238,6 +238,60 @@ gkr_buffer_get_byte (GkrBuffer *buffer, size_t offset,
 	if (next_offset != NULL)
 		*next_offset = offset + 1;
 	return 1;
+}
+
+void
+gkr_buffer_encode_uint16 (unsigned char* buf, uint16_t val)
+{
+	buf[0] = (val >> 8) & 0xff;
+	buf[1] = (val >> 0) & 0xff;	
+}
+
+uint16_t
+gkr_buffer_decode_uint16 (unsigned char* buf)
+{
+	uint16_t val = buf[0] << 8 | buf[1];
+	return val;
+}
+
+int
+gkr_buffer_add_uint16 (GkrBuffer *buffer, uint16_t val)
+{
+	if (!gkr_buffer_reserve (buffer, buffer->len + 2))
+		return 0; /* failures already incremented */
+	buffer->len += 2;
+	gkr_buffer_set_uint16 (buffer, buffer->len - 2, val);
+	return 1;	
+}
+
+int
+gkr_buffer_set_uint16 (GkrBuffer *buffer, size_t offset, uint16_t val)
+{
+	unsigned char *ptr;
+	if (buffer->len < 2 || offset > buffer->len - 2) {
+		buffer->failures++;
+		return 0;
+	}
+	ptr = (unsigned char*)buffer->buf + offset;
+	gkr_buffer_encode_uint16 (ptr, val);
+	return 1;
+}
+
+int
+gkr_buffer_get_uint16 (GkrBuffer *buffer, size_t offset,
+                       size_t *next_offset, uint16_t *val)
+{
+	unsigned char *ptr;
+	if (buffer->len < 2 || offset > buffer->len - 2) {
+		buffer->failures++;
+		return 0;
+	}
+	ptr = (unsigned char*)buffer->buf + offset;
+	if (val != NULL)
+		*val = gkr_buffer_decode_uint16 (ptr);
+	if (next_offset != NULL)
+		*next_offset = offset + 2;
+	return 1;	
 }
 
 void 
@@ -338,18 +392,13 @@ gkr_buffer_add_byte_array (GkrBuffer *buffer, const unsigned char *val,
 unsigned char*
 gkr_buffer_add_byte_array_empty (GkrBuffer *buffer, size_t vlen)
 {
-	size_t pos;
 	if (vlen >= 0x7fffffff) {
 		buffer->failures++;
 		return NULL; 
 	}
 	if (!gkr_buffer_add_uint32 (buffer, vlen))
 		return NULL;
-	pos = buffer->len;
-	/* This, as any gkr_buffer_add_* can reallocate */
-	if (!gkr_buffer_add_empty (buffer, vlen))
-		return NULL;
-	return buffer->buf + pos;
+	return gkr_buffer_add_empty (buffer, vlen);
 }
 
 int

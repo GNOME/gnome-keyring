@@ -29,6 +29,10 @@
 
 #include "gkr-id.h"
 
+typedef guchar* (*GkrCryptoPadding) (guint n_modulus, const guchar* raw, 
+                                     gsize n_raw, gsize *n_padded);
+
+
 void               gkr_crypto_setup                     (void);
 
 gboolean           gkr_crypto_hex_encode                (const guchar *data, gsize n_data, 
@@ -63,7 +67,11 @@ gcry_sexp_t        gkr_crypto_sexp_get_child            (gcry_sexp_t sexp, ...)
 gboolean           gkr_crypto_sexp_extract_mpi          (gcry_sexp_t sexp, gcry_mpi_t *mpi, ...)
                                                          G_GNUC_NULL_TERMINATED;
 
-gboolean           gkr_crypto_sexp_extract_mpi_aligned  (gcry_sexp_t sexp, guchar* block, gsize n_block, ...)
+guchar*            gkr_crypto_sexp_extract_mpi_padded   (gcry_sexp_t sexp, guint bits, gsize *n_data, 
+                                                         GkrCryptoPadding padfunc, ...) 
+                                                         G_GNUC_NULL_TERMINATED;
+
+gboolean           gkr_crypto_sexp_extract_mpi_aligned  (gcry_sexp_t sexp, guchar* block, gsize n_block, ...) 
                                                          G_GNUC_NULL_TERMINATED;
 
 void               gkr_crypto_sexp_dump                 (gcry_sexp_t sexp);
@@ -74,5 +82,23 @@ gboolean           gkr_crypto_skey_parse                (gcry_sexp_t s_key, int 
 gkrid              gkr_crypto_skey_make_id              (gcry_sexp_t s_key);
 
 gboolean           gkr_crypto_skey_private_to_public    (gcry_sexp_t privkey, gcry_sexp_t *pubkey);
+
+guchar*	           gkr_crypto_rsa_pad_raw               (guint bits, const guchar* raw,
+                                                         gsize n_raw, gsize *n_padded);
+
+guchar*            gkr_crypto_rsa_pad_one               (guint bits, const guchar* raw, 
+                                                         gsize n_raw, gsize *n_padded);
+
+guchar*            gkr_crypto_rsa_pad_two               (guint bits, const guchar* raw, 
+                                                         gsize n_raw, gsize *n_padded);
+
+guchar*            gkr_crypto_rsa_unpad_pkcs1           (guint bits, const guchar *padded,
+                                                         gsize n_padded, gsize *n_raw);
+
+guchar*            gkr_crypto_rsa_unpad_one             (guint bits, const guchar *padded, 
+                                                         gsize n_padded, gsize *n_raw);
+
+guchar*            gkr_crypto_rsa_unpad_two             (guint bits, const guchar* padded, 
+                                                         gsize n_padded, gsize *n_raw);
 
 #endif /*GKRCRYPTO_H_*/

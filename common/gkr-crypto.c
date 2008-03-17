@@ -698,15 +698,78 @@ gkr_crypto_sexp_extract_mpi (gcry_sexp_t sexp, gcry_mpi_t *mpi, ...)
 	return (*mpi) ? TRUE : FALSE;
 }
 
+static gboolean
+print_mpi_aligned (gcry_mpi_t mpi, guchar *block, gsize n_block)
+{
+	gcry_error_t gcry;
+	gsize offset, len;
+	
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &len, mpi);
+	g_return_val_if_fail (gcry == 0, FALSE);
+
+	if (n_block < len)
+		return FALSE;
+	
+	offset = n_block - len;
+	memset (block, 0, offset);
+	
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, block + offset, len, &len, mpi);
+	g_return_val_if_fail (gcry == 0, FALSE);
+	g_return_val_if_fail (len == n_block - offset, FALSE);
+	
+	return TRUE;
+}
+
+guchar*
+gkr_crypto_sexp_extract_mpi_padded (gcry_sexp_t sexp, guint bits, gsize *n_data, 
+                                    GkrCryptoPadding padfunc, ...)
+{
+	gcry_sexp_t at = NULL;
+	gcry_mpi_t mpi;
+	va_list va;
+	guchar *padded, *data;
+	gsize n_padded;
+	
+	g_assert (sexp);
+	g_assert (n_data);
+	g_assert (padfunc);
+	g_assert (bits);
+	
+	va_start (va, padfunc);
+	at = sexp_get_childv (sexp, va);
+	va_end (va);
+	
+	if (!at)
+		return NULL;
+
+	/* Parse out the MPI */
+	mpi = gcry_sexp_nth_mpi (at ? at : sexp, 1, GCRYMPI_FMT_USG);
+	gcry_sexp_release (at);
+	
+	if (!mpi)
+		return NULL;
+	
+	/* Do we need to unpad the data? */
+	n_padded = (bits + 7) / 8;
+	data = NULL;
+	
+	/* Extract it aligned into this buffer */
+	padded = g_malloc0 (n_padded);
+	if (print_mpi_aligned (mpi, padded, n_padded))
+		data = (padfunc) (bits, padded, n_padded, n_data);
+	g_free (padded);
+	
+	gcry_mpi_release (mpi);
+	return data;	
+}
+
 gboolean
 gkr_crypto_sexp_extract_mpi_aligned (gcry_sexp_t sexp, guchar* block, gsize n_block, ...)
 {
 	gcry_sexp_t at = NULL;
-	gcry_error_t gcry;
 	gboolean ret;
 	gcry_mpi_t mpi;
 	va_list va;
-	gsize len;
 	
 	g_assert (sexp);
 	g_assert (block);
@@ -725,27 +788,8 @@ gkr_crypto_sexp_extract_mpi_aligned (gcry_sexp_t sexp, guchar* block, gsize n_bl
 	
 	if (!mpi)
 		return FALSE;
-	
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &len, mpi);
-	g_return_val_if_fail (gcry == 0, FALSE);
-	
-	ret = FALSE;
-	
-	/* Is it too long? */
-	if (len <= n_block) {
-		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, block, n_block, &len, mpi);
-		g_return_val_if_fail (gcry == 0, FALSE);
-		g_return_val_if_fail (len <= n_block, FALSE);
-		
-		/* Now align it if necessary */
-		if (len < n_block) {
-			memmove (block + (n_block - len), block, len);
-			memset (block, 0, (n_block - len));
-		}
-		
-		ret = TRUE;
-	}
-	
+
+	ret = print_mpi_aligned (mpi, block, n_block);
 	gcry_mpi_release (mpi);
 	return ret;
 }
@@ -919,4 +963,172 @@ gkr_crypto_skey_private_to_public (gcry_sexp_t privkey, gcry_sexp_t *pubkey)
 	
 	gcry_sexp_release (numbers);
 	return *pubkey ? TRUE : FALSE;
+}
+
+/* -------------------------------------------------------------------
+ * RSA PADDING
+ */
+
+guchar*
+gkr_crypto_rsa_pad_raw (guint n_modulus, const guchar* raw,
+                        gsize n_raw, gsize *n_padded)
+{
+	gint total, n_pad;
+	guchar *padded;
+
+	/*
+	 * 0x00 0x00 0x00 ... 0x?? 0x?? 0x?? ...
+         *   padding               data
+         */
+
+	total = n_modulus / 8;
+	n_pad = total - n_raw;
+	if (n_pad < 0) /* minumum padding */
+		return NULL;
+
+	padded = g_new0 (guchar, total);
+	memset (padded, 0x00, n_pad);
+	memcpy (padded + n_pad, raw, n_raw);
+	
+	*n_padded = total;
+	return padded;
+}
+
+guchar*
+gkr_crypto_rsa_pad_one (guint n_modulus, const guchar* raw, 
+                        gsize n_raw, gsize *n_padded)
+{
+	gint total, n_pad;
+	guchar *padded;
+
+	/*
+	 * 0x00 0x01 0xFF 0xFF ... 0x00 0x?? 0x?? 0x?? ...
+         *      type  padding              data
+         */
+
+	total = n_modulus / 8;
+	n_pad = total - 3 - n_raw;
+	if (n_pad < 8) /* minumum padding */
+		return NULL;
+
+	padded = g_new0 (guchar, total);
+	padded[1] = 1; /* Block type */
+	memset (padded + 2, 0xff, n_pad);
+	memcpy (padded + 3 + n_pad, raw, n_raw); 
+	
+	*n_padded = total;
+	return padded;
+}
+
+static void
+fill_random_nonzero (guchar *data, gsize n_data)
+{
+	guchar *rnd;
+	guint n_zero, i, j;
+	
+	gcry_randomize (data, n_data, GCRY_STRONG_RANDOM);
+
+	/* Find any zeros in random data */
+	n_zero = 0;
+	for (i = 0; i < n_data; ++i) {
+		if (data[i] == 0x00)
+			++n_zero;
+	}
+
+	while (n_zero > 0) {
+		rnd = gcry_random_bytes (n_zero, GCRY_STRONG_RANDOM);
+		n_zero = 0;
+		for (i = 0, j = 0; i < n_data; ++i) {
+			if (data[i] != 0x00)
+				continue;
+				
+			/* Use some of the replacement data */
+			data[i] = rnd[j];
+			++j;
+			
+			/* It's zero again :( */
+			if (data[i] == 0x00)
+				n_zero++;
+		}
+		
+		gcry_free (rnd);
+	}
+}
+
+guchar*
+gkr_crypto_rsa_pad_two (guint n_modulus, const guchar* raw, 
+                        gsize n_raw, gsize *n_padded)
+{
+	gint total, n_pad;
+	guchar *padded;
+
+	/*
+	 * 0x00 0x01 0x?? 0x?? ... 0x00 0x?? 0x?? 0x?? ...
+         *      type  padding              data
+         */
+
+	total = n_modulus / 8;
+	n_pad = total - 3 - n_raw;
+	if (n_pad < 8) /* minumum padding */
+		return NULL;
+
+	padded = g_new0 (guchar, total);
+	padded[1] = 2; /* Block type */
+	fill_random_nonzero (padded + 2, n_pad);
+	memcpy (padded + 3 + n_pad, raw, n_raw); 
+	
+	*n_padded = total;
+	return padded;
+}
+
+static guchar*
+unpad_rsa_pkcs1 (guchar bt, guint n_modulus, const guchar* padded,
+                 gsize n_padded, gsize *n_raw)
+{ 
+	const guchar *at;
+	guchar *raw;
+	
+	/* The absolute minimum size including padding */
+	g_return_val_if_fail (n_modulus / 8 >= 3 + 8, NULL);
+	
+	if (n_padded != n_modulus / 8)
+		return NULL;
+		
+	/* Check the header */
+	if (padded[0] != 0x00 || padded[1] != bt)
+		return NULL;
+	
+	/* The first zero byte after the header */
+	at = memchr (padded + 2, 0x00, n_padded - 2);
+	if (!at)
+		return NULL;
+		
+	++at;
+	*n_raw = n_padded - (at - padded);
+	raw = g_new0 (guchar, *n_raw);
+	memcpy (raw, at, *n_raw);
+	return raw;
+}
+
+guchar*
+gkr_crypto_rsa_unpad_pkcs1 (guint bits, const guchar *padded,
+                            gsize n_padded, gsize *n_raw)
+{
+	/* Further checks are done later */
+	g_return_val_if_fail (n_padded > 2, NULL);
+	return unpad_rsa_pkcs1 (padded[1], bits, padded, n_padded, n_raw);
+}
+
+guchar* 
+gkr_crypto_rsa_unpad_one (guint bits, const guchar *padded, 
+                          gsize n_padded, gsize *n_raw)
+{
+	return unpad_rsa_pkcs1 (0x01, bits, padded, n_padded, n_raw);
+}
+
+guchar* 
+gkr_crypto_rsa_unpad_two (guint bits, const guchar *padded, 
+                          gsize n_padded, gsize *n_raw)
+{
+	return unpad_rsa_pkcs1 (0x02, bits, padded, n_padded, n_raw);
 }

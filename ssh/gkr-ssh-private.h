@@ -88,7 +88,11 @@ const gchar*          gkr_ssh_proto_algo_to_keytype           (int algo);
 
 gboolean              gkr_ssh_proto_read_mpi                  (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi);
 
+gboolean              gkr_ssh_proto_read_mpi_v1               (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi);
+
 gboolean              gkr_ssh_proto_write_mpi                 (GkrBuffer *resp, gcry_mpi_t mpi, int format);
+
+gboolean              gkr_ssh_proto_write_mpi_v1              (GkrBuffer *resp, gcry_mpi_t mpi);
 
 gboolean              gkr_ssh_proto_read_public               (GkrBuffer *req, gsize *offset, gcry_sexp_t *key, int *algo);
 
@@ -96,15 +100,21 @@ gboolean              gkr_ssh_proto_read_public_rsa           (GkrBuffer *req, g
 
 gboolean              gkr_ssh_proto_read_public_dsa           (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp);
 
+gboolean              gkr_ssh_proto_read_public_v1            (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp);
+
 gboolean              gkr_ssh_proto_read_private_rsa          (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp);
 
 gboolean              gkr_ssh_proto_read_private_dsa          (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp);
+
+gboolean              gkr_ssh_proto_read_private_v1           (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp);
 
 gboolean              gkr_ssh_proto_write_public              (GkrBuffer *resp, int algorithm, gcry_sexp_t key);
 
 gboolean              gkr_ssh_proto_write_public_rsa          (GkrBuffer *resp, gcry_sexp_t key);
 
 gboolean              gkr_ssh_proto_write_public_dsa          (GkrBuffer *resp, gcry_sexp_t key);
+
+gboolean              gkr_ssh_proto_write_public_v1           (GkrBuffer *resp, gcry_sexp_t key);
 
 gboolean              gkr_ssh_proto_write_signature_rsa       (GkrBuffer *resp, gcry_sexp_t ssig);
 
