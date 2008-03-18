@@ -47,6 +47,9 @@ typedef struct _GkrLocationVolume {
 	gchar *prefix;
 	gchar *friendly;
 	gboolean hidden;
+#ifdef WITH_HAL
+	gboolean hal_volume;
+#endif
 } GkrLocationVolume;
 
 enum {
@@ -65,6 +68,8 @@ typedef struct _GkrLocationManagerPrivate GkrLocationManagerPrivate;
 struct _GkrLocationManagerPrivate {
 #ifdef WITH_HAL
 	LibHalContext *hal_ctx;
+	guint hal_retry;
+	DBusConnection *dbus_connection;
 #endif
 	GHashTable *volumes_by_name;
 	GHashTable *volumes_by_loc;
@@ -82,6 +87,11 @@ struct _GkrLocationManagerPrivate {
 	(G_TYPE_INSTANCE_GET_PRIVATE((o), GKR_TYPE_LOCATION_MANAGER, GkrLocationManagerPrivate))
 
 static GkrLocationManager *location_manager_singleton = NULL; 
+
+#ifdef WITH_HAL
+/* Forward declaration */
+static void location_manager_hal_init (GkrLocationManager *locmgr);
+#endif
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -261,6 +271,7 @@ hal_device_property (LibHalContext *hal_ctx, const char *udi, const char *key,
 	char *product = NULL;
 	DBusError error;
 	gboolean removable, is_mounted;
+	GkrLocationVolume *locvol;
 
 	if (g_ascii_strcasecmp (key, "volume.is_mounted") != 0)
 		return;
@@ -309,6 +320,8 @@ hal_device_property (LibHalContext *hal_ctx, const char *udi, const char *key,
 		
 		g_message ("adding removable location: %s at %s", name, mount); 
 		gkr_location_manager_register (locmgr, name, mount, friendly);
+		locvol = g_hash_table_lookup (pv->volumes_by_name, name);
+		locvol->hal_volume = TRUE;
 
 	/* A mount was removed? */		
 	} else if (!is_mounted && g_hash_table_lookup (pv->volumes_by_name, name)) {
@@ -350,49 +363,28 @@ populate_all_volumes (GkrLocationManager *locmgr)
 	}
 }	
 
-static void
-location_manager_hal_init (GkrLocationManager *locmgr)
+static gboolean
+location_manager_try_hal_connection (gpointer data) 
 {
+	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (data);
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	DBusConnection *dbus_connection;
-	DBusError error;
-	
-	pv->hal_ctx = libhal_ctx_new ();
-	if (!pv->hal_ctx) {
-		g_warning ("failed to create a HAL context\n");
-		return;
-	}
-	
-	/* 
-	 * Although we can be started before the session bus, we should be 
-	 * able to connect to the system bus without any trouble at all.
-	 */
 
-	dbus_error_init (&error);
-	dbus_connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (dbus_error_is_set (&error)) {
-		g_warning ("Error connecting to D-BUS system bus: %s", error.message);
-		dbus_error_free (&error);
-		return;
-	}
-	
-	gkr_dbus_connect_with_mainloop (dbus_connection, NULL);
+	pv->hal_retry = 0;
 
-	libhal_ctx_set_dbus_connection (pv->hal_ctx, dbus_connection);
+	location_manager_hal_init (locmgr);
 
-	libhal_ctx_set_device_added (pv->hal_ctx, hal_device_added);
-	libhal_ctx_set_device_removed (pv->hal_ctx, hal_device_removed);
-	libhal_ctx_set_device_property_modified (pv->hal_ctx, hal_device_property);
-	
-	if (!libhal_ctx_init (pv->hal_ctx, &error)) {
-		g_warning ("failed to initialize a HAL context: %s\n", error.message);
-		dbus_error_free (&error);
-		return;
-	}
-	
-	libhal_ctx_set_user_data (pv->hal_ctx, locmgr);
-	
-	populate_all_volumes (locmgr);
+	return FALSE;
+}
+
+static void
+location_manager_schedule_hal_retry (GkrLocationManager *locmgr) {
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+
+	g_message ("Scheduling hal init retry");
+
+	if (pv->hal_retry == 0)
+		pv->hal_retry = g_timeout_add_seconds (30, location_manager_try_hal_connection, 
+		                                       locmgr);
 }
 
 static void
@@ -403,7 +395,7 @@ location_manager_hal_uninit (GkrLocationManager *locmgr)
 
 	if (pv->hal_ctx) {
 		dbus_error_init (&error);
-		if (!libhal_ctx_shutdown (pv->hal_ctx, &error)) {
+		if (pv->dbus_connection != NULL && !libhal_ctx_shutdown (pv->hal_ctx, &error)) {
 			g_warning ("failed to shutdown HAL context: %s\n", error.message);
 			dbus_error_free (&error);
 		} 
@@ -412,6 +404,100 @@ location_manager_hal_uninit (GkrLocationManager *locmgr)
 			g_warning ("failed to free HAL context");
 		pv->hal_ctx = NULL;
 	}
+
+	if (pv->dbus_connection != NULL) {
+		gkr_dbus_disconnect_from_mainloop (pv->dbus_connection, NULL);
+		dbus_connection_unref (pv->dbus_connection);
+		pv->dbus_connection = NULL;
+	}
+}
+
+static void
+gather_hal_volume_names (gpointer key, gpointer value, gpointer user_data)
+{
+	GList **list = (GList**)user_data;
+	GkrLocationVolume *locvol = (GkrLocationVolume*)value;
+	if (locvol->hal_volume)
+		*list = g_list_prepend (*list, key);
+}
+
+static DBusHandlerResult
+location_manager_dbus_filter_function (DBusConnection *connection, DBusMessage *message, void *user_data) 
+{
+	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (user_data);
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	GList *l, *names = NULL;
+	
+	if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected") &&
+	    strcmp (dbus_message_get_path (message), DBUS_PATH_LOCAL) == 0) {
+		
+		/* Reconnect to HAL when we can */
+		location_manager_hal_uninit (locmgr);
+		location_manager_schedule_hal_retry (locmgr);
+
+		/* Remove all our HAL based volumes */
+		g_hash_table_foreach (pv->volumes_by_name, gather_hal_volume_names, &names);
+		for (l = names; l; l = g_list_next (l))
+			gkr_location_manager_unregister (locmgr, (const gchar*)l->data);
+		g_list_free (names);
+
+		return DBUS_HANDLER_RESULT_HANDLED;
+	}
+	
+	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
+static void
+location_manager_hal_init (GkrLocationManager *locmgr)
+{
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	DBusError error;
+
+	pv->hal_ctx = libhal_ctx_new ();
+	if (!pv->hal_ctx) {
+		g_warning ("failed to create a HAL context");
+		goto failed;
+	}
+	
+	/* 
+	 * Although we can be started before the session bus, we should be 
+	 * able to connect to the system bus without any trouble at all.
+	 */
+
+	dbus_error_init (&error);
+	pv->dbus_connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (dbus_error_is_set (&error)) {
+		g_warning ("error connecting to D-BUS system bus: %s", error.message);
+		dbus_error_free (&error);
+		goto failed;
+	}
+	
+	gkr_dbus_connect_with_mainloop (pv->dbus_connection, NULL);
+	dbus_connection_set_exit_on_disconnect (pv->dbus_connection, FALSE);
+
+	dbus_connection_add_filter (pv->dbus_connection, location_manager_dbus_filter_function, locmgr, NULL);
+
+	libhal_ctx_set_dbus_connection (pv->hal_ctx, pv->dbus_connection);
+
+	libhal_ctx_set_device_added (pv->hal_ctx, hal_device_added);
+	libhal_ctx_set_device_removed (pv->hal_ctx, hal_device_removed);
+	libhal_ctx_set_device_property_modified (pv->hal_ctx, hal_device_property);
+	
+	if (!libhal_ctx_init (pv->hal_ctx, &error)) {
+		g_warning ("failed to initialize a HAL context: %s\n", error.message);
+		dbus_error_free (&error);
+		goto failed;
+	}
+	
+	libhal_ctx_set_user_data (pv->hal_ctx, locmgr);
+	
+	populate_all_volumes (locmgr);
+
+	return;
+
+failed:
+	location_manager_hal_uninit (locmgr);
+	location_manager_schedule_hal_retry (locmgr);
 }
 
 #endif /* WITH_HAL */
@@ -471,6 +557,9 @@ gkr_location_manager_dispose (GObject *obj)
 
 #ifdef WITH_HAL
 	location_manager_hal_uninit (locmgr);
+	if (pv->hal_retry != 0)
+		g_source_remove (pv->hal_retry);
+	pv->hal_retry = 0;
 #endif
 
 	g_hash_table_remove_all (pv->volumes_by_loc);
@@ -578,6 +667,9 @@ gkr_location_manager_register (GkrLocationManager *locmgr, const gchar *name,
 	locvol->friendly = g_strdup (friendly);
 	locvol->volume_loc = volume_loc;
 	locvol->hidden = FALSE;
+#ifdef WITH_HAL
+	locvol->hal_volume = FALSE;
+#endif
 	
 	/* TODO: What about trailing slashes? */
 	

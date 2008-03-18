@@ -1,3 +1,9 @@
+2008-03-18  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-location.c: Reconnect to system bus whenever 
+	the system bus restarts. Patch by Sjoerd Simons. Fixes 
+	bug #522410 
+	
 2008-03-16  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-crypto.c:
