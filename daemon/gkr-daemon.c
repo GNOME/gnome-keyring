@@ -95,7 +95,7 @@ static GOptionEntry option_entries[] = {
 	{ "login", 'l', 0, G_OPTION_ARG_NONE, &unlock_with_login, 
 	  "Use login password from stdin", NULL },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
-	  "The components to run", "ssh,keyring" },
+	  "The components to run", "ssh,keyring,pkcs11" },
 	{ NULL }
 };
 
