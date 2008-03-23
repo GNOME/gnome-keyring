@@ -1,14 +1,14 @@
 # Vietnamese translation of Gnome Keyring.
 # Copyright © 2008 Gnome i18n Project for Vietnamese.
-# Nguyễn Thái Ngọc Duy <pclouds@vnlinux.org>, 2004.
+# Nguyễn Thái Ngọc Duy <pclouds@vnlinux.org>, 2004,2008.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2008.
-# 
+#
 msgid ""
-""
-msgstr "Project-Id-Version: gnome-keyring 2.21.4 TRUNK\n"
+msgstr ""
+"Project-Id-Version: gnome-keyring 2.21.4 TRUNK\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-22 17:44+0000\n"
-"PO-Revision-Date: 2008-01-05 18:07+1030\n"
+"POT-Creation-Date: 2008-02-14 23:37+0000\n"
+"PO-Revision-Date: 2008-03-23 16:41+0700\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -26,296 +26,337 @@ msgstr "Đĩa rời: %s"
 msgid "Removable Disk"
 msgstr "Đĩa rời"
 
-#: ../common/gkr-location.c:446
-#: ../common/gkr-location.c:458
+#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
 msgid "Home"
 msgstr "Nhà"
 
-#: ../common/gkr-location.c:980
-#: ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:540
+#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../pkix/gkr-pkix-parser.c:497 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Tập tin này nằm trên một đĩa hay ổ không có"
 
-#.TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:221
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:222
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
-msgstr "Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « <object prop='name'/> » "
+msgstr ""
+"Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « <object prop='name'/> » "
 "trong vòng khóa mặc định."
 
-#.TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:225
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:226
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
-msgstr "Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « <object prop='name'/> » "
+msgstr ""
+"Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « <object prop='name'/> » "
 "trong %s."
 
-#.TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231
-#: ../daemon/gkr-daemon-ops.c:241
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:232 ../daemon/gkr-daemon-ops.c:242
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "Ứng dụng « %s » muốn truy cập mật khẩu cho « <object prop='name'/> » trong "
+msgstr ""
+"Ứng dụng « %s » muốn truy cập mật khẩu cho « <object prop='name'/> » trong "
 "vòng khóa mặc định."
 
-#.TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:235
-#: ../daemon/gkr-daemon-ops.c:245
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "Ứng dụng « %s » muốn truy cập mật khẩu cho « <object prop='name'/> » trong %s."
+msgstr ""
+"Ứng dụng « %s » muốn truy cập mật khẩu cho « <object prop='name'/> » trong %"
+"s."
 
-#.TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:251
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:252
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "Ứng dụng lạ muốn truy cập mật khẩu cho « <object prop='name'/> » trong vòng "
+msgstr ""
+"Ứng dụng lạ muốn truy cập mật khẩu cho « <object prop='name'/> » trong vòng "
 "khóa mặc định."
 
-#.TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:254
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:255
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "Ứng dụng lạ muốn truy cập mật khẩu cho « <object prop='name'/> » trong %s."
+msgstr ""
+"Ứng dụng lạ muốn truy cập mật khẩu cho « <object prop='name'/> » trong %s."
 
-#.And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:260
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:261
 msgid "Allow access"
 msgstr "Cho phép truy xuất"
 
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 msgid "Allow application access to keyring?"
 msgstr "Cho phép ứng dụng truy xuất vòng khóa chứ?"
 
-#: ../daemon/gkr-daemon-ops.c:310
+#: ../daemon/gkr-daemon-ops.c:311
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "Mở khoá mật khẩu cho vòng khóa %s"
 
-#: ../daemon/gkr-daemon-ops.c:367
+#: ../daemon/gkr-daemon-ops.c:368
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị "
+msgstr ""
+"Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị "
 "khóa"
 
-#: ../daemon/gkr-daemon-ops.c:371
+#: ../daemon/gkr-daemon-ops.c:372
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa « %s », nhưng vòng đã bị khóa"
+msgstr ""
+"Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa « %s », nhưng vòng đã bị "
+"khóa"
 
-#: ../daemon/gkr-daemon-ops.c:377
-#: ../daemon/gkr-daemon-ops.c:387
+#: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "Ứng dụng « %s » muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị khóa"
+msgstr ""
+"Ứng dụng « %s » muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị khóa"
 
-#: ../daemon/gkr-daemon-ops.c:381
-#: ../daemon/gkr-daemon-ops.c:392
+#: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Ứng dụng « %s » muốn truy cập vào vòng khóa « %s », nhưng vòng đã bị khóa"
+msgstr ""
+"Ứng dụng « %s » muốn truy cập vào vòng khóa « %s », nhưng vòng đã bị khóa"
 
-#: ../daemon/gkr-daemon-ops.c:398
+#: ../daemon/gkr-daemon-ops.c:399
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
-msgstr "Ứng dụng lạ muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị khóa"
+msgstr ""
+"Ứng dụng lạ muốn truy cập vào vòng khóa mặc định, nhưng vòng đã bị khóa"
 
-#: ../daemon/gkr-daemon-ops.c:402
+#: ../daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Ứng dụng lạ muốn truy cập vào vòng khóa « %s », nhưng vòng đã bị khóa"
 
-#: ../daemon/gkr-daemon-ops.c:409
+#: ../daemon/gkr-daemon-ops.c:410
 msgid "Enter password for default keyring to unlock"
 msgstr "Hãy nhập mật khẩu cho vòng khóa mặc định để mở vòng khóa"
 
-#: ../daemon/gkr-daemon-ops.c:411
+#: ../daemon/gkr-daemon-ops.c:412
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Hãy nhập mật khẩu cho vòng khóa « %s » để mở vòng khóa"
 
-#.And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:415
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:416
 msgid "Unlock Keyring"
 msgstr "Mở vòng"
 
-#: ../daemon/gkr-daemon-ops.c:427
+#: ../daemon/gkr-daemon-ops.c:428
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Tự động mở khoá vòng khoá này khi tôi đăng nhập."
 
-#: ../daemon/gkr-daemon-ops.c:463
+#: ../daemon/gkr-daemon-ops.c:464
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "Ứng dụng « %s » (%s) muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật "
+msgstr ""
+"Ứng dụng « %s » (%s) muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật "
 "khẩu bạn muốn dùng để mở vòng khóa này."
 
-#: ../daemon/gkr-daemon-ops.c:467
+#: ../daemon/gkr-daemon-ops.c:468
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Ứng dụng « %s » (%s) muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu "
+msgstr ""
+"Ứng dụng « %s » (%s) muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu "
 "bạn muốn dùng để mở vòng khóa này."
 
-#: ../daemon/gkr-daemon-ops.c:473
-#: ../daemon/gkr-daemon-ops.c:483
+#: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "Ứng dụng « %s » muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật khẩu "
+msgstr ""
+"Ứng dụng « %s » muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật khẩu "
 "bạn muốn dùng để mở vòng khóa này."
 
-#: ../daemon/gkr-daemon-ops.c:477
-#: ../daemon/gkr-daemon-ops.c:487
+#: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Ứng dụng « %s » muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu bạn "
+msgstr ""
+"Ứng dụng « %s » muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu bạn "
 "muốn dùng để mở vòng khóa này."
 
-#: ../daemon/gkr-daemon-ops.c:493
+#: ../daemon/gkr-daemon-ops.c:494
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
-msgstr "Ứng dụng lạ muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật khẩu bạn "
+msgstr ""
+"Ứng dụng lạ muốn tạo vòng khóa mới tên « %s ». Bạn phải chọn mật khẩu bạn "
 "muốn dùng để mở vòng khóa này."
 
-#: ../daemon/gkr-daemon-ops.c:497
+#: ../daemon/gkr-daemon-ops.c:498
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "Ứng dụng lạ muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu bạn muốn "
+msgstr ""
+"Ứng dụng lạ muốn tạo vòng khóa mặc định mới. Bạn phải chọn mật khẩu bạn muốn "
 "dùng để mở vòng khóa này."
 
-#.And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:503
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:504
 msgid "New Keyring Password"
 msgstr "Mật khẩu vòng khóa mới"
 
-#: ../daemon/gkr-daemon-ops.c:504
+#: ../daemon/gkr-daemon-ops.c:505
 msgid "Choose password for new keyring"
 msgstr "Hãy chọn mật khẩu cho vòng khóa mới"
 
-#: ../daemon/gkr-daemon-ops.c:551
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "Ứng dụng « %s » (%s) muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần "
+msgstr ""
+"Ứng dụng « %s » (%s) muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần "
 "phải chọn mật khẩu cho nó."
 
-#: ../daemon/gkr-daemon-ops.c:555
+#: ../daemon/gkr-daemon-ops.c:556
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
-msgstr "Ứng dụng « %s » (%s) muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần "
+msgstr ""
+"Ứng dụng « %s » (%s) muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần "
 "phải chọn mật khẩu cho nó."
 
-#: ../daemon/gkr-daemon-ops.c:561
-#: ../daemon/gkr-daemon-ops.c:571
+#: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
-msgstr "Ứng dụng « %s » muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần phải "
+msgstr ""
+"Ứng dụng « %s » muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần phải "
 "chọn mật khẩu cho nó."
 
-#: ../daemon/gkr-daemon-ops.c:565
-#: ../daemon/gkr-daemon-ops.c:575
+#: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr "Ứng dụng « %s » muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần phải "
+msgstr ""
+"Ứng dụng « %s » muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần phải "
 "chọn mật khẩu cho nó."
 
-#: ../daemon/gkr-daemon-ops.c:581
+#: ../daemon/gkr-daemon-ops.c:582
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "Ứng dụng lạ muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần phải chọn "
+msgstr ""
+"Ứng dụng lạ muốn thay đổi mật khẫu cho vòng khoá « %s ». Bạn cần phải chọn "
 "mật khẩu cho nó."
 
-#: ../daemon/gkr-daemon-ops.c:585
+#: ../daemon/gkr-daemon-ops.c:586
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr "Ứng dụng lạ muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần phải chọn "
+msgstr ""
+"Ứng dụng lạ muốn thay đổi mật khẫu cho vòng khoá mặc định. Bạn cần phải chọn "
 "mật khẩu cho nó."
 
-#: ../daemon/gkr-daemon-ops.c:595
+#: ../daemon/gkr-daemon-ops.c:596
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Chọn mật khẩu mới cho vòng khóa « %s ». "
 
-#: ../daemon/gkr-daemon-ops.c:597
+#: ../daemon/gkr-daemon-ops.c:598
 msgid "Choose a new password for the default keyring. "
 msgstr "Chọn mật khẩu mới cho vòng khóa mặc định. "
 
-#.And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:601
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:602
 msgid "Change Keyring Password"
 msgstr "Đổi mật khẩu vòng khóa"
 
-#: ../daemon/gkr-daemon-ops.c:671
+#: ../daemon/gkr-daemon-ops.c:672
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Ứng dụng « %s » (%s) muốn lưu mật khẩu, nhưng không có vòng khóa mặc định. "
+msgstr ""
+"Ứng dụng « %s » (%s) muốn lưu mật khẩu, nhưng không có vòng khóa mặc định. "
 "Để tạo vòng, bạn cần chọn mật khẩu dùng để mở vòng khoá."
 
-#: ../daemon/gkr-daemon-ops.c:675
-#: ../daemon/gkr-daemon-ops.c:679
+#: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Ứng dụng « %s » muốn lưu mật khẩu, nhưng không có vòng khóa mặc định. Để tạo "
+msgstr ""
+"Ứng dụng « %s » muốn lưu mật khẩu, nhưng không có vòng khóa mặc định. Để tạo "
 "vòng, bạn cần chọn mật khẩu dùng để mở vòng khoá."
 
-#: ../daemon/gkr-daemon-ops.c:683
+#: ../daemon/gkr-daemon-ops.c:684
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr "Ứng dụng lạ muốn lưu mật khẩu, nhưng không có vòng khóa mặc định. Để tạo "
+msgstr ""
+"Ứng dụng lạ muốn lưu mật khẩu, nhưng không có vòng khóa mặc định. Để tạo "
 "vòng, bạn cần chọn mật khẩu dùng để mở vòng khoá."
 
-#.And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:688
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Create Default Keyring"
 msgstr "Tạo vòng khoá mặc định"
 
-#: ../daemon/gkr-daemon-ops.c:688
+#: ../daemon/gkr-daemon-ops.c:689
 msgid "Choose password for default keyring"
 msgstr "Chọn mật khẩu cho vòng khóa mặc định"
+
+#: ../data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr "Tuỳ chọn này bật thành phần PKCS#11 trong gnome-keyring daemon. Nó chỉ có tác dụng khi gnome-keyring-daemon hoạt động, (ví dụ: khi người dùng đăng nhập). Thiết lập này có thể bị ghi đè bằng đối số dòng lệnh truyền cho daemon."
+
+#: ../data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr "Tuỳ chọn này bật SSH agent trong gnome-keyring daemon. Nó chỉ có tác dụng khi gnome-keyring-daemon hoạt động, (ví dụ: khi người dùng đăng nhập). Thiết lập này có thể bị ghi đè bằng đối số dòng lệnh truyền cho daemon."
+
+#: ../data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Có bật thành phần gnome-keyring PKCS#11 hay không."
+
+#: ../data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Có bật gnome-keyring SSH agent hay không."
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
@@ -349,7 +390,7 @@ msgstr "Không có vòng khoá tên đó."
 msgid "The keyring has already been unlocked."
 msgstr "Vòng khoá đã được bỏ khoá."
 
-#.And put together the ask request
+#. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
 msgstr "Gỡ khoá vòng khoá đăng nhập"
@@ -362,9 +403,11 @@ msgstr "Gõ mật khẩu đăng nhập để gỡ khoá vòng khoá"
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr "Vòng khoá đăng nhập của bạn đã không được gỡ khoá khi bạn đăng nhập vào máy tính này."
+msgstr ""
+"Vòng khoá đăng nhập của bạn đã không được gỡ khoá khi bạn đăng nhập vào máy "
+"tính này."
 
-#.And put together the ask request
+#. And put together the ask request
 #: ../keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
 msgstr "Tạo vòng khoá đăng nhập"
@@ -377,125 +420,171 @@ msgstr "Gõ mật khẩu đăng nhập"
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
-msgstr "Vòng khoá đăng nhập của bạn đã không được tạo tự động khi bạn đăng nhập vào máy tính này. Nó sẽ được tạo ngay bây giờ."
+msgstr ""
+"Vòng khoá đăng nhập của bạn đã không được tạo tự động khi bạn đăng nhập vào "
+"máy tính này. Nó sẽ được tạo ngay bây giờ."
 
-#: ../pk/gkr-pk-object-storage.c:153
+#: ../pk/gkr-pk-object-storage.c:99
+msgid "Unlock private key"
+msgstr "Mở khoá cá nhân"
+
+#: ../pk/gkr-pk-object-storage.c:101
+msgid "Unlock certificate"
+msgstr "Mở chứng nhận"
+
+#: ../pk/gkr-pk-object-storage.c:103
+msgid "Unlock public key"
+msgstr "Mở khoá công khai"
+
+#: ../pk/gkr-pk-object-storage.c:105
 msgid "Unlock"
-msgstr "Gỡ khoá"
+msgstr "Mở khoá"
 
-#: ../pk/gkr-pk-object-storage.c:154
+#: ../pk/gkr-pk-object-storage.c:116
+msgid "Enter password to unlock the private key"
+msgstr "Gõ mật khẩu để mở khoá cá nhân"
+
+#: ../pk/gkr-pk-object-storage.c:118
+msgid "Enter password to unlock the certificate"
+msgstr "Gõ mật khẩu để mở chứng nhận"
+
+#: ../pk/gkr-pk-object-storage.c:120
+msgid "Enter password to unlock the public key"
+msgstr "Gõ mật khẩu để mở khoá công khai"
+
+#: ../pk/gkr-pk-object-storage.c:122
 msgid "Enter password to unlock"
 msgstr "Gõ mật khẩu để gỡ khoá"
 
-#: ../pk/gkr-pk-object-storage.c:164
-#, c-format
-msgid "Unlock %s"
-msgstr "Gỡ khoá %s"
+#: ../pk/gkr-pk-object-storage.c:133
+msgid "Automatically unlock this private key when I log in."
+msgstr "Tự động mở khoá cá nhân này khi tôi đăng nhập."
 
-#: ../pk/gkr-pk-object-storage.c:165
-#, c-format
-msgid "Enter password for the %s to unlock"
-msgstr "Hãy nhập mật khẩu cho %s để gỡ khoá"
+#: ../pk/gkr-pk-object-storage.c:135
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Tự động mở chứng nhận này khi tôi đăng nhập."
 
-#: ../pk/gkr-pk-object-storage.c:174
-#, c-format
-msgid "An application wants access to the %s '%s', but it is locked"
-msgstr "Ứng dụng muốn truy cập đến %s « %s », nhưng nó bị khóa"
+#: ../pk/gkr-pk-object-storage.c:137
+msgid "Automatically unlock this public key when I log in."
+msgstr "Tự động mở khoá công khai này khi tôi đăng nhập."
 
-#: ../pk/gkr-pk-object-storage.c:177
+#: ../pk/gkr-pk-object-storage.c:139
+msgid "Automatically unlock this when I log in"
+msgstr "Tự động mở khoá này khi tôi đăng nhập."
+
+#: ../pk/gkr-pk-object-storage.c:154
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Ứng dụng muốn truy cập đến khoá cá nhân %s, nhưng nó đang bị khóa"
+
+#: ../pk/gkr-pk-object-storage.c:156
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Ứng dụng muốn truy cập đến chứng nhận %s, nhưng nó đang bị khóa"
+
+#: ../pk/gkr-pk-object-storage.c:158
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Ứng dụng muốn truy cập đến khoá công khai %s, nhưng nó đang bị khóa"
+
+#: ../pk/gkr-pk-object-storage.c:160
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Ứng dụng muốn truy cập đến « %s », nhưng nó bị khóa"
 
-#: ../pk/gkr-pk-object-storage.c:182
+#: ../pk/gkr-pk-object-storage.c:166
 #, c-format
-msgid "The system wants to import the %s '%s', but it is locked."
-msgstr "Hệ thống muốn nhập khẩu %s « %s », nhưng nó bị khoá."
+msgid "The system wants to import the private key '%s', but it is locked"
+msgstr "Hệ thống muốn nhập khẩu khoá cá nhân '%s', nhưng nó đang bị khoá"
 
-#: ../pk/gkr-pk-object-storage.c:185
+#: ../pk/gkr-pk-object-storage.c:168
 #, c-format
-msgid "The system wants to import '%s', but it is locked."
-msgstr "Hệ thống muốn nhập khẩu « %s », nhưng nó bị khoá."
+msgid "The system wants to import the certificate '%s', but it is locked"
+msgstr "Hệ thống muốn nhập khẩu khoá chứng nhận '%s', nhưng nó đang bị khoá"
 
-#: ../pk/gkr-pk-object-storage.c:197
+#: ../pk/gkr-pk-object-storage.c:170
 #, c-format
-msgid "Automatically unlock this %s when I log in."
-msgstr "Tự động gỡ khoá %s này khi tôi đăng nhập."
+msgid "The system wants to import the public key '%s', but it is locked"
+msgstr "Hệ thống muốn nhập khẩu khoá công khai '%s', nhưng nó đang bị khoá"
 
-#: ../pk/gkr-pk-object-storage.c:209
+#: ../pk/gkr-pk-object-storage.c:172
 #, c-format
-msgid "Unlock password for %s"
-msgstr "Mật khẩu gỡ khoá cho %s"
+msgid "The system wants to import '%s', but it is locked"
+msgstr "Hệ thống muốn nhập khẩu '%s', nhưng nó đang bị khoá"
 
-#: ../pkix/gkr-pkix-parser.c:430
+#: ../pk/gkr-pk-object-storage.c:258
+#, c-format
+msgid "Unlock password for '%s'"
+msgstr "Mật khẩu mở khoá cho '%s'"
+
+#: ../pkix/gkr-pkix-parser.c:428
 msgid "Unrecognized or unsupported file."
 msgstr "Tập tin không được nhận dạng hay không được hỗ trợ."
 
-#: ../pkix/gkr-pkix-parser.c:434
+#: ../pkix/gkr-pkix-parser.c:432
 msgid "Could not parse invalid or corrupted file."
 msgstr "Không thể phân tích tập tin không hợp lệ hay tập tin bị hỏng."
 
-#: ../pkix/gkr-pkix-parser.c:503
-msgid "private key"
-msgstr "khoá riêng"
-
-#: ../pkix/gkr-pkix-parser.c:505
-msgid "certificate"
-msgstr "chứng nhận"
-
-#: ../ui/gkr-ask-tool.c:79
+#: ../ui/gkr-ask-tool.c:182
 msgid "Store passwords unencrypted?"
 msgstr "Lưu mật khẩu không mật mã không?"
 
-#: ../ui/gkr-ask-tool.c:80
+#: ../ui/gkr-ask-tool.c:183
 msgid ""
-"By choosing to use a blank password, your stored passwords not be safely "
-"encrypted. They will be accessible by anyone with access to your files."
-msgstr "Dùng một mật khẩu trắng thì mật khẩu đã lưu sẽ không thể được mật mã an toàn. Mọi người thấy tập tin của bạn cũng có thể đọc các mật khẩu này."
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr "Dùng một mật khẩu trắng thì mật khẩu đã lưu sẽ không thể được mã hoá an toàn. Mọi người đều có thể truy cập vào tập tin của bạn."
 
-#: ../ui/gkr-ask-tool.c:87
+#: ../ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
 msgstr "Lưu không an toàn"
 
-#: ../ui/gkr-ask-tool.c:340
+#: ../ui/gkr-ask-tool.c:413
 msgid "_Location:"
 msgstr "_Vị trí:"
 
-#: ../ui/gkr-ask-tool.c:353
+#: ../ui/gkr-ask-tool.c:426
 msgid "_Old password:"
 msgstr "Mật khẩu _cũ :"
 
-#: ../ui/gkr-ask-tool.c:373
+#: ../ui/gkr-ask-tool.c:446
 msgid "_Password:"
 msgstr "_Mật khẩu :"
 
-#: ../ui/gkr-ask-tool.c:395
+#: ../ui/gkr-ask-tool.c:468
 msgid "_Confirm password:"
 msgstr "_Xác nhận mật khẩu :"
 
-#: ../ui/gkr-ask-tool.c:414
+#: ../ui/gkr-ask-tool.c:488
 msgid "New password strength"
 msgstr "Độ mạnh của mật khẩu mới"
 
-#: ../ui/gkr-ask-tool.c:481
+#: ../ui/gkr-ask-tool.c:546
 msgid "Passwords do not match."
 msgstr "Hai mật khẩu không trùng."
 
-#: ../ui/gkr-ask-tool.c:497
+#: ../ui/gkr-ask-tool.c:562
 msgid "Password cannot be blank"
 msgstr "Không cho phép mật khẩu trắng"
 
-#: ../ui/gkr-ask-tool.c:548
+#: ../ui/gkr-ask-tool.c:613
 msgid "Deny"
 msgstr "Từ chối"
 
-#: ../ui/gkr-ask-tool.c:560
+#: ../ui/gkr-ask-tool.c:625
 msgid "Allow _Once"
 msgstr "Cho phép _một lần"
 
-#: ../ui/gkr-ask-tool.c:564
+#: ../ui/gkr-ask-tool.c:629
 msgid "_Always Allow"
 msgstr "_Luôn cho phép"
+
+#~ msgid "Unlock %s"
+#~ msgstr "Gỡ khoá %s"
+
+#~ msgid "Enter password for the %s to unlock"
+#~ msgstr "Hãy nhập mật khẩu cho %s để gỡ khoá"
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "Không cho phép mật khẩu cũ rỗng."
@@ -509,11 +598,13 @@ msgstr "_Luôn cho phép"
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
 #~ "locked"
-#~ msgstr "Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa lạ, nhưng vòng đã bị khóa"
+#~ msgstr ""
+#~ "Ứng dụng « %s » (%s) muốn truy cập vào vòng khóa lạ, nhưng vòng đã bị khóa"
 
 #~ msgid ""
 #~ "The application '%s' wants access to an unknown keyring, but it is locked"
-#~ msgstr "Ứng dụng « %s » muốn truy cập vào vòng khóa lạ, nhưng vòng đã bị khóa"
+#~ msgstr ""
+#~ "Ứng dụng « %s » muốn truy cập vào vòng khóa lạ, nhưng vòng đã bị khóa"
 
 #~ msgid ""
 #~ "An unknown application wants access to an unknown keyring, but it is "
@@ -523,12 +614,14 @@ msgstr "_Luôn cho phép"
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '%s' in an "
 #~ "unknown keyring."
-#~ msgstr "Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « %s » trong vòng khóa lạ."
+#~ msgstr ""
+#~ "Ứng dụng « %s » (%s) muốn truy cập mật khẩu cho « %s » trong vòng khóa lạ."
 
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '%s' in an unknown "
 #~ "keyring."
-#~ msgstr "Ứng dụng « %s » muốn truy cập mật khẩu cho « %s » trong vòng khóa lạ."
+#~ msgstr ""
+#~ "Ứng dụng « %s » muốn truy cập mật khẩu cho « %s » trong vòng khóa lạ."
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '%s' in an "
