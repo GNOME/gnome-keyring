@@ -361,7 +361,7 @@ msgid ""
 msgstr ""
 "Deze optie schakelt de PKCS#11-component van gnome-keyring daemon in. Dit "
 "heeft alleen effect als gnome-keyring-daemon start, bijvoorbeeld als de "
-"gebruiker zich aanmeld. Deze instelling kan worden overschreven door "
+"gebruiker zich aanmeldt. Deze instelling kan worden overschreven door "
 "parameters op de opdrachtregel mee te geven aan de daemon."
 
 #: ../data/gnome-keyring.schemas.in.h:2
@@ -373,7 +373,7 @@ msgid ""
 msgstr ""
 "Deze optie schakelt de SSH-agent van gnome-keyring daemon in. Dit heeft "
 "alleen effect als gnome-keyring-daemon start, bijvoorbeeld als de gebruiker "
-"zich aanmeld. Deze instelling kan worden overschreven door parameters op de "
+"zich aanmeldt. Deze instelling kan worden overschreven door parameters op de "
 "opdrachtregel mee te geven aan de daemon."
 
 #: ../data/gnome-keyring.schemas.in.h:3
