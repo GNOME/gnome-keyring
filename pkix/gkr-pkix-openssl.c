@@ -209,9 +209,11 @@ gkr_pkix_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
                                 guchar **decrypted, gsize *n_decrypted)
 {
 	gcry_cipher_hd_t ch;
-	guchar *key, *iv;
-	int algo, mode;
+	guchar *key = NULL;
+	guchar *iv = NULL;
 	int gcry, ivlen;
+	int algo = 0;
+	int mode = 0;
 	
 	if (!parse_dekinfo (dekinfo, &algo, &mode, &iv))
 		return GKR_PKIX_UNRECOGNIZED;

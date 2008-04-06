@@ -1,3 +1,9 @@
+2008-04-05  Stef Walter <stef@memberwebs.com>
+
+	* pkix/gkr-pkix-openssl.c: Fix compiler warnings about 
+	uninitialized variables. Patch by Alex Converse. Fixes 
+	bug #523928
+
 2008-03-20  Sebastian Dröge  <slomo@circular-chaos.org>
 
 	* daemon/gkr-daemon.c: Include pkcs11 in the --help message too.
