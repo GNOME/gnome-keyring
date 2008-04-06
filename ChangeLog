@@ -1,4 +1,13 @@
-2008-04-05  Stef Walter <stef@memberwebs.com>
+2008-04-05  Stef Walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object.h:
+	* pk/gkr-pk-privkey.c: 
+	* ssh/gkr-ssh-daemon-ops.c: Make 'ssh-add -D' and 'ssh-add -d'
+	lock any SSH private keys that gnome-keyring natively handles.
+	Fixes bug #524823
+	
+2008-04-05  Stef Walter  <stef@memberwebs.com>
 
 	* pkix/gkr-pkix-openssl.c: Fix compiler warnings about 
 	uninitialized variables. Patch by Alex Converse. Fixes 

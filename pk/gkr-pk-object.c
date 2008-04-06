@@ -407,6 +407,17 @@ gkr_pk_object_flush (GkrPkObject *object)
 	g_hash_table_remove_all (pv->attr_cache);
 }
 
+void
+gkr_pk_object_lock (GkrPkObject *object)
+{
+	GkrPkObjectClass *klass;
+	
+	klass = GKR_PK_OBJECT_GET_CLASS (object);
+
+	if (klass->lock)
+		(*klass->lock) (object);
+}
+
 gboolean
 gkr_pk_object_match_one (GkrPkObject *object, CK_ATTRIBUTE_PTR rattr)
 {

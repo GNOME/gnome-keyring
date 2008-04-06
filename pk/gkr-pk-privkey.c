@@ -519,6 +519,20 @@ gkr_pk_privkey_serialize (GkrPkObject *obj, const gchar *password, gsize *n_data
 }
 
 static void
+gkr_pk_privkey_lock (GkrPkObject *obj)
+{
+	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
+
+	if (!key->priv->s_key)
+		return;
+	
+	gcry_sexp_release (key->priv->s_key);
+	key->priv->s_key = NULL;
+	
+	initialize_from_key (key);
+}
+
+static void
 gkr_pk_privkey_dispose (GObject *obj)
 {
 	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
@@ -536,13 +550,13 @@ gkr_pk_privkey_finalize (GObject *obj)
 {
 	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
 
+	g_assert (!key->priv->pubkey);
+
 	gcry_sexp_release (key->priv->s_key);
 	key->priv->s_key = NULL;
-	
-	initialize_from_key (key);
-	
-	g_assert (!key->priv->pubkey);
-	g_assert (!key->priv->numbers);
+
+	gcry_sexp_release (key->priv->numbers);
+	key->priv->numbers = NULL;	
 	
 	G_OBJECT_CLASS (gkr_pk_privkey_parent_class)->finalize (obj);
 }
@@ -558,6 +572,7 @@ gkr_pk_privkey_class_init (GkrPkPrivkeyClass *klass)
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
 	parent_class->get_attribute = gkr_pk_privkey_get_attribute;
 	parent_class->serialize = gkr_pk_privkey_serialize;
+	parent_class->lock = gkr_pk_privkey_lock;
 	
 	gobject_class = (GObjectClass*)klass;
 	gobject_class->get_property = gkr_pk_privkey_get_property;

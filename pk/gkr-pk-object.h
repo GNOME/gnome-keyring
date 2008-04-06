@@ -79,6 +79,12 @@ struct _GkrPkObjectClass {
 	 * the data, as long as the representation is later decryptable. 
 	 */
 	guchar* (*serialize) (GkrPkObject *obj, const gchar* password, gsize *n_data);
+	
+	/* 
+	 * Asks the object to lock itself, ie: remove any sensitive data from 
+	 * memory.
+	 */
+	void (*lock) (GkrPkObject *obj);
 };
 
 GType               gkr_pk_object_get_type         (void) G_GNUC_CONST;
@@ -89,6 +95,8 @@ CK_RV               gkr_pk_object_create           (GkrPkObjectManager *manager,
 void                gkr_pk_object_refresh          (GkrPkObject *object);
 
 void                gkr_pk_object_flush            (GkrPkObject *object);
+
+void                gkr_pk_object_lock             (GkrPkObject *object);
 
 gboolean            gkr_pk_object_match            (GkrPkObject *object,
                                                     GArray *attrs);

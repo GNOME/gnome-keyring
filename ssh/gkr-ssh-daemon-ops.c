@@ -570,8 +570,6 @@ op_v1_challenge (GkrBuffer *req, GkrBuffer *resp)
 	if (!make_decrypt_sexp (challenge, &sdata))
 		return FALSE;
 
-gkr_crypto_sexp_dump (sdata);
-
 	/* Do the magic */
 	gcry = gcry_pk_decrypt (&splain, sdata, skey);
 
@@ -582,8 +580,6 @@ gkr_crypto_sexp_dump (sdata);
 		goto cleanup;
 	}
 	
-gkr_crypto_sexp_dump (splain);
-
 	/* Number of bits in the key */
 	bits = gcry_pk_get_nbits (skey);
 	g_return_val_if_fail (bits, FALSE);
@@ -625,6 +621,7 @@ static gboolean
 op_remove_identity (GkrBuffer *req, GkrBuffer *resp)
 {
 	GkrPkPrivkey *key;
+	GkrPkObject *obj;
 	gcry_sexp_t skey;
 	gsize offset;
 	
@@ -632,11 +629,27 @@ op_remove_identity (GkrBuffer *req, GkrBuffer *resp)
 	if (!gkr_ssh_proto_read_public (req, &offset, &skey, NULL))
 		return FALSE;
 	
-	key = find_private_key (skey, FALSE, 2);
+	key = find_private_key (skey, TRUE, 2);
 	gcry_sexp_release (skey);
 
-	if (key)
-		remove_session_key (key);
+	if (key) {
+		obj = GKR_PK_OBJECT (key);
+		
+		/* 
+		 * When the key is just a session key, then remove it
+		 * completely. 
+		 */ 
+		if (obj->manager == session_manager)
+			remove_session_key (key);
+			
+		/* 
+		 * Otherwise lock it so the user gets prompted for 
+		 * any passwords again. 
+		 */
+		else
+			gkr_pk_object_lock (obj);
+	}
+	
 	gkr_buffer_add_byte (resp, GKR_SSH_RES_SUCCESS);
 
 	return TRUE;	
@@ -667,8 +680,9 @@ static gboolean
 op_remove_all_identities (GkrBuffer *req, GkrBuffer *resp)
 {
 	GkrPkPrivkey *key;
-	GList *l, *removes = NULL;
+	GList *objects, *l, *removes = NULL;
 	
+	/* Remove all session keys */
 	if (session_manager) {
 		for (l = session_manager->objects; l; l = g_list_next (l)) {
 			if (!GKR_IS_PK_PRIVKEY (l->data))
@@ -682,6 +696,17 @@ op_remove_all_identities (GkrBuffer *req, GkrBuffer *resp)
 			remove_session_key (GKR_PK_PRIVKEY (l->data));
 		g_list_free (removes);
 	}
+	
+	/* And now we lock all private keys with usage = SSH */
+	objects = gkr_pk_object_manager_findv (gkr_pk_object_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
+	                                       CKA_GNOME_PURPOSE_SSH_AUTH, CK_TRUE, 0, NULL);
+	
+	for (l = objects; l; l = g_list_next (l)) { 
+		g_return_val_if_fail (GKR_IS_PK_OBJECT (l->data), FALSE);
+		gkr_pk_object_lock (GKR_PK_OBJECT (l->data));
+	}
+	
+	g_list_free (objects);
 	
 	gkr_buffer_add_byte (resp, GKR_SSH_RES_SUCCESS);
 	return TRUE;
