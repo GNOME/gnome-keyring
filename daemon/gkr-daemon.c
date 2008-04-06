@@ -37,7 +37,9 @@
 
 #include "pkcs11/gkr-pkcs11-daemon.h"
 
+#ifdef WITH_SSH
 #include "ssh/gkr-ssh-daemon.h"
+#endif
 
 #include "ui/gkr-ask-daemon.h"
 
@@ -80,8 +82,12 @@ static GMainLoop *loop = NULL;
  */
 
 /* All the components to run on startup if not set in gconf */
+#ifdef WITH_SSH
 #define DEFAULT_COMPONENTS  "ssh,keyring,pkcs11"
- 
+#else
+#define DEFAULT_COMPONENTS  "keyring,pkcs11"
+#endif
+
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
 static gboolean unlock_with_login = FALSE;
@@ -95,7 +101,7 @@ static GOptionEntry option_entries[] = {
 	{ "login", 'l', 0, G_OPTION_ARG_NONE, &unlock_with_login, 
 	  "Use login password from stdin", NULL },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
-	  "The components to run", "ssh,keyring,pkcs11" },
+	  "The components to run", DEFAULT_COMPONENTS },
 	{ NULL }
 };
 
@@ -448,11 +454,13 @@ main (int argc, char *argv[])
 		if (!gkr_daemon_io_create_master_socket ())
 			cleanup_and_exit (1);
 	}
-	
+
+#ifdef WITH_SSH	
 	if (check_run_component ("ssh")) {
 		if (!gkr_daemon_ssh_io_initialize ())
 			cleanup_and_exit (1);
 	}
+#endif
 	
 	if (check_run_component ("pkcs11")) {
 		if (!gkr_pkcs11_daemon_setup ())

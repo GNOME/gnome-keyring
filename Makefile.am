@@ -4,6 +4,12 @@ else
 PAM_DIR = 
 endif
 
+if WITH_SSH
+SSH_DIR = ssh
+else
+SSH_DIR =
+endif
+
 if WITH_TESTS
 TESTS_DIR = tests
 else
@@ -18,7 +24,7 @@ SUBDIRS = \
 	keyrings \
 	pkix \
 	pk \
-	ssh \
+	$(SSH_DIR) \
 	pkcs11 \
 	daemon \
 	data \

@@ -310,6 +310,22 @@ if test "$have_pam" = "yes"; then
 	pam_status="yes ($with_pam_dir)"
 fi
 
+# --------------------------------------------------------------------
+# SSH Agent support
+#
+
+AC_ARG_ENABLE([ssh-agent], 
+		AC_HELP_STRING([--disable-ssh-agent],
+		[Don't include SSH agent in gnome-keyring]))
+
+if test "$enable_ssh_agent" != "no"; then
+	AC_DEFINE(WITH_SSH, 1, [Whether to build SSH agent or not])
+	ssh_status="yes"
+else
+	ssh_status="no"
+fi
+
+AM_CONDITIONAL(WITH_SSH, test "$enable_ssh_agent" != "no")
 
 # --------------------------------------------------------------------
 # Trusted Root Certificates Directory
@@ -457,6 +473,7 @@ echo "  DBus:          $dbus_status"
 echo "  HAL:           $hal_status"
 echo
 echo "CONFIGURATION"
+echo "  SSH Agent:            $ssh_status"
 echo "  Root Certificates:    $root_status"
 echo
 echo "BUILD"

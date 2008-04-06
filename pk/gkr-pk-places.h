@@ -42,9 +42,11 @@ static const GkrPkPlace gkr_pk_places[] = {
 	{ NULL, "keystore", "*", "*.keystore", 
 		"[default]\n" },
 	
+#ifdef WITH_SSH
 	/* The SSH directory, mark all keys as ssh-authentication capable */
 	{ GKR_LOCATION_VOLUME_HOME_S, ".ssh", "id_?sa", NULL, 
 		"[default]\npurposes=ssh-authentication" },
+#endif
 
 #ifdef ROOT_CERTIFICATES
 	/* The root certificates directory, mark as trusted anchors */

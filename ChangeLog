@@ -1,5 +1,13 @@
 2008-04-05  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c:
+	* pk/gkr-pk-places.h:
+	* ssh/gkr-ssh-daemon-io.c:
+	* configure.in:
+	* Makefile.am: Add configure option to disable SSH agent. 
+	
+2008-04-05  Stef Walter  <stef@memberwebs.com>
+
 	* pk/gkr-pk-object.c:
 	* pk/gkr-pk-object.h:
 	* pk/gkr-pk-privkey.c: 

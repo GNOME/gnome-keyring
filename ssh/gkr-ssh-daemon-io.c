@@ -318,6 +318,9 @@ gkr_daemon_ssh_io_initialize (void)
 	channel = g_io_channel_unix_new (sock);
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_client, NULL);
 	g_io_channel_unref (channel);
+	
+	if (g_getenv ("SSH_AUTH_SOCK"))
+		g_message ("another SSH agent is running at: %s", g_getenv ("SSH_AUTH_SOCK")); 
 		
 	/* TODO: Do we need to push SSH_AGENT_PID? */
 	gkr_daemon_util_push_environment ("SSH_AUTH_SOCK", socket_path);
