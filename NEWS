@@ -1,3 +1,12 @@
+Changes in version 2.22.1 are:
+* Add SSH agent protocol 1 support. 
+* Make 'ssh-add -D' lock any SSH private keys that gnome-keyring is 
+  automatically loading.
+* Reconnect to system DBus whenever the system bus restarts. [Sjoerd Simons]
+* Log to syslog even when running in the foreground [Tony Espy]
+* Add a configure option to disable building of the SSH agent.
+* Build fixes. [Alex Converse, Andrea Del Signore]
+
 Changes in version 2.22.0 are:
 * Build fix. [Jens Granseuer]
 
