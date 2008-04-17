@@ -428,8 +428,12 @@ prep_dialog_data (GkrAskRequest *ask)
 		loc_volume = gkr_location_get_volume (pv->location);
 		
 		/* Suppress local stuff unless displying the selector */ 
-		if (!need_locations && loc_volume == GKR_LOCATION_VOLUME_LOCAL)
-			loc_volume = 0;
+		if (!need_locations && loc_volume) {
+			if(loc_volume == GKR_LOCATION_VOLUME_LOCAL)
+				loc_volume = 0;
+			else if(loc_volume == GKR_LOCATION_VOLUME_HOME)
+				loc_volume = 0;
+		}
 			
 		if (loc_volume) {
 			g_key_file_set_value (key_file, "location", "location", 

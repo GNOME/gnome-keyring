@@ -1,3 +1,9 @@
+2008-04-16  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-location.h:
+	* ui/gkr-ask-request.c: Don't show 'Location' in password prompt 
+	for objects in the user's home directory.
+	
 2008-04-06  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number

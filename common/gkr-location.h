@@ -39,7 +39,7 @@ G_BEGIN_DECLS
 
 #define        GKR_LOCATION_NAME_HOME      "HOME"
 #define        GKR_LOCATION_VOLUME_HOME_S  "HOME:"
-#define        GKR_LOCATION_VOLUME_HOME    (gkr_location_from_string (GKR_LOCATION_VOLUME_LOCAL_S))
+#define        GKR_LOCATION_VOLUME_HOME    (gkr_location_from_string (GKR_LOCATION_VOLUME_HOME_S))
 
 #define        GKR_LOCATION_NAME_FILE      "FILE"
 #define        GKR_LOCATION_VOLUME_FILE_S  "FILE:"
