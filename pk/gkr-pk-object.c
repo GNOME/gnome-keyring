@@ -419,6 +419,23 @@ gkr_pk_object_lock (GkrPkObject *object)
 }
 
 gboolean
+gkr_pk_object_import (GkrPkObject *object)
+{
+	GkrPkObjectClass *klass;
+	gboolean ret = TRUE;
+	
+	klass = GKR_PK_OBJECT_GET_CLASS (object);
+
+	if (klass->import)
+		ret = (*klass->import) (object);
+	
+	if (ret)
+		gkr_pk_index_set_boolean (object, "imported", TRUE);
+	
+	return ret;
+}
+
+gboolean
 gkr_pk_object_match_one (GkrPkObject *object, CK_ATTRIBUTE_PTR rattr)
 {
 	CK_ATTRIBUTE_PTR attr;

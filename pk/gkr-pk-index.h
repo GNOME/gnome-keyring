@@ -32,6 +32,9 @@
 gboolean            gkr_pk_index_get_boolean           (GkrPkObject *object, const gchar *field, 
                                                         gboolean defvalue);
 
+gboolean            gkr_pk_index_get_boolean_full      (GQuark location, gkrconstid digest, 
+                                                        const gchar *field, gboolean defvalue);
+
 gint                gkr_pk_index_get_int               (GkrPkObject *object, const gchar *field, 
                                                         gint defvalue);
                                                                   

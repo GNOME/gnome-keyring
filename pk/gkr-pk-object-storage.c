@@ -56,6 +56,7 @@ struct _GkrPkObjectStoragePrivate {
 	GHashTable *objects;
 	GHashTable *objects_by_location;
 	GHashTable *specific_load_requests;
+	GHashTable *denied_import_requests;
 
 	GSList *watches;
 };
@@ -182,7 +183,9 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	GkrAskRequest *ask;
 	gchar *custom_label, *ret, *display_name, *stype, *secondary;
 	const gchar *password;
-	gboolean have_indexed = FALSE;
+	gboolean imported = FALSE;
+	gboolean importing = FALSE;
+	guint flags;
 	
 	g_return_val_if_fail (loc == ctx->location, NULL);
 	
@@ -216,27 +219,43 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	if (stype) {
 		if (!type && stype[0])
 			type = g_quark_from_string (stype);
-		have_indexed = TRUE;
 		g_free (stype);
 	}
-
-	/*
-	 * If we've indexed this before, and the user isn't specifically requesting it 
-	 * to be loaded then we don't need to prompt for the password 
-	 */
-	if (have_indexed && !g_hash_table_lookup (pv->specific_load_requests, digest))
-		return NULL;
 	
+	/* This is how we know if we've imported this object before */
+	imported = gkr_pk_index_get_boolean_full (loc, digest, "imported", FALSE);
+
+	/* 
+	 * If the user isn't specifically requeting this object, then we don't 
+	 * necessarily prompt for a password. 
+	 */
+	if (!g_hash_table_lookup (pv->specific_load_requests, digest)) {
+		
+		/* If the user specifically denied this earlier, then don't prompt */
+		if (g_hash_table_lookup (pv->denied_import_requests, digest))
+			return NULL;
+		
+		/* If this has been imported already, then don't prompt */
+		if (imported)
+			return NULL;
+		
+		importing = TRUE;
+	}
+
 	/* TODO: Load a better label if we have one */
 	custom_label = NULL;
 	
 	if (custom_label != NULL)
 		label = custom_label;
 	
-	ask = gkr_ask_request_new (prepare_ask_title (type), prepare_ask_primary (type), 
-			                   GKR_ASK_REQUEST_PROMPT_PASSWORD);
+	/* Build up the prompt */
+	if (importing)
+		flags = GKR_ASK_REQUEST_PASSWORD | GKR_ASK_REQUEST_OK_CANCEL_BUTTONS;
+	else
+		flags = GKR_ASK_REQUEST_PASSWORD | GKR_ASK_REQUEST_OK_DENY_BUTTONS;
+	ask = gkr_ask_request_new (prepare_ask_title (type), prepare_ask_primary (type), flags);
 
-	secondary = prepare_ask_secondary (type, have_indexed, label); 
+	secondary = prepare_ask_secondary (type, !importing, label); 
 	gkr_ask_request_set_secondary (ask, secondary);
 	g_free (secondary);
 
@@ -245,10 +264,22 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	if (gkr_keyring_login_is_usable ())
 		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 	
+	/* Prompt the user */
 	gkr_ask_daemon_process (ask);
+
+	/* If the user denied ... */
+	if (ask->response == GKR_ASK_RESPONSE_DENY) {
+		
+		/* If we were importing then don't try again */
+		if (importing)
+			g_hash_table_insert (pv->denied_import_requests, 
+			                     gkr_id_dup (digest), NO_VALUE);
+		
+		ret = NULL;
 	
-	/* User denied or cancelled */
-	if (ask->response < GKR_ASK_RESPONSE_ALLOW) {
+	/* User cancelled or failure */
+	} else if (ask->response < GKR_ASK_RESPONSE_ALLOW) {
+		
 		ret = NULL;
 		
 	/* Successful response */
@@ -453,6 +484,15 @@ parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrid digest,
 	
 	/* Setup the sexp, probably a key on this object */
 	g_object_set (object, "gcrypt-sexp", sexp, NULL);
+	
+	/*
+	 * Now we have the object loaded and everything, and since it's a fully
+	 * loaded (if encrypted a password has been provided), take the 
+	 * opportunity to 'import' it and make sure we have all necessary data
+	 * on it.
+	 */
+	if (!gkr_pk_index_get_boolean (object, "imported", FALSE))
+		gkr_pk_object_import (object);
 }
 
 static void
@@ -479,6 +519,15 @@ parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest,
 
 	/* Setup the asn1, probably a certificate on this object */
 	g_object_set (object, "asn1-tree", asn1, NULL); 
+	
+	/*
+	 * Now we have the object loaded and everything, and since it's a fully
+	 * loaded (if encrypted a password has been provided), take the 
+	 * opportunity to 'import' it and make sure we have all necessary data
+	 * on it.
+	 */
+	if (gkr_pk_index_get_boolean (object, "imported", FALSE))
+		gkr_pk_object_import (object);
 }
 
 static void
@@ -618,6 +667,7 @@ gkr_pk_object_storage_init (GkrPkObjectStorage *storage)
  	pv->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
  	pv->objects_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_array);
 	pv->specific_load_requests = g_hash_table_new_full (gkr_id_hash, gkr_id_equals, gkr_id_free, NULL);
+	pv->denied_import_requests = g_hash_table_new_full (gkr_id_hash, gkr_id_equals, gkr_id_free, NULL);
 	
 	for (i = 0; i < G_N_ELEMENTS (gkr_pk_places); ++i) {
 		place = &gkr_pk_places[i];
@@ -649,6 +699,7 @@ gkr_pk_object_storage_dispose (GObject *obj)
  	
  	g_hash_table_remove_all (pv->objects_by_location);
  	g_hash_table_remove_all (pv->specific_load_requests);
+ 	g_hash_table_remove_all (pv->denied_import_requests);
  	g_hash_table_remove_all (pv->objects);
  	
  	for (l = pv->watches; l; l = g_slist_next (l)) {
@@ -670,6 +721,7 @@ gkr_pk_object_storage_finalize (GObject *obj)
  	g_hash_table_destroy (pv->objects);
 	g_hash_table_destroy (pv->objects_by_location);
 	g_hash_table_destroy (pv->specific_load_requests);
+	g_hash_table_destroy (pv->denied_import_requests);
 
  	for (l = pv->watches; l; l = g_slist_next (l)) {
 		watch = GKR_LOCATION_WATCH (l->data);

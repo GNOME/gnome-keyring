@@ -1,3 +1,16 @@
+2008-04-18  Stef Walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-index.c:
+	* pk/gkr-pk-index.h:
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object.h:
+	* pk/gkr-pk-object-storage.c:
+	* pk/gkr-pk-privkey.c: 
+	* ui/gkr-ask-request.h: Streamline the importing of keys, and make 
+	the proper 'import' prompt come up when importing. Don't repeatedly
+	try to import a key that a user has 'denied'. Use the 'cancel'
+	label instead of 'deny' for the import prompt. See bug #528122
+	
 2008-04-16  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-location.h:

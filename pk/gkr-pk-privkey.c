@@ -504,6 +504,18 @@ gkr_pk_privkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	return GKR_PK_OBJECT_CLASS (gkr_pk_privkey_parent_class)->get_attribute (obj, attr);
 }
 
+static gboolean
+gkr_pk_privkey_import (GkrPkObject *obj)
+{
+	GkrPkPrivkey *key = GKR_PK_PRIVKEY (obj);
+	GkrPkPubkey *pub;
+	
+	/* This stores all necessary information in the indexes */
+	pub = get_public_key (key, TRUE);
+	
+	return GKR_IS_PK_PUBKEY (pub);
+}
+
 static guchar*
 gkr_pk_privkey_serialize (GkrPkObject *obj, const gchar *password, gsize *n_data)
 {
@@ -571,6 +583,7 @@ gkr_pk_privkey_class_init (GkrPkPrivkeyClass *klass)
 	
 	parent_class = GKR_PK_OBJECT_CLASS (klass);
 	parent_class->get_attribute = gkr_pk_privkey_get_attribute;
+	parent_class->import = gkr_pk_privkey_import;
 	parent_class->serialize = gkr_pk_privkey_serialize;
 	parent_class->lock = gkr_pk_privkey_lock;
 	

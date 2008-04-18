@@ -939,6 +939,22 @@ gkr_pk_index_get_boolean (GkrPkObject *obj, const gchar *field, gboolean defvalu
 	return ret;
 }
 
+gboolean
+gkr_pk_index_get_boolean_full (GQuark location, gkrconstid digest, 
+                               const gchar *field, gboolean defvalue)
+{
+	gboolean ret = defvalue;
+	
+	g_return_val_if_fail (digest, ret);
+	g_return_val_if_fail (field != NULL, ret);
+	
+	if (!read_pk_index_value (get_index_singleton (), location, digest, field,
+	                          NULL, (ReadValueFunc)read_boolean_value, &ret))
+		ret = defvalue;
+
+	return ret;
+}
+
 gint
 gkr_pk_index_get_int (GkrPkObject *obj, const gchar *field, gint defvalue)
 {

@@ -70,6 +70,13 @@ struct _GkrPkObjectClass {
 	CK_RV (*get_attribute) (GkrPkObject *obj, CK_ATTRIBUTE_PTR attr);
 	CK_RV (*set_attribute) (GkrPkObject *obj, CK_ATTRIBUTE_PTR attr); 
 	
+	/*
+	 * Overridden by derived classes to prepare an object for 
+	 * use by gnome-keyring. This might include extracting public
+	 * key and storing it in indexes or other stuff like that.
+	 */
+	gboolean (*import) (GkrPkObject *obj);
+	
 	/* 
 	 * Overridden by derived classes to provide the serialized 
 	 * representation of the object, minus modifiable attributes, and 
@@ -97,6 +104,8 @@ void                gkr_pk_object_refresh          (GkrPkObject *object);
 void                gkr_pk_object_flush            (GkrPkObject *object);
 
 void                gkr_pk_object_lock             (GkrPkObject *object);
+
+gboolean            gkr_pk_object_import           (GkrPkObject *object);
 
 gboolean            gkr_pk_object_match            (GkrPkObject *object,
                                                     GArray *attrs);
