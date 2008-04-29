@@ -516,7 +516,8 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 			return ret;
 		cdata = gkr_pkix_asn1_read_element (cert->data->asn1, cert->data->raw, cert->data->n_raw, 
 		                                    "tbsCertificate.subject", &n_data);
-		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
+		if (!cdata)
+			return CKR_GENERAL_ERROR;
 		gkr_pk_attribute_set_data (attr, cdata, n_data);
 		return CKR_OK;
 		
@@ -525,7 +526,8 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 			return ret;
 		cdata = gkr_pkix_asn1_read_element (cert->data->asn1, cert->data->raw, cert->data->n_raw, 
 		                                    "tbsCertificate.issuer", &n_data);
-		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
+		if (!cdata)
+			return CKR_GENERAL_ERROR;
 		gkr_pk_attribute_set_data (attr, cdata, n_data);
 		return CKR_OK;
 		
@@ -533,7 +535,8 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		if ((ret = load_certificate (cert)) != CKR_OK)
 			return ret;
 		data = gkr_pkix_asn1_read_value (cert->data->asn1, "tbsCertificate.serialNumber", &n_data, NULL);
-		g_return_val_if_fail (data, CKR_GENERAL_ERROR);
+		if (!cdata)
+			return CKR_GENERAL_ERROR;
 		gkr_pk_attribute_set_data (attr, data, n_data);
 		g_free (data);
 		return CKR_OK;
@@ -566,7 +569,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		                                       "tbsCertificate.validity.notBefore" : 
 		                                       "tbsCertificate.validity.notAfter",
 		                              &time))
-			g_return_val_if_reached (CKR_GENERAL_ERROR);
+			return CKR_GENERAL_ERROR;
 		gkr_pk_attribute_set_date (attr, time);
 		return CKR_OK;
 	
