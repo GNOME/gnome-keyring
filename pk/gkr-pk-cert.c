@@ -535,7 +535,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		if ((ret = load_certificate (cert)) != CKR_OK)
 			return ret;
 		data = gkr_pkix_asn1_read_value (cert->data->asn1, "tbsCertificate.serialNumber", &n_data, NULL);
-		if (!cdata)
+		if (!data)
 			return CKR_GENERAL_ERROR;
 		gkr_pk_attribute_set_data (attr, data, n_data);
 		g_free (data);

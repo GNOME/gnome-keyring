@@ -4,7 +4,7 @@
 	callbacks so we don't have double free scenarios.
 	
 	* pk/gkr-pk-cert.c: Don't use critical warnings on invalid
-	certificates.
+	certificates. Return serial number properly.
 
 2008-04-18  Stef Walter  <stef@memberwebs.com>
 
