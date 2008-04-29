@@ -428,7 +428,7 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 	return object;
 }
 
-static void 
+static gboolean 
 parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrid digest,
                        GQuark type, ParseContext *ctx)
 {
@@ -446,7 +446,7 @@ parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrid digest,
 	
 	if (type) { 
 	 	object = prepare_object (ctx->storage, location, digest, type);
- 		g_return_if_fail (object != NULL);
+ 		g_return_val_if_fail (object != NULL, FALSE);
  	
 		/* Make note of having seen this object in load requests */
 		g_hash_table_remove (pv->specific_load_requests, digest);
@@ -458,19 +458,21 @@ parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrid digest,
 	/* Track the type of this digest */
 	g_hash_table_insert (ctx->types_by_digest, gkr_id_dup (digest), 
 		                 GUINT_TO_POINTER (type));
+	
+	return TRUE;
 }
 
-static void
+static gboolean
 parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrid digest,
 	                GQuark type, gcry_sexp_t sexp, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
  	GkrPkObject *object;
  	
- 	g_return_if_fail (type != 0);
+ 	g_return_val_if_fail (type != 0, FALSE);
  	
  	object = prepare_object (ctx->storage, location, digest, type);
- 	g_return_if_fail (object != NULL);
+ 	g_return_val_if_fail (object != NULL, FALSE);
 	
 	/* Make note of having seen this object in load requests */
 	g_hash_table_remove (pv->specific_load_requests, digest);
@@ -493,19 +495,21 @@ parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrid digest,
 	 */
 	if (!gkr_pk_index_get_boolean (object, "imported", FALSE))
 		gkr_pk_object_import (object);
+	
+	return TRUE;
 }
 
-static void
+static gboolean
 parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest, 
                     GQuark type, ASN1_TYPE asn1, ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
 	GkrPkObject *object;
 	
- 	g_return_if_fail (type != 0);
+ 	g_return_val_if_fail (type != 0, FALSE);
  	
 	object = prepare_object (ctx->storage, location, digest, type);
-	g_return_if_fail (object != NULL);
+	g_return_val_if_fail (object != NULL, FALSE);
 
 	/* Make note of having seen this object in load requests */
 	g_hash_table_remove (pv->specific_load_requests, digest);
@@ -528,6 +532,8 @@ parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest,
 	 */
 	if (gkr_pk_index_get_boolean (object, "imported", FALSE))
 		gkr_pk_object_import (object);
+	
+	return TRUE;
 }
 
 static void
