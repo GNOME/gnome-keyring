@@ -125,11 +125,11 @@ gkr_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 		cred = (struct sockcred *) CMSG_DATA (&cmsg.hdr);
 		*pid = 0;
 		*uid = cred->sc_euid;
-		set_local_creds(fd, FALSE);
+		set_local_creds(sock, FALSE);
 #elif defined(HAVE_GETPEERUCRED)
 		ucred_t *uc = NULL;
 
-		if (getpeerucred (fd, &uc) == 0) {
+		if (getpeerucred (sock, &uc) == 0) {
 			*pid = ucred_getpid (uc);
 			*uid = ucred_geteuid (uc);
 			ucred_free (uc);
