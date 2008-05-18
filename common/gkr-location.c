@@ -320,8 +320,10 @@ hal_device_property (LibHalContext *hal_ctx, const char *udi, const char *key,
 		
 		g_message ("adding removable location: %s at %s", name, mount); 
 		gkr_location_manager_register (locmgr, name, mount, friendly);
+		
 		locvol = g_hash_table_lookup (pv->volumes_by_name, name);
-		locvol->hal_volume = TRUE;
+		if (locvol)
+			locvol->hal_volume = TRUE;
 
 	/* A mount was removed? */		
 	} else if (!is_mounted && g_hash_table_lookup (pv->volumes_by_name, name)) {

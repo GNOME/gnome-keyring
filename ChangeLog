@@ -1,3 +1,8 @@
+2008-05-18  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-location.c: Fix crash when HAL location volume
+	is not registered for some reason. Fixes bug #530316
+	
 2008-04-29  Stef Walter  <stef@memberwebs.com>
 
 	* pk/gkr-pk-object-storage.c: Return gboolean from parsed_* 
