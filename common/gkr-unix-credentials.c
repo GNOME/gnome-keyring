@@ -127,6 +127,17 @@ gkr_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 		*pid = 0;
 		*uid = cred->sc_euid;
 		set_local_creds(sock, FALSE);
+#elif defined(HAVE_GETPEEREID) /* OpenBSD */
+		uid_t euid;
+		gid_t egid;
+		*pid = 0;
+
+		if (getpeereid (fd, &euid, &egid) == 0) {
+			*uid = euid;
+		} else {
+			g_warning ("getpeereid() failed: %s", strerror (errno));
+			return FALSE;
+		}
 #elif defined(HAVE_GETPEERUCRED)
 		ucred_t *uc = NULL;
 

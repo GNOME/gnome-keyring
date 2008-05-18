@@ -142,6 +142,12 @@ fi
 AC_CHECK_FUNCS(getpeerucred, AC_DEFINE(HAVE_GETPEERUCRED,1,[Have getpeerucred]))
 
 # --------------------------------------------------------------------
+# Check for getpeereid
+# 
+
+AC_CHECK_FUNCS(getpeereid, AC_DEFINE(HAVE_GETPEEREID, 1, [Have getpeereid function]))
+
+# --------------------------------------------------------------------
 # Check for flock
 #
 

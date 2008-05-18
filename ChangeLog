@@ -1,13 +1,18 @@
 2008-05-18  Stef Walter  <stef@memberwebs.com>
 
-	* common/gkr-location.c: Fix crash when HAL location volume
-	is not registered for some reason. Fixes bug #530316
-	
 	* common/gkr-unix-credentials.c: Fix use of undefined variable
 	on certain OS's. Patch by Brian Cameron. Fixes bug #530989
 	
 	* common/gkr-unix-credentials.c: Add additional header for 
-	building on NetBSD. Patch by Matthias Drochner. Fixes bug #532014 
+	building on NetBSD. Patch by Matthias Drochner. Fixes bug #532014
+	
+	* common/gkr-unix-credentials.c: Add socket credential support
+	for OpenBSD. Patch by Antoine Jacoutot. Fixes bug #532143 
+	
+2008-05-18  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-location.c: Fix crash when HAL location volume
+	is not registered for some reason. Fixes bug #530316
 	
 2008-04-29  Stef Walter  <stef@memberwebs.com>
 
