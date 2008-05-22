@@ -174,7 +174,7 @@ msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"يريد التطبيق '%s' (%s) إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة "
+"يريد التطبيق '%s' (%s) إنشاء حلقة مفاتيح جديدة باسم '%s'.يفترض أن تختار كلمة "
 "السر التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:468
@@ -192,7 +192,7 @@ msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"يريد التطبيق '%s'  إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة "
+"يريد التطبيق '%s'  إنشاء حلقة مفاتيح جديدة باسم '%s'.يفترض أن تختار كلمة "
 "السر التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
@@ -210,7 +210,7 @@ msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
 msgstr ""
-"يريد تطبيق مجهول إنشاء حلقة مفاتيح جديدة بإسم '%s'.يفترض أن تختار كلمة السر "
+"يريد تطبيق مجهول إنشاء حلقة مفاتيح جديدة باسم '%s'.يفترض أن تختار كلمة السر "
 "التي تريد استخدمها لهذا الغرض."
 
 #: ../daemon/gkr-daemon-ops.c:498
