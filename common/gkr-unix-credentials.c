@@ -132,7 +132,7 @@ gkr_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 		gid_t egid;
 		*pid = 0;
 
-		if (getpeereid (fd, &euid, &egid) == 0) {
+		if (getpeereid (sock, &euid, &egid) == 0) {
 			*uid = euid;
 		} else {
 			g_warning ("getpeereid() failed: %s", strerror (errno));

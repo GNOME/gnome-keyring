@@ -1,3 +1,7 @@
+2008-05-26  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-unix-credentials.c: Another compiler fix. 
+	
 2008-05-18  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-unix-credentials.c: Fix use of undefined variable
