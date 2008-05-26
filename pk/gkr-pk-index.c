@@ -580,11 +580,9 @@ load_index_key_file (GkrPkIndex *index, GQuark loc, int fd, gboolean force)
 		                      location_to_key (loc), key_file);
 	}
 
-	if (!key_file) {
-		g_message ("no index available for location: %s", 
-		           g_quark_to_string (loc));
+	/* No index is available for this location */
+	if (!key_file)
 		return NULL;
-	}
 
 	return key_file;
 }

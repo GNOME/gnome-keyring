@@ -1,3 +1,10 @@
+=== gnome-keyring 2.22.2 ===
+
+2008-05-26  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* NEWS: Release version 2.22.2
+	
 2008-05-26  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-async.c: Fix compiler warnings. Fixes bug #534328

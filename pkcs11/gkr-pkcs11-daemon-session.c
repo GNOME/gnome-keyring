@@ -21,6 +21,8 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
+#include "config.h"
+
 #include <glib.h>
 
 #include "gkr-pkcs11-message.h"

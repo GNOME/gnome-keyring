@@ -1,3 +1,11 @@
+Changes in version 2.22.2 are:
+* Streamline the importing of keys and make the proper prompts show up
+  consistently. Better fixes for this to come in 2.24.x
+* Don't show 'location' field in most password prompts.
+* Return serial number of certificates properly to requesting programs.
+* Fix crash when receiving certain HAL events.
+* Build fixes [Brian Cameron, Matthias Drochner, Antoine Jacoutot]
+
 Changes in version 2.22.1 are:
 * Add SSH agent protocol 1 support. 
 * Make 'ssh-add -D' lock any SSH private keys that gnome-keyring is 
