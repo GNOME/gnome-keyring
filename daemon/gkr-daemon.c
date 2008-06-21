@@ -429,10 +429,10 @@ main (int argc, char *argv[])
 	GIOChannel *channel;
 	GMainContext *ctx;
 	gchar *login_password;
+	unsigned seed;
 	
 	g_type_init ();
 	g_thread_init (NULL);
-	srand (time (NULL));
 	
 	parse_arguments (&argc, &argv);
 
@@ -448,6 +448,9 @@ main (int argc, char *argv[])
 #endif
 
 	gkr_crypto_setup ();
+
+	gcry_create_nonce (&seed, sizeof (seed));
+	srand (seed);
 
 	/* Initialize the appropriate components */
 	if (check_run_component ("keyring")) {
