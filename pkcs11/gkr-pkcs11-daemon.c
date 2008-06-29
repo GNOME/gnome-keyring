@@ -37,6 +37,7 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <unistd.h>
+#include <string.h>
 
 #ifdef _DEBUG
 #include <assert.h>

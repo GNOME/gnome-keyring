@@ -42,6 +42,7 @@
 #include <sys/un.h>
 #include <sys/stat.h>
 #include <glib.h>
+#include <strings.h>
 
 #define LOC_DEFAULT_FILE    (gkr_location_from_string ("LOCAL:/keyrings/default"))
 

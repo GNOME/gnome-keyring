@@ -44,6 +44,7 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 /* TODO: module fini should call finalize_common */
 

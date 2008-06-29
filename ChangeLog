@@ -1,3 +1,12 @@
+2008-06-29  Stef Walter  <stef@memberwebs.com>
+
+	* keyrings/gkr-keyrings.c:
+	* pkcs11/gkr-pkcs11-module.c:
+	* pkcs11/gkr-pkcs11-daemon.c:
+	* pkcs11/gkr-pkcs11-calls.h:
+	* daemon/gkr-daemon-ops.c: Fix build issues on Mac OS X
+	See bug #535859. Patch by John Ralls
+
 2008-06-21  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon.c: Initialize random number generator

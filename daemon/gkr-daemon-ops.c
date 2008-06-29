@@ -1030,7 +1030,7 @@ op_delete_keyring (GkrBuffer *packet, GkrBuffer *result,
                    GkrKeyringRequest *req)
 {
 	char *keyring_name;
-	GkrKeyring *keyring;
+	GkrKeyring *keyring = NULL;
 	GnomeKeyringOpCode opcode;
 	GnomeKeyringResult res;
 	
