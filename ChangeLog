@@ -1,5 +1,8 @@
 2008-06-29  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-unix-credentials.c: Fix build issues. 
+	See bug #540397. Patch by margali
+	
 	* keyrings/gkr-keyrings.c:
 	* pkcs11/gkr-pkcs11-module.c:
 	* pkcs11/gkr-pkcs11-daemon.c:
