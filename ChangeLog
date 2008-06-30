@@ -1,3 +1,9 @@
+=== gnome-keyring 2.22.3 ===
+
+2008-05-26  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS: Release version 2.22.3
+	
 2008-06-29  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-unix-credentials.c: Fix build issues. 

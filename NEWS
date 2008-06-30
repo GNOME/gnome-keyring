@@ -1,3 +1,7 @@
+Changes in version 2.22.3 are:
+* Better initization of (non-crypto) random number generator. 
+* Build fixes [margali, John Ralls]
+
 Changes in version 2.22.2 are:
 * Streamline the importing of keys and make the proper prompts show up
   consistently. Better fixes for this to come in 2.24.x
