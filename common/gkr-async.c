@@ -612,7 +612,7 @@ gkr_async_usleep (gulong microseconds)
 	/* Let another worker or the main loop run */
 	DO_UNLOCK (async_mutex);
 	
-		g_usleep (G_USEC_PER_SEC);
+		g_usleep (microseconds);
 		
 	DO_LOCK (async_mutex);
 }

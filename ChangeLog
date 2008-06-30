@@ -1,3 +1,8 @@
+2008-06-30  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-async.c: Make gkr_async_usleep() sleep for 
+	the proper amount of time. Patch by Jon Burgess
+	
 2008-06-29  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-unix-credentials.c: Fix build issues. 
