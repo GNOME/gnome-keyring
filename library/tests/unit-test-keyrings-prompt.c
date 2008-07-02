@@ -143,11 +143,14 @@ void unit_test_acls (CuTest* cu)
 	sleep(2);
 
 	/* Now try to read the item, should be prompted */
+#ifdef ENABLE_ACL_PROMPTS
 	TELL("Press 'Allow Once' to give program access to the data");
+#endif
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
 	CuAssert(cu, "didn't return a secret when it should have", gnome_keyring_item_info_get_secret (info) != NULL);
 	
+#ifdef ENABLE_ACL_PROMPTS
 	/* Now try to read the item again, give forever access */
 	TELL("Press 'Always Allow' to give program access to the data");
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
@@ -158,6 +161,7 @@ void unit_test_acls (CuTest* cu)
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
 	sleep(2);	
+#endif
 }
 
 void unit_test_application_secret (CuTest* cu)

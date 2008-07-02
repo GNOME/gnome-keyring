@@ -182,6 +182,7 @@ check_acl_ask_request (GkrAskRequest* ask, GnomeKeyringApplicationRef *app)
 		return GKR_ASK_STOP_REQUEST;
 	}
 	
+#ifdef ENABLE_ACL_PROMPTS
 	/* Did prompting already occur? */
 	if (ask->response) {
 		
@@ -197,6 +198,10 @@ check_acl_ask_request (GkrAskRequest* ask, GnomeKeyringApplicationRef *app)
 	
 	/* Continue with prompting */
 	return GKR_ASK_DONT_CARE;
+#else /* !ENABLE_ACL_PROMPTS */
+	ask->response = GKR_ASK_RESPONSE_ALLOW;
+	return GKR_ASK_STOP_REQUEST;
+#endif /* ENABLE_ACL_PROMPTS */
 }
 
 static gboolean

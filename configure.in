@@ -303,13 +303,28 @@ if test "$enable_pam" != "no"; then
 	fi
 fi
 
+# --------------------------------------------------------------------
+# Disable ACL Prompts
+
+AC_ARG_ENABLE(acl-prompts, 
+	    AC_HELP_STRING([--disable-acl-prompts],
+	    [Disable prompted for user to give access to passwords]))
+
+echo "!!!!!!$enable_acl_prompts!!!!!"
+if test "$enable_acl_prompts" != "no"; then
+	AC_DEFINE(ENABLE_ACL_PROMPTS, 1, [Whether to prompt before giving access to passwords])
+fi
+
+# --------------------------------------------------------------------
+# PAM Module Directory
+
 AC_ARG_WITH([pam-dir],
             [AC_HELP_STRING([--with-pam-dir=DIR],
                              [directory to install pam modules in])],
              [], [with_pam_dir="${prefix}/lib/security"])
 PAM_DEST_DIR="$with_pam_dir"
 AC_SUBST(PAM_DEST_DIR)
-	
+
 AM_CONDITIONAL(WITH_PAM, test "$have_pam" = "yes")
 
 if test "$have_pam" = "yes"; then
