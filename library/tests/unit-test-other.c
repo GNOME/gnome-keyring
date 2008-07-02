@@ -86,3 +86,11 @@ void unit_test_result_string (CuTest* cu)
 	msg = gnome_keyring_result_to_message (GNOME_KEYRING_RESULT_KEYRING_ALREADY_EXISTS); 	
 	CuAssert (cu, "should return a valid message", msg && msg[0]);
 }
+
+void unit_test_is_available (CuTest* cu)
+{
+	gboolean ret;
+	
+	ret = gnome_keyring_is_available ();
+	CuAssert (cu, "gnome_is_available returned false", ret == TRUE);
+}

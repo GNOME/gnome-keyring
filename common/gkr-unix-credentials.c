@@ -90,6 +90,10 @@ gkr_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 		if (errno == EINTR)
 			goto again;
 		return -1;
+		
+	} else if (ret == 0) {
+		/* Disconnected */
+		return -1;
 	}
 	
 	if (buf != '\0') {

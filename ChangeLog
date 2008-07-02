@@ -1,5 +1,12 @@
 2008-07-02  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-unix-credentials.c:
+	* library/tests/unit-test-other.c: Fix problem with 
+	gnome_keyring_is_available() producing spurious warnings
+	in the logs. Fixes bug #511285
+	
+2008-07-02  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon-ops.c:
 	* library/tests/unit-test-keyrings-prompt.c:
 	* configure.in: Add --disable-acl-prompts option to disable
