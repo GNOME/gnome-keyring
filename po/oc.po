@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-07 10:21+0100\n"
+"POT-Creation-Date: 2008-07-02 08:58+0200\n"
 "PO-Revision-Date: 2007-12-27 01:08+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
@@ -17,20 +17,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../common/gkr-location.c:306
+#: ../common/gkr-location.c:317
 #, c-format
 msgid "Removable Disk: %s"
 msgstr ""
 
-#: ../common/gkr-location.c:308
+#: ../common/gkr-location.c:319
 msgid "Removable Disk"
 msgstr ""
 
-#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
+#: ../common/gkr-location.c:534 ../common/gkr-location.c:546
 msgid "Home"
-msgstr "Ostal"
+msgstr "Repertòri personal"
 
-#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
+#: ../common/gkr-location.c:1074 ../common/gkr-location.c:1097
 #: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr ""
@@ -377,95 +377,95 @@ msgid ""
 "computer. It will now be created."
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:99
+#: ../pk/gkr-pk-object-storage.c:100
 msgid "Unlock private key"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:101
+#: ../pk/gkr-pk-object-storage.c:102
 msgid "Unlock certificate"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:103
+#: ../pk/gkr-pk-object-storage.c:104
 msgid "Unlock public key"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:105
+#: ../pk/gkr-pk-object-storage.c:106
 msgid "Unlock"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:116
+#: ../pk/gkr-pk-object-storage.c:117
 msgid "Enter password to unlock the private key"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:118
+#: ../pk/gkr-pk-object-storage.c:119
 msgid "Enter password to unlock the certificate"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:120
+#: ../pk/gkr-pk-object-storage.c:121
 msgid "Enter password to unlock the public key"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:122
+#: ../pk/gkr-pk-object-storage.c:123
 msgid "Enter password to unlock"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:133
+#: ../pk/gkr-pk-object-storage.c:134
 msgid "Automatically unlock this private key when I log in."
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:135
+#: ../pk/gkr-pk-object-storage.c:136
 msgid "Automatically unlock this certificate when I log in."
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:137
+#: ../pk/gkr-pk-object-storage.c:138
 msgid "Automatically unlock this public key when I log in."
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:139
+#: ../pk/gkr-pk-object-storage.c:140
 msgid "Automatically unlock this when I log in"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:154
+#: ../pk/gkr-pk-object-storage.c:155
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:156
+#: ../pk/gkr-pk-object-storage.c:157
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:158
+#: ../pk/gkr-pk-object-storage.c:159
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:160
+#: ../pk/gkr-pk-object-storage.c:161
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:166
+#: ../pk/gkr-pk-object-storage.c:167
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:168
+#: ../pk/gkr-pk-object-storage.c:169
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:170
+#: ../pk/gkr-pk-object-storage.c:171
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:172
+#: ../pk/gkr-pk-object-storage.c:173
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
 msgstr ""
 
-#: ../pk/gkr-pk-object-storage.c:258
+#: ../pk/gkr-pk-object-storage.c:289
 #, c-format
 msgid "Unlock password for '%s'"
 msgstr ""
