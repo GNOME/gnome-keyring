@@ -1,5 +1,10 @@
 2008-07-02  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-buffer.c: Better checks, and buffer handling.
+	Bugs found by Jon Burgress. 
+	 
+2008-07-02  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-unix-credentials.c:
 	* library/tests/unit-test-other.c: Fix problem with 
 	gnome_keyring_is_available() producing spurious warnings

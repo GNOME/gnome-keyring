@@ -441,15 +441,15 @@ int
 gkr_buffer_add_string (GkrBuffer *buffer, const char *str)
 {
 	if (str == NULL) {
-		gkr_buffer_add_uint32 (buffer, 0xffffffff);
+		return gkr_buffer_add_uint32 (buffer, 0xffffffff);
 	} else {
 		size_t len = strlen (str);
 		if (len >= 0x7fffffff)
 			return 0;
-		gkr_buffer_add_uint32 (buffer, len);
-		gkr_buffer_append (buffer, (unsigned char*)str, len);
+		if (!gkr_buffer_add_uint32 (buffer, len))
+			return 0;
+		return gkr_buffer_append (buffer, (unsigned char*)str, len);
 	}
-	return 1;
 }
 
 int
@@ -485,7 +485,7 @@ gkr_buffer_get_string (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 	*str_ret = (allocator) (NULL, len + 1);
 	if (!*str_ret)
 		return 0;
-	memcpy (*str_ret, buffer->buf + offset, len + 1);
+	memcpy (*str_ret, buffer->buf + offset, len);
 
 	/* Always zero terminate */
 	(*str_ret)[len] = 0;
