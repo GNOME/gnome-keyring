@@ -45,7 +45,7 @@ G_BEGIN_DECLS
 typedef struct _GkrPkObject      GkrPkObject;
 typedef struct _GkrPkObjectClass GkrPkObjectClass;
 
-typedef struct _GkrPkObjectStorage GkrPkObjectStorage;
+typedef struct _GkrPkStorage GkrPkStorage;
 typedef struct _GkrPkObjectManager GkrPkObjectManager;
 
 struct _GkrPkObject {
@@ -56,7 +56,7 @@ struct _GkrPkObject {
 	CK_OBJECT_HANDLE handle;
 	
 	GkrPkObjectManager *manager;
-	GkrPkObjectStorage *storage;
+	GkrPkStorage *storage;
 };
 
 struct _GkrPkObjectClass {
@@ -149,6 +149,39 @@ gchar*              gkr_pk_object_get_label        (GkrPkObject *object);
 
 void                gkr_pk_object_set_label        (GkrPkObject *object, 
                                                     const gchar *label);
+
+/* -------------------------------------------------------------------
+ * Helpers to access the index for an object 
+ */
+
+gboolean            gkr_pk_object_index_has_value    (GkrPkObject *object,
+                                                      const gchar *field);
+
+GQuark*             gkr_pk_object_index_get_quarks   (GkrPkObject *object,
+                                                      const gchar *field);
+
+gchar*              gkr_pk_object_index_get_string   (GkrPkObject *object,
+                                                      const gchar *field);
+
+guchar*             gkr_pk_object_index_get_binary   (GkrPkObject *object,
+                                                      const gchar *field,
+                                                      gsize *n_data);
+
+void                gkr_pk_object_index_set_boolean  (GkrPkObject *object,
+                                                      const gchar *field,
+                                                      gboolean value);
+
+void                gkr_pk_object_index_set_string   (GkrPkObject *object,
+                                                      const gchar *field,
+                                                      const gchar *string);
+
+void                gkr_pk_object_index_set_binary   (GkrPkObject *object,
+                                                      const gchar *field,
+                                                      const guchar *data,
+                                                      gsize n_data);
+
+void                gkr_pk_object_index_clear        (GkrPkObject *object, 
+                                                      const gchar *field);
 
 G_END_DECLS
 

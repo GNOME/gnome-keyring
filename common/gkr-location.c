@@ -35,7 +35,9 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
+#include <errno.h>
 #include <string.h>
 
 #define LOC_DELIMITER   ":"
@@ -1017,6 +1019,27 @@ gkr_location_to_display (GQuark loc)
 }
 
 gboolean
+gkr_location_is_volume (GQuark loc)
+{
+	const gchar *sloc;
+	const gchar *delim;
+	
+	if (!loc)
+		return FALSE;
+	
+	sloc = g_quark_to_string (loc);
+	g_return_val_if_fail (sloc, FALSE);
+
+	delim = strchr (sloc, LOC_DELIMITER_C);
+	if (!delim) {
+		g_warning ("The '%s' location is invalid", sloc);
+		return FALSE;
+	}
+	
+	return (delim[1] == 0);
+}
+
+gboolean
 gkr_location_is_descendant (GQuark parent, GQuark descendant)
 {
 	const gchar *sparent = g_quark_to_string (parent);
@@ -1102,4 +1125,33 @@ gkr_location_write_file (GQuark loc, const guchar *data, gssize len, GError **er
 	g_free (path);
 	
 	return ret;
+}
+
+gboolean
+gkr_location_delete_file (GQuark loc, GError **err)
+{
+	gchar *path;
+	int eno;
+	
+	g_return_val_if_fail (loc != 0, FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+
+	/* Should be successful when file doesn't exist */
+	path = gkr_location_to_path (loc);
+	if (!path)
+		return TRUE;
+
+	if (g_unlink (path) < 0) {
+		eno = errno;
+		
+		/* Should be successful when file doesn't exist */
+		if (eno != ENOENT) {
+			g_set_error (err, G_FILE_ERROR, g_file_error_from_errno (eno), 
+			             _("Couldn't delete the file: %s"), g_strerror (eno));
+			return FALSE;
+		}
+	}
+	
+	g_free (path);
+	return TRUE;	
 }

@@ -28,10 +28,18 @@
 
 #include "gkr-pkix-parser.h"
 
-int               gkr_pkix_openssl_parse_algo       (const gchar *name, int *mode);
+int              gkr_pkix_openssl_parse_algo        (const gchar *name, int *mode);
 
-GkrPkixResult    gkr_pkix_openssl_decrypt_block    (const gchar *dekinfo, const gchar *password, 
+gboolean         gkr_pkix_openssl_encrypt_block     (const gchar *dekinfo, const gchar *password, 
+                                                     const guchar *data, gsize n_data,
+                                                     guchar **encrypted, gsize *n_encrypted);
+
+GkrPkixResult    gkr_pkix_openssl_decrypt_block     (const gchar *dekinfo, const gchar *password, 
                                                      const guchar *data, gsize n_data, 
                                                      guchar **decrypted, gsize *n_decrypted);
+
+const gchar*     gkr_pkix_openssl_get_dekinfo       (GHashTable *headers);
+
+const gchar*     gkr_pkix_openssl_prep_dekinfo      (GHashTable *headers);
 
 #endif /*GKRPKIOPENSSL_H_*/

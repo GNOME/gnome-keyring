@@ -40,6 +40,8 @@ void            gkr_keyrings_remove        (GkrKeyring *keyring);
 
 GkrKeyring*     gkr_keyrings_find          (const gchar *name);
 
+GkrKeyring*     gkr_keyrings_for_location  (GQuark location);
+
 GkrKeyring*     gkr_keyrings_get_session   (void);
 
 guint           gkr_keyrings_get_count     (void);

@@ -67,20 +67,22 @@ read_file (CuTest *cu, const gchar *filename, guchar **contents, gsize *len)
 	g_free (path);
 }
 
-static gchar*
+static gboolean
 ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid unique, 
-              GQuark type, const gchar *details, guint n_prompts, 
-              gpointer user_data) 
+              GQuark type, const gchar *details, gint *state, 
+              gchar **password, gpointer user_data) 
 {
 	CuTest *cu = (CuTest*)user_data;
 	gchar *msg;
 	
 	/* Should only be asking once per location */
-	if (n_prompts > 0) {
+	if (*state > 0) {
 		msg = g_strdup_printf ("decryption didn't work for: %s", g_quark_to_string (loc));
 		CuAssert (cu, msg, FALSE);
-		return NULL;
+		return FALSE;
 	}
+	
+	(*state)++;
 	
 	CuAssert (cu, "type is zero", type != 0);
 	CuAssert (cu, "details is null", details != NULL);
@@ -88,7 +90,8 @@ ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid unique,
 	g_print ("getting password 'booo' for: %s\n", details); 	
 	
 	/* All our test encrypted stuff use this password */
-	return gkr_secure_strdup ("booo");
+	*password = gkr_secure_strdup ("booo");
+	return TRUE;
 }
 
 void unit_test_serialize_certificate (CuTest* cu)

@@ -58,11 +58,15 @@ static GkrPkObjectManager *manager = NULL;
 static GkrPkCert *certificate_1 = NULL;
 static GkrPkCert *certificate_2 = NULL;
 static GkrPkObject *privkey_1 = NULL;
+static GkrPkIndex *pk_index = NULL;
 
 void unit_setup_certificate (void)
 {
 	/* Our own object manager */
-	manager = gkr_pk_object_manager_instance_for_client (1231); 
+	manager = gkr_pk_object_manager_instance_for_client (1231);
+	
+	/* Our own pk_index */
+	pk_index = gkr_pk_index_default ();
 }
 
 void unit_test_create_certificate (CuTest* cu)
@@ -172,17 +176,17 @@ void unit_test_certificate_trust (CuTest *cu)
 	
 	/* Mark as trusted */
 	/* TODO: Should do this via attribute once writable */
-	gkr_pk_index_set_string (GKR_PK_OBJECT (certificate_2), "user-trust", "trusted");
+	gkr_pk_object_index_set_string (GKR_PK_OBJECT (certificate_2), "user-trust", "trusted");
 	CHECK_ULONG_ATTRIBUTE (cu, certificate_2, CKA_GNOME_USER_TRUST, CKT_GNOME_TRUSTED);
 	
 	/* Should return to previous state */	
 	/* TODO: Should do this via attribute once writable */
-	gkr_pk_index_delete (GKR_PK_OBJECT (certificate_2), "user-trust");
+	gkr_pk_object_index_clear (GKR_PK_OBJECT (certificate_2), "user-trust");
 	CHECK_ULONG_ATTRIBUTE (cu, certificate_2, CKA_GNOME_USER_TRUST, CKT_GNOME_UNKNOWN);
 
 	/* Mark as untrusted */
 	/* TODO: Should do this via attribute once writable */
-	gkr_pk_index_set_string (GKR_PK_OBJECT (certificate_1), "user-trust", "untrusted");
+	gkr_pk_object_index_set_string (GKR_PK_OBJECT (certificate_1), "user-trust", "untrusted");
 	CHECK_ULONG_ATTRIBUTE (cu, certificate_1, CKA_GNOME_USER_TRUST, CKT_GNOME_UNTRUSTED);	
 }
 
@@ -226,10 +230,9 @@ void unit_test_certificate_purpose (CuTest *cu)
 	CHECK_BOOL_ATTRIBUTE (cu, certificate_2, CKA_GNOME_PURPOSE_IPSEC_USER, CK_TRUE);
 	CHECK_BOOL_ATTRIBUTE (cu, certificate_2, CKA_GNOME_PURPOSE_TIME_STAMPING, CK_TRUE);
 
-	
 	/* Add a purpose */
 	/* TODO: Should do this via attribute once writable */
-	gkr_pk_index_set_string (GKR_PK_OBJECT (certificate_2), "purposes", "some-purpose");
+	gkr_pk_object_index_set_string (GKR_PK_OBJECT (certificate_2), "purposes", "some-purpose");
 	CHECK_BOOL_ATTRIBUTE (cu, certificate_2, CKA_GNOME_PURPOSE_RESTRICTED, CK_TRUE);
 	
 	memset (&attr, 0, sizeof (attr));

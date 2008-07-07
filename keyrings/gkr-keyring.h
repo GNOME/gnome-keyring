@@ -37,6 +37,8 @@
 
 #include "library/gnome-keyring.h"
 
+#include "ui/gkr-ask-request.h"
+
 G_BEGIN_DECLS
 
 #define GKR_TYPE_KEYRING             (gkr_keyring_get_type())
@@ -95,7 +97,7 @@ guint            gkr_keyring_get_new_id         (GkrKeyring *keyring);
 GkrKeyringItem*  gkr_keyring_get_item           (GkrKeyring *keyring, guint id);
 
 GkrKeyringItem*  gkr_keyring_find_item          (GkrKeyring *keyring, GnomeKeyringItemType type, 
-                                                 GnomeKeyringAttributeList *attrs);
+                                                 GnomeKeyringAttributeList *attrs, gboolean match_all);
 
 void             gkr_keyring_add_item           (GkrKeyring* keyring, GkrKeyringItem* item);
 
@@ -116,6 +118,9 @@ void             gkr_keyrings_set_item          (GkrKeyring *keyring, GnomeKeyri
                                                  GnomeKeyringAttributeList *attrs);
 
 gboolean         gkr_keyring_is_insecure        (GkrKeyring *keyring);
+
+/* Used with the check-request signal on GkrAskRequest to unlock a keyring */
+gboolean         gkr_keyring_ask_check_unlock   (GkrAskRequest* ask);
 
 /* -----------------------------------------------------------------------------
  * FILE FORMATS

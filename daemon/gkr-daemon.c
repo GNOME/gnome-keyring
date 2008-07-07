@@ -39,6 +39,7 @@
 
 #ifdef WITH_SSH
 #include "ssh/gkr-ssh-daemon.h"
+#include "ssh/gkr-ssh-storage.h"
 #endif
 
 #include "ui/gkr-ask-daemon.h"
@@ -460,7 +461,8 @@ main (int argc, char *argv[])
 
 #ifdef WITH_SSH	
 	if (check_run_component ("ssh")) {
-		if (!gkr_daemon_ssh_io_initialize ())
+		if (!gkr_daemon_ssh_io_initialize () ||
+		    !gkr_ssh_storage_initialize ())
 			cleanup_and_exit (1);
 	}
 #endif

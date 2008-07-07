@@ -174,9 +174,10 @@ prepare_ask_secondary (GQuark type, gboolean indexed, const gchar *label)
 	}
 }
 
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 static gchar* 
 parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid digest, 
-                     GQuark type, const gchar *label, guint failures,
+                     GQuark type, const gchar *label, gint *state,
                      ParseContext *ctx)
 {
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
@@ -292,9 +293,11 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 			                                 "pk-object", gkr_location_to_string (loc), NULL);
 		} 
 		
+	xxxxxxxxxxxxxxxxxxxxxx
 		/* Track that we prompted for this */
 		g_hash_table_insert (ctx->types_by_digest, gkr_id_dup (digest), 
 		                     GUINT_TO_POINTER (type));
+	xxxxxxxxxxxxxxxxxxxxxx
 	}	
 		
 	g_free (custom_label);
@@ -593,6 +596,7 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, GError **err)
 	g_signal_connect (parser, "parsed-asn1", G_CALLBACK (parser_parsed_asn1), &ctx);
 	g_signal_connect (parser, "parsed-sexp", G_CALLBACK (parser_parsed_sexp), &ctx);
 	g_signal_connect (parser, "parsed-partial", G_CALLBACK (parser_parsed_partial), &ctx);
+	xxxxxxxxxxxxxxxxxxxxxxxx
  	g_signal_connect (parser, "ask-password", G_CALLBACK (parser_ask_password), &ctx);
 
 	ret = gkr_pkix_parser_parse_location (parser, loc, err);

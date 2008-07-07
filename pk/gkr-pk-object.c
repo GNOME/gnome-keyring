@@ -29,6 +29,7 @@
 #include "gkr-pk-object-manager.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-pubkey.h"
+#include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-location.h"
@@ -45,7 +46,8 @@ enum {
 	PROP_LOCATION,
 	PROP_DIGEST,
 	PROP_ORIG_LABEL,
-	PROP_LABEL
+	PROP_LABEL,
+	PROP_STORAGE
 };
 
 enum {
@@ -59,6 +61,7 @@ struct _GkrPkObjectPrivate {
 	GHashTable *attr_cache;
 	gchar *orig_label;
 	guint load_state;
+	gboolean dummy_digest;
 	
 	gchar *data_path;
 	gchar *data_section;
@@ -108,6 +111,42 @@ lookup_attribute (GkrPkObject *object, CK_ATTRIBUTE_TYPE type, CK_ATTRIBUTE_PTR 
 	return CKR_OK;
 }
 
+static void
+move_indexes_if_necessary (GkrPkObject *obj, GkrPkStorage *copy_storage, 
+                           GQuark copy_location)
+{
+	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (obj);
+	GkrPkIndex *old_index = NULL;
+	GkrPkIndex *new_index = NULL;
+	
+	if (obj->storage)
+		old_index = gkr_pk_storage_index (obj->storage, obj->location);
+	if (copy_storage)
+		new_index = gkr_pk_storage_index (copy_storage, copy_location);
+	
+	if (old_index == new_index)
+		return;
+	
+	gkr_pk_index_copy (old_index, new_index, obj->digest);
+	
+	/* 
+	 * If the index is a dummy index, or wasn't being stored 
+	 * somewhere 'real', then remove the old indexes too.
+	 */
+	if (pv->dummy_digest || !obj->storage)
+		gkr_pk_index_delete (old_index, obj->digest);
+}
+
+static void
+remove_indexes (GkrPkObject *obj)
+{
+	GkrPkIndex *index = NULL;
+	
+	if (obj->storage)
+		index = gkr_pk_storage_index (obj->storage, obj->location);
+	gkr_pk_index_delete (index, obj->digest);
+}
+
 /* --------------------------------------------------------------------------------
  * OBJECT
  */
@@ -118,6 +157,10 @@ gkr_pk_object_init (GkrPkObject *obj)
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (obj);
 	pv->attr_cache = g_hash_table_new_full (g_direct_hash, g_direct_equal, 
 	                                        NULL, gkr_pk_attribute_free);
+	
+	/* Create a dummy digest which is the object address */
+	pv->dummy_digest = TRUE;
+	obj->digest = gkr_id_new ((guchar*)&obj, sizeof (obj));
 }
 
 static GObject*
@@ -134,15 +177,21 @@ gkr_pk_object_constructor (GType type, guint n_props, GObjectConstructParam *pro
 		
 	xobj = GKR_PK_OBJECT (obj);
 	
-	/* Find the object manager and register */
-	for (i = 0; i < n_props; ++i) {
-		if (props[i].pspec->name && g_str_equal (props[i].pspec->name, "manager")) {
-			mgr = g_value_get_object (props[i].value);
-			if (mgr) {
-				gkr_pk_object_manager_register (mgr, xobj);
-				g_return_val_if_fail (xobj->manager == mgr, obj);
+	/* 
+	 * Find the object manager and register, if we have 
+	 * a digest setup already. Otherwise this'll happen
+	 * later (see PROP_DIGEST in gkr_pk_object_set_property)
+	  */
+	if (xobj->digest) {
+		for (i = 0; i < n_props; ++i) {
+			if (props[i].pspec->name && g_str_equal (props[i].pspec->name, "manager")) {
+				mgr = g_value_get_object (props[i].value);
+				if (mgr) {
+					gkr_pk_object_manager_register (mgr, xobj);
+					g_return_val_if_fail (xobj->manager == mgr, obj);
+				}
+				break;
 			}
-			break;
 		}
 	}
 	
@@ -247,6 +296,9 @@ gkr_pk_object_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_LABEL:
 		g_value_take_string (value, gkr_pk_object_get_label (xobj));
 		break;
+	case PROP_STORAGE:
+		g_value_set_object (value, xobj->storage);
+		break;
 	}
 }
 
@@ -256,6 +308,10 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 {
 	GkrPkObject *xobj = GKR_PK_OBJECT (obj);
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
+	GkrPkIndex *index;
+	GkrPkStorage *storage;
+	gkrid digest;
+	GQuark location;
 	
 	switch (prop_id) {
 	case PROP_MANAGER:
@@ -265,28 +321,80 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		 * taken effect. See above.
 		 */
 		break; 
+		
 	case PROP_LOCATION:
-		xobj->location = g_value_get_uint (value);
+		location = g_value_get_uint (value);
+		if (location)
+			move_indexes_if_necessary (xobj, xobj->storage, location);
+		xobj->location = location; 
 		break;
+		
 	case PROP_DIGEST:
+		/* 
+		 * This is a bit of complicated song and dance. The digest uniquely
+		 * identifies the object in many cases. When it changes, all sorts 
+		 * of stuff needs to change.
+		 */
+		
+		g_return_if_fail (xobj->digest);
+		digest = gkr_id_dup (g_value_get_boxed (value));
+		g_return_if_fail (digest);
+		
+		/* Unregister old digest with object manager */
+		if (xobj->manager)
+			gkr_pk_object_manager_unregister (xobj->manager, xobj);
+
+		/* Rename to the new digest in the index */
+		index = xobj->storage ? gkr_pk_storage_index (xobj->storage, xobj->location) : NULL;
+		if (gkr_pk_index_have (index, xobj->digest)) {
+			if (!gkr_pk_index_rename (index, xobj->digest, digest))
+				g_return_if_reached ();
+		}
+
+		/* Change to new digest */
 		gkr_id_free (xobj->digest);
-		xobj->digest = gkr_id_dup (g_value_get_boxed (value));
+		xobj->digest = digest;
+
+		/* Register with the object manager with the new digest */
+		if (xobj->manager)
+			gkr_pk_object_manager_register (xobj->manager, xobj);
+		
 		break;
+		
 	case PROP_ORIG_LABEL:
 		g_free (pv->orig_label);
 		pv->orig_label = g_value_dup_string (value);
 		break;
+		
 	case PROP_LABEL:
 		gkr_pk_object_set_label (xobj, g_value_get_string (value));
 		break;
-	}
+		
+	case PROP_STORAGE:
+		/* 
+		 * We're changing storages at this point. We may get a new index
+		 * so try to move everything from the old index to the new. 
+		 */
+		storage = g_value_get_object (value);
+		if (storage)
+			move_indexes_if_necessary (xobj, storage, xobj->location);
+		
+		/* We don't reference, storage should remove itself before the end */
+		xobj->storage = storage;
+		break;
+	};
 }
                                     
 static void
 gkr_pk_object_finalize (GObject *obj)
 {
 	GkrPkObject *xobj = GKR_PK_OBJECT (obj);
-	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);	
+	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
+	
+	/* If this never actually got stored properly, then remove it */
+	if (pv->dummy_digest || !xobj->storage)
+		remove_indexes (xobj);
+	
 	if (pv->attr_cache)
 		g_hash_table_destroy (pv->attr_cache);
 		
@@ -297,6 +405,9 @@ gkr_pk_object_finalize (GObject *obj)
 	if (xobj->manager)
 		gkr_pk_object_manager_unregister (xobj->manager, xobj);
 	g_return_if_fail (xobj->manager == NULL);
+	
+	gkr_id_free (xobj->digest);
+	xobj->digest = NULL;
 
 	G_OBJECT_CLASS (gkr_pk_object_parent_class)->finalize (obj);
 }
@@ -333,11 +444,15 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 		                    
 	g_object_class_install_property (gobject_class, PROP_ORIG_LABEL,
 		g_param_spec_string ("orig-label", "Original Label", "Original Label",
-		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                     NULL, G_PARAM_READWRITE));
 		                     
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 		g_param_spec_string ("label", "Label", "PK Object Label",
 		                     NULL, G_PARAM_READWRITE));
+	
+	g_object_class_install_property (gobject_class, PROP_STORAGE,
+		g_param_spec_object ("storage", "Storage", "Storage for this Object",
+		                     GKR_TYPE_PK_STORAGE, G_PARAM_READWRITE));
 }
 
 /* --------------------------------------------------------------------------------
@@ -430,7 +545,7 @@ gkr_pk_object_import (GkrPkObject *object)
 		ret = (*klass->import) (object);
 	
 	if (ret)
-		gkr_pk_index_set_boolean (object, "imported", TRUE);
+		gkr_pk_object_index_set_boolean (object, "imported", TRUE);
 	
 	return ret;
 }
@@ -670,15 +785,168 @@ gchar*
 gkr_pk_object_get_label (GkrPkObject *xobj)
 {
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (xobj), NULL);
-	return gkr_pk_index_get_string (xobj, "label");
+	return gkr_pk_object_index_get_string (xobj, "label");
 }
 
 void
 gkr_pk_object_set_label (GkrPkObject *xobj, const gchar *label)
 {
 	g_return_if_fail (GKR_IS_PK_OBJECT (xobj));
-	if (!label)
-		gkr_pk_index_delete (xobj, "label");
-	else
-		gkr_pk_index_set_string (xobj, "label", label);
+	gkr_pk_object_index_set_string (xobj, "label", label);
+}
+
+/* -------------------------------------------------------------------
+ * INDEX HELPERS 
+ */
+
+gboolean
+gkr_pk_object_index_has_value (GkrPkObject *object, const gchar *field)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), FALSE);
+	g_return_val_if_fail (object->digest, FALSE);
+	g_return_val_if_fail (field, FALSE);
+
+	if (object->storage) {
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
+		index = gkr_pk_storage_index (object->storage, object->location);
+		g_return_val_if_fail (index, FALSE);
+	} 
+	
+	return gkr_pk_index_has_value (index, object->digest, field);
+}
+
+GQuark*
+gkr_pk_object_index_get_quarks (GkrPkObject *object, const gchar *field)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), NULL);
+	g_return_val_if_fail (object->digest, NULL);
+	g_return_val_if_fail (field, NULL);
+	
+	if (object->storage) {
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
+		index = gkr_pk_storage_index (object->storage, object->location);
+		g_return_val_if_fail (index, FALSE);
+	} 
+	
+	return gkr_pk_index_get_quarks (index, object->digest, field);
+}
+
+gchar*
+gkr_pk_object_index_get_string (GkrPkObject *object, const gchar *field)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), NULL);
+	g_return_val_if_fail (object->digest, NULL);
+	g_return_val_if_fail (field, NULL);
+	
+	if (object->storage) {
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
+		index = gkr_pk_storage_index (object->storage, object->location);
+		g_return_val_if_fail (index, FALSE);
+	} 
+	
+	return gkr_pk_index_get_string (index, object->digest, field);
+}
+
+guchar*
+gkr_pk_object_index_get_binary (GkrPkObject *object, const gchar *field,
+                                gsize *n_data)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), NULL);
+	g_return_val_if_fail (object->digest, NULL);
+	g_return_val_if_fail (field, NULL);
+	
+	if (object->storage) {
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
+		index = gkr_pk_storage_index (object->storage, object->location);
+		g_return_val_if_fail (index, FALSE);
+	} 
+	
+	return gkr_pk_index_get_binary (index, object->digest, field, n_data);
+}
+
+void
+gkr_pk_object_index_set_boolean (GkrPkObject *object, const gchar *field,
+                                 gboolean value)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_if_fail (GKR_IS_PK_OBJECT (object));
+	g_return_if_fail (object->digest);
+	g_return_if_fail (field);
+	
+	if (object->storage) {
+		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
+		index = gkr_pk_storage_index (object->storage, object->location);
+		g_return_if_fail (index);
+	} 
+	
+	if (gkr_pk_index_set_boolean (index, object->digest, field, value))
+		gkr_pk_object_flush (object);
+}
+
+void
+gkr_pk_object_index_set_string (GkrPkObject *object, const gchar *field,
+                                const gchar *string)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_if_fail (GKR_IS_PK_OBJECT (object));
+	g_return_if_fail (object->digest);
+	g_return_if_fail (field);
+	
+	if (object->storage) {
+		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
+		index = gkr_pk_storage_index (object->storage, object->location);
+		g_return_if_fail (index);
+	} 
+	
+	if (gkr_pk_index_set_string (index, object->digest, field, string))
+		gkr_pk_object_flush (object);
+}
+
+void
+gkr_pk_object_index_set_binary (GkrPkObject *object, const gchar *field,
+                                const guchar *data, gsize n_data)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_if_fail (GKR_IS_PK_OBJECT (object));
+	g_return_if_fail (object->digest);
+	g_return_if_fail (field);
+
+	if (object->storage) {
+		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
+		index = gkr_pk_storage_index (object->storage, object->location);
+		g_return_if_fail (index);
+	}
+	
+	if (gkr_pk_index_set_binary (index, object->digest, field, data, n_data))
+		gkr_pk_object_flush (object);
+}
+
+void
+gkr_pk_object_index_clear (GkrPkObject *object, const gchar *field)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_if_fail (GKR_IS_PK_OBJECT (object));
+	g_return_if_fail (object->digest);
+	g_return_if_fail (field);
+
+	if (object->storage) {
+		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
+		index = gkr_pk_storage_index (object->storage, object->location);
+		g_return_if_fail (index);
+	}
+	
+	if (gkr_pk_index_clear (index, object->digest, field))
+		gkr_pk_object_flush (object);
 }

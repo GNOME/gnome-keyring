@@ -161,12 +161,7 @@ gkr_ssh_proto_read_public (GkrBuffer *req, gsize *offset, gcry_sexp_t *key, int 
 {
 	gboolean ret;
 	gchar *stype;
-	guint sz;
 	int alg;
-	
-	/* The key packet size */
-	if (!gkr_buffer_get_uint32 (req, *offset, offset, &sz))
-		return FALSE;
 	
 	/* The string algorithm */
 	if (!gkr_buffer_get_string (req, *offset, offset, &stype, (GkrBufferAllocator)g_realloc))
@@ -425,13 +420,8 @@ gboolean
 gkr_ssh_proto_write_public (GkrBuffer *resp, int algo, gcry_sexp_t key)
 {
 	gboolean ret = FALSE;
-	gsize blobpos;
 	const gchar *salgo;
 	
-	/* Add a space for the key blob length */		
-	blobpos = resp->len;
-	gkr_buffer_add_uint32 (resp, 0);
-
 	salgo = gkr_ssh_proto_algo_to_keytype (algo);
 	g_assert (salgo);
 	gkr_buffer_add_string (resp, salgo);
@@ -449,9 +439,6 @@ gkr_ssh_proto_write_public (GkrBuffer *resp, int algo, gcry_sexp_t key)
 		g_return_val_if_reached (FALSE);
 		break;
 	}
-		
-	/* Write back the blob length */
-	gkr_buffer_set_uint32 (resp, blobpos, (resp->len - blobpos) - 4);
 
 	return ret;
 }

@@ -1,3 +1,72 @@
+2008-07-07  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-crypto.c: Null terminate hex encodings properly
+	
+	* common/gkr-location.c: 
+	* common/gkr-location.h: 
+	* common/tests/unit-test-location.c: Add function to delete files, and 
+	check if a location is a volume.
+	
+	* daemon/gkr-daemon-ops.c: Allow arbitrary item types.
+	
+	* keyrings/gkr-keyring.c:
+	* keyrings/gkr-keyrings.c:
+	* keyrings/gkr-keyrings.h: Can create keyrings in arbitrary locations.
+	
+	* daemon/gkr-daemon-ops.c:
+	* keyrings/gkr-keyring.c: Consolidate the keyring unlocking logic.
+	
+	* keyrings/gkr-keyring-binary.c: 
+	* keyrings/gkr-keyring-item.c:
+	* keyrings/gkr-keyring-item.h: Functions to manage item attribute lists.
+	
+	* keyrings/gkr-keyring-item.c: 
+	* keyrings/gkr-keyring-login.c:
+	* keyrings/tests/unit-test-keyring-file.c: 
+	* library/gnome-keyring.h:
+	* pk/gkr-pk-cert.c:
+	* pk/gkr-pk-index.c:
+	* pk/gkr-pk-index.h:
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object.h:
+	* pk/gkr-pk-object-manager.c:
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-pubkey.c:
+	* pk/gkr-pk-root-storage.c: (added)
+	* pk/gkr-pk-root-storage.h: (added)
+	* pk/gkr-pk-session-storage.c: (added)
+	* pk/gkr-pk-session-storage.h: (added)
+	* pk/gkr-pk-storage.c: (added)
+	* pk/gkr-pk-storage.h: (added)
+	* pk/Makefile.am:
+	* pk/tests/unit-test-pk-cert.c:
+	* pk/tests/unit-test-pk-index.c:
+	* pk/tests/unit-test-pk-netscape-trust.c:
+	* pkcs11/gkr-pkcs11-daemon-session.c: 
+	* pkix/gkr-pkix-marshal.list
+	* pkix/gkr-pkix-parser.c:
+	* pkix/gkr-pkix-parser.h:
+	* pkix/tests/unit-test-pkix-parser.c:
+	* pkix/tests/unit-test-pkix-serialize.c:
+	* configure.in: Put indexes into keyrings, and rework how storage
+	of PK objects is thought out. 
+
+	* daemon/gkr-daemon.c:   
+	* pkix/gkr-pkix-openssl.c:
+	* pkix/gkr-pkix-openssl.h:
+	* pkix/gkr-pkix-pem.c:
+	* pkix/gkr-pkix-pem.h:
+	* pkix/tests/unit-test-pkix-openssl.c: (added)
+	* ssh/gkr-ssh-daemon-io.c:
+	* ssh/gkr-ssh-daemon-ops.c:
+	* ssh/gkr-ssh-proto.c:
+	* ssh/gkr-ssh-storage.c: (added)
+	* ssh/gkr-ssh-storage.h: (added)
+	* ssh/Makefile.am: 
+	* ssh/tests/Makefile.am: (added)
+	* ssh/tests/unit-test-ssh-storage.c: (added) 
+	Add an SSH key store which loads ~/.ssh
+	
 2008-07-02  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-buffer.c: Better checks, and buffer handling.

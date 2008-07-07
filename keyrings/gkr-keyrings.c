@@ -338,6 +338,34 @@ gkr_keyrings_find (const gchar *name)
 	return NULL;
 }
 
+GkrKeyring*
+gkr_keyrings_for_location (GQuark location)
+{
+	GkrKeyring *keyring;
+	GList *l;
+	
+	keyrings_init ();
+
+	for (l = keyrings; l != NULL; l = l->next) {
+		keyring = GKR_KEYRING (l->data);
+		if (keyring->location == location)
+			return keyring;
+	}
+
+	/* Try and load the keyring */
+	if (gkr_location_test_file (location, G_FILE_TEST_IS_REGULAR)) {
+		keyring = gkr_keyring_new ("", location);
+		if (gkr_keyring_update_from_disk (keyring))
+			gkr_keyrings_add (keyring);
+		else
+			keyring = NULL;
+		g_object_unref (keyring);
+		return keyring;
+	}
+
+	return NULL;
+}
+
 gboolean 
 gkr_keyrings_foreach (GkrKeyringEnumFunc func, gpointer data)
 {

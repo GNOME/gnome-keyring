@@ -111,12 +111,11 @@ init_quarks (void)
 
 typedef struct {
 	GQuark location;
-	guint n_prompts;
-	guint n_passes;
+	gint ask_state;
 	GSList *seen;
 } PasswordState;
 
-#define PASSWORD_STATE_INIT { 0, 0, 0, NULL}
+#define PASSWORD_STATE_INIT { 0, 0, NULL}
 
 typedef struct {
 	GSList *seen_passwords;
@@ -149,8 +148,8 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	GkrPkixParserPrivate *pv = GKR_PKIX_PARSER_GET_PRIVATE (parser);
 	gboolean first = FALSE;
 	gchar *display = NULL;
-	guint passes;
 	gchar *prompted;
+	gboolean result;
 	GSList *l;
 
 	if (gkr_async_is_stopping ())
@@ -159,36 +158,10 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	/* Is it a new location, reset stuff */
 	if (loc != state->location) {
 		state->seen = NULL;
-		state->n_prompts = 0;
-		state->n_passes = 0;
+		state->ask_state = 0;
 		state->location = loc;
 	}
-	
-	passes = state->n_passes;
-	++state->n_passes;
-		
-	/* 
-	 * On the first pass always try a NULL and then an empty password. 
-	 * This helps with two things.
-	 *  
-	 * 1. Often code will call this function, without actually parsing
-	 *    any data yet. So this prevents us prompting the user without
-	 *    knowing it will parse. 
-	 *  
-	 * 2. In case it is actually an empty password, we don't want to 
-	 *    prompt the user, just 'decrypt' it. Note that some systems
-	 *    use the null password instead of empty, so we try both.
-	 */
-	if (passes == 0) {
-		*password = "";
-		return TRUE;
-	}
-	
-	if (passes == 1) {
-		*password = NULL;
-		return TRUE;
-	}
-	
+
 	/* 
 	 * Next passes we look through all the passwords that the parser 
 	 * has seen so far. This is because different parts of a encrypted
@@ -225,19 +198,19 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	 * And lastly we actually prompt for a password. This prompt might
 	 * also lookup saved passwords for this location.
 	 */
-	 
 	if (!label) 
 		label = display = gkr_location_to_display (loc);
 	
 	g_signal_emit (parser, signals[ASK_PASSWORD], 0, 
-	               loc, digest, type, label, state->n_prompts, &prompted);
+	               loc, digest, type, label, &state->ask_state, 
+	               &prompted, &result);
 	               
-	++state->n_prompts;
 	g_free (display);
 	
 	/* Stash away any password */
-	if (prompted) {
-		pv->seen_passwords = g_slist_prepend (pv->seen_passwords, prompted);
+	if (result) {
+		if (prompted)
+			pv->seen_passwords = g_slist_prepend (pv->seen_passwords, prompted);
 		*password = prompted;
 		return TRUE;
 	}
@@ -287,21 +260,6 @@ fire_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest,
 		asn1_delete_structure (&asn1);
 }
 
-static gboolean
-accumulate_password (GSignalInvocationHint *ihint, GValue *return_accu,
-                     const GValue *handler_return, gpointer data)
-{
-	gchar *password;
-	
-	password = g_value_get_pointer (handler_return);
-	if (!password)
-		return TRUE;
-		
-	/* Choose the first password returned by a handler */
-	g_value_set_pointer (return_accu, password);
-	return FALSE;
-}
-
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -337,11 +295,13 @@ gkr_pkix_parser_parsed_sexp (GkrPkixParser *parser, GQuark loc, gkrconstid diges
 	return FALSE;
 }
 
-static gchar*
+static gboolean
 gkr_pkix_parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
-                              GQuark type, const gchar *details, guint n_prompts)
+                              GQuark type, const gchar *details, gint *state, 
+                              gchar **password)
 {
-	return NULL;
+	*password = NULL;
+	return FALSE;
 }
 	
 static void
@@ -392,8 +352,8 @@ gkr_pkix_parser_class_init (GkrPkixParserClass *klass)
 	/* Due to our use of secure memory, we use a pointer as the signal return type */
 	signals[ASK_PASSWORD] = g_signal_new ("ask-password", GKR_TYPE_PKIX_PARSER, 
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GkrPkixParserClass, ask_password),
-			accumulate_password, NULL, gkr_pkix_marshal_POINTER__UINT_POINTER_UINT_STRING_UINT, 
-			G_TYPE_POINTER, 5, G_TYPE_UINT, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_UINT);
+			g_signal_accumulator_true_handled, NULL, gkr_pkix_marshal_BOOLEAN__UINT_POINTER_UINT_STRING_POINTER_POINTER, 
+			G_TYPE_BOOLEAN, 6, G_TYPE_UINT, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_POINTER);
 			
 	g_type_class_add_private (klass, sizeof (GkrPkixParserPrivate));
 }

@@ -41,7 +41,8 @@
 
 #include "pk/gkr-pk-object.h"
 #include "pk/gkr-pk-object-manager.h"
-#include "pk/gkr-pk-object-storage.h"
+#include "pk/gkr-pk-session-storage.h"
+#include "pk/gkr-pk-storage.h"
 #include "pk/gkr-pk-util.h"
 
 #include <stdlib.h>
@@ -76,7 +77,7 @@ struct _SessionInfo {
 	guint deverror;                 /* The 'device' error code */
 	
 	GkrPkObjectManager *manager;	/* The object manager for this session */
-	GHashTable *objects;		/* Objects owned by the session */
+	GkrPkStorage *storage;          /* Objects owned by the session */
 };
 
 /* 
@@ -84,24 +85,6 @@ struct _SessionInfo {
  * parse failure? Or should we just disconnect? 
  */
 #define PROTOCOL_ERROR   CKR_DEVICE_ERROR
-
-/* -----------------------------------------------------------------------------
- * SESSION OBJECTS 
- */
-
-static void
-session_add_object (SessionInfo *sinfo, GkrPkObject *object)
-{
-	g_assert (sinfo);
-	
-	g_return_if_fail (object->handle != 0);
-	g_return_if_fail (object->location == 0);
-	g_return_if_fail (object->manager == sinfo->manager);
-
-	/* We assume the ownership */
-	g_object_ref (object);
-	g_hash_table_insert (sinfo->objects, GUINT_TO_POINTER (object->handle), object);
-}
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -492,22 +475,22 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 		goto done;
 
 	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
-		
+	g_return_val_if_fail (object->storage == NULL, CKR_GENERAL_ERROR);
+
 	/* Token objects get stored in the main object storage */
-	if (token) {
-		g_return_val_if_fail (object->storage != NULL, CKR_GENERAL_ERROR);
-		res = gkr_pk_object_storage_add (gkr_pk_object_storage_get (), object, &err);
-		if (!res) {
-			g_warning ("couldn't write created object to disk: %s", 
-			           err && err->message ? err->message : "");
-			g_clear_error (&err);
-			ret = CKR_GENERAL_ERROR;
-			goto done;
-		}
-			
+	if (token) 
+		res = gkr_pk_storage_store (NULL, object, &err);
+
 	/* Session objects are owned by the session */
-	} else {
-		session_add_object (sinfo, object);
+	else
+		res = gkr_pk_storage_store (sinfo->storage, object, &err);
+	
+	if (!res) {
+		g_warning ("couldn't write created object to disk: %s", 
+		           err && err->message ? err->message : "");
+		g_clear_error (&err);
+		ret = CKR_GENERAL_ERROR;
+		goto done;
 	}
 
 	gkr_pkcs11_message_write_uint32 (resp, object->handle);
@@ -572,7 +555,7 @@ session_C_DestroyObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 			return CKR_SESSION_READ_ONLY;
 			
 		g_return_val_if_fail (object->storage, CKR_GENERAL_ERROR);
-		res = gkr_pk_object_storage_remove (object->storage, object, &err);
+		res = gkr_pk_storage_remove (object->storage, object, &err);
 		if (!res) {
 			g_warning ("couldn't remove object from disk: %s", 
 			           err && err->message ? err->message : "");
@@ -1381,17 +1364,20 @@ static SessionInfo*
 session_info_new ()
 {
 	SessionInfo *sinfo = g_new0 (SessionInfo, 1);
-	sinfo->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
+	sinfo->storage = GKR_PK_STORAGE (gkr_pk_session_storage_new ());
 	return sinfo;
 }
 
 static void 
 session_info_free (SessionInfo *sinfo)
 {
-	if (sinfo->manager)
-		g_object_unref (sinfo->manager);
-	g_hash_table_destroy (sinfo->objects);
-	g_free (sinfo);
+	if (sinfo) {
+		if (sinfo->manager)
+			g_object_unref (sinfo->manager);
+		if (sinfo->storage)
+			g_object_unref (sinfo->storage);
+		g_free (sinfo);
+	}
 }
 
 static gboolean

@@ -286,72 +286,6 @@ request_item_access (GkrKeyringRequest *req, GkrKeyringItem *item,
 	return ret;
 }
 
-static gboolean 
-check_keyring_ask_request (GkrAskRequest* ask)
-{
-	GkrKeyring *keyring;
-	const gchar *password;
-	gchar *display;
-	
-	keyring = GKR_KEYRING (gkr_ask_request_get_object (ask));
-	g_assert (GKR_IS_KEYRING (keyring));
-
-	if (!keyring->locked) {
-		ask->response = GKR_ASK_RESPONSE_ALLOW;
-		return GKR_ASK_STOP_REQUEST;
-	}
-	
-	/* If they typed a password, try it out */
-	if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
-		
-		g_assert (ask->typed_password);
-		if (!gkr_keyring_unlock (keyring, ask->typed_password)) {
-			/* Bad password, try again */
-			ask->response = GKR_ASK_RESPONSE_NONE;
-			return GKR_ASK_CONTINUE_REQUEST;
-		}
-		
-		/* Did they ask us to remember the password? */
-		if (ask->checked) {
-			display = g_strdup_printf (_("Unlock password for %s keyring"), 
-			                           keyring->keyring_name);
-			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
-			                                 display, ask->typed_password, 
-			                                 "keyring", gkr_location_to_string (keyring->location), NULL);
-			g_free (display);
-		}
-	}
-	
-	/* 
-	 * We can automatically unlock keyrings that have their password
-	 * stored in the 'login' keyring.
-	 */
-	password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
-	                                            "keyring", gkr_location_to_string (keyring->location), NULL);
-	if (password) {
-		if (gkr_keyring_unlock (keyring, password)) {
-			
-			/* A good password, unlocked, all done */
-			ask->response = GKR_ASK_RESPONSE_ALLOW;
-			return GKR_ASK_STOP_REQUEST;
-			
-		} else {
-			
-			/* A bad internal password */
-			gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
-			                                 "keyring", gkr_location_to_string (keyring->location), NULL);
-		}
-	}	
-
-	/* If the keyring is unlocked then no need to continue */
-	if (!keyring->locked) {
-		ask->response = GKR_ASK_RESPONSE_ALLOW;
-		return GKR_ASK_STOP_REQUEST;
-	}
-	
-	return GKR_ASK_DONT_CARE;
-}
-
 static gboolean
 request_keyring_access (GkrKeyringRequest *req, GkrKeyring *keyring)
 {
@@ -433,7 +367,7 @@ request_keyring_access (GkrKeyringRequest *req, GkrKeyring *keyring)
 		gkr_ask_request_set_check_option (ask, _("Automatically unlock this keyring when I log in."));
 	
 	/* Intercept item access requests to see if we still need to prompt */
-	g_signal_connect (ask, "check-request", G_CALLBACK (check_keyring_ask_request), NULL);
+	g_signal_connect (ask, "check-request", G_CALLBACK (gkr_keyring_ask_check_unlock), NULL);
 	
 	g_free (primary);
 	g_free (message);
@@ -1196,8 +1130,7 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
 		return FALSE;
 	}
 
-	if ((type & GNOME_KEYRING_ITEM_TYPE_MASK) >= GNOME_KEYRING_ITEM_LAST_TYPE ||
-	    display_name == NULL || secret == NULL) {
+	if (display_name == NULL || secret == NULL) {
 		res = GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
 		goto out;
 	}
@@ -1227,7 +1160,7 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
 	}
 	
 	if (update_if_exists) {
-		item = gkr_keyring_find_item (keyring, type, keyring->locked ? hashed : attributes);
+		item = gkr_keyring_find_item (keyring, type, keyring->locked ? hashed : attributes, TRUE);
 		if (item) {
 			/* Make sure we have access to the previous item */
 			if (!request_item_access (req, item, GNOME_KEYRING_ACCESS_WRITE, TRUE))
@@ -1691,7 +1624,7 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 
 	/* Need at least one attribute to match on */
 	if (ctx.attributes->len > 0) {
-		ctx.hashed = gkr_keyring_item_attributes_hash (ctx.attributes);
+		ctx.hashed = gkr_attribute_list_hash (ctx.attributes);
 		ctx.nfound = 0;
 		ctx.req = req;
 		ctx.items = NULL;

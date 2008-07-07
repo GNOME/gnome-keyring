@@ -5,7 +5,10 @@ daemon/gkr-daemon-ops.c
 data/gnome-keyring.schemas.in
 library/gnome-keyring-utils.c
 keyrings/gkr-keyring-login.c
-pk/gkr-pk-object-storage.c
+keyrings/gkr-keyring.c
+pk/gkr-pk-index.c
+pk/gkr-pk-storage.c
 pkix/gkr-pkix-parser.c
 pkix/gkr-pkix-serialize.c
+ssh/gkr-ssh-storage.c
 ui/gkr-ask-tool.c

@@ -264,6 +264,7 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 {
 	GList *objects, *pubkeys, *l;
 	GkrPkPubkey *pub;
+	gsize blobpos;
 	const gchar *label;
 	
 	/* Only find the keys that have usage = ssh */
@@ -285,9 +286,16 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 		pub = GKR_PK_PUBKEY (l->data);
 		g_return_val_if_fail (GKR_IS_PK_PUBKEY (pub), FALSE);
 		
+		/* Add a space for the key blob length */		
+		blobpos = resp->len;
+		gkr_buffer_add_uint32 (resp, 0);
+		
 		if (!gkr_ssh_proto_write_public (resp, gkr_pk_pubkey_get_algorithm (pub),
 		                                 gkr_pk_pubkey_get_key (pub)))
 			return FALSE;
+		
+		/* Write back the blob length */
+		gkr_buffer_set_uint32 (resp, blobpos, (resp->len - blobpos) - 4);
 		
 		/* And now a per key comment */
 		label = gkr_pk_object_get_label (GKR_PK_OBJECT (pub));
@@ -387,12 +395,18 @@ op_sign_request (GkrBuffer *req, GkrBuffer *resp)
 	gsize offset;
 	gcry_error_t gcry;
 	gboolean ret;
-	guint blobpos;
+	guint blobpos, sz;
 	guchar *hash;
 	int algo;
 	int halgo, n_algo;
 	
 	offset = 5;
+	
+	/* The key packet size */
+	if (!gkr_buffer_get_uint32 (req, offset, &offset, &sz))
+		return FALSE;
+
+	/* The key itself */
 	if (!gkr_ssh_proto_read_public (req, &offset, &s_key, &algo))
 		return FALSE;
 		
@@ -624,8 +638,15 @@ op_remove_identity (GkrBuffer *req, GkrBuffer *resp)
 	GkrPkObject *obj;
 	gcry_sexp_t skey;
 	gsize offset;
+	guint sz;
 	
 	offset = 5;
+	
+	/* The key packet size */
+	if (!gkr_buffer_get_uint32 (req, offset, &offset, &sz))
+		return FALSE;
+
+	/* The public key itself */
 	if (!gkr_ssh_proto_read_public (req, &offset, &skey, NULL))
 		return FALSE;
 	

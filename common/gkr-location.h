@@ -57,6 +57,8 @@ const gchar*   gkr_location_to_string      (GQuark loc);
  
 gchar*         gkr_location_to_path        (GQuark loc);
 
+gboolean       gkr_location_is_volume      (GQuark loc);
+
 gboolean       gkr_location_is_descendant  (GQuark parent, GQuark descendant);
 
 GQuark         gkr_location_get_volume     (GQuark loc);
@@ -72,6 +74,8 @@ gboolean       gkr_location_test_file      (GQuark loc, GFileTest test);
 gboolean       gkr_location_read_file      (GQuark loc, guchar **data, gsize *len, GError **err);
 
 gboolean       gkr_location_write_file     (GQuark loc, const guchar *data, gssize len, GError **err);
+
+gboolean       gkr_location_delete_file    (GQuark loc, GError **err);
 
 /* -------------------------------------------------------------------------- */
 

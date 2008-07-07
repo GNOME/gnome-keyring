@@ -257,3 +257,121 @@ gkr_pkix_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
 	
 	return GKR_PKIX_SUCCESS;
 }
+
+gboolean
+gkr_pkix_openssl_encrypt_block (const gchar *dekinfo, const gchar *password, 
+                                const guchar *data, gsize n_data,
+                                guchar **encrypted, gsize *n_encrypted)
+{
+	gsize n_overflow, n_batch, n_padding;
+	gcry_cipher_hd_t ch;
+	guchar *key = NULL;
+	guchar *iv = NULL;
+	guchar *padded = NULL;
+	int gcry, ivlen;
+	int algo = 0;
+	int mode = 0;
+	
+	if (!parse_dekinfo (dekinfo, &algo, &mode, &iv))
+		g_return_val_if_reached (FALSE);
+		
+	ivlen = gcry_cipher_get_algo_blklen (algo);
+
+	/* We assume the iv is at least as long as at 8 byte salt */
+	g_return_val_if_fail (ivlen >= 8, FALSE);
+	
+	/* IV is already set from the DEK info */
+	if (!gkr_crypto_generate_symkey_simple (algo, GCRY_MD_MD5, password, 
+	                                        iv, 8, 1, &key, NULL))
+		g_return_val_if_reached (FALSE);
+	
+	gcry = gcry_cipher_open (&ch, algo, mode, 0);
+	g_return_val_if_fail (!gcry, FALSE);
+		
+	gcry = gcry_cipher_setkey (ch, key, gcry_cipher_get_algo_keylen (algo));
+	g_return_val_if_fail (!gcry, FALSE);
+	gkr_secure_free (key);
+
+	/* 16 = 128 bits */
+	gcry = gcry_cipher_setiv (ch, iv, ivlen);
+	g_return_val_if_fail (!gcry, FALSE);
+	g_free (iv);
+	
+	/* Allocate output area */
+	n_overflow = (n_data % ivlen);
+	n_padding = n_overflow ? (ivlen - n_overflow) : 0;
+	n_batch = n_data - n_overflow;
+	*n_encrypted = n_data + n_padding;
+	*encrypted = g_malloc0 (*n_encrypted);
+	
+	g_assert (*n_encrypted % ivlen == 0);
+	g_assert (*n_encrypted >= n_data);
+	g_assert (*n_encrypted == n_batch + n_overflow + n_padding);
+
+	/* Encrypt everything but the last bit */
+	gcry = gcry_cipher_encrypt (ch, *encrypted, n_batch, (void*)data, n_batch);
+	if (gcry) {
+		g_free (*encrypted);
+		g_return_val_if_reached (FALSE);
+	}
+	
+	/* Encrypt the padded block */
+	if (n_overflow) {
+		padded = gkr_secure_alloc (ivlen);
+		memset (padded, 0, ivlen);
+		memcpy (padded, data + n_batch, n_overflow);
+		gcry = gcry_cipher_encrypt (ch, *encrypted + n_batch, ivlen, padded, ivlen);
+		gkr_secure_free (padded);
+		if (gcry) {
+			g_free (*encrypted);
+			g_return_val_if_reached (FALSE);
+		}
+	}
+
+	gcry_cipher_close (ch);
+	return TRUE;
+}
+
+const gchar*
+gkr_pkix_openssl_get_dekinfo (GHashTable *headers)
+{
+	const gchar *val;
+	if (!headers)
+		return NULL;
+	val = g_hash_table_lookup (headers, "Proc-Type");
+	if (!val || strcmp (val, "4,ENCRYPTED") != 0)
+		return NULL;
+	val = g_hash_table_lookup (headers, "DEK-Info");
+	g_return_val_if_fail (val, NULL);
+	return val;
+}
+
+const gchar*
+gkr_pkix_openssl_prep_dekinfo (GHashTable *headers)
+{
+	gsize ivlen, len, n_encoded;
+	gchar buf[256];
+	guchar *iv;
+	const gchar *dekinfo;
+	
+	strcpy (buf, "DES-EDE3-CBC,");
+
+	/* Create the iv */
+	ivlen = gcry_cipher_get_algo_blklen (GCRY_CIPHER_3DES);
+	g_return_val_if_fail (ivlen, NULL);
+	iv = g_malloc (ivlen);
+	gcry_create_nonce (iv, ivlen);
+	
+	/* And encode it into the string */
+	len = strlen (buf);
+	g_return_val_if_fail (sizeof (buf) - len > ivlen * 2, NULL);
+	n_encoded = (ivlen * 2) + 1;
+	if (!gkr_crypto_hex_encode (iv, ivlen, buf + len, &n_encoded))
+		g_return_val_if_reached (NULL);
+
+	dekinfo = g_strdup (buf);
+	g_hash_table_insert (headers, g_strdup ("DEK-Info"), (void*)dekinfo);
+	g_hash_table_insert (headers, g_strdup ("Proc-Type"), g_strdup ("4,ENCRYPTED"));
+	
+	return dekinfo;
+}

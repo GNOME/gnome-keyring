@@ -362,6 +362,8 @@ if test -n "$with_root_certs"; then
 	root_status="$with_root_certs"
 fi
 
+AM_CONDITIONAL(WITH_ROOT_CERTS, test -n "$with_root_certs")
+
 
 # --------------------------------------------------------------------
 # Check for /dev/random
@@ -477,6 +479,7 @@ pkix/tests/Makefile
 po/Makefile.in
 reference/Makefile
 ssh/Makefile
+ssh/tests/Makefile
 tests/Makefile
 ui/Makefile
 library/gnome-keyring-1.pc

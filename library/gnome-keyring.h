@@ -41,7 +41,9 @@ typedef enum {
 	GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
 	GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 	
-	/*< private >*/
+	GNOME_KEYRING_ITEM_PK_STORAGE = 0x100,
+	
+	/* Not used, remains here only for compatibility */
 	GNOME_KEYRING_ITEM_LAST_TYPE,
 
 } GnomeKeyringItemType;

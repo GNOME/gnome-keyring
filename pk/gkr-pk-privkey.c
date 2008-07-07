@@ -27,9 +27,9 @@
 #include "gkr-pk-index.h"
 #include "gkr-pk-object.h"
 #include "gkr-pk-object-manager.h"
-#include "gkr-pk-object-storage.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-pubkey.h"
+#include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
@@ -86,7 +86,7 @@ load_private_key (GkrPkPrivkey *key)
 	obj = GKR_PK_OBJECT (key);
 	
 	g_return_val_if_fail (obj->storage, CKR_GENERAL_ERROR);
-	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, &err)) {
+	if (!gkr_pk_storage_load (obj->storage, obj, &err)) {
 		g_message ("couldn't load private key for: %s: %s", 
 		           g_quark_to_string (obj->location),
 		           err && err->message ? err->message : "");
@@ -116,7 +116,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 	obj = GKR_PK_OBJECT (key);
 	
 	/* Do we have a public key in the indexes? */
-	data = gkr_pk_index_get_binary (obj, "public-key", &n_data);
+	data = gkr_pk_object_index_get_binary (obj, "public-key", &n_data);
 	if (data) {
 		res = gkr_pkix_der_read_public_key (data, n_data, &s_key);
 		if (res == GKR_PKIX_SUCCESS) {
@@ -125,7 +125,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 			goto done;
 		} 
 
-		gkr_pk_index_delete (obj, "public-key");	
+		gkr_pk_object_index_set_binary (obj, "public-key", NULL, 0);
 		g_warning ("invalid public-key in indexes for: %s", g_quark_to_string (obj->location));
 	}
 	
@@ -147,8 +147,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 		g_return_val_if_fail (data != NULL, NULL);
 		
 		/* Write the public key out to the indexes */
-		if (!gkr_pk_index_set_binary (obj, "public-key", data, n_data))
-			g_warning ("couldn't write public key to index for: %s", g_quark_to_string (obj->location));
+		gkr_pk_object_index_set_binary (obj, "public-key", data, n_data);
 		
 		key->priv->pubkey = gkr_pk_pubkey_instance (obj->manager, 0, s_key);
 		goto done;
@@ -414,7 +413,7 @@ gkr_pk_privkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		return CKR_OK;
 
 	case CKA_GNOME_PURPOSE_SSH_AUTH:
-		quarks = gkr_pk_index_get_quarks (obj, "purposes");
+		quarks = gkr_pk_object_index_get_quarks (obj, "purposes");
 		gkr_pk_attribute_set_boolean (attr, quarks && 
 				gkr_pk_index_quarks_has (quarks, SSH_AUTHENTICATION));
 		gkr_pk_index_quarks_free (quarks);

@@ -82,7 +82,7 @@ parse_header_lines (const gchar *hbeg, const gchar *hend, GHashTable **result)
         	g_strstrip (name);
         	
         	if (!*result)
-        		*result = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+        		*result = gkr_pkix_pem_headers_new ();
         	g_hash_table_replace (*result, name, value);
 	}
 
@@ -225,6 +225,12 @@ pem_parse_block (const gchar *data, gsize n_data, guchar **decoded, gsize *n_dec
 	return TRUE;
 }
 
+GHashTable*
+gkr_pkix_pem_headers_new (void)
+{
+	return g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+}
+
 guint
 gkr_pkix_pem_parse  (const guchar *data, gsize n_data, 
                      GkrPkixPemCallback callback, gpointer user_data)
@@ -279,3 +285,61 @@ gkr_pkix_pem_parse  (const guchar *data, gsize n_data,
 	return nfound;
 }
 
+static void 
+append_each_header (gpointer key, gpointer value, gpointer user_data)
+{
+	GString *string = (GString*)user_data;
+	
+	g_string_append (string, (gchar*)key);
+	g_string_append (string, ": ");
+	g_string_append (string, (gchar*)value);
+	g_string_append_c (string, '\n');
+}
+
+guchar*
+gkr_pkix_pem_write (const guchar *data, gsize n_data, GQuark type, 
+                    GHashTable *headers, gsize *n_result)
+{
+	GString *string;
+	gint state, save;
+	gsize length, n_prefix;
+	
+	g_return_val_if_fail (data || !n_data, NULL);
+	g_return_val_if_fail (type, NULL);
+	g_return_val_if_fail (n_result, NULL);
+
+	string = g_string_sized_new (4096);
+	
+	/* The prefix */
+	g_string_append_len (string, PEM_PREF_BEGIN, PEM_PREF_BEGIN_L);
+	g_string_append (string, g_quark_to_string (type));
+	g_string_append_len (string, PEM_SUFF, PEM_SUFF_L);
+	g_string_append_c (string, '\n');
+	
+	/* The headers */
+	if (headers && g_hash_table_size (headers) > 0) {
+		g_hash_table_foreach (headers, append_each_header, string);
+		g_string_append_c (string, '\n');
+	}
+
+	/* Resize string to fit the base64 data. Algorithm from Glib reference */
+	length = n_data * 4 / 3 + n_data * 4 / (3 * 72) + 7;
+	n_prefix = string->len;
+	g_string_set_size (string, n_prefix + length);
+	
+	/* The actual base64 data */
+	state = save = 0;
+	length = g_base64_encode_step (data, n_data, TRUE, 
+	                               string->str + string->len, &state, &save);
+	g_string_set_size (string, n_prefix + length);
+	
+	/* The suffix */
+	g_string_append_c (string, '\n');
+	g_string_append_len (string, PEM_PREF_END, PEM_PREF_END_L);
+	g_string_append (string, g_quark_to_string (type));
+	g_string_append_len (string, PEM_SUFF, PEM_SUFF_L);
+	g_string_append_c (string, '\n');
+	
+	*n_result = string->len;
+	return (guchar*)g_string_free (string, FALSE);
+}

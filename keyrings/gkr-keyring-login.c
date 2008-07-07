@@ -232,7 +232,7 @@ gkr_keyring_login_attach_secret (GnomeKeyringItemType type, const gchar *display
 	attrs = string_attribute_list_va (args);
 	va_end (args);
 	
-	item = gkr_keyring_find_item (login, type, attrs);
+	item = gkr_keyring_find_item (login, type, attrs, TRUE);
 	
 	if (!item) {
 		item = gkr_keyring_item_create (login, type);
@@ -270,7 +270,7 @@ gkr_keyring_login_lookup_secret (GnomeKeyringItemType type, ...)
 	attrs = string_attribute_list_va (args);
 	va_end (args);
 				
-	item = gkr_keyring_find_item (login, type, attrs);
+	item = gkr_keyring_find_item (login, type, attrs, TRUE);
 	gnome_keyring_attribute_list_free (attrs);
 	
 	if (item)
@@ -298,7 +298,7 @@ gkr_keyring_login_remove_secret (GnomeKeyringItemType type, ...)
 	attrs = string_attribute_list_va (args);
 	va_end (args);
 		
-	item = gkr_keyring_find_item (login, type, attrs);
+	item = gkr_keyring_find_item (login, type, attrs, TRUE);
 	gnome_keyring_attribute_list_free (attrs);
 	
 	if (item) {

@@ -25,8 +25,8 @@
 
 #include "gkr-pk-cert.h"
 #include "gkr-pk-object-manager.h"
-#include "gkr-pk-object-storage.h"
 #include "gkr-pk-privkey.h"
+#include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-cleanup.h"
@@ -411,7 +411,7 @@ gkr_pk_object_manager_find (GkrPkObjectManager *man, GType gtype, GArray *attrs)
 	}
 
 	if (do_refresh) 
-		gkr_pk_object_storage_refresh (NULL);
+		gkr_pk_storage_refresh_all ();
 
 	/* TODO: We may want to only go through objects of CKA_CLASS */
 	for (l = man->objects; l; l = g_list_next (l)) {

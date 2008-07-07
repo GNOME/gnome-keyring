@@ -30,203 +30,36 @@
 #include "common/gkr-cleanup.h"
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
+#include "common/gkr-secure-memory.h"
 
-#include <sys/file.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "keyrings/gkr-keyring-login.h"
+#include "keyrings/gkr-keyrings.h"
 
-#define MAX_LOCK_TRIES 16
+#include "ui/gkr-ask-daemon.h"
+#include "ui/gkr-ask-request.h"
 
-#define GKR_TYPE_PK_INDEX             (gkr_pk_index_get_type())
-#define GKR_PK_INDEX(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), GKR_TYPE_PK_INDEX, GkrPkIndex))
-#define GKR_IS_PK_INDEX(obj)          (G_TYPE_CHECK_INSTANCE_TYPE((obj), GKR_TYPE_PK_INDEX))
+#include <glib/gi18n.h>
 
-typedef struct _GkrPkIndex      GkrPkIndex;
-typedef struct _GkrPkIndexClass GkrPkIndexClass;
-
-struct _GkrPkIndex {
-	 GObject parent;
-	 GHashTable *path_by_location;
-	 GHashTable *mtime_by_location;
-	 GHashTable *file_by_location;
-	 GHashTable *defaults_by_parent;
+enum {
+	PROP_0,
+	PROP_KEYRING,
+	PROP_DEFAULTS
 };
 
-struct _GkrPkIndexClass {
-	GObjectClass parent_class;
-};
-
-static GType gkr_pk_index_get_type (void);
 G_DEFINE_TYPE (GkrPkIndex, gkr_pk_index, G_TYPE_OBJECT);
 
-static GkrPkIndex *index_singleton = NULL; 
-static GQuark no_location = 0;
-
-typedef gboolean (*ReadValueFunc) (GKeyFile *file, const gchar *group, const gchar *field, 
-                                   GError **err, gpointer user_data);
-                                   
-typedef gboolean (*WriteValueFunc) (GKeyFile *file, const gchar *group, const gchar *field, 
-                                    GError **err, gpointer user_data);
+static GkrPkIndex *index_default = NULL; 
 
 /* -----------------------------------------------------------------------------
  * HELPERS
  */
- 
-#ifndef HAVE_FLOCK
-#define LOCK_SH 1
-#define LOCK_EX 2
-#define LOCK_NB 4
-#define LOCK_UN 8
-
-static int flock(int fd, int operation)
-{
-	struct flock flock;
-
-	switch (operation & ~LOCK_NB) {
-	case LOCK_SH:
-		flock.l_type = F_RDLCK;
-		break;
-	case LOCK_EX:
-		flock.l_type = F_WRLCK;
-		break;
-	case LOCK_UN:
-		flock.l_type = F_UNLCK;
-		break;
-	default:
-		errno = EINVAL;
-		return -1;
-	}
-
-	flock.l_whence = 0;
-	flock.l_start = 0;
-	flock.l_len = 0;
-
-	return fcntl(fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &flock);
-}
-#endif //NOT_HAVE_FLOCK
 
 static void 
-free_mtime (gpointer v)
+cleanup_default_index (void *unused)
 {
-	g_slice_free (time_t, v);
-}
-
-static GQuark* 
-quarks_from_strings (const gchar **strv, gsize *n_quarks)
-{
-	GArray *arr;
-	GQuark quark;
-	
-	arr = g_array_new (TRUE, TRUE, sizeof (GQuark));
-	while (*strv) {
-		quark = g_quark_from_string (*strv);
-		g_array_append_val (arr, quark);
-		++strv;
-	}
-	
-	if (n_quarks)
-		*n_quarks = arr->len;
-	
-	return (GQuark*)g_array_free (arr, FALSE);
-}
-
-static gchar**
-quarks_to_strings (const GQuark* quarks, gsize *n_strings)
-{
-	const gchar *value;
-	GArray *arr;
-	
-	arr = g_array_new (TRUE, TRUE, sizeof (const gchar*));
-	while (*quarks) {
-		value = g_quark_to_string (*quarks);
-		g_array_append_val (arr, value);
-		++quarks;
-	}
-	
-	if (n_strings)
-		*n_strings = arr->len;
-	return (gchar**)g_array_free (arr, FALSE);
-}
-
-static gboolean
-strings_are_equal (const gchar **one, const gchar **two)
-{
-	while (*one && *two) {
-		if (!g_str_equal (*one, *two))
-			return FALSE;
-		++one;
-		++two;
-	}
-	
-	return *one == *two;
-}
-
-static gpointer
-location_to_key (GQuark loc)
-{
-	return GUINT_TO_POINTER (loc ? loc : no_location);
-}
-
-static GQuark
-location_from_key (gpointer key)
-{
-	GQuark ret = GPOINTER_TO_UINT (key);
-	return ret == no_location ? 0 : ret;
-}
-
-static const gchar*
-index_path_for_location (GkrPkIndex *index, GQuark loc)
-{
-	gchar *locpath;
-	gchar *path;
-	
-	if (!loc)
-		return NULL; 
-	
-	path = g_hash_table_lookup (index->path_by_location, location_to_key (loc));
-	if (!path) {
-		locpath = gkr_location_to_path (loc);
-		if (!locpath) {
-			g_message ("The disk or drive this file is located on is not present: %s",
-			           g_quark_to_string (loc));
-			return NULL;
-		}
-		
-		/* Our index files have a .keystore extension */
-		path = g_strconcat (locpath, ".keystore", NULL);
-		g_free (locpath);
-		
-		g_hash_table_replace (index->path_by_location, location_to_key (loc), path);
-	}
-	
-	return path;
-}
-
-static gboolean
-check_index_mtime (GkrPkIndex *index, GQuark loc, time_t mtime)
-{
-	gpointer k;
-	gboolean ret = FALSE;
-	time_t *last;
-	
-	k = location_to_key (loc);
-	
-	/* Check on last mtime */
-	last = (time_t*)g_hash_table_lookup (index->mtime_by_location, k);
-	ret = !last || (*last != mtime);
-	
-	/* Setup new mtime */
-	if (ret) {
-		last = g_slice_new (time_t);
-		*last = mtime;
-		g_hash_table_replace (index->mtime_by_location, k, last);
-	}
-	
-	return ret;
+	g_assert (index_default);
+	g_object_unref (index_default);
+	index_default = NULL;
 }
 
 static gchar*
@@ -234,635 +67,218 @@ digest_to_group (gkrconstid digest)
 {
 	const guchar *digdata;
 	gsize n_group, n_digdata;
-	gboolean r;
 	gchar *group;
+	gboolean r;
 	
-	g_return_val_if_fail (digest, NULL);
-		
+	/* Encode the digest */		
 	digdata = gkr_id_get_raw (digest, &n_digdata);
 	g_assert (digdata);
 	n_group = (n_digdata * 2) + 1;
 	group = g_malloc0 (n_group);
-	
 	r = gkr_crypto_hex_encode (digdata, n_digdata, group, &n_group);
 	g_assert (r == TRUE);
-	
+
 	return group;
+}
+ 
+static gboolean
+request_keyring_new (GQuark location, gchar **password)
+{
+	GkrAskRequest* ask;
+	gboolean ret;
+	
+	g_assert (password);
+	g_assert (!*password);
+
+	/* And put together the ask request */
+	ask = gkr_ask_request_new (_("Create Storage for Key Information"), 
+	                           _("Choose password to protect storage"),
+	 	                   GKR_ASK_REQUEST_NEW_PASSWORD);
+	
+	gkr_ask_request_set_secondary (ask, _("The system wants to store information about your keys and certificates. "
+					      "In order to protect this information, choose a password with which it will be locked."));
+	
+	gkr_ask_request_set_location (ask, location);
+	
+	/* And do the prompt */
+	gkr_ask_daemon_process (ask);
+	ret = ask->response >= GKR_ASK_RESPONSE_ALLOW;
+	if (ret)
+		*password = gkr_secure_strdup (ask->typed_password);
+	g_object_unref (ask);
+	return ret;
 }
 
 static gboolean
-read_exists_any_value (GKeyFile *file, const gchar *group, const gchar *field,
-                       GError **err, gboolean *value)
+request_keyring_unlock (GkrPkIndex *index)
 {
-	g_assert (value);
-	*value = g_key_file_has_group (file, group);
+	GkrAskRequest* ask;
+	gboolean ret;
+	
+	g_return_val_if_fail (index->keyring, FALSE);
+	
+	/* If the user denied access to this index, don't try again */
+	if (index->denied)
+		return FALSE;
+	
+	/* And put together the ask request */
+	ask = gkr_ask_request_new (_("Unlock Storage for Key Information"), 
+	                           _("Enter password to unlock storage"),
+	                           GKR_ASK_REQUEST_PROMPT_PASSWORD);
+	
+	gkr_ask_request_set_secondary (ask, _("The system wants to access information about your keys and certificates, "
+					      "but it is locked."));
+	
+	gkr_ask_request_set_location (ask, index->keyring->location);
+	gkr_ask_request_set_object (ask, G_OBJECT (index->keyring));
+	
+	if (gkr_keyring_login_is_usable ())
+		gkr_ask_request_set_check_option (ask, _("Automatically unlock this keyring when I log in."));
+
+	/* Intercept item access requests to see if we still need to prompt */
+	g_signal_connect (ask, "check-request", G_CALLBACK (gkr_keyring_ask_check_unlock), NULL);
+	gkr_ask_daemon_process (ask);
+	
+	ret = ask->response >= GKR_ASK_RESPONSE_ALLOW;
+	if (ask->response == GKR_ASK_RESPONSE_DENY) {
+		g_message ("access to the pk index was denied");
+		index->denied = TRUE;
+	}
+	
+	g_object_unref (ask);
+	return ret;
+}
+
+static GkrKeyringItem*
+find_item_for_digest (GkrPkIndex *index, gkrconstid digest, gboolean create)
+{
+	GnomeKeyringAttributeList *attrs;
+	GkrKeyringItem *item;
+	gchar *group;
+	guint type;
+	
+	g_return_val_if_fail (index && index->keyring, NULL);
+	g_return_val_if_fail (digest, NULL);
+
+	/* Unlock the keyring if necassary */
+	if (index->keyring->locked) {
+		if (!request_keyring_unlock (index))
+			return NULL;
+		g_return_val_if_fail (index->keyring->locked == FALSE, NULL);
+	}
+	
+	group = digest_to_group (digest);
+	
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs, "object-digest", group);
+	item = gkr_keyring_find_item (index->keyring, GNOME_KEYRING_ITEM_PK_STORAGE, attrs, FALSE);
+	
+	if (item || !create) {
+		gnome_keyring_attribute_list_free (attrs);
+		g_free (group);
+		return item;  
+	}
+
+	type = GNOME_KEYRING_ITEM_PK_STORAGE | GNOME_KEYRING_ITEM_APPLICATION_SECRET;
+	item = gkr_keyring_item_create (index->keyring, type);
+
+	gkr_keyring_add_item (index->keyring, item);
+	g_object_unref (item);
+	
+	gnome_keyring_attribute_list_free (item->attributes);
+	item->attributes = attrs;
+	g_free (group);
+	
+	return item;
+}
+
+static GnomeKeyringAttribute*
+find_default_attribute (GkrPkIndex *index, const gchar *field)
+{
+	if (!index->defaults)
+		return NULL;
+	return gkr_attribute_list_find (index->defaults, field);
+}
+
+static gboolean
+string_equal (const gchar *one, const gchar *two)
+{
+	if (!one && !two)
+		return TRUE;
+	if (!one || !two)
+		return FALSE;
+	return strcmp (one, two) == 0;
+}
+
+static gboolean 
+write_string (GkrPkIndex *index, gkrconstid digest, const gchar *field, 
+              const gchar *val)
+{
+	GnomeKeyringAttribute *prev;
+	GnomeKeyringAttribute attr;
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	g_return_val_if_fail (field != NULL, FALSE);
+
+	item = find_item_for_digest (index, digest, TRUE);
+	if (!item)
+		return FALSE;
+	
+	/* Skip this step if we already have this value */
+	prev = gkr_attribute_list_find (item->attributes, field);
+	if (prev) {
+		if (prev->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING && 
+		    string_equal (prev->value.string, val))
+			return FALSE;
+	}
+		
+	attr.name = (gchar*)field;
+	attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attr.value.string = (gchar*)val;
+	
+	gkr_attribute_list_set (item->attributes, &attr);
+	if (!gkr_keyring_save_to_disk (index->keyring))
+		g_warning ("writing field '%s': couldn't write index keyring to disk", field);
 	return TRUE;
 }
 
-static gboolean
-read_exists_value (GKeyFile *file, const gchar *group, const gchar *field, 
-                   GError **err, gboolean *value)
+static gboolean 
+write_uint (GkrPkIndex *index, gkrconstid digest, const gchar *field, guint val) 
 {
-	g_assert (value);
-	g_assert (field);
-	*value = g_key_file_has_key (file, group, field, err);
-	return *err == NULL;	
-}
+	GnomeKeyringAttribute *prev;
+	GnomeKeyringAttribute attr;
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
 
-static gboolean
-read_boolean_value (GKeyFile *file, const gchar *group, const gchar *field, 
-                    GError **err, gboolean *value)
-{
-	g_assert (value);
-	g_assert (field);
-	*value = g_key_file_get_boolean (file, group, field, err);
-	return *err == NULL;
-}
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	g_return_val_if_fail (field != NULL, FALSE);
 
-static gboolean
-read_int_value (GKeyFile *file, const gchar *group, const gchar *field,
-                GError **err, gint *value)
-{
-	g_assert (value);
-	g_assert (field);
-	*value = g_key_file_get_integer (file, group, field, err);
-	return *err == NULL;
-}
-
-static gboolean
-read_string_value (GKeyFile *file, const gchar *group, const gchar *field,
-                   GError **err, gchar **value)
-{
-	g_assert (value);
-	g_assert (field);
-	*value = g_key_file_get_string (file, group, field, err);
-	return *value != NULL;
-}
-
-static gboolean
-read_quarks_value (GKeyFile *file, const gchar *group, const gchar *field,
-                   GError **err, GQuark **value)
-{
-	gchar **vals;
-	
-	g_assert (value);
-	g_assert (field);
-	
-	vals = g_key_file_get_string_list (file, group, field, NULL, err);
-	if (vals != NULL) {
-		g_assert (*err == NULL);
-		*value = quarks_from_strings ((const gchar**)vals, NULL);
-		g_strfreev (vals);
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-	
-static gint
-get_keyfile_value (GKeyFile *key_file, const gchar *group, 
-                   const gchar *field, ReadValueFunc func, gpointer data)
-{
-	GError *err = NULL;
-	
-	g_assert (key_file);
-	g_assert (group);
-	g_assert (func);
-	
-	if ((func) (key_file, group, field, &err, data))
-		return 1;
-	
-	if (err != NULL) {
-		if (err->code != G_KEY_FILE_ERROR_GROUP_NOT_FOUND &&
-		    err->code != G_KEY_FILE_ERROR_KEY_NOT_FOUND) {
-		    	g_warning ("couldn't read field '%s' from index: %s", 
-		    	           field, err->message ? err->message : "");
-			g_error_free (err);
-			return -1;
-		}
-		
-		g_error_free (err);
-	}
-
-	return 0;
-}
-
-static gboolean
-write_clear (GKeyFile *file, const gchar *group, const gchar *field,
-             GError **err, gpointer user_data)
-{
-	if (!g_key_file_has_group (file, group))
+	item = find_item_for_digest (index, digest, TRUE);
+	if (!item)
 		return FALSE;
-	g_key_file_remove_group (file, group, err);
-	return TRUE; 	
-}
-
-static gboolean 
-write_delete (GKeyFile *file, const gchar *group, const gchar *field, 
-              GError **err, gpointer user_data)
-{
-	g_assert (field);
 	
-	if (g_key_file_has_key (file, group, field, err)) {
-		g_key_file_remove_key (file, group, field, err);
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-static gboolean 
-write_boolean_value (GKeyFile *file, const gchar *group, const gchar *field, 
-                     GError **err, gboolean *value)
-{
-	g_assert (value);
-	g_assert (field);
-	
-	if (g_key_file_get_boolean (file, group, field, err) != *value || err != NULL) {
-		g_clear_error (err);
-		g_key_file_set_boolean (file, group, field, *value);
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-static gboolean
-write_int_value (GKeyFile *file, const gchar *group, const gchar *field, 
-                 GError **err, gint *value)
-{
-	g_assert (value);
-	g_assert (field);
-	
-	if (g_key_file_get_integer (file, group, field, err) != *value || err != NULL) {
-		g_clear_error (err);
-		g_key_file_set_integer (file, group, field, *value);
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-static gboolean
-write_string_value (GKeyFile *file, const gchar *group, const gchar *field, 
-                    GError **err, const gchar **value)
-{
-	gboolean ret = FALSE;
-	gchar *o;
-	
-	g_assert (value);
-	g_assert (*value);
-	g_assert (field);
-	
-	o = g_key_file_get_value (file, group, field, NULL);
-
-	if (!o || !g_str_equal (o, *value)) {
-		g_key_file_set_string (file, group, field, *value);
-		ret = TRUE;
-	}
-			
-	g_free (o);
-	return ret;
-}
-
-static gboolean
-write_quarks_value (GKeyFile *file, const gchar *group, const gchar *field, 
-                    GError **err, GQuark **value)
-{
-	GQuark *quarks;
-	gsize n_strings;
-	gchar **strings, **o;
-	gboolean ret = FALSE;
-	
-	g_assert (value);
-	g_assert (*value);
-	g_assert (field);
-	
-	quarks = *value;
-	strings = quarks_to_strings (quarks, &n_strings);
-	o = g_key_file_get_string_list (file, group, field, NULL, NULL);
-		
-	if (!o || !strings_are_equal ((const gchar**)strings, (const gchar**)o)) {
-		g_key_file_set_string_list (file, group, field, (const gchar**)strings, n_strings);
-		ret = TRUE;
-	}
-		
-	g_strfreev (o);
-	g_free (strings);
-	return ret;
-}
-
-static void
-set_keyfile_value (GKeyFile *key_file, gkrconstid digest, 
-                   const gchar *field, WriteValueFunc func, 
-                   gpointer data, gboolean *updated)
-{
-	GError *err = NULL;
-	gchar *group;
-	
-	g_assert (key_file);
-	g_assert (digest);
-	g_assert (func);
-	g_assert (updated);
-	
-	/* TODO: Cache this somehow? */
-	group = digest_to_group (digest);
-	g_return_if_fail (group);
-	
-	*updated = (func) (key_file, group, field, &err, data);
-
-	if (err) {
-	    	g_warning ("couldn't write field '%s' to index: %s", 
-	    	           field, err->message ? err->message : "");
-		g_error_free (err);
-	}
-	
-	g_free (group);
-}	
-
-static GKeyFile*
-read_key_file (int fd, GError **err)
-{
-	GKeyFile *key_file = NULL;
-	gchar *contents;
-	gboolean res;
-	struct stat sb;
-		
-	g_assert (fd != -1);
-	
-	if (fstat (fd, &sb) == -1) {
-		g_set_error (err, G_FILE_ERROR, g_file_error_from_errno (errno),
-		             "failed to get index file size: %s", g_strerror (errno));
-		return NULL;		
-	}
-
-	/* Empty file, empty key file */
-	if (sb.st_size == 0 || sb.st_size > G_MAXSIZE)
-		return g_key_file_new ();
-				
-	contents = (gchar*)mmap (NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-	if (!contents) {
-		g_set_error (err, G_FILE_ERROR, g_file_error_from_errno (errno),
-		             "failed to read (map) index file: %s", g_strerror (errno));
-		return NULL;
-	}
-		
-	key_file = g_key_file_new ();
-	res = g_key_file_load_from_data (key_file, contents, sb.st_size, G_KEY_FILE_KEEP_COMMENTS, err);
-	munmap (contents, sb.st_size);
-
-	if (!res) {	
-		g_key_file_free (key_file);
-		key_file = NULL;
-	}
-	
-	return key_file;
-}
-			
-static GKeyFile*
-load_index_key_file (GkrPkIndex *index, GQuark loc, int fd, gboolean force)
-{
-	GKeyFile *key_file = NULL;
-	const gchar *path;
-	gboolean closefd = FALSE;
-	GError *err = NULL;
-	
-	/* If we've never seen it then we should try to read it */
-	if (loc && !force && 
-	    !g_hash_table_lookup (index->file_by_location, location_to_key (loc)))
-		force = TRUE;
-		
-	/* Read it when necessary and possible */
-	if (force) {
-		path = index_path_for_location (index, loc);
-		if (path) {
-			fd = open (path, O_RDONLY);
-			if (fd == -1) {
-				if (errno != ENOTDIR && errno != ENOENT) {
-					g_message ("couldn't open index file: %s: %s", 
-				        	   path, g_strerror (errno));
-					return NULL;
-				}
-			}
-			
-			closefd = TRUE;
-		}
-
-		/* No file on disk, no index */
-		if (fd == -1) {
-			g_hash_table_remove (index->file_by_location, 
-			                     location_to_key (loc));
-			                     
-		/* Read in the open file */
-		} else {
-			key_file = read_key_file (fd, &err);
-			if (closefd)
-				close (fd);
-				
-			if (!key_file) {
-				g_message ("couldn't read index file: %s: %s", path ? path : "", 
-				            err && err->message ? err->message : "");
-				return NULL;
-			}
-			
-			g_hash_table_replace (index->file_by_location, 
-			                      location_to_key (loc), key_file);
-		}
-	}
-	
-	key_file = g_hash_table_lookup (index->file_by_location,
-	                                location_to_key (loc));
-
-	/* Automatically create an in memory key file for 'no location' */
-	if (!key_file && !loc) {
-		key_file = g_key_file_new ();
-		g_hash_table_replace (index->file_by_location,
-		                      location_to_key (loc), key_file);
-	}
-
-	/* No index is available for this location */
-	if (!key_file)
-		return NULL;
-
-	return key_file;
-}
-
-static const gchar*
-find_parent_defaults (GQuark parent)
-{
-	const GkrPkPlace *place;
-	const gchar *defaults = NULL;
-	GSList *volumes, *l;
-	GQuark loc;
-	guint i;
-	
-	for (i = 0; i < G_N_ELEMENTS (gkr_pk_places); ++i) {
-		place = &(gkr_pk_places[i]);
-		
-		/* With a specific volume */
-		if (place->volume) {
-			loc = gkr_location_from_string (place->volume);
-			loc = gkr_location_from_child (loc, place->directory);
-			if (loc == parent)
-				defaults = place->defaults;
-				
-		/* With any volume */
-		} else {
-			volumes = gkr_location_manager_get_volumes (NULL);
-			for (l = volumes; l; l = g_slist_next (l)) {
-				loc = gkr_location_from_child (GPOINTER_TO_UINT (l->data), 
-				                               place->directory);
-				if (loc == parent) {
-					defaults = place->defaults;
-					break;
-				}
-			}
-			g_slist_free (volumes);
-		}
-		
-		/* Found something? */
-		if (defaults)
-			return defaults;
-	}
-	
-	return NULL;	
-}
-
-static GKeyFile*
-load_parent_key_file (GkrPkIndex *index, GQuark loc)
-{
-	GKeyFile *file;
-	GQuark parent;
-	const gchar *defaults;
-	
-	if (!loc)
-		return NULL;
-		
-	parent = gkr_location_to_parent (loc);
-	if (!parent)
-		return NULL;
-		
-	file = g_hash_table_lookup (index->defaults_by_parent, GUINT_TO_POINTER (parent));
-	if (!file) {
-		file = g_key_file_new ();
-		g_hash_table_insert (index->defaults_by_parent, GUINT_TO_POINTER (parent), file);	
-
-		/* 
-		 * Look in the places list and load any default index data 
-		 * from there. 
-		 */
-		defaults = find_parent_defaults (parent);
-		if (defaults) {
-			if (!g_key_file_load_from_data (file, defaults, strlen (defaults), 
-			                                G_KEY_FILE_NONE, NULL))
-				g_warning ("couldn't parse builtin parent defaults");
-		}
-	}
-	
-	return file;
-}
-
-static gboolean
-read_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid digest, 
-                     const gchar *field, GkrPkObject *object, 
-                     ReadValueFunc func, gpointer data)
-{
-	const gchar *path = NULL;
-	struct stat sb;
-	gboolean force = FALSE;
-	GKeyFile *key_file = NULL;
-	gchar *group;
-	gint ret = 0;
-	
-	g_return_val_if_fail (digest, FALSE);
-
-	if (loc) {
-		path = index_path_for_location (index, loc);
-		if (!path) 
+	/* Skip this step if we already have this value */
+	prev = gkr_attribute_list_find (item->attributes, field);
+	if (prev) {
+		if (prev->type == GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32 &&
+		    prev->value.integer == val)
 			return FALSE;
-
-		/* TODO: Any way to do this less often? */
-		force = (stat (path, &sb) < 0 || check_index_mtime (index, loc, sb.st_mtime));
-	}
-	
-	key_file = load_index_key_file (index, loc, -1, force);
-	
-	/* Try the actual item first */
-	if (key_file) {
-		group = digest_to_group (digest);
-		g_return_val_if_fail (group, FALSE);
-	
-		ret = get_keyfile_value (key_file, group, field, func, data);
-		g_free (group);
-
-		/* If not found, look in the default section */
-		if (ret == 0)
-			ret = get_keyfile_value (key_file, "default", field, func, data);
 	}
 		
-	/* Look in the parent directory defaults */
-	if (ret == 0) {
-		key_file = load_parent_key_file (index, loc);
-		if (key_file) 
-			ret = get_keyfile_value (key_file, "default", field, func, data);
-	}
-
-	/* 
-	 * If we saw that the file was changed, then tell the object
-	 * to flush all of its caches and etc...
-	 */ 
-	if (force && object)
-		gkr_pk_object_flush (object);
+	attr.name = (gchar*)field;
+	attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32;
+	attr.value.integer = val;
 	
-	return ret == 1;
-}
-
-static gboolean
-update_pk_index_value (GkrPkIndex *index, GQuark loc, gkrconstid digest, 
-                       const gchar *field, GkrPkObject *object, 
-                       WriteValueFunc func, gpointer data)
-{
-	const gchar *path = NULL;
-	gchar *contents = NULL;
-	gboolean ret = FALSE;
-	gboolean force = FALSE;
-	gboolean updated = FALSE;
-	GError *err = NULL;
-	GKeyFile *key_file = NULL;
-	gsize n_contents;
-	struct stat sb;
-	int tries = 0;
-	int fd = -1;
-	
-	g_return_val_if_fail (digest, FALSE);
-	
-	if (loc) {
-		path = index_path_for_location (index, loc);
-		if (!path) 
-			return FALSE;
-	
-		/* File lock retry loop */
-		for (;;) {
-			if (tries > MAX_LOCK_TRIES) {
-				g_message ("couldn't write index '%s' value to file: %s: file is locked", 
-			        	   field, path);
-				goto done;
-			}
-			
-			fd = open (path, O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
-			if (fd == -1) {
-				g_message ("couldn't create index file: %s: %s", path, g_strerror (errno));
-				goto done;
-			}
-			
-			if (flock (fd, LOCK_EX | LOCK_NB) < 0) {
-				if (errno == EWOULDBLOCK) {
-					close (fd);
-					fd = -1;
-					++tries;
-					gkr_async_usleep (200000);
-					continue;
-				} 
-				g_message ("couldn't lock index file: %s: %s", path, g_strerror (errno));
-				goto done;
-			}
-			
-			/* Successfully opened file */;
-			break;
-		}
-
-	
-		/* See if file needs updating */
-		force = (fstat (fd, &sb) < 0 || check_index_mtime (index, loc, sb.st_mtime));
-	}
-	
-	key_file = load_index_key_file (index, loc, -1, force);
-	if (!key_file)
-		goto done;
-
-	set_keyfile_value (key_file, digest, field, func, data, &updated);
-	if (updated && loc) {
-		
-		/* Serialize the key file into memory */
-		contents = g_key_file_to_data (key_file, &n_contents, &err);
-		if (!contents) {
-			g_warning ("couldn't serialize index file: %s", 
-			           err && err->message ? err->message : "");
-			g_error_free (err);
-			goto done;
-		}
-		
-		g_assert (path);
-		
-		/* And write that memory to disk atomically */
-		if (!g_file_set_contents (path, contents, n_contents, &err)) {
-			g_message ("couldn't write index file to disk: %s: %s", 
-			           path, err && err->message ? err->message : "");
-			g_error_free (err);
-			goto done;
-		}
-	}
-	
-	/* 
-	 * If the file was updated then tell the object to flush all of 
-	 * its caches and other optimizations...
-	 */
-	if ((force || updated) && object)
-		gkr_pk_object_flush (object);
-		
-	ret = TRUE;
-	
-done:
-	if (fd != -1)
-		close (fd);
-	g_free (contents);
-	
-	return ret;	
-}
-
-static void 
-cleanup_index_singleton (void *unused)
-{
-	g_assert (index_singleton);
-	g_object_unref (index_singleton);
-	index_singleton = NULL;
-}
-
-static GkrPkIndex*
-get_index_singleton (void)
-{
-	if (!index_singleton) {
-		index_singleton = g_object_new (GKR_TYPE_PK_INDEX, NULL);
-		gkr_cleanup_register (cleanup_index_singleton, NULL);
-	}
-	
-	return index_singleton;
-}
-
-static gboolean
-remove_descendent_locations (gpointer key, gpointer value, gpointer user_data)
-{
-	GQuark loc = location_from_key (key);
-	GQuark volume = GPOINTER_TO_UINT (user_data);
-	return loc && gkr_location_is_descendant (volume, loc);
-}
-
-static void
-flush_caches (GkrLocationManager *locmgr, GQuark volume, GkrPkIndex *index)
-{
-	/* 
-	 * Called when the location manager adds or removes a prefix
-	 * possibly invalidating our cached paths.
-	 */
-	
-	g_hash_table_foreach_remove (index->path_by_location, remove_descendent_locations, 
-	                             GUINT_TO_POINTER (volume));
-	g_hash_table_foreach_remove (index->file_by_location, remove_descendent_locations, 
-	                             GUINT_TO_POINTER (volume));
-	g_hash_table_foreach_remove (index->mtime_by_location, remove_descendent_locations, 
-	                             GUINT_TO_POINTER (volume));
-	g_hash_table_foreach_remove (index->defaults_by_parent, remove_descendent_locations,
-	                             GUINT_TO_POINTER (volume));
+	gkr_attribute_list_set (item->attributes, &attr);
+	if (!gkr_keyring_save_to_disk (index->keyring))
+		g_warning ("writing field '%s': couldn't write index keyring to disk", field);
+	return TRUE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -872,36 +288,57 @@ flush_caches (GkrLocationManager *locmgr, GQuark volume, GkrPkIndex *index)
 static void
 gkr_pk_index_init (GkrPkIndex *index)
 {
-	GkrLocationManager *locmgr;
-	
-	index->path_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free); 
-	index->mtime_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_mtime);
-	index->file_by_location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, 
-	                                                 (GDestroyNotify)g_key_file_free);
-	index->defaults_by_parent = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL,
-	                                                   (GDestroyNotify)g_key_file_free);
-	
-	locmgr = gkr_location_manager_get ();
-	g_signal_connect (locmgr, "volume-removed", G_CALLBACK (flush_caches), index);
+
 }
 
 static void
 gkr_pk_index_finalize (GObject *obj)
 {
 	GkrPkIndex *index = GKR_PK_INDEX (obj);
-	GkrLocationManager *locmgr;
 	
-	locmgr = gkr_location_manager_get ();
-	g_signal_handlers_disconnect_by_func (locmgr, flush_caches, index);
+	g_object_unref (index->keyring);
+	index->keyring = NULL;
 	
-	g_hash_table_destroy (index->path_by_location);
-	g_hash_table_destroy (index->mtime_by_location);
-	g_hash_table_destroy (index->file_by_location);
-	g_hash_table_destroy (index->defaults_by_parent);
-	index->path_by_location = index->mtime_by_location = NULL;
-	index->file_by_location = index->defaults_by_parent = NULL;
+	gnome_keyring_attribute_list_free (index->defaults);
+	index->defaults = NULL;
 	
 	G_OBJECT_CLASS (gkr_pk_index_parent_class)->finalize (obj);
+}
+
+static void
+gkr_pk_index_get_property (GObject *obj, guint prop_id, GValue *value, 
+                           GParamSpec *pspec)
+{
+	GkrPkIndex *index = GKR_PK_INDEX (obj);
+
+	switch (prop_id) {
+	case PROP_KEYRING:
+		g_value_set_object (value, index->keyring);
+		break;
+	case PROP_DEFAULTS:
+		g_value_set_pointer (value, index->defaults); 
+		break;
+	}
+}
+
+static void
+gkr_pk_index_set_property (GObject *obj, guint prop_id, const GValue *value, 
+                           GParamSpec *pspec)
+{
+	GkrPkIndex *index = GKR_PK_INDEX (obj);
+	
+	switch (prop_id) {
+	case PROP_KEYRING:
+		g_return_if_fail (GKR_IS_KEYRING (g_value_get_object (value)));
+		g_return_if_fail (!index->keyring);
+		index->keyring = GKR_KEYRING (g_value_get_object (value));
+		g_object_ref (index->keyring);
+		break;
+	case PROP_DEFAULTS:
+		g_return_if_fail (!index->defaults);
+		index->defaults = gnome_keyring_attribute_list_copy (g_value_get_pointer (value));
+		break;
+	}
 }
 
 static void
@@ -913,230 +350,336 @@ gkr_pk_index_class_init (GkrPkIndexClass *klass)
 
 	gobject_class = (GObjectClass*)klass;
 	gobject_class->finalize = gkr_pk_index_finalize;
+	gobject_class->get_property = gkr_pk_index_get_property;
+	gobject_class->set_property = gkr_pk_index_set_property;
 	
-	/* A special quark that denotes stored in memory */
-	no_location = g_quark_from_static_string ("MEMORY");
+	g_object_class_install_property (gobject_class, PROP_KEYRING,
+		g_param_spec_object ("keyring", "Keyring", "Keyring the index writes to",
+		                     GKR_TYPE_KEYRING, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (gobject_class, PROP_DEFAULTS,
+		g_param_spec_pointer ("defaults", "Defaults", "Default index attributes",
+		                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
 
-gboolean
-gkr_pk_index_get_boolean (GkrPkObject *obj, const gchar *field, gboolean defvalue)
+GkrPkIndex*
+gkr_pk_index_new (GkrKeyring *keyring, GnomeKeyringAttributeList *defaults)
 {
-	gboolean ret = defvalue;
+	GkrPkIndex *index;
+	gpointer unref = NULL;
 	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), ret);
-	g_return_val_if_fail (field != NULL, ret);	
+	if (!keyring)
+		unref = keyring = gkr_keyring_new ("in-memory", 0);
+	g_return_val_if_fail (GKR_IS_KEYRING (keyring), NULL);
 	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
-	                          field, obj, (ReadValueFunc)read_boolean_value, &ret))
-		ret = defvalue;
+	index = g_object_new (GKR_TYPE_PK_INDEX, "keyring", keyring, 
+	                      "defaults", defaults, NULL);
+	
+	if (unref)
+		g_object_unref (unref);
+	return index;
+}
 
-	return ret;
+
+GkrPkIndex*
+gkr_pk_index_open (GQuark index_location, const gchar *name, 
+                   GnomeKeyringAttributeList *defaults)
+{
+	GkrKeyring *keyring, *login;
+	gchar *password;
+	
+	keyring = gkr_keyrings_for_location (index_location);
+	
+	/* No keyring, try and create one */
+	if (!keyring) {
+		
+		/* We need a password, see if we can use the login one */
+		password = NULL;
+		if (gkr_keyring_login_unlock (NULL)) {
+			if (gkr_keyring_login_is_usable ()) {
+				login = gkr_keyrings_get_login ();
+				if (login)
+					password = gkr_secure_strdup (login->password);
+			}
+		}
+		
+		/* We need to prompt for a password */
+		if (!password) {
+			if (!request_keyring_new (index_location, &password))
+				return NULL;
+		}
+		
+		g_return_val_if_fail (password, NULL);
+		
+		keyring = gkr_keyring_create (index_location, name, password);
+		gkr_secure_strfree (password);
+
+		/* Make it available */
+		gkr_keyrings_add (keyring);
+		g_object_unref (keyring);
+	}
+	
+	return gkr_pk_index_new (keyring, defaults);
+}
+
+GkrPkIndex*
+gkr_pk_index_default (void)
+{
+	if (!index_default) {
+		index_default = gkr_pk_index_new (NULL, NULL);
+		gkr_cleanup_register (cleanup_default_index, NULL);
+	}
+	
+	return index_default;
 }
 
 gboolean
-gkr_pk_index_get_boolean_full (GQuark location, gkrconstid digest, 
-                               const gchar *field, gboolean defvalue)
+gkr_pk_index_get_boolean (GkrPkIndex *index, gkrconstid digest, 
+                          const gchar *field, gboolean defvalue)
 {
-	gboolean ret = defvalue;
-	
-	g_return_val_if_fail (digest, ret);
-	g_return_val_if_fail (field != NULL, ret);
-	
-	if (!read_pk_index_value (get_index_singleton (), location, digest, field,
-	                          NULL, (ReadValueFunc)read_boolean_value, &ret))
-		ret = defvalue;
-
-	return ret;
+	return gkr_pk_index_get_uint (index, digest, field, defvalue ? 1 : 0) ? 
+			TRUE : FALSE;
 }
 
-gint
-gkr_pk_index_get_int (GkrPkObject *obj, const gchar *field, gint defvalue)
+guint
+gkr_pk_index_get_uint (GkrPkIndex *index, gkrconstid digest, 
+                       const gchar *field, guint defvalue)
 {
-	gint ret = defvalue;
+	GnomeKeyringAttribute *attr = NULL;
+	GkrKeyringItem *item;
 	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), ret);	
-	g_return_val_if_fail (field != NULL, ret);	
+	if (!index)
+		index = gkr_pk_index_default ();
+	
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), defvalue);
 
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
-	                          field, obj, (ReadValueFunc)read_int_value, &ret))
-		ret = defvalue;
-
-	return ret;	
+	item = find_item_for_digest (index, digest, FALSE);
+	if (item != NULL)
+		attr = gkr_attribute_list_find (item->attributes, field);
+		
+	attr = gkr_attribute_list_find (item->attributes, field);
+	if (!attr) {
+		attr = find_default_attribute (index, field);
+		if (!attr)
+			return defvalue;
+	}
+		
+	g_return_val_if_fail (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32, defvalue);
+	return attr->value.integer;
 }                                                                 
 
 gchar*
-gkr_pk_index_get_string (GkrPkObject *obj, const gchar *field)
+gkr_pk_index_get_string (GkrPkIndex *index, gkrconstid digest, const gchar *field)
 {
-	gchar *ret = NULL;
+	GnomeKeyringAttribute *attr = NULL;
+	GkrKeyringItem *item;
 	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), NULL);
-	g_return_val_if_fail (field != NULL, NULL);	
+	if (!index)
+		index = gkr_pk_index_default ();
 	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
-	                          field, obj, (ReadValueFunc)read_string_value, &ret))
-		ret = NULL;
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), NULL);
 
-	return ret;
+	item = find_item_for_digest (index, digest, FALSE);
+	if (item != NULL)
+		attr = gkr_attribute_list_find (item->attributes, field);
+		
+	if (!attr) {
+		attr = find_default_attribute (index, field);
+		if (!attr)
+			return NULL;
+	}
+		
+	g_return_val_if_fail (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING, NULL);
+	return g_strdup (attr->value.string);
 }
 
 gchar*
-gkr_pk_index_get_string_full (GQuark location, gkrconstid digest, 
-                              const gchar *field)
+gkr_pk_index_get_secret (GkrPkIndex *index, gkrconstid digest)
 {
-	gchar *ret = NULL;
+	GkrKeyringItem *item;
 	
-	g_return_val_if_fail (digest, NULL);
-	g_return_val_if_fail (field != NULL, NULL);	
-	
-	if (!read_pk_index_value (get_index_singleton (), location, digest, field,
-	                          NULL, (ReadValueFunc)read_string_value, &ret))
-		ret = NULL;
+	if (!index)
+		index = gkr_pk_index_default ();
 
-	return ret;	
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), NULL);
+
+	item = find_item_for_digest (index, digest, FALSE);
+	if (item == NULL)
+		return NULL;
+		
+	return gkr_secure_strdup (item->secret);	
 }
 
 guchar*
-gkr_pk_index_get_binary (GkrPkObject *obj, const gchar *field, gsize *n_data)
+gkr_pk_index_get_binary (GkrPkIndex *index, gkrconstid digest, 
+                         const gchar *field, gsize *n_data)
 {
 	guchar *data;
-	gchar *str;
-	gsize n_str;
+	gchar *string;
+	gsize n_string;
 
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), NULL);
-	g_return_val_if_fail (field != NULL, NULL);	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	g_return_val_if_fail (field != NULL, FALSE);
 	g_return_val_if_fail (n_data != NULL, NULL);	
 
-	str = gkr_pk_index_get_string (obj, field);
-	if (!str)
+	string = gkr_pk_index_get_string (index, digest, field);
+	if (!string)
 		return NULL;
 		
-	n_str = strlen (str);
-	*n_data = (n_str / 2) + 1;
+	n_string = strlen (string);
+	*n_data = (n_string / 2) + 1;
 	data = g_malloc0 (*n_data);
-	if (!gkr_crypto_hex_decode (str, n_str, data, n_data)) {
+	if (!gkr_crypto_hex_decode (string, n_string, data, n_data)) {
 		g_message ("invalid binary data in index under field '%s'", field);
 		g_free (data);
 		data = NULL;
 	}
 
-	g_free (str);
-	return data;	
+	g_free (string);
+	return data;
 }
 
 GQuark* 
-gkr_pk_index_get_quarks (GkrPkObject *obj, const gchar *field)
+gkr_pk_index_get_quarks (GkrPkIndex *index, gkrconstid digest, 
+                         const gchar *field)
 {
-	GQuark *ret = NULL;
+	GArray *quarks;
+	GQuark quark;
+	gchar *string; 
+	gchar *at, *next;
 	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), NULL);
-	g_return_val_if_fail (field != NULL, NULL);	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	g_return_val_if_fail (field != NULL, FALSE);
 	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
-	                          field, obj, (ReadValueFunc)read_quarks_value, &ret))
-		ret = NULL;
+	string = gkr_pk_index_get_string (index, digest, field);
+	if (!string)
+		return NULL;
+	
+	quarks = g_array_new (TRUE, TRUE, sizeof (GQuark));
 		
-	return ret;
-}
-
-gboolean
-gkr_pk_index_has_value (GkrPkObject *obj, const gchar *field)
-{
-	gboolean ret;
-
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
-	g_return_val_if_fail (field != NULL, FALSE);
-	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
-	                          field, obj, (ReadValueFunc)read_exists_value, &ret))
-		ret = FALSE;
-
-	return ret;
-}
-
-gboolean
-gkr_pk_index_have (GkrPkObject *obj)
-{
-	gboolean ret;
-
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
-	
-	if (!read_pk_index_value (get_index_singleton (), obj->location, obj->digest,
-	                          NULL, obj, (ReadValueFunc)read_exists_any_value, &ret))
-		ret = FALSE;
-
-	return ret;
-}
-
-gboolean
-gkr_pk_index_have_full (GQuark location, gkrconstid digest)
-{
-	gboolean ret;
-
-	g_return_val_if_fail (digest, FALSE);
-	
-	if (!read_pk_index_value (get_index_singleton (), location, digest, NULL,
-	                          NULL, (ReadValueFunc)read_exists_any_value, &ret))
-		ret = FALSE;
-
-	return ret;
-}
-
-gboolean
-gkr_pk_index_set_boolean (GkrPkObject *obj, const gchar *field, gboolean val)
-{
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
-	g_return_val_if_fail (field != NULL, FALSE);
+	/* Parse all the quarks */
+	at = string;
+	while (at != NULL) {
+		next = strchr (at, '\n');
+		if (next) {
+			*next = 0;
+			++next;
+		}
 		
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
-	                              field, obj, (WriteValueFunc)write_boolean_value, &val);
+		quark = g_quark_from_string (at);
+		g_array_append_val (quarks, quark);
+		at = next;
+	}
+	
+	g_free (string);
+	return (GQuark*)g_array_free (quarks, FALSE);
 }
 
 gboolean
-gkr_pk_index_set_int (GkrPkObject *obj, const gchar *field, gint val)
+gkr_pk_index_has_value (GkrPkIndex *index, gkrconstid digest, 
+                        const gchar *field)
 {
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
-	                              field, obj, (WriteValueFunc)write_int_value, &val);
-}                                                       
+	item = find_item_for_digest (index, digest, FALSE);
+	if (!item)
+		return index->defaults && gkr_attribute_list_find (index->defaults, field);
+		
+	return gkr_attribute_list_find (item->attributes, field) ? TRUE : FALSE;
+}
+
+gboolean
+gkr_pk_index_have (GkrPkIndex *index, gkrconstid digest)
+{
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+
+	item = find_item_for_digest (index, digest, FALSE);
+	return item == NULL ? FALSE : TRUE;
+}
+
+gboolean
+gkr_pk_index_set_boolean (GkrPkIndex *index, gkrconstid digest, 
+                          const gchar *field, gboolean val)
+{
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	return write_uint (index, digest, field, val ? 1 : 0);
+}
+
+gboolean
+gkr_pk_index_set_uint (GkrPkIndex *index, gkrconstid digest, 
+                       const gchar *field, guint val)
+{
+	return write_uint (index, digest, field, val);
+}                              
                                                         
 gboolean 
-gkr_pk_index_set_string (GkrPkObject *obj, const gchar *field, const gchar *val)
+gkr_pk_index_set_string (GkrPkIndex *index, gkrconstid digest, 
+                         const gchar *field, const gchar *val)
 {
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
-	g_return_val_if_fail (field != NULL, FALSE);
-	g_return_val_if_fail (val, FALSE);
+	return write_string (index, digest, field, val);
+}
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
-	                              field, obj, (WriteValueFunc)write_string_value, &val);
+gboolean 
+gkr_pk_index_set_secret (GkrPkIndex *index, gkrconstid digest, 
+                         const gchar *val)
+{
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+
+	item = find_item_for_digest (index, digest, TRUE);
+	if (!item)
+		return FALSE;
+
+	/* Make sure it's actually changed */
+	if (string_equal (item->secret, val))
+		return FALSE;
+	
+	gkr_secure_strfree (item->secret);
+	item->secret = gkr_secure_strdup (val);
+	if (!gkr_keyring_save_to_disk (index->keyring))
+		g_warning ("writing secret: couldn't write index keyring to disk");
+	return TRUE;
 }
 
 gboolean
-gkr_pk_index_set_string_full (GQuark location, gkrconstid digest, const gchar *field, 
-                              const gchar *val)
-{
-	g_return_val_if_fail (digest, FALSE);
-	g_return_val_if_fail (field != NULL, FALSE);
-	g_return_val_if_fail (val, FALSE);
-
-	return update_pk_index_value (get_index_singleton (), location, digest, field, 
-	                              NULL, (WriteValueFunc)write_string_value, &val);	
-}
-
-gboolean
-gkr_pk_index_set_binary (GkrPkObject *obj, const gchar *field, 
-                         const guchar *data, gsize n_data)
+gkr_pk_index_set_binary (GkrPkIndex *index, gkrconstid digest, 
+                         const gchar *field, const guchar *data, 
+                         gsize n_data)
 {
 	gboolean ret, r;
 	gchar *str;
 	gsize n_str;
 	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 	
@@ -1146,42 +689,155 @@ gkr_pk_index_set_binary (GkrPkObject *obj, const gchar *field,
 	r = gkr_crypto_hex_encode (data, n_data, str, &n_str);
 	g_assert (r == TRUE);
 	
-	ret = gkr_pk_index_set_string (obj, field, str);
+	ret = write_string (index, digest, field, str);
 	g_free (str);
 
 	return ret;
 }
 
 gboolean
-gkr_pk_index_set_quarks (GkrPkObject *obj, const gchar *field, GQuark *quarks)
+gkr_pk_index_set_quarks (GkrPkIndex *index, gkrconstid digest, 
+                         const gchar *field, GQuark *quarks)
 {
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
+	GString *string;
+	gboolean ret;
+	gchar *value;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
-	                              field, obj, (WriteValueFunc)write_quarks_value, &quarks);
+	/* Build up a string with all of this */
+	string = g_string_new (NULL);
+	while (*quarks) {
+		value = g_strescape (g_quark_to_string (*quarks), "");
+		if (string->len > 0)
+			g_string_append_c (string, '\n');
+		g_string_append (string, value);
+		g_free (value);
+		++quarks;
+	}
+
+	/* Store it as a string */
+	ret = write_string (index, digest, field, string->str);
+	g_string_free (string, TRUE);
+	return ret;
 }
 
 gboolean
-gkr_pk_index_delete (GkrPkObject *obj, const gchar *field)
+gkr_pk_index_clear (GkrPkIndex *index, gkrconstid digest, 
+                     const gchar *field)
 {
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
 	g_return_val_if_fail (field != NULL, FALSE);
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
-	                              field, obj, (WriteValueFunc)write_delete, NULL);
+	item = find_item_for_digest (index, digest, FALSE);
+	if (!item)
+		return FALSE;
+	
+	if (!gkr_attribute_list_find (item->attributes, field))
+		return FALSE;
 
+	gkr_attribute_list_delete (item->attributes, field);
+	if (!gkr_keyring_save_to_disk (index->keyring))
+		g_warning ("clearing field '%s': couldn't write index keyring to disk", field);
+	return TRUE;
 }
 
 gboolean
-gkr_pk_index_clear (GkrPkObject *obj)
+gkr_pk_index_rename (GkrPkIndex *index, gkrconstid old_digest, gkrconstid new_digest)
 {
-	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
+	GnomeKeyringAttribute attr;
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
 
-	return update_pk_index_value (get_index_singleton (), obj->location, obj->digest, 
-	                              NULL, obj, (WriteValueFunc)write_clear, NULL);
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	g_return_val_if_fail (old_digest != NULL, FALSE);
+	g_return_val_if_fail (new_digest != NULL, FALSE);
+	
+	item = find_item_for_digest (index, old_digest, FALSE);
+	if (!item)
+		return FALSE;
 
+	if (gkr_id_equals (old_digest, new_digest))
+		return FALSE;
+	
+	attr.name = "object-digest";
+	attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attr.value.string = digest_to_group (new_digest);
+
+	gkr_attribute_list_set (item->attributes, &attr);
+	g_free (attr.value.string);
+	
+	if (!gkr_keyring_save_to_disk (index->keyring))
+		g_warning ("renaming item: couldn't write index keyring to disk");
+	return TRUE;
 }
+
+gboolean
+gkr_pk_index_copy (GkrPkIndex *old_index, GkrPkIndex *new_index, gkrconstid digest)
+{
+	GkrKeyringItem *item;
+	
+	if (!old_index)
+		old_index = gkr_pk_index_default ();
+	if (!new_index)
+		new_index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (old_index), FALSE);
+	g_return_val_if_fail (GKR_IS_PK_INDEX (new_index), FALSE);
+	g_return_val_if_fail (digest != NULL, FALSE);
+
+	if (old_index == new_index)
+		return FALSE;
+	
+	item = find_item_for_digest (old_index, digest, FALSE);
+	if (!item)
+		return FALSE;
+	
+	item = gkr_keyring_item_clone (new_index->keyring, item);
+	gkr_keyring_add_item (new_index->keyring, item);
+	
+	if (!gkr_keyring_save_to_disk (new_index->keyring))
+		g_warning ("copying item: couldn't write index keyring to disk");
+
+	return TRUE;
+}
+
+gboolean
+gkr_pk_index_delete (GkrPkIndex *index, gkrconstid digest)
+{
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	
+	item = find_item_for_digest (index, digest, FALSE);
+	if (!item)
+		return FALSE;
+	
+	gkr_keyring_remove_item (index->keyring, item);
+	
+	if (!gkr_keyring_save_to_disk (index->keyring))
+		g_warning ("deleting item: couldn't write index keyring to disk");
+	
+	return TRUE;
+}
+
+/* ------------------------------------------------------------------------
+ * QUARK LISTS
+ */
 
 gboolean
 gkr_pk_index_quarks_has (GQuark *quarks, GQuark check)

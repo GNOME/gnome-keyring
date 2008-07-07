@@ -125,30 +125,43 @@ parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest,
 	return TRUE;
 }
 
-static gchar*
+static gboolean
 ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest, 
-              GQuark type, const gchar *details, guint n_prompts, 
-              gpointer user_data) 
+              GQuark type, const gchar *details, gint *state, 
+              gchar **password, gpointer user_data) 
 {
 	CuTest *cu = the_cu;
-	g_assert (cu);
-
 	gchar *msg;
+	gint st;
 	
-	/* Should only be asking once per location */
-	if (n_prompts > 0) {
-		msg = g_strdup_printf ("decryption didn't work for: %s", g_quark_to_string (loc));
-		CuAssert (cu, msg, FALSE);
-		return NULL;
-	}
-	
+	g_assert (cu);
+	CuAssert (cu, "state is null", state != NULL);
+	CuAssert (cu, "state is bad", *state >= 0 && *state < 3);
+
+	st = *state;
+	(*state)++;
+
 	CuAssert (cu, "location is empty", loc != 0);
 	CuAssert (cu, "details is null", details != NULL);
 	
-	g_print ("getting password 'booo' for: %s\n", details); 	
-	
-	/* All our test encrypted stuff use this password */
-	return gkr_secure_strdup ("booo");
+	/* Return "", null, and "booo" in that order */
+	switch (st) {
+	case 0:
+		*password = gkr_secure_strdup ("");
+		return TRUE;
+	case 1:
+		*password = NULL;
+		return TRUE;
+	case 2:
+		/* Most of our test encrypted stuff use this password */
+		g_print ("getting password 'booo' for: %s\n", details); 	
+		*password = gkr_secure_strdup ("booo");
+		return TRUE;
+	default:
+		msg = g_strdup_printf ("decryption didn't work for: %s", g_quark_to_string (loc));
+		CuAssert (cu, msg, FALSE);
+		return FALSE;
+	};
 }
 
 static void

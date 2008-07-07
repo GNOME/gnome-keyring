@@ -72,6 +72,10 @@ void unit_test_location_simple (CuTest* cu)
 
 	path2 = gkr_location_to_path (child);
 	CuAssert (cu, "should return non-null path", path2 != NULL);
+	
+	CuAssert (cu, "should be volume", gkr_location_is_volume (GKR_LOCATION_VOLUME_HOME));
+	CuAssert (cu, "should not be volume", !gkr_location_is_volume (loc));
+	CuAssert (cu, "should not be volume", !gkr_location_is_volume (child));
 }
 
 void unit_test_location_trailing (CuTest* cu)
@@ -142,3 +146,32 @@ void unit_test_location_media (CuTest* cu)
 	
 }
 
+void unit_test_location_fileops (CuTest* cu)
+{
+	const guchar *data = (guchar*)"TEST DATA FOR FILE";
+	guchar *result;
+	gsize n_result, len;
+	gboolean ret;
+	GQuark loc;
+	
+	loc = gkr_location_from_child (GKR_LOCATION_VOLUME_FILE, "/tmp/gkr-test-location-fileops");
+	CuAssert (cu, "should return a non-zero quark", loc != 0);
+	
+	len = strlen ((gchar*)data);
+	ret = gkr_location_write_file (loc, data, len, NULL);
+	CuAssert (cu, "should be successful writing to temp file", ret == TRUE);
+
+	ret = gkr_location_read_file (loc, &result, &n_result, NULL);
+	CuAssert (cu, "should be successful reading from temp file", ret == TRUE);
+	CuAssert (cu, "should have read same length as written", n_result == len);
+	CuAssert (cu, "should have read same data as written", memcmp (data, result, len) == 0);
+	
+	ret = gkr_location_delete_file (loc, NULL);
+	CuAssert (cu, "should have successfully deleted file", ret == TRUE);
+
+	ret = gkr_location_read_file (loc, &result, &n_result, NULL);
+	CuAssert (cu, "shouldn't be able to read from deleted file", ret == FALSE);
+
+	ret = gkr_location_delete_file (loc, NULL);
+	CuAssert (cu, "should be able to successfully delete non-existant file", ret == TRUE);
+}

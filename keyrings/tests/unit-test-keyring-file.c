@@ -87,7 +87,7 @@ validate_keyring_contents (GkrKeyring *keyring, CuTest *cu)
 	gnome_keyring_attribute_list_append_string (attrs, "bird", "cheep");
 	gnome_keyring_attribute_list_append_string (attrs, "iguana", "");
 	gnome_keyring_attribute_list_append_uint32 (attrs, "num", 3); 
-	item = gkr_keyring_find_item (keyring, GNOME_KEYRING_ITEM_GENERIC_SECRET, attrs);
+	item = gkr_keyring_find_item (keyring, GNOME_KEYRING_ITEM_GENERIC_SECRET, attrs, TRUE);
 	gnome_keyring_attribute_list_free (attrs);
 	CuAssert (cu, "Couldn't find item #3", item != NULL);
 	CuAssert (cu, "Invalid item found", item->id == 3);

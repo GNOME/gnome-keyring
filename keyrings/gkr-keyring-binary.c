@@ -341,7 +341,7 @@ gkr_keyring_binary_generate (GkrKeyring *keyring, GkrBuffer *buffer)
 		gkr_buffer_add_uint32 (buffer, item->id);
 		gkr_buffer_add_uint32 (buffer, item->type);
 		
-		hashed = gkr_keyring_item_attributes_hash (item->attributes);
+		hashed = gkr_attribute_list_hash (item->attributes);
 
 		if (!gkr_proto_add_attribute_list (buffer, hashed)) {
 			gnome_keyring_attribute_list_free (hashed);

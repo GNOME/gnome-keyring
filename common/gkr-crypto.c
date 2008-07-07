@@ -82,7 +82,7 @@ gkr_crypto_setup (void)
 	gcrypt_initialized = TRUE;
 }
 
-static const char HEXC[] = "0123456789abcdef";
+static const char HEXC[] = "0123456789ABCDEF";
 
 gboolean
 gkr_crypto_hex_encode (const guchar *data, gsize n_data, 
@@ -101,7 +101,9 @@ gkr_crypto_hex_encode (const guchar *data, gsize n_data,
     
 		n_data--;
 	}
-	
+
+	/* Null terminate */
+	*encoded = 0;
 	return TRUE;
 }
 
@@ -125,7 +127,7 @@ gkr_crypto_hex_decode (const gchar *data, gsize n_data,
     		if (!isspace (*data)) {
     			
 	        	/* Find the position */
-			pos = strchr (HEXC, tolower (*data));
+			pos = strchr (HEXC, toupper (*data));
 			if (pos == 0)
 				break;
 

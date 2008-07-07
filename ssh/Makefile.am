@@ -16,8 +16,17 @@ libgkr_ssh_la_SOURCES = \
 	gkr-ssh-daemon-io.c \
 	gkr-ssh-daemon-ops.c \
 	gkr-ssh-private.h \
-	gkr-ssh-proto.c
+	gkr-ssh-proto.c \
+	gkr-ssh-storage.c gkr-ssh-storage.h 
 
 libgkr_ssh_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
+
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR = 
+endif
+
+SUBDIRS = . $(TESTS_DIR)

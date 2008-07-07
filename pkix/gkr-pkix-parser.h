@@ -70,9 +70,10 @@ struct _GkrPkixParserClass {
 	                         gcry_sexp_t sexp);
 	
 	/* A callback for each password needed */
-	gchar* (*ask_password) (GkrPkixParser *parser, GQuark location, 
-	                        gkrconstid digest, GQuark type,
-	                        const gchar *orig_label, guint failed);
+	gboolean (*ask_password) (GkrPkixParser *parser, GQuark location, 
+	                          gkrconstid digest, GQuark type,
+	                          const gchar *orig_label, gint *state,
+	                          gchar **password);
 };
 
 GType               gkr_pkix_parser_get_type                (void) G_GNUC_CONST;

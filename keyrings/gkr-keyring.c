@@ -25,8 +25,9 @@
 #include "config.h"
 
 #include "gkr-keyring.h"
-#include "gkr-keyrings.h"
 #include "gkr-keyring-item.h"
+#include "gkr-keyring-login.h"
+#include "gkr-keyrings.h"
 
 #include "common/gkr-buffer.h"
 #include "common/gkr-location.h"
@@ -36,6 +37,7 @@
 #include "library/gnome-keyring-proto.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #include <gcrypt.h>
 
@@ -248,16 +250,18 @@ gkr_keyring_new (const char *name, GQuark location)
 }
 
 GkrKeyring*
-gkr_keyring_create (GQuark volume, const gchar *keyring_name, const gchar *password)
+gkr_keyring_create (GQuark location, const gchar *keyring_name, const gchar *password)
 {
 	GkrKeyring *keyring;
 	
-	if (!volume)
-		volume = GKR_LOCATION_VOLUME_LOCAL;
+	if (!location)
+		location = GKR_LOCATION_VOLUME_LOCAL;
+	if (gkr_location_is_volume (location))
+		location = get_default_location_for_name (location, keyring_name);
 	
 	keyring = gkr_keyring_new (keyring_name, 0);
 	if (keyring != NULL) {
-		keyring->location = get_default_location_for_name (volume, keyring_name);
+		keyring->location = location;
 		keyring->locked = FALSE;
 		keyring->password = gkr_secure_strdup (password);
 		keyring->salt_valid = FALSE;
@@ -306,14 +310,14 @@ gkr_keyring_get_item (GkrKeyring *keyring, guint id)
 
 GkrKeyringItem*  
 gkr_keyring_find_item (GkrKeyring *keyring, GnomeKeyringItemType type, 
-                       GnomeKeyringAttributeList *attrs)
+                       GnomeKeyringAttributeList *attrs, gboolean match_all)
 {    
 	GkrKeyringItem *item;
 	GList *l;
 	
 	for (l = keyring->items; l; l = g_list_next (l)) {
 		item = GKR_KEYRING_ITEM (l->data);
-		if (gkr_keyring_item_match (item, type, attrs, TRUE))
+		if (gkr_keyring_item_match (item, type, attrs, match_all))
 			return item;
 	}
 	
@@ -548,4 +552,70 @@ gkr_keyring_is_insecure (GkrKeyring *keyring)
 		return TRUE;
 		
 	return FALSE;
+}
+
+gboolean 
+gkr_keyring_ask_check_unlock (GkrAskRequest* ask)
+{
+	GkrKeyring *keyring;
+	const gchar *password;
+	gchar *display;
+	
+	keyring = GKR_KEYRING (gkr_ask_request_get_object (ask));
+	g_assert (GKR_IS_KEYRING (keyring));
+
+	if (!keyring->locked) {
+		ask->response = GKR_ASK_RESPONSE_ALLOW;
+		return GKR_ASK_STOP_REQUEST;
+	}
+	
+	/* If they typed a password, try it out */
+	if (ask->response >= GKR_ASK_RESPONSE_ALLOW) {
+		
+		g_assert (ask->typed_password);
+		if (!gkr_keyring_unlock (keyring, ask->typed_password)) {
+			/* Bad password, try again */
+			ask->response = GKR_ASK_RESPONSE_NONE;
+			return GKR_ASK_CONTINUE_REQUEST;
+		}
+		
+		/* Did they ask us to remember the password? */
+		if (ask->checked) {
+			display = g_strdup_printf (_("Unlock password for %s keyring"), 
+			                           keyring->keyring_name);
+			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
+			                                 display, ask->typed_password, 
+			                                 "keyring", gkr_location_to_string (keyring->location), NULL);
+			g_free (display);
+		}
+	}
+	
+	/* 
+	 * We can automatically unlock keyrings that have their password
+	 * stored in the 'login' keyring.
+	 */
+	password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
+	                                            "keyring", gkr_location_to_string (keyring->location), NULL);
+	if (password) {
+		if (gkr_keyring_unlock (keyring, password)) {
+			
+			/* A good password, unlocked, all done */
+			ask->response = GKR_ASK_RESPONSE_ALLOW;
+			return GKR_ASK_STOP_REQUEST;
+			
+		} else {
+			
+			/* A bad internal password */
+			gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
+			                                 "keyring", gkr_location_to_string (keyring->location), NULL);
+		}
+	}	
+
+	/* If the keyring is unlocked then no need to continue */
+	if (!keyring->locked) {
+		ask->response = GKR_ASK_RESPONSE_ALLOW;
+		return GKR_ASK_STOP_REQUEST;
+	}
+	
+	return GKR_ASK_DONT_CARE;
 }

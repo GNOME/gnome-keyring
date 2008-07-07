@@ -28,9 +28,9 @@
 #include "gkr-pk-netscape-trust.h"
 #include "gkr-pk-object.h"
 #include "gkr-pk-object-manager.h"
-#include "gkr-pk-object-storage.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-pubkey.h"
+#include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
@@ -125,7 +125,7 @@ load_certificate (GkrPkCert *cert)
 	obj = GKR_PK_OBJECT (cert);
 	
 	g_return_val_if_fail (obj->storage, CKR_GENERAL_ERROR);	
-	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, &err)) {
+	if (!gkr_pk_storage_load (obj->storage, obj, &err)) {
 		g_message ("couldn't load certificate at: %s: %s", 
 		           g_quark_to_string (obj->location),
 		           err && err->message ? err->message : "");
@@ -227,7 +227,7 @@ has_certificate_purposes (GkrPkCert *cert)
 	GkrPkObject *obj = GKR_PK_OBJECT (cert);
 	
 	/* Check if the index has such a value */
-	if (gkr_pk_index_has_value (obj, "purposes"))
+	if (gkr_pk_object_index_has_value (obj, "purposes"))
 		return TRUE;
 
 	if (gkr_pk_cert_has_extension (cert, OID_ENHANCED_USAGE, NULL))
@@ -249,10 +249,10 @@ lookup_certificate_purposes (GkrPkCert *cert, GQuark **oids)
 		return ret;
 			
 	*oids = NULL;
-	
+        
 	/* Look in the index if the purposes have been overridden there */	
-	if (gkr_pk_index_has_value (obj, "purposes")) {
-		*oids = gkr_pk_index_get_quarks (obj, "purposes");
+	if (gkr_pk_object_index_has_value (obj, "purposes")) {
+		*oids = gkr_pk_object_index_get_quarks (obj, "purposes");
 
 	/* Otherwise look in the certificate */		
 	} else {	
@@ -485,7 +485,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		value = CKT_GNOME_UNKNOWN;
 		
 		/* Explicity set? */
-		index = gkr_pk_index_get_string (obj, "user-trust");
+		index = gkr_pk_object_index_get_string (obj, "user-trust");
 		if (index) {
 			if (g_str_equal (index, "trusted"))
 				value = CKT_GNOME_TRUSTED;

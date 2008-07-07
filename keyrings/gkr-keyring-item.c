@@ -169,6 +169,7 @@ gkr_keyring_item_new (GkrKeyring* keyring, guint id, GnomeKeyringItemType type)
 	item->keyring = keyring;
 	item->id = id;
 	item->type = type;
+	item->attributes = gnome_keyring_attribute_list_new ();
 	
 	/* Make sure we get disconnected when keyring goes away */
 	g_object_add_weak_pointer (G_OBJECT (item->keyring), (gpointer*)&(item->keyring));
@@ -192,6 +193,34 @@ gkr_keyring_item_create (GkrKeyring* keyring, GnomeKeyringItemType type)
 	item->ctime = item->mtime = time (NULL);
 	item->type = type;
 	
+	return item;
+}
+
+GkrKeyringItem*
+gkr_keyring_item_clone (GkrKeyring* new_keyring, GkrKeyringItem *item)
+{
+	GkrKeyringItem *nitem = g_object_new (GKR_TYPE_KEYRING_ITEM, NULL);
+
+	g_return_val_if_fail (GKR_IS_KEYRING (new_keyring), NULL);
+	g_return_val_if_fail (GKR_IS_KEYRING_ITEM (item), NULL);
+		
+	nitem->keyring = new_keyring;
+	nitem->id = item->id;
+	nitem->locked = item->locked;
+
+	nitem->type = item->type;
+	nitem->secret = gkr_secure_strdup (item->secret);
+	nitem->display_name = g_strdup (item->display_name);
+
+	nitem->attributes = gnome_keyring_attribute_list_copy (item->attributes);
+	nitem->acl = gnome_keyring_acl_copy (item->acl);
+	
+	nitem->ctime = item->ctime;
+	nitem->mtime = item->mtime;
+	
+	/* Make sure we get disconnected when keyring goes away */
+	g_object_add_weak_pointer (G_OBJECT (item->keyring), (gpointer*)&(item->keyring));
+		
 	return item;
 }
 
@@ -254,8 +283,94 @@ gkr_keyring_item_match (GkrKeyringItem *item, GnomeKeyringItemType type,
 	return TRUE;
 }
 
+/* -----------------------------------------------------------------------------
+ * ATTRIBUTE LIST FUNCTIONS
+ */
+
+void
+gkr_attribute_list_set (GnomeKeyringAttributeList *attrs, GnomeKeyringAttribute *attr)
+{
+	GnomeKeyringAttribute *set;
+	GnomeKeyringAttribute last;
+	gchar *tofree = NULL;
+	
+	g_return_if_fail (attrs);
+	g_return_if_fail (attr);
+	g_return_if_fail (attr->name);
+	
+	set = gkr_attribute_list_find (attrs, attr->name);
+	
+	/* Found, appropriate for our own uses */
+	if (set) {
+		if (set->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING) {
+			tofree = set->value.string;
+			set->value.string = NULL;
+		}
+		
+	/* Not found, add a new one to the end */
+	} else {
+		memset (&last, 0, sizeof (last));
+		g_array_append_val (attrs, last);
+		set = &g_array_index (attrs, GnomeKeyringAttribute, attrs->len - 1);
+		set->name = g_strdup (attr->name);
+	}
+	
+	/* Set the actual value */
+	set->type = attr->type;
+	switch (attr->type) {
+	case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
+		set->value.string = g_strdup (attr->value.string);
+		break;
+	case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
+		set->value.integer = attr->value.integer;
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	
+	g_free (tofree);
+}
+
+GnomeKeyringAttribute*
+gkr_attribute_list_find (GnomeKeyringAttributeList *attrs, const gchar *name)
+{
+	GnomeKeyringAttribute *attr;
+	int i;
+	
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (name, NULL);
+	
+	for (i = 0; i < attrs->len; i++) {
+		attr = &gnome_keyring_attribute_list_index (attrs, i);
+		g_return_val_if_fail (attr->name, NULL);
+		if (strcmp (attr->name, name) == 0)
+			return attr;
+	}
+
+	return NULL;
+}
+
+void
+gkr_attribute_list_delete (GnomeKeyringAttributeList *attrs, const gchar *name)
+{
+	GnomeKeyringAttribute *attr;
+	int i;
+	
+	g_return_if_fail (attrs);
+	g_return_if_fail (name);
+	
+	for (i = 0; i < attrs->len; i++) {
+		attr = &gnome_keyring_attribute_list_index (attrs, i);
+		g_return_if_fail (attr->name);
+		if (strcmp (attr->name, name) == 0) {
+			g_array_remove_index_fast (attrs, i);
+			return;
+		}
+	}
+}
+
 GnomeKeyringAttributeList *
-gkr_keyring_item_attributes_hash (GnomeKeyringAttributeList *attributes)
+gkr_attribute_list_hash (GnomeKeyringAttributeList *attributes)
 {
 	GnomeKeyringAttributeList *hashed;
 	GnomeKeyringAttribute *orig_attribute;

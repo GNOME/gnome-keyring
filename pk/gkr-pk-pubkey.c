@@ -27,8 +27,8 @@
 #include "gkr-pk-index.h"
 #include "gkr-pk-object.h"
 #include "gkr-pk-object-manager.h"
-#include "gkr-pk-object-storage.h"
 #include "gkr-pk-pubkey.h"
+#include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-crypto.h"
@@ -113,7 +113,7 @@ load_public_key (GkrPkPubkey *key)
 		
 	obj = GKR_PK_OBJECT (key);
 	
-	if (!gkr_pk_object_storage_load_complete (obj->storage, obj, &err)) {
+	if (!gkr_pk_storage_load (obj->storage, obj, &err)) {
 		g_message ("couldn't load public key for: %s: %s", 
 		           g_quark_to_string (obj->location),
 		           err && err->message ? err->message : "");

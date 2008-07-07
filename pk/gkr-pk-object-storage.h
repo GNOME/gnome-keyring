@@ -33,11 +33,12 @@ G_BEGIN_DECLS
 
 #define GKR_TYPE_PK_OBJECT_STORAGE             (gkr_pk_object_storage_get_type ())
 #define GKR_PK_OBJECT_STORAGE(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKR_TYPE_PK_OBJECT_STORAGE, GkrPkObjectStorage))
-#define GKR_PK_OBJECT_STORAGE_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GKR_TYPE_PK_OBJECT_STORAGE, GObject))
+#define GKR_PK_OBJECT_STORAGE_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GKR_TYPE_PK_OBJECT_STORAGE, GkrPkObjectStorageClass))
 #define GKR_IS_PK_OBJECT_STORAGE(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GKR_TYPE_PK_OBJECT_STORAGE))
 #define GKR_IS_PK_OBJECT_STORAGE_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GKR_TYPE_PK_OBJECT_STORAGE))
 #define GKR_PK_OBJECT_STORAGE_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GKR_TYPE_PK_OBJECT_STORAGE, GkrPkObjectStorageClass))
 
+typedef struct _GkrPkObjectStorage GkrPkObjectStorage;
 typedef struct _GkrPkObjectStorageClass GkrPkObjectStorageClass;
 
 struct _GkrPkObjectStorage {

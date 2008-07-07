@@ -29,8 +29,14 @@
 typedef void (*GkrPkixPemCallback) (GQuark type, const guchar *data, gsize n_data,
                                     GHashTable *headers, gpointer user_data);
 
+GHashTable*    gkr_pkix_pem_headers_new       (void);
+
 guint          gkr_pkix_pem_parse             (const guchar *data, gsize n_data, 
                                                GkrPkixPemCallback callback, 
                                                gpointer user_data);
+
+guchar*        gkr_pkix_pem_write             (const guchar *data, gsize n_data, 
+                                               GQuark type, GHashTable *headers,
+                                               gsize *n_result);
 
 #endif /*GKRPKIPEM_H_*/

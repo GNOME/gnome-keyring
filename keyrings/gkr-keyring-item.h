@@ -83,13 +83,24 @@ GkrKeyringItem*    gkr_keyring_item_new         (GkrKeyring* keyring, guint id,
 GkrKeyringItem*    gkr_keyring_item_create      (GkrKeyring* keyring, 
                                                  GnomeKeyringItemType type);
 
+GkrKeyringItem*    gkr_keyring_item_clone       (GkrKeyring* new_keyring, 
+                                                 GkrKeyringItem *item);
+
 gboolean           gkr_keyring_item_match       (GkrKeyringItem *item, 
                                                  GnomeKeyringItemType type, 
                                                  GnomeKeyringAttributeList *attributes, 
                                                  gboolean match_all);
 
+void                        gkr_attribute_list_set     (GnomeKeyringAttributeList *attrs, 
+                                                        GnomeKeyringAttribute *attr);
 
-GnomeKeyringAttributeList*  gkr_keyring_item_attributes_hash (GnomeKeyringAttributeList *attributes);
+GnomeKeyringAttribute*      gkr_attribute_list_find    (GnomeKeyringAttributeList *attrs,
+                                                        const gchar *name);
+
+void                        gkr_attribute_list_delete  (GnomeKeyringAttributeList *attrs,
+                                                        const gchar *name);
+
+GnomeKeyringAttributeList*  gkr_attribute_list_hash    (GnomeKeyringAttributeList *attrs);
                                                  
 G_END_DECLS
 
