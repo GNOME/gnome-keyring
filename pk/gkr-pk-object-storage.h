@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-pk-object-storage.h - Manage all 'token' PK objects
+/* gkr-pk-object-storage.h - Store general 'token' PK objects
 
    Copyright (C) 2007 Stefan Walter
 
@@ -27,7 +27,7 @@
 #include <gcrypt.h>
 #include <glib-object.h>
 
-#include "gkr-pk-object.h"
+#include "gkr-pk-storage.h"
 
 G_BEGIN_DECLS
 
@@ -42,27 +42,16 @@ typedef struct _GkrPkObjectStorage GkrPkObjectStorage;
 typedef struct _GkrPkObjectStorageClass GkrPkObjectStorageClass;
 
 struct _GkrPkObjectStorage {
-	 GObject parent;
+	 GkrPkStorage parent;
 };
 
 struct _GkrPkObjectStorageClass {
-	GObjectClass parent_class;
+	GkrPkStorageClass parent_class;
 };
 
 GType                   gkr_pk_object_storage_get_type           (void) G_GNUC_CONST;
 
-GkrPkObjectStorage*     gkr_pk_object_storage_get                (void);
-
-void                    gkr_pk_object_storage_refresh            (GkrPkObjectStorage *storage);
-
-gboolean                gkr_pk_object_storage_load_complete      (GkrPkObjectStorage *storage, 
-                                                                  GkrPkObject *obj, GError **err);
-
-gboolean                gkr_pk_object_storage_add                (GkrPkObjectStorage *storage,
-                                                                  GkrPkObject *obj, GError **err);
-
-gboolean                gkr_pk_object_storage_remove             (GkrPkObjectStorage *storage,
-                                                                  GkrPkObject *obj, GError **err);
+gboolean                gkr_pk_object_storage_initialize         (void);
 
 G_END_DECLS
 

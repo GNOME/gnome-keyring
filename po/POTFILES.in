@@ -7,6 +7,8 @@ library/gnome-keyring-utils.c
 keyrings/gkr-keyring-login.c
 keyrings/gkr-keyring.c
 pk/gkr-pk-index.c
+pk/gkr-pk-object.c
+pk/gkr-pk-object-storage.c
 pk/gkr-pk-storage.c
 pkix/gkr-pkix-parser.c
 pkix/gkr-pkix-serialize.c

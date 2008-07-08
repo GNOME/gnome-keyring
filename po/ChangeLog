@@ -1,5 +1,9 @@
 2008-07-07  Stef Walter  <stef@memberwebs.com>
 
+	* POTFILES.in: Added pk/gkr-pk-object.c pk/gkr-pk-object-storage.c
+	
+2008-07-07  Stef Walter  <stef@memberwebs.com>
+
 	* POTFILES.in: Updated
 	
 2008-07-02  Yannig Marchegay <yannig@marchegay.org>

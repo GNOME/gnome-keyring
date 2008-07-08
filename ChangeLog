@@ -1,3 +1,29 @@
+2008-07-08  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon.c:
+	* pk/gkr-pk-object-storage.c:
+	* pk/gkr-pk-object-storage.h:
+	* pk/gkr-pk-storage.c:
+	* pk/gkr-pk-storage.h:
+	* pk/Makefile.am:
+	* pkix/gkr-pkix-serialize.c:
+	* pkix/gkr-pkix-serialize.h: Reimplement arbitrary token object
+	storage in new storage framework.
+	
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object.h:
+	* pk/tests/Makefile.am: 
+	* pk/tests/unit-test-pk-object.c: (added) 
+	Better support for calculating and using labels for objects.
+	
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-privkey.h:
+	* ssh/gkr-ssh-daemon-ops.c:
+	* ssh/gkr-ssh-storage.c:
+	* ssh/gkr-ssh-storage.h:
+	* ssh/tests/unit-test-ssh-storage.c: Don't load SSH public keys 
+	directly, just provide them as hints for the private keys to use.
+	
 2008-07-07  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-crypto.c: Null terminate hex encodings properly

@@ -24,6 +24,7 @@ libgkr_pk_la_SOURCES = \
 	gkr-pk-netscape-trust.c gkr-pk-netscape-trust.h \
 	gkr-pk-object.c gkr-pk-object.h \
 	gkr-pk-object-manager.c gkr-pk-object-manager.h \
+	gkr-pk-object-storage.c gkr-pk-object-storage.h \
 	gkr-pk-places.h \
 	gkr-pk-privkey.c gkr-pk-privkey.h \
 	gkr-pk-pubkey.c gkr-pk-pubkey.h \

@@ -14,6 +14,8 @@ guchar*           gkr_pkix_serialize_to_data            (GQuark type, gpointer w
                                                          const gchar *password, 
                                                          gsize *n_data);
 
+const gchar*      gkr_pkix_serialize_get_extension      (GQuark type);
+
 guchar*           gkr_pkix_serialize_certificate        (ASN1_TYPE asn, gsize *n_data);
 
 guchar*           gkr_pkix_serialize_public_key         (gcry_sexp_t skey, gsize *n_data);

@@ -3,7 +3,8 @@ UNIT_AUTO = \
 	unit-test-pk-index.c \
 	unit-test-pk-cert.c \
 	unit-test-pk-key.c \
-	unit-test-pk-netscape-trust.c
+	unit-test-pk-netscape-trust.c \
+	unit-test-pk-object.c
 
 UNIT_PROMPT = 
 

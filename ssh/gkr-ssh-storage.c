@@ -71,7 +71,7 @@ G_DEFINE_TYPE(GkrSshStorage, gkr_ssh_storage, GKR_TYPE_PK_STORAGE);
 static GQuark PEM_RSA_PRIVATE_KEY;
 static GQuark PEM_DSA_PRIVATE_KEY;
 
-#define NO_VALUE GUINT_TO_POINTER (TRUE)
+static GkrPkIndex* gkr_ssh_storage_index (GkrPkStorage *storage, GQuark unused);
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -114,12 +114,10 @@ location_for_storing_private_key (GkrSshStorage *storage, gcry_sexp_t sexp)
 }
 
 static GkrPkObject*
-prepare_object (GkrSshStorage *storage, GQuark location, 
-                gkrconstid digest, gboolean is_public)
+prepare_object (GkrSshStorage *storage, GQuark location, gkrconstid digest)
 {
 	GkrPkObjectManager *manager;
 	GkrPkObject *object;
-	GType gtype;
 	
 	manager = gkr_pk_object_manager_for_token ();
 	object = gkr_pk_object_manager_find_by_digest (manager, digest);
@@ -130,12 +128,7 @@ prepare_object (GkrSshStorage *storage, GQuark location,
 		return object;
 	} 
 	
-	if (is_public)
-		gtype = GKR_TYPE_PK_PUBKEY;
-	else
-		gtype = GKR_TYPE_PK_PRIVKEY;
-	
-	object = g_object_new (gtype, "manager", manager, "location", location, 
+	object = g_object_new (GKR_TYPE_PK_PRIVKEY, "manager", manager, "location", location, 
 	                       "digest", digest, NULL);
 	gkr_pk_storage_add_object (GKR_PK_STORAGE (storage), object);
 
@@ -158,49 +151,8 @@ public_location_for_private (GQuark loc)
 }
 
 static gboolean
-storage_load_public_key (GkrSshStorage *storage, GQuark loc, GError **err)
-{
- 	GkrPkObject *object;
-	GkrPkixResult res;
-	gcry_sexp_t sexp;
-	gkrid digest;
-	gchar *comment;
-	guchar *data;
-	gsize n_data;
-	
-	g_return_val_if_fail (loc, FALSE);
-	g_return_val_if_fail (!err || !*err, FALSE);
-	
-	if (!gkr_location_read_file (loc, &data, &n_data, err))
-		return FALSE;
-
-	res = gkr_ssh_storage_load_public_key (data, n_data, &sexp, &comment);
-	if (res == GKR_PKIX_FAILURE) {
-		g_set_error (err, GKR_SSH_STORAGE_ERROR, 0, _("Couldn't read secure shell key public key: %s"),
-		             g_quark_to_string (loc));
-		return FALSE;
-	} else if (res == GKR_PKIX_UNRECOGNIZED) {
-		g_set_error (err, GKR_SSH_STORAGE_ERROR, 0, _("Invalid secure shell public key at: %s"),
-		             g_quark_to_string (loc));
-		return FALSE;
-	}
-	
-	digest = gkr_id_new_digest (data, n_data);
-	
-	/* Prepare and setup the object */
-	object = prepare_object (storage, loc, digest, TRUE);
-	g_object_set (object, "orig-label", comment, NULL);
-	g_object_set (object, "gcrypt-sexp", sexp, NULL);
-	
-	
-	gkr_id_free (digest);
-	g_free (comment);
-	return TRUE;
-}
-
-static gboolean
 storage_write_public_key (GkrSshStorage *storage, gcry_sexp_t sexp, 
-                          GQuark loc, GError **err)
+                          const gchar *comment, GQuark loc, GError **err)
 {
 	guchar *data;
 	gsize n_data;
@@ -209,10 +161,9 @@ storage_write_public_key (GkrSshStorage *storage, gcry_sexp_t sexp,
 	g_return_val_if_fail (loc, FALSE);
 	g_return_val_if_fail (!err || !*err, FALSE);
 
-	/* TODO: What about the comment? */
-	data = gkr_ssh_storage_write_public_key(sexp, NULL, &n_data); 
+	data = gkr_ssh_storage_write_public_key (sexp, comment, &n_data); 
 	if (!data) {
-		g_set_error (err, GKR_SSH_STORAGE_ERROR, 0, _("Couldn't encode secure shell public key."));
+		g_set_error (err, GKR_PK_STORAGE_ERROR, 0, _("Couldn't encode secure shell public key."));
 		return FALSE;
 	}
 	
@@ -226,6 +177,7 @@ static gboolean
 store_public_key_for_private (GkrSshStorage *storage, GkrPkObject *priv, GError **err)
 {
 	gcry_sexp_t sexp, psexp;
+	gchar *label;
 	gboolean ret;
 	GQuark ploc;
 	
@@ -243,7 +195,9 @@ store_public_key_for_private (GkrSshStorage *storage, GkrPkObject *priv, GError 
 	
 	/* And then store that public key next to the private */
 	ploc = public_location_for_private (priv->location);
-	ret = storage_write_public_key (storage, psexp, ploc, err);
+	g_object_get (priv, "orig-label", &label, NULL);
+	ret = storage_write_public_key (storage, psexp, label, ploc, err);
+	g_free (label);
 	gcry_sexp_release (psexp);
 	
 	return ret;
@@ -299,23 +253,62 @@ load_encrypted_key (GkrSshStorage *storage, gkrid digest, GQuark location,
 	return GKR_PKIX_FAILURE;
 }
 
-
 static void
-add_corresponding_public (GkrSshStorage *storage, GQuark loc)
+index_correspending_public_key (GkrSshStorage *storage, GQuark loc, gkrconstid digest, 
+                                gchar **comment)
 {
-	GError *err = NULL;
+ 	GError *err = NULL;
+	GkrPkixResult res;
+	GkrPkIndex *index;
+	gcry_sexp_t sexp;
+	guchar *data;
+	gsize n_data;
 	GQuark ploc;
 	
+	*comment = NULL;
+
 	g_return_if_fail (loc);
-	ploc = public_location_for_private (loc);
 	
-	if (gkr_location_test_file (ploc, G_FILE_TEST_IS_REGULAR)) {
-		if (!storage_load_public_key (storage, ploc, &err)) {
-			g_message ("couldn't parse public key: %s: %s", g_quark_to_string (ploc),
-			           err && err->message ? err->message : "");
-			g_clear_error (&err);
-		}
+	index = gkr_ssh_storage_index (GKR_PK_STORAGE (storage), loc);
+	g_return_if_fail (index);
+	
+	ploc = public_location_for_private (loc);
+	g_return_if_fail (ploc);
+	
+	/* Does the file even exist? */
+	if (!gkr_location_test_file (ploc, G_FILE_TEST_IS_REGULAR))
+		return;
+			
+	if (!gkr_location_read_file (ploc, &data, &n_data, &err)) {
+		g_message ("couldn't read public key file: %s: %s", g_quark_to_string (ploc),
+		           err && err->message ? err->message : "");
+		g_clear_error (&err);
+		return;
 	}
+
+	res = gkr_ssh_storage_load_public_key (data, n_data, &sexp, comment);
+	g_free (data);
+	
+	if (res == GKR_PKIX_FAILURE) {
+		g_message ("couldn't parse public key file: %s", g_quark_to_string (ploc));
+		g_free (*comment);
+		*comment = NULL;
+		return;
+	} else if (res == GKR_PKIX_UNRECOGNIZED) {
+		g_message ("invalid secure shell public key file: %s", g_quark_to_string (ploc));
+		g_free (*comment);
+		*comment = NULL;
+		return;
+	}
+
+	/* Write key to the indexes */
+	if (!gkr_pk_index_has_value (index, digest, GKR_PK_INDEX_PUBLIC_KEY)) {
+		data = gkr_pkix_der_write_public_key (sexp, &n_data);
+		g_return_if_fail (data != NULL);
+		gkr_pk_index_set_binary (index, digest, GKR_PK_INDEX_PUBLIC_KEY, data, n_data);
+	}
+	
+	gcry_sexp_release (sexp);
 }
 
 typedef struct _Load {
@@ -331,9 +324,10 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 {
 	Load *ctx = (Load*)user_data;
  	GkrSshStoragePrivate *pv = GKR_SSH_STORAGE_GET_PRIVATE (ctx->storage);
-	gcry_sexp_t sexp;
+	gcry_sexp_t sexp = NULL;
 	GkrPkObject *object;
 	const gchar *dekinfo;
+	gchar *comment;
 	gkrid digest;
 	
 	/* Only handle SSHv2 private keys */
@@ -366,17 +360,30 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 		ctx->result = gkr_pkix_der_read_private_key (data, n_data, &sexp);
 	}
 	
-	if (ctx->result == GKR_PKIX_SUCCESS) {
-		if (gkr_id_equals (pv->specific_load_request, digest))
-			pv->specific_load_request = NULL;
-	
-		/* Prepare and setup the object */
-		object = prepare_object (ctx->storage, ctx->location, digest, FALSE);
-		if (sexp)
-			g_object_set (object, "gcrypt-sexp", sexp, NULL);
-	
+	if (!ctx->result == GKR_PKIX_SUCCESS) {
 		gkr_id_free (digest);
+		return;
 	}
+	
+	/* 
+	 * Now that we have a digest, and we know the key parses, let's be helpful
+	 * and check whether we have the public key in our indexes. If not, load it up.
+	 * It's important that we do this before the private key object is instantiated
+	 */
+	index_correspending_public_key (ctx->storage, ctx->location, digest, &comment);
+	
+	if (gkr_id_equals (pv->specific_load_request, digest))
+		pv->specific_load_request = NULL;
+	
+	/* Prepare and setup the object */
+	object = prepare_object (ctx->storage, ctx->location, digest);
+	if (sexp)
+		g_object_set (object, "gcrypt-sexp", sexp, NULL);
+	if (comment)
+		g_object_set (object, "orig-label", comment, NULL);
+	
+	g_free (comment);
+	gkr_id_free (digest);
 }
 
 static gboolean
@@ -404,17 +411,14 @@ storage_load_private_key (GkrSshStorage *storage, GQuark loc, GError **err)
 		return TRUE;
 	
 	if (ctx.result == GKR_PKIX_FAILURE) {
-		g_set_error (err, GKR_SSH_STORAGE_ERROR, 0, _("Couldn't read secure shell key private key: %s"),
+		g_set_error (err, GKR_PK_STORAGE_ERROR, 0, _("Couldn't read secure shell key private key: %s"),
 		             g_quark_to_string (loc));
 		return FALSE;
 	} else if (ctx.result == GKR_PKIX_UNRECOGNIZED) {
-		g_set_error (err, GKR_SSH_STORAGE_ERROR, 0, _("Invalid secure shell private key at: %s"),
+		g_set_error (err, GKR_PK_STORAGE_ERROR, 0, _("Invalid secure shell private key at: %s"),
 		             g_quark_to_string (loc));
 		return FALSE;
 	}
-	
-	/* Load the corresponding public key */
-	add_corresponding_public (storage, loc);
 	
 	return TRUE;
 }
@@ -459,7 +463,7 @@ storage_write_private_key (GkrSshStorage *storage, gcry_sexp_t sexp,
 
 		if (!gkr_pkix_openssl_encrypt_block (dekinfo, password, data, n_data,
 		                                     &encrypted, &n_encrypted)) {
-			g_set_error (err, GKR_SSH_STORAGE_ERROR, 0, 
+			g_set_error (err, GKR_PK_STORAGE_ERROR, 0, 
 			             _("Couldn't encrypt the SSH key to store it."));
 			goto done;
 		}
@@ -475,7 +479,7 @@ storage_write_private_key (GkrSshStorage *storage, gcry_sexp_t sexp,
 	
 	/* Make sure it worked */
 	if (!result) {
-		g_set_error (err, GKR_SSH_STORAGE_ERROR, 0, 
+		g_set_error (err, GKR_PK_STORAGE_ERROR, 0, 
 		             _("Couldn't encode the SSH key to store it."));
 		gkr_id_free (digest);
 		digest = NULL;
@@ -553,16 +557,12 @@ gkr_ssh_storage_load (GkrPkStorage *storage, GkrPkObject *obj, GError **err)
 	if (GKR_IS_PK_PRIVKEY (obj))
 		storage_load_private_key (GKR_SSH_STORAGE (storage), obj->location, err);
 	
-	/* Load a private key from this location */
-	else if (GKR_IS_PK_PUBKEY (obj))
-		storage_load_public_key (GKR_SSH_STORAGE (storage), obj->location, err);
-	
 	else
 		g_return_val_if_reached (FALSE);
 	
 	/* See if it was seen */
 	if (pv->specific_load_request != NULL) {
-		g_set_error (err, GKR_SSH_STORAGE_ERROR, 0, "The object was not found at: %s",
+		g_set_error (err, GKR_PK_STORAGE_ERROR, 0, "The object was not found at: %s",
 		             g_quark_to_string (obj->location));
 		pv->specific_load_request = NULL;
 		goto done;
@@ -572,7 +572,8 @@ gkr_ssh_storage_load (GkrPkStorage *storage, GkrPkObject *obj, GError **err)
 	 * At this point, if we were loading a public key, it should be all loaded, 
 	 * including encrypted parts. Write out the public key if needed. 
 	 */
-	if (GKR_IS_PK_PRIVKEY (obj))
+	if (GKR_IS_PK_PRIVKEY (obj) && 
+	    !gkr_location_test_file (public_location_for_private (obj->location), G_FILE_TEST_EXISTS))
 		store_public_key_for_private (GKR_SSH_STORAGE (storage), obj, NULL);
 
 	ret = TRUE;
@@ -588,9 +589,8 @@ gkr_ssh_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 	GkrSshStorage *storage;
 	gcry_sexp_t sexp;
 	gchar *password;
-	gchar *label;
 	gkrid digest;
-	gboolean save, ret;
+	gboolean ret;
 	GQuark loc;
 	
 	g_return_val_if_fail (!err || !*err, FALSE);
@@ -601,9 +601,6 @@ gkr_ssh_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 	storage = GKR_SSH_STORAGE (stor);
 	
 	/* We don't yet support storing arbitrary public keys */
-	if (GKR_IS_PK_PUBKEY (obj))
-		return TRUE;
-	
 	g_return_val_if_fail (GKR_IS_PK_PRIVKEY (obj), FALSE);
 	
 	/* Pull out the actual part of the key */
@@ -615,10 +612,9 @@ gkr_ssh_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 	g_return_val_if_fail (loc, FALSE);
 		
 	/* Get a password for this key, determines whether encrypted or not */
-	label = gkr_pk_object_get_label (obj);
-	ret = gkr_pk_storage_get_store_password (stor, loc, GKR_PKIX_PRIVATE_KEY, 
-	                                         label, &save, &password);
-	g_free (label);
+	ret = gkr_pk_storage_get_store_password (stor, loc, obj->digest, GKR_PKIX_PRIVATE_KEY, 
+	                                         gkr_pk_object_get_label (obj),
+	                                         &password);
 	
 	/* Prompt for a password was denied */
 	if (!ret)
@@ -765,15 +761,6 @@ gkr_ssh_storage_class_init (GkrSshStorageClass *klass)
  * PUBLIC FUNCTIONS
  */
 
-GQuark
-gkr_ssh_storage_get_error_domain (void)
-{
-	static GQuark domain = 0;
-	if (domain == 0)
-		domain = g_quark_from_static_string ("gkr-ssh-storage-error");
-	return domain;
-}
-
 gboolean
 gkr_ssh_storage_initialize (void)
 {
@@ -882,14 +869,14 @@ gkr_ssh_storage_load_public_key (const guchar *data, gsize n_data,
 	}
 	
 	/* If there's data left, its the comment */
-	if (comment && n_data)
-		*comment = g_strndup ((gchar*)data, n_data);
+	if (comment)
+		*comment = n_data ? g_strndup ((gchar*)data, n_data) : NULL;
 
 	return GKR_PKIX_SUCCESS;
 }
 
 guchar*
-gkr_ssh_storage_write_public_key (gcry_sexp_t sexp, gchar *comment,
+gkr_ssh_storage_write_public_key (gcry_sexp_t sexp, const gchar *comment,
                                   gsize *n_data)
 {
 	GString *result;
@@ -928,6 +915,8 @@ gkr_ssh_storage_write_public_key (gcry_sexp_t sexp, gchar *comment,
 		g_string_append_c (result, ' ');
 		g_string_append (result, comment);
 	}
+	
+	g_string_append_c (result, '\n');
 	
 	*n_data = result->len;
 	return (guchar*)g_string_free (result, FALSE);

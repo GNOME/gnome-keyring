@@ -31,7 +31,9 @@
 
 G_BEGIN_DECLS
 
-#define GKR_PK_OBJECT_HANDLE_MASK      0x0FFFFFFF
+#define GKR_PK_INDEX_LABEL              "label"
+
+#define GKR_PK_OBJECT_HANDLE_MASK       0x0FFFFFFF
 #define GKR_PK_OBJECT_IS_PERMANENT	0x10000000
 #define GKR_PK_OBJECT_IS_TEMPORARY	0x00000000
 
@@ -145,7 +147,7 @@ CK_RV               gkr_pk_object_set_bool         (GkrPkObject *object,
 CK_RV               gkr_pk_object_set_attributes   (GkrPkObject *object, 
                                                     GArray *attrs);
 
-gchar*              gkr_pk_object_get_label        (GkrPkObject *object);
+const gchar*        gkr_pk_object_get_label        (GkrPkObject *object);
 
 void                gkr_pk_object_set_label        (GkrPkObject *object, 
                                                     const gchar *label);

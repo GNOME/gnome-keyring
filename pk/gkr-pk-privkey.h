@@ -33,6 +33,8 @@
 
 G_BEGIN_DECLS
 
+#define GKR_PK_INDEX_PUBLIC_KEY         "public-key"
+
 #define GKR_TYPE_PK_PRIVKEY             (gkr_pk_privkey_get_type())
 #define GKR_PK_PRIVKEY(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), GKR_TYPE_PK_PRIVKEY, GkrPkPrivkey))
 #define GKR_PK_PRIVKEY_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST((klass), GKR_TYPE_PK_PRIVKEY, GkrPkPrivkey))
@@ -61,7 +63,7 @@ GkrPkObject*        gkr_pk_privkey_new                (GkrPkObjectManager *mgr,
 CK_RV               gkr_pk_privkey_create             (GkrPkObjectManager* manager, 
                                                        GArray* array, GkrPkObject **object);
                                                        
-gkrconstid      gkr_pk_privkey_get_keyid          (GkrPkPrivkey *pkey);
+gkrconstid          gkr_pk_privkey_get_keyid          (GkrPkPrivkey *pkey);
 
 gkrid               gkr_pk_privkey_make_keyid         (gcry_sexp_t skey);
 

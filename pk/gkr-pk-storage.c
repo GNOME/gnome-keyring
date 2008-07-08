@@ -374,6 +374,16 @@ gkr_pk_storage_class_init (GkrPkStorageClass *klass)
  * PUBLIC 
  */
 
+
+GQuark
+gkr_pk_storage_get_error_domain (void)
+{
+	static GQuark domain = 0;
+	if (domain == 0)
+		domain = g_quark_from_static_string ("gkr-pk-storage-error");
+	return domain;
+}
+
 void
 gkr_pk_storage_register (GkrPkStorage *storage, gboolean is_default)
 {
@@ -585,6 +595,32 @@ gkr_pk_storage_clr_objects (GkrPkStorage *storage, GQuark loc)
 	g_array_free (copy, TRUE);
 }
 
+GSList*
+gkr_pk_storage_get_objects (GkrPkStorage *storage, GQuark location)
+{
+	GkrPkStoragePrivate *pv = GKR_PK_STORAGE_GET_PRIVATE (storage);
+	GArray *objs;
+	gpointer k;
+	GSList *result;
+	guint i;
+		
+	/* Remove everything that is at that location */
+	k = GUINT_TO_POINTER (location);
+	objs = (GArray*)g_hash_table_lookup (pv->objects_by_location, k);
+	if (!objs)
+		return NULL;
+			
+	/* When removing we cleanup empty arrays */
+	g_assert (objs->len);
+
+	/* We copy because otherwise the array will change from underneath us */
+	result = NULL;
+	for (i = 0; i < objs->len; ++i)
+		result = g_slist_prepend (result, g_array_index (objs, GkrPkObject*, i));
+	
+	return result;
+}
+
 GkrPkChecks*
 gkr_pk_storage_checks_prepare (GkrPkStorage *storage, GQuark location)
 {
@@ -633,9 +669,8 @@ gkr_pk_storage_checks_purge (GkrPkStorage *storage, GkrPkChecks *checks)
 }
 
 gboolean
-gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location,
-                                   GQuark type, const gchar *label, gboolean *save,
-                                   gchar **result)
+gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrconstid digest,
+                                   GQuark type, const gchar *label, gchar **result)
 {
 	GkrAskRequest *ask;
 	gchar *custom_label = NULL;
@@ -643,13 +678,21 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location,
 	gchar *display = NULL;
 	gboolean ret;
 	guint flags;
+	GkrPkIndex *index;
 	GkrKeyring *login;
 	
 	g_return_val_if_fail (GKR_IS_PK_STORAGE (storage), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
-	g_return_val_if_fail (save != NULL, FALSE);
-	
-	*save = FALSE;
+
+	index = gkr_pk_storage_index (storage, location);
+	g_return_val_if_fail (index, FALSE);
+
+	/*
+	 * We save the password while still here in this function.
+	 *  - Optimistic, assuming it'll succeed.
+	 *  - Can store to the possibly bogus digest, because objects
+	 *    will move all index storage to the real digest later.
+	 */
 
 	/* See if we can just use the login keyring password for this */
 	if (gkr_keyring_login_is_usable ()) {
@@ -663,8 +706,8 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location,
 		 * Always same a 'login' password used as a secret. So that 
 		 * the user can later change the login password, and this'll 
 		 * still work. 
-		 */ 
-		*save = TRUE;
+		 */
+		gkr_pk_index_set_secret (index, digest, *result);
 		return TRUE;
 	}
 
@@ -699,7 +742,8 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location,
 	/* Successful response */
 	} else {
 		*result = gkr_secure_strdup (ask->typed_password);
-		*save = ask->checked;
+		if (ask->checked)
+			gkr_pk_index_set_secret (index, digest, *result);
 	}
 	
 	g_free (display);
@@ -714,7 +758,6 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
                                   gchar **result)
 {
 	GkrAskRequest *ask;
-	gchar *custom_label = NULL;
 	gchar *stype, *secondary;
 	gchar *display = NULL;
 	gboolean ret;
@@ -788,12 +831,6 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 			type = g_quark_from_string (stype);
 		g_free (stype);
 	}
-		
-	/* TODO: Load a better label if we have one */
-	custom_label = NULL;
-		
-	if (custom_label != NULL)
-		label = custom_label;
 	
 	if (!label) 
 		label = display = gkr_location_to_display (location);
@@ -834,7 +871,6 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 	}
 	
 	g_free (display);
-	g_free (custom_label);
 	g_object_unref (ask);
 	return ret;
 }

@@ -32,6 +32,8 @@
 
 G_BEGIN_DECLS
 
+#define GKR_PK_STORAGE_ERROR            (gkr_pk_storage_get_error_domain ())
+
 #define GKR_TYPE_PK_STORAGE             (gkr_pk_storage_get_type ())
 #define GKR_PK_STORAGE(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKR_TYPE_PK_STORAGE, GkrPkStorage))
 #define GKR_PK_STORAGE_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GKR_TYPE_PK_STORAGE, GkrPkStorageClass))
@@ -57,6 +59,8 @@ struct _GkrPkStorageClass {
 };
 
 GType                   gkr_pk_storage_get_type           (void) G_GNUC_CONST;
+
+GQuark 	                gkr_pk_storage_get_error_domain   (void) G_GNUC_CONST;
 
 void                    gkr_pk_storage_register           (GkrPkStorage *storage, 
                                                            gboolean default_storage);
@@ -94,6 +98,9 @@ void                    gkr_pk_storage_del_object         (GkrPkStorage *storage
 void                    gkr_pk_storage_clr_objects        (GkrPkStorage *storage, 
                                                            GQuark location);
 
+GSList*                 gkr_pk_storage_get_objects        (GkrPkStorage *storage,
+                                                           GQuark location);
+
 typedef GHashTable GkrPkChecks;
 
 GkrPkChecks*            gkr_pk_storage_checks_prepare     (GkrPkStorage *storage, 
@@ -109,9 +116,9 @@ void                    gkr_pk_storage_checks_purge       (GkrPkStorage *storage
 #define GKR_PK_STORAGE_PASSWD_PROMPT	 2
 
 gboolean                gkr_pk_storage_get_store_password (GkrPkStorage *storage, 
-                                                           GQuark location, GQuark type, 
-                                                           const gchar *label, gboolean *save, 
-                                                           gchar **passowrd);
+                                                           GQuark location, gkrconstid digest, 
+                                                           GQuark type, const gchar *label,  
+                                                           gchar **password);
 	
 gboolean                gkr_pk_storage_get_load_password  (GkrPkStorage *storage, 
                                                            GQuark location, gkrconstid digest, 

@@ -116,7 +116,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 	obj = GKR_PK_OBJECT (key);
 	
 	/* Do we have a public key in the indexes? */
-	data = gkr_pk_object_index_get_binary (obj, "public-key", &n_data);
+	data = gkr_pk_object_index_get_binary (obj, GKR_PK_INDEX_PUBLIC_KEY, &n_data);
 	if (data) {
 		res = gkr_pkix_der_read_public_key (data, n_data, &s_key);
 		if (res == GKR_PKIX_SUCCESS) {
@@ -125,7 +125,7 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 			goto done;
 		} 
 
-		gkr_pk_object_index_set_binary (obj, "public-key", NULL, 0);
+		gkr_pk_object_index_set_binary (obj, GKR_PK_INDEX_PUBLIC_KEY, NULL, 0);
 		g_warning ("invalid public-key in indexes for: %s", g_quark_to_string (obj->location));
 	}
 	
@@ -147,7 +147,8 @@ get_public_key (GkrPkPrivkey *key, gboolean force)
 		g_return_val_if_fail (data != NULL, NULL);
 		
 		/* Write the public key out to the indexes */
-		gkr_pk_object_index_set_binary (obj, "public-key", data, n_data);
+		gkr_pk_object_index_set_binary (obj, GKR_PK_INDEX_PUBLIC_KEY, data, n_data);
+		g_free (data);
 		
 		key->priv->pubkey = gkr_pk_pubkey_instance (obj->manager, 0, s_key);
 		goto done;

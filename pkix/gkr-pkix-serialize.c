@@ -295,3 +295,18 @@ gkr_pkix_serialize_private_key_pkcs8 (gcry_sexp_t skey, const gchar *password,
 	
 	return data;
 }
+
+const gchar*
+gkr_pkix_serialize_get_extension (GQuark type)
+{
+	g_return_val_if_fail (type, NULL);
+	
+	if (type == GKR_PKIX_CERTIFICATE)
+		return "crt";
+	else if (type == GKR_PKIX_PUBLIC_KEY)
+		return "key";
+	else if (type == GKR_PKIX_PRIVATE_KEY)
+		return "pkcs8";
+	return "pk";
+}
+

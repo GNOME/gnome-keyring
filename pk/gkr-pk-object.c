@@ -34,6 +34,8 @@
 
 #include "common/gkr-location.h"
 
+#include <glib/gi18n.h>
+
 #include <string.h>
 
 /* --------------------------------------------------------------------------------
@@ -59,6 +61,7 @@ typedef struct _GkrPkObjectPrivate GkrPkObjectPrivate;
 
 struct _GkrPkObjectPrivate {
 	GHashTable *attr_cache;
+	gchar *label;
 	gchar *orig_label;
 	guint load_state;
 	gboolean dummy_digest;
@@ -69,6 +72,8 @@ struct _GkrPkObjectPrivate {
 
 #define GKR_PK_OBJECT_GET_PRIVATE(o)  \
 	(G_TYPE_INSTANCE_GET_PRIVATE((o), GKR_TYPE_PK_OBJECT, GkrPkObjectPrivate))
+
+static guint64 unique_counter = 0;
 
 G_DEFINE_TYPE(GkrPkObject, gkr_pk_object, G_TYPE_OBJECT);
 
@@ -137,16 +142,6 @@ move_indexes_if_necessary (GkrPkObject *obj, GkrPkStorage *copy_storage,
 		gkr_pk_index_delete (old_index, obj->digest);
 }
 
-static void
-remove_indexes (GkrPkObject *obj)
-{
-	GkrPkIndex *index = NULL;
-	
-	if (obj->storage)
-		index = gkr_pk_storage_index (obj->storage, obj->location);
-	gkr_pk_index_delete (index, obj->digest);
-}
-
 /* --------------------------------------------------------------------------------
  * OBJECT
  */
@@ -155,12 +150,16 @@ static void
 gkr_pk_object_init (GkrPkObject *obj)
 {
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (obj);
+	
 	pv->attr_cache = g_hash_table_new_full (g_direct_hash, g_direct_equal, 
 	                                        NULL, gkr_pk_attribute_free);
 	
-	/* Create a dummy digest which is the object address */
+	/* Create a dummy digest which has the object address */
 	pv->dummy_digest = TRUE;
-	obj->digest = gkr_id_new ((guchar*)&obj, sizeof (obj));
+	++unique_counter;
+	obj->digest = gkr_id_new_digestv((guchar*)&obj, sizeof (obj),
+	                                 (guchar*)&unique_counter, sizeof (unique_counter),
+	                                 NULL);
 }
 
 static GObject*
@@ -202,17 +201,10 @@ static CK_RV
 gkr_pk_object_get_attribute_common (GkrPkObject *obj, CK_ATTRIBUTE_PTR attr)
 {
 	CK_OBJECT_CLASS cls;
-	gchar *label;
 
 	switch (attr->type) {
 	case CKA_LABEL:
-		label = gkr_pk_object_get_label (obj);
-		if (!label && obj->location)
-			label = gkr_location_to_display (obj->location);
-		if (!label)
-			label = g_strdup ("");
-		gkr_pk_attribute_set_string (attr, label);
-		g_free (label);
+		gkr_pk_attribute_set_string (attr, gkr_pk_object_get_label (obj));
 		return CKR_OK;
 	
 	case CKA_TOKEN:
@@ -294,7 +286,7 @@ gkr_pk_object_get_property (GObject *obj, guint prop_id, GValue *value,
 		g_value_set_string (value, pv->orig_label);
 		break;
 	case PROP_LABEL:
-		g_value_take_string (value, gkr_pk_object_get_label (xobj));
+		g_value_set_string (value, gkr_pk_object_get_label (xobj));
 		break;
 	case PROP_STORAGE:
 		g_value_set_object (value, xobj->storage);
@@ -308,6 +300,7 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 {
 	GkrPkObject *xobj = GKR_PK_OBJECT (obj);
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
+	GkrPkObjectManager *manager;
 	GkrPkIndex *index;
 	GkrPkStorage *storage;
 	gkrid digest;
@@ -327,6 +320,7 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		if (location)
 			move_indexes_if_necessary (xobj, xobj->storage, location);
 		xobj->location = location; 
+		gkr_pk_object_flush (xobj);
 		break;
 		
 	case PROP_DIGEST:
@@ -341,8 +335,9 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (digest);
 		
 		/* Unregister old digest with object manager */
-		if (xobj->manager)
-			gkr_pk_object_manager_unregister (xobj->manager, xobj);
+		manager = xobj->manager;
+		if (manager)
+			gkr_pk_object_manager_unregister (manager, xobj);
 
 		/* Rename to the new digest in the index */
 		index = xobj->storage ? gkr_pk_storage_index (xobj->storage, xobj->location) : NULL;
@@ -354,16 +349,18 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		/* Change to new digest */
 		gkr_id_free (xobj->digest);
 		xobj->digest = digest;
+		gkr_pk_object_flush (xobj);
 
 		/* Register with the object manager with the new digest */
-		if (xobj->manager)
-			gkr_pk_object_manager_register (xobj->manager, xobj);
+		if (manager)
+			gkr_pk_object_manager_register (manager, xobj);
 		
 		break;
 		
 	case PROP_ORIG_LABEL:
 		g_free (pv->orig_label);
 		pv->orig_label = g_value_dup_string (value);
+		gkr_pk_object_flush (xobj);
 		break;
 		
 	case PROP_LABEL:
@@ -381,6 +378,7 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		
 		/* We don't reference, storage should remove itself before the end */
 		xobj->storage = storage;
+		gkr_pk_object_flush (xobj);
 		break;
 	};
 }
@@ -390,10 +388,6 @@ gkr_pk_object_finalize (GObject *obj)
 {
 	GkrPkObject *xobj = GKR_PK_OBJECT (obj);
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
-	
-	/* If this never actually got stored properly, then remove it */
-	if (pv->dummy_digest || !xobj->storage)
-		remove_indexes (xobj);
 	
 	if (pv->attr_cache)
 		g_hash_table_destroy (pv->attr_cache);
@@ -440,7 +434,7 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 		                   
 	g_object_class_install_property (gobject_class, PROP_DIGEST,
 		g_param_spec_boxed ("digest", "Digest", "Digest Identifier for Data",
-		                    GKR_ID_BOXED_TYPE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                    GKR_ID_BOXED_TYPE, G_PARAM_READWRITE));
 		                    
 	g_object_class_install_property (gobject_class, PROP_ORIG_LABEL,
 		g_param_spec_string ("orig-label", "Original Label", "Original Label",
@@ -519,7 +513,11 @@ gkr_pk_object_flush (GkrPkObject *object)
 {
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE(object);
 	g_return_if_fail (GKR_IS_PK_OBJECT (object));
+	
 	g_hash_table_remove_all (pv->attr_cache);
+	
+	g_free (pv->label);
+	pv->label = NULL;
 }
 
 void
@@ -781,11 +779,44 @@ gkr_pk_object_set_attributes (GkrPkObject *object, GArray *attrs)
 	return ret;
 }
 
-gchar*
+const gchar*
 gkr_pk_object_get_label (GkrPkObject *xobj)
 {
+	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
+	GType type;
+	
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (xobj), NULL);
-	return gkr_pk_object_index_get_string (xobj, "label");
+	
+	if (!pv->label) {
+		/* Try the label from the index */
+		pv->label = gkr_pk_object_index_get_string (xobj, GKR_PK_INDEX_LABEL);
+				
+		/* Try any original label handed us by parsers */
+		if (!pv->label && pv->orig_label) 
+			pv->label = g_strdup (pv->orig_label);
+		
+		/* Try and use the filename */
+		if (!pv->label && xobj->location) 
+			pv->label = gkr_location_to_display (xobj->location);
+		
+		/* Come up with a name depending on the type */
+		if (!pv->label) {
+			type = G_OBJECT_TYPE (xobj);
+			if (type == GKR_TYPE_PK_CERT) {
+				pv->label = g_strdup (_("Certificate"));
+			} else if (type == GKR_TYPE_PK_PRIVKEY) {
+				pv->label = g_strdup (_("Private Key"));
+			} else if (type == GKR_TYPE_PK_PUBKEY) {
+				pv->label = g_strdup (_("Public Key"));
+			} else {
+				g_warning ("no default label for objects of type: %s",
+				           G_OBJECT_TYPE_NAME (xobj));
+				pv->label = g_strdup (G_OBJECT_TYPE_NAME (xobj));
+			}
+		}
+	}
+	
+	return pv->label;
 }
 
 void

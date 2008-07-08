@@ -265,7 +265,6 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 	GList *objects, *pubkeys, *l;
 	GkrPkPubkey *pub;
 	gsize blobpos;
-	const gchar *label;
 	
 	/* Only find the keys that have usage = ssh */
 	objects = gkr_pk_object_manager_findv (gkr_pk_object_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
@@ -298,8 +297,7 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 		gkr_buffer_set_uint32 (resp, blobpos, (resp->len - blobpos) - 4);
 		
 		/* And now a per key comment */
-		label = gkr_pk_object_get_label (GKR_PK_OBJECT (pub));
-		gkr_buffer_add_string (resp, label ? label : "");
+		gkr_buffer_add_string (resp, gkr_pk_object_get_label (GKR_PK_OBJECT (pub)));
 	}
 	
 	g_list_free (pubkeys);

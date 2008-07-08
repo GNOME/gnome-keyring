@@ -35,6 +35,8 @@
 
 #include "library/gnome-keyring.h"
 
+#include "pk/gkr-pk-object-storage.h"
+
 #include "pkcs11/gkr-pkcs11-daemon.h"
 
 #ifdef WITH_SSH
@@ -452,6 +454,10 @@ main (int argc, char *argv[])
 
 	gcry_create_nonce (&seed, sizeof (seed));
 	srand (seed);
+	
+	/* Initialize object storage */
+	if (!gkr_pk_object_storage_initialize ())
+		cleanup_and_exit (1);
 
 	/* Initialize the appropriate components */
 	if (check_run_component ("keyring")) {
