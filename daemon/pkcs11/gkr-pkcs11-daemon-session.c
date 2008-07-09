@@ -25,12 +25,9 @@
 
 #include <glib.h>
 
-#include "gkr-pkcs11-message.h"
-#include "gkr-pkcs11-calls.h"
 #include "gkr-pkcs11-daemon.h"
 #include "gkr-pkcs11-dsa.h"
 #include "gkr-pkcs11-rsa.h"
-#include "pkcs11.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-buffer.h"
@@ -44,6 +41,10 @@
 #include "pk/gkr-pk-session.h"
 #include "pk/gkr-pk-storage.h"
 #include "pk/gkr-pk-util.h"
+
+#include "pkcs11/gkr-pkcs11-message.h"
+#include "pkcs11/gkr-pkcs11-calls.h"
+#include "pkcs11/pkcs11.h"
 
 #include <stdlib.h>
 #include <string.h>

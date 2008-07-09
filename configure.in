@@ -310,7 +310,6 @@ AC_ARG_ENABLE(acl-prompts,
 	    AC_HELP_STRING([--disable-acl-prompts],
 	    [Disable prompted for user to give access to passwords]))
 
-echo "!!!!!!$enable_acl_prompts!!!!!"
 if test "$enable_acl_prompts" != "no"; then
 	AC_DEFINE(ENABLE_ACL_PROMPTS, 1, [Whether to prompt before giving access to passwords])
 fi
@@ -464,24 +463,25 @@ Makefile
 common/Makefile
 common/tests/Makefile
 daemon/Makefile
-data/Makefile
-keyrings/Makefile
-keyrings/tests/Makefile
+daemon/data/Makefile
+daemon/keyrings/Makefile
+daemon/keyrings/tests/Makefile
+daemon/pk/Makefile
+daemon/pk/tests/Makefile
+daemon/pkcs11/Makefile
+daemon/pkix/Makefile
+daemon/pkix/tests/Makefile
+daemon/ssh/Makefile
+daemon/ssh/tests/Makefile
+daemon/ui/Makefile
 library/Makefile
 library/tests/Makefile
 pam/Makefile
 pam/tests/Makefile
-pk/Makefile
-pk/tests/Makefile
 pkcs11/Makefile
-pkix/Makefile
-pkix/tests/Makefile
 po/Makefile.in
 reference/Makefile
-ssh/Makefile
-ssh/tests/Makefile
 tests/Makefile
-ui/Makefile
 library/gnome-keyring-1.pc
 library/gnome-keyring-1-uninstalled.pc
 ])

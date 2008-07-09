@@ -23,14 +23,15 @@
 
 #include <glib.h>
 
-#include "gkr-pkcs11-calls.h"
-#include "gkr-pkcs11-message.h"
 #include "gkr-pkcs11-daemon.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
 #include "common/gkr-daemon-util.h"
 #include "common/gkr-secure-memory.h"
+
+#include "pkcs11/gkr-pkcs11-calls.h"
+#include "pkcs11/gkr-pkcs11-message.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>

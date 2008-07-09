@@ -13,6 +13,7 @@ INCLUDES=	\
 	-DLIBEXECDIR=\""$(libexecdir)"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(top_srcdir) 				\
+	-I$(top_srcdir)/daemon 				\
 	-I$(top_builddir) 				\
 	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS) 				\
@@ -36,8 +37,8 @@ libgkr_pk_la_SOURCES = \
 	$(ROOT_SRCS)
 
 libgkr_pk_la_LIBADD = \
-	$(top_builddir)/ui/libgkr-ui.la \
-	$(top_builddir)/pkix/libgkr-pkix.la \
+	$(top_builddir)/daemon/ui/libgkr-ui.la \
+	$(top_builddir)/daemon/pkix/libgkr-pkix.la \
 	$(top_builddir)/common/libgkr-common.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \

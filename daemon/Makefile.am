@@ -1,3 +1,18 @@
+if WITH_SSH
+SSH_DIR = ssh
+else
+SSH_DIR =
+endif
+
+SUBDIRS = \
+	ui \
+	keyrings \
+	pkix \
+	pk \
+	pkcs11 \
+	$(SSH_DIR) \
+	data 
+
 bin_PROGRAMS= \
 	gnome-keyring-daemon
 
@@ -7,6 +22,7 @@ INCLUDES=	\
 	-DLIBEXECDIR=\""$(libexecdir)"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(top_srcdir) 				\
+	-I$(top_srcdir)/daemon 				\
 	-I$(top_builddir) 				\
 	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS)				\
@@ -21,11 +37,11 @@ gnome_keyring_daemon_SOURCES = \
 	gkr-daemon-ops.c
 
 gnome_keyring_daemon_LDADD = \
-	$(top_builddir)/ssh/libgkr-ssh.la \
-	$(top_builddir)/pkcs11/libgkr-pkcs11.la \
-	$(top_builddir)/pk/libgkr-pk.la \
-	$(top_builddir)/keyrings/libgkr-keyrings.la \
-	$(top_builddir)/ui/libgkr-ui.la \
+	$(top_builddir)/daemon/ssh/libgkr-ssh.la \
+	$(top_builddir)/daemon/pkcs11/libgkr-pkcs11.la \
+	$(top_builddir)/daemon/pk/libgkr-pk.la \
+	$(top_builddir)/daemon/keyrings/libgkr-keyrings.la \
+	$(top_builddir)/daemon/ui/libgkr-ui.la \
 	$(top_builddir)/library/libgnome-keyring-common.la \
 	$(top_builddir)/common/libgkr-common.la \
 	$(DAEMON_LIBS) \

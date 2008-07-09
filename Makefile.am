@@ -4,12 +4,6 @@ else
 PAM_DIR = 
 endif
 
-if WITH_SSH
-SSH_DIR = ssh
-else
-SSH_DIR =
-endif
-
 if WITH_TESTS
 TESTS_DIR = tests
 else
@@ -20,14 +14,8 @@ SUBDIRS = \
 	. \
 	common \
 	library \
-	ui \
-	keyrings \
-	pkix \
-	pk \
-	$(SSH_DIR) \
 	pkcs11 \
 	daemon \
-	data \
 	po \
 	reference \
 	$(TESTS_DIR) \

@@ -18,3 +18,10 @@ for component in *; do
 	fi
 done
 
+for component in daemon/*; do
+	if [ -f "$component/tests/$PRG" ]; then
+		echo "<<<<< Running tests in '$component' >>>>>" 
+		$component/tests/$PRG
+	fi
+done
+

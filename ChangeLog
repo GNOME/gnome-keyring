@@ -1,5 +1,9 @@
 2008-07-09  Stef Walter  <stef@memberwebs.com>
 
+	Move all daemon code and sub-modules into daemon/ directory.
+
+2008-07-09  Stef Walter  <stef@memberwebs.com>
+
 	* pk/gkr-pk-cert.c:
 	* pk/gkr-pk-cert.h:
 	* pk/gkr-pk-manager.c: (moved from gkr-pk-object-manager.c)

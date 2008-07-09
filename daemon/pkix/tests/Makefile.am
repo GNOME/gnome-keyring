@@ -17,7 +17,7 @@ UNIT_AUTO = \
 UNIT_PROMPT = 
 
 UNIT_LIBS =  \
-	$(top_builddir)/pkix/libgkr-pkix.la \
+	$(top_builddir)/daemon/pkix/libgkr-pkix.la \
 	$(top_builddir)/common/libgkr-common.la
 
 EXTRA_DIST = \

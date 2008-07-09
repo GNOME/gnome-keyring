@@ -8,6 +8,7 @@
 
 INCLUDES=				\
 	-I$(top_srcdir) 		\
+	-I$(top_srcdir)/daemon 		\
 	-I$(top_builddir) 		\
 	$(GTK_CFLAGS)			\
 	$(GLIB_CFLAGS) 

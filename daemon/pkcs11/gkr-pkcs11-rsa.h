@@ -24,10 +24,11 @@
 #ifndef GKRPKCS11RSA_H_
 #define GKRPKCS11RSA_H_
 
-#include "pkcs11.h"
+#include "common/gkr-crypto.h"
 
 #include "pk/gkr-pk-object.h"
-#include "common/gkr-crypto.h"
+
+#include "pkcs11/pkcs11.h"
 
 CK_RV                 gkr_pkcs11_rsa_encrypt                (GkrPkObject *key, GkrCryptoPadding padfunc,
                                                              const guchar *plain, gsize n_plain, 

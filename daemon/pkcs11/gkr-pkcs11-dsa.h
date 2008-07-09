@@ -24,9 +24,9 @@
 #ifndef GKRPKCS11DSA_H_
 #define GKRPKCS11DSA_H_
 
-#include "pkcs11.h"
-
 #include "pk/gkr-pk-object.h"
+
+#include "pkcs11/pkcs11.h"
 
 CK_RV                 gkr_pkcs11_dsa_sign                   (GkrPkObject *key, 
                                                              const guchar *plain, gsize n_plain, 
