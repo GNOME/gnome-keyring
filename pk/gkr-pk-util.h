@@ -51,8 +51,6 @@ void               gkr_pk_attribute_free                  (gpointer attr);
 
 void               gkr_pk_attribute_copy                  (CK_ATTRIBUTE_PTR dest, const CK_ATTRIBUTE_PTR attr);
 
-void               gkr_pk_attribute_steal                 (CK_ATTRIBUTE_PTR dest, CK_ATTRIBUTE_PTR attr);
-
 void               gkr_pk_attribute_clear                 (CK_ATTRIBUTE_PTR attr);
 
 void               gkr_pk_attribute_set_invalid           (CK_ATTRIBUTE_PTR attr);
@@ -71,6 +69,9 @@ void               gkr_pk_attribute_set_date              (CK_ATTRIBUTE_PTR attr
 void               gkr_pk_attribute_set_ulong             (CK_ATTRIBUTE_PTR attr, CK_ULONG value);
 
 void               gkr_pk_attribute_set_mpi               (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi);
+
+void               gkr_pk_attribute_take_data             (CK_ATTRIBUTE_PTR attr, gpointer value, 
+                                                           gsize n_value);
 
 gboolean           gkr_pk_attribute_get_boolean           (const CK_ATTRIBUTE_PTR attr, CK_BBOOL *value);
 

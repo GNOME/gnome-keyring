@@ -25,7 +25,7 @@
 
 #include "gkr-pk-cert.h"
 #include "gkr-pk-index.h"
-#include "gkr-pk-object-manager.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-object-storage.h"
 #include "gkr-pk-places.h"
 #include "gkr-pk-privkey.h"
@@ -133,12 +133,12 @@ static GkrPkObject*
 prepare_object (GkrPkObjectStorage *storage, GQuark location, 
                 gkrconstid digest, GQuark type)
 {
-	GkrPkObjectManager *manager;
+	GkrPkManager *manager;
 	GkrPkObject *object;
 	GType gtype;
 	
-	manager = gkr_pk_object_manager_for_token ();
-	object = gkr_pk_object_manager_find_by_digest (manager, digest);
+	manager = gkr_pk_manager_for_token ();
+	object = gkr_pk_manager_find_by_digest (manager, digest);
 	
 	/* The object already exists just reference it */
 	if (object) {
@@ -146,14 +146,8 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 		return object;
 	} 
 	
-	if (type == GKR_PKIX_PRIVATE_KEY) 
-		gtype = GKR_TYPE_PK_PRIVKEY;
-	else if (type == GKR_PKIX_PUBLIC_KEY) 
-		gtype = GKR_TYPE_PK_PUBKEY;
-	else if (type == GKR_PKIX_CERTIFICATE)
-		gtype = GKR_TYPE_PK_CERT;
-	else 
-		g_return_val_if_reached (NULL);
+	gtype = gkr_pk_object_get_object_type (type);
+	g_return_val_if_fail (gtype != 0, NULL);
 	
 	object = g_object_new (gtype, "manager", manager, "location", location, 
 	                       "digest", digest, NULL);

@@ -1,3 +1,7 @@
+2008-07-09  Stef Walter  <stef@memberwebs.com>
+
+	* POTFILES.in: Added pk/gkr-pk-import.c
+	
 2008-07-09  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* nb.po: Updated Norwegian bokmål translation.

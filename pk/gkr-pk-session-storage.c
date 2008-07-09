@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include "gkr-pk-cert.h"
-#include "gkr-pk-object-manager.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-session-storage.h"
 #include "gkr-pk-util.h"
 

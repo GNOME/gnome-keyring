@@ -35,6 +35,9 @@ check_attribute (CuTest *cu, GkrPkObject *obj, CK_ATTRIBUTE_TYPE type,
 #define CHECK_BYTE_ATTRIBUTE(cu, obj, type, val, length) \
 	check_attribute (cu, GKR_PK_OBJECT (obj), type, #type, val, length)
 
+#define CHECK_STRING_ATTRIBUTE(cu, obj, type, val) \
+	check_attribute (cu, GKR_PK_OBJECT (obj), type, #type, val, strlen (val))
+
 #define CHECK_DATE_ATTRIBUTE(cu, obj, type, str) { \
 	CK_ATTRIBUTE test = { 0, NULL, 0 }; \
 	struct tm tm; \

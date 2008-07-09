@@ -52,10 +52,10 @@ struct _GkrPkCertClass {
 
 GType               gkr_pk_cert_get_type           (void) G_GNUC_CONST;
 
-GkrPkCert*          gkr_pk_cert_new                (GkrPkObjectManager *manager, 
+GkrPkCert*          gkr_pk_cert_new                (GkrPkManager *manager, 
                                                     GQuark location, ASN1_TYPE asn1);
 
-CK_RV               gkr_pk_cert_create             (GkrPkObjectManager* manager, 
+CK_RV               gkr_pk_cert_create             (GkrPkManager* manager, 
                                                     GArray* array, GkrPkObject **object);
                                                     
 gboolean            gkr_pk_cert_has_extension      (GkrPkCert *cert, GQuark oid, 

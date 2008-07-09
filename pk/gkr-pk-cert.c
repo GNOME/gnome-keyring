@@ -27,7 +27,7 @@
 #include "gkr-pk-index.h"
 #include "gkr-pk-netscape-trust.h"
 #include "gkr-pk-object.h"
-#include "gkr-pk-object-manager.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-pubkey.h"
 #include "gkr-pk-storage.h"
@@ -218,7 +218,7 @@ has_private_key (GkrPkCert *cert)
 	id = gkr_pk_cert_get_keyid (cert);
 	g_return_val_if_fail (id, FALSE);
 	
-	return gkr_pk_object_manager_find_by_id (GKR_PK_OBJECT (cert)->manager, GKR_TYPE_PK_PRIVKEY, id) != NULL;	
+	return gkr_pk_manager_find_by_id (GKR_PK_OBJECT (cert)->manager, GKR_TYPE_PK_PRIVKEY, id) != NULL;	
 }
 
 static gboolean 
@@ -648,13 +648,15 @@ gkr_pk_cert_class_init (GkrPkCertClass *klass)
 }
 
 GkrPkCert*
-gkr_pk_cert_new (GkrPkObjectManager *manager, GQuark location, ASN1_TYPE asn1)
+gkr_pk_cert_new (GkrPkManager *manager, GQuark location, ASN1_TYPE asn1)
 {
 	gkrid id = NULL;
 	GkrPkCert *cert;
 	guchar *raw;
 	gsize n_raw;
 	
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (manager), NULL);
+
 	/* TODO: A more efficient way? */
 	if (asn1) {
 		raw = gkr_pkix_asn1_encode (asn1, "", &n_raw, NULL);
@@ -671,14 +673,14 @@ gkr_pk_cert_new (GkrPkObjectManager *manager, GQuark location, ASN1_TYPE asn1)
 }
 
 CK_RV
-gkr_pk_cert_create (GkrPkObjectManager* manager, GArray* array, 
+gkr_pk_cert_create (GkrPkManager* manager, GArray* array, 
                     GkrPkObject **object)
 {
 	ASN1_TYPE asn;
 	CK_ATTRIBUTE_PTR attr;
  	CK_KEY_TYPE type;
  	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (manager), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (manager), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (array, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
 	

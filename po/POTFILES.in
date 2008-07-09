@@ -6,6 +6,7 @@ data/gnome-keyring.schemas.in
 library/gnome-keyring-utils.c
 keyrings/gkr-keyring-login.c
 keyrings/gkr-keyring.c
+pk/gkr-pk-import.c
 pk/gkr-pk-index.c
 pk/gkr-pk-object.c
 pk/gkr-pk-object-storage.c

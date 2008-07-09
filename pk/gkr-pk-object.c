@@ -24,15 +24,23 @@
 #include "config.h"
 
 #include "gkr-pk-cert.h"
+#include "gkr-pk-import.h"
 #include "gkr-pk-index.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-object.h"
-#include "gkr-pk-object-manager.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-pubkey.h"
+#include "gkr-pk-session.h"
 #include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-location.h"
+
+#include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11g.h"
+#include "pkcs11/pkcs11n.h"
+
+#include "pkix/gkr-pkix-types.h"
 
 #include <glib/gi18n.h>
 
@@ -110,7 +118,8 @@ lookup_attribute (GkrPkObject *object, CK_ATTRIBUTE_TYPE type, CK_ATTRIBUTE_PTR 
 	
 	g_assert (cattr.type == type); 
 	*attr = gkr_pk_attribute_new (cattr.type);
-	gkr_pk_attribute_steal (*attr, &cattr);
+	memcpy (*attr, &cattr, sizeof (cattr));
+	memset (&cattr, 0, sizeof (cattr));
 	
 	g_hash_table_replace (pv->attr_cache, GUINT_TO_POINTER (type), *attr);
 	return CKR_OK;
@@ -165,7 +174,7 @@ gkr_pk_object_init (GkrPkObject *obj)
 static GObject*
 gkr_pk_object_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
-	GkrPkObjectManager *mgr;
+	GkrPkManager *mgr;
 	GkrPkObject *xobj;
 	GObject *obj;
 	guint i;
@@ -186,7 +195,7 @@ gkr_pk_object_constructor (GType type, guint n_props, GObjectConstructParam *pro
 			if (props[i].pspec->name && g_str_equal (props[i].pspec->name, "manager")) {
 				mgr = g_value_get_object (props[i].value);
 				if (mgr) {
-					gkr_pk_object_manager_register (mgr, xobj);
+					gkr_pk_manager_register (mgr, xobj);
 					g_return_val_if_fail (xobj->manager == mgr, obj);
 				}
 				break;
@@ -300,7 +309,7 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 {
 	GkrPkObject *xobj = GKR_PK_OBJECT (obj);
 	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
-	GkrPkObjectManager *manager;
+	GkrPkManager *manager;
 	GkrPkIndex *index;
 	GkrPkStorage *storage;
 	gkrid digest;
@@ -337,7 +346,7 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		/* Unregister old digest with object manager */
 		manager = xobj->manager;
 		if (manager)
-			gkr_pk_object_manager_unregister (manager, xobj);
+			gkr_pk_manager_unregister (manager, xobj);
 
 		/* Rename to the new digest in the index */
 		index = xobj->storage ? gkr_pk_storage_index (xobj->storage, xobj->location) : NULL;
@@ -353,7 +362,7 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 
 		/* Register with the object manager with the new digest */
 		if (manager)
-			gkr_pk_object_manager_register (manager, xobj);
+			gkr_pk_manager_register (manager, xobj);
 		
 		break;
 		
@@ -397,7 +406,7 @@ gkr_pk_object_finalize (GObject *obj)
 	g_free (pv->data_section);
 	
 	if (xobj->manager)
-		gkr_pk_object_manager_unregister (xobj->manager, xobj);
+		gkr_pk_manager_unregister (xobj->manager, xobj);
 	g_return_if_fail (xobj->manager == NULL);
 	
 	gkr_id_free (xobj->digest);
@@ -426,7 +435,7 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_MANAGER, 
 		g_param_spec_object ("manager", "Manager", "Object Manager",
-		                     GKR_TYPE_PK_OBJECT_MANAGER, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                     GKR_TYPE_PK_MANAGER, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
 		g_param_spec_uint ("location", "Location", "Location of Data",
@@ -453,28 +462,64 @@ gkr_pk_object_class_init (GkrPkObjectClass *klass)
  * PUBLIC 
  */
  
+GType
+gkr_pk_object_get_object_type (GQuark pkix_type)
+{
+	if (pkix_type == GKR_PKIX_PRIVATE_KEY) 
+		return GKR_TYPE_PK_PRIVKEY;
+	else if (pkix_type == GKR_PKIX_PUBLIC_KEY) 
+		return GKR_TYPE_PK_PUBKEY;
+	else if (pkix_type == GKR_PKIX_CERTIFICATE)
+		return GKR_TYPE_PK_CERT;
+	else 
+		g_return_val_if_reached (0);
+}
+
 CK_RV
-gkr_pk_object_create (GkrPkObjectManager *manager, 
+gkr_pk_object_create (GkrPkSession *session, 
                       GArray *attrs, GkrPkObject **object)
 {
+	GkrPkManager *the_manager;
+	GkrPkStorage *the_storage;
 	CK_ATTRIBUTE_PTR attr;
 	CK_OBJECT_CLASS cls;
+	CK_BBOOL token;
+	GError *err = NULL;
 	CK_RV ret;
+	gboolean res;
 	guint i;
 	
+	/* Find out if its a token object or not */
+	if (!gkr_pk_attributes_boolean (attrs, CKA_TOKEN, &token))
+		token = CK_FALSE;
+
 	if (!gkr_pk_attributes_ulong (attrs, CKA_CLASS, &cls))
 		return CKR_TEMPLATE_INCOMPLETE;
-	gkr_pk_attributes_consume (attrs, CKA_CLASS, -1);
-	
+
+	/* Create the object with the right object manager */
+	the_manager = token ? gkr_pk_manager_for_token () : session->manager;
+	the_storage = token ? gkr_pk_storage_get_default () : session->storage; 
+
+	/* Create the specific kind of object */
 	switch (cls) {
 	case CKO_PUBLIC_KEY:
-		ret = gkr_pk_pubkey_create (manager, attrs, object);
+		ret = gkr_pk_pubkey_create (the_manager, attrs, object);
 		break;
+		
 	case CKO_PRIVATE_KEY:
-		ret = gkr_pk_privkey_create (manager, attrs, object);
+		ret = gkr_pk_privkey_create (the_manager, attrs, object);
 		break;
+		
 	case CKO_CERTIFICATE:
-		ret = gkr_pk_cert_create (manager, attrs, object);
+		ret = gkr_pk_cert_create (the_manager, attrs, object);
+		break;
+		
+	case CKO_GNOME_IMPORT:
+		/* 
+		 * The import object, needs to have access to the session_manager, and 
+		 * session_storage in order to import stuff there.
+		 */
+		ret = gkr_pk_import_create (the_manager, session, attrs, object);
 		break;
 	default:
 		/* TODO: What's a better error code here? */
@@ -483,12 +528,15 @@ gkr_pk_object_create (GkrPkObjectManager *manager,
 	
 	if (ret != CKR_OK)
 		return ret;
-		
+
 	g_return_val_if_fail (*object != NULL, CKR_GENERAL_ERROR);
+
+	/* Mark these bits as used */
+	gkr_pk_attributes_consume (attrs, CKA_CLASS, CKA_TOKEN, -1);
 	
 	/* 
 	 * Check that all the remaining attributes are either already
-	 * set or are settable 
+	 * set, if not try to set them on the object. 
 	 */
 	for (i = 0; i < attrs->len; ++i) {
 		attr = &(g_array_index (attrs, CK_ATTRIBUTE, i));
@@ -503,9 +551,26 @@ gkr_pk_object_create (GkrPkObjectManager *manager,
 	if (ret != CKR_OK) {
 		g_object_unref (*object);
 		*object = NULL;
+		return ret;
 	}
 	
-	return ret;
+	/* Store the object in the store that was appropriate */
+	res = gkr_pk_storage_store (the_storage, *object, &err);
+	
+	if (!res) {
+		g_warning ("couldn't store created object: %s", 
+		           err && err->message ? err->message : "");
+		g_clear_error (&err);
+		g_object_unref (*object);
+		*object = NULL;
+		return CKR_GENERAL_ERROR;
+	}
+
+	/* Register it with the object manager if necessary */
+	if (!(*object)->manager)
+		gkr_pk_manager_register (the_manager, *object);
+	
+	return CKR_OK;
 }
 
 void
@@ -777,6 +842,16 @@ gkr_pk_object_set_attributes (GkrPkObject *object, GArray *attrs)
 	} 
 	
 	return ret;
+}
+
+gboolean
+gkr_pk_object_has_label (GkrPkObject *xobj)
+{
+	GkrPkObjectPrivate *pv = GKR_PK_OBJECT_GET_PRIVATE (xobj);
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (xobj), FALSE);
+	
+	return pv->orig_label != NULL || 
+	       gkr_pk_object_index_has_value (xobj, GKR_PK_INDEX_LABEL);
 }
 
 const gchar*

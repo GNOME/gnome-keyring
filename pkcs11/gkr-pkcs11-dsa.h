@@ -36,7 +36,7 @@ CK_RV                 gkr_pkcs11_dsa_verify                 (GkrPkObject *key,
                                                              const guchar *plain, gsize n_plain, 
                                                              const guchar *signature, gsize n_signature);
 
-CK_RV                 gkr_pkcs11_dsa_create_key             (GkrPkObjectManager *manager, 
+CK_RV                 gkr_pkcs11_dsa_create_key             (GkrPkManager *manager, 
                                                              const GArray* attrs, GkrPkObject **key); 
 
 #endif /*GKRPKCS11DSA_H_*/

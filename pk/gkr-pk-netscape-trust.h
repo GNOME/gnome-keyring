@@ -51,7 +51,7 @@ struct _GkrPkNetscapeTrustClass {
 
 GType                     gkr_pk_netscape_trust_get_type           (void) G_GNUC_CONST;
 
-GkrPkNetscapeTrust*       gkr_pk_netscape_trust_new                (GkrPkObjectManager* mgr, GkrPkCert *cert);
+GkrPkNetscapeTrust*       gkr_pk_netscape_trust_new                (GkrPkManager* mgr, GkrPkCert *cert);
 
 G_END_DECLS
 

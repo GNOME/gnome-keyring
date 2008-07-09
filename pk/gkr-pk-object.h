@@ -48,7 +48,8 @@ typedef struct _GkrPkObject      GkrPkObject;
 typedef struct _GkrPkObjectClass GkrPkObjectClass;
 
 typedef struct _GkrPkStorage GkrPkStorage;
-typedef struct _GkrPkObjectManager GkrPkObjectManager;
+typedef struct _GkrPkManager GkrPkManager;
+typedef struct _GkrPkSession GkrPkSession;
 
 struct _GkrPkObject {
 	GObject parent;
@@ -57,7 +58,7 @@ struct _GkrPkObject {
 	gkrid digest;
 	CK_OBJECT_HANDLE handle;
 	
-	GkrPkObjectManager *manager;
+	GkrPkManager *manager;
 	GkrPkStorage *storage;
 };
 
@@ -98,7 +99,9 @@ struct _GkrPkObjectClass {
 
 GType               gkr_pk_object_get_type         (void) G_GNUC_CONST;
 
-CK_RV               gkr_pk_object_create           (GkrPkObjectManager *manager, 
+GType               gkr_pk_object_get_object_type  (GQuark pkix_type);
+
+CK_RV               gkr_pk_object_create           (GkrPkSession *session,
                                                     GArray *attrs, GkrPkObject **object);
                                                     
 void                gkr_pk_object_refresh          (GkrPkObject *object);
@@ -117,7 +120,7 @@ gboolean            gkr_pk_object_match_one        (GkrPkObject *object,
 
 CK_OBJECT_HANDLE    gkr_pk_object_get_handle       (GkrPkObject *object);
 
-GkrPkObjectManager* gkr_pk_object_get_manager      (GkrPkObject *object);
+GkrPkManager*       gkr_pk_object_get_manager      (GkrPkObject *object);
 
 CK_RV               gkr_pk_object_get_attribute    (GkrPkObject *object,
                                                     CK_ATTRIBUTE_PTR attr);
@@ -146,6 +149,8 @@ CK_RV               gkr_pk_object_set_bool         (GkrPkObject *object,
                                                     
 CK_RV               gkr_pk_object_set_attributes   (GkrPkObject *object, 
                                                     GArray *attrs);
+
+gboolean            gkr_pk_object_has_label        (GkrPkObject *object);
 
 const gchar*        gkr_pk_object_get_label        (GkrPkObject *object);
 

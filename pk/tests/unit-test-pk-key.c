@@ -29,9 +29,10 @@
 
 #include "pk/gkr-pk-index.h"
 #include "pk/gkr-pk-object.h"
-#include "pk/gkr-pk-object-manager.h"
+#include "pk/gkr-pk-manager.h"
 #include "pk/gkr-pk-pubkey.h"
 #include "pk/gkr-pk-privkey.h"
+#include "pk/gkr-pk-session.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -55,7 +56,8 @@
  * Tests be run in the order specified here.
  */
 
-static GkrPkObjectManager *manager = NULL;
+static GkrPkSession *session = NULL;
+static GkrPkManager *manager = NULL;
 
 static GkrPkObject *privkey_1 = NULL;
 static GkrPkObject *privkey_3 = NULL;
@@ -66,7 +68,8 @@ void unit_setup_keys (void)
 	gkr_crypto_setup ();
 	
 	/* Our own object manager */
-	manager = gkr_pk_object_manager_instance_for_client (1232); 
+	session = gkr_pk_session_new_for_client (1232);
+	manager = session->manager;
 }
 
 void unit_test_create_keys (CuTest* cu)
@@ -153,7 +156,7 @@ void unit_test_privkey_related (CuTest *cu)
 	keyid = gkr_pk_privkey_get_keyid (GKR_PK_PRIVKEY (privkey_1));
 	CuAssert (cu, "No key id returned from private key", keyid != NULL);
 	
-	obj = gkr_pk_object_manager_find_by_id (manager, GKR_TYPE_PK_PUBKEY, keyid);
+	obj = gkr_pk_manager_find_by_id (manager, GKR_TYPE_PK_PUBKEY, keyid);
 	CuAssert (cu, "No matching public key object found in manager", GKR_IS_PK_PUBKEY (obj));
 	
 	pubid = gkr_pk_pubkey_get_keyid (GKR_PK_PUBKEY (obj));
@@ -217,7 +220,7 @@ void unit_test_privkey_rsa_create (CuTest *cu)
 	gkr_pk_attributes_append (attrs, &attr);
 	
 	/* Now try with a proper set of attributes */
-	ret = gkr_pk_object_create (manager, attrs, &object);
+	ret = gkr_pk_object_create (session, attrs, &object);
 	CuAssert (cu, "Private key creation failed", ret == CKR_OK);
 	CuAssert (cu, "Returned invalid object", GKR_IS_PK_PRIVKEY (object));
 	
@@ -256,7 +259,7 @@ void unit_test_pubkey_rsa_create (CuTest *cu)
 	gkr_pk_attributes_append (attrs, &attr);
 	
 	/* Now try with a proper set of attributes */
-	ret = gkr_pk_object_create (manager, attrs, &object);
+	ret = gkr_pk_object_create (session, attrs, &object);
 	CuAssert (cu, "Public key creation failed", ret == CKR_OK);
 	CuAssert (cu, "Returned invalid object", GKR_IS_PK_PUBKEY (object));
 	
@@ -312,7 +315,7 @@ void unit_test_privkey_dsa_create (CuTest *cu)
 	gkr_pk_attributes_append (attrs, &attr);
 	
 	/* Now try with a proper set of attributes */
-	ret = gkr_pk_object_create (manager, attrs, &object);
+	ret = gkr_pk_object_create (session, attrs, &object);
 	CuAssert (cu, "Private key creation failed", ret == CKR_OK);
 	CuAssert (cu, "Returned invalid object", GKR_IS_PK_PRIVKEY (object));
 	
@@ -368,7 +371,7 @@ void unit_test_pubkey_dsa_create (CuTest *cu)
 	gkr_pk_attributes_append (attrs, &attr);
 		
 	/* Now try with a proper set of attributes */
-	ret = gkr_pk_object_create (manager, attrs, &object);
+	ret = gkr_pk_object_create (session, attrs, &object);
 	CuAssert (cu, "Public key creation failed", ret == CKR_OK);
 	CuAssert (cu, "Returned invalid object", GKR_IS_PK_PUBKEY (object));
 	

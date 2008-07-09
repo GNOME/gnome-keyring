@@ -40,8 +40,8 @@
 #include "keyrings/gkr-keyring-login.h"
 
 #include "pk/gkr-pk-object.h"
-#include "pk/gkr-pk-object-manager.h"
-#include "pk/gkr-pk-session-storage.h"
+#include "pk/gkr-pk-manager.h"
+#include "pk/gkr-pk-session.h"
 #include "pk/gkr-pk-storage.h"
 #include "pk/gkr-pk-util.h"
 
@@ -74,10 +74,9 @@ struct _SessionInfo {
 	GDestroyNotify operation_cleanup;
 	gpointer operation_data;
 	
-	guint deverror;                 /* The 'device' error code */
+	guint deverror;             /* The 'device' error code */
 	
-	GkrPkObjectManager *manager;	/* The object manager for this session */
-	GkrPkStorage *storage;          /* Objects owned by the session */
+	GkrPkSession *session;	    /* PK session to be used */
 };
 
 /* 
@@ -225,18 +224,18 @@ static CK_RV
 read_object (GkrPkcs11Message *msg, SessionInfo *sinfo, GkrPkObject **res)
 {
 	CK_OBJECT_HANDLE obj;
-	GkrPkObjectManager *manager;
+	GkrPkManager *manager;
 	
 	if (gkr_pkcs11_message_read_uint32 (msg, &obj) != CKR_OK)
 		return PROTOCOL_ERROR;
 	
 	/* Find the object in question */
 	if (obj & GKR_PK_OBJECT_IS_PERMANENT)
-		manager = gkr_pk_object_manager_for_token ();
+		manager = gkr_pk_manager_for_token ();
 	else
-		manager = sinfo->manager;
+		manager = sinfo->session->manager;
 		
-	*res = gkr_pk_object_manager_lookup (manager, obj);
+	*res = gkr_pk_manager_lookup (manager, obj);
 	if (!*res)
 		return CKR_OBJECT_HANDLE_INVALID;
 		
@@ -300,7 +299,7 @@ session_C_OpenSession (SessionInfo *sinfo, GkrPkcs11Message *req,
 	 * client tells us.
 	 */ 
 	sinfo->pid = pid;
-	sinfo->manager = gkr_pk_object_manager_instance_for_client (pid);
+	sinfo->session = gkr_pk_session_new_for_client (pid);
 	
 	return CKR_OK;
 }
@@ -419,15 +418,10 @@ static CK_RV
 session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req, 
                         GkrPkcs11Message *resp)
 {
-	GkrPkObjectManager *manager;
-	CK_ATTRIBUTE_PTR attr;
 	CK_OBJECT_CLASS cls;
 	GkrPkObject *object;
 	GArray *attrs = NULL;
 	CK_BBOOL token;
-	GError *err = NULL;
-	gboolean res;
-	guint i;
 	CK_RV ret;
 	
 	if (sinfo->operation_type)
@@ -448,18 +442,8 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 	}
 	
 	/* Find out if its a token object or not */
-	token = CK_FALSE;
-	for (i = 0; i < attrs->len; ++i) {
-		attr = &(g_array_index (attrs, CK_ATTRIBUTE, i));
-		if (attr->type == CKA_TOKEN) {
-			if (attr && attr->pValue && attr->ulValueLen == sizeof (CK_BBOOL))
-				token = *((CK_BBOOL*)attr->pValue);
-				
-			/* Mark that attribute as used */
-			gkr_pk_attribute_consume (attr);
-			break;
-		}
-	}
+	if (!gkr_pk_attributes_boolean (attrs, CKA_TOKEN, &token))
+		token = CK_FALSE;
 	
 	/* A readonly session cannot create token objects */
 	if (token && sinfo->readonly) {
@@ -467,31 +451,14 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 		goto done;
 	}
 
-	/* Create the object with the right object manager */
-	manager = token ? gkr_pk_object_manager_for_token () : sinfo->manager;
-	ret = gkr_pk_object_create (manager, attrs, &object);
+	ret = gkr_pk_object_create (sinfo->session, attrs, &object);
 	                 		
 	if (ret != CKR_OK) 
 		goto done;
 
 	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
-	g_return_val_if_fail (object->storage == NULL, CKR_GENERAL_ERROR);
-
-	/* Token objects get stored in the main object storage */
-	if (token) 
-		res = gkr_pk_storage_store (NULL, object, &err);
-
-	/* Session objects are owned by the session */
-	else
-		res = gkr_pk_storage_store (sinfo->storage, object, &err);
-	
-	if (!res) {
-		g_warning ("couldn't write created object to disk: %s", 
-		           err && err->message ? err->message : "");
-		g_clear_error (&err);
-		ret = CKR_GENERAL_ERROR;
-		goto done;
-	}
+	g_return_val_if_fail (object->storage != NULL, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (object->manager != NULL, CKR_GENERAL_ERROR);
 
 	gkr_pkcs11_message_write_uint32 (resp, object->handle);
 	ret = CKR_OK;
@@ -518,7 +485,7 @@ session_C_DestroyObject (SessionInfo *sinfo, GkrPkcs11Message *req,
                          GkrPkcs11Message *resp)
 {
 	CK_OBJECT_HANDLE obj;
-	GkrPkObjectManager *manager;
+	GkrPkManager *manager;
 	GkrPkObject *object;
 	CK_RV ret = CKR_OK;
 	gboolean res;
@@ -530,11 +497,11 @@ session_C_DestroyObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 	
 	/* Find the object in question */
 	if (obj & GKR_PK_OBJECT_IS_PERMANENT)
-		manager = gkr_pk_object_manager_for_token ();
+		manager = gkr_pk_manager_for_token ();
 	else
-		manager = sinfo->manager;
+		manager = sinfo->session->manager;
 		
-	object = gkr_pk_object_manager_lookup (manager, obj);
+	object = gkr_pk_manager_lookup (manager, obj);
 	if (!object)
 		return CKR_OBJECT_HANDLE_INVALID;
 		
@@ -546,35 +513,20 @@ session_C_DestroyObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 		if (priv)
 			return CKR_USER_NOT_LOGGED_IN;
 	}
-	
-	/* A token object */
-	if (obj & GKR_PK_OBJECT_IS_PERMANENT) {
 
-		/* A readonly session cannot destroy token objects */
-		if (sinfo->readonly)
-			return CKR_SESSION_READ_ONLY;
-			
-		g_return_val_if_fail (object->storage, CKR_GENERAL_ERROR);
-		res = gkr_pk_storage_remove (object->storage, object, &err);
-		if (!res) {
-			g_warning ("couldn't remove object from disk: %s", 
-			           err && err->message ? err->message : "");
-			g_clear_error (&err);
-			ret = CKR_GENERAL_ERROR;
-		}
-	
-	/* A session object */
-	} else {
-		/* 
-		 * TODO: This just hides the object, does not destroy. 
-		 * The problem is that we need to locate the actual
-		 * session where this is owned, which we currently 
-		 * don't track.
-		 */
-		gkr_pk_object_manager_unregister (manager, object);
-		ret = CKR_OK;
+	/* A readonly session cannot destroy token objects */
+	if (sinfo->readonly && obj & GKR_PK_OBJECT_IS_PERMANENT)
+		return CKR_SESSION_READ_ONLY;
+
+	g_return_val_if_fail (object->storage, CKR_GENERAL_ERROR);
+	res = gkr_pk_storage_remove (object->storage, object, &err);
+	if (!res) {
+		g_warning ("couldn't remove object from disk: %s", 
+		           err && err->message ? err->message : "");
+		g_clear_error (&err);
+		ret = CKR_GENERAL_ERROR;
 	}
-		 
+	
 	return ret;
 }
 
@@ -678,13 +630,13 @@ session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	
 	/* All or only token objects? */
 	if(all || token) {
-		l = gkr_pk_object_manager_find (gkr_pk_object_manager_for_token (), 0, attrs);
+		l = gkr_pk_manager_find (gkr_pk_manager_for_token (), 0, attrs);
 		objects = g_list_concat (objects, l);
 	}
 	
 	/* All or only session objects? */
 	if (all || !token) {
-		l = gkr_pk_object_manager_find (sinfo->manager, 0, attrs);
+		l = gkr_pk_manager_find (sinfo->session->manager, 0, attrs);
 		objects = g_list_concat (objects, l);
 	}
 	
@@ -1364,7 +1316,7 @@ static SessionInfo*
 session_info_new ()
 {
 	SessionInfo *sinfo = g_new0 (SessionInfo, 1);
-	sinfo->storage = GKR_PK_STORAGE (gkr_pk_session_storage_new ());
+	sinfo->session = NULL; /* We assign this when the session opens */
 	return sinfo;
 }
 
@@ -1372,10 +1324,8 @@ static void
 session_info_free (SessionInfo *sinfo)
 {
 	if (sinfo) {
-		if (sinfo->manager)
-			g_object_unref (sinfo->manager);
-		if (sinfo->storage)
-			g_object_unref (sinfo->storage);
+		if (sinfo->session)
+			g_object_unref (sinfo->session);
 		g_free (sinfo);
 	}
 }

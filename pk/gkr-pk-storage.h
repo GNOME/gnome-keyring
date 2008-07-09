@@ -62,6 +62,8 @@ GType                   gkr_pk_storage_get_type           (void) G_GNUC_CONST;
 
 GQuark 	                gkr_pk_storage_get_error_domain   (void) G_GNUC_CONST;
 
+GkrPkStorage*           gkr_pk_storage_get_default        (void);
+
 void                    gkr_pk_storage_register           (GkrPkStorage *storage, 
                                                            gboolean default_storage);
 

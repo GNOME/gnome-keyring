@@ -201,15 +201,6 @@ gkr_pk_attribute_equal (const CK_ATTRIBUTE_PTR one, const CK_ATTRIBUTE_PTR two)
 }
 
 void
-gkr_pk_attribute_steal (CK_ATTRIBUTE_PTR dest, CK_ATTRIBUTE_PTR attr)
-{
-	g_assert (dest && attr);
-	memcpy (dest, attr, sizeof (CK_ATTRIBUTE));
-	memset (attr, 0, sizeof (CK_ATTRIBUTE));
-	attr->type = dest->type;
-}
-
-void
 gkr_pk_attribute_copy (CK_ATTRIBUTE_PTR dest, const CK_ATTRIBUTE_PTR attr)
 {
 	g_assert (dest && attr);
@@ -223,6 +214,20 @@ gkr_pk_attribute_set_invalid (CK_ATTRIBUTE_PTR attr)
 	g_assert (attr);
 	gkr_pk_attribute_clear (attr);	
 	attr->ulValueLen = (CK_ULONG)-1;
+}
+
+void
+gkr_pk_attribute_take_data (CK_ATTRIBUTE_PTR attr, gpointer value, gsize n_value)
+{
+	g_assert (attr);
+
+	gkr_pk_attribute_clear (attr);
+
+	attr->ulValueLen = n_value;
+	if (n_value > 0) {
+		g_assert (value);
+		attr->pValue = value;
+	}	
 }
 
 void

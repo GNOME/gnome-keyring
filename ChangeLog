@@ -1,3 +1,45 @@
+2008-07-09  Stef Walter  <stef@memberwebs.com>
+
+	* pk/gkr-pk-cert.c:
+	* pk/gkr-pk-cert.h:
+	* pk/gkr-pk-manager.c: (moved from gkr-pk-object-manager.c)
+	* pk/gkr-pk-manager.h: (moved from gkr-pk-object-manager.h)
+	* pk/gkr-pk-netscape-trust.c:
+	* pk/gkr-pk-netscape-trust.h:
+	* pk/gkr-pk-object.c:
+	* pk/gkr-pk-object.h:
+	* pk/gkr-pk-object-manager.c: (moved to gkr-pk-manager.c)
+	* pk/gkr-pk-object-manager.h: (moved to gkr-pk-manager.h)
+	* pk/gkr-pk-privkey.c:
+	* pk/gkr-pk-privkey.h:
+	* pk/gkr-pk-root-storage.c:
+	* pk/gkr-pk-session.c:
+	* pk/gkr-pk-session.h:
+	* pk/gkr-pk-session-storage.c:
+	* pk/gkr-pk-storage.c:
+	* pk/gkr-pk-storage.h:
+	* pk/Makefile.am:
+	* pk/tests/unit-test-pk-cert.c:
+	* pk/tests/unit-test-pk-netscape-trust.c: 
+	* pk/tests/unit-test-pk-object.c: 
+	* pkcs11/gkr-pkcs11-daemon-session.c:
+	* pkcs11/gkr-pkcs11-dsa.h:
+	* ssh/gkr-ssh-daemon-ops.c:
+	* ssh/gkr-ssh-storage.c: Rework how object creation happens. Rename
+	GkrPkObjectManager to GkrPkManager. Add concept of a PK session, which
+	PKCS#11 and SSH can now use. 
+	
+	* pk/gkr-pk-import.c: (added)
+	* pk/gkr-pk-import.h: (added)
+	* pk/gkr-pk-util.c:
+	* pk/gkr-pk-util.h:
+	* pk/Makefile.am:
+	* pk/tests/check-attribute.c:
+	* pk/tests/Makefile.am:
+	* pk/tests/unit-test-pk-import.c: (added)
+	* pkcs11/pkcs11g.h:
+	* pkix/gkr-pkix-parser.c: Implement 'import' PKCS#11 object.
+	 
 2008-07-08  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon.c:

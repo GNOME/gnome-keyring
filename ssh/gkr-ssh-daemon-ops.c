@@ -28,9 +28,9 @@
 #include "common/gkr-cleanup.h"
 #include "common/gkr-crypto.h"
 
-#include "pk/gkr-pk-object-manager.h"
 #include "pk/gkr-pk-privkey.h"
 #include "pk/gkr-pk-pubkey.h"
+#include "pk/gkr-pk-session.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -48,7 +48,7 @@
  * SESSION KEYS
  */
 
-static GkrPkObjectManager *session_manager = NULL;
+static GkrPkSession *ssh_session = NULL;
 
 static void
 mark_v1_key (GkrPkPrivkey *key)
@@ -64,15 +64,15 @@ check_v1_key (GkrPkPrivkey *key)
 }
 
 static void
-cleanup_session_manager (gpointer unused)
+cleanup_session (gpointer unused)
 {
-	g_return_if_fail (session_manager);
-	g_object_unref (session_manager);
-	session_manager = NULL;
+	g_return_if_fail (ssh_session);
+	g_object_unref (ssh_session);
+	ssh_session = NULL;
 }
 
 static GkrPkPrivkey*
-find_private_key_in_manager (GkrPkObjectManager *manager, const gkrid keyid, guint version)
+find_private_key_in_manager (GkrPkManager *manager, const gkrid keyid, guint version)
 {
 	GkrPkPrivkey *key = NULL;
 	GList *l, *objects;
@@ -82,8 +82,8 @@ find_private_key_in_manager (GkrPkObjectManager *manager, const gkrid keyid, gui
 	data = gkr_id_get_raw (keyid, &n_data);
 	g_assert (data && n_data);
 
-	objects = gkr_pk_object_manager_findv (manager, GKR_TYPE_PK_PRIVKEY, 
-	                                       CKA_ID, data, n_data, NULL);
+	objects = gkr_pk_manager_findv (manager, GKR_TYPE_PK_PRIVKEY, 
+	                                CKA_ID, data, n_data, NULL);
 	
 	for (l = objects; l; l = g_list_next (l)) {
 		key = GKR_PK_PRIVKEY (objects->data);
@@ -109,13 +109,13 @@ find_private_key (gcry_sexp_t skey, gboolean global, guint version)
 	keyid = gkr_crypto_skey_make_id (skey);
 	g_return_val_if_fail (keyid != NULL, NULL);
 
-	/* Search through the  session keys */
-	if (session_manager)
-		key = find_private_key_in_manager (session_manager, keyid, version);
+	/* Search through the session keys */
+	if (ssh_session)
+		key = find_private_key_in_manager (ssh_session->manager, keyid, version);
 		
 	/* Search through the global keys */
 	if (!key && global) 
-		key = find_private_key_in_manager (gkr_pk_object_manager_for_token (), keyid, version);
+		key = find_private_key_in_manager (gkr_pk_manager_for_token (), keyid, version);
 	
 	gkr_id_free (keyid);
 	return key;
@@ -124,8 +124,11 @@ find_private_key (gcry_sexp_t skey, gboolean global, guint version)
 static void
 remove_session_key (GkrPkPrivkey *key)
 {
-	if (session_manager)
-		gkr_pk_object_manager_unregister (session_manager, GKR_PK_OBJECT (key));
+	if (ssh_session) {
+		/* This removes ownership of the key */
+		if (!gkr_pk_storage_remove (ssh_session->storage, GKR_PK_OBJECT (key), NULL))
+			g_return_if_reached ();
+	}
 }
 
 static void
@@ -133,16 +136,16 @@ add_session_key (gcry_sexp_t skey, const gchar *comment, guint version)
 {
 	GkrPkPrivkey *key, *prev;
 
-	if (!session_manager) {
-		session_manager = gkr_pk_object_manager_new ();
-		gkr_cleanup_register (cleanup_session_manager, NULL);
+	if (!ssh_session) {
+		ssh_session = gkr_pk_session_new ();
+		gkr_cleanup_register (cleanup_session, NULL);
 	}
 
 	prev = find_private_key (skey, FALSE, version);
 	if (prev)
 		remove_session_key (prev);
 	
-	key = GKR_PK_PRIVKEY (gkr_pk_privkey_new (session_manager, 0, skey));
+	key = GKR_PK_PRIVKEY (gkr_pk_privkey_new (ssh_session->manager, 0, skey));
 	g_return_if_fail (key != NULL);
 	
 	if (comment)
@@ -150,6 +153,12 @@ add_session_key (gcry_sexp_t skey, const gchar *comment, guint version)
 	
 	if (version == 1)
 		mark_v1_key (key);
+	
+	/* This owns the actual key */
+	if (!gkr_pk_storage_store (ssh_session->storage, GKR_PK_OBJECT (key), NULL))
+		g_return_if_reached ();
+	
+	g_object_unref (key);
 }
 
 static void
@@ -267,12 +276,12 @@ op_request_identities (GkrBuffer *req, GkrBuffer *resp)
 	gsize blobpos;
 	
 	/* Only find the keys that have usage = ssh */
-	objects = gkr_pk_object_manager_findv (gkr_pk_object_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
-	                                       CKA_GNOME_PURPOSE_SSH_AUTH, CK_TRUE, 0, NULL);
+	objects = gkr_pk_manager_findv (gkr_pk_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
+	                                CKA_GNOME_PURPOSE_SSH_AUTH, CK_TRUE, 0, NULL);
 	
 	pubkeys = NULL;
-	if (session_manager)
-		get_public_keys (session_manager->objects, &pubkeys, 2);
+	if (ssh_session)
+		get_public_keys (ssh_session->manager->objects, &pubkeys, 2);
 	get_public_keys (objects, &pubkeys, 2);
 	
 	g_list_free (objects);
@@ -312,8 +321,8 @@ op_v1_request_identities (GkrBuffer *req, GkrBuffer *resp)
 	GkrPkPubkey *pub;
 	const gchar *label;
 	
-	if (session_manager)
-		get_public_keys (session_manager->objects, &pubkeys, 1);
+	if (ssh_session)
+		get_public_keys (ssh_session->manager->objects, &pubkeys, 1);
 	
 	gkr_buffer_add_byte (resp, GKR_SSH_RES_RSA_IDENTITIES_ANSWER);
 	gkr_buffer_add_uint32 (resp, g_list_length (pubkeys));
@@ -658,7 +667,7 @@ op_remove_identity (GkrBuffer *req, GkrBuffer *resp)
 		 * When the key is just a session key, then remove it
 		 * completely. 
 		 */ 
-		if (obj->manager == session_manager)
+		if (ssh_session && obj->manager == ssh_session->manager)
 			remove_session_key (key);
 			
 		/* 
@@ -702,8 +711,8 @@ op_remove_all_identities (GkrBuffer *req, GkrBuffer *resp)
 	GList *objects, *l, *removes = NULL;
 	
 	/* Remove all session keys */
-	if (session_manager) {
-		for (l = session_manager->objects; l; l = g_list_next (l)) {
+	if (ssh_session) {
+		for (l = ssh_session->manager->objects; l; l = g_list_next (l)) {
 			if (!GKR_IS_PK_PRIVKEY (l->data))
 				continue;
 			key = GKR_PK_PRIVKEY (l->data);
@@ -717,8 +726,8 @@ op_remove_all_identities (GkrBuffer *req, GkrBuffer *resp)
 	}
 	
 	/* And now we lock all private keys with usage = SSH */
-	objects = gkr_pk_object_manager_findv (gkr_pk_object_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
-	                                       CKA_GNOME_PURPOSE_SSH_AUTH, CK_TRUE, 0, NULL);
+	objects = gkr_pk_manager_findv (gkr_pk_manager_for_token (), GKR_TYPE_PK_PRIVKEY, 
+	                                CKA_GNOME_PURPOSE_SSH_AUTH, CK_TRUE, 0, NULL);
 	
 	for (l = objects; l; l = g_list_next (l)) { 
 		g_return_val_if_fail (GKR_IS_PK_OBJECT (l->data), FALSE);
@@ -737,8 +746,8 @@ op_v1_remove_all_identities (GkrBuffer *req, GkrBuffer *resp)
 	GkrPkPrivkey *key;
 	GList *l, *removes = NULL;
 	
-	if (session_manager) {
-		for (l = session_manager->objects; l; l = g_list_next (l)) {
+	if (ssh_session) {
+		for (l = ssh_session->manager->objects; l; l = g_list_next (l)) {
 			if (!GKR_IS_PK_PRIVKEY (l->data))
 				continue;
 			key = GKR_PK_PRIVKEY (l->data);

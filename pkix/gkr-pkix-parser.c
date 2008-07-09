@@ -384,7 +384,6 @@ gkr_pkix_parser_parse (GkrPkixParser *parser, GQuark loc, const guchar *data,
 	GkrPkixResult ret;
 
 	g_return_val_if_fail (GKR_IS_PKIX_PARSER (parser), FALSE);
-	g_return_val_if_fail (loc != 0, FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 	g_return_val_if_fail (!err || !*err, FALSE);
 	

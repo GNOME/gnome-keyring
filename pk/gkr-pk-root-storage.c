@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include "gkr-pk-cert.h"
-#include "gkr-pk-object-manager.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-root-storage.h"
 #include "gkr-pk-util.h"
 
@@ -78,8 +78,8 @@ prepare_object (GkrPkRootStorage *storage, GQuark location, gkrconstid digest)
 	GkrPkObjectManager *manager;
 	GkrPkObject *object;
 	
-	manager = gkr_pk_object_manager_for_token ();
-	object = gkr_pk_object_manager_find_by_digest (manager, digest);
+	manager = gkr_pk_manager_for_token ();
+	object = gkr_pk_manager_find_by_digest (manager, digest);
 	
 	/* The object already exists just reference it */
 	if (object) {

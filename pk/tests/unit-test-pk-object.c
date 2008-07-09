@@ -30,7 +30,7 @@
 #include "pk/gkr-pk-cert.h"
 #include "pk/gkr-pk-index.h"
 #include "pk/gkr-pk-object.h"
-#include "pk/gkr-pk-object-manager.h"
+#include "pk/gkr-pk-manager.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -53,13 +53,13 @@
  * Tests be run in the order specified here.
  */
 
-static GkrPkObjectManager *manager = NULL;
+static GkrPkManager *manager = NULL;
 static GkrPkObject *object_1 = NULL;
 
 void unit_setup_object (void)
 {
 	/* Our own object manager */
-	manager = gkr_pk_object_manager_instance_for_client (1239);
+	manager = gkr_pk_manager_instance_for_client (1239);
 	object_1 = g_object_new (GKR_TYPE_PK_CERT, "location", 0, "manager", manager, NULL);
 }
 

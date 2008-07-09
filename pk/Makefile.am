@@ -20,14 +20,16 @@ INCLUDES=	\
 
 libgkr_pk_la_SOURCES = \
 	gkr-pk-cert.c gkr-pk-cert.h \
+	gkr-pk-import.c gkr-pk-import.h \
 	gkr-pk-index.c gkr-pk-index.h \
+	gkr-pk-manager.c gkr-pk-manager.h \
 	gkr-pk-netscape-trust.c gkr-pk-netscape-trust.h \
 	gkr-pk-object.c gkr-pk-object.h \
-	gkr-pk-object-manager.c gkr-pk-object-manager.h \
 	gkr-pk-object-storage.c gkr-pk-object-storage.h \
 	gkr-pk-places.h \
 	gkr-pk-privkey.c gkr-pk-privkey.h \
 	gkr-pk-pubkey.c gkr-pk-pubkey.h \
+	gkr-pk-session.c gkr-pk-session.h \
 	gkr-pk-session-storage.c gkr-pk-session-storage.h \
 	gkr-pk-storage.c gkr-pk-storage.h \
 	gkr-pk-util.c gkr-pk-util.h \

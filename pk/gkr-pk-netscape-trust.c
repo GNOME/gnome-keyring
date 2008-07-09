@@ -26,7 +26,7 @@
 #include "gkr-pk-cert.h"
 #include "gkr-pk-netscape-trust.h"
 #include "gkr-pk-object.h"
-#include "gkr-pk-object-manager.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-util.h"
 
 #include "common/gkr-location.h"
@@ -371,7 +371,7 @@ gkr_pk_netscape_trust_class_init (GkrPkNetscapeTrustClass *klass)
 }
 
 GkrPkNetscapeTrust*
-gkr_pk_netscape_trust_new (GkrPkObjectManager *mgr, GkrPkCert *cert)
+gkr_pk_netscape_trust_new (GkrPkManager *mgr, GkrPkCert *cert)
 {
 	GkrPkNetscapeTrust *trust;
 	gkrid digest = NULL;
@@ -379,6 +379,7 @@ gkr_pk_netscape_trust_new (GkrPkObjectManager *mgr, GkrPkCert *cert)
 	const guchar *raw;
 	gsize n_raw;
 	
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (mgr), NULL);
 	g_return_val_if_fail (GKR_IS_PK_CERT (cert), NULL);
 	obj = GKR_PK_OBJECT (cert);
 	

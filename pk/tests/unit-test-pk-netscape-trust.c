@@ -28,8 +28,9 @@
 #include "pk/gkr-pk-cert.h"
 #include "pk/gkr-pk-index.h"
 #include "pk/gkr-pk-object.h"
-#include "pk/gkr-pk-object-manager.h"
+#include "pk/gkr-pk-manager.h"
 #include "pk/gkr-pk-netscape-trust.h"
+#include "pk/gkr-pk-session.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11n.h"
@@ -52,7 +53,9 @@
  * Tests be run in the order specified here.
  */
 
-static GkrPkObjectManager *manager = NULL;
+static GkrPkSession *session = NULL;
+static GkrPkManager *manager = NULL;
+
 static GkrPkCert *certificate_1 = NULL;
 static GkrPkCert *certificate_2 = NULL;
 static GkrPkObject *trust_1 = NULL;
@@ -62,7 +65,8 @@ static GkrPkIndex *pk_index = NULL;
 void unit_setup_trust (void)
 {
 	/* Our own object manager */
-	manager = gkr_pk_object_manager_instance_for_client (12333);
+	session = gkr_pk_session_new_for_client (12333);
+	manager = session->manager;
 	
 	pk_index = gkr_pk_index_default ();
 }
@@ -88,7 +92,7 @@ void unit_test_create_trust (CuTest* cu)
 	
 	/* Should have created netscape trust companion object */
 	keyid = gkr_pk_cert_get_keyid (certificate_1);
-	trust_1 = gkr_pk_object_manager_find_by_id (manager, GKR_TYPE_PK_NETSCAPE_TRUST, keyid);
+	trust_1 = gkr_pk_manager_find_by_id (manager, GKR_TYPE_PK_NETSCAPE_TRUST, keyid);
 	CuAssert (cu, "No matching netscape trust object found in manager", GKR_IS_PK_NETSCAPE_TRUST (trust_1));
 	
 	if (!g_file_get_contents ("test-data/certificate-2.crt", &data, &n_data, NULL))
@@ -104,7 +108,7 @@ void unit_test_create_trust (CuTest* cu)
 	
 	/* Should have created netscape trust companion object */
 	keyid = gkr_pk_cert_get_keyid (certificate_2);
-	trust_2 = gkr_pk_object_manager_find_by_id (manager, GKR_TYPE_PK_NETSCAPE_TRUST, keyid);
+	trust_2 = gkr_pk_manager_find_by_id (manager, GKR_TYPE_PK_NETSCAPE_TRUST, keyid);
 	CuAssert (cu, "No matching netscape trust object found in manager", GKR_IS_PK_NETSCAPE_TRUST (trust_2));
 }
 

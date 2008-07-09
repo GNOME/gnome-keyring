@@ -203,37 +203,17 @@ prepare_ask_check (GQuark type)
 }
 
 static gchar*
-prepare_ask_load_secondary (GQuark type, gboolean indexed, const gchar *label)
+prepare_ask_load_secondary (GQuark type, const gchar *label)
 {
-	/*
-	 * Yes this is unmaintainable and stupid, but is required 
-	 * for translations to work properly.
-	 */
+	if (type == GKR_PKIX_PRIVATE_KEY)
+		return g_strdup_printf (_("An application wants access to the private key '%s', but it is locked"), label);
+	else if (type == GKR_PKIX_CERTIFICATE)
+		return g_strdup_printf (_("An application wants access to the certificate '%s', but it is locked"), label);
+	else if (type == GKR_PKIX_PUBLIC_KEY)
+		return g_strdup_printf (_("An application wants access to the public key '%s', but it is locked"), label);
+	else 
+		return g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
 
-	/* When we've already indexed this data */
-	if (indexed) {
-
-		if (type == GKR_PKIX_PRIVATE_KEY)
-			return g_strdup_printf (_("An application wants access to the private key '%s', but it is locked"), label);
-		else if (type == GKR_PKIX_CERTIFICATE)
-			return g_strdup_printf (_("An application wants access to the certificate '%s', but it is locked"), label);
-		else if (type == GKR_PKIX_PUBLIC_KEY)
-			return g_strdup_printf (_("An application wants access to the public key '%s', but it is locked"), label);
-		else 
-			return g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
-	
-	/* Never before seen this data */ 
-	} else {
-
-		if (type == GKR_PKIX_PRIVATE_KEY)
-			return g_strdup_printf (_("The system wants to import the private key '%s', but it is locked"), label);
-		else if (type == GKR_PKIX_CERTIFICATE)
-			return g_strdup_printf (_("The system wants to import the certificate '%s', but it is locked"), label);
-		else if (type == GKR_PKIX_PUBLIC_KEY)
-			return g_strdup_printf (_("The system wants to import the public key '%s', but it is locked"), label);
-		else 
-			return g_strdup_printf (_("The system wants to import '%s', but it is locked"), label);
-	}
 }
 
 static gchar*
@@ -384,6 +364,13 @@ gkr_pk_storage_get_error_domain (void)
 	return domain;
 }
 
+GkrPkStorage*
+gkr_pk_storage_get_default (void)
+{
+	g_return_val_if_fail (GKR_IS_PK_STORAGE (default_storage), NULL);
+	return default_storage;
+}
+
 void
 gkr_pk_storage_register (GkrPkStorage *storage, gboolean is_default)
 {
@@ -525,7 +512,6 @@ gkr_pk_storage_add_object (GkrPkStorage *storage, GkrPkObject *object)
 		
 	g_return_if_fail (GKR_IS_PK_STORAGE (storage));
 	g_return_if_fail (GKR_IS_PK_OBJECT (object));
-	g_return_if_fail (object->location);
 	
 	if (g_hash_table_lookup (pv->objects, object))
 		return;
@@ -550,7 +536,6 @@ gkr_pk_storage_del_object (GkrPkStorage *storage, GkrPkObject *object)
 
 	g_return_if_fail (GKR_IS_PK_OBJECT (object));
 	g_return_if_fail (GKR_IS_PK_STORAGE (storage));
-	g_return_if_fail (object->location);
 	
 	if (!g_hash_table_lookup (pv->objects, object))
 		return;
@@ -762,7 +747,6 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 	gchar *display = NULL;
 	gboolean ret;
 	GkrPkIndex *index;
-	gboolean importing = FALSE;
 	gint st;
 	guint flags;
 	
@@ -836,14 +820,11 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		label = display = gkr_location_to_display (location);
 		
 	/* Build up the prompt */
-	if (importing)
-		flags = GKR_ASK_REQUEST_PASSWORD | GKR_ASK_REQUEST_OK_CANCEL_BUTTONS;
-	else
-		flags = GKR_ASK_REQUEST_PASSWORD | GKR_ASK_REQUEST_OK_DENY_BUTTONS;
+	flags = GKR_ASK_REQUEST_PASSWORD | GKR_ASK_REQUEST_OK_DENY_BUTTONS;
 	ask = gkr_ask_request_new (prepare_ask_load_title (type), 
 	                           prepare_ask_load_primary (type), flags);
 
-	secondary = prepare_ask_load_secondary (type, !importing, label); 
+	secondary = prepare_ask_load_secondary (type, label); 
 	gkr_ask_request_set_secondary (ask, secondary);
 	g_free (secondary);
 

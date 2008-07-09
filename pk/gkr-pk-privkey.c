@@ -25,8 +25,8 @@
 
 #include "gkr-pk-cert.h"
 #include "gkr-pk-index.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-object.h"
-#include "gkr-pk-object-manager.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-pubkey.h"
 #include "gkr-pk-storage.h"
@@ -315,7 +315,7 @@ attribute_from_certificate (GkrPkPrivkey *key, CK_ATTRIBUTE_PTR attr)
 		return CKR_GENERAL_ERROR;
 		
 	obj = GKR_PK_OBJECT (key);
-	crt = gkr_pk_object_manager_find_by_id (obj->manager, GKR_TYPE_PK_CERT, keyid); 
+	crt = gkr_pk_manager_find_by_id (obj->manager, GKR_TYPE_PK_CERT, keyid); 
 	if (crt == NULL)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
@@ -601,12 +601,13 @@ gkr_pk_privkey_class_init (GkrPkPrivkeyClass *klass)
 }
 
 GkrPkObject*
-gkr_pk_privkey_new (GkrPkObjectManager *mgr, GQuark location, gcry_sexp_t s_key)
+gkr_pk_privkey_new (GkrPkManager *mgr, GQuark location, gcry_sexp_t s_key)
 {
 	GkrPkObject *key;
 	guchar hash[20];
 	gkrid digest; 
-	
+
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (mgr), NULL);
 	g_return_val_if_fail (s_key != NULL, NULL);
 	
 	if (!gcry_pk_get_keygrip (s_key, hash))
@@ -624,14 +625,14 @@ gkr_pk_privkey_new (GkrPkObjectManager *mgr, GQuark location, gcry_sexp_t s_key)
 }
 
 CK_RV
-gkr_pk_privkey_create (GkrPkObjectManager* manager, GArray* array, 
+gkr_pk_privkey_create (GkrPkManager* manager, GArray* array, 
                        GkrPkObject **object)
 {
  	CK_KEY_TYPE type;
  	gcry_sexp_t sexp;
  	CK_RV ret;
  	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (manager), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (manager), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (array, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
 	

@@ -26,7 +26,7 @@
 #include "gkr-pk-cert.h"
 #include "gkr-pk-index.h"
 #include "gkr-pk-object.h"
-#include "gkr-pk-object-manager.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-pubkey.h"
 #include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
@@ -211,7 +211,7 @@ attribute_from_related (GkrPkPubkey *key, GType type, CK_ATTRIBUTE_PTR attr)
 		return CKR_GENERAL_ERROR;
 	
 	obj = GKR_PK_OBJECT (key);	
-	crt = gkr_pk_object_manager_find_by_id (obj->manager, type, key->pub->keyid);
+	crt = gkr_pk_manager_find_by_id (obj->manager, type, key->pub->keyid);
 	
 	if (crt == NULL)
 		return CKR_GENERAL_ERROR;
@@ -483,12 +483,13 @@ gkr_pk_pubkey_class_init (GkrPkPubkeyClass *klass)
 }
 
 GkrPkObject*
-gkr_pk_pubkey_new (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_key)
+gkr_pk_pubkey_new (GkrPkManager *manager, GQuark location, gcry_sexp_t s_key)
 {
 	GkrPkObject *key;
 	guchar hash[20];
 	gkrid digest; 
 	
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (manager), NULL);
 	g_return_val_if_fail (s_key != NULL, NULL);
 	
 	if (!gcry_pk_get_keygrip (s_key, hash))
@@ -505,20 +506,20 @@ gkr_pk_pubkey_new (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_k
 }
 
 GkrPkPubkey*
-gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_t s_key)
+gkr_pk_pubkey_instance (GkrPkManager *manager, GQuark location, gcry_sexp_t s_key)
 {
 	GkrPkObject *pub;
 	gkrid keyid;
 	
 	g_return_val_if_fail (s_key, NULL);
-	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (manager), NULL);
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (manager), NULL);
 	
 	/* Make sure we have the keyid properly */
 	keyid = gkr_crypto_skey_make_id (s_key);
 	g_return_val_if_fail (keyid, NULL);
 	
 	/* Try the lookup */
-	pub = gkr_pk_object_manager_find_by_id (manager, GKR_TYPE_PK_PUBKEY, keyid);
+	pub = gkr_pk_manager_find_by_id (manager, GKR_TYPE_PK_PUBKEY, keyid);
 	gkr_id_free (keyid);
 	
 	if (pub != NULL) {
@@ -532,14 +533,14 @@ gkr_pk_pubkey_instance (GkrPkObjectManager *manager, GQuark location, gcry_sexp_
 }
 
 CK_RV
-gkr_pk_pubkey_create (GkrPkObjectManager* manager, GArray* array, 
+gkr_pk_pubkey_create (GkrPkManager* manager, GArray* array, 
                       GkrPkObject **object)
 {
  	CK_KEY_TYPE type;
  	gcry_sexp_t sexp;
  	CK_RV ret;
  	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (manager), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (manager), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (array, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
 	

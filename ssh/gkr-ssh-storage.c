@@ -37,7 +37,7 @@
 #include "pkcs11/pkcs11.h"
 
 #include "pk/gkr-pk-privkey.h"
-#include "pk/gkr-pk-object-manager.h"
+#include "pk/gkr-pk-manager.h"
 #include "pk/gkr-pk-util.h"
 
 #include "pkix/gkr-pkix-asn1.h"
@@ -116,11 +116,11 @@ location_for_storing_private_key (GkrSshStorage *storage, gcry_sexp_t sexp)
 static GkrPkObject*
 prepare_object (GkrSshStorage *storage, GQuark location, gkrconstid digest)
 {
-	GkrPkObjectManager *manager;
+	GkrPkManager *manager;
 	GkrPkObject *object;
 	
-	manager = gkr_pk_object_manager_for_token ();
-	object = gkr_pk_object_manager_find_by_digest (manager, digest);
+	manager = gkr_pk_manager_for_token ();
+	object = gkr_pk_manager_find_by_digest (manager, digest);
 	
 	/* The object already exists just reference it */
 	if (object) {

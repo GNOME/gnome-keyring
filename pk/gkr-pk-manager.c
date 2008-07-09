@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-pk-object-manager.c - Manage all 'token' PK objects
+/* gkr-pk-manager.c - Manage all 'token' PK objects
 
    Copyright (C) 2007 Stefan Walter
 
@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include "gkr-pk-cert.h"
-#include "gkr-pk-object-manager.h"
+#include "gkr-pk-manager.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
@@ -48,9 +48,9 @@
 
 #include <stdarg.h>
 
-typedef struct _GkrPkObjectManagerPrivate GkrPkObjectManagerPrivate;
+typedef struct _GkrPkManagerPrivate GkrPkManagerPrivate;
 
-struct _GkrPkObjectManagerPrivate {
+struct _GkrPkManagerPrivate {
 	pid_t for_pid;
 	gboolean is_token;
 	
@@ -58,13 +58,13 @@ struct _GkrPkObjectManagerPrivate {
 	GHashTable *object_by_digest;
 };
 
-#define GKR_PK_OBJECT_MANAGER_GET_PRIVATE(o) \
-      (G_TYPE_INSTANCE_GET_PRIVATE((o), GKR_TYPE_PK_OBJECT_MANAGER, GkrPkObjectManagerPrivate))
+#define GKR_PK_MANAGER_GET_PRIVATE(o) \
+      (G_TYPE_INSTANCE_GET_PRIVATE((o), GKR_TYPE_PK_MANAGER, GkrPkManagerPrivate))
 
-G_DEFINE_TYPE(GkrPkObjectManager, gkr_pk_object_manager, G_TYPE_OBJECT);
+G_DEFINE_TYPE(GkrPkManager, gkr_pk_manager, G_TYPE_OBJECT);
 
-static GkrPkObjectManager *object_manager_for_token = NULL; 
-static GHashTable *object_managers_by_pid = NULL;
+static GkrPkManager *manager_for_token = NULL; 
+static GHashTable *managers_by_pid = NULL;
 
 /* 
  * Constantly increasing counter for the token object handles. Starting at 
@@ -77,17 +77,17 @@ static CK_OBJECT_HANDLE next_object_handle = 0x00000010;
  */
  
 static void 
-cleanup_object_manager (void *unused)
+cleanup_manager (void *unused)
 {
-	g_assert (object_manager_for_token);
-	g_object_unref (object_manager_for_token);
-	object_manager_for_token = NULL;
+	g_assert (manager_for_token);
+	g_object_unref (manager_for_token);
+	manager_for_token = NULL;
 }
 
 static void
-add_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
+add_object (GkrPkManager *objmgr, GkrPkObject *object)
 {
- 	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
+ 	GkrPkManagerPrivate *pv = GKR_PK_MANAGER_GET_PRIVATE (objmgr);
 	gpointer k;
 	
 	g_assert (GKR_IS_PK_OBJECT (object));
@@ -120,9 +120,9 @@ add_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
 }
 
 static void
-remove_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
+remove_object (GkrPkManager *objmgr, GkrPkObject *object)
 {
- 	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
+ 	GkrPkManagerPrivate *pv = GKR_PK_MANAGER_GET_PRIVATE (objmgr);
 	gpointer k;
 	
 	g_assert (GKR_IS_PK_OBJECT (object));
@@ -150,26 +150,26 @@ remove_object (GkrPkObjectManager *objmgr, GkrPkObject *object)
  */
 
 static void
-gkr_pk_object_manager_init (GkrPkObjectManager *objmgr)
+gkr_pk_manager_init (GkrPkManager *objmgr)
 {
- 	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
+ 	GkrPkManagerPrivate *pv = GKR_PK_MANAGER_GET_PRIVATE (objmgr);
  	
  	pv->object_by_handle = g_hash_table_new (g_direct_hash, g_direct_equal);
  	pv->object_by_digest = g_hash_table_new (gkr_id_hash, gkr_id_equals);
 }
 
 static void
-gkr_pk_object_manager_dispose (GObject *obj)
+gkr_pk_manager_dispose (GObject *obj)
 {
-	GkrPkObjectManager *objmgr = GKR_PK_OBJECT_MANAGER (obj);
- 	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (obj);
+	GkrPkManager *objmgr = GKR_PK_MANAGER (obj);
+ 	GkrPkManagerPrivate *pv = GKR_PK_MANAGER_GET_PRIVATE (obj);
  	gpointer k;
  	GList *objects, *l;
 
 	/* Unregister all objects */
 	objects = g_list_copy (objmgr->objects);
 	for (l = objects; l; l = g_list_next (l)) 
-		gkr_pk_object_manager_unregister (objmgr, GKR_PK_OBJECT (l->data));
+		gkr_pk_manager_unregister (objmgr, GKR_PK_OBJECT (l->data));
 	g_list_free (objects);
 	
 	g_return_if_fail (objmgr->objects == NULL);
@@ -177,110 +177,114 @@ gkr_pk_object_manager_dispose (GObject *obj)
  	g_return_if_fail (g_hash_table_size (pv->object_by_digest) == 0);
  	
  	if (pv->for_pid) {
- 		g_assert (object_managers_by_pid);
+ 		g_assert (managers_by_pid);
  		
  		k =  GUINT_TO_POINTER (pv->for_pid);
  		pv->for_pid = 0; 
 
 		/* Remove us from the hash table */
- 		g_assert (g_hash_table_lookup (object_managers_by_pid, k) == objmgr);
- 		g_hash_table_remove (object_managers_by_pid, k);
+ 		g_assert (g_hash_table_lookup (managers_by_pid, k) == objmgr);
+ 		g_hash_table_remove (managers_by_pid, k);
  		
  		/* Destroy the table if its empty */
- 		if (g_hash_table_size (object_managers_by_pid) == 0) {
- 			g_hash_table_destroy (object_managers_by_pid);
- 			object_managers_by_pid = NULL;
+ 		if (g_hash_table_size (managers_by_pid) == 0) {
+ 			g_hash_table_destroy (managers_by_pid);
+ 			managers_by_pid = NULL;
  		} 
  	}
 
-	G_OBJECT_CLASS (gkr_pk_object_manager_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gkr_pk_manager_parent_class)->dispose (obj);
 }
 
 static void
-gkr_pk_object_manager_finalize (GObject *obj)
+gkr_pk_manager_finalize (GObject *obj)
 {
-	GkrPkObjectManager *man = GKR_PK_OBJECT_MANAGER (obj);
- 	GkrPkObjectManagerPrivate *pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (obj);
+	GkrPkManager *man = GKR_PK_MANAGER (obj);
+ 	GkrPkManagerPrivate *pv = GKR_PK_MANAGER_GET_PRIVATE (obj);
  	
 	g_hash_table_destroy (pv->object_by_handle);
 	g_hash_table_destroy (pv->object_by_digest);
 	g_assert (!man->objects);
 	g_assert (!pv->for_pid);
 
-	G_OBJECT_CLASS (gkr_pk_object_manager_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gkr_pk_manager_parent_class)->finalize (obj);
 }
 
 static void
-gkr_pk_object_manager_class_init (GkrPkObjectManagerClass *klass)
+gkr_pk_manager_class_init (GkrPkManagerClass *klass)
 {
 	GObjectClass *gobject_class;
 	gobject_class = (GObjectClass*)klass;
 
-	gkr_pk_object_manager_parent_class = g_type_class_peek_parent (klass);
-	gobject_class->dispose = gkr_pk_object_manager_dispose;
-	gobject_class->finalize = gkr_pk_object_manager_finalize;
+	gkr_pk_manager_parent_class = g_type_class_peek_parent (klass);
+	gobject_class->dispose = gkr_pk_manager_dispose;
+	gobject_class->finalize = gkr_pk_manager_finalize;
 
-	g_type_class_add_private (gobject_class, sizeof (GkrPkObjectManagerPrivate));
+	g_type_class_add_private (gobject_class, sizeof (GkrPkManagerPrivate));
 }
 
-GkrPkObjectManager*
-gkr_pk_object_manager_new (void)
+/* ------------------------------------------------------------------------
+ * PUBLIC METHODS
+ */
+
+GkrPkManager*
+gkr_pk_manager_new (void)
 {
-	return g_object_new (GKR_TYPE_PK_OBJECT_MANAGER, NULL);
+	return g_object_new (GKR_TYPE_PK_MANAGER, NULL);
 }
 
-GkrPkObjectManager*
-gkr_pk_object_manager_for_token (void)
+GkrPkManager*
+gkr_pk_manager_for_token (void)
 {
-	if (!object_manager_for_token) {
-		object_manager_for_token = g_object_new (GKR_TYPE_PK_OBJECT_MANAGER, NULL);
-		GKR_PK_OBJECT_MANAGER_GET_PRIVATE (object_manager_for_token)->is_token = TRUE;
-		gkr_cleanup_register (cleanup_object_manager, NULL);
+	if (!manager_for_token) {
+		manager_for_token = g_object_new (GKR_TYPE_PK_MANAGER, NULL);
+		GKR_PK_MANAGER_GET_PRIVATE (manager_for_token)->is_token = TRUE;
+		gkr_cleanup_register (cleanup_manager, NULL);
 	}
 	
-	return object_manager_for_token;
+	return manager_for_token;
 }
 
-GkrPkObjectManager*
-gkr_pk_object_manager_for_client (pid_t pid)
+GkrPkManager*
+gkr_pk_manager_for_client (pid_t pid)
 {
-	if (!object_managers_by_pid)
+	if (!managers_by_pid)
 		return NULL;
-	return GKR_PK_OBJECT_MANAGER (g_hash_table_lookup (object_managers_by_pid, 
-	                                                   GUINT_TO_POINTER (pid)));
+	return GKR_PK_MANAGER (g_hash_table_lookup (managers_by_pid, 
+	                                            GUINT_TO_POINTER (pid)));
 }
 
-GkrPkObjectManager*
-gkr_pk_object_manager_instance_for_client (pid_t pid)
+GkrPkManager*
+gkr_pk_manager_instance_for_client (pid_t pid)
 {
-	GkrPkObjectManager *manager;
+	GkrPkManager *manager;
 	
-	manager = gkr_pk_object_manager_for_client (pid);
+	manager = gkr_pk_manager_for_client (pid);
 	if (manager) {
 		g_object_ref (manager);
 		return manager;
 	}
 	
-	manager = g_object_new (GKR_TYPE_PK_OBJECT_MANAGER, NULL);
-	GKR_PK_OBJECT_MANAGER_GET_PRIVATE (manager)->for_pid = pid;
+	manager = g_object_new (GKR_TYPE_PK_MANAGER, NULL);
+	GKR_PK_MANAGER_GET_PRIVATE (manager)->for_pid = pid;
 		
 	/* The first client? */
-	if (!object_managers_by_pid)
-		object_managers_by_pid = g_hash_table_new (g_direct_hash, g_direct_equal);
+	if (!managers_by_pid)
+		managers_by_pid = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	/* Note us in the table */
-	g_hash_table_insert (object_managers_by_pid, GUINT_TO_POINTER (pid), manager);
+	g_hash_table_insert (managers_by_pid, GUINT_TO_POINTER (pid), manager);
 	return manager;
 }
 
 void
-gkr_pk_object_manager_register (GkrPkObjectManager *objmgr, GkrPkObject *object)
+gkr_pk_manager_register (GkrPkManager *objmgr, GkrPkObject *object)
 {
-	GkrPkObjectManagerPrivate *pv;
+	GkrPkManagerPrivate *pv;
 	
-	g_return_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr));
+	g_return_if_fail (GKR_IS_PK_MANAGER (objmgr));
 	g_return_if_fail (GKR_IS_PK_OBJECT (object));
-	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
+	pv = GKR_PK_MANAGER_GET_PRIVATE (objmgr);
 
 	g_return_if_fail (object->manager == NULL);
 	g_return_if_fail (object->digest);
@@ -289,13 +293,13 @@ gkr_pk_object_manager_register (GkrPkObjectManager *objmgr, GkrPkObject *object)
 }
 
 void
-gkr_pk_object_manager_unregister (GkrPkObjectManager *objmgr, GkrPkObject *object)
+gkr_pk_manager_unregister (GkrPkManager *objmgr, GkrPkObject *object)
 {
-	GkrPkObjectManagerPrivate *pv;
+	GkrPkManagerPrivate *pv;
 	
-	g_return_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr));
+	g_return_if_fail (GKR_IS_PK_MANAGER (objmgr));
 	g_return_if_fail (GKR_IS_PK_OBJECT (object));
-	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
+	pv = GKR_PK_MANAGER_GET_PRIVATE (objmgr);
 	
 	g_return_if_fail (object->manager == objmgr);
 	g_return_if_fail (object->digest);
@@ -304,20 +308,20 @@ gkr_pk_object_manager_unregister (GkrPkObjectManager *objmgr, GkrPkObject *objec
 }
 
 GkrPkObject*
-gkr_pk_object_manager_lookup (GkrPkObjectManager *man, CK_OBJECT_HANDLE obj)
+gkr_pk_manager_lookup (GkrPkManager *man, CK_OBJECT_HANDLE obj)
 {
-	GkrPkObjectManagerPrivate *pv;
+	GkrPkManagerPrivate *pv;
 	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (man), NULL);
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (man), NULL);
 	g_return_val_if_fail (obj != 0, NULL);
-	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (man);
+	pv = GKR_PK_MANAGER_GET_PRIVATE (man);
 	
 	return (GkrPkObject*)g_hash_table_lookup (pv->object_by_handle, 
 	                                          GUINT_TO_POINTER (obj));
 }
 
 GList*
-gkr_pk_object_manager_findv (GkrPkObjectManager *objmgr, GType gtype, ...)
+gkr_pk_manager_findv (GkrPkManager *objmgr, GType gtype, ...)
 {
 	CK_ATTRIBUTE attr;
 	GArray *attrs = NULL;
@@ -342,7 +346,7 @@ gkr_pk_object_manager_findv (GkrPkObjectManager *objmgr, GType gtype, ...)
 			 * cleanup at variable scope rather than function scope.
 			 */
 			 
-			ret = gkr_pk_object_manager_find (objmgr, gtype, attrs);
+			ret = gkr_pk_manager_find (objmgr, gtype, attrs);
 			break;
 		}	
 		
@@ -382,14 +386,14 @@ gkr_pk_object_manager_findv (GkrPkObjectManager *objmgr, GType gtype, ...)
 }
 
 GList*
-gkr_pk_object_manager_find (GkrPkObjectManager *man, GType gtype, GArray *attrs)
+gkr_pk_manager_find (GkrPkManager *man, GType gtype, GArray *attrs)
 {
 	CK_OBJECT_CLASS *ocls = NULL;
 	GkrPkObject *object;
 	gboolean do_refresh = TRUE;
 	GList *l, *objects = NULL;
 	
-	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (man), NULL);
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (man), NULL);
 
 	/* Figure out the class of objects we're loading */
 	if (attrs)
@@ -426,8 +430,7 @@ gkr_pk_object_manager_find (GkrPkObjectManager *man, GType gtype, GArray *attrs)
 }
 
 GkrPkObject*
-gkr_pk_object_manager_find_by_id (GkrPkObjectManager *objmgr, GType gtype, 
-                                  gkrconstid id)
+gkr_pk_manager_find_by_id (GkrPkManager *objmgr, GType gtype, gkrconstid id)
 {
 	CK_ATTRIBUTE attr;
 	GkrPkObject *object;
@@ -435,7 +438,7 @@ gkr_pk_object_manager_find_by_id (GkrPkObjectManager *objmgr, GType gtype,
 	GList *l;
 	
 	g_return_val_if_fail (id, NULL);
-	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr), NULL);
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (objmgr), NULL);
 
 	attr.pValue = (CK_VOID_PTR)gkr_id_get_raw (id, &len);
 	attr.ulValueLen = len;
@@ -454,14 +457,14 @@ gkr_pk_object_manager_find_by_id (GkrPkObjectManager *objmgr, GType gtype,
 }
 
 GkrPkObject*
-gkr_pk_object_manager_find_by_digest (GkrPkObjectManager *objmgr, gkrconstid digest)
+gkr_pk_manager_find_by_digest (GkrPkManager *objmgr, gkrconstid digest)
 {
-	GkrPkObjectManagerPrivate *pv;
+	GkrPkManagerPrivate *pv;
 	GkrPkObject *object;
 	
 	g_return_val_if_fail (digest, NULL);
-	g_return_val_if_fail (GKR_IS_PK_OBJECT_MANAGER (objmgr), NULL);
-	pv = GKR_PK_OBJECT_MANAGER_GET_PRIVATE (objmgr);
+	g_return_val_if_fail (GKR_IS_PK_MANAGER (objmgr), NULL);
+	pv = GKR_PK_MANAGER_GET_PRIVATE (objmgr);
 
 	object = GKR_PK_OBJECT (g_hash_table_lookup (pv->object_by_digest, digest));
 	return object;
