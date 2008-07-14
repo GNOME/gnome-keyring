@@ -1,6 +1,4 @@
 
-#include <check.h>
-
 #include <glib.h>
 #include <string.h>
 
@@ -15,12 +13,12 @@ DEFINE_TEST(init_memory)
 {
 	GP11Attribute attr;
 	
-	fail_if (sizeof (attr) != sizeof (CK_ATTRIBUTE));
+	g_assert (sizeof (attr) == sizeof (CK_ATTRIBUTE));
 	
 	gp11_attribute_init (&attr, ATTR_TYPE, ATTR_DATA, N_ATTR_DATA);
-	fail_unless (attr.type == ATTR_TYPE);
-	fail_unless (attr.length == N_ATTR_DATA);
-	fail_unless (memcmp (attr.value, ATTR_DATA, attr.length) == 0);
+	g_assert (attr.type == ATTR_TYPE);
+	g_assert (attr.length == N_ATTR_DATA);
+	g_assert (memcmp (attr.value, ATTR_DATA, attr.length) == 0);
 	
 	gp11_attribute_clear (&attr);
 }
@@ -30,9 +28,9 @@ DEFINE_TEST(init_boolean)
 	GP11Attribute attr;
 
 	gp11_attribute_init_boolean (&attr, ATTR_TYPE, TRUE);
-	fail_unless (attr.type == ATTR_TYPE);
-	fail_unless (attr.length == sizeof (CK_BBOOL));
-	fail_unless (*((CK_BBOOL*)attr.value) == CK_TRUE);
+	g_assert (attr.type == ATTR_TYPE);
+	g_assert (attr.length == sizeof (CK_BBOOL));
+	g_assert (*((CK_BBOOL*)attr.value) == CK_TRUE);
 
 	gp11_attribute_clear (&attr);
 }
@@ -49,9 +47,9 @@ DEFINE_TEST(init_date)
 	memcpy (ck_date.day, "05", 2);
 	gp11_attribute_init_date (&attr, ATTR_TYPE, date);
 	g_date_free (date);
-	fail_unless (attr.type == ATTR_TYPE);
-	fail_unless (attr.length == sizeof (CK_DATE));
-	fail_unless (memcmp (attr.value, &ck_date, attr.length) == 0);
+	g_assert (attr.type == ATTR_TYPE);
+	g_assert (attr.length == sizeof (CK_DATE));
+	g_assert (memcmp (attr.value, &ck_date, attr.length) == 0);
 	
 	gp11_attribute_clear (&attr);
 }
@@ -61,9 +59,9 @@ DEFINE_TEST(init_ulong)
 	GP11Attribute attr;
 	
 	gp11_attribute_init_ulong (&attr, ATTR_TYPE, 88);
-	fail_unless (attr.type == ATTR_TYPE);
-	fail_unless (attr.length == sizeof (CK_ULONG));
-	fail_unless (*((CK_ULONG*)attr.value) == 88);
+	g_assert (attr.type == ATTR_TYPE);
+	g_assert (attr.length == sizeof (CK_ULONG));
+	g_assert (*((CK_ULONG*)attr.value) == 88);
 
 	gp11_attribute_clear (&attr);
 }
@@ -73,9 +71,9 @@ DEFINE_TEST(init_string)
 	GP11Attribute attr;
 	
 	gp11_attribute_init_string (&attr, ATTR_TYPE, "a test string");
-	fail_unless (attr.type == ATTR_TYPE);
-	fail_unless (attr.length == strlen ("a test string"));
-	fail_unless (memcmp (attr.value, "a test string", attr.length) == 0);
+	g_assert (attr.type == ATTR_TYPE);
+	g_assert (attr.length == strlen ("a test string"));
+	g_assert (memcmp (attr.value, "a test string", attr.length) == 0);
 
 	gp11_attribute_clear (&attr);
 }
@@ -85,9 +83,9 @@ DEFINE_TEST(new_memory)
 	GP11Attribute *attr;
 	
 	attr = gp11_attribute_new (ATTR_TYPE, ATTR_DATA, N_ATTR_DATA);
-	fail_unless (attr->type == ATTR_TYPE);
-	fail_unless (attr->length == N_ATTR_DATA);
-	fail_unless (memcmp (attr->value, ATTR_DATA, attr->length) == 0);
+	g_assert (attr->type == ATTR_TYPE);
+	g_assert (attr->length == N_ATTR_DATA);
+	g_assert (memcmp (attr->value, ATTR_DATA, attr->length) == 0);
 	
 	gp11_attribute_free (attr);
 }
@@ -97,9 +95,9 @@ DEFINE_TEST(new_boolean)
 	GP11Attribute *attr;
 
 	attr = gp11_attribute_new_boolean (ATTR_TYPE, TRUE);
-	fail_unless (attr->type == ATTR_TYPE);
-	fail_unless (attr->length == sizeof (CK_BBOOL));
-	fail_unless (*((CK_BBOOL*)attr->value) == CK_TRUE);
+	g_assert (attr->type == ATTR_TYPE);
+	g_assert (attr->length == sizeof (CK_BBOOL));
+	g_assert (*((CK_BBOOL*)attr->value) == CK_TRUE);
 
 	gp11_attribute_free (attr);
 }
@@ -116,9 +114,9 @@ DEFINE_TEST(new_date)
 	memcpy (ck_date.day, "05", 2);
 	attr = gp11_attribute_new_date (ATTR_TYPE, date);
 	g_date_free (date);
-	fail_unless (attr->type == ATTR_TYPE);
-	fail_unless (attr->length == sizeof (CK_DATE));
-	fail_unless (memcmp (attr->value, &ck_date, attr->length) == 0);
+	g_assert (attr->type == ATTR_TYPE);
+	g_assert (attr->length == sizeof (CK_DATE));
+	g_assert (memcmp (attr->value, &ck_date, attr->length) == 0);
 	
 	gp11_attribute_free (attr);
 }
@@ -128,9 +126,9 @@ DEFINE_TEST(new_ulong)
 	GP11Attribute *attr;
 	
 	attr = gp11_attribute_new_ulong (ATTR_TYPE, 88);
-	fail_unless (attr->type == ATTR_TYPE);
-	fail_unless (attr->length == sizeof (CK_ULONG));
-	fail_unless (*((CK_ULONG*)attr->value) == 88);
+	g_assert (attr->type == ATTR_TYPE);
+	g_assert (attr->length == sizeof (CK_ULONG));
+	g_assert (*((CK_ULONG*)attr->value) == 88);
 
 	gp11_attribute_free (attr);
 }
@@ -140,9 +138,9 @@ DEFINE_TEST(new_string)
 	GP11Attribute *attr;
 	
 	attr = gp11_attribute_new_string (ATTR_TYPE, "a test string");
-	fail_unless (attr->type == ATTR_TYPE);
-	fail_unless (attr->length == strlen ("a test string"));
-	fail_unless (memcmp (attr->value, "a test string", attr->length) == 0);
+	g_assert (attr->type == ATTR_TYPE);
+	g_assert (attr->length == strlen ("a test string"));
+	g_assert (memcmp (attr->value, "a test string", attr->length) == 0);
 
 	gp11_attribute_free (attr);
 }
@@ -152,7 +150,7 @@ DEFINE_TEST(get_boolean)
 	GP11Attribute *attr;
 
 	attr = gp11_attribute_new_boolean (ATTR_TYPE, TRUE);
-	fail_unless (gp11_attribute_get_boolean (attr) == TRUE);
+	g_assert (gp11_attribute_get_boolean (attr) == TRUE);
 	gp11_attribute_free (attr);
 }
 
@@ -168,7 +166,7 @@ DEFINE_TEST(get_date)
 	memcpy (ck_date.day, "05", 2);
 	attr = gp11_attribute_new_date (ATTR_TYPE, date);
 	date2 = gp11_attribute_get_date (attr);
-	fail_unless (g_date_compare (date, date2) == 0);
+	g_assert (g_date_compare (date, date2) == 0);
 	g_date_free (date);
 	g_date_free (date2);
 	gp11_attribute_free (attr);
@@ -179,7 +177,7 @@ DEFINE_TEST(get_ulong)
 	GP11Attribute *attr;
 	
 	attr = gp11_attribute_new_ulong (ATTR_TYPE, 88);
-	fail_unless (gp11_attribute_get_ulong (attr) == 88);
+	g_assert (gp11_attribute_get_ulong (attr) == 88);
 	gp11_attribute_free (attr);
 }
 
@@ -190,14 +188,14 @@ DEFINE_TEST(get_string)
 	
 	attr = gp11_attribute_new_string (ATTR_TYPE, "a test string");
 	value = gp11_attribute_get_string (attr);
-	fail_unless (strcmp ("a test string", value) == 0);
+	g_assert (strcmp ("a test string", value) == 0);
 	g_free (value);
 	gp11_attribute_free (attr);
 
 	/* Should be able to store null strings */
 	attr = gp11_attribute_new_string (ATTR_TYPE, NULL);
 	value = gp11_attribute_get_string (attr);
-	fail_unless (value == NULL);
+	g_assert (value == NULL);
 	gp11_attribute_free (attr);
 }
 
@@ -208,13 +206,13 @@ DEFINE_TEST(dup_attribute)
 	gp11_attribute_init_ulong (&attr, ATTR_TYPE, 88);
 	dup = gp11_attribute_dup (&attr);
 	gp11_attribute_clear (&attr);
-	fail_unless (gp11_attribute_get_ulong (dup) == 88);
-	fail_unless (dup->type == ATTR_TYPE);
+	g_assert (gp11_attribute_get_ulong (dup) == 88);
+	g_assert (dup->type == ATTR_TYPE);
 	gp11_attribute_free (dup);
 	
 	/* Should be able to dup null */
 	dup = gp11_attribute_dup (NULL);
-	fail_if (dup != NULL);
+	g_assert (dup == NULL);
 }
 
 DEFINE_TEST(copy_attribute)
@@ -224,8 +222,8 @@ DEFINE_TEST(copy_attribute)
 	gp11_attribute_init_ulong (&attr, ATTR_TYPE, 88);
 	gp11_attribute_init_copy (&copy, &attr);
 	gp11_attribute_clear (&attr);
-	fail_unless (gp11_attribute_get_ulong (&copy) == 88);
-	fail_unless (copy.type == ATTR_TYPE);
+	g_assert (gp11_attribute_get_ulong (&copy) == 88);
+	g_assert (copy.type == ATTR_TYPE);
 	gp11_attribute_clear (&copy);
 }
 
@@ -234,8 +232,8 @@ DEFINE_TEST(new_attributes)
 	GP11Attributes *attrs;
 	
 	attrs = gp11_attributes_new ();
-	fail_if (attrs == NULL);
-	fail_unless (gp11_attributes_count (attrs) == 0);
+	g_assert (attrs != NULL);
+	g_assert (gp11_attributes_count (attrs) == 0);
 	
 	gp11_attributes_ref (attrs);
 	gp11_attributes_unref (attrs);
@@ -253,35 +251,35 @@ test_attributes_contents (GP11Attributes *attrs)
 	gchar *value;
 	GDate *date, *check;
 	
-	fail_if (attrs == NULL);
-	fail_unless (gp11_attributes_count (attrs) == 5);
+	g_assert (attrs != NULL);
+	g_assert (gp11_attributes_count (attrs) == 5);
 	
 	attr = gp11_attributes_at (attrs, 0);
-	fail_unless (attr->type == 0);
-	fail_unless (gp11_attribute_get_boolean (attr) == TRUE);
+	g_assert (attr->type == 0);
+	g_assert (gp11_attribute_get_boolean (attr) == TRUE);
 	
 	attr = gp11_attributes_at (attrs, 1);
-	fail_unless (attr->type == 101);
-	fail_unless (gp11_attribute_get_ulong (attr) == 888);
+	g_assert (attr->type == 101);
+	g_assert (gp11_attribute_get_ulong (attr) == 888);
 
 	attr = gp11_attributes_at (attrs, 2);
-	fail_unless (attr->type == 202);
+	g_assert (attr->type == 202);
 	value = gp11_attribute_get_string (attr);
-	fail_unless (strcmp (value, "string") == 0);
+	g_assert (strcmp (value, "string") == 0);
 	g_free (value);
 
 	attr = gp11_attributes_at (attrs, 3);
-	fail_unless (attr->type == 303);
+	g_assert (attr->type == 303);
 	check = g_date_new_dmy (11, 12, 2008);
 	date = gp11_attribute_get_date (attr);
-	fail_unless (g_date_compare (date, check) == 0);
+	g_assert (g_date_compare (date, check) == 0);
 	g_date_free (date);
 	g_date_free (check);
 	
 	attr = gp11_attributes_at (attrs, 4);
-	fail_unless (attr->type == 404);
-	fail_unless (attr->length == N_ATTR_DATA);
-	fail_unless (memcmp (attr->value, ATTR_DATA, N_ATTR_DATA) == 0);
+	g_assert (attr->type == 404);
+	g_assert (attr->length == N_ATTR_DATA);
+	g_assert (memcmp (attr->value, ATTR_DATA, N_ATTR_DATA) == 0);
 }
 
 DEFINE_TEST(newv_attributes)
@@ -335,6 +333,7 @@ DEFINE_TEST(new_valist_attributes)
 	gp11_attributes_unref (attrs);	
 }
 
+#if 0
 DEFINE_ABORT(bad_length)
 {
 	GP11Attributes *attrs;
@@ -345,6 +344,7 @@ DEFINE_ABORT(bad_length)
 	
 	gp11_attributes_unref (attrs);
 }
+#endif
 
 DEFINE_TEST(add_data_attributes)
 {
@@ -412,28 +412,28 @@ DEFINE_TEST(find_attributes)
 	                              -1);
 
 	attr = gp11_attributes_find (attrs, 404);
-	fail_if (attr == NULL);
-	fail_unless (attr->length == N_ATTR_DATA);
-	fail_unless (memcmp (attr->value, ATTR_DATA, N_ATTR_DATA) == 0);
+	g_assert (attr != NULL);
+	g_assert (attr->length == N_ATTR_DATA);
+	g_assert (memcmp (attr->value, ATTR_DATA, N_ATTR_DATA) == 0);
 	
 	ret = gp11_attributes_find_boolean (attrs, 0, &bvalue);
-	fail_unless (ret == TRUE);
-	fail_unless (bvalue == TRUE);
+	g_assert (ret == TRUE);
+	g_assert (bvalue == TRUE);
 	
 	ret = gp11_attributes_find_ulong (attrs, 101, &uvalue);
-	fail_unless (ret == TRUE);
-	fail_unless (uvalue == 888);
+	g_assert (ret == TRUE);
+	g_assert (uvalue == 888);
 
 	ret = gp11_attributes_find_string (attrs, 202, &svalue);
-	fail_unless (ret == TRUE);
-	fail_if (svalue == NULL);
-	fail_unless (strcmp (svalue, "string") == 0);
+	g_assert (ret == TRUE);
+	g_assert (svalue != NULL);
+	g_assert (strcmp (svalue, "string") == 0);
 	g_free (svalue);
 	
 	ret = gp11_attributes_find_date (attrs, 303, &check);
-	fail_unless (ret == TRUE);
-	fail_if (check == NULL);
-	fail_unless (g_date_compare (date, check) == 0);
+	g_assert (ret == TRUE);
+	g_assert (check != NULL);
+	g_assert (g_date_compare (date, check) == 0);
 	g_date_free (check);
 	
 	gp11_attributes_unref (attrs);

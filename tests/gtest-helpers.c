@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* test-helpers.c: Common functions called from check unit tests
+/* test-helpers.c: Common functions called from gtest unit tests
 
    Copyright (C) 2008 Stefan Walter
 
@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-/* This file is included into the main .c file for each check unit-test program */
+/* This file is included into the main .c file for each gtest unit-test program */
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -30,16 +30,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <check.h>
-
-#include "check-helpers.h"
+#include "gtest-helpers.h"
 
 #include "common/gkr-secure-memory.h"
 
 static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
-
-/* Used from the tests sometimes */
-SRunner *srunner = NULL;
 
 void gkr_memory_lock (void) 
 { 
@@ -95,13 +90,6 @@ test_mainloop_get (void)
 	return mainloop;
 }
 
-void
-test_quiet_abort_log_handler (const gchar *log_domain, GLogLevelFlags log_level,
-                              const gchar *message, gpointer user_data)
-{
-	abort();
-}
-
 static void 
 chdir_base_dir (char* argv0)
 {
@@ -123,8 +111,6 @@ main (int argc, char* argv[])
 {
 	GLogLevelFlags fatal_mask;
 	const gchar* envi;
-	int number_failed;
-	Suite *suite;
 
 	g_thread_init (NULL);
 
@@ -137,7 +123,8 @@ main (int argc, char* argv[])
 	}
 
 	chdir_base_dir (argv[0]);
-	gtk_init(&argc, &argv);
+	g_test_init (&argc, &argv, NULL);
+	gtk_init (&argc, &argv);
 	mainloop = g_main_loop_new (NULL, FALSE);
 
 #ifndef EXTERNAL_TEST
@@ -150,12 +137,6 @@ main (int argc, char* argv[])
 	fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
 	g_log_set_always_fatal (fatal_mask);
 
-	suite = test_suite_create ();
-	srunner = srunner_create (suite);
-	srunner_run_all (srunner, CK_NORMAL);
-	number_failed = srunner_ntests_failed (srunner);
-	srunner_free (srunner);
-	srunner = NULL;
-	
-	return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+	initialize_tests ();
+	return g_test_run ();
 } 

@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* check-helpers.h: Declarations for common functions called from check unit tests
+/* gtest-helpers.h: Declarations for common functions called from gtest unit tests
 
    Copyright (C) 2008 Stefan Walter
 
@@ -21,8 +21,8 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef CHECK_HELPERS_H_
-#define CHECK_HELPERS_H_
+#ifndef GTEST_HELPERS_H_
+#define GTEST_HELPERS_H_
 
 #include <glib.h>
 
@@ -30,7 +30,21 @@ void test_mainloop_quit (void);
 void test_mainloop_run (int timeout);
 GMainLoop* test_mainloop_get (void);
 
-void test_quiet_abort_log_handler (const gchar *log_domain, GLogLevelFlags log_level,
-                                   const gchar *message, gpointer user_data);
+#define DECLARE_SETUP(x) \
+	void setup_##x(int *v, gconstpointer d)
+#define DEFINE_SETUP(x) \
+	void setup_##x(int *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)
 
-#endif /*CHECK_HELPERS_H_*/
+#define DECLARE_TEARDOWN(x) \
+	void teardown_##x(int *v, gconstpointer d)
+#define DEFINE_TEARDOWN(x) \
+	void teardown_##x(int *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)
+
+#define DECLARE_TEST(x) \
+	void test_##x(int *v, gconstpointer d)
+#define DEFINE_TEST(x) \
+	void test_##x(int *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)
+
+/* #define DEFINE_ABORT(x) void abort_x(void *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)' */
+
+#endif /* GTEST_HELPERS_H_ */

@@ -5,7 +5,6 @@
 
 #include <glib.h>
 
-#include <check.h>
 #include <string.h>
 
 static gboolean initialized = FALSE;
@@ -53,40 +52,40 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	void *mutex;
 	CK_RV rv;
 	
-	fail_unless (initialized == FALSE, "Initialized same module twice, maybe module was not finalized, outstanding refs?");
-	fail_unless (pInitArgs != NULL, "Missing arguments");
+	g_assert (initialized == FALSE && "Initialized same module twice, maybe module was not finalized, outstanding refs?");
+	g_assert (pInitArgs != NULL && "Missing arguments");
 	
 	args = (CK_C_INITIALIZE_ARGS_PTR)pInitArgs;
-	fail_unless (args->CreateMutex != NULL, "Missing CreateMutex");
-	fail_unless (args->DestroyMutex != NULL, "Missing DestroyMutex");
-	fail_unless (args->LockMutex != NULL, "Missing LockMutex");
-	fail_unless (args->UnlockMutex != NULL, "Missing UnlockMutex");
+	g_assert (args->CreateMutex != NULL && "Missing CreateMutex");
+	g_assert (args->DestroyMutex != NULL && "Missing DestroyMutex");
+	g_assert (args->LockMutex != NULL && "Missing LockMutex");
+	g_assert (args->UnlockMutex != NULL && "Missing UnlockMutex");
 
-	fail_unless ((args->CreateMutex) (NULL) == CKR_ARGUMENTS_BAD, "CreateMutex succeeded wrong");
-	fail_unless ((args->DestroyMutex) (NULL) == CKR_MUTEX_BAD, "DestroyMutex succeeded wrong");
-	fail_unless ((args->LockMutex) (NULL) == CKR_MUTEX_BAD, "LockMutex succeeded wrong");
-	fail_unless ((args->UnlockMutex) (NULL) == CKR_MUTEX_BAD, "UnlockMutex succeeded wrong");
+	g_assert ((args->CreateMutex) (NULL) == CKR_ARGUMENTS_BAD && "CreateMutex succeeded wrong");
+	g_assert ((args->DestroyMutex) (NULL) == CKR_MUTEX_BAD && "DestroyMutex succeeded wrong");
+	g_assert ((args->LockMutex) (NULL) == CKR_MUTEX_BAD && "LockMutex succeeded wrong");
+	g_assert ((args->UnlockMutex) (NULL) == CKR_MUTEX_BAD && "UnlockMutex succeeded wrong");
 
 	/* Try to create an actual mutex */
 	rv = (args->CreateMutex) (&mutex);
-	fail_unless (rv == CKR_OK, "CreateMutex failed");
-	fail_unless (mutex != NULL, "CreateMutex created null mutex");
+	g_assert (rv == CKR_OK && "CreateMutex g_assert_not_reacheded");
+	g_assert (mutex != NULL && "CreateMutex created null mutex");
 	
 	/* Try and lock the mutex */
 	rv = (args->LockMutex) (mutex);
-	fail_unless (rv == CKR_OK, "LockMutex failed");
+	g_assert (rv == CKR_OK && "LockMutex g_assert_not_reacheded");
 
 	/* Try and unlock the mutex */
 	rv = (args->UnlockMutex) (mutex);
-	fail_unless (rv == CKR_OK, "UnlockMutex failed");
+	g_assert (rv == CKR_OK && "UnlockMutex g_assert_not_reacheded");
 
 	/* Try and destroy the mutex */
 	rv = (args->DestroyMutex) (mutex);
-	fail_unless (rv == CKR_OK, "DestroyMutex failed");
+	g_assert (rv == CKR_OK && "DestroyMutex g_assert_not_reacheded");
 	
 	/* Flags should allow OS locking and os threads */
-	fail_unless ((args->flags & CKF_OS_LOCKING_OK) == CKF_OS_LOCKING_OK, "Invalid CKF_OS_LOCKING_OK flag");
-	fail_unless ((args->flags & CKF_LIBRARY_CANT_CREATE_OS_THREADS) == 0, "Invalid CKF_LIBRARY_CANT_CREATE_OS_THREADS flag");
+	g_assert ((args->flags & CKF_OS_LOCKING_OK) == CKF_OS_LOCKING_OK && "Invalid CKF_OS_LOCKING_OK flag");
+	g_assert ((args->flags & CKF_LIBRARY_CANT_CREATE_OS_THREADS) == 0 && "Invalid CKF_LIBRARY_CANT_CREATE_OS_THREADS flag");
 	
 	the_pin = g_strdup ("booo");
 	the_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_session);
@@ -107,8 +106,8 @@ test_C_Finalize (CK_VOID_PTR pReserved)
 {
 	
 	
-	fail_unless (pReserved == NULL, "Invalid reserved pointer");
-	fail_unless (initialized == TRUE, "Finalize without being initialized");
+	g_assert (pReserved == NULL && "Invalid reserved pointer");
+	g_assert (initialized == TRUE && "Finalize without being initialized");
 	
 	initialized = FALSE;
 	g_hash_table_destroy (the_objects);
@@ -132,9 +131,7 @@ const static CK_INFO TEST_INFO = {
 static CK_RV
 test_C_GetInfo (CK_INFO_PTR pInfo)
 {
-	
-
-	fail_unless (pInfo != NULL, "Invalid pointer to GetInfo");
+	g_assert (pInfo != NULL && "Invalid pointer to GetInfo");
 	memcpy (pInfo, &TEST_INFO, sizeof (*pInfo));
 	return CKR_OK;
 }
@@ -142,9 +139,7 @@ test_C_GetInfo (CK_INFO_PTR pInfo)
 static CK_RV
 test_C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 {
-	
-	
-	fail_unless (list != NULL, "Invalid pointer passed to GetFunctionList");
+	g_assert (list != NULL && "Invalid pointer passed to GetFunctionList");
 	return C_GetFunctionList (list);
 }
 
@@ -162,9 +157,7 @@ test_C_GetSlotList (CK_BBOOL tokenPresent, CK_SLOT_ID_PTR pSlotList, CK_ULONG_PT
 {
 	CK_ULONG count;
 	
-	
-	
-	fail_unless (pulCount != NULL, "Invalid pulCount");
+	g_assert (pulCount != NULL && "Invalid pulCount");
 
 	count = tokenPresent ? 1 : 2;
 
@@ -175,7 +168,7 @@ test_C_GetSlotList (CK_BBOOL tokenPresent, CK_SLOT_ID_PTR pSlotList, CK_ULONG_PT
 	}
 
 	if (*pulCount < count) {
-		fail_unless (*pulCount, "Passed in a bad count");
+		g_assert (*pulCount && "Passed in a bad count");
 		return CKR_BUFFER_TOO_SMALL;
 	}
 
@@ -208,7 +201,7 @@ test_C_GetSlotInfo (CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo)
 {
 	
 	
-	fail_unless (pInfo != NULL, "Invalid pInfo");
+	g_assert (pInfo != NULL && "Invalid pInfo");
 	
 	if (slotID == TEST_SLOT_ONE) {
 		memcpy (pInfo, &TEST_INFO_ONE, sizeof (*pInfo));
@@ -217,7 +210,7 @@ test_C_GetSlotInfo (CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo)
 		memcpy (pInfo, &TEST_INFO_TWO, sizeof (*pInfo));
 		return CKR_OK;
 	} else {
-		fail ("Invalid slot id");
+		g_assert_not_reached (); /* "Invalid slot id" */
 		return CKR_SLOT_ID_INVALID;
 	}
 }
@@ -248,7 +241,7 @@ test_C_GetTokenInfo (CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo)
 {
 	
 	
-	fail_unless (pInfo != NULL, "Invalid pInfo");
+	g_assert (pInfo != NULL && "Invalid pInfo");
 	
 	if (slotID == TEST_SLOT_ONE) {
 		memcpy (pInfo, &TEST_TOKEN_ONE, sizeof (*pInfo));
@@ -256,7 +249,7 @@ test_C_GetTokenInfo (CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo)
 	} else if (slotID == TEST_SLOT_TWO) {
 		return CKR_TOKEN_NOT_PRESENT;
 	} else {
-		fail ("Invalid slot id");
+		g_assert_not_reached (); /* "Invalid slot id" */
 		return CKR_SLOT_ID_INVALID;
 	}
 }
@@ -273,8 +266,8 @@ test_C_GetMechanismList (CK_SLOT_ID slotID, CK_MECHANISM_TYPE_PTR pMechanismList
 {
 	
 	
-	fail_unless (slotID == TEST_SLOT_ONE, "Invalid slotID");
-	fail_unless (pulCount != NULL, "Invalid pulCount");
+	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert (pulCount != NULL && "Invalid pulCount");
 	
 	/* Application only wants to know the number of slots. */
 	if (pMechanismList == NULL) {
@@ -283,7 +276,7 @@ test_C_GetMechanismList (CK_SLOT_ID slotID, CK_MECHANISM_TYPE_PTR pMechanismList
 	}
 
 	if (*pulCount != 2) {
-		fail_unless (*pulCount, "Passed in a bad count");
+		g_assert (*pulCount && "Passed in a bad count");
 		return CKR_BUFFER_TOO_SMALL;
 	}
 
@@ -306,8 +299,8 @@ test_C_GetMechanismInfo (CK_SLOT_ID slotID, CK_MECHANISM_TYPE type,
 {
 	
 
-	fail_unless (slotID == TEST_SLOT_ONE, "Invalid slotID");
-	fail_unless (pInfo != NULL, "Invalid pInfo");
+	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert (pInfo != NULL && "Invalid pInfo");
 
 	if (type == CKM_RSA_PKCS) {
 		memcpy (pInfo, &TEST_MECH_RSA, sizeof (*pInfo));
@@ -316,7 +309,7 @@ test_C_GetMechanismInfo (CK_SLOT_ID slotID, CK_MECHANISM_TYPE type,
 		memcpy (pInfo, &TEST_MECH_DSA, sizeof (*pInfo));
 		return CKR_OK;
 	} else {
-		fail ("Invalid type");
+		g_assert_not_reached (); /* "Invalid type" */
 		return CKR_MECHANISM_INVALID;
 	}
 }
@@ -325,12 +318,12 @@ static CK_RV
 test_C_InitToken (CK_SLOT_ID slotID, CK_UTF8CHAR_PTR pPin, CK_ULONG ulPinLen, 
                   CK_UTF8CHAR_PTR pLabel)
 {
-	fail_unless (slotID == TEST_SLOT_ONE, "Invalid slotID");
-	fail_unless (pPin != NULL, "Invalid pPin");
-	fail_unless (strlen ("TEST PIN"), "Invalid ulPinLen");
-	fail_unless (strncmp ((gchar*)pPin, "TEST PIN", ulPinLen) == 0, "Invalid pPin string");
-	fail_unless (pLabel != NULL, "Invalid pLabel");
-	fail_unless (strcmp ((gchar*)pPin, "TEST LABEL") == 0, "Invalid pLabel string");
+	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert (pPin != NULL && "Invalid pPin");
+	g_assert (strlen ("TEST PIN") && "Invalid ulPinLen");
+	g_assert (strncmp ((gchar*)pPin, "TEST PIN", ulPinLen) == 0 && "Invalid pPin string");
+	g_assert (pLabel != NULL && "Invalid pLabel");
+	g_assert (strcmp ((gchar*)pPin, "TEST LABEL") == 0 && "Invalid pLabel string");
 
 	g_free (the_pin);
 	the_pin = g_strndup ((gchar*)pPin, ulPinLen);
@@ -340,7 +333,7 @@ test_C_InitToken (CK_SLOT_ID slotID, CK_UTF8CHAR_PTR pPin, CK_ULONG ulPinLen,
 static CK_RV
 test_C_WaitForSlotEvent (CK_FLAGS flags, CK_SLOT_ID_PTR pSlot, CK_VOID_PTR pReserved)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -366,11 +359,11 @@ test_C_OpenSession (CK_SLOT_ID slotID, CK_FLAGS flags, CK_VOID_PTR pApplication,
 {
 	Session *sess;
 	
-	fail_unless (slotID == TEST_SLOT_ONE, "Invalid slotID");
-	fail_unless (pApplication == NULL, "pApplication should be null");
-	fail_unless (Notify == NULL, "Notify should be null");
-	fail_unless (phSession != NULL, "Invalid phSession");
-	fail_unless ((flags & CKF_SERIAL_SESSION) == CKF_SERIAL_SESSION);
+	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert (pApplication == NULL && "pApplication should be null");
+	g_assert (Notify == NULL && "Notify should be null");
+	g_assert (phSession != NULL && "Invalid phSession");
+	g_assert ((flags & CKF_SERIAL_SESSION) == CKF_SERIAL_SESSION);
 
 	sess = g_new0 (Session, 1);
 	sess->handle = ++unique_identifier;
@@ -390,10 +383,8 @@ test_C_CloseSession (CK_SESSION_HANDLE hSession)
 {
 	Session *session;
 	
-	
-
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_unless (session != NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
@@ -404,9 +395,7 @@ test_C_CloseSession (CK_SESSION_HANDLE hSession)
 static CK_RV
 test_C_CloseAllSessions (CK_SLOT_ID slotID)
 {
-	fail_unless (slotID == TEST_SLOT_ONE, "Invalid slotID");	
-
-	
+	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");	
 
 	g_hash_table_remove_all (the_sessions);
 	return CKR_OK;
@@ -415,14 +404,14 @@ test_C_CloseAllSessions (CK_SLOT_ID slotID)
 static CK_RV
 test_C_GetFunctionStatus (CK_SESSION_HANDLE hSession)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_PARALLEL;
 }
 
 static CK_RV
 test_C_CancelFunction (CK_SESSION_HANDLE hSession)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_PARALLEL;
 }
 
@@ -431,10 +420,10 @@ test_C_GetSessionInfo (CK_SESSION_HANDLE hSession, CK_SESSION_INFO_PTR pInfo)
 {
 	Session *session;
 
-	fail_unless (pInfo != NULL, "Invalid pInfo");
+	g_assert (pInfo != NULL && "Invalid pInfo");
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_unless (session != NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -446,7 +435,7 @@ static CK_RV
 test_C_InitPIN (CK_SESSION_HANDLE hSession, CK_UTF8CHAR_PTR pPin, 
                 CK_ULONG ulPinLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -454,7 +443,7 @@ static CK_RV
 test_C_SetPIN (CK_SESSION_HANDLE hSession, CK_UTF8CHAR_PTR pOldPin,
              CK_ULONG ulOldLen, CK_UTF8CHAR_PTR pNewPin, CK_ULONG ulNewLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -462,7 +451,7 @@ static CK_RV
 test_C_GetOperationState (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pOperationState,
                         CK_ULONG_PTR pulOperationStateLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -471,7 +460,7 @@ test_C_SetOperationState (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pOperationStat
                         CK_ULONG ulOperationStateLen, CK_OBJECT_HANDLE hEncryptionKey,
                         CK_OBJECT_HANDLE hAuthenticationKey)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -482,14 +471,14 @@ test_C_Login (CK_SESSION_HANDLE hSession, CK_USER_TYPE userType,
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
-	fail_unless (pPinLen == strlen (the_pin), "Wrong PIN length");
-	fail_unless (strncmp ((gchar*)pPin, the_pin, pPinLen) == 0, "Wrong PIN");
-	fail_unless (userType == CKU_SO || userType == CKU_USER || userType == CKU_CONTEXT_SPECIFIC, "Bad user type");
-	fail_unless (session->logged_in == FALSE, "Already logged in");
+	g_assert (pPinLen == strlen (the_pin) && "Wrong PIN length");
+	g_assert (strncmp ((gchar*)pPin, the_pin, pPinLen) == 0 && "Wrong PIN");
+	g_assert ((userType == CKU_SO || userType == CKU_USER || userType == CKU_CONTEXT_SPECIFIC) && "Bad user type");
+	g_assert (session->logged_in == FALSE && "Already logged in");
 	
 	session->logged_in = TRUE;
 	session->user_type = userType;
@@ -502,11 +491,11 @@ test_C_Logout (CK_SESSION_HANDLE hSession)
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_unless (session != NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
-	fail_unless (session->logged_in, "Not logged in");
+	g_assert (session->logged_in && "Not logged in");
 	session->logged_in = FALSE;
 	session->user_type = 0;
 	return CKR_OK;
@@ -521,10 +510,10 @@ test_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 	gboolean token;
 	CK_ULONG i;
 
-	fail_if (phObject == NULL);
+	g_assert (phObject != NULL);
 	
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -546,7 +535,7 @@ test_C_CopyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
                  CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount,
                  CK_OBJECT_HANDLE_PTR phNewObject)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -557,13 +546,13 @@ test_C_DestroyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject)
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
 	if (!g_hash_table_remove (the_objects, GUINT_TO_POINTER (hObject)) && 
 	    !g_hash_table_remove (session->objects, GUINT_TO_POINTER (hObject))) {
-		fail ("no such object found");
+		g_assert_not_reached (); /* "no such object found" */
 		return CKR_OBJECT_HANDLE_INVALID;
 	}
 		
@@ -574,7 +563,7 @@ static CK_RV
 test_C_GetObjectSize (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
                     CK_ULONG_PTR pulSize)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -590,7 +579,7 @@ test_C_GetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
 	CK_ULONG i;
 	
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
@@ -598,7 +587,7 @@ test_C_GetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
 	if (!attrs)
 		attrs = g_hash_table_lookup (session->objects, GUINT_TO_POINTER (hObject));
 	if (!attrs) {
-		fail ("invalid object handle passed");
+		g_assert_not_reached (); /* "invalid object handle passed" */
 		return CKR_OBJECT_HANDLE_INVALID;
 	}
 
@@ -639,7 +628,7 @@ test_C_SetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
 	CK_ULONG i;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -647,7 +636,7 @@ test_C_SetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
 	if (!attrs)
 		attrs = g_hash_table_lookup (session->objects, GUINT_TO_POINTER (hObject));
 	if (!attrs) {
-		fail ("invalid object handle passed");
+		g_assert_not_reached (); /* "invalid object handle passed" */
 		return CKR_OBJECT_HANDLE_INVALID;
 	}
 
@@ -679,12 +668,12 @@ test_C_FindObjectsInit (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 	CK_ULONG i;
 	
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
 	if (session->operation != 0) {
-		fail ("invalid call to FindObjectsInit");
+		g_assert_not_reached (); /* "invalid call to FindObjectsInit" */
 		return CKR_OPERATION_ACTIVE;
 	}
 	
@@ -747,17 +736,17 @@ test_C_FindObjects (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE_PTR phObject,
 {
 	Session *session;
 
-	fail_if (phObject == NULL);
-	fail_if (pulObjectCount == NULL);
-	fail_if (ulMaxObjectCount == 0);
+	g_assert (phObject != NULL);
+	g_assert (pulObjectCount != NULL);
+	g_assert (ulMaxObjectCount != 0);
 	
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
 	if (session->operation != OP_FIND) {
-		fail ("invalid call to FindObjects");
+		g_assert_not_reached (); /* "invalid call to FindObjects" */
 		return CKR_OPERATION_NOT_INITIALIZED;
 	}
 	
@@ -780,12 +769,12 @@ test_C_FindObjectsFinal (CK_SESSION_HANDLE hSession)
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
 	if (session->operation != OP_FIND) {
-		fail ("invalid call to FindObjectsFinal");
+		g_assert_not_reached (); /* "invalid call to FindObjectsFinal" */
 		return CKR_OPERATION_NOT_INITIALIZED;
 	}
 	
@@ -804,7 +793,7 @@ test_C_EncryptInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -816,7 +805,7 @@ test_C_EncryptInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
 	PROCESS_CALL ((hSession, pMechanism, hKey))
 	DONE_CALL
 #else 
-	fail ("Not yet implemented");
+	g_assert_not_reached (); /* "Not yet implemented" */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 #endif
 }
@@ -829,7 +818,7 @@ test_C_Encrypt (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLe
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -841,7 +830,7 @@ test_C_Encrypt (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLe
 		OUT_BYTE_ARRAY (pEncryptedData, pulEncryptedDataLen)
 	DONE_CALL
 #else 
-	fail ("Not yet implemented");
+	g_assert_not_reached (); /* "Not yet implemented" */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 #endif
 }
@@ -851,7 +840,7 @@ test_C_EncryptUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pPart,
                     CK_ULONG ulPartLen, CK_BYTE_PTR pEncryptedPart,
                     CK_ULONG_PTR pulEncryptedPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -859,7 +848,7 @@ static CK_RV
 test_C_EncryptFinal (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pLastEncryptedPart,
                    CK_ULONG_PTR pulLastEncryptedPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -871,7 +860,7 @@ test_C_DecryptInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -883,7 +872,7 @@ test_C_DecryptInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
 	PROCESS_CALL ((hSession, pMechanism, hKey))
 	DONE_CALL
 #else 
-	fail ("Not yet implemented");
+	g_assert_not_reached (); /* "Not yet implemented" */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 #endif
 }
@@ -896,7 +885,7 @@ test_C_Decrypt (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pEncryptedData,
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -908,7 +897,7 @@ test_C_Decrypt (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pEncryptedData,
 		OUT_BYTE_ARRAY (pData, pulDataLen)
 	DONE_CALL
 #else 
-	fail ("Not yet implemented");
+	g_assert_not_reached (); /* "Not yet implemented" */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 #endif
 }
@@ -917,7 +906,7 @@ static CK_RV
 test_C_DecryptUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pEncryptedPart,
                     CK_ULONG ulEncryptedPartLen, CK_BYTE_PTR pPart, CK_ULONG_PTR pulPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -925,14 +914,14 @@ static CK_RV
 test_C_DecryptFinal (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pLastPart,
                    CK_ULONG_PTR pulLastPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
 test_C_DigestInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -940,21 +929,21 @@ static CK_RV
 test_C_Digest (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen,
              CK_BYTE_PTR pDigest, CK_ULONG_PTR pulDigestLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
 test_C_DigestUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pPart, CK_ULONG ulPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
 test_C_DigestKey (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -962,7 +951,7 @@ static CK_RV
 test_C_DigestFinal (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pDigest,
                   CK_ULONG_PTR pulDigestLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -974,13 +963,13 @@ test_C_SignInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
 	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #else 
-	fail ("Not yet implemented");
+	g_assert_not_reached (); /* "Not yet implemented" */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 #endif
 }
@@ -993,13 +982,13 @@ test_C_Sign (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen,
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
 	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #else 
-	fail ("Not yet implemented");
+	g_assert_not_reached (); /* "Not yet implemented" */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 #endif
 }
@@ -1007,7 +996,7 @@ test_C_Sign (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen,
 static CK_RV
 test_C_SignUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pPart, CK_ULONG ulPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1015,7 +1004,7 @@ static CK_RV
 test_C_SignFinal (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pSignature,
                 CK_ULONG_PTR pulSignatureLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1023,7 +1012,7 @@ static CK_RV
 test_C_SignRecoverInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                       CK_OBJECT_HANDLE hKey)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1031,7 +1020,7 @@ static CK_RV
 test_C_SignRecover (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen, 
                   CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1043,7 +1032,7 @@ test_C_VerifyInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -1055,7 +1044,7 @@ test_C_VerifyInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
 	PROCESS_CALL ((hSession, pMechanism, hKey))
 	DONE_CALL
 #else 
-	fail ("Not yet implemented");
+	g_assert_not_reached (); /* "Not yet implemented" */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 #endif
 }
@@ -1068,7 +1057,7 @@ test_C_Verify (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	fail_if (session == NULL, "No such session found");
+	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
@@ -1080,7 +1069,7 @@ test_C_Verify (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen
 	PROCESS_CALL ((hSession, pData, ulDataLen, pSignature, pulSignatureLen))
 	DONE_CALL
 #else 
-	fail ("Not yet implemented");
+	g_assert_not_reached (); /* "Not yet implemented" */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 #endif
 }
@@ -1088,7 +1077,7 @@ test_C_Verify (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen
 static CK_RV
 test_C_VerifyUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pPart, CK_ULONG ulPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1096,7 +1085,7 @@ static CK_RV
 test_C_VerifyFinal (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pSignature,
                   CK_ULONG pulSignatureLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1104,7 +1093,7 @@ static CK_RV
 test_C_VerifyRecoverInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                         CK_OBJECT_HANDLE hKey)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1112,7 +1101,7 @@ static CK_RV
 test_C_VerifyRecover (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pSignature,
                     CK_ULONG pulSignatureLen, CK_BYTE_PTR pData, CK_ULONG_PTR pulDataLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1121,7 +1110,7 @@ test_C_DigestEncryptUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pPart,
                           CK_ULONG ulPartLen, CK_BYTE_PTR pEncryptedPart,
                           CK_ULONG_PTR ulEncryptedPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1130,7 +1119,7 @@ test_C_DecryptDigestUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pEncryptedPa
                           CK_ULONG ulEncryptedPartLen, CK_BYTE_PTR pPart, 
                           CK_ULONG_PTR pulPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1139,7 +1128,7 @@ test_C_SignEncryptUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pPart,
                         CK_ULONG ulPartLen, CK_BYTE_PTR pEncryptedPart,
                         CK_ULONG_PTR ulEncryptedPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1148,7 +1137,7 @@ test_C_DecryptVerifyUpdate (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pEncryptedPa
                           CK_ULONG ulEncryptedPartLen, CK_BYTE_PTR pPart, 
                           CK_ULONG_PTR pulPartLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1157,7 +1146,7 @@ test_C_GenerateKey (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                   CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount, 
                   CK_OBJECT_HANDLE_PTR phKey)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1167,7 +1156,7 @@ test_C_GenerateKeyPair (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                       CK_ATTRIBUTE_PTR pPrivateKeyTemplate, CK_ULONG ulPrivateKeyAttributeCount,
                       CK_OBJECT_HANDLE_PTR phPublicKey, CK_OBJECT_HANDLE_PTR phPrivateKey)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1176,7 +1165,7 @@ test_C_WrapKey (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
               CK_OBJECT_HANDLE hWrappingKey, CK_OBJECT_HANDLE hKey,
               CK_BYTE_PTR pWrappedKey, CK_ULONG_PTR pulWrappedKeyLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1186,7 +1175,7 @@ test_C_UnwrapKey (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                 CK_ULONG pulWrappedKeyLen, CK_ATTRIBUTE_PTR pTemplate,
                 CK_ULONG ulCount, CK_OBJECT_HANDLE_PTR phKey)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1195,14 +1184,14 @@ test_C_DeriveKey (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                 CK_OBJECT_HANDLE hBaseKey, CK_ATTRIBUTE_PTR pTemplate,
                 CK_ULONG ulCount, CK_OBJECT_HANDLE_PTR phKey)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 static CK_RV
 test_C_SeedRandom (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pSeed, CK_ULONG ulSeedLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
@@ -1210,7 +1199,7 @@ static CK_RV
 test_C_GenerateRandom (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pRandomData,
                       CK_ULONG ulRandomLen)
 {
-	fail ("Not yet used by library");
+	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 

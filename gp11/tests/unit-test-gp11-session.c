@@ -22,7 +22,7 @@ DEFINE_SETUP(load_session)
 	SUCCESS_RES (module, err);
 	
 	slots = gp11_module_get_slots (module, TRUE);
-	fail_if (slots == NULL);
+	g_assert (slots != NULL);
 	
 	slot = GP11_SLOT (slots->data);
 	g_object_ref (slot);
@@ -45,24 +45,23 @@ DEFINE_TEST(session_props)
 	guint handle;
 	
 	g_object_get (session, "module", &mod, "handle", &handle, NULL);
-	fail_unless (mod == module);
+	g_assert (mod == module);
 	g_object_unref (mod);
 	
-	fail_unless (handle != 0);
-	fail_unless (session->handle == handle);
+	g_assert (handle != 0);
+	g_assert (session->handle == handle);
 }
 
 DEFINE_TEST(session_info)
 {
 	GP11SessionInfo *info;
 	
-	g_printerr ("session_info");
 	info = gp11_session_get_info (session);
-	fail_unless (info != NULL, "no session info");
+	g_assert (info != NULL && "no session info");
 	
-	fail_unless (info->slot_id == slot->handle); 
-	fail_unless ((info->flags & CKF_SERIAL_SESSION) == CKF_SERIAL_SESSION); 
-	fail_unless (info->device_error == 1414); 
+	g_assert (info->slot_id == slot->handle); 
+	g_assert ((info->flags & CKF_SERIAL_SESSION) == CKF_SERIAL_SESSION); 
+	g_assert (info->device_error == 1414); 
 	gp11_session_info_free (info);
 }
 
@@ -88,7 +87,7 @@ DEFINE_TEST(open_close_session)
 	gp11_slot_open_session_async (slot, 0, NULL, fetch_async_result, &result);
 	
 	WAIT_UNTIL (result);
-	fail_if (result == NULL);
+	g_assert (result != NULL);
 	
 	/* Get the result */
 	sess = gp11_slot_open_session_finish (slot, result, &err);
@@ -120,7 +119,7 @@ DEFINE_TEST(login_logout)
 	/* login async */
 	gp11_session_login_async (session, CKU_USER, (guchar*)"booo", 4, NULL, fetch_async_result, &result);
 	WAIT_UNTIL (result);
-	fail_if (result == NULL);
+	g_assert (result != NULL);
 	
 	ret = gp11_session_login_finish (session, result, &err);
 	SUCCESS_RES (ret, err);
@@ -131,7 +130,7 @@ DEFINE_TEST(login_logout)
 	/* logout async */
 	gp11_session_logout_async (session, NULL, fetch_async_result, &result);
 	WAIT_UNTIL (result);
-	fail_if (result == NULL);
+	g_assert (result != NULL);
 	
 	ret = gp11_session_logout_finish (session, result, &err);
 	SUCCESS_RES (ret, err);

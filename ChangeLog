@@ -1,5 +1,22 @@
 2008-07-14  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/tests/gp11-test.h:
+	* gp11/tests/gp11-test-module.c:
+	* gp11/tests/Makefile.am:
+	* gp11/tests/unit-test-gp11-attributes.c:
+	* gp11/tests/unit-test-gp11-module.c:
+	* gp11/tests/unit-test-gp11-object.c:
+	* gp11/tests/unit-test-gp11-session.c:
+	* gp11/tests/unit-test-gp11-slot.c:
+	* tests/gtest.make: (moved from check.make)
+	* tests/gtest-helpers.c: (moved from check-helpers.c)
+	* tests/gtest-helpers.h: (moved from check-helpers.h)
+	* tests/Makefile.am:
+	* tests/prep-gtest.sh: (moved from prep-check.sh)
+	* configure.in: Move to glib based testing for new stuff
+	
+2008-07-14  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pk/gkr-pk-cert.c:
 	* daemon/pk/gkr-pk-import.c:
 	* daemon/pk/gkr-pk-object.c:

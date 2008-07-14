@@ -3,9 +3,10 @@ EXTRA_DIST = \
 	ca-example \
 	cu-test \
 	test-helpers.c test-helpers.h \
-	prep-tests.sh \
+	gtest-helpers.c gtest-helpers.h \
+	prep-tests.sh prep-gtest.sh \
 	run-tests.sh \
-	test.make 
+	test.make gtest.make
 
 INCLUDES=					\
 	-I$(top_srcdir) 		\
@@ -54,7 +55,7 @@ test_keyring_two_LDADD = \
 run: run-auto
 
 run-auto: 
-	sh run-tests.sh $(top_srcdir) run-auto-test
+	sh run-tests.sh $(top_srcdir) test-auto
 
 run-prompt: 
-	sh run-tests.sh $(top_srcdir) run-prompt-test
+	sh run-tests.sh $(top_srcdir) test-auto

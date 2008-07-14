@@ -1,6 +1,4 @@
 
-#include <check.h>
-
 #include <glib.h>
 #include <string.h>
 
@@ -43,8 +41,8 @@ DEFINE_TEST(module_props)
 	gchar *path;
 
 	g_object_get (module, "module-path", &path, NULL);
-	fail_unless (path != NULL, "no module-path");
-	fail_unless (strcmp (".libs/libgp11-test-module.so", path) == 0, "module path wrong");
+	g_assert (path != NULL && "no module-path");
+	g_assert (strcmp (".libs/libgp11-test-module.so", path) == 0 && "module path wrong");
 	g_free (path);
 }
 
@@ -53,15 +51,15 @@ DEFINE_TEST(module_info)
 	GP11ModuleInfo *info;
 	
 	info = gp11_module_get_info (module);
-	fail_unless (info != NULL, "no module info");
+	g_assert (info != NULL && "no module info");
 	
-	fail_unless (info->pkcs11_version_major == CRYPTOKI_VERSION_MAJOR, "wrong major version"); 
-	fail_unless (info->pkcs11_version_minor == CRYPTOKI_VERSION_MINOR, "wrong minor version"); 
-	fail_unless (strcmp ("TEST MANUFACTURER", info->manufacturer_id) == 0);
-	fail_unless (strcmp ("TEST LIBRARY", info->library_description) == 0);
-	fail_unless (0 == info->flags);
-	fail_unless (45 == info->library_version_major);
-	fail_unless (145 == info->library_version_minor);
+	g_assert (info->pkcs11_version_major == CRYPTOKI_VERSION_MAJOR && "wrong major version"); 
+	g_assert (info->pkcs11_version_minor == CRYPTOKI_VERSION_MINOR && "wrong minor version"); 
+	g_assert (strcmp ("TEST MANUFACTURER", info->manufacturer_id) == 0);
+	g_assert (strcmp ("TEST LIBRARY", info->library_description) == 0);
+	g_assert (0 == info->flags);
+	g_assert (45 == info->library_version_major);
+	g_assert (145 == info->library_version_minor);
 	
 	gp11_module_info_free (info);
 }
