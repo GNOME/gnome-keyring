@@ -46,8 +46,8 @@ object_to_public_key (GkrPkObject *object, gcry_sexp_t *s_key)
 	*s_key = gkr_pk_pubkey_get_key (key);
 	if (!*s_key) {
 		/* TODO: This happens when the user doesn't unlock key, proper code */
-		g_warning ("couldn't get public key");
-		return CKR_GENERAL_ERROR;
+		g_message ("couldn't get public key");
+		return CKR_FUNCTION_FAILED;
 	}
 	
 	return CKR_OK;
@@ -69,8 +69,8 @@ object_to_private_key (GkrPkObject *object, gcry_sexp_t *s_key)
 	*s_key = gkr_pk_privkey_get_key (key);
 	if (!*s_key) {
 		/* TODO: This happens when the user doesn't unlock key, proper code */
-		g_warning ("couldn't get private key");
-		return CKR_GENERAL_ERROR;
+		g_message ("couldn't get private key");
+		return CKR_FUNCTION_FAILED;
 	}
 	
 	return CKR_OK;
@@ -167,8 +167,8 @@ gkr_pkcs11_rsa_encrypt (GkrPkObject *key, GkrCryptoPadding padfunc,
 	
 	/* TODO: Certain codes should be returned (data too big etc... ) */
 	if (gcry) {
-		g_warning ("encrypting of the data failed: %s", gcry_strerror (gcry));
-		return CKR_GENERAL_ERROR;
+		g_message ("encrypting of the data failed: %s", gcry_strerror (gcry));
+		return CKR_FUNCTION_FAILED;
 	}
 
 	/* Now extract and send it back out */
@@ -218,8 +218,8 @@ gkr_crypto_sexp_dump (sdata);
 	
 	/* TODO: Certain codes should be returned (data too big etc... ) */
 	if (gcry) {
-		g_warning ("decrypting of the data failed: %s", gcry_strerror (gcry));
-		return CKR_GENERAL_ERROR;
+		g_message ("decrypting of the data failed: %s", gcry_strerror (gcry));
+		return CKR_FUNCTION_FAILED;
 	}
 gkr_crypto_sexp_dump (splain);
 
@@ -266,8 +266,8 @@ gkr_pkcs11_rsa_sign (GkrPkObject *object, GkrCryptoPadding padfunc,
 	
 	/* TODO: Certain codes should be returned (data too big etc... ) */
 	if (gcry) {
-		g_warning ("signing of the data failed: %s", gcry_strerror (gcry));
-		return CKR_GENERAL_ERROR;
+		g_message ("signing of the data failed: %s", gcry_strerror (gcry));
+		return CKR_FUNCTION_FAILED;
 	}
 
 	/* Now extract and send it back out */
@@ -326,8 +326,8 @@ gkr_pkcs11_rsa_verify (GkrPkObject *object, GkrCryptoPadding padfunc,
 	if (gcry_err_code (gcry) == GPG_ERR_BAD_SIGNATURE) {
 		return CKR_SIGNATURE_INVALID;
 	} else if (gcry) {
-		g_warning ("signing of the data failed: %s", gcry_strerror (gcry));
-		return CKR_GENERAL_ERROR;
+		g_message ("signing of the data failed: %s", gcry_strerror (gcry));
+		return CKR_FUNCTION_FAILED;
 	}
 
 	return CKR_OK;

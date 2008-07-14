@@ -12,6 +12,7 @@ endif
 
 SUBDIRS = \
 	. \
+	gp11 \
 	common \
 	library \
 	pkcs11 \

@@ -47,8 +47,8 @@ object_to_public_key (GkrPkObject *object, gcry_sexp_t *s_key)
 	*s_key = gkr_pk_pubkey_get_key (key);
 	if (!*s_key) {
 		/* TODO: This happens when the user doesn't unlock key, proper code */
-		g_warning ("couldn't get public key");
-		return CKR_GENERAL_ERROR;
+		g_message ("couldn't get public key");
+		return CKR_FUNCTION_FAILED;
 	}
 	
 	return CKR_OK;
@@ -70,8 +70,8 @@ object_to_private_key (GkrPkObject *object, gcry_sexp_t *s_key)
 	*s_key = gkr_pk_privkey_get_key (key);
 	if (!*s_key) {
 		/* TODO: This happens when the user doesn't unlock key, proper code */
-		g_warning ("couldn't get private key");
-		return CKR_GENERAL_ERROR;
+		g_message ("couldn't get private key");
+		return CKR_FUNCTION_FAILED;
 	}
 	
 	return CKR_OK;
@@ -116,8 +116,8 @@ gkr_pkcs11_dsa_sign (GkrPkObject *object, const guchar *plain, gsize n_plain,
 	
 	/* TODO: Certain codes should be returned (data too big etc... ) */
 	if (gcry) {
-		g_warning ("signing of the data failed: %s", gcry_strerror (gcry));
-		return CKR_GENERAL_ERROR;
+		g_message ("signing of the data failed: %s", gcry_strerror (gcry));
+		return CKR_FUNCTION_FAILED;
 	}
 
 	*signature = g_new0 (guchar, 40);
@@ -182,8 +182,8 @@ gkr_pkcs11_dsa_verify (GkrPkObject *object, const guchar *plain, gsize n_plain,
 	if (gcry_err_code (gcry) == GPG_ERR_BAD_SIGNATURE) {
 		return CKR_SIGNATURE_INVALID;
 	} else if (gcry) {
-		g_warning ("signing of the data failed: %s", gcry_strerror (gcry));
-		return CKR_GENERAL_ERROR;
+		g_message ("signing of the data failed: %s", gcry_strerror (gcry));
+		return CKR_FUNCTION_FAILED;
 	}
 
 	return CKR_OK;

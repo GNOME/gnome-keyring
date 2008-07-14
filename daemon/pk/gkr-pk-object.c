@@ -558,12 +558,12 @@ gkr_pk_object_create (GkrPkSession *session,
 	res = gkr_pk_storage_store (the_storage, *object, &err);
 	
 	if (!res) {
-		g_warning ("couldn't store created object: %s", 
+		g_message ("couldn't store created object: %s", 
 		           err && err->message ? err->message : "");
 		g_clear_error (&err);
 		g_object_unref (*object);
 		*object = NULL;
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 	}
 
 	/* Register it with the object manager if necessary */

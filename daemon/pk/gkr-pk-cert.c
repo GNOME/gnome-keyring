@@ -130,7 +130,7 @@ load_certificate (GkrPkCert *cert)
 		           g_quark_to_string (obj->location),
 		           err && err->message ? err->message : "");
 		g_error_free (err);
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 	}
 
 	/* This can happen if the user cancels out of a dialog */
@@ -474,7 +474,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 			res = gkr_pkix_der_read_basic_constraints (data, n_data, &is_ca, NULL);
 			g_free (data);
 			if (res != GKR_PKIX_SUCCESS)
-				return CKR_GENERAL_ERROR;
+				return CKR_FUNCTION_FAILED;
 			if (is_ca)
 				value = 2; /* authority */
 		}
@@ -505,7 +505,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 			return ret;
 		keyid = gkr_pk_cert_get_keyid (cert);
 		if (!keyid) 
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		data = (CK_VOID_PTR)gkr_id_get_raw (keyid, &n_data);
 		gkr_pk_attribute_set_data (attr, data, n_data);
 		return CKR_OK;
@@ -517,7 +517,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		cdata = gkr_pkix_asn1_read_element (cert->data->asn1, cert->data->raw, cert->data->n_raw, 
 		                                    "tbsCertificate.subject", &n_data);
 		if (!cdata)
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		gkr_pk_attribute_set_data (attr, cdata, n_data);
 		return CKR_OK;
 		
@@ -527,7 +527,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		cdata = gkr_pkix_asn1_read_element (cert->data->asn1, cert->data->raw, cert->data->n_raw, 
 		                                    "tbsCertificate.issuer", &n_data);
 		if (!cdata)
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		gkr_pk_attribute_set_data (attr, cdata, n_data);
 		return CKR_OK;
 		
@@ -536,7 +536,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 			return ret;
 		data = gkr_pkix_asn1_read_value (cert->data->asn1, "tbsCertificate.serialNumber", &n_data, NULL);
 		if (!data)
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		gkr_pk_attribute_set_data (attr, data, n_data);
 		g_free (data);
 		return CKR_OK;
@@ -569,7 +569,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		                                       "tbsCertificate.validity.notBefore" : 
 		                                       "tbsCertificate.validity.notAfter",
 		                              &time))
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		gkr_pk_attribute_set_date (attr, time);
 		return CKR_OK;
 	

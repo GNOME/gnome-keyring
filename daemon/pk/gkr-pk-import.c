@@ -532,7 +532,7 @@ gkr_pk_import_create (GkrPkManager* manager, GkrPkSession *session,
 		if (err->domain == GKR_PKIX_PARSE_ERROR)
 			ret = CKR_DATA_INVALID;
 		else
-			ret = CKR_GENERAL_ERROR;
+			ret = CKR_FUNCTION_FAILED;
 
 		g_message ("couldn't import data: %s", err && err->message ? err->message : "");
 		g_clear_error (&err);

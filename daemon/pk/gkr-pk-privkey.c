@@ -194,7 +194,7 @@ create_rsa_private (GArray *attrs, gcry_sexp_t *skey)
 	/* TODO: We should be mapping better return codes */
 	if (gcry != 0) {
 		g_message ("couldn't create RSA key from passed attributes");
-		ret = CKR_GENERAL_ERROR;
+		ret = CKR_FUNCTION_FAILED;
 		goto done;
 	}
 	
@@ -244,7 +244,7 @@ create_dsa_private (GArray *attrs, gcry_sexp_t *skey)
 	/* TODO: We should be mapping better return codes */
 	if (gcry != 0) {
 		g_message ("couldn't create DSA key from passed attributes");
-		ret = CKR_GENERAL_ERROR;
+		ret = CKR_FUNCTION_FAILED;
 		goto done;
 	}
 
@@ -300,7 +300,7 @@ attribute_from_public (GkrPkPrivkey *key, CK_ATTRIBUTE_PTR attr)
 {
 	GkrPkPubkey *pub = get_public_key (key, TRUE);
 	if (pub == NULL)
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 	return gkr_pk_object_get_attribute (GKR_PK_OBJECT (pub), attr);
 }
 
@@ -312,7 +312,7 @@ attribute_from_certificate (GkrPkPrivkey *key, CK_ATTRIBUTE_PTR attr)
 	
 	keyid = gkr_pk_privkey_get_keyid (key);
 	if (!keyid)
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 		
 	obj = GKR_PK_OBJECT (key);
 	crt = gkr_pk_manager_find_by_id (obj->manager, GKR_TYPE_PK_CERT, keyid); 
@@ -334,7 +334,7 @@ extract_key_mpi (GkrPkPrivkey *key, int algorithm, const char *part, CK_ATTRIBUT
 		
 	/* Load our key */
 	if (!load_private_key (key))
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 	
 	if (key->priv->algorithm != algorithm)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
@@ -449,7 +449,7 @@ gkr_pk_privkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_ID:
 		keyid = gkr_pk_privkey_get_keyid (key);
 		if (!keyid) 
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		value = (CK_VOID_PTR)gkr_id_get_raw (keyid, &len);
 		gkr_pk_attribute_set_data (attr, value, len);
 		return CKR_OK;

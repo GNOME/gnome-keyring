@@ -148,7 +148,7 @@ create_rsa_public (GArray *attrs, gcry_sexp_t *skey)
 	/* TODO: We should be mapping better return codes */
 	if (gcry != 0) {
 		g_message ("couldn't create RSA key from passed attributes");
-		ret = CKR_GENERAL_ERROR;
+		ret = CKR_FUNCTION_FAILED;
 		goto done;
 	}
 	
@@ -186,7 +186,7 @@ create_dsa_public (GArray *attrs, gcry_sexp_t *skey)
 	/* TODO: We should be mapping better return codes */
 	if (gcry != 0) {
 		g_message ("couldn't create DSA key from passed attributes");
-		ret = CKR_GENERAL_ERROR;
+		ret = CKR_FUNCTION_FAILED;
 		goto done;
 	}
 	
@@ -208,13 +208,13 @@ attribute_from_related (GkrPkPubkey *key, GType type, CK_ATTRIBUTE_PTR attr)
 	GkrPkObject *crt, *obj;
 	
 	if (!load_public_key (key))
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 	
 	obj = GKR_PK_OBJECT (key);	
 	crt = gkr_pk_manager_find_by_id (obj->manager, type, key->pub->keyid);
 	
 	if (crt == NULL)
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 		
 	return gkr_pk_object_get_attribute (crt, attr);
 }
@@ -226,7 +226,7 @@ extract_key_mpi (GkrPkPubkey *key, int algorithm, const char *part, CK_ATTRIBUTE
 	gboolean ret;
 	
 	if (!load_public_key (key))
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 	
 	if (key->pub->algorithm != algorithm)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
@@ -246,7 +246,7 @@ extract_key_value (GkrPkPubkey *key, CK_ATTRIBUTE_PTR attr)
 	gsize n_data;
 	
 	if (!load_public_key (key))
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 	
 	switch (gkr_pk_pubkey_get_algorithm (key)) {
 	case GCRY_PK_RSA:
@@ -346,7 +346,7 @@ gkr_pk_pubkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		
 	case CKA_KEY_TYPE:
 		if (!load_public_key (key))
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		switch (key->pub->algorithm) {
 		case GCRY_PK_RSA:
 			gkr_pk_attribute_set_ulong (attr, CKK_RSA);
@@ -362,7 +362,7 @@ gkr_pk_pubkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	
 	case CKA_MODULUS_BITS:
 		if (!load_public_key (key))
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		if (key->pub->algorithm != GCRY_PK_RSA)
 			return CKR_ATTRIBUTE_TYPE_INVALID;
 		g_assert (key->pub->numbers);
@@ -379,7 +379,7 @@ gkr_pk_pubkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_ID:
 		/* Always a SHA-1 hash output buffer */
 		if (!load_public_key (key) || !key->pub->keyid)
-			return CKR_GENERAL_ERROR;
+			return CKR_FUNCTION_FAILED;
 		gkr_pk_attribute_set_id (attr, key->pub->keyid);
 		return CKR_OK;
 

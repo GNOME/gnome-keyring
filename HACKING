@@ -10,26 +10,29 @@ each other. These parts generally live in different directories:
 daemon 
    The main daemon startup code and gnome-keyring password protocol operations. 
    
-keyrings
+daemon/keyrings
    Code that manages the user's password keyrings 
+
+daemon/pk 
+   General public key / certificate code, management of objects.
+
+daemon/pkcs11
+   The PKCS#11 part of the daemon.
+
+daemon/pkix
+   Nitty gritty handling of various PKCS#?? standards, parsing, ASN.1 stuff.
+
+daemon/ui 
+   Prompting the user, asking for passwords. 
    
 library
    The gnome-keyring library for accessing passwords and secrets. 
 
-pk 
-   General public key / certificate code, management of objects.
-
 pkcs11
    The PKCS#11 module, provider and headers.
-
-pkix
-   Nitty gritty handling of various PKCS#?? standards, parsing, ASN.1 stuff.
       
 tests  
    Test tools and unit tests.
-   
-ui 
-   Prompting the user, asking for passwords. 
    
 
 --------------------------------------------------------------------------------

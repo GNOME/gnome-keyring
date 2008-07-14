@@ -391,7 +391,7 @@ session_C_Login (SessionInfo *sinfo, GkrPkcs11Message *req,
 	 * not accept a PIN, but instead prompt for it. 
 	 */
 	if (!gkr_keyring_login_unlock (NULL))
-		return CKR_GENERAL_ERROR;
+		return CKR_FUNCTION_FAILED;
 
 	return CKR_OK;
 }
@@ -522,10 +522,10 @@ session_C_DestroyObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 	g_return_val_if_fail (object->storage, CKR_GENERAL_ERROR);
 	res = gkr_pk_storage_remove (object->storage, object, &err);
 	if (!res) {
-		g_warning ("couldn't remove object from disk: %s", 
+		g_message ("couldn't remove object from disk: %s", 
 		           err && err->message ? err->message : "");
 		g_clear_error (&err);
-		ret = CKR_GENERAL_ERROR;
+		ret = CKR_FUNCTION_FAILED;
 	}
 	
 	return ret;
