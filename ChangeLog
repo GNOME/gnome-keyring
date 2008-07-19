@@ -1,3 +1,15 @@
+2008-07-19  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h
+	* gp11/gp11.pc.in:
+	* gp11/gp11-call.c:
+	* gp11/gp11-private.h:
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c:
+	* gp11/Makefile.am:
+	* gp11/tests/unit-test-gp11-session.c: Add ability to reuse sessions,
+	in a simple pool.  
+	
 2008-07-14  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/tests/gp11-test.h:

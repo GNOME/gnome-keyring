@@ -9,10 +9,202 @@
 enum {
 	PROP_0,
 	PROP_MODULE,
-	PROP_HANDLE
+	PROP_HANDLE,
+	PROP_REUSE_SESSIONS
 };
 
+typedef struct _GP11SlotPrivate {
+	gboolean reuse_sessions;
+	GHashTable *open_sessions;
+} GP11SlotPrivate;
+
 G_DEFINE_TYPE (GP11Slot, gp11_slot, G_TYPE_OBJECT);
+
+#define GP11_SLOT_GET_PRIVATE(o) \
+      (G_TYPE_INSTANCE_GET_PRIVATE((o), GP11_TYPE_SLOT, GP11SlotPrivate))
+
+typedef struct _SessionPool {
+	guint flags;
+	GP11Module *module; /* weak */
+	GSList *sessions; /* list of CK_SESSION_HANDLE */
+} SessionPool;
+
+/* ----------------------------------------------------------------------------
+ * HELPERS
+ */
+
+static void
+close_session (GP11Module *module, CK_SESSION_HANDLE handle)
+{
+	CK_RV rv; 
+	
+	g_return_if_fail (GP11_IS_MODULE (module));
+	g_return_if_fail (module->funcs);
+	rv = (module->funcs->C_CloseSession) (handle);
+	if (rv != CKR_OK) {
+		g_warning ("couldn't close session properly: %s",
+		           gp11_message_from_rv (rv));
+	}
+}
+
+static void
+free_session_pool (gpointer p)
+{
+	SessionPool *pool = p;
+	GSList *l;
+	for (l = pool->sessions; l; l = g_slist_next (l))
+		close_session (pool->module, GPOINTER_TO_UINT (l->data));
+	g_free (pool);
+}
+
+#ifdef UNUSED
+
+static void
+foreach_count_sessions (gpointer key, gpointer value, gpointer user_data)
+{
+	SessionPool *pool = value;
+	guint *result = user_data;
+	*result += g_slist_length (pool->sessions);
+}
+
+static guint
+count_session_table (GP11Slot *slot, guint flags)
+{
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	guint result = 0;
+	
+	if (!pv->open_sessions)
+		return 0;
+	
+	g_hash_table_foreach (pv->open_sessions, foreach_count_sessions, &result);
+	return result;
+}
+
+#endif /* UNUSED */
+
+static void
+push_session_table (GP11Slot *slot, guint flags, CK_SESSION_HANDLE handle)
+{
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	SessionPool *pool;
+	
+	if (!pv->open_sessions) {
+		close_session (slot->module, handle);
+		return;
+	}
+	
+	g_assert (handle);
+	g_assert (GP11_IS_MODULE (slot->module));
+	
+	pool = g_hash_table_lookup (pv->open_sessions, GUINT_TO_POINTER (flags));
+	if (!pool) {
+		pool = g_new0 (SessionPool, 1);
+		pool->flags = flags;
+		pool->module = slot->module; /* weak ref */
+		g_hash_table_insert (pv->open_sessions, GUINT_TO_POINTER (flags), pool);
+	}
+	
+	g_assert (pool->flags == flags);
+	pool->sessions = g_slist_prepend (pool->sessions, GUINT_TO_POINTER (handle));
+}
+
+static CK_SESSION_HANDLE
+pop_session_table (GP11Slot *slot, guint flags)
+{
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	CK_SESSION_HANDLE result;
+	SessionPool *pool;
+	
+	if (!pv->open_sessions)
+		return 0;
+	
+	g_assert (GP11_IS_MODULE (slot->module));
+	
+	pool = g_hash_table_lookup (pv->open_sessions, GUINT_TO_POINTER (flags));
+	if (!pool)
+		return 0;
+	
+	result = GPOINTER_TO_UINT (pool->sessions->data);
+	g_assert (result != 0);
+	pool->sessions = g_slist_remove (pool->sessions, pool->sessions->data);
+	
+	return result;
+}
+
+static void
+destroy_session_table (GP11Slot *slot)
+{
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	if (pv->open_sessions)
+		g_hash_table_unref (pv->open_sessions);
+	pv->open_sessions = NULL;
+}
+
+static void
+create_session_table (GP11Slot *slot)
+{
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	if (!pv->open_sessions)
+		pv->open_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_session_pool);
+}
+
+static void
+reuse_session_handle (GP11Session *session, GP11Slot *slot)
+{
+	CK_SESSION_INFO info;
+	guint flags;
+	CK_RV rv;
+	
+	g_return_if_fail (GP11_IS_SESSION (session));
+	g_return_if_fail (GP11_IS_SLOT (slot));
+	g_return_if_fail (GP11_IS_MODULE (slot->module));
+	g_return_if_fail (session->handle != 0);
+	
+	/* Get the session info so we know where to categorize this */
+	rv = (slot->module->funcs->C_GetSessionInfo) (session->handle, &info);
+	
+	/* An already closed session, we don't want to bother with */
+	if (rv == CKR_SESSION_CLOSED || rv == CKR_SESSION_HANDLE_INVALID) {
+		session->handle = 0;
+		return;
+	}
+	
+	/* A strange session, let it go to be closed somewhere else */
+	if (rv != CKR_OK)
+		return;
+	
+	/* 
+	 * Get the flags that this session was opened with originally, and
+	 * check them against the session's current flags. If they're no
+	 * longer present, then don't reuse this session.
+	 */
+	flags = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (session), 
+	                                             "gp11-open-session-flags"));
+	if ((flags & info.flags) != flags)
+		return;
+	
+	/* Keep this one around for later use */
+	push_session_table (slot, flags, session->handle);
+	session->handle = 0;
+}
+
+static GP11Session*
+make_session_object (GP11Slot *slot, guint flags, CK_SESSION_HANDLE handle)
+{
+	GP11Session *session;
+	
+	g_return_val_if_fail (handle != 0, NULL);
+	session = gp11_session_from_handle (slot, handle);
+	g_return_val_if_fail (session != NULL, NULL);
+	
+	/* Session keeps a reference to us, so this is safe */
+	g_signal_connect (session, "discard-handle", G_CALLBACK (reuse_session_handle), slot);
+
+	/* Mark the flags on the session for later looking up */
+	g_object_set_data (G_OBJECT (session), "gp11-open-session-flags", GUINT_TO_POINTER (flags));
+	
+	return session;
+}
 
 /* ----------------------------------------------------------------------------
  * OBJECT
@@ -28,6 +220,7 @@ static void
 gp11_slot_get_property (GObject *obj, guint prop_id, GValue *value, 
                         GParamSpec *pspec)
 {
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (obj);
 	GP11Slot *slot = GP11_SLOT (obj);
 
 	switch (prop_id) {
@@ -36,6 +229,9 @@ gp11_slot_get_property (GObject *obj, guint prop_id, GValue *value,
 		break;
 	case PROP_HANDLE:
 		g_value_set_uint (value, slot->handle);
+		break;
+	case PROP_REUSE_SESSIONS:
+		g_value_set_boolean (value, pv->open_sessions != NULL);
 		break;
 	}
 }
@@ -57,6 +253,12 @@ gp11_slot_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (!slot->handle);
 		slot->handle = g_value_get_uint (value);
 		break;
+	case PROP_REUSE_SESSIONS:
+		if (g_value_get_boolean (value))
+			create_session_table (slot);
+		else
+			destroy_session_table (slot);
+		break;
 	}
 }
 
@@ -64,7 +266,10 @@ static void
 gp11_slot_dispose (GObject *obj)
 {
 	GP11Slot *slot = GP11_SLOT (obj);
-	
+
+	/* Need to do this before the module goes away */
+	destroy_session_table (slot);
+
 	if (slot->module)
 		g_object_unref (slot->module);
 	slot->module = NULL;
@@ -102,6 +307,12 @@ gp11_slot_class_init (GP11SlotClass *klass)
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 		g_param_spec_uint ("handle", "Handle", "PKCS11 Slot ID",
 		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_REUSE_SESSIONS,
+		g_param_spec_boolean ("reuse-sessions", "Reuse Sessions", "Reuse sessions?",
+		                      FALSE, G_PARAM_READWRITE));
+	
+	g_type_class_add_private (gobject_class, sizeof (GP11SlotPrivate));
 }
 
 /* ----------------------------------------------------------------------------
@@ -136,6 +347,20 @@ gp11_mechanism_info_free (GP11MechanismInfo *mech_info)
 	if (!mech_info)
 		return;
 	g_free (mech_info);
+}
+
+gboolean
+gp11_slot_get_reuse_sessions (GP11Slot *slot)
+{
+	gboolean reuse = FALSE;
+	g_object_get (slot, "reuse-sessions", &reuse, NULL);
+	return reuse;
+}
+
+void
+gp11_slot_set_reuse_sessions (GP11Slot *slot, gboolean reuse)
+{
+	g_object_set (slot, "reuse-sessions", reuse, NULL);
 }
 
 GP11SlotInfo*
@@ -365,11 +590,18 @@ GP11Session*
 gp11_slot_open_session_full (GP11Slot *slot, guint flags, GCancellable *cancellable, GError **err)
 {
 	OpenSession args = { GP11_ARGUMENTS_INIT, flags, 0 };
+	CK_SESSION_HANDLE handle;
 	
+	/* Try to use a cached session */
+	handle = pop_session_table (slot, flags);
+	if (handle != 0)
+		return make_session_object (slot, flags, handle);
+	
+	/* Open a new session */
 	if (!_gp11_call_sync (slot, perform_open_session, &args, cancellable, err))
 		return FALSE;
 	
-	return gp11_session_from_handle (slot, args.session);
+	return make_session_object (slot, flags, args.session);
 }
 
 void
@@ -379,10 +611,14 @@ gp11_slot_open_session_async (GP11Slot *slot, guint flags, GCancellable *cancell
 	OpenSession *args = _gp11_call_async_prep (slot, perform_open_session,
 	                                           sizeof (*args), NULL);
 	
+	/* Try to use a cached session */
+	args->session = pop_session_table (slot, flags);
 	args->flags = flags;
-	args->session = 0;
 	
-	_gp11_call_async_go (args, cancellable, callback, user_data);
+	if (args->session)
+		_gp11_call_async_short (args, callback, user_data);
+	else
+		_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
 GP11Session*
@@ -394,43 +630,5 @@ gp11_slot_open_session_finish (GP11Slot *slot, GAsyncResult *result, GError **er
 		return NULL;
 	
 	args = _gp11_call_arguments (result, OpenSession);
-	return gp11_session_from_handle (slot, args->session);
+	return make_session_object (slot, args->flags, args->session);
 }
-
-#if UNIMPLEMENTED
-
-static CK_RV
-perform_close_all_sessions (GP11Arguments *args)
-{
-	return (args->pkcs11->C_CloseAllSessions) (args->handle);
-}
-
-gboolean
-gp11_slot_close_all_sessions (GP11Slot *slot, GError **err)
-{
-	return gp11_slot_close_all_sessions_full (slot, NULL, err);
-}
-
-gboolean
-gp11_slot_close_all_sessions_full (GP11Slot *slot, GCancellable *cancellable, GError **err)
-{
-	GP11Arguments args = GP11_ARGUMENTS_INIT;
-	return _gp11_call_sync (slot, perform_close_all_sessions, &args, cancellable, err);
-}
-
-void
-gp11_slot_close_all_sessions_async (GP11Slot *slot, GCancellable *cancellable, 
-                                    GAsyncReadyCallback callback, gpointer user_data)
-{
-	GP11Arguments *args = _gp11_call_async_prep (slot, perform_close_all_sessions, 0, NULL);
-	_gp11_call_async_go (args, cancellable, callback, user_data);	
-}
-
-gboolean
-gp11_slot_close_all_sessions_finish (GP11Slot *slot, GAsyncResult *result,
-                                     GError **err)
-{
-	return _gp11_call_basic_finish (slot, result, err);
-}
-
-#endif

@@ -9,6 +9,10 @@
 
 G_BEGIN_DECLS
 
+/* ---------------------------------------------------------------------------
+ * ATTRIBUTE INTERNALS
+ */
+
 void                _gp11_attribute_init_take               (GP11Attribute *attr, 
                                                              guint attr_type,
                                                              gpointer value,
@@ -90,6 +94,10 @@ gpointer           _gp11_call_async_prep                  (gpointer object,
 void               _gp11_call_async_go                    (gpointer args, 
                                                            GCancellable *cancellable, 
                                                            GAsyncReadyCallback callback, 
+                                                           gpointer user_data);
+
+void                _gp11_call_async_short                (gpointer data, 
+                                                           GAsyncReadyCallback callback,
                                                            gpointer user_data);
 
 gboolean           _gp11_call_basic_finish                (gpointer object,

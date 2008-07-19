@@ -302,6 +302,11 @@ struct _GP11SlotClass {
 
 GType               gp11_slot_get_type                      (void) G_GNUC_CONST;
 
+gboolean            gp11_slot_get_reuse_sessions            (GP11Slot *slot);
+
+void                gp11_slot_set_reuse_sessions            (GP11Slot *slot, 
+                                                             gboolean reuse);
+
 GP11SlotInfo*       gp11_slot_get_info                      (GP11Slot *slot);
 
 GP11TokenInfo*      gp11_slot_get_token_info                (GP11Slot *slot);
@@ -378,11 +383,13 @@ struct _GP11Session {
 	GObject parent;
 	
 	GP11Module *module;
-	CK_SLOT_ID handle;	
+	CK_SESSION_HANDLE handle;	
 };
 
 struct _GP11SessionClass {
 	GObjectClass parent;
+
+	void (*discard_handle) (GP11Session *session);
 };
 
 GType               gp11_session_get_type                   (void) G_GNUC_CONST;

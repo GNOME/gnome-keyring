@@ -304,6 +304,22 @@ _gp11_call_async_prep (gpointer object, gpointer func, gsize args_size, gpointer
 	return args;
 }
 
+void 
+_gp11_call_async_short (gpointer data, GAsyncReadyCallback callback,
+                        gpointer user_data)
+{
+	GP11Arguments *args = (GP11Arguments*)data;
+	
+	g_assert (GP11_IS_CALL (args->call));
+	
+	args->call->callback = callback;
+	args->call->user_data = user_data;
+	
+	/* Already complete, so just push it for processing in main loop */
+	g_assert (completed_queue);
+	g_async_queue_push (completed_queue, args->call);
+}
+
 void
 _gp11_call_async_go (gpointer data, GCancellable *cancellable, 
                      GAsyncReadyCallback callback, gpointer user_data)

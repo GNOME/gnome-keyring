@@ -7,12 +7,19 @@
 #include <string.h>
 
 enum {
+	DISCARD_HANDLE,
+	LAST_SIGNAL
+};
+
+enum {
 	PROP_0,
 	PROP_MODULE,
 	PROP_HANDLE
 };
 
 G_DEFINE_TYPE (GP11Session, gp11_session, G_TYPE_OBJECT);
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 /* ----------------------------------------------------------------------------
  * OBJECT
@@ -64,6 +71,15 @@ gp11_session_dispose (GObject *obj)
 {
 	GP11Session *session = GP11_SESSION (obj);
 	CK_RV rv;
+
+	g_return_if_fail (GP11_IS_SESSION (session));
+	
+	/* 
+	 * Let the world know that we're discarding the session 
+	 * handle. This allows session reuse to work.
+	 */
+	if (session->handle)
+		g_signal_emit_by_name (session, "discard-handle");
 	
 	if (session->handle) {
 		g_return_if_fail (session->module && session->module->funcs);
@@ -112,6 +128,11 @@ gp11_session_class_init (GP11SessionClass *klass)
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 		g_param_spec_uint ("handle", "Session Handle", "PKCS11 Session Handle",
 		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	
+	signals[DISCARD_HANDLE] = g_signal_new ("discard-handle", GP11_TYPE_SESSION, 
+			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GP11SessionClass, discard_handle),
+			NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+
 }
 
 /* ----------------------------------------------------------------------------
