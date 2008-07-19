@@ -96,6 +96,61 @@ DEFINE_TEST(open_close_session)
 	g_object_unref (result);
 	g_object_unref (sess);
 }
+
+DEFINE_TEST(open_reused)
+{
+	CK_OBJECT_HANDLE handle;
+	GP11Session *sess, *sess2;
+	GAsyncResult *result = NULL;
+	GError *err = NULL;
+	
+	g_assert (gp11_slot_get_reuse_sessions (slot) == FALSE);
+	gp11_slot_set_reuse_sessions (slot, TRUE);
+	g_assert (gp11_slot_get_reuse_sessions (slot) == TRUE);
+	
+	sess = gp11_slot_open_session (slot, 0, &err);
+	SUCCESS_RES (sess, err);
+	if (!sess) return;
+
+	/* Make note of the handle we saw */
+	handle = sess->handle;
+	g_object_unref (sess);
+	
+	/* Open again, and see if the same handle */
+	sess = gp11_slot_open_session (slot, 0, &err);
+	SUCCESS_RES (sess, err);
+	if (!sess) return;
+	g_assert (handle == sess->handle);
+	g_object_unref (sess);
+	
+	/* Test opening async */
+	gp11_slot_open_session_async (slot, 0, NULL, fetch_async_result, &result);
+	WAIT_UNTIL (result);
+	g_assert (result != NULL);
+	sess = gp11_slot_open_session_finish (slot, result, &err);
+	SUCCESS_RES (sess, err);
+	if (!sess) return;
+	g_assert (handle == sess->handle);
+	g_object_unref (result);
+	g_object_unref (sess);
+	
+	/* Test opening with different flags, a different session should be returned */
+	sess = gp11_slot_open_session (slot, CKF_RW_SESSION, &err);
+	SUCCESS_RES (sess, err);
+	if (!sess) return;
+	g_assert (handle != sess->handle);
+	
+	/* Now open a second session, with same flags, shouldn't return the same */
+	sess2 = gp11_slot_open_session (slot, CKF_RW_SESSION, &err);
+	SUCCESS_RES (sess2, err);
+	if (!sess2) return;
+	g_assert (sess->handle != sess2->handle);
+	
+	g_object_unref (sess);
+	g_object_unref (sess2);
+}
+
+
 DEFINE_TEST(login_logout)
 {
 	GAsyncResult *result = NULL;
