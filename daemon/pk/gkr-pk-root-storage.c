@@ -75,7 +75,7 @@ typedef struct {
 static GkrPkObject*
 prepare_object (GkrPkRootStorage *storage, GQuark location, gkrconstid digest)
 {
-	GkrPkObjectManager *manager;
+	GkrPkManager *manager;
 	GkrPkObject *object;
 	
 	manager = gkr_pk_manager_for_token ();

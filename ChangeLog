@@ -1,3 +1,8 @@
+2008-07-20  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pk/gkr-pk-root-storage.c:
+	* daemon/pkix/gkr-pkix-parser.c: Build fixes
+	
 2008-07-19  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:

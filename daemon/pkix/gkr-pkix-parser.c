@@ -349,7 +349,6 @@ gkr_pkix_parser_class_init (GkrPkixParserClass *klass)
 			g_signal_accumulator_true_handled, NULL, gkr_pkix_marshal_BOOLEAN__UINT_POINTER_UINT_POINTER, 
 			G_TYPE_BOOLEAN, 4, G_TYPE_UINT, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_POINTER);
 
-	/* Due to our use of secure memory, we use a pointer as the signal return type */
 	signals[ASK_PASSWORD] = g_signal_new ("ask-password", GKR_TYPE_PKIX_PARSER, 
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GkrPkixParserClass, ask_password),
 			g_signal_accumulator_true_handled, NULL, gkr_pkix_marshal_BOOLEAN__UINT_POINTER_UINT_STRING_POINTER_POINTER, 
