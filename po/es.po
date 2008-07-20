@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-14 23:31+0000\n"
-"PO-Revision-Date: 2008-07-16 22:32+0200\n"
+"POT-Creation-Date: 2008-07-16 20:35+0000\n"
+"PO-Revision-Date: 2008-07-20 14:59+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -746,35 +746,35 @@ msgstr "El campo no es válido o no existe"
 
 #: ../gp11/gp11-misc.c:63
 msgid "Invalid value for field"
-msgstr ""
+msgstr "Valor no válido para el campo"
 
 #: ../gp11/gp11-misc.c:65
 msgid "The data is not valid or unrecognized"
-msgstr ""
+msgstr "El dato no es válido o reconocible"
 
 #: ../gp11/gp11-misc.c:67
 msgid "The data is too long"
-msgstr ""
+msgstr "El dato es demasiado largo"
 
 #: ../gp11/gp11-misc.c:69
 msgid "An error occurred on the device"
-msgstr ""
+msgstr "Ocurrió un error en el dispositivo"
 
 #: ../gp11/gp11-misc.c:71
 msgid "Insufficient memory available on device"
-msgstr ""
+msgstr "No hay memoria suficiente en el dispositivo"
 
 #: ../gp11/gp11-misc.c:73
 msgid "The device was removed or unplugged"
-msgstr ""
+msgstr "El dispositivo se extrajo o desconectó"
 
 #: ../gp11/gp11-misc.c:75
 msgid "The encrypted data is not valid or unrecognized"
-msgstr ""
+msgstr "El dato cifrados no son válidos o reconocibles"
 
 #: ../gp11/gp11-misc.c:77
 msgid "The encrypted data is too long"
-msgstr ""
+msgstr "El dato cifrado es demasiado largo"
 
 #: ../gp11/gp11-misc.c:79
 msgid "This operation is not supported"
@@ -998,11 +998,11 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:189
 msgid "The state cannot be saved"
-msgstr ""
+msgstr "El estado no se puede guardar"
 
 #: ../gp11/gp11-misc.c:191
 msgid "The module has not been initialized"
-msgstr ""
+msgstr "El módulo no se ha inicializado"
 
 #: ../gp11/gp11-misc.c:193
 msgid "The module has already been initialized"
