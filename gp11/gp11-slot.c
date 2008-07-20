@@ -3,6 +3,7 @@
 
 #include "gp11.h"
 #include "gp11-private.h"
+#include "gp11-marshal.h"
 
 #include <string.h>
 
@@ -10,12 +11,23 @@ enum {
 	PROP_0,
 	PROP_MODULE,
 	PROP_HANDLE,
-	PROP_REUSE_SESSIONS
+	PROP_REUSE_SESSIONS,
+	PROP_AUTO_LOGIN
+};
+
+enum {
+	AUTHENTICATE_TOKEN,
+#ifdef UNIMPLEMENTED
+	AUTHENTICATE_KEY,
+	SLOT_EVENT
+#endif
+	LAST_SIGNAL
 };
 
 typedef struct _GP11SlotPrivate {
-	gboolean reuse_sessions;
+	gboolean auto_login;
 	GHashTable *open_sessions;
+	GP11TokenInfo *token_info;
 } GP11SlotPrivate;
 
 G_DEFINE_TYPE (GP11Slot, gp11_slot, G_TYPE_OBJECT);
@@ -28,6 +40,8 @@ typedef struct _SessionPool {
 	GP11Module *module; /* weak */
 	GSList *sessions; /* list of CK_SESSION_HANDLE */
 } SessionPool;
+
+static guint signals[LAST_SIGNAL] = { 0 }; 
 
 /* ----------------------------------------------------------------------------
  * HELPERS
@@ -206,6 +220,14 @@ make_session_object (GP11Slot *slot, guint flags, CK_SESSION_HANDLE handle)
 	return session;
 }
 
+static void 
+ensure_token_info (GP11Slot *slot)
+{
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	if (!pv->token_info) 
+		pv->token_info = gp11_slot_get_token_info (slot);
+}
+
 /* ----------------------------------------------------------------------------
  * OBJECT
  */
@@ -230,6 +252,9 @@ gp11_slot_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_HANDLE:
 		g_value_set_uint (value, slot->handle);
 		break;
+	case PROP_AUTO_LOGIN:
+		g_value_set_boolean (value, pv->auto_login);
+		break;
 	case PROP_REUSE_SESSIONS:
 		g_value_set_boolean (value, pv->open_sessions != NULL);
 		break;
@@ -240,6 +265,7 @@ static void
 gp11_slot_set_property (GObject *obj, guint prop_id, const GValue *value, 
                         GParamSpec *pspec)
 {
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (obj);
 	GP11Slot *slot = GP11_SLOT (obj);
 
 	switch (prop_id) {
@@ -252,6 +278,9 @@ gp11_slot_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_HANDLE:
 		g_return_if_fail (!slot->handle);
 		slot->handle = g_value_get_uint (value);
+		break;
+	case PROP_AUTO_LOGIN:
+		pv->auto_login = g_value_get_boolean (value);
 		break;
 	case PROP_REUSE_SESSIONS:
 		if (g_value_get_boolean (value))
@@ -308,11 +337,51 @@ gp11_slot_class_init (GP11SlotClass *klass)
 		g_param_spec_uint ("handle", "Handle", "PKCS11 Slot ID",
 		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	g_object_class_install_property (gobject_class, PROP_AUTO_LOGIN,
+		g_param_spec_boolean ("auto-login", "Auto Login", "Auto Login to Token when necessary",
+		                      FALSE, G_PARAM_READWRITE));
+	
 	g_object_class_install_property (gobject_class, PROP_REUSE_SESSIONS,
 		g_param_spec_boolean ("reuse-sessions", "Reuse Sessions", "Reuse sessions?",
 		                      FALSE, G_PARAM_READWRITE));
 	
+	signals[AUTHENTICATE_TOKEN] = g_signal_new ("authenticate-token", GP11_TYPE_SLOT, 
+			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GP11SlotClass, authenticate_token),
+			g_signal_accumulator_true_handled, NULL, _gp11_marshal_BOOLEAN__POINTER, 
+			G_TYPE_BOOLEAN, 1, G_TYPE_POINTER);
+
 	g_type_class_add_private (gobject_class, sizeof (GP11SlotPrivate));
+}
+
+/* ----------------------------------------------------------------------------
+ * INTERNAL
+ */
+
+gboolean 
+_gp11_slot_token_authentication (GP11Slot *slot, gchar **password)
+{
+	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	gboolean ret = FALSE;
+	
+	g_return_val_if_fail (GP11_IS_SLOT (slot), FALSE);
+	g_return_val_if_fail (password, FALSE);
+	
+	if (!pv->auto_login)
+		return FALSE;
+
+	/* 
+	 * If it's a protected authentication path style token, then 
+	 * we don't prompt here, the hardware/software is expected
+	 * to prompt the user in some other way.
+	 */
+	ensure_token_info (slot);
+	if (pv->token_info && (pv->token_info->flags & CKF_PROTECTED_AUTHENTICATION_PATH)) {
+		*password = NULL;
+		return TRUE;
+	}
+		
+	g_signal_emit (slot, signals[AUTHENTICATE_TOKEN], 0, password, &ret);
+	return ret;
 }
 
 /* ----------------------------------------------------------------------------
@@ -361,6 +430,20 @@ void
 gp11_slot_set_reuse_sessions (GP11Slot *slot, gboolean reuse)
 {
 	g_object_set (slot, "reuse-sessions", reuse, NULL);
+}
+
+gboolean
+gp11_slot_get_auto_login (GP11Slot *slot)
+{
+	gboolean auto_login = FALSE;
+	g_object_get (slot, "auto-login", &auto_login, NULL);
+	return auto_login;
+}
+
+void
+gp11_slot_set_auto_login (GP11Slot *slot, gboolean auto_login)
+{
+	g_object_set (slot, "auto-login", auto_login, NULL);
 }
 
 GP11SlotInfo*

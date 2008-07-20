@@ -104,8 +104,6 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 static CK_RV
 test_C_Finalize (CK_VOID_PTR pReserved)
 {
-	
-	
 	g_assert (pReserved == NULL && "Invalid reserved pointer");
 	g_assert (initialized == TRUE && "Finalize without being initialized");
 	
@@ -199,8 +197,6 @@ const static CK_SLOT_INFO TEST_INFO_TWO = {
 static CK_RV
 test_C_GetSlotInfo (CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo)
 {
-	
-	
 	g_assert (pInfo != NULL && "Invalid pInfo");
 	
 	if (slotID == TEST_SLOT_ONE) {
@@ -220,7 +216,7 @@ const static CK_TOKEN_INFO TEST_TOKEN_ONE = {
 	"TEST MANUFACTURER               ",
 	"TEST MODEL      ",
 	"TEST SERIAL     ",
-	CKF_LOGIN_REQUIRED | CKF_USER_PIN_INITIALIZED | CKF_CLOCK_ON_TOKEN | CKF_PROTECTED_AUTHENTICATION_PATH | CKF_TOKEN_INITIALIZED,
+	CKF_LOGIN_REQUIRED | CKF_USER_PIN_INITIALIZED | CKF_CLOCK_ON_TOKEN | CKF_TOKEN_INITIALIZED,
 	1,
 	2,
 	3,
@@ -239,8 +235,6 @@ const static CK_TOKEN_INFO TEST_TOKEN_ONE = {
 static CK_RV
 test_C_GetTokenInfo (CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo)
 {
-	
-	
 	g_assert (pInfo != NULL && "Invalid pInfo");
 	
 	if (slotID == TEST_SLOT_ONE) {
@@ -297,8 +291,6 @@ static CK_RV
 test_C_GetMechanismInfo (CK_SLOT_ID slotID, CK_MECHANISM_TYPE type, 
                        CK_MECHANISM_INFO_PTR pInfo)
 {
-	
-
 	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
 	g_assert (pInfo != NULL && "Invalid pInfo");
 
@@ -507,7 +499,7 @@ test_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 {
 	GP11Attributes *attrs;
 	Session *session;
-	gboolean token;
+	gboolean token, priv;
 	CK_ULONG i;
 
 	g_assert (phObject != NULL);
@@ -516,10 +508,17 @@ test_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
-
+	
 	attrs = gp11_attributes_new ();
 	for (i = 0; i < ulCount; ++i) 
 		gp11_attributes_add_data (attrs, pTemplate[i].type, pTemplate[i].pValue, pTemplate[i].ulValueLen);
+	
+	if (gp11_attributes_find_boolean (attrs, CKA_PRIVATE, &priv) && priv) {
+		if (!session->logged_in) {
+			gp11_attributes_unref (attrs);
+			return CKR_USER_NOT_LOGGED_IN;
+		}
+	}
 	
 	*phObject = ++unique_identifier;
 	if (gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token) && token)
@@ -543,19 +542,28 @@ test_C_CopyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
 static CK_RV
 test_C_DestroyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject)
 {
+	GP11Attributes *attrs;
 	Session *session;
+	gboolean priv;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
-	if (!g_hash_table_remove (the_objects, GUINT_TO_POINTER (hObject)) && 
-	    !g_hash_table_remove (session->objects, GUINT_TO_POINTER (hObject))) {
+	attrs = g_hash_table_lookup (the_objects, GUINT_TO_POINTER (hObject));
+	if (!attrs)
+		attrs = g_hash_table_lookup (session->objects, GUINT_TO_POINTER (hObject));
+	if (!attrs) {
 		g_assert_not_reached (); /* "no such object found" */
 		return CKR_OBJECT_HANDLE_INVALID;
 	}
-		
+	
+	if (gp11_attributes_find_boolean (attrs, CKA_PRIVATE, &priv) && priv) {
+		if (!session->logged_in)
+			return CKR_USER_NOT_LOGGED_IN;
+	}
+
 	return CKR_OK;
 }
 

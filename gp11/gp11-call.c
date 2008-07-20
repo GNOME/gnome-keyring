@@ -1,6 +1,7 @@
 
 #include "gp11-private.h"
 
+#include <string.h>
 
 static GThreadPool *thread_pool = NULL;
 static GAsyncQueue *completed_queue = NULL;
@@ -48,12 +49,27 @@ static void
 process_async_call (gpointer data, gpointer unused)
 {
 	GP11Call *call = GP11_CALL (data);
-	g_assert (GP11_IS_CALL (call));
-
-	g_assert (call->rv == CKR_OK);
+	CK_ULONG pin_len;
 	
-	call->rv = perform_call (call->func, call->cancellable, 
-	                         call->args);
+	g_assert (GP11_IS_CALL (call));
+	
+	/* Try to login to the token, with the provided password */
+	if (call->do_login) {
+		call->do_login = FALSE;
+
+		pin_len = call->password ? strlen (call->password) : 0;
+		call->rv = (call->args->pkcs11->C_Login) (call->args->handle, CKU_USER, 
+		                                          (CK_UTF8CHAR_PTR)call->password, 
+		                                          pin_len);
+		
+		/* Fix the result so that we'll try the login again */
+		if (call->rv == CKR_PIN_INCORRECT)
+			call->rv = CKR_USER_NOT_LOGGED_IN;
+		
+	/* An actual call */
+	} else {
+		call->rv = perform_call (call->func, call->cancellable, call->args);
+	}
 	
 	g_async_queue_push (completed_queue, call);
 	
@@ -69,9 +85,28 @@ process_result (GP11Call *call, gpointer unused)
 	if (call->cancellable) {
 		/* Don't call the callback when cancelled */
 		if (g_cancellable_is_cancelled (call->cancellable))
-			return;
+			call->rv = CKR_FUNCTION_CANCELED;
 	}
 	
+	/* 
+	 * Now if this is a session call, and the slot wants does 
+	 * auto-login, then we try to get a password and do auto login.
+	 */
+	if (call->rv == CKR_USER_NOT_LOGGED_IN && GP11_IS_SESSION (call->object)) {
+		g_free (call->password);
+		call->password = NULL;
+		call->do_login = _gp11_slot_token_authentication (GP11_SESSION (call->object)->slot, 
+		                                                  &call->password);
+	}
+	
+	/* If we're supposed to do a login, then queue this call again */
+	if (call->do_login) {
+		g_object_ref (call);
+		g_thread_pool_push (thread_pool, call, NULL);
+		return;
+	}
+	
+	/* All done, finish processing */
 	if (call->callback) {
 		g_assert (G_IS_OBJECT (call->object));
 		(call->callback) (G_OBJECT (call->object), G_ASYNC_RESULT (call), 
@@ -153,6 +188,10 @@ _gp11_call_finalize (GObject *obj)
 		(call->destroy) (call->args);
 	call->destroy = NULL;
 	call->args = NULL;
+	
+	if (call->password)
+		g_free (call->password);
+	call->password = NULL;
 	
 	G_OBJECT_CLASS (_gp11_call_parent_class)->finalize (obj);
 }
@@ -247,7 +286,9 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
                  GCancellable *cancellable, GError **err)
 {
 	GP11Arguments *args = (GP11Arguments*)data;
-	GP11Module *module;
+	gchar *password = NULL;
+	GP11Module *module = NULL;
+	CK_ULONG pin_len;
 	CK_RV rv;
 	
 	g_assert (G_IS_OBJECT (object));
@@ -261,9 +302,32 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
 	g_object_unref (module);
 	
 	rv = perform_call ((GP11CallFunc)func, cancellable, args);
+		
+	/* 
+	 * Now if this is a session call, and the slot wants does 
+	 * auto-login, then we try to get a password and do auto login.
+	 */
+	if (rv == CKR_USER_NOT_LOGGED_IN && GP11_IS_SESSION (object)) {
+		
+		do {
+			if (!_gp11_slot_token_authentication (GP11_SESSION (object)->slot, 
+			                                      &password)) {
+				rv = CKR_USER_NOT_LOGGED_IN;
+			} else {
+				pin_len = password ? strlen (password) : 0; 
+				rv = (args->pkcs11->C_Login) (args->handle, CKU_USER, 
+				                              (CK_UTF8CHAR_PTR)password, pin_len);
+			}
+		} while (rv == CKR_PIN_INCORRECT);
+
+		/* If we logged in successfully then try again */
+		if (rv == CKR_OK)
+			rv = perform_call ((GP11CallFunc)func, cancellable, args);
+	}
+
 	if (rv == CKR_OK)
 		return TRUE;
-	
+
 	g_set_error (err, GP11_ERROR, rv, gp11_message_from_rv (rv));
 	return FALSE;
 }

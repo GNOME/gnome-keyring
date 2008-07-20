@@ -194,3 +194,64 @@ DEFINE_TEST(login_logout)
 	result = NULL;
 
 }
+
+static gboolean
+authenticate_token (GP11Slot *slot, gchar **password, gpointer unused)
+{
+	g_assert (unused == GUINT_TO_POINTER (35));
+	g_assert (password != NULL);
+	g_assert (*password == NULL);
+	g_assert (GP11_IS_SLOT (slot));
+	
+	*password = g_strdup ("booo");
+	return TRUE;
+}
+
+DEFINE_TEST(auto_login)
+{
+	GP11Object *object;
+	GAsyncResult *result = NULL;
+	GError *err = NULL;
+	GP11Attributes *attrs;
+	gboolean ret;
+	
+	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_DATA,
+	                              CKA_LABEL, GP11_STRING, "TEST OBJECT",
+	                              CKA_PRIVATE, GP11_BOOLEAN, CK_TRUE,
+	                              -1);
+	
+	/* Try to do something that requires a login */
+	object = gp11_session_create_object_full (session, attrs, NULL, &err); 
+	g_assert (!object);
+	g_assert (err && err->code == CKR_USER_NOT_LOGGED_IN);
+	g_clear_error (&err);
+	
+	/* Setup for auto login */
+	g_assert (gp11_slot_get_auto_login (slot) == FALSE);
+	gp11_slot_set_auto_login (slot, TRUE);
+	g_assert (gp11_slot_get_auto_login (slot) == TRUE);
+	
+	g_signal_connect (slot, "authenticate-token", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
+
+	/* Try again to do something that requires a login */
+	object = gp11_session_create_object_full (session, attrs, NULL, &err); 
+	SUCCESS_RES (object, err);
+	g_object_unref (object);
+	
+	/* We should now be logged in, try to log out */
+	ret = gp11_session_logout (session, &err);
+	SUCCESS_RES (ret, err);
+	
+	/* Now try the same thing, but asyncronously */
+	gp11_session_create_object_async (session, attrs, NULL, fetch_async_result, &result); 
+	WAIT_UNTIL (result);
+	g_assert (result != NULL);
+	object = gp11_session_create_object_finish (session, result, &err);
+	SUCCESS_RES (object, err);
+	g_object_unref (result);
+	g_object_unref (object);
+
+	/* We should now be logged in, try to log out */
+	ret = gp11_session_logout (session, &err);
+	SUCCESS_RES (ret, err);
+}

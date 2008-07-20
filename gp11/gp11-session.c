@@ -14,7 +14,8 @@ enum {
 enum {
 	PROP_0,
 	PROP_MODULE,
-	PROP_HANDLE
+	PROP_HANDLE,
+	PROP_SLOT
 };
 
 G_DEFINE_TYPE (GP11Session, gp11_session, G_TYPE_OBJECT);
@@ -44,6 +45,9 @@ gp11_session_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_HANDLE:
 		g_value_set_uint (value, session->handle);
 		break;
+	case PROP_SLOT:
+		g_value_set_object(value, session->slot);
+		break;
 	}
 }
 
@@ -62,6 +66,11 @@ gp11_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_HANDLE:
 		g_return_if_fail (!session->handle);
 		session->handle = g_value_get_uint (value);
+		break;
+	case PROP_SLOT:
+		g_return_if_fail (!session->slot);
+		session->slot = g_value_dup_object (value);
+		g_return_if_fail (session->slot);
 		break;
 	}
 }
@@ -91,10 +100,14 @@ gp11_session_dispose (GObject *obj)
 		session->handle = 0;
 	}
 	
+	if (session->slot)
+		g_object_unref (session->slot);
+	session->slot = NULL;
+
 	if (session->module)
 		g_object_unref (session->module);
 	session->module = NULL;
-
+	
 	G_OBJECT_CLASS (gp11_session_parent_class)->dispose (obj);
 }
 
@@ -128,6 +141,10 @@ gp11_session_class_init (GP11SessionClass *klass)
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 		g_param_spec_uint ("handle", "Session Handle", "PKCS11 Session Handle",
 		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_SLOT,
+		g_param_spec_object ("slot", "Slot that this session uses", "PKCS11 Slot",
+		                     GP11_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
 	signals[DISCARD_HANDLE] = g_signal_new ("discard-handle", GP11_TYPE_SESSION, 
 			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GP11SessionClass, discard_handle),
@@ -151,7 +168,8 @@ GP11Session*
 gp11_session_from_handle (GP11Slot *slot, CK_SESSION_HANDLE handle)
 {
 	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
-	return g_object_new (GP11_TYPE_SESSION, "module", slot->module, "handle", handle, NULL);
+	return g_object_new (GP11_TYPE_SESSION, "module", slot->module, 
+	                     "handle", handle, "slot", slot, NULL);
 }
 
 GP11SessionInfo*

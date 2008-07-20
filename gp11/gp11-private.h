@@ -26,6 +26,13 @@ void                _gp11_attributes_add_take               (GP11Attributes *att
 CK_ATTRIBUTE_PTR    _gp11_attributes_raw                    (GP11Attributes *attrs);
 
 /* ----------------------------------------------------------------------------
+ * SLOT
+ */
+
+gboolean            _gp11_slot_token_authentication       (GP11Slot *slot, 
+                                                           gchar **password);
+
+/* ----------------------------------------------------------------------------
  * CALL
  */
 
@@ -42,7 +49,7 @@ typedef struct _GP11Arguments {
 	
 } GP11Arguments;
 
-#define GP11_ARGUMENTS_INIT 	{ NULL, NULL, 0 }
+#define GP11_ARGUMENTS_INIT 	   { NULL, NULL, 0 }
 
 #define GP11_TYPE_CALL             (_gp11_call_get_type())
 #define GP11_CALL(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), GP11_TYPE_CALL, GP11Call))
@@ -67,6 +74,10 @@ struct _GP11Call {
 	gpointer object;
 	GAsyncReadyCallback callback;
 	gpointer user_data;
+	
+	/* For authenticating */
+	gboolean do_login;
+	gchar *password;
 };
 
 struct _GP11CallClass {

@@ -296,8 +296,16 @@ struct _GP11Slot {
 
 struct _GP11SlotClass {
 	GObjectClass parent;
+
+	gboolean (*authenticate_token) (GP11Slot *slot, gchar **password);
 	
+#ifdef UNIMPLEMENTED
+	gboolean (*authenticate_key) (GP11Slot *slot, GP11Object *object, 
+	                              gchar **password);
+
 	void (*slot_event) (GP11Slot *slot);
+#endif
+	
 };
 
 GType               gp11_slot_get_type                      (void) G_GNUC_CONST;
@@ -306,6 +314,13 @@ gboolean            gp11_slot_get_reuse_sessions            (GP11Slot *slot);
 
 void                gp11_slot_set_reuse_sessions            (GP11Slot *slot, 
                                                              gboolean reuse);
+
+gboolean            gp11_slot_get_auto_login                (GP11Slot *slot);
+
+void                gp11_slot_set_auto_login                (GP11Slot *slot, 
+                                                             gboolean auto_login);
+
+gint                gp11_slot_get_max_pin_length            (GP11Slot *slot);
 
 GP11SlotInfo*       gp11_slot_get_info                      (GP11Slot *slot);
 
@@ -382,6 +397,7 @@ typedef struct _GP11SessionClass GP11SessionClass;
 struct _GP11Session {
 	GObject parent;
 	
+	GP11Slot *slot;
 	GP11Module *module;
 	CK_SESSION_HANDLE handle;	
 };
