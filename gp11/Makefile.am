@@ -48,7 +48,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gp11-$(GP11_MAJOR).pc
 
 EXTRA_DIST = \
-	gp11.pc.in
+	gp11.pc.in \
+	gp11-marshal.list
     
 DISTCLEANFILES = \
 	gp11-$(GP11_MAJOR).pc

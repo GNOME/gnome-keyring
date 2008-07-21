@@ -1,3 +1,18 @@
+Changes in version 2.23.5 are:
+* Load all SSH keys in ~/.ssh named id_?sa*, not just id_rsa 
+  and id_dsa. Also load public portions of keys when needed ie: *.pub
+* Include new GP11 library, which is a GLib wrapper for PKCS#11
+* Add ability to import keys/certificates to PKCS#11.
+* Better storage and creation of PKCS#11 objects.
+* Start using GTest for new unit testing.
+* Better indexing of keys and certificates.
+* Better buffer handling, and threading fixes. [Jon Burgress] 
+* Fix warnings in logs caused by programs checking whether 
+  gnome-keyring is available.
+* Standardize on libgcrypt random number generator. 
+* Add --disable-acl-prompts option to disable all ACL prompting [Colin Walters]
+* Build fixes. 
+
 Changes in version 2.22.2 are:
 * Streamline the importing of keys and make the proper prompts show up
   consistently. Better fixes for this to come in 2.24.x
