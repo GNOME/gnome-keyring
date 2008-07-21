@@ -29,7 +29,7 @@ struct _GkrPkRootStorageClass {
 
 GType                   gkr_pk_root_storage_get_type          (void) G_GNUC_CONST;
 
-GkrPkRootStorage*       gkr_pk_root_storage_new               (void);
+gboolean                gkr_pk_root_storage_initialize        (void);
 
 G_END_DECLS
 

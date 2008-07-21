@@ -1,5 +1,17 @@
 2008-07-20  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c:
+	* daemon/pk/gkr-pk-index.c:
+	* daemon/pk/gkr-pk-object-storage.c:
+	* daemon/pk/gkr-pk-places.h: (removed)
+	* daemon/pk/gkr-pk-root-storage.c:
+	* daemon/pk/gkr-pk-root-storage.h:
+	* daemon/pk/Makefile.am: Initialize root storage properly.
+
+	* pk/gkr-pk-object.c: Default name for Netscape Trust
+	
+2008-07-20  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pk/gkr-pk-root-storage.c:
 	* daemon/pkix/gkr-pkix-parser.c: Build fixes
 	

@@ -27,7 +27,6 @@
 #include "gkr-pk-index.h"
 #include "gkr-pk-manager.h"
 #include "gkr-pk-object-storage.h"
-#include "gkr-pk-places.h"
 #include "gkr-pk-privkey.h"
 #include "gkr-pk-util.h"
 

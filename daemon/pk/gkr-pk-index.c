@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include "gkr-pk-index.h"
-#include "gkr-pk-places.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"

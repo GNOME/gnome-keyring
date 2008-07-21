@@ -36,6 +36,9 @@
 #include "library/gnome-keyring.h"
 
 #include "pk/gkr-pk-object-storage.h"
+#ifdef ROOT_CERTIFICATES
+#include "pk/gkr-pk-root-storage.h"
+#endif
 
 #include "pkcs11/gkr-pkcs11-daemon.h"
 
@@ -458,6 +461,11 @@ main (int argc, char *argv[])
 	/* Initialize object storage */
 	if (!gkr_pk_object_storage_initialize ())
 		cleanup_and_exit (1);
+	
+#ifdef ROOT_CERTIFICATES
+	if (!gkr_pk_root_storage_initialize ())
+		cleanup_and_exit (1);
+#endif
 
 	/* Initialize the appropriate components */
 	if (check_run_component ("keyring")) {

@@ -56,6 +56,7 @@ typedef struct _GkrPkRootStoragePrivate GkrPkRootStoragePrivate;
 struct _GkrPkRootStoragePrivate {
 	gkrid specific_load_request;
 	GkrLocationWatch *watch;
+	GkrPkIndex *index;
 };
 
 #define GKR_PK_ROOT_STORAGE_GET_PRIVATE(o) \
@@ -106,7 +107,7 @@ parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest,
  	g_return_val_if_fail (type != 0, FALSE);
  	
  	/* We only handle certificates */
- 	if (type == GKR_PKIX_CERTIFICATE)
+ 	if (type != GKR_PKIX_CERTIFICATE)
  		return FALSE;
  	
 	object = prepare_object (ctx->storage, location, digest);
@@ -212,6 +213,31 @@ gkr_pk_root_storage_load (GkrPkStorage *storage, GkrPkObject *obj, GError **err)
 	return ret;
 }
 
+static GkrPkIndex* 
+gkr_pk_root_storage_index (GkrPkStorage *storage, GQuark unused)
+{
+ 	GkrPkRootStoragePrivate *pv = GKR_PK_ROOT_STORAGE_GET_PRIVATE (storage);
+ 	GnomeKeyringAttributeList *attrs;
+	GQuark kloc;
+	
+	if (!pv->index) {
+		/* We default to a keyring stored on the computer */
+		kloc = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, 
+		                                "pk-storage.keyring");
+		
+		/* Default attributes for our index */
+		attrs = gnome_keyring_attribute_list_new ();
+		gnome_keyring_attribute_list_append_string (attrs, "user-trust", "trusted");
+		
+		pv->index = gkr_pk_index_open (kloc, "pk-storage", attrs);
+		gnome_keyring_attribute_list_free (attrs);
+		
+		g_return_val_if_fail (pv->index, NULL);
+	}
+	
+	return pv->index;
+}
+
 static void
 gkr_pk_root_storage_init (GkrPkRootStorage *storage)
 {
@@ -234,6 +260,10 @@ gkr_pk_root_storage_dispose (GObject *obj)
 	GkrPkRootStorage *storage = GKR_PK_ROOT_STORAGE (obj);
  	GkrPkRootStoragePrivate *pv = GKR_PK_ROOT_STORAGE_GET_PRIVATE (obj);
  	
+	if (pv->index)
+		g_object_unref (pv->index);
+	pv->index = NULL;
+
 	g_signal_handlers_disconnect_by_func (pv->watch, location_load, storage);
 	g_signal_handlers_disconnect_by_func (pv->watch, location_remove, storage);
  	
@@ -263,6 +293,7 @@ gkr_pk_root_storage_class_init (GkrPkRootStorageClass *klass)
 
 	storage_class->refresh = gkr_pk_root_storage_refresh;
 	storage_class->load = gkr_pk_root_storage_load;
+	storage_class->index = gkr_pk_root_storage_index;
 	
 	gkr_pk_root_storage_parent_class = g_type_class_peek_parent (klass);
 
@@ -273,8 +304,14 @@ gkr_pk_root_storage_class_init (GkrPkRootStorageClass *klass)
  * PUBLIC FUNCTIONS
  */
 
-GkrPkRootStorage*
-gkr_pk_root_storage_new (void)
+gboolean
+gkr_pk_root_storage_initialize (void)
 {
-	return g_object_new (GKR_TYPE_PK_ROOT_STORAGE, NULL);
+	GkrPkStorage *storage;
+	
+	storage = g_object_new (GKR_TYPE_PK_ROOT_STORAGE, NULL);
+	gkr_pk_storage_register (storage, FALSE);
+	g_object_unref (storage);
+	
+	return TRUE;
 }
