@@ -70,6 +70,7 @@ typedef struct _GkrLocationManagerPrivate GkrLocationManagerPrivate;
 struct _GkrLocationManagerPrivate {
 #ifdef WITH_HAL
 	LibHalContext *hal_ctx;
+	gboolean hal_inited;
 	guint hal_retry;
 	DBusConnection *dbus_connection;
 #endif
@@ -399,9 +400,14 @@ location_manager_hal_uninit (GkrLocationManager *locmgr)
 
 	if (pv->hal_ctx) {
 		dbus_error_init (&error);
-		if (pv->dbus_connection != NULL && !libhal_ctx_shutdown (pv->hal_ctx, &error)) {
-			g_warning ("failed to shutdown HAL context: %s\n", error.message);
-			dbus_error_free (&error);
+		if (pv->dbus_connection != NULL) {
+			if (pv->hal_inited) {
+				if (libhal_ctx_shutdown (pv->hal_ctx, &error)) {
+					g_warning ("failed to shutdown HAL context: %s\n", error.message);
+					dbus_error_free (&error);
+				}
+				pv->hal_inited = FALSE;
+			}
 		} 
 		
 		if (!libhal_ctx_free (pv->hal_ctx)) 
@@ -493,6 +499,7 @@ location_manager_hal_init (GkrLocationManager *locmgr)
 		goto failed;
 	}
 	
+	pv->hal_inited = TRUE;
 	libhal_ctx_set_user_data (pv->hal_ctx, locmgr);
 	
 	populate_all_volumes (locmgr);

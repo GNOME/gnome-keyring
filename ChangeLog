@@ -2,6 +2,9 @@
 
 	* pkcs11/gkr-pkcs11-module.c: Build fix. Fixes bug #543221
 	
+	* common/gkr-location.c: Fix crash in libhal_ctx_shutdown. 
+	Fixes bug #544007
+	
 2008-07-20  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon.c:
