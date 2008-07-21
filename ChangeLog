@@ -1,3 +1,7 @@
+2008-07-21  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/gkr-pkcs11-module.c: Build fix. Fixes bug #543221
+	
 2008-07-20  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon.c:

@@ -257,7 +257,7 @@ call_session_destroy (CallSession* cs)
  * not ready for use after this call. 
  */
 static CallSession*
-call_session_create ()
+call_session_create (void)
 {
 	CallSession *cs = calloc (1, sizeof (CallSession));
 	if (!cs)
@@ -1605,7 +1605,7 @@ gkr_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data,
 		return CKR_TOKEN_NOT_PRESENT;
 
 	/* Create the session */
-	cs = call_session_create (&cs);
+	cs = call_session_create ();
 	if (cs == NULL) {
 		ret = CKR_HOST_MEMORY;
 		goto cleanup;
