@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring HEAD\n"
+"Project-Id-Version: gnome-keyring 2.22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-14 23:37+0000\n"
+"POT-Creation-Date: 2008-06-30 15:24+0000\n"
 "PO-Revision-Date: 2008-03-04 18:11+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
@@ -21,21 +21,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gkr-location.c:306
+#: ../common/gkr-location.c:317
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Eemaldatav ketas: %s"
 
-#: ../common/gkr-location.c:308
+#: ../common/gkr-location.c:319
 msgid "Removable Disk"
 msgstr "Eemaldatav ketas"
 
-#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
+#: ../common/gkr-location.c:534 ../common/gkr-location.c:546
 msgid "Home"
 msgstr "Kodu"
 
-#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:497 ../pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1074 ../common/gkr-location.c:1097
+#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Selle faili asukohaks määratud ketas või seade pole kättesaadav"
 
@@ -124,15 +124,13 @@ msgstr ""
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Rakendus '%s' (%s) tahab kasutada võtmerõngast '%s', kuid see on lukus"
+msgstr "Rakendus '%s' (%s) tahab kasutada võtmerõngast '%s', kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"Rakendus '%s' tahab kasutada vaikimisi võtmerõngast, kuid see on lukus"
+msgstr "Rakendus '%s' tahab kasutada vaikimisi võtmerõngast, kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
 #, c-format
@@ -140,6 +138,7 @@ msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Rakendus '%s' tahab kasutada võtmerõngast '%s', kuid see on lukus"
 
 #: ../daemon/gkr-daemon-ops.c:399
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
@@ -215,6 +214,7 @@ msgstr ""
 "võtmerõngast kasutada, siis pead sa selle jaoks parooli määrama."
 
 #: ../daemon/gkr-daemon-ops.c:498
+#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
@@ -277,6 +277,7 @@ msgstr ""
 "võtmerõngast kasutada, siis pead sa selle jaoks parooli määrama."
 
 #: ../daemon/gkr-daemon-ops.c:586
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
@@ -290,6 +291,7 @@ msgid "Choose a new password for the '%s' keyring. "
 msgstr "Sisesta uus parool võtmerõngale '%s'."
 
 #: ../daemon/gkr-daemon-ops.c:598
+#, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Sisesta uus parool vaikimisi võtmerõngale."
 
@@ -319,6 +321,7 @@ msgstr ""
 "võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
 #: ../daemon/gkr-daemon-ops.c:684
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
@@ -434,108 +437,107 @@ msgstr ""
 "Sinu sisselogimise võtmerõngast ei loodud, kui sa sellesse arvutisse sisse "
 "logisid. See luuakse nüüd."
 
-#: ../pk/gkr-pk-object-storage.c:99
+#: ../pk/gkr-pk-object-storage.c:100
 msgid "Unlock private key"
 msgstr "Võta salajane võti lukust lahti"
 
-#: ../pk/gkr-pk-object-storage.c:101
+#: ../pk/gkr-pk-object-storage.c:102
 msgid "Unlock certificate"
 msgstr "Võta sertifikaat lukust lahti"
 
-#: ../pk/gkr-pk-object-storage.c:103
+#: ../pk/gkr-pk-object-storage.c:104
 msgid "Unlock public key"
 msgstr "Võta avalik võti lukust lahti"
 
-#: ../pk/gkr-pk-object-storage.c:105
+#: ../pk/gkr-pk-object-storage.c:106
 msgid "Unlock"
 msgstr "Võta lukust lahti"
 
-#: ../pk/gkr-pk-object-storage.c:116
+#: ../pk/gkr-pk-object-storage.c:117
 msgid "Enter password to unlock the private key"
 msgstr "Sisesta salajase võtme lukust lahtivõtmise parool"
 
-#: ../pk/gkr-pk-object-storage.c:118
+#: ../pk/gkr-pk-object-storage.c:119
 msgid "Enter password to unlock the certificate"
 msgstr "Sisesta sertifikaadi lukust lahtivõtmise parool"
 
-#: ../pk/gkr-pk-object-storage.c:120
+#: ../pk/gkr-pk-object-storage.c:121
 msgid "Enter password to unlock the public key"
 msgstr "Sisesta avaliku võtme lukust lahtivõtmise parool"
 
-#: ../pk/gkr-pk-object-storage.c:122
+#: ../pk/gkr-pk-object-storage.c:123
 msgid "Enter password to unlock"
 msgstr "Sisesta lukust lahtivõtmise parool"
 
-#: ../pk/gkr-pk-object-storage.c:133
+#: ../pk/gkr-pk-object-storage.c:134
 msgid "Automatically unlock this private key when I log in."
 msgstr ""
 "See salajane võti võetakse minu sisselogimisel automaatselt lukust lahti."
 
-#: ../pk/gkr-pk-object-storage.c:135
+#: ../pk/gkr-pk-object-storage.c:136
 msgid "Automatically unlock this certificate when I log in."
 msgstr ""
 "See sertifikaat võetakse minu sisselogimisel automaatselt lukust lahti."
 
-#: ../pk/gkr-pk-object-storage.c:137
+#: ../pk/gkr-pk-object-storage.c:138
 msgid "Automatically unlock this public key when I log in."
 msgstr ""
 "See avalik võti võetakse minu sisselogimisel automaatselt lukust lahti."
 
-#: ../pk/gkr-pk-object-storage.c:139
+#: ../pk/gkr-pk-object-storage.c:140
 msgid "Automatically unlock this when I log in"
-msgstr ""
-"See võetakse minu sisselogimisel automaatselt lukust lahti."
+msgstr "See võetakse minu sisselogimisel automaatselt lukust lahti."
 
-#: ../pk/gkr-pk-object-storage.c:154
+#: ../pk/gkr-pk-object-storage.c:155
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Rakendus tahab kasutada salajast võtit '%s', kuid see on lukus"
 
-#: ../pk/gkr-pk-object-storage.c:156
+#: ../pk/gkr-pk-object-storage.c:157
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Rakendus tahab kasutada sertifikaati '%s', kuid see on lukus"
 
-#: ../pk/gkr-pk-object-storage.c:158
+#: ../pk/gkr-pk-object-storage.c:159
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Rakendus tahab kasutada avalikku võtit '%s', kuid see on lukus"
 
-#: ../pk/gkr-pk-object-storage.c:160
+#: ../pk/gkr-pk-object-storage.c:161
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Rakendus tahab kasutada '%s', kuid see on lukus"
 
-#: ../pk/gkr-pk-object-storage.c:166
+#: ../pk/gkr-pk-object-storage.c:167
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
 msgstr "Süsteem tahab importida salajast võtit '%s', kuid see on lukus"
 
-#: ../pk/gkr-pk-object-storage.c:168
+#: ../pk/gkr-pk-object-storage.c:169
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
 msgstr "Süsteem tahab importida sertifikaati '%s', kuid see on lukus"
 
-#: ../pk/gkr-pk-object-storage.c:170
+#: ../pk/gkr-pk-object-storage.c:171
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
 msgstr "Süsteem tahab importida avalikku võtit '%s', kuid see on lukus"
 
-#: ../pk/gkr-pk-object-storage.c:172
+#: ../pk/gkr-pk-object-storage.c:173
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
 msgstr "Süsteem tahab importida '%s', kuid see on lukus"
 
-#: ../pk/gkr-pk-object-storage.c:258
+#: ../pk/gkr-pk-object-storage.c:289
 #, c-format
 msgid "Unlock password for '%s'"
 msgstr "Lukust lahtivõtmise parool '%s' jaoks"
 
-#: ../pkix/gkr-pkix-parser.c:428
+#: ../pkix/gkr-pkix-parser.c:445
 msgid "Unrecognized or unsupported file."
 msgstr "Arusaamatu või toetamata fail."
 
-#: ../pkix/gkr-pkix-parser.c:432
+#: ../pkix/gkr-pkix-parser.c:449
 msgid "Could not parse invalid or corrupted file."
 msgstr "Vigast või rikutud faili pole võimalik analüüsida."
 
