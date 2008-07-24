@@ -28,6 +28,7 @@
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
+#include "common/gkr-daemon-util.h"
 
 #include <glib.h>
 
@@ -66,6 +67,52 @@ ask_daemon_init (void)
 	gkr_cleanup_register (ask_daemon_cleanup, NULL);
 }
 
+static gboolean
+check_previously_denied (GkrAskRequest *ask)
+{
+	GkrDaemonClient *client;
+	GHashTable *denied;
+	gchar *unique;
+	gboolean ret;
+	
+	client = gkr_daemon_client_get_current ();
+	g_return_val_if_fail (client, FALSE);
+	
+	denied = g_object_get_data (G_OBJECT (client), "gkr-ask-daemon.denied");
+	if (!denied)
+		return FALSE;
+	
+	unique = gkr_ask_request_make_unique (ask);
+	g_return_val_if_fail (unique, FALSE);
+	ret = g_hash_table_lookup (denied, unique) ? TRUE : FALSE;
+	g_free (unique);
+	return ret;
+}
+
+static void
+note_previously_denied (GkrAskRequest *ask)
+{
+	GkrDaemonClient *client;
+	GHashTable *denied;
+	gchar *unique;
+
+	unique = gkr_ask_request_make_unique (ask);
+	g_return_if_fail (unique);
+	
+	client = gkr_daemon_client_get_current ();
+	g_return_if_fail (client);
+
+	/* Associate the denied table with the current client */
+	denied = g_object_get_data (G_OBJECT (client), "gkr-ask-daemon.denied");
+	if (!denied) {
+		denied = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		g_object_set_data_full (G_OBJECT (client), "gkr-ask-daemon.denied", 
+		                        denied, (GDestroyNotify)g_hash_table_unref);
+	}
+	
+	g_hash_table_insert (denied, unique, unique);
+}
+
 void
 gkr_ask_daemon_process (GkrAskRequest* ask)
 {
@@ -73,7 +120,9 @@ gkr_ask_daemon_process (GkrAskRequest* ask)
 	
 	g_assert (GKR_IS_ASK_REQUEST (ask));
 	g_assert (!gkr_ask_request_is_complete (ask));
-	
+
+	g_object_ref (ask);
+
 	/* 
 	 * Hand it off to the hook. This is used in the test harnesses
 	 * to verify that a prompt or no prompt was run.
@@ -93,23 +142,44 @@ gkr_ask_daemon_process (GkrAskRequest* ask)
 	/* Wait until no other asks are prompting */
 	while (current_ask)
 		gkr_async_wait (wait_condition);
+
+	/* 
+	 * See if the user already denied this request.
+	 * 
+	 * The logic here is, that if the user denied the request, 
+	 * then we won't prompt them again for the same string. 
+	 * They'll probably deny it again. 
+	 * 
+	 * We only keep this cache for the current client connection. 
+	 */
+	if (check_previously_denied (ask)) {
+		gkr_ask_request_deny (ask);
+		goto done;
+	}
 	
 	g_assert (ask_daemon_inited);
-	
-	g_object_ref (ask);
 	current_ask = ask;
 	
-	if (!gkr_ask_request_check (ask))
+	if (!gkr_ask_request_check (ask)) {
 		gkr_ask_request_prompt (ask);
+		
+		/* 
+		 * Note that this prompt was explicitly denied, so we 
+		 * can prevent prompting again on the same client
+		 * connection. See above.
+		 */ 
+		if (ask->response == GKR_ASK_RESPONSE_DENY)
+			note_previously_denied (ask);
+	}
 
 	current_ask = NULL;
-	g_object_unref (ask);
 	
 	g_assert (wait_condition);
 	gkr_async_notify (wait_condition);
 	
 done:
 	g_assert (gkr_ask_request_is_complete (ask));
+	g_object_unref (ask);
 }
 
 void

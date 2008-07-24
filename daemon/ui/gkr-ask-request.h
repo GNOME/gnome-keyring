@@ -123,9 +123,13 @@ gboolean           gkr_ask_request_check            (GkrAskRequest *ask);
 
 void               gkr_ask_request_prompt           (GkrAskRequest *ask);
 
+void               gkr_ask_request_deny             (GkrAskRequest *ask);
+
 void               gkr_ask_request_cancel           (GkrAskRequest *ask);
 
 gboolean           gkr_ask_request_is_complete      (GkrAskRequest *ask);
+
+gchar*             gkr_ask_request_make_unique      (GkrAskRequest *ask);
 
 G_END_DECLS
 

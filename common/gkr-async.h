@@ -34,7 +34,7 @@ struct _GkrAsyncWait;
 typedef struct _GkrAsyncWait GkrAsyncWait;
 
 /* 
- * Create a new wait condition 
+ * Create a new wait condition. Use instead of GCond.
  */
 GkrAsyncWait*      gkr_async_wait_new            (void);
 
@@ -52,6 +52,18 @@ void               gkr_async_wait                (GkrAsyncWait *wait);
  * Notify that a condition has been satisfied 
  */
 void               gkr_async_notify              (GkrAsyncWait *wait);
+
+/*
+ * Per Async Worker Storage. This is currently exactly the same 
+ * as GPrivate, however that may change in the future, so use this
+ * API instead.
+ */
+
+typedef GPrivate GkrAsyncPrivate;
+#define gkr_async_private_new(x) g_private_new (x)
+#define gkr_async_private_get(x) g_private_get (x)
+#define gkr_async_private_set(x, y) g_private_set (x, y)
+#define gkr_async_private_free(x) 
 
 /* -----------------------------------------------------------------------------
  * GENERAL ASYNC CALLS

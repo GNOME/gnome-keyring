@@ -168,6 +168,14 @@ client_worker_main (gpointer user_data)
 	SshClient *client = (SshClient*)user_data;
 	guchar op;
 	
+	/* 
+	 * Note the current client application. We actually don't know 
+	 * the pid, so this is just an empty application object, useful 
+	 * for other parts of the code to track the lifecycle of the 
+	 * connection.
+	 */
+	gkr_daemon_client_set_current (0, NULL, NULL);
+	
 	/* This array needs to be laid out properly */
 	g_assert ((sizeof (gkr_ssh_operations) / sizeof (gkr_ssh_operations[0])) == GKR_SSH_OP_MAX);
 

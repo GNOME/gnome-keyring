@@ -99,37 +99,14 @@ set_local_creds (int fd, gboolean on)
 }
 
 static GnomeKeyringApplicationRef*
-application_ref_new_from_pid (pid_t pid)
+application_ref_new_from_client ()
 {
 	GnomeKeyringApplicationRef *app_ref;
-
+	
 	app_ref = g_new0 (GnomeKeyringApplicationRef, 1);
-
-#if defined(__linux__) || defined(__FreeBSD__)
-	g_assert (pid > 0);
-	{
-		char *buffer;
-		int len;
-		char *path = NULL;
-		
-#if defined(__linux__)
-		path = g_strdup_printf ("/proc/%d/exe", (gint)pid);
-#elif defined(__FreeBSD__)
-		path = g_strdup_printf ("/proc/%d/file", (gint)pid);
-#endif
-		buffer = g_file_read_link (path, NULL);
-		g_free (path);
-
-		len = (buffer != NULL) ? strlen (buffer) : 0;
-		if (len > 0) {
-			app_ref->pathname = g_malloc (len + 1);
-			memcpy (app_ref->pathname, buffer, len);
-			app_ref->pathname[len] = 0;
-		}
-		g_free (buffer);
-	}
-#endif
-
+	app_ref->pathname = g_strdup (gkr_daemon_client_get_app_path (NULL));
+	app_ref->display_name = g_strdup (gkr_daemon_client_get_app_display (NULL));
+	
 	return app_ref;
 }
 
@@ -273,7 +250,9 @@ client_worker_main (gpointer user_data)
 		g_warning ("uid mismatch: %u, should be %u\n", (guint)uid, (guint)getuid());
 		return NULL;
 	}
-	client->app_ref = application_ref_new_from_pid (pid);
+	
+	gkr_daemon_client_set_current (pid, NULL, NULL);
+	client->app_ref = application_ref_new_from_client ();
 
 
 	/* 2. Read the connecting application display name */
@@ -286,6 +265,7 @@ client_worker_main (gpointer user_data)
 	if (!str)
 		return NULL;
 	debug_print (("got name: %s\n", str));
+	g_free (client->app_ref->display_name);
 	client->app_ref->display_name = str;
 
 

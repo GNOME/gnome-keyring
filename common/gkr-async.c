@@ -373,6 +373,10 @@ gkr_async_worker_start (GThreadFunc func, GkrAsyncWorkerCallback callback,
 	worker->cancelled = 0;
 	worker->stopped = 0;
 	
+	/* 
+	 * Don't change this to a thread pool too lightly. Assumptions are made 
+	 * that worker threads are not shared throughout the code.
+	 */
 	worker->thread = g_thread_create (async_worker_thread, worker, TRUE, &err);
 	if (!worker->thread) {
 		g_warning ("couldn't create new worker thread: %s", err->message);

@@ -23,14 +23,229 @@
 
 #include "config.h"
 
-#include "common/gkr-daemon-util.h"
-#include "common/gkr-cleanup.h"
+#include "gkr-async.h"
+#include "gkr-daemon-util.h"
+#include "gkr-cleanup.h"
 
 #include <glib.h>
 
 #include <sys/stat.h>
+
 #include <errno.h>
+#include <string.h>
 #include <unistd.h>
+
+enum {
+	PROP_0,
+	PROP_PID,
+	PROP_APP_PATH,
+	PROP_APP_DISPLAY
+};
+
+enum {
+	DISCONNECTED,
+	LAST_SIGNAL
+};
+
+G_DEFINE_TYPE (GkrDaemonClient, gkr_daemon_client, G_TYPE_OBJECT);
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
+static GkrAsyncPrivate *current_client = NULL;
+
+/* -----------------------------------------------------------------------------
+ * HELPERS
+ */
+
+static void
+unregister_client (gpointer data)
+{
+	g_assert (GKR_IS_DAEMON_CLIENT (data));
+	g_signal_emit (data, signals[DISCONNECTED], 0);
+	g_object_unref (data);
+}
+
+static void
+register_client (GkrDaemonClient *client)
+{
+	g_assert (GKR_IS_DAEMON_CLIENT (client));
+	g_assert (current_client);
+	gkr_async_private_set (current_client, client);
+}
+
+/* -----------------------------------------------------------------------------
+ * OBJECT
+ */
+
+static void
+gkr_daemon_client_init (GkrDaemonClient *obj)
+{
+
+}
+
+static void
+gkr_daemon_client_get_property (GObject *obj, guint prop_id, GValue *value, 
+                                GParamSpec *pspec)
+{
+	GkrDaemonClient *client = GKR_DAEMON_CLIENT (obj);
+
+	switch (prop_id) {
+	case PROP_PID:
+		g_value_set_uint (value, client->pid);
+		break;
+	case PROP_APP_PATH:
+		g_value_set_string (value, client->app_path);
+		break;
+	case PROP_APP_DISPLAY:
+		g_value_set_string (value, client->app_display);
+		break;
+	}
+}
+
+static void
+gkr_daemon_client_set_property (GObject *obj, guint prop_id, const GValue *value, 
+                                GParamSpec *pspec)
+{
+	GkrDaemonClient *client = GKR_DAEMON_CLIENT (obj);
+
+	switch (prop_id) {
+	case PROP_PID:
+		g_return_if_fail (!client->pid);
+		client->pid = g_value_get_uint (value);
+		break;
+	case PROP_APP_PATH:
+		g_return_if_fail (!client->app_path);
+		client->app_path = g_value_dup_string (value);
+		break;
+	case PROP_APP_DISPLAY:
+		g_free (client->app_display);
+		client->app_display = g_value_dup_string (value);
+		break;
+	}
+}
+
+static void
+gkr_daemon_client_finalize (GObject *obj)
+{
+	GkrDaemonClient *client = GKR_DAEMON_CLIENT (obj);
+	 
+	if (client->app_path)
+		g_free (client->app_path);
+	if (client->app_display)
+		g_free (client->app_display);
+	
+	G_OBJECT_CLASS (gkr_daemon_client_parent_class)->finalize (obj);
+}
+
+static void
+gkr_daemon_client_class_init (GkrDaemonClientClass *klass)
+{
+	GObjectClass *gobject_class = (GObjectClass*) klass;
+	gkr_daemon_client_parent_class = g_type_class_peek_parent (klass);
+	
+	gobject_class->get_property = gkr_daemon_client_get_property;
+	gobject_class->set_property = gkr_daemon_client_set_property;
+	gobject_class->finalize = gkr_daemon_client_finalize;
+
+	g_object_class_install_property (gobject_class, PROP_PID,
+		g_param_spec_uint ("pid", "Process ID", "Process ID of client",
+		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                   
+	g_object_class_install_property (gobject_class, PROP_APP_PATH,
+		g_param_spec_string ("app-path", "Application Path", "Client application path",
+		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                     
+	g_object_class_install_property (gobject_class, PROP_APP_DISPLAY,
+		g_param_spec_string ("app-display", "Application Display Name", "Client application display name",
+		                     NULL, G_PARAM_READWRITE));
+		                     
+	signals[DISCONNECTED] = g_signal_new ("disconnected", GKR_TYPE_DAEMON_CLIENT, 
+			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrDaemonClientClass, disconnected),
+			NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+	
+	current_client = gkr_async_private_new (unregister_client);
+}
+
+/* -------------------------------------------------------------------------------------
+ * PUBLIC STUFF
+ */
+
+GkrDaemonClient*
+gkr_daemon_client_set_current (pid_t pid, const gchar *app_path, const gchar *app_display)
+{
+	GkrDaemonClient *client;
+	gchar *path = NULL;
+	
+	/* Try and figure out the path from the pid */
+#if defined(__linux__) || defined(__FreeBSD__)
+	if (pid > 0 && !app_path) {
+		char *buffer;
+		int len;
+		char *path = NULL;
+			
+#if defined(__linux__)
+		path = g_strdup_printf ("/proc/%d/exe", (gint)pid);
+#elif defined(__FreeBSD__)
+		path = g_strdup_printf ("/proc/%d/file", (gint)pid);
+#endif
+		buffer = g_file_read_link (path, NULL);
+		g_free (path);
+
+		len = (buffer != NULL) ? strlen (buffer) : 0;
+		if (len > 0) {
+			path = g_strndup (buffer, len);
+			app_path = path;
+		}
+		
+		g_free (buffer);
+	}
+#endif
+	
+	client = g_object_new (GKR_TYPE_DAEMON_CLIENT, "pid", pid, "app-path", app_path, 
+	                       "app-display", app_display, NULL);
+	
+	register_client (client);
+	g_free (path);
+	
+	return client;
+}
+
+GkrDaemonClient*
+gkr_daemon_client_get_current (void)
+{
+	if (!current_client)
+		return NULL;
+	return gkr_async_private_get (current_client);
+}
+
+pid_t
+gkr_daemon_client_get_app_pid (GkrDaemonClient* client)
+{
+	if (!client)
+		client = gkr_daemon_client_get_current ();
+	g_return_val_if_fail (GKR_IS_DAEMON_CLIENT (client), 0);
+	return client->pid;
+}
+
+const gchar*
+gkr_daemon_client_get_app_display (GkrDaemonClient* client)
+{
+	if (!client)
+		client = gkr_daemon_client_get_current ();
+	g_return_val_if_fail (GKR_IS_DAEMON_CLIENT (client), 0);
+	return client->app_display;
+}
+
+const gchar*
+gkr_daemon_client_get_app_path (GkrDaemonClient* client)
+{
+	if (!client)
+		client = gkr_daemon_client_get_current ();
+	g_return_val_if_fail (GKR_IS_DAEMON_CLIENT (client), 0);
+	return client->app_path;
+}
+
+/* -------------------------------------------------------------------------------------- */
 
 static gchar* master_directory = NULL;
 static GArray* published_environ = NULL;
@@ -325,3 +540,4 @@ do_mkdtemp (template)
   else
     return template;
 }
+

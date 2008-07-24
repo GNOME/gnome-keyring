@@ -32,6 +32,7 @@
 #include "common/gkr-async.h"
 #include "common/gkr-buffer.h"
 #include "common/gkr-crypto.h"
+#include "common/gkr-daemon-util.h"
 #include "common/gkr-unix-credentials.h"
 
 #include "keyrings/gkr-keyring-login.h"
@@ -1571,6 +1572,9 @@ gkr_pkcs11_daemon_session_thread (gpointer user_data)
 		g_warning ("uid mismatch: %u, should be %u\n", (guint)uid, (guint)getuid());
 		return NULL;
 	}
+	
+	/* Note the current client application */
+	gkr_daemon_client_set_current (pid, NULL, NULL);
 	
 	/* Setup our buffers */
 	/* TODO: Do these need to be secure buffers? */

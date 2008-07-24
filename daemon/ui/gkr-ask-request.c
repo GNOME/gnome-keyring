@@ -260,7 +260,7 @@ kill_ask_process (GkrAskRequest *ask)
 }
 
 static void 
-cancel_ask_if_active (GkrAskRequest *ask)
+kill_ask_if_active (GkrAskRequest *ask)
 {
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	if (pv->ask_pid) {
@@ -268,8 +268,6 @@ cancel_ask_if_active (GkrAskRequest *ask)
 		kill_ask_process (ask);
 		g_assert (pv->ask_pid == 0);
 	}
-	
-	mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
 }
 
 static void
@@ -643,7 +641,8 @@ tracked_object_destroyed (gpointer data, GObject *where_the_object_was)
 	pv->object = NULL;
 	
 	/* Cancel any goings on */
-	cancel_ask_if_active (ask);
+	kill_ask_if_active (ask);
+	mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
 }
 
 static gboolean
@@ -699,7 +698,8 @@ gkr_ask_request_dispose (GObject *obj)
 	GkrAskRequest *ask = GKR_ASK_REQUEST (obj);
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	
-	cancel_ask_if_active (ask);
+	kill_ask_if_active (ask);
+	mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
 	g_assert (pv->ask_pid == 0);
 	
 	gkr_secure_strfree (ask->original_password);
@@ -906,14 +906,19 @@ gkr_ask_request_prompt (GkrAskRequest *ask)
 }
 
 void
+gkr_ask_request_deny (GkrAskRequest *ask)
+{
+	g_assert (GKR_IS_ASK_REQUEST (ask));
+	kill_ask_if_active (ask);
+	mark_completed (ask, GKR_ASK_RESPONSE_DENY);
+}
+
+void
 gkr_ask_request_cancel (GkrAskRequest *ask)
 {
-	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	g_assert (GKR_IS_ASK_REQUEST (ask));
-	
-	cancel_ask_if_active (ask);
-	if (!pv->completed)
-		mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
+	kill_ask_if_active (ask);
+	mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
 }
 
 gboolean
@@ -938,4 +943,22 @@ gkr_ask_request_set_location (GkrAskRequest *ask, GQuark loc)
 	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
 	g_assert (GKR_IS_ASK_REQUEST (ask));
 	pv->location = loc;
+}
+
+gchar*
+gkr_ask_request_make_unique (GkrAskRequest *ask)
+{
+	GkrAskRequestPrivate *pv = GKR_ASK_REQUEST_GET_PRIVATE (ask);
+	g_assert (GKR_IS_ASK_REQUEST (ask));
+
+	/* 
+	 * This string is used to uniquely identify another
+	 * prompt with the same text as this one. Usually used
+	 * so we can be intelligent about prompting the user.
+	 */
+	
+	return g_strconcat (pv->title ? pv->title : "", "|", 
+	                    pv->primary ? pv->primary : "", "|",
+	                    pv->secondary ? pv->secondary : "", "|",
+	                    NULL);
 }
