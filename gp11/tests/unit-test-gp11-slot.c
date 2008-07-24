@@ -14,7 +14,7 @@ DEFINE_SETUP(load_slots)
 	GList *slots;
 	
 	/* Successful load */
-	module = gp11_module_initialize (".libs/libgp11-test-module.so", &err);
+	module = gp11_module_initialize (".libs/libgp11-test-module.so", NULL, &err);
 	SUCCESS_RES (module, err);
 	
 	slots = gp11_module_get_slots (module, TRUE);

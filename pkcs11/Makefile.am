@@ -30,3 +30,11 @@ gnome_keyring_pkcs11_la_LIBADD = \
 	$(top_builddir)/common/libgkr-module-common.la 
 
 
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR = 
+endif
+
+SUBDIRS = . $(TESTS_DIR)
+

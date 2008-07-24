@@ -37,6 +37,7 @@
 #include <sys/un.h>
 
 #include <stdlib.h>
+#include <ctype.h>
 #include <stdint.h>
 #include <pthread.h>
 #include <unistd.h>
@@ -170,6 +171,100 @@ void*
 gkr_memory_fallback (void *p, unsigned long sz)
 {
 	return realloc (p, sz);	
+}
+
+/* -----------------------------------------------------------------------------
+ * MODULE ARGUMENTS
+ */
+
+static void
+parse_argument (char *arg)
+{
+	char *value;
+	
+	value = arg + strcspn (arg, ":=");
+	if (!*value)
+		value = NULL;
+	else 
+		*(value++) = 0;
+
+	/* Setup the socket path from the arguments */
+	if (strcmp (arg, "socket") == 0) {
+		strncpy (socket_path, value, sizeof (socket_path));
+		socket_path[sizeof (socket_path) - 1] = 0;		
+	} else {
+		WARN(("unrecognized argument: %s", arg));
+	}
+}
+
+static void
+parse_arguments (const char *string) 
+{
+	char quote = '\0';
+	char *src, *dup, *at, *arg;
+	
+	if (!string)
+		return;
+	
+	src = dup = strdup (string);
+	if (!dup) {
+		WARN (("couldn't allocate memory for argument string"));
+		return;
+	}
+
+	arg = at = src;
+	for (src = dup; *src; src++) {
+		
+		/* Matching quote */
+		if (quote == *src) {
+			quote = '\0';
+			
+		/* Inside of quotes */
+		} else if (quote != '\0') {
+			if (*src == '\\') {
+				*at++ = *src++;
+				if (!*src) {
+					WARN (("couldn't parse argument string: %s", string));
+					goto done;
+				}
+				if (*src != quote) 
+					*at++ = '\\';
+			}
+			*at++ = *src;
+			
+		/* Space, not inside of quotes */
+		} else if (isspace(*src)) {
+			*at = 0;
+			parse_argument (arg);
+			arg = at;
+			
+		/* Other character outside of quotes */
+		} else {
+			switch (*src) {
+			case '\'':
+			case '"':
+				quote = *src;
+				break;
+			case '\\':
+				*at++ = *src++;
+				if (!*src) {
+					WARN (("couldn't parse argument string: %s", string));
+					goto done;
+				}
+				/* fall through */
+			default:
+				*at++ = *src;
+				break;
+			}
+		}
+	}
+
+	
+	if (at != arg) 
+		parse_argument (arg);
+	
+done:
+	free (dup);
 }
 
 /* -----------------------------------------------------------------------------
@@ -1208,7 +1303,6 @@ gkr_C_Initialize (CK_VOID_PTR init_args)
 	CK_RV ret = CKR_OK;
 	pid_t initialize_pid;
 	char *path;
-	int l;
 	
 	DBG (("C_Initialize: enter"));
 
@@ -1226,7 +1320,6 @@ gkr_C_Initialize (CK_VOID_PTR init_args)
 
 		/* pReserved must be NULL */
 		args = init_args;
-		PREREQ (!args->pReserved, CKR_ARGUMENTS_BAD);
 
 		/* ALL supplied function pointers need to have the value either NULL or non-NULL. */
 		supplied_ok = (args->CreateMutex == NULL && args->DestroyMutex == NULL &&
@@ -1237,11 +1330,18 @@ gkr_C_Initialize (CK_VOID_PTR init_args)
 
 		/*
 		 * When the CKF_OS_LOCKING_OK flag isn't set and mutex function pointers are supplied
-		 * by an application, return an error.  DBus must be able to use its own locks.
+		 * by an application, return an error.  We must be able to use its own locks.
 		 */
 		if (!(args->flags & CKF_OS_LOCKING_OK) && (args->CreateMutex != NULL)) {
 			PREREQ (FALSE, CKR_CANT_LOCK);
 		}
+		
+		/* 
+		 * We support setting the socket path and other arguments from from the 
+		 * pReserved pointer, similar to how NSS PKCS#11 components are initialized. 
+		 */ 
+		if (args->pReserved) 
+			parse_arguments ((const char*)args->pReserved);			
 	}
 
 	/* Main initialization */
@@ -1267,16 +1367,16 @@ gkr_C_Initialize (CK_VOID_PTR init_args)
 			crypto_pid = initialize_pid;
 			
 			/* Lookup the socket path, append '.pkcs11' */
-			socket_path[0] = 0;
-			path = getenv ("GNOME_KEYRING_SOCKET");
-			if (path && path[0]) {
-				l = sizeof (socket_path) - 1;
-				strncpy (socket_path, path, l);
-				strncat (socket_path, ".pkcs11", l);
-				socket_path[l] = 0;
-				
-				DBG (("gnome-keyring pkcs11 socket is: %s", socket_path));
+			if (socket_path[0] == 0) {
+				socket_path[0] = 0;
+				path = getenv ("GNOME_KEYRING_SOCKET");
+				if (path && path[0]) {
+					snprintf (socket_path, sizeof (socket_path), "%s.pkcs11", path);
+					socket_path[sizeof (socket_path) - 1] = 0;
+				}
 			}
+			
+			DBG (("gnome-keyring pkcs11 socket is: %s", socket_path));
 		}
 
 	pthread_mutex_unlock (&global_mutex);

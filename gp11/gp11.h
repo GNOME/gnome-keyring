@@ -215,6 +215,7 @@ struct _GP11ModuleClass {
 GType               gp11_module_get_type                    (void) G_GNUC_CONST;
 
 GP11Module*         gp11_module_initialize                  (const gchar *path, 
+                                                             gpointer reserved,
                                                              GError **err);
 
 GP11ModuleInfo*     gp11_module_get_info                    (GP11Module *module);

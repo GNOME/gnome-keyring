@@ -1,3 +1,19 @@
+2007-07-24  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
+	* gp11/gp11-module.c:
+	* gp11/tests/unit-test-gp11-module.c:
+	* gp11/tests/unit-test-gp11-object.c:
+	* gp11/tests/unit-test-gp11-session.c:
+	* gp11/tests/unit-test-gp11-slot.c:
+	* pkcs11/gkr-pkcs11-module.c:
+	* pkcs11/Makefile.am:
+	* pkcs11/tests/Makefile.am:
+	* pkcs11/tests/unit-test-pkcs11-initialize.c:
+	* configure.in: Add ability to gnome-keyring module to pass in the
+	socket using the reserved argument. This is similar to how NSS
+	libsoftkn3 likes to be initialized. 
+	
 2007-07-23  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attributes.c: Build fix

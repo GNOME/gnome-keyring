@@ -176,7 +176,7 @@ gp11_module_info_free (GP11ModuleInfo *module_info)
 }
 
 GP11Module*
-gp11_module_initialize (const gchar *path, GError **err)
+gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 {
 	CK_C_INITIALIZE_ARGS init_args;
 	CK_C_GetFunctionList get_function_list;
@@ -232,7 +232,7 @@ gp11_module_initialize (const gchar *path, GError **err)
 	init_args.DestroyMutex = destroy_mutex;
 	init_args.LockMutex = lock_mutex;
 	init_args.UnlockMutex = unlock_mutex;
-	init_args.pReserved = NULL;
+	init_args.pReserved = reserved;
 	
 	/* Now initialize the module */
 	rv = (mod->funcs->C_Initialize) (&init_args);

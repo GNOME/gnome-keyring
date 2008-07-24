@@ -12,7 +12,7 @@ DEFINE_SETUP(load_module)
 	GError *err = NULL;
 
 	/* Successful load */
-	module = gp11_module_initialize (".libs/libgp11-test-module.so", &err);
+	module = gp11_module_initialize (".libs/libgp11-test-module.so", NULL, &err);
 	SUCCESS_RES (module, err);
 }
 
@@ -27,11 +27,11 @@ DEFINE_TEST(invalid_modules)
 	GError *err = NULL;
 	
 	/* Shouldn't be able to load modules */
-	invalid = gp11_module_initialize ("blah-blah-non-existant", &err);
+	invalid = gp11_module_initialize ("blah-blah-non-existant", NULL, &err);
 	FAIL_RES (invalid, err);
 
 	/* Shouldn't be able to load any file successfully */ 
-	invalid = gp11_module_initialize ("/usr/lib/libm.so", &err);
+	invalid = gp11_module_initialize ("/usr/lib/libm.so", NULL, &err);
 	FAIL_RES (invalid, err);
 
 }
