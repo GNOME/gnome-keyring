@@ -1,3 +1,9 @@
+2007-07-23  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pk/gkr-pk-storage.c: Try storage of SSH and other key 
+	passwords in the old 2.22 style, so that user's desktops 
+	continue to work as expected. 
+	
 2007-07-21  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number

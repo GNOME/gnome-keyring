@@ -745,6 +745,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 	GkrAskRequest *ask;
 	gchar *stype, *secondary;
 	gchar *display = NULL;
+	const gchar *password;
 	gboolean ret;
 	GkrPkIndex *index;
 	gint st;
@@ -799,6 +800,19 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		*result = gkr_pk_index_get_secret (index, digest);
 		if (*result != NULL)
 			 return TRUE;
+		
+		/* 
+		 * COMPATIBILITY: This is for compatibility with old versions 2.22, which 
+		 * stored a location/filename based password in the login keyring.
+		 * This is wrong for locations with  more than one password, so we 
+		 * migrate transparently to the new style (above).
+		 */ 
+		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
+				                            "pk-object", gkr_location_to_string (location), NULL);
+		if (password != NULL) {
+			*result = gkr_secure_strdup (password);
+			return TRUE;
+		}
 		
 	/* If we've already tried this password unsuccesfully, then clear */
 	} else {
