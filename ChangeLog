@@ -1,5 +1,9 @@
 2007-07-23  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/gp11-attributes.c: Build fix
+	
+2007-07-23  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-async.c:
 	* common/gkr-async.h:
 	* common/gkr-daemon-util.c:

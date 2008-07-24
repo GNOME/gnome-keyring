@@ -272,7 +272,7 @@ initialize_from_valist (guint type, va_list va)
 			
 			/* But not this long */
 			if (length < 0 || length >= G_MAXSSIZE)
-				g_warning ("length passed to attributes varargs is invalid or too large: %d", length);
+				g_warning ("length passed to attributes varargs is invalid or too large: %d", (int)length);
 			else
 				gp11_attributes_add_data (attrs, type, value, length);
 			break;
