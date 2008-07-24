@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-16 20:35+0000\n"
-"PO-Revision-Date: 2008-07-20 14:59+0200\n"
+"POT-Creation-Date: 2008-07-21 06:07+0000\n"
+"PO-Revision-Date: 2008-07-24 22:41+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgid "Home"
 msgstr "Inicio"
 
 #: ../common/gkr-location.c:1097 ../common/gkr-location.c:1120
-#: ../daemon/pkix/gkr-pkix-parser.c:473 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../daemon/pkix/gkr-pkix-parser.c:472 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "El disco o la unidad en la que está ubicado este archivo no está presente"
 
@@ -168,7 +168,7 @@ msgstr "Introduzca la contraseña para desbloquear el depósito «%s»"
 msgid "Unlock Keyring"
 msgstr "Desbloquear depósito"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:136
+#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Desbloquear este depósito de claves automáticamente al iniciar sesión."
 
@@ -487,15 +487,15 @@ msgid "The system wants to import '%s', but it is locked"
 msgstr "El sistema quiere importar «%s», pero está bloqueado"
 
 #. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:94
+#: ../daemon/pk/gkr-pk-index.c:93
 msgid "Create Storage for Key Information"
 msgstr "Crear depósito para la información de la clave"
 
-#: ../daemon/pk/gkr-pk-index.c:95
+#: ../daemon/pk/gkr-pk-index.c:94
 msgid "Choose password to protect storage"
 msgstr "Elija la contraseña para el depósito"
 
-#: ../daemon/pk/gkr-pk-index.c:98
+#: ../daemon/pk/gkr-pk-index.c:97
 msgid ""
 "The system wants to store information about your keys and certificates. In "
 "order to protect this information, choose a password with which it will be "
@@ -506,15 +506,15 @@ msgstr ""
 "bloquearán."
 
 #. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:125
+#: ../daemon/pk/gkr-pk-index.c:124
 msgid "Unlock Storage for Key Information"
 msgstr "Desbloquear el depósito para la información de la clave"
 
-#: ../daemon/pk/gkr-pk-index.c:126
+#: ../daemon/pk/gkr-pk-index.c:125
 msgid "Enter password to unlock storage"
 msgstr "Introduzca la contraseña para desbloquear el depósito"
 
-#: ../daemon/pk/gkr-pk-index.c:129
+#: ../daemon/pk/gkr-pk-index.c:128
 msgid ""
 "The system wants to access information about your keys and certificates, but "
 "it is locked."
@@ -522,19 +522,23 @@ msgstr ""
 "El sistema quiere acceder a la información acerca de sus claves y "
 "certificados, pero está bloqueado."
 
-#: ../daemon/pk/gkr-pk-object.c:881
+#: ../daemon/pk/gkr-pk-object.c:883
 msgid "Certificate"
 msgstr "Certificado"
 
-#: ../daemon/pk/gkr-pk-object.c:883
+#: ../daemon/pk/gkr-pk-object.c:885
 msgid "Private Key"
 msgstr "Clave privada"
 
-#: ../daemon/pk/gkr-pk-object.c:885
+#: ../daemon/pk/gkr-pk-object.c:887
 msgid "Public Key"
 msgstr "Clave privada"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:435
+#: ../daemon/pk/gkr-pk-object.c:889
+msgid "Trust Association"
+msgstr "Asociación de confianza"
+
+#: ../daemon/pk/gkr-pk-object-storage.c:434
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "No se puede borrar «%s» porque está atada a otros objetos."
@@ -609,11 +613,11 @@ msgstr ""
 "El sistema quiere almacenar «%s» en su disco. Introduzca una contraseña para "
 "bloquearlo con ella."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:404
+#: ../daemon/pkix/gkr-pkix-parser.c:403
 msgid "Unrecognized or unsupported file."
 msgstr "Archivo no reconocido o no soportado."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:408
+#: ../daemon/pkix/gkr-pkix-parser.c:407
 msgid "Could not parse invalid or corrupted file."
 msgstr "No se pudo analizar el archivo inválido o corrupto."
 
@@ -738,7 +742,7 @@ msgstr "El campo es de sólo lectura"
 
 #: ../gp11/gp11-misc.c:59
 msgid "The field is sensitive and cannot be revealed"
-msgstr ""
+msgstr "El campo es sensible y no se puede revelar"
 
 #: ../gp11/gp11-misc.c:61
 msgid "The field is invalid or does not exist"
@@ -778,39 +782,39 @@ msgstr "El dato cifrado es demasiado largo"
 
 #: ../gp11/gp11-misc.c:79
 msgid "This operation is not supported"
-msgstr ""
+msgstr "Esta operación no está soportada"
 
 #: ../gp11/gp11-misc.c:81
 msgid "The key is missing or invalid"
-msgstr ""
+msgstr "Falta la clave o no es válida"
 
 #: ../gp11/gp11-misc.c:83
 msgid "The key is the wrong size"
-msgstr ""
+msgstr "La clave tiene un tamaño incorrecto"
 
 #: ../gp11/gp11-misc.c:85
 msgid "The key is of the wrong type"
-msgstr ""
+msgstr "La clave es de tipo erróneo"
 
 #: ../gp11/gp11-misc.c:87
 msgid "No key is needed"
-msgstr ""
+msgstr "No se necesita clave"
 
 #: ../gp11/gp11-misc.c:89
 msgid "The key is different than before"
-msgstr ""
+msgstr "La clave es diferente que anteriormente"
 
 #: ../gp11/gp11-misc.c:91
 msgid "A key is needed"
-msgstr ""
+msgstr "Se necesita una clave"
 
 #: ../gp11/gp11-misc.c:93
 msgid "Cannot include the key in digest"
-msgstr ""
+msgstr "No se puede incluir la clave en el resumen"
 
 #: ../gp11/gp11-misc.c:95
 msgid "This operation cannot be done with this key"
-msgstr ""
+msgstr "Esta operación no se puede realizar con esta clave"
 
 #: ../gp11/gp11-misc.c:97
 msgid "The key cannot be wrapped"
