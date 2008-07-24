@@ -218,21 +218,15 @@ gkr_pk_root_storage_index (GkrPkStorage *storage, GQuark unused)
 {
  	GkrPkRootStoragePrivate *pv = GKR_PK_ROOT_STORAGE_GET_PRIVATE (storage);
  	GnomeKeyringAttributeList *attrs;
-	GQuark kloc;
 	
 	if (!pv->index) {
-		/* We default to a keyring stored on the computer */
-		kloc = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, 
-		                                "pk-storage.keyring");
-		
+
 		/* Default attributes for our index */
 		attrs = gnome_keyring_attribute_list_new ();
 		gnome_keyring_attribute_list_append_string (attrs, "user-trust", "trusted");
-		
-		pv->index = gkr_pk_index_open (kloc, "pk-storage", attrs);
+
+		pv->index = gkr_pk_index_open_for_login (attrs);
 		gnome_keyring_attribute_list_free (attrs);
-		
-		g_return_val_if_fail (pv->index, NULL);
 	}
 	
 	return pv->index;

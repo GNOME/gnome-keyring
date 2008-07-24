@@ -1,5 +1,18 @@
 2007-07-23  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pk/gkr-pk-import.c:
+	* daemon/pk/gkr-pk-index.c:
+	* daemon/pk/gkr-pk-index.h:
+	* daemon/pk/gkr-pk-object.c:
+	* daemon/pk/gkr-pk-object-storage.c:
+	* daemon/pk/gkr-pk-root-storage.c:
+	* daemon/pk/gkr-pk-storage.c:
+	* daemon/ssh/gkr-pk-storage.c: Use the login keyring for storing
+	indexes of PK objects. Handle the 'deny' to unlock use case 
+	better.  
+	
+2007-07-23  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pk/gkr-pk-storage.c: Try storage of SSH and other key 
 	passwords in the old 2.22 style, so that user's desktops 
 	continue to work as expected. 

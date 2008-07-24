@@ -270,7 +270,8 @@ index_correspending_public_key (GkrSshStorage *storage, GQuark loc, gkrconstid d
 	g_return_if_fail (loc);
 	
 	index = gkr_ssh_storage_index (GKR_PK_STORAGE (storage), loc);
-	g_return_if_fail (index);
+	if (!index)
+		return;
 	
 	ploc = public_location_for_private (loc);
 	g_return_if_fail (ploc);
@@ -665,21 +666,14 @@ gkr_ssh_storage_index (GkrPkStorage *storage, GQuark unused)
 {
  	GkrSshStoragePrivate *pv = GKR_SSH_STORAGE_GET_PRIVATE (storage);
  	GnomeKeyringAttributeList *attrs;
-	GQuark kloc;
 	
 	if (!pv->index) {
-		/* We default to a keyring stored on the computer */
-		kloc = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, 
-		                                "pk-storage.keyring");
-		
 		/* Default attributes for our index */
 		attrs = gnome_keyring_attribute_list_new ();
 		gnome_keyring_attribute_list_append_string (attrs, "purposes", "ssh-authentication");
 		
-		pv->index = gkr_pk_index_open (kloc, "pk-storage", attrs);
+		pv->index = gkr_pk_index_open_for_login (attrs);
 		gnome_keyring_attribute_list_free (attrs);
-		
-		g_return_val_if_fail (pv->index, NULL);
 	}
 	
 	return pv->index;

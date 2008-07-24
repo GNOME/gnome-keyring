@@ -287,16 +287,9 @@ static GkrPkIndex*
 gkr_pk_storage_internal_index (GkrPkStorage *storage, GQuark unused)
 {
  	GkrPkStoragePrivate *pv = GKR_PK_STORAGE_GET_PRIVATE (storage);
-	GQuark kloc;
 	
-	if (!pv->index) {
-		/* We default to a keyring stored on the computer */
-		kloc = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, 
-		                                "pk-storage.keyring");
-	
-		pv->index = gkr_pk_index_open (kloc, "pk-storage", NULL);
-		g_return_val_if_fail (pv->index, NULL);
-	}
+	if (!pv->index)
+		pv->index = gkr_pk_index_open_for_login (NULL);
 	
 	return pv->index;
 }
@@ -670,7 +663,6 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrco
 	g_return_val_if_fail (result != NULL, FALSE);
 
 	index = gkr_pk_storage_index (storage, location);
-	g_return_val_if_fail (index, FALSE);
 
 	/*
 	 * We save the password while still here in this function.
@@ -680,7 +672,7 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrco
 	 */
 
 	/* See if we can just use the login keyring password for this */
-	if (gkr_keyring_login_is_usable ()) {
+	if (index && gkr_keyring_login_is_usable () && gkr_pk_index_is_secure (index)) {
 		login = gkr_keyrings_get_login ();
 		g_return_val_if_fail (login, FALSE);
 		g_return_val_if_fail (login->password, FALSE);
@@ -710,7 +702,7 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrco
 
 	gkr_ask_request_set_location (ask, location);
 			
-	if (gkr_keyring_login_is_usable ())
+	if (index && gkr_pk_index_is_secure (index))
 		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 		
 	/* Prompt the user */
@@ -782,7 +774,6 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 	}
 	
 	index = gkr_pk_storage_index (storage, location);
-	g_return_val_if_fail (index, FALSE);
 	
 	/*
 	 * The password prompting is somewhat convoluted with the end goal of 
@@ -797,9 +788,11 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		
 	/* See if we can find a valid password for this location */
 	if (st == 2) {
-		*result = gkr_pk_index_get_secret (index, digest);
-		if (*result != NULL)
-			 return TRUE;
+		if (index) {
+			*result = gkr_pk_index_get_secret (index, digest);
+			if (*result != NULL)
+				return TRUE;
+		}
 		
 		/* 
 		 * COMPATIBILITY: This is for compatibility with old versions 2.22, which 
@@ -816,18 +809,21 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		
 	/* If we've already tried this password unsuccesfully, then clear */
 	} else {
-		gkr_pk_index_set_secret (index, digest, NULL);
+		if (index)
+			gkr_pk_index_set_secret (index, digest, NULL);
 	}
 
 	/*
 	 * If we've parsed this before, then we can lookup in our index as to what 
 	 * exactly this is we're talking about here.  
 	 */
-	stype = gkr_pk_index_get_string (index, digest, "parsed-type");
-	if (stype) {
-		if (!type && stype[0])
-			type = g_quark_from_string (stype);
-		g_free (stype);
+	if (index) {
+		stype = gkr_pk_index_get_string (index, digest, "parsed-type");
+		if (stype) {
+			if (!type && stype[0])
+				type = g_quark_from_string (stype);
+			g_free (stype);
+		}
 	}
 	
 	if (!label) 
@@ -844,7 +840,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 
 	gkr_ask_request_set_location (ask, location);
 			
-	if (gkr_keyring_login_is_usable ())
+	if (index && gkr_pk_index_is_secure (index))
 		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 		
 	/* Prompt the user */

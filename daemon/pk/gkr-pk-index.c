@@ -382,6 +382,27 @@ gkr_pk_index_new (GkrKeyring *keyring, GnomeKeyringAttributeList *defaults)
 	return index;
 }
 
+gboolean
+gkr_pk_index_is_secure (GkrPkIndex *index)
+{
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	g_return_val_if_fail (GKR_IS_KEYRING (index->keyring), FALSE);
+	return !gkr_keyring_is_insecure (index->keyring);
+}
+
+GkrPkIndex*
+gkr_pk_index_open_for_login (GnomeKeyringAttributeList *defaults)
+{
+	GkrKeyring *login;
+
+	if (!gkr_keyring_login_unlock (NULL))
+		return NULL;
+	
+	login = gkr_keyrings_get_login ();
+	g_return_val_if_fail (login, NULL);
+	
+	return gkr_pk_index_new (login, defaults);
+}
 
 GkrPkIndex*
 gkr_pk_index_open (GQuark index_location, const gchar *name, 
@@ -650,6 +671,13 @@ gkr_pk_index_set_secret (GkrPkIndex *index, gkrconstid digest,
 		index = gkr_pk_index_default ();
 
 	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	
+	/* Cannot store secrets in an insecure keyring. Caller should have checked this. */
+	if (val != NULL && gkr_keyring_is_insecure (index->keyring)) {
+		g_warning ("gkr_pk_index_set_secret() called on an insecure keyring. Cannot "
+		           "store secrets in a text based or otherwise insecure keyring.");
+		return FALSE;
+	}
 
 	item = find_item_for_digest (index, digest, TRUE);
 	if (!item)

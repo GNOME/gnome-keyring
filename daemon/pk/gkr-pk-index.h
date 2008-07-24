@@ -58,14 +58,18 @@ GkrPkIndex*         gkr_pk_index_new                   (GkrKeyring* keyring,
 GkrPkIndex*         gkr_pk_index_open                  (GQuark index_location, const gchar *name, 
                                                         GnomeKeyringAttributeList *defaults);
 
+GkrPkIndex*         gkr_pk_index_open_for_login        (GnomeKeyringAttributeList *defaults);
+
 GkrPkIndex*         gkr_pk_index_default               (void);
+
+gboolean            gkr_pk_index_is_secure             (GkrPkIndex *index);
 
 gboolean            gkr_pk_index_get_boolean           (GkrPkIndex *index, gkrconstid digest,
                                                         const gchar *field, gboolean defvalue);
 
 guint               gkr_pk_index_get_uint              (GkrPkIndex *index, gkrconstid digest, 
                                                         const gchar *field, guint defvalue);
-                                                                  
+
 gchar*              gkr_pk_index_get_string            (GkrPkIndex *index, gkrconstid digest,
                                                         const gchar *field);
 

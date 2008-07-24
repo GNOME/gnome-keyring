@@ -476,6 +476,13 @@ gkr_pk_object_storage_finalize (GObject *obj)
 	G_OBJECT_CLASS (gkr_pk_object_storage_parent_class)->finalize (obj);
 }
 
+static GkrPkIndex* 
+gkr_pk_object_storage_index (GkrPkStorage *storage, GQuark location)
+{
+	/* TODO: When it's not a local location, we should use an index nearer to the location */
+	return GKR_PK_STORAGE_CLASS (gkr_pk_object_storage_parent_class)->index (storage, location);
+}
+
 static void
 gkr_pk_object_storage_class_init (GkrPkObjectStorageClass *klass)
 {
@@ -491,6 +498,7 @@ gkr_pk_object_storage_class_init (GkrPkObjectStorageClass *klass)
 	storage_class->refresh = gkr_pk_object_storage_refresh;
 	storage_class->store = gkr_pk_object_storage_store;
 	storage_class->remove = gkr_pk_object_storage_remove;
+	storage_class->index = gkr_pk_object_storage_index;
 
 	g_type_class_add_private (gobject_class, sizeof (GkrPkObjectStoragePrivate));
 }

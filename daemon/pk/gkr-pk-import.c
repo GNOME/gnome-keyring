@@ -32,8 +32,6 @@
 
 #include "common/gkr-secure-memory.h"
 
-#include "keyrings/gkr-keyring-login.h"
-
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
 
@@ -170,9 +168,6 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 		return TRUE;
 	}
 	
-	index = gkr_pk_storage_index (import->import_storage, loc);
-	g_return_val_if_fail (index, FALSE);
-
 	if (!label) 
 		label = import->import_label;
 		
@@ -190,7 +185,8 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 	 * object to.
 	 */
 		
-	if (gkr_keyring_login_is_usable ())
+	index = gkr_pk_storage_index (import->import_storage, loc);
+	if (index && gkr_pk_index_is_secure (index))
 		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 		
 	/* Prompt the user */
