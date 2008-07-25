@@ -186,7 +186,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 	 */
 		
 	index = gkr_pk_storage_index (import->import_storage, loc);
-	if (index && gkr_pk_index_is_secure (index))
+	if (gkr_pk_index_allows_secrets (index))
 		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 		
 	/* Prompt the user */

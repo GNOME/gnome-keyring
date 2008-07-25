@@ -153,6 +153,7 @@ gkr_ask_daemon_process (GkrAskRequest* ask)
 	 * We only keep this cache for the current client connection. 
 	 */
 	if (check_previously_denied (ask)) {
+		g_message ("user denied this prompt previously, skipping prompt and automatically denying");
 		gkr_ask_request_deny (ask);
 		goto done;
 	}

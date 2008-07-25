@@ -269,10 +269,6 @@ index_correspending_public_key (GkrSshStorage *storage, GQuark loc, gkrconstid d
 
 	g_return_if_fail (loc);
 	
-	index = gkr_ssh_storage_index (GKR_PK_STORAGE (storage), loc);
-	if (!index)
-		return;
-	
 	ploc = public_location_for_private (loc);
 	g_return_if_fail (ploc);
 	
@@ -303,6 +299,7 @@ index_correspending_public_key (GkrSshStorage *storage, GQuark loc, gkrconstid d
 	}
 
 	/* Write key to the indexes */
+	index = gkr_ssh_storage_index (GKR_PK_STORAGE (storage), loc);
 	if (!gkr_pk_index_has_value (index, digest, GKR_PK_INDEX_PUBLIC_KEY)) {
 		data = gkr_pkix_der_write_public_key (sexp, &n_data);
 		g_return_if_fail (data != NULL);
@@ -672,7 +669,10 @@ gkr_ssh_storage_index (GkrPkStorage *storage, GQuark unused)
 		attrs = gnome_keyring_attribute_list_new ();
 		gnome_keyring_attribute_list_append_string (attrs, "purposes", "ssh-authentication");
 		
-		pv->index = gkr_pk_index_open_for_login (attrs);
+		pv->index = gkr_pk_index_open_login (attrs);
+		if (!pv->index)
+			pv->index = gkr_pk_index_open_session (attrs);
+		
 		gnome_keyring_attribute_list_free (attrs);
 	}
 	

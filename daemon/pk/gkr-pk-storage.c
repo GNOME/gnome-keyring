@@ -288,8 +288,11 @@ gkr_pk_storage_internal_index (GkrPkStorage *storage, GQuark unused)
 {
  	GkrPkStoragePrivate *pv = GKR_PK_STORAGE_GET_PRIVATE (storage);
 	
-	if (!pv->index)
-		pv->index = gkr_pk_index_open_for_login (NULL);
+	if (!pv->index) {
+		pv->index = gkr_pk_index_open_login (NULL);
+		if (!pv->index)
+			pv->index = gkr_pk_index_open_session (NULL);
+	}
 	
 	return pv->index;
 }
@@ -672,7 +675,7 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrco
 	 */
 
 	/* See if we can just use the login keyring password for this */
-	if (index && gkr_keyring_login_is_usable () && gkr_pk_index_is_secure (index)) {
+	if (index && gkr_keyring_login_is_usable () && gkr_pk_index_allows_secrets (index)) {
 		login = gkr_keyrings_get_login ();
 		g_return_val_if_fail (login, FALSE);
 		g_return_val_if_fail (login->password, FALSE);
@@ -702,7 +705,7 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrco
 
 	gkr_ask_request_set_location (ask, location);
 			
-	if (index && gkr_pk_index_is_secure (index))
+	if (index && gkr_pk_index_allows_secrets (index))
 		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 		
 	/* Prompt the user */
@@ -788,11 +791,9 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		
 	/* See if we can find a valid password for this location */
 	if (st == 2) {
-		if (index) {
-			*result = gkr_pk_index_get_secret (index, digest);
-			if (*result != NULL)
-				return TRUE;
-		}
+		*result = gkr_pk_index_get_secret (index, digest);
+		if (*result != NULL)
+			return TRUE;
 		
 		/* 
 		 * COMPATIBILITY: This is for compatibility with old versions 2.22, which 
@@ -809,21 +810,18 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		
 	/* If we've already tried this password unsuccesfully, then clear */
 	} else {
-		if (index)
-			gkr_pk_index_set_secret (index, digest, NULL);
+		gkr_pk_index_set_secret (index, digest, NULL);
 	}
 
 	/*
 	 * If we've parsed this before, then we can lookup in our index as to what 
 	 * exactly this is we're talking about here.  
 	 */
-	if (index) {
-		stype = gkr_pk_index_get_string (index, digest, "parsed-type");
-		if (stype) {
-			if (!type && stype[0])
-				type = g_quark_from_string (stype);
-			g_free (stype);
-		}
+	stype = gkr_pk_index_get_string (index, digest, "parsed-type");
+	if (stype) {
+		if (!type && stype[0])
+			type = g_quark_from_string (stype);
+		g_free (stype);
 	}
 	
 	if (!label) 
@@ -840,7 +838,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 
 	gkr_ask_request_set_location (ask, location);
 			
-	if (index && gkr_pk_index_is_secure (index))
+	if (index && gkr_pk_index_allows_secrets (index))
 		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 		
 	/* Prompt the user */

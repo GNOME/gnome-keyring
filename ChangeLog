@@ -1,4 +1,17 @@
-2007-07-24  Stef Walter  <stef@memberwebs.com>
+2008-07-25  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pk/gkr-pk-import.c:
+	* daemon/pk/gkr-pk-index.c:
+	* daemon/pk/gkr-pk-index.h:
+	* daemon/pk/gkr-pk-object.c:
+	* daemon/pk/gkr-pk-root-storage.c:
+	* daemon/pk/gkr-pk-storage.c:
+	* daemon/ssh/gkr-ssh-storage.c:
+	* daemon/ui/gkr-ask-daemon.c: Fix problems using SSH and other PK 
+	related stuff when index unlock is denied by the user. We should 
+	default to a session index.
+	
+2008-07-24  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:
 	* gp11/gp11-module.c:
@@ -14,11 +27,11 @@
 	socket using the reserved argument. This is similar to how NSS
 	libsoftkn3 likes to be initialized. 
 	
-2007-07-23  Stef Walter  <stef@memberwebs.com>
+2008-07-23  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attributes.c: Build fix
 	
-2007-07-23  Stef Walter  <stef@memberwebs.com>
+2008-07-23  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-async.c:
 	* common/gkr-async.h:
@@ -32,7 +45,7 @@
 	* daemon/ui/gkr-ask-request.h: Don't prompt for the same prompt twice 
 	while servicing the same client connection. Fixes bug #544373
 	
-2007-07-23  Stef Walter  <stef@memberwebs.com>
+2008-07-23  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pk/gkr-pk-import.c:
 	* daemon/pk/gkr-pk-index.c:
@@ -45,19 +58,19 @@
 	indexes of PK objects. Handle the 'deny' to unlock use case 
 	better.  
 	
-2007-07-23  Stef Walter  <stef@memberwebs.com>
+2008-07-23  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pk/gkr-pk-storage.c: Try storage of SSH and other key 
 	passwords in the old 2.22 style, so that user's desktops 
 	continue to work as expected. 
 	
-2007-07-21  Stef Walter  <stef@memberwebs.com>
+2008-07-21  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number
 
 === gnome-keyring 2.23.5 ===
 
-2007-07-21  Stef Walter  <stef@memberwebs.com>
+2008-07-21  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/Makefile.am: 
 	* configure.in:

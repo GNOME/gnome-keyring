@@ -134,16 +134,10 @@ move_indexes_if_necessary (GkrPkObject *obj, GkrPkStorage *copy_storage,
 	GkrPkIndex *old_index = NULL;
 	GkrPkIndex *new_index = NULL;
 	
-	if (obj->storage) {
+	if (obj->storage)
 		old_index = gkr_pk_storage_index (obj->storage, obj->location);
-		if (!old_index) /* User may have denied us access to index */
-			return;
-	}
-	if (copy_storage) {
+	if (copy_storage)
 		new_index = gkr_pk_storage_index (copy_storage, copy_location);
-		if (!old_index) /* User may have denied us access to index */
-			return;
-	}
 	
 	if (old_index == new_index)
 		return;
@@ -927,8 +921,6 @@ gkr_pk_object_index_has_value (GkrPkObject *object, const gchar *field)
 	if (object->storage) {
 		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
 		index = gkr_pk_storage_index (object->storage, object->location);
-		if (!index)
-			return FALSE;
 	} 
 	
 	return gkr_pk_index_has_value (index, object->digest, field);
@@ -946,8 +938,6 @@ gkr_pk_object_index_get_quarks (GkrPkObject *object, const gchar *field)
 	if (object->storage) {
 		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
 		index = gkr_pk_storage_index (object->storage, object->location);
-		if (!index)
-			return NULL;
 	} 
 	
 	return gkr_pk_index_get_quarks (index, object->digest, field);
@@ -965,8 +955,6 @@ gkr_pk_object_index_get_string (GkrPkObject *object, const gchar *field)
 	if (object->storage) {
 		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
 		index = gkr_pk_storage_index (object->storage, object->location);
-		if (!index)
-			return NULL;
 	} 
 	
 	return gkr_pk_index_get_string (index, object->digest, field);
@@ -985,8 +973,6 @@ gkr_pk_object_index_get_binary (GkrPkObject *object, const gchar *field,
 	if (object->storage) {
 		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
 		index = gkr_pk_storage_index (object->storage, object->location);
-		if (!index)
-			return NULL;
 	} 
 	
 	return gkr_pk_index_get_binary (index, object->digest, field, n_data);
@@ -1005,8 +991,6 @@ gkr_pk_object_index_set_boolean (GkrPkObject *object, const gchar *field,
 	if (object->storage) {
 		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
 		index = gkr_pk_storage_index (object->storage, object->location);
-		if (!index)
-			return;
 	} 
 	
 	if (gkr_pk_index_set_boolean (index, object->digest, field, value))
@@ -1026,8 +1010,6 @@ gkr_pk_object_index_set_string (GkrPkObject *object, const gchar *field,
 	if (object->storage) {
 		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
 		index = gkr_pk_storage_index (object->storage, object->location);
-		if (!index)
-			return;
 	} 
 	
 	if (gkr_pk_index_set_string (index, object->digest, field, string))
@@ -1047,8 +1029,6 @@ gkr_pk_object_index_set_binary (GkrPkObject *object, const gchar *field,
 	if (object->storage) {
 		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
 		index = gkr_pk_storage_index (object->storage, object->location);
-		if (!index)
-			return;
 	}
 	
 	if (gkr_pk_index_set_binary (index, object->digest, field, data, n_data))
@@ -1067,8 +1047,6 @@ gkr_pk_object_index_clear (GkrPkObject *object, const gchar *field)
 	if (object->storage) {
 		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
 		index = gkr_pk_storage_index (object->storage, object->location);
-		if (!index)
-			return;
 	}
 	
 	if (gkr_pk_index_clear (index, object->digest, field))

@@ -383,15 +383,39 @@ gkr_pk_index_new (GkrKeyring *keyring, GnomeKeyringAttributeList *defaults)
 }
 
 gboolean
-gkr_pk_index_is_secure (GkrPkIndex *index)
+gkr_pk_index_allows_secrets (GkrPkIndex *index)
 {
+	if (!index)
+		return FALSE;
+
 	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
 	g_return_val_if_fail (GKR_IS_KEYRING (index->keyring), FALSE);
-	return !gkr_keyring_is_insecure (index->keyring);
+
+	/* 
+	 * Secrets can be stored on:
+	 *  - Disk base indexes (memory based doesn't make sense,
+	 *    it's just confusing to the user. It's not really 'stored').
+	 *  - Encrypted indexes. It's not secure to store password 
+	 *    in clear text indexes.
+	 */
+	 
+	return index->keyring->location && 
+	       !gkr_keyring_is_insecure (index->keyring); 
 }
 
 GkrPkIndex*
-gkr_pk_index_open_for_login (GnomeKeyringAttributeList *defaults)
+gkr_pk_index_open_session (GnomeKeyringAttributeList *defaults)
+{
+	GkrKeyring *session;
+
+	session = gkr_keyrings_get_session ();
+	g_return_val_if_fail (session, NULL);
+	
+	return gkr_pk_index_new (session, defaults);
+}
+
+GkrPkIndex*
+gkr_pk_index_open_login (GnomeKeyringAttributeList *defaults)
 {
 	GkrKeyring *login;
 
@@ -673,7 +697,7 @@ gkr_pk_index_set_secret (GkrPkIndex *index, gkrconstid digest,
 	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
 	
 	/* Cannot store secrets in an insecure keyring. Caller should have checked this. */
-	if (val != NULL && gkr_keyring_is_insecure (index->keyring)) {
+	if (val != NULL && !gkr_pk_index_allows_secrets (index)) {
 		g_warning ("gkr_pk_index_set_secret() called on an insecure keyring. Cannot "
 		           "store secrets in a text based or otherwise insecure keyring.");
 		return FALSE;
