@@ -193,7 +193,7 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 	/* Load the actual module */
 	pv->module = g_module_open (path, 0);
 	if (!pv->module) {
-		g_set_error (err, GP11_ERROR, CKR_GP11_MODULE_PROBLEM,
+		g_set_error (err, GP11_ERROR, (int)CKR_GP11_MODULE_PROBLEM,
 		             "Error loading pkcs11 module: %s", g_module_error ());
 		g_object_unref (mod);
 		return NULL;
@@ -201,7 +201,7 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 	
 	/* Get the entry point */
 	if (!g_module_symbol (pv->module, "C_GetFunctionList", (void**)&get_function_list)) {
-		g_set_error (err, GP11_ERROR, CKR_GP11_MODULE_PROBLEM,
+		g_set_error (err, GP11_ERROR, (int)CKR_GP11_MODULE_PROBLEM,
 		             "Invalid pkcs11 module: %s", g_module_error ());
 		g_object_unref (mod);
 		return NULL;
@@ -218,7 +218,7 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 	
 	/* Make sure we have a compatible version */
 	if (mod->funcs->version.major != CRYPTOKI_VERSION_MAJOR) {
-		g_set_error (err, GP11_ERROR, CKR_GP11_MODULE_PROBLEM,
+		g_set_error (err, GP11_ERROR, (int)CKR_GP11_MODULE_PROBLEM,
 		             "Incompatible version of pkcs11 module: %d.%d",
 		             (int)mod->funcs->version.major,
 		             (int)mod->funcs->version.minor);

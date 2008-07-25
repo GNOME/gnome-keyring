@@ -1,5 +1,9 @@
 2008-07-25  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/gp11-module.c: Build fixes. Fixes bug #544407
+	
+2008-07-25  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pk/gkr-pk-import.c:
 	* daemon/pk/gkr-pk-index.c:
 	* daemon/pk/gkr-pk-index.h:
