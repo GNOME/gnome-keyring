@@ -225,9 +225,9 @@ prepare_ask_store_secondary (GQuark type, const gchar *label)
 	 */
 
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return g_strdup_printf (_("The system wants to store to the private key '%s' on your disk. Please enter a password to lock it with."), label);
+		return g_strdup_printf (_("The system wants to store the private key '%s' on your disk. Please enter a password to lock it with."), label);
 	else 
-		return g_strdup_printf (_("The system wants to store to '%s' on your disk. Please enter a password to lock it with."), label);
+		return g_strdup_printf (_("The system wants to store '%s' on your disk. Please enter a password to lock it with."), label);
 }
 
 static void

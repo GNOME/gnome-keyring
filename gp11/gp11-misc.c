@@ -50,7 +50,7 @@ gp11_message_from_rv (CK_RV rv)
 	case CKR_ARGUMENTS_BAD:
 		return _("Invalid arguments");
 	case CKR_NEED_TO_CREATE_THREADS:
-		return _("The module cannot created needed threads");
+		return _("The module cannot create needed threads");
 	case CKR_CANT_LOCK:
 		return _("The module cannot lock data properly");
 	case CKR_ATTRIBUTE_READ_ONLY:
@@ -142,7 +142,7 @@ gp11_message_from_rv (CK_RV rv)
 	case CKR_TOKEN_NOT_PRESENT:
 		return _("The device is not present or unplugged");
 	case CKR_TOKEN_NOT_RECOGNIZED:
-		return _("The device is invalid or unregocnizable");
+		return _("The device is invalid or unrecognizable");
 	case CKR_TOKEN_WRITE_PROTECTED:
 		return _("The device is write protected");
 	case CKR_UNWRAPPING_KEY_HANDLE_INVALID:

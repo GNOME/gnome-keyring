@@ -409,7 +409,7 @@ storage_load_private_key (GkrSshStorage *storage, GQuark loc, GError **err)
 		return TRUE;
 	
 	if (ctx.result == GKR_PKIX_FAILURE) {
-		g_set_error (err, GKR_PK_STORAGE_ERROR, 0, _("Couldn't read secure shell key private key: %s"),
+		g_set_error (err, GKR_PK_STORAGE_ERROR, 0, _("Couldn't read secure shell private key: %s"),
 		             g_quark_to_string (loc));
 		return FALSE;
 	} else if (ctx.result == GKR_PKIX_UNRECOGNIZED) {

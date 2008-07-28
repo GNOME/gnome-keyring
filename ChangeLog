@@ -1,3 +1,10 @@
+2008-07-27  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pk/gkr-pk-storage.c:
+	* daemon/ssh/gkr-ssh-storage.c:
+	* gp11/gp11-misc.c: Fix text problems highlighted by Claude Paroz 
+	Fixes bug #545030.
+
 2008-07-25  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-module.c: Build fixes. Fixes bug #544407
