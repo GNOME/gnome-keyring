@@ -164,6 +164,9 @@ void                gkr_pk_object_set_label        (GkrPkObject *object,
 gboolean            gkr_pk_object_index_has_value    (GkrPkObject *object,
                                                       const gchar *field);
 
+gboolean            gkr_pk_object_index_get_boolean  (GkrPkObject *object,
+                                                      const gchar *field);
+
 GQuark*             gkr_pk_object_index_get_quarks   (GkrPkObject *object,
                                                       const gchar *field);
 

@@ -504,7 +504,6 @@ gkr_pk_index_get_uint (GkrPkIndex *index, gkrconstid digest,
 	if (item != NULL)
 		attr = gkr_attribute_list_find (item->attributes, field);
 		
-	attr = gkr_attribute_list_find (item->attributes, field);
 	if (!attr) {
 		attr = find_default_attribute (index, field);
 		if (!attr)

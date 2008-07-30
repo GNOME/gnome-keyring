@@ -466,6 +466,8 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		if ((ret = load_certificate (cert)) != CKR_OK)
 			return ret;
 		value = 0; /* unknown */
+
+		/* Read in the Basic Constraints section */
 		data = gkr_pk_cert_get_extension (cert, OID_BASIC_CONSTRAINTS, &n_data, NULL);
 		if (data) {
 			GkrPkixResult res;
@@ -477,7 +479,12 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 				return CKR_FUNCTION_FAILED;
 			if (is_ca)
 				value = 2; /* authority */
+
+		/* If no basic constraints section, see if it is marked as a CA manually */
+		} else if (gkr_pk_object_index_get_boolean (obj, "default-ca")) {
+			value = 2; /* authority */
 		}
+			
 		gkr_pk_attribute_set_ulong (attr, value);
 		return CKR_OK;
 	

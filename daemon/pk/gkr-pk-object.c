@@ -926,6 +926,23 @@ gkr_pk_object_index_has_value (GkrPkObject *object, const gchar *field)
 	return gkr_pk_index_has_value (index, object->digest, field);
 }
 
+gboolean
+gkr_pk_object_index_get_boolean (GkrPkObject *object, const gchar *field)
+{
+	GkrPkIndex *index = NULL;
+
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), FALSE);
+	g_return_val_if_fail (object->digest, FALSE);
+	g_return_val_if_fail (field, FALSE);
+	
+	if (object->storage) {
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
+		index = gkr_pk_storage_index (object->storage, object->location);
+	} 
+	
+	return gkr_pk_index_get_boolean (index, object->digest, field, FALSE);
+}
+
 GQuark*
 gkr_pk_object_index_get_quarks (GkrPkObject *object, const gchar *field)
 {
@@ -936,7 +953,7 @@ gkr_pk_object_index_get_quarks (GkrPkObject *object, const gchar *field)
 	g_return_val_if_fail (field, NULL);
 	
 	if (object->storage) {
-		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), NULL);
 		index = gkr_pk_storage_index (object->storage, object->location);
 	} 
 	
@@ -953,7 +970,7 @@ gkr_pk_object_index_get_string (GkrPkObject *object, const gchar *field)
 	g_return_val_if_fail (field, NULL);
 	
 	if (object->storage) {
-		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), NULL);
 		index = gkr_pk_storage_index (object->storage, object->location);
 	} 
 	
@@ -971,7 +988,7 @@ gkr_pk_object_index_get_binary (GkrPkObject *object, const gchar *field,
 	g_return_val_if_fail (field, NULL);
 	
 	if (object->storage) {
-		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), FALSE);
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), NULL);
 		index = gkr_pk_storage_index (object->storage, object->location);
 	} 
 	

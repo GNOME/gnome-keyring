@@ -224,6 +224,7 @@ gkr_pk_root_storage_index (GkrPkStorage *storage, GQuark unused)
 		/* Default attributes for our index */
 		attrs = gnome_keyring_attribute_list_new ();
 		gnome_keyring_attribute_list_append_string (attrs, "user-trust", "trusted");
+		gnome_keyring_attribute_list_append_uint32 (attrs, "default-ca", 1);
 
 		pv->index = gkr_pk_index_open_login (attrs);
 		if (!pv->index)

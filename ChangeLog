@@ -1,3 +1,12 @@
+2008-07-30  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pk/gkr-pk-cert.c:
+	* daemon/pk/gkr-pk-index.c:
+	* daemon/pk/gkr-pk-object.c:
+	* daemon/pk/gkr-pk-object.h:
+	* daemon/pk/gkr-pk-root-storage.c: When a certificate is in the Roots
+	storage, assume it is a CA if no basic constraints are present. 
+	
 2008-07-27  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pk/gkr-pk-storage.c:
