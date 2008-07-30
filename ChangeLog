@@ -1,5 +1,9 @@
 2008-07-30  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location.c: Fix erroneous warning on shutdown.
+	
+2008-07-30  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pk/gkr-pk-cert.c:
 	* daemon/pk/gkr-pk-index.c:
 	* daemon/pk/gkr-pk-object.c:

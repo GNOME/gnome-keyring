@@ -402,7 +402,7 @@ location_manager_hal_uninit (GkrLocationManager *locmgr)
 		dbus_error_init (&error);
 		if (pv->dbus_connection != NULL) {
 			if (pv->hal_inited) {
-				if (libhal_ctx_shutdown (pv->hal_ctx, &error)) {
+				if (!libhal_ctx_shutdown (pv->hal_ctx, &error)) {
 					g_warning ("failed to shutdown HAL context: %s\n", error.message);
 					dbus_error_free (&error);
 				}
