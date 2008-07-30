@@ -191,6 +191,7 @@ keyrings_init (void)
 	g_assert (!session_keyring);
 	session_keyring = gkr_keyring_new ("session", 0);
 	gkr_keyrings_add (session_keyring);
+	g_object_unref (session_keyring);
 	
 	g_assert (!location_watch);
 	location_watch = gkr_location_watch_new (NULL, 0, "keyrings", "*.keyring", NULL);
@@ -355,12 +356,13 @@ gkr_keyrings_for_location (GQuark location)
 	/* Try and load the keyring */
 	if (gkr_location_test_file (location, G_FILE_TEST_IS_REGULAR)) {
 		keyring = gkr_keyring_new ("", location);
-		if (gkr_keyring_update_from_disk (keyring))
+		if (gkr_keyring_update_from_disk (keyring)) {
 			gkr_keyrings_add (keyring);
-		else
-			keyring = NULL;
+			g_object_unref (keyring);
+			return keyring;
+		} 
+		
 		g_object_unref (keyring);
-		return keyring;
 	}
 
 	return NULL;

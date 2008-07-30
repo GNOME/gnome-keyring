@@ -1,5 +1,16 @@
 2008-07-30  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon-ops.c:
+	* daemon/keyrings/gkr-keyring-binary.c:
+	* daemon/keyrings/gkr-keyring-item.c:
+	* daemon/keyrings/gkr-keyring-login.c:
+	* daemon/keyrings/gkr-keyrings.c:
+	* daemon/keyrings/gkr-keyring-textual.c:
+	* library/tests/unit-test-keyrings.c: Manage keyring and item 
+	reference counting properly. Fixes bug #545456
+	
+2008-07-30  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-location.c: Fix erroneous warning on shutdown.
 	
 2008-07-30  Stef Walter  <stef@memberwebs.com>

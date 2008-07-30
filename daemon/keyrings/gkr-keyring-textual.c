@@ -431,6 +431,7 @@ gkr_keyring_textual_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 		if (item == NULL) {
 			item = gkr_keyring_item_new (keyring, id, 0);
 			gkr_keyring_add_item (keyring, item);
+			g_object_unref (item);
 		}
 
 		parse_item (file, item, (const gchar**)groups);

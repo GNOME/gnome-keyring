@@ -237,6 +237,7 @@ gkr_keyring_login_attach_secret (GnomeKeyringItemType type, const gchar *display
 	if (!item) {
 		item = gkr_keyring_item_create (login, type);
 		gkr_keyring_add_item (login, item);
+		g_object_unref (item);
 	}
 	
 	g_free (item->display_name);

@@ -588,6 +588,9 @@ check_keyring_default_request (GkrAskRequest* ask)
 
 			/* Set our newly created keyring as the default */
 			gkr_keyrings_set_default (keyring);
+			
+			/* Let go of the initial reference to this object */
+			g_object_unref (keyring);
 		}
 	}
 	
@@ -1171,6 +1174,7 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
 	if (!item) {
 		item = gkr_keyring_item_create (keyring, type);
 		gkr_keyring_add_item (keyring, item);
+		g_object_unref (item);
 	}
 
 	/* Copy in item type flags */
@@ -1208,6 +1212,7 @@ op_delete_item (GkrBuffer *packet, GkrBuffer *result,
                 GkrKeyringRequest *req)
 {
 	char *keyring_name;
+	GkrKeyring *keyring;
 	GkrKeyringItem *item;
 	GnomeKeyringOpCode opcode;
 	guint32 item_id;
@@ -1231,8 +1236,9 @@ op_delete_item (GkrBuffer *packet, GkrBuffer *result,
 	gkr_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
 		if (item->keyring) {
-			gkr_keyring_remove_item (item->keyring, item);
-			gkr_keyring_save_to_disk (item->keyring);
+			keyring = item->keyring;
+			gkr_keyring_remove_item (keyring, item);
+			gkr_keyring_save_to_disk (keyring);
 		}
 	}
 

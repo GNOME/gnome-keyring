@@ -114,7 +114,6 @@ gkr_keyring_item_dispose (GObject *obj)
 	GkrKeyringItem *item = GKR_KEYRING_ITEM (obj);
 	
 	if (item->keyring) {
-		gkr_keyring_remove_item (item->keyring, item);
 		g_object_remove_weak_pointer (G_OBJECT (item->keyring), 
 		                              (gpointer*)&(item->keyring));
 		item->keyring = NULL;

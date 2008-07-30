@@ -211,11 +211,11 @@ void unit_test_find_keyrings (CuTest* cu)
 	gnome_keyring_attribute_list_append_string (attrs, "dog", "woof");
 	gnome_keyring_attribute_list_append_string (attrs, "bird", "cheep");
 	gnome_keyring_attribute_list_append_string (attrs, "iguana", "");
-	gnome_keyring_attribute_list_append_uint32 (attrs, "num", 3);
+	gnome_keyring_attribute_list_append_uint32 (attrs, "num", 19);
 	
-	/* Create teh item */
-	res = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
-	                                      "Barnyard", attrs, SECRET, FALSE, &id);
+	/* Create the item */
+	res = gnome_keyring_item_create_sync ("session", GNOME_KEYRING_ITEM_GENERIC_SECRET, 
+	                                      "Barnyard", attrs, SECRET, TRUE, &id);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
 	
 	/* Now try to find it */
@@ -225,10 +225,10 @@ void unit_test_find_keyrings (CuTest* cu)
 
 	f = (GnomeKeyringFound*)found->data;	
 	CuAssert(cu, "Wrong item found", f->item_id == id);
-	CuAssert(cu, "Found in wrong keyring", strcmp (f->keyring, KEYRING_NAME) == 0);
+	CuAssert(cu, "Found in wrong keyring", strcmp (f->keyring, "session") == 0);
 	CuAssert(cu, "Wrong secret came back", strcmp (f->secret, SECRET) == 0);
 	
-	res = gnome_keyring_item_get_attributes_sync (NULL, id, &attrs);
+	res = gnome_keyring_item_get_attributes_sync ("session", id, &attrs);
 	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
 	
 	/* Make sure that dog does in fact woof */

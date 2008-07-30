@@ -655,6 +655,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 		if (item == NULL) {
 			item = gkr_keyring_item_new (keyring, items[i].id, items[i].type);
 			gkr_keyring_add_item (keyring, item);
+			g_object_unref (item);
 		}
 		
 		item->locked = locked;
