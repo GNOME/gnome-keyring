@@ -1,4 +1,11 @@
-2007-07-03  Stef Walter  <stef@memberwebs.com>
+=== gnome-keyring 2.23.6 ===
+
+2008-08-03  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* NEWS: Release 2.23.6
+	
+2007-08-03  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attribute.c:
 	* gp11/gp11-call.c:
@@ -11,9 +18,9 @@
 	Call async ready callbacks with right object. 
 	
 	* daemon/data/gnome-keyring.schemas.in: Add gconf schema for 
-	noting the PKCS#11 objects for the current user.
+	noting the PKCS#11 modules for the current user.
 	
-2008-07-03  Stef Walter  <stef@memberwebs.com>
+2008-08-03  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attributes.c:
 	* gp11/gp11-object.c: 
@@ -23,7 +30,7 @@
 	* gp11/tests/unit-test-gp11-attributes.c: More fine tuning of GP11 
 	library. Add missing functions. Clarify date handling.
 	 
-2008-07-03  Stef Walter  <stef@memberwebs.com>
+2008-08-03  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attributes.c:
 	* gp11/gp11.h:

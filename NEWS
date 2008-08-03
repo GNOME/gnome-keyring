@@ -1,3 +1,17 @@
+Changes in version 2.23.6 are:
+* If the user denies a prompt, then don't prompt the same prompt
+  again for that connection to the daemon.
+* Bug fixes for loading of SSH keys. 
+* Add gconf schema for noting the user's configured PKCS#11 modules.
+* Update and bug fixes for the new GP11 library.
+* Better reference counting of internal objects.
+* When a certificate is in the roots storage, assume it is a CA if 
+  no basic constraints are present.
+* Add ability of PKCS#11 module to accept a string on its reserved
+  initialization argument, similar to NSS's libsoftkn3 module.
+* Translation fixes.
+* Build fixes.
+
 Changes in version 2.23.5 are:
 * Load all SSH keys in ~/.ssh named id_?sa*, not just id_rsa 
   and id_dsa. Also load public portions of keys when needed ie: *.pub
