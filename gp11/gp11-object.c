@@ -134,6 +134,29 @@ gp11_object_from_handle (GP11Session *session, CK_OBJECT_HANDLE handle)
 	return g_object_new (GP11_TYPE_OBJECT, "module", session->module, "handle", handle, "session", session, NULL);
 }
 
+GList*
+gp11_objects_from_handle_array (GP11Session *session, const GP11Attribute *attr)
+{
+	GList *results = NULL;
+	CK_OBJECT_HANDLE *array;
+	guint i, n_array;
+	
+	g_return_val_if_fail (GP11_IS_SESSION (session), NULL);
+	
+	array = (CK_OBJECT_HANDLE*)attr->value;
+	n_array = attr->length / sizeof (CK_OBJECT_HANDLE);
+	for (i = 0; i < n_array; ++i)
+		results = g_list_prepend (results, gp11_object_from_handle (session, array[i]));
+	return g_list_reverse (results);
+}
+
+CK_OBJECT_HANDLE
+gp11_object_get_handle (GP11Object *object)
+{
+	g_return_val_if_fail (GP11_IS_OBJECT (object), (CK_OBJECT_HANDLE)-1);
+	return object->handle;
+}
+
 /* DESTROY */
 
 typedef struct _Destroy {
@@ -354,7 +377,7 @@ gp11_object_get (GP11Object *object, GError **err, ...)
 }
 
 GP11Attributes*
-gp11_object_get_full (GP11Object *object, guint *attr_types, gsize n_attr_types,
+gp11_object_get_full (GP11Object *object, const guint *attr_types, gsize n_attr_types,
                       GCancellable *cancellable, GError **err)
 {
 	GetAttributes args;
@@ -362,7 +385,7 @@ gp11_object_get_full (GP11Object *object, guint *attr_types, gsize n_attr_types,
 	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
 	
 	memset (&args, 0, sizeof (args));
-	args.attr_types = attr_types;
+	args.attr_types = (guint*)attr_types;
 	args.n_attr_types = n_attr_types;
 	args.object = object->handle;
 
@@ -375,7 +398,7 @@ gp11_object_get_full (GP11Object *object, guint *attr_types, gsize n_attr_types,
 }
 
 void
-gp11_object_get_async (GP11Object *object, guint *attr_types, gsize n_attr_types,
+gp11_object_get_async (GP11Object *object, const guint *attr_types, gsize n_attr_types,
                        GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GetAttributes *args;

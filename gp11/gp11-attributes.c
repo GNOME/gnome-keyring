@@ -140,35 +140,35 @@ gp11_attribute_get_string (GP11Attribute *attr)
 	return g_strndup ((gchar*)attr->value, attr->length);
 }
 
-GDate*
-gp11_attribute_get_date (GP11Attribute *attr)
+void
+gp11_attribute_get_date (GP11Attribute *attr, GDate *value)
 {
 	guint year, month, day;
 	gchar buffer[5];
 	CK_DATE *date;
 	gchar *end;
 	
-	g_return_val_if_fail (attr, NULL);
-	g_return_val_if_fail (attr->length == sizeof (CK_DATE), NULL);
-	g_return_val_if_fail (attr->value, NULL);
+	g_return_if_fail (attr);
+	g_return_if_fail (attr->length == sizeof (CK_DATE));
+	g_return_if_fail (attr->value);
 	date = (CK_DATE*)attr->value;
 	
 	memset (&buffer, 0, sizeof (buffer));
 	memcpy (buffer, date->year, 4);
 	year = strtol (buffer, &end, 10);
-	g_return_val_if_fail (end != buffer && !*end, NULL); 
+	g_return_if_fail (end != buffer && !*end); 
 	
 	memset (&buffer, 0, sizeof (buffer));
 	memcpy (buffer, date->month, 2);
 	month = strtol (buffer, &end, 10);
-	g_return_val_if_fail (end != buffer && !*end, NULL); 
+	g_return_if_fail (end != buffer && !*end); 
 
 	memset (&buffer, 0, sizeof (buffer));
 	memcpy (buffer, date->day, 2);
 	day = strtol (buffer, &end, 10);
-	g_return_val_if_fail (end != buffer && !*end, NULL); 
+	g_return_if_fail (end != buffer && !*end); 
 	
-	return g_date_new_dmy (day, month, year);	
+	g_date_set_dmy (value, day, month, year);	
 }
 
 GP11Attribute*
@@ -221,6 +221,17 @@ struct _GP11Attributes {
 	gint immutable;
 	gint refs;
 };
+
+GType
+gp11_attributes_get_boxed_type (void)
+{
+	static GType type = 0;
+	if (!type)
+		type = g_boxed_type_register_static ("GP11Attributes", 
+		                                     (GBoxedCopyFunc)gp11_attributes_ref,
+		                                     (GBoxedFreeFunc)gp11_attributes_unref);
+	return type;
+}
 
 GP11Attributes*
 gp11_attributes_new (void)
@@ -470,7 +481,7 @@ gp11_attributes_find_string (GP11Attributes *attrs, guint attr_type, gchar **val
 }
 
 gboolean
-gp11_attributes_find_date (GP11Attributes *attrs, guint attr_type, GDate **value)
+gp11_attributes_find_date (GP11Attributes *attrs, guint attr_type, GDate *value)
 {
 	GP11Attribute *attr;
 	g_return_val_if_fail (value, FALSE);
@@ -478,15 +489,16 @@ gp11_attributes_find_date (GP11Attributes *attrs, guint attr_type, GDate **value
 	attr = gp11_attributes_find (attrs, attr_type);
 	if (!attr)
 		return FALSE;
-	*value = gp11_attribute_get_date (attr);
+	gp11_attribute_get_date (attr, value);
 	return TRUE;
 }
 
-void 
+GP11Attributes*
 gp11_attributes_ref (GP11Attributes *attrs)
 {
-	g_return_if_fail (attrs);
+	g_return_val_if_fail (attrs, NULL);
 	g_atomic_int_inc (&attrs->refs);
+	return attrs;
 }
 
 void

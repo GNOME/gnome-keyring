@@ -93,7 +93,8 @@ gulong              gp11_attribute_get_ulong                (GP11Attribute *attr
 
 gchar*              gp11_attribute_get_string               (GP11Attribute *attr);
 
-GDate*              gp11_attribute_get_date                 (GP11Attribute *attr);
+void                gp11_attribute_get_date                 (GP11Attribute *attr, 
+                                                             GDate* value);
 
 GP11Attribute*      gp11_attribute_dup                      (GP11Attribute *attr);
 
@@ -101,7 +102,12 @@ void                gp11_attribute_clear                    (GP11Attribute *attr
 
 void                gp11_attribute_free                     (GP11Attribute *attr);
 
+
 typedef struct _GP11Attributes GP11Attributes;
+
+#define             GP11_TYPE_ATTRIBUTES                    (gp11_attributes_get_boxed_type ())
+
+GType               gp11_attributes_get_boxed_type          (void) G_GNUC_CONST;
  
 GP11Attributes*     gp11_attributes_new                     (void);
 
@@ -157,11 +163,11 @@ gboolean            gp11_attributes_find_string             (GP11Attributes *att
 
 gboolean            gp11_attributes_find_date               (GP11Attributes *attrs,
                                                              guint attr_type,
-                                                             GDate **value);            
+                                                             GDate *value);
 
 gulong              gp11_attributes_count                   (GP11Attributes *attrs);
 
-void                gp11_attributes_ref                     (GP11Attributes *attrs);
+GP11Attributes*     gp11_attributes_ref                     (GP11Attributes *attrs);
 
 void                gp11_attributes_unref                   (GP11Attributes *attrs);
 
@@ -311,6 +317,8 @@ struct _GP11SlotClass {
 
 GType               gp11_slot_get_type                      (void) G_GNUC_CONST;
 
+CK_SLOT_ID          gp11_slot_get_handle                    (GP11Slot *slot);
+
 gboolean            gp11_slot_get_reuse_sessions            (GP11Slot *slot);
 
 void                gp11_slot_set_reuse_sessions            (GP11Slot *slot, 
@@ -412,6 +420,8 @@ struct _GP11SessionClass {
 GType               gp11_session_get_type                   (void) G_GNUC_CONST;
 
 GP11Session*        gp11_session_from_handle                (GP11Slot *slot, CK_SESSION_HANDLE handle); 
+
+CK_SESSION_HANDLE   gp11_session_get_handle                 (GP11Session *session);
 
 GP11SessionInfo*    gp11_session_get_info                   (GP11Session *session);
 
@@ -1158,6 +1168,11 @@ GType               gp11_object_get_type                    (void) G_GNUC_CONST;
 GP11Object*         gp11_object_from_handle                 (GP11Session *session, 
                                                              CK_OBJECT_HANDLE handle);
 
+GList*              gp11_objects_from_handle_array          (GP11Session *session,
+                                                             const GP11Attribute *attr);
+
+CK_OBJECT_HANDLE    gp11_object_get_handle                  (GP11Object *object);
+
 #ifdef UNIMPLEMENTED
 
 GP11Object*         gp11_object_copy                        (GP11Object *object,
@@ -1239,13 +1254,13 @@ GP11Attributes*     gp11_object_get                         (GP11Object *object,
                                                              ...);
 
 GP11Attributes*     gp11_object_get_full                    (GP11Object *object,
-                                                             guint *attr_types,
+                                                             const guint *attr_types,
                                                              gsize n_attr_types,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gp11_object_get_async                   (GP11Object *object,
-                                                             guint *attr_types,
+                                                             const guint *attr_types,
                                                              gsize n_attr_types,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,

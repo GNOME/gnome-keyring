@@ -172,6 +172,13 @@ gp11_session_from_handle (GP11Slot *slot, CK_SESSION_HANDLE handle)
 	                     "handle", handle, "slot", slot, NULL);
 }
 
+CK_SESSION_HANDLE
+gp11_session_get_handle (GP11Session *session)
+{
+	g_return_val_if_fail (GP11_IS_SESSION (session), (CK_SESSION_HANDLE)-1);
+	return session->handle;
+}
+
 GP11SessionInfo*
 gp11_session_get_info (GP11Session *session)
 {

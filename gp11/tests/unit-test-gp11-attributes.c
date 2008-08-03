@@ -158,17 +158,15 @@ DEFINE_TEST(get_date)
 {
 	GP11Attribute *attr;
 	CK_DATE ck_date;
-	GDate *date, *date2;
+	GDate date, date2;
 
-	date = g_date_new_dmy(05, 06, 1800);
+	g_date_set_dmy(&date, 05, 06, 1800);
 	memcpy (ck_date.year, "1800", 4);
 	memcpy (ck_date.month, "06", 2);
 	memcpy (ck_date.day, "05", 2);
-	attr = gp11_attribute_new_date (ATTR_TYPE, date);
-	date2 = gp11_attribute_get_date (attr);
-	g_assert (g_date_compare (date, date2) == 0);
-	g_date_free (date);
-	g_date_free (date2);
+	attr = gp11_attribute_new_date (ATTR_TYPE, &date);
+	gp11_attribute_get_date (attr, &date2);
+	g_assert (g_date_compare (&date, &date2) == 0);
 	gp11_attribute_free (attr);
 }
 
@@ -249,7 +247,7 @@ test_attributes_contents (GP11Attributes *attrs)
 {
 	GP11Attribute *attr;
 	gchar *value;
-	GDate *date, *check;
+	GDate date, *check;
 	
 	g_assert (attrs != NULL);
 	g_assert (gp11_attributes_count (attrs) == 5);
@@ -271,9 +269,8 @@ test_attributes_contents (GP11Attributes *attrs)
 	attr = gp11_attributes_at (attrs, 3);
 	g_assert (attr->type == 303);
 	check = g_date_new_dmy (11, 12, 2008);
-	date = gp11_attribute_get_date (attr);
-	g_assert (g_date_compare (date, check) == 0);
-	g_date_free (date);
+	gp11_attribute_get_date (attr, &date);
+	g_assert (g_date_compare (&date, check) == 0);
 	g_date_free (check);
 	
 	attr = gp11_attributes_at (attrs, 4);
@@ -398,7 +395,7 @@ DEFINE_TEST(add_attributes)
 DEFINE_TEST(find_attributes)
 {
 	GP11Attribute *attr;
-	GDate *check, *date = g_date_new_dmy (13, 12, 2008);
+	GDate check, *date = g_date_new_dmy (13, 12, 2008);
 	gboolean bvalue, ret;
 	gulong uvalue;
 	gchar *svalue;
@@ -432,9 +429,8 @@ DEFINE_TEST(find_attributes)
 	
 	ret = gp11_attributes_find_date (attrs, 303, &check);
 	g_assert (ret == TRUE);
-	g_assert (check != NULL);
-	g_assert (g_date_compare (date, check) == 0);
-	g_date_free (check);
+	g_assert (g_date_compare (date, &check) == 0);
 	
 	gp11_attributes_unref (attrs);
+	g_date_free (date);
 }

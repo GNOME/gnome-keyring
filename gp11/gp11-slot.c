@@ -418,6 +418,13 @@ gp11_mechanism_info_free (GP11MechanismInfo *mech_info)
 	g_free (mech_info);
 }
 
+CK_SLOT_ID
+gp11_slot_get_handle (GP11Slot *slot)
+{
+	g_return_val_if_fail (GP11_IS_SLOT (slot), (CK_SLOT_ID)-1);
+	return slot->handle;
+}
+
 gboolean
 gp11_slot_get_reuse_sessions (GP11Slot *slot)
 {
