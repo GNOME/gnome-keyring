@@ -28,5 +28,21 @@
 				when certain command line arguments are passed to the daemon.</long>
 			</locale>
 		</schema>
+		<schema>
+			<key>/schemas/system/pkcs11/modules</key>
+			<applyto>/system/pkcs11/modules</applyto>
+			<owner>gnome-keyring</owner>
+			<type>list</type>
+			<list_type>string</list_type>
+			<default>[]</default>
+			<locale name="C">
+				<short>PKCS#11 Modules</short>
+				<long>A list of paths to PKCS#11 modules to load. No modules are 
+				currently listed by default, as this is still an experimental
+				feature. This is used by seahorse and other PKCS#11 aware 
+				applications.</long>
+			</locale>
+		</schema>
+			
 	</schemalist>
 </gconfschemafile>

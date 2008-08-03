@@ -98,6 +98,7 @@ gboolean           _gp11_call_sync                        (gpointer object,
                                                            GError **err);
 
 gpointer           _gp11_call_async_prep                  (gpointer object, 
+                                                           gpointer cb_object,
                                                            gpointer func, 
                                                            gsize args_size,
                                                            gpointer destroy_func);

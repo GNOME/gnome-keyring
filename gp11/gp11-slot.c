@@ -638,7 +638,7 @@ gp11_slot_init_token_async (GP11Slot *slot, const guchar *pin, gsize length,
                             const gchar *label, GCancellable *cancellable,
                             GAsyncReadyCallback callback, gpointer user_data)
 {
-	InitToken* args = _gp11_call_async_prep (slot, perform_init_token, 
+	InitToken* args = _gp11_call_async_prep (slot, slot, perform_init_token, 
 	                                         sizeof (*args));
 	
 	args->pin = pin;
@@ -698,7 +698,7 @@ void
 gp11_slot_open_session_async (GP11Slot *slot, guint flags, GCancellable *cancellable, 
                               GAsyncReadyCallback callback, gpointer user_data)
 {
-	OpenSession *args = _gp11_call_async_prep (slot, perform_open_session,
+	OpenSession *args = _gp11_call_async_prep (slot, slot, perform_open_session,
 	                                           sizeof (*args), NULL);
 	
 	/* Try to use a cached session */

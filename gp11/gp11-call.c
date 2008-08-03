@@ -333,7 +333,8 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
 }
 
 gpointer
-_gp11_call_async_prep (gpointer object, gpointer func, gsize args_size, gpointer destroy)
+_gp11_call_async_prep (gpointer object, gpointer cb_object, gpointer func, 
+                       gsize args_size, gpointer destroy)
 {
 	GP11Arguments *args;
 	GP11Module *module;
@@ -358,8 +359,8 @@ _gp11_call_async_prep (gpointer object, gpointer func, gsize args_size, gpointer
 	call = g_object_new (GP11_TYPE_CALL, NULL);
 	call->destroy = (GDestroyNotify)destroy;
 	call->func = (GP11CallFunc)func;
-	call->object = object;
-	g_object_ref (object);
+	call->object = cb_object;
+	g_object_ref (cb_object);
 
 	/* Hook the two together */
 	call->args = args;

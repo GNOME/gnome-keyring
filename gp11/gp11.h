@@ -52,6 +52,9 @@ void                gp11_attribute_init                     (GP11Attribute *attr
                                                              gconstpointer value,
                                                              gsize length);
 
+void                gp11_attribute_init_invalid             (GP11Attribute *attr,
+                                                             guint attr_type);
+
 void                gp11_attribute_init_boolean             (GP11Attribute *attr,
                                                              guint attr_type,
                                                              gboolean value);
@@ -75,6 +78,8 @@ GP11Attribute*      gp11_attribute_new                      (guint attr_type,
                                                              gpointer value,
                                                              gsize length);
 
+GP11Attribute*      gp11_attribute_new_invalid              (guint attr_type);
+
 GP11Attribute*      gp11_attribute_new_boolean              (guint attr_type,
                                                              gboolean value);
 
@@ -86,6 +91,8 @@ GP11Attribute*      gp11_attribute_new_ulong                (guint attr_type,
 
 GP11Attribute*      gp11_attribute_new_string               (guint attr_type,
                                                              const gchar *value);
+
+gboolean            gp11_attribute_is_invalid               (GP11Attribute *attr);
 
 gboolean            gp11_attribute_get_boolean              (GP11Attribute *attr);
 
@@ -129,6 +136,9 @@ void                gp11_attributes_add_data                (GP11Attributes *att
                                                              guint attr_type,
                                                              gconstpointer value,
                                                              gsize length);
+
+void                gp11_attributes_add_invalid             (GP11Attributes *attrs,
+                                                             guint attr_type);
 
 void                gp11_attributes_add_boolean             (GP11Attributes *attrs,
                                                              guint attr_type,

@@ -1,3 +1,18 @@
+2007-07-03  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-attribute.c:
+	* gp11/gp11-call.c:
+	* gp11/gp11-object.c:
+	* gp11/gp11-private.h:
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c:
+	* gp11/gp11.h: Add concept of invalid attributes. Don't throw error
+	when some attributes of a multi attribute retrieval are invalid.
+	Call async ready callbacks with right object. 
+	
+	* daemon/data/gnome-keyring.schemas.in: Add gconf schema for 
+	noting the PKCS#11 objects for the current user.
+	
 2008-07-03  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attributes.c:

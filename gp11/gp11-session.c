@@ -252,7 +252,7 @@ gp11_session_login_async (GP11Session *session, guint32 user_type, const guchar 
                           gsize n_pin, GCancellable *cancellable, GAsyncReadyCallback callback,
                           gpointer user_data)
 {
-	Login* args = _gp11_call_async_prep (session, perform_login, sizeof (*args), free_login);
+	Login* args = _gp11_call_async_prep (session, session, perform_login, sizeof (*args), free_login);
 	
 	args->user_type = user_type;
 	args->pin = pin && n_pin ? g_memdup (pin, n_pin) : NULL;
@@ -296,7 +296,7 @@ void
 gp11_session_logout_async (GP11Session *session, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
-	GP11Arguments *args = _gp11_call_async_prep (session, perform_logout, 0, NULL);
+	GP11Arguments *args = _gp11_call_async_prep (session, session, perform_logout, 0, NULL);
 	_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
@@ -364,7 +364,7 @@ gp11_session_create_object_async (GP11Session *session, GP11Attributes *attrs,
                                   GCancellable *cancellable, GAsyncReadyCallback callback, 
                                   gpointer user_data)
 {
-	CreateObject *args = _gp11_call_async_prep (session, perform_create_object, 
+	CreateObject *args = _gp11_call_async_prep (session, session, perform_create_object, 
 	                                            sizeof (*args), free_create_object);
 	args->attrs = attrs;
 	gp11_attributes_ref (attrs);
@@ -502,7 +502,7 @@ gp11_session_find_objects_async (GP11Session *session, GP11Attributes *attrs,
                                  GCancellable *cancellable, GAsyncReadyCallback callback, 
                                  gpointer user_data)
 {
-	FindObjects *args = _gp11_call_async_prep (session, perform_find_objects, 
+	FindObjects *args = _gp11_call_async_prep (session, session, perform_find_objects, 
 	                                           sizeof (*args), free_find_objects);
 	args->attrs = attrs;
 	gp11_attributes_ref (attrs);
@@ -618,7 +618,7 @@ crypt_async (GP11Session *session, GP11Object *key, GP11Mechanism *mech_args, co
              gsize n_input, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data,
              CK_C_EncryptInit init_func, CK_C_Encrypt complete_func)
 {
-	Crypt *args = _gp11_call_async_prep (session, perform_crypt, sizeof (*args), free_crypt);
+	Crypt *args = _gp11_call_async_prep (session, session, perform_crypt, sizeof (*args), free_crypt);
 
 	g_return_if_fail (GP11_IS_OBJECT (key));
 	g_return_if_fail (mech_args);
@@ -880,7 +880,7 @@ gp11_session_verify_async (GP11Session *session, GP11Object *key, GP11Mechanism 
                            gsize n_signature, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
-	Verify *args = _gp11_call_async_prep (session, perform_verify, sizeof (*args), free_verify);
+	Verify *args = _gp11_call_async_prep (session, session, perform_verify, sizeof (*args), free_verify);
 
 	g_return_if_fail (GP11_IS_OBJECT (key));
 	g_return_if_fail (mech_args);

@@ -19,6 +19,15 @@ gp11_attribute_init (GP11Attribute *attr, guint attr_type,
 }
 
 void
+gp11_attribute_init_invalid (GP11Attribute *attr, guint attr_type)
+{
+	g_assert (sizeof (GP11Attribute) == sizeof (CK_ATTRIBUTE));
+	memset (attr, 0, sizeof (GP11Attribute));
+	attr->type = attr_type;
+	attr->length = (gulong)-1;
+}
+
+void
 _gp11_attribute_init_take (GP11Attribute *attr, guint attr_type,
                            gpointer value, gsize length)
 {
@@ -80,6 +89,14 @@ gp11_attribute_new (guint attr_type, gpointer value, gsize length)
 }
 
 GP11Attribute*
+gp11_attribute_new_invalid (guint attr_type)
+{
+	GP11Attribute *attr = g_slice_new0 (GP11Attribute);
+	gp11_attribute_init_invalid (attr, attr_type);
+	return attr;
+}
+
+GP11Attribute*
 gp11_attribute_new_boolean (guint attr_type, gboolean value)
 {
 	GP11Attribute *attr = g_slice_new0 (GP11Attribute);
@@ -112,9 +129,18 @@ gp11_attribute_new_string (guint attr_type, const gchar *value)
 }
 
 gboolean
+gp11_attribute_is_invalid (GP11Attribute *attr)
+{
+	g_return_val_if_fail (attr, TRUE);
+	return attr->length == (gulong)-1;
+}
+
+gboolean
 gp11_attribute_get_boolean (GP11Attribute *attr)
 {
 	g_return_val_if_fail (attr, FALSE);
+	if (gp11_attribute_is_invalid (attr))
+		return FALSE;
 	g_return_val_if_fail (attr->length == sizeof (CK_BBOOL), FALSE);
 	g_return_val_if_fail (attr->value, FALSE);
 	return *((CK_BBOOL*)attr->value) == CK_TRUE ? TRUE : FALSE;
@@ -124,6 +150,8 @@ gulong
 gp11_attribute_get_ulong (GP11Attribute *attr)
 {
 	g_return_val_if_fail (attr, FALSE);
+	if (gp11_attribute_is_invalid (attr))
+		return 0;
 	g_return_val_if_fail (attr->length == sizeof (CK_ULONG), (gulong)-1);
 	g_return_val_if_fail (attr->value, (gulong)-1);
 	return *((CK_ULONG*)attr->value);
@@ -134,6 +162,8 @@ gp11_attribute_get_string (GP11Attribute *attr)
 {
 	g_return_val_if_fail (attr, NULL);
 	
+	if (gp11_attribute_is_invalid (attr))
+		return NULL;
 	if (!attr->value)
 		return NULL;
 
@@ -149,6 +179,12 @@ gp11_attribute_get_date (GP11Attribute *attr, GDate *value)
 	gchar *end;
 	
 	g_return_if_fail (attr);
+	
+	if (gp11_attribute_is_invalid (attr)) {
+		g_date_clear (value, 1);
+		return;
+	}
+
 	g_return_if_fail (attr->length == sizeof (CK_DATE));
 	g_return_if_fail (attr->value);
 	date = (CK_DATE*)attr->value;
@@ -377,6 +413,16 @@ gp11_attributes_add_data (GP11Attributes *attrs, guint attr_type,
 }
 
 void
+gp11_attributes_add_invalid (GP11Attributes *attrs, guint attr_type)
+{
+	GP11Attribute *added;
+	g_return_if_fail (attrs);
+	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
+	added = attributes_push (attrs);
+	gp11_attribute_init_invalid (added, attr_type);	
+}
+
+void
 gp11_attributes_add_boolean (GP11Attributes *attrs, guint attr_type, gboolean value)
 {
 	GP11Attribute *added;
@@ -448,7 +494,7 @@ gp11_attributes_find_boolean (GP11Attributes *attrs, guint attr_type, gboolean *
 	g_return_val_if_fail (value, FALSE);
 
 	attr = gp11_attributes_find (attrs, attr_type);
-	if (!attr)
+	if (!attr || gp11_attribute_is_invalid (attr))
 		return FALSE;
 	*value = gp11_attribute_get_boolean (attr);
 	return TRUE;
@@ -461,7 +507,7 @@ gp11_attributes_find_ulong (GP11Attributes *attrs, guint attr_type, gulong *valu
 	g_return_val_if_fail (value, FALSE);
 
 	attr = gp11_attributes_find (attrs, attr_type);
-	if (!attr)
+	if (!attr || gp11_attribute_is_invalid (attr))
 		return FALSE;
 	*value = gp11_attribute_get_ulong (attr);
 	return TRUE;
@@ -474,7 +520,7 @@ gp11_attributes_find_string (GP11Attributes *attrs, guint attr_type, gchar **val
 	g_return_val_if_fail (value, FALSE);
 
 	attr = gp11_attributes_find (attrs, attr_type);
-	if (!attr)
+	if (!attr || gp11_attribute_is_invalid (attr))
 		return FALSE;
 	*value = gp11_attribute_get_string (attr);
 	return TRUE;
@@ -487,7 +533,7 @@ gp11_attributes_find_date (GP11Attributes *attrs, guint attr_type, GDate *value)
 	g_return_val_if_fail (value, FALSE);
 
 	attr = gp11_attributes_find (attrs, attr_type);
-	if (!attr)
+	if (!attr || gp11_attribute_is_invalid (attr))
 		return FALSE;
 	gp11_attribute_get_date (attr, value);
 	return TRUE;

@@ -195,7 +195,7 @@ gp11_object_destroy_async (GP11Object *object, GCancellable *cancellable,
 	g_return_if_fail (GP11_IS_OBJECT (object));
 	g_return_if_fail (GP11_IS_SESSION (object->session));
 
-	args = _gp11_call_async_prep (object->session, perform_destroy, sizeof (*args), NULL);
+	args = _gp11_call_async_prep (object->session, object, perform_destroy, sizeof (*args), NULL);
 	args->object = object->handle;
 	
 	_gp11_call_async_go (args, cancellable, callback, user_data);
@@ -268,7 +268,7 @@ gp11_object_set_async (GP11Object *object, GP11Attributes *attrs, GCancellable *
 
 	g_return_if_fail (GP11_IS_OBJECT (object));
 
-	args = _gp11_call_async_prep (object->session, perform_set_attributes, 
+	args = _gp11_call_async_prep (object->session, object, perform_set_attributes, 
 	                              sizeof (*args), free_set_attributes);
 	args->attrs = attrs;
 	gp11_attributes_ref (attrs);
@@ -300,6 +300,24 @@ free_get_attributes (GetAttributes *args)
 	g_free (args);
 }
 
+/* 
+ * Certain failure return values only apply to individual attributes
+ * being retrieved. These are ignored, since the attribute should 
+ * already have -1 set as the length.
+ */
+static gboolean
+is_ok_get_attributes_rv (CK_RV rv) 
+{
+	switch (rv) {
+	case CKR_OK:
+	case CKR_ATTRIBUTE_SENSITIVE:
+	case CKR_ATTRIBUTE_TYPE_INVALID:
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
 static CK_RV
 perform_get_attributes (GetAttributes *args)
 {
@@ -320,7 +338,7 @@ perform_get_attributes (GetAttributes *args)
 	/* Get the size of each value */
 	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object,
 	                                               attrs, n_attrs);
-	if (rv != CKR_OK) {
+	if (!is_ok_get_attributes_rv (rv)) {
 		g_free (attrs);
 		return rv;
 	}
@@ -336,7 +354,7 @@ perform_get_attributes (GetAttributes *args)
 	                                               attrs, n_attrs);
 	
 	/* Transfer over the memory to the results */
-	if (rv == CKR_OK) {
+	if (is_ok_get_attributes_rv (rv)) {
 		g_assert (!args->results);
 		args->results = gp11_attributes_new ();
 		for (i = 0; i < n_attrs; ++i) {
@@ -350,6 +368,10 @@ perform_get_attributes (GetAttributes *args)
 	for (i = 0; i < n_attrs; ++i)
 		g_free (attrs[i].pValue);
 	g_free (attrs);
+	
+	if (is_ok_get_attributes_rv (rv))
+		rv = CKR_OK;
+	
 	return rv;
 }
 
@@ -405,7 +427,7 @@ gp11_object_get_async (GP11Object *object, const guint *attr_types, gsize n_attr
 
 	g_return_if_fail (GP11_IS_OBJECT (object));
 
-	args = _gp11_call_async_prep (object->session, perform_get_attributes, 
+	args = _gp11_call_async_prep (object->session, object, perform_get_attributes, 
 	                              sizeof (*args), free_get_attributes);
 	args->n_attr_types = n_attr_types;
 	if (n_attr_types)
