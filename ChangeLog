@@ -1,6 +1,16 @@
 2008-07-03  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attributes.c:
+	* gp11/gp11-object.c: 
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c: 
+	* gp11/gp11.h:
+	* gp11/tests/unit-test-gp11-attributes.c: More fine tuning of GP11 
+	library. Add missing functions. Clarify date handling.
+	 
+2008-07-03  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-attributes.c:
 	* gp11/gp11.h:
 	* gp11/gp11.pc.in:
 	* pkcs11/Makefile.am: Fine tune GP11 library. Make attribute 
