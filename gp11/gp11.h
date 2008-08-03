@@ -32,7 +32,7 @@ typedef struct GP11Mechanism {
 
 typedef struct GP11Attribute {
 	gulong type;
-	gpointer value;
+	guchar *value;
 	gulong length;
 } GP11Attribute;
 

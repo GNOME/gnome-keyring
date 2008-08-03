@@ -137,7 +137,7 @@ gp11_attribute_get_string (GP11Attribute *attr)
 	if (!attr->value)
 		return NULL;
 
-	return g_strndup (attr->value, attr->length);
+	return g_strndup ((gchar*)attr->value, attr->length);
 }
 
 GDate*

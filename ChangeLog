@@ -1,3 +1,12 @@
+2008-07-03  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-attributes.c:
+	* gp11/gp11.h:
+	* gp11/gp11.pc.in:
+	* pkcs11/Makefile.am: Fine tune GP11 library. Make attribute 
+	data be guchar, and install gnome PKCS#11 header. Set proper
+	version on the library. 
+	
 2008-07-30  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon-ops.c:
