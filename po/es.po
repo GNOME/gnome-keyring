@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-21 06:07+0000\n"
-"PO-Revision-Date: 2008-07-24 22:41+0200\n"
+"POT-Creation-Date: 2008-07-28 03:50+0000\n"
+"PO-Revision-Date: 2008-08-03 19:26+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,25 +19,25 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gkr-location.c:319
+#: ../common/gkr-location.c:320
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Disco extraíble: %s"
 
-#: ../common/gkr-location.c:321
+#: ../common/gkr-location.c:322
 msgid "Removable Disk"
 msgstr "Disco extraíble"
 
-#: ../common/gkr-location.c:536 ../common/gkr-location.c:548
+#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
 msgid "Home"
 msgstr "Inicio"
 
-#: ../common/gkr-location.c:1097 ../common/gkr-location.c:1120
+#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1127
 #: ../daemon/pkix/gkr-pkix-parser.c:472 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "El disco o la unidad en la que está ubicado este archivo no está presente"
 
-#: ../common/gkr-location.c:1150
+#: ../common/gkr-location.c:1157
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "No se pudo borrar el archivo: %s"
@@ -418,70 +418,70 @@ msgstr ""
 msgid "Unlock password for %s keyring"
 msgstr "Contraseña de desbloqueo para el depósito de claves %s"
 
-#: ../daemon/pk/gkr-pk-import.c:90
+#: ../daemon/pk/gkr-pk-import.c:88
 msgid "Import private key"
 msgstr "Importar clave privada"
 
-#: ../daemon/pk/gkr-pk-import.c:92
+#: ../daemon/pk/gkr-pk-import.c:90
 msgid "Import certificate"
 msgstr "Importar certificado"
 
-#: ../daemon/pk/gkr-pk-import.c:94
+#: ../daemon/pk/gkr-pk-import.c:92
 msgid "Import public key"
 msgstr "Importar clave pública"
 
-#: ../daemon/pk/gkr-pk-import.c:96
+#: ../daemon/pk/gkr-pk-import.c:94
 msgid "Import"
 msgstr "Importar"
 
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:166
+#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
 msgid "Enter password to unlock the private key"
 msgstr "Introduzca la contraseña para desbloquear la clave privada"
 
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:168
+#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
 msgid "Enter password to unlock the certificate"
 msgstr "Introduzca la contraseña para desbloquear el certificado"
 
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:170
+#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
 msgid "Enter password to unlock the public key"
 msgstr "Introduzca la contraseña para desbloquear la clave pública"
 
-#: ../daemon/pk/gkr-pk-import.c:109 ../daemon/pk/gkr-pk-storage.c:172
+#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
 msgid "Enter password to unlock"
 msgstr "Introduzca la contraseña para desbloquearlo"
 
-#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:196
+#: ../daemon/pk/gkr-pk-import.c:118 ../daemon/pk/gkr-pk-storage.c:196
 msgid "Automatically unlock this private key when I log in."
 msgstr "Desbloquear esta clave privada automáticamente al iniciar sesión."
 
-#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:198
+#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:198
 msgid "Automatically unlock this certificate when I log in."
 msgstr "Desbloquear este certificado automáticamente al iniciar sesión."
 
-#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:200
+#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:200
 msgid "Automatically unlock this public key when I log in."
 msgstr "Desbloquear esta clave pública automáticamente al iniciar sesión."
 
-#: ../daemon/pk/gkr-pk-import.c:126 ../daemon/pk/gkr-pk-storage.c:202
+#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:202
 msgid "Automatically unlock this when I log in"
 msgstr "Desbloquear esto automáticamente al iniciar sesión"
 
-#: ../daemon/pk/gkr-pk-import.c:133
+#: ../daemon/pk/gkr-pk-import.c:131
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
 msgstr "El sistema quiere importar la clave privada «%s», pero está bloqueada"
 
-#: ../daemon/pk/gkr-pk-import.c:135
+#: ../daemon/pk/gkr-pk-import.c:133
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
 msgstr "El sistema quiere importar el certificado «%s», pero está bloqueado"
 
-#: ../daemon/pk/gkr-pk-import.c:137
+#: ../daemon/pk/gkr-pk-import.c:135
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
 msgstr "El sistema quiere importar la clave privada «%s», pero está bloqueada"
 
-#: ../daemon/pk/gkr-pk-import.c:139
+#: ../daemon/pk/gkr-pk-import.c:137
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
 msgstr "El sistema quiere importar «%s», pero está bloqueado"
@@ -598,8 +598,8 @@ msgstr "Una aplicación quiere acceder «%s», pero está bloqueado"
 #: ../daemon/pk/gkr-pk-storage.c:228
 #, c-format
 msgid ""
-"The system wants to store to the private key '%s' on your disk. Please enter "
-"a password to lock it with."
+"The system wants to store the private key '%s' on your disk. Please enter a "
+"password to lock it with."
 msgstr ""
 "El sistema quiere almacenar la clave privada «%s» en su disco. Introduzca una "
 "contraseña para bloquearlo con ella."
@@ -607,8 +607,8 @@ msgstr ""
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
 msgid ""
-"The system wants to store to '%s' on your disk. Please enter a password to "
-"lock it with."
+"The system wants to store '%s' on your disk. Please enter a password to lock "
+"it with."
 msgstr ""
 "El sistema quiere almacenar «%s» en su disco. Introduzca una contraseña para "
 "bloquearlo con ella."
@@ -626,22 +626,22 @@ msgstr "No se pudo analizar el archivo inválido o corrupto."
 msgid "Couldn't encode secure shell public key."
 msgstr "No se pudo codificar la clave pública de la shell segura."
 
-#: ../daemon/ssh/gkr-ssh-storage.c:414
+#: ../daemon/ssh/gkr-ssh-storage.c:412
 #, c-format
-msgid "Couldn't read secure shell key private key: %s"
+msgid "Couldn't read secure shell private key: %s"
 msgstr "No se pudo leer la clave privada de la shell segura: %s"
 
-#: ../daemon/ssh/gkr-ssh-storage.c:418
+#: ../daemon/ssh/gkr-ssh-storage.c:416
 #, c-format
 msgid "Invalid secure shell private key at: %s"
 msgstr "Clave privada de shell segura no válida en: %s"
 
-#: ../daemon/ssh/gkr-ssh-storage.c:467
+#: ../daemon/ssh/gkr-ssh-storage.c:465
 #, c-format
 msgid "Couldn't encrypt the SSH key to store it."
 msgstr "No se pudo cifrar la clave SSH para almacenarla."
 
-#: ../daemon/ssh/gkr-ssh-storage.c:483
+#: ../daemon/ssh/gkr-ssh-storage.c:481
 #, c-format
 msgid "Couldn't encode the SSH key to store it."
 msgstr "No se pudo codificar la clave SSH para almacenarla."
@@ -714,7 +714,7 @@ msgstr "No hay suficiente memoria disponible"
 
 #: ../gp11/gp11-misc.c:45
 msgid "The specified slot ID is not valid"
-msgstr ""
+msgstr "El ID de la ranura especificada no es válido"
 
 #: ../gp11/gp11-misc.c:47
 msgid "Internal error"
@@ -729,7 +729,7 @@ msgid "Invalid arguments"
 msgstr "Argumentos no válidos"
 
 #: ../gp11/gp11-misc.c:53
-msgid "The module cannot created needed threads"
+msgid "The module cannot create needed threads"
 msgstr "El módulo no pudo crear los hilos necesarios"
 
 #: ../gp11/gp11-misc.c:55
@@ -822,35 +822,35 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:99
 msgid "Cannot export this key"
-msgstr ""
+msgstr "No se puede exportar esta clave"
 
 #: ../gp11/gp11-misc.c:101
 msgid "The crypto mechanism is invalid or unrecognized"
-msgstr ""
+msgstr "El mecanismo de cifrado no es válido o no se reconoce"
 
 #: ../gp11/gp11-misc.c:103
 msgid "The crypto mechanism has an invalid argument"
-msgstr ""
+msgstr "El mecanismo de cifrado tiene un argumento no válido"
 
 #: ../gp11/gp11-misc.c:105
 msgid "The object is missing or invalid"
-msgstr ""
+msgstr "El objeto falta o no es válido"
 
 #: ../gp11/gp11-misc.c:107
 msgid "Another operation is already taking place"
-msgstr ""
+msgstr "Ya se está realizando otra operación"
 
 #: ../gp11/gp11-misc.c:109
 msgid "No operation is taking place"
-msgstr ""
+msgstr "No se está realizando ninguna operación"
 
 #: ../gp11/gp11-misc.c:111
 msgid "The password or PIN is incorrect"
-msgstr ""
+msgstr "La contraseña o PIN es incorrecta"
 
 #: ../gp11/gp11-misc.c:113
 msgid "The password or PIN is invalid"
-msgstr ""
+msgstr "La contraseña o PIN no es válida"
 
 #: ../gp11/gp11-misc.c:115
 msgid "The password or PIN is of an invalid length"
@@ -913,8 +913,8 @@ msgid "The device is not present or unplugged"
 msgstr ""
 
 #: ../gp11/gp11-misc.c:145
-msgid "The device is invalid or unregocnizable"
-msgstr ""
+msgid "The device is invalid or unrecognizable"
+msgstr "El dispositivo no es válido o es irreconocible"
 
 #: ../gp11/gp11-misc.c:147
 msgid "The device is write protected"
