@@ -328,6 +328,8 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 	gchar *comment;
 	gkrid digest;
 	
+g_message("saw PEM block: %s", g_quark_to_string (type));
+
 	/* Only handle SSHv2 private keys */
 	if (type != PEM_RSA_PRIVATE_KEY && type != PEM_DSA_PRIVATE_KEY)
 		return;
@@ -341,6 +343,7 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 	
 	/* If it's encrypted ... */
 	dekinfo = gkr_pkix_openssl_get_dekinfo (headers);
+g_message("dekinfo: %s", dekinfo);
 	if (dekinfo) {
 		/* This key was specifically requested to be loaded */
 		if (gkr_id_equals (digest, pv->specific_load_request)) {
@@ -349,6 +352,7 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 			
 		/* Nobody's asking us to load this key just yet */
 		} else {
+g_message("skipping loading of wrong key");
 			ctx->result = GKR_PKIX_SUCCESS;
 			sexp = NULL;
 		}
@@ -395,6 +399,7 @@ storage_load_private_key (GkrSshStorage *storage, GQuark loc, GError **err)
 	g_return_val_if_fail (loc, FALSE);
 	g_return_val_if_fail (!err || !*err, FALSE);
 	
+g_message("loading SSH private key at: %s", g_quark_to_string (loc));
 	if (!gkr_location_read_file (loc, &data, &n_data, err))
 		return FALSE;
 

@@ -417,6 +417,8 @@ gkr_pk_storage_load (GkrPkStorage *storage, GkrPkObject *obj, GError **err)
 	g_return_val_if_fail (GKR_IS_PK_STORAGE (storage), FALSE);
 	klass = GKR_PK_STORAGE_GET_CLASS (storage);
 	g_return_val_if_fail (klass->load, FALSE);
+	
+g_message("loading location: %s", obj->location ? g_quark_to_string (obj->location) : "NONE");
 	return (klass->load) (storage, obj, err);	
 }
 
