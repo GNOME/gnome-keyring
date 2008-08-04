@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-28 03:50+0000\n"
-"PO-Revision-Date: 2008-08-03 19:26+0200\n"
+"POT-Creation-Date: 2008-08-03 21:57+0000\n"
+"PO-Revision-Date: 2008-08-04 21:34+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -305,7 +305,7 @@ msgstr "Elija una contraseña nueva para el depósito de claves predeterminado. 
 msgid "Change Keyring Password"
 msgstr "Cambia la contraseña del depósito"
 
-#: ../daemon/gkr-daemon-ops.c:611
+#: ../daemon/gkr-daemon-ops.c:614
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -316,7 +316,7 @@ msgstr ""
 "depósito de claves predeterminado. Para crear uno debe elegir la contraseña "
 "que quiere usar en él."
 
-#: ../daemon/gkr-daemon-ops.c:615 ../daemon/gkr-daemon-ops.c:619
+#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -327,7 +327,7 @@ msgstr ""
 "claves predeterminado. Para crear uno debe elegir la contraseña que quiere "
 "usar en él."
 
-#: ../daemon/gkr-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:626
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -339,15 +339,29 @@ msgstr ""
 "que quiere usar en él."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Create Default Keyring"
 msgstr "Crear depósito predeterminado"
 
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Choose password for default keyring"
 msgstr "Elija una contraseña para el depósito de claves predeterminado"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid ""
+"A list of paths to PKCS#11 modules to load. No modules are currently listed "
+"by default, as this is still an experimental feature. This is used by "
+"seahorse and other PKCS#11 aware applications."
+msgstr ""
+"Una lista de rutas de módulos PKCS#11 que cargar. De forma predeterminada no se lista "
+"ningún módulo, ya que ésta es una característica experimental. Contraseñas y claves de cifrado "
+"y otras aplicaciones PKCS#11 lo usan."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid "PKCS#11 Modules"
+msgstr "Módulos PKCS#11"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -359,7 +373,7 @@ msgstr ""
 "el usuario entra en el sistema). Este ajuste se puede sobreescribir al pasar "
 "ciertos parámetros al demonio a través de la línea de comandos."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -371,11 +385,11 @@ msgstr ""
 "entra en el sistema). Este ajuste se puede sobreescribir al pasar ciertos "
 "parámetros al demonio a traes de la línea de comandos."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "Indica si el componente PKCS#11 del depósito de claves está activado."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Indica si el agente SSH del depósito de claves está activado."
 
@@ -854,11 +868,11 @@ msgstr "La contraseña o PIN no es válida"
 
 #: ../gp11/gp11-misc.c:115
 msgid "The password or PIN is of an invalid length"
-msgstr ""
+msgstr "La contraseña o PIN es de una longitud no válida"
 
 #: ../gp11/gp11-misc.c:117
 msgid "The password or PIN has expired"
-msgstr ""
+msgstr "La contraseña o PIN ha caducado"
 
 #: ../gp11/gp11-misc.c:119
 msgid "The password or PIN is locked"
@@ -870,47 +884,47 @@ msgstr "La sesión está cerrada"
 
 #: ../gp11/gp11-misc.c:123
 msgid "Too many sessions are active"
-msgstr ""
+msgstr "Hay demasiadas sesiones activas"
 
 #: ../gp11/gp11-misc.c:125
 msgid "The session is invalid"
-msgstr ""
+msgstr "La sesión no es válida"
 
 #: ../gp11/gp11-misc.c:127
 msgid "The session is read-only"
-msgstr ""
+msgstr "La sesión es de sólo lectura"
 
 #: ../gp11/gp11-misc.c:129
 msgid "An open session exists"
-msgstr ""
+msgstr "Existe una sesión abierta"
 
 #: ../gp11/gp11-misc.c:131
 msgid "A read-only session exists"
-msgstr ""
+msgstr "Existe una sesión de sólo lectura"
 
 #: ../gp11/gp11-misc.c:133
 msgid "An administrator session exists"
-msgstr ""
+msgstr "Existe una sesión de administrador"
 
 #: ../gp11/gp11-misc.c:135
 msgid "The signature is bad or corrupted"
-msgstr ""
+msgstr "La firma es errónea o está corrupta"
 
 #: ../gp11/gp11-misc.c:137
 msgid "The signature is unrecognized or corrupted"
-msgstr ""
+msgstr "La firma no es reconocible o está corrupta"
 
 #: ../gp11/gp11-misc.c:139
 msgid "Certain required fields are missing"
-msgstr ""
+msgstr "Faltan ciertos campos necesarios"
 
 #: ../gp11/gp11-misc.c:141
 msgid "Certain fields have invalid values"
-msgstr ""
+msgstr "Ciertos campos tienen valores no válidos"
 
 #: ../gp11/gp11-misc.c:143
 msgid "The device is not present or unplugged"
-msgstr ""
+msgstr "El dispositivo no está presente o no está conectado"
 
 #: ../gp11/gp11-misc.c:145
 msgid "The device is invalid or unrecognizable"
@@ -918,19 +932,19 @@ msgstr "El dispositivo no es válido o es irreconocible"
 
 #: ../gp11/gp11-misc.c:147
 msgid "The device is write protected"
-msgstr ""
+msgstr "El dispositivo está protegido contra escritura"
 
 #: ../gp11/gp11-misc.c:149
 msgid "Cannot import because the key is invalid"
-msgstr ""
+msgstr "No se puede importar porque la clave no es válida"
 
 #: ../gp11/gp11-misc.c:151
 msgid "Cannot import because the key is of the wrong size"
-msgstr ""
+msgstr "No se puede importar porque la clave es de tamaño erróneo"
 
 #: ../gp11/gp11-misc.c:153
 msgid "Cannot import because the key is of the wrong type"
-msgstr ""
+msgstr "No se puede importar porque la clave es de tipo erróneo"
 
 #: ../gp11/gp11-misc.c:155
 msgid "You are already logged in"
@@ -998,7 +1012,7 @@ msgstr "El estado guardado no es válido"
 
 #: ../gp11/gp11-misc.c:187
 msgid "The information is sensitive and cannot be revealed"
-msgstr ""
+msgstr "La información es sensible y no se puede revelar"
 
 #: ../gp11/gp11-misc.c:189
 msgid "The state cannot be saved"
@@ -1022,7 +1036,7 @@ msgstr "Los datos no se pueden bloquear"
 
 #: ../gp11/gp11-misc.c:199
 msgid "The signature request was rejected by the user"
-msgstr ""
+msgstr "El usuario rechazó la petición de firma"
 
 #: ../gp11/gp11-misc.c:203
 msgid "Unknown error"
