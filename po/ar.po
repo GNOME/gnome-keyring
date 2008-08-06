@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-29 02:15+0100\n"
+"POT-Creation-Date: 2008-08-06 09:18+0100\n"
 "PO-Revision-Date: 2008-03-08 18:28-0000\n"
 "Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -300,7 +300,7 @@ msgstr "إختر كلمة سر جديدة للحلقة الإفتراضية"
 msgid "Change Keyring Password"
 msgstr "غيّر كلمة سر حلقة المفاتيح"
 
-#: ../daemon/gkr-daemon-ops.c:611
+#: ../daemon/gkr-daemon-ops.c:614
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -310,7 +310,7 @@ msgstr ""
 "يريد التطبيق '%s' (%s) حفظ كلمة سر، لكنه لا يوجد حلقة مفاتيح إفتراضية لهذه "
 "العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
 
-#: ../daemon/gkr-daemon-ops.c:615 ../daemon/gkr-daemon-ops.c:619
+#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -320,7 +320,7 @@ msgstr ""
 "يريد التطبيق '%s' حفظ كلمة سر، لكنه لا يوجد حلقة مفاتيح إفتراضية لهذه "
 "العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
 
-#: ../daemon/gkr-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:626
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -331,15 +331,26 @@ msgstr ""
 "العملية. لإنشاء حلقة يجب أن تختار كلمة سر تريد استخدامه معه."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Create Default Keyring"
 msgstr "أنشئ حلقة مفاتيح إفتراضية"
 
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Choose password for default keyring"
 msgstr "اختر كلمة سر للحلقة الإفتراضية"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid ""
+"A list of paths to PKCS#11 modules to load. No modules are currently listed "
+"by default, as this is still an experimental feature. This is used by "
+"seahorse and other PKCS#11 aware applications."
+msgstr ""
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid "PKCS#11 Modules"
+msgstr ""
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -347,7 +358,7 @@ msgid ""
 "passed to the daemon."
 msgstr "سيفعّل هذا الخيار مكون  PKCS#11 لـ gnome-keyring. "
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -355,11 +366,11 @@ msgid ""
 "the daemon."
 msgstr "سيفعّل هذا الخيار مكون  SSH  لـ gnome-keyring. "
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "اذا كان عميل PKCS#11 لـ gnome-keyring مفعّلا."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "اذا كان عميل SSH لـ gnome-keyring مفعّلا."
 
