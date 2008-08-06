@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-14 23:31+0000\n"
+"POT-Creation-Date: 2008-08-03 21:57+0000\n"
 "PO-Revision-Date: 2007-10-16 19:04+0000\n"
 "Last-Translator: unknown\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -17,25 +17,25 @@ msgstr ""
 "X-Launchpad-Export-Date: 2007-11-27 11:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../common/gkr-location.c:319
+#: ../common/gkr-location.c:320
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "דיסק נייד: %s"
 
-#: ../common/gkr-location.c:321
+#: ../common/gkr-location.c:322
 msgid "Removable Disk"
 msgstr "דיסק נייד"
 
-#: ../common/gkr-location.c:536 ../common/gkr-location.c:548
+#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
 msgid "Home"
 msgstr "בית"
 
-#: ../common/gkr-location.c:1097 ../common/gkr-location.c:1120
-#: ../daemon/pkix/gkr-pkix-parser.c:473 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1127
+#: ../daemon/pkix/gkr-pkix-parser.c:472 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr ""
 
-#: ../common/gkr-location.c:1150
+#: ../common/gkr-location.c:1157
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "לא ניתן למחוק את הקובץ: %s"
@@ -156,7 +156,7 @@ msgstr "הכנס סיסמה לפתיחת קבוצת הסיסמאות '%s'"
 msgid "Unlock Keyring"
 msgstr "פתח את קבוצת הסיסמאות"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:136
+#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
 msgid "Automatically unlock this keyring when I log in."
 msgstr "פתח את קבוצת הסיסמאות הזו באופן אוטומטי בזמן הכניסה למערכת."
 
@@ -292,7 +292,7 @@ msgstr "הכנס סיסמה חדשה עבור קבוצת הסיסמאות הפע
 msgid "Change Keyring Password"
 msgstr "שנה את הסיסמה של קבוצת הסיסמאות"
 
-#: ../daemon/gkr-daemon-ops.c:611
+#: ../daemon/gkr-daemon-ops.c:614
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -302,7 +302,7 @@ msgstr ""
 "היישום '%s' (%s) מנסה לשמור סיסמה אך לא מוגדרת קבוצת סיסמאות פעילה. כדי "
 "ליצור קבוצת סיסמאות פעילה עליך לקבוע סיסמת גישה לקבוצה."
 
-#: ../daemon/gkr-daemon-ops.c:615 ../daemon/gkr-daemon-ops.c:619
+#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -312,7 +312,7 @@ msgstr ""
 "היישום '%s' מנסה לשמור סיסמה אך לא מוגדרת קבוצת סיסמאות פעילה. כדי ליצור "
 "קבוצת סיסמאות פעילה עליך לקבוע סיסמת גישה לקבוצה."
 
-#: ../daemon/gkr-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:626
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -323,48 +323,68 @@ msgstr ""
 "ליצור קבוצת סיסמאות פעילה עליך לקבוע סיסמת גישה לקבוצה."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Create Default Keyring"
 msgstr "צור קבוצת סיסמאות פעילה"
 
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Choose password for default keyring"
 msgstr "בחר סיסמה עבור מקבוצת הסיסמאות הפעילה"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid ""
+"A list of paths to PKCS#11 modules to load. No modules are currently listed "
+"by default, as this is still an experimental feature. This is used by "
+"seahorse and other PKCS#11 aware applications."
+msgstr ""
+"A list of paths to PKCS#11 modules to load. No modules are currently listed "
+"by default, as this is still an experimental feature. This is used by "
+"seahorse and other PKCS#11 aware applications."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid "PKCS#11 Modules"
+msgstr "PKCS#11 Modules"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr ""
+msgstr "Whether the gnome-keyring PKCS#11 component is enabled."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr ""
+msgstr "Whether the gnome-keyring SSH agent is enabled."
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
-#, fuzzy
 msgid "Unlock Login Keyring"
-msgstr "פתח את קבוצת הסיסמאות"
+msgstr "פתח את קבוצת סיסמאות ההתחברות"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:98
-#, fuzzy
 msgid "Enter login password to unlock keyring"
-msgstr "סיסמת הפתיחה עבור קבוצת הסיסמאות %s"
+msgstr "הכנס את סיסמת ההתחברות על מנת לפתוח את קבוצת הסיסמאות"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:100
 msgid ""
@@ -374,9 +394,8 @@ msgstr ""
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:124
-#, fuzzy
 msgid "Create Login Keyring"
-msgstr "צור קבוצת סיסמאות פעילה"
+msgstr "צור קבוצת סיסמאות התחברות"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
@@ -393,92 +412,86 @@ msgstr ""
 msgid "Unlock password for %s keyring"
 msgstr "סיסמת הפתיחה עבור קבוצת הסיסמאות %s"
 
-#: ../daemon/pk/gkr-pk-import.c:90
+#: ../daemon/pk/gkr-pk-import.c:88
 msgid "Import private key"
 msgstr "יבא מפתח פרטי"
 
-#: ../daemon/pk/gkr-pk-import.c:92
+#: ../daemon/pk/gkr-pk-import.c:90
 msgid "Import certificate"
 msgstr "יבא תעודה"
 
-#: ../daemon/pk/gkr-pk-import.c:94
+#: ../daemon/pk/gkr-pk-import.c:92
 msgid "Import public key"
 msgstr "יבא מפתח ציבורי"
 
-#: ../daemon/pk/gkr-pk-import.c:96
+#: ../daemon/pk/gkr-pk-import.c:94
 msgid "Import"
 msgstr "יבא"
 
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:166
-#, fuzzy
+#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
 msgid "Enter password to unlock the private key"
-msgstr "הכנס סיסמה לפתיחת קבוצת הסיסמאות הפעילה"
+msgstr "הכנס סיסמה לפתיחת המפתח הפרטי"
 
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:168
+#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
 msgid "Enter password to unlock the certificate"
-msgstr ""
+msgstr "הכנס סיסמה לפתיחת התעודה"
 
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:170
-#, fuzzy
+#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
 msgid "Enter password to unlock the public key"
-msgstr "הכנס סיסמה לפתיחת קבוצת הסיסמאות הפעילה"
+msgstr "הכנס סיסמה לפתיחת המפתח הציבורי"
 
-#: ../daemon/pk/gkr-pk-import.c:109 ../daemon/pk/gkr-pk-storage.c:172
-#, fuzzy
+#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
 msgid "Enter password to unlock"
-msgstr "הכנס סיסמה לפתיחת קבוצת הסיסמאות '%s'"
+msgstr "הכנס סיסמה לפתיחה"
 
-#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:196
-#, fuzzy
+#: ../daemon/pk/gkr-pk-import.c:118 ../daemon/pk/gkr-pk-storage.c:196
 msgid "Automatically unlock this private key when I log in."
-msgstr "פתח את קבוצת הסיסמאות הזו באופן אוטומטי בזמן הכניסה למערכת."
+msgstr "פתח את מפתח פרטי זה אוטומטית בהתחברות למערכת."
 
-#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:198
-#, fuzzy
+#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:198
 msgid "Automatically unlock this certificate when I log in."
-msgstr "פתח את קבוצת הסיסמאות הזו באופן אוטומטי בזמן הכניסה למערכת."
+msgstr "פתח את תעודה זאת אוטומטית בהתחברות למערכת."
 
-#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:200
-#, fuzzy
+#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:200
 msgid "Automatically unlock this public key when I log in."
-msgstr "פתח את קבוצת הסיסמאות הזו באופן אוטומטי בזמן הכניסה למערכת."
+msgstr "פתח את מפתח ציבורי זה אוטומטית בהתחברות למערכת."
 
-#: ../daemon/pk/gkr-pk-import.c:126 ../daemon/pk/gkr-pk-storage.c:202
-#, fuzzy
+#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:202
 msgid "Automatically unlock this when I log in"
-msgstr "פתח את קבוצת הסיסמאות הזו באופן אוטומטי בזמן הכניסה למערכת."
+msgstr "פתח את זה אוטומטית בהתחברות למערכת."
 
-#: ../daemon/pk/gkr-pk-import.c:133
+#: ../daemon/pk/gkr-pk-import.c:131
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
 msgstr "המערכת רוצה ליבא את המפתח הפרטי '%s', אבל היא נעולה"
 
-#: ../daemon/pk/gkr-pk-import.c:135
 # c-format
+#: ../daemon/pk/gkr-pk-import.c:133
+#, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
 msgstr "המערכת רוצה ליבא את התעודה '%s', אבל היא נעולה"
 
-#: ../daemon/pk/gkr-pk-import.c:137
+#: ../daemon/pk/gkr-pk-import.c:135
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
 msgstr "המערכת רוצה ליבא את המפתח הציבורי '%s', אבל היא נעולה"
 
-#: ../daemon/pk/gkr-pk-import.c:139
+#: ../daemon/pk/gkr-pk-import.c:137
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
 msgstr "המערכת רוצה ליבא את '%s', אבל היא נעולה"
 
 #. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:94
+#: ../daemon/pk/gkr-pk-index.c:93
 msgid "Create Storage for Key Information"
 msgstr ""
 
-#: ../daemon/pk/gkr-pk-index.c:95
+#: ../daemon/pk/gkr-pk-index.c:94
 #, fuzzy
 msgid "Choose password to protect storage"
-msgstr "הכנס סיסמה עבור קבוצת הסיסמאות החדשה"
+msgstr "הכנס סיסמה עעל מנת להגן על"
 
-#: ../daemon/pk/gkr-pk-index.c:98
+#: ../daemon/pk/gkr-pk-index.c:97
 msgid ""
 "The system wants to store information about your keys and certificates. In "
 "order to protect this information, choose a password with which it will be "
@@ -486,55 +499,57 @@ msgid ""
 msgstr ""
 
 #. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:125
+#: ../daemon/pk/gkr-pk-index.c:124
 msgid "Unlock Storage for Key Information"
 msgstr ""
 
-#: ../daemon/pk/gkr-pk-index.c:126
+#: ../daemon/pk/gkr-pk-index.c:125
 #, fuzzy
 msgid "Enter password to unlock storage"
 msgstr "הכנס סיסמה לפתיחת קבוצת הסיסמאות '%s'"
 
-#: ../daemon/pk/gkr-pk-index.c:129
+#: ../daemon/pk/gkr-pk-index.c:128
 msgid ""
 "The system wants to access information about your keys and certificates, but "
 "it is locked."
 msgstr ""
 
-#: ../daemon/pk/gkr-pk-object.c:881
+#: ../daemon/pk/gkr-pk-object.c:883
 msgid "Certificate"
 msgstr "תעודה"
 
-#: ../daemon/pk/gkr-pk-object.c:883
+#: ../daemon/pk/gkr-pk-object.c:885
 msgid "Private Key"
 msgstr "מפתח פרטי"
 
-#: ../daemon/pk/gkr-pk-object.c:885
+#: ../daemon/pk/gkr-pk-object.c:887
 msgid "Public Key"
 msgstr "מפתח ציבורי"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:435
+#: ../daemon/pk/gkr-pk-object.c:889
+msgid "Trust Association"
+msgstr ""
+
+#: ../daemon/pk/gkr-pk-object-storage.c:434
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr ""
 
 #: ../daemon/pk/gkr-pk-storage.c:136
 msgid "Unlock private key"
-msgstr ""
+msgstr "פתח מפתח פרטי"
 
 #: ../daemon/pk/gkr-pk-storage.c:138
-#, fuzzy
 msgid "Unlock certificate"
-msgstr "פתח את קבוצת הסיסמאות"
+msgstr "פתח תעודה"
 
 #: ../daemon/pk/gkr-pk-storage.c:140
 msgid "Unlock public key"
-msgstr ""
+msgstr "פתח מפתח ציבורי"
 
 #: ../daemon/pk/gkr-pk-storage.c:142
-#, fuzzy
 msgid "Unlock"
-msgstr "פתח את קבוצת הסיסמאות"
+msgstr "פתח"
 
 #: ../daemon/pk/gkr-pk-storage.c:153
 msgid "Lock private key"
@@ -553,48 +568,48 @@ msgid "Enter password to protect storage"
 msgstr ""
 
 #: ../daemon/pk/gkr-pk-storage.c:209
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
-"יישום מנ"
+"יישום מנסה לגשת למפתח הפרטי '%s', אך הוא נעול"
 
 #: ../daemon/pk/gkr-pk-storage.c:211
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
-"יישום בלתי מזוהה מנסה לגשת לקבוצת הסיסמאות '%s', אך קבוצה זו הינה נעולה"
+"יישום מנסה לגשת לתעודה '%s', אך היא נעולה"
 
 #: ../daemon/pk/gkr-pk-storage.c:213
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
-"יישום בלתי מזוהה מנסה לגשת לקבוצת הסיסמאות '%s', אך קבוצה זו הינה נעולה"
+"יישום מנסה לגשת למפתח הציבורי '%s', אך הוא נעול"
 
 #: ../daemon/pk/gkr-pk-storage.c:215
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr ""
-"יישום בלתי מזוהה מנסה לגשת לקבוצת הסיסמאות '%s', אך קבוצה זו הינה נעולה"
+"יישום מנסה ל-'%s', אך הוא נעול"
 
 #: ../daemon/pk/gkr-pk-storage.c:228
-#, c-format
+#, fuzzy, c-format
 msgid ""
-"The system wants to store to the private key '%s' on your disk. Please enter "
-"a password to lock it with."
-msgstr ""
+"The system wants to store the private key '%s' on your disk. Please enter a "
+"password to lock it with."
+msgstr "המערכת רוצה ליבא את המפתח הפרטי '%s', אבל היא נעולה"
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
 msgid ""
-"The system wants to store to '%s' on your disk. Please enter a password to "
-"lock it with."
+"The system wants to store '%s' on your disk. Please enter a password to lock "
+"it with."
 msgstr ""
 
-#: ../daemon/pkix/gkr-pkix-parser.c:404
+#: ../daemon/pkix/gkr-pkix-parser.c:403
 msgid "Unrecognized or unsupported file."
 msgstr "סוג קובץ לא מזוהה או לא נתמך"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:408
+#: ../daemon/pkix/gkr-pkix-parser.c:407
 msgid "Could not parse invalid or corrupted file."
 msgstr "לא ניתן לפרק קובץ שגוי או פגום"
 
@@ -603,22 +618,22 @@ msgstr "לא ניתן לפרק קובץ שגוי או פגום"
 msgid "Couldn't encode secure shell public key."
 msgstr "לא ניתן לקודד את מפתח ה-SSH."
 
-#: ../daemon/ssh/gkr-ssh-storage.c:414
-#, c-format
-msgid "Couldn't read secure shell key private key: %s"
-msgstr ""
+#: ../daemon/ssh/gkr-ssh-storage.c:412
+#, fuzzy, c-format
+msgid "Couldn't read secure shell private key: %s"
+msgstr "לא ניתן לקודד את מפתח ה-SSH."
 
-#: ../daemon/ssh/gkr-ssh-storage.c:418
+#: ../daemon/ssh/gkr-ssh-storage.c:416
 #, c-format
 msgid "Invalid secure shell private key at: %s"
 msgstr ""
 
-#: ../daemon/ssh/gkr-ssh-storage.c:467
+#: ../daemon/ssh/gkr-ssh-storage.c:465
 #, c-format
 msgid "Couldn't encrypt the SSH key to store it."
 msgstr ""
 
-#: ../daemon/ssh/gkr-ssh-storage.c:483
+#: ../daemon/ssh/gkr-ssh-storage.c:481
 #, c-format
 msgid "Couldn't encode the SSH key to store it."
 msgstr ""
@@ -703,7 +718,8 @@ msgid "Invalid arguments"
 msgstr "ארגומנטים שגויים"
 
 #: ../gp11/gp11-misc.c:53
-msgid "The module cannot created needed threads"
+#, fuzzy
+msgid "The module cannot create needed threads"
 msgstr "המודל לא יכול לייצר את התהליכונים הדרושים"
 
 #: ../gp11/gp11-misc.c:55
@@ -744,7 +760,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:73
 msgid "The device was removed or unplugged"
-msgstr ""
+msgstr "ההתקן הוסר או נותק"
 
 #: ../gp11/gp11-misc.c:75
 msgid "The encrypted data is not valid or unrecognized"
@@ -752,27 +768,27 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:77
 msgid "The encrypted data is too long"
-msgstr ""
+msgstr "המידע המוצפן ארוך מדי"
 
 #: ../gp11/gp11-misc.c:79
 msgid "This operation is not supported"
-msgstr ""
+msgstr "פעולה זאת אינה נתמכת"
 
 #: ../gp11/gp11-misc.c:81
 msgid "The key is missing or invalid"
-msgstr ""
+msgstr "המפתח חסר או שגוי"
 
 #: ../gp11/gp11-misc.c:83
 msgid "The key is the wrong size"
-msgstr ""
+msgstr "המפתח אינו בגודל הנכון"
 
 #: ../gp11/gp11-misc.c:85
 msgid "The key is of the wrong type"
-msgstr ""
+msgstr "הפתח אינו מהסוג הנכון"
 
 #: ../gp11/gp11-misc.c:87
 msgid "No key is needed"
-msgstr ""
+msgstr "אין צורך במפתח"
 
 #: ../gp11/gp11-misc.c:89
 msgid "The key is different than before"
@@ -780,7 +796,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:91
 msgid "A key is needed"
-msgstr ""
+msgstr "יש צורך במפתח"
 
 #: ../gp11/gp11-misc.c:93
 msgid "Cannot include the key in digest"
@@ -792,7 +808,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:97
 msgid "The key cannot be wrapped"
-msgstr ""
+msgstr "לא ניתן לעטוף את המפתח"
 
 #: ../gp11/gp11-misc.c:99
 msgid "Cannot export this key"
@@ -816,7 +832,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:109
 msgid "No operation is taking place"
-msgstr ""
+msgstr "לא מתבצעת פעולה"
 
 #: ../gp11/gp11-misc.c:111
 msgid "The password or PIN is incorrect"
@@ -844,7 +860,7 @@ msgstr "ההפעלה סגורה"
 
 #: ../gp11/gp11-misc.c:123
 msgid "Too many sessions are active"
-msgstr ""
+msgstr "יותר מדי הפעלות פעילות"
 
 #: ../gp11/gp11-misc.c:125
 msgid "The session is invalid"
@@ -887,16 +903,16 @@ msgid "The device is not present or unplugged"
 msgstr ""
 
 #: ../gp11/gp11-misc.c:145
-msgid "The device is invalid or unregocnizable"
+msgid "The device is invalid or unrecognizable"
 msgstr ""
 
 #: ../gp11/gp11-misc.c:147
 msgid "The device is write protected"
-msgstr ""
+msgstr "ההתקן אינו ניתן לכתיבה"
 
 #: ../gp11/gp11-misc.c:149
 msgid "Cannot import because the key is invalid"
-msgstr ""
+msgstr "לא ניתן לייבא מכיון שהמפתח שגוי"
 
 #: ../gp11/gp11-misc.c:151
 msgid "Cannot import because the key is of the wrong size"
@@ -908,7 +924,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:155
 msgid "You are already logged in"
-msgstr ""
+msgstr "אתה כבר מחובר"
 
 #: ../gp11/gp11-misc.c:157
 msgid "No user has logged in"
