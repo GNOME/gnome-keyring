@@ -1,3 +1,8 @@
+2008-08-07  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/ssh/gkr-ssh-storage.c: Fix problem with result 
+	comparison. Related to #544554
+	
 2008-08-03  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number.

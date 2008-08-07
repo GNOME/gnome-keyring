@@ -358,7 +358,7 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 		ctx->result = gkr_pkix_der_read_private_key (data, n_data, &sexp);
 	}
 	
-	if (!ctx->result == GKR_PKIX_SUCCESS) {
+	if (ctx->result != GKR_PKIX_SUCCESS) {
 		gkr_id_free (digest);
 		return;
 	}
