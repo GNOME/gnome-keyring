@@ -657,7 +657,7 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrco
 	gchar *custom_label = NULL;
 	gchar *secondary;
 	gchar *display = NULL;
-	gboolean ret;
+	gboolean ret = TRUE;
 	guint flags;
 	GkrPkIndex *index;
 	GkrKeyring *login;
@@ -741,7 +741,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 	gchar *stype, *secondary;
 	gchar *display = NULL;
 	const gchar *password;
-	gboolean ret;
+	gboolean ret = TRUE;
 	GkrPkIndex *index;
 	gint st;
 	guint flags;

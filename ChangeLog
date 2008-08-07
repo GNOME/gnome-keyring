@@ -1,5 +1,8 @@
 2008-08-07  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pk/gkr-pk-storage.c: Fix problem with unititialized
+	variable in prompting for password. Fixes bug #544554.
+	
 	* daemon/ssh/gkr-ssh-storage.c: Fix problem with result 
 	comparison. Related to #544554
 	
