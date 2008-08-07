@@ -9,12 +9,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-03 21:57+0000\n"
-"PO-Revision-Date: 2008-08-04 21:34+0200\n"
+"POT-Creation-Date: 2008-08-04 19:35+0000\n"
+"PO-Revision-Date: 2008-08-07 09:29+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type:  text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
@@ -35,7 +35,8 @@ msgstr "Inicio"
 #: ../common/gkr-location.c:1104 ../common/gkr-location.c:1127
 #: ../daemon/pkix/gkr-pkix-parser.c:472 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
-msgstr "El disco o la unidad en la que está ubicado este archivo no está presente"
+msgstr ""
+"El disco o la unidad en la que está ubicado este archivo no está presente"
 
 #: ../common/gkr-location.c:1157
 #, c-format
@@ -121,14 +122,16 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:311
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "La aplicación «%s» (%s) quiere acceder al depósito de claves «%s», pero está "
 "bloqueado"
 
 #: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "La aplicación «%s»  quiere acceder al depósito de claves predeterminado, pero "
 "está bloqueado"
@@ -142,14 +145,16 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:338
 #, c-format
-msgid "An unknown application wants access to the default keyring, but it is locked"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Una aplicación desconocida quiere acceder al depósito de claves "
 "predeterminado, pero está bloqueado"
 
 #: ../daemon/gkr-daemon-ops.c:342
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Una aplicación desconocida quiere acceder al depósito de claves «%s», pero "
 "está bloqueado"
@@ -353,9 +358,9 @@ msgid ""
 "by default, as this is still an experimental feature. This is used by "
 "seahorse and other PKCS#11 aware applications."
 msgstr ""
-"Una lista de rutas de módulos PKCS#11 que cargar. De forma predeterminada no se lista "
-"ningún módulo, ya que ésta es una característica experimental. Contraseñas y claves de cifrado "
-"y otras aplicaciones PKCS#11 lo usan."
+"Una lista de rutas de módulos PKCS#11 que cargar. De forma predeterminada no "
+"se lista ningún módulo, ya que ésta es una característica experimental. "
+"Contraseñas y claves de cifrado y otras aplicaciones PKCS#11 lo usan."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
@@ -592,7 +597,8 @@ msgstr "Introduzca la contraseña para proteger el depósito"
 #: ../daemon/pk/gkr-pk-storage.c:209
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Una aplicación quiere acceder a la clave privada «%s», pero está bloqueada"
+msgstr ""
+"Una aplicación quiere acceder a la clave privada «%s», pero está bloqueada"
 
 #: ../daemon/pk/gkr-pk-storage.c:211
 #, c-format
@@ -602,7 +608,8 @@ msgstr "Una aplicación quiere acceder al certificado «%s», pero está bloquea
 #: ../daemon/pk/gkr-pk-storage.c:213
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Una aplicación quiere acceder a la clave pública «%s», pero está bloqueada"
+msgstr ""
+"Una aplicación quiere acceder a la clave pública «%s», pero está bloqueada"
 
 #: ../daemon/pk/gkr-pk-storage.c:215
 #, c-format
@@ -832,7 +839,7 @@ msgstr "Esta operación no se puede realizar con esta clave"
 
 #: ../gp11/gp11-misc.c:97
 msgid "The key cannot be wrapped"
-msgstr ""
+msgstr "La clave no se puede envolver"
 
 #: ../gp11/gp11-misc.c:99
 msgid "Cannot export this key"
@@ -1073,4 +1080,3 @@ msgstr "No existe un depósito de claves con ese nombre."
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "El depósito de claves ya se ha desbloqueado."
-
