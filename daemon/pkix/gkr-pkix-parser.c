@@ -112,13 +112,13 @@ init_quarks (void)
 typedef struct {
 	GQuark location;
 	gint ask_state;
-	GSList *seen;
+	GList *seen;
 } PasswordState;
 
 #define PASSWORD_STATE_INIT { 0, 0, NULL}
 
 typedef struct {
-	GSList *seen_passwords;
+	GList *seen_passwords;
 } GkrPkixParserPrivate;
 
 enum {
@@ -155,7 +155,7 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	gchar *display = NULL;
 	gchar *prompted;
 	gboolean result;
-	GSList *l;
+	GList *l;
 
 	if (gkr_async_is_stopping ())
 		return FALSE;
@@ -193,10 +193,8 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	/* Return next seen password? */
 	if (l && l->next) {
 		l = state->seen = state->seen->next;
-		if (l->data) {
-			*password = (const gchar*)l->data;
-			return TRUE;
-		}
+		*password = (const gchar*)l->data;
+		return TRUE;
 	}
 	
 	/* 
@@ -214,8 +212,8 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	
 	/* Stash away any password */
 	if (result) {
-		if (prompted)
-			pv->seen_passwords = g_slist_prepend (pv->seen_passwords, prompted);
+		pv->seen_passwords = g_list_append (pv->seen_passwords, prompted);
+		state->seen = g_list_last (pv->seen_passwords);
 		*password = prompted;
 		return TRUE;
 	}
@@ -353,11 +351,11 @@ gkr_pkix_parser_finalize (GObject *obj)
 {
 	GkrPkixParser *parser = GKR_PKIX_PARSER (obj);
 	GkrPkixParserPrivate *pv = GKR_PKIX_PARSER_GET_PRIVATE (parser);
-	GSList *l;
+	GList *l;
 	
-	for (l = pv->seen_passwords; l; l = g_slist_next (l))
+	for (l = pv->seen_passwords; l; l = g_list_next (l))
 		gkr_secure_strfree (l->data);
-	g_slist_free (pv->seen_passwords);
+	g_list_free (pv->seen_passwords);
 	
 	G_OBJECT_CLASS (gkr_pkix_parser_parent_class)->finalize (obj);
 }
@@ -699,14 +697,14 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 		
 		g_assert (cih == NULL);
 		
-    	/* If no password is available, we still know it's a key, so 'partial' parse */
-        if (!enum_next_password (parser, location, digest, GKR_PKIX_PRIVATE_KEY, NULL, &pstate, &password)) {
-        	if (parser->interactive)
-        		ret = GKR_PKIX_CANCELLED;
-        	else 
-        		ret = fire_parsed_partial (parser, location, digest, GKR_PKIX_PRIVATE_KEY);
-        	goto done; 
-        }
+		/* If no password is available, we still know it's a key, so 'partial' parse */
+		if (!enum_next_password (parser, location, digest, GKR_PKIX_PRIVATE_KEY, NULL, &pstate, &password)) {
+			if (parser->interactive)
+				ret = GKR_PKIX_CANCELLED;
+			else 
+				ret = fire_parsed_partial (parser, location, digest, GKR_PKIX_PRIVATE_KEY);
+			goto done; 
+		}
 	        
 		/* 
 		 * Parse the encryption stuff into a cipher. 
