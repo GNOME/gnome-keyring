@@ -1,5 +1,21 @@
 2008-08-09  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pk/gkr-pk-cert.c:
+	* daemon/pk/gkr-pk-import.c:
+	* daemon/pk/gkr-pk-netscape-trust.c:
+	* daemon/pk/gkr-pk-object-storage.c:
+	* daemon/pk/gkr-pk-root-storage.c:
+	* daemon/pkcs11/gkr-pkcs11-daemon-session.c:
+	* daemon/pkix/gkr-pkix-parser.c:
+	* daemon/pkix/gkr-pkix-parser.h:
+	* daemon/pkix/gkr-pkix-types.h: 
+	* daemon/pkix/tests/unit-test-pkix-parser.c:
+	* daemon/pkix/tests/unit-test-pkix-serialize.c: Fix problems where
+	the parser is used interactively, and continues to prompt the user
+	after they've cancelled the operation.
+	
+2008-08-09  Stef Walter  <stef@memberwebs.com>
+
 	* conifgure.in:
 	* Makefile.am:
 	* tool/gkr-tool.c: (added)

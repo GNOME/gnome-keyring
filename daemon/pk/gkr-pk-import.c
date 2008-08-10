@@ -144,7 +144,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 {
 	GkrAskRequest *ask;
 	gchar *secondary;
-	gboolean ret;
+	gboolean ret = TRUE;
 	GkrPkIndex *index;
 	guint flags;
 	
@@ -168,7 +168,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 		return TRUE;
 	}
 	
-	if (!label) 
+	if (!label || !label[0]) 
 		label = import->import_label;
 		
 	/* Build up the prompt */
@@ -245,13 +245,13 @@ process_parsed (GkrPkImport *import, GQuark location, gkrconstid digest,
 	if (!gkr_pk_object_has_label (object) && import->import_label)
 		g_object_set (object, "label", import->import_label, NULL);
 	
+	import->import_objects = g_slist_prepend (import->import_objects, object);
+	g_object_weak_ref (G_OBJECT (object), object_disappeared, import);
+
 	if (created) {
 		gkr_pk_storage_store (import->import_storage, object, &pv->error);
 		g_object_unref (object);
 	}
-	
-	import->import_objects = g_slist_prepend (import->import_objects, object);
-	g_object_weak_ref (G_OBJECT (object), object_disappeared, import);
 	
 	return TRUE;
 }
@@ -525,10 +525,14 @@ gkr_pk_import_create (GkrPkManager* manager, GkrPkSession *session,
 		g_object_unref (*object);
 		*object = NULL;
 
-		if (err->domain == GKR_PKIX_PARSE_ERROR)
-			ret = CKR_DATA_INVALID;
-		else
+		if (err->domain == GKR_PKIX_PARSE_ERROR) {
+			if (err->code == GKR_PKIX_CANCELLED)
+				ret = CKR_FUNCTION_CANCELED;
+			else
+				ret = CKR_DATA_INVALID;
+		} else {
 			ret = CKR_FUNCTION_FAILED;
+		}
 
 		g_message ("couldn't import data: %s", err && err->message ? err->message : "");
 		g_clear_error (&err);
@@ -559,7 +563,7 @@ gkr_pk_import_perform (GkrPkImport *import, const guchar *data, gsize n_data, GE
 	
  	g_return_val_if_fail (GKR_IS_PK_IMPORT (import), FALSE);
  	
-	parser = gkr_pkix_parser_new ();
+	parser = gkr_pkix_parser_new (TRUE);
 	g_signal_connect (parser, "parsed-asn1", G_CALLBACK (parser_parsed_asn1), import);
 	g_signal_connect (parser, "parsed-sexp", G_CALLBACK (parser_parsed_sexp), import);
  	g_signal_connect (parser, "ask-password", G_CALLBACK (parser_ask_password), import);

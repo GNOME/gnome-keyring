@@ -165,7 +165,8 @@ get_public_key (GkrPkCert *cert)
 	g_free (data);
 	
 	if (res != GKR_PKIX_SUCCESS) {
-		g_warning ("invalid public-key in certificate: %s", g_quark_to_string (obj->location));
+		if (res != GKR_PKIX_CANCELLED)
+			g_warning ("invalid public-key in certificate: %s", g_quark_to_string (obj->location));
 		return NULL;
 	}
 	
@@ -266,7 +267,8 @@ lookup_certificate_purposes (GkrPkCert *cert, GQuark **oids)
 		g_free (extension);
 	
 		if (res != GKR_PKIX_SUCCESS) {
-			g_warning ("invalid enhanced usage in certificate");
+			if (res != GKR_PKIX_CANCELLED)
+				g_warning ("invalid enhanced usage in certificate");
 			return CKR_GENERAL_ERROR;
 		}
 	}
@@ -475,6 +477,8 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 
 			res = gkr_pkix_der_read_basic_constraints (data, n_data, &is_ca, NULL);
 			g_free (data);
+			if (res == GKR_PKIX_CANCELLED)
+				return CKR_FUNCTION_CANCELED;
 			if (res != GKR_PKIX_SUCCESS)
 				return CKR_FUNCTION_FAILED;
 			if (is_ca)

@@ -50,6 +50,7 @@ typedef struct _GkrPkixParserClass GkrPkixParserClass;
 
 struct _GkrPkixParser {
 	 GObject parent;
+	 gboolean interactive;
 };
 
 struct _GkrPkixParserClass {
@@ -80,7 +81,7 @@ GType               gkr_pkix_parser_get_type                (void) G_GNUC_CONST;
 
 GQuark 	            gkr_pkix_parser_get_error_domain        (void) G_GNUC_CONST;
 
-GkrPkixParser*      gkr_pkix_parser_new                     (void);
+GkrPkixParser*      gkr_pkix_parser_new                     (gboolean interactive);
 
 gboolean            gkr_pkix_parser_parse                   (GkrPkixParser *parser, GQuark loc,
                                                              const guchar *data, gsize n_data, 

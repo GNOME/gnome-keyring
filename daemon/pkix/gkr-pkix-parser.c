@@ -122,6 +122,11 @@ typedef struct {
 } GkrPkixParserPrivate;
 
 enum {
+	PROP_0,
+	PROP_INTERACTIVE
+};
+
+enum {
 	PARSED_PARTIAL,
 	PARSED_SEXP,
 	PARSED_ASN1,
@@ -218,19 +223,22 @@ enum_next_password (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	return FALSE;
 }
 
-static void
+static GkrPkixResult
 fire_parsed_partial (GkrPkixParser *parser, GQuark location, 
                      gkrconstid digest, GQuark type)
 {
 	gboolean owned = FALSE;
 	
-	g_assert (location);
+	g_assert (digest);
 	
-	if (!gkr_async_is_stopping ())
-		g_signal_emit (parser, signals[PARSED_PARTIAL], 0, location, digest, type, &owned);
+	if (gkr_async_is_stopping ())
+		return GKR_PKIX_CANCELLED;
+	
+	g_signal_emit (parser, signals[PARSED_PARTIAL], 0, location, digest, type, &owned);	
+	return GKR_PKIX_SUCCESS;
 }
 
-static void
+static GkrPkixResult
 fire_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstid digest, 
                   GQuark type, gcry_sexp_t sexp)
 {
@@ -238,14 +246,19 @@ fire_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrconstid digest,
 	
 	g_assert (sexp);
 	g_assert (type);
+	g_assert (digest);
+
+	if (gkr_async_is_stopping ())
+		return GKR_PKIX_CANCELLED;
 	
-	if (!gkr_async_is_stopping ())
-		g_signal_emit (parser, signals[PARSED_SEXP], 0, location, digest, type, sexp, &owned);
+	g_signal_emit (parser, signals[PARSED_SEXP], 0, location, digest, type, sexp, &owned);
 	if (!owned)
 		gcry_sexp_release (sexp);
+	
+	return GKR_PKIX_SUCCESS;	
 }
 
-static void
+static GkrPkixResult
 fire_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest, 
                   GQuark type, ASN1_TYPE asn1)
 {
@@ -253,11 +266,16 @@ fire_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest,
 	
 	g_assert (asn1);
 	g_assert (type);
-	
-	if (!gkr_async_is_stopping ())
-		g_signal_emit (parser, signals[PARSED_ASN1], 0, location, digest, type, asn1, &owned);
+	g_assert (digest);
+
+	if (gkr_async_is_stopping ())
+		return GKR_PKIX_CANCELLED;
+
+	g_signal_emit (parser, signals[PARSED_ASN1], 0, location, digest, type, asn1, &owned);
 	if (!owned)
 		asn1_delete_structure (&asn1);
+	
+	return GKR_PKIX_SUCCESS;
 }
 
 /* -----------------------------------------------------------------------------
@@ -269,6 +287,32 @@ gkr_pkix_parser_init (GkrPkixParser *parser)
 {
 	GkrPkixParserPrivate *pv = GKR_PKIX_PARSER_GET_PRIVATE (parser);
 	pv->seen_passwords = NULL;	
+}
+
+static void
+gkr_pkix_parser_get_property (GObject *obj, guint prop_id, GValue *value, 
+                              GParamSpec *pspec)
+{
+	GkrPkixParser *parser = GKR_PKIX_PARSER (obj);
+
+	switch (prop_id) {
+	case PROP_INTERACTIVE:
+		g_value_set_boolean (value, parser->interactive);
+		break;
+	}
+}
+
+static void
+gkr_pkix_parser_set_property (GObject *obj, guint prop_id, const GValue *value, 
+                              GParamSpec *pspec)
+{
+	GkrPkixParser *parser = GKR_PKIX_PARSER (obj);
+	
+	switch (prop_id) {
+	case PROP_INTERACTIVE:
+		parser->interactive = g_value_get_boolean (value);
+		break;
+	};
 }
 
 static gboolean 
@@ -333,6 +377,12 @@ gkr_pkix_parser_class_init (GkrPkixParserClass *klass)
 	klass->ask_password = gkr_pkix_parser_ask_password;
 	
 	gobject_class->finalize = gkr_pkix_parser_finalize;
+	gobject_class->get_property = gkr_pkix_parser_get_property;
+	gobject_class->set_property = gkr_pkix_parser_set_property;
+
+	g_object_class_install_property (gobject_class, PROP_INTERACTIVE,
+		g_param_spec_boolean ("interactive", "Interactive", "Is this parser acting upon user actions directly",
+		                      FALSE, G_PARAM_READWRITE));
 
 	signals[PARSED_PARTIAL] = g_signal_new ("parsed-partial", GKR_TYPE_PKIX_PARSER, 
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GkrPkixParserClass, parsed_partial),
@@ -362,9 +412,9 @@ gkr_pkix_parser_class_init (GkrPkixParserClass *klass)
  */
 
 GkrPkixParser*
-gkr_pkix_parser_new (void)
+gkr_pkix_parser_new (gboolean interactive)
 {
-	return g_object_new (GKR_TYPE_PKIX_PARSER, NULL);
+	return g_object_new (GKR_TYPE_PKIX_PARSER, "interactive", interactive, NULL);
 }
 
 GQuark
@@ -398,6 +448,10 @@ gkr_pkix_parser_parse (GkrPkixParser *parser, GQuark loc, const guchar *data,
 		return TRUE;
 		
 	switch (ret) {
+	case GKR_PKIX_CANCELLED:
+		g_set_error (err, GKR_PKIX_PARSE_ERROR, ret, "%s",
+		             _("The operation was cancelled"));
+		return FALSE;
 	case GKR_PKIX_UNRECOGNIZED:
 		g_set_error (err, GKR_PKIX_PARSE_ERROR, ret, "%s",
 		             _("Unrecognized or unsupported file."));
@@ -509,7 +563,7 @@ gkr_pkix_parser_der_private_key (GkrPkixParser *parser, GQuark loc,
 	if (ret == GKR_PKIX_UNRECOGNIZED)
 		ret = gkr_pkix_der_read_private_key_dsa (data, n_data, &s_key);
 	if (ret == GKR_PKIX_SUCCESS)
-		fire_parsed_sexp (parser, loc, digest, GKR_PKIX_PRIVATE_KEY, s_key);
+		ret = fire_parsed_sexp (parser, loc, digest, GKR_PKIX_PRIVATE_KEY, s_key);
 		
 	gkr_id_free (digest);
 	
@@ -584,7 +638,7 @@ done:
 		};
 		
 		if (ret == GKR_PKIX_SUCCESS)
-			fire_parsed_sexp (parser, loc, digest, GKR_PKIX_PRIVATE_KEY, s_key);
+			ret = fire_parsed_sexp (parser, loc, digest, GKR_PKIX_PRIVATE_KEY, s_key);
 		
 	} else if (ret == GKR_PKIX_FAILURE) {
 		g_message ("invalid PKCS#8 key");
@@ -647,8 +701,10 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 		
     	/* If no password is available, we still know it's a key, so 'partial' parse */
         if (!enum_next_password (parser, location, digest, GKR_PKIX_PRIVATE_KEY, NULL, &pstate, &password)) {
-        	fire_parsed_partial (parser, location, digest, GKR_PKIX_PRIVATE_KEY);
-        	ret = GKR_PKIX_SUCCESS;
+        	if (parser->interactive)
+        		ret = GKR_PKIX_CANCELLED;
+        	else 
+        		ret = fire_parsed_partial (parser, location, digest, GKR_PKIX_PRIVATE_KEY);
         	goto done; 
         }
 	        
@@ -752,7 +808,7 @@ gkr_pkix_parser_der_certificate (GkrPkixParser *parser, GQuark loc,
 
 	ret = gkr_pkix_der_read_certificate (data, n_data, &asn1);	
 	if(ret == GKR_PKIX_SUCCESS)
-		fire_parsed_asn1 (parser, loc, digest, GKR_PKIX_CERTIFICATE, asn1);
+		ret = fire_parsed_asn1 (parser, loc, digest, GKR_PKIX_CERTIFICATE, asn1);
 	gkr_id_free (digest);
 	
 	return ret;
@@ -793,7 +849,7 @@ parse_pkcs12_cert_bag (GkrPkixParser *parser, GQuark loc, gkrid digest, const gu
 	
 	ret = gkr_pkix_der_read_certificate (certificate, n_certificate, &casn);
 	if(ret == GKR_PKIX_SUCCESS)
-		fire_parsed_asn1 (parser, loc, digest, GKR_PKIX_CERTIFICATE, casn);
+		ret = fire_parsed_asn1 (parser, loc, digest, GKR_PKIX_CERTIFICATE, casn);
 		
 done:
 	if (asn)
@@ -862,7 +918,7 @@ parse_pkcs12_bag (GkrPkixParser *parser, GQuark loc, gkrid digest, const guchar 
 			r = GKR_PKIX_UNRECOGNIZED;
 		}
 		 
-		if (r == GKR_PKIX_FAILURE) {
+		if (r == GKR_PKIX_FAILURE || r == GKR_PKIX_CANCELLED) {
 			ret = r;
 			goto done;
 		}
@@ -916,8 +972,10 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrid digest,
 		g_assert (cih == NULL);
 		
 	        if (!enum_next_password (parser, loc, digest, 0, NULL, &pstate, &password)) {
-	        	fire_parsed_partial (parser, loc, digest, 0);
-	        	ret = GKR_PKIX_SUCCESS;
+	        	if (parser->interactive)
+	        		ret = GKR_PKIX_CANCELLED;
+	        	else 
+	        		ret = fire_parsed_partial (parser, loc, digest, 0);
 	        	goto done; 
 	        }
 	        
@@ -1039,7 +1097,7 @@ parse_pkcs12_safe (GkrPkixParser *parser, GQuark loc, const guchar *data, gsize 
 			r = GKR_PKIX_UNRECOGNIZED;
 		}
 		
-		if (r == GKR_PKIX_FAILURE) {
+		if (r == GKR_PKIX_FAILURE || r == GKR_PKIX_CANCELLED) {
 			ret = r;
 			goto done;
 		}
@@ -1133,7 +1191,7 @@ parse_pkcs7_signed_data (GkrPkixParser *parser, GQuark loc, gkrid digest,
 	
 		ret = gkr_pkix_der_read_certificate (certificate, n_certificate, &casn);
 		if (ret == GKR_PKIX_SUCCESS)
-			fire_parsed_asn1 (parser, loc, digest, GKR_PKIX_CERTIFICATE, casn);
+			ret = fire_parsed_asn1 (parser, loc, digest, GKR_PKIX_CERTIFICATE, casn);
 		if (ret == GKR_PKIX_FAILURE)
 			goto done;
 	}
@@ -1273,9 +1331,9 @@ parse_plain_pem (GkrPkixParser *parser, GQuark location, gkrid digest,
 		g_assert (parsed);
 		
 		if (s_key)
-			fire_parsed_sexp (parser, location, digest, parsed, s_key);
+			res = fire_parsed_sexp (parser, location, digest, parsed, s_key);
 		else
-			fire_parsed_asn1 (parser, location, digest, parsed, asn1);
+			res = fire_parsed_asn1 (parser, location, digest, parsed, asn1);
 	}
 
 	return res;
@@ -1311,11 +1369,13 @@ parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrid digest,
 		
 	while (!gkr_async_is_stopping ()) {
 
-    	/* If no password is available, we still know what it was, so 'partial' parse */
+		/* If no password is available, we still know what it was, so 'partial' parse */
 		if (!enum_next_password (parser, location, digest, parsed, NULL, &pstate, &password)) {
-        	fire_parsed_partial (parser, location, digest, parsed);
-        	return GKR_PKIX_SUCCESS;
-        }
+	        	if (parser->interactive)
+	        		return GKR_PKIX_CANCELLED;
+	        	else 
+	        		return fire_parsed_partial (parser, location, digest, parsed);
+		}
 		
 		decrypted = NULL;
 		n_decrypted = 0;

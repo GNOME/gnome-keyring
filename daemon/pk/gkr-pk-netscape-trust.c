@@ -101,6 +101,8 @@ has_key_usage (GkrPkNetscapeTrust *trust, guint check, CK_ULONG *val)
 	res = gkr_pkix_der_read_key_usage (extension, n_extension, &usage);
 	g_free (extension);
 	
+	if (res != GKR_PKIX_CANCELLED)
+		return CKR_FUNCTION_CANCELED;
 	if (res != GKR_PKIX_SUCCESS) {
 		g_warning ("invalid key usage in certificate");
 		return CKR_GENERAL_ERROR;

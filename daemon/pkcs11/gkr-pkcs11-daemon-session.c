@@ -421,7 +421,7 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
                         GkrPkcs11Message *resp)
 {
 	CK_OBJECT_CLASS cls;
-	GkrPkObject *object;
+	GkrPkObject *object = NULL;
 	GArray *attrs = NULL;
 	CK_BBOOL token;
 	CK_RV ret;
@@ -466,7 +466,8 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 	ret = CKR_OK;
 	
 done:
-	g_object_unref (object);
+	if (object)
+		g_object_unref (object);
 	gkr_pk_attributes_free (attrs);
 	return ret;
 }

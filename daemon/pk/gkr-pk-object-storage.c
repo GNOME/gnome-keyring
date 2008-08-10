@@ -244,7 +244,7 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, GError **err)
 	ctx.checks = gkr_pk_storage_checks_prepare (GKR_PK_STORAGE (storage), loc);
 
 	/* TODO: Try and use a shared parser? */
-	parser = gkr_pkix_parser_new ();
+	parser = gkr_pkix_parser_new (FALSE);
 	g_signal_connect (parser, "parsed-asn1", G_CALLBACK (parser_parsed_asn1), &ctx);
 	g_signal_connect (parser, "parsed-sexp", G_CALLBACK (parser_parsed_sexp), &ctx);
 	g_signal_connect (parser, "parsed-partial", G_CALLBACK (parser_parsed_partial), &ctx);
@@ -367,11 +367,11 @@ gkr_pk_object_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 	if (gtype == GKR_TYPE_PK_PRIVKEY) {
 		type = GKR_PKIX_PRIVATE_KEY;
 		g_object_get (obj, "gcrypt-sexp", &what, NULL);
-	} else if (gtype == GKR_PKIX_PUBLIC_KEY) {
-		type = GKR_TYPE_PK_PUBKEY;
+	} else if (gtype == GKR_TYPE_PK_PUBKEY) {
+		type = GKR_PKIX_PUBLIC_KEY;
 		g_object_get (obj, "gcrypt-sexp", &what, NULL);
-	} else if (gtype == GKR_PKIX_CERTIFICATE) {
-		type = GKR_TYPE_PK_CERT;
+	} else if (gtype == GKR_TYPE_PK_CERT) {
+		type = GKR_PKIX_CERTIFICATE;
 		g_object_get (obj, "asn1-tree", &what, NULL);
 	} else {
 		g_return_val_if_reached (FALSE);
@@ -513,7 +513,7 @@ gkr_pk_object_storage_initialize (void)
 	GkrPkStorage *storage;
 	
 	storage = g_object_new (GKR_TYPE_PK_OBJECT_STORAGE, NULL);
-	gkr_pk_storage_register (storage, FALSE);
+	gkr_pk_storage_register (storage, TRUE);
 	g_object_unref (storage);
 	
 	return TRUE;

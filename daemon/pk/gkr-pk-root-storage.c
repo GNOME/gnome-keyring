@@ -141,7 +141,7 @@ storage_load_certificate (GkrPkRootStorage *storage, GQuark loc, GError **err)
 	ctx.checks = gkr_pk_storage_checks_prepare (GKR_PK_STORAGE (storage), loc);
 
 	/* TODO: Try and use a shared parser? */
-	parser = gkr_pkix_parser_new ();
+	parser = gkr_pkix_parser_new (FALSE);
 	g_signal_connect (parser, "parsed-asn1", G_CALLBACK (parser_parsed_asn1), &ctx);
 	ret = gkr_pkix_parser_parse_location (parser, loc, err);
 	g_object_unref (parser);

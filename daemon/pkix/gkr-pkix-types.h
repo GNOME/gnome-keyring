@@ -2,7 +2,8 @@
 #define GKRPKIXTYPES_H_
 
 typedef enum _GkrPkixResult {
-	GKR_PKIX_FAILURE = -1,
+	GKR_PKIX_FAILURE = -2,
+	GKR_PKIX_CANCELLED = -1,
 	GKR_PKIX_UNRECOGNIZED = 0,
 	GKR_PKIX_SUCCESS = 1
 } GkrPkixResult;

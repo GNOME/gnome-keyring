@@ -185,7 +185,7 @@ read_file (CuTest *cu, const gchar *filename, GQuark *location, guchar **content
 
 void unit_test_start_parser (CuTest *cu)
 {
-	parser = gkr_pkix_parser_new ();
+	parser = gkr_pkix_parser_new (FALSE);
 	g_signal_connect (parser, "parsed-partial", G_CALLBACK (parsed_partial), NULL);
 	g_signal_connect (parser, "parsed-sexp", G_CALLBACK (parsed_sexp), NULL);
 	g_signal_connect (parser, "parsed-asn1", G_CALLBACK (parsed_asn1), NULL);

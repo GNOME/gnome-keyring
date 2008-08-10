@@ -126,7 +126,7 @@ void unit_test_serialize_pkcs8 (CuTest* cu)
 	/* Serializes as PKCS8 */
 	output = gkr_pkix_serialize_to_data (GKR_PKIX_PRIVATE_KEY, key, "booo", &n_output);
 	
-	parser = gkr_pkix_parser_new ();
+	parser = gkr_pkix_parser_new (FALSE);
 	g_signal_connect (parser, "ask-password", G_CALLBACK (ask_password), cu);
 
 	result = gkr_pkix_parser_der_pkcs8 (parser, 0, output, n_output);
