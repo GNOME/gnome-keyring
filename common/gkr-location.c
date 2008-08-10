@@ -1114,7 +1114,8 @@ gkr_location_read_file (GQuark loc, guchar **data, gsize *len, GError **err)
 gboolean
 gkr_location_write_file (GQuark loc, const guchar *data, gssize len, GError **err)
 {
-	gboolean ret;
+	gboolean ret = TRUE;
+	gchar *dirname;
 	gchar *path;
 	
 	g_return_val_if_fail (loc != 0, FALSE);
@@ -1127,9 +1128,21 @@ gkr_location_write_file (GQuark loc, const guchar *data, gssize len, GError **er
 		             _("The disk or drive this file is located on is not present"));
 		return FALSE;
 	}
+	
+	dirname = g_dirname (path);
+	if (dirname && dirname[0]) {
+		if (g_mkdir_with_parents (dirname, 0700) < 0) {
+			g_set_error (err, G_FILE_ERROR, g_file_error_from_errno (errno),
+			             _("Couldn't create directory: %s"), dirname);
+			ret = FALSE;
+		}
+	}
 
-	ret = g_file_set_contents (path, (const gchar*)data, len, err);
+	if (ret)
+		ret = g_file_set_contents (path, (const gchar*)data, len, err);
+	
 	g_free (path);
+	g_free (dirname);
 	
 	return ret;
 }

@@ -107,23 +107,6 @@ prepare_ask_primary (GQuark type)
 		return _("Enter password to unlock");
 }
 
-static const gchar*
-prepare_ask_check (GQuark type)
-{
-	/*
-	 * Yes this is unmaintainable and stupid, but is required 
-	 * for translations to work properly.
-	 */
-	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("Automatically unlock this private key when I log in.");
-	else if (type == GKR_PKIX_CERTIFICATE)
-		return _("Automatically unlock this certificate when I log in.");
-	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return _("Automatically unlock this public key when I log in.");
-	else 
-		return _("Automatically unlock this when I log in");
-}
-
 static gchar*
 prepare_ask_secondary (GQuark type, const gchar *label)
 {
@@ -186,8 +169,6 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 	 */
 		
 	index = gkr_pk_storage_index (import->import_storage, loc);
-	if (gkr_pk_index_allows_secrets (index))
-		gkr_ask_request_set_check_option (ask, prepare_ask_check (type));
 		
 	/* Prompt the user */
 	gkr_ask_daemon_process (ask);
@@ -205,8 +186,6 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 		*result = gkr_secure_strdup (ask->typed_password);
 		if (*result && strlen (*result) == 0)
 			*state = LAST_WAS_BLANK;
-		if (ask->checked) 
-			gkr_pk_index_set_secret (index, digest, ask->typed_password);
 	}
 	
 	g_object_unref (ask);
@@ -576,12 +555,8 @@ gkr_pk_import_perform (GkrPkImport *import, const guchar *data, gsize n_data, GE
 
 	/* Check for import errors */
 	if (pv->error) {
-		if (*err) {
-			*err = pv->error;
-			pv->error = NULL;
-		}
-		
-		g_clear_error (&pv->error);
+		g_propagate_error (err, pv->error);
+		pv->error = NULL;
 		return FALSE;
 	}
 	

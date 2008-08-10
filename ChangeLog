@@ -18,6 +18,18 @@
 	same password twice when parsing a PKCS#12 or other file with
 	multiple parts encrypted with same password.
 	
+	* common/gkr-location.c: Automatically create non-existing directories
+	when we're trying to store a file.
+	
+	* daemon/pk/gkr-pk-import.c: Don't offer to store password for 
+	stuff we're unlocking while importing.
+	
+	* daemon/pk/gkr-pk-object-storage.c: Create stored files in proper
+	directories. 
+
+	* daemon/pk/gkr-pk-object-storage.c: Don't try to store certificates
+	encrypted on the disk.
+	
 2008-08-09  Stef Walter  <stef@memberwebs.com>
 
 	* conifgure.in:

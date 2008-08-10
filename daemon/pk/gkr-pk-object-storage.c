@@ -75,7 +75,7 @@ typedef struct {
 static GQuark
 location_for_storing (GkrPkObjectStorage *storage, GkrPkObject *obj, GQuark type)
 {
-	const gchar *label;
+	gchar *label;
 	const gchar *ext;
 	gchar *filename;
 	GQuark loc;
@@ -86,12 +86,13 @@ location_for_storing (GkrPkObjectStorage *storage, GkrPkObject *obj, GQuark type
 		ext = "pk";
 	
 	/* Come up with a good relative name for the object */
-	label = gkr_pk_object_get_label (obj);
+	label = g_strdup (gkr_pk_object_get_label (obj));
+	g_strdelimit (label, UNWANTED_FILENAME_CHARS, '_');
 	filename = g_strconcat (RELATIVE_DIRECTORY, G_DIR_SEPARATOR_S, label, ".", ext, NULL);
-	g_strdelimit (filename, UNWANTED_FILENAME_CHARS, '_');
 	
 	loc = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, filename);
 	g_free (filename);
+	g_free (label);
 	
 	return loc;
 }
@@ -346,10 +347,11 @@ static gboolean
 gkr_pk_object_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 {
 	GkrPkObjectStorage *storage;
+	gchar *password = NULL;
 	gpointer what;
-	gchar *password;
 	gkrid digest;
 	gboolean ret;
+	gboolean is_private;
 	GQuark loc, type;
 	GType gtype;
 	guchar *data;
@@ -361,11 +363,13 @@ gkr_pk_object_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 	g_return_val_if_fail (obj->location == 0, FALSE);
 
 	storage = GKR_PK_OBJECT_STORAGE (stor);
-
+	is_private = FALSE;
+	
 	/* What are we dealing with? */
 	gtype = G_OBJECT_TYPE (obj);
 	if (gtype == GKR_TYPE_PK_PRIVKEY) {
 		type = GKR_PKIX_PRIVATE_KEY;
+		is_private = TRUE;
 		g_object_get (obj, "gcrypt-sexp", &what, NULL);
 	} else if (gtype == GKR_TYPE_PK_PUBKEY) {
 		type = GKR_PKIX_PUBLIC_KEY;
@@ -383,14 +387,16 @@ gkr_pk_object_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 	loc = location_for_storing (storage, obj, type);
 	g_return_val_if_fail (loc, FALSE);
 	
-	/* Get a password for this key, determines whether encrypted or not */
-	ret = gkr_pk_storage_get_store_password (stor, loc, obj->digest, type, 
-	                                         gkr_pk_object_get_label (obj), 
-	                                         &password);
+	if(is_private) {
+		/* Get a password for this key, determines whether encrypted or not */
+		ret = gkr_pk_storage_get_store_password (stor, loc, obj->digest, type, 
+		                                         gkr_pk_object_get_label (obj), 
+		                                         &password);
 	
-	/* Prompt for a password was denied */
-	if (!ret)
-		return TRUE;
+		/* Prompt for a password was denied */
+		if (!ret)
+			return FALSE;
+	}
 
 	/* Store the object into memory */
 	data = gkr_pkix_serialize_to_data (type, what, password, &n_data);
