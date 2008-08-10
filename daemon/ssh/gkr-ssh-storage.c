@@ -627,6 +627,7 @@ gkr_ssh_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 	
 	/* The object now has a (possibly new) location */
 	g_object_set (obj, "location", loc, "storage", stor, "digest", digest, NULL);
+	gkr_pk_storage_add_object (stor, obj);
 	gkr_id_free (digest);
 	
 	/* Now store the public key in place if possible */

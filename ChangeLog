@@ -30,6 +30,10 @@
 	* daemon/pk/gkr-pk-object-storage.c: Don't try to store certificates
 	encrypted on the disk.
 	
+	* daemon/pk/gkr-pk-object-storage.c: 
+	* daemon/ssh/gkr-ssh-storage.c: Add objects to storage list after
+	storing them.
+	
 2008-08-09  Stef Walter  <stef@memberwebs.com>
 
 	* conifgure.in:
