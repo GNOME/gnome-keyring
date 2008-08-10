@@ -34,6 +34,9 @@
 	* daemon/ssh/gkr-ssh-storage.c: Add objects to storage list after
 	storing them.
 	
+	* tool/gkr-tool-import.c:
+	* tool/gkr-tool.c: Fix importing of objects from tool.
+	
 2008-08-09  Stef Walter  <stef@memberwebs.com>
 
 	* conifgure.in:

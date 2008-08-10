@@ -130,6 +130,7 @@ import_from_file (GP11Session *session, const gchar *filename)
 	attrs = gp11_attributes_new ();
 	gp11_attributes_add_data (attrs, CKA_VALUE, data, n_data);
 	gp11_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_GNOME_IMPORT);
 	gp11_attributes_add_boolean (attrs, CKA_GNOME_IMPORT_TOKEN, TRUE);
 	gp11_attributes_add_string (attrs, CKA_GNOME_IMPORT_LABEL, g_basename (filename));
 	

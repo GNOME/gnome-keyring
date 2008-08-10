@@ -47,7 +47,7 @@ void gkr_tool_handle_error (GError **error, const gchar *format, ...)
 		va_end(va);
 	}
 	
-	g_printerr ("gnome-keyring: %s%s%s",
+	g_printerr ("gnome-keyring: %s%s%s\n",
 	            message ? message : "",
 	            message && err && err->message ? ": " : "",
 	            err && err->message ? err->message : "");
