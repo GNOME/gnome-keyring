@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-06 20:23+0200\n"
-"PO-Revision-Date: 2008-08-06 20:29+0200\n"
+"POT-Creation-Date: 2008-08-10 19:21+0200\n"
+"PO-Revision-Date: 2008-08-10 19:22+0200\n"
 "Last-Translator: Ignacio Casal Quinteiro <icq@svn.gnome.org>\n"
 "Language-Team: Galego <proxecto@trasno.net>\n"
 "MIME-Version: 1.0\n"
@@ -30,13 +30,18 @@ msgstr "Disco extraíble"
 msgid "Home"
 msgstr "Inicio"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1127
-#: ../daemon/pkix/gkr-pkix-parser.c:472 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
+#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr ""
 "O disco ou a unidade na que está ubicado este ficheiro non está presente"
 
-#: ../common/gkr-location.c:1157
+#: ../common/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Non se puido crear o directorio: %s"
+
+#: ../common/gkr-location.c:1170
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Non se puido eliminar o ficheiro: %s"
@@ -465,38 +470,22 @@ msgstr "Introduza o contrasinal para desbloquear a chave pública"
 msgid "Enter password to unlock"
 msgstr "Introduza o contrasinal para desbloquear"
 
-#: ../daemon/pk/gkr-pk-import.c:118 ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "Desbloquear automaticamente esta chave privada ao iniciar sesión."
-
-#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Desbloquear automaticamente este certificado ao iniciar sesión."
-
-#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "Desbloquear automaticamente esta chave pública ao iniciar sesión."
-
-#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "Desbloquear automaticamente isto ao iniciar sesión."
-
-#: ../daemon/pk/gkr-pk-import.c:131
+#: ../daemon/pk/gkr-pk-import.c:114
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
 msgstr "O sistema quere importar a chave privada '%s' mais está bloqueada"
 
-#: ../daemon/pk/gkr-pk-import.c:133
+#: ../daemon/pk/gkr-pk-import.c:116
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
 msgstr "O sistema quere importar o certificado '%s' mais está bloqueado"
 
-#: ../daemon/pk/gkr-pk-import.c:135
+#: ../daemon/pk/gkr-pk-import.c:118
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
 msgstr "O sistema quere importar a chave pública '%s' mais está bloqueada"
 
-#: ../daemon/pk/gkr-pk-import.c:137
+#: ../daemon/pk/gkr-pk-import.c:120
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
 msgstr "O sistema quere importar '%s' mais está bloqueado."
@@ -553,7 +542,7 @@ msgstr "Chave pública"
 msgid "Trust Association"
 msgstr "Asociación de confianza"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:434
+#: ../daemon/pk/gkr-pk-object-storage.c:441
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "Non se pode eliminar '%s' porque está atada a outros obxectos."
@@ -589,6 +578,22 @@ msgstr "Introduza o contrasinal para protexer a chave privada"
 #: ../daemon/pk/gkr-pk-storage.c:185
 msgid "Enter password to protect storage"
 msgstr "Introduza o contrasinal para protexer o depósito"
+
+#: ../daemon/pk/gkr-pk-storage.c:196
+msgid "Automatically unlock this private key when I log in."
+msgstr "Desbloquear automaticamente esta chave privada ao iniciar sesión."
+
+#: ../daemon/pk/gkr-pk-storage.c:198
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Desbloquear automaticamente este certificado ao iniciar sesión."
+
+#: ../daemon/pk/gkr-pk-storage.c:200
+msgid "Automatically unlock this public key when I log in."
+msgstr "Desbloquear automaticamente esta chave pública ao iniciar sesión."
+
+#: ../daemon/pk/gkr-pk-storage.c:202
+msgid "Automatically unlock this when I log in"
+msgstr "Desbloquear automaticamente isto ao iniciar sesión."
 
 #: ../daemon/pk/gkr-pk-storage.c:209
 #, c-format
@@ -628,11 +633,15 @@ msgstr ""
 "O sistema quere almacenar '%s' no seu disco. Introduza un contrasinal para "
 "bloquealo con ela."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:403
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:40
+msgid "The operation was cancelled"
+msgstr "Cancelouse a operación"
+
+#: ../daemon/pkix/gkr-pkix-parser.c:455
 msgid "Unrecognized or unsupported file."
 msgstr "Ficheiro non recoñecido ou non soportado."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:407
+#: ../daemon/pkix/gkr-pkix-parser.c:459
 msgid "Could not parse invalid or corrupted file."
 msgstr "Non se puido analizar o ficheiro inválido ou corrupto."
 
@@ -718,10 +727,6 @@ msgstr "Permitir _unha vez"
 #: ../daemon/ui/gkr-ask-tool.c:629
 msgid "_Always Allow"
 msgstr "_Permitir sempre"
-
-#: ../gp11/gp11-misc.c:40
-msgid "The operation was cancelled"
-msgstr "Cancelouse a operación"
 
 #: ../gp11/gp11-misc.c:43
 msgid "Insufficient memory available"
