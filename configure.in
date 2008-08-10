@@ -514,6 +514,7 @@ pkcs11/tests/Makefile
 po/Makefile.in
 reference/Makefile
 tests/Makefile
+tool/Makefile
 library/gnome-keyring-1.pc
 library/gnome-keyring-1-uninstalled.pc
 ])

@@ -17,6 +17,7 @@ SUBDIRS = \
 	library \
 	pkcs11 \
 	daemon \
+	tool \
 	po \
 	reference \
 	$(TESTS_DIR) \

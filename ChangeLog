@@ -1,3 +1,13 @@
+2008-08-09  Stef Walter  <stef@memberwebs.com>
+
+	* conifgure.in:
+	* Makefile.am:
+	* tool/gkr-tool.c: (added)
+	* tool/gkr-tool.h: (added)
+	* tool/gkr-tool-import.c: (added)
+	* tool/Makefile.am: (added) Add basics of gnome-keyring 
+	command line tool.
+	
 2008-08-07  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pk/gkr-pk-storage.c: Fix problem with unititialized
