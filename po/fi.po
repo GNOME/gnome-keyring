@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-11 09:49+0300\n"
+"POT-Creation-Date: 2008-08-11 15:47+0300\n"
 "PO-Revision-Date: 2008-08-11 09:10+0300\n"
 "Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -41,12 +41,12 @@ msgstr "Levy tai asema, jossa tämä tiedosto on, ei ole saatavilla"
 #: ../common/gkr-location.c:1136
 #, c-format
 msgid "Couldn't create directory: %s"
-msgstr ""
+msgstr "Kansiota ei voitu luda: %s"
 
 #: ../common/gkr-location.c:1170
 #, c-format
 msgid "Couldn't delete the file: %s"
-msgstr ""
+msgstr "Tiedostoa ei voitu poistaa: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:227
@@ -359,10 +359,14 @@ msgid ""
 "by default, as this is still an experimental feature. This is used by "
 "seahorse and other PKCS#11 aware applications."
 msgstr ""
+"Luettelo poluista ladattaviin PKCS#11-moduleihin. Oletuksena yhtäkään "
+"modulia ei ole luettelossa, koska tämä on vielä kehitteillä oleva "
+"ominaisuus. Tätä voi käyttää seahorsesta ja muista PKCS#11-kykyisistä "
+"ohjelmista."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
-msgstr ""
+msgstr "PKCS#11-modulit"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
@@ -516,11 +520,12 @@ msgid "Enter password to unlock storage"
 msgstr "Syötä salasanasäilön salasana avataksesi säilön"
 
 #: ../daemon/pk/gkr-pk-index.c:128
-#, fuzzy
 msgid ""
 "The system wants to access information about your keys and certificates, but "
 "it is locked."
-msgstr "Järjestelmä haluaa tuoda varmenteen \"%s\", mutta se on lukittu."
+msgstr ""
+"Järjestelmä haluaa lukea tietoja avaimistasi ja varmenteistasi, mutta ne on "
+"lukittu."
 
 #: ../daemon/pk/gkr-pk-object.c:883
 msgid "Certificate"
@@ -541,7 +546,7 @@ msgstr "Luottamussuhde"
 #: ../daemon/pk/gkr-pk-object-storage.c:436
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr ""
+msgstr "Kohdetta \"%s\" ei voi poistaa, koska se on sidottu muihin kohteisiin."
 
 #: ../daemon/pk/gkr-pk-storage.c:136
 msgid "Unlock private key"
@@ -568,14 +573,12 @@ msgid "Lock"
 msgstr "Lukitse"
 
 #: ../daemon/pk/gkr-pk-storage.c:183
-#, fuzzy
 msgid "Enter password to protect the private key"
-msgstr "Avaa salaisen avaimen lukitus syöttämällä salasana"
+msgstr "Avaa salasana, jolla salainen avain suojataan"
 
 #: ../daemon/pk/gkr-pk-storage.c:185
-#, fuzzy
 msgid "Enter password to protect storage"
-msgstr "Avaa syöttämällä salasana"
+msgstr "Avaa salasana, jolla säilö suojataan"
 
 #: ../daemon/pk/gkr-pk-storage.c:196
 msgid "Automatically unlock this private key when I log in."
@@ -617,11 +620,13 @@ msgid "An application wants access to '%s', but it is locked"
 msgstr "Sovellus tahtoo päästä käsiksi kohteeseen \"%s\", mutta se on lukittu"
 
 #: ../daemon/pk/gkr-pk-storage.c:228
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The system wants to store the private key '%s' on your disk. Please enter a "
 "password to lock it with."
-msgstr "Järjestelmä haluaa tuoda salaisen avaimen \"%s\", mutta se on lukittu."
+msgstr ""
+"Järjestelmä haluaa tallentaa salaisen avaimen \"%s\" levyllesi. Anna "
+"salasana, jolla avain suojataan."
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
@@ -629,10 +634,12 @@ msgid ""
 "The system wants to store '%s' on your disk. Please enter a password to lock "
 "it with."
 msgstr ""
+"Järjestelmä haluaa tallentaa \"%s\" levyllesi. Anna salasana, jolla se "
+"suojataan."
 
 #: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:40
 msgid "The operation was cancelled"
-msgstr ""
+msgstr "Toiminto peruttiin"
 
 #: ../daemon/pkix/gkr-pkix-parser.c:455
 msgid "Unrecognized or unsupported file."
@@ -645,27 +652,27 @@ msgstr "Virheellistä tai viallista tiedostoa ei voi tulkita."
 #: ../daemon/ssh/gkr-ssh-storage.c:166
 #, c-format
 msgid "Couldn't encode secure shell public key."
-msgstr ""
+msgstr "SSH-avaimen julkista osaa ei voitu koodata."
 
 #: ../daemon/ssh/gkr-ssh-storage.c:412
 #, c-format
 msgid "Couldn't read secure shell private key: %s"
-msgstr ""
+msgstr "SSH-avaimen salaista osaa ei voitu lukea: %s"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:416
 #, c-format
 msgid "Invalid secure shell private key at: %s"
-msgstr ""
+msgstr "Virheellinen SSH-avaimen salainen osa: %s"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:465
 #, c-format
 msgid "Couldn't encrypt the SSH key to store it."
-msgstr ""
+msgstr "SSH-avainta ei voitu salata tallennusta varten."
 
 #: ../daemon/ssh/gkr-ssh-storage.c:481
 #, c-format
 msgid "Couldn't encode the SSH key to store it."
-msgstr ""
+msgstr "SSH-avainta ei voitu koodata tallennusta varten."
 
 #: ../daemon/ui/gkr-ask-tool.c:182
 msgid "Store passwords unencrypted?"
@@ -727,155 +734,155 @@ msgstr "Salli _aina"
 
 #: ../gp11/gp11-misc.c:43
 msgid "Insufficient memory available"
-msgstr ""
+msgstr "Muisti ei riitä"
 
 #: ../gp11/gp11-misc.c:45
 msgid "The specified slot ID is not valid"
-msgstr ""
+msgstr "Annettu lohkotunniste ei ole kelvollinen"
 
 #: ../gp11/gp11-misc.c:47
 msgid "Internal error"
-msgstr ""
+msgstr "Sisäinen virhe"
 
 #: ../gp11/gp11-misc.c:49
 msgid "The operation failed"
-msgstr ""
+msgstr "Toiminto epäonnistui"
 
 #: ../gp11/gp11-misc.c:51
 msgid "Invalid arguments"
-msgstr ""
+msgstr "Virheelliset argumentit"
 
 #: ../gp11/gp11-misc.c:53
 msgid "The module cannot create needed threads"
-msgstr ""
+msgstr "Moduli ei voi luoda vaadittuja säikeitä"
 
 #: ../gp11/gp11-misc.c:55
 msgid "The module cannot lock data properly"
-msgstr ""
+msgstr "Moduli ei voi lukita tietoja kunnolla"
 
 #: ../gp11/gp11-misc.c:57
 msgid "The field is read-only"
-msgstr ""
+msgstr "Kenttä on vain luettavissa"
 
 #: ../gp11/gp11-misc.c:59
 msgid "The field is sensitive and cannot be revealed"
-msgstr ""
+msgstr "Kenttä on luottamuksellinen eikä sitä voi paljastaa"
 
 #: ../gp11/gp11-misc.c:61
 msgid "The field is invalid or does not exist"
-msgstr ""
+msgstr "Kenttä on virheellinen tai sitä ei ole olemassa"
 
 #: ../gp11/gp11-misc.c:63
 msgid "Invalid value for field"
-msgstr ""
+msgstr "Virheellinen kentän arvo"
 
 #: ../gp11/gp11-misc.c:65
 msgid "The data is not valid or unrecognized"
-msgstr ""
+msgstr "Tieto ei ollut kelvollinen tai sitä ei tunnistettu"
 
 #: ../gp11/gp11-misc.c:67
 msgid "The data is too long"
-msgstr ""
+msgstr "Tieto on liian pitkä"
 
 #: ../gp11/gp11-misc.c:69
 msgid "An error occurred on the device"
-msgstr ""
+msgstr "Tapahtui virhe laitteella"
 
 #: ../gp11/gp11-misc.c:71
 msgid "Insufficient memory available on device"
-msgstr ""
+msgstr "Laitteen muisti ei riitä"
 
 #: ../gp11/gp11-misc.c:73
 msgid "The device was removed or unplugged"
-msgstr ""
+msgstr "Laite poistettiin tai irrotettiin"
 
 #: ../gp11/gp11-misc.c:75
 msgid "The encrypted data is not valid or unrecognized"
-msgstr ""
+msgstr "Salattu tieto ei ole kelvollista tai sitä ei voitu tunnistaa"
 
 #: ../gp11/gp11-misc.c:77
 msgid "The encrypted data is too long"
-msgstr ""
+msgstr "Salattu tieto on liian pitkä"
 
 #: ../gp11/gp11-misc.c:79
 msgid "This operation is not supported"
-msgstr ""
+msgstr "Tämä toiminto ei ole tuettu"
 
 #: ../gp11/gp11-misc.c:81
 msgid "The key is missing or invalid"
-msgstr ""
+msgstr "Avain puuttuu tai on viallinen"
 
 #: ../gp11/gp11-misc.c:83
 msgid "The key is the wrong size"
-msgstr ""
+msgstr "Avain on väärän kokoinen"
 
 #: ../gp11/gp11-misc.c:85
 msgid "The key is of the wrong type"
-msgstr ""
+msgstr "Avain on väärän tyyppinen"
 
 #: ../gp11/gp11-misc.c:87
 msgid "No key is needed"
-msgstr ""
+msgstr "Avainta ei tarvita"
 
 #: ../gp11/gp11-misc.c:89
 msgid "The key is different than before"
-msgstr ""
+msgstr "Avain on eri kuin aikaisemmin"
 
 #: ../gp11/gp11-misc.c:91
 msgid "A key is needed"
-msgstr ""
+msgstr "Avain tarvitaan"
 
 #: ../gp11/gp11-misc.c:93
 msgid "Cannot include the key in digest"
-msgstr ""
+msgstr "Avainta ei voi liittää tiivisteeseen"
 
 #: ../gp11/gp11-misc.c:95
 msgid "This operation cannot be done with this key"
-msgstr ""
+msgstr "Tätä toimintoa ei voi suorittaa tällä avaimella"
 
 #: ../gp11/gp11-misc.c:97
 msgid "The key cannot be wrapped"
-msgstr ""
+msgstr "Avainta ei voi rivittää"
 
 #: ../gp11/gp11-misc.c:99
 msgid "Cannot export this key"
-msgstr ""
+msgstr "Tätä avainta ei voi viedä"
 
 #: ../gp11/gp11-misc.c:101
 msgid "The crypto mechanism is invalid or unrecognized"
-msgstr ""
+msgstr "Salausmenetelmä on virheellinen tai sitä ei voitu tunnistaa"
 
 #: ../gp11/gp11-misc.c:103
 msgid "The crypto mechanism has an invalid argument"
-msgstr ""
+msgstr "Salausmenetelmän argumentti on virheellinen"
 
 #: ../gp11/gp11-misc.c:105
 msgid "The object is missing or invalid"
-msgstr ""
+msgstr "Kohde puuttuu tai on virheellinen"
 
 #: ../gp11/gp11-misc.c:107
 msgid "Another operation is already taking place"
-msgstr ""
+msgstr "Toinen toiminto on jo käynnissä"
 
 #: ../gp11/gp11-misc.c:109
 msgid "No operation is taking place"
-msgstr ""
+msgstr "Yhtään toimintoa ei ole käynnissä"
 
 #: ../gp11/gp11-misc.c:111
 msgid "The password or PIN is incorrect"
-msgstr ""
+msgstr "Salasana tai PIN-koodi on väärä"
 
 #: ../gp11/gp11-misc.c:113
 msgid "The password or PIN is invalid"
-msgstr ""
+msgstr "Salasana tai PIN-koodi on virheellinen"
 
 #: ../gp11/gp11-misc.c:115
 msgid "The password or PIN is of an invalid length"
-msgstr ""
+msgstr "Salasanan tai PIN-koodin pituus ei ole kelvollinen"
 
 #: ../gp11/gp11-misc.c:117
 msgid "The password or PIN has expired"
-msgstr ""
+msgstr "Salasana tai PIN-koodi on vanhentunut"
 
 #: ../gp11/gp11-misc.c:119
 msgid "The password or PIN is locked"
@@ -887,143 +894,143 @@ msgstr "Istunto on suljettu"
 
 #: ../gp11/gp11-misc.c:123
 msgid "Too many sessions are active"
-msgstr ""
+msgstr "Liian monta avointa istuntoa"
 
 #: ../gp11/gp11-misc.c:125
 msgid "The session is invalid"
-msgstr ""
+msgstr "Istunto on virheellinen"
 
 #: ../gp11/gp11-misc.c:127
 msgid "The session is read-only"
-msgstr ""
+msgstr "Istunto on vain luettavissa"
 
 #: ../gp11/gp11-misc.c:129
 msgid "An open session exists"
-msgstr ""
+msgstr "Avoin istunto on olemassa"
 
 #: ../gp11/gp11-misc.c:131
 msgid "A read-only session exists"
-msgstr ""
+msgstr "Vain luettavissa oleva istunto on olemassa"
 
 #: ../gp11/gp11-misc.c:133
 msgid "An administrator session exists"
-msgstr ""
+msgstr "Ylläpitäjän istunto on olemassa"
 
 #: ../gp11/gp11-misc.c:135
 msgid "The signature is bad or corrupted"
-msgstr ""
+msgstr "Allekirjoitus on virheellinen tai vioittunut"
 
 #: ../gp11/gp11-misc.c:137
 msgid "The signature is unrecognized or corrupted"
-msgstr ""
+msgstr "Allekirjoitusta ei voitu tunnistaa tai se on vioittunut"
 
 #: ../gp11/gp11-misc.c:139
 msgid "Certain required fields are missing"
-msgstr ""
+msgstr "Jotkut vaadituista kentistä puuttuvat"
 
 #: ../gp11/gp11-misc.c:141
 msgid "Certain fields have invalid values"
-msgstr ""
+msgstr "Joissain kentissä on virheellinen arvo"
 
 #: ../gp11/gp11-misc.c:143
 msgid "The device is not present or unplugged"
-msgstr ""
+msgstr "Laite ei ole saatavilla tai on irroitettu"
 
 #: ../gp11/gp11-misc.c:145
 msgid "The device is invalid or unrecognizable"
-msgstr ""
+msgstr "Laite on virheellinen tai sitä ei voi tunnistaa"
 
 #: ../gp11/gp11-misc.c:147
 msgid "The device is write protected"
-msgstr ""
+msgstr "Laite on kirjoitussuojattu"
 
 #: ../gp11/gp11-misc.c:149
 msgid "Cannot import because the key is invalid"
-msgstr ""
+msgstr "Tuonti epäonnistui, koska avain oli virheellinen"
 
 #: ../gp11/gp11-misc.c:151
 msgid "Cannot import because the key is of the wrong size"
-msgstr ""
+msgstr "Tuonti epäonnistui, koska avain oli väärän kokoinen"
 
 #: ../gp11/gp11-misc.c:153
 msgid "Cannot import because the key is of the wrong type"
-msgstr ""
+msgstr "Tuonti epäonnistui, koska avain oli väärän tyyppinen"
 
 #: ../gp11/gp11-misc.c:155
 msgid "You are already logged in"
-msgstr ""
+msgstr "Olet jo kirjautunut sisään"
 
 #: ../gp11/gp11-misc.c:157
 msgid "No user has logged in"
-msgstr ""
+msgstr "Yhtäkään käyttäjää ei ole kirjautunut sisään"
 
 #: ../gp11/gp11-misc.c:159
 msgid "The user's password or PIN is not set"
-msgstr ""
+msgstr "Käyttäjän salasanaa tai PIN-koodia ei ole asetettu"
 
 #: ../gp11/gp11-misc.c:161
 msgid "The user is of an invalid type"
-msgstr ""
+msgstr "Käyttäjä on väärän tyyppinen"
 
 #: ../gp11/gp11-misc.c:163
 msgid "Another user is already logged in"
-msgstr ""
+msgstr "Toinen käyttäjä on jo kirjautunut sisään"
 
 #: ../gp11/gp11-misc.c:165
 msgid "Too many users of different types logged in"
-msgstr ""
+msgstr "Liian monta erityyppistä käyttäjää on kirjautunut sisään"
 
 #: ../gp11/gp11-misc.c:167
 msgid "Cannot import an invalid key"
-msgstr ""
+msgstr "Virheellistä avainta ei voi tuoda"
 
 #: ../gp11/gp11-misc.c:169
 msgid "Cannot import a key of the wrong size"
-msgstr ""
+msgstr "Väärän kokoista avainta ei voi tuoda"
 
 #: ../gp11/gp11-misc.c:171
 msgid "Cannot export because the key is invalid"
-msgstr ""
+msgstr "Vienti ei onnistu, koska avain on virheellinen"
 
 #: ../gp11/gp11-misc.c:173
 msgid "Cannot export because the key is of the wrong size"
-msgstr ""
+msgstr "Vienti ei onnistu, koska avain on väärän kokoinen"
 
 #: ../gp11/gp11-misc.c:175
 msgid "Cannot export because the key is of the wrong type"
-msgstr ""
+msgstr "Vienti ei onnistu, koska avain on väärän kokoinen"
 
 #: ../gp11/gp11-misc.c:177
 msgid "Cannot set a random seed"
-msgstr ""
+msgstr "Satunnaislukulähdettä ei voi alustaa"
 
 #: ../gp11/gp11-misc.c:179
 msgid "No random number generator available"
-msgstr ""
+msgstr "Satunnaislukugeneraattoria ei ole saatavilla"
 
 #: ../gp11/gp11-misc.c:181
 msgid "The crypto mechanism has an invalid parameter"
-msgstr ""
+msgstr "Salausmenetelmän parametri on virheellinen"
 
 #: ../gp11/gp11-misc.c:183
 msgid "Not enough space to store the result"
-msgstr ""
+msgstr "Tila ei riitä tuloksen tallentamiseen"
 
 #: ../gp11/gp11-misc.c:185
 msgid "The saved state is invalid"
-msgstr ""
+msgstr "Tallennettu tila on virheellinen"
 
 #: ../gp11/gp11-misc.c:187
 msgid "The information is sensitive and cannot be revealed"
-msgstr ""
+msgstr "Tieto on luttamuksellista eikä sitä voi näyttää"
 
 #: ../gp11/gp11-misc.c:189
 msgid "The state cannot be saved"
-msgstr ""
+msgstr "Tilaa ei voi tallentaa"
 
 #: ../gp11/gp11-misc.c:191
 msgid "The module has not been initialized"
-msgstr ""
+msgstr "Modulia ei ole alustettu"
 
 #: ../gp11/gp11-misc.c:193
 msgid "The module has already been initialized"
@@ -1076,4 +1083,3 @@ msgstr "Tämännimistä avainrengasta ei ole olemassa."
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "Avainrenkaan lukitus on jo avattu."
-
