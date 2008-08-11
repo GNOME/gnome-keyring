@@ -50,7 +50,6 @@ typedef struct _GkrPkObjectStoragePrivate GkrPkObjectStoragePrivate;
 
 struct _GkrPkObjectStoragePrivate {
 	GHashTable *specific_load_requests;
-	GHashTable *denied_import_requests;
 	GkrLocationWatch *watch;
 };
 
@@ -62,7 +61,7 @@ G_DEFINE_TYPE(GkrPkObjectStorage, gkr_pk_object_storage, GKR_TYPE_PK_STORAGE);
 typedef struct {
 	GkrPkObjectStorage *storage;       /* The object storage to parse into */
 	GQuark location;                   /* The location being parsed */
-	GHashTable *checks;                /* The set of objects that existed before parse */
+	GkrPkChecks *checks;               /* The set of objects that existed before parse */
 } ParseContext;
 
 
@@ -104,7 +103,6 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 {
  	ParseContext *ctx = (ParseContext*)user_data;
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
-	gboolean ret;
 	
 	g_return_val_if_fail (loc == ctx->location, FALSE);
 
@@ -112,30 +110,39 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 	 * If the user isn't specifically requesting this object, then we don't 
 	 * necessarily prompt for a password. 
 	 */
-	if (!g_hash_table_lookup (pv->specific_load_requests, digest)) {
-		
-		/* If the user specifically denied this earlier, then don't prompt */
-		if (g_hash_table_lookup (pv->denied_import_requests, digest)) {
-			*password = NULL;
-			return FALSE;
-		}
-	}
+	if (!g_hash_table_lookup (pv->specific_load_requests, digest)) 
+		return FALSE;
 
-	/* TODO: Work out how imports work, add to denied import requests if necessary */
-	
-	ret = gkr_pk_storage_get_load_password (GKR_PK_STORAGE (ctx->storage), loc, digest, 
-	                                        type, label, state, password);
-
-	return ret;
+	return gkr_pk_storage_get_load_password (GKR_PK_STORAGE (ctx->storage), loc, digest, 
+	                                         type, label, state, password);
 }
 
 static GkrPkObject*
 prepare_object (GkrPkObjectStorage *storage, GQuark location, 
                 gkrconstid digest, GQuark type)
 {
+ 	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
 	GkrPkManager *manager;
 	GkrPkObject *object;
+	GkrPkIndex *index;
 	GType gtype;
+
+ 	/* We don't know the type, not much else we can do */
+	if (!type)
+		return NULL;
+	
+	/* 
+	 * The object must be in our index for us to load or otherwise
+	 * process it. See gkr_pk_object_storage_store() for getting
+	 * stuff into index.
+	 */
+	
+	index = gkr_pk_storage_index (GKR_PK_STORAGE (storage), location);
+	if (!gkr_pk_index_have (index, digest)) {
+		g_message ("object at %s is not imported properly, ignoring.", 
+		           gkr_location_to_string (location));
+		return NULL;
+	}
 	
 	manager = gkr_pk_manager_for_token ();
 	object = gkr_pk_manager_find_by_digest (manager, digest);
@@ -143,18 +150,23 @@ prepare_object (GkrPkObjectStorage *storage, GQuark location,
 	/* The object already exists just reference it */
 	if (object) {
 		gkr_pk_storage_add_object (GKR_PK_STORAGE (storage), object);
-		return object;
-	} 
+		
+	/* Create a new object here */
+	} else { 
+		gtype = gkr_pk_object_get_object_type (type);
+		g_return_val_if_fail (gtype != 0, NULL);
 	
-	gtype = gkr_pk_object_get_object_type (type);
-	g_return_val_if_fail (gtype != 0, NULL);
-	
-	object = g_object_new (gtype, "manager", manager, "location", location, 
-	                       "digest", digest, NULL);
-	gkr_pk_storage_add_object (GKR_PK_STORAGE (storage), object);
+		object = g_object_new (gtype, "manager", manager, "location", location, 
+		                       "digest", digest, NULL);
+		gkr_pk_storage_add_object (GKR_PK_STORAGE (storage), object);
 
-	/* Object was reffed */
-	g_object_unref (object);
+		/* Object was reffed */
+		g_object_unref (object);
+	}
+	
+	/* Make note of having seen this object in load requests */
+	g_hash_table_remove (pv->specific_load_requests, digest);
+	
 	return object;
 }
 
@@ -162,72 +174,54 @@ static gboolean
 parser_parsed_partial (GkrPkixParser *parser, GQuark location, gkrid digest,
                        GQuark type, ParseContext *ctx)
 {
- 	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
- 	GkrPkObject *object;
-
- 	/* TODO: What do we do if we don't know the type? */
-	if (!type)
-		return FALSE;
-	
- 	object = prepare_object (ctx->storage, location, digest, type);
-	g_return_val_if_fail (object != NULL, FALSE);
+ 	GkrPkObject *object = prepare_object (ctx->storage, location, digest, type);
+ 	if (object == NULL)
+ 		return FALSE;
  	
-	/* Make note of having seen this object in load requests */
-	g_hash_table_remove (pv->specific_load_requests, digest);
-
 	/* Make note of having seen this one */
 	gkr_pk_storage_checks_mark (ctx->checks, object);
-	
-	return TRUE;
+ 	return TRUE;
 }
 
 static gboolean
 parser_parsed_sexp (GkrPkixParser *parser, GQuark location, gkrid digest,
 	                GQuark type, gcry_sexp_t sexp, ParseContext *ctx)
 {
- 	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
  	GkrPkObject *object;
- 	
+
  	g_return_val_if_fail (type != 0, FALSE);
  	
  	object = prepare_object (ctx->storage, location, digest, type);
- 	g_return_val_if_fail (object != NULL, FALSE);
-	
-	/* Make note of having seen this object in load requests */
-	g_hash_table_remove (pv->specific_load_requests, digest);
-	
-	/* Make note of having seen this one */
-	g_hash_table_remove (ctx->checks, object);
-		
+ 	if (object == NULL)
+ 		return FALSE;
+ 	
+ 	/* Setup the sexp, probably a key, on this object */
+ 	g_object_set (object, "gcrypt-sexp", sexp, NULL);
+ 	
 	/* Make note of having seen this one */
 	gkr_pk_storage_checks_mark (ctx->checks, object);
-	
-	/* TODO: Work how imports work */
-	return TRUE;
+
+ 	return TRUE;
 }
 
 static gboolean
 parser_parsed_asn1 (GkrPkixParser *parser, GQuark location, gkrconstid digest, 
                     GQuark type, ASN1_TYPE asn1, ParseContext *ctx)
 {
- 	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (ctx->storage);
 	GkrPkObject *object;
 	
  	g_return_val_if_fail (type != 0, FALSE);
  	
 	object = prepare_object (ctx->storage, location, digest, type);
-	g_return_val_if_fail (object != NULL, FALSE);
-
-	/* Make note of having seen this object in load requests */
-	g_hash_table_remove (pv->specific_load_requests, digest);
-	
-	/* Make note of having seen this one */
-	g_hash_table_remove (ctx->checks, object);
+	if (object == NULL)
+		return FALSE;
 	
 	/* Setup the asn1, probably a certificate on this object */
 	g_object_set (object, "asn1-tree", asn1, NULL); 
 	
-	/* TODO: Work out how imports work */
+	/* Make note of having seen this one */
+	gkr_pk_storage_checks_mark (ctx->checks, object);
+
 	return TRUE;
 }
 
@@ -244,7 +238,7 @@ load_objects_at_location (GkrPkObjectStorage *storage, GQuark loc, GError **err)
 	ctx.storage = storage;
 	ctx.checks = gkr_pk_storage_checks_prepare (GKR_PK_STORAGE (storage), loc);
 
-	/* TODO: Try and use a shared parser? */
+	/* Create a parser object */
 	parser = gkr_pkix_parser_new (FALSE);
 	g_signal_connect (parser, "parsed-asn1", G_CALLBACK (parser_parsed_asn1), &ctx);
 	g_signal_connect (parser, "parsed-sexp", G_CALLBACK (parser_parsed_sexp), &ctx);
@@ -288,7 +282,6 @@ gkr_pk_object_storage_init (GkrPkObjectStorage *storage)
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (storage);
  	
 	pv->specific_load_requests = g_hash_table_new_full (gkr_id_hash, gkr_id_equals, gkr_id_free, NULL);
-	pv->denied_import_requests = g_hash_table_new_full (gkr_id_hash, gkr_id_equals, gkr_id_free, NULL);
 	
 	/* The main key and certificate storage */
 	pv->watch = gkr_location_watch_new (NULL, 0, RELATIVE_DIRECTORY, "*", "*.keystore");
@@ -413,6 +406,7 @@ gkr_pk_object_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 		/* The object now has a (possibly new) location, and possibly new digest */
 		g_object_set (obj, "location", loc, "storage", stor, "digest", digest, NULL);
 		gkr_pk_storage_add_object (stor, obj);
+		gkr_pk_index_add (gkr_pk_storage_index (stor, loc), digest);
 	}
 	
 	gkr_id_free (digest);
@@ -428,6 +422,7 @@ gkr_pk_object_storage_remove (GkrPkStorage *storage, GkrPkObject *obj,
 	
 	g_return_val_if_fail (!err || !*err, FALSE);
 	g_return_val_if_fail (GKR_IS_PK_OBJECT_STORAGE (storage), FALSE);
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (obj), FALSE);
 	g_return_val_if_fail (obj->storage == storage, FALSE);
 	g_return_val_if_fail (obj->location, FALSE);
 	
@@ -447,6 +442,12 @@ gkr_pk_object_storage_remove (GkrPkStorage *storage, GkrPkObject *obj,
 	/* Delete the object itself */
 	if (!gkr_location_delete_file (obj->location, err))
 		return FALSE;
+	
+	/* Remove it from our indexes */
+	gkr_pk_index_delete (gkr_pk_storage_index (storage, obj->location), obj->digest);
+	
+	/* And remove it from our list */
+	gkr_pk_storage_del_object (storage, obj);
 
 	return TRUE;
 }
@@ -458,7 +459,6 @@ gkr_pk_object_storage_dispose (GObject *obj)
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (obj);
  	
  	g_hash_table_remove_all (pv->specific_load_requests);
- 	g_hash_table_remove_all (pv->denied_import_requests);
  	
  	if (pv->watch) {
  		g_signal_handlers_disconnect_by_func (pv->watch, location_load, storage);
@@ -476,7 +476,6 @@ gkr_pk_object_storage_finalize (GObject *obj)
  	GkrPkObjectStoragePrivate *pv = GKR_PK_OBJECT_STORAGE_GET_PRIVATE (obj);
  	
 	g_hash_table_destroy (pv->specific_load_requests);
-	g_hash_table_destroy (pv->denied_import_requests);
 
 	g_assert (pv->watch == NULL);
 	

@@ -37,6 +37,11 @@
 	* tool/gkr-tool-import.c:
 	* tool/gkr-tool.c: Fix importing of objects from tool.
 	
+	* daemon/pk/gkr-pk-index.c:
+	* daemon/pk/gkr-pk-index.h:
+	* daemon/pk/gkr-pk-object-storage.c: Only load properly imported keys 
+	in main object storage. Remove keys properly when deleted.
+	
 2008-08-09  Stef Walter  <stef@memberwebs.com>
 
 	* conifgure.in:

@@ -864,6 +864,20 @@ gkr_pk_index_copy (GkrPkIndex *old_index, GkrPkIndex *new_index, gkrconstid dige
 }
 
 gboolean
+gkr_pk_index_add (GkrPkIndex *index, gkrconstid digest)
+{
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+	
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	
+	item = find_item_for_digest (index, digest, TRUE);
+	return item ? TRUE : FALSE;
+}
+
+gboolean
 gkr_pk_index_delete (GkrPkIndex *index, gkrconstid digest)
 {
 	GkrKeyringItem *item;

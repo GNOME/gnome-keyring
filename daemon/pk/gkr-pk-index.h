@@ -114,6 +114,8 @@ gboolean            gkr_pk_index_rename                (GkrPkIndex *index, gkrco
 gboolean            gkr_pk_index_copy                  (GkrPkIndex *old_index, GkrPkIndex *new_index,
                                                         gkrconstid digest);
 
+gboolean            gkr_pk_index_add                   (GkrPkIndex *index, gkrconstid digest);
+
 gboolean            gkr_pk_index_delete                (GkrPkIndex *index, gkrconstid digest);
 
 gboolean            gkr_pk_index_have                  (GkrPkIndex *index, gkrconstid digest);
