@@ -4,7 +4,8 @@
 #include "gkr-tool.h"
 
 #include "gp11/gp11.h"
-#include "gp11/pkcs11g.h"
+
+#include "pkcs11/pkcs11g.h"
 
 static gchar **import_files = NULL;
 
