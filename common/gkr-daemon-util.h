@@ -29,6 +29,8 @@ G_BEGIN_DECLS
 #include <glib.h>
 #include <glib-object.h>
 
+#include <sys/types.h>
+
 const gchar*    gkr_daemon_util_get_master_directory    (void);
 
 void            gkr_daemon_util_push_environment        (const gchar *name, const gchar *value);

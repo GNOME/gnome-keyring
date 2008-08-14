@@ -1,3 +1,8 @@
+2008-08-13  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-daemon-util.h: Fix build issue on Mac OS X. 
+	Patch by John Ralls
+	
 2008-08-10  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pk/gkr-pk-cert.c:
