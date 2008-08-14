@@ -6,6 +6,10 @@
 	* tool/gkr-tool-import.c: Fix build issue. Patch by John Ralls.
 	Fixes bug #547417
 	
+	* tool/gkr-tool.c:
+	* tool/gkr-tool.h:
+	* tool/gkr-tool-import.c: Add copyright headers
+	
 2008-08-10  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pk/gkr-pk-cert.c:
