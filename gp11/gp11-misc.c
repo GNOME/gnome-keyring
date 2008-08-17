@@ -199,7 +199,7 @@ gp11_message_from_rv (CK_RV rv)
 		return _("The signature request was rejected by the user");
 		
 	default:
-		g_message ("unknown error: %u", (guint)rv);
+		g_message ("unknown error: %lu", (gulong)rv);
 		return _("Unknown error");
 	}
 }

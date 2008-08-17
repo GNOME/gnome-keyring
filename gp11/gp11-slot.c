@@ -36,9 +36,9 @@ G_DEFINE_TYPE (GP11Slot, gp11_slot, G_TYPE_OBJECT);
       (G_TYPE_INSTANCE_GET_PRIVATE((o), GP11_TYPE_SLOT, GP11SlotPrivate))
 
 typedef struct _SessionPool {
-	guint flags;
+	gulong flags;
 	GP11Module *module; /* weak */
-	GSList *sessions; /* list of CK_SESSION_HANDLE */
+	GArray *sessions; /* array of CK_SESSION_HANDLE */
 } SessionPool;
 
 static guint signals[LAST_SIGNAL] = { 0 }; 
@@ -65,9 +65,11 @@ static void
 free_session_pool (gpointer p)
 {
 	SessionPool *pool = p;
-	GSList *l;
-	for (l = pool->sessions; l; l = g_slist_next (l))
-		close_session (pool->module, GPOINTER_TO_UINT (l->data));
+	guint i;
+	
+	for(i = 0; i < pool->sessions->len; ++i)
+		close_session (pool->module, g_array_index(pool->sessions, CK_SESSION_HANDLE, i));
+	g_array_free(pool->sessions, TRUE);
 	g_free (pool);
 }
 
@@ -78,7 +80,7 @@ foreach_count_sessions (gpointer key, gpointer value, gpointer user_data)
 {
 	SessionPool *pool = value;
 	guint *result = user_data;
-	*result += g_slist_length (pool->sessions);
+	*result += pool->sessions->len;
 }
 
 static guint
@@ -97,7 +99,7 @@ count_session_table (GP11Slot *slot, guint flags)
 #endif /* UNUSED */
 
 static void
-push_session_table (GP11Slot *slot, guint flags, CK_SESSION_HANDLE handle)
+push_session_table (GP11Slot *slot, gulong flags, CK_SESSION_HANDLE handle)
 {
 	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
 	SessionPool *pool;
@@ -110,20 +112,21 @@ push_session_table (GP11Slot *slot, guint flags, CK_SESSION_HANDLE handle)
 	g_assert (handle);
 	g_assert (GP11_IS_MODULE (slot->module));
 	
-	pool = g_hash_table_lookup (pv->open_sessions, GUINT_TO_POINTER (flags));
+	pool = g_hash_table_lookup (pv->open_sessions, &flags);
 	if (!pool) {
 		pool = g_new0 (SessionPool, 1);
 		pool->flags = flags;
 		pool->module = slot->module; /* weak ref */
-		g_hash_table_insert (pv->open_sessions, GUINT_TO_POINTER (flags), pool);
+		pool->sessions = g_array_new (FALSE, TRUE, sizeof (CK_SESSION_HANDLE));
+		g_hash_table_insert (pv->open_sessions, g_memdup (&flags, sizeof (flags)), pool);
 	}
 	
 	g_assert (pool->flags == flags);
-	pool->sessions = g_slist_prepend (pool->sessions, GUINT_TO_POINTER (handle));
+	g_array_append_val (pool->sessions, handle);
 }
 
 static CK_SESSION_HANDLE
-pop_session_table (GP11Slot *slot, guint flags)
+pop_session_table (GP11Slot *slot, gulong flags)
 {
 	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
 	CK_SESSION_HANDLE result;
@@ -134,13 +137,14 @@ pop_session_table (GP11Slot *slot, guint flags)
 	
 	g_assert (GP11_IS_MODULE (slot->module));
 	
-	pool = g_hash_table_lookup (pv->open_sessions, GUINT_TO_POINTER (flags));
+	pool = g_hash_table_lookup (pv->open_sessions, &flags);
 	if (!pool)
 		return 0;
 	
-	result = GPOINTER_TO_UINT (pool->sessions->data);
+	g_assert (pool->sessions->len > 0);
+	result = g_array_index (pool->sessions, CK_SESSION_HANDLE, pool->sessions->len - 1);
 	g_assert (result != 0);
-	pool->sessions = g_slist_remove (pool->sessions, pool->sessions->data);
+	g_array_remove_index_fast (pool->sessions, pool->sessions->len - 1);
 	
 	return result;
 }
@@ -154,19 +158,38 @@ destroy_session_table (GP11Slot *slot)
 	pv->open_sessions = NULL;
 }
 
+static guint
+ulong_hash (gconstpointer v)
+{
+	// TODO: I'm sure there's a better gulong hash
+	const signed char *p = v;
+	guint32 i, h = *p;
+
+	for(i = 0; i < sizeof (gulong); ++i)
+		h = (h << 5) - h + *(p++);
+
+	return h;
+}
+
+static gboolean
+ulong_equal (gconstpointer v1, gconstpointer v2)
+{
+	return *((const gulong*)v1) == *((const gulong*)v2);
+}
+
 static void
 create_session_table (GP11Slot *slot)
 {
 	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
 	if (!pv->open_sessions)
-		pv->open_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_session_pool);
+		pv->open_sessions = g_hash_table_new_full (ulong_hash, ulong_equal, g_free, free_session_pool);
 }
 
 static void
 reuse_session_handle (GP11Session *session, GP11Slot *slot)
 {
 	CK_SESSION_INFO info;
-	guint flags;
+	gulong *flags;
 	CK_RV rv;
 	
 	g_return_if_fail (GP11_IS_SESSION (session));
@@ -192,18 +215,18 @@ reuse_session_handle (GP11Session *session, GP11Slot *slot)
 	 * check them against the session's current flags. If they're no
 	 * longer present, then don't reuse this session.
 	 */
-	flags = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (session), 
-	                                             "gp11-open-session-flags"));
-	if ((flags & info.flags) != flags)
+	flags = g_object_get_data (G_OBJECT (session), "gp11-open-session-flags");
+	g_return_if_fail (flags);
+	if ((*flags & info.flags) != *flags)
 		return;
 	
 	/* Keep this one around for later use */
-	push_session_table (slot, flags, session->handle);
+	push_session_table (slot, *flags, session->handle);
 	session->handle = 0;
 }
 
 static GP11Session*
-make_session_object (GP11Slot *slot, guint flags, CK_SESSION_HANDLE handle)
+make_session_object (GP11Slot *slot, gulong flags, CK_SESSION_HANDLE handle)
 {
 	GP11Session *session;
 	
@@ -215,7 +238,8 @@ make_session_object (GP11Slot *slot, guint flags, CK_SESSION_HANDLE handle)
 	g_signal_connect (session, "discard-handle", G_CALLBACK (reuse_session_handle), slot);
 
 	/* Mark the flags on the session for later looking up */
-	g_object_set_data (G_OBJECT (session), "gp11-open-session-flags", GUINT_TO_POINTER (flags));
+	g_object_set_data_full (G_OBJECT (session), "gp11-open-session-flags", 
+	                        g_memdup (&flags, sizeof (flags)), g_free);
 	
 	return session;
 }
@@ -542,12 +566,12 @@ gp11_slot_get_token_info (GP11Slot *slot)
 	return tokeninfo;
 }
 
-GSList*
+GP11Mechanisms*
 gp11_slot_get_mechanisms (GP11Slot *slot)
 {
 	CK_MECHANISM_TYPE_PTR mech_list;
 	CK_ULONG count, i;
-	GSList *result;
+	GP11Mechanisms *result;
 	CK_RV rv;
 	
 	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
@@ -571,17 +595,17 @@ gp11_slot_get_mechanisms (GP11Slot *slot)
 		return NULL;
 	}
 	
-	result = NULL;
+	result = g_array_new (FALSE, TRUE, sizeof (CK_MECHANISM_TYPE));
 	for (i = 0; i < count; ++i)
-		result = g_slist_prepend (result, GUINT_TO_POINTER (mech_list[i]));
+		g_array_append_val (result, mech_list[i]);
 	
 	g_free (mech_list);
-	return g_slist_reverse (result);
+	return result;
 
 }
 
 GP11MechanismInfo*
-gp11_slot_get_mechanism_info (GP11Slot *slot, guint mech_type)
+gp11_slot_get_mechanism_info (GP11Slot *slot, gulong mech_type)
 {
 	GP11MechanismInfo *mechinfo;
 	CK_MECHANISM_INFO info;
@@ -658,7 +682,7 @@ gp11_slot_init_token_finish (GP11Slot *slot, GAsyncResult *result, GError **err)
 
 typedef struct OpenSession {
 	GP11Arguments base;
-	guint flags;
+	gulong flags;
 	CK_SESSION_HANDLE session;
 } OpenSession;
 
@@ -671,13 +695,13 @@ perform_open_session (OpenSession *args)
 }
 
 GP11Session*
-gp11_slot_open_session (GP11Slot *slot, guint flags, GError **err)
+gp11_slot_open_session (GP11Slot *slot, gulong flags, GError **err)
 {
 	return gp11_slot_open_session_full (slot, flags, NULL, err);
 }
 
 GP11Session*
-gp11_slot_open_session_full (GP11Slot *slot, guint flags, GCancellable *cancellable, GError **err)
+gp11_slot_open_session_full (GP11Slot *slot, gulong flags, GCancellable *cancellable, GError **err)
 {
 	OpenSession args = { GP11_ARGUMENTS_INIT, flags, 0 };
 	CK_SESSION_HANDLE handle;
@@ -695,7 +719,7 @@ gp11_slot_open_session_full (GP11Slot *slot, guint flags, GCancellable *cancella
 }
 
 void
-gp11_slot_open_session_async (GP11Slot *slot, guint flags, GCancellable *cancellable, 
+gp11_slot_open_session_async (GP11Slot *slot, gulong flags, GCancellable *cancellable, 
                               GAsyncReadyCallback callback, gpointer user_data)
 {
 	OpenSession *args = _gp11_call_async_prep (slot, slot, perform_open_session,

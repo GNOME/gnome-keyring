@@ -189,7 +189,7 @@ DEFINE_TEST(get_attributes)
 	GError *err = NULL;
 	gulong klass;
 	gchar *value = NULL;
-	guint types[2] = { CKA_CLASS, CKA_LABEL };
+	gulong types[2] = { CKA_CLASS, CKA_LABEL };
 	
 	/* Simple */
 	attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);

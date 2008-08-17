@@ -37,7 +37,7 @@ static GOptionEntry import_entries[] = {
 	{ NULL }
 };
 
-static const guint ATTR_TYPES[] = {
+static const gulong ATTR_TYPES[] = {
 	CKA_LABEL,
 	CKA_CLASS,
 	CKA_ID

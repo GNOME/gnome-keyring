@@ -25,7 +25,7 @@ const gchar*        gp11_message_from_rv                    (CK_RV rv);
 gchar*              gp11_string_from_chars                  (const guchar *data, gsize max);
 
 typedef struct GP11Mechanism {
-	guint type;
+	gulong type;
 	gpointer parameter;
 	gulong n_parameter;
 } GP11Mechanism;
@@ -48,48 +48,48 @@ enum {
 };
 
 void                gp11_attribute_init                     (GP11Attribute *attr,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gconstpointer value,
                                                              gsize length);
 
 void                gp11_attribute_init_invalid             (GP11Attribute *attr,
-                                                             guint attr_type);
+                                                             gulong attr_type);
 
 void                gp11_attribute_init_boolean             (GP11Attribute *attr,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gboolean value);
 
 void                gp11_attribute_init_date                (GP11Attribute *attr,
-                                                             guint attr_type, 
+                                                             gulong attr_type, 
                                                              const GDate *value);
 
 void                gp11_attribute_init_ulong               (GP11Attribute *attr,
-                                                             guint attr_type, 
+                                                             gulong attr_type, 
                                                              gulong value);
 
 void                gp11_attribute_init_string              (GP11Attribute *attr,
-                                                             guint attr_type, 
+                                                             gulong attr_type, 
                                                              const gchar *value);
 
 void                gp11_attribute_init_copy                (GP11Attribute *dest, 
                                                              GP11Attribute *src);
 
-GP11Attribute*      gp11_attribute_new                      (guint attr_type,
+GP11Attribute*      gp11_attribute_new                      (gulong attr_type,
                                                              gpointer value,
                                                              gsize length);
 
-GP11Attribute*      gp11_attribute_new_invalid              (guint attr_type);
+GP11Attribute*      gp11_attribute_new_invalid              (gulong attr_type);
 
-GP11Attribute*      gp11_attribute_new_boolean              (guint attr_type,
+GP11Attribute*      gp11_attribute_new_boolean              (gulong attr_type,
                                                              gboolean value);
 
-GP11Attribute*      gp11_attribute_new_date                 (guint attr_type,
+GP11Attribute*      gp11_attribute_new_date                 (gulong attr_type,
                                                              const GDate *value);
 
-GP11Attribute*      gp11_attribute_new_ulong                (guint attr_type,
+GP11Attribute*      gp11_attribute_new_ulong                (gulong attr_type,
                                                              gulong value);
 
-GP11Attribute*      gp11_attribute_new_string               (guint attr_type,
+GP11Attribute*      gp11_attribute_new_string               (gulong attr_type,
                                                              const gchar *value);
 
 gboolean            gp11_attribute_is_invalid               (GP11Attribute *attr);
@@ -118,7 +118,7 @@ GType               gp11_attributes_get_boxed_type          (void) G_GNUC_CONST;
  
 GP11Attributes*     gp11_attributes_new                     (void);
 
-GP11Attributes*     gp11_attributes_newv                    (guint attr_type, ...);
+GP11Attributes*     gp11_attributes_newv                    (gulong attr_type, ...);
 
 GP11Attributes*     gp11_attributes_new_valist              (va_list va);
 
@@ -133,46 +133,46 @@ void                gp11_attributes_add                     (GP11Attributes *att
                                                              GP11Attribute *attr);
 
 void                gp11_attributes_add_data                (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gconstpointer value,
                                                              gsize length);
 
 void                gp11_attributes_add_invalid             (GP11Attributes *attrs,
-                                                             guint attr_type);
+                                                             gulong attr_type);
 
 void                gp11_attributes_add_boolean             (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gboolean value);
 
 void                gp11_attributes_add_string              (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              const gchar *string);
 
 void                gp11_attributes_add_date                (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              const GDate *date);
 
 void                gp11_attributes_add_ulong               (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gulong value);
 
 GP11Attribute*      gp11_attributes_find                    (GP11Attributes *attrs,
-                                                             guint attr_type);
+                                                             gulong attr_type);
 
 gboolean            gp11_attributes_find_boolean            (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gboolean *value);            
 
 gboolean            gp11_attributes_find_ulong              (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gulong *value);            
 
 gboolean            gp11_attributes_find_string             (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gchar **value);            
 
 gboolean            gp11_attributes_find_date               (GP11Attributes *attrs,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              GDate *value);
 
 gulong              gp11_attributes_count                   (GP11Attributes *attrs);
@@ -184,7 +184,6 @@ void                gp11_attributes_unref                   (GP11Attributes *att
 /* -------------------------------------------------------------------------
  * FORWARDS
  */
-
 typedef struct _GP11Slot GP11Slot;
 typedef struct _GP11Module GP11Module;
 typedef struct _GP11Session GP11Session;
@@ -195,15 +194,15 @@ typedef struct _GP11Object GP11Object;
  */
 
 typedef struct _GP11ModuleInfo {
-	guint pkcs11_version_major;
-	guint pkcs11_version_minor;
+	guint8 pkcs11_version_major;
+	guint8 pkcs11_version_minor;
 	
 	gchar *manufacturer_id;
-	guint32 flags;
+	gulong flags;
 	
 	gchar *library_description;
-	guint library_version_major;
-	guint library_version_minor;
+	guint8 library_version_major;
+	guint8 library_version_minor;
 } GP11ModuleInfo;
 
 void                gp11_module_info_free                   (GP11ModuleInfo *module_info);
@@ -253,11 +252,11 @@ enum {
 typedef struct _GP11SlotInfo {
 	gchar *slot_description;
 	gchar *manufacturer_id;
-	guint32 flags;
-	guint hardware_version_major;
-	guint hardware_version_minor;
-	guint firmware_version_major;
-	guint firmware_version_minor;
+	gulong flags;
+	guint8 hardware_version_major;
+	guint8 hardware_version_minor;
+	guint8 firmware_version_major;
+	guint8 firmware_version_minor;
 } GP11SlotInfo;
 
 void                gp11_slot_info_free                      (GP11SlotInfo *slot_info);
@@ -267,7 +266,7 @@ typedef struct _GP11TokenInfo {
 	gchar *manufacturer_id;
 	gchar *model;
 	gchar *serial_number;
-	guint32 flags;
+	gulong flags;
 	glong max_session_count;
 	glong session_count;
 	glong max_rw_session_count;
@@ -278,10 +277,10 @@ typedef struct _GP11TokenInfo {
 	glong free_public_memory;
 	glong total_private_memory;
 	glong free_private_memory;
-	guint hardware_version_major;
-	guint hardware_version_minor;
-	guint firmware_version_major;
-	guint firmware_version_minor;
+	guint8 hardware_version_major;
+	guint8 hardware_version_minor;
+	guint8 firmware_version_major;
+	guint8 firmware_version_minor;
 	gint64 utc_time;
 } GP11TokenInfo;
 
@@ -290,10 +289,18 @@ void                gp11_token_info_free                    (GP11TokenInfo *toke
 typedef struct _GP11MechanismInfo {
 	gulong min_key_size;
 	gulong max_key_size;
-	guint32 flags;
+	gulong flags;
 } GP11MechanismInfo;
 
 void                gp11_mechanism_info_free                (GP11MechanismInfo *mech_info);
+
+typedef GArray GP11Mechanisms;
+
+#define gp11_mechanisms_length(a)  	((a)->len)
+
+#define gp11_mechanisms_at(a, i) 	(g_array_index(a, CK_MECHANISM_TYPE, i))
+
+#define gp11_mechanisms_free(a)         (g_array_free(a, TRUE))
 
 #define GP11_TYPE_SLOT             (gp11_slot_get_type())
 #define GP11_SLOT(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), GP11_TYPE_SLOT, GP11Slot))
@@ -345,10 +352,10 @@ GP11SlotInfo*       gp11_slot_get_info                      (GP11Slot *slot);
 
 GP11TokenInfo*      gp11_slot_get_token_info                (GP11Slot *slot);
 
-GSList*             gp11_slot_get_mechanisms                (GP11Slot *slot);
+GP11Mechanisms*     gp11_slot_get_mechanisms                (GP11Slot *slot);
 
 GP11MechanismInfo*  gp11_slot_get_mechanism_info            (GP11Slot *slot,
-                                                             guint32 mech_type);
+                                                             gulong mech_type);
 
 #if UNIMPLEMENTED
 
@@ -373,16 +380,16 @@ gboolean            gp11_slot_init_token_finish             (GP11Slot *slot,
 #endif /* UNIMPLEMENTED */
 
 GP11Session*        gp11_slot_open_session                  (GP11Slot *slot,
-                                                             guint flags,
+                                                             gulong flags,
                                                              GError **err);
 
 GP11Session*        gp11_slot_open_session_full             (GP11Slot *slot,
-                                                             guint flags,
+                                                             gulong flags,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gp11_slot_open_session_async            (GP11Slot *slot,
-                                                             guint flags,
+                                                             gulong flags,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);
@@ -396,9 +403,9 @@ GP11Session*        gp11_slot_open_session_finish           (GP11Slot *slot,
  */
 
 typedef struct _GP11SessionInfo {
-	guint32 slot_id;
-	guint32 state;
-	guint32 flags;
+	gulong slot_id;
+	gulong state;
+	gulong flags;
 	gulong device_error;
 } GP11SessionInfo;
 
@@ -503,20 +510,20 @@ gboolean            gp11_session_set_operation_state_finish (GP11Session *sessio
 #endif /* UNIMPLEMENTED */
 
 gboolean            gp11_session_login                      (GP11Session *session, 
-                                                             guint32 user_type,
+                                                             gulong user_type,
                                                              const guchar *pin,
                                                              gsize n_pin,
                                                              GError **err);
 
 gboolean            gp11_session_login_full                 (GP11Session *session, 
-                                                             guint32 user_type,
+                                                             gulong user_type,
                                                              const guchar *pin,
                                                              gsize n_pin,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gp11_session_login_async                (GP11Session *session, 
-                                                             guint32 user_type,
+                                                             gulong user_type,
                                                              const guchar *pin,
                                                              gsize n_pin,
                                                              GCancellable *cancellable,
@@ -654,7 +661,7 @@ guchar*             gp11_session_generate_random_finish     (GP11Session *sessio
 
 guchar*             gp11_session_encrypt                     (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech,
+                                                              gulong mech,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -710,7 +717,7 @@ GP11Processor*      gp11_session_batch_encrypt_finish        (GP11Session *sessi
 #if UNTESTED
 guchar*             gp11_session_decrypt                     (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -761,7 +768,7 @@ GP11Processor*      gp11_session_batch_decrypt_finish        (GP11Session *sessi
                                                               GError **err);
 
 guchar*             gp11_session_digest                      (GP11Session *session,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -866,7 +873,7 @@ GP11Processor*      gp11_session_batch_decrypt_verify_finish (GP11Session *sessi
 
 guchar*             gp11_session_sign                        (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -937,7 +944,7 @@ GP11Processor*      gp11_session_batch_sign_encrypt_finish   (GP11Session *sessi
 
 guchar*             gp11_session_sign_recover                (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -972,7 +979,7 @@ guchar*             gp11_session_sign_recover_finish         (GP11Session *sessi
 
 gboolean            gp11_session_verify                      (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               const guchar *signature,
@@ -1032,7 +1039,7 @@ GkrProcessor*       gp11_session_batch_verify_finish         (GP11Session *sessi
 
 guchar*             gp11_session_verify_recover              (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -1063,7 +1070,7 @@ guchar*             gp11_session_verify_recover_finish       (GP11Session *sessi
 
 guchar*             gp11_session_wrap                        (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               GP11Object *wrapped_key,
                                                               gsize *n_result,
                                                               GError **err);
@@ -1091,7 +1098,7 @@ guchar*             gp11_session_wrap_finish                 (GP11Session *sessi
 
 GP11Object*         gp11_session_unwrap                      (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GError **err,
@@ -1122,7 +1129,7 @@ GP11Object*         gp11_session_unwrap_finish               (GP11Session *sessi
 
 GP11Object*         gp11_session_derive                      (GP11Session *session,
                                                               GP11Object *key,
-                                                              guint mech_type,
+                                                              gulong mech_type,
                                                               GError **err,
                                                               ...);
 
@@ -1264,13 +1271,13 @@ GP11Attributes*     gp11_object_get                         (GP11Object *object,
                                                              ...);
 
 GP11Attributes*     gp11_object_get_full                    (GP11Object *object,
-                                                             const guint *attr_types,
+                                                             const gulong *attr_types,
                                                              gsize n_attr_types,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gp11_object_get_async                   (GP11Object *object,
-                                                             const guint *attr_types,
+                                                             const gulong *attr_types,
                                                              gsize n_attr_types,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
@@ -1281,16 +1288,16 @@ GP11Attributes*     gp11_object_get_finish                  (GP11Object *object,
                                                              GError **err);
 
 GP11Attribute*      gp11_object_get_one                     (GP11Object *object,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              GError **err);
 
 GP11Attribute*      gp11_object_get_one_full                (GP11Object *object,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gp11_object_get_one_async               (GP11Object *object,
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);

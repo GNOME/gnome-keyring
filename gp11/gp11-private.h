@@ -14,12 +14,12 @@ G_BEGIN_DECLS
  */
 
 void                _gp11_attribute_init_take               (GP11Attribute *attr, 
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gpointer value,
                                                              gsize length);
 
 void                _gp11_attributes_add_take               (GP11Attributes *attr, 
-                                                             guint attr_type,
+                                                             gulong attr_type,
                                                              gpointer value,
                                                              gsize length);
 

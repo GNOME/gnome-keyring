@@ -285,7 +285,7 @@ gp11_object_set_finish (GP11Object *object, GAsyncResult *result, GError **err)
 
 typedef struct _GetAttributes {
 	GP11Arguments base;
-	guint *attr_types;
+	gulong *attr_types;
 	gsize n_attr_types;
 	CK_OBJECT_HANDLE object;
 	GP11Attributes *results;
@@ -381,25 +381,25 @@ gp11_object_get (GP11Object *object, GError **err, ...)
 	GP11Attributes *result;
 	GArray *array;
 	va_list va;
-	guint type;
+	gulong type;
 	
-	array = g_array_new (0, 1, sizeof (guint));
+	array = g_array_new (0, 1, sizeof (gulong));
 	va_start (va, err);
 	for (;;) {
-		type = va_arg (va, guint);
-		if (type == (guint)-1)
+		type = va_arg (va, gulong);
+		if (type == (gulong)-1)
 			break;
 		g_array_append_val (array, type);
 	}
 	va_end (va);
 	
-	result = gp11_object_get_full (object, (guint*)array->data, array->len, NULL, err);
+	result = gp11_object_get_full (object, (gulong*)array->data, array->len, NULL, err);
 	g_array_free (array, TRUE);
 	return result;
 }
 
 GP11Attributes*
-gp11_object_get_full (GP11Object *object, const guint *attr_types, gsize n_attr_types,
+gp11_object_get_full (GP11Object *object, const gulong *attr_types, gsize n_attr_types,
                       GCancellable *cancellable, GError **err)
 {
 	GetAttributes args;
@@ -407,7 +407,7 @@ gp11_object_get_full (GP11Object *object, const guint *attr_types, gsize n_attr_
 	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
 	
 	memset (&args, 0, sizeof (args));
-	args.attr_types = (guint*)attr_types;
+	args.attr_types = (gulong*)attr_types;
 	args.n_attr_types = n_attr_types;
 	args.object = object->handle;
 
@@ -420,7 +420,7 @@ gp11_object_get_full (GP11Object *object, const guint *attr_types, gsize n_attr_
 }
 
 void
-gp11_object_get_async (GP11Object *object, const guint *attr_types, gsize n_attr_types,
+gp11_object_get_async (GP11Object *object, const gulong *attr_types, gsize n_attr_types,
                        GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GetAttributes *args;
@@ -431,7 +431,7 @@ gp11_object_get_async (GP11Object *object, const guint *attr_types, gsize n_attr
 	                              sizeof (*args), free_get_attributes);
 	args->n_attr_types = n_attr_types;
 	if (n_attr_types)
-		args->attr_types = g_memdup (attr_types, sizeof (guint) * n_attr_types);
+		args->attr_types = g_memdup (attr_types, sizeof (gulong) * n_attr_types);
 	args->object = object->handle;
 	
 	_gp11_call_async_go (args, cancellable, callback, user_data);
@@ -455,13 +455,13 @@ gp11_object_get_finish (GP11Object *object, GAsyncResult *result, GError **err)
 }
 
 GP11Attribute*
-gp11_object_get_one (GP11Object *object, guint attr_type, GError **err)
+gp11_object_get_one (GP11Object *object, gulong attr_type, GError **err)
 {
 	return gp11_object_get_one_full (object, attr_type, NULL, err);
 }
 
 GP11Attribute*
-gp11_object_get_one_full (GP11Object *object, guint attr_type, 
+gp11_object_get_one_full (GP11Object *object, gulong attr_type, 
                           GCancellable *cancellable, GError **err)
 {
 	GP11Attributes *attrs;
@@ -479,7 +479,7 @@ gp11_object_get_one_full (GP11Object *object, guint attr_type,
 }
 
 void
-gp11_object_get_one_async (GP11Object *object, guint attr_type, GCancellable *cancellable,
+gp11_object_get_one_async (GP11Object *object, gulong attr_type, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	gp11_object_get_async (object, &attr_type, 1, cancellable, callback, user_data);

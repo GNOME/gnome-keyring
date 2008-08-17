@@ -101,20 +101,21 @@ DEFINE_TEST(slot_props)
 
 DEFINE_TEST(slot_mechanisms)
 {
-	GSList *mechs, *l;
+	GP11Mechanisms *mechs;
 	GP11MechanismInfo *info;
+	guint i;
 	
 	mechs = gp11_slot_get_mechanisms (slot);
-	g_assert (2 == g_slist_length (mechs) && "wrong number of mech types returned");
+	g_assert (2 == gp11_mechanisms_length (mechs) && "wrong number of mech types returned");
 
-	for (l = mechs; l; l = g_slist_next (l)) {
+	for (i = 0; i < gp11_mechanisms_length (mechs); ++i) {
 		
-		info = gp11_slot_get_mechanism_info (slot, GPOINTER_TO_UINT (l->data));
+		info = gp11_slot_get_mechanism_info (slot, gp11_mechanisms_at (mechs, i));
 		g_assert (info != NULL && "no mech info returned");
 		
 		gp11_mechanism_info_free (info);
 	}
 	
-	g_slist_free (mechs);
+	gp11_mechanisms_free (mechs);
 }
 

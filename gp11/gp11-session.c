@@ -212,7 +212,7 @@ gp11_session_get_info (GP11Session *session)
 
 typedef struct _Login {
 	GP11Arguments base;
-	guint32 user_type;
+	gulong user_type;
 	guchar *pin;
 	gsize n_pin;
 } Login;
@@ -232,14 +232,14 @@ perform_login (Login *args)
 }
 
 gboolean
-gp11_session_login (GP11Session *session, guint32 user_type, const guchar *pin,
+gp11_session_login (GP11Session *session, gulong user_type, const guchar *pin,
                     gsize n_pin, GError **err)
 {
 	return gp11_session_login_full (session, user_type, pin, n_pin, NULL, err);
 }
 
 gboolean
-gp11_session_login_full (GP11Session *session, guint32 user_type, const guchar *pin,
+gp11_session_login_full (GP11Session *session, gulong user_type, const guchar *pin,
                          gsize n_pin, GCancellable *cancellable, GError **err)
 {
 	Login args = { GP11_ARGUMENTS_INIT, user_type, (guchar*)pin, n_pin };
@@ -248,7 +248,7 @@ gp11_session_login_full (GP11Session *session, guint32 user_type, const guchar *
 }
 
 void
-gp11_session_login_async (GP11Session *session, guint32 user_type, const guchar *pin,
+gp11_session_login_async (GP11Session *session, gulong user_type, const guchar *pin,
                           gsize n_pin, GCancellable *cancellable, GAsyncReadyCallback callback,
                           gpointer user_data)
 {
@@ -662,7 +662,7 @@ crypt_finish (GP11Session *session, GAsyncResult *result, gsize *n_result, GErro
 }
 
 guchar*
-gp11_session_encrypt (GP11Session *session, GP11Object *key, guint mech, const guchar *input, 
+gp11_session_encrypt (GP11Session *session, GP11Object *key, gulong mech, const guchar *input, 
                       gsize n_input, gsize *n_result, GError **err)
 {
 	GP11Mechanism mech_args = { mech, NULL, 0 };
@@ -710,7 +710,7 @@ gp11_session_encrypt_finish (GP11Session *session, GAsyncResult *result, gsize *
 }
 
 guchar*
-gp11_session_decrypt (GP11Session *session, GP11Object *key, guint mech_type, const guchar *input,
+gp11_session_decrypt (GP11Session *session, GP11Object *key, gulong mech_type, const guchar *input,
                       gsize n_input, gsize *n_result, GError **err)
 {
 	GP11Mechanism mech_args = { mech_type, NULL, 0 };
@@ -756,7 +756,7 @@ gp11_session_decrypt_finish (GP11Session *session, GAsyncResult *result,
 }
 
 guchar*
-gp11_session_sign (GP11Session *session, GP11Object *key, guint mech_type, const guchar *input, 
+gp11_session_sign (GP11Session *session, GP11Object *key, gulong mech_type, const guchar *input, 
                    gsize n_input, gsize *n_result, GError **err)
 {
 	GP11Mechanism mech_args = { mech_type, NULL, 0 };
@@ -839,7 +839,7 @@ perform_verify (Verify *args)
 }
 
 gboolean
-gp11_session_verify (GP11Session *session, GP11Object *key, guint mech_type, const guchar *input,
+gp11_session_verify (GP11Session *session, GP11Object *key, gulong mech_type, const guchar *input,
                      gsize n_input, const guchar *signature, gsize n_signature, GError **err)
 {
 	GP11Mechanism mech_args = { mech_type, NULL, 0 };
