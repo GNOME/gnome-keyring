@@ -1,3 +1,10 @@
+2008-08-17  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/ui/gkr-ask-request.h:
+	* daemon/ui/gkr-ask-tool.c: Use better text for button in 
+	keyring create password prompt. Patch by Adam Schreiber.
+	Fixes bug #547722
+	
 2008-08-13  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-daemon-util.h: Fix build issue on Mac OS X. 

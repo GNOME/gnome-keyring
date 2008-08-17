@@ -621,6 +621,10 @@ prepare_dialog (void)
 		buttons[i] = GTK_STOCK_OK;
 		resps[i++] = GKR_ASK_RESPONSE_ALLOW;
 	}
+	if (flags & GKR_ASK_REQUEST_CREATE_BUTTON) {
+	    buttons[i] = _("_Create");
+	    resps[i++] = GKR_ASK_RESPONSE_ALLOW;
+    }
 	if (flags & GKR_ASK_REQUEST_ALLOW_BUTTON) {
 		buttons[i] = _("Allow _Once");
 		resps[i++] = GKR_ASK_RESPONSE_ALLOW;
