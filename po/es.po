@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-10 16:40+0000\n"
-"PO-Revision-Date: 2008-08-10 20:18+0200\n"
+"POT-Creation-Date: 2008-08-17 15:17+0000\n"
+"PO-Revision-Date: 2008-08-17 23:44+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -541,7 +541,7 @@ msgstr "Clave privada"
 msgid "Trust Association"
 msgstr "Asociación de confianza"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:440
+#: ../daemon/pk/gkr-pk-object-storage.c:436
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "No se puede borrar «%s» porque está atada a otros objetos."
@@ -720,10 +720,14 @@ msgid "Deny"
 msgstr "Denegar"
 
 #: ../daemon/ui/gkr-ask-tool.c:625
+msgid "_Create"
+msgstr "_Crear"
+
+#: ../daemon/ui/gkr-ask-tool.c:629
 msgid "Allow _Once"
 msgstr "Permitir _una vez"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:633
 msgid "_Always Allow"
 msgstr "Permitir _siempre"
 
