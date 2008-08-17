@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-28 03:50+0000\n"
-"PO-Revision-Date: 2008-07-29 12:05+0300\n"
+"POT-Creation-Date: 2008-08-10 16:40+0000\n"
+"PO-Revision-Date: 2008-08-17 10:08+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -34,15 +34,20 @@ msgstr "Eemaldatav ketas"
 msgid "Home"
 msgstr "Kodu"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1127
-#: ../daemon/pkix/gkr-pkix-parser.c:472 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
+#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Selle faili asukohaks määratud ketas või seade pole kättesaadav"
 
-#: ../common/gkr-location.c:1157
+#: ../common/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Kataloogi pole võimalik luua: %s"
+
+#: ../common/gkr-location.c:1170
 #, c-format
 msgid "Couldn't delete the file: %s"
-msgstr ""
+msgstr "Faili pole võimalik kustutada: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:227
@@ -300,7 +305,7 @@ msgstr "Sisesta uus parool vaikimisi võtmerõngale."
 msgid "Change Keyring Password"
 msgstr "Võtmerõnga parooli vahetamine"
 
-#: ../daemon/gkr-daemon-ops.c:611
+#: ../daemon/gkr-daemon-ops.c:614
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -310,7 +315,7 @@ msgstr ""
 "Rakendus '%s' (%s) soovib salvestada parooli aga siin pole vaikimisi "
 "võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
-#: ../daemon/gkr-daemon-ops.c:615 ../daemon/gkr-daemon-ops.c:619
+#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -320,7 +325,7 @@ msgstr ""
 "Rakendus '%s' soovib salvestada parooli aga siin pole vaikimisi "
 "võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
-#: ../daemon/gkr-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:626
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -331,15 +336,26 @@ msgstr ""
 "võtmerõngast. Rõnga loomiseks pead sa sellele parooli valima."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Create Default Keyring"
 msgstr "Vaikimisi võtmerõnga loomine"
 
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Choose password for default keyring"
 msgstr "Sisesta vaikimisi võtmerõnga parool"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid ""
+"A list of paths to PKCS#11 modules to load. No modules are currently listed "
+"by default, as this is still an experimental feature. This is used by "
+"seahorse and other PKCS#11 aware applications."
+msgstr ""
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid "PKCS#11 Modules"
+msgstr "PKCS#11-moodulid"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -351,7 +367,7 @@ msgstr ""
 "(ehk siis, kui kasutaja sisse logib). Seda sätet on võimalik mõnede "
 "deemonile antud käsureaargumentidega eirata."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -363,11 +379,11 @@ msgstr ""
 "siis, kui kasutaja sisse logib). Seda sätet on võimalik mõnede deemonile "
 "antud käsureaargumentidega eirata."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "Kas gnome võtmerõnga PKCS#11 komponent on lubatud või mitte."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Kas gnome võtmerõnga SSH komponent on lubatud või mitte."
 
@@ -442,41 +458,22 @@ msgstr "Sisesta avaliku võtme lukust lahtivõtmise parool"
 msgid "Enter password to unlock"
 msgstr "Sisesta lukust lahtivõtmise parool"
 
-#: ../daemon/pk/gkr-pk-import.c:118 ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr ""
-"See salajane võti võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr ""
-"See sertifikaat võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr ""
-"See avalik võti võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "See võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#: ../daemon/pk/gkr-pk-import.c:131
+#: ../daemon/pk/gkr-pk-import.c:114
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
 msgstr "Süsteem tahab importida salajast võtit '%s', kuid see on lukus"
 
-#: ../daemon/pk/gkr-pk-import.c:133
+#: ../daemon/pk/gkr-pk-import.c:116
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
 msgstr "Süsteem tahab importida sertifikaati '%s', kuid see on lukus"
 
-#: ../daemon/pk/gkr-pk-import.c:135
+#: ../daemon/pk/gkr-pk-import.c:118
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
 msgstr "Süsteem tahab importida avalikku võtit '%s', kuid see on lukus"
 
-#: ../daemon/pk/gkr-pk-import.c:137
+#: ../daemon/pk/gkr-pk-import.c:120
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
 msgstr "Süsteem tahab importida '%s', kuid see on lukus"
@@ -528,7 +525,7 @@ msgstr "Avalik võti"
 msgid "Trust Association"
 msgstr ""
 
-#: ../daemon/pk/gkr-pk-object-storage.c:434
+#: ../daemon/pk/gkr-pk-object-storage.c:440
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr ""
@@ -564,6 +561,25 @@ msgstr "Sisesta salajase võtme kaitsmiseks parool"
 #: ../daemon/pk/gkr-pk-storage.c:185
 msgid "Enter password to protect storage"
 msgstr ""
+
+#: ../daemon/pk/gkr-pk-storage.c:196
+msgid "Automatically unlock this private key when I log in."
+msgstr ""
+"See salajane võti võetakse minu sisselogimisel automaatselt lukust lahti."
+
+#: ../daemon/pk/gkr-pk-storage.c:198
+msgid "Automatically unlock this certificate when I log in."
+msgstr ""
+"See sertifikaat võetakse minu sisselogimisel automaatselt lukust lahti."
+
+#: ../daemon/pk/gkr-pk-storage.c:200
+msgid "Automatically unlock this public key when I log in."
+msgstr ""
+"See avalik võti võetakse minu sisselogimisel automaatselt lukust lahti."
+
+#: ../daemon/pk/gkr-pk-storage.c:202
+msgid "Automatically unlock this when I log in"
+msgstr "See võetakse minu sisselogimisel automaatselt lukust lahti."
 
 #: ../daemon/pk/gkr-pk-storage.c:209
 #, c-format
@@ -601,11 +617,15 @@ msgid ""
 "it with."
 msgstr ""
 
-#: ../daemon/pkix/gkr-pkix-parser.c:403
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:40
+msgid "The operation was cancelled"
+msgstr ""
+
+#: ../daemon/pkix/gkr-pkix-parser.c:455
 msgid "Unrecognized or unsupported file."
 msgstr "Arusaamatu või toetamata fail."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:407
+#: ../daemon/pkix/gkr-pkix-parser.c:459
 msgid "Could not parse invalid or corrupted file."
 msgstr "Vigast või rikutud faili pole võimalik analüüsida."
 
@@ -691,10 +711,6 @@ msgstr "Luba ainult _seekord"
 msgid "_Always Allow"
 msgstr "Luba _alati"
 
-#: ../gp11/gp11-misc.c:40
-msgid "The operation was cancelled"
-msgstr ""
-
 #: ../gp11/gp11-misc.c:43
 msgid "Insufficient memory available"
 msgstr ""
@@ -713,15 +729,15 @@ msgstr "Operatsioon nurjus"
 
 #: ../gp11/gp11-misc.c:51
 msgid "Invalid arguments"
-msgstr ""
+msgstr "Vigased argumendid"
 
 #: ../gp11/gp11-misc.c:53
 msgid "The module cannot create needed threads"
-msgstr ""
+msgstr "Moodulil pole võimalik vajalikke lõimi luua"
 
 #: ../gp11/gp11-misc.c:55
 msgid "The module cannot lock data properly"
-msgstr ""
+msgstr "Moodulil pole võimalik andmeid õigel viisil lukustada"
 
 #: ../gp11/gp11-misc.c:57
 msgid "The field is read-only"
@@ -785,7 +801,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:87
 msgid "No key is needed"
-msgstr ""
+msgstr "Võtit pole vaja"
 
 #: ../gp11/gp11-misc.c:89
 msgid "The key is different than before"
@@ -793,7 +809,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:91
 msgid "A key is needed"
-msgstr ""
+msgstr "Võti on vajalik"
 
 #: ../gp11/gp11-misc.c:93
 msgid "Cannot include the key in digest"
@@ -809,11 +825,11 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:99
 msgid "Cannot export this key"
-msgstr ""
+msgstr "Seda võtit pole võimalik eksportida"
 
 #: ../gp11/gp11-misc.c:101
 msgid "The crypto mechanism is invalid or unrecognized"
-msgstr ""
+msgstr "Krüptomehhanism on tundmatu või vigane"
 
 #: ../gp11/gp11-misc.c:103
 msgid "The crypto mechanism has an invalid argument"
@@ -1046,6 +1062,3 @@ msgstr "Selle nimega võtmerõngast pole olemas."
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "Võtmerõngas on juba lukust lahti võetud."
-
-#~ msgid "Unlock password for '%s'"
-#~ msgstr "Lukust lahtivõtmise parool '%s' jaoks"
