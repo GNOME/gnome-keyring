@@ -1,6 +1,18 @@
 2008-08-17  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attributes.c:
+	* gp11/gp11-call.c:
+	* gp11/gp11-misc.c:
+	* gp11/gp11-module.c:
+	* gp11/gp11-object.c:
+	* gp11/gp11-private.h:
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c:
+	* gp11/gp11.h: Add license comments to top of files.
+	
+2008-08-17  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-attributes.c:
 	* gp11/gp11-misc.c:
 	* gp11/gp11-object.c:
 	* gp11/gp11-private.h:
