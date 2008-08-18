@@ -123,9 +123,22 @@ sexp_to_data (const gchar* format1, const gchar *format2, const gchar *format3,
 	g_assert (data);
 	g_assert (n_data);
 
-	/* Now extract and send it back out */
-	*data = gkr_crypto_sexp_extract_mpi_padded (sexp, nbits, n_data, padfunc,
-	                                            format1, format2, format3, NULL);
+	/* Extract it via a padding function */
+	if (padfunc) {
+		*data = gkr_crypto_sexp_extract_mpi_padded (sexp, nbits, n_data, padfunc,
+		                                            format1, format2, format3, NULL);
+		
+	/* Just extract it directly */
+	} else {
+		*n_data = (nbits + 7) / 8;
+		*data = g_malloc0 (*n_data);
+		if (!gkr_crypto_sexp_extract_mpi_aligned (sexp, *data, *n_data, 
+		                                          format1, format2, format3, NULL)) {
+			g_free (*data);
+			*data = NULL;
+		}
+	}
+	
 	g_return_val_if_fail (*data, CKR_GENERAL_ERROR);
 
 	return CKR_OK;  

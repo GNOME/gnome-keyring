@@ -44,7 +44,7 @@
 		g_atomic_int_inc (&waiting_on_lock); \
 		if (g_atomic_int_get (&waiting_on_poll)) gkr_wakeup_now (); \
 		g_mutex_lock (mtx);  \
-		g_atomic_int_exchange_and_add (&waiting_on_lock, -1); \
+		g_atomic_int_add (&waiting_on_lock, -1); \
         } G_STMT_END
 #define DO_UNLOCK(mtx) G_STMT_START { \
 		g_printerr ("%s UNLOCK %s\n", __func__, G_STRINGIFY(mtx));  \
@@ -55,7 +55,7 @@
 		g_atomic_int_inc (&waiting_on_lock); \
 		if (g_atomic_int_get (&waiting_on_poll)) gkr_wakeup_now (); \
 		g_mutex_lock (mtx); \
-		g_atomic_int_exchange_and_add (&waiting_on_lock, -1); \
+		g_atomic_int_add (&waiting_on_lock, -1); \
 	} G_STMT_END
 #define DO_UNLOCK(mtx) \
 	g_mutex_unlock (mtx)
