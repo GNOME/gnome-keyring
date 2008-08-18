@@ -1,3 +1,17 @@
+Changes in version 2.23.90 are:
+* Use 'Create' button instead of 'OK' when prompting the user for 
+  a password to create a new keyring. [Adam Schreiber]
+* Fix more cases where 'Deny' choice by a user resulted in 
+  more subsequent prompts.
+* Automatically create non-existant directories when storing files.
+* Fix problem prompting for the same password twice when parsing a 
+  PFX or PKCS#12 file.
+* Don't offer to store password during import operation.
+* Don't try to store certificates encrypted on the disk.
+* Add command line tool for importing of keys and certificates.
+* Fix problems with SSH agent not unlocking keys properly.
+* Build fixes. [John Ralls]
+
 Changes in version 2.23.6 are:
 * If the user denies a prompt, then don't prompt the same prompt
   again for that connection to the daemon.

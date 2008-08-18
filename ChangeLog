@@ -1,3 +1,9 @@
+=== gnome-keyring 2.23.90 ===
+
+2008-08-18  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS: Release 2.23.90
+
 2008-08-17  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-attributes.c:
