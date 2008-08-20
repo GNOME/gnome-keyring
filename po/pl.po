@@ -12,16 +12,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-20 21:33+0200\n"
-"PO-Revision-Date: 2008-08-20 21:32+0100\n"
+"POT-Creation-Date: 2008-08-20 21:42+0200\n"
+"PO-Revision-Date: 2008-08-20 21:43+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Aviary.pl <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: Poland\n"
 
@@ -34,16 +33,24 @@ msgstr "Dysk wymienny: %s"
 msgid "Removable Disk"
 msgstr "Dysk wymienny"
 
-#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
+#: ../common/gkr-location.c:543
+#: ../common/gkr-location.c:555
 msgid "Home"
 msgstr "Dom"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1127
-#: ../daemon/pkix/gkr-pkix-parser.c:472 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1104
+#: ../common/gkr-location.c:1128
+#: ../daemon/pkix/gkr-pkix-parser.c:524
+#: ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Dysk lub napęd, na którym znajduje się ten plik jest niedostępny"
 
-#: ../common/gkr-location.c:1157
+#: ../common/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Nie można utworzyć katalogu: %s"
+
+#: ../common/gkr-location.c:1170
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Nie można usunąć pliku: %s"
@@ -51,58 +58,39 @@ msgstr "Nie można usunąć pliku: %s"
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:227
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr ""
-"Program \"%s\" (%s) wymaga hasła dostępu dla \"<object prop='name'/>\" w "
-"domyślnej bazie kluczy."
+msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "Program \"%s\" (%s) wymaga hasła dostępu dla \"<object prop='name'/>\" w domyślnej bazie kluczy."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:231
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr ""
-"Program \"%s\" (%s) wymaga hasła dostępu dla \"<object prop='name'/>\" w %s."
+msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."
+msgstr "Program \"%s\" (%s) wymaga hasła dostępu dla \"<object prop='name'/>\" w %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
+#: ../daemon/gkr-daemon-ops.c:237
+#: ../daemon/gkr-daemon-ops.c:247
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Program \"%s\" wymaga hasła dostępu dla \"<object prop='name'/>\" w "
-"domyślnej bazie kluczy."
+msgid "The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "Program \"%s\" wymaga hasła dostępu dla \"<object prop='name'/>\" w domyślnej bazie kluczy."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:241
+#: ../daemon/gkr-daemon-ops.c:251
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"Program \"%s\" wymaga hasła dostępu dla \"<object prop='name'/>\" w %s."
+msgid "The application '%s' wants to access the password for '<object prop='name'/>' in %s."
+msgstr "Program \"%s\" wymaga hasła dostępu dla \"<object prop='name'/>\" w %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:257
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Nieznany program wymaga hasła dostępu dla \"<object prop='name'/>\" w "
-"domyślnej bazie kluczy."
+msgid "An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "Nieznany program wymaga hasła dostępu dla \"<object prop='name'/>\" w domyślnej bazie kluczy."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:260
 #, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"Nieznany program wymaga hasła dostępu dla \"<object prop='name'/>\" w %s."
+msgid "An unknown application wants to access the password for '<object prop='name'/>' in %s."
+msgstr "Nieznany program wymaga hasła dostępu dla \"<object prop='name'/>\" w %s."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:266
@@ -115,51 +103,35 @@ msgstr "Zezwolić programowi na dostęp do bazy kluczy?"
 
 #: ../daemon/gkr-daemon-ops.c:307
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"Program \"%s\" (%s) wymaga dostępu do domyślnej bazy kluczy, ale baza jest "
-"zablokowana"
+msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
+msgstr "Program \"%s\" (%s) wymaga dostępu do domyślnej bazy kluczy, ale baza jest zablokowana"
 
 #: ../daemon/gkr-daemon-ops.c:311
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Program \"%s\" (%s) wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
-"zablokowana"
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "Program \"%s\" (%s) wymaga dostępu do bazy kluczy \"%s\", ale baza jest zablokowana"
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
+#: ../daemon/gkr-daemon-ops.c:317
+#: ../daemon/gkr-daemon-ops.c:327
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"Program \"%s\" wymaga dostępu do domyślnej bazy kluczy, ale baza jest "
-"zablokowana"
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "Program \"%s\" wymaga dostępu do domyślnej bazy kluczy, ale baza jest zablokowana"
 
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
+#: ../daemon/gkr-daemon-ops.c:321
+#: ../daemon/gkr-daemon-ops.c:332
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Program \"%s\" wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
-"zablokowana"
+msgstr "Program \"%s\" wymaga dostępu do bazy kluczy \"%s\", ale baza jest zablokowana"
 
 #: ../daemon/gkr-daemon-ops.c:338
 #, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"Nieznany program wymaga dostępu do domyślnej bazy kluczy, ale baza jest "
-"zablokowana"
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "Nieznany program wymaga dostępu do domyślnej bazy kluczy, ale baza jest zablokowana"
 
 #: ../daemon/gkr-daemon-ops.c:342
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Nieznany program wymaga dostępu do bazy kluczy \"%s\", ale baza jest "
-"zablokowana"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "Nieznany program wymaga dostępu do bazy kluczy \"%s\", ale baza jest zablokowana"
 
 #: ../daemon/gkr-daemon-ops.c:349
 msgid "Enter password for default keyring to unlock"
@@ -175,63 +147,42 @@ msgstr "Proszę wprowadzić hasło do bazy kluczy \"%s\", aby ją odblokować"
 msgid "Unlock Keyring"
 msgstr "Odblokowanie bazy kluczy"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
+#: ../daemon/gkr-daemon-ops.c:367
+#: ../daemon/pk/gkr-pk-index.c:135
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Automatyczne odblokowanie tej bazy kluczy po zalogowaniu."
 
 #: ../daemon/gkr-daemon-ops.c:403
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Program \"%s\" (%s) wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". "
-"Należy wprowadzić hasło, jakie będzie z nią używane."
+msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Program \"%s\" (%s) wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". Należy wprowadzić hasło, jakie będzie z nią używane."
 
 #: ../daemon/gkr-daemon-ops.c:407
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Program \"%s\" (%s) wymaga utworzenia nowej domyślnej bazy kluczy. Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Program \"%s\" (%s) wymaga utworzenia nowej domyślnej bazy kluczy. Należy wprowadzić hasło, jakie będzie z nią używane."
 
-#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
+#: ../daemon/gkr-daemon-ops.c:413
+#: ../daemon/gkr-daemon-ops.c:423
 #, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Program \"%s\" wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Program \"%s\" wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". Należy wprowadzić hasło, jakie będzie z nią używane."
 
-#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
+#: ../daemon/gkr-daemon-ops.c:417
+#: ../daemon/gkr-daemon-ops.c:427
 #, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Program \"%s\" wymaga utworzenia nowej domyślnej bazy kluczy. Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Program \"%s\" wymaga utworzenia nowej domyślnej bazy kluczy. Należy wprowadzić hasło, jakie będzie z nią używane."
 
 #: ../daemon/gkr-daemon-ops.c:433
 #, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"Nieznany program wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Nieznany program wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". Należy wprowadzić hasło, jakie będzie z nią używane."
 
 #: ../daemon/gkr-daemon-ops.c:437
 #, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Nieznany program wymaga utworzenia nowej domyślnej bazy kluczy. Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Nieznany program wymaga utworzenia nowej domyślnej bazy kluczy. Należy wprowadzić hasło, jakie będzie z nią używane."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:443
@@ -244,57 +195,35 @@ msgstr "Proszę wprowadzić hasło dla nowej bazy kluczy"
 
 #: ../daemon/gkr-daemon-ops.c:491
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Program \"%s\" (%s) wymaga zmiany hasła dla bazy kluczy \"%s\". Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "Program \"%s\" (%s) wymaga zmiany hasła dla bazy kluczy \"%s\". Należy wprowadzić hasło, jakie będzie z nią używane."
 
 #: ../daemon/gkr-daemon-ops.c:495
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"Program \"%s\" (%s) wymaga zmiany hasła dla domyślnej bazy kluczy. Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "Program \"%s\" (%s) wymaga zmiany hasła dla domyślnej bazy kluczy. Należy wprowadzić hasło, jakie będzie z nią używane."
 
-#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
+#: ../daemon/gkr-daemon-ops.c:501
+#: ../daemon/gkr-daemon-ops.c:511
 #, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Program \"%s\" wymaga zmiany hasła dla bazy kluczy \"%s\". Należy wprowadzić "
-"hasło, jakie będzie z nią używane."
+msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "Program \"%s\" wymaga zmiany hasła dla bazy kluczy \"%s\". Należy wprowadzić hasło, jakie będzie z nią używane."
 
-#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:505
+#: ../daemon/gkr-daemon-ops.c:515
 #, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Program \"%s\" wymaga zmiany hasła dla domyślnej bazy kluczy. Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "Program \"%s\" wymaga zmiany hasła dla domyślnej bazy kluczy. Należy wprowadzić hasło, jakie będzie z nią używane."
 
 #: ../daemon/gkr-daemon-ops.c:521
 #, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Nieznany program wymaga zmiany hasła dla bazy kluczy \"%s\". Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "Nieznany program wymaga zmiany hasła dla bazy kluczy \"%s\". Należy wprowadzić hasło, jakie będzie z nią używane."
 
 #: ../daemon/gkr-daemon-ops.c:525
 #, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Nieznany program wymaga zmiany hasła dla domyślnej bazy kluczy. Należy "
-"wprowadzić hasło, jakie będzie z nią używane."
+msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "Nieznany program wymaga zmiany hasła dla domyślnej bazy kluczy. Należy wprowadzić hasło, jakie będzie z nią używane."
 
 #: ../daemon/gkr-daemon-ops.c:535
 #, c-format
@@ -313,34 +242,19 @@ msgstr "Zmiana hasła bazy kluczy"
 
 #: ../daemon/gkr-daemon-ops.c:614
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Program \"%s\" (%s) wymaga zachowania hasła, ale nie utworzono domyślnej "
-"bazy kluczy. Aby ją utworzyć, należy wprowadzić hasło, jakie będzie z nią "
-"używane."
+msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Program \"%s\" (%s) wymaga zachowania hasła, ale nie utworzono domyślnej bazy kluczy. Aby ją utworzyć, należy wprowadzić hasło, jakie będzie z nią używane."
 
-#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
+#: ../daemon/gkr-daemon-ops.c:618
+#: ../daemon/gkr-daemon-ops.c:622
 #, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Program \"%s\" wymaga zachowania hasła, ale nie utworzono domyślnej bazy "
-"kluczy. Aby ją utworzyć, należy wprowadzić hasło, jakie będzie z nią używane."
+msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Program \"%s\" wymaga zachowania hasła, ale nie utworzono domyślnej bazy kluczy. Aby ją utworzyć, należy wprowadzić hasło, jakie będzie z nią używane."
 
 #: ../daemon/gkr-daemon-ops.c:626
 #, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Nieznany program wymaga zachowania hasła, ale nie utworzono domyślnej bazy "
-"kluczy. Aby ją utworzyć, należy wprowadzić hasło, jakie będzie z nią używane."
+msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Nieznany program wymaga zachowania hasła, ale nie utworzono domyślnej bazy kluczy. Aby ją utworzyć, należy wprowadzić hasło, jakie będzie z nią używane."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:631
@@ -352,43 +266,20 @@ msgid "Choose password for default keyring"
 msgstr "Proszę wprowadzić hasło dla domyślnej bazy kluczy"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"A list of paths to PKCS#11 modules to load. No modules are currently listed "
-"by default, as this is still an experimental feature. This is used by "
-"seahorse and other PKCS#11 aware applications."
-msgstr ""
-"Lista ścieżek do modułów PKCS#11, które mają być wczytane. Domyślnie żaden "
-"moduł nie jest na liście, ponieważ jest to funkcja eksperymentalna. Używana "
-"jest ona przez program seahorse i inne programy, które korzystają z modułów "
-"PKCS#11."
+msgid "A list of paths to PKCS#11 modules to load. No modules are currently listed by default, as this is still an experimental feature. This is used by seahorse and other PKCS#11 aware applications."
+msgstr "Lista ścieżek do modułów PKCS#11, które mają być wczytane. Domyślnie żaden moduł nie jest na liście, ponieważ jest to funkcja eksperymentalna. Używana jest ona przez program seahorse i inne programy, które korzystają z modułów PKCS#11."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
 msgstr "Moduły PKCS#11"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Ta opcja włącza komponent PKCS#11 usługi gnome-keyring. Działa tylko podczas "
-"uruchamiania usługi gnome-keyring (np. kiedy użytkownik się loguje). To "
-"ustawienie może zostać unieważnione poprzez odpowiednie parametry wiersza "
-"poleceń przekazane usłudze."
+msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "Ta opcja włącza komponent PKCS#11 usługi gnome-keyring. Działa tylko podczas uruchamiania usługi gnome-keyring (np. kiedy użytkownik się loguje). To ustawienie może zostać unieważnione poprzez odpowiednie parametry wiersza poleceń przekazane usłudze."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Ta opcja uruchamia agenta SSH w usłudze gnome-keyring. Działa tylko podczas "
-"uruchamiania usługi gnome-keyring (np. kiedy użytkownik się loguje). To "
-"ustawienie może zostać unieważnione poprzez odpowiednie parametry wiersza "
-"poleceń przekazane usłudze."
+msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "Ta opcja uruchamia agenta SSH w usłudze gnome-keyring. Działa tylko podczas uruchamiania usługi gnome-keyring (np. kiedy użytkownik się loguje). To ustawienie może zostać unieważnione poprzez odpowiednie parametry wiersza poleceń przekazane usłudze."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -408,12 +299,8 @@ msgid "Enter login password to unlock keyring"
 msgstr "Proszę wprowadzić hasło konta, aby odblokować bazę kluczy"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:100
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
-msgstr ""
-"Baza kluczy konta nie została automatycznie odblokowana podczas zalogowania "
-"się do tego komputera."
+msgid "Your login keyring was not automatically unlocked when you logged into this computer."
+msgstr "Baza kluczy konta nie została automatycznie odblokowana podczas zalogowania się do tego komputera."
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:124
@@ -425,12 +312,8 @@ msgid "Enter your login password"
 msgstr "Proszę wprowadzić hasło konta"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:126
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
-msgstr ""
-"Baza kluczy konta nie została poprawnie utworzona podczas zalogowania się do "
-"tego komputera. Zostanie utworzona teraz."
+msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
+msgstr "Baza kluczy konta nie została poprawnie utworzona podczas zalogowania się do tego komputera. Zostanie utworzona teraz."
 
 #: ../daemon/keyrings/gkr-keyring.c:584
 #, c-format
@@ -453,59 +336,42 @@ msgstr "Importowanie klucza publicznego"
 msgid "Import"
 msgstr "Zaimportuj"
 
-#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
+#: ../daemon/pk/gkr-pk-import.c:101
+#: ../daemon/pk/gkr-pk-storage.c:166
 msgid "Enter password to unlock the private key"
 msgstr "Proszę wprowadzić hasło, aby odblokować klucz prywatny"
 
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
+#: ../daemon/pk/gkr-pk-import.c:103
+#: ../daemon/pk/gkr-pk-storage.c:168
 msgid "Enter password to unlock the certificate"
 msgstr "Proszę wprowadzić hasło, aby odblokować certyfikat"
 
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
+#: ../daemon/pk/gkr-pk-import.c:105
+#: ../daemon/pk/gkr-pk-storage.c:170
 msgid "Enter password to unlock the public key"
 msgstr "Proszę wprowadzić hasło, aby odblokować klucz publiczny"
 
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
+#: ../daemon/pk/gkr-pk-import.c:107
+#: ../daemon/pk/gkr-pk-storage.c:172
 msgid "Enter password to unlock"
 msgstr "Proszę wprowadzić hasło, aby odblokować"
 
-#: ../daemon/pk/gkr-pk-import.c:118 ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "Automatyczne odblokowanie tego klucza prywatnego po zalogowaniu."
-
-#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Automatyczne odblokowanie tego certyfikatu po zalogowaniu."
-
-#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "Automatyczne odblokowanie tego klucza publicznego po zalogowaniu."
-
-#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "Automatyczne odblokowanie po zalogowaniu"
-
-#: ../daemon/pk/gkr-pk-import.c:131
+#: ../daemon/pk/gkr-pk-import.c:114
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
-msgstr ""
-"System wymaga zaimportowania klucza prywatnego \"%s\", ale jest on "
-"zablokowany"
+msgstr "System wymaga zaimportowania klucza prywatnego \"%s\", ale jest on zablokowany"
 
-#: ../daemon/pk/gkr-pk-import.c:133
+#: ../daemon/pk/gkr-pk-import.c:116
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr ""
-"System wymaga zaimportowania certyfikatu \"%s\", ale jest on zablokowany"
+msgstr "System wymaga zaimportowania certyfikatu \"%s\", ale jest on zablokowany"
 
-#: ../daemon/pk/gkr-pk-import.c:135
+#: ../daemon/pk/gkr-pk-import.c:118
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
-msgstr ""
-"System wymaga zaimportowania klucza publicznego \"%s\", ale jest on "
-"zablokowany"
+msgstr "System wymaga zaimportowania klucza publicznego \"%s\", ale jest on zablokowany"
 
-#: ../daemon/pk/gkr-pk-import.c:137
+#: ../daemon/pk/gkr-pk-import.c:120
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
 msgstr "System wymaga zaimportowania obiektu \"%s\", ale jest on zablokowany"
@@ -520,13 +386,8 @@ msgid "Choose password to protect storage"
 msgstr "Proszę wprowadzić hasło do ochrony przechowalni"
 
 #: ../daemon/pk/gkr-pk-index.c:97
-msgid ""
-"The system wants to store information about your keys and certificates. In "
-"order to protect this information, choose a password with which it will be "
-"locked."
-msgstr ""
-"System wymaga przechowania informacji o kluczach i certyfikatach. Aby "
-"chronić te informacje należy wybrać hasło, które zablokuje przechowalnię."
+msgid "The system wants to store information about your keys and certificates. In order to protect this information, choose a password with which it will be locked."
+msgstr "System wymaga przechowania informacji o kluczach i certyfikatach. Aby chronić te informacje należy wybrać hasło, które zablokuje przechowalnię."
 
 #. And put together the ask request
 #: ../daemon/pk/gkr-pk-index.c:124
@@ -538,12 +399,8 @@ msgid "Enter password to unlock storage"
 msgstr "Proszę wprowadzić hasło, aby odblokować przechowalnię"
 
 #: ../daemon/pk/gkr-pk-index.c:128
-msgid ""
-"The system wants to access information about your keys and certificates, but "
-"it is locked."
-msgstr ""
-"System wymaga dostępu do informacji o kluczach i certyfikatach, ale jest "
-"zablokowany."
+msgid "The system wants to access information about your keys and certificates, but it is locked."
+msgstr "System wymaga dostępu do informacji o kluczach i certyfikatach, ale jest zablokowany."
 
 #: ../daemon/pk/gkr-pk-object.c:883
 msgid "Certificate"
@@ -561,7 +418,7 @@ msgstr "Klucz publiczny"
 msgid "Trust Association"
 msgstr "Powiązanie dotyczące zaufania"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:434
+#: ../daemon/pk/gkr-pk-object-storage.c:436
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "Nie można usunąć obiektu \"%s\", jest powiązany z innymi obiektami."
@@ -598,11 +455,26 @@ msgstr "Proszę wprowadzić hasło ochrony klucza prywatnego"
 msgid "Enter password to protect storage"
 msgstr "Proszę wprowadzić hasło ochrony przechowalni"
 
+#: ../daemon/pk/gkr-pk-storage.c:196
+msgid "Automatically unlock this private key when I log in."
+msgstr "Automatyczne odblokowanie tego klucza prywatnego po zalogowaniu."
+
+#: ../daemon/pk/gkr-pk-storage.c:198
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Automatyczne odblokowanie tego certyfikatu po zalogowaniu."
+
+#: ../daemon/pk/gkr-pk-storage.c:200
+msgid "Automatically unlock this public key when I log in."
+msgstr "Automatyczne odblokowanie tego klucza publicznego po zalogowaniu."
+
+#: ../daemon/pk/gkr-pk-storage.c:202
+msgid "Automatically unlock this when I log in"
+msgstr "Automatyczne odblokowanie po zalogowaniu"
+
 #: ../daemon/pk/gkr-pk-storage.c:209
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Program wymaga dostępu do klucza prywatnego \"%s\", ale jest zablokowany"
+msgstr "Program wymaga dostępu do klucza prywatnego \"%s\", ale jest zablokowany"
 
 #: ../daemon/pk/gkr-pk-storage.c:211
 #, c-format
@@ -612,8 +484,7 @@ msgstr "Program wymaga dostępu do certyfikatu \"%s\", ale jest zablokowany"
 #: ../daemon/pk/gkr-pk-storage.c:213
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Program wymaga dostępu do klucza publicznego \"%s\", ale jest zablokowany"
+msgstr "Program wymaga dostępu do klucza publicznego \"%s\", ale jest zablokowany"
 
 #: ../daemon/pk/gkr-pk-storage.c:215
 #, c-format
@@ -622,27 +493,24 @@ msgstr "Program wymaga dostępu do \"%s\", ale jest zablokowany"
 
 #: ../daemon/pk/gkr-pk-storage.c:228
 #, c-format
-msgid ""
-"The system wants to store the private key '%s' on your disk. Please enter a "
-"password to lock it with."
-msgstr ""
-"Żądanie przechowania klucza prywatnego \"%s\" na dysku. Proszę wprowadzić "
-"hasło do zablokowania."
+msgid "The system wants to store the private key '%s' on your disk. Please enter a password to lock it with."
+msgstr "Żądanie przechowania klucza prywatnego \"%s\" na dysku. Proszę wprowadzić hasło do zablokowania."
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
-msgid ""
-"The system wants to store '%s' on your disk. Please enter a password to lock "
-"it with."
-msgstr ""
-"Żądanie przechowania \"%s\" na dysku. Proszę wprowadzić hasło do "
-"zablokowania."
+msgid "The system wants to store '%s' on your disk. Please enter a password to lock it with."
+msgstr "Żądanie przechowania \"%s\" na dysku. Proszę wprowadzić hasło do zablokowania."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:403
+#: ../daemon/pkix/gkr-pkix-parser.c:451
+#: ../gp11/gp11-misc.c:64
+msgid "The operation was cancelled"
+msgstr "Operacja została anulowana"
+
+#: ../daemon/pkix/gkr-pkix-parser.c:455
 msgid "Unrecognized or unsupported file."
 msgstr "Plik nie został rozpoznany lub nie jest obsługiwany."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:407
+#: ../daemon/pkix/gkr-pkix-parser.c:459
 msgid "Could not parse invalid or corrupted file."
 msgstr "Nie można przetworzyć niepoprawnego lub uszkodzonego pliku."
 
@@ -676,13 +544,8 @@ msgid "Store passwords unencrypted?"
 msgstr "Przechowywać hasła bez szyfrowania?"
 
 #: ../daemon/ui/gkr-ask-tool.c:183
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Puste hasło oznacza niechronione przechowywanie haseł. Będą one dostępne dla "
-"każdego, kto będzie miał dostęp do plików tego konta."
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Puste hasło oznacza niechronione przechowywanie haseł. Będą one dostępne dla każdego, kto będzie miał dostęp do plików tego konta."
 
 #: ../daemon/ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
@@ -721,335 +584,335 @@ msgid "Deny"
 msgstr "Odmów"
 
 #: ../daemon/ui/gkr-ask-tool.c:625
-msgid "Allow _Once"
-msgstr "Zezwolenie jedn_okrotne"
+msgid "_Create"
+msgstr "_Utwórz"
 
 #: ../daemon/ui/gkr-ask-tool.c:629
+msgid "Allow _Once"
+msgstr "_Zezwolenie jednokrotne"
+
+#: ../daemon/ui/gkr-ask-tool.c:633
 msgid "_Always Allow"
 msgstr "Zezwolenie st_ałe"
 
-#: ../gp11/gp11-misc.c:40
-msgid "The operation was cancelled"
-msgstr "Operacja została anulowana"
-
-#: ../gp11/gp11-misc.c:43
+#: ../gp11/gp11-misc.c:67
 msgid "Insufficient memory available"
 msgstr "Brak wolnej pamięci"
 
-#: ../gp11/gp11-misc.c:45
+#: ../gp11/gp11-misc.c:69
 msgid "The specified slot ID is not valid"
 msgstr "Podane ID slotu jest błędne"
 
-#: ../gp11/gp11-misc.c:47
+#: ../gp11/gp11-misc.c:71
 msgid "Internal error"
 msgstr "Błąd wewnętrzny"
 
-#: ../gp11/gp11-misc.c:49
+#: ../gp11/gp11-misc.c:73
 msgid "The operation failed"
 msgstr "Operacja nie powiodła się"
 
-#: ../gp11/gp11-misc.c:51
+#: ../gp11/gp11-misc.c:75
 msgid "Invalid arguments"
 msgstr "Nieprawidłowe parametry"
 
-#: ../gp11/gp11-misc.c:53
+#: ../gp11/gp11-misc.c:77
 msgid "The module cannot create needed threads"
 msgstr "Moduł nie mógł utworzyć wymaganych wątków"
 
-#: ../gp11/gp11-misc.c:55
+#: ../gp11/gp11-misc.c:79
 msgid "The module cannot lock data properly"
 msgstr "Moduł nie mógł poprawnie zablokować danych"
 
-#: ../gp11/gp11-misc.c:57
+#: ../gp11/gp11-misc.c:81
 msgid "The field is read-only"
 msgstr "Pole jest tylko do odczytu"
 
-#: ../gp11/gp11-misc.c:59
+#: ../gp11/gp11-misc.c:83
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Pole jest poufne i nie może zostać ujawnione"
 
-#: ../gp11/gp11-misc.c:61
+#: ../gp11/gp11-misc.c:85
 msgid "The field is invalid or does not exist"
 msgstr "Pole jest błędne lub nie istnieje"
 
-#: ../gp11/gp11-misc.c:63
+#: ../gp11/gp11-misc.c:87
 msgid "Invalid value for field"
 msgstr "Nieprawidłowa wartość dla pola"
 
-#: ../gp11/gp11-misc.c:65
+#: ../gp11/gp11-misc.c:89
 msgid "The data is not valid or unrecognized"
 msgstr "Dane są błędne lub nie zostały rozpoznane"
 
-#: ../gp11/gp11-misc.c:67
+#: ../gp11/gp11-misc.c:91
 msgid "The data is too long"
 msgstr "Dane są zbyt obszerne"
 
-#: ../gp11/gp11-misc.c:69
+#: ../gp11/gp11-misc.c:93
 msgid "An error occurred on the device"
 msgstr "Wystąpił błąd w urządzeniu"
 
-#: ../gp11/gp11-misc.c:71
+#: ../gp11/gp11-misc.c:95
 msgid "Insufficient memory available on device"
 msgstr "Brak wolnej pamięci w urządzeniu"
 
-#: ../gp11/gp11-misc.c:73
+#: ../gp11/gp11-misc.c:97
 msgid "The device was removed or unplugged"
 msgstr "Urządzenie zostało usunięte lub odłączone"
 
-#: ../gp11/gp11-misc.c:75
+#: ../gp11/gp11-misc.c:99
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Szyfrowane dane są błędne lub nie zostały rozpoznane"
 
-#: ../gp11/gp11-misc.c:77
+#: ../gp11/gp11-misc.c:101
 msgid "The encrypted data is too long"
 msgstr "Szyfrowane dane są zbyt długie"
 
-#: ../gp11/gp11-misc.c:79
+#: ../gp11/gp11-misc.c:103
 msgid "This operation is not supported"
 msgstr "Operacja nie jest obsługiwana"
 
-#: ../gp11/gp11-misc.c:81
+#: ../gp11/gp11-misc.c:105
 msgid "The key is missing or invalid"
 msgstr "Brak klucza lub błędny klucz"
 
-#: ../gp11/gp11-misc.c:83
+#: ../gp11/gp11-misc.c:107
 msgid "The key is the wrong size"
 msgstr "Klucz ma nieprawidłowy rozmiar"
 
-#: ../gp11/gp11-misc.c:85
+#: ../gp11/gp11-misc.c:109
 msgid "The key is of the wrong type"
 msgstr "Klucz jest nieprawidłowego typu"
 
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:111
 msgid "No key is needed"
 msgstr "Klucz nie jest wymagany"
 
-#: ../gp11/gp11-misc.c:89
+#: ../gp11/gp11-misc.c:113
 msgid "The key is different than before"
 msgstr "Klucz jest inny od poprzedniego"
 
-#: ../gp11/gp11-misc.c:91
+#: ../gp11/gp11-misc.c:115
 msgid "A key is needed"
 msgstr "Klucz wymagany"
 
-#: ../gp11/gp11-misc.c:93
+#: ../gp11/gp11-misc.c:117
 msgid "Cannot include the key in digest"
 msgstr "Nie można włączyć klucza do podsumowania"
 
-#: ../gp11/gp11-misc.c:95
+#: ../gp11/gp11-misc.c:119
 msgid "This operation cannot be done with this key"
 msgstr "Ta operacja nie może zostać przeprowadzona z tym kluczem"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:121
 msgid "The key cannot be wrapped"
 msgstr "Nie można zastosować algorytmu wrap na kluczu"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:123
 msgid "Cannot export this key"
 msgstr "Nie można wyeksportować klucza"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:125
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Mechanizm szyfrowania jest błędny lub nie został rozpoznany"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:127
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Mechanizm szyfrowania zawiera nieprawidłowy parametr"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:129
 msgid "The object is missing or invalid"
 msgstr "Brak obiektu lub błędny obiekt"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:131
 msgid "Another operation is already taking place"
 msgstr "Inna operacja już się odbywa"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:133
 msgid "No operation is taking place"
 msgstr "Brak bieżących operacji"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:135
 msgid "The password or PIN is incorrect"
 msgstr "Hasło lub PIN jest błędny"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:137
 msgid "The password or PIN is invalid"
 msgstr "Hasło lub PIN jest nieprawidłowy"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:139
 msgid "The password or PIN is of an invalid length"
 msgstr "Hasło lub PIN ma nieprawidłową długość"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:141
 msgid "The password or PIN has expired"
 msgstr "Hasło lub PIN wygasł"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:143
 msgid "The password or PIN is locked"
 msgstr "Hasło lub PIN jest zablokowany"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:145
 msgid "The session is closed"
 msgstr "Sesja została zamknięta"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:147
 msgid "Too many sessions are active"
 msgstr "Zbyt wiele aktywnych sesji"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:149
 msgid "The session is invalid"
 msgstr "Sesja jest nieprawidłowa"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:151
 msgid "The session is read-only"
 msgstr "Sesja jest tylko do odczytu"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:153
 msgid "An open session exists"
 msgstr "Istnieje otwarta sesja"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:155
 msgid "A read-only session exists"
 msgstr "Istnieje sesja tylko do odczytu"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:157
 msgid "An administrator session exists"
 msgstr "Istnieje sesja administratora"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:159
 msgid "The signature is bad or corrupted"
 msgstr "Podpis jest błędny lub uszkodzony"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:161
 msgid "The signature is unrecognized or corrupted"
 msgstr "Podpis nie został rozpoznany lub jest uszkodzony"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:163
 msgid "Certain required fields are missing"
 msgstr "Niektóre wymagane pola nie zostały wypełnione"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:165
 msgid "Certain fields have invalid values"
 msgstr "Niektóre pola zawierają nieprawidłowe wartości"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:167
 msgid "The device is not present or unplugged"
 msgstr "Urządzenie jest nieobecne lub odłączone"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:169
 msgid "The device is invalid or unrecognizable"
 msgstr "Urządzenie jest niepoprawne lub nierozpoznawalne"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:171
 msgid "The device is write protected"
 msgstr "Urządzenie ma włączoną blokadę zapisu"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:173
 msgid "Cannot import because the key is invalid"
 msgstr "Nie można zaimportować, klucz jest błędny"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:175
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Nie można zaimportować, klucz ma nieprawidłowy rozmiar"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:177
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Nie można zaimportować, klucz jest nieprawidłowego typu"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:179
 msgid "You are already logged in"
 msgstr "Użytkownik jest już zalogowany"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:181
 msgid "No user has logged in"
 msgstr "Żaden użytkownik nie zalogował się"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:183
 msgid "The user's password or PIN is not set"
 msgstr "Hasło lub PIN użytkownika jest nieustawiony"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:185
 msgid "The user is of an invalid type"
 msgstr "Błędny typ użytkownika"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:187
 msgid "Another user is already logged in"
 msgstr "Inny użytkownik jest już zalogowany"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:189
 msgid "Too many users of different types logged in"
 msgstr "Zalogowanych jest zbyt wielu użytkowników różnych typów"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:191
 msgid "Cannot import an invalid key"
 msgstr "Nie można zaimportować błędnego klucza"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:193
 msgid "Cannot import a key of the wrong size"
 msgstr "Nie można zaimportować klucza o nieprawidłowym rozmiarze"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:195
 msgid "Cannot export because the key is invalid"
 msgstr "Nie można wyeksportować, klucz jest błędny"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:197
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Nie można wyeksportować, klucz ma nieprawidłowy rozmiar"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:199
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Nie można wyeksportować, nieprawidłowy typ klucza"
 
 # liczba inicjująca generator liczb pseudolosowych to ziarno
-#: ../gp11/gp11-misc.c:177
+#: ../gp11/gp11-misc.c:201
 msgid "Cannot set a random seed"
 msgstr "Nie można ustalić ziarna"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:203
 msgid "No random number generator available"
 msgstr "Brak dostępnego generatora liczb losowych"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:205
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Mechanizm szyfrowania zawiera nieprawidłowy parametr"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:207
 msgid "Not enough space to store the result"
 msgstr "Brak miejsca do zapisania wyniku"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:209
 msgid "The saved state is invalid"
 msgstr "Zapisany stan jest niepoprawny"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:211
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Informacje są poufne i nie mogą zostać ujawnione"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:213
 msgid "The state cannot be saved"
 msgstr "Stan nie może zostać zapisany"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:215
 msgid "The module has not been initialized"
 msgstr "Moduł nie został zainicjowany"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:217
 msgid "The module has already been initialized"
 msgstr "Moduł został już zainicjowany"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:219
 msgid "Cannot lock data"
 msgstr "Nie można zablokować danych"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:221
 msgid "The data cannot be locked"
 msgstr "Dane nie mogą zostać zablokowane"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:223
 msgid "The signature request was rejected by the user"
 msgstr "Żądanie podpisania zostało odrzucone przez użytkownika"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:227
 msgid "Unknown error"
 msgstr "Nieznany błąd"
 
@@ -1087,78 +950,64 @@ msgstr "Baza kluczy jest już odblokowana."
 
 #~ msgid "Unlock password for '%s'"
 #~ msgstr "Hasło odblokowywujące dla \"%s\""
-
 #~ msgid "Unlock %s"
 #~ msgstr "Odblokowanie %s"
-
 #~ msgid "Old password cannot be blank."
 #~ msgstr "Stare hasło nie może być puste."
-
 #~ msgid "Must be run from gnome-keyring\n"
 #~ msgstr "Musi być uruchomione z gnome-keyring\n"
-
 #~ msgid "_Confirm new password:"
 #~ msgstr "_Potwierdź nowe hasło:"
-
 #~ msgid "<span weight=\"bold\">Password strength meter:</span>"
 #~ msgstr "<span weight=\"bold\">Miernik siły hasła:</span>"
-
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
 #~ "locked"
 #~ msgstr ""
 #~ "Aplikacja \"%s\" (%s) wymaga dostępu do nieznanej bazy kluczy, ale baza "
 #~ "jest zablokowana"
-
 #~ msgid ""
 #~ "The application '%s' wants access to an unknown keyring, but it is locked"
 #~ msgstr ""
 #~ "Aplikacja \"%s\" wymaga dostępu do nieznanej bazy kluczy, ale baza jest "
 #~ "zablokowana"
-
 #~ msgid ""
 #~ "An unknown application wants access to an unknown keyring, but it is "
 #~ "locked"
 #~ msgstr ""
 #~ "Nieznana aplikacja wymaga dostępu do nieznanej bazy kluczy, ale baza jest "
 #~ "zablokowana"
-
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '%s' in an "
 #~ "unknown keyring."
 #~ msgstr ""
 #~ "Aplikacja \"%s\" (%s) wymaga hasła dostępu dla \"%s\" w nieznanej bazie "
 #~ "kluczy."
-
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '%s' in an unknown "
 #~ "keyring."
 #~ msgstr ""
 #~ "Aplikacja \"%s\" wymaga hasła dostępu dla \"%s\" w nieznanej bazie kluczy."
-
 #~ msgid ""
 #~ "An unknown application wants to access the password for '%s' in an "
 #~ "unknown keyring."
 #~ msgstr ""
 #~ "Nieznana aplikacja wymaga hasła dostępu dla \"%s\" w nieznanej bazie "
 #~ "kluczy."
-
 #~ msgid "You must specify the type of request to run\n"
 #~ msgstr "Należy podać rodzaj żądania do uruchomienia\n"
-
 #~ msgid "Unknown request type\n"
 #~ msgstr "Nieznany typ żądania\n"
-
 #~ msgid ""
 #~ "An unkown application wants to create a new keyring called '%s'. You have "
 #~ "to choose the password you want to use for it."
 #~ msgstr ""
 #~ "Nieznana aplikacja wymaga utworzenia nowej bazy kluczy o nazwie \"%s\". "
 #~ "Należy utworzyć hasło, które będzie z nią używane."
-
 #~ msgid ""
 #~ "An unkown application wants to create a new default keyring. You have to "
 #~ "choose the password you want to use for it."
 #~ msgstr ""
 #~ "Nieznana aplikacja wymaga utworzenia nowej domyślnej bazy kluczy. Należy "
 #~ "utworzyć hasło, które będzie z nią używane."
+
