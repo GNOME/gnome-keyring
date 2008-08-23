@@ -352,7 +352,7 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
 	if (rv == CKR_OK)
 		return TRUE;
 
-	g_set_error (err, GP11_ERROR, rv, gp11_message_from_rv (rv));
+	g_set_error (err, GP11_ERROR, rv, "%s", gp11_message_from_rv (rv));
 	return FALSE;
 }
 
@@ -441,6 +441,6 @@ _gp11_call_basic_finish (gpointer object, GAsyncResult *result, GError **err)
 	if (rv == CKR_OK)
 		return TRUE;
 	
-	g_set_error (err, GP11_ERROR, rv, gp11_message_from_rv (rv));
+	g_set_error (err, GP11_ERROR, rv, "%s", gp11_message_from_rv (rv));
 	return FALSE;	
 }

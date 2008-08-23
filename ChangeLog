@@ -1,3 +1,8 @@
+2008-08-22  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-call.c: Fix build problem with string formats
+	to g_set_error.
+
 2008-08-18  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number
