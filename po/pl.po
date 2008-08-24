@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-20 21:42+0200\n"
-"PO-Revision-Date: 2008-08-20 21:43+0100\n"
+"POT-Creation-Date: 2008-08-24 12:11+0200\n"
+"PO-Revision-Date: 2008-08-24 12:12+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Aviary.pl <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
@@ -425,7 +425,7 @@ msgstr "Nie można usunąć obiektu \"%s\", jest powiązany z innymi obiektami."
 
 #: ../daemon/pk/gkr-pk-storage.c:136
 msgid "Unlock private key"
-msgstr "Odblokowanie klucza prywatny"
+msgstr "Odblokowanie klucza prywatnego"
 
 #: ../daemon/pk/gkr-pk-storage.c:138
 msgid "Unlock certificate"
@@ -433,7 +433,7 @@ msgstr "Odblokowanie certyfikatu"
 
 #: ../daemon/pk/gkr-pk-storage.c:140
 msgid "Unlock public key"
-msgstr "Odblokowanie klucza publiczny"
+msgstr "Odblokowanie klucza publicznego"
 
 #: ../daemon/pk/gkr-pk-storage.c:142
 msgid "Unlock"
