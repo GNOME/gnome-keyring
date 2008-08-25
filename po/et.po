@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-10 16:40+0000\n"
-"PO-Revision-Date: 2008-08-17 10:08+0300\n"
+"PO-Revision-Date: 2008-08-25 08:02+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -713,7 +713,7 @@ msgstr "Luba _alati"
 
 #: ../gp11/gp11-misc.c:43
 msgid "Insufficient memory available"
-msgstr ""
+msgstr "Vaba mälu pole piisavalt"
 
 #: ../gp11/gp11-misc.c:45
 msgid "The specified slot ID is not valid"
@@ -749,11 +749,11 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:61
 msgid "The field is invalid or does not exist"
-msgstr ""
+msgstr "Väli on vigane või pole seda olemas"
 
 #: ../gp11/gp11-misc.c:63
 msgid "Invalid value for field"
-msgstr ""
+msgstr "Vigane väärtus või väli"
 
 #: ../gp11/gp11-misc.c:65
 msgid "The data is not valid or unrecognized"
@@ -761,7 +761,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:67
 msgid "The data is too long"
-msgstr ""
+msgstr "Andmed on liiga pikad"
 
 #: ../gp11/gp11-misc.c:69
 msgid "An error occurred on the device"
@@ -773,7 +773,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:73
 msgid "The device was removed or unplugged"
-msgstr ""
+msgstr "Seade on eemaldatud või lahti ühendatud"
 
 #: ../gp11/gp11-misc.c:75
 msgid "The encrypted data is not valid or unrecognized"
@@ -781,23 +781,23 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:77
 msgid "The encrypted data is too long"
-msgstr ""
+msgstr "Krüptitud andmed on liiga pikad"
 
 #: ../gp11/gp11-misc.c:79
 msgid "This operation is not supported"
-msgstr ""
+msgstr "See toiming pole toetatud"
 
 #: ../gp11/gp11-misc.c:81
 msgid "The key is missing or invalid"
-msgstr ""
+msgstr "Võti puudub või on vigane"
 
 #: ../gp11/gp11-misc.c:83
 msgid "The key is the wrong size"
-msgstr ""
+msgstr "Võti on vale suurusega"
 
 #: ../gp11/gp11-misc.c:85
 msgid "The key is of the wrong type"
-msgstr ""
+msgstr "Võti on valet liiki"
 
 #: ../gp11/gp11-misc.c:87
 msgid "No key is needed"
@@ -805,7 +805,7 @@ msgstr "Võtit pole vaja"
 
 #: ../gp11/gp11-misc.c:89
 msgid "The key is different than before"
-msgstr ""
+msgstr "Võti erineb varasemast võtmest"
 
 #: ../gp11/gp11-misc.c:91
 msgid "A key is needed"
@@ -837,7 +837,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:105
 msgid "The object is missing or invalid"
-msgstr ""
+msgstr "Objekt puudub või on vigane"
 
 #: ../gp11/gp11-misc.c:107
 msgid "Another operation is already taking place"
@@ -849,15 +849,15 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:111
 msgid "The password or PIN is incorrect"
-msgstr ""
+msgstr "Parool või PIN ei ole korrektne"
 
 #: ../gp11/gp11-misc.c:113
 msgid "The password or PIN is invalid"
-msgstr ""
+msgstr "Parool või PIN on vigane"
 
 #: ../gp11/gp11-misc.c:115
 msgid "The password or PIN is of an invalid length"
-msgstr ""
+msgstr "Parool või PIN on vale pikkusega"
 
 #: ../gp11/gp11-misc.c:117
 msgid "The password or PIN has expired"
@@ -913,7 +913,7 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:143
 msgid "The device is not present or unplugged"
-msgstr ""
+msgstr "Seadet pole või on seade ühendamata"
 
 #: ../gp11/gp11-misc.c:145
 msgid "The device is invalid or unrecognizable"
@@ -925,31 +925,31 @@ msgstr "Seade on kirjutuskaitsega"
 
 #: ../gp11/gp11-misc.c:149
 msgid "Cannot import because the key is invalid"
-msgstr ""
+msgstr "Importimine pole võimalik, kuna võti on vigane"
 
 #: ../gp11/gp11-misc.c:151
 msgid "Cannot import because the key is of the wrong size"
-msgstr ""
+msgstr "Importimine pole võimalik, kuna võti on vale suurusega"
 
 #: ../gp11/gp11-misc.c:153
 msgid "Cannot import because the key is of the wrong type"
-msgstr ""
+msgstr "Importimine pole võimalik, kuna võti on valet liiki"
 
 #: ../gp11/gp11-misc.c:155
 msgid "You are already logged in"
-msgstr ""
+msgstr "Sa oled juba sisse logitud"
 
 #: ../gp11/gp11-misc.c:157
 msgid "No user has logged in"
-msgstr ""
+msgstr "Kasutaja on sisse logitud"
 
 #: ../gp11/gp11-misc.c:159
 msgid "The user's password or PIN is not set"
-msgstr ""
+msgstr "Kasutaja parool või PIN on määramata"
 
 #: ../gp11/gp11-misc.c:161
 msgid "The user is of an invalid type"
-msgstr ""
+msgstr "Kasutaja on vigast liiki"
 
 #: ../gp11/gp11-misc.c:163
 msgid "Another user is already logged in"
@@ -961,23 +961,23 @@ msgstr ""
 
 #: ../gp11/gp11-misc.c:167
 msgid "Cannot import an invalid key"
-msgstr ""
+msgstr "Vigast võtit pole võimalik importida"
 
 #: ../gp11/gp11-misc.c:169
 msgid "Cannot import a key of the wrong size"
-msgstr ""
+msgstr "Vale suurusega võtit pole võimalik importida"
 
 #: ../gp11/gp11-misc.c:171
 msgid "Cannot export because the key is invalid"
-msgstr ""
+msgstr "Eksportimine pole võimalik, kuna võti on vigane"
 
 #: ../gp11/gp11-misc.c:173
 msgid "Cannot export because the key is of the wrong size"
-msgstr ""
+msgstr "Eksportimine pole võimalik, kuna võti on vale suurusega"
 
 #: ../gp11/gp11-misc.c:175
 msgid "Cannot export because the key is of the wrong type"
-msgstr ""
+msgstr "Eksportimine pole võimalik, kuna võti on valet liiki"
 
 #: ../gp11/gp11-misc.c:177
 msgid "Cannot set a random seed"
