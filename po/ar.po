@@ -8,20 +8,20 @@
 # Djihed Afifi <djihed@gmail.com>, 2006.
 # Khaled Hosny <khaledhosny@eglug.org>, 2006.
 # Anas Husseini <linux.anas@gmail.org>, 2007.
+# Anas Afif Emad <anas.e87@gmail.com>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-06 09:18+0100\n"
-"PO-Revision-Date: 2008-03-08 18:28-0000\n"
-"Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
+"POT-Creation-Date: 2008-08-18 15:03+0100\n"
+"PO-Revision-Date: 2008-08-23 04:16+0300\n"
+"Last-Translator: <anas.e87@gmail.com>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && "
-"n<=10 ? 2 : 3\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #: ../common/gkr-location.c:320
 #, c-format
@@ -36,15 +36,20 @@ msgstr "قرص قابل للإزالة"
 msgid "Home"
 msgstr "الموطن"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1127
-#: ../daemon/pkix/gkr-pkix-parser.c:472 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
+#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "الملف أو القرص الذي يحوي الملف غير موجود."
 
-#: ../common/gkr-location.c:1157
+#: ../common/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "غير قادر على إنشاء الدليل %s"
+
+#: ../common/gkr-location.c:1170
 #, c-format
 msgid "Couldn't delete the file: %s"
-msgstr ""
+msgstr "غير قادر على حذف الملف ·%s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:227
@@ -344,11 +349,11 @@ msgid ""
 "A list of paths to PKCS#11 modules to load. No modules are currently listed "
 "by default, as this is still an experimental feature. This is used by "
 "seahorse and other PKCS#11 aware applications."
-msgstr ""
+msgstr "قائمة بوحدات PKCS#11 للتحميل. لا يوجد أية وحدات مدرجة حالياً بشكل افتراضي، بما أن هذه الميزة تجريبية. يستخدم ذلك في حصان البحر وتطبيقات الإدراك PKCS#11"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
-msgstr ""
+msgstr "وحدات PKCS#11"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
@@ -356,7 +361,7 @@ msgid ""
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
-msgstr "سيفعّل هذا الخيار مكون  PKCS#11 لـ gnome-keyring. "
+msgstr "سيفعّل هذا الخيار مكون  PKCS#11 لـ gnome-keyring. تبدأ فعاليته فقط عند تشغيل gnome-keyring-daemon (أي عندما يسجّل المستخدم الدخول).  قد يتم تجاوز هذا الإعداد عند تمرير خيارات سطر أوامر محددة إلى الرقيب."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid ""
@@ -364,7 +369,7 @@ msgid ""
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
-msgstr "سيفعّل هذا الخيار مكون  SSH  لـ gnome-keyring. "
+msgstr "سيفعّل هذا الخيار مكون  SSH  لـ gnome-keyring. تبدأ·فعاليته·فقط·عند·تشغيل·gnome-keyring-daemon·(أي·عندما·يسجّل·المستخدم·الدخول).··قد·يتم·تجاوز·هذا·الإعداد·عند·تمرير·خيارات·سطر·أوامر·محددة·إلى·الرقيب."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -413,31 +418,28 @@ msgid "Unlock password for %s keyring"
 msgstr "افتح كلمة السر لحلقة المفاتيح %s"
 
 #: ../daemon/pk/gkr-pk-import.c:88
-#, fuzzy
 msgid "Import private key"
-msgstr "فكّ القفل مفتاح خاصّ"
+msgstr "استيراد مفتاح خاص"
 
 #: ../daemon/pk/gkr-pk-import.c:90
-#, fuzzy
 msgid "Import certificate"
-msgstr "فكّ القفل شهادة"
+msgstr "استيراد شهادة"
 
 #: ../daemon/pk/gkr-pk-import.c:92
-#, fuzzy
 msgid "Import public key"
-msgstr "فك قفل المفتاح العام"
+msgstr "استيراد مفتاح عام"
 
 #: ../daemon/pk/gkr-pk-import.c:94
 msgid "Import"
-msgstr ""
+msgstr "استيراد"
 
 #: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
 msgid "Enter password to unlock the private key"
-msgstr "أدخل كلمة سر لفكّ القفل المفتاح الخاص"
+msgstr "أدخل كلمة سر لفكّ قفل المفتاح الخاص"
 
 #: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
 msgid "Enter password to unlock the certificate"
-msgstr "أدخل كلمة سر لفكّ القفل الشهادة"
+msgstr "أدخل كلمة سر لفكّ قفل الشهادة"
 
 #: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
 msgid "Enter password to unlock the public key"
@@ -447,139 +449,130 @@ msgstr "أدخل كلمة سر لفكّ قفل المفتاح العام"
 msgid "Enter password to unlock"
 msgstr "أدخل كلمة سر لفكّ القفل"
 
-#: ../daemon/pk/gkr-pk-import.c:118 ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "افتح هذا المفتاح الخاص تلقائيًا عندما أسجل دخولي."
-
-#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "افتح هذه الشهادة تلقائيًا عندما أسجل دخولي."
-
-#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "افتح هذه  تلقائيًا عندما أسجل دخولي."
-
-#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "افتح هذه  تلقائيًا عندما أسجل دخولي."
-
-#: ../daemon/pk/gkr-pk-import.c:131
+#: ../daemon/pk/gkr-pk-import.c:114
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "يريد التطبيق '%s' الوصول إلى حلقة المفاتيح لكنها مقفلة"
+msgstr "يريد النظام استيراد المفتاح الخاص '%s', ولكنه مقفل"
 
-#: ../daemon/pk/gkr-pk-import.c:133
+#: ../daemon/pk/gkr-pk-import.c:116
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "يريد التطبيق '%s' الوصول إلى حلقة المفاتيح لكنها مقفلة"
+msgstr "يريد النظام استيراد الشهادة ·'%s' ولكنها مقفلة"
 
-#: ../daemon/pk/gkr-pk-import.c:135
+#: ../daemon/pk/gkr-pk-import.c:118
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "يريد التطبيق '%s' الوصول إلى حلقة المفاتيح لكنها الحلقة مقفلة"
+msgstr "يريد النظام استيراد المفتاح العام '%s', ولكنه مقفل"
 
-#: ../daemon/pk/gkr-pk-import.c:137
+#: ../daemon/pk/gkr-pk-import.c:120
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
-msgstr "يريد التطبيق '%s' الوصول إلى حلقة المفاتيح لكنها مقفلة"
+msgstr "يريد النظام '%s', ولكنه مقفل"
 
 #. And put together the ask request
 #: ../daemon/pk/gkr-pk-index.c:93
 msgid "Create Storage for Key Information"
-msgstr ""
+msgstr "أنشئ تخزيناً لمعلومات المفتاح"
 
 #: ../daemon/pk/gkr-pk-index.c:94
-#, fuzzy
 msgid "Choose password to protect storage"
-msgstr "إختر كلمة سر لحلقة المفاتيح الجديدة"
+msgstr "اختر كلمة سر لحماية التخزين"
 
 #: ../daemon/pk/gkr-pk-index.c:97
 msgid ""
 "The system wants to store information about your keys and certificates. In "
 "order to protect this information, choose a password with which it will be "
 "locked."
-msgstr ""
+msgstr "يريد النظام تخزين المعلومات حول المفاتيح والشهادات لكي يحمي هذه المعلومات. اختر كلمة المرور التي سيتم القفل باستخدامها"
 
 #. And put together the ask request
 #: ../daemon/pk/gkr-pk-index.c:124
 msgid "Unlock Storage for Key Information"
-msgstr ""
+msgstr "فكّ قفل التخزين لمعلومات المقتاح"
 
 #: ../daemon/pk/gkr-pk-index.c:125
-#, fuzzy
 msgid "Enter password to unlock storage"
-msgstr "أدخل كلمة سر لفكّ القفل"
+msgstr "أدخل كلمة سر لفكّ قفل التخزين"
 
 #: ../daemon/pk/gkr-pk-index.c:128
-#, fuzzy
 msgid ""
 "The system wants to access information about your keys and certificates, but "
 "it is locked."
-msgstr "يريد التطبيق '%s' الوصول إلى حلقة المفاتيح لكنها مقفلة"
+msgstr "يريد النظام الوصول إلى المعلومات حول مقاتيحك وشهاداتك، ولكنه مقفل."
 
 #: ../daemon/pk/gkr-pk-object.c:883
-#, fuzzy
 msgid "Certificate"
-msgstr "فكّ القفل شهادة"
+msgstr "الشهادة"
 
 #: ../daemon/pk/gkr-pk-object.c:885
-#, fuzzy
 msgid "Private Key"
-msgstr "فكّ القفل مفتاح خاصّ"
+msgstr "المفتاح الخاص"
 
 #: ../daemon/pk/gkr-pk-object.c:887
 msgid "Public Key"
-msgstr ""
+msgstr "المفتاح العام"
 
 #: ../daemon/pk/gkr-pk-object.c:889
 msgid "Trust Association"
-msgstr ""
+msgstr "اتحاد الثقة"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:434
+#: ../daemon/pk/gkr-pk-object-storage.c:436
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr ""
+msgstr "غير قادر على حذف ·'%s' لأنه مربوط بكائنات أخرى."
 
 #: ../daemon/pk/gkr-pk-storage.c:136
 msgid "Unlock private key"
-msgstr "فكّ القفل مفتاح خاصّ"
+msgstr "فكّ قفل مفتاح خاصّ"
 
 #: ../daemon/pk/gkr-pk-storage.c:138
 msgid "Unlock certificate"
-msgstr "فكّ القفل شهادة"
+msgstr "فكّ قفل شهادة"
 
 #: ../daemon/pk/gkr-pk-storage.c:140
 msgid "Unlock public key"
-msgstr "فك قفل المفتاح العام"
+msgstr "فك قفل مفتاح عام"
 
 #: ../daemon/pk/gkr-pk-storage.c:142
 msgid "Unlock"
 msgstr "فك القفل"
 
 #: ../daemon/pk/gkr-pk-storage.c:153
-#, fuzzy
 msgid "Lock private key"
-msgstr "فكّ القفل مفتاح خاصّ"
+msgstr "إقفل مفتاح خاص"
 
 #: ../daemon/pk/gkr-pk-storage.c:155
-#, fuzzy
 msgid "Lock"
-msgstr "فك القفل"
+msgstr "إقفل"
 
 #: ../daemon/pk/gkr-pk-storage.c:183
-#, fuzzy
 msgid "Enter password to protect the private key"
-msgstr "أدخل كلمة سر لفكّ القفل المفتاح الخاص"
+msgstr "أدخل كلمة سر لحماية المفتاح الخاص"
 
 #: ../daemon/pk/gkr-pk-storage.c:185
-#, fuzzy
 msgid "Enter password to protect storage"
-msgstr "أدخل كلمة سر لفكّ القفل"
+msgstr "أدخل كلمة سر لحماية التخزين"
+
+#: ../daemon/pk/gkr-pk-storage.c:196
+msgid "Automatically unlock this private key when I log in."
+msgstr "افتح هذا المفتاح الخاص تلقائيًا عندما أسجل دخولي."
+
+#: ../daemon/pk/gkr-pk-storage.c:198
+msgid "Automatically unlock this certificate when I log in."
+msgstr "افتح هذه الشهادة تلقائيًا عندما أسجل دخولي."
+
+#: ../daemon/pk/gkr-pk-storage.c:200
+msgid "Automatically unlock this public key when I log in."
+msgstr "افتح هذا المفتاح العام  تلقائيًا عندما أسجل دخولي."
+
+#: ../daemon/pk/gkr-pk-storage.c:202
+msgid "Automatically unlock this when I log in"
+msgstr "افتح هذه  تلقائيًا عندما أسجل دخولي."
 
 #: ../daemon/pk/gkr-pk-storage.c:209
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "يريد تطبيق مجهول الوصول إلى حلقة المفاتيح الخاصة '%s' لكنها مقفلة"
+msgstr "يريد تطبيق مجهول الوصول إلى المقتاح الخاص '%s' لكنه مقفل."
 
 #: ../daemon/pk/gkr-pk-storage.c:211
 #, c-format
@@ -589,7 +582,7 @@ msgstr "يريد تطبيق مجهول الوصول إلى الشهادة  '%s' 
 #: ../daemon/pk/gkr-pk-storage.c:213
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "يريد تطبيق مجهول الوصول إلى حلقة المفاتيح العامة  '%s'  لكنها مقفلة"
+msgstr "يريد تطبيق مجهول الوصول إلى المفتاح العام  '%s'  لكنه مقفل"
 
 #: ../daemon/pk/gkr-pk-storage.c:215
 #, c-format
@@ -597,11 +590,11 @@ msgid "An application wants access to '%s', but it is locked"
 msgstr "يريد تطبيق مجهول الوصول إلى  '%s' ، لكنها مقفلة"
 
 #: ../daemon/pk/gkr-pk-storage.c:228
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The system wants to store the private key '%s' on your disk. Please enter a "
 "password to lock it with."
-msgstr "يريد التطبيق '%s' الوصول إلى حلقة المفاتيح لكنها مقفلة"
+msgstr "يريد النظام تخزين المقتاح الخاص '%s'·على القرص الخاص بك. رجاءً أدخل كلمة السر لقفله بها."
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
@@ -609,39 +602,44 @@ msgid ""
 "The system wants to store '%s' on your disk. Please enter a password to lock "
 "it with."
 msgstr ""
+"يريد النظام تخزين '%s'·على القرص الخاص بك. رجاءً أدخل كلمة السر لقفله بها."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:403
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:64
+msgid "The operation was cancelled"
+msgstr "تم إلغاء العملية"
+
+#: ../daemon/pkix/gkr-pkix-parser.c:455
 msgid "Unrecognized or unsupported file."
 msgstr "ملف غير مدعوم أو غير معروف."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:407
+#: ../daemon/pkix/gkr-pkix-parser.c:459
 msgid "Could not parse invalid or corrupted file."
-msgstr "لم تمكن قراءة الملف غير الصحيح."
+msgstr "غير قادر على قراءة ملف معطوب أو غير صحيح "
 
 #: ../daemon/ssh/gkr-ssh-storage.c:166
 #, c-format
 msgid "Couldn't encode secure shell public key."
-msgstr ""
+msgstr "غير قادر على ترميز مقتاح الصدفة العام الآمن"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:412
 #, c-format
 msgid "Couldn't read secure shell private key: %s"
-msgstr ""
+msgstr "غير قادر على قراءة مفتاح الصدفة الخاص الآمن %s"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:416
 #, c-format
 msgid "Invalid secure shell private key at: %s"
-msgstr ""
+msgstr "مقتاح صدفة خاص آمن غير صالح عند: %s"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:465
 #, c-format
 msgid "Couldn't encrypt the SSH key to store it."
-msgstr ""
+msgstr "غير قادر على تشفير مفتاح SSH لتخزينه"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:481
 #, c-format
 msgid "Couldn't encode the SSH key to store it."
-msgstr ""
+msgstr "غير قادر على ترميز مقتاح SSH لتخزينه"
 
 #: ../daemon/ui/gkr-ask-tool.c:182
 msgid "Store passwords unencrypted?"
@@ -652,7 +650,8 @@ msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
-msgstr "باختيار كلمة سر فارغة لا تكون كلمات السر المخبأة مشفّرة."
+msgstr ""
+"باختيار استخدام كلمة سر فارغة، لن تكون كلمات السر الخاصة بك مشفرة بشكل آمن. وسيستطيع كل من يملك الوصول إلى ملفاتك الوصول إليها."
 
 #: ../daemon/ui/gkr-ask-tool.c:190
 msgid "Use Unsafe Storage"
@@ -664,7 +663,7 @@ msgstr "المو_قع:"
 
 #: ../daemon/ui/gkr-ask-tool.c:426
 msgid "_Old password:"
-msgstr "كلمة السّر ال_قديمة:"
+msgstr "كلمة السّر الق_ديمة:"
 
 #: ../daemon/ui/gkr-ask-tool.c:446
 msgid "_Password:"
@@ -680,7 +679,7 @@ msgstr "قوة كلمة السر الجديدة"
 
 #: ../daemon/ui/gkr-ask-tool.c:546
 msgid "Passwords do not match."
-msgstr "كلمتا السّر لا تتطابقان."
+msgstr "كلمتا السّر غير متطابقتين."
 
 #: ../daemon/ui/gkr-ask-tool.c:562
 msgid "Password cannot be blank"
@@ -691,338 +690,336 @@ msgid "Deny"
 msgstr "ا_رفض"
 
 #: ../daemon/ui/gkr-ask-tool.c:625
+msgid "_Create"
+msgstr "أن_شئ"
+
+#: ../daemon/ui/gkr-ask-tool.c:629
 msgid "Allow _Once"
 msgstr "اسمح مرة _واحدة"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:633
 msgid "_Always Allow"
 msgstr "ا_سمح دائمًا"
 
-#: ../gp11/gp11-misc.c:40
-msgid "The operation was cancelled"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:43
-msgid "Insufficient memory available"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:45
-msgid "The specified slot ID is not valid"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:47
-msgid "Internal error"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:49
-msgid "The operation failed"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:51
-msgid "Invalid arguments"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:53
-msgid "The module cannot create needed threads"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:55
-msgid "The module cannot lock data properly"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:57
-msgid "The field is read-only"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:59
-msgid "The field is sensitive and cannot be revealed"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:61
-msgid "The field is invalid or does not exist"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:63
-msgid "Invalid value for field"
-msgstr ""
-
-#: ../gp11/gp11-misc.c:65
-msgid "The data is not valid or unrecognized"
-msgstr ""
-
 #: ../gp11/gp11-misc.c:67
-msgid "The data is too long"
-msgstr ""
+msgid "Insufficient memory available"
+msgstr "كمية الذاكرة المتاحة غير كافية"
 
 #: ../gp11/gp11-misc.c:69
-msgid "An error occurred on the device"
-msgstr ""
+msgid "The specified slot ID is not valid"
+msgstr "إن معرّف ID الفتحة المحددة غير صالح"
 
 #: ../gp11/gp11-misc.c:71
-msgid "Insufficient memory available on device"
-msgstr ""
+msgid "Internal error"
+msgstr "خطأ داخلي"
 
 #: ../gp11/gp11-misc.c:73
-msgid "The device was removed or unplugged"
-msgstr ""
+msgid "The operation failed"
+msgstr "فشلت العملية"
 
 #: ../gp11/gp11-misc.c:75
-msgid "The encrypted data is not valid or unrecognized"
-msgstr ""
+msgid "Invalid arguments"
+msgstr "خيار غير صالح"
 
 #: ../gp11/gp11-misc.c:77
-msgid "The encrypted data is too long"
-msgstr ""
+msgid "The module cannot create needed threads"
+msgstr "لم تستطع الوحدة إنشاء الخيوط التي تحتاجها"
 
 #: ../gp11/gp11-misc.c:79
-msgid "This operation is not supported"
-msgstr ""
+msgid "The module cannot lock data properly"
+msgstr "الوحدة غير قادرة على قفل البيانات بشكل صحيح"
 
 #: ../gp11/gp11-misc.c:81
-msgid "The key is missing or invalid"
-msgstr ""
+msgid "The field is read-only"
+msgstr "الحقل للقراءة فقط"
 
 #: ../gp11/gp11-misc.c:83
-msgid "The key is the wrong size"
-msgstr ""
+msgid "The field is sensitive and cannot be revealed"
+msgstr "الحقل حساس ولا يمكن كشفه"
 
 #: ../gp11/gp11-misc.c:85
-msgid "The key is of the wrong type"
-msgstr ""
+msgid "The field is invalid or does not exist"
+msgstr "الحقل غير صالح أو غير موجود"
 
 #: ../gp11/gp11-misc.c:87
-msgid "No key is needed"
-msgstr ""
+msgid "Invalid value for field"
+msgstr "قيمة غير صالحة للحقل"
 
 #: ../gp11/gp11-misc.c:89
-msgid "The key is different than before"
-msgstr ""
+msgid "The data is not valid or unrecognized"
+msgstr "البيانات غير صالحة أو غير معترف بها"
 
 #: ../gp11/gp11-misc.c:91
-msgid "A key is needed"
-msgstr ""
+msgid "The data is too long"
+msgstr "البيانات طويلة جداً"
 
 #: ../gp11/gp11-misc.c:93
-msgid "Cannot include the key in digest"
-msgstr ""
+msgid "An error occurred on the device"
+msgstr "حصل خطأ في الجهاز"
 
 #: ../gp11/gp11-misc.c:95
-msgid "This operation cannot be done with this key"
-msgstr ""
+msgid "Insufficient memory available on device"
+msgstr "ذاكرة غير كافية متاحة على الجهاز"
 
 #: ../gp11/gp11-misc.c:97
-msgid "The key cannot be wrapped"
-msgstr ""
+msgid "The device was removed or unplugged"
+msgstr "تم إزالة الجهاز أو فصله"
 
 #: ../gp11/gp11-misc.c:99
-msgid "Cannot export this key"
-msgstr ""
+msgid "The encrypted data is not valid or unrecognized"
+msgstr "البيانات المشفرة غير صالحة أو غير معترف بها"
 
 #: ../gp11/gp11-misc.c:101
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr ""
+msgid "The encrypted data is too long"
+msgstr "البيانات المشفرة طويلة جداً"
 
 #: ../gp11/gp11-misc.c:103
-msgid "The crypto mechanism has an invalid argument"
-msgstr ""
+msgid "This operation is not supported"
+msgstr "العملية غير مدعومة"
 
 #: ../gp11/gp11-misc.c:105
-msgid "The object is missing or invalid"
-msgstr ""
+msgid "The key is missing or invalid"
+msgstr "المفتاح مفقود أو غير صالح"
 
 #: ../gp11/gp11-misc.c:107
-msgid "Another operation is already taking place"
-msgstr ""
+msgid "The key is the wrong size"
+msgstr "حجم المفتاح خاطئ"
 
 #: ../gp11/gp11-misc.c:109
-msgid "No operation is taking place"
-msgstr ""
+msgid "The key is of the wrong type"
+msgstr "المفتاح من النوع الخاطئ"
 
 #: ../gp11/gp11-misc.c:111
-msgid "The password or PIN is incorrect"
-msgstr ""
+msgid "No key is needed"
+msgstr "لا حاجة لمفتاح"
 
 #: ../gp11/gp11-misc.c:113
-msgid "The password or PIN is invalid"
-msgstr ""
+msgid "The key is different than before"
+msgstr "المفتاح مختلف عن ما قبل"
 
 #: ../gp11/gp11-misc.c:115
-msgid "The password or PIN is of an invalid length"
-msgstr ""
+msgid "A key is needed"
+msgstr "المفتاح ضروري"
 
 #: ../gp11/gp11-misc.c:117
-msgid "The password or PIN has expired"
-msgstr ""
+msgid "Cannot include the key in digest"
+msgstr "غير قادر على تضمين المفتاح في الملخص"
 
 #: ../gp11/gp11-misc.c:119
-#, fuzzy
-msgid "The password or PIN is locked"
-msgstr "أدخل كلمة سر لـ '%s' لفك القفل"
+msgid "This operation cannot be done with this key"
+msgstr "لا يمكن إتمام العملية بهذا المفتاح"
 
 #: ../gp11/gp11-misc.c:121
-msgid "The session is closed"
-msgstr ""
+msgid "The key cannot be wrapped"
+msgstr "لا يمكن تغليف المفتاح"
 
 #: ../gp11/gp11-misc.c:123
-msgid "Too many sessions are active"
-msgstr ""
+msgid "Cannot export this key"
+msgstr "لا يمكن تصدير هذا المفتاح"
 
 #: ../gp11/gp11-misc.c:125
-msgid "The session is invalid"
-msgstr ""
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr "تقنية الـ crypto غير صالحة أو غير معترف بها"
 
 #: ../gp11/gp11-misc.c:127
-msgid "The session is read-only"
-msgstr ""
+msgid "The crypto mechanism has an invalid argument"
+msgstr "خيار غير صالح لتقنية الـ crypto"
 
 #: ../gp11/gp11-misc.c:129
-msgid "An open session exists"
-msgstr ""
+msgid "The object is missing or invalid"
+msgstr "الكائن مفقود أو غير صالح"
 
 #: ../gp11/gp11-misc.c:131
-msgid "A read-only session exists"
-msgstr ""
+msgid "Another operation is already taking place"
+msgstr "عملية أخرى تجري مسبقاً"
 
 #: ../gp11/gp11-misc.c:133
-msgid "An administrator session exists"
-msgstr ""
+msgid "No operation is taking place"
+msgstr "لا يوجد أية عملية جارية"
 
 #: ../gp11/gp11-misc.c:135
-msgid "The signature is bad or corrupted"
-msgstr ""
+msgid "The password or PIN is incorrect"
+msgstr "كلمة السر أو رمز التعريف الشخصي PIN غير صحيحة"
 
 #: ../gp11/gp11-misc.c:137
-msgid "The signature is unrecognized or corrupted"
-msgstr ""
+msgid "The password or PIN is invalid"
+msgstr "كلمة السر أو رمز التعريف الشخصي PIN غير صالحة"
 
 #: ../gp11/gp11-misc.c:139
-msgid "Certain required fields are missing"
-msgstr ""
+msgid "The password or PIN is of an invalid length"
+msgstr "طول كلمة السر أو رمز التعريف الشخصي PIN غير صالح"
 
 #: ../gp11/gp11-misc.c:141
-msgid "Certain fields have invalid values"
-msgstr ""
+msgid "The password or PIN has expired"
+msgstr "انتهت مدة كلمة السر أو رمز التعريف الشخصي PIN"
 
 #: ../gp11/gp11-misc.c:143
-msgid "The device is not present or unplugged"
-msgstr ""
+msgid "The password or PIN is locked"
+msgstr "كلمة السر أو رمز التعريف الشخصي PIN مقفلة"
 
 #: ../gp11/gp11-misc.c:145
-msgid "The device is invalid or unrecognizable"
-msgstr ""
+msgid "The session is closed"
+msgstr "الجلسة مغلقة"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The device is write protected"
-msgstr ""
+msgid "Too many sessions are active"
+msgstr "الكثير من الجلسات نشطة"
 
 #: ../gp11/gp11-misc.c:149
-msgid "Cannot import because the key is invalid"
-msgstr ""
+msgid "The session is invalid"
+msgstr "الجلسة غير صالحة"
 
 #: ../gp11/gp11-misc.c:151
-msgid "Cannot import because the key is of the wrong size"
-msgstr ""
+msgid "The session is read-only"
+msgstr "الجلسة للقراءة فقط"
 
 #: ../gp11/gp11-misc.c:153
-msgid "Cannot import because the key is of the wrong type"
-msgstr ""
+msgid "An open session exists"
+msgstr "توجد جلسة مفتوحة"
 
 #: ../gp11/gp11-misc.c:155
-msgid "You are already logged in"
-msgstr ""
+msgid "A read-only session exists"
+msgstr "توجد جلسة للقراءة فقط"
 
 #: ../gp11/gp11-misc.c:157
-msgid "No user has logged in"
-msgstr ""
+msgid "An administrator session exists"
+msgstr "توجد جلسة مسئول نظام"
 
 #: ../gp11/gp11-misc.c:159
-msgid "The user's password or PIN is not set"
-msgstr ""
+msgid "The signature is bad or corrupted"
+msgstr "التوقيع سيء او فاسد"
 
 #: ../gp11/gp11-misc.c:161
-msgid "The user is of an invalid type"
-msgstr ""
+msgid "The signature is unrecognized or corrupted"
+msgstr "التوقيع غير معترف به أو فاسد"
 
 #: ../gp11/gp11-misc.c:163
-msgid "Another user is already logged in"
-msgstr ""
+msgid "Certain required fields are missing"
+msgstr "بعض الحقول المطلوبة مفقودة"
 
 #: ../gp11/gp11-misc.c:165
-msgid "Too many users of different types logged in"
-msgstr ""
+msgid "Certain fields have invalid values"
+msgstr "بعض الحقول لها قيم غير صالحة"
 
 #: ../gp11/gp11-misc.c:167
-msgid "Cannot import an invalid key"
-msgstr ""
+msgid "The device is not present or unplugged"
+msgstr "الجهاز غير موجود أو مفصول"
 
 #: ../gp11/gp11-misc.c:169
-msgid "Cannot import a key of the wrong size"
-msgstr ""
+msgid "The device is invalid or unrecognizable"
+msgstr "الجهاز غير صالح أو غير معترف به"
 
 #: ../gp11/gp11-misc.c:171
-msgid "Cannot export because the key is invalid"
-msgstr ""
+msgid "The device is write protected"
+msgstr "الجهاز محمي ضد الكتابة"
 
 #: ../gp11/gp11-misc.c:173
-msgid "Cannot export because the key is of the wrong size"
-msgstr ""
+msgid "Cannot import because the key is invalid"
+msgstr "غير قادر على الاستيراد المفتاح غير صالح"
 
 #: ../gp11/gp11-misc.c:175
-msgid "Cannot export because the key is of the wrong type"
-msgstr ""
+msgid "Cannot import because the key is of the wrong size"
+msgstr "غير قادر على الاستيراد لأن حجم المفتاح خاطئ"
 
 #: ../gp11/gp11-misc.c:177
-msgid "Cannot set a random seed"
-msgstr ""
+msgid "Cannot import because the key is of the wrong type"
+msgstr "غير قادر على الاستيراد لأن نوع المفتاح خاطئ"
 
 #: ../gp11/gp11-misc.c:179
-msgid "No random number generator available"
-msgstr ""
+msgid "You are already logged in"
+msgstr "لقد سجلت الدخول مسبقاً"
 
 #: ../gp11/gp11-misc.c:181
-msgid "The crypto mechanism has an invalid parameter"
-msgstr ""
+msgid "No user has logged in"
+msgstr "لم يسجل أي مستخدم الدخول"
 
 #: ../gp11/gp11-misc.c:183
-msgid "Not enough space to store the result"
-msgstr ""
+msgid "The user's password or PIN is not set"
+msgstr "لم يتم ضبط كلمة المرور أو رمز التعريف الشخصي PIN للمستخدم"
 
 #: ../gp11/gp11-misc.c:185
-msgid "The saved state is invalid"
-msgstr ""
+msgid "The user is of an invalid type"
+msgstr "المستخدم من النوع الخاطئ"
 
 #: ../gp11/gp11-misc.c:187
-msgid "The information is sensitive and cannot be revealed"
-msgstr ""
+msgid "Another user is already logged in"
+msgstr "هناك مستخدم آخر قد سجل دخوله مسبقاً"
 
 #: ../gp11/gp11-misc.c:189
-msgid "The state cannot be saved"
-msgstr ""
+msgid "Too many users of different types logged in"
+msgstr "العديد من المستخدمين من الأنواع المختلفة قد سجلوا الدخول."
 
 #: ../gp11/gp11-misc.c:191
-msgid "The module has not been initialized"
-msgstr ""
+msgid "Cannot import an invalid key"
+msgstr "غير قادر على استيراد مفتاح غير صالح"
 
 #: ../gp11/gp11-misc.c:193
-#, fuzzy
-msgid "The module has already been initialized"
-msgstr "حلقة المفاتيح مفتوحة مسبقًا."
+msgid "Cannot import a key of the wrong size"
+msgstr "غير قادر على استيراد مفتاح من الحجم الخاطئ"
 
 #: ../gp11/gp11-misc.c:195
-msgid "Cannot lock data"
-msgstr ""
+msgid "Cannot export because the key is invalid"
+msgstr "غير قادر على التصدير لأن المفتاح غير صالح"
 
 #: ../gp11/gp11-misc.c:197
-msgid "The data cannot be locked"
-msgstr ""
+msgid "Cannot export because the key is of the wrong size"
+msgstr "غير قادر على التصدير لأن المفتاح من الحجم الخاطئ"
 
 #: ../gp11/gp11-misc.c:199
-msgid "The signature request was rejected by the user"
-msgstr ""
+msgid "Cannot export because the key is of the wrong type"
+msgstr "غير قادر على التصدير لأن المفتاح من النوع الخاطئ"
+
+#: ../gp11/gp11-misc.c:201
+msgid "Cannot set a random seed"
+msgstr "غير قادر على تعيين بذرة عشوائية"
 
 #: ../gp11/gp11-misc.c:203
+msgid "No random number generator available"
+msgstr "لا يتوفر مولّد أرقام عشوائيّة"
+
+#: ../gp11/gp11-misc.c:205
+msgid "The crypto mechanism has an invalid parameter"
+msgstr "عامل غير صالح لتقنية الـ crypto"
+
+#: ../gp11/gp11-misc.c:207
+msgid "Not enough space to store the result"
+msgstr "لا يتوفر مساحة كافية لتخزين النتيجة"
+
+#: ../gp11/gp11-misc.c:209
+msgid "The saved state is invalid"
+msgstr "الحالة المحفوظة غير صالحة"
+
+#: ../gp11/gp11-misc.c:211
+msgid "The information is sensitive and cannot be revealed"
+msgstr "المعلومات حسّاسة ولا يمكن كشفها"
+
+#: ../gp11/gp11-misc.c:213
+msgid "The state cannot be saved"
+msgstr "لا يمكن حفظ الحالة"
+
+#: ../gp11/gp11-misc.c:215
+msgid "The module has not been initialized"
+msgstr "لم يتم ابتداء الوحدة"
+
+#: ../gp11/gp11-misc.c:217
+msgid "The module has already been initialized"
+msgstr "تم ابتداء الوحدة مسبقاً"
+
+#: ../gp11/gp11-misc.c:219
+msgid "Cannot lock data"
+msgstr "غير قادر على قفل البيانات"
+
+#: ../gp11/gp11-misc.c:221
+msgid "The data cannot be locked"
+msgstr "لا يمكن قفل البيانات"
+
+#: ../gp11/gp11-misc.c:223
+msgid "The signature request was rejected by the user"
+msgstr "تم رفض طلب التوقيع من قبل المستخدم"
+
+#: ../gp11/gp11-misc.c:227
 msgid "Unknown error"
-msgstr ""
+msgstr "خطأ غير معروف"
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
@@ -1050,7 +1047,7 @@ msgstr "لا نتائج مطابقة"
 
 #: ../library/gnome-keyring-utils.c:103
 msgid "A keyring with that name does not exist."
-msgstr "لا حلقة مفاتيح بهذا الاسم"
+msgstr "لا توجد حلقة مفاتيح بهذا الاسم"
 
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
@@ -1105,3 +1102,4 @@ msgstr "حلقة المفاتيح مفتوحة مسبقًا."
 
 #~ msgid "Unknown request type\n"
 #~ msgstr "نوع الطلب مجهول\n"
+
