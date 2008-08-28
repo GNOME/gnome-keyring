@@ -580,7 +580,7 @@ gp11_slot_get_token_info (GP11Slot *slot)
 		if (!strptime (string, "%Y%m%d%H%M%S", &tm))
 			tokeninfo->utc_time = -1;
 		else
-			tokeninfo->utc_time = mktime (&tm);
+			tokeninfo->utc_time = timegm (&tm);
 	} else {
 		tokeninfo->utc_time = -1;
 	}

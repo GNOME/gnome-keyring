@@ -1,5 +1,10 @@
 2008-08-27  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/gp11-slot.c: Make sure we use the UTC time when 
+	converting time from PKCS#11.
+	
+2008-08-27  Stef Walter  <stef@memberwebs.com>
+
 	* tool/Makefile.am: Build fix. Include gthread library in 
 	tool binary. Fixes bug #548424. Patch by Götz Waschk
 	
