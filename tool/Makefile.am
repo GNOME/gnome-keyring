@@ -15,4 +15,4 @@ gnome_keyring_SOURCES = \
 
 gnome_keyring_LDADD = \
 	$(top_builddir)/gp11/libgp11.la \
-	$(GLIB_LIBS)
+	$(GLIB_LIBS) $(GTHREAD_LIBS)

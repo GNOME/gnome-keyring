@@ -1,5 +1,10 @@
 2008-08-27  Stef Walter  <stef@memberwebs.com>
 
+	* tool/Makefile.am: Build fix. Include gthread library in 
+	tool binary. Fixes bug #548424. Patch by Götz Waschk
+	
+2008-08-27  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-crypto.c: Fix build problems with string formats.
 	
 2008-08-22  Stef Walter  <stef@memberwebs.com>
