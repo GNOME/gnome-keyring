@@ -504,6 +504,7 @@ daemon/ssh/tests/Makefile
 daemon/ui/Makefile
 gp11/gp11.pc
 gp11/Makefile
+gp11/reference/Makefile
 gp11/tests/Makefile
 library/Makefile
 library/reference/Makefile

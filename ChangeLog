@@ -1,5 +1,13 @@
 2008-08-27  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/Makefile.am:
+	* gp11/gp11-attributes.c:
+	* gp11/gp11.h:
+	* gp11/reference/*: (added) Added start of documentation for the 
+	GP11 library.
+	
+2008-08-27  Stef Walter  <stef@memberwebs.com>
+
 	* Makefile.am:
 	* configure.in:
 	* library/Makefile.am: 

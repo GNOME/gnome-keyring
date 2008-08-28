@@ -606,9 +606,28 @@ initialize_from_valist (gulong type, va_list va)
 /**
  * gp11_attributes_newv:
  * 
- * Create a new GP11Attributes array.
+ * Create a new GP11Attributes array, containing a list of attributes.
  * 
  * The arguments must be triples of: attribute type, data type, value
+ * 
+ * <para>The variable argument list should contain:
+ * 	<variablelist>
+ *		<varlistentry>
+ * 			<term>a)</term>
+ * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>b)</term>
+ * 			<listitem><para>The attribute data type (one of GP11_BOOLEAN, GP11_ULONG, 
+ * 				GP11_STRING, GP11_DATE) orthe raw attribute value length.</para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>c)</term>
+ * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or 
+ * 				a pointer to a raw attribute value.</para></listitem>
+ * 		</varlistentry>
+ * 	</variablelist>
+ * The variable argument list should be terminated with GP11_INVALID.</para>
  * 
  * Return value: The new attributes array. When done with the array 
  * release it with gp11_attributes_unref().
@@ -626,6 +645,36 @@ gp11_attributes_newv (gulong first_type, ...)
 	return attrs;
 }
 
+/**
+ * gp11_attributes_newv:
+ * @va: Variable argument containing attributes to add. 
+ * 
+ * Create a new GP11Attributes array.
+ * 
+ * The arguments must be triples of: attribute type, data type, value
+ * 
+ * <para>The variable argument list should contain:
+ * 	<variablelist>
+ *		<varlistentry>
+ * 			<term>a)</term>
+ * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>b)</term>
+ * 			<listitem><para>The attribute data type (one of GP11_BOOLEAN, GP11_ULONG, 
+ * 				GP11_STRING, GP11_DATE) orthe raw attribute value length.</para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>c)</term>
+ * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or 
+ * 				a pointer to a raw attribute value.</para></listitem>
+ * 		</varlistentry>
+ * 	</variablelist>
+ * The variable argument list should be terminated with GP11_INVALID.</para>
+ * 
+ * Return value: The new attributes array. When done with the array 
+ * release it with gp11_attributes_unref().
+ **/
 GP11Attributes*
 gp11_attributes_new_valist (va_list va)
 {
@@ -633,6 +682,18 @@ gp11_attributes_new_valist (va_list va)
 	return initialize_from_valist (type, va);
 }
 
+/**
+ * gp11_attributes_at:
+ * @attrs: The attributes array.
+ * @index: The attribute index to retrieve.
+ * 
+ * Get attribute at the specified index in the attribute array.
+ * 
+ * Use gp11_attributes_count() to determine how many attributes are 
+ * in the array.
+ * 
+ * Return value: The specified attribute.
+ **/
 GP11Attribute*
 gp11_attributes_at (GP11Attributes *attrs, guint index)
 {
@@ -660,6 +721,15 @@ attributes_push (GP11Attributes *attrs)
 	return &g_array_index (attrs->array, GP11Attribute, attrs->array->len - 1);
 }
 
+/**
+ * gp11_attributes_add:
+ * @attrs: The attributes array to add to
+ * @attr: The attribute to add.
+ * 
+ * Add the specified attribute to the array. 
+ * 
+ * The value stored in the attribute will be copied.
+ **/
 void
 gp11_attributes_add (GP11Attributes *attrs, GP11Attribute *attr)
 {
@@ -682,6 +752,17 @@ _gp11_attributes_add_take (GP11Attributes *attrs, gulong attr_type,
 	_gp11_attribute_init_take (added, attr_type, (gpointer)value, length);
 }
 
+/**
+ * gp11_attributes_add_data:
+ * @attrs: The attributes array to add to.
+ * @attr_type: The type of attribute to add.
+ * @value: The raw memory of the attribute value.
+ * @length: The length of the attribute value.
+ * 
+ * Add an attribute with the specified type and value to the array. 
+ * 
+ * The value stored in the attribute will be copied.
+ **/
 void 
 gp11_attributes_add_data (GP11Attributes *attrs, gulong attr_type,
                           gconstpointer value, gsize length)
@@ -693,6 +774,13 @@ gp11_attributes_add_data (GP11Attributes *attrs, gulong attr_type,
 	gp11_attribute_init (added, attr_type, value, length);
 }
 
+/**
+ * gp11_attributes_add_invalid:
+ * @attrs: The attributes array to add to.
+ * @attr_type: The type of attribute to add.
+ * 
+ * Add an attribute with the specified type and an 'invalid' value to the array. 
+ **/
 void
 gp11_attributes_add_invalid (GP11Attributes *attrs, gulong attr_type)
 {
@@ -703,6 +791,16 @@ gp11_attributes_add_invalid (GP11Attributes *attrs, gulong attr_type)
 	gp11_attribute_init_invalid (added, attr_type);	
 }
 
+/**
+ * gp11_attributes_add_boolean:
+ * @attrs: The attributes array to add to.
+ * @attr_type: The type of attribute to add.
+ * @value: The boolean value to add.
+ * 
+ * Add an attribute with the specified type and value to the array. 
+ * 
+ * The value will be stored as a CK_BBOOL PKCS#11 style attribute.
+ **/
 void
 gp11_attributes_add_boolean (GP11Attributes *attrs, gulong attr_type, gboolean value)
 {
@@ -713,6 +811,16 @@ gp11_attributes_add_boolean (GP11Attributes *attrs, gulong attr_type, gboolean v
 	gp11_attribute_init_boolean (added, attr_type, value);
 }
 
+/**
+ * gp11_attributes_add_string:
+ * @attrs: The attributes array to add to.
+ * @attr_type: The type of attribute to add.
+ * @value: The null terminated string value to add.
+ * 
+ * Add an attribute with the specified type and value to the array. 
+ * 
+ * The value will be copied into the attribute.
+ **/
 void
 gp11_attributes_add_string (GP11Attributes *attrs, gulong attr_type, const gchar *value)
 {
@@ -723,6 +831,16 @@ gp11_attributes_add_string (GP11Attributes *attrs, gulong attr_type, const gchar
 	gp11_attribute_init_string (added, attr_type, value);
 }
 
+/**
+ * gp11_attributes_add_date:
+ * @attrs: The attributes array to add to.
+ * @attr_type: The type of attribute to add.
+ * @value: The GDate value to add.
+ * 
+ * Add an attribute with the specified type and value to the array. 
+ * 
+ * The value will be stored as a CK_DATE PKCS#11 style attribute.
+ **/
 void
 gp11_attributes_add_date (GP11Attributes *attrs, gulong attr_type, const GDate *value)
 {
@@ -733,6 +851,16 @@ gp11_attributes_add_date (GP11Attributes *attrs, gulong attr_type, const GDate *
 	gp11_attribute_init_date (added, attr_type, value);
 }
 
+/**
+ * gp11_attributes_add_ulong:
+ * @attrs: The attributes array to add to.
+ * @attr_type: The type of attribute to add.
+ * @value: The gulong value to add.
+ * 
+ * Add an attribute with the specified type and value to the array. 
+ * 
+ * The value will be stored as a CK_ULONG PKCS#11 style attribute.
+ **/
 void
 gp11_attributes_add_ulong (GP11Attributes *attrs, gulong attr_type, gulong value)
 {
@@ -743,6 +871,14 @@ gp11_attributes_add_ulong (GP11Attributes *attrs, gulong attr_type, gulong value
 	gp11_attribute_init_ulong (added, attr_type, value);
 }
 
+/**
+ * gp11_attributes_count:
+ * @attrs: The attributes array to count.
+ * 
+ * Get the number of attributes in this attribute array.
+ * 
+ * Return value: The number of contained attributes.
+ **/
 gulong
 gp11_attributes_count (GP11Attributes *attrs)
 {
@@ -750,7 +886,15 @@ gp11_attributes_count (GP11Attributes *attrs)
 	return attrs->array->len;
 }
 
-
+/**
+ * gp11_attributes_find:
+ * @attrs: The attributes array to search.
+ * @attr_type: The type of attribute to find.
+ * 
+ * Find an attribute with the specified type in the array.
+ * 
+ * Return value: The first attribute found with the specified type, or NULL.
+ **/
 GP11Attribute*
 gp11_attributes_find (GP11Attributes *attrs, gulong attr_type)
 {
@@ -768,6 +912,20 @@ gp11_attributes_find (GP11Attributes *attrs, gulong attr_type)
 	return NULL;
 }
 
+/**
+ * gp11_attributes_find_boolean:
+ * @attrs: The attributes array to search.
+ * @attr_type: The type of attribute to find.
+ * @value: The resulting gboolean value.
+ * 
+ * Find an attribute with the specified type in the array. 
+ * 
+ * The attribute (if found) must be of the right size to store
+ * a boolean value (ie: CK_BBOOL). If the attribute is marked invalid 
+ * then it will be treated as not found.
+ * 
+ * Return value: Whether a value was found or not.
+ **/
 gboolean
 gp11_attributes_find_boolean (GP11Attributes *attrs, gulong attr_type, gboolean *value)
 {
@@ -781,6 +939,20 @@ gp11_attributes_find_boolean (GP11Attributes *attrs, gulong attr_type, gboolean 
 	return TRUE;
 }
 
+/**
+ * gp11_attributes_find_ulong:
+ * @attrs: The attributes array to search.
+ * @attr_type: The type of attribute to find.
+ * @value: The resulting gulong value.
+ * 
+ * Find an attribute with the specified type in the array. 
+ * 
+ * The attribute (if found) must be of the right size to store
+ * a unsigned long value (ie: CK_ULONG). If the attribute is marked invalid 
+ * then it will be treated as not found.
+ * 
+ * Return value: Whether a value was found or not.
+ **/
 gboolean
 gp11_attributes_find_ulong (GP11Attributes *attrs, gulong attr_type, gulong *value)
 {
@@ -794,6 +966,20 @@ gp11_attributes_find_ulong (GP11Attributes *attrs, gulong attr_type, gulong *val
 	return TRUE;
 }
 
+/**
+ * gp11_attributes_find_string:
+ * @attrs: The attributes array to search.
+ * @attr_type: The type of attribute to find.
+ * @value: The resulting string value.
+ * 
+ * Find an attribute with the specified type in the array. 
+ * 
+ * If the attribute is marked invalid then it will be treated as not found. 
+ * The resulting string will be null-terminated, and must be freed by the caller 
+ * using g_free().
+ * 
+ * Return value: Whether a value was found or not.
+ **/
 gboolean
 gp11_attributes_find_string (GP11Attributes *attrs, gulong attr_type, gchar **value)
 {
@@ -807,6 +993,20 @@ gp11_attributes_find_string (GP11Attributes *attrs, gulong attr_type, gchar **va
 	return TRUE;
 }
 
+/**
+ * gp11_attributes_find_date:
+ * @attrs: The attributes array to search.
+ * @attr_type: The type of attribute to find.
+ * @value: The resulting GDate value.
+ * 
+ * Find an attribute with the specified type in the array. 
+ * 
+ * The attribute (if found) must be of the right size to store
+ * a date value (ie: CK_DATE). If the attribute is marked invalid 
+ * then it will be treated as not found.
+ * 
+ * Return value: Whether a value was found or not.
+ **/
 gboolean
 gp11_attributes_find_date (GP11Attributes *attrs, gulong attr_type, GDate *value)
 {
@@ -820,6 +1020,12 @@ gp11_attributes_find_date (GP11Attributes *attrs, gulong attr_type, GDate *value
 	return TRUE;
 }
 
+/**
+ * gp11_attributes_ref:
+ * @attrs: An attribute array
+ * 
+ * Reference this attributes array.
+ */
 GP11Attributes*
 gp11_attributes_ref (GP11Attributes *attrs)
 {
@@ -828,6 +1034,14 @@ gp11_attributes_ref (GP11Attributes *attrs)
 	return attrs;
 }
 
+/**
+ * gp11_attributes_unref:
+ * @attrs: An attribute array
+ * 
+ * Unreference this attribute array.
+ * 
+ * When all outstanding references are NULL, the array will be freed.
+ */
 void
 gp11_attributes_unref (GP11Attributes *attrs)
 {

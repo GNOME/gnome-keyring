@@ -70,6 +70,8 @@ enum {
 	GP11_DATE = -4
 };
 
+#define GP11_INVALID (gulong)-1
+
 void                gp11_attribute_init                     (GP11Attribute *attr,
                                                              gulong attr_type,
                                                              gconstpointer value,
