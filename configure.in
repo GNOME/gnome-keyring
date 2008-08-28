@@ -506,13 +506,13 @@ gp11/gp11.pc
 gp11/Makefile
 gp11/tests/Makefile
 library/Makefile
+library/reference/Makefile
 library/tests/Makefile
 pam/Makefile
 pam/tests/Makefile
 pkcs11/Makefile
 pkcs11/tests/Makefile
 po/Makefile.in
-reference/Makefile
 tests/Makefile
 tool/Makefile
 library/gnome-keyring-1.pc

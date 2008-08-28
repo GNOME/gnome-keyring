@@ -19,7 +19,6 @@ SUBDIRS = \
 	daemon \
 	tool \
 	po \
-	reference \
 	$(TESTS_DIR) \
 	$(PAM_DIR)
 

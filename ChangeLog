@@ -1,5 +1,14 @@
 2008-08-27  Stef Walter  <stef@memberwebs.com>
 
+	* Makefile.am:
+	* configure.in:
+	* library/Makefile.am: 
+	* library/reference/: (moved from library/)
+	* reference/: (moved to library/reference/) Move the documentation
+	for the gnome-keyring library into the 'library' subdirectory. 
+	
+2008-08-27  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pk/gkr-pk-netscape-trust.c: Fix bug where we always 
 	return CKR_FUNCTION_CANCELLED.
 	
