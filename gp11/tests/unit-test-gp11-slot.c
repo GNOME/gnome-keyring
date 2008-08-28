@@ -78,7 +78,7 @@ DEFINE_TEST(slot_info)
 			g_assert (175 == token->hardware_version_minor);
 			g_assert (85 == token->firmware_version_major);
 			g_assert (185 == token->firmware_version_minor);
-			g_assert (927645599 == token->utc_time);
+			g_assert (927623999 == token->utc_time);
 			
 			gp11_token_info_free (token);
 		}
