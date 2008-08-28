@@ -55,7 +55,7 @@ test_keyring_two_LDADD = \
 run: run-auto
 
 run-auto: 
-	sh run-tests.sh $(top_srcdir) test-auto
+	sh run-tests.sh $(top_srcdir) run-auto-test
 
 run-prompt: 
-	sh run-tests.sh $(top_srcdir) test-auto
+	sh run-tests.sh $(top_srcdir) run-prompt-test
