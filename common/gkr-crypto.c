@@ -60,7 +60,7 @@ static void
 fatal_handler (gpointer unused, int unknown, const gchar *msg)
 {
 	/* TODO: Figure out additional arguments */
-	g_log ("gcrypt", G_LOG_LEVEL_ERROR, msg);
+	g_log ("gcrypt", G_LOG_LEVEL_ERROR, "%s", msg);
 }
 
 void
@@ -805,7 +805,7 @@ gkr_crypto_sexp_dump (gcry_sexp_t sexp)
 	len = gcry_sexp_sprint (sexp, GCRYSEXP_FMT_ADVANCED, NULL, 0);
 	buf = g_malloc (len);
 	gcry_sexp_sprint (sexp, GCRYSEXP_FMT_ADVANCED, buf, len);
-	g_printerr (buf);
+	g_printerr ("%s", buf);
 	g_free (buf);
 }
 

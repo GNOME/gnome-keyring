@@ -1,3 +1,7 @@
+2008-08-27  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-crypto.c: Fix build problems with string formats.
+	
 2008-08-22  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-call.c: Fix build problem with string formats
