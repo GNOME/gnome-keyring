@@ -187,6 +187,12 @@ gp11_module_class_init (GP11ModuleClass *klass)
  * PUBLIC 
  */
 
+/**
+ * gp11_module_info_free:
+ * @module_info: The module info to free, or NULL.
+ * 
+ * Free a GP11ModuleInfo structure.
+ **/
 void
 gp11_module_info_free (GP11ModuleInfo *module_info)
 {
@@ -197,6 +203,16 @@ gp11_module_info_free (GP11ModuleInfo *module_info)
 	g_free (module_info);
 }
 
+/**
+ * gp11_module_initialize:
+ * @path: The file system path to the PKCS#11 module to load.
+ * @reserved: Extra arguments for the PKCS#11 module, should usually be NULL.
+ * @err: A location to store an error resulting from a failed load.
+ * 
+ * Load and initialize a PKCS#11 module represented by a GP11Module object.
+ * 
+ * Return value: The loaded PKCS#11 module or NULL if failed.
+ **/
 GP11Module*
 gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 {
@@ -268,6 +284,14 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 	return mod;
 }
 
+/**
+ * gp11_module_get_info:
+ * @module: The module to get info for.
+ * 
+ * Get the info about a PKCS#11 module. 
+ * 
+ * Return value: The module info. Release this with gp11_module_info_free().
+ **/
 GP11ModuleInfo*
 gp11_module_get_info (GP11Module *module)
 {

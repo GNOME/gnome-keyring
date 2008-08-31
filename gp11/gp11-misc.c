@@ -27,6 +27,13 @@
 
 #include <glib/gi18n.h>
 
+/**
+ * gp11_get_error_quark:
+ * 
+ * The error domain for GP11 library errors.
+ * 
+ * Return value: The error domain. 
+ */
 GQuark
 gp11_get_error_quark (void)
 {
@@ -36,6 +43,13 @@ gp11_get_error_quark (void)
 	return domain;
 }
 
+/**
+ * gp11_list_unref_free:
+ * reflist: List of Gobject reference counted pointers.
+ * 
+ * Free a list of GObject based pointers. All objects in the list
+ * will be unreffed and then the list itself will be freed.
+ */
 void
 gp11_list_unref_free (GList *reflist)
 {
@@ -47,6 +61,15 @@ gp11_list_unref_free (GList *reflist)
 	g_list_free (reflist);
 }
 
+/**
+ * gp11_message_from_rv:
+ * rv: The PKCS#11 return value to get a message for.
+ * 
+ * Get a message for a PKCS#11 return value or error code. Do not 
+ * pass CKR_OK or other such non errors to this function.
+ * 
+ * Return value: The user readable message. 
+ */
 const gchar*
 gp11_message_from_rv (CK_RV rv)
 {
@@ -228,6 +251,18 @@ gp11_message_from_rv (CK_RV rv)
 	}
 }
 
+/**
+ * gp11_string_form_chars:
+ * @data: The character data to turn into a null terminated string.
+ * @max: The maximum length of the charater data.
+ * 
+ * Create a string from a set of PKCS#11 characters. This is 
+ * similar to g_strndup, except for that it also strips trailing 
+ * spaces. These space padded strings are often used in PKCS#11
+ * structures.
+ * 
+ * Return value: The null terminated string.
+ */
 gchar*
 gp11_string_from_chars (const guchar *data, gsize max)
 {
@@ -237,6 +272,6 @@ gp11_string_from_chars (const guchar *data, gsize max)
 	g_return_val_if_fail (max, NULL);
 	
 	string = g_strndup ((gchar*)data, max);
-	g_strstrip (string);
+	g_strchomp (string);
 	return string;
 }
