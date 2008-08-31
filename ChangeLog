@@ -1,5 +1,10 @@
 2008-08-31  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/gp11-misc.c:
+	* gp11/gp11-module.c: Complete some more documentation.
+
+2008-08-31  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon-ops.c:
 	* daemon/ui/gkr-ask-request.h:
 	* daemon/ui/gkr-ask-tool.c: Use proper text for button when
