@@ -1,3 +1,8 @@
+2008-08-31  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-misc.c: Use a more easily translatable message 
+	for CKR_RANDOM_SEED_NOT_SUPPORTED.
+	
 2008-08-27  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/Makefile.am:

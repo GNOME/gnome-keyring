@@ -198,7 +198,7 @@ gp11_message_from_rv (CK_RV rv)
 	case CKR_WRAPPING_KEY_TYPE_INCONSISTENT:
 		return _("Cannot export because the key is of the wrong type");
 	case CKR_RANDOM_SEED_NOT_SUPPORTED:
-		return _("Cannot set a random seed");
+		return _("Unable to initialize the random number generator");
 	case CKR_RANDOM_NO_RNG:
 		return _("No random number generator available");
 	case CKR_DOMAIN_PARAMS_INVALID:
