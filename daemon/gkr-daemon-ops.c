@@ -527,7 +527,7 @@ request_change_keyring_password (GkrKeyringRequest *req, GkrKeyring* keyring,
 		} 
 	}
 	
-	flags = GKR_ASK_REQUEST_NEW_PASSWORD;
+	flags = GKR_ASK_REQUEST_CHANGE_PASSWORD;
 	if (!*original)
 		flags |= GKR_ASK_REQUEST_ORIGINAL_PASSWORD;
 

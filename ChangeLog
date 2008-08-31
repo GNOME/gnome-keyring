@@ -1,5 +1,13 @@
 2008-08-31  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon-ops.c:
+	* daemon/ui/gkr-ask-request.h:
+	* daemon/ui/gkr-ask-tool.c: Use proper text for button when
+	prompting to change password. Fixes bug #549730. Patch by
+	Adam Schreiber.
+	
+2008-08-31  Stef Walter  <stef@memberwebs.com>
+
 	* gp11/gp11-misc.c: Use a more easily translatable message 
 	for CKR_RANDOM_SEED_NOT_SUPPORTED.
 	

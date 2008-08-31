@@ -622,9 +622,13 @@ prepare_dialog (void)
 		resps[i++] = GKR_ASK_RESPONSE_ALLOW;
 	}
 	if (flags & GKR_ASK_REQUEST_CREATE_BUTTON) {
-	    buttons[i] = _("_Create");
-	    resps[i++] = GKR_ASK_RESPONSE_ALLOW;
-    }
+		buttons[i] = _("C_reate");
+		resps[i++] = GKR_ASK_RESPONSE_ALLOW;
+	}
+	if (flags & GKR_ASK_REQUEST_CHANGE_BUTTON) {
+		buttons[i] = _("C_hange");
+		resps[i++] = GKR_ASK_RESPONSE_ALLOW;
+	}
 	if (flags & GKR_ASK_REQUEST_ALLOW_BUTTON) {
 		buttons[i] = _("Allow _Once");
 		resps[i++] = GKR_ASK_RESPONSE_ALLOW;
