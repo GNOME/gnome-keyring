@@ -4,16 +4,19 @@
 #
 # Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2005, 2006.
 # Ignacio Casal Quinteiro <icq@svn.gnome.org>, 2007, 2008.
+# Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2008.
+# Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2008.
+# Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-17 19:49+0200\n"
-"PO-Revision-Date: 2008-08-17 19:49+0200\n"
-"Last-Translator: Ignacio Casal Quinteiro <icq@svn.gnome.org>\n"
+"POT-Creation-Date: 2008-08-31 21:02+0200\n"
+"PO-Revision-Date: 2008-08-31 21:06+0200\n"
+"Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego <proxecto@trasno.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type:  text/plain; charset=UTF-8\n"
+"Content-Type:  text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
@@ -28,7 +31,7 @@ msgstr "Disco extraíble"
 
 #: ../common/gkr-location.c:543 ../common/gkr-location.c:555
 msgid "Home"
-msgstr "Inicio"
+msgstr "Cartafol persoal"
 
 #: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
 #: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
@@ -721,14 +724,18 @@ msgid "Deny"
 msgstr "Denegar"
 
 #: ../daemon/ui/gkr-ask-tool.c:625
-msgid "_Create"
-msgstr "_Crear"
+msgid "C_reate"
+msgstr "C_rear"
 
 #: ../daemon/ui/gkr-ask-tool.c:629
+msgid "C_hange"
+msgstr "_Cambiar"
+
+#: ../daemon/ui/gkr-ask-tool.c:633
 msgid "Allow _Once"
 msgstr "Permitir _unha vez"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:637
 msgid "_Always Allow"
 msgstr "_Permitir sempre"
 
@@ -1001,8 +1008,8 @@ msgid "Cannot export because the key is of the wrong type"
 msgstr "Non se pode exportar porque a chave é de tipo incorrecto"
 
 #: ../gp11/gp11-misc.c:201
-msgid "Cannot set a random seed"
-msgstr "Non se pode establecer unha semente aleatoria"
+msgid "Unable to initialize the random number generator"
+msgstr "Non se puido inicializar o xerador de números aleatorios"
 
 #: ../gp11/gp11-misc.c:203
 msgid "No random number generator available"
@@ -1083,6 +1090,9 @@ msgstr "Xa existe un anel de chaves con ese nome."
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "O anel de chaves xa foi desbloqueado."
+
+#~ msgid "Cannot set a random seed"
+#~ msgstr "Non se pode establecer unha semente aleatoria"
 
 #~ msgid "Unlock password for '%s'"
 #~ msgstr "Contrasinal de desbloqueo para o '%s'"
