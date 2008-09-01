@@ -90,7 +90,7 @@ void unit_test_object_label (CuTest* cu)
 	g_printerr ("ORIG LABEL: %s\n", label);
 	
 	/* After setting a label in index, should return that */
-	gkr_pk_object_index_set_string (object_1, GKR_PK_INDEX_LABEL, "Index Label");
+	gkr_pk_object_index_set_label (object_1, "Index Label");
 	label = gkr_pk_object_get_label (object_1);
 	CuAssert (cu, "no label returned after index label", label != NULL);
 	CuAssert (cu, "wrong label returned after index label", strcmp (label, "Index Label") == 0);

@@ -75,7 +75,9 @@ guint               gkr_pk_index_get_uint              (GkrPkIndex *index, gkrco
 gchar*              gkr_pk_index_get_string            (GkrPkIndex *index, gkrconstid digest,
                                                         const gchar *field);
 
-gchar*              gkr_pk_index_get_secret            (GkrPkIndex *index, gkrconstid digest);
+const gchar*        gkr_pk_index_get_label             (GkrPkIndex *index, gkrconstid digest);
+
+const gchar*        gkr_pk_index_get_secret            (GkrPkIndex *index, gkrconstid digest);
 
 guchar*             gkr_pk_index_get_binary            (GkrPkIndex *index, gkrconstid digest,
                                                         const gchar *field, gsize *n_data);
@@ -91,6 +93,9 @@ gboolean            gkr_pk_index_set_uint              (GkrPkIndex *index, gkrco
                                                         
 gboolean            gkr_pk_index_set_string            (GkrPkIndex *index, gkrconstid digest,
                                                         const gchar *field, const gchar *val);
+
+gboolean            gkr_pk_index_set_label             (GkrPkIndex *index, gkrconstid digest,
+                                                        const gchar *label);
 
 gboolean            gkr_pk_index_set_secret            (GkrPkIndex *index, gkrconstid digest,
                                                         const gchar *secret);

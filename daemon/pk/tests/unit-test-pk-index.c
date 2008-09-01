@@ -89,6 +89,40 @@ void unit_test_index_binary (CuTest* cu)
 	CuAssert (cu, "get_binary returned wrong data", memcmp (data, DATA, DATA_L) == 0);
 }
 
+void unit_test_index_secret (CuTest *cu)
+{
+	gboolean ret;
+	const gchar *secret;
+	
+	ret = gkr_pk_index_set_secret (pk_index, object->digest, "my secret");
+	CuAssert (cu, "set_secret returned false", ret == TRUE);
+	
+	/* Setting same secret should return false */
+	ret = gkr_pk_index_set_secret (pk_index, object->digest, "my secret");
+	CuAssert (cu, "set_secret shouldn't return true", ret == FALSE);
+	
+	secret = gkr_pk_index_get_secret (pk_index, object->digest);
+	CuAssert (cu, "get_secret returned no data", secret != NULL);
+	CuAssert (cu, "get_secret returned wrong secret", strcmp (secret, "my secret") == 0);
+}
+
+void unit_test_index_label (CuTest *cu)
+{
+	gboolean ret;
+	const gchar *label;
+	
+	ret = gkr_pk_index_set_label (pk_index, object->digest, "my label");
+	CuAssert (cu, "set_label returned false", ret == TRUE);
+	
+	/* Setting same label should return false */
+	ret = gkr_pk_index_set_label (pk_index, object->digest, "my label");
+	CuAssert (cu, "set_label shouldn't return true", ret == FALSE);
+	
+	label = gkr_pk_index_get_label (pk_index, object->digest);
+	CuAssert (cu, "get_label returned no data", label != NULL);
+	CuAssert (cu, "get_label returned wrong label", strcmp (label, "my label") == 0);
+}
+
 void unit_test_index_string (CuTest *cu)
 {
 	gchar *str;

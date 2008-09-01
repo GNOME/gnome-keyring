@@ -1,5 +1,16 @@
 2008-08-31  Stef Walter  <stef@memberwebs.com>
 
+	* deamon/pk/gkr-pk-index.c:
+	* daemon/pk/gkr-pk-index.h:
+	* daemon/pk/gkr-pk-object.c:
+	* daemon/pk/gkr-pk-object.h:
+	* daemon/pk/gkr-pk-storage.c:
+	* daemon/pk/tests/unit-test-pk-index.c:
+	* daemon/pk/tests/unit-test-pk-object.c: Use the keyring item 
+	display_name to store PK object labels in. 
+	
+2008-08-31  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pkcs11/gkr-pkcs11-rsa.c: Support extracting of RSA 
 	signature even when no pad function is specified for extraction.
 	

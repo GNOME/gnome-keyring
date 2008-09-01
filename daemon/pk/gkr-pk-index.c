@@ -398,7 +398,7 @@ gkr_pk_index_allows_secrets (GkrPkIndex *index)
 	 *  - Encrypted indexes. It's not secure to store password 
 	 *    in clear text indexes.
 	 */
-	 
+	
 	return index->keyring->location && 
 	       !gkr_keyring_is_insecure (index->keyring); 
 }
@@ -539,7 +539,7 @@ gkr_pk_index_get_string (GkrPkIndex *index, gkrconstid digest, const gchar *fiel
 	return g_strdup (attr->value.string);
 }
 
-gchar*
+const gchar*
 gkr_pk_index_get_secret (GkrPkIndex *index, gkrconstid digest)
 {
 	GkrKeyringItem *item;
@@ -553,7 +553,24 @@ gkr_pk_index_get_secret (GkrPkIndex *index, gkrconstid digest)
 	if (item == NULL)
 		return NULL;
 		
-	return gkr_secure_strdup (item->secret);	
+	return item->secret;	
+}
+
+const gchar*
+gkr_pk_index_get_label (GkrPkIndex *index, gkrconstid digest)
+{
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+	
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), NULL);
+	
+	item = find_item_for_digest (index, digest, FALSE);
+	if (item == NULL)
+		return NULL;
+	
+	return item->display_name;
 }
 
 guchar*
@@ -684,6 +701,34 @@ gkr_pk_index_set_string (GkrPkIndex *index, gkrconstid digest,
 	return write_string (index, digest, field, val);
 }
 
+gboolean
+gkr_pk_index_set_label (GkrPkIndex *index, gkrconstid digest, 
+                        const gchar *label)
+{
+	GkrKeyringItem *item;
+	
+	if (!index)
+		index = gkr_pk_index_default ();
+
+	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	
+	item = find_item_for_digest (index, digest, TRUE);
+	if (!item)
+		return FALSE;
+
+	/* Make sure it's actually changed */
+	if (string_equal (item->display_name, label))
+		return FALSE;
+	
+	g_free (item->display_name);
+	item->display_name = g_strdup (label);
+
+	if (!gkr_keyring_save_to_disk (index->keyring))
+		g_warning ("writing label: couldn't write index keyring to disk");
+	
+	return TRUE;	
+}
+
 gboolean 
 gkr_pk_index_set_secret (GkrPkIndex *index, gkrconstid digest, 
                          const gchar *val)
@@ -694,9 +739,10 @@ gkr_pk_index_set_secret (GkrPkIndex *index, gkrconstid digest,
 		index = gkr_pk_index_default ();
 
 	g_return_val_if_fail (GKR_IS_PK_INDEX (index), FALSE);
+	g_return_val_if_fail (index->keyring, FALSE);
 	
 	/* Cannot store secrets in an insecure keyring. Caller should have checked this. */
-	if (val != NULL && !gkr_pk_index_allows_secrets (index)) {
+	if (val != NULL && index->keyring->location && !gkr_pk_index_allows_secrets (index)) {
 		g_warning ("gkr_pk_index_set_secret() called on an insecure keyring. Cannot "
 		           "store secrets in a text based or otherwise insecure keyring.");
 		return FALSE;

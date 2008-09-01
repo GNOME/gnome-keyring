@@ -858,7 +858,7 @@ gkr_pk_object_has_label (GkrPkObject *xobj)
 	g_return_val_if_fail (GKR_IS_PK_OBJECT (xobj), FALSE);
 	
 	return pv->orig_label != NULL || 
-	       gkr_pk_object_index_has_value (xobj, GKR_PK_INDEX_LABEL);
+	       gkr_pk_object_index_get_label (xobj);
 }
 
 const gchar*
@@ -871,7 +871,7 @@ gkr_pk_object_get_label (GkrPkObject *xobj)
 	
 	if (!pv->label) {
 		/* Try the label from the index */
-		pv->label = gkr_pk_object_index_get_string (xobj, GKR_PK_INDEX_LABEL);
+		pv->label = g_strdup (gkr_pk_object_index_get_label (xobj));
 				
 		/* Try any original label handed us by parsers */
 		if (!pv->label && pv->orig_label) 
@@ -908,7 +908,7 @@ void
 gkr_pk_object_set_label (GkrPkObject *xobj, const gchar *label)
 {
 	g_return_if_fail (GKR_IS_PK_OBJECT (xobj));
-	gkr_pk_object_index_set_string (xobj, "label", label);
+	gkr_pk_object_index_set_label (xobj, label);
 }
 
 /* -------------------------------------------------------------------
@@ -1001,6 +1001,22 @@ gkr_pk_object_index_get_binary (GkrPkObject *object, const gchar *field,
 	return gkr_pk_index_get_binary (index, object->digest, field, n_data);
 }
 
+const gchar*
+gkr_pk_object_index_get_label (GkrPkObject *object)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_val_if_fail (GKR_IS_PK_OBJECT (object), NULL);
+	g_return_val_if_fail (object->digest, NULL);
+	
+	if (object->storage) {
+		g_return_val_if_fail (GKR_IS_PK_STORAGE (object->storage), NULL);
+		index = gkr_pk_storage_index (object->storage, object->location);
+	}
+	
+	return gkr_pk_index_get_label (index, object->digest);
+}
+
 void
 gkr_pk_object_index_set_boolean (GkrPkObject *object, const gchar *field,
                                  gboolean value)
@@ -1055,6 +1071,23 @@ gkr_pk_object_index_set_binary (GkrPkObject *object, const gchar *field,
 	}
 	
 	if (gkr_pk_index_set_binary (index, object->digest, field, data, n_data))
+		gkr_pk_object_flush (object);
+}
+
+void
+gkr_pk_object_index_set_label (GkrPkObject *object, const gchar *label)
+{
+	GkrPkIndex *index = NULL;
+	
+	g_return_if_fail (GKR_IS_PK_OBJECT (object));
+	g_return_if_fail (object->digest);
+	
+	if (object->storage) {
+		g_return_if_fail (GKR_IS_PK_STORAGE (object->storage));
+		index = gkr_pk_storage_index (object->storage, object->location);
+	}
+	
+	if (gkr_pk_index_set_label (index, object->digest, label))
 		gkr_pk_object_flush (object);
 }
 

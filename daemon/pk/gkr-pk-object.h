@@ -31,8 +31,6 @@
 
 G_BEGIN_DECLS
 
-#define GKR_PK_INDEX_LABEL              "label"
-
 #define GKR_PK_OBJECT_HANDLE_MASK       0x0FFFFFFF
 #define GKR_PK_OBJECT_IS_PERMANENT	0x10000000
 #define GKR_PK_OBJECT_IS_TEMPORARY	0x00000000
@@ -177,6 +175,8 @@ guchar*             gkr_pk_object_index_get_binary   (GkrPkObject *object,
                                                       const gchar *field,
                                                       gsize *n_data);
 
+const gchar*        gkr_pk_object_index_get_label    (GkrPkObject *object);
+
 void                gkr_pk_object_index_set_boolean  (GkrPkObject *object,
                                                       const gchar *field,
                                                       gboolean value);
@@ -189,6 +189,9 @@ void                gkr_pk_object_index_set_binary   (GkrPkObject *object,
                                                       const gchar *field,
                                                       const guchar *data,
                                                       gsize n_data);
+
+void                gkr_pk_object_index_set_label    (GkrPkObject *object,
+                                                      const gchar *label);
 
 void                gkr_pk_object_index_clear        (GkrPkObject *object, 
                                                       const gchar *field);

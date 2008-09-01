@@ -791,7 +791,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		
 	/* See if we can find a valid password for this location */
 	if (st == 2) {
-		*result = gkr_pk_index_get_secret (index, digest);
+		*result = gkr_secure_strdup (gkr_pk_index_get_secret (index, digest));
 		if (*result != NULL)
 			return TRUE;
 		
