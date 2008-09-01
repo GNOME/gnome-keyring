@@ -1,5 +1,10 @@
 2008-08-31  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pk/gkr-pk-object.c: Don't try to rename in indexes
+	if digest remains the same on an object. 
+	
+2008-08-31  Stef Walter  <stef@memberwebs.com>
+
 	* gp11/gp11-misc.c:
 	* gp11/gp11-module.c: Complete some more documentation.
 

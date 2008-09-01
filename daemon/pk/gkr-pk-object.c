@@ -343,6 +343,12 @@ gkr_pk_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (xobj->digest);
 		digest = gkr_id_dup (g_value_get_boxed (value));
 		g_return_if_fail (digest);
+
+		/* Set to the same value, no need to do anything */
+		if (gkr_id_equals (digest, xobj->digest)) {
+			gkr_id_free (digest);
+			return;
+		}
 		
 		/* Unregister old digest with object manager */
 		manager = xobj->manager;
