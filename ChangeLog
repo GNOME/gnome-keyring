@@ -1,5 +1,10 @@
 2008-08-31  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pkcs11/gkr-pkcs11-rsa.c: Support extracting of RSA 
+	signature even when no pad function is specified for extraction.
+	
+2008-08-31  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pk/gkr-pk-object.c: Don't try to rename in indexes
 	if digest remains the same on an object. 
 	

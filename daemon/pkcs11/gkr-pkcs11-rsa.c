@@ -118,15 +118,25 @@ sexp_to_data (const gchar* format1, const gchar *format2, const gchar *format3,
               guint nbits, GkrCryptoPadding padfunc, gcry_sexp_t sexp, 
               guchar **data, gsize *n_data)
 {
+	gboolean res;
+	
 	g_assert (format1);
 	g_assert (sexp);
 	g_assert (data);
 	g_assert (n_data);
 
 	/* Now extract and send it back out */
-	*data = gkr_crypto_sexp_extract_mpi_padded (sexp, nbits, n_data, padfunc,
-	                                            format1, format2, format3, NULL);
-	g_return_val_if_fail (*data, CKR_GENERAL_ERROR);
+	if (padfunc) {
+		*data = gkr_crypto_sexp_extract_mpi_padded (sexp, nbits, n_data, padfunc,
+		                                            format1, format2, format3, NULL);
+		g_return_val_if_fail (*data, CKR_GENERAL_ERROR);
+	} else {
+		*n_data = nbits / 8;
+		*data = g_malloc0 (*n_data);
+		res = gkr_crypto_sexp_extract_mpi_aligned (sexp, *data, *n_data, 
+		                                           format1, format2, format3, NULL);
+		g_return_val_if_fail (res, CKR_GENERAL_ERROR);
+	}
 
 	return CKR_OK;  
 } 
