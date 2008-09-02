@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.21.4 TRUNK\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-17 15:17+0000\n"
-"PO-Revision-Date: 2008-08-22 12:45+0700\n"
+"POT-Creation-Date: 2008-08-31 18:25+0000\n"
+"PO-Revision-Date: 2008-09-02 15:13+0700\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -347,7 +347,10 @@ msgid ""
 "A list of paths to PKCS#11 modules to load. No modules are currently listed "
 "by default, as this is still an experimental feature. This is used by "
 "seahorse and other PKCS#11 aware applications."
-msgstr "Danh sách đường dẫn các module PKCS#11 cần nạp. Mặc định không có module nào, vì đây vẫn là tính năng thử nghiệm. Được dùng bởi seahorse và các ứng dụng hiểu PKCS#11 khác."
+msgstr ""
+"Danh sách đường dẫn các module PKCS#11 cần nạp. Mặc định không có module "
+"nào, vì đây vẫn là tính năng thử nghiệm. Được dùng bởi seahorse và các ứng "
+"dụng hiểu PKCS#11 khác."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
@@ -489,7 +492,9 @@ msgid ""
 "The system wants to store information about your keys and certificates. In "
 "order to protect this information, choose a password with which it will be "
 "locked."
-msgstr "Hệ thống muốn lưu thông tin về khoá và chứng nhận của bạn. Để có thể bảo vệ những thông tin này, hãy chọn mật khẩu đế khoá nó."
+msgstr ""
+"Hệ thống muốn lưu thông tin về khoá và chứng nhận của bạn. Để có thể bảo vệ "
+"những thông tin này, hãy chọn mật khẩu đế khoá nó."
 
 #. And put together the ask request
 #: ../daemon/pk/gkr-pk-index.c:124
@@ -504,7 +509,9 @@ msgstr "Gõ mật khẩu để mở khoá vùng lưu trữ"
 msgid ""
 "The system wants to access information about your keys and certificates, but "
 "it is locked."
-msgstr "Hệ thống muốn truy cập thông tin về khoá và chứng nhận của bạn, nhưng chúng đã bị khoá."
+msgstr ""
+"Hệ thống muốn truy cập thông tin về khoá và chứng nhận của bạn, nhưng chúng "
+"đã bị khoá."
 
 #: ../daemon/pk/gkr-pk-object.c:883
 msgid "Certificate"
@@ -600,7 +607,8 @@ msgstr "Ứng dụng muốn truy cập đến « %s », nhưng nó bị khóa"
 msgid ""
 "The system wants to store the private key '%s' on your disk. Please enter a "
 "password to lock it with."
-msgstr "Hệ thống muốn lưu khoá cá nhân '%s' vào đĩa. Hãy nhập mật khẩu để khoá nó."
+msgstr ""
+"Hệ thống muốn lưu khoá cá nhân '%s' vào đĩa. Hãy nhập mật khẩu để khoá nó."
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
@@ -609,7 +617,7 @@ msgid ""
 "it with."
 msgstr "Hệ thống muốn lưu '%s' vào đĩa. Hãy nhập mật khẩu để khoá nó."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:40
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:64
 msgid "The operation was cancelled"
 msgstr "Thao tác bị huỷ"
 
@@ -696,334 +704,338 @@ msgid "Deny"
 msgstr "Từ chối"
 
 #: ../daemon/ui/gkr-ask-tool.c:625
-msgid "_Create"
+msgid "C_reate"
 msgstr "_Tạo"
 
 #: ../daemon/ui/gkr-ask-tool.c:629
+msgid "C_hange"
+msgstr "_Thay đổi"
+
+#: ../daemon/ui/gkr-ask-tool.c:633
 msgid "Allow _Once"
 msgstr "Cho phép _một lần"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:637
 msgid "_Always Allow"
 msgstr "_Luôn cho phép"
 
-#: ../gp11/gp11-misc.c:43
+#: ../gp11/gp11-misc.c:67
 msgid "Insufficient memory available"
 msgstr "Không đủ bộ nhớ"
 
-#: ../gp11/gp11-misc.c:45
+#: ../gp11/gp11-misc.c:69
 msgid "The specified slot ID is not valid"
 msgstr "ID khe xác định không hợp lệ"
 
-#: ../gp11/gp11-misc.c:47
+#: ../gp11/gp11-misc.c:71
 msgid "Internal error"
 msgstr "Lỗi nội bộ"
 
-#: ../gp11/gp11-misc.c:49
+#: ../gp11/gp11-misc.c:73
 msgid "The operation failed"
 msgstr "Thao tác thất bại"
 
-#: ../gp11/gp11-misc.c:51
+#: ../gp11/gp11-misc.c:75
 msgid "Invalid arguments"
 msgstr "Đối số không hợp lệ"
 
-#: ../gp11/gp11-misc.c:53
+#: ../gp11/gp11-misc.c:77
 msgid "The module cannot create needed threads"
 msgstr "Module không thể tạo các thread cần thiết"
 
-#: ../gp11/gp11-misc.c:55
+#: ../gp11/gp11-misc.c:79
 msgid "The module cannot lock data properly"
 msgstr "Module không thể khoá dữ liệu đúng cách"
 
-#: ../gp11/gp11-misc.c:57
+#: ../gp11/gp11-misc.c:81
 msgid "The field is read-only"
 msgstr "Trường này chỉ đọc"
 
-#: ../gp11/gp11-misc.c:59
+#: ../gp11/gp11-misc.c:83
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Trường nhạy cảm và không thể tiết lộ"
 
-#: ../gp11/gp11-misc.c:61
+#: ../gp11/gp11-misc.c:85
 msgid "The field is invalid or does not exist"
 msgstr "Trường này không hợp lệ hoặc không tồn tại"
 
-#: ../gp11/gp11-misc.c:63
+#: ../gp11/gp11-misc.c:87
 msgid "Invalid value for field"
 msgstr "Giá trị không hợp lệ với trường"
 
-#: ../gp11/gp11-misc.c:65
+#: ../gp11/gp11-misc.c:89
 msgid "The data is not valid or unrecognized"
 msgstr "Dữ liệu không hợp lệ hoặc không nhận ra được"
 
-#: ../gp11/gp11-misc.c:67
+#: ../gp11/gp11-misc.c:91
 msgid "The data is too long"
 msgstr "Dữ liệu quá dài"
 
-#: ../gp11/gp11-misc.c:69
+#: ../gp11/gp11-misc.c:93
 msgid "An error occurred on the device"
 msgstr "Lỗi xảy ra trên thiết bị"
 
-#: ../gp11/gp11-misc.c:71
+#: ../gp11/gp11-misc.c:95
 msgid "Insufficient memory available on device"
 msgstr "Không đủ bộ nhớ trên thiết bị."
 
-#: ../gp11/gp11-misc.c:73
+#: ../gp11/gp11-misc.c:97
 msgid "The device was removed or unplugged"
 msgstr "Thiết bị đã bị rút ra"
 
-#: ../gp11/gp11-misc.c:75
+#: ../gp11/gp11-misc.c:99
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Dữ liệu mã hoá không hợp lệ hoặc không thể nhận ra"
 
-#: ../gp11/gp11-misc.c:77
+#: ../gp11/gp11-misc.c:101
 msgid "The encrypted data is too long"
 msgstr "Dữ liệu mã hoá quá dài"
 
-#: ../gp11/gp11-misc.c:79
+#: ../gp11/gp11-misc.c:103
 msgid "This operation is not supported"
 msgstr "Thao tác không được hỗ trợ"
 
-#: ../gp11/gp11-misc.c:81
+#: ../gp11/gp11-misc.c:105
 msgid "The key is missing or invalid"
 msgstr "Thiếu khoá hoặc khoá không hợp lệ"
 
-#: ../gp11/gp11-misc.c:83
+#: ../gp11/gp11-misc.c:107
 msgid "The key is the wrong size"
 msgstr "Khoá sai kích thước"
 
-#: ../gp11/gp11-misc.c:85
+#: ../gp11/gp11-misc.c:109
 msgid "The key is of the wrong type"
 msgstr "Khoá sai kiểu"
 
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:111
 msgid "No key is needed"
 msgstr "Không cần khoá"
 
-#: ../gp11/gp11-misc.c:89
+#: ../gp11/gp11-misc.c:113
 msgid "The key is different than before"
 msgstr "Khoá khác trước"
 
-#: ../gp11/gp11-misc.c:91
+#: ../gp11/gp11-misc.c:115
 msgid "A key is needed"
 msgstr "Cần khoá"
 
-#: ../gp11/gp11-misc.c:93
+#: ../gp11/gp11-misc.c:117
 msgid "Cannot include the key in digest"
 msgstr "Không thể kèm khoá trong tóm tắt"
 
-#: ../gp11/gp11-misc.c:95
+#: ../gp11/gp11-misc.c:119
 msgid "This operation cannot be done with this key"
 msgstr "Không thể thực hiện thao tác này với khoá này"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:121
 msgid "The key cannot be wrapped"
 msgstr "Khoá không thể bị cuộn"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:123
 msgid "Cannot export this key"
 msgstr "Không thể xuất khoá"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:125
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Cơ chế mã hoá không hợp lệ hoặc không thể nhận ra"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:127
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Cơ chế mã hoá có đối số không hợp lệ"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:129
 msgid "The object is missing or invalid"
 msgstr "Thiếu hoặc sai đối tượng"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:131
 msgid "Another operation is already taking place"
 msgstr "Một thao tác khác đang được tiến hành"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:133
 msgid "No operation is taking place"
 msgstr "Không có thao tác nào đang được tiến hành"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:135
 msgid "The password or PIN is incorrect"
 msgstr "Mật khẩu hoặc PIN không đúng"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:137
 msgid "The password or PIN is invalid"
 msgstr "Mật khẩu hoặc PIN không hợp lệ"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:139
 msgid "The password or PIN is of an invalid length"
 msgstr "Mật khẩu hoặc PIN sai độ dài"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:141
 msgid "The password or PIN has expired"
 msgstr "Mật khẩu hoặc PIN đã quá hạn"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:143
 msgid "The password or PIN is locked"
 msgstr "Mật khẩu hoặc PIN đã bị khoá"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:145
 msgid "The session is closed"
 msgstr "Phiên làm việc đã kết thúc"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:147
 msgid "Too many sessions are active"
 msgstr "Quá nhiều phiên làm việc đang hoạt động"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:149
 msgid "The session is invalid"
 msgstr "Phiên làm việc không hợp lệ"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:151
 msgid "The session is read-only"
 msgstr "Phiên làm việc chỉ đọc"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:153
 msgid "An open session exists"
 msgstr "Đang có phiên làm việc mở"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:155
 msgid "A read-only session exists"
 msgstr "Đang có phiên làm việc chỉ đọc"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:157
 msgid "An administrator session exists"
 msgstr "Đang có phiên làm việc quản trị"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:159
 msgid "The signature is bad or corrupted"
 msgstr "Chữ ký hư hoặc không đúng"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:161
 msgid "The signature is unrecognized or corrupted"
 msgstr "Chữ ký hư hoặc không thể nhận ra"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:163
 msgid "Certain required fields are missing"
 msgstr "Thiếu một số trường bắt buộc"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:165
 msgid "Certain fields have invalid values"
 msgstr "Một số trường bắt buộc có giá trị không hợp lệ"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:167
 msgid "The device is not present or unplugged"
 msgstr "Thiết bị không có hoặc đã bị rút ra"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:169
 msgid "The device is invalid or unrecognizable"
 msgstr "Thiết bị không hợp lệ hoặc không thể nhận ra"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:171
 msgid "The device is write protected"
 msgstr "Thiết bị được chống ghi"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:173
 msgid "Cannot import because the key is invalid"
 msgstr "Không thể nhập vì khoá không hợp lệ"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:175
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Không thể nhập vì khoá sai kích thước"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:177
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Không thể nhập vì khoá sai kiểu"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:179
 msgid "You are already logged in"
 msgstr "Bạn đã đăng nhập rồi"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:181
 msgid "No user has logged in"
 msgstr "Không có người dùng nào đăng nhập"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:183
 msgid "The user's password or PIN is not set"
 msgstr "Chưa đặt mật khẩu người dùng hoặc PIN"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:185
 msgid "The user is of an invalid type"
 msgstr "Người dùng sai kiểu"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:187
 msgid "Another user is already logged in"
 msgstr "Người dùng khác đã đăng nhập"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:189
 msgid "Too many users of different types logged in"
 msgstr "Quá nhiều loại người dùng đăng nhập"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:191
 msgid "Cannot import an invalid key"
 msgstr "Không thể nhập khoá không hợp lệ"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:193
 msgid "Cannot import a key of the wrong size"
 msgstr "Không thể nhập khoá sai kích thước"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:195
 msgid "Cannot export because the key is invalid"
 msgstr "Không thể xuất vì khoá không hợp lệ"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:197
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Không thể xuất vì khoá sai kích thước"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:199
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Không thể xuất vì khoá sai kiểu"
 
-#: ../gp11/gp11-misc.c:177
-msgid "Cannot set a random seed"
-msgstr "Không thể đặt mầm ngẫu nhiên"
+#: ../gp11/gp11-misc.c:201
+msgid "Unable to initialize the random number generator"
+msgstr "Không thể khởi động bộ phát số ngẫu nhiên"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:203
 msgid "No random number generator available"
 msgstr "Không có bộ phát sinh số ngẫu nhiên"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:205
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Cơ chế mã hoá có tham số không hợp lệ"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:207
 msgid "Not enough space to store the result"
 msgstr "Không đủ chỗ lưu kết quả"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:209
 msgid "The saved state is invalid"
 msgstr "Trạng thái được lưu không hợp lệ"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:211
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Thông tin nhạy cảm và không thể tiết lộ"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:213
 msgid "The state cannot be saved"
 msgstr "Không thể lưu trạng thái"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:215
 msgid "The module has not been initialized"
 msgstr "Module đã được khởi động"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:217
 msgid "The module has already been initialized"
 msgstr "Module đã khởi động rồi"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:219
 msgid "Cannot lock data"
 msgstr "Không thể khoá dữ liệu"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:221
 msgid "The data cannot be locked"
 msgstr "Không thể khoá dữ liệu"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:223
 msgid "The signature request was rejected by the user"
 msgstr "Người dùng từ chối yêu cầu ký"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:227
 msgid "Unknown error"
 msgstr "Lỗi lạ"
 
@@ -1058,6 +1070,9 @@ msgstr "Không có vòng khoá tên đó."
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "Vòng khoá đã được bỏ khoá."
+
+#~ msgid "Cannot set a random seed"
+#~ msgstr "Không thể đặt mầm ngẫu nhiên"
 
 #~ msgid "Unlock password for '%s'"
 #~ msgstr "Mật khẩu mở khoá cho '%s'"
