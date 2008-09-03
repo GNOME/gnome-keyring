@@ -1,3 +1,9 @@
+2008-09-03  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-async.c:
+	* common/tests/Makefile.am: Some tweaking of the asynchronous
+	task scheduling. 
+	
 2008-08-31  Stef Walter  <stef@memberwebs.com>
 
 	* deamon/pk/gkr-pk-index.c:
