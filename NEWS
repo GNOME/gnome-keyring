@@ -1,3 +1,12 @@
+Changes in version 2.23.91 are:
+* Use 'Change' instead of 'Create' when prompting the user for 
+  a password to change keyring password. [Adam Schreiber]
+* Fix RSA signing with X509 mechanism.
+* Tweaking of the asynchronous scheduling to prevent hangs.
+* Add some documentation for GP11 library.
+* Translation fixes.
+* Build fixes. [Götz Waschk]
+
 Changes in version 2.23.90 are:
 * Use 'Create' button instead of 'OK' when prompting the user for 
   a password to create a new keyring. [Adam Schreiber]

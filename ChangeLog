@@ -1,3 +1,9 @@
+=== gnome-keyring 2.23.91 ===
+
+2008-09-03  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS: Release 2.23.91
+
 2008-09-03  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-wakeup.c: Build fix for strange gcc warning.
