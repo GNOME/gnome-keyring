@@ -84,13 +84,15 @@ gkr_wakeup_now (void)
 {
 	#define SIG_MSG "couldn't write signal byte to pipe\n"
 	guchar x = 0xAA;
+	int res;
 	
 	if (wakeup_fds[1] < 0)
 		return;
 	
 	/* Could be called from a signal handler, so try to not use library functions */
 	if (write (wakeup_fds[1], &x, 1) != 1)
-		write (2, SIG_MSG, strlen (SIG_MSG) - 1);		
+		res = write (2, SIG_MSG, strlen (SIG_MSG) - 1);
+			
 }
 
 void
