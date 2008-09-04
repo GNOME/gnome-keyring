@@ -2,42 +2,52 @@
 # Copyright (C) 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 # Rostislav "zbrox" Raykov <zbrox@i-space.org>, 2004, 2005, 2006.
-# Alexander Shopov <ash@contact.bg>, 2007.
+# Alexander Shopov <ash@contact.bg>, 2007, 2008.
 # Yavor Doganov <yavor@gnu.org>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-15 22:42+0300\n"
-"PO-Revision-Date: 2008-04-15 18:15+0300\n"
-"Last-Translator: Yavor Doganov <yavor@gnu.org>\n"
+"POT-Creation-Date: 2008-09-04 09:08+0300\n"
+"PO-Revision-Date: 2008-09-04 09:08+0300\n"
+"Last-Translator: Alexander Shopov <ash@contact.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../common/gkr-location.c:317
+#: ../common/gkr-location.c:320
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Преносим диск: %s"
 
-#: ../common/gkr-location.c:319
+#: ../common/gkr-location.c:322
 msgid "Removable Disk"
 msgstr "Преносим диск"
 
-#: ../common/gkr-location.c:532 ../common/gkr-location.c:544
+#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
 msgid "Home"
 msgstr "Домашна папка"
 
-#: ../common/gkr-location.c:1072 ../common/gkr-location.c:1095
-#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
+#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
-msgstr "Устройството, където се намира този файл, не е достъпно"
+msgstr "Не е достъпно устройството, където се намира този файл"
+
+#: ../common/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Папката не може да бъде създадена: %s"
+
+#: ../common/gkr-location.c:1170
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "Файлът не може да бъде изтрит: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:222
+#: ../daemon/gkr-daemon-ops.c:227
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -47,7 +57,7 @@ msgstr ""
 "стандартния ключодържател."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:226
+#: ../daemon/gkr-daemon-ops.c:231
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -56,7 +66,7 @@ msgstr ""
 "Програмата „%s“ (%s) иска достъп до паролата за „<object prop='name'/>“ в %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232 ../daemon/gkr-daemon-ops.c:242
+#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -66,7 +76,7 @@ msgstr ""
 "стандартния ключодържател."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
+#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -75,7 +85,7 @@ msgstr ""
 "Програмата „%s“ иска достъп до паролата за „<object prop='name'/>“ в %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:252
+#: ../daemon/gkr-daemon-ops.c:257
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -84,7 +94,7 @@ msgstr ""
 "стандартния ключодържател."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:255
+#: ../daemon/gkr-daemon-ops.c:260
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -93,20 +103,15 @@ msgstr ""
 "Непозната програма иска достъп до паролата за „<object prop='name'/>“ в %s."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:261
+#: ../daemon/gkr-daemon-ops.c:266
 msgid "Allow access"
 msgstr "Позволяване на достъп"
 
-#: ../daemon/gkr-daemon-ops.c:261
+#: ../daemon/gkr-daemon-ops.c:266
 msgid "Allow application access to keyring?"
 msgstr "Да се позволи ли достъп на програмата до ключодържателя?"
 
-#: ../daemon/gkr-daemon-ops.c:311
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Парола за ключодържателя „%s“"
-
-#: ../daemon/gkr-daemon-ops.c:368
+#: ../daemon/gkr-daemon-ops.c:307
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -115,26 +120,26 @@ msgstr ""
 "Програмата „%s“ (%s) иска достъп до стандартния ключодържател, но той е "
 "заключен"
 
-#: ../daemon/gkr-daemon-ops.c:372
+#: ../daemon/gkr-daemon-ops.c:311
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Програмата „%s“ (%s) иска достъп до ключодържателя „%s“, но той е заключен"
 
-#: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
+#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "Програмата „%s“ иска достъп до стандартния ключодържател, но той е заключен"
 
-#: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Програмата „%s“ иска достъп до ключодържателя „%s“, но той е заключен"
 
-#: ../daemon/gkr-daemon-ops.c:399
+#: ../daemon/gkr-daemon-ops.c:338
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
@@ -142,32 +147,32 @@ msgstr ""
 "Непозната програма иска достъп до стандартния ключодържател, но той е "
 "заключен"
 
-#: ../daemon/gkr-daemon-ops.c:403
+#: ../daemon/gkr-daemon-ops.c:342
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Непозната програма иска достъп до ключодържателя „%s“, но той е заключен"
 
-#: ../daemon/gkr-daemon-ops.c:410
+#: ../daemon/gkr-daemon-ops.c:349
 msgid "Enter password for default keyring to unlock"
 msgstr "Въведете парола за стандартния ключодържател, за да го отключите"
 
-#: ../daemon/gkr-daemon-ops.c:412
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Въведете парола за ключодържателя „%s“, за да го отключите"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:416
+#: ../daemon/gkr-daemon-ops.c:355
 msgid "Unlock Keyring"
 msgstr "Отключване на ключодържател"
 
-#: ../daemon/gkr-daemon-ops.c:428
+#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Автоматично отключване на ключодържателя при влизане."
 
-#: ../daemon/gkr-daemon-ops.c:464
+#: ../daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -176,7 +181,7 @@ msgstr ""
 "Програмата „%s“ (%s) иска да създаде нов ключодържател наречен „%s“. Трябва "
 "да изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:468
+#: ../daemon/gkr-daemon-ops.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -185,7 +190,7 @@ msgstr ""
 "Програмата „%s“ (%s) иска да създаде нов стандартен ключодържател. Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
+#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -194,7 +199,7 @@ msgstr ""
 "Програмата „%s“ иска да създаде нов ключодържател наречен „%s“. Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
+#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -203,7 +208,7 @@ msgstr ""
 "Програмата „%s“ иска да създаде нов стандартен ключодържател. Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:494
+#: ../daemon/gkr-daemon-ops.c:433
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -212,7 +217,7 @@ msgstr ""
 "Непозната програма иска да създаде нов ключодържател наречен „%s“. Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:498
+#: ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -222,15 +227,15 @@ msgstr ""
 "изберете парола за него."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:504
+#: ../daemon/gkr-daemon-ops.c:443
 msgid "New Keyring Password"
 msgstr "Нова парола за ключодържател"
 
-#: ../daemon/gkr-daemon-ops.c:505
+#: ../daemon/gkr-daemon-ops.c:444
 msgid "Choose password for new keyring"
 msgstr "Изберете паролата за новия ключодържател"
 
-#: ../daemon/gkr-daemon-ops.c:552
+#: ../daemon/gkr-daemon-ops.c:491
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -239,7 +244,7 @@ msgstr ""
 "Програмата „%s“ (%s) иска да промени паролата за ключодържателя „%s“. Трябва "
 "да изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:556
+#: ../daemon/gkr-daemon-ops.c:495
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -248,7 +253,7 @@ msgstr ""
 "Програмата „%s“ (%s) иска да промени паролата за стандартния ключодържател. "
 "Трябва да изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
+#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -257,7 +262,7 @@ msgstr ""
 "Програмата „%s“ иска да промени паролата за ключодържателя „%s“. Трябва да "
 "изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
+#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -266,7 +271,7 @@ msgstr ""
 "Програмата „%s“ иска да промени паролата за стандартния ключодържател. "
 "Трябва да изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:582
+#: ../daemon/gkr-daemon-ops.c:521
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -275,7 +280,7 @@ msgstr ""
 "Непозната програма иска да промени паролата за ключодържателя „%s“. Трябва "
 "да изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:586
+#: ../daemon/gkr-daemon-ops.c:525
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -284,22 +289,22 @@ msgstr ""
 "Непозната програма иска да промени паролата за стандартния ключодържател. "
 "Трябва да изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:596
+#: ../daemon/gkr-daemon-ops.c:535
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Изберете нова парола за ключодържателя „%s“. "
 
-#: ../daemon/gkr-daemon-ops.c:598
+#: ../daemon/gkr-daemon-ops.c:537
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Изберете нова парола за стандартния ключодържател. "
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:602
+#: ../daemon/gkr-daemon-ops.c:541
 msgid "Change Keyring Password"
 msgstr "Нова парола за ключодържателя"
 
-#: ../daemon/gkr-daemon-ops.c:672
+#: ../daemon/gkr-daemon-ops.c:614
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -309,17 +314,17 @@ msgstr ""
 "Програмата „%s“ (%s) иска да запази парола, но няма стандартен "
 "ключодържател. За да създадете такъв, трябва да изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
+#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Програмата „%s“ иска да запази парола, но няма стандартен ключодържател.За "
+"Програмата „%s“ иска да запази парола, но няма стандартен ключодържател. За "
 "да създадете такъв, трябва да изберете парола за него."
 
-#: ../daemon/gkr-daemon-ops.c:684
+#: ../daemon/gkr-daemon-ops.c:626
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -330,27 +335,41 @@ msgstr ""
 "За да създадете такъв, трябва да изберете парола за него."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:689
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Create Default Keyring"
 msgstr "Създаване на стандартен ключодържател"
 
-#: ../daemon/gkr-daemon-ops.c:689
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Choose password for default keyring"
 msgstr "Изберете парола за стандартния ключодържател"
 
-#: ../data/gnome-keyring.schemas.in.h:1
+#: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid ""
+"A list of paths to PKCS#11 modules to load. No modules are currently listed "
+"by default, as this is still an experimental feature. This is used by "
+"seahorse and other PKCS#11 aware applications."
+msgstr ""
+"Списък с модулите за PKCS#11, които да бъдат заредени. Стандартно в момента "
+"такива не са изброени, понеже това е все още експериментална възможност. "
+"Използва се от seahorse и други програми работещи с PKCS#11."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid "PKCS#11 Modules"
+msgstr "Модули за PKCS#11"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
-"Тази опция задейства компонента PKCS#11 в демона gnome-keyring и има ефект "
+"Тази опция задейства модула за PKCS#11 в демона gnome-keyring и има ефект "
 "само при стартирането на gnome-keyring-daemon (т.е. когато потребителят "
 "влиза в системата). Тази настройка може да се заобиколи чрез определени "
 "опции на командния ред, зададени на демона."
 
-#: ../data/gnome-keyring.schemas.in.h:2
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -362,13 +381,667 @@ msgstr ""
 "системата). Тази настройка може да се заобиколи чрез определени опции на "
 "командния ред, зададени на демона."
 
-#: ../data/gnome-keyring.schemas.in.h:3
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Дали да се задейства компонентът на gnome-keyring PKCS#11."
+msgstr "Дали да се задейства модулът за PKCS#11 на gnome-keyring."
 
-#: ../data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Дали да се задейства агентът на SSH в gnome-keyring."
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+msgid "Unlock Login Keyring"
+msgstr "Отключване на ключодържателя за влизане в системата"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+msgid "Enter login password to unlock keyring"
+msgstr "Въведете паролата за влизане, за да отключите ключодържателя"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:100
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr ""
+"Ключодържателят за влизане не беше отключен автоматично при влизането ви в "
+"системата."
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+msgid "Create Login Keyring"
+msgstr "Създаване на ключодържател за влизане в системата"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+msgid "Enter your login password"
+msgstr "Въведете паролата за влизане"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:126
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+"Ключодържателят за влизане не беше създаден автоматично при влизането ви в "
+"системата. Ще бъде създаден сега."
+
+#: ../daemon/keyrings/gkr-keyring.c:584
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Парола за ключодържателя „%s“"
+
+#: ../daemon/pk/gkr-pk-import.c:88
+msgid "Import private key"
+msgstr "Внасяне на частен ключ"
+
+#: ../daemon/pk/gkr-pk-import.c:90
+msgid "Import certificate"
+msgstr "Внасяне на сертификат"
+
+#: ../daemon/pk/gkr-pk-import.c:92
+msgid "Import public key"
+msgstr "Внасяне на публичен ключ"
+
+#: ../daemon/pk/gkr-pk-import.c:94
+msgid "Import"
+msgstr "Внасяне"
+
+#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
+msgid "Enter password to unlock the private key"
+msgstr "Въведете парола за отключване на частния ключ"
+
+#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
+msgid "Enter password to unlock the certificate"
+msgstr "Въведете парола за отключване на сертификата"
+
+#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
+msgid "Enter password to unlock the public key"
+msgstr "Въведете парола за отключване на публичния ключ"
+
+#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
+msgid "Enter password to unlock"
+msgstr "Въведете парола за отключване"
+
+#: ../daemon/pk/gkr-pk-import.c:114
+#, c-format
+msgid "The system wants to import the private key '%s', but it is locked"
+msgstr "Системата иска да внесе частния ключ „%s“, но той е заключен"
+
+#: ../daemon/pk/gkr-pk-import.c:116
+#, c-format
+msgid "The system wants to import the certificate '%s', but it is locked"
+msgstr "Системата иска да внесе сертификата „%s“, но той е заключен"
+
+#: ../daemon/pk/gkr-pk-import.c:118
+#, c-format
+msgid "The system wants to import the public key '%s', but it is locked"
+msgstr "Системата иска да внесе публичния ключ „%s“, но той е заключен"
+
+#: ../daemon/pk/gkr-pk-import.c:120
+#, c-format
+msgid "The system wants to import '%s', but it is locked"
+msgstr "Системата иска да внесе „%s“, но той е заключен"
+
+#. And put together the ask request
+#: ../daemon/pk/gkr-pk-index.c:93
+msgid "Create Storage for Key Information"
+msgstr "Създаване на хранилище за информацията за ключовете"
+
+#: ../daemon/pk/gkr-pk-index.c:94
+msgid "Choose password to protect storage"
+msgstr "Изберете паролата за защита на хранилището"
+
+#: ../daemon/pk/gkr-pk-index.c:97
+msgid ""
+"The system wants to store information about your keys and certificates. In "
+"order to protect this information, choose a password with which it will be "
+"locked."
+msgstr ""
+"Компютърът трябва да запази информация за ключовете и сертификатите ви. За "
+"да я защитите, изберете парола."
+
+#. And put together the ask request
+#: ../daemon/pk/gkr-pk-index.c:124
+msgid "Unlock Storage for Key Information"
+msgstr "Отключване на хранилището за информация за ключовете"
+
+#: ../daemon/pk/gkr-pk-index.c:125
+msgid "Enter password to unlock storage"
+msgstr "Въведете парола за отключване на хранилището"
+
+#: ../daemon/pk/gkr-pk-index.c:128
+msgid ""
+"The system wants to access information about your keys and certificates, but "
+"it is locked."
+msgstr ""
+"Системата иска да достъпи информация за ключовете и сертификатите, но тя е "
+"заключена."
+
+#: ../daemon/pk/gkr-pk-object.c:889
+msgid "Certificate"
+msgstr "Сертификат"
+
+#: ../daemon/pk/gkr-pk-object.c:891
+msgid "Private Key"
+msgstr "Частен ключ"
+
+#: ../daemon/pk/gkr-pk-object.c:893
+msgid "Public Key"
+msgstr "Публичен ключ"
+
+#: ../daemon/pk/gkr-pk-object.c:895
+msgid "Trust Association"
+msgstr "Връзка на доверие"
+
+#: ../daemon/pk/gkr-pk-object-storage.c:436
+#, c-format
+msgid "Cannot delete '%s' because it is tied to other objects."
+msgstr "„%s“ не може да бъде изтрит, защото е свързан с други обекти."
+
+#: ../daemon/pk/gkr-pk-storage.c:136
+msgid "Unlock private key"
+msgstr "Отключване на частен ключ"
+
+#: ../daemon/pk/gkr-pk-storage.c:138
+msgid "Unlock certificate"
+msgstr "Отключване на сертификат"
+
+#: ../daemon/pk/gkr-pk-storage.c:140
+msgid "Unlock public key"
+msgstr "Отключване на публичен ключ"
+
+#: ../daemon/pk/gkr-pk-storage.c:142
+msgid "Unlock"
+msgstr "Отключване"
+
+#: ../daemon/pk/gkr-pk-storage.c:153
+msgid "Lock private key"
+msgstr "Заключване на частен ключ"
+
+#: ../daemon/pk/gkr-pk-storage.c:155
+msgid "Lock"
+msgstr "Заключване"
+
+#: ../daemon/pk/gkr-pk-storage.c:183
+msgid "Enter password to protect the private key"
+msgstr "Въведете парола за защита на частния ключ"
+
+#: ../daemon/pk/gkr-pk-storage.c:185
+msgid "Enter password to protect storage"
+msgstr "Въведете парола за защита на хранилището"
+
+#: ../daemon/pk/gkr-pk-storage.c:196
+msgid "Automatically unlock this private key when I log in."
+msgstr "Автоматично отключване на този частен ключ при влизане."
+
+#: ../daemon/pk/gkr-pk-storage.c:198
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Автоматично отключване на този сертификат при влизане."
+
+#: ../daemon/pk/gkr-pk-storage.c:200
+msgid "Automatically unlock this public key when I log in."
+msgstr "Автоматично отключване на този публичен ключ при влизане."
+
+#: ../daemon/pk/gkr-pk-storage.c:202
+msgid "Automatically unlock this when I log in"
+msgstr "Автоматично отключване при влизане."
+
+#: ../daemon/pk/gkr-pk-storage.c:209
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Програма иска достъп до частния ключ „%s“, но той е заключен"
+
+#: ../daemon/pk/gkr-pk-storage.c:211
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Програма иска достъп до сертификата „%s“, но той е заключен"
+
+#: ../daemon/pk/gkr-pk-storage.c:213
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Програма иска достъп до публичния ключ „%s“, но той е заключен"
+
+#: ../daemon/pk/gkr-pk-storage.c:215
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Програма иска достъп до „%s“, но той е заключен"
+
+#: ../daemon/pk/gkr-pk-storage.c:228
+#, c-format
+msgid ""
+"The system wants to store the private key '%s' on your disk. Please enter a "
+"password to lock it with."
+msgstr ""
+"Системата иска да запази частния ключ „%s“ на диска. Въведете парола, с "
+"която да го защитите."
+
+#: ../daemon/pk/gkr-pk-storage.c:230
+#, c-format
+msgid ""
+"The system wants to store '%s' on your disk. Please enter a password to lock "
+"it with."
+msgstr ""
+"Системата иска да запази „%s“ на диска. Въведете парола за заключването."
+
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
+msgid "The operation was cancelled"
+msgstr "Отменено действие"
+
+#: ../daemon/pkix/gkr-pkix-parser.c:455
+msgid "Unrecognized or unsupported file."
+msgstr "Непознат или неподдържан файл."
+
+#: ../daemon/pkix/gkr-pkix-parser.c:459
+msgid "Could not parse invalid or corrupted file."
+msgstr "Неуспех при анализирането на неправилен или повреден файл."
+
+#: ../daemon/ssh/gkr-ssh-storage.c:166
+#, c-format
+msgid "Couldn't encode secure shell public key."
+msgstr "Публичният ключ за SSH не може да бъде шифриран."
+
+#: ../daemon/ssh/gkr-ssh-storage.c:412
+#, c-format
+msgid "Couldn't read secure shell private key: %s"
+msgstr "Частният ключ за SSH не може да бъде шифриран: %s"
+
+#: ../daemon/ssh/gkr-ssh-storage.c:416
+#, c-format
+msgid "Invalid secure shell private key at: %s"
+msgstr "Неправилен частен ключ за SSH при: %s"
+
+#: ../daemon/ssh/gkr-ssh-storage.c:465
+#, c-format
+msgid "Couldn't encrypt the SSH key to store it."
+msgstr "Ключът за SSH не може да бъде шифриран и съответно записан."
+
+#: ../daemon/ssh/gkr-ssh-storage.c:481
+#, c-format
+msgid "Couldn't encode the SSH key to store it."
+msgstr "Ключът за SSH не може да бъде кодиран и съответно записан."
+
+#: ../daemon/ui/gkr-ask-tool.c:182
+msgid "Store passwords unencrypted?"
+msgstr "Запазване на паролите нешифрирани?"
+
+#: ../daemon/ui/gkr-ask-tool.c:183
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Ако изберете празна парола, запазените ви пароли няма да бъдат шифрирани "
+"надеждно и ще бъдат достъпни за всеки, който има достъп до вашите файлове."
+
+#: ../daemon/ui/gkr-ask-tool.c:190
+msgid "Use Unsafe Storage"
+msgstr "Използване на несигурно хранилище"
+
+#: ../daemon/ui/gkr-ask-tool.c:413
+msgid "_Location:"
+msgstr "_Местоположение:"
+
+#: ../daemon/ui/gkr-ask-tool.c:426
+msgid "_Old password:"
+msgstr "_Стара парола:"
+
+#: ../daemon/ui/gkr-ask-tool.c:446
+msgid "_Password:"
+msgstr "_Парола:"
+
+#: ../daemon/ui/gkr-ask-tool.c:468
+msgid "_Confirm password:"
+msgstr "По_твърждаване на паролата:"
+
+#: ../daemon/ui/gkr-ask-tool.c:488
+msgid "New password strength"
+msgstr "Надеждност на новата парола"
+
+#: ../daemon/ui/gkr-ask-tool.c:546
+msgid "Passwords do not match."
+msgstr "Паролите не съвпадат."
+
+#: ../daemon/ui/gkr-ask-tool.c:562
+msgid "Password cannot be blank"
+msgstr "Паролата не може да бъде празна"
+
+#: ../daemon/ui/gkr-ask-tool.c:613
+msgid "Deny"
+msgstr "Отказ"
+
+#: ../daemon/ui/gkr-ask-tool.c:625
+msgid "C_reate"
+msgstr "_Създаване"
+
+#: ../daemon/ui/gkr-ask-tool.c:629
+msgid "C_hange"
+msgstr "_Промяна"
+
+#: ../daemon/ui/gkr-ask-tool.c:633
+msgid "Allow _Once"
+msgstr "Позволяване _веднъж"
+
+#: ../daemon/ui/gkr-ask-tool.c:637
+msgid "_Always Allow"
+msgstr "_Позволяване винаги"
+
+#: ../gp11/gp11-misc.c:90
+msgid "Insufficient memory available"
+msgstr "Няма достатъчно памет"
+
+#: ../gp11/gp11-misc.c:92
+msgid "The specified slot ID is not valid"
+msgstr "Неправилен идентификатор"
+
+#: ../gp11/gp11-misc.c:94
+msgid "Internal error"
+msgstr "Вътрешна грешка"
+
+#: ../gp11/gp11-misc.c:96
+msgid "The operation failed"
+msgstr "Неуспешно действие"
+
+#: ../gp11/gp11-misc.c:98
+msgid "Invalid arguments"
+msgstr "Неправилни аргументи"
+
+#: ../gp11/gp11-misc.c:100
+msgid "The module cannot create needed threads"
+msgstr "Модулът не може да създаде необходимите нишки"
+
+#: ../gp11/gp11-misc.c:102
+msgid "The module cannot lock data properly"
+msgstr "Модулът не може да заключи данните си правилно"
+
+#: ../gp11/gp11-misc.c:104
+msgid "The field is read-only"
+msgstr "Полето е само за четене"
+
+#: ../gp11/gp11-misc.c:106
+msgid "The field is sensitive and cannot be revealed"
+msgstr "Полето съдържа чувствителна информация и не може да бъде показано"
+
+#: ../gp11/gp11-misc.c:108
+msgid "The field is invalid or does not exist"
+msgstr "Полето е неправилно или не съществува"
+
+#: ../gp11/gp11-misc.c:110
+msgid "Invalid value for field"
+msgstr "Полето е с неправилна стойност"
+
+#: ../gp11/gp11-misc.c:112
+msgid "The data is not valid or unrecognized"
+msgstr "Неправилни или неразпознати данни"
+
+#: ../gp11/gp11-misc.c:114
+msgid "The data is too long"
+msgstr "Данните са прекалено дълги"
+
+#: ../gp11/gp11-misc.c:116
+msgid "An error occurred on the device"
+msgstr "Грешка в устройството"
+
+#: ../gp11/gp11-misc.c:118
+msgid "Insufficient memory available on device"
+msgstr "Недостатъчно памет на устройството"
+
+#: ../gp11/gp11-misc.c:120
+msgid "The device was removed or unplugged"
+msgstr "Устройството бе махнато или извадено"
+
+#: ../gp11/gp11-misc.c:122
+msgid "The encrypted data is not valid or unrecognized"
+msgstr "Неправилни или неразпознати шифрирани данни"
+
+#: ../gp11/gp11-misc.c:124
+msgid "The encrypted data is too long"
+msgstr "Прекалено дълги шифрирани данни"
+
+#: ../gp11/gp11-misc.c:126
+msgid "This operation is not supported"
+msgstr "Неподдържано действие"
+
+#: ../gp11/gp11-misc.c:128
+msgid "The key is missing or invalid"
+msgstr "Неправилен или липсващ ключ"
+
+#: ../gp11/gp11-misc.c:130
+msgid "The key is the wrong size"
+msgstr "Ключ с неправилен размер"
+
+#: ../gp11/gp11-misc.c:132
+msgid "The key is of the wrong type"
+msgstr "Неправилен вид ключ"
+
+#: ../gp11/gp11-misc.c:134
+msgid "No key is needed"
+msgstr "Ключ не е необходим"
+
+#: ../gp11/gp11-misc.c:136
+msgid "The key is different than before"
+msgstr "Различен ключ от преди"
+
+#: ../gp11/gp11-misc.c:138
+msgid "A key is needed"
+msgstr "Необходим е ключ"
+
+#: ../gp11/gp11-misc.c:140
+msgid "Cannot include the key in digest"
+msgstr "Ключът не може да бъде вмъкнат в извадката"
+
+#: ../gp11/gp11-misc.c:142
+msgid "This operation cannot be done with this key"
+msgstr "Действието не може да бъде извършено с този ключ"
+
+#: ../gp11/gp11-misc.c:144
+msgid "The key cannot be wrapped"
+msgstr "Ключът не може да бъде обвит"
+
+#: ../gp11/gp11-misc.c:146
+msgid "Cannot export this key"
+msgstr "Ключът не може да бъде изнесен"
+
+#: ../gp11/gp11-misc.c:148
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr "Неправилен или непознат шифриращ механизъм"
+
+#: ../gp11/gp11-misc.c:150
+msgid "The crypto mechanism has an invalid argument"
+msgstr "Шифриращият механизъм получи неправилен аргумент"
+
+#: ../gp11/gp11-misc.c:152
+msgid "The object is missing or invalid"
+msgstr "Липсващ или неправилен обект"
+
+#: ../gp11/gp11-misc.c:154
+msgid "Another operation is already taking place"
+msgstr "В момента вече тече друго действие"
+
+#: ../gp11/gp11-misc.c:156
+msgid "No operation is taking place"
+msgstr "В момента не тече друго действие"
+
+#: ../gp11/gp11-misc.c:158
+msgid "The password or PIN is incorrect"
+msgstr "Грешни парола или ПИН"
+
+#: ../gp11/gp11-misc.c:160
+msgid "The password or PIN is invalid"
+msgstr "Неправилни парола или ПИН"
+
+#: ../gp11/gp11-misc.c:162
+msgid "The password or PIN is of an invalid length"
+msgstr "Парола или ПИН с неправилна дължина"
+
+#: ../gp11/gp11-misc.c:164
+msgid "The password or PIN has expired"
+msgstr "Паролата или ПИН-ът са изтекли"
+
+#: ../gp11/gp11-misc.c:166
+msgid "The password or PIN is locked"
+msgstr "Паролата или ПИН-ът са заключени"
+
+#: ../gp11/gp11-misc.c:168
+msgid "The session is closed"
+msgstr "Сесията е затворена"
+
+#: ../gp11/gp11-misc.c:170
+msgid "Too many sessions are active"
+msgstr "Прекалено много активни сесии"
+
+#: ../gp11/gp11-misc.c:172
+msgid "The session is invalid"
+msgstr "Неправилна сесия"
+
+#: ../gp11/gp11-misc.c:174
+msgid "The session is read-only"
+msgstr "Сесия само за четене"
+
+#: ../gp11/gp11-misc.c:176
+msgid "An open session exists"
+msgstr "Съществува отворена сесия"
+
+#: ../gp11/gp11-misc.c:178
+msgid "A read-only session exists"
+msgstr "Съществува сесия само за четене"
+
+#: ../gp11/gp11-misc.c:180
+msgid "An administrator session exists"
+msgstr "Съществува администраторска сесия"
+
+#: ../gp11/gp11-misc.c:182
+msgid "The signature is bad or corrupted"
+msgstr "Неправилен или счупен подпис"
+
+#: ../gp11/gp11-misc.c:184
+msgid "The signature is unrecognized or corrupted"
+msgstr "Непознат или счупен подпис"
+
+#: ../gp11/gp11-misc.c:186
+msgid "Certain required fields are missing"
+msgstr "Някои задължителни полета липсват"
+
+#: ../gp11/gp11-misc.c:188
+msgid "Certain fields have invalid values"
+msgstr "Някои полета са с неправилни стойности"
+
+#: ../gp11/gp11-misc.c:190
+msgid "The device is not present or unplugged"
+msgstr "Липсващо или извадено устройство"
+
+#: ../gp11/gp11-misc.c:192
+msgid "The device is invalid or unrecognizable"
+msgstr "Неправилно или непознато устройство"
+
+#: ../gp11/gp11-misc.c:194
+msgid "The device is write protected"
+msgstr "Устройство със защита срещу запис"
+
+#: ../gp11/gp11-misc.c:196
+msgid "Cannot import because the key is invalid"
+msgstr "Неправилен ключ няма да бъде внесен"
+
+#: ../gp11/gp11-misc.c:198
+msgid "Cannot import because the key is of the wrong size"
+msgstr "Ключ с неправилен размер няма да бъде внесен"
+
+#: ../gp11/gp11-misc.c:200
+msgid "Cannot import because the key is of the wrong type"
+msgstr "Неправилен вид ключ няма да бъде внесен"
+
+#: ../gp11/gp11-misc.c:202
+msgid "You are already logged in"
+msgstr "Вече сте влезли"
+
+#: ../gp11/gp11-misc.c:204
+msgid "No user has logged in"
+msgstr "Никой потребител не е влязъл"
+
+#: ../gp11/gp11-misc.c:206
+msgid "The user's password or PIN is not set"
+msgstr "Паролата или ПИН-ът на потребителя не са зададени"
+
+#: ../gp11/gp11-misc.c:208
+msgid "The user is of an invalid type"
+msgstr "Неправилен вид потребител"
+
+#: ../gp11/gp11-misc.c:210
+msgid "Another user is already logged in"
+msgstr "Друг потребител е влязъл"
+
+#: ../gp11/gp11-misc.c:212
+msgid "Too many users of different types logged in"
+msgstr "Прекалено много различни видове потребители са влезли"
+
+#: ../gp11/gp11-misc.c:214
+msgid "Cannot import an invalid key"
+msgstr "Неправилен ключ няма да бъде внесен"
+
+#: ../gp11/gp11-misc.c:216
+msgid "Cannot import a key of the wrong size"
+msgstr "Ключ с неправилна дължина няма да бъде внесен"
+
+#: ../gp11/gp11-misc.c:218
+msgid "Cannot export because the key is invalid"
+msgstr "Неправилен ключ няма да бъде изнесен"
+
+#: ../gp11/gp11-misc.c:220
+msgid "Cannot export because the key is of the wrong size"
+msgstr "Ключ с неправилна дължина няма да бъде изнесен"
+
+#: ../gp11/gp11-misc.c:222
+msgid "Cannot export because the key is of the wrong type"
+msgstr "Неправилен вид ключ няма да бъде изнесен"
+
+#: ../gp11/gp11-misc.c:224
+msgid "Unable to initialize the random number generator"
+msgstr "Генераторът на случайни числа не може да бъде инициализиран"
+
+#: ../gp11/gp11-misc.c:226
+msgid "No random number generator available"
+msgstr "Липсва генератор на случайни числа"
+
+#: ../gp11/gp11-misc.c:228
+msgid "The crypto mechanism has an invalid parameter"
+msgstr "Шифриращият механизъм получи неправилен аргумент"
+
+#: ../gp11/gp11-misc.c:230
+msgid "Not enough space to store the result"
+msgstr "Недостатъчно място за запазване на резултата"
+
+#: ../gp11/gp11-misc.c:232
+msgid "The saved state is invalid"
+msgstr "Запазеното състояние е неправилно"
+
+#: ../gp11/gp11-misc.c:234
+msgid "The information is sensitive and cannot be revealed"
+msgstr "Информацията е чувствителна и не може да бъде показана"
+
+#: ../gp11/gp11-misc.c:236
+msgid "The state cannot be saved"
+msgstr "Състоянието не може да бъде запазено"
+
+#: ../gp11/gp11-misc.c:238
+msgid "The module has not been initialized"
+msgstr "Модулът не е инициализиран"
+
+#: ../gp11/gp11-misc.c:240
+msgid "The module has already been initialized"
+msgstr "Модулът е инициализиран"
+
+#: ../gp11/gp11-misc.c:242
+msgid "Cannot lock data"
+msgstr "Данните не могат да бъдат заключени"
+
+#: ../gp11/gp11-misc.c:244
+msgid "The data cannot be locked"
+msgstr "Данните не могат да бъдат заключени"
+
+#: ../gp11/gp11-misc.c:246
+msgid "The signature request was rejected by the user"
+msgstr "Потребителят отказа заявката за подписване"
+
+#: ../gp11/gp11-misc.c:250
+msgid "Unknown error"
+msgstr "Непозната грешка"
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
@@ -388,7 +1061,7 @@ msgstr "Вече съществува ключодържател с това и�
 
 #: ../library/gnome-keyring-utils.c:99
 msgid "Programmer error: The application sent invalid data."
-msgstr "Програмна грешка: приложението изпрати неправилни данни."
+msgstr "Програмна грешка: програмата изпрати неправилни данни."
 
 #: ../library/gnome-keyring-utils.c:101
 msgid "No matching results"
@@ -401,195 +1074,3 @@ msgstr "Не съществува ключодържател с това име.
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "Ключодържателят вече е отключен."
-
-#. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:98
-msgid "Unlock Login Keyring"
-msgstr "Отключване на ключодържателя за влизане в системата"
-
-#: ../keyrings/gkr-keyring-login.c:98
-msgid "Enter login password to unlock keyring"
-msgstr "Въведете паролата за влизане, за да отключите ключодържателя"
-
-#: ../keyrings/gkr-keyring-login.c:100
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
-msgstr ""
-"Ключодържателят за влизане не беше отключен автоматично при влизането ви в "
-"системата."
-
-#. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:124
-msgid "Create Login Keyring"
-msgstr "Създаване на ключодържател за влизане в системата"
-
-#: ../keyrings/gkr-keyring-login.c:124
-msgid "Enter your login password"
-msgstr "Въведете паролата за влизане"
-
-#: ../keyrings/gkr-keyring-login.c:126
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
-msgstr ""
-"Ключодържателят за влизане не беше създаден автоматично при влизането ви в "
-"системата. Ще бъде създаден сега."
-
-#: ../pk/gkr-pk-object-storage.c:99
-msgid "Unlock private key"
-msgstr "Отключване на частен ключ"
-
-#: ../pk/gkr-pk-object-storage.c:101
-msgid "Unlock certificate"
-msgstr "Отключване на сертификат"
-
-#: ../pk/gkr-pk-object-storage.c:103
-msgid "Unlock public key"
-msgstr "Отключване на публичен ключ"
-
-#: ../pk/gkr-pk-object-storage.c:105
-msgid "Unlock"
-msgstr "Отключване"
-
-#: ../pk/gkr-pk-object-storage.c:116
-msgid "Enter password to unlock the private key"
-msgstr "Въведете парола за отключване на частния ключ"
-
-#: ../pk/gkr-pk-object-storage.c:118
-msgid "Enter password to unlock the certificate"
-msgstr "Въведете парола за отключване на сертификата"
-
-#: ../pk/gkr-pk-object-storage.c:120
-msgid "Enter password to unlock the public key"
-msgstr "Въведете парола за отключване на публичния ключ"
-
-#: ../pk/gkr-pk-object-storage.c:122
-msgid "Enter password to unlock"
-msgstr "Въведете парола за отключване"
-
-#: ../pk/gkr-pk-object-storage.c:133
-msgid "Automatically unlock this private key when I log in."
-msgstr "Автоматично отключване на този частен ключ при влизане."
-
-#: ../pk/gkr-pk-object-storage.c:135
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Автоматично отключване на този сертификат при влизане."
-
-#: ../pk/gkr-pk-object-storage.c:137
-msgid "Automatically unlock this public key when I log in."
-msgstr "Автоматично отключване на този публичен ключ при влизане."
-
-#: ../pk/gkr-pk-object-storage.c:139
-msgid "Automatically unlock this when I log in"
-msgstr "Автоматично отключване при влизане."
-
-#: ../pk/gkr-pk-object-storage.c:154
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Програма иска достъп до частния ключ „%s“, но той е заключен"
-
-#: ../pk/gkr-pk-object-storage.c:156
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Програма иска достъп до сертификата „%s“, но той е заключен"
-
-#: ../pk/gkr-pk-object-storage.c:158
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Програма иска достъп до публичния ключ „%s“, но той е заключен"
-
-#: ../pk/gkr-pk-object-storage.c:160
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Програма иска достъп до „%s“, но той е заключен"
-
-#: ../pk/gkr-pk-object-storage.c:166
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "Системата иска да внесе частния ключ „%s“, но той е заключен"
-
-#: ../pk/gkr-pk-object-storage.c:168
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "Системата иска да внесе сертификата „%s“, но той е заключен"
-
-#: ../pk/gkr-pk-object-storage.c:170
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "Системата иска да внесе публичния ключ „%s“, но той е заключен"
-
-#: ../pk/gkr-pk-object-storage.c:172
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "Системата иска да внесе „%s“, но той е заключен"
-
-#: ../pk/gkr-pk-object-storage.c:258
-#, c-format
-msgid "Unlock password for '%s'"
-msgstr "Парола за отключване на „%s“"
-
-#: ../pkix/gkr-pkix-parser.c:445
-msgid "Unrecognized or unsupported file."
-msgstr "Непознат или неподдържан файл."
-
-#: ../pkix/gkr-pkix-parser.c:449
-msgid "Could not parse invalid or corrupted file."
-msgstr "Неуспех при анализирането на невалиден или повреден файл."
-
-#: ../ui/gkr-ask-tool.c:182
-msgid "Store passwords unencrypted?"
-msgstr "Запазване на паролите нешифрирани?"
-
-#: ../ui/gkr-ask-tool.c:183
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Като избирате празна парола, запазените ви пароли няма да бъдат надеждно "
-"шифрирани. Ще бъдат достъпни за всеки, който има достъп до вашите файлове."
-
-#: ../ui/gkr-ask-tool.c:190
-msgid "Use Unsafe Storage"
-msgstr "Използване на несигурно хранилище"
-
-#: ../ui/gkr-ask-tool.c:413
-msgid "_Location:"
-msgstr "_Местоположение:"
-
-#: ../ui/gkr-ask-tool.c:426
-msgid "_Old password:"
-msgstr "_Стара парола:"
-
-#: ../ui/gkr-ask-tool.c:446
-msgid "_Password:"
-msgstr "_Парола:"
-
-#: ../ui/gkr-ask-tool.c:468
-msgid "_Confirm password:"
-msgstr "По_твърждаване на паролата:"
-
-#: ../ui/gkr-ask-tool.c:488
-msgid "New password strength"
-msgstr "Надеждност на новата парола"
-
-#: ../ui/gkr-ask-tool.c:546
-msgid "Passwords do not match."
-msgstr "Паролите не съвпадат."
-
-#: ../ui/gkr-ask-tool.c:562
-msgid "Password cannot be blank"
-msgstr "Паролата не може да бъде празна"
-
-#: ../ui/gkr-ask-tool.c:613
-msgid "Deny"
-msgstr "Отказ"
-
-#: ../ui/gkr-ask-tool.c:625
-msgid "Allow _Once"
-msgstr "Позволяване _веднъж"
-
-#: ../ui/gkr-ask-tool.c:629
-msgid "_Always Allow"
-msgstr "_Позволяване винаги"
