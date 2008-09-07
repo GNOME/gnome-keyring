@@ -1707,7 +1707,9 @@ op_prepare_daemon_environment (GkrBuffer *packet, GkrBuffer *result, GkrKeyringR
 			else if (g_str_equal (*e, "XAUTHORITY"))
 				g_setenv ("XAUTHORITY", x, FALSE);
 			else if (g_str_equal (*e, "XDG_SESSION_COOKIE"))
-				g_setenv ("XDG_SESSION_COOKIE", x, FALSE);
+				g_setenv ("XDG_SESSION_COOKIE", x, FALSE);	
+			else if (g_str_equal (*e, "LANG"))
+				g_setenv ("LANG", x, FALSE);
 		}
 	}
 	
