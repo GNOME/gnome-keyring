@@ -1,3 +1,8 @@
+2008-09-08  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-slot.c: Build fix for Solaris. 
+	Fixes bug #550943. Patch by Jeff Cai.
+	
 2008-09-06  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon-ops.c: Import the LANG environment variable

@@ -65,6 +65,39 @@ typedef struct _SessionPool {
 
 static guint signals[LAST_SIGNAL] = { 0 }; 
 
+#ifndef HAVE_TIMEGM
+
+time_t 
+timegm(struct tm *t)
+{
+	time_t tl, tb;
+	struct tm *tg;
+
+	tl = mktime (t);
+	if (tl == -1)
+	{
+		t->tm_hour--;
+		tl = mktime (t);
+		if (tl == -1)
+			return -1; 
+		tl += 3600;
+	    }
+	tg = gmtime (&tl);
+	tg->tm_isdst = 0;
+	tb = mktime (tg);
+	if (tb == -1)
+	{
+		tg->tm_hour--;
+		tb = mktime (tg);
+		if (tb == -1)
+			return -1; 
+		tb += 3600;
+	}
+	return (tl - (tb - tl));
+}
+
+#endif
+
 /* ----------------------------------------------------------------------------
  * HELPERS
  */
