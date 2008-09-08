@@ -1,4 +1,10 @@
-2008-09-08  Stef Walter  <stef@memberwebs.com>
+=== gnome-keyring 2.23.92 ===
+
+2008-09-07  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS: Release 2.23.92
+
+2008-09-07  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-slot.c: Build fix for Solaris. 
 	Fixes bug #550943. Patch by Jeff Cai.

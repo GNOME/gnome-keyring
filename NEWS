@@ -1,3 +1,8 @@
+Changes in version 2.23.92 are:
+* Build fix for Solaris. [Jeff Cai] 
+* Import the LANG environment variable into daemon enviroment
+  so that dialogs display with correct translations.
+	
 Changes in version 2.23.91 are:
 * Use 'Change' instead of 'Create' when prompting the user for 
   a password to change keyring password. [Adam Schreiber]
