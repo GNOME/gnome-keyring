@@ -76,6 +76,7 @@ location_for_storing (GkrPkObjectStorage *storage, GkrPkObject *obj, GQuark type
 {
 	gchar *label;
 	const gchar *ext;
+	gsize n_ext, n_label;
 	gchar *filename;
 	GQuark loc;
 	
@@ -83,11 +84,19 @@ location_for_storing (GkrPkObjectStorage *storage, GkrPkObject *obj, GQuark type
 	ext = gkr_pkix_serialize_get_extension (type);
 	if (!ext) 
 		ext = "pk";
+	n_ext = strlen (ext);
 	
 	/* Come up with a good relative name for the object */
 	label = g_strdup (gkr_pk_object_get_label (obj));
 	g_strdelimit (label, UNWANTED_FILENAME_CHARS, '_');
-	filename = g_strconcat (RELATIVE_DIRECTORY, G_DIR_SEPARATOR_S, label, ".", ext, NULL);
+	n_label = strlen (label);
+	
+	/* See if we already have the rigth extension */
+	if (n_label > n_ext + 1 && label[n_label - (n_ext + 1)] == '.' 
+	    && strcmp (label + (n_label - n_ext), ext) == 0)
+		filename = g_strconcat (RELATIVE_DIRECTORY, G_DIR_SEPARATOR_S, label, NULL);
+	else
+		filename = g_strconcat (RELATIVE_DIRECTORY, G_DIR_SEPARATOR_S, label, ".", ext, NULL);
 	
 	loc = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, filename);
 	g_free (filename);

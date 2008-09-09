@@ -1,5 +1,10 @@
 2008-09-08  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pk/gkr-pk-object-storage.c: Don't add additional extensions
+	on storage files when the extension is already correct.
+	
+2008-09-08  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/keyrings/gkr-keyring-item.c:
 	* daemon/keyrings/gkr-keyring-item.h: 
 	* daemon/keyrings/gkr-pk-index.c: Cover corner cases when 
