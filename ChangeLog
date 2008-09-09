@@ -1,3 +1,15 @@
+2008-09-08  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/keyrings/gkr-keyring-item.c:
+	* daemon/keyrings/gkr-keyring-item.h: 
+	* daemon/keyrings/gkr-pk-index.c: Cover corner cases when 
+	an indexed object is copy between indexes using the same keyring
+	or to a keyring where it already exists.
+	
+	* daemon/pkcs11/gkr-pkcs11-daemon-session.c: Load all objects 
+	when a session is opened, regardless of whether a C_FindObjects
+	is run or not.
+	 
 === gnome-keyring 2.23.92 ===
 
 2008-09-07  Stef Walter  <stef@memberwebs.com>

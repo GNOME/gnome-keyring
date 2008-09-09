@@ -223,6 +223,20 @@ gkr_keyring_item_clone (GkrKeyring* new_keyring, GkrKeyringItem *item)
 	return item;
 }
 
+void
+gkr_keyring_item_merge (GkrKeyringItem* merged, GkrKeyringItem* item)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute *attribute;
+	gint i;
+	
+	attributes = item->attributes;
+	for (i = 0; i < attributes->len; i++) {
+		attribute = &gnome_keyring_attribute_list_index (attributes, i);
+		gkr_attribute_list_set (merged->attributes, attribute);
+	}
+}
+
 gboolean
 gkr_keyring_item_match (GkrKeyringItem *item, GnomeKeyringItemType type, 
                         GnomeKeyringAttributeList *attributes, gboolean match_all)

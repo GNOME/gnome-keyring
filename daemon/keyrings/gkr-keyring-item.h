@@ -86,6 +86,9 @@ GkrKeyringItem*    gkr_keyring_item_create      (GkrKeyring* keyring,
 GkrKeyringItem*    gkr_keyring_item_clone       (GkrKeyring* new_keyring, 
                                                  GkrKeyringItem *item);
 
+void               gkr_keyring_item_merge       (GkrKeyringItem* merged,
+                                                 GkrKeyringItem* item);
+
 gboolean           gkr_keyring_item_match       (GkrKeyringItem *item, 
                                                  GnomeKeyringItemType type, 
                                                  GnomeKeyringAttributeList *attributes, 

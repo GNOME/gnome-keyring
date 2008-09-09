@@ -303,6 +303,8 @@ session_C_OpenSession (SessionInfo *sinfo, GkrPkcs11Message *req,
 	sinfo->pid = pid;
 	sinfo->session = gkr_pk_session_new_for_client (pid);
 	
+	gkr_pk_storage_refresh_all ();
+	
 	return CKR_OK;
 }
 

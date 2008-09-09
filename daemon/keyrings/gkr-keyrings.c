@@ -280,12 +280,22 @@ gkr_keyrings_update (void)
 void 
 gkr_keyrings_add (GkrKeyring *keyring)
 {
+	GList *l;
+	
 	keyrings_init ();
 	
 	g_assert (GKR_IS_KEYRING (keyring));
 	
 	/* Can't add the same keyring twice */
 	g_assert (g_list_find (keyrings, keyring) == NULL);
+	
+	/* Can't add two keyrings for the same location */
+	for (l = keyrings; l; l = g_list_next (l)) { 
+		if (((GkrKeyring*)l->data)->location == keyring->location) {
+			g_warning ("two keyrings added for the same location: %s",
+			           gkr_location_to_string (keyring->location));
+		}
+	}
 	
 	keyrings = g_list_prepend (keyrings, keyring);
 	g_object_ref (keyring);

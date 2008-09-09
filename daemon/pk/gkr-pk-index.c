@@ -883,6 +883,7 @@ gboolean
 gkr_pk_index_copy (GkrPkIndex *old_index, GkrPkIndex *new_index, gkrconstid digest)
 {
 	GkrKeyringItem *item;
+	GkrKeyringItem *copy;
 	
 	if (!old_index)
 		old_index = gkr_pk_index_default ();
@@ -896,12 +897,22 @@ gkr_pk_index_copy (GkrPkIndex *old_index, GkrPkIndex *new_index, gkrconstid dige
 	if (old_index == new_index)
 		return FALSE;
 	
+	if (old_index->keyring == new_index->keyring)
+		return FALSE;
+	
 	item = find_item_for_digest (old_index, digest, FALSE);
 	if (!item)
 		return FALSE;
 	
-	item = gkr_keyring_item_clone (new_index->keyring, item);
-	gkr_keyring_add_item (new_index->keyring, item);
+	copy = find_item_for_digest (new_index, digest, FALSE);
+	if (copy) {
+		/* Just merge the attributes from the old_index into new item */ 
+		gkr_keyring_item_merge (copy, item);
+	} else {
+		/* Create a new item and add it to the keyring */
+		copy = gkr_keyring_item_clone (new_index->keyring, item);
+		gkr_keyring_add_item (new_index->keyring, copy);
+	}
 	
 	if (!gkr_keyring_save_to_disk (new_index->keyring))
 		g_warning ("copying item: couldn't write index keyring to disk");
