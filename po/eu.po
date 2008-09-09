@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-22 17:25+0200\n"
-"PO-Revision-Date: 2008-08-22 18:10+0200\n"
+"POT-Creation-Date: 2008-09-09 12:34+0200\n"
+"PO-Revision-Date: 2008-09-09 12:35+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -350,8 +350,8 @@ msgid ""
 "by default, as this is still an experimental feature. This is used by "
 "seahorse and other PKCS#11 aware applications."
 msgstr ""
-"Bide-izenen zerrenda PKCS#11 moduluak kargatzeko. Unean ez dago "
-"modulurik zerrendatuta lehenetsi gisa, eta oraindik eginbide esperimentala da hau. "
+"Bide-izenen zerrenda PKCS#11 moduluak kargatzeko. Unean ez dago modulurik "
+"zerrendatuta lehenetsi gisa, eta oraindik eginbide esperimentala da hau. "
 "Seahorse eta beste PKCS#11 aplikazioek erabiltzen dute hau."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
@@ -514,26 +514,26 @@ msgid ""
 "The system wants to access information about your keys and certificates, but "
 "it is locked."
 msgstr ""
-"Sistemak gakoei eta ziurtagiriei buruzko informazioa atzitzea nahi du, "
-"baina blokeatuta dago."
+"Sistemak gakoei eta ziurtagiriei buruzko informazioa atzitzea nahi du, baina "
+"blokeatuta dago."
 
-#: ../daemon/pk/gkr-pk-object.c:883
+#: ../daemon/pk/gkr-pk-object.c:889
 msgid "Certificate"
 msgstr "Ziurtagiria"
 
-#: ../daemon/pk/gkr-pk-object.c:885
+#: ../daemon/pk/gkr-pk-object.c:891
 msgid "Private Key"
 msgstr "Gako pribatua"
 
-#: ../daemon/pk/gkr-pk-object.c:887
+#: ../daemon/pk/gkr-pk-object.c:893
 msgid "Public Key"
 msgstr "Gako publikoa"
 
-#: ../daemon/pk/gkr-pk-object.c:889
+#: ../daemon/pk/gkr-pk-object.c:895
 msgid "Trust Association"
 msgstr "Elkarte fidagarria"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:436
+#: ../daemon/pk/gkr-pk-object-storage.c:445
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "Ezin da '%s' ezabatu beste objektu batzuetara lotuta dagoelako."
@@ -612,8 +612,8 @@ msgid ""
 "The system wants to store the private key '%s' on your disk. Please enter a "
 "password to lock it with."
 msgstr ""
-"Sistemak '%s' gako pribatua diskoan gordetzea nahi du. Idatzi "
-"pasahitza (pasahitzarekin blokeatzeko)."
+"Sistemak '%s' gako pribatua diskoan gordetzea nahi du. Idatzi pasahitza "
+"(pasahitzarekin blokeatzeko)."
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
@@ -621,10 +621,10 @@ msgid ""
 "The system wants to store '%s' on your disk. Please enter a password to lock "
 "it with."
 msgstr ""
-"Sistemak '%s' diskoan gordetzea nahi du. Idatzi "
-"pasahitza (pasahitzarekin blokeatzeko)."
+"Sistemak '%s' diskoan gordetzea nahi du. Idatzi pasahitza (pasahitzarekin "
+"blokeatzeko)."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:64
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
 msgid "The operation was cancelled"
 msgstr "Eragiketa bertan behera utzi da"
 
@@ -712,334 +712,338 @@ msgid "Deny"
 msgstr "Ukatu"
 
 #: ../daemon/ui/gkr-ask-tool.c:625
-msgid "_Create"
+msgid "C_reate"
 msgstr "_Sortu"
 
 #: ../daemon/ui/gkr-ask-tool.c:629
+msgid "C_hange"
+msgstr "_Aldatu"
+
+#: ../daemon/ui/gkr-ask-tool.c:633
 msgid "Allow _Once"
 msgstr "Baimend_u behin"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:637
 msgid "_Always Allow"
 msgstr "B_aimendu beti"
 
-#: ../gp11/gp11-misc.c:67
+#: ../gp11/gp11-misc.c:90
 msgid "Insufficient memory available"
 msgstr "Ez dago nahikoa memoria erabilgarri"
 
-#: ../gp11/gp11-misc.c:69
+#: ../gp11/gp11-misc.c:92
 msgid "The specified slot ID is not valid"
 msgstr "Zehaztutako IDa ez da baliozkoa"
 
-#: ../gp11/gp11-misc.c:71
+#: ../gp11/gp11-misc.c:94
 msgid "Internal error"
 msgstr "Barneko errorea"
 
-#: ../gp11/gp11-misc.c:73
+#: ../gp11/gp11-misc.c:96
 msgid "The operation failed"
 msgstr "Eragiketak huts egin du"
 
-#: ../gp11/gp11-misc.c:75
+#: ../gp11/gp11-misc.c:98
 msgid "Invalid arguments"
 msgstr "Argumentu baliogabeak"
 
-#: ../gp11/gp11-misc.c:77
+#: ../gp11/gp11-misc.c:100
 msgid "The module cannot create needed threads"
 msgstr "Moduluak ezin du beharrezko hariak sortu"
 
-#: ../gp11/gp11-misc.c:79
+#: ../gp11/gp11-misc.c:102
 msgid "The module cannot lock data properly"
 msgstr "Moduluak ezin du datuak ongi blokeatu"
 
-#: ../gp11/gp11-misc.c:81
+#: ../gp11/gp11-misc.c:104
 msgid "The field is read-only"
 msgstr "Eremua irakurtzeko soilik da"
 
-#: ../gp11/gp11-misc.c:83
+#: ../gp11/gp11-misc.c:106
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Eremua pribatua da, eta ezin da azaldu"
 
-#: ../gp11/gp11-misc.c:85
+#: ../gp11/gp11-misc.c:108
 msgid "The field is invalid or does not exist"
 msgstr "Eremua baliogabea da edo ez da existitzen"
 
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:110
 msgid "Invalid value for field"
 msgstr "Eremuaren balio baliogabea"
 
-#: ../gp11/gp11-misc.c:89
+#: ../gp11/gp11-misc.c:112
 msgid "The data is not valid or unrecognized"
 msgstr "Datua ez da baliozkoa edo ez da ezagutzen"
 
-#: ../gp11/gp11-misc.c:91
+#: ../gp11/gp11-misc.c:114
 msgid "The data is too long"
 msgstr "Datua luzeegia da"
 
-#: ../gp11/gp11-misc.c:93
+#: ../gp11/gp11-misc.c:116
 msgid "An error occurred on the device"
 msgstr "Errorea gertatu da gailuan"
 
-#: ../gp11/gp11-misc.c:95
+#: ../gp11/gp11-misc.c:118
 msgid "Insufficient memory available on device"
 msgstr "Ez dago nahikoa memoria erabilgarri gailuan"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:120
 msgid "The device was removed or unplugged"
 msgstr "Gailua kendu edo deskonektatu egin da"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:122
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Enkriptatutako datua ez da baliozkoa edo ez da ezagutzen"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:124
 msgid "The encrypted data is too long"
 msgstr "Enkriptatutako datua luzeegia da"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:126
 msgid "This operation is not supported"
 msgstr "Eragiketa hau ez dago onartuta"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:128
 msgid "The key is missing or invalid"
 msgstr "Gakoa falta da edo baliogabea da"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:130
 msgid "The key is the wrong size"
 msgstr "Gakoak okerreko tamaina du"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:132
 msgid "The key is of the wrong type"
 msgstr "Gakoa okerreko motakoa da"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:134
 msgid "No key is needed"
 msgstr "Ez da gakorik behar"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:136
 msgid "The key is different than before"
 msgstr "Gakoa aurrekotik desberdina da"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:138
 msgid "A key is needed"
 msgstr "Gakoa behar da"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:140
 msgid "Cannot include the key in digest"
 msgstr "Ezin da gakoa laburpenean txertatu"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:142
 msgid "This operation cannot be done with this key"
 msgstr "Eragiketa hau ezin da gako honekin egin"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:144
 msgid "The key cannot be wrapped"
 msgstr "Gakoa ez da itzulbiratu"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:146
 msgid "Cannot export this key"
 msgstr "Ezin da gako hau esportatu"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:148
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Zifratzeko motorra baliogabea da, edo ezezaguna"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:150
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Zifratzeko motorrak argumentu baliogabe bat du"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:152
 msgid "The object is missing or invalid"
 msgstr "Objektua falta da edo baliogabea da"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:154
 msgid "Another operation is already taking place"
 msgstr "Jadanik beste eragiketa bat ari da lantzen"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:156
 msgid "No operation is taking place"
 msgstr "Ez da eragiketarik lantzen ari"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:158
 msgid "The password or PIN is incorrect"
 msgstr "Pasahitza edo PINa ez da zuzena"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:160
 msgid "The password or PIN is invalid"
 msgstr "Pasahitza edo PINa baliogabea da"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:162
 msgid "The password or PIN is of an invalid length"
 msgstr "Pasahitza edo PINaren luzeera baliogabekoa da"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:164
 msgid "The password or PIN has expired"
 msgstr "Pasahitza edo PINa iraungitu egin da"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:166
 msgid "The password or PIN is locked"
 msgstr "Pasahitza edo PINa blokeatuta dago"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:168
 msgid "The session is closed"
 msgstr "Saioa itxi da"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:170
 msgid "Too many sessions are active"
 msgstr "Saio gehiegi daude aktibo"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:172
 msgid "The session is invalid"
 msgstr "Saio baliogabea"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:174
 msgid "The session is read-only"
 msgstr "Saioa irakurtzeko soilik da"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:176
 msgid "An open session exists"
 msgstr "Irekitako saioa badago lehendik ere"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:178
 msgid "A read-only session exists"
 msgstr "Irakurtzeko soilik den saioa badago lehendik ere"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:180
 msgid "An administrator session exists"
 msgstr "Administratzailearen saioa badago lehendik ere"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:182
 msgid "The signature is bad or corrupted"
 msgstr "Sinadura okerrekoa da edo hondatuta dago"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:184
 msgid "The signature is unrecognized or corrupted"
 msgstr "Sinadura ez da ezaguna edo hondatuta dago"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:186
 msgid "Certain required fields are missing"
 msgstr "Beharrezkoak diren zenbait eremu falta dira"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:188
 msgid "Certain fields have invalid values"
 msgstr "Eremu batzuk balio baliogabeak dituzte"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:190
 msgid "The device is not present or unplugged"
 msgstr "Gailua ez dago edo deskonektatuta dago"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:192
 msgid "The device is invalid or unrecognizable"
 msgstr "Gailua baliogabea da edo ezezaguna"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:194
 msgid "The device is write protected"
 msgstr "Gailuak idazketaren aurkako babesa du"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:196
 msgid "Cannot import because the key is invalid"
 msgstr "Ezin da inportatu gakoa baliogabea delako"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:198
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Ezin da inportatu gakoak okerreko tamaina duelako"
 
-#: ../gp11/gp11-misc.c:177
+#: ../gp11/gp11-misc.c:200
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Ezin da inportatu gakoa okerreko motakoa delako"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:202
 msgid "You are already logged in"
 msgstr "Jadanik saioa hasita zaude"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:204
 msgid "No user has logged in"
 msgstr "Ez dago erabiltzailerik saioa hasi duenik"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:206
 msgid "The user's password or PIN is not set"
 msgstr "Erabiltzailearen pasahitza edo PINa ez dago ezarrita"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:208
 msgid "The user is of an invalid type"
 msgstr "Erabiltzailea mota baliogabekoa da"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:210
 msgid "Another user is already logged in"
 msgstr "Beste erabiltzaile bat dago saioa hasita"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:212
 msgid "Too many users of different types logged in"
 msgstr "Mota desberdinetako erabiltzaile gehiegik hasi dute saioa"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:214
 msgid "Cannot import an invalid key"
 msgstr "Ezin da gako baliogabea inportatu"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:216
 msgid "Cannot import a key of the wrong size"
 msgstr "Ezin da okerreko tamaina duen gakoa inportatu"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:218
 msgid "Cannot export because the key is invalid"
 msgstr "Ezin da esportatu gakoa baliogabea delako"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:220
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Ezin da esportatu gakoak okerreko tamaina duelako"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:222
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Ezin da esportatu gakoa okerreko motakoa delako"
 
-#: ../gp11/gp11-misc.c:201
-msgid "Cannot set a random seed"
-msgstr "Ezin da ausazko hazia ezarri"
+#: ../gp11/gp11-misc.c:224
+msgid "Unable to initialize the random number generator"
+msgstr "Ezin da ausazko zenbakien sortzailea hasieratu"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:226
 msgid "No random number generator available"
 msgstr "Ez dago ausazko zenbaki sortzailea erabilgarri"
 
-#: ../gp11/gp11-misc.c:205
+#: ../gp11/gp11-misc.c:228
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Zifratzeko motorrak parametro baliogabea du"
 
-#: ../gp11/gp11-misc.c:207
+#: ../gp11/gp11-misc.c:230
 msgid "Not enough space to store the result"
 msgstr "Ez dago nahikoa lekurik emaitza gordetzeko"
 
-#: ../gp11/gp11-misc.c:209
+#: ../gp11/gp11-misc.c:232
 msgid "The saved state is invalid"
 msgstr "Gordetako egoera baliogabea da"
 
-#: ../gp11/gp11-misc.c:211
+#: ../gp11/gp11-misc.c:234
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Informazioa pribatua da, eta ezin da azaldu"
 
-#: ../gp11/gp11-misc.c:213
+#: ../gp11/gp11-misc.c:236
 msgid "The state cannot be saved"
 msgstr "Egoera ezin da gorde"
 
-#: ../gp11/gp11-misc.c:215
+#: ../gp11/gp11-misc.c:238
 msgid "The module has not been initialized"
 msgstr "Modulua ez da hasieratu"
 
-#: ../gp11/gp11-misc.c:217
+#: ../gp11/gp11-misc.c:240
 msgid "The module has already been initialized"
 msgstr "Modulua jadanik hasieratuta dago"
 
-#: ../gp11/gp11-misc.c:219
+#: ../gp11/gp11-misc.c:242
 msgid "Cannot lock data"
 msgstr "Ezin dira datuak blokeatu"
 
-#: ../gp11/gp11-misc.c:221
+#: ../gp11/gp11-misc.c:244
 msgid "The data cannot be locked"
 msgstr "Datuak ezin dira blokeatu"
 
-#: ../gp11/gp11-misc.c:223
+#: ../gp11/gp11-misc.c:246
 msgid "The signature request was rejected by the user"
 msgstr "Erabiltzaileak ukatu egin du sinaduraren eskaera"
 
-#: ../gp11/gp11-misc.c:227
+#: ../gp11/gp11-misc.c:250
 msgid "Unknown error"
 msgstr "Errore ezezaguna"
 
