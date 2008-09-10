@@ -204,7 +204,7 @@ gkr_keyring_item_clone (GkrKeyring* new_keyring, GkrKeyringItem *item)
 	g_return_val_if_fail (GKR_IS_KEYRING_ITEM (item), NULL);
 		
 	nitem->keyring = new_keyring;
-	nitem->id = item->id;
+	nitem->id = gkr_keyring_get_new_id (new_keyring);
 	nitem->locked = item->locked;
 
 	nitem->type = item->type;
@@ -220,7 +220,7 @@ gkr_keyring_item_clone (GkrKeyring* new_keyring, GkrKeyringItem *item)
 	/* Make sure we get disconnected when keyring goes away */
 	g_object_add_weak_pointer (G_OBJECT (item->keyring), (gpointer*)&(item->keyring));
 		
-	return item;
+	return nitem;
 }
 
 void
