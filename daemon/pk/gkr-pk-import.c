@@ -148,6 +148,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 	#define LAST_WAS_BLANK 1
 	if (*state == LAST_WAS_BLANK) {
 		*result = NULL;
+		*state = 0;
 		return TRUE;
 	}
 	

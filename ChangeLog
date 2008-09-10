@@ -1,5 +1,10 @@
 2008-09-09  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-pk-import.c: When prompting for a password on 
+	import, don't go into an endless loop for blank passwords.
+	 
+2008-09-09  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/keyrings/gkr-keyring-item.c: Fix bugs when cloning a
 	keyring item to be part of another keyring. This fixes issues 
 	with items in PK indexes overwriting each other.
