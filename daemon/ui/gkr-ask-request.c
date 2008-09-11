@@ -321,6 +321,10 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 	
 	if (!line) {
 		g_warning ("missing dialog response from ask tool");
+		if (!g_getenv ("DISPLAY"))
+			g_warning ("the gnome-keyring-daemon process may not have been "
+			           "initialized properly, as its environment is missing "
+			           "the 'DISPLAY' variable.");
 		mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
 		return;
 	}

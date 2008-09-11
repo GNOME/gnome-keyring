@@ -118,20 +118,82 @@ gkr_memory_fallback (void *p, unsigned long sz)
 static void 
 fatal (const char *msg1, const char *msg2)
 {
-	fprintf (stderr, "%s: %s%s%s\n", 
-	         g_get_prgname (),
-	         msg1 ? msg1 : "", 
-	         msg1 && msg2 ? ": " : "",
-	         msg2 ? msg2 : "");
+	g_printerr ("%s: %s%s%s\n", 
+	            g_get_prgname (),
+	            msg1 ? msg1 : "", 
+	            msg1 && msg2 ? ": " : "",
+	            msg2 ? msg2 : "");
 #if LOG_ERRORS
-	syslog (LOG_AUTH | LOG_ERR, "%s: %s%s%s\n", 
-	         g_get_prgname (),
+	syslog (LOG_AUTH | LOG_ERR, "%s%s%s\n", 
 	         msg1 ? msg1 : "", 
 	         msg1 && msg2 ? ": " : "",
 	         msg2 ? msg2 : "");
 #endif
 	exit (1);
 }
+
+#if LOG_ERRORS
+
+static void
+log_handler (const gchar *log_domain, GLogLevelFlags log_level, 
+             const gchar *message, gpointer user_data)
+{
+	int level;
+
+	/* Note that crit and err are the other way around in syslog */
+        
+	switch (G_LOG_LEVEL_MASK & log_level) {
+	case G_LOG_LEVEL_ERROR:
+		level = LOG_CRIT;
+		break;
+	case G_LOG_LEVEL_CRITICAL:
+		level = LOG_ERR;
+		break;
+	case G_LOG_LEVEL_WARNING:
+		level = LOG_WARNING;
+		break;
+	case G_LOG_LEVEL_MESSAGE:
+		level = LOG_NOTICE;
+		break;
+	case G_LOG_LEVEL_INFO:
+		level = LOG_INFO;
+		break;
+	case G_LOG_LEVEL_DEBUG:
+		level = LOG_DEBUG;
+		break;
+	default:
+		level = LOG_ERR;
+		break;
+	}
+    
+	/* Log to syslog first */
+	if (log_domain)
+		syslog (level, "%s: %s", log_domain, message);
+	else
+		syslog (level, "%s", message);
+ 
+    /* And then to default handler for aborting and stuff like that */
+    g_log_default_handler (log_domain, log_level, message, user_data); 
+}
+
+#endif /* LOG_ERRORS */
+
+static void
+prepare_logging ()
+{
+	GLogLevelFlags flags = G_LOG_FLAG_FATAL | G_LOG_LEVEL_ERROR | 
+	                       G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING | 
+	                       G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO;
+                
+	openlog ("gnome-keyring-ask", 0, LOG_AUTH);
+    
+	g_log_set_handler (NULL, flags, log_handler, NULL);
+	g_log_set_handler ("Glib", flags, log_handler, NULL);
+	g_log_set_handler ("Gtk", flags, log_handler, NULL);
+	g_log_set_handler ("Gnome", flags, log_handler, NULL);
+	g_log_set_default_handler (log_handler, NULL);
+}
+
 
 static void
 write_output (const gchar *data, gsize len)
@@ -696,7 +758,7 @@ read_all_input (void)
 		if (r < 0) {
 			if (errno == EAGAIN || errno == EINTR)
 				continue;
-			g_warning ("couldn't read dialog instructions from input: %s",
+			g_warning ("couldn't read auth dialog instructions from input: %s",
 			           g_strerror (errno));
 			exit (1);
 		} 
@@ -715,6 +777,8 @@ main (int argc, char *argv[])
 	gchar *data;
 	gboolean ret;
 	gsize length;
+	
+	prepare_logging ();
 	
 	input_data = g_key_file_new ();
 	output_data = g_key_file_new ();
@@ -736,13 +800,13 @@ main (int argc, char *argv[])
 	g_assert (data);
 	
 	if (!data[0])
-		fatal ("no dialog instructions", NULL);	
+		fatal ("no auth dialog instructions", NULL);	
 	
 	ret = g_key_file_load_from_data (input_data, data, strlen (data), G_KEY_FILE_NONE, &err);
 	g_free (data);
 
 	if (!ret)
-		fatal ("couldn't parse dialog instructions", err ? err->message : "");
+		fatal ("couldn't parse auth dialog instructions", err ? err->message : "");
 
 	prepare_dialog ();
 	
@@ -751,7 +815,7 @@ main (int argc, char *argv[])
 	g_key_file_free (output_data);
 	
 	if (!data)
-		fatal ("couldn't format dialog response: %s", err ? err->message : ""); 
+		fatal ("couldn't format auth dialog response: %s", err ? err->message : ""); 
 	
 	write_output (data, length);
 	g_free (data);

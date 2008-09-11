@@ -1,3 +1,11 @@
+2008-09-11  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/ui/gkr-ask-request.c:
+	* daemon/ui/gkr-ask-tool.c: Make all glib/gtk error messages
+	go to syslog from the ask tool. Also try and show a smart
+	warning if the ask tool failed and no DISPLAY was set.
+	See bug #551687
+	
 2008-09-09  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-pk-import.c: When prompting for a password on 
