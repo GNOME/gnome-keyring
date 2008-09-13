@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-10 04:07+0000\n"
-"PO-Revision-Date: 2008-09-10 15:30+0100\n"
+"POT-Creation-Date: 2008-09-10 13:31+0000\n"
+"PO-Revision-Date: 2008-09-12 12:55+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -262,7 +262,7 @@ msgstr "Izberite geslo za privzeto zbirko ključev"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid "A list of paths to PKCS#11 modules to load. No modules are currently listed by default, as this is still an experimental feature. This is used by seahorse and other PKCS#11 aware applications."
-msgstr ""
+msgstr "Seznam poti do PKCS#11 modulov. Trenutno v seznamu ni modulov, saj je to še vedno nova možnost programa. Seznam uporabljajo programi seahorse in pa drugi programi, ki upravljajo s PKCS#11 potrdili."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
@@ -374,7 +374,7 @@ msgstr "Sistem želi uvoziti '%s', vendar je ta zaklenjen"
 #. And put together the ask request
 #: ../daemon/pk/gkr-pk-index.c:93
 msgid "Create Storage for Key Information"
-msgstr ""
+msgstr "Ustvari shrnjevalnik za podrobnosti ključa."
 
 #: ../daemon/pk/gkr-pk-index.c:94
 msgid "Choose password to protect storage"
@@ -382,12 +382,12 @@ msgstr "Izberite geslo za varovanje zbirke"
 
 #: ../daemon/pk/gkr-pk-index.c:97
 msgid "The system wants to store information about your keys and certificates. In order to protect this information, choose a password with which it will be locked."
-msgstr ""
+msgstr "Program poskuša shraniti podrobnosti ključa in potrdil. Za varovanje podrobnosti, izberite geslo s katerim boste podatke zaklenili."
 
 #. And put together the ask request
 #: ../daemon/pk/gkr-pk-index.c:124
 msgid "Unlock Storage for Key Information"
-msgstr ""
+msgstr "Odkleni shranjeno za izpis podrobnosti ključa"
 
 #: ../daemon/pk/gkr-pk-index.c:125
 msgid "Enter password to unlock storage"
@@ -410,14 +410,13 @@ msgid "Public Key"
 msgstr "Javni ključ"
 
 #: ../daemon/pk/gkr-pk-object.c:895
-#, fuzzy
 msgid "Trust Association"
-msgstr "Povezava z Adresarjem"
+msgstr "Določila zaupnosti"
 
 #: ../daemon/pk/gkr-pk-object-storage.c:445
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr ""
+msgstr "Ni mogoče izbrisati '%s', saj je vezan na druge predmete."
 
 #: ../daemon/pk/gkr-pk-storage.c:136
 msgid "Unlock private key"
@@ -436,19 +435,16 @@ msgid "Unlock"
 msgstr "Odkleni"
 
 #: ../daemon/pk/gkr-pk-storage.c:153
-#, fuzzy
 msgid "Lock private key"
-msgstr "Odkleni osebni ključ"
+msgstr "Zakleni osebni ključ"
 
 #: ../daemon/pk/gkr-pk-storage.c:155
-#, fuzzy
 msgid "Lock"
 msgstr "Zakleni"
 
 #: ../daemon/pk/gkr-pk-storage.c:183
-#, fuzzy
 msgid "Enter password to protect the private key"
-msgstr "Vnesite geslo za odklepanje osebnega ključa"
+msgstr "Vnesite geslo za zaščito osebnega ključa"
 
 #: ../daemon/pk/gkr-pk-storage.c:185
 msgid "Enter password to protect storage"
@@ -491,14 +487,14 @@ msgid "An application wants access to '%s', but it is locked"
 msgstr "Program želi dostop do '%s', vendar je ta zaklenjen"
 
 #: ../daemon/pk/gkr-pk-storage.c:228
-#, fuzzy, c-format
+#, c-format
 msgid "The system wants to store the private key '%s' on your disk. Please enter a password to lock it with."
-msgstr "Sistem želi uvoziti osebni ključ '%s', vendar je ta zaklenjen"
+msgstr "Sistem želi shraniti osebni ključ '%s' na disk. Prosim, vnesite geslo za zaklepanje."
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
 msgid "The system wants to store '%s' on your disk. Please enter a password to lock it with."
-msgstr ""
+msgstr "Program poskuša shraniti '%s' na disk. Prosim, vnesite geslo za zaklepanje."
 
 #: ../daemon/pkix/gkr-pkix-parser.c:451
 #: ../gp11/gp11-misc.c:87
@@ -516,27 +512,27 @@ msgstr "Ni mogoče razčleniti neveljavne ali pokvarjene datoteke."
 #: ../daemon/ssh/gkr-ssh-storage.c:166
 #, c-format
 msgid "Couldn't encode secure shell public key."
-msgstr ""
+msgstr "Ni mogoče kodirati varnega lupinskega osebnega ključa."
 
 #: ../daemon/ssh/gkr-ssh-storage.c:412
 #, c-format
 msgid "Couldn't read secure shell private key: %s"
-msgstr ""
+msgstr "Ni mogoče prebrati varnega lupinskega osebnega ključa: %s"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:416
 #, c-format
 msgid "Invalid secure shell private key at: %s"
-msgstr ""
+msgstr "Neveljavni varni lupinski osebni ključ na: %s"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:465
 #, c-format
 msgid "Couldn't encrypt the SSH key to store it."
-msgstr ""
+msgstr "Ni mogoče šifrirati SSH ključa in ga shraniti."
 
 #: ../daemon/ssh/gkr-ssh-storage.c:481
 #, c-format
 msgid "Couldn't encode the SSH key to store it."
-msgstr ""
+msgstr "Ni mogoče kodirati SSH ključa in ga shraniti."
 
 #: ../daemon/ui/gkr-ask-tool.c:182
 msgid "Store passwords unencrypted?"
@@ -603,180 +599,156 @@ msgid "Insufficient memory available"
 msgstr "Na voljo je premalo spomina"
 
 #: ../gp11/gp11-misc.c:92
-#, fuzzy
 msgid "The specified slot ID is not valid"
-msgstr "Izbrana vrsta mape ni veljavna"
+msgstr "Izbran ID ni veljaven"
 
 #: ../gp11/gp11-misc.c:94
-#, fuzzy
 msgid "Internal error"
 msgstr "Notranja napaka"
 
 #: ../gp11/gp11-misc.c:96
-#, fuzzy
 msgid "The operation failed"
-msgstr "Operacija ni uspela: %s"
+msgstr "Dejanje ni uspelo"
 
 #: ../gp11/gp11-misc.c:98
-#, fuzzy
 msgid "Invalid arguments"
 msgstr "Neveljavni argumenti"
 
 #: ../gp11/gp11-misc.c:100
 msgid "The module cannot create needed threads"
-msgstr ""
+msgstr "Z modulom ni mogoče ustvariti zahtevanih niti"
 
 #: ../gp11/gp11-misc.c:102
 msgid "The module cannot lock data properly"
-msgstr ""
+msgstr "z modulom ni mogoče primerno zakleniti podatkov"
 
 #: ../gp11/gp11-misc.c:104
-#, fuzzy
 msgid "The field is read-only"
-msgstr "Cilj je mogoče samo brati"
+msgstr "Polje je samo za branje"
 
 #: ../gp11/gp11-misc.c:106
 msgid "The field is sensitive and cannot be revealed"
-msgstr ""
+msgstr "Polje je občutljivo in ga ni mogoče odkriti"
 
 #: ../gp11/gp11-misc.c:108
-#, fuzzy
 msgid "The field is invalid or does not exist"
-msgstr "Datoteka »%1« ne obstaja ali pa ni izvedljiva."
+msgstr "Polje ni veljavno ali pa ne obstaja"
 
 #: ../gp11/gp11-misc.c:110
-#, fuzzy
 msgid "Invalid value for field"
-msgstr "neveljavna vrednost za »ai_flags«"
+msgstr "neveljavna vrednost polja"
 
 #: ../gp11/gp11-misc.c:112
-#, fuzzy
 msgid "The data is not valid or unrecognized"
-msgstr "Napaka: Slogovna predloga ni veljavna ali pa datoteka ni naložena.\n"
+msgstr "Podatki niso veljavni ali pa jih ni mogoče prepoznati"
 
 #: ../gp11/gp11-misc.c:114
-#, fuzzy
 msgid "The data is too long"
-msgstr "Uporabniško ime je predolgo!"
+msgstr "Podatki so predolgi"
 
 #: ../gp11/gp11-misc.c:116
-#, fuzzy
 msgid "An error occurred on the device"
-msgstr "Prišlo je do napake pri povezavi"
+msgstr "Na napravi je prišlo napake"
 
 #: ../gp11/gp11-misc.c:118
 msgid "Insufficient memory available on device"
-msgstr ""
+msgstr "Ni zadostnega spomina na napravi"
 
 #: ../gp11/gp11-misc.c:120
 msgid "The device was removed or unplugged"
-msgstr ""
+msgstr "Naprava je bila odstranjena ali pa je bila odklopljena"
 
 #: ../gp11/gp11-misc.c:122
 msgid "The encrypted data is not valid or unrecognized"
-msgstr ""
+msgstr "Šifrirani podatki niso veljavni ali pa jih ni mogoče prepoznati"
 
 #: ../gp11/gp11-misc.c:124
-#, fuzzy
 msgid "The encrypted data is too long"
-msgstr "Če je sporočilo pr&edolgo:"
+msgstr "Šifrirani podatki so predolgi"
 
 #: ../gp11/gp11-misc.c:126
-#, fuzzy
 msgid "This operation is not supported"
-msgstr "Ta nabor znakov ni podprt."
+msgstr "Naloga ni podprta."
 
 #: ../gp11/gp11-misc.c:128
-#, fuzzy
 msgid "The key is missing or invalid"
-msgstr "Neveljavna ali neprepoznavna vrsta ključa: %s"
+msgstr "Ključa ni ali pa je neveljaven"
 
 #: ../gp11/gp11-misc.c:130
-#, fuzzy
 msgid "The key is the wrong size"
-msgstr "Datum začetka je napačen"
+msgstr "Velikost ključa je napačna"
 
 #: ../gp11/gp11-misc.c:132
-#, fuzzy
 msgid "The key is of the wrong type"
-msgstr "<li> ima napačno vrsto %s"
+msgstr "Vrsta ključa je napačna"
 
 #: ../gp11/gp11-misc.c:134
-#, fuzzy
 msgid "No key is needed"
-msgstr "Ključ se ne uporablja več"
+msgstr "Ključ ni zahtevan"
 
 #: ../gp11/gp11-misc.c:136
 msgid "The key is different than before"
-msgstr ""
+msgstr "Ključ je drugačen, kot je bil prej"
 
 #: ../gp11/gp11-misc.c:138
-#, fuzzy
 msgid "A key is needed"
-msgstr "Ključ je NULL"
+msgstr "Ključ je nujno zahtevan"
 
 #: ../gp11/gp11-misc.c:140
 msgid "Cannot include the key in digest"
-msgstr ""
+msgstr "V povzetku ni mogoče vključiti ključa"
 
 #: ../gp11/gp11-misc.c:142
 msgid "This operation cannot be done with this key"
-msgstr ""
+msgstr "Dejanja s tem ključem ni mogoče izvesti"
 
 #: ../gp11/gp11-misc.c:144
-#, fuzzy
 msgid "The key cannot be wrapped"
-msgstr "Izbrisanega ključa ni mogoče povrniti."
+msgstr "Ključa ni mogoče prelomiti."
 
 #: ../gp11/gp11-misc.c:146
-#, fuzzy
 msgid "Cannot export this key"
-msgstr "Vseeno uporabim ključ?"
+msgstr "Ključa ni mogoče uporabiti"
 
 #: ../gp11/gp11-misc.c:148
 msgid "The crypto mechanism is invalid or unrecognized"
-msgstr ""
+msgstr "Mehanizem šifriranja je neveljaven ali pa ni prepoznan"
 
 #: ../gp11/gp11-misc.c:150
 msgid "The crypto mechanism has an invalid argument"
-msgstr ""
+msgstr "Mehanizem šifriranja ima neveljaven argument"
 
 #: ../gp11/gp11-misc.c:152
-#, fuzzy
 msgid "The object is missing or invalid"
-msgstr "OPOZORILO: neveljavna ali pogrešana vrsta za shemo (%s)\n"
+msgstr "Predmet manjka ali pa je neveljaven"
 
 #: ../gp11/gp11-misc.c:154
 msgid "Another operation is already taking place"
-msgstr ""
+msgstr "Trenutno teče že druga dejavnost"
 
 #: ../gp11/gp11-misc.c:156
-#, fuzzy
 msgid "No operation is taking place"
-msgstr "%s: ni trenutne operacije"
+msgstr "Trenutno ni dejanj v izvajanju"
 
 #: ../gp11/gp11-misc.c:158
-#, fuzzy
 msgid "The password or PIN is incorrect"
-msgstr "Polje URL, uporabniškega imena ali pa gesla je prazno."
+msgstr "Uporabniško ime ali pa PIN geslo ni pravilno."
 
 #: ../gp11/gp11-misc.c:160
-#, fuzzy
 msgid "The password or PIN is invalid"
-msgstr "Polje URL, uporabniškega imena ali pa gesla je prazno."
+msgstr "Uporabniško ime ali pa PIN geslo je neveljavno."
 
 #: ../gp11/gp11-misc.c:162
 msgid "The password or PIN is of an invalid length"
-msgstr ""
+msgstr "Geslo ali PIN koda ni ustrezne velikosti"
 
 #: ../gp11/gp11-misc.c:164
 msgid "The password or PIN has expired"
-msgstr ""
+msgstr "Geslo ali PIN koda sta pokvarjena"
 
 #: ../gp11/gp11-misc.c:166
-#, fuzzy
 msgid "The password or PIN is locked"
-msgstr "Polje URL, uporabniškega imena ali pa gesla je prazno."
+msgstr "Uporabniško ime ali pa PIN geslo je zakljenjeno."
 
 #: ../gp11/gp11-misc.c:168
 msgid "The session is closed"
@@ -795,49 +767,44 @@ msgid "The session is read-only"
 msgstr "Seja je samo za branje"
 
 #: ../gp11/gp11-misc.c:176
-#, fuzzy
 msgid "An open session exists"
-msgstr "Ni mogoče odpreti seje za %s"
+msgstr "Trenutno obtaja odprta seja"
 
 #: ../gp11/gp11-misc.c:178
-#, fuzzy
 msgid "A read-only session exists"
-msgstr "Cilj je mogoče samo brati"
+msgstr "Trenutno je zagnana seja samo za branje "
 
 #: ../gp11/gp11-misc.c:180
-#, fuzzy
 msgid "An administrator session exists"
-msgstr "Filter \"%s\" že obstaja."
+msgstr "Trenutno je zagnana skrbniška seja."
 
 #: ../gp11/gp11-misc.c:182
 msgid "The signature is bad or corrupted"
-msgstr ""
+msgstr "Podpis je slab ali pa je pokvarjen"
 
 #: ../gp11/gp11-misc.c:184
 msgid "The signature is unrecognized or corrupted"
-msgstr ""
+msgstr "Podpis ni prepoznan ali pa je pokvarjen"
 
 #: ../gp11/gp11-misc.c:186
 msgid "Certain required fields are missing"
-msgstr ""
+msgstr "Nekatera zahtevana polja niso izpolnjena"
 
 #: ../gp11/gp11-misc.c:188
-#, fuzzy
 msgid "Certain fields have invalid values"
-msgstr "Neveljaven argument \"%s\" za --%s, veljavne vrednosti so: %s\n"
+msgstr "Nekatera polja imajo neveljavne vrednosti"
 
 #: ../gp11/gp11-misc.c:190
 msgid "The device is not present or unplugged"
-msgstr ""
+msgstr "Naprava ni prisotna ali pa ni ustrezno priklopljena"
 
 #: ../gp11/gp11-misc.c:192
 msgid "The device is invalid or unrecognizable"
-msgstr ""
+msgstr "Naprava je neveljavna ali pa je ni mogoče prepoznati"
 
 #: ../gp11/gp11-misc.c:194
-#, fuzzy
 msgid "The device is write protected"
-msgstr "Naprava Pilot %1 ni bralno/pisalna."
+msgstr "Naprava je  zaščitena pred pisanjem"
 
 #: ../gp11/gp11-misc.c:196
 msgid "Cannot import because the key is invalid"
@@ -852,23 +819,20 @@ msgid "Cannot import because the key is of the wrong type"
 msgstr "Uvoz ni mogoč, ker je ključ napačne vrste."
 
 #: ../gp11/gp11-misc.c:202
-#, fuzzy
 msgid "You are already logged in"
-msgstr "Vsi uporabniki so že v skupini %1."
+msgstr "Vi ste že uspešno prijavljeni."
 
 #: ../gp11/gp11-misc.c:204
-#, fuzzy
 msgid "No user has logged in"
-msgstr "Izberite uporabnika, ki se lahko samodejno prijavi."
+msgstr "Noben uporabnik se ni logiral"
 
 #: ../gp11/gp11-misc.c:206
 msgid "The user's password or PIN is not set"
 msgstr "Podatek uporabniškega gesla ali PIN kode ni nastavljen."
 
 #: ../gp11/gp11-misc.c:208
-#, fuzzy
 msgid "The user is of an invalid type"
-msgstr "Surova vrsta slike PNM ni veljavna"
+msgstr "Vrsta uporabnik ni veljavna"
 
 #: ../gp11/gp11-misc.c:210
 msgid "Another user is already logged in"
@@ -876,7 +840,7 @@ msgstr "Drug uporabnik je že prijavljen"
 
 #: ../gp11/gp11-misc.c:212
 msgid "Too many users of different types logged in"
-msgstr ""
+msgstr "Prijavljenih je preveč različnih uporabnikov"
 
 #: ../gp11/gp11-misc.c:214
 msgid "Cannot import an invalid key"
@@ -884,52 +848,47 @@ msgstr "Ni mogoče uvoziti neveljavnega ključa"
 
 #: ../gp11/gp11-misc.c:216
 msgid "Cannot import a key of the wrong size"
-msgstr ""
+msgstr "Uvoz ni mogoče, ker ima ključ napačno velikost."
 
 #: ../gp11/gp11-misc.c:218
 msgid "Cannot export because the key is invalid"
-msgstr ""
+msgstr "Izvoz ni mogoče, ker ključ ni veljaven."
 
 #: ../gp11/gp11-misc.c:220
 msgid "Cannot export because the key is of the wrong size"
-msgstr ""
+msgstr "Izvoz ni mogoče, ker ima ključ napačno velikost."
 
 #: ../gp11/gp11-misc.c:222
 msgid "Cannot export because the key is of the wrong type"
-msgstr ""
+msgstr "Izvoz ni mogoče, ker je ključ napačne vrste."
 
 #: ../gp11/gp11-misc.c:224
 msgid "Unable to initialize the random number generator"
-msgstr ""
+msgstr "Ni mogoče zagnati programa za izpis naključnih števil."
 
 #: ../gp11/gp11-misc.c:226
 msgid "No random number generator available"
-msgstr ""
+msgstr "Na voljo ni nobenega programa za izpis naključnih števil"
 
 #: ../gp11/gp11-misc.c:228
 msgid "The crypto mechanism has an invalid parameter"
-msgstr ""
+msgstr "Mehanizem šifriranja ima določene neveljavne parametre."
 
 #: ../gp11/gp11-misc.c:230
-#, fuzzy
 msgid "Not enough space to store the result"
-msgstr "Ni dovolj prostora za ustvaritev mape"
+msgstr "Ni dovolj prostora za shranjevanje rezultatov."
 
 #: ../gp11/gp11-misc.c:232
-#, fuzzy
 msgid "The saved state is invalid"
-msgstr ""
-"Podatki o stiku so neveljavni:\n"
-"\n"
+msgstr "Shranjeno stanje je neveljavno."
 
 #: ../gp11/gp11-misc.c:234
 msgid "The information is sensitive and cannot be revealed"
-msgstr ""
+msgstr "Podrobnosti so občutljive in jih ni mogoče odkriti."
 
 #: ../gp11/gp11-misc.c:236
-#, fuzzy
 msgid "The state cannot be saved"
-msgstr "Datoteka %1 ne more biti shranjena."
+msgstr "Stanja ni mogoče shraniti."
 
 #: ../gp11/gp11-misc.c:238
 msgid "The module has not been initialized"
@@ -949,7 +908,7 @@ msgstr "Podatkov ni mogoče zakleniti"
 
 #: ../gp11/gp11-misc.c:246
 msgid "The signature request was rejected by the user"
-msgstr ""
+msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
 
 #: ../gp11/gp11-misc.c:250
 msgid "Unknown error"
