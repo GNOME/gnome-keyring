@@ -425,8 +425,11 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith \
 	-Wcast-align -Wsign-compare \
-	-Werror \
 	$CFLAGS"
+
+	# Disable -Werror for now, because of issues with
+	# strange gtk-doc programs not building cleanly.  
+	# -Werror \ 
 
 	for option in -Wno-strict-aliasing -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"

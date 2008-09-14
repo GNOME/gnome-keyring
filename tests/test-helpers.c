@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include "test-helpers.h"
 
@@ -72,11 +73,16 @@ chdir_base_dir (char* argv0)
 	gchar *dir, *base;
 
 	dir = g_path_get_dirname (argv0);
-	chdir (dir);
+	if (chdir (dir) < 0)
+		g_warning ("couldn't change directory to: %s: %s", 
+		           dir, g_strerror (errno));
 	
 	base = g_path_get_basename (dir);
-	if (strcmp (base, ".libs") == 0)
-		chdir ("..");
+	if (strcmp (base, ".libs") == 0) {
+		if (chdir ("..") < 0)
+			g_warning ("couldn't change directory to ..: %s",
+			           g_strerror (errno));
+	}
 
 	g_free (base);
 	g_free (dir);

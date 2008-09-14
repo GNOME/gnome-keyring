@@ -1,3 +1,9 @@
+2008-09-14  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* tests/gtest-helpers.c:
+	* tests/test-helpers.c: Fix problems compiling with gcc 4.3
+	
 2008-09-12  Joe Orton  <jorton@redhat.com>
 
 	* gp11/gp11-module.c (GP11ModulePrivate): Add init_args field.
