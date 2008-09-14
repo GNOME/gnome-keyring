@@ -1,3 +1,10 @@
+2008-09-12  Joe Orton  <jorton@redhat.com>
+
+	* gp11/gp11-module.c (GP11ModulePrivate): Add init_args field.
+	(gp11_module_initialize): Use init_args structure from private
+	structure since at least one PKCS#11 module (opensc) requires
+	that the init_args argument persists in memory.
+
 2008-09-11  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/ui/gkr-ask-request.c:

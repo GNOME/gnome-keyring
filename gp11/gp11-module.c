@@ -34,6 +34,7 @@ enum {
 
 typedef struct _GP11ModulePrivate {
 	GModule *module;
+	CK_C_INITIALIZE_ARGS init_args;
 } GP11ModulePrivate;
 
 #define GP11_MODULE_GET_PRIVATE(o) \
@@ -216,7 +217,6 @@ gp11_module_info_free (GP11ModuleInfo *module_info)
 GP11Module*
 gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 {
-	CK_C_INITIALIZE_ARGS init_args;
 	CK_C_GetFunctionList get_function_list;
 	GP11ModulePrivate *pv;
 	GP11Module *mod;
@@ -264,16 +264,16 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 		return NULL;
 	}
 	
-	memset (&init_args, 0, sizeof (init_args));
-	init_args.flags = CKF_OS_LOCKING_OK;
-	init_args.CreateMutex = create_mutex;
-	init_args.DestroyMutex = destroy_mutex;
-	init_args.LockMutex = lock_mutex;
-	init_args.UnlockMutex = unlock_mutex;
-	init_args.pReserved = reserved;
+	memset (&pv->init_args, 0, sizeof (pv->init_args));
+	pv->init_args.flags = CKF_OS_LOCKING_OK;
+	pv->init_args.CreateMutex = create_mutex;
+	pv->init_args.DestroyMutex = destroy_mutex;
+	pv->init_args.LockMutex = lock_mutex;
+	pv->init_args.UnlockMutex = unlock_mutex;
+	pv->init_args.pReserved = reserved;
 	
 	/* Now initialize the module */
-	rv = (mod->funcs->C_Initialize) (&init_args);
+	rv = (mod->funcs->C_Initialize) (&pv->init_args);
 	if (rv != CKR_OK) {
 		g_set_error (err, GP11_ERROR, rv, "Couldn't initialize module: %s",
 		             gp11_message_from_rv (rv));
