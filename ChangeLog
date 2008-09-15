@@ -1,3 +1,9 @@
+2008-09-15  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/ui/gkr-ask-tool.c: Fix for keyboard ungrabbing when
+	minimizing the password prompt window, and handle grab
+	errors in a better manner.
+	
 2008-09-14  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in:

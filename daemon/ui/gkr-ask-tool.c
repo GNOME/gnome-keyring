@@ -327,17 +327,21 @@ on_password_changed (GtkEditable     *editable,
 static gboolean
 grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 {
-	if (!grabbed)
-		if (gdk_keyboard_grab (win->window, FALSE, gdk_event_get_time (event)))
-			g_message ("could not grab keyboard");
-	grabbed = TRUE;
+	GdkGrabStatus status;
+	if (!grabbed) {
+		status = gdk_keyboard_grab (win->window, FALSE, gdk_event_get_time (event));
+		if (status == GDK_GRAB_SUCCESS)
+			grabbed = TRUE;
+		else
+			g_message ("could not grab keyboard: %d", (int)status);
+	}
 	return FALSE;
 }
 
 static gboolean
 ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 {
-	if (!grabbed)
+	if (grabbed)
 		gdk_keyboard_ungrab (gdk_event_get_time (event));
 	grabbed = FALSE;
 	return FALSE;
