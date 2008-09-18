@@ -323,6 +323,15 @@ gp11_module_get_info (GP11Module *module)
 	return modinfo;
 }
 
+/**
+ * gp11_module_get_slots:
+ * @module: The module for which to get the slots.
+ * @token_present: Whether to limit only to slots with a token present.
+ * 
+ * Get the GP11Slot objects for a given module. 
+ * 
+ * Return value: The possibly empty list of slots. Release this with gp11_list_unref_free().
+ */
 GList*
 gp11_module_get_slots (GP11Module *module, gboolean token_present)
 {

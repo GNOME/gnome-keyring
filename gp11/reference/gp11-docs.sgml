@@ -14,6 +14,7 @@
   <chapter>
     <title>[Insert title here]</title>
     <xi:include href="xml/gp11.xml"/>
+    <xi:include href="xml/gp11-private.xml"/>
     <xi:include href="xml/pkcs11.xml"/>
     <xi:include href="xml/gp11-test.xml"/>
   </chapter>

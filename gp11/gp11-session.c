@@ -178,6 +178,12 @@ gp11_session_class_init (GP11SessionClass *klass)
  * PUBLIC 
  */
 
+/**
+ * gp11_session_info_free:
+ * @session_info: Session info to free.
+ * 
+ * Free the GP11SessionInfo structure and all associated memory.
+ **/
 void
 gp11_session_info_free (GP11SessionInfo *session_info)
 {
@@ -186,6 +192,17 @@ gp11_session_info_free (GP11SessionInfo *session_info)
 	g_free (session_info);
 }
 
+/**
+ * gp11_session_from_handle:
+ * @slot: The slot which the session belongs to.
+ * @handle: The raw PKCS#11 handle of the session.
+ * 
+ * Initialize a GP11Session object from a raw PKCS#11 session handle.
+ * Usually one would use the gp11_slot_open_session() function to 
+ * create a session.
+ * 
+ * Return value: The new GP11Session object.
+ **/
 GP11Session*
 gp11_session_from_handle (GP11Slot *slot, CK_SESSION_HANDLE handle)
 {
@@ -194,6 +211,14 @@ gp11_session_from_handle (GP11Slot *slot, CK_SESSION_HANDLE handle)
 	                     "handle", handle, "slot", slot, NULL);
 }
 
+/**
+ * gp11_session_get_handle:
+ * @session: The session object.
+ * 
+ * Get the raw PKCS#11 session handle from a GP11Session object.
+ * 
+ * Return value: The raw session handle.
+ **/
 CK_SESSION_HANDLE
 gp11_session_get_handle (GP11Session *session)
 {
@@ -201,6 +226,15 @@ gp11_session_get_handle (GP11Session *session)
 	return session->handle;
 }
 
+/**
+ * gp11_session_get_info: 
+ * @session: The session object.
+ * 
+ * Get information about the session.
+ * 
+ * Return value: The session info. Use the gp11_session_info_free() to release
+ * when done.
+ **/
 GP11SessionInfo*
 gp11_session_get_info (GP11Session *session)
 {
@@ -253,6 +287,19 @@ perform_login (Login *args)
 	                                     (CK_BYTE_PTR)args->pin, args->n_pin);
 }
 
+/**
+ * gp11_session_login:
+ * @session: Log into this session.
+ * @user_type: The type of login user.
+ * @pin: The user's PIN, or NULL for protected authentication path.
+ * @n_pin: The length of the PIN.
+ * @err: A location to return an error.
+ * 
+ * Login the user on the session. This call may block
+ * for an indefinite period.
+ * 
+ * Return value: Whether successful or not.
+ **/
 gboolean
 gp11_session_login (GP11Session *session, gulong user_type, const guchar *pin,
                     gsize n_pin, GError **err)
@@ -260,6 +307,20 @@ gp11_session_login (GP11Session *session, gulong user_type, const guchar *pin,
 	return gp11_session_login_full (session, user_type, pin, n_pin, NULL, err);
 }
 
+/**
+ * gp11_session_login_full:
+ * @session: Log into this session.
+ * @user_type: The type of login user.
+ * @pin: The user's PIN, or NULL for protected authentication path.
+ * @n_pin: The length of the PIN.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error.
+ * 
+ * Login the user on the session. This call may block for 
+ * an indefinite period.
+ * 
+ * Return value: Whether successful or not.
+ **/
 gboolean
 gp11_session_login_full (GP11Session *session, gulong user_type, const guchar *pin,
                          gsize n_pin, GCancellable *cancellable, GError **err)
@@ -269,6 +330,19 @@ gp11_session_login_full (GP11Session *session, gulong user_type, const guchar *p
 	
 }
 
+/**
+ * gp11_session_login_async:
+ * @session: Log into this session.
+ * @user_type: The type of login user.
+ * @pin: The user's PIN, or NULL for protected authentication path.
+ * @n_pin: The length of the PIN.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ * 
+ * Login the user on the session. This call will return 
+ * immediately and completes asynchronously.
+ **/
 void
 gp11_session_login_async (GP11Session *session, gulong user_type, const guchar *pin,
                           gsize n_pin, GCancellable *cancellable, GAsyncReadyCallback callback,
@@ -284,6 +358,16 @@ gp11_session_login_async (GP11Session *session, gulong user_type, const guchar *
 
 }
 
+/**
+ * gp11_session_login_finish:
+ * @session: The session logged into.
+ * @result: The result passed to the callback.
+ * @err: A location to return an error.
+ * 
+ * Get the result of a login operation.
+ * 
+ * Return value: Whether the operation was successful or not.
+ **/
 gboolean
 gp11_session_login_finish (GP11Session *session, GAsyncResult *result, GError **err)
 {
@@ -301,12 +385,31 @@ perform_logout (GP11Arguments *args)
 	return (args->pkcs11->C_Logout) (args->handle);
 }
 
+/**
+ * gp11_session_logout:
+ * @session: Logout of this session.
+ * @err: A location to return an error.
+ * 
+ * Log out of the session. This call may block for an indefinite period.
+ * 
+ * Return value: Whether the logout was successful or not.
+ **/
 gboolean
 gp11_session_logout (GP11Session *session, GError **err)
 {
 	return gp11_session_logout_full (session, NULL, err);
 }
 
+/**
+ * gp11_session_logout_full:
+ * @session: Logout of this session.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error.
+ * 
+ * Log out of the session. This call may block for an indefinite period.
+ * 
+ * Return value: Whether the logout was successful or not.
+ **/
 gboolean
 gp11_session_logout_full (GP11Session *session, GCancellable *cancellable, GError **err)
 {
@@ -314,6 +417,16 @@ gp11_session_logout_full (GP11Session *session, GCancellable *cancellable, GErro
 	return _gp11_call_sync (session, perform_logout, &args, cancellable, err);	
 }
 
+/**
+ * gp11_session_logout_async:
+ * @session: Logout of this session.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ * 
+ * Log out of the session. This call returns immediately and completes
+ * asynchronously.
+ **/
 void
 gp11_session_logout_async (GP11Session *session, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
@@ -322,6 +435,16 @@ gp11_session_logout_async (GP11Session *session, GCancellable *cancellable,
 	_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gp11_session_logout_finish:
+ * @session: Logout of this session.
+ * @result: The result passed to the callback.
+ * @err: A location to return an error.
+ * 
+ * Get the result of logging out of a session.
+ * 
+ * Return value: Whether the logout was successful or not.
+ **/
 gboolean
 gp11_session_logout_finish (GP11Session *session, GAsyncResult *result, GError **err)
 {
@@ -355,6 +478,39 @@ perform_create_object (CreateObject *args)
 	                                            &args->object);
 }
 
+/**
+ * gp11_session_create_object:
+ * @session: The session to create the object on.
+ * @err: A location to store an error.
+ * ...: The attributes to create the new object with.
+ * 
+ * Create a new PKCS#11 object. This call may block 
+ * for an indefinite period.
+ * 
+ * The arguments must be triples of: attribute type, data type, value
+ * 
+ * <para>The variable argument list should contain:
+ * 	<variablelist>
+ *		<varlistentry>
+ * 			<term>a)</term>
+ * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>b)</term>
+ * 			<listitem><para>The attribute data type (one of GP11_BOOLEAN, GP11_ULONG, 
+ * 				GP11_STRING, GP11_DATE) orthe raw attribute value length.</para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>c)</term>
+ * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or 
+ * 				a pointer to a raw attribute value.</para></listitem>
+ * 		</varlistentry>
+ * 	</variablelist>
+ * 
+ * The variable argument list should be terminated with GP11_INVALID.</para>
+ * 
+ * Return value: The newly created object, or NULL if an error occurred.
+ **/
 GP11Object*
 gp11_session_create_object (GP11Session *session, GError **err, ...)
 {
@@ -371,6 +527,18 @@ gp11_session_create_object (GP11Session *session, GError **err, ...)
 	return object;
 }
 
+/**
+ * gp11_session_create_object_full:
+ * @session: The session to create the object on.
+ * @attrs: The attributes to create the object with.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ * 
+ * Create a new PKCS#11 object. This call may block for an 
+ * indefinite period. 
+ * 
+ * Return value: The newly created object or NULL if an error occurred.
+ **/
 GP11Object*
 gp11_session_create_object_full (GP11Session *session, GP11Attributes *attrs,
                                  GCancellable *cancellable, GError **err)
@@ -381,6 +549,17 @@ gp11_session_create_object_full (GP11Session *session, GP11Attributes *attrs,
 	return gp11_object_from_handle (session, args.object);
 }
 
+/**
+ * gp11_session_create_object_async:
+ * @session: The session to create the object on.
+ * @attrs: The attributes to create the object with.
+ * @cancellable: Optional cancellation object or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ * 
+ * Create a new PKCS#11 object. This call will return immediately
+ * and complete asynchronously.
+ **/
 void
 gp11_session_create_object_async (GP11Session *session, GP11Attributes *attrs,
                                   GCancellable *cancellable, GAsyncReadyCallback callback, 
@@ -393,6 +572,16 @@ gp11_session_create_object_async (GP11Session *session, GP11Attributes *attrs,
 	_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gp11_session_create_object_finish:
+ * @session: The session to create the object on.
+ * @result: The result passed to the callback.
+ * @err: A location to return an error, or NULL.
+ * 
+ * Get the result of creating a new PKCS#11 object.
+ * 
+ * Return value: The newly created object or NULL if an error occurred.
+ **/
 GP11Object*
 gp11_session_create_object_finish (GP11Session *session, GAsyncResult *result, GError **err)
 {
@@ -490,6 +679,38 @@ objlist_from_handles (GP11Session *session, CK_OBJECT_HANDLE_PTR objects,
 	return g_list_reverse (results);
 }
 
+/**
+ * gp11_session_find_objects:
+ * @session: The session to find objects on.
+ * @err: A location to return an error or NULL.
+ * ...: The attributes to match.
+ * 
+ * Find objects matching the passed attributes. This call may 
+ * block for an indefinite period.
+ * 
+ * The arguments must be triples of: attribute type, data type, value
+ * 
+ * <para>The variable argument list should contain:
+ * 	<variablelist>
+ *		<varlistentry>
+ * 			<term>a)</term>
+ * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>b)</term>
+ * 			<listitem><para>The attribute data type (one of GP11_BOOLEAN, GP11_ULONG, 
+ * 				GP11_STRING, GP11_DATE) orthe raw attribute value length.</para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>c)</term>
+ * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or 
+ * 				a pointer to a raw attribute value.</para></listitem>
+ * 		</varlistentry>
+ * 	</variablelist>
+ * The variable argument list should be terminated with GP11_INVALID.</para>
+ * 
+ * Return value: A list of the matching objects, which may be empty.  
+ **/
 GList*
 gp11_session_find_objects (GP11Session *session, GError **err, ...)
 {
@@ -506,6 +727,18 @@ gp11_session_find_objects (GP11Session *session, GError **err, ...)
 	return results;
 }
 
+/**
+ * gp11_session_find_objects_full:
+ * @session: The session to find objects on.
+ * @attrs: The attributes to match.
+ * @cancellable: Optional cancellation object or NULL.
+ * @err: A location to return an error or NULL.
+ * 
+ * Find the objects matching the passed attributes. This call may 
+ * block for an indefinite period.
+ * 
+ * Return value: A list of the matching objects, which may be empty.
+ **/
 GList*
 gp11_session_find_objects_full (GP11Session *session, GP11Attributes *attrs, 
                                 GCancellable *cancellable, GError **err)
@@ -518,7 +751,18 @@ gp11_session_find_objects_full (GP11Session *session, GP11Attributes *attrs,
 	g_free (args.objects);
 	return results;
 }
-	
+
+/**
+ * gp11_session_find_objects_async:
+ * @session: The session to find objects on.
+ * @attrs: The attributes to match.
+ * @cancellable: Optional cancellation object or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ * 
+ * Find the objects matching the passed attributes. This call will 
+ * return immediately and complete asynchronously.
+ **/
 void
 gp11_session_find_objects_async (GP11Session *session, GP11Attributes *attrs, 
                                  GCancellable *cancellable, GAsyncReadyCallback callback, 
@@ -531,6 +775,16 @@ gp11_session_find_objects_async (GP11Session *session, GP11Attributes *attrs,
 	_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gp11_session_find_objects_finish:
+ * @session: The session to find objects on.
+ * @result: The attributes to match.
+ * @err: A location to return an error.
+ * 
+ * Get the result of a find operation.
+ * 
+ * Return value: A list of the matching objects, which may be empty.
+ **/
 GList*
 gp11_session_find_objects_finish (GP11Session *session, GAsyncResult *result, GError **err)
 {

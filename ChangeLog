@@ -1,3 +1,16 @@
+2008-09-17  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-module.c:
+	* gp11/gp11-object.c:
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c:
+	* gp11/reference/Makefile.am:
+	* gp11/reference/gp11-docs.sgml:
+	* gp11/reference/gp11-sections.txt:
+	* gp11/reference/gp11-undeclared.txt:
+	* gp11/reference/tmpl/gp11-unused.sgml: Update documentation
+	for functions in gp11 library.
+	
 2008-09-15  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/ui/gkr-ask-tool.c: Fix for keyboard ungrabbing when

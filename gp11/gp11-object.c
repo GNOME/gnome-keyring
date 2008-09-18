@@ -149,6 +149,16 @@ gp11_object_class_init (GP11ObjectClass *klass)
  * PUBLIC 
  */
 
+/**
+ * gp11_object_from_handle:
+ * @session: The session on which this object is available.
+ * @handle: The raw handle of the object. 
+ * 
+ * Initialize a GP11Object from a raw PKCS#11 handle. Normally you would use 
+ * gp11_session_create_object() or gp11_session_find_objects() to access objects. 
+ * 
+ * Return value: The new GP11Object. You should use g_object_unref() when done with this object.
+ **/
 GP11Object*
 gp11_object_from_handle (GP11Session *session, CK_OBJECT_HANDLE handle)
 {
@@ -156,6 +166,18 @@ gp11_object_from_handle (GP11Session *session, CK_OBJECT_HANDLE handle)
 	return g_object_new (GP11_TYPE_OBJECT, "module", session->module, "handle", handle, "session", session, NULL);
 }
 
+/**
+ * gp11_objects_from_handle_array:
+ * @session: The session on which these objects are available.
+ * @attr: The raw object handles, contained in an attribute.
+ * 
+ * Initialize a list of GP11Object from raw PKCS#11 handles contained inside 
+ * of an attribute. The attribute must contain contiguous CK_OBJECT_HANDLE
+ * handles in an array.
+ * 
+ * Return value: The list of GP11Object. You should use gp11_list_unref_free() when done with 
+ * this list. 
+ **/
 GList*
 gp11_objects_from_handle_array (GP11Session *session, const GP11Attribute *attr)
 {
@@ -172,6 +194,14 @@ gp11_objects_from_handle_array (GP11Session *session, const GP11Attribute *attr)
 	return g_list_reverse (results);
 }
 
+/**
+ * gp11_object_get_handle:
+ * @object: The object.
+ * 
+ * Get the raw PKCS#11 handle of a GP11Object.
+ * 
+ * Return value: The raw object handle.
+ **/
 CK_OBJECT_HANDLE
 gp11_object_get_handle (GP11Object *object)
 {
@@ -192,12 +222,33 @@ perform_destroy (Destroy *args)
 	return (args->base.pkcs11->C_DestroyObject) (args->base.handle, args->object);
 }
 
+/**
+ * gp11_object_destroy:
+ * @object: The object to destroy.
+ * @err: A location to return an error.
+ * 
+ * Destroy a PKCS#11 object, deleting it from storage or the session.
+ * This call may block for an indefinite period.
+ * 
+ * Return value: Whether the call was successful or not.
+ **/
 gboolean
 gp11_object_destroy (GP11Object *object, GError **err)
 {
 	return gp11_object_destroy_full (object, NULL, err);
 }
 
+/**
+ * gp11_object_destroy_full:
+ * @object: The object to destroy.
+ * @cancellable: Optional cancellable object, or NULL to ignore. 
+ * @err: A location to return an error.
+ * 
+ * Destroy a PKCS#11 object, deleting it from storage or the session.
+ * This call may block for an indefinite period.
+ * 
+ * Return value: Whether the call was successful or not.
+ **/
 gboolean
 gp11_object_destroy_full (GP11Object *object, GCancellable *cancellable, GError **err)
 {
@@ -208,6 +259,16 @@ gp11_object_destroy_full (GP11Object *object, GCancellable *cancellable, GError 
 	return _gp11_call_sync (object->session, perform_destroy, &args, cancellable, err);
 }
 
+/**
+ * gp11_object_destroy_async:
+ * @object: The object to destroy.
+ * @cancellable: Optional cancellable object, or NULL to ignore. 
+ * @callback: Callback which is called when operation completes.
+ * @user_data: Data to pass to the callback.
+ * 
+ * Destroy a PKCS#11 object, deleting it from storage or the session.
+ * This call will return immediately and complete asynchronously.
+ **/
 void
 gp11_object_destroy_async (GP11Object *object, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
@@ -223,6 +284,17 @@ gp11_object_destroy_async (GP11Object *object, GCancellable *cancellable,
 	_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gp11_object_destroy_finish:
+ * @object: The object being destroyed.
+ * @result: The result of the destory operation passed to the callback.
+ * @err: A location to store an error.
+ * 
+ * Get the status of the operation to destroy a PKCS#11 object, begun with 
+ * gp11_object_destroy_async(). 
+ * 
+ * Return value: Whether the object was destroyed successfully or not.
+ */
 gboolean
 gp11_object_destroy_finish (GP11Object *object, GAsyncResult *result, GError **err)
 {
@@ -250,6 +322,38 @@ perform_set_attributes (SetAttributes *args)
 	                                                 gp11_attributes_count (args->attrs));
 }
 
+/**
+ * gp11_object_set:
+ * @object: The object to set attributes on.
+ * @err: A location to return an error.
+ * ...: The attributes to set.
+ *
+ * Set PKCS#11 attributes on an object.
+ * This call may block for an indefinite period.
+ * 
+ * The arguments must be triples of: attribute type, data type, value
+ * 
+ * <para>The variable argument list should contain:
+ * 	<variablelist>
+ *		<varlistentry>
+ * 			<term>a)</term>
+ * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>b)</term>
+ * 			<listitem><para>The attribute data type (one of GP11_BOOLEAN, GP11_ULONG, 
+ * 				GP11_STRING, GP11_DATE) orthe raw attribute value length.</para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>c)</term>
+ * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or 
+ * 				a pointer to a raw attribute value.</para></listitem>
+ * 		</varlistentry>
+ * 	</variablelist>
+ * The variable argument list should be terminated with GP11_INVALID.</para> 
+ * 
+ * Return value: Whether the call was successful or not.
+ **/
 gboolean
 gp11_object_set (GP11Object *object, GError **err, ...)
 {
@@ -267,6 +371,17 @@ gp11_object_set (GP11Object *object, GError **err, ...)
 	return rv;
 }
 
+/**
+ * gp11_object_set_full:
+ * @object: The object to set attributes on.
+ * @attrs: The attributes to set on the object.
+ * @cancellable: Optional cancellable object, or NULL to ignore. 
+ * @err: A location to return an error.
+ * 
+ * Set PKCS#11 attributes on an object. This call may block for an indefinite period.
+ * 
+ * Return value: Whether the call was successful or not.
+ **/
 gboolean
 gp11_object_set_full (GP11Object *object, GP11Attributes *attrs,
                       GCancellable *cancellable, GError **err)
@@ -282,6 +397,17 @@ gp11_object_set_full (GP11Object *object, GP11Attributes *attrs,
 	return _gp11_call_sync (object->session, perform_set_attributes, &args, cancellable, err);
 }
 
+/**
+ * gp11_object_set_async:
+ * @object: The object to set attributes on.
+ * @attrs: The attributes to set on the object.
+ * @cancellable: Optional cancellable object, or NULL to ignore. 
+ * @callback: Callback which is called when operation completes.
+ * @user_data: Data to pass to the callback.
+ * 
+ * Set PKCS#11 attributes on an object. This call will return 
+ * immediately and completes asynchronously.
+ **/
 void
 gp11_object_set_async (GP11Object *object, GP11Attributes *attrs, GCancellable *cancellable,
                        GAsyncReadyCallback callback, gpointer user_data)
@@ -299,6 +425,17 @@ gp11_object_set_async (GP11Object *object, GP11Attributes *attrs, GCancellable *
 	_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gp11_object_set_finish:
+ * @object: The object to set attributes on.
+ * @result: The result of the destory operation passed to the callback.
+ * @err: A location to store an error.
+ * 
+ * Get the status of the operation to set attributes on a PKCS#11 object, 
+ * begun with gp11_object_set_async(). 
+ * 
+ * Return value: Whether the attributes were successfully set on the object or not.
+ */
 gboolean
 gp11_object_set_finish (GP11Object *object, GAsyncResult *result, GError **err)
 {
@@ -397,6 +534,20 @@ perform_get_attributes (GetAttributes *args)
 	return rv;
 }
 
+/**
+ * gp11_object_get:
+ * @object: The object to get attributes from.
+ * @err: A location to store an error.
+ * ...: The attribute types to get.
+ * 
+ * Get the specified attributes from the object. This call may
+ * block for an indefinite period.
+ * 
+ * Note that the returned attributes are not required to be 
+ * in the order they were requested.
+ * 
+ * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
+ **/
 GP11Attributes*
 gp11_object_get (GP11Object *object, GError **err, ...)
 {
@@ -420,6 +571,22 @@ gp11_object_get (GP11Object *object, GError **err, ...)
 	return result;
 }
 
+/**
+ * gp11_object_get:
+ * @object: The object to get attributes from.
+ * @attr_types: The attributes to get.
+ * @n_attr_types: The number of attributes to get.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to store an error.
+ * 
+ * Get the specified attributes from the object. This call may
+ * block for an indefinite period.
+ * 
+ * Note that the returned attributes are not required to be 
+ * in the order they were requested.
+ * 
+ * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
+ **/
 GP11Attributes*
 gp11_object_get_full (GP11Object *object, const gulong *attr_types, gsize n_attr_types,
                       GCancellable *cancellable, GError **err)
@@ -441,6 +608,18 @@ gp11_object_get_full (GP11Object *object, const gulong *attr_types, gsize n_attr
 	return args.results;
 }
 
+/**
+ * gp11_object_get_async:
+ * @object: The object to get attributes from.
+ * @attr_types: The attributes to get.
+ * @n_attr_types: The number of attributes to get.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: A callback which is called when the operation completes.
+ * @user_data: Data to be passed to the callback.
+ * 
+ * Get the specified attributes from the object. This call returns
+ * immediately and completes asynchronously.
+ **/
 void
 gp11_object_get_async (GP11Object *object, const gulong *attr_types, gsize n_attr_types,
                        GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
@@ -459,6 +638,20 @@ gp11_object_get_async (GP11Object *object, const gulong *attr_types, gsize n_att
 	_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gp11_object_get_finish:
+ * @object: The object to get attributes from.
+ * @result: The result passed to the callback.
+ * @err: A location to store an error.
+ * 
+ * Get the result of a get operation and return specified attributes from 
+ * the object. 
+ * 
+ * Note that the returned attributes are not required to be 
+ * in the order they were requested.
+ * 
+ * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
+ **/
 GP11Attributes*
 gp11_object_get_finish (GP11Object *object, GAsyncResult *result, GError **err)
 {
@@ -476,12 +669,35 @@ gp11_object_get_finish (GP11Object *object, GAsyncResult *result, GError **err)
 	return results;
 }
 
+/**
+ * gp11_object_get_one:
+ * @object: The object to get an attribute from.
+ * @attr_type: The attribute to get.
+ * @err: A location to store an error.
+ * 
+ * Get the specified attribute from the object. This call may
+ * block for an indefinite period.
+ * 
+ * Return value: The resulting PKCS#11 attribute, or NULL if an error occurred. 
+ **/
 GP11Attribute*
 gp11_object_get_one (GP11Object *object, gulong attr_type, GError **err)
 {
 	return gp11_object_get_one_full (object, attr_type, NULL, err);
 }
 
+/**
+ * gp11_object_get_one_full:
+ * @object: The object to get an attribute from.
+ * @attr_type: The attribute to get.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to store an error.
+ * 
+ * Get the specified attribute from the object. This call may
+ * block for an indefinite period.
+ * 
+ * Return value: The resulting PKCS#11 attribute, or NULL if an error occurred. 
+ **/
 GP11Attribute*
 gp11_object_get_one_full (GP11Object *object, gulong attr_type, 
                           GCancellable *cancellable, GError **err)
@@ -500,12 +716,35 @@ gp11_object_get_one_full (GP11Object *object, gulong attr_type,
 	return attr;
 }
 
+/**
+ * gp11_object_get_one_async:
+ * @object: The object to get an attribute from.
+ * @attr_type: The attribute to get.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to be passed to the callback.
+ * 
+ * Get the specified attribute from the object. This call will
+ * return immediately and complete asynchronously.
+ **/
 void
 gp11_object_get_one_async (GP11Object *object, gulong attr_type, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	gp11_object_get_async (object, &attr_type, 1, cancellable, callback, user_data);
 }
+
+/**
+ * gp11_object_get_one_finish:
+ * @object: The object to get an attribute from.
+ * @result: The result passed to the callback.
+ * @err: A location to store an error.
+ *
+ * Get the result of an operation to get an attribute from 
+ * an object. 
+ * 
+ * Return value: The PKCS#11 attribute or NULL if an error occurred.
+ **/
 
 GP11Attribute*
 gp11_object_get_one_finish (GP11Object *object, GAsyncResult *result, GError **err)

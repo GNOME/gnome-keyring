@@ -467,6 +467,12 @@ _gp11_slot_token_authentication (GP11Slot *slot, gchar **password)
  * PUBLIC 
  */
 
+/**
+ * gp11_slot_info_free:
+ * @slot_info: The slot info to free, or NULL.
+ * 
+ * Free the GP11SlotInfo and associated resources. 
+ **/
 void
 gp11_slot_info_free (GP11SlotInfo *slot_info)
 {
@@ -477,6 +483,12 @@ gp11_slot_info_free (GP11SlotInfo *slot_info)
 	g_free (slot_info);
 }
 
+/**
+ * gp11_token_info_free:
+ * @token_info: The token info to free, or NULL.
+ * 
+ * Free the GP11TokenInfo and associated resources.
+ **/
 void
 gp11_token_info_free (GP11TokenInfo *token_info)
 {
@@ -489,6 +501,12 @@ gp11_token_info_free (GP11TokenInfo *token_info)
 	g_free (token_info);
 }
 
+/**
+ * gp11_mechanism_info_free:
+ * @mech_info: The mechanism info to free, or NULL.
+ * 
+ * Free the GP11MechanismInfo and associated resources.
+ **/
 void
 gp11_mechanism_info_free (GP11MechanismInfo *mech_info)
 {
@@ -497,6 +515,14 @@ gp11_mechanism_info_free (GP11MechanismInfo *mech_info)
 	g_free (mech_info);
 }
 
+/**
+ * gp11_slot_get_handle:
+ * @slot: The slot to get the handle of.
+ * 
+ * Get the raw PKCS#11 handle of a slot.
+ * 
+ * Return value: The raw handle.
+ **/
 CK_SLOT_ID
 gp11_slot_get_handle (GP11Slot *slot)
 {
@@ -504,6 +530,16 @@ gp11_slot_get_handle (GP11Slot *slot)
 	return slot->handle;
 }
 
+/**
+ * gp11_slot_get_reuse_sessions:
+ * @slot: The slot to get setting from.
+ * 
+ * Get the reuse sessions setting. When this is set, sessions
+ * will be pooled and reused if their flags match when 
+ * gp11_slot_open_session() is called. 
+ * 
+ * Return value: Whether reusing sessions or not.
+ **/
 gboolean
 gp11_slot_get_reuse_sessions (GP11Slot *slot)
 {
@@ -512,12 +548,30 @@ gp11_slot_get_reuse_sessions (GP11Slot *slot)
 	return reuse;
 }
 
+/**
+ * gp11_slot_set_reuse_sessions:
+ * @slot: The slot to set the setting on.
+ * @reuse: Whether to reuse sessions or not.
+ * 
+ * When this is set, sessions will be pooled and reused
+ * if their flags match when gp11_slot_open_session() is called.
+ **/
 void
 gp11_slot_set_reuse_sessions (GP11Slot *slot, gboolean reuse)
 {
 	g_object_set (slot, "reuse-sessions", reuse, NULL);
 }
 
+/**
+ * gp11_slot_get_auto_login:
+ * @slot: The slot to get setting from.
+ * 
+ * Get the auto login setting. When this is set, this slot 
+ * will emit the 'authenticate-token' signal when a session
+ * requires authentication.
+ * 
+ * Return value: Whether auto login or not.
+ **/
 gboolean
 gp11_slot_get_auto_login (GP11Slot *slot)
 {
@@ -526,12 +580,30 @@ gp11_slot_get_auto_login (GP11Slot *slot)
 	return auto_login;
 }
 
+/**
+ * gp11_slot_set_auto_login:
+ * @slot: The slot to set the setting on.
+ * @auto_login: Whether auto login or not.
+ * 
+ * When this is set, this slot 
+ * will emit the 'authenticate-token' signal when a session
+ * requires authentication.
+ **/
 void
 gp11_slot_set_auto_login (GP11Slot *slot, gboolean auto_login)
 {
 	g_object_set (slot, "auto-login", auto_login, NULL);
 }
 
+/**
+ * gp11_slot_get_info:
+ * @slot: The slot to get info for.
+ * 
+ * Get the information for this slot.
+ * 
+ * Return value: The slot information. When done, use gp11_slot_info_free()
+ * to release it.
+ **/
 GP11SlotInfo*
 gp11_slot_get_info (GP11Slot *slot)
 {
@@ -564,6 +636,15 @@ gp11_slot_get_info (GP11Slot *slot)
 	return slotinfo;
 }
 
+/**
+ * gp11_slot_get_token_info:
+ * @slot: The slot to get info for.
+ * 
+ * Get the token information for this slot.
+ * 
+ * Return value: The token information. When done, use gp11_token_info_free()
+ * to release it.
+ **/
 GP11TokenInfo*
 gp11_slot_get_token_info (GP11Slot *slot)
 {
@@ -621,6 +702,15 @@ gp11_slot_get_token_info (GP11Slot *slot)
 	return tokeninfo;
 }
 
+/**
+ * gp11_slot_get_mechanisms:
+ * @slot: The slot to get mechanisms for.
+ * 
+ * Get the available mechanisms for this slot.
+ * 
+ * Return value: A list of the mechanisms for this slot. Use 
+ * gp11_mechanisms_free() when done with this.
+ **/
 GP11Mechanisms*
 gp11_slot_get_mechanisms (GP11Slot *slot)
 {
@@ -659,6 +749,16 @@ gp11_slot_get_mechanisms (GP11Slot *slot)
 
 }
 
+/**
+ * gp11_slot_get_mechanism_info:
+ * @slot: The slot to get mechanism info from.
+ * @mech_type: The mechanisms type to get info for.
+ * 
+ * Get information for the specified mechanism.
+ * 
+ * Return value: The mechanism information, or NULL if failed. Use 
+ * gp11_mechanism_info_free() when done with it.
+ **/
 GP11MechanismInfo*
 gp11_slot_get_mechanism_info (GP11Slot *slot, gulong mech_type)
 {
@@ -749,12 +849,39 @@ perform_open_session (OpenSession *args)
 	                                           NULL, NULL, &args->session);
 }
 
+/**
+ * gp11_slot_open_session:
+ * @slot: The slot ot open a session on.
+ * @flags: The flags to open a session with.
+ * @err: A location to return an error, or NULL.
+ * 
+ * Open a session on the slot. If the 'auto reuse' setting is set,
+ * then this may be a recycled session with the same flags.
+ * 
+ * This call may block for an indefinite period.
+ * 
+ * Return value: A new session or NULL if an error occurs.
+ **/
 GP11Session*
 gp11_slot_open_session (GP11Slot *slot, gulong flags, GError **err)
 {
 	return gp11_slot_open_session_full (slot, flags, NULL, err);
 }
 
+/**
+ * gp11_slot_open_session_full:
+ * @slot: The slot to open a session on.
+ * @flags: The flags to open a session with.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ * 
+ * Open a session on the slot. If the 'auto reuse' setting is set,
+ * then this may be a recycled session with the same flags.
+ * 
+ * This call may block for an indefinite period.
+ * 
+ * Return value: A new session or NULL if an error occurs.
+ **/
 GP11Session*
 gp11_slot_open_session_full (GP11Slot *slot, gulong flags, GCancellable *cancellable, GError **err)
 {
@@ -773,6 +900,19 @@ gp11_slot_open_session_full (GP11Slot *slot, gulong flags, GCancellable *cancell
 	return make_session_object (slot, flags, args.session);
 }
 
+/**
+ * gp11_slot_open_session_async:
+ * @slot: The slot to open a session on.
+ * @flags: The flags to open a session with.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ * 
+ * Open a session on the slot. If the 'auto reuse' setting is set,
+ * then this may be a recycled session with the same flags.
+ * 
+ * This call will return immediately and complete asynchronously.
+ **/
 void
 gp11_slot_open_session_async (GP11Slot *slot, gulong flags, GCancellable *cancellable, 
                               GAsyncReadyCallback callback, gpointer user_data)
@@ -790,6 +930,17 @@ gp11_slot_open_session_async (GP11Slot *slot, gulong flags, GCancellable *cancel
 		_gp11_call_async_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gp11_slot_open_session_finish:
+ * @slot: The slot to open a session on.
+ * @result: The result passed to the callback.
+ * @err: A location to return an error or NULL.
+ * 
+ * Get the result of an open session operation. If the 'auto reuse' setting is set,
+ * then this may be a recycled session with the same flags.
+ * 
+ * Return value: The new session or NULL if an error occurs.
+ */
 GP11Session*
 gp11_slot_open_session_finish (GP11Slot *slot, GAsyncResult *result, GError **err)
 {
