@@ -6,35 +6,43 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 2.22.3\n"
+"Project-Id-Version: gnome-keyring 2.23.92\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-19 08:32+0800\n"
-"PO-Revision-Date: 2008-07-18 20:07+0800\n"
-"Last-Translator: Chao-Hsiung Liao  <j_h_liau@yahoo.com.tw>\n"
+"POT-Creation-Date: 2008-09-18 12:43+0800\n"
+"PO-Revision-Date: 2008-09-18 13:01+0800\n"
+"Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Taiwan) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gkr-location.c:319
+#: ../common/gkr-location.c:320
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "可攜式磁碟：%s"
 
-#: ../common/gkr-location.c:321
+#: ../common/gkr-location.c:322
 msgid "Removable Disk"
 msgstr "可攜式磁碟"
 
-#: ../common/gkr-location.c:536 ../common/gkr-location.c:548
+#: ../common/gkr-location.c:543
+#: ../common/gkr-location.c:555
 msgid "Home"
 msgstr "家"
 
-#: ../common/gkr-location.c:1097 ../common/gkr-location.c:1120
-#: ../daemon/pkix/gkr-pkix-parser.c:473 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1104
+#: ../common/gkr-location.c:1128
+#: ../daemon/pkix/gkr-pkix-parser.c:524
+#: ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "這個檔案所在的磁碟或裝置尚未掛載"
 
-#: ../common/gkr-location.c:1150
+#: ../common/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "無法建立目錄：%s"
+
+#: ../common/gkr-location.c:1170
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "無法刪除此檔案：%s"
@@ -42,48 +50,38 @@ msgstr "無法刪除此檔案：%s"
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:227
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
+msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "程式‘%s’(%s) 要求存取在預設鑰匙圈中的‘<object prop='name'/>’密碼。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:231
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
+msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."
 msgstr "程式 ‘%s’(%s) 要求存取在‘%s’中‘<object prop='name'/>’的密碼 。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
+#: ../daemon/gkr-daemon-ops.c:237
+#: ../daemon/gkr-daemon-ops.c:247
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
+msgid "The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "程式‘%s’要求存取在預設鑰匙圈中‘<object prop='name'/>’的密碼。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:241
+#: ../daemon/gkr-daemon-ops.c:251
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
+msgid "The application '%s' wants to access the password for '<object prop='name'/>' in %s."
 msgstr "程式‘%s’要求存取在‘%s’中‘<object prop='name'/>’的密碼。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:257
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
+msgid "An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "一個不明的程式要求存取在預設鑰匙圈中‘<object prop='name'/>’的密碼。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:260
 #, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
+msgid "An unknown application wants to access the password for '<object prop='name'/>' in %s."
 msgstr "一個不明的程式要求存取在‘%s’中‘<object prop='name'/>’的密碼。"
 
 #. And put together the ask request
@@ -97,38 +95,34 @@ msgstr "允許程式存取鑰匙圈？"
 
 #: ../daemon/gkr-daemon-ops.c:307
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
+msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
 msgstr "程式‘%s’(%s) 要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
 
 #: ../daemon/gkr-daemon-ops.c:311
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "程式‘%s’(%s) 要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
+#: ../daemon/gkr-daemon-ops.c:317
+#: ../daemon/gkr-daemon-ops.c:327
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
+msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "程式‘%s’要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
 
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
+#: ../daemon/gkr-daemon-ops.c:321
+#: ../daemon/gkr-daemon-ops.c:332
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "程式 ‘%s’要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
 
 #: ../daemon/gkr-daemon-ops.c:338
 #, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
+msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr "一個不明的程式要求存取預設鑰匙圈，但該鑰匙圈已被鎖上"
 
 #: ../daemon/gkr-daemon-ops.c:342
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "一個不明的程式要求存取鑰匙圈‘%s’，但該鑰匙圈已被鎖上"
 
 #: ../daemon/gkr-daemon-ops.c:349
@@ -145,50 +139,41 @@ msgstr "輸入鑰匙圈‘%s’的密碼，作為開鎖之用"
 msgid "Unlock Keyring"
 msgstr "解開鑰匙圈"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:136
+#: ../daemon/gkr-daemon-ops.c:367
+#: ../daemon/pk/gkr-pk-index.c:135
 msgid "Automatically unlock this keyring when I log in."
 msgstr "當我登入時自動解鎖鑰匙圈。"
 
 #: ../daemon/gkr-daemon-ops.c:403
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
+msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "程式‘%s’(%s) 要求新增一個鑰匙圈，名為：‘%s’。您需要給它選用一個密碼。"
 
 #: ../daemon/gkr-daemon-ops.c:407
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
+msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "程式‘%s’(%s) 要求新增一個預設鑰匙圈。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
+#: ../daemon/gkr-daemon-ops.c:413
+#: ../daemon/gkr-daemon-ops.c:423
 #, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "程式‘%s’要求新增一個鑰匙圈，名為：‘%s’。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
+#: ../daemon/gkr-daemon-ops.c:417
+#: ../daemon/gkr-daemon-ops.c:427
 #, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
+msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "程式 ‘%s’要求新增一個預設鑰匙圈。您需要給它選用一個密碼。"
 
 #: ../daemon/gkr-daemon-ops.c:433
 #, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
+msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "不明的程式要求建立一個新的鑰匙圈，名為：‘%s’。您需要給它選用一個密碼。"
 
 #: ../daemon/gkr-daemon-ops.c:437
 #, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
+msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "不明的程式要求建立一個預設鑰匙圈。您需要給它選用一個密碼。"
 
 #. And put together the ask request
@@ -202,44 +187,34 @@ msgstr "輸入新鑰匙圈的密碼"
 
 #: ../daemon/gkr-daemon-ops.c:491
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
+msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "程式‘%s’(%s) 要求更改鑰匙圈‘%s’的密碼。您需要給它選用一個密碼。"
 
 #: ../daemon/gkr-daemon-ops.c:495
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
+msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "程式‘%s’(%s) 要求更改預設鑰匙圈的密碼。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
+#: ../daemon/gkr-daemon-ops.c:501
+#: ../daemon/gkr-daemon-ops.c:511
 #, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "程式 ‘%s’要求更改鑰匙圈‘%s’的密碼。您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:505
+#: ../daemon/gkr-daemon-ops.c:515
 #, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
+msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "程式 ‘%s’要求更改預設鑰匙圈的密碼。您需要給它選用一個密碼。"
 
 #: ../daemon/gkr-daemon-ops.c:521
 #, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
+msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "一個不明的程式要求更改鑰匙圈‘%s’的密碼。您需要給它選用一個密碼。"
 
 #: ../daemon/gkr-daemon-ops.c:525
 #, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
+msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "一個不明的程式要求更改預設鑰匙圈的密碼。您需要給它選用一個密碼。"
 
 #: ../daemon/gkr-daemon-ops.c:535
@@ -257,72 +232,52 @@ msgstr "給預設鑰匙圈選用一個新的密碼。"
 msgid "Change Keyring Password"
 msgstr "更改鑰匙圈密碼"
 
-#: ../daemon/gkr-daemon-ops.c:611
+#: ../daemon/gkr-daemon-ops.c:614
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"程式‘%s’(%s) 要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙"
-"圈，您需要給它選用一個密碼。"
+msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "程式‘%s’(%s) 要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙圈，您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:615 ../daemon/gkr-daemon-ops.c:619
+#: ../daemon/gkr-daemon-ops.c:618
+#: ../daemon/gkr-daemon-ops.c:622
 #, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"程式‘%s’要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙圈，您"
-"需要給它選用一個密碼。"
+msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "程式‘%s’要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙圈，您需要給它選用一個密碼。"
 
-#: ../daemon/gkr-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:626
 #, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"不明的程式要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙圈，"
-"您需要給它選用一個密碼。"
+msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "不明的程式要求儲存一個密碼，但是這裡並沒有預設鑰匙圈。要新增一個預設鑰匙圈，您需要給它選用一個密碼。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Create Default Keyring"
 msgstr "建立預設鑰匙圈"
 
-#: ../daemon/gkr-daemon-ops.c:628
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Choose password for default keyring"
 msgstr "輸入預設鑰匙圈的密碼"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"這個選項會啟用 gnome-keyring 伺服程式中的 PKCS#11 元件。它只會在 gnome-"
-"keyring-daemon 啟動時生效，(例如使用者登入時)。這個設定值在傳送某些命令列引數"
-"給伺服程式時可能會被覆蓋。"
+msgid "A list of paths to PKCS#11 modules to load. No modules are currently listed by default, as this is still an experimental feature. This is used by seahorse and other PKCS#11 aware applications."
+msgstr "載入 PKCS#11 模組的路徑清單。目前預設並沒有列出任何模組，因為這是一個實驗中的功能。這是給 seahorsee 和其他需要 PKCS#11 的應用程式使用的。"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"這個選項會啟用 gnome-keyring 伺服程式中的 SSH 代理程式。它只會在 gnome-"
-"keyring-daemon 啟動時生效，(例如使用者登入時)。這個設定值在傳送某些命令列引數"
-"給伺服程式時可能會被覆蓋。"
+msgid "PKCS#11 Modules"
+msgstr "PKCS#11 模組"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
+msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "這個選項會啟用 gnome-keyring 伺服程式中的 PKCS#11 元件。它只會在 gnome-keyring-daemon 啟動時生效，(例如使用者登入時)。這個設定值在傳送某些命令列引數給伺服程式時可能會被覆蓋。"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
+msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "這個選項會啟用 gnome-keyring 伺服程式中的 SSH 代理程式。它只會在 gnome-keyring-daemon 啟動時生效，(例如使用者登入時)。這個設定值在傳送某些命令列引數給伺服程式時可能會被覆蓋。"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "是否啟用 gnome-keyring PKCS#11 元件。"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "是否啟用 gnome-keyring SSH 代理程式。"
 
@@ -336,9 +291,7 @@ msgid "Enter login password to unlock keyring"
 msgstr "輸入解鎖鑰匙圈的登入密碼"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:100
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
+msgid "Your login keyring was not automatically unlocked when you logged into this computer."
 msgstr "您的登入鑰匙圈並未在登入這台電腦時自動解鎖。"
 
 #. And put together the ask request
@@ -351,9 +304,7 @@ msgid "Enter your login password"
 msgstr "輸入您的登入密碼"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:126
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
+msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
 msgstr "您的登入鑰匙圈並未在登入這台電腦時自動建立。現在將會建立它。"
 
 #: ../daemon/keyrings/gkr-keyring.c:584
@@ -361,119 +312,105 @@ msgstr "您的登入鑰匙圈並未在登入這台電腦時自動建立。現在
 msgid "Unlock password for %s keyring"
 msgstr "解鎖 %s 鑰匙圈的密碼"
 
-#: ../daemon/pk/gkr-pk-import.c:90
+#: ../daemon/pk/gkr-pk-import.c:88
 msgid "Import private key"
 msgstr "匯入私密金鑰"
 
-#: ../daemon/pk/gkr-pk-import.c:92
+#: ../daemon/pk/gkr-pk-import.c:90
 msgid "Import certificate"
 msgstr "匯入憑證"
 
-#: ../daemon/pk/gkr-pk-import.c:94
+#: ../daemon/pk/gkr-pk-import.c:92
 msgid "Import public key"
 msgstr "匯入公開金鑰"
 
-#: ../daemon/pk/gkr-pk-import.c:96
+#: ../daemon/pk/gkr-pk-import.c:94
 msgid "Import"
 msgstr "匯入"
 
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:166
+#: ../daemon/pk/gkr-pk-import.c:101
+#: ../daemon/pk/gkr-pk-storage.c:166
 msgid "Enter password to unlock the private key"
 msgstr "輸入解鎖私密金鑰的密碼"
 
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:168
+#: ../daemon/pk/gkr-pk-import.c:103
+#: ../daemon/pk/gkr-pk-storage.c:168
 msgid "Enter password to unlock the certificate"
 msgstr "輸入解鎖憑證的密碼"
 
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:170
+#: ../daemon/pk/gkr-pk-import.c:105
+#: ../daemon/pk/gkr-pk-storage.c:170
 msgid "Enter password to unlock the public key"
 msgstr "輸入解鎖公開金鑰的密碼"
 
-#: ../daemon/pk/gkr-pk-import.c:109 ../daemon/pk/gkr-pk-storage.c:172
+#: ../daemon/pk/gkr-pk-import.c:107
+#: ../daemon/pk/gkr-pk-storage.c:172
 msgid "Enter password to unlock"
 msgstr "輸入解鎖的密碼"
 
-#: ../daemon/pk/gkr-pk-import.c:120 ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "當我登入時自動解鎖私密金鑰。"
-
-#: ../daemon/pk/gkr-pk-import.c:122 ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "當我登入時自動解鎖憑證。"
-
-#: ../daemon/pk/gkr-pk-import.c:124 ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "當我登入時自動解鎖公開金鑰。"
-
-#: ../daemon/pk/gkr-pk-import.c:126 ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "當我登入時自動解鎖此項"
-
-#: ../daemon/pk/gkr-pk-import.c:133
+#: ../daemon/pk/gkr-pk-import.c:114
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
 msgstr "系統要求匯入私密金鑰‘%s’，但它已被鎖上。"
 
-#: ../daemon/pk/gkr-pk-import.c:135
+#: ../daemon/pk/gkr-pk-import.c:116
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
 msgstr "系統要求匯入憑證‘%s’，但它已被鎖上。"
 
-#: ../daemon/pk/gkr-pk-import.c:137
+#: ../daemon/pk/gkr-pk-import.c:118
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
 msgstr "系統要求匯入公開金鑰‘%s’，但它已被鎖上。"
 
-#: ../daemon/pk/gkr-pk-import.c:139
+#: ../daemon/pk/gkr-pk-import.c:120
 #, c-format
 msgid "The system wants to import '%s', but it is locked"
 msgstr "系統要求匯入‘%s’，但它已被鎖上"
 
 #. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:94
+#: ../daemon/pk/gkr-pk-index.c:93
 msgid "Create Storage for Key Information"
 msgstr "建立金鑰資訊的儲存區"
 
-#: ../daemon/pk/gkr-pk-index.c:95
+#: ../daemon/pk/gkr-pk-index.c:94
 msgid "Choose password to protect storage"
 msgstr "選擇用來保護儲存區的密碼"
 
-#: ../daemon/pk/gkr-pk-index.c:98
-msgid ""
-"The system wants to store information about your keys and certificates. In "
-"order to protect this information, choose a password with which it will be "
-"locked."
-msgstr ""
-"系統要儲存關於您的金鑰與憑證資訊。為了保護這個資訊，請選擇用來鎖住它的密碼。"
+#: ../daemon/pk/gkr-pk-index.c:97
+msgid "The system wants to store information about your keys and certificates. In order to protect this information, choose a password with which it will be locked."
+msgstr "系統要儲存關於您的金鑰與憑證資訊。為了保護這個資訊，請選擇用來鎖住它的密碼。"
 
 #. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:125
+#: ../daemon/pk/gkr-pk-index.c:124
 msgid "Unlock Storage for Key Information"
 msgstr "解鎖金鑰資訊儲存區"
 
-#: ../daemon/pk/gkr-pk-index.c:126
+#: ../daemon/pk/gkr-pk-index.c:125
 msgid "Enter password to unlock storage"
 msgstr "輸入解鎖儲存區的密碼"
 
-#: ../daemon/pk/gkr-pk-index.c:129
-msgid ""
-"The system wants to access information about your keys and certificates, but "
-"it is locked."
+#: ../daemon/pk/gkr-pk-index.c:128
+msgid "The system wants to access information about your keys and certificates, but it is locked."
 msgstr "系統要存取關於您的金鑰與憑證資訊，但它已被鎖上。"
 
-#: ../daemon/pk/gkr-pk-object.c:881
+#: ../daemon/pk/gkr-pk-object.c:889
 msgid "Certificate"
 msgstr "憑證"
 
-#: ../daemon/pk/gkr-pk-object.c:883
+#: ../daemon/pk/gkr-pk-object.c:891
 msgid "Private Key"
 msgstr "私密金鑰"
 
-#: ../daemon/pk/gkr-pk-object.c:885
+#: ../daemon/pk/gkr-pk-object.c:893
 msgid "Public Key"
 msgstr "公開金鑰"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:435
+#: ../daemon/pk/gkr-pk-object.c:895
+msgid "Trust Association"
+msgstr ""
+
+#: ../daemon/pk/gkr-pk-object-storage.c:445
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "不能刪除「%s」因為它正與其他物件連結。"
@@ -510,6 +447,22 @@ msgstr "輸入保護私密金鑰的密碼"
 msgid "Enter password to protect storage"
 msgstr "輸入保護儲存區的密碼"
 
+#: ../daemon/pk/gkr-pk-storage.c:196
+msgid "Automatically unlock this private key when I log in."
+msgstr "當我登入時自動解鎖私密金鑰。"
+
+#: ../daemon/pk/gkr-pk-storage.c:198
+msgid "Automatically unlock this certificate when I log in."
+msgstr "當我登入時自動解鎖憑證。"
+
+#: ../daemon/pk/gkr-pk-storage.c:200
+msgid "Automatically unlock this public key when I log in."
+msgstr "當我登入時自動解鎖公開金鑰。"
+
+#: ../daemon/pk/gkr-pk-storage.c:202
+msgid "Automatically unlock this when I log in"
+msgstr "當我登入時自動解鎖此項"
+
 #: ../daemon/pk/gkr-pk-storage.c:209
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
@@ -532,23 +485,24 @@ msgstr "一個不明的程式要求存取‘%s’，但它已被鎖上"
 
 #: ../daemon/pk/gkr-pk-storage.c:228
 #, c-format
-msgid ""
-"The system wants to store to the private key '%s' on your disk. Please enter "
-"a password to lock it with."
+msgid "The system wants to store the private key '%s' on your disk. Please enter a password to lock it with."
 msgstr "系統要將私密金鑰「%s」儲存在您的磁碟上。請輸入用來鎖住它的密碼。"
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
-msgid ""
-"The system wants to store to '%s' on your disk. Please enter a password to "
-"lock it with."
+msgid "The system wants to store '%s' on your disk. Please enter a password to lock it with."
 msgstr "系統要將「%s」儲存在您的磁碟上。請輸入用來鎖住它的密碼。"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:404
+#: ../daemon/pkix/gkr-pkix-parser.c:451
+#: ../gp11/gp11-misc.c:87
+msgid "The operation was cancelled"
+msgstr "該操作已取消"
+
+#: ../daemon/pkix/gkr-pkix-parser.c:455
 msgid "Unrecognized or unsupported file."
 msgstr "無法辨識或不支援的檔案。"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:408
+#: ../daemon/pkix/gkr-pkix-parser.c:459
 msgid "Could not parse invalid or corrupted file."
 msgstr "無法解析無效或損毀的檔案。"
 
@@ -557,404 +511,403 @@ msgstr "無法解析無效或損毀的檔案。"
 msgid "Couldn't encode secure shell public key."
 msgstr "無法編碼 SSH 公開金鑰。"
 
-#: ../daemon/ssh/gkr-ssh-storage.c:414
+#: ../daemon/ssh/gkr-ssh-storage.c:412
 #, c-format
-msgid "Couldn't read secure shell key private key: %s"
+msgid "Couldn't read secure shell private key: %s"
 msgstr "無法讀取 SSH 私密金鑰：%s"
 
-#: ../daemon/ssh/gkr-ssh-storage.c:418
+#: ../daemon/ssh/gkr-ssh-storage.c:416
 #, c-format
 msgid "Invalid secure shell private key at: %s"
 msgstr "無效的 SSH 私密金鑰於：%s"
 
-#: ../daemon/ssh/gkr-ssh-storage.c:467
+#: ../daemon/ssh/gkr-ssh-storage.c:465
 #, c-format
 msgid "Couldn't encrypt the SSH key to store it."
 msgstr "無法加密 SSH 金鑰以利儲存。"
 
-#: ../daemon/ssh/gkr-ssh-storage.c:483
+#: ../daemon/ssh/gkr-ssh-storage.c:481
 #, c-format
 msgid "Couldn't encode the SSH key to store it."
 msgstr "無法編碼 SSH 金鑰以利儲存。"
 
-#: ../daemon/ui/gkr-ask-tool.c:182
+#: ../daemon/ui/gkr-ask-tool.c:244
 msgid "Store passwords unencrypted?"
 msgstr "是否儲存不加密的密碼？"
 
-#: ../daemon/ui/gkr-ask-tool.c:183
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"若選擇使用空白密碼，您所儲存的密碼將不會被安全的加密。任何能存取您的檔案的人"
-"都將能看到這些密碼。"
+#: ../daemon/ui/gkr-ask-tool.c:245
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "若選擇使用空白密碼，您所儲存的密碼將不會被安全的加密。任何能存取您的檔案的人都將能看到這些密碼。"
 
-#: ../daemon/ui/gkr-ask-tool.c:190
+#: ../daemon/ui/gkr-ask-tool.c:252
 msgid "Use Unsafe Storage"
 msgstr "使用不安全的儲存"
 
-#: ../daemon/ui/gkr-ask-tool.c:413
+#: ../daemon/ui/gkr-ask-tool.c:479
 msgid "_Location:"
 msgstr "位置(_L):"
 
-#: ../daemon/ui/gkr-ask-tool.c:426
+#: ../daemon/ui/gkr-ask-tool.c:492
 msgid "_Old password:"
 msgstr "舊密碼(_O)："
 
-#: ../daemon/ui/gkr-ask-tool.c:446
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Password:"
 msgstr "密碼(_P)："
 
-#: ../daemon/ui/gkr-ask-tool.c:468
+#: ../daemon/ui/gkr-ask-tool.c:534
 msgid "_Confirm password:"
 msgstr "確認新密碼(_C):"
 
-#: ../daemon/ui/gkr-ask-tool.c:488
+#: ../daemon/ui/gkr-ask-tool.c:554
 msgid "New password strength"
 msgstr "新密碼的強度"
 
-#: ../daemon/ui/gkr-ask-tool.c:546
+#: ../daemon/ui/gkr-ask-tool.c:612
 msgid "Passwords do not match."
 msgstr "密碼不相符。"
 
-#: ../daemon/ui/gkr-ask-tool.c:562
+#: ../daemon/ui/gkr-ask-tool.c:628
 msgid "Password cannot be blank"
 msgstr "密碼不能空白"
 
-#: ../daemon/ui/gkr-ask-tool.c:613
+#: ../daemon/ui/gkr-ask-tool.c:679
 msgid "Deny"
 msgstr "禁止"
 
-#: ../daemon/ui/gkr-ask-tool.c:625
+#: ../daemon/ui/gkr-ask-tool.c:691
+msgid "C_reate"
+msgstr "建立(_R)"
+
+#: ../daemon/ui/gkr-ask-tool.c:695
+msgid "C_hange"
+msgstr "改變(_H)"
+
+#: ../daemon/ui/gkr-ask-tool.c:699
 msgid "Allow _Once"
 msgstr "只允許一次(_O)"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:703
 msgid "_Always Allow"
 msgstr "永遠允許(_A)"
 
-#: ../gp11/gp11-misc.c:40
-msgid "The operation was cancelled"
-msgstr "該操作已取消"
-
-#: ../gp11/gp11-misc.c:43
+#: ../gp11/gp11-misc.c:90
 msgid "Insufficient memory available"
 msgstr "沒有足夠的記憶體可用"
 
-#: ../gp11/gp11-misc.c:45
+#: ../gp11/gp11-misc.c:92
 msgid "The specified slot ID is not valid"
 msgstr "指定的插槽 ID 是無效的"
 
-#: ../gp11/gp11-misc.c:47
+#: ../gp11/gp11-misc.c:94
 msgid "Internal error"
 msgstr "內部的錯誤"
 
-#: ../gp11/gp11-misc.c:49
+#: ../gp11/gp11-misc.c:96
 msgid "The operation failed"
 msgstr "此操作失敗"
 
-#: ../gp11/gp11-misc.c:51
+#: ../gp11/gp11-misc.c:98
 msgid "Invalid arguments"
 msgstr "無效的引數"
 
-#: ../gp11/gp11-misc.c:53
-msgid "The module cannot created needed threads"
+#: ../gp11/gp11-misc.c:100
+msgid "The module cannot create needed threads"
 msgstr "模組不能建立所需的執行緒"
 
-#: ../gp11/gp11-misc.c:55
+#: ../gp11/gp11-misc.c:102
 msgid "The module cannot lock data properly"
 msgstr "模組不能正確的鎖定資料"
 
-#: ../gp11/gp11-misc.c:57
+#: ../gp11/gp11-misc.c:104
 msgid "The field is read-only"
 msgstr "此欄位是唯讀的"
 
-#: ../gp11/gp11-misc.c:59
+#: ../gp11/gp11-misc.c:106
 msgid "The field is sensitive and cannot be revealed"
 msgstr "此欄位需區分大小寫並且不會顯示其實際值"
 
-#: ../gp11/gp11-misc.c:61
+#: ../gp11/gp11-misc.c:108
 msgid "The field is invalid or does not exist"
 msgstr "該欄位無效或者不存在"
 
-#: ../gp11/gp11-misc.c:63
+#: ../gp11/gp11-misc.c:110
 msgid "Invalid value for field"
 msgstr "對此欄位無效的數值"
 
-#: ../gp11/gp11-misc.c:65
+#: ../gp11/gp11-misc.c:112
 msgid "The data is not valid or unrecognized"
 msgstr "資料無效或無法辨識"
 
-#: ../gp11/gp11-misc.c:67
+#: ../gp11/gp11-misc.c:114
 msgid "The data is too long"
 msgstr "資料太長"
 
-#: ../gp11/gp11-misc.c:69
+#: ../gp11/gp11-misc.c:116
 msgid "An error occurred on the device"
 msgstr "在裝置上發生錯誤"
 
-#: ../gp11/gp11-misc.c:71
+#: ../gp11/gp11-misc.c:118
 msgid "Insufficient memory available on device"
 msgstr "裝置上沒有足夠的記憶體"
 
-#: ../gp11/gp11-misc.c:73
+#: ../gp11/gp11-misc.c:120
 msgid "The device was removed or unplugged"
 msgstr "該裝置已移動或拔除了"
 
-#: ../gp11/gp11-misc.c:75
+#: ../gp11/gp11-misc.c:122
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "已加密資料無效或無法辨識"
 
-#: ../gp11/gp11-misc.c:77
+#: ../gp11/gp11-misc.c:124
 msgid "The encrypted data is too long"
 msgstr "已加密資料太長"
 
-#: ../gp11/gp11-misc.c:79
+#: ../gp11/gp11-misc.c:126
 msgid "This operation is not supported"
 msgstr "這個操作是不支援的"
 
-#: ../gp11/gp11-misc.c:81
+#: ../gp11/gp11-misc.c:128
 msgid "The key is missing or invalid"
 msgstr "該金鑰已遺失或無效"
 
-#: ../gp11/gp11-misc.c:83
+#: ../gp11/gp11-misc.c:130
 msgid "The key is the wrong size"
 msgstr "該金鑰的大小錯誤"
 
-#: ../gp11/gp11-misc.c:85
+#: ../gp11/gp11-misc.c:132
 msgid "The key is of the wrong type"
 msgstr "該金鑰的類型錯誤"
 
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:134
 msgid "No key is needed"
 msgstr "不需要金鑰"
 
-#: ../gp11/gp11-misc.c:89
+#: ../gp11/gp11-misc.c:136
 msgid "The key is different than before"
 msgstr "此金鑰與從前不同"
 
-#: ../gp11/gp11-misc.c:91
+#: ../gp11/gp11-misc.c:138
 msgid "A key is needed"
 msgstr "需要金鑰"
 
-#: ../gp11/gp11-misc.c:93
+#: ../gp11/gp11-misc.c:140
 msgid "Cannot include the key in digest"
 msgstr "不能在摘要中包含金鑰"
 
-#: ../gp11/gp11-misc.c:95
+#: ../gp11/gp11-misc.c:142
 msgid "This operation cannot be done with this key"
 msgstr "這個操作不能以此金鑰進行"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:144
 msgid "The key cannot be wrapped"
 msgstr "金鑰不能斷行"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:146
 msgid "Cannot export this key"
 msgstr "不能匯出這個金鑰"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:148
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "該加密機制無效或無法辨識"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:150
 msgid "The crypto mechanism has an invalid argument"
 msgstr "該加密機制有無效的引數"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:152
 msgid "The object is missing or invalid"
 msgstr "該物件已遺失或無效"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:154
 msgid "Another operation is already taking place"
 msgstr "另一個操作已在進行"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:156
 msgid "No operation is taking place"
 msgstr "沒有操作正在進行"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:158
 msgid "The password or PIN is incorrect"
 msgstr "此密碼或 PIN 是不正確的"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:160
 msgid "The password or PIN is invalid"
 msgstr "此密碼或 PIN 是無效的"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:162
 msgid "The password or PIN is of an invalid length"
 msgstr "此密碼或 PIN 的長度不合法"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:164
 msgid "The password or PIN has expired"
 msgstr "此密碼或 PIN 已過期"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:166
 msgid "The password or PIN is locked"
 msgstr "此密碼或 PIN 已被鎖定"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:168
 msgid "The session is closed"
 msgstr "該作業階段已關閉"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:170
 msgid "Too many sessions are active"
 msgstr "太多作業階段在使用中"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:172
 msgid "The session is invalid"
 msgstr "該作業階段是無效的"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:174
 msgid "The session is read-only"
 msgstr "此作業階段是唯讀的"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:176
 msgid "An open session exists"
 msgstr "已存在開啟的作業階段"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:178
 msgid "A read-only session exists"
 msgstr "已存在一個唯讀的作業階段"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:180
 msgid "An administrator session exists"
 msgstr "已存在系統管理者作業階段"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:182
 msgid "The signature is bad or corrupted"
 msgstr "此簽章不良或已損毀"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:184
 msgid "The signature is unrecognized or corrupted"
 msgstr "此簽章無法辨識或已損毀"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:186
 msgid "Certain required fields are missing"
 msgstr "漏掉某些必要的欄位"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:188
 msgid "Certain fields have invalid values"
 msgstr "某些欄位有無效的數值"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:190
 msgid "The device is not present or unplugged"
 msgstr "此裝置沒有出現或已拔除"
 
-#: ../gp11/gp11-misc.c:145
-msgid "The device is invalid or unregocnizable"
+#: ../gp11/gp11-misc.c:192
+msgid "The device is invalid or unrecognizable"
 msgstr "此裝置無效或無法辨識"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:194
 msgid "The device is write protected"
 msgstr "此裝置為寫入保護狀態"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:196
 msgid "Cannot import because the key is invalid"
 msgstr "由於金鑰無效故不能匯入"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:198
 msgid "Cannot import because the key is of the wrong size"
 msgstr "由於金鑰大小錯誤故不能匯入"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:200
 msgid "Cannot import because the key is of the wrong type"
 msgstr "由於金鑰類型錯誤故不能匯入"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:202
 msgid "You are already logged in"
 msgstr "您已經登入"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:204
 msgid "No user has logged in"
 msgstr "沒有使用者已登入"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:206
 msgid "The user's password or PIN is not set"
 msgstr "該使用者的密碼或 PIN 尚未設定"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:208
 msgid "The user is of an invalid type"
 msgstr "該使用者為無效的類型"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:210
 msgid "Another user is already logged in"
 msgstr "另一個使用者已經登入"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:212
 msgid "Too many users of different types logged in"
 msgstr "太多不同類型的使用者已登入"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:214
 msgid "Cannot import an invalid key"
 msgstr "不能匯入無效的金鑰"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:216
 msgid "Cannot import a key of the wrong size"
 msgstr "不能匯入大小錯誤的金鑰"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:218
 msgid "Cannot export because the key is invalid"
 msgstr "由於金鑰無效故不能匯出"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:220
 msgid "Cannot export because the key is of the wrong size"
 msgstr "由於金鑰大小錯誤故不能匯出"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:222
 msgid "Cannot export because the key is of the wrong type"
 msgstr "由於金鑰類型錯誤故不能匯出"
 
-#: ../gp11/gp11-misc.c:177
-msgid "Cannot set a random seed"
-msgstr "無法設定亂數種子"
+#: ../gp11/gp11-misc.c:224
+msgid "Unable to initialize the random number generator"
+msgstr "無法初始化亂數產生器"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:226
 msgid "No random number generator available"
 msgstr "沒有可用的亂數產生器"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:228
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "該加密機制有無效的參數"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:230
 msgid "Not enough space to store the result"
 msgstr "沒有足夠的空間來儲存結果"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:232
 msgid "The saved state is invalid"
 msgstr "儲存的狀態無效"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:234
 msgid "The information is sensitive and cannot be revealed"
 msgstr "此資訊需區分大小寫並且不會顯示其實際值"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:236
 msgid "The state cannot be saved"
 msgstr "此狀態不能儲存"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:238
 msgid "The module has not been initialized"
 msgstr "模組尚未初始化"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:240
 msgid "The module has already been initialized"
 msgstr "模組已經初始化了"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:242
 msgid "Cannot lock data"
 msgstr "不能鎖定資料"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:244
 msgid "The data cannot be locked"
 msgstr "該資料不能鎖定"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:246
 msgid "The signature request was rejected by the user"
 msgstr "簽署的要求被使用者拒絕"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:250
 msgid "Unknown error"
 msgstr "不明的錯誤"
 
@@ -990,5 +943,8 @@ msgstr "以此為名的鑰匙圈並不存在。"
 msgid "The keyring has already been unlocked."
 msgstr "此鑰匙圈已經被解鎖了。"
 
+#~ msgid "Cannot set a random seed"
+#~ msgstr "無法設定亂數種子"
 #~ msgid "Unlock password for '%s'"
 #~ msgstr "‘%s’的解鎖密碼"
+
