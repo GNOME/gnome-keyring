@@ -1,3 +1,12 @@
+=== gnome-keyring 2.24.0 ===
+
+2008-09-20  Stef Walter  <stef@memberwebs.com>
+
+	* ChangeLog:
+	* configure.in:
+	* NEWS: 
+	* gp11/reference/Makefile.am: Release version 2.24.0
+
 2008-09-17  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-module.c:

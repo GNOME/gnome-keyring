@@ -1,3 +1,18 @@
+Changes in version 2.24.0 are:
+* Update documentation for functions in gp11 library
+* Ungrab the keyboard properly when a password prompt is minimized.
+* Report errors from keyboard grabbing.
+* Fix build problems with gcc 4.3.
+* PKCS#11 initialize compatibility fix for OpenSC. [Joe Orton]
+* Make all errors from prompt process go to syslog.
+* When prompting for a password on import, don't go into an endless 
+  loop for blank passwords.
+* Fix problems with PK indexes overwriting one another.
+* Don't add additional extensions on storage files when the extension 
+  is already correct.
+* Load all objects when a PKCS#11 session is opened, regardless of 
+  whether a C_FindObjects is run or not.
+
 Changes in version 2.23.92 are:
 * Build fix for Solaris. [Jeff Cai] 
 * Import the LANG environment variable into daemon enviroment
