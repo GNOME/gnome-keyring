@@ -1,18 +1,19 @@
 # Czech translation of gnome-keyring.
-# Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
+# Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 the author(s) of gnome-keyring.
 # Copyright (C) 2004, 2005, 2006 Miloslav Trmac <mitr@volny.cz>.
 # This file is distributed under the same license as the gnome-keyring package.
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005, 2006.
 # Jakub Friedl <jfriedl@suse.cz>, 2007.
 # Kamil Páral <ripper42@gmail.com>, 2008.
 # Petr Kovar <pknbe@volny.cz>, 2008.
+# Lucas Lommer <llommer@svn.gnome.org>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-16 16:30+0100\n"
-"PO-Revision-Date: 2008-02-16 13:39+0100\n"
+"POT-Creation-Date: 2008-09-20 23:18+0200\n"
+"PO-Revision-Date: 2008-09-20 23:16+0200\n"
 "Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,36 +21,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../common/gkr-location.c:306
+#: ../common/gkr-location.c:320
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Výměnný disk: %s"
 
-#: ../common/gkr-location.c:308
+#: ../common/gkr-location.c:322
 msgid "Removable Disk"
 msgstr "Výměnný disk"
 
-#: ../common/gkr-location.c:446 ../common/gkr-location.c:458
+#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
 msgid "Home"
 msgstr "Domov"
 
-#: ../common/gkr-location.c:980 ../common/gkr-location.c:1003
-#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
+#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disk nebo jednotka, na které je umístěn tento soubor, nejsou dostupné"
 
+#: ../common/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Nelze vytvořit adresář: %s"
+
+#: ../common/gkr-location.c:1170
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "Nelze odstranit soubor: %s"
+
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:222
+#: ../daemon/gkr-daemon-ops.c:227
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
 msgstr ""
-"Aplikace '%s' (%s) chce přístup k heslu pro '<object prop='name'/>' v "
-"implicitní klíčence."
+"Aplikace '%s' (%s) chce přístup k heslu pro '<object prop='name'/>' ve "
+"výchozí klíčence."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:226
+#: ../daemon/gkr-daemon-ops.c:231
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -58,17 +69,17 @@ msgstr ""
 "Aplikace '%s' (%s) chce přístup k heslu pro '<object prop='name'/>' v %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232 ../daemon/gkr-daemon-ops.c:242
+#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
 msgstr ""
-"Aplikace '%s' chce přístup k heslu pro '<object prop='name'/>' v implicitní "
+"Aplikace '%s' chce přístup k heslu pro '<object prop='name'/>' ve výchozí "
 "klíčence."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
+#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -76,16 +87,16 @@ msgid ""
 msgstr "Aplikace '%s' chce přístup k heslu pro '<object prop='name'/>' v %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:252
+#: ../daemon/gkr-daemon-ops.c:257
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
 msgstr ""
-"Neznámá aplikace chce přístup k heslu pro '<object prop='name'/>' v "
-"implicitní klíčence."
+"Neznámá aplikace chce přístup k heslu pro '<object prop='name'/>' ve výchozí "
+"klíčence."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:255
+#: ../daemon/gkr-daemon-ops.c:260
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -94,74 +105,69 @@ msgstr ""
 "Neznámá aplikace chce přístup k heslu pro '<object prop='name'/>' v %s."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:261
+#: ../daemon/gkr-daemon-ops.c:266
 msgid "Allow access"
 msgstr "Povolit přístup"
 
-#: ../daemon/gkr-daemon-ops.c:261
+#: ../daemon/gkr-daemon-ops.c:266
 msgid "Allow application access to keyring?"
 msgstr "Povolit aplikaci přístup ke klíčence?"
 
-#: ../daemon/gkr-daemon-ops.c:311
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Odemykací heslo pro klíčenku %s"
-
-#: ../daemon/gkr-daemon-ops.c:368
+#: ../daemon/gkr-daemon-ops.c:307
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr ""
-"Aplikace '%s' (%s) chce přístup k implicitní klíčence, která je zamčena"
+msgstr "Aplikace '%s' (%s) chce přístup k výchozí klíčence, která je zamčena"
 
-#: ../daemon/gkr-daemon-ops.c:372
+#: ../daemon/gkr-daemon-ops.c:311
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Aplikace '%s' (%s) chce přístup ke klíčence '%s', která je zamčena"
 
-#: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
+#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "Aplikace '%s' chce přístup k implicitní klíčence, která je zamčena"
+msgstr "Aplikace '%s' chce přístup k výchozí klíčence, která je zamčena"
 
-#: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Aplikace '%s' chce přístup ke klíčence '%s', která je zamčena"
 
-#: ../daemon/gkr-daemon-ops.c:399
+#: ../daemon/gkr-daemon-ops.c:338
+#, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
-msgstr "Neznámá aplikace chce přístup k implicitní klíčence, která je zamčena"
+msgstr "Neznámá aplikace chce přístup k výchozí klíčence, která je zamčena"
 
-#: ../daemon/gkr-daemon-ops.c:403
+#: ../daemon/gkr-daemon-ops.c:342
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Neznámá aplikace chce přístup ke klíčence '%s', která je zamčena"
 
-#: ../daemon/gkr-daemon-ops.c:410
+#: ../daemon/gkr-daemon-ops.c:349
 msgid "Enter password for default keyring to unlock"
-msgstr "Zadejte heslo pro odemčení implicitní klíčenky"
+msgstr "Zadejte heslo pro odemčení výchozí klíčenky"
 
-#: ../daemon/gkr-daemon-ops.c:412
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Zadejte heslo pro odemčení klíčenky '%s'"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:416
+#: ../daemon/gkr-daemon-ops.c:355
 msgid "Unlock Keyring"
 msgstr "Odemknout klíčenku"
 
-#: ../daemon/gkr-daemon-ops.c:428
+#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Při přihlášení automaticky odemknout klíčenku."
 
-#: ../daemon/gkr-daemon-ops.c:464
+#: ../daemon/gkr-daemon-ops.c:403
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -170,16 +176,16 @@ msgstr ""
 "Aplikace '%s' (%s) chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:468
+#: ../daemon/gkr-daemon-ops.c:407
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Aplikace '%s' (%s) chce vytvořit novou implicitní klíčenku. Musíte zvolit "
+"Aplikace '%s' (%s) chce vytvořit novou výchozí klíčenku. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
+#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -188,16 +194,16 @@ msgstr ""
 "Aplikace '%s' chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
+#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Aplikace '%s' chce vytvořit novou implicitní klíčenku. Musíte zvolit heslo, "
+"Aplikace '%s' chce vytvořit novou výchozí klíčenku. Musíte zvolit heslo, "
 "které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:494
+#: ../daemon/gkr-daemon-ops.c:433
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -206,24 +212,25 @@ msgstr ""
 "Neznámá aplikace chce vytvořit novou klíčenku nazvanou '%s'. Musíte zvolit "
 "heslo, které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:498
+#: ../daemon/gkr-daemon-ops.c:437
+#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"Neznámá aplikace chce vytvořit novou implicitní klíčenku. Musíte zvolit "
-"heslo, které pro ni chcete používat."
+"Neznámá aplikace chce vytvořit novou výchozí klíčenku. Musíte zvolit heslo, "
+"které pro ni chcete používat."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:504
+#: ../daemon/gkr-daemon-ops.c:443
 msgid "New Keyring Password"
 msgstr "Heslo nové klíčenky"
 
-#: ../daemon/gkr-daemon-ops.c:505
+#: ../daemon/gkr-daemon-ops.c:444
 msgid "Choose password for new keyring"
 msgstr "Zvolte heslo pro novou klíčenku"
 
-#: ../daemon/gkr-daemon-ops.c:552
+#: ../daemon/gkr-daemon-ops.c:491
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -232,16 +239,16 @@ msgstr ""
 "Aplikace '%s' (%s) chce změnit heslo klíčenky '%s'. Musíte zvolit heslo, "
 "které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:556
+#: ../daemon/gkr-daemon-ops.c:495
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
 msgstr ""
-"Aplikace '%s' (%s) chce změnit heslo implicitní klíčenky. Musíte zvolit "
-"heslo, které pro ni chcete používat."
+"Aplikace '%s' (%s) chce změnit heslo výchozí klíčenky. Musíte zvolit heslo, "
+"které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
+#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -250,16 +257,16 @@ msgstr ""
 "Aplikace '%s' chce změnit heslo klíčenky '%s'. Musíte zvolit heslo, které "
 "pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
+#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Aplikace '%s' chce změnit heslo implicitní klíčenky. Musíte zvolit heslo, "
-"které pro ni chcete používat."
+"Aplikace '%s' chce změnit heslo výchozí klíčenky. Musíte zvolit heslo, které "
+"pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:582
+#: ../daemon/gkr-daemon-ops.c:521
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -268,67 +275,84 @@ msgstr ""
 "Neznámá aplikace chce změnit heslo klíčenky '%s'. Musíte zvolit heslo, které "
 "pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:586
+#: ../daemon/gkr-daemon-ops.c:525
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
 msgstr ""
-"Neznámá aplikace chce změnit heslo implicitní klíčenky. Musíte zvolit heslo, "
+"Neznámá aplikace chce změnit heslo výchozí klíčenky. Musíte zvolit heslo, "
 "které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:596
+#: ../daemon/gkr-daemon-ops.c:535
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Zvolte nové heslo pro klíčenku '%s'. "
 
-#: ../daemon/gkr-daemon-ops.c:598
+#: ../daemon/gkr-daemon-ops.c:537
+#, c-format
 msgid "Choose a new password for the default keyring. "
-msgstr "Zvolte nové heslo pro implicitní klíčenku. "
+msgstr "Zvolte nové heslo pro výchozí klíčenku. "
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:602
+#: ../daemon/gkr-daemon-ops.c:541
 msgid "Change Keyring Password"
 msgstr "Změnit heslo klíčenky"
 
-#: ../daemon/gkr-daemon-ops.c:672
+#: ../daemon/gkr-daemon-ops.c:614
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Aplikace '%s' (%s) chce uložit heslo, ale neexistuje implicitní klíčenka. "
-"Před jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
+"Aplikace '%s' (%s) chce uložit heslo, ale neexistuje výchozí klíčenka. Před "
+"jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
+#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Aplikace '%s' chce uložit heslo, ale neexistuje implicitní klíčenka. Před "
-"jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
+"Aplikace '%s' chce uložit heslo, ale neexistuje výchozí klíčenka. Před jejím "
+"vytvořením musíte zvolit heslo, které pro ni chcete používat."
 
-#: ../daemon/gkr-daemon-ops.c:684
+#: ../daemon/gkr-daemon-ops.c:626
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"Neznámá aplikace chce uložit heslo, ale neexistuje implicitní klíčenka. Před "
+"Neznámá aplikace chce uložit heslo, ale neexistuje výchozí klíčenka. Před "
 "jejím vytvořením musíte zvolit heslo, které pro ni chcete používat."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:689
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Create Default Keyring"
-msgstr "Vytvořit implicitní klíčenku"
+msgstr "Vytvořit výchozí klíčenku"
 
-#: ../daemon/gkr-daemon-ops.c:689
+#: ../daemon/gkr-daemon-ops.c:631
 msgid "Choose password for default keyring"
-msgstr "Zvolte heslo pro implicitní klíčenku"
+msgstr "Zvolte heslo pro výchozí klíčenku"
 
-#: ../data/gnome-keyring.schemas.in.h:1
+#: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid ""
+"A list of paths to PKCS#11 modules to load. No modules are currently listed "
+"by default, as this is still an experimental feature. This is used by "
+"seahorse and other PKCS#11 aware applications."
+msgstr ""
+"Seznam cest k modulům PKCS#11. Ve výchozím stavu nejsou v seznamu žádné "
+"moduly, protože se stále jedná o experimentální vlastnost. Využíváno "
+"aplikací seahorse a dalšími, které znají PKCS#11."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid "PKCS#11 Modules"
+msgstr "Moduly PKCS#11"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -340,7 +364,7 @@ msgstr ""
 "přihlásí). Toto nastavení může být potlačeno, pokud jsou démonu předány "
 "jisté parametry příkazové řádky."
 
-#: ../data/gnome-keyring.schemas.in.h:2
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -352,13 +376,667 @@ msgstr ""
 "přihlásí). Toto nastavení může být potlačeno, pokud jsou démonu předány "
 "jisté parametry příkazové řádky."
 
-#: ../data/gnome-keyring.schemas.in.h:3
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "Zda je komponenta PKCS#11 pro gnome-keyring aktivní."
 
-#: ../data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Zda je agent SSH pro gnome-keyring aktivní."
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+msgid "Unlock Login Keyring"
+msgstr "Odemknout přihlašovací klíčenku"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+msgid "Enter login password to unlock keyring"
+msgstr "Zadejte přihlašovací heslo k odemknutí klíčenky"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:100
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr ""
+"Vaše přihlašovací klíčenka nebyla během vašeho přihlášení k tomuto počítači "
+"automaticky odemčena."
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+msgid "Create Login Keyring"
+msgstr "Vytvořit přihlašovací klíčenku"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+msgid "Enter your login password"
+msgstr "Zadejte své přihlašovací heslo"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:126
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+"Vaše přihlašovací klíčenka nebyla během vašeho přihlášení k tomuto počítači "
+"automaticky vytvořena. Bude vytvořena nyní."
+
+#: ../daemon/keyrings/gkr-keyring.c:584
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Odemykací heslo pro klíčenku %s"
+
+#: ../daemon/pk/gkr-pk-import.c:88
+msgid "Import private key"
+msgstr "Importovat soukromý klíč"
+
+#: ../daemon/pk/gkr-pk-import.c:90
+msgid "Import certificate"
+msgstr "Importovat certifikát"
+
+#: ../daemon/pk/gkr-pk-import.c:92
+msgid "Import public key"
+msgstr "Importovat veřejný klíč"
+
+#: ../daemon/pk/gkr-pk-import.c:94
+msgid "Import"
+msgstr "Import"
+
+#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
+msgid "Enter password to unlock the private key"
+msgstr "Zadejte heslo k odemknutí soukromého klíče"
+
+#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
+msgid "Enter password to unlock the certificate"
+msgstr "Zadejte heslo k odemknutí certifikátu"
+
+#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
+msgid "Enter password to unlock the public key"
+msgstr "Zadejte heslo k odemknutí veřejného klíče"
+
+#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
+msgid "Enter password to unlock"
+msgstr "Zadejte heslo k odemknutí"
+
+#: ../daemon/pk/gkr-pk-import.c:114
+#, c-format
+msgid "The system wants to import the private key '%s', but it is locked"
+msgstr "Systém chce importovat soukromý klíč \"%s\", ale ten je zamčen"
+
+#: ../daemon/pk/gkr-pk-import.c:116
+#, c-format
+msgid "The system wants to import the certificate '%s', but it is locked"
+msgstr "Systém chce importovat certifikát \"%s\", ale ten je zamčen"
+
+#: ../daemon/pk/gkr-pk-import.c:118
+#, c-format
+msgid "The system wants to import the public key '%s', but it is locked"
+msgstr "Systém chce importovat veřejný klíč \"%s\", ale ten je zamčen"
+
+#: ../daemon/pk/gkr-pk-import.c:120
+#, c-format
+msgid "The system wants to import '%s', but it is locked"
+msgstr "Systém chce importovat \"%s\", ale prvek je zamčen"
+
+#. And put together the ask request
+#: ../daemon/pk/gkr-pk-index.c:93
+msgid "Create Storage for Key Information"
+msgstr "Vytvořit úložiště pro informace o klíči"
+
+#: ../daemon/pk/gkr-pk-index.c:94
+msgid "Choose password to protect storage"
+msgstr "Zvolte heslo, kterým ochráníte úložiště"
+
+#: ../daemon/pk/gkr-pk-index.c:97
+msgid ""
+"The system wants to store information about your keys and certificates. In "
+"order to protect this information, choose a password with which it will be "
+"locked."
+msgstr ""
+"Systém chce uložit informace o vašich klíčích a certifikátech. V zájmu "
+"ochrany informací zvolte heslo, kterým budou data uzamčena."
+
+#. And put together the ask request
+#: ../daemon/pk/gkr-pk-index.c:124
+msgid "Unlock Storage for Key Information"
+msgstr "Odemknout úložiště a získat informace o klíči"
+
+#: ../daemon/pk/gkr-pk-index.c:125
+msgid "Enter password to unlock storage"
+msgstr "Zadejte heslo k odemknutí úložiště"
+
+#: ../daemon/pk/gkr-pk-index.c:128
+msgid ""
+"The system wants to access information about your keys and certificates, but "
+"it is locked."
+msgstr ""
+"Systém chce přistupovat k informacím o vašich klíčích a certifikátech, ale "
+"ty jsou uzamčeny."
+
+#: ../daemon/pk/gkr-pk-object.c:889
+msgid "Certificate"
+msgstr "Certifikát"
+
+#: ../daemon/pk/gkr-pk-object.c:891
+msgid "Private Key"
+msgstr "Soukromý klíč"
+
+#: ../daemon/pk/gkr-pk-object.c:893
+msgid "Public Key"
+msgstr "Veřejný klíč"
+
+#: ../daemon/pk/gkr-pk-object.c:895
+msgid "Trust Association"
+msgstr "Důvěryhodná asociace"
+
+#: ../daemon/pk/gkr-pk-object-storage.c:445
+#, c-format
+msgid "Cannot delete '%s' because it is tied to other objects."
+msgstr "Nemohu odstranit '%s', protože napojeni na jiné objekty."
+
+#: ../daemon/pk/gkr-pk-storage.c:136
+msgid "Unlock private key"
+msgstr "Odemknout soukromý klíč"
+
+#: ../daemon/pk/gkr-pk-storage.c:138
+msgid "Unlock certificate"
+msgstr "Odemknout certifikát"
+
+#: ../daemon/pk/gkr-pk-storage.c:140
+msgid "Unlock public key"
+msgstr "Odemknout veřejný klíč"
+
+#: ../daemon/pk/gkr-pk-storage.c:142
+msgid "Unlock"
+msgstr "Odemknout"
+
+#: ../daemon/pk/gkr-pk-storage.c:153
+msgid "Lock private key"
+msgstr "Uzamknout soukromý klíč"
+
+#: ../daemon/pk/gkr-pk-storage.c:155
+msgid "Lock"
+msgstr "Uzamknout"
+
+#: ../daemon/pk/gkr-pk-storage.c:183
+msgid "Enter password to protect the private key"
+msgstr "Zadejte heslo k ochraně soukromého klíče"
+
+#: ../daemon/pk/gkr-pk-storage.c:185
+msgid "Enter password to protect storage"
+msgstr "Zadejte heslo k ochraně úložiště"
+
+#: ../daemon/pk/gkr-pk-storage.c:196
+msgid "Automatically unlock this private key when I log in."
+msgstr "Tento soukromý klíč při přihlášení automaticky odemknout."
+
+#: ../daemon/pk/gkr-pk-storage.c:198
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Tento certifikát při přihlášení automaticky odemknout."
+
+#: ../daemon/pk/gkr-pk-storage.c:200
+msgid "Automatically unlock this public key when I log in."
+msgstr "Tento veřejný klíč při přihlášení automaticky odemknout."
+
+#: ../daemon/pk/gkr-pk-storage.c:202
+msgid "Automatically unlock this when I log in"
+msgstr "Automaticky odemknout při přihlášení"
+
+#: ../daemon/pk/gkr-pk-storage.c:209
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Aplikace požaduje přístup k soukromému klíči \"%s\", ale ten je zamčen"
+
+#: ../daemon/pk/gkr-pk-storage.c:211
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Aplikace požaduje přístup k certifikátu \"%s\", ale ten je zamčen"
+
+#: ../daemon/pk/gkr-pk-storage.c:213
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Aplikace požaduje přístup k veřejnému klíči \"%s\", ale ten je zamčen"
+
+#: ../daemon/pk/gkr-pk-storage.c:215
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Aplikace požaduje přístup k '%s', ale ta je zamčena"
+
+#: ../daemon/pk/gkr-pk-storage.c:228
+#, c-format
+msgid ""
+"The system wants to store the private key '%s' on your disk. Please enter a "
+"password to lock it with."
+msgstr ""
+"Systém chce uložit soukromý klíč '%s' na pevný disk. Zadejte prosím heslo, "
+"kterým jej uzamknete."
+
+#: ../daemon/pk/gkr-pk-storage.c:230
+#, c-format
+msgid ""
+"The system wants to store '%s' on your disk. Please enter a password to lock "
+"it with."
+msgstr ""
+"Systém chce uložit '%s' na pevný disk. Zvolte prosím heslo pro uzamčení."
+
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
+msgid "The operation was cancelled"
+msgstr "Operace byla zrušena"
+
+#: ../daemon/pkix/gkr-pkix-parser.c:455
+msgid "Unrecognized or unsupported file."
+msgstr "Nerozpoznaný nebo nepodporovaný soubor."
+
+#: ../daemon/pkix/gkr-pkix-parser.c:459
+msgid "Could not parse invalid or corrupted file."
+msgstr "Nemohu analyzovat neplatný nebo poškozený soubor."
+
+#: ../daemon/ssh/gkr-ssh-storage.c:166
+#, c-format
+msgid "Couldn't encode secure shell public key."
+msgstr "Nelze zakódovat veřejný klíč zabezpečeného shellu."
+
+#: ../daemon/ssh/gkr-ssh-storage.c:412
+#, c-format
+msgid "Couldn't read secure shell private key: %s"
+msgstr "Nelze číst soukromý klíč zabezpečeného shellu: %s"
+
+#: ../daemon/ssh/gkr-ssh-storage.c:416
+#, c-format
+msgid "Invalid secure shell private key at: %s"
+msgstr "Neplatný soukromý klíč zabezpečeného shellu na: %s"
+
+#: ../daemon/ssh/gkr-ssh-storage.c:465
+#, c-format
+msgid "Couldn't encrypt the SSH key to store it."
+msgstr "Nelze zašifrovat SSH klíč pro uložení."
+
+#: ../daemon/ssh/gkr-ssh-storage.c:481
+#, c-format
+msgid "Couldn't encode the SSH key to store it."
+msgstr "Nelze zakódovat SSH klíč pro uložení."
+
+#: ../daemon/ui/gkr-ask-tool.c:244
+msgid "Store passwords unencrypted?"
+msgstr "Ukládat hesla nešifrovaně?"
+
+#: ../daemon/ui/gkr-ask-tool.c:245
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Pokud zvolíte použití prázdného hesla, vaše uložená hesla nebudou bezpečně "
+"zašifrována. Budou přístupná každému, kdo bude mít přístup k vašim souborům."
+
+#: ../daemon/ui/gkr-ask-tool.c:252
+msgid "Use Unsafe Storage"
+msgstr "Použít nezabezpečené úložiště"
+
+#: ../daemon/ui/gkr-ask-tool.c:479
+msgid "_Location:"
+msgstr "U_místění:"
+
+#: ../daemon/ui/gkr-ask-tool.c:492
+msgid "_Old password:"
+msgstr "_Staré heslo:"
+
+#: ../daemon/ui/gkr-ask-tool.c:512
+msgid "_Password:"
+msgstr "_Heslo:"
+
+#: ../daemon/ui/gkr-ask-tool.c:534
+msgid "_Confirm password:"
+msgstr "_Potvrďte heslo:"
+
+#: ../daemon/ui/gkr-ask-tool.c:554
+msgid "New password strength"
+msgstr "Síla nového hesla"
+
+#: ../daemon/ui/gkr-ask-tool.c:612
+msgid "Passwords do not match."
+msgstr "Hesla nesouhlasí."
+
+#: ../daemon/ui/gkr-ask-tool.c:628
+msgid "Password cannot be blank"
+msgstr "Heslo nesmí být prázdné"
+
+#: ../daemon/ui/gkr-ask-tool.c:679
+msgid "Deny"
+msgstr "Odepřít"
+
+#: ../daemon/ui/gkr-ask-tool.c:691
+msgid "C_reate"
+msgstr "V_ytvořit"
+
+#: ../daemon/ui/gkr-ask-tool.c:695
+msgid "C_hange"
+msgstr "Z_měnit"
+
+#: ../daemon/ui/gkr-ask-tool.c:699
+msgid "Allow _Once"
+msgstr "Povolit _jednou"
+
+#: ../daemon/ui/gkr-ask-tool.c:703
+msgid "_Always Allow"
+msgstr "_Vždy povolit"
+
+#: ../gp11/gp11-misc.c:90
+msgid "Insufficient memory available"
+msgstr "Není dostupný dostatek paměti"
+
+#: ../gp11/gp11-misc.c:92
+msgid "The specified slot ID is not valid"
+msgstr "Zadané ID slotu není platné"
+
+#: ../gp11/gp11-misc.c:94
+msgid "Internal error"
+msgstr "Interní chyba"
+
+#: ../gp11/gp11-misc.c:96
+msgid "The operation failed"
+msgstr "Operace selhala"
+
+#: ../gp11/gp11-misc.c:98
+msgid "Invalid arguments"
+msgstr "Neplatné argumenty"
+
+#: ../gp11/gp11-misc.c:100
+msgid "The module cannot create needed threads"
+msgstr "Modul nemůže vytvořit potřebná vlákna"
+
+#: ../gp11/gp11-misc.c:102
+msgid "The module cannot lock data properly"
+msgstr "Modul nemůže správně uzamknout data"
+
+#: ../gp11/gp11-misc.c:104
+msgid "The field is read-only"
+msgstr "Pole je jen pro čtení"
+
+#: ../gp11/gp11-misc.c:106
+msgid "The field is sensitive and cannot be revealed"
+msgstr "Pole obsahuje citlivá data a nelze ho zobrazit"
+
+#: ../gp11/gp11-misc.c:108
+msgid "The field is invalid or does not exist"
+msgstr "Pole je neplatné nebo neexistuje"
+
+#: ../gp11/gp11-misc.c:110
+msgid "Invalid value for field"
+msgstr "Neplatná hodnota pole"
+
+#: ../gp11/gp11-misc.c:112
+msgid "The data is not valid or unrecognized"
+msgstr "Data jsou neplatná nebo nerozpoznatelná"
+
+#: ../gp11/gp11-misc.c:114
+msgid "The data is too long"
+msgstr "Data jsou příliš velká"
+
+#: ../gp11/gp11-misc.c:116
+msgid "An error occurred on the device"
+msgstr "Na zařízení se vyskytla chyba"
+
+#: ../gp11/gp11-misc.c:118
+msgid "Insufficient memory available on device"
+msgstr "Na zařízení není dostatek paměti"
+
+#: ../gp11/gp11-misc.c:120
+msgid "The device was removed or unplugged"
+msgstr "Zařízení bylo odebráno nebo odpojeno"
+
+#: ../gp11/gp11-misc.c:122
+msgid "The encrypted data is not valid or unrecognized"
+msgstr "Šifrovaná data jsou neplatná nebo nerozpoznatelná"
+
+#: ../gp11/gp11-misc.c:124
+msgid "The encrypted data is too long"
+msgstr "Šifrovaná data jsou příliš velká"
+
+#: ../gp11/gp11-misc.c:126
+msgid "This operation is not supported"
+msgstr "Operace není podporována"
+
+#: ../gp11/gp11-misc.c:128
+msgid "The key is missing or invalid"
+msgstr "Klíč chybí nebo je neplatný"
+
+#: ../gp11/gp11-misc.c:130
+msgid "The key is the wrong size"
+msgstr "Klíč nemá správnou velikost"
+
+#: ../gp11/gp11-misc.c:132
+msgid "The key is of the wrong type"
+msgstr "Klíč je špatného typu"
+
+#: ../gp11/gp11-misc.c:134
+msgid "No key is needed"
+msgstr "Klíč není potřeba"
+
+#: ../gp11/gp11-misc.c:136
+msgid "The key is different than before"
+msgstr "Klíč je jiný, než byl dříve"
+
+#: ../gp11/gp11-misc.c:138
+msgid "A key is needed"
+msgstr "Klíč je vyžadován"
+
+#: ../gp11/gp11-misc.c:140
+msgid "Cannot include the key in digest"
+msgstr "Do kontrolního součtu nelze přiložit klíč"
+
+#: ../gp11/gp11-misc.c:142
+msgid "This operation cannot be done with this key"
+msgstr "S tímto klíčem nelze tuto operaci provést"
+
+#: ../gp11/gp11-misc.c:144
+msgid "The key cannot be wrapped"
+msgstr "Klíč nemůže být zabalen"
+
+#: ../gp11/gp11-misc.c:146
+msgid "Cannot export this key"
+msgstr "Tento klíč nelze vyexportovat"
+
+#: ../gp11/gp11-misc.c:148
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr "Šifrovací mechanismus je neplatný nebo nerozpoznaný"
+
+#: ../gp11/gp11-misc.c:150
+msgid "The crypto mechanism has an invalid argument"
+msgstr "Šifrovací mechanismus má neplatný argument"
+
+#: ../gp11/gp11-misc.c:152
+msgid "The object is missing or invalid"
+msgstr "Objekt je neplatný nebo chybí"
+
+#: ../gp11/gp11-misc.c:154
+msgid "Another operation is already taking place"
+msgstr "Již probíhá jiná operace"
+
+#: ../gp11/gp11-misc.c:156
+msgid "No operation is taking place"
+msgstr "Neprobíhá žádná operace"
+
+#: ../gp11/gp11-misc.c:158
+msgid "The password or PIN is incorrect"
+msgstr "Heslo nebo PIN jsou nesprávné"
+
+#: ../gp11/gp11-misc.c:160
+msgid "The password or PIN is invalid"
+msgstr "Heslo nebo PIN jsou neplatné"
+
+#: ../gp11/gp11-misc.c:162
+msgid "The password or PIN is of an invalid length"
+msgstr "Heslo nebo PIN nemají správnou délku"
+
+#: ../gp11/gp11-misc.c:164
+msgid "The password or PIN has expired"
+msgstr "Heslo nebo PIN již vypršely"
+
+#: ../gp11/gp11-misc.c:166
+msgid "The password or PIN is locked"
+msgstr "Heslo nebo PIN jsou uzamčeny"
+
+#: ../gp11/gp11-misc.c:168
+msgid "The session is closed"
+msgstr "Sezení je uzavřeno"
+
+#: ../gp11/gp11-misc.c:170
+msgid "Too many sessions are active"
+msgstr "Příliš mnoho sezení je aktivních"
+
+#: ../gp11/gp11-misc.c:172
+msgid "The session is invalid"
+msgstr "Sezení je neplatné"
+
+#: ../gp11/gp11-misc.c:174
+msgid "The session is read-only"
+msgstr "Sezení je jen pro čtení"
+
+#: ../gp11/gp11-misc.c:176
+msgid "An open session exists"
+msgstr "Existuje otevřené sezení"
+
+#: ../gp11/gp11-misc.c:178
+msgid "A read-only session exists"
+msgstr "Existuje sezení jen pro čtení"
+
+#: ../gp11/gp11-misc.c:180
+msgid "An administrator session exists"
+msgstr "Existuje sezení správce"
+
+#: ../gp11/gp11-misc.c:182
+msgid "The signature is bad or corrupted"
+msgstr "Podpis je špatný nebo poškozený"
+
+#: ../gp11/gp11-misc.c:184
+msgid "The signature is unrecognized or corrupted"
+msgstr "Podpis je nerozpoznatelný nebo poškozený"
+
+#: ../gp11/gp11-misc.c:186
+msgid "Certain required fields are missing"
+msgstr "Některá vyžadovaná pole chybí"
+
+#: ../gp11/gp11-misc.c:188
+msgid "Certain fields have invalid values"
+msgstr "Některá vyžadovaná pole mají neplatné hodnoty"
+
+#: ../gp11/gp11-misc.c:190
+msgid "The device is not present or unplugged"
+msgstr "Zařízení není přítomno nebo je odpojeno"
+
+#: ../gp11/gp11-misc.c:192
+msgid "The device is invalid or unrecognizable"
+msgstr "Zařízení je nesprávné nebo nerozpoznatelné"
+
+#: ../gp11/gp11-misc.c:194
+msgid "The device is write protected"
+msgstr "Zařízení lze použít jen pro čtení"
+
+#: ../gp11/gp11-misc.c:196
+msgid "Cannot import because the key is invalid"
+msgstr "Nelze importovat, protože klíč je neplatný"
+
+#: ../gp11/gp11-misc.c:198
+msgid "Cannot import because the key is of the wrong size"
+msgstr "Nelze importovat, protože klíč má špatnou velikost"
+
+#: ../gp11/gp11-misc.c:200
+msgid "Cannot import because the key is of the wrong type"
+msgstr "Nelze importovat, protože klíč není správného typu"
+
+#: ../gp11/gp11-misc.c:202
+msgid "You are already logged in"
+msgstr "Již jste přihlášení"
+
+#: ../gp11/gp11-misc.c:204
+msgid "No user has logged in"
+msgstr "Žádný uživatel se nepřihlásil"
+
+#: ../gp11/gp11-misc.c:206
+msgid "The user's password or PIN is not set"
+msgstr "Heslo nebo PIN uživatele nejsou nastaveny"
+
+#: ../gp11/gp11-misc.c:208
+msgid "The user is of an invalid type"
+msgstr "Uživatel není platného typu"
+
+#: ../gp11/gp11-misc.c:210
+msgid "Another user is already logged in"
+msgstr "Již je přihlášen jiný uživatel"
+
+#: ../gp11/gp11-misc.c:212
+msgid "Too many users of different types logged in"
+msgstr "Je přihlášeno příliš mnoho uživatelů rozdílných typů"
+
+#: ../gp11/gp11-misc.c:214
+msgid "Cannot import an invalid key"
+msgstr "Neplatný klíč nelze importovat"
+
+#: ../gp11/gp11-misc.c:216
+msgid "Cannot import a key of the wrong size"
+msgstr "Nelze importovat klíč ze špatné stránky"
+
+#: ../gp11/gp11-misc.c:218
+msgid "Cannot export because the key is invalid"
+msgstr "Neplatný klíč nelze exportovat"
+
+#: ../gp11/gp11-misc.c:220
+msgid "Cannot export because the key is of the wrong size"
+msgstr "Nelze exportovat, protože klíč má špatnou velikost"
+
+#: ../gp11/gp11-misc.c:222
+msgid "Cannot export because the key is of the wrong type"
+msgstr "Nelze exportovat, protože klíč je špatného typu"
+
+#: ../gp11/gp11-misc.c:224
+msgid "Unable to initialize the random number generator"
+msgstr "Nelze spustit generátor náhodných čísel"
+
+#: ../gp11/gp11-misc.c:226
+msgid "No random number generator available"
+msgstr "Není dostupný žádný generátor náhodných čísel"
+
+#: ../gp11/gp11-misc.c:228
+msgid "The crypto mechanism has an invalid parameter"
+msgstr "Šifrovací mechanismus má neplatný parametr"
+
+#: ../gp11/gp11-misc.c:230
+msgid "Not enough space to store the result"
+msgstr "Nedostatek místa pro uložení výsledku"
+
+#: ../gp11/gp11-misc.c:232
+msgid "The saved state is invalid"
+msgstr "Uložený stav je neplatný"
+
+#: ../gp11/gp11-misc.c:234
+msgid "The information is sensitive and cannot be revealed"
+msgstr "Informace jsou citlivé a nemohou být zobrazeny"
+
+#: ../gp11/gp11-misc.c:236
+msgid "The state cannot be saved"
+msgstr "Stav nelze uložit"
+
+#: ../gp11/gp11-misc.c:238
+msgid "The module has not been initialized"
+msgstr "Modul nebyl spuštěn"
+
+#: ../gp11/gp11-misc.c:240
+msgid "The module has already been initialized"
+msgstr "Modul již byl inicializován"
+
+#: ../gp11/gp11-misc.c:242
+msgid "Cannot lock data"
+msgstr "Nelze zamknout data"
+
+#: ../gp11/gp11-misc.c:244
+msgid "The data cannot be locked"
+msgstr "Data nemohou být uzamčena"
+
+#: ../gp11/gp11-misc.c:246
+msgid "The signature request was rejected by the user"
+msgstr "Dotaz na podpis byl uživatelem zamítnut"
+
+#: ../gp11/gp11-misc.c:250
+msgid "Unknown error"
+msgstr "Neznámá chyba"
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
@@ -391,195 +1069,3 @@ msgstr "Klíčenka s tímto názvem neexistuje."
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "Klíčenka již byla odemčena."
-
-#. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:98
-msgid "Unlock Login Keyring"
-msgstr "Odemknout přihlašovací klíčenku"
-
-#: ../keyrings/gkr-keyring-login.c:98
-msgid "Enter login password to unlock keyring"
-msgstr "Zadejte přihlašovací heslo k odemknutí klíčenky"
-
-#: ../keyrings/gkr-keyring-login.c:100
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
-msgstr ""
-"Vaše přihlašovací klíčenka nebyla během vašeho přihlášení k tomuto počítači "
-"automaticky odemčena."
-
-#. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:124
-msgid "Create Login Keyring"
-msgstr "Vytvořit přihlašovací klíčenku"
-
-#: ../keyrings/gkr-keyring-login.c:124
-msgid "Enter your login password"
-msgstr "Zadejte své přihlašovací heslo"
-
-#: ../keyrings/gkr-keyring-login.c:126
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
-msgstr ""
-"Vaše přihlašovací klíčenka nebyla během vašeho přihlášení k tomuto počítači "
-"automaticky vytvořena. Bude vytvořena nyní."
-
-#: ../pk/gkr-pk-object-storage.c:99
-msgid "Unlock private key"
-msgstr "Odemknout soukromý klíč"
-
-#: ../pk/gkr-pk-object-storage.c:101
-msgid "Unlock certificate"
-msgstr "Odemknout certifikát"
-
-#: ../pk/gkr-pk-object-storage.c:103
-msgid "Unlock public key"
-msgstr "Odemknout veřejný klíč"
-
-#: ../pk/gkr-pk-object-storage.c:105
-msgid "Unlock"
-msgstr "Odemknout"
-
-#: ../pk/gkr-pk-object-storage.c:116
-msgid "Enter password to unlock the private key"
-msgstr "Zadejte heslo k odemknutí soukromého klíče"
-
-#: ../pk/gkr-pk-object-storage.c:118
-msgid "Enter password to unlock the certificate"
-msgstr "Zadejte heslo k odemknutí certifikátu"
-
-#: ../pk/gkr-pk-object-storage.c:120
-msgid "Enter password to unlock the public key"
-msgstr "Zadejte heslo k odemknutí veřejného klíče"
-
-#: ../pk/gkr-pk-object-storage.c:122
-msgid "Enter password to unlock"
-msgstr "Zadejte heslo k odemknutí"
-
-#: ../pk/gkr-pk-object-storage.c:133
-msgid "Automatically unlock this private key when I log in."
-msgstr "Tento soukromý klíč při přihlášení automaticky odemknout."
-
-#: ../pk/gkr-pk-object-storage.c:135
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Tento certifikát při přihlášení automaticky odemknout."
-
-#: ../pk/gkr-pk-object-storage.c:137
-msgid "Automatically unlock this public key when I log in."
-msgstr "Tento veřejný klíč při přihlášení automaticky odemknout."
-
-#: ../pk/gkr-pk-object-storage.c:139
-msgid "Automatically unlock this when I log in"
-msgstr "Automaticky odemknout při přihlášení"
-
-#: ../pk/gkr-pk-object-storage.c:154
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Aplikace požaduje přístup k soukromému klíči \"%s\", ale ten je zamčen"
-
-#: ../pk/gkr-pk-object-storage.c:156
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Aplikace požaduje přístup k certifikátu \"%s\", ale ten je zamčen"
-
-#: ../pk/gkr-pk-object-storage.c:158
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Aplikace požaduje přístup k veřejnému klíči \"%s\", ale ten je zamčen"
-
-#: ../pk/gkr-pk-object-storage.c:160
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Aplikace požaduje přístup k '%s', ale ta je zamčena"
-
-#: ../pk/gkr-pk-object-storage.c:166
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "Systém chce importovat soukromý klíč \"%s\", ale ten je zamčen"
-
-#: ../pk/gkr-pk-object-storage.c:168
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "Systém chce importovat certifikát \"%s\", ale ten je zamčen"
-
-#: ../pk/gkr-pk-object-storage.c:170
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "Systém chce importovat veřejný klíč \"%s\", ale ten je zamčen"
-
-#: ../pk/gkr-pk-object-storage.c:172
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "Systém chce importovat \"%s\", ale prvek je zamčen"
-
-#: ../pk/gkr-pk-object-storage.c:258
-#, c-format
-msgid "Unlock password for '%s'"
-msgstr "Odemykací heslo pro \"%s\""
-
-#: ../pkix/gkr-pkix-parser.c:445
-msgid "Unrecognized or unsupported file."
-msgstr "Nerozpoznaný nebo nepodporovaný soubor."
-
-#: ../pkix/gkr-pkix-parser.c:449
-msgid "Could not parse invalid or corrupted file."
-msgstr "Nemohu analyzovat neplatný nebo poškozený soubor."
-
-#: ../ui/gkr-ask-tool.c:182
-msgid "Store passwords unencrypted?"
-msgstr "Ukládat hesla nešifrovaně?"
-
-#: ../ui/gkr-ask-tool.c:183
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Pokud zvolíte použití prázdného hesla, vaše uložená hesla nebudou bezpečně "
-"zašifrována. Budou přístupná každému, kdo bude mít přístup k vašim souborům."
-
-#: ../ui/gkr-ask-tool.c:190
-msgid "Use Unsafe Storage"
-msgstr "Použít nezabezpečené úložiště"
-
-#: ../ui/gkr-ask-tool.c:413
-msgid "_Location:"
-msgstr "U_místění:"
-
-#: ../ui/gkr-ask-tool.c:426
-msgid "_Old password:"
-msgstr "_Staré heslo:"
-
-#: ../ui/gkr-ask-tool.c:446
-msgid "_Password:"
-msgstr "_Heslo:"
-
-#: ../ui/gkr-ask-tool.c:468
-msgid "_Confirm password:"
-msgstr "_Potvrďte heslo:"
-
-#: ../ui/gkr-ask-tool.c:488
-msgid "New password strength"
-msgstr "Síla nového hesla"
-
-#: ../ui/gkr-ask-tool.c:546
-msgid "Passwords do not match."
-msgstr "Hesla nesouhlasí."
-
-#: ../ui/gkr-ask-tool.c:562
-msgid "Password cannot be blank"
-msgstr "Heslo nesmí být prázdné"
-
-#: ../ui/gkr-ask-tool.c:613
-msgid "Deny"
-msgstr "Odepřít"
-
-#: ../ui/gkr-ask-tool.c:625
-msgid "Allow _Once"
-msgstr "Povolit _jednou"
-
-#: ../ui/gkr-ask-tool.c:629
-msgid "_Always Allow"
-msgstr "_Vždy povolit"
