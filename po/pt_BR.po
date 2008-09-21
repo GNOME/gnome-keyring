@@ -1,5 +1,5 @@
-# gnome-keyring: translation to Brazilian Portuguese (pt_BR)
-# Copyright (C) 2004 Free Software Foundation, Inc.
+# Brazilian Portuguese translation of GNOME Keyring.
+# Copyright (C) 2004-2008 the GNOME Keyring authors.
 # This file is distributed under the same license as the gnome-keyring package.
 # Guilherme de S. Pastore <gpastore@gnome.org>, 2004-2005.
 # Leonardo Ferreira Fontenelle <leonardof@gnome.org>, 2006, 2008.
@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-31 18:25+0000\n"
-"PO-Revision-Date: 2008-08-31 19:12-0300\n"
+"PO-Revision-Date: 2008-09-13 21:28-0300\n"
 "Last-Translator: Leonardo Ferreira Fontenelle <leonardof@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
@@ -25,11 +25,11 @@ msgstr ""
 #: ../common/gkr-location.c:320
 #, c-format
 msgid "Removable Disk: %s"
-msgstr "Disco Removível: %s"
+msgstr "Disco removível: %s"
 
 #: ../common/gkr-location.c:322
 msgid "Removable Disk"
-msgstr "Disco Removível"
+msgstr "Disco removível"
 
 #: ../common/gkr-location.c:543 ../common/gkr-location.c:555
 msgid "Home"
@@ -177,11 +177,11 @@ msgstr "Digite a senha do chaveiro \"%s\" para desbloqueá-lo"
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:355
 msgid "Unlock Keyring"
-msgstr "Desbloquear Chaveiro"
+msgstr "Desbloquear chaveiro"
 
 #: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
 msgid "Automatically unlock this keyring when I log in."
-msgstr "Desbloquear este chaveiro automaticamente quando eu efetuar o login."
+msgstr "Desbloquear este chaveiro automaticamente quando eu iniciar a sessão."
 
 #: ../daemon/gkr-daemon-ops.c:403
 #, c-format
@@ -240,7 +240,7 @@ msgstr ""
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:443
 msgid "New Keyring Password"
-msgstr "Senha do Novo Chaveiro"
+msgstr "Senha do novo chaveiro"
 
 #: ../daemon/gkr-daemon-ops.c:444
 msgid "Choose password for new keyring"
@@ -313,7 +313,7 @@ msgstr "Escolha uma nova senha para o chaveiro padrão. "
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:541
 msgid "Change Keyring Password"
-msgstr "Mudar Senha do Chaveiro"
+msgstr "Alterar senha do chaveiro"
 
 #: ../daemon/gkr-daemon-ops.c:614
 #, c-format
@@ -348,7 +348,7 @@ msgstr ""
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:631
 msgid "Create Default Keyring"
-msgstr "Criar Chaveiro Padrão"
+msgstr "Criar chaveiro padrão"
 
 #: ../daemon/gkr-daemon-ops.c:631
 msgid "Choose password for default keyring"
@@ -377,9 +377,9 @@ msgid ""
 "passed to the daemon."
 msgstr ""
 "Esta opção habilita o componente PKCS#11 no daemon do gnome-keyring. Ela só "
-"tem efeito quando o gnome-keyring-daemon inicia (ex: quando o usuário faz "
-"login). Esta configuração pode ser substituída quando certos argumentos de "
-"linha de comando são passados para o daemon."
+"tem efeito quando o gnome-keyring-daemon inicia, p. ex. quando o usuário "
+"inicia uma sessão. Esta configuração pode ser substituída quando certos "
+"argumentos de linha de comando são passados para o daemon."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid ""
@@ -389,9 +389,9 @@ msgid ""
 "the daemon."
 msgstr ""
 "Esta opção habilita o agente SSH no daemon do gnome-keyring. Ela só tem "
-"efeito quando o gnome-keyring-daemon inicia (ex: quando o usuário faz "
-"login). Esta configuração pode ser substituída quando certos argumentos de "
-"linha de comando são passados para o daemon."
+"efeito quando o gnome-keyring-daemon inicia, p. ex. quando o usuário inicia "
+"uma sessão. Esta configuração pode ser substituída quando certos argumentos "
+"de linha de comando são passados para o daemon."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -404,36 +404,36 @@ msgstr "Se o agente SSH do gnome-keyring está ativado."
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
-msgstr "Desbloquear Chaveiro Login"
+msgstr "Desbloquear chaveiro de sessão"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:98
 msgid "Enter login password to unlock keyring"
-msgstr "Digite a senha de login para desbloquear o chaveiro"
+msgstr "Digite a senha de usuário para desbloquear o chaveiro"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:100
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
 msgstr ""
-"Seu chaveiro login não foi desbloqueado automaticamente quando você efetuou "
-"login neste computador."
+"Seu chaveiro de sessão não foi desbloqueado automaticamente quando você "
+"iniciou a sessão neste computador."
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
-msgstr "Criar o Chaveiro Login"
+msgstr "Criar o chaveiro de sessão"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
-msgstr "Digite a senha de login"
+msgstr "Digite sua senha de usuário"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:126
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
 msgstr ""
-"O chaveiro login não foi criado automaticamente quando você efetuou login "
-"neste computador. Ele será criado agora."
+"Seu chaveiro de sessão não foi desbloqueado automaticamente quando você "
+"iniciou a sessão neste computador. Ele será criado agora."
 
 #: ../daemon/keyrings/gkr-keyring.c:584
 #, c-format
@@ -516,7 +516,7 @@ msgstr ""
 #. And put together the ask request
 #: ../daemon/pk/gkr-pk-index.c:124
 msgid "Unlock Storage for Key Information"
-msgstr "Desbloquear o Armazenamento de Informação da Chave"
+msgstr "Desbloquear o armazenamento de informação da chave"
 
 #: ../daemon/pk/gkr-pk-index.c:125
 msgid "Enter password to unlock storage"
@@ -544,7 +544,7 @@ msgstr "Chave pública"
 
 #: ../daemon/pk/gkr-pk-object.c:889
 msgid "Trust Association"
-msgstr "Associação de Confiança"
+msgstr "Associação de confiança"
 
 #: ../daemon/pk/gkr-pk-object-storage.c:436
 #, c-format
@@ -586,20 +586,21 @@ msgstr "Digite a senha para proteger o armazenamento"
 #: ../daemon/pk/gkr-pk-storage.c:196
 msgid "Automatically unlock this private key when I log in."
 msgstr ""
-"Desbloquear esta chave privada automaticamente quando eu efetuar login."
+"Desbloquear esta chave privada automaticamente quando eu iniciar a sessão."
 
 #: ../daemon/pk/gkr-pk-storage.c:198
 msgid "Automatically unlock this certificate when I log in."
-msgstr "Desbloquear este certificado automaticamente quando eu efetuar login."
+msgstr ""
+"Desbloquear este certificado automaticamente quando eu iniciar a sessão."
 
 #: ../daemon/pk/gkr-pk-storage.c:200
 msgid "Automatically unlock this public key when I log in."
 msgstr ""
-"Desbloquear esta chave pública automaticamente quando eu efetuar o login."
+"Desbloquear esta chave pública automaticamente quando eu iniciar a sessão."
 
 #: ../daemon/pk/gkr-pk-storage.c:202
 msgid "Automatically unlock this when I log in"
-msgstr "Automaticamente desbloquear isto quando eu efetuar o login"
+msgstr "Automaticamente desbloquear isto quando eu iniciar a sessão."
 
 #: ../daemon/pk/gkr-pk-storage.c:209
 #, c-format
@@ -703,7 +704,7 @@ msgstr "_Localização:"
 
 #: ../daemon/ui/gkr-ask-tool.c:426
 msgid "_Old password:"
-msgstr "Senha _antiga:"
+msgstr "Senha a_ntiga:"
 
 #: ../daemon/ui/gkr-ask-tool.c:446
 msgid "_Password:"
@@ -711,7 +712,7 @@ msgstr "_Senha:"
 
 #: ../daemon/ui/gkr-ask-tool.c:468
 msgid "_Confirm password:"
-msgstr "_Confirmar senha:"
+msgstr "C_onfirmar senha:"
 
 #: ../daemon/ui/gkr-ask-tool.c:488
 msgid "New password strength"
@@ -731,19 +732,19 @@ msgstr "Negar"
 
 #: ../daemon/ui/gkr-ask-tool.c:625
 msgid "C_reate"
-msgstr "C_riar"
+msgstr "_Criar"
 
 #: ../daemon/ui/gkr-ask-tool.c:629
 msgid "C_hange"
-msgstr "Alt_erar"
+msgstr "_Alterar"
 
 #: ../daemon/ui/gkr-ask-tool.c:633
 msgid "Allow _Once"
-msgstr "Autorizar _Uma Vez"
+msgstr "Autorizar _uma vez"
 
 #: ../daemon/ui/gkr-ask-tool.c:637
 msgid "_Always Allow"
-msgstr "Sempre _Autorizar"
+msgstr "_Sempre autorizar"
 
 #: ../gp11/gp11-misc.c:67
 msgid "Insufficient memory available"
@@ -1067,7 +1068,7 @@ msgstr "Erro desconhecido"
 
 #: ../library/gnome-keyring-utils.c:91
 msgid "Access Denied"
-msgstr "Acesso Negado"
+msgstr "Acesso negado"
 
 #: ../library/gnome-keyring-utils.c:93
 msgid "The gnome-keyring-daemon application is not running."
