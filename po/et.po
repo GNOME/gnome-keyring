@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-10 16:40+0000\n"
-"PO-Revision-Date: 2008-08-25 08:02+0300\n"
+"PO-Revision-Date: 2008-09-21 08:33+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -745,7 +745,7 @@ msgstr "Väli on kirjutuskaitsega"
 
 #: ../gp11/gp11-misc.c:59
 msgid "The field is sensitive and cannot be revealed"
-msgstr ""
+msgstr "See väli on tundlik ja seda pole võimalik nähtavale tuua"
 
 #: ../gp11/gp11-misc.c:61
 msgid "The field is invalid or does not exist"
@@ -1001,7 +1001,7 @@ msgstr "Salvestatud olek on vigane"
 
 #: ../gp11/gp11-misc.c:187
 msgid "The information is sensitive and cannot be revealed"
-msgstr ""
+msgstr "Need andned on tundlikud ja neid pole võimalik nähtavale tuua"
 
 #: ../gp11/gp11-misc.c:189
 msgid "The state cannot be saved"
