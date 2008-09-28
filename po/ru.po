@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-29 00:37+0400\n"
+"POT-Creation-Date: 2008-09-29 00:51+0400\n"
 "PO-Revision-Date: 2008-09-22 21:51+0400\n"
 "Last-Translator: Lebedev Roman <roman@lebedev.com>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
@@ -537,7 +537,7 @@ msgstr "Связь доверия"
 #: ../daemon/pk/gkr-pk-object-storage.c:445
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr "Не удалось удалить %s, потому что он привязан к другим обьектам"
+msgstr "Не удалось удалить %s, потому что он привязан к другим объектам"
 
 #: ../daemon/pk/gkr-pk-storage.c:136
 msgid "Unlock private key"
@@ -767,7 +767,7 @@ msgstr "Поле содержит важную информацию и не мо
 
 #: ../gp11/gp11-misc.c:108
 msgid "The field is invalid or does not exist"
-msgstr "Поле некорректно или несуществует"
+msgstr "Поле некорректно или не существует"
 
 #: ../gp11/gp11-misc.c:110
 msgid "Invalid value for field"
@@ -775,7 +775,7 @@ msgstr "Неверное значение поля"
 
 #: ../gp11/gp11-misc.c:112
 msgid "The data is not valid or unrecognized"
-msgstr "Данные неверны или нераспознанны"
+msgstr "Данные неверны или не распознаны"
 
 #: ../gp11/gp11-misc.c:114
 msgid "The data is too long"
@@ -795,7 +795,7 @@ msgstr "Устройство было удалено или отключено"
 
 #: ../gp11/gp11-misc.c:122
 msgid "The encrypted data is not valid or unrecognized"
-msgstr "Зашифрованные данные неверны или нераспознанны"
+msgstr "Зашифрованные данные неверны или не распознаны"
 
 #: ../gp11/gp11-misc.c:124
 msgid "The encrypted data is too long"
@@ -803,7 +803,7 @@ msgstr "Зашифрованные данные слишком длинные"
 
 #: ../gp11/gp11-misc.c:126
 msgid "This operation is not supported"
-msgstr "Эта операция неподдерживается"
+msgstr "Эта операция не поддерживается"
 
 #: ../gp11/gp11-misc.c:128
 msgid "The key is missing or invalid"
@@ -835,7 +835,7 @@ msgstr "Не удалось включить ключ в digest"
 
 #: ../gp11/gp11-misc.c:142
 msgid "This operation cannot be done with this key"
-msgstr "Эта операция не может быть сделана с этим ключем"
+msgstr "Эта операция не может быть сделана с этим ключом"
 
 #: ../gp11/gp11-misc.c:144
 msgid "The key cannot be wrapped"
@@ -847,7 +847,7 @@ msgstr "Не удалось экспортировать этот ключ"
 
 #: ../gp11/gp11-misc.c:148
 msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "Механизм шифрования неверен или нераспознан"
+msgstr "Механизм шифрования неверен или не распознан"
 
 #: ../gp11/gp11-misc.c:150
 msgid "The crypto mechanism has an invalid argument"
@@ -935,7 +935,7 @@ msgstr "Устройство отсутствует или отключено"
 
 #: ../gp11/gp11-misc.c:192
 msgid "The device is invalid or unrecognizable"
-msgstr "Устройство неверно или неопознаваемо"
+msgstr "Устройство неверно или не опознаваемо"
 
 #: ../gp11/gp11-misc.c:194
 msgid "The device is write protected"
@@ -1019,7 +1019,7 @@ msgstr "Сохраненный статус неверен"
 
 #: ../gp11/gp11-misc.c:234
 msgid "The information is sensitive and cannot be revealed"
-msgstr "Информация чуствительна и не может быть показана"
+msgstr "Информация важна и не может быть раскрыта"
 
 #: ../gp11/gp11-misc.c:236
 msgid "The state cannot be saved"
