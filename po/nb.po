@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.21.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-27 13:45+0200\n"
-"PO-Revision-Date: 2008-08-27 13:51+0200\n"
+"POT-Creation-Date: 2008-10-07 09:40+0200\n"
+"PO-Revision-Date: 2008-10-07 09:45+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -346,7 +346,7 @@ msgid ""
 "A list of paths to PKCS#11 modules to load. No modules are currently listed "
 "by default, as this is still an experimental feature. This is used by "
 "seahorse and other PKCS#11 aware applications."
-msgstr ""
+msgstr "En liste med stier til PKCS#11-moduler som skal lastes. Ingen moduler er lagt til i listen som forvalg da dette fremdeles er en eksperimentell funksjon. Dette brukes av seahorse og andre programmer som forstår PKCS#11."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
@@ -511,23 +511,23 @@ msgstr ""
 "Systemet ønsker tilgang til informasjon om dine nøkler og sertifikater, men "
 "denne er låst."
 
-#: ../daemon/pk/gkr-pk-object.c:883
+#: ../daemon/pk/gkr-pk-object.c:889
 msgid "Certificate"
 msgstr "Sertifikat"
 
-#: ../daemon/pk/gkr-pk-object.c:885
+#: ../daemon/pk/gkr-pk-object.c:891
 msgid "Private Key"
 msgstr "Privat nøkkel"
 
-#: ../daemon/pk/gkr-pk-object.c:887
+#: ../daemon/pk/gkr-pk-object.c:893
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
 
-#: ../daemon/pk/gkr-pk-object.c:889
+#: ../daemon/pk/gkr-pk-object.c:895
 msgid "Trust Association"
 msgstr "Assosiering av tillit"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:436
+#: ../daemon/pk/gkr-pk-object-storage.c:445
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "Kan ikke slette «%s» på grunn av knytninger til andre objekter."
@@ -618,7 +618,7 @@ msgstr ""
 "Systemet ønsker å lagre «%s» på din disk. Vennligst oppgi et passord å låse "
 "informasjonen med."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:64
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
 msgid "The operation was cancelled"
 msgstr "Operasjonen ble avbrutt"
 
@@ -655,11 +655,11 @@ msgstr "Kunne ikke kryptere SSH-nøkkel for å lagre den."
 msgid "Couldn't encode the SSH key to store it."
 msgstr "Kunne ikke kode SSH-nøkkel for å lagre den."
 
-#: ../daemon/ui/gkr-ask-tool.c:182
+#: ../daemon/ui/gkr-ask-tool.c:244
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../daemon/ui/gkr-ask-tool.c:183
+#: ../daemon/ui/gkr-ask-tool.c:245
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -669,371 +669,375 @@ msgstr ""
 "krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
 "tilgang til dine filer."
 
-#: ../daemon/ui/gkr-ask-tool.c:190
+#: ../daemon/ui/gkr-ask-tool.c:252
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../daemon/ui/gkr-ask-tool.c:413
+#: ../daemon/ui/gkr-ask-tool.c:479
 msgid "_Location:"
 msgstr "_Lokasjon:"
 
-#: ../daemon/ui/gkr-ask-tool.c:426
+#: ../daemon/ui/gkr-ask-tool.c:492
 msgid "_Old password:"
 msgstr "_Gammelt passord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:446
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Password:"
 msgstr "_Passord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:468
+#: ../daemon/ui/gkr-ask-tool.c:534
 msgid "_Confirm password:"
 msgstr "_Bekreft passord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:488
+#: ../daemon/ui/gkr-ask-tool.c:554
 msgid "New password strength"
 msgstr "Styrke for nytt passord"
 
-#: ../daemon/ui/gkr-ask-tool.c:546
+#: ../daemon/ui/gkr-ask-tool.c:612
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../daemon/ui/gkr-ask-tool.c:562
+#: ../daemon/ui/gkr-ask-tool.c:628
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 
-#: ../daemon/ui/gkr-ask-tool.c:613
+#: ../daemon/ui/gkr-ask-tool.c:679
 msgid "Deny"
 msgstr "Nekt"
 
-#: ../daemon/ui/gkr-ask-tool.c:625
-msgid "_Create"
-msgstr "_Lag"
+#: ../daemon/ui/gkr-ask-tool.c:691
+msgid "C_reate"
+msgstr "La_g"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:695
+msgid "C_hange"
+msgstr "En_dre"
+
+#: ../daemon/ui/gkr-ask-tool.c:699
 msgid "Allow _Once"
 msgstr "Tillat én gang"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:703
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
 
-#: ../gp11/gp11-misc.c:67
+#: ../gp11/gp11-misc.c:90
 msgid "Insufficient memory available"
 msgstr "Ikke nok minne tilgjengelig"
 
-#: ../gp11/gp11-misc.c:69
+#: ../gp11/gp11-misc.c:92
 msgid "The specified slot ID is not valid"
-msgstr ""
+msgstr "Oppgitt ID for plass er ikke gyldig"
 
-#: ../gp11/gp11-misc.c:71
+#: ../gp11/gp11-misc.c:94
 msgid "Internal error"
 msgstr "Intern feil"
 
-#: ../gp11/gp11-misc.c:73
+#: ../gp11/gp11-misc.c:96
 msgid "The operation failed"
 msgstr "Operasjonen feilet"
 
-#: ../gp11/gp11-misc.c:75
+#: ../gp11/gp11-misc.c:98
 msgid "Invalid arguments"
 msgstr "Ugyldige argumenter"
 
-#: ../gp11/gp11-misc.c:77
+#: ../gp11/gp11-misc.c:100
 msgid "The module cannot create needed threads"
 msgstr "Modulen kan ikke lage nødvendige tråder"
 
-#: ../gp11/gp11-misc.c:79
+#: ../gp11/gp11-misc.c:102
 msgid "The module cannot lock data properly"
 msgstr "Modulen kan ikke låse data ordentlig"
 
-#: ../gp11/gp11-misc.c:81
+#: ../gp11/gp11-misc.c:104
 msgid "The field is read-only"
 msgstr "Feltet er skrivebeskyttet"
 
-#: ../gp11/gp11-misc.c:83
+#: ../gp11/gp11-misc.c:106
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Feltet er sensitivt og kan ikke vises"
 
-#: ../gp11/gp11-misc.c:85
+#: ../gp11/gp11-misc.c:108
 msgid "The field is invalid or does not exist"
 msgstr "Feltet er ugyldig eller eksisterer ikke"
 
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:110
 msgid "Invalid value for field"
 msgstr "Ugyldig verdi for felt"
 
-#: ../gp11/gp11-misc.c:89
+#: ../gp11/gp11-misc.c:112
 msgid "The data is not valid or unrecognized"
 msgstr "Data er ikke gyldig eller kan ikke gjenkjennes"
 
-#: ../gp11/gp11-misc.c:91
+#: ../gp11/gp11-misc.c:114
 msgid "The data is too long"
 msgstr "For mye data"
 
-#: ../gp11/gp11-misc.c:93
+#: ../gp11/gp11-misc.c:116
 msgid "An error occurred on the device"
 msgstr "Fen feil oppsto på enheten"
 
-#: ../gp11/gp11-misc.c:95
+#: ../gp11/gp11-misc.c:118
 msgid "Insufficient memory available on device"
 msgstr "Ikke nok minne på enheten"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:120
 msgid "The device was removed or unplugged"
 msgstr "Enheten ble fjernet eller koblet fra"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:122
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Krypterte data er ikke gyldige eller ble ikke gjenkjent"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:124
 msgid "The encrypted data is too long"
 msgstr "For mye krypterte data"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:126
 msgid "This operation is not supported"
 msgstr "Operasjonen er ikke støttet"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:128
 msgid "The key is missing or invalid"
 msgstr "Nøkkelen mangler eller er ugyldig"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:130
 msgid "The key is the wrong size"
 msgstr "Nøkkelen har feil størrelse"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:132
 msgid "The key is of the wrong type"
 msgstr "Nøkkelen er av feil type"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:134
 msgid "No key is needed"
 msgstr "Ingen nøkkel kreves"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:136
 msgid "The key is different than before"
 msgstr "Nøkkelen er forskjellig fra tidligere"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:138
 msgid "A key is needed"
 msgstr "En nøkkel kreves"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:140
 msgid "Cannot include the key in digest"
 msgstr "Kan ikke ta med nøkkelen i sammendraget"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:142
 msgid "This operation cannot be done with this key"
 msgstr "Operasjonen kan ikke utføres med denne nøkkelen"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:144
 msgid "The key cannot be wrapped"
 msgstr "Nøkkelen kan ikke pakkes inn"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:146
 msgid "Cannot export this key"
 msgstr "Kan ikke eksportere denne nøkkelen"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:148
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Mekanisme for kryptering er ugyldig eller ikke gjenkjent"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:150
 msgid "The crypto mechanism has an invalid argument"
-msgstr ""
+msgstr "Kryptomekanismen har et ugyldig argument"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:152
 msgid "The object is missing or invalid"
 msgstr "Objektet mangler eller er ugyldig"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:154
 msgid "Another operation is already taking place"
-msgstr ""
+msgstr "En annen operasjon er i gang allerede"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:156
 msgid "No operation is taking place"
 msgstr "Ingen operasjon pågår"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:158
 msgid "The password or PIN is incorrect"
 msgstr "Passord eller pin-kode er feil"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:160
 msgid "The password or PIN is invalid"
 msgstr "Passord eller pin-kode er ugyldig"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:162
 msgid "The password or PIN is of an invalid length"
 msgstr "Passord eller pin-kode har ugyldig lengde"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:164
 msgid "The password or PIN has expired"
 msgstr "Passord eller pin-kode er utløpt"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:166
 msgid "The password or PIN is locked"
 msgstr "Passord eller PIN er låst"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:168
 msgid "The session is closed"
 msgstr "Sesjonen er lukket"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:170
 msgid "Too many sessions are active"
 msgstr "For mange aktive sesjoner"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:172
 msgid "The session is invalid"
 msgstr "Sesjonen er ugyldig"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:174
 msgid "The session is read-only"
 msgstr "Sesjonen er skrivebeskyttet"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:176
 msgid "An open session exists"
 msgstr "En åpen sesjon finnes"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:178
 msgid "A read-only session exists"
 msgstr "En skrivebeskyttet sesjon finnes."
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:180
 msgid "An administrator session exists"
 msgstr "En administrator-sesjon eksisterer"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:182
 msgid "The signature is bad or corrupted"
 msgstr "Signaturen er ugyldig eller korrupt"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:184
 msgid "The signature is unrecognized or corrupted"
-msgstr ""
+msgstr "Signatur ikke gjenkjent eller korrupt"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:186
 msgid "Certain required fields are missing"
-msgstr ""
+msgstr "Noen obligatoriske felt mangler"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:188
 msgid "Certain fields have invalid values"
-msgstr ""
+msgstr "Noen felt har ugyldige verdier"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:190
 msgid "The device is not present or unplugged"
-msgstr ""
+msgstr "Enheten er ikke tilgjengelig eller koblet fra"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:192
 msgid "The device is invalid or unrecognizable"
-msgstr ""
+msgstr "Enheten er ugyldig eller ikke gjenkjennbar"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:194
 msgid "The device is write protected"
-msgstr ""
+msgstr "Enheten er skrivebeskyttet"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:196
 msgid "Cannot import because the key is invalid"
-msgstr ""
+msgstr "Kan ikke importere fordi nøkkelen er ugyldig"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:198
 msgid "Cannot import because the key is of the wrong size"
-msgstr ""
+msgstr "Kan ikke importere fordi nøkkelen har feil størrelse"
 
-#: ../gp11/gp11-misc.c:177
+#: ../gp11/gp11-misc.c:200
 msgid "Cannot import because the key is of the wrong type"
-msgstr ""
+msgstr "Kan ikke importere fordi nøkkelen er av feil type"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:202
 msgid "You are already logged in"
 msgstr "Du er allerede logget inn"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:204
 msgid "No user has logged in"
 msgstr "Ingen bruker har logget inn"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:206
 msgid "The user's password or PIN is not set"
-msgstr ""
+msgstr "Brukers passord eller PIN-kode er ikke satt"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:208
 msgid "The user is of an invalid type"
 msgstr "Bruker har ugyldig type"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:210
 msgid "Another user is already logged in"
 msgstr "En annen bruker er allerede logget inn"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:212
 msgid "Too many users of different types logged in"
-msgstr ""
+msgstr "For mange brukere av forskjellig type logget inn"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:214
 msgid "Cannot import an invalid key"
 msgstr "Kan ikke importere en ugyldig nøkkel"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:216
 msgid "Cannot import a key of the wrong size"
-msgstr ""
+msgstr "Kan ikke importere en nøkkel med feil størrelse"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:218
 msgid "Cannot export because the key is invalid"
-msgstr ""
+msgstr "Kan ikke eksportere fordi nøkkelen er ugyldig"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:220
 msgid "Cannot export because the key is of the wrong size"
-msgstr ""
+msgstr "Kan ikke eksportere fordi nøkkelen har feil størrelse"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:222
 msgid "Cannot export because the key is of the wrong type"
-msgstr ""
+msgstr "Kan ikke eksportere fordi nøkkelen er av feil type"
 
-#: ../gp11/gp11-misc.c:201
-msgid "Cannot set a random seed"
-msgstr ""
+#: ../gp11/gp11-misc.c:224
+msgid "Unable to initialize the random number generator"
+msgstr "Kan ikke initiere generator av tilfeldige tall"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:226
 msgid "No random number generator available"
-msgstr ""
+msgstr "Ingen generator av tilfeldige tall tilgjengelig"
 
-#: ../gp11/gp11-misc.c:205
+#: ../gp11/gp11-misc.c:228
 msgid "The crypto mechanism has an invalid parameter"
-msgstr ""
+msgstr "Kryptomekanismen har en ugyldig parameter"
 
-#: ../gp11/gp11-misc.c:207
+#: ../gp11/gp11-misc.c:230
 msgid "Not enough space to store the result"
-msgstr ""
+msgstr "Ikke nok plass til å lagre resultatet"
 
-#: ../gp11/gp11-misc.c:209
+#: ../gp11/gp11-misc.c:232
 msgid "The saved state is invalid"
 msgstr "Lagret tilstand er ugyldig"
 
-#: ../gp11/gp11-misc.c:211
+#: ../gp11/gp11-misc.c:234
 msgid "The information is sensitive and cannot be revealed"
-msgstr ""
+msgstr "Informasjonen er sensitiv og kan ikke vises"
 
-#: ../gp11/gp11-misc.c:213
+#: ../gp11/gp11-misc.c:236
 msgid "The state cannot be saved"
 msgstr "Tilstand kan ikke lagres"
 
-#: ../gp11/gp11-misc.c:215
+#: ../gp11/gp11-misc.c:238
 msgid "The module has not been initialized"
 msgstr "Modulen er ikke initiert"
 
-#: ../gp11/gp11-misc.c:217
+#: ../gp11/gp11-misc.c:240
 msgid "The module has already been initialized"
 msgstr "Modulen er allerede initiert"
 
-#: ../gp11/gp11-misc.c:219
+#: ../gp11/gp11-misc.c:242
 msgid "Cannot lock data"
 msgstr "Kan ikke låse data"
 
-#: ../gp11/gp11-misc.c:221
+#: ../gp11/gp11-misc.c:244
 msgid "The data cannot be locked"
 msgstr "Data kan ikke låses"
 
-#: ../gp11/gp11-misc.c:223
+#: ../gp11/gp11-misc.c:246
 msgid "The signature request was rejected by the user"
-msgstr ""
+msgstr "Signaturforespørselen ble avvist av bruker"
 
-#: ../gp11/gp11-misc.c:227
+#: ../gp11/gp11-misc.c:250
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
