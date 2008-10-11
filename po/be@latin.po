@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-16 14:06+0300\n"
+"POT-Creation-Date: 2008-10-11 12:13+0300\n"
 "PO-Revision-Date: 2008-02-17 00:15+0200\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian Latin <i18n@mova.org>\n"
@@ -510,23 +510,23 @@ msgstr ""
 "Systema choča atrymać dostup da infarmacyi pra tvaje klučy j sertyfikaty, "
 "jakaja zablakavanaja."
 
-#: ../daemon/pk/gkr-pk-object.c:883
+#: ../daemon/pk/gkr-pk-object.c:889
 msgid "Certificate"
 msgstr "Sertyfikat"
 
-#: ../daemon/pk/gkr-pk-object.c:885
+#: ../daemon/pk/gkr-pk-object.c:891
 msgid "Private Key"
 msgstr "Pryvatny kluč"
 
-#: ../daemon/pk/gkr-pk-object.c:887
+#: ../daemon/pk/gkr-pk-object.c:893
 msgid "Public Key"
 msgstr "Publičny kluč"
 
-#: ../daemon/pk/gkr-pk-object.c:889
+#: ../daemon/pk/gkr-pk-object.c:895
 msgid "Trust Association"
 msgstr "Poviaź davieru"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:436
+#: ../daemon/pk/gkr-pk-object-storage.c:445
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "Niemahčyma vydalić \"%s\", bo jon źviazany ź inšymi abjektami."
@@ -618,7 +618,7 @@ msgid ""
 msgstr ""
 "Systema choča zachoŭvać \"%s\" na dysku. Upišy parol, jakim jaho abaraniać."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:40
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
 msgid "The operation was cancelled"
 msgstr "Aperacyja anulavanaja"
 
@@ -652,11 +652,11 @@ msgstr "Nie ŭdałosia zašyfravać kluč SSH, kab zachavać jaho."
 msgid "Couldn't encode the SSH key to store it."
 msgstr "Nie ŭdałosia zakadavać kluč SSH, kab zachavać jaho."
 
-#: ../daemon/ui/gkr-ask-tool.c:182
+#: ../daemon/ui/gkr-ask-tool.c:244
 msgid "Store passwords unencrypted?"
 msgstr "Zachoŭvać paroli niezašyfravanymi?"
 
-#: ../daemon/ui/gkr-ask-tool.c:183
+#: ../daemon/ui/gkr-ask-tool.c:245
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -666,367 +666,375 @@ msgstr ""
 "buduć šyfravacca. Ich zmoža pračytać lubaja asoba, jakaja maje dostup da "
 "tvaich fajłaŭ."
 
-#: ../daemon/ui/gkr-ask-tool.c:190
+#: ../daemon/ui/gkr-ask-tool.c:252
 msgid "Use Unsafe Storage"
 msgstr "Užyj niebiaśpiečnaje schovišča"
 
-#: ../daemon/ui/gkr-ask-tool.c:413
+#: ../daemon/ui/gkr-ask-tool.c:479
 msgid "_Location:"
 msgstr "_Pałažeńnie:"
 
-#: ../daemon/ui/gkr-ask-tool.c:426
+#: ../daemon/ui/gkr-ask-tool.c:492
 msgid "_Old password:"
 msgstr "_Stary parol:"
 
-#: ../daemon/ui/gkr-ask-tool.c:446
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Password:"
 msgstr "_Parol:"
 
-#: ../daemon/ui/gkr-ask-tool.c:468
+#: ../daemon/ui/gkr-ask-tool.c:534
 msgid "_Confirm password:"
 msgstr "_Paćvierdź parol:"
 
-#: ../daemon/ui/gkr-ask-tool.c:488
+#: ../daemon/ui/gkr-ask-tool.c:554
 msgid "New password strength"
 msgstr "Ličylnik mocy novaha parolu"
 
-#: ../daemon/ui/gkr-ask-tool.c:546
+#: ../daemon/ui/gkr-ask-tool.c:612
 msgid "Passwords do not match."
 msgstr "Paroli adroźnivajucca."
 
-#: ../daemon/ui/gkr-ask-tool.c:562
+#: ../daemon/ui/gkr-ask-tool.c:628
 msgid "Password cannot be blank"
 msgstr "Parol nia moža być pustym"
 
-#: ../daemon/ui/gkr-ask-tool.c:613
+#: ../daemon/ui/gkr-ask-tool.c:679
 msgid "Deny"
 msgstr "Admaŭlaj"
 
-#: ../daemon/ui/gkr-ask-tool.c:625
+#: ../daemon/ui/gkr-ask-tool.c:691
+msgid "C_reate"
+msgstr "_Stvary"
+
+#: ../daemon/ui/gkr-ask-tool.c:695
+msgid "C_hange"
+msgstr "_Źmiani"
+
+#: ../daemon/ui/gkr-ask-tool.c:699
 msgid "Allow _Once"
 msgstr "Dazvol _raz"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:703
 msgid "_Always Allow"
 msgstr "_Zaŭsiody dazvalaj"
 
-#: ../gp11/gp11-misc.c:43
+#: ../gp11/gp11-misc.c:90
 msgid "Insufficient memory available"
 msgstr "Nie staje volnaj pamiaci"
 
-#: ../gp11/gp11-misc.c:45
+#: ../gp11/gp11-misc.c:92
 msgid "The specified slot ID is not valid"
 msgstr "Padadzieny ID slota niapravilny"
 
-#: ../gp11/gp11-misc.c:47
+#: ../gp11/gp11-misc.c:94
 msgid "Internal error"
 msgstr "Unutranaja pamyłka"
 
-#: ../gp11/gp11-misc.c:49
+#: ../gp11/gp11-misc.c:96
 msgid "The operation failed"
 msgstr "Nie ŭdałosia vykanać aperacyju"
 
-#: ../gp11/gp11-misc.c:51
+#: ../gp11/gp11-misc.c:98
 msgid "Invalid arguments"
 msgstr "Niapravilnyja arhumenty"
 
-#: ../gp11/gp11-misc.c:53
+#: ../gp11/gp11-misc.c:100
 msgid "The module cannot create needed threads"
 msgstr "Modul nia zmoh stvaryć patrebnyja płyni vykanańnia"
 
-#: ../gp11/gp11-misc.c:55
+#: ../gp11/gp11-misc.c:102
 msgid "The module cannot lock data properly"
 msgstr "Modul nia zmoh naležnym čynam zablakavać źviestki"
 
-#: ../gp11/gp11-misc.c:57
+#: ../gp11/gp11-misc.c:104
 msgid "The field is read-only"
 msgstr "Pole dastupnaje tolki dla čytańnia"
 
-#: ../gp11/gp11-misc.c:59
+#: ../gp11/gp11-misc.c:106
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Pole vielmi važnaje, i jaho nielha raskryvać"
 
-#: ../gp11/gp11-misc.c:61
+#: ../gp11/gp11-misc.c:108
 msgid "The field is invalid or does not exist"
 msgstr "Pole niapravilnaje, albo jaho nie isnuje"
 
-#: ../gp11/gp11-misc.c:63
+#: ../gp11/gp11-misc.c:110
 msgid "Invalid value for field"
 msgstr "Niapravilnaja vartaść pola"
 
-#: ../gp11/gp11-misc.c:65
+#: ../gp11/gp11-misc.c:112
 msgid "The data is not valid or unrecognized"
 msgstr "Niapravilnyja źviestki, albo ich niemahčyma razabrać"
 
-#: ../gp11/gp11-misc.c:67
+#: ../gp11/gp11-misc.c:114
 msgid "The data is too long"
 msgstr "Nadta vialikija źviestki"
 
-#: ../gp11/gp11-misc.c:69
+#: ../gp11/gp11-misc.c:116
 msgid "An error occurred on the device"
 msgstr "Na pryładzie ŭźnikła pamyłka"
 
-#: ../gp11/gp11-misc.c:71
+#: ../gp11/gp11-misc.c:118
 msgid "Insufficient memory available on device"
 msgstr "Na pryładzie nie staje volnaj pamiaci"
 
-#: ../gp11/gp11-misc.c:73
+#: ../gp11/gp11-misc.c:120
 msgid "The device was removed or unplugged"
 msgstr "Pryłada adłučanaja"
 
-#: ../gp11/gp11-misc.c:75
+#: ../gp11/gp11-misc.c:122
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Niapravilnyja zašyfravanyja źviestki, albo ich niemhčyma razabrać"
 
-#: ../gp11/gp11-misc.c:77
+#: ../gp11/gp11-misc.c:124
 msgid "The encrypted data is too long"
 msgstr "Nadta vialikija zašyfravanyja źviestki"
 
-#: ../gp11/gp11-misc.c:79
+#: ../gp11/gp11-misc.c:126
 msgid "This operation is not supported"
 msgstr "Hetaja aperacyja nie padtrymlivajecca"
 
-#: ../gp11/gp11-misc.c:81
+#: ../gp11/gp11-misc.c:128
 msgid "The key is missing or invalid"
 msgstr "Kluča niama ci jon niapravilny"
 
-#: ../gp11/gp11-misc.c:83
+#: ../gp11/gp11-misc.c:130
 msgid "The key is the wrong size"
 msgstr "Kluč niapravilnych pamieraŭ"
 
-#: ../gp11/gp11-misc.c:85
+#: ../gp11/gp11-misc.c:132
 msgid "The key is of the wrong type"
 msgstr "Kluč niapravilnaha typu"
 
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:134
 msgid "No key is needed"
 msgstr "Kluč niepatrebny"
 
-#: ../gp11/gp11-misc.c:89
+#: ../gp11/gp11-misc.c:136
 msgid "The key is different than before"
 msgstr "Kluč nie taki, jaki byŭ raniej"
 
-#: ../gp11/gp11-misc.c:91
+#: ../gp11/gp11-misc.c:138
 msgid "A key is needed"
 msgstr "Kluč patrebny"
 
-#: ../gp11/gp11-misc.c:93
+#: ../gp11/gp11-misc.c:140
 msgid "Cannot include the key in digest"
 msgstr "Niemahčyma ŭłučyć kluč u dajdžest"
 
-#: ../gp11/gp11-misc.c:95
+#: ../gp11/gp11-misc.c:142
 msgid "This operation cannot be done with this key"
 msgstr "Hetuju aperacyju niemahčyma vykanać hetym klučom"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:144
 msgid "The key cannot be wrapped"
 msgstr "Niemahčyma abharnuć kluč"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:146
 msgid "Cannot export this key"
 msgstr "Niemahčyma zekspartavać hety kluč"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:148
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Mechanizm šyfravańnia niapravilny albo nia vyznačany"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:150
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Mechanizm šyfravańnia maje niapravilny arhument"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:152
 msgid "The object is missing or invalid"
 msgstr "Abjekta niama albo jon niapravilny"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:154
 msgid "Another operation is already taking place"
 msgstr "Užo vykonvajecca inšaja aperacyja"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:156
 msgid "No operation is taking place"
 msgstr "Nijakich aperacyj nie vykonvajecca"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:158
 msgid "The password or PIN is incorrect"
 msgstr "Parol ci PIN niapravilnyja"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:160
 msgid "The password or PIN is invalid"
 msgstr "Parol ci PIN niapravilnyja"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:162
 msgid "The password or PIN is of an invalid length"
 msgstr "Parol ci PIN niapravilnaj daŭžyni"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:164
 msgid "The password or PIN has expired"
 msgstr "Parol ci PIN sastareli"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:166
 msgid "The password or PIN is locked"
 msgstr "Parol ci PIN zablakavanyja"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:168
 msgid "The session is closed"
 msgstr "Sesija skončanaja"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:170
 msgid "Too many sessions are active"
 msgstr "Nadta šmat aktyŭnych sesijaŭ"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:172
 msgid "The session is invalid"
 msgstr "Sesija niapravilnaja"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:174
 msgid "The session is read-only"
 msgstr "Sesija maje dostup tolki dla čytańnia"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:176
 msgid "An open session exists"
 msgstr "Jość adčynienaja sesija"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:178
 msgid "A read-only session exists"
 msgstr "Jość sesija tolki dla čytańnia"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:180
 msgid "An administrator session exists"
 msgstr "Jość sesija administratara"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:182
 msgid "The signature is bad or corrupted"
 msgstr "Podpis kiepski ci paškodžany"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:184
 msgid "The signature is unrecognized or corrupted"
 msgstr "Podpis nia vyznačany ci paškodžany"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:186
 msgid "Certain required fields are missing"
 msgstr "Nie staje niekalkich patrebnych paloŭ"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:188
 msgid "Certain fields have invalid values"
 msgstr "Niekatoryja pali majuć niapravilnyja vartaści"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:190
 msgid "The device is not present or unplugged"
 msgstr "Pryłady niama albo jana adłučanaja"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:192
 msgid "The device is invalid or unrecognizable"
 msgstr "Pryłada niapravilna ci nia vyznačanaja"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:194
 msgid "The device is write protected"
 msgstr "Pryłada abaronienaja ad zapisu"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:196
 msgid "Cannot import because the key is invalid"
 msgstr "Niemahčyma zimpartavać kluč, bo toj niapravilny"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:198
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Niemahčyma zimpartavać kluč, bo toj niapravilnych pamieraŭ"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:200
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Niemahčyma zimpartavać kluč, bo toj niapravilnaha typu"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:202
 msgid "You are already logged in"
 msgstr "Ty ŭžo ŭvajšoŭ"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:204
 msgid "No user has logged in"
 msgstr "Nichto nie ŭvajšoŭ"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:206
 msgid "The user's password or PIN is not set"
 msgstr "Parol ci PIN karystalnika nia vyznačanyja"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:208
 msgid "The user is of an invalid type"
 msgstr "Karystalnik niapravilnaha typu"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:210
 msgid "Another user is already logged in"
 msgstr "Inšy karystalnik užo ŭvajšoŭ"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:212
 msgid "Too many users of different types logged in"
 msgstr "Uvajšli nadta šmat karystalnikaŭ roznych typaŭ"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:214
 msgid "Cannot import an invalid key"
 msgstr "Niemahčyma zimpartavać niapravilny kluč"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:216
 msgid "Cannot import a key of the wrong size"
 msgstr "Niemahčyma zimpartavać kluč niapravilnych pamieraŭ"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:218
 msgid "Cannot export because the key is invalid"
 msgstr "Niemahčyma zekspartavać kluč, bo toj niapravilny"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:220
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Niemahčyma zekspartavać kluč, bo toj niapravilnych pamieraŭ"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:222
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Niemahčyma zekspartavać kluč, bo toj niapravilnaha typu"
 
-#: ../gp11/gp11-misc.c:177
-msgid "Cannot set a random seed"
-msgstr "Niemahčyma vyznačyć pačatkovy nabor dla hieneracyi vypadkovych likaŭ"
+#: ../gp11/gp11-misc.c:224
+msgid "Unable to initialize the random number generator"
+msgstr "Nie ŭdałosia zinicyjalizavać hieneratar vypadkovych likaŭ"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:226
 msgid "No random number generator available"
 msgstr "Niama hienerataraŭ vypadkovych likaŭ"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:228
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Mechanizm šyfravańnia maje niapravilny parametar"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:230
 msgid "Not enough space to store the result"
 msgstr "Nie staje volnaha miesca, kab zachavać vynik"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:232
 msgid "The saved state is invalid"
 msgstr "Zachavany stan niapravilny"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:234
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Infarmacyja vielmi važnaja, i jaje nielha raskryvać"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:236
 msgid "The state cannot be saved"
 msgstr "Niemahčyma zachavać stan"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:238
 msgid "The module has not been initialized"
 msgstr "Modul nie zinicyjalizavany"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:240
 msgid "The module has already been initialized"
 msgstr "Modul užo zinicyjalizavany"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:242
 msgid "Cannot lock data"
 msgstr "Niemahčyma zablakavać źviestki"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:244
 msgid "The data cannot be locked"
 msgstr "Niemahčyma zablakavać źviestki"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:246
 msgid "The signature request was rejected by the user"
 msgstr "Ad karystalnika padadzieny zapyt na podpis"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:250
 msgid "Unknown error"
 msgstr "Nieviadomaja pamyłka"
 
@@ -1061,6 +1069,10 @@ msgstr "Klučnik z takoj nazvaj nie isnuje."
 #: ../library/gnome-keyring-utils.c:110
 msgid "The keyring has already been unlocked."
 msgstr "Klučnik užo razblakavany."
+
+#~ msgid "Cannot set a random seed"
+#~ msgstr ""
+#~ "Niemahčyma vyznačyć pačatkovy nabor dla hieneracyi vypadkovych likaŭ"
 
 #~ msgid "Unlock password for '%s'"
 #~ msgstr "Adblakuj parol dla \"%s\""
