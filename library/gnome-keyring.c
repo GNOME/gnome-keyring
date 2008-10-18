@@ -3918,6 +3918,7 @@ static const GnomeKeyringPasswordSchema network_password_schema = {
 		{  "object", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
 		{  "protocol", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
 		{  "port", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32 },
+		{  "server", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
 		{  "NULL", 0 },
 	}
 };

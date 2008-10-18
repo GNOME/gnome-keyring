@@ -1,3 +1,8 @@
+2008-10-18  Stef Walter  <stef@memberwebs.com>
+
+	* library/gnome-keyring.c: Add missing 'server' attribute 
+	to the NETWORK_PASSWORD schema. Fixes bug #556530
+
 === gnome-keyring 2.24.0 ===
 
 2008-09-20  Stef Walter  <stef@memberwebs.com>
