@@ -1,5 +1,10 @@
 2008-10-18  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-location.c: Fix crash on logout on Solaris.
+	Fixes bug #556368. Patch by Jeff Cai
+
+2008-10-18  Stef Walter  <stef@memberwebs.com>
+
 	* library/gnome-keyring.c: Add missing 'server' attribute 
 	to the NETWORK_PASSWORD schema. Fixes bug #556530
 
