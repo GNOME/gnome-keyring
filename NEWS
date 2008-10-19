@@ -1,3 +1,7 @@
+Changes in version 2.24.1 are:
+* Fix crash on logout on Solaris. [Jeff Cai]
+* Add missing 'server' attribute to the NETWORK_PASSWORD schema.
+
 Changes in version 2.24.0 are:
 * Update documentation for functions in gp11 library
 * Ungrab the keyboard properly when a password prompt is minimized.

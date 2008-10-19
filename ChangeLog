@@ -1,3 +1,11 @@
+=== gnome-keyring 2.24.1 ===
+
+2008-10-19  Stef Walter  <stef@memberwebs.com>
+
+	* ChangeLog:
+	* configure.in:
+	* NEWS: Release version 2.24.1
+
 2008-10-18  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-location.c: Fix crash on logout on Solaris.
