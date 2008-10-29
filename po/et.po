@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-10 16:40+0000\n"
-"PO-Revision-Date: 2008-09-21 08:33+0300\n"
+"PO-Revision-Date: 2008-10-26 13:40+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -428,19 +428,19 @@ msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
 
 #: ../daemon/pk/gkr-pk-import.c:88
 msgid "Import private key"
-msgstr ""
+msgstr "Salajase võtme importimine"
 
 #: ../daemon/pk/gkr-pk-import.c:90
 msgid "Import certificate"
-msgstr ""
+msgstr "Sertifikaadi importimine"
 
 #: ../daemon/pk/gkr-pk-import.c:92
 msgid "Import public key"
-msgstr ""
+msgstr "Avaliku võtme importimine"
 
 #: ../daemon/pk/gkr-pk-import.c:94
 msgid "Import"
-msgstr ""
+msgstr "Impordi"
 
 #: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
 msgid "Enter password to unlock the private key"
@@ -901,15 +901,15 @@ msgstr "Signatuur on vigane või rikutud"
 
 #: ../gp11/gp11-misc.c:137
 msgid "The signature is unrecognized or corrupted"
-msgstr ""
+msgstr "Allkirja pole võimalik ära tunda või on see rikutud"
 
 #: ../gp11/gp11-misc.c:139
 msgid "Certain required fields are missing"
-msgstr ""
+msgstr "Osad vajalikud väljad on puudu"
 
 #: ../gp11/gp11-misc.c:141
 msgid "Certain fields have invalid values"
-msgstr ""
+msgstr "Osad väljad sisaldavad vigaseid väärtuseid"
 
 #: ../gp11/gp11-misc.c:143
 msgid "The device is not present or unplugged"
@@ -917,7 +917,7 @@ msgstr "Seadet pole või on seade ühendamata"
 
 #: ../gp11/gp11-misc.c:145
 msgid "The device is invalid or unrecognizable"
-msgstr ""
+msgstr "Seade on vigane või pole seda võimalik ära tunda"
 
 #: ../gp11/gp11-misc.c:147
 msgid "The device is write protected"
