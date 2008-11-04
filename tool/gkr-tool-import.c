@@ -140,6 +140,7 @@ import_from_file (GP11Session *session, const gchar *filename)
 	GError *err = NULL;
 	GP11Object *import;
 	GP11Attributes *attrs;
+	gchar *basename;
 	gchar *data;
 	gsize n_data;
 	
@@ -155,7 +156,9 @@ import_from_file (GP11Session *session, const gchar *filename)
 	gp11_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
 	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_GNOME_IMPORT);
 	gp11_attributes_add_boolean (attrs, CKA_GNOME_IMPORT_TOKEN, TRUE);
-	gp11_attributes_add_string (attrs, CKA_GNOME_IMPORT_LABEL, g_basename (filename));
+	basename = g_path_get_basename (filename);
+	gp11_attributes_add_string (attrs, CKA_GNOME_IMPORT_LABEL, basename);
+	g_free (basename);
 	
 	import = gp11_session_create_object_full (session, attrs, NULL, &err);
 	gp11_attributes_unref (attrs);
