@@ -1,3 +1,6 @@
+Changes in version 2.25.1 are: 
+* Remove usage of deprecated glib/gtk stuff.
+
 Changes in version 2.24.1 are:
 * Fix crash on logout on Solaris. [Jeff Cai]
 * Add missing 'server' attribute to the NETWORK_PASSWORD schema.
