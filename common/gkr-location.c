@@ -1129,7 +1129,7 @@ gkr_location_write_file (GQuark loc, const guchar *data, gssize len, GError **er
 		return FALSE;
 	}
 	
-	dirname = g_dirname (path);
+	dirname = g_path_get_dirname (path);
 	if (dirname && dirname[0]) {
 		if (g_mkdir_with_parents (dirname, 0700) < 0) {
 			g_set_error (err, G_FILE_ERROR, g_file_error_from_errno (errno),

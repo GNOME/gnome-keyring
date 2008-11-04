@@ -17,6 +17,6 @@
 
 
 #define WAIT_UNTIL(cond) \
-	while(!cond) g_main_iteration (TRUE);
+	while(!cond) g_main_context_iteration (NULL, TRUE);
 
 #endif /*TESTGP11HELPERS_H_*/
