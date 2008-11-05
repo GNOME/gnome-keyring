@@ -52,11 +52,9 @@ struct GnomeKeyringItemInfo {
 	time_t ctime;
 };
 
-#ifdef WITH_DBUS
 #define GNOME_KEYRING_DAEMON_SERVICE    "org.gnome.keyring"
 #define GNOME_KEYRING_DAEMON_PATH       "/org/gnome/keyring/daemon"
 #define GNOME_KEYRING_DAEMON_INTERFACE  "org.gnome.keyring.Daemon"
-#endif
 
 void 	_gnome_keyring_memory_dump (void);
 extern  gboolean gnome_keyring_memory_warning;

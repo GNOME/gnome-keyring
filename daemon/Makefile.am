@@ -54,12 +54,10 @@ gnome_keyring_daemon_LDADD = \
 EXTRA_DIST = org.gnome.keyring.service.in
 CLEANFILES = org.gnome.keyring.service
 
-if WITH_DBUS
 servicedir       = $(DBUS_SERVICES_DIR)
 service_in_files = org.gnome.keyring.service.in
 service_DATA     = $(service_in_files:.service.in=.service)
 
 $(service_DATA): $(service_in_files) Makefile
 	@sed -e "s|\@BINDIR\@|$(bindir)|" $< > $@
-endif
 

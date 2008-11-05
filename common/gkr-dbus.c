@@ -25,8 +25,6 @@
 
 #include "config.h"
 
-#ifdef WITH_DBUS
-
 #include "gkr-dbus.h"
 
 #include "gkr-cleanup.h"
@@ -420,6 +418,4 @@ gkr_dbus_disconnect_from_mainloop (DBusConnection *connection, GMainContext *con
 	if (cs)
 		connection_setup_free (cs);		
 }
-
-#endif /* WITH_DBUS */
 

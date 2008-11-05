@@ -583,7 +583,6 @@ main (int argc, char *argv[])
 	
 	gkr_async_workers_init (loop);
 	
-#ifdef WITH_DBUS
 	/* 
 	 * We may be launched before the DBUS session, (ie: via PAM) 
 	 * and DBus tries to launch itself somehow, so double check 
@@ -592,7 +591,6 @@ main (int argc, char *argv[])
 	env = getenv ("DBUS_SESSION_BUS_ADDRESS");
 	if (env && env[0])
 		gkr_daemon_dbus_setup (loop);
-#endif
 
 	/*
 	 * Unlock the login keyring if we were given a password on STDIN.

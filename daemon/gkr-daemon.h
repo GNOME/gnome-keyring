@@ -49,8 +49,6 @@ gboolean       gkr_daemon_io_create_master_socket (void);
 const gchar*   gkr_daemon_io_get_socket_path      (void);
 
 /* Dbus Initialization/Cleanup */
-#ifdef WITH_DBUS
 void gkr_daemon_dbus_setup (GMainLoop *loop);
-#endif 
 
 #endif /* GNOME_KEYRING_DAEMON_H */

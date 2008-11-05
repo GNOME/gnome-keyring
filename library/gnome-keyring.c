@@ -46,9 +46,7 @@
 #include <sys/un.h>
 #include <stdarg.h>
 
-#ifdef WITH_DBUS
 #include <dbus/dbus.h>
-#endif
 
 typedef enum {
 	CALLBACK_DONE,
@@ -99,8 +97,6 @@ struct GnomeKeyringOperation {
 	gpointer reply_data;
 	GDestroyNotify destroy_reply_data;
 };
-
-#ifdef WITH_DBUS
 
 static gchar* 
 find_daemon_via_dbus ()
@@ -153,8 +149,6 @@ find_daemon_via_dbus ()
 	return socket;
 }
 
-#endif 
-
 static int 
 connect_to_daemon_at (const gchar *path)
 {
@@ -200,7 +194,6 @@ connect_to_daemon (gboolean non_blocking)
 		}
 	}
 
-#ifdef WITH_DBUS
 	/* Try using DBus to find daemon */
 	if (sock < 0) {
 		gchar *dpath = find_daemon_via_dbus ();
@@ -213,7 +206,6 @@ connect_to_daemon (gboolean non_blocking)
 			}
 		}
 	}
-#endif
 
 	if (sock < 0)
 		return -1;

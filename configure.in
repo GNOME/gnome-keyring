@@ -216,39 +216,32 @@ fi
 # 
 
 DBUS_REQUIRED=1.0
+PKG_CHECK_MODULES([DBUS], dbus-1 >= 1.0)
 
-PKG_CHECK_MODULES([DBUS], [dbus-1 >= $DBUS_REQUIRED], [enable_dbus=yes], [enable_dbus=no])
+DBUS_VERSION=`$PKG_CONFIG --modversion dbus-1`
+DBUS_MAJOR_VERSION=`echo $DBUS_VERSION | cut -d. -f1`
+DBUS_MINOR_VERSION=`echo $DBUS_VERSION | cut -d. -f2`
+DBUS_MICRO_VERSION=`echo $DBUS_VERSION | cut -d. -f3`
+DBUS_CFLAGS="$DBUS_CFLAGS -DGKR_DBUS_MAJOR_VERSION=$DBUS_MAJOR_VERSION"
+DBUS_CFLAGS="$DBUS_CFLAGS -DGKR_DBUS_MINOR_VERSION=$DBUS_MINOR_VERSION"
+DBUS_CFLAGS="$DBUS_CFLAGS -DGKR_DBUS_MICRO_VERSION=$DBUS_MICRO_VERSION"
 
-dbus_status=no
-if test "$enable_dbus" = "yes"; then
-	AC_DEFINE_UNQUOTED(WITH_DBUS, 1, [Include DBus dependant code])
-	
-	DBUS_VERSION=`$PKG_CONFIG --modversion dbus-1`
-	DBUS_MAJOR_VERSION=`echo $DBUS_VERSION | cut -d. -f1`
-	DBUS_MINOR_VERSION=`echo $DBUS_VERSION | cut -d. -f2`
-	DBUS_MICRO_VERSION=`echo $DBUS_VERSION | cut -d. -f3`
-	DBUS_CFLAGS="$DBUS_CFLAGS -DGKR_DBUS_MAJOR_VERSION=$DBUS_MAJOR_VERSION"
-	DBUS_CFLAGS="$DBUS_CFLAGS -DGKR_DBUS_MINOR_VERSION=$DBUS_MINOR_VERSION"
-	DBUS_CFLAGS="$DBUS_CFLAGS -DGKR_DBUS_MICRO_VERSION=$DBUS_MICRO_VERSION"
+DAEMON_CFLAGS="$DAEMON_CFLAGS $DBUS_CFLAGS"
+DAEMON_LIBS="$DAEMON_LIBS $DBUS_LIBS"
 
-	DAEMON_CFLAGS="$DAEMON_CFLAGS $DBUS_CFLAGS"
-	DAEMON_LIBS="$DAEMON_LIBS $DBUS_LIBS"
+LIBRARY_CFLAGS="$LIBRARY_CFLAGS $DBUS_CFLAGS"
+LIBRARY_LIBS="$LIBRARY_LIBS $DBUS_LIBS"
 
-	LIBRARY_CFLAGS="$LIBRARY_CFLAGS $DBUS_CFLAGS"
-	LIBRARY_LIBS="$LIBRARY_LIBS $DBUS_LIBS"
-
-	AC_ARG_WITH(dbus-services,
-			  [AC_HELP_STRING([--with-dbus-services=<dir>],
-			  [where D-BUS session services directory is])])
-	if ! test -z "$with_dbus_services" ; then
-		DBUS_SERVICES_DIR="$with_dbus_services"
-	else
-		DBUS_SERVICES_DIR="$datadir/dbus-1/services"
-	fi
-	AC_SUBST(DBUS_SERVICES_DIR)
-	dbus_status=$DBUS_VERSION
+AC_ARG_WITH(dbus-services,
+		  [AC_HELP_STRING([--with-dbus-services=<dir>],
+		  [where D-BUS session services directory is])])
+if ! test -z "$with_dbus_services" ; then
+	DBUS_SERVICES_DIR="$with_dbus_services"
+else
+	DBUS_SERVICES_DIR="$datadir/dbus-1/services"
 fi
-AM_CONDITIONAL(WITH_DBUS, test "$enable_dbus" == "yes")
+
+AC_SUBST(DBUS_SERVICES_DIR)
 
 # --------------------------------------------------------------------
 # HAL Checks

@@ -25,15 +25,11 @@
 #ifndef GKRDBUS_H_
 #define GKRDBUS_H_
 
-#ifdef WITH_DBUS 
-
 #include <glib.h>
 #include <dbus/dbus.h>
 
 void gkr_dbus_connect_with_mainloop (DBusConnection *connection, GMainContext *context);
 
 void gkr_dbus_disconnect_from_mainloop (DBusConnection *connection, GMainContext *context);
-
-#endif /* WITH_DBUS */
 
 #endif /*GKRDBUS_H_*/

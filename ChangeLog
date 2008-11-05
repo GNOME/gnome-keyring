@@ -1,3 +1,15 @@
+2008-11-05  Stef Walter  <stef@memberwebs.com>
+
+	* common/gkr-dbus.c:
+	* common/gkr-dbus.h:
+	* daemon/gkr-daemon.c:
+	* daemon/gkr-daemon.h:
+	* daemon/gkr-daemon-dbus.c:
+	* daemon/Makefile.am:
+	* library/gnome-keyring.c:
+	* library/gnome-keyring-private.h:
+	* configure.in: Make DBUS a required dependency of gnome-keyring. 
+	
 2008-11-04  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number.

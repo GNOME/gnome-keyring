@@ -22,8 +22,6 @@
 
 #include "config.h"
 
-#ifdef WITH_DBUS
-
 #include "gkr-daemon.h"
 
 #include "common/gkr-cleanup.h"
@@ -147,6 +145,3 @@ gkr_daemon_dbus_setup (GMainLoop *loop)
 		return;
 	}
 }
-
-
-#endif /* WITH_DBUS */
