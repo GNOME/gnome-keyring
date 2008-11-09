@@ -34,6 +34,68 @@
 
 /* Functions used by both the library and the daemon */
 
+/* 
+ * A list of all the environment variables the daemon can
+ * possibly send out when it starts. 
+ */
+const gchar *GNOME_KEYRING_OUT_ENVIRONMENT[] = {
+	"SSH_AUTH_SOCK",
+	"GNOME_KEYRING_SOCKET",
+	"GNOME_KEYRING_PID",
+	"SSH_AGENT_PID",
+	NULL
+};
+
+/*
+ * A list of all the environment variables the daemon 
+ * is interested in from clients if it was started 
+ * early before these environment variables were set.
+ */
+const gchar *GNOME_KEYRING_IN_ENVIRONMENT[] = {
+	"DISPLAY",
+	"DBUS_SESSION_BUS_ADDRESS",
+	"XAUTHORITY",
+	"XDG_SESSION_COOKIE",
+	"DESKTOP_AUTOSTART_ID",
+	"LANG",
+	NULL
+};
+
+gchar** 
+gnome_keyring_build_environment (const gchar **names)
+{
+	GArray *array = g_array_sized_new (TRUE, TRUE, sizeof (gchar*), 8);
+	const gchar *value;
+	const gchar **name;
+	gchar *env;
+	
+	/* Transform them into NAME=VALUE pairs */
+	for (name = names; *name; ++name) {
+		value = g_getenv (*name);
+		if (value) {
+			env = g_strdup_printf ("%s=%s", *name, value);
+			g_array_append_val (array, env);
+		}
+	}
+
+	return (gchar**)g_array_free (array, FALSE);
+}
+
+void 
+gnome_keyring_apply_environment (gchar **envp)
+{
+	gchar **e, **parts;
+	
+	g_return_if_fail (envp);
+	
+	for (e = envp; *e; ++e) {
+		parts = g_strsplit (*e, "=", 2);
+		if (parts && parts[0] && parts[1])
+			g_setenv (parts[0], parts[1], TRUE);
+		g_strfreev (parts);
+	}
+}
+
 /**
  * gnome_keyring_free_password:
  * @password: the password to be freed

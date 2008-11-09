@@ -35,6 +35,8 @@ const gchar*    gkr_daemon_util_get_master_directory    (void);
 
 void            gkr_daemon_util_push_environment        (const gchar *name, const gchar *value);
 
+void            gkr_daemon_util_push_environment_full   (const gchar *env);
+
 const gchar**   gkr_daemon_util_get_environment         (void);
 
 #define GKR_TYPE_DAEMON_CLIENT             (gkr_daemon_client_get_type ())

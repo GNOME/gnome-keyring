@@ -29,6 +29,7 @@
 #include "common/gkr-crypto.h"
 #include "common/gkr-daemon-util.h"
 #include "common/gkr-secure-memory.h"
+#include "common/gkr-unix-credentials.h"
 #include "common/gkr-unix-signal.h"
 
 #include "keyrings/gkr-keyring-login.h"
@@ -97,6 +98,7 @@ static GMainLoop *loop = NULL;
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
 static gboolean unlock_with_login = FALSE;
+static gboolean start_any_daemon = FALSE;
 static gchar* run_components = NULL;
 
 static GOptionEntry option_entries[] = {
@@ -106,6 +108,8 @@ static GOptionEntry option_entries[] = {
 	  "Run as a daemon", NULL }, 
 	{ "login", 'l', 0, G_OPTION_ARG_NONE, &unlock_with_login, 
 	  "Use login password from stdin", NULL },
+	{ "start", 's', 0, G_OPTION_ARG_NONE, &start_any_daemon,
+	  "Start or initialize an already running daemon" },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
 	  "The components to run", DEFAULT_COMPONENTS },
 	{ NULL }
@@ -130,6 +134,13 @@ parse_arguments (int *argc, char** argv[])
 		run_components = g_strdup (run_components);
 		gkr_cleanup_register (g_free, run_components);
 	}
+	
+	/* Check the arguments */
+	if (unlock_with_login && start_any_daemon) {
+		g_printerr ("gnome-keyring-daemon: The --start option is incompatible with --login");
+		start_any_daemon = FALSE;
+	}
+		
 	
 	g_option_context_free (context);
 }
@@ -326,10 +337,16 @@ prepare_logging ()
     g_log_set_default_handler (log_handler, NULL);
 }
 
+void
+gkr_daemon_quit (void)
+{
+	g_main_loop_quit (loop);
+}
+
 static gboolean
 signal_handler (guint sig, gpointer unused)
 {
-	g_main_loop_quit (loop);
+	gkr_daemon_quit ();
 	return TRUE;
 }
 
@@ -423,7 +440,96 @@ print_environment (pid_t pid)
 	const gchar **env;
 	for (env = gkr_daemon_util_get_environment (); *env; ++env)
 		printf ("%s\n", *env);
-	printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
+	if (pid)
+		printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
+}
+
+static gboolean
+initialize_running_daemon (int sock)
+{
+	GnomeKeyringResult res;
+	gchar **envp, **e;
+	GkrBuffer buf;
+	gboolean ret;
+	
+	if (gkr_unix_credentials_write (sock) < 0)
+		return FALSE;
+
+	gkr_buffer_init_full (&buf, 128, (GkrBufferAllocator)g_realloc);
+	
+	envp = gnome_keyring_build_environment (GNOME_KEYRING_IN_ENVIRONMENT);
+	ret = gkr_proto_encode_prepare_environment (&buf, (const gchar**)envp);
+	g_strfreev (envp);
+	
+	if (!ret) {
+		gkr_buffer_uninit (&buf);
+		g_return_val_if_reached (FALSE);
+	}
+
+	envp = NULL;
+
+	ret = gnome_keyring_socket_write_buffer (sock, &buf) && 
+	      gnome_keyring_socket_read_buffer (sock, &buf) && 
+	      gkr_proto_decode_prepare_environment_reply (&buf, &res, &envp);
+	
+	
+	gkr_buffer_uninit (&buf);
+	
+	if(!ret) {
+		g_warning ("couldn't initialize running daemon");
+		return FALSE;
+	}
+
+	if (res == GNOME_KEYRING_RESULT_OK) {
+		g_return_val_if_fail (envp, FALSE);
+		for (e = envp; *e; ++e)
+			gkr_daemon_util_push_environment_full (*e);
+		ret = TRUE;
+	} else {
+		g_warning ("couldn't initialize running daemon: %s", gnome_keyring_result_to_message (res));
+		ret = FALSE;
+	}
+	
+	g_strfreev (envp);
+
+	return ret;
+}
+
+static gboolean
+start_or_initialize_daemon (void)
+{
+	gboolean ret;
+	int sock;
+	
+	/* 
+	 * Is a daemon already running? If not we need to run
+	 * a daemon process, just return and let things go 
+	 * their normal way. 
+	 */
+	sock = gnome_keyring_socket_connect_daemon (FALSE);
+	if (sock == -1)
+		return FALSE;
+	
+	ret = initialize_running_daemon (sock);
+	close (sock);
+	
+	/* Initialization failed, start this process up as a daemon */
+	if (!ret)
+		return FALSE;
+	
+	/* 
+	 * Now we've initialized the daemon, we need to print out 
+	 * the daemon's environment for any callers, and possibly
+	 * block if we've been asked to remain in the foreground.
+	 */
+	print_environment (0);
+	
+	/* TODO: Better way to sleep forever? */
+	if (run_foreground) {
+		while (sleep(0x08000000) == 0);
+	}
+	
+	return TRUE;
 }
 
 int
@@ -441,7 +547,7 @@ main (int argc, char *argv[])
 	g_thread_init (NULL);
 	
 	parse_arguments (&argc, &argv);
-
+	
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */
 	setlocale (LC_ALL, "");
@@ -453,6 +559,15 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
+	/* 
+	 * If asked to start a daemon, see if one is already running 
+	 * and initialize it if so. 
+	 */
+	if (start_any_daemon) {
+		if (start_or_initialize_daemon ())
+			return 0;
+	}
+	
 	gkr_crypto_setup ();
 
 	gcry_create_nonce (&seed, sizeof (seed));
@@ -578,19 +693,10 @@ main (int argc, char *argv[])
 					lifetime_slave_pipe_io, NULL);
 			g_io_channel_unref (channel);
 		}
-		
 	}
 	
 	gkr_async_workers_init (loop);
-	
-	/* 
-	 * We may be launched before the DBUS session, (ie: via PAM) 
-	 * and DBus tries to launch itself somehow, so double check 
-	 * that it has really started.
-	 */ 
-	env = getenv ("DBUS_SESSION_BUS_ADDRESS");
-	if (env && env[0])
-		gkr_daemon_dbus_setup (loop);
+	gkr_daemon_dbus_setup ();
 
 	/*
 	 * Unlock the login keyring if we were given a password on STDIN.

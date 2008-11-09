@@ -335,6 +335,18 @@ gkr_daemon_util_push_environment (const gchar *name, const gchar *value)
 	g_array_append_val (published_environ, env);
 }
 
+void 
+gkr_daemon_util_push_environment_full (const gchar *var)
+{
+	gchar *env;
+	
+	g_return_if_fail (strchr (var, '=') != NULL);
+	init_environment ();
+	
+	env = g_strdup (var);
+	g_array_append_val (published_environ, env);
+}
+
 const gchar**
 gkr_daemon_util_get_environment (void)
 {

@@ -25,6 +25,7 @@
 #define GNOME_KEYRING_PRIVATE_H
 
 #include "gnome-keyring.h"
+#include "gnome-keyring-proto.h"
 
 struct GnomeKeyringApplicationRef {
 	char *display_name;
@@ -55,6 +56,18 @@ struct GnomeKeyringItemInfo {
 #define GNOME_KEYRING_DAEMON_SERVICE    "org.gnome.keyring"
 #define GNOME_KEYRING_DAEMON_PATH       "/org/gnome/keyring/daemon"
 #define GNOME_KEYRING_DAEMON_INTERFACE  "org.gnome.keyring.Daemon"
+
+int gnome_keyring_socket_connect_daemon (gboolean non_blocking);
+int gnome_keyring_socket_read_all (int fd, guchar *buf, size_t len);
+int gnome_keyring_socket_write_all (int fd, const guchar *buf, size_t len);
+gboolean gnome_keyring_socket_read_buffer (int fd, GkrBuffer *buffer);
+gboolean gnome_keyring_socket_write_buffer (int fd, GkrBuffer *buffer);
+
+extern const gchar *GNOME_KEYRING_OUT_ENVIRONMENT[];
+extern const gchar *GNOME_KEYRING_IN_ENVIRONMENT[];
+
+gchar** gnome_keyring_build_environment (const gchar **names);
+void gnome_keyring_apply_environment (gchar **envp);
 
 void 	_gnome_keyring_memory_dump (void);
 extern  gboolean gnome_keyring_memory_warning;

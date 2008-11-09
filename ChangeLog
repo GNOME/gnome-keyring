@@ -1,3 +1,22 @@
+2008-11-09  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* common/gkr-daemon-util.c:
+	* common/gkr-daemon-util.h:
+	* daemon/Makefile.am:
+	* daemon/gkr-daemon-dbus.c:
+	* daemon/gkr-daemon-ops.c:
+	* daemon/gkr-daemon.c:
+	* daemon/gkr-daemon.h:
+	* daemon/gnome-keyring-daemon.desktop.in:
+	* library/Makefile.am:
+	* library/gnome-keyring-private.h:
+	* library/gnome-keyring-socket.c:
+	* library/gnome-keyring-utils.c:
+	* library/gnome-keyring.c: Add --start option to daemon which allows 
+	initialization of a running daemon or start one if none found. 
+	This reworks the startup interactions with gnome-session.
+	
 2008-11-05  Stef Walter  <stef@memberwebs.com>
 
 	* common/gkr-dbus.c:

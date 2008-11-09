@@ -35,7 +35,6 @@
 
 #include <time.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -43,10 +42,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
-#include <sys/un.h>
 #include <stdarg.h>
-
-#include <dbus/dbus.h>
 
 typedef enum {
 	CALLBACK_DONE,
@@ -97,135 +93,6 @@ struct GnomeKeyringOperation {
 	gpointer reply_data;
 	GDestroyNotify destroy_reply_data;
 };
-
-static gchar* 
-find_daemon_via_dbus ()
-{
-	DBusConnection *dconn;
-	DBusMessage *reply;
-	DBusMessage *msg;
-	DBusMessageIter args;
-	DBusError derr;
-	char* socket = NULL;
-
-	dbus_error_init (&derr);
-	dconn = dbus_bus_get (DBUS_BUS_SESSION, &derr);
-	if (!dconn) {
-		g_warning ("couldn't connect to dbus session bus: %s", derr.message);
-		return NULL;
-	}	
-
-	msg = dbus_message_new_method_call (GNOME_KEYRING_DAEMON_SERVICE,
-	                                    GNOME_KEYRING_DAEMON_PATH,
-	                                    GNOME_KEYRING_DAEMON_INTERFACE,
-	                                    "GetSocketPath");
-	if (!msg) {
-		g_warning ("couldn't create dbus message");
-		dbus_connection_unref (dconn);
-		return NULL;
-	}
-
-	/* Send message and get a handle for a reply */
-	reply = dbus_connection_send_with_reply_and_block (dconn, msg, 1000, &derr);
-	dbus_message_unref (msg);
-	if (!reply) {
-		g_warning ("couldn't communicate with gnome keyring daemon via dbus: %s", derr.message);
-		dbus_connection_unref (dconn);
-		return NULL;
-	}
-
-	/* Read the return value */
-	if (!dbus_message_iter_init(reply, &args) || 
-	    dbus_message_iter_get_arg_type(&args) != DBUS_TYPE_STRING) {
-		g_warning ("gnome-keyring-daemon sent back an invalid reply");
-	} else {
-		dbus_message_iter_get_basic(&args, &socket);
-		socket = g_strdup (socket);
-	}
-
-	dbus_message_unref (reply);
-	dbus_connection_unref (dconn);
-
-	return socket;
-}
-
-static int 
-connect_to_daemon_at (const gchar *path)
-{
-	struct sockaddr_un addr;
-	int sock;
-
-	addr.sun_family = AF_UNIX;
-	strncpy (addr.sun_path, path, sizeof (addr.sun_path));
-	
-	sock = socket (AF_UNIX, SOCK_STREAM, 0);
-	if (sock < 0) {
-		return -1;
-	}
-
-	/* close on exec */
-	if (fcntl (sock, F_SETFD, 1) == -1) {
-		close (sock);
-		return -1;
-	}
-
-	if (connect (sock, (struct sockaddr *) &addr, sizeof (addr)) < 0) {
-		close (sock);
-		return -1;
-	}
-
-	return sock;
-}
-
-static int
-connect_to_daemon (gboolean non_blocking)
-{
-	const gchar *epath = NULL;
-	int sock = -1;
-	int val;
-
-	/* Try using the environment variable */
-	epath = g_getenv ("GNOME_KEYRING_SOCKET");
-	if (epath && epath[0]) {
-		sock = connect_to_daemon_at (epath);
-		if (sock < 0) {
-			g_warning ("couldn't connect to daemon at $GNOME_KEYRING_SOCKET: %s: %s", 
-				     epath, g_strerror (errno));
-		}
-	}
-
-	/* Try using DBus to find daemon */
-	if (sock < 0) {
-		gchar *dpath = find_daemon_via_dbus ();
-		if (dpath) {
-			sock = connect_to_daemon_at (dpath);
-			g_free (dpath);
-			if (sock < 0) {
-				g_warning ("couldn't connect to daemon at DBus discovered socket: %s: %s", 
-					     dpath, g_strerror (errno));
-			}
-		}
-	}
-
-	if (sock < 0)
-		return -1;
-
-	/* Setup non blocking */
-	if (non_blocking) {
-		val = fcntl (sock, F_GETFL, 0);
-		if (val < 0) {
-			close (sock);
-			return -1;
-		}
-
-		if (fcntl (sock, F_SETFL, val | O_NONBLOCK) < 0) {
-			close (sock);
-			return -1;
-		}
-	}
-	
-	return sock;
-}
 
 static void
 operation_free (GnomeKeyringOperation *op)
@@ -305,53 +172,6 @@ schedule_op_failed (GnomeKeyringOperation *op,
 	
 	if (op->idle_watch == 0)
 		op->idle_watch = g_idle_add (op_failed, op);
-}
-
-static int
-read_all (int fd, guchar *buf, size_t len)
-{
-	size_t bytes;
-	ssize_t res;
-	
-	bytes = 0;
-	while (bytes < len) {
-		res = read (fd, buf + bytes, len - bytes);
-		if (res <= 0) {
-			if (res == 0)
-				res = -1;
-			else if (errno == EAGAIN)
-				continue;
-			else 
-				g_warning ("couldn't read %u bytes from gnome-keyring socket: %s", 
-					   (unsigned int)len, g_strerror (errno));
-			return res;
-		}
-		bytes += res;
-	}
-	return 0;
-}
-
-
-static int
-write_all (int fd, const guchar *buf, size_t len)
-{
-	size_t bytes;
-	ssize_t res;
-
-	bytes = 0;
-	while (bytes < len) {
-		res = write (fd, buf + bytes, len - bytes);
-		if (res < 0) {
-			if (errno != EINTR &&
-			    errno != EAGAIN) {
-				perror ("write_all write failure:");
-				return -1;
-			}
-		} else {
-			bytes += res;
-		}
-	}
-	return 0;
 }
 
 static GnomeKeyringResult
@@ -519,7 +339,7 @@ start_operation (GnomeKeyringOperation *op)
 		close (op->socket);
 	}
 
-	op->socket = connect_to_daemon (TRUE);
+	op->socket = gnome_keyring_socket_connect_daemon (TRUE);
 	if (op->socket < 0) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON);
 	} else  {
@@ -542,45 +362,27 @@ run_sync_operation (GkrBuffer *buffer,
 {
 	GnomeKeyringResult res;
 	int socket;
-	guint32 packet_size;
 
 	g_assert (buffer != NULL);
 	g_assert (receive_buffer != NULL);
 
-	socket = connect_to_daemon (FALSE);
-	if (socket < 0) {
+	socket = gnome_keyring_socket_connect_daemon (FALSE);
+	if (socket < 0)
 		return GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON;
-	}
+
 	res = write_credentials_byte_sync (socket);
 	if (res != GNOME_KEYRING_RESULT_OK) {
 		close (socket);
 		return res;
 	}
 
-	if (write_all (socket,
-		       buffer->buf, buffer->len) < 0) {
+	if (!gnome_keyring_socket_write_buffer (socket, buffer) || 
+	    !gnome_keyring_socket_read_buffer (socket, receive_buffer)) {
 		close (socket);
 		return GNOME_KEYRING_RESULT_IO_ERROR;
 	}
 
-	gkr_buffer_resize (receive_buffer, 4);
-	if (read_all (socket, receive_buffer->buf, 4) < 0) {
-		close (socket);
-		return GNOME_KEYRING_RESULT_IO_ERROR;
-	}
-
-	if (!gkr_proto_decode_packet_size (receive_buffer, &packet_size) ||
-	    packet_size < 4) {
-		close (socket);
-		return GNOME_KEYRING_RESULT_IO_ERROR;
-	}
-	gkr_buffer_resize (receive_buffer, packet_size);
-	if (read_all (socket, receive_buffer->buf + 4, packet_size - 4) < 0) {
-		close (socket);
-		return GNOME_KEYRING_RESULT_IO_ERROR;
-	}
 	close (socket);
-	
 	return GNOME_KEYRING_RESULT_OK;
 }
 
@@ -597,7 +399,7 @@ gnome_keyring_is_available (void)
 {
 	int socket;
 	
-	socket = connect_to_daemon (FALSE);
+	socket = gnome_keyring_socket_connect_daemon (FALSE);
 	if (socket < 0) {
 		return FALSE;
 	}
@@ -1776,23 +1578,13 @@ gnome_keyring_daemon_prepare_environment_sync (void)
 {
 	GkrBuffer send, receive;
 	GnomeKeyringResult res;
-	gchar **envp, **e, *name;
-	gchar **parts;
+	gchar **envp;
 	gboolean ret;
 
 	gkr_buffer_init_full (&send, 128, NORMAL_ALLOCATOR);
 
 	/* Get all the environment names */
-	envp = g_listenv ();
-	g_return_val_if_fail (envp, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
-	
-	/* Transform them into NAME=VALUE pairs */
-	for (e = envp; *e; ++e) {
-		name = *e;
-		*e = g_strdup_printf ("%s=%s", name, g_getenv (name));
-		g_free (name);
-	}
-
+	envp = gnome_keyring_build_environment (GNOME_KEYRING_IN_ENVIRONMENT);
 	ret = gkr_proto_encode_prepare_environment (&send, (const gchar**)envp);
 	g_strfreev (envp);
 	
@@ -1817,12 +1609,7 @@ gnome_keyring_daemon_prepare_environment_sync (void)
 	
 	if (res == GNOME_KEYRING_RESULT_OK) {
 		g_return_val_if_fail (envp, GNOME_KEYRING_RESULT_IO_ERROR);
-		for (e = envp; *e; ++e) {
-			parts = g_strsplit (*e, "=", 2);
-			if (parts && parts[0] && parts[1])
-				g_setenv (parts[0], parts[1], TRUE);
-			g_strfreev (parts);
-		}
+		gnome_keyring_apply_environment (envp);
 	}
 	
 	g_strfreev (envp);

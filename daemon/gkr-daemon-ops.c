@@ -1689,6 +1689,7 @@ op_prepare_daemon_environment (GkrBuffer *packet, GkrBuffer *result, GkrKeyringR
 	const gchar **daemonenv;
 	gchar **environment, **e;
 	gchar *x;
+	gint i;
 
 	if (!gkr_proto_decode_prepare_environment (packet, &environment))
 		return FALSE;
@@ -1699,24 +1700,25 @@ op_prepare_daemon_environment (GkrBuffer *packet, GkrBuffer *result, GkrKeyringR
 		if (x) {
 			*(x++) = 0;
 			
-			/* We're only interested in these guys */
-			if (g_str_equal (*e, "DISPLAY")) 
-				g_setenv ("DISPLAY", x, FALSE);
-			else if (g_str_equal (*e, "DBUS_SESSION_BUS_ADDRESS"))
-				g_setenv ("DBUS_SESSION_BUS_ADDRESS", x, FALSE);
-			else if (g_str_equal (*e, "XAUTHORITY"))
-				g_setenv ("XAUTHORITY", x, FALSE);
-			else if (g_str_equal (*e, "XDG_SESSION_COOKIE"))
-				g_setenv ("XDG_SESSION_COOKIE", x, FALSE);	
-			else if (g_str_equal (*e, "LANG"))
-				g_setenv ("LANG", x, FALSE);
+			/* We're only interested in these environment variables */
+			for (i = 0; GNOME_KEYRING_IN_ENVIRONMENT[i] != NULL; ++i) {
+				if (g_str_equal (*e, GNOME_KEYRING_IN_ENVIRONMENT[i]))
+				{
+					g_setenv (*e, x, FALSE);
+					break;
+				}
+			}
 		}
 	}
 	
 	g_strfreev (environment);
+	
+	/* We may have received DBUS environment variable so try and setup DBUS */
+	gkr_daemon_dbus_setup ();
 
 	gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 
+	/* These are the environment variables that the daemon setup */
 	daemonenv = gkr_daemon_util_get_environment ();
 	g_return_val_if_fail (daemonenv, FALSE);
 	

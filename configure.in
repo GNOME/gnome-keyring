@@ -484,11 +484,15 @@ AC_SUBST(DAEMON_LIBS)
 AC_SUBST(LIBRARY_CFLAGS)
 AC_SUBST(LIBRARY_LIBS)
 
+BINDIR="$bindir"
+AC_SUBST(BINDIR)
+
 AC_OUTPUT([
 Makefile
 common/Makefile
 common/tests/Makefile
 daemon/Makefile
+daemon/gnome-keyring-daemon.desktop
 daemon/data/Makefile
 daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile
