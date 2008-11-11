@@ -106,6 +106,8 @@ find_private_key (gcry_sexp_t skey, gboolean global, guint version)
 	GkrPkPrivkey *key = NULL;
 	gkrid keyid;
 	
+	g_assert (skey);
+	
 	keyid = gkr_crypto_skey_make_id (skey);
 	g_return_val_if_fail (keyid != NULL, NULL);
 
@@ -135,6 +137,8 @@ static void
 add_session_key (gcry_sexp_t skey, const gchar *comment, guint version)
 {
 	GkrPkPrivkey *key, *prev;
+	
+	g_assert (skey);
 
 	if (!ssh_session) {
 		ssh_session = gkr_pk_session_new ();
@@ -416,6 +420,8 @@ op_sign_request (GkrBuffer *req, GkrBuffer *resp)
 	/* The key itself */
 	if (!gkr_ssh_proto_read_public (req, &offset, &s_key, &algo))
 		return FALSE;
+	
+	g_return_val_if_fail (s_key, FALSE);
 		
 	if (!gkr_buffer_get_byte_array (req, offset, &offset, &data, &n_data) ||
 	    !gkr_buffer_get_uint32 (req, offset, &offset, &flags)) {
@@ -539,6 +545,8 @@ op_v1_challenge (GkrBuffer *req, GkrBuffer *resp)
 	if (!gkr_ssh_proto_read_public_v1 (req, &offset, &skey))
 		return FALSE;
 	
+	g_return_val_if_fail (skey, FALSE);
+	
 	/* Lookup the key */
 	key = find_private_key (skey, TRUE, 1);
 	gcry_sexp_release (skey);
@@ -657,6 +665,8 @@ op_remove_identity (GkrBuffer *req, GkrBuffer *resp)
 	if (!gkr_ssh_proto_read_public (req, &offset, &skey, NULL))
 		return FALSE;
 	
+	g_return_val_if_fail (skey, FALSE);
+	
 	key = find_private_key (skey, TRUE, 2);
 	gcry_sexp_release (skey);
 
@@ -693,6 +703,8 @@ op_v1_remove_identity (GkrBuffer *req, GkrBuffer *resp)
 	offset = 5;
 	if (!gkr_ssh_proto_read_public_v1 (req, &offset, &skey))
 		return FALSE;
+	
+	g_return_val_if_fail (skey, FALSE);
 	
 	key = find_private_key (skey, FALSE, 1);
 	gcry_sexp_release (skey);

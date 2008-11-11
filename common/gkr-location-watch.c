@@ -211,13 +211,15 @@ update_volume (GkrLocationWatch *watch, GQuark volume, gboolean force_all,
 			g_assert (file);
 			ret = g_stat (file, &sb);
 			lasterr = errno;
-			g_free (file);
 			
 			/* Couldn't access the file */
 			if (ret < 0) {
-				g_message ("couldn't stat file: %s: %s", path, g_strerror (lasterr));
+				g_message ("couldn't stat file: %s: %s", file, g_strerror (lasterr));
+				g_free (file);
 				continue;
 			}
+			
+			g_free (file);
 			
 			/* We don't do directories */
 			if (sb.st_mode & S_IFDIR)

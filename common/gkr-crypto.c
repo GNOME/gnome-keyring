@@ -875,6 +875,8 @@ gkr_crypto_skey_make_id (gcry_sexp_t s_key)
 {
 	guchar hash[20];
 	
+	g_return_val_if_fail (s_key != NULL, NULL);
+	
 	if (!gcry_pk_get_keygrip (s_key, hash))
 		g_return_val_if_reached (NULL);
 	
