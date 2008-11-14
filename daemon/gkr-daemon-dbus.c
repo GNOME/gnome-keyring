@@ -35,69 +35,119 @@
 
 #include <string.h>
 
-/* Rule to send to DBus bus for which signals we're interested in */
-#define SIGNAL_MATCH_RULE "type='signal',interface='org.gnome.SessionManager'"
+#define SERVICE_SESSION_MANAGER	"org.gnome.SessionManager"
+#define PATH_SESSION_MANAGER	"/org/gnome/SessionManager"
+#define IFACE_SESSION_MANAGER   "org.gnome.SessionManager"
+#define IFACE_SESSION_CLIENT    "org.gnome.SessionManager.Client"
+#define IFACE_SESSION_PRIVATE   "org.gnome.SessionManager.ClientPrivate"
 
 static DBusConnection *dbus_conn = NULL;
 static const char* socket_path = NULL;
+static gchar *client_session_path = NULL;
+static gchar *client_session_rule = NULL;
 static gboolean dbus_initialized = FALSE;
 
-static DBusHandlerResult 
-message_handler_cb (DBusConnection *conn, DBusMessage *message, void *user_data)
+/* -----------------------------------------------------------------------------------
+ * 
+ */
+
+static void
+send_end_session_response ()
 {
 	DBusMessageIter args;
+	DBusMessage *msg;
 	DBusMessage *reply;
-
-	if (dbus_message_get_type (message) != DBUS_MESSAGE_TYPE_METHOD_CALL ||
-	    !dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetSocketPath") ||
-	    !g_str_equal (dbus_message_get_signature (message), "")) {
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	DBusError derr = { 0 };
+	const gchar *reason = "";
+	dbus_bool_t is_ok = TRUE;
+	
+	g_return_if_fail (client_session_path);
+	g_return_if_fail (dbus_conn);
+	
+	msg = dbus_message_new_method_call (SERVICE_SESSION_MANAGER,
+	                                    client_session_path,
+	                                    IFACE_SESSION_PRIVATE,
+	                                    "EndSessionResponse");
+	g_return_if_fail (msg);
+	
+	dbus_message_iter_init_append (msg, &args); 
+	if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_BOOLEAN, &is_ok) ||
+	    !dbus_message_iter_append_basic (&args, DBUS_TYPE_STRING, &reason))
+		g_return_if_reached ();
+	
+	reply = dbus_connection_send_with_reply_and_block (dbus_conn, msg, 1000, &derr);
+	dbus_message_unref (msg);
+	
+	if (!reply) {
+		g_warning ("dbus failure responding to ending session: %s", derr.message);
+		return;
 	}
 
-	g_return_val_if_fail (socket_path, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+	dbus_message_unref (reply);
+}
 
-	/* Setup the result */ 
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &args); 
-	if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_STRING, &socket_path))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
+static void 
+unregister_daemon_in_session (void)
+{
+	DBusMessageIter args;
+	DBusMessage *msg;
+	DBusMessage *reply;
+	DBusError derr = { 0 };
 
-	/* Send the reply */
-	if (!dbus_connection_send (dbus_conn, reply, NULL))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
-	dbus_connection_flush (dbus_conn);
+	g_return_if_fail (dbus_conn);
 
-	return DBUS_HANDLER_RESULT_HANDLED;
+	if (client_session_rule) {
+		dbus_bus_remove_match (dbus_conn, client_session_rule, NULL);
+		g_free (client_session_rule);
+		client_session_rule = NULL;
+	}
+
+	if (!client_session_path)
+		return;
+	
+	msg = dbus_message_new_method_call (SERVICE_SESSION_MANAGER,
+	                                    PATH_SESSION_MANAGER,
+	                                    IFACE_SESSION_MANAGER,
+	                                    "UnregisterClient");
+	g_return_if_fail (msg);
+	
+	dbus_message_iter_init_append (msg, &args); 
+	if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_OBJECT_PATH, &client_session_path))
+		g_return_if_reached ();
+	
+	reply = dbus_connection_send_with_reply_and_block (dbus_conn, msg, 1000, &derr);
+	dbus_message_unref (msg);
+	
+	if (!reply) {
+		g_warning ("dbus failure unregistering from session: %s", derr.message);
+		return;
+	}
+	
+	dbus_message_unref (reply);
+	
+	g_free (client_session_path);
+	client_session_path = NULL;
 }
 
 static DBusHandlerResult
 signal_filter (DBusConnection *conn, DBusMessage *msg, void *user_data)
 {
 	/* Quit the daemon when the session is over */
-	if (dbus_message_is_signal (msg, "org.gnome.SessionManager", "SessionOver")) {
+	if (dbus_message_is_signal (msg, IFACE_SESSION_PRIVATE, "Stop")) {
+		unregister_daemon_in_session ();
+		gkr_daemon_quit ();
+		return DBUS_HANDLER_RESULT_HANDLED;
+	} else if (dbus_message_is_signal (msg, IFACE_SESSION_PRIVATE, "QueryEndSession")) {
+		send_end_session_response ();
+		return DBUS_HANDLER_RESULT_HANDLED;
+	} else if (dbus_message_is_signal (msg, IFACE_SESSION_PRIVATE, "EndSession")) {
+		send_end_session_response ();
+		unregister_daemon_in_session ();
 		gkr_daemon_quit ();
 		return DBUS_HANDLER_RESULT_HANDLED;
 	}
 	
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
-static DBusObjectPathVTable object_vtable  = {
-	NULL,
-	message_handler_cb,
-	NULL, 
-};
-
-static void 
-daemon_dbus_cleanup (gpointer unused)
-{
-	if (dbus_conn) {
-		dbus_bus_remove_match (dbus_conn, SIGNAL_MATCH_RULE, NULL);
-		dbus_connection_unregister_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH);
-		gkr_dbus_disconnect_from_mainloop (dbus_conn, NULL);
-		dbus_connection_unref (dbus_conn);
-		dbus_conn = NULL;
-	}
 }
 
 /* 
@@ -133,9 +183,9 @@ register_environment_in_session (void)
 		name = g_strndup (*envp, value - *envp);
 		++value;
 		
-		msg = dbus_message_new_method_call ("org.gnome.SessionManager",
-		                                    "/org/gnome/SessionManager",
-		                                    "org.gnome.SessionManager",
+		msg = dbus_message_new_method_call (SERVICE_SESSION_MANAGER,
+		                                    PATH_SESSION_MANAGER,
+		                                    IFACE_SESSION_MANAGER,
 		                                    "Setenv");
 		g_return_if_fail (msg);
 		
@@ -180,9 +230,9 @@ register_daemon_in_session (void)
 	
 	g_return_if_fail (dbus_conn);
 	
-	msg = dbus_message_new_method_call ("org.gnome.SessionManager",
-	                                    "/org/gnome/SessionManager",
-	                                    "org.gnome.SessionManager",
+	msg = dbus_message_new_method_call (SERVICE_SESSION_MANAGER,
+	                                    PATH_SESSION_MANAGER,
+	                                    IFACE_SESSION_MANAGER,
 	                                    "RegisterClient");
 	g_return_if_fail (msg);
 	
@@ -197,9 +247,19 @@ register_daemon_in_session (void)
 	
 	if (!reply) {
 		g_warning ("couldn't register in session: %s", derr.message);
+		dbus_error_free (&derr);
 		return;
 	}
 	
+	/* Get out our client path */
+	if (!dbus_message_iter_init (reply, &args) || 
+	    dbus_message_iter_get_arg_type (&args) != DBUS_TYPE_OBJECT_PATH) {
+		g_warning ("invalid register response from session");
+	} else {
+		dbus_message_iter_get_basic (&args, &client_session_path);
+		client_session_path = g_strdup (client_session_path);
+	}
+
 	dbus_message_unref (reply);
 	
 	/* 
@@ -207,6 +267,87 @@ register_daemon_in_session (void)
 	 * use the same client id. 
 	 */
 	g_unsetenv ("DESKTOP_AUTOSTART_ID");
+	
+	/*
+	 * Now we register for DBus signals on that client session path
+	 * These are fired specifically for us.
+	 */
+	client_session_rule = g_strdup_printf("type='signal',"
+	                                      "interface='org.gnome.SessionManager.ClientPrivate',"
+	                                      "path='%s'", 
+	                                      client_session_path);
+	dbus_bus_add_match (dbus_conn, client_session_rule, &derr);
+	
+	if(dbus_error_is_set(&derr)) {
+		g_warning ("couldn't listen for signals in session: %s", derr.message);
+		dbus_error_free (&derr);
+		g_free (client_session_rule);
+		client_session_rule = NULL;
+		return;
+	}
+
+	dbus_connection_add_filter (dbus_conn, signal_filter, NULL, NULL);
+}
+
+/* -----------------------------------------------------------------------------------
+ * GNOME-KEYRING DBUS INTERFACES
+ */
+
+static DBusHandlerResult 
+message_handler_cb (DBusConnection *conn, DBusMessage *message, void *user_data)
+{
+	/* 
+	 * Here we handle the requests to our own gnome-keyring DBus interfaces
+	 */
+	
+	DBusMessageIter args;
+	DBusMessage *reply;
+
+	if (dbus_message_get_type (message) != DBUS_MESSAGE_TYPE_METHOD_CALL ||
+	    !dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetSocketPath") ||
+	    !g_str_equal (dbus_message_get_signature (message), "")) {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+
+	g_return_val_if_fail (socket_path, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+
+	/* Setup the result */ 
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &args); 
+	if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_STRING, &socket_path))
+		g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
+
+	/* Send the reply */
+	if (!dbus_connection_send (dbus_conn, reply, NULL))
+		g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
+	dbus_connection_flush (dbus_conn);
+
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusObjectPathVTable object_vtable  = {
+	NULL,
+	message_handler_cb,
+	NULL, 
+};
+
+static void 
+daemon_dbus_cleanup (gpointer unused)
+{
+	if (dbus_conn) {
+		unregister_daemon_in_session ();
+		
+		dbus_connection_unregister_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH);
+		gkr_dbus_disconnect_from_mainloop (dbus_conn, NULL);
+		dbus_connection_unref (dbus_conn);
+		dbus_conn = NULL;
+	}
+	
+	g_free (client_session_path);
+	client_session_path = NULL;
+	
+	g_free (client_session_rule);
+	client_session_rule = NULL;
 }
 
 void 
@@ -286,12 +427,9 @@ gkr_daemon_dbus_setup (void)
 		return;
 	}
 	
-	/* Listen in to signals that tell us when the session will be over */
-	dbus_bus_add_match (dbus_conn, SIGNAL_MATCH_RULE, NULL);
-	dbus_connection_add_filter (dbus_conn, signal_filter, NULL, NULL);
-
 	dbus_initialized = TRUE;
-	
+
+	/* Register with the session now that DBus is setup */
 	register_environment_in_session ();
 	register_daemon_in_session ();
 }
