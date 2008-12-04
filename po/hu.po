@@ -406,7 +406,7 @@ msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
 msgstr ""
-"A bejelentkezési kulcstartója nem lett automatikusa feloldva a számítógépre "
+"A bejelentkezési kulcstartója nem lett automatikusan feloldva a számítógépre "
 "való bejelentkezéskor."
 
 #. And put together the ask request
@@ -423,7 +423,7 @@ msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
 msgstr ""
-"A bejelentkezési kulcstartója nem lett automatikusa létrehozva a "
+"A bejelentkezési kulcstartója nem lett automatikusan létrehozva a "
 "számítógépre való bejelentkezéskor. Most kerül létrehozásra."
 
 #: ../daemon/keyrings/gkr-keyring.c:584
