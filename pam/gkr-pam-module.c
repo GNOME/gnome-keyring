@@ -925,7 +925,7 @@ pam_chauthtok_preliminary (pam_handle_t *ph, struct passwd *pwd)
 }
 
 static int
-pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd)
+pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 {
 	const char *password, *original;
 	int ret, started_daemon = 0;
@@ -967,6 +967,12 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd)
 		return ret;
 	
 	ret = change_keyring_password (ph, pwd, password, original);
+
+	/* if not auto_start, kill the daemon if we started it: we don't want
+	 * it to stay */
+	if (started_daemon && !(args & ARG_AUTO_START))
+		stop_daemon (ph, pwd);
+
 	if (ret != PAM_SUCCESS)
 		return ret;
 		
@@ -978,8 +984,11 @@ pam_sm_chauthtok (pam_handle_t *ph, int flags, int argc, const char **argv)
 {
 	const char *user;
 	struct passwd *pwd;
+	uint args;
 	int ret;
 	
+	args = parse_args (argc, argv);
+
 	/* Figure out and/or prompt for the user name */
 	ret = pam_get_user (ph, &user, NULL);
 	if (ret != PAM_SUCCESS) {
@@ -997,7 +1006,7 @@ pam_sm_chauthtok (pam_handle_t *ph, int flags, int argc, const char **argv)
 	if (flags & PAM_PRELIM_CHECK) 
 		return pam_chauthtok_preliminary (ph, pwd);
 	else if (flags & PAM_UPDATE_AUTHTOK)
-		return pam_chauthtok_update (ph, pwd);
+		return pam_chauthtok_update (ph, pwd, args);
 	else 
 		return PAM_IGNORE;
 }

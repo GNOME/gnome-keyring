@@ -1,5 +1,11 @@
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-module.c: Don't leave gnome-keyring-daemon running
+	if started for a password change. Patch by Vincent Untz.
+	Fixes bug #558636
+
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/ui/gkr-ask-tool.c: Add accelerator to 'Deny' button
 	in dialog. Patch by Gabor Kelemen. Fixes bug #552604
 
