@@ -1,5 +1,10 @@
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring-utils.c: Synchronize ICEAUTHORITY and 
+	XAUTHLOCALHOSTNAME on startup. Fixes bug #562824
+
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Use pkg-config to detect libtasn1. Fixes bug #563702
 
 2008-11-14  Stef Walter  <stef@memberwebs.com>
