@@ -860,9 +860,12 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 			return ret;
 	}
 
-	if (!started_daemon && password != NULL) {
-		if (unlock_keyring (ph, pwd, password) != PAM_SUCCESS)
-			return PAM_SERVICE_ERR;
+	/* If gnome keyring is running, but we didn't start it here, then unlock now */
+	if (get_any_env (ph, ENV_SOCKET) != NULL) {
+		if (!started_daemon && password != NULL) {
+			if (unlock_keyring (ph, pwd, password) != PAM_SUCCESS)
+				return PAM_SERVICE_ERR;
+		}
 	}
 	
 	return PAM_SUCCESS;

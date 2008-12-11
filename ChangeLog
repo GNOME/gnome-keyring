@@ -1,5 +1,10 @@
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-module.c: Don't unlock keyring if 
+	daemon wasn't started. Patch by Vincent Untz. Fixes bug #559958
+
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
 	* pam/gkr-pam-module.c: Don't leave gnome-keyring-daemon running
 	if started for a password change. Patch by Vincent Untz.
 	Fixes bug #558636
