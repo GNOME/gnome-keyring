@@ -1,5 +1,10 @@
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/ui/gkr-ask-tool.c: Add accelerator to 'Deny' button
+	in dialog. Patch by Gabor Kelemen. Fixes bug #552604
+
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-location.c: Fix crash when empty error message.
 	Patch by Jeff Cai. Fixes bug #562521
 

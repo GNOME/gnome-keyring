@@ -676,7 +676,7 @@ prepare_dialog (void)
 	
 	/* In order of preference for default response */
 	if (flags & GKR_ASK_REQUEST_DENY_BUTTON) {
-		buttons[i] = _("Deny");
+		buttons[i] = _("_Deny");
 		resps[i++] = GKR_ASK_RESPONSE_DENY;
 	}
 	if (flags & GKR_ASK_REQUEST_CANCEL_BUTTON) {
