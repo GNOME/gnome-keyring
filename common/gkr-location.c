@@ -477,7 +477,7 @@ location_manager_hal_init (GkrLocationManager *locmgr)
 	dbus_error_init (&error);
 	pv->dbus_connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
 	if (dbus_error_is_set (&error)) {
-		g_warning ("error connecting to D-BUS system bus: %s", error.message);
+		g_warning ("error connecting to D-BUS system bus: %s", error.message ? error.message : "");
 		dbus_error_free (&error);
 		goto failed;
 	}
@@ -494,7 +494,7 @@ location_manager_hal_init (GkrLocationManager *locmgr)
 	libhal_ctx_set_device_property_modified (pv->hal_ctx, hal_device_property);
 	
 	if (!libhal_ctx_init (pv->hal_ctx, &error)) {
-		g_warning ("failed to initialize a HAL context: %s\n", error.message);
+		g_warning ("failed to initialize a HAL context: %s\n", error.message ? error.message : "");
 		dbus_error_free (&error);
 		goto failed;
 	}

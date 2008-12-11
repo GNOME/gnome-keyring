@@ -1,11 +1,17 @@
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
-	* library/gnome-keyring-utils.c: Synchronize ICEAUTHORITY and 
-	XAUTHLOCALHOSTNAME on startup. Fixes bug #562824
+	* common/gkr-location.c: Fix crash when empty error message.
+	Patch by Jeff Cai. Fixes bug #562521
 
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
-	* configure.in: Use pkg-config to detect libtasn1. Fixes bug #563702
+	* library/gnome-keyring-utils.c: Synchronize ICEAUTHORITY and 
+	XAUTHLOCALHOSTNAME environment variables on startup. Fixes bug #562824
+
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in: Use pkg-config to detect libtasn1. 
+	Patch by Jeff Cai. Fixes bug #563702
 
 2008-11-14  Stef Walter  <stef@memberwebs.com>
 
