@@ -202,7 +202,7 @@ register_environment_in_session (void)
 		dbus_message_unref (msg);
 		
 		if (!reply) {
-			g_warning ("couldn't set environment variable in session: %s", derr.message);
+			g_message ("couldn't set environment variable in session: %s", derr.message);
 			return;
 		}
 		
@@ -357,15 +357,6 @@ gkr_daemon_dbus_setup (void)
 	DBusError derr = { 0 };
 	const gchar *env;
 	
-	/* 
-	 * We may be launched before the DBUS session, (ie: via PAM) 
-	 * and DBus tries to launch itself somehow, so double check 
-	 * that it has really started.
-	 */ 
-	env = getenv ("DBUS_SESSION_BUS_ADDRESS");
-	if (!env || !env[0])
-		return;
-	
 	if (dbus_initialized)
 		return;
 	
@@ -414,7 +405,7 @@ gkr_daemon_dbus_setup (void)
 	case DBUS_REQUEST_NAME_REPLY_IN_QUEUE:
 	case DBUS_REQUEST_NAME_REPLY_EXISTS:
 		g_message ("another gnome-keyring-daemon is running");
-		return;
+		break;
 	default:
 		g_return_if_reached ();
 		break;

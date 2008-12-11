@@ -80,6 +80,8 @@ void   gkr_secure_dump_blocks  (void);
 
 char*  gkr_secure_strdup       (const char *str);
 
+void   gkr_secure_strclear     (char *str);
+
 void   gkr_secure_strfree      (char *str);
 
 #endif /* GKR_SECURE_MEMORY_H */

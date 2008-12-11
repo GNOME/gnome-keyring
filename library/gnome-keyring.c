@@ -339,7 +339,7 @@ start_operation (GnomeKeyringOperation *op)
 		close (op->socket);
 	}
 
-	op->socket = gnome_keyring_socket_connect_daemon (TRUE);
+	op->socket = gnome_keyring_socket_connect_daemon (TRUE, FALSE);
 	if (op->socket < 0) {
 		schedule_op_failed (op, GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON);
 	} else  {
@@ -366,7 +366,7 @@ run_sync_operation (GkrBuffer *buffer,
 	g_assert (buffer != NULL);
 	g_assert (receive_buffer != NULL);
 
-	socket = gnome_keyring_socket_connect_daemon (FALSE);
+	socket = gnome_keyring_socket_connect_daemon (FALSE, FALSE);
 	if (socket < 0)
 		return GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON;
 
@@ -399,7 +399,7 @@ gnome_keyring_is_available (void)
 {
 	int socket;
 	
-	socket = gnome_keyring_socket_connect_daemon (FALSE);
+	socket = gnome_keyring_socket_connect_daemon (FALSE, FALSE);
 	if (socket < 0) {
 		return FALSE;
 	}

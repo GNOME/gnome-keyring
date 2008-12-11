@@ -123,7 +123,7 @@ connect_to_daemon_at (const gchar *path)
 }
 
 int
-gnome_keyring_socket_connect_daemon (gboolean non_blocking)
+gnome_keyring_socket_connect_daemon (gboolean non_blocking, gboolean only_running)
 {
 	const gchar *epath = NULL;
 	int sock = -1;
@@ -140,7 +140,7 @@ gnome_keyring_socket_connect_daemon (gboolean non_blocking)
 	}
 
 	/* Try using DBus to find daemon */
-	if (sock < 0) {
+	if (sock < 0 && !only_running) {
 		gchar *dpath = find_daemon_via_dbus ();
 		if (dpath) {
 			sock = connect_to_daemon_at (dpath);

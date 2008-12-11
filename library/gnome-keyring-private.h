@@ -57,7 +57,7 @@ struct GnomeKeyringItemInfo {
 #define GNOME_KEYRING_DAEMON_PATH       "/org/gnome/keyring/daemon"
 #define GNOME_KEYRING_DAEMON_INTERFACE  "org.gnome.keyring.Daemon"
 
-int gnome_keyring_socket_connect_daemon (gboolean non_blocking);
+int gnome_keyring_socket_connect_daemon (gboolean non_blocking, gboolean only_running);
 int gnome_keyring_socket_read_all (int fd, guchar *buf, size_t len);
 int gnome_keyring_socket_write_all (int fd, const guchar *buf, size_t len);
 gboolean gnome_keyring_socket_read_buffer (int fd, GkrBuffer *buffer);

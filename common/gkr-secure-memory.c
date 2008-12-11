@@ -774,19 +774,13 @@ gkr_secure_strdup (const char *str)
 }
 
 void
-gkr_secure_strfree (char *str)
+gkr_secure_strclear (char *str)
 {
 	volatile char *vp;
 	size_t len;
 	
 	if (!str)
 		return;
-		
-	/*
-	 * If we're using unpageable 'secure' memory, then the free call
-	 * should zero out the memory, but because on certain platforms 
-	 * we may be using normal memory, zero it out here just in case.
-	 */
 		
         vp = (volatile char*)str;
        	len = strlen (str);
@@ -795,6 +789,17 @@ gkr_secure_strfree (char *str)
         	vp++;
         	len--; 
         } 
+}
+
+void
+gkr_secure_strfree (char *str)
+{
+	/*
+	 * If we're using unpageable 'secure' memory, then the free call
+	 * should zero out the memory, but because on certain platforms 
+	 * we may be using normal memory, zero it out here just in case.
+	 */
 	
+	gkr_secure_strclear (str);
 	gkr_secure_free_full (str, GKR_SECURE_USE_FALLBACK);
 }

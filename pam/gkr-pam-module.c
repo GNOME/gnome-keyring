@@ -271,7 +271,7 @@ static void
 setup_child (int inp[2], int outp[2], int errp[2], 
              pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
-	char *args[] = { GNOME_KEYRING_DAEMON, "-d", "--login", NULL};
+	char *args[] = { GNOME_KEYRING_DAEMON, "--daemonize", "--login", NULL};
 	const char* display;
 	int i, ret;
 	

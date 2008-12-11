@@ -1,7 +1,25 @@
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
-	* pam/gkr-pam-module.c: Close open file descriptors before 
-	running the daemon. Fixes bug #560131 
+	* common/gkr-crypto.c:
+	* common/gkr-secure-memory.c:
+	* common/gkr-secure-memory.h:
+	* daemon/gkr-daemon.c:
+	* daemon/gkr-daemon.h:
+	* daemon/gkr-daemon-dbus.c:
+	* daemon/gkr-daemon-ops.c: 
+	* pam/gkr-pam-module.c: Rework initialization of the daemon
+	so that most initialization can happen after starting via PAM.
+	Fixes bug #558181
+	
+	* library/gnome-keyring.c:
+	* library/gnome-keyring-private.h:
+	* library/gnome-keyring-socket.c: Don't let --start use an 
+	autostart DBus daemon.
+	
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
+	* pam/gkr-pam-module.c: Close first 64 open file descriptors 
+	before running the daemon. Fixes bug #560131 
 	
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 

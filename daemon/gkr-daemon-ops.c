@@ -1713,8 +1713,11 @@ op_prepare_daemon_environment (GkrBuffer *packet, GkrBuffer *result, GkrKeyringR
 	
 	g_strfreev (environment);
 	
-	/* We may have received DBUS environment variable so try and setup DBUS */
-	gkr_daemon_dbus_setup ();
+	/* 
+	 * We've now definitely received everything we need to run. Ask
+	 * the daemon to complete the initialization. 
+	 */
+	gkr_daemon_complete_initialization();
 
 	gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 

@@ -66,6 +66,8 @@ fatal_handler (gpointer unused, int unknown, const gchar *msg)
 void
 gkr_crypto_setup (void)
 {
+	unsigned seed;
+
 	if (gcrypt_initialized)
 		return;
 		
@@ -80,6 +82,9 @@ gkr_crypto_setup (void)
 	                             gkr_secure_free);
 	                             
 	gcrypt_initialized = TRUE;
+	
+	gcry_create_nonce (&seed, sizeof (seed));
+	srand (seed);
 }
 
 static const char HEXC[] = "0123456789ABCDEF";

@@ -90,28 +90,30 @@ static GMainLoop *loop = NULL;
 
 /* All the components to run on startup if not set in gconf */
 #ifdef WITH_SSH
-#define DEFAULT_COMPONENTS  "ssh,keyring,pkcs11"
+#define DEFAULT_COMPONENTS  "ssh,pkcs11"
 #else
-#define DEFAULT_COMPONENTS  "keyring,pkcs11"
+#define DEFAULT_COMPONENTS  "pkcs11"
 #endif
 
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
-static gboolean unlock_with_login = FALSE;
-static gboolean start_any_daemon = FALSE;
+static gboolean run_for_login = FALSE;
+static gboolean run_for_start = FALSE;
 static gchar* run_components = NULL;
+static gchar* login_password = NULL;
+static gboolean initialization_completed = FALSE;
 
 static GOptionEntry option_entries[] = {
 	{ "foreground", 'f', 0, G_OPTION_ARG_NONE, &run_foreground, 
 	  "Run in the foreground", NULL }, 
 	{ "daemonize", 'd', 0, G_OPTION_ARG_NONE, &run_daemonized, 
 	  "Run as a daemon", NULL }, 
-	{ "login", 'l', 0, G_OPTION_ARG_NONE, &unlock_with_login, 
-	  "Use login password from stdin", NULL },
-	{ "start", 's', 0, G_OPTION_ARG_NONE, &start_any_daemon,
-	  "Start or initialize an already running daemon" },
+	{ "login", 'l', 0, G_OPTION_ARG_NONE, &run_for_login, 
+	  "Run for a user login. Read login password from stdin", NULL },
+	{ "start", 's', 0, G_OPTION_ARG_NONE, &run_for_start,
+	  "Start a dameon or initialize an already running daemon." },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
-	  "The components to run", DEFAULT_COMPONENTS },
+	  "The optional components to run", DEFAULT_COMPONENTS },
 	{ NULL }
 };
 
@@ -136,9 +138,9 @@ parse_arguments (int *argc, char** argv[])
 	}
 	
 	/* Check the arguments */
-	if (unlock_with_login && start_any_daemon) {
+	if (run_for_login && run_for_start) {
 		g_printerr ("gnome-keyring-daemon: The --start option is incompatible with --login");
-		start_any_daemon = FALSE;
+		run_for_login = FALSE;
 	}
 		
 	
@@ -369,6 +371,12 @@ read_login_password (int fd)
 	/* We only accept a max of 8K as the login password */
 	#define MAX_LENGTH 8192
 	#define MAX_BLOCK 256
+
+	/* 
+	 * When --login is specified then the login password is passed 
+	 * in on stdin. All data (including newlines) are part of the 
+	 * password.
+	 */
 	
 	gchar *buf = gkr_secure_alloc (MAX_BLOCK);
 	gchar *ret = NULL;
@@ -401,28 +409,18 @@ read_login_password (int fd)
 }
 
 static void
-close_stdinout (void)
-{
-	int fd;
-	
-	fd = open ("/dev/null", O_RDONLY);
-	sane_dup2 (fd, 0);
-	close (fd);
-	
-	fd = open ("/dev/null", O_WRONLY);
-	sane_dup2 (fd, 1);
-	close (fd);
-
-	fd = open ("/dev/null", O_WRONLY);
-	sane_dup2 (fd, 2);
-	close (fd);
-}
-
-static void
 cleanup_and_exit (int code)
 {
 	gkr_cleanup_perform ();
-	_exit (code);
+	exit (code);
+}
+
+static void
+clear_login_password (void)
+{
+	if(login_password)
+		gkr_secure_strfree (login_password);
+	login_password = NULL;
 }
 
 static gboolean
@@ -430,8 +428,29 @@ lifetime_slave_pipe_io (GIOChannel  *channel,
 			GIOCondition cond,
 			gpointer     callback_data)
 {
-	cleanup_and_exit (2);
+	gkr_cleanup_perform ();
+	_exit (2);
 	return FALSE;
+}
+
+static void
+slave_lifetime_to_fd (void)
+{
+	const char *env;
+	GIOChannel *channel;
+	int fd;
+	
+	env = getenv ("GNOME_KEYRING_LIFETIME_FD");
+	if (env && env[0]) {
+		fd = atoi (env);
+		if (fd != 0) {
+			channel = g_io_channel_unix_new (fd);
+			g_io_add_watch (channel,
+					G_IO_IN | G_IO_HUP,
+					lifetime_slave_pipe_io, NULL);
+			g_io_channel_unref (channel);
+		}
+	}
 }
 
 static void
@@ -445,7 +464,7 @@ print_environment (pid_t pid)
 }
 
 static gboolean
-initialize_running_daemon (int sock)
+initialize_other_running_daemon (int sock)
 {
 	GnomeKeyringResult res;
 	gchar **envp, **e;
@@ -506,11 +525,11 @@ start_or_initialize_daemon (void)
 	 * a daemon process, just return and let things go 
 	 * their normal way. 
 	 */
-	sock = gnome_keyring_socket_connect_daemon (FALSE);
+	sock = gnome_keyring_socket_connect_daemon (FALSE, TRUE);
 	if (sock == -1)
 		return FALSE;
 	
-	ret = initialize_running_daemon (sock);
+	ret = initialize_other_running_daemon (sock);
 	close (sock);
 	
 	/* Initialization failed, start this process up as a daemon */
@@ -532,21 +551,146 @@ start_or_initialize_daemon (void)
 	return TRUE;
 }
 
+static void
+fork_and_print_environment (void)
+{
+	int status;
+	pid_t pid;
+	int fd, i;
+
+	if (run_foreground) {
+		print_environment (getpid ());
+		return;
+	}
+	
+	pid = fork ();
+		
+	if (pid != 0) {
+
+		/* Here we are in the initial process */
+
+		if (run_daemonized) {
+			
+			/* Initial process, waits for intermediate child */
+			if (pid == -1)
+				exit (1);
+
+			waitpid (pid, &status, 0);
+			if (WEXITSTATUS (status) != 0)
+				exit (WEXITSTATUS (status));
+			
+		} else {
+			/* Not double forking, we know the PID */
+			print_environment (pid);
+		}
+
+		/* The initial process exits successfully */
+		exit (0);
+	}
+	
+	if (!run_daemonized) 
+		return;
+	
+	/* Double fork if need to daemonize properly */
+	pid = fork ();
+	
+	if (pid != 0) {
+
+		/* Here we are in the intermediate child process */
+			
+		/* 
+		 * This process exits, so that the final child will inherit 
+		 * init as parent to avoid zombies
+		 */
+		if (pid == -1)
+			exit (1);
+
+		/* We've done two forks. Now we know the PID */
+		print_environment (pid);
+			
+		/* The intermediate child exits */
+		exit (0);
+	}
+
+	/* Here we are in the resulting daemon process. */
+
+	for (i = 0; i < 3; ++i) {
+		fd = open ("/dev/null", O_RDONLY);
+		sane_dup2 (fd, i);
+		close (fd);
+	}
+}
+
+gboolean
+gkr_daemon_complete_initialization(void)
+{
+	/*
+	 * Sometimes we don't initialize the full daemon right on 
+	 * startup. When run with --login is one such case.
+	 */
+	
+	if (initialization_completed) {
+		g_message ("The daemon was already initialized.");
+		return TRUE;
+	}
+	
+	gkr_daemon_dbus_setup ();
+	
+	/* Initialize object storage */
+	if (!gkr_pk_object_storage_initialize ())
+		return FALSE;
+	
+#ifdef ROOT_CERTIFICATES
+	if (!gkr_pk_root_storage_initialize ())
+		return FALSE;
+#endif
+
+	/* Initialize the appropriate components */
+	
+#ifdef WITH_SSH	
+	if (check_run_component ("ssh")) {
+		if (!gkr_daemon_ssh_io_initialize () ||
+		    !gkr_ssh_storage_initialize ())
+			return FALSE;
+	}
+#endif
+	
+	if (check_run_component ("pkcs11")) {
+		if (!gkr_pkcs11_daemon_setup ())
+			return FALSE;
+	}
+	
+	initialization_completed = TRUE;
+	return TRUE;
+}
+
 int
 main (int argc, char *argv[])
 {
-	const char *env;
-	int fd;
-	pid_t pid;
-	GIOChannel *channel;
 	GMainContext *ctx;
-	gchar *login_password;
-	unsigned seed;
+	
+	/* 
+	 * The gnome-keyring startup is not as simple as I wish it could be. 
+	 * 
+	 * It's often started in the primidoral stages of a session, where 
+	 * there's no DBus, no GConf, and no proper X display. This is the 
+	 * strange world of PAM.
+	 * 
+	 * When started with the --login option, we do as little initialization
+	 * as possible. We expect a login password on the stdin, and unlock
+	 * or create the login keyring.
+	 * 
+	 * Then later we expect gnome-keyring-dameon to be run again with the 
+	 * --start option. This second gnome-keyring-daemon will hook the
+	 * original daemon up with environment variables necessary to initialize
+	 * itself and bring it into the session. This second daemon usually exits.
+	 * 
+	 * Without either of these options, we follow a more boring and 
+	 * predictable startup.  
+	 */
 	
 	g_type_init ();
 	g_thread_init (NULL);
-	
-	parse_arguments (&argc, &argv);
 	
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */
@@ -559,120 +703,42 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
-	/* 
-	 * If asked to start a daemon, see if one is already running 
-	 * and initialize it if so. 
-	 */
-	if (start_any_daemon) {
-		if (start_or_initialize_daemon ())
-			return 0;
-	}
-	
 	gkr_crypto_setup ();
 
-	gcry_create_nonce (&seed, sizeof (seed));
-	srand (seed);
+	/* Send all warning or error messages to syslog */
+	prepare_logging ();
 	
-	/* Initialize object storage */
-	if (!gkr_pk_object_storage_initialize ())
-		cleanup_and_exit (1);
+	parse_arguments (&argc, &argv);
 	
-#ifdef ROOT_CERTIFICATES
-	if (!gkr_pk_root_storage_initialize ())
-		cleanup_and_exit (1);
-#endif
-
-	/* Initialize the appropriate components */
-	if (check_run_component ("keyring")) {
-		if (!gkr_daemon_io_create_master_socket ())
-			cleanup_and_exit (1);
-	}
-
-#ifdef WITH_SSH	
-	if (check_run_component ("ssh")) {
-		if (!gkr_daemon_ssh_io_initialize () ||
-		    !gkr_ssh_storage_initialize ())
-			cleanup_and_exit (1);
-	}
-#endif
-	
-	if (check_run_component ("pkcs11")) {
-		if (!gkr_pkcs11_daemon_setup ())
-			cleanup_and_exit (1);
-	}	
-	 
-	/* 
-	 * When --login is specified then the login password is passed 
-	 * in on stdin. All data (including newlines) are part of the 
-	 * password.
-	 */
-	login_password = unlock_with_login ? read_login_password (STDIN) : NULL;
+	/* The --start option */
+	if (run_for_start) {
+		if (start_or_initialize_daemon ())
+			cleanup_and_exit (0);
+	} 
 	
 	/* 
-	 * The whole forking and daemonizing dance starts here.
+	 * Always initialize the keyring subsystem. This is a necessary
+	 * component that everything else depends on in one way or 
+	 * another. 
 	 */
-	if (!run_foreground) {
-		pid = fork ();
-		
-		/* An intermediate child */
-		if (pid == 0) {
-			if (run_daemonized) {
-				pid = fork ();
-				
-				/* Still in the intermedate child */
-				if (pid != 0) {
-					gkr_secure_free (login_password);
-					
-					/* This process exits, so that the
-					 * final child will inherit init as parent
-					 * to avoid zombies
-					 */
-					if (pid == -1) {
-						exit (1);
-					} else {
-						/* This is where we know the pid of the daemon.
-						 * The initial process will waitpid until we exit,
-						 * so there is no race */
-						print_environment (pid);
-						exit (0);
-					}
-				}
-			}
-			
-			/* final child continues here */
-			
-		/* The initial process */
-		} else {
-			gkr_secure_free (login_password);
-			
-			if (run_daemonized) {
-				int status;
-				
-				/* Initial process, waits for intermediate child */
-				if (pid == -1)
-					exit (1);
+	if (!gkr_daemon_io_create_master_socket ())
+		cleanup_and_exit (1);
 
-				waitpid (pid, &status, 0);
-				if (WEXITSTATUS (status) != 0)
-					exit (WEXITSTATUS (status));
-				
-			} else {
-				print_environment (pid);
-			}
-			
-			exit (0);
-		}
-		
-		/* The final child ... */
-		close_stdinout ();
-
+	/* The --login option. Delayed initialization */
+	if (run_for_login) {
+		login_password = read_login_password (STDIN);
+		atexit (clear_login_password);
+	
+	/* Not a login daemon. Initialize now. */
 	} else {
-		print_environment (getpid ());
+		if (!gkr_daemon_complete_initialization ())
+			cleanup_and_exit (1);
 	}
+	 
+	/* The whole forking and daemonizing dance starts here. */
+	fork_and_print_environment();
 
-	/* Daemon process continues here */
-
-        /* Send all warning or error messages to syslog */
+	/* Prepare logging a second time, since we may be in a different process */
 	prepare_logging();
 
 	loop = g_main_loop_new (NULL, FALSE);
@@ -683,29 +749,19 @@ main (int argc, char *argv[])
 	gkr_unix_signal_connect (ctx, SIGHUP, signal_handler, NULL);
 	gkr_unix_signal_connect (ctx, SIGTERM, signal_handler, NULL);
              
-	env = getenv ("GNOME_KEYRING_LIFETIME_FD");
-	if (env && env[0]) {
-		fd = atoi (env);
-		if (fd != 0) {
-			channel = g_io_channel_unix_new (fd);
-			g_io_add_watch (channel,
-					G_IO_IN | G_IO_HUP,
-					lifetime_slave_pipe_io, NULL);
-			g_io_channel_unref (channel);
-		}
-	}
+	/* TODO: Do we still need this? XFCE still seems to use it. */
+	slave_lifetime_to_fd ();
 	
 	gkr_async_workers_init (loop);
-	gkr_daemon_dbus_setup ();
 
 	/*
 	 * Unlock the login keyring if we were given a password on STDIN.
 	 * If it does not exist. We create it. 
 	 */
-	if (unlock_with_login && login_password) {
+	if (login_password) {
 		if (!gkr_keyring_login_unlock (login_password))
 			g_warning ("Failed to unlock login on startup");
-		gkr_secure_free (login_password);
+		gkr_secure_strclear (login_password);
 	}
 	
 	g_main_loop_run (loop);
