@@ -1,3 +1,7 @@
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in: Use pkg-config to detect libtasn1. Fixes bug #563702
+
 2008-11-14  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon-dbus.c: Register and unregister with the session
