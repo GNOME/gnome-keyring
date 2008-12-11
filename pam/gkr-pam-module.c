@@ -273,7 +273,7 @@ setup_child (int inp[2], int outp[2], int errp[2],
 {
 	char *args[] = { GNOME_KEYRING_DAEMON, "-d", "--login", NULL};
 	const char* display;
-	int ret;
+	int i, ret;
 	
 	assert (pwd);
 	assert (pwd->pw_dir);
@@ -290,6 +290,10 @@ setup_child (int inp[2], int outp[2], int errp[2],
 		        strerror (errno));
 		exit (EXIT_FAILURE);
 	}
+
+	/* Try valiantly to close unnecessary file descriptors */
+	for (i = STDERR; i < 64; ++i)
+		close (i);
 	    
 	/* Close unnecessary file descriptors */
 	close (inp[READ_END]);

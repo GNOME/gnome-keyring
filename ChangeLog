@@ -1,5 +1,10 @@
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
+	* pam/gkr-pam-module.c: Close open file descriptors before 
+	running the daemon. Fixes bug #560131 
+	
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
 	* pam/gkr-pam-module.c: Don't unlock keyring if 
 	daemon wasn't started. Patch by Vincent Untz. Fixes bug #559958
 
