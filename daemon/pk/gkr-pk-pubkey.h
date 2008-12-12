@@ -63,11 +63,15 @@ GkrPkPubkey*        gkr_pk_pubkey_instance           (GkrPkManager* manager,
 CK_RV               gkr_pk_pubkey_create             (GkrPkManager* manager, 
                                                       GArray* array, GkrPkObject **object);
                                                       
-gkrconstid         gkr_pk_pubkey_get_keyid           (GkrPkPubkey *key);
+gkrconstid          gkr_pk_pubkey_get_keyid          (GkrPkPubkey *key);
 
 gcry_sexp_t         gkr_pk_pubkey_get_key            (GkrPkPubkey *key);
 
 int                 gkr_pk_pubkey_get_algorithm      (GkrPkPubkey *key);
+
+/* TODO: This really should go somewhere else */
+CK_RV               gkr_pk_pubkey_allowed_mechanisms (int algorithm, 
+                                                      CK_ATTRIBUTE_PTR attr);
 
 G_END_DECLS
 

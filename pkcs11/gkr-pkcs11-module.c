@@ -1073,7 +1073,7 @@ call_session_close_all ()
 
 static CK_RV
 proto_read_attribute_array (GkrPkcs11Message *msg, CK_ATTRIBUTE_PTR arr, 
-                            CK_ULONG_PTR len, CK_ULONG max)
+                            CK_ULONG_PTR len, CK_ULONG max, int *overflowed)
 {
 	uint32_t i, num, val;
 	CK_ATTRIBUTE_PTR attr;
@@ -1129,10 +1129,12 @@ proto_read_attribute_array (GkrPkcs11Message *msg, CK_ATTRIBUTE_PTR arr,
 				/* Just requesting the attribute size */
 				if (!attr->pValue) {
 					attr->ulValueLen = attrlen;
+					(*overflowed)++;
 
 				/* Wants attribute data, but too small */
 				} else if (attr->ulValueLen < attrlen) {
 					attr->ulValueLen = attrlen;
+					(*overflowed)++;
 					ret = CKR_BUFFER_TOO_SMALL;
 
 				/* Wants attribute data, value is null */
@@ -1157,7 +1159,7 @@ proto_read_attribute_array (GkrPkcs11Message *msg, CK_ATTRIBUTE_PTR arr,
 
 static CK_RV
 proto_read_byte_array (GkrPkcs11Message *msg, CK_BYTE_PTR arr,
-                       CK_ULONG_PTR len, CK_ULONG max)
+                       CK_ULONG_PTR len, CK_ULONG max, int *overflowed)
 {
 	const unsigned char *val;
 	size_t vlen;
@@ -1176,11 +1178,15 @@ proto_read_byte_array (GkrPkcs11Message *msg, CK_BYTE_PTR arr,
 	*len = vlen;
 
 	/* Just asking us for size */
-	if (!arr) 
+	if (!arr) {
+		(*overflowed)++;
 		return CKR_OK;
+	}
 
-	if (max < vlen)
+	if (max < vlen) {
+		(*overflowed)++;
 		return CKR_BUFFER_TOO_SMALL;
+	}
 
 	/* Enough space, yay */
 	memcpy (arr, val, vlen);
@@ -1190,7 +1196,7 @@ proto_read_byte_array (GkrPkcs11Message *msg, CK_BYTE_PTR arr,
 
 static CK_RV
 proto_read_uint32_array (GkrPkcs11Message *msg, CK_ULONG_PTR arr,
-                         CK_ULONG_PTR len, CK_ULONG max)
+                         CK_ULONG_PTR len, CK_ULONG max, int *overflowed)
 {
 	uint32_t i, num, val;
 
@@ -1207,8 +1213,12 @@ proto_read_uint32_array (GkrPkcs11Message *msg, CK_ULONG_PTR arr,
 
 	*len = num;
 
-	if (arr && max < num)
+	if (!arr) {
+		(*overflowed)++;
+	} else if (max < num) {
+		(*overflowed)++;
 		return CKR_BUFFER_TOO_SMALL;
+	}
 
 	/* We need to go ahead and read everything in all cases */
 	for (i = 0; i < num; ++i) {
@@ -1274,7 +1284,7 @@ proto_read_sesssion_info (GkrPkcs11Message *msg, CK_SESSION_INFO_PTR info)
 	
 	/* The slot id (we ignore) */
 	gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &val);
-	info->slotID = 0;
+	info->slotID = slot_id;
 
 	/* The state */
 	gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &val);
@@ -1697,7 +1707,7 @@ gkr_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data,
 	DBG (("C_OpenSession: enter"));
 	PREREQ (pkcs11_initialized, CKR_CRYPTOKI_NOT_INITIALIZED);
 	PREREQ (session, CKR_ARGUMENTS_BAD);
-	PREREQ (flags & CKF_SERIAL_SESSION, CKR_FUNCTION_NOT_PARALLEL);
+	PREREQ (flags & CKF_SERIAL_SESSION, CKR_SESSION_PARALLEL_NOT_SUPPORTED);
 
 	if (id != slot_id) 
 		return CKR_SLOT_ID_INVALID;
@@ -1815,7 +1825,7 @@ gkr_C_CloseAllSessions (CK_SLOT_ID id)
 		ret = CKR_SLOT_ID_INVALID;
 	
 	DBG (("C_CloseAllSessions: %d", ret));
-	return CKR_OK;
+	return ret;
 }
 
 static CK_RV
@@ -1863,6 +1873,7 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	} 
 
 #define IN_ATTRIBUTE_ARRAY(arr, num) \
+	if (num && !arr) { _ret = CKR_ARGUMENTS_BAD; goto _cleanup; } \
 	_ret = gkr_pkcs11_message_write_attribute_array (_cs->req, (arr), (num)); \
 	if (_ret != CKR_OK) goto _cleanup;
 
@@ -1883,13 +1894,13 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_ATTRIBUTE_ARRAY(arr, num, max) \
-	if (!arr) _cs->overflowed = 1; \
-	_ret = proto_read_attribute_array (_cs->resp, (arr), (num), (max)); \
+	if (!arr) _cs->overflowed++; \
+	_ret = proto_read_attribute_array (_cs->resp, (arr), (num), (max), &_cs->overflowed); \
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_BYTE_ARRAY(arr, len, max)  \
-	if (!arr) _cs->overflowed = 1; \
-	_ret = proto_read_byte_array (_cs->resp, (arr), (len), (max)); \
+	if (!arr) _cs->overflowed++; \
+	_ret = proto_read_byte_array (_cs->resp, (arr), (len), (max), &_cs->overflowed); \
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_HANDLE(val) \
@@ -1897,8 +1908,9 @@ gkr_C_CancelFunction (CK_SESSION_HANDLE hSession)
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_HANDLE_ARRAY(a, n, mx) \
-	if (!a) _cs->overflowed = 1; \
-	_ret = proto_read_uint32_array (_cs->resp, (a), (n), (mx)); \
+	if (!n) { _ret = CKR_ARGUMENTS_BAD; goto _cleanup; } \
+	if (!a) _cs->overflowed++; \
+	_ret = proto_read_uint32_array (_cs->resp, (a), (n), (mx), &_cs->overflowed); \
 	if (_ret != CKR_OK) goto _cleanup;
 
 #define OUT_RETURN_CODE() { \

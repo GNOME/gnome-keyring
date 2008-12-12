@@ -545,11 +545,11 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_SERIAL_NUMBER:
 		if ((ret = load_certificate (cert)) != CKR_OK)
 			return ret;
-		data = gkr_pkix_asn1_read_value (cert->data->asn1, "tbsCertificate.serialNumber", &n_data, NULL);
-		if (!data)
+		cdata = gkr_pkix_asn1_read_element (cert->data->asn1, cert->data->raw, cert->data->n_raw,
+		                                    "tbsCertificate.serialNumber", &n_data);
+		if (!cdata)
 			return CKR_FUNCTION_FAILED;
-		gkr_pk_attribute_set_data (attr, data, n_data);
-		g_free (data);
+		gkr_pk_attribute_set_data (attr, cdata, n_data);
 		return CKR_OK;
 		
 	case CKA_VALUE:
@@ -588,8 +588,13 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_URL:
 	case CKA_HASH_OF_SUBJECT_PUBLIC_KEY:
 	case CKA_HASH_OF_ISSUER_PUBLIC_KEY:
-		return CKR_ATTRIBUTE_TYPE_INVALID;	
+		gkr_pk_attribute_set_data (attr, "", 0);
+		return CKR_OK;
 
+	case CKA_JAVA_MIDP_SECURITY_DOMAIN:
+		gkr_pk_attribute_set_ulong(attr, 0);
+		return CKR_OK;
+		
 	case CKA_GNOME_PURPOSE_OIDS:
 		return read_certificate_purposes (cert, attr);
 

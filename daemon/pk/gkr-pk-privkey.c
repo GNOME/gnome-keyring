@@ -316,8 +316,10 @@ attribute_from_certificate (GkrPkPrivkey *key, CK_ATTRIBUTE_PTR attr)
 		
 	obj = GKR_PK_OBJECT (key);
 	crt = gkr_pk_manager_find_by_id (obj->manager, GKR_TYPE_PK_CERT, keyid); 
-	if (crt == NULL)
-		return CKR_ATTRIBUTE_TYPE_INVALID;
+	if (crt == NULL) {	
+		gkr_pk_attribute_set_data(attr, "", 0);
+		return CKR_OK;
+	}
 		
 	return gkr_pk_object_get_attribute (crt, attr);
 }
@@ -485,17 +487,17 @@ gkr_pk_privkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_VALUE:
 		return CKR_ATTRIBUTE_SENSITIVE;
 	
-	/* TODO: We need to implement this: ARRAY[1] (CKM_RSA_PKCS) */
 	case CKA_ALLOWED_MECHANISMS:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
+		return gkr_pk_pubkey_allowed_mechanisms (key->priv->algorithm, attr);
 		
 	case CKA_UNWRAP_TEMPLATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
-	/* We don't support these */
+	/* These will be empty */
 	case CKA_START_DATE:
 	case CKA_END_DATE:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
+		gkr_pk_attribute_set_data(attr, "", 0);
+		return CKR_OK;
 
 	default:
 		break;

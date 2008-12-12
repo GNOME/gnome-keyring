@@ -1,4 +1,16 @@
-2007-12-12  Halton Huo <halton.huo@sun.com>
+2008-12-12  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pk/gkr-pk-cert.c:
+	* daemon/pk/gkr-pk-privkey.c:
+	* daemon/pk/gkr-pk-pubkey.c:
+	* daemon/pk/gkr-pk-pubkey.h:
+	* daemon/pk/gkr-pk-util.c:
+	* daemon/pkcs11/gkr-pkcs11-daemon-session.c:
+	* daemon/pkix/gkr-pkix-asn1.c:
+	* pkcs11/gkr-pkcs11-module.c: Fix most of the inconsistencies and bugs
+	highlighted by the p11-tests tool.  
+	
+2008-12-12  Halton Huo <halton.huo@sun.com>
 
 	* pam/gkr-pam-module.c: Allow build on Solaris PAM. Fixes bug #559232.
 

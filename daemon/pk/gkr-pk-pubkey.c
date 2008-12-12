@@ -374,7 +374,8 @@ gkr_pk_pubkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		
 	/* TODO: Once we can generate keys, this should change */
 	case CKA_KEY_GEN_MECHANISM:
-		return CK_UNAVAILABLE_INFORMATION;
+		gkr_pk_attribute_set_ulong (attr, CK_UNAVAILABLE_INFORMATION);
+		return CKR_OK;
 		
 	case CKA_ID:
 		/* Always a SHA-1 hash output buffer */
@@ -410,17 +411,17 @@ gkr_pk_pubkey_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	case CKA_VALUE:
 		return extract_key_value (key, attr);
 	
-	/* TODO: We need to implement this: ARRAY[1] (CKM_RSA_PKCS) */
 	case CKA_ALLOWED_MECHANISMS:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
+		return gkr_pk_pubkey_allowed_mechanisms (key->pub->algorithm, attr);
 		
 	case CKA_UNWRAP_TEMPLATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
-	/* We don't support these */
+	/* These will be empty */
 	case CKA_START_DATE:
 	case CKA_END_DATE:
-		return CKR_ATTRIBUTE_TYPE_INVALID;
+		gkr_pk_attribute_set_data(attr, "", 0);
+		return CKR_OK;
 	
 	default:
 		break;
@@ -595,4 +596,31 @@ gkr_pk_pubkey_get_algorithm (GkrPkPubkey *key)
 	if (!load_public_key (key))
 		return 0;
 	return key->pub->algorithm;
+}
+
+CK_RV
+gkr_pk_pubkey_allowed_mechanisms (int algorithm, CK_ATTRIBUTE_PTR attr)
+{
+	CK_MECHANISM_TYPE mechanisms[3];
+	CK_ULONG n_mechanisms;
+	
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	
+	switch (algorithm) {
+	case GCRY_PK_RSA:
+		mechanisms[0] = CKM_RSA_PKCS;
+		mechanisms[1] = CKM_RSA_X_509;
+		n_mechanisms = 2;
+		break;
+	case GCRY_PK_DSA:
+		mechanisms[0] = CKM_DSA;
+		n_mechanisms = 1;
+		break;
+	default:
+		n_mechanisms = 0;
+		break;
+	}
+	
+	gkr_pk_attribute_set_data (attr, mechanisms, sizeof(CK_MECHANISM_TYPE) * n_mechanisms);
+	return CKR_OK;
 }

@@ -324,6 +324,7 @@ session_C_GetSessionInfo (SessionInfo *sinfo, GkrPkcs11Message *req,
 	flags = 0;
 	if (!sinfo->readonly)
 		flags |= CKF_RW_SESSION;
+	
 	write_session_info (resp, 0, state, flags, sinfo->deverror);
 
 	return CKR_OK;
@@ -377,14 +378,17 @@ session_C_Login (SessionInfo *sinfo, GkrPkcs11Message *req,
 	if (!read_byte_array (req, &pin, &pin_len))
 		return PROTOCOL_ERROR;
 
-	if (user_type != CKU_USER) {
+	if (user_type == CKU_SO) {
 
 		/* Readonly session, SO can't log in */
 		if (sinfo->readonly)
 			return CKR_SESSION_READ_ONLY_EXISTS;
 		
 		/* Actually SO can't log in at all ... */
-		/* PKCS#11 QUESTION: What should we really be returning here? */
+		return CKR_USER_TYPE_INVALID;
+		
+	} else {
+		
 		return CKR_USER_TYPE_INVALID;
 	}
 	
@@ -1449,7 +1453,7 @@ session_process (SessionInfo *sinfo, GkrPkcs11Message *req,
 		 * When there's an error any operation automatically done.
 		 * We make an exception for functions which we don't implement. 
 		 */
-		if (ret != CKR_FUNCTION_NOT_SUPPORTED)
+		if (ret != CKR_FUNCTION_NOT_SUPPORTED && ret != CKR_OPERATION_ACTIVE)
 			finish_operation (sinfo);
 		
 		gkr_pkcs11_message_prep (resp, PKCS11_CALL_ERROR, GKR_PKCS11_RESPONSE);

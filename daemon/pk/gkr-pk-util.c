@@ -251,7 +251,7 @@ gkr_pk_attribute_set_string (CK_ATTRIBUTE_PTR attr, const gchar *str)
 	g_assert (attr);
 	g_assert (str);
 	
-	gkr_pk_attribute_set_data (attr, str, strlen (str) + 1);
+	gkr_pk_attribute_set_data (attr, str, strlen (str));
 }
 
 void

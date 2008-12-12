@@ -462,7 +462,7 @@ two_to_four_digit_year (int year)
 	struct tm tm;
 	int century, current;
 	
-	g_return_val_if_fail (year > 0 && year <= 99, -1);
+	g_return_val_if_fail (year >= 0 && year <= 99, -1);
 	
 	/* Get the current year */
 	now = time (NULL);
