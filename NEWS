@@ -1,3 +1,19 @@
+Changes in version 2.25.2 are:
+* Fix PKCS#11 corner cases highlighted by p11-tests tool.
+* Solaris fixes [Halton Huo, Jeff Cai]
+* Don't use non-pageable memory for public keys.
+* Rework initialization of daemon, and the way that it integrates
+  with the session.
+* Close open file descriptors before starting daemon from PAM module.
+* Don't try and unlock keyring from PAM if daemon isn't 
+  running. [Vincent Untz]
+* Don't leave keyring daemon running if PAM just started it for 
+  a password change. [Vincent Untz]
+* Add a keyboard accelerator to the 'Deny' button. [Gabor Kelemen]
+* Use pkg-config to detect libtasn1. [Jeff Cai]
+* Register environment variables with session properly.
+* Make DBUS a required dependency of gnome-keyring. 
+
 Changes in version 2.25.1 are: 
 * Remove usage of deprecated glib/gtk stuff.
 

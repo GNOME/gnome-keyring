@@ -1,3 +1,10 @@
+=== gnome-keyring 2.25.2 ===
+
+2008-12-12  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* NEWS: Release version 2.25.2
+
 2008-12-12  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pk/gkr-pk-cert.c:
