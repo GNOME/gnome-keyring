@@ -1,3 +1,7 @@
+2007-12-12  Halton Huo <halton.huo@sun.com>
+
+	* pam/gkr-pam-module.c: Allow build on Solaris PAM. Fixes bug #559232.
+
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pkix/gkr-pkix-asn1.c:

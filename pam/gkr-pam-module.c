@@ -77,6 +77,14 @@ enum {
 #define PAM_AUTHTOK_RECOVER_ERR PAM_AUTHTOK_RECOVERY_ERR
 #endif
 
+#ifndef PAM_EXTERN
+#ifdef PAM_STATIC
+#define PAM_EXTERN static
+#else
+#define PAM_EXTERN extern
+#endif
+#endif
+
 /* -----------------------------------------------------------------------------
  * HELPERS 
  */
