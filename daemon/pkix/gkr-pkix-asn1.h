@@ -67,6 +67,9 @@ gboolean           gkr_pkix_asn1_write_uint                    (ASN1_TYPE asn, c
 gboolean           gkr_pkix_asn1_read_mpi                      (ASN1_TYPE asn, const gchar *part, 
                                                                 gcry_mpi_t *mpi);
 
+gboolean           gkr_pkix_asn1_read_secure_mpi               (ASN1_TYPE asn, const gchar *part, 
+                                                                gcry_mpi_t *mpi);
+
 gboolean           gkr_pkix_asn1_write_mpi                     (ASN1_TYPE asn, const gchar *part, 
                                                                 gcry_mpi_t mpi);
                                                                 

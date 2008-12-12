@@ -378,6 +378,26 @@ gkr_pkix_asn1_read_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi)
   	gsize sz;
   	guchar *buf;
 
+	buf = gkr_pkix_asn1_read_value (asn, part, &sz, (GkrBufferAllocator)g_realloc);
+	if (!buf)
+		return FALSE;
+	
+	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_STD, buf, sz, &sz);
+	g_free (buf);
+
+	if (gcry != 0)
+		return FALSE;
+	
+	return TRUE;
+}
+
+gboolean
+gkr_pkix_asn1_read_secure_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi)
+{
+  	gcry_error_t gcry;
+  	gsize sz;
+  	guchar *buf;
+
 	buf = gkr_pkix_asn1_read_value (asn, part, &sz, gkr_secure_realloc);
 	if (!buf)
 		return FALSE;

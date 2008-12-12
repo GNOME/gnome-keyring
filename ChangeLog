@@ -1,5 +1,12 @@
 2008-12-11  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pkix/gkr-pkix-asn1.c:
+	* daemon/pkix/gkr-pkix-asn1.h: 
+	* daemon/pkix/gkr-pkix-der.c: Only allocate secure memory 
+	for secret key MPIs. 
+	
+2008-12-11  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-crypto.c:
 	* common/gkr-secure-memory.c:
 	* common/gkr-secure-memory.h:

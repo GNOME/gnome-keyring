@@ -190,12 +190,12 @@ gkr_pkix_der_read_private_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t
 		goto done;
 	}
     
-	if (!gkr_pkix_asn1_read_mpi (asn, "modulus", &n) || 
-	    !gkr_pkix_asn1_read_mpi (asn, "publicExponent", &e) ||
-	    !gkr_pkix_asn1_read_mpi (asn, "privateExponent", &d) ||
-	    !gkr_pkix_asn1_read_mpi (asn, "prime1", &p) ||
-	    !gkr_pkix_asn1_read_mpi (asn, "prime2", &q) || 
-	    !gkr_pkix_asn1_read_mpi (asn, "coefficient", &u))
+	if (!gkr_pkix_asn1_read_secure_mpi (asn, "modulus", &n) || 
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "publicExponent", &e) ||
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "privateExponent", &d) ||
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "prime1", &p) ||
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "prime2", &q) || 
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "coefficient", &u))
 		goto done;
 		
 	/* Fix up the incoming key so gcrypt likes it */    	
@@ -360,11 +360,11 @@ gkr_pkix_der_read_private_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t
 	
 	ret = GKR_PKIX_FAILURE;
     
-	if (!gkr_pkix_asn1_read_mpi (asn, "p", &p) || 
-	    !gkr_pkix_asn1_read_mpi (asn, "q", &q) ||
-	    !gkr_pkix_asn1_read_mpi (asn, "g", &g) ||
-	    !gkr_pkix_asn1_read_mpi (asn, "Y", &y) ||
-	    !gkr_pkix_asn1_read_mpi (asn, "priv", &x))
+	if (!gkr_pkix_asn1_read_secure_mpi (asn, "p", &p) || 
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "q", &q) ||
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "g", &g) ||
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "Y", &y) ||
+	    !gkr_pkix_asn1_read_secure_mpi (asn, "priv", &x))
 		goto done;
 		
 	res = gcry_sexp_build (s_key, NULL, SEXP_PRIVATE_DSA, p, q, g, y, x);
@@ -409,12 +409,12 @@ gkr_pkix_der_read_private_key_dsa_parts (const guchar *keydata, gsize n_keydata,
 	
 	ret = GKR_PKIX_FAILURE;
     
-	if (!gkr_pkix_asn1_read_mpi (asn_params, "p", &p) || 
-	    !gkr_pkix_asn1_read_mpi (asn_params, "q", &q) ||
-	    !gkr_pkix_asn1_read_mpi (asn_params, "g", &g))
+	if (!gkr_pkix_asn1_read_secure_mpi (asn_params, "p", &p) || 
+	    !gkr_pkix_asn1_read_secure_mpi (asn_params, "q", &q) ||
+	    !gkr_pkix_asn1_read_secure_mpi (asn_params, "g", &g))
 	    	goto done;
 	    	
-	if (!gkr_pkix_asn1_read_mpi (asn_key, "", &x))
+	if (!gkr_pkix_asn1_read_secure_mpi (asn_key, "", &x))
 		goto done;
 
 	/* Now we calculate y */
