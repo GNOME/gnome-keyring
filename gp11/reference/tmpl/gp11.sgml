@@ -2504,6 +2504,11 @@ GP11Object
 
 </para>
 
+<!-- ##### ARG GP11Object:slot ##### -->
+<para>
+
+</para>
+
 <!-- ##### FUNCTION gp11_object_get_type ##### -->
 <para>
 
@@ -2517,7 +2522,7 @@ GP11Object
 
 </para>
 
-@session: 
+@slot: 
 @handle: 
 @Returns: 
 
@@ -2527,7 +2532,7 @@ GP11Object
 
 </para>
 
-@session: 
+@slot: 
 @attr: 
 @Returns: 
 

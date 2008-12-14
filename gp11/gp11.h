@@ -1197,6 +1197,7 @@ struct _GP11Object {
 	GObject parent;
 	
 	GP11Module *module;
+	GP11Slot *slot;
 	GP11Session *session;
 	CK_OBJECT_HANDLE handle;
 };
@@ -1207,13 +1208,18 @@ struct _GP11ObjectClass {
 
 GType               gp11_object_get_type                    (void) G_GNUC_CONST;
 
-GP11Object*         gp11_object_from_handle                 (GP11Session *session, 
+GP11Object*         gp11_object_from_handle                 (GP11Slot *slot, 
                                                              CK_OBJECT_HANDLE handle);
 
-GList*              gp11_objects_from_handle_array          (GP11Session *session,
+GList*              gp11_objects_from_handle_array          (GP11Slot *slot,
                                                              const GP11Attribute *attr);
 
 CK_OBJECT_HANDLE    gp11_object_get_handle                  (GP11Object *object);
+
+GP11Session*        gp11_object_get_session                 (GP11Object *object);
+
+void                gp11_object_set_session                 (GP11Object *object,
+                                                             GP11Session *session);
 
 #ifdef UNIMPLEMENTED
 

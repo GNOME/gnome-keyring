@@ -1,3 +1,15 @@
+2008-12-13  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h
+	* gp11/gp11-call.c:
+	* gp11/gp11-object.c:
+	* gp11/gp11-private.h:
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c:
+	* gp11/gp11-test-gp11-object.c: Don't tie an object to a session unless
+	explicitly requested. Automatically open a session for object operations
+	(usually pooled).
+	
 2008-12-12  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number.

@@ -354,7 +354,7 @@ gp11_session_login_async (GP11Session *session, gulong user_type, const guchar *
 	args->pin = pin && n_pin ? g_memdup (pin, n_pin) : NULL;
 	args->n_pin = n_pin;
 	
-	_gp11_call_async_go (args, cancellable, callback, user_data);
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 
 }
 
@@ -371,7 +371,7 @@ gp11_session_login_async (GP11Session *session, gulong user_type, const guchar *
 gboolean
 gp11_session_login_finish (GP11Session *session, GAsyncResult *result, GError **err)
 {
-	return _gp11_call_basic_finish (session, result, err);
+	return _gp11_call_basic_finish (result, err);
 }
 
 
@@ -432,7 +432,7 @@ gp11_session_logout_async (GP11Session *session, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	GP11Arguments *args = _gp11_call_async_prep (session, session, perform_logout, 0, NULL);
-	_gp11_call_async_go (args, cancellable, callback, user_data);
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
 /**
@@ -448,7 +448,7 @@ gp11_session_logout_async (GP11Session *session, GCancellable *cancellable,
 gboolean
 gp11_session_logout_finish (GP11Session *session, GAsyncResult *result, GError **err)
 {
-	return _gp11_call_basic_finish (session, result, err);
+	return _gp11_call_basic_finish (result, err);
 }
 
 
@@ -546,7 +546,7 @@ gp11_session_create_object_full (GP11Session *session, GP11Attributes *attrs,
 	CreateObject args = { GP11_ARGUMENTS_INIT, attrs, 0 };
 	if (!_gp11_call_sync (session, perform_create_object, &args, cancellable, err))
 		return NULL;
-	return gp11_object_from_handle (session, args.object);
+	return gp11_object_from_handle (session->slot, args.object);
 }
 
 /**
@@ -569,7 +569,7 @@ gp11_session_create_object_async (GP11Session *session, GP11Attributes *attrs,
 	                                            sizeof (*args), free_create_object);
 	args->attrs = attrs;
 	gp11_attributes_ref (attrs);
-	_gp11_call_async_go (args, cancellable, callback, user_data);
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
 /**
@@ -587,10 +587,10 @@ gp11_session_create_object_finish (GP11Session *session, GAsyncResult *result, G
 {
 	CreateObject *args;
 	
-	if (!_gp11_call_basic_finish (session, result, err))
+	if (!_gp11_call_basic_finish (result, err))
 		return NULL;
 	args = _gp11_call_arguments (result, CreateObject);
-	return gp11_object_from_handle (session, args->object);
+	return gp11_object_from_handle (session->slot, args->object);
 }
 
 
@@ -673,7 +673,7 @@ objlist_from_handles (GP11Session *session, CK_OBJECT_HANDLE_PTR objects,
 	
 	while (n_objects > 0) {
 		results = g_list_prepend (results, 
-		                gp11_object_from_handle (session, objects[--n_objects]));
+		                gp11_object_from_handle (session->slot, objects[--n_objects]));
 	}
 	
 	return g_list_reverse (results);
@@ -772,7 +772,7 @@ gp11_session_find_objects_async (GP11Session *session, GP11Attributes *attrs,
 	                                           sizeof (*args), free_find_objects);
 	args->attrs = attrs;
 	gp11_attributes_ref (attrs);
-	_gp11_call_async_go (args, cancellable, callback, user_data);
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
 /**
@@ -790,7 +790,7 @@ gp11_session_find_objects_finish (GP11Session *session, GAsyncResult *result, GE
 {
 	FindObjects *args;
 	
-	if (!_gp11_call_basic_finish (session, result, err))
+	if (!_gp11_call_basic_finish (result, err))
 		return NULL;
 	args = _gp11_call_arguments (result, FindObjects);
 	return objlist_from_handles (session, args->objects, args->n_objects);

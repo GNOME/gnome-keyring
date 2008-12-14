@@ -917,6 +917,7 @@ void
 gp11_slot_open_session_async (GP11Slot *slot, gulong flags, GCancellable *cancellable, 
                               GAsyncReadyCallback callback, gpointer user_data)
 {
+	GP11Call *call;
 	OpenSession *args = _gp11_call_async_prep (slot, slot, perform_open_session,
 	                                           sizeof (*args), NULL);
 	
@@ -924,10 +925,11 @@ gp11_slot_open_session_async (GP11Slot *slot, gulong flags, GCancellable *cancel
 	args->session = pop_session_table (slot, flags);
 	args->flags = flags;
 	
+	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
 	if (args->session)
-		_gp11_call_async_short (args, callback, user_data);
+		_gp11_call_async_short (call, CKR_OK);
 	else
-		_gp11_call_async_go (args, cancellable, callback, user_data);
+		_gp11_call_async_go (call);
 }
 
 /**
@@ -946,7 +948,7 @@ gp11_slot_open_session_finish (GP11Slot *slot, GAsyncResult *result, GError **er
 {
 	OpenSession *args;
 	
-	if (!_gp11_call_basic_finish (slot, result, err))
+	if (!_gp11_call_basic_finish (result, err))
 		return NULL;
 	
 	args = _gp11_call_arguments (result, OpenSession);

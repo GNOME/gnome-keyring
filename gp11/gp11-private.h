@@ -126,17 +126,26 @@ gpointer           _gp11_call_async_prep                  (gpointer object,
                                                            gsize args_size,
                                                            gpointer destroy_func);
 
-void               _gp11_call_async_go                    (gpointer args, 
+GP11Call*          _gp11_call_async_ready                 (gpointer args, 
                                                            GCancellable *cancellable, 
                                                            GAsyncReadyCallback callback, 
                                                            gpointer user_data);
 
-void                _gp11_call_async_short                (gpointer data, 
-                                                           GAsyncReadyCallback callback,
+void               _gp11_call_async_go                    (GP11Call *call);
+
+void               _gp11_call_async_ready_go              (gpointer args, 
+                                                           GCancellable *cancellable, 
+                                                           GAsyncReadyCallback callback, 
                                                            gpointer user_data);
 
-gboolean           _gp11_call_basic_finish                (gpointer object,
-                                                           GAsyncResult *result,
+
+void               _gp11_call_async_short                 (GP11Call *call, 
+                                                           CK_RV rv);
+
+gboolean           _gp11_call_basic_finish                (GAsyncResult *result,
                                                            GError **err);
+
+void               _gp11_call_async_object                (GP11Call *call,
+                                                           gpointer object);
 
 #endif /* GP11_PRIVATE_H_ */

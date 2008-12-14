@@ -361,10 +361,9 @@ _gp11_call_async_prep (gpointer object, gpointer cb_object, gpointer func,
                        gsize args_size, gpointer destroy)
 {
 	GP11Arguments *args;
-	GP11Module *module;
 	GP11Call *call;
 
-	g_assert (G_IS_OBJECT (object));
+	g_assert (!object || G_IS_OBJECT (object));
 	g_assert (func);
 	
 	if (!destroy)
@@ -375,11 +374,6 @@ _gp11_call_async_prep (gpointer object, gpointer cb_object, gpointer func,
 	g_assert (args_size >= sizeof (GP11Arguments));
 	
 	args = g_malloc0 (args_size);
-	g_object_get (object, "module", &module, "handle", &args->handle, NULL);
-	g_assert (GP11_IS_MODULE (module));
-	args->pkcs11 = module->funcs;
-	g_object_unref (module);
-	
 	call = g_object_new (GP11_TYPE_CALL, NULL);
 	call->destroy = (GDestroyNotify)destroy;
 	call->func = (GP11CallFunc)func;
@@ -390,31 +384,32 @@ _gp11_call_async_prep (gpointer object, gpointer cb_object, gpointer func,
 	call->args = args;
 	call->args->call = call;
 
+	/* Setup call object if available */
+	if (object != NULL)
+		_gp11_call_async_object (call, object);
+
 	return args;
 }
 
-void 
-_gp11_call_async_short (gpointer data, GAsyncReadyCallback callback,
-                        gpointer user_data)
+void
+_gp11_call_async_object (GP11Call *call, gpointer object)
 {
-	GP11Arguments *args = (GP11Arguments*)data;
+	GP11Module *module;
 	
-	g_assert (GP11_IS_CALL (args->call));
+	g_assert (GP11_IS_CALL (call));
+	g_assert (call->args);
 	
-	args->call->callback = callback;
-	args->call->user_data = user_data;
-	
-	/* Already complete, so just push it for processing in main loop */
-	g_assert (completed_queue);
-	g_async_queue_push (completed_queue, args->call);
+	g_object_get (object, "module", &module, "handle", &call->args->handle, NULL);
+	g_assert (GP11_IS_MODULE (module));
+	call->args->pkcs11 = module->funcs;
+	g_object_unref (module);
 }
 
-void
-_gp11_call_async_go (gpointer data, GCancellable *cancellable, 
-                     GAsyncReadyCallback callback, gpointer user_data)
+GP11Call*
+_gp11_call_async_ready (gpointer data, GCancellable *cancellable, 
+                        GAsyncReadyCallback callback, gpointer user_data)
 {
 	GP11Arguments *args = (GP11Arguments*)data;
-	
 	g_assert (GP11_IS_CALL (args->call));
 	
 	args->call->cancellable = cancellable;
@@ -426,12 +421,29 @@ _gp11_call_async_go (gpointer data, GCancellable *cancellable,
 	args->call->callback = callback;
 	args->call->user_data = user_data;
 	
+	return args->call;
+}
+
+void
+_gp11_call_async_go (GP11Call *call)
+{
+	g_assert (GP11_IS_CALL (call));
+	g_assert (call->args->pkcs11);
+	
 	g_assert (thread_pool);
-	g_thread_pool_push (thread_pool, args->call, NULL);
+	g_thread_pool_push (thread_pool, call, NULL);
+}
+
+void
+_gp11_call_async_ready_go (gpointer data, GCancellable *cancellable, 
+                           GAsyncReadyCallback callback, gpointer user_data)
+{
+	GP11Call *call = _gp11_call_async_ready (data, cancellable, callback, user_data);
+	_gp11_call_async_go (call);
 }
 
 gboolean
-_gp11_call_basic_finish (gpointer object, GAsyncResult *result, GError **err)
+_gp11_call_basic_finish (GAsyncResult *result, GError **err)
 {
 	CK_RV rv;
 	
@@ -443,4 +455,16 @@ _gp11_call_basic_finish (gpointer object, GAsyncResult *result, GError **err)
 	
 	g_set_error (err, GP11_ERROR, rv, "%s", gp11_message_from_rv (rv));
 	return FALSE;	
+}
+
+void
+_gp11_call_async_short (GP11Call *call, CK_RV rv)
+{
+	g_assert (GP11_IS_CALL (call));
+	
+	call->rv = rv;
+
+	/* Already complete, so just push it for processing in main loop */
+	g_assert (completed_queue);
+	g_async_queue_push (completed_queue, call);
 }
