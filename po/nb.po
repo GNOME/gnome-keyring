@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.21.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-07 09:40+0200\n"
-"PO-Revision-Date: 2008-10-07 09:45+0200\n"
+"POT-Creation-Date: 2008-12-15 21:34+0100\n"
+"PO-Revision-Date: 2008-12-15 21:34+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -346,7 +346,10 @@ msgid ""
 "A list of paths to PKCS#11 modules to load. No modules are currently listed "
 "by default, as this is still an experimental feature. This is used by "
 "seahorse and other PKCS#11 aware applications."
-msgstr "En liste med stier til PKCS#11-moduler som skal lastes. Ingen moduler er lagt til i listen som forvalg da dette fremdeles er en eksperimentell funksjon. Dette brukes av seahorse og andre programmer som forstår PKCS#11."
+msgstr ""
+"En liste med stier til PKCS#11-moduler som skal lastes. Ingen moduler er "
+"lagt til i listen som forvalg da dette fremdeles er en eksperimentell "
+"funksjon. Dette brukes av seahorse og andre programmer som forstår PKCS#11."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
@@ -702,8 +705,8 @@ msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 
 #: ../daemon/ui/gkr-ask-tool.c:679
-msgid "Deny"
-msgstr "Nekt"
+msgid "_Deny"
+msgstr "Ne_kt"
 
 #: ../daemon/ui/gkr-ask-tool.c:691
 msgid "C_reate"
@@ -1041,34 +1044,34 @@ msgstr "Signaturforespørselen ble avvist av bruker"
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: ../library/gnome-keyring-utils.c:91
+#: ../library/gnome-keyring-utils.c:155
 msgid "Access Denied"
 msgstr "Tilgang nektet"
 
-#: ../library/gnome-keyring-utils.c:93
+#: ../library/gnome-keyring-utils.c:157
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Programmet gnome-keyring-daemon kjører ikke."
 
-#: ../library/gnome-keyring-utils.c:95
+#: ../library/gnome-keyring-utils.c:159
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Feil ved kommunikasjon med gnome-keyring-daemon"
 
-#: ../library/gnome-keyring-utils.c:97
+#: ../library/gnome-keyring-utils.c:161
 msgid "A keyring with that name already exists"
 msgstr "En nøkkelring med dette navnet eksisterer allerede"
 
-#: ../library/gnome-keyring-utils.c:99
+#: ../library/gnome-keyring-utils.c:163
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programfeil: Programmet sendte ugyldige data."
 
-#: ../library/gnome-keyring-utils.c:101
+#: ../library/gnome-keyring-utils.c:165
 msgid "No matching results"
 msgstr "Ingen treff"
 
-#: ../library/gnome-keyring-utils.c:103
+#: ../library/gnome-keyring-utils.c:167
 msgid "A keyring with that name does not exist."
 msgstr "Det finnes ingen nøkkelring med dette navnet."
 
-#: ../library/gnome-keyring-utils.c:110
+#: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "Nøkkelringen er allerede låst opp."
