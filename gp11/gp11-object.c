@@ -49,7 +49,8 @@ run_call_with_session (GP11Call *call, GP11Session *session)
 	g_assert (GP11_IS_SESSION (session));
 	
 	/* Hold onto this session for the length of the call */
-	g_object_set_data_full (G_OBJECT (call), "call-opened-session", session, g_object_unref);
+	g_object_set_data_full (G_OBJECT (call), "call-opened-session", 
+	                        g_object_ref (session), g_object_unref);
 
 	_gp11_call_async_object (call, session);
 	_gp11_call_async_go (call);	
@@ -71,9 +72,11 @@ opened_session (GObject *obj, GAsyncResult *result, gpointer user_data)
 	if (!session) {
 		_gp11_call_async_short (user_data, err->code);
 		g_error_free (err);
+		return;
 	}
 
 	run_call_with_session (GP11_CALL (user_data), session);
+	g_object_unref (session);
 }
 
 static void

@@ -200,7 +200,9 @@ pop_session_table (GP11Slot *slot, gulong flags)
 	result = g_array_index (pool->sessions, CK_SESSION_HANDLE, pool->sessions->len - 1);
 	g_assert (result != 0);
 	g_array_remove_index_fast (pool->sessions, pool->sessions->len - 1);
-	
+	if (!pool->sessions->len)
+		g_hash_table_remove(pv->open_sessions, &flags);
+
 	return result;
 }
 
@@ -272,12 +274,15 @@ reuse_session_handle (GP11Session *session, GP11Slot *slot)
 	 */
 	flags = g_object_get_data (G_OBJECT (session), "gp11-open-session-flags");
 	g_return_if_fail (flags);
-	if ((*flags & info.flags) != *flags)
+	if ((*flags & info.flags) != *flags) {
+g_message ("discarding session, wrong flags");
 		return;
+	}
 	
 	/* Keep this one around for later use */
 	push_session_table (slot, *flags, session->handle);
 	session->handle = 0;
+g_message ("keeping the session for reuse");
 }
 
 static GP11Session*

@@ -139,6 +139,23 @@ process_result (GP11Call *call, gpointer unused)
 }
 
 static gboolean
+process_completed (void)
+{
+	gpointer call;
+
+	g_assert (completed_queue);
+
+	call = g_async_queue_try_pop (completed_queue);
+	if (call) {
+		process_result (call, NULL);
+		g_object_unref (call);
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+static gboolean
 completed_prepare(GSource* source, gint *timeout)
 {
 	gboolean have;
@@ -158,17 +175,7 @@ completed_check(GSource* source)
 static gboolean
 completed_dispatch(GSource* source, GSourceFunc callback, gpointer user_data)
 {
-	gpointer *call;
-	
-	g_assert (completed_queue);
-	g_assert (callback);
-	
-	call = g_async_queue_try_pop (completed_queue);
-	if (call) {
-		((GFunc)callback) (call, user_data);
-		g_object_unref (call);
-	}
-
+	process_completed ();
 	return TRUE;
 }
 
@@ -253,7 +260,7 @@ _gp11_call_class_init (GP11CallClass *klass)
 	gobject_class->finalize = _gp11_call_finalize;
 	
 	g_assert (!thread_pool);
-	thread_pool = g_thread_pool_new ((GFunc)process_async_call, NULL, -1, FALSE, &err);
+	thread_pool = g_thread_pool_new ((GFunc)process_async_call, NULL, 16, FALSE, &err);
 	if (!thread_pool) {
 		g_critical ("couldn't create thread pool: %s", 
 		            err && err->message ? err->message : "");
@@ -271,7 +278,7 @@ _gp11_call_class_init (GP11CallClass *klass)
 	g_assert (!completed_id);
 	src = g_source_new (&completed_functions, sizeof (GSource));
 	completed_id = g_source_attach (src, context);
-	g_source_set_callback (src, (GSourceFunc)process_result, NULL, NULL);
+	g_source_set_callback (src, NULL, NULL, NULL);
 	g_source_unref (src);
 }
 
@@ -429,7 +436,10 @@ _gp11_call_async_go (GP11Call *call)
 {
 	g_assert (GP11_IS_CALL (call));
 	g_assert (call->args->pkcs11);
-	
+
+	/* To keep things balanced, process at one completed event */
+	process_completed();
+
 	g_assert (thread_pool);
 	g_thread_pool_push (thread_pool, call, NULL);
 }
