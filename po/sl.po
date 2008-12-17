@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-10 13:31+0000\n"
-"PO-Revision-Date: 2008-09-12 12:55+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&amp;component=general\n"
+"POT-Creation-Date: 2008-12-15 20:47+0000\n"
+"PO-Revision-Date: 2008-12-17 20:01+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -534,63 +534,63 @@ msgstr "Ni mogoče šifrirati SSH ključa in ga shraniti."
 msgid "Couldn't encode the SSH key to store it."
 msgstr "Ni mogoče kodirati SSH ključa in ga shraniti."
 
-#: ../daemon/ui/gkr-ask-tool.c:182
+#: ../daemon/ui/gkr-ask-tool.c:244
 msgid "Store passwords unencrypted?"
 msgstr "Shranim gesla nešifrirana?"
 
-#: ../daemon/ui/gkr-ask-tool.c:183
+#: ../daemon/ui/gkr-ask-tool.c:245
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop to takih gesel ima vsak, ki ima tudi dostop do računalnika."
 
-#: ../daemon/ui/gkr-ask-tool.c:190
+#: ../daemon/ui/gkr-ask-tool.c:252
 msgid "Use Unsafe Storage"
 msgstr "Uporabi nevarno shranjevanje"
 
-#: ../daemon/ui/gkr-ask-tool.c:413
+#: ../daemon/ui/gkr-ask-tool.c:479
 msgid "_Location:"
 msgstr "_Položaj:"
 
-#: ../daemon/ui/gkr-ask-tool.c:426
+#: ../daemon/ui/gkr-ask-tool.c:492
 msgid "_Old password:"
 msgstr "_Staro geslo:"
 
-#: ../daemon/ui/gkr-ask-tool.c:446
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Password:"
 msgstr "_Geslo:"
 
-#: ../daemon/ui/gkr-ask-tool.c:468
+#: ../daemon/ui/gkr-ask-tool.c:534
 msgid "_Confirm password:"
 msgstr "_Potrdi geslo:"
 
-#: ../daemon/ui/gkr-ask-tool.c:488
+#: ../daemon/ui/gkr-ask-tool.c:554
 msgid "New password strength"
 msgstr "Varnost novega gesla"
 
-#: ../daemon/ui/gkr-ask-tool.c:546
+#: ../daemon/ui/gkr-ask-tool.c:612
 msgid "Passwords do not match."
 msgstr "Gesli se ne ujemata."
 
-#: ../daemon/ui/gkr-ask-tool.c:562
+#: ../daemon/ui/gkr-ask-tool.c:628
 msgid "Password cannot be blank"
 msgstr "Geslo ne sme biti prazno."
 
-#: ../daemon/ui/gkr-ask-tool.c:613
-msgid "Deny"
-msgstr "Zavrni"
+#: ../daemon/ui/gkr-ask-tool.c:679
+msgid "_Deny"
+msgstr "_Zavrni"
 
-#: ../daemon/ui/gkr-ask-tool.c:625
+#: ../daemon/ui/gkr-ask-tool.c:691
 msgid "C_reate"
 msgstr "Ustva_ri"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:695
 msgid "C_hange"
 msgstr "S_prememeni"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:699
 msgid "Allow _Once"
 msgstr "Dovoli enkrat"
 
-#: ../daemon/ui/gkr-ask-tool.c:637
+#: ../daemon/ui/gkr-ask-tool.c:703
 msgid "_Always Allow"
 msgstr "Vedno dovoli"
 
@@ -914,35 +914,35 @@ msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
 msgid "Unknown error"
 msgstr "Neznana napaka"
 
-#: ../library/gnome-keyring-utils.c:91
+#: ../library/gnome-keyring-utils.c:155
 msgid "Access Denied"
 msgstr "Dostop zavrnjen"
 
-#: ../library/gnome-keyring-utils.c:93
+#: ../library/gnome-keyring-utils.c:157
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Demn zbirke ključev ne teče."
 
-#: ../library/gnome-keyring-utils.c:95
+#: ../library/gnome-keyring-utils.c:159
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Napaka med povezovanjem z demonom zbirke ključev"
 
-#: ../library/gnome-keyring-utils.c:97
+#: ../library/gnome-keyring-utils.c:161
 msgid "A keyring with that name already exists"
 msgstr "Zbirka ključev s tem imenom že obstaja"
 
-#: ../library/gnome-keyring-utils.c:99
+#: ../library/gnome-keyring-utils.c:163
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programska napaka: Program je poslal neveljavne podatke."
 
-#: ../library/gnome-keyring-utils.c:101
+#: ../library/gnome-keyring-utils.c:165
 msgid "No matching results"
 msgstr "Ni zadetkov iskanja"
 
-#: ../library/gnome-keyring-utils.c:103
+#: ../library/gnome-keyring-utils.c:167
 msgid "A keyring with that name does not exist."
 msgstr "Zbirka ključev s tem imenom ne obstaja."
 
-#: ../library/gnome-keyring-utils.c:110
+#: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "Zbirka ključev je že odklenjena."
 
