@@ -47,6 +47,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define DEBUG_OUTPUT 0
+
 /* TODO: module fini should call finalize_common */
 
 /* 
@@ -128,7 +130,7 @@ gkr_pkcs11_warn (const char* msg, ...)
 	va_end (va);
 }
 
-#ifdef _DEBUG 
+#if DEBUG_OUTPUT
 
 static void 
 gkr_pkcs11_debug (const char* msg, ...)
@@ -141,11 +143,11 @@ gkr_pkcs11_debug (const char* msg, ...)
 
 #define DBG(x) 	gkr_pkcs11_debug x
 
-#else /* !_DEBUG */
+#else /* !DEBUG_OUTPUT */
 
 #define DBG(x)	
 
-#endif /* _DEBUG */
+#endif /* DEBUG_OUTPUT */
 
 
 /* -----------------------------------------------------------------------------

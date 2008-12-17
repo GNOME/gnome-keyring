@@ -1,5 +1,10 @@
 2008-12-17  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gkr-pkcs11-module.c: Disable debug output from
+	pkcs#11 module by default.
+	
+2008-12-17  Stef Walter  <stef@memberwebs.com>
+
 	* gp11/gp11-call.c: There was a problem when the main loop 
 	wasn't being run for periods of time, things would backup.
 	Now we process a result for every async call we make.
