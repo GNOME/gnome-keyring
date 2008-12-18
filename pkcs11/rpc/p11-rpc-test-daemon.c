@@ -37,15 +37,16 @@
 #include <dlfcn.h>
 #include <pthread.h>
 
-#define SOCKET_PREFIX "/tmp/p11-rpc-daemon-sock"
+#define SOCKET_PATH "/tmp/p11-rpc-daemon.sock"
 
+/* Sample configuration for loading NSS remotely */
 static CK_C_INITIALIZE_ARGS p11_init_args = {
 	NULL,
         NULL,
         NULL,
         NULL,
         CKF_OS_LOCKING_OK,
-        NULL
+        "init-string = configdir='/tmp' certPrefix='' keyPrefix='' secmod='/tmp/secmod.db' flags="
 };
 
 static int is_running = 1;
@@ -57,7 +58,7 @@ p11_rpc_log (const char *line)
 }
 
 void*
-p11_rpc_create_thread (void (*thread_func) (void*), void* thread_arg)
+p11_rpc_create_child (void (*thread_func) (void*), void* thread_arg)
 {
 	pthread_t *thread;
 	int error;
@@ -73,7 +74,7 @@ p11_rpc_create_thread (void (*thread_func) (void*), void* thread_arg)
 }
 
 void
-p11_rpc_join_thread (void *th)
+p11_rpc_join_child (void *th)
 {
 	pthread_t *thread = th;
 	void *value;
@@ -131,15 +132,17 @@ main (int argc, char *argv[])
 		errx (1, "couldn't get function list from C_GetFunctionList in libary: %s: 0x%08x", 
 		      argv[1], (int)rv);
 	
-	if (!p11_rpc_dispatch_init (SOCKET_PREFIX, funcs, &p11_init_args))
+	unlink (SOCKET_PATH);
+	if (!p11_rpc_dispatch_init (SOCKET_PATH, funcs, &p11_init_args))
 		exit (1);
 	
 	sock = p11_rpc_dispatch_fd ();
 	
 	is_running = 1;
 	while (is_running) {
+		FD_ZERO (&read_fds);
 		FD_SET (sock, &read_fds);
-		ret = select (sock, &read_fds, NULL, NULL, NULL);
+		ret = select (sock + 1, &read_fds, NULL, NULL, NULL);
 		if (ret < 0) {
 			if (errno == EINTR)
 				continue;

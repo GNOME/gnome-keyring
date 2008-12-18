@@ -69,12 +69,6 @@ static char pkcs11_socket_path[MAXPATHLEN] = { 0, };
  * LOGGING and DEBUGGING
  */
 
-void 
-p11_rpc_log (const char* line)
-{
-	fprintf (stderr, "%s\n", line);
-}
-
 #if DEBUG_OUTPUT
 #define debug(x) p11_rpc_debug x
 #else
@@ -84,100 +78,6 @@ p11_rpc_log (const char* line)
 
 #define return_val_if_fail(x, v) \
 	if (!(x)) { p11_rpc_warn ("'%s' not true at %s", #x, __func__); return v; } 
-
-/* -----------------------------------------------------------------------------
- * MODULE ARGUMENTS
- */
-
-static void
-parse_argument (char *arg)
-{
-	char *value;
-	
-	value = arg + strcspn (arg, ":=");
-	if (!*value)
-		value = NULL;
-	else 
-		*(value++) = 0;
-
-	/* Setup the socket path from the arguments */
-	if (strcmp (arg, "socket") == 0) {
-		strncpy (pkcs11_socket_path, value, sizeof (pkcs11_socket_path));
-		pkcs11_socket_path[sizeof (pkcs11_socket_path) - 1] = 0;		
-	} else {
-		warning(("unrecognized argument: %s", arg));
-	}
-}
-
-static void
-parse_arguments (const char *string) 
-{
-	char quote = '\0';
-	char *src, *dup, *at, *arg;
-	
-	if (!string)
-		return;
-	
-	src = dup = strdup (string);
-	if (!dup) {
-		warning (("couldn't allocate memory for argument string"));
-		return;
-	}
-
-	arg = at = src;
-	for (src = dup; *src; src++) {
-		
-		/* Matching quote */
-		if (quote == *src) {
-			quote = '\0';
-			
-		/* Inside of quotes */
-		} else if (quote != '\0') {
-			if (*src == '\\') {
-				*at++ = *src++;
-				if (!*src) {
-					warning (("couldn't parse argument string: %s", string));
-					goto done;
-				}
-				if (*src != quote) 
-					*at++ = '\\';
-			}
-			*at++ = *src;
-			
-		/* Space, not inside of quotes */
-		} else if (isspace(*src)) {
-			*at = 0;
-			parse_argument (arg);
-			arg = at;
-			
-		/* Other character outside of quotes */
-		} else {
-			switch (*src) {
-			case '\'':
-			case '"':
-				quote = *src;
-				break;
-			case '\\':
-				*at++ = *src++;
-				if (!*src) {
-					warning (("couldn't parse argument string: %s", string));
-					goto done;
-				}
-				/* fall through */
-			default:
-				*at++ = *src;
-				break;
-			}
-		}
-	}
-
-	
-	if (at != arg) 
-		parse_argument (arg);
-	
-done:
-	free (dup);
-}
 
 /* -----------------------------------------------------------------------------
  * CALL SESSION
@@ -217,7 +117,6 @@ call_connect (CallState *cs)
 	assert (cs);
 	assert (cs->socket == -1);
 	assert (cs->call_status == CALL_INVALID);
-	assert (pkcs11_initialized);
 	assert (pkcs11_socket_path[0]);
 	
 	debug (("connecting to: %s", pkcs11_socket_path));
@@ -556,10 +455,9 @@ call_run (CallState *cs)
 	/* If it's an error code then return it */
 	if (cs->resp->call_id == P11_RPC_CALL_ERROR) {
 
-		ret = p11_rpc_message_read_ulong (cs->resp, &ckerr);
-		if (ret != CKR_OK) {
+		if (!p11_rpc_message_read_ulong (cs->resp, &ckerr)) {
 			warning (("invalid error response from gnome-keyring-daemon: too short"));
-			return ret;
+			return CKR_DEVICE_ERROR;
 		}
 
 		if (ckerr <= CKR_OK) {
@@ -858,30 +756,15 @@ proto_write_mechanism (P11RpcMessage *msg, CK_MECHANISM_PTR mech)
 static CK_RV
 proto_read_info (P11RpcMessage *msg, CK_INFO_PTR info)
 {
-	CK_RV rv;
-	
 	assert (msg);
 	assert (info);
 
-	/* The version  */
-	rv = p11_rpc_message_read_version (msg, &info->cryptokiVersion);
-	if (rv != CKR_OK) return rv;
-	
-	/* The manufacturer */
-	rv = p11_rpc_message_read_space_string (msg, info->manufacturerID, 32);
-	if (rv != CKR_OK) return rv;
-
-	/* The flags */
-	rv = p11_rpc_message_read_ulong (msg, &info->flags);
-	if (rv != CKR_OK) return rv;
-	
-	/* The manufacturer */
-	rv = p11_rpc_message_read_space_string (msg, info->libraryDescription, 32);
-	if (rv != CKR_OK) return rv;
-	
-	/* The version  */
-	rv = p11_rpc_message_read_version (msg, &info->libraryVersion);
-	if (rv != CKR_OK) return rv;
+	if (!p11_rpc_message_read_version (msg, &info->cryptokiVersion) || 
+	    !p11_rpc_message_read_space_string (msg, info->manufacturerID, 32) ||
+	    !p11_rpc_message_read_ulong (msg, &info->flags) ||
+	    !p11_rpc_message_read_space_string (msg, info->libraryDescription, 32) ||
+	    !p11_rpc_message_read_version (msg, &info->libraryVersion))
+		return PARSE_ERROR;
 
 	return CKR_OK;
 }
@@ -889,30 +772,15 @@ proto_read_info (P11RpcMessage *msg, CK_INFO_PTR info)
 static CK_RV
 proto_read_slot_info (P11RpcMessage *msg, CK_SLOT_INFO_PTR info)
 {
-	CK_RV rv;
-	
 	assert (msg);
 	assert (info);
 
-	/* The description */
-	rv = p11_rpc_message_read_space_string (msg, info->slotDescription, 64);
-	if (rv != CKR_OK) return rv;
-
-	/* The manufacturer */
-	rv = p11_rpc_message_read_space_string (msg, info->manufacturerID, 32);
-	if (rv != CKR_OK) return rv;
-
-	/* The flags */
-	rv = p11_rpc_message_read_ulong (msg, &info->flags);
-	if (rv != CKR_OK) return rv;
-	
-	/* The hardware version  */
-	rv = p11_rpc_message_read_version (msg, &info->hardwareVersion);
-	if (rv != CKR_OK) return rv;
-	
-	/* The firmware version  */
-	rv = p11_rpc_message_read_version (msg, &info->firmwareVersion);
-	if (rv != CKR_OK) return rv;
+	if (!p11_rpc_message_read_space_string (msg, info->slotDescription, 64) ||
+	    !p11_rpc_message_read_space_string (msg, info->manufacturerID, 32) ||
+	    !p11_rpc_message_read_ulong (msg, &info->flags) ||
+	    !p11_rpc_message_read_version (msg, &info->hardwareVersion) ||
+	    !p11_rpc_message_read_version (msg, &info->firmwareVersion))
+		return PARSE_ERROR;
 
 	return CKR_OK;
 }
@@ -920,82 +788,28 @@ proto_read_slot_info (P11RpcMessage *msg, CK_SLOT_INFO_PTR info)
 static CK_RV
 proto_read_token_info (P11RpcMessage *msg, CK_TOKEN_INFO_PTR info)
 {
-	CK_RV rv;
-	
 	assert (msg);
 	assert (info);
 
-	/* The label */
-	rv = p11_rpc_message_read_space_string (msg, info->label, 32);
-	if (rv != CKR_OK) return rv;
-
-	/* The manufacturer */
-	rv = p11_rpc_message_read_space_string (msg, info->manufacturerID, 32);
-	if (rv != CKR_OK) return rv;
-	
-	/* The model */
-	rv = p11_rpc_message_read_space_string (msg, info->model, 16);
-	if (rv != CKR_OK) return rv;
-	
-	/* The serial number */
-	rv = p11_rpc_message_read_space_string (msg, info->serialNumber, 16);
-	if (rv != CKR_OK) return rv;
-
-	/* The flags */
-	rv = p11_rpc_message_read_ulong (msg, &info->flags);
-	if (rv != CKR_OK) return rv;
-
-	/* The max session count */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulMaxSessionCount);
-	if (rv != CKR_OK) return rv;
-
-	/* The session count */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulSessionCount);
-	if (rv != CKR_OK) return rv;
-	
-	/* The max rw session count */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulMaxRwSessionCount);
-	if (rv != CKR_OK) return rv;
-
-	/* The rw session count */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulRwSessionCount);
-	if (rv != CKR_OK) return rv;
-	
-	/* The max pin len */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulMaxPinLen);
-	if (rv != CKR_OK) return rv;
-
-	/* The min pin len */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulMinPinLen);
-	if (rv != CKR_OK) return rv;
-	
-	/* The total public memory */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulTotalPublicMemory);
-	if (rv != CKR_OK) return rv;
-	
-	/* The free public memory */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulFreePublicMemory);
-	if (rv != CKR_OK) return rv;
-
-	/* The total private memory */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulTotalPrivateMemory);
-	if (rv != CKR_OK) return rv;
-
-	/* The free private memory */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulFreePrivateMemory);
-	if (rv != CKR_OK) return rv;
-	
-	/* The hardware version  */
-	rv = p11_rpc_message_read_version (msg, &info->hardwareVersion);
-	if (rv != CKR_OK) return rv;
-	
-	/* The firmware version  */
-	rv = p11_rpc_message_read_version (msg, &info->firmwareVersion);
-	if (rv != CKR_OK) return rv;
-
-	/* The current utc time */
-	rv = p11_rpc_message_read_space_string (msg, info->utcTime, 16);
-	if (rv != CKR_OK) return rv;
+	if (!p11_rpc_message_read_space_string (msg, info->label, 32) ||
+	    !p11_rpc_message_read_space_string (msg, info->manufacturerID, 32) ||
+	    !p11_rpc_message_read_space_string (msg, info->model, 16) ||
+	    !p11_rpc_message_read_space_string (msg, info->serialNumber, 16) ||
+	    !p11_rpc_message_read_ulong (msg, &info->flags) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulMaxSessionCount) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulSessionCount) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulMaxRwSessionCount) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulRwSessionCount) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulMaxPinLen) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulMinPinLen) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulTotalPublicMemory) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulFreePublicMemory) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulTotalPrivateMemory) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulFreePrivateMemory) ||
+	    !p11_rpc_message_read_version (msg, &info->hardwareVersion) ||
+	    !p11_rpc_message_read_version (msg, &info->firmwareVersion) ||
+	    !p11_rpc_message_read_space_string (msg, info->utcTime, 16))
+		return PARSE_ERROR;
 	
 	return CKR_OK;
 }
@@ -1003,22 +817,13 @@ proto_read_token_info (P11RpcMessage *msg, CK_TOKEN_INFO_PTR info)
 static CK_RV
 proto_read_mechanism_info (P11RpcMessage *msg, CK_MECHANISM_INFO_PTR info)
 {
-	CK_RV rv;
-	
 	assert (msg);
 	assert (info);
 	
-	/* The min key size */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulMinKeySize);
-	if (rv != CKR_OK) return rv;
-
-	/* The max key size */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulMaxKeySize);
-	if (rv != CKR_OK) return rv;
-
-	/* The flags */
-	rv = p11_rpc_message_read_ulong (msg, &info->flags);
-	if (rv != CKR_OK) return rv;
+	if (!p11_rpc_message_read_ulong (msg, &info->ulMinKeySize) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulMaxKeySize) ||
+	    !p11_rpc_message_read_ulong (msg, &info->flags))
+		return PARSE_ERROR;
 	
 	return CKR_OK;
 }
@@ -1026,26 +831,14 @@ proto_read_mechanism_info (P11RpcMessage *msg, CK_MECHANISM_INFO_PTR info)
 static CK_RV
 proto_read_sesssion_info (P11RpcMessage *msg, CK_SESSION_INFO_PTR info)
 {
-	CK_RV rv;
-	
 	assert (msg);
 	assert (info);
 
-	/* The slot id */
-	rv = p11_rpc_message_read_ulong (msg, &info->slotID);
-	if (rv != CKR_OK) return rv;
-
-	/* The state */
-	rv = p11_rpc_message_read_ulong (msg, &info->state);
-	if (rv != CKR_OK) return rv;
-
-	/* The flags */
-	rv = p11_rpc_message_read_ulong (msg, &info->flags);
-	if (rv != CKR_OK) return rv;
-
-	/* The device error code */
-	rv = p11_rpc_message_read_ulong (msg, &info->ulDeviceError);
-	if (rv != CKR_OK) return rv;
+	if (!p11_rpc_message_read_ulong (msg, &info->slotID) ||
+	    !p11_rpc_message_read_ulong (msg, &info->state) ||
+	    !p11_rpc_message_read_ulong (msg, &info->flags) ||
+	    !p11_rpc_message_read_ulong (msg, &info->ulDeviceError))
+		return PARSE_ERROR;
 
 	return CKR_OK;
 }
@@ -1200,7 +993,7 @@ proto_read_sesssion_info (P11RpcMessage *msg, CK_SESSION_INFO_PTR info)
 		_ret = CKR_ARGUMENTS_BAD; \
 	if (_ret == CKR_OK) \
 		_ret = proto_read_ulong_array (_cs->resp, (arr), (len), *(len)); \
-	if (_ret == CKR_OK) \
+	if (_ret == CKR_OK && arr) \
 		p11_rpc_mechanism_list_purge (arr, len);
 	
 #define OUT_MECHANISM_INFO(info) \
@@ -1219,7 +1012,7 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 {
 	CK_C_INITIALIZE_ARGS_PTR args = NULL;
 	CK_RV ret = CKR_OK;
-	const char *env;
+	const char *path;
 	CallState *cs;
 	pid_t pid;
 	int err;
@@ -1279,42 +1072,29 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 				goto done;
 			}
 		}
-			
-		/* 
-		 * We support setting the socket path and other arguments from from the 
-		 * pReserved pointer, similar to how NSS PKCS#11 components are initialized.
-		 * 
-		 * What we do not support is passing through the pReserved pointer to the other
-		 * side of the RPC. The other side can have these arguments set on its own. 
-		 */ 
-		if (args && args->pReserved) 
-			parse_arguments ((const char*)args->pReserved);	
-			
-		/* Lookup the socket path, append '.pkcs11' */
-		if (pkcs11_socket_path[0] == 0) { 
-			env = getenv ("GNOME_KEYRING_SOCKET");
-			if (env && env[0]) {
-				snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), 
-				          "%s.%s", env, P11_RPC_SOCKET_EXT);
-				pkcs11_socket_path[sizeof (pkcs11_socket_path) - 1] = 0;
-			}
-		
-			if (pkcs11_socket_path[0] == 0) {
-				warning (("missing pkcs11 socket path in environment"));
-				ret = CKR_GENERAL_ERROR;
-				goto done;
-			}
+
+		path = p11_rpc_module_init (args);
+		if (!path || !path[0]) {
+			warning (("missing pkcs11 socket path in environment"));
+			ret = CKR_GENERAL_ERROR;
+			goto done;
 		}
+		
+		/* Make a copy of the socket path */
+		snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s", path);
 			
 		/* Call through and initialize the daemon */
 		ret = call_lookup (&cs);
 		if (ret == CKR_OK) { 
 			ret = call_prepare (cs, P11_RPC_CALL_C_Initialize);
 			if (ret == CKR_OK)
-				ret = p11_rpc_message_write_byte_array (cs->req, P11_RPC_HANDSHAKE, 
-				                                        P11_RPC_HANDSHAKE_LEN);
-			if (ret == CKR_OK)
+				if (!p11_rpc_message_write_byte_array (cs->req, P11_RPC_HANDSHAKE, P11_RPC_HANDSHAKE_LEN))
+					ret = CKR_HOST_MEMORY;
+			if (ret == CKR_OK) {
 				ret = call_run (cs);
+				if (ret == CKR_CRYPTOKI_ALREADY_INITIALIZED)
+					ret = CKR_OK;
+			}
 			call_done (cs, ret);
 		}
 
@@ -1323,7 +1103,7 @@ done:
 	if (ret == CKR_OK) {
 		pkcs11_initialized = 1;
 		pkcs11_initialized_pid = pid;
-	} else {
+	} else if (ret != CKR_CRYPTOKI_ALREADY_INITIALIZED) {
 		pkcs11_initialized = 0;
 		pkcs11_initialized_pid = 0;
 		pkcs11_socket_path[0] = 0;
@@ -1712,7 +1492,6 @@ rpc_C_FindObjects (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE_PTR objects,
 
 	BEGIN_CALL (C_FindObjects);
 		IN_ULONG (session);
-		IN_ULONG (max_count);
 		IN_ULONG_BUFFER (objects, &max_count);
 	PROCESS_CALL;
 		*count = max_count;

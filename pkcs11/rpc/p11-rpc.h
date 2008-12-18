@@ -11,9 +11,13 @@
 
 /* IMPLEMENT: These functions must be implemented by glue code */
 
-extern void p11_rpc_log (const char *line);
+extern void  p11_rpc_log (const char *line);
 
-extern int  p11_rpc_write_credentials (int socket);
+extern const char* p11_rpc_module_init (CK_C_INITIALIZE_ARGS_PTR init_args);
+
+extern void  p11_rpc_module_uninit (void);
+
+extern int   p11_rpc_write_credentials (int socket);
 
 
 /* ------------------------------------------------------------------
@@ -39,10 +43,10 @@ void               p11_rpc_dispatch_accept              (void);
 
 extern void        p11_rpc_log                          (const char *line);
 
-extern void*       p11_rpc_create_thread                (void (*thread_func) (void*),
-                                                         void* thread_arg);
+extern void*       p11_rpc_create_child                 (void (*child_func) (void*),
+                                                         void* child_arg);
 
-extern void        p11_rpc_join_thread                  (void *thread);
+extern void        p11_rpc_join_child                   (void *child);
 
 extern int         p11_rpc_read_credentials             (int socket);
 

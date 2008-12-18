@@ -1,7 +1,13 @@
 
 noinst_LTLIBRARIES = \
 	libp11-rpc-daemon.la \
-	libp11-rpc-module.la \
+	libp11-rpc-module.la
+	
+# Have to install this somewhere to get libtool to actually 
+# build the library. Strange stuff.
+moduledir = /tmp
+
+module_LTLIBRARIES = \
 	p11-rpc-test-module.la
 
 noinst_PROGRAMS = \
@@ -29,7 +35,7 @@ libp11_rpc_daemon_la_LIBADD = \
 
 libp11_rpc_module_la_SOURCES = \
 	p11-rpc-calls.h \
-	p11-rpc-dispatch.c \
+	p11-rpc-module.c \
 	p11-rpc-message.c \
 	p11-rpc-message.h \
 	p11-rpc-util.c
@@ -48,8 +54,6 @@ p11_rpc_test_module_la_SOURCES = \
 	p11-rpc-test-module.c
 
 p11_rpc_test_module_la_LIBADD = \
-	-lpthread \
-	$(top_builddir)/common/libgkr-common-buffer.la \
 	libp11-rpc-module.la
 
 # -----------------------------------------------------------------------------

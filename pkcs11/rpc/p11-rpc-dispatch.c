@@ -32,6 +32,7 @@
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <pthread.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -44,6 +45,12 @@ static CK_FUNCTION_LIST_PTR pkcs11_module = NULL;
 
 /* Argument to pass to C_Initialize */
 static CK_C_INITIALIZE_ARGS *pkcs11_initialize_args = NULL;
+
+/* Mutex for guarding initialization variable */
+static pthread_mutex_t init_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+/* The number of times we've initialized */
+static int pkcs11_initialized = 0;
 
 /* The error returned on protocol failures */
 #define PARSE_ERROR CKR_DEVICE_ERROR
@@ -127,7 +134,6 @@ call_reset (CallState *cs)
 	allocated = cs->allocated;
 	while (allocated) {
 		data = (void**)allocated;
-		--data;
 		
 		/* Pointer to the next allocation */
 		allocated = *data;
@@ -368,6 +374,36 @@ proto_read_attribute_array (CallState *cs, CK_ATTRIBUTE_PTR* result, CK_ULONG* n
 }
 
 static CK_RV
+proto_write_attribute_array (CallState *cs, CK_ATTRIBUTE_PTR array, CK_ULONG len, CK_RV ret)
+{
+	assert (cs);
+	
+	/* 
+	 * When returning an attribute array, certain errors aren't 
+	 * actually real errors, these are passed through to the other 
+	 * side along with the attribute array.
+	 */
+	
+	switch (ret) {
+	case CKR_ATTRIBUTE_SENSITIVE:
+	case CKR_ATTRIBUTE_TYPE_INVALID:
+	case CKR_BUFFER_TOO_SMALL:
+	case CKR_OK:
+		break;
+		
+	/* Pass all other errors straight through */
+	default:
+		return ret;
+	};
+	
+	if (!p11_rpc_message_write_attribute_array (cs->resp, array, len) ||
+	    !p11_rpc_message_write_ulong (cs->resp, ret))
+		return PREP_ERROR;
+
+	return CKR_OK;
+}
+
+static CK_RV
 proto_read_null_string (CallState *cs, CK_UTF8CHAR_PTR* val)
 {
 	P11RpcMessage *msg;
@@ -601,16 +637,16 @@ proto_write_session_info (CallState *cs, CK_SESSION_INFO_PTR info)
 		_ret = PREP_ERROR;
 
 #define OUT_BYTE_ARRAY(array, len) \
-	if (_ret == CKR_OK && !p11_rpc_message_write_byte_array (cs->req, array, len)) \
+	if (_ret == CKR_OK && !p11_rpc_message_write_byte_array (cs->resp, array, len)) \
 		_ret = PREP_ERROR;
 
 #define OUT_ULONG_ARRAY(array, len) \
-	if (_ret == CKR_OK && !p11_rpc_message_write_ulong_array (cs->req, array, len)) \
+	if (_ret == CKR_OK && !p11_rpc_message_write_ulong_array (cs->resp, array, len)) \
 		_ret = PREP_ERROR;
 
 #define OUT_ATTRIBUTE_ARRAY(array, len) \
-	if (_ret == CKR_OK && !p11_rpc_message_write_attribute_array (cs->req, array, len)) \
-		_ret = PREP_ERROR;
+	/* Note how we filter return codes */ \
+	_ret = proto_write_attribute_array (cs, array, len, _ret);
 
 #define OUT_INFO(val) \
 	if (_ret == CKR_OK) \
@@ -639,17 +675,67 @@ proto_write_session_info (CallState *cs, CK_SESSION_INFO_PTR info)
 static CK_RV
 rpc_C_Initialize (CallState *cs)
 {
-	BEGIN_CALL (C_Initialize);
-	PROCESS_CALL ((pkcs11_initialize_args));
-	END_CALL;
+	CK_BYTE_PTR handshake;
+	CK_ULONG n_handshake;
+	CK_RV ret = CKR_OK;
+	
+	debug (("C_Initialize: enter"));
+	
+	assert (cs);
+	assert (pkcs11_module);
+
+	ret = proto_read_byte_array (cs, &handshake, &n_handshake);
+	if (ret == CKR_OK) {
+		
+		/* Check to make sure the header matches */
+		if (n_handshake != P11_RPC_HANDSHAKE_LEN ||
+		    memcmp (handshake, P11_RPC_HANDSHAKE, n_handshake) != 0) {
+			p11_rpc_warn ("invalid handshake received from connecting module");
+			ret = CKR_GENERAL_ERROR;
+		}
+
+		assert (p11_rpc_message_is_verified (cs->req));
+	}
+	
+	if (ret == CKR_OK) { 
+		
+		pthread_mutex_lock (&init_mutex);
+	
+			if (pkcs11_initialized == 0)
+				ret = pkcs11_module->C_Initialize (pkcs11_initialize_args);
+
+			if (ret == CKR_OK)
+				++pkcs11_initialized;
+		
+		pthread_mutex_unlock (&init_mutex);
+	}
+	
+	debug (("ret: %d", ret));
+	return ret;
 }
 
 static CK_RV
 rpc_C_Finalize (CallState *cs)
 {
-	BEGIN_CALL (C_Finalize);
-	PROCESS_CALL ((NULL));
-	END_CALL;
+	CK_RV ret;
+	
+	debug (("C_Finalize: enter"));
+
+	assert (cs);
+	assert (pkcs11_module);
+	
+	pthread_mutex_lock (&init_mutex);
+
+		if (pkcs11_initialized == 1)
+			ret = pkcs11_module->C_Finalize (NULL);
+
+		if (ret == CKR_OK)
+			--pkcs11_initialized;
+	
+	pthread_mutex_unlock (&init_mutex);	
+
+	debug (("ret: %d", ret));
+	return ret;
 }
 
 static CK_RV
@@ -1147,7 +1233,6 @@ rpc_C_DecryptInit (CallState *cs)
 		IN_ULONG (key);
 	PROCESS_CALL ((session, &mechanism, key));
 	END_CALL;
-
 }
 
 static CK_RV
@@ -1397,7 +1482,7 @@ rpc_C_Verify (CallState *cs)
 	BEGIN_CALL (C_Verify);
 		IN_ULONG (session);
 		IN_BYTE_ARRAY (data, data_len);
-		IN_BYTE_BUFFER (signature, signature_len);
+		IN_BYTE_ARRAY (signature, signature_len);
 	PROCESS_CALL ((session, data, data_len, signature, signature_len));
 	END_CALL;
 }
@@ -1425,9 +1510,8 @@ rpc_C_VerifyFinal (CallState *cs)
 	
 	BEGIN_CALL (C_VerifyFinal);
 		IN_ULONG (session);
-		IN_BYTE_BUFFER (signature, signature_len);
+		IN_BYTE_ARRAY (signature, signature_len);
 	PROCESS_CALL ((session, signature, signature_len));
-		OUT_BYTE_ARRAY (signature, signature_len);
 	END_CALL;
 }
 
@@ -1816,7 +1900,7 @@ dispatch_call (CallState *cs)
 	} else {
 		if (!p11_rpc_message_prep (resp, P11_RPC_CALL_ERROR, P11_RPC_RESPONSE) ||
 		    !p11_rpc_message_write_ulong (resp, (uint32_t)ret) ||
-		    !p11_rpc_message_buffer_error (resp)) {
+		    p11_rpc_message_buffer_error (resp)) {
 			p11_rpc_warn ("out of memory responding with error");
 			return 0;
 		}	
@@ -1902,7 +1986,7 @@ run_dispatch_loop (int sock)
 		p11_rpc_warn ("out of memory");
 		return;
 	}
-		
+	
 	/* The main thread loop */
 	while (TRUE) {
 	
@@ -1955,6 +2039,11 @@ run_dispatch_thread (void *arg)
 	int *sock = arg;
 	assert (*sock != -1);
 
+	/* Try and initialize the PKCS#11 module */
+	if (!pkcs11_initialized) {
+		
+	}
+	
 	run_dispatch_loop (*sock);
 	
 	/* The thread closes the socket and marks as done */
@@ -1996,7 +2085,7 @@ p11_rpc_dispatch_accept (void)
 	/* Cleanup any completed dispatch threads */
 	for (here = &pkcs11_dispatchers, ds = *here; ds != NULL; ds = *here) {
 		if (ds->socket == -1) {
-			p11_rpc_join_thread (ds->thread);
+			p11_rpc_join_child (ds->thread);
 			*here = ds->next; 
 			free (ds);
 		} else {
@@ -2019,8 +2108,8 @@ p11_rpc_dispatch_accept (void)
 	
 	ds->socket = new_fd;
 	
-	/* And create a new thread */
-	ds->thread = p11_rpc_create_thread (run_dispatch_thread, &(ds->socket));
+	/* And create a new thread/process */
+	ds->thread = p11_rpc_create_child (run_dispatch_thread, &(ds->socket));
 	if (!ds->thread) {
 		free (ds);
 		p11_rpc_warn ("couldn't create thread for pkcs11 dispatch: %s", strerror (errno));
@@ -2057,12 +2146,12 @@ p11_rpc_dispatch_init (const char *socket_path, CK_FUNCTION_LIST_PTR module,
 	assert (pkcs11_dispatchers == NULL);
 	
 	snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), 
-	          "%s.%s", socket_path, P11_RPC_SOCKET_EXT);
+	          "%s", socket_path);
 
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
 		p11_rpc_warn ("couldn't create pkcs11 socket: %s", strerror (errno));
-		return -1;
+		return 0;
 	}
 	
 	memset(&addr, 0, sizeof(addr));
@@ -2071,20 +2160,20 @@ p11_rpc_dispatch_init (const char *socket_path, CK_FUNCTION_LIST_PTR module,
 	if (bind (sock, (struct sockaddr*)&addr, sizeof (addr)) < 0) {
 		p11_rpc_warn ("couldn't bind to pkcs11 socket: %s: %s", 
 		                  pkcs11_socket_path, strerror (errno));
-		return -1;
+		return 0;
 	}
 	
 	if (listen (sock, 128) < 0) {
 		p11_rpc_warn ("couldn't listen on pkcs11 socket: %s: %s", 
 		                  pkcs11_socket_path, strerror (errno));
-		return -1;
+		return 0;
 	}
 	
 	pkcs11_module = module;
 	pkcs11_initialize_args = init_args;
 	pkcs11_socket = sock;
 	pkcs11_dispatchers = NULL;
-	return 0;
+	return 1;
 }
 
 void
@@ -2112,7 +2201,7 @@ p11_rpc_dispatch_uninit (void)
 		/* Forcibly shutdown the connection */
 		if (ds->socket)
 			shutdown (ds->socket, SHUT_RDWR);
-		p11_rpc_join_thread (ds->thread);
+		p11_rpc_join_child (ds->thread);
 		
 		/* This is always closed by dispatch thread */
 		assert (ds->socket == -1);

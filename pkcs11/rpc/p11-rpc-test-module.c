@@ -39,3 +39,16 @@ p11_rpc_write_credentials (int socket)
 	/* Do nothing */
 	return 1;
 }
+
+extern const char* 
+p11_rpc_module_init (CK_C_INITIALIZE_ARGS_PTR init_args)
+{
+	/* Same as in daemon */
+	return "/tmp/p11-rpc-daemon.sock";
+}
+
+extern void  
+p11_rpc_module_uninit (void)
+{
+	/* Nothing to do */
+}

@@ -28,6 +28,7 @@
 
 #include <stdarg.h>
 #include <string.h>
+#include <stdio.h>
 
 static void
 do_log (const char *pref, const char *msg, va_list va)

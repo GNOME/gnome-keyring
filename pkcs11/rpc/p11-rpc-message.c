@@ -456,3 +456,14 @@ p11_rpc_message_write_space_string (P11RpcMessage *msg, CK_UTF8CHAR* buffer, CK_
 	
 	return gkr_buffer_add_byte_array (&msg->buffer, buffer, length);
 }
+
+int
+p11_rpc_message_write_zero_string (P11RpcMessage *msg, CK_UTF8CHAR* string)
+{
+	assert (msg);
+	assert (string);
+
+	assert (!msg->signature || p11_rpc_message_verify_part (msg, "z"));
+	
+	return gkr_buffer_add_string (&msg->buffer, (const char*)string);
+}
