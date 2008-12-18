@@ -634,8 +634,6 @@ gkr_daemon_complete_initialization(void)
 		return TRUE;
 	}
 	
-	gkr_daemon_dbus_setup ();
-	
 	/* Initialize object storage */
 	if (!gkr_pk_object_storage_initialize ())
 		return FALSE;
@@ -659,6 +657,8 @@ gkr_daemon_complete_initialization(void)
 		if (!gkr_pkcs11_daemon_setup ())
 			return FALSE;
 	}
+	
+	gkr_daemon_dbus_setup ();
 	
 	initialization_completed = TRUE;
 	return TRUE;

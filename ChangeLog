@@ -1,5 +1,12 @@
 2008-12-17  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c: Patch by Yanko Kaneti. On daemon 
+	initialisation move the dbus setup after the plugins setup
+	so that all supported environment variables are exported to 
+	the session.
+
+2008-12-17  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/gkr-pkcs11-module.c: Disable debug output from
 	pkcs#11 module by default.
 	
