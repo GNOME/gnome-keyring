@@ -1,3 +1,11 @@
+2008-12-18  Stef Walter  <stef@memberwebs.com>
+
+	* common/Makefile.am: 
+	* pkcs11/rpc/*: (added)
+	* pkcs11/Makefile.am:
+	* configure.in: Added initial implementation of generic 
+	PKCS#11 RPC module.
+
 2008-12-17  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon.c: Patch by Yanko Kaneti. On daemon 
