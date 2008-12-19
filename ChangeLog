@@ -1,5 +1,22 @@
 2008-12-18  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in: Add pkcs11/rpc Fixes bug #565043
+
+2008-12-18  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/rpc/p11-rpc.h:
+	* pkcs11/rpc/p11-rpc-dispatch.c:
+	* pkcs11/rpc/p11-rpc-message.c:
+	* pkcs11/rpc/p11-rpc-module.c:
+	* pkcs11/rpc/p11-rpc-private.h:
+	* pkcs11/rpc/p11-rpc-test-daemon.c:
+	* pkcs11/rpc/p11-rpc-test-module.c:
+	* pkcs11/rpc/p11-rpc-util.c: 
+	* pkcs11/rpc/Makefile.am: Lots of fixes to new modular
+	PKCS#11 RPC module.
+	
+2008-12-18  Stef Walter  <stef@memberwebs.com>
+
 	* common/Makefile.am: 
 	* pkcs11/rpc/*: (added)
 	* pkcs11/Makefile.am:

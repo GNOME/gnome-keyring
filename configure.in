@@ -510,6 +510,7 @@ library/tests/Makefile
 pam/Makefile
 pam/tests/Makefile
 pkcs11/Makefile
+pkcs11/rpc/Makefile
 pkcs11/tests/Makefile
 po/Makefile.in
 tests/Makefile
