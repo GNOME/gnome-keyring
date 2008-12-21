@@ -21,10 +21,9 @@ INCLUDES = -I. \
 # The dispatch code
 
 libp11_rpc_daemon_la_SOURCES = \
-	p11-rpc-calls.h \
+	p11-rpc-private.h \
 	p11-rpc-dispatch.c \
 	p11-rpc-message.c \
-	p11-rpc-message.h \
 	p11-rpc-util.c
 
 libp11_rpc_daemon_la_LIBADD = \
@@ -34,10 +33,9 @@ libp11_rpc_daemon_la_LIBADD = \
 # The module code 
 
 libp11_rpc_module_la_SOURCES = \
-	p11-rpc-calls.h \
+	p11-rpc-private.h \
 	p11-rpc-module.c \
 	p11-rpc-message.c \
-	p11-rpc-message.h \
 	p11-rpc-util.c
 
 libp11_rpc_module_la_LIBADD = \
