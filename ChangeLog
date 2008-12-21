@@ -1,5 +1,9 @@
 2008-12-21  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gck/*: (added)
+	* pkcs11/Makefile.am:
+	* configure.in: Added GCK base PKCS#11 module code 
+	
 	* pkcs11/rpc/Makefile.am: distcheck fixes
 	
 2008-12-18  Stef Walter  <stef@memberwebs.com>

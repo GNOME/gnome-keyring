@@ -41,5 +41,5 @@ else
 TESTS_DIR = 
 endif
 
-SUBDIRS = . rpc $(TESTS_DIR)
+SUBDIRS = . rpc gck $(TESTS_DIR)
 

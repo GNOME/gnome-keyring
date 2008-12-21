@@ -381,6 +381,9 @@ AC_DEFINE_UNQUOTED(LIBGCRYPT_VERSION, "$GCRYPT_VERSION", [Version of GCRYPT we e
 DAEMON_CFLAGS="$DAEMON_CFLAGS $LIBGCRYPT_CFLAGS"
 DAEMON_LIBS="$DAEMON_LIBS $LIBGCRYPT_LIBS"
 
+AC_SUBST([LIBGCRYPT_CFLAGS])
+AC_SUBST([LIBGCRYPT_LIBS])
+
 # -------------------------------------------------------------------
 # libtasn1
 # 
@@ -510,6 +513,7 @@ library/tests/Makefile
 pam/Makefile
 pam/tests/Makefile
 pkcs11/Makefile
+pkcs11/gck/Makefile
 pkcs11/rpc/Makefile
 pkcs11/tests/Makefile
 po/Makefile.in
