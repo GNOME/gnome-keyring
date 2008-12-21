@@ -1,5 +1,16 @@
 2008-12-21  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/gp11-private.h: 
+	* gp11/gp11-call.c: Fix possible threading problems, by using 
+	proper class finalizer, and hiding all instance details.
+	
+	* gp11/gp11-object.c: Fix possible reference counting problem.
+	
+	* gp11/gp11-slot.c: 
+	* gp11/tests/unit-test-gp11-object.c: Fix test reference problems.  
+	
+2008-12-21  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/gck/*: (added)
 	* pkcs11/Makefile.am:
 	* configure.in: Added GCK base PKCS#11 module code 

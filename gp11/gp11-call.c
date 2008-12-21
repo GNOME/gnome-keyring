@@ -27,14 +27,41 @@
 
 #include <string.h>
 
-static GThreadPool *thread_pool = NULL;
-static GAsyncQueue *completed_queue = NULL;
-static guint completed_id = 0;
+typedef struct _GP11CallSource GP11CallSource;
 
-static void _gp11_call_implement_async_result (GAsyncResultIface *iface);
+static gpointer _gp11_call_parent_class = NULL;
 
-G_DEFINE_TYPE_EXTENDED (GP11Call, _gp11_call, G_TYPE_OBJECT, 0,
-        G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_RESULT, _gp11_call_implement_async_result));
+struct _GP11Call {
+	GObject parent;
+	
+	/* For making the call */
+	GP11CallFunc func;
+	GP11Arguments *args;
+	GCancellable *cancellable;
+	GDestroyNotify destroy;
+	CK_RV rv;
+	
+	/* For result callback only */
+	gpointer object;
+	GAsyncReadyCallback callback;
+	gpointer user_data;
+	
+	/* For authenticating */
+	gboolean do_login;
+	gchar *password;
+};
+
+struct _GP11CallClass {
+	GObjectClass parent;
+	GThreadPool *thread_pool;
+	GAsyncQueue *completed_queue;
+	guint completed_id;
+};
+
+struct _GP11CallSource {
+	GSource source;
+	GP11CallClass *klass;
+};
 
 /* ----------------------------------------------------------------------------
  * HELPER FUNCTIONS
@@ -70,7 +97,7 @@ perform_call (GP11CallFunc func, GCancellable *cancellable, GP11Arguments *args)
 }
 
 static void
-process_async_call (gpointer data, gpointer unused)
+process_async_call (gpointer data, GP11CallClass *klass)
 {
 	GP11Call *call = GP11_CALL (data);
 	CK_ULONG pin_len;
@@ -95,11 +122,12 @@ process_async_call (gpointer data, gpointer unused)
 		call->rv = perform_call (call->func, call->cancellable, call->args);
 	}
 	
-	g_async_queue_push (completed_queue, call);
+	g_async_queue_push (klass->completed_queue, call);
 	
 	/* Wakeup main thread if on a separate thread */
 	g_main_context_wakeup (NULL);
 }
+
 static void 
 process_result (GP11Call *call, gpointer unused)
 {
@@ -126,7 +154,7 @@ process_result (GP11Call *call, gpointer unused)
 	/* If we're supposed to do a login, then queue this call again */
 	if (call->do_login) {
 		g_object_ref (call);
-		g_thread_pool_push (thread_pool, call, NULL);
+		g_thread_pool_push (GP11_CALL_GET_CLASS (call)->thread_pool, call, NULL);
 		return;
 	}
 	
@@ -139,13 +167,13 @@ process_result (GP11Call *call, gpointer unused)
 }
 
 static gboolean
-process_completed (void)
+process_completed (GP11CallClass *klass)
 {
 	gpointer call;
 
-	g_assert (completed_queue);
+	g_assert (klass->completed_queue);
 
-	call = g_async_queue_try_pop (completed_queue);
+	call = g_async_queue_try_pop (klass->completed_queue);
 	if (call) {
 		process_result (call, NULL);
 		g_object_unref (call);
@@ -156,31 +184,35 @@ process_completed (void)
 }
 
 static gboolean
-completed_prepare(GSource* source, gint *timeout)
+completed_prepare(GSource* base, gint *timeout)
 {
+	GP11CallSource *source = (GP11CallSource*)base;
 	gboolean have;
-	g_assert (completed_queue);
-	have = g_async_queue_length (completed_queue) > 0;
+	
+	g_assert (source->klass->completed_queue);
+	have = g_async_queue_length (source->klass->completed_queue) > 0;
 	*timeout = have ? 0 : -1;
 	return have;
 }
 
 static gboolean
-completed_check(GSource* source)
+completed_check(GSource* base)
 {
-	g_assert (completed_queue);
-	return g_async_queue_length (completed_queue) > 0;
+	GP11CallSource *source = (GP11CallSource*)base;
+	g_assert (source->klass->completed_queue);
+	return g_async_queue_length (source->klass->completed_queue) > 0;
 }
 
 static gboolean
-completed_dispatch(GSource* source, GSourceFunc callback, gpointer user_data)
+completed_dispatch(GSource* base, GSourceFunc callback, gpointer user_data)
 {
-	process_completed ();
+	GP11CallSource *source = (GP11CallSource*)base;
+	process_completed (source->klass);
 	return TRUE;
 }
 
 static void
-completed_finalize(GSource* source)
+completed_finalize(GSource* base)
 {
 	
 }
@@ -252,34 +284,98 @@ static void
 _gp11_call_class_init (GP11CallClass *klass)
 {
 	GObjectClass *gobject_class = (GObjectClass*)klass;
-	GMainContext *context;
-	GError *err = NULL;
-	GSource *src;
 
 	_gp11_call_parent_class = g_type_class_peek_parent (klass);
 	gobject_class->finalize = _gp11_call_finalize;
-	
-	g_assert (!thread_pool);
-	thread_pool = g_thread_pool_new ((GFunc)process_async_call, NULL, 16, FALSE, &err);
-	if (!thread_pool) {
+}
+
+static void
+_gp11_call_base_init (GP11CallClass *klass)
+{
+	GP11CallSource *source;
+	GMainContext *context;
+	GError *err = NULL;
+
+	klass->thread_pool = g_thread_pool_new ((GFunc)process_async_call, klass, 16, FALSE, &err);
+	if (!klass->thread_pool) {
 		g_critical ("couldn't create thread pool: %s", 
 		            err && err->message ? err->message : "");
 		return;
 	}
 	
-	g_assert (!completed_queue);
-	completed_queue = g_async_queue_new_full (g_object_unref);
-	g_assert (completed_queue);
+	klass->completed_queue = g_async_queue_new_full (g_object_unref);
+	g_assert (klass->completed_queue);
 	
 	context = g_main_context_default ();
 	g_assert (context);
 	
 	/* Add our idle handler which processes other tasks */
-	g_assert (!completed_id);
-	src = g_source_new (&completed_functions, sizeof (GSource));
-	completed_id = g_source_attach (src, context);
-	g_source_set_callback (src, NULL, NULL, NULL);
-	g_source_unref (src);
+	source = (GP11CallSource*)g_source_new (&completed_functions, sizeof (GP11CallSource));
+	source->klass = klass;
+	klass->completed_id = g_source_attach ((GSource*)source, context);
+	g_source_set_callback ((GSource*)source, NULL, NULL, NULL);
+	g_source_unref ((GSource*)source);
+}
+
+static void
+_gp11_call_base_finalize (GP11CallClass *klass)
+{
+	GMainContext *context;
+	GSource *src;
+
+	if (klass->thread_pool) {
+		g_assert (g_thread_pool_unprocessed (klass->thread_pool) == 0);
+		g_thread_pool_free (klass->thread_pool, FALSE, TRUE);
+		klass->thread_pool = NULL;
+	}
+	
+	if (klass->completed_id) {
+		context = g_main_context_default ();
+		g_return_if_fail (context);
+		
+		src = g_main_context_find_source_by_id (context, klass->completed_id);
+		g_assert (src);
+		g_source_destroy (src);
+		klass->completed_id = 0;
+	}
+	
+	if (klass->completed_queue) {
+		g_assert (g_async_queue_length (klass->completed_queue));
+		g_async_queue_unref (klass->completed_queue);
+		klass->completed_queue = NULL;
+	}
+}
+
+GType
+_gp11_call_get_type (void) 
+{
+	static volatile gsize type_id__volatile = 0;
+	
+	if (g_once_init_enter (&type_id__volatile)) {
+		
+		static const GTypeInfo type_info = {
+			sizeof (GP11CallClass), 
+			(GBaseInitFunc)_gp11_call_base_init, 
+			(GBaseFinalizeFunc)_gp11_call_base_finalize, 
+			(GClassInitFunc)_gp11_call_class_init, 
+			(GClassFinalizeFunc)NULL, 
+			NULL,   // class_data 
+			sizeof (GP11Call), 
+			0,      // n_preallocs 
+			(GInstanceInitFunc)_gp11_call_init, 
+		};
+
+		static const GInterfaceInfo interface_info = {
+			(GInterfaceInitFunc)_gp11_call_implement_async_result
+		};
+
+		GType type_id = g_type_register_static (G_TYPE_OBJECT, "_GP11Call", &type_info, 0); 
+		g_type_add_interface_static (type_id, G_TYPE_ASYNC_RESULT, &interface_info);
+
+		g_once_init_leave (&type_id__volatile, type_id);
+	}
+	
+	return type_id__volatile;
 }
 
 /* ----------------------------------------------------------------------------
@@ -289,27 +385,7 @@ _gp11_call_class_init (GP11CallClass *klass)
 void
 _gp11_call_uninitialize (void)
 {
-	GMainContext *context;
-	GSource *src;
 
-	if (thread_pool) {
-		g_thread_pool_free (thread_pool, FALSE, TRUE);
-		thread_pool = NULL;
-	}
-	
-	if (completed_id) {
-		context = g_main_context_default ();
-		g_return_if_fail (context);
-		
-		src = g_main_context_find_source_by_id (context, completed_id);
-		g_assert (src);
-		g_source_destroy (src);
-		completed_id = 0;
-	}
-	if (completed_queue) {
-		g_async_queue_unref (completed_queue);
-		completed_queue = NULL;
-	}
 }
 
 gboolean
@@ -438,10 +514,10 @@ _gp11_call_async_go (GP11Call *call)
 	g_assert (call->args->pkcs11);
 
 	/* To keep things balanced, process at one completed event */
-	process_completed();
+	process_completed(GP11_CALL_GET_CLASS (call));
 
-	g_assert (thread_pool);
-	g_thread_pool_push (thread_pool, call, NULL);
+	g_assert (GP11_CALL_GET_CLASS (call)->thread_pool);
+	g_thread_pool_push (GP11_CALL_GET_CLASS (call)->thread_pool, call, NULL);
 }
 
 void
@@ -475,6 +551,13 @@ _gp11_call_async_short (GP11Call *call, CK_RV rv)
 	call->rv = rv;
 
 	/* Already complete, so just push it for processing in main loop */
-	g_assert (completed_queue);
-	g_async_queue_push (completed_queue, call);
+	g_assert (GP11_CALL_GET_CLASS (call)->completed_queue);
+	g_async_queue_push (GP11_CALL_GET_CLASS (call)->completed_queue, call);
+}
+
+gpointer
+_gp11_call_get_arguments (GP11Call *call)
+{
+	g_assert (GP11_IS_CALL (call));
+	return call->args;
 }

@@ -377,13 +377,14 @@ DEFINE_TEST(explicit_sessions)
 	gulong klass;
 	gchar *value = NULL;
 	gulong types[2] = { CKA_CLASS, CKA_LABEL };
-	
+
 	/* Set an explicit session */
 	gp11_object_set_session (object, session);
 	g_assert (gp11_object_get_session (object) == session);
 	g_object_get (object, "session", &sess, NULL);
 	g_assert (sess == session);
-	
+	g_object_unref (sess);
+
 	/* Simple */
 	attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);
 	SUCCESS_RES (attrs, err);

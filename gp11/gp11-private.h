@@ -83,34 +83,11 @@ typedef struct _GP11Arguments {
 
 typedef struct _GP11CallClass GP11CallClass;
 
-struct _GP11Call {
-	GObject parent;
-	
-	/* For making the call */
-	GP11CallFunc func;
-	GP11Arguments *args;
-	GCancellable *cancellable;
-	GDestroyNotify destroy;
-	CK_RV rv;
-	
-	/* For result callback only */
-	gpointer object;
-	GAsyncReadyCallback callback;
-	gpointer user_data;
-	
-	/* For authenticating */
-	gboolean do_login;
-	gchar *password;
-};
-
-struct _GP11CallClass {
-	GObjectClass parent;
-};
-
 GType              _gp11_call_get_type                    (void) G_GNUC_CONST;
 
-#define            _gp11_call_arguments(call, type) \
-			(type*)(GP11_CALL (call)->args)
+#define            _gp11_call_arguments(call, type)       (type*)(_gp11_call_get_arguments (GP11_CALL (call)))
+
+gpointer           _gp11_call_get_arguments               (GP11Call *call);
 
 void               _gp11_call_uninitialize                (void);
 

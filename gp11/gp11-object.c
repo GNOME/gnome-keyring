@@ -329,11 +329,11 @@ void
 gp11_object_set_session (GP11Object *object, GP11Session *session)
 {
 	g_return_if_fail (GP11_IS_OBJECT (object));
+	if (session)
+		g_object_ref (session);
 	if (object->session)
 		g_object_unref (object->session);
 	object->session = session;
-	if (object->session)
-		g_object_ref (object->session);
 }
 
 /* DESTROY */
@@ -744,7 +744,7 @@ gp11_object_get_full (GP11Object *object, const gulong *attr_types, gsize n_attr
 	
 	session = require_session_sync (object, 0, err);
 	if (!session)
-		return FALSE;
+		return NULL;
 	
 	memset (&args, 0, sizeof (args));
 	args.attr_types = (gulong*)attr_types;
