@@ -24,6 +24,10 @@
 
 #include <glib-object.h>
 
+#include "pkcs11/pkcs11.h"
+
+#include "gck-manager.h"
+
 typedef struct _GckSession GckSession;
 
 #define GCK_TYPE_MODULE               (gck_module_get_type ())

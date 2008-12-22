@@ -29,11 +29,11 @@
 int              gck_data_openssl_parse_algo        (const gchar *name, int *mode);
 
 gboolean         gck_data_openssl_encrypt_block     (const gchar *dekinfo, const gchar *password, 
-                                                     const guchar *data, gsize n_data,
+                                                     gssize n_password, const guchar *data, gsize n_data,
                                                      guchar **encrypted, gsize *n_encrypted);
 
 GckDataResult    gck_data_openssl_decrypt_block     (const gchar *dekinfo, const gchar *password, 
-                                                     const guchar *data, gsize n_data, 
+                                                     gssize n_password, const guchar *data, gsize n_data, 
                                                      guchar **decrypted, gsize *n_decrypted);
 
 const gchar*     gck_data_openssl_get_dekinfo       (GHashTable *headers);

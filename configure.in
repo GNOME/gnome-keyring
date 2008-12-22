@@ -513,6 +513,8 @@ library/tests/Makefile
 pam/Makefile
 pam/tests/Makefile
 pkcs11/Makefile
+pkcs11/dot-ssh/Makefile
+pkcs11/dot-ssh/tests/Makefile
 pkcs11/gck/Makefile
 pkcs11/gck/tests/Makefile
 pkcs11/rpc/Makefile

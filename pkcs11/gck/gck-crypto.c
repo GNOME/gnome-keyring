@@ -895,9 +895,9 @@ gck_crypto_rsa_unpad_two (guint bits, const guchar *padded,
 
 gboolean
 gck_crypto_symkey_generate_simple (int cipher_algo, int hash_algo, 
-                                   const gchar *password, const guchar *salt, 
-                                   gsize n_salt, int iterations, guchar **key, 
-                                   guchar **iv)
+                                   const gchar *password, gssize n_password, 
+                                   const guchar *salt, gsize n_salt, int iterations, 
+                                   guchar **key, guchar **iv)
 {
 	gcry_md_hd_t mdh;
 	gcry_error_t gcry;
@@ -912,6 +912,11 @@ gck_crypto_symkey_generate_simple (int cipher_algo, int hash_algo,
 	g_assert (hash_algo);
 
 	g_return_val_if_fail (iterations >= 1, FALSE);
+	
+	if (!password)
+		n_password = 0;
+	if (n_password == -1)
+		n_password = strlen (password);
 	
 	/* 
 	 * If cipher algo needs more bytes than hash algo has available
@@ -952,7 +957,7 @@ gck_crypto_symkey_generate_simple (int cipher_algo, int hash_algo,
 			gcry_md_write (mdh, digest, n_digest);
 
 		if (password)
-			gcry_md_write (mdh, password, strlen (password));
+			gcry_md_write (mdh, password, n_password);
 		if (salt && n_salt)
 			gcry_md_write (mdh, salt, n_salt);
 		gcry_md_final (mdh);
@@ -996,7 +1001,7 @@ gck_crypto_symkey_generate_simple (int cipher_algo, int hash_algo,
 
 gboolean
 gck_crypto_symkey_generate_pbe (int cipher_algo, int hash_algo, const gchar *password, 
-                                const guchar *salt, gsize n_salt, int iterations, 
+                                gssize n_password, const guchar *salt, gsize n_salt, int iterations, 
                                 guchar **key, guchar **iv)
 {
 	gcry_md_hd_t mdh;
@@ -1010,6 +1015,11 @@ gck_crypto_symkey_generate_pbe (int cipher_algo, int hash_algo, const gchar *pas
 	g_assert (hash_algo);
 
 	g_return_val_if_fail (iterations >= 1, FALSE);
+	
+	if (!password)
+		n_password = 0;
+	if (n_password == -1)
+		n_password = strlen (password);
 	
 	/* 
 	 * We only do one pass here.
@@ -1051,7 +1061,7 @@ gck_crypto_symkey_generate_pbe (int cipher_algo, int hash_algo, const gchar *pas
 		*iv = g_new0 (guchar, needed_iv);
 
 	if (password)
-		gcry_md_write (mdh, password, strlen (password));
+		gcry_md_write (mdh, password, n_password);
 	if (salt && n_salt)
 		gcry_md_write (mdh, salt, n_salt);
 	gcry_md_final (mdh);
@@ -1082,11 +1092,12 @@ gck_crypto_symkey_generate_pbe (int cipher_algo, int hash_algo, const gchar *pas
 
 static gboolean
 generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password, 
-                 const guchar *salt, gsize n_salt, int iterations,
-                 guchar *output, gsize n_output)
+                 gssize n_password, const guchar *salt, gsize n_salt, 
+                 int iterations, guchar *output, gsize n_output)
 {
 	gcry_mpi_t num_b1, num_ij;
 	guchar *hash, *buf_i, *buf_b;
+	const gchar *end_password;
 	gcry_md_hd_t mdh;
 	const gchar *p2;
 	guchar *p;
@@ -1098,6 +1109,13 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 	
 	n_hash = gcry_md_get_algo_dlen (hash_algo);
 	g_return_val_if_fail (n_hash > 0, FALSE);
+	
+	if (!utf8_password)
+		n_password = 0;
+	if (n_password == -1) 
+		end_password = utf8_password + strlen (utf8_password);
+	else
+		end_password = utf8_password + n_password;
 	
 	gcry = gcry_md_open (&mdh, hash_algo, 0);
 	if (gcry) {
@@ -1126,13 +1144,21 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 	if (utf8_password) {
 		p2 = utf8_password;
 		for (i = 0; i < 64; i += 2) {
-			unich = *p2 ? g_utf8_get_char (p2) : 0;
+			
+			/* Get a character from the string */
+			if (p2 < end_password) {
+				unich = g_utf8_get_char (p2);
+				p2 = g_utf8_next_char (p2);
+
+			/* Get zero null terminator, and loop back to beginning */
+			} else {
+				unich = 0;
+				p2 = utf8_password;
+			}
+
+			/* Encode the bytes received */
 			*(p++) = (unich & 0xFF00) >> 8;
 			*(p++) = (unich & 0xFF);
-			if (*p2) /* Loop back to beginning if more bytes are needed */
-				p2 = g_utf8_next_char (p2);
-			else
-				p2 = utf8_password;
 		}
 	} else {
 		memset (p, 0, 64);
@@ -1195,7 +1221,7 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 
 gboolean
 gck_crypto_symkey_generate_pkcs12 (int cipher_algo, int hash_algo, const gchar *password, 
-                                   const guchar *salt, gsize n_salt,
+                                   gssize n_password, const guchar *salt, gsize n_salt,
                                    int iterations, guchar **key, guchar **iv)
 {
 	gsize n_block, n_key;
@@ -1208,7 +1234,7 @@ gck_crypto_symkey_generate_pkcs12 (int cipher_algo, int hash_algo, const gchar *
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
 	
-	if (password && !g_utf8_validate (password, -1, NULL)) {
+	if (password && !g_utf8_validate (password, n_password, NULL)) {
 		g_warning ("invalid non-UTF8 password");
 		g_return_val_if_reached (FALSE);
 	}
@@ -1222,7 +1248,7 @@ gck_crypto_symkey_generate_pkcs12 (int cipher_algo, int hash_algo, const gchar *
 	if (key) {
 		*key = gkr_secure_alloc (n_key);
 		g_return_val_if_fail (*key != NULL, FALSE);
-		ret = generate_pkcs12 (hash_algo, 1, password, salt, n_salt, 
+		ret = generate_pkcs12 (hash_algo, 1, password, n_password, salt, n_salt, 
 		                       iterations, *key, n_key);
 	} 
 	
@@ -1230,7 +1256,7 @@ gck_crypto_symkey_generate_pkcs12 (int cipher_algo, int hash_algo, const gchar *
 	if (ret && iv) {
 		if (n_block > 1) {
 			*iv = g_malloc (n_block);
-			ret = generate_pkcs12 (hash_algo, 2, password, salt, n_salt, 
+			ret = generate_pkcs12 (hash_algo, 2, password, n_password, salt, n_salt, 
 			                       iterations, *iv, n_block);
 		} else {
 			*iv = NULL;
@@ -1326,11 +1352,11 @@ generate_pbkdf2 (int hash_algo, const gchar *password, gsize n_password,
 
 gboolean
 gck_crypto_symkey_generate_pbkdf2 (int cipher_algo, int hash_algo, 
-                                   const gchar *password, const guchar *salt, 
-                                   gsize n_salt, int iterations, 
+                                   const gchar *password, gssize n_password, 
+                                   const guchar *salt, gsize n_salt, int iterations, 
                                    guchar **key, guchar **iv)
 {
-	gsize n_key, n_block, n_password;
+	gsize n_key, n_block;
 	gboolean ret = TRUE;
 	
 	g_return_val_if_fail (hash_algo, FALSE);
@@ -1344,8 +1370,11 @@ gck_crypto_symkey_generate_pbkdf2 (int cipher_algo, int hash_algo,
 		*key = NULL;
 	if (iv)
 		*iv = NULL;
-		
-	n_password = password ? strlen (password) : 0;
+	
+	if (!password)
+		n_password = 0;
+	if (n_password == -1)
+		n_password = strlen (password);
 	
 	/* Generate us an key */
 	if (key) {

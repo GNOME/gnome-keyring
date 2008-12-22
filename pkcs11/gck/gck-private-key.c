@@ -280,13 +280,11 @@ void
 gck_private_key_store_private (GckPrivateKey *self, GckSexp *sexp, guint num_uses)
 {
 	g_return_if_fail (GCK_IS_PRIVATE_KEY (self));
-	g_return_if_fail (sexp);
-	g_return_if_fail (num_uses > 0);
 	
-	gck_sexp_ref (sexp);
+	if (sexp)
+		gck_sexp_ref (sexp);
 	if (self->pv->sexp) 
 		gck_sexp_unref (self->pv->sexp);
 	self->pv->sexp = sexp;
 	self->pv->sexp_uses = num_uses;
 }
-

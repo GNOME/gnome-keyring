@@ -162,6 +162,7 @@ guchar*                  gck_crypto_rsa_unpad_two                      (guint bi
 gboolean                 gck_crypto_symkey_generate_simple             (int cipher_algo, 
                                                                         int hash_algo, 
                                                                         const gchar *password, 
+                                                                        gssize n_password,
                                                                         const guchar *salt, 
                                                                         gsize n_salt, 
                                                                         int iterations, 
@@ -170,7 +171,8 @@ gboolean                 gck_crypto_symkey_generate_simple             (int ciph
 
 gboolean                 gck_crypto_symkey_generate_pbe                (int cipher_algo, 
                                                                         int hash_algo, 
-                                                                        const gchar *password, 
+                                                                        const gchar *password,
+                                                                        gssize n_password,
                                                                         const guchar *salt, 
                                                                         gsize n_salt, 
                                                                         int iterations, 
@@ -179,7 +181,8 @@ gboolean                 gck_crypto_symkey_generate_pbe                (int ciph
 
 gboolean                 gck_crypto_symkey_generate_pkcs12             (int cipher_algo, 
                                                                         int hash_algo, 
-                                                                        const gchar *password, 
+                                                                        const gchar *password,
+                                                                        gssize n_password,
                                                                         const guchar *salt, 
                                                                         gsize n_salt,
                                                                         int iterations, 
@@ -188,7 +191,8 @@ gboolean                 gck_crypto_symkey_generate_pkcs12             (int ciph
 
 gboolean                 gck_crypto_symkey_generate_pbkdf2             (int cipher_algo, 
                                                                         int hash_algo, 
-                                                                        const gchar *password, 
+                                                                        const gchar *password,
+                                                                        gssize n_password,
                                                                         const guchar *salt, 
                                                                         gsize n_salt, 
                                                                         int iterations, 

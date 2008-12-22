@@ -106,7 +106,7 @@ init_quarks (void)
 	}
 }
 
-#endif UNTESTED_CODE
+#endif /* UNTESTED_CODE */
 
 /* -----------------------------------------------------------------------------
  * KEY PARSING

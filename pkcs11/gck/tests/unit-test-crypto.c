@@ -128,7 +128,7 @@ DEFINE_TEST(generate_key_simple)
 		
 		ret = gck_crypto_symkey_generate_simple (all_generation_tests[i].cipher_algo, 
                                                          all_generation_tests[i].hash_algo,
-                                                         all_generation_tests[i].password,
+                                                         all_generation_tests[i].password, -1,
                                                          (guchar*)all_generation_tests[i].salt, 8,
                                                          all_generation_tests[i].iterations,
                                                          &key, NULL);
@@ -154,7 +154,7 @@ DEFINE_TEST(generate_key_pkcs12)
 		
 		ret = gck_crypto_symkey_generate_pkcs12 (all_generation_tests[i].cipher_algo, 
                                                          all_generation_tests[i].hash_algo,
-                                                         all_generation_tests[i].password,
+                                                         all_generation_tests[i].password, -1,
                                                          (guchar*)all_generation_tests[i].salt, 8,
                                                          all_generation_tests[i].iterations,
                                                          &key, NULL);
@@ -180,7 +180,7 @@ DEFINE_TEST(generate_key_pbkdf2)
 		
 		ret = gck_crypto_symkey_generate_pbkdf2 (all_generation_tests[i].cipher_algo, 
                                                          all_generation_tests[i].hash_algo,
-                                                         all_generation_tests[i].password,
+                                                         all_generation_tests[i].password, -1,
                                                          (guchar*)all_generation_tests[i].salt, 8,
                                                          all_generation_tests[i].iterations,
                                                          &key, NULL);
@@ -206,7 +206,7 @@ DEFINE_TEST(generate_key_pbe)
 		
 		ret = gck_crypto_symkey_generate_pbe (all_generation_tests[i].cipher_algo, 
                                                       all_generation_tests[i].hash_algo,
-                                                      all_generation_tests[i].password,
+                                                      all_generation_tests[i].password, -1,
                                                       (guchar*)all_generation_tests[i].salt, 8,
                                                       all_generation_tests[i].iterations,
                                                       &key, NULL);

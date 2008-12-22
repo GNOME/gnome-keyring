@@ -80,7 +80,7 @@ parse_reference (GQuark type, const guchar *data, gsize n_data,
 	dekinfo = gck_data_openssl_get_dekinfo (headers);
 	g_assert ("no dekinfo in headers" && dekinfo != NULL);
 	
-	res = gck_data_openssl_decrypt_block (dekinfo, "booo", data, n_data, &refdata, &n_refdata);
+	res = gck_data_openssl_decrypt_block (dekinfo, "booo", 4, data, n_data, &refdata, &n_refdata);
 	g_assert ("couldn't openssl decrypt block" && res == GCK_DATA_SUCCESS);
 	g_assert ("no data returned from openssl decrypt" && refdata != NULL);
 	g_assert ("invalid amount of data returned from openssl decrypt" && n_refdata == n_data);
@@ -110,7 +110,7 @@ DEFINE_TEST(write_reference)
 	dekinfo = gck_data_openssl_get_dekinfo (refheaders); 
 	g_assert ("no dekinfo in headers" && dekinfo != NULL);
 
-	ret = gck_data_openssl_encrypt_block (dekinfo, "booo", refdata, n_refdata, &encrypted, &n_encrypted);
+	ret = gck_data_openssl_encrypt_block (dekinfo, "booo", 4, refdata, n_refdata, &encrypted, &n_encrypted);
 	g_assert ("couldn't openssl encrypt block" && ret == TRUE);
 	g_assert ("no data returned from openssl encrypt" && encrypted != NULL);
 	g_assert ("invalid amount of data returned from openssl encrypt" && n_refdata <= n_encrypted);
@@ -134,12 +134,12 @@ DEFINE_TEST(openssl_roundtrip)
 	
 	dekinfo = gck_data_openssl_prep_dekinfo (refheaders);
 	
-	ret = gck_data_openssl_encrypt_block (dekinfo, "password", TEST_DATA, TEST_DATA_L, &encrypted, &n_encrypted);
+	ret = gck_data_openssl_encrypt_block (dekinfo, "password", -1, TEST_DATA, TEST_DATA_L, &encrypted, &n_encrypted);
 	g_assert ("couldn't openssl encrypt block" && ret == TRUE);
 	g_assert ("no data returned from openssl encrypt" && encrypted != NULL);
 	g_assert ("invalid amount of data returned from openssl encrypt" && TEST_DATA_L <= n_encrypted);
 
-	res = gck_data_openssl_decrypt_block (dekinfo, "password", encrypted, n_encrypted, &decrypted, &n_decrypted);
+	res = gck_data_openssl_decrypt_block (dekinfo, "password", 8, encrypted, n_encrypted, &decrypted, &n_decrypted);
 	g_assert ("couldn't openssl decrypt block" && res == GCK_DATA_SUCCESS);
 	g_assert ("no data returned from openssl decrypt" && decrypted != NULL);
 

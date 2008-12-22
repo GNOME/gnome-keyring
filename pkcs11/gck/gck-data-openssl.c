@@ -279,7 +279,7 @@ done:
 
 GckDataResult
 gck_data_openssl_decrypt_block (const gchar *dekinfo, const gchar *password, 
-                                const guchar *data, gsize n_data, 
+                                gssize n_password, const guchar *data, gsize n_data, 
                                 guchar **decrypted, gsize *n_decrypted)
 {
 	gcry_cipher_hd_t ch;
@@ -299,7 +299,7 @@ gck_data_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
 	
 	/* IV is already set from the DEK info */
 	if (!gck_crypto_symkey_generate_simple (algo, GCRY_MD_MD5, password, 
-	                                        iv, 8, 1, &key, NULL)) {
+	                                        n_password, iv, 8, 1, &key, NULL)) {
 		g_free (iv);
 		return GCK_DATA_FAILURE;
 	}
@@ -334,7 +334,7 @@ gck_data_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
 
 gboolean
 gck_data_openssl_encrypt_block (const gchar *dekinfo, const gchar *password, 
-                                const guchar *data, gsize n_data,
+                                gssize n_password, const guchar *data, gsize n_data,
                                 guchar **encrypted, gsize *n_encrypted)
 {
 	gsize n_overflow, n_batch, n_padding;
@@ -356,7 +356,7 @@ gck_data_openssl_encrypt_block (const gchar *dekinfo, const gchar *password,
 	
 	/* IV is already set from the DEK info */
 	if (!gck_crypto_symkey_generate_simple (algo, GCRY_MD_MD5, password, 
-	                                        iv, 8, 1, &key, NULL))
+	                                        n_password, iv, 8, 1, &key, NULL))
 		g_return_val_if_reached (FALSE);
 	
 	gcry = gcry_cipher_open (&ch, algo, mode, 0);
