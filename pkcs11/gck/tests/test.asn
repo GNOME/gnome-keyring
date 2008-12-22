@@ -1,0 +1,18 @@
+TEST { }
+
+DEFINITIONS EXPLICIT TAGS ::=
+
+BEGIN
+
+TestIntegers ::= SEQUENCE {
+	uint1                   INTEGER,
+	uint2			INTEGER,
+	uint3			INTEGER,
+	mpi                     INTEGER
+}
+
+TestData ::= SEQUENCE {
+	data			OCTET STRING
+}
+
+END

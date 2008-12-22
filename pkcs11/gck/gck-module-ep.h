@@ -36,6 +36,8 @@ gck_C_Initialize (CK_VOID_PTR init_args)
 	CK_RV rv = CKR_OK;
 	pid_t pid = getpid ();
 	
+	gck_crypto_initialize (void);
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
 		if (pkcs11_module != NULL) {

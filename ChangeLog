@@ -1,3 +1,33 @@
+2008-12-22  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/gck/tests/*: (added)
+	* pkcs11/gck/gck-crypto.c:
+	* pkcs11/gck/gck-crypto.h:
+	* pkcs11/gck/gck-data-asn1.c:
+	* pkcs11/gck/gck-data-asn1.h:
+	* pkcs11/gck/gck-data-der.c: (added)
+	* pkcs11/gck/gck-data-der.h: (added)
+	* pkcs11/gck/gck-data-openssl.c: (added)
+	* pkcs11/gck/gck-data-openssl.h: (added)
+	* pkcs11/gck/gck-data-pem.c: (added)
+	* pkcs11/gck/gck-data-pem.h: (added)
+	* pkcs11/gck/gck-data-types.h: (added)
+	* pkcs11/gck/gck-file-tracker.c: (added)
+	* pkcs11/gck/gck-file-tracker.h: (added)
+	* pkcs11/gck/gck-module.c:
+	* pkcs11/gck/gck-module.h: 
+	* pkcs11/gck/gck-module-ep.h:
+	* pkcs11/gck/temporary-test.c: 
+	* pkcs11/gck/Makefile.am:
+	* pkcs11/gck/pk.asn: (added)
+	* pkcs11/gck/pkix.asn: (added)
+	* pkcs11/Makefile.am:
+	* tests/gtest-helpers.c:
+	* tests/gtest.make:
+	* configure.in: Migrate lots of data processing code over to 
+	new GCK component. Vet for thread-safety, add unit-tests,
+	and disable code not covered by unit tests.
+	
 2008-12-21  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-private.h: 

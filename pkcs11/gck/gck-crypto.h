@@ -40,6 +40,8 @@ static const CK_MECHANISM_TYPE GCK_CRYPTO_DSA_MECHANISMS[] = {
 	CKM_DSA
 };
 
+void                     gck_crypto_initialize                         (void);
+
 CK_RV                    gck_crypto_perform                            (gcry_sexp_t sexp, 
                                                                         CK_MECHANISM_TYPE mech, 
                                                                         CK_ATTRIBUTE_TYPE method, 
@@ -156,5 +158,41 @@ guchar*                  gck_crypto_rsa_unpad_two                      (guint bi
                                                                         const guchar* padded, 
                                                                         gsize n_padded, 
                                                                         gsize *n_raw);
+
+gboolean                 gck_crypto_symkey_generate_simple             (int cipher_algo, 
+                                                                        int hash_algo, 
+                                                                        const gchar *password, 
+                                                                        const guchar *salt, 
+                                                                        gsize n_salt, 
+                                                                        int iterations, 
+                                                                        guchar **key, 
+                                                                        guchar **iv);
+
+gboolean                 gck_crypto_symkey_generate_pbe                (int cipher_algo, 
+                                                                        int hash_algo, 
+                                                                        const gchar *password, 
+                                                                        const guchar *salt, 
+                                                                        gsize n_salt, 
+                                                                        int iterations, 
+                                                                        guchar **key, 
+                                                                        guchar **iv);
+
+gboolean                 gck_crypto_symkey_generate_pkcs12             (int cipher_algo, 
+                                                                        int hash_algo, 
+                                                                        const gchar *password, 
+                                                                        const guchar *salt, 
+                                                                        gsize n_salt,
+                                                                        int iterations, 
+									guchar **key, 
+									guchar **iv);
+
+gboolean                 gck_crypto_symkey_generate_pbkdf2             (int cipher_algo, 
+                                                                        int hash_algo, 
+                                                                        const gchar *password, 
+                                                                        const guchar *salt, 
+                                                                        gsize n_salt, 
+                                                                        int iterations, 
+                                                                        guchar **key, 
+                                                                        guchar **iv);
 
 #endif /* GCKCRYPTO_H_ */

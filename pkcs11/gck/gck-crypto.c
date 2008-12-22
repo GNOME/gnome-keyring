@@ -23,6 +23,8 @@
 
 #include "gck-crypto.h"
 
+#include "common/gkr-secure-memory.h"
+
 /* ----------------------------------------------------------------------------
  * INTERNAL
  */
@@ -885,4 +887,575 @@ gck_crypto_rsa_unpad_two (guint bits, const guchar *padded,
                           gsize n_padded, gsize *n_raw)
 {
 	return unpad_rsa_pkcs1 (0x02, bits, padded, n_padded, n_raw);
+}
+
+/* -----------------------------------------------------------------------------
+ * PASSWORD TO KEY/IV
+ */
+
+gboolean
+gck_crypto_symkey_generate_simple (int cipher_algo, int hash_algo, 
+                                   const gchar *password, const guchar *salt, 
+                                   gsize n_salt, int iterations, guchar **key, 
+                                   guchar **iv)
+{
+	gcry_md_hd_t mdh;
+	gcry_error_t gcry;
+	guchar *digest;
+	guchar *digested;
+	guint n_digest;
+	gint pass, i;
+	gint needed_iv, needed_key;
+	guchar *at_iv, *at_key;
+
+	g_assert (cipher_algo);
+	g_assert (hash_algo);
+
+	g_return_val_if_fail (iterations >= 1, FALSE);
+	
+	/* 
+	 * If cipher algo needs more bytes than hash algo has available
+	 * then the entire hashing process is done again (with the previous
+	 * hash bytes as extra input), and so on until satisfied.
+	 */ 
+	
+	needed_key = gcry_cipher_get_algo_keylen (cipher_algo);
+	needed_iv = gcry_cipher_get_algo_blklen (cipher_algo);
+	
+	gcry = gcry_md_open (&mdh, hash_algo, 0);
+	if (gcry) {
+		g_warning ("couldn't create '%s' hash context: %s", 
+			   gcry_md_algo_name (hash_algo), gcry_strerror (gcry));
+		return FALSE;
+	}
+
+	n_digest = gcry_md_get_algo_dlen (hash_algo);
+	g_return_val_if_fail (n_digest > 0, FALSE);
+	
+	digest = gkr_secure_alloc (n_digest);
+	g_return_val_if_fail (digest, FALSE);
+	if (key) {
+		*key = gkr_secure_alloc (needed_key);
+		g_return_val_if_fail (*key, FALSE);
+	}
+	if (iv) 
+		*iv = g_new0 (guchar, needed_iv);
+
+	at_key = key ? *key : NULL;
+	at_iv = iv ? *iv : NULL;
+
+	for (pass = 0; TRUE; ++pass) {
+		gcry_md_reset (mdh);
+		
+		/* Hash in the previous buffer on later passes */
+		if (pass > 0)
+			gcry_md_write (mdh, digest, n_digest);
+
+		if (password)
+			gcry_md_write (mdh, password, strlen (password));
+		if (salt && n_salt)
+			gcry_md_write (mdh, salt, n_salt);
+		gcry_md_final (mdh);
+		digested = gcry_md_read (mdh, 0);
+		g_return_val_if_fail (digested, FALSE);
+		memcpy (digest, digested, n_digest);
+		
+		for (i = 1; i < iterations; ++i) {
+			gcry_md_reset (mdh);
+			gcry_md_write (mdh, digest, n_digest);
+			gcry_md_final (mdh);
+			digested = gcry_md_read (mdh, 0);
+			g_return_val_if_fail (digested, FALSE);
+			memcpy (digest, digested, n_digest);
+		}
+		
+		/* Copy as much as possible into the destinations */
+		i = 0; 
+		while (needed_key && i < n_digest) {
+			if (at_key)
+				*(at_key++) = digest[i];
+			needed_key--;
+			i++;
+		}
+		while (needed_iv && i < n_digest) {
+			if (at_iv) 
+				*(at_iv++) = digest[i];
+			needed_iv--;
+			i++;
+		}
+		
+		if (needed_key == 0 && needed_iv == 0)
+			break;
+	}
+
+	gkr_secure_free (digest);
+	gcry_md_close (mdh);
+	
+	return TRUE;
+}
+
+gboolean
+gck_crypto_symkey_generate_pbe (int cipher_algo, int hash_algo, const gchar *password, 
+                                const guchar *salt, gsize n_salt, int iterations, 
+                                guchar **key, guchar **iv)
+{
+	gcry_md_hd_t mdh;
+	gcry_error_t gcry;
+	guchar *digest;
+	guchar *digested;
+	guint i, n_digest;
+	gint needed_iv, needed_key;
+
+	g_assert (cipher_algo);
+	g_assert (hash_algo);
+
+	g_return_val_if_fail (iterations >= 1, FALSE);
+	
+	/* 
+	 * We only do one pass here.
+	 * 
+	 * The key ends up as the first needed_key bytes of the hash buffer.
+	 * The iv ends up as the last needed_iv bytes of the hash buffer. 
+	 * 
+	 * The IV may overlap the key (which is stupid) if the wrong pair of 
+	 * hash/cipher algorithms are chosen.
+	 */ 
+
+	n_digest = gcry_md_get_algo_dlen (hash_algo);
+	g_return_val_if_fail (n_digest > 0, FALSE);
+	
+	needed_key = gcry_cipher_get_algo_keylen (cipher_algo);
+	needed_iv = gcry_cipher_get_algo_blklen (cipher_algo);
+	if (needed_iv + needed_key > 16 || needed_iv + needed_key > n_digest) {
+		g_warning ("using PBE symkey generation with %s using an algorithm that needs " 
+		           "too many bytes of key and/or IV: %s",
+		           gcry_cipher_algo_name (hash_algo), 
+		           gcry_cipher_algo_name (cipher_algo));
+		return FALSE;
+	}
+	
+	gcry = gcry_md_open (&mdh, hash_algo, 0);
+	if (gcry) {
+		g_warning ("couldn't create '%s' hash context: %s", 
+			   gcry_md_algo_name (hash_algo), gcry_strerror (gcry));
+		return FALSE;
+	}
+
+	digest = gkr_secure_alloc (n_digest);
+	g_return_val_if_fail (digest, FALSE);
+	if (key) {
+		*key = gkr_secure_alloc (needed_key);
+		g_return_val_if_fail (*key, FALSE);
+	}
+	if (iv) 
+		*iv = g_new0 (guchar, needed_iv);
+
+	if (password)
+		gcry_md_write (mdh, password, strlen (password));
+	if (salt && n_salt)
+		gcry_md_write (mdh, salt, n_salt);
+	gcry_md_final (mdh);
+	digested = gcry_md_read (mdh, 0);
+	g_return_val_if_fail (digested, FALSE);
+	memcpy (digest, digested, n_digest);
+		
+	for (i = 1; i < iterations; ++i)
+		gcry_md_hash_buffer (hash_algo, digest, digest, n_digest);
+	
+	/* The first x bytes are the key */
+	if (key) {
+		g_assert (needed_key <= n_digest);
+		memcpy (*key, digest, needed_key);
+	}
+	
+	/* The last 16 - x bytes are the iv */
+	if (iv) {
+		g_assert (needed_iv <= n_digest && n_digest >= 16);
+		memcpy (*iv, digest + (16 - needed_iv), needed_iv);
+	}
+		
+	gkr_secure_free (digest);
+	gcry_md_close (mdh);
+	
+	return TRUE;	
+}
+
+static gboolean
+generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password, 
+                 const guchar *salt, gsize n_salt, int iterations,
+                 guchar *output, gsize n_output)
+{
+	gcry_mpi_t num_b1, num_ij;
+	guchar *hash, *buf_i, *buf_b;
+	gcry_md_hd_t mdh;
+	const gchar *p2;
+	guchar *p;
+	gsize n_hash, i;
+	gunichar unich;
+	gcry_error_t gcry;
+	
+	num_b1 = num_ij = NULL;
+	
+	n_hash = gcry_md_get_algo_dlen (hash_algo);
+	g_return_val_if_fail (n_hash > 0, FALSE);
+	
+	gcry = gcry_md_open (&mdh, hash_algo, 0);
+	if (gcry) {
+		g_warning ("couldn't create '%s' hash context: %s", 
+		           gcry_md_algo_name (hash_algo), gcry_strerror (gcry));
+		return FALSE;
+	}
+
+	/* Reqisition me a buffer */
+	hash = gkr_secure_alloc (n_hash);
+	buf_i = gkr_secure_alloc (128);
+	buf_b = gkr_secure_alloc (64);
+	g_return_val_if_fail (hash && buf_i && buf_b, FALSE);
+		
+	/* Bring in the salt */
+	p = buf_i;
+	if (salt) {
+		for (i = 0; i < 64; ++i)
+			*(p++) = salt[i % n_salt];
+	} else {
+		memset (p, 0, 64);
+		p += 64;
+	}
+	
+	/* Bring in the password, as 16bits per character BMP string, ie: UCS2 */
+	if (utf8_password) {
+		p2 = utf8_password;
+		for (i = 0; i < 64; i += 2) {
+			unich = *p2 ? g_utf8_get_char (p2) : 0;
+			*(p++) = (unich & 0xFF00) >> 8;
+			*(p++) = (unich & 0xFF);
+			if (*p2) /* Loop back to beginning if more bytes are needed */
+				p2 = g_utf8_next_char (p2);
+			else
+				p2 = utf8_password;
+		}
+	} else {
+		memset (p, 0, 64);
+		p += 64;
+	}
+	
+	/* Hash and bash */
+	for (;;) {
+		gcry_md_reset (mdh);
+
+		/* Put in the PKCS#12 type of key */
+		for (i = 0; i < 64; ++i)
+			gcry_md_putc (mdh, type);
+			
+		/* Bring in the password */
+		gcry_md_write (mdh, buf_i, utf8_password ? 128 : 64);
+		
+		/* First iteration done */
+		memcpy (hash, gcry_md_read (mdh, hash_algo), n_hash);
+		
+		/* All the other iterations */
+		for (i = 1; i < iterations; i++)
+			gcry_md_hash_buffer (hash_algo, hash, hash, n_hash);
+		
+		/* Take out as much as we need */
+		for (i = 0; i < n_hash && n_output; ++i) {
+			*(output++) = hash[i];
+			--n_output;
+		}
+		
+		/* Is that enough generated keying material? */
+		if (!n_output)
+			break;
+			
+		/* Need more bytes, do some voodoo */
+		for (i = 0; i < 64; ++i)
+			buf_b[i] = hash[i % n_hash];
+		gcry = gcry_mpi_scan (&num_b1, GCRYMPI_FMT_USG, buf_b, 64, NULL);
+		g_return_val_if_fail (gcry == 0, FALSE);
+		gcry_mpi_add_ui (num_b1, num_b1, 1);
+		for (i = 0; i < 128; i += 64) {
+			gcry = gcry_mpi_scan (&num_ij, GCRYMPI_FMT_USG, buf_i + i, 64, NULL);
+			g_return_val_if_fail (gcry == 0, FALSE);
+			gcry_mpi_add (num_ij, num_ij, num_b1);
+			gcry_mpi_clear_highbit (num_ij, 64 * 8);
+			gcry = gcry_mpi_print (GCRYMPI_FMT_USG, buf_i + i, 64, NULL, num_ij);
+			g_return_val_if_fail (gcry == 0, FALSE);
+			gcry_mpi_release (num_ij);
+		}
+	}  
+	
+	gkr_secure_free (buf_i);
+	gkr_secure_free (buf_b);
+	gkr_secure_free (hash);
+	gcry_mpi_release (num_b1);
+	gcry_md_close (mdh);
+	
+	return TRUE;
+}
+
+gboolean
+gck_crypto_symkey_generate_pkcs12 (int cipher_algo, int hash_algo, const gchar *password, 
+                                   const guchar *salt, gsize n_salt,
+                                   int iterations, guchar **key, guchar **iv)
+{
+	gsize n_block, n_key;
+	gboolean ret = TRUE;
+	
+	g_return_val_if_fail (cipher_algo, FALSE);
+	g_return_val_if_fail (hash_algo, FALSE);
+	g_return_val_if_fail (iterations > 0, FALSE);
+	
+	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
+	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
+	
+	if (password && !g_utf8_validate (password, -1, NULL)) {
+		g_warning ("invalid non-UTF8 password");
+		g_return_val_if_reached (FALSE);
+	}
+	
+	if (key)
+		*key = NULL;
+	if (iv)
+		*iv = NULL;
+	
+	/* Generate us an key */
+	if (key) {
+		*key = gkr_secure_alloc (n_key);
+		g_return_val_if_fail (*key != NULL, FALSE);
+		ret = generate_pkcs12 (hash_algo, 1, password, salt, n_salt, 
+		                       iterations, *key, n_key);
+	} 
+	
+	/* Generate us an iv */
+	if (ret && iv) {
+		if (n_block > 1) {
+			*iv = g_malloc (n_block);
+			ret = generate_pkcs12 (hash_algo, 2, password, salt, n_salt, 
+			                       iterations, *iv, n_block);
+		} else {
+			*iv = NULL;
+		}
+	}
+	
+	/* Cleanup in case of failure */
+	if (!ret) {
+		g_free (iv ? *iv : NULL);
+		g_free (key ? *key : NULL);
+	}
+	
+	return ret;
+}
+
+static gboolean
+generate_pbkdf2 (int hash_algo, const gchar *password, gsize n_password,
+		 const guchar *salt, gsize n_salt, guint iterations,
+		 guchar *output, gsize n_output)
+{
+	gcry_md_hd_t mdh;
+	guint u, l, r, i, k;
+	gcry_error_t gcry;
+	guchar *U, *T, *buf;
+	gsize n_buf, n_hash;
+	
+	g_return_val_if_fail (hash_algo > 0, FALSE);
+	g_return_val_if_fail (iterations > 0, FALSE);
+	g_return_val_if_fail (n_output > 0, FALSE);
+	g_return_val_if_fail (n_output < G_MAXUINT32, FALSE);
+
+	n_hash = gcry_md_get_algo_dlen (hash_algo);
+	g_return_val_if_fail (n_hash > 0, FALSE);
+	
+	gcry = gcry_md_open (&mdh, hash_algo, GCRY_MD_FLAG_HMAC);
+	if (gcry != 0) {
+		g_warning ("couldn't create '%s' hash context: %s", 
+		           gcry_md_algo_name (hash_algo), gcry_strerror (gcry));
+		return FALSE;
+	}
+
+	/* Get us a temporary buffers */
+	T = gkr_secure_alloc (n_hash);
+	U = gkr_secure_alloc (n_hash);
+	n_buf = n_salt + 4;
+	buf = gkr_secure_alloc (n_buf);
+	g_return_val_if_fail (buf && T && U, FALSE);
+
+	/* n_hash blocks in output, rounding up */
+	l = ((n_output - 1) / n_hash) + 1;
+	
+	/* number of bytes in last, rounded up, n_hash block */
+	r = n_output - (l - 1) * n_hash;
+	
+	memcpy (buf, salt, n_salt);
+	for (i = 1; i <= l; i++) {
+		memset (T, 0, n_hash);
+		for (u = 1; u <= iterations; u++) {
+			gcry_md_reset (mdh);
+
+			gcry = gcry_md_setkey (mdh, password, n_password);
+			g_return_val_if_fail (gcry == 0, FALSE);
+			
+			/* For first iteration on each block add 4 extra bytes */
+			if (u == 1) {
+				buf[n_salt + 0] = (i & 0xff000000) >> 24;
+				buf[n_salt + 1] = (i & 0x00ff0000) >> 16;
+				buf[n_salt + 2] = (i & 0x0000ff00) >> 8;
+				buf[n_salt + 3] = (i & 0x000000ff) >> 0;
+				
+				gcry_md_write (mdh, buf, n_buf);
+		
+			/* Other iterations, any block */
+			} else {
+				gcry_md_write (mdh, U, n_hash);
+			}
+			
+			memcpy (U, gcry_md_read (mdh, hash_algo), n_hash);
+
+			for (k = 0; k < n_hash; k++)
+				T[k] ^= U[k];
+		}
+
+		memcpy (output + (i - 1) * n_hash, T, i == l ? r : n_hash);
+	}
+	
+	gkr_secure_free (T);
+	gkr_secure_free (U);
+	gkr_secure_free (buf);
+	gcry_md_close (mdh);
+	return TRUE;
+}
+
+gboolean
+gck_crypto_symkey_generate_pbkdf2 (int cipher_algo, int hash_algo, 
+                                   const gchar *password, const guchar *salt, 
+                                   gsize n_salt, int iterations, 
+                                   guchar **key, guchar **iv)
+{
+	gsize n_key, n_block, n_password;
+	gboolean ret = TRUE;
+	
+	g_return_val_if_fail (hash_algo, FALSE);
+	g_return_val_if_fail (cipher_algo, FALSE);
+	g_return_val_if_fail (iterations > 0, FALSE);
+	
+	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
+	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
+	
+	if (key)
+		*key = NULL;
+	if (iv)
+		*iv = NULL;
+		
+	n_password = password ? strlen (password) : 0;
+	
+	/* Generate us an key */
+	if (key) {
+		*key = gkr_secure_alloc (n_key);
+		g_return_val_if_fail (*key != NULL, FALSE);
+		ret = generate_pbkdf2 (hash_algo, password, n_password, salt, n_salt, 
+		                       iterations, *key, n_key);
+	} 
+	
+	/* Generate us an iv */
+	if (ret && iv) {
+		if (n_block > 1) {
+			*iv = g_malloc (n_block);
+			gcry_create_nonce (*iv, n_block);
+		} else {
+			*iv = NULL;
+		}
+	}
+	
+	/* Cleanup in case of failure */
+	if (!ret) {
+		g_free (iv ? *iv : NULL);
+		g_free (key ? *key : NULL);
+	}
+	
+	return ret;
+}
+
+/* --------------------------------------------------------------------------
+ * INITIALIZATION
+ */
+
+static void
+log_handler (gpointer unused, int unknown, const gchar *msg, va_list va)
+{
+	/* TODO: Figure out additional arguments */
+	g_logv ("gcrypt", G_LOG_LEVEL_MESSAGE, msg, va);
+}
+
+static int 
+no_mem_handler (gpointer unused, size_t sz, unsigned int unknown)
+{
+	/* TODO: Figure out additional arguments */
+	g_error ("couldn't allocate %lu bytes of memory", 
+	         (unsigned long int)sz);
+	return 0;
+}
+
+static void
+fatal_handler (gpointer unused, int unknown, const gchar *msg)
+{
+	/* TODO: Figure out additional arguments */
+	g_log ("gcrypt", G_LOG_LEVEL_ERROR, "%s", msg);
+}
+
+static int
+glib_thread_mutex_init (void **lock)
+{
+	*lock = g_mutex_new ();
+	return 0;
+}
+
+static int 
+glib_thread_mutex_destroy (void **lock)
+{
+	g_mutex_free (*lock);
+	return 0;
+}
+
+static int 
+glib_thread_mutex_lock (void **lock)
+{
+	g_mutex_lock (*lock);
+	return 0;
+}
+
+static int 
+glib_thread_mutex_unlock (void **lock)
+{
+	g_mutex_unlock (*lock);
+	return 0;
+}
+
+static struct gcry_thread_cbs glib_thread_cbs = {
+	GCRY_THREAD_OPTION_USER, NULL,
+	glib_thread_mutex_init, glib_thread_mutex_destroy,
+	glib_thread_mutex_lock, glib_thread_mutex_unlock,
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL 
+};
+
+void
+gck_crypto_initialize (void)
+{
+	static gsize gcrypt_initialized = FALSE;
+	unsigned seed;
+
+	if (g_once_init_enter (&gcrypt_initialized)) {
+		gcry_control (GCRYCTL_SET_THREAD_CBS, &glib_thread_cbs);
+		gcry_check_version (LIBGCRYPT_VERSION);
+		gcry_set_log_handler (log_handler, NULL);
+		gcry_set_outofcore_handler (no_mem_handler, NULL);
+		gcry_set_fatalerror_handler (fatal_handler, NULL);
+		gcry_set_allocation_handler ((gcry_handler_alloc_t)g_malloc, 
+		                             (gcry_handler_alloc_t)gkr_secure_alloc, 
+		                             gkr_secure_check, 
+		                             (gcry_handler_realloc_t)gkr_secure_realloc, 
+		                             gkr_secure_free);
+		gcry_create_nonce (&seed, sizeof (seed));
+		srand (seed);
+		
+		g_once_init_leave (&gcrypt_initialized, 1);
+	}
 }

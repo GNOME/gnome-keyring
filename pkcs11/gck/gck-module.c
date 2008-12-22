@@ -216,6 +216,13 @@ unregister_virtual_slot (GckModule *self, VirtualSlot *slot)
  */
 
 static CK_RV
+gck_module_real_refresh_token (GckModule *self)
+{
+	/* Derived classes should do something interesting */
+	return CKR_OK;
+}
+
+static CK_RV
 gck_module_real_login_user (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
 	VirtualSlot *slot;
@@ -360,6 +367,7 @@ gck_module_class_init (GckModuleClass *klass)
 	klass->slot_info = &default_slot_info;
 	klass->token_info = &default_token_info;
 	
+	klass->refresh_token = gck_module_real_refresh_token;
 	klass->login_user = gck_module_real_login_user;
 	klass->logout_user = gck_module_real_logout_user;
 	

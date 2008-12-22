@@ -52,10 +52,6 @@ void* gkr_memory_fallback (void *p, unsigned long sz)
 	return g_realloc (p, sz); 
 }
 
-#ifndef EXTERNAL_TEST
-#include "common/gkr-async.h"
-#endif
-
 static GMainLoop *mainloop = NULL;
 
 static gboolean
@@ -132,12 +128,6 @@ main (int argc, char* argv[])
 	g_test_init (&argc, &argv, NULL);
 	gtk_init (&argc, &argv);
 	mainloop = g_main_loop_new (NULL, FALSE);
-
-#ifndef EXTERNAL_TEST
-
-	gkr_async_workers_init (mainloop);
-	
-#endif
 
 	fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
 	fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;

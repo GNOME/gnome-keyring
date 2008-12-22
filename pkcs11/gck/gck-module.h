@@ -57,6 +57,8 @@ struct _GckModuleClass {
 	
 	/* virtual methods */
 	
+	CK_RV (*refresh_token) (GckModule *self);
+	
 	CK_RV (*login_user) (GckModule *self, CK_SLOT_ID slot_id, 
 	                     CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
 	
