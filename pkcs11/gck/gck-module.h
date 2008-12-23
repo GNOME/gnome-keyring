@@ -55,12 +55,10 @@ struct _GckModuleClass {
 	const CK_SLOT_INFO *slot_info;
 	const CK_TOKEN_INFO *token_info;
 	
-	/* signals --------------------------------------------------------- */
-    
-	void (*signal) (GckModule *module);
-	
 	/* virtual methods */
-	
+
+	void (*parse_argument) (GckModule *self, const gchar *name, const gchar *value);
+
 	CK_RV (*refresh_token) (GckModule *self);
 	
 	CK_RV (*login_user) (GckModule *self, CK_SLOT_ID slot_id, 
@@ -87,7 +85,7 @@ struct _GckModuleClass {
 
 #define GCK_DEFINE_MODULE(prefix, type) \
 	static GckModule* gck_module_instantiate (CK_C_INITIALIZE_ARGS_PTR args) \
-		{ return g_object_new ((type), NULL); } \
+		{ return g_object_new ((type), "initialize-args", args, NULL); } \
 	const CK_FUNCTION_LIST_PTR prefix ## _function_list = &gck_module_function_list;
 	
 GType                  gck_module_get_type                        (void);
@@ -109,6 +107,7 @@ CK_RV                  gck_module_login_user                      (GckModule *se
 CK_RV                  gck_module_logout_user                     (GckModule *self,
                                                                    CK_SLOT_ID slot_id);
 
+CK_RV                  gck_module_refresh_token                   (GckModule *self);
 
 
 

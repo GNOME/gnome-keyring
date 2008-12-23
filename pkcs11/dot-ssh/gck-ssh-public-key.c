@@ -54,7 +54,7 @@ gck_ssh_public_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 		return gck_util_set_string (attr, self->label ? self->label : "");
 	}
 	
-	return GCK_OBJECT_GET_CLASS (base)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_ssh_public_key_parent_class)->get_attribute (base, attr);
 }
 
 static void

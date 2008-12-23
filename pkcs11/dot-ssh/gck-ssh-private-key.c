@@ -66,7 +66,7 @@ unlock_private_key (GckSshPrivateKey *self, const gchar *password, gssize n_pass
 	
 	res = gck_ssh_openssh_parse_private_key (self->private_data, 
 	                                         self->n_private_data, 
-	                                         password, -1, &sexp);
+	                                         password, n_password, &sexp);
 	
 	switch (res) {
 	case GCK_DATA_LOCKED:
@@ -88,7 +88,7 @@ unlock_private_key (GckSshPrivateKey *self, const gchar *password, gssize n_pass
 		self->is_encrypted = FALSE;
 
 	wrapper = gck_sexp_new (sexp);
-	gck_private_key_store_private (GCK_PRIVATE_KEY (self), wrapper, self->is_encrypted ? 1 : 0);
+	gck_private_key_store_private (GCK_PRIVATE_KEY (self), wrapper, self->is_encrypted ? 1 : G_MAXUINT);
 	gck_sexp_unref (wrapper);
 	
 	return CKR_OK;
@@ -117,14 +117,14 @@ realize_and_take_data (GckSshPrivateKey *self, gcry_sexp_t sexp, gchar *comment,
 	g_free (self->private_data);
 	self->private_data = private_data;
 	self->n_private_data = n_private_data;
+
+	/* Force parsing next time required */
+	gck_private_key_store_private (GCK_PRIVATE_KEY (self), NULL, 0);
 	
 	/* Try to parse the private data, and note if it's not actually encrypted */
 	self->is_encrypted = TRUE;
 	if (unlock_private_key (self, "", 0) == CKR_OK) 
 		self->is_encrypted = FALSE;
-	
-	/* Force parsing next time required */
-	gck_private_key_store_private (GCK_PRIVATE_KEY (self), NULL, 0);
 }
 
 /* -----------------------------------------------------------------------------
@@ -141,7 +141,7 @@ gck_ssh_private_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 		return gck_util_set_string (attr, self->label ? self->label : "");
 	}
 	
-	return GCK_OBJECT_GET_CLASS (base)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_ssh_private_key_parent_class)->get_attribute (base, attr);
 }
 
 static CK_RV

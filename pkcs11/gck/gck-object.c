@@ -129,7 +129,9 @@ gck_object_dispose (GObject *obj)
 {
 	GckObject *self = GCK_OBJECT (obj);
 	
-	gck_object_set_manager (self, NULL);
+	if (self->pv->manager)
+		gck_manager_unregister_object (self->pv->manager, self);
+	g_assert (self->pv->manager == NULL);
     
 	G_OBJECT_CLASS (gck_object_parent_class)->dispose (obj);
 }
@@ -149,13 +151,25 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
                            GParamSpec *pspec)
 {
 	GckObject *self = GCK_OBJECT (obj);
+	GckManager *manager;
 	
 	switch (prop_id) {
 	case PROP_HANDLE:
 		gck_object_set_handle (self, g_value_get_ulong (value));
 		break;
 	case PROP_MANAGER:
-		gck_object_set_manager (self, g_value_get_object (value));
+		manager = g_value_get_object (value);
+		if (self->pv->manager) {
+			g_return_if_fail (!manager);
+			g_object_remove_weak_pointer (G_OBJECT (self->pv->manager), 
+			                              (gpointer*)&(self->pv->manager));
+		}
+		self->pv->manager = manager;
+		if (self->pv->manager)
+			g_object_add_weak_pointer (G_OBJECT (self->pv->manager), 
+			                           (gpointer*)&(self->pv->manager));
+		
+		g_object_notify (G_OBJECT (self), "manager");
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -298,26 +312,6 @@ gck_object_get_manager (GckObject *self)
 	return self->pv->manager;
 }
 
-void
-gck_object_set_manager (GckObject *self, GckManager *manager)
-{
-	g_return_if_fail (GCK_IS_OBJECT (self));
-	g_return_if_fail (!manager || GCK_IS_MANAGER (manager));
-
-	if (self->pv->manager) {
-		g_return_if_fail (!manager);
-		g_object_remove_weak_pointer (G_OBJECT (self->pv->manager), 
-		                              (gpointer*)&(self->pv->manager));
-	}
-	
-	self->pv->manager = manager;
-	if (self->pv->manager)
-		g_object_add_weak_pointer (G_OBJECT (self->pv->manager), 
-		                           (gpointer*)&(self->pv->manager));
-	
-	g_object_notify (G_OBJECT (self), "manager");
-}
-
 CK_RV
 gck_object_unlock (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
@@ -392,5 +386,6 @@ gck_object_get_attribute_data (GckObject *self, CK_ATTRIBUTE_TYPE type, gsize *n
 		return NULL;
 	}
 	
+	*n_data = attr.ulValueLen;
 	return attr.pValue;
 }

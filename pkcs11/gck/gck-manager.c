@@ -74,7 +74,7 @@ add_object (GckManager *self, GckObject *object)
 	
 	/* Note objects is being managed */
 	self->pv->objects = g_list_prepend (self->pv->objects, object);
-	gck_object_set_manager (object, self);
+	g_object_set (object, "manager", self, NULL);
 }
 
 static void
@@ -95,7 +95,7 @@ remove_object (GckManager *self, GckObject *object)
 	
 	/* Release object management */		
 	self->pv->objects = g_list_remove (self->pv->objects, object);
-	gck_object_set_manager (object, NULL);
+	g_object_set (object, "manager", NULL, NULL);
 }
 
 /* -----------------------------------------------------------------------------
@@ -233,11 +233,12 @@ gck_manager_lookup_handle (GckManager *self, CK_OBJECT_HANDLE handle)
 }
 
 CK_RV
-gck_manager_find_handles (GckManager *self, CK_ATTRIBUTE_PTR template,
-                          CK_ULONG count, GArray *found)
+gck_manager_find_handles (GckManager *self, gboolean also_private, 
+                          CK_ATTRIBUTE_PTR template, CK_ULONG count, GArray *found)
 {
 	CK_OBJECT_HANDLE handle;
 	GckObject *object;
+	gboolean is_private;
 	GList *l;
 	
 	g_return_val_if_fail (GCK_IS_MANAGER (self), CKR_GENERAL_ERROR);
@@ -246,6 +247,16 @@ gck_manager_find_handles (GckManager *self, CK_ATTRIBUTE_PTR template,
 	
 	for (l = self->pv->objects; l; l = g_list_next (l)) {
 		object = GCK_OBJECT (l->data);
+		
+		/* Exclude private objects if required */
+		if (!also_private) {
+			if (gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private)) {
+				if (is_private)
+					continue;
+			}
+		}
+		
+		/* Match all the other attributes */
 		if (gck_object_match_all (object, template, count)) {
 			handle = gck_object_get_handle (object);
 			g_return_val_if_fail (handle != 0, CKR_GENERAL_ERROR);

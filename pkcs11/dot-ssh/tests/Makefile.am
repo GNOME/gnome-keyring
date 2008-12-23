@@ -9,3 +9,7 @@ UNIT_LIBS =  \
 	$(top_builddir)/common/libgkr-module-common.la
 
 include $(top_srcdir)/tests/gtest.make
+
+p11-tests:
+	p11-tests -f p11-tests.conf ../.libs/gck-dot-ssh-module.so
+	

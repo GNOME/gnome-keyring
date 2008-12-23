@@ -89,6 +89,7 @@ GckObject*              gck_manager_lookup_handle       (GckManager *self,
                                                          CK_OBJECT_HANDLE obj);
 
 CK_RV                   gck_manager_find_handles        (GckManager *self,
+                                                         gboolean also_private,
                                                          CK_ATTRIBUTE_PTR template,
                                                          CK_ULONG count,
                                                          GArray *found);

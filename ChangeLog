@@ -1,6 +1,29 @@
 2008-12-23  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/dot-ssh/gck-ssh-module.c:
+	* pkcs11/dot-ssh/gck-ssh-private-key.c:
+	* pkcs11/dot-ssh/gck-ssh-public-key.c:
+	* pkcs11/dot-ssh/gck-ssh-standalone.c:
+	* pkcs11/dot-ssh/tests/Makefile.am:
+	* pkcs11/dot-ssh/tests/p11-tests.conf: (added)
+	* pkcs11/dot-ssh/tests/*.pub: (added)
+	* pkcs11/gck/gck-crypto.c:
+	* pkcs11/gck/gck-manager.c:
+	* pkcs11/gck/gck-manager.h:
+	* pkcs11/gck/gck-module.c:
+	* pkcs11/gck/gck-module.h:
+	* pkcs11/gck/gck-module-ep.h:
+	* pkcs11/gck/gck-object.c:
+	* pkcs11/gck/gck-object.h:
+	* pkcs11/gck/gck-private-key.c:
+	* pkcs11/gck/gck-public-key.c:
+	* pkcs11/gck/gck-util.c: Ran dot-ssh component through testing paces.
+	Fixed lots of bugs. Implemented string based initialization in gck
+	ala NSS. dot-ssh can now use any directory.
+	
+2008-12-23  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/dot-ssh/gck-ssh-module.c:
 	* pkcs11/dot-ssh/gck-ssh-module.h:
 	* pkcs11/dot-ssh/gck-ssh-openssh.c:
 	* pkcs11/dot-ssh/gck-ssh-standalone.c: (added)

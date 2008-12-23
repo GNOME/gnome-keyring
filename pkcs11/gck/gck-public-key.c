@@ -23,6 +23,7 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-crypto.h"
 #include "gck-public-key.h"
 #include "gck-util.h"
 
@@ -42,6 +43,34 @@ G_DEFINE_TYPE (GckPublicKey, gck_public_key, GCK_TYPE_KEY);
  * INTERNAL 
  */
 
+static CK_RV
+return_modulus_bits (GckPublicKey *self, CK_ATTRIBUTE_PTR attr)
+{
+	gcry_sexp_t numbers;
+	gcry_mpi_t mpi;
+	int algorithm;
+	CK_RV rv;
+	
+	if (!gck_crypto_sexp_parse_key (gck_sexp_get (gck_key_get_base_sexp (GCK_KEY (self))),
+	                                &algorithm, NULL, &numbers))
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+	
+	if (algorithm != GCRY_PK_RSA) {
+		gcry_sexp_release (numbers);
+		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
+	
+	g_assert (numbers);
+	if (!gck_crypto_sexp_extract_mpi (numbers, &mpi, "n", NULL))
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+
+	gcry_sexp_release (numbers);
+	rv = gck_util_set_ulong (attr, gcry_mpi_get_nbits (mpi));
+	gcry_mpi_release (mpi);
+
+	return rv;
+}
+
 /* -----------------------------------------------------------------------------
  * PUBLIC_KEY 
  */
@@ -53,6 +82,9 @@ gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 	
 	switch (attr->type)
 	{
+	
+	case CKA_CLASS:
+		return gck_util_set_ulong (attr, CKO_PUBLIC_KEY);
 	
 	case CKA_ENCRYPT:
 		return gck_util_set_bool (attr, gck_key_get_algorithm (GCK_KEY (self)) == GCRY_PK_RSA);
@@ -71,6 +103,9 @@ gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		
 	case CKA_WRAP_TEMPLATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+		
+	case CKA_MODULUS_BITS:
+		return return_modulus_bits (self, attr);
 		
 	case CKA_MODULUS:
 		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_RSA, "n", attr);
@@ -114,6 +149,18 @@ gck_public_key_real_set_attribute (GckPublicKey *public_key, const CK_ATTRIBUTE*
 	return CKA_ATTRIBUTE_TYPE_INVALID;
 }
 #endif
+
+static GckSexp*
+gck_public_key_acquire_crypto_sexp (GckKey *self)
+{
+	GckSexp* sexp;
+	
+	sexp = gck_key_get_base_sexp (self);
+	if (sexp != NULL)
+		gck_sexp_ref (sexp);
+	
+	return sexp;
+}
 
 static GObject* 
 gck_public_key_constructor (GType type, guint n_props, GObjectConstructParam *props) 
@@ -185,6 +232,7 @@ gck_public_key_class_init (GckPublicKeyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
+	GckKeyClass *key_class = GCK_KEY_CLASS (klass);
 	
 	gck_public_key_parent_class = g_type_class_peek_parent (klass);
 #if 0
@@ -201,6 +249,8 @@ gck_public_key_class_init (GckPublicKeyClass *klass)
 #if 0
 	gck_class->set_attribute = gck_public_key_real_set_attribute;
 #endif
+	
+	key_class->acquire_crypto_sexp = gck_public_key_acquire_crypto_sexp;
 	
 #if 0
 	g_public_key_class_install_property (gobject_class, PROP_PUBLIC_KEY,

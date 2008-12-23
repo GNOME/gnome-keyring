@@ -96,8 +96,8 @@ cleanup_crypto (GckSession *self)
 	self->pv->crypto_method = 0;
 
 	if (self->pv->current_object)
-		g_object_remove_weak_pointer (G_OBJECT (self->pv->current_object), 
-		                              (gpointer*)&(self->pv->current_object));
+		g_object_unref (self->pv->current_object);
+	
 	self->pv->current_object = NULL;
 	self->pv->current_operation = NULL;
 }
@@ -437,7 +437,7 @@ gck_session_class_init (GckSessionClass *klass)
 	         g_param_spec_ulong ("handle", "Handle", "PKCS#11 session handle", 
 	                             0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-	g_object_class_install_property (gobject_class, PROP_HANDLE,
+	g_object_class_install_property (gobject_class, PROP_SLOT_ID,
 	         g_param_spec_ulong ("slot-id", "Slot ID", "Slot ID this session is opened on", 
 	                             0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
@@ -579,7 +579,8 @@ CK_RV
 gck_session_C_GetSessionInfo(GckSession* self, CK_SESSION_INFO_PTR info)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (info, CKR_ARGUMENTS_BAD);
+	if (!info)
+		return CKR_ARGUMENTS_BAD;
 	
 	info->slotID = self->pv->slot_id;
 	if (self->pv->logged_in)
@@ -587,7 +588,7 @@ gck_session_C_GetSessionInfo(GckSession* self, CK_SESSION_INFO_PTR info)
 	else
 		info->state = self->pv->read_only ? CKS_RO_PUBLIC_SESSION : CKS_RW_PUBLIC_SESSION;
 	info->flags = CKF_SERIAL_SESSION;
-	if (self->pv->read_only)
+	if (!self->pv->read_only)
 		info->flags |= CKF_RW_SESSION;
 	info->ulDeviceError = 0;
 	
@@ -664,7 +665,8 @@ gck_session_C_GetAttributeValue (GckSession* self, CK_OBJECT_HANDLE handle,
 	CK_RV code, rv;
 	
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (!count || template, CKR_ARGUMENTS_BAD);
+	if (!(!count || template))
+		return CKR_ARGUMENTS_BAD;
 	
 	rv = gck_session_lookup_readable_object (self, handle, &object);
 	if (rv != CKR_OK)
@@ -677,8 +679,11 @@ gck_session_C_GetAttributeValue (GckSession* self, CK_OBJECT_HANDLE handle,
 
 		/* Not a true error, keep going */
 		if (code == CKR_ATTRIBUTE_SENSITIVE ||
-		    code == CKR_ATTRIBUTE_TYPE_INVALID ||
-		    code == CKR_BUFFER_TOO_SMALL) {
+		    code == CKR_ATTRIBUTE_TYPE_INVALID) {
+			template[i].ulValueLen = (CK_ULONG)-1;
+			rv = code;
+			
+		} else if(code == CKR_BUFFER_TOO_SMALL) {
 			rv = code;
 			
 		/* Any other error aborts */
@@ -710,13 +715,15 @@ CK_RV
 gck_session_C_FindObjectsInit (GckSession* self, CK_ATTRIBUTE_PTR template,
                                CK_ULONG count)
 {
+	gboolean also_private;
 	CK_BBOOL token;
 	GArray *found;
 	gboolean all;
 	CK_RV rv;
 	
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (template || !count, CKR_ARGUMENTS_BAD);
+	if (!(template || !count))
+		return CKR_ARGUMENTS_BAD;
 	
 	if (self->pv->current_operation)
 		return CKR_OPERATION_ACTIVE;
@@ -726,20 +733,27 @@ gck_session_C_FindObjectsInit (GckSession* self, CK_ATTRIBUTE_PTR template,
 	
 	/* An array of object handles */
 	found = g_array_new (FALSE, TRUE, sizeof (CK_OBJECT_HANDLE));
+
+	/* If not logged in, then skip private objects */
+	also_private = gck_session_get_logged_in (self); 
+
+	if (all || token) {
+		rv = gck_module_refresh_token (self->pv->module);
+		if (rv == CKR_OK)
+			rv = gck_manager_find_handles (gck_module_get_manager (self->pv->module), 
+			                               also_private, template, count, found);
+	}
 	
-	if (all || token)
-		rv = gck_manager_find_handles (gck_module_get_manager (self->pv->module), 
+	if (rv == CKR_OK && (all || !token)) {
+		rv = gck_manager_find_handles (self->pv->manager, also_private,
 		                               template, count, found);
-	
-	if (rv == CKR_OK && (all || !token))
-		rv = gck_manager_find_handles (self->pv->manager, template, 
-		                               count, found);
+	}
 
 	if (rv != CKR_OK) {
 		g_array_free (found, TRUE);
 		return rv;
 	}
-		
+	
 	g_assert (!self->pv->current_operation);
 	g_assert (!self->pv->found_objects);
 	
@@ -757,8 +771,10 @@ gck_session_C_FindObjects (GckSession* self, CK_OBJECT_HANDLE_PTR objects,
 	GArray *found;
 	
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (objects || !max_count, CKR_ARGUMENTS_BAD);
-	g_return_val_if_fail (count, CKR_ARGUMENTS_BAD);
+	if (!(objects || !max_count))
+		return CKR_ARGUMENTS_BAD;
+	if (!count)
+		return CKR_ARGUMENTS_BAD;
 
 	if (self->pv->current_operation != cleanup_found)
 		return CKR_OPERATION_NOT_INITIALIZED;
@@ -767,11 +783,13 @@ gck_session_C_FindObjects (GckSession* self, CK_OBJECT_HANDLE_PTR objects,
 	found = self->pv->found_objects;
 	
 	n_objects = MIN (max_count, found->len);
+	if (n_objects > 0) {
+		for (i = 0; i < n_objects; ++i)
+			objects[i] = g_array_index (found, CK_OBJECT_HANDLE, i);
+		g_array_remove_range (found, 0, n_objects);
+	}
 	
-	for (i = 0; i < n_objects; ++i)
-		objects[i] = g_array_index (found, CK_OBJECT_HANDLE, i);
-
-	g_array_remove_range (found, 0, n_objects);
+	*count = n_objects;
 	return CKR_OK;
 	
 }
@@ -793,7 +811,8 @@ gck_session_C_EncryptInit (GckSession *self, CK_MECHANISM_PTR mechanism,
                            CK_OBJECT_HANDLE key)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (mechanism, CKR_ARGUMENTS_BAD);
+	if (!mechanism)
+		return CKR_ARGUMENTS_BAD;
 	return prepare_crypto (self, mechanism, CKA_ENCRYPT, key);
 }
 
@@ -802,7 +821,8 @@ gck_session_C_Encrypt (GckSession *self, CK_BYTE_PTR data, CK_ULONG data_len,
                        CK_BYTE_PTR encrypted_data, CK_ULONG_PTR encrypted_data_len)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (data, CKR_ARGUMENTS_BAD);
+	if (!data || !encrypted_data_len)
+		return CKR_ARGUMENTS_BAD;
 	return process_crypto (self, CKA_ENCRYPT, data, data_len, encrypted_data, encrypted_data_len);
 }
 
@@ -828,7 +848,8 @@ gck_session_C_DecryptInit (GckSession *self, CK_MECHANISM_PTR mechanism,
                            CK_OBJECT_HANDLE key)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (mechanism, CKR_ARGUMENTS_BAD);
+	if (!mechanism)
+		return CKR_ARGUMENTS_BAD;
 	return prepare_crypto (self, mechanism, CKA_DECRYPT, key);	
 }
 
@@ -837,7 +858,8 @@ gck_session_C_Decrypt (GckSession *self, CK_BYTE_PTR enc_data,
                        CK_ULONG enc_data_len, CK_BYTE_PTR data, CK_ULONG_PTR data_len)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (data, CKR_ARGUMENTS_BAD);
+	if (!enc_data || !data_len)
+		return CKR_ARGUMENTS_BAD;
 	return process_crypto (self, CKA_DECRYPT, enc_data, enc_data_len, data, data_len);
 }
 
@@ -899,7 +921,8 @@ gck_session_C_SignInit (GckSession *self, CK_MECHANISM_PTR mechanism,
                         CK_OBJECT_HANDLE key)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (mechanism, CKR_ARGUMENTS_BAD);
+	if (!mechanism)
+		return CKR_ARGUMENTS_BAD;
 	return prepare_crypto (self, mechanism, CKA_SIGN, key);
 }
 
@@ -908,7 +931,8 @@ gck_session_C_Sign (GckSession *self, CK_BYTE_PTR data, CK_ULONG data_len,
                     CK_BYTE_PTR signature, CK_ULONG_PTR signature_len)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (data, CKR_ARGUMENTS_BAD);
+	if (!data || !signature_len)
+		return CKR_ARGUMENTS_BAD;
 	return process_crypto (self, CKA_SIGN, data, data_len, signature, signature_len);
 }
 
@@ -948,7 +972,8 @@ gck_session_C_VerifyInit (GckSession *self, CK_MECHANISM_PTR mechanism,
                           CK_OBJECT_HANDLE key)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (mechanism, CKR_ARGUMENTS_BAD);
+	if (!mechanism)
+		return CKR_ARGUMENTS_BAD;
 	return prepare_crypto (self, mechanism, CKA_VERIFY, key);
 }
 
@@ -957,7 +982,8 @@ gck_session_C_Verify (GckSession *self, CK_BYTE_PTR data, CK_ULONG data_len,
                       CK_BYTE_PTR signature, CK_ULONG signature_len)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	g_return_val_if_fail (data, CKR_ARGUMENTS_BAD);
+	if (!data || !signature)
+		return CKR_ARGUMENTS_BAD;
 	return process_crypto (self, CKA_VERIFY, data, data_len, signature, &signature_len);
 }
 

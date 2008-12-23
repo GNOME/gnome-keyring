@@ -43,7 +43,8 @@ void* gkr_memory_fallback (void *p, unsigned long sz)
 CK_RV
 C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 {
-	g_return_val_if_fail (list, CKR_ARGUMENTS_BAD);
+	if (!list)
+		return CKR_ARGUMENTS_BAD;
 	
 	g_type_init ();
 	

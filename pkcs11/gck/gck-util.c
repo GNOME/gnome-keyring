@@ -70,7 +70,7 @@ CK_RV
 gck_util_set_string (CK_ATTRIBUTE_PTR attr, const gchar* string)
 {
 	g_return_val_if_fail (string, CKR_GENERAL_ERROR);
-	return gck_util_set_data (attr, string, strlen (string));
+	return gck_util_set_data (attr, (CK_VOID_PTR)string, strlen (string));
 }
 
 CK_RV
@@ -130,6 +130,7 @@ gck_util_set_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi)
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, attr->pValue, len, &len, mpi);	
 	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
 	
+	attr->ulValueLen = len;
 	return CKR_OK;
 }
 

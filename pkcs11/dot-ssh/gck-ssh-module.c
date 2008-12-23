@@ -32,6 +32,7 @@
 struct _GckSshModule {
 	GckModule parent;
 	GckFileTracker *tracker;
+	gchar *directory;
 	GHashTable *keys_by_path;
 };
 
@@ -152,6 +153,16 @@ file_remove (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
  * OBJECT 
  */
 
+static void 
+gck_ssh_module_real_parse_argument (GckModule *base, const gchar *name, const gchar *value)
+{
+	GckSshModule *self = GCK_SSH_MODULE (base);
+	if (g_str_equal (name, "directory")) {
+		g_free (self->directory);
+		self->directory = g_strdup (value);
+	}
+}
+
 static CK_RV
 gck_ssh_module_real_refresh_token (GckModule *base)
 {
@@ -166,7 +177,12 @@ gck_ssh_module_constructor (GType type, guint n_props, GObjectConstructParam *pr
 	GckSshModule *self = GCK_SSH_MODULE (G_OBJECT_CLASS (gck_ssh_module_parent_class)->constructor(type, n_props, props));
 	g_return_val_if_fail (self, NULL);	
 
-
+	if (!self->directory)
+		self->directory = g_strdup ("~/.ssh");
+	self->tracker = gck_file_tracker_new (self->directory, "*.pub", NULL);
+	g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
+	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
+	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
 	
 	return G_OBJECT (self);
 }
@@ -174,10 +190,7 @@ gck_ssh_module_constructor (GType type, guint n_props, GObjectConstructParam *pr
 static void
 gck_ssh_module_init (GckSshModule *self)
 {
-	self->tracker = gck_file_tracker_new ("~/.ssh", "*.pub", NULL);
-	g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
-	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
-	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
+	self->keys_by_path = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 }
 
 static void
@@ -188,6 +201,8 @@ gck_ssh_module_dispose (GObject *obj)
 	if (self->tracker)
 		g_object_unref (self->tracker);
 	self->tracker = NULL;
+	
+	g_hash_table_remove_all (self->keys_by_path);
     
 	G_OBJECT_CLASS (gck_ssh_module_parent_class)->dispose (obj);
 }
@@ -198,6 +213,12 @@ gck_ssh_module_finalize (GObject *obj)
 	GckSshModule *self = GCK_SSH_MODULE (obj);
 	
 	g_assert (self->tracker == NULL);
+	
+	g_hash_table_destroy (self->keys_by_path);
+	self->keys_by_path = NULL;
+	
+	g_free (self->directory);
+	self->directory = NULL;
 
 	G_OBJECT_CLASS (gck_ssh_module_parent_class)->finalize (obj);
 }
@@ -212,6 +233,7 @@ gck_ssh_module_class_init (GckSshModuleClass *klass)
 	gobject_class->dispose = gck_ssh_module_dispose;
 	gobject_class->finalize = gck_ssh_module_finalize;
 	
+	module_class->parse_argument = gck_ssh_module_real_parse_argument;
 	module_class->refresh_token = gck_ssh_module_real_refresh_token;
 	
 	module_class->slot_info = &gck_ssh_module_slot_info;

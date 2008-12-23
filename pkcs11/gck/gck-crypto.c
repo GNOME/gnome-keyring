@@ -111,7 +111,6 @@ sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
 	g_assert (data);
 	g_assert (n_data);
 	g_assert (*n_data);
-	g_assert (padding);
 	g_assert (bits);
 
 	/* First try and dig out sexp child based on arguments */
@@ -131,7 +130,7 @@ sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
 	n_block = (bits + 7) / 8;
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &len, mpi);
 	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-	g_return_val_if_fail (len > n_block, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (len <= n_block, CKR_GENERAL_ERROR);
 	offset = n_block - len;
 	block = g_malloc0 (n_block);
 	memset (block, 0, offset);
@@ -251,11 +250,11 @@ gck_crypto_encrypt (gcry_sexp_t sexp, CK_MECHANISM_TYPE mech, CK_BYTE_PTR data,
 	switch (mech) {
 	case CKM_RSA_PKCS:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR); 
-		rv = gck_crypto_decrypt_rsa (sexp, gck_crypto_rsa_pad_two, data, n_data, encrypted, n_encrypted);
+		rv = gck_crypto_encrypt_rsa (sexp, gck_crypto_rsa_pad_two, data, n_data, encrypted, n_encrypted);
 		break;
 	case CKM_RSA_X_509:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR);
-		rv = gck_crypto_decrypt_rsa (sexp, gck_crypto_rsa_pad_raw, data, n_data, encrypted, n_encrypted);
+		rv = gck_crypto_encrypt_rsa (sexp, gck_crypto_rsa_pad_raw, data, n_data, encrypted, n_encrypted);
 		break;
 	default:
 		/* Again shouldn't be reached */
@@ -304,7 +303,7 @@ gck_crypto_encrypt_rsa (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR 
 	}
 
 	/* Now extract and send it back out */
-	rv = sexp_to_data (sexp, nbits, encrypted, n_encrypted, NULL, "enc-val", "rsa", "a", NULL);
+	rv = sexp_to_data (sdata, nbits, encrypted, n_encrypted, NULL, "enc-val", "rsa", "a", NULL);
 	gcry_sexp_release (sdata);
 	
 	return rv;
@@ -685,13 +684,13 @@ gck_crypto_perform (gcry_sexp_t sexp, CK_MECHANISM_TYPE mech, CK_ATTRIBUTE_TYPE 
 	
 	switch (method) {
 	case CKA_ENCRYPT:
-		return gck_crypto_encrypt (sexp, method, bufone, n_bufone, buftwo, n_buftwo);
+		return gck_crypto_encrypt (sexp, mech, bufone, n_bufone, buftwo, n_buftwo);
 	case CKA_DECRYPT:
-		return gck_crypto_decrypt (sexp, method, bufone, n_bufone, buftwo, n_buftwo);
+		return gck_crypto_decrypt (sexp, mech, bufone, n_bufone, buftwo, n_buftwo);
 	case CKA_SIGN:
-		return gck_crypto_sign (sexp, method, bufone, n_bufone, buftwo, n_buftwo);
+		return gck_crypto_sign (sexp, mech, bufone, n_bufone, buftwo, n_buftwo);
 	case CKA_VERIFY:
-		return gck_crypto_verify (sexp, method, bufone, n_bufone, buftwo, *n_buftwo);
+		return gck_crypto_verify (sexp, mech, bufone, n_bufone, buftwo, *n_buftwo);
 	default:
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
 	}

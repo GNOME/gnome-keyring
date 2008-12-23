@@ -90,7 +90,7 @@ gck_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
 	case CKA_ALWAYS_AUTHENTICATE:
-		return gck_util_set_bool (attr, self->pv->sexp_uses > 1);
+		return gck_util_set_bool (attr, self->pv->sexp_uses <= 1);
 		
 	case CKA_MODULUS:
 		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_RSA, "n", attr);
@@ -280,6 +280,7 @@ void
 gck_private_key_store_private (GckPrivateKey *self, GckSexp *sexp, guint num_uses)
 {
 	g_return_if_fail (GCK_IS_PRIVATE_KEY (self));
+	g_return_if_fail (!sexp || num_uses);
 	
 	if (sexp)
 		gck_sexp_ref (sexp);

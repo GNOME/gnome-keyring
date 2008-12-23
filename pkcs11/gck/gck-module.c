@@ -32,17 +32,9 @@
 enum {
 	PROP_0,
 	PROP_MANAGER,
-	PROP_WRITE_PROTECTED
+	PROP_WRITE_PROTECTED,
+	PROP_INITIALIZE_ARGS
 };
-
-#if 0
-enum {
-	SIGNAL,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-#endif
 
 struct _GckModulePrivate {
 	GckManager *token_manager; 
@@ -211,9 +203,105 @@ unregister_virtual_slot (GckModule *self, VirtualSlot *slot)
 		g_assert_not_reached ();
 }
 
+static void
+parse_argument (GckModule *self, char *arg)
+{
+	gchar *value;
+
+	g_assert (GCK_IS_MODULE (self));
+
+	value = arg + strcspn (arg, ":=");
+	if (!*value)
+		value = NULL;
+	else 
+		*(value++) = 0;
+
+	g_strstrip (arg);
+	g_strstrip (value);
+	
+	g_return_if_fail (GCK_MODULE_GET_CLASS (self)->parse_argument);
+	GCK_MODULE_GET_CLASS (self)->parse_argument (self, arg, value);
+}
+
+static void
+parse_arguments (GckModule *self, const gchar *string)
+{
+	gchar quote = '\0';
+	gchar *src, *dup, *at, *arg;
+	
+	g_assert (GCK_IS_MODULE (self));
+	
+	if (!string)
+		return;
+	
+	src = dup = g_strdup (string);
+
+	arg = at = src;
+	for (src = dup; *src; src++) {
+		
+		/* Matching quote */
+		if (quote == *src) {
+			quote = '\0';
+			
+		/* Inside of quotes */
+		} else if (quote != '\0') {
+			if (*src == '\\') {
+				*at++ = *src++;
+				if (!*src) {
+					g_warning ("couldn't parse module argument string");
+					goto done;
+				}
+				if (*src != quote) 
+					*at++ = '\\';
+			}
+			*at++ = *src;
+			
+		/* Space, not inside of quotes */
+		} else if (g_ascii_isspace(*src)) {
+			*at = 0;
+			parse_argument (self, arg);
+			arg = at;
+			
+		/* Other character outside of quotes */
+		} else {
+			switch (*src) {
+			case '\'':
+			case '"':
+				quote = *src;
+				break;
+			case '\\':
+				*at++ = *src++;
+				if (!*src) {
+					g_warning ("couldn't parse module argument string");
+					goto done;
+				}
+				/* fall through */
+			default:
+				*at++ = *src;
+				break;
+			}
+		}
+	}
+
+	
+	if (at != arg) {
+		*at = 0;
+		parse_argument (self, arg);
+	}
+	
+done:
+	g_free (dup);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
+
+static void 
+gck_module_real_parse_argument (GckModule *self, const gchar *name, const gchar *value)
+{
+	/* Derived classes should do something interesting */
+}
 
 static CK_RV
 gck_module_real_refresh_token (GckModule *self)
@@ -317,13 +405,17 @@ gck_module_finalize (GObject *obj)
 
 static void
 gck_module_set_property (GObject *obj, guint prop_id, const GValue *value, 
-                           GParamSpec *pspec)
+                         GParamSpec *pspec)
 {
-#if 0
 	GckModule *self = GCK_MODULE (obj);
-#endif 
+	CK_C_INITIALIZE_ARGS_PTR args;
 	
 	switch (prop_id) {
+	case PROP_INITIALIZE_ARGS:
+		args = g_value_get_pointer (value);
+		if (args != NULL && args->pReserved != NULL) 
+			parse_arguments (self, args->pReserved);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -367,6 +459,7 @@ gck_module_class_init (GckModuleClass *klass)
 	klass->slot_info = &default_slot_info;
 	klass->token_info = &default_token_info;
 	
+	klass->parse_argument = gck_module_real_parse_argument;
 	klass->refresh_token = gck_module_real_refresh_token;
 	klass->login_user = gck_module_real_login_user;
 	klass->logout_user = gck_module_real_logout_user;
@@ -378,6 +471,10 @@ gck_module_class_init (GckModuleClass *klass)
 	g_object_class_install_property (gobject_class, PROP_WRITE_PROTECTED,
 	           g_param_spec_boolean ("write-protected", "Write Protected", "Token is write protected", 
 	                                 TRUE, G_PARAM_READABLE));
+	
+	g_object_class_install_property (gobject_class, PROP_INITIALIZE_ARGS,
+	           g_param_spec_pointer ("initialize-args", "Initialize Args", "Arguments passed to C_Initialize", 
+	                                 G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 
 #if 0
 	signals[SIGNAL] = g_signal_new ("signal", GCK_TYPE_MODULE, 
@@ -446,6 +543,14 @@ gck_module_next_handle (GckModule *self)
 	return (self->pv->handle_counter)++;
 }
 
+CK_RV
+gck_module_refresh_token (GckModule *self)
+{
+	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_GENERAL_ERROR);
+	g_assert (GCK_MODULE_GET_CLASS (self)->refresh_token);
+	return GCK_MODULE_GET_CLASS (self)->refresh_token (self);	
+}
+
 /* -----------------------------------------------------------------------------
  * PKCS#11
  */
@@ -456,7 +561,9 @@ gck_module_C_GetInfo (GckModule *self, CK_INFO_PTR info)
 	GckModuleClass *klass;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	g_return_val_if_fail (info, CKR_ARGUMENTS_BAD);
+	
+	if (!info)
+		return CKR_ARGUMENTS_BAD;
 	
 	klass = GCK_MODULE_GET_CLASS (self);
 	g_return_val_if_fail (klass, CKR_GENERAL_ERROR);
@@ -474,7 +581,9 @@ CK_RV
 gck_module_C_GetSlotList (GckModule *self, CK_BBOOL token_present, CK_SLOT_ID_PTR slot_list, CK_ULONG_PTR count)
 {
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	g_return_val_if_fail (count, CKR_ARGUMENTS_BAD);
+	
+	if (!count)
+		return CKR_ARGUMENTS_BAD;
 	
 	/* Just want to get the count */
 	if (slot_list == NULL) {
@@ -501,7 +610,9 @@ gck_module_C_GetSlotInfo (GckModule *self, CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 	GckModuleClass *klass;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	g_return_val_if_fail (info, CKR_ARGUMENTS_BAD);
+	
+	if (!info)
+		return CKR_ARGUMENTS_BAD;
 	
 	/* Any slot ID is valid for partitioned module */
 	
@@ -523,7 +634,9 @@ gck_module_C_GetTokenInfo (GckModule *self, CK_SLOT_ID id, CK_TOKEN_INFO_PTR inf
 	GckModuleClass *klass;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	g_return_val_if_fail (info, CKR_ARGUMENTS_BAD);
+	
+	if (!info)
+		return CKR_ARGUMENTS_BAD;
 	
 	/* Any slot ID is valid for partitioned module */
 	
@@ -552,7 +665,9 @@ gck_module_C_GetMechanismList (GckModule *self, CK_SLOT_ID id,
 	guint i;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	g_return_val_if_fail (count, CKR_ARGUMENTS_BAD);
+	
+	if (!count)
+		return CKR_ARGUMENTS_BAD;
 	
 	/* Just want to get the count */
 	if (mech_list == NULL) {
@@ -565,8 +680,6 @@ gck_module_C_GetMechanismList (GckModule *self, CK_SLOT_ID id,
 		*count = n_mechanisms;
 		return CKR_BUFFER_TOO_SMALL;
 	}
-	
-	g_return_val_if_fail (mech_list, CKR_ARGUMENTS_BAD);
 	
 	*count = n_mechanisms;
 	for (i = 0; i < n_mechanisms; ++i)
@@ -583,7 +696,9 @@ gck_module_C_GetMechanismInfo (GckModule *self, CK_SLOT_ID id,
 	guint index;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	g_return_val_if_fail (info, CKR_ARGUMENTS_BAD);
+	
+	if (!info)
+		return CKR_ARGUMENTS_BAD;
 
 	for (index = 0; index < n_mechanisms; ++index) {
 		if (mechanism_list[index].mechanism == type)
@@ -614,7 +729,9 @@ gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID slot_id, CK_FLAGS flags, C
 	GckSession *session;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	g_return_val_if_fail (handle, CKR_ARGUMENTS_BAD);
+	
+	if (!result)
+		return CKR_ARGUMENTS_BAD;
 	
 	if (!(flags & CKF_SERIAL_SESSION))
 		return CKR_SESSION_PARALLEL_NOT_SUPPORTED;
@@ -679,6 +796,8 @@ CK_RV
 gck_module_C_CloseAllSessions (GckModule *self, CK_SLOT_ID slot_id)
 {
 	VirtualSlot *slot;
+	CK_SESSION_HANDLE handle;
+	GList *l;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
 	
@@ -686,6 +805,13 @@ gck_module_C_CloseAllSessions (GckModule *self, CK_SLOT_ID slot_id)
 	slot = lookup_virtual_slot (self, slot_id);
 	if (!slot)
 		return CKR_OK;
+	
+	/* Unregister all its sessions */
+	for (l = slot->sessions; l; l = g_list_next (l)) {
+		handle = gck_session_get_handle (l->data);
+		if (!g_hash_table_remove (self->pv->sessions_by_handle, &handle))
+			g_assert_not_reached ();
+	}
 
 	unregister_virtual_slot (self, slot);
 	return CKR_OK;	
@@ -711,6 +837,10 @@ gck_module_C_Login (GckModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user
 
 	/* We don't have support for SO logins */
 	if (user_type == CKU_SO) 
+		return CKR_USER_TYPE_INVALID;
+	
+	/* Some random crap... */
+	if (user_type != CKU_USER)
 		return CKR_USER_TYPE_INVALID;
 
 	/* Calculate the virtual slot */

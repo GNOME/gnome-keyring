@@ -67,9 +67,6 @@ void                   gck_object_set_handle             (GckObject *self,
 
 GckManager*            gck_object_get_manager            (GckObject *self);
 
-void                   gck_object_set_manager            (GckObject *self,
-                                                          GckManager *manager);
-
 CK_RV                  gck_object_unlock                 (GckObject *self, 
                                                           CK_UTF8CHAR_PTR pin, 
                                                           CK_ULONG n_pin);

@@ -53,12 +53,12 @@ gck_C_Initialize (CK_VOID_PTR init_args)
 		               args->LockMutex != NULL && args->UnlockMutex != NULL);
 		
 		if (!supplied_ok) {
-			g_warning ("invalid set of mutex calls supplied");
+			g_message ("invalid set of mutex calls supplied");
 			return CKR_ARGUMENTS_BAD;
 		}
 		
 		if (!(args->flags & CKF_OS_LOCKING_OK)) {
-			g_warning ("must be able to use our own locking and multi-thread primitives");
+			g_message ("must be able to use our own locking and multi-thread primitives");
 			return CKR_CANT_LOCK;
 		}
 	}
@@ -92,13 +92,15 @@ gck_C_Finalize (CK_VOID_PTR reserved)
 {
 	CK_RV rv = CKR_OK;
 	
-	g_return_val_if_fail (!reserved, CKR_ARGUMENTS_BAD);
+	if (reserved)
+		return CKR_ARGUMENTS_BAD;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
 		if (pkcs11_module == NULL) {
 			rv = CKR_CRYPTOKI_NOT_INITIALIZED;
 		} else {
+			g_object_run_dispose (G_OBJECT (pkcs11_module));
 			g_object_unref (pkcs11_module);
 			pkcs11_module = NULL;
 			pkcs11_module_pid = 0;
@@ -127,7 +129,8 @@ gck_C_GetInfo (CK_INFO_PTR info)
 static CK_RV
 gck_C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 {
-	g_return_val_if_fail (list, CKR_ARGUMENTS_BAD);
+	if (!list)
+		return CKR_ARGUMENTS_BAD;
 	*list = &gck_module_function_list;
 	return CKR_OK;
 }
