@@ -65,7 +65,7 @@ G_DEFINE_TYPE (GckModule, gck_module, G_TYPE_OBJECT);
 static const CK_INFO default_module_info = {
 	{ CRYPTOKI_VERSION_MAJOR, CRYPTOKI_VERSION_MINOR },
 	"Gnome Keyring",
-	0,
+	0x40000000, /* TODO: Define as CKF_VIRTUAL_SLOTS elsewhere */
 	"Gnome Keyring Module",
 	{ 1, 1 },
 };
@@ -134,7 +134,7 @@ extend_space_string (CK_UTF8CHAR_PTR string, gsize length)
 	CK_UTF8CHAR_PTR at;
 	
 	/* Find a null pointer in the string */
-	at = memchr (string, '0', length);
+	at = memchr (string, 0, length);
 	g_assert (at != NULL && at < string + length);
 	for (; at < string + length; ++at) 
 		*at = ' ';
@@ -175,7 +175,7 @@ virtual_slot_new (CK_SLOT_ID slot_id)
 	VirtualSlot *slot;
 
 	slot = g_slice_new0 (VirtualSlot);
-	slot->session_manager = g_object_new (GCK_TYPE_MANAGER, "is-token", FALSE, NULL);
+	slot->session_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", FALSE, NULL);
 	slot->logged_in = FALSE;
 	slot->sessions = NULL;
 	slot->slot_id = slot_id;
@@ -273,7 +273,7 @@ static void
 gck_module_init (GckModule *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_MODULE, GckModulePrivate);
-	self->pv->token_manager = g_object_new (GCK_TYPE_MANAGER, "is-token", TRUE, NULL);
+	self->pv->token_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", TRUE, NULL);
 	self->pv->sessions_by_handle = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, 
 	                                                      gck_util_ulong_free, g_object_unref);
 	self->pv->virtual_slots_by_id = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, 
@@ -390,12 +390,6 @@ gck_module_class_init (GckModuleClass *klass)
 /* -----------------------------------------------------------------------------
  * PUBLIC 
  */
-
-GckModule*
-gck_module_new (void)
-{
-	return g_object_new (GCK_TYPE_MODULE, NULL);
-}
 
 GckManager*
 gck_module_get_manager (GckModule *self)
@@ -601,6 +595,13 @@ gck_module_C_GetMechanismInfo (GckModule *self, CK_SLOT_ID id,
 
 	memcpy (info, &mechanism_list[index].info, sizeof (CK_MECHANISM_INFO));
 	return CKR_OK;
+}
+
+CK_RV
+gck_module_C_InitToken (GckModule *self, CK_SLOT_ID id, CK_UTF8CHAR_PTR pin, 
+                        CK_ULONG pin_len, CK_UTF8CHAR_PTR label)
+{
+	return CKR_FUNCTION_NOT_SUPPORTED;
 }
 
 CK_RV

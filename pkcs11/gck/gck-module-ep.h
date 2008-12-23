@@ -19,46 +19,80 @@
  * 02111-1307, USA.  
  */
 
+#include "gck-crypto.h"
 #include "gck-module.h"
+#include "gck-session.h"
 
 #include "pkcs11/pkcs11.h"
+
+#include <unistd.h>
+
+/* Forward declaration, this must be defined manually or using GCK_DEFINE_MODULE */
+static GckModule* gck_module_instantiate (CK_C_INITIALIZE_ARGS_PTR args);
 
 static GckModule *pkcs11_module = NULL;
 static pid_t pkcs11_module_pid = 0;
 static GStaticMutex pkcs11_module_mutex = G_STATIC_MUTEX_INIT;
 
-/* Forward declaration */
-CK_RV C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list);
+static CK_FUNCTION_LIST gck_module_function_list;
 
 static CK_RV
 gck_C_Initialize (CK_VOID_PTR init_args)
 {
+	CK_C_INITIALIZE_ARGS_PTR args = (CK_C_INITIALIZE_ARGS_PTR)init_args;
 	CK_RV rv = CKR_OK;
 	pid_t pid = getpid ();
+	gboolean supplied_ok;
 	
-	gck_crypto_initialize (void);
+	if (args) {
+		
+		/* ALL supplied function pointers need to have the value either NULL or non-NULL. */
+		supplied_ok = (args->CreateMutex == NULL && args->DestroyMutex == NULL &&
+		               args->LockMutex == NULL && args->UnlockMutex == NULL) ||
+		              (args->CreateMutex != NULL && args->DestroyMutex != NULL &&
+		               args->LockMutex != NULL && args->UnlockMutex != NULL);
+		
+		if (!supplied_ok) {
+			g_warning ("invalid set of mutex calls supplied");
+			return CKR_ARGUMENTS_BAD;
+		}
+		
+		if (!(args->flags & CKF_OS_LOCKING_OK)) {
+			g_warning ("must be able to use our own locking and multi-thread primitives");
+			return CKR_CANT_LOCK;
+		}
+	}
+
+	gck_crypto_initialize ();
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
 		if (pkcs11_module != NULL) {
-			if (pkcs11_module_pid != pid) 
+			if (pkcs11_module_pid == pid) 
 				rv = CKR_CRYPTOKI_ALREADY_INITIALIZED;
 			else 
 				pkcs11_module_pid = pid;
 		} else {
-			pkcs11_module = g_object_new (GCK_MODULE_TYPE, NULL);
-			pkcs11_module_pid = pid;
+			pkcs11_module = gck_module_instantiate (args);
+			if (!pkcs11_module) {
+				g_warning ("module could not be instantiated");
+				rv = CKR_GENERAL_ERROR;
+			} else {
+				pkcs11_module_pid = pid;
+			}
 		}
 
 	g_static_mutex_unlock (&pkcs11_module_mutex);
 
-	return CKR_OK;
+	return rv;
 }
 
 static CK_RV
 gck_C_Finalize (CK_VOID_PTR reserved)
 {
-	CK_RV rv;
+	CK_RV rv = CKR_OK;
+	
+	g_return_val_if_fail (!reserved, CKR_ARGUMENTS_BAD);
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
@@ -71,6 +105,8 @@ gck_C_Finalize (CK_VOID_PTR reserved)
 		}
 
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
@@ -84,12 +120,16 @@ gck_C_GetInfo (CK_INFO_PTR info)
 			rv = gck_module_C_GetInfo (pkcs11_module, info);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
 gck_C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 {
-	xxxxx;
+	g_return_val_if_fail (list, CKR_ARGUMENTS_BAD);
+	*list = &gck_module_function_list;
+	return CKR_OK;
 }
 
 static CK_RV
@@ -103,6 +143,8 @@ gck_C_GetSlotList (CK_BBOOL token_present, CK_SLOT_ID_PTR slot_list, CK_ULONG_PT
 			rv = gck_module_C_GetSlotList (pkcs11_module, token_present, slot_list, count);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
@@ -116,6 +158,8 @@ gck_C_GetSlotInfo (CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 			rv = gck_module_C_GetSlotInfo (pkcs11_module, id, info);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
@@ -129,6 +173,8 @@ gck_C_GetTokenInfo (CK_SLOT_ID id, CK_TOKEN_INFO_PTR info)
 			rv = gck_module_C_GetTokenInfo (pkcs11_module, id, info);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
@@ -139,9 +185,11 @@ gck_C_GetMechanismList (CK_SLOT_ID id, CK_MECHANISM_TYPE_PTR mechanism_list, CK_
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
 		if (pkcs11_module != NULL)
-			rv = gck_module_C_GetMechanismList (pkcs11_module, id, info);
+			rv = gck_module_C_GetMechanismList (pkcs11_module, id, mechanism_list, count);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
@@ -155,6 +203,8 @@ gck_C_GetMechanismInfo (CK_SLOT_ID id, CK_MECHANISM_TYPE type, CK_MECHANISM_INFO
 			rv = gck_module_C_GetMechanismInfo (pkcs11_module, id, type, info);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
@@ -168,38 +218,54 @@ gck_C_InitToken (CK_SLOT_ID id, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len, CK_UTF8CH
 			rv = gck_module_C_InitToken (pkcs11_module, id, pin, pin_len, label);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
 gck_C_WaitForSlotEvent (CK_FLAGS flags, CK_SLOT_ID_PTR slot, CK_VOID_PTR reserved)
 {
-	xxxxxxx;
+	/* 
+	 * PKCS#11 GRAY AREA: What happens when we know we'll *never* 
+	 * have any slot events, and someone calls us without CKR_DONT_BLOCK?
+	 * In case there's a thread dedicated to calling this function in a 
+	 * loop, we wait 5 seconds when called without CKR_DONT_BLOCK.
+	 */
+	
+	if (!(flags & CKF_DONT_BLOCK))
+		sleep (5);
+	
+	return CKR_NO_EVENT;
 }
 
 static CK_RV
-gck_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data, CK_NOTIFY callback, CK_SESSION_HANDLE_PTR session)
+gck_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data, CK_NOTIFY callback, CK_SESSION_HANDLE_PTR handle)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
 		if (pkcs11_module != NULL)
-			rv = gck_module_C_OpenSession (pkcs11_module, id, flags, user_data, callback, session);
+			rv = gck_module_C_OpenSession (pkcs11_module, id, flags, user_data, callback, handle);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
-gck_C_CloseSession (CK_SESSION_HANDLE session)
+gck_C_CloseSession (CK_SESSION_HANDLE handle)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
 		if (pkcs11_module != NULL)
-			rv = gck_module_C_CloseSession (pkcs11_module, session);
+			rv = gck_module_C_CloseSession (pkcs11_module, handle);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
@@ -213,109 +279,166 @@ gck_C_CloseAllSessions (CK_SLOT_ID id)
 			rv = gck_module_C_CloseAllSessions (pkcs11_module, id);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
-gck_C_GetFunctionStatus (CK_SESSION_HANDLE session)
+gck_C_GetFunctionStatus (CK_SESSION_HANDLE handle)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL)
-			rv = gck_session_C_GetFunctionStatus (gck_module_lookup_session (session));
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_GetFunctionStatus (session);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
 
+	return rv;
 }
 
 static CK_RV
-gck_C_CancelFunction (CK_SESSION_HANDLE session)
+gck_C_CancelFunction (CK_SESSION_HANDLE handle)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL)
-			rv = gck_session_C_CancelFunction (gck_module_lookup_session (session));
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_CancelFunction (session);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_GetSessionInfo (CK_SESSION_HANDLE session, CK_SESSION_INFO_PTR info)
+gck_C_GetSessionInfo (CK_SESSION_HANDLE handle, CK_SESSION_INFO_PTR info)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL)
-			rv = gck_session_C_GetSessionInfo (gck_module_lookup_session (session),
-			                                   info);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_GetSessionInfo (session,
+				                                   info);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_InitPIN (CK_SESSION_HANDLE session, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
+gck_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL)
-			rv = gck_session_C_InitPIN (gck_module_lookup_session (session),
-			                                   pin, pin_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_InitPIN (session,
+				                            pin, pin_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SetPIN (CK_SESSION_HANDLE session, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len, CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
+gck_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len, CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL)
-			rv = gck_session_C_SetPIN (gck_module_lookup_session (session),
-			                           old_pin, old_pin_len, new_pin, new_pin_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SetPIN (session,
+				                           old_pin, old_pin_len, new_pin, new_pin_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_GetOperationState (CK_SESSION_HANDLE session, CK_BYTE_PTR operation_state, CK_ULONG_PTR operation_state_len)
+gck_C_GetOperationState (CK_SESSION_HANDLE handle, CK_BYTE_PTR operation_state, CK_ULONG_PTR operation_state_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL)
-			rv = gck_session_C_GetOperationState (gck_module_lookup_session (session),
-			                                      operation_state, operation_state_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_GetOperationState (session,
+				                                      operation_state, operation_state_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SetOperationState (CK_SESSION_HANDLE session, CK_BYTE_PTR operation_state,
+gck_C_SetOperationState (CK_SESSION_HANDLE handle, CK_BYTE_PTR operation_state,
                          CK_ULONG operation_state_len, CK_OBJECT_HANDLE encryption_key,
                          CK_OBJECT_HANDLE authentication_key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL)
-			rv = gck_session_C_SetOperationState (gck_module_lookup_session (session),
-			                                      operation_state, operation_state_len, encryption_key, authentication_key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SetOperationState (session,
+				                                      operation_state, operation_state_len, encryption_key, authentication_key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_Login (CK_SESSION_HANDLE session, CK_USER_TYPE user_type,
+gck_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
              CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
@@ -323,702 +446,1024 @@ gck_C_Login (CK_SESSION_HANDLE session, CK_USER_TYPE user_type,
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
 		if (pkcs11_module != NULL)
-			rv = gck_module_C_Login (session, user_type, pin, pin_len);
+			rv = gck_module_C_Login (pkcs11_module, handle, user_type, pin, pin_len);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
 
+	return rv;
 }
 
 static CK_RV
-gck_C_Logout (CK_SESSION_HANDLE session)
+gck_C_Logout (CK_SESSION_HANDLE handle)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
 		if (pkcs11_module != NULL)
-			rv = gck_module_C_Logout (session);
+			rv = gck_module_C_Logout (pkcs11_module, handle);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_CreateObject (CK_SESSION_HANDLE session, CK_ATTRIBUTE_PTR template,
+gck_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
                     CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_CreateObject (gck_module_lookup_session (session),
-		                                 template, count, new_object);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_CreateObject (session,
+				                                 template, count, new_object);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_CopyObject (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object,
+gck_C_CopyObject (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                   CK_ATTRIBUTE_PTR template, CK_ULONG count,
                   CK_OBJECT_HANDLE_PTR new_object)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_CopyObject (gck_module_lookup_session (session),
-		                               object, template, count, new_object);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_CopyObject (session,
+				                               object, template, count, new_object);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 
 static CK_RV
-gck_C_DestroyObject (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object)
+gck_C_DestroyObject (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DestroyObject (gck_module_lookup_session (session), object);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DestroyObject (session, object);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_GetObjectSize (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object,
+gck_C_GetObjectSize (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                      CK_ULONG_PTR size)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_object_C_GetObjectSize (gck_module_lookup_object (session, object), 
-		                                 size);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_GetObjectSize (session, object, size);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_GetAttributeValue (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object,
+gck_C_GetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                          CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_object_C_GetAttributeValue (gck_module_lookup_object (session, object), 
-		                                     template, count);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_GetAttributeValue (session, object, template, count);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SetAttributeValue (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object,
+gck_C_SetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                          CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_object_C_SetAttributeValue (gck_module_lookup_object (session, object), 
-		                                     template, count);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SetAttributeValue (session, handle, template, count);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_FindObjectsInit (CK_SESSION_HANDLE session, CK_ATTRIBUTE_PTR template,
+gck_C_FindObjectsInit (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
                        CK_ULONG count)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_FindObjectsInit (gck_module_lookup_session (session), 
-		                                    template, count);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_FindObjectsInit (session, template, count);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 	
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_FindObjects (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE_PTR objects,
+gck_C_FindObjects (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE_PTR objects,
                    CK_ULONG max_count, CK_ULONG_PTR count)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_FindObjects (gck_module_lookup_session (session), 
-		                                objects, max_count, count);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_FindObjects (session, objects, max_count, count);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_FindObjectsFinal (CK_SESSION_HANDLE session)
+gck_C_FindObjectsFinal (CK_SESSION_HANDLE handle)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_FindObjectsFinal (gck_module_lookup_session (session));
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_FindObjectsFinal (session);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_EncryptInit (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_EncryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                    CK_OBJECT_HANDLE key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_EncryptInit (gck_module_lookup_session (session),
-		                                mechanism, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_EncryptInit (session, mechanism, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_Encrypt (CK_SESSION_HANDLE session, CK_BYTE_PTR data, CK_ULONG data_len,
+gck_C_Encrypt (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len,
                CK_BYTE_PTR encrypted_data, CK_ULONG_PTR encrypted_data_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_Encrypt (gck_module_lookup_session (session),
-		                            data, data_len, encrypted_data, encrypted_data_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_Encrypt (session, data, data_len, encrypted_data, encrypted_data_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_EncryptUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR part,
+gck_C_EncryptUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part,
                      CK_ULONG part_len, CK_BYTE_PTR encrypted_part,
                      CK_ULONG_PTR encrypted_part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_EncryptUpdate (gck_module_lookup_session (session),
-		                                  part, part_len, encrypted_part, encrypted_part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_EncryptUpdate (session, part, part_len, encrypted_part, encrypted_part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_EncryptFinal (CK_SESSION_HANDLE session, CK_BYTE_PTR last_part,
+gck_C_EncryptFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR last_part,
                     CK_ULONG_PTR last_part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_EncryptFinal (gck_module_lookup_session (session),
-		                                 last_part, last_part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_EncryptFinal (session, last_part, last_part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DecryptInit (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_DecryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                    CK_OBJECT_HANDLE key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DecryptInit (gck_module_lookup_session (session),
-		                                mechanism, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DecryptInit (session, mechanism, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_Decrypt (CK_SESSION_HANDLE session, CK_BYTE_PTR enc_data,
+gck_C_Decrypt (CK_SESSION_HANDLE handle, CK_BYTE_PTR enc_data,
                CK_ULONG enc_data_len, CK_BYTE_PTR data, CK_ULONG_PTR data_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_Decrypt (gck_module_lookup_session (session),
-		                            enc_data, enc_data_len, data, data_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_Decrypt (session, enc_data, enc_data_len, data, data_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DecryptUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR enc_part,
+gck_C_DecryptUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR enc_part,
                      CK_ULONG enc_part_len, CK_BYTE_PTR part, CK_ULONG_PTR part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DecryptUpdate (gck_module_lookup_session (session),
-		                                  enc_part, enc_part_len, part, part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DecryptUpdate (session, enc_part, enc_part_len, part, part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DecryptFinal (CK_SESSION_HANDLE session, CK_BYTE_PTR last_part,
+gck_C_DecryptFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR last_part,
                     CK_ULONG_PTR last_part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DecryptFinal (gck_module_lookup_session (session),
-		                                 last_part, last_part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DecryptFinal (session, last_part, last_part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DigestInit (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism)
+gck_C_DigestInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DigestInit (gck_module_lookup_session (session),
-		                               mechanism);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DigestInit (session, mechanism);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_Digest (CK_SESSION_HANDLE session, CK_BYTE_PTR data, CK_ULONG data_len,
+gck_C_Digest (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len,
               CK_BYTE_PTR digest, CK_ULONG_PTR digest_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_Digest (gck_module_lookup_session (session),
-		                           data, data_len, digest, digest_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_Digest (session, data, data_len, digest, digest_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DigestUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR part, CK_ULONG part_len)
+gck_C_DigestUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part, CK_ULONG part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DigestUpdate (gck_module_lookup_session (session),
-		                                  part, part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DigestUpdate (session, part, part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DigestKey (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE key)
+gck_C_DigestKey (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DigestKey (gck_module_lookup_session (session),
-		                              key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DigestKey (session, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DigestFinal (CK_SESSION_HANDLE session, CK_BYTE_PTR digest,
+gck_C_DigestFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR digest,
                    CK_ULONG_PTR digest_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DigestFinal (gck_module_lookup_session (session),
-		                                digest, digest_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DigestFinal (session, digest, digest_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SignInit (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_SignInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                 CK_OBJECT_HANDLE key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_SignInit (gck_module_lookup_session (session),
-		                             mechanism, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SignInit (session, mechanism, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_Sign (CK_SESSION_HANDLE session, CK_BYTE_PTR data, CK_ULONG data_len,
+gck_C_Sign (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len,
             CK_BYTE_PTR signature, CK_ULONG_PTR signature_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_Sign (gck_module_lookup_session (session),
-		                         data, data_len, signature, signature_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_Sign (session, data, data_len, signature, signature_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SignUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR part, CK_ULONG part_len)
+gck_C_SignUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part, CK_ULONG part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_SignUpdate (gck_module_lookup_session (session),
-		                               part, part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SignUpdate (session, part, part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 static CK_RV
-gck_C_SignFinal (CK_SESSION_HANDLE session, CK_BYTE_PTR signature,
+gck_C_SignFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR signature,
                  CK_ULONG_PTR signature_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_SignFinal (gck_module_lookup_session (session),
-		                              signature, signature_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SignFinal (session, signature, signature_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SignRecoverInit (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_SignRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                        CK_OBJECT_HANDLE key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_SignRecoverInit (gck_module_lookup_session (session),
-		                                    mechanism, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SignRecoverInit (session, mechanism, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SignRecover (CK_SESSION_HANDLE session, CK_BYTE_PTR data, CK_ULONG data_len, 
+gck_C_SignRecover (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len, 
                    CK_BYTE_PTR signature, CK_ULONG_PTR signature_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_SignRecover (gck_module_lookup_session (session),
-		                                data, data_len, signature, signature_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SignRecover (session, data, data_len, signature, signature_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_VerifyInit (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_VerifyInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                   CK_OBJECT_HANDLE key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_VerifyInit (gck_module_lookup_session (session),
-		                               mechanism, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_VerifyInit (session, mechanism, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_Verify (CK_SESSION_HANDLE session, CK_BYTE_PTR data, CK_ULONG data_len,
+gck_C_Verify (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len,
               CK_BYTE_PTR signature, CK_ULONG signature_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_Verify (gck_module_lookup_session (session),
-		                           data, data_len, signature, signature_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_Verify (session, data, data_len, signature, signature_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_VerifyUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR part, CK_ULONG part_len)
+gck_C_VerifyUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part, CK_ULONG part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_VerifyUpdate (gck_module_lookup_session (session),
-		                                 part, part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_VerifyUpdate (session, part, part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_VerifyFinal (CK_SESSION_HANDLE session, CK_BYTE_PTR signature,
+gck_C_VerifyFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR signature,
                    CK_ULONG signature_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_VerifyFinal (gck_module_lookup_session (session),
-		                                signature, signature_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_VerifyFinal (session, signature, signature_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_VerifyRecoverInit (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_VerifyRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                          CK_OBJECT_HANDLE key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_VerifyRecoverInit (gck_module_lookup_session (session),
-		                                      mechanism, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_VerifyRecoverInit (session, mechanism, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_VerifyRecover (CK_SESSION_HANDLE session, CK_BYTE_PTR signature,
+gck_C_VerifyRecover (CK_SESSION_HANDLE handle, CK_BYTE_PTR signature,
                      CK_ULONG signature_len, CK_BYTE_PTR data, CK_ULONG_PTR data_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_VerifyRecover (gck_module_lookup_session (session),
-		                                  signature, signature_len, data, data_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_VerifyRecover (session, signature, signature_len, data, data_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DigestEncryptUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR part,
+gck_C_DigestEncryptUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part,
                            CK_ULONG part_len, CK_BYTE_PTR enc_part,
                            CK_ULONG_PTR enc_part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DigestEncryptUpdate (gck_module_lookup_session (session),
-		                                        part, part_len, enc_part, enc_part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DigestEncryptUpdate (session, part, part_len, enc_part, enc_part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DecryptDigestUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR enc_part,
+gck_C_DecryptDigestUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR enc_part,
                            CK_ULONG enc_part_len, CK_BYTE_PTR part, 
                            CK_ULONG_PTR part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DecryptDigestUpdate (gck_module_lookup_session (session),
-		                                        enc_part, enc_part_len, part, part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DecryptDigestUpdate (session, enc_part, enc_part_len, part, part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SignEncryptUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR part,
+gck_C_SignEncryptUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part,
                          CK_ULONG part_len, CK_BYTE_PTR enc_part,
                          CK_ULONG_PTR enc_part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_SignEncryptUpdate (gck_module_lookup_session (session),
-		                                      part, part_len, enc_part, enc_part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SignEncryptUpdate (session, part, part_len, enc_part, enc_part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DecryptVerifyUpdate (CK_SESSION_HANDLE session, CK_BYTE_PTR enc_part,
+gck_C_DecryptVerifyUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR enc_part,
                            CK_ULONG enc_part_len, CK_BYTE_PTR part, 
                            CK_ULONG_PTR part_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_DecryptVerifyUpdate (gck_module_lookup_session (session),
-		                                        enc_part, enc_part_len, part, part_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DecryptVerifyUpdate (session, enc_part, enc_part_len, part, part_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_GenerateKey (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_GenerateKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                    CK_ATTRIBUTE_PTR template, CK_ULONG count, 
                    CK_OBJECT_HANDLE_PTR key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_GenerateKey (gck_module_lookup_session (session),
-		                                mechanism, template, count, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_GenerateKey (session, mechanism, template, count, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_GenerateKeyPair (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_GenerateKeyPair (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                        CK_ATTRIBUTE_PTR pub_template, CK_ULONG pub_count,
                        CK_ATTRIBUTE_PTR priv_template, CK_ULONG priv_count,
                        CK_OBJECT_HANDLE_PTR pub_key, CK_OBJECT_HANDLE_PTR priv_key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_GenerateKeyPair (gck_module_lookup_session (session),
-		                                    mechanism, pub_template, pub_count, priv_template, priv_count, pub_key, priv_key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_GenerateKeyPair (session, mechanism, pub_template, pub_count, priv_template, priv_count, pub_key, priv_key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_WrapKey (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_WrapKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                CK_OBJECT_HANDLE wrapping_key, CK_OBJECT_HANDLE key,
                CK_BYTE_PTR wrapped_key, CK_ULONG_PTR wrapped_key_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_WrapKey (gck_module_lookup_session (session),
-		                            mechanism, wrapping_key, key, wrapped_key, wrapped_key_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_WrapKey (session, mechanism, wrapping_key, key, wrapped_key, wrapped_key_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_UnwrapKey (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_UnwrapKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                  CK_OBJECT_HANDLE unwrapping_key, CK_BYTE_PTR wrapped_key,
                  CK_ULONG wrapped_key_len, CK_ATTRIBUTE_PTR template,
                  CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_UnwrapKey (gck_module_lookup_session (session),
-		                              mechanism, unwrapping_key, wrapped_key, wrapped_key_len, template, count, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_UnwrapKey (session, mechanism, unwrapping_key, wrapped_key, wrapped_key_len, template, count, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_DeriveKey (CK_SESSION_HANDLE session, CK_MECHANISM_PTR mechanism,
+gck_C_DeriveKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                  CK_OBJECT_HANDLE base_key, CK_ATTRIBUTE_PTR template,
                  CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_UnwrapKey (gck_module_lookup_session (session),
-		                              mechanism, base_key, template, count, key);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_DeriveKey (session, mechanism, base_key, template, count, key);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_SeedRandom (CK_SESSION_HANDLE session, CK_BYTE_PTR seed, CK_ULONG seed_len)
+gck_C_SeedRandom (CK_SESSION_HANDLE handle, CK_BYTE_PTR seed, CK_ULONG seed_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-		
+	GckSession *session;
+
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_SeedRandom (gck_module_lookup_session (session),
-		                               seed, seed_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_SeedRandom (session, seed, seed_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+
+	return rv;
 }
 
 static CK_RV
-gck_C_GenerateRandom (CK_SESSION_HANDLE session, CK_BYTE_PTR random_data,
+gck_C_GenerateRandom (CK_SESSION_HANDLE handle, CK_BYTE_PTR random_data,
                       CK_ULONG random_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
+	GckSession *session;
 		
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-	if (pkcs11_module != NULL)
-		rv = gck_session_C_GenerateRandom (gck_module_lookup_session (session),
-		                                   random_data, random_len);
+		if (pkcs11_module != NULL) {
+			session = gck_module_lookup_session (pkcs11_module, handle);
+			if (session != NULL)
+				rv = gck_session_C_GenerateRandom (session, random_data, random_len);
+			else
+				rv = CKR_SESSION_HANDLE_INVALID;
+		}
 				
 	g_static_mutex_unlock (&pkcs11_module_mutex);
+	
+	return rv;
 }
 
 /* --------------------------------------------------------------------
@@ -1034,12 +1479,12 @@ gck_C_GenerateRandom (CK_SESSION_HANDLE session, CK_BYTE_PTR random_data,
  * is compiled.
  */
 
-static CK_FUNCTION_LIST gck_function_list = {
+static CK_FUNCTION_LIST gck_module_function_list = {
 	{ CRYPTOKI_VERSION_MAJOR, CRYPTOKI_VERSION_MINOR },  /* version */
 	gck_C_Initialize,
 	gck_C_Finalize,
 	gck_C_GetInfo,
-	C_GetFunctionList,
+	gck_C_GetFunctionList,
 	gck_C_GetSlotList,
 	gck_C_GetSlotInfo,
 	gck_C_GetTokenInfo,
@@ -1105,12 +1550,3 @@ static CK_FUNCTION_LIST gck_function_list = {
 	gck_C_CancelFunction,
 	gck_C_WaitForSlotEvent
 };
-
-CK_RV
-C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
-{
-	return_val_if_fail (list, CKR_ARGUMENTS_BAD);
-
-	*list = &gck_function_list;
-	return CKR_OK;
-}

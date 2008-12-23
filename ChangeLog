@@ -1,3 +1,27 @@
+2008-12-23  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/dot-ssh/gck-ssh-module.c:
+	* pkcs11/dot-ssh/gck-ssh-module.h:
+	* pkcs11/dot-ssh/gck-ssh-openssh.c:
+	* pkcs11/dot-ssh/gck-ssh-standalone.c: (added)
+	* pkcs11/dot-ssh/Makefile.am:
+	* pkcs11/gck/gck-module.c:
+	* pkcs11/gck/gck-module.h:
+	* pkcs11/gck/gck-module-ep.h:
+	* pkcs11/gck/gck-object.c:
+	* pkcs11/gck/gck-session.c:
+	* pkcs11/gck/gck-session.h:
+	* pkcs11/gck/Makefile.am:
+	* pkcs11/gck/tests/unit-test-data-openssl.c: Assemble SSH PKCS#11 component
+	into a standalone module.
+	
+	* pkcs11/dot-ssh/gck-crypto.c:
+	* pkcs11/dot-ssh/gck-data-asn1.c:
+	* pkcs11/dot-ssh/gck-data-der.c:
+	* pkcs11/dot-ssh/gck-data-openssl.c:
+	* pkcs11/dot-ssh/gck-data-pem.c: Use libgcrypt secure functions
+	as the interface for allocating secure memory.
+	
 2008-12-22  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-crypto.c:

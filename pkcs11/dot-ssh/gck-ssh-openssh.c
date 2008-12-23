@@ -8,7 +8,6 @@
 #include "gck/gck-data-types.h"
 
 #include "common/gkr-buffer.h"
-#include "common/gkr-secure-memory.h"
 
 typedef struct _ParsePrivate {
 	gcry_sexp_t sexp;
@@ -178,7 +177,7 @@ load_encrypted_key (const guchar *data, gsize n_data, const gchar *dekinfo,
 	
 	/* Try to parse */
 	ret = gck_data_der_read_private_key (decrypted, n_decrypted, skey);
-	gkr_secure_free (decrypted);
+	gcry_free (decrypted);
 
 	if (ret != GCK_DATA_UNRECOGNIZED)
 		return ret;

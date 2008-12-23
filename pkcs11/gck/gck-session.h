@@ -132,6 +132,7 @@ CK_RV                    gck_session_C_DestroyObject                    (GckSess
                                                                          CK_OBJECT_HANDLE object);
 
 CK_RV                    gck_session_C_GetObjectSize                    (GckSession* self, 
+                                                                         CK_OBJECT_HANDLE object,
                                                                          CK_ULONG_PTR size);
 
 CK_RV                    gck_session_C_GetAttributeValue                (GckSession* self, 

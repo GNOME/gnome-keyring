@@ -431,7 +431,7 @@ gck_session_class_init (GckSessionClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_MANAGER,
 	         g_param_spec_object ("manager", "Manager", "Object manager for this session", 
-	                              GCK_TYPE_MODULE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	                              GCK_TYPE_MANAGER, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 	         g_param_spec_ulong ("handle", "Handle", "PKCS#11 session handle", 
@@ -649,7 +649,7 @@ gck_session_C_CopyObject (GckSession* self, CK_OBJECT_HANDLE object,
 }
 
 CK_RV
-gck_session_C_GetObjectSize (GckSession* self, CK_ULONG_PTR size)
+gck_session_C_GetObjectSize (GckSession* self, CK_OBJECT_HANDLE object, CK_ULONG_PTR size)
 {
 	/* TODO: Do we need to implement this? */
 	return CKR_FUNCTION_NOT_SUPPORTED;

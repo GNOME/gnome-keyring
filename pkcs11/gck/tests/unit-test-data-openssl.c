@@ -25,8 +25,6 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-secure-memory.h"
-
 #include "gck/gck-crypto.h"
 #include "gck/gck-data-pem.h"
 #include "gck/gck-data-openssl.h"

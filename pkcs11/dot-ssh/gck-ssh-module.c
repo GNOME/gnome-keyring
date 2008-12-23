@@ -30,12 +30,50 @@
 #include <string.h>
 
 struct _GckSshModule {
-	GObject parent;
+	GckModule parent;
 	GckFileTracker *tracker;
 	GHashTable *keys_by_path;
 };
 
+static const CK_SLOT_INFO gck_ssh_module_slot_info = {
+	"SSH Keys",
+	"Gnome Keyring",
+	CKF_TOKEN_PRESENT,
+	{ 0, 0 },
+	{ 0, 0 }
+};
+
+static const CK_TOKEN_INFO gck_ssh_module_token_info = {
+	"SSH Keys",
+	"Gnome Keyring",
+	"1.0",
+	"1",
+	CKF_TOKEN_INITIALIZED | CKF_WRITE_PROTECTED,
+	CK_EFFECTIVELY_INFINITE,
+	CK_EFFECTIVELY_INFINITE,
+	CK_EFFECTIVELY_INFINITE,
+	CK_EFFECTIVELY_INFINITE,
+	1024,
+	1,
+	CK_UNAVAILABLE_INFORMATION,
+	CK_UNAVAILABLE_INFORMATION,
+	CK_UNAVAILABLE_INFORMATION,
+	CK_UNAVAILABLE_INFORMATION,
+	{ 0, 0 },
+	{ 0, 0 },
+	""
+};
+
+
 G_DEFINE_TYPE (GckSshModule, gck_ssh_module, GCK_TYPE_MODULE);
+
+/* -----------------------------------------------------------------------------
+ * ACTUAL PKCS#11 Module Implementation 
+ */
+
+/* Include all the module entry points */
+#include "gck/gck-module-ep.h"
+GCK_DEFINE_MODULE (gck_ssh_module, GCK_TYPE_SSH_MODULE);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
@@ -175,9 +213,7 @@ gck_ssh_module_class_init (GckSshModuleClass *klass)
 	gobject_class->finalize = gck_ssh_module_finalize;
 	
 	module_class->refresh_token = gck_ssh_module_real_refresh_token;
+	
+	module_class->slot_info = &gck_ssh_module_slot_info;
+	module_class->token_info = &gck_ssh_module_token_info;
 }
-
-/* -----------------------------------------------------------------------------
- * PUBLIC 
- */
-

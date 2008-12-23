@@ -32,6 +32,17 @@ libgck_la_SOURCES = \
 	gck-session.c gck-session.h \
 	gck-sexp.c gck-sexp.h \
 	gck-util.c gck-util.h 
+
+libgck_la_CFLAGS = \
+	$(GOBJECT_CFLAGS) \
+    	$(LIBGCRYPT_CFLAGS) \
+    	$(LIBTASN1_CFLAGS) \
+	$(GLIB_CFLAGS) 
+	
+libgck_la_LIBADD = \
+	$(GOBJECT_LIBS) \
+    	$(LIBGCRYPT_LIBS) \
+	$(GLIB_LIBS) 
 	
 asn1-def-pk.h: pk.asn
 	asn1Parser -o asn1-def-pk.h pk.asn 

@@ -40,6 +40,8 @@ struct _GckSshModuleClass {
 	GckModuleClass parent_class;
 };
 
+GCK_DECLARE_MODULE (gck_ssh_module);
+
 GType               gck_ssh_module_get_type               (void);
 
 #endif /* __GCK_SSH_MODULE_H__ */

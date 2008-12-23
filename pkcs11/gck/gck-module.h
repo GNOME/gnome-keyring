@@ -69,9 +69,28 @@ struct _GckModuleClass {
 	CK_RV (*logout_user) (GckModule *self, CK_SLOT_ID slot_id);
 };
 
-GType                  gck_module_get_type               (void);
+/* 
+ * The PKCS#11 module is created by the following code in a header file:
+ * 
+ *     #include "gck-module.h"
+ *     GCK_DECLARE_MODULE(my_module);
+ * 
+ * And the following code in a source file:
+ * 
+ *     #include "gck-module-ep.h"
+ *     GCK_DEFINE_MODULE(my_module, MY_TYPE_MODULE)
+ *     
+ */
 
-GckModule*             gck_module_new                    (void);
+#define GCK_DECLARE_MODULE(prefix) \
+	extern const CK_FUNCTION_LIST_PTR prefix ## _function_list
+
+#define GCK_DEFINE_MODULE(prefix, type) \
+	static GckModule* gck_module_instantiate (CK_C_INITIALIZE_ARGS_PTR args) \
+		{ return g_object_new ((type), NULL); } \
+	const CK_FUNCTION_LIST_PTR prefix ## _function_list = &gck_module_function_list;
+	
+GType                  gck_module_get_type                        (void);
 
 GckManager*            gck_module_get_manager                     (GckModule *self);
 
@@ -118,6 +137,12 @@ CK_RV                  gck_module_C_GetMechanismInfo              (GckModule *se
                                                                    CK_SLOT_ID id, 
                                                                    CK_MECHANISM_TYPE type, 
                                                                    CK_MECHANISM_INFO_PTR info);
+
+CK_RV                  gck_module_C_InitToken                     (GckModule *self,
+                                                                   CK_SLOT_ID id, 
+                                                                   CK_UTF8CHAR_PTR pin, 
+                                                                   CK_ULONG pin_len, 
+                                                                   CK_UTF8CHAR_PTR label);
 
 CK_RV                  gck_module_C_OpenSession                   (GckModule *self, 
                                                                    CK_SLOT_ID id, 

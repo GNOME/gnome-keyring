@@ -25,8 +25,6 @@
 
 #include "gck-data-pem.h"
 
-#include "common/gkr-secure-memory.h"
-
 #include <glib.h>
 
 #include <ctype.h>
@@ -206,15 +204,15 @@ pem_parse_block (const gchar *data, gsize n_data, guchar **decoded, gsize *n_dec
 	}
 	
 	*n_decoded = (n_data * 3) / 4 + 1;
-	if (gkr_secure_check (data))
-		*decoded = gkr_secure_alloc (*n_decoded);
+	if (gcry_is_secure (data))
+		*decoded = gcry_calloc_secure (*n_decoded, 1);
 	else
-		*decoded = g_malloc (*n_decoded);
+		*decoded = gcry_calloc (*n_decoded, 1);
 	g_return_val_if_fail (*decoded, FALSE);
 	
 	*n_decoded = g_base64_decode_step (data, n_data, *decoded, &state, &save);
 	if (!*n_decoded) {
-		gkr_secure_free (*decoded);
+		gcry_free (*decoded);
 		return FALSE;
 	}
 	
@@ -263,7 +261,7 @@ gck_data_pem_parse  (const guchar *data, gsize n_data,
 			if (pem_parse_block (beg, end - beg, &decoded, &n_decoded, &headers)) {
 				(callback) (type, decoded, n_decoded, headers, user_data);
 				++nfound;
-				gkr_secure_free (decoded);
+				gcry_free (decoded);
 				if (headers)
 					g_hash_table_remove_all (headers);
 			}

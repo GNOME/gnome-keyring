@@ -26,7 +26,6 @@
 #include "gck-data-asn1.h"
 
 #include "common/gkr-buffer.h"
-#include "common/gkr-secure-memory.h"
 
 #include <libtasn1.h>
 
@@ -401,12 +400,12 @@ gck_data_asn1_read_secure_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi
   	gsize sz;
   	guchar *buf;
 
-	buf = gck_data_asn1_read_value (asn, part, &sz, gkr_secure_realloc);
+	buf = gck_data_asn1_read_value (asn, part, &sz, (GkrBufferAllocator)gcry_realloc);
 	if (!buf)
 		return FALSE;
 	
 	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_STD, buf, sz, &sz);
-	gkr_secure_free (buf);
+	gcry_free (buf);
 
 	if (gcry != 0)
 		return FALSE;
@@ -431,13 +430,13 @@ gck_data_asn1_write_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t mpi)
 	g_return_val_if_fail (gcry == 0, FALSE);
 	g_return_val_if_fail (len > 0, FALSE); 
 
-	buf = gkr_secure_alloc (len);
+	buf = gcry_calloc_secure (len, 1);
 	
 	gcry = gcry_mpi_print (GCRYMPI_FMT_STD, buf, len, &len, mpi);	
 	g_return_val_if_fail (gcry == 0, FALSE);
 	
 	res = asn1_write_value (asn, part, buf, len);
-	gkr_secure_free (buf);
+	gcry_free (buf);
 	
 	if (res != ASN1_SUCCESS)
 		return FALSE;

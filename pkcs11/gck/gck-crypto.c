@@ -937,10 +937,10 @@ gck_crypto_symkey_generate_simple (int cipher_algo, int hash_algo,
 	n_digest = gcry_md_get_algo_dlen (hash_algo);
 	g_return_val_if_fail (n_digest > 0, FALSE);
 	
-	digest = gkr_secure_alloc (n_digest);
+	digest = gcry_calloc_secure (n_digest, 1);
 	g_return_val_if_fail (digest, FALSE);
 	if (key) {
-		*key = gkr_secure_alloc (needed_key);
+		*key = gcry_calloc_secure (needed_key, 1);
 		g_return_val_if_fail (*key, FALSE);
 	}
 	if (iv) 
@@ -993,7 +993,7 @@ gck_crypto_symkey_generate_simple (int cipher_algo, int hash_algo,
 			break;
 	}
 
-	gkr_secure_free (digest);
+	gcry_free (digest);
 	gcry_md_close (mdh);
 	
 	return TRUE;
@@ -1051,10 +1051,10 @@ gck_crypto_symkey_generate_pbe (int cipher_algo, int hash_algo, const gchar *pas
 		return FALSE;
 	}
 
-	digest = gkr_secure_alloc (n_digest);
+	digest = gcry_calloc_secure (n_digest, 1);
 	g_return_val_if_fail (digest, FALSE);
 	if (key) {
-		*key = gkr_secure_alloc (needed_key);
+		*key = gcry_calloc_secure (needed_key, 1);
 		g_return_val_if_fail (*key, FALSE);
 	}
 	if (iv) 
@@ -1084,7 +1084,7 @@ gck_crypto_symkey_generate_pbe (int cipher_algo, int hash_algo, const gchar *pas
 		memcpy (*iv, digest + (16 - needed_iv), needed_iv);
 	}
 		
-	gkr_secure_free (digest);
+	gcry_free (digest);
 	gcry_md_close (mdh);
 	
 	return TRUE;	
@@ -1125,9 +1125,9 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 	}
 
 	/* Reqisition me a buffer */
-	hash = gkr_secure_alloc (n_hash);
-	buf_i = gkr_secure_alloc (128);
-	buf_b = gkr_secure_alloc (64);
+	hash = gcry_calloc_secure (n_hash, 1);
+	buf_i = gcry_calloc_secure (1, 128);
+	buf_b = gcry_calloc_secure (1, 64);
 	g_return_val_if_fail (hash && buf_i && buf_b, FALSE);
 		
 	/* Bring in the salt */
@@ -1210,9 +1210,9 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 		}
 	}  
 	
-	gkr_secure_free (buf_i);
-	gkr_secure_free (buf_b);
-	gkr_secure_free (hash);
+	gcry_free (buf_i);
+	gcry_free (buf_b);
+	gcry_free (hash);
 	gcry_mpi_release (num_b1);
 	gcry_md_close (mdh);
 	
@@ -1246,7 +1246,7 @@ gck_crypto_symkey_generate_pkcs12 (int cipher_algo, int hash_algo, const gchar *
 	
 	/* Generate us an key */
 	if (key) {
-		*key = gkr_secure_alloc (n_key);
+		*key = gcry_calloc_secure (n_key, 1);
 		g_return_val_if_fail (*key != NULL, FALSE);
 		ret = generate_pkcs12 (hash_algo, 1, password, n_password, salt, n_salt, 
 		                       iterations, *key, n_key);
@@ -1299,10 +1299,10 @@ generate_pbkdf2 (int hash_algo, const gchar *password, gsize n_password,
 	}
 
 	/* Get us a temporary buffers */
-	T = gkr_secure_alloc (n_hash);
-	U = gkr_secure_alloc (n_hash);
+	T = gcry_calloc_secure (n_hash, 1);
+	U = gcry_calloc_secure (n_hash, 1);
 	n_buf = n_salt + 4;
-	buf = gkr_secure_alloc (n_buf);
+	buf = gcry_calloc_secure (n_buf, 1);
 	g_return_val_if_fail (buf && T && U, FALSE);
 
 	/* n_hash blocks in output, rounding up */
@@ -1343,9 +1343,9 @@ generate_pbkdf2 (int hash_algo, const gchar *password, gsize n_password,
 		memcpy (output + (i - 1) * n_hash, T, i == l ? r : n_hash);
 	}
 	
-	gkr_secure_free (T);
-	gkr_secure_free (U);
-	gkr_secure_free (buf);
+	gcry_free (T);
+	gcry_free (U);
+	gcry_free (buf);
 	gcry_md_close (mdh);
 	return TRUE;
 }
@@ -1378,7 +1378,7 @@ gck_crypto_symkey_generate_pbkdf2 (int cipher_algo, int hash_algo,
 	
 	/* Generate us an key */
 	if (key) {
-		*key = gkr_secure_alloc (n_key);
+		*key = gcry_calloc_secure (n_key, 1);
 		g_return_val_if_fail (*key != NULL, FALSE);
 		ret = generate_pbkdf2 (hash_algo, password, n_password, salt, n_salt, 
 		                       iterations, *key, n_key);
@@ -1472,16 +1472,22 @@ gck_crypto_initialize (void)
 	unsigned seed;
 
 	if (g_once_init_enter (&gcrypt_initialized)) {
-		gcry_control (GCRYCTL_SET_THREAD_CBS, &glib_thread_cbs);
-		gcry_check_version (LIBGCRYPT_VERSION);
-		gcry_set_log_handler (log_handler, NULL);
-		gcry_set_outofcore_handler (no_mem_handler, NULL);
-		gcry_set_fatalerror_handler (fatal_handler, NULL);
-		gcry_set_allocation_handler ((gcry_handler_alloc_t)g_malloc, 
-		                             (gcry_handler_alloc_t)gkr_secure_alloc, 
-		                             gkr_secure_check, 
-		                             (gcry_handler_realloc_t)gkr_secure_realloc, 
-		                             gkr_secure_free);
+		
+		/* Only initialize libgcrypt if it hasn't already been initialized */
+		if (!gcry_control (GCRYCTL_INITIALIZATION_FINISHED_P)) {
+			gcry_control (GCRYCTL_SET_THREAD_CBS, &glib_thread_cbs);
+			gcry_check_version (LIBGCRYPT_VERSION);
+			gcry_set_log_handler (log_handler, NULL);
+			gcry_set_outofcore_handler (no_mem_handler, NULL);
+			gcry_set_fatalerror_handler (fatal_handler, NULL);
+			gcry_set_allocation_handler ((gcry_handler_alloc_t)g_malloc, 
+			                             (gcry_handler_alloc_t)gkr_secure_alloc, 
+			                             gkr_secure_check, 
+			                             (gcry_handler_realloc_t)gkr_secure_realloc, 
+			                             gkr_secure_free);
+			gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
+		}
+		
 		gcry_create_nonce (&seed, sizeof (seed));
 		srand (seed);
 		

@@ -28,8 +28,6 @@
 #include "gck-data-der.h"
 #include "gck-data-types.h"
 
-#include "common/gkr-secure-memory.h"
-
 #include <glib.h>
 #include <gcrypt.h>
 #include <libtasn1.h>
@@ -1092,8 +1090,8 @@ gck_data_der_read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode,
 	ret = GCK_DATA_SUCCESS;
 
 done:
-	gkr_secure_free (iv);
-	gkr_secure_free (key);
+	gcry_free (iv);
+	gcry_free (key);
 	
 	if (asn)
 		asn1_delete_structure (&asn);
@@ -1212,7 +1210,7 @@ setup_pkcs5_pbkdf2_params (const gchar *password, const guchar *data,
 	ret = GCK_DATA_SUCCESS;
 	                                         
 done:
-	gkr_secure_free (key);
+	gcry_free (key);
 	if (asn)
 		asn1_delete_structure (&asn);
 	return ret;
@@ -1387,8 +1385,8 @@ done:
 		*cih = NULL;
 	}
 	
-	gkr_secure_free (iv);
-	gkr_secure_free (key);
+	gcry_free (iv);
+	gcry_free (key);
 	
 	if (asn)
 		asn1_delete_structure (&asn);

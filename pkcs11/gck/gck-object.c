@@ -222,6 +222,15 @@ gck_object_class_init (GckObjectClass *klass)
  * PUBLIC 
  */
 
+CK_RV
+gck_object_get_attribute (GckObject *self, CK_ATTRIBUTE_PTR attr)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (self), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	g_assert (GCK_OBJECT_GET_CLASS (self)->get_attribute);
+	return GCK_OBJECT_GET_CLASS (self)->get_attribute (self, attr);
+}
+
 gboolean
 gck_object_match (GckObject *self, CK_ATTRIBUTE_PTR match)
 {
