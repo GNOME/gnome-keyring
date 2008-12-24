@@ -110,7 +110,6 @@ sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
 	g_assert (sexp);
 	g_assert (data);
 	g_assert (n_data);
-	g_assert (*n_data);
 	g_assert (bits);
 
 	/* First try and dig out sexp child based on arguments */
@@ -142,8 +141,9 @@ sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
 	/* Pad it properly if necessary */
 	if (padding != NULL) {
 		guchar *padded = (padding) (bits, block, n_block, &n_block);
-		g_return_val_if_fail (padded, CKR_GENERAL_ERROR);
 		g_free (block);
+		if (!padded)
+			return CKR_DATA_LEN_RANGE;
 		block = padded;
 	}
 	
@@ -357,7 +357,7 @@ gck_crypto_decrypt_rsa (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR 
 
 	g_return_val_if_fail (sexp, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (n_data, CKR_ARGUMENTS_BAD);
-	g_return_val_if_fail (data, CKR_ARGUMENTS_BAD);
+	g_return_val_if_fail (encrypted, CKR_ARGUMENTS_BAD);
 
 	nbits = gcry_pk_get_nbits (sexp);
 	g_return_val_if_fail (nbits > 0, CKR_GENERAL_ERROR);
@@ -367,6 +367,9 @@ gck_crypto_decrypt_rsa (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR 
 		*n_data = (nbits + 7) / 8;
 		return CKR_OK;
 	}
+	
+	if (n_encrypted != (nbits + 7) / 8) 
+		return CKR_DATA_LEN_RANGE;
 	
 	/* Prepare the input s expression */
 	rv = data_to_sexp ("(enc-val (flags) (rsa (a %m)))", 
@@ -594,7 +597,9 @@ gck_crypto_verify_rsa (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR d
 	/* The key size */
 	nbits = gcry_pk_get_nbits (sexp);
 	g_return_val_if_fail (nbits > 0, CKR_GENERAL_ERROR);
-	g_return_val_if_fail (nbits % 8 == 0, CKR_GENERAL_ERROR);
+	
+	if (n_signature != (nbits + 7) / 8)
+		return CKR_SIGNATURE_LEN_RANGE;
 
 	/* Prepare the input s expressions */
 	rv = data_to_sexp ("(data (flags raw) (value %m))", 
@@ -640,7 +645,7 @@ gck_crypto_verify_dsa (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
 	if (n_data != 20)
 		return CKR_DATA_LEN_RANGE;				
 	if (n_signature != 40)
-		return CKR_DATA_LEN_RANGE;
+		return CKR_SIGNATURE_LEN_RANGE;
 
 	/* Prepare the input s-expressions */
 	gcry = gcry_mpi_scan (&mpi, GCRYMPI_FMT_USG, data, n_data, NULL);
@@ -863,15 +868,6 @@ gck_crypto_rsa_pad_two (guint n_modulus, const guchar* raw,
 	
 	*n_padded = total;
 	return padded;
-}
-
-guchar*
-gck_crypto_rsa_unpad_pkcs1 (guint bits, const guchar *padded,
-                            gsize n_padded, gsize *n_raw)
-{
-	/* Further checks are done later */
-	g_return_val_if_fail (n_padded > 2, NULL);
-	return unpad_rsa_pkcs1 (padded[1], bits, padded, n_padded, n_raw);
 }
 
 guchar* 

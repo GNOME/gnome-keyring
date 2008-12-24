@@ -1,3 +1,10 @@
+2008-12-24  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/gck/gck-crypto.c:
+	* pkcs11/gck/gck-crypto.h:
+	* pkcs11/gck/gck-session.c: Test invalid inputs and states 
+	on crypto functions, and bring in line with PKCS#11 spec.
+	
 2008-12-23  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/dot-ssh/gck-ssh-module.c:

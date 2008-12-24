@@ -87,14 +87,15 @@ cleanup_crypto (GckSession *self)
 {
 	g_assert (self->pv->current_operation == cleanup_crypto);
 
-	g_assert (self->pv->crypto_sexp);
-	g_assert (GCK_IS_KEY (self->pv->current_object));
-	gck_sexp_unref (self->pv->crypto_sexp);
-	self->pv->crypto_sexp = NULL;
+	if (self->pv->crypto_sexp) {
+		gck_sexp_unref (self->pv->crypto_sexp);
+		self->pv->crypto_sexp = NULL;
+	}
 
 	self->pv->crypto_mechanism = 0;
 	self->pv->crypto_method = 0;
 
+	g_assert (GCK_IS_KEY (self->pv->current_object));
 	if (self->pv->current_object)
 		g_object_unref (self->pv->current_object);
 	
@@ -145,9 +146,7 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 		return CKR_KEY_TYPE_INCONSISTENT;
 
 	/* Check that the object can do this method */
-	if (!gck_object_get_attribute_boolean (object, method, &have))
-		g_return_val_if_reached (CKR_GENERAL_ERROR);
-	if (have == CK_FALSE)
+	if (!gck_object_get_attribute_boolean (object, method, &have) || !have)
 		return CKR_KEY_FUNCTION_NOT_PERMITTED;
 	
 	/* Track the cyrpto object */
@@ -166,7 +165,7 @@ static CK_RV
 process_crypto (GckSession *self, CK_ATTRIBUTE_TYPE method, CK_BYTE_PTR bufone, 
                 CK_ULONG n_bufone, CK_BYTE_PTR buftwo, CK_ULONG_PTR n_buftwo)
 {
-	CK_RV rv;
+	CK_RV rv = CKR_OK;
 	
 	g_assert (GCK_IS_SESSION (self));
 
@@ -175,20 +174,28 @@ process_crypto (GckSession *self, CK_ATTRIBUTE_TYPE method, CK_BYTE_PTR bufone,
 	if (method != self->pv->crypto_method)
 		return CKR_OPERATION_NOT_INITIALIZED;
 	
-	/* Load up the actual sexp we're going to use */
-	if (!self->pv->crypto_sexp) {
-		g_return_val_if_fail (GCK_IS_KEY (self->pv->current_object), CKR_GENERAL_ERROR);
-		self->pv->crypto_sexp = gck_key_acquire_crypto_sexp (GCK_KEY (self->pv->current_object));
-		if (!self->pv->crypto_sexp)
-			return CKR_USER_NOT_LOGGED_IN;
+	if (!bufone || !n_buftwo)
+		rv = CKR_ARGUMENTS_BAD;
+	
+	if (rv == CKR_OK) {
+		/* Load up the actual sexp we're going to use */
+		if (!self->pv->crypto_sexp) {
+			g_return_val_if_fail (GCK_IS_KEY (self->pv->current_object), CKR_GENERAL_ERROR);
+			self->pv->crypto_sexp = gck_key_acquire_crypto_sexp (GCK_KEY (self->pv->current_object));
+			if (!self->pv->crypto_sexp)
+				rv = CKR_USER_NOT_LOGGED_IN;
+		}
 	}
 
-	g_assert (self->pv->crypto_mechanism);
-	rv = gck_crypto_perform (gck_sexp_get (self->pv->crypto_sexp), self->pv->crypto_mechanism, 
-	                         method, bufone, n_bufone, buftwo, n_buftwo);
+	if (rv == CKR_OK) {
+		g_assert (self->pv->crypto_mechanism);
+		rv = gck_crypto_perform (gck_sexp_get (self->pv->crypto_sexp), self->pv->crypto_mechanism, 
+		                         method, bufone, n_bufone, buftwo, n_buftwo);
+	}
 	
 	/* Under these conditions the operation isn't complete */
-	if (rv == CKR_BUFFER_TOO_SMALL || (rv == CKR_OK && buftwo == NULL))
+	if (rv == CKR_BUFFER_TOO_SMALL || rv == CKR_USER_NOT_LOGGED_IN || 
+	    (rv == CKR_OK && buftwo == NULL))
 		return rv;
 	
 	cleanup_crypto (self);
@@ -821,8 +828,6 @@ gck_session_C_Encrypt (GckSession *self, CK_BYTE_PTR data, CK_ULONG data_len,
                        CK_BYTE_PTR encrypted_data, CK_ULONG_PTR encrypted_data_len)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	if (!data || !encrypted_data_len)
-		return CKR_ARGUMENTS_BAD;
 	return process_crypto (self, CKA_ENCRYPT, data, data_len, encrypted_data, encrypted_data_len);
 }
 
@@ -858,8 +863,6 @@ gck_session_C_Decrypt (GckSession *self, CK_BYTE_PTR enc_data,
                        CK_ULONG enc_data_len, CK_BYTE_PTR data, CK_ULONG_PTR data_len)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	if (!enc_data || !data_len)
-		return CKR_ARGUMENTS_BAD;
 	return process_crypto (self, CKA_DECRYPT, enc_data, enc_data_len, data, data_len);
 }
 
@@ -931,8 +934,6 @@ gck_session_C_Sign (GckSession *self, CK_BYTE_PTR data, CK_ULONG data_len,
                     CK_BYTE_PTR signature, CK_ULONG_PTR signature_len)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	if (!data || !signature_len)
-		return CKR_ARGUMENTS_BAD;
 	return process_crypto (self, CKA_SIGN, data, data_len, signature, signature_len);
 }
 
@@ -982,8 +983,6 @@ gck_session_C_Verify (GckSession *self, CK_BYTE_PTR data, CK_ULONG data_len,
                       CK_BYTE_PTR signature, CK_ULONG signature_len)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
-	if (!data || !signature)
-		return CKR_ARGUMENTS_BAD;
 	return process_crypto (self, CKA_VERIFY, data, data_len, signature, &signature_len);
 }
 

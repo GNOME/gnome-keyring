@@ -144,11 +144,6 @@ guchar*                  gck_crypto_rsa_pad_two                        (guint bi
                                                                         gsize n_raw, 
                                                                         gsize *n_padded);
 
-guchar*                  gck_crypto_rsa_unpad_pkcs1                    (guint bits, 
-                                                                        const guchar *padded,
-                                                                        gsize n_padded, 
-                                                                        gsize *n_raw);
-
 guchar*                  gck_crypto_rsa_unpad_one                      (guint bits, 
                                                                         const guchar *padded, 
                                                                         gsize n_padded, 
