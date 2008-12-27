@@ -9,12 +9,12 @@ INCLUDES = \
 	
 			
 # ------------------------------------------------------------------------------
-# The dot-ssh component code
+# The ssh-keys component code
 
 noinst_LTLIBRARIES = \
-	libgck-dot-ssh.la
+	libgck-ssh-keys.la
 
-libgck_dot_ssh_la_SOURCES = \
+libgck_ssh_keys_la_SOURCES = \
 	gck-ssh-module.c gck-ssh-module.h \
 	gck-ssh-openssh.c gck-ssh-openssh.h \
 	gck-ssh-private-key.c gck-ssh-private-key.h \
@@ -26,17 +26,17 @@ libgck_dot_ssh_la_SOURCES = \
 moduledir = $(libdir)/gnome-keyring/standalone/
 
 module_LTLIBRARIES = \
-	gck-dot-ssh-module.la
+	gck-ssh-keys-module.la
 
-gck_dot_ssh_module_la_LDFLAGS = \
+gck_ssh_keys_module_la_LDFLAGS = \
 	-module -avoid-version \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
-gck_dot_ssh_module_la_SOURCES = \
+gck_ssh_keys_module_la_SOURCES = \
 	gck-ssh-standalone.c
 
-gck_dot_ssh_module_la_LIBADD = \
-	libgck-dot-ssh.la \
+gck_ssh_keys_module_la_LIBADD = \
+	libgck-ssh-keys.la \
 	$(top_builddir)/pkcs11/gck/libgck.la \
 	$(top_builddir)/common/libgkr-module-common.la \
 	$(GOBJECT_LIBS) \

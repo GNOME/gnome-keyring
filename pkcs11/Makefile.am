@@ -41,5 +41,5 @@ else
 TESTS_DIR = 
 endif
 
-SUBDIRS = . rpc gck dot-ssh roots $(TESTS_DIR)
+SUBDIRS = . rpc gck ssh-keys roots $(TESTS_DIR)
 

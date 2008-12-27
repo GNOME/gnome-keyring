@@ -1,6 +1,13 @@
 2008-12-26  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/Makefile.am:
+	* pkcs11/dot-ssh/: (moved to ssh-keys)
+	* pkcs11/ssh-keys/: (moved from dot-ssh)
+	* configure.in: Rename dot-ssh component to ssh-keys
+	
+2008-12-26  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/Makefile.am:
 	* pkcs11/gck/gck-certificate.c: (added)
 	* pkcs11/gck/gck-certificate.h: (added)
 	* pkcs11/gck/gck-certificate-key.c: (added)
