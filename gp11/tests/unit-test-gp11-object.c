@@ -33,7 +33,7 @@ DEFINE_SETUP(prep_object)
 	SUCCESS_RES(session, err);
 	
 	/* Our module always exports a token object with this */
-	object = gp11_object_from_handle (session->slot, 2);
+	object = gp11_object_from_handle (slot, 2);
 	g_assert (object != NULL);
 }
 
@@ -47,12 +47,12 @@ DEFINE_TEARDOWN(prep_object)
 
 DEFINE_TEST(object_props)
 {
-	GP11Slot *slot;
+	GP11Slot *sl;
 	GP11Module *mod;
 	CK_OBJECT_HANDLE handle;
-	g_object_get (object, "slot", &slot, "module", &mod, "handle", &handle, NULL);
-	g_assert (slot == session->slot);
-	g_object_unref (slot);
+	g_object_get (object, "slot", &sl, "module", &mod, "handle", &handle, NULL);
+	g_assert (slot == sl);
+	g_object_unref (sl);
 	g_assert (module == mod);
 	g_object_unref (mod);
 	g_assert (handle == 2);
@@ -84,7 +84,7 @@ DEFINE_TEST(create_object)
 	g_assert (GP11_IS_OBJECT (object));
 	
 	if (object) {
-		last_handle = object->handle;
+		last_handle = gp11_object_get_handle (object);
 		g_object_unref (object);
 	}
 	
@@ -100,8 +100,8 @@ DEFINE_TEST(create_object)
 	SUCCESS_RES (object, err);
 	
 	if (object) {
-		g_assert (last_handle != object->handle);
-		last_handle = object->handle;
+		g_assert (last_handle != gp11_object_get_handle (object));
+		last_handle = gp11_object_get_handle (object);
 		g_object_unref (object);
 	}
 
@@ -380,11 +380,13 @@ DEFINE_TEST(explicit_sessions)
 
 	/* Set an explicit session */
 	gp11_object_set_session (object, session);
-	g_assert (gp11_object_get_session (object) == session);
+	sess = gp11_object_get_session (object);
+	g_assert (sess == session);
+	g_object_unref (sess);
 	g_object_get (object, "session", &sess, NULL);
 	g_assert (sess == session);
 	g_object_unref (sess);
-
+	
 	/* Simple */
 	attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);
 	SUCCESS_RES (attrs, err);
@@ -415,4 +417,11 @@ DEFINE_TEST(explicit_sessions)
 	g_assert (gp11_object_get_session (object) == NULL);
 	g_object_get (object, "session", &sess, NULL);
 	g_assert (sess == NULL);
+
+	/* Test property settor */
+	g_object_set (object, "session", session, NULL);
+	sess = gp11_object_get_session (object);
+	g_assert (sess == session);
+	gp11_object_set_session (object, NULL);
+	g_object_unref (sess);
 }

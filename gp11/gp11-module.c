@@ -27,18 +27,35 @@
 
 #include <string.h>
 
+/*
+ * MT safe 
+ * 
+ * The only thing that can change after object initialization in
+ * a GP11Module is the finalized flag, which can be set
+ * to 1 in dispose.
+ */
+
 enum {
 	PROP_0,
-	PROP_MODULE_PATH
+	PROP_PATH,
+	PROP_FUNCTION_LIST
 };
 
-typedef struct _GP11ModulePrivate {
+typedef struct _GP11ModuleData {
 	GModule *module;
+	gchar *path;
+	gint finalized;
+	CK_FUNCTION_LIST_PTR funcs;
 	CK_C_INITIALIZE_ARGS init_args;
+} GP11ModuleData;
+
+typedef struct _GP11ModulePrivate {
+	GP11ModuleData data;
+	/* Add future mutex and non-MT-safe data here */
 } GP11ModulePrivate;
 
-#define GP11_MODULE_GET_PRIVATE(o) \
-      (G_TYPE_INSTANCE_GET_PRIVATE((o), GP11_TYPE_MODULE, GP11ModulePrivate))
+#define GP11_MODULE_GET_DATA(o) \
+      (G_TYPE_INSTANCE_GET_PRIVATE((o), GP11_TYPE_MODULE, GP11ModuleData))
 
 G_DEFINE_TYPE (GP11Module, gp11_module, G_TYPE_OBJECT);
 
@@ -94,7 +111,7 @@ unlock_mutex (void *mutex)
  */
 
 static void
-gp11_module_init (GP11Module *module)
+gp11_module_init (GP11Module *self)
 {
 	
 }
@@ -103,11 +120,14 @@ static void
 gp11_module_get_property (GObject *obj, guint prop_id, GValue *value, 
                           GParamSpec *pspec)
 {
-	GP11Module *module = GP11_MODULE (obj);
+	GP11Module *self = GP11_MODULE (obj);
 
 	switch (prop_id) {
-	case PROP_MODULE_PATH:
-		g_value_set_string (value, module->path);
+	case PROP_PATH:
+		g_value_set_string (value, gp11_module_get_path (self));
+		break;
+	case PROP_FUNCTION_LIST:
+		g_value_set_pointer (value, gp11_module_get_function_list (self));
 		break;
 	}
 }
@@ -116,14 +136,14 @@ static void
 gp11_module_set_property (GObject *obj, guint prop_id, const GValue *value, 
                           GParamSpec *pspec)
 {
-	GP11ModulePrivate *pv = GP11_MODULE_GET_PRIVATE (obj);
-	GP11Module *module = GP11_MODULE (obj);
+	GP11ModuleData *data = GP11_MODULE_GET_DATA (obj);
 
+	/* Only allowed during initialization */
 	switch (prop_id) {
-	case PROP_MODULE_PATH:
-		g_return_if_fail (!pv->module);
-		module->path = g_value_dup_string (value);
-		g_return_if_fail (module->path);
+	case PROP_PATH:
+		g_return_if_fail (!data->path);
+		data->path = g_value_dup_string (value);
+		g_return_if_fail (data->path);
 		break;
 	}
 }
@@ -131,36 +151,39 @@ gp11_module_set_property (GObject *obj, guint prop_id, const GValue *value,
 static void
 gp11_module_dispose (GObject *obj)
 {
-	GP11Module *module = GP11_MODULE (obj);
+	GP11ModuleData *data = GP11_MODULE_GET_DATA (obj);
+	gint finalized = g_atomic_int_get (&data->finalized);
 	CK_RV rv;
-	
-	if (module->funcs) {
-		rv = (module->funcs->C_Finalize) (NULL);
+
+	/* Must be careful when accessing funcs */
+	if (data->funcs && !finalized && 
+	    g_atomic_int_compare_and_exchange (&data->finalized, finalized, 1)) {
+		rv = (data->funcs->C_Finalize) (NULL);
 		if (rv != CKR_OK) {
 			g_warning ("C_Finalize on module '%s' failed: %s", 
-			           module->path, gp11_message_from_rv (rv));
+			           data->path, gp11_message_from_rv (rv));
 		}
-		module->funcs = NULL;
 	}
+	
+	G_OBJECT_CLASS (gp11_module_parent_class)->dispose (obj);
 }
 
 static void
 gp11_module_finalize (GObject *obj)
 {
-	GP11ModulePrivate *pv = GP11_MODULE_GET_PRIVATE (obj);
-	GP11Module *module = GP11_MODULE (obj);
+	GP11ModuleData *data = GP11_MODULE_GET_DATA (obj);
 
-	g_assert (module->funcs == NULL);
+	data->funcs = NULL;
 	
-	if (pv->module) {
-		if (!g_module_close (pv->module))
+	if (data->module) {
+		if (!g_module_close (data->module))
 			g_warning ("failed to close the pkcs11 module: %s", 
 			           g_module_error ());
-		pv->module = NULL;
+		data->module = NULL;
 	}
 	
-	g_free (module->path);
-	module->path = NULL;
+	g_free (data->path);
+	data->path = NULL;
 	
 	G_OBJECT_CLASS (gp11_module_parent_class)->finalize (obj);
 }
@@ -177,9 +200,13 @@ gp11_module_class_init (GP11ModuleClass *klass)
 	gobject_class->dispose = gp11_module_dispose;
 	gobject_class->finalize = gp11_module_finalize;
 	
-	g_object_class_install_property (gobject_class, PROP_MODULE_PATH,
-		g_param_spec_string ("module-path", "Module Path", "Path to the PKCS11 Module",
+	g_object_class_install_property (gobject_class, PROP_PATH,
+		g_param_spec_string ("path", "Module Path", "Path to the PKCS11 Module",
 		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_FUNCTION_LIST,
+		g_param_spec_pointer ("function-list", "Function List", "PKCS11 Function List",
+		                      G_PARAM_READABLE));
 
 	g_type_class_add_private (gobject_class, sizeof (GP11ModulePrivate));
 }
@@ -218,19 +245,19 @@ GP11Module*
 gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 {
 	CK_C_GetFunctionList get_function_list;
-	GP11ModulePrivate *pv;
+	GP11ModuleData *data;
 	GP11Module *mod;
 	CK_RV rv;
 	
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (!err || !*err, NULL);
 	
-	mod = g_object_new (GP11_TYPE_MODULE, "module-path", path, NULL);
-	pv = GP11_MODULE_GET_PRIVATE (mod);
+	mod = g_object_new (GP11_TYPE_MODULE, "path", path, NULL);
+	data = GP11_MODULE_GET_DATA (mod);
 	
 	/* Load the actual module */
-	pv->module = g_module_open (path, 0);
-	if (!pv->module) {
+	data->module = g_module_open (path, 0);
+	if (!data->module) {
 		g_set_error (err, GP11_ERROR, (int)CKR_GP11_MODULE_PROBLEM,
 		             "Error loading pkcs11 module: %s", g_module_error ());
 		g_object_unref (mod);
@@ -238,7 +265,7 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 	}
 	
 	/* Get the entry point */
-	if (!g_module_symbol (pv->module, "C_GetFunctionList", (void**)&get_function_list)) {
+	if (!g_module_symbol (data->module, "C_GetFunctionList", (void**)&get_function_list)) {
 		g_set_error (err, GP11_ERROR, (int)CKR_GP11_MODULE_PROBLEM,
 		             "Invalid pkcs11 module: %s", g_module_error ());
 		g_object_unref (mod);
@@ -246,7 +273,7 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 	}
 	
 	/* Get the function list */
-	rv = (get_function_list) (&mod->funcs);
+	rv = (get_function_list) (&data->funcs);
 	if (rv != CKR_OK) {
 		g_set_error (err, GP11_ERROR, rv, "Couldn't get pkcs11 function list: %s",
 		             gp11_message_from_rv (rv));
@@ -254,26 +281,16 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 		return NULL;
 	}
 	
-	/* Make sure we have a compatible version */
-	if (mod->funcs->version.major != CRYPTOKI_VERSION_MAJOR) {
-		g_set_error (err, GP11_ERROR, (int)CKR_GP11_MODULE_PROBLEM,
-		             "Incompatible version of pkcs11 module: %d.%d",
-		             (int)mod->funcs->version.major,
-		             (int)mod->funcs->version.minor);
-		g_object_unref (mod);
-		return NULL;
-	}
-	
-	memset (&pv->init_args, 0, sizeof (pv->init_args));
-	pv->init_args.flags = CKF_OS_LOCKING_OK;
-	pv->init_args.CreateMutex = create_mutex;
-	pv->init_args.DestroyMutex = destroy_mutex;
-	pv->init_args.LockMutex = lock_mutex;
-	pv->init_args.UnlockMutex = unlock_mutex;
-	pv->init_args.pReserved = reserved;
+	memset (&data->init_args, 0, sizeof (data->init_args));
+	data->init_args.flags = CKF_OS_LOCKING_OK;
+	data->init_args.CreateMutex = create_mutex;
+	data->init_args.DestroyMutex = destroy_mutex;
+	data->init_args.LockMutex = lock_mutex;
+	data->init_args.UnlockMutex = unlock_mutex;
+	data->init_args.pReserved = reserved;
 	
 	/* Now initialize the module */
-	rv = (mod->funcs->C_Initialize) (&pv->init_args);
+	rv = (data->funcs->C_Initialize) (&data->init_args);
 	if (rv != CKR_OK) {
 		g_set_error (err, GP11_ERROR, rv, "Couldn't initialize module: %s",
 		             gp11_message_from_rv (rv));
@@ -286,24 +303,25 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 
 /**
  * gp11_module_get_info:
- * @module: The module to get info for.
+ * @self: The module to get info for.
  * 
  * Get the info about a PKCS#11 module. 
  * 
  * Return value: The module info. Release this with gp11_module_info_free().
  **/
 GP11ModuleInfo*
-gp11_module_get_info (GP11Module *module)
+gp11_module_get_info (GP11Module *self)
 {
+	GP11ModuleData *data = GP11_MODULE_GET_DATA (self);
 	GP11ModuleInfo *modinfo;
 	CK_INFO info;
 	CK_RV rv;
 	
-	g_return_val_if_fail (GP11_IS_MODULE (module), NULL);
-	g_return_val_if_fail (module->funcs, NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (self), NULL);
+	g_return_val_if_fail (data->funcs, NULL);
 	
 	memset (&info, 0, sizeof (info));
-	rv = (module->funcs->C_GetInfo (&info));
+	rv = (data->funcs->C_GetInfo (&info));
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get module info: %s", gp11_message_from_rv (rv));
 		return NULL;
@@ -325,7 +343,7 @@ gp11_module_get_info (GP11Module *module)
 
 /**
  * gp11_module_get_slots:
- * @module: The module for which to get the slots.
+ * @self: The module for which to get the slots.
  * @token_present: Whether to limit only to slots with a token present.
  * 
  * Get the GP11Slot objects for a given module. 
@@ -333,17 +351,18 @@ gp11_module_get_info (GP11Module *module)
  * Return value: The possibly empty list of slots. Release this with gp11_list_unref_free().
  */
 GList*
-gp11_module_get_slots (GP11Module *module, gboolean token_present)
+gp11_module_get_slots (GP11Module *self, gboolean token_present)
 {
+	GP11ModuleData *data = GP11_MODULE_GET_DATA (self);
 	CK_SLOT_ID_PTR slot_list;
 	CK_ULONG count, i;
 	GList *result;
 	CK_RV rv;
 	
-	g_return_val_if_fail (GP11_IS_MODULE (module), NULL);
-	g_return_val_if_fail (module->funcs, NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (self), NULL);
+	g_return_val_if_fail (data->funcs, NULL);
 
-	rv = (module->funcs->C_GetSlotList) (token_present ? CK_TRUE : CK_FALSE, NULL, &count);
+	rv = (data->funcs->C_GetSlotList) (token_present ? CK_TRUE : CK_FALSE, NULL, &count);
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get slot count: %s", gp11_message_from_rv (rv));
 		return NULL;
@@ -353,7 +372,7 @@ gp11_module_get_slots (GP11Module *module, gboolean token_present)
 		return NULL;
 	
 	slot_list = g_new (CK_SLOT_ID, count);
-	rv = (module->funcs->C_GetSlotList) (token_present ? CK_TRUE : CK_FALSE, slot_list, &count);
+	rv = (data->funcs->C_GetSlotList) (token_present ? CK_TRUE : CK_FALSE, slot_list, &count);
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get slot list: %s", gp11_message_from_rv (rv));
 		g_free (slot_list);
@@ -362,13 +381,44 @@ gp11_module_get_slots (GP11Module *module, gboolean token_present)
 	
 	result = NULL;
 	for (i = 0; i < count; ++i) {
-		/* TODO: Should we be looking these up somewhere? */
 		result = g_list_prepend (result, g_object_new (GP11_TYPE_SLOT, 
 		                                               "handle", slot_list[i],
-		                                               "module", module, NULL));
+		                                               "module", self, NULL));
 	}
 	
 	g_free (slot_list);
 	return g_list_reverse (result);
 }
 
+/**
+ * gp11_module_get_path:
+ * @self: The module for which to get the path.
+ * 
+ * Get the file path of this module. This may not be an absolute path, and 
+ * usually reflects the path passed to gp11_module_initialize().
+ * 
+ * Return value: The path, do not modify or free this value. 
+ **/
+const gchar*
+gp11_module_get_path (GP11Module *self)
+{
+	GP11ModuleData *data = GP11_MODULE_GET_DATA (self);
+	g_return_val_if_fail (GP11_IS_MODULE (self), NULL);
+	return data->path;
+}
+
+/**
+ * gp11_module_get_function_list:
+ * @self: The module for which to get the function list.
+ * 
+ * Get the PKCS#11 function list for the module.
+ * 
+ * Return value: The function list, do not modify this structure. 
+ **/
+CK_FUNCTION_LIST_PTR
+gp11_module_get_function_list (GP11Module *self)
+{
+	GP11ModuleData *data = GP11_MODULE_GET_DATA (self);
+	g_return_val_if_fail (GP11_IS_MODULE (self), NULL);
+	return data->funcs;	
+}

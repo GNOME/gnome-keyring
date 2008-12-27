@@ -1,3 +1,17 @@
+2008-12-27  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
+	* gp11/gp11-call.c:
+	* gp11/gp11-marshal.list:
+	* gp11/gp11-misc.c:
+	* gp11/gp11-module.c:
+	* gp11/gp11-object.c:
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c:
+	* gp11/tests/unit-test-gp11-module.c:
+	* gp11/tests/unit-test-gp11-object.c:
+	* gp11/tests/unit-test-gp11-session.c: Add basic thread-safety.
+
 2008-12-26  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/Makefile.am:

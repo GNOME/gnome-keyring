@@ -46,7 +46,14 @@ enum {
 	LAST_SIGNAL
 };
 
+typedef struct _GP11SlotData {
+	GP11Module *module;
+	CK_SLOT_ID handle;
+} GP11SlotData;
+
 typedef struct _GP11SlotPrivate {
+	GP11SlotData data;
+	GStaticMutex mutex;
 	gboolean auto_login;
 	GHashTable *open_sessions;
 	GP11TokenInfo *token_info;
@@ -54,8 +61,8 @@ typedef struct _GP11SlotPrivate {
 
 G_DEFINE_TYPE (GP11Slot, gp11_slot, G_TYPE_OBJECT);
 
-#define GP11_SLOT_GET_PRIVATE(o) \
-      (G_TYPE_INSTANCE_GET_PRIVATE((o), GP11_TYPE_SLOT, GP11SlotPrivate))
+#define GP11_SLOT_GET_DATA(o) \
+      (G_TYPE_INSTANCE_GET_PRIVATE((o), GP11_TYPE_SLOT, GP11SlotData))
 
 typedef struct _SessionPool {
 	gulong flags;
@@ -102,123 +109,9 @@ timegm(struct tm *t)
  * HELPERS
  */
 
-static void
-close_session (GP11Module *module, CK_SESSION_HANDLE handle)
-{
-	CK_RV rv; 
-	
-	g_return_if_fail (GP11_IS_MODULE (module));
-	g_return_if_fail (module->funcs);
-	rv = (module->funcs->C_CloseSession) (handle);
-	if (rv != CKR_OK) {
-		g_warning ("couldn't close session properly: %s",
-		           gp11_message_from_rv (rv));
-	}
-}
-
-static void
-free_session_pool (gpointer p)
-{
-	SessionPool *pool = p;
-	guint i;
-	
-	for(i = 0; i < pool->sessions->len; ++i)
-		close_session (pool->module, g_array_index(pool->sessions, CK_SESSION_HANDLE, i));
-	g_array_free(pool->sessions, TRUE);
-	g_free (pool);
-}
-
-#ifdef UNUSED
-
-static void
-foreach_count_sessions (gpointer key, gpointer value, gpointer user_data)
-{
-	SessionPool *pool = value;
-	guint *result = user_data;
-	*result += pool->sessions->len;
-}
-
-static guint
-count_session_table (GP11Slot *slot, guint flags)
-{
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
-	guint result = 0;
-	
-	if (!pv->open_sessions)
-		return 0;
-	
-	g_hash_table_foreach (pv->open_sessions, foreach_count_sessions, &result);
-	return result;
-}
-
-#endif /* UNUSED */
-
-static void
-push_session_table (GP11Slot *slot, gulong flags, CK_SESSION_HANDLE handle)
-{
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
-	SessionPool *pool;
-	
-	if (!pv->open_sessions) {
-		close_session (slot->module, handle);
-		return;
-	}
-	
-	g_assert (handle);
-	g_assert (GP11_IS_MODULE (slot->module));
-	
-	pool = g_hash_table_lookup (pv->open_sessions, &flags);
-	if (!pool) {
-		pool = g_new0 (SessionPool, 1);
-		pool->flags = flags;
-		pool->module = slot->module; /* weak ref */
-		pool->sessions = g_array_new (FALSE, TRUE, sizeof (CK_SESSION_HANDLE));
-		g_hash_table_insert (pv->open_sessions, g_memdup (&flags, sizeof (flags)), pool);
-	}
-	
-	g_assert (pool->flags == flags);
-	g_array_append_val (pool->sessions, handle);
-}
-
-static CK_SESSION_HANDLE
-pop_session_table (GP11Slot *slot, gulong flags)
-{
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
-	CK_SESSION_HANDLE result;
-	SessionPool *pool;
-	
-	if (!pv->open_sessions)
-		return 0;
-	
-	g_assert (GP11_IS_MODULE (slot->module));
-	
-	pool = g_hash_table_lookup (pv->open_sessions, &flags);
-	if (!pool)
-		return 0;
-	
-	g_assert (pool->sessions->len > 0);
-	result = g_array_index (pool->sessions, CK_SESSION_HANDLE, pool->sessions->len - 1);
-	g_assert (result != 0);
-	g_array_remove_index_fast (pool->sessions, pool->sessions->len - 1);
-	if (!pool->sessions->len)
-		g_hash_table_remove(pv->open_sessions, &flags);
-
-	return result;
-}
-
-static void
-destroy_session_table (GP11Slot *slot)
-{
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
-	if (pv->open_sessions)
-		g_hash_table_unref (pv->open_sessions);
-	pv->open_sessions = NULL;
-}
-
 static guint
 ulong_hash (gconstpointer v)
 {
-	// TODO: I'm sure there's a better gulong hash
 	const signed char *p = v;
 	guint32 i, h = *p;
 
@@ -235,78 +128,196 @@ ulong_equal (gconstpointer v1, gconstpointer v2)
 }
 
 static void
-create_session_table (GP11Slot *slot)
+close_session (GP11Module *module, CK_SESSION_HANDLE handle)
 {
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	CK_FUNCTION_LIST_PTR funcs;
+	CK_RV rv; 
+	
+	g_return_if_fail (GP11_IS_MODULE (module));
+	
+	g_object_ref (module);
+	
+	funcs = gp11_module_get_function_list (module);
+	g_return_if_fail (funcs);
+	
+	rv = (funcs->C_CloseSession) (handle);
+	if (rv != CKR_OK) {
+		g_warning ("couldn't close session properly: %s",
+		           gp11_message_from_rv (rv));
+	}
+	
+	g_object_unref (module);
+}
+
+static GP11SlotPrivate*
+lock_private (gpointer obj)
+{
+	GP11SlotPrivate *pv;
+	GP11Slot *self;
+	
+	g_assert (GP11_IS_SLOT (obj));
+	self = GP11_SLOT (obj);
+	
+	g_object_ref (self);
+	
+	pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GP11_TYPE_SLOT, GP11SlotPrivate);
+	g_static_mutex_lock (&pv->mutex);
+	
+	return pv;
+}
+
+static void
+unlock_private (gpointer obj, GP11SlotPrivate *pv)
+{
+	GP11Slot *self;
+
+	g_assert (pv);
+	g_assert (GP11_IS_SLOT (obj));
+	
+	self = GP11_SLOT (obj);
+	
+	g_assert (G_TYPE_INSTANCE_GET_PRIVATE (self, GP11_TYPE_SLOT, GP11SlotPrivate) == pv);
+	
+	g_static_mutex_unlock (&pv->mutex);
+	g_object_unref (self);
+}
+
+static void
+free_session_pool (gpointer p)
+{
+	SessionPool *pool = p;
+	guint i;
+	
+	for(i = 0; i < pool->sessions->len; ++i)
+		close_session (pool->module, g_array_index(pool->sessions, CK_SESSION_HANDLE, i));
+	g_array_free(pool->sessions, TRUE);
+	g_free (pool);
+}
+
+static gboolean
+push_session_table (GP11SlotPrivate *pv, gulong flags, CK_SESSION_HANDLE handle)
+{
+	SessionPool *pool;
+
+	g_assert (handle);
+	g_assert (GP11_IS_MODULE (pv->data.module));
+
+	if (pv->open_sessions == NULL)
+		return FALSE;
+		
+	pool = g_hash_table_lookup (pv->open_sessions, &flags);
+	if (!pool) {
+		pool = g_new0 (SessionPool, 1);
+		pool->flags = flags;
+		pool->module = pv->data.module; /* weak ref */
+		pool->sessions = g_array_new (FALSE, TRUE, sizeof (CK_SESSION_HANDLE));
+		g_hash_table_insert (pv->open_sessions, g_memdup (&flags, sizeof (flags)), pool);
+	}
+	
+	g_assert (pool->flags == flags);
+	g_array_append_val (pool->sessions, handle);
+	return TRUE;
+}
+
+static CK_SESSION_HANDLE
+pop_session_table (GP11SlotPrivate *pv, gulong flags)
+{
+	CK_SESSION_HANDLE result = 0;
+	SessionPool *pool;
+
+	g_return_val_if_fail (pv, 0);
+
+
+	g_assert (GP11_IS_MODULE (pv->data.module));
+
+	if (pv->open_sessions) {
+		pool = g_hash_table_lookup (pv->open_sessions, &flags);
+		if (pool) {
+			g_assert (pool->sessions->len > 0);
+			result = g_array_index (pool->sessions, CK_SESSION_HANDLE, pool->sessions->len - 1);
+			g_assert (result != 0);
+			g_array_remove_index_fast (pool->sessions, pool->sessions->len - 1);
+			if (!pool->sessions->len)
+				g_hash_table_remove(pv->open_sessions, &flags);
+		}
+	}
+
+	return result;
+}
+
+static void
+destroy_session_table (GP11SlotPrivate *pv)
+{
+	if (pv->open_sessions)
+		g_hash_table_unref (pv->open_sessions);
+	pv->open_sessions = NULL;
+}
+
+static void
+create_session_table (GP11SlotPrivate *pv)
+{
 	if (!pv->open_sessions)
 		pv->open_sessions = g_hash_table_new_full (ulong_hash, ulong_equal, g_free, free_session_pool);
 }
 
-static void
-reuse_session_handle (GP11Session *session, GP11Slot *slot)
+static gboolean
+reuse_session_handle (GP11Session *session, CK_SESSION_HANDLE handle, GP11Slot *self)
 {
+	GP11SlotData *data = GP11_SLOT_GET_DATA (self);
+	GP11SlotPrivate *pv;
+	CK_FUNCTION_LIST_PTR funcs;
 	CK_SESSION_INFO info;
-	gulong *flags;
+	gboolean handled = FALSE;
 	CK_RV rv;
 	
-	g_return_if_fail (GP11_IS_SESSION (session));
-	g_return_if_fail (GP11_IS_SLOT (slot));
-	g_return_if_fail (GP11_IS_MODULE (slot->module));
-	g_return_if_fail (session->handle != 0);
+	g_return_val_if_fail (GP11_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (GP11_IS_SLOT (self), FALSE);
 	
+	funcs = gp11_module_get_function_list (data->module);
+	g_return_val_if_fail (funcs, FALSE);
+
 	/* Get the session info so we know where to categorize this */
-	rv = (slot->module->funcs->C_GetSessionInfo) (session->handle, &info);
+	rv = (funcs->C_GetSessionInfo) (handle, &info);
+
+	if (rv == CKR_OK) {
 	
-	/* An already closed session, we don't want to bother with */
-	if (rv == CKR_SESSION_CLOSED || rv == CKR_SESSION_HANDLE_INVALID) {
-		session->handle = 0;
-		return;
+		/* Keep this one around for later use */
+		pv = lock_private (self);
+		
+		{
+			handled = push_session_table (pv, info.flags, handle);
+		}
+		
+		unlock_private (self, pv);
+	
+	} else {
+	
+		/* An already closed session, we don't want to bother with */
+		if (rv == CKR_SESSION_CLOSED || rv == CKR_SESSION_HANDLE_INVALID)
+			handled = TRUE;
 	}
-	
-	/* A strange session, let it go to be closed somewhere else */
-	if (rv != CKR_OK)
-		return;
-	
-	/* 
-	 * Get the flags that this session was opened with originally, and
-	 * check them against the session's current flags. If they're no
-	 * longer present, then don't reuse this session.
-	 */
-	flags = g_object_get_data (G_OBJECT (session), "gp11-open-session-flags");
-	g_return_if_fail (flags);
-	if ((*flags & info.flags) != *flags)
-		return;
-	
-	/* Keep this one around for later use */
-	push_session_table (slot, *flags, session->handle);
-	session->handle = 0;
+
+	return handled;
 }
 
 static GP11Session*
-make_session_object (GP11Slot *slot, gulong flags, CK_SESSION_HANDLE handle)
+make_session_object (GP11Slot *self, gulong flags, CK_SESSION_HANDLE handle)
 {
 	GP11Session *session;
-	
-	g_return_val_if_fail (handle != 0, NULL);
-	session = gp11_session_from_handle (slot, handle);
-	g_return_val_if_fail (session != NULL, NULL);
-	
-	/* Session keeps a reference to us, so this is safe */
-	g_signal_connect (session, "discard-handle", G_CALLBACK (reuse_session_handle), slot);
 
-	/* Mark the flags on the session for later looking up */
-	g_object_set_data_full (G_OBJECT (session), "gp11-open-session-flags", 
-	                        g_memdup (&flags, sizeof (flags)), g_free);
+	g_return_val_if_fail (handle != 0, NULL);
+
+	g_object_ref (self);
+	
+		session = gp11_session_from_handle (self, handle);
+		g_return_val_if_fail (session != NULL, NULL);
+	
+		/* Session keeps a reference to us, so this is safe */
+		g_signal_connect (session, "discard-handle", G_CALLBACK (reuse_session_handle), self);
+	
+	g_object_unref (self);
 	
 	return session;
-}
-
-static void 
-ensure_token_info (GP11Slot *slot)
-{
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
-	if (!pv->token_info) 
-		pv->token_info = gp11_slot_get_token_info (slot);
 }
 
 /* ----------------------------------------------------------------------------
@@ -314,30 +325,30 @@ ensure_token_info (GP11Slot *slot)
  */
 
 static void
-gp11_slot_init (GP11Slot *slot)
+gp11_slot_init (GP11Slot *self)
 {
-	
+	GP11SlotPrivate *pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GP11_TYPE_SLOT, GP11SlotPrivate);
+	g_static_mutex_init (&pv->mutex);
 }
 
 static void
 gp11_slot_get_property (GObject *obj, guint prop_id, GValue *value, 
                         GParamSpec *pspec)
 {
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (obj);
-	GP11Slot *slot = GP11_SLOT (obj);
-
+	GP11Slot *self = GP11_SLOT (obj);
+	
 	switch (prop_id) {
 	case PROP_MODULE:
-		g_value_set_object (value, slot->module);
+		g_value_take_object (value, gp11_slot_get_module (self));
 		break;
 	case PROP_HANDLE:
-		g_value_set_uint (value, slot->handle);
+		g_value_set_ulong (value, gp11_slot_get_handle (self));
 		break;
 	case PROP_AUTO_LOGIN:
-		g_value_set_boolean (value, pv->auto_login);
+		g_value_set_boolean (value, gp11_slot_get_auto_login (self));
 		break;
 	case PROP_REUSE_SESSIONS:
-		g_value_set_boolean (value, pv->open_sessions != NULL);
+		g_value_set_boolean (value, gp11_slot_get_reuse_sessions (self));
 		break;
 	}
 }
@@ -346,28 +357,27 @@ static void
 gp11_slot_set_property (GObject *obj, guint prop_id, const GValue *value, 
                         GParamSpec *pspec)
 {
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (obj);
-	GP11Slot *slot = GP11_SLOT (obj);
+	GP11SlotData *data = GP11_SLOT_GET_DATA (obj);
+	GP11Slot *self = GP11_SLOT (obj);
+
+	/* All writes to data members below, happen only during construct phase */
 
 	switch (prop_id) {
 	case PROP_MODULE:
-		g_return_if_fail (!slot->module);
-		slot->module = g_value_get_object (value);
-		g_return_if_fail (slot->module);
-		g_object_ref (slot->module);
+		g_assert (!data->module);
+		data->module = g_value_get_object (value);
+		g_assert (data->module);
+		g_object_ref (data->module);
 		break;
 	case PROP_HANDLE:
-		g_return_if_fail (!slot->handle);
-		slot->handle = g_value_get_uint (value);
+		g_assert (!data->handle);
+		data->handle = g_value_get_ulong (value);
 		break;
 	case PROP_AUTO_LOGIN:
-		pv->auto_login = g_value_get_boolean (value);
+		gp11_slot_set_auto_login (self, g_value_get_boolean (value));
 		break;
 	case PROP_REUSE_SESSIONS:
-		if (g_value_get_boolean (value))
-			create_session_table (slot);
-		else
-			destroy_session_table (slot);
+		gp11_slot_set_reuse_sessions (self, g_value_get_boolean (value));
 		break;
 	}
 }
@@ -375,14 +385,14 @@ gp11_slot_set_property (GObject *obj, guint prop_id, const GValue *value,
 static void
 gp11_slot_dispose (GObject *obj)
 {
-	GP11Slot *slot = GP11_SLOT (obj);
+	GP11SlotPrivate *pv = lock_private (obj);
+	
+	{
+		/* Need to do this before the module goes away */
+		destroy_session_table (pv);
+	}
 
-	/* Need to do this before the module goes away */
-	destroy_session_table (slot);
-
-	if (slot->module)
-		g_object_unref (slot->module);
-	slot->module = NULL;
+	unlock_private (obj, pv);
 
 	G_OBJECT_CLASS (gp11_slot_parent_class)->dispose (obj);
 }
@@ -390,10 +400,22 @@ gp11_slot_dispose (GObject *obj)
 static void
 gp11_slot_finalize (GObject *obj)
 {
-	GP11Slot *slot = GP11_SLOT (obj);
+	GP11SlotPrivate *pv = G_TYPE_INSTANCE_GET_PRIVATE (obj, GP11_TYPE_SLOT, GP11SlotPrivate);
+	GP11SlotData *data = GP11_SLOT_GET_DATA (obj);
+	
+	data->handle = 0;
+	
+	g_assert (!pv->open_sessions);
+	
+	if (data->module)
+		g_object_unref (data->module);
+	data->module = NULL;
+		
+	if (pv->token_info)
+		gp11_token_info_free (pv->token_info);
+	pv->token_info = NULL;	
 
-	g_assert (slot->module == NULL);
-	slot->handle = 0;
+	g_static_mutex_free (&pv->mutex);
 	
 	G_OBJECT_CLASS (gp11_slot_parent_class)->finalize (obj);
 }
@@ -415,8 +437,8 @@ gp11_slot_class_init (GP11SlotClass *klass)
 		                     GP11_TYPE_MODULE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
-		g_param_spec_uint ("handle", "Handle", "PKCS11 Slot ID",
-		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		g_param_spec_ulong ("handle", "Handle", "PKCS11 Slot ID",
+		                   0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_AUTO_LOGIN,
 		g_param_spec_boolean ("auto-login", "Auto Login", "Auto Login to Token when necessary",
@@ -439,29 +461,41 @@ gp11_slot_class_init (GP11SlotClass *klass)
  */
 
 gboolean 
-_gp11_slot_token_authentication (GP11Slot *slot, gchar **password)
+_gp11_slot_token_authentication (GP11Slot *self, gchar **password)
 {
-	GP11SlotPrivate *pv = GP11_SLOT_GET_PRIVATE (slot);
+	GP11SlotPrivate *pv = lock_private (self);
+	gboolean emit_signal = FALSE;
 	gboolean ret = FALSE;
-	
-	g_return_val_if_fail (GP11_IS_SLOT (slot), FALSE);
-	g_return_val_if_fail (password, FALSE);
-	
-	if (!pv->auto_login)
-		return FALSE;
 
-	/* 
-	 * If it's a protected authentication path style token, then 
-	 * we don't prompt here, the hardware/software is expected
-	 * to prompt the user in some other way.
-	 */
-	ensure_token_info (slot);
-	if (pv->token_info && (pv->token_info->flags & CKF_PROTECTED_AUTHENTICATION_PATH)) {
-		*password = NULL;
-		return TRUE;
+	g_return_val_if_fail (GP11_IS_SLOT (self), FALSE);
+	g_return_val_if_fail (password, FALSE);
+
+	{
+		if (pv->auto_login) {
+			
+			/* 
+			 * If it's a protected authentication path style token, then 
+			 * we don't prompt here, the hardware/software is expected
+			 * to prompt the user in some other way.
+			 */
+			
+			if (!pv->token_info) 
+				pv->token_info = gp11_slot_get_token_info (self);
+
+			if (pv->token_info && (pv->token_info->flags & CKF_PROTECTED_AUTHENTICATION_PATH)) {
+				*password = NULL;
+				ret = TRUE;
+			} else {
+				emit_signal = TRUE;
+			}
+		}
 	}
-		
-	g_signal_emit (slot, signals[AUTHENTICATE_TOKEN], 0, password, &ret);
+	
+	unlock_private (self, pv);
+
+	if (emit_signal)
+		g_signal_emit (self, signals[AUTHENTICATE_TOKEN], 0, password, &ret);
+
 	return ret;
 }
 
@@ -519,22 +553,40 @@ gp11_mechanism_info_free (GP11MechanismInfo *mech_info)
 
 /**
  * gp11_slot_get_handle:
- * @slot: The slot to get the handle of.
+ * @self: The slot to get the handle of.
  * 
  * Get the raw PKCS#11 handle of a slot.
  * 
  * Return value: The raw handle.
  **/
 CK_SLOT_ID
-gp11_slot_get_handle (GP11Slot *slot)
+gp11_slot_get_handle (GP11Slot *self)
 {
-	g_return_val_if_fail (GP11_IS_SLOT (slot), (CK_SLOT_ID)-1);
-	return slot->handle;
+	GP11SlotData *data = GP11_SLOT_GET_DATA (self);
+	g_return_val_if_fail (GP11_IS_SLOT (self), (CK_SLOT_ID)-1);
+	return data->handle;
+}
+
+/**
+ * gp11_slot_get_module:
+ * @self: The slot to get the module for.
+ * 
+ * Get the module that this slot is on.
+ * 
+ * Return value: The module, you must unreference this after you're done with it.
+ */
+GP11Module*
+gp11_slot_get_module (GP11Slot *self)
+{
+	GP11SlotData *data = GP11_SLOT_GET_DATA (self);
+	g_return_val_if_fail (GP11_IS_SLOT (self), NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (data->module), NULL);
+	return g_object_ref (data->module);
 }
 
 /**
  * gp11_slot_get_reuse_sessions:
- * @slot: The slot to get setting from.
+ * @self: The slot to get setting from.
  * 
  * Get the reuse sessions setting. When this is set, sessions
  * will be pooled and reused if their flags match when 
@@ -543,30 +595,51 @@ gp11_slot_get_handle (GP11Slot *slot)
  * Return value: Whether reusing sessions or not.
  **/
 gboolean
-gp11_slot_get_reuse_sessions (GP11Slot *slot)
+gp11_slot_get_reuse_sessions (GP11Slot *self)
 {
-	gboolean reuse = FALSE;
-	g_object_get (slot, "reuse-sessions", &reuse, NULL);
-	return reuse;
+	GP11SlotPrivate *pv = lock_private (self);
+	gboolean ret;
+	
+	g_return_val_if_fail (pv, FALSE);
+	
+	{
+		ret = pv->open_sessions != NULL;
+	}
+	
+	unlock_private (self, pv);
+
+	return ret;
 }
 
 /**
  * gp11_slot_set_reuse_sessions:
- * @slot: The slot to set the setting on.
+ * @self: The slot to set the setting on.
  * @reuse: Whether to reuse sessions or not.
  * 
  * When this is set, sessions will be pooled and reused
  * if their flags match when gp11_slot_open_session() is called.
  **/
 void
-gp11_slot_set_reuse_sessions (GP11Slot *slot, gboolean reuse)
+gp11_slot_set_reuse_sessions (GP11Slot *self, gboolean reuse)
 {
-	g_object_set (slot, "reuse-sessions", reuse, NULL);
+	GP11SlotPrivate *pv = lock_private (self);
+
+	g_return_if_fail (pv);
+	
+	{
+		if (reuse)
+			create_session_table (pv);
+		else
+			destroy_session_table (pv);
+	}
+	
+	unlock_private (self, pv);
+	g_object_notify (G_OBJECT (self), "reuse-sessions");
 }
 
 /**
  * gp11_slot_get_auto_login:
- * @slot: The slot to get setting from.
+ * @self: The slot to get setting from.
  * 
  * Get the auto login setting. When this is set, this slot 
  * will emit the 'authenticate-token' signal when a session
@@ -575,16 +648,25 @@ gp11_slot_set_reuse_sessions (GP11Slot *slot, gboolean reuse)
  * Return value: Whether auto login or not.
  **/
 gboolean
-gp11_slot_get_auto_login (GP11Slot *slot)
+gp11_slot_get_auto_login (GP11Slot *self)
 {
-	gboolean auto_login = FALSE;
-	g_object_get (slot, "auto-login", &auto_login, NULL);
-	return auto_login;
+	GP11SlotPrivate *pv = lock_private (self);
+	gboolean ret;
+	
+	g_return_val_if_fail (pv, FALSE);
+	
+	{
+		ret = pv->auto_login;
+	}
+	
+	unlock_private (self, pv);
+
+	return ret;
 }
 
 /**
  * gp11_slot_set_auto_login:
- * @slot: The slot to set the setting on.
+ * @self: The slot to set the setting on.
  * @auto_login: Whether auto login or not.
  * 
  * When this is set, this slot 
@@ -592,14 +674,23 @@ gp11_slot_get_auto_login (GP11Slot *slot)
  * requires authentication.
  **/
 void
-gp11_slot_set_auto_login (GP11Slot *slot, gboolean auto_login)
+gp11_slot_set_auto_login (GP11Slot *self, gboolean auto_login)
 {
-	g_object_set (slot, "auto-login", auto_login, NULL);
+	GP11SlotPrivate *pv = lock_private (self);
+
+	g_return_if_fail (pv);
+	
+	{
+		pv->auto_login = auto_login;
+	}
+	
+	unlock_private (self, pv);
+	g_object_notify (G_OBJECT (self), "auto-login");
 }
 
 /**
  * gp11_slot_get_info:
- * @slot: The slot to get info for.
+ * @self: The slot to get info for.
  * 
  * Get the information for this slot.
  * 
@@ -607,18 +698,28 @@ gp11_slot_set_auto_login (GP11Slot *slot, gboolean auto_login)
  * to release it.
  **/
 GP11SlotInfo*
-gp11_slot_get_info (GP11Slot *slot)
+gp11_slot_get_info (GP11Slot *self)
 {
+	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
+	GP11Module *module = NULL;
+	CK_FUNCTION_LIST_PTR funcs;
 	GP11SlotInfo *slotinfo;
 	CK_SLOT_INFO info;
 	CK_RV rv;
 	
-	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
-	g_return_val_if_fail (GP11_IS_MODULE (slot->module), NULL);
-	g_return_val_if_fail (slot->module->funcs, NULL);
+	g_return_val_if_fail (GP11_IS_SLOT (self), NULL);
+	
+	g_object_get (self, "module", &module, "handle", &handle, NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (module), NULL);
+	
+	funcs = gp11_module_get_function_list (module);
+	g_return_val_if_fail (funcs, NULL);
 	
 	memset (&info, 0, sizeof (info));
-	rv = (slot->module->funcs->C_GetSlotInfo) (slot->handle, &info);
+	rv = (funcs->C_GetSlotInfo) (handle, &info);
+	
+	g_object_unref (module);
+	
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get slot info: %s", gp11_message_from_rv (rv));
 		return NULL;
@@ -640,7 +741,7 @@ gp11_slot_get_info (GP11Slot *slot)
 
 /**
  * gp11_slot_get_token_info:
- * @slot: The slot to get info for.
+ * @self: The slot to get info for.
  * 
  * Get the token information for this slot.
  * 
@@ -648,20 +749,30 @@ gp11_slot_get_info (GP11Slot *slot)
  * to release it.
  **/
 GP11TokenInfo*
-gp11_slot_get_token_info (GP11Slot *slot)
+gp11_slot_get_token_info (GP11Slot *self)
 {
+	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
+	CK_FUNCTION_LIST_PTR funcs;
+	GP11Module *module = NULL;
 	GP11TokenInfo *tokeninfo;
 	CK_TOKEN_INFO info;
 	gchar *string;
 	struct tm tm;
 	CK_RV rv;
 	
-	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
-	g_return_val_if_fail (GP11_IS_MODULE (slot->module), NULL);
-	g_return_val_if_fail (slot->module->funcs, NULL);
+	g_return_val_if_fail (GP11_IS_SLOT (self), NULL);
+
+	g_object_get (self, "module", &module, "handle", &handle, NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (module), NULL);
+	
+	funcs = gp11_module_get_function_list (module);
+	g_return_val_if_fail (funcs, NULL);
 	
 	memset (&info, 0, sizeof (info));
-	rv = (slot->module->funcs->C_GetTokenInfo) (slot->handle, &info);
+	rv = (funcs->C_GetTokenInfo) (handle, &info);
+	
+	g_object_unref (module);
+	
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get slot info: %s", gp11_message_from_rv (rv));
 		return NULL;
@@ -706,7 +817,7 @@ gp11_slot_get_token_info (GP11Slot *slot)
 
 /**
  * gp11_slot_get_mechanisms:
- * @slot: The slot to get mechanisms for.
+ * @self: The slot to get mechanisms for.
  * 
  * Get the available mechanisms for this slot.
  * 
@@ -714,33 +825,42 @@ gp11_slot_get_token_info (GP11Slot *slot)
  * gp11_mechanisms_free() when done with this.
  **/
 GP11Mechanisms*
-gp11_slot_get_mechanisms (GP11Slot *slot)
+gp11_slot_get_mechanisms (GP11Slot *self)
 {
+	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
+	CK_FUNCTION_LIST_PTR funcs;
+	GP11Module *module = NULL;
 	CK_MECHANISM_TYPE_PTR mech_list;
 	CK_ULONG count, i;
 	GP11Mechanisms *result;
 	CK_RV rv;
 	
-	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
-	g_return_val_if_fail (GP11_IS_MODULE (slot->module), NULL);
-	g_return_val_if_fail (slot->module->funcs, NULL);
+	g_return_val_if_fail (GP11_IS_SLOT (self), NULL);
 
-	rv = (slot->module->funcs->C_GetMechanismList) (slot->handle, NULL, &count);
+	g_object_get (self, "module", &module, "handle", &handle, NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (module), NULL);
+
+	funcs = gp11_module_get_function_list (module);
+	g_return_val_if_fail (funcs, NULL);
+	
+	rv = (funcs->C_GetMechanismList) (handle, NULL, &count);
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get mechanism count: %s", gp11_message_from_rv (rv));
-		return NULL;
+		count = 0;
+	} else {
+		mech_list = g_new (CK_MECHANISM_TYPE, count);
+		rv = (funcs->C_GetMechanismList) (handle, mech_list, &count);
+		if (rv != CKR_OK) {
+			g_warning ("couldn't get mechanism list: %s", gp11_message_from_rv (rv));
+			g_free (mech_list);
+			count = 0;
+		}
 	}
+	
+	g_object_unref (module);
 	
 	if (!count)
 		return NULL;
-	
-	mech_list = g_new (CK_MECHANISM_TYPE, count);
-	rv = (slot->module->funcs->C_GetMechanismList) (slot->handle, mech_list, &count);
-	if (rv != CKR_OK) {
-		g_warning ("couldn't get mechanism list: %s", gp11_message_from_rv (rv));
-		g_free (mech_list);
-		return NULL;
-	}
 	
 	result = g_array_new (FALSE, TRUE, sizeof (CK_MECHANISM_TYPE));
 	for (i = 0; i < count; ++i)
@@ -753,7 +873,7 @@ gp11_slot_get_mechanisms (GP11Slot *slot)
 
 /**
  * gp11_slot_get_mechanism_info:
- * @slot: The slot to get mechanism info from.
+ * @self: The slot to get mechanism info from.
  * @mech_type: The mechanisms type to get info for.
  * 
  * Get information for the specified mechanism.
@@ -762,19 +882,29 @@ gp11_slot_get_mechanisms (GP11Slot *slot)
  * gp11_mechanism_info_free() when done with it.
  **/
 GP11MechanismInfo*
-gp11_slot_get_mechanism_info (GP11Slot *slot, gulong mech_type)
+gp11_slot_get_mechanism_info (GP11Slot *self, gulong mech_type)
 {
+	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
+	CK_FUNCTION_LIST_PTR funcs;
 	GP11MechanismInfo *mechinfo;
+	GP11Module *module = NULL;
 	CK_MECHANISM_INFO info;
 	struct tm;
 	CK_RV rv;
 	
-	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
-	g_return_val_if_fail (GP11_IS_MODULE (slot->module), NULL);
-	g_return_val_if_fail (slot->module->funcs, NULL);
+	g_return_val_if_fail (GP11_IS_SLOT (self), NULL);
+
+	g_object_get (self, "module", &module, "handle", &handle, NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (module), NULL);
 	
+	funcs = gp11_module_get_function_list (module);
+	g_return_val_if_fail (funcs, NULL);
+		
 	memset (&info, 0, sizeof (info));
-	rv = (slot->module->funcs->C_GetMechanismInfo) (slot->handle, mech_type, &info);
+	rv = (funcs->C_GetMechanismInfo) (handle, mech_type, &info);
+	
+	g_object_unref (module);
+	
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get mechanism info: %s", gp11_message_from_rv (rv));
 		return NULL;
@@ -806,20 +936,20 @@ perform_init_token (InitToken *args)
 }
 
 gboolean
-gp11_slot_init_token (GP11Slot *slot, const guchar *pin, gsize length, 
+gp11_slot_init_token (GP11Slot *self, const guchar *pin, gsize length, 
                       const gchar *label, GCancellable *cancellable,
                       GError **err)
 {
 	InitToken args = { GP11_ARGUMENTS_INIT, pin, length, label };
-	return _gp11_call_sync (slot, perform_init_token, &args, err);
+	return _gp11_call_sync (self, perform_init_token, &args, err);
 }
 
 void
-gp11_slot_init_token_async (GP11Slot *slot, const guchar *pin, gsize length, 
+gp11_slot_init_token_async (GP11Slot *self, const guchar *pin, gsize length, 
                             const gchar *label, GCancellable *cancellable,
                             GAsyncReadyCallback callback, gpointer user_data)
 {
-	InitToken* args = _gp11_call_async_prep (slot, slot, perform_init_token, 
+	InitToken* args = _gp11_call_async_prep (self, self, perform_init_token, 
 	                                         sizeof (*args));
 	
 	args->pin = pin;
@@ -830,9 +960,9 @@ gp11_slot_init_token_async (GP11Slot *slot, const guchar *pin, gsize length,
 }
 	
 gboolean
-gp11_slot_init_token_finish (GP11Slot *slot, GAsyncResult *result, GError **err)
+gp11_slot_init_token_finish (GP11Slot *self, GAsyncResult *result, GError **err)
 {
-	return _gp11_call_basic_finish (slot, result, err);
+	return _gp11_call_basic_finish (self, result, err);
 }
 
 #endif /* UNIMPLEMENTED */
@@ -853,7 +983,7 @@ perform_open_session (OpenSession *args)
 
 /**
  * gp11_slot_open_session:
- * @slot: The slot ot open a session on.
+ * @self: The slot ot open a session on.
  * @flags: The flags to open a session with.
  * @err: A location to return an error, or NULL.
  * 
@@ -865,14 +995,14 @@ perform_open_session (OpenSession *args)
  * Return value: A new session or NULL if an error occurs.
  **/
 GP11Session*
-gp11_slot_open_session (GP11Slot *slot, gulong flags, GError **err)
+gp11_slot_open_session (GP11Slot *self, gulong flags, GError **err)
 {
-	return gp11_slot_open_session_full (slot, flags, NULL, err);
+	return gp11_slot_open_session_full (self, flags, NULL, err);
 }
 
 /**
  * gp11_slot_open_session_full:
- * @slot: The slot to open a session on.
+ * @self: The slot to open a session on.
  * @flags: The flags to open a session with.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error, or NULL.
@@ -885,26 +1015,42 @@ gp11_slot_open_session (GP11Slot *slot, gulong flags, GError **err)
  * Return value: A new session or NULL if an error occurs.
  **/
 GP11Session*
-gp11_slot_open_session_full (GP11Slot *slot, gulong flags, GCancellable *cancellable, GError **err)
+gp11_slot_open_session_full (GP11Slot *self, gulong flags, GCancellable *cancellable, GError **err)
 {
-	OpenSession args = { GP11_ARGUMENTS_INIT, flags, 0 };
+	GP11SlotPrivate *pv;
+	GP11Session *session = NULL;
 	CK_SESSION_HANDLE handle;
+
+	flags |= CKF_SERIAL_SESSION;
 	
-	/* Try to use a cached session */
-	handle = pop_session_table (slot, flags);
-	if (handle != 0)
-		return make_session_object (slot, flags, handle);
+	g_object_ref (self);
 	
+	pv = lock_private (self);
+	
+	{
+		/* Try to use a cached session */
+		handle = pop_session_table (pv, flags);
+		if (handle != 0) 
+			session = make_session_object (self, flags, handle);
+	}
+
+	unlock_private (self, pv);
+
 	/* Open a new session */
-	if (!_gp11_call_sync (slot, perform_open_session, &args, cancellable, err))
-		return FALSE;
+	if (session == NULL) {
+		OpenSession args = { GP11_ARGUMENTS_INIT, flags, 0 };
+		if (_gp11_call_sync (self, perform_open_session, &args, cancellable, err))
+			session = make_session_object (self, flags, args.session);
+	}
+
+	g_object_unref (self);
 	
-	return make_session_object (slot, flags, args.session);
+	return session;
 }
 
 /**
  * gp11_slot_open_session_async:
- * @slot: The slot to open a session on.
+ * @self: The slot to open a session on.
  * @flags: The flags to open a session with.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: Called when the operation completes.
@@ -916,27 +1062,41 @@ gp11_slot_open_session_full (GP11Slot *slot, gulong flags, GCancellable *cancell
  * This call will return immediately and complete asynchronously.
  **/
 void
-gp11_slot_open_session_async (GP11Slot *slot, gulong flags, GCancellable *cancellable, 
+gp11_slot_open_session_async (GP11Slot *self, gulong flags, GCancellable *cancellable, 
                               GAsyncReadyCallback callback, gpointer user_data)
 {
+	GP11SlotPrivate *pv;
 	GP11Call *call;
-	OpenSession *args = _gp11_call_async_prep (slot, slot, perform_open_session,
-	                                           sizeof (*args), NULL);
+	OpenSession *args;
+
+	flags |= CKF_SERIAL_SESSION;
 	
-	/* Try to use a cached session */
-	args->session = pop_session_table (slot, flags);
-	args->flags = flags;
+	g_object_ref (self);
+	
+	args =  _gp11_call_async_prep (self, self, perform_open_session, sizeof (*args), NULL);
+	
+	pv = lock_private (self);
+
+	{
+		/* Try to use a cached session */
+		args->session = pop_session_table (pv, flags);
+		args->flags = flags;
+	}
+	
+	unlock_private (self, pv);
 	
 	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
 	if (args->session)
 		_gp11_call_async_short (call, CKR_OK);
 	else
 		_gp11_call_async_go (call);
+	
+	g_object_unref (self);
 }
 
 /**
  * gp11_slot_open_session_finish:
- * @slot: The slot to open a session on.
+ * @self: The slot to open a session on.
  * @result: The result passed to the callback.
  * @err: A location to return an error or NULL.
  * 
@@ -946,13 +1106,22 @@ gp11_slot_open_session_async (GP11Slot *slot, gulong flags, GCancellable *cancel
  * Return value: The new session or NULL if an error occurs.
  */
 GP11Session*
-gp11_slot_open_session_finish (GP11Slot *slot, GAsyncResult *result, GError **err)
+gp11_slot_open_session_finish (GP11Slot *self, GAsyncResult *result, GError **err)
 {
-	OpenSession *args;
+	GP11Session *session = NULL;
+
+	g_object_ref (self);
 	
-	if (!_gp11_call_basic_finish (result, err))
-		return NULL;
+	{
+		OpenSession *args;
+
+		if (_gp11_call_basic_finish (result, err)) {
+			args = _gp11_call_arguments (result, OpenSession);
+			session = make_session_object (self, args->flags, args->session);
+		}
+	}
 	
-	args = _gp11_call_arguments (result, OpenSession);
-	return make_session_object (slot, args->flags, args->session);
+	g_object_unref (self);
+	
+	return session;
 }

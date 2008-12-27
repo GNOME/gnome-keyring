@@ -33,6 +33,7 @@ static gpointer _gp11_call_parent_class = NULL;
 
 struct _GP11Call {
 	GObject parent;
+	GP11Module *module;
 	
 	/* For making the call */
 	GP11CallFunc func;
@@ -131,6 +132,8 @@ process_async_call (gpointer data, GP11CallClass *klass)
 static void 
 process_result (GP11Call *call, gpointer unused)
 {
+	GP11Slot *slot;
+	
 	/* Double check a few things */
 	g_assert (GP11_IS_CALL (call));
 	
@@ -147,8 +150,10 @@ process_result (GP11Call *call, gpointer unused)
 	if (call->rv == CKR_USER_NOT_LOGGED_IN && GP11_IS_SESSION (call->object)) {
 		g_free (call->password);
 		call->password = NULL;
-		call->do_login = _gp11_slot_token_authentication (GP11_SESSION (call->object)->slot, 
-		                                                  &call->password);
+		slot = gp11_session_get_slot (GP11_SESSION (call->object));
+		g_assert (GP11_IS_SLOT (slot));
+		call->do_login = _gp11_slot_token_authentication (slot, &call->password);
+		g_object_unref (slot);
 	}
 	
 	/* If we're supposed to do a login, then queue this call again */
@@ -238,6 +243,10 @@ static void
 _gp11_call_finalize (GObject *obj)
 {
 	GP11Call *call = GP11_CALL (obj);
+	
+	if (call->module)
+		g_object_unref (call->module);
+	call->module = NULL;
 
 	if (call->object)
 		g_object_unref (call->object);
@@ -395,6 +404,7 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
 	GP11Arguments *args = (GP11Arguments*)data;
 	gchar *password = NULL;
 	GP11Module *module = NULL;
+	GP11Slot *slot; 
 	CK_ULONG pin_len;
 	CK_RV rv;
 	
@@ -404,9 +414,10 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
 	
 	g_object_get (object, "module", &module, "handle", &args->handle, NULL);
 	g_assert (GP11_IS_MODULE (module));
-	
-	args->pkcs11 = module->funcs;
-	g_object_unref (module);
+
+	/* We now hold a reference to module until below */
+	args->pkcs11 = gp11_module_get_function_list (module);
+	g_assert (args->pkcs11);
 	
 	rv = perform_call ((GP11CallFunc)func, cancellable, args);
 		
@@ -417,20 +428,23 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
 	if (rv == CKR_USER_NOT_LOGGED_IN && GP11_IS_SESSION (object)) {
 		
 		do {
-			if (!_gp11_slot_token_authentication (GP11_SESSION (object)->slot, 
-			                                      &password)) {
+			slot = gp11_session_get_slot (GP11_SESSION (object));
+			if (!_gp11_slot_token_authentication (slot, &password)) {
 				rv = CKR_USER_NOT_LOGGED_IN;
 			} else {
 				pin_len = password ? strlen (password) : 0; 
 				rv = (args->pkcs11->C_Login) (args->handle, CKU_USER, 
 				                              (CK_UTF8CHAR_PTR)password, pin_len);
 			}
+			g_object_unref (slot);
 		} while (rv == CKR_PIN_INCORRECT);
 
 		/* If we logged in successfully then try again */
 		if (rv == CKR_OK)
 			rv = perform_call ((GP11CallFunc)func, cancellable, args);
 	}
+	
+	g_object_unref (module);
 
 	if (rv == CKR_OK)
 		return TRUE;
@@ -477,15 +491,18 @@ _gp11_call_async_prep (gpointer object, gpointer cb_object, gpointer func,
 void
 _gp11_call_async_object (GP11Call *call, gpointer object)
 {
-	GP11Module *module;
-	
 	g_assert (GP11_IS_CALL (call));
 	g_assert (call->args);
 	
-	g_object_get (object, "module", &module, "handle", &call->args->handle, NULL);
-	g_assert (GP11_IS_MODULE (module));
-	call->args->pkcs11 = module->funcs;
-	g_object_unref (module);
+	if (call->module)
+		g_object_unref (call->module);
+	call->module = NULL;
+	
+	g_object_get (object, "module", &call->module, "handle", &call->args->handle, NULL);
+	g_assert (GP11_IS_MODULE (call->module));
+	call->args->pkcs11 = gp11_module_get_function_list (call->module);
+	
+	/* We now hold a reference on module until finalize */
 }
 
 GP11Call*

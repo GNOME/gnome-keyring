@@ -40,7 +40,7 @@ DEFINE_TEST(module_props)
 {
 	gchar *path;
 
-	g_object_get (module, "module-path", &path, NULL);
+	g_object_get (module, "path", &path, NULL);
 	g_assert (path != NULL && "no module-path");
 	g_assert (strcmp (".libs/libgp11-test-module.so", path) == 0 && "module path wrong");
 	g_free (path);

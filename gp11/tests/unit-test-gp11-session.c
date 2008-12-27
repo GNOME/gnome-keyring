@@ -42,14 +42,17 @@ DEFINE_TEARDOWN(load_session)
 DEFINE_TEST(session_props)
 {
 	GP11Module *mod;
+	GP11Slot *sl;
 	guint handle;
 	
-	g_object_get (session, "module", &mod, "handle", &handle, NULL);
+	g_object_get (session, "module", &mod, "handle", &handle, "slot", &sl, NULL);
 	g_assert (mod == module);
+	g_assert (sl == slot);
 	g_object_unref (mod);
+	g_object_unref (sl);
 	
 	g_assert (handle != 0);
-	g_assert (session->handle == handle);
+	g_assert (gp11_session_get_handle (session) == handle);
 }
 
 DEFINE_TEST(session_info)
@@ -59,7 +62,7 @@ DEFINE_TEST(session_info)
 	info = gp11_session_get_info (session);
 	g_assert (info != NULL && "no session info");
 	
-	g_assert (info->slot_id == slot->handle); 
+	g_assert (info->slot_id == gp11_slot_get_handle (slot)); 
 	g_assert ((info->flags & CKF_SERIAL_SESSION) == CKF_SERIAL_SESSION); 
 	g_assert (info->device_error == 1414); 
 	gp11_session_info_free (info);
@@ -103,24 +106,27 @@ DEFINE_TEST(open_reused)
 	GP11Session *sess, *sess2;
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
+	gboolean value;
 	
 	g_assert (gp11_slot_get_reuse_sessions (slot) == FALSE);
 	gp11_slot_set_reuse_sessions (slot, TRUE);
 	g_assert (gp11_slot_get_reuse_sessions (slot) == TRUE);
+	g_object_get (slot, "reuse-sessions", &value, NULL);
+	g_assert (value == TRUE);
 	
 	sess = gp11_slot_open_session (slot, 0, &err);
 	SUCCESS_RES (sess, err);
 	if (!sess) return;
 
 	/* Make note of the handle we saw */
-	handle = sess->handle;
+	handle = gp11_session_get_handle (sess);
 	g_object_unref (sess);
 	
 	/* Open again, and see if the same handle */
 	sess = gp11_slot_open_session (slot, 0, &err);
 	SUCCESS_RES (sess, err);
 	if (!sess) return;
-	g_assert (handle == sess->handle);
+	g_assert (handle == gp11_session_get_handle (sess));
 	g_object_unref (sess);
 	
 	/* Test opening async */
@@ -130,7 +136,7 @@ DEFINE_TEST(open_reused)
 	sess = gp11_slot_open_session_finish (slot, result, &err);
 	SUCCESS_RES (sess, err);
 	if (!sess) return;
-	g_assert (handle == sess->handle);
+	g_assert (handle == gp11_session_get_handle (sess));
 	g_object_unref (result);
 	g_object_unref (sess);
 	
@@ -138,14 +144,17 @@ DEFINE_TEST(open_reused)
 	sess = gp11_slot_open_session (slot, CKF_RW_SESSION, &err);
 	SUCCESS_RES (sess, err);
 	if (!sess) return;
-	g_assert (handle != sess->handle);
+	g_assert (handle != gp11_session_get_handle (sess));
 	
 	/* Now open a second session, with same flags, shouldn't return the same */
 	sess2 = gp11_slot_open_session (slot, CKF_RW_SESSION, &err);
 	SUCCESS_RES (sess2, err);
 	if (!sess2) return;
-	g_assert (sess->handle != sess2->handle);
+	g_assert (gp11_session_get_handle (sess) != gp11_session_get_handle (sess2));
 	
+	g_object_set (slot, "reuse-sessions", FALSE, NULL);
+	g_assert (gp11_slot_get_reuse_sessions (slot) == FALSE);
+
 	g_object_unref (sess);
 	g_object_unref (sess2);
 }
@@ -214,6 +223,7 @@ DEFINE_TEST(auto_login)
 	GError *err = NULL;
 	GP11Attributes *attrs;
 	gboolean ret;
+	gboolean value;
 	
 	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                              CKA_LABEL, GP11_STRING, "TEST OBJECT",
@@ -230,6 +240,8 @@ DEFINE_TEST(auto_login)
 	g_assert (gp11_slot_get_auto_login (slot) == FALSE);
 	gp11_slot_set_auto_login (slot, TRUE);
 	g_assert (gp11_slot_get_auto_login (slot) == TRUE);
+	g_object_get (slot, "auto-login", &value, NULL);
+	g_assert (value == TRUE);
 	
 	g_signal_connect (slot, "authenticate-token", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
 
@@ -254,4 +266,7 @@ DEFINE_TEST(auto_login)
 	/* We should now be logged in, try to log out */
 	ret = gp11_session_logout (session, &err);
 	SUCCESS_RES (ret, err);
+	
+	g_object_set (slot, "auto-login", FALSE, NULL);
+	g_assert (gp11_slot_get_auto_login (slot) == FALSE);
 }

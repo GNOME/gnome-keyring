@@ -243,25 +243,28 @@ typedef struct _GP11ModuleClass GP11ModuleClass;
 
 struct _GP11Module {
 	GObject parent;
-	
-	gchar *path;
-	CK_FUNCTION_LIST_PTR funcs;
+	gpointer reserved[4];
 };
 
 struct _GP11ModuleClass {
 	GObjectClass parent;
+	gpointer reserved[8];
 };
 
-GType               gp11_module_get_type                    (void) G_GNUC_CONST;
+GType                 gp11_module_get_type                    (void) G_GNUC_CONST;
 
-GP11Module*         gp11_module_initialize                  (const gchar *path, 
-                                                             gpointer reserved,
-                                                             GError **err);
+GP11Module*           gp11_module_initialize                  (const gchar *path, 
+                                                               gpointer reserved,
+                                                               GError **err);
 
-GP11ModuleInfo*     gp11_module_get_info                    (GP11Module *module);
+const gchar*          gp11_module_get_path                    (GP11Module *module);
 
-GList*              gp11_module_get_slots                   (GP11Module *module,
-                                                             gboolean token_present);
+CK_FUNCTION_LIST_PTR  gp11_module_get_function_list           (GP11Module *module);
+
+GP11ModuleInfo*       gp11_module_get_info                    (GP11Module *module);
+
+GList*                gp11_module_get_slots                   (GP11Module *module,
+                                                               gboolean token_present);
 
 enum {
 	GP11_IS_STRING = -1,
@@ -338,16 +341,14 @@ typedef struct _GP11SlotClass GP11SlotClass;
 
 struct _GP11Slot {
 	GObject parent;
-	
-	GP11Module *module;
-	CK_SLOT_ID handle;
+	gpointer reserved[4];
 };
 
 struct _GP11SlotClass {
 	GObjectClass parent;
 
 	gboolean (*authenticate_token) (GP11Slot *slot, gchar **password);
-	
+
 #ifdef UNIMPLEMENTED
 	gboolean (*authenticate_key) (GP11Slot *slot, GP11Object *object, 
 	                              gchar **password);
@@ -355,9 +356,12 @@ struct _GP11SlotClass {
 	void (*slot_event) (GP11Slot *slot);
 #endif
 	
+	gpointer reserved[10];	
 };
 
 GType               gp11_slot_get_type                      (void) G_GNUC_CONST;
+
+GP11Module*         gp11_slot_get_module                    (GP11Slot *slot);
 
 CK_SLOT_ID          gp11_slot_get_handle                    (GP11Slot *slot);
 
@@ -447,23 +451,25 @@ typedef struct _GP11SessionClass GP11SessionClass;
 
 struct _GP11Session {
 	GObject parent;
-	
-	GP11Slot *slot;
-	GP11Module *module;
-	CK_SESSION_HANDLE handle;	
 };
 
 struct _GP11SessionClass {
 	GObjectClass parent;
 
-	void (*discard_handle) (GP11Session *session);
+	gboolean (*discard_handle) (GP11Session *session, CK_SESSION_HANDLE handle);
 };
 
 GType               gp11_session_get_type                   (void) G_GNUC_CONST;
 
 GP11Session*        gp11_session_from_handle                (GP11Slot *slot, CK_SESSION_HANDLE handle); 
 
+GP11Module*         gp11_session_get_module                 (GP11Session *self);
+
+GP11Slot*           gp11_session_get_slot                   (GP11Session *self);
+
 CK_SESSION_HANDLE   gp11_session_get_handle                 (GP11Session *session);
+
+CK_SESSION_HANDLE   gp11_session_steal_handle               (GP11Session *session);
 
 GP11SessionInfo*    gp11_session_get_info                   (GP11Session *session);
 
@@ -1195,11 +1201,6 @@ typedef struct _GP11ObjectClass GP11ObjectClass;
 
 struct _GP11Object {
 	GObject parent;
-	
-	GP11Module *module;
-	GP11Slot *slot;
-	GP11Session *session;
-	CK_OBJECT_HANDLE handle;
 };
 
 struct _GP11ObjectClass {
@@ -1213,6 +1214,10 @@ GP11Object*         gp11_object_from_handle                 (GP11Slot *slot,
 
 GList*              gp11_objects_from_handle_array          (GP11Slot *slot,
                                                              const GP11Attribute *attr);
+
+GP11Module*         gp11_object_get_module                  (GP11Object *self);
+
+GP11Slot*           gp11_object_get_slot                    (GP11Object *object);
 
 CK_OBJECT_HANDLE    gp11_object_get_handle                  (GP11Object *object);
 

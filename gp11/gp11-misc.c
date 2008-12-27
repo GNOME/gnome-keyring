@@ -38,8 +38,13 @@ GQuark
 gp11_get_error_quark (void)
 {
 	static GQuark domain = 0;
-	if (domain == 0)
+	static volatile gsize quark_inited = 0;
+	
+	if (g_once_init_enter (&quark_inited)) {
 		domain = g_quark_from_static_string ("gp11-error");
+		g_once_init_leave (&quark_inited, 1);
+	}
+	
 	return domain;
 }
 

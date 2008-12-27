@@ -28,6 +28,12 @@
 
 #include <string.h>
 
+/*
+ * MT safe -- Nothing in GP11ObjectData changes between 
+ * init and finalize. All GP11ObjectPrivate access between init
+ * and finalize is locked.
+ */
+
 enum {
 	PROP_0,
 	PROP_MODULE,
@@ -35,6 +41,21 @@ enum {
 	PROP_HANDLE,
 	PROP_SESSION
 };
+
+typedef struct _GP11ObjectData {
+	GP11Module *module;
+	GP11Slot *slot;
+	CK_OBJECT_HANDLE handle;
+} GP11ObjectData;
+
+typedef struct _GP11ObjectPrivate {
+	GP11ObjectData data;
+	GStaticMutex mutex;
+	GP11Session *session;
+} GP11ObjectPrivate;
+
+#define GP11_OBJECT_GET_DATA(o) \
+      (G_TYPE_INSTANCE_GET_PRIVATE((o), GP11_TYPE_OBJECT, GP11ObjectData))
 
 G_DEFINE_TYPE (GP11Object, gp11_object, G_TYPE_OBJECT);
 
@@ -80,26 +101,37 @@ opened_session (GObject *obj, GAsyncResult *result, gpointer user_data)
 }
 
 static void
-require_session_async (GP11Object *object, GP11Call *call, 
+require_session_async (GP11Object *self, GP11Call *call, 
                        gulong flags, GCancellable *cancellable)
 {
-	g_assert (GP11_IS_OBJECT (object));
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	GP11Session *session;
 	
-	if (object->session)
-		run_call_with_session (call, object->session);
-	else
-		gp11_slot_open_session_async (object->slot, flags, cancellable, opened_session, call);
+	g_assert (GP11_IS_OBJECT (self));
+	
+	session = gp11_object_get_session (self);
+	if (session) {
+		run_call_with_session (call, session);
+		g_object_unref (session);
+	} else {
+		gp11_slot_open_session_async (data->slot, flags, cancellable, opened_session, call);
+	}
+	
 }
 
 static GP11Session*
-require_session_sync (GP11Object *object, gulong flags, GError **err)
+require_session_sync (GP11Object *self, gulong flags, GError **err)
 {
-	g_assert (GP11_IS_OBJECT (object));
-
-	if (object->session) 
-		return g_object_ref (object->session);
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	GP11Session *session;
 	
-	return gp11_slot_open_session (object->slot, flags, err);
+	g_assert (GP11_IS_OBJECT (self));
+
+	session = gp11_object_get_session (self);
+	if (session)
+		return session;
+	
+	return gp11_slot_open_session (data->slot, flags, err);
 }
 
 /* ----------------------------------------------------------------------------
@@ -107,29 +139,30 @@ require_session_sync (GP11Object *object, gulong flags, GError **err)
  */
 
 static void
-gp11_object_init (GP11Object *object)
+gp11_object_init (GP11Object *self)
 {
-	
+	GP11ObjectPrivate *pv = (G_TYPE_INSTANCE_GET_PRIVATE(self, GP11_TYPE_OBJECT, GP11ObjectPrivate));
+	g_static_mutex_init (&pv->mutex);
 }
 
 static void
 gp11_object_get_property (GObject *obj, guint prop_id, GValue *value, 
-                           GParamSpec *pspec)
+                          GParamSpec *pspec)
 {
-	GP11Object *object = GP11_OBJECT (obj);
+	GP11Object *self = GP11_OBJECT (obj);
 
 	switch (prop_id) {
 	case PROP_MODULE:
-		g_value_set_object (value, object->module);
+		g_value_take_object (value, gp11_object_get_module (self));
 		break;
 	case PROP_SLOT:
-		g_value_set_object (value, object->slot);
+		g_value_take_object (value, gp11_object_get_slot (self));
 		break;
 	case PROP_SESSION:
-		g_value_set_object (value, object->session);
+		g_value_take_object (value, gp11_object_get_session (self));
 		break;
 	case PROP_HANDLE:
-		g_value_set_uint (value, object->handle);
+		g_value_set_ulong (value, gp11_object_get_handle (self));
 		break;
 	}
 }
@@ -138,61 +171,55 @@ static void
 gp11_object_set_property (GObject *obj, guint prop_id, const GValue *value, 
                           GParamSpec *pspec)
 {
-	GP11Object *object = GP11_OBJECT (obj);
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (obj);
+	GP11Object *self = GP11_OBJECT (obj);
+	
+	/* The sets to data below are only allowed during construction */ 
 	
 	switch (prop_id) {
 	case PROP_MODULE:
-		g_return_if_fail (!object->module);
-		object->module = g_value_get_object (value);
-		g_return_if_fail (object->module);
-		g_object_ref (object->module);
+		g_return_if_fail (!data->module);
+		data->module = g_value_get_object (value);
+		g_return_if_fail (data->module);
+		g_object_ref (data->module);
 		break;
 	case PROP_SLOT:
-		g_return_if_fail (!object->slot);
-		object->slot = g_value_get_object (value);
-		g_return_if_fail (object->slot);
-		g_object_ref (object->slot);
+		g_return_if_fail (!data->slot);
+		data->slot = g_value_get_object (value);
+		g_return_if_fail (data->slot);
+		g_object_ref (data->slot);
 		break;
 	case PROP_SESSION:
-		gp11_object_set_session (object, g_value_get_object (value));
+		gp11_object_set_session (self, g_value_get_object (value));
 		break;
 	case PROP_HANDLE:
-		g_return_if_fail (!object->handle);
-		object->handle = g_value_get_uint (value);
+		g_return_if_fail (!data->handle);
+		data->handle = g_value_get_ulong (value);
 		break;
 	}
 }
 
 static void
-gp11_object_dispose (GObject *obj)
-{
-	GP11Object *object = GP11_OBJECT (obj);
-	
-	if (object->slot)
-		g_object_unref (object->slot);
-	object->slot = NULL;
-	
-	if (object->module)
-		g_object_unref (object->module);
-	object->module = NULL;
-	
-	if (object->session)
-		g_object_unref (object->session);
-	object->session = NULL;
-
-	G_OBJECT_CLASS (gp11_object_parent_class)->dispose (obj);
-}
-
-static void
 gp11_object_finalize (GObject *obj)
 {
-	GP11Object *object = GP11_OBJECT (obj);
+	GP11ObjectPrivate *pv = (G_TYPE_INSTANCE_GET_PRIVATE(obj, GP11_TYPE_OBJECT, GP11ObjectPrivate));
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (obj);
 
-	g_assert (object->slot == NULL);
-	g_assert (object->module == NULL);
-	g_assert (object->session == NULL);
+	if (data->slot)
+		g_object_unref (data->slot);
+	data->slot = NULL;
 	
-	object->handle = 0;
+	if (data->module)
+		g_object_unref (data->module);
+	data->module = NULL;
+	
+	if (pv->session)
+		g_object_unref (pv->session);
+	pv->session = NULL;
+	
+	data->handle = 0;
+	
+	g_static_mutex_free (&pv->mutex);
 	
 	G_OBJECT_CLASS (gp11_object_parent_class)->finalize (obj);
 }
@@ -206,7 +233,6 @@ gp11_object_class_init (GP11ObjectClass *klass)
 	
 	gobject_class->get_property = gp11_object_get_property;
 	gobject_class->set_property = gp11_object_set_property;
-	gobject_class->dispose = gp11_object_dispose;
 	gobject_class->finalize = gp11_object_finalize;
 	
 	g_object_class_install_property (gobject_class, PROP_MODULE,
@@ -218,12 +244,14 @@ gp11_object_class_init (GP11ObjectClass *klass)
 		                     GP11_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
-		g_param_spec_uint ("handle", "Object Handle", "PKCS11 Object Handle",
-		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		g_param_spec_ulong ("handle", "Object Handle", "PKCS11 Object Handle",
+		                   0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_SESSION,
 		g_param_spec_object ("session", "session", "PKCS11 Session to make calls on",
 		                     GP11_TYPE_SESSION, G_PARAM_READWRITE));
+	
+	g_type_class_add_private (klass, sizeof (GP11ObjectPrivate));
 }
 
 /* ----------------------------------------------------------------------------
@@ -243,8 +271,16 @@ gp11_object_class_init (GP11ObjectClass *klass)
 GP11Object*
 gp11_object_from_handle (GP11Slot *slot, CK_OBJECT_HANDLE handle)
 {
+	GP11Module *module = NULL;
+	GP11Object *object;
+	
 	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
-	return g_object_new (GP11_TYPE_OBJECT, "module", slot->module, "handle", handle, "slot", slot, NULL);
+	
+	module = gp11_slot_get_module (slot);
+	object = g_object_new (GP11_TYPE_OBJECT, "module", module, "handle", handle, "slot", slot, NULL);
+	g_object_unref (module);
+	
+	return object;
 }
 
 /**
@@ -277,22 +313,57 @@ gp11_objects_from_handle_array (GP11Slot *slot, const GP11Attribute *attr)
 
 /**
  * gp11_object_get_handle:
- * @object: The object.
+ * @self: The object.
  * 
  * Get the raw PKCS#11 handle of a GP11Object.
  * 
  * Return value: The raw object handle.
  **/
 CK_OBJECT_HANDLE
-gp11_object_get_handle (GP11Object *object)
+gp11_object_get_handle (GP11Object *self)
 {
-	g_return_val_if_fail (GP11_IS_OBJECT (object), (CK_OBJECT_HANDLE)-1);
-	return object->handle;
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	g_return_val_if_fail (GP11_IS_OBJECT (self), (CK_OBJECT_HANDLE)-1);
+	return data->handle;
+}
+
+/**
+ * gp11_object_get_module:
+ * @self: The object.
+ * 
+ * Get the PKCS#11 module to which this object belongs.
+ * 
+ * Return value: The module, which should be unreffed after use.
+ **/
+GP11Module*
+gp11_object_get_module (GP11Object *self)
+{
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (data->module), NULL);
+	return g_object_ref (data->module);
+}
+
+/**
+ * gp11_object_get_slot:
+ * @self: The object.
+ * 
+ * Get the PKCS#11 slot to which this object belongs.
+ * 
+ * Return value: The slot, which should be unreffed after use.
+ **/
+GP11Slot*
+gp11_object_get_slot (GP11Object *self)
+{
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (GP11_IS_SLOT (data->slot), NULL);
+	return g_object_ref (data->slot);
 }
 
 /**
  * gp11_object_get_session:
- * @object: The object
+ * @self: The object
  * 
  * Get the PKCS#11 session assigned to make calls on when operating
  * on this object.  
@@ -301,18 +372,30 @@ gp11_object_get_handle (GP11Object *object)
  * object. By default an object will open and close sessions 
  * appropriate for its calls.
  * 
- * Return value: The assigned session.   
+ * Return value: The assigned session, which must be unreffed after use.
  **/
 GP11Session*
-gp11_object_get_session (GP11Object *object)
+gp11_object_get_session (GP11Object *self)
 {
-	g_return_val_if_fail (GP11_IS_OBJECT (object), NULL);
-	return object->session;
+	GP11ObjectPrivate *pv = (G_TYPE_INSTANCE_GET_PRIVATE (self, GP11_TYPE_OBJECT, GP11ObjectPrivate));
+	GP11Session *session;
+	
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	
+	g_static_mutex_lock (&pv->mutex);
+	
+	{
+		session = pv->session ? g_object_ref (pv->session) : NULL;
+	}
+	
+	g_static_mutex_unlock (&pv->mutex);
+	
+	return session;
 }
 
 /**
- * gp11_object_get_session:
- * @object: The object
+ * gp11_object_set_session:
+ * @self: The object
  * @session: The assigned session
  * 
  * Set the PKCS#11 session assigned to make calls on when operating
@@ -326,14 +409,23 @@ gp11_object_get_session (GP11Object *object)
  * that modify the state of the object will probably fail.
  **/
 void
-gp11_object_set_session (GP11Object *object, GP11Session *session)
+gp11_object_set_session (GP11Object *self, GP11Session *session)
 {
-	g_return_if_fail (GP11_IS_OBJECT (object));
-	if (session)
-		g_object_ref (session);
-	if (object->session)
-		g_object_unref (object->session);
-	object->session = session;
+	GP11ObjectPrivate *pv = (G_TYPE_INSTANCE_GET_PRIVATE (self, GP11_TYPE_OBJECT, GP11ObjectPrivate));
+
+	g_return_if_fail (GP11_IS_OBJECT (self));
+	
+	g_static_mutex_lock (&pv->mutex);
+	
+	{
+		if (session)
+			g_object_ref (session);
+		if (pv->session)
+			g_object_unref (pv->session);
+		pv->session = session;
+	}
+	
+	g_static_mutex_unlock (&pv->mutex);
 }
 
 /* DESTROY */
@@ -351,7 +443,7 @@ perform_destroy (Destroy *args)
 
 /**
  * gp11_object_destroy:
- * @object: The object to destroy.
+ * @self: The object to destroy.
  * @err: A location to return an error.
  * 
  * Destroy a PKCS#11 object, deleting it from storage or the session.
@@ -360,14 +452,14 @@ perform_destroy (Destroy *args)
  * Return value: Whether the call was successful or not.
  **/
 gboolean
-gp11_object_destroy (GP11Object *object, GError **err)
+gp11_object_destroy (GP11Object *self, GError **err)
 {
-	return gp11_object_destroy_full (object, NULL, err);
+	return gp11_object_destroy_full (self, NULL, err);
 }
 
 /**
  * gp11_object_destroy_full:
- * @object: The object to destroy.
+ * @self: The object to destroy.
  * @cancellable: Optional cancellable object, or NULL to ignore. 
  * @err: A location to return an error.
  * 
@@ -377,18 +469,19 @@ gp11_object_destroy (GP11Object *object, GError **err)
  * Return value: Whether the call was successful or not.
  **/
 gboolean
-gp11_object_destroy_full (GP11Object *object, GCancellable *cancellable, GError **err)
+gp11_object_destroy_full (GP11Object *self, GCancellable *cancellable, GError **err)
 {
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
 	Destroy args = { GP11_ARGUMENTS_INIT, 0 };
 	GP11Session *session;
 	gboolean ret = FALSE;
 	
-	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
-	g_return_val_if_fail (GP11_IS_SLOT (object->slot), FALSE);
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GP11_IS_SLOT (data->slot), FALSE);
 	
-	args.object = object->handle;
+	args.object = data->handle;
 
-	session = require_session_sync (object, CKF_RW_SESSION, err);
+	session = require_session_sync (self, CKF_RW_SESSION, err);
 	if (session)
 		ret = _gp11_call_sync (session, perform_destroy, &args, cancellable, err);
 	g_object_unref (session);
@@ -397,7 +490,7 @@ gp11_object_destroy_full (GP11Object *object, GCancellable *cancellable, GError 
 
 /**
  * gp11_object_destroy_async:
- * @object: The object to destroy.
+ * @self: The object to destroy.
  * @cancellable: Optional cancellable object, or NULL to ignore. 
  * @callback: Callback which is called when operation completes.
  * @user_data: Data to pass to the callback.
@@ -406,25 +499,26 @@ gp11_object_destroy_full (GP11Object *object, GCancellable *cancellable, GError 
  * This call will return immediately and complete asynchronously.
  **/
 void
-gp11_object_destroy_async (GP11Object *object, GCancellable *cancellable,
+gp11_object_destroy_async (GP11Object *self, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
 	Destroy* args;
 	GP11Call *call;
 
-	g_return_if_fail (GP11_IS_OBJECT (object));
-	g_return_if_fail (GP11_IS_SLOT (object->slot));
+	g_return_if_fail (GP11_IS_OBJECT (self));
+	g_return_if_fail (GP11_IS_SLOT (data->slot));
 
-	args = _gp11_call_async_prep (NULL, object, perform_destroy, sizeof (*args), NULL);
-	args->object = object->handle;
+	args = _gp11_call_async_prep (data->slot, self, perform_destroy, sizeof (*args), NULL);
+	args->object = data->handle;
 	
 	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
-	require_session_async (object, call, CKF_RW_SESSION, cancellable);
+	require_session_async (self, call, CKF_RW_SESSION, cancellable);
 }
 
 /**
  * gp11_object_destroy_finish:
- * @object: The object being destroyed.
+ * @self: The object being destroyed.
  * @result: The result of the destory operation passed to the callback.
  * @err: A location to store an error.
  * 
@@ -434,7 +528,7 @@ gp11_object_destroy_async (GP11Object *object, GCancellable *cancellable,
  * Return value: Whether the object was destroyed successfully or not.
  */
 gboolean
-gp11_object_destroy_finish (GP11Object *object, GAsyncResult *result, GError **err)
+gp11_object_destroy_finish (GP11Object *self, GAsyncResult *result, GError **err)
 {
 	return _gp11_call_basic_finish (result, err);
 }
@@ -462,7 +556,7 @@ perform_set_attributes (SetAttributes *args)
 
 /**
  * gp11_object_set:
- * @object: The object to set attributes on.
+ * @self: The object to set attributes on.
  * @err: A location to return an error.
  * ...: The attributes to set.
  *
@@ -493,7 +587,7 @@ perform_set_attributes (SetAttributes *args)
  * Return value: Whether the call was successful or not.
  **/
 gboolean
-gp11_object_set (GP11Object *object, GError **err, ...)
+gp11_object_set (GP11Object *self, GError **err, ...)
 {
 	GP11Attributes *attrs;
 	va_list va;
@@ -503,7 +597,7 @@ gp11_object_set (GP11Object *object, GError **err, ...)
 	attrs = gp11_attributes_new_valist (va);
 	va_end (va);
 	
-	rv = gp11_object_set_full (object, attrs, NULL, err);
+	rv = gp11_object_set_full (self, attrs, NULL, err);
 	
 	gp11_attributes_unref (attrs);
 	return rv;
@@ -511,7 +605,7 @@ gp11_object_set (GP11Object *object, GError **err, ...)
 
 /**
  * gp11_object_set_full:
- * @object: The object to set attributes on.
+ * @self: The object to set attributes on.
  * @attrs: The attributes to set on the object.
  * @cancellable: Optional cancellable object, or NULL to ignore. 
  * @err: A location to return an error.
@@ -521,20 +615,21 @@ gp11_object_set (GP11Object *object, GError **err, ...)
  * Return value: Whether the call was successful or not.
  **/
 gboolean
-gp11_object_set_full (GP11Object *object, GP11Attributes *attrs,
+gp11_object_set_full (GP11Object *self, GP11Attributes *attrs,
                       GCancellable *cancellable, GError **err)
 {
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
 	SetAttributes args;
 	GP11Session *session;
 	gboolean ret = FALSE;
 	
-	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
 	
 	memset (&args, 0, sizeof (args));
 	args.attrs = attrs;
-	args.object = object->handle;
+	args.object = data->handle;
 
-	session = require_session_sync (object, CKF_RW_SESSION, err);
+	session = require_session_sync (self, CKF_RW_SESSION, err);
 	if (session)
 		ret = _gp11_call_sync (session, perform_set_attributes, &args, cancellable, err);
 	g_object_unref (session);
@@ -543,7 +638,7 @@ gp11_object_set_full (GP11Object *object, GP11Attributes *attrs,
 
 /**
  * gp11_object_set_async:
- * @object: The object to set attributes on.
+ * @self: The object to set attributes on.
  * @attrs: The attributes to set on the object.
  * @cancellable: Optional cancellable object, or NULL to ignore. 
  * @callback: Callback which is called when operation completes.
@@ -553,27 +648,28 @@ gp11_object_set_full (GP11Object *object, GP11Attributes *attrs,
  * immediately and completes asynchronously.
  **/
 void
-gp11_object_set_async (GP11Object *object, GP11Attributes *attrs, GCancellable *cancellable,
+gp11_object_set_async (GP11Object *self, GP11Attributes *attrs, GCancellable *cancellable,
                        GAsyncReadyCallback callback, gpointer user_data)
 {
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
 	SetAttributes *args;
 	GP11Call *call;
 	
-	g_return_if_fail (GP11_IS_OBJECT (object));
+	g_return_if_fail (GP11_IS_OBJECT (self));
 
-	args = _gp11_call_async_prep (object->slot, object, perform_set_attributes, 
+	args = _gp11_call_async_prep (data->slot, self, perform_set_attributes, 
 	                              sizeof (*args), free_set_attributes);
 	args->attrs = attrs;
 	gp11_attributes_ref (attrs);
-	args->object = object->handle;
+	args->object = data->handle;
 	
 	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
-	require_session_async (object, call, CKF_RW_SESSION, cancellable);
+	require_session_async (self, call, CKF_RW_SESSION, cancellable);
 }
 
 /**
  * gp11_object_set_finish:
- * @object: The object to set attributes on.
+ * @self: The object to set attributes on.
  * @result: The result of the destory operation passed to the callback.
  * @err: A location to store an error.
  * 
@@ -583,7 +679,7 @@ gp11_object_set_async (GP11Object *object, GP11Attributes *attrs, GCancellable *
  * Return value: Whether the attributes were successfully set on the object or not.
  */
 gboolean
-gp11_object_set_finish (GP11Object *object, GAsyncResult *result, GError **err)
+gp11_object_set_finish (GP11Object *self, GAsyncResult *result, GError **err)
 {
 	return _gp11_call_basic_finish (result, err);
 }
@@ -682,7 +778,7 @@ perform_get_attributes (GetAttributes *args)
 
 /**
  * gp11_object_get:
- * @object: The object to get attributes from.
+ * @self: The object to get attributes from.
  * @err: A location to store an error.
  * ...: The attribute types to get.
  * 
@@ -695,7 +791,7 @@ perform_get_attributes (GetAttributes *args)
  * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
  **/
 GP11Attributes*
-gp11_object_get (GP11Object *object, GError **err, ...)
+gp11_object_get (GP11Object *self, GError **err, ...)
 {
 	GP11Attributes *result;
 	GArray *array;
@@ -712,14 +808,14 @@ gp11_object_get (GP11Object *object, GError **err, ...)
 	}
 	va_end (va);
 	
-	result = gp11_object_get_full (object, (gulong*)array->data, array->len, NULL, err);
+	result = gp11_object_get_full (self, (gulong*)array->data, array->len, NULL, err);
 	g_array_free (array, TRUE);
 	return result;
 }
 
 /**
  * gp11_object_get:
- * @object: The object to get attributes from.
+ * @self: The object to get attributes from.
  * @attr_types: The attributes to get.
  * @n_attr_types: The number of attributes to get.
  * @cancellable: Optional cancellation object, or NULL.
@@ -734,22 +830,23 @@ gp11_object_get (GP11Object *object, GError **err, ...)
  * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
  **/
 GP11Attributes*
-gp11_object_get_full (GP11Object *object, const gulong *attr_types, gsize n_attr_types,
+gp11_object_get_full (GP11Object *self, const gulong *attr_types, gsize n_attr_types,
                       GCancellable *cancellable, GError **err)
 {
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
 	GetAttributes args;
 	GP11Session *session;
 	
-	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
 	
-	session = require_session_sync (object, 0, err);
+	session = require_session_sync (self, 0, err);
 	if (!session)
 		return NULL;
 	
 	memset (&args, 0, sizeof (args));
 	args.attr_types = (gulong*)attr_types;
 	args.n_attr_types = n_attr_types;
-	args.object = object->handle;
+	args.object = data->handle;
 
 	if (!_gp11_call_sync (session, perform_get_attributes, &args, cancellable, err)) {
 		gp11_attributes_unref (args.results);
@@ -763,7 +860,7 @@ gp11_object_get_full (GP11Object *object, const gulong *attr_types, gsize n_attr
 
 /**
  * gp11_object_get_async:
- * @object: The object to get attributes from.
+ * @self: The object to get attributes from.
  * @attr_types: The attributes to get.
  * @n_attr_types: The number of attributes to get.
  * @cancellable: Optional cancellation object, or NULL.
@@ -774,28 +871,29 @@ gp11_object_get_full (GP11Object *object, const gulong *attr_types, gsize n_attr
  * immediately and completes asynchronously.
  **/
 void
-gp11_object_get_async (GP11Object *object, const gulong *attr_types, gsize n_attr_types,
+gp11_object_get_async (GP11Object *self, const gulong *attr_types, gsize n_attr_types,
                        GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
 	GetAttributes *args;
 	GP11Call *call;
 	
-	g_return_if_fail (GP11_IS_OBJECT (object));
+	g_return_if_fail (GP11_IS_OBJECT (self));
 
-	args = _gp11_call_async_prep (object->session, object, perform_get_attributes, 
+	args = _gp11_call_async_prep (data->slot, self, perform_get_attributes, 
 	                              sizeof (*args), free_get_attributes);
 	args->n_attr_types = n_attr_types;
 	if (n_attr_types)
 		args->attr_types = g_memdup (attr_types, sizeof (gulong) * n_attr_types);
-	args->object = object->handle;
+	args->object = data->handle;
 	
 	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
-	require_session_async (object, call, 0, cancellable);
+	require_session_async (self, call, 0, cancellable);
 }
 
 /**
  * gp11_object_get_finish:
- * @object: The object to get attributes from.
+ * @self: The object to get attributes from.
  * @result: The result passed to the callback.
  * @err: A location to store an error.
  * 
@@ -808,7 +906,7 @@ gp11_object_get_async (GP11Object *object, const gulong *attr_types, gsize n_att
  * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
  **/
 GP11Attributes*
-gp11_object_get_finish (GP11Object *object, GAsyncResult *result, GError **err)
+gp11_object_get_finish (GP11Object *self, GAsyncResult *result, GError **err)
 {
 	GP11Attributes *results;
 	GetAttributes *args;
@@ -826,7 +924,7 @@ gp11_object_get_finish (GP11Object *object, GAsyncResult *result, GError **err)
 
 /**
  * gp11_object_get_one:
- * @object: The object to get an attribute from.
+ * @self: The object to get an attribute from.
  * @attr_type: The attribute to get.
  * @err: A location to store an error.
  * 
@@ -836,14 +934,14 @@ gp11_object_get_finish (GP11Object *object, GAsyncResult *result, GError **err)
  * Return value: The resulting PKCS#11 attribute, or NULL if an error occurred. 
  **/
 GP11Attribute*
-gp11_object_get_one (GP11Object *object, gulong attr_type, GError **err)
+gp11_object_get_one (GP11Object *self, gulong attr_type, GError **err)
 {
-	return gp11_object_get_one_full (object, attr_type, NULL, err);
+	return gp11_object_get_one_full (self, attr_type, NULL, err);
 }
 
 /**
  * gp11_object_get_one_full:
- * @object: The object to get an attribute from.
+ * @self: The object to get an attribute from.
  * @attr_type: The attribute to get.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to store an error.
@@ -854,13 +952,13 @@ gp11_object_get_one (GP11Object *object, gulong attr_type, GError **err)
  * Return value: The resulting PKCS#11 attribute, or NULL if an error occurred. 
  **/
 GP11Attribute*
-gp11_object_get_one_full (GP11Object *object, gulong attr_type, 
+gp11_object_get_one_full (GP11Object *self, gulong attr_type, 
                           GCancellable *cancellable, GError **err)
 {
 	GP11Attributes *attrs;
 	GP11Attribute *attr;
 	
-	attrs = gp11_object_get_full (object, &attr_type, 1, cancellable, err);
+	attrs = gp11_object_get_full (self, &attr_type, 1, cancellable, err);
 	if (!attrs || !gp11_attributes_count (attrs))
 		return NULL;
 	
@@ -873,7 +971,7 @@ gp11_object_get_one_full (GP11Object *object, gulong attr_type,
 
 /**
  * gp11_object_get_one_async:
- * @object: The object to get an attribute from.
+ * @self: The object to get an attribute from.
  * @attr_type: The attribute to get.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: Called when the operation completes.
@@ -883,15 +981,15 @@ gp11_object_get_one_full (GP11Object *object, gulong attr_type,
  * return immediately and complete asynchronously.
  **/
 void
-gp11_object_get_one_async (GP11Object *object, gulong attr_type, GCancellable *cancellable,
+gp11_object_get_one_async (GP11Object *self, gulong attr_type, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
-	gp11_object_get_async (object, &attr_type, 1, cancellable, callback, user_data);
+	gp11_object_get_async (self, &attr_type, 1, cancellable, callback, user_data);
 }
 
 /**
  * gp11_object_get_one_finish:
- * @object: The object to get an attribute from.
+ * @self: The object to get an attribute from.
  * @result: The result passed to the callback.
  * @err: A location to store an error.
  *
@@ -902,12 +1000,12 @@ gp11_object_get_one_async (GP11Object *object, gulong attr_type, GCancellable *c
  **/
 
 GP11Attribute*
-gp11_object_get_one_finish (GP11Object *object, GAsyncResult *result, GError **err)
+gp11_object_get_one_finish (GP11Object *self, GAsyncResult *result, GError **err)
 {
 	GP11Attributes *attrs;
 	GP11Attribute *attr;
 	
-	attrs = gp11_object_get_finish (object, result, err);
+	attrs = gp11_object_get_finish (self, result, err);
 	if (!attrs)
 		return NULL;
 	
