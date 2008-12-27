@@ -26,6 +26,7 @@
 #include "run-auto-test.h"
 
 #include "gck/gck-crypto.h"
+#include "gck/gck-data-asn1.h"
 #include "gck/gck-data-der.h"
 
 #include <glib.h>
@@ -34,6 +35,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+static ASN1_TYPE certificate = NULL; 
+static guchar *certificate_data = NULL;
+static gsize n_certificate_data = 0;
 
 const gchar *rsapub = "(public-key (rsa" \
 " (n #00AE4B381CF43F7DC24CF90827325E2FB2EB57EDDE29562DF391C8942AA8E6423410E2D3FE26381F9DE0395E74BF2D17621AE46992C72CF895F6FA5FBE98054FBF#)" \
@@ -69,7 +74,7 @@ compare_keys (gcry_sexp_t key, gcry_sexp_t sexp)
 	/* Now compare them */
 	p = gcry_pk_get_keygrip (key, hash1);
 	g_assert ("couldn't get key id for private key" && p == hash1);
-	p = gcry_pk_get_keygrip (key, hash2);
+	p = gcry_pk_get_keygrip (sexp, hash2);
 	g_assert ("couldn't get key id for parsed private key" && p == hash2);
 
 	return memcmp (hash1, hash2, 20) == 0;
@@ -95,6 +100,24 @@ test_der_public (gcry_sexp_t key)
 	
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (key, sexp)); 	
+}
+
+DEFINE_SETUP(preload)
+{
+	gboolean ret;
+	
+	ret = g_file_get_contents ("test-data/test-certificate-1.der", (gchar**)&certificate_data, &n_certificate_data, NULL);
+	g_assert ("couldn't read in file: test-data/test-certificate-1.der" && ret);
+	
+	certificate = gck_data_asn1_decode ("PKIX1.Certificate", certificate_data, n_certificate_data);
+	g_assert (certificate);
+}
+
+DEFINE_TEARDOWN(preload)
+{
+	asn1_delete_structure (&certificate);
+	g_free (certificate_data);
+	certificate_data = NULL;
 }
 
 DEFINE_TEST(der_rsa_public)
@@ -187,4 +210,65 @@ DEFINE_TEST(der_dsa_private_parts)
 	
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (skey, pkey)); 	
+}
+
+const gchar *certpub = "(public-key (rsa " \
+	"(n #00C966D9F80744CFB98C2EF0A1EF13456C05DFDE2716513641116C6C3BEDFE107D129EE59B429AFE6031C366B7733A48AE4ED032379488B50DB6D9F3F244D9D58812DD764DF21AFC6F231E7AF1D898454E0710EF1642D043756D4ADEE2AAC931FF1F00707C66CF102508BAFAEE00E94603662711153BAA5BF298DD3642B2DA8875#) " \
+	"(e #010001#) ) )";
+
+DEFINE_TEST(read_public_key_info)
+{
+	const guchar *data;
+	guchar hash[20];
+	gsize n_data;
+	GckDataResult res;
+	gcry_sexp_t sexp, match;
+	gcry_error_t gcry;
+	
+	data = gck_data_asn1_read_element (certificate, certificate_data, n_certificate_data, "tbsCertificate.subjectPublicKeyInfo", &n_data);
+	g_assert (data);
+	
+	res = gck_data_der_read_public_key_info (data, n_data, &sexp);
+	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (sexp != NULL);
+	
+	if (!gcry_pk_get_keygrip (sexp, hash))
+		g_assert_not_reached ();
+
+	gcry = gcry_sexp_sscan (&match, NULL, certpub, strlen (certpub));
+	g_assert (gcry == 0);
+
+	g_assert (compare_keys (sexp, match));
+	
+	gcry_sexp_release (sexp);
+	gcry_sexp_release (match);
+}
+
+DEFINE_TEST(read_certificate)
+{
+	ASN1_TYPE asn = NULL;
+	GckDataResult res;
+	
+	res = gck_data_der_read_certificate (certificate_data, n_certificate_data, &asn);
+	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (asn != NULL);
+	
+	asn1_delete_structure (&asn);
+}
+
+DEFINE_TEST(read_basic_constraints)
+{
+	const guchar *extension;
+	gsize n_extension;
+	gboolean is_ca;
+	gint path_len;
+	GckDataResult res;
+	
+	extension = gck_data_asn1_read_content (certificate, certificate_data, n_certificate_data, "tbsCertificate.extensions.?1.extnValue", &n_extension);
+	g_assert (extension);
+	
+	res = gck_data_der_read_basic_constraints (extension, n_extension, &is_ca, &path_len);
+	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (is_ca == TRUE);
+	g_assert (path_len == -1);
 }

@@ -273,7 +273,7 @@ gck_private_key_class_init (GckPrivateKeyClass *klass)
 }
 
 /* -----------------------------------------------------------------------------
- * PRIVATE 
+ * PUBLIC 
  */
 
 void

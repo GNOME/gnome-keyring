@@ -218,7 +218,7 @@ gck_key_class_init (GckKeyClass *klass)
 }
 
 /* -----------------------------------------------------------------------------
- * PRIVATE 
+ * PUBLIC
  */
 
 GckSexp*

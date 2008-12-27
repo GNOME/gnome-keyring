@@ -72,7 +72,11 @@ gboolean           gck_data_asn1_read_secure_mpi               (ASN1_TYPE asn, c
 
 gboolean           gck_data_asn1_write_mpi                     (ASN1_TYPE asn, const gchar *part, 
                                                                 gcry_mpi_t mpi);
-                                                                
+                                        
+gchar*             gck_data_asn1_read_dn                       (ASN1_TYPE asn, const gchar *part);
+
+gchar*             gck_data_asn1_read_dn_part                  (ASN1_TYPE asn, const gchar *part, const gchar *match);
+
 gint               gck_data_asn1_element_length                (const guchar *data, gsize n_data);
 
 const guchar*      gck_data_asn1_element_content               (const guchar *data, gsize n_data, gsize *n_content);

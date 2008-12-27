@@ -23,6 +23,9 @@
 
 #include "gck-util.h"
 
+#include <stdio.h>
+#include <string.h>
+
 /* Only access using atomic operations */
 static gint next_handle = 0x00000010;
 
@@ -74,14 +77,47 @@ gck_util_set_string (CK_ATTRIBUTE_PTR attr, const gchar* string)
 }
 
 CK_RV
-gck_util_set_data (CK_ATTRIBUTE_PTR attr, CK_VOID_PTR value, CK_ULONG n_value)
+gck_util_set_date (CK_ATTRIBUTE_PTR attr, time_t time)
+{
+	CK_DATE date;
+	struct tm tm;
+	gchar buf[16];
+	
+	/* 'Empty' date as defined in PKCS#11 */
+	if (time == (time_t)-1)
+		return gck_util_set_data (attr, NULL, 0);
+	
+	if (!attr->pValue) {
+		attr->ulValueLen = sizeof (CK_DATE);
+		return CKR_OK;
+	}
+
+	if (!gmtime_r (&time, &tm))
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+		
+	g_assert (sizeof (date.year) == 4);
+	snprintf ((char*)buf, 5, "%04d", 1900 + tm.tm_year);
+	memcpy (date.year, buf, 4);
+	 
+	g_assert (sizeof (date.month) == 2);
+	snprintf ((char*)buf, 3, "%02d", tm.tm_mon + 1);
+	memcpy (date.month, buf, 2);
+	
+	g_assert (sizeof (date.day) == 2);
+	snprintf ((char*)buf, 3, "%02d", tm.tm_mday);
+	memcpy (date.day, buf, 2);
+		
+	return gck_util_set_data (attr, &date, sizeof (date));
+}
+CK_RV
+gck_util_set_data (CK_ATTRIBUTE_PTR attr, gconstpointer value, gsize n_value)
 {
 	return gck_util_return_data (attr->pValue, &(attr->ulValueLen), value, n_value);
 }
 
 CK_RV
 gck_util_return_data (CK_VOID_PTR output, CK_ULONG_PTR n_output,
-                      CK_VOID_PTR input, CK_ULONG n_input)
+                      gconstpointer input, gsize n_input)
 {
 	g_return_val_if_fail (n_output, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (input, CKR_GENERAL_ERROR);

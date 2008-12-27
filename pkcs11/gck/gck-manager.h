@@ -71,42 +71,60 @@ struct _GckManagerClass {
 	GObjectClass parent_class;
 };
 
-GType                   gck_manager_get_type            (void) G_GNUC_CONST;
+GType                   gck_manager_get_type                    (void) G_GNUC_CONST;
 
-gboolean                gck_manager_get_for_token       (GckManager *self);
+gboolean                gck_manager_get_for_token               (GckManager *self);
 
-#if 0
-GType                   gck_manager_type_from_string    (const gchar *type);
-#endif
+void                    gck_manager_add_attribute_index         (GckManager *self,
+                                                                 CK_ATTRIBUTE_TYPE attr,
+                                                                 gboolean unique);
 
-void                    gck_manager_register_object     (GckManager *self, 
-                                                         GckObject *object);
+void                    gck_manager_add_property_index          (GckManager *self,
+                                                                 const gchar *property,
+                                                                 gboolean unique);
 
-void                    gck_manager_unregister_object   (GckManager *self, 
-                                                         GckObject *object);
+void                    gck_manager_register_object             (GckManager *self, 
+                                                                 GckObject *object);
 
-GckObject*              gck_manager_lookup_handle       (GckManager *self,
-                                                         CK_OBJECT_HANDLE obj);
+void                    gck_manager_unregister_object           (GckManager *self, 
+                                                                 GckObject *object);
 
-CK_RV                   gck_manager_find_handles        (GckManager *self,
-                                                         gboolean also_private,
-                                                         CK_ATTRIBUTE_PTR template,
-                                                         CK_ULONG count,
-                                                         GArray *found);
+GckObject*              gck_manager_find_by_handle              (GckManager *self,
+                                                                 CK_OBJECT_HANDLE obj);
 
-#if 0
-GList*                  gck_manager_find                (GckManager *self,
-                                                         GType type, GArray *attrs);
-                                                                  
-GList*                  gck_manager_findv               (GckManager *self,
-                                                           GType gtype, ...) G_GNUC_NULL_TERMINATED;
+GList*                  gck_manager_find_by_number_property     (GckManager *self, 
+                                                                 const gchar *property,
+                                                                 gulong value);
 
-GckObject*              gck_manager_find_by_id         (GckManager *self,
-                                                           GType gtype, gkrconstid id);
+GckObject*              gck_manager_find_one_by_number_property (GckManager *self, 
+                                                                 const gchar *property,
+                                                                 gulong value);
 
-GckObject*              gck_manager_find_by_digest     (GckManager *self,
-                                                           gkrconstid digest);
-#endif
+GList*                  gck_manager_find_by_string_property     (GckManager *self, 
+                                                                 const gchar *property,
+                                                                 const gchar *value);
+
+GckObject*              gck_manager_find_one_by_string_property (GckManager *self, 
+                                                                 const gchar *property,
+                                                                 const gchar *value);
+
+GList*                  gck_manager_find_by_attributes          (GckManager *self, 
+                                                                 CK_ATTRIBUTE_PTR template, 
+                                                                 CK_ULONG n_attrs);
+
+GckObject*              gck_manager_find_one_by_attributes      (GckManager *self, 
+                                                                 CK_ATTRIBUTE_PTR template, 
+                                                                 CK_ULONG n_attrs);
+
+GckObject*              gck_manager_find_related                (GckManager *self,
+                                                     	         CK_OBJECT_CLASS klass,
+                                                     	         GckObject *related_to);
+
+CK_RV                   gck_manager_find_handles                (GckManager *self,
+                                                                 gboolean include_private,
+                                                                 CK_ATTRIBUTE_PTR template,
+                                                                 CK_ULONG count,
+                                                                 GArray *found);
 
 G_END_DECLS
 

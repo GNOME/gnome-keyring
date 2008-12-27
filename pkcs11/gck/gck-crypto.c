@@ -788,6 +788,19 @@ gck_crypto_sexp_extract_mpi (gcry_sexp_t sexp, gcry_mpi_t *mpi, ...)
 	return (*mpi) ? TRUE : FALSE;
 }
 
+void
+gck_crypto_sexp_dump (gcry_sexp_t sexp)
+{
+	gsize len;
+	gchar *buf;
+	
+	len = gcry_sexp_sprint (sexp, GCRYSEXP_FMT_ADVANCED, NULL, 0);
+	buf = g_malloc (len);
+	gcry_sexp_sprint (sexp, GCRYSEXP_FMT_ADVANCED, buf, len);
+	g_printerr ("%s", buf);
+	g_free (buf);
+}
+
 /* ----------------------------------------------------------------------------
  * PADDING FUNCTIONS
  */

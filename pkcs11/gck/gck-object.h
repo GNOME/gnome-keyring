@@ -51,6 +51,9 @@ struct _GckObject {
 struct _GckObjectClass {
 	GObjectClass parent_class;
 	
+	/* properties --------------------------------------------------------------- */
+	
+	
 	/* virtual methods  --------------------------------------------------------- */
     
 	CK_RV (*get_attribute) (GckObject *object, CK_ATTRIBUTE* attr);

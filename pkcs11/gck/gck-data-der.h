@@ -93,7 +93,7 @@ GckDataResult      gck_data_der_read_certificate           (const guchar *data, 
                                                             ASN1_TYPE *asn1);
                                                          
 GckDataResult      gck_data_der_read_basic_constraints     (const guchar *data, gsize n_data, 
-                                                            gboolean *is_ca, guint *path_len);
+                                                            gboolean *is_ca, gint *path_len);
 
 GckDataResult      gck_data_der_read_key_usage             (const guchar *data, gsize n_data, 
                                                             guint *key_usage);

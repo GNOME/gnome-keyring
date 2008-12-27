@@ -50,10 +50,12 @@ struct _GckModule {
 struct _GckModuleClass {
 	GObjectClass parent_class;
 	
-	/* Various  */
+	/* often overridden by defined */
 	const CK_INFO *module_info;
 	const CK_SLOT_INFO *slot_info;
 	const CK_TOKEN_INFO *token_info;
+	GType manager_type;
+	GType session_type;
 	
 	/* virtual methods */
 

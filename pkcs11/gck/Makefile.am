@@ -16,6 +16,8 @@ BUILT_SOURCES = \
 	asn1-def-pk.h asn1-def-pkix.h
 
 libgck_la_SOURCES = \
+	gck-certificate.c gck-certificate.h \
+	gck-certificate-key.c gck-certificate-key.h \
 	gck-crypto.c gck-crypto.h \
 	gck-data-asn1.c gck-data-asn1.h \
 	gck-data-der.c gck-data-der.h \

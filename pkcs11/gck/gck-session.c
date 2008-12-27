@@ -240,7 +240,7 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 	
 	g_return_val_if_fail (manager, CKR_GENERAL_ERROR);
 	
-	object = gck_manager_lookup_handle (manager, handle);
+	object = gck_manager_find_by_handle (manager, handle);
 	if (object == NULL)
 		return CKR_OBJECT_HANDLE_INVALID;
 	

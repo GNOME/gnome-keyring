@@ -46,14 +46,17 @@ CK_RV                 gck_util_set_ulong                          (CK_ATTRIBUTE_
 CK_RV                 gck_util_set_string                         (CK_ATTRIBUTE_PTR attr, 
                                                                    const gchar* string);
 
+CK_RV                 gck_util_set_date                           (CK_ATTRIBUTE_PTR attr,
+                                                                   time_t when);
+
 CK_RV                 gck_util_set_data                           (CK_ATTRIBUTE_PTR attr,
-                                                                   CK_VOID_PTR value,
-                                                                   CK_ULONG n_value);
+                                                                   gconstpointer value,
+                                                                   gsize n_value);
 
 CK_RV                 gck_util_return_data                        (CK_VOID_PTR output,
                                                                    CK_ULONG_PTR n_output,
-                                                                   CK_VOID_PTR input,
-                                                                   CK_ULONG n_input);
+                                                                   gconstpointer input,
+                                                                   gsize n_input);
 
 CK_RV                 gck_util_set_mpi                            (CK_ATTRIBUTE_PTR attr, 
                                                                    gcry_mpi_t mpi);

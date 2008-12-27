@@ -36,8 +36,6 @@
  * QUARKS
  */
 
-#ifdef UNTESTED_CODE
-
 static GQuark OID_PKIX1_RSA;
 static GQuark OID_PKIX1_DSA;
 
@@ -65,7 +63,7 @@ static GQuark OID_PKCS12_PBE_RC2_40_SHA1;
 static void
 init_quarks (void)
 {
-	static gsize quarks_inited = 0;
+	static volatile gsize quarks_inited = 0;
 
 	if (g_once_init_enter (&quarks_inited)) {
 
@@ -103,8 +101,6 @@ init_quarks (void)
 		g_once_init_leave (&quarks_inited, 1);
 	}
 }
-
-#endif /* UNTESTED_CODE */
 
 /* -----------------------------------------------------------------------------
  * KEY PARSING
@@ -286,8 +282,6 @@ done:
 	return ret;	
 }
 
-#ifdef UNTESTED_CODE
-
 GckDataResult
 gck_data_der_read_public_key_dsa_parts (const guchar *keydata, gsize n_keydata,
                                         const guchar *params, gsize n_params,
@@ -338,8 +332,6 @@ done:
 		
 	return ret;	
 }
-
-#endif /* UNTESTED_CODE */
 
 #define SEXP_PRIVATE_DSA  \
 	"(private-key"   \
@@ -463,8 +455,6 @@ gck_data_der_read_public_key (const guchar *data, gsize n_data, gcry_sexp_t *s_k
 	return res;
 }
 
-#ifdef UNTESTED_CODE
-
 GckDataResult
 gck_data_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t* s_key)
 {
@@ -521,8 +511,6 @@ done:
 		
 	return ret;
 }
-
-#endif /* UNTESTED_CODE */
 
 GckDataResult
 gck_data_der_read_private_key (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
@@ -835,8 +823,6 @@ gck_data_der_write_private_key (gcry_sexp_t s_key, gsize *len)
 	}
 }
 
-#ifdef UNTESTED_CODE
-
 /* -----------------------------------------------------------------------------
  * CERTIFICATES
  */
@@ -853,10 +839,11 @@ gck_data_der_read_certificate (const guchar *data, gsize n_data, ASN1_TYPE *asn1
 
 GckDataResult
 gck_data_der_read_basic_constraints (const guchar *data, gsize n_data, 
-                                     gboolean *is_ca, guint *path_len)
+                                     gboolean *is_ca, gint *path_len)
 {
 	GckDataResult ret = GCK_DATA_UNRECOGNIZED;
 	ASN1_TYPE asn;
+	guint value;
 
 	asn = gck_data_asn1_decode ("PKIX1.BasicConstraints", data, n_data);
 	if (!asn)
@@ -865,8 +852,10 @@ gck_data_der_read_basic_constraints (const guchar *data, gsize n_data,
 	ret = GCK_DATA_FAILURE;
     
     	if (path_len) {
-    		if (!gck_data_asn1_read_uint (asn, "pathLenConstraint", path_len))
-    			goto done;
+    		if (!gck_data_asn1_read_uint (asn, "pathLenConstraint", &value))
+    			*path_len = -1;
+    		else
+    			*path_len = value;
     	}
     	
     	if (is_ca) {
@@ -885,6 +874,8 @@ done:
 		
 	return ret;
 }
+
+#ifdef UNTESTED_CODE
 
 GckDataResult
 gck_data_der_read_key_usage (const guchar *data, gsize n_data, guint *key_usage)

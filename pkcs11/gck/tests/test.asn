@@ -12,7 +12,8 @@ TestIntegers ::= SEQUENCE {
 }
 
 TestData ::= SEQUENCE {
-	data			OCTET STRING
+	data			OCTET STRING,
+	boolean                 BOOLEAN DEFAULT FALSE
 }
 
 END

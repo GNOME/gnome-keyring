@@ -162,12 +162,12 @@ virtual_slot_free (gpointer data)
 }
 
 static VirtualSlot*
-virtual_slot_new (CK_SLOT_ID slot_id)
+virtual_slot_new (GckModuleClass *klass, CK_SLOT_ID slot_id)
 {
 	VirtualSlot *slot;
 
 	slot = g_slice_new0 (VirtualSlot);
-	slot->session_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", FALSE, NULL);
+	slot->session_manager = g_object_new (klass->manager_type, "for-token", FALSE, NULL);
 	slot->logged_in = FALSE;
 	slot->sessions = NULL;
 	slot->slot_id = slot_id;
@@ -361,7 +361,7 @@ static void
 gck_module_init (GckModule *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_MODULE, GckModulePrivate);
-	self->pv->token_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", TRUE, NULL);
+	self->pv->token_manager = g_object_new (GCK_MODULE_GET_CLASS (self)->manager_type, "for-token", TRUE, NULL);
 	self->pv->sessions_by_handle = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, 
 	                                                      gck_util_ulong_free, g_object_unref);
 	self->pv->virtual_slots_by_id = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, 
@@ -458,6 +458,8 @@ gck_module_class_init (GckModuleClass *klass)
 	klass->module_info = &default_module_info;
 	klass->slot_info = &default_slot_info;
 	klass->token_info = &default_token_info;
+	klass->manager_type = GCK_TYPE_MANAGER;
+	klass->session_type = GCK_TYPE_SESSION;
 	
 	klass->parse_argument = gck_module_real_parse_argument;
 	klass->refresh_token = gck_module_real_refresh_token;
@@ -739,16 +741,16 @@ gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID slot_id, CK_FLAGS flags, C
 	/* Lookup or register the virtual slot */
 	slot = lookup_virtual_slot (self, slot_id);
 	if (slot == NULL) {
-		slot = virtual_slot_new (slot_id);
+		slot = virtual_slot_new (GCK_MODULE_GET_CLASS (self), slot_id);
 		register_virtual_slot (self, slot);
 	}
 
 	/* Make and register a new session */
 	handle = gck_module_next_handle (self);
 	read_only = !(flags & CKF_RW_SESSION);
-	session = g_object_new (GCK_TYPE_SESSION, "slot-id", slot->slot_id, "read-only", read_only, 
-	                        "handle", handle, "module", self, "manager", slot->session_manager, 
-	                        "logged-in", slot->logged_in, NULL);
+	session = g_object_new (GCK_MODULE_GET_CLASS (self)->session_type, "slot-id", slot->slot_id, 
+	                        "read-only", read_only, "handle", handle, "module", self, 
+	                        "manager", slot->session_manager, "logged-in", slot->logged_in, NULL);
 	slot->sessions = g_list_prepend (slot->sessions, session);
 	
 	/* Track the session by handle */
@@ -872,7 +874,7 @@ gck_module_C_Logout (GckModule *self, CK_SESSION_HANDLE handle)
 	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
 
 	if (!slot->logged_in)
-		return CKR_USER_ALREADY_LOGGED_IN;
+		return CKR_USER_NOT_LOGGED_IN;
 
 	return gck_module_logout_user (self, slot_id);
 }

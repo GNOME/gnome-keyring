@@ -129,6 +129,8 @@ gboolean                 gck_crypto_sexp_extract_mpi                   (gcry_sex
                                                                         gcry_mpi_t *mpi, 
                                                                         ...) G_GNUC_NULL_TERMINATED;
 
+void                     gck_crypto_sexp_dump                          (gcry_sexp_t sexp);
+
 guchar*	                 gck_crypto_rsa_pad_raw                        (guint bits, 
        	                                                                const guchar* raw,
        	                                                                gsize n_raw, 

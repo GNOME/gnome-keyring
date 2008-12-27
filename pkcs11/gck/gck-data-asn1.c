@@ -149,8 +149,6 @@ gck_data_asn1_element_length (const guchar *data, gsize n_data)
 	return -1;
 }
 
-#ifdef UNTESTED_CODE
-
 const guchar*
 gck_data_asn1_read_element (ASN1_TYPE asn, const guchar *data, gsize n_data, 
                             const gchar *part, gsize *n_element)
@@ -189,8 +187,6 @@ gck_data_asn1_read_content (ASN1_TYPE asn, const guchar *data, gsize n_data,
 	return gck_data_asn1_element_content (raw, n_raw, n_content);		
 }
 
-#endif /* UNTESTED_CODE */
-
 const guchar*
 gck_data_asn1_element_content (const guchar *data, gsize n_data, gsize *n_content)
 {
@@ -225,13 +221,10 @@ gck_data_asn1_read_value (ASN1_TYPE asn, const gchar *part, gsize *len,
 	
 	g_return_val_if_fail (asn != NULL, NULL);
 	g_return_val_if_fail (part != NULL, NULL);
-	g_return_val_if_fail (len != NULL, NULL);
 	
 	if (allocator == NULL)
 		allocator = (GkrBufferAllocator)g_realloc;
 	
-	*len = 0;
-
 	l = 0;
 	res = asn1_read_value (asn, part, NULL, &l);
 	g_return_val_if_fail (res != ASN1_SUCCESS, NULL);
@@ -241,13 +234,13 @@ gck_data_asn1_read_value (ASN1_TYPE asn, const gchar *part, gsize *len,
 	/* Always null terminate it, just for convenience */
 	buf = (allocator) (NULL, l + 1);
 	g_return_val_if_fail (buf, NULL);
-	memset (buf, 0, *len + 1);
+	memset (buf, 0, l + 1);
 	
 	res = asn1_read_value (asn, part, buf, &l);
 	if (res != ASN1_SUCCESS) {
 		(allocator) (buf, 0);
 		buf = NULL;
-	} else {
+	} else if (len) {
 		*len = l;
 	}
 	
@@ -267,8 +260,6 @@ gck_data_asn1_write_value (ASN1_TYPE asn, const gchar *part,
 	res = asn1_write_value (asn, part, (const void*)value, (int)len);
 	return res == ASN1_SUCCESS;
 }
-
-#ifdef UNTESTED_CODE
 
 gboolean
 gck_data_asn1_read_boolean (ASN1_TYPE asn, const gchar *part, gboolean *val)
@@ -290,8 +281,6 @@ gck_data_asn1_read_boolean (ASN1_TYPE asn, const gchar *part, gboolean *val)
 		
 	return TRUE;
 }
-
-#endif /* UNTESTED_CODE */
 
 gboolean
 gck_data_asn1_read_uint (ASN1_TYPE asn, const gchar *part, guint *val)
@@ -337,8 +326,6 @@ gck_data_asn1_write_uint (ASN1_TYPE asn, const gchar *part, guint32 val)
 	return res == ASN1_SUCCESS;	
 }
 
-#ifdef UNTESTED_CODE
-
 GQuark
 gck_data_asn1_read_oid (ASN1_TYPE asn, const gchar *part)
 {
@@ -350,12 +337,16 @@ gck_data_asn1_read_oid (ASN1_TYPE asn, const gchar *part)
 	if (!buf)
 		return 0;
 		
-	/* TODO: This should probably just 'try' */
-	quark = g_quark_from_string ((gchar*)buf);
+	quark = g_quark_try_string ((gchar*)buf);
 	g_free (buf);
+	
+	if (quark == 0)
+		quark = g_quark_from_static_string ("0.UNKNOWN.OID");
 	
 	return quark;
 }
+
+#ifdef UNTESTED_CODE
 
 gboolean
 gck_data_asn1_write_oid (ASN1_TYPE asn, const gchar *part, GQuark val)
@@ -750,8 +741,6 @@ gck_data_asn1_parse_general_time (const gchar *time)
 	return result;
 }
 
-#ifdef UNTESTED_CODE
-
 gboolean
 gck_data_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
 {
@@ -794,4 +783,311 @@ gck_data_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
 	return TRUE;	
 }
 
-#endif /* UNTESTED_CODE */
+
+/* -------------------------------------------------------------------------------
+ * Reading DN's
+ */
+
+typedef struct _PrintableOid {
+	GQuark oid;
+	const gchar *oidstr;
+	const gchar *display;
+	gboolean is_choice;
+} PrintableOid;
+
+static PrintableOid printable_oids[] = {
+	{ 0, "0.9.2342.19200300.100.1.25", "DC", FALSE },
+	{ 0, "0.9.2342.19200300.100.1.1", "UID", TRUE },
+
+	{ 0, "1.2.840.113549.1.9.1", "EMAIL", FALSE },
+	{ 0, "1.2.840.113549.1.9.7", NULL, TRUE },
+	{ 0, "1.2.840.113549.1.9.20", NULL, FALSE },
+	
+	{ 0, "1.3.6.1.5.5.7.9.1", "dateOfBirth", FALSE },
+	{ 0, "1.3.6.1.5.5.7.9.2", "placeOfBirth", FALSE },
+	{ 0, "1.3.6.1.5.5.7.9.3", "gender", FALSE },
+        { 0, "1.3.6.1.5.5.7.9.4", "countryOfCitizenship", FALSE },
+        { 0, "1.3.6.1.5.5.7.9.5", "countryOfResidence", FALSE },
+
+	{ 0, "2.5.4.3", "CN", TRUE },
+	{ 0, "2.5.4.4", "surName", TRUE },
+	{ 0, "2.5.4.5", "serialNumber", FALSE },
+	{ 0, "2.5.4.6", "C", FALSE, },
+	{ 0, "2.5.4.7", "L", TRUE },
+	{ 0, "2.5.4.8", "ST", TRUE },
+	{ 0, "2.5.4.9", "STREET", TRUE },
+	{ 0, "2.5.4.10", "O", TRUE },
+	{ 0, "2.5.4.11", "OU", TRUE },
+	{ 0, "2.5.4.12", "T", TRUE },
+	{ 0, "2.5.4.20", "telephoneNumber", FALSE },
+	{ 0, "2.5.4.42", "givenName", TRUE },
+	{ 0, "2.5.4.43", "initials", TRUE },
+	{ 0, "2.5.4.44", "generationQualifier", TRUE },
+	{ 0, "2.5.4.46", "dnQualifier", FALSE },
+	{ 0, "2.5.4.65", "pseudonym", TRUE },
+
+	{ 0, NULL, NULL, FALSE }
+};
+
+static void
+init_printable_oids (void)
+{
+	static volatile gsize inited_oids = 0;
+	int i;
+	
+	if (g_once_init_enter (&inited_oids)) {
+		for (i = 0; printable_oids[i].oidstr != NULL; ++i)
+			printable_oids[i].oid = g_quark_from_static_string (printable_oids[i].oidstr);
+		g_once_init_leave (&inited_oids, 1);
+	}
+}
+
+static PrintableOid*
+dn_find_printable (GQuark oid)
+{
+	int i;
+	
+	g_return_val_if_fail (oid != 0, NULL);
+	
+	for (i = 0; printable_oids[i].oidstr != NULL; ++i) {
+		if (printable_oids[i].oid == oid)
+			return &printable_oids[i];
+	}
+	
+	return NULL;
+}
+
+static const char HEXC[] = "0123456789ABCDEF";
+
+static gchar*
+dn_print_hex_value (const guchar *data, gsize len)
+{
+	GString *result = g_string_sized_new (len * 2 + 1);
+	gsize i;
+	
+	g_string_append_c (result, '#');
+	for (i = 0; i < len; ++i) {
+		g_string_append_c (result, HEXC[data[i] >> 4 & 0xf]);
+		g_string_append_c (result, HEXC[data[i] & 0xf]);
+	}
+	
+	return g_string_free (result, FALSE);
+}
+
+static gchar* 
+dn_print_oid_value_parsed (PrintableOid *printable, guchar *data, gsize len)
+{
+	const gchar *asn_name;
+	ASN1_TYPE asn1;
+	gchar *part;
+	gchar *value;
+	
+	g_assert (printable);
+	g_assert (data);
+	g_assert (len);
+	g_assert (printable->oid);
+	
+	asn_name = asn1_find_structure_from_oid (gck_data_asn1_get_pkix_asn1type (), 
+	                                         printable->oidstr);
+	g_return_val_if_fail (asn_name, NULL);
+	
+	part = g_strdup_printf ("PKIX1.%s", asn_name);
+	asn1 = gck_data_asn1_decode (part, data, len);
+	g_free (part);
+	
+	if (!asn1) {
+		g_message ("couldn't decode value for OID: %s", printable->oidstr);
+		return NULL;
+	}
+
+	value = (gchar*)gck_data_asn1_read_value (asn1, "", NULL, NULL);
+	
+	/*
+	 * If it's a choice element, then we have to read depending
+	 * on what's there.
+	 */
+	if (value && printable->is_choice) {
+		if (strcmp ("printableString", value) == 0 ||
+		    strcmp ("ia5String", value) == 0 ||
+		    strcmp ("utf8String", value) == 0 ||
+		    strcmp ("teletexString", value) == 0) {
+			part = value;
+			value = (gchar*)gck_data_asn1_read_value (asn1, part, NULL, NULL);
+			g_free (part);
+		} else {
+			g_free (value);
+			return NULL;
+		}
+	}
+
+	if (!value) {
+		g_message ("couldn't read value for OID: %s", printable->oidstr);
+		return NULL;
+	}
+
+	/* 
+	 * Now we make sure it's UTF-8. 
+	 */
+	if (!g_utf8_validate (value, -1, NULL)) {
+		gchar *hex = dn_print_hex_value ((guchar*)value, strlen (value));
+		g_free (value);
+		value = hex;
+	}
+	
+	return value;
+}
+
+static gchar*
+dn_print_oid_value (PrintableOid *printable, guchar *data, gsize len)
+{
+	gchar *value;
+	
+	g_assert (data);
+	g_assert (len);
+	
+	if (printable) {
+		value = dn_print_oid_value_parsed (printable, data, len);
+		if (value != NULL)
+			return value;
+	}
+	
+	return dn_print_hex_value (data, len);
+}
+
+static gchar* 
+dn_parse_rdn (ASN1_TYPE asn, const gchar *part)
+{
+	PrintableOid *printable;
+	GQuark oid;
+	gchar *path;
+	guchar *value;
+	gsize n_value;
+	gchar *display;
+	gchar *result;
+	
+	g_assert (asn);
+	g_assert (part);
+	
+	path = g_strdup_printf ("%s.type", part);
+	oid = gck_data_asn1_read_oid (asn, path);
+	g_free (path);
+
+	if (!oid)
+		return NULL;
+	
+	path = g_strdup_printf ("%s.value", part);
+	value = gck_data_asn1_read_value (asn, path, &n_value, NULL);
+	g_free (path);
+
+	printable = dn_find_printable (oid);
+	
+	g_return_val_if_fail (value, NULL);
+	display = dn_print_oid_value (printable, value, n_value);
+	
+	result = g_strconcat (printable ? printable->display : g_quark_to_string (oid), 
+			      "=", display, NULL);
+	g_free (display);
+	
+	return result;
+}
+
+gchar*
+gck_data_asn1_read_dn (ASN1_TYPE asn, const gchar *part)
+{
+	gboolean done = FALSE;
+	GString *result;
+	gchar *path;
+	gchar *rdn;
+	gint i, j;
+	
+	g_return_val_if_fail (asn, NULL);
+	g_return_val_if_fail (part, NULL);
+	
+	init_printable_oids ();
+	
+	result = g_string_sized_new (64);
+	
+	/* Each (possibly multi valued) RDN */
+	for (i = 1; !done; ++i) {
+		
+		/* Each type=value pair of an RDN */
+		for (j = 1; TRUE; ++j) {
+			path = g_strdup_printf ("%s%s?%u.?%u", part ? part : "", 
+			                        part ? "." : "", i, j);
+			rdn = dn_parse_rdn (asn, path);
+			g_free (path);
+
+			if (!rdn) {
+				done = j == 1;
+				break;
+			}
+			
+			/* Account for multi valued RDNs */
+			if (j > 1)
+				g_string_append (result, "+");
+			else if (i > 1)
+				g_string_append (result, ", ");
+			
+			g_string_append (result, rdn);
+			g_free (rdn);
+		}
+	}
+
+	/* Returns null when string is empty */
+	return g_string_free (result, (result->len == 0));
+}
+
+gchar*
+gck_data_asn1_read_dn_part (ASN1_TYPE asn, const gchar *part, const gchar *match)
+{
+	PrintableOid *printable;
+	gboolean done = FALSE;
+	guchar *value;
+	gsize n_value;
+	gchar *path;
+	GQuark oid;
+	gint i, j;
+	
+	g_return_val_if_fail (asn, NULL);
+	g_return_val_if_fail (part, NULL);
+	g_return_val_if_fail (match, NULL);
+	
+	init_printable_oids ();
+	
+	/* Each (possibly multi valued) RDN */
+	for (i = 1; !done; ++i) {
+		
+		/* Each type=value pair of an RDN */
+		for (j = 1; TRUE; ++j) {
+			path = g_strdup_printf ("%s%s?%u.?%u.type", 
+			                        part ? part : "", 
+			                        part ? "." : "", i, j);
+			oid = gck_data_asn1_read_oid (asn, path);
+			g_free (path);
+
+			if (!oid) {
+				done = j == 1;
+				break;
+			}
+			
+			/* Does it match either the OID or the displayable? */
+			if (g_ascii_strcasecmp (g_quark_to_string (oid), match) != 0) {
+				printable = dn_find_printable (oid);
+				if (!printable || !printable->display || 
+				    !g_ascii_strcasecmp (printable->display, match) == 0)
+					continue;
+			}
+
+			path = g_strdup_printf ("%s%s?%u.?%u.value", 
+			                        part ? part : "", 
+			                        part ? "." : "", i, j);
+			value = gck_data_asn1_read_value (asn, path, &n_value, NULL);
+			g_free (path);
+			
+			g_return_val_if_fail (value, NULL);
+			return dn_print_oid_value (printable, value, n_value);
+		}
+	}
+	
+	return NULL;
+}
