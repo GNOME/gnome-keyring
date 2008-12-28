@@ -1,5 +1,10 @@
 2008-12-27  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/Makefile.am: Fix problem building roots component
+	when not included in build.
+	
+2008-12-27  Stef Walter  <stef@memberwebs.com>
+
 	* gp11/gp11.h:
 	* gp11/gp11-call.c:
 	* gp11/gp11-marshal.list:
