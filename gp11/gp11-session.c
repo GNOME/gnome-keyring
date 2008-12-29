@@ -29,6 +29,8 @@
 
 #include <string.h>
 
+#include <glib/gi18n.h>
+
 enum {
 	DISCARD_HANDLE,
 	LAST_SIGNAL
@@ -45,12 +47,17 @@ typedef struct _GP11SessionData {
 	GP11Slot *slot;
 	GP11Module *module;
 	CK_SESSION_HANDLE handle;
-	gint discarded;
 } GP11SessionData;
 
 typedef struct _GP11SessionPrivate {
+
+	/* Remain same from init to finalize */
 	GP11SessionData data;
-	/* Add mutex and future MT-unsafe members here */
+
+	/* Modified atomically */
+	gint discarded;
+	gint auto_login;
+	
 } GP11SessionPrivate;
 
 #define GP11_SESSION_GET_DATA(o) \
@@ -59,6 +66,43 @@ typedef struct _GP11SessionPrivate {
 G_DEFINE_TYPE (GP11Session, gp11_session, G_TYPE_OBJECT);
 
 static guint signals[LAST_SIGNAL] = { 0 };
+
+/* ----------------------------------------------------------------------------
+ * HELPERS
+ */
+
+static GP11SessionPrivate*
+lock_private (gpointer obj)
+{
+	GP11SessionPrivate *pv;
+	GP11Session *self;
+	
+	g_return_val_if_fail (GP11_IS_SESSION (obj), NULL);
+	self = GP11_SESSION (obj);
+	
+	g_object_ref (self);
+	
+	pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GP11_TYPE_SESSION, GP11SessionPrivate);
+	/* g_static_mutex_lock (&pv->mutex); */
+	
+	return pv;
+}
+
+static void
+unlock_private (gpointer obj, GP11SessionPrivate *pv)
+{
+	GP11Session *self;
+
+	g_assert (pv);
+	g_assert (GP11_IS_SESSION (obj));
+	
+	self = GP11_SESSION (obj);
+	
+	g_assert (G_TYPE_INSTANCE_GET_PRIVATE (self, GP11_TYPE_SESSION, GP11SessionPrivate) == pv);
+	
+	/* g_static_mutex_unlock (&pv->mutex); */
+	g_object_unref (self);
+}
 
 /* ----------------------------------------------------------------------------
  * OBJECT
@@ -92,7 +136,7 @@ gp11_session_real_discard_handle (GP11Session *self, CK_OBJECT_HANDLE handle)
 static void
 gp11_session_init (GP11Session *self)
 {
-
+	
 }
 
 static void
@@ -143,25 +187,31 @@ gp11_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 static void
 gp11_session_dispose (GObject *obj)
 {
-	GP11SessionData *data = GP11_SESSION_GET_DATA (obj);
+	GP11SessionPrivate *pv;
 	GP11Session *self = GP11_SESSION (obj);
 	gboolean handled;
 	gint discarded;
 
 	g_return_if_fail (GP11_IS_SESSION (self));
 	
-	discarded = g_atomic_int_get (&data->discarded);
-	if (!discarded && g_atomic_int_compare_and_exchange (&data->discarded, discarded, 1)) {
+	pv = lock_private (obj);
 	
-		/* 
-		 * Let the world know that we're discarding the session 
-		 * handle. This allows session reuse to work.
-		 */
+	{
+		discarded = g_atomic_int_get (&pv->discarded);
+		if (!discarded && g_atomic_int_compare_and_exchange (&pv->discarded, discarded, 1)) {
+	
+			/* 
+			 * Let the world know that we're discarding the session 
+			 * handle. This allows session reuse to work.
+			 */
 		
-		g_signal_emit_by_name (self, "discard-handle", data->handle, &handled);
-		g_return_if_fail (handled);
+			g_signal_emit_by_name (self, "discard-handle", pv->data.handle, &handled);
+			g_return_if_fail (handled);
+		}
 
 	}
+	
+	unlock_private (obj, pv);
 
 	G_OBJECT_CLASS (gp11_session_parent_class)->dispose (obj);
 }
@@ -169,9 +219,10 @@ gp11_session_dispose (GObject *obj)
 static void
 gp11_session_finalize (GObject *obj)
 {
+	GP11SessionPrivate *pv = G_TYPE_INSTANCE_GET_PRIVATE (obj, GP11_TYPE_SESSION, GP11SessionPrivate);
 	GP11SessionData *data = GP11_SESSION_GET_DATA (obj);
 
-	g_assert (data->discarded != 0);
+	g_assert (pv->discarded != 0);
 	
 	if (data->slot)
 		g_object_unref (data->slot);
@@ -421,7 +472,7 @@ gp11_session_login_full (GP11Session *self, gulong user_type, const guchar *pin,
                          gsize n_pin, GCancellable *cancellable, GError **err)
 {
 	Login args = { GP11_ARGUMENTS_INIT, user_type, (guchar*)pin, n_pin };
-	return _gp11_call_sync (self, perform_login, &args, cancellable, err);
+	return _gp11_call_sync (self, perform_login, NULL, &args, cancellable, err);
 	
 }
 
@@ -443,7 +494,7 @@ gp11_session_login_async (GP11Session *self, gulong user_type, const guchar *pin
                           gsize n_pin, GCancellable *cancellable, GAsyncReadyCallback callback,
                           gpointer user_data)
 {
-	Login* args = _gp11_call_async_prep (self, self, perform_login, sizeof (*args), free_login);
+	Login* args = _gp11_call_async_prep (self, self, perform_login, NULL, sizeof (*args), free_login);
 	
 	args->user_type = user_type;
 	args->pin = pin && n_pin ? g_memdup (pin, n_pin) : NULL;
@@ -509,7 +560,7 @@ gboolean
 gp11_session_logout_full (GP11Session *self, GCancellable *cancellable, GError **err)
 {
 	GP11Arguments args = GP11_ARGUMENTS_INIT;
-	return _gp11_call_sync (self, perform_logout, &args, cancellable, err);	
+	return _gp11_call_sync (self, perform_logout, NULL, &args, cancellable, err);	
 }
 
 /**
@@ -526,7 +577,7 @@ void
 gp11_session_logout_async (GP11Session *self, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
-	GP11Arguments *args = _gp11_call_async_prep (self, self, perform_logout, 0, NULL);
+	GP11Arguments *args = _gp11_call_async_prep (self, self, perform_logout, NULL, 0, NULL);
 	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
@@ -640,7 +691,7 @@ gp11_session_create_object_full (GP11Session *self, GP11Attributes *attrs,
 {
 	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
 	CreateObject args = { GP11_ARGUMENTS_INIT, attrs, 0 };
-	if (!_gp11_call_sync (self, perform_create_object, &args, cancellable, err))
+	if (!_gp11_call_sync (self, perform_create_object, NULL, &args, cancellable, err))
 		return NULL;
 	return gp11_object_from_handle (data->slot, args.object);
 }
@@ -662,7 +713,7 @@ gp11_session_create_object_async (GP11Session *self, GP11Attributes *attrs,
                                   gpointer user_data)
 {
 	CreateObject *args = _gp11_call_async_prep (self, self, perform_create_object, 
-	                                            sizeof (*args), free_create_object);
+	                                            NULL, sizeof (*args), free_create_object);
 	args->attrs = attrs;
 	gp11_attributes_ref (attrs);
 	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
@@ -844,7 +895,7 @@ gp11_session_find_objects_full (GP11Session *self, GP11Attributes *attrs,
 	FindObjects args = { GP11_ARGUMENTS_INIT, attrs, NULL, 0 };
 	GList *results = NULL;
 	
-	if (_gp11_call_sync (self, perform_find_objects, &args, cancellable, err)) 
+	if (_gp11_call_sync (self, perform_find_objects, NULL, &args, cancellable, err)) 
 		results = objlist_from_handles (self, args.objects, args.n_objects);
 	g_free (args.objects);
 	return results;
@@ -867,7 +918,7 @@ gp11_session_find_objects_async (GP11Session *self, GP11Attributes *attrs,
                                  gpointer user_data)
 {
 	FindObjects *args = _gp11_call_async_prep (self, self, perform_find_objects, 
-	                                           sizeof (*args), free_find_objects);
+	                                           NULL, sizeof (*args), free_find_objects);
 	args->attrs = attrs;
 	gp11_attributes_ref (attrs);
 	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
@@ -894,14 +945,186 @@ gp11_session_find_objects_finish (GP11Session *self, GAsyncResult *result, GErro
 	return objlist_from_handles (self, args->objects, args->n_objects);
 }
 
+/* --------------------------------------------------------------------------------------------------
+ * AUTHENTICATE 
+ */
 
-#if UNTESTED 
+typedef enum _AuthenticateState {
+	AUTHENTICATE_NONE,
+	AUTHENTICATE_CAN,
+	AUTHENTICATE_WANT,
+	AUTHENTICATE_PERFORM
+} AuthenticateState;
 
-/* ENCRYPT */
+typedef struct _Authenticate {
+	AuthenticateState state;
+	gboolean protected_auth;
+	GP11Slot *slot;
+	GP11Object *object;
+	gchar *label;
+	gchar *password;
+} Authenticate;
 
+static CK_RV
+authenticate_perform (Authenticate *args, GP11Arguments *base)
+{
+	CK_ATTRIBUTE attributes[2];
+	CK_OBJECT_HANDLE handle;
+	CK_ULONG pin_len;
+	CK_BBOOL bvalue;
+	CK_RV rv;
+	
+	g_assert (args);
+	g_assert (base);
+	
+	switch (args->state) {
+	
+	/* 
+	 * Cannot authenticate for whatever reason, perhaps not 
+	 * enabled, or failed incomprehensibly etc. 
+	 * 
+	 */
+	case AUTHENTICATE_NONE:
+		return CKR_OK;
+	
+	/* 
+	 * Can authenticate but haven't seen if we should, yet 
+	 * check out the object in question. 
+	 */
+	case AUTHENTICATE_CAN:
+		
+		handle = gp11_object_get_handle (args->object);
+		
+		attributes[0].type = CKA_LABEL;
+		attributes[0].pValue = NULL;
+		attributes[0].ulValueLen = 0;
+		attributes[1].type = CKA_ALWAYS_AUTHENTICATE;
+		attributes[1].pValue = &bvalue;
+		attributes[1].ulValueLen = sizeof (bvalue);
+		
+		rv = (base->pkcs11->C_GetAttributeValue) (base->handle, handle, attributes, 2);
+		if (rv == CKR_ATTRIBUTE_TYPE_INVALID)
+			bvalue = CK_FALSE;
+		else if (rv != CKR_OK)
+			return rv;
+		
+		/* No authentication needed, on this object */
+		if (bvalue != CK_TRUE) {
+			args->state = AUTHENTICATE_NONE;
+			return CKR_OK;
+		}
+		
+		/* Protected authentication path, just go to perform */
+		if (args->protected_auth) {
+			args->state = AUTHENTICATE_PERFORM;
+			do {
+				rv = authenticate_perform (args, base);
+			} while (rv == CKR_PIN_INCORRECT);
+			return rv;
+		}
+
+		/* Get the label for a prompt */
+		g_assert (!args->label);
+		if (attributes[0].ulValueLen) {
+			attributes[0].pValue = g_malloc0 (attributes[0].ulValueLen + 1);
+			rv = (base->pkcs11->C_GetAttributeValue) (base->handle, handle, attributes, 2);
+			if (rv == CKR_OK) {
+				g_assert (!args->label);
+				args->label = attributes[0].pValue;
+				args->label[attributes[0].ulValueLen] = 0;
+			} else {
+				g_free (attributes[0].pValue);
+			}
+		}
+		
+		/* Need a password */
+		args->state = AUTHENTICATE_WANT;
+		return CKR_USER_NOT_LOGGED_IN; 
+
+	/*
+	 * This state should be handled in verify_authenticate.
+	 */
+	case AUTHENTICATE_WANT:
+		g_assert (FALSE);
+		return CKR_GENERAL_ERROR;
+	
+	/* 
+	 * Do the actual login authentication. 
+	 */
+	case AUTHENTICATE_PERFORM:
+		pin_len = args->password ? strlen (args->password) : 0; 
+		rv = (base->pkcs11->C_Login) (base->handle, CKU_CONTEXT_SPECIFIC, 
+		                              (CK_UTF8CHAR_PTR)args->password, pin_len);
+		if (rv == CKR_PIN_INCORRECT) 
+			args->state = AUTHENTICATE_WANT;
+		else
+			args->state = AUTHENTICATE_NONE;
+		return rv;
+		
+	default:
+		g_assert_not_reached ();
+		return CKR_GENERAL_ERROR;
+	}
+}
+
+static gboolean
+authenticate_complete (Authenticate *auth, GP11Arguments *base, CK_RV result)
+{
+	g_assert (auth);
+	g_assert (base);
+	
+	/* We're done here if not in this state */
+	if (auth->state == AUTHENTICATE_WANT) {
+
+		g_assert (GP11_IS_SLOT (auth->slot));
+		g_assert (GP11_IS_OBJECT (auth->object));
+
+		g_free (auth->password);
+		auth->password = NULL;
+	
+		if (_gp11_slot_fire_authenticate_object (auth->slot, auth->object, auth->label, &auth->password)) {
+			auth->state = AUTHENTICATE_PERFORM;
+			return FALSE; /* Want to continue processing this call */
+		}
+	}
+
+	/* Free up various memory */
+	if (auth->slot)
+		g_object_unref (auth->slot);
+	if (auth->object)
+		g_object_unref (auth->object);
+	g_free (auth->label);
+	g_free (auth->password);
+	
+	/* The call is complete */
+	return TRUE;
+}
+
+static void
+authenticate_init (Authenticate *auth, GP11Slot *slot, GP11Object *object)
+{
+	g_assert (GP11_IS_SLOT (slot));
+	g_assert (GP11_IS_OBJECT (object));
+	
+	if (gp11_slot_get_auto_login (slot)) {
+		auth->state = AUTHENTICATE_CAN;
+		auth->protected_auth = _gp11_slot_is_protected_auth_path (slot);
+		auth->slot = g_object_ref (slot);
+		auth->object = g_object_ref (object);
+	} else {
+		auth->state = AUTHENTICATE_NONE;
+	}
+}
+
+/* --------------------------------------------------------------------------------------------------
+ * COMMON CRYPTO ROUTINES 
+ */
 
 typedef struct _Crypt {
 	GP11Arguments base;
+	
+	/* Authenticator */
+	Authenticate auth;
 	
 	/* Functions to call */
 	CK_C_EncryptInit init_func;
@@ -916,15 +1139,8 @@ typedef struct _Crypt {
 	/* Output */
 	guchar *result;
 	CK_ULONG n_result;
+	
 } Crypt;
-
-static void
-free_crypt (Crypt *args)
-{
-	g_free (args->input);
-	g_free (args->mech.pParameter);
-	g_free (args->result);
-}
 
 static CK_RV
 perform_crypt (Crypt *args)
@@ -942,6 +1158,10 @@ perform_crypt (Crypt *args)
 	if (rv != CKR_OK)
 		return rv;
 	
+	rv = authenticate_perform (&args->auth, &args->base);
+	if (rv != CKR_OK)
+		return rv;
+	
 	/* Get the length of the result */
 	rv = (args->complete_func) (args->base.handle, args->input, args->n_input, NULL, &args->n_result);
 	if (rv != CKR_OK)
@@ -952,13 +1172,33 @@ perform_crypt (Crypt *args)
 	return (args->complete_func) (args->base.handle, args->input, args->n_input, args->result, &args->n_result);
 }
 
+static gboolean
+complete_crypt (Crypt *args, CK_RV result)
+{
+	if (!authenticate_complete (&args->auth, &args->base, result))
+		return FALSE;
+	
+	/* Call is complete */
+	return TRUE;
+}
+
+static void
+free_crypt (Crypt *args)
+{
+	g_free (args->input);
+	g_free (args->mech.pParameter);
+	g_free (args->result);
+	g_free (args);
+}
+
 static guchar*
 crypt_sync (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const guchar *input, 
             gsize n_input, gsize *n_result, GCancellable *cancellable, GError **err,
             CK_C_EncryptInit init_func, CK_C_Encrypt complete_func)
 {
 	Crypt args;
-	
+	GP11Slot *slot;
+
 	g_return_val_if_fail (GP11_IS_OBJECT (key), NULL);
 	g_return_val_if_fail (mech_args, NULL);
 	g_return_val_if_fail (init_func, NULL);
@@ -979,11 +1219,16 @@ crypt_sync (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const 
 	args.init_func = init_func;
 	args.complete_func = complete_func;
 	
-	if (!_gp11_call_sync (self, perform_crypt, &args, cancellable, err)) {
+	slot = gp11_session_get_slot (self);
+	authenticate_init (&args.auth, slot, key);
+	g_object_unref (slot);
+	
+	if (!_gp11_call_sync (self, perform_crypt, complete_crypt, &args, cancellable, err)) {
 		g_free (args.result);
 		return NULL;
 	}
 	
+	*n_result = args.n_result;
 	return args.result;
 }
 
@@ -992,7 +1237,8 @@ crypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const
              gsize n_input, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data,
              CK_C_EncryptInit init_func, CK_C_Encrypt complete_func)
 {
-	Crypt *args = _gp11_call_async_prep (self, self, perform_crypt, sizeof (*args), free_crypt);
+	Crypt *args = _gp11_call_async_prep (self, self, perform_crypt, complete_crypt, sizeof (*args), free_crypt);
+	GP11Slot *slot;
 
 	g_return_if_fail (GP11_IS_OBJECT (key));
 	g_return_if_fail (mech_args);
@@ -1013,7 +1259,11 @@ crypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const
 	args->init_func = init_func;
 	args->complete_func = complete_func;
 	
-	_gp11_call_async_go (args, cancellable, callback, user_data);
+	slot = gp11_session_get_slot (self);
+	authenticate_init (&args->auth, slot, key);
+	g_object_unref (slot);
+	
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
 static guchar*
@@ -1022,7 +1272,7 @@ crypt_finish (GP11Session *self, GAsyncResult *result, gsize *n_result, GError *
 	Crypt *args;
 	guchar *res;
 	
-	if (!_gp11_call_basic_finish (self, result, err))
+	if (!_gp11_call_basic_finish (result, err))
 		return NULL;
 	args = _gp11_call_arguments (result, Crypt);
 	
@@ -1034,6 +1284,10 @@ crypt_finish (GP11Session *self, GAsyncResult *result, gsize *n_result, GError *
 	
 	return res;
 }
+
+/* --------------------------------------------------------------------------------------------------
+ * ENCRYPT
+ */
 
 guchar*
 gp11_session_encrypt (GP11Session *self, GP11Object *key, gulong mech, const guchar *input, 
@@ -1049,13 +1303,17 @@ gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
                            GCancellable *cancellable, GError **err)
 {
 	GP11Module *module = NULL;
+	CK_FUNCTION_LIST_PTR funcs;
 	guchar *ret;
 	
 	g_object_get (self, "module", &module, NULL);
 	g_return_val_if_fail (module != NULL, NULL);
+	
+	funcs = gp11_module_get_function_list (module);
+	g_return_val_if_fail (module != NULL, NULL);
 
 	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err, 
-	                  module->funcs->C_EncryptInit, module->funcs->C_Encrypt);
+	                  funcs->C_EncryptInit, funcs->C_Encrypt);
 	
 	g_object_unref (module);
 	return ret;
@@ -1067,11 +1325,16 @@ gp11_session_encrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *m
                             GAsyncReadyCallback callback, gpointer user_data)
 {
 	GP11Module *module = NULL;
+	CK_FUNCTION_LIST_PTR funcs;
+	
 	g_object_get (self, "module", &module, NULL);
 	g_return_if_fail (module != NULL);
 
+	funcs = gp11_module_get_function_list (module);
+	g_return_if_fail (module != NULL);
+
 	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,
-	             module->funcs->C_EncryptInit, module->funcs->C_Encrypt);
+	             funcs->C_EncryptInit, funcs->C_Encrypt);
 	
 	g_object_unref (module);
 }
@@ -1082,6 +1345,10 @@ gp11_session_encrypt_finish (GP11Session *self, GAsyncResult *result, gsize *n_r
 {
 	return crypt_finish (self, result, n_result, err);
 }
+
+/* --------------------------------------------------------------------------------------------------
+ * DECRYPT
+ */
 
 guchar*
 gp11_session_decrypt (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input,
@@ -1097,13 +1364,17 @@ gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
                            GCancellable *cancellable, GError **err)
 {
 	GP11Module *module = NULL;
+	CK_FUNCTION_LIST_PTR funcs;
 	guchar *ret;
 	
 	g_object_get (self, "module", &module, NULL);
 	g_return_val_if_fail (module != NULL, NULL);
+	
+	funcs = gp11_module_get_function_list (module);
+	g_return_val_if_fail (module != NULL, NULL);
 
 	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err,
-	                  module->funcs->C_DecryptInit, module->funcs->C_Decrypt);
+	                  funcs->C_DecryptInit, funcs->C_Decrypt);
 	g_object_unref (module);
 	return ret;
 }
@@ -1114,11 +1385,16 @@ gp11_session_decrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *m
                             GAsyncReadyCallback callback, gpointer user_data)
 {
 	GP11Module *module = NULL;
+	CK_FUNCTION_LIST_PTR funcs;
+	
 	g_object_get (self, "module", &module, NULL);
+	g_return_if_fail (module != NULL);
+	
+	funcs = gp11_module_get_function_list (module);
 	g_return_if_fail (module != NULL);
 
 	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,
-	             module->funcs->C_DecryptInit, module->funcs->C_Decrypt);
+	             funcs->C_DecryptInit, funcs->C_Decrypt);
 	g_object_unref (module);
 }
 
@@ -1128,6 +1404,10 @@ gp11_session_decrypt_finish (GP11Session *self, GAsyncResult *result,
 {
 	return crypt_finish (self, result, n_result, err);
 }
+
+/* --------------------------------------------------------------------------------------------------
+ * SIGN
+ */
 
 guchar*
 gp11_session_sign (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input, 
@@ -1143,13 +1423,17 @@ gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_
                         GCancellable *cancellable, GError **err)
 {
 	GP11Module *module = NULL;
+	CK_FUNCTION_LIST_PTR funcs;
 	guchar *ret;
 	
 	g_object_get (self, "module", &module, NULL);
 	g_return_val_if_fail (module != NULL, NULL);
+	
+	funcs = gp11_module_get_function_list (module);
+	g_return_val_if_fail (module != NULL, NULL);
 
-	return crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err,
-	                   module->funcs->C_SignInit, module->funcs->C_Sign);
+	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err,
+	                  funcs->C_SignInit, funcs->C_Sign);
 	g_object_unref (module);
 	return ret;
 }
@@ -1160,11 +1444,16 @@ gp11_session_sign_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech
                          GAsyncReadyCallback callback, gpointer user_data)
 {
 	GP11Module *module = NULL;
+	CK_FUNCTION_LIST_PTR funcs;
+	
 	g_object_get (self, "module", &module, NULL);
+	g_return_if_fail (module != NULL);
+	
+	funcs = gp11_module_get_function_list (module);
 	g_return_if_fail (module != NULL);
 
 	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,
-	             module->funcs->C_SignInit, module->funcs->C_Sign);
+	             funcs->C_SignInit, funcs->C_Sign);
 	g_object_unref (module);
 }
 
@@ -1175,10 +1464,16 @@ gp11_session_sign_finish (GP11Session *self, GAsyncResult *result,
 	return crypt_finish (self, result, n_result, err);	
 }
 
+/* --------------------------------------------------------------------------------------------------
+ * VERIFY
+ */
 
 typedef struct _Verify {
 	GP11Arguments base;
 	
+	/* Authenticator */
+	Authenticate auth;
+
 	/* Input */
 	CK_OBJECT_HANDLE key;
 	CK_MECHANISM mech;
@@ -1188,14 +1483,6 @@ typedef struct _Verify {
 	CK_ULONG n_signature;
 	
 } Verify;
-
-static void
-free_verify (Verify *args)
-{
-	g_free (args->input);
-	g_free (args->signature);
-	g_free (args->mech.pParameter);
-}
 
 static CK_RV
 perform_verify (Verify *args)
@@ -1207,9 +1494,32 @@ perform_verify (Verify *args)
 	if (rv != CKR_OK)
 		return rv;
 	
+	rv = authenticate_perform (&args->auth, &args->base);
+	if (rv != CKR_OK)
+		return rv;
+	
 	/* Do the actual verify */
 	return (args->base.pkcs11->C_Verify) (args->base.handle, args->input, args->n_input, 
 	                                      args->signature, args->n_signature);
+}
+
+static gboolean
+complete_verify (Verify *args, CK_RV result)
+{
+	if (!authenticate_complete (&args->auth, &args->base, result))
+		return FALSE;
+	
+	/* Call is complete */
+	return TRUE;
+}
+
+static void
+free_verify (Verify *args)
+{
+	g_free (args->input);
+	g_free (args->signature);
+	g_free (args->mech.pParameter);
+	g_free (args);
 }
 
 gboolean
@@ -1227,6 +1537,7 @@ gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mec
                           gsize n_signature, GCancellable *cancellable, GError **err)
 {
 	Verify args;
+	GP11Slot *slot;
 	
 	g_return_val_if_fail (GP11_IS_OBJECT (key), FALSE);
 	g_return_val_if_fail (mech_args, FALSE);
@@ -1244,8 +1555,12 @@ gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mec
 	args.n_input = n_input;
 	args.signature = (guchar*)signature;
 	args.n_signature = n_signature;
+	
+	slot = gp11_session_get_slot (self);
+	authenticate_init (&args.auth, slot, key);
+	g_object_unref (slot);
 
-	return _gp11_call_sync (self, perform_verify, &args, cancellable, err);
+	return _gp11_call_sync (self, perform_verify, complete_verify, &args, cancellable, err);
 }
 
 void
@@ -1254,8 +1569,9 @@ gp11_session_verify_async (GP11Session *self, GP11Object *key, GP11Mechanism *me
                            gsize n_signature, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
-	Verify *args = _gp11_call_async_prep (self, self, perform_verify, sizeof (*args), free_verify);
-
+	Verify *args = _gp11_call_async_prep (self, self, perform_verify, complete_verify, sizeof (*args), free_verify);
+	GP11Slot *slot;
+	
 	g_return_if_fail (GP11_IS_OBJECT (key));
 	g_return_if_fail (mech_args);
 	
@@ -1270,15 +1586,18 @@ gp11_session_verify_async (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	args->input = input && n_input ? g_memdup (input, n_input) : NULL;
 	args->n_input = n_input;
 	args->signature = signature && n_signature ? g_memdup (signature, n_signature) : NULL;
-	args->n_input = n_signature;
+	args->n_signature = n_signature;
 	
-	_gp11_call_async_go (args, cancellable, callback, user_data);
+	slot = gp11_session_get_slot (self);
+	authenticate_init (&args->auth, slot, key);
+	g_object_unref (slot);
+	
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
 gboolean
 gp11_session_verify_finish (GP11Session *self, GAsyncResult *result, GError **err)
 {
-	return _gp11_call_basic_finish (self, result, err);
+	return _gp11_call_basic_finish (result, err);
 }
 
-#endif /* UNTESTED */

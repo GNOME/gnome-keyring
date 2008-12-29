@@ -205,7 +205,7 @@ DEFINE_TEST(login_logout)
 }
 
 static gboolean
-authenticate_token (GP11Slot *slot, gchar **password, gpointer unused)
+authenticate_token (GP11Slot *slot, gchar *label, gchar **password, gpointer unused)
 {
 	g_assert (unused == GUINT_TO_POINTER (35));
 	g_assert (password != NULL);
@@ -219,6 +219,7 @@ authenticate_token (GP11Slot *slot, gchar **password, gpointer unused)
 DEFINE_TEST(auto_login)
 {
 	GP11Object *object;
+	GP11Session *new_session;
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
 	GP11Attributes *attrs;
@@ -244,6 +245,11 @@ DEFINE_TEST(auto_login)
 	g_assert (value == TRUE);
 	
 	g_signal_connect (slot, "authenticate-token", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
+	
+	/* Create a new session */
+	new_session = gp11_slot_open_session (slot, CKF_RW_SESSION, &err);
+	SUCCESS_RES (new_session, err);
+	g_object_unref (new_session);
 
 	/* Try again to do something that requires a login */
 	object = gp11_session_create_object_full (session, attrs, NULL, &err); 
@@ -255,6 +261,15 @@ DEFINE_TEST(auto_login)
 	SUCCESS_RES (ret, err);
 	
 	/* Now try the same thing, but asyncronously */
+	gp11_slot_open_session_async (slot, CKF_RW_SESSION, NULL, fetch_async_result, &result);
+	WAIT_UNTIL (result);
+	g_assert (result != NULL);
+	new_session = gp11_slot_open_session_finish (slot, result, &err);
+	SUCCESS_RES (new_session, err);
+	g_object_unref (result);
+	g_object_unref (new_session);
+	
+	result = NULL;
 	gp11_session_create_object_async (session, attrs, NULL, fetch_async_result, &result); 
 	WAIT_UNTIL (result);
 	g_assert (result != NULL);

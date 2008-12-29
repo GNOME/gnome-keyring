@@ -36,7 +36,8 @@ struct _GP11Call {
 	GP11Module *module;
 	
 	/* For making the call */
-	GP11CallFunc func;
+	GP11PerformFunc perform;
+	GP11CompleteFunc complete;
 	GP11Arguments *args;
 	GCancellable *cancellable;
 	GDestroyNotify destroy;
@@ -46,10 +47,6 @@ struct _GP11Call {
 	gpointer object;
 	GAsyncReadyCallback callback;
 	gpointer user_data;
-	
-	/* For authenticating */
-	gboolean do_login;
-	gchar *password;
 };
 
 struct _GP11CallClass {
@@ -69,7 +66,7 @@ struct _GP11CallSource {
  */
 
 static CK_RV
-perform_call (GP11CallFunc func, GCancellable *cancellable, GP11Arguments *args)
+perform_call (GP11PerformFunc func, GCancellable *cancellable, GP11Arguments *args)
 {
 	CK_RV rv;
 	
@@ -97,31 +94,28 @@ perform_call (GP11CallFunc func, GCancellable *cancellable, GP11Arguments *args)
 	return rv;
 }
 
+static gboolean
+complete_call (GP11CompleteFunc func, GP11Arguments *args, CK_RV result)
+{
+	/* Double check a few things */
+	g_assert (args);
+	
+	/* If no complete function, then just ignore */
+	if (!func)
+		return TRUE;
+
+	return (func) (args, result);
+}
+
+
 static void
 process_async_call (gpointer data, GP11CallClass *klass)
 {
 	GP11Call *call = GP11_CALL (data);
-	CK_ULONG pin_len;
 	
 	g_assert (GP11_IS_CALL (call));
 	
-	/* Try to login to the token, with the provided password */
-	if (call->do_login) {
-		call->do_login = FALSE;
-
-		pin_len = call->password ? strlen (call->password) : 0;
-		call->rv = (call->args->pkcs11->C_Login) (call->args->handle, CKU_USER, 
-		                                          (CK_UTF8CHAR_PTR)call->password, 
-		                                          pin_len);
-		
-		/* Fix the result so that we'll try the login again */
-		if (call->rv == CKR_PIN_INCORRECT)
-			call->rv = CKR_USER_NOT_LOGGED_IN;
-		
-	/* An actual call */
-	} else {
-		call->rv = perform_call (call->func, call->cancellable, call->args);
-	}
+	call->rv = perform_call (call->perform, call->cancellable, call->args);
 	
 	g_async_queue_push (klass->completed_queue, call);
 	
@@ -132,39 +126,29 @@ process_async_call (gpointer data, GP11CallClass *klass)
 static void 
 process_result (GP11Call *call, gpointer unused)
 {
-	GP11Slot *slot;
+	gboolean stop = FALSE;
 	
 	/* Double check a few things */
 	g_assert (GP11_IS_CALL (call));
 	
 	if (call->cancellable) {
 		/* Don't call the callback when cancelled */
-		if (g_cancellable_is_cancelled (call->cancellable))
+		if (g_cancellable_is_cancelled (call->cancellable)) {
 			call->rv = CKR_FUNCTION_CANCELED;
+			stop = TRUE;
+		}
 	}
 	
 	/* 
-	 * Now if this is a session call, and the slot wants does 
-	 * auto-login, then we try to get a password and do auto login.
+	 * Hmmm, does the function want to actually be done?
+	 * If not, then queue this call again. 
 	 */
-	if (call->rv == CKR_USER_NOT_LOGGED_IN && GP11_IS_SESSION (call->object)) {
-		g_free (call->password);
-		call->password = NULL;
-		slot = gp11_session_get_slot (GP11_SESSION (call->object));
-		g_assert (GP11_IS_SLOT (slot));
-		call->do_login = _gp11_slot_token_authentication (slot, &call->password);
-		g_object_unref (slot);
-	}
-	
-	/* If we're supposed to do a login, then queue this call again */
-	if (call->do_login) {
+	if (!stop && !complete_call (call->complete, call->args, call->rv)) {
 		g_object_ref (call);
 		g_thread_pool_push (GP11_CALL_GET_CLASS (call)->thread_pool, call, NULL);
-		return;
-	}
 	
 	/* All done, finish processing */
-	if (call->callback) {
+	} else if (call->callback) {
 		g_assert (G_IS_OBJECT (call->object));
 		(call->callback) (G_OBJECT (call->object), G_ASYNC_RESULT (call), 
 				  call->user_data);
@@ -260,10 +244,6 @@ _gp11_call_finalize (GObject *obj)
 		(call->destroy) (call->args);
 	call->destroy = NULL;
 	call->args = NULL;
-	
-	if (call->password)
-		g_free (call->password);
-	call->password = NULL;
 	
 	G_OBJECT_CLASS (_gp11_call_parent_class)->finalize (obj);
 }
@@ -398,18 +378,15 @@ _gp11_call_uninitialize (void)
 }
 
 gboolean
-_gp11_call_sync (gpointer object, gpointer func, gpointer data, 
-                 GCancellable *cancellable, GError **err)
+_gp11_call_sync (gpointer object, gpointer perform, gpointer complete, 
+                 gpointer data, GCancellable *cancellable, GError **err)
 {
 	GP11Arguments *args = (GP11Arguments*)data;
-	gchar *password = NULL;
 	GP11Module *module = NULL;
-	GP11Slot *slot; 
-	CK_ULONG pin_len;
 	CK_RV rv;
 	
 	g_assert (G_IS_OBJECT (object));
-	g_assert (func);
+	g_assert (perform);
 	g_assert (args);
 	
 	g_object_get (object, "module", &module, "handle", &args->handle, NULL);
@@ -419,31 +396,13 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
 	args->pkcs11 = gp11_module_get_function_list (module);
 	g_assert (args->pkcs11);
 	
-	rv = perform_call ((GP11CallFunc)func, cancellable, args);
+	do {
+		rv = perform_call (perform, cancellable, args);
+		if (rv == CKR_FUNCTION_CANCELED)
+			break;
 		
-	/* 
-	 * Now if this is a session call, and the slot wants does 
-	 * auto-login, then we try to get a password and do auto login.
-	 */
-	if (rv == CKR_USER_NOT_LOGGED_IN && GP11_IS_SESSION (object)) {
+	} while (!complete_call (complete, args, rv));
 		
-		do {
-			slot = gp11_session_get_slot (GP11_SESSION (object));
-			if (!_gp11_slot_token_authentication (slot, &password)) {
-				rv = CKR_USER_NOT_LOGGED_IN;
-			} else {
-				pin_len = password ? strlen (password) : 0; 
-				rv = (args->pkcs11->C_Login) (args->handle, CKU_USER, 
-				                              (CK_UTF8CHAR_PTR)password, pin_len);
-			}
-			g_object_unref (slot);
-		} while (rv == CKR_PIN_INCORRECT);
-
-		/* If we logged in successfully then try again */
-		if (rv == CKR_OK)
-			rv = perform_call ((GP11CallFunc)func, cancellable, args);
-	}
-	
 	g_object_unref (module);
 
 	if (rv == CKR_OK)
@@ -454,14 +413,14 @@ _gp11_call_sync (gpointer object, gpointer func, gpointer data,
 }
 
 gpointer
-_gp11_call_async_prep (gpointer object, gpointer cb_object, gpointer func, 
-                       gsize args_size, gpointer destroy)
+_gp11_call_async_prep (gpointer object, gpointer cb_object, gpointer perform, 
+                       gpointer complete, gsize args_size, gpointer destroy)
 {
 	GP11Arguments *args;
 	GP11Call *call;
 
 	g_assert (!object || G_IS_OBJECT (object));
-	g_assert (func);
+	g_assert (perform);
 	
 	if (!destroy)
 		destroy = g_free;
@@ -473,7 +432,8 @@ _gp11_call_async_prep (gpointer object, gpointer cb_object, gpointer func,
 	args = g_malloc0 (args_size);
 	call = g_object_new (GP11_TYPE_CALL, NULL);
 	call->destroy = (GDestroyNotify)destroy;
-	call->func = (GP11CallFunc)func;
+	call->perform = (GP11PerformFunc)perform;
+	call->complete = (GP11CompleteFunc)complete;
 	call->object = cb_object;
 	g_object_ref (cb_object);
 

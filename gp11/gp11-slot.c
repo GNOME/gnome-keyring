@@ -39,10 +39,7 @@ enum {
 
 enum {
 	AUTHENTICATE_TOKEN,
-#ifdef UNIMPLEMENTED
-	AUTHENTICATE_KEY,
-	SLOT_EVENT
-#endif
+	AUTHENTICATE_OBJECT,
 	LAST_SIGNAL
 };
 
@@ -324,6 +321,18 @@ make_session_object (GP11Slot *self, gulong flags, CK_SESSION_HANDLE handle)
  * OBJECT
  */
 
+static gboolean 
+gp11_slot_real_authenticate_token (GP11Slot *self, gchar *label, gchar **password)
+{
+	return FALSE;
+}
+
+static gboolean 
+gp11_slot_real_authenticate_object (GP11Slot *self, GP11Object *object, gchar *label, gchar **password)
+{
+	return FALSE;
+}
+
 static void
 gp11_slot_init (GP11Slot *self)
 {
@@ -432,6 +441,9 @@ gp11_slot_class_init (GP11SlotClass *klass)
 	gobject_class->dispose = gp11_slot_dispose;
 	gobject_class->finalize = gp11_slot_finalize;
 	
+	klass->authenticate_object = gp11_slot_real_authenticate_object;
+	klass->authenticate_token = gp11_slot_real_authenticate_token;
+	
 	g_object_class_install_property (gobject_class, PROP_MODULE,
 		g_param_spec_object ("module", "Module", "PKCS11 Module",
 		                     GP11_TYPE_MODULE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
@@ -450,52 +462,91 @@ gp11_slot_class_init (GP11SlotClass *klass)
 	
 	signals[AUTHENTICATE_TOKEN] = g_signal_new ("authenticate-token", GP11_TYPE_SLOT, 
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GP11SlotClass, authenticate_token),
-			g_signal_accumulator_true_handled, NULL, _gp11_marshal_BOOLEAN__POINTER, 
-			G_TYPE_BOOLEAN, 1, G_TYPE_POINTER);
+			g_signal_accumulator_true_handled, NULL, _gp11_marshal_BOOLEAN__STRING_POINTER, 
+			G_TYPE_BOOLEAN, 2, G_TYPE_STRING, G_TYPE_POINTER);
+
+	signals[AUTHENTICATE_OBJECT] = g_signal_new ("authenticate-object", GP11_TYPE_SLOT, 
+			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GP11SlotClass, authenticate_object),
+			g_signal_accumulator_true_handled, NULL, _gp11_marshal_BOOLEAN__OBJECT_STRING_POINTER, 
+			G_TYPE_BOOLEAN, 3, G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER);
+
 
 	g_type_class_add_private (gobject_class, sizeof (GP11SlotPrivate));
 }
 
 /* ----------------------------------------------------------------------------
- * INTERNAL
+ * INTERNAL AUTHENTICATION
  */
 
-gboolean 
-_gp11_slot_token_authentication (GP11Slot *self, gchar **password)
+
+gboolean
+_gp11_slot_fire_authenticate_token (GP11Slot *self, gchar *label, gchar **password)
 {
 	GP11SlotPrivate *pv = lock_private (self);
-	gboolean emit_signal = FALSE;
-	gboolean ret = FALSE;
-
-	g_return_val_if_fail (GP11_IS_SLOT (self), FALSE);
-	g_return_val_if_fail (password, FALSE);
+	gboolean protected_auth = FALSE;
+	gchar *allocated = NULL;
+	gboolean ret;
+	
+	g_assert (GP11_IS_SLOT (self));
+	g_assert (pv);
 
 	{
-		if (pv->auto_login) {
-			
-			/* 
-			 * If it's a protected authentication path style token, then 
-			 * we don't prompt here, the hardware/software is expected
-			 * to prompt the user in some other way.
-			 */
-			
-			if (!pv->token_info) 
-				pv->token_info = gp11_slot_get_token_info (self);
-
-			if (pv->token_info && (pv->token_info->flags & CKF_PROTECTED_AUTHENTICATION_PATH)) {
-				*password = NULL;
-				ret = TRUE;
-			} else {
-				emit_signal = TRUE;
-			}
+		if (!pv->token_info) 
+			pv->token_info = gp11_slot_get_token_info (self);
+		if (pv->token_info) {
+			protected_auth = (pv->token_info->flags & CKF_PROTECTED_AUTHENTICATION_PATH) ? TRUE : FALSE;
+			if (!label)
+				label = allocated = g_strdup (pv->token_info->label); 
 		}
 	}
 	
 	unlock_private (self, pv);
+	
+	if (protected_auth) {
+		*password = NULL;
+		return TRUE;
+	}
+	
+	g_signal_emit (self, signals[AUTHENTICATE_TOKEN], 0, label, password, &ret);
+	g_free (allocated);
+	return ret;
+}
 
-	if (emit_signal)
-		g_signal_emit (self, signals[AUTHENTICATE_TOKEN], 0, password, &ret);
+gboolean
+_gp11_slot_fire_authenticate_object (GP11Slot *self, GP11Object *object,
+                                     gchar *label, gchar **password)
+{
+	gboolean ret;
 
+	g_assert (GP11_IS_SLOT (self));
+	g_assert (password);
+
+	if (_gp11_slot_is_protected_auth_path (self)) {
+		*password = NULL;
+		return TRUE;
+	}
+	
+	g_signal_emit (self, signals[AUTHENTICATE_OBJECT], 0, object, label, password, &ret);
+	return ret;
+}
+
+gboolean
+_gp11_slot_is_protected_auth_path (GP11Slot *self)
+{
+	GP11SlotPrivate *pv = lock_private (self);
+	gboolean ret;
+
+	g_assert (GP11_IS_SLOT (self));
+	g_assert (pv);
+
+	{
+		if (!pv->token_info) 
+			pv->token_info = gp11_slot_get_token_info (self);
+		ret = (pv->token_info && pv->token_info->flags & CKF_PROTECTED_AUTHENTICATION_PATH);
+	}
+	
+	unlock_private (self, pv);
+	
 	return ret;
 }
 
@@ -941,7 +992,7 @@ gp11_slot_init_token (GP11Slot *self, const guchar *pin, gsize length,
                       GError **err)
 {
 	InitToken args = { GP11_ARGUMENTS_INIT, pin, length, label };
-	return _gp11_call_sync (self, perform_init_token, &args, err);
+	return _gp11_call_sync (self, perform_init_token, NULL, &args, err);
 }
 
 void
@@ -950,7 +1001,7 @@ gp11_slot_init_token_async (GP11Slot *self, const guchar *pin, gsize length,
                             GAsyncReadyCallback callback, gpointer user_data)
 {
 	InitToken* args = _gp11_call_async_prep (self, self, perform_init_token, 
-	                                         sizeof (*args));
+	                                         NULL, sizeof (*args));
 	
 	args->pin = pin;
 	args->length = length;
@@ -969,16 +1020,68 @@ gp11_slot_init_token_finish (GP11Slot *self, GAsyncResult *result, GError **err)
 
 typedef struct OpenSession {
 	GP11Arguments base;
+	GP11Slot *slot;
 	gulong flags;
+	gchar *password;
 	CK_SESSION_HANDLE session;
 } OpenSession;
 
 static CK_RV
 perform_open_session (OpenSession *args)
 {
-	return (args->base.pkcs11->C_OpenSession) (args->base.handle, 
-	                                           args->flags | CKF_SERIAL_SESSION, 
-	                                           NULL, NULL, &args->session);
+	CK_SESSION_INFO info;
+	CK_RV rv = CKR_OK;
+	CK_ULONG pin_len;
+	
+	/* Can be called multiple times */
+	
+	/* First step, open session */
+	if (!args->session) {
+		rv = (args->base.pkcs11->C_OpenSession) (args->base.handle, args->flags, 
+		                                         NULL, NULL, &args->session);
+	}
+
+	if (rv != CKR_OK || !gp11_slot_get_auto_login (args->slot))
+		return rv;
+
+	/* Step two, check if session is logged in */
+	rv = (args->base.pkcs11->C_GetSessionInfo) (args->session, &info);
+	if (rv != CKR_OK)
+		return rv;
+	
+	/* Already logged in? */
+	if (info.state != CKS_RO_PUBLIC_SESSION && info.state != CKS_RW_PUBLIC_SESSION)
+		return CKR_OK;
+	
+	/* Try to login */
+	pin_len = args->password ? strlen (args->password) : 0;
+	return (args->base.pkcs11->C_Login) (args->session, CKU_USER, 
+	                                     (CK_UTF8CHAR_PTR)args->password, pin_len);
+}
+
+static gboolean
+complete_open_session (OpenSession *args, CK_RV result)
+{
+	g_free (args->password);
+	args->password = NULL;
+	
+	/* Ask the token for a password */
+	if (gp11_slot_get_auto_login (args->slot) && result == CKR_PIN_INCORRECT) {
+		if (_gp11_slot_fire_authenticate_token (args->slot, NULL, &args->password))
+			return FALSE; /* Call is not complete */
+	}
+	
+	/* Call is complete */
+	return TRUE;
+}
+
+static void
+free_open_session (OpenSession *args)
+{
+	g_assert (!args->password);
+	if (args->slot)
+		g_object_unref (args->slot);
+	g_free (args);
 }
 
 /**
@@ -1038,8 +1141,14 @@ gp11_slot_open_session_full (GP11Slot *self, gulong flags, GCancellable *cancell
 
 	/* Open a new session */
 	if (session == NULL) {
-		OpenSession args = { GP11_ARGUMENTS_INIT, flags, 0 };
-		if (_gp11_call_sync (self, perform_open_session, &args, cancellable, err))
+		OpenSession args = { GP11_ARGUMENTS_INIT, 0,  };
+		
+		args.slot = self;
+		args.flags = flags;
+		args.password = NULL;
+		args.session = 0;
+		
+		if (_gp11_call_sync (self, perform_open_session, complete_open_session, &args, cancellable, err))
 			session = make_session_object (self, flags, args.session);
 	}
 
@@ -1073,7 +1182,8 @@ gp11_slot_open_session_async (GP11Slot *self, gulong flags, GCancellable *cancel
 	
 	g_object_ref (self);
 	
-	args =  _gp11_call_async_prep (self, self, perform_open_session, sizeof (*args), NULL);
+	args =  _gp11_call_async_prep (self, self, perform_open_session, complete_open_session, 
+	                               sizeof (*args), free_open_session);
 	
 	pv = lock_private (self);
 
@@ -1081,6 +1191,7 @@ gp11_slot_open_session_async (GP11Slot *self, gulong flags, GCancellable *cancel
 		/* Try to use a cached session */
 		args->session = pop_session_table (pv, flags);
 		args->flags = flags;
+		args->slot = g_object_ref (self);
 	}
 	
 	unlock_private (self, pv);

@@ -1,5 +1,6 @@
 UNIT_AUTO = \
 	unit-test-gp11-attributes.c \
+	unit-test-gp11-crypto.c \
 	unit-test-gp11-module.c \
 	unit-test-gp11-object.c \
 	unit-test-gp11-session.c \

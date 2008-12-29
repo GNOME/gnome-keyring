@@ -1,34 +1,65 @@
 #include "config.h"
 
 #include "gp11.h"
+#include "gp11-test.h"
+
 #include "pkcs11.h"
 
 #include <glib.h>
 
 #include <string.h>
 
+/* 
+ * This is *NOT* how you'd want to implement a PKCS#11 module. This 
+ * fake module simply provides enough for GP11 library to test against.
+ * It doesn't pass any tests, or behave as expected from a PKCS#11 module.
+ */ 
+
 static gboolean initialized = FALSE;
 static gchar *the_pin = NULL;
 
+static gboolean logged_in = FALSE;
+static CK_USER_TYPE user_type = 0;
+
 typedef enum _Operation {
 	OP_FIND = 1,
+	OP_CRYPTO
 } Operation;
 
 typedef struct _Session {
 	CK_SESSION_HANDLE handle;
 	CK_SESSION_INFO info;
-	gboolean logged_in;
-	CK_USER_TYPE user_type;
 	GHashTable *objects;
 
 	Operation operation;
+	
+	/* For find operations */
 	GList *matches;
+	
+	/* For crypto operations */
+	CK_OBJECT_HANDLE crypto_key;
+	CK_ATTRIBUTE_TYPE crypto_method;
+	CK_MECHANISM_TYPE crypto_mechanism;
+	CK_BBOOL want_context_login;
+	
+	/* For 'signing' with CKM_PREFIX */
+	CK_BYTE sign_prefix[128];
+	CK_ULONG n_sign_prefix;	
 	
 } Session;
 
 static guint unique_identifier = 100;
 static GHashTable *the_sessions = NULL;
 static GHashTable *the_objects = NULL;
+
+enum {
+	PRIVATE_KEY_CAPITALIZE = 3,
+	PUBLIC_KEY_CAPITALIZE = 4,
+	PRIVATE_KEY_PREFIX = 5,
+	PUBLIC_KEY_PREFIX = 6
+};
+
+#define SIGNED_PREFIX "signed-prefix:"
 
 /* 
  * This is not a generic test module, it works in concert with the 
@@ -49,6 +80,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 {
 	GP11Attributes *attrs;
 	CK_C_INITIALIZE_ARGS_PTR args;
+	CK_ULONG value;
 	void *mutex;
 	CK_RV rv;
 	
@@ -96,6 +128,47 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_LABEL, GP11_STRING, "TEST LABEL",
 	                              -1);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (2), attrs);
+	
+	/* Private capitalize key */
+	value = CKM_CAPITALIZE;
+	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
+	                              CKA_LABEL, GP11_STRING, "Private Capitalize Key",
+	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
+	                              CKA_DECRYPT, GP11_BOOLEAN, TRUE,
+	                              CKA_PRIVATE, GP11_BOOLEAN, TRUE,
+	                              -1);
+	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_CAPITALIZE), attrs);
+
+	/* Public capitalize key */
+	value = CKM_CAPITALIZE;
+	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
+	                              CKA_LABEL, GP11_STRING, "Public Capitalize Key",
+	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
+	                              CKA_ENCRYPT, GP11_BOOLEAN, TRUE,
+	                              CKA_PRIVATE, GP11_BOOLEAN, FALSE,
+	                              -1);
+	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_CAPITALIZE), attrs);
+
+	/* Private prefix key */
+	value = CKM_PREFIX;
+	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
+	                              CKA_LABEL, GP11_STRING, "Private prefix key",
+	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
+	                              CKA_SIGN, GP11_BOOLEAN, TRUE,
+	                              CKA_PRIVATE, GP11_BOOLEAN, TRUE,
+	                              CKA_ALWAYS_AUTHENTICATE, GP11_BOOLEAN, TRUE,
+	                              -1);
+	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_PREFIX), attrs);
+
+	/* Private prefix key */
+	value = CKM_PREFIX;
+	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
+	                              CKA_LABEL, GP11_STRING, "Public prefix key",
+	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
+	                              CKA_VERIFY, GP11_BOOLEAN, TRUE,
+	                              CKA_PRIVATE, GP11_BOOLEAN, FALSE,
+	                              -1);
+	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_PREFIX), attrs);
 	
 	initialized = TRUE;
 	return CKR_OK;
@@ -250,16 +323,14 @@ test_C_GetTokenInfo (CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo)
 
 /* 
  * TWO mechanisms: 
- *  RSA 
- *  DSA
+ *  CKM_CAPITALIZE 
+ *  CKM_PREFIX
  */
 
 static CK_RV
 test_C_GetMechanismList (CK_SLOT_ID slotID, CK_MECHANISM_TYPE_PTR pMechanismList,
                          CK_ULONG_PTR pulCount)
 {
-	
-	
 	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
 	g_assert (pulCount != NULL && "Invalid pulCount");
 	
@@ -274,31 +345,31 @@ test_C_GetMechanismList (CK_SLOT_ID slotID, CK_MECHANISM_TYPE_PTR pMechanismList
 		return CKR_BUFFER_TOO_SMALL;
 	}
 
-	pMechanismList[0] = CKM_RSA_PKCS;
-	pMechanismList[1] = CKM_DSA;
+	pMechanismList[0] = CKM_CAPITALIZE;
+	pMechanismList[1] = CKM_PREFIX;
 	return CKR_OK;
 }
 
-static const CK_MECHANISM_INFO TEST_MECH_RSA = {
+static const CK_MECHANISM_INFO TEST_MECH_CAPITALIZE = {
 	512, 4096, 0
 };
 
-static const CK_MECHANISM_INFO TEST_MECH_DSA = {
+static const CK_MECHANISM_INFO TEST_MECH_PREFIX = {
 	2048, 2048, 0
 };
 
 static CK_RV
 test_C_GetMechanismInfo (CK_SLOT_ID slotID, CK_MECHANISM_TYPE type, 
-                       CK_MECHANISM_INFO_PTR pInfo)
+                         CK_MECHANISM_INFO_PTR pInfo)
 {
 	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
 	g_assert (pInfo != NULL && "Invalid pInfo");
 
-	if (type == CKM_RSA_PKCS) {
-		memcpy (pInfo, &TEST_MECH_RSA, sizeof (*pInfo));
+	if (type == CKM_CAPITALIZE) {
+		memcpy (pInfo, &TEST_MECH_CAPITALIZE, sizeof (*pInfo));
 		return CKR_OK;
-	} else if (type == CKM_DSA) {
-		memcpy (pInfo, &TEST_MECH_DSA, sizeof (*pInfo));
+	} else if (type == CKM_PREFIX) {
+		memcpy (pInfo, &TEST_MECH_PREFIX, sizeof (*pInfo));
 		return CKR_OK;
 	} else {
 		g_assert_not_reached (); /* "Invalid type" */
@@ -328,22 +399,6 @@ test_C_WaitForSlotEvent (CK_FLAGS flags, CK_SLOT_ID_PTR pSlot, CK_VOID_PTR pRese
 	g_assert_not_reached (); /* Not yet used by library */
 	return CKR_FUNCTION_NOT_SUPPORTED;
 }
-
-#define TEST_RSA_KEY   257
-#define TEST_DSA_KEY   357
-
-#ifdef INCOMPLETE
-
-#define TEST_KEY \
-"(private-key (rsa " \
-"(n  #00B78758D55EBFFAB61D07D0DC49B5309A6F1DA2AE51C275DFC2370959BB81AC0C39093B1C618E396161A0DECEB8768D0FFB14F197B96C3DA14190EE0F20D51315#)" \
-"(e #010001#)" \
-"(d #108BCAC5FDD35812981E6EC5957D98E2AB76E4064C47B861D27C2CC322C50792313C852B4164A035B42D261F1A09F9FFE8F477F9F78FF2EABBDA6BA875C671D7#)" \
-"(p #00C357F11B19A18C66573D25D1E466D9AB8BCDDCDFE0B2E80BD46712C4BEC18EB7#)" \
-"(q #00F0843B90A60EF7034CA4BE80414ED9497CABCC685143B388013FF989CBB0E093#)" \
-"(u #12F2555F52EB56329A991CF0404B51C68AC921AD370A797860F550415FF987BD#)" \
-"))"
-#endif
 
 static CK_RV
 test_C_OpenSession (CK_SLOT_ID slotID, CK_FLAGS flags, CK_VOID_PTR pApplication,
@@ -467,13 +522,21 @@ test_C_Login (CK_SESSION_HANDLE hSession, CK_USER_TYPE userType,
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
+	if (!pPin)
+		return CKR_PIN_INCORRECT;
+	
 	g_assert (pPinLen == strlen (the_pin) && "Wrong PIN length");
 	g_assert (strncmp ((gchar*)pPin, the_pin, pPinLen) == 0 && "Wrong PIN");
 	g_assert ((userType == CKU_SO || userType == CKU_USER || userType == CKU_CONTEXT_SPECIFIC) && "Bad user type");
-	g_assert (session->logged_in == FALSE && "Already logged in");
+	g_assert (logged_in == FALSE && "Already logged in");
 	
-	session->logged_in = TRUE;
-	session->user_type = userType;
+	if (userType == CKU_CONTEXT_SPECIFIC) {
+		session->want_context_login = CK_FALSE;
+	} else {
+		logged_in = TRUE;
+		user_type = userType;
+	}
+	
 	return CKR_OK;
 }
 
@@ -487,9 +550,9 @@ test_C_Logout (CK_SESSION_HANDLE hSession)
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
-	g_assert (session->logged_in && "Not logged in");
-	session->logged_in = FALSE;
-	session->user_type = 0;
+	g_assert (logged_in && "Not logged in");
+	logged_in = FALSE;
+	user_type = 0;
 	return CKR_OK;
 }
 
@@ -514,7 +577,7 @@ test_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 		gp11_attributes_add_data (attrs, pTemplate[i].type, pTemplate[i].pValue, pTemplate[i].ulValueLen);
 	
 	if (gp11_attributes_find_boolean (attrs, CKA_PRIVATE, &priv) && priv) {
-		if (!session->logged_in) {
+		if (!logged_in) {
 			gp11_attributes_unref (attrs);
 			return CKR_USER_NOT_LOGGED_IN;
 		}
@@ -560,7 +623,7 @@ test_C_DestroyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject)
 	}
 	
 	if (gp11_attributes_find_boolean (attrs, CKA_PRIVATE, &priv) && priv) {
-		if (!session->logged_in)
+		if (!logged_in)
 			return CKR_USER_NOT_LOGGED_IN;
 	}
 
@@ -577,7 +640,7 @@ test_C_GetObjectSize (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
 
 static CK_RV
 test_C_GetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
-                        CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount)
+                          CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount)
 {
 	CK_ATTRIBUTE_PTR result;
 	CK_RV ret = CKR_OK;
@@ -680,10 +743,9 @@ test_C_FindObjectsInit (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
-	if (session->operation != 0) {
-		g_assert_not_reached (); /* "invalid call to FindObjectsInit" */
-		return CKR_OPERATION_ACTIVE;
-	}
+	/* Starting an operation, cancels any previous one */
+	if (session->operation != 0) 
+		session->operation = 0;
 	
 	session->operation = OP_FIND;
 	
@@ -797,50 +859,71 @@ static CK_RV
 test_C_EncryptInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                     CK_OBJECT_HANDLE hKey)
 {
-#ifdef INCOMPLETE
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
+	
+	/* Starting an operation, cancels any previous one */
+	if (session->operation != 0) 
+		session->operation = 0;
+	
+	g_assert (pMechanism);
+	g_assert (pMechanism->mechanism == CKM_CAPITALIZE);
+	g_assert (hKey == PUBLIC_KEY_CAPITALIZE);
 
-	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-	BEGIN_CALL (C_EncryptInit)
-		IN_SESSION (hSession)
-		IN_MECHANISM (pMechanism)
-		IN_HANDLE (hKey)
-	PROCESS_CALL ((hSession, pMechanism, hKey))
-	DONE_CALL
-#else 
-	g_assert_not_reached (); /* "Not yet implemented" */
-	return CKR_FUNCTION_NOT_SUPPORTED;
-#endif
+	session->operation = OP_CRYPTO;
+	session->crypto_method = CKA_ENCRYPT;
+	session->crypto_mechanism = CKM_CAPITALIZE;
+	session->crypto_key = hKey;
+	return CKR_OK;
 }
 
 static CK_RV
 test_C_Encrypt (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen,
-              CK_BYTE_PTR pEncryptedData, CK_ULONG_PTR pulEncryptedDataLen)
+                CK_BYTE_PTR pEncryptedData, CK_ULONG_PTR pulEncryptedDataLen)
 {
-#ifdef INCOMPLETE
 	Session *session;
+	CK_ULONG i;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
-
-	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-	BEGIN_CALL (C_Encrypt)
-		IN_SESSION (hSession)
-		IN_BYTE_ARRAY (pData, ulDataLen)
-	PROCESS_CALL ((hSession, pData, ulDataLen, pEncryptedData, pulEncryptedDataLen))
-		OUT_BYTE_ARRAY (pEncryptedData, pulEncryptedDataLen)
-	DONE_CALL
-#else 
-	g_assert_not_reached (); /* "Not yet implemented" */
-	return CKR_FUNCTION_NOT_SUPPORTED;
-#endif
+	
+	if (session->operation != OP_CRYPTO) {
+		g_assert_not_reached (); /* "invalid call to Encrypt" */
+		return CKR_OPERATION_NOT_INITIALIZED;
+	}
+	
+	g_assert (pData);
+	g_assert (pulEncryptedDataLen);
+	g_assert (session->crypto_method == CKA_ENCRYPT);
+	g_assert (session->crypto_mechanism == CKM_CAPITALIZE);
+	g_assert (session->crypto_key == PUBLIC_KEY_CAPITALIZE);
+	
+	if (!pEncryptedData) {
+		*pulEncryptedDataLen = ulDataLen;
+		return CKR_OK;
+	}
+	
+	if (*pulEncryptedDataLen < ulDataLen) {
+		*pulEncryptedDataLen = ulDataLen;
+		return CKR_BUFFER_TOO_SMALL;
+	}
+	
+	for (i = 0; i < ulDataLen; ++i) 
+		pEncryptedData[i] = g_ascii_toupper (pData[i]);
+	*pulEncryptedDataLen = ulDataLen;
+	
+	session->operation = 0;
+	session->crypto_method = 0;
+	session->crypto_mechanism = 0;
+	session->crypto_key = 0;
+	
+	return CKR_OK;
 }
 
 static CK_RV
@@ -864,50 +947,71 @@ static CK_RV
 test_C_DecryptInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                   CK_OBJECT_HANDLE hKey)
 {
-#ifdef INCOMPLETE
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
+	
+	/* Starting an operation, cancels any previous one */
+	if (session->operation != 0) 
+		session->operation = 0;
+	
+	g_assert (pMechanism);
+	g_assert (pMechanism->mechanism == CKM_CAPITALIZE);
+	g_assert (hKey == PRIVATE_KEY_CAPITALIZE);
 
-	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-	BEGIN_CALL (C_DecryptInit)
-		IN_SESSION (hSession)
-		IN_MECHANISM (pMechanism)
-		IN_HANDLE (hKey)
-	PROCESS_CALL ((hSession, pMechanism, hKey))
-	DONE_CALL
-#else 
-	g_assert_not_reached (); /* "Not yet implemented" */
-	return CKR_FUNCTION_NOT_SUPPORTED;
-#endif
+	session->operation = OP_CRYPTO;
+	session->crypto_method = CKA_DECRYPT;
+	session->crypto_mechanism = CKM_CAPITALIZE;
+	session->crypto_key = hKey;
+	return CKR_OK;
 }
 
 static CK_RV
 test_C_Decrypt (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pEncryptedData,
-              CK_ULONG pulEncryptedDataLen, CK_BYTE_PTR pData, CK_ULONG_PTR pulDataLen)
+                CK_ULONG ulEncryptedDataLen, CK_BYTE_PTR pData, CK_ULONG_PTR pulDataLen)
 {
-#ifdef INCOMPLETE
 	Session *session;
+	CK_ULONG i;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
-
-	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-	BEGIN_CALL (C_Decrypt)
-		IN_SESSION (hSession)
-		IN_BYTE_ARRAY (pEncryptedData, pulEncryptedDataLen)
-	PROCESS_CALL ((hSession, pEncryptedData, pulEncryptedDataLen, pData, pulDataLen))
-		OUT_BYTE_ARRAY (pData, pulDataLen)
-	DONE_CALL
-#else 
-	g_assert_not_reached (); /* "Not yet implemented" */
-	return CKR_FUNCTION_NOT_SUPPORTED;
-#endif
+	
+	if (session->operation != OP_CRYPTO) {
+		g_assert_not_reached (); /* "invalid call to Encrypt" */
+		return CKR_OPERATION_NOT_INITIALIZED;
+	}
+	
+	g_assert (pEncryptedData);
+	g_assert (pulDataLen);
+	g_assert (session->crypto_method == CKA_DECRYPT);
+	g_assert (session->crypto_mechanism == CKM_CAPITALIZE);
+	g_assert (session->crypto_key == PRIVATE_KEY_CAPITALIZE);
+	
+	if (!pData) {
+		*pulDataLen = ulEncryptedDataLen;
+		return CKR_OK;
+	}
+	
+	if (*pulDataLen < ulEncryptedDataLen) {
+		*pulDataLen = ulEncryptedDataLen;
+		return CKR_BUFFER_TOO_SMALL;
+	}
+	
+	for (i = 0; i < ulEncryptedDataLen; ++i) 
+		pData[i] = g_ascii_tolower (pEncryptedData[i]);
+	*pulDataLen = ulEncryptedDataLen;
+	
+	session->operation = 0;
+	session->crypto_method = 0;
+	session->crypto_mechanism = 0;
+	session->crypto_key = 0;
+	
+	return CKR_OK;
 }
 
 static CK_RV
@@ -965,40 +1069,92 @@ test_C_DigestFinal (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pDigest,
 
 static CK_RV
 test_C_SignInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
-               CK_OBJECT_HANDLE hKey)
+                 CK_OBJECT_HANDLE hKey)
 {
-#ifdef INCOMPLETE
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
+	
+	/* Starting an operation, cancels any previous one */
+	if (session->operation != 0) 
+		session->operation = 0;
+	
+	g_assert (pMechanism);
+	g_assert (pMechanism->mechanism == CKM_PREFIX);
+	g_assert (hKey == PRIVATE_KEY_PREFIX);
 
-	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#else 
-	g_assert_not_reached (); /* "Not yet implemented" */
-	return CKR_FUNCTION_NOT_SUPPORTED;
-#endif
+	session->operation = OP_CRYPTO;
+	session->crypto_method = CKA_SIGN;
+	session->crypto_mechanism = CKM_PREFIX;
+	session->crypto_key = hKey;
+	
+	if (pMechanism->pParameter) {
+		g_assert (pMechanism->ulParameterLen < sizeof (session->sign_prefix));
+		memcpy (session->sign_prefix, pMechanism->pParameter, pMechanism->ulParameterLen);
+		session->n_sign_prefix = pMechanism->ulParameterLen;
+	} else {
+		g_assert (strlen (SIGNED_PREFIX) + 1 < sizeof (session->sign_prefix));
+		strcpy ((gchar*)session->sign_prefix, SIGNED_PREFIX);
+		session->n_sign_prefix = strlen (SIGNED_PREFIX);
+	}
+	
+	/* The private key has CKA_ALWAYS_AUTHENTICATE above */
+	session->want_context_login = CK_TRUE;
+	
+	return CKR_OK;
 }
 
 static CK_RV
 test_C_Sign (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen,
             CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen)
 {
-#ifdef INCOMPLETE
 	Session *session;
+	CK_ULONG length;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
-
-	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#else 
-	g_assert_not_reached (); /* "Not yet implemented" */
-	return CKR_FUNCTION_NOT_SUPPORTED;
-#endif
+	
+	if (session->operation != OP_CRYPTO) {
+		g_assert_not_reached (); /* "invalid call to Encrypt" */
+		return CKR_OPERATION_NOT_INITIALIZED;
+	}
+	
+	if (session->want_context_login)
+		return CKR_USER_NOT_LOGGED_IN;
+	
+	g_assert (pData);
+	g_assert (pulSignatureLen);
+	g_assert (session->crypto_method == CKA_SIGN);
+	g_assert (session->crypto_mechanism == CKM_PREFIX);
+	g_assert (session->crypto_key == PRIVATE_KEY_PREFIX);
+	
+	length = session->n_sign_prefix + ulDataLen;
+	
+	if (!pSignature) {
+		*pulSignatureLen = length;
+		return CKR_OK;
+	}
+	
+	if (*pulSignatureLen < length) {
+		*pulSignatureLen = length;
+		return CKR_BUFFER_TOO_SMALL;
+	}
+	
+	memcpy (pSignature, session->sign_prefix, session->n_sign_prefix);
+	memcpy (pSignature + session->n_sign_prefix, pData, ulDataLen);
+	*pulSignatureLen = length;
+	
+	session->operation = 0;
+	session->crypto_method = 0;
+	session->crypto_mechanism = 0;
+	session->crypto_key = 0;
+	
+	return CKR_OK;
 }
 
 static CK_RV
@@ -1034,52 +1190,76 @@ test_C_SignRecover (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDa
 
 static CK_RV
 test_C_VerifyInit (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
-                 CK_OBJECT_HANDLE hKey)
+                   CK_OBJECT_HANDLE hKey)
 {
-#ifdef INCOMPLETE
 	Session *session;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
+	
+	/* Starting an operation, cancels any previous one */
+	if (session->operation != 0) 
+		session->operation = 0;
+	
+	g_assert (pMechanism);
+	g_assert (pMechanism->mechanism == CKM_PREFIX);
+	g_assert (hKey == PUBLIC_KEY_PREFIX);
 
-	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-	BEGIN_CALL (C_VerifyInit);
-		IN_SESSION (hSession)
-		IN_MECHANISM (pMechanism)
-		IN_HANDLE (hKey)
-	PROCESS_CALL ((hSession, pMechanism, hKey))
-	DONE_CALL
-#else 
-	g_assert_not_reached (); /* "Not yet implemented" */
-	return CKR_FUNCTION_NOT_SUPPORTED;
-#endif
+	session->operation = OP_CRYPTO;
+	session->crypto_method = CKA_VERIFY;
+	session->crypto_mechanism = CKM_PREFIX;
+	session->crypto_key = hKey;
+	
+	if (pMechanism->pParameter) {
+		g_assert (pMechanism->ulParameterLen < sizeof (session->sign_prefix));
+		memcpy (session->sign_prefix, pMechanism->pParameter, pMechanism->ulParameterLen);
+		session->n_sign_prefix = pMechanism->ulParameterLen;
+	} else {
+		g_assert (strlen (SIGNED_PREFIX) + 1 < sizeof (session->sign_prefix));
+		strcpy ((gchar*)session->sign_prefix, SIGNED_PREFIX);
+		session->n_sign_prefix = strlen (SIGNED_PREFIX);
+	}
+	
+	return CKR_OK;
 }
 
 static CK_RV
 test_C_Verify (CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData, CK_ULONG ulDataLen,
-             CK_BYTE_PTR pSignature, CK_ULONG pulSignatureLen)
+               CK_BYTE_PTR pSignature, CK_ULONG ulSignatureLen)
 {
-#ifdef INCOMPLETE
 	Session *session;
+	CK_ULONG length;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
+	
+	if (session->operation != OP_CRYPTO) {
+		g_assert_not_reached (); /* "invalid call to Encrypt" */
+		return CKR_OPERATION_NOT_INITIALIZED;
+	}
+	
+	g_assert (pData);
+	g_assert (pSignature);
+	g_assert (session->crypto_method == CKA_VERIFY);
+	g_assert (session->crypto_mechanism == CKM_PREFIX);
+	g_assert (session->crypto_key == PUBLIC_KEY_PREFIX);
+	
+	length = session->n_sign_prefix + ulDataLen;
 
-	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-	BEGIN_CALL (C_Verify)
-		IN_SESSION (hSession)
-		IN_BYTE_ARRAY (pData, ulDataLen)
-		IN_BYTE_ARRAY (pSignature, pulSignatureLen)
-	PROCESS_CALL ((hSession, pData, ulDataLen, pSignature, pulSignatureLen))
-	DONE_CALL
-#else 
-	g_assert_not_reached (); /* "Not yet implemented" */
-	return CKR_FUNCTION_NOT_SUPPORTED;
-#endif
+	if (ulSignatureLen < length) {
+		g_assert (FALSE);
+		return CKR_SIGNATURE_LEN_RANGE;
+	}
+
+	if (memcmp (pSignature, session->sign_prefix, session->n_sign_prefix) == 0 && 
+	    memcmp (pSignature + session->n_sign_prefix, pData, ulDataLen) == 0)
+		return CKR_OK;
+	
+	return CKR_SIGNATURE_INVALID;
 }
 
 static CK_RV

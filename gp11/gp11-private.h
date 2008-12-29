@@ -52,14 +52,23 @@ CK_ATTRIBUTE_PTR    _gp11_attributes_raw                    (GP11Attributes *att
  * SLOT
  */
 
-gboolean            _gp11_slot_token_authentication       (GP11Slot *slot, 
-                                                           gchar **password);
+gboolean            _gp11_slot_fire_authenticate_token       (GP11Slot *slot,
+                                                              gchar *label,
+                                                              gchar **password);
+
+gboolean            _gp11_slot_fire_authenticate_object      (GP11Slot *slot,
+                                                              GP11Object *object,
+                                                              gchar *label,
+                                                              gchar **password);
+
+gboolean            _gp11_slot_is_protected_auth_path        (GP11Slot *slot);
 
 /* ----------------------------------------------------------------------------
  * CALL
  */
 
-typedef CK_RV (*GP11CallFunc) (gpointer call_data); 
+typedef CK_RV (*GP11PerformFunc) (gpointer call_data);
+typedef gboolean (*GP11CompleteFunc) (gpointer call_data, CK_RV result); 
 
 typedef struct _GP11Call GP11Call;
 
@@ -92,14 +101,16 @@ gpointer           _gp11_call_get_arguments               (GP11Call *call);
 void               _gp11_call_uninitialize                (void);
 
 gboolean           _gp11_call_sync                        (gpointer object, 
-                                                           gpointer func, 
+                                                           gpointer perform, 
+                                                           gpointer complete,
                                                            gpointer args, 
                                                            GCancellable *cancellable, 
                                                            GError **err);
 
 gpointer           _gp11_call_async_prep                  (gpointer object, 
                                                            gpointer cb_object,
-                                                           gpointer func, 
+                                                           gpointer perform,
+                                                           gpointer complete,
                                                            gsize args_size,
                                                            gpointer destroy_func);
 
@@ -114,7 +125,6 @@ void               _gp11_call_async_ready_go              (gpointer args,
                                                            GCancellable *cancellable, 
                                                            GAsyncReadyCallback callback, 
                                                            gpointer user_data);
-
 
 void               _gp11_call_async_short                 (GP11Call *call, 
                                                            CK_RV rv);

@@ -483,7 +483,7 @@ gp11_object_destroy_full (GP11Object *self, GCancellable *cancellable, GError **
 
 	session = require_session_sync (self, CKF_RW_SESSION, err);
 	if (session)
-		ret = _gp11_call_sync (session, perform_destroy, &args, cancellable, err);
+		ret = _gp11_call_sync (session, perform_destroy, NULL, &args, cancellable, err);
 	g_object_unref (session);
 	return ret;
 }
@@ -509,7 +509,7 @@ gp11_object_destroy_async (GP11Object *self, GCancellable *cancellable,
 	g_return_if_fail (GP11_IS_OBJECT (self));
 	g_return_if_fail (GP11_IS_SLOT (data->slot));
 
-	args = _gp11_call_async_prep (data->slot, self, perform_destroy, sizeof (*args), NULL);
+	args = _gp11_call_async_prep (data->slot, self, perform_destroy, NULL, sizeof (*args), NULL);
 	args->object = data->handle;
 	
 	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
@@ -539,19 +539,19 @@ typedef struct _SetAttributes {
 	CK_OBJECT_HANDLE object;
 } SetAttributes;
 
-static void
-free_set_attributes (SetAttributes *args)
-{
-	gp11_attributes_unref (args->attrs);
-	g_free (args);
-}
-
 static CK_RV
 perform_set_attributes (SetAttributes *args)
 {
 	return (args->base.pkcs11->C_SetAttributeValue) (args->base.handle, args->object, 
 	                                                 _gp11_attributes_raw (args->attrs),
 	                                                 gp11_attributes_count (args->attrs));
+}
+
+static void
+free_set_attributes (SetAttributes *args)
+{
+	gp11_attributes_unref (args->attrs);
+	g_free (args);
 }
 
 /**
@@ -631,7 +631,7 @@ gp11_object_set_full (GP11Object *self, GP11Attributes *attrs,
 
 	session = require_session_sync (self, CKF_RW_SESSION, err);
 	if (session)
-		ret = _gp11_call_sync (session, perform_set_attributes, &args, cancellable, err);
+		ret = _gp11_call_sync (session, perform_set_attributes, NULL, &args, cancellable, err);
 	g_object_unref (session);
 	return ret;
 }
@@ -658,9 +658,8 @@ gp11_object_set_async (GP11Object *self, GP11Attributes *attrs, GCancellable *ca
 	g_return_if_fail (GP11_IS_OBJECT (self));
 
 	args = _gp11_call_async_prep (data->slot, self, perform_set_attributes, 
-	                              sizeof (*args), free_set_attributes);
-	args->attrs = attrs;
-	gp11_attributes_ref (attrs);
+	                              NULL, sizeof (*args), free_set_attributes);
+	args->attrs = gp11_attributes_ref (attrs);
 	args->object = data->handle;
 	
 	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
@@ -691,15 +690,6 @@ typedef struct _GetAttributes {
 	CK_OBJECT_HANDLE object;
 	GP11Attributes *results;
 } GetAttributes;
-
-static void
-free_get_attributes (GetAttributes *args)
-{
-	g_free (args->attr_types);
-	if (args->results)
-		gp11_attributes_unref (args->results);
-	g_free (args);
-}
 
 /* 
  * Certain failure return values only apply to individual attributes
@@ -776,6 +766,15 @@ perform_get_attributes (GetAttributes *args)
 	return rv;
 }
 
+static void
+free_get_attributes (GetAttributes *args)
+{
+	g_free (args->attr_types);
+	if (args->results)
+		gp11_attributes_unref (args->results);
+}
+
+
 /**
  * gp11_object_get:
  * @self: The object to get attributes from.
@@ -848,7 +847,7 @@ gp11_object_get_full (GP11Object *self, const gulong *attr_types, gsize n_attr_t
 	args.n_attr_types = n_attr_types;
 	args.object = data->handle;
 
-	if (!_gp11_call_sync (session, perform_get_attributes, &args, cancellable, err)) {
+	if (!_gp11_call_sync (session, perform_get_attributes, NULL, &args, cancellable, err)) {
 		gp11_attributes_unref (args.results);
 		g_object_unref (session);
 		return NULL;
@@ -881,7 +880,8 @@ gp11_object_get_async (GP11Object *self, const gulong *attr_types, gsize n_attr_
 	g_return_if_fail (GP11_IS_OBJECT (self));
 
 	args = _gp11_call_async_prep (data->slot, self, perform_get_attributes, 
-	                              sizeof (*args), free_get_attributes);
+	                              NULL, sizeof (*args), free_get_attributes);
+	
 	args->n_attr_types = n_attr_types;
 	if (n_attr_types)
 		args->attr_types = g_memdup (attr_types, sizeof (gulong) * n_attr_types);
