@@ -77,6 +77,31 @@ DEFINE_TEST(init_string)
 
 	gp11_attribute_clear (&attr);
 }
+
+DEFINE_TEST(init_invalid)
+{
+	GP11Attribute attr;
+	
+	gp11_attribute_init_invalid (&attr, ATTR_TYPE);
+	g_assert (attr.type == ATTR_TYPE);
+	g_assert (attr.length == (gulong)-1);
+	g_assert (attr.value == NULL);
+
+	g_assert (gp11_attribute_is_invalid (&attr));
+	gp11_attribute_clear (&attr);
+}
+
+DEFINE_TEST(init_empty)
+{
+	GP11Attribute attr;
+	
+	gp11_attribute_init_empty (&attr, ATTR_TYPE);
+	g_assert (attr.type == ATTR_TYPE);
+	g_assert (attr.length == 0);
+	g_assert (attr.value == NULL);
+
+	gp11_attribute_clear (&attr);
+}
 	
 DEFINE_TEST(new_memory)
 {
@@ -141,6 +166,32 @@ DEFINE_TEST(new_string)
 	g_assert (attr->type == ATTR_TYPE);
 	g_assert (attr->length == strlen ("a test string"));
 	g_assert (memcmp (attr->value, "a test string", attr->length) == 0);
+
+	gp11_attribute_free (attr);
+}
+
+DEFINE_TEST(new_invalid)
+{
+	GP11Attribute *attr;
+	
+	attr = gp11_attribute_new_invalid (ATTR_TYPE);
+	g_assert (attr->type == ATTR_TYPE);
+	g_assert (attr->length == (gulong)-1);
+	g_assert (attr->value == NULL);
+
+	g_assert (gp11_attribute_is_invalid (attr));
+	
+	gp11_attribute_free (attr);
+}
+
+DEFINE_TEST(new_empty)
+{
+	GP11Attribute *attr;
+	
+	attr = gp11_attribute_new_empty (ATTR_TYPE);
+	g_assert (attr->type == ATTR_TYPE);
+	g_assert (attr->length == 0);
+	g_assert (attr->value == NULL);
 
 	gp11_attribute_free (attr);
 }
@@ -243,14 +294,16 @@ DEFINE_TEST(new_attributes)
 }
 
 static void
-test_attributes_contents (GP11Attributes *attrs)
+test_attributes_contents (GP11Attributes *attrs, gboolean extras)
 {
 	GP11Attribute *attr;
 	gchar *value;
 	GDate date, *check;
+	guint count;
 	
 	g_assert (attrs != NULL);
-	g_assert (gp11_attributes_count (attrs) == 5);
+	count = extras ? 7 : 5;
+	g_assert_cmpuint (gp11_attributes_count (attrs), ==, count);
 	
 	attr = gp11_attributes_at (attrs, 0);
 	g_assert (attr->type == 0);
@@ -277,6 +330,20 @@ test_attributes_contents (GP11Attributes *attrs)
 	g_assert (attr->type == 404);
 	g_assert (attr->length == N_ATTR_DATA);
 	g_assert (memcmp (attr->value, ATTR_DATA, N_ATTR_DATA) == 0);
+	
+	if (!extras)
+		return;
+	
+	attr = gp11_attributes_at (attrs, 5);
+	g_assert (attr->type == 505);
+	g_assert (attr->length == (gulong)-1);
+	g_assert (attr->value == NULL);
+	g_assert (gp11_attribute_is_invalid (attr));
+
+	attr = gp11_attributes_at (attrs, 6);
+	g_assert (attr->type == 606);
+	g_assert (attr->length == 0);
+	g_assert (attr->value == NULL);
 }
 
 DEFINE_TEST(newv_attributes)
@@ -291,12 +358,27 @@ DEFINE_TEST(newv_attributes)
 	                              -1);
 	g_date_free (date);
 
-	test_attributes_contents (attrs);
+	test_attributes_contents (attrs, FALSE);
 	gp11_attributes_unref (attrs);
 	
 	/* An empty one */
 	attrs = gp11_attributes_newv (-1);
 	gp11_attributes_unref (attrs);
+}
+
+DEFINE_TEST(new_empty_attributes)
+{
+	GP11Attributes *attrs = gp11_attributes_new_empty (101, 202, 303, 404, -1);
+	GP11Attribute *attr;
+	guint i;
+	
+	g_assert_cmpuint (gp11_attributes_count (attrs), ==, 4);
+	for (i = 0; i < gp11_attributes_count (attrs); ++i) {
+		attr = gp11_attributes_at (attrs, i);
+		g_assert (attr->type == ((i + 1) * 100) + i + 1);
+		g_assert (attr->value == NULL);
+		g_assert (attr->length == 0);
+	}
 }
 
 static GP11Attributes*
@@ -306,7 +388,7 @@ help_attributes_valist (int dummy, ...)
 	va_list va;
 	
 	va_start (va, dummy);
-	attrs = gp11_attributes_new_valist (va);
+	attrs = gp11_attributes_new_valist (NULL, va);
 	va_end (va);
 	
 	return attrs;
@@ -326,7 +408,7 @@ DEFINE_TEST(new_valist_attributes)
 	                                -1);
 	
 	g_date_free (date);
-	test_attributes_contents (attrs);
+	test_attributes_contents (attrs, FALSE);
 	gp11_attributes_unref (attrs);	
 }
 
@@ -354,7 +436,9 @@ DEFINE_TEST(add_data_attributes)
 	gp11_attributes_add_date (attrs, 303, date);
 	g_date_free (date);
 	gp11_attributes_add_data (attrs, 404, ATTR_DATA, N_ATTR_DATA);
-	test_attributes_contents (attrs);
+	gp11_attributes_add_invalid (attrs, 505);
+	gp11_attributes_add_empty (attrs, 606);
+	test_attributes_contents (attrs, TRUE);
 	gp11_attributes_unref (attrs);
 }
 
@@ -387,7 +471,15 @@ DEFINE_TEST(add_attributes)
 	gp11_attributes_add (attrs, &attr);
 	gp11_attribute_clear (&attr);
 	
-	test_attributes_contents (attrs);
+	gp11_attribute_init_invalid (&attr, 505);
+	gp11_attributes_add (attrs, &attr);
+	gp11_attribute_clear (&attr);
+
+	gp11_attribute_init_empty (&attr, 606);
+	gp11_attributes_add (attrs, &attr);
+	gp11_attribute_clear (&attr);
+
+	test_attributes_contents (attrs, TRUE);
 	gp11_attributes_unref (attrs);
 }
 

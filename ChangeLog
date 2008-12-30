@@ -1,3 +1,19 @@
+2008-12-29  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
+	* gp11/gp11-attributes.c:
+	* gp11/gp11-object.c:
+	* gp11/gp11-private.h:
+	* gp11/gp11-session.c:
+	* gp11/tests/Makefile.am:
+	* gp11/tests/unit-test-gp11-attributes.c:
+	* gp11/tests/unit-test-gp11-crypto.c:
+	* gp11/tests/unit-test-gp11-object.c:
+	* tool/gkr-tool-import.c: Add support for specifying custom allocators
+	on GP11Attributes, and fine tune how gp11_object_get_* work. Add 
+	concept of locked attribute arrays with guarantees of application to 
+	not modify while we're processing them. 
+	
 2008-12-28  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:

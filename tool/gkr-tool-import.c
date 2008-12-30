@@ -55,8 +55,8 @@ print_object_information (GP11Object *object)
 	GError *err = NULL;
 	gchar *label;
 	
-	attrs = gp11_object_get_full (object, ATTR_TYPES, G_N_ELEMENTS(ATTR_TYPES), NULL, &err);
-	if(!attrs) {
+	attrs = gp11_attributes_new_empty (CKA_LABEL, CKA_CLASS, CKA_ID, -1);
+	if (!gp11_object_get_full (object, attrs, NULL, &err)) {
 		gkr_tool_handle_error (&err, "couldn't get imported object info");
 		return;
 	}
@@ -115,18 +115,27 @@ print_object_information (GP11Object *object)
 static void
 print_import_information (GP11Session *session, GP11Object *import)
 {
-	GP11Attribute *attr;
+	CK_OBJECT_HANDLE_PTR handles;
+	CK_ULONG n_handles;
+	gsize length;
 	GList *objects, *l;
+	GP11Slot *slot;
 	GError *err;
 	
-	attr = gp11_object_get_one (import, CKA_GNOME_IMPORT_OBJECTS, &err);
-	if (!attr) {
+	handles = gp11_object_get_data (import, CKA_GNOME_IMPORT_OBJECTS, &length, &err);
+	if (!handles) {
 		gkr_tool_handle_error (&err, "couldn't find imported objects");
 		return;
 	}
+	
+	n_handles = length / sizeof (CK_OBJECT_HANDLE);
+	
+	slot = gp11_session_get_slot (session);
+	g_return_if_fail (slot);
 
-	objects = gp11_objects_from_handle_array (session, attr);
-	gp11_attribute_free (attr);
+	objects = gp11_objects_from_handle_array (slot, handles, n_handles);
+	g_free (handles);
+	g_object_unref (slot);
 
 	for (l = objects; l; l = g_list_next (l))
 		print_object_information (GP11_OBJECT (l->data));

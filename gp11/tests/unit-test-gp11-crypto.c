@@ -51,18 +51,20 @@ find_key (GP11Session *session, CK_ATTRIBUTE_TYPE method, CK_MECHANISM_TYPE mech
 {
 	GList *objects, *l;
 	GP11Object *object = NULL;
-	GP11Attribute *attr;
+	CK_MECHANISM_TYPE_PTR mechs;
+	gsize n_mechs;
 	
 	objects = gp11_session_find_objects (session, NULL, method, GP11_BOOLEAN, TRUE, GP11_INVALID);
 	g_assert (objects);
 	
 	for (l = objects; l; l = g_list_next (l)) {
 		gp11_object_set_session (l->data, session);
-		attr = gp11_object_get_one (l->data, CKA_ALLOWED_MECHANISMS, NULL);
-		g_assert (attr);
+		mechs = gp11_object_get_data (l->data, CKA_ALLOWED_MECHANISMS, &n_mechs, NULL);
+		g_assert (mechs);
+		g_assert (n_mechs == sizeof (CK_MECHANISM_TYPE));
 		
 		/* We know all of them only have one allowed mech */
-		if (gp11_attribute_get_ulong (attr) == mech) {
+		if (*mechs == mech) {
 			object = l->data;
 			g_object_ref (object);
 			break;

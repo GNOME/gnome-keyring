@@ -185,11 +185,10 @@ DEFINE_TEST(destroy_object)
 DEFINE_TEST(get_attributes)
 {
 	GAsyncResult *result = NULL;
-	GP11Attributes *attrs;
+	GP11Attributes *attrs, *attrs_ret;
 	GError *err = NULL;
 	gulong klass;
 	gchar *value = NULL;
-	gulong types[2] = { CKA_CLASS, CKA_LABEL };
 	
 	/* Simple */
 	attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);
@@ -198,69 +197,78 @@ DEFINE_TEST(get_attributes)
 		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
 		g_assert (gp11_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "TEST LABEL") == 0);
 		g_free (value); value = NULL;
-		gp11_attributes_unref (attrs);
 	}
+	gp11_attributes_unref (attrs);
 
 	/* Full */
-	attrs = gp11_object_get_full (object, types, 2, NULL, &err);
-	SUCCESS_RES (attrs, err);
-	if (attrs != NULL) {
+	attrs = gp11_attributes_new_empty (CKA_CLASS, CKA_LABEL, -1);
+	attrs_ret = gp11_object_get_full (object, attrs, NULL, &err);
+	SUCCESS_RES (attrs_ret, err);
+	if (attrs_ret != NULL) {
+		g_assert (attrs_ret == attrs);
 		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
 		g_assert (gp11_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "TEST LABEL") == 0);
 		g_free (value); value = NULL;
-		gp11_attributes_unref (attrs);
 	}
+	gp11_attributes_unref (attrs);
 
 	/* Async */
-	gp11_object_get_async (object, types, 2, NULL, fetch_async_result, &result);
+	attrs = gp11_attributes_new_empty (CKA_CLASS, CKA_LABEL, -1);
+	gp11_object_get_async (object, attrs, NULL, fetch_async_result, &result);
 	WAIT_UNTIL (result);
 	g_assert (result != NULL);
 
-	attrs = gp11_object_get_finish (object, result, &err);
+	attrs_ret = gp11_object_get_finish (object, result, &err);
 	g_object_unref (result);
 	SUCCESS_RES (attrs, err);
 	if (attrs != NULL) {
+		g_assert (attrs_ret == attrs);
 		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
 		g_assert (gp11_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "TEST LABEL") == 0);
 		g_free (value); value = NULL;
-		gp11_attributes_unref (attrs);
 	}
+	gp11_attributes_unref (attrs);
 }
 
-DEFINE_TEST(get_one_attribute)
+DEFINE_TEST(get_data_attribute)
 {
 	GAsyncResult *result = NULL;
-	GP11Attribute *attr;
+	CK_OBJECT_CLASS_PTR klass;
+	gsize n_data;
 	GError *err = NULL;
 	
 	/* Simple */
-	attr = gp11_object_get_one (object, CKA_CLASS, &err);
-	SUCCESS_RES (attr, err);
-	if (attr != NULL) {
-		g_assert (attr->type == CKA_CLASS && gp11_attribute_get_ulong (attr) == CKO_DATA);
-		gp11_attribute_free (attr);
+	klass = gp11_object_get_data (object, CKA_CLASS, &n_data, &err);
+	SUCCESS_RES (klass, err);
+	if (klass != NULL) {
+		g_assert (n_data == sizeof (CK_OBJECT_CLASS));
+		g_assert (*klass == CKO_DATA);
+		g_free (klass);
 	}
 
 	/* Full */
-	attr = gp11_object_get_one_full (object, CKA_CLASS, NULL, &err);
-	SUCCESS_RES (attr, err);
-	if (attr != NULL) {
-		g_assert (attr->type == CKA_CLASS && gp11_attribute_get_ulong (attr) == CKO_DATA);
-		gp11_attribute_free (attr);
+	klass = gp11_object_get_data_full (object, CKA_CLASS, NULL, NULL, &n_data, &err);
+	SUCCESS_RES (klass, err);
+	if (klass != NULL) {
+		g_assert (n_data == sizeof (CK_OBJECT_CLASS));
+		g_assert (*klass == CKO_DATA);
+		g_free (klass);
 	}
 
 	/* Async */
-	gp11_object_get_one_async (object, CKA_CLASS, NULL, fetch_async_result, &result);
+	gp11_object_get_data_async (object, CKA_CLASS, NULL, NULL, fetch_async_result, &result);
 	WAIT_UNTIL (result);
 	g_assert (result != NULL);
 
-	attr = gp11_object_get_one_finish (object, result, &err);
+	klass = gp11_object_get_data_finish (object, result, &n_data, &err);
 	g_object_unref (result);
-	SUCCESS_RES (attr, err);
-	if (attr != NULL) {
-		g_assert (attr->type == CKA_CLASS && gp11_attribute_get_ulong (attr) == CKO_DATA);
-		gp11_attribute_free (attr);
+	SUCCESS_RES (klass, err);
+	if (klass != NULL) {
+		g_assert (n_data == sizeof (CK_OBJECT_CLASS));
+		g_assert (*klass == CKO_DATA);
+		g_free (klass);
 	}
+
 }
 
 DEFINE_TEST(set_attributes)
@@ -372,11 +380,9 @@ DEFINE_TEST(explicit_sessions)
 {
 	GP11Session *sess;
 	GAsyncResult *result = NULL;
-	GP11Attributes *attrs;
+	CK_OBJECT_CLASS_PTR klass;
 	GError *err = NULL;
-	gulong klass;
-	gchar *value = NULL;
-	gulong types[2] = { CKA_CLASS, CKA_LABEL };
+	gsize n_data;
 
 	/* Set an explicit session */
 	gp11_object_set_session (object, session);
@@ -388,28 +394,26 @@ DEFINE_TEST(explicit_sessions)
 	g_object_unref (sess);
 	
 	/* Simple */
-	attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);
-	SUCCESS_RES (attrs, err);
-	if (attrs != NULL) {
-		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
-		g_assert (gp11_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "TEST LABEL") == 0);
-		g_free (value); value = NULL;
-		gp11_attributes_unref (attrs);
+	klass = gp11_object_get_data (object, CKA_CLASS, &n_data, &err);
+	SUCCESS_RES (klass, err);
+	if (klass != NULL) {
+		g_assert (n_data == sizeof (CK_OBJECT_CLASS));
+		g_assert (*klass == CKO_DATA);
+		g_free (klass);
 	}
 
 	/* Async */
-	gp11_object_get_async (object, types, 2, NULL, fetch_async_result, &result);
+	gp11_object_get_data_async (object, CKA_CLASS, NULL, NULL, fetch_async_result, &result);
 	WAIT_UNTIL (result);
 	g_assert (result != NULL);
 
-	attrs = gp11_object_get_finish (object, result, &err);
+	klass = gp11_object_get_data_finish (object, result, &n_data, &err);
 	g_object_unref (result);
-	SUCCESS_RES (attrs, err);
-	if (attrs != NULL) {
-		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
-		g_assert (gp11_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "TEST LABEL") == 0);
-		g_free (value); value = NULL;
-		gp11_attributes_unref (attrs);
+	SUCCESS_RES (klass, err);
+	if (klass != NULL) {
+		g_assert (n_data == sizeof (CK_OBJECT_CLASS));
+		g_assert (*klass == CKO_DATA);
+		g_free (klass);
 	}
 
 	/* Set it to null and make sure taht works */

@@ -29,6 +29,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+static void
+attribute_init (GP11Attribute *attr, gulong attr_type, 
+                gconstpointer value, gsize length,
+                GP11Allocator allocator)
+{
+	g_assert (sizeof (GP11Attribute) == sizeof (CK_ATTRIBUTE));
+	g_assert (allocator);
+	
+	memset (attr, 0, sizeof (GP11Attribute));
+	attr->type = attr_type;
+	attr->length = length;
+	if (value && length) {
+		attr->value = (allocator) (NULL, length);
+		g_assert (attr->value);
+		memcpy (attr->value, value, length);
+	}
+}
+
 /**
  * gp11_attribute_init:
  * @attr: An uninitialized attribute.
@@ -46,11 +65,8 @@ void
 gp11_attribute_init (GP11Attribute *attr, gulong attr_type, 
                      gconstpointer value, gsize length)
 {
-	g_assert (sizeof (GP11Attribute) == sizeof (CK_ATTRIBUTE));
-	memset (attr, 0, sizeof (GP11Attribute));
-	attr->type = attr_type;
-	attr->length = length;
-	attr->value = value && length ? g_memdup (value, length) : NULL;
+	g_return_if_fail (attr);
+	attribute_init (attr, attr_type, value, length, g_realloc);
 }
 
 /**
@@ -68,21 +84,41 @@ gp11_attribute_init (GP11Attribute *attr, gulong attr_type,
 void
 gp11_attribute_init_invalid (GP11Attribute *attr, gulong attr_type)
 {
+	g_return_if_fail (attr);
 	g_assert (sizeof (GP11Attribute) == sizeof (CK_ATTRIBUTE));
 	memset (attr, 0, sizeof (GP11Attribute));
 	attr->type = attr_type;
 	attr->length = (gulong)-1;
 }
 
+/**
+ * gp11_attribute_init_empty:
+ * @attr: An uninitialized attribute.
+ * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * 
+ * Initialize a PKCS#11 attribute to an empty state. The attribute
+ * type will be set, but no data will be set.
+ * 
+ * When done with the attribute you should use gp11_attribute_clear()
+ * to free the internal memory. 
+ **/
 void
-_gp11_attribute_init_take (GP11Attribute *attr, gulong attr_type,
-                           gpointer value, gsize length)
+gp11_attribute_init_empty (GP11Attribute *attr, gulong attr_type)
 {
+	g_return_if_fail (attr);
 	g_assert (sizeof (GP11Attribute) == sizeof (CK_ATTRIBUTE));
 	memset (attr, 0, sizeof (GP11Attribute));
 	attr->type = attr_type;
-	attr->length = length;
-	attr->value = value && length ? value : NULL;	
+	attr->length = 0;
+	attr->value = 0;
+}
+
+static void 
+attribute_init_boolean (GP11Attribute *attr, gulong attr_type, 
+                        gboolean value, GP11Allocator allocator)
+{
+	CK_BBOOL bvalue = value ? CK_TRUE : CK_FALSE;
+	attribute_init (attr, attr_type, &bvalue, sizeof (bvalue), allocator);
 }
 
 /**
@@ -101,8 +137,25 @@ void
 gp11_attribute_init_boolean (GP11Attribute *attr, gulong attr_type, 
                              gboolean value)
 {
-	CK_BBOOL bvalue = value ? CK_TRUE : CK_FALSE;
-	gp11_attribute_init (attr, attr_type, &bvalue, sizeof (bvalue));
+	g_return_if_fail (attr);
+	attribute_init_boolean (attr, attr_type, value, g_realloc);
+}
+
+static void
+attribute_init_date (GP11Attribute *attr, gulong attr_type, 
+                     const GDate *value, GP11Allocator allocator)
+{
+	gchar buffer[9];
+	CK_DATE date;
+	g_assert (value);
+	g_snprintf (buffer, sizeof (buffer), "%04d%02d%02d",
+	            (int)g_date_get_year (value), 
+	            (int)g_date_get_month (value),
+	            (int)g_date_get_day (value));
+	memcpy (&date.year, buffer + 0, 4);
+	memcpy (&date.month, buffer + 4, 2);
+	memcpy (&date.day, buffer + 6, 2);
+	attribute_init (attr, attr_type, &date, sizeof (CK_DATE), allocator);
 }
 
 /**
@@ -121,17 +174,17 @@ void
 gp11_attribute_init_date (GP11Attribute *attr, gulong attr_type, 
                           const GDate *value)
 {
-	gchar buffer[9];
-	CK_DATE date;
+	g_return_if_fail (attr);
 	g_return_if_fail (value);
-	g_snprintf (buffer, sizeof (buffer), "%04d%02d%02d",
-	            (int)g_date_get_year (value), 
-	            (int)g_date_get_month (value),
-	            (int)g_date_get_day (value));
-	memcpy (&date.year, buffer + 0, 4);
-	memcpy (&date.month, buffer + 4, 2);
-	memcpy (&date.day, buffer + 6, 2);
-	gp11_attribute_init (attr, attr_type, &date, sizeof (CK_DATE));
+	attribute_init_date (attr, attr_type, value, g_realloc);
+}
+
+static void
+attribute_init_ulong (GP11Attribute *attr, gulong attr_type,
+                      gulong value, GP11Allocator allocator)
+{
+	CK_ULONG uvalue = value;
+	attribute_init (attr, attr_type, &uvalue, sizeof (uvalue), allocator);
 }
 
 /**
@@ -150,8 +203,16 @@ void
 gp11_attribute_init_ulong (GP11Attribute *attr, gulong attr_type,
                            gulong value)
 {
-	CK_ULONG uvalue = value;
-	gp11_attribute_init (attr, attr_type, &uvalue, sizeof (uvalue));
+	g_return_if_fail (attr);
+	attribute_init_ulong (attr, attr_type, value, g_realloc);
+}
+
+static void
+attribute_init_string (GP11Attribute *attr, gulong attr_type, 
+                       const gchar *value, GP11Allocator allocator)
+{
+	gsize len = value ? strlen (value) : 0;
+	attribute_init (attr, attr_type, (gpointer)value, len, allocator);
 }
 
 /**
@@ -172,8 +233,8 @@ void
 gp11_attribute_init_string (GP11Attribute *attr, gulong attr_type, 
                             const gchar *value)
 {
-	gsize len = value ? strlen (value) : 0;
-	gp11_attribute_init (attr, attr_type, (gpointer)value, len);
+	g_return_if_fail (attr);
+	attribute_init_string (attr, attr_type, value, g_realloc);
 }
 
 /**
@@ -192,7 +253,7 @@ GP11Attribute*
 gp11_attribute_new (gulong attr_type, gpointer value, gsize length)
 {
 	GP11Attribute *attr = g_slice_new0 (GP11Attribute);
-	gp11_attribute_init (attr, attr_type, value, length);
+	attribute_init (attr, attr_type, value, length, g_realloc);
 	return attr;
 }
 
@@ -216,6 +277,23 @@ gp11_attribute_new_invalid (gulong attr_type)
 }
 
 /**
+ * gp11_attribute_new_empty:
+ * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * 
+ * Create a new PKCS#11 attribute with empty data. 
+ * 
+ * Return value: The new attribute. When done with the attribute use 
+ * gp11_attribute_free() to free it.
+ */
+GP11Attribute*
+gp11_attribute_new_empty (gulong attr_type)
+{
+	GP11Attribute *attr = g_slice_new0 (GP11Attribute);
+	gp11_attribute_init_empty (attr, attr_type);
+	return attr;
+}
+
+/**
  * gp11_attribute_new_boolean:
  * @attr_type: The PKCS#11 attribute type to set on the attribute.
  * @value: The boolean value of the attribute.
@@ -230,7 +308,7 @@ GP11Attribute*
 gp11_attribute_new_boolean (gulong attr_type, gboolean value)
 {
 	GP11Attribute *attr = g_slice_new0 (GP11Attribute);
-	gp11_attribute_init_boolean (attr, attr_type, value);
+	attribute_init_boolean (attr, attr_type, value, g_realloc);
 	return attr;	
 }
 
@@ -249,7 +327,7 @@ GP11Attribute*
 gp11_attribute_new_date (gulong attr_type, const GDate *value)
 {
 	GP11Attribute *attr = g_slice_new0 (GP11Attribute);
-	gp11_attribute_init_date (attr, attr_type, value);
+	attribute_init_date (attr, attr_type, value, g_realloc);
 	return attr;		
 }
 
@@ -268,7 +346,7 @@ GP11Attribute*
 gp11_attribute_new_ulong (gulong attr_type, gulong value)
 {
 	GP11Attribute *attr = g_slice_new0 (GP11Attribute);
-	gp11_attribute_init_ulong (attr, attr_type, value);
+	attribute_init_ulong (attr, attr_type, value, g_realloc);
 	return attr;			
 }
 
@@ -289,7 +367,7 @@ GP11Attribute*
 gp11_attribute_new_string (gulong attr_type, const gchar *value)
 {
 	GP11Attribute *attr = g_slice_new0 (GP11Attribute);
-	gp11_attribute_init_string (attr, attr_type, value);
+	attribute_init_string (attr, attr_type, value, g_realloc);
 	return attr;		
 }
 
@@ -449,6 +527,26 @@ gp11_attribute_dup (GP11Attribute *attr)
 	return copy;
 }
 
+static void
+attribute_init_copy (GP11Attribute *dest, const GP11Attribute *src, GP11Allocator allocator)
+{
+	g_assert (dest);
+	g_assert (src);
+	g_assert (allocator);
+
+	/* 
+	 * TODO: Handle stupid, dumb, broken, special cases like
+	 * CKA_WRAP_TEMPLATE and CKA_UNWRAP_TEMPLATE. 
+	 */
+
+	memcpy (dest, src, sizeof (GP11Attribute));
+	if (src->value && src->length) {
+		dest->value = (allocator) (NULL, src->length);
+		g_assert (dest->value);
+		memcpy (dest->value, src->value, src->length);
+	}
+}
+
 /**
  * gp11_attribute_init_copy:
  * @dest: An uninitialized attribute.
@@ -461,18 +559,22 @@ gp11_attribute_dup (GP11Attribute *attr)
  * gp11_attribute_clear() to free the internal memory. 
  **/ 
 void
-gp11_attribute_init_copy (GP11Attribute *dest, GP11Attribute *src)
+gp11_attribute_init_copy (GP11Attribute *dest, const GP11Attribute *src)
 {
 	g_return_if_fail (dest);
 	g_return_if_fail (src);
+	attribute_init_copy (dest, src, g_realloc);
+}
 
-	/* 
-	 * TODO: Handle stupid, dumb, broken, special cases like
-	 * CKA_WRAP_TEMPLATE and CKA_UNWRAP_TEMPLATE. 
-	 */
-	
-	memcpy (dest, src, sizeof (GP11Attribute));
-	dest->value = src->value && src->length ? g_memdup (src->value, src->length) : NULL;
+static void
+attribute_clear (GP11Attribute *attr, GP11Allocator allocator)
+{
+	g_assert (attr);
+	g_assert (allocator);
+	if (attr->value)
+		(allocator) (attr->value, 0);
+	attr->value = NULL;
+	attr->length = 0;
 }
 
 /**
@@ -482,13 +584,14 @@ gp11_attribute_init_copy (GP11Attribute *dest, GP11Attribute *src)
  * Clear allocated memory held by a statically allocated attribute.
  * These are usually initialized with gp11_attribute_init() or a 
  * similar function.
+ * 
+ * The type of the attribute will remain set.
  **/
 void
 gp11_attribute_clear (GP11Attribute *attr)
 {
 	g_return_if_fail (attr);
-	g_free (attr->value);
-	memset (attr, 0, sizeof (GP11Attribute));
+	attribute_clear (attr, g_realloc);
 }
 
 /**
@@ -503,14 +606,15 @@ void
 gp11_attribute_free (GP11Attribute *attr)
 {
 	if (attr) {
-		gp11_attribute_clear (attr);
+		attribute_clear (attr, g_realloc);
 		g_slice_free (GP11Attribute, attr);
 	}
 }
 
 struct _GP11Attributes {
 	GArray *array;
-	gint immutable;
+	GP11Allocator allocator;
+	gboolean locked;
 	gint refs;
 };
 
@@ -543,24 +647,73 @@ gp11_attributes_get_boxed_type (void)
 GP11Attributes*
 gp11_attributes_new (void)
 {
+	return gp11_attributes_new_full (g_realloc);
+}
+
+/**
+ * gp11_attributes_new_full:
+ * @allocator: Memory allocator for attribute data, or NULL for default.
+ * 
+ * Create a new GP11Attributes array.
+ * 
+ * Return value: The new attributes array. When done with the array 
+ * release it with gp11_attributes_unref().
+ **/
+GP11Attributes*
+gp11_attributes_new_full (GP11Allocator allocator)
+{
 	GP11Attributes *attrs;
+
+	if (!allocator)
+		allocator = g_realloc;
 	
 	g_assert (sizeof (GP11Attribute) == sizeof (CK_ATTRIBUTE));
 	attrs = g_slice_new0 (GP11Attributes);
 	attrs->array = g_array_new (0, 1, sizeof (GP11Attribute));
+	attrs->allocator = allocator;
 	attrs->refs = 1;
-	attrs->immutable = 0;
+	attrs->locked = FALSE;
+	return attrs;
+}
+
+/**
+ * gp11_attributes_new_empty:
+ * @attr_type: The first attribute type to add as empty.
+ * 
+ * Creates an GP11Attributes array with empty attributes. The arguments 
+ * should be values of attribute types, terminated with -1.
+ * 
+ * Return value: The new attributes array. When done with the array 
+ * release it with gp11_attributes_unref().
+ **/
+GP11Attributes*
+gp11_attributes_new_empty (gulong attr_type, ...)
+{
+	GP11Attributes *attrs = gp11_attributes_new_full (g_realloc);
+	va_list va;
+
+	va_start (va, attr_type);
+	
+	while (attr_type != (gulong)-1) {
+		gp11_attributes_add_empty (attrs, attr_type);
+		attr_type = va_arg (va, gulong);
+	}
+
+	va_end (va);
+
 	return attrs;
 }
 
 static GP11Attributes*
-initialize_from_valist (gulong type, va_list va)
+initialize_from_valist (GP11Allocator allocator, gulong type, va_list va)
 {
 	GP11Attributes *attrs;
 	gssize length;
 	gpointer value;
 	
-	attrs = gp11_attributes_new ();
+	g_assert (allocator);
+	
+	attrs = gp11_attributes_new_full (allocator);
 	
 	/* No attributes */
 	if (type == (gulong)-1)
@@ -639,7 +792,7 @@ gp11_attributes_newv (gulong first_type, ...)
 	va_list va;
 	
 	va_start (va, first_type);
-	attrs = initialize_from_valist (first_type, va);
+	attrs = initialize_from_valist (g_realloc, first_type, va);
 	va_end (va);
 	
 	return attrs;
@@ -647,6 +800,7 @@ gp11_attributes_newv (gulong first_type, ...)
 
 /**
  * gp11_attributes_newv:
+ * @allocator: Memory allocator for attribute data, or NULL for default.
  * @va: Variable argument containing attributes to add. 
  * 
  * Create a new GP11Attributes array.
@@ -676,10 +830,14 @@ gp11_attributes_newv (gulong first_type, ...)
  * release it with gp11_attributes_unref().
  **/
 GP11Attributes*
-gp11_attributes_new_valist (va_list va)
+gp11_attributes_new_valist (GP11Allocator allocator, va_list va)
 {
 	gulong type = va_arg (va, gulong);
-	return initialize_from_valist (type, va);
+	
+	if (!allocator)
+		allocator = g_realloc;
+	
+	return initialize_from_valist (allocator, type, va);
 }
 
 /**
@@ -699,23 +857,15 @@ gp11_attributes_at (GP11Attributes *attrs, guint index)
 {
 	g_return_val_if_fail (attrs && attrs->array, NULL);
 	g_return_val_if_fail (index < attrs->array->len, NULL);
-	g_return_val_if_fail (g_atomic_int_get (&attrs->immutable) == 0, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
 	return &g_array_index (attrs->array, GP11Attribute, index);
-}
-
-CK_ATTRIBUTE_PTR
-_gp11_attributes_raw (GP11Attributes *attrs)
-{
-	g_return_val_if_fail (attrs && attrs->array, NULL);
-	return (CK_ATTRIBUTE_PTR)attrs->array->data;
 }
 
 static GP11Attribute*
 attributes_push (GP11Attributes *attrs)
 {
 	GP11Attribute attr;
-	g_assert (g_atomic_int_get (&attrs->immutable) == 0);
-	
+	g_assert (!attrs->locked);
 	memset (&attr, 0, sizeof (attr));
 	g_array_append_val (attrs->array, attr);
 	return &g_array_index (attrs->array, GP11Attribute, attrs->array->len - 1);
@@ -735,21 +885,10 @@ gp11_attributes_add (GP11Attributes *attrs, GP11Attribute *attr)
 {
 	GP11Attribute *added;
 	g_return_if_fail (attrs && attrs->array);
-	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
+	g_return_if_fail (!attrs->locked);
 	g_return_if_fail (attr);
 	added = attributes_push (attrs);
-	gp11_attribute_init_copy (added, attr);
-}
-
-void
-_gp11_attributes_add_take (GP11Attributes *attrs, gulong attr_type,
-                           gpointer value, gsize length)
-{
-	GP11Attribute *added;
-	g_return_if_fail (attrs);
-	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
-	added = attributes_push (attrs);
-	_gp11_attribute_init_take (added, attr_type, (gpointer)value, length);
+	attribute_init_copy (added, attr, attrs->allocator);
 }
 
 /**
@@ -769,9 +908,9 @@ gp11_attributes_add_data (GP11Attributes *attrs, gulong attr_type,
 {
 	GP11Attribute *added;
 	g_return_if_fail (attrs);
-	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
+	g_return_if_fail (!attrs->locked);
 	added = attributes_push (attrs);
-	gp11_attribute_init (added, attr_type, value, length);
+	attribute_init (added, attr_type, value, length, attrs->allocator);
 }
 
 /**
@@ -786,9 +925,26 @@ gp11_attributes_add_invalid (GP11Attributes *attrs, gulong attr_type)
 {
 	GP11Attribute *added;
 	g_return_if_fail (attrs);
-	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
+	g_return_if_fail (!attrs->locked);
 	added = attributes_push (attrs);
 	gp11_attribute_init_invalid (added, attr_type);	
+}
+
+/**
+ * gp11_attributes_add_empty:
+ * @attrs: The attributes array to add.
+ * @attr_type: The type of attribute to add.
+ * 
+ * Add an attribute with the specified type, with empty data.
+ **/
+void
+gp11_attributes_add_empty (GP11Attributes *attrs, gulong attr_type)
+{
+	GP11Attribute *added;
+	g_return_if_fail (attrs);
+	g_return_if_fail (!attrs->locked);
+	added = attributes_push (attrs);
+	gp11_attribute_init_empty (added, attr_type);		
 }
 
 /**
@@ -806,9 +962,9 @@ gp11_attributes_add_boolean (GP11Attributes *attrs, gulong attr_type, gboolean v
 {
 	GP11Attribute *added;
 	g_return_if_fail (attrs);
-	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
+	g_return_if_fail (!attrs->locked);
 	added = attributes_push (attrs);
-	gp11_attribute_init_boolean (added, attr_type, value);
+	attribute_init_boolean (added, attr_type, value, attrs->allocator);
 }
 
 /**
@@ -826,9 +982,9 @@ gp11_attributes_add_string (GP11Attributes *attrs, gulong attr_type, const gchar
 {
 	GP11Attribute *added;
 	g_return_if_fail (attrs);
-	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
+	g_return_if_fail (!attrs->locked);
 	added = attributes_push (attrs);
-	gp11_attribute_init_string (added, attr_type, value);
+	attribute_init_string (added, attr_type, value, attrs->allocator);
 }
 
 /**
@@ -846,9 +1002,9 @@ gp11_attributes_add_date (GP11Attributes *attrs, gulong attr_type, const GDate *
 {
 	GP11Attribute *added;
 	g_return_if_fail (attrs);
-	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
+	g_return_if_fail (!attrs->locked);
 	added = attributes_push (attrs);
-	gp11_attribute_init_date (added, attr_type, value);
+	attribute_init_date (added, attr_type, value, attrs->allocator);
 }
 
 /**
@@ -866,9 +1022,9 @@ gp11_attributes_add_ulong (GP11Attributes *attrs, gulong attr_type, gulong value
 {
 	GP11Attribute *added;
 	g_return_if_fail (attrs);
-	g_return_if_fail (g_atomic_int_get (&attrs->immutable) == 0);
+	g_return_if_fail (!attrs->locked);
 	added = attributes_push (attrs);
-	gp11_attribute_init_ulong (added, attr_type, value);
+	attribute_init_ulong (added, attr_type, value, attrs->allocator);
 }
 
 /**
@@ -883,6 +1039,7 @@ gulong
 gp11_attributes_count (GP11Attributes *attrs)
 {
 	g_return_val_if_fail (attrs, 0);
+	g_return_val_if_fail (!attrs->locked, 0);
 	return attrs->array->len;
 }
 
@@ -902,7 +1059,8 @@ gp11_attributes_find (GP11Attributes *attrs, gulong attr_type)
 	guint i;
 	
 	g_return_val_if_fail (attrs && attrs->array, NULL);
-	
+	g_return_val_if_fail (!attrs->locked, NULL);
+
 	for (i = 0; i < attrs->array->len; ++i) {
 		attr = gp11_attributes_at (attrs, i);
 		if (attr->type == attr_type)
@@ -930,7 +1088,9 @@ gboolean
 gp11_attributes_find_boolean (GP11Attributes *attrs, gulong attr_type, gboolean *value)
 {
 	GP11Attribute *attr;
+
 	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (!attrs->locked, FALSE);
 
 	attr = gp11_attributes_find (attrs, attr_type);
 	if (!attr || gp11_attribute_is_invalid (attr))
@@ -957,7 +1117,9 @@ gboolean
 gp11_attributes_find_ulong (GP11Attributes *attrs, gulong attr_type, gulong *value)
 {
 	GP11Attribute *attr;
+	
 	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (!attrs->locked, FALSE);
 
 	attr = gp11_attributes_find (attrs, attr_type);
 	if (!attr || gp11_attribute_is_invalid (attr))
@@ -984,7 +1146,9 @@ gboolean
 gp11_attributes_find_string (GP11Attributes *attrs, gulong attr_type, gchar **value)
 {
 	GP11Attribute *attr;
+	
 	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (!attrs->locked, FALSE);
 
 	attr = gp11_attributes_find (attrs, attr_type);
 	if (!attr || gp11_attribute_is_invalid (attr))
@@ -1011,7 +1175,9 @@ gboolean
 gp11_attributes_find_date (GP11Attributes *attrs, gulong attr_type, GDate *value)
 {
 	GP11Attribute *attr;
+	
 	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (!attrs->locked, FALSE);
 
 	attr = gp11_attributes_find (attrs, attr_type);
 	if (!attr || gp11_attribute_is_invalid (attr))
@@ -1052,10 +1218,101 @@ gp11_attributes_unref (GP11Attributes *attrs)
 	
 	if (g_atomic_int_dec_and_test (&attrs->refs)) {
 		g_return_if_fail (attrs->array);
+		g_return_if_fail (!attrs->locked);
 		for (i = 0; i < attrs->array->len; ++i)
-			gp11_attribute_clear (gp11_attributes_at (attrs, i));
+			attribute_clear (gp11_attributes_at (attrs, i), attrs->allocator);
 		g_array_free (attrs->array, TRUE);
 		attrs->array = NULL;
 		g_slice_free (GP11Attributes, attrs);
 	}
+}
+
+/* -------------------------------------------------------------------------------------------
+ * INTERNAL
+ * 
+ * The idea is that while we're processing a GP11Attributes array (via PKCS#11 
+ * C_GetAtributeValue for example) the calling application shouldn't access those
+ * attributes at all, except to ref or unref them.
+ * 
+ * We try to help debug this with our 'locked' states. The various processing 
+ * functions that accept GP11Attributes lock the attributes while handing 
+ * them off to be processed (perhaps in a different thread). We check this locked
+ * flag in all public functions accessing GP11Attributes.
+ * 
+ * The reason we don't use thread safe or atomic primitives here, is because:
+ *  a) The attributes are 'locked' by the same thread that prepares the call.
+ *  b) This is a debugging feature, and should not be relied on for correctness. 
+ */
+
+void
+_gp11_attributes_lock (GP11Attributes *attrs)
+{
+	g_assert (attrs);
+	g_assert (!attrs->locked);
+	attrs->locked = TRUE;
+}
+
+void
+_gp11_attributes_unlock (GP11Attributes *attrs)
+{
+	g_assert (attrs);
+	g_assert (attrs->locked);
+	attrs->locked = FALSE;
+}
+
+CK_ATTRIBUTE_PTR
+_gp11_attributes_prepare_in (GP11Attributes *attrs, CK_ULONG_PTR n_attrs)
+{
+	GP11Attribute *attr;
+	guint i;
+
+	g_assert (attrs);
+	g_assert (n_attrs);
+	g_assert (attrs->locked);
+	
+	/* Prepare the attributes to receive their length */
+	
+	for (i = 0; i < attrs->array->len; ++i) {
+		attr = &g_array_index (attrs->array, GP11Attribute, i);
+		attribute_clear (attr, attrs->allocator);
+	}
+	
+	*n_attrs = attrs->array->len;
+	return (CK_ATTRIBUTE_PTR)attrs->array->data;
+}
+
+CK_ATTRIBUTE_PTR
+_gp11_attributes_commit_in (GP11Attributes *attrs, CK_ULONG_PTR n_attrs)
+{
+	GP11Attribute *attr;
+	guint i;
+	
+	g_assert (attrs);
+	g_assert (n_attrs);
+	g_assert (attrs->locked);
+	
+	/* Allocate each attribute with the length that was set */
+	
+	for (i = 0; i < attrs->array->len; ++i) {
+		attr = &g_array_index (attrs->array, GP11Attribute, i);
+		g_assert (!attr->value);
+		if (attr->length != 0 && attr->length != (gulong)-1) {
+			attr->value = (attrs->allocator) (NULL, attr->length);
+			g_assert (attr->value);
+		}
+	}
+	
+	*n_attrs = attrs->array->len;
+	return (CK_ATTRIBUTE_PTR)attrs->array->data;	
+}
+
+CK_ATTRIBUTE_PTR
+_gp11_attributes_commit_out (GP11Attributes *attrs, CK_ULONG_PTR n_attrs)
+{
+	g_assert (attrs);
+	g_assert (n_attrs);
+	g_assert (attrs->locked);
+	
+	*n_attrs = attrs->array->len;
+	return (CK_ATTRIBUTE_PTR)attrs->array->data;
 }

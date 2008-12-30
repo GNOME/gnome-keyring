@@ -286,28 +286,26 @@ gp11_object_from_handle (GP11Slot *slot, CK_OBJECT_HANDLE handle)
 /**
  * gp11_objects_from_handle_array:
  * @slot: The slot on which these objects are present.
- * @attr: The raw object handles, contained in an attribute.
+ * @handles: The raw object handles.
+ * @n_handles: The number of raw object handles.
  * 
- * Initialize a list of GP11Object from raw PKCS#11 handles contained inside 
- * of an attribute. The attribute must contain contiguous CK_OBJECT_HANDLE
- * handles in an array.
+ * Initialize a list of GP11Object from raw PKCS#11 handles. The handles argument must contain 
+ * contiguous CK_OBJECT_HANDLE handles in an array.
  * 
  * Return value: The list of GP11Object. You should use gp11_list_unref_free() when done with 
  * this list. 
  **/
 GList*
-gp11_objects_from_handle_array (GP11Slot *slot, const GP11Attribute *attr)
+gp11_objects_from_handle_array (GP11Slot *slot, CK_OBJECT_HANDLE_PTR handles, CK_ULONG n_handles)
 {
 	GList *results = NULL;
-	CK_OBJECT_HANDLE *array;
-	guint i, n_array;
+	CK_ULONG i;
 	
 	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
+	g_return_val_if_fail (handles || !n_handles, NULL);
 	
-	array = (CK_OBJECT_HANDLE*)attr->value;
-	n_array = attr->length / sizeof (CK_OBJECT_HANDLE);
-	for (i = 0; i < n_array; ++i)
-		results = g_list_prepend (results, gp11_object_from_handle (slot, array[i]));
+	for (i = 0; i < n_handles; ++i)
+		results = g_list_prepend (results, gp11_object_from_handle (slot, handles[i]));
 	return g_list_reverse (results);
 }
 
@@ -428,7 +426,9 @@ gp11_object_set_session (GP11Object *self, GP11Session *session)
 	g_static_mutex_unlock (&pv->mutex);
 }
 
-/* DESTROY */
+/* --------------------------------------------------------------------------------------
+ * DESTROY
+ */
 
 typedef struct _Destroy {
 	GP11Arguments base;
@@ -438,6 +438,7 @@ typedef struct _Destroy {
 static CK_RV
 perform_destroy (Destroy *args)
 {
+	g_assert (args);
 	return (args->base.pkcs11->C_DestroyObject) (args->base.handle, args->object);
 }
 
@@ -454,6 +455,8 @@ perform_destroy (Destroy *args)
 gboolean
 gp11_object_destroy (GP11Object *self, GError **err)
 {
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
 	return gp11_object_destroy_full (self, NULL, err);
 }
 
@@ -478,6 +481,7 @@ gp11_object_destroy_full (GP11Object *self, GCancellable *cancellable, GError **
 	
 	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
 	g_return_val_if_fail (GP11_IS_SLOT (data->slot), FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
 	
 	args.object = data->handle;
 
@@ -530,8 +534,14 @@ gp11_object_destroy_async (GP11Object *self, GCancellable *cancellable,
 gboolean
 gp11_object_destroy_finish (GP11Object *self, GAsyncResult *result, GError **err)
 {
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GP11_IS_CALL (result), FALSE);
 	return _gp11_call_basic_finish (result, err);
 }
+
+/* --------------------------------------------------------------------------------------
+ * SET ATTRIBUTES
+ */
 
 typedef struct _SetAttributes {
 	GP11Arguments base;
@@ -542,14 +552,20 @@ typedef struct _SetAttributes {
 static CK_RV
 perform_set_attributes (SetAttributes *args)
 {
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG n_attrs;
+	
+	g_assert (args);
+	attrs = _gp11_attributes_commit_out (args->attrs, &n_attrs);
+	
 	return (args->base.pkcs11->C_SetAttributeValue) (args->base.handle, args->object, 
-	                                                 _gp11_attributes_raw (args->attrs),
-	                                                 gp11_attributes_count (args->attrs));
+	                                                 attrs, n_attrs);
 }
 
 static void
 free_set_attributes (SetAttributes *args)
 {
+	g_assert (args);
 	gp11_attributes_unref (args->attrs);
 	g_free (args);
 }
@@ -593,8 +609,11 @@ gp11_object_set (GP11Object *self, GError **err, ...)
 	va_list va;
 	CK_RV rv;
 	
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+	
 	va_start (va, err);
-	attrs = gp11_attributes_new_valist (va);
+	attrs = gp11_attributes_new_valist (g_realloc, va);
 	va_end (va);
 	
 	rv = gp11_object_set_full (self, attrs, NULL, err);
@@ -624,6 +643,10 @@ gp11_object_set_full (GP11Object *self, GP11Attributes *attrs,
 	gboolean ret = FALSE;
 	
 	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (attrs, FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+	
+	_gp11_attributes_lock (attrs);
 	
 	memset (&args, 0, sizeof (args));
 	args.attrs = attrs;
@@ -632,6 +655,8 @@ gp11_object_set_full (GP11Object *self, GP11Attributes *attrs,
 	session = require_session_sync (self, CKF_RW_SESSION, err);
 	if (session)
 		ret = _gp11_call_sync (session, perform_set_attributes, NULL, &args, cancellable, err);
+	
+	_gp11_attributes_unlock (attrs);
 	g_object_unref (session);
 	return ret;
 }
@@ -656,9 +681,12 @@ gp11_object_set_async (GP11Object *self, GP11Attributes *attrs, GCancellable *ca
 	GP11Call *call;
 	
 	g_return_if_fail (GP11_IS_OBJECT (self));
+	g_return_if_fail (attrs);
 
 	args = _gp11_call_async_prep (data->slot, self, perform_set_attributes, 
 	                              NULL, sizeof (*args), free_set_attributes);
+	
+	_gp11_attributes_lock (attrs);
 	args->attrs = gp11_attributes_ref (attrs);
 	args->object = data->handle;
 	
@@ -680,15 +708,28 @@ gp11_object_set_async (GP11Object *self, GP11Attributes *attrs, GCancellable *ca
 gboolean
 gp11_object_set_finish (GP11Object *self, GAsyncResult *result, GError **err)
 {
+	SetAttributes *args;
+	
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GP11_IS_CALL (result), FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+	
+	/* Unlock the attributes we were using */
+	args = _gp11_call_arguments (result, SetAttributes);
+	g_assert (args->attrs);
+	_gp11_attributes_unlock (args->attrs);
+
 	return _gp11_call_basic_finish (result, err);
 }
 
+/* ------------------------------------------------------------------------------------
+ * GET ATTRIBUTES
+ */
+
 typedef struct _GetAttributes {
 	GP11Arguments base;
-	gulong *attr_types;
-	gsize n_attr_types;
 	CK_OBJECT_HANDLE object;
-	GP11Attributes *results;
+	GP11Attributes *attrs;
 } GetAttributes;
 
 /* 
@@ -713,18 +754,14 @@ static CK_RV
 perform_get_attributes (GetAttributes *args)
 {
 	CK_ATTRIBUTE_PTR attrs;
-	CK_ULONG i, n_attrs;
+	CK_ULONG n_attrs;
 	CK_RV rv;
 	
-	/* Allocate the CK_ATTRIBUTE's */
-	n_attrs = args->n_attr_types;
-	if (n_attrs) {
-		attrs = g_new0 (CK_ATTRIBUTE, n_attrs);
-		for (i = 0; i < n_attrs; ++i)
-			attrs[i].type = args->attr_types[i];
-	} else {
-		attrs = NULL;
-	}
+	g_assert (args);
+	g_assert (args->attrs);
+	
+	/* Prepare all the attributes */
+	attrs = _gp11_attributes_prepare_in (args->attrs, &n_attrs);
 
 	/* Get the size of each value */
 	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object,
@@ -735,30 +772,11 @@ perform_get_attributes (GetAttributes *args)
 	}
 	
 	/* Allocate memory for each value */
-	for (i = 0; i < n_attrs; ++i) {
-		if (attrs[i].ulValueLen > 0 && attrs[i].ulValueLen != (CK_ULONG)-1)
-			attrs[i].pValue = g_malloc0 (attrs[i].ulValueLen);
-	}
+	attrs = _gp11_attributes_commit_in (args->attrs, &n_attrs);
 	
 	/* Now get the actual values */
 	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object,
 	                                               attrs, n_attrs);
-	
-	/* Transfer over the memory to the results */
-	if (is_ok_get_attributes_rv (rv)) {
-		g_assert (!args->results);
-		args->results = gp11_attributes_new ();
-		for (i = 0; i < n_attrs; ++i) {
-			_gp11_attributes_add_take (args->results, attrs[i].type,
-			                           attrs[i].pValue, attrs[i].ulValueLen);
-			memset (&attrs[i], 0, sizeof (attrs[0]));
-		}
-	}
-
-	/* Free any memory we didn't use */
-	for (i = 0; i < n_attrs; ++i)
-		g_free (attrs[i].pValue);
-	g_free (attrs);
 	
 	if (is_ok_get_attributes_rv (rv))
 		rv = CKR_OK;
@@ -769,9 +787,10 @@ perform_get_attributes (GetAttributes *args)
 static void
 free_get_attributes (GetAttributes *args)
 {
-	g_free (args->attr_types);
-	if (args->results)
-		gp11_attributes_unref (args->results);
+	g_assert (args);
+	g_assert (args->attrs);
+	gp11_attributes_unref (args->attrs);
+	g_free (args);
 }
 
 
@@ -784,107 +803,114 @@ free_get_attributes (GetAttributes *args)
  * Get the specified attributes from the object. This call may
  * block for an indefinite period.
  * 
- * Note that the returned attributes are not required to be 
- * in the order they were requested.
- * 
  * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
+ * The result must be unreffed when you're finished with it.
  **/
 GP11Attributes*
 gp11_object_get (GP11Object *self, GError **err, ...)
 {
-	GP11Attributes *result;
-	GArray *array;
+	GP11Attributes *attrs;
 	va_list va;
 	gulong type;
 	
-	array = g_array_new (0, 1, sizeof (gulong));
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+
+	attrs = gp11_attributes_new ();
 	va_start (va, err);
 	for (;;) {
 		type = va_arg (va, gulong);
 		if (type == (gulong)-1)
 			break;
-		g_array_append_val (array, type);
+		gp11_attributes_add_invalid (attrs, type);
 	}
 	va_end (va);
 	
-	result = gp11_object_get_full (self, (gulong*)array->data, array->len, NULL, err);
-	g_array_free (array, TRUE);
-	return result;
+	if (!gp11_object_get_full (self, attrs, NULL, err)) {
+		gp11_attributes_unref (attrs);
+		return NULL;
+	}
+
+	return attrs;
 }
 
 /**
  * gp11_object_get:
  * @self: The object to get attributes from.
- * @attr_types: The attributes to get.
- * @n_attr_types: The number of attributes to get.
+ * @attrs: The attributes to get, with the types filled in.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to store an error.
  * 
  * Get the specified attributes from the object. This call may
  * block for an indefinite period.
  * 
- * Note that the returned attributes are not required to be 
- * in the order they were requested.
+ * No extra references are added to the returned attributes pointer. 
+ * During this call you may not access the attributes in any way. 
  * 
- * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
+ * Return value: A pointer to the filled in attributes if successful, 
+ * or NULL if not. 
  **/
 GP11Attributes*
-gp11_object_get_full (GP11Object *self, const gulong *attr_types, gsize n_attr_types,
+gp11_object_get_full (GP11Object *self, GP11Attributes *attrs,
                       GCancellable *cancellable, GError **err)
 {
 	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
 	GetAttributes args;
 	GP11Session *session;
+	gboolean ret;
 	
-	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
 	
 	session = require_session_sync (self, 0, err);
 	if (!session)
 		return NULL;
 	
+	_gp11_attributes_lock (attrs);
+	
 	memset (&args, 0, sizeof (args));
-	args.attr_types = (gulong*)attr_types;
-	args.n_attr_types = n_attr_types;
+	args.attrs = attrs;
 	args.object = data->handle;
 
-	if (!_gp11_call_sync (session, perform_get_attributes, NULL, &args, cancellable, err)) {
-		gp11_attributes_unref (args.results);
-		g_object_unref (session);
-		return NULL;
-	}
-	
+	ret = _gp11_call_sync (session, perform_get_attributes, NULL, &args, cancellable, err);
+	_gp11_attributes_unlock (attrs);
 	g_object_unref (session);
-	return args.results;
+	
+	return ret ? attrs : NULL;
 }
 
 /**
  * gp11_object_get_async:
  * @self: The object to get attributes from.
- * @attr_types: The attributes to get.
- * @n_attr_types: The number of attributes to get.
+ * @attrs: The attributes to get, initialized with their types.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: A callback which is called when the operation completes.
  * @user_data: Data to be passed to the callback.
  * 
- * Get the specified attributes from the object. This call returns
- * immediately and completes asynchronously.
+ * Get the specified attributes from the object. The attributes will be cleared
+ * of their current values, and new attributes will be stored. The attributes
+ * should not be accessed in any way except for referencing and unreferencing 
+ * them until gp11_object_get_finish() is called.
+ * 
+ * This call returns immediately and completes asynchronously.
  **/
 void
-gp11_object_get_async (GP11Object *self, const gulong *attr_types, gsize n_attr_types,
-                       GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+gp11_object_get_async (GP11Object *self, GP11Attributes *attrs, GCancellable *cancellable, 
+                       GAsyncReadyCallback callback, gpointer user_data)
 {
 	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
 	GetAttributes *args;
 	GP11Call *call;
 	
 	g_return_if_fail (GP11_IS_OBJECT (self));
+	g_return_if_fail (attrs);
 
 	args = _gp11_call_async_prep (data->slot, self, perform_get_attributes, 
 	                              NULL, sizeof (*args), free_get_attributes);
 	
-	args->n_attr_types = n_attr_types;
-	if (n_attr_types)
-		args->attr_types = g_memdup (attr_types, sizeof (gulong) * n_attr_types);
+	_gp11_attributes_lock (attrs);
+	args->attrs = gp11_attributes_ref (attrs);
 	args->object = data->handle;
 	
 	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
@@ -900,119 +926,228 @@ gp11_object_get_async (GP11Object *self, const gulong *attr_types, gsize n_attr_
  * Get the result of a get operation and return specified attributes from 
  * the object. 
  * 
- * Note that the returned attributes are not required to be 
- * in the order they were requested.
+ * No extra references are added to the returned attributes pointer. 
  * 
- * Return value: The resulting PKCS#11 attributes, or NULL if an error occurred. 
+ * Return value: The filled in attributes structure if successful or 
+ * NULL if not successful.
  **/
 GP11Attributes*
 gp11_object_get_finish (GP11Object *self, GAsyncResult *result, GError **err)
 {
-	GP11Attributes *results;
 	GetAttributes *args;
 	
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (GP11_IS_CALL (result), NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+
+	args = _gp11_call_arguments (result, GetAttributes);
+	_gp11_attributes_unlock (args->attrs);
+
 	if (!_gp11_call_basic_finish (result, err))
 		return NULL;
 	
-	args = _gp11_call_arguments (result, GetAttributes);
+	return args->attrs;
+}
+
+/* ---------------------------------------------------------------------------------
+ * GET ATTRIBUTE DATA
+ */
+
+typedef struct _GetAttributeData {
+	GP11Arguments base;
+	CK_OBJECT_HANDLE object;
+	CK_ATTRIBUTE_TYPE type;
+	GP11Allocator allocator;
+	guchar *result;
+	gsize n_result;
+} GetAttributeData;
+
+static CK_RV
+perform_get_attribute_data (GetAttributeData *args)
+{
+	CK_ATTRIBUTE attr;
+	CK_RV rv;
 	
-	results = args->results;
-	args->results = NULL;
+	g_assert (args);
+	g_assert (args->allocator);
 	
-	return results;
+	attr.type = args->type;
+	attr.ulValueLen = 0;
+	attr.pValue = 0;
+	
+	/* Get the size of the value */
+	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object,
+	                                               &attr, 1);
+	if (rv != CKR_OK) 
+		return rv;
+	
+	/* Allocate memory for the value */
+	args->result = (args->allocator) (NULL, attr.ulValueLen);
+	g_assert (args->result);
+	attr.pValue = args->result;
+	
+	/* Now get the actual value */
+	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object,
+	                                               &attr, 1);
+
+	if (rv == CKR_OK)
+		args->n_result = attr.ulValueLen;
+	
+	return rv;
+}
+
+static void
+free_get_attribute_data (GetAttributeData *args)
+{
+	g_assert (args);
+	g_free (args->result);
+	g_free (args);
 }
 
 /**
- * gp11_object_get_one:
- * @self: The object to get an attribute from.
- * @attr_type: The attribute to get.
+ * gp11_object_get_data:
+ * @self: The object to get attribute data from.
+ * @attr_type: The attribute to get data for.
+ * @n_data: The length of the resulting data.
  * @err: A location to store an error.
  * 
- * Get the specified attribute from the object. This call may
- * block for an indefinite period.
+ * Get the data for the specified attribute from the object. This call 
+ * may block for an indefinite period.
  * 
- * Return value: The resulting PKCS#11 attribute, or NULL if an error occurred. 
+ * Return value: The resulting PKCS#11 attribute data, or NULL if an error occurred. 
  **/
-GP11Attribute*
-gp11_object_get_one (GP11Object *self, gulong attr_type, GError **err)
+gpointer
+gp11_object_get_data (GP11Object *self, gulong attr_type, gsize *n_data, GError **err)
 {
-	return gp11_object_get_one_full (self, attr_type, NULL, err);
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (n_data, NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+	
+	return gp11_object_get_data_full (self, attr_type, g_realloc, NULL, n_data, err);
 }
 
 /**
- * gp11_object_get_one_full:
- * @self: The object to get an attribute from.
- * @attr_type: The attribute to get.
+ * gp11_object_get_data_full:
+ * @self: The object to get attribute data from.
+ * @attr_type: The attribute to get data for.
+ * @allocator: An allocator with which to allocate memory for the data, or NULL for default.
  * @cancellable: Optional cancellation object, or NULL.
+ * @n_data: The length of the resulting data.
  * @err: A location to store an error.
  * 
- * Get the specified attribute from the object. This call may
- * block for an indefinite period.
+ * Get the data for the specified attribute from the object. This call 
+ * may block for an indefinite period.
  * 
- * Return value: The resulting PKCS#11 attribute, or NULL if an error occurred. 
+ * Return value: The resulting PKCS#11 attribute data, or NULL if an error occurred. 
  **/
-GP11Attribute*
-gp11_object_get_one_full (GP11Object *self, gulong attr_type, 
-                          GCancellable *cancellable, GError **err)
+gpointer
+gp11_object_get_data_full (GP11Object *self, gulong attr_type, GP11Allocator allocator,
+                           GCancellable *cancellable, gsize *n_data, GError **err)
 {
-	GP11Attributes *attrs;
-	GP11Attribute *attr;
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	GetAttributeData args;
+	GP11Session *session;
+	gboolean ret;
 	
-	attrs = gp11_object_get_full (self, &attr_type, 1, cancellable, err);
-	if (!attrs || !gp11_attributes_count (attrs))
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (n_data, NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+	
+	if (!allocator)
+		allocator = g_realloc;
+	
+	session = require_session_sync (self, 0, err);
+	if (!session)
 		return NULL;
 	
-	attr = gp11_attributes_at (attrs, 0);
-	g_return_val_if_fail (attr, NULL);
-	attr = gp11_attribute_dup (attr);
-	gp11_attributes_unref (attrs);
-	return attr;
+	memset (&args, 0, sizeof (args));
+	args.allocator = allocator;
+	args.object = data->handle;
+	args.type = attr_type;
+
+	ret = _gp11_call_sync (session, perform_get_attribute_data, NULL, &args, cancellable, err);
+	g_object_unref (session);
+	
+	/* Free any value if failed */
+	if (!ret) {
+		if (args.result)
+			(allocator) (args.result, 0);
+		return NULL;
+	}
+	
+	*n_data = args.n_result;
+	return args.result;
 }
 
 /**
- * gp11_object_get_one_async:
- * @self: The object to get an attribute from.
- * @attr_type: The attribute to get.
+ * gp11_object_get_data_async:
+ * @self: The object to get attribute data from.
+ * @attr_type: The attribute to get data for.
+ * @allocator: An allocator with which to allocate memory for the data, or NULL for default.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: Called when the operation completes.
  * @user_data: Data to be passed to the callback.
  * 
- * Get the specified attribute from the object. This call will
+ * Get the data for the specified attribute from the object. This call will
  * return immediately and complete asynchronously.
  **/
 void
-gp11_object_get_one_async (GP11Object *self, gulong attr_type, GCancellable *cancellable,
-                           GAsyncReadyCallback callback, gpointer user_data)
+gp11_object_get_data_async (GP11Object *self, gulong attr_type, GP11Allocator allocator, 
+                            GCancellable *cancellable, GAsyncReadyCallback callback, 
+                            gpointer user_data)
 {
-	gp11_object_get_async (self, &attr_type, 1, cancellable, callback, user_data);
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	GetAttributeData *args;
+	GP11Call *call;
+	
+	g_return_if_fail (GP11_IS_OBJECT (self));
+	
+	if (!allocator)
+		allocator = g_realloc;
+
+	args = _gp11_call_async_prep (data->slot, self, perform_get_attribute_data, 
+	                              NULL, sizeof (*args), free_get_attribute_data);
+
+	args->allocator = allocator;
+	args->object = data->handle;
+	args->type = attr_type;
+	
+	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
+	require_session_async (self, call, 0, cancellable);
 }
 
 /**
- * gp11_object_get_one_finish:
+ * gp11_object_get_data_finish:
  * @self: The object to get an attribute from.
  * @result: The result passed to the callback.
+ * @n_data: The length of the resulting data.
  * @err: A location to store an error.
  *
- * Get the result of an operation to get an attribute from 
+ * Get the result of an operation to get attribute data from 
  * an object. 
  * 
- * Return value: The PKCS#11 attribute or NULL if an error occurred.
+ * Return value: The PKCS#11 attribute data or NULL if an error occurred.
  **/
-
-GP11Attribute*
-gp11_object_get_one_finish (GP11Object *self, GAsyncResult *result, GError **err)
+gpointer
+gp11_object_get_data_finish (GP11Object *self, GAsyncResult *result, 
+                             gsize *n_data, GError **err)
 {
-	GP11Attributes *attrs;
-	GP11Attribute *attr;
+	GetAttributeData *args;
+	guchar *data;
 	
-	attrs = gp11_object_get_finish (self, result, err);
-	if (!attrs)
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (GP11_IS_CALL (result), NULL);
+	g_return_val_if_fail (n_data, NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+	
+	if (!_gp11_call_basic_finish (result, err))
 		return NULL;
-	
-	attr = gp11_attributes_at (attrs, 0);
-	g_return_val_if_fail (attr, NULL);
-	attr = gp11_attribute_dup (attr);
-	gp11_attributes_unref (attrs);
-	return attr;
-}
 
+	args = _gp11_call_arguments (result, GetAttributeData);
+
+	*n_data = args->n_result;
+	data = args->result;
+	args->result = NULL;
+	
+	return data;
+}

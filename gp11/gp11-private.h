@@ -36,17 +36,18 @@ G_BEGIN_DECLS
  * ATTRIBUTE INTERNALS
  */
 
-void                _gp11_attribute_init_take               (GP11Attribute *attr, 
-                                                             gulong attr_type,
-                                                             gpointer value,
-                                                             gsize length);
+void                _gp11_attributes_lock                   (GP11Attributes *attrs);
 
-void                _gp11_attributes_add_take               (GP11Attributes *attr, 
-                                                             gulong attr_type,
-                                                             gpointer value,
-                                                             gsize length);
+void                _gp11_attributes_unlock                 (GP11Attributes *attrs);
 
-CK_ATTRIBUTE_PTR    _gp11_attributes_raw                    (GP11Attributes *attrs);
+CK_ATTRIBUTE_PTR    _gp11_attributes_prepare_in             (GP11Attributes *attrs, 
+                                                             CK_ULONG_PTR n_attrs);
+
+CK_ATTRIBUTE_PTR    _gp11_attributes_commit_in              (GP11Attributes *attrs, 
+                                                             CK_ULONG_PTR n_attrs);
+
+CK_ATTRIBUTE_PTR    _gp11_attributes_commit_out             (GP11Attributes *attrs, 
+                                                             CK_ULONG_PTR n_attrs);
 
 /* ----------------------------------------------------------------------------
  * SLOT

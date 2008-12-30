@@ -47,6 +47,8 @@ const gchar*        gp11_message_from_rv                    (CK_RV rv);
 
 gchar*              gp11_string_from_chars                  (const guchar *data, gsize max);
 
+typedef gpointer    (*GP11Allocator)                        (gpointer data, gsize length);
+
 typedef struct GP11Mechanism {
 	gulong type;
 	gpointer parameter;
@@ -80,6 +82,9 @@ void                gp11_attribute_init                     (GP11Attribute *attr
 void                gp11_attribute_init_invalid             (GP11Attribute *attr,
                                                              gulong attr_type);
 
+void                gp11_attribute_init_empty               (GP11Attribute *attr,
+                                                             gulong attr_type);
+
 void                gp11_attribute_init_boolean             (GP11Attribute *attr,
                                                              gulong attr_type,
                                                              gboolean value);
@@ -97,13 +102,15 @@ void                gp11_attribute_init_string              (GP11Attribute *attr
                                                              const gchar *value);
 
 void                gp11_attribute_init_copy                (GP11Attribute *dest, 
-                                                             GP11Attribute *src);
+                                                             const GP11Attribute *src);
 
 GP11Attribute*      gp11_attribute_new                      (gulong attr_type,
                                                              gpointer value,
                                                              gsize length);
 
 GP11Attribute*      gp11_attribute_new_invalid              (gulong attr_type);
+
+GP11Attribute*      gp11_attribute_new_empty                (gulong attr_type);
 
 GP11Attribute*      gp11_attribute_new_boolean              (gulong attr_type,
                                                              gboolean value);
@@ -143,13 +150,13 @@ GType               gp11_attributes_get_boxed_type          (void) G_GNUC_CONST;
  
 GP11Attributes*     gp11_attributes_new                     (void);
 
+GP11Attributes*     gp11_attributes_new_empty               (gulong attr_type, ...);
+
+GP11Attributes*     gp11_attributes_new_full                (GP11Allocator allocator);
+
 GP11Attributes*     gp11_attributes_newv                    (gulong attr_type, ...);
 
-GP11Attributes*     gp11_attributes_new_valist              (va_list va);
-
-void                gp11_attributes_set_immutable           (GP11Attributes *attrs);
-
-gboolean            gp11_attributes_is_immutable            (GP11Attributes *attrs);
+GP11Attributes*     gp11_attributes_new_valist              (GP11Allocator allocator, va_list va);
 
 GP11Attribute*      gp11_attributes_at                      (GP11Attributes *attrs,
                                                              guint index);
@@ -163,6 +170,9 @@ void                gp11_attributes_add_data                (GP11Attributes *att
                                                              gsize length);
 
 void                gp11_attributes_add_invalid             (GP11Attributes *attrs,
+                                                             gulong attr_type);
+
+void                gp11_attributes_add_empty               (GP11Attributes *attrs,
                                                              gulong attr_type);
 
 void                gp11_attributes_add_boolean             (GP11Attributes *attrs,
@@ -1201,7 +1211,8 @@ GP11Object*         gp11_object_from_handle                 (GP11Slot *slot,
                                                              CK_OBJECT_HANDLE handle);
 
 GList*              gp11_objects_from_handle_array          (GP11Slot *slot,
-                                                             const GP11Attribute *attr);
+                                                             CK_OBJECT_HANDLE_PTR handles,
+                                                             CK_ULONG n_handles);
 
 GP11Module*         gp11_object_get_module                  (GP11Object *self);
 
@@ -1295,14 +1306,12 @@ GP11Attributes*     gp11_object_get                         (GP11Object *self,
                                                              ...);
 
 GP11Attributes*     gp11_object_get_full                    (GP11Object *self,
-                                                             const gulong *attr_types,
-                                                             gsize n_attr_types,
+                                                             GP11Attributes *attrs,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gp11_object_get_async                   (GP11Object *self,
-                                                             const gulong *attr_types,
-                                                             gsize n_attr_types,
+                                                             GP11Attributes *attrs,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);
@@ -1311,23 +1320,28 @@ GP11Attributes*     gp11_object_get_finish                  (GP11Object *self,
                                                              GAsyncResult *result,
                                                              GError **err);
 
-GP11Attribute*      gp11_object_get_one                     (GP11Object *self,
+gpointer            gp11_object_get_data                    (GP11Object *self,
                                                              gulong attr_type,
+                                                             gsize *n_data,
                                                              GError **err);
 
-GP11Attribute*      gp11_object_get_one_full                (GP11Object *self,
+gpointer            gp11_object_get_data_full               (GP11Object *self,
                                                              gulong attr_type,
+                                                             GP11Allocator allocator,
                                                              GCancellable *cancellable,
+                                                             gsize *n_data,
                                                              GError **err);
 
-void                gp11_object_get_one_async               (GP11Object *self,
+void                gp11_object_get_data_async              (GP11Object *self,
                                                              gulong attr_type,
+                                                             GP11Allocator allocator,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);
 
-GP11Attribute*      gp11_object_get_one_finish              (GP11Object *self,
+gpointer            gp11_object_get_data_finish             (GP11Object *self,
                                                              GAsyncResult *result,
+                                                             gsize *n_data,
                                                              GError **err);
 
 

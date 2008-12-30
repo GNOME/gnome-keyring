@@ -618,9 +618,13 @@ free_create_object (CreateObject *args)
 static CK_RV
 perform_create_object (CreateObject *args)
 {
-	return (args->base.pkcs11->C_CreateObject) (args->base.handle, 
-	                                            _gp11_attributes_raw (args->attrs),
-	                                            gp11_attributes_count (args->attrs),
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG n_attrs;
+	
+	attrs = _gp11_attributes_commit_out (args->attrs, &n_attrs);
+	
+	return (args->base.pkcs11->C_CreateObject) (args->base.handle,
+	                                            attrs, n_attrs, 
 	                                            &args->object);
 }
 
@@ -665,7 +669,7 @@ gp11_session_create_object (GP11Session *self, GError **err, ...)
 	va_list va;
 	
 	va_start (va, err);
-	attrs = gp11_attributes_new_valist (va);
+	attrs = gp11_attributes_new_valist (g_realloc, va);
 	va_end (va);
 	
 	object = gp11_session_create_object_full (self, attrs, NULL, err);
@@ -691,8 +695,18 @@ gp11_session_create_object_full (GP11Session *self, GP11Attributes *attrs,
 {
 	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
 	CreateObject args = { GP11_ARGUMENTS_INIT, attrs, 0 };
-	if (!_gp11_call_sync (self, perform_create_object, NULL, &args, cancellable, err))
+	gboolean ret;
+	
+	g_return_val_if_fail (GP11_IS_SESSION (self), NULL);
+	g_return_val_if_fail (attrs, NULL);
+	
+	_gp11_attributes_lock (attrs);
+	ret = _gp11_call_sync (self, perform_create_object, NULL, &args, cancellable, err);
+	_gp11_attributes_unlock (attrs);
+	
+	if (!ret)
 		return NULL;
+	
 	return gp11_object_from_handle (data->slot, args.object);
 }
 
@@ -714,8 +728,12 @@ gp11_session_create_object_async (GP11Session *self, GP11Attributes *attrs,
 {
 	CreateObject *args = _gp11_call_async_prep (self, self, perform_create_object, 
 	                                            NULL, sizeof (*args), free_create_object);
-	args->attrs = attrs;
-	gp11_attributes_ref (attrs);
+	
+	g_return_if_fail (attrs);
+	
+	args->attrs = gp11_attributes_ref (attrs);
+	_gp11_attributes_lock (attrs);
+
 	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
@@ -734,10 +752,12 @@ gp11_session_create_object_finish (GP11Session *self, GAsyncResult *result, GErr
 {
 	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
 	CreateObject *args;
-	
+
+	args = _gp11_call_arguments (result, CreateObject);
+	_gp11_attributes_unlock (args->attrs); 
+
 	if (!_gp11_call_basic_finish (result, err))
 		return NULL;
-	args = _gp11_call_arguments (result, CreateObject);
 	return gp11_object_from_handle (data->slot, args->object);
 }
 
@@ -764,12 +784,15 @@ perform_find_objects (FindObjects *args)
 {
 	CK_OBJECT_HANDLE_PTR batch;
 	CK_ULONG n_batch, n_found;
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG n_attrs;
 	GArray *array;
 	CK_RV rv;
 	
+	attrs = _gp11_attributes_commit_out (args->attrs, &n_attrs);
+	
 	rv = (args->base.pkcs11->C_FindObjectsInit) (args->base.handle, 
-	                                             _gp11_attributes_raw (args->attrs),
-	                                             gp11_attributes_count (args->attrs));
+	                                             attrs, n_attrs);
 	if (rv != CKR_OK)
 		return rv;
 	
@@ -868,7 +891,7 @@ gp11_session_find_objects (GP11Session *self, GError **err, ...)
 	va_list va;
 	
 	va_start (va, err);
-	attrs = gp11_attributes_new_valist (va);
+	attrs = gp11_attributes_new_valist (g_realloc, va);
 	va_end (va);
 
 	results = gp11_session_find_objects_full (self, attrs, NULL, err);
@@ -895,9 +918,14 @@ gp11_session_find_objects_full (GP11Session *self, GP11Attributes *attrs,
 	FindObjects args = { GP11_ARGUMENTS_INIT, attrs, NULL, 0 };
 	GList *results = NULL;
 	
+	g_return_val_if_fail (attrs, NULL);
+	_gp11_attributes_lock (attrs);
+	
 	if (_gp11_call_sync (self, perform_find_objects, NULL, &args, cancellable, err)) 
 		results = objlist_from_handles (self, args.objects, args.n_objects);
+	
 	g_free (args.objects);
+	_gp11_attributes_unlock (attrs);
 	return results;
 }
 
@@ -919,8 +947,8 @@ gp11_session_find_objects_async (GP11Session *self, GP11Attributes *attrs,
 {
 	FindObjects *args = _gp11_call_async_prep (self, self, perform_find_objects, 
 	                                           NULL, sizeof (*args), free_find_objects);
-	args->attrs = attrs;
-	gp11_attributes_ref (attrs);
+	args->attrs = gp11_attributes_ref (attrs);
+	_gp11_attributes_lock (attrs);
 	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
@@ -938,10 +966,12 @@ GList*
 gp11_session_find_objects_finish (GP11Session *self, GAsyncResult *result, GError **err)
 {
 	FindObjects *args;
-	
+
+	args = _gp11_call_arguments (result, FindObjects);
+	_gp11_attributes_unlock (args->attrs);
+
 	if (!_gp11_call_basic_finish (result, err))
 		return NULL;
-	args = _gp11_call_arguments (result, FindObjects);
 	return objlist_from_handles (self, args->objects, args->n_objects);
 }
 
