@@ -1,3 +1,10 @@
+2008-01-03  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pkcs11/gkr-pkcs11-daemon-session.c: Allow starting one operation
+	on top of another by cancelling the first.
+
+	* common/gkr-buffer.c: Use a default allocator.
+	
 2008-12-29  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:

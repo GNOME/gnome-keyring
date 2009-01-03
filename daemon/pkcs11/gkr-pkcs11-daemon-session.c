@@ -432,9 +432,6 @@ session_C_CreateObject (SessionInfo *sinfo, GkrPkcs11Message *req,
 	CK_BBOOL token;
 	CK_RV ret;
 	
-	if (sinfo->operation_type)
-		return CKR_OPERATION_ACTIVE;
-
 	if (!(attrs = read_attribute_array (req)))
 		return PROTOCOL_ERROR;
 
@@ -628,8 +625,11 @@ session_C_FindObjectsInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	GArray *attrs;
 	gboolean all;
 	
-	if (sinfo->operation_type)
-		return CKR_OPERATION_ACTIVE;
+	/* Abandon any current operation */
+	if (sinfo->operation_type) {
+		finish_operation (sinfo);
+		g_assert (!sinfo->operation_type);
+	}
 	
 	if (!(attrs = read_attribute_array (req)))
 		return PROTOCOL_ERROR;
@@ -749,8 +749,11 @@ session_C_EncryptInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	CK_MECHANISM mech;
 	CK_RV ret;
 	
-	if (sinfo->operation_type)
-		return CKR_OPERATION_ACTIVE;
+	/* Abandon any current operation */
+	if (sinfo->operation_type) {
+		finish_operation (sinfo);
+		g_assert (!sinfo->operation_type);
+	}
 
 	if (!read_mechanism (req, &mech))
 		return PROTOCOL_ERROR;
@@ -848,8 +851,11 @@ session_C_DecryptInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	CK_MECHANISM mech;
 	CK_RV ret;
 	
-	if (sinfo->operation_type)
-		return CKR_OPERATION_ACTIVE;
+	/* Abandon any current operation */
+	if (sinfo->operation_type) {
+		finish_operation (sinfo);
+		g_assert (!sinfo->operation_type);
+	}
 
 	if (!read_mechanism (req, &mech))
 		return PROTOCOL_ERROR;
@@ -991,8 +997,11 @@ session_C_SignInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	CK_MECHANISM mech;
 	CK_RV ret;
 	
-	if (sinfo->operation_type)
-		return CKR_OPERATION_ACTIVE;
+	/* Abandon any current operation */
+	if (sinfo->operation_type) {
+		finish_operation (sinfo);
+		g_assert (!sinfo->operation_type);
+	}
 
 	if (!read_mechanism (req, &mech))
 		return PROTOCOL_ERROR;
@@ -1113,8 +1122,11 @@ session_C_VerifyInit (SessionInfo *sinfo, GkrPkcs11Message *req,
 	CK_MECHANISM mech;
 	CK_RV ret;
 	
-	if (sinfo->operation_type)
-		return CKR_OPERATION_ACTIVE;
+	/* Abandon any current operation */
+	if (sinfo->operation_type) {
+		finish_operation (sinfo);
+		g_assert (!sinfo->operation_type);
+	}
 
 	if (!read_mechanism (req, &mech))
 		return PROTOCOL_ERROR;

@@ -460,6 +460,8 @@ gkr_buffer_get_string (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 	
 	if (!allocator)
 		allocator = buffer->allocator;
+	if (!allocator)
+		allocator = DEFAULT_ALLOCATOR;
 	
 	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &len)) {
 		return 0;
@@ -527,6 +529,8 @@ gkr_buffer_get_stringv (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 	
 	if (!allocator)
 		allocator = buffer->allocator;
+	if (!allocator)
+		allocator = DEFAULT_ALLOCATOR;
 	
 	/* First the number of environment variable lines */
 	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &n))
