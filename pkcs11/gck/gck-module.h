@@ -26,9 +26,8 @@
 
 #include "pkcs11/pkcs11.h"
 
-#include "gck-manager.h"
-
-typedef struct _GckSession GckSession;
+#include "gck-factory.h"
+#include "gck-types.h"
 
 #define GCK_TYPE_MODULE               (gck_module_get_type ())
 #define GCK_MODULE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_MODULE, GckModule))
@@ -37,7 +36,6 @@ typedef struct _GckSession GckSession;
 #define GCK_IS_MODULE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_MODULE))
 #define GCK_MODULE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_MODULE, GckModuleClass))
 
-typedef struct _GckModule GckModule;
 typedef struct _GckModuleClass GckModuleClass;
 typedef struct _GckModulePrivate GckModulePrivate;
     
@@ -62,6 +60,10 @@ struct _GckModuleClass {
 	void (*parse_argument) (GckModule *self, const gchar *name, const gchar *value);
 
 	CK_RV (*refresh_token) (GckModule *self);
+	
+	void (*store_token_object) (GckModule *self, GckTransaction *transaction, GckObject *object);
+	
+	void (*remove_token_object) (GckModule *self, GckTransaction *transaction, GckObject *object);
 	
 	CK_RV (*login_user) (GckModule *self, CK_SLOT_ID slot_id, 
 	                     CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
@@ -111,7 +113,20 @@ CK_RV                  gck_module_logout_user                     (GckModule *se
 
 CK_RV                  gck_module_refresh_token                   (GckModule *self);
 
+void                   gck_module_store_token_object              (GckModule *self,
+                                                                   GckTransaction *transaction,
+                                                                   GckObject *object);
 
+void                   gck_module_remove_token_object             (GckModule *self,
+                                                                   GckTransaction *transaction,
+                                                                   GckObject *object);
+
+GckFactory             gck_module_find_factory                    (GckModule *self,
+                                                                   CK_ATTRIBUTE_PTR attrs,
+                                                                   CK_ULONG n_attrs);
+
+void                   gck_module_register_factory                (GckModule *self, 
+                                                                   GckFactoryInfo *factory);
 
 CK_RV                  gck_module_C_GetInfo                       (GckModule *self, 
                                                                    CK_INFO_PTR info);

@@ -25,7 +25,7 @@
 #include <glib-object.h>
 
 #include "gck-public-key.h"
-#include "gck-certificate.h"
+#include "gck-types.h"
 
 #define GCK_TYPE_CERTIFICATE_KEY               (gck_certificate_key_get_type ())
 #define GCK_CERTIFICATE_KEY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_CERTIFICATE_KEY, GckCertificateKey))

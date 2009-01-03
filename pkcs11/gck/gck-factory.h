@@ -4,40 +4,37 @@
  * Copyright (C) 2008 Stefan Walter
  * 
  * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU Lesser General  License as
+ * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
  *  
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General  License for more details.
+ * Lesser General Public License for more details.
  *  
- * You should have received a copy of the GNU Lesser General 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  * 02111-1307, USA.  
  */
 
-#ifndef GCKSEXP_H_
-#define GCKSEXP_H_
-
-#include <gcrypt.h>
+#ifndef __GCK_FACTORY_H__
+#define __GCK_FACTORY_H__
 
 #include <glib-object.h>
 
+#include "pkcs11/pkcs11.h"
+
 #include "gck-types.h"
 
-GckSexp*       gck_sexp_new           (gcry_sexp_t sexp);
+typedef void (*GckFactory) (GckSession *session, GckTransaction *transaction, 
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object);
 
-GckSexp*       gck_sexp_ref           (GckSexp *sexp);
+struct _GckFactoryInfo {
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG n_attrs;
+	GckFactory factory;
+};
 
-void           gck_sexp_unref         (GckSexp *sexp);
-
-gcry_sexp_t    gck_sexp_get           (GckSexp *sexp);
-
-#define        GCK_BOXED_SEXP         (gck_sexp_boxed_type ())
-
-GType          gck_sexp_boxed_type    (void);
-
-#endif /* GCKSEXPHANDLE_H_ */
+#endif /* __GCK_FACTORY_H__ */

@@ -23,19 +23,31 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-attributes.h"
 #include "gck-manager.h"
 #include "gck-object.h"
+#include "gck-transaction.h"
+#include "gck-store.h"
 #include "gck-util.h"
 
 enum {
 	PROP_0,
 	PROP_HANDLE,
-	PROP_MANAGER
+	PROP_MANAGER,
+	PROP_STORE
 };
+
+enum {
+	NOTIFY_ATTRIBUTE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 struct _GckObjectPrivate {
 	CK_OBJECT_HANDLE handle;
 	GckManager *manager;
+	GckStore *store;
 };
 
 G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
@@ -51,44 +63,64 @@ G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
 static CK_RV 
 gck_object_real_get_attribute (GckObject *self, CK_ATTRIBUTE* attr)
 {
+	CK_RV rv;
+	
 	switch (attr->type)
 	{
 	case CKA_CLASS:
 		g_warning ("Derived class should have overridden CKA_CLASS");
 		return CKR_GENERAL_ERROR;
-	case CKA_LABEL:
-		g_warning ("Derived class should have overridden CKA_LABEL");
-		return gck_util_set_data (attr, "", 0);
 	case CKA_MODIFIABLE:
+		return gck_attribute_set_bool (attr, self->pv->store ? TRUE : FALSE);
 	case CKA_PRIVATE:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 	case CKA_TOKEN:
-		return gck_util_set_bool (attr, (self->pv->handle & GCK_OBJECT_IS_PERMANENT) ? TRUE : FALSE);
+		return gck_attribute_set_bool (attr, (self->pv->handle & GCK_OBJECT_IS_PERMANENT) ? TRUE : FALSE);
 	};
+
+	/* Give store a shot */
+	if (self->pv->store) {
+		rv = gck_store_get_attribute (self->pv->store, self, attr);
+		if (rv != CKR_ATTRIBUTE_TYPE_INVALID)
+			return rv;
+	}
+
+	/* Now some more defaults */
+	switch (attr->type) {
+	case CKA_LABEL:
+		return gck_attribute_set_data (attr, "", 0);
+	}
 	
 	return CKR_ATTRIBUTE_TYPE_INVALID;
 }
 
-#if 0
-static CK_RV 
-gck_object_real_set_attribute (GckObject *self, const CK_ATTRIBUTE* attr)
+static void 
+gck_object_real_set_attribute (GckObject *self, GckTransaction* transaction, CK_ATTRIBUTE* attr)
 {
 	switch (attr->type) {
-	case CKA_LABEL:
-		g_warning ("Derived class should have overridden CKA_LABEL");
-		return CKR_ATTRIBUTE_READ_ONLY;
 	case CKA_TOKEN:
 	case CKA_PRIVATE:
 	case CKA_MODIFIABLE:
-		return CKR_ATTRIBUTE_READ_ONLY;
-		
 	case CKA_CLASS:
-		return CKR_ATTRIBUTE_READ_ONLY;
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_READ_ONLY);
+		return;
 	};
-	
-	return CKR_ATTRIBUTE_TYPE_INVALID;
+
+	/* Give store a shot */
+	if (self->pv->store) {
+		gck_store_set_attribute (self->pv->store, transaction, self, attr);
+		return;
+	}
+
+	/* Now some more defaults */
+	switch (attr->type) {
+	case CKA_LABEL:
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_READ_ONLY);
+		return;
+	}	
+
+	gck_transaction_fail (transaction, CKR_ATTRIBUTE_TYPE_INVALID);
 }
-#endif
 
 static CK_RV
 gck_object_real_unlock (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
@@ -152,6 +184,7 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 {
 	GckObject *self = GCK_OBJECT (obj);
 	GckManager *manager;
+	GckStore *store;
 	
 	switch (prop_id) {
 	case PROP_HANDLE:
@@ -171,6 +204,20 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		
 		g_object_notify (G_OBJECT (self), "manager");
 		break;
+	case PROP_STORE:
+		store = g_value_get_object (value);
+		if (self->pv->store) {
+			g_return_if_fail (!store);
+			g_object_remove_weak_pointer (G_OBJECT (self->pv->store), 
+			                              (gpointer*)&(self->pv->store));
+		}
+		self->pv->store = store;
+		if (self->pv->store)
+			g_object_add_weak_pointer (G_OBJECT (self->pv->store), 
+			                           (gpointer*)&(self->pv->store));
+		
+		g_object_notify (G_OBJECT (self), "store");
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -189,6 +236,9 @@ gck_object_get_property (GObject *obj, guint prop_id, GValue *value,
 		break;
 	case PROP_MANAGER:
 		g_value_set_object (value, gck_object_get_manager (self));
+		break;
+	case PROP_STORE:
+		g_value_set_object (value, self->pv->store);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -212,9 +262,7 @@ gck_object_class_init (GckObjectClass *klass)
 	
 	klass->unlock = gck_object_real_unlock;
 	klass->get_attribute = gck_object_real_get_attribute;
-#if 0
 	klass->set_attribute = gck_object_real_set_attribute;
-#endif
 	
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 	           g_param_spec_ulong ("handle", "Handle", "Object handle",
@@ -224,12 +272,14 @@ gck_object_class_init (GckObjectClass *klass)
 	           g_param_spec_object ("manager", "Manager", "Object manager", 
 	                                GCK_TYPE_MANAGER, G_PARAM_READWRITE));
 	
-#if 0
-	signals[SIGNAL] = g_signal_new ("signal", GCK_TYPE_OBJECT, 
-	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, signal),
-	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
-	                                G_TYPE_NONE, 0);
-#endif
+	g_object_class_install_property (gobject_class, PROP_STORE,
+	           g_param_spec_object ("store", "Store", "Object store", 
+	                                GCK_TYPE_STORE, G_PARAM_READWRITE));
+	
+	signals[NOTIFY_ATTRIBUTE] = g_signal_new ("notify-attribute", GCK_TYPE_OBJECT, 
+	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, notify_attribute),
+	                                NULL, NULL, g_cclosure_marshal_VOID__ULONG, 
+	                                G_TYPE_NONE, 1, G_TYPE_ULONG);
 }
 
 /* -----------------------------------------------------------------------------
@@ -243,6 +293,42 @@ gck_object_get_attribute (GckObject *self, CK_ATTRIBUTE_PTR attr)
 	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
 	g_assert (GCK_OBJECT_GET_CLASS (self)->get_attribute);
 	return GCK_OBJECT_GET_CLASS (self)->get_attribute (self, attr);
+}
+
+void
+gck_object_set_attribute (GckObject *self, GckTransaction *transaction,
+                          CK_ATTRIBUTE_PTR attr)
+{
+	CK_ATTRIBUTE check;
+	CK_RV rv;
+	
+	g_return_if_fail (GCK_IS_OBJECT (self));
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (!gck_transaction_get_failed (transaction));
+	g_return_if_fail (attr);
+
+	g_assert (GCK_OBJECT_GET_CLASS (self)->set_attribute);
+
+	/* Check if this attribute exists */
+	check.type = attr->type;
+	check.pValue = 0;
+	check.ulValueLen = 0;
+	rv = gck_object_get_attribute (self, &check);
+	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_SENSITIVE) {
+		gck_transaction_fail (transaction, rv);
+		return;
+	}
+	
+	/* Check that the value will actually change */
+	if (rv == CKR_ATTRIBUTE_SENSITIVE || !gck_object_match (self, attr))
+		GCK_OBJECT_GET_CLASS (self)->set_attribute (self, transaction, attr);
+}
+
+void
+gck_object_notify_attribute  (GckObject *self, CK_ATTRIBUTE_TYPE attr_type)
+{
+	g_return_if_fail (GCK_IS_OBJECT (self));
+	g_signal_emit (self, signals[NOTIFY_ATTRIBUTE], 0, attr_type);
 }
 
 gboolean

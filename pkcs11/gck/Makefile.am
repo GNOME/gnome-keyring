@@ -13,9 +13,11 @@ noinst_LTLIBRARIES = \
 	libgck.la	
 
 BUILT_SOURCES = \
+	gck-marshal.c gck-marshal.h \
 	asn1-def-pk.h asn1-def-pkix.h
 
 libgck_la_SOURCES = \
+	gck-attributes.c gck-attributes.h \
 	gck-certificate.c gck-certificate.h \
 	gck-certificate-key.c gck-certificate-key.h \
 	gck-crypto.c gck-crypto.h \
@@ -24,16 +26,23 @@ libgck_la_SOURCES = \
 	gck-data-openssl.c gck-data-openssl.h \
 	gck-data-pem.c gck-data-pem.h \
 	gck-data-types.h \
+	gck-factory.c gck-factory.h \
+	gck-file-store.c gck-file-store.h \
 	gck-file-tracker.c gck-file-tracker.h \
 	gck-key.c gck-key.h \
 	gck-manager.c gck-manager.h \
+	gck-memory-store.c gck-memory-store.h \
 	gck-module.c gck-module.h gck-module-ep.h \
 	gck-object.c gck-object.h \
 	gck-private-key.c gck-private-key.h \
 	gck-public-key.c gck-public-key.h \
 	gck-session.c gck-session.h \
 	gck-sexp.c gck-sexp.h \
-	gck-util.c gck-util.h 
+	gck-store.c gck-store.h \
+	gck-transaction.c gck-transaction.h \
+	gck-types.h \
+	gck-util.c gck-util.h \
+	$(BUILT_SOURCES)
 
 libgck_la_CFLAGS = \
 	$(GOBJECT_CFLAGS) \
@@ -46,6 +55,13 @@ libgck_la_LIBADD = \
     	$(LIBGCRYPT_LIBS) \
 	$(GLIB_LIBS) 
 	
+gck-marshal.h: gck-marshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=gck_marshal > $@
+
+gck-marshal.c: gck-marshal.list $(GLIB_GENMARSHAL)
+	echo "#include \"gck-marshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) $< --body --prefix=gck_marshal >> $@
+
 asn1-def-pk.h: pk.asn
 	asn1Parser -o asn1-def-pk.h pk.asn 
 	
@@ -53,6 +69,7 @@ asn1-def-pkix.h: pkix.asn
 	asn1Parser -o asn1-def-pkix.h pkix.asn 
 
 EXTRA_DIST = \
+	gck-marshal.list \
 	pkix.asn \
 	pk.asn
 

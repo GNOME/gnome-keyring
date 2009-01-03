@@ -23,6 +23,7 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-attributes.h"
 #include "gck-crypto.h"
 #include "gck-key.h"
 #include "gck-util.h"
@@ -57,9 +58,9 @@ gck_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		{
 			switch (gck_key_get_algorithm (self)) {
 			case GCRY_PK_RSA:
-				return gck_util_set_ulong (attr, CKK_RSA);
+				return gck_attribute_set_ulong (attr, CKK_RSA);
 			case GCRY_PK_DSA:
-				return gck_util_set_ulong (attr, CKK_DSA);
+				return gck_attribute_set_ulong (attr, CKK_DSA);
 			default:
 				g_return_val_if_reached (CKR_GENERAL_ERROR);
 			};
@@ -72,30 +73,30 @@ gck_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 			g_return_val_if_fail (self->pv->base_sexp, CKR_GENERAL_ERROR);
 			if (!gcry_pk_get_keygrip (gck_sexp_get (self->pv->base_sexp), hash))
 				g_return_val_if_reached (CKR_GENERAL_ERROR);
-			return gck_util_set_data (attr, hash, sizeof (hash));
+			return gck_attribute_set_data (attr, hash, sizeof (hash));
 		}
 		break;
 		
 	case CKA_START_DATE:
 	case CKA_END_DATE:
-		return gck_util_set_data (attr, "", 0);
+		return gck_attribute_set_data (attr, "", 0);
 	
 	case CKA_DERIVE:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_LOCAL:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_KEY_GEN_MECHANISM:
-		return gck_util_set_ulong (attr, CK_UNAVAILABLE_INFORMATION);
+		return gck_attribute_set_ulong (attr, CK_UNAVAILABLE_INFORMATION);
 		
 	case CKA_ALLOWED_MECHANISMS:
 		switch (gck_key_get_algorithm (self)) {
 		case GCRY_PK_RSA:
-			return gck_util_set_data (attr, (CK_VOID_PTR)GCK_CRYPTO_RSA_MECHANISMS, 
+			return gck_attribute_set_data (attr, (CK_VOID_PTR)GCK_CRYPTO_RSA_MECHANISMS, 
 			                          sizeof (GCK_CRYPTO_RSA_MECHANISMS));
 		case GCRY_PK_DSA:
-			return gck_util_set_data (attr, (CK_VOID_PTR)GCK_CRYPTO_DSA_MECHANISMS, 
+			return gck_attribute_set_data (attr, (CK_VOID_PTR)GCK_CRYPTO_DSA_MECHANISMS, 
 			                          sizeof (GCK_CRYPTO_DSA_MECHANISMS));
 		default:
 			g_return_val_if_reached (CKR_GENERAL_ERROR);
@@ -104,7 +105,7 @@ gck_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 	/* Lookup the certificate subject */
 	case CKA_SUBJECT:
 		/* TODO: When we have certificates, implement this */
-		return gck_util_set_data (attr, "", 0);
+		return gck_attribute_set_data (attr, "", 0);
 	};
 
 	return GCK_OBJECT_CLASS (gck_key_parent_class)->get_attribute (base, attr);
@@ -274,7 +275,7 @@ gck_key_set_key_part (GckKey *self, int algo, const char *part,
 	
 	if (!gck_crypto_sexp_extract_mpi (numbers, &mpi, part, NULL))
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
-	rv = gck_util_set_mpi (attr, mpi);
+	rv = gck_attribute_set_mpi (attr, mpi);
 	gcry_sexp_release (numbers);
 	gcry_mpi_release (mpi);
 	

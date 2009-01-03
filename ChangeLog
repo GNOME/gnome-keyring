@@ -1,5 +1,55 @@
 2008-01-03  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gck/gck-attributes.c: (added)
+	* pkcs11/gck/gck-attributes.h: (added)
+	* pkcs11/gck/gck-certificate.c:
+	* pkcs11/gck/gck-certificate.h:
+	* pkcs11/gck/gck-certificate-key.c:
+	* pkcs11/gck/gck-certificate-key.h:
+	* pkcs11/gck/gck-factory.c: (added)
+	* pkcs11/gck/gck-factory.h: (added)
+	* pkcs11/gck/gck-file-store.c: (added)
+	* pkcs11/gck/gck-file-store.h: (added)
+	* pkcs11/gck/gck-key.c:
+	* pkcs11/gck/gck-key.h:
+	* pkcs11/gck/gck-manager.c:
+	* pkcs11/gck/gck-manager.h:
+	* pkcs11/gck/gck-marshal.list: (added)
+	* pkcs11/gck/gck-memory-store.c: (added)
+	* pkcs11/gck/gck-memory-store.h: (added)
+	* pkcs11/gck/gck-module.c:
+	* pkcs11/gck/gck-module.h:
+	* pkcs11/gck/gck-object.c:
+	* pkcs11/gck/gck-object.h:
+	* pkcs11/gck/gck-private-key.c:
+	* pkcs11/gck/gck-private-key.h:
+	* pkcs11/gck/gck-public-key.c:
+	* pkcs11/gck/gck-public-key.h:
+	* pkcs11/gck/gck-session.c:
+	* pkcs11/gck/gck-sexp.h:
+	* pkcs11/gck/gck-store.c: (added)
+	* pkcs11/gck/gck-store.h: (added)
+	* pkcs11/gck/gck-transaction.c: (added)
+	* pkcs11/gck/gck-transaction.h: (added)
+	* pkcs11/gck/gck-types.h: (added)
+	* pkcs11/gck/gck-util.c:
+	* pkcs11/gck/gck-util.h: 
+	* pkcs11/gck/Makefile.am:
+	* pkcs11/gck/tests/Makefile.am:
+	* pkcs11/gck/tests/unit-test-file-store.c: (added)
+	* pkcs11/gck/tests/unit-test-memory-store.c: (added)
+	* pkcs11/gck/tests/unit-test-store.c: (added)
+	* pkcs11/gck/tests/unit-test-transaction.c: (added)
+	* pkcs11/gck/tests/test-data/test-file-store.store: (added)
+	* pkcs11/roots/gck-roots-certificate.c:
+	* pkcs11/ssh-keys/gck-ssh-private-key.c:
+	* pkcs11/ssh-keys/gck-ssh-public-key.c:
+	* tests/gtest-helpers.c:
+	* tests/gtest-helpers.h: Added support for creating, deleting and setting
+	attributes on session objects. Framework for general modification of objects.
+	
+2008-01-03  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pkcs11/gkr-pkcs11-daemon-session.c: Allow starting one operation
 	on top of another by cancelling the first.
 

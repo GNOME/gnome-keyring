@@ -23,6 +23,8 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-attributes.h"
+#include "gck-certificate.h"
 #include "gck-certificate-key.h"
 #include "gck-crypto.h"
 #include "gck-data-asn1.h"
@@ -127,24 +129,24 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 	switch (attr->type) {
 	
 	case CKA_CLASS:
-		return gck_util_set_ulong (attr, CKO_CERTIFICATE);
+		return gck_attribute_set_ulong (attr, CKO_CERTIFICATE);
 		
 	case CKA_PRIVATE:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_LABEL:
-		return gck_util_set_string (attr, gck_certificate_get_label (self)); 
+		return gck_attribute_set_string (attr, gck_certificate_get_label (self)); 
 		
 	case CKA_CERTIFICATE_TYPE:
-		return gck_util_set_ulong (attr, CKC_X_509);
+		return gck_attribute_set_ulong (attr, CKC_X_509);
 		
 	case CKA_TRUSTED:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_CERTIFICATE_CATEGORY:
 		if (!gck_certificate_calc_category (self, &category))
 			return CKR_FUNCTION_FAILED;
-		return gck_util_set_ulong (attr, category);
+		return gck_attribute_set_ulong (attr, category);
 		
 	case CKA_CHECK_VALUE:
 		g_return_val_if_fail (self->pv->data, CKR_GENERAL_ERROR);
@@ -152,7 +154,7 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		g_return_val_if_fail (n_data && n_data > 3, CKR_GENERAL_ERROR);
 		data = g_new0 (guchar, n_data);
 		gcry_md_hash_buffer (GCRY_MD_SHA1, data, self->pv->data, self->pv->n_data);
-		rv = gck_util_set_data (attr, data, 3);
+		rv = gck_attribute_set_data (attr, data, 3);
 		g_free (data);
 		return rv;
 	
@@ -165,14 +167,14 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		                                       "tbsCertificate.validity.notAfter",
 		                              &when))
 			return CKR_FUNCTION_FAILED;
-		return gck_util_set_date (attr, when);
+		return gck_attribute_set_date (attr, when);
 
 	case CKA_SUBJECT:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
 		cdata = gck_data_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
 		                                    "tbsCertificate.subject", &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
-		return gck_util_set_data (attr, cdata, n_data);
+		return gck_attribute_set_data (attr, cdata, n_data);
 
 	case CKA_ID:
 		g_return_val_if_fail (self->pv->key, CKR_GENERAL_ERROR);
@@ -183,28 +185,28 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		cdata = gck_data_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
 		                                    "tbsCertificate.issuer", &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
-		return gck_util_set_data (attr, cdata, n_data);
+		return gck_attribute_set_data (attr, cdata, n_data);
 		
 	case CKA_SERIAL_NUMBER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
 		cdata = gck_data_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
 		                                    "tbsCertificate.serialNumber", &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
-		return gck_util_set_data (attr, cdata, n_data);		
+		return gck_attribute_set_data (attr, cdata, n_data);		
 		
 	case CKA_VALUE:
 		g_return_val_if_fail (self->pv->data, CKR_GENERAL_ERROR);
-		return gck_util_set_data (attr, self->pv->data, self->pv->n_data);
+		return gck_attribute_set_data (attr, self->pv->data, self->pv->n_data);
 
 	/* These are only used for strange online certificates which we don't support */	
 	case CKA_URL:
 	case CKA_HASH_OF_SUBJECT_PUBLIC_KEY:
 	case CKA_HASH_OF_ISSUER_PUBLIC_KEY:
-		return gck_util_set_data (attr, "", 0);
+		return gck_attribute_set_data (attr, "", 0);
 	
 	/* What in the world is this doing in the spec? */
 	case CKA_JAVA_MIDP_SECURITY_DOMAIN:
-		return gck_util_set_ulong (attr, 0); /* 0 = unspecified */
+		return gck_attribute_set_ulong (attr, 0); /* 0 = unspecified */
 	};
 
 	return GCK_OBJECT_CLASS (gck_certificate_parent_class)->get_attribute (base, attr);

@@ -23,19 +23,12 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-attributes.h"
 #include "gck-crypto.h"
+#include "gck-factory.h"
 #include "gck-public-key.h"
+#include "gck-transaction.h"
 #include "gck-util.h"
-
-#if 0
-enum {
-	PROP_0,
-	PROP_PUBLIC_KEY
-};
-
-struct _GckPublicKeyPrivate {
-};
-#endif
 
 G_DEFINE_TYPE (GckPublicKey, gck_public_key, GCK_TYPE_KEY);
 
@@ -65,10 +58,83 @@ return_modulus_bits (GckPublicKey *self, CK_ATTRIBUTE_PTR attr)
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
 
 	gcry_sexp_release (numbers);
-	rv = gck_util_set_ulong (attr, gcry_mpi_get_nbits (mpi));
+	rv = gck_attribute_set_ulong (attr, gcry_mpi_get_nbits (mpi));
 	gcry_mpi_release (mpi);
 
 	return rv;
+}
+
+static CK_RV
+create_rsa_public (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t n = NULL;
+	gcry_mpi_t e = NULL;
+	CK_RV ret;
+	
+	if (!gck_attributes_find_mpi (attrs, n_attrs, CKA_MODULUS, &n) ||
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_PUBLIC_EXPONENT, &e)) { 
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}
+	
+	gcry = gcry_sexp_build (skey, NULL, 
+	                        "(public-key (rsa (n %m) (e %m)))", 
+	                        n, e);
+
+	if (gcry != 0) {
+		g_message ("couldn't create RSA key from passed attributes: %s", gcry_strerror (gcry));
+		ret = CKR_FUNCTION_FAILED;
+		goto done;
+	}
+	
+	gck_attributes_consume (attrs, n_attrs, CKA_MODULUS, CKA_PUBLIC_EXPONENT, CKA_MODULUS_BITS, -1); 
+	ret = CKR_OK;
+
+done:
+	gcry_mpi_release (n);
+	gcry_mpi_release (e);
+	return ret;	
+}
+
+static CK_RV
+create_dsa_public (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t p = NULL;
+	gcry_mpi_t q = NULL;
+	gcry_mpi_t g = NULL;
+	gcry_mpi_t y = NULL;
+	CK_RV ret;
+	
+	if (!gck_attributes_find_mpi (attrs, n_attrs, CKA_PRIME, &p) ||
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_SUBPRIME, &q) || 
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_BASE, &g) ||
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_VALUE, &y)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}
+	
+	gcry = gcry_sexp_build (skey, NULL, 
+	                        "(public-key (dsa (p %m) (q %m) (g %m) (y %m)))",
+	                        p, q, g, y);
+
+	if (gcry != 0) {
+		g_message ("couldn't create DSA key from passed attributes: %s", gcry_strerror (gcry));
+		ret = CKR_FUNCTION_FAILED;
+		goto done;
+	}
+
+	gck_attributes_consume (attrs, n_attrs, CKA_PRIME, CKA_SUBPRIME, 
+	                        CKA_BASE, CKA_VALUE, -1);
+	ret = CKR_OK;
+
+done:
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (g);
+	gcry_mpi_release (y);
+	return ret;
 }
 
 /* -----------------------------------------------------------------------------
@@ -84,22 +150,22 @@ gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 	{
 	
 	case CKA_CLASS:
-		return gck_util_set_ulong (attr, CKO_PUBLIC_KEY);
+		return gck_attribute_set_ulong (attr, CKO_PUBLIC_KEY);
 	
 	case CKA_ENCRYPT:
-		return gck_util_set_bool (attr, gck_key_get_algorithm (GCK_KEY (self)) == GCRY_PK_RSA);
+		return gck_attribute_set_bool (attr, gck_key_get_algorithm (GCK_KEY (self)) == GCRY_PK_RSA);
 		
 	case CKA_VERIFY:
-		return gck_util_set_bool (attr, TRUE);
+		return gck_attribute_set_bool (attr, TRUE);
 		
 	case CKA_VERIFY_RECOVER:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_WRAP:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_TRUSTED:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_WRAP_TEMPLATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
@@ -130,26 +196,6 @@ gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 	return GCK_OBJECT_CLASS (gck_public_key_parent_class)->get_attribute (base, attr);
 }
 
-#if 0
-static CK_RV 
-gck_public_key_real_set_attribute (GckPublicKey *public_key, const CK_ATTRIBUTE* attr)
-{
-	switch (attr->type) {
-	/* TODO: CKA_LABEL */
-
-	case CKA_TOKEN:
-	case CKA_PRIVATE:
-	case CKA_MODIFIABLE:
-		return CKR_ATTRIBUTE_READ_ONLY;
-		
-	case CKA_CLASS:
-		return CKR_ATTRIBUTE_READ_ONLY;
-	};
-	
-	return CKA_ATTRIBUTE_TYPE_INVALID;
-}
-#endif
-
 static GckSexp*
 gck_public_key_acquire_crypto_sexp (GckKey *self)
 {
@@ -174,26 +220,18 @@ gck_public_key_constructor (GType type, guint n_props, GObjectConstructParam *pr
 static void
 gck_public_key_init (GckPublicKey *self)
 {
-#if 0
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_PUBLIC_KEY, GckPublicKeyPrivate);
-#endif
+
 }
 
 static void
 gck_public_key_dispose (GObject *obj)
 {
-#if 0
-	GckPublicKey *self = GCK_PUBLIC_KEY (obj);
-#endif
 	G_OBJECT_CLASS (gck_public_key_parent_class)->dispose (obj);
 }
 
 static void
 gck_public_key_finalize (GObject *obj)
 {
-#if 0
-	GckPublicKey *self = GCK_PUBLIC_KEY (obj);
-#endif
 	G_OBJECT_CLASS (gck_public_key_parent_class)->finalize (obj);
 }
 
@@ -201,10 +239,6 @@ static void
 gck_public_key_set_property (GObject *obj, guint prop_id, const GValue *value, 
                            GParamSpec *pspec)
 {
-#if 0
-	GckPublicKey *self = GCK_PUBLIC_KEY (obj);
-#endif
-	
 	switch (prop_id) {
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -216,10 +250,6 @@ static void
 gck_public_key_get_property (GObject *obj, guint prop_id, GValue *value, 
                            GParamSpec *pspec)
 {
-#if 0
-	GckPublicKey *self = GCK_PUBLIC_KEY (obj);
-#endif
-	
 	switch (prop_id) {
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -235,9 +265,6 @@ gck_public_key_class_init (GckPublicKeyClass *klass)
 	GckKeyClass *key_class = GCK_KEY_CLASS (klass);
 	
 	gck_public_key_parent_class = g_type_class_peek_parent (klass);
-#if 0
-	g_type_class_add_private (klass, sizeof (GckPublicKeyPrivate));
-#endif
 	
 	gobject_class->constructor = gck_public_key_constructor;
 	gobject_class->dispose = gck_public_key_dispose;
@@ -246,23 +273,75 @@ gck_public_key_class_init (GckPublicKeyClass *klass)
 	gobject_class->get_property = gck_public_key_get_property;
 	
 	gck_class->get_attribute = gck_public_key_real_get_attribute;
-#if 0
-	gck_class->set_attribute = gck_public_key_real_set_attribute;
-#endif
 	
 	key_class->acquire_crypto_sexp = gck_public_key_acquire_crypto_sexp;
-	
-#if 0
-	g_public_key_class_install_property (gobject_class, PROP_PUBLIC_KEY,
-	           g_param_spec_pointer ("public_key", "PublicKey", "PublicKey.", G_PARAM_READWRITE));
-    
-	signals[SIGNAL] = g_signal_new ("signal", GCK_TYPE_PUBLIC_KEY, 
-	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckPublicKeyClass, signal),
-	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
-	                                G_TYPE_NONE, 0);
-#endif
 }
 
 /* -----------------------------------------------------------------------------
  * PUBLIC 
  */
+
+void
+gck_public_key_create (GckSession *session, GckTransaction *transaction, 
+                       CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+{
+ 	CK_KEY_TYPE type;
+ 	GckSexp *wrapper;
+ 	gcry_sexp_t sexp;
+ 	CK_RV ret;
+ 
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (attrs || !n_attrs);
+	g_return_if_fail (object);
+	
+	*object = NULL;
+	
+	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_KEY_TYPE, &type)) {
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return;
+	}
+		
+ 	gck_attributes_consume (attrs, n_attrs, CKA_KEY_TYPE, CKA_CLASS, -1);
+
+ 	switch (type) {
+	case CKK_RSA:
+		ret = create_rsa_public (attrs, n_attrs, &sexp);
+		break;
+	case CKK_DSA:
+		ret = create_dsa_public (attrs, n_attrs, &sexp);
+		break;
+	default:
+		ret = CKR_ATTRIBUTE_VALUE_INVALID;
+		break;
+ 	};
+
+	if (ret != CKR_OK) {
+		gck_transaction_fail (transaction, ret);
+		return;
+	}
+	
+	g_return_if_fail (sexp);
+	wrapper = gck_sexp_new (sexp);
+	*object = g_object_new (GCK_TYPE_PUBLIC_KEY, "base-sexp", wrapper, NULL);
+	gck_sexp_unref (wrapper);
+}
+
+GckFactoryInfo*
+gck_public_key_get_factory (void)
+{
+	static CK_OBJECT_CLASS klass = CKO_PUBLIC_KEY;
+	static CK_BBOOL token = CK_FALSE;
+
+	static CK_ATTRIBUTE attributes[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_TOKEN, &token, sizeof (token) }, 
+	};
+
+	static GckFactoryInfo factory = {
+		attributes,
+		G_N_ELEMENTS (attributes),
+		gck_public_key_create
+	};
+	
+	return &factory;
+}

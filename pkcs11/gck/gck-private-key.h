@@ -25,7 +25,9 @@
 #include <glib-object.h>
 
 #include "gck-key.h"
-#include "gck-sexp.h"
+#include "gck-types.h"
+
+#define GCK_FACTORY_PRIVATE_KEY            (gck_private_key_get_factory ())
 
 #define GCK_TYPE_PRIVATE_KEY               (gck_private_key_get_type ())
 #define GCK_PRIVATE_KEY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_PRIVATE_KEY, GckPrivateKey))
@@ -34,7 +36,6 @@
 #define GCK_IS_PRIVATE_KEY_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_PRIVATE_KEY))
 #define GCK_PRIVATE_KEY_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_PRIVATE_KEY, GckPrivateKeyClass))
 
-typedef struct _GckPrivateKey GckPrivateKey;
 typedef struct _GckPrivateKeyClass GckPrivateKeyClass;
 typedef struct _GckPrivateKeyPrivate GckPrivateKeyPrivate;
     
@@ -49,10 +50,16 @@ struct _GckPrivateKeyClass {
 
 GType                      gck_private_key_get_type               (void);
 
-GckPrivateKey*             gck_private_key_new                    (void);
-
 void                       gck_private_key_store_private          (GckPrivateKey *self, 
                                                                    GckSexp *sexp, 
                                                                    guint num_uses);               
+
+GckFactoryInfo*            gck_private_key_get_factory            (void);
+
+void                       gck_private_key_create                 (GckSession *session, 
+                                                                   GckTransaction *transaction, 
+                                                                   CK_ATTRIBUTE_PTR attrs, 
+                                                                   CK_ULONG n_attrs, 
+                                                                   GckObject **object);
 
 #endif /* __GCK_PRIVATE_KEY_H__ */

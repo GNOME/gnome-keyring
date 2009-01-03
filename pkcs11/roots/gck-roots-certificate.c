@@ -61,7 +61,7 @@ gck_roots_certificate_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 	
 	switch (attr->type) {
 	case CKA_TRUSTED:
-		return gck_util_set_bool (attr, TRUE);
+		return gck_attribute_set_bool (attr, TRUE);
 		
 	case CKA_CERTIFICATE_CATEGORY:
 		if (!gck_certificate_calc_category (GCK_CERTIFICATE (self), &category))
@@ -69,7 +69,7 @@ gck_roots_certificate_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 		/* Unknown category, is CA by default in this slot */
 		if (category == 0) 
 			category = 2;
-		return gck_util_set_ulong (attr, category);
+		return gck_attribute_set_ulong (attr, category);
 	}
 	
 	return GCK_OBJECT_CLASS (gck_roots_certificate_parent_class)->get_attribute (base, attr);

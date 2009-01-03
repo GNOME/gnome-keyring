@@ -24,11 +24,22 @@
 #ifndef GTEST_HELPERS_H_
 #define GTEST_HELPERS_H_
 
+#include "config.h"
+
 #include <glib.h>
+#include <glib-object.h>
+#include <glib/gstdio.h>
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 void test_mainloop_quit (void);
 void test_mainloop_run (int timeout);
 GMainLoop* test_mainloop_get (void);
+
+gchar* test_build_filename (const gchar *basename);
 
 #define DECLARE_SETUP(x) \
 	void setup_##x(int *v, gconstpointer d)

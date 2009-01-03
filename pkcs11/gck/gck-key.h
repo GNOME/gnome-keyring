@@ -26,6 +26,7 @@
 
 #include "gck-sexp.h"
 #include "gck-object.h"
+#include "gck-types.h"
 
 #define GCK_TYPE_KEY               (gck_key_get_type ())
 #define GCK_KEY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_KEY, GckKey))
@@ -34,7 +35,6 @@
 #define GCK_IS_KEY_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_KEY))
 #define GCK_KEY_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_KEY, GckKeyClass))
 
-typedef struct _GckKey GckKey;
 typedef struct _GckKeyClass GckKeyClass;
 typedef struct _GckKeyPrivate GckKeyPrivate;
     

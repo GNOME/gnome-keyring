@@ -23,14 +23,11 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-attributes.h"
+#include "gck-factory.h"
 #include "gck-private-key.h"
+#include "gck-transaction.h"
 #include "gck-util.h"
-
-#if 0
-enum {
-	PROP_0
-};
-#endif
 
 struct _GckPrivateKeyPrivate {
 	guint sexp_uses;
@@ -43,6 +40,108 @@ G_DEFINE_TYPE (GckPrivateKey, gck_private_key, GCK_TYPE_KEY);
  * INTERNAL 
  */
 
+
+static CK_RV
+create_rsa_private (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t n = NULL;
+	gcry_mpi_t e = NULL;
+	gcry_mpi_t d = NULL;
+	gcry_mpi_t p = NULL;
+	gcry_mpi_t q = NULL;
+	gcry_mpi_t u = NULL;
+	CK_RV ret;
+	
+	if (!gck_attributes_find_mpi (attrs, n_attrs, CKA_MODULUS, &n) ||
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_PUBLIC_EXPONENT, &e) || 
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_PRIVATE_EXPONENT, &d) || 
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_PRIME_1, &p) || 
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_PRIME_2, &q)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}
+	
+	/* Fix up the incoming key so gcrypt likes it */    	
+	if (gcry_mpi_cmp (p, q) > 0)
+		gcry_mpi_swap (p, q);
+
+	/* Compute U.  */
+	u = gcry_mpi_snew (gcry_mpi_get_nbits (n));
+	gcry_mpi_invm (u, p, q);
+	
+	gcry = gcry_sexp_build (skey, NULL, 
+	                        "(private-key (rsa (n %m) (e %m) (d %m) (p %m) (q %m) (u %m)))", 
+	                        n, e, d, p, q, u);
+
+	if (gcry != 0) {
+		g_message ("couldn't create RSA key from passed attributes: %s", gcry_strerror (gcry));
+		ret = CKR_FUNCTION_FAILED;
+		goto done;
+	}
+	
+	gck_attributes_consume (attrs, n_attrs, CKA_MODULUS, CKA_PUBLIC_EXPONENT, 
+	                        CKA_PRIVATE_EXPONENT, CKA_PRIME_1, CKA_PRIME_2, 
+	                        CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT, -1);
+	ret = CKR_OK;
+
+done:
+	gcry_mpi_release (n);
+	gcry_mpi_release (e);
+	gcry_mpi_release (d);
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (u);
+	return ret;	
+}
+
+static CK_RV
+create_dsa_private (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t p = NULL;
+	gcry_mpi_t q = NULL;
+	gcry_mpi_t g = NULL;
+	gcry_mpi_t y = NULL;
+	gcry_mpi_t value = NULL;
+	CK_RV ret;
+	
+	if (!gck_attributes_find_mpi (attrs, n_attrs, CKA_PRIME, &p) ||
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_SUBPRIME, &q) || 
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_BASE, &g) ||
+	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_VALUE, &value)) {
+	    	ret = CKR_TEMPLATE_INCOMPLETE;
+	    	goto done;
+	}
+	
+	/* Calculate the public part from the private */
+	y = gcry_mpi_snew (gcry_mpi_get_nbits (value));
+	g_return_val_if_fail (y, CKR_GENERAL_ERROR);
+  	gcry_mpi_powm (y, g, value, p);
+
+	gcry = gcry_sexp_build (skey, NULL, 
+	                        "(private-key (dsa (p %m) (q %m) (g %m) (y %m) (x %m)))",
+	                        p, q, g, y, value);
+
+	if (gcry != 0) {
+		g_message ("couldn't create DSA key from passed attributes: %s", gcry_strerror (gcry));
+		ret = CKR_FUNCTION_FAILED;
+		goto done;
+	}
+
+	gck_attributes_consume (attrs, n_attrs, CKA_PRIME, CKA_SUBPRIME, 
+	                        CKA_BASE, CKA_VALUE, -1);
+	ret = CKR_OK;
+
+done:
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (g);
+	gcry_mpi_release (y);
+	gcry_mpi_release (value);
+	return ret;
+}
+
 /* -----------------------------------------------------------------------------
  * PRIVATE_KEY 
  */
@@ -54,43 +153,43 @@ gck_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 	
 	switch (attr->type) {
 	case CKA_CLASS:
-		return gck_util_set_ulong (attr, CKO_PRIVATE_KEY);
+		return gck_attribute_set_ulong (attr, CKO_PRIVATE_KEY);
 		
 	case CKA_PRIVATE:
-		return gck_util_set_bool (attr, TRUE);
+		return gck_attribute_set_bool (attr, TRUE);
 
 	case CKA_SENSITIVE:
-		return gck_util_set_bool (attr, TRUE);
+		return gck_attribute_set_bool (attr, TRUE);
 		
 	case CKA_DECRYPT:
-		return gck_util_set_bool (attr, gck_key_get_algorithm (GCK_KEY (self)) == GCRY_PK_RSA); 
+		return gck_attribute_set_bool (attr, gck_key_get_algorithm (GCK_KEY (self)) == GCRY_PK_RSA); 
 		
 	case CKA_SIGN:
-		return gck_util_set_bool (attr, TRUE);
+		return gck_attribute_set_bool (attr, TRUE);
 		
 	case CKA_SIGN_RECOVER:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_UNWRAP:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_EXTRACTABLE:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_ALWAYS_SENSITIVE:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_NEVER_EXTRACTABLE:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_WRAP_WITH_TRUSTED:
-		return gck_util_set_bool (attr, FALSE);
+		return gck_attribute_set_bool (attr, FALSE);
 		
 	case CKA_UNWRAP_TEMPLATE:
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
 	case CKA_ALWAYS_AUTHENTICATE:
-		return gck_util_set_bool (attr, self->pv->sexp_uses <= 1);
+		return gck_attribute_set_bool (attr, self->pv->sexp_uses <= 1);
 		
 	case CKA_MODULUS:
 		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_RSA, "n", attr);
@@ -123,26 +222,6 @@ gck_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 	
 	return GCK_OBJECT_CLASS (gck_private_key_parent_class)->get_attribute (base, attr);
 }
-
-#if 0
-static CK_RV 
-gck_private_key_real_set_attribute (GckPrivateKey *private_key, const CK_ATTRIBUTE* attr)
-{
-	switch (attr->type) {
-	/* TODO: CKA_LABEL */
-
-	case CKA_TOKEN:
-	case CKA_PRIVATE:
-	case CKA_MODIFIABLE:
-		return CKR_ATTRIBUTE_READ_ONLY;
-		
-	case CKA_CLASS:
-		return CKR_ATTRIBUTE_READ_ONLY;
-	};
-	
-xxx
-}
-#endif
 
 static GckSexp*
 gck_private_key_real_acquire_crypto_sexp (GckKey *base)
@@ -212,10 +291,6 @@ static void
 gck_private_key_set_property (GObject *obj, guint prop_id, const GValue *value, 
                               GParamSpec *pspec)
 {
-#if 0
-	GckPrivateKey *self = GCK_PRIVATE_KEY (obj);
-#endif
-	
 	switch (prop_id) {
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -227,10 +302,6 @@ static void
 gck_private_key_get_property (GObject *obj, guint prop_id, GValue *value, 
                               GParamSpec *pspec)
 {
-#if 0
-	GckPrivateKey *self = GCK_PRIVATE_KEY (obj);
-#endif
-	
 	switch (prop_id) {
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -255,21 +326,8 @@ gck_private_key_class_init (GckPrivateKeyClass *klass)
 	gobject_class->get_property = gck_private_key_get_property;
 	
 	gck_class->get_attribute = gck_private_key_real_get_attribute;
-#if 0
-	gck_class->set_attribute = gck_private_key_real_set_attribute;
-#endif
-	
+
 	key_class->acquire_crypto_sexp = gck_private_key_real_acquire_crypto_sexp;
-    
-#if 0
-	g_private_key_class_install_property (gprivate_key_class, PROP_PRIVATE_KEY,
-	           g_param_spec_pointer ("private_key", "PrivateKey", "PrivateKey.", G_PARAM_READWRITE));
-    
-	signals[SIGNAL] = g_signal_new ("signal", GCK_TYPE_PRIVATE_KEY, 
-	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckPrivateKeyClass, signal),
-	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
-	                                G_TYPE_NONE, 0);
-#endif
 }
 
 /* -----------------------------------------------------------------------------
@@ -288,4 +346,72 @@ gck_private_key_store_private (GckPrivateKey *self, GckSexp *sexp, guint num_use
 		gck_sexp_unref (self->pv->sexp);
 	self->pv->sexp = sexp;
 	self->pv->sexp_uses = num_uses;
+}
+
+
+void
+gck_private_key_create (GckSession *session, GckTransaction *transaction, 
+                        CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+{
+ 	CK_KEY_TYPE type;
+ 	GckSexp *wrapper;
+ 	gcry_sexp_t sexp;
+ 	CK_RV ret;
+ 	
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (attrs || !n_attrs);
+	g_return_if_fail (object);
+	
+	*object = NULL;
+	
+	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_KEY_TYPE, &type)) {
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return;
+	}
+		
+ 	gck_attributes_consume (attrs, n_attrs, CKA_KEY_TYPE, CKA_CLASS, -1);
+
+ 	switch (type) {
+	case CKK_RSA:
+		ret = create_rsa_private (attrs, n_attrs, &sexp);
+		break;
+	case CKK_DSA:
+		ret = create_dsa_private (attrs, n_attrs, &sexp);
+		break;
+	default:
+		ret = CKR_ATTRIBUTE_VALUE_INVALID;
+		break;
+ 	};
+
+ 	
+	if (ret != CKR_OK) {
+		gck_transaction_fail (transaction, ret);
+		return;
+	}
+	
+	g_return_if_fail (sexp);
+	wrapper = gck_sexp_new (sexp);
+	*object = g_object_new (GCK_TYPE_PRIVATE_KEY, "base-sexp", wrapper, NULL);
+	gck_private_key_store_private (GCK_PRIVATE_KEY (*object), wrapper, G_MAXUINT);
+	gck_sexp_unref (wrapper);
+}
+
+GckFactoryInfo*
+gck_private_key_get_factory (void)
+{
+	static CK_OBJECT_CLASS klass = CKO_PRIVATE_KEY;
+	static CK_BBOOL token = CK_FALSE;
+
+	static CK_ATTRIBUTE attributes[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_TOKEN, &token, sizeof (token) }, 
+	};
+
+	static GckFactoryInfo factory = {
+		attributes,
+		G_N_ELEMENTS (attributes),
+		gck_private_key_create
+	};
+	
+	return &factory;
 }

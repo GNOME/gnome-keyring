@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include "gck-attributes.h"
+#include "gck-certificate.h"
 #include "gck-certificate-key.h"
 
 #include "gck-object.h"
@@ -52,7 +54,7 @@ gck_certificate_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 	case CKA_LABEL:
 		if (self->pv->certificate)
 			return gck_object_get_attribute (GCK_OBJECT (self->pv->certificate), attr);
-		return gck_util_set_string (attr, "");
+		return gck_attribute_set_string (attr, "");
 	}
 	
 	return GCK_OBJECT_CLASS (gck_certificate_key_parent_class)->get_attribute (base, attr);

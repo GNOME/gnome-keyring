@@ -24,6 +24,7 @@
 #include "gck-ssh-openssh.h"
 #include "gck-ssh-private-key.h"
 
+#include "gck/gck-attributes.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
 #include "gck/gck-sexp.h"
@@ -138,7 +139,7 @@ gck_ssh_private_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 	
 	switch (attr->type) {
 	case CKA_LABEL:
-		return gck_util_set_string (attr, self->label ? self->label : "");
+		return gck_attribute_set_string (attr, self->label ? self->label : "");
 	}
 	
 	return GCK_OBJECT_CLASS (gck_ssh_private_key_parent_class)->get_attribute (base, attr);

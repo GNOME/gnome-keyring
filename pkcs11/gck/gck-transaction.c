@@ -1,0 +1,291 @@
+/* 
+ * gnome-keyring
+ * 
+ * Copyright (C) 2008 Stefan Walter
+ * 
+ * This program is free software; you can redistribute it and/or modify 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *  
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.  
+ */
+
+#include "config.h"
+
+#include "gck-marshal.h"
+#include "gck-transaction.h"
+
+enum {
+	PROP_0,
+	PROP_COMPLETED,
+	PROP_FAILED,
+	PROP_RESULT
+};
+
+enum {
+	COMPLETE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
+struct _GckTransaction {
+	GObject parent;
+	GList *completes;
+	gboolean failed;
+	gboolean completed;
+	CK_RV result;
+};
+
+typedef struct _Complete {
+	GObject *object;
+	GckTransactionFunc func;
+	gpointer user_data;
+} Complete;
+
+G_DEFINE_TYPE (GckTransaction, gck_transaction, G_TYPE_OBJECT);
+
+/* -----------------------------------------------------------------------------
+ * INTERNAL 
+ */
+
+static gboolean
+complete_invoke (GckTransaction *transaction, Complete *complete)
+{
+	g_assert (complete);
+	g_assert (complete->func);
+	g_assert (complete->object);
+	
+	return (complete->func) (transaction, complete->object, complete->user_data);
+}
+
+static void
+complete_destroy (Complete *complete)
+{
+	g_assert (complete->func);
+	g_assert (G_IS_OBJECT (complete->object));
+	g_object_unref (complete->object);
+	g_slice_free (Complete, complete);
+}
+
+static gboolean
+complete_accumulator (GSignalInvocationHint *ihint, GValue *return_accu, 
+                      const GValue *handler_return, gpointer data)
+{
+	gboolean result;
+	
+	/* If any of them return false, then the result is false */
+	result = g_value_get_boolean (handler_return);
+	if (result == FALSE)
+		g_value_set_boolean (return_accu, FALSE);
+	
+	/* Continue signal invocations */
+	return TRUE;
+}
+
+/* -----------------------------------------------------------------------------
+ * OBJECT 
+ */
+
+static gboolean
+gck_transaction_real_complete (GckTransaction *self)
+{
+	GList *l;
+	
+	g_return_val_if_fail (!self->completed, FALSE);
+	self->completed = TRUE;
+	g_object_notify (G_OBJECT (self), "completed");
+	
+	for (l = self->completes; l; l = g_list_next (l)) {
+		complete_invoke (self, l->data);
+		complete_destroy (l->data);
+	}
+	
+	g_list_free (self->completes);
+	self->completes = NULL;
+	
+	return TRUE;
+}
+
+static void
+gck_transaction_init (GckTransaction *self)
+{
+
+}
+
+static void
+gck_transaction_dispose (GObject *obj)
+{
+	GckTransaction *self = GCK_TRANSACTION (obj);
+	
+	if (!self->completed)
+		gck_transaction_complete (self);
+    
+	G_OBJECT_CLASS (gck_transaction_parent_class)->dispose (obj);
+}
+
+static void
+gck_transaction_finalize (GObject *obj)
+{
+	GckTransaction *self = GCK_TRANSACTION (obj);
+
+	g_assert (!self->completes);
+	g_assert (self->completed);
+	
+	G_OBJECT_CLASS (gck_transaction_parent_class)->finalize (obj);
+}
+
+static void
+gck_transaction_set_property (GObject *obj, guint prop_id, const GValue *value, 
+                              GParamSpec *pspec)
+{
+	switch (prop_id) {
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gck_transaction_get_property (GObject *obj, guint prop_id, GValue *value, 
+                              GParamSpec *pspec)
+{
+	GckTransaction *self = GCK_TRANSACTION (obj);
+
+	switch (prop_id) {
+	case PROP_COMPLETED:
+		g_value_set_boolean (value, gck_transaction_get_completed (self));
+		break;
+	case PROP_FAILED:
+		g_value_set_boolean (value, gck_transaction_get_failed (self));
+		break;
+	case PROP_RESULT:
+		g_value_set_ulong (value, gck_transaction_get_result (self));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gck_transaction_class_init (GckTransactionClass *klass)
+{
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    
+	gobject_class->dispose = gck_transaction_dispose;
+	gobject_class->finalize = gck_transaction_finalize;
+	gobject_class->set_property = gck_transaction_set_property;
+	gobject_class->get_property = gck_transaction_get_property;
+	
+	klass->complete = gck_transaction_real_complete;
+    
+	g_object_class_install_property (gobject_class, PROP_COMPLETED,
+	           g_param_spec_boolean ("completed", "Completed", "Whether transaction is complete", 
+	                                 FALSE, G_PARAM_READABLE));
+	
+	g_object_class_install_property (gobject_class, PROP_FAILED,
+	           g_param_spec_boolean ("failed", "Failed", "Whether transaction failed", 
+	                                 FALSE, G_PARAM_READABLE));
+    
+	g_object_class_install_property (gobject_class, PROP_RESULT,
+	           g_param_spec_ulong ("result", "Result", "Result code for transaction",
+	                               0, G_MAXULONG, CKR_OK, G_PARAM_READABLE));
+	                               
+	signals[COMPLETE] = g_signal_new ("complete", GCK_TYPE_TRANSACTION, 
+	                                  G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GckTransactionClass, complete),
+	                                  complete_accumulator, NULL, gck_marshal_BOOLEAN__VOID, 
+	                                  G_TYPE_BOOLEAN, 0, G_TYPE_NONE);
+}
+
+/* -----------------------------------------------------------------------------
+ * PUBLIC 
+ */
+
+GckTransaction*
+gck_transaction_new (void)
+{
+	return g_object_new (GCK_TYPE_TRANSACTION, NULL);
+}
+
+void
+gck_transaction_add (GckTransaction *self, gpointer object,
+                     GckTransactionFunc func, gpointer user_data)
+{
+	Complete *complete;
+	
+	g_return_if_fail (GCK_IS_TRANSACTION (self));
+	g_return_if_fail (G_IS_OBJECT (object));
+	g_return_if_fail (func);
+	
+	complete = g_slice_new0 (Complete);
+	complete->func = func;
+	complete->object = g_object_ref (object);
+	complete->user_data = user_data;
+	
+	self->completes = g_list_prepend (self->completes, complete);
+}
+
+void
+gck_transaction_fail (GckTransaction *self, CK_RV result)
+{
+	g_return_if_fail (GCK_IS_TRANSACTION (self));
+	g_return_if_fail (!self->completed);
+	g_return_if_fail (result != CKR_OK);
+	g_return_if_fail (!self->failed);
+
+	self->failed = TRUE;
+	self->result = result;
+	
+	g_object_notify (G_OBJECT (self), "failed");
+	g_object_notify (G_OBJECT (self), "result");
+}
+
+void
+gck_transaction_complete(GckTransaction *self)
+{
+	gboolean critical = FALSE;
+	
+	g_return_if_fail (GCK_IS_TRANSACTION (self));
+	g_return_if_fail (!self->completed);
+	g_signal_emit (self, signals[COMPLETE], 0, &critical);
+	g_assert (self->completed);
+	
+	if (!self->failed && critical) {
+		g_warning ("transaction failed to commit, data may be lost");
+		self->failed = TRUE;
+		self->result = CKR_GENERAL_ERROR;
+		g_object_notify (G_OBJECT (self), "failed");
+		g_object_notify (G_OBJECT (self), "result");
+	}
+}
+
+gboolean
+gck_transaction_get_completed (GckTransaction *self)
+{
+	g_return_val_if_fail (GCK_IS_TRANSACTION (self), FALSE);
+	return self->completed;
+}
+
+gboolean
+gck_transaction_get_failed (GckTransaction *self)
+{
+	g_return_val_if_fail (GCK_IS_TRANSACTION (self), FALSE);
+	return self->failed;
+}
+
+CK_RV
+gck_transaction_get_result (GckTransaction *self)
+{
+	g_return_val_if_fail (GCK_IS_TRANSACTION (self), FALSE);
+	return self->result;
+}

@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gck-attributes.h"
 #include "gck-manager.h"
 #include "gck-util.h"
 
@@ -73,51 +74,6 @@ attribute_free (gpointer data)
 	}
 }
 
-static gboolean
-attribute_equal (gconstpointer v1, gconstpointer v2)
-{
-	const CK_ATTRIBUTE *a1 = v1;
-	const CK_ATTRIBUTE *a2 = v2;
-	
-	g_assert (a1);
-	g_assert (a2);
-	
-	if (a1 == a2)
-		return TRUE;
-	if (a1->type != a2->type)
-		return FALSE;
-	if (a1->ulValueLen != a2->ulValueLen)
-		return FALSE;
-	if (a1->pValue == a2->pValue)
-		return TRUE;
-	
-	g_assert (a1->pValue);
-	g_assert (a2->pValue);
-	
-	return memcmp (a1->pValue, a2->pValue, a1->ulValueLen) == 0;
-}
-
-static guint
-attribute_hash (gconstpointer v)
-{
-	const CK_ATTRIBUTE *a = v;
-	const signed char *p;
-	guint i, h;
-	
-	g_assert (a);
-	
-	p = (const signed char*)&(a->type);
-	h = *p;
-	for(i = 0; i < sizeof (CK_ATTRIBUTE_PTR); ++i)
-		h = (h << 5) - h + *(p++);
-	
-	p = a->pValue;
-	for(i = 0; i < a->ulValueLen; ++i)
-		h = (h << 5) - h + *(p++);
-	
-	return h;
-}
-
 static Index*
 index_new (gboolean unique)
 {
@@ -125,9 +81,9 @@ index_new (gboolean unique)
 	index->unique = unique;
 	
 	if (unique)
-		index->values = g_hash_table_new_full (attribute_hash, attribute_equal, attribute_free, NULL);
+		index->values = g_hash_table_new_full (gck_attribute_hash, gck_attribute_equal, attribute_free, NULL);
 	else
-		index->values = g_hash_table_new_full (attribute_hash, attribute_equal, attribute_free,
+		index->values = g_hash_table_new_full (gck_attribute_hash, gck_attribute_equal, attribute_free,
 		                                       (GDestroyNotify)g_hash_table_destroy);
 	
 	index->objects = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -267,9 +223,58 @@ read_value (GckObject *object, const gchar *property, CK_ATTRIBUTE_PTR *result)
 }
 
 static void
-index_update (Index *index, GckObject *object)
+index_remove_attr (Index *index, gpointer object, CK_ATTRIBUTE_PTR attr)
+{
+	GHashTable *objects;
+
+	g_assert (index);
+	g_assert (object);
+	g_assert (attr);
+	
+	if (index->unique) {
+		if (!g_hash_table_remove (index->values, attr))
+			g_assert_not_reached ();
+	} else {
+		objects = g_hash_table_lookup (index->values, attr);
+		g_assert (objects);
+		if (!g_hash_table_remove (objects, object))
+			g_assert_not_reached ();
+		if (g_hash_table_size (objects) == 0)
+			if (!g_hash_table_remove (index->values, attr))
+				g_assert_not_reached ();
+	}
+}
+
+static void
+index_remove (Index *index, gpointer object)
 {
 	CK_ATTRIBUTE_PTR attr;
+
+	/* 
+	 * We don't actually access the object. We want to be able to 
+	 * handle objects that have been destroyed as well.
+	 */
+	
+	g_assert (object);
+	g_assert (index);
+	
+	attr = g_hash_table_lookup (index->objects, object);
+	
+	/* Object not in this index */
+	if (attr == NULL) 
+		return;
+
+	/* Remove the actual value */
+	index_remove_attr (index, object, attr);
+	
+	if (!g_hash_table_remove (index->objects, object))
+		g_assert_not_reached ();
+}
+
+static void
+index_update (Index *index, GckObject *object)
+{
+	CK_ATTRIBUTE_PTR attr, prev;
 	GHashTable *objects;
 	gboolean ret;
 
@@ -286,7 +291,20 @@ index_update (Index *index, GckObject *object)
 	/* No such attribute/property on object */
 	if (attr == NULL)
 		return;
-	
+
+	prev = g_hash_table_lookup (index->objects, object);
+	if (prev != NULL) {
+		
+		/* The previous one is same, ignore */
+		if (gck_attribute_equal (prev, attr)) {
+			attribute_free (attr);
+			return;
+		}
+		
+		/* Remove the previous one */
+		index_remove_attr (index, object, prev);
+	} 
+
 	/* In this case values is a direct pointer to the object */
 	if (index->unique) {
 		g_return_if_fail (g_hash_table_lookup (index->values, attr) == NULL);
@@ -308,43 +326,6 @@ index_update (Index *index, GckObject *object)
 		g_hash_table_insert (objects, object, object);
 		g_hash_table_replace (index->objects, object, attr);
 	}
-}
-
-static void
-index_remove (Index *index, gpointer object)
-{
-	CK_ATTRIBUTE_PTR attr;
-	GHashTable *objects;
-
-	/* 
-	 * We don't actually access the object. We want to be able to 
-	 * handle objects that have been destroyed as well.
-	 */
-	
-	g_assert (object);
-	g_assert (index);
-	
-	attr = g_hash_table_lookup (index->objects, object);
-	
-	/* Object not in this index */
-	if (attr == NULL) 
-		return;
-	
-	if (index->unique) {
-		if (!g_hash_table_remove (index->values, attr))
-			g_assert_not_reached ();
-	} else {
-		objects = g_hash_table_lookup (index->values, attr);
-		g_assert (objects);
-		if (!g_hash_table_remove (objects, object))
-			g_assert_not_reached ();
-		if (g_hash_table_size (objects) == 0)
-			if (!g_hash_table_remove (index->values, attr))
-				g_assert_not_reached ();
-	}
-	
-	if (!g_hash_table_remove (index->objects, object))
-		g_assert_not_reached ();
 }
 
 static gboolean
@@ -377,6 +358,34 @@ index_remove_each (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
+notify_attribute (GckObject *object, CK_ATTRIBUTE_TYPE attr_type, GckManager *self)
+{
+	Index *index;
+	
+	g_return_if_fail (GCK_IS_OBJECT (object));
+	g_return_if_fail (GCK_IS_MANAGER (self));
+	g_return_if_fail (gck_object_get_manager (object) == self);
+	
+	index = g_hash_table_lookup (self->pv->index_by_attribute, &attr_type);
+	if (index != NULL) 
+		index_update (index, object);
+}
+
+static void
+notify_property (GckObject *object, GParamSpec *spec, GckManager *self)
+{
+	Index *index;
+	
+	g_return_if_fail (GCK_IS_OBJECT (object));
+	g_return_if_fail (GCK_IS_MANAGER (self));
+	g_return_if_fail (gck_object_get_manager (object) == self);
+	
+	index = g_hash_table_lookup (self->pv->index_by_property, spec->name);
+	if (index != NULL)
+		index_update (index, object);
+}
+
+static void
 add_object (GckManager *self, GckObject *object)
 {
 	CK_OBJECT_HANDLE handle;
@@ -406,6 +415,8 @@ add_object (GckManager *self, GckObject *object)
 	/* Now index the object properly */
 	g_hash_table_foreach (self->pv->index_by_attribute, index_object_each, object);
 	g_hash_table_foreach (self->pv->index_by_property, index_object_each, object);
+	g_signal_connect (object, "notify-attribute", G_CALLBACK (notify_attribute), self);
+	g_signal_connect (object, "notify", G_CALLBACK (notify_property), self);
 }
 
 static void
@@ -420,15 +431,16 @@ remove_object (GckManager *self, GckObject *object)
 	handle = gck_object_get_handle (object);
 	g_assert (handle);
 	
+	/* Remove from all indexes */
+	g_signal_handlers_disconnect_by_func (object, G_CALLBACK (notify_attribute), self);
+	g_signal_handlers_disconnect_by_func (object, G_CALLBACK (notify_property), self);
+	g_hash_table_foreach (self->pv->index_by_attribute, index_remove_each, object);
+	g_hash_table_foreach (self->pv->index_by_property, index_remove_each, object);
+	
 	/* Release object management */		
 	self->pv->objects = g_list_remove (self->pv->objects, object);
 	g_object_set (object, "manager", NULL, NULL);
-	
-	/* Remove from all indexes */
-	g_hash_table_foreach (self->pv->index_by_attribute, index_remove_each, object);
-	g_hash_table_foreach (self->pv->index_by_property, index_remove_each, object);
 }
-
 
 static void
 find_each_object (gpointer unused, gpointer object, gpointer user_data)

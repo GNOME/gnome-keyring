@@ -23,11 +23,15 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-attributes.h"
+#include "gck-factory.h"
 #include "gck-manager.h"
 #include "gck-module.h"
+#include "gck-private-key.h"
+#include "gck-public-key.h"
 #include "gck-session.h"
+#include "gck-transaction.h"
 #include "gck-util.h"
-
 
 enum {
 	PROP_0,
@@ -41,6 +45,8 @@ struct _GckModulePrivate {
 	GHashTable *virtual_slots_by_id;        /* Various slot partitions by their ID */
 	GHashTable *sessions_by_handle;         /* Mapping of handle to all open sessions */
 	gint handle_counter;                    /* Constantly incrementing counter for handles and the like */
+	GArray *factories;                      /* Various registered object factories */
+	gboolean factories_sorted;              /* Whether we need to sort the object factories */
 };
 
 typedef struct _VirtualSlot {
@@ -119,6 +125,21 @@ static const MechanismAndInfo mechanism_list[] = {
 /* -----------------------------------------------------------------------------
  * INTERNAL 
  */
+
+static gint
+sort_factory_by_n_attrs (gconstpointer a, gconstpointer b)
+{
+	const GckFactoryInfo *fa = a;
+	const GckFactoryInfo *fb = b;
+	
+	g_assert (a);
+	g_assert (b);
+	
+	/* Note we're sorting in reverse order */
+	if (fa->n_attrs < fb->n_attrs)
+		return 1;
+	return (fa->n_attrs == fb->n_attrs) ? 0 : -1;
+}
 
 static void
 extend_space_string (CK_UTF8CHAR_PTR string, gsize length)
@@ -310,6 +331,20 @@ gck_module_real_refresh_token (GckModule *self)
 	return CKR_OK;
 }
 
+static void
+gck_module_real_store_token_object (GckModule *self, GckTransaction *transaction, GckObject *object)
+{
+	/* Derived classes should do something interesting */
+	gck_transaction_fail (transaction, CKR_FUNCTION_NOT_SUPPORTED);
+}
+
+static void
+gck_module_real_remove_token_object (GckModule *self, GckTransaction *transaction, GckObject *object)
+{
+	/* Derived classes should do something interesting */
+	gck_transaction_fail (transaction, CKR_FUNCTION_NOT_SUPPORTED);
+}
+
 static CK_RV
 gck_module_real_login_user (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
@@ -366,8 +401,13 @@ gck_module_init (GckModule *self)
 	                                                      gck_util_ulong_free, g_object_unref);
 	self->pv->virtual_slots_by_id = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, 
 	                                                       gck_util_ulong_free, virtual_slot_free);
+	self->pv->factories = g_array_new (FALSE, TRUE, sizeof (GckFactoryInfo));
 	
 	g_atomic_int_set (&(self->pv->handle_counter), 1);
+	
+	/* Register session object factories */
+	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_KEY);
 }
 
 static void
@@ -381,6 +421,8 @@ gck_module_dispose (GObject *obj)
 	
 	g_hash_table_remove_all (self->pv->virtual_slots_by_id);
 	g_hash_table_remove_all (self->pv->sessions_by_handle);
+	
+	g_array_set_size (self->pv->factories, 0);
     
 	G_OBJECT_CLASS (gck_module_parent_class)->dispose (obj);
 }
@@ -399,6 +441,9 @@ gck_module_finalize (GObject *obj)
 	g_assert (g_hash_table_size (self->pv->sessions_by_handle) == 0);
 	g_hash_table_destroy (self->pv->sessions_by_handle);
 	self->pv->sessions_by_handle = NULL;
+	
+	g_array_free (self->pv->factories, TRUE);
+	self->pv->factories = NULL;
 
 	G_OBJECT_CLASS (gck_module_parent_class)->finalize (obj);
 }
@@ -463,6 +508,8 @@ gck_module_class_init (GckModuleClass *klass)
 	
 	klass->parse_argument = gck_module_real_parse_argument;
 	klass->refresh_token = gck_module_real_refresh_token;
+	klass->store_token_object = gck_module_real_store_token_object;
+	klass->remove_token_object = gck_module_real_remove_token_object;
 	klass->login_user = gck_module_real_login_user;
 	klass->logout_user = gck_module_real_logout_user;
 	
@@ -477,13 +524,6 @@ gck_module_class_init (GckModuleClass *klass)
 	g_object_class_install_property (gobject_class, PROP_INITIALIZE_ARGS,
 	           g_param_spec_pointer ("initialize-args", "Initialize Args", "Arguments passed to C_Initialize", 
 	                                 G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
-
-#if 0
-	signals[SIGNAL] = g_signal_new ("signal", GCK_TYPE_MODULE, 
-	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckModuleClass, signal),
-	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
-	                                G_TYPE_NONE, 0);
-#endif
 }
 
 /* -----------------------------------------------------------------------------
@@ -551,6 +591,70 @@ gck_module_refresh_token (GckModule *self)
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_GENERAL_ERROR);
 	g_assert (GCK_MODULE_GET_CLASS (self)->refresh_token);
 	return GCK_MODULE_GET_CLASS (self)->refresh_token (self);	
+}
+
+void
+gck_module_store_token_object (GckModule *self, GckTransaction *transaction, GckObject *object)
+{
+	g_return_if_fail (GCK_IS_MODULE (self));
+	g_return_if_fail (GCK_IS_OBJECT (object));
+	g_assert (GCK_MODULE_GET_CLASS (self)->store_token_object);
+	GCK_MODULE_GET_CLASS (self)->store_token_object (self, transaction, object);
+}
+
+void
+gck_module_remove_token_object (GckModule *self, GckTransaction *transaction, GckObject *object)
+{
+	g_return_if_fail (GCK_IS_MODULE (self));
+	g_return_if_fail (GCK_IS_OBJECT (object));
+	g_assert (GCK_MODULE_GET_CLASS (self)->remove_token_object);
+	GCK_MODULE_GET_CLASS (self)->remove_token_object (self, transaction, object);
+}
+
+void
+gck_module_register_factory (GckModule *self, GckFactoryInfo *factory)
+{
+	g_return_if_fail (GCK_IS_MODULE (self));
+	g_return_if_fail (factory);
+	g_return_if_fail (factory->attrs || !factory->n_attrs);
+	g_return_if_fail (factory->factory);
+	
+	g_array_append_val (self->pv->factories, *factory);
+	self->pv->factories_sorted = FALSE;
+}
+
+GckFactory
+gck_module_find_factory (GckModule *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+{
+	GckFactoryInfo *factory;
+	gboolean matched;
+	gulong j;
+	gsize i;
+	
+	g_return_val_if_fail (GCK_IS_MODULE (self), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
+	
+	if (!self->pv->factories_sorted) {
+		g_array_sort (self->pv->factories, sort_factory_by_n_attrs);
+		self->pv->factories_sorted = TRUE;
+	}
+	
+	for (i = 0; i < self->pv->factories->len; ++i) {
+		factory = &(g_array_index (self->pv->factories, GckFactoryInfo, i));
+		
+		matched = TRUE;
+		for (j = 0; j < factory->n_attrs; ++j) {
+			if (!gck_attributes_contains (attrs, n_attrs, &factory->attrs[j])) {
+				matched = FALSE;
+				break;
+			}
+		}
+		
+		if (matched)
+			return factory->factory;
+	}
+	
+	return NULL;
 }
 
 /* -----------------------------------------------------------------------------

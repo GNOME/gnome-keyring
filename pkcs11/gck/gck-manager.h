@@ -48,7 +48,9 @@
 
 G_BEGIN_DECLS
 
-#include "gck-object.h"
+#include <glib-object.h>
+
+#include "gck-types.h"
 
 #include "pkcs11/pkcs11.h"
 

@@ -36,6 +36,7 @@
 #include "common/gkr-secure-memory.h"
 
 static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
+static const gchar *test_path = NULL;
 
 void gkr_memory_lock (void) 
 { 
@@ -87,6 +88,12 @@ test_mainloop_get (void)
 	return mainloop;
 }
 
+gchar*
+test_build_filename (const gchar *basename)
+{
+	return g_build_filename (test_path, basename, NULL);
+}
+
 static void 
 chdir_base_dir (char* argv0)
 {
@@ -112,16 +119,16 @@ int
 main (int argc, char* argv[])
 {
 	GLogLevelFlags fatal_mask;
-	const gchar* envi;
 
 	g_thread_init (NULL);
 
-	envi = getenv ("GNOME_KEYRING_TEST_PATH");
-	if (envi) {
+	test_path = getenv ("GNOME_KEYRING_TEST_PATH");
+	if (test_path) {
 		setenv ("GNOME_KEYRING_OUTSIDE_TEST", "TRUE", 1);
 	} else {
-		setenv ("GNOME_KEYRING_TEST_PATH", "/tmp/test-gnome-keyring", 1);
-		g_mkdir_with_parents ("/tmp/test-gnome-keyring", 0777);
+		test_path = "/tmp/test-gnome-keyring";
+		setenv ("GNOME_KEYRING_TEST_PATH", test_path, 1);
+		g_mkdir_with_parents (test_path, 0777);
 	}
 
 	chdir_base_dir (argv[0]);

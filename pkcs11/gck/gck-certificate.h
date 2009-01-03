@@ -25,6 +25,7 @@
 #include <glib-object.h>
 
 #include "gck-object.h"
+#include "gck-types.h"
 
 #define GCK_TYPE_CERTIFICATE               (gck_certificate_get_type ())
 #define GCK_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_CERTIFICATE, GckCertificate))
@@ -33,8 +34,6 @@
 #define GCK_IS_CERTIFICATE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_CERTIFICATE))
 #define GCK_CERTIFICATE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_CERTIFICATE, GckCertificateClass))
 
-typedef struct _GckCertificate GckCertificate;
-typedef struct _GckCertificateKey GckCertificateKey;
 typedef struct _GckCertificateClass GckCertificateClass;
 typedef struct _GckCertificatePrivate GckCertificatePrivate;
     

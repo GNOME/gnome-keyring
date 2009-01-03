@@ -26,6 +26,8 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-types.h"
+
 #define GCK_OBJECT_HANDLE_MASK  0x0FFFFFFF
 #define GCK_OBJECT_IS_PERMANENT	0x10000000
 #define GCK_OBJECT_IS_TEMPORARY	0x00000000
@@ -37,11 +39,8 @@
 #define GCK_IS_OBJECT_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_OBJECT))
 #define GCK_OBJECT_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_OBJECT, GckObjectClass))
 
-typedef struct _GckObject GckObject;
 typedef struct _GckObjectClass GckObjectClass;
 typedef struct _GckObjectPrivate GckObjectPrivate;
-
-typedef struct _GckManager GckManager;
 
 struct _GckObject {
 	GObject parent;
@@ -51,12 +50,15 @@ struct _GckObject {
 struct _GckObjectClass {
 	GObjectClass parent_class;
 	
-	/* properties --------------------------------------------------------------- */
+	/* signals ------------------------------------------------------------------ */
 	
+	void (*notify_attribute) (GckObject *object, CK_ATTRIBUTE_TYPE attr_type);
 	
 	/* virtual methods  --------------------------------------------------------- */
     
-	CK_RV (*get_attribute) (GckObject *object, CK_ATTRIBUTE* attr);
+	CK_RV (*get_attribute) (GckObject *object, CK_ATTRIBUTE *attr);
+	
+	void (*set_attribute) (GckObject *object, GckTransaction *transaction, CK_ATTRIBUTE *attr);
 	
 	CK_RV (*unlock) (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
 };
@@ -84,8 +86,12 @@ gboolean               gck_object_match_all              (GckObject *self,
 CK_RV                  gck_object_get_attribute          (GckObject *self,
                                                           CK_ATTRIBUTE_PTR attr);
 
-void                   gck_object_cache_attribute        (GckObject *self,
+void                   gck_object_set_attribute          (GckObject *self,
+                                                          GckTransaction *transaction,
                                                           CK_ATTRIBUTE_PTR attr);
+
+void                   gck_object_notify_attribute       (GckObject *self,
+                                                          CK_ATTRIBUTE_TYPE attr_type);
 
 gboolean               gck_object_get_attribute_boolean  (GckObject *self,
                                                           CK_ATTRIBUTE_TYPE type,

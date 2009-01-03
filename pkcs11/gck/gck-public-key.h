@@ -25,6 +25,9 @@
 #include <glib-object.h>
 
 #include "gck-key.h"
+#include "gck-types.h"
+
+#define GCK_FACTORY_PUBLIC_KEY            (gck_public_key_get_factory ())
 
 #define GCK_TYPE_PUBLIC_KEY               (gck_public_key_get_type ())
 #define GCK_PUBLIC_KEY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_PUBLIC_KEY, GckPublicKey))
@@ -33,7 +36,6 @@
 #define GCK_IS_PUBLIC_KEY_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_PUBLIC_KEY))
 #define GCK_PUBLIC_KEY_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_PUBLIC_KEY, GckPublicKeyClass))
 
-typedef struct _GckPublicKey GckPublicKey;
 typedef struct _GckPublicKeyClass GckPublicKeyClass;
 typedef struct _GckPublicKeyPrivate GckPublicKeyPrivate;
     
@@ -48,4 +50,11 @@ struct _GckPublicKeyClass {
 
 GType                     gck_public_key_get_type               (void);
 
+GckFactoryInfo*           gck_public_key_get_factory            (void);
+
+void                      gck_public_key_create                 (GckSession *session, 
+                                                                 GckTransaction *transaction, 
+                                                                 CK_ATTRIBUTE_PTR attrs, 
+                                                                 CK_ULONG n_attrs, 
+                                                                 GckObject **object);
 #endif /* __GCK_PUBLIC_KEY_H__ */
