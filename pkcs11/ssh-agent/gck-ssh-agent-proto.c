@@ -1,0 +1,513 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* gck-ssh-agent-proto.c - SSH agent protocol helpers
+
+   Copyright (C) 2007 Stefan Walter
+
+   Gnome keyring is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+  
+   Gnome keyring is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+  
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+   Author: Stef Walter <stef@memberwebs.com>
+*/
+
+#include "config.h"
+
+#include "gck-ssh-agent-private.h"
+
+#include "common/gkr-buffer.h"
+
+#include <gp11/gp11.h>
+
+#include <glib.h>
+
+#include <string.h>
+
+gulong
+gck_ssh_agent_proto_keytype_to_algo (const gchar *salgo)
+{
+	g_return_val_if_fail (salgo, (gulong)-1);
+	if (strcmp (salgo, "ssh-rsa") == 0)
+		return CKK_RSA;
+	else if (strcmp (salgo, "ssh-dss") == 0)
+		return CKK_DSA;
+	return (gulong)-1;
+}
+
+const gchar*
+gck_ssh_agent_proto_algo_to_keytype (gulong algo)
+{
+	if (algo == CKK_RSA)
+		return "ssh-rsa";
+	else if (algo == CKK_DSA)
+		return "ssh-dss";
+	return NULL;	
+}
+
+gboolean
+gck_ssh_agent_proto_read_mpi (GkrBuffer *req, gsize *offset, GP11Attributes *attrs, 
+                              CK_ATTRIBUTE_TYPE type)
+{
+	const guchar *data;
+	gsize len;
+	
+	if (!gkr_buffer_get_byte_array (req, *offset, offset, &data, &len))
+		return FALSE;
+	
+	/* Convert to unsigned format */
+	if (len >= 2 && data[0] == 0 && (data[1] & 0x80)) {
+		++data;
+		--len;
+	}
+
+	gp11_attributes_add_data (attrs, type, data, len);
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_read_mpi_v1 (GkrBuffer *req, gsize *offset, GP11Attributes *attrs, 
+                                 CK_ATTRIBUTE_TYPE type)
+{
+	const guchar *data;
+	gsize bytes;
+	guint16 bits;
+	
+	/* Get the number of bits */
+	if (!gkr_buffer_get_uint16 (req, *offset, offset, &bits))
+		return FALSE;
+	
+	/* Figure out the number of binary bytes following */
+	bytes = (bits + 7) / 8;
+	if (bytes > 8 * 1024)
+		return FALSE;
+	
+	/* Pull these out directly */
+	if (req->len < *offset + bytes)
+		return FALSE;
+	data = req->buf + *offset;
+	*offset += bytes;
+	
+	gp11_attributes_add_data (attrs, type, data, bytes);
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_write_mpi (GkrBuffer *resp, GP11Attribute *attr)
+{
+	guchar *data;
+	gsize n_extra;
+	
+	g_assert (resp);
+	g_assert (attr);
+	
+	/* Convert from unsigned format */
+	n_extra = 0;
+	if (attr->length && (attr->value[0] & 0x80)) 
+		++n_extra;
+
+	data = gkr_buffer_add_byte_array_empty (resp, attr->length + n_extra);
+	if (data == NULL)
+		return FALSE;
+
+	memset (data, 0, n_extra);
+	memcpy (data + n_extra, attr->value, attr->length);
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_write_mpi_v1 (GkrBuffer *resp, GP11Attribute *attr)
+{
+	guchar *data;
+	
+	g_return_val_if_fail (attr->length * 8 < G_MAXUSHORT, FALSE);
+	
+	if (!gkr_buffer_add_uint16 (resp, attr->length * 8))
+		return FALSE;
+
+	data = gkr_buffer_add_empty (resp, attr->length);
+	if (data == NULL)
+		return FALSE;
+	memcpy (data, attr->value, attr->length);
+	return TRUE;
+}
+
+const guchar*
+gck_ssh_agent_proto_read_challenge_v1 (GkrBuffer *req, gsize *offset, gsize *n_challenge)
+{
+	const guchar *data;
+	gsize bytes;
+	guint16 bits;
+	
+	/* Get the number of bits */
+	if (!gkr_buffer_get_uint16 (req, *offset, offset, &bits))
+		return FALSE;
+	
+	/* Figure out the number of binary bytes following */
+	bytes = (bits + 7) / 8;
+	if (bytes > 8 * 1024)
+		return FALSE;
+	
+	/* Pull these out directly */
+	if (req->len < *offset + bytes)
+		return FALSE;
+	data = req->buf + *offset;
+	*offset += bytes;
+	*n_challenge = bytes;
+	return data;
+}
+
+gboolean
+gck_ssh_agent_proto_read_public (GkrBuffer *req, gsize *offset, GP11Attributes* attrs, gulong *algo)
+{
+	gboolean ret;
+	gchar *stype;
+	gulong alg;
+	
+	g_assert (req);
+	g_assert (offset);
+	
+	/* The string algorithm */
+	if (!gkr_buffer_get_string (req, *offset, offset, &stype, (GkrBufferAllocator)g_realloc))
+		return FALSE;
+	
+	alg = gck_ssh_agent_proto_keytype_to_algo (stype);
+	if (alg == (gulong)-1) {
+		g_warning ("unsupported algorithm from SSH: %s", stype);
+		g_free (stype);
+		return FALSE;
+	}
+	
+	g_free (stype);
+	switch (alg) {
+	case CKK_RSA:
+		ret = gck_ssh_agent_proto_read_public_rsa (req, offset, attrs);
+		break;
+	case CKK_DSA:
+		ret = gck_ssh_agent_proto_read_public_dsa (req, offset, attrs);
+		break;
+	default:
+		g_assert_not_reached ();
+		return FALSE;
+	}
+	
+	if (!ret) {
+		g_warning ("couldn't read incoming SSH private key");
+		return FALSE;
+	}
+	
+	if (algo)
+		*algo = alg;
+	return ret;
+}
+
+gboolean
+gck_ssh_agent_proto_read_pair_rsa (GkrBuffer *req, gsize *offset, 
+                                   GP11Attributes *priv_attrs, GP11Attributes *pub_attrs)
+{
+	GP11Attribute *attr;
+	
+	g_assert (req);
+	g_assert (offset);
+	g_assert (priv_attrs);
+	g_assert (pub_attrs);
+	
+	if (!gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_MODULUS) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PUBLIC_EXPONENT) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PRIVATE_EXPONENT) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_COEFFICIENT) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PRIME_1) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PRIME_2))
+		return FALSE;
+
+	/* Copy attributes to the public key */
+	attr = gp11_attributes_find (priv_attrs, CKA_MODULUS);
+	gp11_attributes_add (pub_attrs, attr);
+	attr = gp11_attributes_find (priv_attrs, CKA_PUBLIC_EXPONENT);
+	gp11_attributes_add (pub_attrs, attr);
+	
+	/* Add in your basic other required attributes */
+	gp11_attributes_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gp11_attributes_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_RSA);
+	gp11_attributes_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gp11_attributes_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_RSA);
+
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_read_pair_v1 (GkrBuffer *req, gsize *offset, 
+                                  GP11Attributes *priv_attrs, GP11Attributes *pub_attrs)
+{
+	GP11Attribute *attr;
+	
+	g_assert (req);
+	g_assert (offset);
+	g_assert (priv_attrs);
+	g_assert (pub_attrs);
+	
+	if (!gck_ssh_agent_proto_read_mpi_v1 (req, offset, priv_attrs, CKA_MODULUS) ||
+	    !gck_ssh_agent_proto_read_mpi_v1 (req, offset, priv_attrs, CKA_PUBLIC_EXPONENT) ||
+	    !gck_ssh_agent_proto_read_mpi_v1 (req, offset, priv_attrs, CKA_PRIVATE_EXPONENT) ||
+	    !gck_ssh_agent_proto_read_mpi_v1 (req, offset, priv_attrs, CKA_COEFFICIENT) ||
+	    !gck_ssh_agent_proto_read_mpi_v1 (req, offset, priv_attrs, CKA_PRIME_1) ||
+	    !gck_ssh_agent_proto_read_mpi_v1 (req, offset, priv_attrs, CKA_PRIME_2)) 
+	    	return FALSE;
+	
+	/* Copy attributes to the public key */
+	attr = gp11_attributes_find (priv_attrs, CKA_MODULUS);
+	gp11_attributes_add (pub_attrs, attr);
+	attr = gp11_attributes_find (priv_attrs, CKA_PUBLIC_EXPONENT);
+	gp11_attributes_add (pub_attrs, attr);
+	
+	/* Add in your basic other required attributes */
+	gp11_attributes_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gp11_attributes_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_RSA);
+	gp11_attributes_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gp11_attributes_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_RSA);
+		
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_read_public_rsa (GkrBuffer *req, gsize *offset, GP11Attributes *attrs)
+{
+	g_assert (req);
+	g_assert (offset);
+	g_assert (attrs);
+	
+	if (!gck_ssh_agent_proto_read_mpi (req, offset, attrs, CKA_PUBLIC_EXPONENT) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, attrs, CKA_MODULUS))
+		return FALSE;
+
+	/* Add in your basic other required attributes */
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gp11_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_RSA);
+		
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_read_public_v1 (GkrBuffer *req, gsize *offset, GP11Attributes *attrs)
+{
+	guint32 bits;
+	
+	g_assert (req);
+	g_assert (offset);
+	g_assert (attrs);
+
+	if (!gkr_buffer_get_uint32 (req, *offset, offset, &bits))
+		return FALSE;
+	
+	if (!gck_ssh_agent_proto_read_mpi_v1 (req, offset, attrs, CKA_PUBLIC_EXPONENT) ||
+	    !gck_ssh_agent_proto_read_mpi_v1 (req, offset, attrs, CKA_MODULUS))
+		return FALSE;
+
+	/* Add in your basic other required attributes */
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gp11_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_RSA);
+		
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_read_pair_dsa (GkrBuffer *req, gsize *offset, 
+                                   GP11Attributes *priv_attrs, GP11Attributes *pub_attrs)
+{
+	GP11Attribute *attr;
+	
+	g_assert (req);
+	g_assert (offset);
+	g_assert (priv_attrs);
+	g_assert (pub_attrs);
+	
+	if (!gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PRIME) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_SUBPRIME) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_BASE) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, pub_attrs, CKA_VALUE) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_VALUE))
+	    	return FALSE;
+	
+	/* Copy attributes to the public key */
+	attr = gp11_attributes_find (priv_attrs, CKA_PRIME);
+	gp11_attributes_add (pub_attrs, attr);
+	attr = gp11_attributes_find (priv_attrs, CKA_SUBPRIME);
+	gp11_attributes_add (pub_attrs, attr);
+	attr = gp11_attributes_find (priv_attrs, CKA_BASE);
+	gp11_attributes_add (pub_attrs, attr);
+	
+	/* Add in your basic other required attributes */
+	gp11_attributes_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gp11_attributes_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_DSA);
+	gp11_attributes_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gp11_attributes_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_DSA);
+
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_read_public_dsa (GkrBuffer *req, gsize *offset, GP11Attributes *attrs)
+{
+	g_assert (req);
+	g_assert (offset);
+	g_assert (attrs);
+	
+	if (!gck_ssh_agent_proto_read_mpi (req, offset, attrs, CKA_PRIME) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, attrs, CKA_SUBPRIME) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, attrs, CKA_BASE) ||
+	    !gck_ssh_agent_proto_read_mpi (req, offset, attrs, CKA_VALUE))
+	    	return FALSE;
+
+	/* Add in your basic other required attributes */
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gp11_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_DSA);
+	
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_write_public (GkrBuffer *resp, GP11Attributes *attrs)
+{
+	gboolean ret = FALSE;
+	const gchar *salgo;
+	gulong algo;
+	
+	g_assert (resp);
+	g_assert (attrs);
+	
+	if (!gp11_attributes_find_ulong (attrs, CKA_KEY_TYPE, &algo))
+		g_return_val_if_reached (FALSE);
+	
+	salgo = gck_ssh_agent_proto_algo_to_keytype (algo);
+	g_assert (salgo);
+	gkr_buffer_add_string (resp, salgo);
+		
+	switch (algo) {
+	case CKK_RSA:
+		ret = gck_ssh_agent_proto_write_public_rsa (resp, attrs);
+		break;
+			
+	case CKK_DSA:
+		ret = gck_ssh_agent_proto_write_public_dsa (resp, attrs);
+		break;
+		
+	default:
+		g_return_val_if_reached (FALSE);
+		break;
+	}
+
+	return ret;
+}
+
+gboolean
+gck_ssh_agent_proto_write_public_rsa (GkrBuffer *resp, GP11Attributes *attrs)
+{
+	GP11Attribute *attr;
+	
+	g_assert (resp);
+	g_assert (attrs);
+	
+	attr = gp11_attributes_find (attrs, CKA_PUBLIC_EXPONENT);
+	g_return_val_if_fail (attr, FALSE);
+
+	if (!gck_ssh_agent_proto_write_mpi (resp, attr))
+		return FALSE;
+
+	attr = gp11_attributes_find (attrs, CKA_MODULUS);
+	g_return_val_if_fail (attr, FALSE);
+
+	if (!gck_ssh_agent_proto_write_mpi (resp, attr))
+		return FALSE;
+
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_write_public_dsa (GkrBuffer *resp, GP11Attributes *attrs)
+{
+	GP11Attribute *attr;
+	
+	g_assert (resp);
+	g_assert (attrs);
+	
+	attr = gp11_attributes_find (attrs, CKA_PRIME);
+	g_return_val_if_fail (attr, FALSE);
+
+	if (!gck_ssh_agent_proto_write_mpi (resp, attr))
+		return FALSE;
+
+	attr = gp11_attributes_find (attrs, CKA_SUBPRIME);
+	g_return_val_if_fail (attr, FALSE);
+
+	if (!gck_ssh_agent_proto_write_mpi (resp, attr))
+		return FALSE;
+
+	attr = gp11_attributes_find (attrs, CKA_BASE);
+	g_return_val_if_fail (attr, FALSE);
+
+	if (!gck_ssh_agent_proto_write_mpi (resp, attr))
+		return FALSE;
+
+	attr = gp11_attributes_find (attrs, CKA_VALUE);
+	g_return_val_if_fail (attr, FALSE);
+
+	if (!gck_ssh_agent_proto_write_mpi (resp, attr))
+		return FALSE;
+
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_write_public_v1 (GkrBuffer *resp, GP11Attributes *attrs)
+{
+	GP11Attribute *attr;
+	gulong bits;
+	
+	g_assert (resp);
+	g_assert (attrs);
+
+	/* This is always an RSA key. */
+	
+	/* Write out the number of bits of the key */
+	if (!gp11_attributes_find_ulong (attrs, CKA_MODULUS_BITS, &bits))
+		g_return_val_if_reached (FALSE);
+	gkr_buffer_add_uint32 (resp, bits);
+
+	/* Write out the exponent */
+	attr = gp11_attributes_find (attrs, CKA_PUBLIC_EXPONENT);
+	g_return_val_if_fail (attr, FALSE);
+
+	if (!gck_ssh_agent_proto_write_mpi_v1 (resp, attr))
+		return FALSE;
+
+	/* Write out the modulus */
+	attr = gp11_attributes_find (attrs, CKA_MODULUS);
+	g_return_val_if_fail (attr, FALSE);
+
+	if (!gck_ssh_agent_proto_write_mpi_v1 (resp, attr))
+		return FALSE;
+	
+	return TRUE;
+}
+
+gboolean
+gck_ssh_agent_proto_write_signature_rsa (GkrBuffer *resp, CK_BYTE_PTR signature, CK_ULONG n_signature)
+{
+	return gkr_buffer_add_byte_array (resp, signature, n_signature);
+}
+
+gboolean
+gck_ssh_agent_proto_write_signature_dsa (GkrBuffer *resp, CK_BYTE_PTR signature, CK_ULONG n_signature)
+{
+	g_return_val_if_fail (n_signature == 40, FALSE);
+	return gkr_buffer_add_byte_array (resp, signature, n_signature);
+}
+

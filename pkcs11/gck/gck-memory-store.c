@@ -163,7 +163,7 @@ gck_memory_store_real_write_value (GckStore *base, GckTransaction *transaction,
 	if (at != NULL && gck_attribute_equal (at, attr))
 		return;
 
-	revert = g_new0 (Revert, 1);
+	revert = g_slice_new0 (Revert);
 	revert->attributes = g_hash_table_ref (attributes);
 	revert->type = attr->type;
 	revert->attr = at;

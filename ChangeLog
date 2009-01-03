@@ -1,4 +1,23 @@
-2008-01-03  Stef Walter  <stef@memberwebs.com>
+2009-01-03  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/gck/gck-memory-store.c:
+	* pkcs11/gck/gck-object.c:
+	* pkcs11/gck/gck-session.c:
+	* pkcs11/ssh-agent/gck-ssh-agent.c: (added)
+	* pkcs11/ssh-agent/gck-ssh-agent.h: (added)
+	* pkcs11/ssh-agent/gck-ssh-agent-ops.c: (added)
+	* pkcs11/ssh-agent/gck-ssh-agent-private.h: (added)
+	* pkcs11/ssh-agent/gck-ssh-agent-proto.c: (added)
+	* pkcs11/ssh-agent/gck-ssh-agent-standalone.c: (added)
+	* pkcs11/ssh-agent/Makefile.am: (added)
+	* configure.in: Add PKCS#11 based SSH agent. 
+	
+2009-01-03  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
+	* gp11/gp11-module.c: Add method to initialize from a function list.
+	
+2009-01-03  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-attributes.c: (added)
 	* pkcs11/gck/gck-attributes.h: (added)

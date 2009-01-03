@@ -164,6 +164,9 @@ gck_object_dispose (GObject *obj)
 	if (self->pv->manager)
 		gck_manager_unregister_object (self->pv->manager, self);
 	g_assert (self->pv->manager == NULL);
+	
+	g_object_set (self, "store", NULL, NULL);
+	g_assert (self->pv->store == NULL);
     
 	G_OBJECT_CLASS (gck_object_parent_class)->dispose (obj);
 }

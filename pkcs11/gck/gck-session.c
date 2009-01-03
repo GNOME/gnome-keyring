@@ -920,10 +920,10 @@ gck_session_C_FindObjectsInit (GckSession* self, CK_ATTRIBUTE_PTR template,
                                CK_ULONG count)
 {
 	gboolean also_private;
+	CK_RV rv = CKR_OK;
 	CK_BBOOL token;
 	GArray *found;
 	gboolean all;
-	CK_RV rv;
 	
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
 	if (!(template || !count))
