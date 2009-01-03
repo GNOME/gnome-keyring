@@ -267,6 +267,10 @@ GP11Module*           gp11_module_initialize                  (const gchar *path
                                                                gpointer reserved,
                                                                GError **err);
 
+GP11Module*           gp11_module_initialize_with_functions   (CK_FUNCTION_LIST_PTR funcs,
+                                                               gpointer reserved,
+                                                               GError **err);
+
 const gchar*          gp11_module_get_path                    (GP11Module *self);
 
 CK_FUNCTION_LIST_PTR  gp11_module_get_function_list           (GP11Module *self);

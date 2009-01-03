@@ -143,7 +143,6 @@ gp11_module_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_PATH:
 		g_return_if_fail (!data->path);
 		data->path = g_value_dup_string (value);
-		g_return_if_fail (data->path);
 		break;
 	}
 }
@@ -245,42 +244,79 @@ GP11Module*
 gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 {
 	CK_C_GetFunctionList get_function_list;
+	CK_FUNCTION_LIST_PTR funcs;
 	GP11ModuleData *data;
+	GModule *module;
 	GP11Module *mod;
 	CK_RV rv;
 	
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (!err || !*err, NULL);
 	
-	mod = g_object_new (GP11_TYPE_MODULE, "path", path, NULL);
-	data = GP11_MODULE_GET_DATA (mod);
-	
 	/* Load the actual module */
-	data->module = g_module_open (path, 0);
-	if (!data->module) {
+	module = g_module_open (path, 0);
+	if (!module) {
 		g_set_error (err, GP11_ERROR, (int)CKR_GP11_MODULE_PROBLEM,
 		             "Error loading pkcs11 module: %s", g_module_error ());
-		g_object_unref (mod);
 		return NULL;
 	}
 	
 	/* Get the entry point */
-	if (!g_module_symbol (data->module, "C_GetFunctionList", (void**)&get_function_list)) {
+	if (!g_module_symbol (module, "C_GetFunctionList", (void**)&get_function_list)) {
 		g_set_error (err, GP11_ERROR, (int)CKR_GP11_MODULE_PROBLEM,
 		             "Invalid pkcs11 module: %s", g_module_error ());
-		g_object_unref (mod);
+		g_module_close (module);
 		return NULL;
 	}
 	
 	/* Get the function list */
-	rv = (get_function_list) (&data->funcs);
+	rv = (get_function_list) (&funcs);
 	if (rv != CKR_OK) {
 		g_set_error (err, GP11_ERROR, rv, "Couldn't get pkcs11 function list: %s",
 		             gp11_message_from_rv (rv));
-		g_object_unref (mod);
+		g_module_close (module);
 		return NULL;
 	}
 	
+	mod = gp11_module_initialize_with_functions (funcs, reserved, err);
+	if (mod == NULL) {
+		g_module_close (module);
+		return NULL;
+	}
+	
+	data = GP11_MODULE_GET_DATA (mod);
+	data->path = g_strdup (path);
+	data->module = module;
+	
+	return mod;
+}
+
+/**
+ * gp11_module_initialize_with_functions:
+ * @funcs: Initialized PKCS#11 function list pointer
+ * @reserved: Extra arguments for the PKCS#11 module, should usually be NULL.
+ * @err: A location to store an error resulting from a failed load.
+ * 
+ * Initialize a PKCS#11 module represented by a GP11Module object.
+ * 
+ * Return value: The loaded PKCS#11 module or NULL if failed.
+ **/
+GP11Module*
+gp11_module_initialize_with_functions (CK_FUNCTION_LIST_PTR funcs, gpointer reserved,
+                                       GError **err)
+{
+	GP11ModuleData *data;
+	GP11Module *mod;
+	CK_RV rv;
+	
+	g_return_val_if_fail (funcs, NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+
+	mod = g_object_new (GP11_TYPE_MODULE, NULL);
+	data = GP11_MODULE_GET_DATA (mod);
+	
+	data->funcs = funcs;
+
 	memset (&data->init_args, 0, sizeof (data->init_args));
 	data->init_args.flags = CKF_OS_LOCKING_OK;
 	data->init_args.CreateMutex = create_mutex;
