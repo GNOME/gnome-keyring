@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-31 18:25+0000\n"
+"POT-Creation-Date: 2009-01-04 21:38+0100\n"
 "PO-Revision-Date: 2008-09-13 23:59+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@fsf.hu>\n"
@@ -127,14 +127,16 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:311
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr ""
 "A(z) „%s” (%s) alkalmazás nem tud hozzáférni a(z) „%s” kulcstartóhoz, mert "
 "zárolva van"
 
 #: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
 msgstr ""
 "A(z) „%s” alkalmazás nem tud hozzáférni az alapértelmezett kulcstartóhoz, "
 "mert zárolva van"
@@ -148,14 +150,16 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:338
 #, c-format
-msgid "An unknown application wants access to the default keyring, but it is locked"
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Egy ismeretlen alkalmazás nem tud hozzáférni az alapértelmezett "
 "kulcstartóhoz, mert zárolva van"
 
 #: ../daemon/gkr-daemon-ops.c:342
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Egy ismeretlen alkalmazás nem tud hozzáférni a(z) „%s” kulcstartóhoz, mert "
 "zárolva van"
@@ -354,7 +358,11 @@ msgid ""
 "A list of paths to PKCS#11 modules to load. No modules are currently listed "
 "by default, as this is still an experimental feature. This is used by "
 "seahorse and other PKCS#11 aware applications."
-msgstr "A betöltendő PKCS#11 modulok útvonalainak listája. Jelenleg nincsenek alapértelmezett modulok felsorolva, mivel ez a szolgáltatás még mindig kísérleti. Ezt a Seahorse és más, a PKCS#11-et támogató alkalmazások használják."
+msgstr ""
+"A betöltendő PKCS#11 modulok útvonalainak listája. Jelenleg nincsenek "
+"alapértelmezett modulok felsorolva, mivel ez a szolgáltatás még mindig "
+"kísérleti. Ezt a Seahorse és más, a PKCS#11-et támogató alkalmazások "
+"használják."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "PKCS#11 Modules"
@@ -391,6 +399,10 @@ msgstr "A gnome-keyring PKCS#11 összetevője engedélyezve van-e?"
 #: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "A gnome-keyring SSH ügynöke engedélyezve van-e."
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr "GNOME kulcstartódémon"
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
@@ -466,17 +478,20 @@ msgstr "Adja meg a jelszót a feloldáshoz"
 #: ../daemon/pk/gkr-pk-import.c:114
 #, c-format
 msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "A rendszer importálni kívánja a(z) „%s” magánkulcsot, de az zárolva van"
+msgstr ""
+"A rendszer importálni kívánja a(z) „%s” magánkulcsot, de az zárolva van"
 
 #: ../daemon/pk/gkr-pk-import.c:116
 #, c-format
 msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "A rendszer importálni kívánja a(z) „%s” tanúsítványt, de az zárolva van"
+msgstr ""
+"A rendszer importálni kívánja a(z) „%s” tanúsítványt, de az zárolva van"
 
 #: ../daemon/pk/gkr-pk-import.c:118
 #, c-format
 msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "A rendszer importálni kívánja a(z) „%s” nyilvános kulcsot, de az zárolva van"
+msgstr ""
+"A rendszer importálni kívánja a(z) „%s” nyilvános kulcsot, de az zárolva van"
 
 #: ../daemon/pk/gkr-pk-import.c:120
 #, c-format
@@ -497,7 +512,10 @@ msgid ""
 "The system wants to store information about your keys and certificates. In "
 "order to protect this information, choose a password with which it will be "
 "locked."
-msgstr "A rendszer információkat akar tárolni a kulcsairól és tanúsítványairól. Ezen információk védelme érdekében válasszon jelszót, amellyel ezek zárolásra kerülnek."
+msgstr ""
+"A rendszer információkat akar tárolni a kulcsairól és tanúsítványairól. Ezen "
+"információk védelme érdekében válasszon jelszót, amellyel ezek zárolásra "
+"kerülnek."
 
 #. And put together the ask request
 #: ../daemon/pk/gkr-pk-index.c:124
@@ -512,25 +530,27 @@ msgstr "Adja meg a jelszót a tároló feloldásához"
 msgid ""
 "The system wants to access information about your keys and certificates, but "
 "it is locked."
-msgstr "A rendszer hozzá kíván férni a kulcsainak és tanúsítványainak információihoz, de azok zárolva vannak."
+msgstr ""
+"A rendszer hozzá kíván férni a kulcsainak és tanúsítványainak "
+"információihoz, de azok zárolva vannak."
 
-#: ../daemon/pk/gkr-pk-object.c:883
+#: ../daemon/pk/gkr-pk-object.c:889
 msgid "Certificate"
 msgstr "Tanúsítvány"
 
-#: ../daemon/pk/gkr-pk-object.c:885
+#: ../daemon/pk/gkr-pk-object.c:891
 msgid "Private Key"
 msgstr "Magánkulcs"
 
-#: ../daemon/pk/gkr-pk-object.c:887
+#: ../daemon/pk/gkr-pk-object.c:893
 msgid "Public Key"
 msgstr "Nyilvános kulcs"
 
-#: ../daemon/pk/gkr-pk-object.c:889
+#: ../daemon/pk/gkr-pk-object.c:895
 msgid "Trust Association"
 msgstr "Megbízhatósági társítás"
 
-#: ../daemon/pk/gkr-pk-object-storage.c:436
+#: ../daemon/pk/gkr-pk-object-storage.c:445
 #, c-format
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "„%s” nem törölhető, mivel más objektumokhoz van kötve."
@@ -586,12 +606,14 @@ msgstr "Automatikus feloldás bejelentkezéskor"
 #: ../daemon/pk/gkr-pk-storage.c:209
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” magánkulcshoz, de az zárolva van"
+msgstr ""
+"Egy alkalmazás hozzá kíván férni a(z) „%s” magánkulcshoz, de az zárolva van"
 
 #: ../daemon/pk/gkr-pk-storage.c:211
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz, de az zárolva van"
+msgstr ""
+"Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz, de az zárolva van"
 
 #: ../daemon/pk/gkr-pk-storage.c:213
 #, c-format
@@ -610,16 +632,20 @@ msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” elemhez, de az záro
 msgid ""
 "The system wants to store the private key '%s' on your disk. Please enter a "
 "password to lock it with."
-msgstr "A rendszer tárolni kívánja a(z) „%s” magánkulcsot a lemezen. Adjon meg egy jelszót a kulcs zárolásához."
+msgstr ""
+"A rendszer tárolni kívánja a(z) „%s” magánkulcsot a lemezen. Adjon meg egy "
+"jelszót a kulcs zárolásához."
 
 #: ../daemon/pk/gkr-pk-storage.c:230
 #, c-format
 msgid ""
 "The system wants to store '%s' on your disk. Please enter a password to lock "
 "it with."
-msgstr "A rendszer tárolni kívánja a(z) „%s” elemet a lemezen. Adjon meg egy jelszót a zárolásához."
+msgstr ""
+"A rendszer tárolni kívánja a(z) „%s” elemet a lemezen. Adjon meg egy jelszót "
+"a zárolásához."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:64
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:92
 msgid "The operation was cancelled"
 msgstr "A művelet megszakítva"
 
@@ -639,12 +665,14 @@ msgstr "A biztonságos parancsértelmező (SSH) nyilvános kulcsa nem kódolhat�
 #: ../daemon/ssh/gkr-ssh-storage.c:412
 #, c-format
 msgid "Couldn't read secure shell private key: %s"
-msgstr "A biztonságos parancsértelmező (SSH) nyilvános kulcsa nem olvasható: %s"
+msgstr ""
+"A biztonságos parancsértelmező (SSH) nyilvános kulcsa nem olvasható: %s"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:416
 #, c-format
 msgid "Invalid secure shell private key at: %s"
-msgstr "A biztonságos parancsértelmező (SSH) nyilvános kulcsa érvénytelen itt: %s"
+msgstr ""
+"A biztonságos parancsértelmező (SSH) nyilvános kulcsa érvénytelen itt: %s"
 
 #: ../daemon/ssh/gkr-ssh-storage.c:465
 #, c-format
@@ -656,11 +684,11 @@ msgstr "Az SSH kulcs nem titkosítható a tárolásához."
 msgid "Couldn't encode the SSH key to store it."
 msgstr "Az SSH kulcs nem kódolható a tárolásához."
 
-#: ../daemon/ui/gkr-ask-tool.c:182
+#: ../daemon/ui/gkr-ask-tool.c:244
 msgid "Store passwords unencrypted?"
 msgstr "A jelszavak tárolása titkosítás nélkül?"
 
-#: ../daemon/ui/gkr-ask-tool.c:183
+#: ../daemon/ui/gkr-ask-tool.c:245
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -669,407 +697,406 @@ msgstr ""
 "Ha üres jelszót választ, az eltárolt jelszavai nem lesznek biztonságosan "
 "titkosítva. Bárki számára elérhetőek lesznek, aki hozzáfér a fájljaihoz."
 
-#: ../daemon/ui/gkr-ask-tool.c:190
+#: ../daemon/ui/gkr-ask-tool.c:252
 msgid "Use Unsafe Storage"
 msgstr "Nem biztonságos tárolás használata"
 
-#: ../daemon/ui/gkr-ask-tool.c:413
+#: ../daemon/ui/gkr-ask-tool.c:479
 msgid "_Location:"
 msgstr "He_ly:"
 
-#: ../daemon/ui/gkr-ask-tool.c:426
+#: ../daemon/ui/gkr-ask-tool.c:492
 msgid "_Old password:"
 msgstr "_Régi jelszó:"
 
-#: ../daemon/ui/gkr-ask-tool.c:446
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Password:"
 msgstr "_Jelszó:"
 
-#: ../daemon/ui/gkr-ask-tool.c:468
+#: ../daemon/ui/gkr-ask-tool.c:534
 msgid "_Confirm password:"
 msgstr "Jelszó _megerősítése:"
 
-#: ../daemon/ui/gkr-ask-tool.c:488
+#: ../daemon/ui/gkr-ask-tool.c:554
 msgid "New password strength"
 msgstr "Új jelszó erőssége"
 
-#: ../daemon/ui/gkr-ask-tool.c:546
+#: ../daemon/ui/gkr-ask-tool.c:612
 msgid "Passwords do not match."
 msgstr "Nem egyeznek a megadott jelszavak."
 
-#: ../daemon/ui/gkr-ask-tool.c:562
+#: ../daemon/ui/gkr-ask-tool.c:628
 msgid "Password cannot be blank"
 msgstr "A jelszó nem lehet üres"
 
-#: ../daemon/ui/gkr-ask-tool.c:613
-msgid "Deny"
-msgstr "Megtagadás"
+#: ../daemon/ui/gkr-ask-tool.c:679
+msgid "_Deny"
+msgstr "_Megtagadás"
 
-#: ../daemon/ui/gkr-ask-tool.c:625
+#: ../daemon/ui/gkr-ask-tool.c:691
 msgid "C_reate"
 msgstr "_Létrehozás"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:695
 msgid "C_hange"
 msgstr "_Módosítás"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:699
 msgid "Allow _Once"
 msgstr "Engedélyezés _egyszer"
 
-#: ../daemon/ui/gkr-ask-tool.c:637
+#: ../daemon/ui/gkr-ask-tool.c:703
 msgid "_Always Allow"
 msgstr "Engedélyezés _mindig"
 
-#: ../gp11/gp11-misc.c:67
+#: ../gp11/gp11-misc.c:95
 msgid "Insufficient memory available"
 msgstr "Nem érhető el elég memória"
 
-#: ../gp11/gp11-misc.c:69
+#: ../gp11/gp11-misc.c:97
 msgid "The specified slot ID is not valid"
 msgstr "A megadott helyazonosító nem érvényes"
 
-#: ../gp11/gp11-misc.c:71
+#: ../gp11/gp11-misc.c:99
 msgid "Internal error"
 msgstr "Belső hiba"
 
-#: ../gp11/gp11-misc.c:73
+#: ../gp11/gp11-misc.c:101
 msgid "The operation failed"
 msgstr "A művelet meghiúsult"
 
-#: ../gp11/gp11-misc.c:75
+#: ../gp11/gp11-misc.c:103
 msgid "Invalid arguments"
 msgstr "Érvénytelen argumentumok"
 
-#: ../gp11/gp11-misc.c:77
+#: ../gp11/gp11-misc.c:105
 msgid "The module cannot create needed threads"
 msgstr "A modul nem képes létrehozni a szükséges szálakat"
 
-#: ../gp11/gp11-misc.c:79
+#: ../gp11/gp11-misc.c:107
 msgid "The module cannot lock data properly"
 msgstr "A modul nem képes megfelelően zárolni az adatokat"
 
-#: ../gp11/gp11-misc.c:81
+#: ../gp11/gp11-misc.c:109
 msgid "The field is read-only"
 msgstr "A mező írásvédett"
 
-#: ../gp11/gp11-misc.c:83
+#: ../gp11/gp11-misc.c:111
 msgid "The field is sensitive and cannot be revealed"
 msgstr "A mező adatai érzékenyek és nem fedhetők fel"
 
-#: ../gp11/gp11-misc.c:85
+#: ../gp11/gp11-misc.c:113
 msgid "The field is invalid or does not exist"
 msgstr "A mező érvénytelen vagy nem létezik"
 
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:115
 msgid "Invalid value for field"
 msgstr "A mező értéke érvénytelen"
 
-#: ../gp11/gp11-misc.c:89
+#: ../gp11/gp11-misc.c:117
 msgid "The data is not valid or unrecognized"
 msgstr "Az adat érvénytelen vagy ismeretlen"
 
-#: ../gp11/gp11-misc.c:91
+#: ../gp11/gp11-misc.c:119
 msgid "The data is too long"
 msgstr "Az adat túl hosszú"
 
-#: ../gp11/gp11-misc.c:93
+#: ../gp11/gp11-misc.c:121
 msgid "An error occurred on the device"
 msgstr "Hiba történt az eszközön"
 
-#: ../gp11/gp11-misc.c:95
+#: ../gp11/gp11-misc.c:123
 msgid "Insufficient memory available on device"
 msgstr "Nem érhető el elegendő memória az eszközön"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:125
 msgid "The device was removed or unplugged"
 msgstr "Az eszköz eltávolításra vagy leválasztásra került"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:127
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "A titkosított adatok érvénytelenek vagy ismeretlenek"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:129
 msgid "The encrypted data is too long"
 msgstr "A titkosított adatok túl hosszúak"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:131
 msgid "This operation is not supported"
 msgstr "Ez a művelet nem támogatott"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:133
 msgid "The key is missing or invalid"
 msgstr "A kulcs hiányzik vagy érvénytelen"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:135
 msgid "The key is the wrong size"
 msgstr "A kulcs mérete hibás"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:137
 msgid "The key is of the wrong type"
 msgstr "A kulcs nem megfelelő típusú"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:139
 msgid "No key is needed"
 msgstr "Nem szükséges kulcs"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:141
 msgid "The key is different than before"
 msgstr "A kulcs megváltozott"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:143
 msgid "A key is needed"
 msgstr "Kulcs szükséges"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:145
 msgid "Cannot include the key in digest"
 msgstr "A kivonatba nem vehető fel a kulcs"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:147
 msgid "This operation cannot be done with this key"
 msgstr "Ez a művelet nem végezhető el a kulccsal"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:149
 msgid "The key cannot be wrapped"
 msgstr "A kulcs nem alakítható át"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:151
 msgid "Cannot export this key"
 msgstr "A kulcs nem exportálható"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:153
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "A titkosítási mód érvénytelen vagy ismeretlen"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:155
 msgid "The crypto mechanism has an invalid argument"
 msgstr "A titkosítási mód argumentuma érvénytelen"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:157
 msgid "The object is missing or invalid"
 msgstr "Az objektum hiányzik vagy érvénytelen"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:159
 msgid "Another operation is already taking place"
 msgstr "Már folyamatban van egy művelet"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:161
 msgid "No operation is taking place"
 msgstr "Nincs folyamatban művelet"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:163
 msgid "The password or PIN is incorrect"
 msgstr "A jelszó vagy PIN helytelen"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:165
 msgid "The password or PIN is invalid"
 msgstr "A jelszó vagy PIN érvénytelen"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:167
 msgid "The password or PIN is of an invalid length"
 msgstr "A jelszó vagy PIN érvénytelen hosszúságú"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:169
 msgid "The password or PIN has expired"
 msgstr "A jelszó vagy PIN lejárt"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:171
 msgid "The password or PIN is locked"
 msgstr "A jelszó vagy PIN zárolva van"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:173
 msgid "The session is closed"
 msgstr "A munkamenet le van zárva"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:175
 msgid "Too many sessions are active"
 msgstr "Túl sok munkamenet aktív"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:177
 msgid "The session is invalid"
 msgstr "A munkamenet érvénytelen"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:179
 msgid "The session is read-only"
 msgstr "A munkamenet írásvédett"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:181
 msgid "An open session exists"
 msgstr "Már létezik nyitott munkamenet"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:183
 msgid "A read-only session exists"
 msgstr "Már létezik írásvédett munkamenet"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:185
 msgid "An administrator session exists"
 msgstr "Már létezik adminisztrátori munkamenet"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:187
 msgid "The signature is bad or corrupted"
 msgstr "Az aláírás rossz vagy sérült"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:189
 msgid "The signature is unrecognized or corrupted"
 msgstr "Az aláírás ismeretlen vagy sérült"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:191
 msgid "Certain required fields are missing"
 msgstr "Néhány szükséges mező hiányzik"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:193
 msgid "Certain fields have invalid values"
 msgstr "Néhány szükséges mező értéke érvénytelen"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:195
 msgid "The device is not present or unplugged"
 msgstr "Az eszköz nincs jelen vagy eltávolították"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:197
 msgid "The device is invalid or unrecognizable"
 msgstr "Az eszköz érvénytelen vagy felismerhetetlen"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:199
 msgid "The device is write protected"
 msgstr "Az eszköz írásvédett"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:201
 msgid "Cannot import because the key is invalid"
 msgstr "Nem importálható, mert a kulcs érvénytelen"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:203
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Nem importálható, mert a kulcs hibás méretű"
 
-#: ../gp11/gp11-misc.c:177
+#: ../gp11/gp11-misc.c:205
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Nem importálható, mert a kulcs hibás típusú"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:207
 msgid "You are already logged in"
 msgstr "Már bejelentkezett"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:209
 msgid "No user has logged in"
 msgstr "Senki sem jelentkezett be"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:211
 msgid "The user's password or PIN is not set"
 msgstr "A felhasználó jelszava vagy PIN kódja nincs beállítva"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:213
 msgid "The user is of an invalid type"
 msgstr "A felhasználó érvénytelen típusú"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:215
 msgid "Another user is already logged in"
 msgstr "Már bejelentkezett egy másik felhasználó"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:217
 msgid "Too many users of different types logged in"
 msgstr "Túl sok eltérő típusú felhasználó jelentkezett be"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:219
 msgid "Cannot import an invalid key"
 msgstr "Nem importálható érvénytelen kulcs"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:221
 msgid "Cannot import a key of the wrong size"
 msgstr "Nem importálható hibás méretű kulcs"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:223
 msgid "Cannot export because the key is invalid"
 msgstr "Nem lehet exportálni, mert a kulcs érvénytelen"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Nem lehet exportálni, mert a kulcs hibás méretű"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Nem lehet exportálni, mert a kulcs hibás típusú"
 
-#: ../gp11/gp11-misc.c:201
+#: ../gp11/gp11-misc.c:229
 msgid "Unable to initialize the random number generator"
 msgstr "A véletlenszám-generátor nem készíthető elő"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:231
 msgid "No random number generator available"
 msgstr "Nem áll rendelkezésre véletlenszám-generátor"
 
-#: ../gp11/gp11-misc.c:205
+#: ../gp11/gp11-misc.c:233
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "A titkosítási mechanizmus egy paramétere érvénytelen"
 
-#: ../gp11/gp11-misc.c:207
+#: ../gp11/gp11-misc.c:235
 msgid "Not enough space to store the result"
 msgstr "Nincs elég hely az eredmény tárolásához"
 
-#: ../gp11/gp11-misc.c:209
+#: ../gp11/gp11-misc.c:237
 msgid "The saved state is invalid"
 msgstr "A mentett állapot érvénytelen"
 
-#: ../gp11/gp11-misc.c:211
+#: ../gp11/gp11-misc.c:239
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Az információk érzékenyek és nem fedhetők fel"
 
-#: ../gp11/gp11-misc.c:213
+#: ../gp11/gp11-misc.c:241
 msgid "The state cannot be saved"
 msgstr "Az állapot nem menthető"
 
-#: ../gp11/gp11-misc.c:215
+#: ../gp11/gp11-misc.c:243
 msgid "The module has not been initialized"
 msgstr "A modul nincs előkészítve"
 
-#: ../gp11/gp11-misc.c:217
+#: ../gp11/gp11-misc.c:245
 msgid "The module has already been initialized"
 msgstr "A modul már elő lett készítve"
 
-#: ../gp11/gp11-misc.c:219
+#: ../gp11/gp11-misc.c:247
 msgid "Cannot lock data"
 msgstr "Az adatok nem zárolhatók"
 
-#: ../gp11/gp11-misc.c:221
+#: ../gp11/gp11-misc.c:249
 msgid "The data cannot be locked"
 msgstr "Az adatok nem zárolhatók"
 
-#: ../gp11/gp11-misc.c:223
+#: ../gp11/gp11-misc.c:251
 msgid "The signature request was rejected by the user"
 msgstr "A felhasználó elutasította az aláíráskérést"
 
-#: ../gp11/gp11-misc.c:227
+#: ../gp11/gp11-misc.c:255
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
-#: ../library/gnome-keyring-utils.c:91
+#: ../library/gnome-keyring-utils.c:155
 msgid "Access Denied"
 msgstr "Hozzáférés megtagadva"
 
-#: ../library/gnome-keyring-utils.c:93
+#: ../library/gnome-keyring-utils.c:157
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "A gnome-keyring-daemon alkalmazás nem fut."
 
-#: ../library/gnome-keyring-utils.c:95
+#: ../library/gnome-keyring-utils.c:159
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Hiba a gnome-keyring-daemon alkalmazással való kommunikáció során"
 
-#: ../library/gnome-keyring-utils.c:97
+#: ../library/gnome-keyring-utils.c:161
 msgid "A keyring with that name already exists"
 msgstr "Már létezik ilyen nevű kulcstartó"
 
-#: ../library/gnome-keyring-utils.c:99
+#: ../library/gnome-keyring-utils.c:163
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programhiba: Az alkalmazás érvénytelen adatokat küldött."
 
-#: ../library/gnome-keyring-utils.c:101
+#: ../library/gnome-keyring-utils.c:165
 msgid "No matching results"
 msgstr "Nincs egyezés"
 
-#: ../library/gnome-keyring-utils.c:103
+#: ../library/gnome-keyring-utils.c:167
 msgid "A keyring with that name does not exist."
 msgstr "Nem létezik ilyen nevű kulcstartó."
 
-#: ../library/gnome-keyring-utils.c:110
+#: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "A kulcstartó már fel lett oldva."
-
