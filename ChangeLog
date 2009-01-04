@@ -1,5 +1,20 @@
 2009-01-04  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in:
+	* pkcs11/Makefile.am:
+	* pkcs11/rpc-layer/: (renamed from rpc/)
+	* pkcs11/rpc-layer/gck-rpc-daemon-standalone.c:
+	* pkcs11/rpc-layer/gck-rpc-dispatch.c:
+	* pkcs11/rpc-layer/gck-rpc-layer.h:
+	* pkcs11/rpc-layer/gck-rpc-message.c:
+	* pkcs11/rpc-layer/gck-rpc-module.c:
+	* pkcs11/rpc-layer/gck-rpc-private.h:
+	* pkcs11/rpc-layer/gck-rpc-util.c:
+	* pkcs11/rpc-layer/Makefile.am: Rename 'rpc' to 'rpc-layer' component, and 
+	reorganize how the files are installed.
+	
+2009-01-04  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/Makefile.am:
 	* pkcs11/ssh-store/: (renamed from ssh-keys)
 	* pkcs11/ssh-store/gck-ssh-module.c:
