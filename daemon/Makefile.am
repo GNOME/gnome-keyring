@@ -53,11 +53,11 @@ gnome_keyring_daemon_LDADD = \
 
 EXTRA_DIST = \
 	org.gnome.keyring.service.in \
-	gnome-keyring-daemon.desktop.in
+	$(desktop_in_files)
 
 CLEANFILES = \
 	org.gnome.keyring.service \
-	gnome-keyring-daemon.desktop
+	$(desktop_DATA)
 
 servicedir       = $(DBUS_SERVICES_DIR)
 service_in_files = org.gnome.keyring.service.in
@@ -66,5 +66,8 @@ service_DATA     = $(service_in_files:.service.in=.service)
 $(service_DATA): $(service_in_files) Makefile
 	@sed -e "s|\@BINDIR\@|$(bindir)|" $< > $@
 
+desktop_in_files = gnome-keyring-daemon.desktop.in
 desktopdir       = $(datadir)/gnome/autostart
-desktop_DATA = gnome-keyring-daemon.desktop
+desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
+
+@INTLTOOL_DESKTOP_RULE@

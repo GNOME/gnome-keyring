@@ -1,3 +1,12 @@
+2009-01-04  Gabor Kelemen  <kelemeng@gnome.hu>
+
+	* configure.in:
+	* daemon/gnome-keyring-daemon.desktop.in: (removed)
+	* daemon/gnome-keyring-daemon.desktop.in.in: (added)
+	* daemon/Makefile.am:
+	* po/POTFILES.in:
+	Make .desktop file translatable. Fixes bug #566280.
+
 2009-01-03  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-memory-store.c:

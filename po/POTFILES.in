@@ -3,6 +3,7 @@
 common/gkr-location.c
 daemon/gkr-daemon-ops.c
 daemon/data/gnome-keyring.schemas.in
+daemon/gnome-keyring-daemon.desktop.in.in
 daemon/keyrings/gkr-keyring-login.c
 daemon/keyrings/gkr-keyring.c
 daemon/pk/gkr-pk-import.c

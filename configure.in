@@ -491,7 +491,7 @@ Makefile
 common/Makefile
 common/tests/Makefile
 daemon/Makefile
-daemon/gnome-keyring-daemon.desktop
+daemon/gnome-keyring-daemon.desktop.in
 daemon/data/Makefile
 daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile
