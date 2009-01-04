@@ -24,6 +24,7 @@
 
 #include <glib-object.h>
 
+#include "gck-ssh-store.h"
 #include "gck/gck-module.h"
 
 #define GCK_TYPE_SSH_MODULE               (gck_ssh_module_get_type ())
@@ -39,8 +40,6 @@ typedef struct _GckSshModuleClass GckSshModuleClass;
 struct _GckSshModuleClass {
 	GckModuleClass parent_class;
 };
-
-GCK_DECLARE_MODULE (gck_ssh_module);
 
 GType               gck_ssh_module_get_type               (void);
 

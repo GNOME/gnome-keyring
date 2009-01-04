@@ -9,12 +9,13 @@ INCLUDES = \
 	
 			
 # ------------------------------------------------------------------------------
-# The ssh-keys component code
+# The ssh-store component code
 
 noinst_LTLIBRARIES = \
-	libgck-ssh-keys.la
+	libgck-ssh-store.la
 
-libgck_ssh_keys_la_SOURCES = \
+libgck_ssh_store_la_SOURCES = \
+	gck-ssh-store.h \
 	gck-ssh-module.c gck-ssh-module.h \
 	gck-ssh-openssh.c gck-ssh-openssh.h \
 	gck-ssh-private-key.c gck-ssh-private-key.h \
@@ -23,20 +24,20 @@ libgck_ssh_keys_la_SOURCES = \
 # ------------------------------------------------------------------------------
 # The standalone module 
 
-moduledir = $(libdir)/gnome-keyring/standalone/
+moduledir = $(libdir)/gnome-keyring/devel/
 
 module_LTLIBRARIES = \
-	gck-ssh-keys-module.la
+	gck-ssh-store-standalone.la
 
-gck_ssh_keys_module_la_LDFLAGS = \
+gck_ssh_store_standalone_la_LDFLAGS = \
 	-module -avoid-version \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
-gck_ssh_keys_module_la_SOURCES = \
+gck_ssh_store_standalone_la_SOURCES = \
 	gck-ssh-standalone.c
 
-gck_ssh_keys_module_la_LIBADD = \
-	libgck-ssh-keys.la \
+gck_ssh_store_standalone_la_LIBADD = \
+	libgck-ssh-store.la \
 	$(top_builddir)/pkcs11/gck/libgck.la \
 	$(top_builddir)/common/libgkr-module-common.la \
 	$(GOBJECT_LIBS) \

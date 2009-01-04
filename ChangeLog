@@ -1,5 +1,18 @@
 2009-01-04  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/Makefile.am:
+	* pkcs11/ssh-store/: (renamed from ssh-keys)
+	* pkcs11/ssh-store/gck-ssh-module.c:
+	* pkcs11/ssh-store/gck-ssh-module.h:
+	* pkcs11/ssh-store/gck-ssh-standalone.c:
+	* pkcs11/ssh-store/gck-ssh-store.h: (added)
+	* pkcs11/ssh-store/Makefile.am:
+	* pkcs11/ssh-store/tests/Makefile.am:
+	* configure.in: Rename 'ssh-keys' to 'ssh-store' component, and add 
+	better entry points to access the PKCS#11 module.
+
+2009-01-04  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/pkcs11g.h: Add more details on our PKCS#11 extensions.
 	
 2009-01-04  Stef Walter  <stef@memberwebs.com>

@@ -239,3 +239,14 @@ gck_ssh_module_class_init (GckSshModuleClass *klass)
 	module_class->slot_info = &gck_ssh_module_slot_info;
 	module_class->token_info = &gck_ssh_module_token_info;
 }
+
+/* ----------------------------------------------------------------------------
+ * PUBLIC
+ */
+
+CK_FUNCTION_LIST_PTR
+gck_ssh_store_get_functions (void)
+{
+	gck_crypto_initialize ();
+	return gck_ssh_module_function_list;
+}

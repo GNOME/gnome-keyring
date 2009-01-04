@@ -23,13 +23,15 @@
 
 #include "config.h"
 
-#include "gck-ssh-module.h"
+#include "gck-ssh-store.h"
 
 #include "gck/gck-crypto.h"
 
 #include "common/gkr-secure-memory.h"
 
 #include "pkcs11/pkcs11.h"
+
+#include <glib-object.h>
 
 /* Module callbacks for secure memory */
 static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
@@ -47,12 +49,9 @@ C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 		return CKR_ARGUMENTS_BAD;
 	
 	g_type_init ();
-	
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
 	
-	gck_crypto_initialize ();
-	
-	*list = gck_ssh_module_function_list;
+	*list = gck_ssh_store_get_functions ();
 	return CKR_OK;
 }

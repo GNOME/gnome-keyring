@@ -518,8 +518,8 @@ pkcs11/gck/tests/Makefile
 pkcs11/roots/Makefile
 pkcs11/roots/tests/Makefile
 pkcs11/ssh-agent/Makefile
-pkcs11/ssh-keys/Makefile
-pkcs11/ssh-keys/tests/Makefile
+pkcs11/ssh-store/Makefile
+pkcs11/ssh-store/tests/Makefile
 pkcs11/rpc/Makefile
 pkcs11/tests/Makefile
 po/Makefile.in
