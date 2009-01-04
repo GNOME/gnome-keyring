@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* pkcs11g.h - GNOME extensions to PKCS#11
 
-   Copyright (C) 2007, Nate Nielsen
+   Copyright (C) 2008, Stef Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Nate Nielsen <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #ifndef PKCS11G_H
@@ -28,6 +28,60 @@
 
 #define CKA_GNOME (CKA_VENDOR_DEFINED | 0x474E4D45 /* GNME */ ) 
 #define CKO_GNOME (CKO_VENDOR_DEFINED | 0x474E4D45 /* GNME */ ) 
+
+
+/* ----------------------------------------------------------------------
+ * APARTMENT SLOTS
+ * 
+ * The lower 10 bits of the CK_SLOT_ID are used as the actual slot identifier, 
+ * and the remainder are used as application identifiers.
+ * 
+ * This enables a single loaded module to serve multiple applications
+ * concurrently. The caller of a module should check the 
+ * CKF_GNOME_VIRTUAL_SLOTS flag before using this functionality.
+ */
+
+/* Flag for CK_INFO when virtual slots are supported */
+#define CKF_GNOME_APPARTMENTS                       0x40000000
+
+/* Get an actual slot id from a virtual slot */
+#define CK_GNOME_APPARTMENT_SLOT(virt)              ((virt) & 0x000003FF)
+
+/* Get an app id from a virtual slot */
+#define CK_GNOME_APPARTMENT_APP(virt)               ((virt) >> 10)
+
+/* Is the app id valid for use in a virtual slot? */
+#define CK_GNOME_APPARTMENT_IS_APP(app)             ((app) < (((CK_ULONG)-1) >> 10))
+
+/* Build a virtual slot from an actual slot id, and an app id */
+#define CK_GNOME_MAKE_APPARTMENT(slot, app)         (((slot) & 0x000003FF) | ((app) << 10))
+
+
+/* -------------------------------------------------------------------
+ * LIMITED HANDLES
+ * 
+ * The upper 10 bits of a CK_SESSION_HANDLE and CK_OBJECT_HANDLE are 
+ * never used by Gnome Keyring PKCS#11 modules. These bits are used 
+ * for tracking purposes when combining modules into a single module.
+ */ 
+
+#define CK_GNOME_MAX_SLOT                           (0x000003FF)
+#define CK_GNOME_MAX_APP                            ((CK_ULONG)-1) >> 10)
+#define CK_GNOME_MAX_HANDLE                         ((CK_ULONG)-1) >> 10)
+
+
+/* -------------------------------------------------------------------
+ * OBJECT AUTHENTICATION 
+ */
+
+#define CKA_GNOME_AUTH_CACHE                        (CKA_GNOME + 300)
+#define CKV_GNOME_AUTH_CACHE_NEVER                  ((CK_ULONG)-1)
+#define CKV_GNOME_AUTH_CACHE_SESSION                0x40000000
+#define CKV_GNOME_AUTH_CACHE_UNLIMITED              0x80000000
+
+/* ----------------------------------------------------------------------
+ * TODO: EXTENSIONS BELOW NEED TO BE INDIVIDUALLY CONSIDERED CAREFULLY
+ */
 
 #define CKT_GNOME_UNKNOWN   0
 #define CKT_GNOME_UNTRUSTED 1
