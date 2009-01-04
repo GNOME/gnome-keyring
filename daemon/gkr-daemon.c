@@ -41,7 +41,7 @@
 #include "pk/gkr-pk-root-storage.h"
 #endif
 
-#include "pkcs11/gkr-pkcs11-daemon.h"
+#include "pkcs11/gkr-pkcs11-dispatch.h"
 
 #ifdef WITH_SSH
 #include "ssh/gkr-ssh-daemon.h"
@@ -654,7 +654,7 @@ gkr_daemon_complete_initialization(void)
 #endif
 	
 	if (check_run_component ("pkcs11")) {
-		if (!gkr_pkcs11_daemon_setup ())
+		if (!gkr_pkcs11_dispatch_setup ())
 			return FALSE;
 	}
 	
