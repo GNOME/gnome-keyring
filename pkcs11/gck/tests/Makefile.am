@@ -11,7 +11,7 @@ UNIT_AUTO = \
 	unit-test-data-asn1.c \
 	unit-test-data-der.c \
 	unit-test-data-openssl.c \
-	unit-test-transaction.c \ 
+	unit-test-transaction.c \
 	unit-test-store.c \
 	unit-test-memory-store.c \
 	unit-test-file-store.c \

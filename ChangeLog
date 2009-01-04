@@ -1,5 +1,9 @@
 2009-01-04  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gck/gck-module.c: Make the module properly support slot appartments. 
+	
+2009-01-04  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in:
 	* pkcs11/Makefile.am:
 	* pkcs11/rpc-layer/: (renamed from rpc/)

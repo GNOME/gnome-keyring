@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11g.h"
 
 #include "gck-attributes.h"
 #include "gck-factory.h"
@@ -56,6 +57,9 @@ typedef struct _VirtualSlot {
 	gboolean logged_in;
 } VirtualSlot;
 
+/* Our slot identifier is 1 */
+#define GCK_SLOT_ID  1
+
 G_DEFINE_TYPE (GckModule, gck_module, G_TYPE_OBJECT);
 
 /* These info blocks are used unless derived class overrides */
@@ -63,7 +67,7 @@ G_DEFINE_TYPE (GckModule, gck_module, G_TYPE_OBJECT);
 static const CK_INFO default_module_info = {
 	{ CRYPTOKI_VERSION_MAJOR, CRYPTOKI_VERSION_MINOR },
 	"Gnome Keyring",
-	0x40000000, /* TODO: Define as CKF_VIRTUAL_SLOTS elsewhere */
+	CKF_GNOME_APPARTMENTS,
 	"Gnome Keyring Module",
 	{ 1, 1 },
 };
@@ -705,7 +709,8 @@ gck_module_C_GetSlotList (GckModule *self, CK_BBOOL token_present, CK_SLOT_ID_PT
 	
 	g_return_val_if_fail (slot_list, CKR_ARGUMENTS_BAD);
 	
-	slot_list[0] = 0;
+	/* Answer C_GetSlotList with 0 for app */
+	slot_list[0] = CK_GNOME_VIRTUAL_SLOT_ID (GCK_SLOT_ID, 0);
 	*count = 1;
 	return CKR_OK;
 }
@@ -717,7 +722,9 @@ gck_module_C_GetSlotInfo (GckModule *self, CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
 	
-	if (!info)
+	if (CK_GNOME_VIRTUAL_TO_SLOT (id) != GCK_SLOT_ID)
+		return CKR_SLOT_ID_INVALID;
+	if (info == NULL)
 		return CKR_ARGUMENTS_BAD;
 	
 	/* Any slot ID is valid for partitioned module */
@@ -741,7 +748,9 @@ gck_module_C_GetTokenInfo (GckModule *self, CK_SLOT_ID id, CK_TOKEN_INFO_PTR inf
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
 	
-	if (!info)
+	if (CK_GNOME_VIRTUAL_TO_SLOT (id) != GCK_SLOT_ID)
+		return CKR_SLOT_ID_INVALID;
+	if (info == NULL)
 		return CKR_ARGUMENTS_BAD;
 	
 	/* Any slot ID is valid for partitioned module */
@@ -772,7 +781,9 @@ gck_module_C_GetMechanismList (GckModule *self, CK_SLOT_ID id,
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
 	
-	if (!count)
+	if (CK_GNOME_VIRTUAL_TO_SLOT (id) != GCK_SLOT_ID)
+		return CKR_SLOT_ID_INVALID;
+	if (count == NULL)
 		return CKR_ARGUMENTS_BAD;
 	
 	/* Just want to get the count */
@@ -803,7 +814,9 @@ gck_module_C_GetMechanismInfo (GckModule *self, CK_SLOT_ID id,
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
 	
-	if (!info)
+	if (CK_GNOME_VIRTUAL_TO_SLOT (id) != GCK_SLOT_ID)
+		return CKR_SLOT_ID_INVALID;
+	if (info == NULL)
 		return CKR_ARGUMENTS_BAD;
 
 	for (index = 0; index < n_mechanisms; ++index) {
@@ -826,7 +839,7 @@ gck_module_C_InitToken (GckModule *self, CK_SLOT_ID id, CK_UTF8CHAR_PTR pin,
 }
 
 CK_RV
-gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID slot_id, CK_FLAGS flags, CK_VOID_PTR user_data, 
+gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data, 
                           CK_NOTIFY callback, CK_SESSION_HANDLE_PTR result)
 {
 	CK_SESSION_HANDLE handle;
@@ -836,6 +849,8 @@ gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID slot_id, CK_FLAGS flags, C
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
 	
+	if (CK_GNOME_VIRTUAL_TO_SLOT (id) != GCK_SLOT_ID)
+		return CKR_SLOT_ID_INVALID;
 	if (!result)
 		return CKR_ARGUMENTS_BAD;
 	
@@ -843,9 +858,9 @@ gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID slot_id, CK_FLAGS flags, C
 		return CKR_SESSION_PARALLEL_NOT_SUPPORTED;
 
 	/* Lookup or register the virtual slot */
-	slot = lookup_virtual_slot (self, slot_id);
+	slot = lookup_virtual_slot (self, id);
 	if (slot == NULL) {
-		slot = virtual_slot_new (GCK_MODULE_GET_CLASS (self), slot_id);
+		slot = virtual_slot_new (GCK_MODULE_GET_CLASS (self), id);
 		register_virtual_slot (self, slot);
 	}
 
@@ -899,7 +914,7 @@ gck_module_C_CloseSession (GckModule *self, CK_SESSION_HANDLE handle)
 }
 
 CK_RV
-gck_module_C_CloseAllSessions (GckModule *self, CK_SLOT_ID slot_id)
+gck_module_C_CloseAllSessions (GckModule *self, CK_SLOT_ID id)
 {
 	VirtualSlot *slot;
 	CK_SESSION_HANDLE handle;
@@ -907,9 +922,12 @@ gck_module_C_CloseAllSessions (GckModule *self, CK_SLOT_ID slot_id)
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
 	
+	if (CK_GNOME_VIRTUAL_TO_SLOT (id) != GCK_SLOT_ID)
+		return CKR_SLOT_ID_INVALID;
+
 	/* Calculate the virtual slot */
-	slot = lookup_virtual_slot (self, slot_id);
-	if (!slot)
+	slot = lookup_virtual_slot (self, id);
+	if (slot == NULL)
 		return CKR_OK;
 	
 	/* Unregister all its sessions */
