@@ -1,3 +1,6 @@
+Changes in version 2.25.4.1 are:
+* Fix broken release.
+
 Changes in version 2.25.4 are:
 * Half way through refactoring of PKCS#11 support.
 * Add crypto support to gp11 library.

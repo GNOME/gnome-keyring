@@ -1,3 +1,10 @@
+=== gnome-keyring 2.25.4.1 ===
+
+2009-01-04  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* NEWS: Release 2.25.4.1
+
 2009-01-04  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c: Fix broken release, I have no idea
