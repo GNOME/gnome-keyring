@@ -4,14 +4,14 @@
 # Copyright (C) 2006 The Free Software Foundation.
 #
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 200, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&amp;component=general\n"
-"POT-Creation-Date: 2008-12-11 20:32+0000\n"
-"PO-Revision-Date: 2008-12-15 21:46+0100\n"
+"keyring&component=general\n"
+"POT-Creation-Date: 2009-01-05 05:05+0000\n"
+"PO-Revision-Date: 2009-01-05 08:55+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -404,6 +404,10 @@ msgstr "Indica si el componente PKCS#11 del depósito de claves está activado."
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Indica si el agente SSH del depósito de claves está activado."
 
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr "Demonio del Depósito de claves de GNOME"
+
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
@@ -640,7 +644,7 @@ msgstr ""
 "El sistema quiere almacenar «%s» en su disco. Introduzca una contraseña para "
 "bloquearlo con ella."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
+#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:92
 msgid "The operation was cancelled"
 msgstr "Se canceló la operación"
 
@@ -743,323 +747,323 @@ msgstr "Permitir _una vez"
 msgid "_Always Allow"
 msgstr "Permitir _siempre"
 
-#: ../gp11/gp11-misc.c:90
+#: ../gp11/gp11-misc.c:95
 msgid "Insufficient memory available"
 msgstr "No hay suficiente memoria disponible"
 
-#: ../gp11/gp11-misc.c:92
+#: ../gp11/gp11-misc.c:97
 msgid "The specified slot ID is not valid"
 msgstr "El ID de la ranura especificada no es válido"
 
-#: ../gp11/gp11-misc.c:94
+#: ../gp11/gp11-misc.c:99
 msgid "Internal error"
 msgstr "Error interno"
 
-#: ../gp11/gp11-misc.c:96
+#: ../gp11/gp11-misc.c:101
 msgid "The operation failed"
 msgstr "Falló la operación"
 
-#: ../gp11/gp11-misc.c:98
+#: ../gp11/gp11-misc.c:103
 msgid "Invalid arguments"
 msgstr "Argumentos no válidos"
 
-#: ../gp11/gp11-misc.c:100
+#: ../gp11/gp11-misc.c:105
 msgid "The module cannot create needed threads"
 msgstr "El módulo no pudo crear los hilos necesarios"
 
-#: ../gp11/gp11-misc.c:102
+#: ../gp11/gp11-misc.c:107
 msgid "The module cannot lock data properly"
 msgstr "El módulo no puede bloquear los datos adecuadamente"
 
-#: ../gp11/gp11-misc.c:104
+#: ../gp11/gp11-misc.c:109
 msgid "The field is read-only"
 msgstr "El campo es de sólo lectura"
 
-#: ../gp11/gp11-misc.c:106
+#: ../gp11/gp11-misc.c:111
 msgid "The field is sensitive and cannot be revealed"
 msgstr "El campo es sensible y no se puede revelar"
 
-#: ../gp11/gp11-misc.c:108
+#: ../gp11/gp11-misc.c:113
 msgid "The field is invalid or does not exist"
 msgstr "El campo no es válido o no existe"
 
-#: ../gp11/gp11-misc.c:110
+#: ../gp11/gp11-misc.c:115
 msgid "Invalid value for field"
 msgstr "Valor no válido para el campo"
 
-#: ../gp11/gp11-misc.c:112
+#: ../gp11/gp11-misc.c:117
 msgid "The data is not valid or unrecognized"
 msgstr "El dato no es válido o reconocible"
 
-#: ../gp11/gp11-misc.c:114
+#: ../gp11/gp11-misc.c:119
 msgid "The data is too long"
 msgstr "El dato es demasiado largo"
 
-#: ../gp11/gp11-misc.c:116
+#: ../gp11/gp11-misc.c:121
 msgid "An error occurred on the device"
 msgstr "Ocurrió un error en el dispositivo"
 
-#: ../gp11/gp11-misc.c:118
+#: ../gp11/gp11-misc.c:123
 msgid "Insufficient memory available on device"
 msgstr "No hay memoria suficiente en el dispositivo"
 
-#: ../gp11/gp11-misc.c:120
+#: ../gp11/gp11-misc.c:125
 msgid "The device was removed or unplugged"
 msgstr "El dispositivo se extrajo o desconectó"
 
-#: ../gp11/gp11-misc.c:122
+#: ../gp11/gp11-misc.c:127
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "El dato cifrados no son válidos o reconocibles"
 
-#: ../gp11/gp11-misc.c:124
+#: ../gp11/gp11-misc.c:129
 msgid "The encrypted data is too long"
 msgstr "El dato cifrado es demasiado largo"
 
-#: ../gp11/gp11-misc.c:126
+#: ../gp11/gp11-misc.c:131
 msgid "This operation is not supported"
 msgstr "Esta operación no está soportada"
 
-#: ../gp11/gp11-misc.c:128
+#: ../gp11/gp11-misc.c:133
 msgid "The key is missing or invalid"
 msgstr "Falta la clave o no es válida"
 
-#: ../gp11/gp11-misc.c:130
+#: ../gp11/gp11-misc.c:135
 msgid "The key is the wrong size"
 msgstr "La clave tiene un tamaño incorrecto"
 
-#: ../gp11/gp11-misc.c:132
+#: ../gp11/gp11-misc.c:137
 msgid "The key is of the wrong type"
 msgstr "La clave es de tipo erróneo"
 
-#: ../gp11/gp11-misc.c:134
+#: ../gp11/gp11-misc.c:139
 msgid "No key is needed"
 msgstr "No se necesita clave"
 
-#: ../gp11/gp11-misc.c:136
+#: ../gp11/gp11-misc.c:141
 msgid "The key is different than before"
 msgstr "La clave es diferente que anteriormente"
 
-#: ../gp11/gp11-misc.c:138
+#: ../gp11/gp11-misc.c:143
 msgid "A key is needed"
 msgstr "Se necesita una clave"
 
-#: ../gp11/gp11-misc.c:140
+#: ../gp11/gp11-misc.c:145
 msgid "Cannot include the key in digest"
 msgstr "No se puede incluir la clave en el resumen"
 
-#: ../gp11/gp11-misc.c:142
+#: ../gp11/gp11-misc.c:147
 msgid "This operation cannot be done with this key"
 msgstr "Esta operación no se puede realizar con esta clave"
 
-#: ../gp11/gp11-misc.c:144
+#: ../gp11/gp11-misc.c:149
 msgid "The key cannot be wrapped"
 msgstr "La clave no se puede envolver"
 
-#: ../gp11/gp11-misc.c:146
+#: ../gp11/gp11-misc.c:151
 msgid "Cannot export this key"
 msgstr "No se puede exportar esta clave"
 
-#: ../gp11/gp11-misc.c:148
+#: ../gp11/gp11-misc.c:153
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "El mecanismo de cifrado no es válido o no se reconoce"
 
-#: ../gp11/gp11-misc.c:150
+#: ../gp11/gp11-misc.c:155
 msgid "The crypto mechanism has an invalid argument"
 msgstr "El mecanismo de cifrado tiene un argumento no válido"
 
-#: ../gp11/gp11-misc.c:152
+#: ../gp11/gp11-misc.c:157
 msgid "The object is missing or invalid"
 msgstr "El objeto falta o no es válido"
 
-#: ../gp11/gp11-misc.c:154
+#: ../gp11/gp11-misc.c:159
 msgid "Another operation is already taking place"
 msgstr "Ya se está realizando otra operación"
 
-#: ../gp11/gp11-misc.c:156
+#: ../gp11/gp11-misc.c:161
 msgid "No operation is taking place"
 msgstr "No se está realizando ninguna operación"
 
-#: ../gp11/gp11-misc.c:158
+#: ../gp11/gp11-misc.c:163
 msgid "The password or PIN is incorrect"
 msgstr "La contraseña o PIN es incorrecta"
 
-#: ../gp11/gp11-misc.c:160
+#: ../gp11/gp11-misc.c:165
 msgid "The password or PIN is invalid"
 msgstr "La contraseña o PIN no es válida"
 
-#: ../gp11/gp11-misc.c:162
+#: ../gp11/gp11-misc.c:167
 msgid "The password or PIN is of an invalid length"
 msgstr "La contraseña o PIN es de una longitud no válida"
 
-#: ../gp11/gp11-misc.c:164
+#: ../gp11/gp11-misc.c:169
 msgid "The password or PIN has expired"
 msgstr "La contraseña o PIN ha caducado"
 
-#: ../gp11/gp11-misc.c:166
+#: ../gp11/gp11-misc.c:171
 msgid "The password or PIN is locked"
 msgstr "La contraseña o PIN está bloqueada"
 
-#: ../gp11/gp11-misc.c:168
+#: ../gp11/gp11-misc.c:173
 msgid "The session is closed"
 msgstr "La sesión está cerrada"
 
-#: ../gp11/gp11-misc.c:170
+#: ../gp11/gp11-misc.c:175
 msgid "Too many sessions are active"
 msgstr "Hay demasiadas sesiones activas"
 
-#: ../gp11/gp11-misc.c:172
+#: ../gp11/gp11-misc.c:177
 msgid "The session is invalid"
 msgstr "La sesión no es válida"
 
-#: ../gp11/gp11-misc.c:174
+#: ../gp11/gp11-misc.c:179
 msgid "The session is read-only"
 msgstr "La sesión es de sólo lectura"
 
-#: ../gp11/gp11-misc.c:176
+#: ../gp11/gp11-misc.c:181
 msgid "An open session exists"
 msgstr "Existe una sesión abierta"
 
-#: ../gp11/gp11-misc.c:178
+#: ../gp11/gp11-misc.c:183
 msgid "A read-only session exists"
 msgstr "Existe una sesión de sólo lectura"
 
-#: ../gp11/gp11-misc.c:180
+#: ../gp11/gp11-misc.c:185
 msgid "An administrator session exists"
 msgstr "Existe una sesión de administrador"
 
-#: ../gp11/gp11-misc.c:182
+#: ../gp11/gp11-misc.c:187
 msgid "The signature is bad or corrupted"
 msgstr "La firma es errónea o está corrupta"
 
-#: ../gp11/gp11-misc.c:184
+#: ../gp11/gp11-misc.c:189
 msgid "The signature is unrecognized or corrupted"
 msgstr "La firma no es reconocible o está corrupta"
 
-#: ../gp11/gp11-misc.c:186
+#: ../gp11/gp11-misc.c:191
 msgid "Certain required fields are missing"
 msgstr "Faltan ciertos campos necesarios"
 
-#: ../gp11/gp11-misc.c:188
+#: ../gp11/gp11-misc.c:193
 msgid "Certain fields have invalid values"
 msgstr "Ciertos campos tienen valores no válidos"
 
-#: ../gp11/gp11-misc.c:190
+#: ../gp11/gp11-misc.c:195
 msgid "The device is not present or unplugged"
 msgstr "El dispositivo no está presente o no está conectado"
 
-#: ../gp11/gp11-misc.c:192
+#: ../gp11/gp11-misc.c:197
 msgid "The device is invalid or unrecognizable"
 msgstr "El dispositivo no es válido o es irreconocible"
 
-#: ../gp11/gp11-misc.c:194
+#: ../gp11/gp11-misc.c:199
 msgid "The device is write protected"
 msgstr "El dispositivo está protegido contra escritura"
 
-#: ../gp11/gp11-misc.c:196
+#: ../gp11/gp11-misc.c:201
 msgid "Cannot import because the key is invalid"
 msgstr "No se puede importar porque la clave no es válida"
 
-#: ../gp11/gp11-misc.c:198
+#: ../gp11/gp11-misc.c:203
 msgid "Cannot import because the key is of the wrong size"
 msgstr "No se puede importar porque la clave es de tamaño erróneo"
 
-#: ../gp11/gp11-misc.c:200
+#: ../gp11/gp11-misc.c:205
 msgid "Cannot import because the key is of the wrong type"
 msgstr "No se puede importar porque la clave es de tipo erróneo"
 
-#: ../gp11/gp11-misc.c:202
+#: ../gp11/gp11-misc.c:207
 msgid "You are already logged in"
 msgstr "Ya ha iniciado sesión"
 
-#: ../gp11/gp11-misc.c:204
+#: ../gp11/gp11-misc.c:209
 msgid "No user has logged in"
 msgstr "Ningún usuario ha iniciado sesión"
 
-#: ../gp11/gp11-misc.c:206
+#: ../gp11/gp11-misc.c:211
 msgid "The user's password or PIN is not set"
 msgstr "La contraseña o PIN del usuario no está establecida"
 
-#: ../gp11/gp11-misc.c:208
+#: ../gp11/gp11-misc.c:213
 msgid "The user is of an invalid type"
 msgstr "El usuario es de tipo no válido"
 
-#: ../gp11/gp11-misc.c:210
+#: ../gp11/gp11-misc.c:215
 msgid "Another user is already logged in"
 msgstr "Otro usuario ya ha iniciado sesión"
 
-#: ../gp11/gp11-misc.c:212
+#: ../gp11/gp11-misc.c:217
 msgid "Too many users of different types logged in"
 msgstr "Demasiados usuarios de tipos diferentes han iniciado sesión"
 
-#: ../gp11/gp11-misc.c:214
+#: ../gp11/gp11-misc.c:219
 msgid "Cannot import an invalid key"
 msgstr "No se puede importar una clave válida"
 
-#: ../gp11/gp11-misc.c:216
+#: ../gp11/gp11-misc.c:221
 msgid "Cannot import a key of the wrong size"
 msgstr "No se puede importar una clave de tamaño incorrecto"
 
-#: ../gp11/gp11-misc.c:218
+#: ../gp11/gp11-misc.c:223
 msgid "Cannot export because the key is invalid"
 msgstr "No se puede exportar porque la clave no es válida"
 
-#: ../gp11/gp11-misc.c:220
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot export because the key is of the wrong size"
 msgstr "No se puede exportar porque la clave es de tamaño incorrecto"
 
-#: ../gp11/gp11-misc.c:222
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot export because the key is of the wrong type"
 msgstr "No se puede exportar porque la clave es de tipo erróneo"
 
-#: ../gp11/gp11-misc.c:224
+#: ../gp11/gp11-misc.c:229
 msgid "Unable to initialize the random number generator"
 msgstr "No se pudo inicializar el generador de números aleatorios"
 
-#: ../gp11/gp11-misc.c:226
+#: ../gp11/gp11-misc.c:231
 msgid "No random number generator available"
 msgstr "No existe un generador de números aleatorios disponible"
 
-#: ../gp11/gp11-misc.c:228
+#: ../gp11/gp11-misc.c:233
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "El mecanismo de cifrado tiene un parámetro no válido"
 
-#: ../gp11/gp11-misc.c:230
+#: ../gp11/gp11-misc.c:235
 msgid "Not enough space to store the result"
 msgstr "No hay suficiente espacio para almacenar el resultado"
 
-#: ../gp11/gp11-misc.c:232
+#: ../gp11/gp11-misc.c:237
 msgid "The saved state is invalid"
 msgstr "El estado guardado no es válido"
 
-#: ../gp11/gp11-misc.c:234
+#: ../gp11/gp11-misc.c:239
 msgid "The information is sensitive and cannot be revealed"
 msgstr "La información es sensible y no se puede revelar"
 
-#: ../gp11/gp11-misc.c:236
+#: ../gp11/gp11-misc.c:241
 msgid "The state cannot be saved"
 msgstr "El estado no se puede guardar"
 
-#: ../gp11/gp11-misc.c:238
+#: ../gp11/gp11-misc.c:243
 msgid "The module has not been initialized"
 msgstr "El módulo no se ha inicializado"
 
-#: ../gp11/gp11-misc.c:240
+#: ../gp11/gp11-misc.c:245
 msgid "The module has already been initialized"
 msgstr "El módulo ya se ha inicializado"
 
-#: ../gp11/gp11-misc.c:242
+#: ../gp11/gp11-misc.c:247
 msgid "Cannot lock data"
 msgstr "No se pueden bloquear los datos"
 
-#: ../gp11/gp11-misc.c:244
+#: ../gp11/gp11-misc.c:249
 msgid "The data cannot be locked"
 msgstr "Los datos no se pueden bloquear"
 
-#: ../gp11/gp11-misc.c:246
+#: ../gp11/gp11-misc.c:251
 msgid "The signature request was rejected by the user"
 msgstr "El usuario rechazó la petición de firma"
 
-#: ../gp11/gp11-misc.c:250
+#: ../gp11/gp11-misc.c:255
 msgid "Unknown error"
 msgstr "Error desconocido"
 
@@ -1094,6 +1098,14 @@ msgstr "No existe un depósito de claves con ese nombre."
 #: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "El depósito de claves ya se ha desbloqueado."
+
+#: ../pkcs11/gck/gck-certificate.c:489
+msgid "Unnamed Certificate"
+msgstr "Certificado sin nombre"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:280
+msgid "Couldn't parse public SSH key"
+msgstr "No se pudo analizar la clave SSH pública"
 
 #~ msgid "Cannot set a random seed"
 #~ msgstr "No se puede establecer una semilla aleatoria"
