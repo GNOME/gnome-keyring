@@ -50,19 +50,32 @@ CK_ATTRIBUTE_PTR    _gp11_attributes_commit_out             (GP11Attributes *att
                                                              CK_ULONG_PTR n_attrs);
 
 /* ----------------------------------------------------------------------------
+ * MODULE
+ */
+
+gboolean            _gp11_module_fire_authenticate_slot     (GP11Module *module,
+                                                             GP11Slot *slot,
+                                                             gchar *label,
+                                                             gchar **password);
+
+gboolean            _gp11_module_fire_authenticate_object   (GP11Module *module,
+                                                             GP11Object *object,
+                                                             gchar *label,
+                                                             gchar **password);
+
+gboolean            _gp11_module_pool_session_handle        (GP11Session *session, 
+                                                             CK_SESSION_HANDLE handle, 
+                                                             GP11Module *self);
+
+CK_SESSION_HANDLE   _gp11_module_pooled_session_handle      (GP11Module *module,
+                                                             CK_SLOT_ID slot,
+                                                             gulong flags);
+
+/* ----------------------------------------------------------------------------
  * SLOT
  */
 
-gboolean            _gp11_slot_fire_authenticate_token       (GP11Slot *slot,
-                                                              gchar *label,
-                                                              gchar **password);
-
-gboolean            _gp11_slot_fire_authenticate_object      (GP11Slot *slot,
-                                                              GP11Object *object,
-                                                              gchar *label,
-                                                              gchar **password);
-
-gboolean            _gp11_slot_is_protected_auth_path        (GP11Slot *slot);
+gboolean            _gp11_slot_is_protected_auth_path       (GP11Slot *slot);
 
 /* ----------------------------------------------------------------------------
  * CALL

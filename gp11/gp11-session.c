@@ -120,7 +120,7 @@ gp11_session_real_discard_handle (GP11Session *self, CK_OBJECT_HANDLE handle)
 	g_return_val_if_fail (data->module, FALSE);
 	g_object_ref (data->module);
 	
-	funcs = gp11_module_get_function_list (data->module);
+	funcs = gp11_module_get_functions (data->module);
 	g_return_val_if_fail (funcs, FALSE);
 	
 	rv = (funcs->C_CloseSession) (handle);
@@ -386,7 +386,7 @@ gp11_session_get_info (GP11Session *self)
 	
 	g_object_ref (data->module);
 	
-	funcs = gp11_module_get_function_list (data->module);
+	funcs = gp11_module_get_functions (data->module);
 	g_return_val_if_fail (funcs, NULL);
 	
 	memset (&info, 0, sizeof (info));
@@ -989,7 +989,7 @@ typedef enum _AuthenticateState {
 typedef struct _Authenticate {
 	AuthenticateState state;
 	gboolean protected_auth;
-	GP11Slot *slot;
+	GP11Module *module;
 	GP11Object *object;
 	gchar *label;
 	gchar *password;
@@ -1106,21 +1106,21 @@ authenticate_complete (Authenticate *auth, GP11Arguments *base, CK_RV result)
 	/* We're done here if not in this state */
 	if (auth->state == AUTHENTICATE_WANT) {
 
-		g_assert (GP11_IS_SLOT (auth->slot));
+		g_assert (GP11_IS_MODULE (auth->module));
 		g_assert (GP11_IS_OBJECT (auth->object));
 
 		g_free (auth->password);
 		auth->password = NULL;
 	
-		if (_gp11_slot_fire_authenticate_object (auth->slot, auth->object, auth->label, &auth->password)) {
+		if (_gp11_module_fire_authenticate_object (auth->module, auth->object, auth->label, &auth->password)) {
 			auth->state = AUTHENTICATE_PERFORM;
 			return FALSE; /* Want to continue processing this call */
 		}
 	}
 
 	/* Free up various memory */
-	if (auth->slot)
-		g_object_unref (auth->slot);
+	if (auth->module)
+		g_object_unref (auth->module);
 	if (auth->object)
 		g_object_unref (auth->object);
 	g_free (auth->label);
@@ -1133,16 +1133,20 @@ authenticate_complete (Authenticate *auth, GP11Arguments *base, CK_RV result)
 static void
 authenticate_init (Authenticate *auth, GP11Slot *slot, GP11Object *object)
 {
+	GP11Module *module;
+	
 	g_assert (GP11_IS_SLOT (slot));
 	g_assert (GP11_IS_OBJECT (object));
 	
-	if (gp11_slot_get_auto_login (slot)) {
+	module = gp11_slot_get_module (slot);
+	if (gp11_module_get_auto_authenticate (module)) {
 		auth->state = AUTHENTICATE_CAN;
 		auth->protected_auth = _gp11_slot_is_protected_auth_path (slot);
-		auth->slot = g_object_ref (slot);
+		auth->module = module;
 		auth->object = g_object_ref (object);
 	} else {
 		auth->state = AUTHENTICATE_NONE;
+		g_object_unref (module);
 	}
 }
 
@@ -1339,7 +1343,7 @@ gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	g_object_get (self, "module", &module, NULL);
 	g_return_val_if_fail (module != NULL, NULL);
 	
-	funcs = gp11_module_get_function_list (module);
+	funcs = gp11_module_get_functions (module);
 	g_return_val_if_fail (module != NULL, NULL);
 
 	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err, 
@@ -1360,7 +1364,7 @@ gp11_session_encrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *m
 	g_object_get (self, "module", &module, NULL);
 	g_return_if_fail (module != NULL);
 
-	funcs = gp11_module_get_function_list (module);
+	funcs = gp11_module_get_functions (module);
 	g_return_if_fail (module != NULL);
 
 	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,
@@ -1400,7 +1404,7 @@ gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	g_object_get (self, "module", &module, NULL);
 	g_return_val_if_fail (module != NULL, NULL);
 	
-	funcs = gp11_module_get_function_list (module);
+	funcs = gp11_module_get_functions (module);
 	g_return_val_if_fail (module != NULL, NULL);
 
 	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err,
@@ -1420,7 +1424,7 @@ gp11_session_decrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *m
 	g_object_get (self, "module", &module, NULL);
 	g_return_if_fail (module != NULL);
 	
-	funcs = gp11_module_get_function_list (module);
+	funcs = gp11_module_get_functions (module);
 	g_return_if_fail (module != NULL);
 
 	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,
@@ -1459,7 +1463,7 @@ gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_
 	g_object_get (self, "module", &module, NULL);
 	g_return_val_if_fail (module != NULL, NULL);
 	
-	funcs = gp11_module_get_function_list (module);
+	funcs = gp11_module_get_functions (module);
 	g_return_val_if_fail (module != NULL, NULL);
 
 	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err,
@@ -1479,7 +1483,7 @@ gp11_session_sign_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech
 	g_object_get (self, "module", &module, NULL);
 	g_return_if_fail (module != NULL);
 	
-	funcs = gp11_module_get_function_list (module);
+	funcs = gp11_module_get_functions (module);
 	g_return_if_fail (module != NULL);
 
 	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,

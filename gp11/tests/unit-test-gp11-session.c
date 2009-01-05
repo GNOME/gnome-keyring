@@ -108,10 +108,10 @@ DEFINE_TEST(open_reused)
 	GError *err = NULL;
 	gboolean value;
 	
-	g_assert (gp11_slot_get_reuse_sessions (slot) == FALSE);
-	gp11_slot_set_reuse_sessions (slot, TRUE);
-	g_assert (gp11_slot_get_reuse_sessions (slot) == TRUE);
-	g_object_get (slot, "reuse-sessions", &value, NULL);
+	g_assert (gp11_module_get_pool_sessions (module) == FALSE);
+	gp11_module_set_pool_sessions (module, TRUE);
+	g_assert (gp11_module_get_pool_sessions (module) == TRUE);
+	g_object_get (module, "pool-sessions", &value, NULL);
 	g_assert (value == TRUE);
 	
 	sess = gp11_slot_open_session (slot, 0, &err);
@@ -152,8 +152,8 @@ DEFINE_TEST(open_reused)
 	if (!sess2) return;
 	g_assert (gp11_session_get_handle (sess) != gp11_session_get_handle (sess2));
 	
-	g_object_set (slot, "reuse-sessions", FALSE, NULL);
-	g_assert (gp11_slot_get_reuse_sessions (slot) == FALSE);
+	g_object_set (module, "pool-sessions", FALSE, NULL);
+	g_assert (gp11_module_get_pool_sessions (module) == FALSE);
 
 	g_object_unref (sess);
 	g_object_unref (sess2);
@@ -205,11 +205,12 @@ DEFINE_TEST(login_logout)
 }
 
 static gboolean
-authenticate_token (GP11Slot *slot, gchar *label, gchar **password, gpointer unused)
+authenticate_token (GP11Module *module, GP11Slot *slot, gchar *label, gchar **password, gpointer unused)
 {
 	g_assert (unused == GUINT_TO_POINTER (35));
 	g_assert (password != NULL);
 	g_assert (*password == NULL);
+	g_assert (GP11_IS_MODULE (module));
 	g_assert (GP11_IS_SLOT (slot));
 	
 	*password = g_strdup ("booo");
@@ -238,13 +239,13 @@ DEFINE_TEST(auto_login)
 	g_clear_error (&err);
 	
 	/* Setup for auto login */
-	g_assert (gp11_slot_get_auto_login (slot) == FALSE);
-	gp11_slot_set_auto_login (slot, TRUE);
-	g_assert (gp11_slot_get_auto_login (slot) == TRUE);
-	g_object_get (slot, "auto-login", &value, NULL);
+	g_assert (gp11_module_get_auto_authenticate (module) == FALSE);
+	gp11_module_set_auto_authenticate (module, TRUE);
+	g_assert (gp11_module_get_auto_authenticate (module) == TRUE);
+	g_object_get (module, "auto-authenticate", &value, NULL);
 	g_assert (value == TRUE);
 	
-	g_signal_connect (slot, "authenticate-token", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
+	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
 	
 	/* Create a new session */
 	new_session = gp11_slot_open_session (slot, CKF_RW_SESSION, &err);
@@ -282,6 +283,6 @@ DEFINE_TEST(auto_login)
 	ret = gp11_session_logout (session, &err);
 	SUCCESS_RES (ret, err);
 	
-	g_object_set (slot, "auto-login", FALSE, NULL);
-	g_assert (gp11_slot_get_auto_login (slot) == FALSE);
+	g_object_set (module, "auto-authenticate", FALSE, NULL);
+	g_assert (gp11_module_get_auto_authenticate (module) == FALSE);
 }

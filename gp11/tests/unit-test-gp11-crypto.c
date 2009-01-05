@@ -76,9 +76,9 @@ find_key (GP11Session *session, CK_ATTRIBUTE_TYPE method, CK_MECHANISM_TYPE mech
 }
 
 static gboolean
-authenticate_object (GP11Slot *slot, GP11Object *object, gchar *label, gchar **password)
+authenticate_object (GP11Slot *module, GP11Object *object, gchar *label, gchar **password)
 {
-	g_assert (GP11_IS_SLOT (slot));
+	g_assert (GP11_IS_MODULE (module));
 	g_assert (GP11_IS_OBJECT (object));
 	g_assert (password);
 	g_assert (!*password);
@@ -219,8 +219,8 @@ DEFINE_TEST(sign)
 	mech.parameter = "my-prefix:";
 	
 	/* Enable auto-login on this session, see previous test */
-	gp11_slot_set_auto_login (slot, TRUE);
-	g_signal_connect (slot, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
+	gp11_module_set_auto_authenticate (module, TRUE);
+	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */
 	key = find_key (session, CKA_SIGN, CKM_PREFIX);
@@ -270,8 +270,8 @@ DEFINE_TEST(verify)
 	mech.parameter = "my-prefix:";
 	
 	/* Enable auto-login on this session, shouldn't be needed */
-	gp11_slot_set_auto_login (slot, TRUE);
-	g_signal_connect (slot, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
+	gp11_module_set_auto_authenticate (module, TRUE);
+	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */
 	key = find_key (session, CKA_VERIFY, CKM_PREFIX);

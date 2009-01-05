@@ -393,7 +393,7 @@ _gp11_call_sync (gpointer object, gpointer perform, gpointer complete,
 	g_assert (GP11_IS_MODULE (module));
 
 	/* We now hold a reference to module until below */
-	args->pkcs11 = gp11_module_get_function_list (module);
+	args->pkcs11 = gp11_module_get_functions (module);
 	g_assert (args->pkcs11);
 	
 	do {
@@ -460,7 +460,7 @@ _gp11_call_async_object (GP11Call *call, gpointer object)
 	
 	g_object_get (object, "module", &call->module, "handle", &call->args->handle, NULL);
 	g_assert (GP11_IS_MODULE (call->module));
-	call->args->pkcs11 = gp11_module_get_function_list (call->module);
+	call->args->pkcs11 = gp11_module_get_functions (call->module);
 	
 	/* We now hold a reference on module until finalize */
 }

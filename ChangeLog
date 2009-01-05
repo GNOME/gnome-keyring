@@ -1,5 +1,19 @@
 2009-01-04  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/gp11.h:
+	* gp11/gp11-call.c:
+	* gp11/gp11-module.c:
+	* gp11/gp11-private.h:
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c: 
+	* gp11/tests/unit-test-gp11-crypto.c:
+	* gp11/tests/unit-test-gp11-module.c:
+	* gp11/tests/unit-test-gp11-session.c: Add gp11_module_enumerate_objects
+	set of functions which enumerates all objects of a given type on a token.
+	Move 'auto-authenticate' and session pool to the module level.
+
+2009-01-04  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/gck/gck-module.c: Make the module properly support slot appartments. 
 	
 2009-01-04  Stef Walter  <stef@memberwebs.com>

@@ -224,6 +224,8 @@ typedef struct _GP11Module GP11Module;
 typedef struct _GP11Session GP11Session;
 typedef struct _GP11Object GP11Object;
 
+typedef gboolean    (*GP11ObjectForeachFunc)                (GP11Object *object, gpointer user_data);
+
 /* -------------------------------------------------------------------------
  * MODULE
  */
@@ -258,27 +260,67 @@ struct _GP11Module {
 
 struct _GP11ModuleClass {
 	GObjectClass parent;
+	
+	gboolean (*authenticate_slot) (GP11Module *self, GP11Slot *slot, gchar *label, gchar **password);
+
+	gboolean (*authenticate_object) (GP11Module *self, GP11Object *object, gchar *label, gchar **password);
+
 	gpointer reserved[8];
 };
 
 GType                 gp11_module_get_type                    (void) G_GNUC_CONST;
 
-GP11Module*           gp11_module_initialize                  (const gchar *path, 
-                                                               gpointer reserved,
-                                                               GError **err);
+GP11Module*           gp11_module_new                         (CK_FUNCTION_LIST_PTR funcs);
 
-GP11Module*           gp11_module_initialize_with_functions   (CK_FUNCTION_LIST_PTR funcs,
+GP11Module*           gp11_module_initialize                  (const gchar *path, 
                                                                gpointer reserved,
                                                                GError **err);
 
 const gchar*          gp11_module_get_path                    (GP11Module *self);
 
-CK_FUNCTION_LIST_PTR  gp11_module_get_function_list           (GP11Module *self);
+CK_FUNCTION_LIST_PTR  gp11_module_get_functions               (GP11Module *self);
 
 GP11ModuleInfo*       gp11_module_get_info                    (GP11Module *self);
 
 GList*                gp11_module_get_slots                   (GP11Module *self,
                                                                gboolean token_present);
+
+gboolean              gp11_module_get_pool_sessions           (GP11Module *self);
+
+void                  gp11_module_set_pool_sessions           (GP11Module *self, 
+                                                               gboolean pool_sessions);
+
+gboolean              gp11_module_get_auto_authenticate       (GP11Module *self);
+
+void                  gp11_module_set_auto_authenticate       (GP11Module *self, 
+                                                               gboolean auto_authenticate);
+
+void                  gp11_module_enumerate_objects           (GP11Module *self,
+                                                               GP11ObjectForeachFunc func,
+                                                               gpointer user_data,
+                                                               ...);
+
+void                  gp11_module_enumerate_objects_full      (GP11Module *self,
+                                                               GP11Attributes *attrs,
+                                                               GCancellable *cancellable,
+                                                               GP11ObjectForeachFunc func,
+                                                               gpointer user_data);
+
+#ifdef UNIMPLEMENTED
+void                  gp11_module_enumerate_objects_async     (GP11Module *self,
+                                                               GP11Attributes *attrs,
+                                                               GCancellable *cancellable,
+                                                               GAsyncReadyCallback callback,
+                                                               gpointer user_data);
+
+GP11Object*           gp11_module_enumerate_objects_next      (GP11Module *self,
+                                                               GAsyncResult *res,
+                                                               GError **error);
+
+void                  gp11_module_enumerate_objects_finish    (GP11Module *self,
+                                                               GAsyncResult *res,
+                                                               GError **error);
+#endif
 
 enum {
 	GP11_IS_STRING = -1,
@@ -361,10 +403,6 @@ struct _GP11Slot {
 struct _GP11SlotClass {
 	GObjectClass parent;
 
-	gboolean (*authenticate_token) (GP11Slot *self, gchar *label, gchar **password);
-
-	gboolean (*authenticate_object) (GP11Slot *self, GP11Object *object, gchar *label, gchar **password);
-
 #ifdef UNIMPLEMENTED
 	void (*slot_event) (GP11Slot *self);
 #endif
@@ -377,16 +415,6 @@ GType               gp11_slot_get_type                      (void) G_GNUC_CONST;
 GP11Module*         gp11_slot_get_module                    (GP11Slot *self);
 
 CK_SLOT_ID          gp11_slot_get_handle                    (GP11Slot *self);
-
-gboolean            gp11_slot_get_reuse_sessions            (GP11Slot *self);
-
-void                gp11_slot_set_reuse_sessions            (GP11Slot *self, 
-                                                             gboolean reuse);
-
-gboolean            gp11_slot_get_auto_login                (GP11Slot *self);
-
-void                gp11_slot_set_auto_login                (GP11Slot *self, 
-                                                             gboolean auto_login);
 
 gint                gp11_slot_get_max_pin_length            (GP11Slot *self);
 

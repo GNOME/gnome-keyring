@@ -63,3 +63,72 @@ DEFINE_TEST(module_info)
 	
 	gp11_module_info_free (info);
 }
+
+static int n_objects = 0;
+static GP11Object *last_object = NULL;
+
+static gboolean
+for_each_object (GP11Object *object, gpointer user_data)
+{
+	g_assert (GP11_IS_OBJECT (object));
+	g_assert_cmpstr ("blah", ==, user_data);
+	g_assert (user_data);
+	
+	if (last_object)
+		g_object_unref (last_object);
+	last_object = g_object_ref (object);
+	
+	++n_objects;
+	
+	return TRUE;
+}
+
+static gboolean
+for_first_object (GP11Object *object, gpointer user_data)
+{
+	g_assert (GP11_IS_OBJECT (object));
+	g_assert_cmpstr ("first", ==, user_data);
+	g_assert (user_data);
+	
+	if (last_object)
+		g_object_unref (last_object);
+	last_object = g_object_ref (object);
+	
+	++n_objects;
+	
+	return FALSE;
+}
+
+DEFINE_TEST(module_enumerate)
+{
+	GP11Session *session;
+	GP11Attributes *attrs;
+	
+	attrs = gp11_attributes_new ();
+	gp11_module_enumerate_objects_full (module, attrs, NULL, for_first_object, "first");
+	g_assert_cmpint (n_objects, ==, 1);
+	g_assert (GP11_IS_OBJECT (last_object));
+	gp11_attributes_unref (attrs);
+	
+	session = gp11_object_get_session (last_object);
+	g_assert (GP11_IS_SESSION (session));
+	g_object_unref (session);
+	
+	g_object_unref (last_object);
+	last_object = NULL;
+	n_objects = 0;
+
+	gp11_module_enumerate_objects (module, for_each_object, "blah", 
+	                               CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
+	                               GP11_INVALID);
+	g_assert_cmpint (n_objects, ==, 2);
+	g_assert (GP11_IS_OBJECT (last_object));
+	
+	session = gp11_object_get_session (last_object);
+	g_assert (GP11_IS_SESSION (session));
+	g_object_unref (session);
+	
+	g_object_unref (last_object);
+	last_object = NULL;
+	n_objects = 0;
+}
