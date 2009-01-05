@@ -27,6 +27,8 @@
 
 #include <glib.h>
 
+#include <gcrypt.h>
+
 #include <ctype.h>
 #include <string.h>
 

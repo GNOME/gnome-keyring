@@ -444,7 +444,7 @@ gp11_slot_get_mechanisms (GP11Slot *self)
 	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
 	CK_FUNCTION_LIST_PTR funcs;
 	GP11Module *module = NULL;
-	CK_MECHANISM_TYPE_PTR mech_list;
+	CK_MECHANISM_TYPE_PTR mech_list = NULL;
 	CK_ULONG count, i;
 	GP11Mechanisms *result;
 	CK_RV rv;

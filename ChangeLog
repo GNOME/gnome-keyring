@@ -1,5 +1,14 @@
 2009-01-04  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gck/gck-module.c: Fix broken release, I have no idea
+	why it distchecked.
+
+	* gp11/gp11-slot.c: 
+	* pkcs11/gck/gck-data-asn1.c:
+	* pkcs11/gck/gck-data-pem.c: Fix compiler warnings.
+
+2009-01-04  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Bump version number.
 
 === gnome-keyring 2.25.4 ===

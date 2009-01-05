@@ -1040,7 +1040,7 @@ gck_data_asn1_read_dn (ASN1_TYPE asn, const gchar *part)
 gchar*
 gck_data_asn1_read_dn_part (ASN1_TYPE asn, const gchar *part, const gchar *match)
 {
-	PrintableOid *printable;
+	PrintableOid *printable = NULL;
 	gboolean done = FALSE;
 	guchar *value;
 	gsize n_value;
