@@ -966,20 +966,31 @@ gp11_module_set_auto_authenticate (GP11Module *self, gboolean auto_login)
  * gp11_object_get_session() function on the resulting objects.
  * 
  * The function can return FALSE to stop the enumeration.
+ * 
+ * Return value: If FALSE then an error prevented all matching objects from being enumerated.
  **/
-void
+gboolean
 gp11_module_enumerate_objects (GP11Module *self, GP11ObjectForeachFunc func,
                                gpointer user_data, ...)
 {
 	GP11Attributes *attrs;
+	GError *error = NULL;
 	va_list va;
 	
 	va_start (va, user_data);
 	attrs = gp11_attributes_new_valist (g_realloc, va);
 	va_end (va);
 
-	gp11_module_enumerate_objects_full (self, attrs, NULL, func, user_data);
+	gp11_module_enumerate_objects_full (self, attrs, NULL, func, user_data, &error);
 	gp11_attributes_unref (attrs);
+	
+	if (error != NULL) {
+		g_warning ("enumerating objects failed: %s", error->message);
+		g_clear_error (&error);
+		return FALSE;
+	}
+	
+	return TRUE;
 }
 
 /**
@@ -989,6 +1000,7 @@ gp11_module_enumerate_objects (GP11Module *self, GP11ObjectForeachFunc func,
  * @cancellable: Optional cancellation object, or NULL.
  * @func: Function to call for each object.
  * @user_data: Data to pass to the function.
+ * @error: Location to return error information.
  * 
  * Call a function for every matching object on the module. This call may 
  * block for an indefinite period. 
@@ -1001,16 +1013,18 @@ gp11_module_enumerate_objects (GP11Module *self, GP11ObjectForeachFunc func,
  * gp11_object_get_session() function on the resulting objects.
  * 
  * The function can return FALSE to stop the enumeration.
+ * 
+ * Return value: If FALSE then an error prevented all matching objects from being enumerated.
  **/
-void
+gboolean
 gp11_module_enumerate_objects_full (GP11Module *self, GP11Attributes *attrs, 
                                     GCancellable *cancellable, GP11ObjectForeachFunc func, 
-                                    gpointer user_data)
+                                    gpointer user_data, GError **error)
 {
 	gboolean stop = FALSE;
+	gboolean ret = TRUE;
 	GList *objects, *o;
 	GList *slots, *l;
-	GError *error = NULL;
 	GP11Session *session;
 	
 	g_return_if_fail (GP11_IS_MODULE (self));
@@ -1020,17 +1034,18 @@ gp11_module_enumerate_objects_full (GP11Module *self, GP11Attributes *attrs,
 	gp11_attributes_ref (attrs);
 	slots = gp11_module_get_slots (self, TRUE);
 	
-	for (l = slots; !stop && l; l = g_list_next (l)) {
-		session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, &error);
-		if (error) {
-			g_warning ("couldn't open session on slot: %s", error->message);
-			g_clear_error (&error);
+	for (l = slots; ret && !stop && l; l = g_list_next (l)) {
+		session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, error);
+		if (!session) {
+			ret = FALSE;
+			continue;
 		}
 		
-		objects = gp11_session_find_objects_full (session, attrs, cancellable, &error);
-		if (error) {
-			g_warning ("couldn't find objects on slot: %s", error->message);
-			g_clear_error (&error);
+		objects = gp11_session_find_objects_full (session, attrs, cancellable, error);
+		if (*error) {
+			ret = FALSE;
+			g_object_unref (session);
+			continue;
 		}
 		
 		for (o = objects; !stop && o; o = g_list_next (o)) {
@@ -1047,5 +1062,7 @@ gp11_module_enumerate_objects_full (GP11Module *self, GP11Attributes *attrs,
 	
 	gp11_list_unref_free (slots);
 	gp11_attributes_unref (attrs);
+	
+	return ret;
 }
 

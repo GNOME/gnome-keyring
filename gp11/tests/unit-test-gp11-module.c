@@ -103,9 +103,11 @@ DEFINE_TEST(module_enumerate)
 {
 	GP11Session *session;
 	GP11Attributes *attrs;
+	gboolean ret;
 	
 	attrs = gp11_attributes_new ();
-	gp11_module_enumerate_objects_full (module, attrs, NULL, for_first_object, "first");
+	ret = gp11_module_enumerate_objects_full (module, attrs, NULL, for_first_object, "first", NULL);
+	g_assert (ret);
 	g_assert_cmpint (n_objects, ==, 1);
 	g_assert (GP11_IS_OBJECT (last_object));
 	gp11_attributes_unref (attrs);
@@ -118,9 +120,10 @@ DEFINE_TEST(module_enumerate)
 	last_object = NULL;
 	n_objects = 0;
 
-	gp11_module_enumerate_objects (module, for_each_object, "blah", 
-	                               CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
-	                               GP11_INVALID);
+	ret = gp11_module_enumerate_objects (module, for_each_object, "blah", 
+	                                     CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
+	                                     GP11_INVALID);
+	g_assert (ret);
 	g_assert_cmpint (n_objects, ==, 2);
 	g_assert (GP11_IS_OBJECT (last_object));
 	

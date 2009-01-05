@@ -295,16 +295,17 @@ gboolean              gp11_module_get_auto_authenticate       (GP11Module *self)
 void                  gp11_module_set_auto_authenticate       (GP11Module *self, 
                                                                gboolean auto_authenticate);
 
-void                  gp11_module_enumerate_objects           (GP11Module *self,
+gboolean              gp11_module_enumerate_objects           (GP11Module *self,
                                                                GP11ObjectForeachFunc func,
                                                                gpointer user_data,
                                                                ...);
 
-void                  gp11_module_enumerate_objects_full      (GP11Module *self,
+gboolean              gp11_module_enumerate_objects_full      (GP11Module *self,
                                                                GP11Attributes *attrs,
                                                                GCancellable *cancellable,
                                                                GP11ObjectForeachFunc func,
-                                                               gpointer user_data);
+                                                               gpointer user_data,
+                                                               GError **error);
 
 #ifdef UNIMPLEMENTED
 void                  gp11_module_enumerate_objects_async     (GP11Module *self,

@@ -1,6 +1,12 @@
 2009-01-04  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:
+	* gp11/gp11-module.c:
+	* gp11/tests/unit-test-gp11-module.c: Fine tune function signatures.
+
+2009-01-04  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
 	* gp11/gp11-call.c:
 	* gp11/gp11-module.c:
 	* gp11/gp11-private.h:
