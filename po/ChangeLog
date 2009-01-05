@@ -1,3 +1,11 @@
+=== gnome-keyring 2.25.4 ===
+
+2008-01-04  Stef Walter  <stef@memberwebs.com>
+
+	* POTFILES.in: Added pkcs11/gck/gck-certificate.c
+	pkcs11/ssh-store/gck-ssh-private-key.c
+	* POTFILES.skip: (added)
+
 2009-01-04  Gabor Kelemen  <kelemeng@gnome.hu>
 
 	* hu.po: Translation updated.

@@ -1,3 +1,16 @@
+Changes in version 2.25.4 are:
+* Half way through refactoring of PKCS#11 support.
+* Add crypto support to gp11 library.
+* gp11 library is now by and large thread-safe.
+* Add modular ssh-store, roots and rpc-layer PKCS#11 components.
+* Beginnings of a PKCS#11 based ssh-agent.
+* Transactional storage of PKCS#11 objects.
+* Add auto-authenticate support in GP11 library, which greatlty 
+  simplifies figuring out when to provide passwords.
+* Fix initialization problems which prevented SSH agent from setting
+  environment variables properly [Yanko Kaneti]
+* Translation fixes [Gabor Kelemen]
+
 Changes in version 2.25.2 are:
 * Fix PKCS#11 corner cases highlighted by p11-tests tool.
 * Solaris fixes [Halton Huo, Jeff Cai]

@@ -3118,6 +3118,33 @@
 @call_data: 
 @Returns: 
 
+<!-- ##### ARG GP11Module:module-path ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GP11Slot::authenticate-token ##### -->
+<para>
+
+</para>
+
+@gp11slot: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### ARG GP11Slot:auto-login ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GP11Slot:reuse-sessions ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO GP11_ARGUMENTS_INIT ##### -->
 <para>
 
@@ -3357,6 +3384,95 @@
 
 </para>
 
+
+<!-- ##### FUNCTION gp11_attributes_is_immutable ##### -->
+<para>
+
+</para>
+
+@attrs: 
+@Returns: 
+
+<!-- ##### FUNCTION gp11_attributes_set_immutable ##### -->
+<para>
+
+</para>
+
+@attrs: 
+
+<!-- ##### FUNCTION gp11_object_get_one ##### -->
+<para>
+
+</para>
+
+@object: 
+@attr_type: 
+@err: 
+@Returns: 
+
+<!-- ##### FUNCTION gp11_object_get_one_async ##### -->
+<para>
+
+</para>
+
+@object: 
+@attr_type: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+<!-- ##### FUNCTION gp11_object_get_one_finish ##### -->
+<para>
+
+</para>
+
+@object: 
+@result: 
+@err: 
+@Returns: 
+
+<!-- ##### FUNCTION gp11_object_get_one_full ##### -->
+<para>
+
+</para>
+
+@object: 
+@attr_type: 
+@cancellable: 
+@err: 
+@Returns: 
+
+<!-- ##### FUNCTION gp11_slot_get_auto_login ##### -->
+<para>
+
+</para>
+
+@slot: 
+@Returns: 
+
+<!-- ##### FUNCTION gp11_slot_get_reuse_sessions ##### -->
+<para>
+
+</para>
+
+@slot: 
+@Returns: 
+
+<!-- ##### FUNCTION gp11_slot_set_auto_login ##### -->
+<para>
+
+</para>
+
+@slot: 
+@auto_login: 
+
+<!-- ##### FUNCTION gp11_slot_set_reuse_sessions ##### -->
+<para>
+
+</para>
+
+@slot: 
+@reuse: 
 
 <!-- ##### MACRO hardware_version ##### -->
 <para>

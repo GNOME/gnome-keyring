@@ -1019,32 +1019,35 @@ gp11_module_enumerate_objects (GP11Module *self, GP11ObjectForeachFunc func,
 gboolean
 gp11_module_enumerate_objects_full (GP11Module *self, GP11Attributes *attrs, 
                                     GCancellable *cancellable, GP11ObjectForeachFunc func, 
-                                    gpointer user_data, GError **error)
+                                    gpointer user_data, GError **err)
 {
 	gboolean stop = FALSE;
 	gboolean ret = TRUE;
 	GList *objects, *o;
 	GList *slots, *l;
+	GError *error = NULL;
 	GP11Session *session;
 	
-	g_return_if_fail (GP11_IS_MODULE (self));
-	g_return_if_fail (attrs);
-	g_return_if_fail (func);
+	g_return_val_if_fail (GP11_IS_MODULE (self), FALSE);
+	g_return_val_if_fail (attrs, FALSE);
+	g_return_val_if_fail (func, FALSE);
 	
 	gp11_attributes_ref (attrs);
 	slots = gp11_module_get_slots (self, TRUE);
 	
 	for (l = slots; ret && !stop && l; l = g_list_next (l)) {
-		session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, error);
+		session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, err);
 		if (!session) {
 			ret = FALSE;
 			continue;
 		}
 		
-		objects = gp11_session_find_objects_full (session, attrs, cancellable, error);
-		if (*error) {
+		objects = gp11_session_find_objects_full (session, attrs, cancellable, &error);
+		if (error) {
 			ret = FALSE;
 			g_object_unref (session);
+			g_propagate_error (err, error);
+			error = NULL;
 			continue;
 		}
 		

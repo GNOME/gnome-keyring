@@ -13,9 +13,10 @@ INCLUDES = -I. \
 # The dispatch code
 
 libgck_rpc_layer_la_SOURCES = \
-	gck-rpc-private.h \
 	gck-rpc-dispatch.c \
+	gck-rpc-layer.h \
 	gck-rpc-message.c \
+	gck-rpc-private.h \
 	gck-rpc-util.c
 
 libgck_rpc_layer_la_LIBADD = \

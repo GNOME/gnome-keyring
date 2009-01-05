@@ -555,6 +555,16 @@ device_error
 firmware_version
 free_private_memory
 free_public_memory
+gp11_attributes_is_immutable
+gp11_attributes_set_immutable
+gp11_object_get_one
+gp11_object_get_one_async
+gp11_object_get_one_finish
+gp11_object_get_one_full
+gp11_slot_get_auto_login
+gp11_slot_get_reuse_sessions
+gp11_slot_set_auto_login
+gp11_slot_set_reuse_sessions
 hardware_version
 library_description
 library_version

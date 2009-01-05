@@ -1,3 +1,14 @@
+=== gnome-keyring 2.25.4 ===
+
+2009-01-04  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* NEWS:
+	* daemon/Makefile.am:	
+	* pkcs11/gck/tests/Makefile.am:
+	* pkcs11/rpc-layer/Makefile.am:
+	* pkcs11/ssh-agent/gck-ssh-agent-standalone.c: Release 2.25.4
+	
 2009-01-04  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:

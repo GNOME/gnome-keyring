@@ -17,4 +17,6 @@ daemon/ssh/gkr-ssh-storage.c
 daemon/ui/gkr-ask-tool.c
 gp11/gp11-misc.c
 library/gnome-keyring-utils.c
+pkcs11/gck/gck-certificate.c
+pkcs11/ssh-store/gck-ssh-private-key.c
 

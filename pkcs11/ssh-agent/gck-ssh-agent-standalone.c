@@ -47,7 +47,7 @@ accept_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
 }
 
 static gboolean 
-authenticate_token (GP11Slot *self, gchar *label, gchar **password, gpointer unused)
+authenticate_slot (GP11Module *module, GP11Slot *slot, gchar *label, gchar **password, gpointer unused)
 {
 	gchar *prompt = g_strdup_printf ("Enter token password (%s): ", label);
 	char *result = getpass (prompt);
@@ -58,7 +58,7 @@ authenticate_token (GP11Slot *self, gchar *label, gchar **password, gpointer unu
 }
 
 static gboolean 
-authenticate_object (GP11Slot *self, GP11Object *object, gchar *label, gchar **password)
+authenticate_object (GP11Module *module, GP11Object *object, gchar *label, gchar **password)
 {
 	gchar *prompt = g_strdup_printf ("Enter object password (%s): ", label);
 	char *result = getpass (prompt);
@@ -100,9 +100,9 @@ main(int argc, char *argv[])
 	slot = g_object_ref (slots->data);
 	gp11_list_unref_free (slots);
 	
-	g_signal_connect (slot, "authenticate-token", G_CALLBACK (authenticate_token), NULL);
-	g_signal_connect (slot, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
-	gp11_slot_set_auto_login (slot, TRUE);
+	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_slot), NULL);
+	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
+	gp11_module_set_auto_authenticate (module, TRUE);
 
 	if (!gck_ssh_agent_initialize ("/tmp/test-gck-ssh-agent", slot))
 		return 1;
