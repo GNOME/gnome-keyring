@@ -110,7 +110,8 @@ void unit_setup_pam (void)
 	sleep (1);
 	
 	printf ("User: ");
-	fgets (user, sizeof (user), stdin);
+	if (!fgets (user, sizeof (user), stdin))
+		g_return_if_reached ();
 	
 	g_strstrip (user);
 

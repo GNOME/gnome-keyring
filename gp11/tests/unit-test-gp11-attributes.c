@@ -355,7 +355,7 @@ DEFINE_TEST(newv_attributes)
 	                              202, GP11_STRING, "string",
 	                              303, GP11_DATE, date,
 	                              404, N_ATTR_DATA, ATTR_DATA,
-	                              -1);
+	                              GP11_INVALID);
 	g_date_free (date);
 
 	test_attributes_contents (attrs, FALSE);

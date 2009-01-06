@@ -1,5 +1,23 @@
 2009-01-05  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in:
+	* gp11/gp11.h:
+	* gp11/reference/Makefile.am:
+	* gp11/tests/gp11-test-module.c:
+	* gp11/tests/unit-test-gp11-attributes.c:
+	* pam/tests/unit-test-pam-setup.c:
+	* pkcs11/gck/gck-file-store.c:
+	* pkcs11/gck/gck-file-tracker.c:
+	* pkcs11/gck/gck-manager.c:
+	* pkcs11/gck/gck-session.c:
+	* pkcs11/roots/gck-roots-certificate.c:
+	* pkcs11/rpc-layer/gck-rpc-module.c:
+	* pkcs11/ssh-agent/gck-ssh-agent-ops.c:
+	* pkcs11/ssh-store/gck-ssh-public-key.c: Fix compiler warnings
+	and add -Werror back in when --enable-tests is configured.
+
+2009-01-05  Stef Walter  <stef@memberwebs.com>
+
 	* gp11/gp11.h:
 	* gp11/gp11-slot.c: Helper function for matching mechanism types.
 	

@@ -126,7 +126,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	/* Our token object */
 	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                              CKA_LABEL, GP11_STRING, "TEST LABEL",
-	                              -1);
+	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (2), attrs);
 	
 	/* Private capitalize key */
@@ -136,7 +136,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
 	                              CKA_DECRYPT, GP11_BOOLEAN, TRUE,
 	                              CKA_PRIVATE, GP11_BOOLEAN, TRUE,
-	                              -1);
+	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_CAPITALIZE), attrs);
 
 	/* Public capitalize key */
@@ -146,7 +146,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
 	                              CKA_ENCRYPT, GP11_BOOLEAN, TRUE,
 	                              CKA_PRIVATE, GP11_BOOLEAN, FALSE,
-	                              -1);
+	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_CAPITALIZE), attrs);
 
 	/* Private prefix key */
@@ -157,7 +157,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_SIGN, GP11_BOOLEAN, TRUE,
 	                              CKA_PRIVATE, GP11_BOOLEAN, TRUE,
 	                              CKA_ALWAYS_AUTHENTICATE, GP11_BOOLEAN, TRUE,
-	                              -1);
+	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_PREFIX), attrs);
 
 	/* Private prefix key */
@@ -167,7 +167,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
 	                              CKA_VERIFY, GP11_BOOLEAN, TRUE,
 	                              CKA_PRIVATE, GP11_BOOLEAN, FALSE,
-	                              -1);
+	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_PREFIX), attrs);
 	
 	initialized = TRUE;

@@ -85,6 +85,9 @@ GTKDOC_LIBS=\
 	$(GOBJECT_LIBS) \
 	$(NULL)
 
+# gtk-doc has warnings
+CFLAGS += "-Wno-error"
+
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
 

@@ -274,7 +274,8 @@ index_remove (Index *index, gpointer object)
 static void
 index_update (Index *index, GckObject *object)
 {
-	CK_ATTRIBUTE_PTR attr, prev;
+	CK_ATTRIBUTE_PTR attr = NULL;
+	CK_ATTRIBUTE_PTR prev;
 	GHashTable *objects;
 	gboolean ret;
 

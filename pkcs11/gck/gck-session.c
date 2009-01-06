@@ -919,9 +919,9 @@ CK_RV
 gck_session_C_FindObjectsInit (GckSession* self, CK_ATTRIBUTE_PTR template,
                                CK_ULONG count)
 {
+	CK_BBOOL token = CK_FALSE;
 	gboolean also_private;
 	CK_RV rv = CKR_OK;
-	CK_BBOOL token;
 	GArray *found;
 	gboolean all;
 	

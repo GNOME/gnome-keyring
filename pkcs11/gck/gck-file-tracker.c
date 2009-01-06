@@ -121,7 +121,6 @@ update_directory (GckFileTracker *self, gboolean force_all, GHashTable *checks)
 	struct stat sb;
 	GError *err = NULL;
 	const char *filename;
-	gchar *path;
 	gchar *file;
 	GDir *dir;
 	int ret, lasterr;
@@ -134,7 +133,8 @@ update_directory (GckFileTracker *self, gboolean force_all, GHashTable *checks)
 
 	if (stat (self->directory_path, &sb) < 0) {
 		if (errno != ENOENT && errno != ENOTDIR && errno != EPERM)
-			g_message ("couldn't stat directory: %s: %s", path, g_strerror (errno));
+			g_message ("couldn't stat directory: %s: %s", 
+			           self->directory_path, g_strerror (errno));
 		return;
 	}
 
@@ -155,7 +155,7 @@ update_directory (GckFileTracker *self, gboolean force_all, GHashTable *checks)
 	dir = g_dir_open (self->directory_path, 0, &err);
 	if (dir == NULL) {
 		if (errno != ENOENT && errno != ENOTDIR && errno != EPERM)
-			g_message ("couldn't list keyrings at: %s: %s", path, 
+			g_message ("couldn't list keyrings at: %s: %s", self->directory_path, 
 		        	   err && err->message ? err->message : "");
 		g_error_free (err);  
 		return;

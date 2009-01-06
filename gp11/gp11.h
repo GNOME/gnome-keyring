@@ -72,7 +72,14 @@ enum {
 	GP11_DATE = -4
 };
 
-#define GP11_INVALID (gulong)-1
+#define GP11_INVALID -1UL
+
+/* Used on varargs functions that should end with GP11_INVALID */
+#ifdef NOT_YET_SUPPORTED
+#define GP11_INVALID_TERMINATED __attribute__((__sentinel__(-1UL)))
+#else
+#define GP11_INVALID_TERMINATED
+#endif
 
 void                gp11_attribute_init                     (GP11Attribute *attr,
                                                              gulong attr_type,
@@ -150,13 +157,16 @@ GType               gp11_attributes_get_boxed_type          (void) G_GNUC_CONST;
  
 GP11Attributes*     gp11_attributes_new                     (void);
 
-GP11Attributes*     gp11_attributes_new_empty               (gulong attr_type, ...);
+GP11Attributes*     gp11_attributes_new_empty               (gulong attr_type, 
+                                                             ...) GP11_INVALID_TERMINATED;
 
 GP11Attributes*     gp11_attributes_new_full                (GP11Allocator allocator);
 
-GP11Attributes*     gp11_attributes_newv                    (gulong attr_type, ...);
+GP11Attributes*     gp11_attributes_newv                    (gulong attr_type, 
+                                                             ...) GP11_INVALID_TERMINATED;
 
-GP11Attributes*     gp11_attributes_new_valist              (GP11Allocator allocator, va_list va);
+GP11Attributes*     gp11_attributes_new_valist              (GP11Allocator allocator, 
+                                                             va_list va);
 
 GP11Attribute*      gp11_attributes_at                      (GP11Attributes *attrs,
                                                              guint index);
@@ -298,7 +308,7 @@ void                  gp11_module_set_auto_authenticate       (GP11Module *self,
 gboolean              gp11_module_enumerate_objects           (GP11Module *self,
                                                                GP11ObjectForeachFunc func,
                                                                gpointer user_data,
-                                                               ...);
+                                                               ...) GP11_INVALID_TERMINATED;
 
 gboolean              gp11_module_enumerate_objects_full      (GP11Module *self,
                                                                GP11Attributes *attrs,
@@ -631,7 +641,7 @@ gboolean            gp11_session_logout_finish              (GP11Session *self,
 
 GP11Object*         gp11_session_create_object              (GP11Session *self, 
                                                              GError **err, 
-                                                             ...); 
+                                                             ...) GP11_INVALID_TERMINATED; 
 
 GP11Object*         gp11_session_create_object_full         (GP11Session *self,
                                                              GP11Attributes *attrs,
@@ -650,7 +660,7 @@ GP11Object*         gp11_session_create_object_finish       (GP11Session *self,
 
 GList*              gp11_session_find_objects               (GP11Session *self,
                                                              GError **err,
-                                                             ...); 
+                                                             ...) GP11_INVALID_TERMINATED; 
 
 GList*              gp11_session_find_objects_full          (GP11Session *self,
                                                              GP11Attributes *attrs,
@@ -672,38 +682,38 @@ GList*              gp11_session_find_objects_finish        (GP11Session *self,
 GP11Object*         gp11_session_generate_key               (GP11Session *self,
                                                              GP11Mechanism *mechanism,
                                                              GError **err,
-                                                             ...);
+                                                             ...) GP11_INVALID_TERMINATED;
 
 void                gp11_session_generate_key_async         (GP11Session *self,
                                                              GP11Mechanism *mechanism,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data,
-                                                             ...);
+                                                             ...) GP11_INVALID_TERMINATED;
 
 GP11Object*         gp11_session_generate_key_finish        (GP11Session *self,
                                                              GAsyncResult *result,
                                                              GError **err,
-                                                             ...);
+                                                             ...) GP11_INVALID_TERMINATED;
 
 gboolean            gp11_session_generate_key_pair          (GP11Session *self,
                                                              GP11Mechanism *mechanism,
                                                              GP11Object **public_key,
                                                              GP11Object **private_key,
                                                              GError **err,
-                                                             ...);
+                                                             ...) GP11_INVALID_TERMINATED;
 
 void                gp11_session_generate_key_pair_async    (GP11Session *self,
                                                              GP11Mechanism *mechanism,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data,
-                                                             ...);
+                                                             ...) GP11_INVALID_TERMINATED;
 
 gboolean            gp11_session_generate_key_pair_finish   (GP11Session *self,
                                                              GAsyncResult *result,
                                                              GP11Object **public_key,
                                                              GP11Object **private_key,
                                                              GError **err,
-                                                             ...);
+                                                             ...) GP11_INVALID_TERMINATED;
 
 gboolean            gp11_session_seed_random                (GP11Session *self,
                                                              const guchar *seed,
@@ -1165,7 +1175,7 @@ GP11Object*         gp11_session_unwrap                      (GP11Session *self,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GError **err,
-                                                              ...);
+                                                              ...) GP11_INVALID_TERMINATED;
 
 GP11Object*         gp11_session_unwrap                      (GP11Session *self,
                                                               GP11Object *key,
@@ -1174,7 +1184,7 @@ GP11Object*         gp11_session_unwrap                      (GP11Session *self,
                                                               gsize n_input,
                                                               GCancellable *cancellable,
                                                               GError **err,
-                                                              ...);
+                                                              ...) GP11_INVALID_TERMINATED;
 
 void                gp11_session_unwrap_async                (GP11Session *self,
                                                               GP11Object *key,
@@ -1184,7 +1194,7 @@ void                gp11_session_unwrap_async                (GP11Session *self,
                                                               GCancellable *cancellable,
                                                               GAsyncReadyCallback callback,
                                                               gpointer user_data);
-                                                              ...);
+                                                              ...) GP11_INVALID_TERMINATED;
 
 GP11Object*         gp11_session_unwrap_finish               (GP11Session *self,
                                                               GAsyncResult *result,
@@ -1194,14 +1204,14 @@ GP11Object*         gp11_session_derive                      (GP11Session *self,
                                                               GP11Object *key,
                                                               gulong mech_type,
                                                               GError **err,
-                                                              ...);
+                                                              ...) GP11_INVALID_TERMINATED;
 
 GP11Object*         gp11_session_derive_full                 (GP11Session *self,
                                                               GP11Object *key,
                                                               GP11Mechanism *mech_args,
                                                               GCancellable *cancellable,
                                                               GError **err,
-                                                              ...);
+                                                              ...) GP11_INVALID_TERMINATED;
 
 void                gp11_session_derive_async                (GP11Session *self,
                                                               GP11Object *key,
@@ -1209,7 +1219,7 @@ void                gp11_session_derive_async                (GP11Session *self,
                                                               GCancellable *cancellable,
                                                               GAsyncReadyCallback callback,
                                                               gpointer user_data);
-                                                              ...);
+                                                              ...) GP11_INVALID_TERMINATED;
 
 GP11Object*         gp11_session_derive_finish               (GP11Session *self,
                                                               GAsyncResult *result,
@@ -1320,7 +1330,7 @@ gssize              gp11_object_get_size_finish             (GP11Object *self,
 
 gboolean            gp11_object_set                         (GP11Object *self,
                                                              GError **err,
-                                                             ...);
+                                                             ...) GP11_INVALID_TERMINATED;
 
 gboolean            gp11_object_set_full                    (GP11Object *self,
                                                              GP11Attributes *attrs,
@@ -1339,7 +1349,7 @@ gboolean            gp11_object_set_finish                  (GP11Object *self,
 
 GP11Attributes*     gp11_object_get                         (GP11Object *self,
                                                              GError **err,
-                                                             ...);
+                                                             ...) GP11_INVALID_TERMINATED;
 
 GP11Attributes*     gp11_object_get_full                    (GP11Object *self,
                                                              GP11Attributes *attrs,

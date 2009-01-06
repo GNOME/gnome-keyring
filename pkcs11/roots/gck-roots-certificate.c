@@ -23,6 +23,7 @@
 
 #include "gck-roots-certificate.h"
 
+#include "gck/gck-attributes.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
 #include "gck/gck-sexp.h"

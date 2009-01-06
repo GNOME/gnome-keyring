@@ -1082,12 +1082,17 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 			}
 		}
 
+#ifdef UNIMPLEMENTED
 		path = gck_rpc_module_init (args);
 		if (!path || !path[0]) {
 			warning (("missing pkcs11 socket path in environment"));
 			ret = CKR_GENERAL_ERROR;
 			goto done;
 		}
+#else
+		/* TODO: Need to complete this code */
+		path = "";
+#endif
 		
 		/* Make a copy of the socket path */
 		snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s", path);

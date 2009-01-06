@@ -549,7 +549,7 @@ read_entry (GckFileStore *self, GHashTable *entries,
 	g_assert (GCK_IS_FILE_STORE (self));
 	g_assert (buffer);
 	g_assert (offset);
-	g_assert (attributes);
+	g_assert (entries);
 	
 	if (!gkr_buffer_get_string (buffer, *offset, offset, &str, (GkrBufferAllocator)g_realloc))
 		return NULL;

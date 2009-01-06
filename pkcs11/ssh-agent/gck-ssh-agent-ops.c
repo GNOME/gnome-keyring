@@ -824,7 +824,7 @@ op_sign_request (GckSshAgentCall *call)
 	guint8 *hash;
 	gulong algo, mech;
 	GChecksumType halgo;
-	gsize n_hash;
+	gsize n_hash = 0;
 	
 	offset = 5;
 	

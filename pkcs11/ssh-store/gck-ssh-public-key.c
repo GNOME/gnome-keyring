@@ -23,6 +23,7 @@
 
 #include "gck-ssh-public-key.h"
 
+#include "gck/gck-attributes.h"
 #include "gck/gck-object.h"
 #include "gck/gck-util.h"
 

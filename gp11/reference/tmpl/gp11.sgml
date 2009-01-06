@@ -332,17 +332,6 @@ GP11Object
 </para>
 
 @attr_type: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_attributes_new_valist ##### -->
-<para>
-
-</para>
-
-@allocator: 
-@va: 
 @Returns: 
 
 
@@ -1292,19 +1281,6 @@ GP11Object
 
 @self: 
 @err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_create_object_full ##### -->
-<para>
-
-</para>
-
-@self: 
-@attrs: 
-@cancellable: 
-@err: 
 @Returns: 
 
 
@@ -1337,19 +1313,6 @@ GP11Object
 </para>
 
 @self: 
-@err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_find_objects_full ##### -->
-<para>
-
-</para>
-
-@self: 
-@attrs: 
-@cancellable: 
 @err: 
 @Returns: 
 
@@ -1384,83 +1347,6 @@ GP11Object
 
 @self: 
 @mechanism: 
-@err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_generate_key_async ##### -->
-<para>
-
-</para>
-
-@self: 
-@mechanism: 
-@callback: 
-@user_data: 
-@Varargs: 
-
-
-<!-- ##### FUNCTION gp11_session_generate_key_finish ##### -->
-<para>
-
-</para>
-
-@self: 
-@result: 
-@err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_generate_key_pair ##### -->
-<para>
-
-</para>
-
-@self: 
-@mechanism: 
-@public_key: 
-@private_key: 
-@err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_generate_key_pair_async ##### -->
-<para>
-
-</para>
-
-@self: 
-@mechanism: 
-@callback: 
-@user_data: 
-@Varargs: 
-
-
-<!-- ##### FUNCTION gp11_session_generate_key_pair_finish ##### -->
-<para>
-
-</para>
-
-@self: 
-@result: 
-@public_key: 
-@private_key: 
-@err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_seed_random ##### -->
-<para>
-
-</para>
-
-@self: 
-@seed: 
-@n_seed: 
 @err: 
 @Returns: 
 
@@ -2323,23 +2209,7 @@ GP11Object
 @input: 
 @n_input: 
 @err: 
-@Varargs: 
 @Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_unwrap_async ##### -->
-<para>
-
-</para>
-
-@self: 
-@key: 
-@mech_args: 
-@input: 
-@n_input: 
-@cancellable: 
-@callback: 
-@user_data: 
 
 
 <!-- ##### FUNCTION gp11_session_unwrap_finish ##### -->
@@ -2362,35 +2232,7 @@ GP11Object
 @key: 
 @mech_type: 
 @err: 
-@Varargs: 
 @Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_derive_full ##### -->
-<para>
-
-</para>
-
-@self: 
-@key: 
-@mech_args: 
-@cancellable: 
-@err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_session_derive_async ##### -->
-<para>
-
-</para>
-
-@self: 
-@key: 
-@mech_args: 
-@cancellable: 
-@callback: 
-@user_data: 
 
 
 <!-- ##### FUNCTION gp11_session_derive_finish ##### -->
@@ -2652,19 +2494,6 @@ GP11Object
 
 @self: 
 @err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_object_set_full ##### -->
-<para>
-
-</para>
-
-@self: 
-@attrs: 
-@cancellable: 
-@err: 
 @Returns: 
 
 
@@ -2697,19 +2526,6 @@ GP11Object
 </para>
 
 @self: 
-@err: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gp11_object_get_full ##### -->
-<para>
-
-</para>
-
-@self: 
-@attrs: 
-@cancellable: 
 @err: 
 @Returns: 
 
