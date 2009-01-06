@@ -1,11 +1,24 @@
+2009-01-05  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
+	* gp11/gp11-slot.c: Helper function for matching mechanism types.
+	
+	* pkcs11/ssh-agent/gck-ssh-agent.c:
+	* pkcs11/ssh-agent/gck-ssh-agent.h:
+	* pkcs11/ssh-agent/gck-ssh-agent-ops.c:
+	* pkcs11/ssh-agent/gck-ssh-agent-private.h:
+	* pkcs11/ssh-agent/gck-ssh-agent-standalone.c: The modular ssh agent now 
+	uses keys from any available PKCS#11 slots, and automatically selects a decent
+	slot for it's session keys.
+
 === gnome-keyring 2.25.4.1 ===
 
-2009-01-04  Stef Walter  <stef@memberwebs.com>
+2009-01-05  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in:
 	* NEWS: Release 2.25.4.1
 
-2009-01-04  Stef Walter  <stef@memberwebs.com>
+2009-01-05  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c: Fix broken release, I have no idea
 	why it distchecked.

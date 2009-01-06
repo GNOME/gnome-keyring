@@ -22,11 +22,19 @@
 
 #include "config.h"
 
-#include <glib.h>
-
 #include "gck-ssh-agent.h"
+#include "gck-ssh-agent-private.h"
 
 #include "common/gkr-secure-memory.h"
+
+#include "gp11/gp11.h"
+
+#include <glib.h>
+#include <glib-object.h>
+
+#include <pwd.h>
+#include <string.h>
+#include <unistd.h>
 
 G_LOCK_DEFINE_STATIC (memory_mutex);
 
@@ -72,11 +80,10 @@ int
 main(int argc, char *argv[])
 {
 	GP11Module *module;
-	GList *slots;
-	GP11Slot *slot;
 	GError *error = NULL;
 	GIOChannel *channel;
 	GMainLoop *loop;
+	int sock;
 	
 	g_type_init ();
 	
@@ -90,28 +97,22 @@ main(int argc, char *argv[])
 		return 1;
 	}
 	
-	/* This is currently brittle because it's just used for development */
-	slots = gp11_module_get_slots (module, TRUE);
-	if (!slots) {
-		g_message ("no slots present in pkcs11 module");
-		return 1;
-	}
-
-	slot = g_object_ref (slots->data);
-	gp11_list_unref_free (slots);
 	
 	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_slot), NULL);
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 	gp11_module_set_auto_authenticate (module, TRUE);
 
-	if (!gck_ssh_agent_initialize ("/tmp/test-gck-ssh-agent", slot))
+	sock = gck_ssh_agent_initialize_with_module ("/tmp/test-gck-ssh-agent", module);
+	g_object_unref (module);
+	
+	if (sock == -1)
 		return 1;
 	
-	channel = g_io_channel_unix_new (gck_ssh_agent_get_socket_fd ());
+	channel = g_io_channel_unix_new (sock);
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_client, NULL);
 	g_io_channel_unref (channel);
 
-	g_print ("SSH_AUTH_SOCK=%s\n", gck_ssh_agent_get_socket_path ());
+	g_print ("SSH_AUTH_SOCK=%s\n", g_getenv ("SSH_AUTH_SOCK"));
 	
 	/* Run a main loop */
 	loop = g_main_loop_new (NULL, FALSE);
@@ -119,7 +120,6 @@ main(int argc, char *argv[])
 	g_main_loop_unref (loop);
 	
 	gck_ssh_agent_uninitialize ();
-	g_object_unref (slot);
 	
 	return 0;
 }

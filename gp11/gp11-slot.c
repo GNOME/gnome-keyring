@@ -270,6 +270,50 @@ gp11_mechanism_info_free (GP11MechanismInfo *mech_info)
 }
 
 /**
+ * gp11_mechanisms_check:
+ * @mechanisms: A list of mechanisms, perhaps retrieved from gp11_slot_get_mechanisms().
+ * 
+ * Check whether all the mechanism types are in the list.
+ * 
+ * The arguments should be a list of CKM_XXX mechanism types. The last argument
+ * should be GP11_INVALID. 
+ * 
+ * Return value: Whether the mechanism is in the list or not.
+ **/
+gboolean
+gp11_mechanisms_check (GP11Mechanisms *mechanisms, ...)
+{
+	gboolean found = TRUE;
+	va_list va;
+	gulong mech;
+	gsize i;
+	
+	g_return_val_if_fail (mechanisms, FALSE);
+	
+	va_start (va, mechanisms);
+	for (;;) {
+		mech = va_arg (va, gulong);
+		if (mech == GP11_INVALID)
+			break;
+		
+		found = FALSE;
+		for (i = 0; i < gp11_mechanisms_length (mechanisms); ++i) {
+			if (gp11_mechanisms_at (mechanisms, i) == mech) {
+				found = TRUE;
+				break;
+			}
+		}
+		
+		if (found == FALSE)
+			break;
+		
+	}
+	va_end (va);
+	
+	return found;
+}
+
+/**
  * gp11_slot_get_handle:
  * @self: The slot to get the handle of.
  * 

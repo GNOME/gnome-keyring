@@ -387,6 +387,9 @@ typedef GArray GP11Mechanisms;
 
 #define gp11_mechanisms_free(a)         (g_array_free(a, TRUE))
 
+gboolean            gp11_mechanisms_check                   (GP11Mechanisms *mechanisms,
+                                                             ...);
+
 #define GP11_TYPE_SLOT             (gp11_slot_get_type())
 #define GP11_SLOT(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), GP11_TYPE_SLOT, GP11Slot))
 #define GP11_SLOT_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST((klass), GP11_TYPE_SLOT, GP11Slot))

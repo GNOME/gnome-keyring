@@ -3,13 +3,9 @@
 
 #include <glib.h>
 
-#include "gp11/gp11.h"
+#include "pkcs11/pkcs11.h"
 
-gboolean          gck_ssh_agent_initialize              (const gchar *prefix, GP11Slot *slot);
-
-int               gck_ssh_agent_get_socket_fd           (void);
-
-const gchar*      gck_ssh_agent_get_socket_path         (void);
+int               gck_ssh_agent_initialize              (const gchar *prefix, CK_FUNCTION_LIST_PTR funcs);
 
 void              gck_ssh_agent_accept                  (void);
 
