@@ -1,3 +1,10 @@
+2009-01-07  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* pkcs11/Makefile.am: Disable rpc-layer component which 
+	has some pthread build problems, that I'll need to look into 
+	at a later time.
+
 2009-01-05  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in:

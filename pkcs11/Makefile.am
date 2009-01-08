@@ -47,5 +47,5 @@ else
 TESTS_DIR = 
 endif
 
-SUBDIRS = . gck ssh-agent ssh-store rpc-layer $(ROOTS_DIR) $(TESTS_DIR)
+SUBDIRS = . gck ssh-agent ssh-store $(ROOTS_DIR) $(TESTS_DIR)
 
