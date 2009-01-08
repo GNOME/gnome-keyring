@@ -883,7 +883,8 @@ op_sign_request (GckSshAgentCall *call)
 	g_free (hash);
 	
 	if (error) {
-		g_warning ("signing of the data failed: %s", error->message);
+		if (error->code != CKR_FUNCTION_CANCELED)
+			g_message ("signing of the data failed: %s", error->message);
 		g_clear_error (&error);
 		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
@@ -999,7 +1000,8 @@ op_v1_challenge (GckSshAgentCall *call)
 	g_object_unref (key);
 	
 	if (error) {
-		g_warning ("decryption of the data failed: %s", error->message);
+		if (error->code != CKR_FUNCTION_CANCELED)
+			g_message ("decryption of the data failed: %s", error->message);
 		g_clear_error (&error);
 		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;

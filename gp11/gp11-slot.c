@@ -683,7 +683,7 @@ complete_open_session (OpenSession *args, CK_RV result)
 		
 		ret = _gp11_module_fire_authenticate_slot (module, args->slot, NULL, &args->password);
 		
-		/* Call is not complete */
+		/* If authenticate returns TRUE then call is not complete */
 		ret = !ret;
 	}
 

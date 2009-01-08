@@ -1047,10 +1047,7 @@ authenticate_perform (Authenticate *args, GP11Arguments *base)
 		/* Protected authentication path, just go to perform */
 		if (args->protected_auth) {
 			args->state = AUTHENTICATE_PERFORM;
-			do {
-				rv = authenticate_perform (args, base);
-			} while (rv == CKR_PIN_INCORRECT);
-			return rv;
+			return authenticate_perform (args, base);
 		}
 
 		/* Get the label for a prompt */

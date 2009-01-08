@@ -102,6 +102,7 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 	gchar *private_path;
 	GckManager *manager;
 	GError *error = NULL;
+	gchar *unique;
 	
 	g_return_if_fail (path);
 	g_return_if_fail (GCK_IS_SSH_MODULE (self));
@@ -116,7 +117,10 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 	/* Create a key if necessary */
 	key = g_hash_table_lookup (self->keys_by_path, path);
 	if (key == NULL) {
-		key = gck_ssh_private_key_new ();
+		unique = g_strdup_printf ("ssh-store:%s", private_path);
+		key = gck_ssh_private_key_new (unique);
+		g_free (unique);
+		
 		g_hash_table_replace (self->keys_by_path, g_strdup (path), key);
 	}
 	

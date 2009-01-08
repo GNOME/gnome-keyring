@@ -30,12 +30,18 @@
 
 #include <libtasn1.h>
 
+/* 
+ * TODO: This code is on it's way out, but conflicts with symbols 
+ * in new code. Quick fix. 
+ */
+#define pk_asn1_tab old_pk_asn1_tab
+#define pkix_asn1_tab old_pkix_asn1_tab
 
 /* 
  * HACK: asn1Parser defines these arrays as extern const, which gives 
  * gcc a fit. So we def it out. 
  */
- 
+
 #define extern 
 #include "asn1-def-pk.h"
 #include "asn1-def-pkix.h"

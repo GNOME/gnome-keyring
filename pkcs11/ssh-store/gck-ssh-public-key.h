@@ -42,11 +42,11 @@ struct _GckSshPublicKeyClass {
 
 GType               gck_ssh_public_key_get_type               (void);
 
-GckSshPublicKey*    gck_ssh_public_key_new                    (void);
+GckSshPublicKey*    gck_ssh_public_key_new                    (const gchar *unique);
 
 const gchar*        gck_ssh_public_key_get_label              (GckSshPublicKey *key);
 
 void                gck_ssh_public_key_set_label              (GckSshPublicKey *key,
-                                                                const gchar *label);
+                                                               const gchar *label);
 
 #endif /* __GCK_SSH_PUBLIC_KEY_H__ */

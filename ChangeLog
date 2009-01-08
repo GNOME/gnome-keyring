@@ -1,3 +1,40 @@
+2009-01-08  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11-module.c: 
+	* gp11/gp11-session.c: 
+	* gp11/gp11-slot.c: Don't try to keep authenticating when 
+	bad password on protected auth path authentication. Protected
+	auth path repeats internally as necessary.
+
+	* pkcs11/pkcs11g.h:
+	* pkcs11/gck/gck-attributes.c:
+	* pkcs11/gck/gck-object.c:
+	* pkcs11/gck/gck-object.h: 
+	* pkcs11/ssh-store/gck-ssh-module.c:
+	* pkcs11/ssh-store/gck-ssh-private-key.c:
+	* pkcs11/ssh-store/gck-ssh-private-key.h:
+	* pkcs11/ssh-store/gck-ssh-public-key.c:
+	* pkcs11/ssh-store/gck-ssh-public-key.h: Added CKA_GNOME_UNIQUE
+	attribute. 
+
+	* daemon/gkr-daemon.c:
+	* daemon/Makefile.am:
+	* daemon/pkcs11/gkr-pkcs11-auth.c: (added)
+	* daemon/pkcs11/gkr-pkcs11-auth.h: (added)
+	* daemon/pkcs11/gkr-pkcs11-auth-ep.c: (added)
+	* daemon/pkcs11/gkr-pkcs11-daemon.c: (added)
+	* daemon/pkcs11/gkr-pkcs11-daemon.h: (added)
+	* daemon/pkcs11/Makefile.am:
+	* daemon/pkix/gkr-pkix-asn1.c: 
+	* daemon/ssh/gkr-ssh-daemon.h: (removed)
+	* daemon/ssh/gkr-ssh-daemon-io.c: (removed)
+	* daemon/ssh/gkr-ssh-daemon-ops.c: (removed)
+	* daemon/ssh/Makefile.am: (removed)
+	* daemon/ui/gkr-ask-daemon.c:
+	* pkcs11/ssh-agent/gck-ssh-agent.c:
+	* pkcs11/ssh-agent/gck-ssh-agent-ops.c: Integrate new modular SSH agent
+	as the main gnome-keyring-daemon SSH agent.
+
 === gnome-keyring 2.25.4.2 ===
 
 2009-01-08  Stef Walter  <stef@memberwebs.com>

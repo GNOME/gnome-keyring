@@ -399,9 +399,11 @@ gck_ssh_agent_initialize (const gchar *prefix, CK_FUNCTION_LIST_PTR funcs)
 	g_return_val_if_fail (prefix, -1);
 	
 	module = gp11_module_new (funcs);
+	gp11_module_set_auto_authenticate (module, TRUE);
+	gp11_module_set_pool_sessions (module, TRUE);
 	sock = gck_ssh_agent_initialize_with_module (prefix, module);
 	g_object_unref (module);
-	
+		
 	return sock;
 }
 
@@ -414,7 +416,7 @@ gck_ssh_agent_initialize_with_module (const gchar *prefix, GP11Module *module)
 	g_return_val_if_fail (prefix, -1);
 	g_return_val_if_fail (GP11_IS_MODULE (module), -1);
 	
-	snprintf (socket_path, sizeof (socket_path), "%s.ssh", prefix);
+	snprintf (socket_path, sizeof (socket_path), "%s/socket.ssh", prefix);
 	unlink (socket_path);
 
 	sock = socket (AF_UNIX, SOCK_STREAM, 0);

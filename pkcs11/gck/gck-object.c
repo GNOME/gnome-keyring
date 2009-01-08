@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11g.h"
 
 #include "gck-attributes.h"
 #include "gck-manager.h"
@@ -34,7 +35,8 @@ enum {
 	PROP_0,
 	PROP_HANDLE,
 	PROP_MANAGER,
-	PROP_STORE
+	PROP_STORE,
+	PROP_UNIQUE
 };
 
 enum {
@@ -48,6 +50,7 @@ struct _GckObjectPrivate {
 	CK_OBJECT_HANDLE handle;
 	GckManager *manager;
 	GckStore *store;
+	gchar *unique;
 };
 
 G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
@@ -76,6 +79,10 @@ gck_object_real_get_attribute (GckObject *self, CK_ATTRIBUTE* attr)
 		return gck_attribute_set_bool (attr, FALSE);
 	case CKA_TOKEN:
 		return gck_attribute_set_bool (attr, (self->pv->handle & GCK_OBJECT_IS_PERMANENT) ? TRUE : FALSE);
+	case CKA_GNOME_UNIQUE:
+		if (self->pv->unique)
+			return gck_attribute_set_string (attr, self->pv->unique);
+		return CKR_ATTRIBUTE_TYPE_INVALID;
 	};
 
 	/* Give store a shot */
@@ -103,6 +110,11 @@ gck_object_real_set_attribute (GckObject *self, GckTransaction* transaction, CK_
 	case CKA_MODIFIABLE:
 	case CKA_CLASS:
 		gck_transaction_fail (transaction, CKR_ATTRIBUTE_READ_ONLY);
+		return;
+	case CKA_GNOME_UNIQUE:
+		gck_transaction_fail (transaction, self->pv->unique ? 
+		                                       CKR_ATTRIBUTE_READ_ONLY : 
+		                                       CKR_ATTRIBUTE_TYPE_INVALID);
 		return;
 	};
 
@@ -177,6 +189,7 @@ gck_object_finalize (GObject *obj)
 	GckObject *self = GCK_OBJECT (obj);
 	
 	g_assert (self->pv->manager == NULL);
+	g_free (self->pv->unique);
 
 	G_OBJECT_CLASS (gck_object_parent_class)->finalize (obj);
 }
@@ -221,6 +234,10 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		
 		g_object_notify (G_OBJECT (self), "store");
 		break;
+	case PROP_UNIQUE:
+		g_return_if_fail (!self->pv->unique);
+		self->pv->unique = g_value_dup_string (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -242,6 +259,9 @@ gck_object_get_property (GObject *obj, guint prop_id, GValue *value,
 		break;
 	case PROP_STORE:
 		g_value_set_object (value, self->pv->store);
+		break;
+	case PROP_UNIQUE:
+		g_value_set_string (value, gck_object_get_unique (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -278,6 +298,10 @@ gck_object_class_init (GckObjectClass *klass)
 	g_object_class_install_property (gobject_class, PROP_STORE,
 	           g_param_spec_object ("store", "Store", "Object store", 
 	                                GCK_TYPE_STORE, G_PARAM_READWRITE));
+	
+	g_object_class_install_property (gobject_class, PROP_UNIQUE,
+	           g_param_spec_string ("unique", "Unique Identifer", "Machine unique identifier", 
+	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
 	signals[NOTIFY_ATTRIBUTE] = g_signal_new ("notify-attribute", GCK_TYPE_OBJECT, 
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, notify_attribute),
@@ -399,6 +423,13 @@ gck_object_get_manager (GckObject *self)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
 	return self->pv->manager;
+}
+
+const gchar*
+gck_object_get_unique (GckObject *self)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
+	return self->pv->unique;
 }
 
 CK_RV

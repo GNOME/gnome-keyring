@@ -43,8 +43,8 @@ gck_attribute_set_ulong (CK_ATTRIBUTE_PTR attr, CK_ULONG value)
 CK_RV
 gck_attribute_set_string (CK_ATTRIBUTE_PTR attr, const gchar* string)
 {
-	g_return_val_if_fail (string, CKR_GENERAL_ERROR);
-	return gck_attribute_set_data (attr, (CK_VOID_PTR)string, strlen (string));
+	return gck_attribute_set_data (attr, (CK_VOID_PTR)string, 
+	                               string ? strlen (string) : 0);
 }
 
 CK_RV

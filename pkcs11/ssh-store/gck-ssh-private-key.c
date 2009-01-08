@@ -139,7 +139,7 @@ gck_ssh_private_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 	
 	switch (attr->type) {
 	case CKA_LABEL:
-		return gck_attribute_set_string (attr, self->label ? self->label : "");
+		return gck_attribute_set_string (attr, self->label);
 	}
 	
 	return GCK_OBJECT_CLASS (gck_ssh_private_key_parent_class)->get_attribute (base, attr);
@@ -152,10 +152,25 @@ gck_ssh_private_key_unlock (GckObject *base, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin
 	return unlock_private_key (self, (const gchar*)pin, n_pin);
 }
 
+static GObject* 
+gck_ssh_private_key_constructor (GType type, guint n_props, GObjectConstructParam *props) 
+{
+	GckSshPrivateKey *self = GCK_SSH_PRIVATE_KEY (G_OBJECT_CLASS (gck_ssh_private_key_parent_class)->constructor(type, n_props, props));
+	gchar *unique;
+	
+	g_return_val_if_fail (self, NULL);	
+
+	unique = g_strdup_printf ("%s.pub", gck_object_get_unique (GCK_OBJECT (self)));
+	self->pubkey = gck_ssh_public_key_new (unique);
+	g_free (unique);
+	
+	return G_OBJECT (self);
+}
+
 static void
 gck_ssh_private_key_init (GckSshPrivateKey *self)
 {
-	self->pubkey = gck_ssh_public_key_new ();
+	
 }
 
 static void
@@ -227,6 +242,7 @@ gck_ssh_private_key_class_init (GckSshPrivateKeyClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
 	
+	gobject_class->constructor = gck_ssh_private_key_constructor;
 	gobject_class->dispose = gck_ssh_private_key_dispose;
 	gobject_class->finalize = gck_ssh_private_key_finalize;
 	gobject_class->set_property = gck_ssh_private_key_set_property;
@@ -249,9 +265,9 @@ gck_ssh_private_key_class_init (GckSshPrivateKeyClass *klass)
  */
 
 GckSshPrivateKey*
-gck_ssh_private_key_new (void)
+gck_ssh_private_key_new (const gchar *unique)
 {
-	return g_object_new (GCK_TYPE_SSH_PRIVATE_KEY, NULL);
+	return g_object_new (GCK_TYPE_SSH_PRIVATE_KEY, "unique", unique, NULL);
 }
 
 gboolean

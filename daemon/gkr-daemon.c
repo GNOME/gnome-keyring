@@ -41,10 +41,10 @@
 #include "pk/gkr-pk-root-storage.h"
 #endif
 
+#include "pkcs11/gkr-pkcs11-daemon.h"
 #include "pkcs11/gkr-pkcs11-dispatch.h"
 
 #ifdef WITH_SSH
-#include "ssh/gkr-ssh-daemon.h"
 #include "ssh/gkr-ssh-storage.h"
 #endif
 
@@ -634,11 +634,16 @@ gkr_daemon_complete_initialization(void)
 		return TRUE;
 	}
 	
-	/* Initialize object storage */
+	/* Initialize new style PKCS#11 components */
+	if (!gkr_pkcs11_daemon_initialize ())
+		return FALSE;
+	
+	/* TODO: OLD, REMOVE */
 	if (!gkr_pk_object_storage_initialize ())
 		return FALSE;
 	
 #ifdef ROOT_CERTIFICATES
+	/* TODO: OLD, REMOVE */
 	if (!gkr_pk_root_storage_initialize ())
 		return FALSE;
 #endif
@@ -647,13 +652,17 @@ gkr_daemon_complete_initialization(void)
 	
 #ifdef WITH_SSH	
 	if (check_run_component ("ssh")) {
-		if (!gkr_daemon_ssh_io_initialize () ||
-		    !gkr_ssh_storage_initialize ())
+		if (!gkr_pkcs11_daemon_setup_ssh ())
+			return FALSE;
+				
+		/* TODO: OLD, REMOVE */
+		if (!gkr_ssh_storage_initialize ())
 			return FALSE;
 	}
 #endif
 	
 	if (check_run_component ("pkcs11")) {
+		/* TODO: OLD, REMOVE */
 		if (!gkr_pkcs11_dispatch_setup ())
 			return FALSE;
 	}
@@ -715,6 +724,11 @@ main (int argc, char *argv[])
 		if (start_or_initialize_daemon ())
 			cleanup_and_exit (0);
 	} 
+
+	/* Initialize our daemon main loop and threading */
+	loop = g_main_loop_new (NULL, FALSE);
+	ctx = g_main_loop_get_context (loop);
+	gkr_async_workers_init (loop);
 	
 	/* 
 	 * Always initialize the keyring subsystem. This is a necessary
@@ -741,9 +755,6 @@ main (int argc, char *argv[])
 	/* Prepare logging a second time, since we may be in a different process */
 	prepare_logging();
 
-	loop = g_main_loop_new (NULL, FALSE);
-	ctx = g_main_loop_get_context (loop);
-	
 	signal (SIGPIPE, SIG_IGN);
 	gkr_unix_signal_connect (ctx, SIGINT, signal_handler, NULL);
 	gkr_unix_signal_connect (ctx, SIGHUP, signal_handler, NULL);
@@ -751,8 +762,6 @@ main (int argc, char *argv[])
              
 	/* TODO: Do we still need this? XFCE still seems to use it. */
 	slave_lifetime_to_fd ();
-	
-	gkr_async_workers_init (loop);
 
 	/*
 	 * Unlock the login keyring if we were given a password on STDIN.

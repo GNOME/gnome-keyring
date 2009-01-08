@@ -369,11 +369,15 @@ _gp11_module_fire_authenticate_slot (GP11Module *self, GP11Slot *slot, gchar *la
 
 	info = gp11_slot_get_token_info (slot);
 	if (info != NULL) {
-		if (info->flags & CKF_PROTECTED_AUTHENTICATION_PATH) {
-			gp11_token_info_free (info);
-			*password = NULL;
-			return TRUE;
-		}
+		
+		/* 
+		 * We'll have tried to login at least once at this point,
+		 * with NULL password. This means that CKF_PROTECTED_AUTHENTICATION_PATH
+		 * tokens have had their chance and we don't need to prompt for it.
+		 */
+
+		if (info->flags & CKF_PROTECTED_AUTHENTICATION_PATH)
+			return FALSE;
 		
 		if (label == NULL)
 			label = allocated = g_strdup (info->label);

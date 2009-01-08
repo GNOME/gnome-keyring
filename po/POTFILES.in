@@ -11,6 +11,7 @@ daemon/pk/gkr-pk-index.c
 daemon/pk/gkr-pk-object.c
 daemon/pk/gkr-pk-object-storage.c
 daemon/pk/gkr-pk-storage.c
+daemon/pkcs11/gkr-pkcs11-auth.c
 daemon/pkix/gkr-pkix-parser.c
 daemon/pkix/gkr-pkix-serialize.c
 daemon/ssh/gkr-ssh-storage.c

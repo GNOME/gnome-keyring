@@ -76,7 +76,8 @@ check_previously_denied (GkrAskRequest *ask)
 	gboolean ret;
 	
 	client = gkr_daemon_client_get_current ();
-	g_return_val_if_fail (client, FALSE);
+	if (client == NULL)
+		return FALSE;
 	
 	denied = g_object_get_data (G_OBJECT (client), "gkr-ask-daemon.denied");
 	if (!denied)
@@ -100,7 +101,8 @@ note_previously_denied (GkrAskRequest *ask)
 	g_return_if_fail (unique);
 	
 	client = gkr_daemon_client_get_current ();
-	g_return_if_fail (client);
+	if (!client)
+		return;
 
 	/* Associate the denied table with the current client */
 	denied = g_object_get_data (G_OBJECT (client), "gkr-ask-daemon.denied");

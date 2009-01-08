@@ -79,6 +79,14 @@
 #define CKV_GNOME_AUTH_CACHE_SESSION                0x40000000
 #define CKV_GNOME_AUTH_CACHE_UNLIMITED              0x80000000
 
+/* -------------------------------------------------------------------
+ * OBJECT UNIQUE IDENTIFIER
+ */
+
+/* A string unique among all objects on a given machine */
+#define CKA_GNOME_UNIQUE                            (CKA_GNOME + 350)
+
+
 /* ----------------------------------------------------------------------
  * TODO: EXTENSIONS BELOW NEED TO BE INDIVIDUALLY CONSIDERED CAREFULLY
  */

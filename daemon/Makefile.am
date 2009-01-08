@@ -43,7 +43,11 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/keyrings/libgkr-keyrings.la \
 	$(top_builddir)/daemon/ui/libgkr-ui.la \
 	$(top_builddir)/library/libgnome-keyring-common.la \
+	$(top_builddir)/pkcs11/ssh-agent/libgck-ssh-agent.la \
+	$(top_builddir)/pkcs11/ssh-store/libgck-ssh-store.la \
+	$(top_builddir)/pkcs11/gck/libgck.la \
 	$(top_builddir)/common/libgkr-common.la \
+	$(top_builddir)/gp11/libgp11.la \
 	$(DAEMON_LIBS) \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \

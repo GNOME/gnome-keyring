@@ -8,6 +8,8 @@ INCLUDES = \
 	$(GLIB_CFLAGS)
 
 DAEMON_SRCS = \
+	gkr-pkcs11-auth.c gkr-pkcs11-auth.h gkr-pkcs11-auth-ep.c \
+	gkr-pkcs11-daemon.c gkr-pkcs11-daemon.h \
 	gkr-pkcs11-dispatch.c gkr-pkcs11-dispatch.h \
 	gkr-pkcs11-dispatch-session.c \
 	gkr-pkcs11-dsa.c gkr-pkcs11-dsa.h \
