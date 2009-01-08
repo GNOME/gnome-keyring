@@ -1,3 +1,8 @@
+Changes in version 2.25.4.2 are:
+* The modular ssh agent uses keys from all available PKCS#11 slots.
+* Fix compiler warnings.
+* Fix broken release.
+
 Changes in version 2.25.4.1 are:
 * Fix broken release.
 
