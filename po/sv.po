@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-08 01:42+0100\n"
-"PO-Revision-Date: 2009-01-08 01:42+0100\n"
+"POT-Creation-Date: 2009-01-08 23:54+0100\n"
+"PO-Revision-Date: 2009-01-08 23:55+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -333,21 +333,25 @@ msgstr "Importera"
 
 #: ../daemon/pk/gkr-pk-import.c:101
 #: ../daemon/pk/gkr-pk-storage.c:166
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:122
 msgid "Enter password to unlock the private key"
 msgstr "Ange lösenordet för att låsa upp privata nyckeln"
 
 #: ../daemon/pk/gkr-pk-import.c:103
 #: ../daemon/pk/gkr-pk-storage.c:168
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:124
 msgid "Enter password to unlock the certificate"
 msgstr "Ange lösenordet för att låsa upp certifikatet"
 
 #: ../daemon/pk/gkr-pk-import.c:105
 #: ../daemon/pk/gkr-pk-storage.c:170
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:126
 msgid "Enter password to unlock the public key"
 msgstr "Ange lösenordet för att låsa upp publika nyckeln"
 
 #: ../daemon/pk/gkr-pk-import.c:107
 #: ../daemon/pk/gkr-pk-storage.c:172
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:128
 msgid "Enter password to unlock"
 msgstr "Ange lösenordet för att låsa upp"
 
@@ -419,18 +423,22 @@ msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "Kan inte ta bort \"%s\" därför att den är bunden till andra objekt."
 
 #: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:107
 msgid "Unlock private key"
 msgstr "Lås upp privat nyckel"
 
 #: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:109
 msgid "Unlock certificate"
 msgstr "Lås upp certifikat"
 
 #: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:111
 msgid "Unlock public key"
 msgstr "Lås upp publik nyckel"
 
 #: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113
 msgid "Unlock"
 msgstr "Lås upp"
 
@@ -451,37 +459,45 @@ msgid "Enter password to protect storage"
 msgstr "Ange ett lösenord för att skydda lagringsplatsen"
 
 #: ../daemon/pk/gkr-pk-storage.c:196
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
 msgid "Automatically unlock this private key when I log in."
 msgstr "Lås automatiskt upp den här privata nyckeln när jag loggar in."
 
 #: ../daemon/pk/gkr-pk-storage.c:198
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
 msgid "Automatically unlock this certificate when I log in."
 msgstr "Lås automatiskt upp det här certifikatet när jag loggar in."
 
 #: ../daemon/pk/gkr-pk-storage.c:200
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:156
 msgid "Automatically unlock this public key when I log in."
 msgstr "Lås automatiskt upp den här publika nyckeln när jag loggar in."
 
 #: ../daemon/pk/gkr-pk-storage.c:202
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:158
 msgid "Automatically unlock this when I log in"
 msgstr "Lås automatiskt upp denna när jag loggar in"
 
 #: ../daemon/pk/gkr-pk-storage.c:209
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:137
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Ett program vill komma åt privata nyckeln \"%s\", men den är låst"
 
 #: ../daemon/pk/gkr-pk-storage.c:211
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Ett program vill komma åt certifikatet \"%s\", men det är låst"
 
 #: ../daemon/pk/gkr-pk-storage.c:213
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:141
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Ett program vill komma åt den publika nyckeln \"%s\", men den är låst"
 
 #: ../daemon/pk/gkr-pk-storage.c:215
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:143
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Ett program vill komma åt \"%s\", men den är låst"
@@ -495,6 +511,23 @@ msgstr "Systemet vill lagra den privata nyckeln \"%s\" på din disk. Ange ett l�
 #, c-format
 msgid "The system wants to store '%s' on your disk. Please enter a password to lock it with."
 msgstr "Systemet vill lagra \"%s\" på din disk. Ange ett lösenord att låsa den med."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+msgid "Unlock certificate/key storage"
+msgstr "Lås upp certifikat/nyckellager"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:376
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Ange lösenordet för att låsa upp certifikatet/nyckellagret"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:379
+#, c-format
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "Ett program vill komma åt certifikatet/nyckellagret \"%s\", men det är låst"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:385
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Lås automatiskt upp säkerhetslagret när jag loggar in."
 
 #: ../daemon/pkix/gkr-pkix-parser.c:451
 #: ../gp11/gp11-misc.c:92
@@ -950,7 +983,7 @@ msgstr "Nyckelringen har redan låsts upp."
 msgid "Unnamed Certificate"
 msgstr "Namnlöst certifikat"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:280
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
 msgid "Couldn't parse public SSH key"
 msgstr "Kunde inte tolka publik SSH-nyckel"
 
