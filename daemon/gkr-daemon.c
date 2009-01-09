@@ -36,17 +36,7 @@
 
 #include "library/gnome-keyring.h"
 
-#include "pk/gkr-pk-object-storage.h"
-#ifdef ROOT_CERTIFICATES
-#include "pk/gkr-pk-root-storage.h"
-#endif
-
 #include "pkcs11/gkr-pkcs11-daemon.h"
-#include "pkcs11/gkr-pkcs11-dispatch.h"
-
-#ifdef WITH_SSH
-#include "ssh/gkr-ssh-storage.h"
-#endif
 
 #include "ui/gkr-ask-daemon.h"
 
@@ -638,32 +628,17 @@ gkr_daemon_complete_initialization(void)
 	if (!gkr_pkcs11_daemon_initialize ())
 		return FALSE;
 	
-	/* TODO: OLD, REMOVE */
-	if (!gkr_pk_object_storage_initialize ())
-		return FALSE;
-	
-#ifdef ROOT_CERTIFICATES
-	/* TODO: OLD, REMOVE */
-	if (!gkr_pk_root_storage_initialize ())
-		return FALSE;
-#endif
-
 	/* Initialize the appropriate components */
 	
 #ifdef WITH_SSH	
 	if (check_run_component ("ssh")) {
 		if (!gkr_pkcs11_daemon_setup_ssh ())
 			return FALSE;
-				
-		/* TODO: OLD, REMOVE */
-		if (!gkr_ssh_storage_initialize ())
-			return FALSE;
 	}
 #endif
 	
 	if (check_run_component ("pkcs11")) {
-		/* TODO: OLD, REMOVE */
-		if (!gkr_pkcs11_dispatch_setup ())
+		if (!gkr_pkcs11_daemon_setup_pkcs11 ())
 			return FALSE;
 	}
 	

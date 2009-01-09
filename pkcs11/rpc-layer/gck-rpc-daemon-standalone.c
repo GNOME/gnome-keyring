@@ -89,8 +89,12 @@ main (int argc, char *argv[])
 		errx (1, "couldn't get function list from C_GetFunctionList in libary: %s: 0x%08x", 
 		      argv[1], (int)rv);
 	
-	unlink (SOCKET_PATH);
-	sock = gck_rpc_dispatch_init (SOCKET_PATH, funcs, &p11_init_args);
+	/* RPC layer expects initialized module */
+	rv = (funcs->C_Initialize) (&p11_init_args);
+	if (rv != CKR_OK) 
+		errx (1, "couldn't initialize module: %s: 0x%08x", argv[1], (int)rv);
+	
+	sock = gck_rpc_layer_initialize (SOCKET_PATH, funcs);
 	if (sock == -1)
 		exit (1);
 	
@@ -106,10 +110,15 @@ main (int argc, char *argv[])
 		}
 		
 		if (FD_ISSET (sock, &read_fds))
-			gck_rpc_dispatch_accept ();
+			gck_rpc_layer_accept ();
 	}
 	
-	gck_rpc_dispatch_uninit ();
+	gck_rpc_layer_uninitialize ();
+	
+	rv = (funcs->C_Finalize) (NULL);
+	if (rv != CKR_OK)
+		warnx ("couldn't finalize module: %s: 0x%08x", argv[1], (int)rv);
+	
 	dlclose(module);
 
 	return 0;

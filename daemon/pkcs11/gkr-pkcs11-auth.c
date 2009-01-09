@@ -525,8 +525,7 @@ gkr_pkcs11_auth_session_closed_all (CK_SLOT_ID id)
 	g_return_if_fail (per_slot_data);
 
 	/* Remove all information about this slot */
-	if (!g_hash_table_remove (per_slot_data, &id))
-		g_return_if_reached ();
+	g_hash_table_remove (per_slot_data, &id);
 }
 
 void

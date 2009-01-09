@@ -97,7 +97,6 @@ gkr_pkcs11_daemon_initialize (void)
 	return TRUE;
 }
 
-#if 0
 static void
 pkcs11_rpc_cleanup (gpointer unused)
 {
@@ -135,7 +134,7 @@ gkr_pkcs11_daemon_setup_pkcs11 (void)
 
 	gkr_async_begin_concurrent ();
 
-		sock = gck_rpc_layer_initialize (base_dir, pkcs11_roof, NULL);
+		sock = gck_rpc_layer_initialize (base_dir, pkcs11_roof);
 		
 	gkr_async_end_concurrent ();
 	
@@ -150,7 +149,6 @@ gkr_pkcs11_daemon_setup_pkcs11 (void)
 
 	return TRUE;
 }
-#endif
 
 static void
 pkcs11_ssh_cleanup (gpointer unused)

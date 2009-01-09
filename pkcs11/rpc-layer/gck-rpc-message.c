@@ -105,6 +105,7 @@ gck_rpc_message_prep (GckRpcMessage *msg, int call_id, GckRpcMessageType type)
 			msg->signature = gck_rpc_calls[call_id].response;
 		else
 			assert (0 && "invalid message type");
+		assert (msg->signature);
 		msg->sigverify = msg->signature;
 	}
 	
@@ -250,7 +251,7 @@ gck_rpc_message_write_attribute_buffer (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr
 
 int
 gck_rpc_message_write_attribute_array (GckRpcMessage *msg, 
-                                           CK_ATTRIBUTE_PTR arr, CK_ULONG num)
+                                       CK_ATTRIBUTE_PTR arr, CK_ULONG num)
 {
 	CK_ULONG i;
 	CK_ATTRIBUTE_PTR attr;
@@ -275,9 +276,11 @@ gck_rpc_message_write_attribute_array (GckRpcMessage *msg,
 		validity = (((CK_LONG)attr->ulValueLen) == -1) ? 0 : 1;
 		gkr_buffer_add_byte (&msg->buffer, validity);
 
-		/* The attribute value */
-		if (validity)
+		/* The attribute length and value */
+		if (validity) {
+			gkr_buffer_add_uint32 (&msg->buffer, attr->ulValueLen);
 			gkr_buffer_add_byte_array (&msg->buffer, attr->pValue, attr->ulValueLen);
+		}
 	}
 
 	return !gkr_buffer_has_error (&msg->buffer);

@@ -8,14 +8,13 @@
  */
 
 /* Call to initialize the module and start listening, returns socket or -1 */
-int                gck_rpc_dispatch_init                (const char *socket_prefix, 
-                                                         CK_FUNCTION_LIST_PTR module, 
-                                                         CK_C_INITIALIZE_ARGS_PTR init_args);
+int                gck_rpc_layer_initialize             (const char *prefix, 
+                                                         CK_FUNCTION_LIST_PTR funcs);
 
 /* Should be called to cleanup dispatcher */
-void               gck_rpc_dispatch_uninit              (void);
+void               gck_rpc_layer_uninitialize           (void);
 
 /* Accept a new connection. Should be called when above fd has read */
-void               gck_rpc_dispatch_accept              (void);
+void               gck_rpc_layer_accept                 (void);
 
 #endif /* GCKRPC_H_ */

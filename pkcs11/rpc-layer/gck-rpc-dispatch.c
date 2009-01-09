@@ -27,6 +27,9 @@
 #include "gck-rpc-private.h"
 
 #include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11g.h"
+
+#include "common/gkr-unix-credentials.h"
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -44,15 +47,6 @@
 
 /* Where we dispatch the calls to */
 static CK_FUNCTION_LIST_PTR pkcs11_module = NULL;
-
-/* Argument to pass to C_Initialize */
-static CK_C_INITIALIZE_ARGS *pkcs11_initialize_args = NULL;
-
-/* Mutex for guarding initialization variable */
-static pthread_mutex_t init_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-/* The number of times we've initialized */
-static int pkcs11_initialized = 0;
 
 /* The error returned on protocol failures */
 #define PARSE_ERROR CKR_DEVICE_ERROR
@@ -87,6 +81,7 @@ typedef struct _CallState {
 	GckRpcMessage *req;
 	GckRpcMessage *resp;
 	void *allocated;
+	CK_ULONG appid;
 } CallState;
 
 static int
@@ -181,7 +176,7 @@ proto_read_byte_buffer (CallState *cs, CK_BYTE_PTR* buffer, CK_ULONG* n_buffer)
 	msg = cs->req;
 	
 	/* Check that we're supposed to be reading this at this point */
-	assert (!msg->signature || gck_rpc_message_verify_part (msg, "ay"));
+	assert (!msg->signature || gck_rpc_message_verify_part (msg, "fy"));
 
 	/* The number of ulongs there's room for on the other end */
 	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &length))
@@ -220,9 +215,11 @@ proto_read_byte_array (CallState *cs, CK_BYTE_PTR* array, CK_ULONG* n_array)
 	if (!gkr_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
 		return PARSE_ERROR;
 	
-	/* Module should always send us valid arrays */
-	if (!valid)
-		return PARSE_ERROR;
+	if (!valid) {
+		*array = NULL;
+		*n_array = 0;
+		return CKR_OK;
+	}
 
 	/* Point our arguments into the buffer */
 	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed,
@@ -366,10 +363,18 @@ proto_read_attribute_array (CallState *cs, CK_ATTRIBUTE_PTR* result, CK_ULONG* n
 			return PARSE_ERROR;
 		
 		if (valid) {
+			if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
+				return PARSE_ERROR;
 			if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &data, &n_data))
 				return PARSE_ERROR;
+			
+			if (data != NULL && n_data != value) {
+				g_warning ("attribute length and data do not match");
+				return PARSE_ERROR;
+			}
+
 			attrs[i].pValue = (CK_VOID_PTR)data;
-			attrs[i].ulValueLen = n_data;
+			attrs[i].ulValueLen = value;
 		} else {
 			attrs[i].pValue = NULL;
 			attrs[i].ulValueLen = -1;
@@ -385,7 +390,7 @@ static CK_RV
 proto_write_attribute_array (CallState *cs, CK_ATTRIBUTE_PTR array, CK_ULONG len, CK_RV ret)
 {
 	assert (cs);
-	
+
 	/* 
 	 * When returning an attribute array, certain errors aren't 
 	 * actually real errors, these are passed through to the other 
@@ -705,18 +710,10 @@ rpc_C_Initialize (CallState *cs)
 		assert (gck_rpc_message_is_verified (cs->req));
 	}
 	
-	if (ret == CKR_OK) { 
-		
-		pthread_mutex_lock (&init_mutex);
-	
-			if (pkcs11_initialized == 0)
-				ret = pkcs11_module->C_Initialize (pkcs11_initialize_args);
-
-			if (ret == CKR_OK)
-				++pkcs11_initialized;
-		
-		pthread_mutex_unlock (&init_mutex);
-	}
+	/* 
+	 * We don't actually C_Initialize lower layers. It's assumed
+	 * that they'll already be initialzied by the code that loaded us. 
+	 */
 	
 	debug (("ret: %d", ret));
 	return ret;
@@ -725,6 +722,9 @@ rpc_C_Initialize (CallState *cs)
 static CK_RV
 rpc_C_Finalize (CallState *cs)
 {
+	CK_SLOT_ID_PTR slots;
+	CK_ULONG n_slots, i;
+	CK_SLOT_ID appartment;
 	CK_RV ret;
 	
 	debug (("C_Finalize: enter"));
@@ -732,16 +732,30 @@ rpc_C_Finalize (CallState *cs)
 	assert (cs);
 	assert (pkcs11_module);
 	
-	pthread_mutex_lock (&init_mutex);
-
-		if (pkcs11_initialized == 1)
-			ret = pkcs11_module->C_Finalize (NULL);
-
-		if (ret == CKR_OK)
-			--pkcs11_initialized;
+	/* 
+	 * We don't actually C_Finalize lower layers, since this would finalize
+	 * for all appartments, client applications. Anyway this is done by 
+	 * the code that loaded us.
+	 * 
+	 * But we do need to cleanup resources used by this client, so instead
+	 * we call C_CloseAllSessions for each appartment for this client.
+	 */
 	
-	pthread_mutex_unlock (&init_mutex);	
-
+	ret = (pkcs11_module->C_GetSlotList) (TRUE, NULL, &n_slots);
+	if (ret == CKR_OK) {
+		slots = calloc (n_slots, sizeof (CK_SLOT_ID));
+		if (slots == NULL) {
+			ret = CKR_DEVICE_MEMORY;
+		} else {
+			ret = (pkcs11_module->C_GetSlotList) (TRUE, slots, &n_slots);
+			for (i = 0; ret == CKR_OK && i < n_slots; ++i) {
+				appartment = CK_GNOME_MAKE_APPARTMENT (slots[i], cs->appid);
+				ret = (pkcs11_module->C_CloseAllSessions) (appartment);
+			}
+			free (slots);
+		}
+	}
+	
 	debug (("ret: %d", ret));
 	return ret;
 }
@@ -777,9 +791,12 @@ rpc_C_GetSlotInfo (CallState *cs)
 {
 	CK_SLOT_ID slot_id;
 	CK_SLOT_INFO info;
-	
+
+	/* Slot id becomes appartment so lower layers can tell clients apart. */
+
 	BEGIN_CALL (C_GetSlotInfo);
 		IN_ULONG (slot_id);
+		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 	PROCESS_CALL ((slot_id, &info));
 		OUT_SLOT_INFO (info);
 	END_CALL;
@@ -791,8 +808,11 @@ rpc_C_GetTokenInfo (CallState *cs)
 	CK_SLOT_ID slot_id;
 	CK_TOKEN_INFO info;
 	
+	/* Slot id becomes appartment so lower layers can tell clients apart. */
+	
 	BEGIN_CALL (C_GetTokenInfo);
 		IN_ULONG (slot_id);
+		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 	PROCESS_CALL ((slot_id, &info));
 		OUT_TOKEN_INFO (info);
 	END_CALL;
@@ -804,9 +824,12 @@ rpc_C_GetMechanismList (CallState *cs)
 	CK_SLOT_ID slot_id;
 	CK_MECHANISM_TYPE_PTR mechanism_list;
 	CK_ULONG count;
-	
+
+	/* Slot id becomes appartment so lower layers can tell clients apart. */
+
 	BEGIN_CALL (C_GetMechanismList);
 		IN_ULONG (slot_id);
+		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 		IN_ULONG_BUFFER (mechanism_list, count);
 	PROCESS_CALL ((slot_id, mechanism_list, &count));
 		OUT_ULONG_ARRAY (mechanism_list, count);
@@ -820,8 +843,11 @@ rpc_C_GetMechanismInfo (CallState *cs)
 	CK_MECHANISM_TYPE type;
 	CK_MECHANISM_INFO info;
 	
+	/* Slot id becomes appartment so lower layers can tell clients apart. */
+	
 	BEGIN_CALL (C_GetMechanismInfo);
 		IN_ULONG (slot_id);
+		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 		IN_ULONG (type);
 	PROCESS_CALL ((slot_id, type, &info));
 		OUT_MECHANISM_INFO (info);
@@ -835,9 +861,12 @@ rpc_C_InitToken (CallState *cs)
 	CK_UTF8CHAR_PTR pin;
 	CK_ULONG pin_len;
 	CK_UTF8CHAR_PTR label;
-	
+
+	/* Slot id becomes appartment so lower layers can tell clients apart. */
+
 	BEGIN_CALL (C_InitToken);
 		IN_ULONG (slot_id);
+		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 		IN_BYTE_ARRAY (pin, pin_len);
 		IN_STRING (label);
 	PROCESS_CALL ((slot_id, pin, pin_len, label));
@@ -849,10 +878,13 @@ rpc_C_WaitForSlotEvent (CallState *cs)
 {
 	CK_FLAGS flags;
 	CK_SLOT_ID slot_id;
-	
+
+	/* Get slot id from appartment lower layers use. */
+
 	BEGIN_CALL (C_WaitForSlotEvent);
 		IN_ULONG (flags);
 	PROCESS_CALL ((flags, &slot_id, NULL));
+		slot_id = CK_GNOME_APPARTMENT_SLOT (slot_id);
 		OUT_ULONG (slot_id);
 	END_CALL;
 }
@@ -864,8 +896,11 @@ rpc_C_OpenSession (CallState *cs)
 	CK_FLAGS flags;
 	CK_SESSION_HANDLE session;
 
+	/* Slot id becomes appartment so lower layers can tell clients apart. */
+
 	BEGIN_CALL (C_OpenSession);
 		IN_ULONG (slot_id);
+		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 		IN_ULONG (flags);
 	PROCESS_CALL ((slot_id, flags, NULL, NULL, &session));
 		OUT_ULONG (session);
@@ -889,8 +924,11 @@ rpc_C_CloseAllSessions (CallState *cs)
 {
 	CK_SLOT_ID slot_id;
 
+	/* Slot id becomes appartment so lower layers can tell clients apart. */
+
 	BEGIN_CALL (C_CloseAllSessions);
 		IN_ULONG (slot_id);
+		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 	PROCESS_CALL ((slot_id));
 	END_CALL;
 }
@@ -922,10 +960,13 @@ rpc_C_GetSessionInfo (CallState *cs)
 {
 	CK_SESSION_HANDLE session;
 	CK_SESSION_INFO info;
+	
+	/* Get slot id from appartment lower layers use. */
 
 	BEGIN_CALL (C_GetSessionInfo);
 		IN_ULONG (session);
 	PROCESS_CALL ((session, &info));
+		info.slotID  = CK_GNOME_APPARTMENT_SLOT (info.slotID);
 		OUT_SESSION_INFO (info);
 	END_CALL;
 }
@@ -1981,12 +2022,20 @@ static void
 run_dispatch_loop (int sock)
 {
 	CallState cs;
+	pid_t pid;
+	uid_t uid;
 	unsigned char buf[4];
 	uint32_t len;
 	
 	assert (sock != -1);
 
-	/* TODO: Read credentials */
+	if (!gkr_unix_credentials_read (sock, &pid, &uid) < 0) {
+		gck_rpc_warn ("couldn't read socket credentials");
+		return;
+	}
+	
+	/* The client application */
+	cs.appid = pid;
 	
 	/* Setup our buffers */
 	if (!call_init (&cs)) {
@@ -2046,11 +2095,6 @@ run_dispatch_thread (void *arg)
 	int *sock = arg;
 	assert (*sock != -1);
 
-	/* Try and initialize the PKCS#11 module */
-	if (!pkcs11_initialized) {
-		
-	}
-	
 	run_dispatch_loop (*sock);
 	
 	/* The thread closes the socket and marks as done */
@@ -2080,9 +2124,8 @@ static char pkcs11_socket_path[MAXPATHLEN] = { 0, };
 /* A linked list of dispatcher threads */
 static DispatchState *pkcs11_dispatchers = NULL;
 
-
 void 
-gck_rpc_dispatch_accept (void)
+gck_rpc_layer_accept (void)
 {
 	struct sockaddr_un addr;
 	DispatchState *ds, **here;
@@ -2132,8 +2175,7 @@ gck_rpc_dispatch_accept (void)
 }
 
 int
-gck_rpc_dispatch_init (const char *socket_path, CK_FUNCTION_LIST_PTR module, 
-                       CK_C_INITIALIZE_ARGS_PTR init_args)
+gck_rpc_layer_initialize (const char *prefix, CK_FUNCTION_LIST_PTR module)
 {
 	struct sockaddr_un addr;
 	int sock;
@@ -2143,7 +2185,7 @@ gck_rpc_dispatch_init (const char *socket_path, CK_FUNCTION_LIST_PTR module,
 #endif
 
 	assert (module);
-	assert (socket_path);
+	assert (prefix);
 
 	/* cannot be called more than once */
 	assert (!pkcs11_module);
@@ -2151,7 +2193,7 @@ gck_rpc_dispatch_init (const char *socket_path, CK_FUNCTION_LIST_PTR module,
 	assert (pkcs11_dispatchers == NULL);
 	
 	snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), 
-	          "%s", socket_path);
+	          "%s/socket.pkcs11", prefix);
 
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -2161,6 +2203,7 @@ gck_rpc_dispatch_init (const char *socket_path, CK_FUNCTION_LIST_PTR module,
 	
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
+	unlink (pkcs11_socket_path);
 	strncpy (addr.sun_path, pkcs11_socket_path, sizeof (addr.sun_path));
 	if (bind (sock, (struct sockaddr*)&addr, sizeof (addr)) < 0) {
 		gck_rpc_warn ("couldn't bind to pkcs11 socket: %s: %s", 
@@ -2175,7 +2218,6 @@ gck_rpc_dispatch_init (const char *socket_path, CK_FUNCTION_LIST_PTR module,
 	}
 	
 	pkcs11_module = module;
-	pkcs11_initialize_args = init_args;
 	pkcs11_socket = sock;
 	pkcs11_dispatchers = NULL;
 	
@@ -2183,7 +2225,7 @@ gck_rpc_dispatch_init (const char *socket_path, CK_FUNCTION_LIST_PTR module,
 }
 
 void
-gck_rpc_dispatch_uninit (void)
+gck_rpc_layer_uninitialize (void)
 {
 	DispatchState *ds, *next;
 	
@@ -2215,5 +2257,4 @@ gck_rpc_dispatch_uninit (void)
 	}
 	
 	pkcs11_module = NULL;
-	pkcs11_initialize_args = NULL;
 }

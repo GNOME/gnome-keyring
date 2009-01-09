@@ -28,6 +28,8 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "common/gkr-unix-credentials.h"
+
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -51,9 +53,6 @@
 
 /* Various mutexes */
 static pthread_mutex_t init_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-/* Our per thread key */
-static pthread_key_t pkcs11_per_thread = 0;
 
 /* Whether we've been initialized, and on what process id it happened */
 static int pkcs11_initialized = 0;
@@ -86,6 +85,98 @@ gck_rpc_log (const char *line)
 }
 
 /* -----------------------------------------------------------------------------
+ * MODULE ARGUMENTS
+ */
+
+static void
+parse_argument (char *arg)
+{
+	char *value;
+	
+	value = arg + strcspn (arg, ":=");
+	if (!*value)
+		value = NULL;
+	else 
+		*(value++) = 0;
+
+	/* Setup the socket path from the arguments */
+	if (strcmp (arg, "socket") == 0)
+		snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s", value);
+	else
+		warning (("unrecognized argument: %s", arg));
+}
+
+static void
+parse_arguments (const char *string) 
+{
+	char quote = '\0';
+	char *src, *dup, *at, *arg;
+	
+	if (!string)
+		return;
+	
+	src = dup = strdup (string);
+	if (!dup) {
+		warning (("couldn't allocate memory for argument string"));
+		return;
+	}
+
+	arg = at = src;
+	for (src = dup; *src; src++) {
+		
+		/* Matching quote */
+		if (quote == *src) {
+			quote = '\0';
+			
+		/* Inside of quotes */
+		} else if (quote != '\0') {
+			if (*src == '\\') {
+				*at++ = *src++;
+				if (!*src) {
+					warning (("couldn't parse argument string: %s", string));
+					goto done;
+				}
+				if (*src != quote) 
+					*at++ = '\\';
+			}
+			*at++ = *src;
+			
+		/* Space, not inside of quotes */
+		} else if (isspace(*src)) {
+			*at = 0;
+			parse_argument (arg);
+			arg = at;
+			
+		/* Other character outside of quotes */
+		} else {
+			switch (*src) {
+			case '\'':
+			case '"':
+				quote = *src;
+				break;
+			case '\\':
+				*at++ = *src++;
+				if (!*src) {
+					warning (("couldn't parse argument string: %s", string));
+					goto done;
+				}
+				/* fall through */
+			default:
+				*at++ = *src;
+				break;
+			}
+		}
+	}
+
+	
+	if (at != arg) 
+		parse_argument (arg);
+	
+done:
+	free (dup);
+}
+
+/* -----------------------------------------------------------------------------
  * CALL SESSION
  */
 
@@ -98,11 +189,22 @@ enum CallStatus {
 };
 
 typedef struct _CallState {
-	int socket;                     /* The connection we're sending on */
+	int socket;                  /* The connection we're sending on */
 	GckRpcMessage *req;          /* The current request */
 	GckRpcMessage *resp;         /* The current response */
 	int call_status;
+	struct _CallState *next;     /* For pooling of completed sockets */
 } CallState;
+
+/* Maximum number of idle calls */
+#define MAX_CALL_STATE_POOL 8
+
+/* All call unused call states are in this list */
+static CallState *call_state_pool = NULL;
+static unsigned int n_call_state_pool = 0;
+
+/* Mutex to protect above call state list */
+static pthread_mutex_t call_state_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Allocator for call session buffers */
 static void*
@@ -149,14 +251,11 @@ call_connect (CallState *cs)
 		return CKR_DEVICE_ERROR;
 	}
 
-	/* TODO: Write credentials */
-#if 0
-	if (!gck_rpc_write_credentials (sock)) {
+	if (gkr_unix_credentials_write (sock) < 0) {
 		close (sock);
 		warning (("couldn't send socket credentials: %s", strerror (errno)));
 		return CKR_DEVICE_ERROR;
 	}
-#endif
 
 	cs->socket = sock;
 	cs->call_status = CALL_READY;
@@ -196,51 +295,44 @@ call_destroy (void *value)
 }
 
 static CK_RV
-call_create (void)
-{
-	CallState *cs;
-	
-	assert (pkcs11_per_thread);
-	
-	cs = calloc(1, sizeof (CallState));
-	if (!cs)
-		return CKR_HOST_MEMORY;
-	cs->socket = -1;
-	cs->call_status = CALL_INVALID;
-	
-	assert (!pthread_getspecific (pkcs11_per_thread));
-	pthread_setspecific (pkcs11_per_thread, cs);
-	
-	return CKR_OK;
-}
-
-static CK_RV
 call_lookup (CallState **ret)
 {
-	CallState *cs;
+	CallState *cs = NULL;
 	CK_RV rv;
 	
 	assert (ret);
-	assert (pkcs11_per_thread);
+
+	pthread_mutex_lock (&call_state_mutex);
+
+		/* Pop one from the pool if possible */
+		if (call_state_pool != NULL) {
+			cs = call_state_pool;
+			call_state_pool = cs->next;
+			cs->next = NULL;
+			assert (n_call_state_pool > 0);
+			--n_call_state_pool; 
+		}
 	
-	cs = pthread_getspecific (pkcs11_per_thread);
+	pthread_mutex_unlock (&call_state_mutex);
+	
 	if (cs == NULL) {
-		rv = call_create ();
-		if (rv != CKR_OK)
-			return rv;
+		cs = calloc(1, sizeof (CallState));
+		if (cs == NULL)
+			return CKR_HOST_MEMORY;
+		cs->socket = -1;
+		cs->call_status = CALL_INVALID;
 
-		cs = pthread_getspecific (pkcs11_per_thread);
-		assert (cs);
-	}
-
-	if (cs->call_status == CALL_INVALID) {
+		/* Try to connect the call */
 		rv = call_connect (cs);
-		if (rv != CKR_OK)
+		if (rv != CKR_OK) {
+			free (cs);
 			return rv;
+		}
 	}
 	
 	assert (cs->call_status == CALL_READY);
 	assert (cs->socket != -1);
+	assert (cs->next == NULL);
 	*ret = cs;
 	return CKR_OK;
 }
@@ -503,19 +595,34 @@ call_done (CallState *cs, CK_RV ret)
 
 			if (gck_rpc_message_buffer_error (cs->resp)) {
 				warning (("invalid response from gnome-keyring-daemon: bad argument data"));
-				return CKR_GENERAL_ERROR;
+				ret = CKR_GENERAL_ERROR;
+			} else {
+				/* Double check that the signature matched our decoding */
+				assert (gck_rpc_message_is_verified (cs->resp));
 			}
-
-			/* Double check that the signature matched our decoding */
-			assert (gck_rpc_message_is_verified (cs->resp));
 		} 
 	}
 
-	/* Some cleanup */
-	if (cs->socket == -1)
-		cs->call_status = CALL_INVALID;
-	else
-		cs->call_status = CALL_READY;
+	/* Certain error codes cause us to discard the conenction */
+	if (ret != CKR_DEVICE_ERROR && ret != CKR_DEVICE_REMOVED && cs->socket != -1) {
+
+		/* Try and stash it away for later use */
+		pthread_mutex_lock (&call_state_mutex);
+		
+			if (n_call_state_pool < MAX_CALL_STATE_POOL) {
+				cs->call_status = CALL_READY;
+				assert (cs->next == NULL);
+				cs->next = call_state_pool;
+				call_state_pool = cs;
+				++n_call_state_pool;
+				cs = NULL;
+			}
+		
+		pthread_mutex_unlock (&call_state_mutex);
+	}
+	
+	if (cs != NULL)
+		call_destroy (cs);
 
 	return ret;
 }
@@ -527,7 +634,7 @@ call_done (CallState *cs, CK_RV ret)
 static CK_RV
 proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG len)
 {
-	uint32_t i, num, val;
+	uint32_t i, num, value, type;
 	CK_ATTRIBUTE_PTR attr;
 	const unsigned char *attrval;
 	size_t attrlen;
@@ -538,7 +645,7 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 	assert (msg);
 
 	/* Make sure this is in the right order */
-	assert (!msg->signature || gck_rpc_message_verify_part (msg, "aA"));
+	assert (!msg->signature || gck_rpc_message_verify_part (msg, "aAu"));
 	
 	/* Get the number of items. We need this value to be correct */
 	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
@@ -564,16 +671,23 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 	
 		/* The attribute type */
 		gkr_buffer_get_uint32 (&msg->buffer, msg->parsed,
-		                       &msg->parsed, &val);
+		                       &msg->parsed, &type);
 
 		/* Attribute validity */
 		gkr_buffer_get_byte (&msg->buffer, msg->parsed,
 		                     &msg->parsed, &validity);
 
 		/* And the data itself */
-		if (validity)
-			gkr_buffer_get_byte_array (&msg->buffer, msg->parsed,
-			                           &msg->parsed, &attrval, &attrlen);
+		if (validity) {
+			if (gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value) &&
+			    gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &attrval, &attrlen)) {
+				if (attrval && value != attrlen) {
+					warning (("attribute length does not match attribute data"));
+					return PARSE_ERROR;
+				}
+				attrlen = value;
+			}
+		}
 			
 		/* Don't act on this data unless no errors */
 		if (gkr_buffer_has_error (&msg->buffer))
@@ -582,7 +696,10 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 		/* Try and stuff it in the output data */
 		if (arr) {
 			attr = &(arr[i]);
-			attr->type = val;
+			if (attr->type != type) {
+				warning (("returned attributes in invalid order"));
+				return PARSE_ERROR;
+			}
 
 			if (validity) {
 				/* Just requesting the attribute size */
@@ -610,8 +727,15 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 			}
 		}
 	}
+	
+	if (gkr_buffer_has_error (&msg->buffer))
+		return PARSE_ERROR;
+	
+	/* Read in the code that goes along with these attributes */
+	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
+		return PARSE_ERROR;
 
-	return gkr_buffer_has_error (&msg->buffer) ? PARSE_ERROR : ret;	
+	return (CK_RV)num;
 }
 
 static CK_RV
@@ -950,13 +1074,6 @@ proto_read_sesssion_info (GckRpcMessage *msg, CK_SESSION_INFO_PTR info)
 	if (_ret == CKR_OK && !gck_rpc_message_read_ulong (_cs->resp, val)) \
 		_ret = PARSE_ERROR;
 
-#define OUT_RETURN_CODE() { \
-	CK_RV r; \
-	_ret = gck_rpc_message_read_ulong (_cs->resp, (_ret == CKR_OK) ? &r : NULL); \
-	if (_ret == CKR_OK) _ret = r; \
-	if (_ret != CKR_OK) goto _cleanup; \
-	}
-
 #define OUT_BYTE_ARRAY(arr, len)  \
 	if (len == NULL) \
 		_ret = CKR_ARGUMENTS_BAD; \
@@ -1024,7 +1141,6 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 	const char *path;
 	CallState *cs;
 	pid_t pid;
-	int err;
 	
 	debug (("C_Initialize: enter"));
 
@@ -1060,6 +1176,13 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 				ret = CKR_CANT_LOCK;
 				goto done;
 			}
+			
+			/* 
+			 * We support setting the socket path and other arguments from from the 
+			 * pReserved pointer, similar to how NSS PKCS#11 components are initialized. 
+			 */ 
+			if (args->pReserved) 
+				parse_arguments ((const char*)args->pReserved);	
 		}
 	
 		pid = getpid ();
@@ -1072,31 +1195,17 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 				goto done;
 			}
 		}
-			
-		/* Create the necessary per thread key */
-		if (pkcs11_per_thread == 0) {
-			err = pthread_key_create (&pkcs11_per_thread, call_destroy);
-			if (err != 0) {
-				ret = CKR_GENERAL_ERROR;
-				goto done;
+		
+		/* Lookup the socket path, append '.pkcs11' */
+		if (pkcs11_socket_path[0] == 0) {
+			pkcs11_socket_path[0] = 0;
+			path = getenv ("GNOME_KEYRING_SOCKET");
+			if (path && path[0]) {
+				snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s.pkcs11", path);
+				pkcs11_socket_path[sizeof (pkcs11_socket_path) - 1] = 0;
 			}
 		}
 
-#ifdef UNIMPLEMENTED
-		path = gck_rpc_module_init (args);
-		if (!path || !path[0]) {
-			warning (("missing pkcs11 socket path in environment"));
-			ret = CKR_GENERAL_ERROR;
-			goto done;
-		}
-#else
-		/* TODO: Need to complete this code */
-		path = "";
-#endif
-		
-		/* Make a copy of the socket path */
-		snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s", path);
-			
 		/* Call through and initialize the daemon */
 		ret = call_lookup (&cs);
 		if (ret == CKR_OK) { 
@@ -1104,24 +1213,21 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 			if (ret == CKR_OK)
 				if (!gck_rpc_message_write_byte_array (cs->req, GCK_RPC_HANDSHAKE, GCK_RPC_HANDSHAKE_LEN))
 					ret = CKR_HOST_MEMORY;
-			if (ret == CKR_OK) {
+			if (ret == CKR_OK)
 				ret = call_run (cs);
-				if (ret == CKR_CRYPTOKI_ALREADY_INITIALIZED)
-					ret = CKR_OK;
-			}
 			call_done (cs, ret);
 		}
 
 done:
-	/* Mark us as officially initialized */
-	if (ret == CKR_OK) {
-		pkcs11_initialized = 1;
-		pkcs11_initialized_pid = pid;
-	} else if (ret != CKR_CRYPTOKI_ALREADY_INITIALIZED) {
-		pkcs11_initialized = 0;
-		pkcs11_initialized_pid = 0;
-		pkcs11_socket_path[0] = 0;
-	}
+		/* Mark us as officially initialized */
+		if (ret == CKR_OK) {
+			pkcs11_initialized = 1;
+			pkcs11_initialized_pid = pid;
+		} else if (ret != CKR_CRYPTOKI_ALREADY_INITIALIZED) {
+			pkcs11_initialized = 0;
+			pkcs11_initialized_pid = 0;
+			pkcs11_socket_path[0] = 0;
+		}
 			
 	pthread_mutex_unlock (&init_mutex);
 
@@ -1471,7 +1577,6 @@ rpc_C_GetAttributeValue (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object,
 		IN_ATTRIBUTE_BUFFER (template, count);
 	PROCESS_CALL;
 		OUT_ATTRIBUTE_ARRAY (template, count);
-		OUT_RETURN_CODE ();
 	END_CALL;
 }
 

@@ -36,7 +36,8 @@ gck_roots_module_la_SOURCES = \
 gck_roots_module_la_LIBADD = \
 	libgck-roots.la \
 	$(top_builddir)/pkcs11/gck/libgck.la \
-	$(top_builddir)/common/libgkr-module-common.la \
+	$(top_builddir)/common/libgkr-common-buffer.la \
+	$(top_builddir)/common/libgkr-common-secure.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \

@@ -35,7 +35,7 @@
 
 
 /* Whether to print debug output or not */
-#define DEBUG_OUTPUT 1
+#define DEBUG_OUTPUT 0
 
 
 /* The calls, must be in sync with array below */
@@ -168,7 +168,7 @@ const static GckRpcCall gck_rpc_calls[] = {
 	{ GCK_RPC_CALL_C_FindObjectsInit,      "C_FindObjectsInit",      "uaA",     ""                     },
 	{ GCK_RPC_CALL_C_FindObjects,          "C_FindObjects",          "ufu",     "au"                   },
 	{ GCK_RPC_CALL_C_FindObjectsFinal,     "C_FindObjectsFinal",     "u",       ""                     },
-	{ GCK_RPC_CALL_C_EncryptInit,          "C_EncryptInit",          "uMu"      ""                     },
+	{ GCK_RPC_CALL_C_EncryptInit,          "C_EncryptInit",          "uMu",     ""                     },
 	{ GCK_RPC_CALL_C_Encrypt,              "C_Encrypt",              "uayfy",   "ay"                   },
 	{ GCK_RPC_CALL_C_EncryptUpdate,        "C_EncryptUpdate",        "uayfy",   "ay"                   },
 	{ GCK_RPC_CALL_C_EncryptFinal,         "C_EncryptFinal",         "ufy",     "ay"                   },
@@ -242,7 +242,7 @@ void                     gck_rpc_message_reset                   (GckRpcMessage 
 int                      gck_rpc_message_equals                  (GckRpcMessage *m1, 
                                                                   GckRpcMessage *m2);
 
-#define                  gck_rpc_message_is_verified(msg)        ((msg)->sigverify[0] == 0)
+#define                  gck_rpc_message_is_verified(msg)        (!(msg)->sigverify || (msg)->sigverify[0] == 0)
 
 #define                  gck_rpc_message_buffer_error(msg)       (gkr_buffer_has_error(&(msg)->buffer))
 

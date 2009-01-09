@@ -40,7 +40,9 @@ libgnomekeyringinclude_HEADERS = \
 
 libgnome_keyring_la_LIBADD = \
 	libgnome-keyring-common.la \
-	$(top_builddir)/common/libgkr-module-common.la \
+	$(top_builddir)/common/libgkr-common-buffer.la \
+	$(top_builddir)/common/libgkr-common-secure.la \
+	$(top_builddir)/common/libgkr-common-creds.la \
 	$(GLIB_LIBS)
 
 libgnome_keyring_la_LDFLAGS = \

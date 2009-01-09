@@ -73,25 +73,6 @@ EXTRA_DIST = \
 	pkix.asn \
 	pk.asn
 
-# ------------------------------------------------------------------------------
-# TEMPORARY TEST BINARY
-
-noinst_PROGRAMS = \
-	temporary-test
-	
-temporary_test_SOURCES = \
-	temporary-test.c
-
-temporary_test_LDFLAGS = \
-	-lpthread
-	
-temporary_test_LDADD = \
-	libgck.la \
-	$(top_builddir)/common/libgkr-module-common.la \
-    	$(GOBJECT_LIBS) \
-    	$(LIBGCRYPT_LIBS) \
-	$(GLIB_LIBS) 
-
 # -------------------------------------------------------------------------------
 
 if WITH_TESTS

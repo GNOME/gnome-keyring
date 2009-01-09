@@ -6,7 +6,8 @@ UNIT_PROMPT =
 UNIT_LIBS =  \
 	$(top_builddir)/pkcs11/ssh-store/libgck-ssh-store.la \
 	$(top_builddir)/pkcs11/gck/libgck.la \
-	$(top_builddir)/common/libgkr-module-common.la
+	$(top_builddir)/common/libgkr-common-buffer.la \
+	$(top_builddir)/common/libgkr-common-secure.la
 
 include $(top_srcdir)/tests/gtest.make
 

@@ -9,12 +9,7 @@ INCLUDES = \
 
 DAEMON_SRCS = \
 	gkr-pkcs11-auth.c gkr-pkcs11-auth.h gkr-pkcs11-auth-ep.c \
-	gkr-pkcs11-daemon.c gkr-pkcs11-daemon.h \
-	gkr-pkcs11-dispatch.c gkr-pkcs11-dispatch.h \
-	gkr-pkcs11-dispatch-session.c \
-	gkr-pkcs11-dsa.c gkr-pkcs11-dsa.h \
-	$(top_srcdir)/pkcs11/gkr-pkcs11-message.c \
-	gkr-pkcs11-rsa.c gkr-pkcs11-rsa.h
+	gkr-pkcs11-daemon.c gkr-pkcs11-daemon.h
 
 noinst_LTLIBRARIES = libgkr-pkcs11.la
 

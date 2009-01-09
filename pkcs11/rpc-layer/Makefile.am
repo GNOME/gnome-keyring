@@ -20,7 +20,6 @@ libgck_rpc_layer_la_SOURCES = \
 	gck-rpc-util.c
 
 libgck_rpc_layer_la_LIBADD = \
-	$(top_builddir)/common/libgkr-common-buffer.la \
 	$(GOBJECT_LIBS) \
     	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) 
@@ -31,23 +30,24 @@ libgck_rpc_layer_la_CFLAGS = \
 	$(GLIB_CFLAGS) 
 
 # ------------------------------------------------------------------------------
-# The module code 
+# The module code, built as the public gnome-keyring module
 
-moduledir = $(libdir)/gnome-keyring/devel/
+moduledir = $(libdir)/gnome-keyring/
 
 module_LTLIBRARIES = \
-	gck-rpc-layer-standalone.la
+	gnome-keyring-pkcs11.la
 
-gck_rpc_layer_standalone_la_SOURCES = \
+gnome_keyring_pkcs11_la_SOURCES = \
 	gck-rpc-private.h \
 	gck-rpc-module.c \
 	gck-rpc-message.c \
 	gck-rpc-util.c
 
-gck_rpc_layer_standalone_la_LIBADD = \
-	$(top_builddir)/common/libgkr-common-buffer.la 
+gnome_keyring_pkcs11_la_LIBADD = \
+	$(top_builddir)/common/libgkr-common-buffer.la \
+	$(top_builddir)/common/libgkr-common-creds.la 
 
-gck_rpc_layer_standalone_la_LDFLAGS = \
+gnome_keyring_pkcs11_la_LDFLAGS = \
 	-module -avoid-version \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
@@ -58,5 +58,6 @@ gck_rpc_daemon_standalone_SOURCES = \
 	gck-rpc-daemon-standalone.c
 	
 gck_rpc_daemon_standalone_LDADD = \
-	-ldl -lpthread libgck-rpc-layer.la
+	-ldl libgck-rpc-layer.la \
+	$(top_builddir)/common/libgkr-common.la
 	

@@ -1,5 +1,50 @@
 2009-01-08  Stef Walter  <stef@memberwebs.com>
 
+	* common/Makefile.am:
+	* daemon/Makefile.am:
+	* daemon/ui/Makefile.am:
+	* library/Makefile.am:
+	* pam/Makefile.am:
+	* pkcs11/gck/tests/Makefile.am:
+	* pkcs11/roots/Makefile.am:
+	* pkcs11/ssh-agent/Makefile.am:
+	* pkcs11/ssh-store/Makefile.am:
+	* pkcs11/ssh-store/tests/Makefile.am: Make it easier to pick and 
+	choose between commonly used code bits in different modules.
+	 
+	* pkcs11/gck/Makefile.am:
+	* pkcs11/gck-temporary-test.c: Remove test code.
+	
+	* daemon/gkr-daemon.c:
+	* daemon/pkcs11/gkr-pkcs11-auth.c:
+	* daemon/pkcs11/gkr-pkcs11-daemon.c:
+	* daemon/pkcs11/gkr-pkcs11-dispatch.c: (removed)
+	* daemon/pkcs11/gkr-pkcs11-dispatch.h: (removed)
+	* daemon/pkcs11/gkr-pkcs11-dispatch-session.c: (removed)
+	* daemon/pkcs11/gkr-pkcs11-dsa.c: (removed)
+	* daemon/pkcs11/gkr-pkcs11-dsa.h: (removed)
+	* daemon/pkcs11/gkr-pkcs11-rsa.c: (removed)
+	* daemon/pkcs11/gkr-pkcs11-rsa.h: (removed)
+	* daemon/pkcs11/Makefile.am:
+	* pkcs11/gkr-pkcs11-calls.h: (removed)
+	* pkcs11/gkr-pkcs11-mechanisms.h: (removed)
+	* pkcs11/gkr-pkcs11-message.c: (removed)
+	* pkcs11/gkr-pkcs11-message.h: (removed)
+	* pkcs11/gkr-pkcs11-module.c: (removed)
+	* pkcs11/Makefile.am: 
+	* pkcs11/rpc-layer/gck-rpc-daemon-standalone.c: 
+	* pkcs11/rpc-layer/gck-rpc-dispatch.c:
+	* pkcs11/rpc-layer/gck-rpc-layer.h:
+	* pkcs11/rpc-layer/gck-rpc-message.c:
+	* pkcs11/rpc-layer/gck-rpc-module.c:
+	* pkcs11/rpc-layer/gck-rpc-private.h:
+	* pkcs11/rpc-layer/Makefile.am:
+	* pkcs11/rpc-layer/p11-rpc-*: (remove old straggler files)
+	* configure.in: Integrate modular rpc-layer and remove old 
+	dispatch and module code frome gnome-keyring-daemon.
+
+2009-01-08  Stef Walter  <stef@memberwebs.com>
+
 	* gp11/gp11-module.c: 
 	* gp11/gp11-session.c: 
 	* gp11/gp11-slot.c: Don't try to keep authenticating when 

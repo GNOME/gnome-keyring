@@ -1,8 +1,9 @@
 
 noinst_LTLIBRARIES = \
 	libgkr-common.la \
-	libgkr-module-common.la \
-	libgkr-common-buffer.la
+	libgkr-common-secure.la \
+	libgkr-common-buffer.la \
+	libgkr-common-creds.la
 
 INCLUDES = \
 	-I$(top_srcdir) 
@@ -42,16 +43,14 @@ libgkr_common_la_LIBADD = \
 # --------------------------------------------------------------------
 # COMMON STUFF COMPILED INTO LOADABLE MODULES
 
-libgkr_module_common_la_SOURCES = \
-	gkr-buffer.c gkr-buffer.h \
-	gkr-secure-memory.c gkr-secure-memory.h \
-	gkr-unix-credentials.c gkr-unix-credentials.h
-
-# --------------------------------------------------------------------
-# ONLY THE BUFFER CODE
+libgkr_common_secure_la_SOURCES = \
+	gkr-secure-memory.c gkr-secure-memory.h
 
 libgkr_common_buffer_la_SOURCES = \
 	gkr-buffer.c gkr-buffer.h 
+	
+libgkr_common_creds_la_SOURCES = \
+	gkr-unix-credentials.c gkr-unix-credentials.h	
 	
 if WITH_TESTS
 TESTS_DIR = tests
