@@ -1,3 +1,9 @@
+2009-01-09  Saleem Abdulrasool <compnerd@compnerd.org>
+
+	* pkcs11/gck/gck-file-store.c:
+	Change %u to %lu in g_warning format to fix compile on 64-bit systems.  Fixes
+	bug #567117.
+
 2009-01-09  Jeff Cai <jeff.cai@sun.com>
 
 	* pkcs11/gck/gck-module.c: (register_virtual_slot):

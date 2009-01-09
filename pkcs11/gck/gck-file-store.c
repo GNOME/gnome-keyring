@@ -135,7 +135,7 @@ read_all_bytes (int fd, guchar *buf, gsize len)
 			if (errno == EAGAIN && errno == EINTR)
 				continue;
 			if (res < 0 || len != all)
-				g_warning ("couldn't read %u bytes from store file: %s", all, 
+				g_warning ("couldn't read %lu bytes from store file: %s", all, 
 				           g_strerror (errno));
 			return FALSE;
 		} else  {
@@ -160,7 +160,7 @@ write_all_bytes (int fd, const guchar *buf, gsize len)
 		if (res <= 0) {
 			if (errno == EAGAIN && errno == EINTR)
 				continue;
-			g_warning ("couldn't write %u bytes to store file: %s", all, 
+			g_warning ("couldn't write %lu bytes to store file: %s", all, 
 			           res < 0 ? g_strerror (errno) : "");
 			return FALSE;
 		} else  {
