@@ -1,3 +1,9 @@
+2009-01-09  Jeff Cai <jeff.cai@sun.com>
+
+	* pkcs11/gck/gck-module.c: (register_virtual_slot):
+	The void function should not return a value.
+	Fix #567121
+
 2009-01-08  Stef Walter  <stef@memberwebs.com>
 
 	* common/Makefile.am:

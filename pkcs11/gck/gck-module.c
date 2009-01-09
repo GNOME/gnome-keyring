@@ -214,7 +214,7 @@ register_virtual_slot (GckModule *self, VirtualSlot *slot)
 	g_assert (GCK_IS_MODULE (self));
 	g_assert (!g_hash_table_lookup (self->pv->virtual_slots_by_id, &(slot->slot_id)));
 	
-	return g_hash_table_insert (self->pv->virtual_slots_by_id, 
+	g_hash_table_insert (self->pv->virtual_slots_by_id, 
 	                            gck_util_ulong_alloc (slot->slot_id), slot);
 }
 
