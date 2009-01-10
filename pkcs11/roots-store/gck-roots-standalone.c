@@ -23,11 +23,13 @@
 
 #include "config.h"
 
-#include "gck-roots-module.h"
+#include "gck-roots-store.h"
 
 #include "gck/gck-crypto.h"
 
 #include "common/gkr-secure-memory.h"
+
+#include <glib-object.h>
 
 #include "pkcs11/pkcs11.h"
 
@@ -53,6 +55,6 @@ C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 	
 	gck_crypto_initialize ();
 	
-	*list = gck_roots_module_function_list;
+	*list = gck_roots_store_get_functions ();
 	return CKR_OK;
 }

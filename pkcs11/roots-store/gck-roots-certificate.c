@@ -33,14 +33,12 @@
 
 enum {
 	PROP_0,
-	PROP_UNIQUE,
 	PROP_PATH,
 };
 
 struct _GckRootsCertificate {
 	GckCertificate parent;
 	gchar *path;
-	gchar *unique;
 };
 
 G_DEFINE_TYPE (GckRootsCertificate, gck_roots_certificate, GCK_TYPE_CERTIFICATE);
@@ -89,10 +87,6 @@ gck_roots_certificate_set_property (GObject *obj, guint prop_id, const GValue *v
 	GckRootsCertificate *self = GCK_ROOTS_CERTIFICATE (obj);
 	
 	switch (prop_id) {
-	case PROP_UNIQUE:
-		g_return_if_fail (!self->unique);
-		self->unique = g_value_dup_string (value);
-		break;
 	case PROP_PATH:
 		g_return_if_fail (!self->path);
 		self->path = g_value_dup_string (value);
@@ -110,9 +104,6 @@ gck_roots_certificate_get_property (GObject *obj, guint prop_id, GValue *value,
 	GckRootsCertificate *self = GCK_ROOTS_CERTIFICATE (obj);
 	
 	switch (prop_id) {
-	case PROP_UNIQUE:
-		g_value_set_string (value, gck_roots_certificate_get_unique (self));
-		break;
 	case PROP_PATH:
 		g_value_set_string (value, gck_roots_certificate_get_path (self));
 		break;
@@ -128,7 +119,6 @@ gck_roots_certificate_finalize (GObject *obj)
 	GckRootsCertificate *self = GCK_ROOTS_CERTIFICATE (obj);
 	
 	g_free (self->path);
-	g_free (self->unique);
 
 	G_OBJECT_CLASS (gck_roots_certificate_parent_class)->finalize (obj);
 }
@@ -145,10 +135,6 @@ gck_roots_certificate_class_init (GckRootsCertificateClass *klass)
 
 	gck_class->get_attribute = gck_roots_certificate_get_attribute;
 	
-	g_object_class_install_property (gobject_class, PROP_UNIQUE,
-	           g_param_spec_string ("unique", "Unique", "Certificate hash plus path", 
-	                                "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	
 	g_object_class_install_property (gobject_class, PROP_PATH,
 	           g_param_spec_string ("path", "Path", "Certificate origin path", 
 	                                "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
@@ -162,13 +148,6 @@ GckRootsCertificate*
 gck_roots_certificate_new (const gchar *unique, const gchar *path)
 {
 	return g_object_new (GCK_TYPE_ROOTS_CERTIFICATE, "unique", unique, "path", path, NULL);
-}
-
-const gchar*
-gck_roots_certificate_get_unique (GckRootsCertificate *self)
-{
-	g_return_val_if_fail (GCK_IS_ROOTS_CERTIFICATE (self), "");
-	return self->unique;
 }
 
 const gchar*

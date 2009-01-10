@@ -28,10 +28,6 @@
 
 #include "gck-types.h"
 
-#define GCK_OBJECT_HANDLE_MASK  0x0FFFFFFF
-#define GCK_OBJECT_IS_PERMANENT	0x10000000
-#define GCK_OBJECT_IS_TEMPORARY	0x00000000
-
 #define GCK_TYPE_OBJECT               (gck_object_get_type ())
 #define GCK_OBJECT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_OBJECT, GckObject))
 #define GCK_OBJECT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCK_TYPE_OBJECT, GckObjectClass))

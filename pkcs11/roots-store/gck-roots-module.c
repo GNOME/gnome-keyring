@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gck-roots-store.h"
 #include "gck-roots-module.h"
 #include "gck-roots-certificate.h"
 
@@ -254,7 +255,9 @@ static CK_RV
 gck_roots_module_real_refresh_token (GckModule *base)
 {
 	GckRootsModule *self = GCK_ROOTS_MODULE (base);
+#ifdef ROOT_CERTIFICATES
 	gck_file_tracker_refresh (self->tracker, FALSE);
+#endif
 	return CKR_OK;
 }
 
@@ -266,12 +269,14 @@ gck_roots_module_constructor (GType type, guint n_props, GObjectConstructParam *
 
 	g_return_val_if_fail (self, NULL);	
 
+#ifdef ROOT_CERTIFICATES
 	if (!self->directory)
 		self->directory = g_strdup (ROOT_CERTIFICATES);
 	self->tracker = gck_file_tracker_new (self->directory, "*", "*.0");
 	g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
 	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
 	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
+#endif
 	
 	manager = gck_module_get_manager (GCK_MODULE (self));
 	gck_manager_add_property_index (manager, "unique", TRUE);
@@ -332,4 +337,15 @@ gck_roots_module_class_init (GckRootsModuleClass *klass)
 	
 	module_class->slot_info = &gck_roots_module_slot_info;
 	module_class->token_info = &gck_roots_module_token_info;
+}
+
+/* ---------------------------------------------------------------------------------------
+ * PUBLIC 
+ */
+
+CK_FUNCTION_LIST_PTR
+gck_roots_store_get_functions (void)
+{
+	gck_crypto_initialize ();
+	return gck_roots_module_function_list;
 }

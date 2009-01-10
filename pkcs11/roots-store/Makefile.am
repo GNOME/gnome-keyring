@@ -12,9 +12,10 @@ INCLUDES = \
 # The roots component code
 
 noinst_LTLIBRARIES = \
-	libgck-roots.la
+	libgck-roots-store.la
 
-libgck_roots_la_SOURCES = \
+libgck_roots_store_la_SOURCES = \
+	gck-roots-store.h \
 	gck-roots-module.c gck-roots-module.h \
 	gck-roots-certificate.c gck-roots-certificate.h
 
@@ -24,16 +25,16 @@ libgck_roots_la_SOURCES = \
 moduledir = $(libdir)/gnome-keyring/standalone/
 
 module_LTLIBRARIES = \
-	gck-roots-module.la
+	gck-roots-store-standalone.la
 
-gck_roots_module_la_LDFLAGS = \
+gck_roots_store_standalone_la_LDFLAGS = \
 	-module -avoid-version \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
-gck_roots_module_la_SOURCES = \
+gck_roots_store_standalone_la_SOURCES = \
 	gck-roots-standalone.c
 
-gck_roots_module_la_LIBADD = \
+gck_roots_store_standalone_la_LIBADD = \
 	libgck-roots.la \
 	$(top_builddir)/pkcs11/gck/libgck.la \
 	$(top_builddir)/common/libgkr-common-buffer.la \

@@ -216,8 +216,13 @@ read_value (GckObject *object, const gchar *property, CK_ATTRIBUTE_PTR *result)
 		return FALSE;
 	};
 	
-	*result = g_slice_new (CK_ATTRIBUTE);
-	memcpy (*result, &attr, sizeof (CK_ATTRIBUTE));
+	if (attr.pValue) {
+		*result = g_slice_new (CK_ATTRIBUTE);
+		memcpy (*result, &attr, sizeof (CK_ATTRIBUTE));
+	} else {
+		*result = NULL;
+	}
+	
 	g_value_unset (&value);
 	return TRUE;
 }
@@ -398,12 +403,13 @@ add_object (GckManager *self, GckObject *object)
 	handle = gck_object_get_handle (object);
 	if (!handle) {
 		/* Make a new handle */
-		handle = (gck_util_next_handle () & GCK_OBJECT_HANDLE_MASK);
-		if (self->pv->for_token)
-			handle |= GCK_OBJECT_IS_PERMANENT;
+		handle = gck_util_next_handle ();
 		gck_object_set_handle (object, handle);
 	}
-	
+
+	/* Make the object know about its token state */
+	g_object_set (object, "permanent", self->pv->for_token, NULL);
+
 	/* 
 	 * We don't ref the objects or anything. They're expected to 
 	 * unregister upon dispose.   

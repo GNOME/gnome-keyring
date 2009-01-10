@@ -1,5 +1,5 @@
-#ifndef GCKRPC_H_
-#define GCKRPC_H_
+#ifndef GCKRPC_LAYER_H_
+#define GCKRPC_LAYER_H_
 
 #include "pkcs11/pkcs11.h"
 
@@ -17,4 +17,4 @@ void               gck_rpc_layer_uninitialize           (void);
 /* Accept a new connection. Should be called when above fd has read */
 void               gck_rpc_layer_accept                 (void);
 
-#endif /* GCKRPC_H_ */
+#endif /* GCKRPC_LAYER_H_ */

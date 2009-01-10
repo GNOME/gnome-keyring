@@ -36,7 +36,8 @@ enum {
 	PROP_HANDLE,
 	PROP_MANAGER,
 	PROP_STORE,
-	PROP_UNIQUE
+	PROP_UNIQUE,
+	PROP_PERMANENT
 };
 
 enum {
@@ -51,6 +52,7 @@ struct _GckObjectPrivate {
 	GckManager *manager;
 	GckStore *store;
 	gchar *unique;
+	gboolean permanent;
 };
 
 G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
@@ -78,7 +80,7 @@ gck_object_real_get_attribute (GckObject *self, CK_ATTRIBUTE* attr)
 	case CKA_PRIVATE:
 		return gck_attribute_set_bool (attr, FALSE);
 	case CKA_TOKEN:
-		return gck_attribute_set_bool (attr, (self->pv->handle & GCK_OBJECT_IS_PERMANENT) ? TRUE : FALSE);
+		return gck_attribute_set_bool (attr, self->pv->permanent);
 	case CKA_GNOME_UNIQUE:
 		if (self->pv->unique)
 			return gck_attribute_set_string (attr, self->pv->unique);
@@ -238,6 +240,10 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (!self->pv->unique);
 		self->pv->unique = g_value_dup_string (value);
 		break;
+	case PROP_PERMANENT:
+		self->pv->permanent = g_value_get_boolean (value);
+		g_object_notify (G_OBJECT (self), "permanent");
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -262,6 +268,9 @@ gck_object_get_property (GObject *obj, guint prop_id, GValue *value,
 		break;
 	case PROP_UNIQUE:
 		g_value_set_string (value, gck_object_get_unique (self));
+		break;
+	case PROP_PERMANENT:
+		g_value_set_boolean (value, self->pv->permanent);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -302,6 +311,10 @@ gck_object_class_init (GckObjectClass *klass)
 	g_object_class_install_property (gobject_class, PROP_UNIQUE,
 	           g_param_spec_string ("unique", "Unique Identifer", "Machine unique identifier", 
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	
+	g_object_class_install_property (gobject_class, PROP_PERMANENT,
+	           g_param_spec_boolean ("permanent", "Is Permanent Object", "Is permanent token object", 
+	                                 FALSE, G_PARAM_READWRITE));
 	
 	signals[NOTIFY_ATTRIBUTE] = g_signal_new ("notify-attribute", GCK_TYPE_OBJECT, 
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, notify_attribute),

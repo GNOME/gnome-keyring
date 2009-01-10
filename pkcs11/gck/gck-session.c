@@ -233,20 +233,23 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 	
 	if (handle == 0)
 		return CKR_OBJECT_HANDLE_INVALID;
+
+	/* Try looking up in the token manager */
+	manager = gck_module_get_manager (self->pv->module);
+	object = gck_manager_find_by_handle (manager, handle);
+	is_token = TRUE;
 	
-	if (handle & GCK_OBJECT_IS_PERMANENT) {
-		manager = gck_module_get_manager (self->pv->module);
-		is_token = TRUE;
-	} else {
+	/* Try looking up in the session manager */
+	if (object == NULL) {
 		manager = gck_session_get_manager (self);
+		object = gck_manager_find_by_handle (manager, handle);
 		is_token = FALSE;
 	}
 	
-	g_return_val_if_fail (manager, CKR_GENERAL_ERROR);
-	
-	object = gck_manager_find_by_handle (manager, handle);
 	if (object == NULL)
 		return CKR_OBJECT_HANDLE_INVALID;
+
+	g_return_val_if_fail (manager, CKR_GENERAL_ERROR);
 	
 	/* 
 	 * Check that we're not accessing private objects on a 

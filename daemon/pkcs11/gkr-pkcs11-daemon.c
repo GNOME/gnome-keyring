@@ -24,9 +24,11 @@
 #include "gkr-pkcs11-auth.h"
 #include "gkr-pkcs11-daemon.h"
 
-#include "pkcs11/ssh-store/gck-ssh-store.h"
+#include "pkcs11/plex-layer/gck-plex-layer.h"
+#include "pkcs11/roots-store/gck-roots-store.h"
 #include "pkcs11/rpc-layer/gck-rpc-layer.h"
 #include "pkcs11/ssh-agent/gck-ssh-agent.h"
+#include "pkcs11/ssh-store/gck-ssh-store.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-daemon-util.h"
@@ -69,21 +71,32 @@ pkcs11_daemon_cleanup (gpointer unused)
 gboolean
 gkr_pkcs11_daemon_initialize (void)
 {
+	CK_FUNCTION_LIST_PTR plex_layer;
+	CK_FUNCTION_LIST_PTR roots_store; 
 	CK_FUNCTION_LIST_PTR ssh_store;
 	CK_RV rv;
 
 	/* Now initialize them all */
 	gkr_async_begin_concurrent ();
 
-		/* Initialize the SSH storage */
+		/* Connect SSH storage */
 		ssh_store = gck_ssh_store_get_functions ();
-
-		/* TODO: More will come here, but currently this is it */
-
+		
+		/* Connect Root certificates */
+		roots_store = gck_roots_store_get_functions (); 
+		
+		/* Add all of those into the multiplexing layer */
+		gck_plex_layer_add_module (ssh_store);
+#ifdef ROOT_CERTIFICATES
+		gck_plex_layer_add_module (roots_store);
+#endif
+		plex_layer = gck_plex_layer_get_functions (); 
+		
 		/* The auth component is the top component */
-		gkr_pkcs11_auth_chain_functions (ssh_store);
+		gkr_pkcs11_auth_chain_functions (plex_layer);
 		pkcs11_roof = gkr_pkcs11_auth_get_functions ();
 	
+		/* Initialize the whole caboodle */
 		rv = (pkcs11_roof->C_Initialize) (NULL);
 
 	gkr_async_end_concurrent ();

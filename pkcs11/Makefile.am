@@ -9,12 +9,6 @@ inc_HEADERS = \
 EXTRA_DIST = \
 	pkcs11.h
 
-if WITH_ROOT_CERTS
-ROOTS_DIR = roots-store
-else
-ROOTS_DIR = 
-endif
-
 if WITH_TESTS
 TESTS_DIR = tests
 else
@@ -23,6 +17,7 @@ endif
 
 SUBDIRS = . \
 	gck \
+	roots-store \
 	rpc-layer \
 	plex-layer \
 	ssh-agent \

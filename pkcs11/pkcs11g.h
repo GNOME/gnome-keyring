@@ -66,8 +66,8 @@
  */ 
 
 #define CK_GNOME_MAX_SLOT                           (0x000003FF)
-#define CK_GNOME_MAX_APP                            ((CK_ULONG)-1) >> 10)
-#define CK_GNOME_MAX_HANDLE                         ((CK_ULONG)-1) >> 10)
+#define CK_GNOME_MAX_APP                            (((CK_ULONG)-1) >> 10)
+#define CK_GNOME_MAX_HANDLE                         (((CK_ULONG)-1) >> 10)
 
 
 /* -------------------------------------------------------------------

@@ -40,8 +40,6 @@ struct _GckRootsModuleClass {
 	GckModuleClass parent_class;
 };
 
-GCK_DECLARE_MODULE (gck_roots_module);
-
 GType               gck_roots_module_get_type               (void);
 
 #endif /* __GCK_ROOTS_MODULE_H__ */

@@ -586,6 +586,10 @@ CK_ULONG
 gck_module_next_handle (GckModule *self)
 {
 	g_return_val_if_fail (GCK_IS_MODULE (self), 0);
+	if (self->pv->handle_counter == CK_GNOME_MAX_HANDLE) {
+		g_warning ("handle counter wrapped");
+		self->pv->handle_counter = 0;
+	}
 	return (self->pv->handle_counter)++;
 }
 
