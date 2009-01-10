@@ -1,5 +1,11 @@
 2009-01-09  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/roots-store/: (rename from roots/)
+	* pkcs11/Makefile.am:
+	* configure.in: Rename 'roots' component to 'roots-store'
+	 
+2009-01-09  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/gck/gck-file-store.c: 
 	* pkcs11/ssh-agent/Makefile.am: Build fixes
 

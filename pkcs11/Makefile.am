@@ -10,7 +10,7 @@ EXTRA_DIST = \
 	pkcs11.h
 
 if WITH_ROOT_CERTS
-ROOTS_DIR = roots
+ROOTS_DIR = roots-store
 else
 ROOTS_DIR = 
 endif
@@ -21,5 +21,11 @@ else
 TESTS_DIR = 
 endif
 
-SUBDIRS = . gck rpc-layer ssh-agent ssh-store $(ROOTS_DIR) $(TESTS_DIR)
-
+SUBDIRS = . \
+	gck \
+	rpc-layer \
+	plex-layer \
+	ssh-agent \
+	ssh-store \
+	$(ROOTS_DIR) \
+	$(TESTS_DIR)
