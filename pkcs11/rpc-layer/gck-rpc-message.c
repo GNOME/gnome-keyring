@@ -346,7 +346,6 @@ int
 gck_rpc_message_write_byte_array (GckRpcMessage *msg, CK_BYTE_PTR arr, CK_ULONG num)
 {
 	assert (msg);
-	assert (!num || arr);
 
 	/* Make sure this is in the right order */
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "ay"));

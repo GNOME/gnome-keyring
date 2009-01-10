@@ -756,27 +756,17 @@ proto_read_byte_array (GckRpcMessage *msg, CK_BYTE_PTR arr,
 	if (!gkr_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
 		return PARSE_ERROR;
 	
-	/* If not valid, then just the length is encoded */
+	/* If not valid, then just the length is encoded, this can signify CKR_BUFFER_TOO_SMALL */
 	if (!valid) {
 		if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &vlen))
 			return PARSE_ERROR;
 		
-		if (arr) {
-			
-			/*
-			 * This should never happen in normal operation. It denotes a goof up 
-			 * on the other side of our RPC. We should be sending an empty buffer 
-			 * only in the case where there's no array to be filled, which is what 
-			 * indicates the other side to reply with an invalid array.
-			 */
-
-			warning (("received an invalid array, but caller expected filled"));
-			return PARSE_ERROR;
-		}
-		
-		/* Just return the length */
 		*len = vlen;
-		return CKR_OK;
+		
+		if (arr)
+			return CKR_BUFFER_TOO_SMALL;
+		else
+			return CKR_OK;
 	} 
 
 	/* Get the actual bytes */
@@ -820,22 +810,12 @@ proto_read_ulong_array (GckRpcMessage *msg, CK_ULONG_PTR arr,
 
 	*len = num;
 
+	/* If not valid, then just the length is encoded, this can signify CKR_BUFFER_TOO_SMALL */
 	if (!valid) {
-
-		if (arr) {
-			
-			/*
-			 * This should never happen in normal operation. It denotes a goof up 
-			 * on the other side of our RPC. We should be sending an empty buffer 
-			 * only in the case where there's no array to be filled, which is what 
-			 * indicates the other side to reply with an invalid array.
-			 */
-
-			warning (("received an invalid array, but caller expected filled"));
-			return PARSE_ERROR;
-		}
-
-		return CKR_OK;
+		if (arr) 
+			return CKR_BUFFER_TOO_SMALL;
+		else
+			return CKR_OK;
 	}
 
 	if (max < num)
@@ -1026,7 +1006,7 @@ proto_read_sesssion_info (GckRpcMessage *msg, CK_SESSION_INFO_PTR info)
 	
 #define IN_BYTE_ARRAY(arr, len) \
 	if (len != 0 && arr == NULL) \
-		_ret = CKR_ARGUMENTS_BAD; \
+		{ _ret = CKR_ARGUMENTS_BAD; goto _cleanup; } \
 	if (!gck_rpc_message_write_byte_array (_cs->req, arr, len)) \
 		{ _ret = CKR_HOST_MEMORY; goto _cleanup; }
 
@@ -1038,7 +1018,7 @@ proto_read_sesssion_info (GckRpcMessage *msg, CK_SESSION_INFO_PTR info)
 	
 #define IN_ULONG_ARRAY(arr, len) \
 	if (len != 0 && arr == NULL) \
-		_ret = CKR_ARGUMENTS_BAD; \
+		{ _ret = CKR_ARGUMENTS_BAD; goto _cleanup; }\
 	if (!gck_rpc_message_write_ulong_array (_cs->req, arr, len)) \
 		{ _ret = CKR_HOST_MEMORY; goto _cleanup; }
 
@@ -1062,7 +1042,7 @@ proto_read_sesssion_info (GckRpcMessage *msg, CK_SESSION_INFO_PTR info)
 
 #define IN_MECHANISM(val) \
 	if (val == NULL) \
-		_ret = CKR_ARGUMENTS_BAD; \
+		{ _ret = CKR_ARGUMENTS_BAD; goto _cleanup; } \
 	_ret = proto_write_mechanism (_cs->req, val); \
 	if (_ret != CKR_OK) goto _cleanup;
 

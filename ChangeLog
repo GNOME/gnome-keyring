@@ -1,5 +1,14 @@
 2009-01-09  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pkcs11/gkr-pkcs11-auth-ep.c:
+	* pkcs11/plex-layer/gck-plex-layer.c:
+	* pkcs11/rpc-layer/gck-rpc-dispatch.c:
+	* pkcs11/rpc-layer/gck-rpc-message.c:
+	* pkcs11/rpc-layer/gck-rpc-module.c: Fix corner cases and error code
+	problems highlighted by the p11-tests tool.
+
+2009-01-09  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/Makefile.am:
 	* daemon/pkcs11/gkr-pkcs11-daemon.c:
 	* pkcs11/Makefile.am:

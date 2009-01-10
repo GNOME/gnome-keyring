@@ -232,6 +232,34 @@ proto_read_byte_array (CallState *cs, CK_BYTE_PTR* array, CK_ULONG* n_array)
 }
 
 static CK_RV
+proto_write_byte_array (CallState *cs, CK_BYTE_PTR array, CK_ULONG len, CK_RV ret)
+{
+	assert (cs);
+
+	/* 
+	 * When returning an byte array, in many cases we need to pass
+	 * an invalid array along with a length, which signifies CKR_BUFFER_TOO_SMALL.
+	 */
+	
+	switch (ret) {
+	case CKR_BUFFER_TOO_SMALL:
+		array = NULL;
+		/* fall through */
+	case CKR_OK:
+		break;
+		
+	/* Pass all other errors straight through */
+	default:
+		return ret;
+	};
+	
+	if (!gck_rpc_message_write_byte_array (cs->resp, array, len))
+		return PREP_ERROR;
+
+	return CKR_OK;
+}
+
+static CK_RV
 proto_read_ulong_buffer (CallState *cs, CK_ULONG_PTR* buffer, CK_ULONG* n_buffer)
 {
 	GckRpcMessage *msg;
@@ -264,6 +292,33 @@ proto_read_ulong_buffer (CallState *cs, CK_ULONG_PTR* buffer, CK_ULONG* n_buffer
 	return CKR_OK;
 }
 
+static CK_RV
+proto_write_ulong_array (CallState *cs, CK_ULONG_PTR array, CK_ULONG len, CK_RV ret)
+{
+	assert (cs);
+
+	/* 
+	 * When returning an ulong array, in many cases we need to pass
+	 * an invalid array along with a length, which signifies CKR_BUFFER_TOO_SMALL.
+	 */
+	
+	switch (ret) {
+	case CKR_BUFFER_TOO_SMALL:
+		array = NULL;
+		/* fall through */
+	case CKR_OK:
+		break;
+		
+	/* Pass all other errors straight through */
+	default:
+		return ret;
+	};
+	
+	if (!gck_rpc_message_write_ulong_array (cs->resp, array, len))
+		return PREP_ERROR;
+
+	return CKR_OK;
+}
 
 static CK_RV
 proto_read_attribute_buffer (CallState *cs, CK_ATTRIBUTE_PTR* result, CK_ULONG* n_result)
@@ -650,12 +705,12 @@ proto_write_session_info (CallState *cs, CK_SESSION_INFO_PTR info)
 		_ret = PREP_ERROR;
 
 #define OUT_BYTE_ARRAY(array, len) \
-	if (_ret == CKR_OK && !gck_rpc_message_write_byte_array (cs->resp, array, len)) \
-		_ret = PREP_ERROR;
+	/* Note how we filter return codes */ \
+	_ret = proto_write_byte_array (cs, array, len, _ret);
 
 #define OUT_ULONG_ARRAY(array, len) \
-	if (_ret == CKR_OK && !gck_rpc_message_write_ulong_array (cs->resp, array, len)) \
-		_ret = PREP_ERROR;
+	/* Note how we filter return codes */ \
+	_ret = proto_write_ulong_array (cs, array, len, _ret);
 
 #define OUT_ATTRIBUTE_ARRAY(array, len) \
 	/* Note how we filter return codes */ \

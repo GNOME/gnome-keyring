@@ -341,7 +341,8 @@ plex_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data, CK_NOT
 	
 	MAP_SLOT_DOWN (id, map);
 	rv = (map.funcs->C_OpenSession) (id, flags, user_data, callback, handle);
-	MAP_SESSION_UP (map, *handle);
+	if (rv == CKR_OK)
+		MAP_SESSION_UP (map, *handle);
 	
 	return rv;
 }

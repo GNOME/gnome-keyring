@@ -545,7 +545,7 @@ auth_C_EncryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 		}
 	}
 	
-	return CKR_OK;
+	return rv;
 }
 
 static CK_RV
@@ -684,7 +684,7 @@ auth_C_SignInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 		}
 	}
 	
-	return CKR_OK;
+	return rv;
 }
 
 static CK_RV
@@ -736,7 +736,7 @@ auth_C_SignRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 		}
 	}
 	
-	return CKR_OK;
+	return rv;
 }
 
 static CK_RV
@@ -770,7 +770,7 @@ auth_C_VerifyInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 		}
 	}
 	
-	return CKR_OK;
+	return rv;
 }
 
 static CK_RV
