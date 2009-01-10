@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2009-01-05 05:05+0000\n"
-"PO-Revision-Date: 2009-01-05 08:55+0100\n"
+"POT-Creation-Date: 2009-01-08 18:41+0000\n"
+"PO-Revision-Date: 2009-01-10 02:09+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -464,18 +464,22 @@ msgid "Import"
 msgstr "Importar"
 
 #: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:122
 msgid "Enter password to unlock the private key"
 msgstr "Introduzca la contraseña para desbloquear la clave privada"
 
 #: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:124
 msgid "Enter password to unlock the certificate"
 msgstr "Introduzca la contraseña para desbloquear el certificado"
 
 #: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:126
 msgid "Enter password to unlock the public key"
 msgstr "Introduzca la contraseña para desbloquear la clave pública"
 
 #: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:128
 msgid "Enter password to unlock"
 msgstr "Introduzca la contraseña para desbloquearlo"
 
@@ -556,19 +560,19 @@ msgstr "Asociación de confianza"
 msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "No se puede borrar «%s» porque está atada a otros objetos."
 
-#: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pk/gkr-pk-storage.c:136 ../daemon/pkcs11/gkr-pkcs11-auth.c:107
 msgid "Unlock private key"
 msgstr "Desbloquear la clave privada"
 
-#: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pk/gkr-pk-storage.c:138 ../daemon/pkcs11/gkr-pkcs11-auth.c:109
 msgid "Unlock certificate"
 msgstr "Desbloquear el certificado"
 
-#: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pk/gkr-pk-storage.c:140 ../daemon/pkcs11/gkr-pkcs11-auth.c:111
 msgid "Unlock public key"
 msgstr "Desbloquear la clave pública"
 
-#: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pk/gkr-pk-storage.c:142 ../daemon/pkcs11/gkr-pkcs11-auth.c:113
 msgid "Unlock"
 msgstr "Desbloquear"
 
@@ -588,40 +592,40 @@ msgstr "Introduzca la contraseña para proteger la clave privada"
 msgid "Enter password to protect storage"
 msgstr "Introduzca la contraseña para proteger el depósito"
 
-#: ../daemon/pk/gkr-pk-storage.c:196
+#: ../daemon/pk/gkr-pk-storage.c:196 ../daemon/pkcs11/gkr-pkcs11-auth.c:152
 msgid "Automatically unlock this private key when I log in."
 msgstr "Desbloquear esta clave privada automáticamente al iniciar sesión."
 
-#: ../daemon/pk/gkr-pk-storage.c:198
+#: ../daemon/pk/gkr-pk-storage.c:198 ../daemon/pkcs11/gkr-pkcs11-auth.c:154
 msgid "Automatically unlock this certificate when I log in."
 msgstr "Desbloquear este certificado automáticamente al iniciar sesión."
 
-#: ../daemon/pk/gkr-pk-storage.c:200
+#: ../daemon/pk/gkr-pk-storage.c:200 ../daemon/pkcs11/gkr-pkcs11-auth.c:156
 msgid "Automatically unlock this public key when I log in."
 msgstr "Desbloquear esta clave pública automáticamente al iniciar sesión."
 
-#: ../daemon/pk/gkr-pk-storage.c:202
+#: ../daemon/pk/gkr-pk-storage.c:202 ../daemon/pkcs11/gkr-pkcs11-auth.c:158
 msgid "Automatically unlock this when I log in"
 msgstr "Desbloquear esto automáticamente al iniciar sesión"
 
-#: ../daemon/pk/gkr-pk-storage.c:209
+#: ../daemon/pk/gkr-pk-storage.c:209 ../daemon/pkcs11/gkr-pkcs11-auth.c:137
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
 "Una aplicación quiere acceder a la clave privada «%s», pero está bloqueada"
 
-#: ../daemon/pk/gkr-pk-storage.c:211
+#: ../daemon/pk/gkr-pk-storage.c:211 ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Una aplicación quiere acceder al certificado «%s», pero está bloqueado"
 
-#: ../daemon/pk/gkr-pk-storage.c:213
+#: ../daemon/pk/gkr-pk-storage.c:213 ../daemon/pkcs11/gkr-pkcs11-auth.c:141
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 "Una aplicación quiere acceder a la clave pública «%s», pero está bloqueada"
 
-#: ../daemon/pk/gkr-pk-storage.c:215
+#: ../daemon/pk/gkr-pk-storage.c:215 ../daemon/pkcs11/gkr-pkcs11-auth.c:143
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Una aplicación quiere acceder «%s», pero está bloqueado"
@@ -643,6 +647,28 @@ msgid ""
 msgstr ""
 "El sistema quiere almacenar «%s» en su disco. Introduzca una contraseña para "
 "bloquearlo con ella."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+msgid "Unlock certificate/key storage"
+msgstr "Desbloquear el depósito de certificados/claves"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:376
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"Introducir la contraseña para desbloquear el depósito de certificados/claves"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:379
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Una aplicación quiere acceder al depósito de certificados/claves «%s», pero "
+"está bloqueado"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:385
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Desbloquear automáticamente el depósito seguro al iniciar sesión."
 
 #: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:92
 msgid "The operation was cancelled"
@@ -697,7 +723,7 @@ msgstr ""
 
 #: ../daemon/ui/gkr-ask-tool.c:252
 msgid "Use Unsafe Storage"
-msgstr "Usar almacenamiento inseguro"
+msgstr "Usar depósito inseguro"
 
 #: ../daemon/ui/gkr-ask-tool.c:479
 msgid "_Location:"
@@ -1103,7 +1129,7 @@ msgstr "El depósito de claves ya se ha desbloqueado."
 msgid "Unnamed Certificate"
 msgstr "Certificado sin nombre"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:280
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
 msgid "Couldn't parse public SSH key"
 msgstr "No se pudo analizar la clave SSH pública"
 
