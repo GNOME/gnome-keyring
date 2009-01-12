@@ -1,3 +1,8 @@
+2009-01-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* pkcs11/roots-store/Makefile.am:
+	Fix the build.
+
 2009-01-09  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pkcs11/gkr-pkcs11-auth-ep.c:
