@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&amp;component=general\n"
-"POT-Creation-Date: 2008-12-15 20:47+0000\n"
-"PO-Revision-Date: 2008-12-17 20:01+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-01-12 13:59+0000\n"
+"PO-Revision-Date: 2009-01-15 17:15+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -284,6 +284,10 @@ msgstr "Ali je gnome-keyring PKCS#11 enota omogočena."
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Ali je gnome-keyring SSH agent omogočen."
 
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr "Demon GNOME zbirke ključev"
+
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
@@ -333,21 +337,25 @@ msgstr "Uvozi"
 
 #: ../daemon/pk/gkr-pk-import.c:101
 #: ../daemon/pk/gkr-pk-storage.c:166
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:122
 msgid "Enter password to unlock the private key"
 msgstr "Vnesite geslo za odklepanje osebnega ključa"
 
 #: ../daemon/pk/gkr-pk-import.c:103
 #: ../daemon/pk/gkr-pk-storage.c:168
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:124
 msgid "Enter password to unlock the certificate"
 msgstr "Vnesite geslo za odklepanje potrdila"
 
 #: ../daemon/pk/gkr-pk-import.c:105
 #: ../daemon/pk/gkr-pk-storage.c:170
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:126
 msgid "Enter password to unlock the public key"
 msgstr "Vnesite geslo za odklepanje javnega ključa"
 
 #: ../daemon/pk/gkr-pk-import.c:107
 #: ../daemon/pk/gkr-pk-storage.c:172
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:128
 msgid "Enter password to unlock"
 msgstr "Vnesite geslo za odklepanje"
 
@@ -419,18 +427,22 @@ msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "Ni mogoče izbrisati '%s', saj je vezan na druge predmete."
 
 #: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:107
 msgid "Unlock private key"
 msgstr "Odkleni osebni ključ"
 
 #: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:109
 msgid "Unlock certificate"
 msgstr "Odkleni potrdilo"
 
 #: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:111
 msgid "Unlock public key"
 msgstr "Odkleni javni ključ"
 
 #: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113
 msgid "Unlock"
 msgstr "Odkleni"
 
@@ -451,37 +463,45 @@ msgid "Enter password to protect storage"
 msgstr "Vnesite geslo za odklepanje potrdila"
 
 #: ../daemon/pk/gkr-pk-storage.c:196
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
 msgid "Automatically unlock this private key when I log in."
 msgstr "Samodejno odkleni osebni ključ ob prijavi."
 
 #: ../daemon/pk/gkr-pk-storage.c:198
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
 msgid "Automatically unlock this certificate when I log in."
 msgstr "Samodejno odkleni potrdilo ob prijavi."
 
 #: ../daemon/pk/gkr-pk-storage.c:200
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:156
 msgid "Automatically unlock this public key when I log in."
 msgstr "Samodejno odkleni javni ključ ob prijavi."
 
 #: ../daemon/pk/gkr-pk-storage.c:202
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:158
 msgid "Automatically unlock this when I log in"
 msgstr "Samodejno odkleni prijavi."
 
 #: ../daemon/pk/gkr-pk-storage.c:209
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:137
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Program želi dostop do osebnega ključa '%s', vendar je ta zaklenjen"
 
 #: ../daemon/pk/gkr-pk-storage.c:211
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Program želi dostop do potrdila '%s', vendar je ta zaklenjen"
 
 #: ../daemon/pk/gkr-pk-storage.c:213
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:141
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Program želi dostop do javnega ključa '%s', vendar je ta zaklenjen"
 
 #: ../daemon/pk/gkr-pk-storage.c:215
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:143
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Program želi dostop do '%s', vendar je ta zaklenjen"
@@ -496,8 +516,25 @@ msgstr "Sistem želi shraniti osebni ključ '%s' na disk. Prosim, vnesite geslo 
 msgid "The system wants to store '%s' on your disk. Please enter a password to lock it with."
 msgstr "Program poskuša shraniti '%s' na disk. Prosim, vnesite geslo za zaklepanje."
 
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+msgid "Unlock certificate/key storage"
+msgstr "Odkleni potrdila in ključe"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:376
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Vnesite geslo za odklepanje potrdila ali ključev."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:379
+#, c-format
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "Program želi dostop do potrdila ali ključa '%s', vendar je ta zaklenjen."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:385
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Samodejno odkleni zbirko ključev ob prijavi."
+
 #: ../daemon/pkix/gkr-pkix-parser.c:451
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:92
 msgid "The operation was cancelled"
 msgstr "Dejanje je bilo preklicano."
 
@@ -594,323 +631,323 @@ msgstr "Dovoli enkrat"
 msgid "_Always Allow"
 msgstr "Vedno dovoli"
 
-#: ../gp11/gp11-misc.c:90
+#: ../gp11/gp11-misc.c:95
 msgid "Insufficient memory available"
 msgstr "Na voljo je premalo spomina"
 
-#: ../gp11/gp11-misc.c:92
+#: ../gp11/gp11-misc.c:97
 msgid "The specified slot ID is not valid"
 msgstr "Izbran ID ni veljaven"
 
-#: ../gp11/gp11-misc.c:94
+#: ../gp11/gp11-misc.c:99
 msgid "Internal error"
 msgstr "Notranja napaka"
 
-#: ../gp11/gp11-misc.c:96
+#: ../gp11/gp11-misc.c:101
 msgid "The operation failed"
 msgstr "Dejanje ni uspelo"
 
-#: ../gp11/gp11-misc.c:98
+#: ../gp11/gp11-misc.c:103
 msgid "Invalid arguments"
 msgstr "Neveljavni argumenti"
 
-#: ../gp11/gp11-misc.c:100
+#: ../gp11/gp11-misc.c:105
 msgid "The module cannot create needed threads"
 msgstr "Z modulom ni mogoče ustvariti zahtevanih niti"
 
-#: ../gp11/gp11-misc.c:102
+#: ../gp11/gp11-misc.c:107
 msgid "The module cannot lock data properly"
 msgstr "z modulom ni mogoče primerno zakleniti podatkov"
 
-#: ../gp11/gp11-misc.c:104
+#: ../gp11/gp11-misc.c:109
 msgid "The field is read-only"
 msgstr "Polje je samo za branje"
 
-#: ../gp11/gp11-misc.c:106
+#: ../gp11/gp11-misc.c:111
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Polje je občutljivo in ga ni mogoče odkriti"
 
-#: ../gp11/gp11-misc.c:108
+#: ../gp11/gp11-misc.c:113
 msgid "The field is invalid or does not exist"
 msgstr "Polje ni veljavno ali pa ne obstaja"
 
-#: ../gp11/gp11-misc.c:110
+#: ../gp11/gp11-misc.c:115
 msgid "Invalid value for field"
 msgstr "neveljavna vrednost polja"
 
-#: ../gp11/gp11-misc.c:112
+#: ../gp11/gp11-misc.c:117
 msgid "The data is not valid or unrecognized"
 msgstr "Podatki niso veljavni ali pa jih ni mogoče prepoznati"
 
-#: ../gp11/gp11-misc.c:114
+#: ../gp11/gp11-misc.c:119
 msgid "The data is too long"
 msgstr "Podatki so predolgi"
 
-#: ../gp11/gp11-misc.c:116
+#: ../gp11/gp11-misc.c:121
 msgid "An error occurred on the device"
 msgstr "Na napravi je prišlo napake"
 
-#: ../gp11/gp11-misc.c:118
+#: ../gp11/gp11-misc.c:123
 msgid "Insufficient memory available on device"
 msgstr "Ni zadostnega spomina na napravi"
 
-#: ../gp11/gp11-misc.c:120
+#: ../gp11/gp11-misc.c:125
 msgid "The device was removed or unplugged"
 msgstr "Naprava je bila odstranjena ali pa je bila odklopljena"
 
-#: ../gp11/gp11-misc.c:122
+#: ../gp11/gp11-misc.c:127
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Šifrirani podatki niso veljavni ali pa jih ni mogoče prepoznati"
 
-#: ../gp11/gp11-misc.c:124
+#: ../gp11/gp11-misc.c:129
 msgid "The encrypted data is too long"
 msgstr "Šifrirani podatki so predolgi"
 
-#: ../gp11/gp11-misc.c:126
+#: ../gp11/gp11-misc.c:131
 msgid "This operation is not supported"
 msgstr "Naloga ni podprta."
 
-#: ../gp11/gp11-misc.c:128
+#: ../gp11/gp11-misc.c:133
 msgid "The key is missing or invalid"
 msgstr "Ključa ni ali pa je neveljaven"
 
-#: ../gp11/gp11-misc.c:130
+#: ../gp11/gp11-misc.c:135
 msgid "The key is the wrong size"
 msgstr "Velikost ključa je napačna"
 
-#: ../gp11/gp11-misc.c:132
+#: ../gp11/gp11-misc.c:137
 msgid "The key is of the wrong type"
 msgstr "Vrsta ključa je napačna"
 
-#: ../gp11/gp11-misc.c:134
+#: ../gp11/gp11-misc.c:139
 msgid "No key is needed"
 msgstr "Ključ ni zahtevan"
 
-#: ../gp11/gp11-misc.c:136
+#: ../gp11/gp11-misc.c:141
 msgid "The key is different than before"
 msgstr "Ključ je drugačen, kot je bil prej"
 
-#: ../gp11/gp11-misc.c:138
+#: ../gp11/gp11-misc.c:143
 msgid "A key is needed"
 msgstr "Ključ je nujno zahtevan"
 
-#: ../gp11/gp11-misc.c:140
+#: ../gp11/gp11-misc.c:145
 msgid "Cannot include the key in digest"
 msgstr "V povzetku ni mogoče vključiti ključa"
 
-#: ../gp11/gp11-misc.c:142
+#: ../gp11/gp11-misc.c:147
 msgid "This operation cannot be done with this key"
 msgstr "Dejanja s tem ključem ni mogoče izvesti"
 
-#: ../gp11/gp11-misc.c:144
+#: ../gp11/gp11-misc.c:149
 msgid "The key cannot be wrapped"
 msgstr "Ključa ni mogoče prelomiti."
 
-#: ../gp11/gp11-misc.c:146
+#: ../gp11/gp11-misc.c:151
 msgid "Cannot export this key"
 msgstr "Ključa ni mogoče uporabiti"
 
-#: ../gp11/gp11-misc.c:148
+#: ../gp11/gp11-misc.c:153
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Mehanizem šifriranja je neveljaven ali pa ni prepoznan"
 
-#: ../gp11/gp11-misc.c:150
+#: ../gp11/gp11-misc.c:155
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Mehanizem šifriranja ima neveljaven argument"
 
-#: ../gp11/gp11-misc.c:152
+#: ../gp11/gp11-misc.c:157
 msgid "The object is missing or invalid"
 msgstr "Predmet manjka ali pa je neveljaven"
 
-#: ../gp11/gp11-misc.c:154
+#: ../gp11/gp11-misc.c:159
 msgid "Another operation is already taking place"
 msgstr "Trenutno teče že druga dejavnost"
 
-#: ../gp11/gp11-misc.c:156
+#: ../gp11/gp11-misc.c:161
 msgid "No operation is taking place"
 msgstr "Trenutno ni dejanj v izvajanju"
 
-#: ../gp11/gp11-misc.c:158
+#: ../gp11/gp11-misc.c:163
 msgid "The password or PIN is incorrect"
 msgstr "Uporabniško ime ali pa PIN geslo ni pravilno."
 
-#: ../gp11/gp11-misc.c:160
+#: ../gp11/gp11-misc.c:165
 msgid "The password or PIN is invalid"
 msgstr "Uporabniško ime ali pa PIN geslo je neveljavno."
 
-#: ../gp11/gp11-misc.c:162
+#: ../gp11/gp11-misc.c:167
 msgid "The password or PIN is of an invalid length"
 msgstr "Geslo ali PIN koda ni ustrezne velikosti"
 
-#: ../gp11/gp11-misc.c:164
+#: ../gp11/gp11-misc.c:169
 msgid "The password or PIN has expired"
 msgstr "Geslo ali PIN koda sta pokvarjena"
 
-#: ../gp11/gp11-misc.c:166
+#: ../gp11/gp11-misc.c:171
 msgid "The password or PIN is locked"
 msgstr "Uporabniško ime ali pa PIN geslo je zakljenjeno."
 
-#: ../gp11/gp11-misc.c:168
+#: ../gp11/gp11-misc.c:173
 msgid "The session is closed"
 msgstr "Seja je zaprta"
 
-#: ../gp11/gp11-misc.c:170
+#: ../gp11/gp11-misc.c:175
 msgid "Too many sessions are active"
 msgstr "Dejavnih je preveč sej."
 
-#: ../gp11/gp11-misc.c:172
+#: ../gp11/gp11-misc.c:177
 msgid "The session is invalid"
 msgstr "Seja ni veljavna."
 
-#: ../gp11/gp11-misc.c:174
+#: ../gp11/gp11-misc.c:179
 msgid "The session is read-only"
 msgstr "Seja je samo za branje"
 
-#: ../gp11/gp11-misc.c:176
+#: ../gp11/gp11-misc.c:181
 msgid "An open session exists"
 msgstr "Trenutno obtaja odprta seja"
 
-#: ../gp11/gp11-misc.c:178
+#: ../gp11/gp11-misc.c:183
 msgid "A read-only session exists"
 msgstr "Trenutno je zagnana seja samo za branje "
 
-#: ../gp11/gp11-misc.c:180
+#: ../gp11/gp11-misc.c:185
 msgid "An administrator session exists"
 msgstr "Trenutno je zagnana skrbniška seja."
 
-#: ../gp11/gp11-misc.c:182
+#: ../gp11/gp11-misc.c:187
 msgid "The signature is bad or corrupted"
 msgstr "Podpis je slab ali pa je pokvarjen"
 
-#: ../gp11/gp11-misc.c:184
+#: ../gp11/gp11-misc.c:189
 msgid "The signature is unrecognized or corrupted"
 msgstr "Podpis ni prepoznan ali pa je pokvarjen"
 
-#: ../gp11/gp11-misc.c:186
+#: ../gp11/gp11-misc.c:191
 msgid "Certain required fields are missing"
 msgstr "Nekatera zahtevana polja niso izpolnjena"
 
-#: ../gp11/gp11-misc.c:188
+#: ../gp11/gp11-misc.c:193
 msgid "Certain fields have invalid values"
 msgstr "Nekatera polja imajo neveljavne vrednosti"
 
-#: ../gp11/gp11-misc.c:190
+#: ../gp11/gp11-misc.c:195
 msgid "The device is not present or unplugged"
 msgstr "Naprava ni prisotna ali pa ni ustrezno priklopljena"
 
-#: ../gp11/gp11-misc.c:192
+#: ../gp11/gp11-misc.c:197
 msgid "The device is invalid or unrecognizable"
 msgstr "Naprava je neveljavna ali pa je ni mogoče prepoznati"
 
-#: ../gp11/gp11-misc.c:194
+#: ../gp11/gp11-misc.c:199
 msgid "The device is write protected"
 msgstr "Naprava je  zaščitena pred pisanjem"
 
-#: ../gp11/gp11-misc.c:196
+#: ../gp11/gp11-misc.c:201
 msgid "Cannot import because the key is invalid"
 msgstr "Uvoz ni mogoč, ker je ključ neveljaven"
 
-#: ../gp11/gp11-misc.c:198
+#: ../gp11/gp11-misc.c:203
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Uvoz ni mogoč, ker je ključ napačne velikosti."
 
-#: ../gp11/gp11-misc.c:200
+#: ../gp11/gp11-misc.c:205
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Uvoz ni mogoč, ker je ključ napačne vrste."
 
-#: ../gp11/gp11-misc.c:202
+#: ../gp11/gp11-misc.c:207
 msgid "You are already logged in"
 msgstr "Vi ste že uspešno prijavljeni."
 
-#: ../gp11/gp11-misc.c:204
+#: ../gp11/gp11-misc.c:209
 msgid "No user has logged in"
 msgstr "Noben uporabnik se ni logiral"
 
-#: ../gp11/gp11-misc.c:206
+#: ../gp11/gp11-misc.c:211
 msgid "The user's password or PIN is not set"
 msgstr "Podatek uporabniškega gesla ali PIN kode ni nastavljen."
 
-#: ../gp11/gp11-misc.c:208
+#: ../gp11/gp11-misc.c:213
 msgid "The user is of an invalid type"
 msgstr "Vrsta uporabnik ni veljavna"
 
-#: ../gp11/gp11-misc.c:210
+#: ../gp11/gp11-misc.c:215
 msgid "Another user is already logged in"
 msgstr "Drug uporabnik je že prijavljen"
 
-#: ../gp11/gp11-misc.c:212
+#: ../gp11/gp11-misc.c:217
 msgid "Too many users of different types logged in"
 msgstr "Prijavljenih je preveč različnih uporabnikov"
 
-#: ../gp11/gp11-misc.c:214
+#: ../gp11/gp11-misc.c:219
 msgid "Cannot import an invalid key"
 msgstr "Ni mogoče uvoziti neveljavnega ključa"
 
-#: ../gp11/gp11-misc.c:216
+#: ../gp11/gp11-misc.c:221
 msgid "Cannot import a key of the wrong size"
 msgstr "Uvoz ni mogoče, ker ima ključ napačno velikost."
 
-#: ../gp11/gp11-misc.c:218
+#: ../gp11/gp11-misc.c:223
 msgid "Cannot export because the key is invalid"
 msgstr "Izvoz ni mogoče, ker ključ ni veljaven."
 
-#: ../gp11/gp11-misc.c:220
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Izvoz ni mogoče, ker ima ključ napačno velikost."
 
-#: ../gp11/gp11-misc.c:222
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Izvoz ni mogoče, ker je ključ napačne vrste."
 
-#: ../gp11/gp11-misc.c:224
+#: ../gp11/gp11-misc.c:229
 msgid "Unable to initialize the random number generator"
 msgstr "Ni mogoče zagnati programa za izpis naključnih števil."
 
-#: ../gp11/gp11-misc.c:226
+#: ../gp11/gp11-misc.c:231
 msgid "No random number generator available"
 msgstr "Na voljo ni nobenega programa za izpis naključnih števil"
 
-#: ../gp11/gp11-misc.c:228
+#: ../gp11/gp11-misc.c:233
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Mehanizem šifriranja ima določene neveljavne parametre."
 
-#: ../gp11/gp11-misc.c:230
+#: ../gp11/gp11-misc.c:235
 msgid "Not enough space to store the result"
 msgstr "Ni dovolj prostora za shranjevanje rezultatov."
 
-#: ../gp11/gp11-misc.c:232
+#: ../gp11/gp11-misc.c:237
 msgid "The saved state is invalid"
 msgstr "Shranjeno stanje je neveljavno."
 
-#: ../gp11/gp11-misc.c:234
+#: ../gp11/gp11-misc.c:239
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Podrobnosti so občutljive in jih ni mogoče odkriti."
 
-#: ../gp11/gp11-misc.c:236
+#: ../gp11/gp11-misc.c:241
 msgid "The state cannot be saved"
 msgstr "Stanja ni mogoče shraniti."
 
-#: ../gp11/gp11-misc.c:238
+#: ../gp11/gp11-misc.c:243
 msgid "The module has not been initialized"
 msgstr "Modul še ni zagnan."
 
-#: ../gp11/gp11-misc.c:240
+#: ../gp11/gp11-misc.c:245
 msgid "The module has already been initialized"
 msgstr "Modul je že zagnan."
 
-#: ../gp11/gp11-misc.c:242
+#: ../gp11/gp11-misc.c:247
 msgid "Cannot lock data"
 msgstr "Ni mogoče zakleniti podatkov."
 
-#: ../gp11/gp11-misc.c:244
+#: ../gp11/gp11-misc.c:249
 msgid "The data cannot be locked"
 msgstr "Podatkov ni mogoče zakleniti"
 
-#: ../gp11/gp11-misc.c:246
+#: ../gp11/gp11-misc.c:251
 msgid "The signature request was rejected by the user"
 msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
 
-#: ../gp11/gp11-misc.c:250
+#: ../gp11/gp11-misc.c:255
 msgid "Unknown error"
 msgstr "Neznana napaka"
 
@@ -945,6 +982,14 @@ msgstr "Zbirka ključev s tem imenom ne obstaja."
 #: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "Zbirka ključev je že odklenjena."
+
+#: ../pkcs11/gck/gck-certificate.c:489
+msgid "Unnamed Certificate"
+msgstr "Neimenovano potrdilo"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+msgid "Couldn't parse public SSH key"
+msgstr "Ni mogoče razčleniti SSH ključa."
 
 #~ msgid "Unlock password for '%s'"
 #~ msgstr "Geslo za odklepanje '%s'"
