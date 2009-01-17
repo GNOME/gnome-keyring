@@ -27,7 +27,7 @@
 #include <sys/types.h>
 #include <glib.h>
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 
 #include "keyrings/gkr-keyring.h"
 #include "keyrings/gkr-keyring-item.h"
@@ -40,7 +40,7 @@ typedef struct {
 	GnomeKeyringApplicationRef *app_ref;
 } GkrKeyringRequest;	
 
-typedef gboolean (*GkrDaemonOperation) (GkrBuffer *packet, GkrBuffer *result,
+typedef gboolean (*GkrDaemonOperation) (EggBuffer *packet, EggBuffer *result,
                                         GkrKeyringRequest *req);
 
 extern GkrDaemonOperation keyring_ops[];

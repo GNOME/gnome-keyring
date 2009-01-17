@@ -29,9 +29,9 @@
 #include "gkr-keyring-login.h"
 #include "gkr-keyrings.h"
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 #include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
@@ -183,7 +183,7 @@ gkr_keyring_dispose (GObject *obj)
 	g_list_free (keyring->items);
 	keyring->items = NULL;
 	
-	gkr_secure_strfree (keyring->password);
+	egg_secure_strfree (keyring->password);
 	keyring->password = NULL;
 
 	G_OBJECT_CLASS (gkr_keyring_parent_class)->dispose (obj);
@@ -263,7 +263,7 @@ gkr_keyring_create (GQuark location, const gchar *keyring_name, const gchar *pas
 	if (keyring != NULL) {
 		keyring->location = location;
 		keyring->locked = FALSE;
-		keyring->password = gkr_secure_strdup (password);
+		keyring->password = egg_secure_strdup (password);
 		keyring->salt_valid = FALSE;
 		gkr_keyring_save_to_disk (keyring);
 	}
@@ -362,7 +362,7 @@ gkr_keyring_remove_item (GkrKeyring* keyring, GkrKeyringItem* item)
 gboolean
 gkr_keyring_update_from_disk (GkrKeyring *keyring)
 {
-	GkrBuffer buffer;
+	EggBuffer buffer;
 	GError *err = NULL;
 	guchar *contents = NULL;
 	gsize len;
@@ -377,13 +377,13 @@ gkr_keyring_update_from_disk (GkrKeyring *keyring)
 		return FALSE;
 	}
 	
-	gkr_buffer_init_static (&buffer, contents, len);
+	egg_buffer_init_static (&buffer, contents, len);
 	
 	result = gkr_keyring_binary_parse (keyring, &buffer);
 	if (result == 0)
 		result = gkr_keyring_textual_parse (keyring, &buffer);
 		
-	gkr_buffer_uninit (&buffer);
+	egg_buffer_uninit (&buffer);
 	g_free (contents);
 		
 	if (result > 0)
@@ -421,7 +421,7 @@ gboolean
 gkr_keyring_save_to_disk (GkrKeyring *keyring)
 {
 	struct stat statbuf;
-	GkrBuffer out;
+	EggBuffer out;
 	int fd;
 	char *dirname;
 	char *template;
@@ -441,7 +441,7 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 	if (!file)
 		return FALSE;
 	
-	gkr_buffer_init_full (&out, 4096, (GkrBufferAllocator)g_realloc);
+	egg_buffer_init_full (&out, 4096, (EggBufferAllocator)g_realloc);
 
 	/* Generate it */	
 	if (!keyring->password || !keyring->password[0])
@@ -486,7 +486,7 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 		ret = FALSE;
 	}
 	
-	gkr_buffer_uninit (&out);
+	egg_buffer_uninit (&out);
 	g_free (file);
 	return ret;
 }
@@ -503,7 +503,7 @@ gkr_keyring_lock (GkrKeyring *keyring)
 
 	g_assert (keyring->password != NULL);
 	
-	gkr_secure_strfree (keyring->password);
+	egg_secure_strfree (keyring->password);
 	keyring->password = NULL;
 	if (!gkr_keyring_update_from_disk (keyring)) {
 		/* Failed to re-read, remove the keyring */
@@ -522,9 +522,9 @@ gkr_keyring_unlock (GkrKeyring *keyring, const gchar *password)
 		
 	g_assert (keyring->password == NULL);
 		
-	keyring->password = gkr_secure_strdup (password);
+	keyring->password = egg_secure_strdup (password);
 	if (!gkr_keyring_update_from_disk (keyring)) {
-		gkr_secure_strfree (keyring->password);
+		egg_secure_strfree (keyring->password);
 		keyring->password = NULL;
 	}
 	if (keyring->locked) {

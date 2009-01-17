@@ -40,7 +40,7 @@
 
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-memory.h"
@@ -354,7 +354,7 @@ gkr_pkix_parser_finalize (GObject *obj)
 	GList *l;
 	
 	for (l = pv->seen_passwords; l; l = g_list_next (l))
-		gkr_secure_strfree (l->data);
+		egg_secure_strfree (l->data);
 	g_list_free (pv->seen_passwords);
 	
 	G_OBJECT_CLASS (gkr_pkix_parser_parent_class)->finalize (obj);
@@ -719,7 +719,7 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 		}
 			
 		crypted = gkr_pkix_asn1_read_value (asn, "encryptedData", &n_crypted, 
-		                                    gkr_secure_realloc);
+		                                    egg_secure_realloc);
 		if (!crypted)
 			goto done;
 	
@@ -739,7 +739,7 @@ parse_der_pkcs8_encrypted (GkrPkixParser *parser, GQuark location,
 		
 		/* Try to parse the resulting key */
 		r = parse_der_pkcs8_plain (parser, location, digest, crypted, n_crypted);
-		gkr_secure_free (crypted);
+		egg_secure_free (crypted);
 		crypted = NULL;
 		
 		if (r != GKR_PKIX_UNRECOGNIZED) {
@@ -755,7 +755,7 @@ done:
 		gcry_cipher_close (cih);
 	if (asn)
 		asn1_delete_structure (&asn);
-	gkr_secure_free (crypted);
+	egg_secure_free (crypted);
 		
 	return ret;
 }
@@ -988,7 +988,7 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrid digest,
 		}
 			
 		crypted = gkr_pkix_asn1_read_value (asn, "encryptedContentInfo.encryptedContent", 
-		                                    &n_crypted, gkr_secure_realloc);
+		                                    &n_crypted, egg_secure_realloc);
 		if (!crypted)
 			goto done;
 	
@@ -1008,7 +1008,7 @@ parse_pkcs12_encrypted_bag (GkrPkixParser *parser, GQuark loc, gkrid digest,
 
 		/* Try to parse the resulting key */
 		r = parse_pkcs12_bag (parser, loc, digest, crypted, n_crypted);
-		gkr_secure_free (crypted);
+		egg_secure_free (crypted);
 		crypted = NULL;
 		
 		if (r != GKR_PKIX_UNRECOGNIZED) {
@@ -1024,7 +1024,7 @@ done:
 		gcry_cipher_close (cih);
 	if (asn)
 		asn1_delete_structure (&asn);
-	gkr_secure_free (crypted);
+	egg_secure_free (crypted);
 	
 	return ret;
 }
@@ -1393,7 +1393,7 @@ parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrid digest,
 	
 		/* Try to parse */
 		ret = parse_plain_pem (parser, location, digest, type, decrypted, n_decrypted);
-		gkr_secure_free (decrypted);
+		egg_secure_free (decrypted);
 
 		if (ret != GKR_PKIX_UNRECOGNIZED)
 			return ret;		

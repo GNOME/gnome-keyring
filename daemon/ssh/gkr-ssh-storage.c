@@ -26,11 +26,11 @@
 #include "gkr-ssh-private.h"
 #include "gkr-ssh-storage.h"
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
 #include "common/gkr-location-watch.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring-login.h"
 
@@ -230,7 +230,7 @@ load_encrypted_key (GkrSshStorage *storage, gkrid digest, GQuark location,
 		/* Decrypt, this will result in garble if invalid password */	
 		res = gkr_pkix_openssl_decrypt_block (dekinfo, password, data, n_data, 
 		                                      &decrypted, &n_decrypted);
-		gkr_secure_free (password);
+		egg_secure_free (password);
 		
 		if (!res)
 			return GKR_PKIX_UNRECOGNIZED;
@@ -244,7 +244,7 @@ load_encrypted_key (GkrSshStorage *storage, gkrid digest, GQuark location,
 	
 		/* Try to parse */
 		ret = gkr_pkix_der_read_private_key (decrypted, n_decrypted, skey);
-		gkr_secure_free (decrypted);
+		egg_secure_free (decrypted);
 
 		if (ret != GKR_PKIX_UNRECOGNIZED)
 			return ret;
@@ -493,7 +493,7 @@ storage_write_private_key (GkrSshStorage *storage, gcry_sexp_t sexp,
 done:
 	if (headers)
 		g_hash_table_destroy (headers);
-	gkr_secure_free (data);
+	egg_secure_free (data);
 	g_free (result);
 	g_free (encrypted);
 	
@@ -620,7 +620,7 @@ gkr_ssh_storage_store (GkrPkStorage *stor, GkrPkObject *obj, GError **err)
 		
 	/* Store the private key */
 	digest = storage_write_private_key (storage, sexp, loc, password, err);
-	gkr_secure_strfree (password);
+	egg_secure_strfree (password);
 	
 	if (!digest)
 		return FALSE;
@@ -772,7 +772,7 @@ GkrPkixResult
 gkr_ssh_storage_load_public_key (const guchar *data, gsize n_data, 
                                  gcry_sexp_t *sexp, gchar **comment)
 {
-	GkrBuffer buf;
+	EggBuffer buf;
 	const guchar *at;
 	guchar *decoded;
 	gsize n_decoded;
@@ -846,7 +846,7 @@ gkr_ssh_storage_load_public_key (const guchar *data, gsize n_data,
 	n_decoded = g_base64_decode_step ((gchar*)data, n_data, decoded, &state, &save);
 	
 	/* Parse the actual key */
-	gkr_buffer_init_static (&buf, decoded, n_decoded);
+	egg_buffer_init_static (&buf, decoded, n_decoded);
 	offset = 0;
 	ret = gkr_ssh_proto_read_public (&buf, &offset, sexp, NULL);
 	g_free (decoded);
@@ -875,7 +875,7 @@ gkr_ssh_storage_write_public_key (gcry_sexp_t sexp, const gchar *comment,
                                   gsize *n_data)
 {
 	GString *result;
-	GkrBuffer buffer;
+	EggBuffer buffer;
 	const gchar *type;
 	gchar *encoded;
 	gboolean is_priv;
@@ -897,11 +897,11 @@ gkr_ssh_storage_write_public_key (gcry_sexp_t sexp, const gchar *comment,
 	g_string_append (result, type);
 	g_string_append_c (result, ' ');
 	
-	gkr_buffer_init_full (&buffer, 4096, (GkrBufferAllocator)g_realloc);
+	egg_buffer_init_full (&buffer, 4096, (EggBufferAllocator)g_realloc);
 	gkr_ssh_proto_write_public (&buffer, algo, sexp);
 	
 	encoded = g_base64_encode (buffer.buf, buffer.len);
-	gkr_buffer_uninit (&buffer);
+	egg_buffer_uninit (&buffer);
 	
 	g_return_val_if_fail (encoded, NULL);
 	g_string_append (result, encoded);

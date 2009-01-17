@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-unix-credentials.c - write and read unix credentials on socket
+/* egg-unix-credentials.c - write and read unix credentials on socket
 
    Copyright (C) 2003 Red Hat, Inc
 
@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "gkr-unix-credentials.h"
+#include "egg-unix-credentials.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -38,7 +38,7 @@
 #endif
 
 int
-gkr_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
+egg_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 {
 	struct msghdr msg;
 	struct iovec iov;
@@ -163,7 +163,7 @@ gkr_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 }
 
 int
-gkr_unix_credentials_write (int socket)
+egg_unix_credentials_write (int socket)
 {
 	char buf;
 	int bytes_written;

@@ -35,11 +35,11 @@
 #include "gkr-daemon.h"
 
 #include "common/gkr-async.h"
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 #include "common/gkr-cleanup.h"
 #include "common/gkr-daemon-util.h"
-#include "common/gkr-secure-memory.h"
-#include "common/gkr-unix-credentials.h"
+#include "egg/egg-secure-memory.h"
+#include "egg/egg-unix-credentials.h"
 
 #include "keyrings/gkr-keyrings.h"
 
@@ -69,8 +69,8 @@ typedef struct {
 
 	GnomeKeyringApplicationRef *app_ref;
 
-	GkrBuffer input_buffer;
-	GkrBuffer output_buffer;
+	EggBuffer input_buffer;
+	EggBuffer output_buffer;
 } GnomeKeyringClient;
 
 static char socket_path[1024] = { 0, };
@@ -188,7 +188,7 @@ read_packet_with_size (GnomeKeyringClient *client)
 
 	fd = client->sock;
 	
-	gkr_buffer_resize (&client->input_buffer, 4);
+	egg_buffer_resize (&client->input_buffer, 4);
 	if (!yield_and_read_all (fd, client->input_buffer.buf, 4))
 		return FALSE;
 
@@ -198,7 +198,7 @@ read_packet_with_size (GnomeKeyringClient *client)
 		return FALSE;
 	}
 
-	gkr_buffer_resize (&client->input_buffer, packet_size + 4);
+	egg_buffer_resize (&client->input_buffer, packet_size + 4);
 	if (!yield_and_read_all (fd, client->input_buffer.buf + 4, packet_size - 4))
 		return FALSE;
 
@@ -212,7 +212,7 @@ yield_and_read_credentials (int sock, pid_t *pid, uid_t *uid)
 	
 	gkr_async_begin_concurrent ();
 	
-		ret = gkr_unix_credentials_read (sock, pid, uid) >= 0;
+		ret = egg_unix_credentials_read (sock, pid, uid) >= 0;
 		
 	gkr_async_end_concurrent ();
 	
@@ -287,10 +287,10 @@ client_worker_main (gpointer user_data)
 	/* Make sure keyrings in memory are up to date before doing anything */
 	gkr_keyrings_update ();
 
-	gkr_buffer_init_full (&client->output_buffer, 128, (GkrBufferAllocator)g_realloc);
+	egg_buffer_init_full (&client->output_buffer, 128, (EggBufferAllocator)g_realloc);
 	
 	/* Add empty size */
-	gkr_buffer_add_uint32 (&client->output_buffer, 0);
+	egg_buffer_add_uint32 (&client->output_buffer, 0);
 		
 	memset (&req, 0, sizeof (req));
 	req.app_ref = client->app_ref;
@@ -298,7 +298,7 @@ client_worker_main (gpointer user_data)
 	if (!(keyring_ops[op])(&client->input_buffer, &client->output_buffer, &req))
 		return NULL;
 		
-	if (!gkr_buffer_set_uint32 (&client->output_buffer, 0,
+	if (!egg_buffer_set_uint32 (&client->output_buffer, 0,
 	                            client->output_buffer.len))
 		return NULL;
 
@@ -319,8 +319,8 @@ client_worker_done (GkrAsyncWorker *worker, gpointer result, gpointer user_data)
 {
 	GnomeKeyringClient *client = (GnomeKeyringClient*)user_data;
 
-	gkr_buffer_uninit (&client->input_buffer);
-	gkr_buffer_uninit (&client->output_buffer);
+	egg_buffer_uninit (&client->input_buffer);
+	egg_buffer_uninit (&client->output_buffer);
 
 	if (client->app_ref != NULL) {
 		gnome_keyring_application_ref_free (client->app_ref);
@@ -346,7 +346,7 @@ client_new (int fd)
 	 * so we err on the side of caution and use secure memory in case
 	 * passwords or secrets are involved.
 	 */  
-	gkr_buffer_init_full (&client->input_buffer, 128, gkr_secure_realloc);
+	egg_buffer_init_full (&client->input_buffer, 128, egg_secure_realloc);
 
 	client->worker = gkr_async_worker_start (client_worker_main, 
 	                                         client_worker_done, client);

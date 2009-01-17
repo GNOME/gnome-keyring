@@ -28,8 +28,8 @@
 #include "common/gkr-cleanup.h"
 #include "common/gkr-crypto.h"
 #include "common/gkr-daemon-util.h"
-#include "common/gkr-secure-memory.h"
-#include "common/gkr-unix-credentials.h"
+#include "egg/egg-secure-memory.h"
+#include "egg/egg-unix-credentials.h"
 #include "common/gkr-unix-signal.h"
 
 #include "keyrings/gkr-keyring-login.h"
@@ -220,19 +220,19 @@ static gboolean do_warning = TRUE;
  */ 
 
 void
-gkr_memory_lock (void)
+egg_memory_lock (void)
 {
 	/* The daemon uses cooperative threading, and doesn't need locking */
 }
 
 void 
-gkr_memory_unlock (void)
+egg_memory_unlock (void)
 {
 	/* The daemon uses cooperative threading, and doesn't need locking */
 }
 
 void*
-gkr_memory_fallback (void *p, unsigned long sz)
+egg_memory_fallback (void *p, unsigned long sz)
 {
 	const gchar *env;
 	
@@ -368,7 +368,7 @@ read_login_password (int fd)
 	 * password.
 	 */
 	
-	gchar *buf = gkr_secure_alloc (MAX_BLOCK);
+	gchar *buf = egg_secure_alloc (MAX_BLOCK);
 	gchar *ret = NULL;
 	int r, len = 0;
 	
@@ -377,12 +377,12 @@ read_login_password (int fd)
 		if (r < 0) {
 			if (errno == EAGAIN)
 				continue;
-			gkr_secure_free (ret);
-			gkr_secure_free (buf);
+			egg_secure_free (ret);
+			egg_secure_free (buf);
 			return NULL;
 			
 		} else  { 
-			char *n = gkr_secure_realloc (ret, len + r + 1);
+			char *n = egg_secure_realloc (ret, len + r + 1);
 			memset(n + len, 0, r + 1); 
 			ret = n;
 			len = len + r;
@@ -394,7 +394,7 @@ read_login_password (int fd)
 			break;
 	}
 	
-	gkr_secure_free (buf);
+	egg_secure_free (buf);
 	return ret;
 }
 
@@ -409,7 +409,7 @@ static void
 clear_login_password (void)
 {
 	if(login_password)
-		gkr_secure_strfree (login_password);
+		egg_secure_strfree (login_password);
 	login_password = NULL;
 }
 
@@ -458,20 +458,20 @@ initialize_other_running_daemon (int sock)
 {
 	GnomeKeyringResult res;
 	gchar **envp, **e;
-	GkrBuffer buf;
+	EggBuffer buf;
 	gboolean ret;
 	
-	if (gkr_unix_credentials_write (sock) < 0)
+	if (egg_unix_credentials_write (sock) < 0)
 		return FALSE;
 
-	gkr_buffer_init_full (&buf, 128, (GkrBufferAllocator)g_realloc);
+	egg_buffer_init_full (&buf, 128, (EggBufferAllocator)g_realloc);
 	
 	envp = gnome_keyring_build_environment (GNOME_KEYRING_IN_ENVIRONMENT);
 	ret = gkr_proto_encode_prepare_environment (&buf, (const gchar**)envp);
 	g_strfreev (envp);
 	
 	if (!ret) {
-		gkr_buffer_uninit (&buf);
+		egg_buffer_uninit (&buf);
 		g_return_val_if_reached (FALSE);
 	}
 
@@ -482,7 +482,7 @@ initialize_other_running_daemon (int sock)
 	      gkr_proto_decode_prepare_environment_reply (&buf, &res, &envp);
 	
 	
-	gkr_buffer_uninit (&buf);
+	egg_buffer_uninit (&buf);
 	
 	if(!ret) {
 		g_warning ("couldn't initialize running daemon");
@@ -745,7 +745,7 @@ main (int argc, char *argv[])
 	if (login_password) {
 		if (!gkr_keyring_login_unlock (login_password))
 			g_warning ("Failed to unlock login on startup");
-		gkr_secure_strclear (login_password);
+		egg_secure_strclear (login_password);
 	}
 	
 	g_main_loop_run (loop);

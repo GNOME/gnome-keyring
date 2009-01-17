@@ -26,7 +26,7 @@
 
 #include "gp11/gp11.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 
@@ -535,7 +535,7 @@ op_add_identity (GckSshAgentCall *call)
 	gulong algo;
 	gsize offset;
 	
-	if (!gkr_buffer_get_string (call->req, 5, &offset, &stype, (GkrBufferAllocator)g_realloc))
+	if (!egg_buffer_get_string (call->req, 5, &offset, &stype, (EggBufferAllocator)g_realloc))
 		return FALSE;
 		
 	algo = gck_ssh_agent_proto_keytype_to_algo (stype);
@@ -546,7 +546,7 @@ op_add_identity (GckSshAgentCall *call)
 	}
 
 	g_free (stype);
-	priv = gp11_attributes_new_full ((GP11Allocator)gkr_secure_realloc);
+	priv = gp11_attributes_new_full ((GP11Allocator)egg_secure_realloc);
 	pub = gp11_attributes_new_full (g_realloc);
 	
 	switch (algo) {
@@ -572,7 +572,7 @@ op_add_identity (GckSshAgentCall *call)
 	/* TODO: Blinding? See ssh-agent.c */
 
 	/* Get the comment */
-	if (!gkr_buffer_get_string (call->req, offset, &offset, &comment, (GkrBufferAllocator)g_realloc)) {
+	if (!egg_buffer_get_string (call->req, offset, &offset, &comment, (EggBufferAllocator)g_realloc)) {
 		gp11_attributes_unref (pub);
 		gp11_attributes_unref (priv);
 		return FALSE;
@@ -597,7 +597,7 @@ op_add_identity (GckSshAgentCall *call)
 	gp11_attributes_unref (priv);
 	gp11_attributes_unref (pub);
 	
-	gkr_buffer_add_byte (call->resp, ret ? GCK_SSH_RES_SUCCESS : GCK_SSH_RES_FAILURE);
+	egg_buffer_add_byte (call->resp, ret ? GCK_SSH_RES_SUCCESS : GCK_SSH_RES_FAILURE);
 	return TRUE;	
 }
 
@@ -610,10 +610,10 @@ op_v1_add_identity (GckSshAgentCall *call)
 	gsize offset = 5;	
 	guint32 unused;
 	
-	if (!gkr_buffer_get_uint32 (call->req, offset, &offset, &unused))
+	if (!egg_buffer_get_uint32 (call->req, offset, &offset, &unused))
 		return FALSE;
 	
-	priv = gp11_attributes_new_full ((GP11Allocator)gkr_secure_realloc);
+	priv = gp11_attributes_new_full ((GP11Allocator)egg_secure_realloc);
 	pub = gp11_attributes_new_full (g_realloc);
 
 	if (!gck_ssh_agent_proto_read_pair_v1 (call->req, &offset, priv, pub)) {
@@ -641,7 +641,7 @@ op_v1_add_identity (GckSshAgentCall *call)
 	gp11_attributes_unref (priv);
 	gp11_attributes_unref (pub);
 	
-	gkr_buffer_add_byte (call->resp, ret ? GCK_SSH_RES_SUCCESS : GCK_SSH_RES_FAILURE);
+	egg_buffer_add_byte (call->resp, ret ? GCK_SSH_RES_SUCCESS : GCK_SSH_RES_FAILURE);
 	return TRUE;	
 }
 
@@ -660,12 +660,12 @@ op_request_identities (GckSshAgentCall *call)
 	                                    load_identity_v2_attributes, &all_attrs,
 	                                    CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
 	                                    GP11_INVALID)) {
-		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+		egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
 	}
 	
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_IDENTITIES_ANSWER);
-	gkr_buffer_add_uint32 (call->resp, g_list_length (all_attrs));
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_IDENTITIES_ANSWER);
+	egg_buffer_add_uint32 (call->resp, g_list_length (all_attrs));
 	      
 	for (l = all_attrs; l; l = g_list_next (l)) {
 		
@@ -677,16 +677,16 @@ op_request_identities (GckSshAgentCall *call)
 		
 		/* Add a space for the key blob length */		
 		blobpos = call->resp->len;
-		gkr_buffer_add_uint32 (call->resp, 0);
+		egg_buffer_add_uint32 (call->resp, 0);
 
 		/* Write out the key */
 		gck_ssh_agent_proto_write_public (call->resp, attrs);
 		
 		/* Write back the blob length */
-		gkr_buffer_set_uint32 (call->resp, blobpos, (call->resp->len - blobpos) - 4);
+		egg_buffer_set_uint32 (call->resp, blobpos, (call->resp->len - blobpos) - 4);
 		
 		/* And now a per key comment */
-		gkr_buffer_add_string (call->resp, comment ? comment : "");
+		egg_buffer_add_string (call->resp, comment ? comment : "");
 		
 		g_free (comment);
 		gp11_attributes_unref (attrs);
@@ -712,12 +712,12 @@ op_v1_request_identities (GckSshAgentCall *call)
 	                                    CKA_TOKEN, GP11_BOOLEAN, FALSE,
 	                                    CKA_LABEL, GP11_STRING, V1_LABEL,
 	                                    GP11_INVALID)) {
-		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+		egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
 	}
 	
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_RSA_IDENTITIES_ANSWER);
-	gkr_buffer_add_uint32 (call->resp, g_list_length (all_attrs));
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_RSA_IDENTITIES_ANSWER);
+	egg_buffer_add_uint32 (call->resp, g_list_length (all_attrs));
 	      
 	for (l = all_attrs; l; l = g_list_next (l)) {
 		
@@ -727,7 +727,7 @@ op_v1_request_identities (GckSshAgentCall *call)
 		gck_ssh_agent_proto_write_public_v1 (call->resp, attrs);
 	
 		/* And now a per key comment */
-		gkr_buffer_add_string (call->resp, "Public Key");
+		egg_buffer_add_string (call->resp, "Public Key");
 		
 		gp11_attributes_unref (attrs);
 	}
@@ -829,7 +829,7 @@ op_sign_request (GckSshAgentCall *call)
 	offset = 5;
 	
 	/* The key packet size */
-	if (!gkr_buffer_get_uint32 (call->req, offset, &offset, &sz))
+	if (!egg_buffer_get_uint32 (call->req, offset, &offset, &sz))
 		return FALSE;
 
 	/* The key itself */
@@ -845,8 +845,8 @@ op_sign_request (GckSshAgentCall *call)
 	else
 		g_return_val_if_reached (FALSE);
 
-	if (!gkr_buffer_get_byte_array (call->req, offset, &offset, &data, &n_data) ||
-	    !gkr_buffer_get_uint32 (call->req, offset, &offset, &flags)) {
+	if (!egg_buffer_get_byte_array (call->req, offset, &offset, &data, &n_data) ||
+	    !egg_buffer_get_uint32 (call->req, offset, &offset, &flags)) {
 		gp11_attributes_unref (attrs);
 	    	return FALSE;
 	}
@@ -856,7 +856,7 @@ op_sign_request (GckSshAgentCall *call)
 	gp11_attributes_unref (attrs);
 	
 	if (!key) {
-		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+		egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
 	}
 	
@@ -886,19 +886,19 @@ op_sign_request (GckSshAgentCall *call)
 		if (error->code != CKR_FUNCTION_CANCELED)
 			g_message ("signing of the data failed: %s", error->message);
 		g_clear_error (&error);
-		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+		egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
 	}
 	
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_SIGN_RESPONSE);
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_SIGN_RESPONSE);
 	
 	/* Add a space for the sig blob length */		
 	blobpos = call->resp->len;
-	gkr_buffer_add_uint32 (call->resp, 0);
+	egg_buffer_add_uint32 (call->resp, 0);
 	
 	salgo = gck_ssh_agent_proto_algo_to_keytype (algo);
 	g_assert (salgo);
-	gkr_buffer_add_string (call->resp, salgo);
+	egg_buffer_add_string (call->resp, salgo);
 
 	switch (algo) {
 	case CKK_RSA:
@@ -917,7 +917,7 @@ op_sign_request (GckSshAgentCall *call)
 	g_return_val_if_fail (ret, FALSE);
 	
 	/* Write back the blob length */
-	gkr_buffer_set_uint32 (call->resp, blobpos, (call->resp->len - blobpos) - 4);
+	egg_buffer_set_uint32 (call->resp, blobpos, (call->resp->len - blobpos) - 4);
 	
 	return TRUE; 
 }
@@ -955,21 +955,21 @@ op_v1_challenge (GckSshAgentCall *call)
 	/* Only protocol 1.1 is supported */
 	if (call->req->len <= offset) {
 		gp11_attributes_unref (attrs);
-		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+		egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
 	}
 		
 	/* Read out the session id, raw, unbounded */
 	for (i = 0; i < 16; ++i) {
-		gkr_buffer_get_byte (call->req, offset, &offset, &b);
+		egg_buffer_get_byte (call->req, offset, &offset, &b);
 		session_id[i] = b;
 	}
 		
 	/* And the response type */
-	gkr_buffer_get_uint32 (call->req, offset, &offset, &resp_type);
+	egg_buffer_get_uint32 (call->req, offset, &offset, &resp_type);
 	
 	/* Did parsing fail? */
-	if (gkr_buffer_has_error (call->req) || data == NULL) {
+	if (egg_buffer_has_error (call->req) || data == NULL) {
 		gp11_attributes_unref (attrs);
 		return FALSE;
 	}
@@ -977,7 +977,7 @@ op_v1_challenge (GckSshAgentCall *call)
 	/* Not supported request type */
 	if (resp_type != 1) {
 		gp11_attributes_unref (attrs);
-		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+		egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
 	}
 	
@@ -987,7 +987,7 @@ op_v1_challenge (GckSshAgentCall *call)
 	
 	/* Didn't find a key? */
 	if (key == NULL) {
-		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+		egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
 	}
 
@@ -1003,7 +1003,7 @@ op_v1_challenge (GckSshAgentCall *call)
 		if (error->code != CKR_FUNCTION_CANCELED)
 			g_message ("decryption of the data failed: %s", error->message);
 		g_clear_error (&error);
-		gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+		egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 		return TRUE;
 	}
 	
@@ -1014,8 +1014,8 @@ op_v1_challenge (GckSshAgentCall *call)
 	n_hash = sizeof (hash);
 	g_checksum_get_digest (checksum, hash, &n_hash);
 	
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_RSA_RESPONSE);
-	gkr_buffer_append (call->resp, hash, n_hash);
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_RSA_RESPONSE);
+	egg_buffer_append (call->resp, hash, n_hash);
 	
 	g_free (result);
 	return TRUE;
@@ -1033,7 +1033,7 @@ op_remove_identity (GckSshAgentCall *call)
 	offset = 5;
 	
 	/* The key packet size */
-	if (!gkr_buffer_get_uint32 (call->req, offset, &offset, &sz))
+	if (!egg_buffer_get_uint32 (call->req, offset, &offset, &sz))
 		return FALSE;
 
 	/* The public key itself */
@@ -1063,7 +1063,7 @@ op_remove_identity (GckSshAgentCall *call)
 
 	/* TODO: Implement locking of other keys */
 
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
 
 	return TRUE;	
 }
@@ -1102,7 +1102,7 @@ op_v1_remove_identity (GckSshAgentCall *call)
 
 	gck_ssh_agent_checkin_main_session (session);
 
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
 	return TRUE;	
 }
 
@@ -1136,7 +1136,7 @@ op_remove_all_identities (GckSshAgentCall *call)
 	
 	/* TODO: Go through all open tokens and lock private SSH keys */
 
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
 	return TRUE;
 }
 
@@ -1169,21 +1169,21 @@ op_v1_remove_all_identities (GckSshAgentCall *call)
 
 	gck_ssh_agent_checkin_main_session (session);
 		
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
 	return TRUE;
 }
 
 static gboolean 
 op_not_implemented_success (GckSshAgentCall *call)
 {
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
 	return TRUE;
 }
 	
 static gboolean
 op_not_implemented_failure (GckSshAgentCall *call)
 {
-	gkr_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
+	egg_buffer_add_byte (call->resp, GCK_SSH_RES_FAILURE);
 	return TRUE;
 }
 

@@ -28,10 +28,10 @@
 #include "gkr-pk-root-storage.h"
 #include "gkr-pk-util.h"
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 #include "common/gkr-location.h"
 #include "common/gkr-location-watch.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring-login.h"
 

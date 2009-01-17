@@ -27,7 +27,7 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 /* 
  * Each test looks like (on one line):
@@ -57,85 +57,83 @@ find_non_zero (gpointer mem, gsize len)
 	return IS_ZERO;
 }
 
-void unit_test_secmem_alloc_free (CuTest* cu)
+DEFINE_TEST(secmem_alloc_free)
 {
 	gpointer p;
 	gboolean ret;
 	
-	p = gkr_secure_alloc_full (512, 0);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 512));
+	p = egg_secure_alloc_full (512, 0);
+	g_assert (p != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 512));
 	
 	memset (p, 0x67, 512);
 	
-	ret = gkr_secure_check (p);
-	CuAssertIntEquals (cu, ret, TRUE);
+	ret = egg_secure_check (p);
+	g_assert (ret == TRUE);
 	
-	gkr_secure_free_full (p, 0);
+	egg_secure_free_full (p, 0);
 }
 
-void unit_test_secmem_realloc_across (CuTest *cu)
+DEFINE_TEST(secmem_realloc_across)
 {
 	gpointer p, p2;
 	
 	/* Tiny allocation */
-	p = gkr_secure_realloc_full (NULL, 1088, 0);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 1088));
+	p = egg_secure_realloc_full (NULL, 1088, 0);
+	g_assert (p != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 1088));
 
 	/* Reallocate to a large one, will have to have changed blocks */	
-	p2 = gkr_secure_realloc_full (p, 16200, 0);
-	CuAssertPtrNotNull (cu, p2);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 16200));
+	p2 = egg_secure_realloc_full (p, 16200, 0);
+	g_assert (p2 != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p2, 16200));
 }
 
-void unit_test_secmem_alloc_two (CuTest* cu)
+DEFINE_TEST(secmem_alloc_two)
 {
 	gpointer p, p2;
 	gboolean ret;
 	
-	p2 = gkr_secure_alloc_full (4, 0);
-	CuAssertPtrNotNull (cu, p2);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 4));
+	p2 = egg_secure_alloc_full (4, 0);
+	g_assert (p2 != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p2, 4));
 
 	memset (p2, 0x67, 4);
 	
-	p = gkr_secure_alloc_full (16200, 0);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 16200));
+	p = egg_secure_alloc_full (16200, 0);
+	g_assert (p != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 16200));
 
 	memset (p, 0x67, 16200);
 	
-	ret = gkr_secure_check (p);
-	CuAssertIntEquals (cu, ret, TRUE);
+	ret = egg_secure_check (p);
+	g_assert (ret == TRUE);
 	
-	gkr_secure_free_full (p2, 0);
-	gkr_secure_free_full (p, 0);
+	egg_secure_free_full (p2, 0);
+	egg_secure_free_full (p, 0);
 }
 
-void unit_test_secmem_realloc (CuTest* cu)
+DEFINE_TEST(secmem_realloc)
 {
 	gchar *str = "a test string to see if realloc works properly";
 	gpointer p, p2;
-	int r;
 	gsize len;
 	
 	len = strlen (str) + 1;
 	
-	p = gkr_secure_realloc_full (NULL, len, 0);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, len));
+	p = egg_secure_realloc_full (NULL, len, 0);
+	g_assert (p != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, len));
 	
 	strcpy ((gchar*)p, str);
 	
-	p2 = gkr_secure_realloc_full (p, 512, 0);
-	CuAssertPtrNotNull (cu, p2);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (((gchar*)p2) + len, 512 - len));
+	p2 = egg_secure_realloc_full (p, 512, 0);
+	g_assert (p2 == NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (((gchar*)p2) + len, 512 - len));
 	
-	r = strcmp (p2, str);
-	CuAssert (cu, "strings not equal after realloc", r == 0);
+	g_assert (strcmp (p2, str) == 0);
 	
-	p = gkr_secure_realloc_full (p2, 0, 0);
-	CuAssert (cu, "should have freed memory", p == NULL);
+	p = egg_secure_realloc_full (p2, 0, 0);
+	g_assert (p == NULL);
 }
 

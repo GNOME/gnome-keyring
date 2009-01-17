@@ -27,7 +27,7 @@
 
 #include "common/gkr-location.h"
 #include "common/gkr-crypto.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "pkix/gkr-pkix-openssl.h"
 #include "pkix/gkr-pkix-pem.h"

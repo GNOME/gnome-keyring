@@ -33,7 +33,7 @@
 
 #include "gkr-keyring-item.h"
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 
 #include "library/gnome-keyring.h"
 
@@ -131,13 +131,13 @@ gboolean         gkr_keyring_ask_check_unlock   (GkrAskRequest* ask);
  *    1 : successful 
  */
 
-gboolean         gkr_keyring_textual_generate (GkrKeyring *keyring, GkrBuffer *buffer);
+gboolean         gkr_keyring_textual_generate (GkrKeyring *keyring, EggBuffer *buffer);
 
-gboolean         gkr_keyring_binary_generate  (GkrKeyring *keyring, GkrBuffer *buffer);
+gboolean         gkr_keyring_binary_generate  (GkrKeyring *keyring, EggBuffer *buffer);
 
-gint             gkr_keyring_textual_parse    (GkrKeyring *keyring, GkrBuffer *buffer); 
+gint             gkr_keyring_textual_parse    (GkrKeyring *keyring, EggBuffer *buffer); 
 
-gint             gkr_keyring_binary_parse     (GkrKeyring *keyring, GkrBuffer *buffer); 
+gint             gkr_keyring_binary_parse     (GkrKeyring *keyring, EggBuffer *buffer); 
 
 G_END_DECLS
 

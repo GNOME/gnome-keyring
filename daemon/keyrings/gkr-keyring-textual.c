@@ -26,7 +26,7 @@
 #include "gkr-keyring.h"
 #include "gkr-keyring-item.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-private.h"
@@ -277,9 +277,9 @@ parse_item (GKeyFile *file, GkrKeyringItem *item, const gchar **groups)
 	item->display_name = g_key_file_get_string (file, groupname, "display-name", NULL);
 
 	/* Even though this is from disk, use secure memory just to be consistent */
-	gkr_secure_free (item->secret);
+	egg_secure_free (item->secret);
 	val = g_key_file_get_string (file, groupname, "secret", NULL);
-	item->secret = gkr_secure_strdup (val);
+	item->secret = egg_secure_strdup (val);
 	g_free (val);
 
 	item->mtime = 0; 
@@ -297,7 +297,7 @@ parse_item (GKeyFile *file, GkrKeyringItem *item, const gchar **groups)
 }
 
 gboolean
-gkr_keyring_textual_generate (GkrKeyring *keyring, GkrBuffer *buffer)
+gkr_keyring_textual_generate (GkrKeyring *keyring, EggBuffer *buffer)
 {
 	GkrKeyringItem *item;
 	GKeyFile *file;
@@ -332,8 +332,8 @@ gkr_keyring_textual_generate (GkrKeyring *keyring, GkrBuffer *buffer)
 		return FALSE;
 	}
 	
-	gkr_buffer_uninit (buffer);
-	gkr_buffer_init_allocated (buffer, (guchar*)data, n_data, NULL);
+	egg_buffer_uninit (buffer);
+	egg_buffer_init_allocated (buffer, (guchar*)data, n_data, NULL);
 	return TRUE;
 }
 
@@ -353,7 +353,7 @@ remove_unavailable_item (gpointer key, gpointer dummy, GkrKeyring *keyring)
 }
 
 gint
-gkr_keyring_textual_parse (GkrKeyring *keyring, GkrBuffer *buffer) 
+gkr_keyring_textual_parse (GkrKeyring *keyring, EggBuffer *buffer) 
 {
 	GkrKeyringItem *item;
 	GError *err = NULL;

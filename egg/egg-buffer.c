@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-buffer.c - helper code for the keyring daemon protocol
+/* egg-buffer.c - Generic data buffer, used by openssh, gnome-keyring
 
    Copyright (C) 2007 Stefan Walter
 
@@ -25,18 +25,18 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "gkr-buffer.h"
+#include "egg-buffer.h"
 
-#define DEFAULT_ALLOCATOR  ((GkrBufferAllocator)realloc)
+#define DEFAULT_ALLOCATOR  ((EggBufferAllocator)realloc)
 
 int
-gkr_buffer_init (GkrBuffer *buffer, size_t reserve)
+egg_buffer_init (EggBuffer *buffer, size_t reserve)
 {
-	return gkr_buffer_init_full (buffer, reserve, NULL);
+	return egg_buffer_init_full (buffer, reserve, NULL);
 }
 
 int
-gkr_buffer_init_full (GkrBuffer *buffer, size_t reserve, GkrBufferAllocator allocator)
+egg_buffer_init_full (EggBuffer *buffer, size_t reserve, EggBufferAllocator allocator)
 {
 	memset (buffer, 0, sizeof (*buffer));
 	
@@ -60,7 +60,7 @@ gkr_buffer_init_full (GkrBuffer *buffer, size_t reserve, GkrBufferAllocator allo
 }
 
 void
-gkr_buffer_init_static (GkrBuffer* buffer, unsigned char *buf, size_t len)
+egg_buffer_init_static (EggBuffer* buffer, unsigned char *buf, size_t len)
 {
 	memset (buffer, 0, sizeof (*buffer));
 		
@@ -74,8 +74,8 @@ gkr_buffer_init_static (GkrBuffer* buffer, unsigned char *buf, size_t len)
 }
 
 void
-gkr_buffer_init_allocated (GkrBuffer *buffer, unsigned char *buf, size_t len,
-                           GkrBufferAllocator allocator)
+egg_buffer_init_allocated (EggBuffer *buffer, unsigned char *buf, size_t len,
+                           EggBufferAllocator allocator)
 {
 	memset (buffer, 0, sizeof (*buffer));
 	
@@ -90,7 +90,7 @@ gkr_buffer_init_allocated (GkrBuffer *buffer, unsigned char *buf, size_t len,
 }
 
 void 
-gkr_buffer_reset (GkrBuffer *buffer)
+egg_buffer_reset (EggBuffer *buffer)
 {
 	memset (buffer->buf, 0, buffer->allocated_len);
 	buffer->len = 0;
@@ -98,7 +98,7 @@ gkr_buffer_reset (GkrBuffer *buffer)
 }
 
 void
-gkr_buffer_uninit (GkrBuffer *buffer)
+egg_buffer_uninit (EggBuffer *buffer)
 {
 	if (!buffer)
 		return;
@@ -114,7 +114,7 @@ gkr_buffer_uninit (GkrBuffer *buffer)
 }
 
 int
-gkr_buffer_set_allocator (GkrBuffer *buffer, GkrBufferAllocator allocator)
+egg_buffer_set_allocator (EggBuffer *buffer, EggBufferAllocator allocator)
 {
 	unsigned char *buf;
 	
@@ -142,7 +142,7 @@ gkr_buffer_set_allocator (GkrBuffer *buffer, GkrBufferAllocator allocator)
 }
 
 int
-gkr_buffer_equal (GkrBuffer *b1, GkrBuffer *b2)
+egg_buffer_equal (EggBuffer *b1, EggBuffer *b2)
 {
 	if (b1->len != b2->len)
 		return 0;
@@ -150,7 +150,7 @@ gkr_buffer_equal (GkrBuffer *b1, GkrBuffer *b2)
 }
 
 int
-gkr_buffer_reserve (GkrBuffer *buffer, size_t len)
+egg_buffer_reserve (EggBuffer *buffer, size_t len)
 {
 	unsigned char *newbuf;
 	size_t newlen;
@@ -183,9 +183,9 @@ gkr_buffer_reserve (GkrBuffer *buffer, size_t len)
 }
 
 int
-gkr_buffer_resize (GkrBuffer *buffer, size_t len)
+egg_buffer_resize (EggBuffer *buffer, size_t len)
 {
-	if (!gkr_buffer_reserve (buffer, len))
+	if (!egg_buffer_reserve (buffer, len))
 		return 0;
 		
 	buffer->len = len;
@@ -193,20 +193,20 @@ gkr_buffer_resize (GkrBuffer *buffer, size_t len)
 }
 
 unsigned char*
-gkr_buffer_add_empty (GkrBuffer *buffer, size_t len)
+egg_buffer_add_empty (EggBuffer *buffer, size_t len)
 {
 	size_t pos = buffer->len;
-	if (!gkr_buffer_reserve (buffer, buffer->len + len))
+	if (!egg_buffer_reserve (buffer, buffer->len + len))
 		return NULL;
 	buffer->len += len;
 	return buffer->buf + pos;
 }
 
 int 
-gkr_buffer_append (GkrBuffer *buffer, const unsigned char *val,
+egg_buffer_append (EggBuffer *buffer, const unsigned char *val,
                              size_t len)
 {
-	if (!gkr_buffer_reserve (buffer, buffer->len + len))
+	if (!egg_buffer_reserve (buffer, buffer->len + len))
 		return 0; /* failures already incremented */
 	memcpy (buffer->buf + buffer->len, val, len);
 	buffer->len += len;
@@ -214,9 +214,9 @@ gkr_buffer_append (GkrBuffer *buffer, const unsigned char *val,
 }
 
 int
-gkr_buffer_add_byte (GkrBuffer *buffer, unsigned char val)
+egg_buffer_add_byte (EggBuffer *buffer, unsigned char val)
 {
-	if (!gkr_buffer_reserve (buffer, buffer->len + 1))
+	if (!egg_buffer_reserve (buffer, buffer->len + 1))
 		return 0; /* failures already incremented */
 	buffer->buf[buffer->len] = val;
 	buffer->len++;
@@ -224,7 +224,7 @@ gkr_buffer_add_byte (GkrBuffer *buffer, unsigned char val)
 }
 
 int
-gkr_buffer_get_byte (GkrBuffer *buffer, size_t offset,
+egg_buffer_get_byte (EggBuffer *buffer, size_t offset,
                                size_t *next_offset, unsigned char *val)
 {
 	unsigned char *ptr;
@@ -241,31 +241,31 @@ gkr_buffer_get_byte (GkrBuffer *buffer, size_t offset,
 }
 
 void
-gkr_buffer_encode_uint16 (unsigned char* buf, uint16_t val)
+egg_buffer_encode_uint16 (unsigned char* buf, uint16_t val)
 {
 	buf[0] = (val >> 8) & 0xff;
 	buf[1] = (val >> 0) & 0xff;	
 }
 
 uint16_t
-gkr_buffer_decode_uint16 (unsigned char* buf)
+egg_buffer_decode_uint16 (unsigned char* buf)
 {
 	uint16_t val = buf[0] << 8 | buf[1];
 	return val;
 }
 
 int
-gkr_buffer_add_uint16 (GkrBuffer *buffer, uint16_t val)
+egg_buffer_add_uint16 (EggBuffer *buffer, uint16_t val)
 {
-	if (!gkr_buffer_reserve (buffer, buffer->len + 2))
+	if (!egg_buffer_reserve (buffer, buffer->len + 2))
 		return 0; /* failures already incremented */
 	buffer->len += 2;
-	gkr_buffer_set_uint16 (buffer, buffer->len - 2, val);
+	egg_buffer_set_uint16 (buffer, buffer->len - 2, val);
 	return 1;	
 }
 
 int
-gkr_buffer_set_uint16 (GkrBuffer *buffer, size_t offset, uint16_t val)
+egg_buffer_set_uint16 (EggBuffer *buffer, size_t offset, uint16_t val)
 {
 	unsigned char *ptr;
 	if (buffer->len < 2 || offset > buffer->len - 2) {
@@ -273,12 +273,12 @@ gkr_buffer_set_uint16 (GkrBuffer *buffer, size_t offset, uint16_t val)
 		return 0;
 	}
 	ptr = (unsigned char*)buffer->buf + offset;
-	gkr_buffer_encode_uint16 (ptr, val);
+	egg_buffer_encode_uint16 (ptr, val);
 	return 1;
 }
 
 int
-gkr_buffer_get_uint16 (GkrBuffer *buffer, size_t offset,
+egg_buffer_get_uint16 (EggBuffer *buffer, size_t offset,
                        size_t *next_offset, uint16_t *val)
 {
 	unsigned char *ptr;
@@ -288,14 +288,14 @@ gkr_buffer_get_uint16 (GkrBuffer *buffer, size_t offset,
 	}
 	ptr = (unsigned char*)buffer->buf + offset;
 	if (val != NULL)
-		*val = gkr_buffer_decode_uint16 (ptr);
+		*val = egg_buffer_decode_uint16 (ptr);
 	if (next_offset != NULL)
 		*next_offset = offset + 2;
 	return 1;	
 }
 
 void 
-gkr_buffer_encode_uint32 (unsigned char* buf, uint32_t val)
+egg_buffer_encode_uint32 (unsigned char* buf, uint32_t val)
 {
 	buf[0] = (val >> 24) & 0xff;
 	buf[1] = (val >> 16) & 0xff;
@@ -304,24 +304,24 @@ gkr_buffer_encode_uint32 (unsigned char* buf, uint32_t val)
 }
 
 uint32_t
-gkr_buffer_decode_uint32 (unsigned char* ptr)
+egg_buffer_decode_uint32 (unsigned char* ptr)
 {
 	uint32_t val = ptr[0] << 24 | ptr[1] << 16 | ptr[2] << 8 | ptr[3];
 	return val;
 }
 
 int 
-gkr_buffer_add_uint32 (GkrBuffer *buffer, uint32_t val)
+egg_buffer_add_uint32 (EggBuffer *buffer, uint32_t val)
 {
-	if (!gkr_buffer_reserve (buffer, buffer->len + 4))
+	if (!egg_buffer_reserve (buffer, buffer->len + 4))
 		return 0; /* failures already incremented */
 	buffer->len += 4;
-	gkr_buffer_set_uint32 (buffer, buffer->len - 4, val);
+	egg_buffer_set_uint32 (buffer, buffer->len - 4, val);
 	return 1;
 }
 
 int
-gkr_buffer_set_uint32 (GkrBuffer *buffer, size_t offset, uint32_t val)
+egg_buffer_set_uint32 (EggBuffer *buffer, size_t offset, uint32_t val)
 {
 	unsigned char *ptr;
 	if (buffer->len < 4 || offset > buffer->len - 4) {
@@ -329,12 +329,12 @@ gkr_buffer_set_uint32 (GkrBuffer *buffer, size_t offset, uint32_t val)
 		return 0;
 	}
 	ptr = (unsigned char*)buffer->buf + offset;
-	gkr_buffer_encode_uint32 (ptr, val);
+	egg_buffer_encode_uint32 (ptr, val);
 	return 1;
 }
 
 int
-gkr_buffer_get_uint32 (GkrBuffer *buffer, size_t offset, size_t *next_offset,
+egg_buffer_get_uint32 (EggBuffer *buffer, size_t offset, size_t *next_offset,
                                  uint32_t *val)
 {
 	unsigned char *ptr;
@@ -344,28 +344,28 @@ gkr_buffer_get_uint32 (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 	}
 	ptr = (unsigned char*)buffer->buf + offset;
 	if (val != NULL)
-		*val = gkr_buffer_decode_uint32 (ptr);
+		*val = egg_buffer_decode_uint32 (ptr);
 	if (next_offset != NULL)
 		*next_offset = offset + 4;
 	return 1;
 }
 
 int
-gkr_buffer_add_uint64 (GkrBuffer *buffer, uint64_t val)
+egg_buffer_add_uint64 (EggBuffer *buffer, uint64_t val)
 {
-	if (!gkr_buffer_add_uint32 (buffer, ((val >> 32) & 0xffffffff)))
+	if (!egg_buffer_add_uint32 (buffer, ((val >> 32) & 0xffffffff)))
 		return 0;
-	return gkr_buffer_add_uint32 (buffer, (val & 0xffffffff));
+	return egg_buffer_add_uint32 (buffer, (val & 0xffffffff));
 }
 
 int
-gkr_buffer_get_uint64 (GkrBuffer *buffer, size_t offset, 
+egg_buffer_get_uint64 (EggBuffer *buffer, size_t offset, 
 					   size_t *next_offset, uint64_t *val)
 {
 	uint32_t a, b;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &a))
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &a))
 		return 0;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &b))
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &b))
 		return 0;
 	if (val != NULL)
 		*val = ((uint64_t)a) << 32 | b;
@@ -375,39 +375,39 @@ gkr_buffer_get_uint64 (GkrBuffer *buffer, size_t offset,
 }
 
 int
-gkr_buffer_add_byte_array (GkrBuffer *buffer, const unsigned char *val,
+egg_buffer_add_byte_array (EggBuffer *buffer, const unsigned char *val,
                                      size_t len)
 {
 	if (val == NULL) 
-		return gkr_buffer_add_uint32 (buffer, 0xffffffff);
+		return egg_buffer_add_uint32 (buffer, 0xffffffff);
 	if (len >= 0x7fffffff) {
 		buffer->failures++;
 		return 0; 
 	}
-	if (!gkr_buffer_add_uint32 (buffer, len))
+	if (!egg_buffer_add_uint32 (buffer, len))
 		return 0;
-	return gkr_buffer_append (buffer, val, len);
+	return egg_buffer_append (buffer, val, len);
 }
 
 unsigned char*
-gkr_buffer_add_byte_array_empty (GkrBuffer *buffer, size_t vlen)
+egg_buffer_add_byte_array_empty (EggBuffer *buffer, size_t vlen)
 {
 	if (vlen >= 0x7fffffff) {
 		buffer->failures++;
 		return NULL; 
 	}
-	if (!gkr_buffer_add_uint32 (buffer, vlen))
+	if (!egg_buffer_add_uint32 (buffer, vlen))
 		return NULL;
-	return gkr_buffer_add_empty (buffer, vlen);
+	return egg_buffer_add_empty (buffer, vlen);
 }
 
 int
-gkr_buffer_get_byte_array (GkrBuffer *buffer, size_t offset,
+egg_buffer_get_byte_array (EggBuffer *buffer, size_t offset,
                                       size_t *next_offset, const unsigned char **val,
                                       size_t *vlen)
 {
 	uint32_t len;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &len))
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &len))
 		return 0;
 	if (len == 0xffffffff) {
 		if (next_offset) 
@@ -438,23 +438,23 @@ gkr_buffer_get_byte_array (GkrBuffer *buffer, size_t offset,
 }
 
 int
-gkr_buffer_add_string (GkrBuffer *buffer, const char *str)
+egg_buffer_add_string (EggBuffer *buffer, const char *str)
 {
 	if (str == NULL) {
-		return gkr_buffer_add_uint32 (buffer, 0xffffffff);
+		return egg_buffer_add_uint32 (buffer, 0xffffffff);
 	} else {
 		size_t len = strlen (str);
 		if (len >= 0x7fffffff)
 			return 0;
-		if (!gkr_buffer_add_uint32 (buffer, len))
+		if (!egg_buffer_add_uint32 (buffer, len))
 			return 0;
-		return gkr_buffer_append (buffer, (unsigned char*)str, len);
+		return egg_buffer_append (buffer, (unsigned char*)str, len);
 	}
 }
 
 int
-gkr_buffer_get_string (GkrBuffer *buffer, size_t offset, size_t *next_offset,
-                       char **str_ret, GkrBufferAllocator allocator)
+egg_buffer_get_string (EggBuffer *buffer, size_t offset, size_t *next_offset,
+                       char **str_ret, EggBufferAllocator allocator)
 {
 	uint32_t len;
 	
@@ -463,7 +463,7 @@ gkr_buffer_get_string (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 	if (!allocator)
 		allocator = DEFAULT_ALLOCATOR;
 	
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &len)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &len)) {
 		return 0;
 	}
 	if (len == 0xffffffff) {
@@ -497,7 +497,7 @@ gkr_buffer_get_string (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 }
 
 int
-gkr_buffer_add_stringv (GkrBuffer *buffer, const char** strv)
+egg_buffer_add_stringv (EggBuffer *buffer, const char** strv)
 {
 	const char **v;
 	uint32_t n = 0;
@@ -508,12 +508,12 @@ gkr_buffer_add_stringv (GkrBuffer *buffer, const char** strv)
 	/* Add the number of strings coming */
 	for (v = strv; *v; ++v)
 		++n;
-	if (!gkr_buffer_add_uint32 (buffer, n))
+	if (!egg_buffer_add_uint32 (buffer, n))
 		return 0;
 	
 	/* Add the individual strings */
 	for (v = strv; *v; ++v) {
-		if (!gkr_buffer_add_string (buffer, *v))
+		if (!egg_buffer_add_string (buffer, *v))
 			return 0;
 	}
 	
@@ -521,8 +521,8 @@ gkr_buffer_add_stringv (GkrBuffer *buffer, const char** strv)
 }
 
 int
-gkr_buffer_get_stringv (GkrBuffer *buffer, size_t offset, size_t *next_offset,
-		                char ***strv_ret, GkrBufferAllocator allocator)
+egg_buffer_get_stringv (EggBuffer *buffer, size_t offset, size_t *next_offset,
+		                char ***strv_ret, EggBufferAllocator allocator)
 {
 	uint32_t n, i, j;
 	size_t len;
@@ -533,7 +533,7 @@ gkr_buffer_get_stringv (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 		allocator = DEFAULT_ALLOCATOR;
 	
 	/* First the number of environment variable lines */
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &n))
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &n))
 		return 0;
 	
 	/* Then that number of strings */
@@ -546,7 +546,7 @@ gkr_buffer_get_stringv (GkrBuffer *buffer, size_t offset, size_t *next_offset,
 	memset (*strv_ret, 0, len);
 	
 	for (i = 0; i < n; ++i) {
-		if (!gkr_buffer_get_string (buffer, offset, &offset, 
+		if (!egg_buffer_get_string (buffer, offset, &offset, 
 		                            &((*strv_ret)[i]), allocator)) {
 			
 			/* Free all the strings on failure */

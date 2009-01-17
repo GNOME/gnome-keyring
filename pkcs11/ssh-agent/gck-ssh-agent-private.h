@@ -23,7 +23,7 @@
 #ifndef GKRSSHPRIVATE_H_
 #define GKRSSHPRIVATE_H_
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 
 #include "pkcs11/pkcs11.h"
 
@@ -34,8 +34,8 @@
 typedef struct _GckSshAgentCall {
 	int sock;
 	GP11Module *module;
-	GkrBuffer *req;
-	GkrBuffer *resp;
+	EggBuffer *req;
+	EggBuffer *resp;
 } GckSshAgentCall;
 
 /* -----------------------------------------------------------------------------
@@ -105,75 +105,75 @@ gulong                gck_ssh_agent_proto_keytype_to_algo           (const gchar
 
 const gchar*          gck_ssh_agent_proto_algo_to_keytype           (gulong algo);
 
-gboolean              gck_ssh_agent_proto_read_mpi                  (GkrBuffer *req, 
+gboolean              gck_ssh_agent_proto_read_mpi                  (EggBuffer *req, 
                                                                      gsize *offset, 
                                                                      GP11Attributes *attrs, 
                                                                      CK_ATTRIBUTE_TYPE type);
 
-gboolean              gck_ssh_agent_proto_read_mpi_v1               (GkrBuffer *req, 
+gboolean              gck_ssh_agent_proto_read_mpi_v1               (EggBuffer *req, 
                                                                      gsize *offset, 
                                                                      GP11Attributes *attrs,
                                                                      CK_ATTRIBUTE_TYPE type);
 
-const guchar*         gck_ssh_agent_proto_read_challenge_v1         (GkrBuffer *req,
+const guchar*         gck_ssh_agent_proto_read_challenge_v1         (EggBuffer *req,
                                                                      gsize *offset,
                                                                      gsize *n_challenge);
                                                                      
-gboolean              gck_ssh_agent_proto_write_mpi                 (GkrBuffer *resp, 
+gboolean              gck_ssh_agent_proto_write_mpi                 (EggBuffer *resp, 
                                                                      GP11Attribute *attr);
 
-gboolean              gck_ssh_agent_proto_write_mpi_v1              (GkrBuffer *resp, 
+gboolean              gck_ssh_agent_proto_write_mpi_v1              (EggBuffer *resp, 
                                                                      GP11Attribute *attr);
 
-gboolean              gck_ssh_agent_proto_read_public               (GkrBuffer *req, 
+gboolean              gck_ssh_agent_proto_read_public               (EggBuffer *req, 
                                                                      gsize *offset, 
                                                                      GP11Attributes *attrs, 
                                                                      gulong *algo);
 
-gboolean              gck_ssh_agent_proto_read_public_rsa           (GkrBuffer *req, 
+gboolean              gck_ssh_agent_proto_read_public_rsa           (EggBuffer *req, 
                                                                      gsize *offset, 
                                                                      GP11Attributes *attrs);
 
-gboolean              gck_ssh_agent_proto_read_public_dsa           (GkrBuffer *req, 
+gboolean              gck_ssh_agent_proto_read_public_dsa           (EggBuffer *req, 
                                                                      gsize *offset, 
                                                                      GP11Attributes *attrs);
 
-gboolean              gck_ssh_agent_proto_read_public_v1            (GkrBuffer *req, 
+gboolean              gck_ssh_agent_proto_read_public_v1            (EggBuffer *req, 
                                                                      gsize *offset, 
                                                                      GP11Attributes *attrs);
 
-gboolean              gck_ssh_agent_proto_read_pair_rsa             (GkrBuffer *req, 
-                                                                     gsize *offset, 
-                                                                     GP11Attributes *priv_attrs,
-                                                                     GP11Attributes *pub_attrs);
-
-gboolean              gck_ssh_agent_proto_read_pair_dsa             (GkrBuffer *req, 
+gboolean              gck_ssh_agent_proto_read_pair_rsa             (EggBuffer *req, 
                                                                      gsize *offset, 
                                                                      GP11Attributes *priv_attrs,
                                                                      GP11Attributes *pub_attrs);
 
-gboolean              gck_ssh_agent_proto_read_pair_v1              (GkrBuffer *req,
+gboolean              gck_ssh_agent_proto_read_pair_dsa             (EggBuffer *req, 
                                                                      gsize *offset, 
                                                                      GP11Attributes *priv_attrs,
                                                                      GP11Attributes *pub_attrs);
 
-gboolean              gck_ssh_agent_proto_write_public              (GkrBuffer *resp, 
+gboolean              gck_ssh_agent_proto_read_pair_v1              (EggBuffer *req,
+                                                                     gsize *offset, 
+                                                                     GP11Attributes *priv_attrs,
+                                                                     GP11Attributes *pub_attrs);
+
+gboolean              gck_ssh_agent_proto_write_public              (EggBuffer *resp, 
                                                                      GP11Attributes *attrs);
 
-gboolean              gck_ssh_agent_proto_write_public_rsa          (GkrBuffer *resp, 
+gboolean              gck_ssh_agent_proto_write_public_rsa          (EggBuffer *resp, 
                                                                      GP11Attributes *attrs);
 
-gboolean              gck_ssh_agent_proto_write_public_dsa          (GkrBuffer *resp, 
+gboolean              gck_ssh_agent_proto_write_public_dsa          (EggBuffer *resp, 
                                                                      GP11Attributes *attrs);
 
-gboolean              gck_ssh_agent_proto_write_public_v1           (GkrBuffer *resp, 
+gboolean              gck_ssh_agent_proto_write_public_v1           (EggBuffer *resp, 
                                                                      GP11Attributes *attrs);
 
-gboolean              gck_ssh_agent_proto_write_signature_rsa       (GkrBuffer *resp, 
+gboolean              gck_ssh_agent_proto_write_signature_rsa       (EggBuffer *resp, 
                                                                      CK_BYTE_PTR signature, 
                                                                      CK_ULONG n_signature);
 
-gboolean              gck_ssh_agent_proto_write_signature_dsa       (GkrBuffer *resp, 
+gboolean              gck_ssh_agent_proto_write_signature_dsa       (EggBuffer *resp, 
                                                                      CK_BYTE_PTR signature, 
                                                                      CK_ULONG n_signature);
 

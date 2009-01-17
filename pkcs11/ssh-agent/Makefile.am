@@ -31,8 +31,8 @@ gck_ssh_agent_standalone_SOURCES = \
 gck_ssh_agent_standalone_LDADD = \
 	libgck-ssh-agent.la \
 	$(top_builddir)/gp11/libgp11.la \
-	$(top_builddir)/common/libgkr-common-buffer.la \
-	$(top_builddir)/common/libgkr-common-secure.la \
+	$(top_builddir)/egg/libegg-buffer.la \
+	$(top_builddir)/egg/libegg-secure.la \
     	$(GOBJECT_LIBS) \
     	$(GTHREAD_LIBS) \
     	$(LIBGCRYPT_LIBS) \

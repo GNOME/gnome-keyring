@@ -27,7 +27,7 @@
 
 #include "common/gkr-location.h"
 #include "common/gkr-crypto.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "pkix/gkr-pkix-der.h"
 #include "pkix/gkr-pkix-parser.h"
@@ -90,7 +90,7 @@ ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid unique,
 	g_print ("getting password 'booo' for: %s\n", details); 	
 	
 	/* All our test encrypted stuff use this password */
-	*password = gkr_secure_strdup ("booo");
+	*password = egg_secure_strdup ("booo");
 	return TRUE;
 }
 

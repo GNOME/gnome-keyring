@@ -28,7 +28,7 @@
 #include "gck-data-der.h"
 #include "gck-data-types.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -124,7 +124,7 @@ gck_data_der_read_public_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t 
 
 	n = e = NULL;
 	
-	asn = gck_data_asn1_decode ("PK.RSAPublicKey", data, n_data);
+	asn = egg_asn1_decode ("PK.RSAPublicKey", data, n_data);
 	if (!asn)
 		goto done;
 		
@@ -175,13 +175,13 @@ gck_data_der_read_private_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t
 
 	n = e = d = p = q = u = NULL;
 	
-	asn = gck_data_asn1_decode ("PK.RSAPrivateKey", data, n_data);
+	asn = egg_asn1_decode ("PK.RSAPrivateKey", data, n_data);
 	if (!asn)
 		goto done;
 		
 	ret = GCK_DATA_FAILURE;
 	
-	if (!gck_data_asn1_read_uint (asn, "version", &version))
+	if (!egg_asn1_read_uint (asn, "version", &version))
 		goto done;
 	
 	/* We only support simple version */
@@ -251,7 +251,7 @@ gck_data_der_read_public_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t 
 
 	p = q = g = y = NULL;
 	
-	asn = gck_data_asn1_decode ("PK.DSAPublicKey", data, n_data);
+	asn = egg_asn1_decode ("PK.DSAPublicKey", data, n_data);
 	if (!asn)
 		goto done;
 	
@@ -297,8 +297,8 @@ gck_data_der_read_public_key_dsa_parts (const guchar *keydata, gsize n_keydata,
 
 	p = q = g = y = NULL;
 	
-	asn_params = gck_data_asn1_decode ("PK.DSAParameters", params, n_params);
-	asn_key = gck_data_asn1_decode ("PK.DSAPublicPart", keydata, n_keydata);
+	asn_params = egg_asn1_decode ("PK.DSAParameters", params, n_params);
+	asn_key = egg_asn1_decode ("PK.DSAPublicPart", keydata, n_keydata);
 	if (!asn_params || !asn_key)
 		goto done;
 	
@@ -354,7 +354,7 @@ gck_data_der_read_private_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t
 
 	p = q = g = y = x = NULL;
 	
-	asn = gck_data_asn1_decode ("PK.DSAPrivateKey", data, n_data);
+	asn = egg_asn1_decode ("PK.DSAPrivateKey", data, n_data);
 	if (!asn)
 		goto done;
 	
@@ -402,8 +402,8 @@ gck_data_der_read_private_key_dsa_parts (const guchar *keydata, gsize n_keydata,
 
 	p = q = g = y = x = NULL;
 	
-	asn_params = gck_data_asn1_decode ("PK.DSAParameters", params, n_params);
-	asn_key = gck_data_asn1_decode ("PK.DSAPrivatePart", keydata, n_keydata);
+	asn_params = egg_asn1_decode ("PK.DSAParameters", params, n_params);
+	asn_key = egg_asn1_decode ("PK.DSAPrivatePart", keydata, n_keydata);
 	if (!asn_params || !asn_key)
 		goto done;
 	
@@ -469,19 +469,19 @@ gck_data_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t
 	
 	init_quarks ();
 
-	asn = gck_data_asn1_decode ("PKIX1.SubjectPublicKeyInfo", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.SubjectPublicKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 	
 	ret = GCK_DATA_FAILURE;
     
 	/* Figure out the algorithm */
-	oid = gck_data_asn1_read_oid (asn, "algorithm.algorithm");
+	oid = egg_asn1_read_oid (asn, "algorithm.algorithm");
 	if (!oid)
 		goto done;
 		
 	/* A bit string so we cannot process in place */
-	key = gck_data_asn1_read_value (asn, "subjectPublicKey", &n_key, NULL);
+	key = egg_asn1_read_value (asn, "subjectPublicKey", &n_key, NULL);
 	if (!key)
 		goto done;
 	n_key /= 8;
@@ -492,7 +492,7 @@ gck_data_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t
 		
 	/* A DSA key paramaters are stored separately */
 	} else if (oid == OID_PKIX1_DSA) {
-		params = gck_data_asn1_read_element (asn, data, n_data, "algorithm.parameters", &n_params);
+		params = egg_asn1_read_element (asn, data, n_data, "algorithm.parameters", &n_params);
 		if (!params)
 			goto done;
 		ret = gck_data_der_read_public_key_dsa_parts (key, n_key, params, n_params, s_key);
@@ -542,14 +542,14 @@ gck_data_der_read_private_pkcs8_plain (const guchar *data, gsize n_data, gcry_se
 	
 	init_quarks ();
 	
-	asn = gck_data_asn1_decode ("PKIX1.pkcs-8-PrivateKeyInfo", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.pkcs-8-PrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GCK_DATA_FAILURE;
 	algorithm = 0;
 		
-	key_algo = gck_data_asn1_read_oid (asn, "privateKeyAlgorithm.algorithm");
+	key_algo = egg_asn1_read_oid (asn, "privateKeyAlgorithm.algorithm");
   	if (!key_algo)
   		goto done;
   	else if (key_algo == OID_PKIX1_RSA)
@@ -562,11 +562,11 @@ gck_data_der_read_private_pkcs8_plain (const guchar *data, gsize n_data, gcry_se
   		goto done;
   	}
 
-	keydata = gck_data_asn1_read_content (asn, data, n_data, "privateKey", &n_keydata);
+	keydata = egg_asn1_read_content (asn, data, n_data, "privateKey", &n_keydata);
 	if (!keydata)
 		goto done;
 		
-	params = gck_data_asn1_read_element (asn, data, n_data, "privateKeyAlgorithm.parameters", 
+	params = egg_asn1_read_element (asn, data, n_data, "privateKeyAlgorithm.parameters", 
 	                                     &n_params);
 		
 	ret = GCK_DATA_SUCCESS;
@@ -620,18 +620,18 @@ gck_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 
 	ret = GCK_DATA_UNRECOGNIZED;
 	
-	asn = gck_data_asn1_decode ("PKIX1.pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GCK_DATA_FAILURE;
 
 	/* Figure out the type of encryption */
-	scheme = gck_data_asn1_read_oid (asn, "encryptionAlgorithm.algorithm");
+	scheme = egg_asn1_read_oid (asn, "encryptionAlgorithm.algorithm");
 	if (!scheme)
 		goto done;
 		
-	params = gck_data_asn1_read_element (asn, data, n_data, "encryptionAlgorithm.parameters", &n_params);
+	params = egg_asn1_read_element (asn, data, n_data, "encryptionAlgorithm.parameters", &n_params);
 	if (!params)
 		goto done;
 
@@ -647,7 +647,7 @@ gck_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 		goto done;
 	}
 			
-	crypted = gck_data_asn1_read_value (asn, "encryptedData", &n_crypted, gkr_secure_realloc);
+	crypted = egg_asn1_read_value (asn, "encryptedData", &n_crypted, egg_secure_realloc);
 	if (!crypted)
 		goto done;
 	
@@ -661,7 +661,7 @@ gck_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 	}
 		
 	/* Unpad the DER data */
-	l = gck_data_asn1_element_length (crypted, n_crypted);
+	l = egg_asn1_element_length (crypted, n_crypted);
 	if (l <= 0 || l > n_crypted) {
 		ret = GCK_DATA_LOCKED;
 		goto done;
@@ -670,7 +670,7 @@ gck_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 		
 	/* Try to parse the resulting key */
 	ret = gck_data_der_read_private_pkcs8_plain (crypted, n_crypted, s_key);
-	gkr_secure_free (crypted);
+	egg_secure_free (crypted);
 	crypted = NULL;
 		
 	/* If unrecognized we assume bad password */
@@ -682,7 +682,7 @@ done:
 		gcry_cipher_close (cih);
 	if (asn)
 		asn1_delete_structure (&asn);
-	gkr_secure_free (crypted);
+	egg_secure_free (crypted);
 		
 	return ret;
 }
@@ -710,7 +710,7 @@ gck_data_der_write_public_key_rsa (gcry_sexp_t s_key, gsize *len)
 
 	n = e = NULL;
 
-	res = asn1_create_element (gck_data_asn1_get_pk_asn1type (), 
+	res = asn1_create_element (egg_asn1_get_pk_asn1type (), 
 	                           "PK.RSAPublicKey", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
@@ -722,7 +722,7 @@ gck_data_der_write_public_key_rsa (gcry_sexp_t s_key, gsize *len)
 	    !gck_data_asn1_write_mpi (asn, "publicExponent", e))
 	    	goto done;
 
-	result = gck_data_asn1_encode (asn, "", len, NULL);
+	result = egg_asn1_encode (asn, "", len, NULL);
 	
 done:
 	if (asn)
@@ -743,7 +743,7 @@ gck_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 
 	n = e = d = p = q = u = e1 = e2 = tmp = NULL;
 
-	res = asn1_create_element (gck_data_asn1_get_pk_asn1type (), 
+	res = asn1_create_element (egg_asn1_get_pk_asn1type (), 
 	                           "PK.RSAPrivateKey", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
@@ -778,10 +778,10 @@ gck_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 		goto done;
 
 	/* Write out the version */
-	if (!gck_data_asn1_write_uint (asn, "version", 0))
+	if (!egg_asn1_write_uint (asn, "version", 0))
 		goto done;
 
-	result = gck_data_asn1_encode (asn, "", n_key, NULL);
+	result = egg_asn1_encode (asn, "", n_key, NULL);
 	
 done:
 	if (asn)
@@ -810,7 +810,7 @@ gck_data_der_write_public_key_dsa (gcry_sexp_t s_key, gsize *len)
 
 	p = q = g = y = NULL;
 
-	res = asn1_create_element (gck_data_asn1_get_pk_asn1type (), 
+	res = asn1_create_element (egg_asn1_get_pk_asn1type (), 
 	                           "PK.DSAPublicKey", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
@@ -826,10 +826,10 @@ gck_data_der_write_public_key_dsa (gcry_sexp_t s_key, gsize *len)
 	    !gck_data_asn1_write_mpi (asn, "Y", y))
 	    	goto done;
 
-	if (!gck_data_asn1_write_uint (asn, "version", 0))
+	if (!egg_asn1_write_uint (asn, "version", 0))
 		goto done; 
 		
-	result = gck_data_asn1_encode (asn, "", len, NULL);
+	result = egg_asn1_encode (asn, "", len, NULL);
 	
 done:
 	if (asn)
@@ -852,7 +852,7 @@ gck_data_der_write_private_key_dsa_part (gcry_sexp_t skey, gsize *n_key)
 
 	x = NULL;
 
-	res = asn1_create_element (gck_data_asn1_get_pk_asn1type (), 
+	res = asn1_create_element (egg_asn1_get_pk_asn1type (), 
 	                           "PK.DSAPrivatePart", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
@@ -862,7 +862,7 @@ gck_data_der_write_private_key_dsa_part (gcry_sexp_t skey, gsize *n_key)
 	if (!gck_data_asn1_write_mpi (asn, "", x))
 	    	goto done;
 
-	result = gck_data_asn1_encode (asn, "", n_key, NULL);
+	result = egg_asn1_encode (asn, "", n_key, NULL);
 	
 done:
 	if (asn)
@@ -882,7 +882,7 @@ gck_data_der_write_private_key_dsa_params (gcry_sexp_t skey, gsize *n_params)
 
 	p = q = g = NULL;
 
-	res = asn1_create_element (gck_data_asn1_get_pk_asn1type (), 
+	res = asn1_create_element (egg_asn1_get_pk_asn1type (), 
 	                           "PK.DSAParameters", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
@@ -896,7 +896,7 @@ gck_data_der_write_private_key_dsa_params (gcry_sexp_t skey, gsize *n_params)
 	    !gck_data_asn1_write_mpi (asn, "g", g))
 	    	goto done;
 
-	result = gck_data_asn1_encode (asn, "", n_params, NULL);
+	result = egg_asn1_encode (asn, "", n_params, NULL);
 	
 done:
 	if (asn)
@@ -918,7 +918,7 @@ gck_data_der_write_private_key_dsa (gcry_sexp_t s_key, gsize *len)
 
 	p = q = g = y = x = NULL;
 
-	res = asn1_create_element (gck_data_asn1_get_pk_asn1type (), 
+	res = asn1_create_element (egg_asn1_get_pk_asn1type (), 
 	                           "PK.DSAPrivateKey", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
@@ -936,10 +936,10 @@ gck_data_der_write_private_key_dsa (gcry_sexp_t s_key, gsize *len)
 	    !gck_data_asn1_write_mpi (asn, "priv", x))
 	    	goto done;
 
-	if (!gck_data_asn1_write_uint (asn, "version", 0))
+	if (!egg_asn1_write_uint (asn, "version", 0))
 		goto done; 
 		
-	result = gck_data_asn1_encode (asn, "", len, NULL);
+	result = egg_asn1_encode (asn, "", len, NULL);
 	
 done:
 	if (asn)
@@ -1018,7 +1018,7 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password,
 	                                             GCRYCTL_TEST_ALGO, NULL, 0), NULL);
 
 	/* The encryption algorithm */
-	if(!gck_data_asn1_write_oid (asn, "encryptionAlgorithm.algorithm", 
+	if(!egg_asn1_write_oid (asn, "encryptionAlgorithm.algorithm", 
 	                             OID_PKCS12_PBE_3DES_SHA1))
 		g_return_val_if_reached (NULL); 
 
@@ -1037,17 +1037,17 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password,
 		g_return_val_if_reached (NULL);
 
 	/* Now write out the parameters */	
-	res = asn1_create_element (gck_data_asn1_get_pkix_asn1type (),
+	res = asn1_create_element (egg_asn1_get_pkix_asn1type (),
 	                           "PKIX1.pkcs-12-PbeParams", &asn1_params);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
-	if (!gck_data_asn1_write_value (asn1_params, "salt", salt, sizeof (salt)))
+	if (!egg_asn1_write_value (asn1_params, "salt", salt, sizeof (salt)))
 		g_return_val_if_reached (NULL);
-	if (!gck_data_asn1_write_uint (asn1_params, "iterations", iterations))
+	if (!egg_asn1_write_uint (asn1_params, "iterations", iterations))
 		g_return_val_if_reached (NULL);
-	portion = gck_data_asn1_encode (asn1_params, "", &n_portion, NULL);
+	portion = egg_asn1_encode (asn1_params, "", &n_portion, NULL);
 	g_return_val_if_fail (portion, NULL); 
 	
-	if (!gck_data_asn1_write_value (asn, "encryptionAlgorithm.parameters", portion, n_portion))
+	if (!egg_asn1_write_value (asn, "encryptionAlgorithm.parameters", portion, n_portion))
 		g_return_val_if_reached (NULL);
 	g_free (portion);
 	
@@ -1083,12 +1083,12 @@ gck_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 		g_return_val_if_reached (NULL);
 	g_return_val_if_fail (is_priv == TRUE, NULL);
 	
-	res = asn1_create_element (gck_data_asn1_get_pkix_asn1type (), 
+	res = asn1_create_element (egg_asn1_get_pkix_asn1type (), 
 	                           "PKIX1.pkcs-8-PrivateKeyInfo", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 	
 	/* Write out the version */
-	if (!gck_data_asn1_write_uint (asn, "version", 1))
+	if (!egg_asn1_write_uint (asn, "version", 1))
 		g_return_val_if_reached (NULL);
 	
 	/* Per algorithm differences */
@@ -1115,24 +1115,24 @@ gck_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 	};
 	
 	/* Write out the algorithm */
-	if (!gck_data_asn1_write_oid (asn, "privateKeyAlgorithm.algorithm", oid))
+	if (!egg_asn1_write_oid (asn, "privateKeyAlgorithm.algorithm", oid))
 		g_return_val_if_reached (NULL);
 
 	/* Write out the parameters */
-	if (!gck_data_asn1_write_value (asn, "privateKeyAlgorithm.parameters", params, n_params))
+	if (!egg_asn1_write_value (asn, "privateKeyAlgorithm.parameters", params, n_params))
 		g_return_val_if_reached (NULL);
-	gkr_secure_free (params);
+	egg_secure_free (params);
 	
 	/* Write out the key portion */
-	if (!gck_data_asn1_write_value (asn, "privateKey", key, n_key))
+	if (!egg_asn1_write_value (asn, "privateKey", key, n_key))
 		g_return_val_if_reached (NULL);
-	gkr_secure_free (key);
+	egg_secure_free (key);
 	
 	/* Add an empty attributes field */
-	if (!gck_data_asn1_write_value (asn, "attributes", NULL, 0))
+	if (!egg_asn1_write_value (asn, "attributes", NULL, 0))
 		g_return_val_if_reached (NULL);
 	
-	data = gck_data_asn1_encode (asn, "", n_data, NULL);
+	data = egg_asn1_encode (asn, "", n_data, NULL);
 	g_return_val_if_fail (data, NULL); 
 	
 	asn1_delete_structure (&asn);
@@ -1154,7 +1154,7 @@ gck_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
 	/* Encode the key in normal pkcs8 fashion */
 	key = gck_data_der_write_private_pkcs8_plain (skey, &n_key);
 	
-	res = asn1_create_element (gck_data_asn1_get_pkix_asn1type (), 
+	res = asn1_create_element (egg_asn1_get_pkix_asn1type (), 
 	                           "PKIX1.pkcs-8-EncryptedPrivateKeyInfo", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 	
@@ -1184,7 +1184,7 @@ gck_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
 	res = asn1_write_value (asn, "encryptedData", key, n_key);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 	
-	data = gck_data_asn1_encode (asn, "", n_data, NULL);
+	data = egg_asn1_encode (asn, "", n_data, NULL);
 	g_return_val_if_fail (data, NULL); 
 
 	asn1_delete_structure (&asn);
@@ -1199,7 +1199,7 @@ gck_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
 GckDataResult
 gck_data_der_read_certificate (const guchar *data, gsize n_data, ASN1_TYPE *asn1)
 {
-	*asn1 = gck_data_asn1_decode ("PKIX1.Certificate", data, n_data);
+	*asn1 = egg_asn1_decode ("PKIX1.Certificate", data, n_data);
 	if (!*asn1)
 		return GCK_DATA_UNRECOGNIZED;
 	
@@ -1214,21 +1214,21 @@ gck_data_der_read_basic_constraints (const guchar *data, gsize n_data,
 	ASN1_TYPE asn;
 	guint value;
 
-	asn = gck_data_asn1_decode ("PKIX1.BasicConstraints", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.BasicConstraints", data, n_data);
 	if (!asn)
 		goto done;
 	
 	ret = GCK_DATA_FAILURE;
     
     	if (path_len) {
-    		if (!gck_data_asn1_read_uint (asn, "pathLenConstraint", &value))
+    		if (!egg_asn1_read_uint (asn, "pathLenConstraint", &value))
     			*path_len = -1;
     		else
     			*path_len = value;
     	}
     	
     	if (is_ca) {
-    		if (!gck_data_asn1_read_boolean (asn, "cA", is_ca))
+    		if (!egg_asn1_read_boolean (asn, "cA", is_ca))
     			*is_ca = FALSE;
     	}
     	
@@ -1254,7 +1254,7 @@ gck_data_der_read_key_usage (const guchar *data, gsize n_data, guint *key_usage)
 	guchar buf[4];
 	int res, len;
 	
-	asn = gck_data_asn1_decode ("PKIX1.KeyUsage", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.KeyUsage", data, n_data);
 	if (!asn)
 		goto done;
 		
@@ -1285,7 +1285,7 @@ gck_data_der_read_enhanced_usage (const guchar *data, gsize n_data, GQuark **usa
 	GQuark oid;
 	int i;
 	
-	asn = gck_data_asn1_decode ("PKIX1.ExtKeyUsageSyntax", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.ExtKeyUsageSyntax", data, n_data);
 	if (!asn)
 		goto done;
 		
@@ -1294,7 +1294,7 @@ gck_data_der_read_enhanced_usage (const guchar *data, gsize n_data, GQuark **usa
 	array = g_array_new (TRUE, TRUE, sizeof (GQuark));
 	for (i = 0; TRUE; ++i) {
 		part = g_strdup_printf ("?%d", i + 1);
-		oid = gck_data_asn1_read_oid (asn, part);
+		oid = egg_asn1_read_oid (asn, part);
 		g_free (part);
 		
 		if (!oid) 
@@ -1320,7 +1320,7 @@ gck_data_der_write_certificate (ASN1_TYPE asn1, gsize *n_data)
 	g_return_val_if_fail (asn1, NULL);
 	g_return_val_if_fail (n_data, NULL);
 	
-	return gck_data_asn1_encode (asn1, "", n_data, NULL);
+	return egg_asn1_encode (asn1, "", n_data, NULL);
 }
 
 /* -----------------------------------------------------------------------------
@@ -1419,16 +1419,16 @@ gck_data_der_read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode, int hash_a
 	    gcry_md_test_algo (hash_algo) != 0)
 		goto done;
 	
-	asn = gck_data_asn1_decode ("PKIX1.pkcs-5-PBE-params", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.pkcs-5-PBE-params", data, n_data);
 	if (!asn) 
 		goto done;
 		
 	ret = GCK_DATA_FAILURE;
 		
-	salt = gck_data_asn1_read_content (asn, data, n_data, "salt", &n_salt);
+	salt = egg_asn1_read_content (asn, data, n_data, "salt", &n_salt);
 	if (!salt)
 		goto done;
-	if (!gck_data_asn1_read_uint (asn, "iterationCount", &iterations))
+	if (!egg_asn1_read_uint (asn, "iterationCount", &iterations))
 		iterations = 1;
 		
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
@@ -1472,14 +1472,14 @@ setup_pkcs5_rc2_params (const guchar *data, guchar n_data, gcry_cipher_hd_t cih)
 	
 	g_assert (data);
 
-	asn = gck_data_asn1_decode ("PKIX1.pkcs-5-rc2-CBC-params", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.pkcs-5-rc2-CBC-params", data, n_data);
 	if (!asn) 
 		return GCK_DATA_UNRECOGNIZED;
 		
-	if (!gck_data_asn1_read_uint (asn, "rc2ParameterVersion", &version))
+	if (!egg_asn1_read_uint (asn, "rc2ParameterVersion", &version))
 		return GCK_DATA_FAILURE;
 	
-	iv = gck_data_asn1_read_content (asn, data, n_data, "iv", &n_iv);
+	iv = egg_asn1_read_content (asn, data, n_data, "iv", &n_iv);
 	asn1_delete_structure (&asn);
 
 	if (!iv)
@@ -1505,13 +1505,13 @@ setup_pkcs5_des_params (const guchar *data, guchar n_data, gcry_cipher_hd_t cih)
 	
 	g_assert (data);
 
-	asn = gck_data_asn1_decode ("PKIX1.pkcs-5-des-EDE3-CBC-params", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.pkcs-5-des-EDE3-CBC-params", data, n_data);
 	if (!asn)
-		asn = gck_data_asn1_decode ("PKIX1.pkcs-5-des-CBC-params", data, n_data);
+		asn = egg_asn1_decode ("PKIX1.pkcs-5-des-CBC-params", data, n_data);
 	if (!asn) 
 		return GCK_DATA_UNRECOGNIZED;
 	
-	iv = gck_data_asn1_read_content (asn, data, n_data, "", &n_iv);
+	iv = egg_asn1_read_content (asn, data, n_data, "", &n_iv);
 	asn1_delete_structure (&asn);
 
 	if (!iv)
@@ -1544,15 +1544,15 @@ setup_pkcs5_pbkdf2_params (const gchar *password, gsize n_password, const guchar
 	
 	ret = GCK_DATA_UNRECOGNIZED;
 
-	asn = gck_data_asn1_decode ("PKIX1.pkcs-5-PBKDF2-params", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.pkcs-5-PBKDF2-params", data, n_data);
 	if (!asn)
 		goto done;
 		
 	ret = GCK_DATA_FAILURE;
 		
-	if (!gck_data_asn1_read_uint (asn, "iterationCount", &iterations))
+	if (!egg_asn1_read_uint (asn, "iterationCount", &iterations))
 		iterations = 1;
-	salt = gck_data_asn1_read_content (asn, data, n_data, "salt.specified", &n_salt);
+	salt = egg_asn1_read_content (asn, data, n_data, "salt.specified", &n_salt);
 	if (!salt)
 		goto done;
 				
@@ -1597,7 +1597,7 @@ gck_data_der_read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, c
 	*cih = NULL;
 	ret = GCK_DATA_UNRECOGNIZED;
 	
-	asn = gck_data_asn1_decode ("PKIX1.pkcs-5-PBES2-params", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.pkcs-5-PBES2-params", data, n_data);
 	if (!asn)
 		goto done;
 		
@@ -1605,7 +1605,7 @@ gck_data_der_read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, c
 	algo = mode = 0;
 	
 	/* Read in all the encryption type */
-	enc_oid = gck_data_asn1_read_oid (asn, "encryptionScheme.algorithm");
+	enc_oid = egg_asn1_read_oid (asn, "encryptionScheme.algorithm");
 	if (!enc_oid)
 		goto done;	
 	if (enc_oid == OID_DES_EDE3_CBC)
@@ -1656,7 +1656,7 @@ gck_data_der_read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, c
 	}
 
 	/* Read out the key creation paramaters */
-	key_deriv_algo = gck_data_asn1_read_oid (asn, "keyDerivationFunc.algorithm");
+	key_deriv_algo = egg_asn1_read_oid (asn, "keyDerivationFunc.algorithm");
 	if (!key_deriv_algo)
 		goto done;
 	if (key_deriv_algo != OID_PBKDF2) {
@@ -1709,16 +1709,16 @@ gck_data_der_read_cipher_pkcs12_pbe (int cipher_algo, int cipher_mode, const gch
 	if (gcry_cipher_algo_info (cipher_algo, GCRYCTL_TEST_ALGO, NULL, 0) != 0)
 		goto done;
 	
-	asn = gck_data_asn1_decode ("PKIX1.pkcs-12-PbeParams", data, n_data);
+	asn = egg_asn1_decode ("PKIX1.pkcs-12-PbeParams", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GCK_DATA_FAILURE;
 
-	salt = gck_data_asn1_read_content (asn, data, n_data, "salt", &n_salt);
+	salt = egg_asn1_read_content (asn, data, n_data, "salt", &n_salt);
 	if (!salt)
 		goto done;
-	if (!gck_data_asn1_read_uint (asn, "iterations", &iterations))
+	if (!egg_asn1_read_uint (asn, "iterations", &iterations))
 		goto done;
 	
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);

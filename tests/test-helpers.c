@@ -10,20 +10,20 @@
 
 #include "test-helpers.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
-void gkr_memory_lock (void) 
+void egg_memory_lock (void) 
 { 
 	g_static_mutex_lock (&memory_mutex); 
 }
 
-void gkr_memory_unlock (void) 
+void egg_memory_unlock (void) 
 { 
 	g_static_mutex_unlock (&memory_mutex); 
 }
 
-void* gkr_memory_fallback (void *p, unsigned long sz) 
+void* egg_memory_fallback (void *p, unsigned long sz) 
 { 
 	return g_realloc (p, sz); 
 }

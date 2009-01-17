@@ -29,7 +29,7 @@
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
 
-#include "common/gkr-unix-credentials.h"
+#include "egg/egg-unix-credentials.h"
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -89,8 +89,8 @@ call_init (CallState *cs)
 {
 	assert (cs);
 	
-	cs->req = gck_rpc_message_new ((GkrBufferAllocator)realloc);
-	cs->resp = gck_rpc_message_new ((GkrBufferAllocator)realloc);
+	cs->req = gck_rpc_message_new ((EggBufferAllocator)realloc);
+	cs->resp = gck_rpc_message_new ((EggBufferAllocator)realloc);
 	if (!cs->req || !cs->resp) {
 		gck_rpc_message_free (cs->req);
 		gck_rpc_message_free (cs->resp);
@@ -179,7 +179,7 @@ proto_read_byte_buffer (CallState *cs, CK_BYTE_PTR* buffer, CK_ULONG* n_buffer)
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "fy"));
 
 	/* The number of ulongs there's room for on the other end */
-	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &length))
+	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &length))
 		return PARSE_ERROR; 
 
 	*n_buffer = length;
@@ -212,7 +212,7 @@ proto_read_byte_array (CallState *cs, CK_BYTE_PTR* array, CK_ULONG* n_array)
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "ay"));
 
 	/* Read out the byte which says whether data is present or not */
-	if (!gkr_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
+	if (!egg_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
 		return PARSE_ERROR;
 	
 	if (!valid) {
@@ -222,7 +222,7 @@ proto_read_byte_array (CallState *cs, CK_BYTE_PTR* array, CK_ULONG* n_array)
 	}
 
 	/* Point our arguments into the buffer */
-	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed,
+	if (!egg_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed,
 	                                &data, &n_data))
 		return PARSE_ERROR;
 	
@@ -275,7 +275,7 @@ proto_read_ulong_buffer (CallState *cs, CK_ULONG_PTR* buffer, CK_ULONG* n_buffer
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "fu"));
 
 	/* The number of ulongs there's room for on the other end */
-	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &length))
+	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &length))
 		return PARSE_ERROR; 
 
 	*n_buffer = length;
@@ -338,7 +338,7 @@ proto_read_attribute_buffer (CallState *cs, CK_ATTRIBUTE_PTR* result, CK_ULONG* 
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "fA"));
 
 	/* Read the number of attributes */
-	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &n_attrs))
+	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &n_attrs))
 		return PARSE_ERROR; 
 
 	/* Allocate memory for the attribute structures */
@@ -350,13 +350,13 @@ proto_read_attribute_buffer (CallState *cs, CK_ATTRIBUTE_PTR* result, CK_ULONG* 
 	for (i = 0; i < n_attrs; ++i) {
 		
 		/* The attribute type */
-		if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
+		if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
 			return PARSE_ERROR;
 		
 		attrs[i].type = value;
 		
 		/* The number of bytes to allocate */
-		if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
+		if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
 			return PARSE_ERROR;
 		
 		if (value == 0) {
@@ -396,7 +396,7 @@ proto_read_attribute_array (CallState *cs, CK_ATTRIBUTE_PTR* result, CK_ULONG* n
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "aA"));
 
 	/* Read the number of attributes */
-	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &n_attrs))
+	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &n_attrs))
 		return PARSE_ERROR; 
 
 	/* Allocate memory for the attribute structures */
@@ -408,19 +408,19 @@ proto_read_attribute_array (CallState *cs, CK_ATTRIBUTE_PTR* result, CK_ULONG* n
 	for (i = 0; i < n_attrs; ++i) {
 		
 		/* The attribute type */
-		if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
+		if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
 			return PARSE_ERROR;
 
 		attrs[i].type = value;
 
 		/* Whether this one is valid or not */
-		if (!gkr_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
+		if (!egg_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
 			return PARSE_ERROR;
 		
 		if (valid) {
-			if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
+			if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
 				return PARSE_ERROR;
-			if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &data, &n_data))
+			if (!egg_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &data, &n_data))
 				return PARSE_ERROR;
 			
 			if (data != NULL && n_data != value) {
@@ -486,7 +486,7 @@ proto_read_null_string (CallState *cs, CK_UTF8CHAR_PTR* val)
 	/* Check that we're supposed to have this at this point */
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "z"));
 
-	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &data, &n_data))
+	if (!egg_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &data, &n_data))
 		return PARSE_ERROR;
 	
 	/* Allocate a block of memory for it */
@@ -517,11 +517,11 @@ proto_read_mechanism (CallState *cs, CK_MECHANISM_PTR mech)
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "M"));
 	
 	/* The mechanism type */
-	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
+	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value))
 		return PARSE_ERROR;
 	
 	/* The mechanism data */
-	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &data, &n_data))
+	if (!egg_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &data, &n_data))
 		return PARSE_ERROR;
 	
 	mech->mechanism = value;
@@ -2084,7 +2084,7 @@ run_dispatch_loop (int sock)
 	
 	assert (sock != -1);
 
-	if (!gkr_unix_credentials_read (sock, &pid, &uid) < 0) {
+	if (!egg_unix_credentials_read (sock, &pid, &uid) < 0) {
 		gck_rpc_warn ("couldn't read socket credentials");
 		return;
 	}
@@ -2108,15 +2108,15 @@ run_dispatch_loop (int sock)
 			break;
 
 		/* Calculate the number of bytes */
-		len = gkr_buffer_decode_uint32 (buf);
+		len = egg_buffer_decode_uint32 (buf);
 		if (len >= 0x0FFFFFFF) { 
 			gck_rpc_warn ("invalid message size from module: %u bytes", len); 
 			break;
 		}
 		
 		/* Allocate memory */
-		gkr_buffer_reserve (&cs.req->buffer, cs.req->buffer.len + len); 
-		if (gkr_buffer_has_error (&cs.req->buffer)) {
+		egg_buffer_reserve (&cs.req->buffer, cs.req->buffer.len + len); 
+		if (egg_buffer_has_error (&cs.req->buffer)) {
 			gck_rpc_warn ("error allocating buffer for message");
 			break;
 		}
@@ -2125,7 +2125,7 @@ run_dispatch_loop (int sock)
 		if (!read_all (sock, cs.req->buffer.buf, len))
 			break;
 		
-		gkr_buffer_add_empty (&cs.req->buffer, len);
+		egg_buffer_add_empty (&cs.req->buffer, len);
 		
 		if (!gck_rpc_message_parse (cs.req, GCK_RPC_REQUEST))
 			break;
@@ -2135,7 +2135,7 @@ run_dispatch_loop (int sock)
 			break;
 		
 		/* .. send back response length, and then response data */
-		gkr_buffer_encode_uint32 (buf, cs.resp->buffer.len);
+		egg_buffer_encode_uint32 (buf, cs.resp->buffer.len);
 		if(!write_all (sock, buf, 4) ||
 		   !write_all (sock, cs.resp->buffer.buf, cs.resp->buffer.len))
 			break;

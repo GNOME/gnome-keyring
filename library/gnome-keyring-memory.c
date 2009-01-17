@@ -26,7 +26,7 @@
 #include "gnome-keyring-memory.h"
 #include "gnome-keyring-private.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 
@@ -47,19 +47,19 @@ static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
  */ 
 
 void
-gkr_memory_lock (void)
+egg_memory_lock (void)
 {
 	g_static_mutex_lock (&memory_mutex);
 }
 
 void 
-gkr_memory_unlock (void)
+egg_memory_unlock (void)
 {
 	g_static_mutex_unlock (&memory_mutex);
 }
 
 void*
-gkr_memory_fallback (void *p, unsigned long sz)
+egg_memory_fallback (void *p, unsigned long sz)
 {
 	const gchar *env;
 	
@@ -113,7 +113,7 @@ gnome_keyring_memory_alloc (gulong sz)
 	gpointer p;
 	
 	/* Try to allocate secure memory */
-	p = gkr_secure_alloc_full (sz, GKR_SECURE_USE_FALLBACK);
+	p = egg_secure_alloc_full (sz, GKR_SECURE_USE_FALLBACK);
 
 	/* Our fallback will always allocate */
 	g_assert (p);
@@ -135,7 +135,7 @@ gnome_keyring_memory_alloc (gulong sz)
 gpointer
 gnome_keyring_memory_try_alloc (gulong sz)
 {
-	return gkr_secure_alloc_full (sz, 0);
+	return egg_secure_alloc_full (sz, 0);
 }
 
 /**
@@ -165,12 +165,12 @@ gnome_keyring_memory_realloc (gpointer p, gulong sz)
 	} else if (!sz) {
 		 gnome_keyring_memory_free (p);
 		 return NULL;
-	} else if (!gkr_secure_check (p)) {
+	} else if (!egg_secure_check (p)) {
 		return g_realloc (p, sz);
 	}
 		
 	/* First try and ask secure memory to reallocate */
-	n = gkr_secure_realloc_full (p, sz, GKR_SECURE_USE_FALLBACK);
+	n = egg_secure_realloc_full (p, sz, GKR_SECURE_USE_FALLBACK);
 
 	g_assert (n);
 	
@@ -204,12 +204,12 @@ gnome_keyring_memory_try_realloc (gpointer p, gulong sz)
 	} else if (!sz) {
 		 gnome_keyring_memory_free (p);
 		 return NULL;
-	} else if (!gkr_secure_check (p)) {
+	} else if (!egg_secure_check (p)) {
 		return g_try_realloc (p, sz);
 	}
 		
 	/* First try and ask secure memory to reallocate */
-	n = gkr_secure_realloc_full (p, sz, 0);
+	n = egg_secure_realloc_full (p, sz, 0);
 
 	g_assert (n);
 	
@@ -230,7 +230,7 @@ gnome_keyring_memory_free (gpointer p)
 {
 	if (!p)
 		return;
-	gkr_secure_free_full (p, GKR_SECURE_USE_FALLBACK);
+	egg_secure_free_full (p, GKR_SECURE_USE_FALLBACK);
 }
 
 
@@ -245,7 +245,7 @@ gnome_keyring_memory_free (gpointer p)
 gboolean  
 gnome_keyring_memory_is_secure (gpointer p)
 {
-	return gkr_secure_check (p) ? TRUE : FALSE;
+	return egg_secure_check (p) ? TRUE : FALSE;
 }
 
 /**
@@ -260,5 +260,5 @@ gnome_keyring_memory_is_secure (gpointer p)
 gchar*
 gnome_keyring_memory_strdup (const gchar* str)
 {
-	return gkr_secure_strdup (str);
+	return egg_secure_strdup (str);
 }

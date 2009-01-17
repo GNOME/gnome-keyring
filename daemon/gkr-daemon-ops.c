@@ -24,10 +24,10 @@
 
 #include "gkr-daemon.h"
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 #include "common/gkr-daemon-util.h"
 #include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring.h"
 #include "keyrings/gkr-keyring-item.h"
@@ -454,7 +454,7 @@ request_new_keyring_password (GkrKeyringRequest *req, const char *keyring_name,
 	ret = ask->response >= GKR_ASK_RESPONSE_ALLOW;
 	if (ret) {
 		g_free (*password);
-		*password = gkr_secure_strdup (ask->typed_password);
+		*password = egg_secure_strdup (ask->typed_password);
 		*volume = ask->location_selected;
 	}
 	
@@ -550,10 +550,10 @@ request_change_keyring_password (GkrKeyringRequest *req, GkrKeyring* keyring,
 	ret = ask->response >= GKR_ASK_RESPONSE_ALLOW;
 	if (ret) {
 		g_free (*password);
-		*password = gkr_secure_strdup (ask->typed_password);
+		*password = egg_secure_strdup (ask->typed_password);
 		
 		g_free (*original);
-		*original = gkr_secure_strdup (ask->original_password);
+		*original = egg_secure_strdup (ask->original_password);
 	}
 	
 	g_object_unref (ask);
@@ -686,14 +686,14 @@ change_keyring_password (GkrKeyring *keyring,  const char *password)
 	if (keyring->locked) {
 		return GNOME_KEYRING_RESULT_DENIED;
 	} else { 
-		keyring->password = gkr_secure_strdup (password);
+		keyring->password = egg_secure_strdup (password);
 		gkr_keyring_save_to_disk (keyring);
 		return GNOME_KEYRING_RESULT_OK;
 	}
 }
 
 static gboolean
-op_lock_keyring (GkrBuffer *packet, GkrBuffer *result,
+op_lock_keyring (EggBuffer *packet, EggBuffer *result,
                  GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -705,10 +705,10 @@ op_lock_keyring (GkrBuffer *packet, GkrBuffer *result,
 
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 	} else {
 		gkr_keyring_lock (keyring);
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	}
 	
 	g_free (keyring_name);
@@ -724,16 +724,16 @@ lock_each_keyring (GkrKeyring* keyring, gpointer unused)
 }
 
 static gboolean
-op_lock_all (GkrBuffer *packet, GkrBuffer *result,
+op_lock_all (EggBuffer *packet, EggBuffer *result,
              GkrKeyringRequest *req)
 {
 	gkr_keyrings_foreach (lock_each_keyring, NULL);
-	gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+	egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	return TRUE;
 }
 
 static gboolean
-op_set_default_keyring (GkrBuffer *packet, GkrBuffer *result,
+op_set_default_keyring (EggBuffer *packet, EggBuffer *result,
                         GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -745,14 +745,14 @@ op_set_default_keyring (GkrBuffer *packet, GkrBuffer *result,
 
 	if (keyring_name == NULL) {
 		gkr_keyrings_set_default (NULL);
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	} else {
 		keyring = gkr_keyrings_find (keyring_name);
 		if (keyring == NULL) {
-			gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+			egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 		} else {
 			gkr_keyrings_set_default (keyring);
-			gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+			egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 		}
 	}
 	
@@ -762,13 +762,13 @@ op_set_default_keyring (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_get_default_keyring (GkrBuffer *packet, GkrBuffer *result,
+op_get_default_keyring (EggBuffer *packet, EggBuffer *result,
                         GkrKeyringRequest *req)
 {
 	GkrKeyring* keyring;
 	char *name;
 	
-	gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+	egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	
 	name = NULL;
 	
@@ -785,17 +785,17 @@ op_get_default_keyring (GkrBuffer *packet, GkrBuffer *result,
 static gboolean
 add_name_to_result (GkrKeyring* keyring, gpointer result)
 {
-	return gkr_proto_add_utf8_string ((GkrBuffer*)result, 
+	return gkr_proto_add_utf8_string ((EggBuffer*)result, 
 	                                  keyring->keyring_name);
 }
 
 static gboolean
-op_list_keyrings (GkrBuffer *packet, GkrBuffer *result,
+op_list_keyrings (EggBuffer *packet, EggBuffer *result,
                   GkrKeyringRequest *req)
 {
-	gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+	egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 
-	gkr_buffer_add_uint32 (result, gkr_keyrings_get_count ());
+	egg_buffer_add_uint32 (result, gkr_keyrings_get_count ());
 	if (!gkr_keyrings_foreach (add_name_to_result, result))
 		return FALSE;
 	
@@ -804,7 +804,7 @@ op_list_keyrings (GkrBuffer *packet, GkrBuffer *result,
 
 
 static gboolean
-op_set_keyring_info (GkrBuffer *packet, GkrBuffer *result,
+op_set_keyring_info (EggBuffer *packet, EggBuffer *result,
                      GkrKeyringRequest *req)
 {
 	char    *keyring_name;
@@ -821,9 +821,9 @@ op_set_keyring_info (GkrBuffer *packet, GkrBuffer *result,
 	
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 	} else {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 		
 		keyring->lock_on_idle = lock_on_idle;
 		keyring->lock_timeout = lock_timeout;
@@ -835,7 +835,7 @@ op_set_keyring_info (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_get_keyring_info (GkrBuffer *packet, GkrBuffer *result,
+op_get_keyring_info (EggBuffer *packet, EggBuffer *result,
                      GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -847,15 +847,15 @@ op_get_keyring_info (GkrBuffer *packet, GkrBuffer *result,
 	
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 	} else {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 		
-		gkr_buffer_add_uint32 (result, keyring->lock_on_idle);
-		gkr_buffer_add_uint32 (result, keyring->lock_timeout);
+		egg_buffer_add_uint32 (result, keyring->lock_on_idle);
+		egg_buffer_add_uint32 (result, keyring->lock_timeout);
 		gkr_proto_add_time (result, keyring->mtime);
 		gkr_proto_add_time (result, keyring->ctime);
-		gkr_buffer_add_uint32 (result, keyring->locked);
+		egg_buffer_add_uint32 (result, keyring->locked);
 	}
 	
 	g_free (keyring_name);
@@ -864,7 +864,7 @@ op_get_keyring_info (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_create_keyring (GkrBuffer *packet, GkrBuffer *result,
+op_create_keyring (EggBuffer *packet, EggBuffer *result,
                    GkrKeyringRequest *req)
 {
 	GQuark volume = GKR_LOCATION_VOLUME_LOCAL;
@@ -881,25 +881,25 @@ op_create_keyring (GkrBuffer *packet, GkrBuffer *result,
 	g_assert (opcode == GNOME_KEYRING_OP_CREATE_KEYRING);
 
 	if (keyring_name == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 		goto out;
 	}
 	
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring != NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_ALREADY_EXISTS);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_ALREADY_EXISTS);
 		goto out;
 	}
 	
 	/* Let user pick password if necessary*/
 	if (!request_new_keyring_password (req, keyring_name, &password, &volume)) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
 	}
 	
 	keyring = gkr_keyring_create (volume, keyring_name, password);
 	if (keyring == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
 	}
 	
@@ -910,17 +910,17 @@ op_create_keyring (GkrBuffer *packet, GkrBuffer *result,
 	g_object_unref (keyring);
 	g_assert (GKR_IS_KEYRING (keyring));
 	
-	gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+	egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	
  out:
 	g_free (keyring_name);
-	gkr_secure_strfree (password);
+	egg_secure_strfree (password);
 
 	return TRUE;
 }
 
 static gboolean
-op_unlock_keyring (GkrBuffer *packet, GkrBuffer *result,
+op_unlock_keyring (EggBuffer *packet, EggBuffer *result,
                    GkrKeyringRequest *req)
 {
 	char *keyring_name, *password;
@@ -938,7 +938,7 @@ op_unlock_keyring (GkrBuffer *packet, GkrBuffer *result,
 	
 	keyring = gkr_keyrings_find (keyring_name);
 	if (!keyring) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 		goto out;
 
 	} 
@@ -946,9 +946,9 @@ op_unlock_keyring (GkrBuffer *packet, GkrBuffer *result,
 	/* User types password */
 	if (password == NULL) {
 		if (request_keyring_access (req, keyring)) 
-			gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+			egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 		else 
-			gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+			egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 			
 	/* Password specified */
 	} else {
@@ -956,19 +956,19 @@ op_unlock_keyring (GkrBuffer *packet, GkrBuffer *result,
 			res = GNOME_KEYRING_RESULT_OK;
 		else
 			res = GNOME_KEYRING_RESULT_DENIED;
-		gkr_buffer_add_uint32 (result, res);
+		egg_buffer_add_uint32 (result, res);
 	} 
 
  out:
 	g_free (keyring_name);
-	gkr_secure_strfree (password);
+	egg_secure_strfree (password);
 
 	return TRUE;
 }
 
 
 static gboolean
-op_delete_keyring (GkrBuffer *packet, GkrBuffer *result,
+op_delete_keyring (EggBuffer *packet, EggBuffer *result,
                    GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -995,7 +995,7 @@ op_delete_keyring (GkrBuffer *packet, GkrBuffer *result,
 		}
 	}
 	
-	gkr_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, res);
 	g_free (keyring_name);
 	
 	if (res == GNOME_KEYRING_RESULT_OK)
@@ -1005,7 +1005,7 @@ op_delete_keyring (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_change_keyring_password (GkrBuffer *packet, GkrBuffer *result,
+op_change_keyring_password (EggBuffer *packet, EggBuffer *result,
                             GkrKeyringRequest *req)
 {
 	char *keyring_name, *original, *password;
@@ -1022,41 +1022,41 @@ op_change_keyring_password (GkrBuffer *packet, GkrBuffer *result,
 	g_assert (opcode == GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD);
 	
 	if (keyring_name == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_BAD_ARGUMENTS);
 		goto out;
 	}
 
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
 		goto out;
 	}
 
 	/* Prompt for any missing passwords */
 	if (!request_change_keyring_password (req, keyring, &original, &password)) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
 	}
 	
 	gkr_keyring_lock (keyring);
 	
 	if (!gkr_keyring_unlock (keyring, original)) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		goto out;
 	}
 	
-	gkr_buffer_add_uint32 (result, change_keyring_password (keyring, password));
+	egg_buffer_add_uint32 (result, change_keyring_password (keyring, password));
 	
  out:
 	g_free (keyring_name);
-	gkr_secure_strfree (original);
-	gkr_secure_strfree (password);
+	egg_secure_strfree (original);
+	egg_secure_strfree (password);
 	
 	return TRUE;
 }
 
 static gboolean
-op_list_items (GkrBuffer *packet, GkrBuffer *result,
+op_list_items (EggBuffer *packet, EggBuffer *result,
                GkrKeyringRequest *req)
 {
 	GkrKeyring *keyring;
@@ -1070,16 +1070,16 @@ op_list_items (GkrBuffer *packet, GkrBuffer *result,
 	
 	keyring = gkr_keyrings_find (keyring_name);
 	if (keyring == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
-		gkr_buffer_add_uint32 (result, 0);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING);
+		egg_buffer_add_uint32 (result, 0);
 		
 	} else if (!request_keyring_access (req, keyring)) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
-		gkr_buffer_add_uint32 (result, 0);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		egg_buffer_add_uint32 (result, 0);
 	
 	} else {
 
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 			
 		items = NULL;
 		for (l = keyring->items; l != NULL; l = l->next) {
@@ -1089,10 +1089,10 @@ op_list_items (GkrBuffer *packet, GkrBuffer *result,
 		items = g_list_reverse (items);
 
 		/* Send the results */
-		gkr_buffer_add_uint32 (result, g_list_length (items));
+		egg_buffer_add_uint32 (result, g_list_length (items));
 		for (l = items; l != NULL; l = l->next) {
 			item = l->data;
-			gkr_buffer_add_uint32 (result, item->id);
+			egg_buffer_add_uint32 (result, item->id);
 		}
 
 		g_list_free (items);
@@ -1104,7 +1104,7 @@ op_list_items (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_create_item (GkrBuffer *packet, GkrBuffer *result,
+op_create_item (EggBuffer *packet, EggBuffer *result,
 		GkrKeyringRequest *req)
 {
 	char *keyring_name, *display_name, *secret;
@@ -1182,8 +1182,8 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
 
 	g_free (item->display_name);
 	item->display_name = g_strdup (display_name);
-	gkr_secure_strfree (item->secret);
-	item->secret = gkr_secure_strdup (secret);
+	egg_secure_strfree (item->secret);
+	item->secret = egg_secure_strdup (secret);
 	gnome_keyring_attribute_list_free (item->attributes);
 	item->attributes = gnome_keyring_attribute_list_copy (attributes);
 	
@@ -1198,17 +1198,17 @@ op_create_item (GkrBuffer *packet, GkrBuffer *result,
  out:	
 	g_free (keyring_name);
 	g_free (display_name);
-	gkr_secure_strfree (secret);
+	egg_secure_strfree (secret);
 	gnome_keyring_attribute_list_free (hashed);
 	gnome_keyring_attribute_list_free (attributes);
 	
-	gkr_buffer_add_uint32 (result, res);
-	gkr_buffer_add_uint32 (result, id);
+	egg_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, id);
 	return TRUE;
 }
 
 static gboolean
-op_delete_item (GkrBuffer *packet, GkrBuffer *result,
+op_delete_item (EggBuffer *packet, EggBuffer *result,
                 GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1233,7 +1233,7 @@ op_delete_item (GkrBuffer *packet, GkrBuffer *result,
 	                                      TRUE, 
 	                                      &item);
 	                                      
-	gkr_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
 		if (item->keyring) {
 			keyring = item->keyring;
@@ -1247,7 +1247,7 @@ op_delete_item (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_get_item_info (GkrBuffer *packet, GkrBuffer *result,
+op_get_item_info (EggBuffer *packet, EggBuffer *result,
                   GkrKeyringRequest *req)
 {
 	char *keyring_name, *secret;
@@ -1270,9 +1270,9 @@ op_get_item_info (GkrBuffer *packet, GkrBuffer *result,
 	                                      (flags & GNOME_KEYRING_ITEM_INFO_SECRET) == GNOME_KEYRING_ITEM_INFO_SECRET, 
 	                                      &item);
 
-	gkr_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		gkr_buffer_add_uint32 (result, item->type);
+		egg_buffer_add_uint32 (result, item->type);
 		if (!gkr_proto_add_utf8_string (result, item->display_name))
 			ret = FALSE;
 
@@ -1294,7 +1294,7 @@ op_get_item_info (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_get_item_attributes (GkrBuffer *packet, GkrBuffer *result,
+op_get_item_attributes (EggBuffer *packet, EggBuffer *result,
                         GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1318,7 +1318,7 @@ op_get_item_attributes (GkrBuffer *packet, GkrBuffer *result,
 	                                      FALSE, 
 	                                      &item);
 
-	gkr_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
 		if (!gkr_proto_add_attribute_list (result, item->attributes))
 			ret = FALSE;
@@ -1329,7 +1329,7 @@ op_get_item_attributes (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_get_item_acl (GkrBuffer *packet, GkrBuffer *result,
+op_get_item_acl (EggBuffer *packet, EggBuffer *result,
                  GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1353,7 +1353,7 @@ op_get_item_acl (GkrBuffer *packet, GkrBuffer *result,
 	                                      FALSE, 
 	                                      &item);
 
-	gkr_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
 		if (!gkr_proto_add_acl (result, item->acl)) 
 			ret = FALSE;
@@ -1364,7 +1364,7 @@ op_get_item_acl (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_set_item_acl (GkrBuffer *packet, GkrBuffer *result,
+op_set_item_acl (EggBuffer *packet, EggBuffer *result,
                  GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1395,7 +1395,7 @@ op_set_item_acl (GkrBuffer *packet, GkrBuffer *result,
 			gkr_keyring_save_to_disk (item->keyring);
 	}
 	
-	gkr_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, res);
 
 	gnome_keyring_acl_free (acl);
 	g_free (keyring_name);
@@ -1403,7 +1403,7 @@ op_set_item_acl (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_set_item_info (GkrBuffer *packet, GkrBuffer *result,
+op_set_item_info (EggBuffer *packet, EggBuffer *result,
                   GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1428,7 +1428,7 @@ op_set_item_info (GkrBuffer *packet, GkrBuffer *result,
 	                                      TRUE, 
 	                                      &item);
 
-	gkr_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
 		if ((type & GNOME_KEYRING_ITEM_TYPE_MASK) != GNOME_KEYRING_ITEM_NO_TYPE) {
 			item->type = type;
@@ -1438,8 +1438,8 @@ op_set_item_info (GkrBuffer *packet, GkrBuffer *result,
 			item->display_name = g_strdup (item_name);
 		}
 		if (secret != NULL) {
-			gkr_secure_strfree (item->secret);
-			item->secret = gkr_secure_strdup (secret);
+			egg_secure_strfree (item->secret);
+			item->secret = egg_secure_strdup (secret);
 		}
 
 		if (item->keyring)
@@ -1448,12 +1448,12 @@ op_set_item_info (GkrBuffer *packet, GkrBuffer *result,
 
 	g_free (keyring_name);
 	g_free (item_name);
-	gkr_secure_strfree (secret);
+	egg_secure_strfree (secret);
 	return TRUE;
 }
 
 static gboolean
-op_set_daemon_display (GkrBuffer *packet, GkrBuffer *result,
+op_set_daemon_display (EggBuffer *packet, EggBuffer *result,
                        GkrKeyringRequest *req)
 {
 	char *display;
@@ -1463,10 +1463,10 @@ op_set_daemon_display (GkrBuffer *packet, GkrBuffer *result,
 		return FALSE;
 
 	if (display == NULL) {
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 	} else {
 		g_setenv ("DISPLAY", display, FALSE);
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 	}
 
 	g_free (display);
@@ -1474,7 +1474,7 @@ op_set_daemon_display (GkrBuffer *packet, GkrBuffer *result,
 }
 
 static gboolean
-op_set_item_attributes (GkrBuffer *packet, GkrBuffer *result,
+op_set_item_attributes (EggBuffer *packet, EggBuffer *result,
                         GkrKeyringRequest *req)
 {
 	char *keyring_name;
@@ -1497,7 +1497,7 @@ op_set_item_attributes (GkrBuffer *packet, GkrBuffer *result,
 	                                      TRUE, 
 	                                      &item);
 
-	gkr_buffer_add_uint32 (result, res);
+	egg_buffer_add_uint32 (result, res);
 	if (res == GNOME_KEYRING_RESULT_OK) {
 		gnome_keyring_attribute_list_free (item->attributes);
 		item->attributes = gnome_keyring_attribute_list_copy (attributes);
@@ -1614,7 +1614,7 @@ unref_object (gpointer obj, gpointer data)
 }
 
 static gboolean
-op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
+op_find (EggBuffer *packet, EggBuffer *result, GkrKeyringRequest *req)
 {
 	FindContext ctx;
 	GList *l;
@@ -1639,15 +1639,15 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 
 	/* No items given access to */
 	if (ctx.nfound > 0 && ctx.items == NULL)
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_DENIED);
 		
 	/* Zero items matched  */
 	else if (ctx.nfound == 0)
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_MATCH);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_NO_MATCH);
 
 	/* More than one item found and given access to */
 	else	
-		gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+		egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 
 	ctx.items = g_list_sort_with_data (ctx.items, sort_found, ctx.attributes);
 	
@@ -1664,7 +1664,7 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 				break;
 			}
 	    	        
-			gkr_buffer_add_uint32 (result, item->id);
+			egg_buffer_add_uint32 (result, item->id);
 			
 			if (!gkr_proto_add_utf8_secret (result, item->secret) ||
 			    !gkr_proto_add_attribute_list (result, item->attributes)) {
@@ -1684,7 +1684,7 @@ op_find (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
 }
 
 static gboolean
-op_prepare_daemon_environment (GkrBuffer *packet, GkrBuffer *result, GkrKeyringRequest *req)
+op_prepare_daemon_environment (EggBuffer *packet, EggBuffer *result, GkrKeyringRequest *req)
 {
 	const gchar **daemonenv;
 	gchar **environment, **e;
@@ -1719,13 +1719,13 @@ op_prepare_daemon_environment (GkrBuffer *packet, GkrBuffer *result, GkrKeyringR
 	 */
 	gkr_daemon_complete_initialization();
 
-	gkr_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
+	egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 
 	/* These are the environment variables that the daemon setup */
 	daemonenv = gkr_daemon_util_get_environment ();
 	g_return_val_if_fail (daemonenv, FALSE);
 	
-	gkr_buffer_add_stringv (result, daemonenv);
+	egg_buffer_add_stringv (result, daemonenv);
 	return TRUE;
 }
 

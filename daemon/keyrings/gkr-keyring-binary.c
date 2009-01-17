@@ -27,9 +27,9 @@
 #include "gkr-keyring.h"
 #include "gkr-keyring-item.h"
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 #include "common/gkr-crypto.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
@@ -105,7 +105,7 @@ init_salt (guchar salt[8])
 }
 
 static gboolean
-encrypt_buffer (GkrBuffer *buffer,
+encrypt_buffer (EggBuffer *buffer,
 		const char *password,
 		guchar salt[8],
 		int iterations)
@@ -127,7 +127,7 @@ encrypt_buffer (GkrBuffer *buffer,
 	if (gerr) {
 		g_warning ("couldn't create aes cipher context: %s", 
 			   gcry_strerror (gerr));
-		gkr_secure_free (key);
+		egg_secure_free (key);
 		g_free (iv);
 		return FALSE;
 	}
@@ -135,7 +135,7 @@ encrypt_buffer (GkrBuffer *buffer,
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setkey (cih, key, 16);
 	g_return_val_if_fail (!gerr, FALSE);
-	gkr_secure_free (key);
+	egg_secure_free (key);
 
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setiv (cih, iv, 16);
@@ -154,7 +154,7 @@ encrypt_buffer (GkrBuffer *buffer,
 }
 
 static gboolean
-decrypt_buffer (GkrBuffer *buffer,
+decrypt_buffer (EggBuffer *buffer,
 		const char *password,
 		guchar salt[8],
 		int iterations)
@@ -176,7 +176,7 @@ decrypt_buffer (GkrBuffer *buffer,
 	if (gerr) {
 		g_warning ("couldn't create aes cipher context: %s", 
 			   gcry_strerror (gerr));
-		gkr_secure_free (key);
+		egg_secure_free (key);
 		g_free (iv);
 		return FALSE;
 	}
@@ -184,7 +184,7 @@ decrypt_buffer (GkrBuffer *buffer,
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setkey (cih, key, 16);
 	g_return_val_if_fail (!gerr, FALSE);
-	gkr_secure_free (key);
+	egg_secure_free (key);
 
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setiv (cih, iv, 16);
@@ -203,7 +203,7 @@ decrypt_buffer (GkrBuffer *buffer,
 }
 
 static gboolean
-verify_decrypted_buffer (GkrBuffer *buffer)
+verify_decrypted_buffer (EggBuffer *buffer)
 {
         guchar digest[16];
 	
@@ -217,17 +217,17 @@ verify_decrypted_buffer (GkrBuffer *buffer)
 }
 
 static gboolean 
-generate_acl_data (GkrBuffer *buffer, GList *acl)
+generate_acl_data (EggBuffer *buffer, GList *acl)
 {
 	GList *l;
 	GnomeKeyringAccessControl *ac;
 	
-	gkr_buffer_add_uint32 (buffer, g_list_length (acl));
+	egg_buffer_add_uint32 (buffer, g_list_length (acl));
 
 	for (l = acl; l != NULL; l = l->next) {
 		ac = l->data;
 		
-		gkr_buffer_add_uint32 (buffer, ac->types_allowed);
+		egg_buffer_add_uint32 (buffer, ac->types_allowed);
 		if (!gkr_proto_add_utf8_string (buffer, ac->application->display_name)) {
 			return FALSE;
 		}
@@ -238,14 +238,14 @@ generate_acl_data (GkrBuffer *buffer, GList *acl)
 		if (!gkr_proto_add_utf8_string (buffer, NULL)) {
 			return FALSE;
 		}
-		gkr_buffer_add_uint32 (buffer, 0);
+		egg_buffer_add_uint32 (buffer, 0);
 	}
 	
 	return TRUE;
 }
 
 static gboolean
-generate_encrypted_data (GkrBuffer *buffer, GkrKeyring *keyring)
+generate_encrypted_data (EggBuffer *buffer, GkrKeyring *keyring)
 {
 	GList *l;
 	int i;
@@ -270,7 +270,7 @@ generate_encrypted_data (GkrBuffer *buffer, GkrKeyring *keyring)
 			return FALSE;
 		}
 		for (i = 0; i < 4; i++) {
-			gkr_buffer_add_uint32 (buffer, 0);
+			egg_buffer_add_uint32 (buffer, 0);
 		}
 
 		if (!gkr_proto_add_attribute_list (buffer, item->attributes)) {
@@ -284,13 +284,13 @@ generate_encrypted_data (GkrBuffer *buffer, GkrKeyring *keyring)
 }
 
 gboolean 
-gkr_keyring_binary_generate (GkrKeyring *keyring, GkrBuffer *buffer)
+gkr_keyring_binary_generate (GkrKeyring *keyring, EggBuffer *buffer)
 {
 	guint flags;
 	GList *l;
 	GkrKeyringItem *item;
 	GnomeKeyringAttributeList *hashed;
-	GkrBuffer to_encrypt;
+	EggBuffer to_encrypt;
         guchar digest[16];
 	int i;
 
@@ -306,11 +306,11 @@ gkr_keyring_binary_generate (GkrKeyring *keyring, GkrBuffer *buffer)
 		keyring->salt_valid = TRUE;
 	}	
 		
-	gkr_buffer_append (buffer, (guchar*)KEYRING_FILE_HEADER, KEYRING_FILE_HEADER_LEN);
-	gkr_buffer_add_byte (buffer, 0); /* Major version */
-	gkr_buffer_add_byte (buffer, 0); /* Minor version */
-	gkr_buffer_add_byte (buffer, 0); /* crypto (0 == AEL) */
-	gkr_buffer_add_byte (buffer, 0); /* hash (0 == MD5) */
+	egg_buffer_append (buffer, (guchar*)KEYRING_FILE_HEADER, KEYRING_FILE_HEADER_LEN);
+	egg_buffer_add_byte (buffer, 0); /* Major version */
+	egg_buffer_add_byte (buffer, 0); /* Minor version */
+	egg_buffer_add_byte (buffer, 0); /* crypto (0 == AEL) */
+	egg_buffer_add_byte (buffer, 0); /* hash (0 == MD5) */
 
 	if (!gkr_proto_add_utf8_string (buffer, keyring->keyring_name)) {
 		return FALSE;
@@ -323,23 +323,23 @@ gkr_keyring_binary_generate (GkrKeyring *keyring, GkrBuffer *buffer)
 	if (keyring->lock_on_idle) {
 		flags |= 1;
 	}
-	gkr_buffer_add_uint32 (buffer, flags);
-	gkr_buffer_add_uint32 (buffer, keyring->lock_timeout);
-	gkr_buffer_add_uint32 (buffer, keyring->hash_iterations);
-	gkr_buffer_append (buffer, (guchar*)keyring->salt, 8);
+	egg_buffer_add_uint32 (buffer, flags);
+	egg_buffer_add_uint32 (buffer, keyring->lock_timeout);
+	egg_buffer_add_uint32 (buffer, keyring->hash_iterations);
+	egg_buffer_append (buffer, (guchar*)keyring->salt, 8);
 
 	/* Reserved: */
 	for (i = 0; i < 4; i++) {
-		gkr_buffer_add_uint32 (buffer, 0);
+		egg_buffer_add_uint32 (buffer, 0);
 	}
 
 	/* Hashed items: */
-	gkr_buffer_add_uint32 (buffer, g_list_length (keyring->items));
+	egg_buffer_add_uint32 (buffer, g_list_length (keyring->items));
 
 	for (l = keyring->items; l != NULL; l = l->next) {
 		item = l->data;
-		gkr_buffer_add_uint32 (buffer, item->id);
-		gkr_buffer_add_uint32 (buffer, item->type);
+		egg_buffer_add_uint32 (buffer, item->id);
+		egg_buffer_add_uint32 (buffer, item->type);
 		
 		hashed = gkr_attribute_list_hash (item->attributes);
 
@@ -351,18 +351,18 @@ gkr_keyring_binary_generate (GkrKeyring *keyring, GkrBuffer *buffer)
 	}
 
 	/* Encrypted data. Use non-pageable memory */
-	gkr_buffer_init_full (&to_encrypt, 4096, gkr_secure_realloc);
+	egg_buffer_init_full (&to_encrypt, 4096, egg_secure_realloc);
 	
-	gkr_buffer_append (&to_encrypt, (guchar*)digest, 16); /* Space for hash */
+	egg_buffer_append (&to_encrypt, (guchar*)digest, 16); /* Space for hash */
 
 	if (!generate_encrypted_data (&to_encrypt, keyring)) {
-		gkr_buffer_uninit (&to_encrypt);
+		egg_buffer_uninit (&to_encrypt);
 		return FALSE;
 	}
 
 	/* Pad with zeros to multiple of 16 bytes */
 	while (to_encrypt.len % 16 != 0) {
-		gkr_buffer_add_byte (&to_encrypt, 0);
+		egg_buffer_add_byte (&to_encrypt, 0);
 	}
 
 	gcry_md_hash_buffer (GCRY_MD_MD5, (void*)digest, 
@@ -373,18 +373,18 @@ gkr_keyring_binary_generate (GkrKeyring *keyring, GkrBuffer *buffer)
 	g_assert (keyring->hash_iterations);
 	
 	if (!encrypt_buffer (&to_encrypt, keyring->password, keyring->salt, keyring->hash_iterations)) {
-		gkr_buffer_uninit (&to_encrypt);
+		egg_buffer_uninit (&to_encrypt);
 		return FALSE;
 	}
-	gkr_buffer_add_uint32 (buffer, to_encrypt.len);
-	gkr_buffer_append (buffer, to_encrypt.buf, to_encrypt.len);
-	gkr_buffer_uninit (&to_encrypt);
+	egg_buffer_add_uint32 (buffer, to_encrypt.len);
+	egg_buffer_append (buffer, to_encrypt.buf, to_encrypt.len);
+	egg_buffer_uninit (&to_encrypt);
 	
 	return TRUE;
 }
 
 static gboolean
-decode_acl (GkrBuffer *buffer, gsize offset, gsize *offset_out, GList **out)
+decode_acl (EggBuffer *buffer, gsize offset, gsize *offset_out, GList **out)
 {
 	GList *acl;
 	guint32 num_acs;
@@ -395,11 +395,11 @@ decode_acl (GkrBuffer *buffer, gsize offset, gsize *offset_out, GList **out)
 	
 	acl = NULL;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &num_acs)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &num_acs)) {
 		return FALSE;
 	}
 	for (i = 0; i < num_acs; i++) {
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &x)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &x)) {
 			goto bail;
 		}
 		if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &name)) {
@@ -416,7 +416,7 @@ decode_acl (GkrBuffer *buffer, gsize offset, gsize *offset_out, GList **out)
 			g_free (reserved);
 			goto bail;
 		}
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &y)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &y)) {
 			g_free (name);
 			g_free (path);
 			g_free (reserved);
@@ -456,7 +456,7 @@ remove_unavailable_item (gpointer key, gpointer dummy, GkrKeyring *keyring)
 }
 
 gint
-gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
+gkr_keyring_binary_parse (GkrKeyring *keyring, EggBuffer *buffer)
 {
 	gsize offset;
 	guchar major, minor, crypto, hash;
@@ -471,7 +471,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 	guint32 hash_iterations;
 	guchar salt[8];
 	ItemInfo *items;
-	GkrBuffer to_decrypt = GKR_BUFFER_EMPTY;
+	EggBuffer to_decrypt = EGG_BUFFER_EMPTY;
 	gboolean locked;
 	GList *l;
 	GHashTable *checks = NULL;
@@ -482,7 +482,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 	items = 0;
 
 	/* We're decrypting this, so use secure memory */
-	gkr_buffer_set_allocator (&to_decrypt, gkr_secure_realloc);	
+	egg_buffer_set_allocator (&to_decrypt, egg_secure_realloc);	
 
 	if (buffer->len < KEYRING_FILE_HEADER_LEN) {
 		return 0;
@@ -511,13 +511,13 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 	if (!gkr_proto_get_time (buffer, offset, &offset, &mtime)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &flags)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &flags)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &lock_timeout)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &lock_timeout)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &hash_iterations)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &hash_iterations)) {
 		goto bail;
 	}
 	if (!gkr_proto_get_bytes (buffer, offset, &offset, salt, 8)) {
@@ -525,7 +525,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 	}
 	
 	for (i = 0; i < 4; i++) {
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &tmp)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &tmp)) {
 			goto bail;
 		}
 		/* reserved bytes must be zero */
@@ -533,18 +533,18 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 			goto bail;
 		}
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &num_items)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &num_items)) {
 		goto bail;
 	}
 
 	items = g_new0 (ItemInfo, num_items);
 
 	for (i = 0; i < num_items; i++) {
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset,
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset,
 						     &items[i].id)) {
 			goto bail;
 		}
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset,
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset,
 						     &items[i].type)) {
 			goto bail;
 		}
@@ -554,7 +554,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 		}
 	}
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset,
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset,
 					     &crypto_size)) {
 		goto bail;
 	}
@@ -565,7 +565,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 	}
 	
 	/* Copy the data into to_decrypt into non-pageable memory */
-	gkr_buffer_init_static (&to_decrypt, buffer->buf + offset, crypto_size);
+	egg_buffer_init_static (&to_decrypt, buffer->buf + offset, crypto_size);
 
 	locked = TRUE;
 	if (keyring->password != NULL) {
@@ -574,7 +574,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 			goto bail;
 		}
 		if (!verify_decrypted_buffer (&to_decrypt)) {
-			gkr_secure_strfree (keyring->password);
+			egg_secure_strfree (keyring->password);
 			keyring->password = NULL;
 		} else {
 			locked = FALSE;
@@ -605,7 +605,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 				}
 				for (j = 0; j < 4; j++) {
 					guint32 tmp;
-					if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &tmp)) {
+					if (!egg_buffer_get_uint32 (buffer, offset, &offset, &tmp)) {
 						goto bail;
 					}
 					/* reserved bytes must be zero */
@@ -663,7 +663,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 
 		g_free (item->display_name);
 		item->display_name = NULL;
-		gkr_secure_strfree (item->secret);
+		egg_secure_strfree (item->secret);
 		item->secret = NULL;
 		if (item->acl) {
 			gnome_keyring_acl_free (item->acl);
@@ -692,7 +692,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 
 	return 1;
  bail:
-	gkr_buffer_uninit (&to_decrypt);
+	egg_buffer_uninit (&to_decrypt);
 	if (checks)
 		g_hash_table_destroy (checks);
 	g_free (display_name);
@@ -700,7 +700,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, GkrBuffer *buffer)
 	if (items != NULL) {
 		for (i = 0; i < num_items; i++) {
 			g_free (items[i].display_name);
-			gkr_secure_strfree (items[i].secret);
+			egg_secure_strfree (items[i].secret);
 			gnome_keyring_attribute_list_free (items[i].hashed_attributes);
 			gnome_keyring_attribute_list_free (items[i].attributes);
 			gnome_keyring_acl_free (items[i].acl);

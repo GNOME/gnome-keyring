@@ -26,7 +26,7 @@
 #include "gkr-ask-tool.h"
 #include "gkr-ask-request.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -63,19 +63,19 @@ static gboolean do_warning = TRUE;
  */ 
 
 void
-gkr_memory_lock (void)
+egg_memory_lock (void)
 {
 	/* No threads used in ask tool, doesn't need locking */
 }
 
 void 
-gkr_memory_unlock (void)
+egg_memory_unlock (void)
 {
 	/* No threads used in ask tool, doesn't need locking */
 }
 
 void*
-gkr_memory_fallback (void *p, unsigned long sz)
+egg_memory_fallback (void *p, unsigned long sz)
 {
 	const gchar *env;
 	
@@ -600,7 +600,7 @@ run_dialog (gboolean include_password,
 	/* Get the original password */
 	if (include_original && old != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
 		original = gkr_ask_entry_get_text (GKR_ASK_ENTRY (old));
-		*original_out = gkr_secure_strdup (original);
+		*original_out = egg_secure_strdup (original);
 	}
 
 	/* Get the main password entry, and confirmation */
@@ -616,7 +616,7 @@ run_dialog (gboolean include_password,
 				goto retry;
 			}
 		}
-		*password_out = gkr_secure_strdup (password);
+		*password_out = egg_secure_strdup (password);
 	}
 	
 	/* When it's a new password and blank, double check */
@@ -728,9 +728,9 @@ prepare_dialog (void)
 	}
 	
 	if (!password)
-		password = gkr_secure_strdup ("");
+		password = egg_secure_strdup ("");
 	if (!original)
-		original = gkr_secure_strdup ("");
+		original = egg_secure_strdup ("");
 
 	/* First two lines of the response are always the passwords */
 	if (response < GKR_ASK_RESPONSE_ALLOW || !(flags & GKR_ASK_REQUEST_PASSWORD))
@@ -746,8 +746,8 @@ prepare_dialog (void)
 	/* Send back the response */
 	g_key_file_set_integer (output_data, "general", "response", response);
 	
-	gkr_secure_free (password);
-	gkr_secure_free (original);
+	egg_secure_free (password);
+	egg_secure_free (original);
 }
 
 static gchar*

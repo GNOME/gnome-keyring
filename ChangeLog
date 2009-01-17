@@ -1,5 +1,25 @@
 2009-01-17  Stef Walter  <stef@memberwebs.com>
 
+	* egg/egg-asn1.c: (moved from pkcs11/gck/gck-data-asn1.c)
+	* egg/egg-asn1.h: (moved from pkcs11/gck/gck-data-asn1.h)
+	* egg/egg-buffer.c: (moved from common/gkr-buffer.c)
+	* egg/egg-buffer.h: (moved from common/gkr-buffer.h)
+	* egg/egg-secure-memory.c: (moved from common/gkr-secure-memory.c)
+	* egg/egg-secure-memory.h: (moved from common/gkr-secure-memory.h)
+	* egg/egg-unix-credentials.c: (moved from common/gkr-unix-credentials.c)
+	* egg/egg-unix-credentials.h: (moved from common/gkr-unix-credentials.h)
+	* egg/Makefile.am: (added)
+	* egg/pk.asn: (moved from pkcs11/gck/pk.asn)
+	* egg/pkix.asn: (moved from pkcs11/gck/pkix.asn)
+	* egg/tests/Makefile.am: (added)
+	* egg/tests/test.asn: (moved from pkcs11/gck/tests/test.asn)
+	* egg/tests/unit-test-asn1.c: (moved from pkcs11/gck/tests/unit-test-data-asn1.c)
+	* egg/tests/unit-test-secmem.c: (moved from common/tests/unit-test-secmem.c)
+	* egg/tests/test-data: (added) Consolidate truly common functionality into 'egg' 
+	library. Many more files touched due to above changes.
+	
+2009-01-17  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in:
 	* daemon/pkcs11/gkr-pkcs11-auth.c:
 	* pkcs11/gck/gck-data-file.c:

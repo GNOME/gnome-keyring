@@ -28,36 +28,36 @@
 #include "gnome-keyring-proto.h"
 #include "gnome-keyring-private.h"
 
-#include "common/gkr-buffer.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-buffer.h"
+#include "egg/egg-secure-memory.h"
 
 void 
-gkr_proto_go_secure (GkrBuffer *buffer)
+gkr_proto_go_secure (EggBuffer *buffer)
 {
-	gkr_buffer_set_allocator (buffer, gkr_secure_realloc);
+	egg_buffer_set_allocator (buffer, egg_secure_realloc);
 }
 
 void
-gkr_proto_add_time (GkrBuffer *buffer, time_t time)
+gkr_proto_add_time (EggBuffer *buffer, time_t time)
 {
 	guint64 val;
 
 	val = time;
-	gkr_buffer_add_uint32 (buffer, ((val >> 32) & 0xffffffff));
-	gkr_buffer_add_uint32 (buffer, (val & 0xffffffff));
+	egg_buffer_add_uint32 (buffer, ((val >> 32) & 0xffffffff));
+	egg_buffer_add_uint32 (buffer, (val & 0xffffffff));
 }
 
 gboolean
-gkr_proto_get_time (GkrBuffer *buffer, gsize offset, gsize *next_offset,
+gkr_proto_get_time (EggBuffer *buffer, gsize offset, gsize *next_offset,
                     time_t *time)
 {
 	guint32 a, b;
 	guint64 val;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &a)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &a)) {
 		return FALSE;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &b)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &b)) {
 		return FALSE;
 	}
 
@@ -70,7 +70,7 @@ gkr_proto_get_time (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 }
 
 gboolean
-gkr_proto_add_utf8_secret (GkrBuffer *buffer, const char *str)
+gkr_proto_add_utf8_secret (EggBuffer *buffer, const char *str)
 {
 	/* Make sure this buffer is using non-pageable memory */	
 	gkr_proto_go_secure (buffer);
@@ -79,7 +79,7 @@ gkr_proto_add_utf8_secret (GkrBuffer *buffer, const char *str)
 }
 
 gboolean
-gkr_proto_add_utf8_string (GkrBuffer *buffer, const char *str)
+gkr_proto_add_utf8_string (EggBuffer *buffer, const char *str)
 {
 	gsize len;
 
@@ -93,11 +93,11 @@ gkr_proto_add_utf8_string (GkrBuffer *buffer, const char *str)
 		len = 0;
 	} 
 
-	return 	gkr_buffer_add_string (buffer, str);
+	return 	egg_buffer_add_string (buffer, str);
 }
 
 gboolean
-gkr_proto_get_bytes (GkrBuffer *buffer, gsize offset, gsize *next_offset,
+gkr_proto_get_bytes (EggBuffer *buffer, gsize offset, gsize *next_offset,
                      guchar *out, gsize n_bytes)
 {
 	if (buffer->len < n_bytes ||
@@ -112,29 +112,29 @@ gkr_proto_get_bytes (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 }
 
 gboolean
-gkr_proto_get_utf8_string (GkrBuffer *buffer, gsize offset, gsize *next_offset,
+gkr_proto_get_utf8_string (EggBuffer *buffer, gsize offset, gsize *next_offset,
                            char **str_ret)
 {
 	return gkr_proto_get_utf8_full (buffer, offset, next_offset, 
-	                                str_ret, (GkrBufferAllocator)g_realloc);
+	                                str_ret, (EggBufferAllocator)g_realloc);
 }
 
 gboolean
-gkr_proto_get_utf8_secret (GkrBuffer *buffer, gsize offset, gsize *next_offset,
+gkr_proto_get_utf8_secret (EggBuffer *buffer, gsize offset, gsize *next_offset,
                            char **str_ret)
 {
 	return gkr_proto_get_utf8_full (buffer, offset, next_offset, 
-	                                str_ret, gkr_secure_realloc);
+	                                str_ret, egg_secure_realloc);
 }
 
 gboolean
-gkr_proto_get_utf8_full (GkrBuffer *buffer, gsize offset, gsize *next_offset,
-                         char **str_ret, GkrBufferAllocator allocator)
+gkr_proto_get_utf8_full (EggBuffer *buffer, gsize offset, gsize *next_offset,
+                         char **str_ret, EggBufferAllocator allocator)
 {
 	gsize len;
 	char *str;
 	
-	if (!gkr_buffer_get_string (buffer, offset, &offset, &str, allocator))
+	if (!egg_buffer_get_string (buffer, offset, &offset, &str, allocator))
 		return FALSE;
 	len = str ? strlen (str) : 0;
 
@@ -157,14 +157,14 @@ gkr_proto_get_utf8_full (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 }
 
 static gboolean
-gkr_proto_start_operation (GkrBuffer *buffer, GnomeKeyringOpCode op,
+gkr_proto_start_operation (EggBuffer *buffer, GnomeKeyringOpCode op,
                            gsize *op_start)
 {
 	gsize appname_pos;
 	const char *name;
 
 	appname_pos = buffer->len;
-	gkr_buffer_add_uint32 (buffer, 0);
+	egg_buffer_add_uint32 (buffer, 0);
 	
 	name = g_get_application_name ();
 	if (name != NULL && !g_utf8_validate (name, -1, NULL)) {
@@ -182,47 +182,47 @@ gkr_proto_start_operation (GkrBuffer *buffer, GnomeKeyringOpCode op,
 	}
 
 	/* backpatch application name size */
-	if (!gkr_buffer_set_uint32 (buffer, appname_pos, buffer->len)) {
+	if (!egg_buffer_set_uint32 (buffer, appname_pos, buffer->len)) {
 		return FALSE;
 	}
 
 	
 	/* Make space for packet size */
 	*op_start = buffer->len;
-	gkr_buffer_add_uint32 (buffer, 0);
-	gkr_buffer_add_uint32 (buffer, op);
+	egg_buffer_add_uint32 (buffer, 0);
+	egg_buffer_add_uint32 (buffer, op);
 	
 	return TRUE;
 }
 
 static gboolean
-gkr_proto_end_operation (GkrBuffer *buffer, gsize op_start)
+gkr_proto_end_operation (EggBuffer *buffer, gsize op_start)
 {
-	if (!gkr_buffer_set_uint32 (buffer, op_start, buffer->len - op_start)) {
+	if (!egg_buffer_set_uint32 (buffer, op_start, buffer->len - op_start)) {
 		return FALSE;
 	}
 	return TRUE;
 }
 
 gboolean
-gkr_proto_decode_packet_size (GkrBuffer *buffer, guint32 *size)
+gkr_proto_decode_packet_size (EggBuffer *buffer, guint32 *size)
 {
-	return gkr_buffer_get_uint32 (buffer, 0, NULL, size);
+	return egg_buffer_get_uint32 (buffer, 0, NULL, size);
 }
 
 gboolean
-gkr_proto_decode_packet_operation (GkrBuffer *buffer, GnomeKeyringOpCode *op)
+gkr_proto_decode_packet_operation (EggBuffer *buffer, GnomeKeyringOpCode *op)
 {
 	guint32 op_nr;
 	gboolean res;
 
-	res = gkr_buffer_get_uint32 (buffer, 4, NULL, &op_nr);
+	res = egg_buffer_get_uint32 (buffer, 4, NULL, &op_nr);
 	*op = op_nr;
 	return res;
 }
 
 gboolean
-gkr_proto_encode_op_only (GkrBuffer *buffer, GnomeKeyringOpCode op)
+gkr_proto_encode_op_only (EggBuffer *buffer, GnomeKeyringOpCode op)
 {
 	gsize op_start;
 
@@ -237,7 +237,7 @@ gkr_proto_encode_op_only (GkrBuffer *buffer, GnomeKeyringOpCode op)
 }
 
 gboolean
-gkr_proto_encode_op_string (GkrBuffer *buffer, GnomeKeyringOpCode op,
+gkr_proto_encode_op_string (EggBuffer *buffer, GnomeKeyringOpCode op,
                             const char *str)
 {
 	gsize op_start;
@@ -256,7 +256,7 @@ gkr_proto_encode_op_string (GkrBuffer *buffer, GnomeKeyringOpCode op,
 }
 
 gboolean
-gkr_proto_encode_op_string_int (GkrBuffer *buffer, GnomeKeyringOpCode op,
+gkr_proto_encode_op_string_int (EggBuffer *buffer, GnomeKeyringOpCode op,
                                 const char *str, guint32 val)
 {
 	gsize op_start;
@@ -267,7 +267,7 @@ gkr_proto_encode_op_string_int (GkrBuffer *buffer, GnomeKeyringOpCode op,
 	if (!gkr_proto_add_utf8_string (buffer, str)) {
 		return FALSE;
 	}
-	gkr_buffer_add_uint32 (buffer,	val);
+	egg_buffer_add_uint32 (buffer,	val);
 	if (!gkr_proto_end_operation (buffer,	op_start)) {
 		return FALSE;
 	}
@@ -276,7 +276,7 @@ gkr_proto_encode_op_string_int (GkrBuffer *buffer, GnomeKeyringOpCode op,
 }
 
 gboolean
-gkr_proto_encode_op_string_int_int (GkrBuffer *buffer, GnomeKeyringOpCode op,
+gkr_proto_encode_op_string_int_int (EggBuffer *buffer, GnomeKeyringOpCode op,
                                     const char *str, guint32 integer1,
                                     guint32 integer2)
 {
@@ -285,15 +285,15 @@ gkr_proto_encode_op_string_int_int (GkrBuffer *buffer, GnomeKeyringOpCode op,
 		return FALSE;
 	if (!gkr_proto_add_utf8_string (buffer, str))
 		return FALSE;
-	gkr_buffer_add_uint32 (buffer,	integer1);
-	gkr_buffer_add_uint32 (buffer,	integer2);
+	egg_buffer_add_uint32 (buffer,	integer1);
+	egg_buffer_add_uint32 (buffer,	integer2);
 	if (!gkr_proto_end_operation (buffer, op_start))
 		return FALSE;
 	return TRUE;
 }
 
 gboolean
-gkr_proto_encode_op_string_secret (GkrBuffer *buffer, GnomeKeyringOpCode op,
+gkr_proto_encode_op_string_secret (EggBuffer *buffer, GnomeKeyringOpCode op,
                                    const char *str1, const char *str2)
 {
 	gsize op_start;
@@ -318,7 +318,7 @@ gkr_proto_encode_op_string_secret (GkrBuffer *buffer, GnomeKeyringOpCode op,
 }
 
 gboolean
-gkr_proto_encode_op_string_secret_secret (GkrBuffer *buffer, GnomeKeyringOpCode op,
+gkr_proto_encode_op_string_secret_secret (EggBuffer *buffer, GnomeKeyringOpCode op,
                                           const char *str1, const char *str2,
                                           const char *str3)
 {
@@ -347,14 +347,14 @@ gkr_proto_encode_op_string_secret_secret (GkrBuffer *buffer, GnomeKeyringOpCode 
 }
 
 gboolean
-gkr_proto_encode_find (GkrBuffer *buffer, GnomeKeyringItemType type,
+gkr_proto_encode_find (EggBuffer *buffer, GnomeKeyringItemType type,
                        GnomeKeyringAttributeList *attributes)
 {
 	gsize op_start;
 	
 	gkr_proto_start_operation (buffer, GNOME_KEYRING_OP_FIND, &op_start);
 
-	gkr_buffer_add_uint32 (buffer, type);
+	egg_buffer_add_uint32 (buffer, type);
 
 	if (!gkr_proto_add_attribute_list (buffer, attributes)) {
 		goto bail;
@@ -367,12 +367,12 @@ gkr_proto_encode_find (GkrBuffer *buffer, GnomeKeyringItemType type,
 	return TRUE;
 	
  bail:
- 	gkr_buffer_resize (buffer, op_start);
+ 	egg_buffer_resize (buffer, op_start);
 	return FALSE;
 }
 
 gboolean
-gkr_proto_encode_create_item (GkrBuffer *buffer, const char *keyring, 
+gkr_proto_encode_create_item (EggBuffer *buffer, const char *keyring, 
                               const char *display_name, 
                               GnomeKeyringAttributeList *attributes,
                               const char *secret, GnomeKeyringItemType type,
@@ -399,8 +399,8 @@ gkr_proto_encode_create_item (GkrBuffer *buffer, const char *keyring,
 	if (!gkr_proto_add_attribute_list (buffer, attributes)) {
 		return FALSE;
 	}
-	gkr_buffer_add_uint32 (buffer, type);
-	gkr_buffer_add_uint32 (buffer, update_if_exists);
+	egg_buffer_add_uint32 (buffer, type);
+	egg_buffer_add_uint32 (buffer, update_if_exists);
 	
 	if (!gkr_proto_end_operation (buffer,	op_start)) {
 		return FALSE;
@@ -410,7 +410,7 @@ gkr_proto_encode_create_item (GkrBuffer *buffer, const char *keyring,
 }
 
 gboolean
-gkr_proto_decode_create_item (GkrBuffer *buffer, char **keyring, char **display_name,
+gkr_proto_decode_create_item (EggBuffer *buffer, char **keyring, char **display_name,
                               GnomeKeyringAttributeList **attributes, char **secret,
                               GnomeKeyringItemType *type, gboolean *update_if_exists)
 {
@@ -451,14 +451,14 @@ gkr_proto_decode_create_item (GkrBuffer *buffer, char **keyring, char **display_
 	if (!gkr_proto_decode_attribute_list (buffer, offset, &offset, attributes)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &val)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &val)) {
 		goto bail;
 	}
 	if (type != NULL) {
 		*type = val;
 	}
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &val)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &val)) {
 		goto bail;
 	}
 	if (update_if_exists != NULL) {
@@ -478,7 +478,7 @@ gkr_proto_decode_create_item (GkrBuffer *buffer, char **keyring, char **display_
 		g_free (*display_name);
 	}
 	if (secret != NULL) {
-		gkr_secure_strfree (*secret);
+		egg_secure_strfree (*secret);
 	}
 	return FALSE;
 	
@@ -486,7 +486,7 @@ gkr_proto_decode_create_item (GkrBuffer *buffer, char **keyring, char **display_
 
 
 gboolean
-gkr_proto_encode_set_attributes (GkrBuffer *buffer, const char *keyring,
+gkr_proto_encode_set_attributes (EggBuffer *buffer, const char *keyring,
                                  guint32 id, GnomeKeyringAttributeList *attributes)
 {
 	gsize op_start;
@@ -498,7 +498,7 @@ gkr_proto_encode_set_attributes (GkrBuffer *buffer, const char *keyring,
 	if (!gkr_proto_add_utf8_string (buffer, keyring)) {
 		return FALSE;
 	}
-	gkr_buffer_add_uint32 (buffer, id);
+	egg_buffer_add_uint32 (buffer, id);
 	
 	if (!gkr_proto_add_attribute_list (buffer, attributes)) {
 		return FALSE;
@@ -512,7 +512,7 @@ gkr_proto_encode_set_attributes (GkrBuffer *buffer, const char *keyring,
 }
 
 gboolean
-gkr_proto_encode_set_acl (GkrBuffer *buffer, const char *keyring,
+gkr_proto_encode_set_acl (EggBuffer *buffer, const char *keyring,
                           guint32 id, GList *acl)
 {
 	gsize op_start;
@@ -524,7 +524,7 @@ gkr_proto_encode_set_acl (GkrBuffer *buffer, const char *keyring,
 	if (!gkr_proto_add_utf8_string (buffer, keyring)) {
 		return FALSE;
 	}
-	gkr_buffer_add_uint32 (buffer, id);
+	egg_buffer_add_uint32 (buffer, id);
 	
 	if (!gkr_proto_add_acl (buffer, acl)) {
 		return FALSE;
@@ -539,7 +539,7 @@ gkr_proto_encode_set_acl (GkrBuffer *buffer, const char *keyring,
 
 
 gboolean
-gkr_proto_encode_set_item_info (GkrBuffer *buffer, const char *keyring,
+gkr_proto_encode_set_item_info (EggBuffer *buffer, const char *keyring,
                                 guint32 id, GnomeKeyringItemInfo *info)
 {
 	gsize op_start;
@@ -554,9 +554,9 @@ gkr_proto_encode_set_item_info (GkrBuffer *buffer, const char *keyring,
 	if (!gkr_proto_add_utf8_string (buffer, keyring)) {
 		return FALSE;
 	}
-	gkr_buffer_add_uint32 (buffer, id);
+	egg_buffer_add_uint32 (buffer, id);
 	
-	gkr_buffer_add_uint32 (buffer, info->type);
+	egg_buffer_add_uint32 (buffer, info->type);
 	if (!gkr_proto_add_utf8_string (buffer, info->display_name)) {
 		return FALSE;
 	}
@@ -572,7 +572,7 @@ gkr_proto_encode_set_item_info (GkrBuffer *buffer, const char *keyring,
 }
 
 gboolean
-gkr_proto_encode_set_keyring_info (GkrBuffer *buffer, const char *keyring,
+gkr_proto_encode_set_keyring_info (EggBuffer *buffer, const char *keyring,
                                    GnomeKeyringInfo *info)
 {
 	gsize op_start;
@@ -585,8 +585,8 @@ gkr_proto_encode_set_keyring_info (GkrBuffer *buffer, const char *keyring,
 		return FALSE;
 	}
 	
-	gkr_buffer_add_uint32 (buffer, info->lock_on_idle);
-	gkr_buffer_add_uint32 (buffer, info->lock_timeout);
+	egg_buffer_add_uint32 (buffer, info->lock_on_idle);
+	egg_buffer_add_uint32 (buffer, info->lock_timeout);
 
 	if (!gkr_proto_end_operation (buffer, op_start)) {
 		return FALSE;
@@ -596,7 +596,7 @@ gkr_proto_encode_set_keyring_info (GkrBuffer *buffer, const char *keyring,
 }
 
 gboolean
-gkr_proto_encode_prepare_environment (GkrBuffer *buffer, const gchar **environment)
+gkr_proto_encode_prepare_environment (EggBuffer *buffer, const gchar **environment)
 {
 	gsize op_start;
 	
@@ -604,7 +604,7 @@ gkr_proto_encode_prepare_environment (GkrBuffer *buffer, const gchar **environme
 	                                &op_start))
 		return FALSE;
 		
-	if (!gkr_buffer_add_stringv (buffer, environment))
+	if (!egg_buffer_add_stringv (buffer, environment))
 		return FALSE;
 
 	if (!gkr_proto_end_operation (buffer, op_start))
@@ -614,7 +614,7 @@ gkr_proto_encode_prepare_environment (GkrBuffer *buffer, const gchar **environme
 }
 
 gboolean
-gkr_proto_decode_attribute_list (GkrBuffer *buffer, gsize offset, gsize *next_offset,
+gkr_proto_decode_attribute_list (EggBuffer *buffer, gsize offset, gsize *next_offset,
                                  GnomeKeyringAttributeList **attributes_out)
 {
 	guint32 list_size;
@@ -628,7 +628,7 @@ gkr_proto_decode_attribute_list (GkrBuffer *buffer, gsize offset, gsize *next_of
 
 	attributes = NULL;
 	
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &list_size)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &list_size)) {
 		goto bail;
 	}
 
@@ -637,7 +637,7 @@ gkr_proto_decode_attribute_list (GkrBuffer *buffer, gsize offset, gsize *next_of
 		if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &name)) {
 			goto bail;
 		}
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &type)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &type)) {
 			g_free (name);
 			goto bail;
 		}
@@ -653,7 +653,7 @@ gkr_proto_decode_attribute_list (GkrBuffer *buffer, gsize offset, gsize *next_of
 			g_array_append_val (attributes, attribute);
 			break;
 		case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
-			if (!gkr_buffer_get_uint32 (buffer, offset, 
+			if (!egg_buffer_get_uint32 (buffer, offset, 
 			                            &offset, &val)) {
 				g_free (name);
 				goto bail;
@@ -683,7 +683,7 @@ gkr_proto_decode_attribute_list (GkrBuffer *buffer, gsize offset, gsize *next_of
 }
 
 gboolean
-gkr_proto_decode_acl (GkrBuffer *buffer, gsize offset, gsize *next_offset,
+gkr_proto_decode_acl (EggBuffer *buffer, gsize offset, gsize *next_offset,
                       GList **acl_out)
 {
 	guint32 list_size;
@@ -697,7 +697,7 @@ gkr_proto_decode_acl (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 
 	acl = NULL;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &list_size)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &list_size)) {
 		goto bail;
 	}
 
@@ -716,7 +716,7 @@ gkr_proto_decode_acl (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 			goto bail;
 		}
 
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &types_allowed)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &types_allowed)) {
 			g_free (display_name);
 			g_free (pathname);
 			goto bail;
@@ -743,27 +743,27 @@ gkr_proto_decode_acl (GkrBuffer *buffer, gsize offset, gsize *next_offset,
 
 
 gboolean
-gkr_proto_add_attribute_list (GkrBuffer *buffer, GnomeKeyringAttributeList *attributes)
+gkr_proto_add_attribute_list (EggBuffer *buffer, GnomeKeyringAttributeList *attributes)
 {
 	int i;
 	GnomeKeyringAttribute *array;
 
 	/* Null attributes = empty attribute array */
 	if (!attributes) {
-		gkr_buffer_add_uint32 (buffer, 0);
+		egg_buffer_add_uint32 (buffer, 0);
 		return TRUE;
 	}
 		
 	array = (GnomeKeyringAttribute *)attributes->data;
 
 	i = 0;
-	gkr_buffer_add_uint32 (buffer, attributes->len);
+	egg_buffer_add_uint32 (buffer, attributes->len);
 
 	for (i = 0; i < attributes->len; i++) {
 		if (!gkr_proto_add_utf8_string (buffer, array[i].name)) {
 			return FALSE;
 		}
-		gkr_buffer_add_uint32 (buffer, array[i].type);
+		egg_buffer_add_uint32 (buffer, array[i].type);
 		switch (array[i].type) {
 		case GNOME_KEYRING_ATTRIBUTE_TYPE_STRING:
 			if (!gkr_proto_add_utf8_string (buffer, array[i].value.string)) {
@@ -771,7 +771,7 @@ gkr_proto_add_attribute_list (GkrBuffer *buffer, GnomeKeyringAttributeList *attr
 			}
 			break;
 		case GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32:
-			gkr_buffer_add_uint32 (buffer, array[i].value.integer);
+			egg_buffer_add_uint32 (buffer, array[i].value.integer);
 			break;
 		default:
 			g_assert_not_reached ();
@@ -782,7 +782,7 @@ gkr_proto_add_attribute_list (GkrBuffer *buffer, GnomeKeyringAttributeList *attr
 }
 
 gboolean
-gkr_proto_add_acl (GkrBuffer *buffer, GList *acl)
+gkr_proto_add_acl (EggBuffer *buffer, GList *acl)
 {
 	int length;
 	GnomeKeyringAccessControl *ac;
@@ -790,7 +790,7 @@ gkr_proto_add_acl (GkrBuffer *buffer, GList *acl)
 
 	length = g_list_length (acl);
 
-	gkr_buffer_add_uint32 (buffer, length);
+	egg_buffer_add_uint32 (buffer, length);
 
 	for (tmp = acl; tmp != NULL; tmp = tmp->next) {
 		ac = (GnomeKeyringAccessControl *)tmp->data;
@@ -800,7 +800,7 @@ gkr_proto_add_acl (GkrBuffer *buffer, GList *acl)
 		if (!gkr_proto_add_utf8_string (buffer, ac->application->pathname)) {
 			return FALSE;
 		}
-		gkr_buffer_add_uint32 (buffer, ac->types_allowed);
+		egg_buffer_add_uint32 (buffer, ac->types_allowed);
 	}
 
 	return TRUE;
@@ -809,14 +809,14 @@ gkr_proto_add_acl (GkrBuffer *buffer, GList *acl)
 
 
 gboolean
-gkr_proto_decode_result_reply (GkrBuffer *buffer, GnomeKeyringResult *result)
+gkr_proto_decode_result_reply (EggBuffer *buffer, GnomeKeyringResult *result)
 {
 	gsize offset;
 	guint32 res;
 
 	offset = 4;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 	*result = res;
@@ -825,7 +825,7 @@ gkr_proto_decode_result_reply (GkrBuffer *buffer, GnomeKeyringResult *result)
 }
 
 gboolean
-gkr_proto_decode_result_string_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_result_string_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                       char **str)
 {
 	gsize offset;
@@ -833,7 +833,7 @@ gkr_proto_decode_result_string_reply (GkrBuffer *buffer, GnomeKeyringResult *res
 
 	offset = 4;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 	*result = res;
@@ -845,7 +845,7 @@ gkr_proto_decode_result_string_reply (GkrBuffer *buffer, GnomeKeyringResult *res
 }
 
 gboolean
-gkr_proto_decode_result_string_list_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_result_string_list_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                            GList **list)
 {
 	gsize offset;
@@ -857,11 +857,11 @@ gkr_proto_decode_result_string_list_reply (GkrBuffer *buffer, GnomeKeyringResult
 	offset = 4;
 	names = NULL;
 	
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &list_size)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &list_size)) {
 		goto bail;
 	}
 	
@@ -884,7 +884,7 @@ gkr_proto_decode_result_string_list_reply (GkrBuffer *buffer, GnomeKeyringResult
 }
 
 gboolean
-gkr_proto_decode_find_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_find_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                              GList **list_out)
 {
 	GList *list;
@@ -895,7 +895,7 @@ gkr_proto_decode_find_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
 	offset = 4;
 
 	*list_out = NULL;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 	*result = res;
@@ -912,7 +912,7 @@ gkr_proto_decode_find_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
 		                                &found->keyring)) {
 			goto bail;
 		}
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &found->item_id)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &found->item_id)) {
 			goto bail;
 		}
 		if (!gkr_proto_get_utf8_secret (buffer, offset, &offset,
@@ -934,7 +934,7 @@ gkr_proto_decode_find_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
 }
 
 gboolean
-gkr_proto_decode_find (GkrBuffer *buffer, GnomeKeyringItemType *type,
+gkr_proto_decode_find (EggBuffer *buffer, GnomeKeyringItemType *type,
                        GnomeKeyringAttributeList **attributes)
 {
 	gsize offset;
@@ -949,7 +949,7 @@ gkr_proto_decode_find (GkrBuffer *buffer, GnomeKeyringItemType *type,
 	}
 
 	offset = 8;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &t)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &t)) {
 		return FALSE;
 	}
 	*type = t;
@@ -957,7 +957,7 @@ gkr_proto_decode_find (GkrBuffer *buffer, GnomeKeyringItemType *type,
 }
 
 gboolean
-gkr_proto_decode_op_string (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
+gkr_proto_decode_op_string (EggBuffer *buffer, GnomeKeyringOpCode *op_out,
                             char **str1)
 {
 	gsize offset;
@@ -983,7 +983,7 @@ gkr_proto_decode_op_string (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
 }
 
 gboolean
-gkr_proto_decode_op_string_int (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
+gkr_proto_decode_op_string_int (EggBuffer *buffer, GnomeKeyringOpCode *op_out,
                                 char **str1, guint32 *val)
 {
 	gsize offset;
@@ -999,7 +999,7 @@ gkr_proto_decode_op_string_int (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
 		goto bail;
 	}
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, val)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, val)) {
 		goto bail;
 	}
 	
@@ -1013,7 +1013,7 @@ gkr_proto_decode_op_string_int (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
 }
 
 gboolean
-gkr_proto_decode_get_item_info (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
+gkr_proto_decode_get_item_info (EggBuffer *buffer, GnomeKeyringOpCode *op_out,
                                 char **keyring, guint32 *item_id, guint32 *flags)
 {
 	gsize offset = 8;
@@ -1022,11 +1022,11 @@ gkr_proto_decode_get_item_info (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
 		return FALSE;
 	if (!gkr_proto_get_utf8_string (buffer, offset, &offset, keyring))
 		goto bail;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, item_id))
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, item_id))
 		goto bail;
 	if (*op_out == GNOME_KEYRING_OP_GET_ITEM_INFO_FULL) {
 		/* Pull in lookup flags/parts, find out which ones */
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, flags))
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, flags))
 			goto bail;
 	} else {
 		/* All parts of the item by default */
@@ -1041,7 +1041,7 @@ gkr_proto_decode_get_item_info (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
 }
 
 gboolean
-gkr_proto_decode_op_string_secret (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
+gkr_proto_decode_op_string_secret (EggBuffer *buffer, GnomeKeyringOpCode *op_out,
                                    char **str1, char **str2)
 {
 	gsize offset;
@@ -1077,7 +1077,7 @@ gkr_proto_decode_op_string_secret (GkrBuffer *buffer, GnomeKeyringOpCode *op_out
 }
 
 gboolean
-gkr_proto_decode_op_string_secret_secret (GkrBuffer *buffer, GnomeKeyringOpCode *op_out,
+gkr_proto_decode_op_string_secret_secret (EggBuffer *buffer, GnomeKeyringOpCode *op_out,
                                           char **str1, char **str2, char **str3)
 {
 	gsize offset;
@@ -1124,14 +1124,14 @@ gkr_proto_decode_op_string_secret_secret (GkrBuffer *buffer, GnomeKeyringOpCode 
 
 
 gboolean
-gkr_proto_decode_get_attributes_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_get_attributes_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                        GnomeKeyringAttributeList **attributes)
 {
 	gsize offset;
 	guint32 res;
 
 	offset = 4;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 	*attributes = NULL;
@@ -1147,14 +1147,14 @@ gkr_proto_decode_get_attributes_reply (GkrBuffer *buffer, GnomeKeyringResult *re
 }
 
 gboolean
-gkr_proto_decode_get_acl_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_get_acl_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                 GList **acl)
 {
 	gsize offset;
 	guint32 res;
 
 	offset = 4;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 	*acl = NULL;
@@ -1171,7 +1171,7 @@ gkr_proto_decode_get_acl_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
 
 
 gboolean
-gkr_proto_decode_get_item_info_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_get_item_info_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                       GnomeKeyringItemInfo      **info_out)
 {
 	gsize offset;
@@ -1184,11 +1184,11 @@ gkr_proto_decode_get_item_info_reply (GkrBuffer *buffer, GnomeKeyringResult *res
 	info = NULL;
 	
 	offset = 4;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &type)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &type)) {
 			return FALSE;
 		}
 		if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &name)) {
@@ -1201,12 +1201,12 @@ gkr_proto_decode_get_item_info_reply (GkrBuffer *buffer, GnomeKeyringResult *res
 		
 		if (!gkr_proto_get_time (buffer, offset, &offset, &mtime)) {
 			g_free (name);
-			gkr_secure_strfree (secret);
+			egg_secure_strfree (secret);
 			return FALSE;
 		}
 		if (!gkr_proto_get_time (buffer, offset, &offset, &ctime)) {
 			g_free (name);
-			gkr_secure_strfree (secret);
+			egg_secure_strfree (secret);
 			return FALSE;
 		}
 		
@@ -1225,7 +1225,7 @@ gkr_proto_decode_get_item_info_reply (GkrBuffer *buffer, GnomeKeyringResult *res
 }
 
 gboolean
-gkr_proto_decode_get_keyring_info_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_get_keyring_info_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                          GnomeKeyringInfo **info_out)
 {
 	gsize offset;
@@ -1237,15 +1237,15 @@ gkr_proto_decode_get_keyring_info_reply (GkrBuffer *buffer, GnomeKeyringResult *
 	info = NULL;
 	
 	offset = 4;
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset,
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset,
 		                            &lock_on_idle)) {
 			return FALSE;
 		}
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset,
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset,
 		                            &lock_timeout)) {
 			return FALSE;
 		}
@@ -1255,7 +1255,7 @@ gkr_proto_decode_get_keyring_info_reply (GkrBuffer *buffer, GnomeKeyringResult *
 		if (!gkr_proto_get_time (buffer, offset, &offset, &ctime)) {
 			return FALSE;
 		}
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset,
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset,
 		                            &is_locked)) {
 			return FALSE;
 		}
@@ -1274,7 +1274,7 @@ gkr_proto_decode_get_keyring_info_reply (GkrBuffer *buffer, GnomeKeyringResult *
 }
 
 gboolean
-gkr_proto_decode_set_item_info (GkrBuffer *buffer, char **keyring, guint32 *item_id,
+gkr_proto_decode_set_item_info (EggBuffer *buffer, char **keyring, guint32 *item_id,
                                 GnomeKeyringItemType *type, char **display_name,
                                 char **secret)
 {
@@ -1296,10 +1296,10 @@ gkr_proto_decode_set_item_info (GkrBuffer *buffer, char **keyring, guint32 *item
 	if (!gkr_proto_get_utf8_string (buffer, offset, &offset, keyring)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, item_id)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, item_id)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &typeint)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &typeint)) {
 		goto bail;
 	}
 	*type = typeint;
@@ -1316,12 +1316,12 @@ gkr_proto_decode_set_item_info (GkrBuffer *buffer, char **keyring, guint32 *item
  bail:
 	g_free (*keyring);
 	g_free (*display_name);
-	gkr_secure_strfree (*secret);
+	egg_secure_strfree (*secret);
 	return FALSE;
 }
 
 gboolean
-gkr_proto_decode_set_keyring_info (GkrBuffer *buffer, char **keyring,
+gkr_proto_decode_set_keyring_info (EggBuffer *buffer, char **keyring,
                                    gboolean *lock_on_idle, guint32 *lock_timeout)
 
 {
@@ -1341,12 +1341,12 @@ gkr_proto_decode_set_keyring_info (GkrBuffer *buffer, char **keyring,
 	if (!gkr_proto_get_utf8_string (buffer, offset, &offset, keyring)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &lock_int)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &lock_int)) {
 		goto bail;
 	}
 	*lock_on_idle = lock_int;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, lock_timeout)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, lock_timeout)) {
 		goto bail;
 	}
 
@@ -1358,7 +1358,7 @@ gkr_proto_decode_set_keyring_info (GkrBuffer *buffer, char **keyring,
 }
 
 gboolean
-gkr_proto_decode_set_attributes (GkrBuffer *buffer, char **keyring,
+gkr_proto_decode_set_attributes (EggBuffer *buffer, char **keyring,
                                  guint32 *item_id, GnomeKeyringAttributeList **attributes)
 {
 	gsize offset;
@@ -1377,7 +1377,7 @@ gkr_proto_decode_set_attributes (GkrBuffer *buffer, char **keyring,
 	if (!gkr_proto_get_utf8_string (buffer, offset, &offset, keyring)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, item_id)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, item_id)) {
 		goto bail;
 	}
 	
@@ -1394,7 +1394,7 @@ gkr_proto_decode_set_attributes (GkrBuffer *buffer, char **keyring,
 
 
 gboolean
-gkr_proto_decode_set_acl (GkrBuffer *buffer, char **keyring, guint32 *item_id,
+gkr_proto_decode_set_acl (EggBuffer *buffer, char **keyring, guint32 *item_id,
                           GList  **acl)
 {
 	gsize offset;
@@ -1413,7 +1413,7 @@ gkr_proto_decode_set_acl (GkrBuffer *buffer, char **keyring, guint32 *item_id,
 	if (!gkr_proto_get_utf8_string (buffer, offset, &offset, keyring)) {
 		goto bail;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, item_id)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, item_id)) {
 		goto bail;
 	}
 	
@@ -1429,7 +1429,7 @@ gkr_proto_decode_set_acl (GkrBuffer *buffer, char **keyring, guint32 *item_id,
 }
 
 gboolean
-gkr_proto_decode_prepare_environment (GkrBuffer *buffer, gchar ***environment)
+gkr_proto_decode_prepare_environment (EggBuffer *buffer, gchar ***environment)
 {
 	GnomeKeyringOpCode op;
 	gsize offset;
@@ -1441,15 +1441,15 @@ gkr_proto_decode_prepare_environment (GkrBuffer *buffer, gchar ***environment)
 		
 	offset = 8;
 	
-	if (!gkr_buffer_get_stringv (buffer, offset, &offset, environment, 
-	                             (GkrBufferAllocator)g_realloc))
+	if (!egg_buffer_get_stringv (buffer, offset, &offset, environment, 
+	                             (EggBufferAllocator)g_realloc))
 		return FALSE; 
 	
 	return TRUE;
 }
 
 gboolean 
-gkr_proto_decode_prepare_environment_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_prepare_environment_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                             char ***environment)
 {
 	gsize offset;
@@ -1457,12 +1457,12 @@ gkr_proto_decode_prepare_environment_reply (GkrBuffer *buffer, GnomeKeyringResul
 
 	offset = 4;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res))
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res))
 		return FALSE;
 	*result = res;
 
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		if (!gkr_buffer_get_stringv (buffer, offset, &offset, environment, NULL))
+		if (!egg_buffer_get_stringv (buffer, offset, &offset, environment, NULL))
 			return FALSE; 
 	}		
 	
@@ -1470,7 +1470,7 @@ gkr_proto_decode_prepare_environment_reply (GkrBuffer *buffer, GnomeKeyringResul
 }
 
 gboolean
-gkr_proto_decode_result_int_list_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_result_int_list_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                         GList **list)
 {
 	gsize offset;
@@ -1480,17 +1480,17 @@ gkr_proto_decode_result_int_list_reply (GkrBuffer *buffer, GnomeKeyringResult *r
 
 	offset = 4;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
 	*result = res;
 	
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &len)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &len)) {
 		return FALSE;
 	}
 	
 	for (i = 0; i < len; i++) {
-		if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &id)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &id)) {
 			g_list_free (*list);
 			*list = NULL;
 			return FALSE;
@@ -1503,7 +1503,7 @@ gkr_proto_decode_result_int_list_reply (GkrBuffer *buffer, GnomeKeyringResult *r
 }
 
 gboolean
-gkr_proto_decode_result_integer_reply (GkrBuffer *buffer, GnomeKeyringResult *result,
+gkr_proto_decode_result_integer_reply (EggBuffer *buffer, GnomeKeyringResult *result,
                                        guint32 *integer)
 {
 	gsize offset;
@@ -1511,10 +1511,10 @@ gkr_proto_decode_result_integer_reply (GkrBuffer *buffer, GnomeKeyringResult *re
 
 	offset = 4;
 
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &res)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &res)) {
 		return FALSE;
 	}
-	if (!gkr_buffer_get_uint32 (buffer, offset, &offset, &val)) {
+	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &val)) {
 		return FALSE;
 	}
 	

@@ -30,7 +30,7 @@
 #include "gkr-keyrings.h"
 
 #include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring.h"
 
@@ -130,7 +130,7 @@ request_login_new (gchar **password)
 	gkr_ask_daemon_process (ask);
 	ret = ask->response >= GKR_ASK_RESPONSE_ALLOW;
 	if (ret)
-		*password = gkr_secure_strdup (ask->typed_password);
+		*password = egg_secure_strdup (ask->typed_password);
 	g_object_unref (ask);
 	return ret;
 }
@@ -173,7 +173,7 @@ gkr_keyring_login_unlock (const gchar *password)
 	
 	/* No such keyring exists, so create one */
 	login = gkr_keyring_create (GKR_LOCATION_VOLUME_LOCAL, "login", password);
-	gkr_secure_strfree (new_password);
+	egg_secure_strfree (new_password);
 	
 	if (!login) {
 		g_warning ("Failed to create login keyring");
@@ -258,8 +258,8 @@ gkr_keyring_login_attach_secret (GnomeKeyringItemType type, const gchar *display
 	g_free (item->display_name);
 	item->display_name = g_strdup (display_name); 
 	
-	gkr_secure_strfree (item->secret);
-	item->secret = gkr_secure_strdup (secret);
+	egg_secure_strfree (item->secret);
+	item->secret = egg_secure_strdup (secret);
 	
 	gnome_keyring_attribute_list_free (item->attributes);
 	item->attributes = attrs;

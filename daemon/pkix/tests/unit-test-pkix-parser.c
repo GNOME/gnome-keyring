@@ -27,7 +27,7 @@
 
 #include "common/gkr-location.h"
 #include "common/gkr-crypto.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "pkix/gkr-pkix-parser.h"
 
@@ -147,7 +147,7 @@ ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 	/* Return "", null, and "booo" in that order */
 	switch (st) {
 	case 0:
-		*password = gkr_secure_strdup ("");
+		*password = egg_secure_strdup ("");
 		return TRUE;
 	case 1:
 		*password = NULL;
@@ -155,7 +155,7 @@ ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 	case 2:
 		/* Most of our test encrypted stuff use this password */
 		g_print ("getting password 'booo' for: %s\n", details); 	
-		*password = gkr_secure_strdup ("booo");
+		*password = egg_secure_strdup ("booo");
 		return TRUE;
 	default:
 		msg = g_strdup_printf ("decryption didn't work for: %s", g_quark_to_string (loc));

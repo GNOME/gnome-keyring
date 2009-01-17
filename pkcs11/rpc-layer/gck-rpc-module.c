@@ -28,7 +28,7 @@
 
 #include "pkcs11/pkcs11.h"
 
-#include "common/gkr-unix-credentials.h"
+#include "egg/egg-unix-credentials.h"
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -251,7 +251,7 @@ call_connect (CallState *cs)
 		return CKR_DEVICE_ERROR;
 	}
 
-	if (gkr_unix_credentials_write (sock) < 0) {
+	if (egg_unix_credentials_write (sock) < 0) {
 		close (sock);
 		warning (("couldn't send socket credentials: %s", strerror (errno)));
 		return CKR_DEVICE_ERROR;
@@ -482,7 +482,7 @@ call_send_recv (CallState *cs)
 	cs->req = cs->resp = NULL;
 
 	/* Send the number of bytes, and then the data */
-	gkr_buffer_encode_uint32 (buf, req->buffer.len);
+	egg_buffer_encode_uint32 (buf, req->buffer.len);
 	ret = call_write (cs, buf, 4);
 	if (ret != CKR_OK)
 		goto cleanup;
@@ -494,8 +494,8 @@ call_send_recv (CallState *cs)
 	ret = call_read (cs, buf, 4);
 	if (ret != CKR_OK) 
 		goto cleanup;
-	len = gkr_buffer_decode_uint32 (buf);
-	if (!gkr_buffer_reserve (&resp->buffer, len + resp->buffer.len)) {
+	len = egg_buffer_decode_uint32 (buf);
+	if (!egg_buffer_reserve (&resp->buffer, len + resp->buffer.len)) {
 		warning (("couldn't allocate %u byte response area: out of memory", len));
 		ret = CKR_HOST_MEMORY;
 		goto cleanup;
@@ -504,7 +504,7 @@ call_send_recv (CallState *cs)
 	if (ret != CKR_OK)
 		goto cleanup;
 	
-	gkr_buffer_add_empty (&resp->buffer, len);
+	egg_buffer_add_empty (&resp->buffer, len);
 	if (!gck_rpc_message_parse (resp, GCK_RPC_RESPONSE))
 		goto cleanup;
 	
@@ -648,7 +648,7 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "aAu"));
 	
 	/* Get the number of items. We need this value to be correct */
-	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
+	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
 		return PARSE_ERROR; 
 
 	if (len != num) {
@@ -670,17 +670,17 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 	for (i = 0; i < num; ++i) {
 	
 		/* The attribute type */
-		gkr_buffer_get_uint32 (&msg->buffer, msg->parsed,
+		egg_buffer_get_uint32 (&msg->buffer, msg->parsed,
 		                       &msg->parsed, &type);
 
 		/* Attribute validity */
-		gkr_buffer_get_byte (&msg->buffer, msg->parsed,
+		egg_buffer_get_byte (&msg->buffer, msg->parsed,
 		                     &msg->parsed, &validity);
 
 		/* And the data itself */
 		if (validity) {
-			if (gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value) &&
-			    gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &attrval, &attrlen)) {
+			if (egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &value) &&
+			    egg_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &attrval, &attrlen)) {
 				if (attrval && value != attrlen) {
 					warning (("attribute length does not match attribute data"));
 					return PARSE_ERROR;
@@ -690,7 +690,7 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 		}
 			
 		/* Don't act on this data unless no errors */
-		if (gkr_buffer_has_error (&msg->buffer))
+		if (egg_buffer_has_error (&msg->buffer))
 			break;
 
 		/* Try and stuff it in the output data */
@@ -728,11 +728,11 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 		}
 	}
 	
-	if (gkr_buffer_has_error (&msg->buffer))
+	if (egg_buffer_has_error (&msg->buffer))
 		return PARSE_ERROR;
 	
 	/* Read in the code that goes along with these attributes */
-	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
+	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
 		return PARSE_ERROR;
 
 	return (CK_RV)num;
@@ -753,12 +753,12 @@ proto_read_byte_array (GckRpcMessage *msg, CK_BYTE_PTR arr,
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "ay"));
 
 	/* A single byte which determines whether valid or not */
-	if (!gkr_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
+	if (!egg_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
 		return PARSE_ERROR;
 	
 	/* If not valid, then just the length is encoded, this can signify CKR_BUFFER_TOO_SMALL */
 	if (!valid) {
-		if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &vlen))
+		if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &vlen))
 			return PARSE_ERROR;
 		
 		*len = vlen;
@@ -770,7 +770,7 @@ proto_read_byte_array (GckRpcMessage *msg, CK_BYTE_PTR arr,
 	} 
 
 	/* Get the actual bytes */
-	if (!gkr_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &val, &vlen))
+	if (!egg_buffer_get_byte_array (&msg->buffer, msg->parsed, &msg->parsed, &val, &vlen))
 		return PARSE_ERROR; 
 
 	*len = vlen;
@@ -801,11 +801,11 @@ proto_read_ulong_array (GckRpcMessage *msg, CK_ULONG_PTR arr,
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "au"));
 
 	/* A single byte which determines whether valid or not */
-	if (!gkr_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
+	if (!egg_buffer_get_byte (&msg->buffer, msg->parsed, &msg->parsed, &valid))
 		return PARSE_ERROR;
 
 	/* Get the number of items. */
-	if (!gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
+	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
 		return PARSE_ERROR;
 
 	*len = num;
@@ -823,12 +823,12 @@ proto_read_ulong_array (GckRpcMessage *msg, CK_ULONG_PTR arr,
 
 	/* We need to go ahead and read everything in all cases */
 	for (i = 0; i < num; ++i) {
-		gkr_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &val);
+		egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &val);
 		if (arr)
 			arr[i] = val;
 	}
 
-	return gkr_buffer_has_error (&msg->buffer) ? PARSE_ERROR : CKR_OK;
+	return egg_buffer_has_error (&msg->buffer) ? PARSE_ERROR : CKR_OK;
 }
 
 static CK_RV
@@ -841,7 +841,7 @@ proto_write_mechanism (GckRpcMessage *msg, CK_MECHANISM_PTR mech)
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "M"));
 	
 	/* The mechanism type */
-	gkr_buffer_add_uint32 (&msg->buffer, mech->mechanism);
+	egg_buffer_add_uint32 (&msg->buffer, mech->mechanism);
 	
 	/*
 	 * PKCS#11 mechanism parameters are not easy to serialize. They're 
@@ -856,14 +856,14 @@ proto_write_mechanism (GckRpcMessage *msg, CK_MECHANISM_PTR mech)
 	 */
 
 	if (gck_rpc_mechanism_has_no_parameters (mech->mechanism))
-		gkr_buffer_add_byte_array (&msg->buffer, NULL, 0);
+		egg_buffer_add_byte_array (&msg->buffer, NULL, 0);
 	else if (gck_rpc_mechanism_has_sane_parameters (mech->mechanism))
-		gkr_buffer_add_byte_array (&msg->buffer, mech->pParameter, 
+		egg_buffer_add_byte_array (&msg->buffer, mech->pParameter, 
 		                           mech->ulParameterLen);
 	else
 		return CKR_MECHANISM_INVALID; 
 
-	return gkr_buffer_has_error (&msg->buffer) ? CKR_HOST_MEMORY : CKR_OK;
+	return egg_buffer_has_error (&msg->buffer) ? CKR_HOST_MEMORY : CKR_OK;
 }
 
 static CK_RV

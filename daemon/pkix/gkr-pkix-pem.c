@@ -26,7 +26,7 @@
 #include "gkr-pkix-pem.h"
 
 #include "common/gkr-async.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 
@@ -207,15 +207,15 @@ pem_parse_block (const gchar *data, gsize n_data, guchar **decoded, gsize *n_dec
 	}
 	
 	*n_decoded = (n_data * 3) / 4 + 1;
-	if (gkr_secure_check (data))
-		*decoded = gkr_secure_alloc (*n_decoded);
+	if (egg_secure_check (data))
+		*decoded = egg_secure_alloc (*n_decoded);
 	else
 		*decoded = g_malloc (*n_decoded);
 	g_return_val_if_fail (*decoded, FALSE);
 	
 	*n_decoded = g_base64_decode_step (data, n_data, *decoded, &state, &save);
 	if (!*n_decoded) {
-		gkr_secure_free (*decoded);
+		egg_secure_free (*decoded);
 		return FALSE;
 	}
 	
@@ -267,7 +267,7 @@ gkr_pkix_pem_parse  (const guchar *data, gsize n_data,
 			if (pem_parse_block (beg, end - beg, &decoded, &n_decoded, &headers)) {
 				(callback) (type, decoded, n_decoded, headers, user_data);
 				++nfound;
-				gkr_secure_free (decoded);
+				egg_secure_free (decoded);
 				if (headers)
 					g_hash_table_remove_all (headers);
 			}

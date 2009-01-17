@@ -28,7 +28,7 @@
 #include <gcrypt.h>
 #include <glib.h>
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 
 ASN1_TYPE          gkr_pkix_asn1_get_pk_asn1type               (void);
 
@@ -38,10 +38,10 @@ ASN1_TYPE          gkr_pkix_asn1_decode                        (const gchar *typ
                                                                 gsize n_data);
 
 guchar*            gkr_pkix_asn1_encode                        (ASN1_TYPE asn, const gchar* part, 
-                                                                gsize *len, GkrBufferAllocator alloc); 
+                                                                gsize *len, EggBufferAllocator alloc); 
 
 guchar*            gkr_pkix_asn1_read_value                    (ASN1_TYPE asn, const gchar *part, 
-                                                                gsize *len, GkrBufferAllocator alloc);
+                                                                gsize *len, EggBufferAllocator alloc);
 
 gboolean           gkr_pkix_asn1_write_value                   (ASN1_TYPE asn, const gchar *part, 
 		                                                        const guchar* value, gsize len); 

@@ -25,7 +25,7 @@
 
 #include "gkr-crypto.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 
@@ -76,10 +76,10 @@ gkr_crypto_setup (void)
 	gcry_set_outofcore_handler (no_mem_handler, NULL);
 	gcry_set_fatalerror_handler (fatal_handler, NULL);
 	gcry_set_allocation_handler ((gcry_handler_alloc_t)g_malloc, 
-	                             (gcry_handler_alloc_t)gkr_secure_alloc, 
-	                             gkr_secure_check, 
-	                             (gcry_handler_realloc_t)gkr_secure_realloc, 
-	                             gkr_secure_free);
+	                             (gcry_handler_alloc_t)egg_secure_alloc, 
+	                             egg_secure_check, 
+	                             (gcry_handler_realloc_t)egg_secure_realloc, 
+	                             egg_secure_free);
 	                             
 	gcrypt_initialized = TRUE;
 	
@@ -200,10 +200,10 @@ gkr_crypto_generate_symkey_simple (int cipher_algo, int hash_algo,
 	n_digest = gcry_md_get_algo_dlen (hash_algo);
 	g_return_val_if_fail (n_digest > 0, FALSE);
 	
-	digest = gkr_secure_alloc (n_digest);
+	digest = egg_secure_alloc (n_digest);
 	g_return_val_if_fail (digest, FALSE);
 	if (key) {
-		*key = gkr_secure_alloc (needed_key);
+		*key = egg_secure_alloc (needed_key);
 		g_return_val_if_fail (*key, FALSE);
 	}
 	if (iv) 
@@ -256,7 +256,7 @@ gkr_crypto_generate_symkey_simple (int cipher_algo, int hash_algo,
 			break;
 	}
 
-	gkr_secure_free (digest);
+	egg_secure_free (digest);
 	gcry_md_close (mdh);
 	
 	return TRUE;
@@ -309,10 +309,10 @@ gkr_crypto_generate_symkey_pbe (int cipher_algo, int hash_algo, const gchar *pas
 		return FALSE;
 	}
 
-	digest = gkr_secure_alloc (n_digest);
+	digest = egg_secure_alloc (n_digest);
 	g_return_val_if_fail (digest, FALSE);
 	if (key) {
-		*key = gkr_secure_alloc (needed_key);
+		*key = egg_secure_alloc (needed_key);
 		g_return_val_if_fail (*key, FALSE);
 	}
 	if (iv) 
@@ -342,7 +342,7 @@ gkr_crypto_generate_symkey_pbe (int cipher_algo, int hash_algo, const gchar *pas
 		memcpy (*iv, digest + (16 - needed_iv), needed_iv);
 	}
 		
-	gkr_secure_free (digest);
+	egg_secure_free (digest);
 	gcry_md_close (mdh);
 	
 	return TRUE;	
@@ -375,9 +375,9 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 	}
 
 	/* Reqisition me a buffer */
-	hash = gkr_secure_alloc (n_hash);
-	buf_i = gkr_secure_alloc (128);
-	buf_b = gkr_secure_alloc (64);
+	hash = egg_secure_alloc (n_hash);
+	buf_i = egg_secure_alloc (128);
+	buf_b = egg_secure_alloc (64);
 	g_return_val_if_fail (hash && buf_i && buf_b, FALSE);
 		
 	/* Bring in the salt */
@@ -452,9 +452,9 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 		}
 	}  
 	
-	gkr_secure_free (buf_i);
-	gkr_secure_free (buf_b);
-	gkr_secure_free (hash);
+	egg_secure_free (buf_i);
+	egg_secure_free (buf_b);
+	egg_secure_free (hash);
 	gcry_mpi_release (num_b1);
 	gcry_md_close (mdh);
 	
@@ -488,7 +488,7 @@ gkr_crypto_generate_symkey_pkcs12 (int cipher_algo, int hash_algo, const gchar *
 	
 	/* Generate us an key */
 	if (key) {
-		*key = gkr_secure_alloc (n_key);
+		*key = egg_secure_alloc (n_key);
 		g_return_val_if_fail (*key != NULL, FALSE);
 		ret = generate_pkcs12 (hash_algo, 1, password, salt, n_salt, 
 		                       iterations, *key, n_key);
@@ -541,10 +541,10 @@ generate_pbkdf2 (int hash_algo, const gchar *password, gsize n_password,
 	}
 
 	/* Get us a temporary buffers */
-	T = gkr_secure_alloc (n_hash);
-	U = gkr_secure_alloc (n_hash);
+	T = egg_secure_alloc (n_hash);
+	U = egg_secure_alloc (n_hash);
 	n_buf = n_salt + 4;
-	buf = gkr_secure_alloc (n_buf);
+	buf = egg_secure_alloc (n_buf);
 	g_return_val_if_fail (buf && T && U, FALSE);
 
 	/* n_hash blocks in output, rounding up */
@@ -585,9 +585,9 @@ generate_pbkdf2 (int hash_algo, const gchar *password, gsize n_password,
 		memcpy (output + (i - 1) * n_hash, T, i == l ? r : n_hash);
 	}
 	
-	gkr_secure_free (T);
-	gkr_secure_free (U);
-	gkr_secure_free (buf);
+	egg_secure_free (T);
+	egg_secure_free (U);
+	egg_secure_free (buf);
 	gcry_md_close (mdh);
 	return TRUE;
 }
@@ -617,7 +617,7 @@ gkr_crypto_generate_symkey_pbkdf2 (int cipher_algo, int hash_algo,
 	
 	/* Generate us an key */
 	if (key) {
-		*key = gkr_secure_alloc (n_key);
+		*key = egg_secure_alloc (n_key);
 		g_return_val_if_fail (*key != NULL, FALSE);
 		ret = generate_pbkdf2 (hash_algo, password, n_password, salt, n_salt, 
 		                       iterations, *key, n_key);

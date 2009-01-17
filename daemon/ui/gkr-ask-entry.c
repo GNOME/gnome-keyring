@@ -48,7 +48,7 @@
 
 #include "gkr-ask-entry.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #define MIN_ASK_ENTRY_WIDTH  150
 #define DRAW_TIMEOUT            20
@@ -504,7 +504,7 @@ gkr_ask_entry_init (GkrAskEntry *entry)
     gtk_widget_set_style (GTK_WIDGET (entry), style); 
 
     entry->text_size = MIN_SIZE;
-    entry->text = gkr_secure_alloc (entry->text_size + 1);
+    entry->text = egg_secure_alloc (entry->text_size + 1);
     entry->text[0] = '\0';
 
     entry->visibility = FALSE;
@@ -554,7 +554,7 @@ gkr_ask_entry_finalize (GObject *object)
     entry->text_size = 0;
 
     if (entry->text)
-    	gkr_secure_free (entry->text);
+    	egg_secure_free (entry->text);
     entry->text = NULL;
 
     G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -1093,7 +1093,7 @@ gkr_ask_entry_insert_text (GtkEditable *editable, const gchar *new_text,
 
     g_object_ref (editable);
 
-    text = gkr_secure_alloc (new_text_length + 1);
+    text = egg_secure_alloc (new_text_length + 1);
 
     strncpy (text, new_text, new_text_length);
     text[new_text_length] = '\0';
@@ -1101,7 +1101,7 @@ gkr_ask_entry_insert_text (GtkEditable *editable, const gchar *new_text,
     g_signal_emit_by_name (editable, "insert_text", text, 
                            new_text_length, position);
 
-    gkr_secure_free (text);
+    egg_secure_free (text);
 
     g_object_unref (editable);
 }
@@ -1280,7 +1280,7 @@ gkr_ask_entry_real_insert_text (GtkEditable *editable, const gchar *new_text,
             }
         }
 
-        entry->text = gkr_secure_realloc (entry->text, entry->text_size + 1);
+        entry->text = egg_secure_realloc (entry->text, entry->text_size + 1);
     }
 
     _index = g_utf8_offset_to_pointer (entry->text, *position) - entry->text;

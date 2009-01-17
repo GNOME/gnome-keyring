@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 
 #include "pkcs11/pkcs11.h"
 
@@ -227,13 +227,13 @@ typedef struct _GckRpcMessage {
 	int call_id;
 	GckRpcMessageType call_type;
 	const char *signature;
-	GkrBuffer buffer;
+	EggBuffer buffer;
 
 	size_t parsed;
 	const char *sigverify;
 } GckRpcMessage;
 
-GckRpcMessage*           gck_rpc_message_new                     (GkrBufferAllocator allocator);
+GckRpcMessage*           gck_rpc_message_new                     (EggBufferAllocator allocator);
 
 void                     gck_rpc_message_free                    (GckRpcMessage *msg);
 
@@ -244,7 +244,7 @@ int                      gck_rpc_message_equals                  (GckRpcMessage 
 
 #define                  gck_rpc_message_is_verified(msg)        (!(msg)->sigverify || (msg)->sigverify[0] == 0)
 
-#define                  gck_rpc_message_buffer_error(msg)       (gkr_buffer_has_error(&(msg)->buffer))
+#define                  gck_rpc_message_buffer_error(msg)       (egg_buffer_has_error(&(msg)->buffer))
 
 int                      gck_rpc_message_prep                    (GckRpcMessage *msg, 
                                                                   int call_id, 

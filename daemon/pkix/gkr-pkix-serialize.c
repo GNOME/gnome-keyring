@@ -8,7 +8,7 @@
 
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib/gi18n.h>
 
@@ -157,8 +157,8 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password, gsize *n_
 	gcry_cipher_setiv (cih, iv, *n_block);
 	gcry_cipher_setkey (cih, key, n_key);
 	
-	gkr_secure_free (iv);
-	gkr_secure_free (key);
+	egg_secure_free (iv);
+	egg_secure_free (key);
 	asn1_delete_structure (&asn1_params);
 	
 	return cih;
@@ -219,12 +219,12 @@ encode_pkcs8_private_key (gcry_sexp_t skey, gsize *n_data)
 	/* Write out the parameters */
 	if (!gkr_pkix_asn1_write_value (asn, "privateKeyAlgorithm.parameters", params, n_params))
 		g_return_val_if_reached (NULL);
-	gkr_secure_free (params);
+	egg_secure_free (params);
 	
 	/* Write out the key portion */
 	if (!gkr_pkix_asn1_write_value (asn, "privateKey", key, n_key))
 		g_return_val_if_reached (NULL);
-	gkr_secure_free (key);
+	egg_secure_free (key);
 	
 	/* Add an empty attributes field */
 	if (!gkr_pkix_asn1_write_value (asn, "attributes", NULL, 0))

@@ -44,8 +44,8 @@ gnome_keyring_pkcs11_la_SOURCES = \
 	gck-rpc-util.c
 
 gnome_keyring_pkcs11_la_LIBADD = \
-	$(top_builddir)/common/libgkr-common-buffer.la \
-	$(top_builddir)/common/libgkr-common-creds.la 
+	$(top_builddir)/egg/libegg-buffer.la \
+	$(top_builddir)/egg/libegg-creds.la 
 
 gnome_keyring_pkcs11_la_LDFLAGS = \
 	-module -avoid-version \

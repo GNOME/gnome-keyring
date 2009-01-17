@@ -495,6 +495,8 @@ daemon/pkix/tests/Makefile
 daemon/ssh/Makefile
 daemon/ssh/tests/Makefile
 daemon/ui/Makefile
+egg/Makefile
+egg/tests/Makefile
 gp11/gp11.pc
 gp11/Makefile
 gp11/reference/Makefile

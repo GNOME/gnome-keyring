@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-buffer.h - helper code for the keyring daemon protocol
+/* egg-buffer.h - Generic data buffer, used by openssh, gnome-keyring
 
    Copyright (C) 2007, Stefan Walter
 
@@ -21,14 +21,14 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKR_BUFFER_H
-#define GKR_BUFFER_H
+#ifndef EGG_BUFFER_H
+#define EGG_BUFFER_H
 
 #include <stdlib.h>
 #include <stdint.h>
 
 /* -------------------------------------------------------------------
- * GkrBuffer 
+ * EggBuffer 
  * 
  * IMPORTANT: This is pure vanila standard C, no glib. We need this 
  * because certain consumers of this protocol need to be built 
@@ -39,13 +39,13 @@
  * Callers can set their own allocator. If NULL is used then standard 
  * C library heap memory is used and failures will not be fatal. Memory 
  * failures will instead result in a zero return value or 
- * gkr_buffer_has_error() returning one.
+ * egg_buffer_has_error() returning one.
  * 
  * If you use something like g_realloc as the allocator, then memory 
  * failures become fatal just like in a standard GTK program.
  * 
- * Don't change the allocator manually in the GkrBuffer structure. The 
- * gkr_buffer_set_allocator() func will reallocate and handle things 
+ * Don't change the allocator manually in the EggBuffer structure. The 
+ * egg_buffer_set_allocator() func will reallocate and handle things 
  * properly.
  * 
  * Pointers into the Buffer
@@ -54,141 +54,141 @@
  * and invalidating any direct pointers into the buffer.
  */
  
-/* The allocator for the GkrBuffer. This follows the realloc() syntax and logic */
-typedef void* (*GkrBufferAllocator) (void* p, unsigned long len);
+/* The allocator for the EggBuffer. This follows the realloc() syntax and logic */
+typedef void* (*EggBufferAllocator) (void* p, unsigned long len);
 
-typedef struct _GkrBuffer {
+typedef struct _EggBuffer {
 	unsigned char *buf;
 	size_t len;
 	size_t allocated_len;
 	int failures; 
-	GkrBufferAllocator allocator;
-} GkrBuffer;
+	EggBufferAllocator allocator;
+} EggBuffer;
 
-#define 	GKR_BUFFER_EMPTY		{ NULL, 0, 0, 0, NULL }
+#define 	EGG_BUFFER_EMPTY		{ NULL, 0, 0, 0, NULL }
 
-int             gkr_buffer_init                 (GkrBuffer *buffer, size_t reserve);
+int             egg_buffer_init                 (EggBuffer *buffer, size_t reserve);
 
-int             gkr_buffer_init_full            (GkrBuffer *buffer, 
+int             egg_buffer_init_full            (EggBuffer *buffer, 
                                                  size_t reserve, 
-                                                 GkrBufferAllocator allocator);
+                                                 EggBufferAllocator allocator);
                                                  
-void            gkr_buffer_init_static          (GkrBuffer *buffer, 
+void            egg_buffer_init_static          (EggBuffer *buffer, 
                                                  unsigned char *buf, 
                                                  size_t len);
 
-void            gkr_buffer_init_allocated       (GkrBuffer *buffer, 
+void            egg_buffer_init_allocated       (EggBuffer *buffer, 
                                                  unsigned char *buf, 
                                                  size_t len,
-                                                 GkrBufferAllocator allocator);
+                                                 EggBufferAllocator allocator);
                                                  
-void            gkr_buffer_uninit               (GkrBuffer *buffer);
+void            egg_buffer_uninit               (EggBuffer *buffer);
 
-int             gkr_buffer_set_allocator        (GkrBuffer *buffer, 
-                                                 GkrBufferAllocator allocator);
+int             egg_buffer_set_allocator        (EggBuffer *buffer, 
+                                                 EggBufferAllocator allocator);
 
-void 		gkr_buffer_reset		(GkrBuffer *buffer);
+void 		egg_buffer_reset		(EggBuffer *buffer);
 
-int		gkr_buffer_equal		(GkrBuffer *b1,
-						 GkrBuffer *b2);
+int		egg_buffer_equal		(EggBuffer *b1,
+						 EggBuffer *b2);
 
-int             gkr_buffer_reserve              (GkrBuffer *buffer,
+int             egg_buffer_reserve              (EggBuffer *buffer,
                                                  size_t len);
 						 
-int             gkr_buffer_resize               (GkrBuffer *buffer,
+int             egg_buffer_resize               (EggBuffer *buffer,
                                                  size_t len);
 
-int		gkr_buffer_append 		(GkrBuffer *buffer,
+int		egg_buffer_append 		(EggBuffer *buffer,
 						 const unsigned char *val,
 						 size_t len);
 
-unsigned char*  gkr_buffer_add_empty            (GkrBuffer *buffer,
+unsigned char*  egg_buffer_add_empty            (EggBuffer *buffer,
                                                  size_t len);
 
-int 		gkr_buffer_add_byte		(GkrBuffer *buffer,
+int 		egg_buffer_add_byte		(EggBuffer *buffer,
 						 unsigned char val);
 
-int 		gkr_buffer_get_byte		(GkrBuffer *buffer,
+int 		egg_buffer_get_byte		(EggBuffer *buffer,
 						 size_t offset,
 						 size_t *next_offset,
 						 unsigned char *val);
 									 
-void 		gkr_buffer_encode_uint32	(unsigned char* buf, 
+void 		egg_buffer_encode_uint32	(unsigned char* buf, 
 						 uint32_t val);
 
-uint32_t	gkr_buffer_decode_uint32	(unsigned char* buf);
+uint32_t	egg_buffer_decode_uint32	(unsigned char* buf);
 
-int 		gkr_buffer_add_uint32		(GkrBuffer *buffer,
+int 		egg_buffer_add_uint32		(EggBuffer *buffer,
 						 uint32_t val);
 
-int		gkr_buffer_set_uint32		(GkrBuffer *buffer,
+int		egg_buffer_set_uint32		(EggBuffer *buffer,
 						 size_t offset, 
 						 uint32_t val);
 
-int		gkr_buffer_get_uint32		(GkrBuffer *buffer,
+int		egg_buffer_get_uint32		(EggBuffer *buffer,
 						 size_t offset,
 						 size_t *next_offset,
 						 uint32_t *val);
 
-void 		gkr_buffer_encode_uint16	(unsigned char* buf, 
+void 		egg_buffer_encode_uint16	(unsigned char* buf, 
 						 uint16_t val);
 
-uint16_t	gkr_buffer_decode_uint16	(unsigned char* buf);
+uint16_t	egg_buffer_decode_uint16	(unsigned char* buf);
 
-int 		gkr_buffer_add_uint16		(GkrBuffer *buffer,
+int 		egg_buffer_add_uint16		(EggBuffer *buffer,
 						 uint16_t val);
 
-int		gkr_buffer_set_uint16		(GkrBuffer *buffer,
+int		egg_buffer_set_uint16		(EggBuffer *buffer,
 						 size_t offset, 
 						 uint16_t val);
 
-int		gkr_buffer_get_uint16		(GkrBuffer *buffer,
+int		egg_buffer_get_uint16		(EggBuffer *buffer,
 						 size_t offset,
 						 size_t *next_offset,
 						 uint16_t *val);
 
-int		gkr_buffer_add_byte_array	(GkrBuffer *buffer,
+int		egg_buffer_add_byte_array	(EggBuffer *buffer,
 						 const unsigned char *val,
 						 size_t len);
 
-int		gkr_buffer_get_byte_array	(GkrBuffer *buffer,
+int		egg_buffer_get_byte_array	(EggBuffer *buffer,
 						 size_t offset,
 						 size_t *next_offset,
 						 const unsigned char **val,
 						 size_t *vlen);
 
-unsigned char*  gkr_buffer_add_byte_array_empty (GkrBuffer *buffer,
+unsigned char*  egg_buffer_add_byte_array_empty (EggBuffer *buffer,
                                                  size_t vlen);						 
 
-int             gkr_buffer_add_string           (GkrBuffer *buffer, 
+int             egg_buffer_add_string           (EggBuffer *buffer, 
                                                  const char *str);
                                                  
-int             gkr_buffer_get_string           (GkrBuffer *buffer, 
+int             egg_buffer_get_string           (EggBuffer *buffer, 
                                                  size_t offset, 
                                                  size_t *next_offset, 
                                                  char **str_ret, 
-                                                 GkrBufferAllocator allocator);
+                                                 EggBufferAllocator allocator);
 
-int             gkr_buffer_add_stringv          (GkrBuffer *buffer, 
+int             egg_buffer_add_stringv          (EggBuffer *buffer, 
                                                  const char** strv);
 
-int             gkr_buffer_get_stringv          (GkrBuffer *buffer,
+int             egg_buffer_get_stringv          (EggBuffer *buffer,
                                                  size_t offset,
                                                  size_t *next_offset,
                                                  char ***strv_ret, 
-                                                 GkrBufferAllocator allocator);
+                                                 EggBufferAllocator allocator);
 
-int		gkr_buffer_add_uint64		(GkrBuffer *buffer,
+int		egg_buffer_add_uint64		(EggBuffer *buffer,
 						 uint64_t val);
 
-int		gkr_buffer_get_uint64		(GkrBuffer *buffer,
+int		egg_buffer_get_uint64		(EggBuffer *buffer,
 						 size_t offset,
 						 size_t *next_offset,
 						 uint64_t *val);
 
-#define		gkr_buffer_length(b)		((b)->len)
+#define		egg_buffer_length(b)		((b)->len)
 
-#define 	gkr_buffer_has_error(b)		((b)->failures > 0)
+#define 	egg_buffer_has_error(b)		((b)->failures > 0)
 
-#endif /* GKR_BUFFER_H */
+#endif /* EGG_BUFFER_H */
 

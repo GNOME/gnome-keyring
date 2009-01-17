@@ -30,7 +30,7 @@
 #include "gkr-pk-storage.h"
 #include "gkr-pk-util.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -184,7 +184,7 @@ parser_ask_password (GkrPkixParser *parser, GQuark loc, gkrconstid digest,
 			
 	/* Successful response */
 	} else {
-		*result = gkr_secure_strdup (ask->typed_password);
+		*result = egg_secure_strdup (ask->typed_password);
 		if (*result && strlen (*result) == 0)
 			*state = LAST_WAS_BLANK;
 	}

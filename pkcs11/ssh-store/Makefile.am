@@ -39,8 +39,7 @@ gck_ssh_store_standalone_la_SOURCES = \
 gck_ssh_store_standalone_la_LIBADD = \
 	libgck-ssh-store.la \
 	$(top_builddir)/pkcs11/gck/libgck.la \
-	$(top_builddir)/common/libgkr-common-buffer.la \
-	$(top_builddir)/common/libgkr-common-secure.la \
+	$(top_builddir)/egg/libegg.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \

@@ -138,10 +138,10 @@ name_for_subject (const guchar *subject, gsize n_subject)
 	g_assert (subject);
 	g_assert (n_subject);
 	
-	asn = gck_data_asn1_decode ("PKIX1.Name", subject, n_subject);
+	asn = egg_asn1_decode ("PKIX1.Name", subject, n_subject);
 	g_return_val_if_fail (asn, NULL);
 	
-	name = gck_data_asn1_read_dn_part (asn, "rdnSequence", "CN");
+	name = egg_asn1_read_dn_part (asn, "rdnSequence", "CN");
 	asn1_delete_structure (&asn);
 	
 	return name;

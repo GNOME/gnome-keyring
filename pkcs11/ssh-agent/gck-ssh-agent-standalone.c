@@ -25,7 +25,7 @@
 #include "gck-ssh-agent.h"
 #include "gck-ssh-agent-private.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "gp11/gp11.h"
 
@@ -38,13 +38,13 @@
 
 G_LOCK_DEFINE_STATIC (memory_mutex);
 
-void gkr_memory_lock (void)
+void egg_memory_lock (void)
 	{ G_LOCK (memory_mutex); }
 
-void gkr_memory_unlock (void)
+void egg_memory_unlock (void)
 	{ G_UNLOCK (memory_mutex); }
 
-void* gkr_memory_fallback (void *p, unsigned long sz)
+void* egg_memory_fallback (void *p, unsigned long sz)
 	{ return g_realloc (p, sz); }
 
 static gboolean

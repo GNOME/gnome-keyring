@@ -11,6 +11,7 @@ UNIT_PROMPT = \
 	unit-test-daemon-setup.c
 
 UNIT_LIBS =  \
+	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/library/libgnome-keyring.la
 
 UNIT_FLAGS = \

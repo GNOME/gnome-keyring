@@ -27,7 +27,7 @@
 
 #include "common/gkr-location.h"
 #include "common/gkr-crypto.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "ssh/gkr-ssh-storage.h"
 

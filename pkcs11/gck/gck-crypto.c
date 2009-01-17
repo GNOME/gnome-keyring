@@ -23,7 +23,7 @@
 
 #include "gck-crypto.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 /* ----------------------------------------------------------------------------
  * INTERNAL
@@ -1569,10 +1569,10 @@ gck_crypto_initialize (void)
 			gcry_set_outofcore_handler (no_mem_handler, NULL);
 			gcry_set_fatalerror_handler (fatal_handler, NULL);
 			gcry_set_allocation_handler ((gcry_handler_alloc_t)g_malloc, 
-			                             (gcry_handler_alloc_t)gkr_secure_alloc, 
-			                             gkr_secure_check, 
-			                             (gcry_handler_realloc_t)gkr_secure_realloc, 
-			                             gkr_secure_free);
+			                             (gcry_handler_alloc_t)egg_secure_alloc, 
+			                             egg_secure_check, 
+			                             (gcry_handler_realloc_t)egg_secure_realloc, 
+			                             egg_secure_free);
 			gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
 		}
 		

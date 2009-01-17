@@ -29,7 +29,7 @@
 #include "common/gkr-cleanup.h"
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring-login.h"
 #include "keyrings/gkr-keyrings.h"
@@ -103,7 +103,7 @@ request_keyring_new (GQuark location, gchar **password)
 	gkr_ask_daemon_process (ask);
 	ret = ask->response >= GKR_ASK_RESPONSE_ALLOW;
 	if (ret)
-		*password = gkr_secure_strdup (ask->typed_password);
+		*password = egg_secure_strdup (ask->typed_password);
 	g_object_unref (ask);
 	return ret;
 }
@@ -446,7 +446,7 @@ gkr_pk_index_open (GQuark index_location, const gchar *name,
 			if (gkr_keyring_login_is_usable ()) {
 				login = gkr_keyrings_get_login ();
 				if (login)
-					password = gkr_secure_strdup (login->password);
+					password = egg_secure_strdup (login->password);
 			}
 		}
 		
@@ -459,7 +459,7 @@ gkr_pk_index_open (GQuark index_location, const gchar *name,
 		g_return_val_if_fail (password, NULL);
 		
 		keyring = gkr_keyring_create (index_location, name, password);
-		gkr_secure_strfree (password);
+		egg_secure_strfree (password);
 
 		/* Make it available */
 		gkr_keyrings_add (keyring);
@@ -756,8 +756,8 @@ gkr_pk_index_set_secret (GkrPkIndex *index, gkrconstid digest,
 	if (string_equal (item->secret, val))
 		return FALSE;
 	
-	gkr_secure_strfree (item->secret);
-	item->secret = gkr_secure_strdup (val);
+	egg_secure_strfree (item->secret);
+	item->secret = egg_secure_strdup (val);
 	if (!gkr_keyring_save_to_disk (index->keyring))
 		g_warning ("writing secret: couldn't write index keyring to disk");
 	return TRUE;

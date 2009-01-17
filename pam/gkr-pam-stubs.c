@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <stdlib.h>
 
@@ -31,19 +31,19 @@
  */ 
 
 void
-gkr_memory_lock (void)
+egg_memory_lock (void)
 {
 	/* No threads in PAM, no locking */
 }
 
 void 
-gkr_memory_unlock (void)
+egg_memory_unlock (void)
 {
 	/* No threads in PAM, no locking */
 }
 
 void*
-gkr_memory_fallback (void *p, unsigned long sz)
+egg_memory_fallback (void *p, unsigned long sz)
 {
 	/* Handles allocation, reallocation and freeing */
 	return realloc (p, sz);

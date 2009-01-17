@@ -21,7 +21,7 @@ gnome_keyring_ask_SOURCES = \
 	gkr-ask-request.h
 	
 gnome_keyring_ask_LDADD = \
-	$(top_builddir)/common/libgkr-common-secure.la \
+	$(top_builddir)/egg/libegg-secure.la \
 	$(GTK_LIBS)
 
 noinst_LTLIBRARIES=libgkr-ui.la

@@ -26,7 +26,7 @@
 #include "gkr-keyring-item.h"
 #include "gkr-keyring.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <gcrypt.h>
 
@@ -131,7 +131,7 @@ gkr_keyring_item_finalize (GObject *obj)
 	if (item->acl != NULL) 
 		gnome_keyring_acl_free (item->acl);
 	g_free (item->display_name);
-	gkr_secure_strfree (item->secret);
+	egg_secure_strfree (item->secret);
 
 	G_OBJECT_CLASS (gkr_keyring_item_parent_class)->finalize (obj);
 }
@@ -208,7 +208,7 @@ gkr_keyring_item_clone (GkrKeyring* new_keyring, GkrKeyringItem *item)
 	nitem->locked = item->locked;
 
 	nitem->type = item->type;
-	nitem->secret = gkr_secure_strdup (item->secret);
+	nitem->secret = egg_secure_strdup (item->secret);
 	nitem->display_name = g_strdup (item->display_name);
 
 	nitem->attributes = gnome_keyring_attribute_list_copy (item->attributes);

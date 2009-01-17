@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-secure-memory.h - library for allocating memory that is non-pageable
+/* egg-secure-memory.h - library for allocating memory that is non-pageable
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,8 +21,8 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKR_SECURE_MEMORY_H
-#define GKR_SECURE_MEMORY_H
+#ifndef EGG_SECURE_MEMORY_H
+#define EGG_SECURE_MEMORY_H
 
 /* -------------------------------------------------------------------
  * Low Level Secure Memory 
@@ -38,9 +38,9 @@
  * secure memory between threads:
  */
  
-extern void   gkr_memory_lock (void);
+extern void   egg_memory_lock (void);
 
-extern void   gkr_memory_unlock (void);
+extern void   egg_memory_unlock (void);
 
 /*
  * Allocation Fallbacks
@@ -51,7 +51,7 @@ extern void   gkr_memory_unlock (void);
  * 
  * Same call semantics as realloc with regard to NULL and zeros 
  */
-extern void*  gkr_memory_fallback (void *p, unsigned long sz);
+extern void*  egg_memory_fallback (void *p, unsigned long sz);
 
 
 /* 
@@ -62,26 +62,26 @@ extern void*  gkr_memory_fallback (void *p, unsigned long sz);
  
 #define GKR_SECURE_USE_FALLBACK     0x0001
 
-void*  gkr_secure_alloc        (unsigned long sz);
+void*  egg_secure_alloc        (unsigned long sz);
 
-void*  gkr_secure_alloc_full   (unsigned long, int flags);
+void*  egg_secure_alloc_full   (unsigned long, int flags);
 
-void*  gkr_secure_realloc      (void *p, unsigned long sz);
+void*  egg_secure_realloc      (void *p, unsigned long sz);
 
-void*  gkr_secure_realloc_full (void *p, unsigned long sz, int fallback);
+void*  egg_secure_realloc_full (void *p, unsigned long sz, int fallback);
 
-void   gkr_secure_free         (void* p); 
+void   egg_secure_free         (void* p); 
 
-void   gkr_secure_free_full    (void* p, int fallback); 
+void   egg_secure_free_full    (void* p, int fallback); 
 
-int    gkr_secure_check        (const void* p); 
+int    egg_secure_check        (const void* p); 
 
-void   gkr_secure_dump_blocks  (void);
+void   egg_secure_dump_blocks  (void);
 
-char*  gkr_secure_strdup       (const char *str);
+char*  egg_secure_strdup       (const char *str);
 
-void   gkr_secure_strclear     (char *str);
+void   egg_secure_strclear     (char *str);
 
-void   gkr_secure_strfree      (char *str);
+void   egg_secure_strfree      (char *str);
 
-#endif /* GKR_SECURE_MEMORY_H */
+#endif /* EGG_SECURE_MEMORY_H */

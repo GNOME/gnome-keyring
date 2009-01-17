@@ -220,11 +220,11 @@ gnome_keyring_socket_write_all (int fd, const guchar *buf, size_t len)
 }
 
 gboolean 
-gnome_keyring_socket_read_buffer (int fd, GkrBuffer *buffer)
+gnome_keyring_socket_read_buffer (int fd, EggBuffer *buffer)
 {
 	guint32 packet_size;
 	
-	gkr_buffer_resize (buffer, 4);
+	egg_buffer_resize (buffer, 4);
 	if (gnome_keyring_socket_read_all (fd, buffer->buf, 4) < 0)
 		return FALSE;
 
@@ -232,7 +232,7 @@ gnome_keyring_socket_read_buffer (int fd, GkrBuffer *buffer)
 	    packet_size < 4)
 		return FALSE;
 
-	gkr_buffer_resize (buffer, packet_size);
+	egg_buffer_resize (buffer, packet_size);
 	if (gnome_keyring_socket_read_all (fd, buffer->buf + 4, packet_size - 4) < 0)
 		return FALSE;
 
@@ -240,7 +240,7 @@ gnome_keyring_socket_read_buffer (int fd, GkrBuffer *buffer)
 }
 
 gboolean 
-gnome_keyring_socket_write_buffer (int fd, GkrBuffer *buffer)
+gnome_keyring_socket_write_buffer (int fd, EggBuffer *buffer)
 {
 	return gnome_keyring_socket_write_all (fd, buffer->buf, buffer->len) >= 0;
 }

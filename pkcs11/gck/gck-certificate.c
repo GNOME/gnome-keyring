@@ -105,7 +105,7 @@ find_certificate_extension (GckCertificate *self, GQuark oid)
 
 		/* See if it's the same */
 		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", index);
-		exoid = gck_data_asn1_read_oid (self->pv->asn1, name);
+		exoid = egg_asn1_read_oid (self->pv->asn1, name);
 		g_free (name);
 
 		if(exoid == oid)
@@ -165,7 +165,7 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 	case CKA_START_DATE:
 	case CKA_END_DATE:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		if (!gck_data_asn1_read_time (self->pv->asn1, 
+		if (!egg_asn1_read_time (self->pv->asn1, 
 		                              attr->type == CKA_START_DATE ? 
 		                                       "tbsCertificate.validity.notBefore" : 
 		                                       "tbsCertificate.validity.notAfter",
@@ -175,7 +175,7 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 
 	case CKA_SUBJECT:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = gck_data_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
+		cdata = egg_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
 		                                    "tbsCertificate.subject", &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
 		return gck_attribute_set_data (attr, cdata, n_data);
@@ -186,14 +186,14 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 
 	case CKA_ISSUER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = gck_data_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
+		cdata = egg_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
 		                                    "tbsCertificate.issuer", &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
 		return gck_attribute_set_data (attr, cdata, n_data);
 		
 	case CKA_SERIAL_NUMBER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = gck_data_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
+		cdata = egg_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data, 
 		                                    "tbsCertificate.serialNumber", &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
 		return gck_attribute_set_data (attr, cdata, n_data);		
@@ -347,7 +347,7 @@ gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar 
 	}
 		
 	/* Generate a raw public key from our certificate */
-	keydata = gck_data_asn1_encode (asn1, "tbsCertificate.subjectPublicKeyInfo", &n_keydata, NULL);
+	keydata = egg_asn1_encode (asn1, "tbsCertificate.subjectPublicKeyInfo", &n_keydata, NULL);
 	g_return_val_if_fail (keydata, FALSE);
 
 	/* Now create us a nice public key with that identifier */
@@ -476,7 +476,7 @@ gck_certificate_get_extension (GckCertificate *self, GQuark oid,
 	/* Read the critical status */
 	if (critical) {
 		name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", index);
-		val = gck_data_asn1_read_value (self->pv->asn1, name, &n_val, NULL);
+		val = egg_asn1_read_value (self->pv->asn1, name, &n_val, NULL);
 		g_free (name);
 		
 		if (!val || n_val < 1 || val[0] != 'T')
@@ -488,7 +488,7 @@ gck_certificate_get_extension (GckCertificate *self, GQuark oid,
 		
 	/* And the extension value */
 	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
-	result = gck_data_asn1_read_content (self->pv->asn1, self->pv->data, self->pv->n_data, 
+	result = egg_asn1_read_content (self->pv->asn1, self->pv->data, self->pv->n_data, 
 	                                     name, n_extension);
 	g_free (name);
 		
@@ -506,11 +506,11 @@ gck_certificate_get_label (GckCertificate *self)
 		g_return_val_if_fail (self->pv->asn1, "");
 		
 		/* Look for the CN in the certificate */
-		label = gck_data_asn1_read_dn_part (self->pv->asn1, "tbsCertificate.subject.rdnSequence", "cn");
+		label = egg_asn1_read_dn_part (self->pv->asn1, "tbsCertificate.subject.rdnSequence", "cn");
 			
 		/* Otherwise use the full DN */
 		if (!label)
-			label = gck_data_asn1_read_dn (self->pv->asn1, "tbsCertificate.subject.rdnSequence");
+			label = egg_asn1_read_dn (self->pv->asn1, "tbsCertificate.subject.rdnSequence");
 		
 		if (!label)
 			label = g_strdup (_("Unnamed Certificate"));

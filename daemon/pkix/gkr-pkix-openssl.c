@@ -26,7 +26,7 @@
 #include "gkr-pkix-openssl.h"
 
 #include "common/gkr-crypto.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <gcrypt.h>
 #include <libtasn1.h>
@@ -236,7 +236,7 @@ gkr_pkix_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
 		
 	gcry = gcry_cipher_setkey (ch, key, gcry_cipher_get_algo_keylen (algo));
 	g_return_val_if_fail (!gcry, GKR_PKIX_UNRECOGNIZED);
-	gkr_secure_free (key);
+	egg_secure_free (key);
 
 	/* 16 = 128 bits */
 	gcry = gcry_cipher_setiv (ch, iv, ivlen);
@@ -245,11 +245,11 @@ gkr_pkix_openssl_decrypt_block (const gchar *dekinfo, const gchar *password,
 	
 	/* Allocate output area */
 	*n_decrypted = n_data;
-	*decrypted = gkr_secure_alloc (n_data);
+	*decrypted = egg_secure_alloc (n_data);
 
 	gcry = gcry_cipher_decrypt (ch, *decrypted, *n_decrypted, (void*)data, n_data);
 	if (gcry) {
-		gkr_secure_free (*decrypted);
+		egg_secure_free (*decrypted);
 		g_return_val_if_reached (GKR_PKIX_FAILURE);
 	}
 	
@@ -290,7 +290,7 @@ gkr_pkix_openssl_encrypt_block (const gchar *dekinfo, const gchar *password,
 		
 	gcry = gcry_cipher_setkey (ch, key, gcry_cipher_get_algo_keylen (algo));
 	g_return_val_if_fail (!gcry, FALSE);
-	gkr_secure_free (key);
+	egg_secure_free (key);
 
 	/* 16 = 128 bits */
 	gcry = gcry_cipher_setiv (ch, iv, ivlen);
@@ -317,11 +317,11 @@ gkr_pkix_openssl_encrypt_block (const gchar *dekinfo, const gchar *password,
 	
 	/* Encrypt the padded block */
 	if (n_overflow) {
-		padded = gkr_secure_alloc (ivlen);
+		padded = egg_secure_alloc (ivlen);
 		memset (padded, 0, ivlen);
 		memcpy (padded, data + n_batch, n_overflow);
 		gcry = gcry_cipher_encrypt (ch, *encrypted + n_batch, ivlen, padded, ivlen);
-		gkr_secure_free (padded);
+		egg_secure_free (padded);
 		if (gcry) {
 			g_free (*encrypted);
 			g_return_val_if_reached (FALSE);

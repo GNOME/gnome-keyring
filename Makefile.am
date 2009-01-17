@@ -13,6 +13,7 @@ endif
 SUBDIRS = \
 	. \
 	gp11 \
+	egg \
 	common \
 	library \
 	pkcs11 \

@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-unix-credentials.h - write and read unix credentials on socket
+/* egg-unix-credentials.h - write and read unix credentials on socket
 
    Copyright (C) 2008 Stefan Walter
 
@@ -20,13 +20,13 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKRUNIXCREDENTIALS_H_
-#define GKRUNIXCREDENTIALS_H_
+#ifndef EGGUNIXCREDENTIALS_H_
+#define EGGUNIXCREDENTIALS_H_
 
 #include <unistd.h>
 
-int gkr_unix_credentials_read (int sock, pid_t *pid, uid_t *uid);
+int egg_unix_credentials_read (int sock, pid_t *pid, uid_t *uid);
 
-int gkr_unix_credentials_write (int sock);
+int egg_unix_credentials_write (int sock);
  
-#endif /*GKRUNIXCREDENTIALS_H_*/
+#endif /*EGGUNIXCREDENTIALS_H_*/

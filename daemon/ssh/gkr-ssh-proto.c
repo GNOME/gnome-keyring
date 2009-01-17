@@ -24,7 +24,7 @@
 
 #include "gkr-ssh-private.h"
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 #include "common/gkr-crypto.h"
 
 #include <gcrypt.h>
@@ -54,13 +54,13 @@ gkr_ssh_proto_algo_to_keytype (int algo)
 }
 
 gboolean
-gkr_ssh_proto_read_mpi (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
+gkr_ssh_proto_read_mpi (EggBuffer *req, gsize *offset, gcry_mpi_t *mpi)
 {
 	const guchar *data;
 	gsize len;
 	gcry_error_t gcry;
 	
-	if (!gkr_buffer_get_byte_array (req, *offset, offset, &data, &len))
+	if (!egg_buffer_get_byte_array (req, *offset, offset, &data, &len))
 		return FALSE;
 		
 	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_USG, data, len, NULL);
@@ -71,7 +71,7 @@ gkr_ssh_proto_read_mpi (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
 }
 
 gboolean
-gkr_ssh_proto_read_mpi_v1 (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
+gkr_ssh_proto_read_mpi_v1 (EggBuffer *req, gsize *offset, gcry_mpi_t *mpi)
 {
 	const guchar *data;
 	gsize bytes;
@@ -79,7 +79,7 @@ gkr_ssh_proto_read_mpi_v1 (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
 	guint16 bits;
 	
 	/* Get the number of bits */
-	if (!gkr_buffer_get_uint16 (req, *offset, offset, &bits))
+	if (!egg_buffer_get_uint16 (req, *offset, offset, &bits))
 		return FALSE;
 	
 	/* Figure out the number of binary bytes following */
@@ -101,7 +101,7 @@ gkr_ssh_proto_read_mpi_v1 (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
 }
 
 gboolean
-gkr_ssh_proto_write_mpi (GkrBuffer *resp, gcry_mpi_t mpi, int format)
+gkr_ssh_proto_write_mpi (EggBuffer *resp, gcry_mpi_t mpi, int format)
 {
 	guchar *buf;
 	size_t len;
@@ -112,7 +112,7 @@ gkr_ssh_proto_write_mpi (GkrBuffer *resp, gcry_mpi_t mpi, int format)
 	g_return_val_if_fail (gcry == 0, FALSE);
 
 	/* Make a space for it in the buffer */
-	buf = gkr_buffer_add_byte_array_empty (resp, len);
+	buf = egg_buffer_add_byte_array_empty (resp, len);
 	if (!buf)
 		return FALSE;
 
@@ -124,7 +124,7 @@ gkr_ssh_proto_write_mpi (GkrBuffer *resp, gcry_mpi_t mpi, int format)
 }
 
 gboolean
-gkr_ssh_proto_write_mpi_v1 (GkrBuffer *resp, gcry_mpi_t mpi)
+gkr_ssh_proto_write_mpi_v1 (EggBuffer *resp, gcry_mpi_t mpi)
 {
   	gcry_error_t gcry;
 	guchar *buf;
@@ -141,11 +141,11 @@ gkr_ssh_proto_write_mpi_v1 (GkrBuffer *resp, gcry_mpi_t mpi)
 	g_return_val_if_fail (gcry == 0, FALSE);
 	g_return_val_if_fail (bytes == len, FALSE);
 	
-	if (!gkr_buffer_add_uint16 (resp, bits))
+	if (!egg_buffer_add_uint16 (resp, bits))
 		return FALSE;
 	
 	/* Make a space for it in the buffer */
-	buf = gkr_buffer_add_empty (resp, len);
+	buf = egg_buffer_add_empty (resp, len);
 	if (!buf)
 		return FALSE;
 	
@@ -157,14 +157,14 @@ gkr_ssh_proto_write_mpi_v1 (GkrBuffer *resp, gcry_mpi_t mpi)
 }
 
 gboolean
-gkr_ssh_proto_read_public (GkrBuffer *req, gsize *offset, gcry_sexp_t *key, int *algo)
+gkr_ssh_proto_read_public (EggBuffer *req, gsize *offset, gcry_sexp_t *key, int *algo)
 {
 	gboolean ret;
 	gchar *stype;
 	int alg;
 	
 	/* The string algorithm */
-	if (!gkr_buffer_get_string (req, *offset, offset, &stype, (GkrBufferAllocator)g_realloc))
+	if (!egg_buffer_get_string (req, *offset, offset, &stype, (EggBufferAllocator)g_realloc))
 		return FALSE;
 	
 	alg = gkr_ssh_proto_keytype_to_algo (stype);
@@ -208,7 +208,7 @@ gkr_ssh_proto_read_public (GkrBuffer *req, gsize *offset, gcry_sexp_t *key, int 
 	"    (u %m)))"
 
 gboolean
-gkr_ssh_proto_read_private_rsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+gkr_ssh_proto_read_private_rsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 {
 	gcry_mpi_t n, e, d, p, q, u;
 	gcry_mpi_t tmp;
@@ -250,7 +250,7 @@ gkr_ssh_proto_read_private_rsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp
 }
 
 gboolean
-gkr_ssh_proto_read_private_v1 (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+gkr_ssh_proto_read_private_v1 (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 {
 	gcry_mpi_t n, e, d, p, q, u;
 	gcry_mpi_t tmp;
@@ -298,7 +298,7 @@ gkr_ssh_proto_read_private_v1 (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 	"    (e %m)))"
 	
 gboolean
-gkr_ssh_proto_read_public_rsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+gkr_ssh_proto_read_public_rsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 {
 	gcry_mpi_t n, e;
 	int gcry;
@@ -320,13 +320,13 @@ gkr_ssh_proto_read_public_rsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 }
 
 gboolean
-gkr_ssh_proto_read_public_v1 (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+gkr_ssh_proto_read_public_v1 (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 {
 	gcry_mpi_t n, e;
 	guint32 bits;
 	int gcry;
 	
-	if (!gkr_buffer_get_uint32 (req, *offset, offset, &bits))
+	if (!egg_buffer_get_uint32 (req, *offset, offset, &bits))
 		return FALSE;
 	
 	if (!gkr_ssh_proto_read_mpi_v1 (req, offset, &e) ||
@@ -355,7 +355,7 @@ gkr_ssh_proto_read_public_v1 (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 	"    (x %m)))"
 	
 gboolean
-gkr_ssh_proto_read_private_dsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+gkr_ssh_proto_read_private_dsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 {
 	gcry_mpi_t p, q, g, y, x;
 	int gcry;
@@ -391,7 +391,7 @@ gkr_ssh_proto_read_private_dsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp
 	"    (y %m)))"
 	
 gboolean
-gkr_ssh_proto_read_public_dsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+gkr_ssh_proto_read_public_dsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 {
 	gcry_mpi_t p, q, g, y;
 	int gcry;
@@ -417,14 +417,14 @@ gkr_ssh_proto_read_public_dsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 }
 
 gboolean
-gkr_ssh_proto_write_public (GkrBuffer *resp, int algo, gcry_sexp_t key)
+gkr_ssh_proto_write_public (EggBuffer *resp, int algo, gcry_sexp_t key)
 {
 	gboolean ret = FALSE;
 	const gchar *salgo;
 	
 	salgo = gkr_ssh_proto_algo_to_keytype (algo);
 	g_assert (salgo);
-	gkr_buffer_add_string (resp, salgo);
+	egg_buffer_add_string (resp, salgo);
 		
 	switch (algo) {
 	case GCRY_PK_RSA:
@@ -444,7 +444,7 @@ gkr_ssh_proto_write_public (GkrBuffer *resp, int algo, gcry_sexp_t key)
 }
 
 gboolean
-gkr_ssh_proto_write_public_rsa (GkrBuffer *resp, gcry_sexp_t key)
+gkr_ssh_proto_write_public_rsa (EggBuffer *resp, gcry_sexp_t key)
 {
 	gcry_mpi_t mpi;
 	gboolean ret;
@@ -468,7 +468,7 @@ gkr_ssh_proto_write_public_rsa (GkrBuffer *resp, gcry_sexp_t key)
 }
 
 gboolean
-gkr_ssh_proto_write_public_dsa (GkrBuffer *resp, gcry_sexp_t key)
+gkr_ssh_proto_write_public_dsa (EggBuffer *resp, gcry_sexp_t key)
 {
 	gcry_mpi_t mpi;
 	gboolean ret;
@@ -510,7 +510,7 @@ gkr_ssh_proto_write_public_dsa (GkrBuffer *resp, gcry_sexp_t key)
 }
 
 gboolean
-gkr_ssh_proto_write_public_v1 (GkrBuffer *resp, gcry_sexp_t key)
+gkr_ssh_proto_write_public_v1 (EggBuffer *resp, gcry_sexp_t key)
 {
 	gboolean ret = FALSE;
 	gcry_mpi_t mpi;
@@ -521,7 +521,7 @@ gkr_ssh_proto_write_public_v1 (GkrBuffer *resp, gcry_sexp_t key)
 	/* Write out the number of bits of the key */
 	bits = gcry_pk_get_nbits (key);
 	g_return_val_if_fail (bits > 0, FALSE);
-	gkr_buffer_add_uint32 (resp, bits);
+	egg_buffer_add_uint32 (resp, bits);
 
 	/* Write out the exponent */
 	ret = gkr_crypto_sexp_extract_mpi (key, &mpi, "rsa", "e", NULL);
@@ -542,7 +542,7 @@ gkr_ssh_proto_write_public_v1 (GkrBuffer *resp, gcry_sexp_t key)
 }
 
 gboolean
-gkr_ssh_proto_write_signature_rsa (GkrBuffer *resp, gcry_sexp_t ssig)
+gkr_ssh_proto_write_signature_rsa (EggBuffer *resp, gcry_sexp_t ssig)
 {
 	gboolean ret;
 	gcry_mpi_t mpi;
@@ -557,7 +557,7 @@ gkr_ssh_proto_write_signature_rsa (GkrBuffer *resp, gcry_sexp_t ssig)
 }
 
 gboolean
-gkr_ssh_proto_write_signature_dsa (GkrBuffer *resp, gcry_sexp_t ssig)
+gkr_ssh_proto_write_signature_dsa (EggBuffer *resp, gcry_sexp_t ssig)
 {
 	guchar buffer[GKR_SSH_DSA_SIGNATURE_PADDING * 2];
 	gboolean ret;
@@ -570,6 +570,6 @@ gkr_ssh_proto_write_signature_dsa (GkrBuffer *resp, gcry_sexp_t ssig)
 	                                           GKR_SSH_DSA_SIGNATURE_PADDING, "dsa", "s", NULL);
 	g_return_val_if_fail (ret, FALSE);
 	
-	return gkr_buffer_add_byte_array (resp, buffer, sizeof (buffer));
+	return egg_buffer_add_byte_array (resp, buffer, sizeof (buffer));
 }
 

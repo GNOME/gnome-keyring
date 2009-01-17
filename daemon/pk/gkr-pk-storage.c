@@ -28,7 +28,7 @@
 
 #include "common/gkr-cleanup.h"
 #include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyrings.h"
 #include "keyrings/gkr-keyring-login.h"
@@ -680,7 +680,7 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrco
 		g_return_val_if_fail (login, FALSE);
 		g_return_val_if_fail (login->password, FALSE);
 		
-		*result = gkr_secure_strdup (login->password);
+		*result = egg_secure_strdup (login->password);
 		
 		/* 
 		 * Always same a 'login' password used as a secret. So that 
@@ -721,7 +721,7 @@ gkr_pk_storage_get_store_password (GkrPkStorage *storage, GQuark location, gkrco
 			
 	/* Successful response */
 	} else {
-		*result = gkr_secure_strdup (ask->typed_password);
+		*result = egg_secure_strdup (ask->typed_password);
 		if (ask->checked)
 			gkr_pk_index_set_secret (index, digest, *result);
 	}
@@ -768,7 +768,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 	 */
 
 	if (st == 0) {
-		*result = gkr_secure_strdup ("");
+		*result = egg_secure_strdup ("");
 		return TRUE;
 		
 	} else if (st == 1) {
@@ -791,7 +791,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		
 	/* See if we can find a valid password for this location */
 	if (st == 2) {
-		*result = gkr_secure_strdup (gkr_pk_index_get_secret (index, digest));
+		*result = egg_secure_strdup (gkr_pk_index_get_secret (index, digest));
 		if (*result != NULL)
 			return TRUE;
 		
@@ -804,7 +804,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 				                            "pk-object", gkr_location_to_string (location), NULL);
 		if (password != NULL) {
-			*result = gkr_secure_strdup (password);
+			*result = egg_secure_strdup (password);
 			return TRUE;
 		}
 		
@@ -854,7 +854,7 @@ gkr_pk_storage_get_load_password (GkrPkStorage *storage, GQuark location, gkrcon
 			
 	/* Successful response */
 	} else {
-		*result = gkr_secure_strdup (ask->typed_password);
+		*result = egg_secure_strdup (ask->typed_password);
 		if (ask->checked) 
 			gkr_pk_index_set_secret (index, digest, ask->typed_password);
 	}

@@ -7,7 +7,7 @@
 #include "gck/gck-data-pem.h"
 #include "gck/gck-data-types.h"
 
-#include "common/gkr-buffer.h"
+#include "egg/egg-buffer.h"
 
 typedef struct _ParsePrivate {
 	gcry_sexp_t sexp;
@@ -33,13 +33,13 @@ keytype_to_algo (const gchar *salgo)
 }
 
 static gboolean
-read_mpi (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
+read_mpi (EggBuffer *req, gsize *offset, gcry_mpi_t *mpi)
 {
 	const guchar *data;
 	gsize len;
 	gcry_error_t gcry;
 	
-	if (!gkr_buffer_get_byte_array (req, *offset, offset, &data, &len))
+	if (!egg_buffer_get_byte_array (req, *offset, offset, &data, &len))
 		return FALSE;
 		
 	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_USG, data, len, NULL);
@@ -58,7 +58,7 @@ read_mpi (GkrBuffer *req, gsize *offset, gcry_mpi_t *mpi)
 	"    (y %m)))"
 	
 static gboolean
-read_public_dsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+read_public_dsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 {
 	gcry_mpi_t p, q, g, y;
 	int gcry;
@@ -90,7 +90,7 @@ read_public_dsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 	"    (e %m)))"
 	
 static gboolean
-read_public_rsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+read_public_rsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 {
 	gcry_mpi_t n, e;
 	int gcry;
@@ -112,14 +112,14 @@ read_public_rsa (GkrBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 }
 
 static gboolean
-read_public (GkrBuffer *req, gsize *offset, gcry_sexp_t *key, int *algo)
+read_public (EggBuffer *req, gsize *offset, gcry_sexp_t *key, int *algo)
 {
 	gboolean ret;
 	gchar *stype;
 	int alg;
 	
 	/* The string algorithm */
-	if (!gkr_buffer_get_string (req, *offset, offset, &stype, (GkrBufferAllocator)g_realloc))
+	if (!egg_buffer_get_string (req, *offset, offset, &stype, (EggBufferAllocator)g_realloc))
 		return FALSE;
 	
 	alg = keytype_to_algo (stype);
@@ -171,7 +171,7 @@ load_encrypted_key (const guchar *data, gsize n_data, const gchar *dekinfo,
 	g_assert (decrypted);
 		
 	/* Unpad the DER data */
-	length = gck_data_asn1_element_length (decrypted, n_decrypted);
+	length = egg_asn1_element_length (decrypted, n_decrypted);
 	if (length > 0)
 		n_decrypted = length;
 	
@@ -233,7 +233,7 @@ GckDataResult
 gck_ssh_openssh_parse_public_key (const guchar *data, gsize n_data,
                                   gcry_sexp_t *sexp, gchar **comment)
 {
-	GkrBuffer buf;
+	EggBuffer buf;
 	const guchar *at;
 	guchar *decoded;
 	gsize n_decoded;
@@ -307,7 +307,7 @@ gck_ssh_openssh_parse_public_key (const guchar *data, gsize n_data,
 	n_decoded = g_base64_decode_step ((gchar*)data, n_data, decoded, &state, &save);
 	
 	/* Parse the actual key */
-	gkr_buffer_init_static (&buf, decoded, n_decoded);
+	egg_buffer_init_static (&buf, decoded, n_decoded);
 	offset = 0;
 	ret = read_public (&buf, &offset, sexp, NULL);
 	g_free (decoded);

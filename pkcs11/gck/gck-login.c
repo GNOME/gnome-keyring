@@ -23,7 +23,7 @@
 
 #include "gck-login.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <string.h>
 
@@ -50,7 +50,7 @@ gck_login_dispose (GObject *obj)
 {
 	GckLogin *self = GCK_LOGIN (obj);
 	
-	gkr_secure_strfree (self->password);
+	egg_secure_strfree (self->password);
 	self->password = NULL;
 	self->n_password = 0;
     
@@ -112,10 +112,10 @@ gck_login_new (CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 	
 	if (pin) {
 		if (n_pin == (CK_ULONG)-1) {
-			login->password = gkr_secure_strdup ((const gchar*)pin);
+			login->password = egg_secure_strdup ((const gchar*)pin);
 			login->n_password = strlen (login->password);
 		} else {
-			login->password = gkr_secure_alloc (n_pin + 1);
+			login->password = egg_secure_alloc (n_pin + 1);
 			memcpy (login->password, pin, n_pin);
 			login->n_password = n_pin;
 		}

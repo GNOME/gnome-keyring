@@ -13,9 +13,9 @@ pam_gnome_keyring_la_SOURCES = \
 	gkr-pam-stubs.c
 
 pam_gnome_keyring_la_LIBADD = \
-	$(top_builddir)/common/libgkr-common-buffer.la \
-	$(top_builddir)/common/libgkr-common-creds.la \
-	$(top_builddir)/common/libgkr-common-secure.la \
+	$(top_builddir)/egg/libegg-buffer.la \
+	$(top_builddir)/egg/libegg-creds.la \
+	$(top_builddir)/egg/libegg-secure.la \
 	-lpam
 	
 pam_gnome_keyring_la_LDFLAGS = \

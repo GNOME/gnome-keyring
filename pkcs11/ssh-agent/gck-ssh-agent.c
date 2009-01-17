@@ -36,8 +36,8 @@
 #include "gck-ssh-agent.h"
 #include "gck-ssh-agent-private.h"
 
-#include "common/gkr-buffer.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-buffer.h"
+#include "egg/egg-secure-memory.h"
 
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
@@ -105,17 +105,17 @@ read_packet_with_size (GckSshAgentCall *call)
 
 	fd = call->sock;
 	
-	gkr_buffer_resize (call->req, 4);
+	egg_buffer_resize (call->req, 4);
 	if (!read_all (fd, call->req->buf, 4))
 		return FALSE;
 
-	if (!gkr_buffer_get_uint32 (call->req, 0, NULL, &packet_size) || 
+	if (!egg_buffer_get_uint32 (call->req, 0, NULL, &packet_size) || 
 	    packet_size < 1) {
 	    	g_warning ("invalid packet size from client");
 		return FALSE;
 	}
 
-	gkr_buffer_resize (call->req, packet_size + 4);
+	egg_buffer_resize (call->req, packet_size + 4);
 	if (!read_all (fd, call->req->buf + 4, packet_size))
 		return FALSE;
 
@@ -127,8 +127,8 @@ run_client_thread (gpointer data)
 {
 	gint *socket = data;
 	GckSshAgentCall call;
-	GkrBuffer req;
-	GkrBuffer resp;
+	EggBuffer req;
+	EggBuffer resp;
 	guchar op;
 	
 	g_assert (GP11_IS_MODULE (pkcs11_module));
@@ -137,33 +137,33 @@ run_client_thread (gpointer data)
 	call.sock = g_atomic_int_get (socket);
 	g_assert (call.sock != -1);
 	
-	gkr_buffer_init_full (&req, 128, gkr_secure_realloc);
-	gkr_buffer_init_full (&resp, 128, (GkrBufferAllocator)g_realloc);
+	egg_buffer_init_full (&req, 128, egg_secure_realloc);
+	egg_buffer_init_full (&resp, 128, (EggBufferAllocator)g_realloc);
 	call.req = &req;
 	call.resp = &resp;
 	call.module = g_object_ref (pkcs11_module);
 
 	for (;;) {
 		
-		gkr_buffer_reset (call.req);
+		egg_buffer_reset (call.req);
 		
 		/* 1. Read in the request */
 		if (!read_packet_with_size (&call))
 			break;
 
 		/* 2. Now decode the operation */
-		if (!gkr_buffer_get_byte (call.req, 4, NULL, &op))
+		if (!egg_buffer_get_byte (call.req, 4, NULL, &op))
 			break; 
 		if (op >= GCK_SSH_OP_MAX)
 			break;
 		g_assert (gck_ssh_agent_operations[op]);
 		
 		/* 3. Execute the right operation */
-		gkr_buffer_reset (call.resp);
-		gkr_buffer_add_uint32 (call.resp, 0);
+		egg_buffer_reset (call.resp);
+		egg_buffer_add_uint32 (call.resp, 0);
 		if (!(gck_ssh_agent_operations[op]) (&call))
 			break;
-		if (!gkr_buffer_set_uint32 (call.resp, 0, call.resp->len - 4))
+		if (!egg_buffer_set_uint32 (call.resp, 0, call.resp->len - 4))
 			break;
 
 		/* 4. Write the reply back out */
@@ -171,8 +171,8 @@ run_client_thread (gpointer data)
 			break;
 	}
 	
-	gkr_buffer_uninit (&req);
-	gkr_buffer_uninit (&resp);
+	egg_buffer_uninit (&req);
+	egg_buffer_uninit (&resp);
 	g_object_unref (call.module);
 	
 	close (call.sock);

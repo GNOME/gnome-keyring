@@ -30,7 +30,7 @@
 #include "gnome-keyring-private.h"
 #include "gnome-keyring-memory.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 /* Functions used by both the library and the daemon */
 
@@ -109,7 +109,7 @@ gnome_keyring_apply_environment (gchar **envp)
 void
 gnome_keyring_free_password (gchar *password)
 {
-	gkr_secure_strfree (password);
+	egg_secure_strfree (password);
 }
 
 /**
@@ -402,7 +402,7 @@ gnome_keyring_item_info_copy (GnomeKeyringItemInfo *item_info)
 	memcpy (copy, item_info, sizeof (GnomeKeyringItemInfo));
 
 	copy->display_name = g_strdup (copy->display_name);
-	copy->secret = gkr_secure_strdup (copy->secret);
+	copy->secret = egg_secure_strdup (copy->secret);
 	
 	return copy;
 }

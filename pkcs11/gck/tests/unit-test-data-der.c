@@ -105,7 +105,7 @@ test_der_public (gcry_sexp_t key)
 DEFINE_SETUP(preload)
 {
 	certificate_data = test_read_testdata ("test-certificate-1.der", &n_certificate_data);	
-	certificate = gck_data_asn1_decode ("PKIX1.Certificate", certificate_data, n_certificate_data);
+	certificate = egg_asn1_decode ("PKIX1.Certificate", certificate_data, n_certificate_data);
 	g_assert (certificate);
 }
 
@@ -221,7 +221,7 @@ DEFINE_TEST(read_public_key_info)
 	gcry_sexp_t sexp, match;
 	gcry_error_t gcry;
 	
-	data = gck_data_asn1_read_element (certificate, certificate_data, n_certificate_data, "tbsCertificate.subjectPublicKeyInfo", &n_data);
+	data = egg_asn1_read_element (certificate, certificate_data, n_certificate_data, "tbsCertificate.subjectPublicKeyInfo", &n_data);
 	g_assert (data);
 	
 	res = gck_data_der_read_public_key_info (data, n_data, &sexp);
@@ -272,7 +272,7 @@ DEFINE_TEST(read_basic_constraints)
 	gint path_len;
 	GckDataResult res;
 	
-	extension = gck_data_asn1_read_content (certificate, certificate_data, n_certificate_data, "tbsCertificate.extensions.?1.extnValue", &n_extension);
+	extension = egg_asn1_read_content (certificate, certificate_data, n_certificate_data, "tbsCertificate.extensions.?1.extnValue", &n_extension);
 	g_assert (extension);
 	
 	res = gck_data_der_read_basic_constraints (extension, n_extension, &is_ca, &path_len);

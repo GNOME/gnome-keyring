@@ -27,7 +27,7 @@
 #include "gkr-pkix-der.h"
 
 #include "common/gkr-crypto.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -1078,8 +1078,8 @@ gkr_pkix_der_read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode,
 	ret = GKR_PKIX_SUCCESS;
 
 done:
-	gkr_secure_free (iv);
-	gkr_secure_free (key);
+	egg_secure_free (iv);
+	egg_secure_free (key);
 	
 	if (asn)
 		asn1_delete_structure (&asn);
@@ -1198,7 +1198,7 @@ setup_pkcs5_pbkdf2_params (const gchar *password, const guchar *data,
 	ret = GKR_PKIX_SUCCESS;
 	                                         
 done:
-	gkr_secure_free (key);
+	egg_secure_free (key);
 	if (asn)
 		asn1_delete_structure (&asn);
 	return ret;
@@ -1373,8 +1373,8 @@ done:
 		*cih = NULL;
 	}
 	
-	gkr_secure_free (iv);
-	gkr_secure_free (key);
+	egg_secure_free (iv);
+	egg_secure_free (key);
 	
 	if (asn)
 		asn1_delete_structure (&asn);

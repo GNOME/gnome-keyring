@@ -25,8 +25,8 @@
 
 #include "gkr-pam.h"
 
-#include "common/gkr-buffer.h"
-#include "common/gkr-unix-credentials.h"
+#include "egg/egg-buffer.h"
+#include "egg/egg-unix-credentials.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -128,7 +128,7 @@ static int
 write_credentials_byte (int sock)
 {
 	for (;;) {
-		if (gkr_unix_credentials_write (sock) < 0) {
+		if (egg_unix_credentials_write (sock) < 0) {
 			if (errno == EINTR || errno == EAGAIN)
 				continue;
 			syslog (GKR_LOG_ERR, "couldn't send credentials to daemon: %s", 
@@ -288,9 +288,9 @@ keyring_daemon_op (const char *socket, GnomeKeyringOpCode op, int argc,
 	}
 	
 	/* Send the application packet / name */
-	gkr_buffer_encode_uint32 (buf, PAM_APP_NAME_LEN + 8);
+	egg_buffer_encode_uint32 (buf, PAM_APP_NAME_LEN + 8);
 	write_part (sock, buf, 4, &ret);
-	gkr_buffer_encode_uint32 (buf, PAM_APP_NAME_LEN);
+	egg_buffer_encode_uint32 (buf, PAM_APP_NAME_LEN);
 	write_part (sock, buf, 4, &ret);
 	write_part (sock, (unsigned char*)PAM_APP_NAME, PAM_APP_NAME_LEN, &ret);
 	    
@@ -300,9 +300,9 @@ keyring_daemon_op (const char *socket, GnomeKeyringOpCode op, int argc,
 		oplen += 4 + strlen (argv[i]);
 
 	/* Write out the length, and op */
-	gkr_buffer_encode_uint32 (buf, oplen);
+	egg_buffer_encode_uint32 (buf, oplen);
 	write_part (sock, buf, 4, &ret);
-	gkr_buffer_encode_uint32 (buf, op);
+	egg_buffer_encode_uint32 (buf, op);
 	write_part (sock, buf, 4, &ret);
 	
 	/* And now the arguments */
@@ -311,7 +311,7 @@ keyring_daemon_op (const char *socket, GnomeKeyringOpCode op, int argc,
 			l = 0x7FFFFFFF;
 		else 
 			l = strlen (argv[i]);
-		gkr_buffer_encode_uint32 (buf, l);
+		egg_buffer_encode_uint32 (buf, l);
 		write_part (sock, buf, 4, &ret);
 		if (argv[i] != NULL)
 			write_part (sock, (unsigned char*)argv[i], l, &ret);
@@ -327,7 +327,7 @@ keyring_daemon_op (const char *socket, GnomeKeyringOpCode op, int argc,
 	}
 
 	/* We only support simple responses */	
-	l = gkr_buffer_decode_uint32 (buf);
+	l = egg_buffer_decode_uint32 (buf);
 	if (l != 8) {
 		syslog (GKR_LOG_ERR, "invalid length response from gnome-keyring-daemon: %d", l);
 		ret = GNOME_KEYRING_RESULT_IO_ERROR;
@@ -338,7 +338,7 @@ keyring_daemon_op (const char *socket, GnomeKeyringOpCode op, int argc,
 		ret = GNOME_KEYRING_RESULT_IO_ERROR;
 		goto done;
 	}
-	ret = gkr_buffer_decode_uint32 (buf);
+	ret = egg_buffer_decode_uint32 (buf);
 	
 done:
 	if (sock >= 0)

@@ -32,7 +32,7 @@
 #include "common/gkr-cleanup.h"
 #include "common/gkr-location.h"
 #include "common/gkr-location-watch.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring-login.h"
 

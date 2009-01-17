@@ -37,8 +37,8 @@ gck_roots_store_standalone_la_SOURCES = \
 gck_roots_store_standalone_la_LIBADD = \
 	libgck-roots-store.la \
 	$(top_builddir)/pkcs11/gck/libgck.la \
-	$(top_builddir)/common/libgkr-common-buffer.la \
-	$(top_builddir)/common/libgkr-common-secure.la \
+	$(top_builddir)/egg/libegg-buffer.la \
+	$(top_builddir)/egg/libegg-secure.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \

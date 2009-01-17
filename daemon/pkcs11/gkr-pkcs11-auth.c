@@ -23,7 +23,7 @@
 
 #include "gkr-pkcs11-auth.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 #include "common/gkr-cleanup.h"
 
 #include "keyrings/gkr-keyring-login.h"
@@ -94,7 +94,7 @@ password_to_pin (const gchar *password, CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len)
 		*pin = NULL;
 		*pin_len = 0;
 	} else {
-		*pin = (CK_UTF8CHAR_PTR)gkr_secure_strdup (password);
+		*pin = (CK_UTF8CHAR_PTR)egg_secure_strdup (password);
 		*pin_len = strlen (password);
 	}
 }
@@ -268,10 +268,10 @@ gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO
 			/* This is delayed allocation because we may never use this for a slot */
 			if (slot->auth_cache == NULL)
 				slot->auth_cache = g_hash_table_new_full (ulong_hash, ulong_equal, ulong_free,
-				                                          (GDestroyNotify)gkr_secure_free);
+				                                          (GDestroyNotify)egg_secure_free);
 			
 			g_hash_table_replace (slot->auth_cache, ulong_alloc (object->handle), 
-			                      gkr_secure_strdup (ask->typed_password));
+			                      egg_secure_strdup (ask->typed_password));
 		}
 	}
 	
@@ -318,7 +318,7 @@ gkr_pkcs11_auth_login_specific_done (CK_SESSION_HANDLE handle, CK_SESSION_INFO *
 		break;
 	}
 	
-	gkr_secure_strfree ((gchar*)*pin);
+	egg_secure_strfree ((gchar*)*pin);
 	
 	*pin = NULL;
 	*pin_len = 0;
@@ -464,7 +464,7 @@ gkr_pkcs11_auth_login_user_done (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 		break;
 	}
 	
-	gkr_secure_strfree ((gchar*)*pin);
+	egg_secure_strfree ((gchar*)*pin);
 	
 	*pin = NULL;
 	*pin_len = 0;
@@ -578,7 +578,7 @@ gkr_pkcs11_auth_init_user_done (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *token_i
 	if (rv != CKR_OK)
 		clear_user_login (token_info);
 	
-	gkr_secure_strfree ((gchar*)*pin);
+	egg_secure_strfree ((gchar*)*pin);
 	
 	*pin = NULL;
 	*pin_len = 0;

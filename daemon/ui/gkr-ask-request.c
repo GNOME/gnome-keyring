@@ -30,7 +30,7 @@
 
 #include "common/gkr-async.h"
 #include "common/gkr-location.h"
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-private.h"
@@ -85,7 +85,7 @@ struct _GkrAskRequestPrivate {
 	gint ask_pid;
 	gint in_fd;
 	gint out_fd;
-	GkrBuffer buffer;
+	EggBuffer buffer;
 };
 
 #define GKR_ASK_REQUEST_GET_PRIVATE(o)  \
@@ -284,9 +284,9 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 	pv->ask_pid = 0;
 
 	/* Cleanup for response processing */
-	gkr_secure_strfree (ask->typed_password);
+	egg_secure_strfree (ask->typed_password);
 	ask->typed_password = NULL;
-	gkr_secure_strfree (ask->original_password);
+	egg_secure_strfree (ask->original_password);
 	ask->original_password = NULL;
 	
 	/* A failed request */
@@ -310,11 +310,11 @@ finish_ask_io (GkrAskRequest *ask, gboolean success)
 		
 		/* First line is the password */
 		if (i == 0)
-			ask->typed_password = gkr_secure_strdup (line);
+			ask->typed_password = egg_secure_strdup (line);
 		
 		/* Second line is the original password (if any)*/
 		else if (i == 1)
-			ask->original_password = gkr_secure_strdup (line);
+			ask->original_password = egg_secure_strdup (line);
 			
 		line = next;
 	}
@@ -499,7 +499,7 @@ read_until_end (GkrAskRequest *ask)
 	g_return_val_if_fail (pv->out_fd >= 0, FALSE);
 	
 	/* Passwords come through this buffer */
-	buf = gkr_secure_alloc (128);
+	buf = egg_secure_alloc (128);
 
 	gkr_async_register_cancel (close_fd, &pv->out_fd);
 
@@ -521,7 +521,7 @@ read_until_end (GkrAskRequest *ask)
 			
 		/* Got some data */
 		} else if (res > 0) {
-			gkr_buffer_append (&pv->buffer, buf, res);
+			egg_buffer_append (&pv->buffer, buf, res);
 			
 		/* End of data */
 		} else if (res == 0) {
@@ -531,9 +531,9 @@ read_until_end (GkrAskRequest *ask)
 	}
 	
 	/* Always null terminate */
-	gkr_buffer_add_byte (&pv->buffer, 0);
+	egg_buffer_add_byte (&pv->buffer, 0);
 
-	gkr_secure_free (buf);
+	egg_secure_free (buf);
 	gkr_async_unregister_cancel (close_fd, &pv->out_fd);
 	
 	close_fd (&pv->out_fd);
@@ -570,7 +570,7 @@ launch_ask_helper (GkrAskRequest *ask)
 	envp[i++] = NULL;
 	g_strfreev (names);
 
-	gkr_buffer_resize (&pv->buffer, 0);
+	egg_buffer_resize (&pv->buffer, 0);
 	
 	ret = g_spawn_async_with_pipes (NULL, argv, envp, 0, NULL, NULL, &pv->ask_pid, 
 	                                &pv->in_fd, &pv->out_fd, NULL, &error);
@@ -687,7 +687,7 @@ gkr_ask_request_init (GkrAskRequest *ask)
 	pv->in_fd = -1;
 	
 	/* Use a secure memory buffer */
-	gkr_buffer_init_full (&pv->buffer, 128, gkr_secure_realloc);
+	egg_buffer_init_full (&pv->buffer, 128, egg_secure_realloc);
 }
 
 static guint
@@ -706,10 +706,10 @@ gkr_ask_request_dispose (GObject *obj)
 	mark_completed (ask, GKR_ASK_RESPONSE_FAILURE);
 	g_assert (pv->ask_pid == 0);
 	
-	gkr_secure_strfree (ask->original_password);
+	egg_secure_strfree (ask->original_password);
 	ask->original_password = NULL;
 	
-	gkr_secure_strfree (ask->typed_password);
+	egg_secure_strfree (ask->typed_password);
 	ask->typed_password = NULL;
 	
 	if (pv->in_fd >= 0)
@@ -739,7 +739,7 @@ gkr_ask_request_finalize (GObject *obj)
 	g_assert (pv->in_fd < 0);
 	g_assert (pv->out_fd < 0);
 	
-	gkr_buffer_uninit (&pv->buffer);
+	egg_buffer_uninit (&pv->buffer);
 
 	G_OBJECT_CLASS(gkr_ask_request_parent_class)->finalize (obj);
 }

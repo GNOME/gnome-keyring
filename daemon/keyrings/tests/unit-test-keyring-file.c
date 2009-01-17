@@ -25,7 +25,7 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring.h"
 
@@ -99,7 +99,7 @@ validate_keyring_contents (GkrKeyring *keyring, CuTest *cu)
 void unit_test_keyring_parse_encrypted (CuTest *cu)
 {
 	GkrKeyring *encrypted, *plain;
-	GkrBuffer buffer, output;
+	EggBuffer buffer, output;
 	gchar *data;
 	gsize n_data;
 	gint ret;
@@ -113,26 +113,26 @@ void unit_test_keyring_parse_encrypted (CuTest *cu)
 		g_assert (FALSE && "couldn't read in encrypted.keyring");
 		
 	/* Parse it */
-	gkr_buffer_init_allocated (&buffer, (guchar*)data, n_data, NULL);
+	egg_buffer_init_allocated (&buffer, (guchar*)data, n_data, NULL);
 	data = g_memdup (data, n_data); /* Make a copy for double parse */
 	ret = gkr_keyring_binary_parse (encrypted, &buffer);
-	gkr_buffer_uninit (&buffer);
+	egg_buffer_uninit (&buffer);
 	CuAssert (cu, "couldn't parse encrypted keyring", ret == 1);
 	CuAssert (cu, "didn't unlock encrypted keyring", !encrypted->locked);
 	
 	validate_keyring_contents (encrypted, cu);
 
 	/* Double parse shouldn't change it */
-	gkr_buffer_init_allocated (&buffer, (guchar*)data, n_data, NULL);
+	egg_buffer_init_allocated (&buffer, (guchar*)data, n_data, NULL);
 	ret = gkr_keyring_binary_parse (encrypted, &buffer);
-	gkr_buffer_uninit (&buffer);
+	egg_buffer_uninit (&buffer);
 	CuAssert (cu, "couldn't parse encrypted keyring", ret == 1);
 	CuAssert (cu, "didn't unlock encrypted keyring", !encrypted->locked);
 	
 	validate_keyring_contents (encrypted, cu);
 	
 	/* Output same data in the cleartext format */
-	gkr_buffer_init (&output, 128);
+	egg_buffer_init (&output, 128);
 	success = gkr_keyring_textual_generate (encrypted, &output);
 	CuAssert (cu, "couldn't generate textual data", success);
 	
@@ -147,7 +147,7 @@ void unit_test_keyring_parse_encrypted (CuTest *cu)
 void unit_test_keyring_parse_plain (CuTest *cu)
 {
 	GkrKeyring *keyring;
-	GkrBuffer buffer;
+	EggBuffer buffer;
 	gchar *data;
 	gsize n_data;
 	gint ret;
@@ -158,7 +158,7 @@ void unit_test_keyring_parse_plain (CuTest *cu)
 		g_assert (FALSE && "couldn't read in plain.keyring");
 		
 	/* Parse it */
-	gkr_buffer_init_static (&buffer, (guchar*)data, n_data);
+	egg_buffer_init_static (&buffer, (guchar*)data, n_data);
 	ret = gkr_keyring_textual_parse (keyring, &buffer);
 	CuAssert (cu, "couldn't parse generated textual data", ret == 1);
 	CuAssert (cu, "keyring should not be locked", !keyring->locked);
@@ -166,7 +166,7 @@ void unit_test_keyring_parse_plain (CuTest *cu)
 	validate_keyring_contents (keyring, cu);
 	
 	/* Double parse shouldn't change it */
-	gkr_buffer_init_static (&buffer, (guchar*)data, n_data);
+	egg_buffer_init_static (&buffer, (guchar*)data, n_data);
 	ret = gkr_keyring_textual_parse (keyring, &buffer);
 	CuAssert (cu, "couldn't parse generated textual data", ret == 1);
 	CuAssert (cu, "keyring should not be locked", !keyring->locked);

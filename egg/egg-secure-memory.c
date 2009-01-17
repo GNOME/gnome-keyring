@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-secure-memory.h - library for allocating memory that is non-pageable
+/* egg-secure-memory.h - library for allocating memory that is non-pageable
 
    Copyright (C) 2007 Stefan Walter
 
@@ -29,7 +29,7 @@
 
 #include "config.h"
 
-#include "gkr-secure-memory.h"
+#include "egg-secure-memory.h"
 
 #include <sys/types.h>
 #include <sys/mman.h>
@@ -68,10 +68,10 @@
 #endif
 
 #define DO_LOCK() \
-	gkr_memory_lock (); 
+	egg_memory_lock (); 
 	
 #define DO_UNLOCK() \
-	gkr_memory_unlock ();
+	egg_memory_unlock ();
 
 #define MEM_ALIGN	(sizeof(void*) > sizeof(long) ? sizeof(void*) : sizeof(long))
 
@@ -564,13 +564,13 @@ block_belongs (MemBlock *bl, const void *p)
 }
 
 void*
-gkr_secure_alloc (unsigned long sz)
+egg_secure_alloc (unsigned long sz)
 {
-	return gkr_secure_alloc_full (sz, GKR_SECURE_USE_FALLBACK);
+	return egg_secure_alloc_full (sz, GKR_SECURE_USE_FALLBACK);
 }
 
 void*
-gkr_secure_alloc_full (unsigned long sz, int flags)
+egg_secure_alloc_full (unsigned long sz, int flags)
 {
 	MemBlock *bl;
 	void *p = NULL;
@@ -600,7 +600,7 @@ gkr_secure_alloc_full (unsigned long sz, int flags)
 	DO_UNLOCK ();
 	
 	if (!p && (flags & GKR_SECURE_USE_FALLBACK)) {
-		p = gkr_memory_fallback (NULL, sz);
+		p = egg_memory_fallback (NULL, sz);
 		if (p) /* Our returned memory is always zeroed */
 			memset (p, 0, sz);
 	}
@@ -612,13 +612,13 @@ gkr_secure_alloc_full (unsigned long sz, int flags)
 }
 
 void*
-gkr_secure_realloc (void *p, unsigned long sz)
+egg_secure_realloc (void *p, unsigned long sz)
 {
-	return gkr_secure_realloc_full (p, sz, GKR_SECURE_USE_FALLBACK);
+	return egg_secure_realloc_full (p, sz, GKR_SECURE_USE_FALLBACK);
 }
 
 void*
-gkr_secure_realloc_full (void *p, unsigned long sz, int flags)
+egg_secure_realloc_full (void *p, unsigned long sz, int flags)
 {
 	MemBlock *bl = NULL;
 	unsigned long oldsz = 0;
@@ -632,9 +632,9 @@ gkr_secure_realloc_full (void *p, unsigned long sz, int flags)
 	}
 	
 	if (p == NULL)
-		return gkr_secure_alloc_full (sz, flags);
+		return egg_secure_alloc_full (sz, flags);
 	if (!sz) {
-		gkr_secure_free_full (p, flags);
+		egg_secure_free_full (p, flags);
 		return NULL;
 	}
 	
@@ -664,7 +664,7 @@ gkr_secure_realloc_full (void *p, unsigned long sz, int flags)
 			 * In this case we can't zero the returned memory, 
 			 * because we don't know what the block size was.
 			 */
-			return gkr_memory_fallback (p, sz);
+			return egg_memory_fallback (p, sz);
 		} else {
 			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)p);
 			ASSERT (0 && "memory does does not belong to gnome-keyring");
@@ -673,10 +673,10 @@ gkr_secure_realloc_full (void *p, unsigned long sz, int flags)
 	}
 		
 	if (donew) {
-		n = gkr_secure_alloc_full (sz, flags);
+		n = egg_secure_alloc_full (sz, flags);
 		if (n) {
 			memcpy (n, p, oldsz);
-			gkr_secure_free_full (p, flags);
+			egg_secure_free_full (p, flags);
 		}
 	}
 	
@@ -687,13 +687,13 @@ gkr_secure_realloc_full (void *p, unsigned long sz, int flags)
 }
 
 void
-gkr_secure_free (void *p)
+egg_secure_free (void *p)
 {
-	gkr_secure_free_full (p, GKR_SECURE_USE_FALLBACK);
+	egg_secure_free_full (p, GKR_SECURE_USE_FALLBACK);
 }
 
 void
-gkr_secure_free_full (void *p, int flags)
+egg_secure_free_full (void *p, int flags)
 {
 	MemBlock *bl = NULL;
 	
@@ -714,7 +714,7 @@ gkr_secure_free_full (void *p, int flags)
 	
 	if (!bl) {
 		if ((flags & GKR_SECURE_USE_FALLBACK)) {
-			gkr_memory_fallback (p, 0);
+			egg_memory_fallback (p, 0);
 		} else {
 			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)p);
 			ASSERT (0 && "memory does does not belong to gnome-keyring");
@@ -723,7 +723,7 @@ gkr_secure_free_full (void *p, int flags)
 } 
 
 int  
-gkr_secure_check (const void *p)
+egg_secure_check (const void *p)
 {
 	MemBlock *bl = NULL;
 
@@ -741,7 +741,7 @@ gkr_secure_check (const void *p)
 } 
 
 void
-gkr_secure_dump_blocks (void)
+egg_secure_dump_blocks (void)
 {
 	MemBlock *bl = NULL;
 
@@ -759,7 +759,7 @@ gkr_secure_dump_blocks (void)
 }
 
 char*
-gkr_secure_strdup (const char *str)
+egg_secure_strdup (const char *str)
 {
 	unsigned long len;
 	char *res;
@@ -768,13 +768,13 @@ gkr_secure_strdup (const char *str)
 		return NULL;
 	
 	len = strlen (str) + 1;	
-	res = (char*)gkr_secure_alloc (len);
+	res = (char*)egg_secure_alloc (len);
 	strcpy (res, str);
 	return res;
 }
 
 void
-gkr_secure_strclear (char *str)
+egg_secure_strclear (char *str)
 {
 	volatile char *vp;
 	size_t len;
@@ -792,7 +792,7 @@ gkr_secure_strclear (char *str)
 }
 
 void
-gkr_secure_strfree (char *str)
+egg_secure_strfree (char *str)
 {
 	/*
 	 * If we're using unpageable 'secure' memory, then the free call
@@ -800,6 +800,6 @@ gkr_secure_strfree (char *str)
 	 * we may be using normal memory, zero it out here just in case.
 	 */
 	
-	gkr_secure_strclear (str);
-	gkr_secure_free_full (str, GKR_SECURE_USE_FALLBACK);
+	egg_secure_strclear (str);
+	egg_secure_free_full (str, GKR_SECURE_USE_FALLBACK);
 }

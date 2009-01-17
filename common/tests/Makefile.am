@@ -1,6 +1,5 @@
 UNIT_AUTO = \
 	unit-test-async.c \
-	unit-test-secmem.c \
 	unit-test-unique.c \
 	unit-test-crypto.c \
 	unit-test-cleanup.c \
@@ -11,6 +10,7 @@ UNIT_AUTO = \
 UNIT_PROMPT = 
 
 UNIT_LIBS =  \
+	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/common/libgkr-common.la
 
 include $(top_srcdir)/tests/test.make

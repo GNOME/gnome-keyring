@@ -60,8 +60,8 @@ struct GnomeKeyringItemInfo {
 int gnome_keyring_socket_connect_daemon (gboolean non_blocking, gboolean only_running);
 int gnome_keyring_socket_read_all (int fd, guchar *buf, size_t len);
 int gnome_keyring_socket_write_all (int fd, const guchar *buf, size_t len);
-gboolean gnome_keyring_socket_read_buffer (int fd, GkrBuffer *buffer);
-gboolean gnome_keyring_socket_write_buffer (int fd, GkrBuffer *buffer);
+gboolean gnome_keyring_socket_read_buffer (int fd, EggBuffer *buffer);
+gboolean gnome_keyring_socket_write_buffer (int fd, EggBuffer *buffer);
 
 extern const gchar *GNOME_KEYRING_OUT_ENVIRONMENT[];
 extern const gchar *GNOME_KEYRING_IN_ENVIRONMENT[];
