@@ -186,3 +186,149 @@ DEFINE_TEST(transaction_dispose_completes)
 
 	g_object_unref (transaction);
 }
+
+DEFINE_TEST(remove_file_success)
+{
+	GckTransaction *transaction = gck_transaction_new ();
+	gchar *filename = test_build_filename ("remove-file");
+	
+	g_assert (g_file_set_contents (filename, "xxx", 3, NULL));
+	g_assert (g_file_test (filename, G_FILE_TEST_IS_REGULAR));
+	
+	gck_transaction_remove_file (transaction, filename);
+	g_assert (!gck_transaction_get_failed (transaction));
+	
+	g_assert (!g_file_test (filename, G_FILE_TEST_IS_REGULAR));
+	
+	gck_transaction_complete (transaction);
+	g_assert (!g_file_test (filename, G_FILE_TEST_IS_REGULAR));
+	
+	g_object_unref (transaction);
+	g_free (filename);
+}
+
+DEFINE_TEST(remove_file_abort)
+{
+	GckTransaction *transaction = gck_transaction_new ();
+	gchar *filename = test_build_filename ("remove-file");
+	gchar *data;
+	gsize n_data;
+	
+	g_assert (g_file_set_contents (filename, "xxx", 3, NULL));
+	g_assert (g_file_test (filename, G_FILE_TEST_IS_REGULAR));
+	
+	gck_transaction_remove_file (transaction, filename);
+	g_assert (!gck_transaction_get_failed (transaction));
+	
+	g_assert (!g_file_test (filename, G_FILE_TEST_IS_REGULAR));
+	
+	/* Fail the transaction */
+	gck_transaction_fail (transaction, CKR_FUNCTION_FAILED);
+	
+	gck_transaction_complete (transaction);
+	g_assert (gck_transaction_get_failed (transaction));
+	g_assert (g_file_test (filename, G_FILE_TEST_IS_REGULAR));
+	
+	g_assert (g_file_get_contents (filename, &data, &n_data, NULL));
+	g_assert_cmpuint (n_data, ==, 3);
+	g_assert_cmpstr (data, ==, "xxx");
+	g_free (data);
+	
+	g_unlink (filename);
+	g_object_unref (transaction);
+	g_free (filename);
+}
+
+DEFINE_TEST(remove_file_non_exist)
+{
+	GckTransaction *transaction = gck_transaction_new ();
+	gchar *filename = test_build_filename ("remove-non-existant");
+
+	g_unlink (filename);
+	
+	/* Should succeed even though not exist */
+	gck_transaction_remove_file (transaction, filename);
+	g_assert (!gck_transaction_get_failed (transaction));
+	
+	gck_transaction_complete (transaction);
+	g_object_unref (transaction);
+	g_free (filename);
+}
+
+DEFINE_TEST(write_file)
+{
+	GckTransaction *transaction = gck_transaction_new ();
+	gchar *filename = test_build_filename ("write-test");
+	gchar *data;
+	gsize n_data;
+	
+	gck_transaction_write_file (transaction, filename, (const guchar*)"value", 5);
+	g_assert (!gck_transaction_get_failed (transaction));
+
+	g_assert (g_file_get_contents (filename, &data, &n_data, NULL));
+	g_assert_cmpuint (n_data, ==, 5);
+	g_assert_cmpstr (data, ==, "value");
+	g_free (data);
+
+	gck_transaction_complete (transaction);
+	
+	g_assert (g_file_get_contents (filename, &data, &n_data, NULL));
+	g_assert_cmpuint (n_data, ==, 5);
+	g_assert_cmpstr (data, ==, "value");
+	g_free (data);
+
+	g_object_unref (transaction);
+	g_free (filename);
+}
+
+DEFINE_TEST(write_file_abort_gone)
+{
+	GckTransaction *transaction = gck_transaction_new ();
+	gchar *filename = test_build_filename ("write-test");
+	gchar *data;
+	gsize n_data;
+	
+	g_unlink (filename);
+	
+	gck_transaction_write_file (transaction, filename, (const guchar*)"value", 5);
+	g_assert (!gck_transaction_get_failed (transaction));
+
+	g_assert (g_file_get_contents (filename, &data, &n_data, NULL));
+	g_assert_cmpuint (n_data, ==, 5);
+	g_assert_cmpstr (data, ==, "value");
+	g_free (data);
+
+	gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+	gck_transaction_complete (transaction);
+
+	g_assert (!g_file_test (filename, G_FILE_TEST_IS_REGULAR));
+
+	g_object_unref (transaction);
+	g_free (filename);
+}
+
+DEFINE_TEST(write_file_abort_revert)
+{
+	GckTransaction *transaction = gck_transaction_new ();
+	gchar *filename = test_build_filename ("write-test");
+	gchar *data;
+	
+	g_assert (g_file_set_contents (filename, "my original", -1, NULL));
+	
+	gck_transaction_write_file (transaction, filename, (const guchar*)"new value", 9);
+	g_assert (!gck_transaction_get_failed (transaction));
+
+	g_assert (g_file_get_contents (filename, &data, NULL, NULL));
+	g_assert_cmpstr (data, ==, "new value");
+	g_free (data);
+
+	gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+	gck_transaction_complete (transaction);
+
+	g_assert (g_file_get_contents (filename, &data, NULL, NULL));
+	g_assert_cmpstr (data, ==, "my original");
+	g_free (data);
+
+	g_object_unref (transaction);
+	g_free (filename);
+}

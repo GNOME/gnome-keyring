@@ -94,6 +94,16 @@ test_build_filename (const gchar *basename)
 	return g_build_filename (test_path, basename, NULL);
 }
 
+guchar* 
+test_read_testdata (const gchar *basename, gsize *n_result)
+{
+	gchar *file = g_build_filename ("test-data", basename, NULL);
+	gchar *result;
+	if (!g_file_get_contents (file, &result, n_result, NULL))
+		g_assert_not_reached ();
+	return (guchar*)result;
+}
+
 static void 
 chdir_base_dir (char* argv0)
 {

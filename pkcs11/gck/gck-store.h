@@ -54,6 +54,7 @@ struct _GckStoreClass {
 	/* Virtual methods */
     
 	CK_RV (*read_value) (GckStore *self, GckObject *object, CK_ATTRIBUTE_PTR attr);
+	
 	void (*write_value) (GckStore *self, GckTransaction *transaction, GckObject *object, CK_ATTRIBUTE_PTR attr); 
 };
 

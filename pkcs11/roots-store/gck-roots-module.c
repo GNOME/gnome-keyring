@@ -27,6 +27,7 @@
 
 #include "gck/gck-data-pem.h"
 #include "gck/gck-file-tracker.h"
+#include "gck/gck-serializable.h"
 
 #include <string.h>
 
@@ -117,7 +118,7 @@ add_certificate_for_data (GckRootsModule *self, const guchar *data,
 	/* Create a new certificate object */
 	cert = GCK_CERTIFICATE (gck_roots_certificate_new (unique, path));
 
-	if (!gck_certificate_load_data (cert, data, n_data)) {
+	if (!gck_serializable_load (GCK_SERIALIZABLE (cert), NULL, data, n_data)) {
 		g_message ("couldn't parse certificate(s): %s", path);
 		g_object_unref (cert);
 		return NULL;

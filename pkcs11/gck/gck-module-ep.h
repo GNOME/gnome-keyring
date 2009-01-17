@@ -354,18 +354,11 @@ static CK_RV
 gck_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL) {
-			session = gck_module_lookup_session (pkcs11_module, handle);
-			if (session != NULL)
-				rv = gck_session_C_InitPIN (session,
-				                            pin, pin_len);
-			else
-				rv = CKR_SESSION_HANDLE_INVALID;
-		}
+		if (pkcs11_module != NULL)
+			rv = gck_module_C_InitPIN (pkcs11_module, handle, pin, pin_len);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
 
@@ -376,18 +369,11 @@ static CK_RV
 gck_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len, CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
 {
 	CK_RV rv = CKR_CRYPTOKI_NOT_INITIALIZED;
-	GckSession *session;
 	
 	g_static_mutex_lock (&pkcs11_module_mutex);
 	
-		if (pkcs11_module != NULL) {
-			session = gck_module_lookup_session (pkcs11_module, handle);
-			if (session != NULL)
-				rv = gck_session_C_SetPIN (session,
-				                           old_pin, old_pin_len, new_pin, new_pin_len);
-			else
-				rv = CKR_SESSION_HANDLE_INVALID;
-		}
+		if (pkcs11_module != NULL)
+			rv = gck_module_C_SetPIN (pkcs11_module, handle, old_pin, old_pin_len, new_pin, new_pin_len);
 			
 	g_static_mutex_unlock (&pkcs11_module_mutex);
 

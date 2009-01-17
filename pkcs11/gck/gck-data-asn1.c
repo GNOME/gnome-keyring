@@ -346,8 +346,6 @@ gck_data_asn1_read_oid (ASN1_TYPE asn, const gchar *part)
 	return quark;
 }
 
-#ifdef UNTESTED_CODE
-
 gboolean
 gck_data_asn1_write_oid (ASN1_TYPE asn, const gchar *part, GQuark val)
 {
@@ -358,11 +356,8 @@ gck_data_asn1_write_oid (ASN1_TYPE asn, const gchar *part, GQuark val)
 	oid = g_quark_to_string (val);
 	g_return_val_if_fail (oid, FALSE);
 	
-	return gck_data_asn1_write_value (asn, part, (const guchar*)oid, 
-			                          1 /* any non-null value for OID */);
+	return gck_data_asn1_write_value (asn, part, (const guchar*)oid, strlen (oid));
 }
-
-#endif /* UNTESTED_CODE */
 
 gboolean
 gck_data_asn1_read_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi)

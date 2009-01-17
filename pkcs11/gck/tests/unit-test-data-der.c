@@ -104,11 +104,7 @@ test_der_public (gcry_sexp_t key)
 
 DEFINE_SETUP(preload)
 {
-	gboolean ret;
-	
-	ret = g_file_get_contents ("test-data/test-certificate-1.der", (gchar**)&certificate_data, &n_certificate_data, NULL);
-	g_assert ("couldn't read in file: test-data/test-certificate-1.der" && ret);
-	
+	certificate_data = test_read_testdata ("test-certificate-1.der", &n_certificate_data);	
 	certificate = gck_data_asn1_decode ("PKIX1.Certificate", certificate_data, n_certificate_data);
 	g_assert (certificate);
 }
@@ -256,6 +252,18 @@ DEFINE_TEST(read_certificate)
 	asn1_delete_structure (&asn);
 }
 
+DEFINE_TEST(write_certificate)
+{
+	guchar *data;
+	gsize n_data;
+	
+	data = gck_data_der_write_certificate (certificate, &n_data);
+	g_assert (data);
+	g_assert (n_data == n_certificate_data);
+	g_assert (memcmp (data, certificate_data, n_data) == 0);
+	g_free (data);
+}
+
 DEFINE_TEST(read_basic_constraints)
 {
 	const guchar *extension;
@@ -271,4 +279,143 @@ DEFINE_TEST(read_basic_constraints)
 	g_assert (res == GCK_DATA_SUCCESS);
 	g_assert (is_ca == TRUE);
 	g_assert (path_len == -1);
+}
+
+DEFINE_TEST(read_all_pkcs8)
+{
+	gcry_sexp_t sexp;
+	GckDataResult res;
+	GDir *dir;
+	const gchar *name;
+	guchar *data;
+	gsize n_data;
+	
+	dir = g_dir_open ("test-data", 0, NULL);
+	g_assert (dir);
+	
+	for(;;) {
+		name = g_dir_read_name (dir);
+		if (!name)
+			break;
+		
+		if (!g_pattern_match_simple ("der-pkcs8-*", name))
+			continue;
+		
+		data = test_read_testdata (name, &n_data);
+		res = gck_data_der_read_private_pkcs8 (data, n_data, "booo", 4, &sexp);
+		g_assert (res == GCK_DATA_SUCCESS);
+		
+		g_assert (gck_crypto_sexp_parse_key (sexp, NULL, NULL, NULL));
+		gcry_sexp_release (sexp);
+		g_free (data);
+	}
+	
+	g_dir_close (dir);
+}
+
+DEFINE_TEST(read_pkcs8_bad_password)
+{
+	gcry_sexp_t sexp;
+	GckDataResult res;
+	guchar *data;
+	gsize n_data;
+	
+	data = test_read_testdata ("der-pkcs8-encrypted-pkcs5.key", &n_data);
+	res = gck_data_der_read_private_pkcs8 (data, n_data, "wrong password", 4, &sexp);
+	g_assert (res == GCK_DATA_LOCKED);
+	
+	g_free (data);
+}
+
+DEFINE_TEST(write_pkcs8_plain)
+{
+	gcry_sexp_t sexp, check;
+	gcry_error_t gcry;
+	GckDataResult res;
+	guchar *data;
+	gsize n_data;
+	
+	/* RSA */
+	
+	gcry = gcry_sexp_sscan (&sexp, NULL, rsaprv, strlen (rsaprv));
+	g_return_if_fail (gcry == 0);
+	
+	data = gck_data_der_write_private_pkcs8_plain (sexp, &n_data);
+	g_assert (data);
+	g_assert (n_data);
+	
+	res = gck_data_der_read_private_pkcs8_plain (data, n_data, &check);
+	g_free (data);
+	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (check);
+	
+	g_assert (compare_keys (sexp, check));
+	gcry_sexp_release (sexp);
+	gcry_sexp_release (check);
+	
+	
+	/* DSA */
+
+	gcry = gcry_sexp_sscan (&sexp, NULL, dsaprv, strlen (dsaprv));
+	g_return_if_fail (gcry == 0);
+	
+	data = gck_data_der_write_private_pkcs8_plain (sexp, &n_data);
+	g_assert (data);
+	g_assert (n_data);
+	
+	res = gck_data_der_read_private_pkcs8_plain (data, n_data, &check);
+	g_free (data);
+	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (check);
+	
+	g_assert (compare_keys (sexp, check));
+	gcry_sexp_release (sexp);
+	gcry_sexp_release (check);
+}
+
+
+DEFINE_TEST(write_pkcs8_encrypted)
+{
+	gcry_sexp_t sexp, check;
+	gcry_error_t gcry;
+	GckDataResult res;
+	guchar *data;
+	gsize n_data;
+	
+	/* RSA */
+	
+	gcry = gcry_sexp_sscan (&sexp, NULL, rsaprv, strlen (rsaprv));
+	g_return_if_fail (gcry == 0);
+	
+	data = gck_data_der_write_private_pkcs8_crypted (sexp, "testo", 5, &n_data);
+	g_assert (data);
+	g_assert (n_data);
+	
+	res = gck_data_der_read_private_pkcs8_crypted (data, n_data, "testo", 5, &check);
+	g_free (data);
+	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (check);
+	
+	g_assert (compare_keys (sexp, check));
+	gcry_sexp_release (sexp);
+	gcry_sexp_release (check);
+	
+	
+	/* DSA */
+
+	gcry = gcry_sexp_sscan (&sexp, NULL, dsaprv, strlen (dsaprv));
+	g_return_if_fail (gcry == 0);
+	
+	data = gck_data_der_write_private_pkcs8_crypted (sexp, "testo", 5, &n_data);
+	g_assert (data);
+	g_assert (n_data);
+	
+	res = gck_data_der_read_private_pkcs8_crypted (data, n_data, "testo", 5, &check);
+	g_free (data);
+	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (check);
+	
+	g_assert (compare_keys (sexp, check));
+	gcry_sexp_release (sexp);
+	gcry_sexp_release (check);
 }

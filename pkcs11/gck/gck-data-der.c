@@ -28,6 +28,8 @@
 #include "gck-data-der.h"
 #include "gck-data-types.h"
 
+#include "common/gkr-secure-memory.h"
+
 #include <glib.h>
 #include <gcrypt.h>
 #include <libtasn1.h>
@@ -524,6 +526,180 @@ gck_data_der_read_private_key (const guchar *data, gsize n_data, gcry_sexp_t *s_
 	return res;
 }
 
+GckDataResult
+gck_data_der_read_private_pkcs8_plain (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
+{
+	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GckDataResult ret;
+	int algorithm;
+	GQuark key_algo;
+	const guchar *keydata;
+	gsize n_keydata;
+	const guchar *params;
+	gsize n_params;
+	
+	ret = GCK_DATA_UNRECOGNIZED;
+	
+	init_quarks ();
+	
+	asn = gck_data_asn1_decode ("PKIX1.pkcs-8-PrivateKeyInfo", data, n_data);
+	if (!asn)
+		goto done;
+
+	ret = GCK_DATA_FAILURE;
+	algorithm = 0;
+		
+	key_algo = gck_data_asn1_read_oid (asn, "privateKeyAlgorithm.algorithm");
+  	if (!key_algo)
+  		goto done;
+  	else if (key_algo == OID_PKIX1_RSA)
+  		algorithm = GCRY_PK_RSA;
+  	else if (key_algo == OID_PKIX1_DSA)
+  		algorithm = GCRY_PK_DSA;
+  		
+  	if (!algorithm) {
+  		ret = GCK_DATA_UNRECOGNIZED;
+  		goto done;
+  	}
+
+	keydata = gck_data_asn1_read_content (asn, data, n_data, "privateKey", &n_keydata);
+	if (!keydata)
+		goto done;
+		
+	params = gck_data_asn1_read_element (asn, data, n_data, "privateKeyAlgorithm.parameters", 
+	                                     &n_params);
+		
+	ret = GCK_DATA_SUCCESS;
+	
+done:
+	if (ret == GCK_DATA_SUCCESS) {		
+		switch (algorithm) {
+		case GCRY_PK_RSA:
+			ret = gck_data_der_read_private_key_rsa (keydata, n_keydata, s_key);
+			break;
+		case GCRY_PK_DSA:
+			/* Try the normal one block format */
+			ret = gck_data_der_read_private_key_dsa (keydata, n_keydata, s_key);
+			
+			/* Otherwise try the two part format that everyone seems to like */
+			if (ret == GCK_DATA_UNRECOGNIZED && params && n_params)
+				ret = gck_data_der_read_private_key_dsa_parts (keydata, n_keydata, 
+				                                               params, n_params, s_key);
+			break;
+		default:
+			g_message ("invalid or unsupported key type in PKCS#8 key");
+			ret = GCK_DATA_UNRECOGNIZED;
+			break;
+		};
+		
+	} else if (ret == GCK_DATA_FAILURE) {
+		g_message ("invalid PKCS#8 key");
+	}
+	
+	if (asn)
+		asn1_delete_structure (&asn);
+	
+	return ret;
+}
+
+GckDataResult
+gck_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const gchar *password, 
+                                         gsize n_password, gcry_sexp_t *s_key)
+{
+	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	gcry_cipher_hd_t cih = NULL;
+	gcry_error_t gcry;
+	GckDataResult ret, r;
+	GQuark scheme;
+	guchar *crypted = NULL;
+	const guchar *params;
+	gsize n_crypted, n_params;
+	gint l;
+
+	init_quarks ();
+
+	ret = GCK_DATA_UNRECOGNIZED;
+	
+	asn = gck_data_asn1_decode ("PKIX1.pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
+	if (!asn)
+		goto done;
+
+	ret = GCK_DATA_FAILURE;
+
+	/* Figure out the type of encryption */
+	scheme = gck_data_asn1_read_oid (asn, "encryptionAlgorithm.algorithm");
+	if (!scheme)
+		goto done;
+		
+	params = gck_data_asn1_read_element (asn, data, n_data, "encryptionAlgorithm.parameters", &n_params);
+	if (!params)
+		goto done;
+
+	/* 
+	 * Parse the encryption stuff into a cipher. 
+	 */
+	r = gck_data_der_read_cipher (scheme, password, n_password, params, n_params, &cih);
+	if (r == GCK_DATA_UNRECOGNIZED) {
+		ret = GCK_DATA_FAILURE;
+		goto done;
+	} else if (r != GCK_DATA_SUCCESS) {
+		ret = r;
+		goto done;
+	}
+			
+	crypted = gck_data_asn1_read_value (asn, "encryptedData", &n_crypted, gkr_secure_realloc);
+	if (!crypted)
+		goto done;
+	
+	gcry = gcry_cipher_decrypt (cih, crypted, n_crypted, NULL, 0);
+	gcry_cipher_close (cih);
+	cih = NULL;
+		
+	if (gcry != 0) {
+		g_warning ("couldn't decrypt pkcs8 data: %s", gcry_strerror (gcry));
+		goto done;
+	}
+		
+	/* Unpad the DER data */
+	l = gck_data_asn1_element_length (crypted, n_crypted);
+	if (l <= 0 || l > n_crypted) {
+		ret = GCK_DATA_LOCKED;
+		goto done;
+	} 
+	n_crypted = l;
+		
+	/* Try to parse the resulting key */
+	ret = gck_data_der_read_private_pkcs8_plain (crypted, n_crypted, s_key);
+	gkr_secure_free (crypted);
+	crypted = NULL;
+		
+	/* If unrecognized we assume bad password */
+	if (ret == GCK_DATA_UNRECOGNIZED) 
+		ret = GCK_DATA_LOCKED;
+
+done:
+	if (cih)
+		gcry_cipher_close (cih);
+	if (asn)
+		asn1_delete_structure (&asn);
+	gkr_secure_free (crypted);
+		
+	return ret;
+}
+
+GckDataResult
+gck_data_der_read_private_pkcs8 (const guchar *data, gsize n_data, const gchar *password, 
+                                 gsize n_password, gcry_sexp_t *s_key)
+{
+	GckDataResult res;
+
+	res = gck_data_der_read_private_pkcs8_crypted (data, n_data, password, n_password, s_key);
+	if (res == GCK_DATA_UNRECOGNIZED) 
+		res = gck_data_der_read_private_pkcs8_plain (data, n_data, s_key);
+
+	return res;
+}
+
 guchar*
 gck_data_der_write_public_key_rsa (gcry_sexp_t s_key, gsize *len)
 {
@@ -823,6 +999,199 @@ gck_data_der_write_private_key (gcry_sexp_t s_key, gsize *len)
 	}
 }
 
+static gcry_cipher_hd_t
+prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password, 
+                                 gsize n_password, gsize *n_block)
+{
+	ASN1_TYPE asn1_params;
+	gcry_cipher_hd_t cih;
+	guchar salt[8];
+	gcry_error_t gcry;
+	guchar *key, *iv, *portion;
+	gsize n_key, n_portion;
+	int iterations, res;
+	
+	init_quarks ();
+
+	/* Make sure the encryption algorithm works */
+	g_return_val_if_fail (gcry_cipher_algo_info (OID_PKCS12_PBE_3DES_SHA1, 
+	                                             GCRYCTL_TEST_ALGO, NULL, 0), NULL);
+
+	/* The encryption algorithm */
+	if(!gck_data_asn1_write_oid (asn, "encryptionAlgorithm.algorithm", 
+	                             OID_PKCS12_PBE_3DES_SHA1))
+		g_return_val_if_reached (NULL); 
+
+	/* Randomize some input for the password based secret */
+	iterations = 1000 + (int) (1000.0 * rand () / (RAND_MAX + 1.0));
+	gcry_create_nonce (salt, sizeof (salt));
+
+	/* Allocate space for the key and iv */
+	n_key = gcry_cipher_get_algo_keylen (GCRY_CIPHER_3DES);
+	*n_block = gcry_cipher_get_algo_blklen (GCRY_MD_SHA1);
+	g_return_val_if_fail (n_key && *n_block, NULL);
+		
+	if (!gck_crypto_symkey_generate_pkcs12 (GCRY_CIPHER_3DES, GCRY_MD_SHA1, 
+	                                        password, n_password, salt, 
+	                                        sizeof (salt), iterations, &key, &iv))
+		g_return_val_if_reached (NULL);
+
+	/* Now write out the parameters */	
+	res = asn1_create_element (gck_data_asn1_get_pkix_asn1type (),
+	                           "PKIX1.pkcs-12-PbeParams", &asn1_params);
+	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	if (!gck_data_asn1_write_value (asn1_params, "salt", salt, sizeof (salt)))
+		g_return_val_if_reached (NULL);
+	if (!gck_data_asn1_write_uint (asn1_params, "iterations", iterations))
+		g_return_val_if_reached (NULL);
+	portion = gck_data_asn1_encode (asn1_params, "", &n_portion, NULL);
+	g_return_val_if_fail (portion, NULL); 
+	
+	if (!gck_data_asn1_write_value (asn, "encryptionAlgorithm.parameters", portion, n_portion))
+		g_return_val_if_reached (NULL);
+	g_free (portion);
+	
+	/* Now make a cipher that matches what we wrote out */
+	gcry = gcry_cipher_open (&cih, GCRY_CIPHER_3DES, GCRY_CIPHER_MODE_CBC, 0);
+	g_return_val_if_fail (gcry == 0, NULL);
+	g_return_val_if_fail (cih, NULL);
+	
+	gcry_cipher_setiv (cih, iv, *n_block);
+	gcry_cipher_setkey (cih, key, n_key);
+	
+	g_free (iv);
+	gcry_free (key);
+	asn1_delete_structure (&asn1_params);
+	
+	return cih;
+}
+
+guchar*
+gck_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
+{
+	ASN1_TYPE asn;
+	int res, algorithm;
+	gboolean is_priv;
+	GQuark oid;
+	guchar *params, *key, *data;
+	gsize n_params, n_key;
+	
+	init_quarks ();
+
+	/* Parse and check that the key is for real */
+	if (!gck_crypto_sexp_parse_key (skey, &algorithm, &is_priv, NULL))
+		g_return_val_if_reached (NULL);
+	g_return_val_if_fail (is_priv == TRUE, NULL);
+	
+	res = asn1_create_element (gck_data_asn1_get_pkix_asn1type (), 
+	                           "PKIX1.pkcs-8-PrivateKeyInfo", &asn);
+	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	
+	/* Write out the version */
+	if (!gck_data_asn1_write_uint (asn, "version", 1))
+		g_return_val_if_reached (NULL);
+	
+	/* Per algorithm differences */
+	switch (algorithm)
+	{
+	/* RSA gets encoded in a standard simple way */
+	case GCRY_PK_RSA:
+		oid = OID_PKIX1_RSA;
+		params = NULL;
+		n_params = 0;
+		key = gck_data_der_write_private_key_rsa (skey, &n_key);
+		break;
+		
+	/* DSA gets incoded with the params seperate */
+	case GCRY_PK_DSA:
+		oid = OID_PKIX1_DSA;
+		key = gck_data_der_write_private_key_dsa_part (skey, &n_key);
+		params = gck_data_der_write_private_key_dsa_params (skey, &n_params);
+		break;
+		
+	default:
+		g_warning ("trying to serialize unsupported private key algorithm: %d", algorithm);
+		return NULL;
+	};
+	
+	/* Write out the algorithm */
+	if (!gck_data_asn1_write_oid (asn, "privateKeyAlgorithm.algorithm", oid))
+		g_return_val_if_reached (NULL);
+
+	/* Write out the parameters */
+	if (!gck_data_asn1_write_value (asn, "privateKeyAlgorithm.parameters", params, n_params))
+		g_return_val_if_reached (NULL);
+	gkr_secure_free (params);
+	
+	/* Write out the key portion */
+	if (!gck_data_asn1_write_value (asn, "privateKey", key, n_key))
+		g_return_val_if_reached (NULL);
+	gkr_secure_free (key);
+	
+	/* Add an empty attributes field */
+	if (!gck_data_asn1_write_value (asn, "attributes", NULL, 0))
+		g_return_val_if_reached (NULL);
+	
+	data = gck_data_asn1_encode (asn, "", n_data, NULL);
+	g_return_val_if_fail (data, NULL); 
+	
+	asn1_delete_structure (&asn);
+	
+	return data;
+}
+
+guchar*
+gck_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *password,
+                                          gsize n_password, gsize *n_data)
+{
+	gcry_error_t gcry;
+	gcry_cipher_hd_t cih;
+	ASN1_TYPE asn;
+	int res;
+	guchar *key, *data; 
+	gsize n_key, block = 0;
+
+	/* Encode the key in normal pkcs8 fashion */
+	key = gck_data_der_write_private_pkcs8_plain (skey, &n_key);
+	
+	res = asn1_create_element (gck_data_asn1_get_pkix_asn1type (), 
+	                           "PKIX1.pkcs-8-EncryptedPrivateKeyInfo", &asn);
+	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	
+	/* Create a and write out a cipher used for encryption */
+	cih = prepare_and_encode_pkcs8_cipher (asn, password, n_password, &block);
+	g_return_val_if_fail (cih, NULL);
+	
+	/* Pad the block of data */
+	if(block > 1) {
+		gsize pad;
+		guchar *padded;
+		
+		pad = block - (n_key % block);
+		if (pad == 0)
+			pad = block;
+		padded = g_realloc (key, n_key + pad);
+		memset (padded + n_key, pad, pad);
+		key = padded;
+		n_key += pad;
+	}
+	
+	gcry = gcry_cipher_encrypt (cih, key, n_key, NULL, 0);
+	g_return_val_if_fail (gcry == 0, NULL);
+	
+	gcry_cipher_close (cih);
+	
+	res = asn1_write_value (asn, "encryptedData", key, n_key);
+	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	
+	data = gck_data_asn1_encode (asn, "", n_data, NULL);
+	g_return_val_if_fail (data, NULL); 
+
+	asn1_delete_structure (&asn);
+	
+	return data;
+}
+
 /* -----------------------------------------------------------------------------
  * CERTIFICATES
  */
@@ -943,6 +1312,8 @@ done:
 	return ret;
 }
 
+#endif /* UNTESTED CODE */
+
 guchar*
 gck_data_der_write_certificate (ASN1_TYPE asn1, gsize *n_data)
 {
@@ -957,7 +1328,7 @@ gck_data_der_write_certificate (ASN1_TYPE asn1, gsize *n_data)
  */
  
 GckDataResult
-gck_data_der_read_cipher (GQuark oid_scheme, const gchar *password, 
+gck_data_der_read_cipher (GQuark oid_scheme, const gchar *password, gsize n_password,
                           const guchar *data, gsize n_data, gcry_cipher_hd_t *cih)
 {
 	GckDataResult ret = GCK_DATA_UNRECOGNIZED;
@@ -971,20 +1342,20 @@ gck_data_der_read_cipher (GQuark oid_scheme, const gchar *password,
 	/* PKCS#5 PBE */
 	if (oid_scheme == OID_PBE_MD2_DES_CBC)
 		ret = gck_data_der_read_cipher_pkcs5_pbe (GCRY_CIPHER_DES, GCRY_CIPHER_MODE_CBC,
-		                                          GCRY_MD_MD2, password, data, n_data, cih);
+		                                          GCRY_MD_MD2, password, n_password, data, n_data, cih);
 
 	else if (oid_scheme == OID_PBE_MD2_RC2_CBC)
 		/* RC2-64 has no implementation in libgcrypt */
 		ret = GCK_DATA_UNRECOGNIZED;
 	else if (oid_scheme == OID_PBE_MD5_DES_CBC)
 		ret = gck_data_der_read_cipher_pkcs5_pbe (GCRY_CIPHER_DES, GCRY_CIPHER_MODE_CBC,
-		                                          GCRY_MD_MD5, password, data, n_data, cih);
+		                                          GCRY_MD_MD5, password, n_password, data, n_data, cih);
 	else if (oid_scheme == OID_PBE_MD5_RC2_CBC)
 		/* RC2-64 has no implementation in libgcrypt */
 		ret = GCK_DATA_UNRECOGNIZED;
 	else if (oid_scheme == OID_PBE_SHA1_DES_CBC)
 		ret = gck_data_der_read_cipher_pkcs5_pbe (GCRY_CIPHER_DES, GCRY_CIPHER_MODE_CBC,
-		                                          GCRY_MD_SHA1, password, data, n_data, cih);
+		                                          GCRY_MD_SHA1, password, n_password, data, n_data, cih);
 	else if (oid_scheme == OID_PBE_SHA1_RC2_CBC)
 		/* RC2-64 has no implementation in libgcrypt */
 		ret = GCK_DATA_UNRECOGNIZED;
@@ -992,29 +1363,29 @@ gck_data_der_read_cipher (GQuark oid_scheme, const gchar *password,
 	
 	/* PKCS#5 PBES2 */
 	else if (oid_scheme == OID_PBES2)
-		ret = gck_data_der_read_cipher_pkcs5_pbes2 (password, data, n_data, cih);
+		ret = gck_data_der_read_cipher_pkcs5_pbes2 (password, n_password, data, n_data, cih);
 
 		
 	/* PKCS#12 PBE */
 	else if (oid_scheme == OID_PKCS12_PBE_ARCFOUR_SHA1)
 		ret = gck_data_der_read_cipher_pkcs12_pbe (GCRY_CIPHER_ARCFOUR, GCRY_CIPHER_MODE_STREAM, 
-                                                   password, data, n_data, cih);
+		                                           password, n_password, data, n_data, cih);
 	else if (oid_scheme == OID_PKCS12_PBE_RC4_40_SHA1)
 		/* RC4-40 has no implementation in libgcrypt */;
 
 	else if (oid_scheme == OID_PKCS12_PBE_3DES_SHA1)
 		ret = gck_data_der_read_cipher_pkcs12_pbe (GCRY_CIPHER_3DES, GCRY_CIPHER_MODE_CBC, 
-                                                   password, data, n_data, cih);
+		                                           password, n_password, data, n_data, cih);
 	else if (oid_scheme == OID_PKCS12_PBE_2DES_SHA1) 
 		/* 2DES has no implementation in libgcrypt */;
 		
 	else if (oid_scheme == OID_PKCS12_PBE_RC2_128_SHA1)
 		ret = gck_data_der_read_cipher_pkcs12_pbe (GCRY_CIPHER_RFC2268_128, GCRY_CIPHER_MODE_CBC, 
-                                                   password, data, n_data, cih);
+		                                           password, n_password, data, n_data, cih);
 
 	else if (oid_scheme == OID_PKCS12_PBE_RC2_40_SHA1)
 		ret = gck_data_der_read_cipher_pkcs12_pbe (GCRY_CIPHER_RFC2268_40, GCRY_CIPHER_MODE_CBC, 
-                                                   password, data, n_data, cih);
+		                                           password, n_password, data, n_data, cih);
 
 	if (ret == GCK_DATA_UNRECOGNIZED)
     		g_message ("unsupported or unrecognized cipher oid: %s", g_quark_to_string (oid_scheme));
@@ -1022,8 +1393,8 @@ gck_data_der_read_cipher (GQuark oid_scheme, const gchar *password,
 }
 
 GckDataResult
-gck_data_der_read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode, 
-                                    int hash_algo, const gchar *password, const guchar *data, 
+gck_data_der_read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode, int hash_algo, 
+                                    const gchar *password, gsize n_password, const guchar *data, 
                                     gsize n_data, gcry_cipher_hd_t *cih)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
@@ -1064,7 +1435,7 @@ gck_data_der_read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode,
 	g_return_val_if_fail (n_key > 0, GCK_DATA_FAILURE);
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
 		
-	if (!gck_crypto_symkey_generate_pbe (cipher_algo, hash_algo, password, salt,
+	if (!gck_crypto_symkey_generate_pbe (cipher_algo, hash_algo, password, n_password, salt,
 	                                     n_salt, iterations, &key, n_block > 1 ? &iv : NULL))
 		goto done;
 		
@@ -1157,7 +1528,7 @@ setup_pkcs5_des_params (const guchar *data, guchar n_data, gcry_cipher_hd_t cih)
 }
 
 static GckDataResult
-setup_pkcs5_pbkdf2_params (const gchar *password, const guchar *data, 
+setup_pkcs5_pbkdf2_params (const gchar *password, gsize n_password, const guchar *data, 
                            gsize n_data, int cipher_algo, gcry_cipher_hd_t cih)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
@@ -1185,7 +1556,7 @@ setup_pkcs5_pbkdf2_params (const gchar *password, const guchar *data,
 	if (!salt)
 		goto done;
 				
-	if (!gck_crypto_symkey_generate_pbkdf2 (cipher_algo, GCRY_MD_SHA1, password, 
+	if (!gck_crypto_symkey_generate_pbkdf2 (cipher_algo, GCRY_MD_SHA1, password, n_password, 
 	                                        salt, n_salt, iterations, &key, NULL))
 		goto done;
 
@@ -1208,7 +1579,7 @@ done:
 }
 
 GckDataResult
-gck_data_der_read_cipher_pkcs5_pbes2 (const gchar *password, const guchar *data, 
+gck_data_der_read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, const guchar *data, 
                                       gsize n_data, gcry_cipher_hd_t *cih)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
@@ -1298,7 +1669,7 @@ gck_data_der_read_cipher_pkcs5_pbes2 (const gchar *password, const guchar *data,
 	                                &beg, &end) != ASN1_SUCCESS)
 		goto done;
 	
-	ret = setup_pkcs5_pbkdf2_params (password, data + beg, end - beg + 1, algo, *cih);
+	ret = setup_pkcs5_pbkdf2_params (password, n_password, data + beg, end - beg + 1, algo, *cih);
 
 done:
 	if (ret != GCK_DATA_SUCCESS && *cih) {
@@ -1314,7 +1685,8 @@ done:
 
 GckDataResult
 gck_data_der_read_cipher_pkcs12_pbe (int cipher_algo, int cipher_mode, const gchar *password, 
-                                     const guchar *data, gsize n_data, gcry_cipher_hd_t *cih)
+                                     gsize n_password, const guchar *data, gsize n_data, 
+                                     gcry_cipher_hd_t *cih)
 {
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
 	gcry_error_t gcry;
@@ -1353,8 +1725,8 @@ gck_data_der_read_cipher_pkcs12_pbe (int cipher_algo, int cipher_mode, const gch
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
 	
 	/* Generate IV and key using salt read above */
-	if (!gck_crypto_symkey_generate_pkcs12 (cipher_algo, GCRY_MD_SHA1, password,
-	                                        salt, n_salt, iterations, &key, 
+	if (!gck_crypto_symkey_generate_pkcs12 (cipher_algo, GCRY_MD_SHA1, password, 
+	                                        n_password, salt, n_salt, iterations, &key, 
 	                                        n_block > 1 ? &iv : NULL))
 		goto done;
 		
@@ -1384,5 +1756,3 @@ done:
 	
 	return ret;
 }
-
-#endif /* UNTESTED_CODE */

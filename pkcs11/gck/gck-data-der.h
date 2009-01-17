@@ -47,6 +47,17 @@ GckDataResult      gck_data_der_read_private_key_dsa_parts   (const guchar *keyd
 GckDataResult      gck_data_der_read_private_key             (const guchar *data, gsize n_data, 
                                                               gcry_sexp_t *s_key);
 
+GckDataResult      gck_data_der_read_private_pkcs8           (const guchar *data, gsize n_data,
+                                                              const gchar *password, gsize n_password, 
+                                                              gcry_sexp_t *s_key); 
+
+GckDataResult      gck_data_der_read_private_pkcs8_plain     (const guchar *data, gsize n_data,
+                                                              gcry_sexp_t *s_key); 
+
+GckDataResult      gck_data_der_read_private_pkcs8_crypted   (const guchar *data, gsize n_data,
+                                                              const gchar *password, gsize n_password, 
+                                                              gcry_sexp_t *s_key); 
+
 guchar*            gck_data_der_write_private_key_rsa        (gcry_sexp_t s_key, gsize *n_data);
 
 guchar*            gck_data_der_write_private_key_dsa        (gcry_sexp_t s_key, gsize *len);
@@ -57,6 +68,10 @@ guchar*            gck_data_der_write_private_key_dsa_params (gcry_sexp_t skey, 
 
 guchar*            gck_data_der_write_private_key            (gcry_sexp_t s_key, gsize *n_data);
 
+guchar*            gck_data_der_write_private_pkcs8_plain    (gcry_sexp_t skey, gsize *n_data);
+
+guchar*            gck_data_der_write_private_pkcs8_crypted  (gcry_sexp_t skey, const gchar *password,
+                                                              gsize n_password, gsize *n_data);
 
 /* -----------------------------------------------------------------------------
  * PUBLIC KEYS
@@ -107,20 +122,20 @@ guchar*            gck_data_der_write_certificate          (ASN1_TYPE asn1, gsiz
  * CIPHERS
  */
  
-GckDataResult      gck_data_der_read_cipher                 (GQuark oid_scheme, const gchar *password, 
-                                                             const guchar *data, gsize n_data, 
+GckDataResult      gck_data_der_read_cipher                 (GQuark oid_scheme, const gchar *password,
+                                                             gsize n_password, const guchar *data, gsize n_data, 
                                                              gcry_cipher_hd_t *cih);
 
 GckDataResult      gck_data_der_read_cipher_pkcs5_pbe       (int cipher_algo, int cipher_mode, 
-                                                             int hash_algo, const gchar *password, 
+                                                             int hash_algo, const gchar *password, gsize n_password,
                                                              const guchar *data, gsize n_data, 
                                                              gcry_cipher_hd_t *cih);
 
-GckDataResult      gck_data_der_read_cipher_pkcs5_pbes2     (const gchar *password, const guchar *data, 
+GckDataResult      gck_data_der_read_cipher_pkcs5_pbes2     (const gchar *password, gsize n_password, const guchar *data, 
                                                              gsize n_data, gcry_cipher_hd_t *cih);
 
 GckDataResult      gck_data_der_read_cipher_pkcs12_pbe      (int cipher_algo, int cipher_mode, 
-                                                             const gchar *password, const guchar *data, 
+                                                             const gchar *password, gsize n_password, const guchar *data, 
                                                              gsize n_data, gcry_cipher_hd_t *cih);
 
 #endif /*GKRPKIXDER_H_*/

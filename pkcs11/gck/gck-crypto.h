@@ -125,6 +125,9 @@ gboolean                 gck_crypto_sexp_parse_key                     (gcry_sex
                                                                         gboolean *is_private, 
                                                                         gcry_sexp_t *numbers);
 
+gboolean                 gck_crypto_sexp_key_to_public                 (gcry_sexp_t sexp, 
+                                                                        gcry_sexp_t *pub);
+
 gboolean                 gck_crypto_sexp_extract_mpi                   (gcry_sexp_t sexp, 
                                                                         gcry_mpi_t *mpi, 
                                                                         ...) G_GNUC_NULL_TERMINATED;

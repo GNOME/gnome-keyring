@@ -35,19 +35,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static void
-read_file (const gchar *filename, guchar **contents, gsize *len)
-{
-	gchar *path;
-	gboolean ret;
-	
-	path = g_build_filename (g_get_current_dir (), "test-data", filename, NULL);
-	ret = g_file_get_contents (path, (gchar**)contents, len, NULL);
-	g_assert ("couldn't read in file" && ret);
-	
-	g_free (path);
-}
-
 guchar *refenc = NULL;
 guchar *refdata = NULL;
 gsize n_refenc = 0;
@@ -90,7 +77,7 @@ DEFINE_TEST(parse_reference)
 	gsize n_input;
 	guint num;
 	
-	read_file ("pem-rsa-enc.key", &input, &n_input);
+	input = test_read_testdata ("pem-rsa-enc.key", &n_input);
 
 	num = gck_data_pem_parse (input, n_input, parse_reference, NULL);
 	g_assert ("couldn't PEM block in reference data" && num == 1);

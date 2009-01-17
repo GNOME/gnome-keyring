@@ -25,6 +25,7 @@
 
 #include "gck-crypto.h"
 #include "gck-data-openssl.h"
+#include "gck-util.h"
 
 #include <gcrypt.h>
 #include <libtasn1.h>
@@ -133,77 +134,7 @@ const static struct {
 	/* CAMELLIA-256-OFB */
 };
 
-static const char HEXC[] = "0123456789ABCDEF";
-
 /* ------------------------------------------------------------------------- */
-
-static gboolean
-hex_decode (const gchar *data, gsize n_data, 
-            guchar *decoded, gsize *n_decoded)
-{
-	gushort j;
-	gint state = 0;
-	const gchar* pos;
-    
-	g_assert (data);
-	g_assert (decoded);
-	g_assert (n_decoded);
-    
-	g_return_val_if_fail (*n_decoded >= n_data / 2, FALSE);
-	*n_decoded = 0;
-
-	while (n_data > 0) 
-    	{
-    		if (!g_ascii_isspace (*data)) {
-    			
-	        	/* Find the position */
-			pos = strchr (HEXC, g_ascii_toupper (*data));
-			if (pos == 0)
-				break;
-
-			j = pos - HEXC;
-			if(!state) {
-				*decoded = (j & 0xf) << 4;
-				state = 1;
-			} else {      
-				*decoded |= (j & 0xf);
-				(*n_decoded)++;
-				decoded++;
-				state = 0;
-			}
-    		}
-      
-      		++data;
-      		--n_data;
-	}
-  
-  	g_return_val_if_fail (state == 0, FALSE);
-  	
-  	return TRUE;
-}
-
-static gboolean
-hex_encode (const guchar *data, gsize n_data, 
-            gchar *encoded, gsize *n_encoded)
-{
-	guchar j;
-	
-	g_return_val_if_fail (*n_encoded >= n_data * 2 + 1, FALSE);
-	
-	while(n_data > 0) {
-		j = *(data) >> 4 & 0xf;
-		*(encoded++) = HEXC[j];
-    
-		j = *(data++) & 0xf;
-		*(encoded++) = HEXC[j];
-    
-		n_data--;
-	}
-
-	/* Null terminate */
-	*encoded = 0;
-	return TRUE;
-}
 
 int
 gck_data_openssl_parse_algo (const char *name, int *mode)
@@ -255,15 +186,10 @@ parse_dekinfo (const gchar *dek, int *algo, int *mode, guchar **iv)
 		goto done;
 
 	/* Parse the IV */
-	ivlen = len = gcry_cipher_get_algo_blklen (*algo);
-	*iv = g_malloc (ivlen);
+	ivlen = gcry_cipher_get_algo_blklen (*algo);
 	
-	if (!hex_decode (parts[1], strlen (parts[1]), *iv, &len)) {
-		g_free (*iv);
-		goto done;
-	}
-	
-	if (ivlen != len) {
+	*iv = gck_util_hex_decode (parts[1], strlen(parts[1]), &len);
+	if (!*iv || ivlen != len) {
 		g_free (*iv);
 		goto done;
 	}
@@ -421,13 +347,10 @@ gck_data_openssl_get_dekinfo (GHashTable *headers)
 const gchar*
 gck_data_openssl_prep_dekinfo (GHashTable *headers)
 {
-	gsize ivlen, len, n_encoded;
-	gchar buf[256];
+	gchar *dekinfo, *hex;
+	gsize ivlen;
 	guchar *iv;
-	const gchar *dekinfo;
 	
-	strcpy (buf, "DES-EDE3-CBC,");
-
 	/* Create the iv */
 	ivlen = gcry_cipher_get_algo_blklen (GCRY_CIPHER_3DES);
 	g_return_val_if_fail (ivlen, NULL);
@@ -435,13 +358,11 @@ gck_data_openssl_prep_dekinfo (GHashTable *headers)
 	gcry_create_nonce (iv, ivlen);
 	
 	/* And encode it into the string */
-	len = strlen (buf);
-	g_return_val_if_fail (sizeof (buf) - len > ivlen * 2, NULL);
-	n_encoded = (ivlen * 2) + 1;
-	if (!hex_encode (iv, ivlen, buf + len, &n_encoded))
-		g_return_val_if_reached (NULL);
+	hex = gck_util_hex_encode (iv, ivlen);
+	g_return_val_if_fail (hex, NULL);
+	dekinfo = g_strdup_printf ("DES-EDE3-CBC,%s", hex);
+	g_free (hex);
 
-	dekinfo = g_strdup (buf);
 	g_hash_table_insert (headers, g_strdup ("DEK-Info"), (void*)dekinfo);
 	g_hash_table_insert (headers, g_strdup ("Proc-Type"), g_strdup ("4,ENCRYPTED"));
 	

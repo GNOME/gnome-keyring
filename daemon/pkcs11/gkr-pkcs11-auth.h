@@ -64,6 +64,17 @@ void                            gkr_pkcs11_auth_login_specific_done      (CK_SES
                                                                           CK_ULONG *pin_len,
                                                                           CK_RV rv);
 
+gboolean                        gkr_pkcs11_auth_init_user_prompt         (CK_SESSION_HANDLE handle, 
+                                                                          CK_TOKEN_INFO *token_info, 
+                                                                          CK_UTF8CHAR_PTR *pin, 
+                                                                          CK_ULONG *pin_len);
+
+void                            gkr_pkcs11_auth_init_user_done           (CK_SESSION_HANDLE handle, 
+                                                                          CK_TOKEN_INFO *token_info, 
+                                                                          CK_UTF8CHAR_PTR *pin, 
+                                                                          CK_ULONG *pin_len,
+                                                                          CK_RV rv);
+
 void                            gkr_pkcs11_auth_initialized              (void);
 
 void                            gkr_pkcs11_auth_session_opened           (CK_SESSION_HANDLE handle,

@@ -766,6 +766,86 @@ done:
 	return ret;
 }
 
+static gcry_sexp_t
+rsa_numbers_to_public (gcry_sexp_t rsa)
+{
+	gcry_sexp_t pubkey = NULL;
+	gcry_mpi_t n, e;
+	gcry_error_t gcry;
+	
+	n = e = NULL;
+	
+	if (!gck_crypto_sexp_extract_mpi (rsa, &n, "n", NULL) || 
+	    !gck_crypto_sexp_extract_mpi (rsa, &e, "e", NULL))
+	    	goto done;
+	    	
+	gcry = gcry_sexp_build (&pubkey, NULL, "(public-key (rsa (n %m) (e %m)))",
+	                        n, e);
+	if (gcry)
+		goto done;
+	g_assert (pubkey);
+	
+done:
+	gcry_mpi_release (n);
+	gcry_mpi_release (e);
+
+	return pubkey;
+}
+
+static gcry_sexp_t
+dsa_numbers_to_public (gcry_sexp_t dsa)
+{
+	gcry_mpi_t p, q, g, y;
+	gcry_sexp_t pubkey = NULL;
+	gcry_error_t gcry;
+	
+	p = q = g = y = NULL;
+	
+	if (!gck_crypto_sexp_extract_mpi (dsa, &p, "p", NULL) || 
+	    !gck_crypto_sexp_extract_mpi (dsa, &q, "q", NULL) ||
+	    !gck_crypto_sexp_extract_mpi (dsa, &g, "g", NULL) ||
+	    !gck_crypto_sexp_extract_mpi (dsa, &y, "y", NULL))
+	    	goto done;
+	    	
+	gcry = gcry_sexp_build (&pubkey, NULL, "(public-key (dsa (p %m) (q %m) (g %m) (y %m)))",
+	                        p, q, g, y);
+	if (gcry)
+		goto done;
+	g_assert (pubkey);
+	
+done:
+	gcry_mpi_release (p);
+	gcry_mpi_release (q);
+	gcry_mpi_release (g);
+	gcry_mpi_release (y);
+
+	return pubkey;
+}
+
+gboolean
+gck_crypto_sexp_key_to_public (gcry_sexp_t privkey, gcry_sexp_t *pubkey)
+{
+	gcry_sexp_t numbers;
+	int algorithm;
+
+	if (!gck_crypto_sexp_parse_key (privkey, &algorithm, NULL, &numbers))
+		g_return_val_if_reached (FALSE);
+		
+	switch (algorithm) {
+	case GCRY_PK_RSA:
+		*pubkey = rsa_numbers_to_public (numbers);
+		break;
+	case GCRY_PK_DSA:
+		*pubkey = dsa_numbers_to_public (numbers);
+		break;
+	default:
+		g_return_val_if_reached (FALSE);
+	} 
+	
+	gcry_sexp_release (numbers);
+	return *pubkey ? TRUE : FALSE;
+}
+
 gboolean
 gck_crypto_sexp_extract_mpi (gcry_sexp_t sexp, gcry_mpi_t *mpi, ...)
 {
@@ -1274,7 +1354,7 @@ gck_crypto_symkey_generate_pkcs12 (int cipher_algo, int hash_algo, const gchar *
 	/* Cleanup in case of failure */
 	if (!ret) {
 		g_free (iv ? *iv : NULL);
-		g_free (key ? *key : NULL);
+		gcry_free (key ? *key : NULL);
 	}
 	
 	return ret;
@@ -1405,7 +1485,7 @@ gck_crypto_symkey_generate_pbkdf2 (int cipher_algo, int hash_algo,
 	/* Cleanup in case of failure */
 	if (!ret) {
 		g_free (iv ? *iv : NULL);
-		g_free (key ? *key : NULL);
+		gcry_free (key ? *key : NULL);
 	}
 	
 	return ret;

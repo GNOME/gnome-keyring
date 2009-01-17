@@ -418,23 +418,15 @@ gkr_pkcs11_auth_login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info
 	return ret;
 }
 
-void 
-gkr_pkcs11_auth_login_user_done (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
-                                 CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len, CK_RV rv)
+static void
+clear_user_login (CK_TOKEN_INFO *info)
 {
 	gchar *manufacturer;
 	gchar *serial;
-
-	g_assert (pin);
-	g_assert (pin_len);
 	
-	switch (rv) {
-	case CKR_PIN_INCORRECT:
-	case CKR_PIN_EXPIRED:
-	case CKR_PIN_INVALID:
-	case CKR_PIN_LEN_RANGE:
-	case CKR_PIN_LOCKED:
-		
+	g_assert (info);
+	
+	if (gkr_keyring_login_is_usable ()) {
 		/* 
 		 * The manufacturer and serial number together uniquely identify token 
 		 * They're stored with space padded in the token info structure.
@@ -447,15 +439,145 @@ gkr_pkcs11_auth_login_user_done (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 		g_strchomp (serial);
 
 		gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
-		                                 "manufacturer", manufacturer, 
-		                                 "serial-number", serial, 
-		                                 NULL);
+						 "manufacturer", manufacturer, 
+						 "serial-number", serial, 
+						 NULL);
 		
 		g_free (manufacturer);
 		g_free (serial);
-		
+	}
+}
+
+void 
+gkr_pkcs11_auth_login_user_done (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
+                                 CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len, CK_RV rv)
+{
+	g_assert (pin);
+	g_assert (pin_len);
+	
+	switch (rv) {
+	case CKR_PIN_INCORRECT:
+	case CKR_PIN_EXPIRED:
+	case CKR_PIN_INVALID:
+	case CKR_PIN_LEN_RANGE:
+	case CKR_PIN_LOCKED:
+		clear_user_login (info);
 		break;
 	}
+	
+	gkr_secure_strfree ((gchar*)*pin);
+	
+	*pin = NULL;
+	*pin_len = 0;
+}
+
+gboolean
+gkr_pkcs11_auth_init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
+                                  CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len)
+{
+	GkrAskRequest *ask;
+	gchar *label;
+	gchar *secondary;
+	gchar *manufacturer;
+	gchar *serial;
+	const gchar *password;
+	gboolean ret = TRUE;
+	guint flags;
+	
+	g_assert (info);
+	g_assert (pin);
+	g_assert (pin_len);
+	
+	/* 
+	 * The manufacturer and serial number together uniquely identify token 
+	 * They're stored with space padded in the token info structure.
+	 */
+	
+	manufacturer = g_strndup ((gchar*)info->manufacturerID, sizeof (info->manufacturerID));
+	g_strchomp (manufacturer);
+
+	serial = g_strndup ((gchar*)info->serialNumber, sizeof (info->serialNumber));
+	g_strchomp (serial);
+
+	label = g_strndup ((gchar*)info->label, sizeof (info->label));
+	g_strchomp (label);
+
+	/* We try to use the login keyring password if available */
+	password = gkr_keyring_login_master ();
+	if (password != NULL) {
+		password_to_pin (password, pin, pin_len);
+		
+		/* Save this away in case the main password changes without us being aware */
+		if (gkr_keyring_login_is_usable ())
+			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, 
+			                                 label, password,
+			                                 "manufacturer", manufacturer, 
+			                                 "serial-number", serial,
+			                                 NULL);
+		
+		g_free (manufacturer);
+		g_free (serial);
+		g_free (label);
+		return TRUE;
+	}
+
+	/* Otherwise we have to prompt for it */
+	
+	/* Build up the prompt */
+	flags = GKR_ASK_REQUEST_NEW_PASSWORD;
+	ask = gkr_ask_request_new (_("New Password Required"), 
+	                           _("New password required for secure storage"), flags);
+
+	secondary = g_strdup_printf (_("In order to prepare '%s' for storage of certificates or keys, a password is required"), label);
+	gkr_ask_request_set_secondary (ask, secondary);
+	g_free (secondary);
+
+	if (gkr_keyring_login_is_usable ())
+		gkr_ask_request_set_check_option (ask, _("Automatically unlock secure storage when I log in."));
+
+	/* Prompt the user */
+	gkr_ask_daemon_process (ask);
+
+	/* If the user denied ... */
+	if (ask->response == GKR_ASK_RESPONSE_DENY) {
+		ret = FALSE;
+		
+	/* User cancelled or failure */
+	} else if (ask->response < GKR_ASK_RESPONSE_ALLOW) {
+		ret = FALSE;
+			
+	/* Successful response */
+	} else {
+		password_to_pin (ask->typed_password, pin, pin_len);
+		
+		if (ask->checked) {
+			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, 
+			                                 label, ask->typed_password,
+			                                 "manufacturer", manufacturer, 
+			                                 "serial-number", serial,
+			                                 NULL);
+		}
+		
+		ret = TRUE;
+	}
+	
+	g_free (manufacturer);
+	g_free (serial);
+	g_free (label);
+	g_object_unref (ask);
+	
+	return ret;
+}
+
+void
+gkr_pkcs11_auth_init_user_done (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *token_info, 
+                                CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len, CK_RV rv)
+{
+	g_assert (pin);
+	g_assert (pin_len);
+	
+	if (rv != CKR_OK)
+		clear_user_login (token_info);
 	
 	gkr_secure_strfree ((gchar*)*pin);
 	

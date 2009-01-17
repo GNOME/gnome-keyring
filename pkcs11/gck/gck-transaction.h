@@ -69,4 +69,12 @@ CK_RV                       gck_transaction_get_result             (GckTransacti
 
 gboolean                    gck_transaction_get_completed          (GckTransaction *self);
 
+void                        gck_transaction_write_file             (GckTransaction *self,
+                                                                    const gchar *filename,
+                                                                    const guchar *data,
+                                                                    gsize n_data);
+
+void                        gck_transaction_remove_file            (GckTransaction *self,
+                                                                    const gchar *filename);
+
 #endif /* __GCK_TRANSACTION_H__ */

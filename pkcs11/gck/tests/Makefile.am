@@ -7,6 +7,7 @@ asn1-def-test.h: test.asn
 	
 # Test files should be listed in order they need to run
 UNIT_AUTO = \
+	unit-test-util.c \
 	unit-test-crypto.c \
 	unit-test-data-asn1.c \
 	unit-test-data-der.c \
@@ -14,7 +15,8 @@ UNIT_AUTO = \
 	unit-test-transaction.c \
 	unit-test-store.c \
 	unit-test-memory-store.c \
-	unit-test-file-store.c \
+	unit-test-login.c \
+	unit-test-data-file.c \
 	unit-test-file-tracker.c \
 	$(BUILT_SOURCES)
 

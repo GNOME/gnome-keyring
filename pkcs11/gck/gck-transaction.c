@@ -24,6 +24,12 @@
 #include "gck-marshal.h"
 #include "gck-transaction.h"
 
+#include <glib/gstdio.h>
+
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+
 enum {
 	PROP_0,
 	PROP_COMPLETED,
@@ -63,7 +69,6 @@ complete_invoke (GckTransaction *transaction, Complete *complete)
 {
 	g_assert (complete);
 	g_assert (complete->func);
-	g_assert (complete->object);
 	
 	return (complete->func) (transaction, complete->object, complete->user_data);
 }
@@ -72,8 +77,8 @@ static void
 complete_destroy (Complete *complete)
 {
 	g_assert (complete->func);
-	g_assert (G_IS_OBJECT (complete->object));
-	g_object_unref (complete->object);
+	if (complete->object)
+		g_object_unref (complete->object);
 	g_slice_free (Complete, complete);
 }
 
@@ -90,6 +95,94 @@ complete_accumulator (GSignalInvocationHint *ihint, GValue *return_accu,
 	
 	/* Continue signal invocations */
 	return TRUE;
+}
+
+static gboolean
+complete_new_file (GckTransaction *self, GObject *unused, gpointer user_data)
+{
+	gchar *path = user_data;
+	gboolean ret = TRUE;
+	
+	if (gck_transaction_get_failed (self)) {
+		if (g_unlink (path) < 0) {
+			g_warning ("couldn't delete aborted file, data may be lost: %s: %s",
+			           path, g_strerror (errno));
+			ret = FALSE;
+		}
+	}
+	
+	g_free (path);
+	return ret;
+}
+
+static gboolean
+begin_new_file (GckTransaction *self, const gchar *filename)
+{
+	g_assert (GCK_IS_TRANSACTION (self));
+	g_assert (!gck_transaction_get_failed (self));
+	g_assert (filename);
+	
+	gck_transaction_add (self, NULL, complete_new_file, g_strdup (filename));
+	return TRUE;
+}
+
+static gboolean
+complete_link_temporary (GckTransaction *self, GObject *unused, gpointer user_data)
+{
+	gchar *path = user_data;
+	gboolean ret = TRUE;
+	gchar *original;
+	gchar *ext;
+	
+	if (gck_transaction_get_failed (self)) {
+		
+		/* Figure out the original file name */
+		original = g_strdup (path);
+		ext = strrchr (original, '.');
+		g_return_val_if_fail (ext, FALSE);
+		*ext = '\0';
+		
+		/* Now rename us back */
+		if (!g_rename (path, original) == -1) {
+			g_warning ("couldn't restore original file, data may be lost: %s: %s", 
+			           original, g_strerror (errno));
+			ret = FALSE;
+		}
+		
+		g_free (original);
+	}
+	
+	g_free (path);
+	return ret;
+}
+
+static gboolean
+begin_link_temporary (GckTransaction *self, const gchar *filename)
+{
+	gchar *result;
+	
+	g_assert (GCK_IS_TRANSACTION (self));
+	g_assert (!gck_transaction_get_failed (self));
+	g_assert (filename);
+	
+	for (;;) {
+		/* Try to link to random temporary file names */
+		result = g_strdup_printf ("%s.temp-%d", filename, g_random_int_range (0, G_MAXINT));
+		if (link (filename, result) == 0) {
+			gck_transaction_add (self, NULL, complete_link_temporary, result);
+			return TRUE;
+		}
+		
+		g_free (result);
+		
+		if (errno != EEXIST) {
+			g_warning ("couldn't create temporary file for: %s: %s", filename, g_strerror (errno));
+			gck_transaction_fail (self, CKR_DEVICE_ERROR);
+			return FALSE;
+		}
+	}
+	
+	g_assert_not_reached ();
 }
 
 /* -----------------------------------------------------------------------------
@@ -224,12 +317,12 @@ gck_transaction_add (GckTransaction *self, gpointer object,
 	Complete *complete;
 	
 	g_return_if_fail (GCK_IS_TRANSACTION (self));
-	g_return_if_fail (G_IS_OBJECT (object));
 	g_return_if_fail (func);
 	
 	complete = g_slice_new0 (Complete);
 	complete->func = func;
-	complete->object = g_object_ref (object);
+	if (object)
+		complete->object = g_object_ref (object);
 	complete->user_data = user_data;
 	
 	self->completes = g_list_prepend (self->completes, complete);
@@ -288,4 +381,53 @@ gck_transaction_get_result (GckTransaction *self)
 {
 	g_return_val_if_fail (GCK_IS_TRANSACTION (self), FALSE);
 	return self->result;
+}
+
+void
+gck_transaction_write_file (GckTransaction *self, const gchar *filename,
+                            const guchar *data, gsize n_data)
+{
+	GError *error = NULL;
+	
+	g_return_if_fail (GCK_IS_TRANSACTION (self));
+	g_return_if_fail (filename);
+	g_return_if_fail (data);
+	g_return_if_fail (!gck_transaction_get_failed (self));
+	
+	/* Open and lock the file */
+	
+	if (!g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		if (!begin_new_file (self, filename))
+			return;
+	} else {
+		if (!begin_link_temporary (self, filename))
+			return;
+	}
+
+	if (!g_file_set_contents (filename, (const gchar*)data, n_data, &error)) {
+		g_warning ("couldn't write to file: %s: %s", filename, 
+		           error && error->message ? error->message : "");
+		gck_transaction_fail (self, CKR_DEVICE_ERROR);
+	}
+}
+
+void
+gck_transaction_remove_file (GckTransaction *self, const gchar *filename)
+{
+	g_return_if_fail (GCK_IS_TRANSACTION (self));
+	g_return_if_fail (filename);
+	g_return_if_fail (!gck_transaction_get_failed (self));
+
+	/* Already gone? Job accomplished */
+	if (!g_file_test (filename, G_FILE_TEST_EXISTS))
+		return;
+
+	if (!begin_link_temporary (self, filename))
+		return;
+	
+	/* If failure, temporary will automatically be removed */
+	if (g_unlink (filename) < 0) {
+		g_warning ("couldn't remove file: %s: %s", filename, g_strerror (errno));
+		gck_transaction_fail (self, CKR_DEVICE_ERROR);
+	}
 }

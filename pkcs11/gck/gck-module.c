@@ -350,6 +350,13 @@ gck_module_real_remove_token_object (GckModule *self, GckTransaction *transactio
 }
 
 static CK_RV
+gck_module_real_login_change (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR old_pin, 
+                              CK_ULONG n_old_pin, CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin)
+{
+	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+static CK_RV
 gck_module_real_login_user (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
 	VirtualSlot *slot;
@@ -514,6 +521,7 @@ gck_module_class_init (GckModuleClass *klass)
 	klass->refresh_token = gck_module_real_refresh_token;
 	klass->store_token_object = gck_module_real_store_token_object;
 	klass->remove_token_object = gck_module_real_remove_token_object;
+	klass->login_change = gck_module_real_login_change;
 	klass->login_user = gck_module_real_login_user;
 	klass->logout_user = gck_module_real_logout_user;
 	
@@ -564,6 +572,15 @@ gck_module_lookup_session (GckModule *self, CK_SESSION_HANDLE handle)
 	
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
 	return session;
+}
+
+CK_RV
+gck_module_login_change (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR old_pin, 
+                         CK_ULONG n_old_pin, CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin)
+{
+	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_GENERAL_ERROR);
+	g_assert (GCK_MODULE_GET_CLASS (self)->login_change);
+	return GCK_MODULE_GET_CLASS (self)->login_change (self, slot_id, old_pin, n_old_pin, new_pin, n_new_pin);
 }
 
 CK_RV
@@ -943,6 +960,35 @@ gck_module_C_CloseAllSessions (GckModule *self, CK_SLOT_ID id)
 
 	unregister_virtual_slot (self, slot);
 	return CKR_OK;	
+}
+
+CK_RV
+gck_module_C_InitPIN (GckModule* self, CK_SESSION_HANDLE handle, 
+                      CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
+{
+	return CKR_FUNCTION_NOT_SUPPORTED;
+}
+
+CK_RV
+gck_module_C_SetPIN (GckModule* self, CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin,
+                     CK_ULONG old_pin_len, CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
+{
+	GckSession *session;
+	VirtualSlot *slot;
+	CK_SLOT_ID slot_id;
+	
+	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
+	
+	session = gck_module_lookup_session (self, handle);
+	if (session == NULL)
+		return CKR_SESSION_HANDLE_INVALID;
+
+	/* Calculate the virtual slot */
+	slot_id = gck_session_get_slot_id (session);
+	slot = lookup_virtual_slot (self, slot_id);
+	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+
+	return gck_module_login_change (self, slot_id, old_pin, old_pin_len, new_pin, new_pin_len);
 }
 
 CK_RV

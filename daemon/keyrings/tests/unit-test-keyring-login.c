@@ -99,6 +99,13 @@ void unit_test_keyrings_login (CuTest* cu)
 	          login == gkr_keyrings_get_login());
 }
 
+void unit_test_keyrings_login_master (CuTest *cu)
+{
+	const gchar *master = gkr_keyring_login_master();
+	CuAssert (cu, "no master password in login keyring", master != NULL);
+	CuAssert (cu, "wrong master password in login keyring", strcmp (master, "blah") == 0);
+}
+
 void unit_test_keyrings_login_secrets (CuTest* cu)
 {
 	const gchar *password;

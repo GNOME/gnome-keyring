@@ -215,6 +215,21 @@ string_attribute_list_va (va_list args)
 	return attributes;
 }
 
+const gchar*
+gkr_keyring_login_master (void)
+{
+	GkrKeyring *login;
+	
+	login = gkr_keyrings_get_login ();
+	if (!login || login->locked)
+		return NULL;
+	
+	if (gkr_keyring_is_insecure (login))
+		return NULL;
+	
+	return login->password;
+}
+
 void
 gkr_keyring_login_attach_secret (GnomeKeyringItemType type, const gchar *display_name, 
                                  const gchar *secret, ...)

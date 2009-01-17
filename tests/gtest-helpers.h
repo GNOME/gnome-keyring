@@ -39,6 +39,7 @@ void test_mainloop_quit (void);
 void test_mainloop_run (int timeout);
 GMainLoop* test_mainloop_get (void);
 
+guchar* test_read_testdata (const gchar *basename, gsize *n_data);
 gchar* test_build_filename (const gchar *basename);
 
 #define DECLARE_SETUP(x) \

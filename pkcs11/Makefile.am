@@ -9,12 +9,6 @@ inc_HEADERS = \
 EXTRA_DIST = \
 	pkcs11.h
 
-if WITH_TESTS
-TESTS_DIR = tests
-else
-TESTS_DIR = 
-endif
-
 SUBDIRS = . \
 	gck \
 	roots-store \
@@ -22,5 +16,4 @@ SUBDIRS = . \
 	plex-layer \
 	ssh-agent \
 	ssh-store \
-	$(ROOTS_DIR) \
-	$(TESTS_DIR)
+	user-store

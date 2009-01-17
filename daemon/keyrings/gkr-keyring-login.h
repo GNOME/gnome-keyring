@@ -34,6 +34,8 @@ gboolean        gkr_keyring_login_unlock         (const gchar *secret);
 
 void            gkr_keyring_login_lock           (void);
 
+const gchar*    gkr_keyring_login_master         (void);
+
 void            gkr_keyring_login_attach_secret  (GnomeKeyringItemType type, 
                                                   const gchar *display_name, 
                                                   const gchar *secret,

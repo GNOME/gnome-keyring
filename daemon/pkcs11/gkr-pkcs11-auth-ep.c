@@ -136,6 +136,53 @@ lookup_specific_auth_object (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
 	return info;
 }
 
+static CK_RV 
+perform_set_user_pin (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG n_old_pin,
+                      CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin, gboolean also_login)
+{
+	CK_SESSION_INFO session_info;
+	CK_TOKEN_INFO token_info;
+	gboolean auth = FALSE;
+	CK_RV rv, login_rv;
+	
+	/* Dig up the information we'll need, and don't prompt if protected auth path */
+	if ((pkcs11_lower->C_GetSessionInfo) (handle, &session_info) == CKR_OK &&
+	    (pkcs11_lower->C_GetTokenInfo) (session_info.slotID, &token_info) == CKR_OK && 
+	    !(token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH)) { 
+
+		gkr_async_end_concurrent ();
+		
+			if (!(token_info.flags & CKF_USER_PIN_INITIALIZED))
+				auth = gkr_pkcs11_auth_init_user_prompt (handle, &token_info, &new_pin, &n_new_pin);
+			/* TODO: Prompt for other 'change password' case */
+
+		gkr_async_begin_concurrent ();
+	}
+
+	rv = (pkcs11_lower->C_SetPIN) (handle, old_pin, n_old_pin, new_pin, n_new_pin);
+	
+	/* If requested we can also login, this prevents two prompts */
+	login_rv = CKR_OK;
+	if (rv == CKR_OK) {
+		login_rv = (pkcs11_lower->C_Login) (handle, CKU_USER, new_pin, n_new_pin);
+	}
+	
+	if (auth) {
+		gkr_async_end_concurrent ();
+		
+			if (!(token_info.flags & CKF_USER_PIN_INITIALIZED))
+				gkr_pkcs11_auth_init_user_done (handle, &token_info, &new_pin, &n_new_pin, rv);
+			/* TODO: Done for other case */
+			
+		gkr_async_begin_concurrent ();
+	}
+	
+	if (login_rv != CKR_OK)
+		rv = login_rv;
+	
+	return rv;
+}
+
 /* --------------------------------------------------------------------------------------
  * PKCS#11 ENTRY POINTS
  */
@@ -358,16 +405,10 @@ auth_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 }
 
 static CK_RV
-auth_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len, 
-               CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
+auth_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG n_old_pin, 
+               CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin)
 {
-	/* 
-	 * TODO: Need to implement this properly.
-	 * 
-	 * Prompt the user for old and new passwords if 
-	 * CKF_PROTECTED_AUTHENTICATION path.
-	 */
-	return (pkcs11_lower->C_SetPIN) (handle, old_pin, old_pin_len, new_pin, new_pin_len);
+	return perform_set_user_pin (handle, old_pin, n_old_pin, new_pin, n_new_pin, FALSE);
 }
 
 static CK_RV
@@ -395,9 +436,22 @@ auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
 
 	/* Try the login first, this allows NULL logins to be tried */
 	rv = (pkcs11_lower->C_Login) (handle, user_type, pin, pin_len);
+	
+	if (rv == CKR_USER_PIN_NOT_INITIALIZED) {
+
+		/* 
+		 * Try and initialize the token login, gnome-keyring modules allow 
+		 * this to be called on CKU_USER if no user pin has yet been set.
+		 */
+		
+		if (user_type == CKU_USER) 
+			return perform_set_user_pin (handle, NULL, 0, NULL, 0, TRUE);
+		
+		return rv;
+	}
 
 	/* See if we can help the login to work */
-	if (pin != NULL || rv != CKR_PIN_INCORRECT)
+	if (rv != CKR_PIN_INCORRECT)
 		return rv;
 
 	/* Dig up the information we'll need */

@@ -97,16 +97,6 @@ CK_RV                    gck_session_C_CancelFunction                   (GckSess
 CK_RV                    gck_session_C_GetSessionInfo                   (GckSession* self, 
                                                                          CK_SESSION_INFO_PTR info);
 
-CK_RV                    gck_session_C_InitPIN                          (GckSession* self, 
-                                                                         CK_UTF8CHAR_PTR pin,
-                                                                         CK_ULONG pin_len);
-
-CK_RV                    gck_session_C_SetPIN                           (GckSession* self, 
-                                                                         CK_UTF8CHAR_PTR old_pin,
-                                                                         CK_ULONG old_pin_len, 
-                                                                         CK_UTF8CHAR_PTR new_pin, 
-                                                                         CK_ULONG new_pin_len);
-
 CK_RV                    gck_session_C_GetOperationState                (GckSession* self, 
                                                                          CK_BYTE_PTR operation_state,
                                                                          CK_ULONG_PTR operation_state_len);

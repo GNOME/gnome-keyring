@@ -49,19 +49,6 @@ static const gchar *PUBLIC_FILES[] = {
 
 #define COMMENT "A public key comment"
 
-static void
-read_file (const gchar *filename, guchar **contents, gsize *len)
-{
-	gchar *path;
-	gboolean ret;
-	
-	path = g_build_filename (g_get_current_dir (), "test-data", filename, NULL);
-	ret = g_file_get_contents (path, (gchar**)contents, len, NULL);
-	g_assert ("couldn't read in file" && ret);
-	
-	g_free (path);
-}
-
 DEFINE_TEST(parse_public)
 {
 	gcry_sexp_t sexp;
@@ -76,7 +63,7 @@ DEFINE_TEST(parse_public)
 	
 	for (i = 0; i < G_N_ELEMENTS (PUBLIC_FILES); ++i) {
 		
-		read_file (PUBLIC_FILES[i], &data, &n_data);
+		data = test_read_testdata (PUBLIC_FILES[i], &n_data);
 		
 		res = gck_ssh_openssh_parse_public_key (data, n_data, &sexp, &comment);
 		if (res != GCK_DATA_SUCCESS) {
@@ -110,7 +97,7 @@ DEFINE_TEST(parse_private)
 	
 	for (i = 0; i < G_N_ELEMENTS (PRIVATE_FILES); ++i) {
 		
-		read_file (PRIVATE_FILES[i], &data, &n_data);
+		data = test_read_testdata (PRIVATE_FILES[i], &n_data);
 		
 		res = gck_ssh_openssh_parse_private_key (data, n_data, "password", 8, &sexp);
 		if (res != GCK_DATA_SUCCESS) {

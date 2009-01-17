@@ -31,6 +31,7 @@
 #include "gck-data-der.h"
 #include "gck-key.h"
 #include "gck-manager.h"
+#include "gck-serializable.h"
 #include "gck-sexp.h"
 #include "gck-util.h"
 
@@ -54,7 +55,10 @@ struct _GckCertificatePrivate {
 
 static GQuark OID_BASIC_CONSTRAINTS;
 
-G_DEFINE_TYPE (GckCertificate, gck_certificate, GCK_TYPE_OBJECT);
+static void gck_certificate_serializable (GckSerializableIface *iface);
+
+G_DEFINE_TYPE_EXTENDED (GckCertificate, gck_certificate, GCK_TYPE_OBJECT, 0,
+               G_IMPLEMENT_INTERFACE (GCK_TYPE_SERIALIZABLE, gck_certificate_serializable));
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
@@ -317,26 +321,23 @@ gck_certificate_class_init (GckCertificateClass *klass)
 	init_quarks ();
 }
 
-/* -----------------------------------------------------------------------------
- * PUBLIC 
- */
-
-gboolean
-gck_certificate_load_data (GckCertificate *self, const guchar *data, gsize n_data)
+static gboolean 
+gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
 {
+	GckCertificate *self = GCK_CERTIFICATE (base);
 	ASN1_TYPE asn1 = ASN1_TYPE_EMPTY;
 	GckDataResult res;
 	guchar *copy, *keydata;
 	gsize n_keydata;
 	gcry_sexp_t sexp;
 	GckSexp *wrapper;
-	
+		
 	g_return_val_if_fail (GCK_IS_CERTIFICATE (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
-	
+		
 	copy = g_memdup (data, n_data);
-	
+		
 	/* Parse the ASN1 data */
 	res = gck_data_der_read_certificate (copy, n_data, &asn1);
 	if (res != GCK_DATA_SUCCESS) {
@@ -344,7 +345,7 @@ gck_certificate_load_data (GckCertificate *self, const guchar *data, gsize n_dat
 		g_free (copy);
 		return FALSE;
 	}
-	
+		
 	/* Generate a raw public key from our certificate */
 	keydata = gck_data_asn1_encode (asn1, "tbsCertificate.subjectPublicKeyInfo", &n_keydata, NULL);
 	g_return_val_if_fail (keydata, FALSE);
@@ -358,23 +359,49 @@ gck_certificate_load_data (GckCertificate *self, const guchar *data, gsize n_dat
 		asn1_delete_structure (&asn1);
 		return FALSE;
 	}
-	
+		
 	/* Create ourselves a public key with that */
 	wrapper = gck_sexp_new (sexp);
 	if (!self->pv->key)
 		self->pv->key = gck_certificate_key_new (self);
 	gck_key_set_base_sexp (GCK_KEY (self->pv->key), wrapper);
 	gck_sexp_unref (wrapper);
-	
+		
 	g_free (self->pv->data);
 	self->pv->data = copy;
 	self->pv->n_data = n_data;
-	
+		
 	asn1_delete_structure (&self->pv->asn1);
 	self->pv->asn1 = asn1;
-	
+		
 	return TRUE;
 }
+
+static gboolean 
+gck_certificate_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+{
+	GckCertificate *self = GCK_CERTIFICATE (base);
+	
+	g_return_val_if_fail (GCK_IS_CERTIFICATE (self), FALSE);
+	g_return_val_if_fail (data, FALSE);
+	g_return_val_if_fail (n_data, FALSE);
+	
+	*n_data = self->pv->n_data;
+	*data = g_memdup (self->pv->data, self->pv->n_data);
+	return TRUE;
+}
+
+static void 
+gck_certificate_serializable (GckSerializableIface *iface)
+{
+	iface->extension = ".cer";
+	iface->load = gck_certificate_real_load;
+	iface->save = gck_certificate_real_save;
+}
+
+/* -----------------------------------------------------------------------------
+ * PUBLIC 
+ */
 
 gboolean
 gck_certificate_calc_category (GckCertificate *self, CK_ULONG* category)

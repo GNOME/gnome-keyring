@@ -23,19 +23,21 @@ libgck_la_SOURCES = \
 	gck-crypto.c gck-crypto.h \
 	gck-data-asn1.c gck-data-asn1.h \
 	gck-data-der.c gck-data-der.h \
+	gck-data-file.c gck-data-file.h \
 	gck-data-openssl.c gck-data-openssl.h \
 	gck-data-pem.c gck-data-pem.h \
 	gck-data-types.h \
 	gck-factory.c gck-factory.h \
-	gck-file-store.c gck-file-store.h \
 	gck-file-tracker.c gck-file-tracker.h \
 	gck-key.c gck-key.h \
+	gck-login.c gck-login.h \
 	gck-manager.c gck-manager.h \
 	gck-memory-store.c gck-memory-store.h \
 	gck-module.c gck-module.h gck-module-ep.h \
 	gck-object.c gck-object.h \
 	gck-private-key.c gck-private-key.h \
 	gck-public-key.c gck-public-key.h \
+	gck-serializable.c gck-serializable.h \
 	gck-session.c gck-session.h \
 	gck-sexp.c gck-sexp.h \
 	gck-store.c gck-store.h \

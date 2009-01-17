@@ -42,9 +42,16 @@ CK_RV                 gck_util_return_data                        (CK_VOID_PTR o
                                                                    gconstpointer input,
                                                                    gsize n_input);
 
-CK_RV                 gck_attribute_set_mpi                            (CK_ATTRIBUTE_PTR attr, 
+CK_RV                 gck_attribute_set_mpi                       (CK_ATTRIBUTE_PTR attr, 
                                                                    gcry_mpi_t mpi);
 
 CK_ULONG              gck_util_next_handle                        (void);
+
+guchar*               gck_util_hex_decode                         (const gchar *data, 
+                                                                   gssize n_data, 
+                                                                   gsize *n_decoded);
+
+gchar*                gck_util_hex_encode                         (const guchar *data, 
+                                                                   gsize n_data);
 
 #endif /* GCKUTIL_H_ */

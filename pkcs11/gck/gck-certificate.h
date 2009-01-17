@@ -48,10 +48,6 @@ struct _GckCertificateClass {
 
 GType                      gck_certificate_get_type               (void);
 
-gboolean                   gck_certificate_load_data              (GckCertificate *self, 
-                                                                   const guchar *data, 
-                                                                   gsize n_data);
-
 gboolean                   gck_certificate_calc_category          (GckCertificate *self, 
                                                                    CK_ULONG* category);
 

@@ -64,7 +64,11 @@ struct _GckModuleClass {
 	void (*store_token_object) (GckModule *self, GckTransaction *transaction, GckObject *object);
 	
 	void (*remove_token_object) (GckModule *self, GckTransaction *transaction, GckObject *object);
-	
+
+	CK_RV (*login_change) (GckModule *self, CK_SLOT_ID slot_id, 
+	                       CK_UTF8CHAR_PTR old_pin, CK_ULONG n_old_pin,
+	                       CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin);
+
 	CK_RV (*login_user) (GckModule *self, CK_SLOT_ID slot_id, 
 	                     CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
 	
@@ -102,6 +106,13 @@ CK_ULONG               gck_module_next_handle                     (GckModule *se
 
 GckSession*            gck_module_lookup_session                  (GckModule *self,
                                                                    CK_SESSION_HANDLE handle);
+
+CK_RV                  gck_module_login_change                    (GckModule *self, 
+                                                                   CK_SLOT_ID slot_id, 
+                                                                   CK_UTF8CHAR_PTR old_pin, 
+                                                                   CK_ULONG n_old_pin,
+                                                                   CK_UTF8CHAR_PTR new_pin, 
+                                                                   CK_ULONG n_new_pin);
 
 CK_RV                  gck_module_login_user                      (GckModule *self,
                                                                    CK_SLOT_ID slot_id,
@@ -172,6 +183,18 @@ CK_RV                  gck_module_C_CloseSession                  (GckModule *se
 
 CK_RV                  gck_module_C_CloseAllSessions              (GckModule *self, 
                                                                    CK_SLOT_ID id);
+
+CK_RV                  gck_module_C_InitPIN                       (GckModule* self, 
+                                                                   CK_SESSION_HANDLE session,
+                                                                   CK_UTF8CHAR_PTR pin,
+                                                                   CK_ULONG pin_len);
+
+CK_RV                  gck_module_C_SetPIN                        (GckModule* self,
+                                                                   CK_SESSION_HANDLE session,
+                                                                   CK_UTF8CHAR_PTR old_pin,
+                                                                   CK_ULONG old_pin_len, 
+                                                                   CK_UTF8CHAR_PTR new_pin, 
+                                                                   CK_ULONG new_pin_len);
 
 CK_RV                  gck_module_C_Login                         (GckModule *self, 
                                                                    CK_SESSION_HANDLE session, 

@@ -29,6 +29,7 @@
 #include "pkcs11/rpc-layer/gck-rpc-layer.h"
 #include "pkcs11/ssh-agent/gck-ssh-agent.h"
 #include "pkcs11/ssh-store/gck-ssh-store.h"
+#include "pkcs11/user-store/gck-user-store.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-daemon-util.h"
@@ -74,22 +75,28 @@ gkr_pkcs11_daemon_initialize (void)
 	CK_FUNCTION_LIST_PTR plex_layer;
 	CK_FUNCTION_LIST_PTR roots_store; 
 	CK_FUNCTION_LIST_PTR ssh_store;
+	CK_FUNCTION_LIST_PTR user_store;
 	CK_RV rv;
 
 	/* Now initialize them all */
 	gkr_async_begin_concurrent ();
 
-		/* Connect SSH storage */
+		/* SSH storage */
 		ssh_store = gck_ssh_store_get_functions ();
 		
-		/* Connect Root certificates */
-		roots_store = gck_roots_store_get_functions (); 
+		/* Root certificates */
+		roots_store = gck_roots_store_get_functions ();
+		
+		/* User certificates */
+		user_store = gck_user_store_get_functions ();
 		
 		/* Add all of those into the multiplexing layer */
 		gck_plex_layer_add_module (ssh_store);
 #ifdef ROOT_CERTIFICATES
 		gck_plex_layer_add_module (roots_store);
 #endif
+		gck_plex_layer_add_module (user_store);
+		
 		plex_layer = gck_plex_layer_get_functions (); 
 		
 		/* The auth component is the top component */

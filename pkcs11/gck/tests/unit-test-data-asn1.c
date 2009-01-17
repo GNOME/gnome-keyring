@@ -42,21 +42,19 @@
 static ASN1_TYPE asn1_test = NULL;
 
 static ASN1_TYPE asn1_cert = NULL;
-static gchar *data_cert = NULL;
+static guchar *data_cert = NULL;
 static gsize n_data_cert = 0;
 
 DEFINE_SETUP(asn1_tree)
 {
 	ASN1_TYPE pkix;
-	gboolean ret;
 	
 	int res = asn1_array2tree (test_asn1_tab, &asn1_test, NULL);
 	g_assert (res == ASN1_SUCCESS);
 
 	/* -------- */
 	
-	ret = g_file_get_contents ("test-data/test-certificate-1.der", (gchar**)&data_cert, &n_data_cert, NULL);
-	g_assert ("couldn't read in file: test-data/test-certificate-1.der" && ret);
+	data_cert = test_read_testdata ("test-certificate-1.der", &n_data_cert);
 
 	/* We'll be catching this error later */
 	pkix = gck_data_asn1_get_pkix_asn1type ();
@@ -300,6 +298,14 @@ DEFINE_TEST(oid)
 	oid = gck_data_asn1_read_oid (asn, "data");
 	g_assert (check == oid);
 	g_assert_cmpstr (g_quark_to_string (oid), ==, "SOME DATA");
+	
+	/* Write a different OID */ 
+	if (!gck_data_asn1_write_oid (asn, "data", g_quark_from_static_string ("ANOTHER")))
+		g_assert_not_reached ();
+	
+	oid = gck_data_asn1_read_oid (asn, "data");
+	g_assert (oid);
+	g_assert_cmpstr (g_quark_to_string (oid), ==, "ANOTHER");
 	
 	asn1_delete_structure (&asn);
 }
