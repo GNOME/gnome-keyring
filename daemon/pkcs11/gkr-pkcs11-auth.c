@@ -374,7 +374,6 @@ gkr_pkcs11_auth_login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info
 	flags = GKR_ASK_REQUEST_PASSWORD | GKR_ASK_REQUEST_OK_DENY_BUTTONS;
 	ask = gkr_ask_request_new (_("Unlock certificate/key storage"), 
 	                           _("Enter password to unlock the certificate/key storage"), flags); 
-	gkr_ask_request_set_secondary (ask, secondary);
 	
 	secondary = g_strdup_printf (_("An application wants access to the certificate/key storage '%s', but it is locked"), label);
 	gkr_ask_request_set_secondary (ask, secondary);

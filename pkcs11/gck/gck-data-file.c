@@ -562,7 +562,7 @@ update_entries_from_block (GckDataFile *self, guint section, GHashTable *entries
 		/* Make sure we have this one */
 		sect = GPOINTER_TO_UINT (g_hash_table_lookup (self->identifiers, str));
 		if (sect != section) {
-			g_message ("data file entry in wrong section: %s", identifier);
+			g_message ("data file entry in wrong section: %s", str);
 			g_free (str);
 			return GCK_DATA_FAILURE;
 		}

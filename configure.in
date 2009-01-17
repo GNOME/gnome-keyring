@@ -515,7 +515,6 @@ pkcs11/ssh-agent/Makefile
 pkcs11/ssh-store/Makefile
 pkcs11/ssh-store/tests/Makefile
 pkcs11/user-store/Makefile
-pkcs11/user-store/tests/Makefile
 po/Makefile.in
 tests/Makefile
 tool/Makefile

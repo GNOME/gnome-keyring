@@ -850,6 +850,7 @@ plex_C_GenerateKeyPair (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	if (priv_key == NULL || pub_key == NULL)
 		return CKR_ARGUMENTS_BAD;
 	
+	MAP_SESSION_DOWN (handle, map);
 	rv = (map.funcs->C_GenerateKeyPair) (handle, mechanism, pub_template, pub_count, priv_template, priv_count, pub_key, priv_key);
 	if (rv == CKR_OK) {
 		MAP_OBJECT_UP (map, *pub_key);
@@ -881,6 +882,7 @@ plex_C_UnwrapKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	if (key == NULL)
 		return CKR_ARGUMENTS_BAD;
 	
+	MAP_SESSION_DOWN (handle, map);
 	rv = (map.funcs->C_UnwrapKey) (handle, mechanism, unwrapping_key, wrapped_key, wrapped_key_len, template, count, key);
 	if (rv == CKR_OK)
 		MAP_OBJECT_UP (map, *key);
@@ -899,6 +901,7 @@ plex_C_DeriveKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	if (key == NULL)
 		return CKR_ARGUMENTS_BAD;
 	
+	MAP_SESSION_DOWN (handle, map);
 	rv = (map.funcs->C_DeriveKey) (handle, mechanism, base_key, template, count, key);
 	if (rv == CKR_OK)
 		MAP_OBJECT_UP (map, *key);

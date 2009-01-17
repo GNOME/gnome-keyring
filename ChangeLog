@@ -1,5 +1,12 @@
 2009-01-17  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in:
+	* daemon/pkcs11/gkr-pkcs11-auth.c:
+	* pkcs11/gck/gck-data-file.c:
+	* pkcs11/plex-layer/gck-plex-layer.c: Build and warning fixes.
+
+2009-01-17  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/keyrings/gkr-keyring-login.c:
 	* daemon/keyrings/gkr-keyring-login.h: 
 	* daemon/keyrings/tests/unit-test-keyring-login.c: Add functions for accessing 
