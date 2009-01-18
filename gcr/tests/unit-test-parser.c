@@ -85,6 +85,7 @@ authenticate (GcrParser *par, gint state, gpointer user_data)
 	default:
 		g_printerr ("decryption didn't work for: %s", filedesc);
 		g_assert (FALSE);
+		return FALSE;
 	};
 } 
 

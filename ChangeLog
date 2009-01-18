@@ -1,4 +1,8 @@
-2009-01-17  Stef Walter  <stef@memberwebs.com>
+2009-01-18  Stef Walter  <stef@memberwebs.com>
+
+	* gcr/tests/unit-test-parser.c: Fix build warning
+
+2009-01-18  Stef Walter  <stef@memberwebs.com>
 
 	* egg/egg-asn1.c:
 	* egg/egg-hex.c: (split from pkcs11/gck/gck-util.c)
