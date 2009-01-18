@@ -1,3 +1,7 @@
+2009-01-18  Stef Walter  <stef@memberwebs.com>
+
+	* POTFILES.in: Added gcr/gcr-parser.c
+
 2009-01-18  Jorge Gonzalez  <jorgegonz@svn.gnome.org>
 
 	* es.po: Updated Spanish translation.
