@@ -118,24 +118,4 @@ GckDataResult      gck_data_der_read_enhanced_usage        (const guchar *data, 
 
 guchar*            gck_data_der_write_certificate          (ASN1_TYPE asn1, gsize *n_data);
 
-/* -----------------------------------------------------------------------------
- * CIPHERS
- */
- 
-GckDataResult      gck_data_der_read_cipher                 (GQuark oid_scheme, const gchar *password,
-                                                             gsize n_password, const guchar *data, gsize n_data, 
-                                                             gcry_cipher_hd_t *cih);
-
-GckDataResult      gck_data_der_read_cipher_pkcs5_pbe       (int cipher_algo, int cipher_mode, 
-                                                             int hash_algo, const gchar *password, gsize n_password,
-                                                             const guchar *data, gsize n_data, 
-                                                             gcry_cipher_hd_t *cih);
-
-GckDataResult      gck_data_der_read_cipher_pkcs5_pbes2     (const gchar *password, gsize n_password, const guchar *data, 
-                                                             gsize n_data, gcry_cipher_hd_t *cih);
-
-GckDataResult      gck_data_der_read_cipher_pkcs12_pbe      (int cipher_algo, int cipher_mode, 
-                                                             const gchar *password, gsize n_password, const guchar *data, 
-                                                             gsize n_data, gcry_cipher_hd_t *cih);
-
 #endif /*GKRPKIXDER_H_*/

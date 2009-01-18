@@ -33,6 +33,8 @@
 #include "gck/gck-serializable.h"
 #include "gck/gck-util.h"
 
+#include "egg/egg-hex.h"
+
 #include <glib/gstdio.h>
 
 #include <libtasn1.h>
@@ -175,7 +177,7 @@ identifier_for_object (GckObject *object)
 	if (name == NULL) {
 		data = gck_object_get_attribute_data (object, CKA_ID, &n_data);
 		if (data && n_data)
-			name = gck_util_hex_encode (data, n_data);
+			name = egg_hex_encode (data, n_data);
 		g_free (data);
 	}
 	

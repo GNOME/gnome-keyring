@@ -25,9 +25,8 @@
 
 #include "run-auto-test.h"
 
-#include "gck/gck-crypto.h"
-#include "gck/gck-data-pem.h"
-#include "gck/gck-data-openssl.h"
+#include "egg-symkey.h"
+#include "egg-openssl.h"
 
 #include <glib.h>
 
@@ -51,7 +50,7 @@ static void
 parse_reference (GQuark type, const guchar *data, gsize n_data,
                  GHashTable *headers, gpointer user_data)
 {
-	GckDataResult res;
+	gboolean res;
 	const gchar *dekinfo;
 	
 	g_assert ("no data in PEM callback" && data != NULL);
@@ -60,13 +59,13 @@ parse_reference (GQuark type, const guchar *data, gsize n_data,
 	n_refenc = n_data;
 	
 	g_assert ("no headers present in file" && headers != NULL);
-	refheaders = gck_data_pem_headers_new ();
+	refheaders = egg_openssl_headers_new ();
 	g_hash_table_foreach (headers, copy_each_key_value, refheaders);
-	dekinfo = gck_data_openssl_get_dekinfo (headers);
+	dekinfo = egg_openssl_get_dekinfo (headers);
 	g_assert ("no dekinfo in headers" && dekinfo != NULL);
 	
-	res = gck_data_openssl_decrypt_block (dekinfo, "booo", 4, data, n_data, &refdata, &n_refdata);
-	g_assert ("couldn't openssl decrypt block" && res == GCK_DATA_SUCCESS);
+	res = egg_openssl_decrypt_block (dekinfo, "booo", 4, data, n_data, &refdata, &n_refdata);
+	g_assert ("couldn't openssl decrypt block" && res == TRUE);
 	g_assert ("no data returned from openssl decrypt" && refdata != NULL);
 	g_assert ("invalid amount of data returned from openssl decrypt" && n_refdata == n_data);
 }
@@ -79,7 +78,7 @@ DEFINE_TEST(parse_reference)
 	
 	input = test_read_testdata ("pem-rsa-enc.key", &n_input);
 
-	num = gck_data_pem_parse (input, n_input, parse_reference, NULL);
+	num = egg_openssl_pem_parse (input, n_input, parse_reference, NULL);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 	
 	g_assert ("parse_reference() wasn't called" && refdata != NULL);
@@ -92,10 +91,10 @@ DEFINE_TEST(write_reference)
 	gsize n_encrypted;
 	gboolean ret;
 	
-	dekinfo = gck_data_openssl_get_dekinfo (refheaders); 
+	dekinfo = egg_openssl_get_dekinfo (refheaders); 
 	g_assert ("no dekinfo in headers" && dekinfo != NULL);
 
-	ret = gck_data_openssl_encrypt_block (dekinfo, "booo", 4, refdata, n_refdata, &encrypted, &n_encrypted);
+	ret = egg_openssl_encrypt_block (dekinfo, "booo", 4, refdata, n_refdata, &encrypted, &n_encrypted);
 	g_assert ("couldn't openssl encrypt block" && ret == TRUE);
 	g_assert ("no data returned from openssl encrypt" && encrypted != NULL);
 	g_assert ("invalid amount of data returned from openssl encrypt" && n_refdata <= n_encrypted);
@@ -111,21 +110,21 @@ const gsize TEST_DATA_L = 29;
 DEFINE_TEST(openssl_roundtrip)
 {
 	const gchar *dekinfo;
-	GckDataResult res;
+	gboolean res;
 	gboolean ret;
 	guchar *encrypted, *decrypted;
 	gsize n_encrypted, n_decrypted;
 	int i;
 	
-	dekinfo = gck_data_openssl_prep_dekinfo (refheaders);
+	dekinfo = egg_openssl_prep_dekinfo (refheaders);
 	
-	ret = gck_data_openssl_encrypt_block (dekinfo, "password", -1, TEST_DATA, TEST_DATA_L, &encrypted, &n_encrypted);
+	ret = egg_openssl_encrypt_block (dekinfo, "password", -1, TEST_DATA, TEST_DATA_L, &encrypted, &n_encrypted);
 	g_assert ("couldn't openssl encrypt block" && ret == TRUE);
 	g_assert ("no data returned from openssl encrypt" && encrypted != NULL);
 	g_assert ("invalid amount of data returned from openssl encrypt" && TEST_DATA_L <= n_encrypted);
 
-	res = gck_data_openssl_decrypt_block (dekinfo, "password", 8, encrypted, n_encrypted, &decrypted, &n_decrypted);
-	g_assert ("couldn't openssl decrypt block" && res == GCK_DATA_SUCCESS);
+	res = egg_openssl_decrypt_block (dekinfo, "password", 8, encrypted, n_encrypted, &decrypted, &n_decrypted);
+	g_assert ("couldn't openssl decrypt block" && res == TRUE);
 	g_assert ("no data returned from openssl decrypt" && decrypted != NULL);
 
 	/* Check that the data was decrypted properly */

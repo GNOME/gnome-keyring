@@ -3,11 +3,10 @@
 
 #include "gck/gck-data-asn1.h"
 #include "gck/gck-data-der.h"
-#include "gck/gck-data-openssl.h"
-#include "gck/gck-data-pem.h"
 #include "gck/gck-data-types.h"
 
 #include "egg/egg-buffer.h"
+#include "egg/egg-openssl.h"
 
 typedef struct _ParsePrivate {
 	gcry_sexp_t sexp;
@@ -163,7 +162,7 @@ load_encrypted_key (const guchar *data, gsize n_data, const gchar *dekinfo,
 	gint length;
 	
 	/* Decrypt, this will result in garble if invalid password */	
-	res = gck_data_openssl_decrypt_block (dekinfo, password, n_password, 
+	res = egg_openssl_decrypt_block (dekinfo, password, n_password, 
 	                                      data, n_data, &decrypted, &n_decrypted);
 	if (!res)
 		return FALSE;
@@ -214,7 +213,7 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 		return;
 	
 	/* If it's encrypted ... */
-	dekinfo = gck_data_openssl_get_dekinfo (headers);
+	dekinfo = egg_openssl_get_dekinfo (headers);
 	if (dekinfo) {
 		ctx->result = load_encrypted_key (data, n_data, dekinfo, ctx->password, 
 		                                  ctx->n_password, &ctx->sexp);
@@ -346,7 +345,7 @@ gck_ssh_openssh_parse_private_key (const guchar *data, gsize n_data,
 	ctx.password = password;
 	ctx.n_password = n_password;
 	
-	num = gck_data_pem_parse (data, n_data, parsed_pem_block, &ctx);
+	num = egg_openssl_pem_parse (data, n_data, parsed_pem_block, &ctx);
 
 	/* Didn't find any private key there */
 	if (num == 0 || !ctx.seen) {

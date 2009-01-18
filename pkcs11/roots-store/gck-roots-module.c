@@ -25,9 +25,10 @@
 #include "gck-roots-module.h"
 #include "gck-roots-certificate.h"
 
-#include "gck/gck-data-pem.h"
 #include "gck/gck-file-tracker.h"
 #include "gck/gck-serializable.h"
+
+#include "egg/egg-openssl.h"
 
 #include <string.h>
 
@@ -204,7 +205,7 @@ file_load (GckFileTracker *tracker, const gchar *path, GckRootsModule *self)
 	g_list_free (objects);
 	
 	/* Try and parse the PEM */
-	num = gck_data_pem_parse (data, n_data, parsed_pem_block, &ctx);
+	num = egg_openssl_pem_parse (data, n_data, parsed_pem_block, &ctx);
 
 	/* If no PEM data, try to parse directly as DER  */
 	if (ctx.count == 0) {

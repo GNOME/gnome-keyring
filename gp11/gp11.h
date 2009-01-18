@@ -21,8 +21,8 @@
    Author: Stef Walter <nielsen@memberwebs.com>
 */
 
-#ifndef GP11_H_
-#define GP11_H_
+#ifndef GP11_H
+#define GP11_H
 
 #include <glib.h>
 #include <glib-object.h>
@@ -1431,4 +1431,4 @@ guchar*             gp11_processor_close_finish            (GP11Processor *proce
 
 G_END_DECLS
 
-#endif /*GP11_H_*/
+#endif /*GP11_H*/

@@ -4,11 +4,15 @@ AM_INIT_AUTOMAKE(gnome-keyring, 2.25.4.2)
 AM_CONFIG_HEADER(config.h)
 	
 dnl ****************************************************************************
-dnl GP11 library libtool versioning
+dnl Library libtool versioning
 
 GP11_MAJOR=0		# Increment for major version number, breaks old apps.
 GP11_REVISION=0		# Increment for internal changes, nothing affected.
 GP11_AGE=0		# Increment for interface that doesn't break anything
+
+GCR_MAJOR=0		# Increment for major version number, breaks old apps.
+GCR_REVISION=0		# Increment for internal changes, nothing affected.
+GCR_AGE=0		# Increment for interface that doesn't break anything
 
 dnl ****************************************************************************
 
@@ -469,6 +473,10 @@ GP11_LT_RELEASE=$GP11_MAJOR:$GP11_REVISION:$GP11_AGE
 AC_SUBST(GP11_LT_RELEASE)
 AC_SUBST(GP11_MAJOR)
 
+GCR_LT_RELEASE=$GCR_MAJOR:$GCR_REVISION:$GCR_AGE
+AC_SUBST(GCR_LT_RELEASE)
+AC_SUBST(GCR_MAJOR)
+
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
@@ -497,6 +505,9 @@ daemon/ssh/tests/Makefile
 daemon/ui/Makefile
 egg/Makefile
 egg/tests/Makefile
+gcr/gcr.pc
+gcr/Makefile
+gcr/tests/Makefile
 gp11/gp11.pc
 gp11/Makefile
 gp11/reference/Makefile

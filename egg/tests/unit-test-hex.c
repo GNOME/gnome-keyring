@@ -27,7 +27,7 @@
 
 #include "run-auto-test.h"
 
-#include "gck/gck-util.h"
+#include "egg-hex.h"
 
 static const guchar TEST_DATA[] = { 0x05, 0xD6, 0x95, 0x96, 0x10, 0x12, 0xAE, 0x35 };
 static const gchar *TEST_HEX = "05D695961012AE35";
@@ -37,7 +37,7 @@ DEFINE_TEST(hex_encode)
 {
 	gchar *hex;
 	
-	hex = gck_util_hex_encode (TEST_DATA, sizeof (TEST_DATA));
+	hex = egg_hex_encode (TEST_DATA, sizeof (TEST_DATA));
 	g_assert (hex);
 	g_assert_cmpstr (hex, ==, TEST_HEX);
 }
@@ -47,23 +47,23 @@ DEFINE_TEST(hex_decode)
 	guchar *data;
 	gsize n_data;
 	
-	data = gck_util_hex_decode (TEST_HEX, -1, &n_data);
+	data = egg_hex_decode (TEST_HEX, -1, &n_data);
 	g_assert (data);
 	g_assert (n_data == sizeof (TEST_DATA));
 	g_assert (memcmp (data, TEST_DATA, n_data) == 0);
 
 	/* Spaces should be ignored */
-	data = gck_util_hex_decode (TEST_HEX_SPACE, -1, &n_data);
+	data = egg_hex_decode (TEST_HEX_SPACE, -1, &n_data);
 	g_assert (data);
 	g_assert (n_data == sizeof (TEST_DATA));
 	g_assert (memcmp (data, TEST_DATA, n_data) == 0);
 
 	/* Invalid input, null out */
-	data = gck_util_hex_decode ("AB", 1, &n_data);
+	data = egg_hex_decode ("AB", 1, &n_data);
 	g_assert (!data);
 
 	/* Nothing in, empty out */
-	data = gck_util_hex_decode ("AB", 0, &n_data);
+	data = egg_hex_decode ("AB", 0, &n_data);
 	g_assert (data);
 	g_assert (n_data == 0);
 }

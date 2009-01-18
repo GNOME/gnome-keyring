@@ -335,11 +335,8 @@ egg_asn1_read_oid (ASN1_TYPE asn, const gchar *part)
 	if (!buf)
 		return 0;
 		
-	quark = g_quark_try_string ((gchar*)buf);
+	quark = g_quark_from_string ((gchar*)buf);
 	g_free (buf);
-	
-	if (quark == 0)
-		quark = g_quark_from_static_string ("0.UNKNOWN.OID");
 	
 	return quark;
 }

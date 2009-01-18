@@ -47,11 +47,4 @@ CK_RV                 gck_attribute_set_mpi                       (CK_ATTRIBUTE_
 
 CK_ULONG              gck_util_next_handle                        (void);
 
-guchar*               gck_util_hex_decode                         (const gchar *data, 
-                                                                   gssize n_data, 
-                                                                   gsize *n_decoded);
-
-gchar*                gck_util_hex_encode                         (const guchar *data, 
-                                                                   gsize n_data);
-
 #endif /* GCKUTIL_H_ */

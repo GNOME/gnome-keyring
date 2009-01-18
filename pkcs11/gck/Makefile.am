@@ -24,8 +24,6 @@ libgck_la_SOURCES = \
 	gck-data-asn1.c gck-data-asn1.h \
 	gck-data-der.c gck-data-der.h \
 	gck-data-file.c gck-data-file.h \
-	gck-data-openssl.c gck-data-openssl.h \
-	gck-data-pem.c gck-data-pem.h \
 	gck-data-types.h \
 	gck-factory.c gck-factory.h \
 	gck-file-tracker.c gck-file-tracker.h \

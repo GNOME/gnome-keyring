@@ -30,6 +30,7 @@
 
 #include "egg/egg-buffer.h"
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-symkey.h"
 
 #include <glib/gstdio.h>
 
@@ -361,7 +362,7 @@ create_cipher (GckLogin *login, int calgo, int halgo, const guchar *salt,
 	
 	password = gck_login_get_password (login, &n_password);
 	
-	if (!gck_crypto_symkey_generate_simple (calgo, halgo, password, n_password, 
+	if (!egg_symkey_generate_simple (calgo, halgo, password, n_password, 
 	                                        salt, n_salt, iterations, &key, &iv)) {
 		gcry_free (key);
 		g_free (iv);

@@ -274,11 +274,6 @@ DEFINE_TEST(oid)
 	oid = egg_asn1_read_oid (asn, "nonExistant");
 	g_assert (oid == 0);
 
-	/* No quark of this has been defined, so should return an invalid OID */
-	oid = egg_asn1_read_oid (asn, "data");
-	g_assert (oid != 0);
-	g_assert_cmpstr (g_quark_to_string (oid), !=, "SOME DATA");
-	
 	/* Now a quark has been defined */
 	check = g_quark_from_static_string ("SOME DATA");
 	oid = egg_asn1_read_oid (asn, "data");

@@ -1,5 +1,55 @@
 2009-01-17  Stef Walter  <stef@memberwebs.com>
 
+	* egg/egg-asn1.c:
+	* egg/egg-hex.c: (split from pkcs11/gck/gck-util.c)
+	* egg/egg-hex.h: (split from pkcs11/gck/gck-util.h)
+	* egg/egg-openssl.c: (moved from pkcs11/gck/gck-data-openssl.c)
+	* egg/egg-openssl.h: (moved from pkcs11/gck/gck-data-openssl.h)
+	* egg/egg-symkey.c: (split from pkcs11/gck/gck-crypto.c)
+	* egg/egg-symkey.h: (split from pkcs11/gck/gck-crypto.h)
+	* egg/Makefile.am:
+	* egg/tests/Makefile.am:
+	* egg/tests/unit-test-asn1.c:
+	* egg/tests/unit-test-hex.c: (moved from pkcs11/gck/tests/unit-test-util.c)
+	* egg/tests/unit-test-openssl.c: (moved from pkcs11/gck/tests/unit-test-data-openssl.c)
+	* egg/tests/unit-test-symkey.c: (split from pkcs11/gck/tests/unit-test-crypto.c)
+	* gcr/gcr.pc.in: (added)
+	* gcr/gcr-internal.c: (added)
+	* gcr/gcr-internal.h: (added)
+	* gcr/gcr-marshal.list: (added)
+	* gcr/gcr-parser.c: (added)
+	* gcr/gcr-parser.h: (added)
+	* gcr/gcr-types.h: (added)
+	* gcr/Makefile.am: (added)
+	* gcr/template/*: (added)
+	* gcr/tests/Makefile.am: (added)
+	* gcr/tests/unit-test-parser.c: (added)
+	* gcr/tests/test-data: (copied from daemon/pkix/test/test-data)
+	* gp11/gp11.h:
+	* pkcs11/gck/gck-crypto.c:
+	* pkcs11/gck/gck-crypto.h:
+	* pkcs11/gck/gck-data-der.c:
+	* pkcs11/gck/gck-data-der.h:
+	* pkcs11/gck/gck-data-file.c:
+	* pkcs11/gck/gck-data-openssl.c: (moved)
+	* pkcs11/gck/gck-data-openssl.h: (moved)
+	* pkcs11/gck/gck-data-pem.c: (combined into egg/egg-openssl.c)
+	* pkcs11/gck/gck-data-pem.c: (combined into egg/egg-openssl.h)
+	* pkcs11/gck/gck-util.c:
+	* pkcs11/gck/gck-util.h:
+	* pkcs11/gck/Makefile.am:
+	* pkcs11/gck/tests/unit-test-crypto.c:
+	* pkcs11/gck/tests/unit-test-data-openssl.c: (moved)
+	* pkcs11/gck/tests/unit-test-util.c: (moved)
+	* pkcs11/roots-store/gck-roots-module.c:
+	* pkcs11/ssh-store/gck-ssh-openssh.c:
+	* pkcs11/user-store/gck-user-storage.c:
+	* configure.in:
+	* Makefile.am: Add new gcr library for crypto UI and related tasks. Implement
+	GckParser class.
+
+2009-01-17  Stef Walter  <stef@memberwebs.com>
+
 	* egg/egg-asn1.c: (moved from pkcs11/gck/gck-data-asn1.c)
 	* egg/egg-asn1.h: (moved from pkcs11/gck/gck-data-asn1.h)
 	* egg/egg-buffer.c: (moved from common/gkr-buffer.c)

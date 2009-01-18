@@ -19,8 +19,11 @@ libegg_la_CFLAGS = \
 libegg_la_SOURCES = \
 	egg-asn1.c egg-asn1.h \
 	egg-buffer.c egg-buffer.h \
+	egg-hex.c egg-hex.h \
+	egg-openssl.c egg-openssl.h \
 	egg-unix-credentials.c egg-unix-credentials.h \
-	egg-secure-memory.c egg-secure-memory.h
+	egg-secure-memory.c egg-secure-memory.h \
+	egg-symkey.c egg-symkey.h
 	
 asn1-def-pk.h: pk.asn
 	asn1Parser -o asn1-def-pk.h pk.asn 
