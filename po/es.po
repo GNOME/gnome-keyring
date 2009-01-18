@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2009-01-08 18:41+0000\n"
-"PO-Revision-Date: 2009-01-10 02:09+0100\n"
+"POT-Creation-Date: 2009-01-17 20:18+0000\n"
+"PO-Revision-Date: 2009-01-18 18:59+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -667,8 +667,28 @@ msgstr ""
 "está bloqueado"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:385
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:536
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Desbloquear automáticamente el depósito seguro al iniciar sesión."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:528
+#| msgid "New password strength"
+msgid "New Password Required"
+msgstr "Se requiere una contraseña nueva"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:529
+#| msgid "Enter password to protect storage"
+msgid "New password required for secure storage"
+msgstr "Se requiere una contraseña nueva para el almacén seguro"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:531
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Se requiere una contraseña para poder preparar «%s» para almacenar "
+"certificados o claves"
 
 #: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:92
 msgid "The operation was cancelled"
@@ -1125,7 +1145,7 @@ msgstr "No existe un depósito de claves con ese nombre."
 msgid "The keyring has already been unlocked."
 msgstr "El depósito de claves ya se ha desbloqueado."
 
-#: ../pkcs11/gck/gck-certificate.c:489
+#: ../pkcs11/gck/gck-certificate.c:516
 msgid "Unnamed Certificate"
 msgstr "Certificado sin nombre"
 
