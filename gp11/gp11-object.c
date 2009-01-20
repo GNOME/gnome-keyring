@@ -310,6 +310,58 @@ gp11_objects_from_handle_array (GP11Slot *slot, CK_OBJECT_HANDLE_PTR handles, CK
 }
 
 /**
+ * gp11_object_equal:
+ * @object1: A pointer to the first GP11Object
+ * @object2: A pointer to the second GP11Object
+ * 
+ * Checks equality of two objects. Two GP11Object objects can point to the same 
+ * underlying PKCS#11 object.
+ * 
+ * Return value: TRUE if object1 and object2 are equal. FALSE if either is not a GP11Object.
+ **/
+gboolean
+gp11_object_equal (gconstpointer object1, gconstpointer object2)
+{
+	GP11ObjectData *data1, *data2;
+
+	if (object1 == object2)
+		return TRUE;
+	if (!GP11_IS_OBJECT (object1) || !GP11_IS_OBJECT (object2))
+		return FALSE;
+	
+	data1 = GP11_OBJECT_GET_DATA (object1);
+	data2 = GP11_OBJECT_GET_DATA (object2);
+	
+	return data1->handle == data2->handle && 
+	       gp11_slot_equal (data1->slot, data2->slot);
+}
+
+/**
+ * gp11_object_hash:
+ * @object: A pointer to a GP11Object
+ * 
+ * Create a hash value for the GP11Object. 
+ * 
+ * This function is intended for easily hashing a GP11Object to add to 
+ * a GHashTable or similar data structure.
+ * 
+ * Return value: An integer that can be used as a hash value, or 0 if invalid.
+ **/
+guint
+gp11_object_hash (gconstpointer object)
+{
+	GP11ObjectData *data;
+	
+	g_return_val_if_fail (GP11_IS_OBJECT (object), 0);
+
+	data = GP11_OBJECT_GET_DATA (object);
+	
+	return _gp11_ulong_hash (&data->handle) ^
+	       gp11_slot_hash (data->slot);
+}
+
+
+/**
  * gp11_object_get_handle:
  * @self: The object.
  * 

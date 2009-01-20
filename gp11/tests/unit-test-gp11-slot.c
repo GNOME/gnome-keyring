@@ -99,6 +99,33 @@ DEFINE_TEST(slot_props)
 	g_object_unref (mod);
 }
 
+DEFINE_TEST(slot_equals_hash)
+{
+	GP11Module *other_mod;
+	GP11Slot *other_slot;
+	GObject *obj;
+	guint hash;
+	
+	hash = gp11_slot_hash (slot);
+	g_assert (hash != 0);
+	
+	g_assert (gp11_slot_equal (slot, slot));
+	
+	other_mod = gp11_module_new (gp11_module_get_functions (module));
+	other_slot = g_object_new (GP11_TYPE_SLOT, "module", other_mod, "handle", gp11_slot_get_handle (slot), NULL);
+	g_assert (gp11_slot_equal (slot, other_slot));
+	g_object_unref (other_mod);
+	g_object_unref (other_slot);
+	
+	obj = g_object_new (G_TYPE_OBJECT, NULL);
+	g_assert (!gp11_slot_equal (slot, obj));
+	g_object_unref (obj);
+
+	other_slot = g_object_new (GP11_TYPE_SLOT, "module", module, "handle", 8909, NULL);
+	g_assert (!gp11_slot_equal (slot, obj));
+	g_object_unref (other_slot);
+}
+
 DEFINE_TEST(slot_mechanisms)
 {
 	GP11Mechanisms *mechs;

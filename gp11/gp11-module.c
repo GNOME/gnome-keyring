@@ -684,6 +684,55 @@ gp11_module_new (CK_FUNCTION_LIST_PTR funcs)
 }
 
 /**
+ * gp11_module_equal:
+ * @module1: A pointer to the first GP11Module
+ * @module2: A pointer to the second GP11Module
+ * 
+ * Checks equality of two modules. Two GP11Module objects can point to the same 
+ * underlying PKCS#11 module.
+ * 
+ * Return value: TRUE if module1 and module2 are equal. FALSE if either is not a GP11Module.
+ **/
+gboolean
+gp11_module_equal (gconstpointer module1, gconstpointer module2)
+{
+	GP11ModuleData *data1, *data2;
+
+	if (module1 == module2)
+		return TRUE;
+	if (!GP11_IS_MODULE (module1) || !GP11_IS_MODULE (module2))
+		return FALSE;
+	
+	data1 = GP11_MODULE_GET_DATA (module1);
+	data2 = GP11_MODULE_GET_DATA (module2);
+	
+	return data1->funcs == data2->funcs;
+}
+
+/**
+ * gp11_module_hash:
+ * @module: A pointer to a GP11Module
+ * 
+ * Create a hash value for the GP11Module. 
+ * 
+ * This function is intended for easily hashing a GP11Module to add to 
+ * a GHashTable or similar data structure.
+ * 
+ * Return value: An integer that can be used as a hash value, or 0 if invalid.
+ **/
+guint
+gp11_module_hash (gconstpointer module)
+{
+	GP11ModuleData *data;
+	
+	g_return_val_if_fail (GP11_IS_MODULE (module), 0);
+
+	data = GP11_MODULE_GET_DATA (module);
+	
+	return g_direct_hash (data->funcs);
+}
+
+/**
  * gp11_module_get_info:
  * @self: The module to get info for.
  * 

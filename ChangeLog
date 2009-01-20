@@ -1,6 +1,18 @@
 2009-01-20  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:
+	* gp11/gp11-module.c:
+	* gp11/gp11-object.c:
+	* gp11/gp11-slot.c:
+	* gp11/tests/unit-test-gp11-module.c:
+	* gp11/tests/unit-test-gp11-object.c:
+	* gp11/tests/unit-test-gp11-slot.c: Add hash and equals functions for 
+	PKCS#11 modules, slots, and objects. Allows them to be used in hash tables
+	and searches.
+
+2009-01-20  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
 	* gp11/gp11-misc.c:
 	* gp11/gp11-module.c:
 	* gp11/gp11-private.h:

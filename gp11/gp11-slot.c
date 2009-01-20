@@ -295,6 +295,57 @@ gp11_mechanisms_check (GP11Mechanisms *mechanisms, ...)
 }
 
 /**
+ * gp11_slot_equal:
+ * @slot1: A pointer to the first GP11Slot
+ * @slot2: A pointer to the second GP11Slot
+ * 
+ * Checks equality of two slots. Two GP11Slot objects can point to the same 
+ * underlying PKCS#11 slot.
+ * 
+ * Return value: TRUE if slot1 and slot2 are equal. FALSE if either is not a GP11Slot.
+ **/
+gboolean
+gp11_slot_equal (gconstpointer slot1, gconstpointer slot2)
+{
+	GP11SlotData *data1, *data2;
+
+	if (slot1 == slot2)
+		return TRUE;
+	if (!GP11_IS_SLOT (slot1) || !GP11_IS_SLOT (slot2))
+		return FALSE;
+	
+	data1 = GP11_SLOT_GET_DATA (slot1);
+	data2 = GP11_SLOT_GET_DATA (slot2);
+	
+	return data1->handle == data2->handle && 
+	       gp11_module_equal (data1->module, data2->module);
+}
+
+/**
+ * gp11_slot_hash:
+ * @slot: A pointer to a GP11Slot
+ * 
+ * Create a hash value for the GP11Slot. 
+ * 
+ * This function is intended for easily hashing a GP11Slot to add to 
+ * a GHashTable or similar data structure.
+ * 
+ * Return value: An integer that can be used as a hash value, or 0 if invalid.
+ **/
+guint
+gp11_slot_hash (gconstpointer slot)
+{
+	GP11SlotData *data;
+	
+	g_return_val_if_fail (GP11_IS_SLOT (slot), 0);
+
+	data = GP11_SLOT_GET_DATA (slot);
+	
+	return _gp11_ulong_hash (&data->handle) ^
+	       gp11_module_hash (data->module);
+}
+
+/**
  * gp11_slot_get_handle:
  * @self: The slot to get the handle of.
  * 

@@ -33,7 +33,29 @@ DEFINE_TEST(invalid_modules)
 	/* Shouldn't be able to load any file successfully */ 
 	invalid = gp11_module_initialize ("/usr/lib/libm.so", NULL, &err);
 	FAIL_RES (invalid, err);
+}
 
+DEFINE_TEST(module_equals_hash)
+{
+	GP11Module *other;
+	GObject *obj;
+	guint hash;
+	
+	hash = gp11_module_hash (module);
+	g_assert (hash != 0);
+	
+	g_assert (gp11_module_equal (module, module));
+	
+	other = gp11_module_new (gp11_module_get_functions (module));
+	obj = g_object_new (G_TYPE_OBJECT, NULL);
+	
+	g_assert (gp11_module_equal (module, other));
+	
+	/* TODO: Could do with another test for inequality */
+	g_assert (!gp11_module_equal (module, obj));
+	
+	g_object_unref (other);
+	g_object_unref (obj);
 }
 
 DEFINE_TEST(module_props)

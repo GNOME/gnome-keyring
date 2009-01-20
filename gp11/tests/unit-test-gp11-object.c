@@ -58,6 +58,37 @@ DEFINE_TEST(object_props)
 	g_assert (handle == 2);
 }
 
+DEFINE_TEST(object_equals_hash)
+{
+	GP11Slot *other_slot;
+	GP11Object *other_object;
+	GObject *obj;
+	guint hash;
+	
+	hash = gp11_object_hash (object);
+	g_assert (hash != 0);
+	
+	g_assert (gp11_object_equal (object, object));
+	
+	other_slot = g_object_new (GP11_TYPE_SLOT, "module", module, "handle", 5895, NULL);
+	other_object = gp11_object_from_handle (other_slot, gp11_object_get_handle (object));
+	g_assert (!gp11_object_equal (object, other_object));
+	g_object_unref (other_slot);
+	g_object_unref (other_object);
+	
+	obj = g_object_new (G_TYPE_OBJECT, NULL);
+	g_assert (!gp11_object_equal (object, obj));
+	g_object_unref (obj);
+
+	other_object = gp11_object_from_handle (slot, 383838);
+	g_assert (!gp11_object_equal (object, other_object));
+	g_object_unref (other_object);
+	
+	other_object = gp11_object_from_handle (slot, gp11_object_get_handle (object));
+	g_assert (gp11_object_equal (object, other_object));
+	g_object_unref (other_object);
+}
+
 static void 
 fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 {

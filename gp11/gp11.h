@@ -288,6 +288,11 @@ GP11Module*           gp11_module_initialize                  (const gchar *path
                                                                gpointer reserved,
                                                                GError **err);
 
+gboolean              gp11_module_equal                       (gconstpointer module1,
+                                                               gconstpointer module2);
+
+guint                 gp11_module_hash                        (gconstpointer module);
+
 const gchar*          gp11_module_get_path                    (GP11Module *self);
 
 CK_FUNCTION_LIST_PTR  gp11_module_get_functions               (GP11Module *self);
@@ -427,6 +432,11 @@ struct _GP11SlotClass {
 };
 
 GType               gp11_slot_get_type                      (void) G_GNUC_CONST;
+
+gboolean            gp11_slot_equal                         (gconstpointer slot1,
+                                                             gconstpointer slot2);
+
+guint               gp11_slot_hash                          (gconstpointer slot);
 
 GP11Module*         gp11_slot_get_module                    (GP11Slot *self);
 
@@ -1264,6 +1274,11 @@ GP11Object*         gp11_object_from_handle                 (GP11Slot *slot,
 GList*              gp11_objects_from_handle_array          (GP11Slot *slot,
                                                              CK_OBJECT_HANDLE_PTR handles,
                                                              CK_ULONG n_handles);
+
+gboolean            gp11_object_equal                       (gconstpointer slot1,
+                                                             gconstpointer slot2);
+
+guint               gp11_object_hash                        (gconstpointer slot);
 
 GP11Module*         gp11_object_get_module                  (GP11Object *self);
 
