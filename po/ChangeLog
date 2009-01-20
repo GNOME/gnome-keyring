@@ -1,3 +1,9 @@
+=== gnome-keyring 2.25.5 ===
+
+2009-01-19  Stef Walter  <stef@memberwebs.com>
+
+	* POTFILES.in: Added gcr/gcr-import-dialog.glade
+
 2009-01-19  Jorge Gonzalez  <jorgegonz@svn.gnome.org>
 
 	* es.po: Updated Spanish translation.

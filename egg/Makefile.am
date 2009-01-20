@@ -23,17 +23,21 @@ libegg_la_SOURCES = \
 	egg-openssl.c egg-openssl.h \
 	egg-unix-credentials.c egg-unix-credentials.h \
 	egg-secure-memory.c egg-secure-memory.h \
-	egg-symkey.c egg-symkey.h
+	egg-symkey.c egg-symkey.h \
+	$(BUILT_SOURCES)
 	
 asn1-def-pk.h: pk.asn
-	asn1Parser -o asn1-def-pk.h pk.asn 
+	asn1Parser -o asn1-def-pk.h $(srcdir)/pk.asn 
 	
 asn1-def-pkix.h: pkix.asn
-	asn1Parser -o asn1-def-pkix.h pkix.asn 
+	asn1Parser -o asn1-def-pkix.h $(srcdir)/pkix.asn 
 
 EXTRA_DIST = \
 	pkix.asn \
 	pk.asn
+
+DISTCLEANFILES = \
+	$(BUILT_SOURCES)
 	
 # --------------------------------------------------------------------
 # COMMON STUFF COMPILED INTO SMALLER COMPONENTS

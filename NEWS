@@ -1,3 +1,13 @@
+Changes in version 2.25.5 are:
+* Refactor out gcr library for crypto UI and related tasks.
+* Code refactoring.
+* Support automatically initializing a PKCS#11 token when not initialized.
+* Add modular user-store module for general storage of keys and certs.
+* Build fixes [Saleem Abdulrasool, Jeff Cai]
+* Add modular roots-store module for storage of trusted CA certs.
+* Add modular rpc-layer for communication between module and daemon.
+* Add modular ssh-agent as the main gnome-keyring-daemon agent.
+
 Changes in version 2.25.4.2 are:
 * The modular ssh agent uses keys from all available PKCS#11 slots.
 * Fix compiler warnings.

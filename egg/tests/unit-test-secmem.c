@@ -42,7 +42,7 @@
  * Tests be run in the order specified here.
  */
 
-#define IS_ZERO ~0
+#define IS_ZERO ((gsize)~0)
 
 static gsize
 find_non_zero (gpointer mem, gsize len)
@@ -128,7 +128,7 @@ DEFINE_TEST(secmem_realloc)
 	strcpy ((gchar*)p, str);
 	
 	p2 = egg_secure_realloc_full (p, 512, 0);
-	g_assert (p2 == NULL);
+	g_assert (p2 != NULL);
 	g_assert_cmpint (IS_ZERO, ==, find_non_zero (((gchar*)p2) + len, 512 - len));
 	
 	g_assert (strcmp (p2, str) == 0);

@@ -257,9 +257,8 @@ static CK_RV
 gck_roots_module_real_refresh_token (GckModule *base)
 {
 	GckRootsModule *self = GCK_ROOTS_MODULE (base);
-#ifdef ROOT_CERTIFICATES
-	gck_file_tracker_refresh (self->tracker, FALSE);
-#endif
+	if (self->tracker)
+		gck_file_tracker_refresh (self->tracker, FALSE);
 	return CKR_OK;
 }
 
@@ -274,11 +273,13 @@ gck_roots_module_constructor (GType type, guint n_props, GObjectConstructParam *
 #ifdef ROOT_CERTIFICATES
 	if (!self->directory)
 		self->directory = g_strdup (ROOT_CERTIFICATES);
-	self->tracker = gck_file_tracker_new (self->directory, "*", "*.0");
-	g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
-	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
-	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
 #endif
+	if (self->directory) {
+		self->tracker = gck_file_tracker_new (self->directory, "*", "*.0");
+		g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
+		g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
+		g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
+	}
 	
 	manager = gck_module_get_manager (GCK_MODULE (self));
 	gck_manager_add_property_index (manager, "unique", TRUE);

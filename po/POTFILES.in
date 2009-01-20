@@ -16,6 +16,7 @@ daemon/pkix/gkr-pkix-parser.c
 daemon/pkix/gkr-pkix-serialize.c
 daemon/ssh/gkr-ssh-storage.c
 daemon/ui/gkr-ask-tool.c
+gcr/gcr-import-dialog.glade
 gcr/gcr-parser.c
 gp11/gp11-misc.c
 library/gnome-keyring-utils.c
