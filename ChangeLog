@@ -1,6 +1,16 @@
+2009-01-20  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
+	* gp11/gp11-misc.c:
+	* gp11/gp11-module.c:
+	* gp11/gp11-private.h:
+	* gp11/gp11-session.c:
+	* gp11/gp11-slot.c: Expose looking up slot flags,
+	and a few other helpful functions.
+
 === gnome-keyring 2.25.5 ===
 
-2009-01-09  Stef Walter  <stef@memberwebs.com>
+2009-01-19  Stef Walter  <stef@memberwebs.com>
 
 	* egg/Makefile.am:
 	* egg/tests/test.asn:

@@ -50,6 +50,15 @@ CK_ATTRIBUTE_PTR    _gp11_attributes_commit_out             (GP11Attributes *att
                                                              CK_ULONG_PTR n_attrs);
 
 /* ----------------------------------------------------------------------------
+ * MISC
+ */
+
+guint               _gp11_ulong_hash                        (gconstpointer v);
+
+gboolean            _gp11_ulong_equal                       (gconstpointer v1, 
+                                                             gconstpointer v2);
+
+/* ----------------------------------------------------------------------------
  * MODULE
  */
 
@@ -75,7 +84,8 @@ CK_SESSION_HANDLE   _gp11_module_pooled_session_handle      (GP11Module *module,
  * SLOT
  */
 
-gboolean            _gp11_slot_is_protected_auth_path       (GP11Slot *slot);
+GP11Object*         _gp11_slot_object_from_handle           (GP11Slot *slot,
+                                                             CK_OBJECT_HANDLE handle);
 
 /* ----------------------------------------------------------------------------
  * CALL

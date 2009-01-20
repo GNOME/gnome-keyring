@@ -65,7 +65,6 @@ typedef struct _GP11ModulePrivate {
 	gboolean finalized;
 	GHashTable *open_sessions;
 	gboolean auto_authenticate;
-	GP11TokenInfo *token_info;
 } GP11ModulePrivate;
 
 #define GP11_MODULE_GET_DATA(o) \
@@ -85,24 +84,6 @@ typedef struct _SessionPool {
 /* ----------------------------------------------------------------------------
  * HELPERS
  */
-
-static guint
-ulong_hash (gconstpointer v)
-{
-	const signed char *p = v;
-	guint32 i, h = *p;
-
-	for(i = 0; i < sizeof (gulong); ++i)
-		h = (h << 5) - h + *(p++);
-
-	return h;
-}
-
-static gboolean
-ulong_equal (gconstpointer v1, gconstpointer v2)
-{
-	return *((const gulong*)v1) == *((const gulong*)v2);
-}
 
 static CK_RV
 create_mutex (void **mutex)
@@ -302,7 +283,7 @@ static void
 create_session_table (GP11ModulePrivate *pv)
 {
 	if (!pv->open_sessions)
-		pv->open_sessions = g_hash_table_new_full (ulong_hash, ulong_equal, g_free, free_session_pool);
+		pv->open_sessions = g_hash_table_new_full (_gp11_ulong_hash, _gp11_ulong_equal, g_free, free_session_pool);
 }
 
 CK_SESSION_HANDLE

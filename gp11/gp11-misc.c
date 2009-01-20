@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include "gp11.h"
+#include "gp11-private.h"
 
 #include <glib/gi18n.h>
 
@@ -64,6 +65,27 @@ gp11_list_unref_free (GList *reflist)
 		g_object_unref (l->data);
 	}
 	g_list_free (reflist);
+}
+
+/**
+ * gp11_list_ref_copy:
+ * reflist: List of GObject reference counted objects.
+ * 
+ * Copy a list of GObject based pointers. All objects 
+ * in the list will be reffed and the list will be copied.
+ * 
+ * Return value: The copied and reffed list. When done, free it with 
+ * gp11_list_unref_free ()
+ */
+GList*
+gp11_list_ref_copy (GList *reflist)
+{
+	GList *l, *copy = g_list_copy (reflist);
+	for (l = copy; l; l = g_list_next (l)) {
+		g_return_val_if_fail (G_IS_OBJECT (l->data), NULL);
+		g_object_ref (l->data);
+	}
+	return copy;
 }
 
 /**
@@ -279,4 +301,22 @@ gp11_string_from_chars (const guchar *data, gsize max)
 	string = g_strndup ((gchar*)data, max);
 	g_strchomp (string);
 	return string;
+}
+
+guint
+_gp11_ulong_hash (gconstpointer v)
+{
+	const signed char *p = v;
+	guint32 i, h = *p;
+
+	for(i = 0; i < sizeof (gulong); ++i)
+		h = (h << 5) - h + *(p++);
+
+	return h;
+}
+
+gboolean
+_gp11_ulong_equal (gconstpointer v1, gconstpointer v2)
+{
+	return *((const gulong*)v1) == *((const gulong*)v2);
 }

@@ -41,6 +41,8 @@ G_BEGIN_DECLS
 
 GQuark              gp11_get_error_quark                    (void);
 
+GList*              gp11_list_ref_copy                      (GList *reflist);
+
 void                gp11_list_unref_free                    (GList *reflist);
 
 const gchar*        gp11_message_from_rv                    (CK_RV rv);
@@ -440,6 +442,9 @@ GP11Mechanisms*     gp11_slot_get_mechanisms                (GP11Slot *self);
 
 GP11MechanismInfo*  gp11_slot_get_mechanism_info            (GP11Slot *self,
                                                              gulong mech_type);
+
+gboolean            gp11_slot_has_flags                     (GP11Slot *self,
+                                                             gulong flags);
 
 #if UNIMPLEMENTED
 

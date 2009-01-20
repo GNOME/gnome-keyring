@@ -199,25 +199,6 @@ gp11_slot_class_init (GP11SlotClass *klass)
 }
 
 /* ----------------------------------------------------------------------------
- * INTERNAL AUTHENTICATION
- */
-
-gboolean
-_gp11_slot_is_protected_auth_path (GP11Slot *self)
-{
-	GP11TokenInfo *info;
-	gboolean ret;
-
-	g_assert (GP11_IS_SLOT (self));
-
-	info = gp11_slot_get_token_info (self);
-	ret = (info && info->flags & CKF_PROTECTED_AUTHENTICATION_PATH);
-	gp11_token_info_free (info);
-	
-	return ret;
-}
-
-/* ----------------------------------------------------------------------------
  * PUBLIC 
  */
 
@@ -574,6 +555,36 @@ gp11_slot_get_mechanism_info (GP11Slot *self, gulong mech_type)
 	mechinfo->min_key_size = info.ulMinKeySize;
 	
 	return mechinfo;
+}
+
+gboolean
+gp11_slot_has_flags (GP11Slot *self, gulong flags)
+{
+	CK_FUNCTION_LIST_PTR funcs;
+	GP11Module *module = NULL;
+	CK_TOKEN_INFO info;
+	CK_SLOT_ID handle;
+	CK_RV rv;
+	
+	g_return_val_if_fail (GP11_IS_SLOT (self), FALSE);
+
+	g_object_get (self, "module", &module, "handle", &handle, NULL);
+	g_return_val_if_fail (GP11_IS_MODULE (module), FALSE);
+	
+	funcs = gp11_module_get_functions (module);
+	g_return_val_if_fail (funcs, FALSE);
+	
+	memset (&info, 0, sizeof (info));
+	rv = (funcs->C_GetTokenInfo) (handle, &info);
+	
+	g_object_unref (module);
+	
+	if (rv != CKR_OK) {
+		g_warning ("couldn't get slot info: %s", gp11_message_from_rv (rv));
+		return FALSE;
+	}
+	
+	return (info.flags & flags) != 0;
 }
 
 #if UNIMPLEMENTED

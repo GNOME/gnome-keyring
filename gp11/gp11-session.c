@@ -1138,7 +1138,7 @@ authenticate_init (Authenticate *auth, GP11Slot *slot, GP11Object *object)
 	module = gp11_slot_get_module (slot);
 	if (gp11_module_get_auto_authenticate (module)) {
 		auth->state = AUTHENTICATE_CAN;
-		auth->protected_auth = _gp11_slot_is_protected_auth_path (slot);
+		auth->protected_auth = gp11_slot_has_flags (slot, CKF_PROTECTED_AUTHENTICATION_PATH);
 		auth->module = module;
 		auth->object = g_object_ref (object);
 	} else {
