@@ -46,9 +46,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "gkr-ask-entry.h"
-
-#include "egg/egg-secure-memory.h"
+#include "egg-secure-entry.h"
+#include "egg-secure-memory.h"
 
 #define MIN_ASK_ENTRY_WIDTH  150
 #define DRAW_TIMEOUT            20
@@ -85,87 +84,87 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 /* GObject, GtkObject methods */
-static void gkr_ask_entry_class_init (GkrAskEntryClass *klass);
-static void gkr_ask_entry_editable_init (GtkEditableClass *iface);
-static void gkr_ask_entry_cell_editable_init (GtkCellEditableIface *iface);
-static void gkr_ask_entry_init (GkrAskEntry *entry);
-static void gkr_ask_entry_set_property (GObject *object, guint prop_id,
+static void egg_secure_entry_class_init (EggSecureEntryClass *klass);
+static void egg_secure_entry_editable_init (GtkEditableClass *iface);
+static void egg_secure_entry_cell_editable_init (GtkCellEditableIface *iface);
+static void egg_secure_entry_init (EggSecureEntry *entry);
+static void egg_secure_entry_set_property (GObject *object, guint prop_id,
                                                 const GValue *value, GParamSpec *pspec);
-static void gkr_ask_entry_get_property (GObject *object, guint prop_id,
+static void egg_secure_entry_get_property (GObject *object, guint prop_id,
                                                 GValue *value, GParamSpec *pspec);
-static void gkr_ask_entry_finalize (GObject *object);
+static void egg_secure_entry_finalize (GObject *object);
 
 /* GtkWidget methods */
-static void gkr_ask_entry_realize (GtkWidget *widget);
-static void gkr_ask_entry_unrealize (GtkWidget *widget);
-static void gkr_ask_entry_size_request (GtkWidget *widget, GtkRequisition *requisition);
-static void gkr_ask_entry_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
-static void gkr_ask_entry_draw_frame (GtkWidget *widget);
-static gint gkr_ask_entry_expose (GtkWidget *widget, GdkEventExpose *event);
-static gint gkr_ask_entry_button_press (GtkWidget *widget, GdkEventButton *event);
-static gint gkr_ask_entry_button_release (GtkWidget *widget, GdkEventButton *event);
-static gint gkr_ask_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event);
-static gint gkr_ask_entry_key_press (GtkWidget *widget, GdkEventKey *event);
-static gint gkr_ask_entry_key_release (GtkWidget *widget, GdkEventKey *event);
-static gint gkr_ask_entry_focus_in (GtkWidget *widget, GdkEventFocus *event);
-static gint gkr_ask_entry_focus_out (GtkWidget *widget, GdkEventFocus *event);
-static void gkr_ask_entry_grab_focus (GtkWidget *widget);
-static void gkr_ask_entry_style_set (GtkWidget *widget, GtkStyle *previous_style);
-static void gkr_ask_entry_direction_changed (GtkWidget *widget, GtkTextDirection previous_dir);
-static void gkr_ask_entry_state_changed (GtkWidget *widget, GtkStateType previous_state);
-static void gkr_ask_entry_screen_changed (GtkWidget *widget, GdkScreen *old_screen);
+static void egg_secure_entry_realize (GtkWidget *widget);
+static void egg_secure_entry_unrealize (GtkWidget *widget);
+static void egg_secure_entry_size_request (GtkWidget *widget, GtkRequisition *requisition);
+static void egg_secure_entry_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
+static void egg_secure_entry_draw_frame (GtkWidget *widget);
+static gint egg_secure_entry_expose (GtkWidget *widget, GdkEventExpose *event);
+static gint egg_secure_entry_button_press (GtkWidget *widget, GdkEventButton *event);
+static gint egg_secure_entry_button_release (GtkWidget *widget, GdkEventButton *event);
+static gint egg_secure_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event);
+static gint egg_secure_entry_key_press (GtkWidget *widget, GdkEventKey *event);
+static gint egg_secure_entry_key_release (GtkWidget *widget, GdkEventKey *event);
+static gint egg_secure_entry_focus_in (GtkWidget *widget, GdkEventFocus *event);
+static gint egg_secure_entry_focus_out (GtkWidget *widget, GdkEventFocus *event);
+static void egg_secure_entry_grab_focus (GtkWidget *widget);
+static void egg_secure_entry_style_set (GtkWidget *widget, GtkStyle *previous_style);
+static void egg_secure_entry_direction_changed (GtkWidget *widget, GtkTextDirection previous_dir);
+static void egg_secure_entry_state_changed (GtkWidget *widget, GtkStateType previous_state);
+static void egg_secure_entry_screen_changed (GtkWidget *widget, GdkScreen *old_screen);
 
 /* GtkEditable method implementations */
-static void gkr_ask_entry_insert_text (GtkEditable *editable, const gchar *new_text,
+static void egg_secure_entry_insert_text (GtkEditable *editable, const gchar *new_text,
                                                gint new_text_length, gint *position);
-static void gkr_ask_entry_delete_text (GtkEditable *editable, gint start_pos, gint end_pos);
-static void gkr_ask_entry_real_set_position (GtkEditable *editable, gint position);
-static gint gkr_ask_entry_get_position (GtkEditable *editable);
-static void gkr_ask_entry_set_selection_bounds (GtkEditable *editable, gint start, gint end);
-static gboolean gkr_ask_entry_get_selection_bounds (GtkEditable *editable, gint *start, gint *end);
+static void egg_secure_entry_delete_text (GtkEditable *editable, gint start_pos, gint end_pos);
+static void egg_secure_entry_real_set_position (GtkEditable *editable, gint position);
+static gint egg_secure_entry_get_position (GtkEditable *editable);
+static void egg_secure_entry_set_selection_bounds (GtkEditable *editable, gint start, gint end);
+static gboolean egg_secure_entry_get_selection_bounds (GtkEditable *editable, gint *start, gint *end);
 
 /* GtkCellEditable method implementations */
-static void gkr_ask_entry_start_editing (GtkCellEditable *cell_editable, GdkEvent *event);
+static void egg_secure_entry_start_editing (GtkCellEditable *cell_editable, GdkEvent *event);
 
 /* Default signal handlers */
-static void gkr_ask_entry_real_insert_text (GtkEditable *editable, const gchar *new_text,
+static void egg_secure_entry_real_insert_text (GtkEditable *editable, const gchar *new_text,
                                                     gint new_text_length, gint *position);
-static void gkr_ask_entry_real_delete_text (GtkEditable *editable, gint start_pos, gint end_pos);
-static void gkr_ask_entry_move_cursor (GkrAskEntry *entry, GtkMovementStep step,
+static void egg_secure_entry_real_delete_text (GtkEditable *editable, gint start_pos, gint end_pos);
+static void egg_secure_entry_move_cursor (EggSecureEntry *entry, GtkMovementStep step,
                                                gint count, gboolean extend_selection);
-static void gkr_ask_entry_insert_at_cursor (GkrAskEntry *entry, const gchar *str);
-static void gkr_ask_entry_delete_from_cursor (GkrAskEntry *entry, GtkDeleteType type, gint count);
-static void gkr_ask_entry_real_activate (GkrAskEntry *entry);
-static void gkr_ask_entry_keymap_direction_changed (GdkKeymap *keymap, GkrAskEntry *entry);
+static void egg_secure_entry_insert_at_cursor (EggSecureEntry *entry, const gchar *str);
+static void egg_secure_entry_delete_from_cursor (EggSecureEntry *entry, GtkDeleteType type, gint count);
+static void egg_secure_entry_real_activate (EggSecureEntry *entry);
+static void egg_secure_entry_keymap_direction_changed (GdkKeymap *keymap, EggSecureEntry *entry);
 
 /* IM Context Callbacks */
-static void gkr_ask_entry_commit_cb(GtkIMContext *context, const gchar *str, GkrAskEntry *entry);
-static void gkr_ask_entry_preedit_changed_cb (GtkIMContext * context, GkrAskEntry *entry);
-static gboolean gkr_ask_entry_retrieve_surrounding_cb (GtkIMContext *context, GkrAskEntry *entry);
-static gboolean gkr_ask_entry_delete_surrounding_cb (GtkIMContext *context, gint offset, 
-                                                             gint n_chars, GkrAskEntry *entry);
+static void egg_secure_entry_commit_cb(GtkIMContext *context, const gchar *str, EggSecureEntry *entry);
+static void egg_secure_entry_preedit_changed_cb (GtkIMContext * context, EggSecureEntry *entry);
+static gboolean egg_secure_entry_retrieve_surrounding_cb (GtkIMContext *context, EggSecureEntry *entry);
+static gboolean egg_secure_entry_delete_surrounding_cb (GtkIMContext *context, gint offset, 
+                                                             gint n_chars, EggSecureEntry *entry);
 
 /* Internal routines */
-static void gkr_ask_entry_enter_text (GkrAskEntry *entry, const gchar *str);
-static void gkr_ask_entry_set_positions (GkrAskEntry *entry, gint current_pos, gint selection_bound);
-static void gkr_ask_entry_draw_text (GkrAskEntry *entry);
-static void gkr_ask_entry_draw_cursor (GkrAskEntry *entry);
-static PangoLayout *gkr_ask_entry_ensure_layout(GkrAskEntry *entry, gboolean include_preedit);
-static void gkr_ask_entry_reset_layout (GkrAskEntry *entry);
-static void gkr_ask_entry_queue_draw (GkrAskEntry *entry);
-static void gkr_ask_entry_reset_im_context (GkrAskEntry *entry);
-static void gkr_ask_entry_recompute (GkrAskEntry *entry);
-static gint gkr_ask_entry_find_position (GkrAskEntry *entry, gint x);
-static void gkr_ask_entry_get_cursor_locations (GkrAskEntry *entry, gint *strong_x, gint *weak_x);
-static void gkr_ask_entry_adjust_scroll (GkrAskEntry *entry);
-static gint gkr_ask_entry_move_visually (GkrAskEntry *editable, gint start, gint count);
-static gint gkr_ask_entry_move_logically (GkrAskEntry *entry, gint start, gint count);
-static gboolean gkr_ask_entry_mnemonic_activate (GtkWidget *widget, gboolean group_cycling);
-static void gkr_ask_entry_state_changed (GtkWidget *widget, GtkStateType previous_state);
-static void gkr_ask_entry_check_cursor_blink (GkrAskEntry *entry);
-static void gkr_ask_entry_pend_cursor_blink (GkrAskEntry *entry);
-static void get_text_area_size (GkrAskEntry *entry, gint *x, gint *y, gint *width, gint *height);
-static void get_widget_window_size (GkrAskEntry *entry, gint *x, gint *y, gint *width, gint *height);
+static void egg_secure_entry_enter_text (EggSecureEntry *entry, const gchar *str);
+static void egg_secure_entry_set_positions (EggSecureEntry *entry, gint current_pos, gint selection_bound);
+static void egg_secure_entry_draw_text (EggSecureEntry *entry);
+static void egg_secure_entry_draw_cursor (EggSecureEntry *entry);
+static PangoLayout *egg_secure_entry_ensure_layout(EggSecureEntry *entry, gboolean include_preedit);
+static void egg_secure_entry_reset_layout (EggSecureEntry *entry);
+static void egg_secure_entry_queue_draw (EggSecureEntry *entry);
+static void egg_secure_entry_reset_im_context (EggSecureEntry *entry);
+static void egg_secure_entry_recompute (EggSecureEntry *entry);
+static gint egg_secure_entry_find_position (EggSecureEntry *entry, gint x);
+static void egg_secure_entry_get_cursor_locations (EggSecureEntry *entry, gint *strong_x, gint *weak_x);
+static void egg_secure_entry_adjust_scroll (EggSecureEntry *entry);
+static gint egg_secure_entry_move_visually (EggSecureEntry *editable, gint start, gint count);
+static gint egg_secure_entry_move_logically (EggSecureEntry *entry, gint start, gint count);
+static gboolean egg_secure_entry_mnemonic_activate (GtkWidget *widget, gboolean group_cycling);
+static void egg_secure_entry_state_changed (GtkWidget *widget, GtkStateType previous_state);
+static void egg_secure_entry_check_cursor_blink (EggSecureEntry *entry);
+static void egg_secure_entry_pend_cursor_blink (EggSecureEntry *entry);
+static void get_text_area_size (EggSecureEntry *entry, gint *x, gint *y, gint *width, gint *height);
+static void get_widget_window_size (EggSecureEntry *entry, gint *x, gint *y, gint *width, gint *height);
 
 #define _gtk_marshal_VOID__VOID         g_cclosure_marshal_VOID__VOID
 #define _gtk_marshal_VOID__STRING       g_cclosure_marshal_VOID__STRING
@@ -178,36 +177,36 @@ static void _gtk_marshal_VOID__ENUM_INT (GClosure *closure, GValue *return_value
 static GtkWidgetClass *parent_class = NULL;
 
 GType
-gkr_ask_entry_get_type(void)
+egg_secure_entry_get_type(void)
 {
     static GType entry_type = 0;
 
     if (!entry_type) {
         static const GTypeInfo entry_info = {
-            sizeof(GkrAskEntryClass),
+            sizeof(EggSecureEntryClass),
             NULL,       /* base_init */
             NULL,       /* base_finalize */
-            (GClassInitFunc) gkr_ask_entry_class_init,
+            (GClassInitFunc) egg_secure_entry_class_init,
             NULL,       /* class_finalize */
             NULL,       /* class_data */
-            sizeof(GkrAskEntry),
+            sizeof(EggSecureEntry),
             0,          /* n_preallocs */
-            (GInstanceInitFunc) gkr_ask_entry_init,
+            (GInstanceInitFunc) egg_secure_entry_init,
         };
 
         static const GInterfaceInfo editable_info = {
-            (GInterfaceInitFunc) gkr_ask_entry_editable_init,    /* interface_init */
+            (GInterfaceInitFunc) egg_secure_entry_editable_init,    /* interface_init */
             NULL,       /* interface_finalize */
             NULL        /* interface_data */
         };
 
         static const GInterfaceInfo cell_editable_info = {
-            (GInterfaceInitFunc) gkr_ask_entry_cell_editable_init,   /* interface_init */
+            (GInterfaceInitFunc) egg_secure_entry_cell_editable_init,   /* interface_init */
             NULL,       /* interface_finalize */
             NULL        /* interface_data */
         };
 
-        entry_type = g_type_register_static(GTK_TYPE_WIDGET, "GkrAskEntry", &entry_info, 0);
+        entry_type = g_type_register_static(GTK_TYPE_WIDGET, "EggSecureEntry", &entry_info, 0);
         g_type_add_interface_static(entry_type, GTK_TYPE_EDITABLE, &editable_info);
         g_type_add_interface_static(entry_type, GTK_TYPE_CELL_EDITABLE, &cell_editable_info);
     }
@@ -230,7 +229,7 @@ add_move_binding (GtkBindingSet *binding_set, guint keyval, guint modmask,
 }
 
 static void
-gkr_ask_entry_class_init(GkrAskEntryClass *class)
+egg_secure_entry_class_init(EggSecureEntryClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS(class);
     GtkWidgetClass *widget_class;
@@ -239,33 +238,33 @@ gkr_ask_entry_class_init(GkrAskEntryClass *class)
     widget_class = (GtkWidgetClass*) class;
     parent_class = g_type_class_peek_parent (class);
 
-    gobject_class->finalize = gkr_ask_entry_finalize;
-    gobject_class->set_property = gkr_ask_entry_set_property;
-    gobject_class->get_property = gkr_ask_entry_get_property;
+    gobject_class->finalize = egg_secure_entry_finalize;
+    gobject_class->set_property = egg_secure_entry_set_property;
+    gobject_class->get_property = egg_secure_entry_get_property;
 
-    widget_class->realize = gkr_ask_entry_realize;
-    widget_class->unrealize = gkr_ask_entry_unrealize;
-    widget_class->size_request = gkr_ask_entry_size_request;
-    widget_class->size_allocate = gkr_ask_entry_size_allocate;
-    widget_class->expose_event = gkr_ask_entry_expose;
-    widget_class->button_press_event = gkr_ask_entry_button_press;
-    widget_class->button_release_event = gkr_ask_entry_button_release;
-    widget_class->motion_notify_event = gkr_ask_entry_motion_notify;
-    widget_class->key_press_event = gkr_ask_entry_key_press;
-    widget_class->key_release_event = gkr_ask_entry_key_release;
-    widget_class->focus_in_event = gkr_ask_entry_focus_in;
-    widget_class->focus_out_event = gkr_ask_entry_focus_out;
-    widget_class->grab_focus = gkr_ask_entry_grab_focus;
-    widget_class->style_set = gkr_ask_entry_style_set;
-    widget_class->direction_changed = gkr_ask_entry_direction_changed;
-    widget_class->state_changed = gkr_ask_entry_state_changed;
-    widget_class->screen_changed = gkr_ask_entry_screen_changed;
-    widget_class->mnemonic_activate = gkr_ask_entry_mnemonic_activate;
+    widget_class->realize = egg_secure_entry_realize;
+    widget_class->unrealize = egg_secure_entry_unrealize;
+    widget_class->size_request = egg_secure_entry_size_request;
+    widget_class->size_allocate = egg_secure_entry_size_allocate;
+    widget_class->expose_event = egg_secure_entry_expose;
+    widget_class->button_press_event = egg_secure_entry_button_press;
+    widget_class->button_release_event = egg_secure_entry_button_release;
+    widget_class->motion_notify_event = egg_secure_entry_motion_notify;
+    widget_class->key_press_event = egg_secure_entry_key_press;
+    widget_class->key_release_event = egg_secure_entry_key_release;
+    widget_class->focus_in_event = egg_secure_entry_focus_in;
+    widget_class->focus_out_event = egg_secure_entry_focus_out;
+    widget_class->grab_focus = egg_secure_entry_grab_focus;
+    widget_class->style_set = egg_secure_entry_style_set;
+    widget_class->direction_changed = egg_secure_entry_direction_changed;
+    widget_class->state_changed = egg_secure_entry_state_changed;
+    widget_class->screen_changed = egg_secure_entry_screen_changed;
+    widget_class->mnemonic_activate = egg_secure_entry_mnemonic_activate;
 
-    class->move_cursor = gkr_ask_entry_move_cursor;
-    class->insert_at_cursor = gkr_ask_entry_insert_at_cursor;
-    class->delete_from_cursor = gkr_ask_entry_delete_from_cursor;
-    class->activate = gkr_ask_entry_real_activate;
+    class->move_cursor = egg_secure_entry_move_cursor;
+    class->insert_at_cursor = egg_secure_entry_insert_at_cursor;
+    class->delete_from_cursor = egg_secure_entry_delete_from_cursor;
+    class->activate = egg_secure_entry_real_activate;
 
     g_object_class_install_property (gobject_class, PROP_CURSOR_POSITION,
         g_param_spec_int ("cursor_position", "Cursor Position", "The current position of the insertion cursor in chars",
@@ -311,24 +310,24 @@ gkr_ask_entry_class_init(GkrAskEntryClass *class)
 
     signals[ACTIVATE] =  g_signal_new ("activate", G_OBJECT_CLASS_TYPE (gobject_class),
                                        G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                                       G_STRUCT_OFFSET (GkrAskEntryClass, activate),
+                                       G_STRUCT_OFFSET (EggSecureEntryClass, activate),
                                        NULL, NULL, _gtk_marshal_VOID__VOID, G_TYPE_NONE, 0);
     widget_class->activate_signal = signals[ACTIVATE];
 
     signals[MOVE_CURSOR] = g_signal_new ("move_cursor", G_OBJECT_CLASS_TYPE (gobject_class),
                                          G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                                         G_STRUCT_OFFSET (GkrAskEntryClass, move_cursor),
+                                         G_STRUCT_OFFSET (EggSecureEntryClass, move_cursor),
                                          NULL, NULL, _gtk_marshal_VOID__ENUM_INT_BOOLEAN,
                                          G_TYPE_NONE, 3, GTK_TYPE_MOVEMENT_STEP, G_TYPE_INT, G_TYPE_BOOLEAN);
 
     signals[INSERT_AT_CURSOR] = g_signal_new("insert_at_cursor", G_OBJECT_CLASS_TYPE (gobject_class),
                                              G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                                             G_STRUCT_OFFSET (GkrAskEntryClass, insert_at_cursor), 
+                                             G_STRUCT_OFFSET (EggSecureEntryClass, insert_at_cursor), 
                                              NULL, NULL, _gtk_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
 
     signals[DELETE_FROM_CURSOR] = g_signal_new("delete_from_cursor", G_OBJECT_CLASS_TYPE (gobject_class),
                                                G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                                               G_STRUCT_OFFSET (GkrAskEntryClass, delete_from_cursor), 
+                                               G_STRUCT_OFFSET (EggSecureEntryClass, delete_from_cursor), 
                                                NULL, NULL, _gtk_marshal_VOID__ENUM_INT, G_TYPE_NONE, 2,
                                                GTK_TYPE_DELETE_TYPE, G_TYPE_INT);
 
@@ -385,57 +384,57 @@ gkr_ask_entry_class_init(GkrAskEntryClass *class)
 }
 
 static void
-gkr_ask_entry_editable_init (GtkEditableClass *iface)
+egg_secure_entry_editable_init (GtkEditableClass *iface)
 {
-    iface->do_insert_text = gkr_ask_entry_insert_text;
-    iface->do_delete_text = gkr_ask_entry_delete_text;
-    iface->insert_text = gkr_ask_entry_real_insert_text;
-    iface->delete_text = gkr_ask_entry_real_delete_text;
-    iface->set_selection_bounds = gkr_ask_entry_set_selection_bounds;
-    iface->get_selection_bounds = gkr_ask_entry_get_selection_bounds;
-    iface->set_position = gkr_ask_entry_real_set_position;
-    iface->get_position = gkr_ask_entry_get_position;
+    iface->do_insert_text = egg_secure_entry_insert_text;
+    iface->do_delete_text = egg_secure_entry_delete_text;
+    iface->insert_text = egg_secure_entry_real_insert_text;
+    iface->delete_text = egg_secure_entry_real_delete_text;
+    iface->set_selection_bounds = egg_secure_entry_set_selection_bounds;
+    iface->get_selection_bounds = egg_secure_entry_get_selection_bounds;
+    iface->set_position = egg_secure_entry_real_set_position;
+    iface->get_position = egg_secure_entry_get_position;
 }
 
 static void
-gkr_ask_entry_cell_editable_init (GtkCellEditableIface * iface)
+egg_secure_entry_cell_editable_init (GtkCellEditableIface * iface)
 {
-    iface->start_editing = gkr_ask_entry_start_editing;
+    iface->start_editing = egg_secure_entry_start_editing;
 }
 
 static void
-gkr_ask_entry_set_property (GObject *object, guint prop_id,
+egg_secure_entry_set_property (GObject *object, guint prop_id,
                                     const GValue *value, GParamSpec *pspec)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY(object);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY(object);
 
     switch (prop_id) {
     case PROP_MAX_LENGTH:
-        gkr_ask_entry_set_max_length(entry, g_value_get_int(value));
+        egg_secure_entry_set_max_length(entry, g_value_get_int(value));
         break;
 
     case PROP_HAS_FRAME:
-        gkr_ask_entry_set_has_frame(entry, g_value_get_boolean(value));
+        egg_secure_entry_set_has_frame(entry, g_value_get_boolean(value));
         break;
 
     case PROP_INVISIBLE_CHAR:
-        gkr_ask_entry_set_invisible_char(entry, g_value_get_uint(value));
+        egg_secure_entry_set_invisible_char(entry, g_value_get_uint(value));
         break;
 
     case PROP_ACTIVATES_DEFAULT:
-        gkr_ask_entry_set_activates_default(entry, g_value_get_boolean(value));
+        egg_secure_entry_set_activates_default(entry, g_value_get_boolean(value));
         break;
 
     case PROP_WIDTH_CHARS:
-        gkr_ask_entry_set_width_chars(entry, g_value_get_int(value));
+        egg_secure_entry_set_width_chars(entry, g_value_get_int(value));
         break;
 
     case PROP_TEXT:
-        gkr_ask_entry_set_text(entry, g_value_get_string(value));
+        egg_secure_entry_set_text(entry, g_value_get_string(value));
         break;
     
     case PROP_VISIBILITY:
-        gkr_ask_entry_set_visibility (entry, g_value_get_boolean (value));
+        egg_secure_entry_set_visibility (entry, g_value_get_boolean (value));
         break;
 
     case PROP_SCROLL_OFFSET:
@@ -447,10 +446,10 @@ gkr_ask_entry_set_property (GObject *object, guint prop_id,
 }
 
 static void
-gkr_ask_entry_get_property (GObject *object, guint prop_id,
+egg_secure_entry_get_property (GObject *object, guint prop_id,
                                     GValue *value, GParamSpec *pspec)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY(object);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY(object);
 
     switch (prop_id) {
     case PROP_CURSOR_POSITION:
@@ -478,10 +477,10 @@ gkr_ask_entry_get_property (GObject *object, guint prop_id,
         g_value_set_int(value, entry->scroll_offset);
         break;
     case PROP_TEXT:
-        g_value_set_string(value, gkr_ask_entry_get_text(entry));
+        g_value_set_string(value, egg_secure_entry_get_text(entry));
         break;
     case PROP_VISIBILITY:
-        g_value_set_boolean (value, gkr_ask_entry_get_visibility (entry));
+        g_value_set_boolean (value, egg_secure_entry_get_visibility (entry));
         break;
     
     default:
@@ -491,7 +490,7 @@ gkr_ask_entry_get_property (GObject *object, guint prop_id,
 }
 
 static void
-gkr_ask_entry_init (GkrAskEntry *entry)
+egg_secure_entry_init (EggSecureEntry *entry)
 {
     GtkStyle *style;
     GtkWidget *tempent;
@@ -526,19 +525,19 @@ gkr_ask_entry_init (GkrAskEntry *entry)
     entry->im_context = gtk_im_multicontext_new ();
 
     g_signal_connect (entry->im_context, "commit",
-                      G_CALLBACK (gkr_ask_entry_commit_cb), entry);
+                      G_CALLBACK (egg_secure_entry_commit_cb), entry);
     g_signal_connect (entry->im_context, "preedit_changed",
-                      G_CALLBACK(gkr_ask_entry_preedit_changed_cb), entry);
+                      G_CALLBACK(egg_secure_entry_preedit_changed_cb), entry);
     g_signal_connect (entry->im_context, "retrieve_surrounding",
-                      G_CALLBACK(gkr_ask_entry_retrieve_surrounding_cb), entry);
+                      G_CALLBACK(egg_secure_entry_retrieve_surrounding_cb), entry);
     g_signal_connect (entry->im_context, "delete_surrounding",
-                      G_CALLBACK(gkr_ask_entry_delete_surrounding_cb), entry);
+                      G_CALLBACK(egg_secure_entry_delete_surrounding_cb), entry);
 }
 
 static void
-gkr_ask_entry_finalize (GObject *object)
+egg_secure_entry_finalize (GObject *object)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (object);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (object);
 
     if (entry->cached_layout)
         g_object_unref (entry->cached_layout);
@@ -561,15 +560,15 @@ gkr_ask_entry_finalize (GObject *object)
 }
 
 static void
-gkr_ask_entry_realize (GtkWidget *widget)
+egg_secure_entry_realize (GtkWidget *widget)
 {
-    GkrAskEntry *entry;
+    EggSecureEntry *entry;
     GtkEditable *editable;
     GdkWindowAttr attributes;
     gint attributes_mask;
 
     GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-    entry = GKR_ASK_ENTRY (widget);
+    entry = EGG_SECURE_ENTRY (widget);
     editable = GTK_EDITABLE (widget);
 
     attributes.window_type = GDK_WINDOW_CHILD;
@@ -615,15 +614,15 @@ gkr_ask_entry_realize (GtkWidget *widget)
 
     gtk_im_context_set_client_window (entry->im_context, entry->text_area);
 
-    gkr_ask_entry_adjust_scroll (entry);
+    egg_secure_entry_adjust_scroll (entry);
 }
 
 static void
-gkr_ask_entry_unrealize (GtkWidget *widget)
+egg_secure_entry_unrealize (GtkWidget *widget)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
 
-    gkr_ask_entry_reset_layout (entry);
+    egg_secure_entry_reset_layout (entry);
 
     gtk_im_context_set_client_window (entry->im_context, NULL);
 
@@ -638,7 +637,7 @@ gkr_ask_entry_unrealize (GtkWidget *widget)
 }
 
 static void
-get_borders (GkrAskEntry *entry, gint *xborder, gint *yborder)
+get_borders (EggSecureEntry *entry, gint *xborder, gint *yborder)
 {
     GtkWidget *widget = GTK_WIDGET (entry);
     gint focus_width;
@@ -662,9 +661,9 @@ get_borders (GkrAskEntry *entry, gint *xborder, gint *yborder)
 }
 
 static void
-gkr_ask_entry_size_request (GtkWidget *widget, GtkRequisition *requisition)
+egg_secure_entry_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
     PangoFontMetrics *metrics;
     gint xborder, yborder;
     PangoContext *context;
@@ -695,7 +694,7 @@ gkr_ask_entry_size_request (GtkWidget *widget, GtkRequisition *requisition)
 }
 
 static void
-get_text_area_size(GkrAskEntry *entry, gint *x, gint *y, gint *width, gint *height)
+get_text_area_size(EggSecureEntry *entry, gint *x, gint *y, gint *width, gint *height)
 {
     gint xborder, yborder;
     GtkRequisition requisition;
@@ -719,7 +718,7 @@ get_text_area_size(GkrAskEntry *entry, gint *x, gint *y, gint *width, gint *heig
 }
 
 static void
-get_widget_window_size (GkrAskEntry *entry, gint *x, gint *y, gint *width, gint *height)
+get_widget_window_size (EggSecureEntry *entry, gint *x, gint *y, gint *width, gint *height)
 {
     GtkRequisition requisition;
     GtkWidget *widget = GTK_WIDGET (entry);
@@ -749,9 +748,9 @@ get_widget_window_size (GkrAskEntry *entry, gint *x, gint *y, gint *width, gint 
 }
 
 static void
-gkr_ask_entry_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+egg_secure_entry_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY(widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY(widget);
 
     widget->allocation = *allocation;
 
@@ -771,12 +770,12 @@ gkr_ask_entry_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 
         gdk_window_move_resize (entry->text_area, x, y, width, height);
 
-        gkr_ask_entry_recompute (entry);
+        egg_secure_entry_recompute (entry);
     }
 }
 
 static void
-gkr_ask_entry_draw_frame (GtkWidget *widget)
+egg_secure_entry_draw_frame (GtkWidget *widget)
 {
     gint x = 0, y = 0;
     gint width, height;
@@ -810,12 +809,12 @@ gkr_ask_entry_draw_frame (GtkWidget *widget)
 }
 
 static gint
-gkr_ask_entry_expose(GtkWidget *widget, GdkEventExpose *event)
+egg_secure_entry_expose(GtkWidget *widget, GdkEventExpose *event)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY(widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY(widget);
 
     if (widget->window == event->window)
-        gkr_ask_entry_draw_frame(widget);
+        egg_secure_entry_draw_frame(widget);
     else if (entry->text_area == event->window) {
         gint area_width, area_height;
 
@@ -826,18 +825,18 @@ gkr_ask_entry_expose(GtkWidget *widget, GdkEventExpose *event)
 
         if ((entry->invisible_char != 0) && GTK_WIDGET_HAS_FOCUS (widget) &&
             entry->selection_bound == entry->current_pos && entry->cursor_visible)
-            gkr_ask_entry_draw_cursor (GKR_ASK_ENTRY (widget));
+            egg_secure_entry_draw_cursor (EGG_SECURE_ENTRY (widget));
 
-        gkr_ask_entry_draw_text (GKR_ASK_ENTRY (widget));
+        egg_secure_entry_draw_text (EGG_SECURE_ENTRY (widget));
     }
 
     return FALSE;
 }
 
 static gint
-gkr_ask_entry_button_press(GtkWidget *widget, GdkEventButton *event)
+egg_secure_entry_button_press(GtkWidget *widget, GdkEventButton *event)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
     gint tmp_pos;
 
     if (event->window != entry->text_area || 
@@ -852,12 +851,12 @@ gkr_ask_entry_button_press(GtkWidget *widget, GdkEventButton *event)
         entry->in_click = FALSE;
     }
 
-    tmp_pos = gkr_ask_entry_find_position (entry, event->x + entry->scroll_offset);
+    tmp_pos = egg_secure_entry_find_position (entry, event->x + entry->scroll_offset);
 
     if (event->button == 1) {
         switch (event->type) {
         case GDK_BUTTON_PRESS:
-            gkr_ask_entry_set_positions(entry, tmp_pos, tmp_pos);
+            egg_secure_entry_set_positions(entry, tmp_pos, tmp_pos);
             break;
         default:
             break;
@@ -870,9 +869,9 @@ gkr_ask_entry_button_press(GtkWidget *widget, GdkEventButton *event)
 }
 
 static gint
-gkr_ask_entry_button_release(GtkWidget *widget, GdkEventButton *event)
+egg_secure_entry_button_release(GtkWidget *widget, GdkEventButton *event)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY(widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY(widget);
 
     if (event->window != entry->text_area || entry->button != event->button)
         return FALSE;
@@ -882,9 +881,9 @@ gkr_ask_entry_button_release(GtkWidget *widget, GdkEventButton *event)
 }
 
 static gint
-gkr_ask_entry_motion_notify(GtkWidget *widget, GdkEventMotion *event)
+egg_secure_entry_motion_notify(GtkWidget *widget, GdkEventMotion *event)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY(widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY(widget);
     gint tmp_pos;
 
     if (entry->mouse_cursor_obscured) {
@@ -912,10 +911,10 @@ gkr_ask_entry_motion_notify(GtkWidget *widget, GdkEventMotion *event)
         else if (event->y >= height)
             tmp_pos = entry->text_length;
         else
-            tmp_pos = gkr_ask_entry_find_position (entry, 
+            tmp_pos = egg_secure_entry_find_position (entry, 
                                                 event->x + entry->scroll_offset);
 
-        gkr_ask_entry_set_positions (entry, tmp_pos, -1);
+        egg_secure_entry_set_positions (entry, tmp_pos, -1);
     }
 
     return TRUE;
@@ -944,7 +943,7 @@ set_invisible_cursor (GdkWindow * window)
 }
 
 static void
-gkr_ask_entry_obscure_mouse_cursor (GkrAskEntry * entry)
+egg_secure_entry_obscure_mouse_cursor (EggSecureEntry * entry)
 {
     if (entry->mouse_cursor_obscured)
         return;
@@ -955,14 +954,14 @@ gkr_ask_entry_obscure_mouse_cursor (GkrAskEntry * entry)
 }
 
 static gint
-gkr_ask_entry_key_press (GtkWidget *widget, GdkEventKey *event)
+egg_secure_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
 
-    gkr_ask_entry_pend_cursor_blink (entry);
+    egg_secure_entry_pend_cursor_blink (entry);
 
     if (gtk_im_context_filter_keypress (entry->im_context, event)) {
-        gkr_ask_entry_obscure_mouse_cursor (entry);
+        egg_secure_entry_obscure_mouse_cursor (entry);
         entry->need_im_reset = TRUE;
         return TRUE;
     }
@@ -975,9 +974,9 @@ gkr_ask_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 }
 
 static gint
-gkr_ask_entry_key_release (GtkWidget *widget, GdkEventKey *event)
+egg_secure_entry_key_release (GtkWidget *widget, GdkEventKey *event)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
 
     if (gtk_im_context_filter_keypress (entry->im_context, event)) {
         entry->need_im_reset = TRUE;
@@ -988,9 +987,9 @@ gkr_ask_entry_key_release (GtkWidget *widget, GdkEventKey *event)
 }
 
 static gint
-gkr_ask_entry_focus_in (GtkWidget *widget, GdkEventFocus *event)
+egg_secure_entry_focus_in (GtkWidget *widget, GdkEventFocus *event)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
 
     gtk_widget_queue_draw (widget);
 
@@ -998,35 +997,35 @@ gkr_ask_entry_focus_in (GtkWidget *widget, GdkEventFocus *event)
     gtk_im_context_focus_in (entry->im_context);
 
     g_signal_connect (gdk_keymap_get_for_display (gtk_widget_get_display (widget)), "direction_changed",
-                      G_CALLBACK (gkr_ask_entry_keymap_direction_changed), entry);
+                      G_CALLBACK (egg_secure_entry_keymap_direction_changed), entry);
 
-    gkr_ask_entry_check_cursor_blink (entry);
+    egg_secure_entry_check_cursor_blink (entry);
 
     return FALSE;
 }
 
 static gint
-gkr_ask_entry_focus_out (GtkWidget *widget, GdkEventFocus *event)
+egg_secure_entry_focus_out (GtkWidget *widget, GdkEventFocus *event)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
 
     gtk_widget_queue_draw (widget);
 
     entry->need_im_reset = TRUE;
     gtk_im_context_focus_out (entry->im_context);
 
-    gkr_ask_entry_check_cursor_blink (entry);
+    egg_secure_entry_check_cursor_blink (entry);
 
     g_signal_handlers_disconnect_by_func (gdk_keymap_get_for_display (gtk_widget_get_display (widget)),
-                                          gkr_ask_entry_keymap_direction_changed, entry);
+                                          egg_secure_entry_keymap_direction_changed, entry);
 
     return FALSE;
 }
 
 static void
-gkr_ask_entry_grab_focus (GtkWidget *widget)
+egg_secure_entry_grab_focus (GtkWidget *widget)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
     GtkSettings *settings = gtk_widget_get_settings (widget);
     gboolean select_on_focus = FALSE;
 
@@ -1043,19 +1042,19 @@ gkr_ask_entry_grab_focus (GtkWidget *widget)
 }
 
 static void
-gkr_ask_entry_direction_changed(GtkWidget *widget, GtkTextDirection previous_dir)
+egg_secure_entry_direction_changed(GtkWidget *widget, GtkTextDirection previous_dir)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
 
-    gkr_ask_entry_recompute (entry);
+    egg_secure_entry_recompute (entry);
 
     GTK_WIDGET_CLASS (parent_class)->direction_changed (widget, previous_dir);
 }
 
 static void
-gkr_ask_entry_state_changed (GtkWidget *widget, GtkStateType previous_state)
+egg_secure_entry_state_changed (GtkWidget *widget, GtkStateType previous_state)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
 
     if (GTK_WIDGET_REALIZED (widget)) {
         gdk_window_set_background (widget->window, 
@@ -1074,18 +1073,18 @@ gkr_ask_entry_state_changed (GtkWidget *widget, GtkStateType previous_state)
 }
 
 static void
-gkr_ask_entry_screen_changed (GtkWidget *widget, GdkScreen *old_screen)
+egg_secure_entry_screen_changed (GtkWidget *widget, GdkScreen *old_screen)
 {
-    gkr_ask_entry_recompute (GKR_ASK_ENTRY (widget));
+    egg_secure_entry_recompute (EGG_SECURE_ENTRY (widget));
 }
 
 /* GtkEditable method implementations */
 
 static void
-gkr_ask_entry_insert_text (GtkEditable *editable, const gchar *new_text,
+egg_secure_entry_insert_text (GtkEditable *editable, const gchar *new_text,
                                    gint new_text_length, gint * position)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY(editable);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY(editable);
     gchar *text;
 
     if (*position < 0 || *position > entry->text_length)
@@ -1107,10 +1106,10 @@ gkr_ask_entry_insert_text (GtkEditable *editable, const gchar *new_text,
 }
 
 static void
-gkr_ask_entry_delete_text (GtkEditable* editable, gint start_pos, 
+egg_secure_entry_delete_text (GtkEditable* editable, gint start_pos, 
                                    gint end_pos)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (editable);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (editable);
 
     if (end_pos < 0 || end_pos > entry->text_length)
         end_pos = entry->text_length;
@@ -1127,7 +1126,7 @@ gkr_ask_entry_delete_text (GtkEditable* editable, gint start_pos,
 }
 
 static void
-gkr_ask_entry_set_position_internal (GkrAskEntry *entry,
+egg_secure_entry_set_position_internal (EggSecureEntry *entry,
                                              gint position, gboolean reset_im)
 {
     if (position < 0 || position > entry->text_length)
@@ -1135,46 +1134,46 @@ gkr_ask_entry_set_position_internal (GkrAskEntry *entry,
 
     if (position != entry->current_pos || position != entry->selection_bound) {
         if (reset_im)
-            gkr_ask_entry_reset_im_context (entry);
-        gkr_ask_entry_set_positions (entry, position, position);
+            egg_secure_entry_reset_im_context (entry);
+        egg_secure_entry_set_positions (entry, position, position);
     }
 }
 
 static void
-gkr_ask_entry_real_set_position (GtkEditable *editable, gint position)
+egg_secure_entry_real_set_position (GtkEditable *editable, gint position)
 {
-    gkr_ask_entry_set_position_internal (GKR_ASK_ENTRY (editable),
+    egg_secure_entry_set_position_internal (EGG_SECURE_ENTRY (editable),
                                                  position, TRUE);
 }
 
 static gint
-gkr_ask_entry_get_position (GtkEditable *editable)
+egg_secure_entry_get_position (GtkEditable *editable)
 {
-    return GKR_ASK_ENTRY (editable)->current_pos;
+    return EGG_SECURE_ENTRY (editable)->current_pos;
 }
 
 static void
-gkr_ask_entry_set_selection_bounds (GtkEditable *editable,
+egg_secure_entry_set_selection_bounds (GtkEditable *editable,
                                             gint start, gint end)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (editable);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (editable);
 
     if (start < 0)
         start = entry->text_length;
     if (end < 0)
         end = entry->text_length;
 
-    gkr_ask_entry_reset_im_context (entry);
+    egg_secure_entry_reset_im_context (entry);
 
-    gkr_ask_entry_set_positions (entry, MIN (end, entry->text_length),
+    egg_secure_entry_set_positions (entry, MIN (end, entry->text_length),
                                          MIN (start, entry->text_length));
 }
 
 static gboolean
-gkr_ask_entry_get_selection_bounds (GtkEditable *editable, 
+egg_secure_entry_get_selection_bounds (GtkEditable *editable, 
                                             gint *start, gint *end)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (editable);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (editable);
 
     *start = entry->selection_bound;
     *end = entry->current_pos;
@@ -1183,11 +1182,11 @@ gkr_ask_entry_get_selection_bounds (GtkEditable *editable,
 }
 
 static void
-gkr_ask_entry_style_set (GtkWidget *widget, GtkStyle *previous_style)
+egg_secure_entry_style_set (GtkWidget *widget, GtkStyle *previous_style)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (widget);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (widget);
 
-    gkr_ask_entry_recompute (entry);
+    egg_secure_entry_recompute (entry);
 
     if (previous_style && GTK_WIDGET_REALIZED (widget)) {
         gdk_window_set_background (widget->window, 
@@ -1200,14 +1199,14 @@ gkr_ask_entry_style_set (GtkWidget *widget, GtkStyle *previous_style)
 /* GtkCellEditable method implementations
  */
 static void
-gtk_cell_editable_secure_entry_activated (GkrAskEntry *entry, gpointer data)
+gtk_cell_editable_secure_entry_activated (EggSecureEntry *entry, gpointer data)
 {
     gtk_cell_editable_editing_done (GTK_CELL_EDITABLE (entry));
     gtk_cell_editable_remove_widget (GTK_CELL_EDITABLE (entry));
 }
 
 static gboolean
-gtk_cell_editable_key_press_event (GkrAskEntry *entry, GdkEventKey *key_event, 
+gtk_cell_editable_key_press_event (EggSecureEntry *entry, GdkEventKey *key_event, 
                                    gpointer data)
 {
     if (key_event->keyval == GDK_Escape) {
@@ -1228,10 +1227,10 @@ gtk_cell_editable_key_press_event (GkrAskEntry *entry, GdkEventKey *key_event,
 }
 
 static void
-gkr_ask_entry_start_editing (GtkCellEditable *cell_editable,
+egg_secure_entry_start_editing (GtkCellEditable *cell_editable,
                                      GdkEvent *event)
 {
-    GKR_ASK_ENTRY(cell_editable)->is_cell_renderer = TRUE;
+    EGG_SECURE_ENTRY(cell_editable)->is_cell_renderer = TRUE;
 
     g_signal_connect (cell_editable, "activate",
                       G_CALLBACK (gtk_cell_editable_secure_entry_activated), NULL);
@@ -1242,13 +1241,13 @@ gkr_ask_entry_start_editing (GtkCellEditable *cell_editable,
 /* Default signal handlers */
 
 static void
-gkr_ask_entry_real_insert_text (GtkEditable *editable, const gchar *new_text,
+egg_secure_entry_real_insert_text (GtkEditable *editable, const gchar *new_text,
                                         gint new_text_length, gint *position)
 {
     gint _index;
     gint n_chars;
 
-    GkrAskEntry *entry = GKR_ASK_ENTRY (editable);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (editable);
 
     if (new_text_length < 0)
         new_text_length = strlen (new_text);
@@ -1303,7 +1302,7 @@ gkr_ask_entry_real_insert_text (GtkEditable *editable, const gchar *new_text,
 
     *position += n_chars;
 
-    gkr_ask_entry_recompute (entry);
+    egg_secure_entry_recompute (entry);
 
     entry->changed = TRUE;
     g_signal_emit_by_name (editable, "changed");
@@ -1311,10 +1310,10 @@ gkr_ask_entry_real_insert_text (GtkEditable *editable, const gchar *new_text,
 }
 
 static void
-gkr_ask_entry_real_delete_text (GtkEditable *editable, gint start_pos, 
+egg_secure_entry_real_delete_text (GtkEditable *editable, gint start_pos, 
                                         gint end_pos)
 {
-    GkrAskEntry *entry = GKR_ASK_ENTRY (editable);
+    EggSecureEntry *entry = EGG_SECURE_ENTRY (editable);
 
     if (start_pos < 0)
         start_pos = 0;
@@ -1340,9 +1339,9 @@ gkr_ask_entry_real_delete_text (GtkEditable *editable, gint start_pos,
         if (selection_bound > start_pos)
             selection_bound -= MIN(selection_bound, end_pos) - start_pos;
 
-        gkr_ask_entry_set_positions(entry, current_pos, selection_bound);
+        egg_secure_entry_set_positions(entry, current_pos, selection_bound);
 
-        gkr_ask_entry_recompute (entry);
+        egg_secure_entry_recompute (entry);
 
         entry->changed = TRUE;
         g_signal_emit_by_name (editable, "changed");
@@ -1357,13 +1356,13 @@ gkr_ask_entry_real_delete_text (GtkEditable *editable, gint start_pos,
  * right arrow key.
  */
 static gint
-get_better_cursor_x (GkrAskEntry *entry, gint offset)
+get_better_cursor_x (EggSecureEntry *entry, gint offset)
 {
     GdkKeymap *keymap = gdk_keymap_get_for_display (gtk_widget_get_display (GTK_WIDGET(entry)));
     PangoDirection keymap_direction = gdk_keymap_get_direction (keymap);
     gboolean split_cursor;
 
-    PangoLayout *layout = gkr_ask_entry_ensure_layout (entry, TRUE);
+    PangoLayout *layout = egg_secure_entry_ensure_layout (entry, TRUE);
     const gchar *text = pango_layout_get_text(layout);
     gint _index = g_utf8_offset_to_pointer (text, offset) - text;
 
@@ -1383,12 +1382,12 @@ get_better_cursor_x (GkrAskEntry *entry, gint offset)
 }
 
 static void
-gkr_ask_entry_move_cursor (GkrAskEntry *entry, GtkMovementStep step,
+egg_secure_entry_move_cursor (EggSecureEntry *entry, GtkMovementStep step,
                                    gint count, gboolean extend_selection)
 {
     gint new_pos = entry->current_pos;
 
-    gkr_ask_entry_reset_im_context (entry);
+    egg_secure_entry_reset_im_context (entry);
 
     if (entry->current_pos != entry->selection_bound && !extend_selection) {
         /* 
@@ -1425,10 +1424,10 @@ gkr_ask_entry_move_cursor (GkrAskEntry *entry, GtkMovementStep step,
     } else {
         switch (step) {
         case GTK_MOVEMENT_LOGICAL_POSITIONS:
-            new_pos = gkr_ask_entry_move_logically (entry, new_pos, count);
+            new_pos = egg_secure_entry_move_logically (entry, new_pos, count);
             break;
         case GTK_MOVEMENT_VISUAL_POSITIONS:
-            new_pos = gkr_ask_entry_move_visually (entry, new_pos, count);
+            new_pos = egg_secure_entry_move_visually (entry, new_pos, count);
             break;
         case GTK_MOVEMENT_DISPLAY_LINE_ENDS:
         case GTK_MOVEMENT_PARAGRAPH_ENDS:
@@ -1449,30 +1448,30 @@ gkr_ask_entry_move_cursor (GkrAskEntry *entry, GtkMovementStep step,
     else
         gtk_editable_set_position (GTK_EDITABLE (entry), new_pos);
 
-    gkr_ask_entry_pend_cursor_blink (entry);
+    egg_secure_entry_pend_cursor_blink (entry);
 }
 
 static void
-gkr_ask_entry_insert_at_cursor(GkrAskEntry *entry, const gchar *str)
+egg_secure_entry_insert_at_cursor(EggSecureEntry *entry, const gchar *str)
 {
     GtkEditable *editable = GTK_EDITABLE (entry);
     gint pos = entry->current_pos;
 
-    gkr_ask_entry_reset_im_context (entry);
+    egg_secure_entry_reset_im_context (entry);
 
     gtk_editable_insert_text (editable, str, -1, &pos);
     gtk_editable_set_position (editable, pos);
 }
 
 static void
-gkr_ask_entry_delete_from_cursor (GkrAskEntry *entry, GtkDeleteType type, 
+egg_secure_entry_delete_from_cursor (EggSecureEntry *entry, GtkDeleteType type, 
                                           gint count)
 {
     GtkEditable *editable = GTK_EDITABLE (entry);
     gint start_pos = entry->current_pos;
     gint end_pos = entry->current_pos;
 
-    gkr_ask_entry_reset_im_context (entry);
+    egg_secure_entry_reset_im_context (entry);
 
     if (entry->selection_bound != entry->current_pos) {
         gtk_editable_delete_selection (editable);
@@ -1481,7 +1480,7 @@ gkr_ask_entry_delete_from_cursor (GkrAskEntry *entry, GtkDeleteType type,
 
     switch (type) {
     case GTK_DELETE_CHARS:
-        end_pos = gkr_ask_entry_move_logically (entry, entry->current_pos, count);
+        end_pos = egg_secure_entry_move_logically (entry, entry->current_pos, count);
         gtk_editable_delete_text (editable, MIN (start_pos, end_pos), MAX (start_pos, end_pos));
         break;
     case GTK_DELETE_DISPLAY_LINE_ENDS:
@@ -1499,11 +1498,11 @@ gkr_ask_entry_delete_from_cursor (GkrAskEntry *entry, GtkDeleteType type,
         break;
     }
 
-    gkr_ask_entry_pend_cursor_blink (entry);
+    egg_secure_entry_pend_cursor_blink (entry);
 }
 
 static void
-gkr_ask_entry_real_activate (GkrAskEntry *entry)
+egg_secure_entry_real_activate (EggSecureEntry *entry)
 {
     GtkWindow *window;
     GtkWidget *toplevel;
@@ -1525,22 +1524,22 @@ gkr_ask_entry_real_activate (GkrAskEntry *entry)
 }
 
 static void
-gkr_ask_entry_keymap_direction_changed (GdkKeymap *keymap, GkrAskEntry *entry)
+egg_secure_entry_keymap_direction_changed (GdkKeymap *keymap, EggSecureEntry *entry)
 {
-    gkr_ask_entry_recompute (entry);
+    egg_secure_entry_recompute (entry);
 }
 
 /* IM Context Callbacks */
 
 static void
-gkr_ask_entry_commit_cb (GtkIMContext *context, const gchar *str, 
-                                 GkrAskEntry *entry)
+egg_secure_entry_commit_cb (GtkIMContext *context, const gchar *str, 
+                                 EggSecureEntry *entry)
 {
-    gkr_ask_entry_enter_text (entry, str);
+    egg_secure_entry_enter_text (entry, str);
 }
 
 static void
-gkr_ask_entry_preedit_changed_cb (GtkIMContext *context, GkrAskEntry *entry)
+egg_secure_entry_preedit_changed_cb (GtkIMContext *context, EggSecureEntry *entry)
 {
     gchar *preedit_string;
     gint cursor_pos;
@@ -1551,11 +1550,11 @@ gkr_ask_entry_preedit_changed_cb (GtkIMContext *context, GkrAskEntry *entry)
     entry->preedit_cursor = cursor_pos;
     g_free (preedit_string);
 
-    gkr_ask_entry_recompute (entry);
+    egg_secure_entry_recompute (entry);
 }
 
 static gboolean
-gkr_ask_entry_retrieve_surrounding_cb (GtkIMContext *context, GkrAskEntry *entry)
+egg_secure_entry_retrieve_surrounding_cb (GtkIMContext *context, EggSecureEntry *entry)
 {
     gtk_im_context_set_surrounding (context, entry->text, entry->n_bytes,
                     g_utf8_offset_to_pointer (entry->text, entry->current_pos) - entry->text);
@@ -1563,8 +1562,8 @@ gkr_ask_entry_retrieve_surrounding_cb (GtkIMContext *context, GkrAskEntry *entry
 }
 
 static gboolean
-gkr_ask_entry_delete_surrounding_cb (GtkIMContext *slave, gint offset, gint n_chars,
-                                             GkrAskEntry *entry)
+egg_secure_entry_delete_surrounding_cb (GtkIMContext *slave, gint offset, gint n_chars,
+                                             EggSecureEntry *entry)
 {
     gtk_editable_delete_text (GTK_EDITABLE (entry), entry->current_pos + offset,
                               entry->current_pos + offset + n_chars);
@@ -1575,7 +1574,7 @@ gkr_ask_entry_delete_surrounding_cb (GtkIMContext *slave, gint offset, gint n_ch
 
 /* Used for im_commit_cb and inserting Unicode chars */
 static void
-gkr_ask_entry_enter_text (GkrAskEntry *entry, const gchar *str)
+egg_secure_entry_enter_text (EggSecureEntry *entry, const gchar *str)
 {
     GtkEditable *editable = GTK_EDITABLE (entry);
     gint tmp_pos;
@@ -1584,12 +1583,12 @@ gkr_ask_entry_enter_text (GkrAskEntry *entry, const gchar *str)
         gtk_editable_delete_selection (editable);
     else {
         if (entry->overwrite_mode)
-            gkr_ask_entry_delete_from_cursor (entry, GTK_DELETE_CHARS, 1);
+            egg_secure_entry_delete_from_cursor (entry, GTK_DELETE_CHARS, 1);
     }
 
     tmp_pos = entry->current_pos;
     gtk_editable_insert_text (editable, str, strlen(str), &tmp_pos);
-    gkr_ask_entry_set_position_internal (entry, tmp_pos, FALSE);
+    egg_secure_entry_set_position_internal (entry, tmp_pos, FALSE);
 }
 
 /* 
@@ -1597,7 +1596,7 @@ gkr_ask_entry_enter_text (GkrAskEntry *entry, const gchar *str)
  * should go through this function.
  */
 static void
-gkr_ask_entry_set_positions (GkrAskEntry *entry, gint current_pos, 
+egg_secure_entry_set_positions (EggSecureEntry *entry, gint current_pos, 
                                      gint selection_bound)
 {
     gboolean changed = FALSE;
@@ -1621,11 +1620,11 @@ gkr_ask_entry_set_positions (GkrAskEntry *entry, gint current_pos,
     g_object_thaw_notify (G_OBJECT (entry));
 
     if (changed)
-        gkr_ask_entry_recompute (entry);
+        egg_secure_entry_recompute (entry);
 }
 
 static void
-gkr_ask_entry_reset_layout (GkrAskEntry *entry)
+egg_secure_entry_reset_layout (EggSecureEntry *entry)
 {
     if (entry->cached_layout) {
         g_object_unref (entry->cached_layout);
@@ -1634,14 +1633,14 @@ gkr_ask_entry_reset_layout (GkrAskEntry *entry)
 }
 
 static void
-update_im_cursor_location (GkrAskEntry *entry)
+update_im_cursor_location (EggSecureEntry *entry)
 {
     GdkRectangle area;
     gint strong_x;
     gint strong_xoffset;
     gint area_width, area_height;
 
-    gkr_ask_entry_get_cursor_locations (entry, &strong_x, NULL);
+    egg_secure_entry_get_cursor_locations (entry, &strong_x, NULL);
     get_text_area_size (entry, NULL, NULL, &area_width, &area_height);
 
     strong_xoffset = strong_x - entry->scroll_offset;
@@ -1661,17 +1660,17 @@ update_im_cursor_location (GkrAskEntry *entry)
 static gboolean
 recompute_idle_func (gpointer data)
 {
-    GkrAskEntry *entry;
+    EggSecureEntry *entry;
 
     GDK_THREADS_ENTER ();
 
-    entry = GKR_ASK_ENTRY (data);
+    entry = EGG_SECURE_ENTRY (data);
 
     entry->recompute_idle = 0;
 
     if (gtk_widget_has_screen (GTK_WIDGET (entry))) {
-        gkr_ask_entry_adjust_scroll (entry);
-        gkr_ask_entry_queue_draw (entry);
+        egg_secure_entry_adjust_scroll (entry);
+        egg_secure_entry_queue_draw (entry);
 
         update_im_cursor_location (entry);
     }
@@ -1682,10 +1681,10 @@ recompute_idle_func (gpointer data)
 }
 
 static void
-gkr_ask_entry_recompute (GkrAskEntry *entry)
+egg_secure_entry_recompute (EggSecureEntry *entry)
 {
-    gkr_ask_entry_reset_layout (entry);
-    gkr_ask_entry_check_cursor_blink (entry);
+    egg_secure_entry_reset_layout (entry);
+    egg_secure_entry_check_cursor_blink (entry);
 
     if (!entry->recompute_idle) {
         entry->recompute_idle = g_idle_add_full (G_PRIORITY_HIGH_IDLE + 15,  /* between resize and redraw */
@@ -1694,7 +1693,7 @@ gkr_ask_entry_recompute (GkrAskEntry *entry)
 }
 
 static gunichar
-build_string (GkrAskEntry *entry, GString *str, gint extra)
+build_string (EggSecureEntry *entry, GString *str, gint extra)
 {
     gint i, count, char_len;
     gunichar invisible_char;
@@ -1722,7 +1721,7 @@ build_string (GkrAskEntry *entry, GString *str, gint extra)
 }
 
 static PangoLayout *
-gkr_ask_entry_create_layout (GkrAskEntry * entry, gboolean include_preedit)
+egg_secure_entry_create_layout (EggSecureEntry * entry, gboolean include_preedit)
 {
     GtkWidget *widget = GTK_WIDGET (entry);
     PangoLayout *layout = gtk_widget_create_pango_layout (widget, NULL);
@@ -1810,13 +1809,13 @@ gkr_ask_entry_create_layout (GkrAskEntry * entry, gboolean include_preedit)
 }
 
 static PangoLayout *
-gkr_ask_entry_ensure_layout (GkrAskEntry *entry, gboolean include_preedit)
+egg_secure_entry_ensure_layout (EggSecureEntry *entry, gboolean include_preedit)
 {
     if (entry->preedit_length > 0 && !include_preedit != !entry->cache_includes_preedit)
-        gkr_ask_entry_reset_layout (entry);
+        egg_secure_entry_reset_layout (entry);
 
     if (!entry->cached_layout) {
-        entry->cached_layout = gkr_ask_entry_create_layout (entry, include_preedit);
+        entry->cached_layout = egg_secure_entry_create_layout (entry, include_preedit);
         entry->cache_includes_preedit = include_preedit;
     }
 
@@ -1824,7 +1823,7 @@ gkr_ask_entry_ensure_layout (GkrAskEntry *entry, gboolean include_preedit)
 }
 
 static void
-get_layout_position (GkrAskEntry *entry, gint *x, gint *y)
+get_layout_position (EggSecureEntry *entry, gint *x, gint *y)
 {
     PangoLayout *layout;
     PangoRectangle logical_rect;
@@ -1832,7 +1831,7 @@ get_layout_position (GkrAskEntry *entry, gint *x, gint *y)
     gint y_pos;
     PangoLayoutLine *line;
 
-    layout = gkr_ask_entry_ensure_layout (entry, TRUE);
+    layout = egg_secure_entry_ensure_layout (entry, TRUE);
 
     get_text_area_size (entry, NULL, NULL, &area_width, &area_height);
 
@@ -1863,7 +1862,7 @@ get_layout_position (GkrAskEntry *entry, gint *x, gint *y)
 }
 
 static void
-gkr_ask_entry_draw_text(GkrAskEntry *entry)
+egg_secure_entry_draw_text(EggSecureEntry *entry)
 {
     GtkWidget *widget;
     PangoLayoutLine *line;
@@ -1872,7 +1871,7 @@ gkr_ask_entry_draw_text(GkrAskEntry *entry)
         return;
 
     if (GTK_WIDGET_DRAWABLE (entry)) {
-        PangoLayout *layout = gkr_ask_entry_ensure_layout (entry, TRUE);
+        PangoLayout *layout = egg_secure_entry_ensure_layout (entry, TRUE);
         gint x, y;
         gint start_pos, end_pos;
 
@@ -1932,7 +1931,7 @@ gkr_ask_entry_draw_text(GkrAskEntry *entry)
 }
 
 static void
-draw_insertion_cursor (GkrAskEntry *entry, GdkRectangle *cursor_location,
+draw_insertion_cursor (EggSecureEntry *entry, GdkRectangle *cursor_location,
                        gboolean is_primary, PangoDirection direction, gboolean draw_arrow)
 {
     GtkWidget *widget = GTK_WIDGET (entry);
@@ -1948,7 +1947,7 @@ draw_insertion_cursor (GkrAskEntry *entry, GdkRectangle *cursor_location,
 }
 
 static void
-gkr_ask_entry_draw_cursor (GkrAskEntry * entry)
+egg_secure_entry_draw_cursor (EggSecureEntry * entry)
 {
     GdkKeymap *keymap = gdk_keymap_get_for_display (gtk_widget_get_display (GTK_WIDGET(entry)));
     PangoDirection keymap_direction = gdk_keymap_get_direction (keymap);
@@ -1968,7 +1967,7 @@ gkr_ask_entry_draw_cursor (GkrAskEntry * entry)
 
         gdk_drawable_get_size (entry->text_area, NULL, &text_area_height);
 
-        gkr_ask_entry_get_cursor_locations (entry, &strong_x, &weak_x);
+        egg_secure_entry_get_cursor_locations (entry, &strong_x, &weak_x);
 
         g_object_get (gtk_widget_get_settings (widget), "gtk-split-cursor", &split_cursor, NULL);
 
@@ -2005,14 +2004,14 @@ gkr_ask_entry_draw_cursor (GkrAskEntry * entry)
 }
 
 static void
-gkr_ask_entry_queue_draw (GkrAskEntry *entry)
+egg_secure_entry_queue_draw (EggSecureEntry *entry)
 {
     if (GTK_WIDGET_REALIZED (entry))
         gdk_window_invalidate_rect (entry->text_area, NULL, FALSE);
 }
 
 static void
-gkr_ask_entry_reset_im_context (GkrAskEntry *entry)
+egg_secure_entry_reset_im_context (EggSecureEntry *entry)
 {
     if (entry->need_im_reset) {
         entry->need_im_reset = 0;
@@ -2021,7 +2020,7 @@ gkr_ask_entry_reset_im_context (GkrAskEntry *entry)
 }
 
 static gint
-gkr_ask_entry_find_position (GkrAskEntry *entry, gint x)
+egg_secure_entry_find_position (EggSecureEntry *entry, gint x)
 {
     PangoLayout *layout;
     PangoLayoutLine *line;
@@ -2031,7 +2030,7 @@ gkr_ask_entry_find_position (GkrAskEntry *entry, gint x)
     const gchar *text;
     gint cursor_index;
 
-    layout = gkr_ask_entry_ensure_layout (entry, TRUE);
+    layout = egg_secure_entry_ensure_layout (entry, TRUE);
     text = pango_layout_get_text (layout);
     cursor_index = g_utf8_offset_to_pointer (text, entry->current_pos) - text;
 
@@ -2054,7 +2053,7 @@ gkr_ask_entry_find_position (GkrAskEntry *entry, gint x)
 }
 
 static void
-gkr_ask_entry_get_cursor_locations (GkrAskEntry *entry, 
+egg_secure_entry_get_cursor_locations (EggSecureEntry *entry, 
                                             gint *strong_x, gint *weak_x)
 {
     if (!entry->invisible_char) {
@@ -2063,7 +2062,7 @@ gkr_ask_entry_get_cursor_locations (GkrAskEntry *entry,
         if (weak_x)
             *weak_x = 0;
     } else {
-        PangoLayout *layout = gkr_ask_entry_ensure_layout (entry, TRUE);
+        PangoLayout *layout = egg_secure_entry_ensure_layout (entry, TRUE);
         const gchar *text = pango_layout_get_text (layout);
         PangoRectangle strong_pos, weak_pos;
         gint _index;
@@ -2082,7 +2081,7 @@ gkr_ask_entry_get_cursor_locations (GkrAskEntry *entry,
 }
 
 static void
-gkr_ask_entry_adjust_scroll (GkrAskEntry *entry)
+egg_secure_entry_adjust_scroll (EggSecureEntry *entry)
 {
     gint min_offset, max_offset;
     gint text_area_width, text_width;
@@ -2098,7 +2097,7 @@ gkr_ask_entry_adjust_scroll (GkrAskEntry *entry)
     gdk_drawable_get_size (entry->text_area, &text_area_width, NULL);
     text_area_width -= 2 * INNER_BORDER;
 
-    layout = gkr_ask_entry_ensure_layout (entry, TRUE);
+    layout = egg_secure_entry_ensure_layout (entry, TRUE);
     line = pango_layout_get_lines (layout)->data;
 
     pango_layout_line_get_extents (line, NULL, &logical_rect);
@@ -2132,7 +2131,7 @@ gkr_ask_entry_adjust_scroll (GkrAskEntry *entry)
      * put the weak cursor on screen if possible.
      */
 
-    gkr_ask_entry_get_cursor_locations (entry, &strong_x, &weak_x);
+    egg_secure_entry_get_cursor_locations (entry, &strong_x, &weak_x);
 
     strong_xoffset = strong_x - entry->scroll_offset;
 
@@ -2157,11 +2156,11 @@ gkr_ask_entry_adjust_scroll (GkrAskEntry *entry)
 }
 
 static gint
-gkr_ask_entry_move_visually (GkrAskEntry * entry,
+egg_secure_entry_move_visually (EggSecureEntry * entry,
                                      gint start, gint count)
 {
     gint _index;
-    PangoLayout *layout = gkr_ask_entry_ensure_layout (entry, FALSE);
+    PangoLayout *layout = egg_secure_entry_ensure_layout (entry, FALSE);
     const gchar *text;
 
     text = pango_layout_get_text (layout);
@@ -2208,7 +2207,7 @@ gkr_ask_entry_move_visually (GkrAskEntry * entry,
 }
 
 static gint
-gkr_ask_entry_move_logically (GkrAskEntry *entry,
+egg_secure_entry_move_logically (EggSecureEntry *entry,
                                       gint start, gint count)
 {
     gint new_pos = start;
@@ -2221,17 +2220,17 @@ gkr_ask_entry_move_logically (GkrAskEntry *entry,
 /* Public API */
 
 GtkWidget *
-gkr_ask_entry_new (void)
+egg_secure_entry_new (void)
 {
-    return g_object_new (GKR_TYPE_ASK_ENTRY, NULL);
+    return g_object_new (EGG_TYPE_SECURE_ENTRY, NULL);
 }
 
 void
-gkr_ask_entry_set_text (GkrAskEntry *entry, const gchar *text)
+egg_secure_entry_set_text (EggSecureEntry *entry, const gchar *text)
 {
     gint tmp_pos;
 
-    g_return_if_fail (GKR_IS_ASK_ENTRY(entry));
+    g_return_if_fail (EGG_IS_SECURE_ENTRY(entry));
     g_return_if_fail (text != NULL);
 
     /* 
@@ -2248,47 +2247,47 @@ gkr_ask_entry_set_text (GkrAskEntry *entry, const gchar *text)
 }
 
 void 
-gkr_ask_entry_reset_changed (GkrAskEntry *entry)
+egg_secure_entry_reset_changed (EggSecureEntry *entry)
 {
-    g_return_if_fail (GKR_IS_ASK_ENTRY (entry));
+    g_return_if_fail (EGG_IS_SECURE_ENTRY (entry));
     entry->changed = FALSE;
 }
 
 gboolean
-gkr_ask_entry_get_changed (GkrAskEntry *entry)
+egg_secure_entry_get_changed (EggSecureEntry *entry)
 {
-    g_return_val_if_fail (GKR_IS_ASK_ENTRY (entry), FALSE);
+    g_return_val_if_fail (EGG_IS_SECURE_ENTRY (entry), FALSE);
     return entry->changed;
 }
 
 void
-gkr_ask_entry_set_visibility (GkrAskEntry *entry, gboolean setting)
+egg_secure_entry_set_visibility (EggSecureEntry *entry, gboolean setting)
 {
-    g_return_if_fail (GKR_IS_ASK_ENTRY (entry));
+    g_return_if_fail (EGG_IS_SECURE_ENTRY (entry));
 
     if (setting == entry->visibility)
         return;
 
     entry->visibility = setting;
     g_object_notify (G_OBJECT (entry), "visibility");
-    gkr_ask_entry_recompute (entry);
+    egg_secure_entry_recompute (entry);
 }
 
 gboolean
-gkr_ask_entry_get_visibility (GkrAskEntry *entry)
+egg_secure_entry_get_visibility (EggSecureEntry *entry)
 {
-    g_return_val_if_fail (GKR_IS_ASK_ENTRY (entry), FALSE);
+    g_return_val_if_fail (EGG_IS_SECURE_ENTRY (entry), FALSE);
     return entry->visibility;
 }
 
 
 /**
- * gkr_ask_entry_set_invisible_char:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_set_invisible_char:
+ * @entry: a #EggSecureEntry
  * @ch: a Unicode character
  * 
  * Sets the character to use in place of the actual text when
- * gkr_ask_entry_set_visibility() has been called to set text 
+ * egg_secure_entry_set_visibility() has been called to set text 
  * to %FALSE. i.e. this is the character used in "password mode" to
  * show the user how many characters have been typed. The default
  * invisible char is an asterisk ('*').  If you set the invisible char
@@ -2297,39 +2296,39 @@ gkr_ask_entry_get_visibility (GkrAskEntry *entry)
  * 
  **/
 void
-gkr_ask_entry_set_invisible_char (GkrAskEntry *entry, gunichar ch)
+egg_secure_entry_set_invisible_char (EggSecureEntry *entry, gunichar ch)
 {
-    g_return_if_fail (GKR_IS_ASK_ENTRY (entry));
+    g_return_if_fail (EGG_IS_SECURE_ENTRY (entry));
 
     if (ch == entry->invisible_char)
         return;
 
     entry->invisible_char = ch;
     g_object_notify (G_OBJECT (entry), "invisible_char");
-    gkr_ask_entry_recompute (entry);
+    egg_secure_entry_recompute (entry);
 }
 
 /**
- * gkr_ask_entry_get_invisible_char:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_get_invisible_char:
+ * @entry: a #EggSecureEntry
  *
  * Retrieves the character displayed in place of the real characters
- * for entries with visisbility set to false. See gkr_ask_entry_set_invisible_char().
+ * for entries with visisbility set to false. See egg_secure_entry_set_invisible_char().
  *
  * Return value: the current invisible char, or 0, if the entry does not
  *               show invisible text at all. 
  **/
 gunichar
-gkr_ask_entry_get_invisible_char (GkrAskEntry * entry)
+egg_secure_entry_get_invisible_char (EggSecureEntry * entry)
 {
-    g_return_val_if_fail (GKR_IS_ASK_ENTRY (entry), 0);
+    g_return_val_if_fail (EGG_IS_SECURE_ENTRY (entry), 0);
 
     return entry->invisible_char;
 }
 
 /**
- * gkr_ask_entry_get_text:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_get_text:
+ * @entry: a #EggSecureEntry
  *
  * Retrieves the contents of the entry widget.
  * See also gtk_editable_get_chars().
@@ -2340,16 +2339,16 @@ gkr_ask_entry_get_invisible_char (GkrAskEntry * entry)
  *      stored.
  **/
 G_CONST_RETURN gchar*
-gkr_ask_entry_get_text (GkrAskEntry *entry)
+egg_secure_entry_get_text (EggSecureEntry *entry)
 {
-    g_return_val_if_fail (GKR_IS_ASK_ENTRY (entry), NULL);
+    g_return_val_if_fail (EGG_IS_SECURE_ENTRY (entry), NULL);
 
     return entry->text;
 }
 
 /**
- * gkr_ask_entry_set_max_length:
- * @entry: a #GkrAskEntry.
+ * egg_secure_entry_set_max_length:
+ * @entry: a #EggSecureEntry.
  * @max: the maximum length of the entry, or 0 for no maximum.
  *   (other than the maximum length of entries.) The value passed in will
  *   be clamped to the range 0-65536.
@@ -2359,9 +2358,9 @@ gkr_ask_entry_get_text (GkrAskEntry *entry)
  * will be truncated to fit.
  **/
 void
-gkr_ask_entry_set_max_length(GkrAskEntry *entry, gint max)
+egg_secure_entry_set_max_length(EggSecureEntry *entry, gint max)
 {
-    g_return_if_fail (GKR_IS_ASK_ENTRY (entry));
+    g_return_if_fail (EGG_IS_SECURE_ENTRY (entry));
 
     max = CLAMP (max, 0, MAX_SIZE);
 
@@ -2373,25 +2372,25 @@ gkr_ask_entry_set_max_length(GkrAskEntry *entry, gint max)
 }
 
 /**
- * gkr_ask_entry_get_max_length:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_get_max_length:
+ * @entry: a #EggSecureEntry
  *
  * Retrieves the maximum allowed length of the text in
- * @entry. See gkr_ask_entry_set_max_length().
+ * @entry. See egg_secure_entry_set_max_length().
  *
  * Return value: the maximum allowed number of characters
- *               in #GkrAskEntry, or 0 if there is no maximum.
+ *               in #EggSecureEntry, or 0 if there is no maximum.
  **/
 gint
-gkr_ask_entry_get_max_length (GkrAskEntry *entry)
+egg_secure_entry_get_max_length (EggSecureEntry *entry)
 {
-    g_return_val_if_fail (GKR_IS_ASK_ENTRY (entry), 0);
+    g_return_val_if_fail (EGG_IS_SECURE_ENTRY (entry), 0);
     return entry->text_max_length;
 }
 
 /**
- * gkr_ask_entry_set_activates_default:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_set_activates_default:
+ * @entry: a #EggSecureEntry
  * @setting: %TRUE to activate window's default widget on Enter keypress
  *
  * If @setting is %TRUE, pressing Enter in the @entry will activate the default
@@ -2405,10 +2404,10 @@ gkr_ask_entry_get_max_length (GkrAskEntry *entry)
  * 
  **/
 void
-gkr_ask_entry_set_activates_default (GkrAskEntry *entry,
+egg_secure_entry_set_activates_default (EggSecureEntry *entry,
                                              gboolean setting)
 {
-    g_return_if_fail (GKR_IS_ASK_ENTRY (entry));
+    g_return_if_fail (EGG_IS_SECURE_ENTRY (entry));
     setting = setting != FALSE;
 
     if (setting != entry->activates_default) {
@@ -2418,23 +2417,23 @@ gkr_ask_entry_set_activates_default (GkrAskEntry *entry,
 }
 
 /**
- * gkr_ask_entry_get_activates_default:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_get_activates_default:
+ * @entry: a #EggSecureEntry
  * 
- * Retrieves the value set by gkr_ask_entry_set_activates_default().
+ * Retrieves the value set by egg_secure_entry_set_activates_default().
  * 
  * Return value: %TRUE if the entry will activate the default widget
  **/
 gboolean
-gkr_ask_entry_get_activates_default (GkrAskEntry *entry)
+egg_secure_entry_get_activates_default (EggSecureEntry *entry)
 {
-    g_return_val_if_fail (GKR_IS_ASK_ENTRY (entry), FALSE);
+    g_return_val_if_fail (EGG_IS_SECURE_ENTRY (entry), FALSE);
     return entry->activates_default;
 }
 
 /**
- * gkr_ask_entry_set_width_chars:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_set_width_chars:
+ * @entry: a #EggSecureEntry
  * @n_chars: width in chars
  *
  * Changes the size request of the entry to be about the right size
@@ -2445,9 +2444,9 @@ gkr_ask_entry_get_activates_default (GkrAskEntry *entry)
  * 
  **/
 void
-gkr_ask_entry_set_width_chars (GkrAskEntry *entry, gint n_chars)    
+egg_secure_entry_set_width_chars (EggSecureEntry *entry, gint n_chars)    
 {
-    g_return_if_fail (GKR_IS_ASK_ENTRY (entry));
+    g_return_if_fail (EGG_IS_SECURE_ENTRY (entry));
 
     if (entry->width_chars != n_chars) {
         entry->width_chars = n_chars;
@@ -2457,31 +2456,31 @@ gkr_ask_entry_set_width_chars (GkrAskEntry *entry, gint n_chars)
 }
 
 /**
- * gkr_ask_entry_get_width_chars:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_get_width_chars:
+ * @entry: a #EggSecureEntry
  * 
- * Gets the value set by gkr_ask_entry_set_width_chars().
+ * Gets the value set by egg_secure_entry_set_width_chars().
  * 
  * Return value: number of chars to request space for, or negative if unset
  **/
 gint
-gkr_ask_entry_get_width_chars (GkrAskEntry *entry)
+egg_secure_entry_get_width_chars (EggSecureEntry *entry)
 {
-    g_return_val_if_fail (GKR_IS_ASK_ENTRY (entry), 0);
+    g_return_val_if_fail (EGG_IS_SECURE_ENTRY (entry), 0);
     return entry->width_chars;
 }
 
 /**
- * gkr_ask_entry_set_has_frame:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_set_has_frame:
+ * @entry: a #EggSecureEntry
  * @setting: new value
  * 
  * Sets whether the entry has a beveled frame around it.
  **/
 void
-gkr_ask_entry_set_has_frame (GkrAskEntry *entry, gboolean setting)
+egg_secure_entry_set_has_frame (EggSecureEntry *entry, gboolean setting)
 {
-    g_return_if_fail (GKR_IS_ASK_ENTRY (entry));
+    g_return_if_fail (EGG_IS_SECURE_ENTRY (entry));
     
     setting = (setting != FALSE);
 
@@ -2494,22 +2493,22 @@ gkr_ask_entry_set_has_frame (GkrAskEntry *entry, gboolean setting)
 }
 
 /**
- * gkr_ask_entry_get_has_frame:
- * @entry: a #GkrAskEntry
+ * egg_secure_entry_get_has_frame:
+ * @entry: a #EggSecureEntry
  * 
- * Gets the value set by gkr_ask_entry_set_has_frame().
+ * Gets the value set by egg_secure_entry_set_has_frame().
  * 
  * Return value: whether the entry has a beveled frame
  **/
 gboolean
-gkr_ask_entry_get_has_frame (GkrAskEntry *entry)
+egg_secure_entry_get_has_frame (EggSecureEntry *entry)
 {
-    g_return_val_if_fail (GKR_IS_ASK_ENTRY (entry), FALSE);
+    g_return_val_if_fail (EGG_IS_SECURE_ENTRY (entry), FALSE);
     return entry->has_frame;
 }
 
 static gboolean
-gkr_ask_entry_mnemonic_activate (GtkWidget *widget, gboolean group_cycling)
+egg_secure_entry_mnemonic_activate (GtkWidget *widget, gboolean group_cycling)
 {
     gtk_widget_grab_focus (widget);
     return TRUE;
@@ -2526,7 +2525,7 @@ gkr_ask_entry_mnemonic_activate (GtkWidget *widget, gboolean group_cycling)
 #define CURSOR_PEND_MULTIPLIER 1.0
 
 static gboolean
-cursor_blinks (GkrAskEntry *entry)
+cursor_blinks (EggSecureEntry *entry)
 {
     GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (entry));
     gboolean blink;
@@ -2540,7 +2539,7 @@ cursor_blinks (GkrAskEntry *entry)
 }
 
 static gint
-get_cursor_time (GkrAskEntry *entry)
+get_cursor_time (EggSecureEntry *entry)
 {
     GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (entry));
     gint time;
@@ -2551,7 +2550,7 @@ get_cursor_time (GkrAskEntry *entry)
 }
 
 static void
-show_cursor (GkrAskEntry *entry)
+show_cursor (EggSecureEntry *entry)
 {
     if (!entry->cursor_visible) {
         entry->cursor_visible = TRUE;
@@ -2563,7 +2562,7 @@ show_cursor (GkrAskEntry *entry)
 }
 
 static void
-hide_cursor(GkrAskEntry * entry)
+hide_cursor(EggSecureEntry * entry)
 {
     if (entry->cursor_visible) {
         entry->cursor_visible = FALSE;
@@ -2580,14 +2579,14 @@ hide_cursor(GkrAskEntry * entry)
 static gint
 blink_cb (gpointer data)
 {
-    GkrAskEntry *entry;
+    EggSecureEntry *entry;
 
     GDK_THREADS_ENTER ();
 
-    entry = GKR_ASK_ENTRY (data);
+    entry = EGG_SECURE_ENTRY (data);
 
     if (!GTK_WIDGET_HAS_FOCUS (entry)) {
-        g_warning ("GkrAskEntry - did not receive focus-out-event. If you\n"
+        g_warning ("EggSecureEntry - did not receive focus-out-event. If you\n"
                    "connect a handler to this signal, it must return\n"
                    "FALSE so the entry gets the event as well");
     }
@@ -2612,7 +2611,7 @@ blink_cb (gpointer data)
 }
 
 static void
-gkr_ask_entry_check_cursor_blink (GkrAskEntry *entry)
+egg_secure_entry_check_cursor_blink (EggSecureEntry *entry)
 {
     if (cursor_blinks (entry)) {
         if (!entry->blink_timeout) {
@@ -2632,7 +2631,7 @@ gkr_ask_entry_check_cursor_blink (GkrAskEntry *entry)
 }
 
 static void
-gkr_ask_entry_pend_cursor_blink (GkrAskEntry *entry)
+egg_secure_entry_pend_cursor_blink (EggSecureEntry *entry)
 {
     if (cursor_blinks (entry)) {
         if (entry->blink_timeout != 0)

@@ -22,11 +22,11 @@
 #ifndef __GCR_PARSER_H__
 #define __GCR_PARSER_H__
 
+#include "gcr.h"
+
 #include <glib-object.h>
 
 #include "gcr-types.h"
-
-#define GCR_PARSER_ERROR              (gcr_parser_get_error_domain ())
 
 #define GCR_TYPE_PARSER               (gcr_parser_get_type ())
 #define GCR_PARSER(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_PARSER, GcrParser))
@@ -56,37 +56,31 @@ struct _GcrParserClass {
 	void     (*parsed) (GcrParser *self);
 };
 
-GType               gcr_parser_get_type               (void);
+GType                    gcr_parser_get_type               (void);
 
-GQuark 	            gcr_parser_get_error_domain       (void) G_GNUC_CONST;
+GcrParser*               gcr_parser_new                    (void);
 
-GcrParser*          gcr_parser_new                    (void);
+gboolean                 gcr_parser_format_enable          (GcrParser *self, 
+                                                            gint format);
 
-gboolean            gcr_parser_format_enable          (GcrParser *self, 
-                                                       gint format);
+gboolean                 gcr_parser_format_disable         (GcrParser *self, 
+                                                            gint format);
 
-gboolean            gcr_parser_format_disable         (GcrParser *self, 
-                                                       gint format);
+gboolean                 gcr_parser_format_supported       (GcrParser *self,
+                                                            gint format);
 
-gboolean            gcr_parser_format_supported       (GcrParser *self,
-                                                       gint format);
+gboolean                 gcr_parser_parse_data             (GcrParser *self, 
+                                                            const guchar *data, 
+                                                            gsize n_data, 
+                                                            GError **err);
 
-gboolean            gcr_parser_parse_data             (GcrParser *self, 
-                                                       const guchar *data, 
-                                                       gsize n_data, 
-                                                       GError **err);
+void                     gcr_parser_add_password           (GcrParser *self,
+                                                            const gchar *password);
 
-gboolean            gcr_parser_parse_file             (GcrParser *self, 
-                                                       const gchar *filename, 
-                                                       GError **err);
+const gchar*             gcr_parser_get_parsed_label       (GcrParser *self);
 
-void                gcr_parser_add_password           (GcrParser *self,
-                                                       const gchar *password);
+const gchar*             gcr_parser_get_parsed_description (GcrParser *self);
 
-const gchar*        gcr_parser_get_parsed_label       (GcrParser *self);
-
-const gchar*        gcr_parser_get_parsed_description (GcrParser *self);
-
-GP11Attributes*     gcr_parser_get_parsed_attributes  (GcrParser *self);
+struct _GP11Attributes*  gcr_parser_get_parsed_attributes  (GcrParser *self);
 
 #endif /* __GCR_PARSER_H__ */

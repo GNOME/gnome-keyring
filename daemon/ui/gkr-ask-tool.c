@@ -22,10 +22,10 @@
 
 #include "config.h"
 
-#include "gkr-ask-entry.h"
 #include "gkr-ask-tool.h"
 #include "gkr-ask-request.h"
 
+#include "egg/egg-secure-entry.h"
 #include "egg/egg-secure-memory.h"
 
 #include <gtk/gtk.h>
@@ -268,7 +268,7 @@ on_password_changed (GtkEditable     *editable,
 	int upper, lower, digit, misc;
 	gdouble pwstrength;
 
-	password = gkr_ask_entry_get_text (GKR_ASK_ENTRY (editable));
+	password = egg_secure_entry_get_text (EGG_SECURE_ENTRY (editable));
 
 	/*
 	 * This code is based on the Master Password dialog in Firefox
@@ -490,8 +490,8 @@ run_dialog (gboolean include_password,
 	if (include_original) {
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
 		label = gtk_label_new_with_mnemonic (_("_Old password:"));
-		old = gkr_ask_entry_new ();
-		gkr_ask_entry_set_visibility (GKR_ASK_ENTRY (old), FALSE);
+		old = egg_secure_entry_new ();
+		egg_secure_entry_set_visibility (EGG_SECURE_ENTRY (old), FALSE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), old);
 		g_signal_connect_swapped (old,
 					  "activate",
@@ -510,8 +510,8 @@ run_dialog (gboolean include_password,
 	if (include_password) {
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
 		label = gtk_label_new_with_mnemonic (_("_Password:"));
-		entry = gkr_ask_entry_new ();
-		gkr_ask_entry_set_visibility (GKR_ASK_ENTRY (entry), FALSE);
+		entry = egg_secure_entry_new ();
+		egg_secure_entry_set_visibility (EGG_SECURE_ENTRY (entry), FALSE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 		g_signal_connect_swapped (entry,
 					  "activate",
@@ -532,8 +532,8 @@ run_dialog (gboolean include_password,
 	
 		gtk_table_resize (GTK_TABLE (ptable), ++row, 2);	
 		label = gtk_label_new_with_mnemonic (_("_Confirm password:"));
-		confirm = gkr_ask_entry_new ();
-		gkr_ask_entry_set_visibility (GKR_ASK_ENTRY (confirm), FALSE);
+		confirm = egg_secure_entry_new ();
+		egg_secure_entry_set_visibility (EGG_SECURE_ENTRY (confirm), FALSE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), confirm);
 		g_signal_connect_swapped (confirm,
 					  "activate",
@@ -599,15 +599,15 @@ run_dialog (gboolean include_password,
 	
 	/* Get the original password */
 	if (include_original && old != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
-		original = gkr_ask_entry_get_text (GKR_ASK_ENTRY (old));
+		original = egg_secure_entry_get_text (EGG_SECURE_ENTRY (old));
 		*original_out = egg_secure_strdup (original);
 	}
 
 	/* Get the main password entry, and confirmation */
 	if (include_password && entry != NULL && response >= GKR_ASK_RESPONSE_ALLOW) {
-		password = gkr_ask_entry_get_text (GKR_ASK_ENTRY (entry));
+		password = egg_secure_entry_get_text (EGG_SECURE_ENTRY (entry));
 		if (include_confirm && confirm != NULL) {
-			confirmation = gkr_ask_entry_get_text (GKR_ASK_ENTRY (confirm));
+			confirmation = egg_secure_entry_get_text (EGG_SECURE_ENTRY (confirm));
 			if (strcmp (password, confirmation) != 0) {
 				notice_text = create_notice (_("Passwords do not match."));
 				gtk_label_set_markup (notice,  notice_text);

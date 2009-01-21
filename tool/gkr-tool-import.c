@@ -27,7 +27,9 @@
 
 #include "gp11/gp11.h"
 
-#include "pkcs11/pkcs11g.h"
+#include "gcr/gcr-importer.h"
+
+#include "egg/egg-hex.h"
 
 static gchar **import_files = NULL;
 
@@ -37,23 +39,15 @@ static GOptionEntry import_entries[] = {
 	{ NULL }
 };
 
-static const gulong ATTR_TYPES[] = {
-	CKA_LABEL,
-	CKA_CLASS,
-	CKA_ID
-};
-
-static const char HEXC[] = "0123456789ABCDEF";
-
 static void
-print_object_information (GP11Object *object)
+on_imported (GcrImporter *importer, GP11Object *object)
 {
 	GP11Attributes *attrs;
 	GP11Attribute *id;
 	CK_OBJECT_CLASS klass;
 	const gchar *message;
 	GError *err = NULL;
-	gchar *label;
+	gchar *label, *hex;
 	
 	attrs = gp11_attributes_new_empty (CKA_LABEL, CKA_CLASS, CKA_ID, -1);
 	if (!gp11_object_get_full (object, attrs, NULL, &err)) {
@@ -91,133 +85,23 @@ print_object_information (GP11Object *object)
 	g_print (message, label);
 
 	if (id) {
-		guchar *data = id->value;
-		gsize n_data = id->length;
-		gchar pair[3];
-		
-		g_print ("\tID: ");
-		
-		while(n_data > 0) {
-			pair[0] = HEXC[*(data) >> 4 & 0xf];
-			pair[1] = HEXC[*(data++) & 0xf];
-			pair[2] = 0;
-			n_data--;
-			g_print ("%s", pair);
-		}
-
-		g_print ("\n");
+		hex = egg_hex_encode (id->value, id->length);
+		g_print ("\tID: %s\n", hex);
+		g_free (hex);
 	}
 	
 	gp11_attributes_unref (attrs);
 	g_free (label);
 }
 
-static void
-print_import_information (GP11Session *session, GP11Object *import)
-{
-	CK_OBJECT_HANDLE_PTR handles;
-	CK_ULONG n_handles;
-	gsize length;
-	GList *objects, *l;
-	GP11Slot *slot;
-	GError *err;
-	
-	handles = gp11_object_get_data (import, CKA_GNOME_IMPORT_OBJECTS, &length, &err);
-	if (!handles) {
-		gkr_tool_handle_error (&err, "couldn't find imported objects");
-		return;
-	}
-	
-	n_handles = length / sizeof (CK_OBJECT_HANDLE);
-	
-	slot = gp11_session_get_slot (session);
-	g_return_if_fail (slot);
-
-	objects = gp11_objects_from_handle_array (slot, handles, n_handles);
-	g_free (handles);
-	g_object_unref (slot);
-
-	for (l = objects; l; l = g_list_next (l))
-		print_object_information (GP11_OBJECT (l->data));
-	
-	gp11_list_unref_free (objects);
-}
-
-static int
-import_from_file (GP11Session *session, const gchar *filename)
-{
-	GError *err = NULL;
-	GP11Object *import;
-	GP11Attributes *attrs;
-	gchar *basename;
-	gchar *data;
-	gsize n_data;
-	
-	/* Read in the file data */
-	if (!g_file_get_contents (filename, &data, &n_data, &err)) {
-		gkr_tool_handle_error (&err, NULL);
-		return 1;
-	}
-	
-	/* Setup the attributes on the object */
-	attrs = gp11_attributes_new ();
-	gp11_attributes_add_data (attrs, CKA_VALUE, data, n_data);
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
-	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_GNOME_IMPORT);
-	gp11_attributes_add_boolean (attrs, CKA_GNOME_IMPORT_TOKEN, TRUE);
-	basename = g_path_get_basename (filename);
-	gp11_attributes_add_string (attrs, CKA_GNOME_IMPORT_LABEL, basename);
-	g_free (basename);
-	
-	import = gp11_session_create_object_full (session, attrs, NULL, &err);
-	gp11_attributes_unref (attrs);
-	g_free (data);
-	
-	if (!import) {
-		gkr_tool_handle_error (&err, "couldn't import file: %s", filename);
-		return 1;
-	}
-	
-	if (!gkr_tool_mode_quiet)
-		print_import_information (session, import);
-	
-	g_object_unref (import);
-	return 0;
-}
-
-static GP11Session*
-open_import_session (void)
-{
-	GP11Module *module;
-	GP11Session *session;
-	GList *slots;
-	GError *err = NULL;
-	
-	module = gp11_module_initialize (PKCS11_MODULE_PATH, NULL, &err);
-	if (!module) {
-		gkr_tool_handle_error (&err, NULL);
-		return NULL;
-	}
-	
-	slots = gp11_module_get_slots (module, FALSE);
-	g_return_val_if_fail (slots && slots->data, NULL);
-	
-	session = gp11_slot_open_session(slots->data, CKF_RW_SESSION, &err);
-	gp11_list_unref_free (slots);
-	g_object_unref (module);
-	
-	if (!session) {
-		gkr_tool_handle_error (&err, "couldn't connect to gnome-keyring");
-		return NULL;
-	}
-	
-	return session;
-}
-
 int
 gkr_tool_import (int argc, char *argv[])
 {
-	GP11Session *session;
+	GcrImporter *importer;
+	GError *error = NULL;
+	GInputStream *input;
+	gboolean res;
+	GFile *file;
 	gchar **imp;
 	int ret = 0;
 	
@@ -230,17 +114,31 @@ gkr_tool_import (int argc, char *argv[])
 		return 2;
 	}
 	
-	/* Open a session */
-	session = open_import_session ();
-	if (!session)
-		return 1;
+	importer = gcr_importer_new ();
+	gcr_importer_set_prompt_behavior (importer, GCR_IMPORTER_PROMPT_NEEDED);
+	
+	if (!gkr_tool_mode_quiet) 
+		g_signal_connect (importer, "imported", G_CALLBACK (on_imported), NULL);
 	
 	for (imp = import_files; *imp; ++imp) {
-		ret = import_from_file (session, *imp);
-		if (ret != 0)
-			break;
+		file = g_file_new_for_commandline_arg (*imp);
+		
+		input = G_INPUT_STREAM (g_file_read (file, NULL, &error));
+		g_object_unref (file);
+		if (!input) {
+			gkr_tool_handle_error (&error, "couldn't read file: %s", *imp);
+			ret = 1;
+		}
+		
+		res = gcr_importer_import (importer, input, NULL, &error);
+		g_object_unref (input);
+		if (res == FALSE) {
+			if (!error || error->code != GCR_ERROR_CANCELLED)
+				gkr_tool_handle_error (&error, "couldn't import file: %s", *imp);
+			ret = 1;
+		}
 	}
 	
-	g_object_unref (session);
+	g_object_unref (importer);
 	return ret;
 }

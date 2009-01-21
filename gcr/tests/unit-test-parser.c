@@ -29,6 +29,8 @@
 
 #include "gcr/gcr-parser.h"
 
+#include "gp11/gp11.h"
+
 #include <glib.h>
 #include <gcrypt.h>
 #include <libtasn1.h>

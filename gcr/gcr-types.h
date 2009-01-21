@@ -1,11 +1,15 @@
 #ifndef GCRTYPES_H_
 #define GCRTYPES_H_
 
+#define             GCR_DATA_ERROR                    (gcr_data_error_get_domain ())
+
+GQuark 	            gcr_data_error_get_domain         (void) G_GNUC_CONST;
+
 enum {
-	GCR_PARSE_FAILURE = -1,
-	GCR_PARSE_UNRECOGNIZED = 1,
-	GCR_PARSE_CANCELLED = 2,
-	GCR_PARSE_LOCKED = 3
+	GCR_ERROR_FAILURE = -1,
+	GCR_ERROR_UNRECOGNIZED = 1,
+	GCR_ERROR_CANCELLED = 2,
+	GCR_ERROR_LOCKED = 3
 };
 
 enum {
@@ -35,11 +39,8 @@ enum {
 	GCR_FORMAT_PEM_PKCS12
 };
 
-#ifndef GP11_H
-
 /* Forward declare some of the GP11 objects */
-typedef struct _GP11Attributes GP11Attributes;
-
-#endif /* GP11_H */
+struct _GP11Attributes;
+struct _GP11Slot;
 
 #endif /* GCRTYPES_H_ */

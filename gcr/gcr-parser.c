@@ -263,7 +263,7 @@ enum_next_password (GcrParser *self, PasswordState *state, const gchar **passwor
 	++state->ask_state;
 	
 	if (!result)
-		return GCR_PARSE_CANCELLED;
+		return GCR_ERROR_CANCELLED;
 	
 	/* Return any passwords added */
 	if (state->seen < self->pv->passwords->len) {
@@ -273,7 +273,7 @@ enum_next_password (GcrParser *self, PasswordState *state, const gchar **passwor
 		return SUCCESS;
 	}
 	
-	return GCR_PARSE_LOCKED;
+	return GCR_ERROR_LOCKED;
 }
 
 static void
@@ -293,7 +293,7 @@ parsed_fire (GcrParser *self)
 static gint
 parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 {
-	gint res = GCR_PARSE_UNRECOGNIZED;
+	gint res = GCR_ERROR_UNRECOGNIZED;
 	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
 	guint version;
 	
@@ -303,14 +303,14 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 	
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_RSA);
-	res = GCR_PARSE_FAILURE;
+	res = GCR_ERROR_FAILURE;
 
 	if (!egg_asn1_read_uint (asn, "version", &version))
 		goto done;
 	
 	/* We only support simple version */
 	if (version != 0) {
-		res = GCR_PARSE_UNRECOGNIZED;
+		res = GCR_ERROR_UNRECOGNIZED;
 		g_message ("unsupported version of RSA key: %u", version);
 		goto done;
 	}
@@ -330,7 +330,7 @@ done:
 	if (asn)
 		asn1_delete_structure (&asn);
 
-	if (res == GCR_PARSE_FAILURE)
+	if (res == GCR_ERROR_FAILURE)
 		g_message ("invalid RSA key");
 	
 	return res;
@@ -343,7 +343,7 @@ done:
 static gint
 parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 {
-	gint ret = GCR_PARSE_UNRECOGNIZED;
+	gint ret = GCR_ERROR_UNRECOGNIZED;
 	int res;
 	ASN1_TYPE asn;
 
@@ -353,7 +353,7 @@ parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 	
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_DSA);
-	res = GCR_PARSE_FAILURE;
+	res = GCR_ERROR_FAILURE;
 
 	if (!parsed_asn1_attribute (self, asn, data, n_data, "p", CKA_PRIME) ||
 	    !parsed_asn1_attribute (self, asn, data, n_data, "q", CKA_SUBPRIME) ||
@@ -368,7 +368,7 @@ done:
 	if (asn)
 		asn1_delete_structure (&asn);
 	
-	if (ret == GCR_PARSE_FAILURE) 
+	if (ret == GCR_ERROR_FAILURE) 
 		g_message ("invalid DSA key");
 		
 	return ret;
@@ -378,7 +378,7 @@ static gint
 parse_der_private_key_dsa_parts (GcrParser *self, const guchar *keydata, gsize n_keydata,
                                  const guchar *params, gsize n_params)
 {
-	gint ret = GCR_PARSE_UNRECOGNIZED;
+	gint ret = GCR_ERROR_UNRECOGNIZED;
 	int res;
 	ASN1_TYPE asn_params = ASN1_TYPE_EMPTY;
 	ASN1_TYPE asn_key = ASN1_TYPE_EMPTY;
@@ -390,7 +390,7 @@ parse_der_private_key_dsa_parts (GcrParser *self, const guchar *keydata, gsize n
 	
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_DSA);
-	res = GCR_PARSE_FAILURE;
+	res = GCR_ERROR_FAILURE;
     
 	if (!parsed_asn1_attribute (self, asn_params, params, n_params, "p", CKA_PRIME) ||
 	    !parsed_asn1_attribute (self, asn_params, params, n_params, "q", CKA_SUBPRIME) ||
@@ -407,7 +407,7 @@ done:
 	if (asn_params)
 		asn1_delete_structure (&asn_params);
 	
-	if (ret == GCR_PARSE_FAILURE) 
+	if (ret == GCR_ERROR_FAILURE) 
 		g_message ("invalid DSA key");
 		
 	return ret;	
@@ -423,7 +423,7 @@ parse_der_private_key (GcrParser *self, const guchar *data, gsize n_data)
 	gint res;
 	
 	res = parse_der_private_key_rsa (self, data, n_data);
-	if (res == GCR_PARSE_UNRECOGNIZED)
+	if (res == GCR_ERROR_UNRECOGNIZED)
 		res = parse_der_private_key_dsa (self, data, n_data);
 		
 	return res;
@@ -445,13 +445,13 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
 	const guchar *params;
 	gsize n_params;
 	
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-8-PrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
-	ret = GCR_PARSE_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 	key_type = GP11_INVALID;
 		
 	key_algo = egg_asn1_read_oid (asn, "privateKeyAlgorithm.algorithm");
@@ -463,7 +463,7 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
   		key_type = CKK_DSA;
   		
   	if (key_type == GP11_INVALID) {
-  		ret = GCR_PARSE_UNRECOGNIZED;
+  		ret = GCR_ERROR_UNRECOGNIZED;
   		goto done;
   	}
 
@@ -487,17 +487,17 @@ done:
 			ret = parse_der_private_key_dsa (self, keydata, n_keydata);
 			
 			/* Otherwise try the two part format that everyone seems to like */
-			if (ret == GCR_PARSE_UNRECOGNIZED && params && n_params)
+			if (ret == GCR_ERROR_UNRECOGNIZED && params && n_params)
 				ret = parse_der_private_key_dsa_parts (self, keydata, n_keydata, 
 				                                       params, n_params);
 			break;
 		default:
 			g_message ("invalid or unsupported key type in PKCS#8 key");
-			ret = GCR_PARSE_UNRECOGNIZED;
+			ret = GCR_ERROR_UNRECOGNIZED;
 			break;
 		};
 		
-	} else if (ret == GCR_PARSE_FAILURE) {
+	} else if (ret == GCR_ERROR_FAILURE) {
 		g_message ("invalid PKCS#8 key");
 	}
 	
@@ -521,13 +521,13 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 	const gchar *password;
 	gint l;
 
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
-	ret = GCR_PARSE_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 
 	/* Figure out the type of encryption */
 	scheme = egg_asn1_read_oid (asn, "encryptionAlgorithm.algorithm");
@@ -576,7 +576,7 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 		egg_secure_free (crypted);
 		crypted = NULL;
 		
-		if (r != GCR_PARSE_UNRECOGNIZED) {
+		if (r != GCR_ERROR_UNRECOGNIZED) {
 			ret = r;
 			break;
 		}
@@ -600,7 +600,7 @@ parse_der_pkcs8 (GcrParser *self, const guchar *data, gsize n_data)
 	gint ret;
 	
 	ret = parse_der_pkcs8_plain (self, data, n_data);
-	if (ret == GCR_PARSE_UNRECOGNIZED)
+	if (ret == GCR_ERROR_UNRECOGNIZED)
 		ret = parse_der_pkcs8_encrypted (self, data, n_data);
 	
 	return ret;
@@ -618,7 +618,7 @@ parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 	
 	asn = egg_asn1_decode ("PKIX1.Certificate", data, n_data);
 	if (asn == NULL)
-		return GCR_PARSE_UNRECOGNIZED;
+		return GCR_ERROR_UNRECOGNIZED;
 
 	parsed_clear (self, CKO_CERTIFICATE);
 	parsed_ulong (self, CKA_CERTIFICATE_TYPE, CKC_X_509);
@@ -651,13 +651,13 @@ handle_pkcs7_signed_data (GcrParser *self, const guchar *data, gsize n_data)
 	gsize n_certificate;
 	int i;
 	
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-7-SignedData", data, n_data);
 	if (!asn)
 		goto done;
 
-	ret = GCR_PARSE_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 	
 	for (i = 0; TRUE; ++i) {
 			
@@ -694,13 +694,13 @@ parse_der_pkcs7 (GcrParser *self, const guchar *data, gsize n_data)
 	gsize n_content;
 	GQuark oid;
 	
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-7-ContentInfo", data, n_data);
 	if (!asn)
 		goto done;
 
-	ret = GCR_PARSE_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 
 	oid = egg_asn1_read_oid (asn, "contentType");
 	if (!oid)
@@ -736,13 +736,13 @@ handle_pkcs12_cert_bag (GcrParser *self, const guchar *data, gsize n_data)
 	gsize n_certificate;
 	gint ret;
 
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-12-CertBag", data, n_data);
 	if (!asn)
 		goto done;
 		
-	ret = GCR_PARSE_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 	
 	certificate = egg_asn1_read_content (asn, data, n_data, "certValue", &n_certificate);
 	if (!certificate)
@@ -775,13 +775,13 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 	const guchar *element;
 	gsize n_element;
 	
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-12-SafeContents", data, n_data);
 	if (!asn)
 		goto done;
 		
-	ret = GCR_PARSE_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 	
 	/* Get the number of elements in this bag */
 	res = asn1_number_of_elements (asn, "", &count);
@@ -822,10 +822,10 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 								
 		/* TODO: OID_PKCS12_BAG_CRL */
 		} else {
-			r = GCR_PARSE_UNRECOGNIZED;
+			r = GCR_ERROR_UNRECOGNIZED;
 		}
 		 
-		if (r == GCR_PARSE_FAILURE || r == GCR_PARSE_CANCELLED) {
+		if (r == GCR_ERROR_FAILURE || r == GCR_ERROR_CANCELLED) {
 			ret = r;
 			goto done;
 		}
@@ -855,13 +855,13 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 	gint ret, r;
 	gint l;
 	
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-7-EncryptedData", data, n_data);
 	if (!asn)
 		goto done;
 	
-	ret = GCR_PARSE_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 		
 	/* Check the encryption schema OID */
 	scheme = egg_asn1_read_oid (asn, "encryptedContentInfo.contentEncryptionAlgorithm.algorithm");
@@ -887,7 +887,7 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 	        
 		/* Parse the encryption stuff into a cipher. */
 		if (!egg_symkey_read_cipher (scheme, password, -1, params, n_params, &cih)) {
-			ret = GCR_PARSE_FAILURE;
+			ret = GCR_ERROR_FAILURE;
 			goto done;
 		}
 			
@@ -915,7 +915,7 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 		egg_secure_free (crypted);
 		crypted = NULL;
 		
-		if (r != GCR_PARSE_UNRECOGNIZED) {
+		if (r != GCR_ERROR_UNRECOGNIZED) {
 			ret = r;
 			break;
 		}
@@ -944,13 +944,13 @@ handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 	GQuark oid;
 	guint i;
 	
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-12-AuthenticatedSafe", data, n_data);
 	if (!asn)
 		goto done;
 		
-	ret = GCR_PARSE_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 	
 	/*
 	 * Inside each PKCS12 safe there are multiple bags. 
@@ -992,10 +992,10 @@ handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 		/* Hmmmm, not sure what this is */
 		} else {
 			g_warning ("unrecognized type of safe content in pkcs12: %s", g_quark_to_string (oid));
-			r = GCR_PARSE_UNRECOGNIZED;
+			r = GCR_ERROR_UNRECOGNIZED;
 		}
 		
-		if (r == GCR_PARSE_FAILURE || r == GCR_PARSE_CANCELLED) {
+		if (r == GCR_ERROR_FAILURE || r == GCR_ERROR_CANCELLED) {
 			ret = r;
 			goto done;
 		}
@@ -1019,7 +1019,7 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	gsize n_content;
 	GQuark oid;
 	
-	ret = GCR_PARSE_UNRECOGNIZED;
+	ret = GCR_ERROR_UNRECOGNIZED;
 	
 	asn = egg_asn1_decode ("PKIX1.pkcs-12-PFX", data, n_data);
 	if (!asn)
@@ -1091,14 +1091,14 @@ handle_plain_pem (GcrParser *self, GQuark type, gint subformat,
 		format_id = GCR_FORMAT_DER_PKCS12;
 		
 	else
-		return GCR_PARSE_UNRECOGNIZED;
+		return GCR_ERROR_UNRECOGNIZED;
 
 	if (subformat != 0 && subformat != format_id)
-		return GCR_PARSE_UNRECOGNIZED;
+		return GCR_ERROR_UNRECOGNIZED;
 	
 	format = parser_format_lookup (format_id);
 	if (format == NULL)
-		return GCR_PARSE_UNRECOGNIZED;
+		return GCR_ERROR_UNRECOGNIZED;
 	
 	return (format->function) (self, data, n_data);
 }
@@ -1143,7 +1143,7 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 	val = g_hash_table_lookup (headers, "DEK-Info");
 	if (!val) {
 		g_message ("missing encryption header");
-		return GCR_PARSE_FAILURE;
+		return GCR_ERROR_FAILURE;
 	}
 	
 	/* Fill in information necessary for prompting */
@@ -1162,7 +1162,7 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 		ret = egg_openssl_decrypt_block (val, password, -1, data, n_data, 
 		                                 &decrypted, &n_decrypted);
 		if (!ret)
-			return GCR_PARSE_FAILURE;
+			return GCR_ERROR_FAILURE;
 			
 		g_assert (decrypted);
 		
@@ -1176,11 +1176,11 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 		egg_secure_free (decrypted);
 
 		/* Unrecognized is a bad password */
-		if (res != GCR_PARSE_UNRECOGNIZED)
+		if (res != GCR_ERROR_UNRECOGNIZED)
 			return res;		
 	}
 	
-	return GCR_PARSE_FAILURE;
+	return GCR_ERROR_FAILURE;
 }
 
 typedef struct {
@@ -1194,12 +1194,12 @@ handle_pem_data (GQuark type, const guchar *data, gsize n_data,
                  GHashTable *headers, gpointer user_data)
 {
 	HandlePemArgs *args = (HandlePemArgs*)user_data;
-	gint res = GCR_PARSE_FAILURE;
+	gint res = GCR_ERROR_FAILURE;
 	gboolean encrypted = FALSE;
 	const gchar *val;
 	
 	/* Something already failed to parse */
-	if (args->result == GCR_PARSE_FAILURE)
+	if (args->result == GCR_ERROR_FAILURE)
 		return;
 	
 	/* See if it's encrypted PEM all openssl like*/
@@ -1216,8 +1216,8 @@ handle_pem_data (GQuark type, const guchar *data, gsize n_data,
 		res = handle_plain_pem (args->parser, type, args->subformat, 
 		                        data, n_data);
 	
-	if (res != GCR_PARSE_UNRECOGNIZED) {
-		if (args->result == GCR_PARSE_UNRECOGNIZED)
+	if (res != GCR_ERROR_UNRECOGNIZED) {
+		if (args->result == GCR_ERROR_UNRECOGNIZED)
 			args->result = res;
 		else if (res > args->result)
 			args->result = res;
@@ -1227,16 +1227,16 @@ handle_pem_data (GQuark type, const guchar *data, gsize n_data,
 static gint
 handle_pem_format (GcrParser *self, gint subformat, const guchar *data, gsize n_data)
 {
-	HandlePemArgs ctx = { self, GCR_PARSE_UNRECOGNIZED, subformat };
+	HandlePemArgs ctx = { self, GCR_ERROR_UNRECOGNIZED, subformat };
 	guint found;
 	
 	if (n_data == 0)
-		return GCR_PARSE_UNRECOGNIZED;
+		return GCR_ERROR_UNRECOGNIZED;
 	
 	found = egg_openssl_pem_parse (data, n_data, handle_pem_data, &ctx);
 	
 	if (found == 0)
-		return GCR_PARSE_UNRECOGNIZED;
+		return GCR_ERROR_UNRECOGNIZED;
 		
 	return ctx.result;
 }
@@ -1375,7 +1375,7 @@ parser_format_foreach (gpointer key, gpointer value, gpointer data)
 	g_assert (GCR_IS_PARSER (args->parser));
 	
 	result = (format->function) (args->parser, args->data, args->n_data);
-	if (result != GCR_PARSE_UNRECOGNIZED) {
+	if (result != GCR_ERROR_UNRECOGNIZED) {
 		args->result = result;
 		return TRUE;
 	}
@@ -1534,15 +1534,6 @@ gcr_parser_new (void)
 	return g_object_new (GCR_TYPE_PARSER, NULL);
 }
 
-GQuark
-gcr_parser_get_error_domain (void)
-{
-	static GQuark domain = 0;
-	if (domain == 0)
-		domain = g_quark_from_static_string ("gcr-parser-error");
-	return domain;
-}
-
 void
 gcr_parser_add_password (GcrParser *self, const gchar *password)
 {
@@ -1554,7 +1545,7 @@ gboolean
 gcr_parser_parse_data (GcrParser *self, const guchar *data, 
                        gsize n_data, GError **err)
 {
-	ForeachArgs args = { self, data, n_data, GCR_PARSE_UNRECOGNIZED };
+	ForeachArgs args = { self, data, n_data, GCR_ERROR_UNRECOGNIZED };
 	const gchar *message;
 	gint i;
 	
@@ -1578,16 +1569,16 @@ gcr_parser_parse_data (GcrParser *self, const guchar *data,
 	switch (args.result) {
 	case SUCCESS:
 		return TRUE;
-	case GCR_PARSE_CANCELLED:
+	case GCR_ERROR_CANCELLED:
 		message = _("The operation was cancelled");
 		break;
-	case GCR_PARSE_UNRECOGNIZED:
+	case GCR_ERROR_UNRECOGNIZED:
 		message = _("Unrecognized or unsupported data.");
 		break;
-	case GCR_PARSE_FAILURE:
+	case GCR_ERROR_FAILURE:
 		message = _("Could not parse invalid or corrupted data.");
 		break;
-	case GCR_PARSE_LOCKED:
+	case GCR_ERROR_LOCKED:
 		message = _("The data is locked");
 		break;
 	default:
@@ -1595,34 +1586,8 @@ gcr_parser_parse_data (GcrParser *self, const guchar *data,
 		break;
 	};
 	
-	g_set_error_literal (err, GCR_PARSER_ERROR, args.result, message);
+	g_set_error_literal (err, GCR_DATA_ERROR, args.result, message);
 	return FALSE;
-}
-
-gboolean
-gcr_parser_parse_file (GcrParser *self, const gchar *filename, GError **err)
-{
-	GMappedFile *mapped;
-	gboolean ret;
-	const guchar *data;
-	gsize n_data; 
-	
-	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
-	g_return_val_if_fail (filename, FALSE);
-	g_return_val_if_fail (!err || !*err, FALSE);
-	
-	mapped = g_mapped_file_new (filename, FALSE, err);
-	if (mapped == NULL)
-		return FALSE;
-
-	data = (const guchar*)g_mapped_file_get_contents (mapped);
-	n_data = g_mapped_file_get_length (mapped);
-	
-	ret = gcr_parser_parse_data (self, data, n_data, err);
-		
-	g_mapped_file_free (mapped);
-	
-	return ret;
 }
 
 gboolean

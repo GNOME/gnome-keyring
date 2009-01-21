@@ -1,3 +1,32 @@
+2009-01-21  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/ui/gkr-ask-entry.c: (moved)
+	* daemon/ui/gkr-ask-entry.h: (moved)
+	* daemon/ui/gkr-ask-tool.c:
+	* daemon/ui/Makefile.am:
+	* egg/egg-secure-entry.c: (moved from daemon/ui/gkr-ask-entry.c)
+	* egg/egg-secure-entry.h: (moved from daemon/ui/gkr-ask-entry.h)
+	* egg/Makefile.am:
+	* gcr/gcr.h: (added)
+	* gcr/gcr-import-dialog.c: (added)
+	* gcr/gcr-import-dialog.glade:
+	* gcr/gcr-import-dialog.h: (added)
+	* gcr/gcr-importer.c:
+	* gcr/gcr-importer.h:
+	* gcr/gcr-internal.c: (removed)
+	* gcr/gcr-internal.h:
+	* gcr/gcr-library.c: (added)
+	* gcr/gcr-parser.c: 
+	* gcr/gcr-parser.h:
+	* gcr/gcr-types.h:
+	* gcr/Makefile.am:
+	* gcr/tests/Makefile.am:
+	* gcr/tests/unit-test-parser.c:
+	* tool/gkr-tool.c:
+	* tool/gkr-tool-import.c: 
+	* tool/Makefile.am: Complete importer in gcr library. Make 'gnome-keyring import'
+	use the new importer.
+
 2009-01-20  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:

@@ -8,6 +8,10 @@ UNIT_PROMPT =
 UNIT_LIBS =  \
 	$(top_builddir)/gcr/libgcr.la \
 	$(top_builddir)/egg/libegg.la \
+	$(top_builddir)/egg/libegg-secure-entry.la \
 	$(top_builddir)/gp11/libgp11.la
+	
+UNIT_FLAGS = \
+	-DGCR_API_SUBJECT_TO_CHANGE
 
 include $(top_srcdir)/tests/gtest.make

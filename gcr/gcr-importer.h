@@ -22,7 +22,16 @@
 #ifndef __GCR_IMPORTER_H__
 #define __GCR_IMPORTER_H__
 
+#include "gcr.h"
+#include "gcr-parser.h"
+
 #include <glib-object.h>
+
+typedef enum {
+	GCR_IMPORTER_PROMPT_NEEDED,
+	GCR_IMPORTER_PROMPT_ALWAYS,
+	GCR_IMPORTER_PROMPT_NEVER
+} GcrImporterPromptBehavior;
 
 #define GCR_TYPE_IMPORTER               (gcr_importer_get_type ())
 #define GCR_IMPORTER(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_IMPORTER, GcrImporter))
@@ -33,49 +42,53 @@
 
 typedef struct _GcrImporter GcrImporter;
 typedef struct _GcrImporterClass GcrImporterClass;
+typedef struct _GcrImporterPrivate GcrImporterPrivate;
 
 struct _GcrImporter {
 	GObject parent;
+	GcrImporterPrivate *pv;
 };
 
 struct _GcrImporterClass {
 	GObjectClass parent_class;
-    
-	/* signals --------------------------------------------------------- */
-    
-	void (*signal) (GcrImporter *self, GkrImportedItem *item);
+	
+	/* signals */
+	
+	void (*imported) (GcrImporter *self, GP11Object *object);
 };
 
-GType               gcr_importer_get_type               (void);
+GType                     gcr_importer_get_type               (void);
 
-GcrImporter*        gcr_importer_new                    (void);
+GcrImporter*              gcr_importer_new                    (void);
 
-GcrImporter*        gcr_importer_new_for_module         (GP11Module *module);
+GcrParser*                gcr_importer_get_parser             (GcrImporter *self);
 
-GcrImporter*        gcr_importer_new_for_module_funcs   (gpointer pkcs11_funcs);
+void                      gcr_importer_set_parser             (GcrImporter *self,
+                                                               GcrParser *parser);
 
-void                gcr_importer_set_slot               (GcrImporter *self,
-                                                         GP11Slot *slot);
+struct _GP11Slot*         gcr_importer_get_slot               (GcrImporter *self);
 
-void                gcr_importer_set_slot_id            (GcrImporter *self,
-                                                         gulong slot_id);
+void                      gcr_importer_set_slot               (GcrImporter *self,
+                                                               struct _GP11Slot *slot);
 
-void                gcr_importer_set_parser             (GcrImporter *self,
-                                                         GcrParser *parser);
+GcrImporterPromptBehavior gcr_importer_get_prompt_behavior    (GcrImporter *self);
 
-void                gcr_importer_set_window             (GcrImporter *self,
-                                                         GtkWindow *window);
+void                      gcr_importer_set_prompt_behavior    (GcrImporter *self,
+                                                               GcrImporterPromptBehavior behavior);
 
-void                gcr_importer_set_prompt_behavior    (GcrImporter *self,
-                                                         GcrImporterPromptBehavior behavior);
+gboolean                  gcr_importer_import                 (GcrImporter *self,
+                                                               GInputStream *input,
+                                                               GCancellable *cancel,
+                                                               GError **error);
 
-gboolean            gcr_importer_import_data            (GcrImporter *self,
-                                                         const guchar *data,
-                                                         gsize n_data,
-                                                         GError *error);
+void                      gcr_importer_import_async           (GcrImporter *self,
+                                                               GInputStream *input,
+                                                               GCancellable *cancel,
+                                                               GAsyncReadyCallback callback,
+                                                               gpointer user_data);
 
-gboolean            gcr_importer_import_file            (GcrImporter *self,
-                                                         const gchar *filename,
-                                                         GError *error);
+gboolean                  gcr_importer_import_finish          (GcrImporter *self,
+                                                               GAsyncResult *res,
+                                                               GError **error);
 
 #endif /* __GCR_IMPORTER_H__ */

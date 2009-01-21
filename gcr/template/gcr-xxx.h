@@ -22,6 +22,8 @@
 #ifndef __GCR_XXX_H__
 #define __GCR_XXX_H__
 
+#include "gcr.h"
+
 #include <glib-object.h>
 
 #define GCR_TYPE_XXX               (gcr_xxx_get_type ())

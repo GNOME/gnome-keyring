@@ -25,9 +25,8 @@
 
 #include "gkr-tool.h"
 
-#include <glib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
+#include <gtk/gtk.h>
 
 #include <locale.h>
 #include <string.h>
@@ -127,6 +126,8 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
+	gtk_init (&argc, &argv);
+	
 	/* The first argument is the command */
 	if (argc < 2) {
 		print_general_usage ();

@@ -41,8 +41,8 @@
  * Modified for inclusion into gnome-keyring by Stef Walter 
  */
 
-#ifndef __GKR_ASK_ENTRY_H__
-#define __GKR_ASK_ENTRY_H__
+#ifndef __EGG_SECURE_ENTRY_H__
+#define __EGG_SECURE_ENTRY_H__
 
 
 #include <gtk/gtk.h>
@@ -51,17 +51,17 @@
 extern "C" {
 #endif
     
-#define GKR_TYPE_ASK_ENTRY                  (gkr_ask_entry_get_type ())
-#define GKR_ASK_ENTRY(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKR_TYPE_ASK_ENTRY, GkrAskEntry))
-#define GKR_ASK_ENTRY_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GKR_TYPE_ASK_ENTRY, GkrAskEntryClass))
-#define GKR_IS_ASK_ENTRY(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GKR_TYPE_ASK_ENTRY))
-#define GKR_IS_ASK_ENTRY_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GKR_TYPE_ASK_ENTRY))
-#define GKR_ASK_ENTRY_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj), GKR_TYPE_ASK_ENTRY, GkrAskEntryClass))
+#define EGG_TYPE_SECURE_ENTRY                  (egg_secure_entry_get_type ())
+#define EGG_SECURE_ENTRY(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EGG_TYPE_SECURE_ENTRY, EggSecureEntry))
+#define EGG_SECURE_ENTRY_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), EGG_TYPE_SECURE_ENTRY, EggSecureEntryClass))
+#define EGG_IS_SECURE_ENTRY(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EGG_TYPE_SECURE_ENTRY))
+#define EGG_IS_SECURE_ENTRY_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), EGG_TYPE_SECURE_ENTRY))
+#define EGG_SECURE_ENTRY_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj), EGG_TYPE_SECURE_ENTRY, EggSecureEntryClass))
     
-typedef struct _GkrAskEntry GkrAskEntry;
-typedef struct _GkrAskEntryClass GkrAskEntryClass;
+typedef struct _EggSecureEntry EggSecureEntry;
+typedef struct _EggSecureEntryClass EggSecureEntryClass;
 
-struct _GkrAskEntry {
+struct _EggSecureEntry {
     GtkWidget widget;
 
     gchar *text;
@@ -124,15 +124,15 @@ struct _GkrAskEntry {
     gboolean changed;
 };
 
-struct _GkrAskEntryClass {
+struct _EggSecureEntryClass {
     GtkWidgetClass parent_class;
 
     /* Action signals */
-    void (*activate) (GkrAskEntry *entry);
-    void (*move_cursor) (GkrAskEntry *entry, GtkMovementStep step,
+    void (*activate) (EggSecureEntry *entry);
+    void (*move_cursor) (EggSecureEntry *entry, GtkMovementStep step,
                          gint count, gboolean extend_selection);
-    void (*insert_at_cursor) (GkrAskEntry *entry, const gchar *str);
-    void (*delete_from_cursor) (GkrAskEntry *entry, GtkDeleteType type, gint count);
+    void (*insert_at_cursor) (EggSecureEntry *entry, const gchar *str);
+    void (*delete_from_cursor) (EggSecureEntry *entry, GtkDeleteType type, gint count);
 
     /* Padding for future expansion */
     void (*_gtk_reserved1) (void);
@@ -141,47 +141,47 @@ struct _GkrAskEntryClass {
     void (*_gtk_reserved4) (void);
 };
 
-GType               gkr_ask_entry_get_type              (void) G_GNUC_CONST;
+GType               egg_secure_entry_get_type              (void) G_GNUC_CONST;
 
-GtkWidget*          gkr_ask_entry_new                   (void);
+GtkWidget*          egg_secure_entry_new                   (void);
 
-void                gkr_ask_entry_reset_changed         (GkrAskEntry *entry);
+void                egg_secure_entry_reset_changed         (EggSecureEntry *entry);
 
-gboolean            gkr_ask_entry_get_changed           (GkrAskEntry *entry);
+gboolean            egg_secure_entry_get_changed           (EggSecureEntry *entry);
 
-void                gkr_ask_entry_set_visibility        (GkrAskEntry *entry, gboolean setting);
+void                egg_secure_entry_set_visibility        (EggSecureEntry *entry, gboolean setting);
 
-gboolean            gkr_ask_entry_get_visibility        (GkrAskEntry *entry);
+gboolean            egg_secure_entry_get_visibility        (EggSecureEntry *entry);
 
-void                gkr_ask_entry_set_invisible_char    (GkrAskEntry *entry, gunichar ch);
+void                egg_secure_entry_set_invisible_char    (EggSecureEntry *entry, gunichar ch);
 
-gunichar            gkr_ask_entry_get_invisible_char    (GkrAskEntry *entry);
+gunichar            egg_secure_entry_get_invisible_char    (EggSecureEntry *entry);
 
-void                gkr_ask_entry_set_has_frame         (GkrAskEntry *entry, gboolean setting);
+void                egg_secure_entry_set_has_frame         (EggSecureEntry *entry, gboolean setting);
 
-gboolean            gkr_ask_entry_get_has_frame         (GkrAskEntry *entry);
+gboolean            egg_secure_entry_get_has_frame         (EggSecureEntry *entry);
 
 /* text is truncated if needed */
-void                gkr_ask_entry_set_max_length        (GkrAskEntry *entry, gint max);
+void                egg_secure_entry_set_max_length        (EggSecureEntry *entry, gint max);
 
-gint                gkr_ask_entry_get_max_length        (GkrAskEntry *entry);
+gint                egg_secure_entry_get_max_length        (EggSecureEntry *entry);
 
-void                gkr_ask_entry_set_activates_default (GkrAskEntry *entry, gboolean setting);
+void                egg_secure_entry_set_activates_default (EggSecureEntry *entry, gboolean setting);
 
-gboolean            gkr_ask_entry_get_activates_default (GkrAskEntry *entry);
+gboolean            egg_secure_entry_get_activates_default (EggSecureEntry *entry);
 
-void                gkr_ask_entry_set_width_chars       (GkrAskEntry *entry, gint n_chars);
+void                egg_secure_entry_set_width_chars       (EggSecureEntry *entry, gint n_chars);
 
-gint                gkr_ask_entry_get_width_chars       (GkrAskEntry *entry);
+gint                egg_secure_entry_get_width_chars       (EggSecureEntry *entry);
 
 /* Somewhat more convenient than the GtkEditable generic functions */
-void                gkr_ask_entry_set_text              (GkrAskEntry *entry, const gchar *text);
+void                egg_secure_entry_set_text              (EggSecureEntry *entry, const gchar *text);
 
 /* returns a reference to the text */
-const gchar*        gkr_ask_entry_get_text              (GkrAskEntry *entry);
+const gchar*        egg_secure_entry_get_text              (EggSecureEntry *entry);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  /*__GKR_ASK_ENTRY_H__ */
+#endif  /*__EGG_SECURE_ENTRY_H__ */

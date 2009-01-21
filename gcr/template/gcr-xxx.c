@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gcr-internal.h"
 #include "gcr-xxx.h"
 
 enum {
@@ -133,6 +134,8 @@ gcr_xxx_class_init (GcrXxxClass *klass)
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GcrXxxClass, signal),
 	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
 	                                G_TYPE_NONE, 0);
+	
+	_gcr_initialize ();
 }
 
 /* -----------------------------------------------------------------------------
