@@ -722,11 +722,11 @@ auth_C_SetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                           CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
 	gboolean have_auth = FALSE;
+	CK_BBOOL cached = CK_FALSE;
 	GkrPkcs11AuthObject *info;
 	CK_ATTRIBUTE_PTR normal;
 	CK_ULONG n_normal;
 	CK_RV rv = CKR_OK;
-	CK_BBOOL cached;
 	CK_ULONG i;
 	
 	/* Are there auth custom attributes, also validate. */

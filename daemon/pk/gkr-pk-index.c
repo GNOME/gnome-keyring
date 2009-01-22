@@ -69,14 +69,13 @@ digest_to_group (gkrconstid digest)
 	const guchar *digdata;
 	gsize n_group, n_digdata;
 	gchar *group;
-	gboolean r;
 	
 	/* Encode the digest */		
 	digdata = gkr_id_get_raw (digest, &n_digdata);
 	g_assert (digdata);
 	n_group = (n_digdata * 2) + 1;
 	group = egg_hex_encode (digdata, n_digdata);
-	g_assert (r == TRUE);
+	g_assert (group);
 
 	return group;
 }

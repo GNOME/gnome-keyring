@@ -1,5 +1,10 @@
 2009-01-22  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/pk/gkr-pk-index.c:
+	* daemon/pkcs11/gkr-pkcs11-auth-ep.c: Fix compiler warnings.
+
+2009-01-22  Stef Walter  <stef@memberwebs.com>
+
 	* common/gkr-crypto.c:
 	* common/gkr-crypto.h:
 	* common/tests/Makefile.am:
