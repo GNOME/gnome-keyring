@@ -28,9 +28,11 @@
 #include "gkr-pk-session-storage.h"
 #include "gkr-pk-util.h"
 
-#include "egg/egg-buffer.h"
 #include "common/gkr-location.h"
 #include "common/gkr-location-watch.h"
+
+#include "egg/egg-buffer.h"
+#include "egg/egg-openssl.h"
 #include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring-login.h"
@@ -39,8 +41,6 @@
 
 #include "pkix/gkr-pkix-asn1.h"
 #include "pkix/gkr-pkix-der.h"
-#include "pkix/gkr-pkix-openssl.h"
-#include "pkix/gkr-pkix-pem.h"
 #include "pkix/gkr-pkix-types.h"
 
 #include "ui/gkr-ask-daemon.h"

@@ -29,6 +29,8 @@
 #include "common/gkr-cleanup.h"
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
+
+#include "egg/egg-hex.h"
 #include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring-login.h"
@@ -73,8 +75,7 @@ digest_to_group (gkrconstid digest)
 	digdata = gkr_id_get_raw (digest, &n_digdata);
 	g_assert (digdata);
 	n_group = (n_digdata * 2) + 1;
-	group = g_malloc0 (n_group);
-	r = gkr_crypto_hex_encode (digdata, n_digdata, group, &n_group);
+	group = egg_hex_encode (digdata, n_digdata);
 	g_assert (r == TRUE);
 
 	return group;
@@ -593,9 +594,8 @@ gkr_pk_index_get_binary (GkrPkIndex *index, gkrconstid digest,
 		return NULL;
 		
 	n_string = strlen (string);
-	*n_data = (n_string / 2) + 1;
-	data = g_malloc0 (*n_data);
-	if (!gkr_crypto_hex_decode (string, n_string, data, n_data)) {
+	data = egg_hex_decode (string, n_string, n_data);
+	if (data == NULL) {
 		g_message ("invalid binary data in index under field '%s'", field);
 		g_free (data);
 		data = NULL;
@@ -768,7 +768,7 @@ gkr_pk_index_set_binary (GkrPkIndex *index, gkrconstid digest,
                          const gchar *field, const guchar *data, 
                          gsize n_data)
 {
-	gboolean ret, r;
+	gboolean ret;
 	gchar *str;
 	gsize n_str;
 	
@@ -782,8 +782,8 @@ gkr_pk_index_set_binary (GkrPkIndex *index, gkrconstid digest,
 	n_str = (n_data * 2) + 1;
 	str = g_malloc0 (n_str);
 	
-	r = gkr_crypto_hex_encode (data, n_data, str, &n_str);
-	g_assert (r == TRUE);
+	str = egg_hex_encode (data, n_data);
+	g_assert (str);
 	
 	ret = write_string (index, digest, field, str);
 	g_free (str);

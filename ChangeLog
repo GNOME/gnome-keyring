@@ -1,5 +1,29 @@
 2009-01-22  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-crypto.c:
+	* common/gkr-crypto.h:
+	* common/tests/Makefile.am:
+	* common/tests/unit-test-crypto.c: (removed)
+	* daemon/Makefile.am:
+	* daemon/keyrings/gkr-keyring-binary.c:
+	* daemon/pk/gkr-pk-index.c:
+	* daemon/pk/gkr-pk-root-storage.c:
+	* daemon/pk/gkr-pk-session-storage.c:
+	* daemon/pkix/gkr-pkix-der.c:
+	* daemon/pkix/gkr-pkix-openssl.c: (removed)
+	* daemon/pkix/gkr-pkix-openssl.h: (removed)
+	* daemon/pkix/gkr-pkix-pem.c: (removed)
+	* daemon/pkix/gkr-pkix-pem.h: (removed)
+	* daemon/pkix/gkr-pkix-serialize.c:
+	* daemon/pkix/Makefile.am:
+	* daemon/pkix/tests/Makefile.am:
+	* daemon/pkix/tests/unit-test-pkix-openssl.c: (removed)
+	* daemon/ssh/*: (removed)
+	* daemon/ssh/tests/*: (removed)
+	* configure.in: Removed lots of unused code resulting from refactoring.
+
+2009-01-22  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pkcs11/gkr-pkcs11-auth.c:
 	* daemon/pkcs11/gkr-pkcs11-auth.h:
 	* daemon/pkcs11/gkr-pkcs11-auth-ep.c:

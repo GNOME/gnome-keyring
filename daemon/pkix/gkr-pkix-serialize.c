@@ -8,6 +8,8 @@
 
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
+
+#include "egg/egg-symkey.h"
 #include "egg/egg-secure-memory.h"
 
 #include <glib/gi18n.h>
@@ -129,9 +131,9 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password, gsize *n_
 	*n_block = gcry_cipher_get_algo_blklen (GCRY_MD_SHA1);
 	g_return_val_if_fail (n_key && *n_block, NULL);
 		
-	if (!gkr_crypto_generate_symkey_pkcs12 (GCRY_CIPHER_3DES, GCRY_MD_SHA1, 
-	                                        password, salt, sizeof (salt),
-	                                        iterations, &key, &iv))
+	if (!egg_symkey_generate_pkcs12 (GCRY_CIPHER_3DES, GCRY_MD_SHA1, 
+	                                 password, -1, salt, sizeof (salt),
+	                                 iterations, &key, &iv))
 		g_return_val_if_reached (NULL);
 
 	/* Now write out the parameters */	

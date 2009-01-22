@@ -35,35 +35,6 @@ typedef guchar* (*GkrCryptoPadding) (guint n_modulus, const guchar* raw,
 
 void               gkr_crypto_setup                     (void);
 
-gboolean           gkr_crypto_hex_encode                (const guchar *data, gsize n_data, 
-                                                         gchar *encoded, gsize *n_encoded);
-
-gboolean           gkr_crypto_hex_decode                (const gchar *data, gsize n_data, 
-                                                         guchar *decoded, gsize *n_decoded);
-
-gboolean           gkr_crypto_generate_symkey_simple    (int cipher_algo, int hash_algo, 
-                                                         const gchar *password, const guchar *salt,
-                                                         gsize n_salt, int iterations, 
-                                                         guchar **key, guchar **iv);
-
-gboolean           gkr_crypto_generate_symkey_pkcs12    (int cipher_algo, int hash_algo, 
-                                                         const gchar *password, const guchar *salt, 
-                                                         gsize n_salt, int iterations, 
-                                                         guchar **key, guchar **iv);
-
-gboolean           gkr_crypto_generate_symkey_pbe       (int cipher_algo, int hash_algo, 
-                                                         const gchar *password, const guchar *salt, 
-                                                         gsize n_salt, int iterations, 
-                                                         guchar **key, guchar **iv);
-
-gboolean           gkr_crypto_generate_symkey_pbkdf2    (int cipher_algo, int hash_algo, 
-                                                         const gchar *password, const guchar *salt, 
-                                                         gsize n_salt, int iterations, 
-                                                         guchar **key, guchar **iv);
-
-gcry_sexp_t        gkr_crypto_sexp_get_child            (gcry_sexp_t sexp, ...) 
-                                                         G_GNUC_NULL_TERMINATED;
-
 gboolean           gkr_crypto_sexp_extract_mpi          (gcry_sexp_t sexp, gcry_mpi_t *mpi, ...)
                                                          G_GNUC_NULL_TERMINATED;
 

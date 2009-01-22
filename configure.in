@@ -500,8 +500,6 @@ daemon/pk/tests/Makefile
 daemon/pkcs11/Makefile
 daemon/pkix/Makefile
 daemon/pkix/tests/Makefile
-daemon/ssh/Makefile
-daemon/ssh/tests/Makefile
 daemon/ui/Makefile
 egg/Makefile
 egg/tests/Makefile

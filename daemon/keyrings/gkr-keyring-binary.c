@@ -28,7 +28,7 @@
 #include "gkr-keyring-item.h"
 
 #include "egg/egg-buffer.h"
-#include "common/gkr-crypto.h"
+#include "egg/egg-symkey.h"
 #include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring-private.h"
@@ -119,8 +119,8 @@ encrypt_buffer (EggBuffer *buffer,
 	g_assert (16 == gcry_cipher_get_algo_blklen (GCRY_CIPHER_AES128));
 	g_assert (16 == gcry_cipher_get_algo_keylen (GCRY_CIPHER_AES128));
 	
-	if (!gkr_crypto_generate_symkey_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
-	                                        password, salt, 8, iterations, &key, &iv))
+	if (!egg_symkey_generate_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
+	                                 password, -1, salt, 8, iterations, &key, &iv))
 		return FALSE;
 
 	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
@@ -168,8 +168,8 @@ decrypt_buffer (EggBuffer *buffer,
 	g_assert (16 == gcry_cipher_get_algo_blklen (GCRY_CIPHER_AES128));
 	g_assert (16 == gcry_cipher_get_algo_keylen (GCRY_CIPHER_AES128));
 	
-	if (!gkr_crypto_generate_symkey_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
-	                                        password, salt, 8, iterations, &key, &iv))
+	if (!egg_symkey_generate_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
+	                                 password, -1, salt, 8, iterations, &key, &iv))
 		return FALSE;
 	
 	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);

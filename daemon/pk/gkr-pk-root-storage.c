@@ -39,8 +39,7 @@
 
 #include "pkix/gkr-pkix-asn1.h"
 #include "pkix/gkr-pkix-der.h"
-#include "pkix/gkr-pkix-openssl.h"
-#include "pkix/gkr-pkix-pem.h"
+#include "pkix/gkr-pkix-parser.h"
 #include "pkix/gkr-pkix-types.h"
 
 #include "ui/gkr-ask-daemon.h"

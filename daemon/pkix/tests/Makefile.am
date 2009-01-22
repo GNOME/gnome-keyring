@@ -9,7 +9,6 @@ UNIT_AUTO = \
 	unit-test-gcrypt-setup.c \
 	unit-test-pkix-asn1.c \
 	unit-test-pkix-der.c \
-	unit-test-pkix-openssl.c \
 	unit-test-pkix-parser.c \
 	unit-test-pkix-serialize.c \
 	$(BUILT_SOURCES)

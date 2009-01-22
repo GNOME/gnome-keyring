@@ -27,6 +27,8 @@
 #include "gkr-pkix-der.h"
 
 #include "common/gkr-crypto.h"
+
+#include "egg/egg-symkey.h"
 #include "egg/egg-secure-memory.h"
 
 #include <glib.h>
@@ -1061,8 +1063,8 @@ gkr_pkix_der_read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode,
 	g_return_val_if_fail (n_key > 0, GKR_PKIX_FAILURE);
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
 		
-	if (!gkr_crypto_generate_symkey_pbe (cipher_algo, hash_algo, password, salt,
-	                                     n_salt, iterations, &key, n_block > 1 ? &iv : NULL))
+	if (!egg_symkey_generate_pbe (cipher_algo, hash_algo, password, -1, salt,
+	                              n_salt, iterations, &key, n_block > 1 ? &iv : NULL))
 		goto done;
 		
 	gcry = gcry_cipher_open (cih, cipher_algo, cipher_mode, 0);
@@ -1182,8 +1184,8 @@ setup_pkcs5_pbkdf2_params (const gchar *password, const guchar *data,
 	if (!salt)
 		goto done;
 				
-	if (!gkr_crypto_generate_symkey_pbkdf2 (cipher_algo, GCRY_MD_SHA1, password, 
-	                                        salt, n_salt, iterations, &key, NULL))
+	if (!egg_symkey_generate_pbkdf2 (cipher_algo, GCRY_MD_SHA1, password, -1, 
+	                                 salt, n_salt, iterations, &key, NULL))
 		goto done;
 
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
@@ -1350,9 +1352,9 @@ gkr_pkix_der_read_cipher_pkcs12_pbe (int cipher_algo, int cipher_mode, const gch
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
 	
 	/* Generate IV and key using salt read above */
-	if (!gkr_crypto_generate_symkey_pkcs12 (cipher_algo, GCRY_MD_SHA1, password,
-	                                        salt, n_salt, iterations, &key, 
-	                                        n_block > 1 ? &iv : NULL))
+	if (!egg_symkey_generate_pkcs12 (cipher_algo, GCRY_MD_SHA1, password, -1, 
+	                                 salt, n_salt, iterations, &key, 
+	                                 n_block > 1 ? &iv : NULL))
 		goto done;
 		
 	gcry = gcry_cipher_open (cih, cipher_algo, cipher_mode, 0);

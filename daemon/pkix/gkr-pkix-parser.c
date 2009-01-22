@@ -34,12 +34,12 @@
 #include "gkr-pkix-asn1.h"
 #include "gkr-pkix-der.h"
 #include "gkr-pkix-marshal.h"
-#include "gkr-pkix-openssl.h"
 #include "gkr-pkix-parser.h"
-#include "gkr-pkix-pem.h"
 
 #include "common/gkr-crypto.h"
 #include "common/gkr-location.h"
+
+#include "egg/egg-openssl.h"
 #include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring.h"
@@ -1379,8 +1379,8 @@ parse_encrypted_pem (GkrPkixParser *parser, GQuark location, gkrid digest,
 		n_decrypted = 0;
 		
 		/* Decrypt, this will result in garble if invalid password */	
-		res = gkr_pkix_openssl_decrypt_block (val, password, data, n_data, 
-		                                      &decrypted, &n_decrypted);
+		res = egg_openssl_decrypt_block (val, password, -1, data, n_data, 
+		                                 &decrypted, &n_decrypted);
 		if (!res)
 			return GKR_PKIX_FAILURE;
 			
@@ -1446,7 +1446,7 @@ gkr_pkix_parser_pem (GkrPkixParser *parser, GQuark loc, const guchar *data, gsiz
 	if (n_data == 0)
 		return GKR_PKIX_UNRECOGNIZED;
 	
-	found = gkr_pkix_pem_parse (data, n_data, handle_pem_data, &ctx);
+	found = egg_openssl_pem_parse (data, n_data, handle_pem_data, &ctx);
 	
 	if (found == 0)
 		return GKR_PKIX_UNRECOGNIZED;

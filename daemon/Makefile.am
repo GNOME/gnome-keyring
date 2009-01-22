@@ -1,16 +1,9 @@
-if WITH_SSH
-SSH_DIR = ssh
-else
-SSH_DIR =
-endif
-
 SUBDIRS = \
 	ui \
 	keyrings \
 	pkix \
 	pk \
 	pkcs11 \
-	$(SSH_DIR) \
 	data 
 
 bin_PROGRAMS= \
@@ -37,7 +30,6 @@ gnome_keyring_daemon_SOURCES = \
 	gkr-daemon-ops.c
 
 gnome_keyring_daemon_LDADD = \
-	$(top_builddir)/daemon/ssh/libgkr-ssh.la \
 	$(top_builddir)/daemon/pkcs11/libgkr-pkcs11.la \
 	$(top_builddir)/daemon/pk/libgkr-pk.la \
 	$(top_builddir)/daemon/keyrings/libgkr-keyrings.la \
