@@ -26,6 +26,9 @@
 
 #include "gp11/gp11.h"
 
+#include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11g.h"
+
 #include "egg/egg-secure-memory.h"
 
 #include <glib.h>
@@ -375,7 +378,23 @@ remove_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 static void
 lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 {
-	/* TODO: Implement */
+	GError *error = NULL;
+	g_assert (GP11_IS_SESSION (session));
+	g_assert (GP11_IS_OBJECT (pub));
+
+	gp11_object_set_session (priv, session);
+	gp11_object_set (priv, &error, CKA_GNOME_AUTH_CACHED, GP11_BOOLEAN, FALSE, GP11_INVALID);
+	if (error != NULL) {
+		g_warning ("couldn't clear cached authentication for key: %s", error->message);
+		g_clear_error (&error);
+	}
+	
+	gp11_object_set_session (pub, session);
+	gp11_object_set (pub, &error, CKA_GNOME_AUTH_CACHED, GP11_BOOLEAN, FALSE, GP11_INVALID);
+	if (error != NULL) {
+		g_warning ("couldn't clear cached authentication for key: %s", error->message);
+		g_clear_error (&error);
+	}
 }
 
 static void

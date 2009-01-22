@@ -1,3 +1,13 @@
+2009-01-22  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pkcs11/gkr-pkcs11-auth.c:
+	* daemon/pkcs11/gkr-pkcs11-auth.h:
+	* daemon/pkcs11/gkr-pkcs11-auth-ep.c:
+	* pkcs11/pkcs11g.h:
+	* pkcs11/ssh-agent/gck-ssh-agent-ops.c: Added ability to clear cached 
+	authentication for an object. In addition made 'ssh-add -D' clear any
+	cached authentication for SSH keys. Fixes bug #568525
+	
 2009-01-21  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/ui/gkr-ask-entry.c: (moved)

@@ -30,25 +30,33 @@
 
 #include <glib.h>
 
+#include <string.h>
+
 /*
  * All these function entry points operate outside of any threading locks. 
  * Any calls to parts of the daemon must be locked inside blocks of:
  * 
- * gkr_async_end_concurrent ();
+ * DAEMON_ENTER ();
  * 
  *     ...
  *     
- * gkr_async_begin_concurrent ();
+ * DAEMON_LEAVE ();
  */
 
 static CK_FUNCTION_LIST_PTR pkcs11_lower = NULL;
+
+#define DAEMON_ENTER() \
+	gkr_async_end_concurrent ()
+
+#define DAEMON_LEAVE() \
+	gkr_async_begin_concurrent ()
 
 /* --------------------------------------------------------------------------------------
  * HELPERS 
  */
 
 static GkrPkcs11AuthObject*
-lookup_specific_auth_object (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
+auth_object_for_context_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
 {
 	GkrPkcs11AuthObject *info = NULL;
 	CK_SESSION_INFO session_info;
@@ -136,6 +144,71 @@ lookup_specific_auth_object (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
 	return info;
 }
 
+static GkrPkcs11AuthObject*
+auth_object_for_cache (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
+{
+	GkrPkcs11AuthObject *info = NULL;
+	CK_SESSION_INFO session_info;
+	CK_ATTRIBUTE attrs[3];
+	CK_OBJECT_CLASS klass;
+	gchar *unique = NULL;
+	CK_BBOOL token;
+	CK_ULONG n_attrs;
+	CK_RV rv;
+	
+	attrs[0].type = CKA_GNOME_UNIQUE;
+	attrs[0].pValue = unique = NULL;
+	attrs[0].ulValueLen = 0;
+
+	attrs[1].type = CKA_CLASS;
+	attrs[1].pValue = &klass;
+	attrs[1].ulValueLen = sizeof (klass);
+
+	token = CK_FALSE;
+	attrs[2].type = CKA_TOKEN;
+	attrs[2].pValue = &token;
+	attrs[2].ulValueLen = sizeof (token);
+	
+	n_attrs = 3;
+	
+	/* Make sure we can get the session info */
+	rv = (pkcs11_lower->C_GetSessionInfo) (handle, &session_info);
+	if (rv != CKR_OK)
+		return NULL;
+
+	/* Get attribute sizes */
+	rv = (pkcs11_lower->C_GetAttributeValue) (handle, object, attrs, n_attrs);
+	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_TYPE_INVALID)
+		return NULL;
+	
+	/* Allocate memory for big attributes */
+	if (attrs[0].ulValueLen != (CK_ULONG)-1)
+		attrs[0].pValue = unique = g_malloc0 (attrs[0].ulValueLen + 1);
+	
+	/* Get actual attributes */
+	rv = (pkcs11_lower->C_GetAttributeValue) (handle, object, attrs, n_attrs);
+	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_TYPE_INVALID) {
+		g_free (unique);
+		return NULL;
+	}
+	
+	info = g_new0 (GkrPkcs11AuthObject, 1);
+	
+	if (attrs[1].ulValueLen != (CK_ULONG)-1) {
+		info->unique = unique;
+		unique = NULL;
+	}
+
+	info->token = token;
+	info->klass = klass;
+	info->handle = object;
+	info->slot = session_info.slotID;
+
+	g_free (unique);
+	
+	return info;
+}
+
 static CK_RV 
 perform_set_user_pin (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG n_old_pin,
                       CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin, gboolean also_login)
@@ -150,13 +223,13 @@ perform_set_user_pin (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULON
 	    (pkcs11_lower->C_GetTokenInfo) (session_info.slotID, &token_info) == CKR_OK && 
 	    !(token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH)) { 
 
-		gkr_async_end_concurrent ();
+		DAEMON_ENTER ();
 		
 			if (!(token_info.flags & CKF_USER_PIN_INITIALIZED))
 				auth = gkr_pkcs11_auth_init_user_prompt (handle, &token_info, &new_pin, &n_new_pin);
 			/* TODO: Prompt for other 'change password' case */
 
-		gkr_async_begin_concurrent ();
+		DAEMON_LEAVE ();
 	}
 
 	rv = (pkcs11_lower->C_SetPIN) (handle, old_pin, n_old_pin, new_pin, n_new_pin);
@@ -168,13 +241,13 @@ perform_set_user_pin (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULON
 	}
 	
 	if (auth) {
-		gkr_async_end_concurrent ();
+		DAEMON_ENTER ();
 		
 			if (!(token_info.flags & CKF_USER_PIN_INITIALIZED))
 				gkr_pkcs11_auth_init_user_done (handle, &token_info, &new_pin, &n_new_pin, rv);
 			/* TODO: Done for other case */
 			
-		gkr_async_begin_concurrent ();
+		DAEMON_LEAVE ();
 	}
 	
 	if (login_rv != CKR_OK)
@@ -221,12 +294,12 @@ auth_C_Initialize (CK_VOID_PTR init_args)
 	rv = pkcs11_lower->C_Initialize (init_args);
 	
 	if (rv == CKR_OK) {
-		gkr_async_end_concurrent ();
+		DAEMON_ENTER ();
 	
 			/* Let our auth caches/storage know we're initializing */
 			gkr_pkcs11_auth_initialized ();
 		
-		gkr_async_begin_concurrent ();
+		DAEMON_LEAVE ();
 	}
 	
 	return rv;
@@ -240,12 +313,12 @@ auth_C_Finalize (CK_VOID_PTR reserved)
 	rv = (pkcs11_lower->C_Finalize) (reserved);
 	
 	if (rv == CKR_OK) {
-		gkr_async_end_concurrent ();
+		DAEMON_ENTER ();
 	
 			/* Let our auth caches/storage know we're initializing */
 			gkr_pkcs11_auth_finalized ();
 		
-		gkr_async_begin_concurrent ();
+		DAEMON_LEAVE ();
 	}
 
 	return rv;
@@ -322,12 +395,12 @@ auth_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data,
 	rv = (pkcs11_lower->C_OpenSession) (id, flags, user_data, callback, handle);
 	if (rv == CKR_OK) {
 		if ((pkcs11_lower->C_GetSessionInfo) (*handle, &session_info) == CKR_OK) {
-			gkr_async_end_concurrent ();
+			DAEMON_ENTER ();
 
 				/* Track this session in our auth layer */
 				gkr_pkcs11_auth_session_opened (*handle, &session_info);
 
-			gkr_async_begin_concurrent ();
+			DAEMON_LEAVE ();
 		}
 	}
 	
@@ -346,12 +419,12 @@ auth_C_CloseSession (CK_SESSION_HANDLE handle)
 	
 	rv = (pkcs11_lower->C_CloseSession) (handle);
 	if (rv == CKR_OK && have_session_info) {
-		gkr_async_end_concurrent ();
+		DAEMON_ENTER ();
 	
 			/* Track this session closure in our auth cache/store */
 			gkr_pkcs11_auth_session_closed (handle, &session_info);
 		
-		gkr_async_begin_concurrent ();
+		DAEMON_LEAVE ();
 	}
 	
 	return rv; 
@@ -363,12 +436,12 @@ auth_C_CloseAllSessions (CK_SLOT_ID id)
 	CK_RV rv = (pkcs11_lower->C_CloseAllSessions) (id);
 	
 	if (rv == CKR_OK) {
-		gkr_async_end_concurrent ();
+		DAEMON_ENTER ();
 	
 			/* Track this session closure in our auth cache/store */
 			gkr_pkcs11_auth_session_closed_all (id);
 		
-		gkr_async_begin_concurrent ();
+		DAEMON_LEAVE ();
 	}
 	
 	return rv; 
@@ -441,7 +514,7 @@ auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
 
 		/* 
 		 * Try and initialize the token login, gnome-keyring modules allow 
-		 * this to be called on CKU_USER if no user pin has yet been set.
+		 * C_SetPIN to be called on with a NULL if no user pin has yet been set.
 		 */
 		
 		if (user_type == CKU_USER) 
@@ -467,7 +540,7 @@ auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
 	/* Loop until logged in or user cancels */
 	while (rv == CKR_PIN_INCORRECT) {
 		
-		gkr_async_end_concurrent ();
+		DAEMON_ENTER ();
 			switch (user_type) {
 			case CKU_CONTEXT_SPECIFIC:
 				auth = gkr_pkcs11_auth_login_specific_prompt (handle, &session_info, &pin, &pin_len);
@@ -478,7 +551,7 @@ auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
 			default:
 				break;
 			};
-		gkr_async_begin_concurrent ();
+		DAEMON_LEAVE ();
 		
 		if (!auth) {
 			rv = CKR_FUNCTION_CANCELED;
@@ -488,7 +561,7 @@ auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
 		/* Try the login again */
 		rv = (pkcs11_lower->C_Login) (handle, user_type, pin, pin_len);	
 	
-		gkr_async_end_concurrent ();
+		DAEMON_ENTER ();
 			switch (user_type) {
 			case CKU_CONTEXT_SPECIFIC:
 				gkr_pkcs11_auth_login_specific_done (handle, &session_info, &pin, &pin_len, rv);
@@ -499,7 +572,7 @@ auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
 			default:
 				break;
 			};
-		gkr_async_begin_concurrent ();
+		DAEMON_LEAVE ();
 	}
 
 	return rv;
@@ -515,7 +588,14 @@ static CK_RV
 auth_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
                      CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
-	/* TODO: Need to implement CKA_GNOME_AUTH_CACHE attributes. */
+	CK_ULONG i;
+
+	/* Can't set auth cached when creating */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED)
+			return CKR_TEMPLATE_INCONSISTENT;
+	}
+	
 	return (pkcs11_lower->C_CreateObject) (handle, template, count, new_object);
 }
 
@@ -524,7 +604,14 @@ auth_C_CopyObject (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                    CK_ATTRIBUTE_PTR template, CK_ULONG count,
                    CK_OBJECT_HANDLE_PTR new_object)
 {
-	/* TODO: Need to implement CKA_GNOME_AUTH_CACHE attributes. */
+	CK_ULONG i;
+	
+	/* Can't set auth cached when copying */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED)
+			return CKR_TEMPLATE_INCONSISTENT;
+	}
+
 	return (pkcs11_lower->C_CopyObject) (handle, object, template, count, new_object);
 }
 
@@ -545,38 +632,298 @@ static CK_RV
 auth_C_GetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                           CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
-	/* TODO: Need to implement CKA_GNOME_AUTH_CACHE attributes. */
-	return (pkcs11_lower->C_GetAttributeValue) (handle, object, template, count);
+	gboolean have_auth = FALSE;
+	GkrPkcs11AuthObject *info;
+	CK_ATTRIBUTE_PTR normal;
+	CK_ULONG n_normal;
+	CK_RV rv = CKR_OK;
+	CK_BBOOL cached;
+	CK_ULONG i, n;
+	
+	/* Are there auth custom attributes? */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED)
+			have_auth = TRUE;
+	}
+	
+	/* No custom attributes, just pass through */
+	if (!have_auth) 
+		return (pkcs11_lower->C_GetAttributeValue) (handle, object, template, count);
+		
+	normal = g_new0 (CK_ATTRIBUTE, count);
+	n_normal = 0;
+	
+	/* Shallow copy all non-auth attributes into our own buffer */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type != CKA_GNOME_AUTH_CACHED) {
+			memcpy (normal + n_normal, template + i, sizeof (CK_ATTRIBUTE));
+			++n_normal;
+		}
+	}
+	
+	/* Call the lower level with our copy */
+	if (n_normal > 0) {
+		rv = (pkcs11_lower->C_GetAttributeValue) (handle, object, normal, n_normal);
+	
+		/* Actual error codes from lower level */
+		if (rv != CKR_BUFFER_TOO_SMALL && rv != CKR_ATTRIBUTE_SENSITIVE && 
+		    rv != CKR_ATTRIBUTE_TYPE_INVALID && rv != CKR_OK) {
+			g_free (normal);
+			return rv;
+		}
+	}
+	
+	/* Lookup cache information about the object */
+	cached = FALSE;
+	info = auth_object_for_cache (handle, object);
+	if (info != NULL) {
+		DAEMON_ENTER ();
+		{
+			gkr_pkcs11_auth_cached_lookup (info, &cached); 
+			gkr_pkcs11_auth_free_object (info);
+		}
+		DAEMON_LEAVE ();
+	}
+	
+	/* Fill in all the attributes appropriately */
+	for (i = 0, n = 0; i < count; ++i, ++n) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED) {
+			
+			if (template[i].pValue && template[i].ulValueLen < 1) {
+				rv = CKR_BUFFER_TOO_SMALL;
+				template[i].ulValueLen = 1;
+			} else if (!template[i].pValue) {
+				template[i].ulValueLen = 1;
+			} else {
+				*((CK_BBOOL*)template[i].pValue) = cached;
+				template[i].ulValueLen = 1;
+			}
+			
+		/* A normal attribute */
+		} else {
+			/* This should never happen with a well behaved module */
+			if (n >= n_normal || template[i].type != normal[n].type) {
+				g_warning ("lower level PKCS#11 module changed attribute type");
+				rv = CKR_GENERAL_ERROR;
+				break;
+			}
+
+			/* Remember we just made a shallow copy, so this is enough */
+			memcpy (template + i, normal + n, sizeof (CK_ATTRIBUTE));
+		}
+	}
+	
+	g_free (normal);
+	return rv;
 }
 
 static CK_RV
 auth_C_SetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                           CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
-	/* TODO: Need to implement CKA_GNOME_AUTH_CACHE attributes. */
-	return (pkcs11_lower->C_SetAttributeValue) (handle, object, template, count);
+	gboolean have_auth = FALSE;
+	GkrPkcs11AuthObject *info;
+	CK_ATTRIBUTE_PTR normal;
+	CK_ULONG n_normal;
+	CK_RV rv = CKR_OK;
+	CK_BBOOL cached;
+	CK_ULONG i;
+	
+	/* Are there auth custom attributes, also validate. */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED) {
+			have_auth = TRUE;
+			if (template[i].ulValueLen != sizeof (CK_BBOOL))
+				return CKR_ATTRIBUTE_VALUE_INVALID;
+			cached = *((CK_BBOOL*)template[i].pValue);
+			if (cached != CK_FALSE)
+				return CKR_ATTRIBUTE_VALUE_INVALID;
+		}
+	}
+
+	/* No custom attributes, just pass through */
+	if (!have_auth) 
+		return (pkcs11_lower->C_SetAttributeValue) (handle, object, template, count);
+	
+	normal = g_new0 (CK_ATTRIBUTE, count);
+	n_normal = 0;
+	
+	/* Shallow copy all non-auth attributes into our own buffer */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type != CKA_GNOME_AUTH_CACHED) {
+			memcpy (normal + n_normal, template + i, sizeof (CK_ATTRIBUTE));
+			++n_normal;
+		}
+	}
+	
+	/* Call the lower level with our copy */
+	if (n_normal > 0) {
+		rv = (pkcs11_lower->C_SetAttributeValue) (handle, object, normal, n_normal);
+		
+		/* Lower level failed, don't commit ours */
+		if (rv != CKR_OK) {
+			g_free (normal);
+			return rv;
+		}
+	}
+	
+	/* Store the custom attributes appropriately */
+	info = auth_object_for_cache (handle, object);
+	if (info != NULL) {
+		DAEMON_ENTER ();
+		{
+			g_assert (cached == CK_FALSE);
+			gkr_pkcs11_auth_cached_clear (info);
+		}
+		DAEMON_LEAVE ();
+	}
+	
+	g_free (normal);
+	return rv;
 }
 
 static CK_RV
-auth_C_FindObjectsInit (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
-                            CK_ULONG count)
+auth_C_FindObjectsInit (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
-	/* TODO: Need to implement CKA_GNOME_AUTH_CACHE attributes. */
-	return (pkcs11_lower->C_FindObjectsInit) (handle, template, count);
+	CK_SESSION_INFO session_info;
+	gboolean have_auth = FALSE;
+	CK_ATTRIBUTE_PTR normal;
+	CK_ULONG n_normal;
+	CK_BBOOL cached;
+	CK_ULONG i;
+	CK_RV rv;
+	
+	/* Are there auth custom attributes, also validate. */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED) {
+			if (template[i].ulValueLen == sizeof (CK_BBOOL)) {
+				cached = *((CK_BBOOL*)template[i].pValue); 
+				have_auth = TRUE;
+				break;
+			}
+		}
+	}
+
+	/* No custom attributes, just pass through */
+	if (!have_auth) 
+		return (pkcs11_lower->C_FindObjectsInit) (handle, template, count);
+
+	normal = g_new0 (CK_ATTRIBUTE, count);
+	n_normal = 0;
+	
+	/* Shallow copy all non-auth attributes into our own buffer */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type != CKA_GNOME_AUTH_CACHED) {
+			memcpy (normal + n_normal, template + i, sizeof (CK_ATTRIBUTE));
+			++n_normal;
+		}
+	}
+
+	rv = (pkcs11_lower->C_FindObjectsInit) (handle, normal, n_normal);
+	
+	if (rv != CKR_OK) {
+		g_free (normal);
+		return rv;
+	}
+	
+	
+	if ((pkcs11_lower->C_GetSessionInfo) (handle, &session_info) == CKR_OK) {
+		DAEMON_ENTER ();	
+		{
+			/* Store away our custom attributes */
+			gkr_pkcs11_auth_cached_set_filter (handle, &session_info, &cached);
+		}
+		DAEMON_LEAVE ();
+	}
+	
+	return rv;
 }
 
 static CK_RV
 auth_C_FindObjects (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE_PTR objects,
                     CK_ULONG max_count, CK_ULONG_PTR count)
 {
-	/* TODO: Need to implement CKA_GNOME_AUTH_CACHE attributes. */
-	return (pkcs11_lower->C_FindObjects) (handle, objects, max_count, count);
+	gboolean have_auth = FALSE;
+	CK_SESSION_INFO session_info;
+	GkrPkcs11AuthObject *info;
+	CK_OBJECT_HANDLE_PTR normal;
+	CK_ULONG n_normal, i;
+	CK_BBOOL is_cached;
+	CK_BBOOL cached;
+	CK_RV rv;
+
+	if ((pkcs11_lower->C_GetSessionInfo) (handle, &session_info) == CKR_OK) {
+		DAEMON_ENTER ();	
+		{
+			have_auth = gkr_pkcs11_auth_cached_get_filter (handle, &session_info, &cached);
+		}
+		DAEMON_LEAVE ();
+	}
+		
+	/* No custom attributes, just pass through */
+	if (!have_auth)
+		return (pkcs11_lower->C_FindObjects) (handle, objects, max_count, count);
+
+	if (count == NULL)
+		return CKR_ARGUMENTS_BAD;
+	if (max_count == 0)
+		return CKR_OK;
+
+	normal = g_new0 (CK_OBJECT_HANDLE, max_count);
+		
+	*count = 0;
+	while (*count < max_count) {
+			
+		/* Get a block of objects from lower module, as many as will fit  */
+		rv = (pkcs11_lower->C_FindObjects) (handle, normal, max_count - *count, &n_normal);
+		if (rv != CKR_OK)
+			break;
+		if (n_normal == 0)
+			break;
+			
+		/* Filter those objects */
+		for (i = 0; i < n_normal; ++i) {
+
+			is_cached = FALSE;
+			info = auth_object_for_cache (handle, normal[i]);
+			if (info != NULL) {
+				DAEMON_ENTER ();
+				{
+					gkr_pkcs11_auth_cached_lookup (info, &is_cached); 
+					gkr_pkcs11_auth_free_object (info);
+				}			
+				DAEMON_LEAVE ();
+			}
+
+			/* Compare what we found */
+			if (is_cached != cached)
+				continue;
+			
+			/* Add it to the output */
+			g_assert (*count < max_count);
+			objects[*count] = normal[i];
+			++(*count);
+		}
+	}
+		
+	g_free (normal);
+	return rv;
 }
 
 static CK_RV
 auth_C_FindObjectsFinal (CK_SESSION_HANDLE handle)
 {
-	/* TODO: Need to implement CKA_GNOME_AUTH_CACHE attributes. */
+	CK_SESSION_INFO session_info;
+	
+	if ((pkcs11_lower->C_GetSessionInfo) (handle, &session_info) == CKR_OK) {
+		DAEMON_ENTER ();	
+		{
+			/* Clear out custom attribute state */
+			gkr_pkcs11_auth_cached_set_filter (handle, &session_info, NULL);
+		}
+		DAEMON_LEAVE ();
+	}
+	
 	return (pkcs11_lower->C_FindObjectsFinal) (handle);
 }
 
@@ -589,13 +936,13 @@ auth_C_EncryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	
 	rv = (pkcs11_lower->C_EncryptInit) (handle, mechanism, key);
 	if (rv == CKR_OK) {
-		object = lookup_specific_auth_object (handle, key);
+		object = auth_object_for_context_specific (handle, key);
 		if (object != NULL) {
-			gkr_async_end_concurrent ();
+			DAEMON_ENTER ();
 					
 				gkr_pkcs11_auth_login_specific_prepare (handle, object);
 					
-			gkr_async_begin_concurrent ();
+			DAEMON_LEAVE ();
 		}
 	}
 	
@@ -643,13 +990,13 @@ auth_C_DecryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 
 	rv = (pkcs11_lower->C_DecryptInit) (handle, mechanism, key);
 	if (rv == CKR_OK) {
-		object = lookup_specific_auth_object (handle, key);
+		object = auth_object_for_context_specific (handle, key);
 		if (object != NULL) {
-			gkr_async_end_concurrent ();
+			DAEMON_ENTER ();
 					
 				gkr_pkcs11_auth_login_specific_prepare (handle, object);
 					
-			gkr_async_begin_concurrent ();
+			DAEMON_LEAVE ();
 		}
 	}
 	
@@ -728,13 +1075,13 @@ auth_C_SignInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 
 	rv = (pkcs11_lower->C_SignInit) (handle, mechanism, key);
 	if (rv == CKR_OK) {
-		object = lookup_specific_auth_object (handle, key);
+		object = auth_object_for_context_specific (handle, key);
 		if (object != NULL) {
-			gkr_async_end_concurrent ();
+			DAEMON_ENTER ();
 					
 				gkr_pkcs11_auth_login_specific_prepare (handle, object);
 					
-			gkr_async_begin_concurrent ();
+			DAEMON_LEAVE ();
 		}
 	}
 	
@@ -780,13 +1127,13 @@ auth_C_SignRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 
 	rv = (pkcs11_lower->C_SignRecoverInit) (handle, mechanism, key);
 	if (rv == CKR_OK) {
-		object = lookup_specific_auth_object (handle, key);
+		object = auth_object_for_context_specific (handle, key);
 		if (object != NULL) {
-			gkr_async_end_concurrent ();
+			DAEMON_ENTER ();
 					
 				gkr_pkcs11_auth_login_specific_prepare (handle, object);
 					
-			gkr_async_begin_concurrent ();
+			DAEMON_LEAVE ();
 		}
 	}
 	
@@ -814,13 +1161,13 @@ auth_C_VerifyInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 
 	rv = (pkcs11_lower->C_VerifyInit) (handle, mechanism, key);
 	if (rv == CKR_OK) {
-		object = lookup_specific_auth_object (handle, key);
+		object = auth_object_for_context_specific (handle, key);
 		if (object != NULL) {
-			gkr_async_end_concurrent ();
+			DAEMON_ENTER ();
 					
 				gkr_pkcs11_auth_login_specific_prepare (handle, object);
 					
-			gkr_async_begin_concurrent ();
+			DAEMON_LEAVE ();
 		}
 	}
 	
@@ -866,13 +1213,13 @@ auth_C_VerifyRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 
 	rv = (pkcs11_lower->C_VerifyRecoverInit) (handle, mechanism, key);
 	if (rv == CKR_OK) {
-		object = lookup_specific_auth_object (handle, key);
+		object = auth_object_for_context_specific (handle, key);
 		if (object != NULL) {
-			gkr_async_end_concurrent ();
+			DAEMON_ENTER ();
 					
 				gkr_pkcs11_auth_login_specific_prepare (handle, object);
 					
-			gkr_async_begin_concurrent ();
+			DAEMON_LEAVE ();
 		}
 	}
 
@@ -947,6 +1294,14 @@ auth_C_GenerateKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                     CK_ATTRIBUTE_PTR template, CK_ULONG count, 
                     CK_OBJECT_HANDLE_PTR key)
 {
+	CK_ULONG i;
+
+	/* Can't set auth cached when creating */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED)
+			return CKR_TEMPLATE_INCONSISTENT;
+	}
+	
 	return (pkcs11_lower->C_GenerateKey) (handle, mechanism, template, count, key);
 }
 
@@ -956,6 +1311,19 @@ auth_C_GenerateKeyPair (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                         CK_ATTRIBUTE_PTR priv_template, CK_ULONG priv_count,
                         CK_OBJECT_HANDLE_PTR pub_key, CK_OBJECT_HANDLE_PTR priv_key)
 {
+	CK_ULONG i;
+
+	/* Can't set auth cached when creating */
+	for (i = 0; i < pub_count; ++i) {
+		if (pub_template[i].type == CKA_GNOME_AUTH_CACHED)
+			return CKR_TEMPLATE_INCONSISTENT;
+	}
+
+	for (i = 0; i < priv_count; ++i) {
+		if (priv_template[i].type == CKA_GNOME_AUTH_CACHED)
+			return CKR_TEMPLATE_INCONSISTENT;
+	}
+
 	return (pkcs11_lower->C_GenerateKeyPair) (handle, mechanism, pub_template, pub_count, priv_template, priv_count, pub_key, priv_key);
 }
 
@@ -973,6 +1341,14 @@ auth_C_UnwrapKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                   CK_ULONG wrapped_key_len, CK_ATTRIBUTE_PTR template,
                   CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
+	CK_ULONG i;
+
+	/* Can't set auth cached when creating */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED)
+			return CKR_TEMPLATE_INCONSISTENT;
+	}
+
 	return (pkcs11_lower->C_UnwrapKey) (handle, mechanism, unwrapping_key, wrapped_key, wrapped_key_len, template, count, key);
 }
 
@@ -981,6 +1357,14 @@ auth_C_DeriveKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                   CK_OBJECT_HANDLE base_key, CK_ATTRIBUTE_PTR template,
                   CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
+	CK_ULONG i;
+
+	/* Can't set auth cached when creating */
+	for (i = 0; i < count; ++i) {
+		if (template[i].type == CKA_GNOME_AUTH_CACHED)
+			return CKR_TEMPLATE_INCONSISTENT;
+	}
+
 	return (pkcs11_lower->C_DeriveKey) (handle, mechanism, base_key, template, count, key);
 }
 

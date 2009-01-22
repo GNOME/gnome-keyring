@@ -75,6 +75,19 @@ void                            gkr_pkcs11_auth_init_user_done           (CK_SES
                                                                           CK_ULONG *pin_len,
                                                                           CK_RV rv);
 
+void                            gkr_pkcs11_auth_cached_lookup            (GkrPkcs11AuthObject *object,
+                                                                          CK_BBOOL *cached);
+
+void                            gkr_pkcs11_auth_cached_clear             (GkrPkcs11AuthObject *object);
+
+void                            gkr_pkcs11_auth_cached_set_filter        (CK_SESSION_HANDLE handle,
+                                                                          CK_SESSION_INFO *info,
+                                                                          CK_BBOOL *cached);
+
+gboolean                        gkr_pkcs11_auth_cached_get_filter        (CK_SESSION_HANDLE handle,
+                                                                          CK_SESSION_INFO *info,
+                                                                          CK_BBOOL *cached);
+
 void                            gkr_pkcs11_auth_initialized              (void);
 
 void                            gkr_pkcs11_auth_session_opened           (CK_SESSION_HANDLE handle,

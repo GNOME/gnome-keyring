@@ -79,6 +79,8 @@
 #define CKV_GNOME_AUTH_CACHE_SESSION                0x40000000
 #define CKV_GNOME_AUTH_CACHE_UNLIMITED              0x80000000
 
+#define CKA_GNOME_AUTH_CACHED                       (CKA_GNOME + 301)
+
 /* -------------------------------------------------------------------
  * OBJECT UNIQUE IDENTIFIER
  */
