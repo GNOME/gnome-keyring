@@ -1,3 +1,7 @@
+2009-01-23  Jorge Gonzalez  <jorgegonz@svn.gnome.org>
+
+	* es.po: Updated Spanish translation.
+
 2009-01-22  Stef Walter  <stef@memberwebs.com>
 
 	* POTFILES.in: Removed daemon/ssh/gkr-ssh-storage.c
