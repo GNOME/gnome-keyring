@@ -553,7 +553,7 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 		if (!egg_symkey_read_cipher (scheme, password, -1, params, n_params, &cih))
 			break;
 			
-		crypted = egg_asn1_read_value (asn, "encryptedData", &n_crypted, egg_secure_realloc);
+		crypted = egg_asn1_read_value (asn, "encryptedData", &n_crypted, (EggAllocator)egg_secure_realloc);
 		if (!crypted)
 			break;
 	
@@ -892,7 +892,7 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 		}
 			
 		crypted = egg_asn1_read_value (asn, "encryptedContentInfo.encryptedContent", 
-		                               &n_crypted, egg_secure_realloc);
+		                               &n_crypted, (EggAllocator)egg_secure_realloc);
 		if (!crypted)
 			goto done;
 	

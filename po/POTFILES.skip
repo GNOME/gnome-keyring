@@ -1,2 +1,3 @@
 daemon/gnome-keyring-daemon.desktop.in
 gcr/gcr-import-dialog.ui
+gcr/gcr-certificate-basics-widget.ui

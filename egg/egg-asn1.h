@@ -28,7 +28,7 @@
 
 #include <libtasn1.h>
 
-typedef void* (*EggAllocator) (void* p, unsigned long len);
+typedef void* (*EggAllocator) (void* p, gsize);
 
 ASN1_TYPE          egg_asn1_get_pk_asn1type               (void);
 
@@ -56,6 +56,8 @@ gboolean           egg_asn1_read_uint                     (ASN1_TYPE asn, const 
 
 gboolean           egg_asn1_read_time                     (ASN1_TYPE asn, const gchar *part, time_t *val);
 
+gboolean           egg_asn1_read_date                     (ASN1_TYPE asn, const gchar *part, GDate *date);
+
 const guchar*      egg_asn1_read_content                  (ASN1_TYPE asn, const guchar *data, gsize n_data, 
                                                            const gchar *part, gsize *n_content);
 
@@ -64,16 +66,30 @@ const guchar*      egg_asn1_read_element                  (ASN1_TYPE asn, const 
                                                                  
 gboolean           egg_asn1_write_uint                    (ASN1_TYPE asn, const gchar *part, guint val);
 
-gchar*             egg_asn1_read_dn                       (ASN1_TYPE asn, const gchar *part);
-
-gchar*             egg_asn1_read_dn_part                  (ASN1_TYPE asn, const gchar *part, const gchar *match);
-
 gint               egg_asn1_element_length                (const guchar *data, gsize n_data);
 
 const guchar*      egg_asn1_element_content               (const guchar *data, gsize n_data, gsize *n_content);
 
-glong              egg_asn1_parse_utc_time                (const gchar* value);
+gchar*             egg_asn1_read_dn                       (ASN1_TYPE asn, const gchar *part);
 
-glong              egg_asn1_parse_general_time            (const gchar* value);
+gchar*             egg_asn1_read_dn_part                  (ASN1_TYPE asn, const gchar *part, const gchar *match);
+
+
+glong              egg_asn1_time_parse_utc                (const gchar* value);
+
+glong              egg_asn1_time_parse_general            (const gchar* value);
+
+
+typedef void       (*EggAsn1DnCallback)                   (guint index, GQuark oid, const guchar *value,
+                                                           gsize n_value, gpointer user_data);
+
+gboolean           egg_asn1_dn_parse                      (ASN1_TYPE asn, const gchar *part, 
+                                                           EggAsn1DnCallback callback, gpointer user_data);
+
+const gchar*       egg_asn1_dn_oid_attr                   (GQuark oid);
+
+const gchar*       egg_asn1_dn_oid_desc                   (GQuark oid);
+
+gchar*             egg_asn1_dn_print_value                (GQuark oid, const guchar *value, gsize n_value);
 
 #endif /*EGG_ASN1_H_*/

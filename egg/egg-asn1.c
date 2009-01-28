@@ -29,6 +29,8 @@
 
 #include <string.h>
 
+#include <glib/gi18n-lib.h>
+
 /* 
  * HACK: asn1Parser defines these arrays as extern const, which gives 
  * gcc a fit. So we def it out. 
@@ -439,25 +441,27 @@ time_t timegm(struct tm *t)
 }
 #endif //NOT_HAVE_TIMEGM
 
-time_t
-egg_asn1_parse_utc_time (const gchar *time)
+static gboolean
+parse_utc_time (const gchar *time, struct tm* when, gint *offset)
 {
-	struct tm when;
 	guint n_time;
-	time_t result;
 	const char *p, *e;
 	int year;
 
-	g_assert (time);	
+	g_assert (when);
+	g_assert (time);
+	g_assert (offset);
+	
 	n_time = strlen (time);
 	
 	/* YYMMDDhhmmss.ffff Z | +0000 */
 	if (n_time < 6 || n_time >= 28) 
-		return -1;
+		return FALSE;
 	
 	/* Reset everything to default legal values */
-	memset (&when, 0, sizeof (when));
-	when.tm_mday = 1;
+	memset (when, 0, sizeof (*when));
+	*offset = 0;
+	when->tm_mday = 1;
 	
 	/* Select the digits part of it */
 	p = time;
@@ -471,48 +475,41 @@ egg_asn1_parse_utc_time (const gchar *time)
 		 * 40 years in the past is our century. 60 years
 		 * in the future is the next century. 
 		 */
-		when.tm_year = two_to_four_digit_year (year) - 1900;
+		when->tm_year = two_to_four_digit_year (year) - 1900;
 	}
 	if (p + 2 <= e) {
-		when.tm_mon = atoin (p, 2) - 1;
+		when->tm_mon = atoin (p, 2) - 1;
 		p += 2;
 	}
 	if (p + 2 <= e) {
-		when.tm_mday = atoin (p, 2);
+		when->tm_mday = atoin (p, 2);
 		p += 2;
 	}
 	if (p + 2 <= e) {
-		when.tm_hour = atoin (p, 2);
+		when->tm_hour = atoin (p, 2);
 		p += 2;
 	}
 	if (p + 2 <= e) {
-		when.tm_min = atoin (p, 2);
+		when->tm_min = atoin (p, 2);
 		p += 2;
 	}
 	if (p + 2 <= e) {
-		when.tm_sec = atoin (p, 2);
+		when->tm_sec = atoin (p, 2);
 		p += 2;
 	}
 
-	if (when.tm_year < 0 || when.tm_year > 9999 ||
-	    when.tm_mon < 0 || when.tm_mon > 11 ||
-	    when.tm_mday < 1 || when.tm_mday > 31 ||
-	    when.tm_hour < 0 || when.tm_hour > 23 ||
-	    when.tm_min < 0 || when.tm_min > 59 ||
-	    when.tm_sec < 0 || when.tm_sec > 59)
-	    	return -1;
+	if (when->tm_year < 0 || when->tm_year > 9999 ||
+	    when->tm_mon < 0 || when->tm_mon > 11 ||
+	    when->tm_mday < 1 || when->tm_mday > 31 ||
+	    when->tm_hour < 0 || when->tm_hour > 23 ||
+	    when->tm_min < 0 || when->tm_min > 59 ||
+	    when->tm_sec < 0 || when->tm_sec > 59)
+	    	return FALSE;
 	    	
 	/* Make sure all that got parsed */
 	if (p != e)
-		return -1;
+		return FALSE;
 
-	/* In order to work with 32 bit time_t. */
-  	if (sizeof (time_t) <= 4 && when.tm_year >= 2038)
-		return (time_t) 2145914603;  /* 2037-12-31 23:23:23 */
-		
-	/* Covnvert to seconds since epoch */
-	result = timegm (&when);
-	
 	/* Now the remaining optional stuff */
 	e = time + n_time;
 		
@@ -543,81 +540,113 @@ egg_asn1_parse_utc_time (const gchar *time)
 
 		/* Use TZ offset */		
 		if (neg)
-			result -= off;
+			*offset = 0 - off;
 		else
-			result += off;
+			*offset = off;
 	}
 
 	/* Make sure everything got parsed */	
 	if (p != e)
-		return -1;
+		return FALSE;
 
+	return TRUE;
+}
+
+static time_t
+when_to_time (struct tm *when, gint offset)
+{
+	time_t result;
+	
+	g_assert (when);
+	
+	/* In order to work with 32 bit time_t. */
+  	if (sizeof (time_t) <= 4 && when->tm_year >= 2038)
+		return (time_t) 2145914603;  /* 2037-12-31 23:23:23 */
+	
+	/* Convert to seconds since epoch */
+	result = timegm (when);
+	if (result >= 0) 
+		result += offset;
+	
 	return result;
 }
 
 time_t
-egg_asn1_parse_general_time (const gchar *time)
+egg_asn1_time_parse_utc (const gchar *time)
 {
 	struct tm when;
-	guint n_time;
-	time_t result;
-	const char *p, *e;
+	gint offset;
+	
+	g_return_val_if_fail (time, -1);
+	
+	if (!parse_utc_time (time, &when, &offset))
+		return -1;
+	
+	return when_to_time (&when, offset);
+}
 
-	g_assert (time);	
+static gboolean
+parse_general_time (const gchar *time, struct tm* when, gint *offset)
+{
+	const char *p, *e;
+	guint n_time;
+
+	g_assert (time);
+	g_assert (when);
+	g_assert (offset);
+	
 	n_time = strlen (time);
 	
 	/* YYYYMMDDhhmmss.ffff Z | +0000 */
 	if (n_time < 8 || n_time >= 30) 
-		return -1;
+		return FALSE;
 	
 	/* Reset everything to default legal values */
-	memset (&when, 0, sizeof (when));
-	when.tm_mday = 1;
+	memset (when, 0, sizeof (*when));
+	*offset = 0;
+	when->tm_mday = 1;
 	
 	/* Select the digits part of it */
 	p = time;
 	for (e = p; *e >= '0' && *e <= '9'; ++e);
 	
 	if (p + 4 <= e) {
-		when.tm_year = atoin (p, 4) - 1900;
+		when->tm_year = atoin (p, 4) - 1900;
 		p += 4;
 	}
 	if (p + 2 <= e) {
-		when.tm_mon = atoin (p, 2) - 1;
+		when->tm_mon = atoin (p, 2) - 1;
 		p += 2;
 	}
 	if (p + 2 <= e) {
-		when.tm_mday = atoin (p, 2);
+		when->tm_mday = atoin (p, 2);
 		p += 2;
 	}
 	if (p + 2 <= e) {
-		when.tm_hour = atoin (p, 2);
+		when->tm_hour = atoin (p, 2);
 		p += 2;
 	}
 	if (p + 2 <= e) {
-		when.tm_min = atoin (p, 2);
+		when->tm_min = atoin (p, 2);
 		p += 2;
 	}
 	if (p + 2 <= e) {
-		when.tm_sec = atoin (p, 2);
+		when->tm_sec = atoin (p, 2);
 		p += 2;
 	}
 
-	if (when.tm_year < 0 || when.tm_year > 9999 ||
-	    when.tm_mon < 0 || when.tm_mon > 11 ||
-	    when.tm_mday < 1 || when.tm_mday > 31 ||
-	    when.tm_hour < 0 || when.tm_hour > 23 ||
-	    when.tm_min < 0 || when.tm_min > 59 ||
-	    when.tm_sec < 0 || when.tm_sec > 59)
-	    	return -1;
+	if (when->tm_year < 0 || when->tm_year > 9999 ||
+	    when->tm_mon < 0 || when->tm_mon > 11 ||
+	    when->tm_mday < 1 || when->tm_mday > 31 ||
+	    when->tm_hour < 0 || when->tm_hour > 23 ||
+	    when->tm_min < 0 || when->tm_min > 59 ||
+	    when->tm_sec < 0 || when->tm_sec > 59)
+	    	return FALSE;
 	
 	/* Make sure all that got parsed */
 	if (p != e)
-		return -1;
+		return FALSE;
 		
-	/* Covnvert to seconds since epoch */
-	result = timegm (&when);
-	
 	/* Now the remaining optional stuff */
 	e = time + n_time;
 		
@@ -648,25 +677,43 @@ egg_asn1_parse_general_time (const gchar *time)
 
 		/* Use TZ offset */		
 		if (neg)
-			result -= off;
+			*offset = 0 - off;
 		else
-			result += off;
+			*offset = off;
 	}
 
 	/* Make sure everything got parsed */	
 	if (p != e)
-		return -1;
+		return FALSE;
 
-	return result;
+	return TRUE;
 }
 
-gboolean
-egg_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
+time_t
+egg_asn1_time_parse_general (const gchar *time)
 {
-	#define MAX_TIME 1024
-	gchar ttime[MAX_TIME];
+	struct tm when;
+	gint offset;
+	
+	g_return_val_if_fail (time, -1);
+	
+	if (!parse_general_time (time, &when, &offset))
+		return -1;
+	
+	return when_to_time (&when, offset);
+}
+
+static gboolean
+read_asn1_time (ASN1_TYPE asn, const gchar *part, struct tm *when, gint *offset)
+{
+	gchar ttime[256];
 	gchar *name;
 	int len, res;
+	
+	g_assert (asn);
+	g_assert (part);
+	g_assert (when);
+	g_assert (offset);
 
 	len = sizeof (ttime) - 1;
 	res = asn1_read_value (asn, part, ttime, &len);
@@ -681,8 +728,7 @@ egg_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
 		g_free (name);
 		if (res != ASN1_SUCCESS)
 			return FALSE;
-		
-		*val = egg_asn1_parse_general_time (ttime);
+		return parse_general_time (ttime, when, offset);
 		
 	/* UTCTIME */
 	} else {
@@ -692,16 +738,45 @@ egg_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
 		g_free (name);
 		if (res != ASN1_SUCCESS)
 			return FALSE;
-	
-		*val = egg_asn1_parse_utc_time (ttime);
+		return parse_utc_time (ttime, when, offset);
     	}
 
-	if (*val < (time_t)0)
-		return FALSE;
-		
-	return TRUE;	
+	return FALSE;	
 }
 
+gboolean
+egg_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
+{
+	struct tm when;
+	gint offset;
+	
+	g_return_val_if_fail (asn, FALSE);
+	g_return_val_if_fail (part, FALSE);
+	g_return_val_if_fail (val, FALSE);
+	
+	if (!read_asn1_time (asn, part, &when, &offset))
+		return FALSE;
+	
+	*val = when_to_time (&when, offset);
+	return TRUE;
+}
+
+gboolean
+egg_asn1_read_date (ASN1_TYPE asn, const gchar *part, GDate *date)
+{
+	struct tm when;
+	gint offset;
+	
+	g_return_val_if_fail (asn, FALSE);
+	g_return_val_if_fail (part, FALSE);
+	g_return_val_if_fail (date, FALSE);
+	
+	if (!read_asn1_time (asn, part, &when, &offset))
+		return FALSE;
+	
+	g_date_set_dmy (date, when.tm_mday, when.tm_mon + 1, when.tm_year + 1900);
+	return g_date_valid (date);
+}
 
 /* -------------------------------------------------------------------------------
  * Reading DN's
@@ -710,42 +785,43 @@ egg_asn1_read_time (ASN1_TYPE asn, const gchar *part, time_t *val)
 typedef struct _PrintableOid {
 	GQuark oid;
 	const gchar *oidstr;
-	const gchar *display;
+	const gchar *attr;
+	const gchar *description;
 	gboolean is_choice;
 } PrintableOid;
 
 static PrintableOid printable_oids[] = {
-	{ 0, "0.9.2342.19200300.100.1.25", "DC", FALSE },
-	{ 0, "0.9.2342.19200300.100.1.1", "UID", TRUE },
+	{ 0, "0.9.2342.19200300.100.1.25", "DC", N_("Domain Component"), FALSE },
+	{ 0, "0.9.2342.19200300.100.1.1", "UID", N_("User ID"), TRUE },
 
-	{ 0, "1.2.840.113549.1.9.1", "EMAIL", FALSE },
-	{ 0, "1.2.840.113549.1.9.7", NULL, TRUE },
-	{ 0, "1.2.840.113549.1.9.20", NULL, FALSE },
+	{ 0, "1.2.840.113549.1.9.1", "EMAIL", N_("Email"), FALSE },
+	{ 0, "1.2.840.113549.1.9.7", NULL, NULL, TRUE },
+	{ 0, "1.2.840.113549.1.9.20", NULL, NULL, FALSE },
 	
-	{ 0, "1.3.6.1.5.5.7.9.1", "dateOfBirth", FALSE },
-	{ 0, "1.3.6.1.5.5.7.9.2", "placeOfBirth", FALSE },
-	{ 0, "1.3.6.1.5.5.7.9.3", "gender", FALSE },
-        { 0, "1.3.6.1.5.5.7.9.4", "countryOfCitizenship", FALSE },
-        { 0, "1.3.6.1.5.5.7.9.5", "countryOfResidence", FALSE },
+	{ 0, "1.3.6.1.5.5.7.9.1", "dateOfBirth", N_("Date of Birth"), FALSE },
+	{ 0, "1.3.6.1.5.5.7.9.2", "placeOfBirth", N_("Place of Birth"), FALSE },
+	{ 0, "1.3.6.1.5.5.7.9.3", "gender", N_("Gender"), FALSE },
+        { 0, "1.3.6.1.5.5.7.9.4", "countryOfCitizenship", N_("Country of Citizenship"), FALSE },
+        { 0, "1.3.6.1.5.5.7.9.5", "countryOfResidence", N_("Country of Residence"), FALSE },
 
-	{ 0, "2.5.4.3", "CN", TRUE },
-	{ 0, "2.5.4.4", "surName", TRUE },
-	{ 0, "2.5.4.5", "serialNumber", FALSE },
-	{ 0, "2.5.4.6", "C", FALSE, },
-	{ 0, "2.5.4.7", "L", TRUE },
-	{ 0, "2.5.4.8", "ST", TRUE },
-	{ 0, "2.5.4.9", "STREET", TRUE },
-	{ 0, "2.5.4.10", "O", TRUE },
-	{ 0, "2.5.4.11", "OU", TRUE },
-	{ 0, "2.5.4.12", "T", TRUE },
-	{ 0, "2.5.4.20", "telephoneNumber", FALSE },
-	{ 0, "2.5.4.42", "givenName", TRUE },
-	{ 0, "2.5.4.43", "initials", TRUE },
-	{ 0, "2.5.4.44", "generationQualifier", TRUE },
-	{ 0, "2.5.4.46", "dnQualifier", FALSE },
-	{ 0, "2.5.4.65", "pseudonym", TRUE },
+	{ 0, "2.5.4.3", "CN", N_("Common Name"), TRUE },
+	{ 0, "2.5.4.4", "surName", N_("Surname"), TRUE },
+	{ 0, "2.5.4.5", "serialNumber", N_("Serial Number"), FALSE },
+	{ 0, "2.5.4.6", "C", N_("Country"), FALSE, },
+	{ 0, "2.5.4.7", "L", N_("Locality"), TRUE },
+	{ 0, "2.5.4.8", "ST", N_("State"), TRUE },
+	{ 0, "2.5.4.9", "STREET", N_("Street"), TRUE },
+	{ 0, "2.5.4.10", "O", N_("Organization"), TRUE },
+	{ 0, "2.5.4.11", "OU", N_("Organizational Unit"), TRUE },
+	{ 0, "2.5.4.12", "T", N_("Title"), TRUE },
+	{ 0, "2.5.4.20", "telephoneNumber", N_("Telephone Number"), FALSE },
+	{ 0, "2.5.4.42", "givenName", N_("Given Name"), TRUE },
+	{ 0, "2.5.4.43", "initials", N_("Initials"), TRUE },
+	{ 0, "2.5.4.44", "generationQualifier", N_("Generation Qualifier"), TRUE },
+	{ 0, "2.5.4.46", "dnQualifier", N_("DN Qualifier"), FALSE },
+	{ 0, "2.5.4.65", "pseudonym", N_("Pseudonym"), TRUE },
 
-	{ 0, NULL, NULL, FALSE }
+	{ 0, NULL, NULL, NULL, FALSE }
 };
 
 static void
@@ -794,7 +870,7 @@ dn_print_hex_value (const guchar *data, gsize len)
 }
 
 static gchar* 
-dn_print_oid_value_parsed (PrintableOid *printable, guchar *data, gsize len)
+dn_print_oid_value_parsed (PrintableOid *printable, const guchar *data, gsize len)
 {
 	const gchar *asn_name;
 	ASN1_TYPE asn1;
@@ -857,7 +933,7 @@ dn_print_oid_value_parsed (PrintableOid *printable, guchar *data, gsize len)
 }
 
 static gchar*
-dn_print_oid_value (PrintableOid *printable, guchar *data, gsize len)
+dn_print_oid_value (PrintableOid *printable, const guchar *data, gsize len)
 {
 	gchar *value;
 	
@@ -903,7 +979,7 @@ dn_parse_rdn (ASN1_TYPE asn, const gchar *part)
 	g_return_val_if_fail (value, NULL);
 	display = dn_print_oid_value (printable, value, n_value);
 	
-	result = g_strconcat (printable ? printable->display : g_quark_to_string (oid), 
+	result = g_strconcat (printable && printable->attr ? printable->attr : g_quark_to_string (oid), 
 			      "=", display, NULL);
 	g_free (display);
 	
@@ -992,8 +1068,8 @@ egg_asn1_read_dn_part (ASN1_TYPE asn, const gchar *part, const gchar *match)
 			/* Does it match either the OID or the displayable? */
 			if (g_ascii_strcasecmp (g_quark_to_string (oid), match) != 0) {
 				printable = dn_find_printable (oid);
-				if (!printable || !printable->display || 
-				    !g_ascii_strcasecmp (printable->display, match) == 0)
+				if (!printable || !printable->attr || 
+				    !g_ascii_strcasecmp (printable->attr, match) == 0)
 					continue;
 			}
 
@@ -1009,4 +1085,99 @@ egg_asn1_read_dn_part (ASN1_TYPE asn, const gchar *part, const gchar *match)
 	}
 	
 	return NULL;
+}
+
+gboolean
+egg_asn1_dn_parse (ASN1_TYPE asn, const gchar *part, 
+                   EggAsn1DnCallback callback, gpointer user_data)
+{
+	gboolean done = FALSE;
+	gchar *path;
+	guchar *value;
+	gsize n_value;
+	GQuark oid;
+	guint i, j;
+	
+	g_return_val_if_fail (asn, FALSE);
+	
+	init_printable_oids ();
+	
+	/* Each (possibly multi valued) RDN */
+	for (i = 1; !done; ++i) {
+		
+		/* Each type=value pair of an RDN */
+		for (j = 1; TRUE; ++j) {
+			
+			/* Dig out the type */
+			path = g_strdup_printf ("%s%s?%u.?%u.type", 
+			                        part ? part : "", 
+			                        part ? "." : "", i, j);
+			oid = egg_asn1_read_oid (asn, path);
+			g_free (path);
+
+			if (!oid) {
+				done = j == 1;
+				break;
+			}
+
+			/* Print the value as nicely as we can */
+			path = g_strdup_printf ("%s%s?%u.?%u.value", 
+			                        part ? part : "", 
+			                        part ? "." : "", i, j);
+			value = egg_asn1_read_value (asn, path, &n_value, NULL);
+			g_free (path);
+
+			if (!value) {
+				done = j == 1;
+				break;
+			}
+			
+			if (callback) 
+				(callback) (i, oid, value, n_value, user_data);
+			
+			g_free (value);
+		}
+	}
+	
+	return i > 1;
+}
+
+const gchar*
+egg_asn1_dn_oid_attr (GQuark oid)
+{
+	PrintableOid *printable;
+	
+	g_return_val_if_fail (oid, NULL);
+	
+	printable = dn_find_printable (oid);
+	if (!printable)
+		return g_quark_to_string (oid);
+	
+	return printable->attr;	
+}
+
+const gchar*
+egg_asn1_dn_oid_desc (GQuark oid)
+{
+	PrintableOid *printable;
+	
+	g_return_val_if_fail (oid, NULL);
+	
+	printable = dn_find_printable (oid);
+	if (!printable)
+		return g_quark_to_string (oid);
+	
+	return gettext (printable->description);
+}
+
+gchar*
+egg_asn1_dn_print_value (GQuark oid, const guchar *value, gsize n_value)
+{
+	PrintableOid *printable;
+	
+	g_return_val_if_fail (oid, NULL);
+	g_return_val_if_fail (value || !n_value, NULL);
+	
+	printable = dn_find_printable (oid);
+	return dn_print_oid_value (printable, value, n_value);
 }

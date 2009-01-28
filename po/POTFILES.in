@@ -15,6 +15,10 @@ daemon/pkcs11/gkr-pkcs11-auth.c
 daemon/pkix/gkr-pkix-parser.c
 daemon/pkix/gkr-pkix-serialize.c
 daemon/ui/gkr-ask-tool.c
+egg/egg-asn1.c
+gcr/gcr-certificate-basics-widget.c
+gcr/gcr-certificate-basics-widget.glade
+gcr/gcr-certificate-details-widget.c
 gcr/gcr-import-dialog.glade
 gcr/gcr-importer.c
 gcr/gcr-parser.c
@@ -22,4 +26,3 @@ gp11/gp11-misc.c
 library/gnome-keyring-utils.c
 pkcs11/gck/gck-certificate.c
 pkcs11/ssh-store/gck-ssh-private-key.c
-

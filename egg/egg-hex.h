@@ -25,10 +25,14 @@
 #include <glib.h>
 
 guchar*               egg_hex_decode                         (const gchar *data, 
-                                                                   gssize n_data, 
-                                                                   gsize *n_decoded);
+                                                              gssize n_data, 
+                                                              gsize *n_decoded);
 
 gchar*                egg_hex_encode                         (const guchar *data, 
-                                                                   gsize n_data);
+                                                              gsize n_data);
+
+gchar*                egg_hex_encode_full                    (const guchar *data, 
+                                                              gsize n_data,
+                                                              guint group);
 
 #endif /* EGG_HEX_H_ */

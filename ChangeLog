@@ -1,3 +1,27 @@
+2009-01-27  Stef Walter  <stef@memberwebs.com>
+
+	* egg/egg-asn1.c:
+	* egg/egg-asn1.h:
+	* egg/egg-hex.c:
+	* egg/egg-hex.h:
+	* egg/pkix.asn:
+	* egg/tests/unit-test-asn1.c:
+	* egg/tests/unit-test-hex.c:
+	* gcr/gcr-certificate.c: (added)
+	* gcr/gcr-certificate.h: (added)
+	* gcr/gcr-certificate-basics-widget.c: (added)
+	* gcr/gcr-certificate-basics-widget.glade: (added)
+	* gcr/gcr-certificate-basics-widget.h: (added)
+	* gcr/gcr-certificate-details-widget.c: (added)
+	* gcr/gcr-certificate-details-widget.h: (added)
+	* gcr/gcr-library.c:
+	* gcr/gcr-parser.c: 
+	* gcr/Makefile.am:
+	* gcr/tests/Makefile.am:
+	* gcr/tests/ui-test-details.c: (added)
+	* gcr/tests/unit-test-certificate.c: (added) Add basic UI widgets for 
+	displaying a certificate. 
+	
 2009-01-22  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/pk/gkr-pk-index.c:

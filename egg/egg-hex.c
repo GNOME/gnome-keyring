@@ -81,24 +81,37 @@ egg_hex_decode (const gchar *data, gssize n_data, gsize *n_decoded)
 gchar* 
 egg_hex_encode (const guchar *data, gsize n_data)
 {
-	gchar *result, *encoded;
+	return egg_hex_encode_full (data, n_data, 0);
+}
+
+gchar*
+egg_hex_encode_full (const guchar *data, gsize n_data, guint group)
+{
+	GString *result;
+	gsize bytes;
 	guchar j;
 	
 	g_return_val_if_fail (data || !n_data, NULL);
+
+	result = g_string_sized_new (n_data * 2 + 1);
+	bytes = 0;
 	
-	encoded = result = g_malloc0 (n_data * 2 + 1);
-	
-	while(n_data > 0) {
+	while (n_data > 0) {
+		
+		if (group && bytes && (bytes % group) == 0)
+			g_string_append_c (result, ' ');
+
 		j = *(data) >> 4 & 0xf;
-		*(encoded++) = HEXC[j];
-    
+		g_string_append_c (result, HEXC[j]);
+		
 		j = *(data++) & 0xf;
-		*(encoded++) = HEXC[j];
+		g_string_append_c (result, HEXC[j]);
     
-		n_data--;
+		++bytes;
+		--n_data;
 	}
 
 	/* Make sure still null terminated */
-	g_assert (encoded[n_data * 2] == 0);
-	return result;
+	return g_string_free (result, FALSE);
 }
+

@@ -31,6 +31,7 @@
 
 static const guchar TEST_DATA[] = { 0x05, 0xD6, 0x95, 0x96, 0x10, 0x12, 0xAE, 0x35 };
 static const gchar *TEST_HEX = "05D695961012AE35";
+static const gchar *TEST_HEX_DELIM = "05 D6 95 96 10 12 AE 35";
 static const gchar *TEST_HEX_SPACE = "\n05 D695 \r961012AE35\n\n";
 
 DEFINE_TEST(hex_encode)
@@ -40,6 +41,21 @@ DEFINE_TEST(hex_encode)
 	hex = egg_hex_encode (TEST_DATA, sizeof (TEST_DATA));
 	g_assert (hex);
 	g_assert_cmpstr (hex, ==, TEST_HEX);
+}
+
+DEFINE_TEST(hex_encode_spaces)
+{
+	gchar *hex;
+	
+	/* Encode without spaces */
+	hex = egg_hex_encode_full (TEST_DATA, sizeof (TEST_DATA), 0);
+	g_assert (hex);
+	g_assert_cmpstr (hex, ==, TEST_HEX);
+	
+	/* Encode without spaces */
+	hex = egg_hex_encode_full (TEST_DATA, sizeof (TEST_DATA), 1);
+	g_assert (hex);
+	g_assert_cmpstr (hex, ==, TEST_HEX_DELIM);
 }
 
 DEFINE_TEST(hex_decode)

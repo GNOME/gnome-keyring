@@ -331,7 +331,7 @@ DEFINE_TEST(general_time)
 	const TimeTestData *data;
 	
 	for (data = generalized_time_test_data; data->value; ++data) {
-		when = egg_asn1_parse_general_time (data->value);
+		when = egg_asn1_time_parse_general (data->value);
 		if (data->ref != when) {
 			printf ("%s", data->value);
 			printf ("%s != ", ctime (&when));
@@ -349,7 +349,7 @@ DEFINE_TEST(utc_time)
 	const TimeTestData *data;
 	
 	for (data = utc_time_test_data; data->value; ++data) {
-		when = egg_asn1_parse_utc_time (data->value);
+		when = egg_asn1_time_parse_utc (data->value);
 		if (data->ref != when) {
 			printf ("%s", data->value);
 			printf ("%s != ", ctime (&when));
@@ -370,6 +370,16 @@ DEFINE_TEST(read_time)
 	g_assert_cmpint (time, ==, 820454400);
 }
 
+DEFINE_TEST(read_date)
+{
+	GDate date;
+	if (!egg_asn1_read_date (asn1_cert, "tbsCertificate.validity.notAfter", &date))
+		g_assert_not_reached ();
+	g_assert_cmpint (date.day, ==, 31);
+	g_assert_cmpint (date.month, ==, 12);
+	g_assert_cmpint (date.year, ==, 2020);
+}
+
 DEFINE_TEST(read_dn)
 {
 	gchar *dn;
@@ -382,6 +392,79 @@ DEFINE_TEST(read_dn)
 	
 	dn = egg_asn1_read_dn (asn1_cert, "tbsCertificate.nonExistant");
 	g_assert (dn == NULL);
+}
+
+DEFINE_TEST(dn_oid)
+{
+	GQuark oid;
+	
+	oid = g_quark_from_static_string ("0.9.2342.19200300.100.1.25");
+	g_assert_cmpstr (egg_asn1_dn_oid_attr (oid), ==, "DC");
+	g_assert_cmpstr (egg_asn1_dn_oid_desc (oid), ==, "Domain Component");
+	
+	/* Should return OID for invalid oids */
+	oid = g_quark_from_static_string ("1.1.1.1.1");
+	g_assert_cmpstr (egg_asn1_dn_oid_attr (oid), ==, "1.1.1.1.1");
+	g_assert_cmpstr (egg_asn1_dn_oid_desc (oid), ==, "1.1.1.1.1");	
+}
+
+DEFINE_TEST(dn_value)
+{
+	const guchar value[] = { 0x13, 0x1a, 0x54, 0x68, 0x61, 0x77, 0x74, 0x65, 0x20, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x6c, 0x20, 0x50, 0x72, 0x65, 0x6d, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x41 };
+	gsize n_value = 28;
+	GQuark oid;
+	gchar *text;
+	
+	/* Some printable strings */
+	oid = g_quark_from_static_string ("2.5.4.3");
+	text = egg_asn1_dn_print_value (oid, value, n_value);
+	g_assert_cmpstr (text, ==, "Thawte Personal Premium CA");
+	g_free (text);
+
+	/* Unknown oid */
+	oid = g_quark_from_static_string ("1.1.1.1.1.1");
+	text = egg_asn1_dn_print_value (oid, value, n_value);
+	g_assert_cmpstr (text, ==, "#131A54686177746520506572736F6E616C205072656D69756D204341");
+	g_free (text);
+}
+
+static int last_index = 0;
+
+static void
+concatenate_dn (guint index, GQuark oid, const guchar *value, gsize n_value, gpointer user_data)
+{
+	GString *dn = user_data;
+	gchar *text;
+	
+	g_assert (oid);
+	g_assert (value);
+	g_assert (n_value);
+	
+	g_assert (index == last_index);
+	++last_index;
+	
+	if (index != 1) {
+		g_string_append (dn, ", ");
+	}
+	
+	g_string_append (dn, egg_asn1_dn_oid_attr (oid));
+	g_string_append_c (dn, '=');
+	
+	text = egg_asn1_dn_print_value (oid, value, n_value);
+	g_string_append (dn, text);
+	g_free (text);
+}
+
+DEFINE_TEST(parse_dn)
+{
+	GString *dn = g_string_new ("");
+	last_index = 1;
+	
+	if (!egg_asn1_dn_parse (asn1_cert, "tbsCertificate.issuer.rdnSequence", concatenate_dn, dn))
+		g_assert_not_reached ();
+	
+	g_assert_cmpstr (dn->str, ==, "C=ZA, ST=Western Cape, L=Cape Town, O=Thawte Consulting, OU=Certification Services Division, CN=Thawte Personal Premium CA, EMAIL=personal-premium@thawte.com");
+	g_string_free (dn, TRUE);
 }
 
 DEFINE_TEST(read_dn_part)

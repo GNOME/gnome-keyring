@@ -5,6 +5,7 @@
 uidir = $(datadir)/gcr/ui/
 
 GLADE_FILES = \
+	gcr-certificate-basics-widget.glade \
 	gcr-import-dialog.glade
 	
 .glade.ui: 
@@ -20,7 +21,9 @@ INCLUDES = \
     	-I$(top_srcdir) \
     	$(GTK_CFLAGS) \
     	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(LIBGCRYPT_CFLAGS) \
+	$(LIBTASN1_CFLAGS)
 
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h
@@ -28,6 +31,9 @@ BUILT_SOURCES = \
 lib_LTLIBRARIES = libgcr.la
 
 libgcr_la_SOURCES = \
+	gcr-certificate.c gcr-certificate.h \
+	gcr-certificate-basics-widget.c gcr-certificate-basics-widget.h \
+	gcr-certificate-details-widget.c gcr-certificate-details-widget.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-importer.c gcr-importer.h  \
 	gcr-internal.h \
@@ -50,7 +56,9 @@ libgcr_la_LIBADD = \
 	$(top_builddir)/egg/libegg-secure-entry.la \
 	$(top_builddir)/gp11/libgp11.la \
 	$(GOBJECT_LIBS) \
-	$(GLIB_LIBS)
+	$(GLIB_LIBS) \
+	$(LIBGCRYPT_LIBS) \
+	$(LIBTASN1_LIBS)
 
 gcr-marshal.h: gcr-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=_gcr_marshal > $@
@@ -70,7 +78,6 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
-	gcr-import-dialog.glade \
 	$(GLADE_FILES)
     
 CLEANFILES = \
