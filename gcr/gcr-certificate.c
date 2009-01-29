@@ -29,56 +29,63 @@
 
 #include <string.h>
 
-struct _GcrCertificatePrivate {
-	/* Cache of data returned  from get_der_data() */ 
-	ASN1_TYPE asn1;
-	gconstpointer data;
-	gsize n_data;
-	
-	/* When initialized with gcr_certificate_new_for_data() */
-	guchar *owned_data;
-	gsize n_owned_data;
-};
-
-G_DEFINE_TYPE (GcrCertificate, gcr_certificate, G_TYPE_OBJECT);
-
 /* -----------------------------------------------------------------------------
  * INTERNAL 
  */
 
-static ASN1_TYPE
-parse_certificate_asn1 (GcrCertificate *self)
-{
-	const guchar *data;
-	gsize n_data;
-	
-	g_assert (GCR_IS_CERTIFICATE (self));
-	
-	data = gcr_certificate_get_der_data (self, &n_data);
-	g_return_val_if_fail (data, NULL);
 
-	if (self->pv->asn1 && n_data == self->pv->n_data && 
-	    memcmp (data, self->pv->data, n_data) == 0)
-		return self->pv->asn1;
+typedef struct _Asn1Cache {
+	ASN1_TYPE asn1;
+	gconstpointer der;
+	gsize length;
+} Asn1Cache;
+
+static GQuark ASN1_CACHE = 0;
+
+static void
+free_asn1_cache (gpointer data)
+{
+	Asn1Cache *cache = (Asn1Cache*)data;
+	if (cache) {
+		g_assert (cache->asn1);
+		asn1_delete_structure (&cache->asn1);
+		g_free (cache);
+	}
+}
+
+static ASN1_TYPE
+parse_certificate_asn1 (GcrCertificate *cert)
+{
+	Asn1Cache *cache;
+	ASN1_TYPE asn1;
+	const guchar *der;
+	gsize n_der;
 	
-	if (self->pv->asn1) {
-		asn1_delete_structure (&self->pv->asn1);
-		self->pv->asn1 = NULL;
-		self->pv->data = NULL;
-		self->pv->n_data = 0;
+	g_assert (cert);
+	
+	der = gcr_certificate_get_der_data (cert, &n_der);
+	g_return_val_if_fail (der, NULL);
+
+	cache = (Asn1Cache*)g_object_get_qdata (G_OBJECT (cert), ASN1_CACHE);
+	if (cache) {
+		if (n_der == cache->length && memcmp (der, cache->der, n_der) == 0)
+			return cache->asn1;
 	}
 	
 	/* Cache is invalid or non existent */
-	self->pv->asn1 = egg_asn1_decode ("PKIX1.Certificate", data, n_data);
-	if (self->pv->asn1 == NULL) {
-		g_warning ("encountered invalid or unparseable X509 DER certificate data.");
+	asn1 = egg_asn1_decode ("PKIX1.Certificate", der, n_der);
+	if (asn1 == NULL) {
+		g_warning ("a derived class provided an invalid or unparseable X509 DER certificate data.");
 		return NULL;
 	}
 	
-	self->pv->data = data;
-	self->pv->n_data = n_data;
-
-	return self->pv->asn1;
+	cache = g_new0 (Asn1Cache, 1);
+	cache->der = der;
+	cache->length = n_der;
+	cache->asn1 = asn1;
+	
+	g_object_set_qdata_full (G_OBJECT (cert), ASN1_CACHE, cache, free_asn1_cache);
+	return asn1;
 }
 
 static GChecksum*
@@ -100,129 +107,58 @@ digest_certificate (GcrCertificate *self, GChecksumType type)
 	return digest;
 }
 
-/* -----------------------------------------------------------------------------
- * OBJECT 
+/* ---------------------------------------------------------------------------------
+ * INTERFACE
  */
 
-static const guchar* 
-gcr_certificate_real_get_der_data (GcrCertificate *self, gsize *n_data)
-{
-	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (n_data, NULL);
-	g_return_val_if_fail (self->pv->owned_data, NULL);
-	
-	/* This is called when we're not a base class */
-	*n_data = self->pv->n_owned_data;
-	return self->pv->owned_data;
-}
-
-static GObject* 
-gcr_certificate_constructor (GType type, guint n_props, GObjectConstructParam *props) 
-{
-	GcrCertificate *self = GCR_CERTIFICATE (G_OBJECT_CLASS (gcr_certificate_parent_class)->constructor(type, n_props, props));
-	g_return_val_if_fail (self, NULL);	
-	
-	return G_OBJECT (self);
-}
-
 static void
-gcr_certificate_init (GcrCertificate *self)
+gcr_certificate_base_init (gpointer g_class)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_CERTIFICATE, GcrCertificatePrivate);
-}
-
-static void
-gcr_certificate_dispose (GObject *obj)
-{
-	GcrCertificate *self = GCR_CERTIFICATE (obj);
-
-	if (self->pv->asn1) {
-		asn1_delete_structure (&self->pv->asn1);
-		self->pv->data = NULL;
-		self->pv->n_data = 0;
-	}
-    
-	G_OBJECT_CLASS (gcr_certificate_parent_class)->dispose (obj);
-}
-
-static void
-gcr_certificate_finalize (GObject *obj)
-{
-	GcrCertificate *self = GCR_CERTIFICATE (obj);
-	
-	g_assert (self->pv->asn1 == NULL);
-	g_free (self->pv->owned_data);
-	self->pv->owned_data = NULL;
-	self->pv->n_owned_data = 0;
-
-	G_OBJECT_CLASS (gcr_certificate_parent_class)->finalize (obj);
-}
-
-static void
-gcr_certificate_set_property (GObject *obj, guint prop_id, const GValue *value, 
-                              GParamSpec *pspec)
-{
-	switch (prop_id) {
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
-		break;
+	static gboolean initialized = FALSE;
+	if (!initialized) {
+		ASN1_CACHE = g_quark_from_static_string ("_gcr_certificate_asn1_cache");
+		
+		/* Add properties and signals to the interface */
+		
+		
+		initialized = TRUE;
 	}
 }
 
-static void
-gcr_certificate_get_property (GObject *obj, guint prop_id, GValue *value, 
-                              GParamSpec *pspec)
+GType
+gcr_certificate_get_type (void)
 {
-	switch (prop_id) {
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
-		break;
+	static GType type = 0;
+	if (!type) {
+		static const GTypeInfo info = {
+			sizeof (GcrCertificateIface),
+			gcr_certificate_base_init,               /* base init */
+			NULL,             /* base finalize */
+			NULL,             /* class_init */
+			NULL,             /* class finalize */
+			NULL,             /* class data */
+			0,
+			0,                /* n_preallocs */
+			NULL,             /* instance init */
+		};
+		type = g_type_register_static (G_TYPE_INTERFACE, "GcrCertificateIface", &info, 0);
+		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
 	}
-}
-
-static void
-gcr_certificate_class_init (GcrCertificateClass *klass)
-{
-	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    
-	gobject_class->constructor = gcr_certificate_constructor;
-	gobject_class->dispose = gcr_certificate_dispose;
-	gobject_class->finalize = gcr_certificate_finalize;
-	gobject_class->set_property = gcr_certificate_set_property;
-	gobject_class->get_property = gcr_certificate_get_property;
 	
-	klass->get_der_data = gcr_certificate_real_get_der_data;
-    
-	g_type_class_add_private (gobject_class, sizeof (GcrCertificatePrivate));
-
-	_gcr_initialize ();
+	return type;
 }
+
 
 /* -----------------------------------------------------------------------------
  * PUBLIC 
  */
 
-GcrCertificate*
-gcr_certificate_new_for_data (const guchar *data, gsize n_data)
-{
-	GcrCertificate *cert;
-	
-	g_return_val_if_fail (data, NULL);
-	g_return_val_if_fail (n_data, NULL);
-	
-	cert = g_object_new (GCR_TYPE_CERTIFICATE, NULL);
-	
-	cert->pv->owned_data = g_memdup (data, n_data);
-	cert->pv->n_owned_data = n_data;
-	return cert;
-}
-
 const guchar*
 gcr_certificate_get_der_data (GcrCertificate *self, gsize *n_length)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (GCR_CERTIFICATE_GET_CLASS (self)->get_der_data, NULL);
-	return GCR_CERTIFICATE_GET_CLASS (self)->get_der_data (self, n_length);
+	g_return_val_if_fail (GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data, NULL);
+	return GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data (self, n_length);
 }
 
 gchar*

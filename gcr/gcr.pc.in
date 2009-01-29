@@ -6,9 +6,9 @@ datarootdir=@datarootdir@
 datadir=@datadir@
 sysconfdir=@sysconfdir@
 
-Name: gp11
-Description: GObject bindings for PKCS#11
+Name: gcr
+Description: GObject and GUI library for high level crypto parsing and display
 Version: @VERSION@
-Requires: glib-2.0
-Libs: -L${libdir} -lgp11
-Cflags: -I${includedir}/gp11
+Requires: glib-2.0 gtk+-2.0 libtasn1 gp11
+Libs: -L${libdir} -lgcr
+Cflags: -I${includedir}/gcr

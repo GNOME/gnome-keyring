@@ -3,6 +3,7 @@
 #include "run-auto-test.h"
 
 #include "gcr-certificate.h"
+#include "gcr-simple-certificate.h"
 
 #include <glib.h>
 
@@ -21,7 +22,7 @@ DEFINE_SETUP(certificate)
 		return;
 	}
 
-	certificate = gcr_certificate_new_for_data ((const guchar*)contents, n_contents);
+	certificate = gcr_simple_certificate_new ((const guchar*)contents, n_contents);
 	g_assert (certificate);
 	g_free (contents);
 }

@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 
 #include "gcr-certificate.h"
+#include "gcr-types.h"
 
 #define GCR_TYPE_CERTIFICATE_DETAILS_WIDGET               (gcr_certificate_details_widget_get_type ())
 #define GCR_CERTIFICATE_DETAILS_WIDGET(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE_DETAILS_WIDGET, GcrCertificateDetailsWidget))

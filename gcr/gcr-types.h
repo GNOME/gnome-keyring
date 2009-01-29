@@ -1,6 +1,12 @@
 #ifndef GCRTYPES_H_
 #define GCRTYPES_H_
 
+#ifndef GCR_API_SUBJECT_TO_CHANGE
+#error "This API has not yet reached stability." 
+#endif 
+
+#include <glib.h>
+
 #define             GCR_DATA_ERROR                    (gcr_data_error_get_domain ())
 
 GQuark 	            gcr_data_error_get_domain         (void) G_GNUC_CONST;
@@ -41,6 +47,7 @@ enum {
 
 /* Forward declare some of the GP11 objects */
 struct _GP11Attributes;
+struct _GP11Object;
 struct _GP11Slot;
 
 #endif /* GCRTYPES_H_ */

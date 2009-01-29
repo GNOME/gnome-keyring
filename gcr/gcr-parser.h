@@ -22,8 +22,6 @@
 #ifndef __GCR_PARSER_H__
 #define __GCR_PARSER_H__
 
-#include "gcr.h"
-
 #include <glib-object.h>
 
 #include "gcr-types.h"

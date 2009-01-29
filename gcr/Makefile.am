@@ -14,6 +14,20 @@ GLADE_FILES = \
 ui_DATA = $(GLADE_FILES:.glade=.ui)
 
 # ------------------------------------------------------------------
+# HEADERS
+
+incdir = $(includedir)/gcr
+
+inc_HEADERS = \
+	gcr.h \
+	gcr-certificate.h \
+	gcr-certificate-basics-widget.h \
+	gcr-certificate-details-widget.h \
+	gcr-importer.h \
+	gcr-parser.h \
+	gcr-types.h
+
+# ------------------------------------------------------------------
 # LIBRARY
 
 INCLUDES = \
@@ -39,6 +53,7 @@ libgcr_la_SOURCES = \
 	gcr-internal.h \
 	gcr-library.c \
 	gcr-parser.c gcr-parser.h \
+	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-types.h \
 	$(BUILT_SOURCES)
 

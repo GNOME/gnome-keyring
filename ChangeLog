@@ -1,3 +1,24 @@
+2009-01-28  Stef Walter  <stef@memberwebs.com>
+
+	* gcr/gcr.h:
+	* gcr/gcr.pc.in:
+	* gcr/gcr-certificate-basics-widget.h:
+	* gcr/gcr-certificate-details-widget.h:
+	* gcr/gcr-importer.h:
+	* gcr/gcr-parser.h:
+	* gcr/gcr-types.h:
+	* gcr/Makefile.am: Install appropriate header files 
+	and fix the pkg-config file for the gcr library.
+
+	* gcr/gcr-certificate.c:
+	* gcr/gcr-certificate.h:
+	* gcr/gcr-simple-certificate.c: (added)
+	* gcr/gcr-simple-certificate.h: (added)
+	* gcr/tests/ui-test-details.c:
+	* gcr/tests/unit-test-certificate.c: Make GcrCertificate
+	an interface so that it can more easily plug into 
+	various libraries.
+
 2009-01-27  Stef Walter  <stef@memberwebs.com>
 
 	* egg/egg-asn1.c:

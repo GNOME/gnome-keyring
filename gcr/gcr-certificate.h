@@ -22,38 +22,33 @@
 #ifndef __GCR_CERTIFICATE_H__
 #define __GCR_CERTIFICATE_H__
 
-#include "gcr.h"
+#include "gcr-types.h"
 
 #include <glib-object.h>
 
-#define GCR_TYPE_CERTIFICATE               (gcr_certificate_get_type ())
-#define GCR_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE, GcrCertificate))
-#define GCR_CERTIFICATE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_CERTIFICATE, GcrCertificateClass))
-#define GCR_IS_CERTIFICATE(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_CERTIFICATE))
-#define GCR_IS_CERTIFICATE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_CERTIFICATE))
-#define GCR_CERTIFICATE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_CERTIFICATE, GcrCertificateClass))
+#define GCR_TYPE_CERTIFICATE                 (gcr_certificate_get_type())
+#define GCR_CERTIFICATE(obj)                 (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE, GcrCertificate))
+#define GCR_IS_CERTIFICATE(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_CERTIFICATE))
+#define GCR_CERTIFICATE_GET_INTERFACE(inst)  (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GCR_TYPE_CERTIFICATE, GcrCertificateIface))
 
-typedef struct _GcrCertificate GcrCertificate;
-typedef struct _GcrCertificateClass GcrCertificateClass;
-typedef struct _GcrCertificatePrivate GcrCertificatePrivate;
+typedef struct _GcrCertificate      GcrCertificate;
+typedef struct _GcrCertificateIface GcrCertificateIface;
 
-struct _GcrCertificate {
-	GObject parent;
-	GcrCertificatePrivate *pv;
-};
-
-struct _GcrCertificateClass {
-	GObjectClass parent_class;
-    
-	/* virtual  */
-    
-	const guchar* (*get_der_data) (GcrCertificate *self, gsize *n_length);
+struct _GcrCertificateIface {
+	GTypeInterface parent;
+	
+	const guchar* (*get_der_data)   (GcrCertificate *self, gsize *n_data);
+	
+	gpointer dummy1;
+	gpointer dummy2;
+	gpointer dummy3;
+	gpointer dummy5;
+	gpointer dummy6;
+	gpointer dummy7;
+	gpointer dummy8;
 };
 
 GType               gcr_certificate_get_type               (void);
-
-GcrCertificate*     gcr_certificate_new_for_data           (const guchar *data,
-                                                            gsize n_data);
 
 const guchar*       gcr_certificate_get_der_data           (GcrCertificate *self, 
                                                             gsize *n_data);

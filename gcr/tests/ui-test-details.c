@@ -2,6 +2,7 @@
 #include "config.h"
 
 #include "gcr-certificate-details-widget.h"
+#include "gcr-simple-certificate.h"
 
 #include <gtk/gtk.h>
 
@@ -17,7 +18,7 @@ test_details (void)
 	if (!g_file_get_contents ("test-data/der-certificate.crt", (gchar**)&data, &n_data, NULL))
 		g_assert_not_reached ();
 	
-	certificate = gcr_certificate_new_for_data (data, n_data);
+	certificate = gcr_simple_certificate_new (data, n_data);
 	g_assert (certificate);
 	g_free (data);
 	

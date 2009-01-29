@@ -24,23 +24,11 @@
 
 #include <glib.h>
 
-#ifndef GCR_API_SUBJECT_TO_CHANGE
-#error "This API has not yet reached stability." 
-#endif 
-
-struct _GP11Slot;
-
-#ifdef UNIMPLEMENTED
-enum {
-	GCR_INIT_NO_MODULES = 0x01,
-};
-
-void                 gcr_initialize                          (guint flags);
-
-void                 gcr_modules_register_loaded             (gpointer funcs);
-
-gboolean             gcr_modules_register_file               (const gchar *module_path,
-                                                              GError *error);
-#endif /* UNIMPLEMENTED */
+#include "gcr-certificate.h"
+#include "gcr-certificate-basics-widget.h"
+#include "gcr-certificate-details-widget.h"
+#include "gcr-importer.h"
+#include "gcr-parser.h"
+#include "gcr-types.h"
 
 #endif /* __GCR_H__ */

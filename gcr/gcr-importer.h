@@ -22,8 +22,8 @@
 #ifndef __GCR_IMPORTER_H__
 #define __GCR_IMPORTER_H__
 
-#include "gcr.h"
 #include "gcr-parser.h"
+#include "gcr-types.h"
 
 #include <glib-object.h>
 
@@ -54,7 +54,7 @@ struct _GcrImporterClass {
 	
 	/* signals */
 	
-	void (*imported) (GcrImporter *self, GP11Object *object);
+	void (*imported) (GcrImporter *self, struct _GP11Object *object);
 };
 
 GType                     gcr_importer_get_type               (void);
