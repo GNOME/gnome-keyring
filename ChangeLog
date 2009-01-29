@@ -1,5 +1,10 @@
 2009-01-28  Stef Walter  <stef@memberwebs.com>
 
+	* gcr/gcr-simple-certificate.c:
+	* pkcs11/gck/gck-data-der.c: Build fixes. 
+
+2009-01-28  Stef Walter  <stef@memberwebs.com>
+
 	* gcr/gcr.h:
 	* gcr/gcr.pc.in:
 	* gcr/gcr-certificate-basics-widget.h:

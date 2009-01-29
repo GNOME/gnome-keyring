@@ -46,7 +46,7 @@ G_DEFINE_TYPE_WITH_CODE (GcrSimpleCertificate, gcr_simple_certificate, G_TYPE_OB
 static void
 gcr_simple_certificate_init (GcrSimpleCertificate *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_CERTIFICATE, GcrSimpleCertificatePrivate);
+	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_SIMPLE_CERTIFICATE, GcrSimpleCertificatePrivate);
 }
 
 static void

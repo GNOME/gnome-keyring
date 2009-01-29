@@ -606,7 +606,7 @@ gck_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 		goto done;
 	}
 			
-	crypted = egg_asn1_read_value (asn, "encryptedData", &n_crypted, egg_secure_realloc);
+	crypted = egg_asn1_read_value (asn, "encryptedData", &n_crypted, (EggAllocator)egg_secure_realloc);
 	if (!crypted)
 		goto done;
 	
