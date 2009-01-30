@@ -67,7 +67,7 @@ $(service_DATA): $(service_in_files) Makefile
 	@sed -e "s|\@BINDIR\@|$(bindir)|" $< > $@
 
 desktop_in_files = gnome-keyring-daemon.desktop.in
-desktopdir       = $(datadir)/gnome/autostart
+desktopdir       = $(sysconfdir)/xdg/autostart
 desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
 
 @INTLTOOL_DESKTOP_RULE@
