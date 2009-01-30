@@ -716,7 +716,7 @@ initialize_from_valist (GP11Allocator allocator, gulong type, va_list va)
 	attrs = gp11_attributes_new_full (allocator);
 	
 	/* No attributes */
-	if (type == (gulong)-1)
+	if (type == GP11_INVALID)
 		return attrs;
 	
 	do {
@@ -751,7 +751,7 @@ initialize_from_valist (GP11Allocator allocator, gulong type, va_list va)
 		
 		type = va_arg (va, gulong);
 			
-	} while (type != (gulong)-1);
+	} while (type != GP11_INVALID);
 		
 	return attrs;
 }

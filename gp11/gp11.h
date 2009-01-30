@@ -74,11 +74,11 @@ enum {
 	GP11_DATE = -4
 };
 
-#define GP11_INVALID -1UL
+#define GP11_INVALID G_MAXULONG
 
 /* Used on varargs functions that should end with GP11_INVALID */
 #ifdef NOT_YET_SUPPORTED
-#define GP11_INVALID_TERMINATED __attribute__((__sentinel__(-1UL)))
+#define GP11_INVALID_TERMINATED __attribute__((__sentinel__(G_MAXULONG)))
 #else
 #define GP11_INVALID_TERMINATED
 #endif

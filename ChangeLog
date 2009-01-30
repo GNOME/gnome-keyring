@@ -1,5 +1,11 @@
 2009-01-29  Stef Walter  <stef@memberwebs.com>
 
+	* gp11/gp11.h:
+	* gp11/gp11-attributes.c: Use a more definite value for 
+	our varargs termination. Fixes bug #569769
+	
+2009-01-29  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon-io.c:
 	* daemon/ui/gkr-ask-request.c:
 	* daemon/ui/gkr-ask-tool.c:
