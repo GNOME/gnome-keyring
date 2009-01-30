@@ -202,7 +202,7 @@ proto_read_byte_array (CallState *cs, CK_BYTE_PTR* array, CK_ULONG* n_array)
 	GckRpcMessage *msg;
 	const unsigned char *data;
 	unsigned char valid;
-	uint32_t n_data;
+	size_t n_data;
 	
 	assert (cs);
 	

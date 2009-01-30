@@ -758,7 +758,7 @@ proto_read_byte_array (GckRpcMessage *msg, CK_BYTE_PTR arr,
 	
 	/* If not valid, then just the length is encoded, this can signify CKR_BUFFER_TOO_SMALL */
 	if (!valid) {
-		if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &vlen))
+		if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, (uint32_t *)&vlen))
 			return PARSE_ERROR;
 		
 		*len = vlen;
