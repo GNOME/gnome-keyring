@@ -1,6 +1,12 @@
 2009-01-29  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:
+	* gp11/pkcs11.h: Fix size problems when using constants 
+	with varargs. Fixes bug #569736. Research by Christophe Fergeau
+
+2009-01-29  Stef Walter  <stef@memberwebs.com>
+
+	* gp11/gp11.h:
 	* gp11/gp11-attributes.c: Use a more definite value for 
 	our varargs termination. Fixes bug #569769
 	

@@ -67,12 +67,11 @@ typedef struct GP11Attribute {
  * Used with var args in place of a length to denote that this type
  * of value follows.
  */
-enum {
-	GP11_BOOLEAN = -1,
-	GP11_ULONG = -2,
-	GP11_STRING = -3,
-	GP11_DATE = -4
-};
+
+#define GP11_BOOLEAN  ((gssize)-1)
+#define GP11_ULONG    ((gssize)-2)
+#define GP11_STRING   ((gssize)-3)
+#define GP11_DATE     ((gssize)-4)
 
 #define GP11_INVALID G_MAXULONG
 
