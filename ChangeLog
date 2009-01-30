@@ -1,3 +1,12 @@
+2009-01-29  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon-io.c:
+	* daemon/ui/gkr-ask-request.c:
+	* daemon/ui/gkr-ask-tool.c:
+	* pkcs11/gck/gck-data-file.c: Fix invalid checks for EINTR
+	and EAGAIN while reading and writing. Fixes bug #569786
+	Caught by James Henstridge
+
 2009-01-28  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-simple-certificate.c:

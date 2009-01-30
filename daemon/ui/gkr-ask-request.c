@@ -514,7 +514,7 @@ read_until_end (GkrAskRequest *ask)
 
 		/* Got an error */
 		if (res < 0) {
-			if (errno == EINTR && errno == EAGAIN) 
+			if (errno == EINTR || errno == EAGAIN) 
 				continue;
 			g_warning ("couldn't read from ask tool: %s", g_strerror (errno));
 			break;
@@ -609,7 +609,7 @@ send_all_data (GkrAskRequest *ask, const gchar *buf, gsize len)
 
 		/* Got an error */
 		if (res < 0) {
-			if (errno == EINTR && errno == EAGAIN) 
+			if (errno == EINTR || errno == EAGAIN) 
 				continue;
 			g_warning ("couldn't write data to ask tool: %s", g_strerror (errno));
 			break;

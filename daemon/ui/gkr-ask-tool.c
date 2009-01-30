@@ -203,7 +203,7 @@ write_output (const gchar *data, gsize len)
 	while (len > 0) {
 		res = write (1, data, len);
 		if (res <= 0) {
-			if (errno == EAGAIN && errno == EINTR)
+			if (errno == EAGAIN || errno == EINTR)
 				continue;
 			g_warning ("couldn't write dialog response to output: %s",
 			           g_strerror (errno));

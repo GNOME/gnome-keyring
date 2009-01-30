@@ -130,7 +130,7 @@ yield_and_read_all (int fd, guchar *buf, int len)
 		gkr_async_end_concurrent ();
 		
 		if (res <= 0) {
-			if (errno == EAGAIN && errno == EINTR)
+			if (errno == EAGAIN || errno == EINTR)
 				continue;
 
 			g_warning ("couldn't read %u bytes from client: %s", all, 
@@ -165,7 +165,7 @@ yield_and_write_all (int fd, const guchar *buf, int len)
 		gkr_async_end_concurrent ();
 		
 		if (res <= 0) {
-			if (errno == EAGAIN && errno == EINTR)
+			if (errno == EAGAIN || errno == EINTR)
 				continue;
 
 			g_warning ("couldn't write %u bytes to client: %s", all, 

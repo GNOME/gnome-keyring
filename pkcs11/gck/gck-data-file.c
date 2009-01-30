@@ -137,7 +137,7 @@ read_all_bytes (int fd, guchar *buf, gsize len)
 		
 		res = read (fd, buf, len);
 		if (res <= 0) {
-			if (errno == EAGAIN && errno == EINTR)
+			if (errno == EAGAIN || errno == EINTR)
 				continue;
 			if (res < 0 || len != all)
 				g_warning ("couldn't read %u bytes from store file: %s", 
@@ -163,7 +163,7 @@ write_all_bytes (int fd, const guchar *buf, gsize len)
 		res = write (fd, buf, len);
 
 		if (res <= 0) {
-			if (errno == EAGAIN && errno == EINTR)
+			if (errno == EAGAIN || errno == EINTR)
 				continue;
 			g_warning ("couldn't write %u bytes to store file: %s", 
 			           (guint)all, res < 0 ? g_strerror (errno) : "");
