@@ -25,6 +25,8 @@
 
 #include "run-auto-test.h"
 
+#include "common/gkr-location.h"
+
 #include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring.h"
@@ -46,6 +48,23 @@
  * 
  * Tests be run in the order specified here.
  */
+
+static GQuark
+location_for_test_data (const gchar *filename)
+{
+	GQuark quark;
+	gchar *dir;
+	gchar *path;
+	
+	dir = g_get_current_dir ();
+	g_assert (dir);
+	
+	path = g_build_filename (dir, "test-data", filename, NULL);
+	quark = gkr_location_from_path (path);
+	g_free (path);
+	
+	return quark;
+}
  
 static void
 validate_keyring_contents (GkrKeyring *keyring, CuTest *cu)
@@ -172,4 +191,45 @@ void unit_test_keyring_parse_plain (CuTest *cu)
 	CuAssert (cu, "keyring should not be locked", !keyring->locked);
 	
 	validate_keyring_contents (keyring, cu);
+}
+
+void unit_test_keyring_double_lock_encrypted (CuTest *cu)
+{
+	GkrKeyring *encrypted;
+	gboolean ret;
+	
+	encrypted = gkr_keyring_new ("encrypted", location_for_test_data ("encrypted.keyring"));
+	encrypted->password = egg_secure_strdup ("my-keyring-password");
+	ret = gkr_keyring_update_from_disk (encrypted);
+	CuAssert (cu, "couldn't parse generated textual data", ret == TRUE);
+	
+	/* Lock it */
+	gkr_keyring_lock (encrypted);
+	CuAssert (cu, "locked", encrypted->locked);
+	
+	/* Should succeed */
+	gkr_keyring_lock (encrypted);
+	CuAssert (cu, "locked", encrypted->locked);
+	
+	g_object_unref (encrypted);
+}
+
+void unit_test_keyring_double_lock_plain (CuTest *cu)
+{
+	GkrKeyring *keyring;
+	gboolean ret;
+	
+	keyring = gkr_keyring_new ("plain", location_for_test_data ("plain.keyring"));
+	ret = gkr_keyring_update_from_disk (keyring);
+	CuAssert (cu, "couldn't parse generated textual data", ret == TRUE);
+
+	/* Lock it, shouldn't actually work, no way to lock */
+	gkr_keyring_lock (keyring);
+	CuAssert (cu, "locked", !keyring->locked);
+	
+	/* Shouldn't crash */
+	gkr_keyring_lock (keyring);
+	CuAssert (cu, "locked", !keyring->locked);
+	
+	g_object_unref (keyring);
 }

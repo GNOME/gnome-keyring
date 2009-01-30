@@ -1,16 +1,22 @@
-2009-01-29  Stef Walter  <stef@memberwebs.com>
+2009-01-30  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/keyrings/gkr-keyring.c:
+	* daemon/keyrings/tests/unit-test-keyring-file.c: Don't assert when 
+	trying to lock a keyring without a password. Fixes bug #569253
+
+2009-01-30  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:
 	* gp11/pkcs11.h: Fix size problems when using constants 
 	with varargs. Fixes bug #569736. Research by Christophe Fergeau
 
-2009-01-29  Stef Walter  <stef@memberwebs.com>
+2009-01-30  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11.h:
 	* gp11/gp11-attributes.c: Use a more definite value for 
 	our varargs termination. Fixes bug #569769
 	
-2009-01-29  Stef Walter  <stef@memberwebs.com>
+2009-01-30  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon-io.c:
 	* daemon/ui/gkr-ask-request.c:

@@ -501,10 +501,12 @@ gkr_keyring_lock (GkrKeyring *keyring)
 	if (!keyring->location)
 		return TRUE;
 
-	g_assert (keyring->password != NULL);
+	/* Password will be null for textual keyrings */
+	if (keyring->password != NULL) {
+		egg_secure_strfree (keyring->password);
+		keyring->password = NULL;
+	}
 	
-	egg_secure_strfree (keyring->password);
-	keyring->password = NULL;
 	if (!gkr_keyring_update_from_disk (keyring)) {
 		/* Failed to re-read, remove the keyring */
 		g_warning ("Couldn't re-read keyring %s\n", keyring->keyring_name);
@@ -520,7 +522,7 @@ gkr_keyring_unlock (GkrKeyring *keyring, const gchar *password)
 	if (!keyring->locked)
 		return TRUE;
 		
-	g_assert (keyring->password == NULL);
+	g_return_val_if_fail (keyring->password == NULL, FALSE);
 		
 	keyring->password = egg_secure_strdup (password);
 	if (!gkr_keyring_update_from_disk (keyring)) {
