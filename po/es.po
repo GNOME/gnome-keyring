@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2009-01-22 22:53+0000\n"
-"PO-Revision-Date: 2009-01-23 16:33+0100\n"
+"POT-Creation-Date: 2009-01-28 01:38+0000\n"
+"PO-Revision-Date: 2009-01-31 15:21+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -179,7 +179,7 @@ msgstr "Introduzca la contraseña para desbloquear el depósito «%s»"
 msgid "Unlock Keyring"
 msgstr "Desbloquear depósito"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:136
+#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Desbloquear este depósito de claves automáticamente al iniciar sesión."
 
@@ -504,15 +504,15 @@ msgid "The system wants to import '%s', but it is locked"
 msgstr "El sistema quiere importar «%s», pero está bloqueado"
 
 #. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:94
+#: ../daemon/pk/gkr-pk-index.c:93
 msgid "Create Storage for Key Information"
 msgstr "Crear depósito para la información de la clave"
 
-#: ../daemon/pk/gkr-pk-index.c:95
+#: ../daemon/pk/gkr-pk-index.c:94
 msgid "Choose password to protect storage"
 msgstr "Elija la contraseña para el depósito"
 
-#: ../daemon/pk/gkr-pk-index.c:98
+#: ../daemon/pk/gkr-pk-index.c:97
 msgid ""
 "The system wants to store information about your keys and certificates. In "
 "order to protect this information, choose a password with which it will be "
@@ -523,15 +523,15 @@ msgstr ""
 "bloquearán."
 
 #. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:125
+#: ../daemon/pk/gkr-pk-index.c:124
 msgid "Unlock Storage for Key Information"
 msgstr "Desbloquear el depósito para la información de la clave"
 
-#: ../daemon/pk/gkr-pk-index.c:126
+#: ../daemon/pk/gkr-pk-index.c:125
 msgid "Enter password to unlock storage"
 msgstr "Introduzca la contraseña para desbloquear el depósito"
 
-#: ../daemon/pk/gkr-pk-index.c:129
+#: ../daemon/pk/gkr-pk-index.c:128
 msgid ""
 "The system wants to access information about your keys and certificates, but "
 "it is locked."
@@ -547,7 +547,8 @@ msgstr "Certificado"
 msgid "Private Key"
 msgstr "Clave privada"
 
-#: ../daemon/pk/gkr-pk-object.c:893 ../gcr/gcr-parser.c:202
+#: ../daemon/pk/gkr-pk-object.c:893
+#: ../gcr/gcr-certificate-details-widget.c:297 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Clave privada"
 
@@ -767,6 +768,245 @@ msgstr "Permitir _una vez"
 msgid "_Always Allow"
 msgstr "Permitir _siempre"
 
+#: ../egg/egg-asn1.c:794
+msgid "Domain Component"
+msgstr "Componente del dominio"
+
+#: ../egg/egg-asn1.c:795
+msgid "User ID"
+msgstr "ID del usuario"
+
+#: ../egg/egg-asn1.c:797
+msgid "Email"
+msgstr "Correo-e"
+
+#: ../egg/egg-asn1.c:801
+msgid "Date of Birth"
+msgstr "Fecha nacimiento"
+
+#: ../egg/egg-asn1.c:802
+msgid "Place of Birth"
+msgstr "Lugar de nacimiento"
+
+#: ../egg/egg-asn1.c:803
+msgid "Gender"
+msgstr "Sexo"
+
+#: ../egg/egg-asn1.c:804
+msgid "Country of Citizenship"
+msgstr "País de nacionalidad"
+
+#: ../egg/egg-asn1.c:805
+msgid "Country of Residence"
+msgstr "País de residencia"
+
+#: ../egg/egg-asn1.c:807
+msgid "Common Name"
+msgstr "Nombre común"
+
+#: ../egg/egg-asn1.c:808
+msgid "Surname"
+msgstr "Apellido"
+
+#: ../egg/egg-asn1.c:809 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:259
+msgid "Serial Number"
+msgstr "Número de serie"
+
+#: ../egg/egg-asn1.c:810
+msgid "Country"
+msgstr "País"
+
+#: ../egg/egg-asn1.c:811
+msgid "Locality"
+msgstr "Localidad"
+
+#: ../egg/egg-asn1.c:812
+msgid "State"
+msgstr "Estado"
+
+#: ../egg/egg-asn1.c:813
+msgid "Street"
+msgstr "Calle"
+
+#: ../egg/egg-asn1.c:814
+msgid "Organization"
+msgstr "Organización"
+
+#: ../egg/egg-asn1.c:815
+msgid "Organizational Unit"
+msgstr "Unidad de organización"
+
+#: ../egg/egg-asn1.c:816
+msgid "Title"
+msgstr "Tratamiento"
+
+#: ../egg/egg-asn1.c:817
+msgid "Telephone Number"
+msgstr "Número de teléfono"
+
+#: ../egg/egg-asn1.c:818
+msgid "Given Name"
+msgstr "Nombre de pila"
+
+#: ../egg/egg-asn1.c:819
+msgid "Initials"
+msgstr "Iniciales"
+
+#: ../egg/egg-asn1.c:820
+#| msgid "The operation failed"
+msgid "Generation Qualifier"
+msgstr "Generador del calificador"
+
+#: ../egg/egg-asn1.c:821
+msgid "DN Qualifier"
+msgstr "Calificador del nombre de dominio"
+
+#: ../egg/egg-asn1.c:822
+msgid "Pseudonym"
+msgstr "Seudónimo"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>No es parte del certificado</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>desconocido</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+#| msgid "Import certificate"
+msgid "<Not Part of Certificate>"
+msgstr "<No es parte del certificado>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Huellas</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Emitido por</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Emitido para</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>Este certificado ha sido verificado para los siguientes usos:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Validez</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "Nombre común (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+#| msgid "Import certificate"
+msgid "Email Recipient Certificate"
+msgstr "Certificado del destinatario del correo-e"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+#| msgid "Unnamed Certificate"
+msgid "Email Signer Certificate"
+msgstr "Certificado del firmante del correo-e"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "Caduca el"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "Emitido el"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "Huella MD5"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "Organización (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Unidad organizativa (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "Huella SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+#| msgid "Certificate"
+msgid "SSL Client Certificate"
+msgstr "Certificado de cliente SSL"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+#| msgid "Certificate"
+msgid "SSL Server Certificate"
+msgstr "Certificado de servidor SSL"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:240
+msgid "Subject Name"
+msgstr "Nombre del asunto"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:244
+msgid "Issuer Name"
+msgstr "Nombre del emisor"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:248
+#| msgid "Certificate"
+msgid "Issued Certificate"
+msgstr "Certificado emitido"
+
+#: ../gcr/gcr-certificate-details-widget.c:253
+msgid "Version"
+msgstr "Versión"
+
+#: ../gcr/gcr-certificate-details-widget.c:266
+msgid "Not Valid Before"
+msgstr "No es válido antes de"
+
+#: ../gcr/gcr-certificate-details-widget.c:271
+msgid "Not Valid After"
+msgstr "No es válido después de"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:276
+#: ../gcr/gcr-certificate-details-widget.c:284
+msgid "Signature"
+msgstr "Firma"
+
+#. TODO: Complete Signature algorithm, and params
+#: ../gcr/gcr-certificate-details-widget.c:279
+msgid "Signature Algorithm"
+msgstr "Algoritmo de firma"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:288
+#| msgid "Public Key"
+msgid "Public Key Info"
+msgstr "Información de la clave pública"
+
+#. TODO: Complete algorithm, params, key size
+#: ../gcr/gcr-certificate-details-widget.c:291
+msgid "Key Algorithm"
+msgstr "Clave del algoritmo"
+
+#: ../gcr/gcr-certificate-details-widget.c:292
+msgid "Key Size"
+msgstr "Tamaño de la clave"
+
+#. TODO: Implement extensions
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:303
+msgid "Fingerprints"
+msgstr "Huellas"
+
 #: ../gcr/gcr-import-dialog.glade.h:1
 msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 msgstr "<span size='large' weight='bold'>Importar certificados y claves</span>"
@@ -785,7 +1025,6 @@ msgid "No location available to import to"
 msgstr "No existe una ubicación disponible en la que importar"
 
 #: ../gcr/gcr-importer.c:328
-#| msgid "Import certificate"
 msgid "Import Certificates/Keys"
 msgstr "Importar certificados/claves"
 
@@ -795,12 +1034,10 @@ msgstr ""
 "Elija una ubicación donde almacenar los certificados/claves importados."
 
 #: ../gcr/gcr-importer.c:372
-#| msgid "The system wants to import the private key '%s', but it is locked"
 msgid "In order to import the private key, it must be unlocked"
 msgstr "Para poder importar la clave privada, se debe desbloquear"
 
 #: ../gcr/gcr-importer.c:374
-#| msgid "The system wants to import the certificate '%s', but it is locked"
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "Para poder importar el certificado, se debe desbloquear"
 
@@ -810,19 +1047,16 @@ msgstr "Para poder importar los datos, se debe desbloquear"
 
 #: ../gcr/gcr-importer.c:379
 #, c-format
-#| msgid "The system wants to import the private key '%s', but it is locked"
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "Para poder importar la clave privada «%s», se debe desbloquear"
 
 #: ../gcr/gcr-importer.c:381
 #, c-format
-#| msgid "The system wants to import the certificate '%s', but it is locked"
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "Para poder impotar el certificado «%s», se debe desbloquear"
 
 #: ../gcr/gcr-importer.c:383
 #, c-format
-#| msgid "The system wants to import '%s', but it is locked"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Para poder importar «%s», se debe desbloquear"
 
