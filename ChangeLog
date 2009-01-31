@@ -1,3 +1,8 @@
+2009-01-31  Theppitak Karoonboonyanan  <thep@linux.thai.net>
+
+	* pkcs11/gck/Makefile.am: Fix rules to allow non-source-dir builds.
+	Fixes bug #569938
+
 2009-01-30  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/rpc-layer/gck-rpc-dispatch.c:
