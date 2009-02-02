@@ -1,3 +1,12 @@
+Changes in version 2.25.90 are:
+* Add certificate UI bit to gcr library.
+* Can now again clear the cached authentication from an SSH key.
+* Add some additional helper functions to gp11 library. 
+* Fix some corner cases in signal handling. [James Henstridge]
+* Don't crash when trying to lock keyrings that don't have a password.
+* Fix problems running on 64-bit systems. [Christophe Fergeau]
+* Build fixes [Theppitak Karoonboonyanan, Saleem Abdulrasool]
+
 Changes in version 2.25.5 are:
 * Refactor out gcr library for crypto UI and related tasks.
 * Code refactoring.

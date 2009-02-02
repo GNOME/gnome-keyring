@@ -29,10 +29,10 @@ build_header()
 	echo
 
 	for _file in $@; do
-		sed -ne 's/.*DEFINE_SETUP(\([^)]\+\))/DECLARE_SETUP(\1);/p' $_file
-		sed -ne 's/.*DEFINE_TEARDOWN(\([^)]\+\))/DECLARE_TEARDOWN(\1);/p' $_file
-		sed -ne 's/.*DEFINE_TEST(\([^)]\+\))/DECLARE_TEST(\1);/p' $_file
-		# sed -ne 's/.*DEFINE_ABORT(\([^)]\+\))/DECLARE_ABORT(\1);/p' $_file
+		sed -ne 's/.*DEFINE_SETUP[ 	]*(\([^)]\+\))/DECLARE_SETUP(\1);/p' $_file
+		sed -ne 's/.*DEFINE_TEARDOWN[ 	]*(\([^)]\+\))/DECLARE_TEARDOWN(\1);/p' $_file
+		sed -ne 's/.*DEFINE_TEST[ 	]*(\([^)]\+\))/DECLARE_TEST(\1);/p' $_file
+		# sed -ne 's/.*DEFINE_ABORT[ 	]*(\([^)]\+\))/DECLARE_ABORT(\1);/p' $_file
 	done
 	echo
 }
