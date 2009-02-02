@@ -110,7 +110,7 @@ DEFINE_TEST(create_object)
 	                                     CKA_LABEL, GP11_STRING, "TEST LABEL",
 	                                     CKA_TOKEN, GP11_BOOLEAN, CK_FALSE,
 	                                     CKA_VALUE, 4, "BLAH",
-	                                     -1);
+	                                     GP11_INVALID);
 	SUCCESS_RES (object, err);
 	g_assert (GP11_IS_OBJECT (object));
 	
@@ -124,7 +124,7 @@ DEFINE_TEST(create_object)
 	                              CKA_LABEL, GP11_STRING, "TEST LABEL",
 	                              CKA_TOKEN, GP11_BOOLEAN, CK_FALSE,
 	                              CKA_VALUE, 4, "BLAH",
-	                              -1);
+	                              GP11_INVALID);
 	
 	object = gp11_session_create_object_full (session, attrs, NULL, &err);
 	g_assert (GP11_IS_OBJECT (object));
@@ -163,7 +163,7 @@ DEFINE_TEST(destroy_object)
 	                                     CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                                     CKA_LABEL, GP11_STRING, "TEST OBJECT",
 	                                     CKA_TOKEN, GP11_BOOLEAN, CK_TRUE,
-	                                     -1);
+	                                     GP11_INVALID);
 	SUCCESS_RES (object, err);
 	g_assert (GP11_IS_OBJECT (object));
 	
@@ -179,7 +179,7 @@ DEFINE_TEST(destroy_object)
 	                                     CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                                     CKA_LABEL, GP11_STRING, "TEST OBJECT",
 	                                     CKA_TOKEN, GP11_BOOLEAN, CK_TRUE,
-	                                     -1);
+	                                     GP11_INVALID);
 	SUCCESS_RES (object, err);
 	g_assert (GP11_IS_OBJECT (object));
 	
@@ -195,7 +195,7 @@ DEFINE_TEST(destroy_object)
 	                                     CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                                     CKA_LABEL, GP11_STRING, "TEST OBJECT",
 	                                     CKA_TOKEN, GP11_BOOLEAN, CK_TRUE,
-	                                     -1);
+	                                     GP11_INVALID);
 	SUCCESS_RES (object, err);
 	g_assert (GP11_IS_OBJECT (object));
 	
@@ -222,7 +222,7 @@ DEFINE_TEST(get_attributes)
 	gchar *value = NULL;
 	
 	/* Simple */
-	attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);
+	attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, GP11_INVALID);
 	SUCCESS_RES (attrs, err);
 	if (attrs != NULL) {
 		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
@@ -232,7 +232,7 @@ DEFINE_TEST(get_attributes)
 	gp11_attributes_unref (attrs);
 
 	/* Full */
-	attrs = gp11_attributes_new_empty (CKA_CLASS, CKA_LABEL, -1);
+	attrs = gp11_attributes_new_empty (CKA_CLASS, CKA_LABEL, GP11_INVALID);
 	attrs_ret = gp11_object_get_full (object, attrs, NULL, &err);
 	SUCCESS_RES (attrs_ret, err);
 	if (attrs_ret != NULL) {
@@ -244,7 +244,7 @@ DEFINE_TEST(get_attributes)
 	gp11_attributes_unref (attrs);
 
 	/* Async */
-	attrs = gp11_attributes_new_empty (CKA_CLASS, CKA_LABEL, -1);
+	attrs = gp11_attributes_new_empty (CKA_CLASS, CKA_LABEL, GP11_INVALID);
 	gp11_object_get_async (object, attrs, NULL, fetch_async_result, &result);
 	WAIT_UNTIL (result);
 	g_assert (result != NULL);
@@ -315,10 +315,10 @@ DEFINE_TEST(set_attributes)
 	ret = gp11_object_set (object, &err, 
 	                       CKA_CLASS, GP11_ULONG, 5, 
 	                       CKA_LABEL, GP11_STRING, "CHANGE ONE", 
-	                       -1);
+	                       GP11_INVALID);
 	SUCCESS_RES (ret, err);
 	if (ret) {
-		attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);
+		attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, GP11_INVALID);
 		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == 5);
 		g_assert (gp11_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "CHANGE ONE") == 0);
 		g_free (value); value = NULL;
@@ -327,14 +327,14 @@ DEFINE_TEST(set_attributes)
 
 	templ = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, 6,
 	                              CKA_LABEL, GP11_STRING, "CHANGE TWO",
-	                              -1);
+	                              GP11_INVALID);
 	
 	/* Full */
 	ret = gp11_object_set_full (object, templ, NULL, &err);
 	gp11_attributes_unref (templ);
 	SUCCESS_RES (ret, err);
 	if (ret) {
-		attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);
+		attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, GP11_INVALID);
 		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == 6);
 		g_assert (gp11_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "CHANGE TWO") == 0);
 		g_free (value); value = NULL;
@@ -343,7 +343,7 @@ DEFINE_TEST(set_attributes)
 
 	templ = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, 7,
 	                              CKA_LABEL, GP11_STRING, "CHANGE THREE",
-	                              -1);
+	                              GP11_INVALID);
 
 	/* Async */
 	gp11_object_set_async (object, templ, NULL, fetch_async_result, &result);
@@ -354,7 +354,7 @@ DEFINE_TEST(set_attributes)
 	g_object_unref (result);
 	SUCCESS_RES (ret, err);
 	if (ret) {
-		attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, -1);
+		attrs = gp11_object_get (object, &err, CKA_CLASS, CKA_LABEL, GP11_INVALID);
 		g_assert (gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == 7);
 		g_assert (gp11_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "CHANGE THREE") == 0);
 		g_free (value); value = NULL;
@@ -373,17 +373,17 @@ DEFINE_TEST(find_objects)
 	testobj = gp11_session_create_object (session, &err, 
 	                                      CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                                      CKA_LABEL, GP11_STRING, "UNIQUE LABEL",
-	                                      -1);
+	                                      GP11_INVALID);
 	g_object_unref (testobj);
 
 	testobj = gp11_session_create_object (session, &err, 
 	                                      CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                                      CKA_LABEL, GP11_STRING, "OTHER LABEL",
-	                                      -1);
+	                                      GP11_INVALID);
 	g_object_unref (testobj);
 
 	/* Simple, "TEST LABEL" */
-	objects = gp11_session_find_objects (session, &err, CKA_LABEL, GP11_STRING, "UNIQUE LABEL", -1);
+	objects = gp11_session_find_objects (session, &err, CKA_LABEL, GP11_STRING, "UNIQUE LABEL", GP11_INVALID);
 	SUCCESS_RES (objects, err);
 	g_assert (g_list_length (objects) == 1);
 	gp11_list_unref_free (objects);

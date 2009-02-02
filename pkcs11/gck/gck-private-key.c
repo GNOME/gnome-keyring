@@ -82,7 +82,7 @@ create_rsa_private (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
 	
 	gck_attributes_consume (attrs, n_attrs, CKA_MODULUS, CKA_PUBLIC_EXPONENT, 
 	                        CKA_PRIVATE_EXPONENT, CKA_PRIME_1, CKA_PRIME_2, 
-	                        CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT, -1);
+	                        CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT, G_MAXULONG);
 	ret = CKR_OK;
 
 done:
@@ -130,7 +130,7 @@ create_dsa_private (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
 	}
 
 	gck_attributes_consume (attrs, n_attrs, CKA_PRIME, CKA_SUBPRIME, 
-	                        CKA_BASE, CKA_VALUE, -1);
+	                        CKA_BASE, CKA_VALUE, G_MAXULONG);
 	ret = CKR_OK;
 
 done:
@@ -369,7 +369,7 @@ gck_private_key_create (GckSession *session, GckTransaction *transaction,
 		return;
 	}
 		
- 	gck_attributes_consume (attrs, n_attrs, CKA_KEY_TYPE, CKA_CLASS, -1);
+ 	gck_attributes_consume (attrs, n_attrs, CKA_KEY_TYPE, CKA_CLASS, G_MAXULONG);
 
  	switch (type) {
 	case CKK_RSA:

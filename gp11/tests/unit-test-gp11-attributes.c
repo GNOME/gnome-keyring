@@ -350,11 +350,11 @@ DEFINE_TEST(newv_attributes)
 {
 	GDate *date = g_date_new_dmy (11, 12, 2008);
 	GP11Attributes *attrs;
-	attrs = gp11_attributes_newv (0, GP11_BOOLEAN, TRUE, 
-	                              101, GP11_ULONG, 888,
-	                              202, GP11_STRING, "string",
-	                              303, GP11_DATE, date,
-	                              404, N_ATTR_DATA, ATTR_DATA,
+	attrs = gp11_attributes_newv (0UL, GP11_BOOLEAN, TRUE, 
+	                              101UL, GP11_ULONG, 888,
+	                              202UL, GP11_STRING, "string",
+	                              303UL, GP11_DATE, date,
+	                              404UL, N_ATTR_DATA, ATTR_DATA,
 	                              GP11_INVALID);
 	g_date_free (date);
 
@@ -362,13 +362,13 @@ DEFINE_TEST(newv_attributes)
 	gp11_attributes_unref (attrs);
 	
 	/* An empty one */
-	attrs = gp11_attributes_newv (-1);
+	attrs = gp11_attributes_newv (GP11_INVALID);
 	gp11_attributes_unref (attrs);
 }
 
 DEFINE_TEST(new_empty_attributes)
 {
-	GP11Attributes *attrs = gp11_attributes_new_empty (101, 202, 303, 404, -1);
+	GP11Attributes *attrs = gp11_attributes_new_empty (101UL, 202UL, 303UL, 404UL, GP11_INVALID);
 	GP11Attribute *attr;
 	guint i;
 	
@@ -400,12 +400,12 @@ DEFINE_TEST(new_valist_attributes)
 	GDate *date = g_date_new_dmy (11, 12, 2008);
 	
 	attrs = help_attributes_valist (232434243, /* Not used */
-	                                0, GP11_BOOLEAN, TRUE, 
-	                                101, GP11_ULONG, 888,
-	                                202, GP11_STRING, "string",
-	                                303, GP11_DATE, date,
-	                                404, N_ATTR_DATA, ATTR_DATA,
-	                                -1);
+	                                0UL, GP11_BOOLEAN, TRUE, 
+	                                101UL, GP11_ULONG, 888,
+	                                202UL, GP11_STRING, "string",
+	                                303UL, GP11_DATE, date,
+	                                404UL, N_ATTR_DATA, ATTR_DATA,
+	                                GP11_INVALID);
 	
 	g_date_free (date);
 	test_attributes_contents (attrs, FALSE);
@@ -418,8 +418,8 @@ DEFINE_ABORT(bad_length)
 	GP11Attributes *attrs;
 	
 	/* We should catch this with a warning */
-	attrs = gp11_attributes_newv (1, G_MAXSSIZE + 500U, GP11_ULONG, "invalid data",
-	                              -1);
+	attrs = gp11_attributes_newv (1UL, G_MAXSSIZE + 500U, GP11_ULONG, "invalid data",
+	                              GP11_INVALID);
 	
 	gp11_attributes_unref (attrs);
 }
@@ -430,14 +430,14 @@ DEFINE_TEST(add_data_attributes)
 	GP11Attributes *attrs;
 	GDate *date = g_date_new_dmy (11, 12, 2008);
 	attrs = gp11_attributes_new ();
-	gp11_attributes_add_boolean (attrs, 0, TRUE);
-	gp11_attributes_add_ulong (attrs, 101, 888);
-	gp11_attributes_add_string (attrs, 202, "string");
-	gp11_attributes_add_date (attrs, 303, date);
+	gp11_attributes_add_boolean (attrs, 0UL, TRUE);
+	gp11_attributes_add_ulong (attrs, 101UL, 888);
+	gp11_attributes_add_string (attrs, 202UL, "string");
+	gp11_attributes_add_date (attrs, 303UL, date);
 	g_date_free (date);
-	gp11_attributes_add_data (attrs, 404, ATTR_DATA, N_ATTR_DATA);
-	gp11_attributes_add_invalid (attrs, 505);
-	gp11_attributes_add_empty (attrs, 606);
+	gp11_attributes_add_data (attrs, 404UL, ATTR_DATA, N_ATTR_DATA);
+	gp11_attributes_add_invalid (attrs, 505UL);
+	gp11_attributes_add_empty (attrs, 606UL);
 	test_attributes_contents (attrs, TRUE);
 	gp11_attributes_unref (attrs);
 }
@@ -450,32 +450,32 @@ DEFINE_TEST(add_attributes)
 	GDate *date = g_date_new_dmy (11, 12, 2008);
 	attrs = gp11_attributes_new ();
 	
-	gp11_attribute_init_boolean (&attr, 0, TRUE);
+	gp11_attribute_init_boolean (&attr, 0UL, TRUE);
 	gp11_attributes_add (attrs, &attr);
 	gp11_attribute_clear (&attr);
 	
-	gp11_attribute_init_ulong (&attr, 101, 888);
+	gp11_attribute_init_ulong (&attr, 101UL, 888);
 	gp11_attributes_add (attrs, &attr);
 	gp11_attribute_clear (&attr);
 	
-	gp11_attribute_init_string (&attr, 202, "string");
+	gp11_attribute_init_string (&attr, 202UL, "string");
 	gp11_attributes_add (attrs, &attr);
 	gp11_attribute_clear (&attr);
 
-	gp11_attribute_init_date (&attr, 303, date);
+	gp11_attribute_init_date (&attr, 303UL, date);
 	gp11_attributes_add (attrs, &attr);
 	gp11_attribute_clear (&attr);
 	g_date_free (date);
 	
-	gp11_attribute_init (&attr, 404, ATTR_DATA, N_ATTR_DATA);
+	gp11_attribute_init (&attr, 404UL, ATTR_DATA, N_ATTR_DATA);
 	gp11_attributes_add (attrs, &attr);
 	gp11_attribute_clear (&attr);
 	
-	gp11_attribute_init_invalid (&attr, 505);
+	gp11_attribute_init_invalid (&attr, 505UL);
 	gp11_attributes_add (attrs, &attr);
 	gp11_attribute_clear (&attr);
 
-	gp11_attribute_init_empty (&attr, 606);
+	gp11_attribute_init_empty (&attr, 606UL);
 	gp11_attributes_add (attrs, &attr);
 	gp11_attribute_clear (&attr);
 
@@ -493,33 +493,33 @@ DEFINE_TEST(find_attributes)
 	gchar *svalue;
 	
 	GP11Attributes *attrs;
-	attrs = gp11_attributes_newv (0, GP11_BOOLEAN, TRUE, 
-	                              101, GP11_ULONG, 888,
-	                              202, GP11_STRING, "string",
-	                              303, GP11_DATE, date,
-	                              404, N_ATTR_DATA, ATTR_DATA,
-	                              -1);
+	attrs = gp11_attributes_newv (0UL, GP11_BOOLEAN, TRUE, 
+	                              101UL, GP11_ULONG, 888,
+	                              202UL, GP11_STRING, "string",
+	                              303UL, GP11_DATE, date,
+	                              404UL, N_ATTR_DATA, ATTR_DATA,
+	                              GP11_INVALID);
 
 	attr = gp11_attributes_find (attrs, 404);
 	g_assert (attr != NULL);
 	g_assert (attr->length == N_ATTR_DATA);
 	g_assert (memcmp (attr->value, ATTR_DATA, N_ATTR_DATA) == 0);
 	
-	ret = gp11_attributes_find_boolean (attrs, 0, &bvalue);
+	ret = gp11_attributes_find_boolean (attrs, 0UL, &bvalue);
 	g_assert (ret == TRUE);
 	g_assert (bvalue == TRUE);
 	
-	ret = gp11_attributes_find_ulong (attrs, 101, &uvalue);
+	ret = gp11_attributes_find_ulong (attrs, 101UL, &uvalue);
 	g_assert (ret == TRUE);
 	g_assert (uvalue == 888);
 
-	ret = gp11_attributes_find_string (attrs, 202, &svalue);
+	ret = gp11_attributes_find_string (attrs, 202UL, &svalue);
 	g_assert (ret == TRUE);
 	g_assert (svalue != NULL);
 	g_assert (strcmp (svalue, "string") == 0);
 	g_free (svalue);
 	
-	ret = gp11_attributes_find_date (attrs, 303, &check);
+	ret = gp11_attributes_find_date (attrs, 303UL, &check);
 	g_assert (ret == TRUE);
 	g_assert (g_date_compare (date, &check) == 0);
 	

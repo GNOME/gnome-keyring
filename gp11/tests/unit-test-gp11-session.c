@@ -230,7 +230,7 @@ DEFINE_TEST(auto_login)
 	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                              CKA_LABEL, GP11_STRING, "TEST OBJECT",
 	                              CKA_PRIVATE, GP11_BOOLEAN, CK_TRUE,
-	                              -1);
+	                              GP11_INVALID);
 	
 	/* Try to do something that requires a login */
 	object = gp11_session_create_object_full (session, attrs, NULL, &err); 

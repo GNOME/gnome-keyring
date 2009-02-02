@@ -872,7 +872,7 @@ gp11_object_get (GP11Object *self, GError **err, ...)
 	va_start (va, err);
 	for (;;) {
 		type = va_arg (va, gulong);
-		if (type == (gulong)-1)
+		if (type == GP11_INVALID)
 			break;
 		gp11_attributes_add_invalid (attrs, type);
 	}

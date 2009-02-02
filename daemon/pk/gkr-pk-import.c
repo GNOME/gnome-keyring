@@ -522,7 +522,7 @@ gkr_pk_import_create (GkrPkManager* manager, GkrPkSession *session,
 	
 	/* All the attributes that we used up */
 	gkr_pk_attributes_consume (array, CKA_VALUE, CKA_GNOME_IMPORT_TOKEN, 
-	                           CKA_GNOME_IMPORT_LABEL, -1);
+	                           CKA_GNOME_IMPORT_LABEL, G_MAXULONG);
 	
 	return CKR_OK;
 }

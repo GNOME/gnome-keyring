@@ -180,7 +180,7 @@ gck_attributes_consume (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, ...)
 	/* Convert the var args into an array */
 	types = g_array_new (FALSE, TRUE, sizeof (CK_ATTRIBUTE_TYPE));
 	va_start (va, n_attrs);
-	while ((type = va_arg (va, CK_ATTRIBUTE_TYPE)) != (CK_ULONG)-1)
+	while ((type = va_arg (va, CK_ATTRIBUTE_TYPE)) != G_MAXULONG)
 		 g_array_append_val (types, type);
 	va_end (va);
 	

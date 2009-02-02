@@ -179,7 +179,7 @@ return_private_matching (GP11Object *object, gpointer user_data)
 	g_return_val_if_fail (*result == NULL, FALSE);
 	
 	/* Get the key identifier and token */
-	attrs = gp11_object_get (object, &error, CKA_ID, CKA_TOKEN, -1);
+	attrs = gp11_object_get (object, &error, CKA_ID, CKA_TOKEN, GP11_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", error->message);
 		g_clear_error (&error);
@@ -238,7 +238,7 @@ load_identity_v1_attributes (GP11Object *object, gpointer user_data)
 	 */
 	
 	attrs = gp11_object_get (object, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS, 
-	                         CKA_PUBLIC_EXPONENT, CKA_CLASS, CKA_MODULUS_BITS, -1);
+	                         CKA_PUBLIC_EXPONENT, CKA_CLASS, CKA_MODULUS_BITS, GP11_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", error->message);
 		g_clear_error (&error);
@@ -294,7 +294,7 @@ load_identity_v2_attributes (GP11Object *object, gpointer user_data)
 	
 	attrs = gp11_object_get (object, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS, 
 	                         CKA_PUBLIC_EXPONENT, CKA_PRIME, CKA_SUBPRIME, CKA_BASE, 
-	                         CKA_VALUE, CKA_CLASS, CKA_MODULUS_BITS, CKA_TOKEN, -1);
+	                         CKA_VALUE, CKA_CLASS, CKA_MODULUS_BITS, CKA_TOKEN, GP11_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", error->message);
 		g_clear_error (&error);
@@ -558,7 +558,7 @@ op_add_identity (GckSshAgentCall *call)
 		return FALSE;
 		
 	algo = gck_ssh_agent_proto_keytype_to_algo (stype);
-	if (algo == (gulong)-1) {
+	if (algo == G_MAXULONG) {
 		g_warning ("unsupported algorithm from SSH: %s", stype);
 		g_free (stype);
 		return FALSE;

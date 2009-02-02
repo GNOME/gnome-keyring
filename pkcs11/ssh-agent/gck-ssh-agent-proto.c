@@ -35,12 +35,12 @@
 gulong
 gck_ssh_agent_proto_keytype_to_algo (const gchar *salgo)
 {
-	g_return_val_if_fail (salgo, (gulong)-1);
+	g_return_val_if_fail (salgo, G_MAXULONG);
 	if (strcmp (salgo, "ssh-rsa") == 0)
 		return CKK_RSA;
 	else if (strcmp (salgo, "ssh-dss") == 0)
 		return CKK_DSA;
-	return (gulong)-1;
+	return G_MAXULONG;
 }
 
 const gchar*
@@ -180,7 +180,7 @@ gck_ssh_agent_proto_read_public (EggBuffer *req, gsize *offset, GP11Attributes* 
 		return FALSE;
 	
 	alg = gck_ssh_agent_proto_keytype_to_algo (stype);
-	if (alg == (gulong)-1) {
+	if (alg == G_MAXULONG) {
 		g_warning ("unsupported algorithm from SSH: %s", stype);
 		g_free (stype);
 		return FALSE;

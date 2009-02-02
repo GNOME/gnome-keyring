@@ -778,7 +778,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	}
 
 	/* Next go through and set all attributes that weren't used initially */
-	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, -1);
+	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
 	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
 		if (!gck_attribute_consumed (&attrs[i]))
 			gck_object_set_attribute (object, transaction, &attrs[i]);

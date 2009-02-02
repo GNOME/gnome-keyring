@@ -1,3 +1,25 @@
+2009-02-02  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/pk/gkr-pk-cert.c:
+	* daemon/pk/gkr-pk-import.c:
+	* daemon/pk/gkr-pk-object.c:
+	* daemon/pk/gkr-pk-privkey.c:
+	* daemon/pk/gkr-pk-pubkey.c:
+	* daemon/pk/gkr-pk-util.c:
+	* gp11/gp11-attributes.c:
+	* gp11/gp11-object.c:
+	* gp11/tests/unit-test-gp11-attributes.c:
+	* gp11/tests/unit-test-gp11-object.c:
+	* gp11/tests/unit-test-gp11-session.c:
+	* pkcs11/gck/gck-attributes.c:
+	* pkcs11/gck/gck-private-key.c:
+	* pkcs11/gck/gck-public-key.c:
+	* pkcs11/gck/gck-session.c:
+	* pkcs11/ssh-agent/gck-ssh-agent-ops.c:
+	* pkcs11/ssh-agent/gck-ssh-agent-proto.c:
+	* tools/gkr-tool-import.c: Fix more size problems when using constants 
+	with varargs. Fixes bug #569736. Research by Christophe Fergeau
+	
 2009-01-31  Theppitak Karoonboonyanan  <thep@linux.thai.net>
 
 	* pkcs11/gck/Makefile.am: Fix rules to allow non-source-dir builds.

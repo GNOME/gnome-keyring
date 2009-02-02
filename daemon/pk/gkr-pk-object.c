@@ -539,7 +539,7 @@ gkr_pk_object_create (GkrPkSession *session,
 	g_return_val_if_fail (*object != NULL, CKR_GENERAL_ERROR);
 
 	/* Mark these bits as used */
-	gkr_pk_attributes_consume (attrs, CKA_CLASS, CKA_TOKEN, -1);
+	gkr_pk_attributes_consume (attrs, CKA_CLASS, CKA_TOKEN, G_MAXULONG);
 	
 	/* 
 	 * Check that all the remaining attributes are either already

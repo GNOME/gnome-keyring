@@ -719,7 +719,7 @@ gkr_pk_cert_create (GkrPkManager* manager, GArray* array,
 		return CKR_ATTRIBUTE_VALUE_INVALID;
 	
 	/* All the attributes that we used up */	
-	gkr_pk_attributes_consume (array, CKA_CERTIFICATE_TYPE, CKA_VALUE, -1);
+	gkr_pk_attributes_consume (array, CKA_CERTIFICATE_TYPE, CKA_VALUE, G_MAXULONG);
 	
 	*object = GKR_PK_OBJECT (gkr_pk_cert_new (manager, 0, asn));
 	return CKR_OK;

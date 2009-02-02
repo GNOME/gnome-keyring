@@ -491,7 +491,7 @@ gkr_pk_attributes_consume (GArray *attrs, ...)
 	/* Convert the var args into an array */
 	types = g_array_new (FALSE, TRUE, sizeof (CK_ATTRIBUTE_TYPE));
 	va_start (va, attrs);
-	while ((type = va_arg (va, CK_ATTRIBUTE_TYPE)) != (CK_ULONG)-1)
+	while ((type = va_arg (va, CK_ATTRIBUTE_TYPE)) != G_MAXULONG)
 		 g_array_append_val (types, type);
 	va_end (va);
 	

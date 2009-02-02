@@ -152,7 +152,7 @@ create_rsa_public (GArray *attrs, gcry_sexp_t *skey)
 		goto done;
 	}
 	
-	gkr_pk_attributes_consume (attrs, CKA_MODULUS, CKA_PUBLIC_EXPONENT, -1);
+	gkr_pk_attributes_consume (attrs, CKA_MODULUS, CKA_PUBLIC_EXPONENT, G_MAXULONG);
 	ret = CKR_OK;
 
 done:
@@ -191,7 +191,7 @@ create_dsa_public (GArray *attrs, gcry_sexp_t *skey)
 	}
 	
 	gkr_pk_attributes_consume (attrs, CKA_PRIME, CKA_SUBPRIME, 
-	                           CKA_BASE, CKA_VALUE, -1);
+	                           CKA_BASE, CKA_VALUE, G_MAXULONG);
 	ret = CKR_OK;
 	
 done:
@@ -549,7 +549,7 @@ gkr_pk_pubkey_create (GkrPkManager* manager, GArray* array,
 	
 	if (!gkr_pk_attributes_ulong (array, CKA_KEY_TYPE, &type))
  		return CKR_TEMPLATE_INCOMPLETE;
- 	gkr_pk_attributes_consume (array, CKA_KEY_TYPE, -1);
+ 	gkr_pk_attributes_consume (array, CKA_KEY_TYPE, G_MAXULONG);
 
  	switch (type) {
 	case CKK_RSA:

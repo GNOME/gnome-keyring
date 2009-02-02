@@ -694,7 +694,7 @@ gp11_attributes_new_empty (gulong attr_type, ...)
 
 	va_start (va, attr_type);
 	
-	while (attr_type != (gulong)-1) {
+	while (attr_type != GP11_INVALID) {
 		gp11_attributes_add_empty (attrs, attr_type);
 		attr_type = va_arg (va, gulong);
 	}

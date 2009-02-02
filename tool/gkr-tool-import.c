@@ -49,7 +49,7 @@ on_imported (GcrImporter *importer, GP11Object *object)
 	GError *err = NULL;
 	gchar *label, *hex;
 	
-	attrs = gp11_attributes_new_empty (CKA_LABEL, CKA_CLASS, CKA_ID, -1);
+	attrs = gp11_attributes_new_empty (CKA_LABEL, CKA_CLASS, CKA_ID, GP11_INVALID);
 	if (!gp11_object_get_full (object, attrs, NULL, &err)) {
 		gkr_tool_handle_error (&err, "couldn't get imported object info");
 		return;
