@@ -47,7 +47,7 @@ DEFINE_TEARDOWN(crypto_setup)
 
 }
 
-const static struct {
+static const struct {
 	const gchar *password;
 	int cipher_algo;
 	int hash_algo;

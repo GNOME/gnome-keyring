@@ -135,7 +135,7 @@ typedef struct _GckRpcCall {
  *  z  = null terminated string
  */
 
-const static GckRpcCall gck_rpc_calls[] = {
+static const GckRpcCall gck_rpc_calls[] = {
 	{ GCK_RPC_CALL_ERROR,                  "ERROR",                  NULL,      NULL                   },
 	{ GCK_RPC_CALL_C_Initialize,           "C_Initialize",           "ay",      ""                     },
 	{ GCK_RPC_CALL_C_Finalize,             "C_Finalize",             "",        ""                     },

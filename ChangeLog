@@ -1,3 +1,12 @@
+2009-02-05  Thomas H.P. Andersen  <phomes@gmail.com>
+
+	* pkcs11/rpc-layer/gck-rpc-private.h:
+	* egg/tests/unit-test-symkey.c:
+	* egg/tests/unit-test-openssl.c:
+	* egg/egg-openssl.c:
+	* gp11/tests/gp11-test-module.c: Fix warnings from -Wold-style-declaration. 
+	Fixes bug #570652
+
 2009-02-02  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Bump version number

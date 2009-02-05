@@ -352,7 +352,7 @@ egg_openssl_pem_write (const guchar *data, gsize n_data, GQuark type,
  * DEFINITIONS
  */
 
-const static struct {
+static const struct {
 	const gchar *desc;
 	int algo;
 	int mode;

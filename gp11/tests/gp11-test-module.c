@@ -191,7 +191,7 @@ test_C_Finalize (CK_VOID_PTR pReserved)
 	return CKR_OK;
 }
 
-const static CK_INFO TEST_INFO = {
+static const CK_INFO TEST_INFO = {
 	{ CRYPTOKI_VERSION_MAJOR, CRYPTOKI_VERSION_MINOR },
 	"TEST MANUFACTURER              ",
 	0, 
@@ -251,7 +251,7 @@ test_C_GetSlotList (CK_BBOOL tokenPresent, CK_SLOT_ID_PTR pSlotList, CK_ULONG_PT
 	return CKR_OK;
 }
 
-const static CK_SLOT_INFO TEST_INFO_ONE = {
+static const CK_SLOT_INFO TEST_INFO_ONE = {
 	"TEST SLOT                                                       ",
 	"TEST MANUFACTURER              ",
 	CKF_TOKEN_PRESENT | CKF_REMOVABLE_DEVICE,
@@ -259,7 +259,7 @@ const static CK_SLOT_INFO TEST_INFO_ONE = {
 	{ 65, 165 },
 };
 
-const static CK_SLOT_INFO TEST_INFO_TWO = {
+static const CK_SLOT_INFO TEST_INFO_TWO = {
 	"TEST SLOT                                                       ",
 	"TEST MANUFACTURER              ",
 	CKF_REMOVABLE_DEVICE,
@@ -284,7 +284,7 @@ test_C_GetSlotInfo (CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo)
 	}
 }
 
-const static CK_TOKEN_INFO TEST_TOKEN_ONE = {
+static const CK_TOKEN_INFO TEST_TOKEN_ONE = {
 	"TEST LABEL                      ",
 	"TEST MANUFACTURER               ",
 	"TEST MODEL      ",

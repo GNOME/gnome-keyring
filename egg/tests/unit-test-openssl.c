@@ -104,7 +104,7 @@ DEFINE_TEST(write_reference)
 }
 
 /* 29 bytes (prime number, so block length has bad chance of matching */
-const static guchar *TEST_DATA = (guchar*)"ABCDEFGHIJKLMNOPQRSTUVWXYZ123";
+static const guchar *TEST_DATA = (guchar*)"ABCDEFGHIJKLMNOPQRSTUVWXYZ123";
 const gsize TEST_DATA_L = 29;
 	
 DEFINE_TEST(openssl_roundtrip)
