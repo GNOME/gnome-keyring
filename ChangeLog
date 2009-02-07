@@ -26,7 +26,9 @@
 
 	* gp11/Makefile.am:
 	* gp11/pkcs11.h:
-	* pkcs11/Makefile.am: We should only have one pkcs11.h header.	
+	* pkcs11/Makefile.am: We should only have one pkcs11.h header.
+	
+	* pkcs11/pkcs11.h: More fixes for 64-bit ulongs.	
 	
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
