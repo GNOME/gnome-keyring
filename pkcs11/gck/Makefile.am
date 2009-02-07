@@ -51,6 +51,7 @@ libgck_la_CFLAGS = \
 	$(GLIB_CFLAGS) 
 	
 libgck_la_LIBADD = \
+	$(top_builddir)/egg/libegg.la \
 	$(GOBJECT_LIBS) \
     	$(LIBGCRYPT_LIBS) \
 	$(GLIB_LIBS) 

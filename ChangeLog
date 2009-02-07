@@ -2,6 +2,12 @@
 
 	* gcr/Makefile.am: Add GTK library dependency in libgcr.
 	See bug #570393
+	
+	* pkcs11/gck/Makefile.am:
+	* pkcs11/roots-store/Makefile.am:
+	* pkcs11/ssh-store/Makefile.am:
+	* pkcs11/user-store/Makefile.am: Link libegg into gck where 
+	it's actually used. See bug #568406
 
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
