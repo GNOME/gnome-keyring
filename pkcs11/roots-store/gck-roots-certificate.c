@@ -24,6 +24,7 @@
 #include "gck-roots-certificate.h"
 
 #include "gck/gck-attributes.h"
+#include "gck/gck-certificate-trust.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
 #include "gck/gck-sexp.h"
@@ -34,10 +35,12 @@
 enum {
 	PROP_0,
 	PROP_PATH,
+	PROP_NETSCAPE_TRUST,
 };
 
 struct _GckRootsCertificate {
 	GckCertificate parent;
+	GckCertificateTrust *trust;
 	gchar *path;
 };
 
@@ -77,7 +80,7 @@ gck_roots_certificate_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 static void
 gck_roots_certificate_init (GckRootsCertificate *self)
 {
-
+	self->trust = gck_certificate_trust_new (GCK_CERTIFICATE (self));
 }
 
 static void
@@ -107,10 +110,25 @@ gck_roots_certificate_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_PATH:
 		g_value_set_string (value, gck_roots_certificate_get_path (self));
 		break;
+	case PROP_NETSCAPE_TRUST:
+		g_value_set_object (value, gck_roots_certificate_get_netscape_trust (self));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
 	}
+}
+
+static void
+gck_roots_certificate_dispose (GObject *obj)
+{
+	GckRootsCertificate *self = GCK_ROOTS_CERTIFICATE (obj);
+	
+	if (self->trust)
+		g_object_unref (self->trust);
+	self->trust = NULL;
+
+	G_OBJECT_CLASS (gck_roots_certificate_parent_class)->finalize (obj);
 }
 
 static void
@@ -119,6 +137,7 @@ gck_roots_certificate_finalize (GObject *obj)
 	GckRootsCertificate *self = GCK_ROOTS_CERTIFICATE (obj);
 	
 	g_free (self->path);
+	g_assert (!self->trust);
 
 	G_OBJECT_CLASS (gck_roots_certificate_parent_class)->finalize (obj);
 }
@@ -129,6 +148,7 @@ gck_roots_certificate_class_init (GckRootsCertificateClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
 	
+	gobject_class->dispose = gck_roots_certificate_dispose;
 	gobject_class->finalize = gck_roots_certificate_finalize;
 	gobject_class->set_property = gck_roots_certificate_set_property;
 	gobject_class->get_property = gck_roots_certificate_get_property;
@@ -138,6 +158,10 @@ gck_roots_certificate_class_init (GckRootsCertificateClass *klass)
 	g_object_class_install_property (gobject_class, PROP_PATH,
 	           g_param_spec_string ("path", "Path", "Certificate origin path", 
 	                                "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	
+	g_object_class_install_property (gobject_class, PROP_NETSCAPE_TRUST,
+	           g_param_spec_object ("netscape-trust", "Netscape Trust", "Netscape trust object", 
+	                                GCK_TYPE_CERTIFICATE_TRUST, G_PARAM_READABLE));
 }
 
 /* -----------------------------------------------------------------------------
@@ -155,4 +179,12 @@ gck_roots_certificate_get_path (GckRootsCertificate *self)
 {
 	g_return_val_if_fail (GCK_IS_ROOTS_CERTIFICATE (self), "");
 	return self->path;
+}
+
+GckCertificateTrust*
+gck_roots_certificate_get_netscape_trust (GckRootsCertificate *self)
+{
+	g_return_val_if_fail (GCK_IS_ROOTS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (GCK_IS_CERTIFICATE_TRUST (self->trust), NULL);
+	return self->trust;
 }

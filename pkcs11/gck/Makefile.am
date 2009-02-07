@@ -20,6 +20,7 @@ libgck_la_SOURCES = \
 	gck-attributes.c gck-attributes.h \
 	gck-certificate.c gck-certificate.h \
 	gck-certificate-key.c gck-certificate-key.h \
+	gck-certificate-trust.c gck-certificate-trust.h \
 	gck-crypto.c gck-crypto.h \
 	gck-data-asn1.c gck-data-asn1.h \
 	gck-data-der.c gck-data-der.h \

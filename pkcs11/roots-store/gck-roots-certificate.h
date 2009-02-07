@@ -49,4 +49,6 @@ const gchar*          gck_roots_certificate_get_unique             (GckRootsCert
 
 const gchar*          gck_roots_certificate_get_path               (GckRootsCertificate *self);
 
+GckCertificateTrust*  gck_roots_certificate_get_netscape_trust     (GckRootsCertificate *self);
+
 #endif /* __GCK_ROOTS_CERTIFICATE_H__ */

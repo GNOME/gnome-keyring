@@ -1,5 +1,19 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gck/Makefile.am:
+	* pkcs11/gck/gck-certificate-trust.c:
+	* pkcs11/gck/gck-certificate-trust.h:
+	* pkcs11/gck/gck-certificate.c:
+	* pkcs11/gck/gck-certificate.h:
+	* pkcs11/gck/gck-types.h:
+	* pkcs11/roots-store/gck-roots-certificate.c:
+	* pkcs11/roots-store/gck-roots-certificate.h:
+	* pkcs11/roots-store/gck-roots-module.c: Implement netscape trust 
+	in roots-store, so that we can have Root CA certificates trusted
+	by NSS programs.
+
+2009-02-07  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/gck/gck-data-der.c:
 	* pkcs11/gck/tests/test-data/test-certificate-2.der: (added)
 	* pkcs11/gck/tests/unit-test-data-der.c: Enable key usage and enhanced

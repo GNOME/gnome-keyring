@@ -24,6 +24,7 @@
 
 typedef struct _GckCertificate GckCertificate;
 typedef struct _GckCertificateKey GckCertificateKey;
+typedef struct _GckCertificateTrust GckCertificateTrust;
 typedef struct _GckKey GckKey;
 typedef struct _GckFactoryInfo GckFactoryInfo;
 typedef struct _GckLogin GckLogin;

@@ -63,4 +63,8 @@ const gchar*               gck_certificate_get_label              (GckCertificat
 void                       gck_certificate_set_label              (GckCertificate *self, 
                                                                    const gchar *label);
 
+guchar*                    gck_certificate_hash                   (GckCertificate *self,
+                                                                   int hash_algo,
+                                                                   gsize *n_hash);
+
 #endif /* __GCK_CERTIFICATE_H__ */
