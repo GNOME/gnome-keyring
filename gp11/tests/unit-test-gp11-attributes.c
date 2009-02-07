@@ -7,7 +7,7 @@
 
 #define ATTR_TYPE 55
 #define ATTR_DATA "TEST DATA"
-#define N_ATTR_DATA 9
+#define N_ATTR_DATA ((gsize)9)
 
 DEFINE_TEST(init_memory)
 {
@@ -351,7 +351,7 @@ DEFINE_TEST(newv_attributes)
 	GDate *date = g_date_new_dmy (11, 12, 2008);
 	GP11Attributes *attrs;
 	attrs = gp11_attributes_newv (0UL, GP11_BOOLEAN, TRUE, 
-	                              101UL, GP11_ULONG, 888,
+	                              101UL, GP11_ULONG, 888UL,
 	                              202UL, GP11_STRING, "string",
 	                              303UL, GP11_DATE, date,
 	                              404UL, N_ATTR_DATA, ATTR_DATA,
@@ -401,7 +401,7 @@ DEFINE_TEST(new_valist_attributes)
 	
 	attrs = help_attributes_valist (232434243, /* Not used */
 	                                0UL, GP11_BOOLEAN, TRUE, 
-	                                101UL, GP11_ULONG, 888,
+	                                101UL, GP11_ULONG, 888UL,
 	                                202UL, GP11_STRING, "string",
 	                                303UL, GP11_DATE, date,
 	                                404UL, N_ATTR_DATA, ATTR_DATA,
@@ -494,7 +494,7 @@ DEFINE_TEST(find_attributes)
 	
 	GP11Attributes *attrs;
 	attrs = gp11_attributes_newv (0UL, GP11_BOOLEAN, TRUE, 
-	                              101UL, GP11_ULONG, 888,
+	                              101UL, GP11_ULONG, 888UL,
 	                              202UL, GP11_STRING, "string",
 	                              303UL, GP11_DATE, date,
 	                              404UL, N_ATTR_DATA, ATTR_DATA,

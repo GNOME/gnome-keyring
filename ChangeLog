@@ -6,6 +6,9 @@
 	
 	* egg/tests/unit-test-secmem.c: Use more portable construct
 	for signifying invalid memory in a test.
+	
+	* gp11/tests/unit-test-gp11-attributes.c: Fix problem not 
+	specifying size correctly when using varargs in tests.
 
 2009-02-05  Thomas H.P. Andersen  <phomes@gmail.com>
 
