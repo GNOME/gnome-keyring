@@ -1,8 +1,7 @@
 incdir = $(includedir)/gp11
 
 inc_HEADERS = \
-	gp11.h \
-	pkcs11.h
+	gp11.h
 
 INCLUDES = \
 	-I$(top_builddir) \

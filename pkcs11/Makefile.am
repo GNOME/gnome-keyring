@@ -3,11 +3,9 @@
 incdir = $(includedir)/gp11
 
 inc_HEADERS = \
+	pkcs11.h \
 	pkcs11g.h \
 	pkcs11n.h 
-
-EXTRA_DIST = \
-	pkcs11.h
 
 SUBDIRS = . \
 	gck \

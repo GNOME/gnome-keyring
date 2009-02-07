@@ -23,6 +23,10 @@
 	
 	* pkcs11/gck/gck-attributes.c: Return -1 when an attribute buffer
 	was provided but too small. Correct according to PKCS#11. 
+
+	* gp11/Makefile.am:
+	* gp11/pkcs11.h:
+	* pkcs11/Makefile.am: We should only have one pkcs11.h header.	
 	
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
