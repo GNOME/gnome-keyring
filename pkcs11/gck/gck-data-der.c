@@ -1203,8 +1203,6 @@ done:
 	return ret;
 }
 
-#ifdef UNTESTED_CODE
-
 GckDataResult
 gck_data_der_read_key_usage (const guchar *data, gsize n_data, guint *key_usage)
 {
@@ -1271,7 +1269,6 @@ done:
 	return ret;
 }
 
-#endif /* UNTESTED CODE */
 
 guchar*
 gck_data_der_write_certificate (ASN1_TYPE asn1, gsize *n_data)

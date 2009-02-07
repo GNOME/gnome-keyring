@@ -40,6 +40,10 @@ static ASN1_TYPE certificate = NULL;
 static guchar *certificate_data = NULL;
 static gsize n_certificate_data = 0;
 
+static ASN1_TYPE certificate2 = NULL; 
+static guchar *certificate2_data = NULL;
+static gsize n_certificate2_data = 0;
+
 const gchar *rsapub = "(public-key (rsa" \
 " (n #00AE4B381CF43F7DC24CF90827325E2FB2EB57EDDE29562DF391C8942AA8E6423410E2D3FE26381F9DE0395E74BF2D17621AE46992C72CF895F6FA5FBE98054FBF#)" \
 " (e #010001#)))";
@@ -107,6 +111,10 @@ DEFINE_SETUP(preload)
 	certificate_data = test_read_testdata ("test-certificate-1.der", &n_certificate_data);	
 	certificate = egg_asn1_decode ("PKIX1.Certificate", certificate_data, n_certificate_data);
 	g_assert (certificate);
+
+	certificate2_data = test_read_testdata ("test-certificate-2.der", &n_certificate2_data);	
+	certificate2 = egg_asn1_decode ("PKIX1.Certificate", certificate2_data, n_certificate2_data);
+	g_assert (certificate2);
 }
 
 DEFINE_TEARDOWN(preload)
@@ -114,6 +122,10 @@ DEFINE_TEARDOWN(preload)
 	asn1_delete_structure (&certificate);
 	g_free (certificate_data);
 	certificate_data = NULL;
+
+	asn1_delete_structure (&certificate2);
+	g_free (certificate2_data);
+	certificate2_data = NULL;
 }
 
 DEFINE_TEST(der_rsa_public)
@@ -264,6 +276,42 @@ DEFINE_TEST(write_certificate)
 	g_free (data);
 }
 
+static const guchar* 
+find_extension (ASN1_TYPE asn, const guchar *data, gsize n_data, const gchar *oid, gsize *n_extension)
+{
+	const guchar *value;
+	guchar *exoid;
+	gchar *name;
+	guint index;
+	int len;
+	
+	len = strlen (oid);
+	
+	for (index = 1; TRUE; ++index) {
+		
+		/* Make sure it is present */
+		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", index);
+		exoid = egg_asn1_read_value (asn, name, NULL, NULL);
+		g_free (name);
+
+		if (!exoid)
+			return NULL;
+
+		if (strcmp ((gchar*)exoid, oid) == 0) {
+			g_free (exoid);
+			name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
+			value = egg_asn1_read_content (asn, data, n_data, name, n_extension);
+			g_assert (value);
+			g_free (name);
+			return value;
+		}
+		
+		g_free (exoid);
+	}
+
+	g_assert_not_reached ();
+}
+
 DEFINE_TEST(read_basic_constraints)
 {
 	const guchar *extension;
@@ -279,6 +327,37 @@ DEFINE_TEST(read_basic_constraints)
 	g_assert (res == GCK_DATA_SUCCESS);
 	g_assert (is_ca == TRUE);
 	g_assert (path_len == -1);
+}
+
+DEFINE_TEST(read_key_usage)
+{
+	const guchar *extension;
+	gsize n_extension;
+	guint key_usage;
+	GckDataResult res;
+	
+	extension = find_extension (certificate2, certificate2_data, n_certificate2_data, "2.5.29.15", &n_extension);
+	g_assert (extension);
+
+	res = gck_data_der_read_key_usage (extension, n_extension, &key_usage);
+	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert_cmpuint (key_usage, ==, 0x80);
+}
+
+DEFINE_TEST(read_enhanced_usage)
+{
+	const guchar *extension;
+	gsize n_extension;
+	GQuark *usages;
+	GckDataResult res;
+	
+	extension = find_extension (certificate2, certificate2_data, n_certificate2_data, "2.5.29.37", &n_extension);
+	g_assert (extension);
+
+	res = gck_data_der_read_enhanced_usage (extension, n_extension, &usages);
+	g_assert (res == GCK_DATA_SUCCESS);
+	
+	g_free (usages);
 }
 
 DEFINE_TEST(read_all_pkcs8)
