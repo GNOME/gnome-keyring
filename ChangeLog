@@ -21,6 +21,9 @@
 	* pkcs11/rpc-layer/gck-rpc-module.c: Use 64 bit integers when 
 	transferring ulongs between module and daemon.
 	
+	* pkcs11/gck/gck-attributes.c: Return -1 when an attribute buffer
+	was provided but too small. Correct according to PKCS#11. 
+	
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/Makefile.am: Add GTK library dependency in libgcr.

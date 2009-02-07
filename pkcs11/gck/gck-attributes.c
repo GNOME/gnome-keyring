@@ -83,7 +83,10 @@ gck_attribute_set_date (CK_ATTRIBUTE_PTR attr, time_t time)
 CK_RV
 gck_attribute_set_data (CK_ATTRIBUTE_PTR attr, gconstpointer value, gsize n_value)
 {
-	return gck_util_return_data (attr->pValue, &(attr->ulValueLen), value, n_value);
+	CK_RV rv = gck_util_return_data (attr->pValue, &(attr->ulValueLen), value, n_value);
+	if (rv == CKR_BUFFER_TOO_SMALL)
+		attr->ulValueLen = (CK_ULONG)-1;
+	return rv;
 }
 
 CK_RV
