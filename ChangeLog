@@ -14,7 +14,8 @@
 	* daemon/pk/tests/unit-test-pk-cert.c: Remove the trust bits since 
 	they're very ambiguous and not necessary.
 
-	
+	* pkcs11/user-store/gck-user-module.c: Call base class in login and 
+	logout methods so all the sessions are marked with appropriate state.
 	
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 

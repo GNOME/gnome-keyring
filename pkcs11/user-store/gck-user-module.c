@@ -189,8 +189,10 @@ gck_user_module_real_login_user (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHA
 	}
 
 	/* Note that this application logged in */
-	if (rv == CKR_OK)
+	if (rv == CKR_OK) {
 		g_hash_table_insert (self->logged_in_apps, gck_util_ulong_alloc (slot_id), UNUSED_VALUE);
+		rv = GCK_MODULE_CLASS (gck_user_module_parent_class)->login_user (base, slot_id, pin, n_pin);
+	}
 	
 	return rv;
 }
@@ -199,14 +201,19 @@ static CK_RV
 gck_user_module_real_logout_user (GckModule *base, CK_SLOT_ID slot_id)
 {
 	GckUserModule *self = GCK_USER_MODULE (base);
+	CK_RV rv;
 	
 	if (!g_hash_table_remove (self->logged_in_apps, &slot_id))
 		return CKR_USER_NOT_LOGGED_IN;
 	
 	if (g_hash_table_size (self->logged_in_apps) > 0)
 		return CKR_OK;
-		
-	return gck_user_storage_lock (self->storage);
+	
+	rv = gck_user_storage_lock (self->storage);
+	if (rv == CKR_OK)
+		rv = GCK_MODULE_CLASS (gck_user_module_parent_class)->logout_user (base, slot_id);
+	
+	return rv;
 }
 
 static GObject* 
