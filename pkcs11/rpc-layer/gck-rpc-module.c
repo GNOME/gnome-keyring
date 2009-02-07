@@ -645,7 +645,7 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 	assert (msg);
 
 	/* Make sure this is in the right order */
-	assert (!msg->signature || gck_rpc_message_verify_part (msg, "aAu"));
+	assert (!msg->signature || gck_rpc_message_verify_part (msg, "aA"));
 	
 	/* Get the number of items. We need this value to be correct */
 	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
@@ -732,10 +732,10 @@ proto_read_attribute_array (GckRpcMessage *msg, CK_ATTRIBUTE_PTR arr, CK_ULONG l
 		return PARSE_ERROR;
 	
 	/* Read in the code that goes along with these attributes */
-	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &num))
+	if (!gck_rpc_message_read_ulong (msg, &ret))
 		return PARSE_ERROR;
 
-	return (CK_RV)num;
+	return ret;
 }
 
 static CK_RV
@@ -791,7 +791,8 @@ static CK_RV
 proto_read_ulong_array (GckRpcMessage *msg, CK_ULONG_PTR arr,
                         CK_ULONG_PTR len, CK_ULONG max)
 {
-	uint32_t i, num, val;
+	uint32_t i, num;
+	uint64_t val;
 	unsigned char valid;
 
 	assert (len);
@@ -823,9 +824,9 @@ proto_read_ulong_array (GckRpcMessage *msg, CK_ULONG_PTR arr,
 
 	/* We need to go ahead and read everything in all cases */
 	for (i = 0; i < num; ++i) {
-		egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &val);
+		egg_buffer_get_uint64 (&msg->buffer, msg->parsed, &msg->parsed, &val);
 		if (arr)
-			arr[i] = val;
+			arr[i] = (CK_ULONG)val;
 	}
 
 	return egg_buffer_has_error (&msg->buffer) ? PARSE_ERROR : CKR_OK;

@@ -309,16 +309,16 @@ gck_rpc_message_write_byte (GckRpcMessage *msg, CK_BYTE val)
 int
 gck_rpc_message_read_ulong (GckRpcMessage *msg, CK_ULONG *val)
 {
-	uint32_t v;
+	uint64_t v;
 	assert (msg);
 	
 	/* Make sure this is in the right order */
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "u"));
 
-	if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &v))
+	if (!egg_buffer_get_uint64 (&msg->buffer, msg->parsed, &msg->parsed, &v))
 		return 0;
 	if (val)
-		*val = v;
+		*val = (CK_ULONG)v;
 	return 1;
 }
 
@@ -329,7 +329,7 @@ gck_rpc_message_write_ulong (GckRpcMessage *msg, CK_ULONG val)
 
 	/* Make sure this is in the rigth order */
 	assert (!msg->signature || gck_rpc_message_verify_part (msg, "u"));
-	return egg_buffer_add_uint32 (&msg->buffer, val);
+	return egg_buffer_add_uint64 (&msg->buffer, val);
 }
 
 int
@@ -389,7 +389,7 @@ gck_rpc_message_write_ulong_array (GckRpcMessage *msg, CK_ULONG_PTR array, CK_UL
 	/* Now send the data if valid */
 	if (array) {
 		for (i = 0; i < n_array; ++i)
-			egg_buffer_add_uint32 (&msg->buffer, array[i]); 
+			egg_buffer_add_uint64 (&msg->buffer, array[i]); 
 	}
 	
 	return !egg_buffer_has_error (&msg->buffer);

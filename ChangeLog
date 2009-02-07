@@ -17,6 +17,10 @@
 	* pkcs11/user-store/gck-user-module.c: Call base class in login and 
 	logout methods so all the sessions are marked with appropriate state.
 	
+	* pkcs11/rpc-layer/gck-rpc-message.c:
+	* pkcs11/rpc-layer/gck-rpc-module.c: Use 64 bit integers when 
+	transferring ulongs between module and daemon.
+	
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/Makefile.am: Add GTK library dependency in libgcr.
