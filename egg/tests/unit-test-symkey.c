@@ -27,6 +27,7 @@
 
 #include "run-auto-test.h"
 
+#include "egg-libgcrypt.h"
 #include "egg-secure-memory.h"
 #include "egg-symkey.h"
 
@@ -34,12 +35,7 @@
 
 DEFINE_SETUP(crypto_setup)
 {
-	gcry_check_version (LIBGCRYPT_VERSION);
-	gcry_set_allocation_handler ((gcry_handler_alloc_t)g_malloc, 
-	                             (gcry_handler_alloc_t)egg_secure_alloc, 
-	                             egg_secure_check, 
-	                             (gcry_handler_realloc_t)egg_secure_realloc, 
-	                             egg_secure_free);
+	egg_libgcrypt_initialize ();
 }
 
 DEFINE_TEARDOWN(crypto_setup)

@@ -27,9 +27,11 @@
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
 #include "common/gkr-daemon-util.h"
+#include "common/gkr-unix-signal.h"
+
+#include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
-#include "common/gkr-unix-signal.h"
 
 #include "keyrings/gkr-keyring-login.h"
 
@@ -686,6 +688,8 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
+	egg_libgcrypt_initialize ();
+	
 	/* Send all warning or error messages to syslog */
 	prepare_logging ();
 	

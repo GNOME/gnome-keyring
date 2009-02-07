@@ -1,5 +1,17 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c:
+	* egg/Makefile.am:
+	* egg/tests/unit-test-symkey.c:
+	* gcr/gcr-library.c:
+	* pkcs11/gck/gck-crypto.c:
+	* egg/egg-libgcrypt.c: (added)
+	* egg/egg-libgcrypt.h: (added) Centralize the way that libgcrypt
+	is initialized from our code, so the different components don't
+	step on each other's toes.
+
+2009-02-07  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in:
 	* daemon/pk/*: (deleted)
 	* daemon/pkix/*: (mostly deleted)
