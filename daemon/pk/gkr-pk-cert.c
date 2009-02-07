@@ -211,6 +211,7 @@ initialize_certificate (GkrPkCert *cert, ASN1_TYPE asn1)
 	get_public_key (cert);
 }
 
+#if 0
 static gboolean
 has_private_key (GkrPkCert *cert)
 {
@@ -221,6 +222,7 @@ has_private_key (GkrPkCert *cert)
 	
 	return gkr_pk_manager_find_by_id (GKR_PK_OBJECT (cert)->manager, GKR_TYPE_PK_PRIVKEY, id) != NULL;	
 }
+#endif
 
 static gboolean 
 has_certificate_purposes (GkrPkCert *cert)
@@ -410,7 +412,9 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 	const guchar *cdata = NULL;
 	gkrconstid keyid;
 	CK_ULONG value;
+#if 0
 	gchar *index;
+#endif
 	guchar *data;
 	gsize n_data;
 	time_t time;
@@ -491,7 +495,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 			
 		gkr_pk_attribute_set_ulong (attr, value);
 		return CKR_OK;
-	
+#if 0	
 	case CKA_GNOME_USER_TRUST:
 		value = CKT_GNOME_UNKNOWN;
 		
@@ -510,7 +514,7 @@ gkr_pk_cert_get_attribute (GkrPkObject* obj, CK_ATTRIBUTE_PTR attr)
 		} 
 		gkr_pk_attribute_set_ulong (attr, value);
 		return CKR_OK;
-		
+#endif		
 	case CKA_ID:
 		if ((ret = load_certificate (cert)) != CKR_OK)
 			return ret;

@@ -7,6 +7,15 @@
 	
 	* pkcs11/gck/tests/test.asn: Fix MPI ASN.1 test
 	
+	* gp11/pkcs11g.h:
+	* daemon/pk/gkr-pk-cert.c:
+	* daemon/pk/gkr-pk-netscape-trust.c:
+	* daemon/pk/gkr-pk-util.c:
+	* daemon/pk/tests/unit-test-pk-cert.c: Remove the trust bits since 
+	they're very ambiguous and not necessary.
+
+	
+	
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/Makefile.am: Add GTK library dependency in libgcr.

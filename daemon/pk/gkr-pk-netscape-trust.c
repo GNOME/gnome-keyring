@@ -146,7 +146,7 @@ has_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, CK_ULONG 
 		*val = CKT_NETSCAPE_UNTRUSTED;
 		return CKR_OK;
 	}	
-		
+#if 0		
 	/* Ascertain the trust in this certificate */
 	ret = gkr_pk_object_get_ulong (GKR_PK_OBJECT (trust->certificate), 
 	                               CKA_GNOME_USER_TRUST, &nval);
@@ -166,7 +166,7 @@ has_enhanced_usage (GkrPkNetscapeTrust *trust, CK_ATTRIBUTE_TYPE type, CK_ULONG 
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
 		break;
 	};
-	
+#endif
 	/* See if we can delegate the purpase (ie: CA) */
 	ret = gkr_pk_object_get_ulong (GKR_PK_OBJECT (trust->certificate),
 	                               CKA_CERTIFICATE_CATEGORY, &nval);

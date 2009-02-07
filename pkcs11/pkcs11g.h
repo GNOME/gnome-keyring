@@ -88,24 +88,9 @@
 /* A string unique among all objects on a given machine */
 #define CKA_GNOME_UNIQUE                            (CKA_GNOME + 350)
 
-
-/* ----------------------------------------------------------------------
- * TODO: EXTENSIONS BELOW NEED TO BE INDIVIDUALLY CONSIDERED CAREFULLY
+/* -------------------------------------------------------------------
+ * PURPOSES
  */
-
-#define CKT_GNOME_UNKNOWN   0
-#define CKT_GNOME_UNTRUSTED 1
-#define CKT_GNOME_TRUSTED   2
-
-/*
- * 
- * CK_ULONG
- * 
- *  - CKT_GNOME_TRUSTED 
- *  - CKT_GNOME_UNTRUSTED
- *  - CKT_GNOME_UNKNOWN
- */
-#define CKA_GNOME_USER_TRUST                     (CKA_GNOME + 10)
 
 /*
  * Whether the key or certificate is restricted to a set of 

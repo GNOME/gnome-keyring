@@ -74,7 +74,9 @@ gkr_pk_attribute_data_type (CK_ATTRIBUTE_TYPE type)
 	case CKA_TRUST_IPSEC_TUNNEL:
 	case CKA_TRUST_IPSEC_USER:
 	case CKA_TRUST_TIME_STAMPING:
+#if 0
 	case CKA_GNOME_USER_TRUST:
+#endif
 		return GKR_PK_DATA_ULONG;
 
 	/* CK_BBOOL attribute types */
