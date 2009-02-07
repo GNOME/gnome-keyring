@@ -109,7 +109,7 @@ DEFINE_TEST(create_object)
 	                                     CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                                     CKA_LABEL, GP11_STRING, "TEST LABEL",
 	                                     CKA_TOKEN, GP11_BOOLEAN, CK_FALSE,
-	                                     CKA_VALUE, 4, "BLAH",
+	                                     CKA_VALUE, 4UL, "BLAH",
 	                                     GP11_INVALID);
 	SUCCESS_RES (object, err);
 	g_assert (GP11_IS_OBJECT (object));
@@ -123,7 +123,7 @@ DEFINE_TEST(create_object)
 	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                              CKA_LABEL, GP11_STRING, "TEST LABEL",
 	                              CKA_TOKEN, GP11_BOOLEAN, CK_FALSE,
-	                              CKA_VALUE, 4, "BLAH",
+	                              CKA_VALUE, 4UL, "BLAH",
 	                              GP11_INVALID);
 	
 	object = gp11_session_create_object_full (session, attrs, NULL, &err);
