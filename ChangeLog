@@ -1,5 +1,10 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* gcr/Makefile.am: Add GTK library dependency in libgcr.
+	See bug #570393
+
+2009-02-07  Stef Walter  <stef@memberwebs.com>
+
 	* egg/egg-secure-memory.c: Fix problems with clearing
 	out entire memory block when allocating memory, and 
 	then reallocating it. 
