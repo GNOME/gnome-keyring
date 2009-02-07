@@ -9,6 +9,9 @@
 	
 	* gp11/tests/unit-test-gp11-attributes.c: Fix problem not 
 	specifying size correctly when using varargs in tests.
+	
+	* gp11/tests/unit-test-gp11-slot.c: Don't use freed memory
+	in test.
 
 2009-02-05  Thomas H.P. Andersen  <phomes@gmail.com>
 

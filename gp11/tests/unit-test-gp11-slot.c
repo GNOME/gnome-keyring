@@ -54,8 +54,6 @@ DEFINE_TEST(slot_info)
 		g_assert (65 == info->firmware_version_major);
 		g_assert (165 == info->firmware_version_minor);
 	
-		gp11_slot_info_free (info);
-		
 		if (info->flags & CKF_TOKEN_PRESENT) {		
 			token = gp11_slot_get_token_info (slot);
 			g_assert (token != NULL && "no token info");
@@ -82,6 +80,8 @@ DEFINE_TEST(slot_info)
 			
 			gp11_token_info_free (token);
 		}
+		
+		gp11_slot_info_free (info);
 	}
 	
 	gp11_list_unref_free (slots);
