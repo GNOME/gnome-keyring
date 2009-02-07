@@ -26,7 +26,6 @@
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
-#include "common/gkr-crypto.h"
 #include "common/gkr-daemon-util.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
@@ -686,8 +685,6 @@ main (int argc, char *argv[])
 	textdomain (GETTEXT_PACKAGE);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
-
-	gkr_crypto_setup ();
 
 	/* Send all warning or error messages to syslog */
 	prepare_logging ();

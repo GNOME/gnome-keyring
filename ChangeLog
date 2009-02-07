@@ -1,12 +1,21 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in:
-	* daemon/pk/*:
-	* daemon/pkix/*: 
+	* daemon/pk/*: (deleted)
+	* daemon/pkix/*: (mostly deleted)
 	* daemon/Makefile.am: Removed all old 'pkix' stuff since it's now 
 	implemented in the modular gck components. Also remove most of the 
 	'pk' stuff. Only leaving behind the last few things we need to 
-	refactor. 
+	refactor.
+	
+	* common/gkr-crypto.c: (deleted)
+	* common/gkr-crypto.h: (deleted)
+	* common/gkr-id.c: (deleted)
+	* common/gkr-id.h: (deleted)
+	* common/Makefile.am:
+	* common/tests/unit-test-unique.c: (deleted)
+	* common/tests/Makefile.am:
+	* daemon/gkr-daemon.c: Remove more unused code. 
 
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 

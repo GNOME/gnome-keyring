@@ -21,12 +21,10 @@ libgkr_common_la_CFLAGS = \
 libgkr_common_la_SOURCES = \
 	gkr-async.c gkr-async.h \
 	gkr-cleanup.c gkr-cleanup.h \
-	gkr-crypto.c gkr-crypto.h \
 	gkr-daemon-util.c gkr-daemon-util.h \
 	gkr-dbus.c gkr-dbus.h \
 	gkr-location.c gkr-location.h \
 	gkr-location-watch.c gkr-location-watch.h \
-	gkr-id.c gkr-id.h \
 	gkr-unix-signal.c gkr-unix-signal.h \
 	gkr-wakeup.c gkr-wakeup.h 
 
