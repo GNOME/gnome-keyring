@@ -3,6 +3,9 @@
 	* egg/egg-secure-memory.c: Fix problems with clearing
 	out entire memory block when allocating memory, and 
 	then reallocating it. 
+	
+	* egg/tests/unit-test-secmem.c: Use more portable construct
+	for signifying invalid memory in a test.
 
 2009-02-05  Thomas H.P. Andersen  <phomes@gmail.com>
 

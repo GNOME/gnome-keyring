@@ -42,8 +42,6 @@
  * Tests be run in the order specified here.
  */
 
-#define IS_ZERO ((gsize)~0)
-
 static gsize
 find_non_zero (gpointer mem, gsize len)
 {
@@ -54,7 +52,7 @@ find_non_zero (gpointer mem, gsize len)
 			return sz;
 	}
 	
-	return IS_ZERO;
+	return G_MAXSIZE;
 }
 
 DEFINE_TEST(secmem_alloc_free)
@@ -64,7 +62,7 @@ DEFINE_TEST(secmem_alloc_free)
 	
 	p = egg_secure_alloc_full (512, 0);
 	g_assert (p != NULL);
-	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 512));
+	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p, 512));
 	
 	memset (p, 0x67, 512);
 	
@@ -81,12 +79,12 @@ DEFINE_TEST(secmem_realloc_across)
 	/* Tiny allocation */
 	p = egg_secure_realloc_full (NULL, 1088, 0);
 	g_assert (p != NULL);
-	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 1088));
+	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p, 1088));
 
 	/* Reallocate to a large one, will have to have changed blocks */	
 	p2 = egg_secure_realloc_full (p, 16200, 0);
 	g_assert (p2 != NULL);
-	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p2, 16200));
+	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p2, 16200));
 }
 
 DEFINE_TEST(secmem_alloc_two)
@@ -96,13 +94,13 @@ DEFINE_TEST(secmem_alloc_two)
 	
 	p2 = egg_secure_alloc_full (4, 0);
 	g_assert (p2 != NULL);
-	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p2, 4));
+	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p2, 4));
 
 	memset (p2, 0x67, 4);
 	
 	p = egg_secure_alloc_full (16200, 0);
 	g_assert (p != NULL);
-	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 16200));
+	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p, 16200));
 
 	memset (p, 0x67, 16200);
 	
@@ -123,13 +121,13 @@ DEFINE_TEST(secmem_realloc)
 	
 	p = egg_secure_realloc_full (NULL, len, 0);
 	g_assert (p != NULL);
-	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, len));
+	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p, len));
 	
 	strcpy ((gchar*)p, str);
 	
 	p2 = egg_secure_realloc_full (p, 512, 0);
 	g_assert (p2 != NULL);
-	g_assert_cmpint (IS_ZERO, ==, find_non_zero (((gchar*)p2) + len, 512 - len));
+	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (((gchar*)p2) + len, 512 - len));
 	
 	g_assert (strcmp (p2, str) == 0);
 	
