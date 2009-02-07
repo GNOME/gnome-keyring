@@ -1,8 +1,6 @@
 SUBDIRS = \
 	ui \
 	keyrings \
-	pkix \
-	pk \
 	pkcs11 \
 	data 
 
@@ -31,7 +29,6 @@ gnome_keyring_daemon_SOURCES = \
 
 gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/pkcs11/libgkr-pkcs11.la \
-	$(top_builddir)/daemon/pk/libgkr-pk.la \
 	$(top_builddir)/daemon/keyrings/libgkr-keyrings.la \
 	$(top_builddir)/daemon/ui/libgkr-ui.la \
 	$(top_builddir)/library/libgnome-keyring-common.la \

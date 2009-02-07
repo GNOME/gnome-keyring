@@ -495,11 +495,7 @@ daemon/gnome-keyring-daemon.desktop.in
 daemon/data/Makefile
 daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile
-daemon/pk/Makefile
-daemon/pk/tests/Makefile
 daemon/pkcs11/Makefile
-daemon/pkix/Makefile
-daemon/pkix/tests/Makefile
 daemon/ui/Makefile
 egg/Makefile
 egg/tests/Makefile

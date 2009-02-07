@@ -1,5 +1,15 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in:
+	* daemon/pk/*:
+	* daemon/pkix/*: 
+	* daemon/Makefile.am: Removed all old 'pkix' stuff since it's now 
+	implemented in the modular gck components. Also remove most of the 
+	'pk' stuff. Only leaving behind the last few things we need to 
+	refactor. 
+
+2009-02-07  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/gck/Makefile.am:
 	* pkcs11/gck/gck-certificate-trust.c:
 	* pkcs11/gck/gck-certificate-trust.h:
