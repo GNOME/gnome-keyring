@@ -12,6 +12,9 @@
 	
 	* gp11/tests/unit-test-gp11-slot.c: Don't use freed memory
 	in test.
+	
+	* gp11/tests/unit-test-gp11-session.c: Use properly sized variable
+	to store handle in the test.
 
 2009-02-05  Thomas H.P. Andersen  <phomes@gmail.com>
 

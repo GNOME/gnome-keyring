@@ -43,7 +43,7 @@ DEFINE_TEST(session_props)
 {
 	GP11Module *mod;
 	GP11Slot *sl;
-	guint handle;
+	gulong handle;
 	
 	g_object_get (session, "module", &mod, "handle", &handle, "slot", &sl, NULL);
 	g_assert (mod == module);
