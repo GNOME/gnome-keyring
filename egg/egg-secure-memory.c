@@ -230,7 +230,7 @@ suba_alloc(struct allocator *suba, size_t size)
 	DEBUG_ALLOC ("gkr-secure-memory: allocated ", (unsigned long)size);
 
 	/* TODO: Fix suba, so always allocates zero */
-	memset (C2P(c2), 0, size);
+	memset (C2P(c2), 0, c2->size);
 	
 	return C2P(c2);
 }
