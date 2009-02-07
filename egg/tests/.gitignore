@@ -1,0 +1,8 @@
+/asn1-def-test.h
+/run-auto-test.c
+/run-auto-test.h
+/.deps
+/.libs
+/Makefile
+/Makefile.in
+/run-auto-test

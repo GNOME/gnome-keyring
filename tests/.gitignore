@@ -1,0 +1,15 @@
+/.*
+/Makefile.in
+/Makefile
+/unit-test
+/unit-test-harness.c
+/unit-test-auto.h
+/unit-test-auto.c
+/list-keyrings
+/test-keyring
+/test-keyring-two
+/unit-test-auto
+/unit-test-prompt.h
+/unit-test-prompt.c
+/unit-test-prompt
+/run-*-test*

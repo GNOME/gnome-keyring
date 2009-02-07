@@ -1,0 +1,7 @@
+/.deps
+/.libs
+/*.loT
+/Makefile
+/Makefile.in
+/gkr-pki-marshal.h
+/gkr-pki-marshal.c

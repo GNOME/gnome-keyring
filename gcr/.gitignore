@@ -1,0 +1,10 @@
+/gcr-marshal.c
+/gcr-marshal.h
+/.deps
+/.libs
+/gcr.pc
+/gcr-0.pc
+/Makefile
+/Makefile.in
+/gcr-import-dialog.ui
+/gcr-certificate-basics-widget.ui

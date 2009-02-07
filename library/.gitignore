@@ -1,0 +1,8 @@
+/*.pc
+/.libs
+/.deps
+/Makefile.in
+/Makefile
+/test-keyring
+/test-keyring-two
+/list-keyrings

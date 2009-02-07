@@ -1,0 +1,7 @@
+/gp11-*.pc
+/gp11.pc
+/Makefile
+/Makefile.in
+/.*
+/gp11-marshal.h
+/gp11-marshal.c

@@ -1,0 +1,9 @@
+/run-auto-test.h
+/run-prompt-test.h
+/run-auto-test.c
+/run-prompt-test.c
+/run-auto-test
+/run-prompt-test
+/Makefile
+/Makefile.in
+/.*

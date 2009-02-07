@@ -1,0 +1,7 @@
+/Makefile.in
+/gnome-keyring-ask
+/.*
+/gkr-ask-marshal.?
+/Makefile
+/.deps
+/.libs

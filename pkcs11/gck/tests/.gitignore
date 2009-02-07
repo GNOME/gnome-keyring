@@ -1,0 +1,8 @@
+/run-auto-test.*
+/asn1-def-test.h
+/run-prompt-test.*
+/.*
+/Makefile
+/Makefile.in
+/run-auto-test
+/run-prompt-test

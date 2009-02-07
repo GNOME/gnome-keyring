@@ -1,0 +1,5 @@
+/run-auto-test.*
+/.*
+/Makefile
+/Makefile.in
+/run-auto-test

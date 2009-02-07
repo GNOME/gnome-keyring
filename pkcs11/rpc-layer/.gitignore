@@ -1,0 +1,5 @@
+/Makefile
+/Makefile.in
+/.*
+/p11-rpc-test-daemon
+/gck-rpc-daemon-standalone

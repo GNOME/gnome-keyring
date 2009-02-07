@@ -1,0 +1,4 @@
+/run-*-test*
+/Makefile
+/Makefile.in
+/.*
