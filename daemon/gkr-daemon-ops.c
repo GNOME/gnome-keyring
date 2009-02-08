@@ -305,41 +305,49 @@ request_keyring_access (GkrKeyringRequest *req, GkrKeyring *keyring)
 	
 	if (app->display_name && app->pathname) {
 		if (is_default) {
+			/* TRANSLATORS: The default keyring is locked */
 			message = g_markup_printf_escaped (_("The application '%s' (%s) wants access to "
 						           "the default keyring, but it is locked"),
 						           app->display_name, app->pathname);
 		} else {
+			/* TRANSLATORS: The keyring '%s' is locked */
 			message = g_markup_printf_escaped (_("The application '%s' (%s) wants access to "
 						           "the keyring '%s', but it is locked"),
 						           app->display_name, app->pathname, keyring_name);
 		}
 	} else if (app->display_name) {
 		if (is_default) {
+			/* TRANSLATORS: The default keyring is locked */
 			message = g_markup_printf_escaped (_("The application '%s' wants access to the "
 						           "default keyring, but it is locked"),
 						           app->display_name);
 		} else {
+			/* TRANSLATORS: The keyring '%s' is locked */
 			message = g_markup_printf_escaped (_("The application '%s' wants access to the "
 						           "keyring '%s', but it is locked"),
 						           app->display_name, keyring_name);
 		} 
 	} else if (app->pathname) {
 		if (is_default) {
+			/* TRANSLATORS: The default keyring is locked */
 			message = g_markup_printf_escaped (_("The application '%s' wants access to the "
 						           "default keyring, but it is locked"),
 						           app->pathname);
 		}
 		else {
+			/* TRANSLATORS: The keyring '%s' is locked */
 			message = g_markup_printf_escaped (_("The application '%s' wants access to the "
 						           "keyring '%s', but it is locked"),
 						           app->pathname, keyring_name);
 		}
 	} else { 
 		if (is_default) {
+			/* TRANSLATORS: The default keyring is locked */
 			message = g_markup_printf_escaped (_("An unknown application wants access to the "
 						           "default keyring, but it is locked"));
 		}
 		else {
+			/* TRANSLATORS: The keyring '%s' is locked */
 			message = g_markup_printf_escaped (_("An unknown application wants access to the "
 						           "keyring '%s', but it is locked"),
 						           keyring_name);
@@ -401,40 +409,48 @@ request_new_keyring_password (GkrKeyringRequest *req, const char *keyring_name,
 
 	if (app->display_name && app->pathname) {
 		if (!is_default) {
+			/* TRANSLATORS: The password is for the new keyring */
 			message = g_markup_printf_escaped (_("The application '%s' (%s) wants to create a new keyring called '%s'. "
 						           "You have to choose the password you want to use for it."),
 						           app->display_name, app->pathname, keyring_name);
 		} else {
+			/* TRANSLATORS: The password is for the new keyring */
 			message = g_markup_printf_escaped (_("The application '%s' (%s) wants to create a new default keyring. "
 						           "You have to choose the password you want to use for it."),
 						           app->display_name, app->pathname);
 		} 
 	} else if (app->display_name) {
 		if (!is_default) {
+			/* TRANSLATORS: The password is for the new keyring */
 			message = g_markup_printf_escaped (_("The application '%s' wants to create a new keyring called '%s'. "
 						           "You have to choose the password you want to use for it."),
 						           app->display_name, keyring_name);
 		} else {
+			/* TRANSLATORS: The password is for the new keyring */
 			message = g_markup_printf_escaped (_("The application '%s' wants to create a new default keyring. "
 						           "You have to choose the password you want to use for it."),
 						           app->display_name);
 		} 
 	} else if (app->pathname) {
 		if (!is_default) {
+			/* TRANSLATORS: The password is for the new keyring */
 			message = g_markup_printf_escaped (_("The application '%s' wants to create a new keyring called '%s'. "
 						           "You have to choose the password you want to use for it."),
 						           app->pathname, keyring_name);
 		} else {
+			/* TRANSLATORS: The password is for the new keyring */
 			message = g_markup_printf_escaped (_("The application '%s' wants to create a new default keyring. "
 						           "You have to choose the password you want to use for it."),
 						           app->pathname);
 		} 
 	} else {
 		if (!is_default) {
+			/* TRANSLATORS: The password is for the new keyring */
 			message = g_markup_printf_escaped (_("An unknown application wants to create a new keyring called '%s'. "
 						           "You have to choose the password you want to use for it."),
 						           keyring_name);
 		} else {
+			/* TRANSLATORS: The password is for the new keyring */
 			message = g_markup_printf_escaped (_("An unknown application wants to create a new default keyring. "
 						           "You have to choose the password you want to use for it."));
 		} 

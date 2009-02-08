@@ -368,19 +368,27 @@ static gchar*
 prepare_auth_secondary (CK_OBJECT_CLASS klass, const gchar *label)
 {
 	if (label == NULL) {
-		if (klass == CKO_PRIVATE_KEY)
+		if (klass == CKO_PRIVATE_KEY) {
+			/* TRANSLATORS: The key is locked. */
 			return g_strdup (_("In order to import the private key, it must be unlocked"));
-		else if (klass == CKO_CERTIFICATE)
+		} else if (klass == CKO_CERTIFICATE) {
+			/* TRANSLATORS: The certificate is locked. */
 			return g_strdup (_("In order to import the certificate, it must be unlocked"));
-		else 
+		} else {
+			/* TRANSLATORS: The data is locked. */
 			return g_strdup (_("In order to import the data, it must be unlocked"));
+		}
 	} else {
-		if (klass == CKO_PRIVATE_KEY)
+		if (klass == CKO_PRIVATE_KEY) {
+			/* TRANSLATORS: The key is locked. */
 			return g_strdup_printf (_("In order to import the private key '%s', it must be unlocked"), label);
-		else if (klass == CKO_CERTIFICATE)
+		} else if (klass == CKO_CERTIFICATE) {
+			/* TRANSLATORS: The certificate is locked. */
 			return g_strdup_printf (_("In order to import the certificate '%s', it must be unlocked"), label);
-		else 
+		} else {
+			/* TRANSLATORS: The object '%s' is locked. */
 			return g_strdup_printf (_("In order to import '%s', it must be unlocked"), label);
+		}
 	}
 }
 

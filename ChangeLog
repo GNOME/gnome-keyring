@@ -1,5 +1,11 @@
 2009-02-08  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon-ops.c:
+	* daemon/pkcs11/gkr-pkcs11-auth.c:
+	* gcr/gcr-importer.c: Add translator comments. Fixes bug #570529
+	
+2009-02-08  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/data/gnome-keyring.schemas: Remove gconf schema for loading
 	of PKCS#11 modules. See mailing list.
 

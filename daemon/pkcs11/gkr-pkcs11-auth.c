@@ -126,12 +126,16 @@ prepare_specific_secondary (CK_OBJECT_CLASS klass, const gchar *label)
 {
 	switch (klass) {
 	case CKO_PRIVATE_KEY:
+		/* TRANSLATORS: The private key is locked */
 		return g_strdup_printf (_("An application wants access to the private key '%s', but it is locked"), label);
 	case CKO_CERTIFICATE:
+		/* TRANSLATORS: The certificate is locked */
 		return g_strdup_printf (_("An application wants access to the certificate '%s', but it is locked"), label);
 	case CKO_PUBLIC_KEY:
+		/* TRANSLATORS: The public key is locked */
 		return g_strdup_printf (_("An application wants access to the public key '%s', but it is locked"), label);
 	default:
+		/* TRANSLATORS: The object '%s' is locked */
 		return g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
 	}
 }
@@ -367,6 +371,7 @@ gkr_pkcs11_auth_login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info
 	ask = gkr_ask_request_new (_("Unlock certificate/key storage"), 
 	                           _("Enter password to unlock the certificate/key storage"), flags); 
 	
+	/* TRANSLATORS: The storage is locked, and needs unlocking before the application can use it. */
 	secondary = g_strdup_printf (_("An application wants access to the certificate/key storage '%s', but it is locked"), label);
 	gkr_ask_request_set_secondary (ask, secondary);
 	g_free (secondary);
