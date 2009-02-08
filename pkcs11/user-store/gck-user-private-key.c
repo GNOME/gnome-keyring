@@ -64,6 +64,7 @@ static void
 factory_create_private_key (GckSession *session, GckTransaction *transaction, 
                             CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
 {
+	GckUserPrivateKey *key;
 	GckSexp *sexp;
 	
 	g_return_if_fail (attrs || !n_attrs);
@@ -73,8 +74,11 @@ factory_create_private_key (GckSession *session, GckTransaction *transaction,
 	if (sexp == NULL)
 		return;
 	
-	*object = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, NULL);
-	gck_private_key_store_private (GCK_PRIVATE_KEY (*object), sexp, G_MAXUINT);
+	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, NULL);
+	g_return_if_fail (!key->private_sexp);
+	key->private_sexp = gck_sexp_ref (sexp);
+	
+	*object = GCK_OBJECT (key);
 	gck_sexp_unref (sexp);
 }
 

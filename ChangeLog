@@ -18,10 +18,13 @@
 	
 	* gcr/gcr-library.c: Setup automatically log into token, and pool sessions.
 	
-	* gck/user-store/gck-user-storage.c: Initialize fd members properly.
+	* pkcs11/user-store/gck-user-storage.c: Initialize fd members properly.
 	
-	* gck/user-store/gck-user-storage.c: Don't try to load objects that we add 
+	* pkcs11/user-store/gck-user-storage.c: Don't try to load objects that we add 
 	to the store ourselves.
+	
+	* pkcs11/user-store/gck-user-private-key.c: Properly initialize new token
+	private keys, so that they can be saved.
 
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
