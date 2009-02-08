@@ -6,14 +6,7 @@ daemon/data/gnome-keyring.schemas.in
 daemon/gnome-keyring-daemon.desktop.in.in
 daemon/keyrings/gkr-keyring-login.c
 daemon/keyrings/gkr-keyring.c
-daemon/pk/gkr-pk-import.c
-daemon/pk/gkr-pk-index.c
-daemon/pk/gkr-pk-object.c
-daemon/pk/gkr-pk-object-storage.c
-daemon/pk/gkr-pk-storage.c
 daemon/pkcs11/gkr-pkcs11-auth.c
-daemon/pkix/gkr-pkix-parser.c
-daemon/pkix/gkr-pkix-serialize.c
 daemon/ui/gkr-ask-tool.c
 egg/egg-asn1.c
 gcr/gcr-certificate-basics-widget.c

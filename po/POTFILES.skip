@@ -1,3 +1,9 @@
 daemon/gnome-keyring-daemon.desktop.in
+daemon/pk/gkr-pk-import.c
+daemon/pk/gkr-pk-index.c
+daemon/pk/gkr-pk-object.c
+daemon/pk/gkr-pk-storage.c
+daemon/pkix/gkr-pkix-parser.c
+daemon/pkix/gkr-pkix-serialize.c
 gcr/gcr-import-dialog.ui
 gcr/gcr-certificate-basics-widget.ui

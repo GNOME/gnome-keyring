@@ -1,3 +1,14 @@
+2009-02-07  Stef Walter  <stef@memberwebs.com>
+
+	* POTFILES.in: Remove pk/gkr-pk-object-storage.c
+	daemon/pk/gkr-pk-import.c
+	daemon/pk/gkr-pk-index.c
+	daemon/pk/gkr-pk-object.c
+	daemon/pk/gkr-pk-object-storage.c
+	daemon/pk/gkr-pk-storage.c
+	daemon/pkix/gkr-pkix-parser.c
+	daemon/pkix/gkr-pkix-serialize.c
+	
 2009-02-07  Gabor Kelemen  <kelemeng@gnome.hu>
 
 	* hu.po: Translation updated.
