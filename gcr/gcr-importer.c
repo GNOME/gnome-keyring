@@ -206,7 +206,7 @@ state_create_object (GcrImporter *self, gboolean async)
 		attrs = g_queue_pop_head (&self->pv->queue);
 		g_assert (attrs);
 		
-		gp11_attributes_add_ulong (attrs, CKA_TOKEN, CK_TRUE);
+		gp11_attributes_add_boolean (attrs, CKA_TOKEN, CK_TRUE);
 		
 		if (async) {
 			gp11_session_create_object_async (self->pv->session, attrs, self->pv->cancel, 

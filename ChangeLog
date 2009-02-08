@@ -13,6 +13,8 @@
 	* pkcs11/user-store/gck-user-public-key.c:
 	* pkcs11/user-store/gck-user-public-key.h: Create proper factories
 	for storable objects and certificate.
+	
+	* gcr/gcr-importer.c: CKA_TOKEN is a CK_BBOOL not a CK_ULONG
 
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
