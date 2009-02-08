@@ -17,6 +17,8 @@
 	* gcr/gcr-importer.c: CKA_TOKEN is a CK_BBOOL not a CK_ULONG
 	
 	* gcr/gcr-library.c: Setup automatically log into token, and pool sessions.
+	
+	* gck/user-store/gck-user-storage.c: Initialize fd members properly.
 
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 

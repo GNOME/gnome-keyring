@@ -838,6 +838,9 @@ gck_user_storage_init (GckUserStorage *self)
 	/* Each one owns the key and contains weak ref to other's key as its value */
 	self->object_to_identifier = g_hash_table_new_full (g_direct_hash, g_direct_equal, dispose_unref_object, NULL);
 	self->identifier_to_object = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	
+	self->read_fd = -1;
+	self->write_fd = -1;
 }
 
 static void
