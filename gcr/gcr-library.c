@@ -121,11 +121,14 @@ _gcr_initialize (void)
 		
 		/* TODO: This needs reworking for multiple modules */
 		module = gp11_module_initialize (PKCS11_MODULE_PATH, NULL, &error);
-		if (module) 
+		if (module) {
+			gp11_module_set_pool_sessions (module, TRUE);
+			gp11_module_set_auto_authenticate (module, TRUE);
 			all_modules = g_list_prepend (all_modules, module);
-		else 
+		} else { 
 			g_warning ("couldn't initialize PKCS#11 module: %s", 
 			           error && error->message ? error->message : "");
+		}
 
 		g_once_init_leave (&gcr_initialized, 1);
 	}

@@ -15,6 +15,8 @@
 	for storable objects and certificate.
 	
 	* gcr/gcr-importer.c: CKA_TOKEN is a CK_BBOOL not a CK_ULONG
+	
+	* gcr/gcr-library.c: Setup automatically log into token, and pool sessions.
 
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
