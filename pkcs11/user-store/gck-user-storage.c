@@ -182,7 +182,7 @@ identifier_for_object (GckObject *object)
 	}
 	
 	/* Build up the identifier */
-	identifier = g_strconcat (name ? "-" : "", name, ext, NULL);
+	identifier = g_strconcat (name, ext, NULL);
 	g_strdelimit (identifier, UNWANTED_IDENTIFIER_CHARS, '_');
 
 	g_free (name);

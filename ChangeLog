@@ -25,6 +25,9 @@
 	
 	* pkcs11/user-store/gck-user-private-key.c: Properly initialize new token
 	private keys, so that they can be saved.
+	
+	* pkcs11/user-store/gck-user-storage.c: Don't add a dash to the front of 
+	the identifiers of stored objects.
 
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
