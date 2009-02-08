@@ -1,3 +1,8 @@
+2009-02-08  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/data/gnome-keyring.schemas: Remove gconf schema for loading
+	of PKCS#11 modules. See mailing list.
+
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-certificate.c:
