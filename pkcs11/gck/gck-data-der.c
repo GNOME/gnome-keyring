@@ -721,6 +721,10 @@ gck_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 	    !gck_data_asn1_write_mpi (asn, "prime2", q) ||
 	    !gck_data_asn1_write_mpi (asn, "coefficient", u))
 		goto done;
+	
+	/* Have to write out a null to delete OPTIONAL */
+	if (!egg_asn1_write_value (asn, "otherPrimeInfos", NULL, 0))
+		goto done;
 
 	/* Calculate e1 and e2 */
 	tmp = gcry_mpi_snew (1024);
@@ -1047,7 +1051,7 @@ gck_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 	
 	/* Write out the version */
-	if (!egg_asn1_write_uint (asn, "version", 1))
+	if (!egg_asn1_write_uint (asn, "version", 0))
 		g_return_val_if_reached (NULL);
 	
 	/* Per algorithm differences */
