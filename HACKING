@@ -4,57 +4,74 @@ HACKING GNOME KEYRING
 Patches should be submitted to bugzilla:
 http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring
 
+The gnome-keyring mailing list is:
+gnome-keyring-list@gnome.org
+
 Gnome Keyring is made up of several distinct parts working on concert with 
 each other. These parts generally live in different directories:
 
+common
+   Deprecated. This code will shortly live elsewhere. Daemon code will be moved 
+   into daemon/ some code may move into egg/ etc...
+   
 daemon 
    The main daemon startup code and gnome-keyring password protocol operations. 
    
 daemon/keyrings
    Code that manages the user's password keyrings 
 
-daemon/pk 
-   General public key / certificate code, management of objects.
+daemon/pk
+   Old code, disappearing presently, not in use. 
 
 daemon/pkcs11
-   The PKCS#11 part of the daemon.
-
-daemon/pkix
-   Nitty gritty handling of various PKCS#?? standards, parsing, ASN.1 stuff.
+   The various hooks that connect the PKCS#11 modules and code into the daemon.
 
 daemon/ui 
-   Prompting the user, asking for passwords. 
+   Prompting the user, asking for passwords.
    
+egg
+   Code that either: a) Really should be implemented elsewhere (eg: glib) but isn't.
+   b) Code that needs to be shared between loosely coupled gnome-keyring components.  
+
+gcr
+   A public library for bits of crypto UI and parsing etc...
+   
+gp11
+   A public library for accessing PKCS#11 modules. 
+
 library
    The gnome-keyring library for accessing passwords and secrets. 
 
+pam 
+   The PAM module that unlocks the login keyring when the user logs in.
+   
 pkcs11
-   The PKCS#11 module, provider and headers.
+   The various bits of the PKCS#11 implementation.
+
+pkcs11/gck
+   A base library for implementing our internal PKCS#11 modules.
+   
+pkcs11/plex-layer
+   A PKCS#11 module that combines slots from multiple PKCS#11 modules into one module.
+   
+pkcs11/roots-store
+   A PKCS#11 module that exposes Root CA certificates from a directory like /etc/ssl/certs
+   
+pkcs11/rpc-layer
+   A PKCS#11 module that calls into the daemon. This is the module that apps actually use.
+   
+pkcs11/ssh-agent
+   An SSH agent implementation that uses a PKCS#11 module for it's cryto and key storage.
+   
+pkcs11/ssh-store
+   A PKCS#11 module which exposes objects in ~/.ssh directory.
+   
+pkcs11/user-store
+   A PKCS#11 module for general storage of certificates and keys.
       
 tests  
    Test tools and unit tests.
    
-
---------------------------------------------------------------------------------
-                    USING 'LOCATIONS' INSTEAD OF FILE PATHS
-
-Gnome Keyring supports having keyrings on removable media. Because removable
-media can be mounted in different mount-points, and for other related reasons,
-what's called a 'location' is used instead of a file point.
-
-Locations are like paths relative to a base. For example certain locations 
-might be relative to a home directory, and others might be relative to a USB
-drive.
-
-Location functionality:
-
-   common/gkr-location.h
-   
-Common functions:
-
-   gkr_location_from_path ()
-   gkr_location_from_child ()
-   gkr_location_to_path ()
    
 --------------------------------------------------------------------------------
                             USE OF WORKER THREADS

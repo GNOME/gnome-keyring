@@ -1,5 +1,9 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* HACKING: Update after refactoring with new info about parts
+	
+2009-02-07  Stef Walter  <stef@memberwebs.com>
+
 	* common/Makefile.am:
 	* common/gkr-location.c:
 	* common/tests/Makefile.am:
