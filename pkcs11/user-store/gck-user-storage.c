@@ -1028,8 +1028,16 @@ gck_user_storage_create (GckUserStorage *self, GckTransaction *transaction, GckO
 		g_return_if_reached ();
 	}
 	
+	/* We don't want to get signals about this item being added */
+	g_signal_handlers_block_by_func (self->file, data_file_entry_added, self);
+	g_signal_handlers_block_by_func (self->file, data_file_entry_changed, self);
+	
 	res = gck_data_file_create_entry (self->file, identifier, 
 	                                  is_private ? GCK_DATA_FILE_SECTION_PRIVATE : GCK_DATA_FILE_SECTION_PUBLIC);
+	
+	g_signal_handlers_unblock_by_func (self->file, data_file_entry_added, self);
+	g_signal_handlers_unblock_by_func (self->file, data_file_entry_changed, self);
+
 	switch(res) {
 	case GCK_DATA_FAILURE:
 	case GCK_DATA_UNRECOGNIZED:
