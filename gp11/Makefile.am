@@ -16,7 +16,7 @@ BUILT_SOURCES = \
 lib_LTLIBRARIES = libgp11.la
 
 libgp11_la_SOURCES = \
-	gp11.h gp11-private.h \
+	gp11.h gp11-private.h pkcs11.h \
 	gp11-attributes.c \
 	gp11-call.c \
 	gp11-misc.c \
