@@ -27,6 +27,8 @@
 #include "gck-object.h"
 #include "gck-types.h"
 
+#define GCK_FACTORY_CERTIFICATE            (gck_certificate_get_factory ())
+
 #define GCK_TYPE_CERTIFICATE               (gck_certificate_get_type ())
 #define GCK_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_CERTIFICATE, GckCertificate))
 #define GCK_CERTIFICATE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCK_TYPE_CERTIFICATE, GckCertificateClass))
@@ -48,6 +50,8 @@ struct _GckCertificateClass {
 
 GType                      gck_certificate_get_type               (void);
 
+GckFactoryInfo*            gck_certificate_get_factory            (void);
+
 gboolean                   gck_certificate_calc_category          (GckCertificate *self, 
                                                                    CK_ULONG* category);
 
@@ -66,5 +70,6 @@ void                       gck_certificate_set_label              (GckCertificat
 guchar*                    gck_certificate_hash                   (GckCertificate *self,
                                                                    int hash_algo,
                                                                    gsize *n_hash);
+
 
 #endif /* __GCK_CERTIFICATE_H__ */

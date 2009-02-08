@@ -56,10 +56,9 @@ void                       gck_private_key_store_private          (GckPrivateKey
 
 GckFactoryInfo*            gck_private_key_get_factory            (void);
 
-void                       gck_private_key_create                 (GckSession *session, 
+GckSexp*                   gck_private_key_create_sexp            (GckSession *session, 
                                                                    GckTransaction *transaction, 
                                                                    CK_ATTRIBUTE_PTR attrs, 
-                                                                   CK_ULONG n_attrs, 
-                                                                   GckObject **object);
+                                                                   CK_ULONG n_attrs);
 
 #endif /* __GCK_PRIVATE_KEY_H__ */

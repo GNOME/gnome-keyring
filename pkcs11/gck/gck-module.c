@@ -25,6 +25,7 @@
 #include "pkcs11/pkcs11g.h"
 
 #include "gck-attributes.h"
+#include "gck-certificate.h"
 #include "gck-factory.h"
 #include "gck-manager.h"
 #include "gck-module.h"
@@ -418,6 +419,7 @@ gck_module_init (GckModule *self)
 	
 	/* Register session object factories */
 	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
 	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_KEY);
 }
 

@@ -142,6 +142,25 @@ done:
 	return ret;
 }
 
+static void
+factory_create_private_key (GckSession *session, GckTransaction *transaction, 
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+{
+	GckSexp *sexp;
+	
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (attrs || !n_attrs);
+	g_return_if_fail (object);
+
+	sexp = gck_private_key_create_sexp (session, transaction, attrs, n_attrs);
+	if (sexp == NULL)
+		return;
+	
+	*object = g_object_new (GCK_TYPE_PRIVATE_KEY, "base-sexp", sexp, NULL);
+	gck_private_key_store_private (GCK_PRIVATE_KEY (*object), sexp, G_MAXUINT);
+	gck_sexp_unref (sexp);
+}
+
 /* -----------------------------------------------------------------------------
  * PRIVATE_KEY 
  */
@@ -349,24 +368,20 @@ gck_private_key_store_private (GckPrivateKey *self, GckSexp *sexp, guint num_use
 }
 
 
-void
-gck_private_key_create (GckSession *session, GckTransaction *transaction, 
-                        CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+GckSexp*
+gck_private_key_create_sexp (GckSession *session, GckTransaction *transaction, 
+                             CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
  	CK_KEY_TYPE type;
- 	GckSexp *wrapper;
  	gcry_sexp_t sexp;
  	CK_RV ret;
  	
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
-	
-	*object = NULL;
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 	
 	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_KEY_TYPE, &type)) {
 		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
-		return;
+		return NULL;
 	}
 		
  	gck_attributes_consume (attrs, n_attrs, CKA_KEY_TYPE, CKA_CLASS, G_MAXULONG);
@@ -386,31 +401,26 @@ gck_private_key_create (GckSession *session, GckTransaction *transaction,
  	
 	if (ret != CKR_OK) {
 		gck_transaction_fail (transaction, ret);
-		return;
+		return NULL;
 	}
 	
-	g_return_if_fail (sexp);
-	wrapper = gck_sexp_new (sexp);
-	*object = g_object_new (GCK_TYPE_PRIVATE_KEY, "base-sexp", wrapper, NULL);
-	gck_private_key_store_private (GCK_PRIVATE_KEY (*object), wrapper, G_MAXUINT);
-	gck_sexp_unref (wrapper);
+	g_return_val_if_fail (sexp, NULL);
+	return gck_sexp_new (sexp);
 }
 
 GckFactoryInfo*
 gck_private_key_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_PRIVATE_KEY;
-	static CK_BBOOL token = CK_FALSE;
 
 	static CK_ATTRIBUTE attributes[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_TOKEN, &token, sizeof (token) }, 
+		{ CKA_CLASS, &klass, sizeof (klass) }
 	};
 
 	static GckFactoryInfo factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
-		gck_private_key_create
+		factory_create_private_key
 	};
 	
 	return &factory;

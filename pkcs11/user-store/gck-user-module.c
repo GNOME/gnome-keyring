@@ -22,6 +22,8 @@
 #include "config.h"
 
 #include "gck-user-module.h"
+#include "gck-user-private-key.h"
+#include "gck-user-public-key.h"
 #include "gck-user-storage.h"
 #include "gck-user-store.h"
 
@@ -233,6 +235,10 @@ static void
 gck_user_module_init (GckUserModule *self)
 {
 	self->logged_in_apps = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, gck_util_ulong_free, NULL);
+	
+	/* For creating stored keys */
+	gck_module_register_factory (GCK_MODULE (self), GCK_FACTORY_USER_PRIVATE_KEY);
+	gck_module_register_factory (GCK_MODULE (self), GCK_FACTORY_USER_PUBLIC_KEY);
 }
 
 static void

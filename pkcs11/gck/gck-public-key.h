@@ -52,9 +52,8 @@ GType                     gck_public_key_get_type               (void);
 
 GckFactoryInfo*           gck_public_key_get_factory            (void);
 
-void                      gck_public_key_create                 (GckSession *session, 
+GckSexp*                  gck_public_key_create_sexp            (GckSession *session, 
                                                                  GckTransaction *transaction, 
                                                                  CK_ATTRIBUTE_PTR attrs, 
-                                                                 CK_ULONG n_attrs, 
-                                                                 GckObject **object);
+                                                                 CK_ULONG n_attrs);
 #endif /* __GCK_PUBLIC_KEY_H__ */

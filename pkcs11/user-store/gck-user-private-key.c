@@ -26,6 +26,7 @@
 #include "gck/gck-attributes.h"
 #include "gck/gck-crypto.h"
 #include "gck/gck-data-der.h"
+#include "gck/gck-factory.h"
 #include "gck/gck-login.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
@@ -58,6 +59,24 @@ G_DEFINE_TYPE_EXTENDED (GckUserPrivateKey, gck_user_private_key, GCK_TYPE_PRIVAT
 /* -----------------------------------------------------------------------------
  * INTERNAL 
  */
+
+static void
+factory_create_private_key (GckSession *session, GckTransaction *transaction, 
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+{
+	GckSexp *sexp;
+	
+	g_return_if_fail (attrs || !n_attrs);
+	g_return_if_fail (object);
+
+	sexp = gck_private_key_create_sexp (session, transaction, attrs, n_attrs);
+	if (sexp == NULL)
+		return;
+	
+	*object = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, NULL);
+	gck_private_key_store_private (GCK_PRIVATE_KEY (*object), sexp, G_MAXUINT);
+	gck_sexp_unref (sexp);
+}
 
 /* -----------------------------------------------------------------------------
  * OBJECT 
@@ -287,3 +306,23 @@ gck_user_private_key_serializable (GckSerializableIface *iface)
 /* -----------------------------------------------------------------------------
  * PUBLIC 
  */
+
+GckFactoryInfo*
+gck_user_private_key_get_factory (void)
+{
+	static CK_OBJECT_CLASS klass = CKO_PRIVATE_KEY;
+	static CK_BBOOL token = CK_TRUE;
+
+	static CK_ATTRIBUTE attributes[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_TOKEN, &token, sizeof (token) }, 
+	};
+
+	static GckFactoryInfo factory = {
+		attributes,
+		G_N_ELEMENTS (attributes),
+		factory_create_private_key
+	};
+	
+	return &factory;
+}

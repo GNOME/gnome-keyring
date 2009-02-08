@@ -26,6 +26,8 @@
 
 #include "gck/gck-public-key.h"
 
+#define GCK_FACTORY_USER_PUBLIC_KEY            (gck_user_public_key_get_factory ())
+
 #define GCK_TYPE_USER_PUBLIC_KEY               (gck_user_public_key_get_type ())
 #define GCK_USER_PUBLIC_KEY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_USER_PUBLIC_KEY, GckUserPublicKey))
 #define GCK_USER_PUBLIC_KEY_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCK_TYPE_USER_PUBLIC_KEY, GckUserPublicKeyClass))
@@ -41,6 +43,8 @@ struct _GckUserPublicKeyClass {
 };
 
 GType                gck_user_public_key_get_type               (void);
+
+GckFactoryInfo*      gck_user_public_key_get_factory            (void);
 
 GckUserPublicKey*    gck_user_public_key_new                    (const gchar *unique);
 

@@ -27,10 +27,12 @@
 #include "gck-crypto.h"
 #include "gck-data-asn1.h"
 #include "gck-data-der.h"
+#include "gck-factory.h"
 #include "gck-key.h"
 #include "gck-manager.h"
 #include "gck-sexp.h"
 #include "gck-serializable.h"
+#include "gck-transaction.h"
 #include "gck-util.h"
 
 #include "pkcs11/pkcs11.h"
@@ -238,6 +240,39 @@ find_certificate_extension (GckCertificate *self, GQuark oid)
 	}
 	
 	return 0;
+}
+
+static void
+factory_create_certificate (GckSession *session, GckTransaction *transaction, 
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+{
+	CK_ATTRIBUTE_PTR attr;
+	GckCertificate *cert;
+	
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (attrs || !n_attrs);
+	g_return_if_fail (object);
+	
+	/* Dig out the value */
+	attr = gck_attributes_find (attrs, n_attrs, CKA_VALUE);
+	if (attr == NULL) {
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return;
+	}
+	
+	cert = g_object_new (GCK_TYPE_CERTIFICATE, NULL);
+	
+	/* Load the certificate from the data specified */
+	if (!gck_serializable_load (GCK_SERIALIZABLE (cert), NULL, attr->pValue, attr->ulValueLen)) {
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+		g_object_unref (cert);
+		return;
+	}
+		
+	/* Note that we ignore the subject */
+ 	gck_attributes_consume (attrs, n_attrs, CKA_VALUE, CKA_SUBJECT, G_MAXULONG);
+
+ 	*object = GCK_OBJECT (cert);
 }
 
 /* -----------------------------------------------------------------------------
@@ -706,4 +741,24 @@ gck_certificate_hash (GckCertificate *self, int hash_algo, gsize *n_hash)
 	gcry_md_hash_buffer (hash_algo, hash, self->pv->data, self->pv->n_data);
 	
 	return hash;
+}
+
+GckFactoryInfo*
+gck_certificate_get_factory (void)
+{
+	static CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
+	static CK_CERTIFICATE_TYPE type = CKC_X_509;
+
+	static CK_ATTRIBUTE attributes[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
+	};
+
+	static GckFactoryInfo factory = {
+		attributes,
+		G_N_ELEMENTS (attributes),
+		factory_create_certificate
+	};
+	
+	return &factory;
 }

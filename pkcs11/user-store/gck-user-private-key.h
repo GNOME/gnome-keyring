@@ -29,6 +29,8 @@
 #include "gck/gck-login.h"
 #include "gck/gck-private-key.h"
 
+#define GCK_FACTORY_USER_PRIVATE_KEY            (gck_user_private_key_get_factory ())
+
 #define GCK_TYPE_USER_PRIVATE_KEY               (gck_user_private_key_get_type ())
 #define GCK_USER_PRIVATE_KEY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_USER_PRIVATE_KEY, GckUserPrivateKey))
 #define GCK_USER_PRIVATE_KEY_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCK_TYPE_USER_PRIVATE_KEY, GckUserPrivateKeyClass))
@@ -44,5 +46,7 @@ struct _GckUserPrivateKeyClass {
 };
 
 GType               gck_user_private_key_get_type               (void);
+
+GckFactoryInfo*     gck_user_private_key_get_factory            (void);
 
 #endif /* __GCK_USER_PRIVATE_KEY_H__ */

@@ -1,5 +1,21 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gck/gck-certificate.c:
+	* pkcs11/gck/gck-certificate.h:
+	* pkcs11/gck/gck-module.c:
+	* pkcs11/gck/gck-private-key.c:
+	* pkcs11/gck/gck-private-key.h:
+	* pkcs11/gck/gck-public-key.c:
+	* pkcs11/gck/gck-public-key.h:
+	* pkcs11/user-store/gck-user-module.c:
+	* pkcs11/user-store/gck-user-private-key.c:
+	* pkcs11/user-store/gck-user-private-key.h:
+	* pkcs11/user-store/gck-user-public-key.c:
+	* pkcs11/user-store/gck-user-public-key.h: Create proper factories
+	for storable objects and certificate.
+
+2009-02-07  Stef Walter  <stef@memberwebs.com>
+
 	* gp11/Makefile.am: Fix problem with not distributing pkcs11.h
 
 2009-02-07  Stef Walter  <stef@memberwebs.com>

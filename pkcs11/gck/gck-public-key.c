@@ -137,6 +137,23 @@ done:
 	return ret;
 }
 
+static void
+factory_create_public_key (GckSession *session, GckTransaction *transaction, 
+                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+{
+	GckSexp *sexp;
+	
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (attrs || !n_attrs);
+	g_return_if_fail (object);
+
+	sexp = gck_public_key_create_sexp (session, transaction, attrs, n_attrs);
+	if (sexp != NULL) {
+		*object = g_object_new (GCK_TYPE_PUBLIC_KEY, "base-sexp", sexp, NULL);
+		gck_sexp_unref (sexp);
+	}
+}
+
 /* -----------------------------------------------------------------------------
  * PUBLIC_KEY 
  */
@@ -281,24 +298,20 @@ gck_public_key_class_init (GckPublicKeyClass *klass)
  * PUBLIC 
  */
 
-void
-gck_public_key_create (GckSession *session, GckTransaction *transaction, 
-                       CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+GckSexp*
+gck_public_key_create_sexp (GckSession *session, GckTransaction *transaction, 
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
  	CK_KEY_TYPE type;
- 	GckSexp *wrapper;
  	gcry_sexp_t sexp;
  	CK_RV ret;
  
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
-	
-	*object = NULL;
-	
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
+
 	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_KEY_TYPE, &type)) {
 		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
-		return;
+		return NULL;
 	}
 		
  	gck_attributes_consume (attrs, n_attrs, CKA_KEY_TYPE, CKA_CLASS, G_MAXULONG);
@@ -317,30 +330,26 @@ gck_public_key_create (GckSession *session, GckTransaction *transaction,
 
 	if (ret != CKR_OK) {
 		gck_transaction_fail (transaction, ret);
-		return;
+		return NULL;
 	}
 	
-	g_return_if_fail (sexp);
-	wrapper = gck_sexp_new (sexp);
-	*object = g_object_new (GCK_TYPE_PUBLIC_KEY, "base-sexp", wrapper, NULL);
-	gck_sexp_unref (wrapper);
+	g_return_val_if_fail (sexp, NULL);
+	return gck_sexp_new (sexp);
 }
 
 GckFactoryInfo*
 gck_public_key_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_PUBLIC_KEY;
-	static CK_BBOOL token = CK_FALSE;
 
 	static CK_ATTRIBUTE attributes[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_TOKEN, &token, sizeof (token) }, 
+		{ CKA_CLASS, &klass, sizeof (klass) }
 	};
 
 	static GckFactoryInfo factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
-		gck_public_key_create
+		factory_create_public_key
 	};
 	
 	return &factory;
