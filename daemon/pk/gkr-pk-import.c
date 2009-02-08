@@ -42,7 +42,6 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <glib/gi18n.h>
 
 /* -------------------------------------------------------------------------------------
  * DECLARATIONS
@@ -85,39 +84,39 @@ static const gchar*
 prepare_ask_title (GQuark type)
 {
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("Import private key");
+		return x("Import private key");
 	else if (type == GKR_PKIX_CERTIFICATE)
-		return _("Import certificate");
+		return x("Import certificate");
 	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return _("Import public key");
+		return x("Import public key");
 	else 
-		return _("Import");
+		return x("Import");
 }
 
 static const gchar*
 prepare_ask_primary (GQuark type)
 {
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("Enter password to unlock the private key");
+		return x("Enter password to unlock the private key");
 	else if (type == GKR_PKIX_CERTIFICATE)
-		return _("Enter password to unlock the certificate");
+		return x("Enter password to unlock the certificate");
 	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return _("Enter password to unlock the public key");
+		return x("Enter password to unlock the public key");
 	else 
-		return _("Enter password to unlock");
+		return x("Enter password to unlock");
 }
 
 static gchar*
 prepare_ask_secondary (GQuark type, const gchar *label)
 {
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return g_strdup_printf (_("The system wants to import the private key '%s', but it is locked"), label);
+		return g_strdup_printf (x("The system wants to import the private key '%s', but it is locked"), label);
 	else if (type == GKR_PKIX_CERTIFICATE)
-		return g_strdup_printf (_("The system wants to import the certificate '%s', but it is locked"), label);
+		return g_strdup_printf (x("The system wants to import the certificate '%s', but it is locked"), label);
 	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return g_strdup_printf (_("The system wants to import the public key '%s', but it is locked"), label);
+		return g_strdup_printf (x("The system wants to import the public key '%s', but it is locked"), label);
 	else 
-		return g_strdup_printf (_("The system wants to import '%s', but it is locked"), label);
+		return g_strdup_printf (x("The system wants to import '%s', but it is locked"), label);
 }
 
 static gboolean

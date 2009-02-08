@@ -133,13 +133,13 @@ prepare_ask_load_title (GQuark type)
 	 * for translations to work properly.
 	 */
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("Unlock private key");
+		return x("Unlock private key");
 	else if (type == GKR_PKIX_CERTIFICATE)
-		return _("Unlock certificate");
+		return x("Unlock certificate");
 	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return _("Unlock public key");
+		return x("Unlock public key");
 	else 
-		return _("Unlock");
+		return x("Unlock");
 }
 
 static const gchar*
@@ -150,9 +150,9 @@ prepare_ask_store_title (GQuark type)
 	 * for translations to work properly.
 	 */
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("Lock private key");
+		return x("Lock private key");
 	else 
-		return _("Lock");
+		return x("Lock");
 }
 
 static const gchar*
@@ -163,13 +163,13 @@ prepare_ask_load_primary (GQuark type)
 	 * for translations to work properly.
 	 */
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("Enter password to unlock the private key");
+		return x("Enter password to unlock the private key");
 	else if (type == GKR_PKIX_CERTIFICATE)
-		return _("Enter password to unlock the certificate");
+		return x("Enter password to unlock the certificate");
 	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return _("Enter password to unlock the public key");
+		return x("Enter password to unlock the public key");
 	else 
-		return _("Enter password to unlock");
+		return x("Enter password to unlock");
 }
 
 static const gchar*
@@ -180,9 +180,9 @@ prepare_ask_store_primary (GQuark type)
 	 * for translations to work properly.
 	 */
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("Enter password to protect the private key");
+		return x("Enter password to protect the private key");
 	else 
-		return _("Enter password to protect storage");
+		return x("Enter password to protect storage");
 }
 
 static const gchar*
@@ -193,26 +193,26 @@ prepare_ask_check (GQuark type)
 	 * for translations to work properly.
 	 */
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return _("Automatically unlock this private key when I log in.");
+		return x("Automatically unlock this private key when I log in.");
 	else if (type == GKR_PKIX_CERTIFICATE)
-		return _("Automatically unlock this certificate when I log in.");
+		return x("Automatically unlock this certificate when I log in.");
 	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return _("Automatically unlock this public key when I log in.");
+		return x("Automatically unlock this public key when I log in.");
 	else 
-		return _("Automatically unlock this when I log in");
+		return x("Automatically unlock this when I log in");
 }
 
 static gchar*
 prepare_ask_load_secondary (GQuark type, const gchar *label)
 {
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return g_strdup_printf (_("An application wants access to the private key '%s', but it is locked"), label);
+		return g_strdup_printf (x("An application wants access to the private key '%s', but it is locked"), label);
 	else if (type == GKR_PKIX_CERTIFICATE)
-		return g_strdup_printf (_("An application wants access to the certificate '%s', but it is locked"), label);
+		return g_strdup_printf (x("An application wants access to the certificate '%s', but it is locked"), label);
 	else if (type == GKR_PKIX_PUBLIC_KEY)
-		return g_strdup_printf (_("An application wants access to the public key '%s', but it is locked"), label);
+		return g_strdup_printf (x("An application wants access to the public key '%s', but it is locked"), label);
 	else 
-		return g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
+		return g_strdup_printf (x("An application wants access to '%s', but it is locked"), label);
 
 }
 
@@ -225,9 +225,9 @@ prepare_ask_store_secondary (GQuark type, const gchar *label)
 	 */
 
 	if (type == GKR_PKIX_PRIVATE_KEY)
-		return g_strdup_printf (_("The system wants to store the private key '%s' on your disk. Please enter a password to lock it with."), label);
+		return g_strdup_printf (x("The system wants to store the private key '%s' on your disk. Please enter a password to lock it with."), label);
 	else 
-		return g_strdup_printf (_("The system wants to store '%s' on your disk. Please enter a password to lock it with."), label);
+		return g_strdup_printf (x("The system wants to store '%s' on your disk. Please enter a password to lock it with."), label);
 }
 
 static void

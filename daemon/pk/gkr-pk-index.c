@@ -90,11 +90,11 @@ request_keyring_new (GQuark location, gchar **password)
 	g_assert (!*password);
 
 	/* And put together the ask request */
-	ask = gkr_ask_request_new (_("Create Storage for Key Information"), 
-	                           _("Choose password to protect storage"),
+	ask = gkr_ask_request_new (x("Create Storage for Key Information"), 
+	                           x("Choose password to protect storage"),
 	 	                   GKR_ASK_REQUEST_NEW_PASSWORD);
 	
-	gkr_ask_request_set_secondary (ask, _("The system wants to store information about your keys and certificates. "
+	gkr_ask_request_set_secondary (ask, x("The system wants to store information about your keys and certificates. "
 					      "In order to protect this information, choose a password with which it will be locked."));
 	
 	gkr_ask_request_set_location (ask, location);
@@ -121,18 +121,18 @@ request_keyring_unlock (GkrPkIndex *index)
 		return FALSE;
 	
 	/* And put together the ask request */
-	ask = gkr_ask_request_new (_("Unlock Storage for Key Information"), 
-	                           _("Enter password to unlock storage"),
+	ask = gkr_ask_request_new (x("Unlock Storage for Key Information"), 
+	                           x("Enter password to unlock storage"),
 	                           GKR_ASK_REQUEST_PROMPT_PASSWORD);
 	
-	gkr_ask_request_set_secondary (ask, _("The system wants to access information about your keys and certificates, "
+	gkr_ask_request_set_secondary (ask, x("The system wants to access information about your keys and certificates, "
 					      "but it is locked."));
 	
 	gkr_ask_request_set_location (ask, index->keyring->location);
 	gkr_ask_request_set_object (ask, G_OBJECT (index->keyring));
 	
 	if (gkr_keyring_login_is_usable ())
-		gkr_ask_request_set_check_option (ask, _("Automatically unlock this keyring when I log in."));
+		gkr_ask_request_set_check_option (ask, x("Automatically unlock this keyring when I log in."));
 
 	/* Intercept item access requests to see if we still need to prompt */
 	g_signal_connect (ask, "check-request", G_CALLBACK (gkr_keyring_ask_check_unlock), NULL);

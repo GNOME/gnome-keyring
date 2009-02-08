@@ -886,13 +886,13 @@ gkr_pk_object_get_label (GkrPkObject *xobj)
 			/* TODO: This should be a virtual function, or class prop */
 			type = G_OBJECT_TYPE (xobj);
 			if (type == GKR_TYPE_PK_CERT) {
-				pv->label = g_strdup (_("Certificate"));
+				pv->label = g_strdup (x("Certificate"));
 			} else if (type == GKR_TYPE_PK_PRIVKEY) {
-				pv->label = g_strdup (_("Private Key"));
+				pv->label = g_strdup (x("Private Key"));
 			} else if (type == GKR_TYPE_PK_PUBKEY) {
-				pv->label = g_strdup (_("Public Key"));
+				pv->label = g_strdup (x("Public Key"));
 			} else if (type == GKR_TYPE_PK_NETSCAPE_TRUST) {
-				pv->label = g_strdup (_("Trust Association"));
+				pv->label = g_strdup (x("Trust Association"));
 			} else {
 				g_warning ("no default label for objects of type: %s",
 				           G_OBJECT_TYPE_NAME (xobj));
