@@ -21,11 +21,11 @@ INCLUDES=	\
 	$(GLIB_CFLAGS)
 
 gnome_keyring_daemon_SOURCES = \
-	gkr-daemon.c \
-	gkr-daemon.h \
+	gkr-daemon.c gkr-daemon.h \
 	gkr-daemon-dbus.c \
 	gkr-daemon-io.c \
-	gkr-daemon-ops.c
+	gkr-daemon-ops.c \
+	gkr-daemon-util.c gkr-daemon-util.h 
 
 gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/pkcs11/libgkr-pkcs11.la \

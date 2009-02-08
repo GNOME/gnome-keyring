@@ -1,5 +1,21 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* common/gkr-daemon-util.c -> daemon/gkr-daemon-util.c:
+	* common/gkr-daemon-util.h -> daemon/gkr-daemon-util.h:
+	* common/Makefile.am:
+	* daemon/Makefile.am:
+	* daemon/gkr-daemon-dbus.c:
+	* daemon/gkr-daemon-io.c:
+	* daemon/gkr-daemon-ops.c:
+	* daemon/gkr-daemon-util.c:
+	* daemon/gkr-daemon-util.h:
+	* daemon/gkr-daemon.c:
+	* daemon/pkcs11/gkr-pkcs11-daemon.c:
+	* daemon/ui/gkr-ask-daemon.c: Move gkr-daemon-util code from 
+	common into daemon since that's where it's used.
+
+2009-02-07  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon.c:
 	* egg/Makefile.am:
 	* egg/tests/unit-test-symkey.c:

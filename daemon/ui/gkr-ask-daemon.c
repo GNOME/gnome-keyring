@@ -28,7 +28,8 @@
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
-#include "common/gkr-daemon-util.h"
+
+#include "daemon/gkr-daemon-util.h"
 
 #include <glib.h>
 

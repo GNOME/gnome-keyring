@@ -24,10 +24,10 @@
 #ifndef GKRMASTERDIRECTORY_H_
 #define GKRMASTERDIRECTORY_H_
 
-G_BEGIN_DECLS
-
 #include <glib.h>
 #include <glib-object.h>
+
+G_BEGIN_DECLS
 
 #include <sys/types.h>
 

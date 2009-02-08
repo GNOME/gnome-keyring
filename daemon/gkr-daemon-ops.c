@@ -23,10 +23,11 @@
 #include "config.h"
 
 #include "gkr-daemon.h"
+#include "gkr-daemon-util.h"
+
+#include "common/gkr-location.h"
 
 #include "egg/egg-buffer.h"
-#include "common/gkr-daemon-util.h"
-#include "common/gkr-location.h"
 #include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring.h"

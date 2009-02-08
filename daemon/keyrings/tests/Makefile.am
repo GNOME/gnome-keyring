@@ -1,10 +1,14 @@
 
 UNIT_AUTO = \
 	unit-test-keyring-login.c \
-	unit-test-keyring-file.c
+	unit-test-keyring-file.c \
+	$(top_srcdir)/daemon/gkr-daemon-util.c \
+	$(top_srcdir)/daemon/gkr-daemon-util.h
 
 UNIT_PROMPT = \
-	unit-test-login-prompt.c 
+	unit-test-login-prompt.c \
+	$(top_srcdir)/daemon/gkr-daemon-util.c \
+	$(top_srcdir)/daemon/gkr-daemon-util.h
 
 UNIT_LIBS =  \
 	$(top_builddir)/daemon/keyrings/libgkr-keyrings.la \

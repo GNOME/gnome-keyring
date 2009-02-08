@@ -23,10 +23,10 @@
 #include "config.h"
 
 #include "gkr-daemon.h"
+#include "gkr-daemon-util.h"
 
 #include "common/gkr-cleanup.h"
 #include "common/gkr-dbus.h"
-#include "common/gkr-daemon-util.h"
 
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-private.h"

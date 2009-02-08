@@ -33,11 +33,11 @@
 #include <sys/un.h>
 
 #include "gkr-daemon.h"
+#include "gkr-daemon-util.h"
 
 #include "common/gkr-async.h"
 #include "egg/egg-buffer.h"
 #include "common/gkr-cleanup.h"
-#include "common/gkr-daemon-util.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
 

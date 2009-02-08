@@ -23,10 +23,10 @@
 #include "config.h"
 
 #include "gkr-daemon.h"
+#include "gkr-daemon-util.h"
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
-#include "common/gkr-daemon-util.h"
 #include "common/gkr-unix-signal.h"
 
 #include "egg/egg-libgcrypt.h"

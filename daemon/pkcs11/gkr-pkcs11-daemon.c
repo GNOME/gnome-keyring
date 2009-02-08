@@ -32,8 +32,9 @@
 #include "pkcs11/user-store/gck-user-store.h"
 
 #include "common/gkr-async.h"
-#include "common/gkr-daemon-util.h"
 #include "common/gkr-cleanup.h"
+
+#include "daemon/gkr-daemon-util.h"
 
 /*
  * ALL calls into PKCS#11 and anything starting with 'gck'
