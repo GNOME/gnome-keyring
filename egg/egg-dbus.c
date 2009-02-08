@@ -1,5 +1,5 @@
 /* -*- mode: C; c-file-style: "gnu" -*- */
-/* gkr-dbus.c GLib main loop integration
+/* egg-dbus.c GLib main loop integration
  *
  * Copyright (C) 2002, 2003 CodeFactory AB
  * Copyright (C) 2005 Red Hat, Inc.
@@ -25,9 +25,7 @@
 
 #include "config.h"
 
-#include "gkr-dbus.h"
-
-#include "gkr-cleanup.h"
+#include "egg-dbus.h"
 
 #include <dbus/dbus.h>
 
@@ -382,7 +380,7 @@ wakeup_main (void *data)
 }
 
 void
-gkr_dbus_connect_with_mainloop (DBusConnection *connection, GMainContext *context)
+egg_dbus_connect_with_mainloop (DBusConnection *connection, GMainContext *context)
 {
 	ConnectionSetup *cs;
   
@@ -410,7 +408,7 @@ nomem:
 }
 
 void
-gkr_dbus_disconnect_from_mainloop (DBusConnection *connection, GMainContext *context)
+egg_dbus_disconnect_from_mainloop (DBusConnection *connection, GMainContext *context)
 {
 	ConnectionSetup *cs = the_setup;
 	the_setup = NULL;

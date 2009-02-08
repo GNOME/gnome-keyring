@@ -26,7 +26,8 @@
 #include "gkr-daemon-util.h"
 
 #include "common/gkr-cleanup.h"
-#include "common/gkr-dbus.h"
+
+#include "egg/egg-dbus.h"
 
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-private.h"
@@ -338,7 +339,7 @@ daemon_dbus_cleanup (gpointer unused)
 		unregister_daemon_in_session ();
 		
 		dbus_connection_unregister_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH);
-		gkr_dbus_disconnect_from_mainloop (dbus_conn, NULL);
+		egg_dbus_disconnect_from_mainloop (dbus_conn, NULL);
 		dbus_connection_unref (dbus_conn);
 		dbus_conn = NULL;
 	}
@@ -380,7 +381,7 @@ gkr_daemon_dbus_setup (void)
 	
 	gkr_cleanup_register (daemon_dbus_cleanup, NULL);
 
-	gkr_dbus_connect_with_mainloop (dbus_conn, NULL);
+	egg_dbus_connect_with_mainloop (dbus_conn, NULL);
 
 	/* Make sure dbus doesn't kill our app */
 	dbus_connection_set_exit_on_disconnect (dbus_conn, FALSE);

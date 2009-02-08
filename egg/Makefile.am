@@ -3,6 +3,7 @@ noinst_LTLIBRARIES = \
 	libegg.la \
 	libegg-buffer.la \
 	libegg-creds.la \
+	libegg-dbus.la \
 	libegg-secure.la \
 	libegg-secure-entry.la
 
@@ -61,6 +62,17 @@ libegg_buffer_la_SOURCES = \
 libegg_creds_la_SOURCES = \
 	egg-unix-credentials.c egg-unix-credentials.h	
 
+libegg_dbus_la_SOURCES = \
+	egg-dbus.c egg-dbus.h 
+
+libegg_dbus_la_CFLAGS = \
+	$(DBUS_CFLAGS) \
+	$(GLIB_CFLAGS)
+
+libegg_dbus_la_LIBADD = \
+	$(DBUS_LIBS) \
+	$(GLIB_LIBS)
+	
 # -------------------------------------------------------------------
 
 if WITH_TESTS

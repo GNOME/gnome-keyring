@@ -1,5 +1,15 @@
 2009-02-07  Stef Walter  <stef@memberwebs.com>
 
+	* common/Makefile.am:
+	* common/gkr-location.c:
+	* common/tests/Makefile.am:
+	* daemon/Makefile.am:
+	* daemon/gkr-daemon-dbus.c:
+	* egg/Makefile.am:
+	* egg/egg-dbus.c (moved from common/gkr-dbus.c):
+	* egg/egg-dbus.h (moved from common/gkr-dbus.h): Move the 
+	general dbus code into our egg folder.  
+
 	* common/gkr-daemon-util.c -> daemon/gkr-daemon-util.c:
 	* common/gkr-daemon-util.h -> daemon/gkr-daemon-util.h:
 	* common/Makefile.am:

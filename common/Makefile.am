@@ -21,7 +21,6 @@ libgkr_common_la_CFLAGS = \
 libgkr_common_la_SOURCES = \
 	gkr-async.c gkr-async.h \
 	gkr-cleanup.c gkr-cleanup.h \
-	gkr-dbus.c gkr-dbus.h \
 	gkr-location.c gkr-location.h \
 	gkr-location-watch.c gkr-location-watch.h \
 	gkr-unix-signal.c gkr-unix-signal.h \
@@ -29,6 +28,7 @@ libgkr_common_la_SOURCES = \
 
 libgkr_common_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
+	$(top_builddir)/egg/libegg-dbus.la \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS)
 

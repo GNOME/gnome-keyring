@@ -26,7 +26,8 @@
 #include "gkr-location.h"
 
 #include "gkr-cleanup.h"
-#include "gkr-dbus.h"
+
+#include "egg/egg-dbus.h"
 
 #ifdef WITH_HAL
 #include <libhal.h>
@@ -416,7 +417,7 @@ location_manager_hal_uninit (GkrLocationManager *locmgr)
 	}
 
 	if (pv->dbus_connection != NULL) {
-		gkr_dbus_disconnect_from_mainloop (pv->dbus_connection, NULL);
+		egg_dbus_disconnect_from_mainloop (pv->dbus_connection, NULL);
 		dbus_connection_unref (pv->dbus_connection);
 		pv->dbus_connection = NULL;
 	}
@@ -482,7 +483,7 @@ location_manager_hal_init (GkrLocationManager *locmgr)
 		goto failed;
 	}
 	
-	gkr_dbus_connect_with_mainloop (pv->dbus_connection, NULL);
+	egg_dbus_connect_with_mainloop (pv->dbus_connection, NULL);
 	dbus_connection_set_exit_on_disconnect (pv->dbus_connection, FALSE);
 
 	dbus_connection_add_filter (pv->dbus_connection, location_manager_dbus_filter_function, locmgr, NULL);

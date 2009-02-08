@@ -1,5 +1,5 @@
 /* -*- mode: C; c-file-style: "gnu" -*- */
-/* gkr-dbus.h GLib main loop integration
+/* egg-dbus.h GLib main loop integration
  *
  * Copyright (C) 2002, 2003 CodeFactory AB
  * Copyright (C) 2005 Red Hat, Inc.
@@ -22,14 +22,14 @@
  *
  */
 
-#ifndef GKRDBUS_H_
-#define GKRDBUS_H_
+#ifndef EGGDBUS_H_
+#define EGGDBUS_H_
 
 #include <glib.h>
 #include <dbus/dbus.h>
 
-void gkr_dbus_connect_with_mainloop (DBusConnection *connection, GMainContext *context);
+void egg_dbus_connect_with_mainloop (DBusConnection *connection, GMainContext *context);
 
-void gkr_dbus_disconnect_from_mainloop (DBusConnection *connection, GMainContext *context);
+void egg_dbus_disconnect_from_mainloop (DBusConnection *connection, GMainContext *context);
 
-#endif /*GKRDBUS_H_*/
+#endif /*EGGDBUS_H_*/
