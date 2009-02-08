@@ -134,8 +134,9 @@ complete_link_temporary (GckTransaction *self, GObject *unused, gpointer user_da
 	gchar *original;
 	gchar *ext;
 	
+	/* When failed, rename temporary back */
 	if (gck_transaction_get_failed (self)) {
-		
+
 		/* Figure out the original file name */
 		original = g_strdup (path);
 		ext = strrchr (original, '.');
@@ -143,13 +144,21 @@ complete_link_temporary (GckTransaction *self, GObject *unused, gpointer user_da
 		*ext = '\0';
 		
 		/* Now rename us back */
-		if (!g_rename (path, original) == -1) {
+		if (g_rename (path, original) == -1) {
 			g_warning ("couldn't restore original file, data may be lost: %s: %s", 
 			           original, g_strerror (errno));
 			ret = FALSE;
 		}
 		
 		g_free (original);
+
+	/* When succeeded, remove temporary */
+	} else {
+		if (g_unlink (path) == -1) {
+			g_warning ("couldn't delete temporary backup file: %s: %s", 
+			           path, g_strerror (errno)); 
+			ret = TRUE; /* Not actually that bad of a situation */
+		}
 	}
 	
 	g_free (path);

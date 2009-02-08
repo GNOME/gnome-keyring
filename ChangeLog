@@ -3,6 +3,9 @@
 	* pkcs11/gck/gck-data-der.c: Make output of RSA keys and PKCS8
 	more interoperable.
 	
+	* pkcs11/gck/gck-transaction.c: Fix problem not deleting temporary
+	files after doing a transaction write.
+	
 2009-02-08  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon-ops.c:
