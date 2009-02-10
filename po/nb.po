@@ -1,14 +1,14 @@
 # Norwegian translations for gnome-keyring.
 # Copyright (C) 2003 Red Hat Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Kjartan Maraas <kmaraas@gnome.org>, 2003-2008.
+# Kjartan Maraas <kmaraas@gnome.org>, 2003-2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 2.21.5\n"
+"Project-Id-Version: gnome-keyring 2.25.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-05 07:17+0100\n"
-"PO-Revision-Date: 2009-01-05 07:18+0100\n"
+"POT-Creation-Date: 2009-02-10 07:28+0100\n"
+"PO-Revision-Date: 2009-02-10 07:35+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -16,36 +16,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gkr-location.c:320
+#: ../common/gkr-location.c:321
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Avtagbar disk: %s"
 
-#: ../common/gkr-location.c:322
+#: ../common/gkr-location.c:323
 msgid "Removable Disk"
 msgstr "Avtagbar disk"
 
-#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
+#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
 msgid "Home"
 msgstr "Hjem"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
-#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller stasjonen denne filen er plassert på er ikke tilstede"
 
-#: ../common/gkr-location.c:1136
+#: ../common/gkr-location.c:1137
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "Kunne ikke lage katalog: %s"
 
-#: ../common/gkr-location.c:1170
+#: ../common/gkr-location.c:1171
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Kunne ikke slette filen: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:227
+#: ../daemon/gkr-daemon-ops.c:228
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -55,7 +54,7 @@ msgstr ""
 "på forvalgt nøkkelring."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231
+#: ../daemon/gkr-daemon-ops.c:232
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -65,7 +64,7 @@ msgstr ""
 "i %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
+#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -75,7 +74,7 @@ msgstr ""
 "forvalgt nøkkelring."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -84,7 +83,7 @@ msgstr ""
 "Programmet «%s» ønsker tilgang til passordet for «<object prop='name'/>» på %s."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:257
+#: ../daemon/gkr-daemon-ops.c:258
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -93,7 +92,7 @@ msgstr ""
 "forvalgt nøkkelring."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -103,15 +102,16 @@ msgstr ""
 "s."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow access"
 msgstr "Gi tilgang"
 
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow application access to keyring?"
 msgstr "Gi program tilgang til nøkkelring?"
 
-#: ../daemon/gkr-daemon-ops.c:307
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -119,55 +119,61 @@ msgid ""
 msgstr ""
 "Programmet «%s» (%s) ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../daemon/gkr-daemon-ops.c:311
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "Programmet «%s» (%s) ønsker tilgang til nøkkelring «%s», men den er låst"
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "Programmet «%s» ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "Programmet «%s» ønsker tilgang til nøkkelring «%s», men den er låst"
 
-#: ../daemon/gkr-daemon-ops.c:338
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Et ukjent program ønsker tilgang til forvalgt nøkkelring, men den er låst"
 
-#: ../daemon/gkr-daemon-ops.c:342
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "Et ukjent program ønsker tilgang til nøkkelring «%s», men den er låst"
 
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
 msgstr "Oppgi passord for forvalgt nøkkelring for å låse opp"
 
-#: ../daemon/gkr-daemon-ops.c:351
+#: ../daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Oppgi passord for nøkkelring «%s» for å låse opp"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:355
+#: ../daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "Lås opp nøkkelring"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
+#: ../daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Lås opp denne nøkkelringen automatisk når jeg logger inn."
 
-#: ../daemon/gkr-daemon-ops.c:403
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -176,7 +182,8 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:407
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -185,7 +192,8 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å opprette en ny forvalgt nøkkelring. Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -194,7 +202,8 @@ msgstr ""
 "Programmet «%s» ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -203,7 +212,8 @@ msgstr ""
 "Programmet «%s» ønsker å opprette en ny forvalgt nøkkelring. Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:433
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -212,7 +222,8 @@ msgstr ""
 "Et ukjent program ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:437
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -222,15 +233,15 @@ msgstr ""
 "passordet du ønsker å bruke for denne."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:443
+#: ../daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
 msgstr "Nytt passord for nøkkelring"
 
-#: ../daemon/gkr-daemon-ops.c:444
+#: ../daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
 msgstr "Oppgi passord for ny nøkkelring"
 
-#: ../daemon/gkr-daemon-ops.c:491
+#: ../daemon/gkr-daemon-ops.c:508
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -239,7 +250,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å bytte passord for nøkkelring «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:512
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -248,7 +259,7 @@ msgstr ""
 "Programmet «%s» (%s) ønsker å bytte passord for forvalgt nøkkelring. Du må "
 "velge passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -257,7 +268,7 @@ msgstr ""
 "Programmet «%s» ønsker å bytte passord for nøkkelring «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -266,7 +277,7 @@ msgstr ""
 "Programmet «%s» ønsker å bytte passord for forvalgt nøkkelring. Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:521
+#: ../daemon/gkr-daemon-ops.c:538
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -275,7 +286,7 @@ msgstr ""
 "Et ukjent program ønsker å bytte passord for nøkkelring «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:525
+#: ../daemon/gkr-daemon-ops.c:542
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -284,22 +295,22 @@ msgstr ""
 "Et ukjent program ønsker å bytte passord for forvalgt nøkkelring. Du må "
 "velge passordet du ønsker å bruke for denne."
 
-#: ../daemon/gkr-daemon-ops.c:535
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Velg et nytt passord for nøkkelring «%s». "
 
-#: ../daemon/gkr-daemon-ops.c:537
+#: ../daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Velg et nytt passord for forvalgt nøkkelring. "
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:541
+#: ../daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
 msgstr "Endre passord for nøkkelring"
 
-#: ../daemon/gkr-daemon-ops.c:614
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -310,7 +321,7 @@ msgstr ""
 "nøkkelring. For å opprette en må du lagre passordet du ønsker å bruke for "
 "den."
 
-#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -321,7 +332,7 @@ msgstr ""
 "nøkkelring. For å opprette en må du lagre passordet du ønsker å bruke for "
 "den."
 
-#: ../daemon/gkr-daemon-ops.c:626
+#: ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -333,29 +344,15 @@ msgstr ""
 "den."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "Opprett forvalgt nøkkelring"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
 msgstr "Oppgi passord for forvalgt nøkkelring"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"A list of paths to PKCS#11 modules to load. No modules are currently listed "
-"by default, as this is still an experimental feature. This is used by "
-"seahorse and other PKCS#11 aware applications."
-msgstr ""
-"En liste med stier til PKCS#11-moduler som skal lastes. Ingen moduler er "
-"lagt til i listen som forvalg da dette fremdeles er en eksperimentell "
-"funksjon. Dette brukes av seahorse og andre programmer som forstår PKCS#11."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid "PKCS#11 Modules"
-msgstr "PKCS#11-moduler"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -367,7 +364,7 @@ msgstr ""
 "når brukeren logger inn. Denne innstillingen kan overstyres med spesifikke "
 "kommandolinjeargumenter gis til tjenesten."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -379,11 +376,11 @@ msgstr ""
 "logger inn. Denne innstillingen kan overstyres med spesifikke "
 "kommandolinjeargumenter gis til tjenesten."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "Om PKCS#11-komponenten for gnome-keyring er aktivert."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Om SSH-agenten for gnome-keyring er aktivert."
 
@@ -425,242 +422,118 @@ msgstr ""
 "Din påloggingsnøkkelring ble ikke opprettet automatisk når du logget på "
 "denne datamaskinen. Den vil bli opprettet nå."
 
-#: ../daemon/keyrings/gkr-keyring.c:584
+#: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "Lås opp passord for %s nøkkelring"
 
-#: ../daemon/pk/gkr-pk-import.c:88
-msgid "Import private key"
-msgstr "Importer privat nøkkel"
-
-#: ../daemon/pk/gkr-pk-import.c:90
-msgid "Import certificate"
-msgstr "Importer sertifikat"
-
-#: ../daemon/pk/gkr-pk-import.c:92
-msgid "Import public key"
-msgstr "Importer offentlig nøkkel"
-
-#: ../daemon/pk/gkr-pk-import.c:94
-msgid "Import"
-msgstr "Importer"
-
-#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
-msgid "Enter password to unlock the private key"
-msgstr "Oppgi passord for å låse opp privat nøkkel"
-
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
-msgid "Enter password to unlock the certificate"
-msgstr "Oppgi passord for å låse opp sertifikat"
-
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
-msgid "Enter password to unlock the public key"
-msgstr "Oppgi passord for å låse opp offentlig nøkkel"
-
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
-msgid "Enter password to unlock"
-msgstr "Oppgi passord for å låse opp"
-
-#: ../daemon/pk/gkr-pk-import.c:114
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "Systemet ønsker å importere privat nøkkel «%s», men den er låst."
-
-#: ../daemon/pk/gkr-pk-import.c:116
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "Systemet ønsker å importere sertifikat «%s», men den er låst."
-
-#: ../daemon/pk/gkr-pk-import.c:118
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "Systemet ønsker å importere offentlig nøkkel «%s», men den er låst."
-
-#: ../daemon/pk/gkr-pk-import.c:120
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "Systemet ønsker å importere «%s», men den er låst."
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:93
-msgid "Create Storage for Key Information"
-msgstr "Opprett lager for nøkkelinformasjon"
-
-#: ../daemon/pk/gkr-pk-index.c:94
-msgid "Choose password to protect storage"
-msgstr "Velg passord for å beskytte lagring"
-
-#: ../daemon/pk/gkr-pk-index.c:97
-msgid ""
-"The system wants to store information about your keys and certificates. In "
-"order to protect this information, choose a password with which it will be "
-"locked."
-msgstr ""
-"Systemet ønsker å lagre informasjon om dine nøkler og sertifikater. For å "
-"kunne beskytte denne informasjonen må du velge et passord som vil brukes for "
-"å låse ned denne informasjonen."
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:124
-msgid "Unlock Storage for Key Information"
-msgstr "Lås opp lagring av nøkkelinformasjon"
-
-#: ../daemon/pk/gkr-pk-index.c:125
-msgid "Enter password to unlock storage"
-msgstr "Oppgi passord for å låse opp lagring"
-
-#: ../daemon/pk/gkr-pk-index.c:128
-msgid ""
-"The system wants to access information about your keys and certificates, but "
-"it is locked."
-msgstr ""
-"Systemet ønsker tilgang til informasjon om dine nøkler og sertifikater, men "
-"denne er låst."
-
-#: ../daemon/pk/gkr-pk-object.c:889
-msgid "Certificate"
-msgstr "Sertifikat"
-
-#: ../daemon/pk/gkr-pk-object.c:891
-msgid "Private Key"
-msgstr "Privat nøkkel"
-
-#: ../daemon/pk/gkr-pk-object.c:893
-msgid "Public Key"
-msgstr "Offentlig nøkkel"
-
-#: ../daemon/pk/gkr-pk-object.c:895
-msgid "Trust Association"
-msgstr "Assosiering av tillit"
-
-#: ../daemon/pk/gkr-pk-object-storage.c:445
-#, c-format
-msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr "Kan ikke slette «%s» på grunn av knytninger til andre objekter."
-
-#: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
 msgid "Unlock private key"
 msgstr "Lås opp privat nøkkel"
 
-#: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
 msgid "Unlock certificate"
 msgstr "Lås opp sertifikat"
 
-#: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
 msgid "Unlock public key"
 msgstr "Lås opp offentlig nøkkel"
 
-#: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
 msgid "Unlock"
 msgstr "Lås opp"
 
-#: ../daemon/pk/gkr-pk-storage.c:153
-msgid "Lock private key"
-msgstr "Lås privat nøkkel"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+msgid "Enter password to unlock the private key"
+msgstr "Oppgi passord for å låse opp privat nøkkel"
 
-#: ../daemon/pk/gkr-pk-storage.c:155
-msgid "Lock"
-msgstr "Lås"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+msgid "Enter password to unlock the certificate"
+msgstr "Oppgi passord for å låse opp sertifikat"
 
-#: ../daemon/pk/gkr-pk-storage.c:183
-msgid "Enter password to protect the private key"
-msgstr "Oppgi passord for å beskytte den private nøkkelen"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+msgid "Enter password to unlock the public key"
+msgstr "Oppgi passord for å låse opp offentlig nøkkel"
 
-#: ../daemon/pk/gkr-pk-storage.c:185
-msgid "Enter password to protect storage"
-msgstr "Oppgi passord for å beskytte lager"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+msgid "Enter password to unlock"
+msgstr "Oppgi passord for å låse opp"
 
-#: ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "Lås opp denne private nøkkelringen automatisk når jeg logger inn."
-
-#: ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Lås opp dette sertifikatet automatisk når jeg logger inn."
-
-#: ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "Lås opp denne offentlige nøkkelringen automatisk når jeg logger inn."
-
-#: ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "Lås denne opp automatisk når jeg logger inn."
-
-#: ../daemon/pk/gkr-pk-storage.c:209
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Et program ønsker tilgang til privat nøkkel «%s», men den er låst"
 
-#: ../daemon/pk/gkr-pk-storage.c:211
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Et program ønsker tilgang til sertifikat «%s», men den er låst"
 
-#: ../daemon/pk/gkr-pk-storage.c:213
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Et program ønsker tilgang til offentlignøkkel «%s», men den er låst"
 
-#: ../daemon/pk/gkr-pk-storage.c:215
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Et program ønsker tilgang til «%s», men den er låst"
 
-#: ../daemon/pk/gkr-pk-storage.c:228
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "Lås opp denne private nøkkelringen automatisk når jeg logger inn."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Lås opp dette sertifikatet automatisk når jeg logger inn."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "Lås opp denne offentlige nøkkelringen automatisk når jeg logger inn."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "Lås denne opp automatisk når jeg logger inn."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+msgid "Unlock certificate/key storage"
+msgstr "Lås opp lager for sertifikat/nøkkel"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Oppgi passord for å låse opp lager for sertifikat/nøkkel"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
 #, c-format
 msgid ""
-"The system wants to store the private key '%s' on your disk. Please enter a "
-"password to lock it with."
-msgstr ""
-"Systemet ønsker å lagre privat nøkkel «%s» på din disk. Vennligst oppgi et "
-"passord å låse den med."
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "Et program ønsker tilgang til lager for sertifikat/nøkkel «%s», men det er låst"
 
-#: ../daemon/pk/gkr-pk-storage.c:230
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Lås opp sikkerhetslageret automatisk når jeg logger inn."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+msgid "New Password Required"
+msgstr "Nytt passord kreves"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+msgid "New password required for secure storage"
+msgstr "Nytt passord kreves for sikkerhetslager"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid ""
-"The system wants to store '%s' on your disk. Please enter a password to lock "
-"it with."
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
 msgstr ""
-"Systemet ønsker å lagre «%s» på din disk. Vennligst oppgi et passord å låse "
-"informasjonen med."
-
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:92
-msgid "The operation was cancelled"
-msgstr "Operasjonen ble avbrutt"
-
-#: ../daemon/pkix/gkr-pkix-parser.c:455
-msgid "Unrecognized or unsupported file."
-msgstr "Ikke gjenkjent eller støttet fil."
-
-#: ../daemon/pkix/gkr-pkix-parser.c:459
-msgid "Could not parse invalid or corrupted file."
-msgstr "Kunne ikke lese ugyldig eller korrupt fil."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:166
-#, c-format
-msgid "Couldn't encode secure shell public key."
-msgstr "Kunne ikke kode offentlig nøkkel for secure shell."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:412
-#, c-format
-msgid "Couldn't read secure shell private key: %s"
-msgstr "Kunne ikke lese privat nøkkel for secure shell: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:416
-#, c-format
-msgid "Invalid secure shell private key at: %s"
-msgstr "Ugyldig privat nøkkel for secure shell: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:465
-#, c-format
-msgid "Couldn't encrypt the SSH key to store it."
-msgstr "Kunne ikke kryptere SSH-nøkkel for å lagre den."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:481
-#, c-format
-msgid "Couldn't encode the SSH key to store it."
-msgstr "Kunne ikke kode SSH-nøkkel for å lagre den."
 
 #: ../daemon/ui/gkr-ask-tool.c:244
 msgid "Store passwords unencrypted?"
@@ -728,323 +601,647 @@ msgstr "Tillat én gang"
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
 
-#: ../gp11/gp11-misc.c:95
+#: ../egg/egg-asn1.c:794
+msgid "Domain Component"
+msgstr ""
+
+#: ../egg/egg-asn1.c:795
+msgid "User ID"
+msgstr "Bruker-ID"
+
+#: ../egg/egg-asn1.c:797
+msgid "Email"
+msgstr "E-post"
+
+#: ../egg/egg-asn1.c:801
+msgid "Date of Birth"
+msgstr "Fødselsdato"
+
+#: ../egg/egg-asn1.c:802
+msgid "Place of Birth"
+msgstr "Fødested"
+
+#: ../egg/egg-asn1.c:803
+msgid "Gender"
+msgstr "Kjønn"
+
+#: ../egg/egg-asn1.c:804
+msgid "Country of Citizenship"
+msgstr ""
+
+#: ../egg/egg-asn1.c:805
+msgid "Country of Residence"
+msgstr ""
+
+#: ../egg/egg-asn1.c:807
+msgid "Common Name"
+msgstr ""
+
+#: ../egg/egg-asn1.c:808
+msgid "Surname"
+msgstr "Etternavn"
+
+#: ../egg/egg-asn1.c:809 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:259
+msgid "Serial Number"
+msgstr "Serienummer"
+
+#: ../egg/egg-asn1.c:810
+msgid "Country"
+msgstr "Land"
+
+#: ../egg/egg-asn1.c:811
+msgid "Locality"
+msgstr ""
+
+#: ../egg/egg-asn1.c:812
+msgid "State"
+msgstr "Stat"
+
+#: ../egg/egg-asn1.c:813
+msgid "Street"
+msgstr "Gate"
+
+#: ../egg/egg-asn1.c:814
+msgid "Organization"
+msgstr "Organisasjon"
+
+#: ../egg/egg-asn1.c:815
+msgid "Organizational Unit"
+msgstr "Organisasjonsenhet"
+
+#: ../egg/egg-asn1.c:816
+msgid "Title"
+msgstr "Tittel"
+
+#: ../egg/egg-asn1.c:817
+msgid "Telephone Number"
+msgstr "Telefonnummer"
+
+#: ../egg/egg-asn1.c:818
+msgid "Given Name"
+msgstr ""
+
+#: ../egg/egg-asn1.c:819
+msgid "Initials"
+msgstr "Initialer"
+
+#: ../egg/egg-asn1.c:820
+#, fuzzy
+msgid "Generation Qualifier"
+msgstr "Operasjonen feilet"
+
+#: ../egg/egg-asn1.c:821
+msgid "DN Qualifier"
+msgstr ""
+
+#: ../egg/egg-asn1.c:822
+msgid "Pseudonym"
+msgstr "Pseudonym"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>Ikke del av sertifikatet</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>ukjent</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Ikke en del av sertifikatet>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Fingeravtrykk</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Utstedt av</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Utstedt til</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Gyldighet</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+#, fuzzy
+msgid "Email Recipient Certificate"
+msgstr "Importer sertifikat"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+#, fuzzy
+msgid "Email Signer Certificate"
+msgstr "Sertifikat uten navn"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "Utløper"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "Utstedt"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5-fingeravtrykk"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "Organisasjon (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Organisasjonsenhet (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1-fingeravtrykk"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+msgid "SSL Client Certificate"
+msgstr "SSL klientsertifikat"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+msgid "SSL Server Certificate"
+msgstr "SSL tjenersertifikat"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:240
+msgid "Subject Name"
+msgstr ""
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:244
+msgid "Issuer Name"
+msgstr ""
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:248
+#, fuzzy
+msgid "Issued Certificate"
+msgstr "Sertifikat"
+
+#: ../gcr/gcr-certificate-details-widget.c:253
+msgid "Version"
+msgstr "Versjon"
+
+#: ../gcr/gcr-certificate-details-widget.c:266
+msgid "Not Valid Before"
+msgstr "Ikke gyldig før"
+
+#: ../gcr/gcr-certificate-details-widget.c:271
+msgid "Not Valid After"
+msgstr "Ikke gyldig etter"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:276
+#: ../gcr/gcr-certificate-details-widget.c:284
+msgid "Signature"
+msgstr "Signatur"
+
+#. TODO: Complete Signature algorithm, and params
+#: ../gcr/gcr-certificate-details-widget.c:279
+msgid "Signature Algorithm"
+msgstr "Algoritme for signatur"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:288
+#, fuzzy
+msgid "Public Key Info"
+msgstr "Offentlig nøkkel"
+
+#. TODO: Complete algorithm, params, key size
+#: ../gcr/gcr-certificate-details-widget.c:291
+msgid "Key Algorithm"
+msgstr "Algoritme for nøkkel"
+
+#: ../gcr/gcr-certificate-details-widget.c:292
+msgid "Key Size"
+msgstr "Størrelse på nøkkel"
+
+#: ../gcr/gcr-certificate-details-widget.c:297 ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "Offentlig nøkkel"
+
+#. TODO: Implement extensions
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:303
+msgid "Fingerprints"
+msgstr "Fingeravtrykk"
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr ""
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+msgid "Import Into:"
+msgstr "Importer til:"
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+msgid "Password:"
+msgstr "Passord:"
+
+#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr "Operasjonen ble avbrutt"
+
+#: ../gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr ""
+
+#: ../gcr/gcr-importer.c:328
+msgid "Import Certificates/Keys"
+msgstr "Importer sertifikater/nøkler"
+
+#: ../gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr ""
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
+#, fuzzy
+msgid "In order to import the private key, it must be unlocked"
+msgstr "Systemet ønsker å importere privat nøkkel «%s», men den er låst."
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
+#, fuzzy
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "Systemet ønsker å importere sertifikat «%s», men den er låst."
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
+msgid "In order to import the data, it must be unlocked"
+msgstr ""
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
+#, fuzzy, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "Systemet ønsker å importere privat nøkkel «%s», men den er låst."
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
+#, fuzzy, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "Systemet ønsker å importere sertifikat «%s», men den er låst."
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
+#, fuzzy, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "Systemet ønsker å importere «%s», men den er låst."
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "Privat nøkkel"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "Sertifikat"
+
+#: ../gcr/gcr-parser.c:1576
+msgid "Unrecognized or unsupported data."
+msgstr "Ikke gjenkjente eller støttede data."
+
+#: ../gcr/gcr-parser.c:1579
+msgid "Could not parse invalid or corrupted data."
+msgstr "Kunne ikke lese ugyldige eller korrupte data."
+
+#: ../gcr/gcr-parser.c:1582
+msgid "The data is locked"
+msgstr "Data er låst"
+
+#: ../gp11/gp11-misc.c:117
 msgid "Insufficient memory available"
 msgstr "Ikke nok minne tilgjengelig"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:119
 msgid "The specified slot ID is not valid"
 msgstr "Oppgitt ID for plass er ikke gyldig"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:121
 msgid "Internal error"
 msgstr "Intern feil"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:123
 msgid "The operation failed"
 msgstr "Operasjonen feilet"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:125
 msgid "Invalid arguments"
 msgstr "Ugyldige argumenter"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:127
 msgid "The module cannot create needed threads"
 msgstr "Modulen kan ikke lage nødvendige tråder"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:129
 msgid "The module cannot lock data properly"
 msgstr "Modulen kan ikke låse data ordentlig"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:131
 msgid "The field is read-only"
 msgstr "Feltet er skrivebeskyttet"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:133
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Feltet er sensitivt og kan ikke vises"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:135
 msgid "The field is invalid or does not exist"
 msgstr "Feltet er ugyldig eller eksisterer ikke"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:137
 msgid "Invalid value for field"
 msgstr "Ugyldig verdi for felt"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:139
 msgid "The data is not valid or unrecognized"
 msgstr "Data er ikke gyldig eller kan ikke gjenkjennes"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:141
 msgid "The data is too long"
 msgstr "For mye data"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:143
 msgid "An error occurred on the device"
 msgstr "Fen feil oppsto på enheten"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:145
 msgid "Insufficient memory available on device"
 msgstr "Ikke nok minne på enheten"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:147
 msgid "The device was removed or unplugged"
 msgstr "Enheten ble fjernet eller koblet fra"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:149
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Krypterte data er ikke gyldige eller ble ikke gjenkjent"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:151
 msgid "The encrypted data is too long"
 msgstr "For mye krypterte data"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:153
 msgid "This operation is not supported"
 msgstr "Operasjonen er ikke støttet"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:155
 msgid "The key is missing or invalid"
 msgstr "Nøkkelen mangler eller er ugyldig"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:157
 msgid "The key is the wrong size"
 msgstr "Nøkkelen har feil størrelse"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:159
 msgid "The key is of the wrong type"
 msgstr "Nøkkelen er av feil type"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:161
 msgid "No key is needed"
 msgstr "Ingen nøkkel kreves"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:163
 msgid "The key is different than before"
 msgstr "Nøkkelen er forskjellig fra tidligere"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:165
 msgid "A key is needed"
 msgstr "En nøkkel kreves"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:167
 msgid "Cannot include the key in digest"
 msgstr "Kan ikke ta med nøkkelen i sammendraget"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:169
 msgid "This operation cannot be done with this key"
 msgstr "Operasjonen kan ikke utføres med denne nøkkelen"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:171
 msgid "The key cannot be wrapped"
 msgstr "Nøkkelen kan ikke pakkes inn"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:173
 msgid "Cannot export this key"
 msgstr "Kan ikke eksportere denne nøkkelen"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:175
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Mekanisme for kryptering er ugyldig eller ikke gjenkjent"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:177
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Kryptomekanismen har et ugyldig argument"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:179
 msgid "The object is missing or invalid"
 msgstr "Objektet mangler eller er ugyldig"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:181
 msgid "Another operation is already taking place"
 msgstr "En annen operasjon er i gang allerede"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:183
 msgid "No operation is taking place"
 msgstr "Ingen operasjon pågår"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:185
 msgid "The password or PIN is incorrect"
 msgstr "Passord eller pin-kode er feil"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:187
 msgid "The password or PIN is invalid"
 msgstr "Passord eller pin-kode er ugyldig"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:189
 msgid "The password or PIN is of an invalid length"
 msgstr "Passord eller pin-kode har ugyldig lengde"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:191
 msgid "The password or PIN has expired"
 msgstr "Passord eller pin-kode er utløpt"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:193
 msgid "The password or PIN is locked"
 msgstr "Passord eller PIN er låst"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:195
 msgid "The session is closed"
 msgstr "Sesjonen er lukket"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:197
 msgid "Too many sessions are active"
 msgstr "For mange aktive sesjoner"
 
-#: ../gp11/gp11-misc.c:177
+#: ../gp11/gp11-misc.c:199
 msgid "The session is invalid"
 msgstr "Sesjonen er ugyldig"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:201
 msgid "The session is read-only"
 msgstr "Sesjonen er skrivebeskyttet"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:203
 msgid "An open session exists"
 msgstr "En åpen sesjon finnes"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:205
 msgid "A read-only session exists"
 msgstr "En skrivebeskyttet sesjon finnes."
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:207
 msgid "An administrator session exists"
 msgstr "En administrator-sesjon eksisterer"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:209
 msgid "The signature is bad or corrupted"
 msgstr "Signaturen er ugyldig eller korrupt"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:211
 msgid "The signature is unrecognized or corrupted"
 msgstr "Signatur ikke gjenkjent eller korrupt"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:213
 msgid "Certain required fields are missing"
 msgstr "Noen obligatoriske felt mangler"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:215
 msgid "Certain fields have invalid values"
 msgstr "Noen felt har ugyldige verdier"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:217
 msgid "The device is not present or unplugged"
 msgstr "Enheten er ikke tilgjengelig eller koblet fra"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:219
 msgid "The device is invalid or unrecognizable"
 msgstr "Enheten er ugyldig eller ikke gjenkjennbar"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:221
 msgid "The device is write protected"
 msgstr "Enheten er skrivebeskyttet"
 
-#: ../gp11/gp11-misc.c:201
+#: ../gp11/gp11-misc.c:223
 msgid "Cannot import because the key is invalid"
 msgstr "Kan ikke importere fordi nøkkelen er ugyldig"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Kan ikke importere fordi nøkkelen har feil størrelse"
 
-#: ../gp11/gp11-misc.c:205
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Kan ikke importere fordi nøkkelen er av feil type"
 
-#: ../gp11/gp11-misc.c:207
+#: ../gp11/gp11-misc.c:229
 msgid "You are already logged in"
 msgstr "Du er allerede logget inn"
 
-#: ../gp11/gp11-misc.c:209
+#: ../gp11/gp11-misc.c:231
 msgid "No user has logged in"
 msgstr "Ingen bruker har logget inn"
 
-#: ../gp11/gp11-misc.c:211
+#: ../gp11/gp11-misc.c:233
 msgid "The user's password or PIN is not set"
 msgstr "Brukers passord eller PIN-kode er ikke satt"
 
-#: ../gp11/gp11-misc.c:213
+#: ../gp11/gp11-misc.c:235
 msgid "The user is of an invalid type"
 msgstr "Bruker har ugyldig type"
 
-#: ../gp11/gp11-misc.c:215
+#: ../gp11/gp11-misc.c:237
 msgid "Another user is already logged in"
 msgstr "En annen bruker er allerede logget inn"
 
-#: ../gp11/gp11-misc.c:217
+#: ../gp11/gp11-misc.c:239
 msgid "Too many users of different types logged in"
 msgstr "For mange brukere av forskjellig type logget inn"
 
-#: ../gp11/gp11-misc.c:219
+#: ../gp11/gp11-misc.c:241
 msgid "Cannot import an invalid key"
 msgstr "Kan ikke importere en ugyldig nøkkel"
 
-#: ../gp11/gp11-misc.c:221
+#: ../gp11/gp11-misc.c:243
 msgid "Cannot import a key of the wrong size"
 msgstr "Kan ikke importere en nøkkel med feil størrelse"
 
-#: ../gp11/gp11-misc.c:223
+#: ../gp11/gp11-misc.c:245
 msgid "Cannot export because the key is invalid"
 msgstr "Kan ikke eksportere fordi nøkkelen er ugyldig"
 
-#: ../gp11/gp11-misc.c:225
+#: ../gp11/gp11-misc.c:247
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Kan ikke eksportere fordi nøkkelen har feil størrelse"
 
-#: ../gp11/gp11-misc.c:227
+#: ../gp11/gp11-misc.c:249
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Kan ikke eksportere fordi nøkkelen er av feil type"
 
-#: ../gp11/gp11-misc.c:229
+#: ../gp11/gp11-misc.c:251
 msgid "Unable to initialize the random number generator"
 msgstr "Kan ikke initiere generator av tilfeldige tall"
 
-#: ../gp11/gp11-misc.c:231
+#: ../gp11/gp11-misc.c:253
 msgid "No random number generator available"
 msgstr "Ingen generator av tilfeldige tall tilgjengelig"
 
-#: ../gp11/gp11-misc.c:233
+#: ../gp11/gp11-misc.c:255
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Kryptomekanismen har en ugyldig parameter"
 
-#: ../gp11/gp11-misc.c:235
+#: ../gp11/gp11-misc.c:257
 msgid "Not enough space to store the result"
 msgstr "Ikke nok plass til å lagre resultatet"
 
-#: ../gp11/gp11-misc.c:237
+#: ../gp11/gp11-misc.c:259
 msgid "The saved state is invalid"
 msgstr "Lagret tilstand er ugyldig"
 
-#: ../gp11/gp11-misc.c:239
+#: ../gp11/gp11-misc.c:261
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Informasjonen er sensitiv og kan ikke vises"
 
-#: ../gp11/gp11-misc.c:241
+#: ../gp11/gp11-misc.c:263
 msgid "The state cannot be saved"
 msgstr "Tilstand kan ikke lagres"
 
-#: ../gp11/gp11-misc.c:243
+#: ../gp11/gp11-misc.c:265
 msgid "The module has not been initialized"
 msgstr "Modulen er ikke initiert"
 
-#: ../gp11/gp11-misc.c:245
+#: ../gp11/gp11-misc.c:267
 msgid "The module has already been initialized"
 msgstr "Modulen er allerede initiert"
 
-#: ../gp11/gp11-misc.c:247
+#: ../gp11/gp11-misc.c:269
 msgid "Cannot lock data"
 msgstr "Kan ikke låse data"
 
-#: ../gp11/gp11-misc.c:249
+#: ../gp11/gp11-misc.c:271
 msgid "The data cannot be locked"
 msgstr "Data kan ikke låses"
 
-#: ../gp11/gp11-misc.c:251
+#: ../gp11/gp11-misc.c:273
 msgid "The signature request was rejected by the user"
 msgstr "Signaturforespørselen ble avvist av bruker"
 
-#: ../gp11/gp11-misc.c:255
+#: ../gp11/gp11-misc.c:277
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
@@ -1080,10 +1277,10 @@ msgstr "Det finnes ingen nøkkelring med dette navnet."
 msgid "The keyring has already been unlocked."
 msgstr "Nøkkelringen er allerede låst opp."
 
-#: ../pkcs11/gck/gck-certificate.c:489
+#: ../pkcs11/gck/gck-certificate.c:710
 msgid "Unnamed Certificate"
 msgstr "Sertifikat uten navn"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:280
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
 msgid "Couldn't parse public SSH key"
 msgstr "Kunne ikke lese offentlig nøkkel for SSH"
