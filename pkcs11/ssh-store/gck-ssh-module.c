@@ -48,7 +48,7 @@ static const CK_TOKEN_INFO gck_ssh_module_token_info = {
 	"SSH Keys",
 	"Gnome Keyring",
 	"1.0",
-	"1", /* Unique serial number for manufacturer */
+	"1:SSH:HOME", /* Unique serial number for manufacturer */
 	CKF_TOKEN_INITIALIZED | CKF_WRITE_PROTECTED | CKF_USER_PIN_INITIALIZED,
 	CK_EFFECTIVELY_INFINITE,
 	CK_EFFECTIVELY_INFINITE,

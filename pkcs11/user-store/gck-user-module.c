@@ -55,7 +55,7 @@ static const CK_TOKEN_INFO gck_user_module_token_info = {
 	"User Keys",
 	"Gnome Keyring",
 	"1.0",
-	"3", /* Unique serial number for manufacturer */
+	"1:USER:DEFAULT", /* Unique serial number for manufacturer */
 	CKF_TOKEN_INITIALIZED | CKF_USER_PIN_INITIALIZED | CKF_LOGIN_REQUIRED,
 	CK_EFFECTIVELY_INFINITE,
 	CK_EFFECTIVELY_INFINITE,

@@ -9,6 +9,11 @@
 	* pkcs11/user-store/gck-user-module.c: Allow dynamically changing the 
 	slot info and token info.
 	
+	* pkcs11/roots-store/gck-roots-module.c: 
+	* pkcs11/ssh-store/gck-ssh-module.c:
+	* pkcs11/user-store/gck-user-module.c: Set the serial numbers to something
+	more maintainable, since we use them for looking up passwords.
+	
 2009-02-08  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-data-der.c: Make output of RSA keys and PKCS8

@@ -51,7 +51,7 @@ static const CK_TOKEN_INFO gck_roots_module_token_info = {
 	"Root CA Certificates",
 	"Gnome Keyring",
 	"1.0",
-	"1",
+	"1:ROOTS:DEFAULT", /* Unique serial number for manufacturer */
 	CKF_TOKEN_INITIALIZED | CKF_WRITE_PROTECTED,
 	CK_EFFECTIVELY_INFINITE,
 	CK_EFFECTIVELY_INFINITE,
