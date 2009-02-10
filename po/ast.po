@@ -1,0 +1,1304 @@
+# Asturian translation for gnome-keyring
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the gnome-keyring package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-02-10 09:49+0100\n"
+"PO-Revision-Date: 2008-05-29 21:57+0000\n"
+"Last-Translator: Astur <malditoastur@gmail.com>\n"
+"Language-Team: Asturian <gnome@softastur.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-02-09 14:52+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../common/gkr-location.c:321
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Discu estrayíble: %s"
+
+#: ../common/gkr-location.c:323
+msgid "Removable Disk"
+msgstr "Discu estrayíble"
+
+#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
+msgid "Home"
+msgstr "Home"
+
+#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
+msgid "The disk or drive this file is located on is not present"
+msgstr "El discu o la unidá na que s'alluga esti archivu nun ta presente"
+
+#: ../common/gkr-location.c:1137
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr ""
+
+#: ../common/gkr-location.c:1171
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr ""
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:228
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr ""
+"L'aplicación «%s» (%s) quier acceder a la contraseña pa «<object prop='name'/"
+">» nel depósitu de claves predetermináu."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr ""
+"L'aplicación «%s» (%s) quier acceder a la contraseña pa «<object prop='name'/"
+">» en %s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"L'aplicación «%s» quier acceder a la contraseña pa «<object prop='name'/>» nel "
+"depósitu predetermináu."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"L'aplicación «%s» quier acceder a la contraseña pa «<object prop='name'/>» en %"
+"s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:258
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"Una aplicación desconocía quier acceder a la contraseña pa «<object "
+"prop='name'/>» nel depósitu de claves predetermináu."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:261
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"Una aplicación desconocía quier acceder a la contraseña pa «<object "
+"prop='name'/>» en %s."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:267
+msgid "Allow access"
+msgstr "Permitir l'accesu"
+
+#: ../daemon/gkr-daemon-ops.c:267
+msgid "Allow application access to keyring?"
+msgstr "¿Permitir a l'aplicación acceder a l'aniellu claves?"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"L'aplicación '%s' (%s) quier acceder al depósitu de claves predetermináu, "
+"pero ta peslláu"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"L'aplicación '%s' (%s) quier acceder al depósitu de claves %s', pero ta "
+"peslláu"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"L'aplicación '%s' quier acceder a l'aniellu de claves predetermináu, pero ta "
+"peslláu"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+"L'aplicación '%s' quier acceder a l'aniellu de claves '%s', pero ta peslláu"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
+#, c-format
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Una aplicación desconocida quier acceder al depósitu de claves "
+"predeterminau, pero ta peslláu"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Una aplicación desconocida quier acceder al aniellu  o depósitu de claves '%"
+"s', pero ta peslláu"
+
+#: ../daemon/gkr-daemon-ops.c:358
+msgid "Enter password for default keyring to unlock"
+msgstr "Introduz una contraseña p'abrir el depósitu de claves predetermináu"
+
+#: ../daemon/gkr-daemon-ops.c:360
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Introduz una contraseña p'abrir l'aniellu de claves '%s'"
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:364
+msgid "Unlock Keyring"
+msgstr "Abrir l'aniellu de claves"
+
+#: ../daemon/gkr-daemon-ops.c:376
+msgid "Automatically unlock this keyring when I log in."
+msgstr "Desbloquiar esti depósitu de claves automáticamente al aniciar sesión."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"L'aplicación '%s' (%s) quier crear un nueu depósitu de claves nomáu '%s'. "
+"Tienes qu'escoyer la contraseña que quieras usar con ella."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"L'aplicación '%s' (%s) quier crear un nueu depósitu de claves predetermináu. "
+"Tienes qu'escoyer la contraseña que quieras usar con ella."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"L'aplicación '%s' quier crear un nueu depósitu de claves nomáu '%s'. Tienes "
+"qu'escoyer la contraseña que quieras usar con ella."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"L'aplicación '%s' quier crear un nueu depósitu de claves predetermináu. "
+"Tienes qu'escoyer la contraseña que quieras usar con ella."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
+#, c-format
+msgid ""
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
+msgstr ""
+"Una aplicación desconocida quier criar un depósitu de claves nuevu nomáu «%"
+"s». Tien d'elexir la contraseña que quier usar con él."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
+#, c-format
+msgid ""
+"An unknown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Una aplicación desconocida quier criar un depósitu de claves predetermináu "
+"nuevu. Tien d'elexir la contraseña que quier usar con él."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:460
+msgid "New Keyring Password"
+msgstr "Contraseña nueva pal depósitu de claves"
+
+#: ../daemon/gkr-daemon-ops.c:461
+msgid "Choose password for new keyring"
+msgstr "Escoye una contraseña pal nuéu aniellu de claves"
+
+#: ../daemon/gkr-daemon-ops.c:508
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"L'aplicación «%s» (%s) quier camudar la contraseña pal depósitu de claves «%"
+"s». Tien d'elexir la contraseña que quier usar con él."
+
+#: ../daemon/gkr-daemon-ops.c:512
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr ""
+"L'aplicación «%s» (%s) quier camudar la contraseña pal depósitu de claves "
+"predetermináu. Tien d'elexir la contraseña que quier usar con él."
+
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"L'aplicación '%s' quier camudar la contraseña pal depósitu de claves '%s'. "
+"Tien d'elexir la contraseña que quier usar con él."
+
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"L'aplicación «%s» quier camudar la contraseña pal depósito de claves "
+"predetermináu. Tien d'elexir la contraseña que quier usar con él."
+
+#: ../daemon/gkr-daemon-ops.c:538
+#, c-format
+msgid ""
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"Una aplicación desconocía quier camudar la contraseña pal depósitu de claves "
+"«%s».Tien d'elexir la contraseña que quier usar con él."
+
+#: ../daemon/gkr-daemon-ops.c:542
+#, c-format
+msgid ""
+"An unknown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"Una aplicación desconocía quier camudar la contraseña pal depósitu de claves "
+"predetermináu nuevu. Tien d'elexir la contraseña que quier usar con él."
+
+#: ../daemon/gkr-daemon-ops.c:552
+#, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "Escueya una contraseña nueva pal depósitu de claves «%s». "
+
+#: ../daemon/gkr-daemon-ops.c:554
+#, c-format
+msgid "Choose a new password for the default keyring. "
+msgstr "Escueya una contraseña nueva pal depósitu de claves predetermináu "
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:558
+msgid "Change Keyring Password"
+msgstr "Camuda la contraseña del depósitu de claves"
+
+#: ../daemon/gkr-daemon-ops.c:631
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"L'aplicación '%s' (%s) quier almacenar una contraseña, pero nun hai aniellu "
+"o depósitu de claves predetermináu. Pa crear unu, tiene qu'escoyer la "
+"contraseña que quieras usar con él."
+
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"L'aplicación '%s' quier almacenar una contraseña, pero nun hai aniellu de "
+"claves predetermináu. Pa crear unu, tienes qu'escoyer la contraseña que "
+"quieras usar con él."
+
+#: ../daemon/gkr-daemon-ops.c:643
+#, c-format
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Una aplicación desconocía quier almacenar una contraseña, pero nun hai "
+"aniellu de claves predetermináu. Pa crear unu, tienes qu'escoyer la "
+"contraseña que quieras usar con él."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:648
+msgid "Create Default Keyring"
+msgstr "Criar un aniellu de claves predetermináu"
+
+#: ../daemon/gkr-daemon-ops.c:648
+msgid "Choose password for default keyring"
+msgstr "Escueye una contraseña pa l'aniellu de claves predetermináu"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr ""
+"Esta opción activa el componente PKCS#11 nel demoniu del Depósitu de claves. "
+"Namái toma efeutu cuando s'anicia gnome-keyring-daemon, (ex: cuando "
+"l'usuariu entra nel sistema). Esti axuste pue sobreescribisae al pasar "
+"ciertos parámetros al demoniu a traviés de la llinia de comandos."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr ""
+"Esta opción activa l'axente SSH nel demoniu del Depósitu de claves. Namái "
+"toma efeutu cuando s'anicia gnome-keyring-daemon, (ex: cuando l'usuariu "
+"entra nel sistema). Esti axuste pue sobreescribisae al pasar ciertos "
+"parámetros al demoniu a traviés de la llinia de comandos."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Conseña si'l componente PKCS#11 del depósitu de claves ta activáu"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Conseña si l'axente SSH del depósitu de claves ta activáu"
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr ""
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+msgid "Unlock Login Keyring"
+msgstr "Desbloquiar el depósitu d'aniciu"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+msgid "Enter login password to unlock keyring"
+msgstr "Introduza la contraseña d'aniciu pa desbloquiar el depósitu"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:100
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr ""
+"Al aniciar sesión nesti equipu nun se crió automáticamente el so depósitu "
+"d'aniciu."
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+msgid "Create Login Keyring"
+msgstr "Criar depósitu d'aniciu"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+msgid "Enter your login password"
+msgstr "Introduza la so contraseña d'aniciu"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:126
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+"Al aniciar sesión nesti equipu nun se crió automáticamente el so depósitu "
+"d'aniciu. Criaráse agora."
+
+#: ../daemon/keyrings/gkr-keyring.c:586
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Contraseña de desbloquéu pal depósitu de claves %s"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+msgid "Unlock private key"
+msgstr "Desbloquiar la clave privada"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+msgid "Unlock certificate"
+msgstr "Desbloquiar el certificáu"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+msgid "Unlock public key"
+msgstr "Desbloquiar la clave pública"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+msgid "Unlock"
+msgstr "Desbloquiar"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+msgid "Enter password to unlock the private key"
+msgstr "Introduza la contraseña pa desbloquiar la clave privada"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+msgid "Enter password to unlock the certificate"
+msgstr "Introduza la contraseña pa desbloquiar el certificáu"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+msgid "Enter password to unlock the public key"
+msgstr "Introduza la contraseña pa desbloquiar la clave pública"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+msgid "Enter password to unlock"
+msgstr "Introduza la contraseña pa desbloquialu"
+
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Una aplicación quier acceder a la clave privada «%s», pero ta bloquiada"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Una aplicación quier acceder al certificáu «%s», pero ta bloquiáu"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Una aplicación quier acceder a la clave pública «%s», pero ta bloquiada"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Una aplicación quier acceder «%s», pero ta bloquiáu"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "Desbloquiar esta clave privada automáticamente al aniciar sesión."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Desbloquear esti certificáu automáticamente al aniciar sesión."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "Desbloquiar esta clave pública automáticamente al aniciar sesión."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "Desbloquiar esto automáticamente al aniciar sesión"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+#, fuzzy
+msgid "Unlock certificate/key storage"
+msgstr "Desbloquiar el certificáu"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+#, fuzzy
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Introduza la contraseña pa desbloquiar el certificáu"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+#, fuzzy, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "Una aplicación quier acceder al certificáu «%s», pero ta bloquiáu"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+#, fuzzy
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Desbloquear esti certificáu automáticamente al aniciar sesión."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+#, fuzzy
+msgid "New Password Required"
+msgstr "Fortaleza de la nueva contraseña"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+msgid "New password required for secure storage"
+msgstr ""
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+
+#: ../daemon/ui/gkr-ask-tool.c:244
+msgid "Store passwords unencrypted?"
+msgstr "¿Atroxar les sos contraseñes ensin cifrales?"
+
+#: ../daemon/ui/gkr-ask-tool.c:245
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Al escoyer usar una contraseña en blancu, les sos contraseñes atroxaes nun "
+"tarán cifraes de miente seguro. Sedrán accesibles por cualesquier que tenga "
+"accesu a los sos archivos."
+
+#: ../daemon/ui/gkr-ask-tool.c:252
+msgid "Use Unsafe Storage"
+msgstr "Usar atroxamientu inseguru"
+
+#: ../daemon/ui/gkr-ask-tool.c:479
+msgid "_Location:"
+msgstr "_Llugar:"
+
+#: ../daemon/ui/gkr-ask-tool.c:492
+msgid "_Old password:"
+msgstr "Contraseña _antigua:"
+
+#: ../daemon/ui/gkr-ask-tool.c:512
+msgid "_Password:"
+msgstr "_Contraseña:"
+
+#: ../daemon/ui/gkr-ask-tool.c:534
+msgid "_Confirm password:"
+msgstr "Con_firmar contraseña:"
+
+#: ../daemon/ui/gkr-ask-tool.c:554
+msgid "New password strength"
+msgstr "Fortaleza de la nueva contraseña"
+
+#: ../daemon/ui/gkr-ask-tool.c:612
+msgid "Passwords do not match."
+msgstr "Les contraseñes nun coinciden."
+
+#: ../daemon/ui/gkr-ask-tool.c:628
+msgid "Password cannot be blank"
+msgstr "La contraseña nun pue tar erma"
+
+#: ../daemon/ui/gkr-ask-tool.c:679
+msgid "_Deny"
+msgstr ""
+
+#: ../daemon/ui/gkr-ask-tool.c:691
+msgid "C_reate"
+msgstr ""
+
+#: ../daemon/ui/gkr-ask-tool.c:695
+msgid "C_hange"
+msgstr ""
+
+#: ../daemon/ui/gkr-ask-tool.c:699
+msgid "Allow _Once"
+msgstr "Permitir _una vegada"
+
+#: ../daemon/ui/gkr-ask-tool.c:703
+msgid "_Always Allow"
+msgstr "Permitir _siempres"
+
+#: ../egg/egg-asn1.c:794
+msgid "Domain Component"
+msgstr ""
+
+#: ../egg/egg-asn1.c:795
+msgid "User ID"
+msgstr ""
+
+#: ../egg/egg-asn1.c:797
+msgid "Email"
+msgstr ""
+
+#: ../egg/egg-asn1.c:801
+msgid "Date of Birth"
+msgstr ""
+
+#: ../egg/egg-asn1.c:802
+msgid "Place of Birth"
+msgstr ""
+
+#: ../egg/egg-asn1.c:803
+msgid "Gender"
+msgstr ""
+
+#: ../egg/egg-asn1.c:804
+msgid "Country of Citizenship"
+msgstr ""
+
+#: ../egg/egg-asn1.c:805
+msgid "Country of Residence"
+msgstr ""
+
+#: ../egg/egg-asn1.c:807
+msgid "Common Name"
+msgstr ""
+
+#: ../egg/egg-asn1.c:808
+msgid "Surname"
+msgstr ""
+
+#: ../egg/egg-asn1.c:809 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:259
+msgid "Serial Number"
+msgstr ""
+
+#: ../egg/egg-asn1.c:810
+msgid "Country"
+msgstr ""
+
+#: ../egg/egg-asn1.c:811
+msgid "Locality"
+msgstr ""
+
+#: ../egg/egg-asn1.c:812
+msgid "State"
+msgstr ""
+
+#: ../egg/egg-asn1.c:813
+msgid "Street"
+msgstr ""
+
+#: ../egg/egg-asn1.c:814
+msgid "Organization"
+msgstr ""
+
+#: ../egg/egg-asn1.c:815
+msgid "Organizational Unit"
+msgstr ""
+
+#: ../egg/egg-asn1.c:816
+msgid "Title"
+msgstr ""
+
+#: ../egg/egg-asn1.c:817
+msgid "Telephone Number"
+msgstr ""
+
+#: ../egg/egg-asn1.c:818
+msgid "Given Name"
+msgstr ""
+
+#: ../egg/egg-asn1.c:819
+msgid "Initials"
+msgstr ""
+
+#: ../egg/egg-asn1.c:820
+msgid "Generation Qualifier"
+msgstr ""
+
+#: ../egg/egg-asn1.c:821
+msgid "DN Qualifier"
+msgstr ""
+
+#: ../egg/egg-asn1.c:822
+msgid "Pseudonym"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+msgid "<Not Part of Certificate>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+msgid "Email Recipient Certificate"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+msgid "Email Signer Certificate"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+#, fuzzy
+msgid "SSL Client Certificate"
+msgstr "Desbloquiar el certificáu"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+msgid "SSL Server Certificate"
+msgstr ""
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:240
+msgid "Subject Name"
+msgstr ""
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:244
+msgid "Issuer Name"
+msgstr ""
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:248
+#, fuzzy
+msgid "Issued Certificate"
+msgstr "Desbloquiar el certificáu"
+
+#: ../gcr/gcr-certificate-details-widget.c:253
+msgid "Version"
+msgstr ""
+
+#: ../gcr/gcr-certificate-details-widget.c:266
+msgid "Not Valid Before"
+msgstr ""
+
+#: ../gcr/gcr-certificate-details-widget.c:271
+msgid "Not Valid After"
+msgstr ""
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:276
+#: ../gcr/gcr-certificate-details-widget.c:284
+msgid "Signature"
+msgstr ""
+
+#. TODO: Complete Signature algorithm, and params
+#: ../gcr/gcr-certificate-details-widget.c:279
+msgid "Signature Algorithm"
+msgstr ""
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:288
+msgid "Public Key Info"
+msgstr ""
+
+#. TODO: Complete algorithm, params, key size
+#: ../gcr/gcr-certificate-details-widget.c:291
+msgid "Key Algorithm"
+msgstr ""
+
+#: ../gcr/gcr-certificate-details-widget.c:292
+msgid "Key Size"
+msgstr ""
+
+#: ../gcr/gcr-certificate-details-widget.c:297 ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr ""
+
+#. TODO: Implement extensions
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:303
+msgid "Fingerprints"
+msgstr ""
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr ""
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+msgid "Import Into:"
+msgstr ""
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+#, fuzzy
+msgid "Password:"
+msgstr "_Contraseña:"
+
+#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr ""
+
+#: ../gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr ""
+
+#: ../gcr/gcr-importer.c:328
+msgid "Import Certificates/Keys"
+msgstr ""
+
+#: ../gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr ""
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
+#, fuzzy
+msgid "In order to import the private key, it must be unlocked"
+msgstr "El sistema quier importar la clave privada «%s», pero ta bloquiada"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
+#, fuzzy
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "El sistema quier importar el certificado «%s», pero ta bloquiáu"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
+msgid "In order to import the data, it must be unlocked"
+msgstr ""
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
+#, fuzzy, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "El sistema quier importar la clave privada «%s», pero ta bloquiada"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
+#, fuzzy, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "El sistema quier importar el certificado «%s», pero ta bloquiáu"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
+#, fuzzy, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "El sistema quier importar «%s», pero ta bloquiáu"
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr ""
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr ""
+
+#: ../gcr/gcr-parser.c:1576
+#, fuzzy
+msgid "Unrecognized or unsupported data."
+msgstr "Archivu non reconocíu o non soportáu"
+
+#: ../gcr/gcr-parser.c:1579
+#, fuzzy
+msgid "Could not parse invalid or corrupted data."
+msgstr "No se foi quien a analizar l'archivu inválidu o corruptu."
+
+#: ../gcr/gcr-parser.c:1582
+msgid "The data is locked"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:117
+msgid "Insufficient memory available"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:119
+msgid "The specified slot ID is not valid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:121
+msgid "Internal error"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:123
+msgid "The operation failed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:125
+msgid "Invalid arguments"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:127
+msgid "The module cannot create needed threads"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:129
+msgid "The module cannot lock data properly"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:131
+msgid "The field is read-only"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:133
+msgid "The field is sensitive and cannot be revealed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:135
+msgid "The field is invalid or does not exist"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:137
+msgid "Invalid value for field"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:139
+msgid "The data is not valid or unrecognized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:141
+msgid "The data is too long"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:143
+msgid "An error occurred on the device"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:145
+msgid "Insufficient memory available on device"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:147
+msgid "The device was removed or unplugged"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:149
+msgid "The encrypted data is not valid or unrecognized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:151
+msgid "The encrypted data is too long"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:153
+msgid "This operation is not supported"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:155
+msgid "The key is missing or invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:157
+msgid "The key is the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:159
+msgid "The key is of the wrong type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:161
+msgid "No key is needed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:163
+msgid "The key is different than before"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:165
+msgid "A key is needed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:167
+msgid "Cannot include the key in digest"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:169
+msgid "This operation cannot be done with this key"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:171
+msgid "The key cannot be wrapped"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:173
+msgid "Cannot export this key"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:175
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:177
+msgid "The crypto mechanism has an invalid argument"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:179
+msgid "The object is missing or invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:181
+msgid "Another operation is already taking place"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:183
+msgid "No operation is taking place"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:185
+msgid "The password or PIN is incorrect"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:187
+msgid "The password or PIN is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:189
+msgid "The password or PIN is of an invalid length"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:191
+msgid "The password or PIN has expired"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:193
+msgid "The password or PIN is locked"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:195
+msgid "The session is closed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:197
+msgid "Too many sessions are active"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:199
+msgid "The session is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:201
+msgid "The session is read-only"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:203
+msgid "An open session exists"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:205
+msgid "A read-only session exists"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:207
+msgid "An administrator session exists"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:209
+msgid "The signature is bad or corrupted"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:211
+msgid "The signature is unrecognized or corrupted"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:213
+msgid "Certain required fields are missing"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:215
+msgid "Certain fields have invalid values"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:217
+msgid "The device is not present or unplugged"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:219
+msgid "The device is invalid or unrecognizable"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:221
+msgid "The device is write protected"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:223
+msgid "Cannot import because the key is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:225
+msgid "Cannot import because the key is of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:227
+msgid "Cannot import because the key is of the wrong type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:229
+msgid "You are already logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:231
+msgid "No user has logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:233
+msgid "The user's password or PIN is not set"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:235
+msgid "The user is of an invalid type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:237
+msgid "Another user is already logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:239
+msgid "Too many users of different types logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:241
+msgid "Cannot import an invalid key"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:243
+msgid "Cannot import a key of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:245
+msgid "Cannot export because the key is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:247
+msgid "Cannot export because the key is of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:249
+msgid "Cannot export because the key is of the wrong type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:251
+msgid "Unable to initialize the random number generator"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:253
+msgid "No random number generator available"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:255
+msgid "The crypto mechanism has an invalid parameter"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:257
+msgid "Not enough space to store the result"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:259
+msgid "The saved state is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:261
+msgid "The information is sensitive and cannot be revealed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:263
+msgid "The state cannot be saved"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:265
+msgid "The module has not been initialized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:267
+msgid "The module has already been initialized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:269
+msgid "Cannot lock data"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:271
+msgid "The data cannot be locked"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:273
+msgid "The signature request was rejected by the user"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:277
+msgid "Unknown error"
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:155
+msgid "Access Denied"
+msgstr "Accesu denegáu"
+
+#: ../library/gnome-keyring-utils.c:157
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "L'aplicación gnome-keyring-daemon nun se ta executando."
+
+#: ../library/gnome-keyring-utils.c:159
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "Erru al comunicase con gnome-keyring-daemon"
+
+#: ../library/gnome-keyring-utils.c:161
+msgid "A keyring with that name already exists"
+msgstr "Yá existe un depósito de claves con ese nombre"
+
+#: ../library/gnome-keyring-utils.c:163
+msgid "Programmer error: The application sent invalid data."
+msgstr "Erru de programación: L'aplicación unvió datos non válidos."
+
+#: ../library/gnome-keyring-utils.c:165
+msgid "No matching results"
+msgstr "Nun s'alcontró dengún resultáu coincidente"
+
+#: ../library/gnome-keyring-utils.c:167
+msgid "A keyring with that name does not exist."
+msgstr "Nun esiste un depósitu de claves con esi nome."
+
+#: ../library/gnome-keyring-utils.c:174
+msgid "The keyring has already been unlocked."
+msgstr "El depósity de claves yá se desbloquió."
+
+#: ../pkcs11/gck/gck-certificate.c:710
+msgid "Unnamed Certificate"
+msgstr ""
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+msgid "Couldn't parse public SSH key"
+msgstr ""
+
+#~ msgid "The system wants to import the public key '%s', but it is locked"
+#~ msgstr "El sistema quier importar la clave privada «%s», pero ta bloquiada"
