@@ -1,3 +1,14 @@
+2009-02-10  Xan Lopez  <xan@gnome.org>
+
+	Bug 571194 -G_BEGIN_DECLS/G_END_DECLS missing from headers
+
+	* library/gnome-keyring.h:
+	* library/gnome-keyring-memory.h:
+	* library/gnome-keyring-result.h:
+
+	Add G_BEGIN_DECLS/G_END_DECLS so the library can be used with a
+	C++ compiler.
+
 2009-02-09  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c: Remove two useless unused class members.
