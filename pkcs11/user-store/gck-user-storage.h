@@ -54,6 +54,8 @@ const gchar*                gck_user_storage_get_directory          (GckUserStor
 
 GckLogin*                   gck_user_storage_get_login              (GckUserStorage *self);
 
+gulong                      gck_user_storage_token_flags            (GckUserStorage *self);
+
 CK_RV                       gck_user_storage_refresh                (GckUserStorage *self);
 
 void                        gck_user_storage_create                 (GckUserStorage *self, 

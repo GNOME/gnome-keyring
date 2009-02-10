@@ -17,6 +17,11 @@
 	* daemon/pkcs11/gkr-pkcs11-auth-ep.c: Correlate state correctly between
 	prompt and done function.
 	
+	* pkcs11/user-store/gck-user-module.c:
+	* pkcs11/user-store/gck-user-storage.c:
+	* pkcs11/user-store/gck-user-storage.h: Dynamically update the state which 
+	allows us to prompt for a password for a new token.	
+	
 2009-02-08  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-data-der.c: Make output of RSA keys and PKCS8

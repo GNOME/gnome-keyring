@@ -41,9 +41,10 @@ struct _GckUserModule {
 	GckUserStorage *storage;
 	gchar *directory;
 	GHashTable *logged_in_apps;
+	CK_TOKEN_INFO token_info;
 };
 
-static const CK_SLOT_INFO gck_user_module_slot_info = {
+static const CK_SLOT_INFO user_module_slot_info = {
 	"User Keys",
 	"Gnome Keyring",
 	CKF_TOKEN_PRESENT,
@@ -51,7 +52,7 @@ static const CK_SLOT_INFO gck_user_module_slot_info = {
 	{ 0, 0 }
 };
 
-static const CK_TOKEN_INFO gck_user_module_token_info = {
+static const CK_TOKEN_INFO user_module_token_info = {
 	"User Keys",
 	"Gnome Keyring",
 	"1.0",
@@ -93,15 +94,20 @@ GCK_DEFINE_MODULE (gck_user_module, GCK_TYPE_USER_MODULE);
  */
 
 static const CK_SLOT_INFO* 
-gck_user_module_real_get_slot_info (GckModule *self)
+gck_user_module_real_get_slot_info (GckModule *base)
 {
-	return &gck_user_module_slot_info;
+	return &user_module_slot_info;
 }
 
 static const CK_TOKEN_INFO*
-gck_user_module_real_get_token_info (GckModule *self)
+gck_user_module_real_get_token_info (GckModule *base)
 {
-	return &gck_user_module_token_info;
+	GckUserModule *self = GCK_USER_MODULE (base);
+	
+	/* Update the info with current info */
+	self->token_info.flags = gck_user_storage_token_flags (self->storage);
+	
+	return &self->token_info;
 }
 
 static void 
@@ -247,6 +253,9 @@ static void
 gck_user_module_init (GckUserModule *self)
 {
 	self->logged_in_apps = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, gck_util_ulong_free, NULL);
+	
+	/* Our default token info, updated as module runs */
+	memcpy (&self->token_info, &user_module_token_info, sizeof (CK_TOKEN_INFO));
 	
 	/* For creating stored keys */
 	gck_module_register_factory (GCK_MODULE (self), GCK_FACTORY_USER_PRIVATE_KEY);

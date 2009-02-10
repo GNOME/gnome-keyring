@@ -1175,7 +1175,7 @@ gck_user_storage_relock (GckUserStorage *self, GckTransaction *transaction,
 	args.new_login = new_login;
 	gck_data_file_foreach_entry (file, relock_each_object, &args);
 	
-	if (!gck_transaction_get_failed (transaction))
+	if (!gck_transaction_get_failed (transaction) && self->login)
 		set_storage_login (self, new_login);
 	
 	g_object_unref (file);
@@ -1238,4 +1238,29 @@ gck_user_storage_get_login (GckUserStorage *self)
 {
 	g_return_val_if_fail (GCK_IS_USER_STORAGE (self), NULL);
 	return self->login;
+}
+
+gulong
+gck_user_storage_token_flags (GckUserStorage *self)
+{
+	gulong flags = 0;
+	CK_RV rv;
+	
+	/* We don't support SO logins, so always initialized */
+	flags |= CKF_TOKEN_INITIALIZED | CKF_LOGIN_REQUIRED;
+	
+	/* No file has been loaded yet? */
+	if (self->last_mtime == 0) {
+		rv = gck_user_storage_refresh (self);
+		if (rv == CKR_USER_PIN_NOT_INITIALIZED)
+			flags |= CKF_USER_PIN_TO_BE_CHANGED;
+		else if (rv != CKR_OK)
+			g_return_val_if_reached (flags);
+	}
+	
+	/* No private stuff in the file? */
+	if (gck_data_file_have_section (self->file, GCK_DATA_FILE_SECTION_PRIVATE))
+		flags |= CKF_USER_PIN_INITIALIZED;
+	
+	return flags;
 }
