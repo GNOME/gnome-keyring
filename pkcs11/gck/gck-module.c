@@ -323,6 +323,18 @@ done:
  * OBJECT 
  */
 
+static const CK_SLOT_INFO* 
+gck_module_real_get_slot_info (GckModule *self)
+{
+	return &default_slot_info;
+}
+
+static const CK_TOKEN_INFO*
+gck_module_real_get_token_info (GckModule *self)
+{
+	return &default_token_info;
+}
+
 static void 
 gck_module_real_parse_argument (GckModule *self, const gchar *name, const gchar *value)
 {
@@ -513,10 +525,8 @@ gck_module_class_init (GckModuleClass *klass)
 	gobject_class->set_property = gck_module_set_property;
 	gobject_class->get_property = gck_module_get_property;
     
-	klass->module_info = &default_module_info;
-	klass->slot_info = &default_slot_info;
-	klass->token_info = &default_token_info;
-	
+	klass->get_slot_info = gck_module_real_get_slot_info;
+	klass->get_token_info = gck_module_real_get_token_info;
 	klass->parse_argument = gck_module_real_parse_argument;
 	klass->refresh_token = gck_module_real_refresh_token;
 	klass->store_token_object = gck_module_real_store_token_object;
@@ -553,11 +563,16 @@ gck_module_get_manager (GckModule *self)
 gboolean
 gck_module_get_write_protected (GckModule *self)
 {
-	g_return_val_if_fail (GCK_IS_MODULE (self), FALSE);
-	g_return_val_if_fail (GCK_MODULE_GET_CLASS (self)->token_info, FALSE);
-	return (GCK_MODULE_GET_CLASS (self)->token_info->flags & CKF_WRITE_PROTECTED) ? TRUE : FALSE;
+	const CK_TOKEN_INFO* info;
+	
+	g_return_val_if_fail (GCK_IS_MODULE (self), TRUE);
+	g_return_val_if_fail (GCK_MODULE_GET_CLASS (self)->get_token_info, TRUE);
+	
+	info = (GCK_MODULE_GET_CLASS (self)->get_token_info) (self);
+	g_return_val_if_fail (info, TRUE);
+	
+	return info->flags & CKF_WRITE_PROTECTED;
 }
-
 
 GckSession*
 gck_module_lookup_session (GckModule *self, CK_SESSION_HANDLE handle)
@@ -699,7 +714,7 @@ gck_module_C_GetInfo (GckModule *self, CK_INFO_PTR info)
 	klass = GCK_MODULE_GET_CLASS (self);
 	g_return_val_if_fail (klass, CKR_GENERAL_ERROR);
 	
-	memcpy (info, klass->module_info, sizeof (CK_INFO));
+	memcpy (info, &default_module_info, sizeof (CK_INFO));
 	
 	/* Extend all the strings appropriately */
 	extend_space_string (info->libraryDescription, sizeof (info->libraryDescription));
@@ -739,6 +754,7 @@ gck_module_C_GetSlotList (GckModule *self, CK_BBOOL token_present, CK_SLOT_ID_PT
 CK_RV
 gck_module_C_GetSlotInfo (GckModule *self, CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 {
+	const CK_SLOT_INFO *original;
 	GckModuleClass *klass;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
@@ -752,8 +768,12 @@ gck_module_C_GetSlotInfo (GckModule *self, CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 	
 	klass = GCK_MODULE_GET_CLASS (self);
 	g_return_val_if_fail (klass, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (klass->get_slot_info, CKR_GENERAL_ERROR);
 	
-	memcpy (info, klass->slot_info, sizeof (CK_SLOT_INFO));
+	original = (klass->get_slot_info) (self);
+	g_return_val_if_fail (original, CKR_GENERAL_ERROR);
+	
+	memcpy (info, original, sizeof (CK_SLOT_INFO));
 	
 	/* Extend all the strings appropriately */
 	extend_space_string (info->manufacturerID, sizeof (info->manufacturerID));
@@ -765,6 +785,7 @@ gck_module_C_GetSlotInfo (GckModule *self, CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 CK_RV
 gck_module_C_GetTokenInfo (GckModule *self, CK_SLOT_ID id, CK_TOKEN_INFO_PTR info)
 {
+	const CK_TOKEN_INFO *original;
 	GckModuleClass *klass;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
@@ -778,19 +799,20 @@ gck_module_C_GetTokenInfo (GckModule *self, CK_SLOT_ID id, CK_TOKEN_INFO_PTR inf
 	
 	klass = GCK_MODULE_GET_CLASS (self);
 	g_return_val_if_fail (klass, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (klass->get_token_info, CKR_GENERAL_ERROR);
 	
-	memcpy (info, klass->token_info, sizeof (CK_TOKEN_INFO));
+	original = (klass->get_token_info) (self);
+	g_return_val_if_fail (original, CKR_GENERAL_ERROR);
 	
+	memcpy (info, original, sizeof (CK_TOKEN_INFO));
+
 	/* Extend all the strings appropriately */
 	extend_space_string (info->label, sizeof (info->label));
 	extend_space_string (info->manufacturerID, sizeof (info->manufacturerID));
 	extend_space_string (info->model, sizeof (info->model));
 	extend_space_string (info->serialNumber, sizeof (info->serialNumber));
-	
-	/* We don't purport to have a clock */
-	memset (info->utcTime, 0, sizeof (info->utcTime));
-	
-	return CKR_OK;	
+
+	return CKR_OK;
 }
 
 CK_RV

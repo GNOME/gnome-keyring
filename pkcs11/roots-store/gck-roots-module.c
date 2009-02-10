@@ -244,6 +244,18 @@ file_remove (GckFileTracker *tracker, const gchar *path, GckRootsModule *self)
  * OBJECT 
  */
 
+static const CK_SLOT_INFO* 
+gck_roots_module_real_get_slot_info (GckModule *self)
+{
+	return &gck_roots_module_slot_info;
+}
+
+static const CK_TOKEN_INFO*
+gck_roots_module_real_get_token_info (GckModule *self)
+{
+	return &gck_roots_module_token_info;
+}
+
 static void 
 gck_roots_module_real_parse_argument (GckModule *base, const gchar *name, const gchar *value)
 {
@@ -336,11 +348,10 @@ gck_roots_module_class_init (GckRootsModuleClass *klass)
 	gobject_class->dispose = gck_roots_module_dispose;
 	gobject_class->finalize = gck_roots_module_finalize;
 	
+	module_class->get_slot_info = gck_roots_module_real_get_slot_info;
+	module_class->get_token_info = gck_roots_module_real_get_token_info;
 	module_class->parse_argument = gck_roots_module_real_parse_argument;
 	module_class->refresh_token = gck_roots_module_real_refresh_token;
-	
-	module_class->slot_info = &gck_roots_module_slot_info;
-	module_class->token_info = &gck_roots_module_token_info;
 }
 
 /* ---------------------------------------------------------------------------------------

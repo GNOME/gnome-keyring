@@ -48,14 +48,13 @@ struct _GckModule {
 struct _GckModuleClass {
 	GObjectClass parent_class;
 	
-	/* often overridden by defined */
-	const CK_INFO *module_info;
-	const CK_SLOT_INFO *slot_info;
-	const CK_TOKEN_INFO *token_info;
-	
 	/* virtual methods */
 
 	void (*parse_argument) (GckModule *self, const gchar *name, const gchar *value);
+	
+	const CK_SLOT_INFO* (*get_slot_info) (GckModule *self);
+
+	const CK_TOKEN_INFO* (*get_token_info) (GckModule *self);
 
 	CK_RV (*refresh_token) (GckModule *self);
 	

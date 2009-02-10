@@ -92,6 +92,18 @@ GCK_DEFINE_MODULE (gck_user_module, GCK_TYPE_USER_MODULE);
  * OBJECT 
  */
 
+static const CK_SLOT_INFO* 
+gck_user_module_real_get_slot_info (GckModule *self)
+{
+	return &gck_user_module_slot_info;
+}
+
+static const CK_TOKEN_INFO*
+gck_user_module_real_get_token_info (GckModule *self)
+{
+	return &gck_user_module_token_info;
+}
+
 static void 
 gck_user_module_real_parse_argument (GckModule *base, const gchar *name, const gchar *value)
 {
@@ -282,6 +294,8 @@ gck_user_module_class_init (GckUserModuleClass *klass)
 	gobject_class->dispose = gck_user_module_dispose;
 	gobject_class->finalize = gck_user_module_finalize;
 	
+	module_class->get_slot_info = gck_user_module_real_get_slot_info;
+	module_class->get_token_info = gck_user_module_real_get_token_info;
 	module_class->parse_argument = gck_user_module_real_parse_argument;
 	module_class->refresh_token = gck_user_module_real_refresh_token;
 	module_class->store_token_object = gck_user_module_real_store_token_object;
@@ -289,9 +303,6 @@ gck_user_module_class_init (GckUserModuleClass *klass)
 	module_class->login_user = gck_user_module_real_login_user;
 	module_class->logout_user = gck_user_module_real_logout_user;
 	module_class->login_change = gck_user_module_real_login_change;
-	
-	module_class->slot_info = &gck_user_module_slot_info;
-	module_class->token_info = &gck_user_module_token_info;
 }
 
 /* ----------------------------------------------------------------------------

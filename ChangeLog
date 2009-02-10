@@ -1,6 +1,13 @@
 2009-02-09  Stef Walter  <stef@memberwebs.com>
 
-	* gck/gck-module.c: Remove two useless unused class members.
+	* pkcs11/gck/gck-module.c: Remove two useless unused class members.
+	
+	* pkcs11/gck/gck-module.c: 
+	* pkcs11/gck/gck-module.h: 
+	* pkcs11/roots-store/gck-roots-module.c: 
+	* pkcs11/ssh-store/gck-ssh-module.c:
+	* pkcs11/user-store/gck-user-module.c: Allow dynamically changing the 
+	slot info and token info.
 	
 2009-02-08  Stef Walter  <stef@memberwebs.com>
 
