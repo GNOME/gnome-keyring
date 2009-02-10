@@ -14,6 +14,9 @@
 	* pkcs11/user-store/gck-user-module.c: Set the serial numbers to something
 	more maintainable, since we use them for looking up passwords.
 	
+	* daemon/pkcs11/gkr-pkcs11-auth-ep.c: Correlate state correctly between
+	prompt and done function.
+	
 2009-02-08  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-data-der.c: Make output of RSA keys and PKCS8

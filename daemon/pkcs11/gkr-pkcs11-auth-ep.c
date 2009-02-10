@@ -215,7 +215,7 @@ perform_set_user_pin (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULON
 {
 	CK_SESSION_INFO session_info;
 	CK_TOKEN_INFO token_info;
-	gboolean auth = FALSE;
+	gboolean init_auth = FALSE;
 	CK_RV rv, login_rv;
 	
 	/* Dig up the information we'll need, and don't prompt if protected auth path */
@@ -226,7 +226,7 @@ perform_set_user_pin (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULON
 		DAEMON_ENTER ();
 		
 			if (!(token_info.flags & CKF_USER_PIN_INITIALIZED))
-				auth = gkr_pkcs11_auth_init_user_prompt (handle, &token_info, &new_pin, &n_new_pin);
+				init_auth = gkr_pkcs11_auth_init_user_prompt (handle, &token_info, &new_pin, &n_new_pin);
 			/* TODO: Prompt for other 'change password' case */
 
 		DAEMON_LEAVE ();
@@ -240,11 +240,10 @@ perform_set_user_pin (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULON
 		login_rv = (pkcs11_lower->C_Login) (handle, CKU_USER, new_pin, n_new_pin);
 	}
 	
-	if (auth) {
+	if (init_auth) {
 		DAEMON_ENTER ();
 		
-			if (!(token_info.flags & CKF_USER_PIN_INITIALIZED))
-				gkr_pkcs11_auth_init_user_done (handle, &token_info, &new_pin, &n_new_pin, rv);
+			gkr_pkcs11_auth_init_user_done (handle, &token_info, &new_pin, &n_new_pin, rv);
 			/* TODO: Done for other case */
 			
 		DAEMON_LEAVE ();
