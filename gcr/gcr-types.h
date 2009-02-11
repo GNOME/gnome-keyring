@@ -7,6 +7,8 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
+
 #define             GCR_DATA_ERROR                    (gcr_data_error_get_domain ())
 
 GQuark 	            gcr_data_error_get_domain         (void) G_GNUC_CONST;
@@ -49,5 +51,7 @@ enum {
 struct _GP11Attributes;
 struct _GP11Object;
 struct _GP11Slot;
+
+G_END_DECLS
 
 #endif /* GCRTYPES_H_ */

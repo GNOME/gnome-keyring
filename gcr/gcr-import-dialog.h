@@ -28,6 +28,8 @@
 
 #include <gtk/gtk.h>
 
+G_BEGIN_DECLS
+
 #define GCR_TYPE_IMPORT_DIALOG               (_gcr_import_dialog_get_type ())
 #define GCR_IMPORT_DIALOG(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_IMPORT_DIALOG, GcrImportDialog))
 #define GCR_IMPORT_DIALOG_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_IMPORT_DIALOG, GcrImportDialogClass))
@@ -82,5 +84,7 @@ const gchar*        _gcr_import_dialog_get_secondary_text     (GcrImportDialog *
 
 void                _gcr_import_dialog_set_secondary_text     (GcrImportDialog *self,
                                                                const gchar *text);
+
+G_END_DECLS
 
 #endif /* __GCR_IMPORT_DIALOG_H__ */

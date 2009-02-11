@@ -27,6 +27,8 @@
 
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 typedef enum {
 	GCR_IMPORTER_PROMPT_NEEDED,
 	GCR_IMPORTER_PROMPT_ALWAYS,
@@ -90,5 +92,7 @@ void                      gcr_importer_import_async           (GcrImporter *self
 gboolean                  gcr_importer_import_finish          (GcrImporter *self,
                                                                GAsyncResult *res,
                                                                GError **error);
+
+G_END_DECLS
 
 #endif /* __GCR_IMPORTER_H__ */

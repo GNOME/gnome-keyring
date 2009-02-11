@@ -26,6 +26,8 @@
 #include "gcr-certificate.h"
 #include "gcr-types.h"
 
+G_BEGIN_DECLS
+
 #define GCR_TYPE_CERTIFICATE_DETAILS_WIDGET               (gcr_certificate_details_widget_get_type ())
 #define GCR_CERTIFICATE_DETAILS_WIDGET(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE_DETAILS_WIDGET, GcrCertificateDetailsWidget))
 #define GCR_CERTIFICATE_DETAILS_WIDGET_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_CERTIFICATE_DETAILS_WIDGET, GcrCertificateDetailsWidgetClass))
@@ -54,5 +56,7 @@ GcrCertificate*               gcr_certificate_details_widget_get_certificate    
 
 void                          gcr_certificate_details_widget_set_certificate        (GcrCertificateDetailsWidget *details, 
                                                                                      GcrCertificate *cert);
+
+G_END_DECLS
 
 #endif /* __GCR_CERTIFICATE_DETAILS_WIDGET_H__ */

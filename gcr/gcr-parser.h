@@ -26,6 +26,8 @@
 
 #include "gcr-types.h"
 
+G_BEGIN_DECLS
+
 #define GCR_TYPE_PARSER               (gcr_parser_get_type ())
 #define GCR_PARSER(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_PARSER, GcrParser))
 #define GCR_PARSER_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_PARSER, GcrParserClass))
@@ -80,5 +82,7 @@ const gchar*             gcr_parser_get_parsed_label       (GcrParser *self);
 const gchar*             gcr_parser_get_parsed_description (GcrParser *self);
 
 struct _GP11Attributes*  gcr_parser_get_parsed_attributes  (GcrParser *self);
+
+G_END_DECLS
 
 #endif /* __GCR_PARSER_H__ */

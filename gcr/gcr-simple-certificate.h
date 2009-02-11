@@ -26,6 +26,8 @@
 
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 #define GCR_TYPE_SIMPLE_CERTIFICATE               (gcr_simple_certificate_get_type ())
 #define GCR_SIMPLE_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE, GcrSimpleCertificate))
 #define GCR_SIMPLE_CERTIFICATE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_CERTIFICATE, GcrSimpleCertificateClass))
@@ -50,5 +52,7 @@ GType               gcr_simple_certificate_get_type               (void);
 
 GcrCertificate*     gcr_simple_certificate_new                    (const guchar *data,
                                                                    gsize n_data);
+
+G_END_DECLS
 
 #endif /* __GCR_SIMPLE_CERTIFICATE_H__ */

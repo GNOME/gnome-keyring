@@ -1,3 +1,14 @@
+2009-02-11  Stef Walter  <stef@memberwebs.com>
+
+	* gcr/gcr-certificate-basics-widget.h:
+	* gcr/gcr-certificate-details-widget.h:
+	* gcr/gcr-certificate.h:
+	* gcr/gcr-import-dialog.h:
+	* gcr/gcr-importer.h:
+	* gcr/gcr-parser.h:
+	* gcr/gcr-simple-certificate.h:
+	* gcr/gcr-types.h: Add G_BEGIN_DECLS/G_END_DECLS to gcr headers.
+
 2009-02-10  Xan Lopez  <xan@gnome.org>
 
 	Bug 571194 -G_BEGIN_DECLS/G_END_DECLS missing from headers

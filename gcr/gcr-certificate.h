@@ -26,6 +26,8 @@
 
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 #define GCR_TYPE_CERTIFICATE                 (gcr_certificate_get_type())
 #define GCR_CERTIFICATE(obj)                 (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE, GcrCertificate))
 #define GCR_IS_CERTIFICATE(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_CERTIFICATE))
@@ -82,5 +84,7 @@ guchar*             gcr_certificate_get_fingerprint        (GcrCertificate *self
 
 gchar*              gcr_certificate_get_fingerprint_hex    (GcrCertificate *self, 
                                                             GChecksumType type);
+
+G_END_DECLS
 
 #endif /* __GCR_CERTIFICATE_H__ */
