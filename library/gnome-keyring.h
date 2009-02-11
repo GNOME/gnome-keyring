@@ -29,8 +29,6 @@
 
 #include "gnome-keyring-result.h"
 
-G_BEGIN_DECLS
-
 #define GNOME_KEYRING_SESSION   "session"
 #define GNOME_KEYRING_DEFAULT   NULL
 
@@ -517,7 +515,5 @@ GnomeKeyringResult gnome_keyring_set_network_password_sync  (const char         
 GnomeKeyringResult    gnome_keyring_daemon_set_display_sync         (const char *display);
 
 GnomeKeyringResult    gnome_keyring_daemon_prepare_environment_sync (void);
-
-G_END_DECLS
 
 #endif /* GNOME_KEYRING_H */

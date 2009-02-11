@@ -26,8 +26,6 @@
 
 #include <glib.h>
 
-G_BEGIN_DECLS
-
 /**
  * gnome-keyring-memory:Short_Description:
  * 
@@ -60,7 +58,5 @@ void      gnome_keyring_memory_free           (gpointer p);
 gboolean  gnome_keyring_memory_is_secure      (gpointer p); 
 
 gchar*    gnome_keyring_memory_strdup         (const gchar* str);
-
-G_END_DECLS
 
 #endif /* GNOME_KEYRING_MEMORY_H */
