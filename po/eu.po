@@ -4,52 +4,51 @@
 # This file is distributed under the same license as the eu package.
 #
 # Alberto Fernández <afernn@euskalnet.net>, 2004.
-# Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2004, 2006, 2008.
+# Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2004, 2006, 2008, 2009.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2007.
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-09 12:34+0200\n"
-"PO-Revision-Date: 2008-09-09 12:35+0200\n"
+"POT-Creation-Date: 2009-02-12 13:34+0100\n"
+"PO-Revision-Date: 2009-02-12 13:58+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gkr-location.c:320
+#: ../common/gkr-location.c:321
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Disko aldagarria: %s"
 
-#: ../common/gkr-location.c:322
+#: ../common/gkr-location.c:323
 msgid "Removable Disk"
 msgstr "Disko aldagarria"
 
-#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
+#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
 msgid "Home"
 msgstr "Etxea"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
-#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
 msgstr "Fitxategia kokatuta dagoen diskoa edo unitatea ez dago"
 
-#: ../common/gkr-location.c:1136
+#: ../common/gkr-location.c:1137
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "Ezin izan da direktorioa sortu: %s"
 
-#: ../common/gkr-location.c:1170
+#: ../common/gkr-location.c:1171
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Ezin izan da fitxategia ezabatu: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:227
+#: ../daemon/gkr-daemon-ops.c:228
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -59,7 +58,7 @@ msgstr ""
 "gako-sorta lehentsian."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231
+#: ../daemon/gkr-daemon-ops.c:232
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -69,7 +68,7 @@ msgstr ""
 "s-(e)an."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
+#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -79,7 +78,7 @@ msgstr ""
 "sorta lehentsian."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -89,7 +88,7 @@ msgstr ""
 "an."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:257
+#: ../daemon/gkr-daemon-ops.c:258
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -98,7 +97,7 @@ msgstr ""
 "du gako-sorta lehentsian."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -108,15 +107,16 @@ msgstr ""
 "du %s(e)an."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow access"
 msgstr "Baimendu atzipena"
 
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow application access to keyring?"
 msgstr "Baimendu aplikazioa gako-sorta atzi dezan?"
 
-#: ../daemon/gkr-daemon-ops.c:307
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -125,54 +125,60 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta lehentsia atzitu nahi du, baina blokeatuta "
 "dago"
 
-#: ../daemon/gkr-daemon-ops.c:311
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "'%s' (%s) aplikazioak '%s' gako-sorta atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "'%s' aplikazioak gako-sorta lehentsia atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "'%s' aplikazioak '%s' gako-sorta atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/gkr-daemon-ops.c:338
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
 #, c-format
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "Aplikazio ezezagun batek gako-sorta lehentsia atzitu nahi du, baina "
 "blokeatuta dago"
 
-#: ../daemon/gkr-daemon-ops.c:342
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Aplikazio ezezagun batek '%s' gako-sorta atzitu nahi du, baina blokeatuta "
 "dago"
 
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
 msgstr "Idatzi pasahitza, gako-sorta lehentsia desblokeatzeko"
 
-#: ../daemon/gkr-daemon-ops.c:351
+#: ../daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Idatzi pasahitza, '%s' gako-sorta desblokeatzeko"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:355
+#: ../daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "Desblokeatu gako-sorta"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
+#: ../daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Desblokeatu automatikoki gako-sorta saioa hastean."
 
-#: ../daemon/gkr-daemon-ops.c:403
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -181,7 +187,8 @@ msgstr ""
 "'%s' (%s) aplikazioak '%s' izeneko gako-sorta berria sortu nahi du. Erabili "
 "nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:407
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -190,7 +197,8 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta lehentsi berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -199,7 +207,8 @@ msgstr ""
 "'%s' aplikazioak '%s' izeneko gako-sorta berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -208,7 +217,8 @@ msgstr ""
 "'%s' aplikazioak gako-sorta lehentsi berria sortu nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:433
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -217,7 +227,8 @@ msgstr ""
 "Aplikazio ezezagun batek '%s' izeneko gako-sorta berria sortu nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:437
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -227,15 +238,15 @@ msgstr ""
 "nahi duzun pasahitza aukeratu behar duzu."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:443
+#: ../daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
 msgstr "Gako-sorta berriaren pasahitza"
 
-#: ../daemon/gkr-daemon-ops.c:444
+#: ../daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
 msgstr "Aukeratu gako-sorta berriaren pasahitza"
 
-#: ../daemon/gkr-daemon-ops.c:491
+#: ../daemon/gkr-daemon-ops.c:508
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -244,7 +255,7 @@ msgstr ""
 "'%s' (%s) aplikazioak '%s' gako-sortaren pasahitza aldatzea nahi du. Erabili "
 "nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:512
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -253,7 +264,7 @@ msgstr ""
 "'%s' (%s) aplikazioak gako-sorta lehentsiaren pasahitza aldatzea nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -262,7 +273,7 @@ msgstr ""
 "'%s' aplikazioak '%s' gako-sortaren pasahitza aldatzea nahi du. Erabili nahi "
 "duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -271,7 +282,7 @@ msgstr ""
 "'%s' aplikazioak gako-sorta lehentsiaren pasahitza aldatzea nahi du. Erabili "
 "nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:521
+#: ../daemon/gkr-daemon-ops.c:538
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -280,7 +291,7 @@ msgstr ""
 "Aplikazio ezezagun batek '%s' gako-sortaren pasahitza aldatzea nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:525
+#: ../daemon/gkr-daemon-ops.c:542
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -289,22 +300,22 @@ msgstr ""
 "Aplikazio ezezagun batek gako-sorta lehentsiaren pasahitza aldatzea nahi du. "
 "Erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:535
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "Aukeratu '%s' gako-sortaren pasahitz berria. "
 
-#: ../daemon/gkr-daemon-ops.c:537
+#: ../daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Aukeratu gako-sorta lehentsiaren pasahitz berria. "
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:541
+#: ../daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
 msgstr "Aldatu gako-sortaren pasahitza"
 
-#: ../daemon/gkr-daemon-ops.c:614
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -314,7 +325,7 @@ msgstr ""
 "'%s' (%s) aplikazioak pasahitz bat gorde nahi du, baina ez dago gako-sorta "
 "lehenetsirik. Bat sortzeko, erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -324,7 +335,7 @@ msgstr ""
 "'%s' aplikazioak pasahitz bat gorde nahi du, baina ez dago gako-sorta "
 "lehentsirik. Bat sortzeko, erabili nahi duzun pasahitza aukeratu behar duzu."
 
-#: ../daemon/gkr-daemon-ops.c:626
+#: ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -336,29 +347,15 @@ msgstr ""
 "du."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "Sortu gako-sorta lehentsia"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
 msgstr "Aukeratu gako-sorta lehentsiaren pasahitza"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"A list of paths to PKCS#11 modules to load. No modules are currently listed "
-"by default, as this is still an experimental feature. This is used by "
-"seahorse and other PKCS#11 aware applications."
-msgstr ""
-"Bide-izenen zerrenda PKCS#11 moduluak kargatzeko. Unean ez dago modulurik "
-"zerrendatuta lehenetsi gisa, eta oraindik eginbide esperimentala da hau. "
-"Seahorse eta beste PKCS#11 aplikazioek erabiltzen dute hau."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid "PKCS#11 Modules"
-msgstr "PKCS#11 moduluak"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -370,7 +367,7 @@ msgstr ""
 "saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu "
 "batzuk daemonari ematean."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -382,13 +379,17 @@ msgstr ""
 "hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu batzuk "
 "daemonari ematean."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "'Gnome-keyring'-en PKCS#11 osagaia gaitu behar den ala ez."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "'Gnome-keyring'-en SSH agentea gaitu behar den ala ez."
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr "GNOMEren gako-sorten daemona"
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
@@ -424,248 +425,124 @@ msgstr ""
 "Zure saioaren gako-sorta ez da automatikoki sortu ordenagailuan saioa "
 "hastean. Oraintxe sortuko da."
 
-#: ../daemon/keyrings/gkr-keyring.c:584
+#: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "Desblokeatu %s gako-sortaren pasahitza"
 
-#: ../daemon/pk/gkr-pk-import.c:88
-msgid "Import private key"
-msgstr "Inportatu gako pribatua"
-
-#: ../daemon/pk/gkr-pk-import.c:90
-msgid "Import certificate"
-msgstr "Inportatu ziurtagiria"
-
-#: ../daemon/pk/gkr-pk-import.c:92
-msgid "Import public key"
-msgstr "Inportatu gako publikoa"
-
-#: ../daemon/pk/gkr-pk-import.c:94
-msgid "Import"
-msgstr "Inportatu"
-
-#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
-msgid "Enter password to unlock the private key"
-msgstr "Idatzi pasahitza gako pribatua desblokeatzeko"
-
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
-msgid "Enter password to unlock the certificate"
-msgstr "Idatzi pasahitza ziurtagiria desblokeatzeko"
-
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
-msgid "Enter password to unlock the public key"
-msgstr "Idatzi pasahitza gako publikoa desblokeatzeko"
-
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
-msgid "Enter password to unlock"
-msgstr "Idatzi pasahitza desblokeatzeko"
-
-#: ../daemon/pk/gkr-pk-import.c:114
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "Sistemak '%s' gako pribatua inportatu nahi du, baina blokeatuta dago"
-
-#: ../daemon/pk/gkr-pk-import.c:116
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "Sistemak '%s' ziurtagiria inportatu nahi du, baina blokeatuta dago"
-
-#: ../daemon/pk/gkr-pk-import.c:118
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "Sistemak '%s' gako publikoa inportatu nahi du, baina blokeatuta dago"
-
-#: ../daemon/pk/gkr-pk-import.c:120
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "Sistemak '%s' inportatu nahi du, baina blokeatuta dago"
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:93
-msgid "Create Storage for Key Information"
-msgstr "Sortu gako-informazioaren biltegia"
-
-#: ../daemon/pk/gkr-pk-index.c:94
-msgid "Choose password to protect storage"
-msgstr "Aukeratu pasahitza biltegia babesteko"
-
-#: ../daemon/pk/gkr-pk-index.c:97
-msgid ""
-"The system wants to store information about your keys and certificates. In "
-"order to protect this information, choose a password with which it will be "
-"locked."
-msgstr ""
-"Sistemak gakoei eta ziurtagiriei buruzko informazioa biltzea nahi du. "
-"Informazio hau babesteko xedearekin, aukeratu pasahitz bat biltegia "
-"blokeatzeko."
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:124
-msgid "Unlock Storage for Key Information"
-msgstr "Desblokeatu gako-informazioaren biltegia"
-
-#: ../daemon/pk/gkr-pk-index.c:125
-msgid "Enter password to unlock storage"
-msgstr "Idatzi pasahitza biltegia desblokeatzeko"
-
-#: ../daemon/pk/gkr-pk-index.c:128
-msgid ""
-"The system wants to access information about your keys and certificates, but "
-"it is locked."
-msgstr ""
-"Sistemak gakoei eta ziurtagiriei buruzko informazioa atzitzea nahi du, baina "
-"blokeatuta dago."
-
-#: ../daemon/pk/gkr-pk-object.c:889
-msgid "Certificate"
-msgstr "Ziurtagiria"
-
-#: ../daemon/pk/gkr-pk-object.c:891
-msgid "Private Key"
-msgstr "Gako pribatua"
-
-#: ../daemon/pk/gkr-pk-object.c:893
-msgid "Public Key"
-msgstr "Gako publikoa"
-
-#: ../daemon/pk/gkr-pk-object.c:895
-msgid "Trust Association"
-msgstr "Elkarte fidagarria"
-
-#: ../daemon/pk/gkr-pk-object-storage.c:445
-#, c-format
-msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr "Ezin da '%s' ezabatu beste objektu batzuetara lotuta dagoelako."
-
-#: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
 msgid "Unlock private key"
 msgstr "Desblokeatu gako pribatua"
 
-#: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
 msgid "Unlock certificate"
 msgstr "Desblokeatu ziurtagiria"
 
-#: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
 msgid "Unlock public key"
 msgstr "Desblokeatu gako publikoa"
 
-#: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
 msgid "Unlock"
 msgstr "Desblokeatu"
 
-#: ../daemon/pk/gkr-pk-storage.c:153
-msgid "Lock private key"
-msgstr "Blokeatu gako pribatua"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+msgid "Enter password to unlock the private key"
+msgstr "Idatzi pasahitza gako pribatua desblokeatzeko"
 
-#: ../daemon/pk/gkr-pk-storage.c:155
-msgid "Lock"
-msgstr "Blokeatu"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+msgid "Enter password to unlock the certificate"
+msgstr "Idatzi pasahitza ziurtagiria desblokeatzeko"
 
-#: ../daemon/pk/gkr-pk-storage.c:183
-msgid "Enter password to protect the private key"
-msgstr "Idatzi pasahitza gako pribatua babesteko"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+msgid "Enter password to unlock the public key"
+msgstr "Idatzi pasahitza gako publikoa desblokeatzeko"
 
-#: ../daemon/pk/gkr-pk-storage.c:185
-msgid "Enter password to protect storage"
-msgstr "Idatzi pasahitza biltegia babesteko"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+msgid "Enter password to unlock"
+msgstr "Idatzi pasahitza desblokeatzeko"
 
-#: ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "Desblokeatu automatikoki gako pribatu hau saioa hastean."
-
-#: ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Desblokeatu automatikoki ziurtagiri hau saioa hastean."
-
-#: ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "Desblokeatu automatikoki gako publiko hau saioa hastean."
-
-#: ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "Desblokeatu automatikoki saioa hastean."
-
-#: ../daemon/pk/gkr-pk-storage.c:209
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Aplikazio batek '%s' gako pribatua atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/pk/gkr-pk-storage.c:211
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Aplikazio batek '%s' ziurtagiria atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/pk/gkr-pk-storage.c:213
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Aplikazio batek '%s' gako publikoa atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/pk/gkr-pk-storage.c:215
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Aplikazio batek '%s' atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/pk/gkr-pk-storage.c:228
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "Desblokeatu automatikoki gako pribatu hau saioa hastean."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Desblokeatu automatikoki ziurtagiri hau saioa hastean."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "Desblokeatu automatikoki gako publiko hau saioa hastean."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "Desblokeatu automatikoki saioa hastean."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+msgid "Unlock certificate/key storage"
+msgstr "Desblokeatu ziurtagirien/gakoen biltegia"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Idatzi pasahitza ziurtagirien/gakoen biltegia desblokeatzeko"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
 #, c-format
 msgid ""
-"The system wants to store the private key '%s' on your disk. Please enter a "
-"password to lock it with."
-msgstr ""
-"Sistemak '%s' gako pribatua diskoan gordetzea nahi du. Idatzi pasahitza "
-"(pasahitzarekin blokeatzeko)."
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "Aplikazio batek '%s' ziurtagiria/gakoa atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/pk/gkr-pk-storage.c:230
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Desblokeatu automatikoki biltegi babestua saioa hastean."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+msgid "New Password Required"
+msgstr "Pasahitz berria behar da"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+msgid "New password required for secure storage"
+msgstr "Pasahitz berria behar da biltegia babesteko"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid ""
-"The system wants to store '%s' on your disk. Please enter a password to lock "
-"it with."
-msgstr ""
-"Sistemak '%s' diskoan gordetzea nahi du. Idatzi pasahitza (pasahitzarekin "
-"blokeatzeko)."
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "Pasahitza behar da '%s' prestatzeko ziurtagiriak/gakoak biltegiratzeko"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
-msgid "The operation was cancelled"
-msgstr "Eragiketa bertan behera utzi da"
-
-#: ../daemon/pkix/gkr-pkix-parser.c:455
-msgid "Unrecognized or unsupported file."
-msgstr "Fitxategi ezezaguna edo onartu gabea."
-
-#: ../daemon/pkix/gkr-pkix-parser.c:459
-msgid "Could not parse invalid or corrupted file."
-msgstr "Ezin izan da hondatutako edo baliogabea den fitxategia."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:166
-#, c-format
-msgid "Couldn't encode secure shell public key."
-msgstr "Ezin izan da shell seguruaren gako publikoa kodetu."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:412
-#, c-format
-msgid "Couldn't read secure shell private key: %s"
-msgstr "Ezin izan da shell seguruaren gako pribatua irakurri: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:416
-#, c-format
-msgid "Invalid secure shell private key at: %s"
-msgstr "Shell seguruaren gako pribatu baliogabea: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:465
-#, c-format
-msgid "Couldn't encrypt the SSH key to store it."
-msgstr "Ezin izan da SSH gakoa enkriptatu gordetzeko."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:481
-#, c-format
-msgid "Couldn't encode the SSH key to store it."
-msgstr "Ezin izan da SSH gakoa kodetu gordetzeko."
-
-#: ../daemon/ui/gkr-ask-tool.c:182
+#: ../daemon/ui/gkr-ask-tool.c:244
 msgid "Store passwords unencrypted?"
 msgstr "Gorde pasahitzak enkriptatu gabe?"
 
-#: ../daemon/ui/gkr-ask-tool.c:183
+#: ../daemon/ui/gkr-ask-tool.c:245
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -675,407 +552,732 @@ msgstr ""
 "segurtasunez enkriptatuko. Zure fitxategiak atzitu ditzakeen edonork "
 "pasahitz hauek atzi ditzake."
 
-#: ../daemon/ui/gkr-ask-tool.c:190
+#: ../daemon/ui/gkr-ask-tool.c:252
 msgid "Use Unsafe Storage"
 msgstr "Erabili segurtasun gabeko biltegia"
 
-#: ../daemon/ui/gkr-ask-tool.c:413
+#: ../daemon/ui/gkr-ask-tool.c:479
 msgid "_Location:"
 msgstr "_Kokalekua:"
 
-#: ../daemon/ui/gkr-ask-tool.c:426
+#: ../daemon/ui/gkr-ask-tool.c:492
 msgid "_Old password:"
 msgstr "_Pasahitz zaharra:"
 
-#: ../daemon/ui/gkr-ask-tool.c:446
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Password:"
 msgstr "_Pasahitza:"
 
-#: ../daemon/ui/gkr-ask-tool.c:468
+#: ../daemon/ui/gkr-ask-tool.c:534
 msgid "_Confirm password:"
 msgstr "_Berretsi pasahitza:"
 
-#: ../daemon/ui/gkr-ask-tool.c:488
+#: ../daemon/ui/gkr-ask-tool.c:554
 msgid "New password strength"
 msgstr "Pasahitz berriaren indarra"
 
-#: ../daemon/ui/gkr-ask-tool.c:546
+#: ../daemon/ui/gkr-ask-tool.c:612
 msgid "Passwords do not match."
 msgstr "Pasahitzak ez datoz bat"
 
-#: ../daemon/ui/gkr-ask-tool.c:562
+#: ../daemon/ui/gkr-ask-tool.c:628
 msgid "Password cannot be blank"
 msgstr "Pasahitza ezin da hutsa izan"
 
-#: ../daemon/ui/gkr-ask-tool.c:613
-msgid "Deny"
-msgstr "Ukatu"
+#: ../daemon/ui/gkr-ask-tool.c:679
+msgid "_Deny"
+msgstr "_Ukatu"
 
-#: ../daemon/ui/gkr-ask-tool.c:625
+#: ../daemon/ui/gkr-ask-tool.c:691
 msgid "C_reate"
 msgstr "_Sortu"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:695
 msgid "C_hange"
 msgstr "_Aldatu"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:699
 msgid "Allow _Once"
 msgstr "Baimend_u behin"
 
-#: ../daemon/ui/gkr-ask-tool.c:637
+#: ../daemon/ui/gkr-ask-tool.c:703
 msgid "_Always Allow"
 msgstr "B_aimendu beti"
 
-#: ../gp11/gp11-misc.c:90
+#: ../egg/egg-asn1.c:794
+msgid "Domain Component"
+msgstr "Domeinuaren osagaia"
+
+#: ../egg/egg-asn1.c:795
+msgid "User ID"
+msgstr "Erabiltzailearen IDa"
+
+#: ../egg/egg-asn1.c:797
+msgid "Email"
+msgstr "Helbide elektronikoa"
+
+#: ../egg/egg-asn1.c:801
+msgid "Date of Birth"
+msgstr "Jaiotze-data"
+
+#: ../egg/egg-asn1.c:802
+msgid "Place of Birth"
+msgstr "Jaioterria"
+
+#: ../egg/egg-asn1.c:803
+msgid "Gender"
+msgstr "Sexua"
+
+#: ../egg/egg-asn1.c:804
+msgid "Country of Citizenship"
+msgstr "Hiritartasunaren estatua"
+
+#: ../egg/egg-asn1.c:805
+msgid "Country of Residence"
+msgstr "Egoitzaren estatua"
+
+#: ../egg/egg-asn1.c:807
+msgid "Common Name"
+msgstr "Izen arrunta"
+
+#: ../egg/egg-asn1.c:808
+msgid "Surname"
+msgstr "Abizena"
+
+#: ../egg/egg-asn1.c:809 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:259
+msgid "Serial Number"
+msgstr "Serie-zenbakia"
+
+#: ../egg/egg-asn1.c:810
+msgid "Country"
+msgstr "Estatua"
+
+#: ../egg/egg-asn1.c:811
+msgid "Locality"
+msgstr "Herria"
+
+#: ../egg/egg-asn1.c:812
+msgid "State"
+msgstr "Herrialdea"
+
+#: ../egg/egg-asn1.c:813
+msgid "Street"
+msgstr "Kalea"
+
+#: ../egg/egg-asn1.c:814
+msgid "Organization"
+msgstr "Erakundea"
+
+#: ../egg/egg-asn1.c:815
+msgid "Organizational Unit"
+msgstr "Erakundeko saila"
+
+#: ../egg/egg-asn1.c:816
+msgid "Title"
+msgstr "Titulua"
+
+#: ../egg/egg-asn1.c:817
+msgid "Telephone Number"
+msgstr "Telefono zenbakia"
+
+#: ../egg/egg-asn1.c:818
+msgid "Given Name"
+msgstr "Izena"
+
+#: ../egg/egg-asn1.c:819
+msgid "Initials"
+msgstr "Sigla"
+
+#: ../egg/egg-asn1.c:820
+msgid "Generation Qualifier"
+msgstr "Identifikatzaileen sortzailea"
+
+#: ../egg/egg-asn1.c:821
+msgid "DN Qualifier"
+msgstr "DN identifikatzailea"
+
+#: ../egg/egg-asn1.c:822
+msgid "Pseudonym"
+msgstr "Goitizena"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>Ez da ziurtagiriaren zatia</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>ezezaguna</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Ez da ziurtagiriaren zatia>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Hatz-markak</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Jaulkitzailea</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Honentzat jaulkia</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>Ziurtagiri hau ondorengo erabileretarako egiaztatu da:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Baliozkotasuna</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "Izen arrunta (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+msgid "Email Recipient Certificate"
+msgstr "Posta elektronikoko hartzailearen ziurtagiria"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+msgid "Email Signer Certificate"
+msgstr "Posta elektronikoko sinatzailearen ziurtagiria"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "Iraungitze-data"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "Jaulkitze-data"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 hatz-marka"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "Erakundea (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Erakundeko Saila (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 hatz-marka"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+msgid "SSL Client Certificate"
+msgstr "SSL bezero-ziurtagiria"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+msgid "SSL Server Certificate"
+msgstr "SSL zerbitzari-ziurtagiria"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:240
+msgid "Subject Name"
+msgstr "Gaiaren izena"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:244
+msgid "Issuer Name"
+msgstr "Jaulkitzailearen izena"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:248
+msgid "Issued Certificate"
+msgstr "Jaulkitako ziurtagiria"
+
+#: ../gcr/gcr-certificate-details-widget.c:253
+msgid "Version"
+msgstr "Bertsioa"
+
+#: ../gcr/gcr-certificate-details-widget.c:266
+msgid "Not Valid Before"
+msgstr "Ez da baliozkoa honen aurretik"
+
+#: ../gcr/gcr-certificate-details-widget.c:271
+msgid "Not Valid After"
+msgstr "Ez da baliozkoa honen ondoren"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:276
+#: ../gcr/gcr-certificate-details-widget.c:284
+msgid "Signature"
+msgstr "Sinadura"
+
+#. TODO: Complete Signature algorithm, and params
+#: ../gcr/gcr-certificate-details-widget.c:279
+msgid "Signature Algorithm"
+msgstr "Sinaduraren algoritmoa"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:288
+msgid "Public Key Info"
+msgstr "Gako publikoaren informazioa"
+
+#. TODO: Complete algorithm, params, key size
+#: ../gcr/gcr-certificate-details-widget.c:291
+msgid "Key Algorithm"
+msgstr "Gakoaren algoritmoa"
+
+#: ../gcr/gcr-certificate-details-widget.c:292
+msgid "Key Size"
+msgstr "Gakoaren tamaina"
+
+#: ../gcr/gcr-certificate-details-widget.c:297 ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "Gako publikoa"
+
+#. TODO: Implement extensions
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:303
+msgid "Fingerprints"
+msgstr "Hatz-markak"
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>Inportatu ziurtagiriak eta gakoak</span>"
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+msgid "Import Into:"
+msgstr "Inportatu hona:"
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+msgid "Password:"
+msgstr "Pasahitza:"
+
+#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr "Eragiketa bertan behera utzi da"
+
+#: ../gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr "Ez dago kokaleku erabilgarririk horra inportatzeko"
+
+#: ../gcr/gcr-importer.c:328
+msgid "Import Certificates/Keys"
+msgstr "Inportatu ziurtagiriak/gakoak"
+
+#: ../gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Aukeratu kokalekua inportatutako ziurtagiriak/gakoak gordetzeko."
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
+msgid "In order to import the private key, it must be unlocked"
+msgstr "Gako pribatua inportatzeko desblokeatu egin behar da"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "Ziurtagiria inportatzeko desblokeatu egin behar da"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
+msgid "In order to import the data, it must be unlocked"
+msgstr "Datuak inportatzeko desblokeatu egin behar dira"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "'%s' gako pribatua inportatzeko desblokeatu egin behar da"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "'%s' ziurtagiria inportatzeko desblokeatu egin behar da"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "'%s' inportatzeko desblokeatu egin behar da"
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "Gako pribatua"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "Ziurtagiria"
+
+#: ../gcr/gcr-parser.c:1576
+msgid "Unrecognized or unsupported data."
+msgstr "Datu ezezaguna edo onartu gabea."
+
+#: ../gcr/gcr-parser.c:1579
+msgid "Could not parse invalid or corrupted data."
+msgstr "Ezin izan dira hondatutako edo baliogabeak diren datuak analizatu."
+
+#: ../gcr/gcr-parser.c:1582
+msgid "The data is locked"
+msgstr "Datuak blokeatuta daude"
+
+#: ../gp11/gp11-misc.c:117
 msgid "Insufficient memory available"
 msgstr "Ez dago nahikoa memoria erabilgarri"
 
-#: ../gp11/gp11-misc.c:92
+#: ../gp11/gp11-misc.c:119
 msgid "The specified slot ID is not valid"
 msgstr "Zehaztutako IDa ez da baliozkoa"
 
-#: ../gp11/gp11-misc.c:94
+#: ../gp11/gp11-misc.c:121
 msgid "Internal error"
 msgstr "Barneko errorea"
 
-#: ../gp11/gp11-misc.c:96
+#: ../gp11/gp11-misc.c:123
 msgid "The operation failed"
 msgstr "Eragiketak huts egin du"
 
-#: ../gp11/gp11-misc.c:98
+#: ../gp11/gp11-misc.c:125
 msgid "Invalid arguments"
 msgstr "Argumentu baliogabeak"
 
-#: ../gp11/gp11-misc.c:100
+#: ../gp11/gp11-misc.c:127
 msgid "The module cannot create needed threads"
 msgstr "Moduluak ezin du beharrezko hariak sortu"
 
-#: ../gp11/gp11-misc.c:102
+#: ../gp11/gp11-misc.c:129
 msgid "The module cannot lock data properly"
 msgstr "Moduluak ezin du datuak ongi blokeatu"
 
-#: ../gp11/gp11-misc.c:104
+#: ../gp11/gp11-misc.c:131
 msgid "The field is read-only"
 msgstr "Eremua irakurtzeko soilik da"
 
-#: ../gp11/gp11-misc.c:106
+#: ../gp11/gp11-misc.c:133
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Eremua pribatua da, eta ezin da azaldu"
 
-#: ../gp11/gp11-misc.c:108
+#: ../gp11/gp11-misc.c:135
 msgid "The field is invalid or does not exist"
 msgstr "Eremua baliogabea da edo ez da existitzen"
 
-#: ../gp11/gp11-misc.c:110
+#: ../gp11/gp11-misc.c:137
 msgid "Invalid value for field"
 msgstr "Eremuaren balio baliogabea"
 
-#: ../gp11/gp11-misc.c:112
+#: ../gp11/gp11-misc.c:139
 msgid "The data is not valid or unrecognized"
 msgstr "Datua ez da baliozkoa edo ez da ezagutzen"
 
-#: ../gp11/gp11-misc.c:114
+#: ../gp11/gp11-misc.c:141
 msgid "The data is too long"
 msgstr "Datua luzeegia da"
 
-#: ../gp11/gp11-misc.c:116
+#: ../gp11/gp11-misc.c:143
 msgid "An error occurred on the device"
 msgstr "Errorea gertatu da gailuan"
 
-#: ../gp11/gp11-misc.c:118
+#: ../gp11/gp11-misc.c:145
 msgid "Insufficient memory available on device"
 msgstr "Ez dago nahikoa memoria erabilgarri gailuan"
 
-#: ../gp11/gp11-misc.c:120
+#: ../gp11/gp11-misc.c:147
 msgid "The device was removed or unplugged"
 msgstr "Gailua kendu edo deskonektatu egin da"
 
-#: ../gp11/gp11-misc.c:122
+#: ../gp11/gp11-misc.c:149
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Enkriptatutako datua ez da baliozkoa edo ez da ezagutzen"
 
-#: ../gp11/gp11-misc.c:124
+#: ../gp11/gp11-misc.c:151
 msgid "The encrypted data is too long"
 msgstr "Enkriptatutako datua luzeegia da"
 
-#: ../gp11/gp11-misc.c:126
+#: ../gp11/gp11-misc.c:153
 msgid "This operation is not supported"
 msgstr "Eragiketa hau ez dago onartuta"
 
-#: ../gp11/gp11-misc.c:128
+#: ../gp11/gp11-misc.c:155
 msgid "The key is missing or invalid"
 msgstr "Gakoa falta da edo baliogabea da"
 
-#: ../gp11/gp11-misc.c:130
+#: ../gp11/gp11-misc.c:157
 msgid "The key is the wrong size"
 msgstr "Gakoak okerreko tamaina du"
 
-#: ../gp11/gp11-misc.c:132
+#: ../gp11/gp11-misc.c:159
 msgid "The key is of the wrong type"
 msgstr "Gakoa okerreko motakoa da"
 
-#: ../gp11/gp11-misc.c:134
+#: ../gp11/gp11-misc.c:161
 msgid "No key is needed"
 msgstr "Ez da gakorik behar"
 
-#: ../gp11/gp11-misc.c:136
+#: ../gp11/gp11-misc.c:163
 msgid "The key is different than before"
 msgstr "Gakoa aurrekotik desberdina da"
 
-#: ../gp11/gp11-misc.c:138
+#: ../gp11/gp11-misc.c:165
 msgid "A key is needed"
 msgstr "Gakoa behar da"
 
-#: ../gp11/gp11-misc.c:140
+#: ../gp11/gp11-misc.c:167
 msgid "Cannot include the key in digest"
 msgstr "Ezin da gakoa laburpenean txertatu"
 
-#: ../gp11/gp11-misc.c:142
+#: ../gp11/gp11-misc.c:169
 msgid "This operation cannot be done with this key"
 msgstr "Eragiketa hau ezin da gako honekin egin"
 
-#: ../gp11/gp11-misc.c:144
+#: ../gp11/gp11-misc.c:171
 msgid "The key cannot be wrapped"
 msgstr "Gakoa ez da itzulbiratu"
 
-#: ../gp11/gp11-misc.c:146
+#: ../gp11/gp11-misc.c:173
 msgid "Cannot export this key"
 msgstr "Ezin da gako hau esportatu"
 
-#: ../gp11/gp11-misc.c:148
+#: ../gp11/gp11-misc.c:175
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Zifratzeko motorra baliogabea da, edo ezezaguna"
 
-#: ../gp11/gp11-misc.c:150
+#: ../gp11/gp11-misc.c:177
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Zifratzeko motorrak argumentu baliogabe bat du"
 
-#: ../gp11/gp11-misc.c:152
+#: ../gp11/gp11-misc.c:179
 msgid "The object is missing or invalid"
 msgstr "Objektua falta da edo baliogabea da"
 
-#: ../gp11/gp11-misc.c:154
+#: ../gp11/gp11-misc.c:181
 msgid "Another operation is already taking place"
 msgstr "Jadanik beste eragiketa bat ari da lantzen"
 
-#: ../gp11/gp11-misc.c:156
+#: ../gp11/gp11-misc.c:183
 msgid "No operation is taking place"
 msgstr "Ez da eragiketarik lantzen ari"
 
-#: ../gp11/gp11-misc.c:158
+#: ../gp11/gp11-misc.c:185
 msgid "The password or PIN is incorrect"
 msgstr "Pasahitza edo PINa ez da zuzena"
 
-#: ../gp11/gp11-misc.c:160
+#: ../gp11/gp11-misc.c:187
 msgid "The password or PIN is invalid"
 msgstr "Pasahitza edo PINa baliogabea da"
 
-#: ../gp11/gp11-misc.c:162
+#: ../gp11/gp11-misc.c:189
 msgid "The password or PIN is of an invalid length"
 msgstr "Pasahitza edo PINaren luzeera baliogabekoa da"
 
-#: ../gp11/gp11-misc.c:164
+#: ../gp11/gp11-misc.c:191
 msgid "The password or PIN has expired"
 msgstr "Pasahitza edo PINa iraungitu egin da"
 
-#: ../gp11/gp11-misc.c:166
+#: ../gp11/gp11-misc.c:193
 msgid "The password or PIN is locked"
 msgstr "Pasahitza edo PINa blokeatuta dago"
 
-#: ../gp11/gp11-misc.c:168
+#: ../gp11/gp11-misc.c:195
 msgid "The session is closed"
 msgstr "Saioa itxi da"
 
-#: ../gp11/gp11-misc.c:170
+#: ../gp11/gp11-misc.c:197
 msgid "Too many sessions are active"
 msgstr "Saio gehiegi daude aktibo"
 
-#: ../gp11/gp11-misc.c:172
+#: ../gp11/gp11-misc.c:199
 msgid "The session is invalid"
 msgstr "Saio baliogabea"
 
-#: ../gp11/gp11-misc.c:174
+#: ../gp11/gp11-misc.c:201
 msgid "The session is read-only"
 msgstr "Saioa irakurtzeko soilik da"
 
-#: ../gp11/gp11-misc.c:176
+#: ../gp11/gp11-misc.c:203
 msgid "An open session exists"
 msgstr "Irekitako saioa badago lehendik ere"
 
-#: ../gp11/gp11-misc.c:178
+#: ../gp11/gp11-misc.c:205
 msgid "A read-only session exists"
 msgstr "Irakurtzeko soilik den saioa badago lehendik ere"
 
-#: ../gp11/gp11-misc.c:180
+#: ../gp11/gp11-misc.c:207
 msgid "An administrator session exists"
 msgstr "Administratzailearen saioa badago lehendik ere"
 
-#: ../gp11/gp11-misc.c:182
+#: ../gp11/gp11-misc.c:209
 msgid "The signature is bad or corrupted"
 msgstr "Sinadura okerrekoa da edo hondatuta dago"
 
-#: ../gp11/gp11-misc.c:184
+#: ../gp11/gp11-misc.c:211
 msgid "The signature is unrecognized or corrupted"
 msgstr "Sinadura ez da ezaguna edo hondatuta dago"
 
-#: ../gp11/gp11-misc.c:186
+#: ../gp11/gp11-misc.c:213
 msgid "Certain required fields are missing"
 msgstr "Beharrezkoak diren zenbait eremu falta dira"
 
-#: ../gp11/gp11-misc.c:188
+#: ../gp11/gp11-misc.c:215
 msgid "Certain fields have invalid values"
 msgstr "Eremu batzuk balio baliogabeak dituzte"
 
-#: ../gp11/gp11-misc.c:190
+#: ../gp11/gp11-misc.c:217
 msgid "The device is not present or unplugged"
 msgstr "Gailua ez dago edo deskonektatuta dago"
 
-#: ../gp11/gp11-misc.c:192
+#: ../gp11/gp11-misc.c:219
 msgid "The device is invalid or unrecognizable"
 msgstr "Gailua baliogabea da edo ezezaguna"
 
-#: ../gp11/gp11-misc.c:194
+#: ../gp11/gp11-misc.c:221
 msgid "The device is write protected"
 msgstr "Gailuak idazketaren aurkako babesa du"
 
-#: ../gp11/gp11-misc.c:196
+#: ../gp11/gp11-misc.c:223
 msgid "Cannot import because the key is invalid"
 msgstr "Ezin da inportatu gakoa baliogabea delako"
 
-#: ../gp11/gp11-misc.c:198
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Ezin da inportatu gakoak okerreko tamaina duelako"
 
-#: ../gp11/gp11-misc.c:200
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Ezin da inportatu gakoa okerreko motakoa delako"
 
-#: ../gp11/gp11-misc.c:202
+#: ../gp11/gp11-misc.c:229
 msgid "You are already logged in"
 msgstr "Jadanik saioa hasita zaude"
 
-#: ../gp11/gp11-misc.c:204
+#: ../gp11/gp11-misc.c:231
 msgid "No user has logged in"
 msgstr "Ez dago erabiltzailerik saioa hasi duenik"
 
-#: ../gp11/gp11-misc.c:206
+#: ../gp11/gp11-misc.c:233
 msgid "The user's password or PIN is not set"
 msgstr "Erabiltzailearen pasahitza edo PINa ez dago ezarrita"
 
-#: ../gp11/gp11-misc.c:208
+#: ../gp11/gp11-misc.c:235
 msgid "The user is of an invalid type"
 msgstr "Erabiltzailea mota baliogabekoa da"
 
-#: ../gp11/gp11-misc.c:210
+#: ../gp11/gp11-misc.c:237
 msgid "Another user is already logged in"
 msgstr "Beste erabiltzaile bat dago saioa hasita"
 
-#: ../gp11/gp11-misc.c:212
+#: ../gp11/gp11-misc.c:239
 msgid "Too many users of different types logged in"
 msgstr "Mota desberdinetako erabiltzaile gehiegik hasi dute saioa"
 
-#: ../gp11/gp11-misc.c:214
+#: ../gp11/gp11-misc.c:241
 msgid "Cannot import an invalid key"
 msgstr "Ezin da gako baliogabea inportatu"
 
-#: ../gp11/gp11-misc.c:216
+#: ../gp11/gp11-misc.c:243
 msgid "Cannot import a key of the wrong size"
 msgstr "Ezin da okerreko tamaina duen gakoa inportatu"
 
-#: ../gp11/gp11-misc.c:218
+#: ../gp11/gp11-misc.c:245
 msgid "Cannot export because the key is invalid"
 msgstr "Ezin da esportatu gakoa baliogabea delako"
 
-#: ../gp11/gp11-misc.c:220
+#: ../gp11/gp11-misc.c:247
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Ezin da esportatu gakoak okerreko tamaina duelako"
 
-#: ../gp11/gp11-misc.c:222
+#: ../gp11/gp11-misc.c:249
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Ezin da esportatu gakoa okerreko motakoa delako"
 
-#: ../gp11/gp11-misc.c:224
+#: ../gp11/gp11-misc.c:251
 msgid "Unable to initialize the random number generator"
 msgstr "Ezin da ausazko zenbakien sortzailea hasieratu"
 
-#: ../gp11/gp11-misc.c:226
+#: ../gp11/gp11-misc.c:253
 msgid "No random number generator available"
 msgstr "Ez dago ausazko zenbaki sortzailea erabilgarri"
 
-#: ../gp11/gp11-misc.c:228
+#: ../gp11/gp11-misc.c:255
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Zifratzeko motorrak parametro baliogabea du"
 
-#: ../gp11/gp11-misc.c:230
+#: ../gp11/gp11-misc.c:257
 msgid "Not enough space to store the result"
 msgstr "Ez dago nahikoa lekurik emaitza gordetzeko"
 
-#: ../gp11/gp11-misc.c:232
+#: ../gp11/gp11-misc.c:259
 msgid "The saved state is invalid"
 msgstr "Gordetako egoera baliogabea da"
 
-#: ../gp11/gp11-misc.c:234
+#: ../gp11/gp11-misc.c:261
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Informazioa pribatua da, eta ezin da azaldu"
 
-#: ../gp11/gp11-misc.c:236
+#: ../gp11/gp11-misc.c:263
 msgid "The state cannot be saved"
 msgstr "Egoera ezin da gorde"
 
-#: ../gp11/gp11-misc.c:238
+#: ../gp11/gp11-misc.c:265
 msgid "The module has not been initialized"
 msgstr "Modulua ez da hasieratu"
 
-#: ../gp11/gp11-misc.c:240
+#: ../gp11/gp11-misc.c:267
 msgid "The module has already been initialized"
 msgstr "Modulua jadanik hasieratuta dago"
 
-#: ../gp11/gp11-misc.c:242
+#: ../gp11/gp11-misc.c:269
 msgid "Cannot lock data"
 msgstr "Ezin dira datuak blokeatu"
 
-#: ../gp11/gp11-misc.c:244
+#: ../gp11/gp11-misc.c:271
 msgid "The data cannot be locked"
 msgstr "Datuak ezin dira blokeatu"
 
-#: ../gp11/gp11-misc.c:246
+#: ../gp11/gp11-misc.c:273
 msgid "The signature request was rejected by the user"
 msgstr "Erabiltzaileak ukatu egin du sinaduraren eskaera"
 
-#: ../gp11/gp11-misc.c:250
+#: ../gp11/gp11-misc.c:277
 msgid "Unknown error"
 msgstr "Errore ezezaguna"
 
-#: ../library/gnome-keyring-utils.c:91
+#: ../library/gnome-keyring-utils.c:155
 msgid "Access Denied"
 msgstr "Sarbidea ukatuta"
 
-#: ../library/gnome-keyring-utils.c:93
+#: ../library/gnome-keyring-utils.c:157
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "gnome-keyring-daemon aplikazioa ez da exekutatzen ari."
 
-#: ../library/gnome-keyring-utils.c:95
+#: ../library/gnome-keyring-utils.c:159
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Errorea gnome-keyring-daemon programarekin komunikatzean"
 
-#: ../library/gnome-keyring-utils.c:97
+#: ../library/gnome-keyring-utils.c:161
 msgid "A keyring with that name already exists"
 msgstr "Izen bereko gako-sorta badago lehendik ere"
 
-#: ../library/gnome-keyring-utils.c:99
+#: ../library/gnome-keyring-utils.c:163
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programatzailearen errorea: aplikazioak baliogabe datuak bidali ditu."
 
-#: ../library/gnome-keyring-utils.c:101
+#: ../library/gnome-keyring-utils.c:165
 msgid "No matching results"
 msgstr "Ez dago bat datorren emaitzik"
 
-#: ../library/gnome-keyring-utils.c:103
+#: ../library/gnome-keyring-utils.c:167
 msgid "A keyring with that name does not exist."
 msgstr "Ez dago izen horretako gako-sortarik."
 
-#: ../library/gnome-keyring-utils.c:110
+#: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "Gako-sorta jadanik desblokeatuta dago."
+
+#: ../pkcs11/gck/gck-certificate.c:710
+msgid "Unnamed Certificate"
+msgstr "Izenik gabeko ziurtagiria"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+msgid "Couldn't parse public SSH key"
+msgstr "Ezin izan da SSHren gako publikoa analizatu"
 
