@@ -4,396 +4,1248 @@
 #
 # Mugurel Tudor <mugurelu@go.ro>, 2004.
 # Mugurel Tudor <mugurelu@gnome.ro>, 2006.
+# Adi Roiban https://launchpad.net/~adiroiban, 2008, 2009
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ro\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2006-03-05 15:58+0200\n"
-"Last-Translator: Mugurel Tudor <mugurelu@gnome.ro>\n"
-"Language-Team: Română <gnomero@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-02-13 04:21+0000\n"
+"PO-Revision-Date: 2009-02-13 16:10+0200\n"
+"Last-Translator: Adi Roiban <adi@roiban.ro>\n"
+"Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.1\n"
-"Plural-Forms: nplurals=3;plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
-"2:1))\n"
+"Plural-Forms: nplurals=3; plural=(n == 1 ? 0: (((n % 100 > 19) || ((n % 100 == 0) && (n != 0))) ? 2: 1));\n"
 
-#: ../gnome-keyring-ask.c:241
+#: ../common/gkr-location.c:321
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Disc detașabil: %s"
+
+#: ../common/gkr-location.c:323
+msgid "Removable Disk"
+msgstr "Disc detașabil"
+
+#: ../common/gkr-location.c:544
+#: ../common/gkr-location.c:556
+msgid "Home"
+msgstr "Acasă"
+
+#: ../common/gkr-location.c:1105
+#: ../common/gkr-location.c:1129
+msgid "The disk or drive this file is located on is not present"
+msgstr "Discul sau partiția pe care acest fișier este situat nu este prezent"
+
+#: ../common/gkr-location.c:1137
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Nu s-a putut crea dosarul: %s"
+
+#: ../common/gkr-location.c:1171
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "Nu s-a putut șterge fișierul: %s"
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:228
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "Aplicația „%s” (%s) dorește să acceseze o parolă pentru „<object prop='name'/>” din inelul de chei implicit."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:232
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."
+msgstr "Aplicația „%s” (%s) dorește să acceseze o parolă pentru „<object prop='name'/>” din %s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:238
+#: ../daemon/gkr-daemon-ops.c:248
+#, c-format
+msgid "The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "Aplicația „%s” dorește să acceseze o parolă pentru „<object prop='name'/>” din inelul de chei implicit."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:242
+#: ../daemon/gkr-daemon-ops.c:252
+#, c-format
+msgid "The application '%s' wants to access the password for '<object prop='name'/>' in %s."
+msgstr "Aplicația „%s” dorește să acceseze o parolă pentru „<object prop='name'/>” din %s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:258
+msgid "An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."
+msgstr "O aplicație necunoscută dorește să acceseze o parolă pentru „<object prop='name'/>” din inelul de chei implicit."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:261
+#, c-format
+msgid "An unknown application wants to access the password for '<object prop='name'/>' in %s."
+msgstr "O aplicație necunoscută dorește să acceseze o parolă pentru „<object prop='name'/>” din %s."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:267
+msgid "Allow access"
+msgstr "Permite acces"
+
+#: ../daemon/gkr-daemon-ops.c:267
+msgid "Allow application access to keyring?"
+msgstr "Permiteți accesul aplicației la inelul de chei?"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
+#, c-format
+msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
+msgstr "Aplicația „%s” (%s) dorește să acceseze inelul de chei implicit, dar acesta este blocat"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
+#, c-format
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "Aplicația „%s” (%s) dorește să acceseze inelul de chei „%s”, dar acesta este blocat"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321
+#: ../daemon/gkr-daemon-ops.c:333
+#, c-format
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "Aplicația „%s” dorește acces la inelul de chei implicit, dar este blocat"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326
+#: ../daemon/gkr-daemon-ops.c:339
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "Aplicația „%s” dorește acces la inelul de chei „%s”, dar este blocat"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
+#, c-format
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "O aplicație necunoscută dorește acces la inelul de chei implicit, dar este blocat"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
+#, c-format
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "O aplicație necunoscută dorește acces la inelul de chei „%s”, dar este blocat"
+
+#: ../daemon/gkr-daemon-ops.c:358
+msgid "Enter password for default keyring to unlock"
+msgstr "Introduceți parola pentru pentru deblocarea inelului de chei implicit"
+
+#: ../daemon/gkr-daemon-ops.c:360
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Introduceți parola pentru pentru deblocarea inelului de chei „%s”"
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:364
+msgid "Unlock Keyring"
+msgstr "Deblocare inel chei"
+
+#: ../daemon/gkr-daemon-ops.c:376
+msgid "Automatically unlock this keyring when I log in."
+msgstr "La autentificare deblochează automat acest inel de chei."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
+#, c-format
+msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Aplicația „%s” (%s) dorește să creeze un nou inel de chei numit „%s”. Va trebui să alegeți pentru acesta o parolă cu care să îl puteți folosi."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
+#, c-format
+msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Aplicația „%s” (%s) dorește să creeze un nou inel de chei implicit. Va trebui să alegeți pentru acesta o parolă cu care să îl puteți folosi."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425
+#: ../daemon/gkr-daemon-ops.c:437
+#, c-format
+msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Aplicația „%s” dorește să creeze un nou inel de chei numit „%s”. Va trebui să alegeți pentru acesta o parolă cu care să îl puteți folosi."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430
+#: ../daemon/gkr-daemon-ops.c:442
+#, c-format
+msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Aplicația „%s” dorește să creeze un nou inel de chei implicit. Va trebui să alegeți pentru acesta o parolă cu care să îl puteți folosi."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
+#, c-format
+msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "O aplicație necunoscută dorește să creeze un nou inel de chei numit „%s”. Va trebui să alegeți pentru acesta o parolă cu care să îl puteți folosi."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
+#, c-format
+msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "O aplicație necunoscută dorește să creeze un nou inel de chei implicit. Va trebui să alegeți pentru acesta o parolă cu care să îl puteți folosi."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:460
+msgid "New Keyring Password"
+msgstr "Noua parolă pentru inel de chei"
+
+#: ../daemon/gkr-daemon-ops.c:461
+msgid "Choose password for new keyring"
+msgstr "Alegeți parola pentru noul inel de chei"
+
+#: ../daemon/gkr-daemon-ops.c:508
+#, c-format
+msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "Aplicația „%s” (%s) dorește schimbarea parolei pentru inelul de chei „%s”. Va trebui să alegeți parola pe care doriți să o folosiți."
+
+#: ../daemon/gkr-daemon-ops.c:512
+#, c-format
+msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "Aplicația „%s” (%s) dorește schimbarea parolei pentru inelul de chei implicit. Alegeți parola ce doriți să o folosiți."
+
+#: ../daemon/gkr-daemon-ops.c:518
+#: ../daemon/gkr-daemon-ops.c:528
+#, c-format
+msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "Aplicația „%s” dorește schimbarea parolei pentru inelul de chei „%s”. Va trebui să alegeți parola pe care doriți să o folosiți."
+
+#: ../daemon/gkr-daemon-ops.c:522
+#: ../daemon/gkr-daemon-ops.c:532
+#, c-format
+msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "Aplicația „%s” dorește schimbarea parolei pentru inelul de chei implicit. Alegeți parola ce doriți să o folosiți."
+
+#: ../daemon/gkr-daemon-ops.c:538
+#, c-format
+msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
+msgstr "O aplicație necunoscută dorește schimbarea parolei pentru inelul de chei „%s”. Alegeți parola ce doriți să o folosiți."
+
+#: ../daemon/gkr-daemon-ops.c:542
+#, c-format
+msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
+msgstr "O aplicație necunoscută dorește schimbarea parolei pentru inelul de chei implicit. Alegeți parola ce doriți să o folosiți."
+
+#: ../daemon/gkr-daemon-ops.c:552
+#, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr "Alegeți parola pentru noul inel de chei „%s”. "
+
+#: ../daemon/gkr-daemon-ops.c:554
+#, c-format
+msgid "Choose a new password for the default keyring. "
+msgstr "Alegeți parola pentru inelul de chei implicit "
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:558
+msgid "Change Keyring Password"
+msgstr "Modifică parolă inel de chei"
+
+#: ../daemon/gkr-daemon-ops.c:631
+#, c-format
+msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Aplicația „%s” (%s) dorește să stocheze o parolă, dar nu există nici un inel de chei implicit. Pentru a crea unul, va trebui să alegeți o parolă cu care să îl puteți utiliza."
+
+#: ../daemon/gkr-daemon-ops.c:635
+#: ../daemon/gkr-daemon-ops.c:639
+#, c-format
+msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Aplicația „%s” dorește să stocheze o parolă, dar nu există nici un inel de chei implicit. Pentru a crea unul, va trebui să alegeți o parolă cu care să îl puteți utiliza."
+
+#: ../daemon/gkr-daemon-ops.c:643
+#, c-format
+msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "O aplicație necunoscută dorește să stocheze o parolă, dar nu există nici un inel de chei implicit. Pentru a crea unul, va trebui să alegeți o parolă cu care să îl puteți utiliza."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:648
+msgid "Create Default Keyring"
+msgstr "Creează inel de chei implicit"
+
+#: ../daemon/gkr-daemon-ops.c:648
+msgid "Choose password for default keyring"
+msgstr "Alegeți parola pentru inelul de chei implicit"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "Această opțiune activează componenta PKCS#1 în serviciul gnome-keyring. Are efect doar la pornirea gnome-keyring-daemon, (ex: când un utilizator este autentificate). Această opțiunea poate fi suprascrisă în cazul în care serviciul este pornit cu anumite argumente."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "Această opțiune activează agentul SSH în serviciul gnome-keyring. Are efect doar la pornirea gnome-keyring-daemon, (ex: când un utilizator este autentificate). Această opțiunea poate fi suprascrisă în cazul în care serviciul este pornit cu anumite argumente."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Dacă componenta PKCS#11 din gnome-keyring este activă."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "Dacă agentul SSH din keyring este activ."
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr "Serviciu inel de chei GNOME"
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+msgid "Unlock Login Keyring"
+msgstr "Deblocare inel de chei la autentificare"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+msgid "Enter login password to unlock keyring"
+msgstr "Introduceți parola de autentificare pentru deblocarea inelului de chei"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:100
+msgid "Your login keyring was not automatically unlocked when you logged into this computer."
+msgstr "Inelul de chei de autentificare nu a fost deblocat automat la autentificarea pe acest calculator."
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+msgid "Create Login Keyring"
+msgstr "Crează inele de chei de autentificare"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+msgid "Enter your login password"
+msgstr "Introduceți parola de autentificare"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:126
+msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
+msgstr "Inelul de chei de autentificare nu a fost creat automat la autentificarea pe acest calculator. Va fi creat acum."
+
+#: ../daemon/keyrings/gkr-keyring.c:586
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr " Parolă deblocare pentru inelul de chei %s"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+msgid "Unlock private key"
+msgstr "Deblocare cheie privată"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+msgid "Unlock certificate"
+msgstr "Deblocare certificat"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+msgid "Unlock public key"
+msgstr "Deblocarea cheie publică"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+msgid "Unlock"
+msgstr "Deblochează"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114
+#: ../gcr/gcr-importer.c:360
+msgid "Enter password to unlock the private key"
+msgstr "Introceți parola pentru a debloca cheia privată"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116
+#: ../gcr/gcr-importer.c:362
+msgid "Enter password to unlock the certificate"
+msgstr "Introceți parola pentru a debloca certificatul"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+msgid "Enter password to unlock the public key"
+msgstr "Introceți parola pentru a debloca cheia publică"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120
+#: ../gcr/gcr-importer.c:364
+msgid "Enter password to unlock"
+msgstr "Introduceți parola pentru deblocare"
+
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "O aplicație dorește să acceseze cheia privată „%s”, dar aceasta este blocată"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "O aplicație dorește să acceseze certificatul „%s”, dar acesta este blocat"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "O aplicație dorește să acceseze cheia publică „%s”, dar aceasta este blocată"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "O aplicație dorește să acceseze „%s”, dar este blocată"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "Deblochează automat această cheie privată la autentificare."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Deblochează automat acest certificat la autentificare."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "Deblochează automat această cheie publică la autentificare."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "Deblochează automat la autentificare."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+msgid "Unlock certificate/key storage"
+msgstr "Deblocare stocare certificat/cheie"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Introduceți parola pentru a debloca stocarea certificat/cheie"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+#, c-format
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "O aplicație dorește să acceseze stocarea certificatului/cheii „%s”, dar aceasta este blocată"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Deblochează automat stocarea sigură la autentificare."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+msgid "New Password Required"
+msgstr "Necesită parolă nouă"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+msgid "New password required for secure storage"
+msgstr "Stocarea sigură necesită parolă nouă"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
+#, c-format
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "Pentru a pregătii „%s” pentru stocarea certificatelor și a cheilor, este nevoie de o parolă"
+
+#: ../daemon/ui/gkr-ask-tool.c:244
+msgid "Store passwords unencrypted?"
+msgstr "Stochează parole necriptate?"
+
+#: ../daemon/ui/gkr-ask-tool.c:245
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Prin alegerea folosirii unei parole goale, parolele stocate nu vor fi criptate în siguranță. Ele vor putea fi citite de oricine are acces la fișierele dumneavoastră."
+
+#: ../daemon/ui/gkr-ask-tool.c:252
+msgid "Use Unsafe Storage"
+msgstr "Folosește stocare nesigură"
+
+#: ../daemon/ui/gkr-ask-tool.c:479
+msgid "_Location:"
+msgstr "_Locație:"
+
+#: ../daemon/ui/gkr-ask-tool.c:492
 msgid "_Old password:"
-msgstr ""
+msgstr "Par_olă veche:"
 
-#: ../gnome-keyring-ask.c:262
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Password:"
-msgstr ""
+msgstr "_Parolă:"
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr ""
+#: ../daemon/ui/gkr-ask-tool.c:534
+msgid "_Confirm password:"
+msgstr "_Confirmă parola:"
 
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
+#: ../daemon/ui/gkr-ask-tool.c:554
+msgid "New password strength"
+msgstr "Calitatea noi parole"
 
-#: ../gnome-keyring-ask.c:329
-#, fuzzy
-msgid "Old password cannot be blank."
-msgstr "Parola nu poate fi goală."
-
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "Parola nu poate fi goală."
-
-#: ../gnome-keyring-ask.c:348
+#: ../daemon/ui/gkr-ask-tool.c:612
 msgid "Passwords do not match."
 msgstr "Parolele nu se potrivesc."
 
-#: ../gnome-keyring-ask.c:407
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să acceseze keyring-ul implicit, dar este blocat"
+#: ../daemon/ui/gkr-ask-tool.c:628
+msgid "Password cannot be blank"
+msgstr "Parola nu poate fi necompletată"
 
-#: ../gnome-keyring-ask.c:411
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să acceseze keyring-ul „%s”, dar este blocat"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să acceseze un keyring necunoscut, dar este "
-"blocat"
-
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr "Aplicaţia „%s” doreşte acces la keyring-ul implicit, dar este blocat"
-
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Aplicaţia „%s” doreşte acces la keyring-ul „%s”, dar este blocat"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
-#, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "Aplicaţia „%s” doreşte acces la un keyring necunoscut, dar este blocat"
-
-#: ../gnome-keyring-ask.c:452
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"O aplicaţie necunoscută doreşte acces la keyring-ul implicit, dar este blocat"
-
-#: ../gnome-keyring-ask.c:456
-#, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"O aplicaţie necunoscută doreşte acces la keyring-ul „%s”, dar este blocat"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"O aplicaţie necunoscută doreşte acces la un keyring necunoscut, dar este "
-"blocat"
-
-#: ../gnome-keyring-ask.c:468
-msgid "Enter password for default keyring to unlock"
-msgstr "Introduceţi parola pentru pentru deblocarea keyring-ului implicit"
-
-#: ../gnome-keyring-ask.c:470
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Introduceţi parola pentru pentru deblocarea keyring-ului „%s”"
-
-#: ../gnome-keyring-ask.c:474
-msgid "Unlock Keyring"
-msgstr "Deblocare keyring"
-
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
+#: ../daemon/ui/gkr-ask-tool.c:679
 msgid "_Deny"
 msgstr "_Refuză"
 
-#: ../gnome-keyring-ask.c:517
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să creeze un nou keyring numit „%s”. Va trebui "
-"să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
+#: ../daemon/ui/gkr-ask-tool.c:691
+msgid "C_reate"
+msgstr "C_reează"
 
-#: ../gnome-keyring-ask.c:521
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să creeze un nou keyring implicit. Va trebui să "
-"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
+#: ../daemon/ui/gkr-ask-tool.c:695
+msgid "C_hange"
+msgstr "Sc_himbă"
 
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Aplicaţia „%s” doreşte să creeze un nou keyring numit „%s”. Va trebui să "
-"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Aplicaţia „%s” doreşte să creeze un nou keyring implicit. Va trebui să "
-"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:547
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"O aplicaţie necunoscută doreşte să creeze un nou keyring numit „%s”. Va "
-"trebui să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:551
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"O aplicaţie necunoscută doreşte să creeze un nou keyring implicit. Va trebui "
-"să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:558
-msgid "New Keyring Password"
-msgstr "Noua parolă pentru keyring"
-
-#: ../gnome-keyring-ask.c:559
-msgid "Choose password for new keyring"
-msgstr "Alegeţi parola pentru noul keyring"
-
-#: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să creeze un nou keyring implicit. Va trebui să "
-"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să creeze un nou keyring implicit. Va trebui să "
-"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Aplicaţia „%s” doreşte să creeze un nou keyring implicit. Va trebui să "
-"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Aplicaţia „%s” doreşte să creeze un nou keyring implicit. Va trebui să "
-"alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"O aplicaţie necunoscută doreşte să creeze un nou keyring implicit. Va trebui "
-"să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:636
-#, fuzzy
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"O aplicaţie necunoscută doreşte să creeze un nou keyring implicit. Va trebui "
-"să alegeţi pentru acesta o parolă cu care să îl puteţi folosi."
-
-#: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "Alegeţi parola pentru noul keyring"
-
-#: ../gnome-keyring-ask.c:645
-#, fuzzy
-msgid "Choose a new password for the default keyring. "
-msgstr "Alegeţi parola pentru keyring-ul implicit"
-
-#: ../gnome-keyring-ask.c:650
-#, fuzzy
-msgid "Change Keyring Password"
-msgstr "Noua parolă pentru keyring"
-
-#: ../gnome-keyring-ask.c:689
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să stocheze o parolă, dar nu există nici un "
-"keyring implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care "
-"să îl puteţi utiliza."
-
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Aplicaţia „%s” doreşte să stocheze o parolă, dar nu există nici un keyring "
-"implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care să îl "
-"puteţi utiliza."
-
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"O aplicaţie necunoscută doreşte să stocheze o parolă, dar nu există nici un "
-"keyring implicit. Pentru a crea unul, va trebui să alegeţi o parolă cu care "
-"să îl puteţi utiliza."
-
-#: ../gnome-keyring-ask.c:706
-msgid "Create Default Keyring"
-msgstr "Creează keyring implicit"
-
-#: ../gnome-keyring-ask.c:707
-msgid "Choose password for default keyring"
-msgstr "Alegeţi parola pentru keyring-ul implicit"
-
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "Permiteţi accesul aplicaţiei la keyring?"
-
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” în %s."
-
-#: ../gnome-keyring-ask.c:753
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” în keyring-ul "
-"implicit."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"Aplicaţia „%s” (%s) doreşte să acceseze parola pentru „%s” într-un keyring "
-"necunoscut."
-
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Aplicaţia „%s” doreşte să acceseze parola pentru „%s” în %s."
-
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Aplicaţia „%s” doreşte să acceseze parola pentru „%s” în keyring-ul implicit."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Aplicaţia „%s” doreşte să acceseze parola pentru „%s” într-un keyring "
-"necunoscut."
-
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” în %s."
-
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” în keyring-ul "
-"implicit."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"O aplicaţie necunoscută doreşte să acceseze parola pentru „%s” într-un "
-"keyring necunoscut."
-
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "Permite accesul"
-
-#: ../gnome-keyring-ask.c:799
+#: ../daemon/ui/gkr-ask-tool.c:699
 msgid "Allow _Once"
-msgstr "Permite doar _o dată"
+msgstr "Permite _o dată"
 
-#: ../gnome-keyring-ask.c:800
+#: ../daemon/ui/gkr-ask-tool.c:703
 msgid "_Always Allow"
-msgstr "Permite în mod _permanent"
+msgstr "Permite perm_anent"
 
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "Trebuie să specificaţi tipul cererii pentru rulare\n"
+#: ../egg/egg-asn1.c:794
+msgid "Domain Component"
+msgstr "Component domeniu"
 
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "Tip de cerere necunoscut\n"
+#: ../egg/egg-asn1.c:795
+msgid "User ID"
+msgstr "ID utilizator"
+
+#: ../egg/egg-asn1.c:797
+msgid "Email"
+msgstr "Email"
+
+#: ../egg/egg-asn1.c:801
+msgid "Date of Birth"
+msgstr "Data nașterii"
+
+#: ../egg/egg-asn1.c:802
+msgid "Place of Birth"
+msgstr "Locul nașterii"
+
+#: ../egg/egg-asn1.c:803
+msgid "Gender"
+msgstr "Gen"
+
+#: ../egg/egg-asn1.c:804
+msgid "Country of Citizenship"
+msgstr "Naționalitate"
+
+#: ../egg/egg-asn1.c:805
+msgid "Country of Residence"
+msgstr "Țară de rezidență"
+
+#: ../egg/egg-asn1.c:807
+msgid "Common Name"
+msgstr "Nume comun"
+
+#: ../egg/egg-asn1.c:808
+msgid "Surname"
+msgstr "Nume familie"
+
+#: ../egg/egg-asn1.c:809
+#: ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:259
+msgid "Serial Number"
+msgstr "Număr serial"
+
+#: ../egg/egg-asn1.c:810
+msgid "Country"
+msgstr "Tară"
+
+#: ../egg/egg-asn1.c:811
+msgid "Locality"
+msgstr "Județ"
+
+#: ../egg/egg-asn1.c:812
+msgid "State"
+msgstr "Stat"
+
+#: ../egg/egg-asn1.c:813
+msgid "Street"
+msgstr "Stradă"
+
+#: ../egg/egg-asn1.c:814
+msgid "Organization"
+msgstr "Organizație"
+
+#: ../egg/egg-asn1.c:815
+msgid "Organizational Unit"
+msgstr "Departament organizație"
+
+#: ../egg/egg-asn1.c:816
+msgid "Title"
+msgstr "Titlu"
+
+#: ../egg/egg-asn1.c:817
+msgid "Telephone Number"
+msgstr "Număr telefon"
+
+#: ../egg/egg-asn1.c:818
+msgid "Given Name"
+msgstr "Prenume"
+
+#: ../egg/egg-asn1.c:819
+msgid "Initials"
+msgstr "Inițiale"
+
+#: ../egg/egg-asn1.c:820
+msgid "Generation Qualifier"
+msgstr ""
+
+#: ../egg/egg-asn1.c:821
+msgid "DN Qualifier"
+msgstr ""
+
+#: ../egg/egg-asn1.c:822
+msgid "Pseudonym"
+msgstr "Pseudonim"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>Nu face parte din certificat</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>necunoscut</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Nu face parte din certificat>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Amprente</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Emis de</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Emis la</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>Acest certificat a fost verificat de următorii utilizatori:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Validitate</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "Nume comun (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+msgid "Email Recipient Certificate"
+msgstr "Certificat destinatar email"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+msgid "Email Signer Certificate"
+msgstr "Certificat semnare email"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "Expiră la"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "Emis la"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "Amprentă MD5"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "Organizaței (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Departament organizație (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "Amprentă SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+msgid "SSL Client Certificate"
+msgstr "Certificat client SSL"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+msgid "SSL Server Certificate"
+msgstr "Certificat server SSL"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:240
+msgid "Subject Name"
+msgstr "Nume subiect"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:244
+msgid "Issuer Name"
+msgstr "Nume emitent"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:248
+msgid "Issued Certificate"
+msgstr "Certificat emis"
+
+#: ../gcr/gcr-certificate-details-widget.c:253
+msgid "Version"
+msgstr "Versiune"
+
+#: ../gcr/gcr-certificate-details-widget.c:266
+msgid "Not Valid Before"
+msgstr "Nu este valid înainte"
+
+#: ../gcr/gcr-certificate-details-widget.c:271
+msgid "Not Valid After"
+msgstr "Nu este valid după"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:276
+#: ../gcr/gcr-certificate-details-widget.c:284
+msgid "Signature"
+msgstr "Semnătură"
+
+#. TODO: Complete Signature algorithm, and params
+#: ../gcr/gcr-certificate-details-widget.c:279
+msgid "Signature Algorithm"
+msgstr "Algoritm semnătură"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:288
+msgid "Public Key Info"
+msgstr "Informații cheie publică"
+
+#. TODO: Complete algorithm, params, key size
+#: ../gcr/gcr-certificate-details-widget.c:291
+msgid "Key Algorithm"
+msgstr "Algoritm cheie"
+
+#: ../gcr/gcr-certificate-details-widget.c:292
+msgid "Key Size"
+msgstr "Dimensiune cheie"
+
+#: ../gcr/gcr-certificate-details-widget.c:297
+#: ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "Cheie publică"
+
+#. TODO: Implement extensions
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:303
+msgid "Fingerprints"
+msgstr "Amprente"
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>Importă certificate și chei</span>"
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+msgid "Import Into:"
+msgstr "Importă în:"
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+msgid "Password:"
+msgstr "Parolă:"
+
+#: ../gcr/gcr-importer.c:162
+#: ../gcr/gcr-parser.c:1573
+#: ../gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr "Operația a fost anulată"
+
+#: ../gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr "Nu există locație pentru importare"
+
+#: ../gcr/gcr-importer.c:328
+msgid "Import Certificates/Keys"
+msgstr "Importă certificate/chei"
+
+#: ../gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Alege o locație pentru a stoca certificate/chei importate."
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
+msgid "In order to import the private key, it must be unlocked"
+msgstr "Pentru a importa cheia privată, aceasta trebuie deblocată"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "Pentru a importa certificatul, acesta trebuie deblocat"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
+msgid "In order to import the data, it must be unlocked"
+msgstr "Pentru a importa datele, acestea trebuie deblocate"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "Pentru a importa cheia privată „%s”, aceasta trebuie deblocată"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "Pentru a importa certificatul „%s”, acesta trebuie deblocat"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "Pentru a importa „%s”, trebuie deblocat"
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "Cheie privată"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "Certificat"
+
+#: ../gcr/gcr-parser.c:1576
+msgid "Unrecognized or unsupported data."
+msgstr "Date nerecunoscute sau nesuportate"
+
+#: ../gcr/gcr-parser.c:1579
+msgid "Could not parse invalid or corrupted data."
+msgstr "Nu s-au putut analiza date nevalide sau nesuportate."
+
+#: ../gcr/gcr-parser.c:1582
+msgid "The data is locked"
+msgstr "Datele sunt blocate"
+
+#: ../gp11/gp11-misc.c:117
+msgid "Insufficient memory available"
+msgstr "Memorie disponibilă insuficientă"
+
+#: ../gp11/gp11-misc.c:119
+msgid "The specified slot ID is not valid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:121
+msgid "Internal error"
+msgstr "Eroare internă"
+
+#: ../gp11/gp11-misc.c:123
+msgid "The operation failed"
+msgstr "Operația a eșuat"
+
+#: ../gp11/gp11-misc.c:125
+msgid "Invalid arguments"
+msgstr "Argument nevalid"
+
+#: ../gp11/gp11-misc.c:127
+msgid "The module cannot create needed threads"
+msgstr "Modulul nu poate crea firele de execuție necesare"
+
+#: ../gp11/gp11-misc.c:129
+msgid "The module cannot lock data properly"
+msgstr "Modulul nu poate bloca corespunzător datele"
+
+#: ../gp11/gp11-misc.c:131
+msgid "The field is read-only"
+msgstr "Acest câmp este doar pentu citire"
+
+#: ../gp11/gp11-misc.c:133
+msgid "The field is sensitive and cannot be revealed"
+msgstr "Acest câmp este sensibil și nu poate fi afișat"
+
+#: ../gp11/gp11-misc.c:135
+msgid "The field is invalid or does not exist"
+msgstr "Acest câmp nu este valid sau nu există"
+
+#: ../gp11/gp11-misc.c:137
+msgid "Invalid value for field"
+msgstr "Valoare nevalidă pentru câmp"
+
+#: ../gp11/gp11-misc.c:139
+msgid "The data is not valid or unrecognized"
+msgstr "Datele nu sunt valide sau nu sunt recunoscute"
+
+#: ../gp11/gp11-misc.c:141
+msgid "The data is too long"
+msgstr "Datele sunt prea lungi"
+
+#: ../gp11/gp11-misc.c:143
+msgid "An error occurred on the device"
+msgstr "S-a produs o eroare în dispozitiv"
+
+#: ../gp11/gp11-misc.c:145
+msgid "Insufficient memory available on device"
+msgstr "Memorie disponibilă insuficientă pe dispozitiv"
+
+#: ../gp11/gp11-misc.c:147
+msgid "The device was removed or unplugged"
+msgstr "Dispozitivul a fost scos sau deconectat"
+
+#: ../gp11/gp11-misc.c:149
+msgid "The encrypted data is not valid or unrecognized"
+msgstr "Datele criptate nu sunt valide sau nu sunt recunoscute"
+
+#: ../gp11/gp11-misc.c:151
+msgid "The encrypted data is too long"
+msgstr "Datele criptate sunt prea lungi"
+
+#: ../gp11/gp11-misc.c:153
+msgid "This operation is not supported"
+msgstr "Operația nu este suportată"
+
+#: ../gp11/gp11-misc.c:155
+msgid "The key is missing or invalid"
+msgstr "Cheia lipsește sau nu este validă"
+
+#: ../gp11/gp11-misc.c:157
+msgid "The key is the wrong size"
+msgstr "Cheia este de dimensiune greșită"
+
+#: ../gp11/gp11-misc.c:159
+msgid "The key is of the wrong type"
+msgstr "Cheia este de tip greșit"
+
+#: ../gp11/gp11-misc.c:161
+msgid "No key is needed"
+msgstr "Nu este nevoie de cheie"
+
+#: ../gp11/gp11-misc.c:163
+msgid "The key is different than before"
+msgstr "Cheia diferă de cea de dinainte"
+
+#: ../gp11/gp11-misc.c:165
+msgid "A key is needed"
+msgstr "Este necesară o cheie"
+
+#: ../gp11/gp11-misc.c:167
+msgid "Cannot include the key in digest"
+msgstr "Nu se poate include cheia în rezumat"
+
+#: ../gp11/gp11-misc.c:169
+msgid "This operation cannot be done with this key"
+msgstr "Operația nu poate fi efectuată cu această cheie"
+
+#: ../gp11/gp11-misc.c:171
+msgid "The key cannot be wrapped"
+msgstr "Cheia nu poate fi înfășurată"
+
+#: ../gp11/gp11-misc.c:173
+msgid "Cannot export this key"
+msgstr "Nu se poate exporta această cheie"
+
+#: ../gp11/gp11-misc.c:175
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr "Mecanismul cripto nu este valid sau nu este recunoscut"
+
+#: ../gp11/gp11-misc.c:177
+msgid "The crypto mechanism has an invalid argument"
+msgstr "Mecanismul cripto are un argument nevalid"
+
+#: ../gp11/gp11-misc.c:179
+msgid "The object is missing or invalid"
+msgstr "Obiectul lispește sau nu este valid"
+
+#: ../gp11/gp11-misc.c:181
+msgid "Another operation is already taking place"
+msgstr "O altă opreație are deja loc"
+
+#: ../gp11/gp11-misc.c:183
+msgid "No operation is taking place"
+msgstr "Nu se efectuează nici o operație"
+
+#: ../gp11/gp11-misc.c:185
+msgid "The password or PIN is incorrect"
+msgstr "Parola sau PIN-ul sunt incorecte"
+
+#: ../gp11/gp11-misc.c:187
+msgid "The password or PIN is invalid"
+msgstr "Parola sau PIN-ul nu sunt valide"
+
+#: ../gp11/gp11-misc.c:189
+msgid "The password or PIN is of an invalid length"
+msgstr "Parola sau PIN-ul au o lungime nevalidă"
+
+#: ../gp11/gp11-misc.c:191
+msgid "The password or PIN has expired"
+msgstr "Parola sau PIN-ul au expirat"
+
+#: ../gp11/gp11-misc.c:193
+msgid "The password or PIN is locked"
+msgstr "Parola sau PIN-ul sunt blocate"
+
+#: ../gp11/gp11-misc.c:195
+msgid "The session is closed"
+msgstr "Sesiunea este închisă"
+
+#: ../gp11/gp11-misc.c:197
+msgid "Too many sessions are active"
+msgstr "Prea multe sesiuni active"
+
+#: ../gp11/gp11-misc.c:199
+msgid "The session is invalid"
+msgstr "Sesiunea nu este validă"
+
+#: ../gp11/gp11-misc.c:201
+msgid "The session is read-only"
+msgstr "Sesiunea este doar pentru citire"
+
+#: ../gp11/gp11-misc.c:203
+msgid "An open session exists"
+msgstr "Există o sesiune deschisă"
+
+#: ../gp11/gp11-misc.c:205
+msgid "A read-only session exists"
+msgstr "Există o sesiune doar pentru citire"
+
+#: ../gp11/gp11-misc.c:207
+msgid "An administrator session exists"
+msgstr "Există o sesiune de administrare"
+
+#: ../gp11/gp11-misc.c:209
+msgid "The signature is bad or corrupted"
+msgstr "Semnătura este greșită sau coruptă"
+
+#: ../gp11/gp11-misc.c:211
+msgid "The signature is unrecognized or corrupted"
+msgstr "Semnătura nu este recunoscută sau este coruptă"
+
+#: ../gp11/gp11-misc.c:213
+msgid "Certain required fields are missing"
+msgstr "Unele câmpuri necesare lipsesc"
+
+#: ../gp11/gp11-misc.c:215
+msgid "Certain fields have invalid values"
+msgstr "Unele câmpuri au valori nevalide"
+
+#: ../gp11/gp11-misc.c:217
+msgid "The device is not present or unplugged"
+msgstr "Dispozitivul nu este prezent sau este deconectat"
+
+#: ../gp11/gp11-misc.c:219
+msgid "The device is invalid or unrecognizable"
+msgstr "Dispozitivul nu este valid sau nu este recunoscut"
+
+#: ../gp11/gp11-misc.c:221
+msgid "The device is write protected"
+msgstr "Dispozitivul este protejat la scriere"
+
+#: ../gp11/gp11-misc.c:223
+msgid "Cannot import because the key is invalid"
+msgstr "Nu se poate importa deoarece cheia nu este validă"
+
+#: ../gp11/gp11-misc.c:225
+msgid "Cannot import because the key is of the wrong size"
+msgstr "Nu se poate importa deoarece cheia are dimensiune greșită"
+
+#: ../gp11/gp11-misc.c:227
+msgid "Cannot import because the key is of the wrong type"
+msgstr "Nu se poate importa deoarece cheia are tip greșit"
+
+#: ../gp11/gp11-misc.c:229
+msgid "You are already logged in"
+msgstr "Sunteți deja autentificați"
+
+#: ../gp11/gp11-misc.c:231
+msgid "No user has logged in"
+msgstr "Nu s-a autentificat nici un utilizator"
+
+#: ../gp11/gp11-misc.c:233
+msgid "The user's password or PIN is not set"
+msgstr "Parola utilizator sau PIN-ul nu sunt definite"
+
+#: ../gp11/gp11-misc.c:235
+msgid "The user is of an invalid type"
+msgstr "Utilizatorul are un tip nevalid"
+
+#: ../gp11/gp11-misc.c:237
+msgid "Another user is already logged in"
+msgstr "Un alt utilizator este deja autentificat"
+
+#: ../gp11/gp11-misc.c:239
+msgid "Too many users of different types logged in"
+msgstr "Prea mulți utilizatori de tipuri diferite autentificați"
+
+#: ../gp11/gp11-misc.c:241
+msgid "Cannot import an invalid key"
+msgstr "Nu se poate importa o cheie de tip nevalid"
+
+#: ../gp11/gp11-misc.c:243
+msgid "Cannot import a key of the wrong size"
+msgstr "Nu se poate importa o cheie de dimensiune greșită"
+
+#: ../gp11/gp11-misc.c:245
+msgid "Cannot export because the key is invalid"
+msgstr "Nu se poate exporta cheia deoarece nu este validă"
+
+#: ../gp11/gp11-misc.c:247
+msgid "Cannot export because the key is of the wrong size"
+msgstr "Nu se poate exporta cheia deoarece are o dimensiune greșită"
+
+#: ../gp11/gp11-misc.c:249
+msgid "Cannot export because the key is of the wrong type"
+msgstr "Nu se poate exporta cheia deoarece are un tip greșit"
+
+#: ../gp11/gp11-misc.c:251
+msgid "Unable to initialize the random number generator"
+msgstr "Nu s-a putut inițializa generatorul de numere aleatoare"
+
+#: ../gp11/gp11-misc.c:253
+msgid "No random number generator available"
+msgstr "Nu este dispoibil nici un generator de numere aleatoare"
+
+#: ../gp11/gp11-misc.c:255
+msgid "The crypto mechanism has an invalid parameter"
+msgstr "Mecanismum cripto are un paramentru nevalid"
+
+#: ../gp11/gp11-misc.c:257
+msgid "Not enough space to store the result"
+msgstr "Nu există spațiu suficient pentru a stoca rezultatul"
+
+#: ../gp11/gp11-misc.c:259
+msgid "The saved state is invalid"
+msgstr "Starea salvată nu este validă"
+
+#: ../gp11/gp11-misc.c:261
+msgid "The information is sensitive and cannot be revealed"
+msgstr "Informațiile sunt sensibile și nu pot fi afișate"
+
+#: ../gp11/gp11-misc.c:263
+msgid "The state cannot be saved"
+msgstr "Starea nu poate fi salvată"
+
+#: ../gp11/gp11-misc.c:265
+msgid "The module has not been initialized"
+msgstr "Modulul nu a fost inițializat"
+
+#: ../gp11/gp11-misc.c:267
+msgid "The module has already been initialized"
+msgstr "Modulul a fost deja inițializat"
+
+#: ../gp11/gp11-misc.c:269
+msgid "Cannot lock data"
+msgstr "Nu se pot bloca datele"
+
+#: ../gp11/gp11-misc.c:271
+msgid "The data cannot be locked"
+msgstr "Datele nu pot fi blocate"
+
+#: ../gp11/gp11-misc.c:273
+msgid "The signature request was rejected by the user"
+msgstr "Cererea de semnătură a fost respinsă de utilizator"
+
+#: ../gp11/gp11-misc.c:277
+msgid "Unknown error"
+msgstr "Eroare necunoscută"
+
+#: ../library/gnome-keyring-utils.c:155
+msgid "Access Denied"
+msgstr "Acces refuzat"
+
+#: ../library/gnome-keyring-utils.c:157
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "Aplicația gnome-keyring-daemon nu rulează."
+
+#: ../library/gnome-keyring-utils.c:159
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "Eroare la comunicarea cu gnome-keyring-daemon"
+
+#: ../library/gnome-keyring-utils.c:161
+msgid "A keyring with that name already exists"
+msgstr "Există deja un inel de chei cu acest nume"
+
+#: ../library/gnome-keyring-utils.c:163
+msgid "Programmer error: The application sent invalid data."
+msgstr "Eroare de programare: Aplicația a trimis date nevalide."
+
+#: ../library/gnome-keyring-utils.c:165
+msgid "No matching results"
+msgstr "Nu s-au găsit rezultate"
+
+#: ../library/gnome-keyring-utils.c:167
+msgid "A keyring with that name does not exist."
+msgstr "Nu există un inel de chei cu acel nume"
+
+#: ../library/gnome-keyring-utils.c:174
+msgid "The keyring has already been unlocked."
+msgstr "Inelul de chei a fost deja deblocat."
+
+#: ../pkcs11/gck/gck-certificate.c:710
+msgid "Unnamed Certificate"
+msgstr "Certificat fără nume"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+msgid "Couldn't parse public SSH key"
+msgstr "Nu se poate analiza cheia publică SSH"
+
+#~ msgid "The system wants to import the private key '%s', but it is locked"
+#~ msgstr ""
+#~ "Sistemul dorește să importe cheia privată „%s”, dar aceasta este blocată"
+#~ msgid "The system wants to import the certificate '%s', but it is locked"
+#~ msgstr ""
+#~ "Sistemul dorește să importe certificatul „%s”, dar acesta este blocat"
+#~ msgid "The system wants to import the public key '%s', but it is locked"
+#~ msgstr ""
+#~ "Sistemul dorește să importe cheia publică „%s”, dar aceasta este blocată"
+#~ msgid "The system wants to import '%s', but it is locked"
+#~ msgstr "Sistemul dorește să importe „%s”, dar aceasta este blocată"
+#~ msgid "Unrecognized or unsupported file."
+#~ msgstr "Fișier nesuportat sau nerecunoscut."
+#~ msgid "Could not parse invalid or corrupted file."
+#~ msgstr "Nu s-a putut analiza fișierul nevalid sau cu erori."
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Aplicația „%s” (%s) dorește să acceseze un keyring necunoscut, dar este "
+#~ "blocat"
+#~ msgid ""
+#~ "The application '%s' wants access to an unknown keyring, but it is locked"
+#~ msgstr ""
+#~ "Aplicația „%s” dorește acces la un keyring necunoscut, dar este blocat"
+#~ msgid ""
+#~ "An unknown application wants access to an unknown keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "O aplicație necunoscută dorește acces la un keyring necunoscut, dar este "
+#~ "blocat"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '%s' in an "
+#~ "unknown keyring."
+#~ msgstr ""
+#~ "Aplicația „%s” (%s) dorește să acceseze parola pentru „%s” într-un "
+#~ "keyring necunoscut."
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '%s' in an unknown "
+#~ "keyring."
+#~ msgstr ""
+#~ "Aplicația „%s” dorește să acceseze parola pentru „%s” într-un keyring "
+#~ "necunoscut."
+#~ msgid ""
+#~ "An unknown application wants to access the password for '%s' in an "
+#~ "unknown keyring."
+#~ msgstr ""
+#~ "O aplicație necunoscută dorește să acceseze parola pentru „%s” într-un "
+#~ "keyring necunoscut."
+#~ msgid "You must specify the type of request to run\n"
+#~ msgstr "Trebuie să specificați tipul cererii pentru rulare\n"
+#~ msgid "Unknown request type\n"
+#~ msgstr "Tip de cerere necunoscut\n"
+#~ msgid "Password cannot be blank."
+#~ msgstr "Parola nu poate fi goală."
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '%s' in %s."
+#~ msgstr "Aplicația „%s” (%s) dorește să acceseze parola pentru „%s” în %s."
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '%s' in the "
+#~ "default keyring."
+#~ msgstr ""
+#~ "Aplicația „%s” (%s) dorește să acceseze parola pentru „%s” în keyring-ul "
+#~ "implicit."
+#~ msgid "The application '%s' wants to access the password for '%s' in %s."
+#~ msgstr "Aplicația „%s” dorește să acceseze parola pentru „%s” în %s."
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '%s' in the default "
+#~ "keyring."
+#~ msgstr ""
+#~ "Aplicația „%s” dorește să acceseze parola pentru „%s” în keyring-ul "
+#~ "implicit."
+#~ msgid "An unknown application wants to access the password for '%s' in %s."
+#~ msgstr ""
+#~ "O aplicație necunoscută dorește să acceseze parola pentru „%s” în %s."
+#~ msgid ""
+#~ "An unknown application wants to access the password for '%s' in the "
+#~ "default keyring."
+#~ msgstr ""
+#~ "O aplicație necunoscută dorește să acceseze parola pentru „%s” în keyring-"
+#~ "ul implicit."
+
