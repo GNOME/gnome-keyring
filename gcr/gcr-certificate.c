@@ -291,14 +291,23 @@ gchar*
 gcr_certificate_get_fingerprint_hex (GcrCertificate *self, GChecksumType type)
 {
 	GChecksum *sum;
+	guchar *digest;
+	gsize n_digest;
+	gssize length;
 	gchar *hex;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	
 	sum = digest_certificate (self, type);
 	g_return_val_if_fail (sum, NULL);
-	hex = g_strdup (g_checksum_get_string (sum));
+	length = g_checksum_type_get_length (type);
+	g_return_val_if_fail (length > 0, NULL);
+	digest = g_malloc (length);
+	n_digest = length;
+	g_checksum_get_digest (sum, digest, &n_digest);
+	hex = egg_hex_encode_full (digest, n_digest, TRUE, ' ', 1);
 	g_checksum_free (sum);
+	g_free (digest);
 	return hex;
 }
 

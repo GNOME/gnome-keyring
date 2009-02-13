@@ -8,6 +8,9 @@
 	* egg/tests/unit-test-hex.c:
 	* gcr/gcr-certificate-details-widget.c: Allow specifying the delemiter
 	and case of hex encodings.
+	
+	* gcr/gcr-certificate.c: Use more readable upper case space delemited
+	hex encoding for the fingerprint.
 
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
