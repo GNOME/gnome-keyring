@@ -116,23 +116,25 @@ egg_buffer_uninit (EggBuffer *buffer)
 int
 egg_buffer_set_allocator (EggBuffer *buffer, EggBufferAllocator allocator)
 {
-	unsigned char *buf;
+	unsigned char *buf = NULL;
 	
 	if (!allocator)
 		allocator = DEFAULT_ALLOCATOR;
 	if (buffer->allocator == allocator)
 		return 1;
 	
-	/* Reallocate memory block using new allocator */
-	buf = (allocator) (NULL, buffer->allocated_len);
-	if (!buf)
-		return 0;
+	if (buffer->allocated_len) {
+		/* Reallocate memory block using new allocator */
+		buf = (allocator) (NULL, buffer->allocated_len);
+		if (buf == NULL)
+			return 0;
 		
-	/* Copy stuff and free old memory */
-	memcpy (buf, buffer->buf, buffer->allocated_len);
-	
+		/* Copy stuff into new memory */
+		memcpy (buf, buffer->buf, buffer->allocated_len);
+	}
+		
 	/* If old wasn't static, then free it */
-	if (buffer->allocator)
+	if (buffer->allocator && buffer->buf)
 		(buffer->allocator) (buffer->buf, 0);
 		
 	buffer->buf = buf;

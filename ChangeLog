@@ -22,6 +22,9 @@
 	 than unsigned long. Fixes bug #571615
 	 
 	 * egg/egg-secure-memory.c: Don't allow allocating zero bytes.
+	 
+	 * egg/egg-buffer.c: Don't try and allocate 0 bytes when changing 
+	 allocator on an empty buffer.
 
 2009-02-11  Stef Walter  <stef@memberwebs.com>
 
