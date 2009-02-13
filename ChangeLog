@@ -1,7 +1,7 @@
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash
-	in certificate basics dialog. Fixes bug #567769
+	in certificate basics dialog. Patch by Fabrizio Tarizzo. Fixes bug #567769
 	
 	* egg/egg-hex.c:
 	* egg/egg-hex.h:
