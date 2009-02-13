@@ -789,6 +789,10 @@ egg_secure_alloc_full (size_t length, int flags)
 		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", length);   
 		return NULL;
 	}
+
+	/* Can't allocate zero bytes */
+	if (length == 0)
+		return NULL;
 	
 	DO_LOCK ();
 	

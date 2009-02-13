@@ -20,6 +20,8 @@
 	 * tests/gtest-helpers.c:
 	 * tests/test-helpers.c: Use size_t and gsize for memory sizes rather
 	 than unsigned long. Fixes bug #571615
+	 
+	 * egg/egg-secure-memory.c: Don't allow allocating zero bytes.
 
 2009-02-11  Stef Walter  <stef@memberwebs.com>
 
