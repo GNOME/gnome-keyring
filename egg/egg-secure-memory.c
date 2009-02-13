@@ -114,6 +114,7 @@ typedef size_t ref_t;  /* suba offset from start of memory to object */
 #define SREF(s,p) (ref_t)((char *)(p) - (char *)(s))
 #define SADR(s,r) (void *)((char *)(s) + (r))
 #define MINCELL 32
+#define HDRSIZ (ALIGN (sizeof *suba))
 
 struct allocator {
 	unsigned char magic[8];                /* suba header identifier */
@@ -131,7 +132,7 @@ struct cell {
 	ref_t next; /* reference to next cell in free list */
 };
 
-static void*
+static inline void*
 suba_addr (const struct allocator *suba, const ref_t ref)
 {
 	if (suba && ref > 0 && ref <= suba->size) {
@@ -156,22 +157,19 @@ static struct allocator *
 suba_init (void *mem, size_t size)
 {
 	struct allocator *suba = mem;
-	size_t hdrsiz;
 	struct cell *c;
 
-	hdrsiz = ALIGN(sizeof *suba);
-
 	ASSERT (mem != NULL);
-	ASSERT (size > (hdrsiz + POFF));
-	ASSERT (ALIGN (sizeof (*c)) >= MINCELL);
+	ASSERT (size > (HDRSIZ + POFF));
+	ASSERT (ALIGN (sizeof (struct cell)) <= MINCELL);
 
-	memset(suba, 0, hdrsiz);
+	memset(suba, 0, HDRSIZ);
 	memcpy(suba->magic, SUBA_MAGIC, 8);
-	suba->tail = hdrsiz;
+	suba->tail = HDRSIZ;
 	suba->size = size;
 
-	c = suba_addr(suba, hdrsiz);
-	c->size = size - (hdrsiz + POFF);
+	c = suba_addr(suba, HDRSIZ);
+	c->size = size - (HDRSIZ + POFF);
 	c->next = suba->tail;
 
 	return suba;

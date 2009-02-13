@@ -6,6 +6,8 @@
 	* egg/egg-secure-memory.c: Remove FORCE_MALLOC_MEMORY define. It seems
 	we can accomplish the identical goal with FORCE_FALLBACK_MEMORY.
 	
+	* egg/egg-secure-memory.c: Calculate memory header size at compile time.
+	
 2009-02-11  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.h:
