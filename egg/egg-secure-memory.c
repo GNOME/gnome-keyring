@@ -45,7 +45,6 @@
  * Use this to force all memory through malloc
  * for use with valgrind and the like 
  */
-#define FORCE_MALLOC_MEMORY 0
 #define FORCE_FALLBACK_MEMORY 0
 
 #define DEBUG_SECURE_MEMORY 0
@@ -415,13 +414,7 @@ get_locked_pages (unsigned long *sz)
 	pgsize = getpagesize ();
 	*sz = (*sz + pgsize -1) & ~(pgsize - 1);
 	
-#if FORCE_MALLOC_MEMORY
-	pages = malloc (*sz);
-	memset (pages, 0, *sz);
-	lock_warning = 1;
-	return pages;
-	
-#elif defined(HAVE_MLOCK)
+#if defined(HAVE_MLOCK)
 	pages = mmap (0, *sz, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
 	if (pages == MAP_FAILED) {
 		if (lock_warning)
@@ -461,10 +454,7 @@ rel_locked_pages (void *pages, unsigned long sz)
 	ASSERT (pages);
 	ASSERT (sz % getpagesize () == 0);
 	
-#if FORCE_MALLOC_MEMORY
-	free (pages);
-	
-#elif defined(HAVE_MLOCK)
+#if defined(HAVE_MLOCK)
 	if (munlock (pages, sz) < 0)
 		fprintf (stderr, "couldn't unlock private memory: %s\n", strerror (errno));
 		

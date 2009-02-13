@@ -3,6 +3,9 @@
 	* egg/egg-secure-memory.c: Remove non-useful mincell structure
 	element from sub allocator.
 	
+	* egg/egg-secure-memory.c: Remove FORCE_MALLOC_MEMORY define. It seems
+	we can accomplish the identical goal with FORCE_FALLBACK_MEMORY.
+	
 2009-02-11  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.h:
