@@ -11,7 +11,11 @@
 	* egg/egg-secure-memory.c: Remove unused field.
 	
 	* egg/egg-secure-memory.c: Be much stricter about checking pointers and
-	sizes being passed around. 
+	sizes being passed around.
+	
+	* egg/egg-secure-memory.c: Completely overhaul the secure memory allocator.
+	Don't store metadata inside the secure memory area. Add memory guards, so 
+	that we can see if/when memory is incorrectly overflown. 
 	
 2009-02-11  Stef Walter  <stef@memberwebs.com>
 
