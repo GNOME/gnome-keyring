@@ -48,12 +48,12 @@ DEFINE_TEST(hex_encode_spaces)
 	gchar *hex;
 	
 	/* Encode without spaces */
-	hex = egg_hex_encode_full (TEST_DATA, sizeof (TEST_DATA), 0);
+	hex = egg_hex_encode_full (TEST_DATA, sizeof (TEST_DATA), TRUE, 0, 0);
 	g_assert (hex);
 	g_assert_cmpstr (hex, ==, TEST_HEX);
 	
-	/* Encode without spaces */
-	hex = egg_hex_encode_full (TEST_DATA, sizeof (TEST_DATA), 1);
+	/* Encode with spaces */
+	hex = egg_hex_encode_full (TEST_DATA, sizeof (TEST_DATA), TRUE, ' ', 1);
 	g_assert (hex);
 	g_assert_cmpstr (hex, ==, TEST_HEX_DELIM);
 }

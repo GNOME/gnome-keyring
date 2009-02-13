@@ -25,7 +25,8 @@
 
 #include <string.h>
 
-static const char HEXC[] = "0123456789ABCDEF";
+static const char HEXC_UPPER[] = "0123456789ABCDEF";
+static const char HEXC_LOWER[] = "0123456789abcdef";
 
 guchar*
 egg_hex_decode (const gchar *data, gssize n_data, gsize *n_decoded)
@@ -49,11 +50,11 @@ egg_hex_decode (const gchar *data, gssize n_data, gsize *n_decoded)
     		if (!g_ascii_isspace (*data)) {
     			
 	        	/* Find the position */
-			pos = strchr (HEXC, g_ascii_toupper (*data));
+			pos = strchr (HEXC_UPPER, g_ascii_toupper (*data));
 			if (pos == 0)
 				break;
 
-			j = pos - HEXC;
+			j = pos - HEXC_UPPER;
 			if(!state) {
 				*decoded = (j & 0xf) << 4;
 				state = 1;
@@ -81,17 +82,21 @@ egg_hex_decode (const gchar *data, gssize n_data, gsize *n_decoded)
 gchar* 
 egg_hex_encode (const guchar *data, gsize n_data)
 {
-	return egg_hex_encode_full (data, n_data, 0);
+	return egg_hex_encode_full (data, n_data, TRUE, '\0', 0);
 }
 
 gchar*
-egg_hex_encode_full (const guchar *data, gsize n_data, guint group)
+egg_hex_encode_full (const guchar *data, gsize n_data,
+                     gboolean upper_case, gchar delim, guint group)
 {
 	GString *result;
+	const char *hexc;
 	gsize bytes;
 	guchar j;
 	
 	g_return_val_if_fail (data || !n_data, NULL);
+	
+	hexc = upper_case ? HEXC_UPPER : HEXC_LOWER;
 
 	result = g_string_sized_new (n_data * 2 + 1);
 	bytes = 0;
@@ -99,13 +104,13 @@ egg_hex_encode_full (const guchar *data, gsize n_data, guint group)
 	while (n_data > 0) {
 		
 		if (group && bytes && (bytes % group) == 0)
-			g_string_append_c (result, ' ');
+			g_string_append_c (result, delim);
 
 		j = *(data) >> 4 & 0xf;
-		g_string_append_c (result, HEXC[j]);
+		g_string_append_c (result, hexc[j]);
 		
 		j = *(data++) & 0xf;
-		g_string_append_c (result, HEXC[j]);
+		g_string_append_c (result, hexc[j]);
     
 		++bytes;
 		--n_data;

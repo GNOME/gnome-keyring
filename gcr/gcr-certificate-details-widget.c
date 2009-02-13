@@ -165,7 +165,7 @@ append_fingerprint (GcrCertificateDetailsWidget *self, const guchar *data,
 	g_checksum_get_digest (checksum, buffer, &n_buffer);
 	g_checksum_free (checksum);
 	
-	display = egg_hex_encode_full (buffer, n_buffer, 1);
+	display = egg_hex_encode_full (buffer, n_buffer, TRUE, ' ', 1);
 	append_field_and_value (self, name, display, TRUE);
 	g_free (display);
 	
@@ -255,7 +255,7 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	
 	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.serialNumber", &n_value);
 	g_return_if_fail (value);
-	display = egg_hex_encode_full (value, n_value, 1);
+	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 	append_field_and_value (self, _("Serial Number"), display, TRUE);
 	g_free (display);
 	
@@ -280,7 +280,7 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	
 	value = egg_asn1_read_content (asn, data, n_data, "signature", &n_value);
 	g_return_if_fail (value);
-	display = egg_hex_encode_full (value, n_value, 1);
+	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 	append_field_and_value (self, _("Signature"), display, TRUE);
 	g_free (display);
 
@@ -293,7 +293,7 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	
 	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.subjectPublicKeyInfo.subjectPublicKey", &n_value);
 	g_return_if_fail (value);
-	display = egg_hex_encode_full (value, n_value, 1);
+	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 	append_field_and_value (self, _("Public Key"), display, TRUE);
 	g_free (display);
 	

@@ -33,6 +33,8 @@ gchar*                egg_hex_encode                         (const guchar *data
 
 gchar*                egg_hex_encode_full                    (const guchar *data, 
                                                               gsize n_data,
+                                                              gboolean upper_case,
+                                                              gchar delim,
                                                               guint group);
 
 #endif /* EGG_HEX_H_ */

@@ -2,6 +2,12 @@
 
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash
 	in certificate basics dialog. Fixes bug #567769
+	
+	* egg/egg-hex.c:
+	* egg/egg-hex.h:
+	* egg/tests/unit-test-hex.c:
+	* gcr/gcr-certificate-details-widget.c: Allow specifying the delemiter
+	and case of hex encodings.
 
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
