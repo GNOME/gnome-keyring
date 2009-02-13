@@ -111,8 +111,6 @@ typedef size_t ref_t;  /* suba offset from start of memory to object */
 #define C2P(c) ((char *)(c) + POFF)
 #define P2C(p) ((struct cell *)((char *)(p) - POFF))
 #define ISADJ(c1,c2) ((struct cell *)(C2P(c1) + (c1)->size) == (struct cell *)(c2))
-#define SREF(s,p) (ref_t)((char *)(p) - (char *)(s))
-#define SADR(s,r) (void *)((char *)(s) + (r))
 #define MINCELL 32
 #define HDRSIZ (ALIGN (sizeof *suba))
 
@@ -134,22 +132,20 @@ struct cell {
 static inline void*
 suba_addr (const struct allocator *suba, const ref_t ref)
 {
-	if (suba && ref > 0 && ref <= suba->size) {
-		return (char *)suba + ref;
-	}
-	return NULL;
+	ASSERT (suba);
+	ASSERT (ref >= HDRSIZ);
+	ASSERT (ref < suba->size);
+	return (char*)suba + ref;
 }
 
-static ref_t
+static inline ref_t
 suba_ref (const struct allocator *suba, const void *ptr)
 {
-	if (suba && ptr) {
-		ref_t ref = (char *)ptr - (char *)suba;
-		if (ref > 0 && ref <= suba->size) {
-			return ref;
-		}
-	}
-	return 0;
+	ASSERT (suba);
+	ASSERT (ptr);
+	ASSERT ((char*)ptr >= (char*)suba + HDRSIZ);
+	ASSERT ((char*)ptr < (char*)suba + suba->size);
+	return (char*)ptr - (char*)suba;
 }
 
 static struct allocator *
@@ -167,7 +163,7 @@ suba_init (void *mem, size_t size)
 	suba->tail = HDRSIZ;
 	suba->size = size;
 
-	c = suba_addr(suba, HDRSIZ);
+	c = suba_addr (suba, HDRSIZ);
 	c->size = size - (HDRSIZ + POFF);
 	c->next = suba->tail;
 
@@ -182,19 +178,14 @@ suba_alloc(struct allocator *suba, size_t size)
 
 	size = size < MINCELL ? MINCELL : ALIGN (size);
 
-	c2 = SADR(suba, suba->tail);
+	c2 = suba_addr (suba, suba->tail);
 	for ( ;; ) {
 		c1 = c2;
-		if ((c2 = suba_addr(suba, c1->next)) == NULL) {
-			errno = EFAULT;
-			return NULL;
-		}
-		if (c2->size >= size) {
+		c2 = suba_addr (suba, c1->next);
+		if (c2->size >= size) 
 			break;       /* found a cell large enough */
-		}
-		if (c1->next == suba->tail) {
+		if (c1->next == suba->tail) 
 			return NULL;
-		}
 	}
 
 	if ((c2->size - size) > MINCELL) {
@@ -206,11 +197,10 @@ suba_alloc(struct allocator *suba, size_t size)
 		} else {
 			c3->next = c2->next;
 		}
-		c1->next = SREF(suba, c3);
+		c1->next = suba_ref (suba, c3);
 		c2->size = size;
-		if (c2 == SADR(suba, suba->tail)) {
-			suba->tail = SREF(suba, c3);
-		}
+		if (c2 == suba_addr (suba, suba->tail))
+			suba->tail = suba_ref (suba, c3);
 	} else if (c1->next == suba->tail) {
                 /* never use the last cell! */
 	} else {                   
@@ -243,14 +233,11 @@ suba_free(void *suba0, void *ptr)
 	if (!ptr) 
 		return;
 
-       	c1 = SADR(suba, suba->tail);
+       	c1 = suba_addr (suba, suba->tail);
 
 	/* Find out what cell we're talking about */
 	c2 = P2C(ptr);
-	if ((ref = suba_ref(suba, c2)) == 0) {
-		ASSERT(0 && "invalid memory pointer passed to gkr-secure-memory");
-		return;
-	}
+	ref = suba_ref (suba, c2);
 	if (c2->magic != CELL_MAGIC) {
 		ASSERT(0 && "invalid memory pointer passed to gkr-secure-memory");
 		return;
@@ -282,29 +269,26 @@ suba_free(void *suba0, void *ptr)
 		return;
 	}
 
-	while (c1->next < ref) {   /* find insertion point */
-		c1 = SADR(suba, c1->next);
-	}
-	c3 = SADR(suba, c1->next);
+	while (c1->next < ref) /* find insertion point */
+		c1 = suba_addr (suba, c1->next);
+	c3 = suba_addr (suba, c1->next);
 
 	j1 = ISADJ(c1,c2); /* c1 and c2 need to be joined */
 	j2 = ISADJ(c2,c3); /* c2 and c3 need to be joined */
 
 	if (j1) {
 		if (j2) {  /* splice all three cells together */
-			if (SREF(suba, c3) == suba->tail) {
-				suba->tail = SREF(suba, c1);
-			}
+			if (suba_ref (suba, c3) == suba->tail)
+				suba->tail = suba_ref (suba, c1);
 			c1->next = c3->next;
 			c1->size += POFF + c3->size;
 		}
 		c1->size += POFF + c2->size;
 	} else {
 		if (j2) {
-			if (SREF(suba, c3) == suba->tail) {
+			if (suba_ref (suba, c3) == suba->tail)
 				suba->tail = ref;
-			}
-			c2->next = c3->next == SREF(suba, c3) ? ref : c3->next;
+			c2->next = c3->next == suba_ref (suba, c3) ? ref : c3->next;
 			c2->size += POFF + c3->size;
 		} else {
 			c2->next = c1->next;
@@ -342,7 +326,7 @@ suba_realloc(struct allocator *suba, void *ptr, size_t size)
 static int
 suba_print_cell(struct allocator *suba, const char *msg, struct cell *c)
 {
-	ref_t ref = suba_ref(suba, c);
+	ref_t ref = suba_ref (suba, c);
 	if (ref >= ALIGN(sizeof *suba) && (ref + POFF + c->size) <= 10000000) {
 		fprintf(stderr, "%s: %8u-%-8u %8u %-8u\n", msg,
 			(unsigned int)ref, (unsigned int)(ref + POFF + c->size),
@@ -364,15 +348,15 @@ suba_print_free_list(struct allocator *suba)
 	int count = 0;
 	int ret = 1;
 
-	c = suba_addr(suba, suba->tail);
+	c = suba_addr (suba, suba->tail);
 	while (c->next < suba->tail) {
-		c = suba_addr(suba, c->next);
+		c = suba_addr (suba, c->next);
 		sprintf(buf, "%d", count++);
 		if (!suba_print_cell(suba, buf, c)) {
 			ret = 0;
 		}
 	}
-	c = suba_addr(suba, c->next);
+	c = suba_addr (suba, c->next);
 	sprintf(buf, "%d", count++);
 	if (!suba_print_cell(suba, buf, c)) {
 		ret = 0;

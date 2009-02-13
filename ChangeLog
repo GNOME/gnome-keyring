@@ -10,6 +10,9 @@
 	
 	* egg/egg-secure-memory.c: Remove unused field.
 	
+	* egg/egg-secure-memory.c: Be much stricter about checking pointers and
+	sizes being passed around. 
+	
 2009-02-11  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.h:
