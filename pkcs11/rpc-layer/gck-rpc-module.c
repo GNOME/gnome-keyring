@@ -208,7 +208,7 @@ static pthread_mutex_t call_state_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Allocator for call session buffers */
 static void*
-call_allocator (void* p, unsigned long sz)
+call_allocator (void* p, size_t sz)
 {
 	void* res = realloc (p, (size_t)sz);
 	if (!res && sz)

@@ -44,7 +44,7 @@ void egg_memory_lock (void)
 void egg_memory_unlock (void)
 	{ G_UNLOCK (memory_mutex); }
 
-void* egg_memory_fallback (void *p, unsigned long sz)
+void* egg_memory_fallback (void *p, size_t sz)
 	{ return g_realloc (p, sz); }
 
 static gboolean

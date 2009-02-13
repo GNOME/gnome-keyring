@@ -55,7 +55,7 @@
  */
  
 /* The allocator for the EggBuffer. This follows the realloc() syntax and logic */
-typedef void* (*EggBufferAllocator) (void* p, unsigned long len);
+typedef void* (*EggBufferAllocator) (void* p, size_t len);
 
 typedef struct _EggBuffer {
 	unsigned char *buf;

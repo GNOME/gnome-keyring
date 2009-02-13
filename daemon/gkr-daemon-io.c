@@ -287,7 +287,7 @@ client_worker_main (gpointer user_data)
 	/* Make sure keyrings in memory are up to date before doing anything */
 	gkr_keyrings_update ();
 
-	egg_buffer_init_full (&client->output_buffer, 128, (EggBufferAllocator)g_realloc);
+	egg_buffer_init_full (&client->output_buffer, 128, g_realloc);
 	
 	/* Add empty size */
 	egg_buffer_add_uint32 (&client->output_buffer, 0);

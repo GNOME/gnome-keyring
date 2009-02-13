@@ -10,8 +10,6 @@ typedef enum _GckDataResult {
 	GCK_DATA_SUCCESS = 1
 } GckDataResult;
 
-typedef void* (*GckDataAllocator) (void* p, unsigned long len);
-
 #define  GCK_DATA_ERROR      (g_quark_from_static_string ("gck-data-error"))
 
 #endif /* GCKDATA_H_ */

@@ -1,3 +1,26 @@
+2009-02-13  Stef Walter  <stef@memberwebs.com>
+
+	 * daemon/gkr-daemon-io.c:
+	 * daemon/gkr-daemon.c:
+	 * daemon/keyrings/gkr-keyring.c:
+	 * daemon/ui/gkr-ask-tool.c:
+	 * egg/egg-buffer.h:
+	 * egg/egg-secure-memory.c:
+	 * egg/egg-secure-memory.h:
+	 * gcr/gcr-library.c:
+	 * library/gnome-keyring-memory.c:
+	 * library/gnome-keyring-proto.c:
+	 * pam/gkr-pam-stubs.c:
+	 * pkcs11/gck/gck-data-types.h:
+	 * pkcs11/roots-store/gck-roots-standalone.c:
+	 * pkcs11/rpc-layer/gck-rpc-module.c:
+	 * pkcs11/ssh-agent/gck-ssh-agent-standalone.c:
+	 * pkcs11/ssh-store/gck-ssh-standalone.c:
+	 * pkcs11/user-store/gck-user-standalone.c:
+	 * tests/gtest-helpers.c:
+	 * tests/test-helpers.c: Use size_t and gsize for memory sizes rather
+	 than unsigned long. Fixes bug #571615
+
 2009-02-11  Stef Walter  <stef@memberwebs.com>
 
 	* egg/egg-secure-memory.c: Remove non-useful mincell structure

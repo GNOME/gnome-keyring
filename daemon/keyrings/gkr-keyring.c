@@ -441,7 +441,7 @@ gkr_keyring_save_to_disk (GkrKeyring *keyring)
 	if (!file)
 		return FALSE;
 	
-	egg_buffer_init_full (&out, 4096, (EggBufferAllocator)g_realloc);
+	egg_buffer_init_full (&out, 4096, g_realloc);
 
 	/* Generate it */	
 	if (!keyring->password || !keyring->password[0])

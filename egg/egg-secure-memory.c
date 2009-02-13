@@ -617,7 +617,7 @@ sec_allocated (Block *block, void *memory)
  */
 
 static void*
-sec_acquire_pages (unsigned long *sz)
+sec_acquire_pages (size_t *sz)
 {
 	void *pages;
 	unsigned long pgsize;
@@ -664,7 +664,7 @@ sec_acquire_pages (unsigned long *sz)
 }
 
 static void 
-sec_release_pages (void *pages, unsigned long sz)
+sec_release_pages (void *pages, size_t sz)
 {
 	ASSERT (pages);
 	ASSERT (sz % getpagesize () == 0);
@@ -690,7 +690,7 @@ sec_release_pages (void *pages, unsigned long sz)
 static Block *all_blocks = NULL;
 
 static Block* 
-sec_block_create (unsigned long size)
+sec_block_create (size_t size)
 {
 	Block *block;
 	Cell *cell;
@@ -826,7 +826,7 @@ egg_secure_realloc (void *memory, size_t length)
 }
 
 void*
-egg_secure_realloc_full (void *memory, unsigned long length, int flags)
+egg_secure_realloc_full (void *memory, size_t length, int flags)
 {
 	Block *block = NULL;
 	size_t previous = 0;
@@ -971,7 +971,7 @@ egg_secure_dump_blocks (void)
 char*
 egg_secure_strdup (const char *str)
 {
-	unsigned long len;
+	size_t len;
 	char *res;
 	
 	if (!str)

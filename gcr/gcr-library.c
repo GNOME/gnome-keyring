@@ -72,7 +72,7 @@ egg_memory_unlock (void)
 }
 
 void*
-egg_memory_fallback (void *p, unsigned long sz)
+egg_memory_fallback (void *p, size_t sz)
 {
 	const gchar *env;
 	

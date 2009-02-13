@@ -233,7 +233,7 @@ egg_memory_unlock (void)
 }
 
 void*
-egg_memory_fallback (void *p, unsigned long sz)
+egg_memory_fallback (void *p, size_t sz)
 {
 	const gchar *env;
 	
@@ -465,7 +465,7 @@ initialize_other_running_daemon (int sock)
 	if (egg_unix_credentials_write (sock) < 0)
 		return FALSE;
 
-	egg_buffer_init_full (&buf, 128, (EggBufferAllocator)g_realloc);
+	egg_buffer_init_full (&buf, 128, g_realloc);
 	
 	envp = gnome_keyring_build_environment (GNOME_KEYRING_IN_ENVIRONMENT);
 	ret = gkr_proto_encode_prepare_environment (&buf, (const gchar**)envp);

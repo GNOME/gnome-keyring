@@ -1441,8 +1441,7 @@ gkr_proto_decode_prepare_environment (EggBuffer *buffer, gchar ***environment)
 		
 	offset = 8;
 	
-	if (!egg_buffer_get_stringv (buffer, offset, &offset, environment, 
-	                             (EggBufferAllocator)g_realloc))
+	if (!egg_buffer_get_stringv (buffer, offset, &offset, environment, g_realloc))
 		return FALSE; 
 	
 	return TRUE;

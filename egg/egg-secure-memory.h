@@ -24,6 +24,8 @@
 #ifndef EGG_SECURE_MEMORY_H
 #define EGG_SECURE_MEMORY_H
 
+#include <stdlib.h>
+
 /* -------------------------------------------------------------------
  * Low Level Secure Memory 
  * 
@@ -51,7 +53,7 @@ extern void   egg_memory_unlock (void);
  * 
  * Same call semantics as realloc with regard to NULL and zeros 
  */
-extern void*  egg_memory_fallback (void *p, unsigned long sz);
+extern void*  egg_memory_fallback (void *p, size_t length);
 
 
 /* 
@@ -62,13 +64,13 @@ extern void*  egg_memory_fallback (void *p, unsigned long sz);
  
 #define GKR_SECURE_USE_FALLBACK     0x0001
 
-void*  egg_secure_alloc        (unsigned long sz);
+void*  egg_secure_alloc        (size_t length);
 
-void*  egg_secure_alloc_full   (unsigned long, int flags);
+void*  egg_secure_alloc_full   (size_t length, int flags);
 
-void*  egg_secure_realloc      (void *p, unsigned long sz);
+void*  egg_secure_realloc      (void *p, size_t length);
 
-void*  egg_secure_realloc_full (void *p, unsigned long sz, int fallback);
+void*  egg_secure_realloc_full (void *p, size_t length, int fallback);
 
 void   egg_secure_free         (void* p); 
 

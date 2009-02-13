@@ -23,7 +23,7 @@ void egg_memory_unlock (void)
 	g_static_mutex_unlock (&memory_mutex); 
 }
 
-void* egg_memory_fallback (void *p, unsigned long sz) 
+void* egg_memory_fallback (void *p, size_t sz) 
 { 
 	return g_realloc (p, sz); 
 }
