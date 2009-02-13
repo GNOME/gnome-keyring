@@ -161,7 +161,7 @@ refresh_display (GcrCertificateBasicsWidget *self)
 	
 	value = NULL;
 	if (self->pv->certificate)
-		value = gcr_certificate_get_fingerprint_hex (self->pv->certificate, G_CHECKSUM_SHA1);
+		value = gcr_certificate_get_fingerprint_hex (self->pv->certificate, G_CHECKSUM_MD5);
 	set_certificate_part_label (self->pv->builder, "fingerprints-md5", value);
 	g_free (value);
 }
