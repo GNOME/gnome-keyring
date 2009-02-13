@@ -123,7 +123,6 @@ struct allocator {
 	size_t alloc_total;  /* total bytes utilized from this allocator */
 	size_t free_total;   /* total bytes released from this allocator */
 	size_t size_total;  /* total bytes requested from this allocator */
-	ref_t userref;
 };
 
 struct cell {
