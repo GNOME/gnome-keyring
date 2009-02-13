@@ -1,5 +1,10 @@
 2009-02-11  Stef Walter  <stef@memberwebs.com>
 
+	* egg/egg-secure-memory.c: Remove non-useful mincell structure
+	element from sub allocator.
+	
+2009-02-11  Stef Walter  <stef@memberwebs.com>
+
 	* gcr/gcr-certificate-basics-widget.h:
 	* gcr/gcr-certificate-details-widget.h:
 	* gcr/gcr-certificate.h:

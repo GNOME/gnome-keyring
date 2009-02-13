@@ -114,12 +114,11 @@ typedef size_t ref_t;  /* suba offset from start of memory to object */
 #define ISADJ(c1,c2) ((struct cell *)(C2P(c1) + (c1)->size) == (struct cell *)(c2))
 #define SREF(s,p) (ref_t)((char *)(p) - (char *)(s))
 #define SADR(s,r) (void *)((char *)(s) + (r))
-#define RECLAIM_DEPTH_MAX 2
+#define MINCELL 32
 
 struct allocator {
 	unsigned char magic[8];                /* suba header identifier */
 	ref_t tail;                 /* offset to first cell in free list */
-	size_t mincell;    /* min cell size must be at least sizeof cell */
 	size_t size;                        /* total size of memory area */
 	size_t alloc_total;  /* total bytes utilized from this allocator */
 	size_t free_total;   /* total bytes released from this allocator */
@@ -155,7 +154,7 @@ suba_ref (const struct allocator *suba, const void *ptr)
 }
 
 static struct allocator *
-suba_init (void *mem, size_t size, size_t mincell)
+suba_init (void *mem, size_t size)
 {
 	struct allocator *suba = mem;
 	size_t hdrsiz;
@@ -165,11 +164,11 @@ suba_init (void *mem, size_t size, size_t mincell)
 
 	ASSERT (mem != NULL);
 	ASSERT (size > (hdrsiz + POFF));
+	ASSERT (ALIGN (sizeof (*c)) >= MINCELL);
 
 	memset(suba, 0, hdrsiz);
 	memcpy(suba->magic, SUBA_MAGIC, 8);
 	suba->tail = hdrsiz;
-	suba->mincell = mincell < ALIGN (sizeof (*c)) ? ALIGN (sizeof (*c)) : ALIGN (mincell);
 	suba->size = size;
 
 	c = suba_addr(suba, hdrsiz);
@@ -185,7 +184,7 @@ suba_alloc(struct allocator *suba, size_t size)
 	struct cell *c1, *c2, *c3;
 	size_t s = size;
 
-	size = size < suba->mincell ? suba->mincell : ALIGN(size);
+	size = size < MINCELL ? MINCELL : ALIGN (size);
 
 	c2 = SADR(suba, suba->tail);
 	for ( ;; ) {
@@ -202,7 +201,7 @@ suba_alloc(struct allocator *suba, size_t size)
 		}
 	}
 
-	if ((c2->size - size) > suba->mincell) {
+	if ((c2->size - size) > MINCELL) {
 									/* split new cell */
 		c3 = (struct cell *)(C2P(c2) + size);
 		c3->size = c2->size - (size + POFF);
@@ -331,7 +330,7 @@ suba_realloc(struct allocator *suba, void *ptr, size_t size)
 		return NULL;
 	}
 	c = P2C(ptr);
-	if (c->size < size || (c->size - ALIGN(size)) > suba->mincell) {
+	if (c->size < size || (c->size - ALIGN(size)) > MINCELL) {
 		p = suba_alloc(suba, size);
 	} else {
 		return ptr;
@@ -515,7 +514,7 @@ block_create (unsigned long size)
 	bl = (MemBlock*)blmem;
 	bl->size = size;
 	bl->suba = suba_init (((unsigned char*)blmem) + sizeof (MemBlock), 
-			      size - sizeof (MemBlock), 32);
+			      size - sizeof (MemBlock));
 	ASSERT (bl->suba);
 	
 	bl->next = most_recent_block;
