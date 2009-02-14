@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ro\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-02-13 04:21+0000\n"
-"PO-Revision-Date: 2009-02-13 16:10+0200\n"
+"POT-Creation-Date: 2009-02-14 04:38+0000\n"
+"PO-Revision-Date: 2009-02-14 11:44+0200\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -486,103 +486,127 @@ msgstr "Permite _o dată"
 msgid "_Always Allow"
 msgstr "Permite perm_anent"
 
-#: ../egg/egg-asn1.c:794
+#: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "Component domeniu"
 
-#: ../egg/egg-asn1.c:795
+#: ../egg/egg-oid.c:43
 msgid "User ID"
 msgstr "ID utilizator"
 
-#: ../egg/egg-asn1.c:797
+#: ../egg/egg-oid.c:46
 msgid "Email"
 msgstr "Email"
 
-#: ../egg/egg-asn1.c:801
+#: ../egg/egg-oid.c:54
 msgid "Date of Birth"
 msgstr "Data nașterii"
 
-#: ../egg/egg-asn1.c:802
+#: ../egg/egg-oid.c:56
 msgid "Place of Birth"
 msgstr "Locul nașterii"
 
-#: ../egg/egg-asn1.c:803
+#: ../egg/egg-oid.c:58
 msgid "Gender"
 msgstr "Gen"
 
-#: ../egg/egg-asn1.c:804
+#: ../egg/egg-oid.c:60
 msgid "Country of Citizenship"
 msgstr "Naționalitate"
 
-#: ../egg/egg-asn1.c:805
+#: ../egg/egg-oid.c:62
 msgid "Country of Residence"
 msgstr "Țară de rezidență"
 
-#: ../egg/egg-asn1.c:807
+#: ../egg/egg-oid.c:65
 msgid "Common Name"
 msgstr "Nume comun"
 
-#: ../egg/egg-asn1.c:808
+#: ../egg/egg-oid.c:67
 msgid "Surname"
 msgstr "Nume familie"
 
-#: ../egg/egg-asn1.c:809
+#: ../egg/egg-oid.c:69
 #: ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:259
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Serial Number"
 msgstr "Număr serial"
 
-#: ../egg/egg-asn1.c:810
+#: ../egg/egg-oid.c:71
 msgid "Country"
 msgstr "Tară"
 
-#: ../egg/egg-asn1.c:811
+#: ../egg/egg-oid.c:73
 msgid "Locality"
 msgstr "Județ"
 
-#: ../egg/egg-asn1.c:812
+#: ../egg/egg-oid.c:75
 msgid "State"
 msgstr "Stat"
 
-#: ../egg/egg-asn1.c:813
+#: ../egg/egg-oid.c:77
 msgid "Street"
 msgstr "Stradă"
 
-#: ../egg/egg-asn1.c:814
+#: ../egg/egg-oid.c:79
 msgid "Organization"
 msgstr "Organizație"
 
-#: ../egg/egg-asn1.c:815
+#: ../egg/egg-oid.c:81
 msgid "Organizational Unit"
 msgstr "Departament organizație"
 
-#: ../egg/egg-asn1.c:816
+#: ../egg/egg-oid.c:83
 msgid "Title"
 msgstr "Titlu"
 
-#: ../egg/egg-asn1.c:817
+#: ../egg/egg-oid.c:85
 msgid "Telephone Number"
 msgstr "Număr telefon"
 
-#: ../egg/egg-asn1.c:818
+#: ../egg/egg-oid.c:87
 msgid "Given Name"
 msgstr "Prenume"
 
-#: ../egg/egg-asn1.c:819
+#: ../egg/egg-oid.c:89
 msgid "Initials"
 msgstr "Inițiale"
 
-#: ../egg/egg-asn1.c:820
+#: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
 msgstr ""
 
-#: ../egg/egg-asn1.c:821
+#: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
 msgstr ""
 
-#: ../egg/egg-asn1.c:822
+#: ../egg/egg-oid.c:95
 msgid "Pseudonym"
 msgstr "Pseudonim"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "MD2 cu RSA"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "MD5 cu RSA"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "SHA1 cu RSA"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "SHA1 cu DSA"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -660,66 +684,98 @@ msgstr "Certificat client SSL"
 msgid "SSL Server Certificate"
 msgstr "Certificat server SSL"
 
+#: ../gcr/gcr-certificate-details-widget.c:207
+#| msgid "Version"
+msgid "Extension"
+msgstr "Extensie"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "Identificator"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "Valoare"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "Da"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "Nu"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+#| msgid "Certificate"
+msgid "Critical"
+msgstr "Critic"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:240
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Subject Name"
 msgstr "Nume subiect"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:244
+#: ../gcr/gcr-certificate-details-widget.c:315
 msgid "Issuer Name"
 msgstr "Nume emitent"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:248
+#: ../gcr/gcr-certificate-details-widget.c:319
 msgid "Issued Certificate"
 msgstr "Certificat emis"
 
-#: ../gcr/gcr-certificate-details-widget.c:253
+#: ../gcr/gcr-certificate-details-widget.c:324
 msgid "Version"
 msgstr "Versiune"
 
-#: ../gcr/gcr-certificate-details-widget.c:266
+#: ../gcr/gcr-certificate-details-widget.c:337
 msgid "Not Valid Before"
 msgstr "Nu este valid înainte"
 
-#: ../gcr/gcr-certificate-details-widget.c:271
+#: ../gcr/gcr-certificate-details-widget.c:342
 msgid "Not Valid After"
 msgstr "Nu este valid după"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:276
-#: ../gcr/gcr-certificate-details-widget.c:284
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Signature"
 msgstr "Semnătură"
 
-#. TODO: Complete Signature algorithm, and params
-#: ../gcr/gcr-certificate-details-widget.c:279
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature Algorithm"
 msgstr "Algoritm semnătură"
 
+#: ../gcr/gcr-certificate-details-widget.c:356
+#| msgid "Signature"
+msgid "Signature Parameters"
+msgstr "Parametrii semnătură"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:288
+#: ../gcr/gcr-certificate-details-widget.c:367
 msgid "Public Key Info"
 msgstr "Informații cheie publică"
 
-#. TODO: Complete algorithm, params, key size
-#: ../gcr/gcr-certificate-details-widget.c:291
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Algorithm"
 msgstr "Algoritm cheie"
 
-#: ../gcr/gcr-certificate-details-widget.c:292
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "Parametrii cheie"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Key Size"
 msgstr "Dimensiune cheie"
 
-#: ../gcr/gcr-certificate-details-widget.c:297
+#: ../gcr/gcr-certificate-details-widget.c:390
 #: ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Cheie publică"
 
-#. TODO: Implement extensions
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:394
 msgid "Fingerprints"
 msgstr "Amprente"
 
