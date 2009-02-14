@@ -28,6 +28,8 @@
 	* gcr/gcr-certificate-details-widget.c: Show extensions as in hex form.
 	No parsing of extensions yet.
 	
+	* gcr/gcr-certificate-details-widget.c: Don't show horizontal scrollbar.
+	
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash
