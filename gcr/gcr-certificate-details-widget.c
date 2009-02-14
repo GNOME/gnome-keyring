@@ -223,7 +223,7 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	const guchar *data, *value;
 	gsize n_data, n_value;
 	const gchar *text;
-	guint version;
+	guint version, size;
 	gchar *display;
 	ASN1_TYPE asn;
 	GQuark oid;
@@ -312,7 +312,12 @@ refresh_display (GcrCertificateDetailsWidget *self)
 		g_free (display);
 	}
 
-	append_field_and_value (self, _("Key Size"), "TODO", FALSE);
+	size = gcr_certificate_get_key_size (self->pv->certificate);
+	if (size > 0) {
+		display = g_strdup_printf ("%u", size); 
+		append_field_and_value (self, _("Key Size"), display, FALSE);
+		g_free (display);
+	}
 	
 	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.subjectPublicKeyInfo.subjectPublicKey", &n_value);
 	g_return_if_fail (value);

@@ -17,6 +17,10 @@
 	* gcr/gcr-certificate-details-widget.c: Fill in key and signature
 	algorithms and parameters.
 	
+	* gcr/gcr-certificate.c:
+	* gcr/gcr-certificate.h:
+	* gcr/gcr-certificate-details-widget.c: Fill in the key size field.
+	
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash

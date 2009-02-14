@@ -29,47 +29,60 @@
 
 #include <string.h>
 
+/* 
+ * The DER data in this structure is owned by the derived class. 
+ * It is only valid for the duration of the current call stack
+ * after we call gcr_certificate_get_der_data(). We shouldn't 
+ * save it anywhere else.
+ * 
+ * We keep the pointer around and compare it so that if the derived
+ * class returns exactly the same pointer and size, then we can
+ * keep from parsing things over again. 
+ */
+
+typedef struct _GcrCertificateInfo {
+	const guchar *der;
+	gsize n_der;
+	ASN1_TYPE asn1;
+	guint key_size;
+} GcrCertificateInfo;
+
 /* -----------------------------------------------------------------------------
  * INTERNAL 
  */
 
-
-typedef struct _Asn1Cache {
-	ASN1_TYPE asn1;
-	gconstpointer der;
-	gsize length;
-} Asn1Cache;
-
-static GQuark ASN1_CACHE = 0;
+static GQuark CERTIFICATE_INFO = 0;
+static GQuark OID_RSA_KEY = 0;
+static GQuark OID_DSA_KEY = 0;
 
 static void
-free_asn1_cache (gpointer data)
+certificate_info_free (gpointer data)
 {
-	Asn1Cache *cache = (Asn1Cache*)data;
-	if (cache) {
-		g_assert (cache->asn1);
-		asn1_delete_structure (&cache->asn1);
-		g_free (cache);
+	GcrCertificateInfo *info = data;
+	if (info) {
+		g_assert (info->asn1);
+		asn1_delete_structure (&info->asn1);
+		g_free (info);
 	}
 }
 
-static ASN1_TYPE
-parse_certificate_asn1 (GcrCertificate *cert)
+static GcrCertificateInfo*
+certificate_info_load (GcrCertificate *cert)
 {
-	Asn1Cache *cache;
+	GcrCertificateInfo *info;
 	ASN1_TYPE asn1;
 	const guchar *der;
 	gsize n_der;
 	
-	g_assert (cert);
+	g_assert (GCR_IS_CERTIFICATE (cert));
 	
 	der = gcr_certificate_get_der_data (cert, &n_der);
 	g_return_val_if_fail (der, NULL);
 
-	cache = (Asn1Cache*)g_object_get_qdata (G_OBJECT (cert), ASN1_CACHE);
-	if (cache) {
-		if (n_der == cache->length && memcmp (der, cache->der, n_der) == 0)
-			return cache->asn1;
+	info = g_object_get_qdata (G_OBJECT (cert), CERTIFICATE_INFO);
+	if (info != NULL) {
+		if (n_der == info->n_der && der == info->der)
+			return info;
 	}
 	
 	/* Cache is invalid or non existent */
@@ -79,13 +92,92 @@ parse_certificate_asn1 (GcrCertificate *cert)
 		return NULL;
 	}
 	
-	cache = g_new0 (Asn1Cache, 1);
-	cache->der = der;
-	cache->length = n_der;
-	cache->asn1 = asn1;
+	info = g_new0 (GcrCertificateInfo, 1);
+	info->der = der;
+	info->n_der = n_der;
+	info->asn1 = asn1;
 	
-	g_object_set_qdata_full (G_OBJECT (cert), ASN1_CACHE, cache, free_asn1_cache);
-	return asn1;
+	g_object_set_qdata_full (G_OBJECT (cert), CERTIFICATE_INFO, info, certificate_info_free);
+	return info;
+}
+
+static guint
+calculate_rsa_key_size (const guchar *data, gsize n_data)
+{
+	ASN1_TYPE asn;
+	gsize n_content;
+	
+	asn = egg_asn1_decode ("PK.RSAPublicKey", data, n_data);
+	g_return_val_if_fail (asn, 0);
+    
+	if (!egg_asn1_read_content (asn, data, n_data, "modulus", &n_content))
+		g_return_val_if_reached (0);
+	
+	asn1_delete_structure (&asn);
+	
+	/* Removes the complement */
+	return (n_content / 2) * 2 * 8;
+}
+
+static guint
+calculate_dsa_params_size (const guchar *data, gsize n_data)
+{
+	ASN1_TYPE asn;
+	gsize n_content;
+	
+	asn = egg_asn1_decode ("PK.DSAParameters", data, n_data);
+	g_return_val_if_fail (asn, 0);
+
+	if (!egg_asn1_read_content (asn, data, n_data, "p", &n_content))
+		g_return_val_if_reached (0);
+		
+	asn1_delete_structure (&asn);
+	
+	/* Removes the complement */
+	return (n_content / 2) * 2 * 8;
+}
+
+static guint
+calculate_key_size (GcrCertificateInfo *info)
+{
+	ASN1_TYPE asn;
+	const guchar *data, *params;
+	gsize n_data, n_params, n_key;
+	guint key_size = 0;
+	guchar *key;
+	GQuark oid;
+	
+	data = egg_asn1_read_element (info->asn1, info->der, info->n_der, "tbsCertificate.subjectPublicKeyInfo", &n_data);
+	g_return_val_if_fail (data != NULL, 0);
+	
+	asn = egg_asn1_decode ("PKIX1.SubjectPublicKeyInfo", data, n_data);
+	g_return_val_if_fail (asn, 0);
+	
+	/* Figure out the algorithm */
+	oid = egg_asn1_read_oid (asn, "algorithm.algorithm");
+	g_return_val_if_fail (oid, 0);
+		
+	/* RSA keys are stored in the main subjectPublicKey field */
+	if (oid == OID_RSA_KEY) {
+		
+		/* A bit string so we cannot process in place */
+		key = egg_asn1_read_value (asn, "subjectPublicKey", &n_key, NULL);
+		g_return_val_if_fail (key, 0);
+		key_size = calculate_rsa_key_size (key, n_key / 8);
+
+	/* The DSA key size is discovered by the prime in params */
+	} else if (oid == OID_DSA_KEY) {
+		params = egg_asn1_read_element (asn, data, n_data, "algorithm.parameters", &n_params);
+		key_size = calculate_dsa_params_size (params, n_params);
+		
+	} else {
+		g_message ("unsupported key algorithm in certificate: %s", g_quark_to_string (oid));
+	}
+	
+	asn1_delete_structure (&asn);
+	g_free (key);
+	
+	return key_size;
 }
 
 static GChecksum*
@@ -114,14 +206,16 @@ digest_certificate (GcrCertificate *self, GChecksumType type)
 static void
 gcr_certificate_base_init (gpointer g_class)
 {
-	static gboolean initialized = FALSE;
-	if (!initialized) {
-		ASN1_CACHE = g_quark_from_static_string ("_gcr_certificate_asn1_cache");
-		
+	static volatile gsize initialized = 0;
+
+	if (g_once_init_enter (&initialized)) {
+		CERTIFICATE_INFO = g_quark_from_static_string ("_gcr_certificate_certificate_info");
+		OID_RSA_KEY = g_quark_from_static_string ("1.2.840.113549.1.1.1");
+		OID_DSA_KEY = g_quark_from_static_string ("1.2.840.10040.4.1");
+
 		/* Add properties and signals to the interface */
-		
-		
-		initialized = TRUE;
+
+		g_once_init_leave (&initialized, 1);
 	}
 }
 
@@ -170,27 +264,27 @@ gcr_certificate_get_issuer_cn (GcrCertificate *self)
 gchar*
 gcr_certificate_get_issuer_part (GcrCertificate *self, const char *part)
 {
-	ASN1_TYPE asn1;
+	GcrCertificateInfo *info;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	
-	asn1 = parse_certificate_asn1 (self);
-	g_return_val_if_fail (asn1, NULL);
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_dn_part (asn1, "tbsCertificate.issuer.rdnSequence", part);
+	return egg_asn1_read_dn_part (info->asn1, "tbsCertificate.issuer.rdnSequence", part);
 }
 
 gchar*
 gcr_certificate_get_issuer_dn (GcrCertificate *self)
 {
-	ASN1_TYPE asn1;
+	GcrCertificateInfo *info;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	
-	asn1 = parse_certificate_asn1 (self);
-	g_return_val_if_fail (asn1, NULL);
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_dn (asn1, "tbsCertificate.issuer.rdnSequence"); 
+	return egg_asn1_read_dn (info->asn1, "tbsCertificate.issuer.rdnSequence"); 
 }
 
 gchar* 
@@ -202,42 +296,42 @@ gcr_certificate_get_subject_cn (GcrCertificate *self)
 gchar* 
 gcr_certificate_get_subject_part (GcrCertificate *self, const char *part)
 {
-	ASN1_TYPE asn1;
+	GcrCertificateInfo *info;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	
-	asn1 = parse_certificate_asn1 (self);
-	g_return_val_if_fail (asn1, NULL);
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_dn_part (asn1, "tbsCertificate.subject.rdnSequence", part); 
+	return egg_asn1_read_dn_part (info->asn1, "tbsCertificate.subject.rdnSequence", part); 
 }
 
 gchar* 
 gcr_certificate_get_subject_dn (GcrCertificate *self)
 {
-	ASN1_TYPE asn1;
+	GcrCertificateInfo *info;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	
-	asn1 = parse_certificate_asn1 (self);
-	g_return_val_if_fail (asn1, NULL);
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_dn (asn1, "tbsCertificate.issuer.rdnSequence"); 	
+	return egg_asn1_read_dn (info->asn1, "tbsCertificate.issuer.rdnSequence"); 	
 }
 
 GDate* 
 gcr_certificate_get_issued_date (GcrCertificate *self)
 {
-	ASN1_TYPE asn1;
+	GcrCertificateInfo *info;
 	GDate *date;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	
-	asn1 = parse_certificate_asn1 (self);
-	g_return_val_if_fail (asn1, NULL);
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
 	
 	date = g_date_new ();
-	if (!egg_asn1_read_date (asn1, "tbsCertificate.validity.notBefore", date)) {
+	if (!egg_asn1_read_date (info->asn1, "tbsCertificate.validity.notBefore", date)) {
 		g_date_free (date);
 		return NULL;
 	}
@@ -248,21 +342,37 @@ gcr_certificate_get_issued_date (GcrCertificate *self)
 GDate* 
 gcr_certificate_get_expiry_date (GcrCertificate *self)
 {
-	ASN1_TYPE asn1;
+	GcrCertificateInfo *info;
 	GDate *date;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	
-	asn1 = parse_certificate_asn1 (self);
-	g_return_val_if_fail (asn1, NULL);
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
 	
 	date = g_date_new ();
-	if (!egg_asn1_read_date (asn1, "tbsCertificate.validity.notAfter", date)) {
+	if (!egg_asn1_read_date (info->asn1, "tbsCertificate.validity.notAfter", date)) {
 		g_date_free (date);
 		return NULL;
 	}
 	
 	return date;
+}
+
+guint
+gcr_certificate_get_key_size (GcrCertificate *self)
+{
+	GcrCertificateInfo *info;
+	
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), 0);
+
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, 0);
+	
+	if (!info->key_size)
+		info->key_size = calculate_key_size (info);
+	
+	return info->key_size;
 }
 
 guchar*
@@ -314,14 +424,14 @@ gcr_certificate_get_fingerprint_hex (GcrCertificate *self, GChecksumType type)
 guchar*
 gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 {
-	ASN1_TYPE asn1;
+	GcrCertificateInfo *info;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	
-	asn1 = parse_certificate_asn1 (self);
-	g_return_val_if_fail (asn1, NULL);
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_value (asn1, "tbsCertificate.serialNumber", n_length, g_realloc); 
+	return egg_asn1_read_value (info->asn1, "tbsCertificate.serialNumber", n_length, g_realloc); 
 }
 
 gchar*

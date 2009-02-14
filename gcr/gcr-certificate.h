@@ -78,6 +78,8 @@ guchar*             gcr_certificate_get_serial_number      (GcrCertificate *self
 
 gchar*              gcr_certificate_get_serial_number_hex  (GcrCertificate *self);
 
+guint               gcr_certificate_get_key_size           (GcrCertificate *self);
+
 guchar*             gcr_certificate_get_fingerprint        (GcrCertificate *self, 
                                                             GChecksumType type, 
                                                             gsize *n_length);
