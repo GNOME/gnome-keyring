@@ -579,31 +579,32 @@ fork_and_print_environment (void)
 		exit (0);
 	}
 	
-	if (!run_daemonized) 
-		return;
+	if (run_daemonized) { 
+		
+		/* Double fork if need to daemonize properly */
+		pid = fork ();
 	
-	/* Double fork if need to daemonize properly */
-	pid = fork ();
+		if (pid != 0) {
+
+			/* Here we are in the intermediate child process */
+				
+			/* 
+			 * This process exits, so that the final child will inherit 
+			 * init as parent to avoid zombies
+			 */
+			if (pid == -1)
+				exit (1);
 	
-	if (pid != 0) {
-
-		/* Here we are in the intermediate child process */
-			
-		/* 
-		 * This process exits, so that the final child will inherit 
-		 * init as parent to avoid zombies
-		 */
-		if (pid == -1)
-			exit (1);
-
-		/* We've done two forks. Now we know the PID */
-		print_environment (pid);
-			
-		/* The intermediate child exits */
-		exit (0);
+			/* We've done two forks. Now we know the PID */
+			print_environment (pid);
+				
+			/* The intermediate child exits */
+			exit (0);
+		}
+		
 	}
 
-	/* Here we are in the resulting daemon process. */
+	/* Here we are in the resulting daemon or background process. */
 
 	for (i = 0; i < 3; ++i) {
 		fd = open ("/dev/null", O_RDONLY);

@@ -1,5 +1,10 @@
 2009-02-14  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c: Close stdin/stdout when not running
+	in foreground. Fixes bug #571781
+	
+2009-02-14  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Bump version number.
 
 === gnome-keyring 2.25.91 ===
