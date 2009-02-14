@@ -1,3 +1,11 @@
+=== gnome-keyring 2.25.91 ===
+
+2009-02-14  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in: 
+	* NEWS: 
+	* gcr/tests/unit-test-certificate.c: Release version 2.25.91
+
 2009-02-14  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/ui/gkr-ask-tools.c: Add strings for fixing of bug #571423

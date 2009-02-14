@@ -1,4 +1,20 @@
 Changes in version 2.25.90 are:
+* Complete certificate details display in the gcr library.
+* Correctly escape prompt markup. [Joe Shaw, Magnus Boman]
+* Show correct MD5 hash in certificate display. [Fabrizio Tarizzo]
+* Overhaul the secure memory allocator to have memory guards, 
+  and also be more sparing with secure memory.
+* Add C++ header guards to public headers. [Xan Lopez]
+* Prompt to initialize new PKCS#11 tokens with a password.
+* Fix output of RSA keys to be interoperable.
+* Translation fixes. 
+* Fix problems importing certificates and keys. 
+* More code reorganization.
+* Add support for netscape trust objects, so Root CA certificates
+  can be trusted by NSS.
+* Fixes to the PKCS#11 headers on 64-bit systems. [Christophe Fergeau]
+
+Changes in version 2.25.90 are:
 * Add certificate UI bit to gcr library.
 * Can now again clear the cached authentication from an SSH key.
 * Add some additional helper functions to gp11 library. 

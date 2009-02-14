@@ -134,7 +134,7 @@ DEFINE_TEST(fingerprint_hex)
 {
 	gchar *print = gcr_certificate_get_fingerprint_hex (certificate, G_CHECKSUM_MD5);
 	g_assert (print);
-	g_assert_cmpstr (print, ==, "a26f53b7ee40db4a68e7fa18d9104b72");
+	g_assert_cmpstr (print, ==, "A2 6F 53 B7 EE 40 DB 4A 68 E7 FA 18 D9 10 4B 72");
 	g_free (print);
 }
 
