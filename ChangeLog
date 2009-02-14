@@ -14,6 +14,9 @@
 	* gcr/tests/ui-test-details.c: Change to right directory so we can 
 	easily find test certificates.
 	
+	* gcr/gcr-certificate-details-widget.c: Fill in key and signature
+	algorithms and parameters.
+	
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash

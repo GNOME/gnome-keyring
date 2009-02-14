@@ -39,6 +39,7 @@ struct _GcrCertificateDetailsWidgetPrivate {
 	GtkTextBuffer *buffer;
 	GtkTextTag *field_tag;
 	gint field_width;
+	guint key_size;
 };
 
 G_DEFINE_TYPE (GcrCertificateDetailsWidget, gcr_certificate_details_widget, GTK_TYPE_ALIGNMENT);
@@ -106,6 +107,8 @@ append_field_and_value (GcrCertificateDetailsWidget *self, const gchar *field,
 	gchar *text;
 	
 	text = g_strdup_printf ("%s:", field);
+	if (value == NULL)
+		value = "";
 	
 	/* Measure the width of the field */
 	layout = gtk_widget_create_pango_layout (GTK_WIDGET (self), text);
@@ -219,9 +222,11 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	GtkTextIter start, iter;
 	const guchar *data, *value;
 	gsize n_data, n_value;
+	const gchar *text;
 	guint version;
 	gchar *display;
 	ASN1_TYPE asn;
+	GQuark oid;
 	GDate date;
 	
 	gtk_text_buffer_get_start_iter (self->pv->buffer, &start);
@@ -276,8 +281,16 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	/* Signature */
 	append_heading (self, _("Signature"));
 	
-	/* TODO: Complete Signature algorithm, and params */
-	append_field_and_value (self, _("Signature Algorithm"), "TODO", FALSE);
+	oid = egg_asn1_read_oid (asn, "signatureAlgorithm.algorithm");
+	text = egg_oid_get_description (oid);
+	append_field_and_value (self, _("Signature Algorithm"), text, FALSE);
+	
+	value = egg_asn1_read_content (asn, data, n_data, "signatureAlgorithm.parameters", &n_value);
+	if (value && n_value) {
+		display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
+		append_field_and_value (self, _("Signature Parameters"), display, TRUE);
+		g_free (display);
+	}
 	
 	value = egg_asn1_read_content (asn, data, n_data, "signature", &n_value);
 	g_return_if_fail (value);
@@ -288,8 +301,17 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	/* Public Key Info */
 	append_heading (self, _("Public Key Info"));
 	
-	/* TODO: Complete algorithm, params, key size */
-	append_field_and_value (self, _("Key Algorithm"), "TODO", FALSE);
+	oid = egg_asn1_read_oid (asn, "tbsCertificate.subjectPublicKeyInfo.algorithm.algorithm");
+	text = egg_oid_get_description (oid);
+	append_field_and_value (self, _("Key Algorithm"), text, FALSE);
+	
+	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.subjectPublicKeyInfo.algorithm.parameters", &n_value);
+	if (value && n_value) {
+		display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
+		append_field_and_value (self, _("Key Parameters"), display, TRUE);
+		g_free (display);
+	}
+
 	append_field_and_value (self, _("Key Size"), "TODO", FALSE);
 	
 	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.subjectPublicKeyInfo.subjectPublicKey", &n_value);
