@@ -176,6 +176,70 @@ append_fingerprint (GcrCertificateDetailsWidget *self, const guchar *data,
 	g_free (buffer);		
 }
 
+static gboolean
+append_extension (GcrCertificateDetailsWidget *self, ASN1_TYPE asn, 
+                  const guchar *data, gsize n_data, gint index)
+{
+	GQuark oid;
+	gchar *name, *display;
+	gsize n_val, n_value;
+	const guchar *value;
+	const gchar *text;
+	guchar *val;
+	int len, res;
+	
+	/* Make sure it is present */
+	len = 0;
+	name = g_strdup_printf ("tbsCertificate.extensions.?%u", index);
+	res = asn1_read_value (asn, name, NULL, &len);
+	g_free (name);
+	
+	if (res == ASN1_ELEMENT_NOT_FOUND)
+		return FALSE;
+
+	/* Dig out the OID */
+	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", index);
+	oid = egg_asn1_read_oid (asn, name);
+	g_free (name);
+	g_return_val_if_fail (oid, FALSE);
+	
+	
+	append_heading (self, _("Extension"));
+	
+	
+	/* Extension type */
+	text = egg_oid_get_description (oid);
+	append_field_and_value (self, _("Identifier"), text, FALSE);
+	
+	
+	/* Extension value */
+	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
+	value = egg_asn1_read_content (asn, data, n_data, name, &n_value);
+	g_free (name);
+
+	/* TODO: Parsing of extensions that we understand */
+	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
+	append_field_and_value (self, _("Value"), display, TRUE);
+	g_free (display);
+
+	
+	/* Critical */
+	name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", index);
+	val = egg_asn1_read_value (asn, name, &n_val, NULL);
+	g_free (name);
+	
+	if (!val || n_val < 1 || val[0] != 'T')
+		text = _("Yes");
+	else
+		text = _("No");
+	g_free (val);
+	
+	append_field_and_value (self, _("Critical"), text, FALSE);
+	
+	
+	return TRUE;
+}
+
 static void
 on_parsed_dn_part (guint index, GQuark oid, const guchar *value,
                    gsize n_value, gpointer user_data)
@@ -224,6 +288,7 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	gsize n_data, n_value;
 	const gchar *text;
 	guint version, size;
+	guint index;
 	gchar *display;
 	ASN1_TYPE asn;
 	GQuark oid;
@@ -325,13 +390,17 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	append_field_and_value (self, _("Public Key"), display, TRUE);
 	g_free (display);
 	
-	/* TODO: Implement extensions */
-
 	/* Fingerprints */
 	append_heading (self, _("Fingerprints"));
 	
 	append_fingerprint (self, data, n_data, "SHA1", G_CHECKSUM_SHA1);
 	append_fingerprint (self, data, n_data, "MD5", G_CHECKSUM_MD5);
+	
+	/* Extensions */
+	for (index = 1; TRUE; ++index) {
+		if (!append_extension (self, asn, data, n_data, index))
+			break;
+	}
 	
 	asn1_delete_structure (&asn);
 }
