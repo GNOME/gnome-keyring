@@ -1,3 +1,10 @@
+2009-02-14  Magnus Boman  <captain.magnus@gmail.com>
+
+	reviewed by: Stef Walter
+
+	* daemon/ui/gkr-ask-tool.c (create_markup), (run_dialog):
+	Bug #570295, Correctly escape markups. Patch by Joe Shaw
+
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* egg/egg-asn1.c:

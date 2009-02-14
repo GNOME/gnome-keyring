@@ -221,8 +221,9 @@ static gchar*
 create_markup (const gchar *primary, const gchar *secondary)
 {
 	/* We're passed markup for both of these */
-	return g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s", 
-	                        primary, secondary ? secondary : "");
+	return g_markup_printf_escaped ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+					primary, secondary ? secondary : "");
+
 }
 
 static gchar*
@@ -447,9 +448,10 @@ run_dialog (gboolean include_password,
 	g_free (value);
 	g_free (value2);
 	
-	message_widget = GTK_LABEL (gtk_label_new (message));
-	g_free (message);
+	message_widget = GTK_LABEL (gtk_label_new (NULL));
 	gtk_label_set_use_markup (message_widget, TRUE);
+	gtk_label_set_markup (message_widget, message);
+	g_free (message);
 	gtk_misc_set_alignment (GTK_MISC (message_widget), 0.0, 0.5);
 	gtk_label_set_line_wrap (message_widget, TRUE);
 	gtk_label_set_justify (message_widget,
