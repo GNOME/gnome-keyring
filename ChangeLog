@@ -21,6 +21,8 @@
 	* gcr/gcr-certificate.h:
 	* gcr/gcr-certificate-details-widget.c: Fill in the key size field.
 	
+	* egg/egg-oid.c: Fill in the OID descriptions for RSA and DSA stuff.
+	
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash

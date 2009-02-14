@@ -95,6 +95,20 @@ static OidInfo oid_info[] = {
 	{ 0, "2.5.4.65", "pseudonym", N_("Pseudonym"), 
 		EGG_OID_PRINTABLE | EGG_OID_IS_CHOICE },
 
+	{ 0, "1.2.840.113549.1.1.1", "rsaEncryption", N_("RSA"),
+	        0 },
+	{ 0, "1.2.840.113549.1.1.2", "md2WithRSAEncryption", N_("MD2 with RSA"),
+	        0 },
+	{ 0, "1.2.840.113549.1.1.4", "md5WithRSAEncryption", N_("MD5 with RSA"),
+		0 },
+	{ 0, "1.2.840.113549.1.1.5", "sha1WithRSAEncryption", N_("SHA1 with RSA"),
+		0 },
+
+	{ 0, "1.2.840.10040.4.1", "dsa", N_("DSA"),
+		0 },
+	{ 0, "1.2.840.10040.4.3", "sha1WithDSA", N_("SHA1 with DSA"),
+		0 },
+
 	{ 0, NULL, NULL, NULL, FALSE }
 };
 
