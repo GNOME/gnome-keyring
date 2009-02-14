@@ -23,6 +23,8 @@
 	
 	* egg/egg-oid.c: Fill in the OID descriptions for RSA and DSA stuff.
 	
+	* gcr/tests/ui-test-details.c: Allow loading any DER certificate file.
+	
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash

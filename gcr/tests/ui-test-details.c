@@ -32,7 +32,7 @@ chdir_base_dir (char* argv0)
 }
 
 static void
-test_details (void)
+test_details (const gchar *path)
 {
 	GcrCertificateDetailsWidget *details;
 	GcrCertificate *certificate;
@@ -40,8 +40,8 @@ test_details (void)
 	guchar *data;
 	gsize n_data;
 	
-	if (!g_file_get_contents ("test-data/der-certificate.crt", (gchar**)&data, &n_data, NULL))
-		g_assert_not_reached ();
+	if (!g_file_get_contents (path, (gchar**)&data, &n_data, NULL))
+		g_error ("couldn't read file: %s", path);
 	
 	certificate = gcr_simple_certificate_new (data, n_data);
 	g_assert (certificate);
@@ -65,8 +65,14 @@ test_details (void)
 int
 main(int argc, char *argv[])
 {
-	chdir_base_dir (argv[0]);
 	gtk_init (&argc, &argv);
-	test_details ();
+	
+	if (argc > 1) {
+		test_details (argv[1]);
+	} else {
+		chdir_base_dir (argv[0]);
+		test_details ("test-data/der-certificate.crt");
+	}
+	
 	return 0;
 }
