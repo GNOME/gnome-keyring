@@ -6,6 +6,31 @@
 
 #include <gtk/gtk.h>
 
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+
+static void 
+chdir_base_dir (char* argv0)
+{
+	gchar *dir, *base;
+
+	dir = g_path_get_dirname (argv0);
+	if (chdir (dir) < 0)
+		g_warning ("couldn't change directory to: %s: %s", 
+		           dir, g_strerror (errno));
+	
+	base = g_path_get_basename (dir);
+	if (strcmp (base, ".libs") == 0) {
+		if (chdir ("..") < 0)
+			g_warning ("couldn't change directory to ..: %s",
+			           g_strerror (errno));
+	}
+
+	g_free (base);
+	g_free (dir);
+}
+
 static void
 test_details (void)
 {
@@ -40,6 +65,7 @@ test_details (void)
 int
 main(int argc, char *argv[])
 {
+	chdir_base_dir (argv[0]);
 	gtk_init (&argc, &argv);
 	test_details ();
 	return 0;

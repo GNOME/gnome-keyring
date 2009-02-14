@@ -11,6 +11,9 @@
 	* gcr/gcr-certificate-details-widget.c: Pull out OID information 
 	functionality into it's own file. 
 	
+	* gcr/tests/ui-test-details.c: Change to right directory so we can 
+	easily find test certificates.
+	
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash
