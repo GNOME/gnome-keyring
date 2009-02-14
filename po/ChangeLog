@@ -1,3 +1,7 @@
+2009-02-14  Stef Walter  <stef@memberwebs.com>
+
+	* POTFILES.in: Added egg/egg-oid.c
+	
 2009-02-13  Jani Monoses  <jani@ubuntu.com>
 
 	* ro.po: Updated Romanian translation
