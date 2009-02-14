@@ -9,6 +9,7 @@ asn1-def-test.h: test.asn
 UNIT_AUTO = \
 	unit-test-asn1.c \
 	unit-test-hex.c \
+	unit-test-oid.c \
 	unit-test-secmem.c \
 	unit-test-symkey.c \
 	unit-test-openssl.c \

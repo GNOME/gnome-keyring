@@ -23,6 +23,7 @@ libegg_la_SOURCES = \
 	egg-buffer.c egg-buffer.h \
 	egg-hex.c egg-hex.h \
 	egg-libgcrypt.c egg-libgcrypt.h \
+	egg-oid.c egg-oid.h \
 	egg-openssl.c egg-openssl.h \
 	egg-unix-credentials.c egg-unix-credentials.h \
 	egg-secure-memory.c egg-secure-memory.h \

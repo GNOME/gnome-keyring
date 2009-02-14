@@ -1,5 +1,18 @@
 2009-02-13  Stef Walter  <stef@memberwebs.com>
 
+	* egg/egg-asn1.c:
+	* egg/egg-asn1.h:
+	* egg/egg-oid.c: (added)
+	* egg/egg-oid.h: (added)
+	* egg/Makefile.am:
+	* egg/tests/unit-test-asn1.c:
+	* egg/tests/unit-test-oid.c: (added)
+	* egg/tests/Makefile.am:
+	* gcr/gcr-certificate-details-widget.c: Pull out OID information 
+	functionality into it's own file. 
+	
+2009-02-13  Stef Walter  <stef@memberwebs.com>
+
 	* gcr/gcr-certificate-basics-widget.c: Show the correct MD5 hash
 	in certificate basics dialog. Patch by Fabrizio Tarizzo. Fixes bug #567769
 	

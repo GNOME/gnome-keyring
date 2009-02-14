@@ -26,6 +26,7 @@
 #include "run-auto-test.h"
 
 #include "egg/egg-asn1.h"
+#include "egg/egg-oid.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -394,20 +395,6 @@ DEFINE_TEST(read_dn)
 	g_assert (dn == NULL);
 }
 
-DEFINE_TEST(dn_oid)
-{
-	GQuark oid;
-	
-	oid = g_quark_from_static_string ("0.9.2342.19200300.100.1.25");
-	g_assert_cmpstr (egg_asn1_dn_oid_attr (oid), ==, "DC");
-	g_assert_cmpstr (egg_asn1_dn_oid_desc (oid), ==, "Domain Component");
-	
-	/* Should return OID for invalid oids */
-	oid = g_quark_from_static_string ("1.1.1.1.1");
-	g_assert_cmpstr (egg_asn1_dn_oid_attr (oid), ==, "1.1.1.1.1");
-	g_assert_cmpstr (egg_asn1_dn_oid_desc (oid), ==, "1.1.1.1.1");	
-}
-
 DEFINE_TEST(dn_value)
 {
 	const guchar value[] = { 0x13, 0x1a, 0x54, 0x68, 0x61, 0x77, 0x74, 0x65, 0x20, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x6c, 0x20, 0x50, 0x72, 0x65, 0x6d, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x41 };
@@ -447,7 +434,7 @@ concatenate_dn (guint index, GQuark oid, const guchar *value, gsize n_value, gpo
 		g_string_append (dn, ", ");
 	}
 	
-	g_string_append (dn, egg_asn1_dn_oid_attr (oid));
+	g_string_append (dn, egg_oid_get_name (oid));
 	g_string_append_c (dn, '=');
 	
 	text = egg_asn1_dn_print_value (oid, value, n_value);

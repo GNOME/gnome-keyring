@@ -23,6 +23,7 @@
 #include "gcr-certificate-details-widget.h"
 
 #include "egg/egg-asn1.h"
+#include "egg/egg-oid.h"
 #include "egg/egg-hex.h"
 
 #include <glib/gi18n-lib.h>
@@ -184,8 +185,8 @@ on_parsed_dn_part (guint index, GQuark oid, const guchar *value,
 	
 	g_return_if_fail (GCR_IS_CERTIFICATE_DETAILS_WIDGET (self));
 	
-	attr = egg_asn1_dn_oid_attr (oid);
-	desc = egg_asn1_dn_oid_desc (oid);
+	attr = egg_oid_get_name (oid);
+	desc = egg_oid_get_description (oid);
 	
 	/* Combine them into something sane */
 	if (attr && desc) {

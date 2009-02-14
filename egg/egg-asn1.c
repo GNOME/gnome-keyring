@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include "egg-asn1.h"
+#include "egg-oid.h"
 
 #include <libtasn1.h>
 
@@ -782,76 +783,6 @@ egg_asn1_read_date (ASN1_TYPE asn, const gchar *part, GDate *date)
  * Reading DN's
  */
 
-typedef struct _PrintableOid {
-	GQuark oid;
-	const gchar *oidstr;
-	const gchar *attr;
-	const gchar *description;
-	gboolean is_choice;
-} PrintableOid;
-
-static PrintableOid printable_oids[] = {
-	{ 0, "0.9.2342.19200300.100.1.25", "DC", N_("Domain Component"), FALSE },
-	{ 0, "0.9.2342.19200300.100.1.1", "UID", N_("User ID"), TRUE },
-
-	{ 0, "1.2.840.113549.1.9.1", "EMAIL", N_("Email"), FALSE },
-	{ 0, "1.2.840.113549.1.9.7", NULL, NULL, TRUE },
-	{ 0, "1.2.840.113549.1.9.20", NULL, NULL, FALSE },
-	
-	{ 0, "1.3.6.1.5.5.7.9.1", "dateOfBirth", N_("Date of Birth"), FALSE },
-	{ 0, "1.3.6.1.5.5.7.9.2", "placeOfBirth", N_("Place of Birth"), FALSE },
-	{ 0, "1.3.6.1.5.5.7.9.3", "gender", N_("Gender"), FALSE },
-        { 0, "1.3.6.1.5.5.7.9.4", "countryOfCitizenship", N_("Country of Citizenship"), FALSE },
-        { 0, "1.3.6.1.5.5.7.9.5", "countryOfResidence", N_("Country of Residence"), FALSE },
-
-	{ 0, "2.5.4.3", "CN", N_("Common Name"), TRUE },
-	{ 0, "2.5.4.4", "surName", N_("Surname"), TRUE },
-	{ 0, "2.5.4.5", "serialNumber", N_("Serial Number"), FALSE },
-	{ 0, "2.5.4.6", "C", N_("Country"), FALSE, },
-	{ 0, "2.5.4.7", "L", N_("Locality"), TRUE },
-	{ 0, "2.5.4.8", "ST", N_("State"), TRUE },
-	{ 0, "2.5.4.9", "STREET", N_("Street"), TRUE },
-	{ 0, "2.5.4.10", "O", N_("Organization"), TRUE },
-	{ 0, "2.5.4.11", "OU", N_("Organizational Unit"), TRUE },
-	{ 0, "2.5.4.12", "T", N_("Title"), TRUE },
-	{ 0, "2.5.4.20", "telephoneNumber", N_("Telephone Number"), FALSE },
-	{ 0, "2.5.4.42", "givenName", N_("Given Name"), TRUE },
-	{ 0, "2.5.4.43", "initials", N_("Initials"), TRUE },
-	{ 0, "2.5.4.44", "generationQualifier", N_("Generation Qualifier"), TRUE },
-	{ 0, "2.5.4.46", "dnQualifier", N_("DN Qualifier"), FALSE },
-	{ 0, "2.5.4.65", "pseudonym", N_("Pseudonym"), TRUE },
-
-	{ 0, NULL, NULL, NULL, FALSE }
-};
-
-static void
-init_printable_oids (void)
-{
-	static volatile gsize inited_oids = 0;
-	int i;
-	
-	if (g_once_init_enter (&inited_oids)) {
-		for (i = 0; printable_oids[i].oidstr != NULL; ++i)
-			printable_oids[i].oid = g_quark_from_static_string (printable_oids[i].oidstr);
-		g_once_init_leave (&inited_oids, 1);
-	}
-}
-
-static PrintableOid*
-dn_find_printable (GQuark oid)
-{
-	int i;
-	
-	g_return_val_if_fail (oid != 0, NULL);
-	
-	for (i = 0; printable_oids[i].oidstr != NULL; ++i) {
-		if (printable_oids[i].oid == oid)
-			return &printable_oids[i];
-	}
-	
-	return NULL;
-}
-
 static const char HEXC[] = "0123456789ABCDEF";
 
 static gchar*
@@ -870,20 +801,18 @@ dn_print_hex_value (const guchar *data, gsize len)
 }
 
 static gchar* 
-dn_print_oid_value_parsed (PrintableOid *printable, const guchar *data, gsize len)
+dn_print_oid_value_parsed (GQuark oid, guint flags, const guchar *data, gsize len)
 {
 	const gchar *asn_name;
 	ASN1_TYPE asn1;
 	gchar *part;
 	gchar *value;
 	
-	g_assert (printable);
 	g_assert (data);
 	g_assert (len);
-	g_assert (printable->oid);
 	
 	asn_name = asn1_find_structure_from_oid (egg_asn1_get_pkix_asn1type (), 
-	                                         printable->oidstr);
+	                                         g_quark_to_string (oid));
 	g_return_val_if_fail (asn_name, NULL);
 	
 	part = g_strdup_printf ("PKIX1.%s", asn_name);
@@ -891,7 +820,7 @@ dn_print_oid_value_parsed (PrintableOid *printable, const guchar *data, gsize le
 	g_free (part);
 	
 	if (!asn1) {
-		g_message ("couldn't decode value for OID: %s", printable->oidstr);
+		g_message ("couldn't decode value for OID: %s", g_quark_to_string (oid));
 		return NULL;
 	}
 
@@ -901,7 +830,7 @@ dn_print_oid_value_parsed (PrintableOid *printable, const guchar *data, gsize le
 	 * If it's a choice element, then we have to read depending
 	 * on what's there.
 	 */
-	if (value && printable->is_choice) {
+	if (value && (flags & EGG_OID_IS_CHOICE)) {
 		if (strcmp ("printableString", value) == 0 ||
 		    strcmp ("ia5String", value) == 0 ||
 		    strcmp ("utf8String", value) == 0 ||
@@ -916,7 +845,7 @@ dn_print_oid_value_parsed (PrintableOid *printable, const guchar *data, gsize le
 	}
 
 	if (!value) {
-		g_message ("couldn't read value for OID: %s", printable->oidstr);
+		g_message ("couldn't read value for OID: %s", g_quark_to_string (oid));
 		return NULL;
 	}
 
@@ -933,15 +862,15 @@ dn_print_oid_value_parsed (PrintableOid *printable, const guchar *data, gsize le
 }
 
 static gchar*
-dn_print_oid_value (PrintableOid *printable, const guchar *data, gsize len)
+dn_print_oid_value (GQuark oid, guint flags, const guchar *data, gsize len)
 {
 	gchar *value;
 	
 	g_assert (data);
 	g_assert (len);
 	
-	if (printable) {
-		value = dn_print_oid_value_parsed (printable, data, len);
+	if (flags & EGG_OID_PRINTABLE) {
+		value = dn_print_oid_value_parsed (oid, flags, data, len);
 		if (value != NULL)
 			return value;
 	}
@@ -952,7 +881,8 @@ dn_print_oid_value (PrintableOid *printable, const guchar *data, gsize len)
 static gchar* 
 dn_parse_rdn (ASN1_TYPE asn, const gchar *part)
 {
-	PrintableOid *printable;
+	const gchar *name;
+	guint flags;
 	GQuark oid;
 	gchar *path;
 	guchar *value;
@@ -974,12 +904,13 @@ dn_parse_rdn (ASN1_TYPE asn, const gchar *part)
 	value = egg_asn1_read_value (asn, path, &n_value, NULL);
 	g_free (path);
 
-	printable = dn_find_printable (oid);
+	flags = egg_oid_get_flags (oid);
+	name = egg_oid_get_name (oid);
 	
 	g_return_val_if_fail (value, NULL);
-	display = dn_print_oid_value (printable, value, n_value);
+	display = dn_print_oid_value (oid, flags, value, n_value);
 	
-	result = g_strconcat (printable && printable->attr ? printable->attr : g_quark_to_string (oid), 
+	result = g_strconcat ((flags & EGG_OID_PRINTABLE) ? name : g_quark_to_string (oid), 
 			      "=", display, NULL);
 	g_free (display);
 	
@@ -997,8 +928,6 @@ egg_asn1_read_dn (ASN1_TYPE asn, const gchar *part)
 	
 	g_return_val_if_fail (asn, NULL);
 	g_return_val_if_fail (part, NULL);
-	
-	init_printable_oids ();
 	
 	result = g_string_sized_new (64);
 	
@@ -1035,8 +964,8 @@ egg_asn1_read_dn (ASN1_TYPE asn, const gchar *part)
 gchar*
 egg_asn1_read_dn_part (ASN1_TYPE asn, const gchar *part, const gchar *match)
 {
-	PrintableOid *printable = NULL;
 	gboolean done = FALSE;
+	const gchar *name;
 	guchar *value;
 	gsize n_value;
 	gchar *path;
@@ -1046,8 +975,6 @@ egg_asn1_read_dn_part (ASN1_TYPE asn, const gchar *part, const gchar *match)
 	g_return_val_if_fail (asn, NULL);
 	g_return_val_if_fail (part, NULL);
 	g_return_val_if_fail (match, NULL);
-	
-	init_printable_oids ();
 	
 	/* Each (possibly multi valued) RDN */
 	for (i = 1; !done; ++i) {
@@ -1067,9 +994,8 @@ egg_asn1_read_dn_part (ASN1_TYPE asn, const gchar *part, const gchar *match)
 			
 			/* Does it match either the OID or the displayable? */
 			if (g_ascii_strcasecmp (g_quark_to_string (oid), match) != 0) {
-				printable = dn_find_printable (oid);
-				if (!printable || !printable->attr || 
-				    !g_ascii_strcasecmp (printable->attr, match) == 0)
+				name = egg_oid_get_name (oid);
+				if (!g_ascii_strcasecmp (name, match) == 0)
 					continue;
 			}
 
@@ -1080,7 +1006,7 @@ egg_asn1_read_dn_part (ASN1_TYPE asn, const gchar *part, const gchar *match)
 			g_free (path);
 			
 			g_return_val_if_fail (value, NULL);
-			return dn_print_oid_value (printable, value, n_value);
+			return dn_print_oid_value (oid, egg_oid_get_flags (oid), value, n_value);
 		}
 	}
 	
@@ -1099,8 +1025,6 @@ egg_asn1_dn_parse (ASN1_TYPE asn, const gchar *part,
 	guint i, j;
 	
 	g_return_val_if_fail (asn, FALSE);
-	
-	init_printable_oids ();
 	
 	/* Each (possibly multi valued) RDN */
 	for (i = 1; !done; ++i) {
@@ -1142,42 +1066,11 @@ egg_asn1_dn_parse (ASN1_TYPE asn, const gchar *part,
 	return i > 1;
 }
 
-const gchar*
-egg_asn1_dn_oid_attr (GQuark oid)
-{
-	PrintableOid *printable;
-	
-	g_return_val_if_fail (oid, NULL);
-	
-	printable = dn_find_printable (oid);
-	if (!printable)
-		return g_quark_to_string (oid);
-	
-	return printable->attr;	
-}
-
-const gchar*
-egg_asn1_dn_oid_desc (GQuark oid)
-{
-	PrintableOid *printable;
-	
-	g_return_val_if_fail (oid, NULL);
-	
-	printable = dn_find_printable (oid);
-	if (!printable)
-		return g_quark_to_string (oid);
-	
-	return gettext (printable->description);
-}
-
 gchar*
 egg_asn1_dn_print_value (GQuark oid, const guchar *value, gsize n_value)
 {
-	PrintableOid *printable;
-	
 	g_return_val_if_fail (oid, NULL);
 	g_return_val_if_fail (value || !n_value, NULL);
 	
-	printable = dn_find_printable (oid);
-	return dn_print_oid_value (printable, value, n_value);
+	return dn_print_oid_value (oid, egg_oid_get_flags (oid), value, n_value);
 }

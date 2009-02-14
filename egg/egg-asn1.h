@@ -86,10 +86,6 @@ typedef void       (*EggAsn1DnCallback)                   (guint index, GQuark o
 gboolean           egg_asn1_dn_parse                      (ASN1_TYPE asn, const gchar *part, 
                                                            EggAsn1DnCallback callback, gpointer user_data);
 
-const gchar*       egg_asn1_dn_oid_attr                   (GQuark oid);
-
-const gchar*       egg_asn1_dn_oid_desc                   (GQuark oid);
-
 gchar*             egg_asn1_dn_print_value                (GQuark oid, const guchar *value, gsize n_value);
 
 #endif /*EGG_ASN1_H_*/
