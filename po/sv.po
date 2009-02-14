@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-14 09:44+0100\n"
-"PO-Revision-Date: 2009-02-14 09:44+0100\n"
+"POT-Creation-Date: 2009-02-15 00:09+0100\n"
+"PO-Revision-Date: 2009-02-15 00:11+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -423,63 +423,91 @@ msgstr "Nytt lösenord krävs för säker lagring"
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "Ett lösenord krävs för att förbereda \"%s\" för lagring av certifikat eller nycklar"
 
-#: ../daemon/ui/gkr-ask-tool.c:245
+#: ../daemon/ui/gkr-ask-tool.c:230
+msgid ""
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>Kunde inte fånga din mus.</big></b>\n"
+"\n"
+"En ondsint klient kan tjuvlyssna på din session, du kanske klickade i en meny eller något program bestämde sig för att ta fokus.\n"
+"\n"
+"Prova igen."
+
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>Kunde inte fånga ditt tangentbord.</big></b>\n"
+"\n"
+"En ondsint klient kan tjuvlyssna på din session, du kanske klickade i en meny eller något program bestämde sig för att ta fokus.\n"
+"\n"
+"Prova igen."
+
+#: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "Lagra lösenord okrypterade?"
 
-#: ../daemon/ui/gkr-ask-tool.c:246
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Genom att välja att använda ett blankt lösenord kommer dina lagrade lösenord inte att vara krypterade på ett säkert sätt. De kommer att vara åtkomliga för alla som har tillgång till dina filer."
 
-#: ../daemon/ui/gkr-ask-tool.c:253
+#: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
 msgstr "Använd osäker lagring"
 
-#: ../daemon/ui/gkr-ask-tool.c:481
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "_Plats:"
 
-#: ../daemon/ui/gkr-ask-tool.c:494
+#: ../daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "_Gammalt lösenord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:514
+#: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "_Lösenord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:536
+#: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "_Bekräfta lösenordet:"
 
-#: ../daemon/ui/gkr-ask-tool.c:556
+#: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "Styrka för nytt lösenord"
 
-#: ../daemon/ui/gkr-ask-tool.c:614
+#: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "Lösenorden stämde inte överens."
 
-#: ../daemon/ui/gkr-ask-tool.c:630
+#: ../daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "Lösenord får inte vara blanka"
 
-#: ../daemon/ui/gkr-ask-tool.c:681
+#: ../daemon/ui/gkr-ask-tool.c:712
 msgid "_Deny"
 msgstr "_Neka"
 
-#: ../daemon/ui/gkr-ask-tool.c:693
+#: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
 msgstr "S_kapa"
 
-#: ../daemon/ui/gkr-ask-tool.c:697
+#: ../daemon/ui/gkr-ask-tool.c:728
 msgid "C_hange"
 msgstr "Ä_ndra"
 
-#: ../daemon/ui/gkr-ask-tool.c:701
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "Tillåt _denna gång"
 
-#: ../daemon/ui/gkr-ask-tool.c:705
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "Tillåt _alltid"
 
