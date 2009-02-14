@@ -1254,7 +1254,7 @@ msgstr "Certyfikat bez nazwy"
 
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
 msgid "Couldn't parse public SSH key"
-msgstr "Nie można przetworzyć klucza publicznego SSH."
+msgstr "Nie można przetworzyć klucza publicznego SSH"
 
 #~ msgid ""
 #~ "A list of paths to PKCS#11 modules to load. No modules are currently "
