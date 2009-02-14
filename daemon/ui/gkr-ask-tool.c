@@ -217,6 +217,37 @@ write_output (const gchar *data, gsize len)
 
 /* ------------------------------------------------------------------------------ */
 
+#if 0
+
+/*
+ * Some strings added before string freeze for the fixing of bug: 
+ * http://bugzilla.gnome.org/show_bug.cgi?id=571423
+ */
+
+static void
+grab_strings (void)
+{
+	_("<b><big>Could not grab your mouse.</big></b>"
+		"\n\n"
+		"A malicious client may be eavesdropping "
+		"on your session or you may have just clicked "
+		"a menu or some application just decided to get "
+		"focus."
+		"\n\n"
+		"Try again.");
+	
+	_("<b><big>Could not grab your keyboard.</big></b>"
+		"\n\n"
+		"A malicious client may be eavesdropping "
+		"on your session or you may have just clicked "
+		"a menu or some application just decided to get "
+		"focus."
+		"\n\n"
+		"Try again.");	
+}
+
+#endif
+
 static gchar*
 create_markup (const gchar *primary, const gchar *secondary)
 {

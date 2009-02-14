@@ -1,3 +1,7 @@
+2009-02-14  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/ui/gkr-ask-tools.c: Add strings for fixing of bug #571423
+	
 2009-02-14  Magnus Boman  <captain.magnus@gmail.com>
 
 	reviewed by: Stef Walter
