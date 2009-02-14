@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-11 15:21+0100\n"
-"PO-Revision-Date: 2009-02-11 15:25+0100\n"
+"POT-Creation-Date: 2009-02-14 09:44+0100\n"
+"PO-Revision-Date: 2009-02-14 09:44+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -423,163 +423,187 @@ msgstr "Nytt lösenord krävs för säker lagring"
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "Ett lösenord krävs för att förbereda \"%s\" för lagring av certifikat eller nycklar"
 
-#: ../daemon/ui/gkr-ask-tool.c:244
+#: ../daemon/ui/gkr-ask-tool.c:245
 msgid "Store passwords unencrypted?"
 msgstr "Lagra lösenord okrypterade?"
 
-#: ../daemon/ui/gkr-ask-tool.c:245
+#: ../daemon/ui/gkr-ask-tool.c:246
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Genom att välja att använda ett blankt lösenord kommer dina lagrade lösenord inte att vara krypterade på ett säkert sätt. De kommer att vara åtkomliga för alla som har tillgång till dina filer."
 
-#: ../daemon/ui/gkr-ask-tool.c:252
+#: ../daemon/ui/gkr-ask-tool.c:253
 msgid "Use Unsafe Storage"
 msgstr "Använd osäker lagring"
 
-#: ../daemon/ui/gkr-ask-tool.c:479
+#: ../daemon/ui/gkr-ask-tool.c:481
 msgid "_Location:"
 msgstr "_Plats:"
 
-#: ../daemon/ui/gkr-ask-tool.c:492
+#: ../daemon/ui/gkr-ask-tool.c:494
 msgid "_Old password:"
 msgstr "_Gammalt lösenord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
+#: ../daemon/ui/gkr-ask-tool.c:514
 msgid "_Password:"
 msgstr "_Lösenord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:534
+#: ../daemon/ui/gkr-ask-tool.c:536
 msgid "_Confirm password:"
 msgstr "_Bekräfta lösenordet:"
 
-#: ../daemon/ui/gkr-ask-tool.c:554
+#: ../daemon/ui/gkr-ask-tool.c:556
 msgid "New password strength"
 msgstr "Styrka för nytt lösenord"
 
-#: ../daemon/ui/gkr-ask-tool.c:612
+#: ../daemon/ui/gkr-ask-tool.c:614
 msgid "Passwords do not match."
 msgstr "Lösenorden stämde inte överens."
 
-#: ../daemon/ui/gkr-ask-tool.c:628
+#: ../daemon/ui/gkr-ask-tool.c:630
 msgid "Password cannot be blank"
 msgstr "Lösenord får inte vara blanka"
 
-#: ../daemon/ui/gkr-ask-tool.c:679
+#: ../daemon/ui/gkr-ask-tool.c:681
 msgid "_Deny"
 msgstr "_Neka"
 
-#: ../daemon/ui/gkr-ask-tool.c:691
+#: ../daemon/ui/gkr-ask-tool.c:693
 msgid "C_reate"
 msgstr "S_kapa"
 
-#: ../daemon/ui/gkr-ask-tool.c:695
+#: ../daemon/ui/gkr-ask-tool.c:697
 msgid "C_hange"
 msgstr "Ä_ndra"
 
-#: ../daemon/ui/gkr-ask-tool.c:699
+#: ../daemon/ui/gkr-ask-tool.c:701
 msgid "Allow _Once"
 msgstr "Tillåt _denna gång"
 
-#: ../daemon/ui/gkr-ask-tool.c:703
+#: ../daemon/ui/gkr-ask-tool.c:705
 msgid "_Always Allow"
 msgstr "Tillåt _alltid"
 
-#: ../egg/egg-asn1.c:794
+#: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "Domänkomponent"
 
-#: ../egg/egg-asn1.c:795
+#: ../egg/egg-oid.c:43
 msgid "User ID"
 msgstr "Användar-id"
 
-#: ../egg/egg-asn1.c:797
+#: ../egg/egg-oid.c:46
 msgid "Email"
 msgstr "E-post"
 
-#: ../egg/egg-asn1.c:801
+#: ../egg/egg-oid.c:54
 msgid "Date of Birth"
 msgstr "Födelsedag"
 
-#: ../egg/egg-asn1.c:802
+#: ../egg/egg-oid.c:56
 msgid "Place of Birth"
 msgstr "Födelseort"
 
-#: ../egg/egg-asn1.c:803
+#: ../egg/egg-oid.c:58
 msgid "Gender"
 msgstr "Kön"
 
-#: ../egg/egg-asn1.c:804
+#: ../egg/egg-oid.c:60
 msgid "Country of Citizenship"
 msgstr "Nationalitet"
 
-#: ../egg/egg-asn1.c:805
+#: ../egg/egg-oid.c:62
 msgid "Country of Residence"
 msgstr "Bostadsland"
 
-#: ../egg/egg-asn1.c:807
+#: ../egg/egg-oid.c:65
 msgid "Common Name"
 msgstr "Common Name"
 
-#: ../egg/egg-asn1.c:808
+#: ../egg/egg-oid.c:67
 msgid "Surname"
 msgstr "Förnamn"
 
-#: ../egg/egg-asn1.c:809
+#: ../egg/egg-oid.c:69
 #: ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:259
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Serial Number"
 msgstr "Serienummer"
 
-#: ../egg/egg-asn1.c:810
+#: ../egg/egg-oid.c:71
 msgid "Country"
 msgstr "Land"
 
-#: ../egg/egg-asn1.c:811
+#: ../egg/egg-oid.c:73
 msgid "Locality"
 msgstr "Lokalitet"
 
-#: ../egg/egg-asn1.c:812
+#: ../egg/egg-oid.c:75
 msgid "State"
 msgstr "Län"
 
-#: ../egg/egg-asn1.c:813
+#: ../egg/egg-oid.c:77
 msgid "Street"
 msgstr "Gata"
 
-#: ../egg/egg-asn1.c:814
+#: ../egg/egg-oid.c:79
 msgid "Organization"
 msgstr "Organisation"
 
-#: ../egg/egg-asn1.c:815
+#: ../egg/egg-oid.c:81
 msgid "Organizational Unit"
 msgstr "Avdelning"
 
-#: ../egg/egg-asn1.c:816
+#: ../egg/egg-oid.c:83
 msgid "Title"
 msgstr "Titel"
 
-#: ../egg/egg-asn1.c:817
+#: ../egg/egg-oid.c:85
 msgid "Telephone Number"
 msgstr "Telefonnummer"
 
-#: ../egg/egg-asn1.c:818
+#: ../egg/egg-oid.c:87
 msgid "Given Name"
 msgstr "Tilltalsnamn"
 
-#: ../egg/egg-asn1.c:819
+#: ../egg/egg-oid.c:89
 msgid "Initials"
 msgstr "Initialer"
 
-#: ../egg/egg-asn1.c:820
+#: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
 msgstr "Genereringskvalificerare"
 
-#: ../egg/egg-asn1.c:821
+#: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
 msgstr "DN-kvalificerare"
 
-#: ../egg/egg-asn1.c:822
+#: ../egg/egg-oid.c:95
 msgid "Pseudonym"
 msgstr "Pseudonym"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "MD2 med RSA"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "MD5 med RSA"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "SHA1 med RSA"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "SHA1 med DSA"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -657,66 +681,95 @@ msgstr "SSL-klientcertifikat"
 msgid "SSL Server Certificate"
 msgstr "SSL-servercertifikat"
 
+#: ../gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "Utökning"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "Identifierare"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "Värde"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "Ja"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "Nej"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+msgid "Critical"
+msgstr "Kritiskt"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:240
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Subject Name"
 msgstr "Subject-namn"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:244
+#: ../gcr/gcr-certificate-details-widget.c:315
 msgid "Issuer Name"
 msgstr "Utfärdarens namn"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:248
+#: ../gcr/gcr-certificate-details-widget.c:319
 msgid "Issued Certificate"
 msgstr "Utfärdat certifikat"
 
-#: ../gcr/gcr-certificate-details-widget.c:253
+#: ../gcr/gcr-certificate-details-widget.c:324
 msgid "Version"
 msgstr "Version"
 
-#: ../gcr/gcr-certificate-details-widget.c:266
+#: ../gcr/gcr-certificate-details-widget.c:337
 msgid "Not Valid Before"
 msgstr "Inte giltigt före"
 
-#: ../gcr/gcr-certificate-details-widget.c:271
+#: ../gcr/gcr-certificate-details-widget.c:342
 msgid "Not Valid After"
 msgstr "Inte giltigt efter"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:276
-#: ../gcr/gcr-certificate-details-widget.c:284
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Signature"
 msgstr "Signatur"
 
-#. TODO: Complete Signature algorithm, and params
-#: ../gcr/gcr-certificate-details-widget.c:279
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature Algorithm"
 msgstr "Signaturalgoritm"
 
+#: ../gcr/gcr-certificate-details-widget.c:356
+msgid "Signature Parameters"
+msgstr "Signaturparametrar"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:288
+#: ../gcr/gcr-certificate-details-widget.c:367
 msgid "Public Key Info"
 msgstr "Information om publik nyckel"
 
-#. TODO: Complete algorithm, params, key size
-#: ../gcr/gcr-certificate-details-widget.c:291
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Algorithm"
 msgstr "Nyckelalgoritm"
 
-#: ../gcr/gcr-certificate-details-widget.c:292
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "Nyckelparametrar"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Key Size"
 msgstr "Nyckelstorlek"
 
-#: ../gcr/gcr-certificate-details-widget.c:297
+#: ../gcr/gcr-certificate-details-widget.c:390
 #: ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Publik nyckel"
 
-#. TODO: Implement extensions
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:394
 msgid "Fingerprints"
 msgstr "Fingeravtryck"
 
