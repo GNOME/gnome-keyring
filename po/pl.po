@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-14 17:37+0100\n"
-"PO-Revision-Date: 2009-02-14 18:13+0100\n"
+"POT-Creation-Date: 2009-02-16 20:07+0100\n"
+"PO-Revision-Date: 2009-02-16 20:08+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Aviary.pl <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
@@ -606,10 +606,9 @@ msgstr "Imię"
 msgid "Initials"
 msgstr "Inicjały"
 
-# FIXME: Przydomek pokolenia, określenie pokolenia, kwalifikator pokolenia, wskaźnik pokolenia?
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr "Generation Qualifier"
+msgstr "Przydomek pokolenia"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
