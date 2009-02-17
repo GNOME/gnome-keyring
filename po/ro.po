@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ro\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-02-14 04:38+0000\n"
-"PO-Revision-Date: 2009-02-14 11:44+0200\n"
+"POT-Creation-Date: 2009-02-14 14:22+0000\n"
+"PO-Revision-Date: 2009-02-17 22:44+0200\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -426,63 +426,93 @@ msgstr "Stocarea sigură necesită parolă nouă"
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "Pentru a pregătii „%s” pentru stocarea certificatelor și a cheilor, este nevoie de o parolă"
 
-#: ../daemon/ui/gkr-ask-tool.c:244
+#: ../daemon/ui/gkr-ask-tool.c:230
+msgid ""
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>Nu s-a putut capta mausul.</big></b>\n"
+"\n"
+"Este posibil ca o aplicație rău întenționată să supravegheze sesiunea\n"
+" sau probabil tocmai ați făcut clic pe un meniu sau o altă aplicația a cerut să fie focalizată.\n"
+"\n"
+"Încercați din nou."
+
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>Nu s-a putut capta tastatura.</big></b>\n"
+"\n"
+"Este posibil ca o aplicație rău întenționată să supravegheze sesiunea\n"
+" sau probabil tocmai ați făcut clic pe un meniu sau o altă aplicația a cerut să fie focalizată.\n"
+"\n"
+"Încercați din nou."
+
+#: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "Stochează parole necriptate?"
 
-#: ../daemon/ui/gkr-ask-tool.c:245
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Prin alegerea folosirii unei parole goale, parolele stocate nu vor fi criptate în siguranță. Ele vor putea fi citite de oricine are acces la fișierele dumneavoastră."
 
-#: ../daemon/ui/gkr-ask-tool.c:252
+#: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
 msgstr "Folosește stocare nesigură"
 
-#: ../daemon/ui/gkr-ask-tool.c:479
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "_Locație:"
 
-#: ../daemon/ui/gkr-ask-tool.c:492
+#: ../daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "Par_olă veche:"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
+#: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "_Parolă:"
 
-#: ../daemon/ui/gkr-ask-tool.c:534
+#: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "_Confirmă parola:"
 
-#: ../daemon/ui/gkr-ask-tool.c:554
+#: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "Calitatea noi parole"
 
-#: ../daemon/ui/gkr-ask-tool.c:612
+#: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "Parolele nu se potrivesc."
 
-#: ../daemon/ui/gkr-ask-tool.c:628
+#: ../daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "Parola nu poate fi necompletată"
 
-#: ../daemon/ui/gkr-ask-tool.c:679
+#: ../daemon/ui/gkr-ask-tool.c:712
 msgid "_Deny"
 msgstr "_Refuză"
 
-#: ../daemon/ui/gkr-ask-tool.c:691
+#: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
 msgstr "C_reează"
 
-#: ../daemon/ui/gkr-ask-tool.c:695
+#: ../daemon/ui/gkr-ask-tool.c:728
 msgid "C_hange"
 msgstr "Sc_himbă"
 
-#: ../daemon/ui/gkr-ask-tool.c:699
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "Permite _o dată"
 
-#: ../daemon/ui/gkr-ask-tool.c:703
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "Permite perm_anent"
 
@@ -574,11 +604,11 @@ msgstr "Inițiale"
 
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr ""
+msgstr "Caracteristică generare"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr ""
+msgstr "Caracteristică DN"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
@@ -685,7 +715,6 @@ msgid "SSL Server Certificate"
 msgstr "Certificat server SSL"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
-#| msgid "Version"
 msgid "Extension"
 msgstr "Extensie"
 
@@ -706,7 +735,6 @@ msgid "No"
 msgstr "Nu"
 
 #: ../gcr/gcr-certificate-details-widget.c:237
-#| msgid "Certificate"
 msgid "Critical"
 msgstr "Critic"
 
@@ -748,7 +776,6 @@ msgid "Signature Algorithm"
 msgstr "Algoritm semnătură"
 
 #: ../gcr/gcr-certificate-details-widget.c:356
-#| msgid "Signature"
 msgid "Signature Parameters"
 msgstr "Parametrii semnătură"
 
@@ -869,7 +896,7 @@ msgstr "Memorie disponibilă insuficientă"
 
 #: ../gp11/gp11-misc.c:119
 msgid "The specified slot ID is not valid"
-msgstr ""
+msgstr "ID slot specificat nu este valid"
 
 #: ../gp11/gp11-misc.c:121
 msgid "Internal error"
