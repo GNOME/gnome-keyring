@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-08 17:33+0900\n"
-"PO-Revision-Date: 2009-02-08 17:31+0900\n"
+"POT-Creation-Date: 2009-02-18 22:49+0900\n"
+"PO-Revision-Date: 2009-02-18 22:40+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -111,7 +111,8 @@ msgstr "アクセスの許可"
 msgid "Allow application access to keyring?"
 msgstr "アプリケーションにキーリングへのアクセスを許可しますか？"
 
-#: ../daemon/gkr-daemon-ops.c:308
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -120,7 +121,8 @@ msgstr ""
 "アプリケーション '%s' (%s) がデフォルトのキーリングへアクセスしようとしました"
 "が、ロックがかかっていました。"
 
-#: ../daemon/gkr-daemon-ops.c:312
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -128,7 +130,8 @@ msgstr ""
 "アプリケーション '%s' (%s) がキーリングの '%s' へアクセスしようとしましたが、"
 "ロックがかかっていました。"
 
-#: ../daemon/gkr-daemon-ops.c:318 ../daemon/gkr-daemon-ops.c:328
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -136,14 +139,16 @@ msgstr ""
 "アプリケーション '%s' がデフォルトのキーリングへアクセスしようとしましたが、"
 "ロックがかかっていました。"
 
-#: ../daemon/gkr-daemon-ops.c:322 ../daemon/gkr-daemon-ops.c:333
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "アプリケーション '%s' がキーリングの '%s' へアクセスしようとしましたが、ロッ"
 "クがかかっていました。"
 
-#: ../daemon/gkr-daemon-ops.c:339
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
@@ -151,7 +156,8 @@ msgstr ""
 "不明なアプリケーションがデフォルトのキーリングへアクセスしようとしましたが、"
 "ロックがかかっていました。"
 
-#: ../daemon/gkr-daemon-ops.c:343
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -159,25 +165,26 @@ msgstr ""
 "不明なアプリケーションがキーリング '%s' へアクセスしようとしましたが、ロック"
 "がかかっていました。"
 
-#: ../daemon/gkr-daemon-ops.c:350
+#: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
 msgstr "キーリング (デフォルト) のロックを解除するパスワードを入力して下さい"
 
-#: ../daemon/gkr-daemon-ops.c:352
+#: ../daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "キーリング '%s' のロックを解除するパスワードを入力して下さい"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:356
+#: ../daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "キーリングのロック解除"
 
-#: ../daemon/gkr-daemon-ops.c:368
+#: ../daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
 msgstr "ログインしたら、このキーリングのロックを自動的に解除する"
 
-#: ../daemon/gkr-daemon-ops.c:404
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -186,7 +193,8 @@ msgstr ""
 "アプリケーション '%s' (%s) が '%s' という新しいキーリングを生成しようとしてい"
 "ます。このキーリングのパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:408
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -195,7 +203,8 @@ msgstr ""
 "アプリケーション '%s' (%s) が新しいデフォルトのキーリングを生成しようとしてい"
 "ます。このキーリングのパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:414 ../daemon/gkr-daemon-ops.c:424
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -204,7 +213,8 @@ msgstr ""
 "アプリケーション '%s' が '%s' という新しいキーリングを生成しようとしていま"
 "す。このキーリングのパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:418 ../daemon/gkr-daemon-ops.c:428
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -213,7 +223,8 @@ msgstr ""
 "アプリケーション '%s' が新しいキーリングを生成しようとしています。このキーリ"
 "ングのパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:434
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -222,7 +233,8 @@ msgstr ""
 "不明なアプリケーションが '%s' という新しいキーリングを生成しようとしていま"
 "す。このキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:438
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -232,15 +244,15 @@ msgstr ""
 "す。このキーリングで使用するパスワードを選択して下さい。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:444
+#: ../daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
 msgstr "新しいキーリングのパスワード"
 
-#: ../daemon/gkr-daemon-ops.c:445
+#: ../daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
 msgstr "新しいキーリングのパスワードの選択"
 
-#: ../daemon/gkr-daemon-ops.c:492
+#: ../daemon/gkr-daemon-ops.c:508
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -249,7 +261,7 @@ msgstr ""
 "アプリケーション '%s' (%s) がキーリング '%s' のパスワードを変更しようとしてい"
 "ます。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:496
+#: ../daemon/gkr-daemon-ops.c:512
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -258,7 +270,7 @@ msgstr ""
 "アプリケーション '%s' (%s) がデフォルトのキーリングのパスワードを変更しようと"
 "しています。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:502 ../daemon/gkr-daemon-ops.c:512
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -267,7 +279,7 @@ msgstr ""
 "アプリケーション '%s' がキーリング '%s' のパスワードを生成しようとしていま"
 "す。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:506 ../daemon/gkr-daemon-ops.c:516
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -276,7 +288,7 @@ msgstr ""
 "アプリケーション '%s' がデフォルトのキーリングのパスワードを変更しようとして"
 "います。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:522
+#: ../daemon/gkr-daemon-ops.c:538
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -285,7 +297,7 @@ msgstr ""
 "不明なアプリケーションが '%s' というキーリングのパスワードを変更しようとして"
 "います。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:526
+#: ../daemon/gkr-daemon-ops.c:542
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -294,22 +306,22 @@ msgstr ""
 "不明なアプリケーションが新しいデフォルト・キーリングのパスワードを変更しよう"
 "としています。そのキーリングで使用するパスワードを選択して下さい。"
 
-#: ../daemon/gkr-daemon-ops.c:536
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "キーリング '%s' の新しいパスワードを選択して下さい"
 
-#: ../daemon/gkr-daemon-ops.c:538
+#: ../daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "デフォルトのキーリングの新しいパスワードを選択して下さい"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:542
+#: ../daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
 msgstr "キーリングのパスワードの変更"
 
-#: ../daemon/gkr-daemon-ops.c:615
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -320,7 +332,7 @@ msgstr ""
 "のキーリングがありません。デフォルトのキーリングを生成する場合はパスワードを"
 "選択する必要があります。"
 
-#: ../daemon/gkr-daemon-ops.c:619 ../daemon/gkr-daemon-ops.c:623
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -331,7 +343,7 @@ msgstr ""
 "キーリングがありません。デフォルトのキーリングを生成する場合はパスワードを選"
 "択する必要があります。"
 
-#: ../daemon/gkr-daemon-ops.c:627
+#: ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -343,29 +355,15 @@ msgstr ""
 "択する必要があります。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:632
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "キーリング (デフォルト) の生成"
 
-#: ../daemon/gkr-daemon-ops.c:632
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
 msgstr "キーリング (デフォルト) のパスワードの選択"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"A list of paths to PKCS#11 modules to load. No modules are currently listed "
-"by default, as this is still an experimental feature. This is used by "
-"seahorse and other PKCS#11 aware applications."
-msgstr ""
-"起動時に読み込む PKCS#11 モジュールのパス名を要素とするリストです。この機能は"
-"未だ開発中のため、デフォルトでは何もモジュールは指定されていません。この機能"
-"は seahorse や他の PKCS#11 対応アプリが使用します。"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid "PKCS#11 Modules"
-msgstr "PKCS#11 のモジュール"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -377,7 +375,7 @@ msgstr ""
 "合) にのみ効果があります。ここで設定した内容はコマンドラインから上書きするこ"
 "とができます。"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -389,11 +387,11 @@ msgstr ""
 "のみ効果があります。ここで設定した内容はコマンドラインから上書きすることがで"
 "きます。"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "PKCS#11 コンポーネントを有効にするかどうか"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "SSH エージェントを有効にするかどうか"
 
@@ -472,60 +470,65 @@ msgstr "パスワードを入力して公開鍵を解除して下さい"
 msgid "Enter password to unlock"
 msgstr "パスワードを入力してロックを解除して下さい"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
 "アプリケーションが秘密鍵の '%s' にアクセスしようとしましたが、ロックがかかっ"
 "ていました。"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:131
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
 "アプリケーションが証明書の '%s' にアクセスしようとしましたが、ロックがかかっ"
 "ていました。"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 "アプリケーションが公開鍵の '%s' にアクセスしようとしましたが、ロックがかかっ"
 "ていました。"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr ""
 "アプリケーションが '%s' にアクセスしようとしましたが、ロックがかかっていまし"
 "た。"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:144
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
 msgid "Automatically unlock this private key when I log in."
 msgstr "ログインしたら、この秘密鍵を自動的に解除する"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:146
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
 msgid "Automatically unlock this certificate when I log in."
 msgstr "ログインしたら、この証明書によるロックを自動的に解除する"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
 msgid "Automatically unlock this public key when I log in."
 msgstr "ログインしたら、この公開鍵を自動的に解除する"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
 msgid "Automatically unlock this when I log in"
 msgstr "ログインしたら、このロックを自動的に解除する"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:367
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
 msgid "Unlock certificate/key storage"
 msgstr "ストレージのロックの解除"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:368
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
 "パスワードを入力して証明書/鍵を格納したストレージのロックを解除して下さい"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:370
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -534,20 +537,20 @@ msgstr ""
 "アプリケーションが証明書/鍵を格納したストレージ ('%s') にアクセスしようとしま"
 "したが、ロックがかかっていました。"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:376
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
 msgid "Automatically unlock secure storage when I log in."
 msgstr "ログインしたら、このストレージのロックを自動的に解除する"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:519
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
 msgid "New Password Required"
 msgstr "新しいパスワードが必要です"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:520
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
 msgid "New password required for secure storage"
 msgstr "セキュアなストレージにするには新しいパスワードが必要です"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:522
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -555,11 +558,45 @@ msgid ""
 msgstr ""
 "'%s' を証明書またはキーを格納するストレージにするにはパスワードが必要です"
 
-#: ../daemon/ui/gkr-ask-tool.c:244
+#: ../daemon/ui/gkr-ask-tool.c:230
+msgid ""
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>お使いのマウスのフォーカスを取得できませんでした</big></b>\n"
+"\n"
+"悪意があるユーザがお使いのセッションを盗み聞きしたり、フォーカスを入手するた"
+"めにあなたがクリックしたメニューやアプリケーションの情報を盗み聞きしている可"
+"能性があります。\n"
+"\n"
+"もう一度試してみて下さい。"
+
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>お使いのキーボードのフォーカスを取得できませんでした</big></b>\n"
+"\n"
+"悪意があるユーザがお使いのセッションを盗み聞きしたり、フォーカスを入手するた"
+"めにあなたがクリックしたメニューやアプリケーションの情報を盗み聞きしている可"
+"能性があります。\n"
+"\n"
+"もう一度試してみて下さい。"
+
+#: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "暗号化していないパスワードを保存しますか？"
 
-#: ../daemon/ui/gkr-ask-tool.c:245
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -568,156 +605,180 @@ msgstr ""
 "空のパスワードを利用する場合、保存しておいたパスワードは完全には暗号化されま"
 "せん。他の人達がこれらのパスワードを利用する可能性があります。"
 
-#: ../daemon/ui/gkr-ask-tool.c:252
+#: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
 msgstr "安全ではないストレージを使う"
 
-#: ../daemon/ui/gkr-ask-tool.c:479
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "場所(_L):"
 
-#: ../daemon/ui/gkr-ask-tool.c:492
+#: ../daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "古いパスワード(_O):"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
+#: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "パスワード(_P):"
 
-#: ../daemon/ui/gkr-ask-tool.c:534
+#: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "パスワードの確認(_C):"
 
-#: ../daemon/ui/gkr-ask-tool.c:554
+#: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "新しいパスワードの強度"
 
-#: ../daemon/ui/gkr-ask-tool.c:612
+#: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "パスワードが一致しません。"
 
-#: ../daemon/ui/gkr-ask-tool.c:628
+#: ../daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "パスワードを空にしないで下さい"
 
-#: ../daemon/ui/gkr-ask-tool.c:679
+#: ../daemon/ui/gkr-ask-tool.c:712
 msgid "_Deny"
 msgstr "拒否する(_D)"
 
-#: ../daemon/ui/gkr-ask-tool.c:691
+#: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
 msgstr "生成する(_R)"
 
-#: ../daemon/ui/gkr-ask-tool.c:695
+#: ../daemon/ui/gkr-ask-tool.c:728
 msgid "C_hange"
 msgstr "変更する(_H)"
 
-#: ../daemon/ui/gkr-ask-tool.c:699
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "一度だけ許可する(_O)"
 
-#: ../daemon/ui/gkr-ask-tool.c:703
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "常に許可する(_A)"
 
 # 参考: インターネットX.509 PKI: 証明書と CRL のプロファイル
 # http://www.ipa.go.jp/security/rfc/RFC5280-04JA.html
-#: ../egg/egg-asn1.c:794
+#: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "ドメイン・コンポーネント"
 
-#: ../egg/egg-asn1.c:795
+#: ../egg/egg-oid.c:43
 msgid "User ID"
 msgstr "ユーザ ID"
 
-#: ../egg/egg-asn1.c:797
+#: ../egg/egg-oid.c:46
 msgid "Email"
 msgstr "E-メール"
 
-#: ../egg/egg-asn1.c:801
+#: ../egg/egg-oid.c:54
 msgid "Date of Birth"
 msgstr "誕生日"
 
-#: ../egg/egg-asn1.c:802
+#: ../egg/egg-oid.c:56
 msgid "Place of Birth"
 msgstr "出生地"
 
-#: ../egg/egg-asn1.c:803
+#: ../egg/egg-oid.c:58
 msgid "Gender"
 msgstr "性別"
 
-#: ../egg/egg-asn1.c:804
+#: ../egg/egg-oid.c:60
 msgid "Country of Citizenship"
 msgstr "市民権を持つ国"
 
-#: ../egg/egg-asn1.c:805
+#: ../egg/egg-oid.c:62
 msgid "Country of Residence"
 msgstr "住居のある国"
 
-#: ../egg/egg-asn1.c:807
+#: ../egg/egg-oid.c:65
 msgid "Common Name"
 msgstr "Common Name"
 
-#: ../egg/egg-asn1.c:808
+#: ../egg/egg-oid.c:67
 msgid "Surname"
 msgstr "あだ名"
 
-#: ../egg/egg-asn1.c:809 ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:259
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Serial Number"
 msgstr "シリアル番号"
 
-#: ../egg/egg-asn1.c:810
+#: ../egg/egg-oid.c:71
 msgid "Country"
 msgstr "国"
 
-#: ../egg/egg-asn1.c:811
+#: ../egg/egg-oid.c:73
 msgid "Locality"
 msgstr "地方"
 
-#: ../egg/egg-asn1.c:812
+#: ../egg/egg-oid.c:75
 msgid "State"
 msgstr "都道府県"
 
-#: ../egg/egg-asn1.c:813
+#: ../egg/egg-oid.c:77
 msgid "Street"
 msgstr "通り"
 
-#: ../egg/egg-asn1.c:814
+#: ../egg/egg-oid.c:79
 msgid "Organization"
 msgstr "会社"
 
-#: ../egg/egg-asn1.c:815
+#: ../egg/egg-oid.c:81
 msgid "Organizational Unit"
 msgstr "部署"
 
-#: ../egg/egg-asn1.c:816
+#: ../egg/egg-oid.c:83
 msgid "Title"
 msgstr "役職"
 
-#: ../egg/egg-asn1.c:817
+#: ../egg/egg-oid.c:85
 msgid "Telephone Number"
 msgstr "電話番号"
 
-#: ../egg/egg-asn1.c:818
+#: ../egg/egg-oid.c:87
 msgid "Given Name"
 msgstr "クリスチャンネーム"
 
-#: ../egg/egg-asn1.c:819
+#: ../egg/egg-oid.c:89
 msgid "Initials"
 msgstr "イニシャル"
 
-#: ../egg/egg-asn1.c:820
+#: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
 msgstr "世代修飾子"
 
-#: ../egg/egg-asn1.c:821
+#: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
 msgstr "DN 修飾子"
 
-#: ../egg/egg-asn1.c:822
+#: ../egg/egg-oid.c:95
 msgid "Pseudonym"
 msgstr "仮名"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "RSA 付きの MD2"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "RSA 付きの MD5"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "RSA 付きの SHA1"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "DSA 付きの SHA1"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -795,65 +856,94 @@ msgstr "SSL クライアント証明書"
 msgid "SSL Server Certificate"
 msgstr "SSL サーバ証明書"
 
+#: ../gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "拡張"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "識別子"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "値"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "はい"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "いいえ"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+msgid "Critical"
+msgstr "重大"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:240
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Subject Name"
 msgstr "サブジェクト名"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:244
+#: ../gcr/gcr-certificate-details-widget.c:315
 msgid "Issuer Name"
 msgstr "発行者の名前"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:248
+#: ../gcr/gcr-certificate-details-widget.c:319
 msgid "Issued Certificate"
 msgstr "発行済の証明書"
 
-#: ../gcr/gcr-certificate-details-widget.c:253
+#: ../gcr/gcr-certificate-details-widget.c:324
 msgid "Version"
 msgstr "版"
 
-#: ../gcr/gcr-certificate-details-widget.c:266
+#: ../gcr/gcr-certificate-details-widget.c:337
 msgid "Not Valid Before"
 msgstr "次より古い日付は妥当ではない"
 
-#: ../gcr/gcr-certificate-details-widget.c:271
+#: ../gcr/gcr-certificate-details-widget.c:342
 msgid "Not Valid After"
 msgstr "次より新しい日付は妥当ではない"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:276
-#: ../gcr/gcr-certificate-details-widget.c:284
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Signature"
 msgstr "署名"
 
-#. TODO: Complete Signature algorithm, and params
-#: ../gcr/gcr-certificate-details-widget.c:279
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature Algorithm"
 msgstr "署名アルゴリズム"
 
+#: ../gcr/gcr-certificate-details-widget.c:356
+msgid "Signature Parameters"
+msgstr "署名のパラメータ"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:288
+#: ../gcr/gcr-certificate-details-widget.c:367
 msgid "Public Key Info"
 msgstr "公開鍵の情報"
 
-#. TODO: Complete algorithm, params, key size
-#: ../gcr/gcr-certificate-details-widget.c:291
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Algorithm"
 msgstr "鍵のアルゴリズム"
 
-#: ../gcr/gcr-certificate-details-widget.c:292
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "鍵のパラメータ"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Key Size"
 msgstr "鍵のサイズ"
 
-#: ../gcr/gcr-certificate-details-widget.c:297 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "公開鍵"
 
-#. TODO: Implement extensions
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:394
 msgid "Fingerprints"
 msgstr "指紋"
 
@@ -886,29 +976,35 @@ msgstr "証明書/鍵のインポート"
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "インポートした証明書/鍵を保存する場所を選択して下さい"
 
-#: ../gcr/gcr-importer.c:372
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
 msgid "In order to import the private key, it must be unlocked"
 msgstr "秘密鍵をインポートする場合はロックを解除して下さい"
 
-#: ../gcr/gcr-importer.c:374
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "証明書をインポートする場合はロックを解除して下さい"
 
-#: ../gcr/gcr-importer.c:376
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
 msgid "In order to import the data, it must be unlocked"
 msgstr "データをインポートする場合はロックを解除して下さい"
 
-#: ../gcr/gcr-importer.c:379
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "秘密鍵の '%s' をインポートする場合はロックを解除して下さい"
 
-#: ../gcr/gcr-importer.c:381
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "証明書の '%s' をインポートする場合はロックを解除して下さい"
 
-#: ../gcr/gcr-importer.c:383
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "'%s' をインポートする場合はロックを解除して下さい"
@@ -1292,90 +1388,3 @@ msgstr "名前なしの証明書"
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
 msgid "Couldn't parse public SSH key"
 msgstr "SSH の公開鍵を解析できませんでした"
-
-#~ msgid "Import private key"
-#~ msgstr "秘密鍵のインポート"
-
-#~ msgid "Import certificate"
-#~ msgstr "証明書のインポート"
-
-#~ msgid "Import public key"
-#~ msgstr "公開鍵のインポート"
-
-#~ msgid "Import"
-#~ msgstr "インポート"
-
-#~ msgid "The system wants to import the private key '%s', but it is locked"
-#~ msgstr ""
-#~ "システムが秘密鍵の '%s' をインポートしようとしましたが、ロックがかかってい"
-#~ "ました。"
-
-#~ msgid "The system wants to import the certificate '%s', but it is locked"
-#~ msgstr ""
-#~ "システムが証明書の '%s' をインポートしようとしましたが、ロックがかかってい"
-#~ "ました。"
-
-#~ msgid "The system wants to import the public key '%s', but it is locked"
-#~ msgstr ""
-#~ "システムが公開鍵の '%s' をインポートしようとしましたが、ロックがかかってい"
-#~ "ました。"
-
-#~ msgid "The system wants to import '%s', but it is locked"
-#~ msgstr ""
-#~ "システムが '%s' をインポートしようとしましたが、ロックがかかっていました。"
-
-#~ msgid "Create Storage for Key Information"
-#~ msgstr "鍵情報を保管するストレージの作成"
-
-#~ msgid "Choose password to protect storage"
-#~ msgstr "ストレージを保護するためのパスワードの選択"
-
-#~ msgid ""
-#~ "The system wants to store information about your keys and certificates. "
-#~ "In order to protect this information, choose a password with which it "
-#~ "will be locked."
-#~ msgstr ""
-#~ "システムが秘密鍵と証明書に関する情報に保存しようとしています。この情報に"
-#~ "ロックをかけて保護するためのパスワードを選択して下さい。"
-
-#~ msgid "Unlock Storage for Key Information"
-#~ msgstr "ストレージのロックの解除"
-
-#~ msgid "Enter password to unlock storage"
-#~ msgstr "パスワードを入力してストレージのロックを解除して下さい"
-
-#~ msgid ""
-#~ "The system wants to access information about your keys and certificates, "
-#~ "but it is locked."
-#~ msgstr ""
-#~ "システムが秘密鍵と証明書に関する情報にアクセスしようとしましたが、ロックが"
-#~ "かかっていました。"
-
-#~ msgid "Trust Association"
-#~ msgstr "トラスト・アソシエーション"
-
-#~ msgid "Lock private key"
-#~ msgstr "秘密鍵をロックする"
-
-#~ msgid "Lock"
-#~ msgstr "ロック"
-
-#~ msgid "Enter password to protect the private key"
-#~ msgstr "パスワードを入力して秘密鍵を保護して下さい"
-
-#~ msgid "Enter password to protect storage"
-#~ msgstr "パスワードを入力してストレージを保護して下さい"
-
-#~ msgid ""
-#~ "The system wants to store the private key '%s' on your disk. Please enter "
-#~ "a password to lock it with."
-#~ msgstr ""
-#~ "システムが秘密鍵である '%s' をお使いのディスクに保存しようとしています。パ"
-#~ "スワードを入力してディスクのロックを解除して下さい。"
-
-#~ msgid ""
-#~ "The system wants to store '%s' on your disk. Please enter a password to "
-#~ "lock it with."
-#~ msgstr ""
-#~ "システムが '%s' をお使いのディスクに保存しようとしています。パスワードを入"
-#~ "力してディスクのロックを解除して下さい。"
