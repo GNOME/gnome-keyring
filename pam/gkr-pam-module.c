@@ -680,9 +680,10 @@ change_keyring_password (pam_handle_t *ph, struct passwd *pwd,
 	
 	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
 
-	/* 'login' keyring doesn't exist, create it */
+	/* No keyring, not an error. Will be created at initial authenticate. */
 	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-		return create_keyring (ph, pwd, password);
+		syslog (GKR_LOG_INFO, "gkr-pam: '%s' keyring does not exist, not changing password", LOGIN_KEYRING);
+		return PAM_SUCCESS;
 		
 	/* An error occured unlocking */
 	} else if (res != GNOME_KEYRING_RESULT_OK) {

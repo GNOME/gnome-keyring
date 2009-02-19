@@ -1,3 +1,9 @@
+2009-02-18  Stef Walter  <stef@memberwebs.com>
+
+	* pam/gkr-pam-module.c: If login keyring doesn't exist when 
+	changing the password, don't create it. Fixes bug #572282
+	Patch by Vincent Untz
+
 2009-02-14  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/gkr-daemon.c: Close stdin/stdout when not running
