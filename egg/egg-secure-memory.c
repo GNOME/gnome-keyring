@@ -148,11 +148,9 @@ unused_peek (void **stack)
  */
 
 /* Pool allocates this data type */
-typedef struct _Item {
-	union {
+typedef union _Item {
 		Cell cell;
 		Block block;
-	};
 } Item;
 
 typedef struct _Pool {
