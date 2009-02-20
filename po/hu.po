@@ -622,7 +622,7 @@ msgstr "A jelszó nem lehet üres"
 
 #: ../daemon/ui/gkr-ask-tool.c:712
 msgid "_Deny"
-msgstr "_Megtagadás"
+msgstr "Meg_tagadás"
 
 #: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
