@@ -1,51 +1,50 @@
 # Thai translation for gnome-keyring.
-# Copyright (C) 2004-2008 Free Software Foundation, Inc.
+# Copyright (C) 2004-2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 # Paisa Seeluangsawat <paisa@users.sf.net>, 2004.
-# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2005-2008.
+# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2005-2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-01 11:34+0700\n"
-"PO-Revision-Date: 2008-09-01 11:39+0700\n"
+"POT-Creation-Date: 2009-02-20 16:01+0700\n"
+"PO-Revision-Date: 2009-02-20 19:56+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: common/gkr-location.c:320
+#: common/gkr-location.c:321
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "ดิสก์ถอดเสียบ: %s"
 
-#: common/gkr-location.c:322
+#: common/gkr-location.c:323
 msgid "Removable Disk"
 msgstr "ดิสก์ถอดเสียบ"
 
-#: common/gkr-location.c:543 common/gkr-location.c:555
+#: common/gkr-location.c:544 common/gkr-location.c:556
 msgid "Home"
 msgstr "บ้าน"
 
-#: common/gkr-location.c:1104 common/gkr-location.c:1128
-#: daemon/pkix/gkr-pkix-parser.c:524 daemon/pkix/gkr-pkix-serialize.c:58
+#: common/gkr-location.c:1105 common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
 msgstr "ดิสก์หรือไดรว์ที่เก็บแฟ้มนี้ไม่มีอยู่"
 
-#: common/gkr-location.c:1136
+#: common/gkr-location.c:1137
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "ไม่สามารถสร้างไดเรกทอรี: %s"
 
-#: common/gkr-location.c:1170
+#: common/gkr-location.c:1171
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "ไม่สามารถลบแฟ้ม: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:227
+#: daemon/gkr-daemon-ops.c:228
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -54,7 +53,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:231
+#: daemon/gkr-daemon-ops.c:232
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -62,7 +61,7 @@ msgid ""
 msgstr "โปรแกรม '%s' (%s) ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:237 daemon/gkr-daemon-ops.c:247
+#: daemon/gkr-daemon-ops.c:238 daemon/gkr-daemon-ops.c:248
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -71,7 +70,7 @@ msgstr ""
 "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:241 daemon/gkr-daemon-ops.c:251
+#: daemon/gkr-daemon-ops.c:242 daemon/gkr-daemon-ops.c:252
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -79,7 +78,7 @@ msgid ""
 msgstr "โปรแกรม '%s' ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:257
+#: daemon/gkr-daemon-ops.c:258
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -87,7 +86,7 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จากพวงกุญแจปริยาย"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: daemon/gkr-daemon-ops.c:260
+#: daemon/gkr-daemon-ops.c:261
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -95,69 +94,76 @@ msgid ""
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการใช้รหัสผ่านสำหรับ '<object prop='name'/>' จาก %s"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:266
+#: daemon/gkr-daemon-ops.c:267
 msgid "Allow access"
 msgstr "ยอมให้ใช้"
 
-#: daemon/gkr-daemon-ops.c:266
+#: daemon/gkr-daemon-ops.c:267
 msgid "Allow application access to keyring?"
 msgstr "ยอมให้โปรแกรมใช้พวงกุญแจนี้ไหม?"
 
-#: daemon/gkr-daemon-ops.c:307
+#. TRANSLATORS: The default keyring is locked
+#: daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:311
+#. TRANSLATORS: The keyring '%s' is locked
+#: daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรม '%s' (%s) ต้องการจะใช้พวงกุญแจ %s ซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:317 daemon/gkr-daemon-ops.c:327
+#. TRANSLATORS: The default keyring is locked
+#: daemon/gkr-daemon-ops.c:321 daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:321 daemon/gkr-daemon-ops.c:332
+#. TRANSLATORS: The keyring '%s' is locked
+#: daemon/gkr-daemon-ops.c:326 daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรม '%s' ต้องการจะใช้พวงกุญแจ %s ซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:338
+#. TRANSLATORS: The default keyring is locked
+#: daemon/gkr-daemon-ops.c:346
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจปริยายซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:342
+#. TRANSLATORS: The keyring '%s' is locked
+#: daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "โปรแกรมที่ไม่ทราบชื่อ ต้องการจะใช้พวงกุญแจ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/gkr-daemon-ops.c:349
+#: daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
 msgstr "ป้อนรหัสผ่านสำหรับปลดล็อคพวงกุญแจปริยาย"
 
-#: daemon/gkr-daemon-ops.c:351
+#: daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "ป้อนรหัสผ่านสำหรับปลดล็อคพวงกุญแจ '%s'"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:355
+#: daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "ปลดล็อคพวงกุญแจ"
 
-#: daemon/gkr-daemon-ops.c:367 daemon/pk/gkr-pk-index.c:135
+#: daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
 msgstr "ปลดล็อคพวงกุญแจนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
 
-#: daemon/gkr-daemon-ops.c:403
+#. TRANSLATORS: The password is for the new keyring
+#: daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -165,7 +171,8 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:407
+#. TRANSLATORS: The password is for the new keyring
+#: daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -173,21 +180,24 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:413 daemon/gkr-daemon-ops.c:423
+#. TRANSLATORS: The password is for the new keyring
+#: daemon/gkr-daemon-ops.c:425 daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr "โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:417 daemon/gkr-daemon-ops.c:427
+#. TRANSLATORS: The password is for the new keyring
+#: daemon/gkr-daemon-ops.c:430 daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr "โปรแกรม '%s' ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:433
+#. TRANSLATORS: The password is for the new keyring
+#: daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -195,7 +205,8 @@ msgid ""
 msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจใหม่ชื่อ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:437
+#. TRANSLATORS: The password is for the new keyring
+#: daemon/gkr-daemon-ops.c:454
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -203,15 +214,15 @@ msgid ""
 msgstr "โปรแกรมไม่ทราบชื่อ ต้องการจะสร้างพวงกุญแจปริยายใหม่ คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:443
+#: daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
 msgstr "รหัสผ่านพวงกุญแจใหม่"
 
-#: daemon/gkr-daemon-ops.c:444
+#: daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
 msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจใหม่"
 
-#: daemon/gkr-daemon-ops.c:491
+#: daemon/gkr-daemon-ops.c:508
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -220,7 +231,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:495
+#: daemon/gkr-daemon-ops.c:512
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -229,7 +240,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:501 daemon/gkr-daemon-ops.c:511
+#: daemon/gkr-daemon-ops.c:518 daemon/gkr-daemon-ops.c:528
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -237,7 +248,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:505 daemon/gkr-daemon-ops.c:515
+#: daemon/gkr-daemon-ops.c:522 daemon/gkr-daemon-ops.c:532
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -245,7 +256,7 @@ msgid ""
 msgstr ""
 "โปรแกรม '%s' ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:521
+#: daemon/gkr-daemon-ops.c:538
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -254,7 +265,7 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:525
+#: daemon/gkr-daemon-ops.c:542
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -263,22 +274,22 @@ msgstr ""
 "โปรแกรมไม่ทราบชื่อ ต้องการจะเปลี่ยนรหัสผ่านสำหรับพวงกุญแจปริยาย "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/gkr-daemon-ops.c:535
+#: daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจ '%s'"
 
-#: daemon/gkr-daemon-ops.c:537
+#: daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจปริยาย"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:541
+#: daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
 msgstr "เปลี่ยนรหัสผ่านพวงกุญแจ"
 
-#: daemon/gkr-daemon-ops.c:614
+#: daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -288,7 +299,7 @@ msgstr ""
 "โปรแกรม '%s' (%s) ต้องการเก็บรหัสผ่าน แต่คุณไม่มีพวงกุญแจปริยาย ถ้าจะสร้างพวงกุญแจดังกล่าว "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
-#: daemon/gkr-daemon-ops.c:618 daemon/gkr-daemon-ops.c:622
+#: daemon/gkr-daemon-ops.c:635 daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -298,7 +309,7 @@ msgstr ""
 "โปรแกรม '%s' ต้องการเก็บรหัสผ่าน แต่คุณไม่มีพวงกุญแจปริยาย ถ้าจะสร้างพวงกุญแจดังกล่าว "
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
-#: daemon/gkr-daemon-ops.c:626
+#: daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -309,29 +320,15 @@ msgstr ""
 "คุณต้องตั้งรหัสผ่านสำหรับพวงกุญแจด้วย"
 
 #. And put together the ask request
-#: daemon/gkr-daemon-ops.c:631
+#: daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "สร้างพวงกุญแจปริยาย"
 
-#: daemon/gkr-daemon-ops.c:631
+#: daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
 msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจปริยาย"
 
 #: daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"A list of paths to PKCS#11 modules to load. No modules are currently listed "
-"by default, as this is still an experimental feature. This is used by "
-"seahorse and other PKCS#11 aware applications."
-msgstr ""
-"รายชื่อพาธของมอดูล PKCS#11 ที่จะโหลด ค่าปริยายจะไม่มีชื่อมอดูลใดเลยในตอนนี้ "
-"เนื่องจากเป็นความสามารถที่ยังอยู่ในขั้นทดลอง มอดูลเหล่านี้จะถูกใช้โดย seahorse "
-"และโปรแกรมที่รองรับ PKCS#11 อื่นๆ"
-
-#: daemon/data/gnome-keyring.schemas.in.h:2
-msgid "PKCS#11 Modules"
-msgstr "มอดูล PKCS#11"
-
-#: daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -342,7 +339,7 @@ msgstr ""
 "keyring ทำงานเท่านั้น (กล่าวคือ เมื่อผู้ใช้เข้าระบบ) "
 "ค่าตั้งนี้อาจถูกแทนที่โดยอาร์กิวเมนต์บางอย่างในบรรทัดคำสั่งที่ใช้เรียกดีมอน"
 
-#: daemon/data/gnome-keyring.schemas.in.h:4
+#: daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -353,13 +350,17 @@ msgstr ""
 "ทำงานเท่านั้น (กล่าวคือ เมื่อผู้ใช้เข้าระบบ) "
 "ค่าตั้งนี้อาจถูกแทนที่โดยอาร์กิวเมนต์บางอย่างในบรรทัดคำสั่งที่ใช้เรียกดีมอน"
 
-#: daemon/data/gnome-keyring.schemas.in.h:5
+#: daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "จะเปิดใช้องค์ประกอบ PKCS#11 ของ gnome-keyring หรือไม่"
 
-#: daemon/data/gnome-keyring.schemas.in.h:6
+#: daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "จะเปิดใช้ SSH agent ของ gnome-keyring หรือไม่"
+
+#: daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr "ดีมอนพวงกุญแจของ GNOME"
 
 #. And put together the ask request
 #: daemon/keyrings/gkr-keyring-login.c:98
@@ -391,241 +392,155 @@ msgid ""
 "computer. It will now be created."
 msgstr "ยังไม่มีการสร้างพวงกุญแจเข้าระบบของคุณโดยอัตโนมัติเมื่อคุณเข้าสู่ระบบนี้ และจะสร้างเดี๋ยวนี้"
 
-#: daemon/keyrings/gkr-keyring.c:584
+#: daemon/keyrings/gkr-keyring.c:586
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "ปลดล็อครหัสผ่านสำหรับพวงกุญแจ %s"
 
-#: daemon/pk/gkr-pk-import.c:88
-msgid "Import private key"
-msgstr "นำเข้ากุญแจส่วนตัว"
-
-#: daemon/pk/gkr-pk-import.c:90
-msgid "Import certificate"
-msgstr "นำเข้าใบรับรอง"
-
-#: daemon/pk/gkr-pk-import.c:92
-msgid "Import public key"
-msgstr "นำเข้ากุญแจสาธารณะ"
-
-#: daemon/pk/gkr-pk-import.c:94
-msgid "Import"
-msgstr "นำเข้า"
-
-#: daemon/pk/gkr-pk-import.c:101 daemon/pk/gkr-pk-storage.c:166
-msgid "Enter password to unlock the private key"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจส่วนตัว"
-
-#: daemon/pk/gkr-pk-import.c:103 daemon/pk/gkr-pk-storage.c:168
-msgid "Enter password to unlock the certificate"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคใบรับรอง"
-
-#: daemon/pk/gkr-pk-import.c:105 daemon/pk/gkr-pk-storage.c:170
-msgid "Enter password to unlock the public key"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจสาธารณะ"
-
-#: daemon/pk/gkr-pk-import.c:107 daemon/pk/gkr-pk-storage.c:172
-msgid "Enter password to unlock"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อค"
-
-#: daemon/pk/gkr-pk-import.c:114
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "ระบบต้องการจะนำเข้ากุญแจส่วนตัว '%s' ซึ่งถูกล็อคอยู่"
-
-#: daemon/pk/gkr-pk-import.c:116
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "ระบบต้องการจะนำเข้าใบรับรอง '%s' ซึ่งถูกล็อคอยู่"
-
-#: daemon/pk/gkr-pk-import.c:118
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "ระบบต้องการจะนำเข้ากุญแจสาธารณะ '%s' ซึ่งถูกล็อคอยู่"
-
-#: daemon/pk/gkr-pk-import.c:120
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "ระบบต้องการจะนำเข้า '%s' ซึ่งถูกล็อคอยู่"
-
-#. And put together the ask request
-#: daemon/pk/gkr-pk-index.c:93
-msgid "Create Storage for Key Information"
-msgstr "สร้างแหล่งเก็บข้อมูลกุญแจ"
-
-#: daemon/pk/gkr-pk-index.c:94
-msgid "Choose password to protect storage"
-msgstr "ตั้งรหัสผ่านเพื่อปกป้องแหล่งเก็บ"
-
-#: daemon/pk/gkr-pk-index.c:97
-msgid ""
-"The system wants to store information about your keys and certificates. In "
-"order to protect this information, choose a password with which it will be "
-"locked."
-msgstr ""
-"ระบบต้องการเก็บข้อมูลเกี่ยวกับกุญแจและใบรับรองต่างๆ ของคุณ กรุณาตั้งรหัสผ่านที่จะใช้ล็อคแหล่งเก็บ "
-"เพื่อปกป้องข้อมูล"
-
-#. And put together the ask request
-#: daemon/pk/gkr-pk-index.c:124
-msgid "Unlock Storage for Key Information"
-msgstr "ปลดล็อคแหล่งเก็บข้อมูลกุญแจ"
-
-#: daemon/pk/gkr-pk-index.c:125
-msgid "Enter password to unlock storage"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคแหล่งเก็บ"
-
-#: daemon/pk/gkr-pk-index.c:128
-msgid ""
-"The system wants to access information about your keys and certificates, but "
-"it is locked."
-msgstr "ระบบต้องการจะเข้าถึงข้อมูลกุญแจและใบรับรองต่างๆ ของคุณ ซึ่งถูกล็อคอยู่"
-
-#: daemon/pk/gkr-pk-object.c:889
-msgid "Certificate"
-msgstr "ใบรับรอง"
-
-#: daemon/pk/gkr-pk-object.c:891
-msgid "Private Key"
-msgstr "กุญแจส่วนตัว"
-
-#: daemon/pk/gkr-pk-object.c:893
-msgid "Public Key"
-msgstr "กุญแจสาธารณะ"
-
-#: daemon/pk/gkr-pk-object.c:895
-msgid "Trust Association"
-msgstr "Trust Association"
-
-#: daemon/pk/gkr-pk-object-storage.c:436
-#, c-format
-msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr "ไม่สามารถลบ '%s' เพราะถูกผูกติดกับอ็อบเจกต์อื่นอยู่"
-
-#: daemon/pk/gkr-pk-storage.c:136
+#: daemon/pkcs11/gkr-pkcs11-auth.c:99
 msgid "Unlock private key"
 msgstr "ปลดล็อคกุญแจส่วนตัว"
 
-#: daemon/pk/gkr-pk-storage.c:138
+#: daemon/pkcs11/gkr-pkcs11-auth.c:101
 msgid "Unlock certificate"
 msgstr "ปลดล็อคใบรับรอง"
 
-#: daemon/pk/gkr-pk-storage.c:140
+#: daemon/pkcs11/gkr-pkcs11-auth.c:103
 msgid "Unlock public key"
 msgstr "ปลดล็อคกุญแจสาธารณะ"
 
-#: daemon/pk/gkr-pk-storage.c:142
+#: daemon/pkcs11/gkr-pkcs11-auth.c:105
 msgid "Unlock"
 msgstr "ปลดล็อค"
 
-#: daemon/pk/gkr-pk-storage.c:153
-msgid "Lock private key"
-msgstr "ล็อคกุญแจส่วนตัว"
+#: daemon/pkcs11/gkr-pkcs11-auth.c:114 gcr/gcr-importer.c:360
+msgid "Enter password to unlock the private key"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจส่วนตัว"
 
-#: daemon/pk/gkr-pk-storage.c:155
-msgid "Lock"
-msgstr "ล็อค"
+#: daemon/pkcs11/gkr-pkcs11-auth.c:116 gcr/gcr-importer.c:362
+msgid "Enter password to unlock the certificate"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคใบรับรอง"
 
-#: daemon/pk/gkr-pk-storage.c:183
-msgid "Enter password to protect the private key"
-msgstr "ตั้งรหัสผ่านที่จะใช้ปกป้องกุญแจส่วนตัว"
+#: daemon/pkcs11/gkr-pkcs11-auth.c:118
+msgid "Enter password to unlock the public key"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจสาธารณะ"
 
-#: daemon/pk/gkr-pk-storage.c:185
-msgid "Enter password to protect storage"
-msgstr "ตั้งรหัสผ่านที่จะใช้ปกป้องแหล่งเก็บ"
+#: daemon/pkcs11/gkr-pkcs11-auth.c:120 gcr/gcr-importer.c:364
+msgid "Enter password to unlock"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อค"
 
-#: daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "ปลดล็อคกุญแจส่วนตัวนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
-
-#: daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "ปลดล็อคใบรับรองนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
-
-#: daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "ปลดล็อคกุญแจสาธารณะนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
-
-#: daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "ปลดล็อครายการนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
-
-#: daemon/pk/gkr-pk-storage.c:209
+#. TRANSLATORS: The private key is locked
+#: daemon/pkcs11/gkr-pkcs11-auth.c:130
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้กุญแจส่วนตัว '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/pk/gkr-pk-storage.c:211
+#. TRANSLATORS: The certificate is locked
+#: daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้ใบรับรอง '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/pk/gkr-pk-storage.c:213
+#. TRANSLATORS: The public key is locked
+#: daemon/pkcs11/gkr-pkcs11-auth.c:136
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้กุญแจสาธารณะ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/pk/gkr-pk-storage.c:215
+#. TRANSLATORS: The object '%s' is locked
+#: daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/pk/gkr-pk-storage.c:228
+#: daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "ปลดล็อคกุญแจส่วนตัวนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
+
+#: daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "ปลดล็อคใบรับรองนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
+
+#: daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "ปลดล็อคกุญแจสาธารณะนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
+
+#: daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "ปลดล็อครายการนี้โดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
+
+#: daemon/pkcs11/gkr-pkcs11-auth.c:371
+msgid "Unlock certificate/key storage"
+msgstr "ปลดล็อคใบรับรอง/แหล่งกุญแจ"
+
+#: daemon/pkcs11/gkr-pkcs11-auth.c:372
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคใบรับรอง/แหล่งกุญแจ"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: daemon/pkcs11/gkr-pkcs11-auth.c:375
 #, c-format
 msgid ""
-"The system wants to store the private key '%s' on your disk. Please enter a "
-"password to lock it with."
-msgstr "ระบบต้องการจะเก็บกุญแจส่วนตัว '%s' ลงในดิสก์ กรุณาตั้งรหัสผ่านที่จะใช้ล็อคกุญแจดังกล่าว"
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "มีโปรแกรมต้องการจะใช้ใบรับรอง/แหล่งกุญแจ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/pk/gkr-pk-storage.c:230
+#: daemon/pkcs11/gkr-pkcs11-auth.c:381 daemon/pkcs11/gkr-pkcs11-auth.c:532
+msgid "Automatically unlock secure storage when I log in."
+msgstr "ปลดล็อคแหล่งข้อมูลนิรภัยโดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
+
+#: daemon/pkcs11/gkr-pkcs11-auth.c:524
+msgid "New Password Required"
+msgstr "ต้องตั้งรหัสผ่าน"
+
+#: daemon/pkcs11/gkr-pkcs11-auth.c:525
+msgid "New password required for secure storage"
+msgstr "ต้องตั้งรหัสผ่านสำหรับแหล่งข้อมูลนิรภัย"
+
+#: daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid ""
-"The system wants to store '%s' on your disk. Please enter a password to lock "
-"it with."
-msgstr "ระบบต้องการจะเก็บ '%s' ลงในดิสก์ กรุณาตั้งรหัสผ่านที่จะใช้ล็อคข้อมูลดังกล่าว"
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "ในการเตรียม '%s' ให้เป็นแหล่งเก็บใบรับรองหรือกุญแจต่างๆ จะต้องตั้งรหัสผ่านด้วย"
 
-#: daemon/pkix/gkr-pkix-parser.c:451 gp11/gp11-misc.c:87
-msgid "The operation was cancelled"
-msgstr "การกระทำถูกยกเลิก"
+#: daemon/ui/gkr-ask-tool.c:230
+msgid ""
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>ไม่สามารถยึดครองเมาส์ได้</big></b>\n"
+"\n"
+"อาจมีบางโปรแกรมที่ไม่ประสงค์ดีกำลังดักข้อมูลการใช้วาระของคุณอยู่ หรือคุณอาจเพิ่งคลิกเมนูไป "
+"หรือบางโปรแกรมอาจดึงโฟกัสไป\n"
+"\n"
+"กรุณาลองใหม่"
 
-#: daemon/pkix/gkr-pkix-parser.c:455
-msgid "Unrecognized or unsupported file."
-msgstr "แฟ้มที่ไม่รู้จักหรือไม่รองรับ"
+#: daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>ไม่สามารถยึดครองแป้นพิมพ์ได้</big></b>\n"
+"\n"
+"อาจมีบางโปรแกรมที่ไม่ประสงค์ดีกำลังดักข้อมูลการใช้วาระของคุณอยู่ หรือคุณอาจเพิ่งคลิกเมนูไป "
+"หรือบางโปรแกรมอาจดึงโฟกัสไป\n"
+"\n"
+"กรุณาลองใหม่"
 
-#: daemon/pkix/gkr-pkix-parser.c:459
-msgid "Could not parse invalid or corrupted file."
-msgstr "ไม่สามารถแจงแฟ้มที่ผิดรูปแบบหรือข้อมูลเสียหาย"
-
-#: daemon/ssh/gkr-ssh-storage.c:166
-#, c-format
-msgid "Couldn't encode secure shell public key."
-msgstr "ไม่สามารถลงรหัสกุญแจสาธารณะสำหรับเชลล์นิรภัย"
-
-#: daemon/ssh/gkr-ssh-storage.c:412
-#, c-format
-msgid "Couldn't read secure shell private key: %s"
-msgstr "ไม่สามารถอ่านกุญแจส่วนตัวสำหรับเชลล์นิรภัย: %s"
-
-#: daemon/ssh/gkr-ssh-storage.c:416
-#, c-format
-msgid "Invalid secure shell private key at: %s"
-msgstr "กุญแจส่วนตัวสำหรับเชลล์นิรภัยไม่ถูกต้องที่: %s"
-
-#: daemon/ssh/gkr-ssh-storage.c:465
-#, c-format
-msgid "Couldn't encrypt the SSH key to store it."
-msgstr "ไม่สามารถเข้ารหัสลับกุญแจ SSH เพื่อจัดเก็บ"
-
-#: daemon/ssh/gkr-ssh-storage.c:481
-#, c-format
-msgid "Couldn't encode the SSH key to store it."
-msgstr "ไม่สามารถลงรหัสกุญแจ SSH เพื่อจัดเก็บ"
-
-#: daemon/ui/gkr-ask-tool.c:182
+#: daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "จะเก็บรหัสผ่านโดยไม่เข้ารหัสลับจริงหรือ?"
 
-#: daemon/ui/gkr-ask-tool.c:183
+#: daemon/ui/gkr-ask-tool.c:277
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -634,409 +549,871 @@ msgstr ""
 "การใช้รหัสผ่านว่างเปล่า จะทำให้รหัสผ่านไม่มีการเข้ารหัสลับอย่างปลอดภัย "
 "และใครก็ตามที่เข้าถึงแฟ้มของคุณได้ก็จะได้รหัสผ่านของคุณไป"
 
-#: daemon/ui/gkr-ask-tool.c:190
+#: daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
 msgstr "เก็บแบบไม่ปลอดภัย"
 
-#: daemon/ui/gkr-ask-tool.c:413
+#: daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "_ตำแหน่งเก็บ:"
 
-#: daemon/ui/gkr-ask-tool.c:426
+#: daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "รหัสผ่านเ_ดิม:"
 
-#: daemon/ui/gkr-ask-tool.c:446
+#: daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "_รหัสผ่าน:"
 
-#: daemon/ui/gkr-ask-tool.c:468
+#: daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "_ยืนยันรหัสผ่าน:"
 
-#: daemon/ui/gkr-ask-tool.c:488
+#: daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "ความแน่นหนาของรหัสผ่าน"
 
-#: daemon/ui/gkr-ask-tool.c:546
+#: daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "รหัสผ่านไม่ตรงกัน"
 
-#: daemon/ui/gkr-ask-tool.c:562
+#: daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "รหัสผ่านเป็นค่าว่างเปล่าไม่ได้"
 
-#: daemon/ui/gkr-ask-tool.c:613
-msgid "Deny"
-msgstr "ปฏิเสธ"
+#: daemon/ui/gkr-ask-tool.c:712
+msgid "_Deny"
+msgstr "_ปฏิเสธ"
 
-#: daemon/ui/gkr-ask-tool.c:625
+#: daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
 msgstr "_สร้าง"
 
-#: daemon/ui/gkr-ask-tool.c:629
+#: daemon/ui/gkr-ask-tool.c:728
 msgid "C_hange"
-msgstr "เ_ปลี่ยน"
+msgstr "เปลี่ย_น"
 
-#: daemon/ui/gkr-ask-tool.c:633
+#: daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "ยอมแ_ค่ครั้งนี้"
 
-#: daemon/ui/gkr-ask-tool.c:637
+#: daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "ยอม_ตลอดไป"
 
-#: gp11/gp11-misc.c:90
+#: egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "องค์ประกอบโดเมน"
+
+#: egg/egg-oid.c:43
+msgid "User ID"
+msgstr "ID ผู้ใช้"
+
+#: egg/egg-oid.c:46
+msgid "Email"
+msgstr "อีเมล"
+
+#: egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "วันเกิด"
+
+#: egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "สถานที่เกิด"
+
+#: egg/egg-oid.c:58
+msgid "Gender"
+msgstr "เพศ"
+
+#: egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "สัญชาติ"
+
+#: egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "ประเทศที่พำนัก"
+
+#: egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "ชื่อสามัญ"
+
+#: egg/egg-oid.c:67
+msgid "Surname"
+msgstr "นามสกุล"
+
+#: egg/egg-oid.c:69 gcr/gcr-certificate-basics-widget.glade.h:18
+#: gcr/gcr-certificate-details-widget.c:330
+msgid "Serial Number"
+msgstr "หมายเลขลำดับ"
+
+#: egg/egg-oid.c:71
+msgid "Country"
+msgstr "ประเทศ"
+
+#: egg/egg-oid.c:73
+msgid "Locality"
+msgstr "ย่านที่อยู่"
+
+#: egg/egg-oid.c:75
+msgid "State"
+msgstr "รัฐ"
+
+#: egg/egg-oid.c:77
+msgid "Street"
+msgstr "ถนน"
+
+#: egg/egg-oid.c:79
+msgid "Organization"
+msgstr "องค์กร"
+
+#: egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "หน่วยงานในองค์กร"
+
+#: egg/egg-oid.c:83
+msgid "Title"
+msgstr "ตำแหน่ง"
+
+#: egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "หมายเลขโทรศัพท์"
+
+#: egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "ชื่อ"
+
+#: egg/egg-oid.c:89
+msgid "Initials"
+msgstr "ชื่อย่อ"
+
+#: egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr "คำระบุรุ่น"
+
+#: egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "DN Qualifier"
+
+#: egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "นามปากกา"
+
+#: egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "MD2 โดยใช้ RSA"
+
+#: egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "MD5 โดยใช้ RSA"
+
+#: egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "SHA1 โดยใช้ RSA"
+
+#: egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "SHA1 โดยใช้ DSA"
+
+#: gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>ไม่ใช่ส่วนหนึ่งของใบรับรอง</i>"
+
+#: gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>ไม่ทราบ</i>"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<ไม่ใช่ส่วนหนึ่งของใบรับรอง>"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>ลายนิ้วมือ</b>"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>ออกให้โดย</b>"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>ออกให้กับ</b>"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>ใบรับรองนี้ผ่านการตรวจสอบสำหรับการใช้งานต่อไปนี้:</b>"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>อายุการใช้งาน</b>"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "ชื่อสามัญ (CN)"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:8
+msgid "Email Recipient Certificate"
+msgstr "ใบรับรองสำหรับรับอีเมล"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:9
+msgid "Email Signer Certificate"
+msgstr "ใบรับรองสำหรับเซ็นกำกับอีเมล"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "วันหมดอายุ"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "วันที่ออก"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "ลายนิ้วมือ MD5"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "องค์กร (O)"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "หน่วยงานในองค์กร (OU)"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "ลายนิ้วมือ SHA1"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:16
+msgid "SSL Client Certificate"
+msgstr "ใบรับรองลูกข่าย SSL"
+
+#: gcr/gcr-certificate-basics-widget.glade.h:17
+msgid "SSL Server Certificate"
+msgstr "ใบรับรองแม่ข่าย SSL"
+
+#: gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "ส่วนขยาย"
+
+#: gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "ตัวระบุ"
+
+#: gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "ค่า"
+
+#: gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "ใช่"
+
+#: gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "ไม่"
+
+#: gcr/gcr-certificate-details-widget.c:237
+msgid "Critical"
+msgstr "วิกฤติ"
+
+#. The subject
+#: gcr/gcr-certificate-details-widget.c:311
+msgid "Subject Name"
+msgstr "ชื่อผู้รับการรับรอง"
+
+#. The Issuer
+#: gcr/gcr-certificate-details-widget.c:315
+msgid "Issuer Name"
+msgstr "ชื่อผู้ออกให้"
+
+#. The Issued Parameters
+#: gcr/gcr-certificate-details-widget.c:319
+msgid "Issued Certificate"
+msgstr "ใบรับรองที่ออก"
+
+#: gcr/gcr-certificate-details-widget.c:324
+msgid "Version"
+msgstr "รุ่น"
+
+#: gcr/gcr-certificate-details-widget.c:337
+msgid "Not Valid Before"
+msgstr "ห้ามใช้ก่อน"
+
+#: gcr/gcr-certificate-details-widget.c:342
+msgid "Not Valid After"
+msgstr "ห้ามใช้หลัง"
+
+#. Signature
+#: gcr/gcr-certificate-details-widget.c:347
+#: gcr/gcr-certificate-details-widget.c:363
+msgid "Signature"
+msgstr "ลายเซ็น"
+
+#: gcr/gcr-certificate-details-widget.c:351
+msgid "Signature Algorithm"
+msgstr "อัลกอริทึมของลายเซ็น"
+
+#: gcr/gcr-certificate-details-widget.c:356
+msgid "Signature Parameters"
+msgstr "พารามิเตอร์สำหรับลายเซ็น"
+
+#. Public Key Info
+#: gcr/gcr-certificate-details-widget.c:367
+msgid "Public Key Info"
+msgstr "ข้อมูลกุญแจสาธารณะ"
+
+#: gcr/gcr-certificate-details-widget.c:371
+msgid "Key Algorithm"
+msgstr "อัลกอริทึมของกุญแจ"
+
+#: gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "พารามิเตอร์สำหรับกุญแจ"
+
+#: gcr/gcr-certificate-details-widget.c:383
+msgid "Key Size"
+msgstr "ขนาดกุญแจ"
+
+#: gcr/gcr-certificate-details-widget.c:390 gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "กุญแจสาธารณะ"
+
+#. Fingerprints
+#: gcr/gcr-certificate-details-widget.c:394
+msgid "Fingerprints"
+msgstr "ลายนิ้วมือ"
+
+#: gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>นำเข้าใบรับรองและกุญแจ</span>"
+
+#: gcr/gcr-import-dialog.glade.h:2
+msgid "Import Into:"
+msgstr "นำเข้าสู่:"
+
+#: gcr/gcr-import-dialog.glade.h:3
+msgid "Password:"
+msgstr "รหัสผ่าน:"
+
+#: gcr/gcr-importer.c:162 gcr/gcr-parser.c:1573 gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr "การกระทำถูกยกเลิก"
+
+#: gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr "ไม่มีตำแหน่งให้นำเข้าไปเก็บได้"
+
+#: gcr/gcr-importer.c:328
+msgid "Import Certificates/Keys"
+msgstr "นำเข้าใบรับรอง/กุญแจ"
+
+#: gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "เลือกตำแหน่งที่จะเก็บใบรับรอง/กุญแจที่นำเข้า"
+
+#. TRANSLATORS: The key is locked.
+#: gcr/gcr-importer.c:373
+msgid "In order to import the private key, it must be unlocked"
+msgstr "การนำเข้ากุญแจส่วนตัว จะต้องปลดล็อคกุญแจเสียก่อน"
+
+#. TRANSLATORS: The certificate is locked.
+#: gcr/gcr-importer.c:376
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "การนำเข้าใบรับรอง จะต้องปลดล็อคใบรับรองเสียก่อน"
+
+#. TRANSLATORS: The data is locked.
+#: gcr/gcr-importer.c:379
+msgid "In order to import the data, it must be unlocked"
+msgstr "การนำเข้าข้อมูล จะต้องปลดล็อคข้อมูลเสียก่อน"
+
+#. TRANSLATORS: The key is locked.
+#: gcr/gcr-importer.c:384
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "การนำเข้ากุญแจส่วนตัว '%s' จะต้องปลดล็อคกุญแจเสียก่อน"
+
+#. TRANSLATORS: The certificate is locked.
+#: gcr/gcr-importer.c:387
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "การนำเข้าใบรับรอง '%s' จะต้องปลดล็อคใบรับรองเสียก่อน"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: gcr/gcr-importer.c:390
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "การนำเข้า '%s' จะต้องปลดล็อคเสียก่อน"
+
+#: gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "กุญแจส่วนตัว"
+
+#: gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "ใบรับรอง"
+
+#: gcr/gcr-parser.c:1576
+msgid "Unrecognized or unsupported data."
+msgstr "ข้อมูลที่ไม่รู้จักหรือไม่รองรับ"
+
+#: gcr/gcr-parser.c:1579
+msgid "Could not parse invalid or corrupted data."
+msgstr "ไม่สามารถแจงข้อมูลที่ผิดรูปแบบหรือเสียหาย"
+
+#: gcr/gcr-parser.c:1582
+msgid "The data is locked"
+msgstr "ข้อมูลถูกล็อคอยู่"
+
+#: gp11/gp11-misc.c:117
 msgid "Insufficient memory available"
 msgstr "เหลือหน่วยความจำไม่เพียงพอ"
 
-#: gp11/gp11-misc.c:92
+#: gp11/gp11-misc.c:119
 msgid "The specified slot ID is not valid"
 msgstr "หมายเลข slot ที่ระบุใช้การไม่ได้"
 
-#: gp11/gp11-misc.c:94
+#: gp11/gp11-misc.c:121
 msgid "Internal error"
 msgstr "ข้อผิดพลาดภายใน"
 
-#: gp11/gp11-misc.c:96
+#: gp11/gp11-misc.c:123
 msgid "The operation failed"
 msgstr "การกระทำล้มเหลว"
 
-#: gp11/gp11-misc.c:98
+#: gp11/gp11-misc.c:125
 msgid "Invalid arguments"
 msgstr "อาร์กิวเมนต์ไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:100
+#: gp11/gp11-misc.c:127
 msgid "The module cannot create needed threads"
 msgstr "มอดูลไม่สามารถสร้างเธรดที่ต้องการได้"
 
-#: gp11/gp11-misc.c:102
+#: gp11/gp11-misc.c:129
 msgid "The module cannot lock data properly"
 msgstr "มอดูลไม่สามารถล็อคข้อมูลได้อย่างเรียบร้อย"
 
-#: gp11/gp11-misc.c:104
+#: gp11/gp11-misc.c:131
 msgid "The field is read-only"
 msgstr "เขตข้อมูลอ่านได้อย่างเดียว"
 
-#: gp11/gp11-misc.c:106
+#: gp11/gp11-misc.c:133
 msgid "The field is sensitive and cannot be revealed"
 msgstr "เขตข้อมูลมีความอ่อนไหวและไม่สามารถเปิดเผยได้"
 
-#: gp11/gp11-misc.c:108
+#: gp11/gp11-misc.c:135
 msgid "The field is invalid or does not exist"
 msgstr "เขตข้อมูลไม่ถูกต้องหรือไม่มีเขตข้อมูลนี้อยู่"
 
-#: gp11/gp11-misc.c:110
+#: gp11/gp11-misc.c:137
 msgid "Invalid value for field"
 msgstr "ค่าสำหรับเขตข้อมูลไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:112
+#: gp11/gp11-misc.c:139
 msgid "The data is not valid or unrecognized"
 msgstr "ข้อมูลไม่ถูกต้องหรือไม่รู้จัก"
 
-#: gp11/gp11-misc.c:114
+#: gp11/gp11-misc.c:141
 msgid "The data is too long"
 msgstr "ข้อมูลยาวเกินไป"
 
-#: gp11/gp11-misc.c:116
+#: gp11/gp11-misc.c:143
 msgid "An error occurred on the device"
 msgstr "เกิดข้อผิดพลาดขึ้นในอุปกรณ์"
 
-#: gp11/gp11-misc.c:118
+#: gp11/gp11-misc.c:145
 msgid "Insufficient memory available on device"
 msgstr "หน่วยความจำเหลือไม่เพียงพอในอุปกรณ์"
 
-#: gp11/gp11-misc.c:120
+#: gp11/gp11-misc.c:147
 msgid "The device was removed or unplugged"
 msgstr "อุปกรณ์ถูกถอดออกหรือถูกปิด"
 
-#: gp11/gp11-misc.c:122
+#: gp11/gp11-misc.c:149
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "ข้อมูลที่เข้ารหัสลับไว้ไม่ถูกต้องหรือไม่รู้จัก"
 
-#: gp11/gp11-misc.c:124
+#: gp11/gp11-misc.c:151
 msgid "The encrypted data is too long"
 msgstr "ข้อมูลที่เข้ารหัสลับไว้ยาวเกินไป"
 
-#: gp11/gp11-misc.c:126
+#: gp11/gp11-misc.c:153
 msgid "This operation is not supported"
 msgstr "ไม่รองรับการกระทำนี้"
 
-#: gp11/gp11-misc.c:128
+#: gp11/gp11-misc.c:155
 msgid "The key is missing or invalid"
 msgstr "กุญแจขาดหายไปหรือไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:130
+#: gp11/gp11-misc.c:157
 msgid "The key is the wrong size"
 msgstr "กุญแจมีขนาดไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:132
+#: gp11/gp11-misc.c:159
 msgid "The key is of the wrong type"
 msgstr "กุญแจมีชนิดไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:134
+#: gp11/gp11-misc.c:161
 msgid "No key is needed"
 msgstr "ไม่ต้องใช้กุญแจ"
 
-#: gp11/gp11-misc.c:136
+#: gp11/gp11-misc.c:163
 msgid "The key is different than before"
 msgstr "กุญแจเปลี่ยนไปจากเดิม"
 
-#: gp11/gp11-misc.c:138
+#: gp11/gp11-misc.c:165
 msgid "A key is needed"
 msgstr "ต้องใช้กุญแจ"
 
-#: gp11/gp11-misc.c:140
+#: gp11/gp11-misc.c:167
 msgid "Cannot include the key in digest"
 msgstr "ไม่สามารถเพิ่มกุญแจในข้อมูลที่ย่อยแล้วได้"
 
-#: gp11/gp11-misc.c:142
+#: gp11/gp11-misc.c:169
 msgid "This operation cannot be done with this key"
 msgstr "การกระทำนี้ทำกับกุญแจนี้ไม่ได้"
 
-#: gp11/gp11-misc.c:144
+#: gp11/gp11-misc.c:171
 msgid "The key cannot be wrapped"
 msgstr "ไม่สามารถห่อหุ้มกุญแจได้"
 
-#: gp11/gp11-misc.c:146
+#: gp11/gp11-misc.c:173
 msgid "Cannot export this key"
 msgstr "ไม่สามารถส่งออกกุญแจนี้ได้"
 
-#: gp11/gp11-misc.c:148
+#: gp11/gp11-misc.c:175
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "กลไกการเข้ารหัสลับไม่ถูกต้องหรือไม่รู้จัก"
 
-#: gp11/gp11-misc.c:150
+#: gp11/gp11-misc.c:177
 msgid "The crypto mechanism has an invalid argument"
 msgstr "กลไกการเข้ารหัสลับมีอาร์กิวเมนต์ไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:152
+#: gp11/gp11-misc.c:179
 msgid "The object is missing or invalid"
 msgstr "อ็อบเจกต์ขาดหายไปหรือไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:154
+#: gp11/gp11-misc.c:181
 msgid "Another operation is already taking place"
 msgstr "มีการกระทำอื่นกำลังดำเนินอยู่"
 
-#: gp11/gp11-misc.c:156
+#: gp11/gp11-misc.c:183
 msgid "No operation is taking place"
 msgstr "ไม่มีการกระทำใดดำเนินอยู่"
 
-#: gp11/gp11-misc.c:158
+#: gp11/gp11-misc.c:185
 msgid "The password or PIN is incorrect"
 msgstr "รหัสผ่านหรือ PIN ไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:160
+#: gp11/gp11-misc.c:187
 msgid "The password or PIN is invalid"
 msgstr "รหัสผ่านหรือ PIN ใช้การไม่ได้"
 
-#: gp11/gp11-misc.c:162
+#: gp11/gp11-misc.c:189
 msgid "The password or PIN is of an invalid length"
 msgstr "รหัสผ่านหรือ PIN มีความยาวไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:164
+#: gp11/gp11-misc.c:191
 msgid "The password or PIN has expired"
 msgstr "รหัสผ่านหรือ PIN หมดอายุแล้ว"
 
-#: gp11/gp11-misc.c:166
+#: gp11/gp11-misc.c:193
 msgid "The password or PIN is locked"
 msgstr "รหัสผ่านหรือ PIN ถูกล็อคไว้"
 
-#: gp11/gp11-misc.c:168
+#: gp11/gp11-misc.c:195
 msgid "The session is closed"
 msgstr "วาระถูกปิดไปแล้ว"
 
-#: gp11/gp11-misc.c:170
+#: gp11/gp11-misc.c:197
 msgid "Too many sessions are active"
 msgstr "มีวาระเปิดอยู่มากเกินไป"
 
-#: gp11/gp11-misc.c:172
+#: gp11/gp11-misc.c:199
 msgid "The session is invalid"
 msgstr "วาระไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:174
+#: gp11/gp11-misc.c:201
 msgid "The session is read-only"
 msgstr "วาระอ่านได้อย่างเดียว"
 
-#: gp11/gp11-misc.c:176
+#: gp11/gp11-misc.c:203
 msgid "An open session exists"
 msgstr "มีวาระที่เปิดอยู่"
 
-#: gp11/gp11-misc.c:178
+#: gp11/gp11-misc.c:205
 msgid "A read-only session exists"
 msgstr "มีวาระที่อ่านได้อย่างเดียวเปิดอยู่"
 
-#: gp11/gp11-misc.c:180
+#: gp11/gp11-misc.c:207
 msgid "An administrator session exists"
 msgstr "มีวาระผู้ดูแลระบบเปิดอยู่"
 
-#: gp11/gp11-misc.c:182
+#: gp11/gp11-misc.c:209
 msgid "The signature is bad or corrupted"
 msgstr "ลายเซ็นผิดหรือเสียหาย"
 
-#: gp11/gp11-misc.c:184
+#: gp11/gp11-misc.c:211
 msgid "The signature is unrecognized or corrupted"
 msgstr "ลายเซ็นไม่รู้จักหรือเสียหาย"
 
-#: gp11/gp11-misc.c:186
+#: gp11/gp11-misc.c:213
 msgid "Certain required fields are missing"
 msgstr "เขตข้อมูลที่จำเป็นบางเขตขาดหายไป"
 
-#: gp11/gp11-misc.c:188
+#: gp11/gp11-misc.c:215
 msgid "Certain fields have invalid values"
 msgstr "เขตข้อมูลบางเขตมีค่าที่ใช้ไม่ได้"
 
-#: gp11/gp11-misc.c:190
+#: gp11/gp11-misc.c:217
 msgid "The device is not present or unplugged"
 msgstr "ไม่มีอุปกรณ์อยู่ หรืออุปกรณ์ถูกปิดไป"
 
-#: gp11/gp11-misc.c:192
+#: gp11/gp11-misc.c:219
 msgid "The device is invalid or unrecognizable"
 msgstr "อุปกรณ์ไม่ถูกต้องหรือไม่รู้จัก"
 
-#: gp11/gp11-misc.c:194
+#: gp11/gp11-misc.c:221
 msgid "The device is write protected"
 msgstr "อุปกรณ์มีการป้องกันการเขียนไว้"
 
-#: gp11/gp11-misc.c:196
+#: gp11/gp11-misc.c:223
 msgid "Cannot import because the key is invalid"
 msgstr "ไม่สามารถนำเข้าเพราะกุญแจใช้ไม่ได้"
 
-#: gp11/gp11-misc.c:198
+#: gp11/gp11-misc.c:225
 msgid "Cannot import because the key is of the wrong size"
 msgstr "ไม่สามารถนำเข้าเพราะกุญแจมีขนาดไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:200
+#: gp11/gp11-misc.c:227
 msgid "Cannot import because the key is of the wrong type"
 msgstr "ไม่สามารถนำเข้าเพราะกุญแจมีชนิดไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:202
+#: gp11/gp11-misc.c:229
 msgid "You are already logged in"
 msgstr "คุณได้เข้าระบบแล้ว"
 
-#: gp11/gp11-misc.c:204
+#: gp11/gp11-misc.c:231
 msgid "No user has logged in"
 msgstr "ไม่มีผู้ใช้เข้าระบบ"
 
-#: gp11/gp11-misc.c:206
+#: gp11/gp11-misc.c:233
 msgid "The user's password or PIN is not set"
 msgstr "รหัสผ่านหรือ PIN ของผู้ใช้ยังไม่ได้ตั้ง"
 
-#: gp11/gp11-misc.c:208
+#: gp11/gp11-misc.c:235
 msgid "The user is of an invalid type"
 msgstr "ผู้ใช้มีชนิดที่ไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:210
+#: gp11/gp11-misc.c:237
 msgid "Another user is already logged in"
 msgstr "มีผู้ใช้อื่นเข้าระบบอยู่"
 
-#: gp11/gp11-misc.c:212
+#: gp11/gp11-misc.c:239
 msgid "Too many users of different types logged in"
 msgstr "มีผู้ใช้หลายชนิดเกินไปเข้าระบบอยู่"
 
-#: gp11/gp11-misc.c:214
+#: gp11/gp11-misc.c:241
 msgid "Cannot import an invalid key"
 msgstr "ไม่สามารถนำเข้ากุญแจที่ใช้ไม่ได้"
 
-#: gp11/gp11-misc.c:216
+#: gp11/gp11-misc.c:243
 msgid "Cannot import a key of the wrong size"
 msgstr "ไม่สามารถนำเข้ากุญแจที่มีขนาดไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:218
+#: gp11/gp11-misc.c:245
 msgid "Cannot export because the key is invalid"
 msgstr "ไม่สามารถส่งออกเพราะกุญแจใช้ไม่ได้"
 
-#: gp11/gp11-misc.c:220
+#: gp11/gp11-misc.c:247
 msgid "Cannot export because the key is of the wrong size"
 msgstr "ไม่สามารถส่งออกเพราะกุญแจมีขนาดไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:222
+#: gp11/gp11-misc.c:249
 msgid "Cannot export because the key is of the wrong type"
 msgstr "ไม่สามารถส่งออกเพราะกุญแจมีชนิดไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:224
+#: gp11/gp11-misc.c:251
 msgid "Unable to initialize the random number generator"
 msgstr "ไม่สามารถตั้งต้นเครื่องมือสร้างตัวเลขสุ่ม"
 
-#: gp11/gp11-misc.c:226
+#: gp11/gp11-misc.c:253
 msgid "No random number generator available"
 msgstr "ไม่มีตัวสร้างเลขสุ่ม"
 
-#: gp11/gp11-misc.c:228
+#: gp11/gp11-misc.c:255
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "กลไกการเข้ารหัสลับมีพารามิเตอร์ที่ไม่ถูกต้อง"
 
-#: gp11/gp11-misc.c:230
+#: gp11/gp11-misc.c:257
 msgid "Not enough space to store the result"
 msgstr "มีที่ว่างไม่เพียงพอที่จะเก็บผลลัพธ์"
 
-#: gp11/gp11-misc.c:232
+#: gp11/gp11-misc.c:259
 msgid "The saved state is invalid"
 msgstr "สถานะที่บันทึกไว้ไม่ใช่สถานะที่ถูกต้อง"
 
-#: gp11/gp11-misc.c:234
+#: gp11/gp11-misc.c:261
 msgid "The information is sensitive and cannot be revealed"
 msgstr "ข้อมูลมีความอ่อนไหวและไม่สามารถเปิดเผยได้"
 
-#: gp11/gp11-misc.c:236
+#: gp11/gp11-misc.c:263
 msgid "The state cannot be saved"
 msgstr "ไม่สามารถบันทึกสถานะได้"
 
-#: gp11/gp11-misc.c:238
+#: gp11/gp11-misc.c:265
 msgid "The module has not been initialized"
 msgstr "มอดูลยังไม่ถูกตั้งค่าเริ่มต้น"
 
-#: gp11/gp11-misc.c:240
+#: gp11/gp11-misc.c:267
 msgid "The module has already been initialized"
 msgstr "มอดูลถูกตั้งค่าเริ่มต้นเรียบร้อยแล้ว"
 
-#: gp11/gp11-misc.c:242
+#: gp11/gp11-misc.c:269
 msgid "Cannot lock data"
 msgstr "ไม่สามารถล็อคข้อมูล"
 
-#: gp11/gp11-misc.c:244
+#: gp11/gp11-misc.c:271
 msgid "The data cannot be locked"
 msgstr "ข้อมูลไม่สามารถล็อคได้"
 
-#: gp11/gp11-misc.c:246
+#: gp11/gp11-misc.c:273
 msgid "The signature request was rejected by the user"
 msgstr "การร้องขอลายเซ็นถูกผู้ใช้ปฏิเสธ"
 
-#: gp11/gp11-misc.c:250
+#: gp11/gp11-misc.c:277
 msgid "Unknown error"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
-#: library/gnome-keyring-utils.c:91
+#: library/gnome-keyring-utils.c:155
 msgid "Access Denied"
 msgstr "ปฏิเสธการใช้งาน"
 
-#: library/gnome-keyring-utils.c:93
+#: library/gnome-keyring-utils.c:157
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "โปรแกรม gnome-keyring-daemon ไม่ได้ทำงานอยู่"
 
-#: library/gnome-keyring-utils.c:95
+#: library/gnome-keyring-utils.c:159
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "เกิดข้อผิดพลาดขณะติดต่อกับ gnome-keyring-daemon"
 
-#: library/gnome-keyring-utils.c:97
+#: library/gnome-keyring-utils.c:161
 msgid "A keyring with that name already exists"
 msgstr "มีพวงกุญแจชื่อนี้อยู่ก่อนแล้ว"
 
-#: library/gnome-keyring-utils.c:99
+#: library/gnome-keyring-utils.c:163
 msgid "Programmer error: The application sent invalid data."
 msgstr "ข้อผิดพลาดของผู้เขียนโปรแกรม: โปรแกรมส่งข้อมูลผิดพลาด"
 
-#: library/gnome-keyring-utils.c:101
+#: library/gnome-keyring-utils.c:165
 msgid "No matching results"
 msgstr "ไม่มีรายการที่ตรง"
 
-#: library/gnome-keyring-utils.c:103
+#: library/gnome-keyring-utils.c:167
 msgid "A keyring with that name does not exist."
 msgstr "ไม่มีพวงกุญแจชื่อนี้"
 
-#: library/gnome-keyring-utils.c:110
+#: library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "พวงกุญแจถูกปลดล็อคเรียบร้อยแล้ว"
+
+#: pkcs11/gck/gck-certificate.c:710
+msgid "Unnamed Certificate"
+msgstr "ใบรับรองไม่มีชื่อ"
+
+#: pkcs11/ssh-store/gck-ssh-private-key.c:296
+msgid "Couldn't parse public SSH key"
+msgstr "ไม่สามารถแจงกุญแจสาธารณะสำหรับ SSH"
+
+#~ msgid ""
+#~ "A list of paths to PKCS#11 modules to load. No modules are currently "
+#~ "listed by default, as this is still an experimental feature. This is used "
+#~ "by seahorse and other PKCS#11 aware applications."
+#~ msgstr ""
+#~ "รายชื่อพาธของมอดูล PKCS#11 ที่จะโหลด ค่าปริยายจะไม่มีชื่อมอดูลใดเลยในตอนนี้ "
+#~ "เนื่องจากเป็นความสามารถที่ยังอยู่ในขั้นทดลอง มอดูลเหล่านี้จะถูกใช้โดย seahorse "
+#~ "และโปรแกรมที่รองรับ PKCS#11 อื่นๆ"
+
+#~ msgid "PKCS#11 Modules"
+#~ msgstr "มอดูล PKCS#11"
+
+#~ msgid "Import private key"
+#~ msgstr "นำเข้ากุญแจส่วนตัว"
+
+#~ msgid "Import public key"
+#~ msgstr "นำเข้ากุญแจสาธารณะ"
+
+#~ msgid "The system wants to import the public key '%s', but it is locked"
+#~ msgstr "ระบบต้องการจะนำเข้ากุญแจสาธารณะ '%s' ซึ่งถูกล็อคอยู่"
+
+#~ msgid "Create Storage for Key Information"
+#~ msgstr "สร้างแหล่งเก็บข้อมูลกุญแจ"
+
+#~ msgid "Choose password to protect storage"
+#~ msgstr "ตั้งรหัสผ่านเพื่อปกป้องแหล่งเก็บ"
+
+#~ msgid ""
+#~ "The system wants to store information about your keys and certificates. "
+#~ "In order to protect this information, choose a password with which it "
+#~ "will be locked."
+#~ msgstr ""
+#~ "ระบบต้องการเก็บข้อมูลเกี่ยวกับกุญแจและใบรับรองต่างๆ ของคุณ "
+#~ "กรุณาตั้งรหัสผ่านที่จะใช้ล็อคแหล่งเก็บ เพื่อปกป้องข้อมูล"
+
+#~ msgid "Unlock Storage for Key Information"
+#~ msgstr "ปลดล็อคแหล่งเก็บข้อมูลกุญแจ"
+
+#~ msgid "Enter password to unlock storage"
+#~ msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคแหล่งเก็บ"
+
+#~ msgid ""
+#~ "The system wants to access information about your keys and certificates, "
+#~ "but it is locked."
+#~ msgstr "ระบบต้องการจะเข้าถึงข้อมูลกุญแจและใบรับรองต่างๆ ของคุณ ซึ่งถูกล็อคอยู่"
+
+#~ msgid "Trust Association"
+#~ msgstr "Trust Association"
+
+#~ msgid "Cannot delete '%s' because it is tied to other objects."
+#~ msgstr "ไม่สามารถลบ '%s' เพราะถูกผูกติดกับอ็อบเจกต์อื่นอยู่"
+
+#~ msgid "Lock private key"
+#~ msgstr "ล็อคกุญแจส่วนตัว"
+
+#~ msgid "Lock"
+#~ msgstr "ล็อค"
+
+#~ msgid "Enter password to protect the private key"
+#~ msgstr "ตั้งรหัสผ่านที่จะใช้ปกป้องกุญแจส่วนตัว"
+
+#~ msgid ""
+#~ "The system wants to store the private key '%s' on your disk. Please enter "
+#~ "a password to lock it with."
+#~ msgstr ""
+#~ "ระบบต้องการจะเก็บกุญแจส่วนตัว '%s' ลงในดิสก์ กรุณาตั้งรหัสผ่านที่จะใช้ล็อคกุญแจดังกล่าว"
+
+#~ msgid ""
+#~ "The system wants to store '%s' on your disk. Please enter a password to "
+#~ "lock it with."
+#~ msgstr "ระบบต้องการจะเก็บ '%s' ลงในดิสก์ กรุณาตั้งรหัสผ่านที่จะใช้ล็อคข้อมูลดังกล่าว"
+
+#~ msgid "Couldn't read secure shell private key: %s"
+#~ msgstr "ไม่สามารถอ่านกุญแจส่วนตัวสำหรับเชลล์นิรภัย: %s"
+
+#~ msgid "Invalid secure shell private key at: %s"
+#~ msgstr "กุญแจส่วนตัวสำหรับเชลล์นิรภัยไม่ถูกต้องที่: %s"
+
+#~ msgid "Couldn't encrypt the SSH key to store it."
+#~ msgstr "ไม่สามารถเข้ารหัสลับกุญแจ SSH เพื่อจัดเก็บ"
+
+#~ msgid "Couldn't encode the SSH key to store it."
+#~ msgstr "ไม่สามารถลงรหัสกุญแจ SSH เพื่อจัดเก็บ"
 
 #~ msgid "Cannot set a random seed"
 #~ msgstr "ไม่สามารถตั้งค่าสุ่มเริ่มต้น"
