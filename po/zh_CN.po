@@ -10,281 +10,281 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-01-28 01:38+0000\n"
-"PO-Revision-Date: 2009-02-21 14:57+0700\n"
+"POT-Creation-Date: 2009-02-21 06:58+0000\n"
+"PO-Revision-Date: 2009-02-21 18:27+0700\n"
 "Last-Translator: 甘露(Gan Lu) <rhythm.gan@gmail.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gkr-location.c:320
+#: ../common/gkr-location.c:321
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "可移动磁盘：%s"
 
-#: ../common/gkr-location.c:322
+#: ../common/gkr-location.c:323
 msgid "Removable Disk"
 msgstr "可移动磁盘"
 
-#: ../common/gkr-location.c:543
-#: ../common/gkr-location.c:555
+#: ../common/gkr-location.c:544
+#: ../common/gkr-location.c:556
 msgid "Home"
 msgstr "主目录"
 
-#: ../common/gkr-location.c:1104
-#: ../common/gkr-location.c:1128
-#: ../daemon/pkix/gkr-pkix-parser.c:524
-#: ../daemon/pkix/gkr-pkix-serialize.c:60
+#: ../common/gkr-location.c:1105
+#: ../common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
 msgstr "此文件所在的磁盘或驱动器不存在"
 
-#: ../common/gkr-location.c:1136
+#: ../common/gkr-location.c:1137
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "无法创建目录：%s"
 
-#: ../common/gkr-location.c:1170
+#: ../common/gkr-location.c:1171
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "无法删除文件：%s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:227
+#: ../daemon/gkr-daemon-ops.c:228
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "应用程序“%s”(%s)想要访问默认密钥环中的“<object prop='name'/>”的密码。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231
+#: ../daemon/gkr-daemon-ops.c:232
 #, c-format
 msgid "The application '%s' (%s) wants to access the password for '<object prop='name'/>' in %s."
 msgstr "应用程序“%s”(%s)想要访问 %s 中“<object prop='name'/>”的密码。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:237
-#: ../daemon/gkr-daemon-ops.c:247
+#: ../daemon/gkr-daemon-ops.c:238
+#: ../daemon/gkr-daemon-ops.c:248
 #, c-format
 msgid "The application '%s' wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "应用程序“%s”想要访问默认密钥环中“<object prop='name'/>”的密码。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:241
-#: ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:242
+#: ../daemon/gkr-daemon-ops.c:252
 #, c-format
 msgid "The application '%s' wants to access the password for '<object prop='name'/>' in %s."
 msgstr "应用程序“%s”想要访问 %s 中“<object prop='name'/>”的密码。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:257
+#: ../daemon/gkr-daemon-ops.c:258
 msgid "An unknown application wants to access the password for '<object prop='name'/>' in the default keyring."
 msgstr "一个未知程序想要访问默认密钥环中“<object prop='name'/>”的密码。"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 #, c-format
 msgid "An unknown application wants to access the password for '<object prop='name'/>' in %s."
 msgstr "一个未知程序想要访问 %s 中“<object prop='name'/>”的密码。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow access"
 msgstr "允许访问"
 
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow application access to keyring?"
 msgstr "允许应用程序访问密钥环吗？"
 
-#: ../daemon/gkr-daemon-ops.c:307
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
 msgstr "应用程序“%s”(%s)想要访问默认密钥环，但该密钥环已上锁"
 
-#: ../daemon/gkr-daemon-ops.c:311
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "应用程序“%s”(%s)想要访问密钥环“%s”，但该密钥环已上锁"
 
-#: ../daemon/gkr-daemon-ops.c:317
-#: ../daemon/gkr-daemon-ops.c:327
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321
+#: ../daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "应用程序“%s”想要访问默认密钥环，但该密钥环已上锁"
 
-#: ../daemon/gkr-daemon-ops.c:321
-#: ../daemon/gkr-daemon-ops.c:332
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326
+#: ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "应用程序“%s”想要访问密钥环“%s”，但该密钥环已上锁"
 
-#: ../daemon/gkr-daemon-ops.c:338
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
 #, c-format
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr "未知应用程序想要访问默认密钥环，但该密钥环已上锁"
 
-#: ../daemon/gkr-daemon-ops.c:342
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "未知应用程序想要访问密钥环“%s”，但该密钥环已上锁"
 
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
 msgstr "要解除锁定，请输入默认密钥环的密码"
 
-#: ../daemon/gkr-daemon-ops.c:351
+#: ../daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "要解除锁定，请输入密钥环“%s”的密码"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:355
+#: ../daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "解锁密钥环"
 
-#: ../daemon/gkr-daemon-ops.c:367
-#: ../daemon/pk/gkr-pk-index.c:135
+#: ../daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
 msgstr "当我登入时自动解锁此密钥环。"
 
-#: ../daemon/gkr-daemon-ops.c:403
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "应用程序“%s”(%s)想要创建名为“%s”的新密钥环。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:407
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "应用程序“%s”(%s)想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:413
-#: ../daemon/gkr-daemon-ops.c:423
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425
+#: ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "应用程序“%s”想要创建名为“%s”的新密钥环。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:417
-#: ../daemon/gkr-daemon-ops.c:427
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430
+#: ../daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "应用程序“%s”想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:433
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
 msgstr "未知应用程序想要创建名为“%s”的新密钥环。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:437
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
 #, c-format
 msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
 msgstr "未知应用程序想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:443
+#: ../daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
 msgstr "新密钥环的密码"
 
-#: ../daemon/gkr-daemon-ops.c:444
+#: ../daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
 msgstr "选择新密钥环的密码"
 
-#: ../daemon/gkr-daemon-ops.c:491
+#: ../daemon/gkr-daemon-ops.c:508
 #, c-format
 msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "应用程序“%s”(%s)想要更改“%s”密钥环的密码。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:512
 #, c-format
 msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "应用程序“%s”(%s)想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:501
-#: ../daemon/gkr-daemon-ops.c:511
+#: ../daemon/gkr-daemon-ops.c:518
+#: ../daemon/gkr-daemon-ops.c:528
 #, c-format
 msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "应用程序“%s”想要更改“%s”密钥环的密码。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:505
-#: ../daemon/gkr-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:522
+#: ../daemon/gkr-daemon-ops.c:532
 #, c-format
 msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "应用程序“%s”想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:521
+#: ../daemon/gkr-daemon-ops.c:538
 #, c-format
 msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
 msgstr "未知应用程序想要更改“%s”密钥环的密码。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:525
+#: ../daemon/gkr-daemon-ops.c:542
 #, c-format
 msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
 msgstr "未知应用程序想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
 
-#: ../daemon/gkr-daemon-ops.c:535
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "为“%s”密钥环选择新密码。"
 
-#: ../daemon/gkr-daemon-ops.c:537
+#: ../daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "为默认密钥环选择新密码。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:541
+#: ../daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
 msgstr "更改密钥环密码"
 
-#: ../daemon/gkr-daemon-ops.c:614
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "应用程序“%s”(%s)想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，请为其输入密码。"
 
-#: ../daemon/gkr-daemon-ops.c:618
-#: ../daemon/gkr-daemon-ops.c:622
+#: ../daemon/gkr-daemon-ops.c:635
+#: ../daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "应用程序“%s”想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，请为其输入密码。"
 
-#: ../daemon/gkr-daemon-ops.c:626
+#: ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
 msgstr "未知应用程序想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，请为其输入密码。"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "创建默认密钥环"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
 msgstr "选择默认密钥环的密码"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid "A list of paths to PKCS#11 modules to load. No modules are currently listed by default, as this is still an experimental feature. This is used by seahorse and other PKCS#11 aware applications."
-msgstr "加载 PKCS#11 模块的路径列表。由于这仍然是一个实验中的特性，默认情况下，当前没有模块被列出。这用于 seahorse 或其他知晓 PKCS#11 的程序。"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid "PKCS#11 Modules"
-msgstr "PKCS#11 模块"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
 msgstr "此选项启用 gnome-keyring 守护进程的 PKCS#11 组件。它仅在 gnome-keyring-daemon 启动时生效(即用户登入时)。当一些特定的命令行参数传给守护进程时，此设定可以被覆盖。"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
 msgstr "此选项启用 gnome-keyring 守护进程的 SSH 代理。它仅在 gnome-keyring-daemon 启动时生效(即用户登入时)。当一些特定的命令行参数传给守护进程时，此设定可以被覆盖。"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "是否启用 gnome-keyring PKCS#11 组件"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "是否启用 gnome-keyring SSH 代理"
 
 #: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-#| msgid "New Keyring Password"
 msgid "GNOME Keyring Daemon"
 msgstr "GNOME 密钥环后台程序"
 
@@ -314,426 +314,327 @@ msgstr "输入您的登录密码"
 msgid "Your login keyring was not automatically created when you logged into this computer. It will now be created."
 msgstr "您登录到此计算机时，您的登录密钥环未被自动创建。现在创建它。"
 
-#: ../daemon/keyrings/gkr-keyring.c:584
+#: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "%s 密钥环的解锁密码"
 
-#: ../daemon/pk/gkr-pk-import.c:88
-msgid "Import private key"
-msgstr "导入私钥"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+msgid "Unlock private key"
+msgstr "解锁私钥"
 
-#: ../daemon/pk/gkr-pk-import.c:90
-msgid "Import certificate"
-msgstr "导入证书"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+msgid "Unlock certificate"
+msgstr "解锁证书"
 
-#: ../daemon/pk/gkr-pk-import.c:92
-msgid "Import public key"
-msgstr "导入公钥"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+msgid "Unlock public key"
+msgstr "解锁公钥"
 
-#: ../daemon/pk/gkr-pk-import.c:94
-msgid "Import"
-msgstr "导入"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+msgid "Unlock"
+msgstr "解锁"
 
-#: ../daemon/pk/gkr-pk-import.c:101
-#: ../daemon/pk/gkr-pk-storage.c:166
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:114
 #: ../gcr/gcr-importer.c:360
 msgid "Enter password to unlock the private key"
 msgstr "输入密码以解锁私钥"
 
-#: ../daemon/pk/gkr-pk-import.c:103
-#: ../daemon/pk/gkr-pk-storage.c:168
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:116
 #: ../gcr/gcr-importer.c:362
 msgid "Enter password to unlock the certificate"
 msgstr "输入密码以解锁证书"
 
-#: ../daemon/pk/gkr-pk-import.c:105
-#: ../daemon/pk/gkr-pk-storage.c:170
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
 msgid "Enter password to unlock the public key"
 msgstr "输入密码以解锁公钥"
 
-#: ../daemon/pk/gkr-pk-import.c:107
-#: ../daemon/pk/gkr-pk-storage.c:172
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:120
 #: ../gcr/gcr-importer.c:364
 msgid "Enter password to unlock"
 msgstr "输入密锁以解锁"
 
-#: ../daemon/pk/gkr-pk-import.c:114
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "系统想要导入私钥‘%s’，但它已上锁"
-
-#: ../daemon/pk/gkr-pk-import.c:116
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "系统想要导入证书‘%s’，但它已上锁"
-
-#: ../daemon/pk/gkr-pk-import.c:118
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "系统想要导入公钥‘%s’，但它已上锁"
-
-#: ../daemon/pk/gkr-pk-import.c:120
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "系统想要导入‘%s’，但它已上锁"
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:93
-msgid "Create Storage for Key Information"
-msgstr "为密匙信息创建储存器"
-
-#: ../daemon/pk/gkr-pk-index.c:94
-msgid "Choose password to protect storage"
-msgstr "选择保护存储器的密码"
-
-#: ../daemon/pk/gkr-pk-index.c:97
-msgid "The system wants to store information about your keys and certificates. In order to protect this information, choose a password with which it will be locked."
-msgstr "系统想要保存关于你密匙和证书的信息。为了保护该信息，请选择一个密码以用于锁定。"
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:124
-msgid "Unlock Storage for Key Information"
-msgstr "为密匙信息解除储存器锁定"
-
-#: ../daemon/pk/gkr-pk-index.c:125
-msgid "Enter password to unlock storage"
-msgstr "输入密锁以解除存储器锁定"
-
-#: ../daemon/pk/gkr-pk-index.c:128
-msgid "The system wants to access information about your keys and certificates, but it is locked."
-msgstr "系统想要访问关于你密匙和证书的信息，但它已被锁定"
-
-#: ../daemon/pk/gkr-pk-object.c:889
-#: ../gcr/gcr-parser.c:199
-msgid "Certificate"
-msgstr "证书"
-
-#: ../daemon/pk/gkr-pk-object.c:891
-#: ../gcr/gcr-parser.c:196
-msgid "Private Key"
-msgstr "私钥"
-
-#: ../daemon/pk/gkr-pk-object.c:893
-#: ../gcr/gcr-certificate-details-widget.c:297
-#: ../gcr/gcr-parser.c:202
-msgid "Public Key"
-msgstr "公共密钥"
-
-#: ../daemon/pk/gkr-pk-object.c:895
-msgid "Trust Association"
-msgstr "信任联盟"
-
-#: ../daemon/pk/gkr-pk-object-storage.c:445
-#, c-format
-msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr "无法删除 '%s' ，因为它和其他对象绑在一起。"
-
-#: ../daemon/pk/gkr-pk-storage.c:136
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
-msgid "Unlock private key"
-msgstr "解锁私钥"
-
-#: ../daemon/pk/gkr-pk-storage.c:138
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
-msgid "Unlock certificate"
-msgstr "解锁证书"
-
-#: ../daemon/pk/gkr-pk-storage.c:140
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
-msgid "Unlock public key"
-msgstr "解锁公钥"
-
-#: ../daemon/pk/gkr-pk-storage.c:142
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
-msgid "Unlock"
-msgstr "解锁"
-
-#: ../daemon/pk/gkr-pk-storage.c:153
-msgid "Lock private key"
-msgstr "锁定私钥"
-
-#: ../daemon/pk/gkr-pk-storage.c:155
-msgid "Lock"
-msgstr "锁定"
-
-#: ../daemon/pk/gkr-pk-storage.c:183
-msgid "Enter password to protect the private key"
-msgstr "输入密码以保护私匙"
-
-#: ../daemon/pk/gkr-pk-storage.c:185
-msgid "Enter password to protect storage"
-msgstr "输入密码以保护存储器"
-
-#: ../daemon/pk/gkr-pk-storage.c:196
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:144
-msgid "Automatically unlock this private key when I log in."
-msgstr "当我登入时自动解锁此私钥。"
-
-#: ../daemon/pk/gkr-pk-storage.c:198
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:146
-msgid "Automatically unlock this certificate when I log in."
-msgstr "当我登入时自动解锁此证书。"
-
-#: ../daemon/pk/gkr-pk-storage.c:200
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
-msgid "Automatically unlock this public key when I log in."
-msgstr "当我登入时自动解锁此公钥。"
-
-#: ../daemon/pk/gkr-pk-storage.c:202
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
-msgid "Automatically unlock this when I log in"
-msgstr "当我登入时自动解除此锁定。"
-
-#: ../daemon/pk/gkr-pk-storage.c:209
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "一个应用程序想要访问私钥‘%s’，但它已被锁定"
 
-#: ../daemon/pk/gkr-pk-storage.c:211
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:131
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "一个应用程序想要访问证书‘%s’，但它已被锁定"
 
-#: ../daemon/pk/gkr-pk-storage.c:213
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "一个应用程序想要访问公钥‘%s’，但它已被锁定"
 
-#: ../daemon/pk/gkr-pk-storage.c:215
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "一个应用程序获取对‘%s’的访问，但它已被锁定"
 
-#: ../daemon/pk/gkr-pk-storage.c:228
-#, c-format
-msgid "The system wants to store the private key '%s' on your disk. Please enter a password to lock it with."
-msgstr "系统想要在你的磁盘上保存私钥‘%s’。请输入一个密码以锁定。"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "当我登入时自动解锁此私钥。"
 
-#: ../daemon/pk/gkr-pk-storage.c:230
-#, c-format
-msgid "The system wants to store '%s' on your disk. Please enter a password to lock it with."
-msgstr "系统想要在你的磁盘上储存 '%s' 。请输入一个密码以将其锁定。"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "当我登入时自动解锁此证书。"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:367
-#| msgid "Unlock certificate"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "当我登入时自动解锁此公钥。"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "当我登入时自动解除此锁定。"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
 msgid "Unlock certificate/key storage"
 msgstr "解锁证书/密匙存储器"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:368
-#| msgid "Enter password to unlock the certificate"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "输入密码以解锁证书/密匙存储器"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:370
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
 #, c-format
-#| msgid ""
-#| "An application wants access to the certificate '%s', but it is locked"
 msgid "An application wants access to the certificate/key storage '%s', but it is locked"
 msgstr "一个应用程序想要访问证书/密匙存储器 '%s，但它已被锁定"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:376
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
-#| msgid "Automatically unlock this certificate when I log in."
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
 msgid "Automatically unlock secure storage when I log in."
 msgstr "当我登入时自动解锁安全存储器。"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:519
-#| msgid "New password strength"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
 msgid "New Password Required"
 msgstr "需要新密码"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:520
-#| msgid "Enter password to protect storage"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
 msgid "New password required for secure storage"
 msgstr "需要新密码以保护安全存储器"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:522
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "要准备为 '%s' 保存证书或密匙，必须要一个密码"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451
-#: ../gcr/gcr-importer.c:162
-#: ../gcr/gcr-parser.c:1573
-#: ../gp11/gp11-misc.c:114
-msgid "The operation was cancelled"
-msgstr "操作已取消"
+#: ../daemon/ui/gkr-ask-tool.c:230
+msgid ""
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>无法抓取你的鼠标</big></b>\n"
+"\n"
+"某个恶意客户端也许正在窃听你的进程，或你正好点击了某个菜单或某些程序刚好需要得到焦点\n"
+"\n"
+"请重试。"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:455
-msgid "Unrecognized or unsupported file."
-msgstr "未识别的或不被支持的文件。"
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>无法抓取你的键盘</big></b>\n"
+"\n"
+"某个恶意客户端也许正在窃听你的进程，或你正好点击了某个菜单或某些程序刚好需要得到焦点\n"
+"\n"
+"请重试。"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:459
-msgid "Could not parse invalid or corrupted file."
-msgstr "无法解析非法的或已损坏的文件。"
-
-#: ../daemon/ui/gkr-ask-tool.c:244
+#: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "以不加密方式储存密码吗？"
 
-#: ../daemon/ui/gkr-ask-tool.c:245
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "使用空白密码，您所储存的密码将不会被安全地加密。它们可由能访问您的文件的任何人访问到。"
 
-#: ../daemon/ui/gkr-ask-tool.c:252
+#: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
 msgstr "使用不安全的存储器"
 
-#: ../daemon/ui/gkr-ask-tool.c:479
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "位置(_L)："
 
-#: ../daemon/ui/gkr-ask-tool.c:492
+#: ../daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "旧密码(_O)："
 
-#: ../daemon/ui/gkr-ask-tool.c:512
+#: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "密码(_P)："
 
-#: ../daemon/ui/gkr-ask-tool.c:534
+#: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "确认密码(_C)："
 
-#: ../daemon/ui/gkr-ask-tool.c:554
+#: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "新密码强度"
 
-#: ../daemon/ui/gkr-ask-tool.c:612
+#: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "密码不匹配。"
 
-#: ../daemon/ui/gkr-ask-tool.c:628
+#: ../daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "密码不能为空"
 
-#: ../daemon/ui/gkr-ask-tool.c:679
+#: ../daemon/ui/gkr-ask-tool.c:712
 msgid "_Deny"
 msgstr "禁止(_D)"
 
-#: ../daemon/ui/gkr-ask-tool.c:691
+#: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
 msgstr "创建(_r)"
 
-#: ../daemon/ui/gkr-ask-tool.c:695
+#: ../daemon/ui/gkr-ask-tool.c:728
 msgid "C_hange"
 msgstr "改变(_h)"
 
-#: ../daemon/ui/gkr-ask-tool.c:699
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "允许一次(_O)"
 
-#: ../daemon/ui/gkr-ask-tool.c:703
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "总是允许(_A)"
 
-#: ../egg/egg-asn1.c:794
+#: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "域组成"
 
-#: ../egg/egg-asn1.c:795
+#: ../egg/egg-oid.c:43
 msgid "User ID"
 msgstr "用户 ID"
 
-#: ../egg/egg-asn1.c:797
+#: ../egg/egg-oid.c:46
 msgid "Email"
 msgstr "电子邮件"
 
-#: ../egg/egg-asn1.c:801
+#: ../egg/egg-oid.c:54
 msgid "Date of Birth"
 msgstr "生日"
 
-#: ../egg/egg-asn1.c:802
+#: ../egg/egg-oid.c:56
 msgid "Place of Birth"
 msgstr "出生地"
 
-#: ../egg/egg-asn1.c:803
+#: ../egg/egg-oid.c:58
 msgid "Gender"
 msgstr "性别"
 
-#: ../egg/egg-asn1.c:804
+#: ../egg/egg-oid.c:60
 msgid "Country of Citizenship"
 msgstr "国籍"
 
-#: ../egg/egg-asn1.c:805
+#: ../egg/egg-oid.c:62
 msgid "Country of Residence"
 msgstr "定居国"
 
-#: ../egg/egg-asn1.c:807
+#: ../egg/egg-oid.c:65
 msgid "Common Name"
 msgstr "常用名"
 
-#: ../egg/egg-asn1.c:808
+#: ../egg/egg-oid.c:67
 msgid "Surname"
 msgstr "姓"
 
-#: ../egg/egg-asn1.c:809
+#: ../egg/egg-oid.c:69
 #: ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:259
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Serial Number"
 msgstr "序列号"
 
-#: ../egg/egg-asn1.c:810
+#: ../egg/egg-oid.c:71
 msgid "Country"
 msgstr "国家"
 
-#: ../egg/egg-asn1.c:811
+#: ../egg/egg-oid.c:73
 msgid "Locality"
 msgstr "位置"
 
-#: ../egg/egg-asn1.c:812
+#: ../egg/egg-oid.c:75
 msgid "State"
 msgstr "省"
 
-#: ../egg/egg-asn1.c:813
+#: ../egg/egg-oid.c:77
 msgid "Street"
 msgstr "街道"
 
-#: ../egg/egg-asn1.c:814
+#: ../egg/egg-oid.c:79
 msgid "Organization"
 msgstr "组织"
 
-#: ../egg/egg-asn1.c:815
+#: ../egg/egg-oid.c:81
 msgid "Organizational Unit"
 msgstr "单位"
 
-#: ../egg/egg-asn1.c:816
+#: ../egg/egg-oid.c:83
 msgid "Title"
 msgstr "头衔"
 
-#: ../egg/egg-asn1.c:817
+#: ../egg/egg-oid.c:85
 msgid "Telephone Number"
 msgstr "电话号码"
 
-#: ../egg/egg-asn1.c:818
+#: ../egg/egg-oid.c:87
 msgid "Given Name"
 msgstr "名"
 
-#: ../egg/egg-asn1.c:819
+#: ../egg/egg-oid.c:89
 msgid "Initials"
 msgstr "首字母"
 
-#: ../egg/egg-asn1.c:820
-#| msgid "The operation failed"
+#: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
 msgstr "操作限定人"
 
-#: ../egg/egg-asn1.c:821
+#: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
 msgstr "DN 限定人"
 
-#: ../egg/egg-asn1.c:822
+#: ../egg/egg-oid.c:95
 msgid "Pseudonym"
 msgstr "笔名"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA 算法加密"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "使用 RSA 算法的 MD2 值"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "使用 RSA 算法的 MD5 值"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "使用 RSA 算法的 SHA1 值"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA 算法加密"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "使用 DSA 算法的 SHA1 值"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -744,7 +645,6 @@ msgid "<i>unknown</i>"
 msgstr "<i>未知的</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:1
-#| msgid "Import certificate"
 msgid "<Not Part of Certificate>"
 msgstr "<非证书部分>"
 
@@ -773,12 +673,10 @@ msgid "Common Name (CN)"
 msgstr "常用名 (CN)"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:8
-#| msgid "Import certificate"
 msgid "Email Recipient Certificate"
 msgstr "电子邮件接收者证书"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:9
-#| msgid "Certificate"
 msgid "Email Signer Certificate"
 msgstr "电子邮件签发者证书"
 
@@ -807,72 +705,105 @@ msgid "SHA1 Fingerprint"
 msgstr "SHA1 指纹"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:16
-#| msgid "Certificate"
 msgid "SSL Client Certificate"
 msgstr "SSL 客户端证书"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:17
-#| msgid "Certificate"
 msgid "SSL Server Certificate"
 msgstr "SSL 服务器证书"
 
+#: ../gcr/gcr-certificate-details-widget.c:207
+#| msgid "Version"
+msgid "Extension"
+msgstr "扩展"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "识别标志"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "值"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "是"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "否"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+#| msgid "Certificate"
+msgid "Critical"
+msgstr "关键"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:240
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Subject Name"
 msgstr "学科名"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:244
+#: ../gcr/gcr-certificate-details-widget.c:315
 msgid "Issuer Name"
 msgstr "发布者名称"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:248
-#| msgid "Certificate"
+#: ../gcr/gcr-certificate-details-widget.c:319
 msgid "Issued Certificate"
 msgstr "发布的证书"
 
-#: ../gcr/gcr-certificate-details-widget.c:253
+#: ../gcr/gcr-certificate-details-widget.c:324
 msgid "Version"
 msgstr "版本"
 
-#: ../gcr/gcr-certificate-details-widget.c:266
+#: ../gcr/gcr-certificate-details-widget.c:337
 msgid "Not Valid Before"
 msgstr "在此之前无效"
 
-#: ../gcr/gcr-certificate-details-widget.c:271
+#: ../gcr/gcr-certificate-details-widget.c:342
 msgid "Not Valid After"
 msgstr "在此之后无效"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:276
-#: ../gcr/gcr-certificate-details-widget.c:284
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Signature"
 msgstr "签名"
 
-#. TODO: Complete Signature algorithm, and params
-#: ../gcr/gcr-certificate-details-widget.c:279
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature Algorithm"
 msgstr "签名算法"
 
+#: ../gcr/gcr-certificate-details-widget.c:356
+#| msgid "Signature"
+msgid "Signature Parameters"
+msgstr "签名参数"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:288
-#| msgid "Public Key"
+#: ../gcr/gcr-certificate-details-widget.c:367
 msgid "Public Key Info"
 msgstr "公共密钥信息"
 
-#. TODO: Complete algorithm, params, key size
-#: ../gcr/gcr-certificate-details-widget.c:291
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Algorithm"
 msgstr "密匙算法"
 
-#: ../gcr/gcr-certificate-details-widget.c:292
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "密匙参数"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Key Size"
 msgstr "密匙大小"
 
-#. TODO: Implement extensions
+#: ../gcr/gcr-certificate-details-widget.c:390
+#: ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "公共密钥"
+
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:394
 msgid "Fingerprints"
 msgstr "指纹"
 
@@ -881,14 +812,18 @@ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 msgstr "<span size='large' weight='bold'>导入证书和密匙</span>"
 
 #: ../gcr/gcr-import-dialog.glade.h:2
-#| msgid "Import"
 msgid "Import Into:"
 msgstr "导入到："
 
 #: ../gcr/gcr-import-dialog.glade.h:3
-#| msgid "_Password:"
 msgid "Password:"
 msgstr "密码："
+
+#: ../gcr/gcr-importer.c:162
+#: ../gcr/gcr-parser.c:1573
+#: ../gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr "操作已取消"
 
 #: ../gcr/gcr-importer.c:254
 #, c-format
@@ -896,7 +831,6 @@ msgid "No location available to import to"
 msgstr "没有可用的导入位置"
 
 #: ../gcr/gcr-importer.c:328
-#| msgid "Import certificate"
 msgid "Import Certificates/Keys"
 msgstr "导入证书/密匙"
 
@@ -904,50 +838,56 @@ msgstr "导入证书/密匙"
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "选择某个位置来保存导入的证书及密匙。"
 
-#: ../gcr/gcr-importer.c:372
-#| msgid "The system wants to import the private key '%s', but it is locked"
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
 msgid "In order to import the private key, it must be unlocked"
 msgstr "要导入私钥，它必须已解除锁定"
 
-#: ../gcr/gcr-importer.c:374
-#| msgid "The system wants to import the certificate '%s', but it is locked"
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "要导入证书，它必须已解除锁定"
 
-#: ../gcr/gcr-importer.c:376
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
 msgid "In order to import the data, it must be unlocked"
 msgstr "要导入数据，它必须已解除锁定"
 
-#: ../gcr/gcr-importer.c:379
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
 #, c-format
-#| msgid "The system wants to import the private key '%s', but it is locked"
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "要导入私钥 '%s'，它必须已解除锁定"
 
-#: ../gcr/gcr-importer.c:381
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
 #, c-format
-#| msgid "The system wants to import the certificate '%s', but it is locked"
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "要导入证书 '%s'，它必须已解除锁定"
 
-#: ../gcr/gcr-importer.c:383
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
 #, c-format
-#| msgid "The system wants to import '%s', but it is locked"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "要导入‘%s’，它必须已解除锁定"
 
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "私钥"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "证书"
+
 #: ../gcr/gcr-parser.c:1576
-#| msgid "Unrecognized or unsupported file."
 msgid "Unrecognized or unsupported data."
 msgstr "无法识别或不被支持的数据。"
 
 #: ../gcr/gcr-parser.c:1579
-#| msgid "Could not parse invalid or corrupted file."
 msgid "Could not parse invalid or corrupted data."
 msgstr "无法解析非法的或已损坏的数据。"
 
 #: ../gcr/gcr-parser.c:1582
-#| msgid "The data cannot be locked"
 msgid "The data is locked"
 msgstr "数据已被锁定"
 
@@ -1303,16 +1243,82 @@ msgstr "不存在此名称对应的密钥环"
 msgid "The keyring has already been unlocked."
 msgstr "密钥环已被解锁。"
 
-#: ../pkcs11/gck/gck-certificate.c:516
-#| msgid "Certificate"
+#: ../pkcs11/gck/gck-certificate.c:710
 msgid "Unnamed Certificate"
 msgstr "未命名的证书"
 
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
-#| msgid "Couldn't encode secure shell public key."
 msgid "Couldn't parse public SSH key"
 msgstr "无法处理 SSH 公匙"
 
+#~ msgid ""
+#~ "A list of paths to PKCS#11 modules to load. No modules are currently "
+#~ "listed by default, as this is still an experimental feature. This is used "
+#~ "by seahorse and other PKCS#11 aware applications."
+#~ msgstr ""
+#~ "加载 PKCS#11 模块的路径列表。由于这仍然是一个实验中的特性，默认情况下，当"
+#~ "前没有模块被列出。这用于 seahorse 或其他知晓 PKCS#11 的程序。"
+#~ msgid "PKCS#11 Modules"
+#~ msgstr "PKCS#11 模块"
+#~ msgid "Import private key"
+#~ msgstr "导入私钥"
+#~ msgid "Import certificate"
+#~ msgstr "导入证书"
+#~ msgid "Import public key"
+#~ msgstr "导入公钥"
+#~ msgid "Import"
+#~ msgstr "导入"
+#~ msgid "The system wants to import the private key '%s', but it is locked"
+#~ msgstr "系统想要导入私钥‘%s’，但它已上锁"
+#~ msgid "The system wants to import the certificate '%s', but it is locked"
+#~ msgstr "系统想要导入证书‘%s’，但它已上锁"
+#~ msgid "The system wants to import the public key '%s', but it is locked"
+#~ msgstr "系统想要导入公钥‘%s’，但它已上锁"
+#~ msgid "The system wants to import '%s', but it is locked"
+#~ msgstr "系统想要导入‘%s’，但它已上锁"
+#~ msgid "Create Storage for Key Information"
+#~ msgstr "为密匙信息创建储存器"
+#~ msgid "Choose password to protect storage"
+#~ msgstr "选择保护存储器的密码"
+#~ msgid ""
+#~ "The system wants to store information about your keys and certificates. "
+#~ "In order to protect this information, choose a password with which it "
+#~ "will be locked."
+#~ msgstr ""
+#~ "系统想要保存关于你密匙和证书的信息。为了保护该信息，请选择一个密码以用于锁"
+#~ "定。"
+#~ msgid "Unlock Storage for Key Information"
+#~ msgstr "为密匙信息解除储存器锁定"
+#~ msgid "Enter password to unlock storage"
+#~ msgstr "输入密锁以解除存储器锁定"
+#~ msgid ""
+#~ "The system wants to access information about your keys and certificates, "
+#~ "but it is locked."
+#~ msgstr "系统想要访问关于你密匙和证书的信息，但它已被锁定"
+#~ msgid "Trust Association"
+#~ msgstr "信任联盟"
+#~ msgid "Cannot delete '%s' because it is tied to other objects."
+#~ msgstr "无法删除 '%s' ，因为它和其他对象绑在一起。"
+#~ msgid "Lock private key"
+#~ msgstr "锁定私钥"
+#~ msgid "Lock"
+#~ msgstr "锁定"
+#~ msgid "Enter password to protect the private key"
+#~ msgstr "输入密码以保护私匙"
+#~ msgid "Enter password to protect storage"
+#~ msgstr "输入密码以保护存储器"
+#~ msgid ""
+#~ "The system wants to store the private key '%s' on your disk. Please enter "
+#~ "a password to lock it with."
+#~ msgstr "系统想要在你的磁盘上保存私钥‘%s’。请输入一个密码以锁定。"
+#~ msgid ""
+#~ "The system wants to store '%s' on your disk. Please enter a password to "
+#~ "lock it with."
+#~ msgstr "系统想要在你的磁盘上储存 '%s' 。请输入一个密码以将其锁定。"
+#~ msgid "Unrecognized or unsupported file."
+#~ msgstr "未识别的或不被支持的文件。"
+#~ msgid "Could not parse invalid or corrupted file."
+#~ msgstr "无法解析非法的或已损坏的文件。"
 #~ msgid "Couldn't read secure shell private key: %s"
 #~ msgstr "无法读取安全外壳私匙：%s"
 #~ msgid "Invalid secure shell private key at: %s"
