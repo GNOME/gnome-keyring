@@ -9,9 +9,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&amp;component=general\n"
-"POT-Creation-Date: 2008-12-11 20:32+0000\n"
-"PO-Revision-Date: 2009-01-02 13:20+0700\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-01-28 01:38+0000\n"
+"PO-Revision-Date: 2009-02-21 14:57+0700\n"
 "Last-Translator: 甘露(Gan Lu) <rhythm.gan@gmail.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr "主目录"
 #: ../common/gkr-location.c:1104
 #: ../common/gkr-location.c:1128
 #: ../daemon/pkix/gkr-pkix-parser.c:524
-#: ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../daemon/pkix/gkr-pkix-serialize.c:60
 msgid "The disk or drive this file is located on is not present"
 msgstr "此文件所在的磁盘或驱动器不存在"
 
@@ -129,12 +129,12 @@ msgstr "未知应用程序想要访问密钥环“%s”，但该密钥环已上�
 
 #: ../daemon/gkr-daemon-ops.c:349
 msgid "Enter password for default keyring to unlock"
-msgstr "要解锁，请输入默认密钥环的密码"
+msgstr "要解除锁定，请输入默认密钥环的密码"
 
 #: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "要解锁，请输入密钥环“%s”的密码"
+msgstr "要解除锁定，请输入密钥环“%s”的密码"
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:355
@@ -283,6 +283,11 @@ msgstr "是否启用 gnome-keyring PKCS#11 组件"
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "是否启用 gnome-keyring SSH 代理"
 
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+#| msgid "New Keyring Password"
+msgid "GNOME Keyring Daemon"
+msgstr "GNOME 密钥环后台程序"
+
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
@@ -332,21 +337,28 @@ msgstr "导入"
 
 #: ../daemon/pk/gkr-pk-import.c:101
 #: ../daemon/pk/gkr-pk-storage.c:166
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114
+#: ../gcr/gcr-importer.c:360
 msgid "Enter password to unlock the private key"
 msgstr "输入密码以解锁私钥"
 
 #: ../daemon/pk/gkr-pk-import.c:103
 #: ../daemon/pk/gkr-pk-storage.c:168
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116
+#: ../gcr/gcr-importer.c:362
 msgid "Enter password to unlock the certificate"
 msgstr "输入密码以解锁证书"
 
 #: ../daemon/pk/gkr-pk-import.c:105
 #: ../daemon/pk/gkr-pk-storage.c:170
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
 msgid "Enter password to unlock the public key"
 msgstr "输入密码以解锁公钥"
 
 #: ../daemon/pk/gkr-pk-import.c:107
 #: ../daemon/pk/gkr-pk-storage.c:172
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120
+#: ../gcr/gcr-importer.c:364
 msgid "Enter password to unlock"
 msgstr "输入密锁以解锁"
 
@@ -397,14 +409,18 @@ msgid "The system wants to access information about your keys and certificates, 
 msgstr "系统想要访问关于你密匙和证书的信息，但它已被锁定"
 
 #: ../daemon/pk/gkr-pk-object.c:889
+#: ../gcr/gcr-parser.c:199
 msgid "Certificate"
 msgstr "证书"
 
 #: ../daemon/pk/gkr-pk-object.c:891
+#: ../gcr/gcr-parser.c:196
 msgid "Private Key"
 msgstr "私钥"
 
 #: ../daemon/pk/gkr-pk-object.c:893
+#: ../gcr/gcr-certificate-details-widget.c:297
+#: ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "公共密钥"
 
@@ -418,18 +434,22 @@ msgid "Cannot delete '%s' because it is tied to other objects."
 msgstr "无法删除 '%s' ，因为它和其他对象绑在一起。"
 
 #: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
 msgid "Unlock private key"
 msgstr "解锁私钥"
 
 #: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
 msgid "Unlock certificate"
 msgstr "解锁证书"
 
 #: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
 msgid "Unlock public key"
 msgstr "解锁公钥"
 
 #: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
 msgid "Unlock"
 msgstr "解锁"
 
@@ -450,37 +470,45 @@ msgid "Enter password to protect storage"
 msgstr "输入密码以保护存储器"
 
 #: ../daemon/pk/gkr-pk-storage.c:196
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:144
 msgid "Automatically unlock this private key when I log in."
 msgstr "当我登入时自动解锁此私钥。"
 
 #: ../daemon/pk/gkr-pk-storage.c:198
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:146
 msgid "Automatically unlock this certificate when I log in."
 msgstr "当我登入时自动解锁此证书。"
 
 #: ../daemon/pk/gkr-pk-storage.c:200
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
 msgid "Automatically unlock this public key when I log in."
 msgstr "当我登入时自动解锁此公钥。"
 
 #: ../daemon/pk/gkr-pk-storage.c:202
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
 msgid "Automatically unlock this when I log in"
 msgstr "当我登入时自动解除此锁定。"
 
 #: ../daemon/pk/gkr-pk-storage.c:209
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "一个应用程序想要访问私钥‘%s’，但它已被锁定"
 
 #: ../daemon/pk/gkr-pk-storage.c:211
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:131
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "一个应用程序想要访问证书‘%s’，但它已被锁定"
 
 #: ../daemon/pk/gkr-pk-storage.c:213
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "一个应用程序想要访问公钥‘%s’，但它已被锁定"
 
 #: ../daemon/pk/gkr-pk-storage.c:215
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "一个应用程序获取对‘%s’的访问，但它已被锁定"
@@ -495,8 +523,48 @@ msgstr "系统想要在你的磁盘上保存私钥‘%s’。请输入一个密�
 msgid "The system wants to store '%s' on your disk. Please enter a password to lock it with."
 msgstr "系统想要在你的磁盘上储存 '%s' 。请输入一个密码以将其锁定。"
 
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:367
+#| msgid "Unlock certificate"
+msgid "Unlock certificate/key storage"
+msgstr "解锁证书/密匙存储器"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:368
+#| msgid "Enter password to unlock the certificate"
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "输入密码以解锁证书/密匙存储器"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:370
+#, c-format
+#| msgid ""
+#| "An application wants access to the certificate '%s', but it is locked"
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "一个应用程序想要访问证书/密匙存储器 '%s，但它已被锁定"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:376
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
+#| msgid "Automatically unlock this certificate when I log in."
+msgid "Automatically unlock secure storage when I log in."
+msgstr "当我登入时自动解锁安全存储器。"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:519
+#| msgid "New password strength"
+msgid "New Password Required"
+msgstr "需要新密码"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:520
+#| msgid "Enter password to protect storage"
+msgid "New password required for secure storage"
+msgstr "需要新密码以保护安全存储器"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:522
+#, c-format
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "要准备为 '%s' 保存证书或密匙，必须要一个密码"
+
 #: ../daemon/pkix/gkr-pkix-parser.c:451
-#: ../gp11/gp11-misc.c:87
+#: ../gcr/gcr-importer.c:162
+#: ../gcr/gcr-parser.c:1573
+#: ../gp11/gp11-misc.c:114
 msgid "The operation was cancelled"
 msgstr "操作已取消"
 
@@ -507,31 +575,6 @@ msgstr "未识别的或不被支持的文件。"
 #: ../daemon/pkix/gkr-pkix-parser.c:459
 msgid "Could not parse invalid or corrupted file."
 msgstr "无法解析非法的或已损坏的文件。"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:166
-#, c-format
-msgid "Couldn't encode secure shell public key."
-msgstr "无法编码安全外壳公匙"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:412
-#, c-format
-msgid "Couldn't read secure shell private key: %s"
-msgstr "无法读取安全外壳私匙：%s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:416
-#, c-format
-msgid "Invalid secure shell private key at: %s"
-msgstr "无效的安全外壳私匙在：%s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:465
-#, c-format
-msgid "Couldn't encrypt the SSH key to store it."
-msgstr "无法加密该 SSH 密匙以保存。"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:481
-#, c-format
-msgid "Couldn't encode the SSH key to store it."
-msgstr "无法编码该 SSH 密匙以保存。"
 
 #: ../daemon/ui/gkr-ask-tool.c:244
 msgid "Store passwords unencrypted?"
@@ -593,323 +636,638 @@ msgstr "允许一次(_O)"
 msgid "_Always Allow"
 msgstr "总是允许(_A)"
 
-#: ../gp11/gp11-misc.c:90
+#: ../egg/egg-asn1.c:794
+msgid "Domain Component"
+msgstr "域组成"
+
+#: ../egg/egg-asn1.c:795
+msgid "User ID"
+msgstr "用户 ID"
+
+#: ../egg/egg-asn1.c:797
+msgid "Email"
+msgstr "电子邮件"
+
+#: ../egg/egg-asn1.c:801
+msgid "Date of Birth"
+msgstr "生日"
+
+#: ../egg/egg-asn1.c:802
+msgid "Place of Birth"
+msgstr "出生地"
+
+#: ../egg/egg-asn1.c:803
+msgid "Gender"
+msgstr "性别"
+
+#: ../egg/egg-asn1.c:804
+msgid "Country of Citizenship"
+msgstr "国籍"
+
+#: ../egg/egg-asn1.c:805
+msgid "Country of Residence"
+msgstr "定居国"
+
+#: ../egg/egg-asn1.c:807
+msgid "Common Name"
+msgstr "常用名"
+
+#: ../egg/egg-asn1.c:808
+msgid "Surname"
+msgstr "姓"
+
+#: ../egg/egg-asn1.c:809
+#: ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:259
+msgid "Serial Number"
+msgstr "序列号"
+
+#: ../egg/egg-asn1.c:810
+msgid "Country"
+msgstr "国家"
+
+#: ../egg/egg-asn1.c:811
+msgid "Locality"
+msgstr "位置"
+
+#: ../egg/egg-asn1.c:812
+msgid "State"
+msgstr "省"
+
+#: ../egg/egg-asn1.c:813
+msgid "Street"
+msgstr "街道"
+
+#: ../egg/egg-asn1.c:814
+msgid "Organization"
+msgstr "组织"
+
+#: ../egg/egg-asn1.c:815
+msgid "Organizational Unit"
+msgstr "单位"
+
+#: ../egg/egg-asn1.c:816
+msgid "Title"
+msgstr "头衔"
+
+#: ../egg/egg-asn1.c:817
+msgid "Telephone Number"
+msgstr "电话号码"
+
+#: ../egg/egg-asn1.c:818
+msgid "Given Name"
+msgstr "名"
+
+#: ../egg/egg-asn1.c:819
+msgid "Initials"
+msgstr "首字母"
+
+#: ../egg/egg-asn1.c:820
+#| msgid "The operation failed"
+msgid "Generation Qualifier"
+msgstr "操作限定人"
+
+#: ../egg/egg-asn1.c:821
+msgid "DN Qualifier"
+msgstr "DN 限定人"
+
+#: ../egg/egg-asn1.c:822
+msgid "Pseudonym"
+msgstr "笔名"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>非证书部分</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>未知的</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+#| msgid "Import certificate"
+msgid "<Not Part of Certificate>"
+msgstr "<非证书部分>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>指纹</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>发布者</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>颁发给</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>该证书已经验证可用为下列情况：</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>有效性</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "常用名 (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+#| msgid "Import certificate"
+msgid "Email Recipient Certificate"
+msgstr "电子邮件接收者证书"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+#| msgid "Certificate"
+msgid "Email Signer Certificate"
+msgstr "电子邮件签发者证书"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "截止于"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "发布于"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 指纹"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "组织 (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "组织单位 (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 指纹"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+#| msgid "Certificate"
+msgid "SSL Client Certificate"
+msgstr "SSL 客户端证书"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+#| msgid "Certificate"
+msgid "SSL Server Certificate"
+msgstr "SSL 服务器证书"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:240
+msgid "Subject Name"
+msgstr "学科名"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:244
+msgid "Issuer Name"
+msgstr "发布者名称"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:248
+#| msgid "Certificate"
+msgid "Issued Certificate"
+msgstr "发布的证书"
+
+#: ../gcr/gcr-certificate-details-widget.c:253
+msgid "Version"
+msgstr "版本"
+
+#: ../gcr/gcr-certificate-details-widget.c:266
+msgid "Not Valid Before"
+msgstr "在此之前无效"
+
+#: ../gcr/gcr-certificate-details-widget.c:271
+msgid "Not Valid After"
+msgstr "在此之后无效"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:276
+#: ../gcr/gcr-certificate-details-widget.c:284
+msgid "Signature"
+msgstr "签名"
+
+#. TODO: Complete Signature algorithm, and params
+#: ../gcr/gcr-certificate-details-widget.c:279
+msgid "Signature Algorithm"
+msgstr "签名算法"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:288
+#| msgid "Public Key"
+msgid "Public Key Info"
+msgstr "公共密钥信息"
+
+#. TODO: Complete algorithm, params, key size
+#: ../gcr/gcr-certificate-details-widget.c:291
+msgid "Key Algorithm"
+msgstr "密匙算法"
+
+#: ../gcr/gcr-certificate-details-widget.c:292
+msgid "Key Size"
+msgstr "密匙大小"
+
+#. TODO: Implement extensions
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:303
+msgid "Fingerprints"
+msgstr "指纹"
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>导入证书和密匙</span>"
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+#| msgid "Import"
+msgid "Import Into:"
+msgstr "导入到："
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+#| msgid "_Password:"
+msgid "Password:"
+msgstr "密码："
+
+#: ../gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr "没有可用的导入位置"
+
+#: ../gcr/gcr-importer.c:328
+#| msgid "Import certificate"
+msgid "Import Certificates/Keys"
+msgstr "导入证书/密匙"
+
+#: ../gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "选择某个位置来保存导入的证书及密匙。"
+
+#: ../gcr/gcr-importer.c:372
+#| msgid "The system wants to import the private key '%s', but it is locked"
+msgid "In order to import the private key, it must be unlocked"
+msgstr "要导入私钥，它必须已解除锁定"
+
+#: ../gcr/gcr-importer.c:374
+#| msgid "The system wants to import the certificate '%s', but it is locked"
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "要导入证书，它必须已解除锁定"
+
+#: ../gcr/gcr-importer.c:376
+msgid "In order to import the data, it must be unlocked"
+msgstr "要导入数据，它必须已解除锁定"
+
+#: ../gcr/gcr-importer.c:379
+#, c-format
+#| msgid "The system wants to import the private key '%s', but it is locked"
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "要导入私钥 '%s'，它必须已解除锁定"
+
+#: ../gcr/gcr-importer.c:381
+#, c-format
+#| msgid "The system wants to import the certificate '%s', but it is locked"
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "要导入证书 '%s'，它必须已解除锁定"
+
+#: ../gcr/gcr-importer.c:383
+#, c-format
+#| msgid "The system wants to import '%s', but it is locked"
+msgid "In order to import '%s', it must be unlocked"
+msgstr "要导入‘%s’，它必须已解除锁定"
+
+#: ../gcr/gcr-parser.c:1576
+#| msgid "Unrecognized or unsupported file."
+msgid "Unrecognized or unsupported data."
+msgstr "无法识别或不被支持的数据。"
+
+#: ../gcr/gcr-parser.c:1579
+#| msgid "Could not parse invalid or corrupted file."
+msgid "Could not parse invalid or corrupted data."
+msgstr "无法解析非法的或已损坏的数据。"
+
+#: ../gcr/gcr-parser.c:1582
+#| msgid "The data cannot be locked"
+msgid "The data is locked"
+msgstr "数据已被锁定"
+
+#: ../gp11/gp11-misc.c:117
 msgid "Insufficient memory available"
 msgstr "没有足够的可用内存"
 
-#: ../gp11/gp11-misc.c:92
+#: ../gp11/gp11-misc.c:119
 msgid "The specified slot ID is not valid"
 msgstr "指定的存储槽 ID 无效"
 
-#: ../gp11/gp11-misc.c:94
+#: ../gp11/gp11-misc.c:121
 msgid "Internal error"
 msgstr "内部错误"
 
-#: ../gp11/gp11-misc.c:96
+#: ../gp11/gp11-misc.c:123
 msgid "The operation failed"
 msgstr "操作失败"
 
-#: ../gp11/gp11-misc.c:98
+#: ../gp11/gp11-misc.c:125
 msgid "Invalid arguments"
 msgstr "无效参数"
 
-#: ../gp11/gp11-misc.c:100
+#: ../gp11/gp11-misc.c:127
 msgid "The module cannot create needed threads"
 msgstr "该模块无法创建需要的线程"
 
-#: ../gp11/gp11-misc.c:102
+#: ../gp11/gp11-misc.c:129
 msgid "The module cannot lock data properly"
 msgstr "该模块无法正确锁定数据"
 
-#: ../gp11/gp11-misc.c:104
+#: ../gp11/gp11-misc.c:131
 msgid "The field is read-only"
 msgstr "该字段只读"
 
-#: ../gp11/gp11-misc.c:106
+#: ../gp11/gp11-misc.c:133
 msgid "The field is sensitive and cannot be revealed"
 msgstr "该字段为敏感字段，无法显示"
 
-#: ../gp11/gp11-misc.c:108
+#: ../gp11/gp11-misc.c:135
 msgid "The field is invalid or does not exist"
 msgstr "该字段无效或不存在"
 
-#: ../gp11/gp11-misc.c:110
+#: ../gp11/gp11-misc.c:137
 msgid "Invalid value for field"
 msgstr "无效的字段值"
 
-#: ../gp11/gp11-misc.c:112
+#: ../gp11/gp11-misc.c:139
 msgid "The data is not valid or unrecognized"
 msgstr "该数据无效或无法识别"
 
-#: ../gp11/gp11-misc.c:114
+#: ../gp11/gp11-misc.c:141
 msgid "The data is too long"
 msgstr "该数据太长"
 
-#: ../gp11/gp11-misc.c:116
+#: ../gp11/gp11-misc.c:143
 msgid "An error occurred on the device"
 msgstr "在设备上发生一个错误"
 
-#: ../gp11/gp11-misc.c:118
+#: ../gp11/gp11-misc.c:145
 msgid "Insufficient memory available on device"
 msgstr "设备上没有足够可用内存"
 
-#: ../gp11/gp11-misc.c:120
+#: ../gp11/gp11-misc.c:147
 msgid "The device was removed or unplugged"
 msgstr "该设备已移除或未插入"
 
-#: ../gp11/gp11-misc.c:122
+#: ../gp11/gp11-misc.c:149
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "该加密数据无效或无法识别"
 
-#: ../gp11/gp11-misc.c:124
+#: ../gp11/gp11-misc.c:151
 msgid "The encrypted data is too long"
 msgstr "该加密数据太长"
 
-#: ../gp11/gp11-misc.c:126
+#: ../gp11/gp11-misc.c:153
 msgid "This operation is not supported"
 msgstr "不支持该操作"
 
-#: ../gp11/gp11-misc.c:128
+#: ../gp11/gp11-misc.c:155
 msgid "The key is missing or invalid"
 msgstr "该密匙丢失或无效"
 
-#: ../gp11/gp11-misc.c:130
+#: ../gp11/gp11-misc.c:157
 msgid "The key is the wrong size"
 msgstr "该密匙大小错误"
 
-#: ../gp11/gp11-misc.c:132
+#: ../gp11/gp11-misc.c:159
 msgid "The key is of the wrong type"
 msgstr "该密匙类型错误"
 
-#: ../gp11/gp11-misc.c:134
+#: ../gp11/gp11-misc.c:161
 msgid "No key is needed"
 msgstr "不需要密匙"
 
-#: ../gp11/gp11-misc.c:136
+#: ../gp11/gp11-misc.c:163
 msgid "The key is different than before"
 msgstr "该密匙与之前的不同"
 
-#: ../gp11/gp11-misc.c:138
+#: ../gp11/gp11-misc.c:165
 msgid "A key is needed"
 msgstr "需要一个密匙"
 
-#: ../gp11/gp11-misc.c:140
+#: ../gp11/gp11-misc.c:167
 msgid "Cannot include the key in digest"
 msgstr "无法在摘要中包括该密匙"
 
-#: ../gp11/gp11-misc.c:142
+#: ../gp11/gp11-misc.c:169
 msgid "This operation cannot be done with this key"
 msgstr "无法用这个密匙完成这次操作"
 
-#: ../gp11/gp11-misc.c:144
+#: ../gp11/gp11-misc.c:171
 msgid "The key cannot be wrapped"
 msgstr "该密匙无法包裹"
 
-#: ../gp11/gp11-misc.c:146
+#: ../gp11/gp11-misc.c:173
 msgid "Cannot export this key"
 msgstr "无法导出该密匙"
 
-#: ../gp11/gp11-misc.c:148
+#: ../gp11/gp11-misc.c:175
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "加密机制无效或无法识别"
 
-#: ../gp11/gp11-misc.c:150
+#: ../gp11/gp11-misc.c:177
 msgid "The crypto mechanism has an invalid argument"
 msgstr "加密机制有一个无效参数"
 
-#: ../gp11/gp11-misc.c:152
+#: ../gp11/gp11-misc.c:179
 msgid "The object is missing or invalid"
 msgstr "对象缺失或无效"
 
-#: ../gp11/gp11-misc.c:154
+#: ../gp11/gp11-misc.c:181
 msgid "Another operation is already taking place"
 msgstr "另外的操作已正在进行"
 
-#: ../gp11/gp11-misc.c:156
+#: ../gp11/gp11-misc.c:183
 msgid "No operation is taking place"
 msgstr "没有正在进行的操作"
 
-#: ../gp11/gp11-misc.c:158
+#: ../gp11/gp11-misc.c:185
 msgid "The password or PIN is incorrect"
 msgstr "密码或 PIN 错误"
 
-#: ../gp11/gp11-misc.c:160
+#: ../gp11/gp11-misc.c:187
 msgid "The password or PIN is invalid"
 msgstr "密码或 PIN 无效"
 
-#: ../gp11/gp11-misc.c:162
+#: ../gp11/gp11-misc.c:189
 msgid "The password or PIN is of an invalid length"
 msgstr "密码或 PIN 长度无效"
 
-#: ../gp11/gp11-misc.c:164
+#: ../gp11/gp11-misc.c:191
 msgid "The password or PIN has expired"
 msgstr "密码或 PIN 已过期"
 
-#: ../gp11/gp11-misc.c:166
+#: ../gp11/gp11-misc.c:193
 msgid "The password or PIN is locked"
 msgstr "密码或 PIN 已锁定"
 
-#: ../gp11/gp11-misc.c:168
+#: ../gp11/gp11-misc.c:195
 msgid "The session is closed"
 msgstr "会话已关闭"
 
-#: ../gp11/gp11-misc.c:170
+#: ../gp11/gp11-misc.c:197
 msgid "Too many sessions are active"
 msgstr "太多会话处于活动中"
 
-#: ../gp11/gp11-misc.c:172
+#: ../gp11/gp11-misc.c:199
 msgid "The session is invalid"
 msgstr "本会话无效"
 
-#: ../gp11/gp11-misc.c:174
+#: ../gp11/gp11-misc.c:201
 msgid "The session is read-only"
 msgstr "本会话只读"
 
-#: ../gp11/gp11-misc.c:176
+#: ../gp11/gp11-misc.c:203
 msgid "An open session exists"
 msgstr "一个开放的会话已存在"
 
-#: ../gp11/gp11-misc.c:178
+#: ../gp11/gp11-misc.c:205
 msgid "A read-only session exists"
 msgstr "存在一个只读会话"
 
-#: ../gp11/gp11-misc.c:180
+#: ../gp11/gp11-misc.c:207
 msgid "An administrator session exists"
 msgstr "存在一个管理者会话"
 
-#: ../gp11/gp11-misc.c:182
+#: ../gp11/gp11-misc.c:209
 msgid "The signature is bad or corrupted"
 msgstr "该签名为坏的或已损坏"
 
-#: ../gp11/gp11-misc.c:184
+#: ../gp11/gp11-misc.c:211
 msgid "The signature is unrecognized or corrupted"
 msgstr "该签名无法识别或已损坏"
 
-#: ../gp11/gp11-misc.c:186
+#: ../gp11/gp11-misc.c:213
 msgid "Certain required fields are missing"
 msgstr "某要求的字段缺失"
 
-#: ../gp11/gp11-misc.c:188
+#: ../gp11/gp11-misc.c:215
 msgid "Certain fields have invalid values"
 msgstr "某字段有无效值"
 
-#: ../gp11/gp11-misc.c:190
+#: ../gp11/gp11-misc.c:217
 msgid "The device is not present or unplugged"
 msgstr "该设备不在或未插入"
 
-#: ../gp11/gp11-misc.c:192
+#: ../gp11/gp11-misc.c:219
 msgid "The device is invalid or unrecognizable"
 msgstr "该设备无效或无法识别"
 
-#: ../gp11/gp11-misc.c:194
+#: ../gp11/gp11-misc.c:221
 msgid "The device is write protected"
 msgstr "该设备处于写保护中"
 
-#: ../gp11/gp11-misc.c:196
+#: ../gp11/gp11-misc.c:223
 msgid "Cannot import because the key is invalid"
 msgstr "无法导入因为密匙无效"
 
-#: ../gp11/gp11-misc.c:198
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot import because the key is of the wrong size"
 msgstr "无法导入因为密匙大小错误"
 
-#: ../gp11/gp11-misc.c:200
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot import because the key is of the wrong type"
 msgstr "无法导入因为密匙类型错误"
 
-#: ../gp11/gp11-misc.c:202
+#: ../gp11/gp11-misc.c:229
 msgid "You are already logged in"
 msgstr "你已登录"
 
-#: ../gp11/gp11-misc.c:204
+#: ../gp11/gp11-misc.c:231
 msgid "No user has logged in"
 msgstr "没有用户登入"
 
-#: ../gp11/gp11-misc.c:206
+#: ../gp11/gp11-misc.c:233
 msgid "The user's password or PIN is not set"
 msgstr "用户密码或 PIN 没有设定"
 
-#: ../gp11/gp11-misc.c:208
+#: ../gp11/gp11-misc.c:235
 msgid "The user is of an invalid type"
 msgstr "该用户为无效类型"
 
-#: ../gp11/gp11-misc.c:210
+#: ../gp11/gp11-misc.c:237
 msgid "Another user is already logged in"
 msgstr "另外的用户已经登入"
 
-#: ../gp11/gp11-misc.c:212
+#: ../gp11/gp11-misc.c:239
 msgid "Too many users of different types logged in"
 msgstr "太多不同类型的用户登入"
 
-#: ../gp11/gp11-misc.c:214
+#: ../gp11/gp11-misc.c:241
 msgid "Cannot import an invalid key"
 msgstr "无法导入无效的密匙"
 
-#: ../gp11/gp11-misc.c:216
+#: ../gp11/gp11-misc.c:243
 msgid "Cannot import a key of the wrong size"
 msgstr "无法导入错误大小的密匙"
 
-#: ../gp11/gp11-misc.c:218
+#: ../gp11/gp11-misc.c:245
 msgid "Cannot export because the key is invalid"
 msgstr "无法导出因为密匙无效"
 
-#: ../gp11/gp11-misc.c:220
+#: ../gp11/gp11-misc.c:247
 msgid "Cannot export because the key is of the wrong size"
 msgstr "无法导出因为密匙大小错误"
 
-#: ../gp11/gp11-misc.c:222
+#: ../gp11/gp11-misc.c:249
 msgid "Cannot export because the key is of the wrong type"
 msgstr "无法导出因为密匙类型错误"
 
-#: ../gp11/gp11-misc.c:224
+#: ../gp11/gp11-misc.c:251
 msgid "Unable to initialize the random number generator"
 msgstr "无法初始化随机数产生器"
 
-#: ../gp11/gp11-misc.c:226
+#: ../gp11/gp11-misc.c:253
 msgid "No random number generator available"
 msgstr "没有随机数产生器可用"
 
-#: ../gp11/gp11-misc.c:228
+#: ../gp11/gp11-misc.c:255
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "加密机制有一个无效的参数"
 
-#: ../gp11/gp11-misc.c:230
+#: ../gp11/gp11-misc.c:257
 msgid "Not enough space to store the result"
 msgstr "没有粗够空间来储存结果"
 
-#: ../gp11/gp11-misc.c:232
+#: ../gp11/gp11-misc.c:259
 msgid "The saved state is invalid"
 msgstr "无效的已保存状态"
 
-#: ../gp11/gp11-misc.c:234
+#: ../gp11/gp11-misc.c:261
 msgid "The information is sensitive and cannot be revealed"
 msgstr "敏感信息，不能透露"
 
-#: ../gp11/gp11-misc.c:236
+#: ../gp11/gp11-misc.c:263
 msgid "The state cannot be saved"
 msgstr "状态无法保存"
 
-#: ../gp11/gp11-misc.c:238
+#: ../gp11/gp11-misc.c:265
 msgid "The module has not been initialized"
 msgstr "模块没有被初始化"
 
-#: ../gp11/gp11-misc.c:240
+#: ../gp11/gp11-misc.c:267
 msgid "The module has already been initialized"
 msgstr "模块已被初始化"
 
-#: ../gp11/gp11-misc.c:242
+#: ../gp11/gp11-misc.c:269
 msgid "Cannot lock data"
 msgstr "无法锁定数据"
 
-#: ../gp11/gp11-misc.c:244
+#: ../gp11/gp11-misc.c:271
 msgid "The data cannot be locked"
 msgstr "数据无法被锁定"
 
-#: ../gp11/gp11-misc.c:246
+#: ../gp11/gp11-misc.c:273
 msgid "The signature request was rejected by the user"
 msgstr "签名请求被用户拒绝"
 
-#: ../gp11/gp11-misc.c:250
+#: ../gp11/gp11-misc.c:277
 msgid "Unknown error"
 msgstr "未知错误"
 
@@ -945,6 +1303,24 @@ msgstr "不存在此名称对应的密钥环"
 msgid "The keyring has already been unlocked."
 msgstr "密钥环已被解锁。"
 
+#: ../pkcs11/gck/gck-certificate.c:516
+#| msgid "Certificate"
+msgid "Unnamed Certificate"
+msgstr "未命名的证书"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+#| msgid "Couldn't encode secure shell public key."
+msgid "Couldn't parse public SSH key"
+msgstr "无法处理 SSH 公匙"
+
+#~ msgid "Couldn't read secure shell private key: %s"
+#~ msgstr "无法读取安全外壳私匙：%s"
+#~ msgid "Invalid secure shell private key at: %s"
+#~ msgstr "无效的安全外壳私匙在：%s"
+#~ msgid "Couldn't encrypt the SSH key to store it."
+#~ msgstr "无法加密该 SSH 密匙以保存。"
+#~ msgid "Couldn't encode the SSH key to store it."
+#~ msgstr "无法编码该 SSH 密匙以保存。"
 #~ msgid "Unlock password for '%s'"
 #~ msgstr "‘%s’的解锁密码"
 #~ msgid "Old password cannot be blank."
