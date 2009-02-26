@@ -2,6 +2,14 @@
 
 	* pkcs11/pkcs11g.h: Remove old unused definitions.
 	
+	* pkcs11/pkcs11g.h: 
+	* pkcs11/pkcs11i.h: (added) 
+	* pkcs11/Makefile.am:
+	* pkcs11/gck/gck-module.c: 
+	* pkcs11/plex-layer/gck-plex-layer.c: 
+	* pkcs11/rpc-layer/gck-rpc-dispatch.c: Move internal definitions a non 
+	public header file.
+	
 2009-02-19  Jeff Cai <jeff.cai@sun.com>
 
 	* egg/egg-secure-memory.c:
