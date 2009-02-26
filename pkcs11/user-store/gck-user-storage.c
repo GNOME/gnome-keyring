@@ -35,6 +35,8 @@
 
 #include "egg/egg-hex.h"
 
+#include "pkcs11/pkcs11i.h"
+
 #include <glib/gstdio.h>
 
 #include <libtasn1.h>
@@ -421,6 +423,56 @@ take_object_ownership (GckUserStorage *self, const gchar *identifier, GckObject 
 	gck_manager_register_object (self->manager, object);
 }
 
+static gboolean
+check_object_hash (GckUserStorage *self, const gchar *identifier, const guchar *data, gsize n_data)
+{
+	gconstpointer value;
+	GckDataResult res;
+	gboolean result;
+	gsize n_value;
+	gchar *digest;
+	
+	g_assert (GCK_IS_USER_STORAGE (self));
+	g_assert (identifier);
+	g_assert (data);
+	
+	digest = g_compute_checksum_for_data (G_CHECKSUM_SHA1, data, n_data);
+	g_return_val_if_fail (digest, FALSE);
+	
+	res = gck_data_file_read_value (self->file, identifier, CK_GNOME_INTERNAL_SHA1, &value, &n_value);
+	g_return_val_if_fail (res == GCK_DATA_SUCCESS, FALSE);
+	
+	result = (strlen (digest) == n_value && memcmp (digest, value, n_value) == 0);
+	g_free (digest);
+	
+	return result;
+}
+
+static void
+store_object_hash (GckUserStorage *self, GckTransaction *transaction, const gchar *identifier, 
+                   const guchar *data, gsize n_data)
+{
+	GckDataResult res;
+	gchar *digest;
+	
+	g_assert (GCK_IS_USER_STORAGE (self));
+	g_assert (GCK_IS_TRANSACTION (transaction));
+	g_assert (identifier);
+	g_assert (data);
+	
+	digest = g_compute_checksum_for_data (G_CHECKSUM_SHA1, data, n_data);
+	if (digest == NULL) {
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+		g_return_if_reached ();
+	}
+	
+	res = gck_data_file_write_value (self->file, identifier, CK_GNOME_INTERNAL_SHA1, digest, strlen (digest));
+	g_free (digest);
+	
+	if (res != GCK_DATA_SUCCESS)
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+}
+
 static void 
 data_file_entry_added (GckDataFile *store, const gchar *identifier, GckUserStorage *self)
 {
@@ -457,6 +509,12 @@ data_file_entry_added (GckDataFile *store, const gchar *identifier, GckUserStora
 		g_warning ("couldn't read file in user store: %s: %s", identifier, 
 		           error && error->message ? error->message : "");
 		g_clear_error (&error);
+		return;
+	}
+	
+	/* Make sure that the object wasn't tampered with */
+	if (!check_object_hash (self, identifier, data, n_data)) {
+		g_message ("file in user store doesn't match hash: %s", identifier);
 		return;
 	}
 	
@@ -521,7 +579,7 @@ data_file_entry_removed (GckDataFile *store, const gchar *identifier, GckUserSto
 }
 
 static void
-relock_object (GckTransaction *transaction, const gchar *path, 
+relock_object (GckUserStorage *self, GckTransaction *transaction, const gchar *path, 
                const gchar *identifier, GckLogin *old_login, GckLogin *new_login)
 {
 	GError *error = NULL;
@@ -532,6 +590,7 @@ relock_object (GckTransaction *transaction, const gchar *path,
 	GType type;
 	CK_RV rv;
 	
+	g_assert (GCK_IS_USER_STORAGE (self));
 	g_assert (GCK_IS_TRANSACTION (transaction));
 	g_assert (identifier);
 	g_assert (path);
@@ -556,10 +615,18 @@ relock_object (GckTransaction *transaction, const gchar *path,
 	
 	/* Read in the data for the object */
 	if (!g_file_get_contents (path, (gchar**)&data, &n_data, &error)) {
-		g_message ("couldn't relock file in user store: %s: %s", identifier,
+		g_message ("couldn't load file in user store in order to relock: %s: %s", identifier,
 		           error && error->message ? error->message : "");
 		g_clear_error (&error);
 		g_object_unref (object);
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+		return;
+	}
+	
+	/* Make sure the data matches the hash */
+	if (!check_object_hash (self, identifier, data, n_data)) {
+		g_message ("file in data store doesn't match hash: %s", identifier);
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
 		return;
 	}
 	
@@ -619,7 +686,13 @@ relock_object (GckTransaction *transaction, const gchar *path,
 	
 	/* And write it back out to the file */
 	gck_transaction_write_file (transaction, path, data, n_data);
+	
+	/* Create and save the hash here */
+	if (!gck_transaction_get_failed (transaction))
+		store_object_hash (self, transaction, identifier, data, n_data);
+	
 	g_free (data);
+
 }
 
 typedef struct _RelockArgs {
@@ -648,7 +721,7 @@ relock_each_object (GckDataFile *file, const gchar *identifier, gpointer data)
 		return;
 
 	path = g_build_filename (args->self->directory, identifier, NULL);
-	relock_object (args->transaction, path, identifier, args->old_login, args->new_login);
+	relock_object (args->self, args->transaction, path, identifier, args->old_login, args->new_login);
 	g_free (path);
 }
 
@@ -1063,6 +1136,10 @@ gck_user_storage_create (GckUserStorage *self, GckTransaction *transaction, GckO
 
 	path = g_build_filename (self->directory, identifier, NULL);
 	gck_transaction_write_file (transaction, path, data, n_data);
+	
+	/* Make sure we write in the object hash */
+	if (!gck_transaction_get_failed (transaction))
+		store_object_hash (self, transaction, identifier, data, n_data);
 
 	/* Now we decide to own the object */
 	if (!gck_transaction_get_failed (transaction))

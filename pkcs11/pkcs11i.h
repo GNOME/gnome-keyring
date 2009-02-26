@@ -66,4 +66,10 @@
 #define CK_GNOME_MAX_APP                            (((CK_ULONG)-1) >> 10)
 #define CK_GNOME_MAX_HANDLE                         (((CK_ULONG)-1) >> 10)
 
+/* -------------------------------------------------------------------
+ * OBJECT HASH
+ */
+
+#define CK_GNOME_INTERNAL_SHA1                      (CKA_GNOME + 1000)
+
 #endif /* PKCS11I_H */

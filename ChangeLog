@@ -1,5 +1,11 @@
 2009-02-24  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/pkcs11i.h:
+	* pkcs11/user-store/gck-user-storage.c: Hash objects when storing them
+	in user-store and validate the hashes when loading them.
+
+2009-02-24  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/pkcs11g.h: Remove old unused definitions.
 	
 	* pkcs11/pkcs11g.h: 
