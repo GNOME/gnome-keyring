@@ -128,14 +128,14 @@ gkr_tool_import (int argc, char *argv[])
 		if (!input) {
 			gkr_tool_handle_error (&error, "couldn't read file: %s", *imp);
 			ret = 1;
-		}
-		
-		res = gcr_importer_import (importer, input, NULL, &error);
-		g_object_unref (input);
-		if (res == FALSE) {
-			if (!error || error->code != GCR_ERROR_CANCELLED)
-				gkr_tool_handle_error (&error, "couldn't import file: %s", *imp);
-			ret = 1;
+		} else {
+			res = gcr_importer_import (importer, input, NULL, &error);
+			g_object_unref (input);
+			if (res == FALSE) {
+				if (!error || error->code != GCR_ERROR_CANCELLED)
+					gkr_tool_handle_error (&error, "couldn't import file: %s", *imp);
+				ret = 1;
+			}
 		}
 	}
 	

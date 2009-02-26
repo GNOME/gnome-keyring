@@ -1,5 +1,9 @@
 2009-02-24  Stef Walter  <stef@memberwebs.com>
 
+	* tool/gkr-tool-import.c: Exit when an error occurs on import.
+	
+2009-02-24  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/pkcs11i.h:
 	* pkcs11/user-store/gck-user-storage.c: Hash objects when storing them
 	in user-store and validate the hashes when loading them.
