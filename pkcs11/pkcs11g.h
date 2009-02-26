@@ -138,41 +138,4 @@
 #define CKA_GNOME_PURPOSE_IPSEC_USER             (CKA_GNOME + 108)
 #define CKA_GNOME_PURPOSE_TIME_STAMPING          (CKA_GNOME + 109)
 
-/*
- * An import object used to, well, import data and create objects 
- * out of the imported data.
- * 
- * Attributes:
- *  - CKA_VALUE: The raw data to import
- *  - CKA_GNOME_IMPORT_TOKEN: Whether to import to token or session.
- *  - CKA_GNOME_IMPORT_OBJECTS: the objects that were imported
- *  - CKA_GNOME_IMPORT_LABEL: Label to be used in prompts, and set on the objects
- *    imported if they have no label.
- */
-#define CKO_GNOME_IMPORT                         (CKO_GNOME + 200)
-
-/* 
- * Whether to import to token or session.
- * 
- * CK_BBOOL
- */
-#define CKA_GNOME_IMPORT_TOKEN                   (CKA_GNOME + 200)
-
-/*
- * The objects that were imported. 
- * 
- * An array of CK_OBJECT_HANDLE. 
- * 
- * - The number of objects in the array is ulValueLen / sizeof (CK_OBJECT_HANDLE) 
- */
-#define CKA_GNOME_IMPORT_OBJECTS                 (CKA_GNOME + 201)
-
-/*
- * The label to be used in prompts and set on objects imported if they
- * have no label.
- * 
- * String
- */
-#define CKA_GNOME_IMPORT_LABEL                   (CKA_GNOME + 202)
-
 #endif /* PKCS11G_H */

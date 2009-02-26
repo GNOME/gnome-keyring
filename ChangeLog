@@ -1,3 +1,7 @@
+2009-02-24  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/pkcs11g.h: Remove old unused definitions.
+	
 2009-02-19  Jeff Cai <jeff.cai@sun.com>
 
 	* egg/egg-secure-memory.c:
