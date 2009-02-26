@@ -29,6 +29,7 @@
 #include "gck-util.h"
 
 #include "egg/egg-buffer.h"
+#include "egg/egg-hex.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-symkey.h"
 
@@ -994,6 +995,46 @@ emit_each_added_identifier (gpointer key, gpointer value, gpointer data)
 	g_signal_emit (self, signals[ENTRY_ADDED], 0, key);
 }
 
+static void
+dump_attributes (gpointer key, gpointer value, gpointer user_data)
+{
+	CK_ATTRIBUTE_PTR attr = value;
+	gulong *type = key;
+	gchar *text;
+	
+	g_assert (type);
+	g_assert (value);
+	
+	if (attr->pValue == NULL)
+		text = g_strdup ("NULL");
+	else
+		text = egg_hex_encode_full (attr->pValue, attr->ulValueLen, TRUE, ' ', 1);
+	
+	g_print ("\t0x%08x: %s\n", (guint)*type, text);
+	g_free (text);
+}
+
+static void
+dump_identifier_and_attributes (GckDataFile *self, const gchar *identifier, gpointer user_data)
+{
+	GHashTable *attributes;
+	guint section;
+	
+	g_assert (GCK_IS_DATA_FILE (self));
+	
+	if (!gck_data_file_lookup_entry (self, identifier, &section))
+		g_assert_not_reached ();
+	
+	if (GPOINTER_TO_UINT (user_data) == section) {
+		g_print ("%s\n", identifier);
+		if (identifier_to_attributes (self, identifier, &attributes) != GCK_DATA_SUCCESS)
+			g_assert_not_reached ();
+		g_hash_table_foreach (attributes, dump_attributes, NULL);
+		g_print ("\n");
+	}
+}
+
+
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -1430,4 +1471,15 @@ gboolean
 gck_data_file_have_section (GckDataFile *self, guint section)
 {
 	return (self->sections & section) ? TRUE : FALSE;
+}
+
+void
+gck_data_file_dump (GckDataFile *self)
+{
+	g_print ("PUBLIC:\n\n");
+	gck_data_file_foreach_entry (self, dump_identifier_and_attributes, 
+	                             GUINT_TO_POINTER (GCK_DATA_FILE_SECTION_PUBLIC));	
+	g_print ("PRIVATE:\n\n");
+	gck_data_file_foreach_entry (self, dump_identifier_and_attributes, 
+	                             GUINT_TO_POINTER (GCK_DATA_FILE_SECTION_PRIVATE));	
 }

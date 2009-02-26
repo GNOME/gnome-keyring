@@ -1,3 +1,13 @@
+2009-02-25  Stef Walter  <stef@memberwebs.com>
+
+	* pkcs11/gck/gck-data-file.c:
+	* pkcs11/gck/gck-data-file.h:
+	* pkcs11/gck/tests/.gitignore:
+	* pkcs11/gck/tests/Makefile.am:
+	* pkcs11/gck/tests/dump-data-file.c: (added)
+	Implement a testing tool to dump gck data files such as the user 
+	key store.
+
 2009-02-24  Stef Walter  <stef@memberwebs.com>
 
 	* tool/gkr-tool-import.c: Exit when an error occurs on import.

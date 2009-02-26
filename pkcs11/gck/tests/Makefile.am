@@ -29,3 +29,17 @@ EXTRA_DIST = \
 	test-data
 
 include $(top_srcdir)/tests/gtest.make
+
+# ---------------------------------------------------------------------
+
+noinst_PROGRAMS += \
+	dump-data-file
+
+dump_data_file_SOURCES = \
+	dump-data-file.c
+	
+dump_data_file_LDADD = \
+	$(top_builddir)/pkcs11/gck/libgck.la \
+	$(top_builddir)/egg/libegg.la \
+	$(DAEMON_LIBS)
+	

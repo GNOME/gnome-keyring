@@ -100,5 +100,10 @@ GckDataResult             gck_data_file_read_value             (GckDataFile *sel
                                                                 gulong type,
                                                                 gconstpointer *value,
                                                                 gsize *n_value);
+
+void                      gck_data_file_foreach_value          (GckDataFile *self,
+                                                                const gchar *identifier);
      
+void                      gck_data_file_dump                   (GckDataFile *self);
+
 #endif /* __GCK_DATA_FILE_H__ */
