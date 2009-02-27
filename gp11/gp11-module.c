@@ -999,6 +999,9 @@ gp11_module_set_auto_authenticate (GP11Module *self, gboolean auto_login)
  * You can access the session in which the object was found, by using the 
  * gp11_object_get_session() function on the resulting objects.
  * 
+ * This function skips tokens that are not initialize, and makes a best effort to 
+ * find objects on valid tokens. 
+ * 
  * The function can return FALSE to stop the enumeration.
  * 
  * Return value: If FALSE then an error prevented all matching objects from being enumerated.
@@ -1070,9 +1073,19 @@ gp11_module_enumerate_objects_full (GP11Module *self, GP11Attributes *attrs,
 	slots = gp11_module_get_slots (self, TRUE);
 	
 	for (l = slots; ret && !stop && l; l = g_list_next (l)) {
-		session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, err);
+		session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, &error);
 		if (!session) {
-			ret = FALSE;
+			g_return_val_if_fail (error != NULL, FALSE);
+			
+			/* Ignore these errors when enumerating */
+			if (error->code == CKR_USER_PIN_NOT_INITIALIZED) {
+				g_clear_error (&error);
+				
+			} else {
+				ret = FALSE;
+				g_propagate_error (err, error);
+				error = NULL;
+			}
 			continue;
 		}
 		
