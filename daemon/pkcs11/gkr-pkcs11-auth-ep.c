@@ -509,19 +509,6 @@ auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
 	/* Try the login first, this allows NULL logins to be tried */
 	rv = (pkcs11_lower->C_Login) (handle, user_type, pin, pin_len);
 	
-	if (rv == CKR_USER_PIN_NOT_INITIALIZED) {
-
-		/* 
-		 * Try and initialize the token login, gnome-keyring modules allow 
-		 * C_SetPIN to be called on with a NULL if no user pin has yet been set.
-		 */
-		
-		if (user_type == CKU_USER) 
-			return perform_set_user_pin (handle, NULL, 0, NULL, 0, TRUE);
-		
-		return rv;
-	}
-
 	/* See if we can help the login to work */
 	if (rv != CKR_PIN_INCORRECT)
 		return rv;
