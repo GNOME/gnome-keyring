@@ -69,10 +69,10 @@ GckManager*              gck_session_get_manager                        (GckSess
 
 gboolean                 gck_session_get_read_only                      (GckSession *self);
 
-gboolean                 gck_session_get_logged_in                      (GckSession *self);
+gulong                   gck_session_get_logged_in                      (GckSession *self);
 
 void                     gck_session_set_logged_in                      (GckSession *self,
-                                                                         gboolean logged_in);
+                                                                         gulong logged_in);
 
 CK_RV                    gck_session_lookup_readable_object             (GckSession *self, 
                                                                          CK_OBJECT_HANDLE handle, 

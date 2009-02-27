@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11i.h"
 
 #include "gck-attributes.h"
 #include "gck-crypto.h"
@@ -52,7 +53,7 @@ struct _GckSessionPrivate {
 	GckManager *manager;
 	GckStore *store;
 
-	gboolean logged_in;
+	CK_USER_TYPE logged_in;
 	gboolean read_only;
 
 	CK_NOTIFY notify_callback;
@@ -255,7 +256,7 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 	 * Check that we're not accessing private objects on a 
 	 * non-logged in session 
 	 */
-	if (!self->pv->logged_in) {
+	if (self->pv->logged_in != CKU_USER) {
 		if (!gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private))
 			is_private = FALSE;
 		if (is_private)
@@ -475,7 +476,7 @@ gck_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 		self->pv->read_only = g_value_get_boolean (value);
 		break;
 	case PROP_LOGGED_IN:
-		gck_session_set_logged_in (self, g_value_get_boolean (value));
+		gck_session_set_logged_in (self, g_value_get_ulong (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -506,7 +507,7 @@ gck_session_get_property (GObject *obj, guint prop_id, GValue *value,
 		g_value_set_boolean (value, gck_session_get_read_only (self));
 		break;
 	case PROP_LOGGED_IN:
-		g_value_set_boolean (value, gck_session_get_logged_in (self));
+		g_value_set_ulong (value, gck_session_get_logged_in (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -549,8 +550,8 @@ gck_session_class_init (GckSessionClass *klass)
 	                               TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
 	g_object_class_install_property (gobject_class, PROP_LOGGED_IN,
-	         g_param_spec_boolean ("logged-in", "Logged in", "Whether this session is logged in or not", 
-	                               FALSE, G_PARAM_READWRITE));
+	         g_param_spec_ulong ("logged-in", "Logged in", "Whether this session is logged in or not", 
+	                             0, G_MAXULONG, CKU_NONE, G_PARAM_READWRITE));
 }
 
 /* -----------------------------------------------------------------------------
@@ -587,7 +588,7 @@ gck_session_get_manager (GckSession *self)
 	return self->pv->manager;	
 }
 
-gboolean
+gulong
 gck_session_get_logged_in (GckSession *self)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), FALSE);
@@ -595,7 +596,7 @@ gck_session_get_logged_in (GckSession *self)
 }
 
 void
-gck_session_set_logged_in (GckSession *self, gboolean logged_in)
+gck_session_set_logged_in (GckSession *self, gulong logged_in)
 {
 	g_return_if_fail (GCK_IS_SESSION (self));
 	self->pv->logged_in = logged_in;
@@ -679,8 +680,10 @@ gck_session_C_GetSessionInfo(GckSession* self, CK_SESSION_INFO_PTR info)
 		return CKR_ARGUMENTS_BAD;
 	
 	info->slotID = self->pv->slot_id;
-	if (self->pv->logged_in)
+	if (self->pv->logged_in == CKU_USER)
 		info->state = self->pv->read_only ? CKS_RO_USER_FUNCTIONS : CKS_RW_USER_FUNCTIONS;
+	else if (self->pv->logged_in == CKU_SO)
+		info->state = CKS_RW_SO_FUNCTIONS;
 	else
 		info->state = self->pv->read_only ? CKS_RO_PUBLIC_SESSION : CKS_RW_PUBLIC_SESSION;
 	info->flags = CKF_SERIAL_SESSION;
@@ -762,7 +765,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 		g_return_val_if_fail (object, CKR_GENERAL_ERROR);
 
 		/* Can only create public objects unless logged in */
-		if (!gck_session_get_logged_in (self) &&
+		if (gck_session_get_logged_in (self) != CKU_USER &&
 		    gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private) && 
 		    is_private == TRUE) {
 			gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
@@ -928,7 +931,7 @@ gck_session_C_FindObjectsInit (GckSession* self, CK_ATTRIBUTE_PTR template,
 	found = g_array_new (FALSE, TRUE, sizeof (CK_OBJECT_HANDLE));
 
 	/* If not logged in, then skip private objects */
-	also_private = gck_session_get_logged_in (self); 
+	also_private = gck_session_get_logged_in (self) == CKU_USER; 
 
 	if (all || token) {
 		rv = gck_module_refresh_token (self->pv->module);

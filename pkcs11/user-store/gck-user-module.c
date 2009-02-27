@@ -40,7 +40,7 @@ struct _GckUserModule {
 	GckModule parent;
 	GckUserStorage *storage;
 	gchar *directory;
-	GHashTable *logged_in_apps;
+	GHashTable *unlocked_apps;
 	CK_TOKEN_INFO token_info;
 };
 
@@ -181,13 +181,13 @@ gck_user_module_real_login_user (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHA
 	CK_RV rv;
 
 	/* See if this application has logged in */
-	if (g_hash_table_lookup (self->logged_in_apps, &slot_id))
+	if (g_hash_table_lookup (self->unlocked_apps, &slot_id))
 		return CKR_USER_ALREADY_LOGGED_IN;
 
 	login = gck_user_storage_get_login (self->storage);
 	
 	/* No application is logged in */
-	if (g_hash_table_size (self->logged_in_apps) == 0) {
+	if (g_hash_table_size (self->unlocked_apps) == 0) {
 
 		g_return_val_if_fail (login == NULL, CKR_GENERAL_ERROR);
 
@@ -210,7 +210,7 @@ gck_user_module_real_login_user (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHA
 
 	/* Note that this application logged in */
 	if (rv == CKR_OK) {
-		g_hash_table_insert (self->logged_in_apps, gck_util_ulong_alloc (slot_id), UNUSED_VALUE);
+		g_hash_table_insert (self->unlocked_apps, gck_util_ulong_alloc (slot_id), UNUSED_VALUE);
 		rv = GCK_MODULE_CLASS (gck_user_module_parent_class)->login_user (base, slot_id, pin, n_pin);
 	}
 	
@@ -218,20 +218,36 @@ gck_user_module_real_login_user (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHA
 }
 
 static CK_RV 
-gck_user_module_real_logout_user (GckModule *base, CK_SLOT_ID slot_id)
+gck_user_module_real_login_so (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
+{
+	GckUserModule *self = GCK_USER_MODULE (base);
+	
+	/* See if this application has unlocked, in which case we can't login */
+	if (g_hash_table_lookup (self->unlocked_apps, &slot_id))
+		return CKR_USER_ALREADY_LOGGED_IN;
+	
+	/* Note that for an SO login, we don't actually unlock, and pin is always blank */
+	if (n_pin != 0)
+		return CKR_PIN_INCORRECT;
+
+	return GCK_MODULE_CLASS (gck_user_module_parent_class)->login_so (base, slot_id, pin, n_pin);
+}
+
+static CK_RV 
+gck_user_module_real_logout_any (GckModule *base, CK_SLOT_ID slot_id)
 {
 	GckUserModule *self = GCK_USER_MODULE (base);
 	CK_RV rv;
 	
-	if (!g_hash_table_remove (self->logged_in_apps, &slot_id))
+	if (!g_hash_table_remove (self->unlocked_apps, &slot_id))
 		return CKR_USER_NOT_LOGGED_IN;
 	
-	if (g_hash_table_size (self->logged_in_apps) > 0)
+	if (g_hash_table_size (self->unlocked_apps) > 0)
 		return CKR_OK;
 	
 	rv = gck_user_storage_lock (self->storage);
 	if (rv == CKR_OK)
-		rv = GCK_MODULE_CLASS (gck_user_module_parent_class)->logout_user (base, slot_id);
+		rv = GCK_MODULE_CLASS (gck_user_module_parent_class)->logout_any (base, slot_id);
 	
 	return rv;
 }
@@ -252,7 +268,7 @@ gck_user_module_constructor (GType type, guint n_props, GObjectConstructParam *p
 static void
 gck_user_module_init (GckUserModule *self)
 {
-	self->logged_in_apps = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, gck_util_ulong_free, NULL);
+	self->unlocked_apps = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, gck_util_ulong_free, NULL);
 	
 	/* Our default token info, updated as module runs */
 	memcpy (&self->token_info, &user_module_token_info, sizeof (CK_TOKEN_INFO));
@@ -271,7 +287,7 @@ gck_user_module_dispose (GObject *obj)
 		g_object_unref (self->storage);
 	self->storage = NULL;
 	
-	g_hash_table_remove_all (self->logged_in_apps);
+	g_hash_table_remove_all (self->unlocked_apps);
     
 	G_OBJECT_CLASS (gck_user_module_parent_class)->dispose (obj);
 }
@@ -283,9 +299,9 @@ gck_user_module_finalize (GObject *obj)
 	
 	g_assert (self->storage == NULL);
 	
-	g_assert (self->logged_in_apps);
-	g_hash_table_destroy (self->logged_in_apps);
-	self->logged_in_apps = NULL;
+	g_assert (self->unlocked_apps);
+	g_hash_table_destroy (self->unlocked_apps);
+	self->unlocked_apps = NULL;
 	
 	g_free (self->directory);
 	self->directory = NULL;
@@ -310,7 +326,8 @@ gck_user_module_class_init (GckUserModuleClass *klass)
 	module_class->store_token_object = gck_user_module_real_store_token_object;
 	module_class->remove_token_object = gck_user_module_real_remove_token_object;
 	module_class->login_user = gck_user_module_real_login_user;
-	module_class->logout_user = gck_user_module_real_logout_user;
+	module_class->login_so = gck_user_module_real_login_so;
+	module_class->logout_any = gck_user_module_real_logout_any;
 	module_class->login_change = gck_user_module_real_login_change;
 }
 

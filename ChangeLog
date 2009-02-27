@@ -1,5 +1,14 @@
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
+	* pkcs11/gck/gck-module.c:
+	* pkcs11/gck/gck-module.h:
+	* pkcs11/gck/gck-session.c:
+	* pkcs11/gck/gck-session.h:
+	* pkcs11/pkcs11i.h:
+	* pkcs11/user-store/gck-user-module.c: Add support for basic SO logins.
+
+2009-02-25  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/pkcs11/gkr-pkcs11-auth-ep.c: Don't automatically initialize
 	tokens without user pin. This leads to erroneous prompts at unexpected
 	times.

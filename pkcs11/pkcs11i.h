@@ -27,6 +27,9 @@
 #include "pkcs11.h"
 #include "pkcs11g.h"
 
+/* Signifies that nobody is logged in */
+#define CKU_NONE G_MAXULONG
+
 /* ----------------------------------------------------------------------
  * APARTMENT SLOTS
  * 
@@ -71,5 +74,6 @@
  */
 
 #define CK_GNOME_INTERNAL_SHA1                      (CKA_GNOME + 1000)
+
 
 #endif /* PKCS11I_H */

@@ -56,7 +56,7 @@ typedef struct _VirtualSlot {
 	CK_SLOT_ID slot_id;
 	GckManager *session_manager;
 	GList *sessions;
-	gboolean logged_in;
+	CK_USER_TYPE logged_in;
 } VirtualSlot;
 
 /* Our slot identifier is 1 */
@@ -195,7 +195,7 @@ virtual_slot_new (GckModuleClass *klass, CK_SLOT_ID slot_id)
 
 	slot = g_slice_new0 (VirtualSlot);
 	slot->session_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", FALSE, NULL);
-	slot->logged_in = FALSE;
+	slot->logged_in = CKU_NONE;
 	slot->sessions = NULL;
 	slot->slot_id = slot_id;
 	
@@ -228,6 +228,20 @@ unregister_virtual_slot (GckModule *self, VirtualSlot *slot)
 	
 	if (!g_hash_table_remove (self->pv->virtual_slots_by_id, &(slot->slot_id)))
 		g_assert_not_reached ();
+}
+
+static void
+mark_login_virtual_slot (GckModule *self, VirtualSlot *slot, CK_USER_TYPE user)
+{
+	GList *l;
+
+	g_assert (slot);
+	g_assert (GCK_IS_MODULE (self));
+	
+	/* Mark all sessions in the partition as logged in */
+	for (l = slot->sessions; l; l = g_list_next (l)) 
+		gck_session_set_logged_in (l->data, user);
+	slot->logged_in = user;
 }
 
 static void
@@ -374,35 +388,36 @@ static CK_RV
 gck_module_real_login_user (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
 	VirtualSlot *slot;
-	GList *l;
 	
 	slot = lookup_virtual_slot (self, slot_id);
 	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
 
-	/* Mark all sessions in the partition as logged in */
-	for (l = slot->sessions; l; l = g_list_next (l)) 
-		gck_session_set_logged_in (l->data, TRUE);
-	slot->logged_in = TRUE;
-	
+	mark_login_virtual_slot (self, slot, CKU_USER);
 	return CKR_OK;
 }
 
 static CK_RV
-gck_module_real_logout_user (GckModule *self, CK_SLOT_ID slot_id)
+gck_module_real_login_so (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
 	VirtualSlot *slot;
-	GList *l;
+	
+	slot = lookup_virtual_slot (self, slot_id);
+	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+
+	mark_login_virtual_slot (self, slot, CKU_SO);
+	return CKR_OK;
+}
+
+static CK_RV
+gck_module_real_logout_any (GckModule *self, CK_SLOT_ID slot_id)
+{
+	VirtualSlot *slot;
 
 	/* Calculate the partition identifier */
 	slot = lookup_virtual_slot (self, slot_id);
 	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
 
-	/* Mark all sessions in the partition as logged out */
-	for (l = slot->sessions; l; l = g_list_next (l)) 
-		gck_session_set_logged_in (l->data, FALSE);
-	slot->logged_in = FALSE;
-	
-	/* Derived classes should override if they want actual login */
+	mark_login_virtual_slot (self, slot, CKU_NONE);
 	return CKR_OK;
 }
 
@@ -534,7 +549,8 @@ gck_module_class_init (GckModuleClass *klass)
 	klass->remove_token_object = gck_module_real_remove_token_object;
 	klass->login_change = gck_module_real_login_change;
 	klass->login_user = gck_module_real_login_user;
-	klass->logout_user = gck_module_real_logout_user;
+	klass->login_so = gck_module_real_login_so;
+	klass->logout_any = gck_module_real_logout_any;
 	
 	g_object_class_install_property (gobject_class, PROP_MANAGER,
 	           g_param_spec_object ("manager", "Manager", "Token object manager", 
@@ -608,11 +624,19 @@ gck_module_login_user (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin,
 }
 
 CK_RV
-gck_module_logout_user (GckModule *self, CK_SLOT_ID slot_id)
+gck_module_login_so (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_GENERAL_ERROR);
-	g_assert (GCK_MODULE_GET_CLASS (self)->logout_user);
-	return GCK_MODULE_GET_CLASS (self)->logout_user (self, slot_id);	
+	g_assert (GCK_MODULE_GET_CLASS (self)->login_so);
+	return GCK_MODULE_GET_CLASS (self)->login_so (self, slot_id, pin, n_pin);
+}
+
+CK_RV
+gck_module_logout_any (GckModule *self, CK_SLOT_ID slot_id)
+{
+	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_GENERAL_ERROR);
+	g_assert (GCK_MODULE_GET_CLASS (self)->logout_any);
+	return GCK_MODULE_GET_CLASS (self)->logout_any (self, slot_id);	
 }
 
 CK_ULONG
@@ -907,6 +931,10 @@ gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID id, CK_FLAGS flags, CK_VOI
 		slot = virtual_slot_new (GCK_MODULE_GET_CLASS (self), id);
 		register_virtual_slot (self, slot);
 	}
+	
+	/* Can't open read only session if SO login */
+	if (slot->logged_in == CKU_SO && !(flags & CKF_RW_SESSION))
+		return CKR_SESSION_READ_WRITE_SO_EXISTS; 
 
 	/* Make and register a new session */
 	handle = gck_module_next_handle (self);
@@ -1021,6 +1049,7 @@ gck_module_C_Login (GckModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user
 	CK_SLOT_ID slot_id;
 	GckSession *session;
 	VirtualSlot *slot;
+	GList *l;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
 	
@@ -1032,12 +1061,8 @@ gck_module_C_Login (GckModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user
 	if (user_type == CKU_CONTEXT_SPECIFIC)
 		return gck_session_login_context_specific (session, pin, pin_len);
 
-	/* We don't have support for SO logins */
-	if (user_type == CKU_SO) 
-		return CKR_USER_TYPE_INVALID;
-	
 	/* Some random crap... */
-	if (user_type != CKU_USER)
+	if (user_type != CKU_USER && user_type != CKU_SO)
 		return CKR_USER_TYPE_INVALID;
 
 	/* Calculate the virtual slot */
@@ -1045,10 +1070,25 @@ gck_module_C_Login (GckModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user
 	slot = lookup_virtual_slot (self, slot_id);
 	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
 
-	if (slot->logged_in)
+	if (slot->logged_in != CKU_NONE)
 		return CKR_USER_ALREADY_LOGGED_IN;
-	
-	return gck_module_login_user (self, slot_id, pin, pin_len);
+
+	if (user_type == CKU_SO) {
+		
+		/* Can't login as SO if read-only sessions exist */
+		for (l = slot->sessions; l; l = g_list_next (l)) {
+			if (gck_session_get_read_only (l->data))
+				return CKR_SESSION_READ_ONLY_EXISTS;
+		}
+		
+		return gck_module_login_so (self, slot_id, pin, pin_len);
+				
+	} else if (user_type == CKU_USER) {
+		return gck_module_login_user (self, slot_id, pin, pin_len);
+		
+	} else {
+		return CKR_USER_TYPE_INVALID;
+	}
 }
 
 CK_RV
@@ -1068,8 +1108,8 @@ gck_module_C_Logout (GckModule *self, CK_SESSION_HANDLE handle)
 	slot = lookup_virtual_slot (self, slot_id);
 	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
 
-	if (!slot->logged_in)
+	if (slot->logged_in == CKU_NONE)
 		return CKR_USER_NOT_LOGGED_IN;
 
-	return gck_module_logout_user (self, slot_id);
+	return gck_module_logout_any (self, slot_id);
 }
