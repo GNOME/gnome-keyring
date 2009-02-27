@@ -7,6 +7,9 @@
 	* gp11/gp11-module.c: When enumerating objects in a module, skip 
 	tokens that fail from not being initialized.
 	
+	* pkcs11/roots-store/gck-roots-certificate.c: Fix problem with destruction
+	of roots certificate. dispose erroneously called base class finalize.
+	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-data-file.c:

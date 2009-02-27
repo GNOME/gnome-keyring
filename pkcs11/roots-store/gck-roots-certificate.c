@@ -128,7 +128,7 @@ gck_roots_certificate_dispose (GObject *obj)
 		g_object_unref (self->trust);
 	self->trust = NULL;
 
-	G_OBJECT_CLASS (gck_roots_certificate_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gck_roots_certificate_parent_class)->dispose (obj);
 }
 
 static void
