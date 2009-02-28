@@ -632,7 +632,7 @@ sec_acquire_pages (size_t *sz)
 	if (pages == MAP_FAILED) {
 		if (lock_warning)
 			fprintf (stderr, "couldn't map %lu bytes of private memory: %s\n", 
-			         *sz, strerror (errno));
+			         (unsigned long)*sz, strerror (errno));
 		lock_warning = 0;
 		return NULL;
 	}
@@ -640,7 +640,7 @@ sec_acquire_pages (size_t *sz)
 	if (mlock (pages, *sz) < 0) {
 		if (lock_warning && errno != EPERM) {
 			fprintf (stderr, "couldn't lock %lu bytes of private memory: %s\n", 
-			         *sz, strerror (errno));
+			         (unsigned long)*sz, strerror (errno));
 			lock_warning = 0;
 		}
 		munmap (pages, *sz);
@@ -784,7 +784,8 @@ egg_secure_alloc_full (size_t length, int flags)
 	void *memory = NULL;
 		
 	if (length > 0xFFFFFFFF / 2) {
-		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", length);   
+		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", 
+		         (unsigned long)length);   
 		return NULL;
 	}
 
@@ -836,7 +837,8 @@ egg_secure_realloc_full (void *memory, size_t length, int flags)
 	void *alloc = NULL;
 	
 	if (length > 0xFFFFFFFF / 2) {
-		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", length);
+		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", 
+		         (unsigned long)length);
 		ASSERT (0 && "tried to allocate an insane amount of memory");
 		return NULL;
 	}
@@ -876,7 +878,8 @@ egg_secure_realloc_full (void *memory, size_t length, int flags)
 			 */
 			return egg_memory_fallback (memory, length);
 		} else {
-			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)memory);
+			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", 
+			         (unsigned long)memory);
 			ASSERT (0 && "memory does does not belong to gnome-keyring");
 			return NULL;
 		}
@@ -929,7 +932,8 @@ egg_secure_free_full (void *memory, int flags)
 		if ((flags & GKR_SECURE_USE_FALLBACK)) {
 			egg_memory_fallback (memory, 0);
 		} else {
-			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", (unsigned long)memory);
+			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", 
+			         (unsigned long)memory);
 			ASSERT (0 && "memory does does not belong to gnome-keyring");
 		}
 	}
@@ -963,7 +967,8 @@ egg_secure_dump_blocks (void)
 		/* Find out where it belongs to */
 		for (block = all_blocks; block; block = block->next) {
 			fprintf (stderr, "----------------------------------------------------\n");
-			fprintf (stderr, "  BLOCK at: 0x%08lx  len: %lu\n", (unsigned long)block, block->n_words * sizeof (word_t));
+			fprintf (stderr, "  BLOCK at: 0x%08lx  len: %lu\n", (unsigned long)block, 
+			         (unsigned long)block->n_words * sizeof (word_t));
 			fprintf (stderr, "\n");
 		}
 		

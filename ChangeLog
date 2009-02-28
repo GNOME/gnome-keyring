@@ -1,3 +1,7 @@
+2009-02-28  Stef Walter  <stef@memberwebs.com>
+
+	* egg/egg-secure-memory.c: Fix compiler warnings on 32-bit.
+	
 2009-02-26  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-importer.c: Add quick hack to initialize tokens before
