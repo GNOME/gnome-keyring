@@ -4,6 +4,11 @@
 	importing into them. More functionality along this line will
 	be needed in future versions.
 	
+	* pkcs11/gck/gck-module.c:
+	* pkcs11/gck/gck-module.h:
+	* pkcs11/user-store/gck-user-module.c: Make different virtual functions
+	for the logout of SO and user. 
+	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c:

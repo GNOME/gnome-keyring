@@ -549,8 +549,9 @@ gck_module_class_init (GckModuleClass *klass)
 	klass->remove_token_object = gck_module_real_remove_token_object;
 	klass->login_change = gck_module_real_login_change;
 	klass->login_user = gck_module_real_login_user;
+	klass->logout_user = gck_module_real_logout_any;
 	klass->login_so = gck_module_real_login_so;
-	klass->logout_any = gck_module_real_logout_any;
+	klass->logout_so = gck_module_real_logout_any;
 	
 	g_object_class_install_property (gobject_class, PROP_MANAGER,
 	           g_param_spec_object ("manager", "Manager", "Token object manager", 
@@ -624,6 +625,14 @@ gck_module_login_user (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin,
 }
 
 CK_RV
+gck_module_logout_user (GckModule *self, CK_SLOT_ID slot_id)
+{
+	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_GENERAL_ERROR);
+	g_assert (GCK_MODULE_GET_CLASS (self)->logout_user);
+	return GCK_MODULE_GET_CLASS (self)->logout_user (self, slot_id);	
+}
+
+CK_RV
 gck_module_login_so (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_GENERAL_ERROR);
@@ -632,11 +641,11 @@ gck_module_login_so (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, C
 }
 
 CK_RV
-gck_module_logout_any (GckModule *self, CK_SLOT_ID slot_id)
+gck_module_logout_so (GckModule *self, CK_SLOT_ID slot_id)
 {
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_GENERAL_ERROR);
-	g_assert (GCK_MODULE_GET_CLASS (self)->logout_any);
-	return GCK_MODULE_GET_CLASS (self)->logout_any (self, slot_id);	
+	g_assert (GCK_MODULE_GET_CLASS (self)->logout_so);
+	return GCK_MODULE_GET_CLASS (self)->logout_so (self, slot_id);	
 }
 
 CK_ULONG
@@ -1110,6 +1119,13 @@ gck_module_C_Logout (GckModule *self, CK_SESSION_HANDLE handle)
 
 	if (slot->logged_in == CKU_NONE)
 		return CKR_USER_NOT_LOGGED_IN;
+	
+	else if (slot->logged_in == CKU_USER)
+		return gck_module_logout_user (self, slot_id);
 
-	return gck_module_logout_any (self, slot_id);
+	else if (slot->logged_in == CKU_SO)
+		return gck_module_logout_so (self, slot_id);
+
+	else 
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
 }

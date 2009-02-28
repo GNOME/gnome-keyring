@@ -69,10 +69,12 @@ struct _GckModuleClass {
 	CK_RV (*login_user) (GckModule *self, CK_SLOT_ID slot_id, 
 	                     CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
 
+	CK_RV (*logout_user) (GckModule *self, CK_SLOT_ID slot_id);
+
 	CK_RV (*login_so) (GckModule *self, CK_SLOT_ID slot_id, 
 	                   CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
-	
-	CK_RV (*logout_any) (GckModule *self, CK_SLOT_ID slot_id);
+
+	CK_RV (*logout_so) (GckModule *self, CK_SLOT_ID slot_id);
 };
 
 /* 
@@ -119,12 +121,15 @@ CK_RV                  gck_module_login_user                      (GckModule *se
                                                                    CK_UTF8CHAR_PTR pin,
                                                                    CK_ULONG n_pin);
 
+CK_RV                  gck_module_logout_user                     (GckModule *self,
+                                                                   CK_SLOT_ID slot_id);
+
 CK_RV                  gck_module_login_so                        (GckModule *self,
                                                                    CK_SLOT_ID slot_id,
                                                                    CK_UTF8CHAR_PTR pin,
                                                                    CK_ULONG n_pin);
 
-CK_RV                  gck_module_logout_any                      (GckModule *self,
+CK_RV                  gck_module_logout_so                       (GckModule *self,
                                                                    CK_SLOT_ID slot_id);
 
 CK_RV                  gck_module_refresh_token                   (GckModule *self);

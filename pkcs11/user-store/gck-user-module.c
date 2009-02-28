@@ -234,7 +234,7 @@ gck_user_module_real_login_so (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHAR_
 }
 
 static CK_RV 
-gck_user_module_real_logout_any (GckModule *base, CK_SLOT_ID slot_id)
+gck_user_module_real_logout_user (GckModule *base, CK_SLOT_ID slot_id)
 {
 	GckUserModule *self = GCK_USER_MODULE (base);
 	CK_RV rv;
@@ -247,7 +247,7 @@ gck_user_module_real_logout_any (GckModule *base, CK_SLOT_ID slot_id)
 	
 	rv = gck_user_storage_lock (self->storage);
 	if (rv == CKR_OK)
-		rv = GCK_MODULE_CLASS (gck_user_module_parent_class)->logout_any (base, slot_id);
+		rv = GCK_MODULE_CLASS (gck_user_module_parent_class)->logout_user (base, slot_id);
 	
 	return rv;
 }
@@ -327,7 +327,7 @@ gck_user_module_class_init (GckUserModuleClass *klass)
 	module_class->remove_token_object = gck_user_module_real_remove_token_object;
 	module_class->login_user = gck_user_module_real_login_user;
 	module_class->login_so = gck_user_module_real_login_so;
-	module_class->logout_any = gck_user_module_real_logout_any;
+	module_class->logout_user = gck_user_module_real_logout_user;
 	module_class->login_change = gck_user_module_real_login_change;
 }
 
