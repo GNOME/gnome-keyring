@@ -338,13 +338,13 @@ begin_write_state (GckUserStorage *self, GckTransaction *transaction)
 		return TRUE;
 	}
 	
-	gck_transaction_add (transaction, self, complete_write_state, NULL);
-	self->transaction = g_object_ref (transaction);
-	
 	/* Lock file for the transaction */
 	self->read_fd = begin_lock_file (self, transaction);
 	if (self->read_fd == -1)
 		return FALSE;
+
+	gck_transaction_add (transaction, self, complete_write_state, NULL);
+	self->transaction = g_object_ref (transaction);
 
 	/* Open the new file */
 	g_assert (self->write_fd == -1);
@@ -360,7 +360,33 @@ begin_write_state (GckUserStorage *self, GckTransaction *transaction)
 }
 
 static gboolean
-begin_write_state_and_refresh (GckUserStorage *self, GckTransaction *transaction)
+complete_modification_state (GckTransaction *transaction, GObject *object, gpointer unused)
+{
+	GckUserStorage *self = GCK_USER_STORAGE (object);
+	GckDataResult res;
+	
+	if (!gck_transaction_get_failed (transaction)) {
+		res = gck_data_file_write_fd (self->file, self->write_fd, self->login);
+		switch(res) {
+		case GCK_DATA_FAILURE:
+		case GCK_DATA_UNRECOGNIZED:
+			g_warning ("couldn't write to temporary store file: %s", self->write_path);
+			return FALSE;
+		case GCK_DATA_LOCKED:
+			g_warning ("couldn't encrypt temporary store file: %s", self->write_path);
+			return FALSE;
+		case GCK_DATA_SUCCESS:
+			break;
+		default:
+			g_assert_not_reached ();
+		}
+	}
+	
+	return TRUE;
+}
+
+static gboolean
+begin_modification_state (GckUserStorage *self, GckTransaction *transaction)
 {
 	GckDataResult res;
 	struct stat sb;
@@ -398,6 +424,9 @@ begin_write_state_and_refresh (GckUserStorage *self, GckTransaction *transaction
 			return FALSE;
 		}
 	}
+	
+	/* Write out the data once completed with modifications */
+	gck_transaction_add (transaction, self, complete_modification_state, NULL);
 	
 	return TRUE;
 }
@@ -1091,7 +1120,7 @@ gck_user_storage_create (GckUserStorage *self, GckTransaction *transaction, GckO
 	}
 
 	/* Hook ourselves into the transaction */
-	if (!begin_write_state_and_refresh (self, transaction))
+	if (!begin_modification_state (self, transaction))
 		return;
 
 	/* Create an identifier guaranteed unique by this transaction */
@@ -1166,7 +1195,7 @@ gck_user_storage_destroy (GckUserStorage *self, GckTransaction *transaction, Gck
 	identifier = g_hash_table_lookup (self->object_to_identifier, object);
 	g_return_if_fail (identifier);
 	
-	if (!begin_write_state_and_refresh (self, transaction))
+	if (!begin_modification_state (self, transaction))
 		return;
 
 	/* First actually delete the file */
@@ -1323,7 +1352,7 @@ gck_user_storage_token_flags (GckUserStorage *self)
 	gulong flags = 0;
 	CK_RV rv;
 	
-	/* We don't support SO logins, so always initialized */
+	/* We don't changing SO logins, so always initialized */
 	flags |= CKF_TOKEN_INITIALIZED | CKF_LOGIN_REQUIRED;
 	
 	/* No file has been loaded yet? */

@@ -22,6 +22,10 @@
 	* gcr/gcr-importer.c: Fix problem with looking up pin initialized flag 
 	in the wrong structure.
 	
+	* pkcs11/user-store/gck-user-storage.c: Fix problems not writing out 
+	user store file when making modifications, but overwriting storage
+	file with zero byte file.
+	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c:
