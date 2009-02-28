@@ -257,7 +257,11 @@ gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const gu
 		g_free (self->private_data);
 		self->n_private_data = n_data;
 		self->private_data = g_memdup (data, n_data);
-		g_object_set (self, "login", login, NULL);
+		
+		g_object_ref (login);
+		if (self->login)
+			g_object_unref (self->login);
+		self->login = login;
 
 		/* Don't need the private key any more */
 		gcry_sexp_release (sexp);
@@ -268,6 +272,10 @@ gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const gu
 		if (self->private_sexp)
 			gck_sexp_unref (self->private_sexp);
 		self->private_sexp = wrapper;
+		
+		if (self->login)
+			g_object_unref (login);
+		self->login = NULL;
 	}
 	
 	return TRUE;

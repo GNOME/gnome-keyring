@@ -759,18 +759,6 @@ refresh_with_login (GckUserStorage *self, GckLogin *login)
 	return rv;
 }
 
-static void
-set_storage_login (GckUserStorage *self, GckLogin *login)
-{
-	g_assert (GCK_IS_USER_STORAGE (self));
-	if (login != NULL)
-		g_object_ref (login);
-	if (self->login)
-		g_object_unref (self->login);
-	self->login = login;
-	g_object_notify (G_OBJECT (self), "login");
-}
-
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -1232,8 +1220,13 @@ gck_user_storage_relock (GckUserStorage *self, GckTransaction *transaction,
 	args.new_login = new_login;
 	gck_data_file_foreach_entry (file, relock_each_object, &args);
 	
-	if (!gck_transaction_get_failed (transaction) && self->login)
-		set_storage_login (self, new_login);
+	if (!gck_transaction_get_failed (transaction) && self->login) {
+		if (new_login)
+			g_object_ref (new_login);
+		g_object_unref (self->login);
+		self->login = new_login;
+		g_object_notify (G_OBJECT (self), "login");
+	}
 	
 	g_object_unref (file);
 }
@@ -1249,11 +1242,23 @@ gck_user_storage_unlock (GckUserStorage *self, GckLogin *login)
 	if (self->login)
 		return CKR_USER_ALREADY_LOGGED_IN;
 	
+	self->login = login;
+	
 	rv = refresh_with_login (self, login);
 	if (rv == CKR_USER_NOT_LOGGED_IN)
-		return CKR_PIN_INCORRECT;
-	else if (rv == CKR_OK)
-		set_storage_login (self, login);
+		rv = CKR_PIN_INCORRECT;
+	
+	/* Take on new login for good */
+	if (rv == CKR_OK) {
+		g_assert (self->login == login);
+		if (self->login)
+			g_object_ref (self->login);
+		g_object_notify (G_OBJECT (self), "login");
+		
+	/* Failed, so keep our previous NULL login */
+	} else {
+		self->login = NULL;
+	}
 	
 	return rv;
 }
@@ -1261,6 +1266,7 @@ gck_user_storage_unlock (GckUserStorage *self, GckLogin *login)
 CK_RV
 gck_user_storage_lock (GckUserStorage *self)
 {
+	GckLogin *prev;
 	CK_RV rv;
 	
 	g_return_val_if_fail (GCK_IS_USER_STORAGE (self), CKR_GENERAL_ERROR);
@@ -1269,9 +1275,22 @@ gck_user_storage_lock (GckUserStorage *self)
 	if (!self->login)
 		return CKR_USER_NOT_LOGGED_IN;
 	
+	/* While loading set new NULL login */
+	prev = self->login;
+	self->login = NULL;
+	
 	rv = refresh_with_login (self, NULL);
-	if (rv == CKR_OK)
-		set_storage_login (self, NULL);
+	
+	/* Take on new login for good */
+	if (rv == CKR_OK) {
+		g_object_unref (prev);
+		g_assert (self->login == NULL);
+		g_object_notify (G_OBJECT (self), "login");
+		
+	/* Failed so revert to previous login */
+	} else {
+		self->login = prev;
+	}
 	
 	return rv;
 }
