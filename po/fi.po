@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-18 19:28+0300\n"
+"POT-Creation-Date: 2009-02-28 19:41+0300\n"
 "PO-Revision-Date: 2009-02-18 19:30+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -455,11 +455,11 @@ msgstr "Avaa julkinen avain"
 msgid "Unlock"
 msgstr "Avaa lukitus"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Avaa salaisen avaimen lukitus syöttämällä salasana"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Avaa varmenteen lukitus syöttämällä salasana"
 
@@ -467,7 +467,7 @@ msgstr "Avaa varmenteen lukitus syöttämällä salasana"
 msgid "Enter password to unlock the public key"
 msgstr "Avaa julkisen avaimen lukitus syöttämällä salasana"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Avaa syöttämällä salasana"
 
@@ -529,23 +529,23 @@ msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
-"Sovellus haluaa päästä käsiksi varmenteeseen tai avainsäilöön  \"%s\", "
-"mutta se on lukittu"
+"Sovellus haluaa päästä käsiksi varmenteeseen tai avainsäilöön  \"%s\", mutta "
+"se on lukittu"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:380
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:531
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Avaa turvallinen tallennus automaattisesti sisäänkirjauduttaessa."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:523
 msgid "New Password Required"
 msgstr "Uusi salasana vaaditaan"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
 msgid "New password required for secure storage"
 msgstr "Turvallinen säilö vaatii uuden salasanan"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:526
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -565,8 +565,8 @@ msgid ""
 msgstr ""
 "<b><big>Hiirtä ei voitu varata.</big></b>\n"
 "\n"
-"Pahantahtoinen ohjelma saattaa tarkkailla istuntoasi, saatoit juuri "
-"äsken napsauttaa valikkoa tai joku toinen sovellus vei kohdistuksen.\n"
+"Pahantahtoinen ohjelma saattaa tarkkailla istuntoasi, saatoit juuri äsken "
+"napsauttaa valikkoa tai joku toinen sovellus vei kohdistuksen.\n"
 "\n"
 "Yritä uudestaan."
 
@@ -581,8 +581,8 @@ msgid ""
 msgstr ""
 "<b><big>Näppäimistöä ei voitu varata.</big></b>\n"
 "\n"
-"Pahantahtoinen ohjelma saattaa tarkkailla istuntoasi, saatoit juuri "
-"äsken napsauttaa valikkoa tai joku toinen sovellus vei kohdistuksen.\n"
+"Pahantahtoinen ohjelma saattaa tarkkailla istuntoasi, saatoit juuri äsken "
+"napsauttaa valikkoa tai joku toinen sovellus vei kohdistuksen.\n"
 "\n"
 "Yritä uudestaan."
 
@@ -952,52 +952,52 @@ msgstr "Tuo kohteeseen:"
 msgid "Password:"
 msgstr "Salasana:"
 
-#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
 msgid "The operation was cancelled"
 msgstr "Toiminto peruttiin"
 
-#: ../gcr/gcr-importer.c:254
+#: ../gcr/gcr-importer.c:255
 #, c-format
 msgid "No location available to import to"
 msgstr "Kohteen tuontia varten ei ole sijaintia saatavilla"
 
-#: ../gcr/gcr-importer.c:328
+#: ../gcr/gcr-importer.c:404
 msgid "Import Certificates/Keys"
 msgstr "Tuo varmenteita tai avaimia"
 
-#: ../gcr/gcr-importer.c:335
+#: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "Valitse sijainti, johon tuodut varmenteet tai avaimet tallennetaan."
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:373
+#: ../gcr/gcr-importer.c:449
 msgid "In order to import the private key, it must be unlocked"
 msgstr "Jotta voit tuoda salaisen avaimen, sen lukitus täytyy avata"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:376
+#: ../gcr/gcr-importer.c:452
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "Jotta voit tuoda varmenteen, sen lukitus täytyy avata"
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:379
+#: ../gcr/gcr-importer.c:455
 msgid "In order to import the data, it must be unlocked"
 msgstr "Jotta voit tuoda tietoja, sen lukitus täytyy avata"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:384
+#: ../gcr/gcr-importer.c:460
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "Tuodaksesi julkisen avaimen \"%s\" sen lukitus täytyy olla avattu."
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:387
+#: ../gcr/gcr-importer.c:463
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "Tuodaksesi varmenteen \"%s\" sen lukitus täytyy olla avattu."
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:390
+#: ../gcr/gcr-importer.c:466
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Tuodaksesi kohteen \"%s\" sen lukitus täytyy olla avattu."
@@ -1044,11 +1044,11 @@ msgstr "Virheelliset argumentit"
 
 #: ../gp11/gp11-misc.c:127
 msgid "The module cannot create needed threads"
-msgstr "Moduli ei voi luoda vaadittuja säikeitä"
+msgstr "Moduuli ei voi luoda vaadittuja säikeitä"
 
 #: ../gp11/gp11-misc.c:129
 msgid "The module cannot lock data properly"
-msgstr "Moduli ei voi lukita tietoja kunnolla"
+msgstr "Moduuli ei voi lukita tietoja kunnolla"
 
 #: ../gp11/gp11-misc.c:131
 msgid "The field is read-only"
@@ -1320,11 +1320,11 @@ msgstr "Tilaa ei voi tallentaa"
 
 #: ../gp11/gp11-misc.c:265
 msgid "The module has not been initialized"
-msgstr "Modulia ei ole alustettu"
+msgstr "Moduulia ei ole alustettu"
 
 #: ../gp11/gp11-misc.c:267
 msgid "The module has already been initialized"
-msgstr "Moduli on jo alustettu"
+msgstr "Moduuli on jo alustettu"
 
 #: ../gp11/gp11-misc.c:269
 msgid "Cannot lock data"
@@ -1381,4 +1381,3 @@ msgstr "Nimeämätön varmenne"
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
 msgid "Couldn't parse public SSH key"
 msgstr "SSH-avaimen julkista osaa ei voitu tulkita."
-
