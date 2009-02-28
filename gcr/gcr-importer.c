@@ -315,7 +315,8 @@ hacky_perform_initialize_pin (GP11Slot *slot)
 static void
 state_initialize_pin (GcrImporter *self, gboolean async)
 {
-	GP11SlotInfo *info;
+	GP11TokenInfo *info;
+	gboolean initialize;
 	CK_RV rv;
 	
 	g_assert (GCR_IS_IMPORTER (self));
@@ -323,10 +324,13 @@ state_initialize_pin (GcrImporter *self, gboolean async)
 	/* HACK: Doesn't function when async */
 	if (!async) {
 		g_return_if_fail (self->pv->slot);
-		info = gp11_slot_get_info (self->pv->slot);
+		info = gp11_slot_get_token_info (self->pv->slot);
 		g_return_if_fail (info);
 	
-		if (!(info->flags & CKF_USER_PIN_INITIALIZED)) {
+		initialize = !(info->flags & CKF_USER_PIN_INITIALIZED);
+		gp11_token_info_free (info);
+		
+		if (initialize) {
 			rv = hacky_perform_initialize_pin (self->pv->slot);
 			if (rv != CKR_OK) {
 				g_propagate_error (&self->pv->error, g_error_new (GP11_ERROR, rv, "%s", gp11_message_from_rv (rv)));

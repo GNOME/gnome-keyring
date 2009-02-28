@@ -19,6 +19,9 @@
 	
 	* daemon/pkcs11/gkr-pkcs11-auth.c: Fix double free.
 	
+	* gcr/gcr-importer.c: Fix problem with looking up pin initialized flag 
+	in the wrong structure.
+	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c:
