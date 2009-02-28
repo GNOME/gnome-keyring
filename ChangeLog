@@ -9,6 +9,10 @@
 	* pkcs11/user-store/gck-user-module.c: Make different virtual functions
 	for the logout of SO and user. 
 	
+	* daemon/pkcs11/gkr-pkcs11-auth-ep.c: Prompt for new password when C_InitPIN
+	is called on a token.
+	
+	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c:

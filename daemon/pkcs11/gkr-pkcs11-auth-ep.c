@@ -209,52 +209,6 @@ auth_object_for_cache (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
 	return info;
 }
 
-static CK_RV 
-perform_set_user_pin (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG n_old_pin,
-                      CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin, gboolean also_login)
-{
-	CK_SESSION_INFO session_info;
-	CK_TOKEN_INFO token_info;
-	gboolean init_auth = FALSE;
-	CK_RV rv, login_rv;
-	
-	/* Dig up the information we'll need, and don't prompt if protected auth path */
-	if ((pkcs11_lower->C_GetSessionInfo) (handle, &session_info) == CKR_OK &&
-	    (pkcs11_lower->C_GetTokenInfo) (session_info.slotID, &token_info) == CKR_OK && 
-	    !(token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH)) { 
-
-		DAEMON_ENTER ();
-		
-			if (!(token_info.flags & CKF_USER_PIN_INITIALIZED))
-				init_auth = gkr_pkcs11_auth_init_user_prompt (handle, &token_info, &new_pin, &n_new_pin);
-			/* TODO: Prompt for other 'change password' case */
-
-		DAEMON_LEAVE ();
-	}
-
-	rv = (pkcs11_lower->C_SetPIN) (handle, old_pin, n_old_pin, new_pin, n_new_pin);
-	
-	/* If requested we can also login, this prevents two prompts */
-	login_rv = CKR_OK;
-	if (rv == CKR_OK) {
-		login_rv = (pkcs11_lower->C_Login) (handle, CKU_USER, new_pin, n_new_pin);
-	}
-	
-	if (init_auth) {
-		DAEMON_ENTER ();
-		
-			gkr_pkcs11_auth_init_user_done (handle, &token_info, &new_pin, &n_new_pin, rv);
-			/* TODO: Done for other case */
-			
-		DAEMON_LEAVE ();
-	}
-	
-	if (login_rv != CKR_OK)
-		rv = login_rv;
-	
-	return rv;
-}
-
 /* --------------------------------------------------------------------------------------
  * PKCS#11 ENTRY POINTS
  */
@@ -465,22 +419,73 @@ auth_C_GetSessionInfo (CK_SESSION_HANDLE handle, CK_SESSION_INFO_PTR info)
 }
 
 static CK_RV
-auth_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
+auth_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
-	/* 
-	 * TODO: Need to implement this properly.
-	 * 
-	 * Prompt the user for new password if 
-	 * CKF_PROTECTED_AUTHENTICATION path.
-	 */
-	return (pkcs11_lower->C_InitPIN) (handle, pin, pin_len);
+	CK_SESSION_INFO session_info;
+	CK_TOKEN_INFO token_info;
+	gboolean init_auth = FALSE;
+	CK_RV rv;
+	
+	/* Dig up the information we'll need, and don't prompt if protected auth path */
+	if ((pkcs11_lower->C_GetSessionInfo) (handle, &session_info) == CKR_OK &&
+	    (pkcs11_lower->C_GetTokenInfo) (session_info.slotID, &token_info) == CKR_OK && 
+	    !(token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH)) { 
+
+		DAEMON_ENTER ();
+		
+			init_auth = gkr_pkcs11_auth_init_user_prompt (handle, &token_info, &pin, &n_pin);
+
+		DAEMON_LEAVE ();
+	}
+
+	rv = (pkcs11_lower->C_InitPIN) (handle, pin, n_pin);
+	
+	if (init_auth) {
+		DAEMON_ENTER ();
+		
+			gkr_pkcs11_auth_init_user_done (handle, &token_info, &pin, &n_pin, rv);
+			
+		DAEMON_LEAVE ();
+	}
+	
+	return rv;
 }
 
 static CK_RV
 auth_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG n_old_pin, 
                CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin)
 {
-	return perform_set_user_pin (handle, old_pin, n_old_pin, new_pin, n_new_pin, FALSE);
+	CK_SESSION_INFO session_info;
+	CK_TOKEN_INFO token_info;
+	gboolean init_auth = FALSE;
+	CK_RV rv;
+	
+	/* Dig up the information we'll need, and don't prompt if protected auth path */
+	if ((pkcs11_lower->C_GetSessionInfo) (handle, &session_info) == CKR_OK &&
+	    (pkcs11_lower->C_GetTokenInfo) (session_info.slotID, &token_info) == CKR_OK && 
+	    !(token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH)) { 
+
+		DAEMON_ENTER ();
+		
+			if (!(token_info.flags & CKF_USER_PIN_INITIALIZED))
+				init_auth = gkr_pkcs11_auth_init_user_prompt (handle, &token_info, &new_pin, &n_new_pin);
+			/* TODO: Prompt for other 'change password' case */
+
+		DAEMON_LEAVE ();
+	}
+
+	rv = (pkcs11_lower->C_SetPIN) (handle, old_pin, n_old_pin, new_pin, n_new_pin);
+	
+	if (init_auth) {
+		DAEMON_ENTER ();
+		
+			gkr_pkcs11_auth_init_user_done (handle, &token_info, &new_pin, &n_new_pin, rv);
+			/* TODO: Done for other case */
+			
+		DAEMON_LEAVE ();
+	}
+	
+	return rv;
 }
 
 static CK_RV
