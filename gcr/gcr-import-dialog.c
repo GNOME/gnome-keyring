@@ -44,6 +44,7 @@ enum {
 struct _GcrImportDialogPrivate {
 	GtkBuilder *builder;
 	EggSecureEntry *entry;
+	GtkWidget *button;
 	GtkComboBox *combo;
 	GtkListStore *slots;
 };
@@ -149,7 +150,10 @@ gcr_import_dialog_constructor (GType type, guint n_props, GObjectConstructParam 
 
 	/* Add our various buttons */
 	gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-	gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_OK, GTK_RESPONSE_OK);
+	self->pv->button = gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_OK, GTK_RESPONSE_OK);
+	gtk_dialog_set_default_response (GTK_DIALOG (self), GTK_RESPONSE_OK);
+	
+	_gcr_import_dialog_show_password (self);
 	
 	return G_OBJECT (self);
 }
@@ -397,7 +401,8 @@ _gcr_import_dialog_show_password (GcrImportDialog *self)
 {
 	g_return_if_fail (GCR_IS_IMPORT_DIALOG (self));
 	gtk_widget_show (GTK_WIDGET (gtk_builder_get_object (self->pv->builder, "password-label")));
-	gtk_widget_show (GTK_WIDGET (gtk_builder_get_object (self->pv->builder, "password-area")));	
+	gtk_widget_show (GTK_WIDGET (gtk_builder_get_object (self->pv->builder, "password-area")));
+	gtk_widget_grab_focus (GTK_WIDGET (self->pv->entry));
 }
 
 void
@@ -406,6 +411,7 @@ _gcr_import_dialog_hide_password (GcrImportDialog *self)
 	g_return_if_fail (GCR_IS_IMPORT_DIALOG (self));
 	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (self->pv->builder, "password-label")));
 	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (self->pv->builder, "password-area")));
+	gtk_widget_grab_focus (self->pv->button);
 }
 
 const gchar*

@@ -34,6 +34,8 @@
 	* pkcs11/user-store/gck-user-storage.c: Track logins properly when 
 	unlocking private objects.
 	
+	* gck/gck-import-dialog.c: Some changes to the import dialog.
+	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c:
