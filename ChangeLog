@@ -1,5 +1,10 @@
 2009-02-28  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/keyrings/gkr-keyrings.c: Load keyrings if they've never been 
+	loaded when looking for a keyring.
+
+2009-02-28  Stef Walter  <stef@memberwebs.com>
+
 	* egg/egg-secure-memory.c: Fix compiler warnings on 32-bit.
 	
 2009-02-26  Stef Walter  <stef@memberwebs.com>

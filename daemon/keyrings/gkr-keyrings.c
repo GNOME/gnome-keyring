@@ -47,6 +47,7 @@
 #define LOC_DEFAULT_FILE    (gkr_location_from_string ("LOCAL:/keyrings/default"))
 
 static gboolean keyrings_inited = FALSE;
+static gboolean keyrings_loaded = FALSE;
 
 static GList *keyrings = NULL;
 
@@ -274,8 +275,8 @@ gkr_keyrings_update (void)
 	keyrings_init ();
 	gkr_location_watch_refresh (location_watch, FALSE);
 	update_default ();
+	keyrings_loaded = TRUE;
 }
-
 
 void 
 gkr_keyrings_add (GkrKeyring *keyring)
@@ -335,6 +336,9 @@ gkr_keyrings_find (const gchar *name)
 	GList *l;
 	
 	keyrings_init ();
+	
+	if (!keyrings_loaded)
+		gkr_keyrings_update ();
 
 	if (name == NULL)
 		return gkr_keyrings_get_default ();
