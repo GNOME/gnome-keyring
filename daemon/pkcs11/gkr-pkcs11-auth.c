@@ -375,7 +375,6 @@ gkr_pkcs11_auth_login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info
 	secondary = g_strdup_printf (_("An application wants access to the certificate/key storage '%s', but it is locked"), label);
 	gkr_ask_request_set_secondary (ask, secondary);
 	g_free (secondary);
-	g_free (label);
 	
 	if (gkr_keyring_login_is_usable ())
 		gkr_ask_request_set_check_option (ask, _("Automatically unlock secure storage when I log in."));

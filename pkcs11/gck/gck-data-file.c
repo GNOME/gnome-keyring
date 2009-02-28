@@ -719,7 +719,6 @@ update_from_index_block (GckDataFile *self, EggBuffer *buffer)
 	
 	g_assert (GCK_IS_DATA_FILE (self));
 	g_assert (buffer);
-	g_assert (offset);
 	
 	offset = 0;
 	

@@ -15,6 +15,10 @@
 	* pkcs11/gck/gck-module.c: Implement C_InitPIN for the cases when no PIN 
 	exists yet. 
 	
+	* pkcs11/gck/gck-data-file.c: Remove erroneous assertion.
+	
+	* daemon/pkcs11/gkr-pkcs11-auth.c: Fix double free.
+	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c:
