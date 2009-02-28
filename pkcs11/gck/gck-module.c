@@ -1024,9 +1024,28 @@ gck_module_C_CloseAllSessions (GckModule *self, CK_SLOT_ID id)
 
 CK_RV
 gck_module_C_InitPIN (GckModule* self, CK_SESSION_HANDLE handle, 
-                      CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
+                      CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	GckSession *session;
+	VirtualSlot *slot;
+	CK_SLOT_ID slot_id;
+	
+	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
+	
+	session = gck_module_lookup_session (self, handle);
+	if (session == NULL)
+		return CKR_SESSION_HANDLE_INVALID;
+	
+	/* Calculate the virtual slot */
+	slot_id = gck_session_get_slot_id (session);
+	slot = lookup_virtual_slot (self, slot_id);
+	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+	
+	if (slot->logged_in != CKU_SO)
+		return CKR_USER_NOT_LOGGED_IN;
+
+	/* Our InitPIN assumes an uninitialized PIN */
+	return gck_module_login_change (self, slot_id, NULL, 0, pin, n_pin);
 }
 
 CK_RV

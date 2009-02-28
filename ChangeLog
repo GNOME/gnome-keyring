@@ -12,6 +12,8 @@
 	* daemon/pkcs11/gkr-pkcs11-auth-ep.c: Prompt for new password when C_InitPIN
 	is called on a token.
 	
+	* pkcs11/gck/gck-module.c: Implement C_InitPIN for the cases when no PIN 
+	exists yet. 
 	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
