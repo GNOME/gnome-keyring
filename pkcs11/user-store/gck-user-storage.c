@@ -507,7 +507,6 @@ data_file_entry_added (GckDataFile *store, const gchar *identifier, GckUserStora
 {
 	GError *error = NULL;
 	GckObject *object;
-	GckDataResult res;
 	gboolean ret;
 	guchar *data;
 	gsize n_data;
@@ -553,26 +552,12 @@ data_file_entry_added (GckDataFile *store, const gchar *identifier, GckUserStora
 	g_return_if_fail (GCK_SERIALIZABLE_GET_INTERFACE (object)->extension);
 
 	/* And load the data into it */
-	res = gck_serializable_load (GCK_SERIALIZABLE (object), self->login, data, n_data);
-	g_free (data);
-	
-	switch (res) {
-	case GCK_DATA_FAILURE:
-		g_message ("failed to load file in user store: %s", identifier);
-		return;
-	case GCK_DATA_UNRECOGNIZED:
-		g_message ("invalid or unparsable file in user store: %s", identifier);
-		return;
-	case GCK_DATA_LOCKED:
-		g_message ("file is locked with unknown password: %s", identifier);
-		return;
-	case GCK_DATA_SUCCESS:
+	if (gck_serializable_load (GCK_SERIALIZABLE (object), self->login, data, n_data)) 
 		take_object_ownership (self, identifier, object);
-		break;
-	default:
-		g_assert_not_reached ();
-	}
+	else 
+		g_message ("failed to load file in user store: %s", identifier);
 	
+	g_free (data);
 	g_object_unref (object);
 }
 
@@ -613,11 +598,9 @@ relock_object (GckUserStorage *self, GckTransaction *transaction, const gchar *p
 {
 	GError *error = NULL;
 	GckObject *object;
-	GckDataResult res;
 	guchar *data;
 	gsize n_data;
 	GType type;
-	CK_RV rv;
 	
 	g_assert (GCK_IS_USER_STORAGE (self));
 	g_assert (GCK_IS_TRANSACTION (transaction));
@@ -660,58 +643,27 @@ relock_object (GckUserStorage *self, GckTransaction *transaction, const gchar *p
 	}
 	
 	/* Load it into our temporary object */
-	res = gck_serializable_load (GCK_SERIALIZABLE (object), old_login, data, n_data);
-	g_free (data);
-	
-	switch (res) {
-	case GCK_DATA_FAILURE:
-	case GCK_DATA_UNRECOGNIZED:
+	if (!gck_serializable_load (GCK_SERIALIZABLE (object), old_login, data, n_data)) {
 		g_message ("unrecognized or invalid user store file: %s", identifier);
-		rv = CKR_FUNCTION_FAILED;
-		break;
-	case GCK_DATA_LOCKED:
-		g_message ("old login is invalid for user store file: %s", identifier);
-		rv = CKR_PIN_INCORRECT;
-		break;
-	case GCK_DATA_SUCCESS:
-		rv = CKR_OK;
-		break;
-	default:
-		g_assert_not_reached ();
-	}
-	
-	if (rv != CKR_OK) {
-		gck_transaction_fail (transaction, rv);
+		gck_transaction_fail (transaction, CKR_FUNCTION_FAILED);
+		g_free (data);
 		g_object_unref (object);
 		return;
-	}
+	} 
+	
+	g_free (data);
+	data = NULL;
 		
 	/* Read it out of our temporary object */
-	res = gck_serializable_save (GCK_SERIALIZABLE (object), new_login, &data, &n_data);
-	g_object_unref (object);
-	
-	switch (res) {
-	case GCK_DATA_FAILURE:
-	case GCK_DATA_UNRECOGNIZED:
+	if (!gck_serializable_save (GCK_SERIALIZABLE (object), new_login, &data, &n_data)) {
 		g_warning ("unable to serialize data with new login: %s", identifier);
-		rv = CKR_GENERAL_ERROR;
-		break;
-	case GCK_DATA_LOCKED:
-		g_message ("new login is invalid for user store file: %s", identifier);
-		rv = CKR_PIN_INVALID;
-		break;
-	case GCK_DATA_SUCCESS:
-		rv = CKR_OK;
-		break;
-	default:
-		g_assert_not_reached ();
-	}
-
-	if (rv != CKR_OK) {
-		gck_transaction_fail (transaction, rv);
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+		g_object_unref (object);
 		g_free (data);
 		return;
 	}
+	
+	g_object_unref (object);
 	
 	/* And write it back out to the file */
 	gck_transaction_write_file (transaction, path, data, n_data);
@@ -1157,8 +1109,7 @@ gck_user_storage_create (GckUserStorage *self, GckTransaction *transaction, GckO
 	}
 	
 	/* Serialize the object in question */
-	res = gck_serializable_save (GCK_SERIALIZABLE (object), is_private ? self->login : NULL, &data, &n_data);
-	if (res != GCK_DATA_SUCCESS) {
+	if (!gck_serializable_save (GCK_SERIALIZABLE (object), is_private ? self->login : NULL, &data, &n_data)) {
 		gck_transaction_fail (transaction, CKR_FUNCTION_FAILED);
 		g_return_if_reached ();
 	}

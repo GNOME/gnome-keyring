@@ -64,8 +64,7 @@ struct _GckDataFile {
 	guint sections;
 	gboolean incomplete;
 	
-	/* Stuff added/notseen on this read */
-	GHashTable *added;
+	/* Stuff notseen on this read */
 	GHashTable *checks;
 };
 
@@ -535,6 +534,7 @@ update_entries_from_block (GckDataFile *self, guint section, GHashTable *entries
 {
 	GHashTable *attributes;
 	const gchar *identifier;
+	gboolean added;
 	CK_ATTRIBUTE_PTR at;
 	CK_ATTRIBUTE attr;
 	gpointer key, value;
@@ -557,6 +557,8 @@ update_entries_from_block (GckDataFile *self, guint section, GHashTable *entries
 
 	for (i = 0; i < n_entries; ++i) {
 		
+		added = FALSE;
+		
 		/* The attributes */
 		if (!egg_buffer_get_string (buffer, *offset, offset, &str, (EggBufferAllocator)g_realloc))
 			return GCK_DATA_FAILURE;
@@ -571,6 +573,7 @@ update_entries_from_block (GckDataFile *self, guint section, GHashTable *entries
 		
 		/* Lookup or create a new table for it */
 		if (!g_hash_table_lookup_extended (entries, str, &key, &value)) {
+			added = TRUE;
 			value = attributes_new ();
 			key = g_strdup (str);
 			g_hash_table_replace (entries, key, value);
@@ -598,11 +601,15 @@ update_entries_from_block (GckDataFile *self, guint section, GHashTable *entries
 				
 			at = attribute_dup (&attr);
 			g_hash_table_replace (attributes, &(at->type), at);
-			
+
 			/* Only emit the changed signal if we haven't just added this one */
-			if (!g_hash_table_lookup (self->added, identifier))
+			if (added == FALSE)
 				g_signal_emit (self, signals[ENTRY_CHANGED], 0, identifier, attr.type);
 		}
+		
+		/* A new entry was loaded */
+		if (added == TRUE)
+			g_signal_emit (self, signals[ENTRY_ADDED], 0, identifier);
 	}
 
 	return GCK_DATA_SUCCESS;
@@ -702,10 +709,18 @@ remove_each_identifier (gpointer key, gpointer value, gpointer data)
 
 	if (!g_hash_table_remove (self->identifiers, key))
 		g_assert_not_reached ();
-	if (entries != NULL && !g_hash_table_remove (entries, key))
-		g_return_if_reached ();
 	
-	g_signal_emit (self, signals[ENTRY_REMOVED], 0, key);
+	if (entries != NULL) {
+		if (!g_hash_table_remove (entries, key))
+			g_return_if_reached ();
+		
+		/* 
+		 * Note that we only fire the removed signal when the identifier 
+		 * was accessible. We don't fire removed for private items in 
+		 * a locked file.
+		 */
+		g_signal_emit (self, signals[ENTRY_REMOVED], 0, key);
+	}
 }
 
 static GckDataResult
@@ -738,11 +753,6 @@ update_from_index_block (GckDataFile *self, EggBuffer *buffer)
 			break;
 		}
 		
-		/* Lookup the section it's currently in */
-		section = GPOINTER_TO_UINT (g_hash_table_lookup (self->identifiers, identifier));
-		if (section == 0 || section != value) 
-			g_hash_table_replace (self->added, g_strdup (identifier), UNUSED_VALUE);
-
 		section = value;
 		g_hash_table_replace (self->identifiers, identifier, GUINT_TO_POINTER (section));
 		
@@ -988,13 +998,6 @@ foreach_identifier (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-emit_each_added_identifier (gpointer key, gpointer value, gpointer data)
-{
-	GckDataFile *self = GCK_DATA_FILE (data);
-	g_signal_emit (self, signals[ENTRY_ADDED], 0, key);
-}
-
-static void
 dump_attributes (gpointer key, gpointer value, gpointer user_data)
 {
 	CK_ATTRIBUTE_PTR attr = value;
@@ -1047,7 +1050,6 @@ gck_data_file_init (GckDataFile *self)
 	
 	self->unknowns = NULL;
 	
-	self->added = NULL;
 	self->checks = NULL;
 }
 
@@ -1060,7 +1062,6 @@ gck_data_file_finalize (GObject *obj)
 	g_hash_table_destroy (self->identifiers);
 	self->identifiers = NULL;
 	
-	g_assert (self->added == NULL);
 	g_assert (self->checks == NULL);
 	
 	g_assert (self->publics);
@@ -1143,7 +1144,6 @@ gck_data_file_read_fd (GckDataFile *self, int fd, GckLogin *login)
 
 	/* Reads are not reentrant for a single data file */
 	g_return_val_if_fail (self->checks == NULL, GCK_DATA_FAILURE);
-	g_return_val_if_fail (self->added == NULL, GCK_DATA_FAILURE);
 
 	self->sections = 0;
 
@@ -1153,18 +1153,9 @@ gck_data_file_read_fd (GckDataFile *self, int fd, GckLogin *login)
 
 	/* Setup a hash table to monitor the actual data read */
 	self->checks = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-	self->added = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	g_hash_table_foreach (self->identifiers, copy_each_identifier, self->checks);
 	
 	res = parse_file_blocks (fd, update_from_any_block, login, self);
-	
-	/* 
-	 * Always need to fire off added signals for all identifiers 
-	 * whether (partially) successful or not.
-	 */
-
-	g_hash_table_foreach (self->added, emit_each_added_identifier, self);
-
 	if (res == GCK_DATA_SUCCESS) {
 		
 		/* Our last read was a success, can write */
@@ -1188,8 +1179,7 @@ gck_data_file_read_fd (GckDataFile *self, int fd, GckLogin *login)
 	}
 	
 	g_hash_table_destroy (self->checks);
-	g_hash_table_destroy (self->added);
-	self->checks = self->added = NULL;
+	self->checks = NULL;
 	
 	return res;
 }
