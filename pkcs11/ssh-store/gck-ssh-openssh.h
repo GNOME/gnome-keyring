@@ -18,4 +18,7 @@ GckDataResult         gck_ssh_openssh_parse_private_key                  (const 
                                                                           gssize n_password,
                                                                           gcry_sexp_t *sexp);
 
+gchar*                gck_ssh_openssh_digest_private_key                 (const guchar *data,
+                                                                          gsize n_data);
+
 #endif /* GCKSSHOPENSSH_H_ */

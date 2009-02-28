@@ -3,6 +3,16 @@
 	* daemon/keyrings/gkr-keyrings.c: Load keyrings if they've never been 
 	loaded when looking for a keyring.
 
+	 * daemon/pkcs11/gkr-pkcs11-auth-ep.c:
+	 * daemon/pkcs11/gkr-pkcs11-auth.c:
+	 * daemon/pkcs11/gkr-pkcs11-auth.h:
+	 * pkcs11/pkcs11i.h:
+	 * pkcs11/ssh-store/gck-ssh-openssh.c:
+	 * pkcs11/ssh-store/gck-ssh-openssh.h:
+	 * pkcs11/ssh-store/gck-ssh-private-key.c:
+	 * pkcs11/user-store/gck-user-storage.c: Add compatibility support for 
+	loading SSH key unlock passwords from previous versions of gnome-keyring.
+
 2009-02-28  Stef Walter  <stef@memberwebs.com>
 
 	* egg/egg-secure-memory.c: Fix compiler warnings on 32-bit.

@@ -73,7 +73,7 @@
  * OBJECT HASH
  */
 
-#define CK_GNOME_INTERNAL_SHA1                      (CKA_GNOME + 1000)
+#define CKA_GNOME_INTERNAL_SHA1                      (CKA_GNOME + 1000)
 
 
 #endif /* PKCS11I_H */

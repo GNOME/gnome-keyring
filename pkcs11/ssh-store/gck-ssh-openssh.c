@@ -184,17 +184,13 @@ load_encrypted_key (const guchar *data, gsize n_data, const gchar *dekinfo,
 	return GCK_DATA_LOCKED;
 }
 
-static void
-parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
-                  GHashTable *headers, gpointer user_data)
+static gboolean
+is_private_key_type (GQuark type)
 {
 	static GQuark PEM_RSA_PRIVATE_KEY;
 	static GQuark PEM_DSA_PRIVATE_KEY;
 	static gsize quarks_inited = 0;
-	
-	ParsePrivate *ctx = (ParsePrivate*)user_data;
-	const gchar *dekinfo;
-	
+
 	/* Initialize the first time through */
 	if (g_once_init_enter (&quarks_inited)) {
 		PEM_RSA_PRIVATE_KEY = g_quark_from_static_string ("RSA PRIVATE KEY");
@@ -203,7 +199,17 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 	}
 	
 	/* Only handle SSHv2 private keys */
-	if (type != PEM_RSA_PRIVATE_KEY && type != PEM_DSA_PRIVATE_KEY)
+	return (type == PEM_RSA_PRIVATE_KEY || type == PEM_DSA_PRIVATE_KEY);
+}
+
+static void
+parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
+                  GHashTable *headers, gpointer user_data)
+{
+	ParsePrivate *ctx = (ParsePrivate*)user_data;
+	const gchar *dekinfo;
+	
+	if (!is_private_key_type (type))
 		return;
 
 	ctx->seen = TRUE;
@@ -222,6 +228,24 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 	} else {
 		ctx->result = gck_data_der_read_private_key (data, n_data, &ctx->sexp);
 	}
+}
+
+static void
+digest_pem_block (GQuark type, const guchar *data, gsize n_data,
+                  GHashTable *headers, gpointer user_data)
+{
+	gchar **result = (gchar**)user_data;
+	
+	g_assert (result);
+	
+	if (!is_private_key_type (type))
+		return;
+	
+	/* Only digest the first key in the file */
+	if (*result != NULL)
+		return;
+
+	*result = g_compute_checksum_for_data (G_CHECKSUM_SHA1, data, n_data);
 }
 
 /* ------------------------------------------------------------------------------
@@ -355,4 +379,12 @@ gck_ssh_openssh_parse_private_key (const guchar *data, gsize n_data,
 	
 	*sexp = ctx.sexp;
 	return ctx.result;
+}
+
+gchar*
+gck_ssh_openssh_digest_private_key (const guchar *data, gsize n_data)
+{
+	gchar *result = NULL;
+	egg_openssl_pem_parse (data, n_data, digest_pem_block, &result);
+	return result;
 }

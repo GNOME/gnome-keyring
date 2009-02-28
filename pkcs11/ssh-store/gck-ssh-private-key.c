@@ -30,6 +30,8 @@
 #include "gck/gck-sexp.h"
 #include "gck/gck-util.h"
 
+#include "pkcs11/pkcs11i.h"
+
 #include <glib/gi18n.h>
 
 enum {
@@ -136,10 +138,21 @@ static CK_RV
 gck_ssh_private_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 {
 	GckSshPrivateKey *self = GCK_SSH_PRIVATE_KEY (base);
+	gchar *digest;
+	CK_RV rv;
 	
 	switch (attr->type) {
 	case CKA_LABEL:
 		return gck_attribute_set_string (attr, self->label);
+
+	/* COMPAT: Previous versions of gnome-keyring used this to save unlock passwords */
+	case CKA_GNOME_INTERNAL_SHA1:
+		if (!self->private_data)
+			return CKR_ATTRIBUTE_TYPE_INVALID;
+		digest = gck_ssh_openssh_digest_private_key (self->private_data, self->n_private_data);
+		rv = gck_attribute_set_string (attr, digest);
+		g_free (digest);
+		return rv;
 	}
 	
 	return GCK_OBJECT_CLASS (gck_ssh_private_key_parent_class)->get_attribute (base, attr);

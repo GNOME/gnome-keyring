@@ -27,6 +27,7 @@
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
+#include "pkcs11/pkcs11i.h"
 
 #include <glib.h>
 
@@ -60,10 +61,11 @@ auth_object_for_context_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE obj
 {
 	GkrPkcs11AuthObject *info = NULL;
 	CK_SESSION_INFO session_info;
-	CK_ATTRIBUTE attrs[5];
+	CK_ATTRIBUTE attrs[6];
 	CK_OBJECT_CLASS klass;
 	gchar *label = NULL;
 	gchar *unique = NULL;
+	gchar *digest = NULL;
 	CK_BBOOL token, always;
 	CK_ULONG n_attrs;
 	CK_RV rv;
@@ -77,21 +79,26 @@ auth_object_for_context_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE obj
 	attrs[1].pValue = unique = NULL;
 	attrs[1].ulValueLen = 0;
 
-	attrs[2].type = CKA_CLASS;
-	attrs[2].pValue = &klass;
-	attrs[2].ulValueLen = sizeof (klass);
+	/* COMPAT: Loaded for compatibility with old gnome-keyrings */
+	attrs[2].type = CKA_GNOME_INTERNAL_SHA1;
+	attrs[2].pValue = digest = NULL;
+	attrs[2].ulValueLen = 0;
+
+	attrs[3].type = CKA_CLASS;
+	attrs[3].pValue = &klass;
+	attrs[3].ulValueLen = sizeof (klass);
 
 	always = CK_FALSE;
-	attrs[3].type = CKA_ALWAYS_AUTHENTICATE;
-	attrs[3].pValue = &always;
-	attrs[3].ulValueLen = sizeof (always);
+	attrs[4].type = CKA_ALWAYS_AUTHENTICATE;
+	attrs[4].pValue = &always;
+	attrs[4].ulValueLen = sizeof (always);
 	
 	token = CK_FALSE;
-	attrs[4].type = CKA_TOKEN;
-	attrs[4].pValue = &token;
-	attrs[4].ulValueLen = sizeof (token);
+	attrs[5].type = CKA_TOKEN;
+	attrs[5].pValue = &token;
+	attrs[5].ulValueLen = sizeof (token);
 	
-	n_attrs = 5;
+	n_attrs = 6;
 	
 	/* Get attribute sizes */
 	rv = (pkcs11_lower->C_GetAttributeValue) (handle, object, attrs, n_attrs);
@@ -112,12 +119,15 @@ auth_object_for_context_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE obj
 		attrs[0].pValue = label = g_malloc0 (attrs[0].ulValueLen + 1);
 	if (attrs[1].ulValueLen != (CK_ULONG)-1)
 		attrs[1].pValue = unique = g_malloc0 (attrs[1].ulValueLen + 1);
+	if (attrs[2].ulValueLen != (CK_ULONG)-1)
+		attrs[2].pValue = digest = g_malloc0 (attrs[2].ulValueLen + 1);
 	
 	/* Get actual attributes */
 	rv = (pkcs11_lower->C_GetAttributeValue) (handle, object, attrs, n_attrs);
 	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_TYPE_INVALID) {
 		g_free (label);
 		g_free (unique);
+		g_free (digest);
 		return NULL;
 	}
 	
@@ -132,6 +142,11 @@ auth_object_for_context_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE obj
 		info->unique = unique;
 		unique = NULL;
 	}
+	
+	if (attrs[2].ulValueLen != (CK_ULONG)-1) {
+		info->digest = digest;
+		digest = NULL;
+	}
 
 	info->token = token;
 	info->klass = klass;
@@ -140,6 +155,7 @@ auth_object_for_context_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE obj
 	
 	g_free (label);
 	g_free (unique);
+	g_free (digest);
 	
 	return info;
 }

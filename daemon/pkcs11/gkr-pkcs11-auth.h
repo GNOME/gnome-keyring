@@ -33,6 +33,7 @@ typedef struct _GkrPkcs11AuthObject {
 	CK_BBOOL token;
 	gchar *label;
 	gchar *unique;
+	gchar *digest;
 } GkrPkcs11AuthObject;
 
 void                            gkr_pkcs11_auth_chain_functions          (CK_FUNCTION_LIST_PTR funcs); 

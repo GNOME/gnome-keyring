@@ -468,7 +468,7 @@ check_object_hash (GckUserStorage *self, const gchar *identifier, const guchar *
 	digest = g_compute_checksum_for_data (G_CHECKSUM_SHA1, data, n_data);
 	g_return_val_if_fail (digest, FALSE);
 	
-	res = gck_data_file_read_value (self->file, identifier, CK_GNOME_INTERNAL_SHA1, &value, &n_value);
+	res = gck_data_file_read_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, &value, &n_value);
 	g_return_val_if_fail (res == GCK_DATA_SUCCESS, FALSE);
 	
 	result = (strlen (digest) == n_value && memcmp (digest, value, n_value) == 0);
@@ -495,7 +495,7 @@ store_object_hash (GckUserStorage *self, GckTransaction *transaction, const gcha
 		g_return_if_reached ();
 	}
 	
-	res = gck_data_file_write_value (self->file, identifier, CK_GNOME_INTERNAL_SHA1, digest, strlen (digest));
+	res = gck_data_file_write_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, digest, strlen (digest));
 	g_free (digest);
 	
 	if (res != GCK_DATA_SUCCESS)

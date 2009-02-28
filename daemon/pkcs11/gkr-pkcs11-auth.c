@@ -177,6 +177,13 @@ gkr_pkcs11_auth_login_specific_prepare (CK_SESSION_HANDLE handle, GkrPkcs11AuthO
 	g_hash_table_replace (slot->session_to_specific, ulong_alloc (handle), object);
 }
 
+static void
+convert_upper_case (gchar *str)
+{
+	for (; *str; ++str)
+		*str = g_ascii_toupper (*str);
+}
+
 gboolean 
 gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info,
                                        CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len)
@@ -216,10 +223,25 @@ gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO
 	}
 	
 	/* See if we can just use the login keyring password for this */
-	if (object->unique && object->token && gkr_keyring_login_is_usable ()) {
+	if (object->unique && object->token) {
 		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 		                                            "unique", object->unique, NULL);
 		if (password != NULL) { 
+			password_to_pin (password, pin, pin_len);
+			return TRUE;
+		}
+	}
+	
+	/* COMPAT: Check old method of storing secrets for objects in login keyring */
+	if (object->digest) {
+		convert_upper_case (object->digest);
+		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_PK_STORAGE,
+		                                            "object-digest", object->digest, NULL);
+		if (password != NULL) {
+			if (object->unique)
+				gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD, 
+				                                 object->label, password, 
+		                                                 "unique", object->unique, NULL);
 			password_to_pin (password, pin, pin_len);
 			return TRUE;
 		}
