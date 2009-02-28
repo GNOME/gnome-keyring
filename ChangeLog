@@ -1,3 +1,9 @@
+2009-02-26  Stef Walter  <stef@memberwebs.com>
+
+	* gcr/gcr-importer.c: Add quick hack to initialize tokens before
+	importing into them. More functionality along this line will
+	be needed in future versions.
+	
 2009-02-25  Stef Walter  <stef@memberwebs.com>
 
 	* pkcs11/gck/gck-module.c:

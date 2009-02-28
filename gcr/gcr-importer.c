@@ -71,6 +71,7 @@ static void state_cancelled (GcrImporter *self, gboolean async);
 static void state_complete (GcrImporter *self, gboolean async);
 static void state_create_object (GcrImporter *self, gboolean async);
 static void state_open_session (GcrImporter *self, gboolean async);
+static void state_initialize_pin (GcrImporter *self, gboolean async);
 static void state_parse_buffer (GcrImporter *self, gboolean async);
 static void state_read_buffer (GcrImporter *self, gboolean async);
 
@@ -268,6 +269,77 @@ state_open_session (GcrImporter *self, gboolean async)
 }
 
 /* ---------------------------------------------------------------------------------
+ * INITIALIZE TOKEN
+ * 
+ * HACK: This is a big temporary hack to get, until the next version 
+ * when we can fix this correctly.  
+ */
+
+static CK_RV
+hacky_perform_initialize_pin (GP11Slot *slot)
+{
+	CK_FUNCTION_LIST_PTR funcs;
+	CK_SESSION_HANDLE session;
+	CK_SLOT_ID slot_id;
+	CK_RV rv;
+	
+	/* 
+	 * This hack only works when:
+	 *  
+	 *  - Module is protected authentication path
+	 *  - No other sessions are open.
+	 *  
+	 *  Thankfully this is the case with gnome-keyring-daemon and 
+	 *  the gnome-keyring tool. 
+	 */
+	
+	funcs = gp11_module_get_functions (gp11_slot_get_module (slot));
+	g_return_val_if_fail (funcs, CKR_GENERAL_ERROR);
+	slot_id = gp11_slot_get_handle (slot);
+	
+	rv = funcs->C_OpenSession (slot_id, CKF_RW_SESSION | CKF_SERIAL_SESSION, NULL, NULL, &session);
+	if (rv != CKR_OK)
+		return rv;
+	
+	rv = funcs->C_Login (session, CKU_SO, NULL, 0);
+	if (rv == CKR_OK) {
+		rv = funcs->C_InitPIN (session, NULL, 0);
+		funcs->C_Logout (session);
+	}
+	
+	funcs->C_CloseSession (session);
+	
+	return rv;
+}
+
+static void
+state_initialize_pin (GcrImporter *self, gboolean async)
+{
+	GP11SlotInfo *info;
+	CK_RV rv;
+	
+	g_assert (GCR_IS_IMPORTER (self));
+	
+	/* HACK: Doesn't function when async */
+	if (!async) {
+		g_return_if_fail (self->pv->slot);
+		info = gp11_slot_get_info (self->pv->slot);
+		g_return_if_fail (info);
+	
+		if (!(info->flags & CKF_USER_PIN_INITIALIZED)) {
+			rv = hacky_perform_initialize_pin (self->pv->slot);
+			if (rv != CKR_OK) {
+				g_propagate_error (&self->pv->error, g_error_new (GP11_ERROR, rv, "%s", gp11_message_from_rv (rv)));
+				next_state (self, state_failure);
+				return;
+			} 
+		}
+	}
+
+	next_state (self, state_open_session);
+}
+
+/* ---------------------------------------------------------------------------------
  * IMPORT PROMPT
  */
 
@@ -284,7 +356,7 @@ complete_import_prompt (GcrImporter *self, GcrImportDialog *dialog, gint respons
 
 		slot = _gcr_import_dialog_get_selected_slot (dialog);
 		gcr_importer_set_slot (self, slot);
-		next_state (self, state_open_session);
+		next_state (self, state_initialize_pin);
 		
 	/* The dialog was cancelled or closed */
 	} else {
@@ -319,7 +391,7 @@ state_import_prompt (GcrImporter *self, gboolean async)
 		prompt = self->pv->slot ? FALSE : TRUE;
 	
 	if (prompt == FALSE) {
-		next_state (self, state_open_session);
+		next_state (self, state_initialize_pin);
 		
 	} else {
 		
