@@ -1,5 +1,11 @@
 2009-02-28  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon.c: Don't allow multiple callers to overlap 
+	completing the daemon initialization. This led to assertions and 
+	a crash on startup.
+
+2009-02-28  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/keyrings/gkr-keyrings.c: Load keyrings if they've never been 
 	loaded when looking for a keyring.
 

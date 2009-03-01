@@ -613,19 +613,9 @@ fork_and_print_environment (void)
 	}
 }
 
-gboolean
-gkr_daemon_complete_initialization(void)
+static gboolean
+gkr_daemon_complete_initialization_steps (void)
 {
-	/*
-	 * Sometimes we don't initialize the full daemon right on 
-	 * startup. When run with --login is one such case.
-	 */
-	
-	if (initialization_completed) {
-		g_message ("The daemon was already initialized.");
-		return TRUE;
-	}
-	
 	/* Initialize new style PKCS#11 components */
 	if (!gkr_pkcs11_daemon_initialize ())
 		return FALSE;
@@ -648,6 +638,28 @@ gkr_daemon_complete_initialization(void)
 	
 	initialization_completed = TRUE;
 	return TRUE;
+}
+
+gboolean
+gkr_daemon_complete_initialization (void)
+{
+	/*
+	 * Sometimes we don't initialize the full daemon right on 
+	 * startup. When run with --login is one such case.
+	 */
+	
+	if (initialization_completed) {
+		g_message ("The daemon was already initialized.");
+		return TRUE;
+	}
+
+	/* Set this early so that two initializations don't overlap */
+	initialization_completed = TRUE;
+
+	/* But then set it back if initializing fails */
+	initialization_completed = gkr_daemon_complete_initialization_steps ();
+
+	return initialization_completed;
 }
 
 int
