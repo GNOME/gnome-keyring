@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-01 16:10-0500\n"
-"PO-Revision-Date: 2009-03-01 17:26-0300\n"
+"POT-Creation-Date: 2009-03-01 17:38-0500\n"
+"PO-Revision-Date: 2009-03-01 19:27-0300\n"
 "Last-Translator: Fabrício Godoy <skarllot@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -316,12 +316,12 @@ msgstr ""
 #: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "Escolha uma nova senha para o chaveiro \"%s\". "
+msgstr "Escolha uma nova senha para o chaveiro \"%s\"."
 
 #: ../daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
-msgstr "Escolha uma nova senha para o chaveiro padrão. "
+msgstr "Escolha uma nova senha para o chaveiro padrão."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:558
