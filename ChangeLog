@@ -23,6 +23,8 @@
 
 	* egg/egg-secure-memory.c: Fix compiler warnings on 32-bit.
 	
+	* daemon/pk/*: Remove remaining old unused files.
+
 2009-02-26  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-importer.c: Add quick hack to initialize tokens before
