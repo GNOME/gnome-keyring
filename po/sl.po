@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-02-24 04:33+0000\n"
-"PO-Revision-Date: 2009-02-24 09:34+0100\n"
+"POT-Creation-Date: 2009-03-01 22:40+0000\n"
+"PO-Revision-Date: 2009-03-02 12:30+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -337,12 +337,12 @@ msgid "Unlock"
 msgstr "Odkleni"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:114
-#: ../gcr/gcr-importer.c:360
+#: ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Vnesite geslo za odklepanje osebnega ključa"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:116
-#: ../gcr/gcr-importer.c:362
+#: ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Vnesite geslo za odklepanje potrdila"
 
@@ -351,7 +351,7 @@ msgid "Enter password to unlock the public key"
 msgstr "Vnesite geslo za odklepanje javnega ključa"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:120
-#: ../gcr/gcr-importer.c:364
+#: ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Vnesite geslo za odklepanje"
 
@@ -395,39 +395,37 @@ msgstr "Samodejno odkleni javni ključ ob prijavi."
 msgid "Automatically unlock this when I log in"
 msgstr "Samodejno odkleni prijavi."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
 msgid "Unlock certificate/key storage"
 msgstr "Odkleni potrdila in ključe"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Vnesite geslo za odklepanje potrdila ali ključev."
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
 #, c-format
 msgid "An application wants access to the certificate/key storage '%s', but it is locked"
 msgstr "Program želi dostop do potrdila ali ključa '%s', vendar je ta zaklenjen."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Samodejno odkleni zbirko ključev ob prijavi."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
-#, fuzzy
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
 msgid "New Password Required"
-msgstr "Varnost novega gesla"
+msgstr "Vnesite novo geslo"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
-#, fuzzy
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New password required for secure storage"
-msgstr "Vnesite geslo za odklepanje potrdila"
+msgstr "Vnesite geslo za varno shranjevanje"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
 #, c-format
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
-msgstr ""
+msgstr "Za pripravo '%s' za shranjevanje potrdil in ključev, mora biti določeno varno geslo"
 
 #: ../daemon/ui/gkr-ask-tool.c:230
 msgid ""
@@ -437,6 +435,11 @@ msgid ""
 "\n"
 "Try again."
 msgstr ""
+"<b><big>Ni mogoče zaznati miške.</big></b>\n"
+"\n"
+"Zlonamerni uporabnik morda prisluškuje seji ali pa ste sami ravnokar kliknili na drug meni oziroma ste zagnali drug program.\n"
+"\n"
+"Poskusite znova."
 
 #: ../daemon/ui/gkr-ask-tool.c:239
 msgid ""
@@ -446,6 +449,11 @@ msgid ""
 "\n"
 "Try again."
 msgstr ""
+"<b><big>Ni mogoče zaznati tipkovnice.</big></b>\n"
+"\n"
+"Zlonamerni uporabnik morda prisluškuje seji ali pa ste sami ravnokar kliknili na drug meni oziroma ste zagnali drug program.\n"
+"\n"
+"Poskusite znova."
 
 #: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
@@ -509,26 +517,23 @@ msgstr "Vedno dovoli"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
-msgstr ""
+msgstr "Komponenta domene"
 
 #: ../egg/egg-oid.c:43
-#, fuzzy
 msgid "User ID"
-msgstr "Uporabnikov ID"
+msgstr "Uporabniški ID"
 
 #: ../egg/egg-oid.c:46
-#, fuzzy
 msgid "Email"
 msgstr "e-Pošta"
 
 #: ../egg/egg-oid.c:54
-#, fuzzy
 msgid "Date of Birth"
-msgstr "Rojstni datum"
+msgstr "Datum rojstva"
 
 #: ../egg/egg-oid.c:56
 msgid "Place of Birth"
-msgstr ""
+msgstr "Kraj rojstva"
 
 #: ../egg/egg-oid.c:58
 msgid "Gender"
@@ -536,87 +541,77 @@ msgstr "Spol"
 
 #: ../egg/egg-oid.c:60
 msgid "Country of Citizenship"
-msgstr ""
+msgstr "Državljanstvo"
 
 #: ../egg/egg-oid.c:62
 msgid "Country of Residence"
-msgstr ""
+msgstr "Država prebivališča"
 
 #: ../egg/egg-oid.c:65
-#, fuzzy
 msgid "Common Name"
 msgstr "Splošno ime"
 
 #: ../egg/egg-oid.c:67
 msgid "Surname"
-msgstr ""
+msgstr "Priimek"
 
 #: ../egg/egg-oid.c:69
 #: ../gcr/gcr-certificate-basics-widget.glade.h:18
 #: ../gcr/gcr-certificate-details-widget.c:330
-#, fuzzy
 msgid "Serial Number"
 msgstr "Serijska številka"
 
 #: ../egg/egg-oid.c:71
-#, fuzzy
 msgid "Country"
-msgstr "Country glasba"
+msgstr "Država"
 
 #: ../egg/egg-oid.c:73
 msgid "Locality"
-msgstr ""
+msgstr "Krajevnost"
 
 #: ../egg/egg-oid.c:75
-#, fuzzy
 msgid "State"
-msgstr "Stanje"
+msgstr "Okraj"
 
 #: ../egg/egg-oid.c:77
-#, fuzzy
 msgid "Street"
-msgstr "Ulica:"
+msgstr "Ulica"
 
 #: ../egg/egg-oid.c:79
-#, fuzzy
 msgid "Organization"
 msgstr "Organizacija"
 
 #: ../egg/egg-oid.c:81
-#, fuzzy
 msgid "Organizational Unit"
 msgstr "Organizacijska enota"
 
 #: ../egg/egg-oid.c:83
-#, fuzzy
 msgid "Title"
-msgstr "Naslov"
+msgstr "Naziv"
 
 #: ../egg/egg-oid.c:85
 msgid "Telephone Number"
-msgstr ""
+msgstr "Telefonska številka"
 
 #: ../egg/egg-oid.c:87
-#, fuzzy
 msgid "Given Name"
-msgstr "Ime"
+msgstr "Ime ob rojstvu"
 
 #: ../egg/egg-oid.c:89
 msgid "Initials"
-msgstr ""
+msgstr "Začetnice"
 
 #: ../egg/egg-oid.c:91
-#, fuzzy
 msgid "Generation Qualifier"
-msgstr "Dejanje ni uspelo"
+msgstr "Nadzornik varnostnih števil"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr ""
+msgstr "DŠ izdajatelja"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
-msgstr ""
+msgstr "Pseudonim"
 
 #: ../egg/egg-oid.c:98
 msgid "RSA"
@@ -624,15 +619,15 @@ msgstr "RSA"
 
 #: ../egg/egg-oid.c:100
 msgid "MD2 with RSA"
-msgstr ""
+msgstr "MD2 z RSA"
 
 #: ../egg/egg-oid.c:102
 msgid "MD5 with RSA"
-msgstr ""
+msgstr "MD5 z RSA"
 
 #: ../egg/egg-oid.c:104
 msgid "SHA1 with RSA"
-msgstr ""
+msgstr "SHA1 z RSA"
 
 #: ../egg/egg-oid.c:107
 msgid "DSA"
@@ -640,101 +635,83 @@ msgstr "DSA"
 
 #: ../egg/egg-oid.c:109
 msgid "SHA1 with DSA"
-msgstr ""
+msgstr "SHA1 z DSA"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
-#, fuzzy
 msgid "<i>Not Part of Certificate</i>"
-msgstr "Ni del certifikata"
+msgstr "<i>Ni del potrdila</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.c:80
-#, fuzzy
 msgid "<i>unknown</i>"
-msgstr "<i>neznano</i>"
+msgstr "<b>neznano</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:1
-#, fuzzy
 msgid "<Not Part of Certificate>"
-msgstr "<Ni del certifikata>"
+msgstr "<Ni del potrdila>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:2
-#, fuzzy
 msgid "<b>Fingerprints</b>"
 msgstr "<b>Prstni odtisi</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:3
-#, fuzzy
 msgid "<b>Issued By</b>"
-msgstr "<b>Izdajatelj</b>"
+msgstr "<b>Izdal</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:4
-#, fuzzy
 msgid "<b>Issued To</b>"
-msgstr "<b>Izdano komu</b>"
+msgstr "<b>Izdano</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:5
-#, fuzzy
 msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>Ta certifikat je bil preverjen za naslednje vrste uporabe:</b>"
+msgstr "<b>To potrdilo je bilo preverjeno za naslednje vrste uporabe:</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:6
 msgid "<b>Validity</b>"
 msgstr "<b>Veljavnost</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:7
-#, fuzzy
 msgid "Common Name (CN)"
 msgstr "Splošno ime (CN)"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:8
-#, fuzzy
 msgid "Email Recipient Certificate"
-msgstr "Certifikat prejemnika e-pošte"
+msgstr "Potrdilo prejemnika e-pošte"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:9
-#, fuzzy
 msgid "Email Signer Certificate"
-msgstr "Certifika podpisnika e-pošte"
+msgstr "Potrdilo podpisnika e-pošte"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:10
-#, fuzzy
 msgid "Expires On"
 msgstr "Poteče dne"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:11
-#, fuzzy
 msgid "Issued On"
-msgstr "Izdan dne"
+msgstr "Izdano dne"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:12
-#, fuzzy
 msgid "MD5 Fingerprint"
 msgstr "Prstni odtis MD5"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:13
-#, fuzzy
 msgid "Organization (O)"
 msgstr "Organizacija (O)"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:14
-#, fuzzy
 msgid "Organizational Unit (OU)"
 msgstr "Organizacijska enota (OU)"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:15
-#, fuzzy
 msgid "SHA1 Fingerprint"
 msgstr "Prstni odtis SHA1"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:16
-#, fuzzy
 msgid "SSL Client Certificate"
-msgstr "Certifikat odjemalca SSL"
+msgstr "Potrdilo odjemalca SSL"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:17
-#, fuzzy
 msgid "SSL Server Certificate"
-msgstr "Certifikat strežnika SSL"
+msgstr "Potrdilo strežnika SSL"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -757,71 +734,66 @@ msgid "No"
 msgstr "Ne"
 
 #: ../gcr/gcr-certificate-details-widget.c:237
-#, fuzzy
 msgid "Critical"
 msgstr "Kritično"
 
 #. The subject
 #: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Subject Name"
-msgstr ""
+msgstr "Ime predmeta"
 
 #. The Issuer
 #: ../gcr/gcr-certificate-details-widget.c:315
 msgid "Issuer Name"
-msgstr ""
+msgstr "Izdajatelj"
 
 #. The Issued Parameters
 #: ../gcr/gcr-certificate-details-widget.c:319
-#, fuzzy
 msgid "Issued Certificate"
-msgstr "Potrdilo"
+msgstr "Izdano potrdilo"
 
 #: ../gcr/gcr-certificate-details-widget.c:324
-#, fuzzy
 msgid "Version"
-msgstr "Verzija"
+msgstr "Različica"
 
 #: ../gcr/gcr-certificate-details-widget.c:337
 msgid "Not Valid Before"
-msgstr ""
+msgstr "Neveljavno pred"
 
 #: ../gcr/gcr-certificate-details-widget.c:342
 msgid "Not Valid After"
-msgstr ""
+msgstr "Neveljavno po"
 
 #. Signature
 #: ../gcr/gcr-certificate-details-widget.c:347
 #: ../gcr/gcr-certificate-details-widget.c:363
-#, fuzzy
 msgid "Signature"
 msgstr "Podpis"
 
 #: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature Algorithm"
-msgstr ""
+msgstr "Algoritem podpisa"
 
 #: ../gcr/gcr-certificate-details-widget.c:356
 msgid "Signature Parameters"
-msgstr ""
+msgstr "Parametri podpisa"
 
 #. Public Key Info
 #: ../gcr/gcr-certificate-details-widget.c:367
-#, fuzzy
 msgid "Public Key Info"
-msgstr "Javni ključ"
+msgstr "Podatki o javnem ključu"
 
 #: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Algorithm"
-msgstr ""
+msgstr "Algoritem ključa"
 
 #: ../gcr/gcr-certificate-details-widget.c:376
 msgid "Key Parameters"
-msgstr ""
+msgstr "Parametri ključa"
 
 #: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Key Size"
-msgstr ""
+msgstr "Velikost ključa"
 
 #: ../gcr/gcr-certificate-details-widget.c:390
 #: ../gcr/gcr-parser.c:202
@@ -830,78 +802,72 @@ msgstr "Javni ključ"
 
 #. Fingerprints
 #: ../gcr/gcr-certificate-details-widget.c:394
-#, fuzzy
 msgid "Fingerprints"
-msgstr "<b>Prstni odtisi</b>"
+msgstr "Prstni odtisi"
 
 #: ../gcr/gcr-import-dialog.glade.h:1
 msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr ""
+msgstr "<span size='large' weight='bold'>Uvoz potrdil in ključev</span>"
 
 #: ../gcr/gcr-import-dialog.glade.h:2
-#, fuzzy
 msgid "Import Into:"
-msgstr "Uvozi"
+msgstr "Podrobnosti uvoza:"
 
 #: ../gcr/gcr-import-dialog.glade.h:3
-#, fuzzy
 msgid "Password:"
 msgstr "Geslo:"
 
-#: ../gcr/gcr-importer.c:162
+#: ../gcr/gcr-importer.c:163
 #: ../gcr/gcr-parser.c:1573
 #: ../gp11/gp11-misc.c:114
 msgid "The operation was cancelled"
 msgstr "Dejanje je bilo preklicano."
 
-#: ../gcr/gcr-importer.c:254
+#: ../gcr/gcr-importer.c:255
 #, c-format
 msgid "No location available to import to"
-msgstr ""
+msgstr "Na voljo ni ustreznega mesta za uvoz"
 
-#: ../gcr/gcr-importer.c:328
-#, fuzzy
+#: ../gcr/gcr-importer.c:404
 msgid "Import Certificates/Keys"
-msgstr "Uvozi potrdilo"
+msgstr "Uvozi ključev in potrdil"
 
-#: ../gcr/gcr-importer.c:335
+#: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
-msgstr ""
+msgstr "Izbor mesta za shranjevanje uvoženih potrdil in ključev."
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:373
-#, fuzzy
+#: ../gcr/gcr-importer.c:449
 msgid "In order to import the private key, it must be unlocked"
-msgstr "Sistem želi uvoziti osebni ključ '%s', vendar je ta zaklenjen"
+msgstr "Pred uvozom osebnega ključa mora biti to odklenjeno."
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:376
-#, fuzzy
+#: ../gcr/gcr-importer.c:452
 msgid "In order to import the certificate, it must be unlocked"
-msgstr "Sistem poskuša uvoziti potrdilo '%s', vendar je ta zaklenjeno"
+msgstr "Pred lahko uvozite potrdilo, mora biti to odklenjeno."
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:379
+#: ../gcr/gcr-importer.c:455
 msgid "In order to import the data, it must be unlocked"
-msgstr ""
+msgstr "Za uvoz podatkov morajo biti ti najprej odklenjeni."
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:384
-#, fuzzy, c-format
+#: ../gcr/gcr-importer.c:460
+#, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Sistem želi uvoziti osebni ključ '%s', vendar je ta zaklenjen"
+msgstr "Pred lahko uvozite osebni ključ '%s', mora biti to odklenjeno."
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:387
-#, fuzzy, c-format
+#: ../gcr/gcr-importer.c:463
+#, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Sistem poskuša uvoziti potrdilo '%s', vendar je ta zaklenjeno"
+msgstr "Pred lahko uvozite potrdilo '%s', mora biti to odklenjeno."
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:390
-#, fuzzy, c-format
+#: ../gcr/gcr-importer.c:466
+#, c-format
 msgid "In order to import '%s', it must be unlocked"
-msgstr "Sistem želi uvoziti '%s', vendar je ta zaklenjen"
+msgstr "Pred lahko uvozite '%s', mora biti odklenjeno."
 
 #: ../gcr/gcr-parser.c:196
 msgid "Private Key"
@@ -912,19 +878,16 @@ msgid "Certificate"
 msgstr "Potrdilo"
 
 #: ../gcr/gcr-parser.c:1576
-#, fuzzy
 msgid "Unrecognized or unsupported data."
-msgstr "Neznana ali nepodprta datoteka."
+msgstr "Neznani ali nepodprti podatki."
 
 #: ../gcr/gcr-parser.c:1579
-#, fuzzy
 msgid "Could not parse invalid or corrupted data."
-msgstr "Ni mogoče razčleniti neveljavne ali pokvarjene datoteke."
+msgstr "Ni mogoče razčleniti neveljavnih ali pokvarjenih podatkov."
 
 #: ../gcr/gcr-parser.c:1582
-#, fuzzy
 msgid "The data is locked"
-msgstr "Podatkov ni mogoče zakleniti"
+msgstr "Podatki sozaklenjeni"
 
 #: ../gp11/gp11-misc.c:117
 msgid "Insufficient memory available"
@@ -1282,7 +1245,7 @@ msgstr "Zbirka ključev je že odklenjena."
 msgid "Unnamed Certificate"
 msgstr "Neimenovano potrdilo"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
 msgid "Couldn't parse public SSH key"
 msgstr "Ni mogoče razčleniti SSH ključa."
 
