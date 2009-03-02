@@ -1,4 +1,27 @@
-Changes in version 2.25.90 are:
+Changes in version 2.25.92 are:
+* Fix problems when multiple processes tried to initialize the 
+  gnome-keyring-daemon at the same time, often resulting in a user
+  session that hung on login.
+* Add compatibility support for loading SSH unlock passwords from 
+  previous versions of gnome-keyring.
+* Fix compiler warnings on 32-bit systems.
+* Fix uninitialized variable usage. These resulted in crashes.
+* Initialize PKCS#11 tokens before importing certificates or keys 
+  to them. Remove previous auto-initialize idea. 
+* Add basic support for PKCS#11 SO logins.
+* Fix focus issues in the import certificate/key dialog.
+* When looking for PKCS#11 objects, skip tokens that have not been 
+  initialized.
+* Exit properly when an error occurs on importing a certificate or key.
+* Hash objects when storing them in PKCS#11 user-store and validate the 
+  hashes when loading them.
+* Build fix on Solaris [Jeff Cai]
+* If login keyring doesn't exist when changing a PAM password, don't 
+  create it automatically. [Vincent Untz]
+* Close stdin/stdout when not running the daemon in foreground. This 
+  fixes a regression in scripts starting gnome-keyring-daemon.
+
+Changes in version 2.25.91 are:
 * Complete certificate details display in the gcr library.
 * Correctly escape prompt markup. [Joe Shaw, Magnus Boman]
 * Show correct MD5 hash in certificate display. [Fabrizio Tarizzo]
