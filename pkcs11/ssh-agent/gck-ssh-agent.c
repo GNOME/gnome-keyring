@@ -399,7 +399,7 @@ gck_ssh_agent_initialize (const gchar *prefix, CK_FUNCTION_LIST_PTR funcs)
 	g_return_val_if_fail (prefix, -1);
 	
 	module = gp11_module_new (funcs);
-	gp11_module_set_auto_authenticate (module, TRUE);
+	gp11_module_set_auto_authenticate (module, GP11_AUTHENTICATE_OBJECTS);
 	gp11_module_set_pool_sessions (module, TRUE);
 	sock = gck_ssh_agent_initialize_with_module (prefix, module);
 	g_object_unref (module);

@@ -57,6 +57,30 @@ copy_attribute (GP11Attributes *original, CK_ATTRIBUTE_TYPE type, GP11Attributes
 		gp11_attributes_add (dest, attr);
 }
 
+static gboolean
+login_session (GP11Session *session)
+{
+	GP11SessionInfo *info;
+	GError *error = NULL;
+	gboolean ret = TRUE;
+	
+	/* TODO: We should have a way to just get the state */
+	info = gp11_session_get_info (session);
+	g_return_val_if_fail (info, FALSE);
+	
+	/* Log in the session if necessary */
+	if (info->state == CKS_RO_PUBLIC_SESSION || info->state == CKS_RW_PUBLIC_SESSION) {
+		if (!gp11_session_login (session, CKU_USER, NULL, 0, &error)) {
+			g_message ("couldn't log into session: %s", error->message);
+			ret = FALSE;
+		}
+	}
+		
+	gp11_session_info_free (info);
+		
+	return ret;
+}
+
 static GP11Attributes*
 build_like_attributes (GP11Attributes *attrs, CK_OBJECT_CLASS klass)
 {
@@ -195,7 +219,10 @@ return_private_matching (GP11Object *object, gpointer user_data)
 	
 	session = gp11_object_get_session (object);
 	g_return_val_if_fail (GP11_IS_SESSION (session), FALSE);
-		
+
+	if (!login_session (session))
+		return FALSE;
+	
 	/* Search for the matching private key */
 	objects = gp11_session_find_objects (session, NULL, 
 	                                     CKA_ID, attr->length, attr->value,
@@ -222,12 +249,8 @@ static gboolean
 load_identity_v1_attributes (GP11Object *object, gpointer user_data)
 {
 	GP11Attributes *attrs;
-	GP11Attribute *attr;
-	GP11Session *session;
 	GError *error = NULL;
-	gboolean valid = TRUE;
 	GList **all_attrs;
-	GList *objects;
 	
 	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
 	g_return_val_if_fail (user_data, FALSE);
@@ -245,31 +268,8 @@ load_identity_v1_attributes (GP11Object *object, gpointer user_data)
 		return TRUE;
 	}
 
-	/* Find a private key for this one */
-	attr = gp11_attributes_find (attrs, CKA_ID);
-	if (attr != NULL) {
-		session = gp11_object_get_session (object);
-		g_return_val_if_fail (GP11_IS_SESSION (session), FALSE);
-		
-		objects = gp11_session_find_objects (session, NULL, 
-		                                     CKA_ID, attr->length, attr->value,
-		                                     CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
-		                                     CKA_TOKEN, GP11_BOOLEAN, FALSE,
-		                                     GP11_INVALID);
-		
-		g_object_unref (session);
-		
-		if (!objects)
-			valid = FALSE;
-
-		gp11_list_unref_free (objects);
-	}
-	
 	all_attrs = (GList**)user_data;
-	if (valid == TRUE)
-		*all_attrs = g_list_prepend (*all_attrs, attrs);
-	else 
-		gp11_attributes_unref (attrs);
+	*all_attrs = g_list_prepend (*all_attrs, attrs);
 	
 	/* Note that we haven't reffed the object or session */
 
@@ -282,12 +282,10 @@ load_identity_v2_attributes (GP11Object *object, gpointer user_data)
 {
 	GP11Attributes *attrs;
 	GP11Attribute *attr;
-	GP11Session *session;
 	GError *error = NULL;
 	gboolean valid = TRUE;
 	gboolean token;
 	GList **all_attrs;
-	GList *objects;
 	
 	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
 	g_return_val_if_fail (user_data, FALSE);
@@ -313,26 +311,6 @@ load_identity_v2_attributes (GP11Object *object, gpointer user_data)
 	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
 
-	/* Find a private key for this one */
-	attr = gp11_attributes_find (attrs, CKA_ID);
-	if (attr != NULL) {
-		session = gp11_object_get_session (object);
-		g_return_val_if_fail (GP11_IS_SESSION (session), FALSE);
-		
-		objects = gp11_session_find_objects (session, NULL, 
-		                                     CKA_ID, attr->length, attr->value,
-		                                     CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
-		                                     CKA_TOKEN, GP11_BOOLEAN, token,
-		                                     GP11_INVALID);
-		
-		g_object_unref (session);
-		
-		if (!objects)
-			valid = FALSE;
-
-		gp11_list_unref_free (objects);
-	}
-	
 	all_attrs = (GList**)user_data;
 	if (valid == TRUE)
 		*all_attrs = g_list_prepend (*all_attrs, attrs);
@@ -351,6 +329,9 @@ remove_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 	GError *error = NULL;
 	
 	g_assert (GP11_IS_SESSION (session));
+	
+	if (!login_session (session))
+		return;
 	
 	if (priv != NULL) {
 		gp11_object_set_session (priv, session);
@@ -381,6 +362,9 @@ lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 	GError *error = NULL;
 	g_assert (GP11_IS_SESSION (session));
 	g_assert (GP11_IS_OBJECT (pub));
+	
+	if (!login_session (session))
+		return;
 
 	gp11_object_set_session (priv, session);
 	gp11_object_set (priv, &error, CKA_GNOME_AUTH_CACHED, GP11_BOOLEAN, FALSE, GP11_INVALID);
@@ -408,6 +392,9 @@ remove_by_public_key (GP11Session *session, GP11Object *pub, gboolean exclude_v1
 
 	g_assert (GP11_IS_SESSION (session));
 	g_assert (GP11_IS_OBJECT (pub));
+	
+	if (!login_session (session))
+		return;
 
 	gp11_object_set_session (pub, session);
 	attrs = gp11_object_get (pub, &error, 
@@ -463,6 +450,9 @@ create_key_pair (GP11Session *session, GP11Attributes *priv, GP11Attributes *pub
 	g_assert (priv);
 	g_assert (pub);
 	
+	if (!login_session (session))
+		return FALSE;
+	
 	priv_key = gp11_session_create_object_full (session, priv, NULL, &error);
 	if (error) {
 		g_warning ("couldn't create session private key: %s", error->message);
@@ -515,6 +505,9 @@ replace_key_pair (GP11Session *session, GP11Attributes *priv, GP11Attributes *pu
 	g_assert (GP11_IS_SESSION (session));
 	g_assert (priv);
 	g_assert (pub);
+	
+	if (!login_session (session))
+		return FALSE;
 
 	gp11_attributes_add_boolean (priv, CKA_TOKEN, FALSE);
 	gp11_attributes_add_boolean (pub, CKA_TOKEN, FALSE);
@@ -1080,8 +1073,6 @@ op_remove_identity (GckSshAgentCall *call)
 
 	gck_ssh_agent_checkin_main_session (session);
 
-	/* TODO: Implement locking of other keys */
-
 	egg_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
 
 	return TRUE;	
@@ -1152,8 +1143,6 @@ op_remove_all_identities (GckSshAgentCall *call)
 	gp11_list_unref_free (objects);
 
 	gck_ssh_agent_checkin_main_session (session);
-	
-	/* TODO: Go through all open tokens and lock private SSH keys */
 
 	egg_buffer_add_byte (call->resp, GCK_SSH_RES_SUCCESS);
 	return TRUE;

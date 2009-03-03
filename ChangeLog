@@ -7,7 +7,12 @@
 	more fine grained level.
 	
 	* pkcs11/gck/gck-roots-module.c: Don't expose public key for 
-	certificates as a findable PKCS#11 object. 
+	certificates as a findable PKCS#11 object.
+	
+	* pkcs11/ssh-agent/gck-ssh-agent-ops.c:
+	* pkcs11/ssh-agent/gck-ssh-agent-standalone.c:
+	* pkcs11/ssh-agent/gck-ssh-agent.c: Only login to a token once we 
+	have a public key for which we want to use the private. 
 
 2009-03-03  Stef Walter  <stef@memberwebs.com>
 
