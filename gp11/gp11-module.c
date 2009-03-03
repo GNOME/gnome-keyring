@@ -64,7 +64,7 @@ typedef struct _GP11ModulePrivate {
 	GStaticMutex mutex;
 	gboolean finalized;
 	GHashTable *open_sessions;
-	gboolean auto_authenticate;
+	gint auto_authenticate;
 } GP11ModulePrivate;
 
 #define GP11_MODULE_GET_DATA(o) \
@@ -438,7 +438,7 @@ gp11_module_get_property (GObject *obj, guint prop_id, GValue *value,
 		g_value_set_pointer (value, gp11_module_get_functions (self));
 		break;
 	case PROP_AUTO_AUTHENTICATE:
-		g_value_set_boolean (value, gp11_module_get_auto_authenticate (self));
+		g_value_set_int (value, gp11_module_get_auto_authenticate (self));
 		break;
 	case PROP_POOL_SESSIONS:
 		g_value_set_boolean (value, gp11_module_get_pool_sessions (self));
@@ -464,7 +464,7 @@ gp11_module_set_property (GObject *obj, guint prop_id, const GValue *value,
 		data->funcs = g_value_get_pointer (value);
 		break;
 	case PROP_AUTO_AUTHENTICATE:
-		gp11_module_set_auto_authenticate (self, g_value_get_boolean (value));
+		gp11_module_set_auto_authenticate (self, g_value_get_int (value));
 		break;
 	case PROP_POOL_SESSIONS:
 		gp11_module_set_pool_sessions (self, g_value_get_boolean (value));
@@ -552,8 +552,8 @@ gp11_module_class_init (GP11ModuleClass *klass)
 		                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_AUTO_AUTHENTICATE,
-		g_param_spec_boolean ("auto-authenticate", "Auto Authenticate", "Auto Login to Token when necessary",
-		                      FALSE, G_PARAM_READWRITE));
+		g_param_spec_int ("auto-authenticate", "Auto Authenticate", "Auto Login to Token when necessary",
+		                  0, G_MAXINT, 0, G_PARAM_READWRITE));
 	
 	g_object_class_install_property (gobject_class, PROP_POOL_SESSIONS,
 		g_param_spec_boolean ("pool-sessions", "Pool Sessions", "Pool sessions?",
@@ -919,11 +919,11 @@ gp11_module_set_pool_sessions (GP11Module *self, gboolean pool)
  * 
  * Return value: Whether auto login or not.
  **/
-gboolean
+gint
 gp11_module_get_auto_authenticate (GP11Module *self)
 {
 	GP11ModulePrivate *pv = lock_private (self);
-	gboolean ret;
+	gint ret;
 	
 	g_return_val_if_fail (pv, FALSE);
 	
@@ -947,9 +947,13 @@ gp11_module_get_auto_authenticate (GP11Module *self)
  * signal when an object requires authintication.
  **/
 void
-gp11_module_set_auto_authenticate (GP11Module *self, gboolean auto_login)
+gp11_module_set_auto_authenticate (GP11Module *self, gint auto_login)
 {
 	GP11ModulePrivate *pv = lock_private (self);
+	
+	/* HACK: Get needed fix around API freeze. */
+	if (auto_login == 1)
+		auto_login = GP11_AUTHENTICATE_TOKENS | GP11_AUTHENTICATE_OBJECTS;
 
 	g_return_if_fail (pv);
 	

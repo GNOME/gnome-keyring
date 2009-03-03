@@ -822,7 +822,7 @@ gp11_slot_open_session_full (GP11Slot *self, gulong flags, GCancellable *cancell
 		args.slot = self;
 		args.flags = flags;
 		args.password = NULL;
-		args.auto_login = gp11_module_get_auto_authenticate (module);
+		args.auto_login = (gp11_module_get_auto_authenticate (module) & GP11_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
 		args.session = 0;
 		
 		if (_gp11_call_sync (self, perform_open_session, complete_open_session, &args, cancellable, err))
@@ -871,7 +871,7 @@ gp11_slot_open_session_async (GP11Slot *self, gulong flags, GCancellable *cancel
 	module = gp11_slot_get_module (self);
 	slot_id = gp11_slot_get_handle (self);
 	args->session = _gp11_module_pooled_session_handle (module, slot_id, flags);
-	args->auto_login = gp11_module_get_auto_authenticate (module);
+	args->auto_login = (gp11_module_get_auto_authenticate (module) & GP11_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
 	g_object_unref (module);
 	
 	call = _gp11_call_async_ready (args, cancellable, callback, user_data);

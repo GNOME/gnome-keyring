@@ -75,6 +75,11 @@ typedef struct GP11Attribute {
 
 #define GP11_INVALID G_MAXULONG
 
+enum {
+	GP11_AUTHENTICATE_TOKENS = 2,
+	GP11_AUTHENTICATE_OBJECTS = 4
+};
+
 /* Used on varargs functions that should end with GP11_INVALID */
 #ifdef NOT_YET_SUPPORTED
 #define GP11_INVALID_TERMINATED __attribute__((__sentinel__(G_MAXULONG)))
@@ -306,10 +311,10 @@ gboolean              gp11_module_get_pool_sessions           (GP11Module *self)
 void                  gp11_module_set_pool_sessions           (GP11Module *self, 
                                                                gboolean pool_sessions);
 
-gboolean              gp11_module_get_auto_authenticate       (GP11Module *self);
+gint                  gp11_module_get_auto_authenticate       (GP11Module *self);
 
 void                  gp11_module_set_auto_authenticate       (GP11Module *self, 
-                                                               gboolean auto_authenticate);
+                                                               gint auto_authenticate);
 
 gboolean              gp11_module_enumerate_objects           (GP11Module *self,
                                                                GP11ObjectForeachFunc func,
