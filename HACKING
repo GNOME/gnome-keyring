@@ -7,6 +7,10 @@ http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring
 The gnome-keyring mailing list is:
 gnome-keyring-list@gnome.org
 
+An overview of the architecture and graphical outline can be found here:
+
+http://live.gnome.org/GnomeKeyring/Architecture
+
 Gnome Keyring is made up of several distinct parts working on concert with 
 each other. These parts generally live in different directories:
 

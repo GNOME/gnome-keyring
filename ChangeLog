@@ -1,3 +1,7 @@
+2009-03-03  Stef Walter  <stef@memberwebs.com>
+
+	* HACKING: Add link to architecture page on wiki.
+
 2009-03-02  Stef Walter  <stef@memberwebs.com>
 
 	* egg/egg-secure-entry.c: Fix "gnome-keyring-ask needs to disable 
