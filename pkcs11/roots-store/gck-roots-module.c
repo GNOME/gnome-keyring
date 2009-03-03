@@ -127,7 +127,6 @@ add_certificate_for_data (GckRootsModule *self, const guchar *data,
 	
 	/* Setup the right manager on the certificates */
 	gck_manager_register_object (manager, GCK_OBJECT (cert));
-	gck_manager_register_object (manager, GCK_OBJECT (gck_certificate_get_public_key (cert)));
 	gck_manager_register_object (manager, GCK_OBJECT (gck_roots_certificate_get_netscape_trust (GCK_ROOTS_CERTIFICATE (cert))));
 	
 	/* And add to our wonderful table */

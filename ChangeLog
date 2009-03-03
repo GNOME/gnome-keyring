@@ -5,6 +5,9 @@
 	* gp11/gp11-slot.c:
 	* gp11/gp11.h: Allow specifying auto-authenticate property on a 
 	more fine grained level.
+	
+	* pkcs11/gck/gck-roots-module.c: Don't expose public key for 
+	certificates as a findable PKCS#11 object. 
 
 2009-03-03  Stef Walter  <stef@memberwebs.com>
 
