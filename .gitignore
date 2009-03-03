@@ -54,3 +54,5 @@
 *.a
 .*project
 .settings
+*.orig
+
