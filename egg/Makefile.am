@@ -31,10 +31,10 @@ libegg_la_SOURCES = \
 	$(BUILT_SOURCES)
 	
 asn1-def-pk.h: pk.asn
-	asn1Parser -o asn1-def-pk.h $(srcdir)/pk.asn 
+	$(ASN1PARSER) -o asn1-def-pk.h $(srcdir)/pk.asn 
 	
 asn1-def-pkix.h: pkix.asn
-	asn1Parser -o asn1-def-pkix.h $(srcdir)/pkix.asn 
+	$(ASN1PARSER) -o asn1-def-pkix.h $(srcdir)/pkix.asn 
 
 EXTRA_DIST = \
 	pkix.asn \

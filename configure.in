@@ -401,6 +401,11 @@ AC_SUBST([LIBTASN1_CFLAGS])
 DAEMON_CFLAGS="$DAEMON_CFLAGS $LIBTASN1_CFLAGS"
 DAEMON_LIBS="$DAEMON_LIBS $LIBTASN1_LIBS"
 
+AC_PATH_PROG(ASN1PARSER, asn1Parser, no)
+if test "$ASN1PARSER" = "no" ; then
+	AC_MSG_ERROR(asn1Parser tool is not installed)
+fi
+
 dnl ==========================================================================
 
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.

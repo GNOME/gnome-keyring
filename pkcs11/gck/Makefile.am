@@ -65,10 +65,10 @@ gck-marshal.c: gck-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --body --prefix=gck_marshal >> $@
 
 asn1-def-pk.h: pk.asn
-	asn1Parser -o asn1-def-pk.h $<
+	$(ASN1PARSER) -o asn1-def-pk.h $<
 	
 asn1-def-pkix.h: pkix.asn
-	asn1Parser -o asn1-def-pkix.h $<
+	$(ASN1PARSER) -o asn1-def-pkix.h $<
 
 EXTRA_DIST = \
 	gck-marshal.list \

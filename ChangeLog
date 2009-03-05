@@ -1,3 +1,12 @@
+2009-03-04  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* egg/Makefile.am:
+	* egg/tests/Makefile.am:
+	* pkcs11/gck/Makefile.am:
+	* pkcs11/gck/tests/Makefile.am: Check for asn1Parser tool in
+	configure. Patch by Alberto Ruiz. Fixes bug #566731
+	
 2009-03-03  Stef Walter  <stef@memberwebs.com>
 
 	* gp11/gp11-module.c: 
