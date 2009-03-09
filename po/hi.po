@@ -1,370 +1,1350 @@
-# translation of gnome-keyring.HEAD.hi.po to Hindi
-# translation of hi.po to Hindi
+# translation of gnome-keyring.HEAD.po to Hindi
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
-# Rajesh Ranjan <rranjan@redhat.com>, 2005, 2006.
 #
+# Rajesh Ranjan <rranjan@redhat.com>, 2005, 2006, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.HEAD.hi\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-29 08:27+0200\n"
-"PO-Revision-Date: 2006-08-29 16:29+0530\n"
+"Project-Id-Version: gnome-keyring.HEAD\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-02-14 14:22+0000\n"
+"PO-Revision-Date: 2009-03-09 13:16+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
-"Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
+"Language-Team: Hindi <hindi.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.9.1\n"
+"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
+"\n"
+"\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "पुराना शब्दकूट (_O):"
+#: ../common/gkr-location.c:321
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "विस्थापनीय डिस्क: %s"
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "पासवर्ड: (_P)"
+#: ../common/gkr-location.c:323
+msgid "Removable Disk"
+msgstr "विस्थापनीय डिस्क"
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "नया शब्दकूट सुनिश्चित करें (_C):"
+#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
+msgid "Home"
+msgstr "घर"
 
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">Password strength meter:</span>"
+#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
+msgid "The disk or drive this file is located on is not present"
+msgstr ""
 
-#: ../gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr "पुराना शब्दकूट नहीं खाली हो सकता है"
+#: ../common/gkr-location.c:1137
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "निर्देशिका नहीं बना सका: %s"
 
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "शब्दकूट नहीं खाली हो सकता है"
+#: ../common/gkr-location.c:1171
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "फ़ाइल मिटा नहीं सका: %s"
 
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr "शब्दकूट मेल नहीं खाता है."
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:228
+#, c-format
+#| msgid ""
+#| "The application '%s' (%s) wants to access the password for '%s' in the "
+#| "default keyring."
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr "अनुप्रयोग '%s' (%s) '<object prop='name'/>' के लिये तयशुदा कीरिंग में कूटशब्द की पहुंच चाहता है."
 
-#: ../gnome-keyring-ask.c:407
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:232
+#, fuzzy, c-format
+#| msgid ""
+#| "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr "अनुप्रयोग '%s' (%s) '%s' के लिये %s में कूटशब्द का पहुंच चाहता है."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
+#, fuzzy, c-format
+#| msgid ""
+#| "The application '%s' wants to access the password for '%s' in the default "
+#| "keyring."
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr "अनुप्रयोग '%s' '%s' के लिये तयशुदा कीरिंग में कूटशब्द का पहुंच चाहता है."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
+#, fuzzy, c-format
+#| msgid "The application '%s' wants to access the password for '%s' in %s."
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr "अनुप्रयोग '%s' '%s' के लिये %s में कूटशब्द का पहुंच चाहता है."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:258
+#, fuzzy
+#| msgid ""
+#| "An unknown application wants to access the password for '%s' in the "
+#| "default keyring."
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr "अनजान अनुप्रयोग '%s' के लिये तयशुदा कीरिंग में कूटशब्द का पहुंच चाहता है."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:261
+#, fuzzy, c-format
+#| msgid "An unknown application wants to access the password for '%s' in %s."
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr "अनजान अनुप्रयोग '%s' के लिये %s में कूटशब्द का पहुंच चाहता है."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:267
+msgid "Allow access"
+msgstr "अभिगम स्वीकारें"
+
+#: ../daemon/gkr-daemon-ops.c:267
+msgid "Allow application access to keyring?"
+msgstr "कीरिंग में अनुप्रयोग पहुंत स्वीकारें?"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "अनुप्रयोग '%s' (%s) मूलभूत कुंजी में अभिगम चाहता है, लेकिन यह बंद है"
+msgstr "अनुप्रयोग '%s' (%s) तयशुदा कुंजी में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:411
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "अनुप्रयोग '%s' (%s) मूलभूत कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
+msgstr "अनुप्रयोग '%s' (%s) तयशुदा कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr "अनुप्रयोग '%s' (%s) अनजान कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
-
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "अनुप्रयोग '%s' मूलभूत कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
+msgstr "अनुप्रयोग '%s' तयशुदा कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "अनुप्रयोग '%s' कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "अनुप्रयोग '%s' अनजान कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
-
-#: ../gnome-keyring-ask.c:452
 msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "अनजान अनुप्रयोग मूलभूत कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
+msgstr "अनजान अनुप्रयोग तयशुदा कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
-#: ../gnome-keyring-ask.c:456
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "अनजान अनुप्रयोग मूलभूत कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
+msgstr "अनजान अनुप्रयोग तयशुदा कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr "अनजान अनुप्रयोग अनजान कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
-
-#: ../gnome-keyring-ask.c:468
+#: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
-msgstr "मूलभूत कीरिंग को खोलने के लिये शब्दकूट डालें"
+msgstr "तयशुदा कीरिंग को खोलने के लिये कूटशब्द डालें"
 
-#: ../gnome-keyring-ask.c:470
+#: ../daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "कीरिंग '%s' को खोलने के लिये शब्दकूट डालें"
+msgstr "कीरिंग '%s' को खोलने के लिये कूटशब्द डालें"
 
-#: ../gnome-keyring-ask.c:474
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "कीरिंग खोलें"
 
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "मना करें"
+#: ../daemon/gkr-daemon-ops.c:376
+msgid "Automatically unlock this keyring when I log in."
+msgstr ""
 
-#: ../gnome-keyring-ask.c:517
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
 msgstr ""
-"अनुप्रयोग '%s' (%s) '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप "
+"अनुप्रयोग '%s' (%s) '%s' नामक नये कीरिंग बनाना चाहता है. आपको कूटशब्द चुनना है जिसे आप "
 "इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:521
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"अनुप्रयोग '%s' (%s) नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके "
+"अनुप्रयोग '%s' (%s) नये तयशुदा कीरिंग बनाना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके "
 "लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"अनुप्रयोग '%s' '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके "
+"अनुप्रयोग '%s' '%s' नामक नये कीरिंग बनाना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके "
 "लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"अनुप्रयोग '%s' नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
+"अनुप्रयोग '%s' नये तयशुदा कीरिंग बनाना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके लिये "
 "प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:547
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
 msgstr ""
-"एक अनजान अनुप्रयोग '%s' नामक नये कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप "
+"एक अनजान अनुप्रयोग '%s' नामक नये कीरिंग बनाना चाहता है. आपको कूटशब्द चुनना है जिसे आप "
 "इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:551
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
+#, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
 msgstr ""
-"अनजान अनुप्रयोग नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
+"अनजान अनुप्रयोग नये तयशुदा कीरिंग बनाना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके लिये "
 "प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:558
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
-msgstr "नया कीरिंग शब्दकूट"
+msgstr "नया कीरिंग कूटशब्द"
 
-#: ../gnome-keyring-ask.c:559
+#: ../daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
-msgstr "नये कीरिंग के लिये शब्दकूट चुनें"
+msgstr "नये कीरिंग के लिये कूटशब्द चुनें"
 
-#: ../gnome-keyring-ask.c:602
+#: ../daemon/gkr-daemon-ops.c:508
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr ""
-"अनुप्रयोग '%s' (%s) नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके "
-"लिये प्रयोग करना चाहते हैं."
+msgstr "अनुप्रयोग '%s' (%s) कीरिंग '%s' के लिए कूटशब्द बदलना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:606
+#: ../daemon/gkr-daemon-ops.c:512
 #, fuzzy, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
-msgstr ""
-"अनुप्रयोग '%s' (%s) नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके "
-"लिये प्रयोग करना चाहते हैं."
+msgstr "अनुप्रयोग '%s' (%s) तयशुदा कीरिंग के लिए कूटशब्द बदलना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
-msgstr ""
-"अनुप्रयोग '%s' नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
-"प्रयोग करना चाहते हैं."
+msgstr "अनुप्रयोग '%s' '%s' कीरिंग के लिए कूटशब्द बदलना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
 #, fuzzy, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr ""
-"अनुप्रयोग '%s' नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
-"प्रयोग करना चाहते हैं."
+msgstr "अनुप्रयोग '%s' तयशुदा कीरिंग के लिए कूटशब्द बदलना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
+#: ../daemon/gkr-daemon-ops.c:538
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr ""
-"अनजान अनुप्रयोग नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
-"प्रयोग करना चाहते हैं."
+msgstr "एक अनजान अनुप्रयोग '%s' कीरिंग के लिए कूटशब्द बदलना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:636
-#, fuzzy
+#: ../daemon/gkr-daemon-ops.c:542
+#, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr ""
-"अनजान अनुप्रयोग नये मूलभूत कीरिंग बनाना चाहता है. आपको शब्दकूट चुनना है जिसे आप इसके लिये "
-"प्रयोग करना चाहते हैं."
+msgstr "एक अनजान अनुप्रयोग तयशुदा कीरिंग के लिए कूटशब्द बदलना चाहता है. आपको कूटशब्द चुनना है जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:643
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "कीरिंग '%s' के लिये शब्दकूट चुनें"
+msgstr "कीरिंग '%s' के लिये कूटशब्द चुनें"
 
-#: ../gnome-keyring-ask.c:645
+#: ../daemon/gkr-daemon-ops.c:554
+#, c-format
 msgid "Choose a new password for the default keyring. "
-msgstr "मूलभूत कीरिंग के लिये शब्दकूट बदलें."
+msgstr "तयशुदा कीरिंग के लिये कूटशब्द बदलें."
 
-#: ../gnome-keyring-ask.c:650
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
-msgstr "कीरिंग शब्दकूट बदलें"
+msgstr "कीरिंग कूटशब्द बदलें"
 
-#: ../gnome-keyring-ask.c:689
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"अनुप्रयोग '%s' (%s) एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. "
-"ऐसा एक बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+"अनुप्रयोग '%s' (%s) एक कूटशब्द भंडारित करना चाहता है, लेकिन कोई तयशुदा कीरिंग नहीं है. "
+"ऐसा एक बनाने के लिये, आपको कूटशब्द चुनना होगा जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"अनुप्रयोग '%s' एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. ऐसा एक "
-"बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये प्रयोग करना चाहते हैं."
+"अनुप्रयोग '%s' एक कूटशब्द भंडारित करना चाहता है, लेकिन कोई तयशुदा कीरिंग नहीं है. ऐसा एक "
+"बनाने के लिये, आपको कूटशब्द चुनना होगा जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
+#: ../daemon/gkr-daemon-ops.c:643
+#, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
 msgstr ""
-"एक अनजान अनुप्रयोग एक शब्दकूट भंडारित करना चाहता है, लेकिन कोई मूलभूत कीरिंग नहीं है. "
-"ऐसा एक बनाने के लिये, आपको शब्दकूट चुनना होगा जिसे आप इसके लिये  प्रयोग करना चाहते हैं."
+"एक अनजान अनुप्रयोग एक कूटशब्द भंडारित करना चाहता है, लेकिन कोई तयशुदा कीरिंग नहीं है. "
+"ऐसा एक बनाने के लिये, आपको कूटशब्द चुनना होगा जिसे आप इसके लिये  प्रयोग करना चाहते हैं."
 
-#: ../gnome-keyring-ask.c:706
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "बनाएँ डिफ़ॉल्ट कीरिंग"
 
-#: ../gnome-keyring-ask.c:707
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
-msgstr "डिफ़ॉल्ट कीरिंग के लिये शब्दकूट बदलें"
+msgstr "डिफ़ॉल्ट कीरिंग के लिये कूटशब्द बदलें"
 
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "कीरिंग में अनुप्रयोग पहुंत स्वीकारें?"
+#: ../daemon/data/gnome-keyring.schemas.in.h:1
+msgid ""
+"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"in). This setting may be overridden when certain command line arguments are "
+"passed to the daemon."
+msgstr ""
 
-#: ../gnome-keyring-ask.c:750
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid ""
+"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
+"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
+"setting may be overridden when certain command line arguments are passed to "
+"the daemon."
+msgstr ""
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr ""
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr ""
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+#| msgid "New Keyring Password"
+msgid "GNOME Keyring Daemon"
+msgstr "गनोम कीरिंग डेमान"
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+#| msgid "Unlock Keyring"
+msgid "Unlock Login Keyring"
+msgstr "लॉगिन कीरिंग खोलें"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:98
+#| msgid "Enter password for default keyring to unlock"
+msgid "Enter login password to unlock keyring"
+msgstr "कीरिंग को खोलने के लिये लॉगिन कूटशब्द डालें"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:100
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr ""
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+#| msgid "Create Default Keyring"
+msgid "Create Login Keyring"
+msgstr "लॉगिन कीरिंग बनाएँ"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:124
+#| msgid "Change Keyring Password"
+msgid "Enter your login password"
+msgstr "अपना लॉगिन कूटशब्द दाखिल करें"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:126
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+
+#: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "अनुप्रयोग '%s' (%s) '%s' के लिये %s में शब्दकूट का पहुंच चाहता है."
+#| msgid "Choose password for new keyring"
+msgid "Unlock password for %s keyring"
+msgstr "%s कीरिंग के लिए कूटशब्द अनलॉक करें"
 
-#: ../gnome-keyring-ask.c:753
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+msgid "Unlock private key"
+msgstr "निजी कुंजी खोलें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+#| msgid "Unlock Keyring"
+msgid "Unlock certificate"
+msgstr "प्रमाणपत्र खोलें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+msgid "Unlock public key"
+msgstr "सार्वजनिक कुंजी खोलें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+#| msgid "Unlock Keyring"
+msgid "Unlock"
+msgstr "खोलें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+#| msgid "Enter password for default keyring to unlock"
+msgid "Enter password to unlock the private key"
+msgstr "निजी कीरिंग को खोलने के लिये कूटशब्द डालें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+msgid "Enter password to unlock the certificate"
+msgstr "प्रमाणपत्र खोलने के लिये कूटशब्द डालें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+#| msgid "Enter password for default keyring to unlock"
+msgid "Enter password to unlock the public key"
+msgstr "सार्वजनिक कीरिंग को खोलने के लिये कूटशब्द डालें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+#| msgid "Enter password for keyring '%s' to unlock"
+msgid "Enter password to unlock"
+msgstr "खोलने के लिये कूटशब्द डालें"
+
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#, c-format
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "अनजान अनुप्रयोग निजी कुंजी '%s' में अभिगम चाहता है, लेकिन यह बंद है"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#, c-format
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "कोई अनुप्रयोग प्रमाणपत्र '%s' में पहुँच चाहता है, लेकिन यह बंद है"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#, c-format
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "कोई अनुप्रयोग सार्वजनिक कुंजी '%s' में पहुँच चाहता है, लेकिन यह बंद है"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#, c-format
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An application wants access to '%s', but it is locked"
+msgstr "कोई अनुप्रयोग '%s' में पहुँच चाहता है, लेकिन यह बंद है"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "जब मैं लॉगिन होऊँ स्वतः यह निजी कुंजी खोलें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "जब मैं लॉगिन होऊँ स्वतः यह प्रमाणपत्र खोलें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "जब मैं लॉगिन होऊँ स्वतः यह सार्वजनिक कुंजी खोलें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "जब मैं लॉगिन होऊँ स्वतः यह खोलें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+msgid "Unlock certificate/key storage"
+msgstr "प्रमाणपत्र/कुंजी भंडार अनलॉक करें"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "प्रमाणपत्र/कुंजी भंडारन खोलने के लिए कूटशब्द दाखिल करें"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+#, fuzzy, c-format
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "अनजान अनुप्रयोग तयशुदा कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+msgid "Automatically unlock secure storage when I log in."
+msgstr ""
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+msgid "New Password Required"
+msgstr "नया कूटशब्द जरूरी"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+msgid "New password required for secure storage"
+msgstr "सुरक्षित भंडार के लिए नया कूटशब्द जरूरी"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr "अनुप्रयोग '%s' (%s) '%s' के लिये मूलभूत कीरिंग में शब्दकूट का पहुंच चाहता है."
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
+#: ../daemon/ui/gkr-ask-tool.c:230
 msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr "अनुप्रयोग '%s' (%s) '%s' के लिये अनजान कीरिंग में शब्दकूट का पहुंच चाहता है."
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
 
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "अनुप्रयोग '%s' '%s' के लिये %s में शब्दकूट का पहुंच चाहता है."
-
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
+#: ../daemon/ui/gkr-ask-tool.c:239
 msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr "अनुप्रयोग '%s' '%s' के लिये मूलभूत कीरिंग में शब्दकूट का पहुंच चाहता है."
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
+#: ../daemon/ui/gkr-ask-tool.c:276
+msgid "Store passwords unencrypted?"
+msgstr "कूटशब्द विगोपित जमा करें?"
+
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr "अनुप्रयोग '%s' '%s' के लिये अनजान कीरिंग में शब्दकूट का पहुंच चाहता है."
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
 
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "अनजान अनुप्रयोग '%s' के लिये %s में शब्दकूट का पहुंच चाहता है."
+#: ../daemon/ui/gkr-ask-tool.c:284
+msgid "Use Unsafe Storage"
+msgstr "असुरक्षित भंडार का प्रयोग करें"
 
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr "अनजान अनुप्रयोग '%s' के लिये मूलभूत कीरिंग में शब्दकूट का पहुंच चाहता है."
+#: ../daemon/ui/gkr-ask-tool.c:512
+msgid "_Location:"
+msgstr "स्थान (_L):"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr "अनजान अनुप्रयोग '%s' के लिये अनजान कीरिंग में शब्दकूट का पहुंच चाहता है."
+#: ../daemon/ui/gkr-ask-tool.c:525
+msgid "_Old password:"
+msgstr "पुराना कूटशब्द (_O):"
 
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "अभिगम स्वीकारें"
+#: ../daemon/ui/gkr-ask-tool.c:545
+msgid "_Password:"
+msgstr "पासवर्ड: (_P)"
 
-#: ../gnome-keyring-ask.c:799
+#: ../daemon/ui/gkr-ask-tool.c:567
+#| msgid "_Confirm new password:"
+msgid "_Confirm password:"
+msgstr "कूटशब्द की पुष्टि करें (_C):"
+
+#: ../daemon/ui/gkr-ask-tool.c:587
+msgid "New password strength"
+msgstr "नए कूटशब्द की मजबूती"
+
+#: ../daemon/ui/gkr-ask-tool.c:645
+msgid "Passwords do not match."
+msgstr "कूटशब्द मेल नहीं खाता है."
+
+#: ../daemon/ui/gkr-ask-tool.c:661
+#| msgid "Password cannot be blank."
+msgid "Password cannot be blank"
+msgstr "कूटशब्द खाली नहीं हो सकता है"
+
+#: ../daemon/ui/gkr-ask-tool.c:712
+msgid "_Deny"
+msgstr "मना करें (_D)"
+
+#: ../daemon/ui/gkr-ask-tool.c:724
+msgid "C_reate"
+msgstr "बनाएं (_r)"
+
+#: ../daemon/ui/gkr-ask-tool.c:728
+msgid "C_hange"
+msgstr "बदलें (_h)"
+
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "स्वीकारें एक बार"
 
-#: ../gnome-keyring-ask.c:800
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "हमेशा स्वीकारें"
 
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "आप आग्रह के प्रकार को चलाने के लिये जरूर निर्दिष्ट करें\n"
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "डोमेन घटक"
 
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "अज्ञात आग्रह प्रकार\n"
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "उपयोक्ता पहचान"
+
+#: ../egg/egg-oid.c:46
+msgid "Email"
+msgstr "ईमेल"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "जन्म दिन"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "जन्म स्थान"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "लिंग"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "नागरिकता देश"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "निवास देश"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "सामान्य नाम"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "कुलनाम"
+
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:330
+msgid "Serial Number"
+msgstr "क्रम संख्या"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "देश"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "जगह"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "स्थिति"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "सड़क"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "संगठन "
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "संगठनात्मक इकाई"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "शीर्षक"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "टेलीफोन नंबर"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "दिया गया नाम"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "प्रथमाक्षर"
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr "जनन उत्तीर्णकर्ता"
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "DN उत्तीर्णकर्ता"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "छद्मनाम"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "RSA के साथ MD2"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "RSA के साथ MD5"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "RSA के साथ SHA1"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "DSA के साथ SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>प्रमाणपत्र का हिस्सा नहीं</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>अज्ञात</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<प्रमाणपत्र का हिस्सा नहीं>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>फ़िंगरप्रिंट्स</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>के द्वारा निर्गत</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>को निर्गत</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>वैधता</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "सामान्य नाम (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+msgid "Email Recipient Certificate"
+msgstr "ई-मेल प्राप्तकर्ता प्रमाणपत्र"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+msgid "Email Signer Certificate"
+msgstr "ई-मेल हस्ताक्षरकर्ता प्रमाणपत्र"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "यहाँ समय समाप्त"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "इस तिथि को निर्गत"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 फिंगरप्रिंट"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "संगठन (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "सांगठनिक इकाई (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 फिंगरप्रिंट"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+msgid "SSL Client Certificate"
+msgstr "SSL क्लाइंट प्रमाणपत्र"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+msgid "SSL Server Certificate"
+msgstr "SSL सर्वर प्रमाणपत्र"
+
+#: ../gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "विस्तार"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "पहचानकर्ता"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "मान"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "हाँ"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "नहीं"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+msgid "Critical"
+msgstr "नाजुक"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:311
+msgid "Subject Name"
+msgstr "विषय नाम"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:315
+msgid "Issuer Name"
+msgstr "निर्गतकर्ता नाम"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:319
+msgid "Issued Certificate"
+msgstr "निर्गत प्रमाणपत्र"
+
+#: ../gcr/gcr-certificate-details-widget.c:324
+msgid "Version"
+msgstr "संस्करण"
+
+#: ../gcr/gcr-certificate-details-widget.c:337
+msgid "Not Valid Before"
+msgstr "इससे पहले वैध नहीं"
+
+#: ../gcr/gcr-certificate-details-widget.c:342
+msgid "Not Valid After"
+msgstr "इससे बाद वैध नहीं"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
+msgid "Signature"
+msgstr "हस्ताक्षर"
+
+#: ../gcr/gcr-certificate-details-widget.c:351
+msgid "Signature Algorithm"
+msgstr "हस्ताक्षर अलगोरिथम"
+
+#: ../gcr/gcr-certificate-details-widget.c:356
+msgid "Signature Parameters"
+msgstr "हस्ताक्षर पैरामीटर"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:367
+msgid "Public Key Info"
+msgstr "सार्वजनिक कुंजी सूचना"
+
+#: ../gcr/gcr-certificate-details-widget.c:371
+msgid "Key Algorithm"
+msgstr "कुंजी अलगोरिथम"
+
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "कुंजी पैरामीटर"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
+msgid "Key Size"
+msgstr "कुंजी आकार"
+
+#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "सार्वजनिक कुंजी"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:394
+msgid "Fingerprints"
+msgstr "फिंगरप्रिंट"
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>प्रमाणपत्र व कुंजी आयात करें</span>"
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+msgid "Import Into:"
+msgstr "यहाँ आयात करें:"
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+#| msgid "_Password:"
+msgid "Password:"
+msgstr "कूटशब्द: "
+
+#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr "यह ऑपरेशन रद्द कर दी गई थी"
+
+#: ../gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr "यहाँ आयात करने के लिए कोई अवस्थिति उपलब्ध नहीं"
+
+#: ../gcr/gcr-importer.c:328
+msgid "Import Certificates/Keys"
+msgstr "प्रमाणपत्र/कुंजी आयात करें"
+
+#: ../gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr ""
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
+msgid "In order to import the private key, it must be unlocked"
+msgstr "निजी कुंजी आयात करने के लिए, इसे निश्चित रूप से खुला होना चाहिए"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "प्रमाणपत्र आयात करने के लिए, इसे निश्चित रूप से खुला होना चाहिए"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
+msgid "In order to import the data, it must be unlocked"
+msgstr "आँकड़ा आयात करने के लिए, इसे निश्चित रूप से खुला होना चाहिए"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "सार्वजनिक कुंजी '%s' आयात करने के लिए, इसे निश्चित रूप से खुला होना चाहिए"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "प्रमाणपत्र '%s' आयात करने के लिए, इसे निश्चित रूप से खुला होना चाहिए"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "'%s' आयात करने के लिए, इसे निश्चित रूप से खुला होना चाहिए"
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "निजी कुंजी"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "प्रमाणपत्र"
+
+#: ../gcr/gcr-parser.c:1576
+msgid "Unrecognized or unsupported data."
+msgstr "अपरिचित या असमर्थित आँकड़ा."
+
+#: ../gcr/gcr-parser.c:1579
+msgid "Could not parse invalid or corrupted data."
+msgstr "अवैध या खराब आँकड़ा विश्लेषित नहीं कर सका."
+
+#: ../gcr/gcr-parser.c:1582
+msgid "The data is locked"
+msgstr "यह आँकड़ा तालाकित है."
+
+#: ../gp11/gp11-misc.c:117
+msgid "Insufficient memory available"
+msgstr "अपर्याप्त स्मृति उपलब्ध"
+
+#: ../gp11/gp11-misc.c:119
+msgid "The specified slot ID is not valid"
+msgstr "निर्दिष्ट स्लॉट ID वैध नहीं है"
+
+#: ../gp11/gp11-misc.c:121
+msgid "Internal error"
+msgstr "आंतरिक त्रुटि"
+
+#: ../gp11/gp11-misc.c:123
+msgid "The operation failed"
+msgstr "ऑपरेशन विफल"
+
+#: ../gp11/gp11-misc.c:125
+msgid "Invalid arguments"
+msgstr "अवैध तर्क"
+
+#: ../gp11/gp11-misc.c:127
+msgid "The module cannot create needed threads"
+msgstr "यह मॉड्यूल जरूरी थ्रेड नहीं बना सकता है"
+
+#: ../gp11/gp11-misc.c:129
+msgid "The module cannot lock data properly"
+msgstr "यह मॉड्यूल आँकड़ा ठीक से बंद नहीं कर सकता है"
+
+#: ../gp11/gp11-misc.c:131
+msgid "The field is read-only"
+msgstr "यह क्षेत्र केवल पठनीय है"
+
+#: ../gp11/gp11-misc.c:133
+msgid "The field is sensitive and cannot be revealed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:135
+msgid "The field is invalid or does not exist"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:137
+msgid "Invalid value for field"
+msgstr "क्षेत्र के अवैध मान"
+
+#: ../gp11/gp11-misc.c:139
+msgid "The data is not valid or unrecognized"
+msgstr "यह आँकड़ा वैध या अपरिचित नहीं है"
+
+#: ../gp11/gp11-misc.c:141
+msgid "The data is too long"
+msgstr "यह आँकड़ा काफी लंबा है"
+
+#: ../gp11/gp11-misc.c:143
+msgid "An error occurred on the device"
+msgstr "इस युक्ति पर त्रुटि आई"
+
+#: ../gp11/gp11-misc.c:145
+msgid "Insufficient memory available on device"
+msgstr "युक्ति पर अपर्याप्त स्मृति उपलब्ध"
+
+#: ../gp11/gp11-misc.c:147
+msgid "The device was removed or unplugged"
+msgstr "यह युक्ति हटा दी गई या खोल दी गई"
+
+#: ../gp11/gp11-misc.c:149
+msgid "The encrypted data is not valid or unrecognized"
+msgstr "यह गोपित आँकड़ा वैध या अपरिचित नहीं है"
+
+#: ../gp11/gp11-misc.c:151
+msgid "The encrypted data is too long"
+msgstr "यह गोपित आँकड़ा काफी लंबा है"
+
+#: ../gp11/gp11-misc.c:153
+msgid "This operation is not supported"
+msgstr "यह ऑपरेशन समर्थित नहीं है"
+
+#: ../gp11/gp11-misc.c:155
+msgid "The key is missing or invalid"
+msgstr "यह कुंजी गुम या अवैध है"
+
+#: ../gp11/gp11-misc.c:157
+msgid "The key is the wrong size"
+msgstr "यह कुंजी गलत आकार का है"
+
+#: ../gp11/gp11-misc.c:159
+msgid "The key is of the wrong type"
+msgstr "यह कुंजी गलत प्रकार का है"
+
+#: ../gp11/gp11-misc.c:161
+msgid "No key is needed"
+msgstr "कोई कुंजी जरूरी नहीं"
+
+#: ../gp11/gp11-misc.c:163
+msgid "The key is different than before"
+msgstr "यह कुंजी पहले से भिन्न है"
+
+#: ../gp11/gp11-misc.c:165
+msgid "A key is needed"
+msgstr "एक कुंजी चाहिए"
+
+#: ../gp11/gp11-misc.c:167
+msgid "Cannot include the key in digest"
+msgstr "डाइजेस्ट में इस कुंजी को शामिल मत करें"
+
+#: ../gp11/gp11-misc.c:169
+msgid "This operation cannot be done with this key"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:171
+msgid "The key cannot be wrapped"
+msgstr "यह कुंजी लपेटा नहीं जा सकता है"
+
+#: ../gp11/gp11-misc.c:173
+msgid "Cannot export this key"
+msgstr "इस कुंजी को निर्यात नहीं कर सकता है"
+
+#: ../gp11/gp11-misc.c:175
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:177
+msgid "The crypto mechanism has an invalid argument"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:179
+msgid "The object is missing or invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:181
+msgid "Another operation is already taking place"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:183
+msgid "No operation is taking place"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:185
+msgid "The password or PIN is incorrect"
+msgstr "यह कूटशब्द या PIN गलत है"
+
+#: ../gp11/gp11-misc.c:187
+msgid "The password or PIN is invalid"
+msgstr "यह कूटशब्द या PIN अवैध है"
+
+#: ../gp11/gp11-misc.c:189
+msgid "The password or PIN is of an invalid length"
+msgstr "यह कूटशब्द या PIN पर्याप्त लंबाई की नहीं है"
+
+#: ../gp11/gp11-misc.c:191
+msgid "The password or PIN has expired"
+msgstr "यह कूटशब्द या PIN का समय समाप्त हो गया है"
+
+#: ../gp11/gp11-misc.c:193
+#| msgid "Enter password for keyring '%s' to unlock"
+msgid "The password or PIN is locked"
+msgstr "यह कूटशब्द या PIN बंद है"
+
+#: ../gp11/gp11-misc.c:195
+msgid "The session is closed"
+msgstr "यह सत्र बंद है"
+
+#: ../gp11/gp11-misc.c:197
+msgid "Too many sessions are active"
+msgstr "कई सत्र सक्रिय हैं"
+
+#: ../gp11/gp11-misc.c:199
+msgid "The session is invalid"
+msgstr "यह सत्र अवैध है"
+
+#: ../gp11/gp11-misc.c:201
+msgid "The session is read-only"
+msgstr "यह सत्र केवल पठनीय है"
+
+#: ../gp11/gp11-misc.c:203
+msgid "An open session exists"
+msgstr "कोई खुला सत्र मौजद है"
+
+#: ../gp11/gp11-misc.c:205
+msgid "A read-only session exists"
+msgstr "एक केवल पठनीय सत्र मौजूद"
+
+#: ../gp11/gp11-misc.c:207
+msgid "An administrator session exists"
+msgstr "एक प्रशासक सत्र मौजूद"
+
+#: ../gp11/gp11-misc.c:209
+msgid "The signature is bad or corrupted"
+msgstr "यह हस्ताक्षर खराब या भ्रष्ट है"
+
+#: ../gp11/gp11-misc.c:211
+msgid "The signature is unrecognized or corrupted"
+msgstr "यह हस्ताक्षर अपरिचित या भ्रष्ट है"
+
+#: ../gp11/gp11-misc.c:213
+msgid "Certain required fields are missing"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:215
+msgid "Certain fields have invalid values"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:217
+msgid "The device is not present or unplugged"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:219
+msgid "The device is invalid or unrecognizable"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:221
+msgid "The device is write protected"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:223
+msgid "Cannot import because the key is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:225
+msgid "Cannot import because the key is of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:227
+msgid "Cannot import because the key is of the wrong type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:229
+msgid "You are already logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:231
+msgid "No user has logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:233
+msgid "The user's password or PIN is not set"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:235
+msgid "The user is of an invalid type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:237
+msgid "Another user is already logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:239
+msgid "Too many users of different types logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:241
+msgid "Cannot import an invalid key"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:243
+msgid "Cannot import a key of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:245
+msgid "Cannot export because the key is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:247
+msgid "Cannot export because the key is of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:249
+msgid "Cannot export because the key is of the wrong type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:251
+msgid "Unable to initialize the random number generator"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:253
+msgid "No random number generator available"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:255
+msgid "The crypto mechanism has an invalid parameter"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:257
+msgid "Not enough space to store the result"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:259
+msgid "The saved state is invalid"
+msgstr "यह सहेजी स्थिति अवैध है"
+
+#: ../gp11/gp11-misc.c:261
+msgid "The information is sensitive and cannot be revealed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:263
+msgid "The state cannot be saved"
+msgstr "यह स्थिति सहेजी नहीं जा सकती है"
+
+#: ../gp11/gp11-misc.c:265
+msgid "The module has not been initialized"
+msgstr "यह मॉड्यूल आरंभीकृत नहीं किया गया है"
+
+#: ../gp11/gp11-misc.c:267
+msgid "The module has already been initialized"
+msgstr "यह मॉड्यूल पहले से आरंभीकृत किया गया है"
+
+#: ../gp11/gp11-misc.c:269
+msgid "Cannot lock data"
+msgstr "आँकड़ा बंद नहीं कर सकता है"
+
+#: ../gp11/gp11-misc.c:271
+msgid "The data cannot be locked"
+msgstr "यह आँकड़ा बंद नहीं किया जा सकता है"
+
+#: ../gp11/gp11-misc.c:273
+msgid "The signature request was rejected by the user"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:277
+msgid "Unknown error"
+msgstr "अज्ञात त्रुटि"
+
+#: ../library/gnome-keyring-utils.c:155
+msgid "Access Denied"
+msgstr "पंहुच अस्वीकृत"
+
+#: ../library/gnome-keyring-utils.c:157
+msgid "The gnome-keyring-daemon application is not running."
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:159
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:161
+msgid "A keyring with that name already exists"
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:163
+msgid "Programmer error: The application sent invalid data."
+msgstr ""
+
+#: ../library/gnome-keyring-utils.c:165
+msgid "No matching results"
+msgstr "कोई मिलान परिणाम नहीं"
+
+#: ../library/gnome-keyring-utils.c:167
+msgid "A keyring with that name does not exist."
+msgstr "उस नाम के साथ कीरिंग मौजूद नहीं है"
+
+#: ../library/gnome-keyring-utils.c:174
+msgid "The keyring has already been unlocked."
+msgstr "यह कुंजीरिंग पहले से खुला है."
+
+#: ../pkcs11/gck/gck-certificate.c:710
+msgid "Unnamed Certificate"
+msgstr "बेनाम प्रमाणपत्र"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+msgid "Couldn't parse public SSH key"
+msgstr "सार्वजनिक SSH कुंजी विश्लेषित नहीं कर सका"
 
