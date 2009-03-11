@@ -41,6 +41,11 @@
 #include <unistd.h>
 #include <assert.h>
 
+#ifdef WITH_VALGRIND
+#include <valgrind/valgrind.h>
+#include <valgrind/memcheck.h>
+#endif
+
 /*
  * Use this to force all memory through malloc
  * for use with valgrind and the like 
@@ -168,7 +173,7 @@ static void*
 pool_alloc (void)
 {
 	Pool *pool;
-	void *pages;
+	void *pages, *item;
 	size_t len, i;
 	
 	/* A pool with an available item */
@@ -196,11 +201,21 @@ pool_alloc (void)
 		pool->n_items = (len - sizeof (Pool)) / sizeof (Item);
 		for (i = 0; i < pool->n_items; ++i)
 			unused_push (&pool->unused, pool->items + i);
+		
+#ifdef WITH_VALGRIND
+		VALGRIND_CREATE_MEMPOOL(pool, 0, 0);
+#endif
 	}
 
 	++pool->used;
 	ASSERT (unused_peek (&pool->unused));
-	return memset (unused_pop (&pool->unused), 0, sizeof (Item));
+	item = unused_pop (&pool->unused);
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MEMPOOL_ALLOC (pool, item, sizeof (Item));
+#endif
+	
+	return memset (item, 0, sizeof (Item));
 }
 
 static void
@@ -228,9 +243,19 @@ pool_free (void* item)
 	/* No more meta cells used in this block, remove from list, destroy */
 	if (pool->used == 1) {
 		*at = pool->next;
+		
+#ifdef WITH_VALGRIND
+		VALGRIND_DESTROY_MEMPOOL (pool);
+#endif
+		
 		munmap (pool, pool->length);
 		return;
 	}
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MEMPOOL_FREE (pool, item);
+	VALGRIND_MAKE_MEM_UNDEFINED (item, sizeof (Item));
+#endif
 	
 	--pool->used;
 	memset (item, 0xCD, sizeof (Item));
@@ -259,8 +284,9 @@ pool_valid (void* item)
 /* -----------------------------------------------------------------------------
  * SEC ALLOCATION
  * 
- * Each memory cell begins and ends with a pointer to its metadata. 
- * 
+ * Each memory cell begins and ends with a pointer to its metadata. These are also
+ * used as guards or red zones. Since they're treated as redzones by valgrind we 
+ * have to jump through a few hoops before reading and/or writing them.
  */
 
 static inline size_t
@@ -272,15 +298,35 @@ sec_size_to_words (size_t length)
 static inline void
 sec_write_guards (Cell *cell)
 {
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_UNDEFINED (cell->words, sizeof (word_t));
+	VALGRIND_MAKE_MEM_UNDEFINED (cell->words + cell->n_words - 1, sizeof (word_t));
+#endif
+
 	((void**)cell->words)[0] = (void*)cell;
 	((void**)cell->words)[cell->n_words - 1] = (void*)cell;
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_NOACCESS (cell->words, sizeof (word_t));
+	VALGRIND_MAKE_MEM_NOACCESS (cell->words + cell->n_words - 1, sizeof (word_t));
+#endif	
 }
 
 static inline void
 sec_check_guards (Cell *cell)
 {
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_DEFINED (cell->words, sizeof (word_t));
+	VALGRIND_MAKE_MEM_DEFINED (cell->words + cell->n_words - 1, sizeof (word_t)); 
+#endif	
+	
 	ASSERT(((void**)cell->words)[0] == (void*)cell);
-	ASSERT(((void**)cell->words)[cell->n_words - 1] == (void*)cell);	
+	ASSERT(((void**)cell->words)[cell->n_words - 1] == (void*)cell);
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_NOACCESS (cell->words, sizeof (word_t));
+	VALGRIND_MAKE_MEM_NOACCESS (cell->words + cell->n_words - 1, sizeof (word_t));
+#endif	
 }
 
 static void
@@ -366,8 +412,17 @@ sec_neighbor_before (Block *block, Cell *cell)
 	if (!sec_is_valid_word (block, word))
 		return NULL;
 
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_DEFINED (word, sizeof (word_t));
+#endif
+	
 	cell = *word;
 	sec_check_guards (cell);
+
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_NOACCESS (word, sizeof (word_t));
+#endif
+
 	return cell;
 }
 
@@ -383,8 +438,17 @@ sec_neighbor_after (Block *block, Cell *cell)
 	if (!sec_is_valid_word (block, word))
 		return NULL;
 
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_DEFINED (word, sizeof (word_t));
+#endif
+
 	cell = *word;
 	sec_check_guards (cell);
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_NOACCESS (word, sizeof (word_t));
+#endif
+
 	return cell;
 }
 
@@ -393,6 +457,7 @@ sec_alloc (Block *block, size_t length)
 {
 	Cell *cell, *other;
 	size_t n_words;
+	void *memory;
 	
 	ASSERT (block);
 	ASSERT (length);
@@ -449,7 +514,13 @@ sec_alloc (Block *block, size_t length)
 	
 	++block->used;
 	cell->allocated = length;
-	return memset (sec_cell_to_memory (cell), 0, cell->allocated);
+	memory = sec_cell_to_memory (cell);
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_UNDEFINED (memory, length);
+#endif
+	
+	return memset (memory, 0, length);
 }
 
 static void*
@@ -460,12 +531,22 @@ sec_free (Block *block, void *memory)
 	
 	ASSERT (block);
 	ASSERT (memory);
+	
+	word = memory;
+	--word;
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_DEFINED (word, sizeof (word_t));
+#endif
 
 	/* Lookup the meta for this memory block (using guard pointer) */
-	word = memory;
-	ASSERT (sec_is_valid_word (block, word - 1));
-	ASSERT (pool_valid (*(word - 1)));
-	cell = *(word - 1);
+	ASSERT (sec_is_valid_word (block, word));
+	ASSERT (pool_valid (*word));
+	cell = *word;
+
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_DEFINED (cell->words, cell->n_words * sizeof (word_t));
+#endif
 
 	sec_check_guards (cell);
 	sec_clear_memory (memory, 0, cell->allocated);
@@ -522,9 +603,15 @@ sec_realloc (Block *block, void *memory, size_t length)
 
 	/* Dig out where the meta should be */
 	word = memory;
-	ASSERT (sec_is_valid_word (block, word - 1));
-	ASSERT (pool_valid (*(word - 1)));
-	cell = *(word - 1);
+	--word;
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_DEFINED (word, sizeof (word_t));
+#endif
+
+	ASSERT (sec_is_valid_word (block, word));
+	ASSERT (pool_valid (*word));
+	cell = *word;
 	
 	/* Validate that it's actually for real */
 	sec_check_guards (cell);
@@ -543,7 +630,13 @@ sec_realloc (Block *block, void *memory, size_t length)
 
 		/* TODO: No shrinking behavior yet */
 		cell->allocated = length;
-		return sec_clear_memory (sec_cell_to_memory (cell), valid, length);
+		alloc = sec_cell_to_memory (cell);
+
+#ifdef WITH_VALGRIND
+		VALGRIND_MAKE_MEM_DEFINED (alloc, length);
+#endif
+		
+		return sec_clear_memory (alloc, valid, length);
 	}
 	
 	/* Need braaaaaiiiiiinsss... */
@@ -573,7 +666,13 @@ sec_realloc (Block *block, void *memory, size_t length)
 	
 	if (cell->n_words >= n_words) {
 		cell->allocated = length;
-		return sec_clear_memory (sec_cell_to_memory (cell), valid, length);
+		alloc = sec_cell_to_memory (cell);
+		
+#ifdef WITH_VALGRIND
+		VALGRIND_MAKE_MEM_DEFINED (alloc, length);
+#endif
+		
+		return sec_clear_memory (alloc, valid, length);
 	}
 	
 	/* That didn't work, try alloc/free */
@@ -596,16 +695,26 @@ sec_allocated (Block *block, void *memory)
 	ASSERT (block);
 	ASSERT (memory);
 
-	/* Lookup the meta for this memory block (using guard pointer) */
 	word = memory;
-	ASSERT (sec_is_valid_word (block, word - 1));
-	ASSERT (pool_valid (*(word - 1)));
-	cell = *(word - 1);
+	--word;
+
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_DEFINED (word, sizeof (word_t));
+#endif
+	
+	/* Lookup the meta for this memory block (using guard pointer) */
+	ASSERT (sec_is_valid_word (block, word));
+	ASSERT (pool_valid (*word));
+	cell = *word;
 	
 	sec_check_guards (cell);
 	ASSERT (cell->next == NULL);
 	ASSERT (cell->prev == NULL);
 	ASSERT (cell->allocated > 0);
+	
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_NOACCESS (word, sizeof (word_t));
+#endif
 	
 	return cell->allocated;
 }
@@ -720,6 +829,10 @@ sec_block_create (size_t size)
 		return NULL;
 	}
 	
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_DEFINED (block->words, size);
+#endif
+	
 	/* The first cell to allocate from */
 	cell->words = block->words;
 	cell->n_words = block->n_words;
@@ -807,6 +920,11 @@ egg_secure_alloc_full (size_t length, int flags)
 			if (block)
 				memory = sec_alloc (block, length);
 		}
+		
+#ifdef WITH_VALGRIND
+		if (memory != NULL)
+			VALGRIND_MALLOCLIKE_BLOCK (memory, length, sizeof (void*), 1);
+#endif
 	
 	DO_UNLOCK ();
 	
@@ -856,7 +974,20 @@ egg_secure_realloc_full (void *memory, size_t length, int flags)
 		for (block = all_blocks; block; block = block->next) {
 			if (sec_is_valid_word (block, memory)) {
 				previous = sec_allocated (block, memory);
+
+#ifdef WITH_VALGRIND
+				/* Let valgrind think we are unallocating so that it'll validate */
+				VALGRIND_FREELIKE_BLOCK (memory, sizeof (word_t));
+#endif
+
 				alloc = sec_realloc (block, memory, length);
+				
+#ifdef WITH_VALGRIND
+				/* Now tell valgrind about either the new block or old one */
+				VALGRIND_MALLOCLIKE_BLOCK (alloc ? alloc : memory, 
+				                           alloc ? length : previous, 
+				                           sizeof (word_t), 1);
+#endif					
 				break;
 			}
 		}
@@ -917,14 +1048,21 @@ egg_secure_free_full (void *memory, int flags)
 	
 		/* Find out where it belongs to */
 		for (block = all_blocks; block; block = block->next) {
-			if (sec_is_valid_word (block, memory)) {
-				sec_free (block, memory);
+			if (sec_is_valid_word (block, memory))
 				break;
-			}
 		}
 
-		if (block && block->used == 0)
-			sec_block_destroy (block);
+#ifdef WITH_VALGRIND
+		/* We like valgrind's warnings, so give it a first whack at checking for errors */
+		if (block != NULL || !(flags & GKR_SECURE_USE_FALLBACK))
+			VALGRIND_FREELIKE_BLOCK (memory, sizeof (word_t));
+#endif
+
+		if (block != NULL) {
+			sec_free (block, memory);
+			if (block->used == 0)
+				sec_block_destroy (block);
+		}
 			
 	DO_UNLOCK ();
 	

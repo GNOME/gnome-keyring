@@ -279,16 +279,27 @@ static void
 setup_child (int inp[2], int outp[2], int errp[2], 
              pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
-	char *args[] = { GNOME_KEYRING_DAEMON, "--daemonize", "--login", NULL};
 	const char* display;
 	int i, ret;
+
+	/* The --login argument comes last, because of code below */
+	
+#ifdef VALGRIND 	
+	char *args[] = { VALGRIND, VALGRIND_ARG, GNOME_KEYRING_DAEMON, "--daemonize", "--login", NULL};
+#else
+	char *args[] = { GNOME_KEYRING_DAEMON, "--daemonize", "--login", NULL};
+#endif
 	
 	assert (pwd);
 	assert (pwd->pw_dir);
 
-	/* If no password, don't pas in --login */
-	if (password == NULL)
-		args[2] = NULL;
+	/* If no password, don't pass in --login */
+	if (password == NULL) {
+		for (i = 0; args[i]; ++i) {
+			if (strcmp ("--login", args[i]) == 0)
+				args[i] = NULL;
+		}
+	}
 
 	/* Fix up our end of the pipes */
 	if (dup2 (inp[READ_END], STDIN) < 0 ||

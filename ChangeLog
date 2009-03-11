@@ -1,3 +1,14 @@
+2009-03-10  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in:
+	* daemon/Makefile.am:
+	* daemon/gnome-keyring-daemon.desktop.in.in:
+	* daemon/org.gnome.keyring.service.in:
+	* egg/egg-secure-memory.c:
+	* pam/gkr-pam-module.c: Implement valgrind support for our 
+	memory allocator, and support for running gnome-keyring-daemon
+	under valgrind. Use --enable-valgrind=run
+
 2009-03-04  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in:

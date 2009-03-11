@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 _Name=GNOME Keyring Daemon
-Exec=gnome-keyring-daemon --start
+Exec=@VALGRIND_RUN@ gnome-keyring-daemon --start
 OnlyShowIn=GNOME;
 X-GNOME-Autostart-Phase=Initialization
 X-GNOME-AutoRestart=false

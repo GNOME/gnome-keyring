@@ -56,13 +56,10 @@ EXTRA_DIST = \
 CLEANFILES = \
 	org.gnome.keyring.service \
 	$(desktop_DATA)
-
+	
 servicedir       = $(DBUS_SERVICES_DIR)
 service_in_files = org.gnome.keyring.service.in
 service_DATA     = $(service_in_files:.service.in=.service)
-
-$(service_DATA): $(service_in_files) Makefile
-	@sed -e "s|\@BINDIR\@|$(bindir)|" $< > $@
 
 desktop_in_files = gnome-keyring-daemon.desktop.in
 desktopdir       = $(sysconfdir)/xdg/autostart
