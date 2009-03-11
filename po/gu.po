@@ -3,21 +3,21 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
 # Ankit Patel <ankit644@yahoo.com>, 2005, 2006.
-# Ankit Patel <ankit@redhat.com>, 2007.
+# Ankit Patel <ankit@redhat.com>, 2007, 2009.
 # Sweta Kothari <swkothar@redhat.com>, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-02-14 14:22+0000\n"
-"PO-Revision-Date: 2009-02-18 15:08+0530\n"
-"Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
-"Language-Team: Gujarati\n"
+"POT-Creation-Date: 2009-02-18 09:40+0000\n"
+"PO-Revision-Date: 2009-03-11 14:22+0530\n"
+"Last-Translator: Ankit Patel <ankit@redhat.com>\n"
+"Language-Team: Gujarati <fedora-trans-gu@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "\n"
@@ -39,11 +39,10 @@ msgstr "ઘર"
 
 #: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
-msgstr ""
+msgstr "આ ફાઈલ જે ડિસ્ક કે ડ્રાઈવ પર સ્થિત થયેલ છે તે હાજર નથી"
 
 #: ../common/gkr-location.c:1137
 #, c-format
-#| msgid "Couldn't delete the file: %s"
 msgid "Couldn't create directory: %s"
 msgstr "ડિરેક્ટરીને બનાવી શકાઇ નહિં: %s"
 
@@ -370,7 +369,6 @@ msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "ક્યાંતો gnome-keyring SSH એજંટ સક્રિય થયેલ છે."
 
 #: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-#| msgid "New Keyring Password"
 msgid "GNOME Keyring Daemon"
 msgstr "GNOME કીરીંગ ડેઇમન"
 
@@ -387,7 +385,7 @@ msgstr "કીરીંગનું તાળુ ખોલવા માટે �
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr ""
+msgstr "તમારા પ્રવેશ કીરીંગને આપોઆપ તાળું મરાયેલ નથી જ્યારે તમે આ કમ્પ્યૂટરમાં પ્રવેશ્યા."
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:124
@@ -402,7 +400,7 @@ msgstr "તમારો પ્રવેશ માટે પાસવર્ડ �
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
-msgstr ""
+msgstr "તમારા પ્રવેશ કીરીંગને આપોઆપ તાળું મરાયેલ નથી જ્યારે તમે આ કમ્પ્યૂટરમાં પ્રવેશ્યા. તે બનાવવામાં આવશે નહિં."
 
 #: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
@@ -482,20 +480,16 @@ msgid "Automatically unlock this when I log in"
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ તાળાને આપોઆપ ખોલો"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
-#| msgid "Unlock certificate"
 msgid "Unlock certificate/key storage"
 msgstr "પ્રમાણપત્ર/કી નો સંગ્રહનું તાળુ ખોલો"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
-#| msgid "Enter password to unlock the certificate"
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "પ્રમાણપત્ર/કી સંગ્રહ તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
 #, c-format
-#| msgid ""
-#| "An application wants access to the certificate '%s', but it is locked"
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
@@ -507,12 +501,10 @@ msgid "Automatically unlock secure storage when I log in."
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ સુરક્ષિત સંગ્રહને આપોઆપ ખોલો."
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
-#| msgid "New password strength"
 msgid "New Password Required"
 msgstr "નવા પાસવર્ડની જરૂરિયાત"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
-#| msgid "Enter password to protect storage"
 msgid "New password required for secure storage"
 msgstr "સુરક્ષિત સંગ્રહ માટે નવા પાસવર્ડ ની જરૂરિયાત છે"
 
@@ -521,7 +513,7 @@ msgstr "સુરક્ષિત સંગ્રહ માટે નવા પ�
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr ""
+msgstr "પ્રમાણપત્રો કે કીઓના સંગ્રહ માટે '%s' તેયાર કરવા માટે, પાસવર્ડ જરૂરી છે"
 
 #: ../daemon/ui/gkr-ask-tool.c:230
 msgid ""
@@ -587,7 +579,6 @@ msgid "Password cannot be blank"
 msgstr "પાસવર્ડ ખાલી હોઈ શકે નહિં"
 
 #: ../daemon/ui/gkr-ask-tool.c:712
-#| msgid "Deny"
 msgid "_Deny"
 msgstr "પરવાનગી નથી (_D)"
 
@@ -737,7 +728,6 @@ msgid "<i>unknown</i>"
 msgstr "<i>અજ્ઞાત</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:1
-#| msgid "Import certificate"
 msgid "<Not Part of Certificate>"
 msgstr "<પ્રમાણપત્રનો ભાગ નથી>"
 
@@ -766,12 +756,10 @@ msgid "Common Name (CN)"
 msgstr "Common Name (CN)"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:8
-#| msgid "Import certificate"
 msgid "Email Recipient Certificate"
 msgstr "ઇમેઇલ પ્રાપ્ત કરનાર પ્રમાણપત્ર"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:9
-#| msgid "Certificate"
 msgid "Email Signer Certificate"
 msgstr "ઇમેઇલ સહી કરનાર પ્રમાણપત્ર"
 
@@ -800,12 +788,10 @@ msgid "SHA1 Fingerprint"
 msgstr "SHA1 ફિંગરપ્રિંટ"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:16
-#| msgid "Certificate"
 msgid "SSL Client Certificate"
 msgstr "SSL ક્લાઇન્ટ પ્રમાણપત્ર"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:17
-#| msgid "Certificate"
 msgid "SSL Server Certificate"
 msgstr "SSL સર્વર પ્રમાણપત્ર"
 
@@ -830,7 +816,6 @@ msgid "No"
 msgstr "ના"
 
 #: ../gcr/gcr-certificate-details-widget.c:237
-#| msgid "Certificate"
 msgid "Critical"
 msgstr "સંકટમય"
 
@@ -846,7 +831,6 @@ msgstr "પ્રકાશિત કરનારનું નામ"
 
 #. The Issued Parameters
 #: ../gcr/gcr-certificate-details-widget.c:319
-#| msgid "Certificate"
 msgid "Issued Certificate"
 msgstr "મોકલેલ પ્રમાણપત્ર"
 
@@ -878,7 +862,6 @@ msgstr "હસ્તાક્ષરનાં પરિમાણો"
 
 #. Public Key Info
 #: ../gcr/gcr-certificate-details-widget.c:367
-#| msgid "Public Key"
 msgid "Public Key Info"
 msgstr "સાર્વજનિક કી જાણકારી"
 
@@ -908,12 +891,10 @@ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 msgstr "<span size='large' weight='bold'>પ્રમાણપત્રો અને કીઓ ને આયાત કરો</span>"
 
 #: ../gcr/gcr-import-dialog.glade.h:2
-#| msgid "Import"
 msgid "Import Into:"
 msgstr "માં આયાત કરો:"
 
 #: ../gcr/gcr-import-dialog.glade.h:3
-#| msgid "_Password:"
 msgid "Password:"
 msgstr "પાસવર્ડ:"
 
@@ -927,7 +908,6 @@ msgid "No location available to import to"
 msgstr "આયાત કરવા માટે ઉપલ્બધ સ્થાન નથી"
 
 #: ../gcr/gcr-importer.c:328
-#| msgid "Import certificate"
 msgid "Import Certificates/Keys"
 msgstr "પ્રમાણપત્રો/કીઓ ને આયાત કરો"
 
@@ -977,7 +957,6 @@ msgid "Certificate"
 msgstr "પ્રમાણપત્ર"
 
 #: ../gcr/gcr-parser.c:1576
-#| msgid "Unrecognized or unsupported file."
 msgid "Unrecognized or unsupported data."
 msgstr "ઓળખાતી નથી અથવા આધારિત માહિતી નથી."
 
@@ -986,7 +965,6 @@ msgid "Could not parse invalid or corrupted data."
 msgstr "અયોગ્ય અથવા બગડેલ માહિતી ને પદચ્છેદન કરી શકાયુ નહિં."
 
 #: ../gcr/gcr-parser.c:1582
-#| msgid "The data cannot be locked"
 msgid "The data is locked"
 msgstr "માહિતી ને તાળુ મારેલ છે"
 
@@ -1260,11 +1238,11 @@ msgstr "નિકાસ કરી શકાતી નથી કારણ કે 
 
 #: ../gp11/gp11-misc.c:251
 msgid "Unable to initialize the random number generator"
-msgstr ""
+msgstr "રેન્ડમ નંબર બનાવનારનો આરંભ કરવામાં અસમર્થ"
 
 #: ../gp11/gp11-misc.c:253
 msgid "No random number generator available"
-msgstr ""
+msgstr "કોઈ રેન્ડમ નંબર બનાવનાર ઉપલબ્ધ નથી"
 
 #: ../gp11/gp11-misc.c:255
 msgid "The crypto mechanism has an invalid parameter"
@@ -1280,7 +1258,7 @@ msgstr "સંગ્રહ થયેલ સ્થિતિ એ અયોગ્�
 
 #: ../gp11/gp11-misc.c:261
 msgid "The information is sensitive and cannot be revealed"
-msgstr ""
+msgstr "જાણકારી સંવેદનશીલ છે અને ખોલી શકાતી નથી"
 
 #: ../gp11/gp11-misc.c:263
 msgid "The state cannot be saved"
@@ -1304,7 +1282,7 @@ msgstr "માહિતીને તાળુ મારી શકાતુ ન�
 
 #: ../gp11/gp11-misc.c:273
 msgid "The signature request was rejected by the user"
-msgstr ""
+msgstr "સહી અરજી વપરાશકર્તા દ્વારા રદ કરવામાં આવી હતી"
 
 #: ../gp11/gp11-misc.c:277
 msgid "Unknown error"
@@ -1343,7 +1321,6 @@ msgid "The keyring has already been unlocked."
 msgstr "કીરીંગનું તાળું પહેલાથી જ ખોલી દેવાયેલ છે."
 
 #: ../pkcs11/gck/gck-certificate.c:710
-#| msgid "Certificate"
 msgid "Unnamed Certificate"
 msgstr "નામ ન થયેલ પ્રમાણપત્ર"
 
