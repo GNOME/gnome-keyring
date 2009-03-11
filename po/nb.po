@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.25.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-10 07:28+0100\n"
-"PO-Revision-Date: 2009-02-10 07:35+0100\n"
+"POT-Creation-Date: 2009-03-12 00:31+0100\n"
+"PO-Revision-Date: 2009-03-12 00:35+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -443,11 +443,11 @@ msgstr "Lås opp offentlig nøkkel"
 msgid "Unlock"
 msgstr "Lås opp"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Oppgi passord for å låse opp privat nøkkel"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Oppgi passord for å låse opp sertifikat"
 
@@ -455,7 +455,7 @@ msgstr "Oppgi passord for å låse opp sertifikat"
 msgid "Enter password to unlock the public key"
 msgstr "Oppgi passord for å låse opp offentlig nøkkel"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Oppgi passord for å låse opp"
 
@@ -499,47 +499,69 @@ msgstr "Lås opp denne offentlige nøkkelringen automatisk når jeg logger inn."
 msgid "Automatically unlock this when I log in"
 msgstr "Lås denne opp automatisk når jeg logger inn."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
 msgid "Unlock certificate/key storage"
 msgstr "Lås opp lager for sertifikat/nøkkel"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Oppgi passord for å låse opp lager for sertifikat/nøkkel"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
-msgstr "Et program ønsker tilgang til lager for sertifikat/nøkkel «%s», men det er låst"
+msgstr ""
+"Et program ønsker tilgang til lager for sertifikat/nøkkel «%s», men det er "
+"låst"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Lås opp sikkerhetslageret automatisk når jeg logger inn."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
 msgid "New Password Required"
 msgstr "Nytt passord kreves"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New password required for secure storage"
 msgstr "Nytt passord kreves for sikkerhetslager"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr ""
 
-#: ../daemon/ui/gkr-ask-tool.c:244
+#: ../daemon/ui/gkr-ask-tool.c:230
+msgid ""
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+
+#: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../daemon/ui/gkr-ask-tool.c:245
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -549,155 +571,179 @@ msgstr ""
 "krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
 "tilgang til dine filer."
 
-#: ../daemon/ui/gkr-ask-tool.c:252
+#: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../daemon/ui/gkr-ask-tool.c:479
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "_Lokasjon:"
 
-#: ../daemon/ui/gkr-ask-tool.c:492
+#: ../daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "_Gammelt passord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
+#: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "_Passord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:534
+#: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "_Bekreft passord:"
 
-#: ../daemon/ui/gkr-ask-tool.c:554
+#: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "Styrke for nytt passord"
 
-#: ../daemon/ui/gkr-ask-tool.c:612
+#: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../daemon/ui/gkr-ask-tool.c:628
+#: ../daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 
-#: ../daemon/ui/gkr-ask-tool.c:679
+#: ../daemon/ui/gkr-ask-tool.c:712
 msgid "_Deny"
 msgstr "Ne_kt"
 
-#: ../daemon/ui/gkr-ask-tool.c:691
+#: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
 msgstr "La_g"
 
-#: ../daemon/ui/gkr-ask-tool.c:695
+#: ../daemon/ui/gkr-ask-tool.c:728
 msgid "C_hange"
 msgstr "En_dre"
 
-#: ../daemon/ui/gkr-ask-tool.c:699
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "Tillat én gang"
 
-#: ../daemon/ui/gkr-ask-tool.c:703
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
 
-#: ../egg/egg-asn1.c:794
+#: ../egg/egg-oid.c:41
 msgid "Domain Component"
-msgstr ""
+msgstr "Domenekomponent"
 
-#: ../egg/egg-asn1.c:795
+#: ../egg/egg-oid.c:43
 msgid "User ID"
 msgstr "Bruker-ID"
 
-#: ../egg/egg-asn1.c:797
+#: ../egg/egg-oid.c:46
 msgid "Email"
 msgstr "E-post"
 
-#: ../egg/egg-asn1.c:801
+#: ../egg/egg-oid.c:54
 msgid "Date of Birth"
 msgstr "Fødselsdato"
 
-#: ../egg/egg-asn1.c:802
+#: ../egg/egg-oid.c:56
 msgid "Place of Birth"
 msgstr "Fødested"
 
-#: ../egg/egg-asn1.c:803
+#: ../egg/egg-oid.c:58
 msgid "Gender"
 msgstr "Kjønn"
 
-#: ../egg/egg-asn1.c:804
+#: ../egg/egg-oid.c:60
 msgid "Country of Citizenship"
 msgstr ""
 
-#: ../egg/egg-asn1.c:805
+#: ../egg/egg-oid.c:62
 msgid "Country of Residence"
 msgstr ""
 
-#: ../egg/egg-asn1.c:807
+#: ../egg/egg-oid.c:65
 msgid "Common Name"
 msgstr ""
 
-#: ../egg/egg-asn1.c:808
+#: ../egg/egg-oid.c:67
 msgid "Surname"
 msgstr "Etternavn"
 
-#: ../egg/egg-asn1.c:809 ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:259
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Serial Number"
 msgstr "Serienummer"
 
-#: ../egg/egg-asn1.c:810
+#: ../egg/egg-oid.c:71
 msgid "Country"
 msgstr "Land"
 
-#: ../egg/egg-asn1.c:811
+#: ../egg/egg-oid.c:73
 msgid "Locality"
 msgstr ""
 
-#: ../egg/egg-asn1.c:812
+#: ../egg/egg-oid.c:75
 msgid "State"
 msgstr "Stat"
 
-#: ../egg/egg-asn1.c:813
+#: ../egg/egg-oid.c:77
 msgid "Street"
 msgstr "Gate"
 
-#: ../egg/egg-asn1.c:814
+#: ../egg/egg-oid.c:79
 msgid "Organization"
 msgstr "Organisasjon"
 
-#: ../egg/egg-asn1.c:815
+#: ../egg/egg-oid.c:81
 msgid "Organizational Unit"
 msgstr "Organisasjonsenhet"
 
-#: ../egg/egg-asn1.c:816
+#: ../egg/egg-oid.c:83
 msgid "Title"
 msgstr "Tittel"
 
-#: ../egg/egg-asn1.c:817
+#: ../egg/egg-oid.c:85
 msgid "Telephone Number"
 msgstr "Telefonnummer"
 
-#: ../egg/egg-asn1.c:818
+#: ../egg/egg-oid.c:87
 msgid "Given Name"
 msgstr ""
 
-#: ../egg/egg-asn1.c:819
+#: ../egg/egg-oid.c:89
 msgid "Initials"
 msgstr "Initialer"
 
-#: ../egg/egg-asn1.c:820
+#: ../egg/egg-oid.c:91
 #, fuzzy
 msgid "Generation Qualifier"
 msgstr "Operasjonen feilet"
 
-#: ../egg/egg-asn1.c:821
+#: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
 msgstr ""
 
-#: ../egg/egg-asn1.c:822
+#: ../egg/egg-oid.c:95
 msgid "Pseudonym"
 msgstr "Pseudonym"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "MD2 med RSA"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "MD5 med RSA"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "SHA1 med DSA"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "SHA1 med DSA"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -777,73 +823,101 @@ msgstr "SSL klientsertifikat"
 msgid "SSL Server Certificate"
 msgstr "SSL tjenersertifikat"
 
+#: ../gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "Utvidelse"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "Identifikator"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "Verdi"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "Ja"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "Nei"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+msgid "Critical"
+msgstr "Kritisk"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:240
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Subject Name"
 msgstr ""
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:244
+#: ../gcr/gcr-certificate-details-widget.c:315
 msgid "Issuer Name"
-msgstr ""
+msgstr "Navn på utsteder"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:248
-#, fuzzy
+#: ../gcr/gcr-certificate-details-widget.c:319
 msgid "Issued Certificate"
-msgstr "Sertifikat"
+msgstr "Utstedt sertifikat"
 
-#: ../gcr/gcr-certificate-details-widget.c:253
+#: ../gcr/gcr-certificate-details-widget.c:324
 msgid "Version"
 msgstr "Versjon"
 
-#: ../gcr/gcr-certificate-details-widget.c:266
+#: ../gcr/gcr-certificate-details-widget.c:337
 msgid "Not Valid Before"
 msgstr "Ikke gyldig før"
 
-#: ../gcr/gcr-certificate-details-widget.c:271
+#: ../gcr/gcr-certificate-details-widget.c:342
 msgid "Not Valid After"
 msgstr "Ikke gyldig etter"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:276
-#: ../gcr/gcr-certificate-details-widget.c:284
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Signature"
 msgstr "Signatur"
 
-#. TODO: Complete Signature algorithm, and params
-#: ../gcr/gcr-certificate-details-widget.c:279
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature Algorithm"
 msgstr "Algoritme for signatur"
 
-#. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:288
+#: ../gcr/gcr-certificate-details-widget.c:356
 #, fuzzy
-msgid "Public Key Info"
-msgstr "Offentlig nøkkel"
+msgid "Signature Parameters"
+msgstr "Signatur"
 
-#. TODO: Complete algorithm, params, key size
-#: ../gcr/gcr-certificate-details-widget.c:291
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:367
+msgid "Public Key Info"
+msgstr "Informasjon om offentlig nøkkel"
+
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Algorithm"
 msgstr "Algoritme for nøkkel"
 
-#: ../gcr/gcr-certificate-details-widget.c:292
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "Nøkkelparametere"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Key Size"
 msgstr "Størrelse på nøkkel"
 
-#: ../gcr/gcr-certificate-details-widget.c:297 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
 
-#. TODO: Implement extensions
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:394
 msgid "Fingerprints"
 msgstr "Fingeravtrykk"
 
 #: ../gcr/gcr-import-dialog.glade.h:1
 msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr ""
+msgstr "<span size='large' weight='bold'>Importer sertifikater og nøkler</span>"
 
 #: ../gcr/gcr-import-dialog.glade.h:2
 msgid "Import Into:"
@@ -853,54 +927,54 @@ msgstr "Importer til:"
 msgid "Password:"
 msgstr "Passord:"
 
-#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
 msgid "The operation was cancelled"
 msgstr "Operasjonen ble avbrutt"
 
-#: ../gcr/gcr-importer.c:254
+#: ../gcr/gcr-importer.c:255
 #, c-format
 msgid "No location available to import to"
-msgstr ""
+msgstr "Ingen lokasjon tilgjengelig for import"
 
-#: ../gcr/gcr-importer.c:328
+#: ../gcr/gcr-importer.c:404
 msgid "Import Certificates/Keys"
 msgstr "Importer sertifikater/nøkler"
 
-#: ../gcr/gcr-importer.c:335
+#: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
-msgstr ""
+msgstr "Velg en lokasjon for å lagre importerte sertifikater og nøkler."
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:373
+#: ../gcr/gcr-importer.c:449
 #, fuzzy
 msgid "In order to import the private key, it must be unlocked"
 msgstr "Systemet ønsker å importere privat nøkkel «%s», men den er låst."
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:376
+#: ../gcr/gcr-importer.c:452
 #, fuzzy
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "Systemet ønsker å importere sertifikat «%s», men den er låst."
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:379
+#: ../gcr/gcr-importer.c:455
 msgid "In order to import the data, it must be unlocked"
 msgstr ""
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:384
+#: ../gcr/gcr-importer.c:460
 #, fuzzy, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "Systemet ønsker å importere privat nøkkel «%s», men den er låst."
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:387
+#: ../gcr/gcr-importer.c:463
 #, fuzzy, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "Systemet ønsker å importere sertifikat «%s», men den er låst."
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:390
+#: ../gcr/gcr-importer.c:466
 #, fuzzy, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Systemet ønsker å importere «%s», men den er låst."
@@ -1281,6 +1355,6 @@ msgstr "Nøkkelringen er allerede låst opp."
 msgid "Unnamed Certificate"
 msgstr "Sertifikat uten navn"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
 msgid "Couldn't parse public SSH key"
 msgstr "Kunne ikke lese offentlig nøkkel for SSH"
