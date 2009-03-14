@@ -4,6 +4,7 @@ common/gkr-location.c
 daemon/gkr-daemon-ops.c
 daemon/data/gnome-keyring.schemas.in
 daemon/gnome-keyring-daemon.desktop.in.in
+daemon/org.gnome.keyring.service.in
 daemon/keyrings/gkr-keyring-login.c
 daemon/keyrings/gkr-keyring.c
 daemon/pkcs11/gkr-pkcs11-auth.c

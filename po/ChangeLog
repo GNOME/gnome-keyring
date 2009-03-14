@@ -1,4 +1,11 @@
-2009-03-14 felix@redhat.com>
+=== gnome-keyring 2.26.0 ===
+
+2009-03-14  Stef Walter  <stef@memberwebs.com>
+
+	* Add missing file due to distcheck:
+	daemon/org.gnome.keyring.service.in
+
+2009-03-14  felix  <felix@redhat.com>
 
 	* ta.po:  Tamil Translation updated
 

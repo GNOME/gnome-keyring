@@ -1,3 +1,10 @@
+=== gnome-keyring 2.26.0 ===
+
+2009-03-14  Stef Walter  <stef@memberwebs.com>
+
+	* configure.in: 
+	* NEWS: Version 2.26.0
+
 2009-03-10  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in:

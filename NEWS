@@ -1,3 +1,11 @@
+Changes in version 2.26.0 are:
+* Implement support for running gnome-keyring-daemon under valgrind.
+* Checks for asn1Parser tool when configuring. [Alberto Ruiz].
+* Only automatically expose PKCS#11 public key objects for private keys. 
+* Have the SSH agent only log into the token when we have a private 
+  key that we want to access.
+* Disable input method in password. [Takao Fujiwara]
+
 Changes in version 2.25.92 are:
 * Fix problems when multiple processes tried to initialize the 
   gnome-keyring-daemon at the same time, often resulting in a user

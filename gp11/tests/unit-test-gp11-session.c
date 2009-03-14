@@ -225,7 +225,7 @@ DEFINE_TEST(auto_login)
 	GError *err = NULL;
 	GP11Attributes *attrs;
 	gboolean ret;
-	gboolean value;
+	gint value;
 	
 	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_DATA,
 	                              CKA_LABEL, GP11_STRING, "TEST OBJECT",
@@ -239,11 +239,11 @@ DEFINE_TEST(auto_login)
 	g_clear_error (&err);
 	
 	/* Setup for auto login */
-	g_assert (gp11_module_get_auto_authenticate (module) == FALSE);
+	g_assert (gp11_module_get_auto_authenticate (module) == 0);
 	gp11_module_set_auto_authenticate (module, TRUE);
-	g_assert (gp11_module_get_auto_authenticate (module) == TRUE);
+	g_assert (gp11_module_get_auto_authenticate (module) == (GP11_AUTHENTICATE_TOKENS | GP11_AUTHENTICATE_OBJECTS));
 	g_object_get (module, "auto-authenticate", &value, NULL);
-	g_assert (value == TRUE);
+	g_assert (value == (GP11_AUTHENTICATE_TOKENS | GP11_AUTHENTICATE_OBJECTS));
 	
 	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
 	
