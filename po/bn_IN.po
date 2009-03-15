@@ -4,15 +4,15 @@
 #
 # Runa Bhattacharjee <runa@bengalinux.org>, 2004.
 # Runa Bhattacharjee <runabh@gmail.com>, 2007.
-# Runa Bhattacharjee <runab@redhat.com>, 2008.
+# Runa Bhattacharjee <runab@redhat.com>, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: bn_IN\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-17 15:17+0000\n"
-"PO-Revision-Date: 2008-08-27 18:40+0530\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-02-14 14:22+0000\n"
+"PO-Revision-Date: 2009-03-15 10:08+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
-"Language-Team: Bengali INDIA <fedora-trans-bn_IN@redhat.com>\n"
+"Language-Team: Bengali INDIA <discuss@lists.ankur.org.in>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,36 +20,35 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
 
-#: ../common/gkr-location.c:320
+#: ../common/gkr-location.c:321
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "অপসারণযোগ্য ডিস্ক: %s"
 
-#: ../common/gkr-location.c:322
+#: ../common/gkr-location.c:323
 msgid "Removable Disk"
 msgstr "অপসারণযোগ্য ডিস্ক"
 
-#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
+#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
 msgid "Home"
 msgstr "ব্যক্তিগত ফোল্ডার"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
-#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
 msgstr "ফাইল ধারণকারী ডিস্ক অথবা ড্রাইভ উপস্থিত নয়"
 
-#: ../common/gkr-location.c:1136
+#: ../common/gkr-location.c:1137
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "চিহ্নির ডিরেক্টরি নির্মাণ করা যায়নি: %s"
 
-#: ../common/gkr-location.c:1170
+#: ../common/gkr-location.c:1171
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "চিহ্নিত ফাইল মুছে ফেলা যায়নি: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:227
+#: ../daemon/gkr-daemon-ops.c:228
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -59,7 +58,7 @@ msgstr ""
 "পাসওয়ার্ডটি ব্যবহার করতে ইচ্ছুক।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231
+#: ../daemon/gkr-daemon-ops.c:232
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -69,7 +68,7 @@ msgstr ""
 "ব্যবহার করতে ইচ্ছুক।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
+#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -79,7 +78,7 @@ msgstr ""
 "ব্যবহার করতে ইচ্ছুক।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -89,7 +88,7 @@ msgstr ""
 "ইচ্ছুক।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:257
+#: ../daemon/gkr-daemon-ops.c:258
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -98,7 +97,7 @@ msgstr ""
 "পাসওয়ার্ড ব্যবহার করতে ইচ্ছুক।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -108,15 +107,16 @@ msgstr ""
 "করতে ইচ্ছুক।"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow access"
 msgstr "ব্যবহারের অনুমতি প্রদান করা হবে"
 
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow application access to keyring?"
 msgstr "অ্যাপ্লিকেশনকে কি-রিং ব্যবহারের অনুমতি প্রদান করা হবে কি?"
 
-#: ../daemon/gkr-daemon-ops.c:307
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -125,52 +125,58 @@ msgstr ""
 "'%s' (%s) অ্যাপ্লিকেশন ডিফল্ট কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা "
 "আছে"
 
-#: ../daemon/gkr-daemon-ops.c:311
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "'%s' (%s) অ্যাপ্লিকেশন '%s' কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "'%s' অ্যাপ্লিকেশন ডিফল্ট কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr "'%s' অ্যাপ্লিকেশন '%s' কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
-#: ../daemon/gkr-daemon-ops.c:338
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
 #, c-format
 msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা "
 "আছে"
 
-#: ../daemon/gkr-daemon-ops.c:342
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "একটি অজানা অ্যাপ্লিকেশন %s কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
 msgstr "ডিফল্ট কি-রিং আনলক করতে পাসওয়ার্ড লিখুন"
 
-#: ../daemon/gkr-daemon-ops.c:351
+#: ../daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' কি-রিং আনলক করতে পাসওয়ার্ড লিখুন"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:355
+#: ../daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "কি-রিং আনলক করুন"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
+#: ../daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
 msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই কি-রিং আন-লক করা হবে।"
 
-#: ../daemon/gkr-daemon-ops.c:403
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -179,7 +185,8 @@ msgstr ""
 "'%s' (%s) অ্যাপ্লিকেশন '%s' নামক একটি নতুন কি-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
 "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:407
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -188,7 +195,8 @@ msgstr ""
 "'%s' (%s) অ্যাপ্লিকেশন একটি ডিফল্ট কি-রিং তৈরি করতে ইচ্ছুক। এই কর্মে ব্যবহারযোগ্য "
 "পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -197,7 +205,8 @@ msgstr ""
 "'%s' অ্যাপ্লিকেশন '%s' নামক একটি নতুন কি-রিং তৈরি করতে ইচ্ছুক। এই কর্মে ব্যবহারযোগ্য "
 "পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -206,7 +215,8 @@ msgstr ""
 "'%s' অ্যাপ্লিকেশন একটি নতুন ডিফল্ট কি-রিং তৈরি করতে ইচ্ছুক। এই কর্মে ব্যবহারযোগ্য "
 "পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:433
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -215,7 +225,8 @@ msgstr ""
 "একটি অজানা অ্যাপ্লিকেশন '%s' নামক একটি নতুন কি-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
 "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:437
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -225,15 +236,15 @@ msgstr ""
 "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:443
+#: ../daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
 msgstr "নতুন কি-রিং পাসওয়ার্ড"
 
-#: ../daemon/gkr-daemon-ops.c:444
+#: ../daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
 msgstr "নতুন কি-রিং'র জন্য পাসওয়ার্ড নির্বাচন করুন"
 
-#: ../daemon/gkr-daemon-ops.c:491
+#: ../daemon/gkr-daemon-ops.c:508
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -242,7 +253,7 @@ msgstr ""
 "'%s' (%s) অ্যাপ্লিকেশন '%s' কি-রিং'র পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
 "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:512
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -251,7 +262,7 @@ msgstr ""
 "'%s' (%s) অ্যাপ্লিকেশন ডিফল্ট কি-রিং'র পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
 "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -260,7 +271,7 @@ msgstr ""
 "'%s' অ্যাপ্লিকেশন '%s' কি-রিং'র পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে ব্যবহারযোগ্য "
 "পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -269,7 +280,7 @@ msgstr ""
 "'%s' অ্যাপ্লিকেশন ডিফল্ট কি-রিং'র পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
 "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:521
+#: ../daemon/gkr-daemon-ops.c:538
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -278,7 +289,7 @@ msgstr ""
 "একটি অজানা অ্যাপ্লিকেশন '%s' কি-রিং'র পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
 "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:525
+#: ../daemon/gkr-daemon-ops.c:542
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -287,22 +298,22 @@ msgstr ""
 "একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কি-রিং'র পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
 "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:535
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "'%s' কি-রিং'র জন্য পাসওয়ার্ড নির্বাচন করুন. "
 
-#: ../daemon/gkr-daemon-ops.c:537
+#: ../daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "ডিফল্ট কি-রিং'র জন্য নতুন পাসওয়ার্ড নির্বাচন করুন। "
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:541
+#: ../daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
 msgstr "কি-রিং'র পাসওয়ার্ড পরিবর্তন করুন"
 
-#: ../daemon/gkr-daemon-ops.c:614
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -312,7 +323,7 @@ msgstr ""
 "'%s' (%s) অ্যাপ্লিকেশন একটি পাসওয়ার্ড সংরক্ষণ করতে ইচ্ছুক, কিন্তু কোনো ডিফল্ট কি-রিং "
 "উপস্থিত নেই। নতুন কি-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -322,7 +333,7 @@ msgstr ""
 "'%s' অ্যাপ্লিকেশন একটি পাসওয়ার্ড সংরক্ষণ করতে ইচ্ছুক, কিন্তু কোনো ডিফল্ট কি-রিং "
 "উপস্থিত নেই। নতুন কি-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
-#: ../daemon/gkr-daemon-ops.c:626
+#: ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -333,48 +344,42 @@ msgstr ""
 "উপস্থিত নেই। নতুন কি-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "ডিফল্ট কি-রিং তৈরি করুন"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
 msgstr "ডিফল্ট কি-রিং'র জন্য পাসওয়ার্ড নির্বাচন করুন"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid ""
-"A list of paths to PKCS#11 modules to load. No modules are currently listed "
-"by default, as this is still an experimental feature. This is used by "
-"seahorse and other PKCS#11 aware applications."
-msgstr ""
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid "PKCS#11 Modules"
-msgstr "PKCS#11 মডিউল"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
-msgstr ""
+msgstr "এই বিকল্পের সাহায্যে gnome-keyring ডেমনের মধ্যে PKCS#11 সামগ্রী সক্রিয় করা হবে। gnome-keyring-daemon আরম্ভের সময় (অর্থাৎ, ব্যবহারকারী লগ-ইন করার সময়) এটি প্রয়োগ করা হবে। কমান্ড-লাইন থেকে প্রযোজ্য কিছু আর্গুমেন্ট এই ডেমনের ব্যবহারের জন্য উল্লেখ করা হলে এই বৈশিষ্ট্য উপেক্ষা করা যাবে।"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
-msgstr ""
+msgstr "এই বিকল্পের সাহায্যে gnome-keyring ডেমনের মধ্যে SSH agent সক্রিয় করা হবে। gnome-keyring-daemon আরম্ভের সময় (অর্থাৎ, ব্যবহারকারী লগ-ইন করার সময়) এটি প্রয়োগ করা হবে। কমান্ড-লাইন থেকে প্রযোজ্য কিছু আর্গুমেন্ট এই ডেমনের ব্যবহারের জন্য উল্লেখ করা হলে এই বৈশিষ্ট্য উপেক্ষা করা যাবে।"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "gnome-keyring PKCS#11 সামগ্রী সক্রিয় কি না।"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "gnome-keyring SSH agent সক্রিয় কি না।"
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+#| msgid "New Keyring Password"
+msgid "GNOME Keyring Daemon"
+msgstr "GNOME Keyring ডেমন"
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
@@ -389,7 +394,7 @@ msgstr "কি-রিং আন-লক করতে ব্যবহৃত পা
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr ""
+msgstr "এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কি-রিং স্বয়ংক্রিয়ভাবে আন-লক করা হয়নি"
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:124
@@ -404,644 +409,972 @@ msgstr "লগ-ইন পাসওয়ার্ড পরিবর্তন ল�
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
-msgstr ""
+msgstr "এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কি-রিং স্বয়ংক্রিয়ভাবে নির্মাণ করা হয়নি। এটি এখন নির্মাণ করা হবে।"
 
-#: ../daemon/keyrings/gkr-keyring.c:584
+#: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "%s কি-রিং আন-লক করতে ব্যবহৃত পাসওয়ার্ড"
 
-#: ../daemon/pk/gkr-pk-import.c:88
-msgid "Import private key"
-msgstr "গোপনীয়-কি ইম্পোর্ট করুন"
-
-#: ../daemon/pk/gkr-pk-import.c:90
-msgid "Import certificate"
-msgstr "সার্টিফিকেট ইম্পোর্ট করুন"
-
-#: ../daemon/pk/gkr-pk-import.c:92
-msgid "Import public key"
-msgstr "সার্বজনীন-কি ইম্পোর্ট করুন"
-
-#: ../daemon/pk/gkr-pk-import.c:94
-msgid "Import"
-msgstr "ইম্পোর্ট করুন"
-
-#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
-msgid "Enter password to unlock the private key"
-msgstr "গোপনীয় কি আনলক করতে পাসওয়ার্ড লিখুন"
-
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
-msgid "Enter password to unlock the certificate"
-msgstr "সার্টিফিকেট আন-লক করার জন্য পাসওয়ার্ড লিখুন"
-
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
-msgid "Enter password to unlock the public key"
-msgstr "সার্বজনীন কি আনলক করতে পাসওয়ার্ড লিখুন"
-
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
-msgid "Enter password to unlock"
-msgstr "আনলক করতে পাসওয়ার্ড লিখুন"
-
-#: ../daemon/pk/gkr-pk-import.c:114
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "সিস্টেম, '%s' গোপনীয় কি ইম্পোর্ট করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
-
-#: ../daemon/pk/gkr-pk-import.c:116
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "সিস্টেম, '%s' সার্টিফিকেট ইম্পোর্ট করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
-
-#: ../daemon/pk/gkr-pk-import.c:118
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "সিস্টেম, '%s' সার্বজনীন কি ইম্পোর্ট করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
-
-#: ../daemon/pk/gkr-pk-import.c:120
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "সিস্টেম, '%s' ইম্পোর্ট করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:93
-msgid "Create Storage for Key Information"
-msgstr "কি সংক্রান্ত তথ্যের জন্য সংগ্রহস্থল নির্মাণ করুন"
-
-#: ../daemon/pk/gkr-pk-index.c:94
-msgid "Choose password to protect storage"
-msgstr "সংগ্রহস্থল নিরাপদ রাখতে পাসওয়ার্ড নির্বাচন করুন"
-
-#: ../daemon/pk/gkr-pk-index.c:97
-msgid ""
-"The system wants to store information about your keys and certificates. In "
-"order to protect this information, choose a password with which it will be "
-"locked."
-msgstr ""
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:124
-msgid "Unlock Storage for Key Information"
-msgstr ""
-
-#: ../daemon/pk/gkr-pk-index.c:125
-msgid "Enter password to unlock storage"
-msgstr "সংগ্রহস্থল আন-লক করার জন্য পাসওয়ার্ড লিখুন"
-
-#: ../daemon/pk/gkr-pk-index.c:128
-msgid ""
-"The system wants to access information about your keys and certificates, but "
-"it is locked."
-msgstr ""
-
-#: ../daemon/pk/gkr-pk-object.c:883
-msgid "Certificate"
-msgstr "সার্টিফিকেট"
-
-#: ../daemon/pk/gkr-pk-object.c:885
-msgid "Private Key"
-msgstr "গোপনীয় কি"
-
-#: ../daemon/pk/gkr-pk-object.c:887
-msgid "Public Key"
-msgstr "সার্বজনীন কি"
-
-#: ../daemon/pk/gkr-pk-object.c:889
-msgid "Trust Association"
-msgstr ""
-
-#: ../daemon/pk/gkr-pk-object-storage.c:436
-#, c-format
-msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr "অন্যান্য সামগ্রীর সাথে যুক্ত হওয়ার ফলে '%s' মুছে ফেলা যায়নি।"
-
-#: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
 msgid "Unlock private key"
 msgstr "গোপনীয়-কি আন-লক করুন"
 
-#: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
 msgid "Unlock certificate"
 msgstr "সার্টিফিকেট আন-লক করুন"
 
-#: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
 msgid "Unlock public key"
 msgstr "সার্বজনীন-কি আন-লক করুন"
 
-#: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
 msgid "Unlock"
 msgstr "আন-লক করুন"
 
-#: ../daemon/pk/gkr-pk-storage.c:153
-msgid "Lock private key"
-msgstr "গোপনীয়-কি লক করুন"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+msgid "Enter password to unlock the private key"
+msgstr "গোপনীয় কি আনলক করতে পাসওয়ার্ড লিখুন"
 
-#: ../daemon/pk/gkr-pk-storage.c:155
-msgid "Lock"
-msgstr "লক করুন"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+msgid "Enter password to unlock the certificate"
+msgstr "সার্টিফিকেট আন-লক করার জন্য পাসওয়ার্ড লিখুন"
 
-#: ../daemon/pk/gkr-pk-storage.c:183
-msgid "Enter password to protect the private key"
-msgstr "গোপনীয়-কি সুরক্ষিত রাখার জন্য পাসওয়ার্ড লিখুন"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+msgid "Enter password to unlock the public key"
+msgstr "সার্বজনীন কি আনলক করতে পাসওয়ার্ড লিখুন"
 
-#: ../daemon/pk/gkr-pk-storage.c:185
-msgid "Enter password to protect storage"
-msgstr "সংগ্রহস্থল নিরাপদ রাখতে পাসওয়ার্ড লিখুন"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+msgid "Enter password to unlock"
+msgstr "আনলক করতে পাসওয়ার্ড লিখুন"
 
-#: ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই গোপনীয়-কি আন-লক করা হবে।"
-
-#: ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই সার্টিফিকেট আন-লক করা হবে।"
-
-#: ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই সার্বজনীন-কি আন-লক করা হবে।"
-
-#: ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এটি আন-লক করা হবে।"
-
-#: ../daemon/pk/gkr-pk-storage.c:209
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "একটি অ্যাপ্লিকেশন, %s গোপনীয়-কি ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
-#: ../daemon/pk/gkr-pk-storage.c:211
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "একটি অ্যাপ্লিকেশন, %s সার্টিফিকেট ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
-#: ../daemon/pk/gkr-pk-storage.c:213
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "একটি অ্যাপ্লিকেশন, %s সার্বজনীন-কি ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
-#: ../daemon/pk/gkr-pk-storage.c:215
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "একটি অ্যাপ্লিকেশন, %s ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
-#: ../daemon/pk/gkr-pk-storage.c:228
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই গোপনীয়-কি আন-লক করা হবে।"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই সার্টিফিকেট আন-লক করা হবে।"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই সার্বজনীন-কি আন-লক করা হবে।"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এটি আন-লক করা হবে।"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+#| msgid "Unlock certificate"
+msgid "Unlock certificate/key storage"
+msgstr "সার্টিফিকেট/কি সংগ্রহস্থল আন-লক করুন"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+#| msgid "Enter password to unlock the certificate"
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "সার্টিফিকেট/কি সংগ্রহস্থল আন-লক করার জন্য পাসওয়ার্ড লিখুন"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+#, c-format
+#| msgid ""
+#| "An application wants access to the certificate '%s', but it is locked"
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "একটি অ্যাপ্লিকেশন, %s সার্টিফিকেট/কি সংগ্রহস্থল ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+#| msgid "Automatically unlock this certificate when I log in."
+msgid "Automatically unlock secure storage when I log in."
+msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে নিরাপদ সংগ্রস্থল আন-লক করা হবে।"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+#| msgid "New password strength"
+msgid "New Password Required"
+msgstr "নতুন পাসওয়ার্ড আবশ্যক"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+#| msgid "Enter password to protect storage"
+msgid "New password required for secure storage"
+msgstr "সংগ্রহস্থল নিরাপদ রাখতে পাসওয়ার্ড লেখা আবশ্যক"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid ""
-"The system wants to store the private key '%s' on your disk. Please enter a "
-"password to lock it with."
-msgstr ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "সার্টিফিকেট ও কি সংগ্রহের জন্য '%s' প্রস্তুত করার উদ্দেশ্যে একটি পাসওয়ার্ড লেখা আবশ্যক"
 
-#: ../daemon/pk/gkr-pk-storage.c:230
-#, c-format
+#: ../daemon/ui/gkr-ask-tool.c:230
 msgid ""
-"The system wants to store '%s' on your disk. Please enter a password to lock "
-"it with."
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
 msgstr ""
+"<b><big>মাউসের উপর নিয়ন্ত্রণ করা সম্ভব হয়নি।</big></b>\n"
+"\n"
+"কোনো ক্ষতিকারী ক্লায়েন্ট সম্ভবত আপনার সেশান বিনা অধিকারে নিরীক্ষণ করছে অথবা সম্ভবত আপনি কোনো মেনু ক্লিক করেছেন অথবা কোনো অ্যাপ্লিকেশন নিজের উপর আকর্ষণ সৃষ্টি করেছে।\n"
+"\n"
+"পুনরায় চেষ্টা করুন।"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:40
-msgid "The operation was cancelled"
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
 msgstr ""
+"<b><big>কি-বোর্ডের উপর নিয়ন্ত্রণ করা সম্ভব হয়নি।</big></b>\n"
+"\n"
+"কোনো ক্ষতিকারী ক্লায়েন্ট সম্ভবত আপনার সেশান বিনা অধিকারে নিরীক্ষণ করছে অথবা সম্ভবত আপনি কোনো মেনু ক্লিক করেছেন অথবা কোনো অ্যাপ্লিকেশন নিজের উপর আকর্ষণ সৃষ্টি করেছে।\n"
+"\n"
+"পুনরায় চেষ্টা করুন।"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:455
-msgid "Unrecognized or unsupported file."
-msgstr "অপরিচিত অথবা অসমর্থিত ফাইল।"
-
-#: ../daemon/pkix/gkr-pkix-parser.c:459
-msgid "Could not parse invalid or corrupted file."
-msgstr "অবৈধ অথবা ক্ষতিগ্রস্ত ফাইল পার্স করতে ব্যর্থ।"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:166
-#, c-format
-msgid "Couldn't encode secure shell public key."
-msgstr "সিকিউর শেল পাবলিক কি এনকোড করতে ব্যর্থ।"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:412
-#, c-format
-msgid "Couldn't read secure shell private key: %s"
-msgstr "সিকিউর শেল পাবলিক কি পড়তে ব্যর্থ: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:416
-#, c-format
-msgid "Invalid secure shell private key at: %s"
-msgstr "চিহ্নিত স্থানে অবৈধ সিকিউর শেল পাবলিক কি: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:465
-#, c-format
-msgid "Couldn't encrypt the SSH key to store it."
-msgstr "সংরক্ষণের উদ্দেশ্যে SSH-কি এনক্রিপ্ট করা যায়নি।"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:481
-#, c-format
-msgid "Couldn't encode the SSH key to store it."
-msgstr "সংরক্ষণের উদ্দেশ্যে SSH-কি এনকোড করা যায়নি।"
-
-#: ../daemon/ui/gkr-ask-tool.c:182
+#: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "এনক্রিপশন বিনা পাসওয়ার্ড সংরক্ষণ করা হবে কি?"
 
-#: ../daemon/ui/gkr-ask-tool.c:183
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
-msgstr ""
+msgstr "ফাঁকা পাসওয়ার্ড নির্বাচনের ফলে, আপনার সংরক্ষিত পাসওয়ার্ডগুলি নিরাপদভাবে এনক্রিপ্ট করা সম্ভব হবে না। আপনার ফাইলগুলি পড়তে অনুমোদিত যে কোনো ব্যবহারকারী দ্বারা এইগুলি প্রয়োগ করা সম্ভব হবে।"
 
-#: ../daemon/ui/gkr-ask-tool.c:190
+#: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
-msgstr ""
+msgstr "অনিরাপদ সংগ্রহস্থল ব্যবহার করা হবে"
 
-#: ../daemon/ui/gkr-ask-tool.c:413
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "অবস্থান: (_L)"
 
-#: ../daemon/ui/gkr-ask-tool.c:426
+#: ../daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "পুরোনো পাসওয়ার্ড:(_O)"
 
-#: ../daemon/ui/gkr-ask-tool.c:446
+#: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "পাসওয়ার্ড:(_P)"
 
-#: ../daemon/ui/gkr-ask-tool.c:468
+#: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "পাসওয়ার্ড নিশ্চিত করুন:(_C)"
 
-#: ../daemon/ui/gkr-ask-tool.c:488
+#: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "নতুন পাসওয়ার্ডের দৃঢ়তা"
 
-#: ../daemon/ui/gkr-ask-tool.c:546
+#: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "পাসওয়ার্ডে গরমিল।"
 
-#: ../daemon/ui/gkr-ask-tool.c:562
+#: ../daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "পাসওয়ার্ড ফাঁকা রাখা যাবে না"
 
-#: ../daemon/ui/gkr-ask-tool.c:613
-msgid "Deny"
-msgstr "প্রত্যাখ্যান করুন"
+#: ../daemon/ui/gkr-ask-tool.c:712
+#| msgid "Deny"
+msgid "_Deny"
+msgstr "প্রত্যাখ্যান করুন (_D)"
 
-#: ../daemon/ui/gkr-ask-tool.c:625
-msgid "_Create"
-msgstr "নির্মাণ করুন (_C)"
+#: ../daemon/ui/gkr-ask-tool.c:724
+#| msgid "_Create"
+msgid "C_reate"
+msgstr "নির্মাণ করুন (_r)"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:728
+msgid "C_hange"
+msgstr "পরিবর্তন করুন (_h)"
+
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "একবার ব্যবহারের অনুমতি প্রদান করা হবে (_O)"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "সর্বদা ব্যবহারের অনুমতি প্রদান করা হবে (_A)"
 
-#: ../gp11/gp11-misc.c:43
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "ডোমেইনের অংশবিশেষ"
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "ব্যবহারকারীর ID"
+
+#: ../egg/egg-oid.c:46
+msgid "Email"
+msgstr "ই-মেইল"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "জন্মদিন"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "জন্মস্থান"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "স্ত্রী/পুরুষ"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "নাগরিকত্ব"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "বসবাসের দেশ"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "নাম"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "পদবি"
+
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:330
+msgid "Serial Number"
+msgstr "ক্রমিক সংখ্যা"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "দেশ"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "অঞ্চল"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "প্রদেশ"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "রাস্তা"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "প্রতিষ্ঠান"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "প্রাতিষ্ঠানিক বিভাগ"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "পদ"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "দূরভাষ"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "প্রদত্ত নাম"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "অদ্যাক্ষর"
+
+#: ../egg/egg-oid.c:91
+#| msgid "The operation failed"
+msgid "Generation Qualifier"
+msgstr ""
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "DN কোয়ালিফায়ার"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "ছদ্ধনাম"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "RSA সহ MD2"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "RSA সহ MD5"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "RSA সহ SHA1"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "DSA সহ SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>সার্টিফিকেটের অংশ নয়</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>অজানা</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+#| msgid "Import certificate"
+msgid "<Not Part of Certificate>"
+msgstr "<সার্টিফিকেটের অংশ নয়>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>ফিংগারপ্রিন্ট</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>জারি করেছেন</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>চিহ্নিত প্রাপকের জন্য জারি করা হয়েছে</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>নিম্নলিখিত কাজের জন্য এই সার্টিফিকেট পরীক্ষিত হয়েছে:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>বৈধতা</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "সাধারণ নাম (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+#| msgid "Import certificate"
+msgid "Email Recipient Certificate"
+msgstr "ই-মেইল প্রাপ্তির সার্টিফিকেট"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+#| msgid "Certificate"
+msgid "Email Signer Certificate"
+msgstr "ই-মেইল স্বাক্ষরের সার্টিফিকেট"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "মেয়াদপূর্তী"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "জারির তারিখ"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 ফিংগারপ্রিন্ট"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "প্রতিষ্ঠান (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "প্রাতিষ্ঠানিক বিভাগ (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 ফিংগারপ্রিন্ট"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+#| msgid "Certificate"
+msgid "SSL Client Certificate"
+msgstr "SSL ক্লায়েন্ট সার্টিফিকেট"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+#| msgid "Certificate"
+msgid "SSL Server Certificate"
+msgstr "SSL সার্ভার সার্টিফিকেট"
+
+#: ../gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "প্রসারণ"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "সনাক্তকারী"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "মান"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "হ্যাঁ"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "না"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+#| msgid "Certificate"
+msgid "Critical"
+msgstr "গুরুতর"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:311
+msgid "Subject Name"
+msgstr "প্রসঙ্গের নাম"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:315
+msgid "Issuer Name"
+msgstr "নির্মাণকারী নাম"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:319
+#| msgid "Certificate"
+msgid "Issued Certificate"
+msgstr "জারি করা সার্টিফিকেট"
+
+#: ../gcr/gcr-certificate-details-widget.c:324
+msgid "Version"
+msgstr "সংস্করণ"
+
+#: ../gcr/gcr-certificate-details-widget.c:337
+msgid "Not Valid Before"
+msgstr "চিহ্নিত সময়ের পূর্বে বৈধ নয়"
+
+#: ../gcr/gcr-certificate-details-widget.c:342
+msgid "Not Valid After"
+msgstr "চিহ্নিত সময়ের পরে বৈধ নয়"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
+msgid "Signature"
+msgstr "স্বাক্ষর"
+
+#: ../gcr/gcr-certificate-details-widget.c:351
+msgid "Signature Algorithm"
+msgstr "স্বাক্ষরের অ্যালগোরিদম"
+
+#: ../gcr/gcr-certificate-details-widget.c:356
+msgid "Signature Parameters"
+msgstr "স্বাক্ষরের পরামিতি"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:367
+#| msgid "Public Key"
+msgid "Public Key Info"
+msgstr "সার্বজনীন কি সংক্রান্ত তথ্য"
+
+#: ../gcr/gcr-certificate-details-widget.c:371
+msgid "Key Algorithm"
+msgstr "কি-র অ্যালগোরিদম"
+
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "কি-র পরামিতি"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
+msgid "Key Size"
+msgstr "কি-র মাপ"
+
+#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "সার্বজনীন কি"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:394
+msgid "Fingerprints"
+msgstr "ফিংগারপ্রিন্ট"
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>সার্টিফিকেট ও কি ইম্পোর্ট করুন</span>"
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+#| msgid "Import"
+msgid "Import Into:"
+msgstr "চিহ্নিত স্থানে ইম্পোর্ট করুন:"
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+#| msgid "_Password:"
+msgid "Password:"
+msgstr "পাসওয়ার্ড:"
+
+#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr "কর্ম বাতিল করা হয়েছে"
+
+#: ../gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr "ইম্পোর্ট করার উদ্দেশ্যে কোনো স্থান চিহ্নিত হয়নি"
+
+#: ../gcr/gcr-importer.c:328
+#| msgid "Import certificate"
+msgid "Import Certificates/Keys"
+msgstr "সার্টিফিকেট/কি ইম্পোর্ট করুন"
+
+#: ../gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "ইম্পোর্ট করা সার্টিফিকেট/কি সংরক্ষণের জন্য একটি স্থান নির্বাচন করুন।"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
+#| msgid "The system wants to import the private key '%s', but it is locked"
+msgid "In order to import the private key, it must be unlocked"
+msgstr "গোপনীয় কি ইম্পোর্ট করতে হলে তা আন-লক করা আবশ্যক"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
+#| msgid "The system wants to import the certificate '%s', but it is locked"
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "সার্টিফিকেট ইম্পোর্ট করতে হলে তা আন-লক করা আবশ্যক"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
+msgid "In order to import the data, it must be unlocked"
+msgstr "তথ্য ইম্পোর্ট করতে হলে তা আন-লক করা আবশ্যক"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
+#, c-format
+#| msgid "The system wants to import the private key '%s', but it is locked"
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "'%s' গোপনীয় কি ইম্পোর্ট করতে হলে তা আন-লক করা আবশ্যক"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
+#, c-format
+#| msgid "The system wants to import the certificate '%s', but it is locked"
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "'%s' সার্টিফিকেট ইম্পোর্ট করতে হলে তা আন-লক করা আবশ্যক"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
+#, c-format
+#| msgid "The system wants to import '%s', but it is locked"
+msgid "In order to import '%s', it must be unlocked"
+msgstr "'%s' ইম্পোর্ট করতে হলে তা আন-লক করা আবশ্যক"
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "গোপনীয় কি"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "সার্টিফিকেট"
+
+#: ../gcr/gcr-parser.c:1576
+#| msgid "Unrecognized or unsupported file."
+msgid "Unrecognized or unsupported data."
+msgstr "অপরিচিত অথবা অসমর্থিত তথ্য।"
+
+#: ../gcr/gcr-parser.c:1579
+#| msgid "Could not parse invalid or corrupted file."
+msgid "Could not parse invalid or corrupted data."
+msgstr "অবৈধ অথবা ক্ষতিগ্রস্ত তথ্য পার্স করতে ব্যর্থ।"
+
+#: ../gcr/gcr-parser.c:1582
+#| msgid "The data cannot be locked"
+msgid "The data is locked"
+msgstr "তথ্য লক করা রয়েছে"
+
+#: ../gp11/gp11-misc.c:117
 msgid "Insufficient memory available"
 msgstr "পর্যাপ্ত মেমরি উপলব্ধ নেই"
 
-#: ../gp11/gp11-misc.c:45
+#: ../gp11/gp11-misc.c:119
 msgid "The specified slot ID is not valid"
 msgstr "চিহ্নিত স্লট ID বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:47
+#: ../gp11/gp11-misc.c:121
 msgid "Internal error"
 msgstr "অভ্যন্তরীণ ত্রুটি"
 
-#: ../gp11/gp11-misc.c:49
+#: ../gp11/gp11-misc.c:123
 msgid "The operation failed"
 msgstr "কর্ম ব্যর্থ"
 
-#: ../gp11/gp11-misc.c:51
+#: ../gp11/gp11-misc.c:125
 msgid "Invalid arguments"
 msgstr "অবৈধ আর্গুমেন্ট"
 
-#: ../gp11/gp11-misc.c:53
+#: ../gp11/gp11-misc.c:127
 msgid "The module cannot create needed threads"
 msgstr "আবশ্যক থ্রেডগুলি মডিউল দ্বারা নির্মাণ করা সম্ভব নয়"
 
-#: ../gp11/gp11-misc.c:55
+#: ../gp11/gp11-misc.c:129
 msgid "The module cannot lock data properly"
-msgstr ""
+msgstr "চিহ্নিত মডিউল দ্বারা সঠিকভাবে তথ্য লক করা সম্ভব নয়"
 
-#: ../gp11/gp11-misc.c:57
+#: ../gp11/gp11-misc.c:131
 msgid "The field is read-only"
 msgstr "এই ক্ষেত্রটি শুধুমাত্র পাঠ-যোগ্য"
 
-#: ../gp11/gp11-misc.c:59
+#: ../gp11/gp11-misc.c:133
 msgid "The field is sensitive and cannot be revealed"
 msgstr "এই ক্ষেত্রে সংবেদনশীল তথ্য উপস্থিত রয়েছে এবং প্রকাশ করা যাবে না"
 
-#: ../gp11/gp11-misc.c:61
+#: ../gp11/gp11-misc.c:135
 msgid "The field is invalid or does not exist"
 msgstr "এই ক্ষেত্রটি বৈধ নয় অথবা অনুপস্থিত"
 
-#: ../gp11/gp11-misc.c:63
+#: ../gp11/gp11-misc.c:137
 msgid "Invalid value for field"
 msgstr "ক্ষেত্রের মান বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:65
+#: ../gp11/gp11-misc.c:139
 msgid "The data is not valid or unrecognized"
 msgstr "তথ্য বৈধ নয় অথবা পরিচিত নয়"
 
-#: ../gp11/gp11-misc.c:67
+#: ../gp11/gp11-misc.c:141
 msgid "The data is too long"
 msgstr "তথ্য অত্যাধিক লম্বা"
 
-#: ../gp11/gp11-misc.c:69
+#: ../gp11/gp11-misc.c:143
 msgid "An error occurred on the device"
 msgstr "ডিভাইসের মধ্যে একটি ত্রুটি দেখা দিয়েছে"
 
-#: ../gp11/gp11-misc.c:71
+#: ../gp11/gp11-misc.c:145
 msgid "Insufficient memory available on device"
 msgstr "ডিভাইসের মধ্যে পর্যাপ্ত মেমরি উপস্থিত নেই"
 
-#: ../gp11/gp11-misc.c:73
+#: ../gp11/gp11-misc.c:147
 msgid "The device was removed or unplugged"
 msgstr "ডিভাইসটি সরিয়ে ফেলা হয়েছে অথবা বিচ্ছিন্ন করা হয়েছে"
 
-#: ../gp11/gp11-misc.c:75
+#: ../gp11/gp11-misc.c:149
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "এনক্রিপ্ট করা তথ্য বৈধ নয় অথবা পরিচিত নয়"
 
-#: ../gp11/gp11-misc.c:77
+#: ../gp11/gp11-misc.c:151
 msgid "The encrypted data is too long"
 msgstr "এনক্রিপ্ট করা তথ্য অত্যাধিক লম্বা"
 
-#: ../gp11/gp11-misc.c:79
+#: ../gp11/gp11-misc.c:153
 msgid "This operation is not supported"
 msgstr "এই কর্ম সমর্থিত নয়"
 
-#: ../gp11/gp11-misc.c:81
+#: ../gp11/gp11-misc.c:155
 msgid "The key is missing or invalid"
 msgstr "কি অনুপস্থিত অথবা বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:83
+#: ../gp11/gp11-misc.c:157
 msgid "The key is the wrong size"
 msgstr "কি-র মাপ সঠিক নয়"
 
-#: ../gp11/gp11-misc.c:85
+#: ../gp11/gp11-misc.c:159
 msgid "The key is of the wrong type"
 msgstr "কি-র ধরন সঠিক নয়"
 
-#: ../gp11/gp11-misc.c:87
+#: ../gp11/gp11-misc.c:161
 msgid "No key is needed"
 msgstr "কোনো কি-র প্রয়োজন নেই"
 
-#: ../gp11/gp11-misc.c:89
+#: ../gp11/gp11-misc.c:163
 msgid "The key is different than before"
-msgstr ""
+msgstr "কি-টি পূর্ববর্তী অবস্থা থেকে পরিবর্তিত হয়েছে"
 
-#: ../gp11/gp11-misc.c:91
+#: ../gp11/gp11-misc.c:165
 msgid "A key is needed"
 msgstr "একটি কি আবশ্যক"
 
-#: ../gp11/gp11-misc.c:93
+#: ../gp11/gp11-misc.c:167
 msgid "Cannot include the key in digest"
 msgstr "ডাইজেস্টের মধ্যে কি অন্তর্ভুক্ত করা যাবে না"
 
-#: ../gp11/gp11-misc.c:95
+#: ../gp11/gp11-misc.c:169
 msgid "This operation cannot be done with this key"
 msgstr "এই কি সহযোগে এই কর্ম করা সম্ভব নয়"
 
-#: ../gp11/gp11-misc.c:97
+#: ../gp11/gp11-misc.c:171
 msgid "The key cannot be wrapped"
-msgstr ""
+msgstr "কি-রি র্‌যাপ করা সম্ভব নয়"
 
-#: ../gp11/gp11-misc.c:99
+#: ../gp11/gp11-misc.c:173
 msgid "Cannot export this key"
 msgstr "চিহ্নিত কি এক্সপোর্ট করা সম্ভব নয়"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gp11/gp11-misc.c:175
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "ক্রিপ্টো ব্যবস্থা বৈধ নয় অথবা অপরিচিত"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gp11/gp11-misc.c:177
 msgid "The crypto mechanism has an invalid argument"
 msgstr "ক্রিপ্টো ব্যবস্থার ক্ষেত্রে অবৈধ আর্গুমেন্ট উপস্থিত"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gp11/gp11-misc.c:179
 msgid "The object is missing or invalid"
 msgstr "সামগ্রী অনুপস্থিত অথবা বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gp11/gp11-misc.c:181
 msgid "Another operation is already taking place"
 msgstr "একটি পৃথক কর্ম বর্তমানে চলছে"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gp11/gp11-misc.c:183
 msgid "No operation is taking place"
 msgstr "কোনো কর্ম বর্তমানে সঞ্চালিত হচ্ছে না"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gp11/gp11-misc.c:185
 msgid "The password or PIN is incorrect"
 msgstr "পাসওয়ার্ড অথবা PIN সঠিক নয়"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gp11/gp11-misc.c:187
 msgid "The password or PIN is invalid"
 msgstr "পাসওয়ার্ড অথবা PIN বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gp11/gp11-misc.c:189
 msgid "The password or PIN is of an invalid length"
 msgstr "পাসওয়ার্ড অথবা PIN-র দৈর্ঘ্য সঠিক নয়"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:191
 msgid "The password or PIN has expired"
 msgstr "পাসওয়ার্ড অথবা PIN-র মেয়াদ পূর্ণ হয়েছে"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:193
 msgid "The password or PIN is locked"
 msgstr "পাসওয়ার্ড অথবা PIN লক করা আছে"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:195
 msgid "The session is closed"
 msgstr "সেশান বন্ধ হয়ে গেছে"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:197
 msgid "Too many sessions are active"
 msgstr "অত্যাধিক সংখ্যক সেশান সক্রিয় রয়েছে"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:199
 msgid "The session is invalid"
 msgstr "এই সেশানটি বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:201
 msgid "The session is read-only"
 msgstr "এই সেশানটি শুধুমাত্র পাঠ-যোগ্য"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:203
 msgid "An open session exists"
 msgstr "একটি সেশান বর্তমানে খোলা রয়েছে"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:205
 msgid "A read-only session exists"
 msgstr "শুধুমাত্র পাঠযোগ্য একটি সেশান বর্তমানে চলছে"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:207
 msgid "An administrator session exists"
 msgstr "অ্যাডমিনিস্ট্রেটরের একটি সেশান বর্তমানে চলছে"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:209
 msgid "The signature is bad or corrupted"
 msgstr "স্বাক্ষর সঠিক নয় অথবা ক্ষতিগ্রস্ত"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:211
 msgid "The signature is unrecognized or corrupted"
 msgstr "স্বাক্ষর পরিচিত নয় অথবা ক্ষতিগ্রস্ত"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:213
 msgid "Certain required fields are missing"
 msgstr "কয়েকটি আবশ্যক ক্ষেত্রের মান অনুপস্থিত"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:215
 msgid "Certain fields have invalid values"
 msgstr "কয়েকটি ক্ষেত্রের মান বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:217
 msgid "The device is not present or unplugged"
 msgstr "ডিভাইস উপস্থিত নেই অথবা বিচ্ছিন্ন করা হয়েছে"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:219
 msgid "The device is invalid or unrecognizable"
 msgstr "ডিভাইসটি বৈধ নয় অথবা পরিচিত নয়"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:221
 msgid "The device is write protected"
 msgstr "ডিভাইসটি লেখার জন্য অনুমোদিত নয়"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:223
 msgid "Cannot import because the key is invalid"
 msgstr "অবৈধ হওয়ার ফলে কি ইম্পোর্ট করা যাবে না"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot import because the key is of the wrong size"
 msgstr "ভুল মাপের হওয়ার ফলে কি ইম্পোর্ট করা যাবে না"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot import because the key is of the wrong type"
 msgstr "ভুল ধরনের হওয়ার ফলে কি ইম্পোর্ট করা যাবে না"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:229
 msgid "You are already logged in"
 msgstr "আপনি লগ-ইন করা অবস্থায় রয়েছে"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:231
 msgid "No user has logged in"
 msgstr "কোনো ব্যবহারকারী লগ-ইন করেননি"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:233
 msgid "The user's password or PIN is not set"
 msgstr "ব্যবহারকারীর পাসওয়ার্ড অথবা PIN নির্ধারিত হয়নি"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:235
 msgid "The user is of an invalid type"
 msgstr "ব্যবহারকারীর প্রকৃতি বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:237
 msgid "Another user is already logged in"
 msgstr "পৃথক এক ব্যবহারকারী পূর্বে লগ-ইন করেছেন"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:239
 msgid "Too many users of different types logged in"
 msgstr "বিভিন্ন ধরনের অত্যাধিক সংখ্যক ব্যবহারকারী লগ-ইন করেছেন"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:241
 msgid "Cannot import an invalid key"
 msgstr "একটি অবৈধ-কি ইম্পোর্ট করা যাবে না"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:243
 msgid "Cannot import a key of the wrong size"
 msgstr "ভুল মাপের কি ইম্পোর্ট করা যাবে না"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:245
 msgid "Cannot export because the key is invalid"
 msgstr "কি অবৈধ হওয়ার ফলে কি এক্সপোর্ট করা যাবে না"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:247
 msgid "Cannot export because the key is of the wrong size"
 msgstr "ভুল মাপের হওয়ার ফলে কি এক্সপোর্ট করা যাবে না"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:249
 msgid "Cannot export because the key is of the wrong type"
 msgstr "ভুল ধরনের হওয়ার ফলে কি এক্সপোর্ট করা যাবে না"
 
-#: ../gp11/gp11-misc.c:177
-msgid "Cannot set a random seed"
-msgstr ""
+#: ../gp11/gp11-misc.c:251
+msgid "Unable to initialize the random number generator"
+msgstr "র্‌যান্ডম সংখ্যা নির্মাণ ব্যবস্থা আরম্ভ করতে ব্যর্থ"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:253
 msgid "No random number generator available"
-msgstr ""
+msgstr "র্‌যান্ডম সংখ্যা নির্মাণের কোনো ব্যবস্থা উপলব্ধ নেই"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:255
 msgid "The crypto mechanism has an invalid parameter"
-msgstr ""
+msgstr "ক্রিপ্টো ব্যবস্থার ক্ষেত্রে উপলব্ধ একটি পরামিতি বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:257
 msgid "Not enough space to store the result"
 msgstr "ফলাফল সংরক্ষণের জন্য পর্যাপ্ত স্থাপ অনুপস্থিত"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:259
 msgid "The saved state is invalid"
 msgstr "সংরক্ষিত অবস্থা বৈধ নয়"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:261
 msgid "The information is sensitive and cannot be revealed"
 msgstr "তথ্যটি সংবেদনশীল ও প্রকাশ করা সম্ভব নয়"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:263
 msgid "The state cannot be saved"
 msgstr "অবস্থা সংরক্ষণ করা যাবে না"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:265
 msgid "The module has not been initialized"
 msgstr "মডিউল আরম্ভ করা হয়নি"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:267
 msgid "The module has already been initialized"
 msgstr "চিহ্নিত মডিউল পূর্বে আরম্ভ করা হয়েছে"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:269
 msgid "Cannot lock data"
 msgstr "তথ্য লক করা যাবে না"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:271
 msgid "The data cannot be locked"
 msgstr "তথ্য লক করা যাবে না"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:273
 msgid "The signature request was rejected by the user"
 msgstr "স্বাক্ষরের অনুরোধ ব্যবহারকারী দ্বারা প্রত্যাখ্যান করা হয়েছে"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:277
 msgid "Unknown error"
 msgstr "অজানা ত্রুটি"
 
-#: ../library/gnome-keyring-utils.c:91
+#: ../library/gnome-keyring-utils.c:155
 msgid "Access Denied"
 msgstr "প্রবেশাধিকার প্রত্যাখ্যাত"
 
-#: ../library/gnome-keyring-utils.c:93
+#: ../library/gnome-keyring-utils.c:157
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "gnome-keyring-daemon অ্যাপ্লিকেশন বর্তমানে চলছে না।"
 
-#: ../library/gnome-keyring-utils.c:95
+#: ../library/gnome-keyring-utils.c:159
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "gnome-keyring-daemon-র সাথে যোগাযোগ করতে সমস্যা"
 
-#: ../library/gnome-keyring-utils.c:97
+#: ../library/gnome-keyring-utils.c:161
 msgid "A keyring with that name already exists"
 msgstr "এই নামের একটি কি-রং বর্তমানে উপস্থিত রয়েছে"
 
-#: ../library/gnome-keyring-utils.c:99
+#: ../library/gnome-keyring-utils.c:163
 msgid "Programmer error: The application sent invalid data."
 msgstr "প্রোগ্রামার ত্রুটি: অ্যাপ্লিকেশন দ্বারা অবৈধ তথ্য প্রেরিত হয়েছে।"
 
-#: ../library/gnome-keyring-utils.c:101
+#: ../library/gnome-keyring-utils.c:165
 msgid "No matching results"
 msgstr "কোনো মিল পাওয়া যায়নি"
 
-#: ../library/gnome-keyring-utils.c:103
+#: ../library/gnome-keyring-utils.c:167
 msgid "A keyring with that name does not exist."
 msgstr "এই নামের কি-রং বর্তমানে উপস্থিত নেই।"
 
-#: ../library/gnome-keyring-utils.c:110
+#: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "কি-রিং পূর্বে আন-লক করা হয়েছে।"
+
+#: ../pkcs11/gck/gck-certificate.c:710
+#| msgid "Certificate"
+msgid "Unnamed Certificate"
+msgstr "নামবিহীন সার্টিফিকেট"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+#| msgid "Couldn't encode secure shell public key."
+msgid "Couldn't parse public SSH key"
+msgstr "সার্বজনীন SSH-কি পার্স করতে ব্যর্থ"
 
