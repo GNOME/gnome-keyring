@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-02-18 09:40+0000\n"
-"PO-Revision-Date: 2009-03-11 14:22+0530\n"
+"POT-Creation-Date: 2009-03-11 09:01+0000\n"
+"PO-Revision-Date: 2009-03-15 11:09+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati <fedora-trans-gu@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -350,7 +351,7 @@ msgid ""
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
-msgstr ""
+msgstr "આ વિકલ્પ PKCS#11 ઘટકને gnome-keyring ડિમનમાં સક્રિય કરે છે. તે માત્ર gnome-keyring-daemon શરૂઆત તરીકે અસર લે છે, (એટલે કે: જ્યારે વપરાશકર્તા પ્રવેશ કરે). આ સુયોજન ફરીથી લખાઈ જશે જ્યારે ચોક્કસ આદેશ વાક્ય દલીલો ડિમનને પસાર કરવામાં આવે."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -358,7 +359,7 @@ msgid ""
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
-msgstr ""
+msgstr "આ વિકલ્પ SSH એજન્ટને gnome-keyring ડિમનમાં સક્રિય કરે છે. તે માત્ર gnome-keyring-daemon શરૂઆત તરીકે અસર લે છે, (એટલે કે: જ્યારે વપરાશકર્તા પ્રવેશ કરે). આ સુયોજન ફરીથી લખાઈ જશે જ્યારે ચોક્કસ આદેશ વાક્ય દલીલો ડિમનને પસાર કરવામાં આવે."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -400,7 +401,9 @@ msgstr "તમારો પ્રવેશ માટે પાસવર્ડ �
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
-msgstr "તમારા પ્રવેશ કીરીંગને આપોઆપ તાળું મરાયેલ નથી જ્યારે તમે આ કમ્પ્યૂટરમાં પ્રવેશ્યા. તે બનાવવામાં આવશે નહિં."
+msgstr ""
+"તમારા પ્રવેશ કીરીંગને આપોઆપ તાળું મરાયેલ નથી જ્યારે તમે આ કમ્પ્યૂટરમાં પ્રવેશ્યા. તે બનાવવામાં "
+"આવશે નહિં."
 
 #: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
@@ -423,11 +426,11 @@ msgstr "સાર્વજનિક કીનું તાળુ ખોલો"
 msgid "Unlock"
 msgstr "તાળુ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "ખાનગી કીનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "પ્રમાણપત્રનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
@@ -435,7 +438,7 @@ msgstr "પ્રમાણપત્રનું તાળુ ખોલવા મ
 msgid "Enter password to unlock the public key"
 msgstr "સાર્વજનિક કી ને તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
@@ -479,36 +482,36 @@ msgstr "જ્યારે હું પ્રવેશ કરું ત્ય�
 msgid "Automatically unlock this when I log in"
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ તાળાને આપોઆપ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
 msgid "Unlock certificate/key storage"
 msgstr "પ્રમાણપત્ર/કી નો સંગ્રહનું તાળુ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "પ્રમાણપત્ર/કી સંગ્રહ તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr "કાર્યક્રમ એ કાર્યક્રમ/કી સંગ્રહ '%s' માં પ્રવેશ કરવા માંગે છે, પરંતુ તે તાળુ મારેલ છે"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
 msgid "Automatically unlock secure storage when I log in."
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ સુરક્ષિત સંગ્રહને આપોઆપ ખોલો."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
 msgid "New Password Required"
 msgstr "નવા પાસવર્ડની જરૂરિયાત"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New password required for secure storage"
 msgstr "સુરક્ષિત સંગ્રહ માટે નવા પાસવર્ડ ની જરૂરિયાત છે"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -524,6 +527,11 @@ msgid ""
 "\n"
 "Try again."
 msgstr ""
+"<b><big>તમારું માઉસ પ્રાપ્ત કરી શક્યા નહિં.</big></b>\n"
+"\n"
+"મલીન ક્લાઈન્ટ તમારા સત્રમાં ઘૂંસી શક્યો હોઈ શકે અથવા તમે ખાલી મેનુ અથવા અમુક કાર્યક્રમ પર માત્ર ફોકસ કરવા માટે ક્લિક કરવાનું નક્કી કર્યું હોઈ શકે.\n"
+"\n"
+"ફરી પ્રયાસ કરો."
 
 #: ../daemon/ui/gkr-ask-tool.c:239
 msgid ""
@@ -534,6 +542,11 @@ msgid ""
 "\n"
 "Try again."
 msgstr ""
+"<b><big>તમારું કીબોર્ડ પ્રાપ્ત કરી શક્યા નહિં.</big></b>\n"
+"\n"
+"મલીન ક્લાઈન્ટ તમારા સત્રમાં ઘૂંસી શક્યો હોઈ શકે અથવા તમે ખાલી મેનુ અથવા અમુક કાર્યક્રમ પર માત્ર ફોકસ કરવા માટે ક્લિક કરવાનું નક્કી કર્યું હોઈ શકે.\n"
+"\n"
+"ફરી પ્રયાસ કરો."
 
 #: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
@@ -544,7 +557,7 @@ msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
-msgstr ""
+msgstr "ખાલી પાસવર્ડ વાપરવાનું પસંદ કરીને, તમારા સંગ્રહાયેલ પાસવર્ડો સુરક્ષિત રીતે એનક્રિપ્ટ થશે નહિં. તેઓ તમારી ફાઈલોના વપરાશ સાથે કોઈપણના દ્વારા સુલભ થશે."
 
 #: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
@@ -898,52 +911,52 @@ msgstr "માં આયાત કરો:"
 msgid "Password:"
 msgstr "પાસવર્ડ:"
 
-#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
 msgid "The operation was cancelled"
 msgstr "પ્રક્રિયા રદ કરી દીધી હતી"
 
-#: ../gcr/gcr-importer.c:254
+#: ../gcr/gcr-importer.c:255
 #, c-format
 msgid "No location available to import to"
 msgstr "આયાત કરવા માટે ઉપલ્બધ સ્થાન નથી"
 
-#: ../gcr/gcr-importer.c:328
+#: ../gcr/gcr-importer.c:404
 msgid "Import Certificates/Keys"
 msgstr "પ્રમાણપત્રો/કીઓ ને આયાત કરો"
 
-#: ../gcr/gcr-importer.c:335
+#: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "આયાત કરેલ પ્રમાણપત્રો/કીઓ ને સંગ્રહ કરવા માટે સ્થાન ને પસંદ કરો."
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:373
+#: ../gcr/gcr-importer.c:449
 msgid "In order to import the private key, it must be unlocked"
 msgstr "ખાનગી કી ને આયાત કરવા માટે ક્રમમાં, તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:376
+#: ../gcr/gcr-importer.c:452
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "પ્રમાણપત્ર ને આયાત કરવાનું ક્રમમાં, તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:379
+#: ../gcr/gcr-importer.c:455
 msgid "In order to import the data, it must be unlocked"
 msgstr "માહિતી ને આયાત કરવા માટે ક્રમમાં, તેને તાળુ ખોલેલ જ હોવુ જોઇએ"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:384
+#: ../gcr/gcr-importer.c:460
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "ખાનગી કી '%s' ને આયાત કરવા માટે ક્રમમાં, તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:387
+#: ../gcr/gcr-importer.c:463
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "પ્રમાણપત્ર '%s' ને આયાત કરવાનું ક્રમમાં, તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:390
+#: ../gcr/gcr-importer.c:466
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "'%s' આયાત કરવા માટે ક્રમમાં. તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
@@ -1324,7 +1337,7 @@ msgstr "કીરીંગનું તાળું પહેલાથી જ �
 msgid "Unnamed Certificate"
 msgstr "નામ ન થયેલ પ્રમાણપત્ર"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
 msgid "Couldn't parse public SSH key"
 msgstr "સાર્વજનિક SSH કી નું પદચ્છેદન કરી શકાયુ નહિં"
 
