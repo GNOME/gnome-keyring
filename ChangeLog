@@ -1,5 +1,9 @@
 2009-03-16  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in: Bump version
+
+2009-03-16  Stef Walter  <stef@memberwebs.com>
+
 	* Merge docs-organize branch.
 
 === gnome-keyring 2.26.0 ===
