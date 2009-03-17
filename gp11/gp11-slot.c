@@ -28,6 +28,21 @@
 
 #include <string.h>
 
+/**
+ * SECTION:gp11-slot
+ * @title: GP11Slot
+ * @short_description: Represents a PKCS11 slot that can contain a token.
+ * 
+ * A PKCS11 slot can contain a token. As an example, a slot might be a card reader, and the token
+ * the card. If the PKCS11 module is not a hardware driver, often the slot and token are equivalent.  
+ */
+
+/**
+ * GP11Slot:
+ * 
+ * Represents a PKCS11 slot.
+ */
+
 enum {
 	PROP_0,
 	PROP_MODULE,
@@ -187,10 +202,20 @@ gp11_slot_class_init (GP11SlotClass *klass)
 	gobject_class->dispose = gp11_slot_dispose;
 	gobject_class->finalize = gp11_slot_finalize;
 	
+	/**
+	 * GP11Slot:module:
+	 * 
+	 * The PKCS11 object that this slot is a part of.
+	 */
 	g_object_class_install_property (gobject_class, PROP_MODULE,
 		g_param_spec_object ("module", "Module", "PKCS11 Module",
 		                     GP11_TYPE_MODULE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GP11Slot:handle:
+	 * 
+	 * The raw CK_SLOT_ID handle of this slot.
+	 */
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 		g_param_spec_ulong ("handle", "Handle", "PKCS11 Slot ID",
 		                   0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
@@ -200,6 +225,25 @@ gp11_slot_class_init (GP11SlotClass *klass)
 
 /* ----------------------------------------------------------------------------
  * PUBLIC 
+ */
+
+/**
+ * GP11SlotInfo:
+ * @slot_description: Description of the slot.
+ * @manufacturer_id: The manufacturer of this slot.
+ * @flags: Various PKCS11 flags that apply to this slot. 
+ * @hardware_version_major: The major version of the hardware.
+ * @hardware_version_minor: The minor version of the hardware.
+ * @firmware_version_major: The major version of the firmware.
+ * @firmware_version_minor: The minor version of the firmware.
+ * 
+ * Represents information about a PKCS11 slot.
+ * 
+ * This is analogous to a CK_SLOT_INFO structure, but the 
+ * strings are far more usable.
+ * 
+ * When you're done with this structure it should be released with 
+ * gp11_slot_info_free().
  */
 
 /**
@@ -217,6 +261,38 @@ gp11_slot_info_free (GP11SlotInfo *slot_info)
 	g_free (slot_info->manufacturer_id);
 	g_free (slot_info);
 }
+
+/**
+ * GP11TokenInfo:
+ * @label: The displayable token label.
+ * @manufacturer_id: The manufacturer of this slot.
+ * @model: The token model number as a string.
+ * @serial_number: The token serial number as a string.
+ * @flags: Various PKCS11 flags that apply to this token.
+ * @max_session_count: The maximum number of sessions allowed on this token.
+ * @session_count: The number of sessions open on this token.
+ * @max_rw_session_count: The maximum number of read/write sessions allowed on this token.
+ * @rw_session_count: The number of sessions open on this token.
+ * @max_pin_len: The maximum length of a PIN for locking this token.
+ * @min_pin_len: The minimum length of a PIN for locking this token.
+ * @total_public_memory: The total amount of memory on this token for storing public objects.
+ * @free_public_memory: The available amount of memory on this token for storing public objects.  
+ * @total_private_memory: The total amount of memory on this token for storing private objects.
+ * @free_private_memory: The available amount of memory on this token for storing private objects.  
+ * @hardware_version_major: The major version of the hardware.
+ * @hardware_version_minor: The minor version of the hardware.
+ * @firmware_version_major: The major version of the firmware.
+ * @firmware_version_minor: The minor version of the firmware.
+ * @utc_time: If the token has a hardware clock, this is set to the number of seconds since the epoch.
+ * 
+ * Represents information about a PKCS11 token.
+ * 
+ * This is analogous to a CK_TOKEN_INFO structure, but the 
+ * strings are far more usable.
+ * 
+ * When you're done with this structure it should be released with 
+ * gp11_token_info_free().
+ */
 
 /**
  * gp11_token_info_free:
@@ -237,6 +313,20 @@ gp11_token_info_free (GP11TokenInfo *token_info)
 }
 
 /**
+ * GP11MechanismInfo:
+ * @min_key_size: The minimum key size that can be used with this mechanism.
+ * @max_key_size: The maximum key size that can be used with this mechanism.
+ * @flags: Various PKCS11 flags that apply to this mechanism.
+ * 
+ * Represents information about a PKCS11 mechanism.
+ * 
+ * This is analogous to a CK_MECHANISM_INFO structure.
+ * 
+ * When you're done with this structure it should be released with 
+ * gp11_mechanism_info_free().
+ */
+
+/**
  * gp11_mechanism_info_free:
  * @mech_info: The mechanism info to free, or NULL.
  * 
@@ -249,6 +339,38 @@ gp11_mechanism_info_free (GP11MechanismInfo *mech_info)
 		return;
 	g_free (mech_info);
 }
+
+/**
+ * GP11Mechanisms:
+ * 
+ * A set of GP11MechanismInfo structures.
+ */
+
+/**
+ * gp11_mechanisms_length:
+ * @a: A GP11Mechanisms set.
+ * 
+ * Get the number of GP11MechanismInfo in the set.
+ * 
+ * Returns: The number in the set.
+ */
+
+/**
+ * gp11_mechanisms_at:
+ * @a: A GP11Mechanisms set.
+ * @i: The index of a GP11MechanismInfo.
+ * 
+ * Get a specific GP11MechanismInfo in a the set.
+ * 
+ * Returns: The GP11MechanismInfo.
+ */
+
+/**
+ * gp11_mechanisms_free:
+ * @a: A GP11Mechanisms set.
+ * 
+ * Free a GP11Mechanisms set.
+ */
 
 /**
  * gp11_mechanisms_check:
@@ -608,6 +730,15 @@ gp11_slot_get_mechanism_info (GP11Slot *self, gulong mech_type)
 	return mechinfo;
 }
 
+/**
+ * gp11_slot_has_flags:
+ * @self: The GP11Slot object.
+ * @flags: The flags to check.
+ * 
+ * Check if the PKCS11 slot has the given flags.
+ * 
+ * Returns: Whether one or more flags exist.
+ */
 gboolean
 gp11_slot_has_flags (GP11Slot *self, gulong flags)
 {

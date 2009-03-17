@@ -29,6 +29,24 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * SECTION:gp11-attribute
+ * @title: GP11Attribute
+ * @short_description: A PKCS11 attribute.
+ * 
+ * This structure represents a PKCS11 CK_ATTRIBUTE. These attributes contain information
+ * about a PKCS11 object. Use gp11_object_get() or gp11_object_set() to set and retrieve
+ * attributes on an object.
+ */
+
+/**
+ * GP11Attribute:
+ * @type: The attribute type, such as CKA_LABEL.
+ * @value: The value of the attribute. May be NULL.
+ * @length: The length of the attribute. May be G_MAXULONG if the attribute is invalid.
+ * 
+ * This structure represents a PKCS11 CK_ATTRIBUTE.
+ */
 
 static void
 attribute_init (GP11Attribute *attr, gulong attr_type, 
@@ -611,12 +629,70 @@ gp11_attribute_free (GP11Attribute *attr)
 	}
 }
 
+/**
+ * SECTION:gp11-attributes
+ * @title: GP11Attributes
+ * @short_description: A set of PKCS11 attributes.
+ * 
+ * A set of GP11Attribute structures. These attributes contain information
+ * about a PKCS11 object. Use gp11_object_get() or gp11_object_set() to set and retrieve
+ * attributes on an object.
+ */
+
+/**
+ * GP11Attributes:
+ * 
+ * A set of GP11Attribute structures. 
+ */
 struct _GP11Attributes {
 	GArray *array;
 	GP11Allocator allocator;
 	gboolean locked;
 	gint refs;
 };
+
+/**
+ * GP11_BOOLEAN:
+ * The attribute data is a gboolean. Used with variable argument functions.
+ */
+
+/**
+ * GP11_ULONG:
+ * The attribute data is a gulong. Used with variable argument functions.  
+ */
+
+/**
+ * GP11_STRING:
+ * The attribute data is a gchar. Used with variable argument functions.  
+ */
+
+/**
+ * GP11_DATE:
+ * The attribute data is a GDate. Used with variable argument functions.  
+ */
+
+/**
+ * GP11_DATE:
+ * Signifies that no more attributes follow. Used with variable argument functions.  
+ */
+
+/**
+ * GP11_ATTRIBUTES_TYPE:
+ * 
+ * A boxed type that can be used to hold a GP11Attributes object.
+ */
+
+/**
+ * GP11Allocator:
+ * @data: Memory to allocate or deallocate.
+ * @length: New length of memory.
+ * 
+ * An allocator used to allocate data for the attributes in this GP11Attributes set.
+ * 
+ * This is a function that acts like g_realloc. Specifically it frees when length is 
+ * set to zero, it allocates when data is set to NULL, and it reallocates when both 
+ * are valid.   
+ */
 
 /**
  * gp11_attributes_get_boxed_type:

@@ -32,6 +32,17 @@
 
 #include "egg/egg-secure-memory.h"
 
+/**
+ * SECTION:gnome-keyring-result
+ * @title: Result Codes
+ * @short_description: Gnome Keyring Result Codes
+ * 
+ * <para>
+ * Result codes used through out GNOME Keyring. Additional result codes may be 
+ * added from time to time and these should be handled gracefully.
+ * </para>
+ */
+
 /* Functions used by both the library and the daemon */
 
 /* 
@@ -211,6 +222,18 @@ gnome_keyring_found_list_free (GList *found_list)
 }
 
 /**
+ * SECTION:gnome-keyring-attributes
+ * @title: Item Attributes
+ * @short_description: Attributes of individual keyring items.
+ * 
+ * Attributes allow various other pieces of information to be associated with an item. 
+ * These can also be used to search for relevant items. Use gnome_keyring_item_get_attributes() 
+ * or gnome_keyring_item_set_attributes().
+ * 
+ * Each attribute has either a string, or unsigned integer value.
+ */
+
+/**
  * gnome_keyring_attribute_list_append_string:
  * @attributes: A #GnomeKeyringAttributeList
  * @name: The name of the new attribute
@@ -315,6 +338,15 @@ gnome_keyring_attribute_list_copy (GnomeKeyringAttributeList *attributes)
 }
 
 /**
+ * SECTION:gnome-keyring-keyring-info
+ * @title: Keyring Info
+ * @short_description: Keyring Information
+ * 
+ * Use gnome_keyring_get_info() or gnome_keyring_get_info_sync() to get a #GnomeKeyringInfo
+ * pointer to use with these functions.
+ */
+
+/**
  * gnome_keyring_info_free:
  * @keyring_info: The keyring info to free.
  * 
@@ -326,6 +358,15 @@ gnome_keyring_info_free (GnomeKeyringInfo *keyring_info)
 {
 	g_free (keyring_info);
 }
+
+/**
+ * SECTION:gnome-keyring-item-info
+ * @title: Item Information
+ * @short_description: Keyring Item Info
+ * 
+ * #GnomeKeyringItemInfo represents the basic information about a keyring item.
+ * Use gnome_keyring_item_get_info() or gnome_keyring_item_set_info().
+ */
 
 /**
  * gnome_keyring_info_copy:

@@ -29,11 +29,34 @@
 #include <glib/gi18n.h>
 
 /**
- * gp11_get_error_quark:
+ * SECTION:gp11-error
+ * @title: Errors
+ * @short_description: GP11 Errors and error codes.
+ * 
+ * GP11 errors are returned as GError structures. The code member of GError 
+ * contains the raw PKCS11 CK_RV result value.
+ */
+
+/**
+ * GP11_VENDOR_CODE:
+ * 
+ * Custom PKCS11 errors that originate from the GP11 library, are 
+ * based at this error code.
+ */
+
+/**
+ * CKR_GP11_MODULE_PROBLEM:
+ * 
+ * A result code that signifies there was a problem loading a PKCS11
+ * module, usually a shared library.
+ * 
+ * More details can be found in the error string.
+ */
+
+/**
+ * GP11_ERROR:
  * 
  * The error domain for GP11 library errors.
- * 
- * Return value: The error domain. 
  */
 GQuark
 gp11_get_error_quark (void)
@@ -47,45 +70,6 @@ gp11_get_error_quark (void)
 	}
 	
 	return domain;
-}
-
-/**
- * gp11_list_unref_free:
- * reflist: List of Gobject reference counted pointers.
- * 
- * Free a list of GObject based pointers. All objects in the list
- * will be unreffed and then the list itself will be freed.
- */
-void
-gp11_list_unref_free (GList *reflist)
-{
-	GList *l;
-	for (l = reflist; l; l = g_list_next (l)) {
-		g_return_if_fail (G_IS_OBJECT (l->data));
-		g_object_unref (l->data);
-	}
-	g_list_free (reflist);
-}
-
-/**
- * gp11_list_ref_copy:
- * reflist: List of GObject reference counted objects.
- * 
- * Copy a list of GObject based pointers. All objects 
- * in the list will be reffed and the list will be copied.
- * 
- * Return value: The copied and reffed list. When done, free it with 
- * gp11_list_unref_free ()
- */
-GList*
-gp11_list_ref_copy (GList *reflist)
-{
-	GList *l, *copy = g_list_copy (reflist);
-	for (l = copy; l; l = g_list_next (l)) {
-		g_return_val_if_fail (G_IS_OBJECT (l->data), NULL);
-		g_object_ref (l->data);
-	}
-	return copy;
 }
 
 /**
@@ -279,7 +263,55 @@ gp11_message_from_rv (CK_RV rv)
 }
 
 /**
- * gp11_string_form_chars:
+ * SECTION:gp11-misc
+ * @title: Miscellaneous Functions
+ * @short_description: Other miscellaneous functions.
+ * 
+ * A few supporting functions that come in handy when dealing with the GP11
+ * library or PKCS11 in general.
+ */
+
+/**
+ * gp11_list_unref_free:
+ * reflist: List of Gobject reference counted pointers.
+ * 
+ * Free a list of GObject based pointers. All objects in the list
+ * will be unreffed and then the list itself will be freed.
+ */
+void
+gp11_list_unref_free (GList *reflist)
+{
+	GList *l;
+	for (l = reflist; l; l = g_list_next (l)) {
+		g_return_if_fail (G_IS_OBJECT (l->data));
+		g_object_unref (l->data);
+	}
+	g_list_free (reflist);
+}
+
+/**
+ * gp11_list_ref_copy:
+ * reflist: List of GObject reference counted objects.
+ * 
+ * Copy a list of GObject based pointers. All objects 
+ * in the list will be reffed and the list will be copied.
+ * 
+ * Return value: The copied and reffed list. When done, free it with 
+ * gp11_list_unref_free ()
+ */
+GList*
+gp11_list_ref_copy (GList *reflist)
+{
+	GList *l, *copy = g_list_copy (reflist);
+	for (l = copy; l; l = g_list_next (l)) {
+		g_return_val_if_fail (G_IS_OBJECT (l->data), NULL);
+		g_object_ref (l->data);
+	}
+	return copy;
+}
+
+/**
+ * gp11_string_from_chars:
  * @data: The character data to turn into a null terminated string.
  * @max: The maximum length of the charater data.
  * 

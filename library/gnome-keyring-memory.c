@@ -32,6 +32,22 @@
 
 #include <string.h>
 
+/**
+ * SECTION:gnome-keyring-memory
+ * @title: Non-pageable Memory
+ * @short_description: Secure Non-pageable Memory
+ * 
+ * Normal allocated memory can be paged to disk at the whim of the operating system. 
+ * This can be a serious problem for sensitive information like passwords, keys and secrets.
+ * 
+ * GNOME Keyring holds passwords in non-pageable, or locked memory. This happens
+ * both in the daemon and in the library. This is only possible if the OS contains
+ * support for it.
+ * 
+ * These functions allow applications to use to hold passwords and other 
+ * sensitive information.
+ */
+
 static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
 
 #define WARNING  "couldn't allocate secure memory to keep passwords " \

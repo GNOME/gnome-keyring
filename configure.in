@@ -41,7 +41,7 @@ AC_TYPE_SIGNAL
 AC_TYPE_SIZE_T
 AC_TYPE_UID_T
 
-GTK_DOC_CHECK
+GTK_DOC_CHECK(1.9)
 DISTCHECK_CONFIGURE_FLAGS="--enable-gtk-doc"
 AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 
@@ -551,6 +551,11 @@ daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile
 daemon/pkcs11/Makefile
 daemon/ui/Makefile
+docs/Makefile
+docs/reference/Makefile
+docs/reference/gcr/Makefile
+docs/reference/gnome-keyring/Makefile
+docs/reference/gp11/Makefile
 egg/Makefile
 egg/tests/Makefile
 gcr/gcr.pc
@@ -558,10 +563,8 @@ gcr/Makefile
 gcr/tests/Makefile
 gp11/gp11.pc
 gp11/Makefile
-gp11/reference/Makefile
 gp11/tests/Makefile
 library/Makefile
-library/reference/Makefile
 library/tests/Makefile
 pam/Makefile
 pam/tests/Makefile

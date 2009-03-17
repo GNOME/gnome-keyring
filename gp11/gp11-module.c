@@ -29,6 +29,42 @@
 
 #include <string.h>
 
+/**
+ * SECTION:gp11-module
+ * @title: GP11Module
+ * @short_description: A loaded and initialized PKCS#11 module.
+ * 
+ * A GP11Module object holds a loaded PKCS#11 module. A PKCS#11 module is a shared library. 
+ * 
+ * You can load and initialize a PKCS#11 module with the gp11_module_initialize() call. If you already
+ * have a loaded and initialized module that you'd like to use with the various GP11 functions, then 
+ * you can use gp11_module_new(). 
+ */
+
+/**
+ * GP11Module:
+ * 
+ * Holds a loaded and initialized PKCS#11 module.
+ */
+
+/**
+ * GP11ModuleInfo:
+ * @pkcs11_version_major: The major version of the module.
+ * @pkcs11_version_minor: The minor version of the module.
+ * @manufacturer_id: The module manufacturer.
+ * @flags: The module PKCS&num;11 flags.
+ * @library_description: The module description.
+ * @library_version_major: The major version of the library.
+ * @library_version_minor: The minor version of the library.
+ * 
+ * Holds information about the PKCS&num;11 module. 
+ * 
+ * This structure corresponds to CK_MODULE_INFO in the PKCS#11 standard. The 
+ * strings are NULL terminated for easier use. 
+ * 
+ * Use gp11_module_info_free() to release this structure when done with it.
+ */
+
 /*
  * MT safe 
  * 
@@ -543,27 +579,84 @@ gp11_module_class_init (GP11ModuleClass *klass)
 	klass->authenticate_object = gp11_module_real_authenticate_object;
 	klass->authenticate_slot = gp11_module_real_authenticate_slot;
 
+	/**
+	 * GP11Module:path:
+	 * 
+	 * The PKCS&num;11 module file path. 
+	 * 
+	 * This may be set to NULL if this object was created from an already
+	 * initialized module via the gp11_module_new() function. 
+	 */
 	g_object_class_install_property (gobject_class, PROP_PATH,
 		g_param_spec_string ("path", "Module Path", "Path to the PKCS11 Module",
 		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GP11Module:functions:
+	 * 
+	 * The raw PKCS&num;11 function list for the module.
+	 * 
+	 * This points to a CK_FUNCTION_LIST structure. 
+	 */
 	g_object_class_install_property (gobject_class, PROP_FUNCTIONS,
 		g_param_spec_pointer ("functions", "Function List", "PKCS11 Function List",
 		                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GP11Module:auto-authenticate:
+	 * 
+	 * Whether or not to automatically authenticate token objects that need
+	 * a C_Login call before they can be used.
+	 * 
+	 * The #GP11Module::authenticate-object signal will be fired when an 
+	 * object needs to be authenticated.
+	 */
 	g_object_class_install_property (gobject_class, PROP_AUTO_AUTHENTICATE,
 		g_param_spec_int ("auto-authenticate", "Auto Authenticate", "Auto Login to Token when necessary",
 		                  0, G_MAXINT, 0, G_PARAM_READWRITE));
 	
+	/**
+	 * GP11Module:pool-sessions:
+	 * 
+	 * Whether or not to pool PKCS&num;11 sessions. When this is set, sessions
+	 * will be pooled and reused if their flags match when gp11_slot_open_session() 
+	 * is called. 
+	 */
 	g_object_class_install_property (gobject_class, PROP_POOL_SESSIONS,
 		g_param_spec_boolean ("pool-sessions", "Pool Sessions", "Pool sessions?",
 		                      FALSE, G_PARAM_READWRITE));
-	
+
+	/**
+	 * GP11Module::authenticate-slot:
+	 * @module: The module
+	 * @slot: The slot to be authenticated.
+	 * @string: A displayable label which describes the object.
+	 * @password: A gchar** where a password should be returned. 
+	 * 
+	 * This signal is emitted when a password is needed to authenticate a PKCS&num;11 
+	 * slot. If the module prompts for passwords itself, then this signal will 
+	 * not be emitted.
+	 * 
+	 * Returns: FALSE if the user cancelled, TRUE if we should proceed.
+	 */
 	signals[AUTHENTICATE_SLOT] = g_signal_new ("authenticate-slot", GP11_TYPE_MODULE, 
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GP11ModuleClass, authenticate_slot),
 			g_signal_accumulator_true_handled, NULL, _gp11_marshal_BOOLEAN__OBJECT_STRING_POINTER, 
 			G_TYPE_BOOLEAN, 3, GP11_TYPE_SLOT, G_TYPE_STRING, G_TYPE_POINTER);
 
+	/**
+	 * GP11Module::authenticate-object:
+	 * @module: The module.
+	 * @object: The object to be authenticated.
+	 * @label: A displayable label which describes the object.
+	 * @password: A gchar** where a password should be returned.
+	 * 
+	 * This signal is emitted when a password is needed to authenticate a PKCS&num;11
+	 * object like a key. If the module prompts for passwords itself, then this signal will 
+	 * not be emitted.
+	 * 
+	 * Returns: FALSE if the user cancelled, TRUE if we should proceed.
+	 */
 	signals[AUTHENTICATE_OBJECT] = g_signal_new ("authenticate-object", GP11_TYPE_MODULE, 
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GP11ModuleClass, authenticate_object),
 			g_signal_accumulator_true_handled, NULL, _gp11_marshal_BOOLEAN__OBJECT_STRING_POINTER, 
@@ -1120,3 +1213,16 @@ gp11_module_enumerate_objects_full (GP11Module *self, GP11Attributes *attrs,
 	return ret;
 }
 
+/**
+ * GP11ObjectForeachFunc:
+ * @object: The enumerated object.
+ * @user_data: Data passed to enumerate function.
+ * 
+ * This function is passed to gp11_module_enumerate_objects() or a similar function.
+ * It is called once for each object matched. 
+ * 
+ * The GP11Session through which the object is accessible can be retrieved by calling
+ * gp11_object_get_session() on object.
+ * 
+ * Returns: TRUE to continue enumerating, FALSE to stop.
+ */

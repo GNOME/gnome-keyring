@@ -44,6 +44,12 @@
 #include <sys/uio.h>
 #include <stdarg.h>
 
+/**
+ * SECTION:gnome-keyring-generic-callbacks
+ * @title: Callbacks
+ * @short_description: Different callbacks for retrieving async results
+ */
+
 typedef enum {
 	CALLBACK_DONE,
 	CALLBACK_GET_STRING,
@@ -387,6 +393,12 @@ run_sync_operation (EggBuffer *buffer,
 }
 
 /**
+ * SECTION:gnome-keyring-misc
+ * @title: Miscellaneous Functions
+ * @short_description: Miscellaneous functions.
+ */
+
+/**
  * gnome_keyring_is_available:
  *
  * Check whether you can communicate with a gnome-keyring-daemon.
@@ -488,6 +500,18 @@ int_reply (GnomeKeyringOperation *op)
 	/* Operation is done */
 	return TRUE;
 }
+
+/**
+ * SECTION:gnome-keyring-keyrings
+ * @title: Keyrings
+ * @short_description: Listing and managing keyrings
+ * 
+ * %gnome-keyring-daemon manages multiple keyrings. Each keyring can store one or more items containing secrets.
+ * 
+ * One of the keyrings is the default keyring, which can in many cases be used by specifying %NULL for a keyring name.
+ * 
+ * Each keyring can be in a locked or unlocked state. A password must be specified, either by the user or the calling application, to unlock the keyring.
+ */
 
 /**
  * gnome_keyring_set_default_keyring:
@@ -1522,6 +1546,14 @@ gnome_keyring_list_item_ids_sync (const char  *keyring,
 }
 
 /**
+ * SECTION:gnome-keyring-daemon
+ * @title: Daemon Management Functions
+ * @short_description: Functions used by session to run the Gnome Keyring Daemon.
+ * 
+ * These functions are not used by most applications using Gnome Keyring.
+ */
+
+/**
  * gnome_keyring_daemon_set_display_sync:
  * @display: Deprecated 
  * 
@@ -1742,6 +1774,18 @@ find_items_reply (GnomeKeyringOperation *op)
 	/* Operation is done */
 	return TRUE;
 }
+
+/**
+ * SECTION:gnome-keyring-find
+ * @title: Search Functionality
+ * @short_description: Find Keyring Items
+ * 
+ * A find operation searches through all keyrings for items that match the 
+ * attributes. The user may have been prompted to unlock necessary keyrings, and 
+ * user will have been prompted for access to the items if needed.
+ * 
+ * A find operation may return multiple or zero results.
+ */
 
 /**
  * gnome_keyring_find_items:
@@ -1979,6 +2023,30 @@ gnome_keyring_find_itemsv_sync  (GnomeKeyringItemType        type,
 	g_array_free (attributes, TRUE);
 	return res;
 }
+
+/** 
+ * SECTION:gnome-keyring-items
+ * @title: Keyring Items
+ * @short_description: Keyring items each hold a secret and a number of attributes.
+ * 
+ * A keyring contains multiple items. Each item has a secret, attributes and access 
+ * information associated with it.
+ * 
+ * An item is identified by an unsigned integer unique to the keyring in which it 
+ * exists. An item's name is for displaying to the user. Each item has a single secret, 
+ * which is a null-terminated string. This secret is stored in non-pageable memory, and 
+ * encrypted on disk. All of this information is exposed via #GnomeKeyringItemInfo
+ * pointers.
+ * 
+ * Attributes allow various other pieces of information to be associated with an item. 
+ * These can also be used to search for relevant items. Attributes are accessed with 
+ * #GnomeKeyringAttribute structures and built into lists using #GnomeKeyringAttributeList.
+ * 
+ * Each item has an access control list, which specifies the applications that 
+ * can read, write or delete an item. The read access applies only to reading the secret.
+ * All applications can read other parts of the item. ACLs are accessed and changed
+ * through #GnomeKeyringAccessControl pointers.
+ */
 
 /**
  * gnome_keyring_item_create:
@@ -3149,6 +3217,17 @@ gnome_keyring_item_info_get_ctime (GnomeKeyringItemInfo *item_info)
 }
 
 /**
+ * SECTION:gnome-keyring-acl
+ * @title: Item ACLs
+ * @short_description: Access control lists for keyring items.
+ * 
+ * Each item has an access control list, which specifies the applications that 
+ * can read, write or delete an item. The read access applies only to reading the secret.
+ * All applications can read other parts of the item. ACLs are accessed and changed
+ * gnome_keyring_item_get_acl() and gnome_keyring_item_set_acl().
+ */
+
+/**
  * gnome_keyring_item_ac_get_display_name:
  * @ac: A #GnomeKeyringAccessControl pointer.
  * 
@@ -3236,6 +3315,15 @@ gnome_keyring_item_ac_set_access_type (GnomeKeyringAccessControl *ac,
 
 /* ------------------------------------------------------------------------------
  * NETWORK PASSWORD APIS
+ */
+
+/**
+ * SECTION:gnome-keyring-network
+ * @title: Network Passwords
+ * @short_description: Saving of network passwords.
+ * 
+ * Networks passwords are a simple way of saving passwords associated with a 
+ * certain user/server/protocol and other fields.
  */
 
 struct FindNetworkPasswordInfo {
@@ -3689,6 +3777,56 @@ gnome_keyring_set_network_password_sync (const char                            *
  * SIMPLE PASSWORD APIS
  */
 
+/**
+ * SECTION:gnome-keyring-password
+ * @title: Simple Password Storage
+ * @short_description: Store and lookup passwords with a set of attributes.
+ * 
+ * This is a simple API for storing passwords and retrieving passwords in the keyring.
+ * 
+ * Each password is associated with a set of attributes. Attribute values can be either 
+ * strings or unsigned integers.
+ *  
+ * The names and types of allowed attributes for a given password are defined with a 
+ * schema. Certain schemas are predefined such as %GNOME_KEYRING_NETWORK_PASSWORD. 
+ * Additional schemas can be defined via the %GnomeKeyringPasswordSchema structure.
+ * 
+ * Each function accepts a variable list of attributes names and their values. 
+ * Include a %NULL to terminate the list of attributes.
+ * 
+ * <example>
+ * <title>Passing attributes to the functions</title>
+ * <programlisting>
+ *   res = gnome_keyring_delete_password_sync (GNOME_KEYRING_NETWORK_PASSWORD,
+ *                                             "user", "me",        // A string attribute
+ *                                             "server, "example.gnome.org", 
+ *                                             "port", "8080",      // An integer attribute
+ *                                             NULL);
+ * </programlisting></example>
+ */
+
+/**
+ * GnomeKeyringPasswordSchema:
+ * 
+ * Describes a password schema. Often you'll want to use a predefined schema such 
+ * as %GNOME_KEYRING_NETWORK_PASSWORD.
+ * 
+ * <para>
+ * The last attribute name in a schema must be %NULL.
+ * 
+ * <programlisting>
+ *   GnomeKeyringPasswordSchema my_schema = {
+ *       GNOME_KEYRING_ITEM_GENERIC_SECRET,
+ *       { 
+ *            { "string-attr", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+ *            { "uint-attr", GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32 },
+ *            { NULL, 0 }
+ *       }
+ *   };
+ * </programlisting>
+ * </para>
+ */
+
 static const GnomeKeyringPasswordSchema network_password_schema = {
 	GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
 	{
@@ -3702,8 +3840,39 @@ static const GnomeKeyringPasswordSchema network_password_schema = {
 	}
 };
 
+/**
+ * GNOME_KEYRING_NETWORK_PASSWORD:
+ * 
+ * <para>
+ * A predefined schema for network paswsords. It contains the following attributes:
+ * </para>
+ * <itemizedlist>
+ * <listitem>user: A string for the user login.</listitem>
+ * <listitem>server: The server being connected to.</listitem>
+ * <listitem>protocol: The protocol used to access the server, such as 'http' or 'smb'</listitem>
+ * <listitem>domain: A realm or domain, such as a Windows login domain.</listitem>
+ * <listitem>port: The network port to used to connect to the server.</listitem>
+ * </itemizedlist>
+ */
+
 /* Declared in gnome-keyring.h */
 const GnomeKeyringPasswordSchema *GNOME_KEYRING_NETWORK_PASSWORD = &network_password_schema;
+
+/**
+ * GNOME_KEYRING_DEFAULT:
+ * 
+ * <para>
+ * The default keyring.
+ * </para>
+ */
+
+/**
+ * GNOME_KEYRING_SESSION:
+ * 
+ * <para>
+ * A keyring only stored in memory.
+ * </para>
+ */
 
 static GnomeKeyringAttributeList*
 schema_attribute_list_va (const GnomeKeyringPasswordSchema *schema, va_list args)

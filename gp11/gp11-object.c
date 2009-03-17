@@ -28,6 +28,21 @@
 
 #include <string.h>
 
+/**
+ * SECTION:gp11-object
+ * @title: GP11Object
+ * @short_description: Represents a PKCS11 object such as a key or certificate.
+ * 
+ * A GP11Object holds a handle to a PKCS11 object such as a key or certificate. Token objects
+ * are stored on the token persistently. Others are transient and are called session objects. 
+ */
+
+/**
+ * GP11Object:
+ * 
+ * Represents a PKCS11 object handle such as a key or certifiacte.
+ */
+
 /*
  * MT safe -- Nothing in GP11ObjectData changes between 
  * init and finalize. All GP11ObjectPrivate access between init
@@ -235,18 +250,45 @@ gp11_object_class_init (GP11ObjectClass *klass)
 	gobject_class->set_property = gp11_object_set_property;
 	gobject_class->finalize = gp11_object_finalize;
 	
+	/**
+	 * GP11Object:module:
+	 * 
+	 * The GP11Module that this object belongs to.
+	 */
 	g_object_class_install_property (gobject_class, PROP_MODULE,
 		g_param_spec_object ("module", "Module", "PKCS11 Module",
 		                     GP11_TYPE_MODULE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GP11Object:slot:
+	 * 
+	 * The GP11Slot that this object belongs to. 
+	 * 
+	 * If this is a token object then it will be stored on the token in this slot.
+	 * If this is a session object, then it belongs to a session opened on this slot. 
+	 */
 	g_object_class_install_property (gobject_class, PROP_SLOT,
 		g_param_spec_object ("slot", "slot", "PKCS11 Slot",
 		                     GP11_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GP11Object:handle:
+	 * 
+	 * The raw PKCS11 handle for this object.
+	 */
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 		g_param_spec_ulong ("handle", "Object Handle", "PKCS11 Object Handle",
 		                   0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GP11Object:session:
+	 * 
+	 * The PKCS11 session to make calls on when this object needs to 
+	 * perform operations on itself. 
+	 * 
+	 * If this is NULL then a new session is opened for each operation, 
+	 * such as gp11_object_get(), gp11_object_set() or gp11_object_destroy().
+	 */
 	g_object_class_install_property (gobject_class, PROP_SESSION,
 		g_param_spec_object ("session", "session", "PKCS11 Session to make calls on",
 		                     GP11_TYPE_SESSION, G_PARAM_READWRITE));

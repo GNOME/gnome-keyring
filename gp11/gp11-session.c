@@ -31,6 +31,30 @@
 
 #include <glib/gi18n.h>
 
+/**
+ * SECTION:gp11-session
+ * @title: GP11Session
+ * @short_description: Represents an open PKCS11 session.
+ * 
+ * Before performing any PKCS11 operations, a session must be opened. This is 
+ * analogous to an open database handle, or a file handle.
+ */
+
+/**
+ * GP11Session:
+ * 
+ * Represents an open PKCS11 session.
+ */
+
+/**
+ * GP11Mechanism:
+ * @type: The mechanism type
+ * @parameter: Mechanism specific data.
+ * @n_parameter: Length of mechanism specific data.
+ * 
+ * Represents a mechanism used with crypto operations. 
+ */
+
 enum {
 	DISCARD_HANDLE,
 	LAST_SIGNAL
@@ -248,18 +272,46 @@ gp11_session_class_init (GP11SessionClass *klass)
 	
 	klass->discard_handle = gp11_session_real_discard_handle;
 	
+	/**
+	 * GP11Session:module:
+	 * 
+	 * The GP11Module that this session is opened on.
+	 */
 	g_object_class_install_property (gobject_class, PROP_MODULE,
 		g_param_spec_object ("module", "Module", "PKCS11 Module",
 		                     GP11_TYPE_MODULE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GP11Session:handle:
+	 * 
+	 * The raw CK_SESSION_HANDLE handle of this session.
+	 */
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 		g_param_spec_ulong ("handle", "Session Handle", "PKCS11 Session Handle",
 		                    0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GP11Session:slot:
+	 * 
+	 * The GP11Slot this session is opened on.
+	 */
 	g_object_class_install_property (gobject_class, PROP_SLOT,
 		g_param_spec_object ("slot", "Slot that this session uses", "PKCS11 Slot",
 		                     GP11_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
+	/**
+	 * GP11Session::discard-handle:
+	 * @session: The session.
+	 * @handle: The handle being discarded.
+	 * 
+	 * When a GP11Session is being disposed of it emits this signal to allow 
+	 * a session pool to pick up the handle and keep it around. 
+	 * 
+	 * If no signal handler claims the handle, then it is closed. This is used by 
+	 * gp11_module_set_pool_sessions() to implement the module session pool.
+	 * 
+	 * Returns: Whether or not this handle was claimed.
+	 */
 	signals[DISCARD_HANDLE] = g_signal_new ("discard-handle", GP11_TYPE_SESSION, 
 	                G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GP11SessionClass, discard_handle),
 			g_signal_accumulator_true_handled, NULL, 
@@ -270,6 +322,18 @@ gp11_session_class_init (GP11SessionClass *klass)
 
 /* ----------------------------------------------------------------------------
  * PUBLIC 
+ */
+
+/**
+ * GP11SessionInfo:
+ * @slot_id: The handle of the PKCS11 slot that this session is opened on.
+ * @state: The user login state of the session.
+ * @flags: Various PKCS11 flags.
+ * @device_error: The last device error that occurred from an operation on this session.
+ * 
+ * Information about the session. This is analogous to a CK_SESSION_INFO structure.
+ * 
+ * When done with this structure, release it using gp11_session_info_free().
  */
 
 /**
@@ -1320,14 +1384,45 @@ crypt_finish (GP11Session *self, GAsyncResult *result, gsize *n_result, GError *
  * ENCRYPT
  */
 
+/**
+ * gp11_session_encrypt:
+ * @self: The session.
+ * @key: The key to encrypt with.
+ * @mech_type: The mechanism type to use for encryption.
+ * @input: The data to encrypt.
+ * @n_input: The length of the data to encrypt.
+ * @n_result: A location to store the length of the result data.
+ * @err: A location to place error information.
+ * 
+ * Encrypt data in a mechanism specific manner. This call may 
+ * block for an indefinite period.
+ * 
+ * Returns: The data that was encrypted, or NULL if an error occured.
+ */
 guchar*
-gp11_session_encrypt (GP11Session *self, GP11Object *key, gulong mech, const guchar *input, 
+gp11_session_encrypt (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input, 
                       gsize n_input, gsize *n_result, GError **err)
 {
-	GP11Mechanism mech_args = { mech, NULL, 0 };
+	GP11Mechanism mech_args = { mech_type, NULL, 0 };
 	return gp11_session_encrypt_full (self, key, &mech_args, input, n_input, n_result, NULL, err);
 }
 
+/**
+ * gp11_session_encrypt_full:
+ * @self: The session.
+ * @key: The key to encrypt with.
+ * @mech_args: The mechanism type and parameters to use for encryption.
+ * @input: The data to encrypt.
+ * @n_input: The length of the data to encrypt.
+ * @n_result: A location to store the length of the result data.
+ * @cancellable: A GCancellable which can be used to cancel the operation.
+ * @err: A location to place error information.
+ * 
+ * Encrypt data in a mechanism specific manner. This call may 
+ * block for an indefinite period. 
+ * 
+ * Returns: The data that was encrypted, or NULL if an error occured.
+ */
 guchar*
 gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
                            const guchar *input, gsize n_input, gsize *n_result,
@@ -1350,6 +1445,22 @@ gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	return ret;
 }
 
+/**
+ * gp11_session_encrypt_async:
+ * @self: The session.
+ * @key: The key to encrypt with.
+ * @mech_args: The mechanism type and parameters to use for encryption.
+ * @input: The data to encrypt.
+ * @n_input: The length of the data to encrypt.
+ * @cancellable: A GCancellable which can be used to cancel the operation.
+ * @callback: Called when the operation completes.
+ * @user_data: A pointer to pass to the callback.
+ * 
+ * Encrypt data in a mechanism specific manner. This call will 
+ * return immediately and complete asynchronously.
+ * 
+ * Returns: The data that was encrypted.
+ */
 void
 gp11_session_encrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
                             const guchar *input, gsize n_input, GCancellable *cancellable,
@@ -1370,6 +1481,17 @@ gp11_session_encrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *m
 	g_object_unref (module);
 }
 
+/**
+ * gp11_session_encrypt_finish:
+ * @self: The session.
+ * @result: The result object passed to the callback.
+ * @n_result: A location to store the length of the result data.
+ * @err: A location to place error information.
+ * 
+ * Get the result of an encryption operation. 
+ * 
+ * Returns: The data that was encrypted, or NULL if an error occurred.
+ */
 guchar*
 gp11_session_encrypt_finish (GP11Session *self, GAsyncResult *result, gsize *n_result,
                              GError **err)
@@ -1381,6 +1503,21 @@ gp11_session_encrypt_finish (GP11Session *self, GAsyncResult *result, gsize *n_r
  * DECRYPT
  */
 
+/**
+ * gp11_session_decrypt:
+ * @self: The session.
+ * @key: The key to decrypt with.
+ * @mech_type: The mechanism type to use for decryption.
+ * @input: The data to decrypt.
+ * @n_input: The length of the data to decrypt.
+ * @n_result: A location to store the length of the result data.
+ * @err: A location to place an error.
+ * 
+ * Decrypt data in a mechanism specific manner. This call may 
+ * block for an indefinite period.
+ * 
+ * Returns: The data that was decrypted, or NULL if an error occured.
+ */
 guchar*
 gp11_session_decrypt (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input,
                       gsize n_input, gsize *n_result, GError **err)
@@ -1389,6 +1526,22 @@ gp11_session_decrypt (GP11Session *self, GP11Object *key, gulong mech_type, cons
 	return gp11_session_decrypt_full (self, key, &mech_args, input, n_input, n_result, NULL, err);
 }
 
+/**
+ * gp11_session_decrypt_full:
+ * @self: The session.
+ * @key: The key to decrypt with.
+ * @mech_args: The mechanism type and parameters to use for decryption.
+ * @input: The data to decrypt.
+ * @n_input: The length of the data to decrypt.
+ * @n_result: A location to store the length of the result data.
+ * @cancellable: A GCancellable which can be used to cancel the operation.
+ * @err: A location to place error information.
+ * 
+ * Decrypt data in a mechanism specific manner. This call may 
+ * block for an indefinite period. 
+ * 
+ * Returns: The data that was decrypted, or NULL if an error occured.
+ */
 guchar*
 gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
                            const guchar *input, gsize n_input, gsize *n_result,
@@ -1410,6 +1563,22 @@ gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	return ret;
 }
 
+/**
+ * gp11_session_decrypt_async:
+ * @self: The session.
+ * @key: The key to decrypt with.
+ * @mech_args: The mechanism type and parameters to use for decryption.
+ * @input: The data to decrypt.
+ * @n_input: The length of the data to decrypt.
+ * @cancellable: A GCancellable which can be used to cancel the operation.
+ * @callback: Called when the operation completes.
+ * @user_data: A pointer to pass to the callback.
+ * 
+ * Decrypt data in a mechanism specific manner. This call will 
+ * return immediately and complete asynchronously.
+ * 
+ * Returns: The data that was decrypted.
+ */
 void
 gp11_session_decrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
                             const guchar *input, gsize n_input, GCancellable *cancellable,
@@ -1429,6 +1598,17 @@ gp11_session_decrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *m
 	g_object_unref (module);
 }
 
+/**
+ * gp11_session_decrypt_finish:
+ * @self: The session.
+ * @result: The result object passed to the callback.
+ * @n_result: A location to store the length of the result data.
+ * @err: A location to place error information.
+ * 
+ * Get the result of an decryption operation. 
+ * 
+ * Returns: The data that was decrypted, or NULL if an error occurred.
+ */
 guchar*
 gp11_session_decrypt_finish (GP11Session *self, GAsyncResult *result,
                              gsize *n_result, GError **err)
@@ -1440,6 +1620,21 @@ gp11_session_decrypt_finish (GP11Session *self, GAsyncResult *result,
  * SIGN
  */
 
+/**
+ * gp11_session_sign:
+ * @self: The session.
+ * @key: The key to sign with.
+ * @mech_type: The mechanism type to use for signing.
+ * @input: The data to sign.
+ * @n_input: The length of the data to sign.
+ * @n_result: A location to store the length of the result data.
+ * @err: A location to place an error.
+ * 
+ * Sign data in a mechanism specific manner. This call may 
+ * block for an indefinite period.
+ * 
+ * Returns: The data that was signed, or NULL if an error occured.
+ */
 guchar*
 gp11_session_sign (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input, 
                    gsize n_input, gsize *n_result, GError **err)
@@ -1448,6 +1643,22 @@ gp11_session_sign (GP11Session *self, GP11Object *key, gulong mech_type, const g
 	return gp11_session_sign_full (self, key, &mech_args, input, n_input, n_result, NULL, err);
 }
 
+/**
+ * gp11_session_sign_full:
+ * @self: The session.
+ * @key: The key to sign with.
+ * @mech_args: The mechanism type and parameters to use for signing.
+ * @input: The data to sign.
+ * @n_input: The length of the data to sign.
+ * @n_result: A location to store the length of the result data.
+ * @cancellable: A GCancellable which can be used to cancel the operation.
+ * @err: A location to place error information.
+ * 
+ * Sign data in a mechanism specific manner. This call may 
+ * block for an indefinite period. 
+ * 
+ * Returns: The data that was signed, or NULL if an error occured.
+ */
 guchar*
 gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
                         const guchar *input, gsize n_input, gsize *n_result,
@@ -1469,6 +1680,22 @@ gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_
 	return ret;
 }
 
+/**
+ * gp11_session_sign_async:
+ * @self: The session.
+ * @key: The key to sign with.
+ * @mech_args: The mechanism type and parameters to use for signing.
+ * @input: The data to sign.
+ * @n_input: The length of the data to sign.
+ * @cancellable: A GCancellable which can be used to cancel the operation.
+ * @callback: Called when the operation completes.
+ * @user_data: A pointer to pass to the callback.
+ * 
+ * Sign data in a mechanism specific manner. This call will 
+ * return immediately and complete asynchronously.
+ * 
+ * Returns: The data that was signed.
+ */
 void
 gp11_session_sign_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
                          const guchar *input, gsize n_input, GCancellable *cancellable,
@@ -1488,6 +1715,17 @@ gp11_session_sign_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech
 	g_object_unref (module);
 }
 
+/**
+ * gp11_session_sign_finish:
+ * @self: The session.
+ * @result: The result object passed to the callback.
+ * @n_result: A location to store the length of the result data.
+ * @err: A location to place error information.
+ * 
+ * Get the result of an signing operation. 
+ * 
+ * Returns: The data that was signed, or NULL if an error occurred.
+ */
 guchar*
 gp11_session_sign_finish (GP11Session *self, GAsyncResult *result, 
                           gsize *n_result, GError **err)
@@ -1553,6 +1791,22 @@ free_verify (Verify *args)
 	g_free (args);
 }
 
+/**
+ * gp11_session_verify:
+ * @self: The session.
+ * @key: The key to verify with.
+ * @mech_type: The mechanism type to use for verifying.
+ * @input: The data to verify.
+ * @n_input: The length of the data to verify.
+ * @signature: The signature.
+ * @n_signature: The length of the signature.
+ * @err: A location to place an error.
+ * 
+ * Verify data in a mechanism specific manner. This call may 
+ * block for an indefinite period.
+ * 
+ * Returns: TRUE if the data verified correctly, otherwise a failure or error occurred.
+ */
 gboolean
 gp11_session_verify (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input,
                      gsize n_input, const guchar *signature, gsize n_signature, GError **err)
@@ -1562,6 +1816,23 @@ gp11_session_verify (GP11Session *self, GP11Object *key, gulong mech_type, const
 	                                 signature, n_signature, NULL, err);	
 }
 
+/**
+ * gp11_session_verify_full:
+ * @self: The session.
+ * @key: The key to verify with.
+ * @mech_args: The mechanism type and parameters to use for signing.
+ * @input: The data to verify.
+ * @n_input: The length of the data to verify.
+ * @signature: The signature.
+ * @n_signature: The length of the signature.
+ * @cancellable: A GCancellable which can be used to cancel the operation.
+ * @err: A location to place an error.
+ * 
+ * Verify data in a mechanism specific manner. This call may 
+ * block for an indefinite period.
+ * 
+ * Returns: TRUE if the data verified correctly, otherwise a failure or error occurred.
+ */
 gboolean
 gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
                           const guchar *input, gsize n_input, const guchar *signature,
@@ -1594,6 +1865,22 @@ gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mec
 	return _gp11_call_sync (self, perform_verify, complete_verify, &args, cancellable, err);
 }
 
+/**
+ * gp11_session_verify_async:
+ * @self: The session.
+ * @key: The key to verify with.
+ * @mech_args: The mechanism type and parameters to use for signing.
+ * @input: The data to verify.
+ * @n_input: The length of the data to verify.
+ * @signature: The signature.
+ * @n_signature: The length of the signature.
+ * @cancellable: A GCancellable which can be used to cancel the operation.
+ * @callback: Called when the operation completes.
+ * @user_data: A pointer to pass to the callback.
+ * 
+ * Verify data in a mechanism specific manner. This call returns 
+ * immediately and completes asynchronously.
+ */
 void
 gp11_session_verify_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
                            const guchar *input, gsize n_input, const guchar *signature,
@@ -1626,6 +1913,16 @@ gp11_session_verify_async (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gp11_session_verify_finish:
+ * @self: The session.
+ * @result: The result object passed to the callback.
+ * @err: A location to place error information.
+ * 
+ * Get the result of an verify operation. 
+ * 
+ * Returns: TRUE if the data verified correctly, otherwise a failure or error occurred.
+ */
 gboolean
 gp11_session_verify_finish (GP11Session *self, GAsyncResult *result, GError **err)
 {

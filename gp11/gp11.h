@@ -446,8 +446,6 @@ GP11Module*         gp11_slot_get_module                    (GP11Slot *self);
 
 CK_SLOT_ID          gp11_slot_get_handle                    (GP11Slot *self);
 
-gint                gp11_slot_get_max_pin_length            (GP11Slot *self);
-
 GP11SlotInfo*       gp11_slot_get_info                      (GP11Slot *self);
 
 GP11TokenInfo*      gp11_slot_get_token_info                (GP11Slot *self);
@@ -545,8 +543,6 @@ GP11Module*         gp11_session_get_module                 (GP11Session *self);
 GP11Slot*           gp11_session_get_slot                   (GP11Session *self);
 
 CK_SESSION_HANDLE   gp11_session_get_handle                 (GP11Session *self);
-
-CK_SESSION_HANDLE   gp11_session_steal_handle               (GP11Session *self);
 
 GP11SessionInfo*    gp11_session_get_info                   (GP11Session *self);
 
@@ -766,7 +762,7 @@ guchar*             gp11_session_generate_random_finish     (GP11Session *self,
 
 guchar*             gp11_session_encrypt                     (GP11Session *self,
                                                               GP11Object *key,
-                                                              gulong mech,
+                                                              gulong mech_type,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,

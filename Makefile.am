@@ -20,9 +20,10 @@ SUBDIRS = \
 	pkcs11 \
 	daemon \
 	tool \
-	po \
 	$(TESTS_DIR) \
-	$(PAM_DIR)
+	$(PAM_DIR) \
+	po \
+	docs
 
 EXTRA_DIST = \
 	intltool-extract.in \
