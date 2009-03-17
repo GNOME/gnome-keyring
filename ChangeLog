@@ -1,5 +1,11 @@
 2009-03-16  Stef Walter  <stef@memberwebs.com>
 
+	* library/gnome-keyring-utils.c: Set USERNAME 
+	and LOGNAME environment variables in daemon when 
+	starting up. Fixes bug #575262. Reported by Matthias Clasen
+
+2009-03-16  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Bump version
 
 2009-03-16  Stef Walter  <stef@memberwebs.com>
