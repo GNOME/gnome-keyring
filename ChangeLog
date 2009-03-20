@@ -1,5 +1,10 @@
 2009-03-20  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in: Quote shell variable properly in configure.in
+	Patch by  Daiki Ueno. Fixes bug #575805
+
+2009-03-20  Stef Walter  <stef@memberwebs.com>
+
 	* pkcs11/rpc-layer/gck-rpc-daemon-standalone.c: Don't use err.h
 	since Solaris doesn't have it. Fixes bug #575829
 	
