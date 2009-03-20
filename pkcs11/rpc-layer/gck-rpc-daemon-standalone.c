@@ -28,7 +28,6 @@
 #include "gck-rpc-layer.h"
 
 #include <stdio.h>
-#include <err.h>
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -54,7 +53,7 @@ static int is_running = 1;
 static int 
 usage (void)
 {
-	fprintf (stderr, "usage: gck-rpc-daemon pkcs11-module");
+	fprintf (stderr, "usage: gck-rpc-daemon pkcs11-module\n");
 	exit (2);
 }
 
@@ -74,25 +73,32 @@ main (int argc, char *argv[])
 
 	/* Load the library */
 	module = dlopen(argv[1], RTLD_NOW);
-	if(!module) 
-		errx (1, "couldn't open library: %s: %s", argv[1], dlerror());
+	if(!module) {
+		fprintf (stderr, "couldn't open library: %s: %s\n", argv[1], dlerror());
+		exit (1);
+	}
 
 	/* Lookup the appropriate function in library */
 	func_get_list = (CK_C_GetFunctionList)dlsym (module, "C_GetFunctionList");
-	if (!func_get_list)
-		errx (1, "couldn't find C_GetFunctionList in library: %s: %s", 
-		      argv[1], dlerror());
+	if (!func_get_list) {
+		fprintf (stderr, "couldn't find C_GetFunctionList in library: %s: %s\n", argv[1], dlerror());
+		exit (1);
+	}
 	
 	/* Get the function list */
 	rv = (func_get_list) (&funcs);
-	if (rv != CKR_OK || !funcs)
-		errx (1, "couldn't get function list from C_GetFunctionList in libary: %s: 0x%08x", 
-		      argv[1], (int)rv);
+	if (rv != CKR_OK || !funcs) {
+		fprintf (stderr, "couldn't get function list from C_GetFunctionList in libary: %s: 0x%08x\n", 
+		         argv[1], (int)rv);
+		exit (1);
+	}
 	
 	/* RPC layer expects initialized module */
 	rv = (funcs->C_Initialize) (&p11_init_args);
-	if (rv != CKR_OK) 
-		errx (1, "couldn't initialize module: %s: 0x%08x", argv[1], (int)rv);
+	if (rv != CKR_OK) {
+		fprintf (stderr, "couldn't initialize module: %s: 0x%08x\n", argv[1], (int)rv);
+		exit (1);
+	}
 	
 	sock = gck_rpc_layer_initialize (SOCKET_PATH, funcs);
 	if (sock == -1)
@@ -106,7 +112,8 @@ main (int argc, char *argv[])
 		if (ret < 0) {
 			if (errno == EINTR)
 				continue;
-			err (1, "error watching socket");
+			fprintf (stderr, "error watching socket: %s\n", strerror (errno));
+			exit (1);
 		}
 		
 		if (FD_ISSET (sock, &read_fds))
@@ -117,7 +124,7 @@ main (int argc, char *argv[])
 	
 	rv = (funcs->C_Finalize) (NULL);
 	if (rv != CKR_OK)
-		warnx ("couldn't finalize module: %s: 0x%08x", argv[1], (int)rv);
+		fprintf (stderr, "couldn't finalize module: %s: 0x%08x\n", argv[1], (int)rv);
 	
 	dlclose(module);
 
