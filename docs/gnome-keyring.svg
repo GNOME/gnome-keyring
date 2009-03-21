@@ -1,0 +1,1125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1056.2656"
+   height="715.84094"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   version="1.0"
+   sodipodi:docname="gnome-keyring.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/data/Desktop/gnome-keyring-architecture-small.png"
+   inkscape:export-xdpi="59.971424"
+   inkscape:export-ydpi="59.971424">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="SquareS"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="SquareS"
+       style="overflow:visible">
+      <path
+         id="path3666"
+         d="M -5,-5 L -5,5 L 5,5 L 5,-5 L -5,-5 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.2,0.2)" />
+    </marker>
+    <marker
+       inkscape:stockid="SquareM"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="SquareM"
+       style="overflow:visible">
+      <path
+         id="path3663"
+         d="M -5,-5 L -5,5 L 5,5 L 5,-5 L -5,-5 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)" />
+    </marker>
+    <marker
+       inkscape:stockid="SquareL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="SquareL"
+       style="overflow:visible">
+      <path
+         id="path3660"
+         d="M -5,-5 L -5,5 L 5,5 L 5,-5 L -5,-5 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="-254.80892 : 737.16288 : 1"
+       inkscape:vp_y="6.1230318e-14 : 1000 : 0"
+       inkscape:vp_z="2231.1593 : 739.20135 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98112735"
+     inkscape:cx="537.75707"
+     inkscape:cy="342.45862"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:showpageshadow="false"
+     showborder="true"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1547"
+     inkscape:window-height="1076"
+     inkscape:window-x="1069"
+     inkscape:window-y="25"
+     inkscape:connector-spacing="17">
+    <sodipodi:guide
+       orientation="0,1"
+       position="473.94459,214.03949"
+       id="guide2445" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="828.63861,489.23313"
+       id="guide6083" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="1024.3319,425.02128"
+       id="guide6085" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Daemon"
+     sodipodi:insensitive="true"
+     transform="translate(1.188,-30.460743)">
+    <g
+       id="g5569"
+       transform="translate(70,0)">
+      <rect
+         ry="9.3141947"
+         rx="10.927643"
+         y="130.5146"
+         x="136.57756"
+         height="595.23364"
+         width="600.32983"
+         id="rect5442"
+         style="opacity:1;fill:#dbd4ce;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2, 4;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text5565"
+         y="157.01472"
+         x="437.08429"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:20px;font-weight:bold;text-align:center;text-anchor:middle;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           y="157.01472"
+           x="437.08429"
+           id="tspan5567"
+           sodipodi:role="line">gnome-keyring-daemon</tspan></text>
+    </g>
+  </g>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(1.188,-30.460743)">
+    <rect
+       style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2415"
+       width="86.63504"
+       height="170.21234"
+       x="456.21286"
+       y="530.05499"
+       ry="10"
+       rx="10" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="558.68787"
+       y="-518.71985"
+       id="text2417"
+       transform="matrix(0,1,-1,0,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan2419"
+         x="558.68787"
+         y="-518.71985"
+         style="font-weight:normal;text-align:start;text-anchor:start">PKCS#11 module that </tspan><tspan
+         sodipodi:role="line"
+         x="558.68787"
+         y="-503.71985"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan5841">implements key </tspan><tspan
+         sodipodi:role="line"
+         x="558.68787"
+         y="-488.71985"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan5843">storage in ~/.ssh</tspan><tspan
+         sodipodi:role="line"
+         x="558.68787"
+         y="-473.71985"
+         id="tspan2421"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;font-family:Bitstream Vera Sans Mono;-inkscape-font-specification:Bitstream Vera Sans Mono">/pkcs11/ssh-store/</tspan></text>
+    <rect
+       style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2449"
+       width="86.63504"
+       height="170.21234"
+       x="665.17487"
+       y="530.05499"
+       ry="10"
+       rx="10" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="559.68787"
+       y="-720.18182"
+       id="text2451"
+       transform="matrix(0,1,-1,0,0,0)"><tspan
+         sodipodi:role="line"
+         x="559.68787"
+         y="-720.18182"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan2455">Trusted root CA </tspan><tspan
+         sodipodi:role="line"
+         x="559.68787"
+         y="-705.18182"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan2468">certificate storage</tspan><tspan
+         sodipodi:role="line"
+         x="559.68787"
+         y="-690.18182"
+         id="tspan2457"
+         style="font-weight:normal;text-align:start;text-anchor:start">/pkcs11/roots-store/</tspan></text>
+    <rect
+       ry="10"
+       rx="10"
+       style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2492"
+       width="80.5196"
+       height="294.55911"
+       x="-506.63184"
+       y="457.23209"
+       transform="matrix(0,-1,1,0,0,0)" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="488.30698"
+       y="454.68259"
+       id="text2494"><tspan
+         id="tspan2504"
+         sodipodi:role="line"
+         x="488.30698"
+         y="454.68259"
+         style="font-weight:normal;text-align:start;text-anchor:start">Combine multiple PKCS#11 modules into </tspan><tspan
+         sodipodi:role="line"
+         x="488.30698"
+         y="469.68259"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan5715">one module with multiple slots.</tspan><tspan
+         sodipodi:role="line"
+         x="488.30698"
+         y="484.68259"
+         id="tspan2500"
+         style="text-align:start;text-anchor:start">/pkcs11/plex-layer/</tspan></text>
+    <rect
+       style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect5428"
+       width="224.23186"
+       height="106.00055"
+       x="-401.63132"
+       y="458.3288"
+       ry="10"
+       rx="10"
+       transform="matrix(0,-1,1,0,0,0)" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="206.16934"
+       y="-530.51855"
+       id="text5430"
+       transform="matrix(0,1,-1,0,0,0)"><tspan
+         sodipodi:role="line"
+         x="206.16934"
+         y="-530.51855"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan5436">PKCS#11 prompting for token </tspan><tspan
+         sodipodi:role="line"
+         x="206.16934"
+         y="-515.51855"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan5906">and object authentication. </tspan><tspan
+         sodipodi:role="line"
+         x="206.16934"
+         y="-500.51855"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan5908">ie: Protected Auth Path</tspan><tspan
+         sodipodi:role="line"
+         x="206.16934"
+         y="-485.51855"
+         id="tspan5434"
+         style="text-align:start;text-anchor:start">/daemon/pkcs11/</tspan></text>
+    <rect
+       rx="10"
+       ry="10"
+       y="16.999762"
+       x="-246.70749"
+       height="170.21234"
+       width="86.63504"
+       id="rect5476"
+       style="fill:#ffeeaa;fill-opacity:1;fill-rule:nonzero;stroke:#d4aa00;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       transform="matrix(0,-1,1,0,0,0)" />
+    <text
+       id="text5478"
+       y="199.89192"
+       x="47.61314"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         y="199.89192"
+         x="47.61314"
+         sodipodi:role="line"
+         id="tspan5683">Prompt Window</tspan><tspan
+         style="text-align:start;text-anchor:start"
+         id="tspan5482"
+         y="214.89192"
+         x="47.61314"
+         sodipodi:role="line">/daemon/ui/</tspan></text>
+    <rect
+       transform="matrix(0,-1,1,0,0,0)"
+       style="fill:#ffeeaa;fill-opacity:1;fill-rule:nonzero;stroke:#d4aa00;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect5539"
+       width="86.63504"
+       height="136.57758"
+       x="-550.75586"
+       y="48.942059"
+       ry="10"
+       rx="10" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="83.632385"
+       y="503.2489"
+       id="text5541"><tspan
+         sodipodi:role="line"
+         x="83.632385"
+         y="503.2489"
+         style="font-weight:normal;text-align:start;text-anchor:start"
+         id="tspan5744">PAM module</tspan><tspan
+         sodipodi:role="line"
+         x="83.632385"
+         y="518.2489"
+         id="tspan5545"
+         style="text-align:start;text-anchor:start">/pam/</tspan></text>
+    <rect
+       rx="10"
+       ry="10"
+       y="47.922817"
+       x="-442.62073"
+       height="135.55833"
+       width="86.63504"
+       id="rect5547"
+       style="fill:#ffeeaa;fill-opacity:1;fill-rule:nonzero;stroke:#d4aa00;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       transform="matrix(0,-1,1,0,0,0)" />
+    <text
+       id="text5549"
+       y="395.11377"
+       x="74.613144"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-weight:normal;text-align:start;writing-mode:lr-tb;text-anchor:start"
+         y="395.11377"
+         x="74.613144"
+         sodipodi:role="line"
+         id="tspan5675">Keyring library</tspan><tspan
+         style="text-align:start;writing-mode:lr-tb;text-anchor:start"
+         id="tspan5553"
+         y="410.11377"
+         x="74.613144"
+         sodipodi:role="line">/library/</tspan></text>
+    <g
+       id="g6016"
+       transform="translate(0,2)">
+      <rect
+         transform="matrix(0,-1,1,0,0,0)"
+         rx="10"
+         ry="10"
+         y="829.81018"
+         x="-370.55435"
+         height="194.67401"
+         width="84.596565"
+         id="rect5985"
+         style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         transform="matrix(0,-1,1,0,0,0)"
+         id="text5997"
+         y="845.06122"
+         x="-328.73654"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:bold;text-align:center;text-anchor:middle"
+           y="845.06122"
+           x="-328.73654"
+           id="tspan5999"
+           sodipodi:role="line">rpc-layer</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="858.26184"
+         y="309.06662"
+         id="text5585"><tspan
+           id="tspan5707"
+           sodipodi:role="line"
+           x="858.26184"
+           y="309.06662"
+           style="font-weight:normal;text-align:start;text-anchor:start">Public PKCS#11 module </tspan><tspan
+           id="tspan5977"
+           sodipodi:role="line"
+           x="858.26184"
+           y="324.06662"
+           style="font-weight:normal;text-align:start;text-anchor:start">and usual entry point for </tspan><tspan
+           id="tspan5979"
+           sodipodi:role="line"
+           x="858.26184"
+           y="339.06662"
+           style="font-weight:normal;text-align:start;text-anchor:start">certificate and key ops.</tspan><tspan
+           sodipodi:role="line"
+           x="858.26184"
+           y="354.06662"
+           id="tspan5589"
+           style="text-align:start;text-anchor:start">/pkcs11/rpc-layer/</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="926.22156"
+       y="209.47031"
+       id="text5612"><tspan
+         id="tspan5614"
+         sodipodi:role="line"
+         x="928.13171"
+         y="209.47031"
+         style="font-weight:normal;text-align:center;text-anchor:middle;-inkscape-font-specification:Bitstream Vera Sans">PKCS#11 Aware </tspan><tspan
+         sodipodi:role="line"
+         x="926.22156"
+         y="224.47031"
+         id="tspan5616"
+         style="font-weight:normal;text-align:center;text-anchor:middle;-inkscape-font-specification:Bitstream Vera Sans">Libraries and Apps</tspan></text>
+    <g
+       transform="matrix(0,-1,1,0,68.745979,488.77594)"
+       id="g5622">
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="614.68787"
+         y="-423.32538"
+         id="text5626"
+         transform="matrix(0,1,-1,0,0,0)"><tspan
+           sodipodi:role="line"
+           x="616.59802"
+           y="-423.32538"
+           id="tspan5630"
+           style="font-weight:normal;text-align:center;text-anchor:middle">OpenSSH and other </tspan><tspan
+           sodipodi:role="line"
+           x="614.68787"
+           y="-408.32538"
+           style="font-weight:normal;text-align:center;text-anchor:middle"
+           id="tspan3510">SSH agent compatible</tspan><tspan
+           sodipodi:role="line"
+           x="614.68787"
+           y="-393.32538"
+           style="font-weight:normal;text-align:center;text-anchor:middle"
+           id="tspan3512">tools.</tspan></text>
+    </g>
+    <text
+       id="text5657"
+       y="607.89551"
+       x="100.43102"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-weight:normal;text-align:center;text-anchor:middle"
+         y="607.89551"
+         x="100.43102"
+         sodipodi:role="line"
+         id="tspan5661">PAM Applications</tspan><tspan
+         style="font-weight:normal;text-align:center;text-anchor:middle"
+         y="622.89551"
+         x="102.34118"
+         sodipodi:role="line"
+         id="tspan3487">like gdm, passwd and </tspan><tspan
+         style="font-weight:normal;text-align:center;text-anchor:middle"
+         y="637.89551"
+         x="100.43102"
+         sodipodi:role="line"
+         id="tspan3489">gnome-screensaver</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-399.6958"
+       y="64.137146"
+       id="text5719"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan5721"
+         x="-399.6958"
+         y="64.137146"
+         style="font-weight:bold;text-align:center;text-anchor:middle">library</tspan></text>
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       id="text5725"
+       y="64.137146"
+       x="-507.46179"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-weight:bold;text-align:center;text-anchor:middle"
+         y="64.137146"
+         x="-507.46179"
+         id="tspan5727"
+         sodipodi:role="line">pam</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-203.34895"
+       y="30.367842"
+       id="text5751"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan5753"
+         x="-203.34895"
+         y="30.367842"
+         style="font-weight:bold;text-align:center;text-anchor:middle">ui</tspan></text>
+    <g
+       id="g3368"
+       transform="translate(14,216.07796)">
+      <rect
+         transform="matrix(0,-1,1,0,0,0)"
+         rx="10"
+         ry="10"
+         y="218.80838"
+         x="-279.32303"
+         height="170.21234"
+         width="86.63504"
+         id="rect5458"
+         style="fill:#ffeeaa;fill-opacity:1;fill-rule:nonzero;stroke:#d4aa00;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text5460"
+         y="232.50746"
+         x="243.38329"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:bold;text-align:start;text-anchor:start"
+           y="232.50746"
+           x="243.38329"
+           sodipodi:role="line"
+           id="tspan5462"><tspan
+             style="font-weight:normal;text-align:start;text-anchor:start"
+             id="tspan5689">Binary Keyring Protocol</tspan></tspan><tspan
+           style="text-align:start;text-anchor:start"
+           id="tspan5464"
+           y="247.50746"
+           x="243.38329"
+           sodipodi:role="line">/daemon/</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="-236.0143"
+         y="235.06122"
+         id="text5760"
+         transform="matrix(0,-1,1,0,0,0)"><tspan
+           sodipodi:role="line"
+           id="tspan5762"
+           x="-236.0143"
+           y="235.06122"
+           style="font-weight:bold;text-align:center;text-anchor:middle">daemon-io</tspan></text>
+    </g>
+    <g
+       id="g3385"
+       transform="translate(-1.2885437,2.6923828)">
+      <rect
+         transform="matrix(0,-1,1,0,0,0)"
+         style="fill:#ffeeaa;fill-opacity:1;fill-rule:nonzero;stroke:#d4aa00;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect5448"
+         width="86.63504"
+         height="170.21234"
+         x="-384.30429"
+         y="234.09692"
+         ry="10"
+         rx="10" />
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="262.7298"
+         y="336.69183"
+         id="text5450"><tspan
+           id="tspan5452"
+           sodipodi:role="line"
+           x="262.7298"
+           y="336.69183"
+           style="font-weight:bold;text-align:start;text-anchor:start"><tspan
+             style="font-weight:normal;text-align:start;text-anchor:start"
+             id="tspan5687">Secrets Storage</tspan></tspan><tspan
+           sodipodi:role="line"
+           x="262.7298"
+           y="351.69183"
+           id="tspan5454"
+           style="text-align:start;text-anchor:start">daemon/keyrings/</tspan></text>
+      <text
+         transform="matrix(0,-1,1,0,0,0)"
+         id="text5769"
+         y="251.36899"
+         x="-341.20355"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:bold;text-align:center;text-anchor:middle"
+           y="251.36899"
+           x="-341.20355"
+           id="tspan5771"
+           sodipodi:role="line">keyrings</tspan></text>
+    </g>
+    <g
+       id="g3377"
+       transform="translate(0.2883828,-215.05873)">
+      <rect
+         transform="matrix(0,-1,1,0,0,0)"
+         rx="10"
+         ry="10"
+         y="233.55847"
+         x="-494.67029"
+         height="170.21234"
+         width="86.63504"
+         id="rect5468"
+         style="fill:#ffeeaa;fill-opacity:1;fill-rule:nonzero;stroke:#d4aa00;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text5470"
+         y="447.85474"
+         x="259.26804"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:normal;text-align:start;text-anchor:start"
+           y="447.85474"
+           x="259.26804"
+           sodipodi:role="line"
+           id="tspan5472">UI Prompting</tspan><tspan
+           style="text-align:start;text-anchor:start"
+           id="tspan5474"
+           y="462.85474"
+           x="259.26804"
+           sodipodi:role="line">/daemon/ui/</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="-451.31177"
+         y="249.48338"
+         id="text5773"
+         transform="matrix(0,-1,1,0,0,0)"><tspan
+           sodipodi:role="line"
+           id="tspan5775"
+           x="-451.31177"
+           y="249.48338"
+           style="font-weight:bold;text-align:center;text-anchor:middle">ui</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="511.53415"
+       y="195.72617"
+       id="text5777"><tspan
+         sodipodi:role="line"
+         id="tspan5779"
+         x="511.53415"
+         y="195.72617"
+         style="font-weight:bold;text-align:center;text-anchor:middle">daemon-auth</tspan></text>
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       id="text5781"
+       y="475.06122"
+       x="-466.85251"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-weight:bold;text-align:center;text-anchor:middle"
+         y="475.06122"
+         x="-466.85251"
+         id="tspan5783"
+         sodipodi:role="line">plex-layer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="499.50696"
+       y="545.34351"
+       id="text5785"><tspan
+         sodipodi:role="line"
+         id="tspan5787"
+         x="499.50696"
+         y="545.34351"
+         style="font-weight:bold;text-align:center;text-anchor:middle">ssh-store</tspan></text>
+    <g
+       id="g5868">
+      <rect
+         style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect2437"
+         width="86.63504"
+         height="170.21234"
+         x="560.17493"
+         y="530.05499"
+         ry="10"
+         rx="10" />
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="559.18787"
+         y="-622.68188"
+         id="text2439"
+         transform="matrix(0,1,-1,0,0,0)"><tspan
+           id="tspan5850"
+           sodipodi:role="line"
+           x="559.18787"
+           y="-622.68188"
+           style="font-weight:normal;text-align:start;text-anchor:start">PKCS#11 module  for </tspan><tspan
+           sodipodi:role="line"
+           x="559.18787"
+           y="-607.68188"
+           style="font-weight:normal;text-align:start;text-anchor:start"
+           id="tspan2447">general certificate </tspan><tspan
+           id="tspan5862"
+           sodipodi:role="line"
+           x="559.18787"
+           y="-592.68188"
+           style="font-weight:normal;text-align:start;text-anchor:start">and key storage</tspan><tspan
+           sodipodi:role="line"
+           x="559.18787"
+           y="-577.68188"
+           id="tspan2443"
+           style="font-weight:normal;text-align:start;text-anchor:start">/pkcs11/user-store/</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="603.31079"
+         y="545.34351"
+         id="text5789"><tspan
+           sodipodi:role="line"
+           id="tspan5791"
+           x="603.31079"
+           y="545.34351"
+           style="font-weight:bold;text-align:center;text-anchor:middle">user-store</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="708.27557"
+       y="545.34351"
+       id="text5793"><tspan
+         sodipodi:role="line"
+         id="tspan5795"
+         x="708.27557"
+         y="545.34351"
+         style="font-weight:bold;text-align:center;text-anchor:middle">roots-store</tspan></text>
+    <g
+       id="g5948"
+       transform="translate(0,-27)">
+      <g
+         id="g2513"
+         transform="matrix(0,-1,1,0,59.75519,777.72925)">
+        <rect
+           rx="10"
+           ry="10"
+           y="530.05499"
+           x="380.1749"
+           height="181.42393"
+           width="83.577332"
+           id="rect2515"
+           style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+        <text
+           transform="matrix(0,1,-1,0,0,0)"
+           id="text2517"
+           y="-433.32538"
+           x="559.68787"
+           style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           xml:space="preserve"><tspan
+             style="font-weight:bold;text-align:start;text-anchor:start"
+             y="-433.32538"
+             x="559.68787"
+             sodipodi:role="line"
+             id="tspan2521"><tspan
+               style="font-weight:normal;text-align:start;text-anchor:start"
+               id="tspan5703">Marshalling of PKCS#11 </tspan></tspan><tspan
+             style="font-weight:normal;text-align:start;text-anchor:start"
+             y="-418.32538"
+             x="559.68787"
+             sodipodi:role="line"
+             id="tspan5699">between processes.</tspan><tspan
+             style="text-align:start;text-anchor:start"
+             id="tspan2523"
+             y="-403.32538"
+             x="559.68787"
+             sodipodi:role="line">/pkcs11/rpc-layer/</tspan></text>
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="-356.24615"
+         y="605.06122"
+         id="text5797"
+         transform="matrix(0,-1,1,0,0,0)"><tspan
+           sodipodi:role="line"
+           id="tspan5799"
+           x="-356.24615"
+           y="605.06122"
+           style="font-weight:bold;text-align:center;text-anchor:middle">rpc-layer</tspan></text>
+    </g>
+    <g
+       id="g5927"
+       transform="translate(-2.5,4)">
+      <g
+         id="g5412"
+         transform="matrix(0,-1,1,0,-279.65029,748.17142)">
+        <g
+           id="g5414"
+           transform="translate(-13.250064,307.80917)">
+          <rect
+             rx="10"
+             ry="10"
+             y="563.68976"
+             x="500.4447"
+             height="180.40472"
+             width="86.635017"
+             id="rect5416"
+             style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+          <text
+             transform="matrix(0,1,-1,0,0,0)"
+             id="text5418"
+             y="-560.59515"
+             x="594.32263"
+             style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+             xml:space="preserve"><tspan
+               id="tspan5695"
+               style="font-weight:normal;text-align:start;text-anchor:start"
+               y="-560.59515"
+               x="594.32263"
+               sodipodi:role="line">SSH agent which uses </tspan><tspan
+               id="tspan5923"
+               style="font-weight:normal;text-align:start;text-anchor:start"
+               y="-545.59515"
+               x="594.32263"
+               sodipodi:role="line">PKCS#11 for key store</tspan><tspan
+               id="tspan5925"
+               style="font-weight:normal;text-align:start;text-anchor:start"
+               y="-530.59515"
+               x="594.32263"
+               sodipodi:role="line">and operations.</tspan><tspan
+               style="text-align:start;text-anchor:start"
+               id="tspan5422"
+               y="-515.59515"
+               x="594.32263"
+               sodipodi:role="line">/pkcs11/ssh-agent/</tspan></text>
+        </g>
+      </g>
+      <text
+         transform="matrix(0,-1,1,0,0,0)"
+         id="text5801"
+         y="607.06122"
+         x="-217.82919"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:bold;text-align:center;text-anchor:middle"
+           y="607.06122"
+           x="-217.82919"
+           id="tspan5803"
+           sodipodi:role="line">ssh-agent</tspan></text>
+    </g>
+    <g
+       id="g6070"
+       transform="translate(-6.1154183,-22)">
+      <rect
+         transform="matrix(0,-1,1,0,0,0)"
+         style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect5500"
+         width="86.63504"
+         height="147.78914"
+         x="-507.63181"
+         y="834.75403"
+         ry="10"
+         rx="10" />
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="864.3869"
+         y="452.62482"
+         id="text5502"><tspan
+           sodipodi:role="line"
+           x="864.3869"
+           y="452.62482"
+           style="font-weight:normal;text-align:start;text-anchor:start"
+           id="tspan6028">A GObject based </tspan><tspan
+           id="tspan6043"
+           sodipodi:role="line"
+           x="864.3869"
+           y="467.62482"
+           style="font-weight:normal;text-align:start;text-anchor:start">PKCS#11 library</tspan><tspan
+           sodipodi:role="line"
+           x="864.3869"
+           y="482.62482"
+           id="tspan5508"
+           style="text-align:start;text-anchor:start">/gp11/</tspan></text>
+      <text
+         transform="matrix(0,-1,1,0,0,0)"
+         id="text5809"
+         y="850.06122"
+         x="-464.17365"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:bold;text-align:center;text-anchor:middle"
+           y="850.06122"
+           x="-464.17365"
+           id="tspan5811"
+           sodipodi:role="line">gp11</tspan></text>
+    </g>
+    <g
+       id="g6061"
+       transform="translate(-4.0769051,-32.5)"
+       inkscape:connector-avoid="true">
+      <rect
+         transform="matrix(0,-1,1,0,0,0)"
+         rx="10"
+         ry="10"
+         y="832.71552"
+         x="-645.22858"
+         height="148.80847"
+         width="100.90437"
+         id="rect5488"
+         style="fill:#ffccaa;fill-opacity:1;fill-rule:nonzero;stroke:#aa4400;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text5490"
+         y="575.95227"
+         x="863.34839"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:normal;text-align:start;text-anchor:start"
+           y="575.95227"
+           x="863.34839"
+           sodipodi:role="line"
+           id="tspan5492">Library for key </tspan><tspan
+           id="tspan5496"
+           style="font-weight:normal;text-align:start;text-anchor:start"
+           y="590.95227"
+           x="863.34839"
+           sodipodi:role="line">and certificate UI, </tspan><tspan
+           style="font-weight:normal;text-align:start;text-anchor:start"
+           y="605.95227"
+           x="863.34839"
+           sodipodi:role="line"
+           id="tspan8746">parsing etc.</tspan><tspan
+           style="text-align:start;text-anchor:start"
+           id="tspan5494"
+           y="620.95227"
+           x="863.34839"
+           sodipodi:role="line">/gcr/</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="-587.88782"
+         y="850.06122"
+         id="text5833"
+         transform="matrix(0,-1,1,0,0,0)"><tspan
+           sodipodi:role="line"
+           id="tspan5835"
+           x="-587.88782"
+           y="850.06122"
+           style="font-weight:bold;text-align:center;text-anchor:middle">gcr</tspan></text>
+    </g>
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 499.02077,506.33463 L 499.02077,531.35222"
+       id="path2558"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path5408"
+       d="M 599.02077,506.33463 L 599.02077,531.35222"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 709.02077,506.33463 L 709.02077,531.35222"
+       id="path5410"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path5918"
+       d="M 509.02077,401.33463 L 509.02077,426.35222"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 564.01197,223.84343 L 589.02957,223.84343"
+       id="path5939"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path5959"
+       d="M 564.01197,328.84343 L 589.02957,328.84343"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareS);marker-end:url(#SquareS);stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 771.01197,328.84343 L 829.66435,328.84343"
+       id="path6026"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path6079"
+       d="M 924.52077,373.33463 L 924.52077,398.35222"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 924.52077,485.33463 L 924.52077,510.35222"
+       id="path6081"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path8708"
+       d="M 684.52077,109.7768 L 684.52077,178.62152"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#SquareM);stroke-miterlimit:4;stroke-dasharray:2.00000008, 4.00000016;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="930.56219"
+       y="673.76721"
+       id="text8748"><tspan
+         sodipodi:role="line"
+         id="tspan8750"
+         x="932.47235"
+         y="673.76721">Seahorse and other </tspan><tspan
+         sodipodi:role="line"
+         x="932.47235"
+         y="688.76721"
+         id="tspan8752">GNOME apps that </tspan><tspan
+         sodipodi:role="line"
+         x="930.56219"
+         y="703.76721"
+         id="tspan8754">use crypto.</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path8760"
+       d="M 924.02077,612.96117 L 924.02077,653.1792"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:none;stroke-miterlimit:4;stroke-dasharray:2.00000005, 4.00000011;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path3398"
+       d="M 403.01197,343.34343 L 457.58741,343.34343"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareS);marker-end:url(#SquareS);stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareS);marker-end:url(#SquareS);stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 315.29969,386.0366 L 315.29969,409.01574"
+       id="path3400"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path3402"
+       d="M 315.29969,279.0366 L 315.29969,302.01574"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareS);marker-end:url(#SquareS);stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:none;stroke-miterlimit:4;stroke-dasharray:2.00000005, 4.00000011;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+       d="M 975.713,442.74881 L 994.94708,494.3242 L 994.94708,630.22858 L 974.38931,651.34404"
+       id="path3408"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareS);marker-end:url(#SquareS);stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 403.01197,237.34343 L 457.58741,237.34343"
+       id="path3410"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path3412"
+       d="M 185.6698,224.84343 L 232.77568,224.84343"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareS);marker-end:url(#SquareS);stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareS);marker-end:url(#SquareS);stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 185.6698,424.84343 L 232.77568,424.84343"
+       id="path3414"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path3416"
+       d="M 185.6698,482.84343 L 232.77568,482.84343"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareS);marker-end:url(#SquareS);stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:none;stroke-miterlimit:4;stroke-dasharray:2.00000005, 4.00000011;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 924.52077,286.6792 L 925.02077,233.28805"
+       id="path3482"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:none;stroke-miterlimit:4;stroke-dasharray:2.00000005, 4.00000011;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 104.02077,550.46117 L 104.02077,590.6792"
+       id="path3491"
+       inkscape:connector-type="polyline"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="100.43102"
+       y="281.89551"
+       id="text3493"><tspan
+         id="tspan3499"
+         sodipodi:role="line"
+         x="100.43102"
+         y="281.89551"
+         style="font-weight:normal;text-align:center;text-anchor:middle">GNOME applications</tspan><tspan
+         sodipodi:role="line"
+         x="100.43102"
+         y="296.89551"
+         style="font-weight:normal;text-align:center;text-anchor:middle"
+         id="tspan3506">that store secrets</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-type="polyline"
+       id="path3508"
+       d="M 103.52077,355.6792 L 103.00154,303.30729"
+       style="opacity:1;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#SquareM);marker-end:none;stroke-miterlimit:4;stroke-dasharray:2.00000005, 4.00000011;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+</svg>
