@@ -1,14 +1,14 @@
-# translation of gnome-keyring.HEAD.po to Kannada
+# translation of gnome-keyring.HEAD.kn.po to Kannada
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Shankar Prasad <svenkate@redhat.com>, 2008.
+# Shankar Prasad <svenkate@redhat.com>, 2008, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.HEAD\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-19 04:03+0000\n"
-"PO-Revision-Date: 2008-09-20 15:13+0530\n"
+"Project-Id-Version: gnome-keyring.HEAD.kn\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-02-14 14:22+0000\n"
+"PO-Revision-Date: 2009-03-22 17:28+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,315 +17,368 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gkr-location.c:320
+#: ../common/gkr-location.c:321
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "ತೆಗೆಯಬಹುದಾದ ಡಿಸ್ಕ್‍: %s"
 
-#: ../common/gkr-location.c:322
+#: ../common/gkr-location.c:323
 msgid "Removable Disk"
 msgstr "ತೆಗೆಯಬಹುದಾದ ಡಿಸ್ಕ್‍"
 
-#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
+#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
 msgid "Home"
 msgstr "ಹೋಮ್"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
-#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
 msgstr "ಈ ಕಡತವು ಇರುವ ಡಿಸ್ಕ್‍ ಅಥವ ಡ್ರೈವ್ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ"
 
-#: ../common/gkr-location.c:1136
+#: ../common/gkr-location.c:1137
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "ಕೋಶವನ್ನು ನಿರ್ಮಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
-#: ../common/gkr-location.c:1170
+#: ../common/gkr-location.c:1171
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "ಕಡತವನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:227
+#: ../daemon/gkr-daemon-ops.c:228
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
-msgstr "'%s'(%s) ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
+msgstr ""
+"'%s'(%s) ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ "
+"ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231
+#: ../daemon/gkr-daemon-ops.c:232
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
-msgstr "'%s'(%s) ಅನ್ವಯವು %s ನಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
+msgstr ""
+"'%s'(%s) ಅನ್ವಯವು %s ನಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು "
+"ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
+#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "%s ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
+msgstr ""
+"%s ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು "
+"ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "%s ಅನ್ವಯವು %s ನಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
+msgstr ""
+"%s ಅನ್ವಯವು %s ನಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು "
+"ಬಯಸಿದೆ."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:257
+#: ../daemon/gkr-daemon-ops.c:258
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
+msgstr ""
+"ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ "
+"ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು %s ನಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
+msgstr ""
+"ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು %s ನಲ್ಲಿ '<object prop='name'/>' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು "
+"ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow access"
 msgstr "ನಿಲುಕಣೆಯನ್ನು ಅನುಮತಿಸು"
 
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow application access to keyring?"
 msgstr "ಅನ್ವಯವು ಕೀಲಿ ಸುರಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಅನುಮತಿಸಬೇಕೆ?"
 
-#: ../daemon/gkr-daemon-ops.c:307
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
 "locked"
-msgstr "'%s' (%s) ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+msgstr ""
+"'%s' (%s) ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು "
+"ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
 
-#: ../daemon/gkr-daemon-ops.c:311
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "'%s' (%s) ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+msgstr ""
+"'%s' (%s) ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು "
+"ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "'%s' ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+msgstr ""
+"'%s' ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು "
+"ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
 
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "'%s' ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+msgstr ""
+"'%s' ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು "
+"ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
 
-#: ../daemon/gkr-daemon-ops.c:338
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
 #, c-format
 msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+msgstr ""
+"ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು "
+"ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
 
-#: ../daemon/gkr-daemon-ops.c:342
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+msgstr ""
+"ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು "
+"ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
 
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
 msgstr "ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
 
-#: ../daemon/gkr-daemon-ops.c:351
+#: ../daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "ಕೀಲಿಸುರುಳಿ '%s' ಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:355
+#: ../daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "ಕೀಲಿ ಸುರುಳಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡು"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
+#: ../daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
 msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ಈ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು."
 
-#: ../daemon/gkr-daemon-ops.c:403
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 "have to choose the password you want to use for it."
-msgstr "'%s' (%s) ಅನ್ವಯವು '%s' ಎಂಬ ಹೆಸರಿನ ಒಂದು ಹೊಸ ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"'%s' (%s) ಅನ್ವಯವು '%s' ಎಂಬ ಹೆಸರಿನ ಒಂದು ಹೊಸ ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು "
+"ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:407
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "'%s' (%s) ಅನ್ವಯವು ಒಂದು ಹೊಸ ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"'%s' (%s) ಅನ್ವಯವು ಒಂದು ಹೊಸ ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ "
+"ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
 "choose the password you want to use for it."
-msgstr "'%s' ಅನ್ವಯವು '%s' ಎಂಬ ಹೆಸರಿನ ಒಂದು ಹೊಸ ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"'%s' ಅನ್ವಯವು '%s' ಎಂಬ ಹೆಸರಿನ ಒಂದು ಹೊಸ ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. "
+"ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "'%s' ಅನ್ವಯವು ಒಂದು ಹೊಸ ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"'%s' ಅನ್ವಯವು ಒಂದು ಹೊಸ ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು "
+"ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:433
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
 "to choose the password you want to use for it."
-msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು '%s' ಎಂಬ ಹೆಸರಿನ ಒಂದು ಹೊಸ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು '%s' ಎಂಬ ಹೆಸರಿನ ಒಂದು ಹೊಸ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. "
+"ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:437
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
 "choose the password you want to use for it."
-msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಒಂದು ಹೊಸ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಒಂದು ಹೊಸ ಕೀಲಿ ಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕೆ ಬಳಸಲು ನೀವು "
+"ಒಂದು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:443
+#: ../daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
 msgstr "ಹೊಸ ಕೀಲಿಸುರುಳಿ ಗುಪ್ತಪದ"
 
-#: ../daemon/gkr-daemon-ops.c:444
+#: ../daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
 msgstr "ಹೊಸ ಕೀಲಿ ಸುರುಳಿಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: ../daemon/gkr-daemon-ops.c:491
+#: ../daemon/gkr-daemon-ops.c:508
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "'%s' (%s) ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"'%s' (%s) ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ "
+"ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:512
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
 "keyring. You have to choose the password you want to use for it."
-msgstr "'%s' (%s) ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"'%s' (%s) ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ "
+"ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
 "have to choose the password you want to use for it."
-msgstr "'%s' ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"'%s' ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ "
+"ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr "'%s' ಅನ್ವಯವು ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"'%s' ಅನ್ವಯವು ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ ಗುಪ್ತಪದವನ್ನು "
+"ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:521
+#: ../daemon/gkr-daemon-ops.c:538
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
 "You have to choose the password you want to use for it."
-msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು '%s' ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ "
+"ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:525
+#: ../daemon/gkr-daemon-ops.c:542
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
 "You have to choose the password you want to use for it."
-msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
+msgstr ""
+"ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದರಲ್ಲಿ ಯಾವ "
+"ಗುಪ್ತಪದವನ್ನು ಬಳಸಬೇಕು ಎಂದು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:535
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
-msgstr "'%s' ಕೀಲಿಸುರುಳಿಗಾಗಿ ಒಂದು ಹೊಸ ಗುಪ್ತಪದವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
+msgstr "'%s' ಕೀಲಿಸುರುಳಿಗಾಗಿ ಒಂದು ಹೊಸ ಗುಪ್ತಪದವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ. "
 
-#: ../daemon/gkr-daemon-ops.c:537
+#: ../daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಗಾಗಿ ಒಂದು ಹೊಸ ಗುಪ್ತಪದವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ. "
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:541
+#: ../daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
 msgstr "ಕೀಲಿ ಸುರುಳಿ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಿ"
 
-#: ../daemon/gkr-daemon-ops.c:614
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr ""
+msgstr "ಅನ್ವಯ '%s' (%s) ವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಶೇಖರಿಸಿಡಲು ಬಯಸಿದೆ, ಆದರೆ ಯಾವುದೆ ಕೀಲಿಸುರುಳಿ ಇಲ್ಲ. ಒಂದು ಕೀಲಿಸುರುಳಿಯನ್ನು ರಚಿಸಲು ಅದಕ್ಕಾಗಿ ಬಳಸಲು ಒಂದು ಗುಪ್ತಪದವನ್ನು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr ""
+msgstr "ಅನ್ವಯ '%s' ವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಶೇಖರಿಸಿಡಲು ಬಯಸಿದೆ, ಆದರೆ ಯಾವುದೆ ಕೀಲಿಸುರುಳಿ ಇಲ್ಲ. ಒಂದು ಕೀಲಿಸುರುಳಿಯನ್ನು ರಚಿಸಲು ಅದಕ್ಕಾಗಿ ಬಳಸಲು ಒಂದು ಗುಪ್ತಪದವನ್ನು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
-#: ../daemon/gkr-daemon-ops.c:626
+#: ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
 "keyring. To create one, you need to choose the password you wish to use for "
 "it."
-msgstr ""
+msgstr "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ಶೇಖರಿಸಿಡಲು ಬಯಸಿದೆ, ಆದರೆ ಯಾವುದೆ ಕೀಲಿಸುರುಳಿ ಇಲ್ಲ. ಒಂದು ಕೀಲಿಸುರುಳಿಯನ್ನು ರಚಿಸಲು ಅದಕ್ಕಾಗಿ ಬಳಸಲು ಒಂದು ಗುಪ್ತಪದವನ್ನು ನೀವು ಆರಿಸಬೇಕಾಗುತ್ತದೆ."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಯನ್ನು ನಿರ್ಮಿಸಿ"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
 msgstr "ಡೀಫಾಲ್ಟ್‍ ಕೀಲಿಸುರುಳಿಗಾಗಿ ಗುಪ್ತಪದವನ್ನು ಆರಿಸಿ"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid ""
-"A list of paths to PKCS#11 modules to load. No modules are currently listed "
-"by default, as this is still an experimental feature. This is used by "
-"seahorse and other PKCS#11 aware applications."
-msgstr ""
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid "PKCS#11 Modules"
-msgstr "PKCS#11 ಘಟಕಗಳು"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
-msgstr ""
+msgstr "ಈ ಆಯ್ಕೆಯು gnome-keyring ಡೀಮನ್‌ನಲ್ಲಿ PKCS#11 ಘಟಕವನ್ನು ಶಕ್ತಗೊಳಿಸುತ್ತದೆ. gnome-keyring-daemon ಆರಂಭಗೊಂಡಾಗ ಮಾತ್ರವೆ ಇದು ಕಾರ್ಯರೂಪಕ್ಕೆ ಬರುತ್ತದೆ, (ಅಂದರೆ: ಬಳಕೆದಾರರು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ). ಡೀಮನ್‌ಗೆ ಕೆಲವು ಆಜ್ಞಾ ಸಾಲಿನ ಆರ್ಗುಮೆಂಟ್‌ಗಳನ್ನು ಒದಗಿಸಿದಾಗ ಈ ಸಿದ್ಧತೆಗಳು ಅತಿಕ್ರಮಿಸಲ್ಪಡುತ್ತವೆ."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
-msgstr ""
+msgstr "ಈ ಆಯ್ಕೆಯು gnome-keyring daemon ನಲ್ಲಿ SSH ಮಧ್ಯವರ್ತಿಯನ್ನು ಶಕ್ತಗೊಳಿಸುತ್ತದೆ. gnome-keyring-daemon ಆರಂಭಗೊಂಡಾಗ ಮಾತ್ರವೆ ಇದು ಕಾರ್ಯರೂಪಕ್ಕೆ ಬರುತ್ತದೆ, (ಅಂದರೆ: ಬಳಕೆದಾರರು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ). ಡೀಮನ್‌ಗೆ ಕೆಲವು ಆಜ್ಞಾ ಸಾಲಿನ ಆರ್ಗುಮೆಂಟ್‌ಗಳನ್ನು ಒದಗಿಸಿದಾಗ ಈ ಸಿದ್ಧತೆಗಳು ಅತಿಕ್ರಮಿಸಲ್ಪಡುತ್ತವೆ."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "gnome-ಕೀಲಿಸುರಳಿ PKCS#11 ಘಟಕವನ್ನು ಶಕ್ತಗೊಳಿಸಲಾಗಿದೆಯೆ."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "gnome-ಕೀಲಿಸುರಳಿ SSH ಮಧ್ಯವರ್ತಿಯನ್ನು ಶಕ್ತಗೊಳಿಸಲಾಗಿದೆಯೆ."
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+#| msgid "New Keyring Password"
+msgid "GNOME Keyring Daemon"
+msgstr "GNOME ಕೀಲಿಸುರುಳಿ ಡೀಮನ್"
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
@@ -355,648 +408,980 @@ msgstr "ನಿಮ್ಮ ಪ್ರವೇಶದ ಗುಪ್ತಪದವನ್ನ�
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
-msgstr "ನೀವು ಈ ಗಣಕಕ್ಕೆ ಪ್ರವೇಶಿಸಿದಾಗ ಪ್ರವೇಶ ಕೀಲಿಸುರುಳಿಯು ತಾನಾಗಿಯೆ ನಿರ್ಮಿತಗೊಂಡಿರಲಿಲ್ಲ. ಅದನ್ನು ಈಗ ನಿರ್ಮಿಸಲಾಗುತ್ತದೆ."
+msgstr ""
+"ನೀವು ಈ ಗಣಕಕ್ಕೆ ಪ್ರವೇಶಿಸಿದಾಗ ಪ್ರವೇಶ ಕೀಲಿಸುರುಳಿಯು ತಾನಾಗಿಯೆ ನಿರ್ಮಿತಗೊಂಡಿರಲಿಲ್ಲ. "
+"ಅದನ್ನು ಈಗ ನಿರ್ಮಿಸಲಾಗುತ್ತದೆ."
 
-#: ../daemon/keyrings/gkr-keyring.c:584
+#: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "%s ಕೀಲಿಸುರುಳಿಗಾಗಿನ ಅನ್‌ಲಾಕ್ ಗುಪ್ತಪದ"
 
-#: ../daemon/pk/gkr-pk-import.c:88
-msgid "Import private key"
-msgstr "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಆಮದು ಮಾಡಿಕೊ"
-
-#: ../daemon/pk/gkr-pk-import.c:90
-msgid "Import certificate"
-msgstr "ಪ್ರಮಾಣ ಪತ್ರವನ್ನು ಆಮದು ಮಾಡಿಕೊ"
-
-#: ../daemon/pk/gkr-pk-import.c:92
-msgid "Import public key"
-msgstr "ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಆಮದು ಮಾಡಿಕೊ"
-
-#: ../daemon/pk/gkr-pk-import.c:94
-msgid "Import"
-msgstr "ಆಮದು"
-
-#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
-msgid "Enter password to unlock the private key"
-msgstr "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
-
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
-msgid "Enter password to unlock the certificate"
-msgstr "ಪ್ರಮಾಣಪತ್ರವನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
-
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
-msgid "Enter password to unlock the public key"
-msgstr "ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
-
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
-msgid "Enter password to unlock"
-msgstr "ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
-
-#: ../daemon/pk/gkr-pk-import.c:114
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr "ಗಣಕವು '%s' ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಆಮದುಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
-
-#: ../daemon/pk/gkr-pk-import.c:116
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr "ಗಣಕವು '%s' ಪ್ರಮಾಣಪತ್ರವನ್ನು ಆಮದುಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
-
-#: ../daemon/pk/gkr-pk-import.c:118
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr "ಗಣಕವು '%s' ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಆಮದುಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
-
-#: ../daemon/pk/gkr-pk-import.c:120
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "ಗಣಕವು '%s' ಅನ್ನು ಆಮದುಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:93
-msgid "Create Storage for Key Information"
-msgstr "ಕೀಲಿ ಮಾಹಿತಿಗಾಗಿ ಶೇಖರಣೆಯನ್ನು ನಿರ್ಮಿಸಿ"
-
-#: ../daemon/pk/gkr-pk-index.c:94
-msgid "Choose password to protect storage"
-msgstr "ಶೇಖರಣೆಯನ್ನು ಭದ್ರಪಡಿಸಲು ಗುಪ್ತಪದವನ್ನು ಆರಿಸಿ"
-
-#: ../daemon/pk/gkr-pk-index.c:97
-msgid ""
-"The system wants to store information about your keys and certificates. In "
-"order to protect this information, choose a password with which it will be "
-"locked."
-msgstr ""
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:124
-msgid "Unlock Storage for Key Information"
-msgstr "ಕೀಲಿ ಮಾಹಿತಿಗಾಗಿ ಶೇಖರಣೆಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಿ"
-
-#: ../daemon/pk/gkr-pk-index.c:125
-msgid "Enter password to unlock storage"
-msgstr "ಶೇಖರಣೆಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
-
-#: ../daemon/pk/gkr-pk-index.c:128
-msgid ""
-"The system wants to access information about your keys and certificates, but "
-"it is locked."
-msgstr "ಗಣಕವು ನಿಮ್ಮ ಕೀಲಿಗಳು ಹಾಗು ಪ್ರಮಾಣಪತ್ರಗಳ ಮಾಹಿತಿಯನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ."
-
-#: ../daemon/pk/gkr-pk-object.c:889
-msgid "Certificate"
-msgstr "ಪ್ರಮಾಣಪತ್ರ"
-
-#: ../daemon/pk/gkr-pk-object.c:891
-msgid "Private Key"
-msgstr "ಖಾಸಗಿ ಕೀಲಿ"
-
-#: ../daemon/pk/gkr-pk-object.c:893
-msgid "Public Key"
-msgstr "ಸಾರ್ವಜನಿಕ ಕೀಲಿ"
-
-#: ../daemon/pk/gkr-pk-object.c:895
-msgid "Trust Association"
-msgstr "ಟ್ರಸ್ಟ್‍ ಅಸೋಸಿಯೇಶನ್"
-
-#: ../daemon/pk/gkr-pk-object-storage.c:445
-#, c-format
-msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr "'%s' ಅನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ಬೇರೆ ವಸ್ತುಗಳೊಡನೆ ಹೊಂದಿಕೊಂಡಿದೆ"
-
-#: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
 msgid "Unlock private key"
 msgstr "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡು"
 
-#: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
 msgid "Unlock certificate"
 msgstr "ಪ್ರಮಾಣಪತ್ರವನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡು"
 
-#: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
 msgid "Unlock public key"
 msgstr "ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡು"
 
-#: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
 msgid "Unlock"
 msgstr "ಅನ್‌ಲಾಕ್ ಮಾಡು"
 
-#: ../daemon/pk/gkr-pk-storage.c:153
-msgid "Lock private key"
-msgstr "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಲಾಕ್ ಮಾಡು"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
+msgid "Enter password to unlock the private key"
+msgstr "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
 
-#: ../daemon/pk/gkr-pk-storage.c:155
-msgid "Lock"
-msgstr "ಲಾಕ್"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
+msgid "Enter password to unlock the certificate"
+msgstr "ಪ್ರಮಾಣಪತ್ರವನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
 
-#: ../daemon/pk/gkr-pk-storage.c:183
-msgid "Enter password to protect the private key"
-msgstr "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಸಂರಕ್ಷಿಸಲು ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+msgid "Enter password to unlock the public key"
+msgstr "ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
 
-#: ../daemon/pk/gkr-pk-storage.c:185
-msgid "Enter password to protect storage"
-msgstr "ಶೇಖರಣೆಯನ್ನು ಸಂರಕ್ಷಿಸಲು ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:364
+msgid "Enter password to unlock"
+msgstr "ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
 
-#: ../daemon/pk/gkr-pk-storage.c:196
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"ಒಂದು ಅನ್ವಯವು ಖಾಸಗಿ ಕೀಲಿ '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು "
+"ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "ಒಂದು ಪ್ರಮಾಣಪತ್ರ '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"ಒಂದು ಅನ್ವಯವು ಸಾರ್ವಜನಿಕ ಕೀಲಿ '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು "
+"ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "ಒಂದು ಅನ್ವಯವು '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
 msgid "Automatically unlock this private key when I log in."
-msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ಖಾಸಗಿ ಕೀಲಿಯು ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು"
+msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ಖಾಸಗಿ ಕೀಲಿಯು ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು."
 
-#: ../daemon/pk/gkr-pk-storage.c:198
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
 msgid "Automatically unlock this certificate when I log in."
-msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ಪ್ರಮಾಣಪತ್ರವು ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು"
+msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ಪ್ರಮಾಣಪತ್ರವು ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು."
 
-#: ../daemon/pk/gkr-pk-storage.c:200
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
 msgid "Automatically unlock this public key when I log in."
-msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯು ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು"
+msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯು ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು."
 
-#: ../daemon/pk/gkr-pk-storage.c:202
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
 msgid "Automatically unlock this when I log in"
 msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು"
 
-#: ../daemon/pk/gkr-pk-storage.c:209
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "ಒಂದು ಅನ್ವಯವು ಖಾಸಗಿ ಕೀಲಿ '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+#| msgid "Unlock certificate"
+msgid "Unlock certificate/key storage"
+msgstr "ಪ್ರಮಾಣಪತ್ರವನ್ನು/ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡು"
 
-#: ../daemon/pk/gkr-pk-storage.c:211
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "ಒಂದು ಪ್ರಮಾಣಪತ್ರ '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+#| msgid "Enter password to unlock the certificate"
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "ಪ್ರಮಾಣಪತ್ರ/ಕೀಲಿ ಶೇಖರಣೆಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
 
-#: ../daemon/pk/gkr-pk-storage.c:213
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
 #, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "ಒಂದು ಅನ್ವಯವು ಸಾರ್ವಜನಿಕ ಕೀಲಿ '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+#| msgid ""
+#| "An application wants access to the certificate '%s', but it is locked"
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "ಒಂದು ಅನ್ವಯವು ಪ್ರಮಾಣಪತ್ರ/ಕೀಲಿ ಶೇಖರಣೆ '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಲಾಕ್‌ ಮಾಡಲಾಗಿದೆ"
 
-#: ../daemon/pk/gkr-pk-storage.c:215
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "ಒಂದು ಅನ್ವಯವು '%s' ಅನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದೆ, ಆದರೆ ಅದನ್ನು ಭದ್ರಪಡಿಸಲಾಗಿದೆ"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
+#| msgid "Automatically unlock this certificate when I log in."
+msgid "Automatically unlock secure storage when I log in."
+msgstr "ನಾನು ಒಳಗೆ ಪ್ರವೇಶಿಸಿದಾಗ ಸುರಕ್ಷಿತ ಶೇಖರಣೆಯು ತಾನಾಗಿಯೆ ಅನ್‌ಲಾಕ್ ಆಗುವಂತೆ ಮಾಡು."
 
-#: ../daemon/pk/gkr-pk-storage.c:228
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+#| msgid "New password strength"
+msgid "New Password Required"
+msgstr "ಹೊಸ ಗುಪ್ತಪದದ ಅಗತ್ಯವಿದೆ"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
+#| msgid "Enter password to protect storage"
+msgid "New password required for secure storage"
+msgstr "ಸುರಕ್ಷಿತ ಶೇಖರಣೆಗಾಗಿ ಒಂದು ಗುಪ್ತಪದದ ಅಗತ್ಯವಿದೆ"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid ""
-"The system wants to store the private key '%s' on your disk. Please enter a "
-"password to lock it with."
-msgstr "ಗಣಕವು ಖಾಸಗಿ ಕೀಲಿ '%s' ಅನ್ನು ನಿಮ್ಮ ಡಿಸ್ಕಿನಲ್ಲಿ ಇರಿಸಲು ಬಯಸುತ್ತದೆ. ದಯವಿಟ್ಟು ಅದನ್ನು ಭದ್ರಪಡಿಸಲು ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ."
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "'%s' ಅನ್ನು ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ಅಥವ ಕೀಲಿಗಳನ್ನು ಶೇಖರಿಸಿಡಲು ಸಿದ್ಧಗೊಳಿಸಲು, ಒಂದು ಗುಪ್ತಪದದ ಅಗತ್ಯವಿರುತ್ತದೆ"
 
-#: ../daemon/pk/gkr-pk-storage.c:230
-#, c-format
+#: ../daemon/ui/gkr-ask-tool.c:230
 msgid ""
-"The system wants to store '%s' on your disk. Please enter a password to lock "
-"it with."
-msgstr "ಗಣಕವು '%s' ಅನ್ನು ನಿಮ್ಮ ಡಿಸ್ಕಿನಲ್ಲಿ ಇರಿಸಲು ಬಯಸುತ್ತದೆ. ದಯವಿಟ್ಟು ಅದನ್ನು ಭದ್ರಪಡಿಸಲು ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ."
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>ನಿಮ್ಮ ಮೌಸನ್ನು ಸೆಳೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ.</big></b>\n"
+"\n"
+"ಒಂದು ಅಪಾಯಕಾರಿಯಾದ ಕ್ಲೈಂಟ್ ನಿಮ್ಮ ಅಧಿವೇಶನವನ್ನು ಕದ್ದು ವೀಕ್ಷಿಸುತ್ತಿರಬಹುದು ಅಥವ ನೀವು ಗಮನ ಕೇಂದ್ರೀಕರಿಸಲು ಒಂದು ಮೆನು ಅಥವ ಯಾವುದಾದರೂ ಅನ್ವಯದ ಮೇಲೆ ಕ್ಲಿಕ್ಕಿಸಿರಬಹುದು.\n"
+"\n"
+"ಇನ್ನೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
-msgid "The operation was cancelled"
-msgstr "ಕಾರ್ಯವನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>ನಿಮ್ಮ ಕೀಲಿಮಣೆಯನ್ನು ಸೆಳೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ.</big></b>\n"
+"\n"
+"ಒಂದು ಅಪಾಯಕಾರಿಯಾದ ಕ್ಲೈಂಟ್ ನಿಮ್ಮ ಅಧಿವೇಶನವನ್ನು ಕದ್ದು ವೀಕ್ಷಿಸುತ್ತಿರಬಹುದು ಅಥವ ನೀವು ಗಮನ ಕೇಂದ್ರೀಕರಿಸಲು ಒಂದು ಮೆನು ಅಥವ ಯಾವುದಾದರೂ ಅನ್ವಯದ ಮೇಲೆ ಕ್ಲಿಕ್ಕಿಸಿರಬಹುದು.\n"
+"\n"
+"ಇನ್ನೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:455
-msgid "Unrecognized or unsupported file."
-msgstr "ಗುರುತಿಸಲಾಗದ ಅಥವ ಬೆಂಬಲವಿಲ್ಲದ ಕಡತದ ಬಗೆ."
-
-#: ../daemon/pkix/gkr-pkix-parser.c:459
-msgid "Could not parse invalid or corrupted file."
-msgstr "ಅಮಾನ್ಯವಾದ ಅಥವ ಭ್ರಷ್ಟಗೊಂಡ ಕಡತವನ್ನು ಪಾರ್ಸ್ ಮಾಡಲಾಗಿಲ್ಲ."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:166
-#, c-format
-msgid "Couldn't encode secure shell public key."
-msgstr "ಸುರಕ್ಷಿತ ಶೆಲ್‌ನ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಎನ್ಕೋಡ್ ಮಾಡಲಾಗಿಲ್ಲ."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:412
-#, c-format
-msgid "Couldn't read secure shell private key: %s"
-msgstr "ಸುರಕ್ಷಿತ ಶೆಲ್‌ನ ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಓದಲಾಗಿಲ್ಲ: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:416
-#, c-format
-msgid "Invalid secure shell private key at: %s"
-msgstr "ಅಮಾನ್ಯವಾದ ಸುರಕ್ಷಿತ ಶೆಲ್‌ನ ಖಾಸಗಿ ಕೀಲಿ: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:465
-#, c-format
-msgid "Couldn't encrypt the SSH key to store it."
-msgstr "SSH ಕೀಲಿಯನ್ನು ಶೇಖರಿಸಿಡಲು ಅದನ್ನು ಗೂಢಲಿಪೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:481
-#, c-format
-msgid "Couldn't encode the SSH key to store it."
-msgstr "SSH ಕೀಲಿಯನ್ನು ಶೇಖರಿಸಲು ಎನ್‌ಕೋಡ್ ಮಾಡಲಾಗಿಲ್ಲ."
-
-#: ../daemon/ui/gkr-ask-tool.c:244
+#: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "ಗುಪ್ತಪದಗಳನ್ನು ಗೂಢಲಿಪೀಕರಿಸದೆ ಶೇಖರಿಸಿಡಬೇಕೆ?"
 
-#: ../daemon/ui/gkr-ask-tool.c:245
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
-msgstr "ಒಂದು ಖಾಲಿ ಇರುವ ಗುಪ್ತಪದವನ್ನು ಬಳಸುವುದರಿಂದ, ಶೇಖರಿಸಲಾದ ನಿಮ್ಮ ಗುಪ್ತಪದಗಳು ಸುರಕ್ಷಿತವಾಗಿ ಗೂಢಲಿಪೀಕರಿಸಲ್ಪಡುವುದಿಲ್ಲ. ನಿಮ್ಮ ಕಡತಗಳನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳುವ ಯಾರೆ ಆದರೂ ಆ ಗುಪ್ತಪದಗಳನ್ನು ನೋಡಬಹುದಾಗಿದೆ."
+msgstr ""
+"ಒಂದು ಖಾಲಿ ಇರುವ ಗುಪ್ತಪದವನ್ನು ಬಳಸುವುದರಿಂದ, ಶೇಖರಿಸಲಾದ ನಿಮ್ಮ ಗುಪ್ತಪದಗಳು ಸುರಕ್ಷಿತವಾಗಿ "
+"ಗೂಢಲಿಪೀಕರಿಸಲ್ಪಡುವುದಿಲ್ಲ. ನಿಮ್ಮ ಕಡತಗಳನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳುವ ಯಾರೆ ಆದರೂ ಆ ಗುಪ್ತಪದಗಳನ್ನು "
+"ನೋಡಬಹುದಾಗಿದೆ."
 
-#: ../daemon/ui/gkr-ask-tool.c:252
+#: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
 msgstr "ಅಸುರಕ್ಷಿತ ಶೇಖರಣೆಯನ್ನು ಬಳಸು"
 
-#: ../daemon/ui/gkr-ask-tool.c:479
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "ಸ್ಥಳ(_L):"
 
-#: ../daemon/ui/gkr-ask-tool.c:492
+#: ../daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "ಹಳೆಯ ಗುಪ್ತಪದ(_O):"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
+#: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "ಗುಪ್ತಪದ(_P):"
 
-#: ../daemon/ui/gkr-ask-tool.c:534
+#: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "ಗುಪ್ತಪದವನ್ನು ಖಚಿತಪಡಿಸು(_C):"
 
-#: ../daemon/ui/gkr-ask-tool.c:554
+#: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "ಹೊಸ ಗುಪ್ತಪದದ ದೃಢತೆ"
 
-#: ../daemon/ui/gkr-ask-tool.c:612
+#: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "ಗುಪ್ತಪದವು ತಾಳೆಯಾಗುತ್ತಿಲ್ಲ."
 
-#: ../daemon/ui/gkr-ask-tool.c:628
+#: ../daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "ಗುಪ್ತಪದವು ಖಾಲಿ ಇರುವಂತಿಲ್ಲ"
 
-#: ../daemon/ui/gkr-ask-tool.c:679
-msgid "Deny"
-msgstr "ನಿರಾಕರಣೆ"
+#: ../daemon/ui/gkr-ask-tool.c:712
+#| msgid "Deny"
+msgid "_Deny"
+msgstr "ನಿರಾಕರಣೆ(_D)"
 
-#: ../daemon/ui/gkr-ask-tool.c:691
+#: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
 msgstr "ರಚಿಸು(_r)"
 
-#: ../daemon/ui/gkr-ask-tool.c:695
+#: ../daemon/ui/gkr-ask-tool.c:728
 msgid "C_hange"
 msgstr "ಬದಲಾಯಿಸು(_h)"
 
-#: ../daemon/ui/gkr-ask-tool.c:699
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "ಒಮ್ಮೆ ಮಾತ್ರ ಅನುಮತಿಸು(_O)"
 
-#: ../daemon/ui/gkr-ask-tool.c:703
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "ಯಾವಾಗಲು ಅನುಮತಿಸು(_A)"
 
-#: ../gp11/gp11-misc.c:90
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "ಡೊಮೈನಿನ ಘಟಕ"
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "ಬಳಕೆದಾರ ID"
+
+#: ../egg/egg-oid.c:46
+msgid "Email"
+msgstr "ಇಮೇಲ್"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "ಹುಟ್ಟಿದ ದಿನಾಂಕ"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "ಹುಟ್ಟಿದ ಸ್ಥಳ"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "ಲಿಂಗ"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "ನಾಗರೀಕತ್ವವನ್ನು ಹೊಂದಿದ ದೇಶ"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "ವಾಸವಾಗಿರುವ ದೇಶ"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "ಸಾಮಾನ್ಯ ಹೆಸರು"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "ಉಪನಾಮ"
+
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:330
+msgid "Serial Number"
+msgstr "ಅನುಕ್ರಮ ಸಂಖ್ಯೆ"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "ದೇಶ"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "ಪ್ರದೇಶ"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "ರಾಜ್ಯ"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "ಬೀದಿ"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "ಸಂಸ್ಥೆ"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "ಸಂಸ್ಥೆಯ ಘಟಕ"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "ಶೀರ್ಷಿಕೆ"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "ದೂರವಾಣಿ ಸಂಖ್ಯೆ"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "ಒದಗಿಸಲಾದ ಹೆಸರು"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "ಇನಿಶಿಯಲ್‌ಗಳು"
+
+#: ../egg/egg-oid.c:91
+#| msgid "The operation failed"
+msgid "Generation Qualifier"
+msgstr "ಕ್ವಾಲಿಫಯರ್ ಅನ್ನು ಉತ್ಪಾದಿಸಲಾಗುತ್ತಿದೆ"
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "DN ಕ್ವಾಲಿಫಯರ್"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "ಗುಪ್ತನಾಮ"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "RSA ಯೊಂದಿಗಿನ MD2"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "RSA ಯೊಂದಿಗಿನ MD5"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "RSA ಯೊಂದಿಗಿನ SHA1"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "DSA ಯೊಂದಿಗಿನ SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>ಪ್ರಮಾಣಪತ್ರದ ಭಾಗವಾಗಿಲ್ಲ</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>ಗೊತ್ತಿರದ</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+#| msgid "Import certificate"
+msgid "<Not Part of Certificate>"
+msgstr "<ಪ್ರಮಾಣಪತ್ರದ ಭಾಗವಲ್ಲ>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>ಫಿಂಗರ್-ಪ್ರಿಂಟ್‍ಗಳು</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>ಒದಗಿಸಿದವರು</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>ಇವರಿಗೆ ಒದಗಿಸಲಾಗಿದೆ</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>ಈ ಪ್ರಮಾಣಪತ್ರವನ್ನು ಈ ಕೆಳಗಿನ ಬಳಕೆಗಾಗಿ ಪರೀಕ್ಷಿಸಲಾಗಿದೆ:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>ಕಾಲಾವಧಿ</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "ಸಾಮಾನ್ಯ ಹೆಸರು (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+#| msgid "Import certificate"
+msgid "Email Recipient Certificate"
+msgstr "ಇಮೈಲ್ ಪಡೆಯುವವರ ಪ್ರಮಾಣಪತ್ರ"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+#| msgid "Certificate"
+msgid "Email Signer Certificate"
+msgstr "ಇಮೈಲ್ ಸೈನರ್ ಪ್ರಮಾಣಪತ್ರ"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "ಅವಧಿ ಮುಗಿಯುವ ದಿನಾಂಕ"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "ಒದಗಿಸಲಾದ ದಿನಾಂಕ"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 ಫಿಂಗರ್-ಪ್ರಿಂಟ್"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "ಸಂಸ್ಥೆ (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "ಸಂಸ್ಥೆಯ ಘಟಕ (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 ಫಿಂಗರ್-ಪ್ರಿಂಟ್"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+#| msgid "Certificate"
+msgid "SSL Client Certificate"
+msgstr "SSL ಕ್ಲೈಂಟ್ ಪ್ರಮಾಣಪತ್ರ"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+#| msgid "Certificate"
+msgid "SSL Server Certificate"
+msgstr "SSL ಪರಿಚಾರಕ ಪ್ರಮಾಣಪತ್ರ"
+
+#: ../gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "ವಿಸ್ತರಣೆ"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "ಪತ್ತೆಗಾರ"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "ಮೌಲ್ಯ"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "ಹೌದು"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "ಇಲ್ಲ"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+#| msgid "Certificate"
+msgid "Critical"
+msgstr "ಸಂದಿಗ್ಧ"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:311
+msgid "Subject Name"
+msgstr "ವಿಷಯದ ಹೆಸರು"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:315
+msgid "Issuer Name"
+msgstr "ಒದಗಿಸಿದವರ ಹೆಸರು"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:319
+#| msgid "Certificate"
+msgid "Issued Certificate"
+msgstr "ಒದಗಿಸಲಾದ ಪ್ರಮಾಣಪತ್ರ"
+
+#: ../gcr/gcr-certificate-details-widget.c:324
+msgid "Version"
+msgstr "ಆವೃತ್ತಿ"
+
+#: ../gcr/gcr-certificate-details-widget.c:337
+msgid "Not Valid Before"
+msgstr "ಇದಕ್ಕೂ ಮುಂಚೆ ಮಾನ್ಯವಲ್ಲ"
+
+#: ../gcr/gcr-certificate-details-widget.c:342
+msgid "Not Valid After"
+msgstr "ಇದರ ನಂತರ ಮಾನ್ಯವಲ್ಲ"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
+msgid "Signature"
+msgstr "ಸಹಿ"
+
+#: ../gcr/gcr-certificate-details-widget.c:351
+msgid "Signature Algorithm"
+msgstr "ಸಹಿ ಅಲ್ಗಾರಿತಮ್"
+
+#: ../gcr/gcr-certificate-details-widget.c:356
+msgid "Signature Parameters"
+msgstr "ಸಹಿ ನಿಯತಾಂಕಗಳು"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:367
+#| msgid "Public Key"
+msgid "Public Key Info"
+msgstr "ಸಾರ್ವಜನಿಕ ಕೀಲಿ ಮಾಹಿತಿ"
+
+#: ../gcr/gcr-certificate-details-widget.c:371
+msgid "Key Algorithm"
+msgstr "ಕೀಲಿ ಅಲ್ಗಾರಿತಮ್"
+
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "ಕೀಲಿ ನಿಯತಾಂಕಗಳು"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
+msgid "Key Size"
+msgstr "ಕೀಲಿ ಗಾತ್ರ"
+
+#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "ಸಾರ್ವಜನಿಕ ಕೀಲಿ"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:394
+msgid "Fingerprints"
+msgstr "ಫಿಂಗರ್-ಪ್ರಿಂಟ್‌ಗಳು"
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ಹಾಗು ಕೀಲಿಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊ</span>"
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+#| msgid "Import"
+msgid "Import Into:"
+msgstr "ಇದಕ್ಕೆ ಆಮದು ಮಾಡು:"
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+#| msgid "_Password:"
+msgid "Password:"
+msgstr "ಗುಪ್ತಪದ:"
+
+#: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+msgid "The operation was cancelled"
+msgstr "ಕಾರ್ಯವನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+#: ../gcr/gcr-importer.c:254
+#, c-format
+msgid "No location available to import to"
+msgstr "ಆಮದು ಮಾಡಲು ಯಾವುದೆ ಸ್ಥಳವನ್ನು ಸೂಚಿಸಲಾಗಿಲ್ಲ"
+
+#: ../gcr/gcr-importer.c:328
+#| msgid "Import certificate"
+msgid "Import Certificates/Keys"
+msgstr "ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು/ಕೀಲಿಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊ"
+
+#: ../gcr/gcr-importer.c:335
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "ಆಮದು ಮಾಡಲಾದ ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು/ಕೀಲಿಗಳನ್ನು ಇರಿಸಿಲು ಒಂದು ಸ್ಥಳವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:373
+#| msgid "The system wants to import the private key '%s', but it is locked"
+msgid "In order to import the private key, it must be unlocked"
+msgstr "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಆಮದುಕೊಳ್ಳಲು, ಅದು ಲಾಕ್ ಆಗಿರಬೇಕು"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:376
+#| msgid "The system wants to import the certificate '%s', but it is locked"
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "ಪ್ರಮಾಣಪತ್ರವನ್ನು ಆಮದುಕೊಳ್ಳಲು, ಅದು ಲಾಕ್ ಆಗಿರಬಾರದು"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:379
+msgid "In order to import the data, it must be unlocked"
+msgstr "ದತ್ತಾಂಶವನ್ನು ಆಮದುಕೊಳ್ಳಲು, ಅದು ಲಾಕ್ ಆಗಿರಬಾರದು"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:384
+#, c-format
+#| msgid "The system wants to import the private key '%s', but it is locked"
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "'%s' ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ಆಮದುಕೊಳ್ಳಲು, ಅದು ಲಾಕ್ ಆಗಿರಬಾರದು"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:387
+#, c-format
+#| msgid "The system wants to import the certificate '%s', but it is locked"
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "'%s' ಪ್ರಮಾಣಪತ್ರವನ್ನು ಆಮದುಕೊಳ್ಳಲು, ಅದು ಲಾಕ್ ಆಗಿರಬಾರದು"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:390
+#, c-format
+#| msgid "The system wants to import '%s', but it is locked"
+msgid "In order to import '%s', it must be unlocked"
+msgstr "'%s' ಅನ್ನು ಆಮದುಕೊಳ್ಳಲು, ಅದು ಲಾಕ್ ಆಗಿರಬಾರದು"
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "ಖಾಸಗಿ ಕೀಲಿ"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "ಪ್ರಮಾಣಪತ್ರ"
+
+#: ../gcr/gcr-parser.c:1576
+#| msgid "Unrecognized or unsupported file."
+msgid "Unrecognized or unsupported data."
+msgstr "ಗುರುತಿಸಲಾಗದ ಅಥವ ಬೆಂಬಲವಿಲ್ಲದ ದತ್ತಾಂಶ."
+
+#: ../gcr/gcr-parser.c:1579
+#| msgid "Could not parse invalid or corrupted file."
+msgid "Could not parse invalid or corrupted data."
+msgstr "ಅಮಾನ್ಯವಾದ ಅಥವ ಭ್ರಷ್ಟಗೊಂಡ ದತ್ತಾಂಶವನ್ನು ಪಾರ್ಸ್ ಮಾಡಲಾಗಿಲ್ಲ."
+
+#: ../gcr/gcr-parser.c:1582
+#| msgid "The data cannot be locked"
+msgid "The data is locked"
+msgstr "ದತ್ತಾಂಶವನ್ನು ಲಾಕ್ ಮಾಡಲಾಗಿದೆ"
+
+#: ../gp11/gp11-misc.c:117
 msgid "Insufficient memory available"
 msgstr "ಸಾಕಷ್ಟು ಮೆಮೊರಿಯು ಲಭ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:92
+#: ../gp11/gp11-misc.c:119
 msgid "The specified slot ID is not valid"
 msgstr "ಸೂಚಿಸಲಾದ ಸ್ಲಾಟ್ ಐಡಿಯು ಅಮಾನ್ಯವಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:94
+#: ../gp11/gp11-misc.c:121
 msgid "Internal error"
 msgstr "ಆಂತರಿಕ ದೋಷ"
 
-#: ../gp11/gp11-misc.c:96
+#: ../gp11/gp11-misc.c:123
 msgid "The operation failed"
 msgstr "ಕಾರ್ಯವು ವಿಫಲಗೊಂಡಿದೆ"
 
-#: ../gp11/gp11-misc.c:98
+#: ../gp11/gp11-misc.c:125
 msgid "Invalid arguments"
 msgstr "ಅಮಾನ್ಯ ಆರ್ಗ್ಯುಮೆಂಟ್‍ಗಳು"
 
-#: ../gp11/gp11-misc.c:100
+#: ../gp11/gp11-misc.c:127
 msgid "The module cannot create needed threads"
 msgstr "ಅಗತ್ಯವಿರುವ ಎಳೆಗಳನ್ನು ಘಟಕದಿಂದ ನಿರ್ಮಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:102
+#: ../gp11/gp11-misc.c:129
 msgid "The module cannot lock data properly"
 msgstr "ಘಟಕದಿಂದ ದತ್ತಾಂಶವನ್ನು ಸರಿಯಾಗಿ ಲಾಕ್‌ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:104
+#: ../gp11/gp11-misc.c:131
 msgid "The field is read-only"
 msgstr "ಕ್ಷೇತ್ರವು ಓದಲು ಮಾತ್ರವೆ ಆಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:106
+#: ../gp11/gp11-misc.c:133
 msgid "The field is sensitive and cannot be revealed"
 msgstr "ಕ್ಷೇತ್ರವು ಸೂಕ್ಷ್ಮವಾದ್ದರಿಂದ ಅದನ್ನು ಬಹಿರಂಗ ಪಡಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:108
+#: ../gp11/gp11-misc.c:135
 msgid "The field is invalid or does not exist"
 msgstr "ಕ್ಷೇತ್ರವು ಅಮಾನ್ಯವಾಗಿದೆ ಅಥವ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:110
+#: ../gp11/gp11-misc.c:137
 msgid "Invalid value for field"
 msgstr "ಕ್ಷೇತ್ರಕ್ಕಾಗಿನ ಅಮಾನ್ಯವಾದ ಮೌಲ್ಯ"
 
-#: ../gp11/gp11-misc.c:112
+#: ../gp11/gp11-misc.c:139
 msgid "The data is not valid or unrecognized"
 msgstr "ದತ್ತಾಂಶವು ಅಮಾನ್ಯವಾಗಿದೆ ಅಥವ ಗುರುತಿಸಲಾಗದಂತಿದೆ"
 
-#: ../gp11/gp11-misc.c:114
+#: ../gp11/gp11-misc.c:141
 msgid "The data is too long"
 msgstr "ದತ್ತಾಂಶವು ಬಹಳ ದೊಡ್ಡದಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:116
+#: ../gp11/gp11-misc.c:143
 msgid "An error occurred on the device"
 msgstr "ಸಾಧನದಲ್ಲಿ ಒಂದು ದೋಷವು ಕಂಡುಬಂದಿದೆ"
 
-#: ../gp11/gp11-misc.c:118
+#: ../gp11/gp11-misc.c:145
 msgid "Insufficient memory available on device"
 msgstr "ಸಾಧನದಲ್ಲಿ ಸಾಕಷ್ಟು ಮೆಮೊರಿಯು ಲಭ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:120
+#: ../gp11/gp11-misc.c:147
 msgid "The device was removed or unplugged"
 msgstr "ಸಾಧನವನ್ನು ತೆಗೆಯಲಾಗಿದೆ ಅಥವ ಜೋಡಿಸಲಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:122
+#: ../gp11/gp11-misc.c:149
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "ಗೂಢಲಿಪೀಕರಣಗೊಂಡ ದತ್ತಾಂಶ ಅಮಾನ್ಯವಾಗಿದೆ ಅಥವ ಗುರುತಿಸಲಾಗದಂತಿದೆ"
 
-#: ../gp11/gp11-misc.c:124
+#: ../gp11/gp11-misc.c:151
 msgid "The encrypted data is too long"
 msgstr "ಗೂಢಲಿಪೀಕರಣಗೊಂಡ ದತ್ತಾಂಶವು ಬಹಳ ದೊಡ್ಡದಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:126
+#: ../gp11/gp11-misc.c:153
 msgid "This operation is not supported"
 msgstr "ಕಾರ್ಯಕ್ಕೆ ಬೆಂಬಲವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:128
+#: ../gp11/gp11-misc.c:155
 msgid "The key is missing or invalid"
 msgstr "ಕೀಲಿಯು ಕಾಣಿಸುತ್ತಿಲ್ಲ ಅಥವ ಅಮಾನ್ಯವಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:130
+#: ../gp11/gp11-misc.c:157
 msgid "The key is the wrong size"
 msgstr "ತಪ್ಪಾದ ಗಾತ್ರದ ಕೀಲಿಯಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:132
+#: ../gp11/gp11-misc.c:159
 msgid "The key is of the wrong type"
 msgstr "ತಪ್ಪಾದ ಬಗೆಯ ಕೀಲಿಯಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:134
+#: ../gp11/gp11-misc.c:161
 msgid "No key is needed"
 msgstr "ಯಾವುದೆ ಕೀಲಿಯ ಅಗತ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:136
+#: ../gp11/gp11-misc.c:163
 msgid "The key is different than before"
 msgstr "ಕೀಲಿಯು ಈ ಮೊದಲಿನಿಗಿಂತ ಭಿನ್ನವಾದುದಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:138
+#: ../gp11/gp11-misc.c:165
 msgid "A key is needed"
 msgstr "ಒಂದು ಕೀಲಿಯ ಅಗತ್ಯವಿದೆ"
 
-#: ../gp11/gp11-misc.c:140
+#: ../gp11/gp11-misc.c:167
 msgid "Cannot include the key in digest"
 msgstr "ಡೈಜೆಸ್ಟಿನಲ್ಲಿ ಕೀಲಿಯನ್ನು ಒಳಗೊಳ್ಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:142
+#: ../gp11/gp11-misc.c:169
 msgid "This operation cannot be done with this key"
 msgstr "ಈ ಕೀಲಿಯೊಂದಿಗೆ ಕಾರ್ಯವನ್ನು ನಿರ್ವಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:144
+#: ../gp11/gp11-misc.c:171
 msgid "The key cannot be wrapped"
 msgstr "ಕೀಲಿಯನ್ನು ವ್ರಾಪ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:146
+#: ../gp11/gp11-misc.c:173
 msgid "Cannot export this key"
 msgstr "ಈ ಕೀಲಿಯನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:148
+#: ../gp11/gp11-misc.c:175
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "ಕ್ರಿಪ್ಟೋ ಕಾರ್ಯವೈಖರಿಯು ಅಮಾನ್ಯವಾಗಿದೆ ಅಥವ ಗುರುತಿಸಲಾಗದಂತಿದೆ"
 
-#: ../gp11/gp11-misc.c:150
+#: ../gp11/gp11-misc.c:177
 msgid "The crypto mechanism has an invalid argument"
 msgstr "ಕ್ರಿಪ್ಟೋ ಕಾರ್ಯವೈಖರಿಯು ಅಮಾನ್ಯವಾದ ಆರ್ಗ್ಯುಮೆಂಟನ್ನು ಹೊಂದಿದೆ"
 
-#: ../gp11/gp11-misc.c:152
+#: ../gp11/gp11-misc.c:179
 msgid "The object is missing or invalid"
 msgstr "ವಸ್ತುವು ಕಾಣಿಸುತ್ತಿಲ್ಲ ಅಥವ ಅಮಾನ್ಯವಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:154
+#: ../gp11/gp11-misc.c:181
 msgid "Another operation is already taking place"
 msgstr "ಇನ್ನೊಂದು ಕಾರ್ಯವು ಈಗಾಗಲೆ ನಡೆಯುತ್ತಿದೆ"
 
-#: ../gp11/gp11-misc.c:156
+#: ../gp11/gp11-misc.c:183
 msgid "No operation is taking place"
 msgstr "ಯಾವುದೆ ಕಾರ್ಯವು ನಡೆಯುತ್ತಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:158
+#: ../gp11/gp11-misc.c:185
 msgid "The password or PIN is incorrect"
 msgstr "ಗುಪ್ತಪದ ಅಥವ PIN ಸರಿಯಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:160
+#: ../gp11/gp11-misc.c:187
 msgid "The password or PIN is invalid"
 msgstr "ಗುಪ್ತಪದ ಅಥವ PIN ಅಮಾನ್ಯವಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:162
+#: ../gp11/gp11-misc.c:189
 msgid "The password or PIN is of an invalid length"
 msgstr "ಗುಪ್ತಪದ ಅಥವ PIN ಒಂದು ಅಮಾನ್ಯವಾದ ಗಾತ್ರವನ್ನು ಹೊಂದಿದೆ"
 
-#: ../gp11/gp11-misc.c:164
+#: ../gp11/gp11-misc.c:191
 msgid "The password or PIN has expired"
 msgstr "ಗುಪ್ತಪದ ಅಥವ PIN ನ ವಾಯಿದೆಯು ತೀರಿದೆ"
 
-#: ../gp11/gp11-misc.c:166
+#: ../gp11/gp11-misc.c:193
 msgid "The password or PIN is locked"
 msgstr "ಗುಪ್ತಪದ ಅಥವ PIN ಲಾಕ್ ಆಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:168
+#: ../gp11/gp11-misc.c:195
 msgid "The session is closed"
 msgstr "ಅಧಿವೇಶನವು ಮುಚ್ಚಲ್ಪಟ್ಟಿದೆ"
 
-#: ../gp11/gp11-misc.c:170
+#: ../gp11/gp11-misc.c:197
 msgid "Too many sessions are active"
 msgstr "ಬಹಳಷ್ಟು ಅಧಿವೇಶನಗಳು ಸಕ್ರಿಯವಾಗಿವೆ"
 
-#: ../gp11/gp11-misc.c:172
+#: ../gp11/gp11-misc.c:199
 msgid "The session is invalid"
 msgstr "ಅಮಾನ್ಯವಾದ ಅಧಿವೇಶನ"
 
-#: ../gp11/gp11-misc.c:174
+#: ../gp11/gp11-misc.c:201
 msgid "The session is read-only"
 msgstr "ಓದಲು ಮಾತ್ರವಾದ ಅಧಿವೇಶನ"
 
-#: ../gp11/gp11-misc.c:176
+#: ../gp11/gp11-misc.c:203
 msgid "An open session exists"
 msgstr "ಒಂದು ಮುಕ್ತ ಅಧಿವೇಶನವು ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ"
 
-#: ../gp11/gp11-misc.c:178
+#: ../gp11/gp11-misc.c:205
 msgid "A read-only session exists"
 msgstr "ಕೇವಲ ಓದಲು ಮಾತ್ರವಾದ ಅಧಿವೇಶನವು ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ"
 
-#: ../gp11/gp11-misc.c:180
+#: ../gp11/gp11-misc.c:207
 msgid "An administrator session exists"
 msgstr "ಒಂದು ವ್ಯವಸ್ಥಾಪಕ ಅಧಿವೇಶನವು ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ"
 
-#: ../gp11/gp11-misc.c:182
+#: ../gp11/gp11-misc.c:209
 msgid "The signature is bad or corrupted"
 msgstr "ಸಹಿಯು ಸರಿಯಾಗಿಲ್ಲ ಅಥವ ಭ್ರಷ್ಟಗೊಂಡಿದೆ"
 
-#: ../gp11/gp11-misc.c:184
+#: ../gp11/gp11-misc.c:211
 msgid "The signature is unrecognized or corrupted"
 msgstr "ಸಹಿಯನ್ನು ಗುರುತಿಸಲಾಗಿಲ್ಲ ಅಥವ ಭ್ರಷ್ಟಗೊಂಡಿದೆ"
 
-#: ../gp11/gp11-misc.c:186
+#: ../gp11/gp11-misc.c:213
 msgid "Certain required fields are missing"
 msgstr "ಅಗತ್ಯ ಕ್ಷೇತ್ರಗಳು ಖಾಲಿ ಇವೆ"
 
-#: ../gp11/gp11-misc.c:188
+#: ../gp11/gp11-misc.c:215
 msgid "Certain fields have invalid values"
 msgstr "ಕೆಲವು ಕ್ಷೇತ್ರಗಳು ಅಮಾನ್ಯವಾದ ಮೌಲ್ಯಗಳನ್ನು ಹೊಂದಿವೆ"
 
-#: ../gp11/gp11-misc.c:190
+#: ../gp11/gp11-misc.c:217
 msgid "The device is not present or unplugged"
 msgstr "ಸಾಧನವು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ ಅಥವ ಜೋಡಿಸಲಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:192
+#: ../gp11/gp11-misc.c:219
 msgid "The device is invalid or unrecognizable"
 msgstr "ಸಾಧನವು ಅಮಾನ್ಯವಾಗಿದೆ ಅಥವ ಗುರುತಿಸಲಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:194
+#: ../gp11/gp11-misc.c:221
 msgid "The device is write protected"
 msgstr "ಸಾಧನಕ್ಕೆ ಬರೆದಂತೆ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:196
+#: ../gp11/gp11-misc.c:223
 msgid "Cannot import because the key is invalid"
 msgstr "ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಕೀಲಿಯು ಅಮಾನ್ಯವಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:198
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot import because the key is of the wrong size"
 msgstr "ಕೀಲಿಯನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ಒಂದು ಅಮಾನ್ಯ ಗಾತ್ರದ್ದಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:200
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot import because the key is of the wrong type"
 msgstr "ಕೀಲಿಯನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ಒಂದು ಅಮಾನ್ಯ ಬಗೆಯದ್ದಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:202
+#: ../gp11/gp11-misc.c:229
 msgid "You are already logged in"
 msgstr "ನೀವು ಈಗಾಗಲೆ ಪ್ರವೇಶಿಸಿದ್ದೀರಿ"
 
-#: ../gp11/gp11-misc.c:204
+#: ../gp11/gp11-misc.c:231
 msgid "No user has logged in"
 msgstr "ಯಾವುದೆ ಬಳಕೆದಾರರು ಪ್ರವೇಶಿಸಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:206
+#: ../gp11/gp11-misc.c:233
 msgid "The user's password or PIN is not set"
 msgstr "ಬಳಕೆದಾರರ ಗುಪ್ತಪದ ಅಥವ PIN ಅನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:208
+#: ../gp11/gp11-misc.c:235
 msgid "The user is of an invalid type"
 msgstr "ಬಳಕೆದಾರರು ಅಮಾನ್ಯ ಬಗೆಯವರಾಗಿದ್ದರು"
 
-#: ../gp11/gp11-misc.c:210
+#: ../gp11/gp11-misc.c:237
 msgid "Another user is already logged in"
 msgstr "ಬೇರೊಬ್ಬ ಬಳಕೆದಾರನು ಈಗಾಗಲೆ ಪ್ರವೇಶಿಸಿದ್ದಾರೆ"
 
-#: ../gp11/gp11-misc.c:212
+#: ../gp11/gp11-misc.c:239
 msgid "Too many users of different types logged in"
 msgstr "ವಿವಿಧ ಬಗೆಯ ಅನೇಕ ಬಳಕೆದಾರರು ಪ್ರವೇಶಿಸಿದ್ದಾರೆ"
 
-#: ../gp11/gp11-misc.c:214
+#: ../gp11/gp11-misc.c:241
 msgid "Cannot import an invalid key"
 msgstr "ಅಮಾನ್ಯ ಬಗೆಯ ಕೀಲಿಯನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:216
+#: ../gp11/gp11-misc.c:243
 msgid "Cannot import a key of the wrong size"
 msgstr "ತಪ್ಪಾದ ಗಾತ್ರದ ಕೀಲಿಯನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:218
+#: ../gp11/gp11-misc.c:245
 msgid "Cannot export because the key is invalid"
 msgstr "ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಕೀಲಿಯು ಅಮಾನ್ಯವಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:220
+#: ../gp11/gp11-misc.c:247
 msgid "Cannot export because the key is of the wrong size"
 msgstr "ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಕೀಲಿಯು ಗಾತ್ರವು ತಪ್ಪಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:222
+#: ../gp11/gp11-misc.c:249
 msgid "Cannot export because the key is of the wrong type"
 msgstr "ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಕೀಲಿಯು ಬಗೆಯು ತಪ್ಪಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:224
+#: ../gp11/gp11-misc.c:251
 msgid "Unable to initialize the random number generator"
 msgstr "ಮನಸ್ಸಿಗೆ ಬಂದ ಸಂಖ್ಯೆಯ ಉತ್ಪಾದಕವನ್ನು ಆರಂಭಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:226
+#: ../gp11/gp11-misc.c:253
 msgid "No random number generator available"
 msgstr "ಮನಸ್ಸಿಗೆ ಬಂದ ಸಂಖ್ಯೆಯ ಉತ್ಪಾದಕವು ಲಭ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:228
+#: ../gp11/gp11-misc.c:255
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "ಕ್ರಿಪ್ಟೋ ಕಾರ್ಯವೈಖರಿಯು ಒಂದು ಅಮಾನ್ಯವಾದ ನಿಯತಾಂಕವನ್ನು ಹೊಂದಿದೆ"
 
-#: ../gp11/gp11-misc.c:230
+#: ../gp11/gp11-misc.c:257
 msgid "Not enough space to store the result"
 msgstr "ಫಲಿತಾಂಶವನ್ನು ಶೇಖರಿಸಿಡಲು ಸಾಕಷ್ಟು ಜಾಗವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:232
+#: ../gp11/gp11-misc.c:259
 msgid "The saved state is invalid"
 msgstr "ಉಳಿಸಲಾದ ಸ್ಥಿತಿಯು ಅಮಾನ್ಯವಾಗಿದೆ"
 
-#: ../gp11/gp11-misc.c:234
+#: ../gp11/gp11-misc.c:261
 msgid "The information is sensitive and cannot be revealed"
 msgstr "ಮಾಹಿತಿಯು ಸೂಕ್ಷ್ಮವಾದ್ದರಿಂದ ಅದನ್ನು ಬಹಿರಂಗ ಪಡಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:236
+#: ../gp11/gp11-misc.c:263
 msgid "The state cannot be saved"
 msgstr "ಸ್ಥಿತಿಯನ್ನು ಉಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:238
+#: ../gp11/gp11-misc.c:265
 msgid "The module has not been initialized"
 msgstr "ಘಟಕವು ಇನ್ನೂ ಆರಂಭಗೊಂಡಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:240
+#: ../gp11/gp11-misc.c:267
 msgid "The module has already been initialized"
 msgstr "ಘಟಕವು ಈಗಾಗಲೆ ಆರಂಭಗೊಂಡಿದೆ"
 
-#: ../gp11/gp11-misc.c:242
+#: ../gp11/gp11-misc.c:269
 msgid "Cannot lock data"
 msgstr "ದತ್ತಾಂಶನ್ನು ಲಾಕ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:244
+#: ../gp11/gp11-misc.c:271
 msgid "The data cannot be locked"
 msgstr "ದತ್ತಾಂಶವನ್ನು ಲಾಕ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ"
 
-#: ../gp11/gp11-misc.c:246
+#: ../gp11/gp11-misc.c:273
 msgid "The signature request was rejected by the user"
 msgstr "ಬಳಕೆದಾರರಿಂದ ಸಹಿ ಮನವಿಯು ತಿರಸ್ಕರಿಸಲ್ಪಟ್ಟಿದೆ"
 
-#: ../gp11/gp11-misc.c:250
+#: ../gp11/gp11-misc.c:277
 msgid "Unknown error"
 msgstr "ಗೊತ್ತಿಲ್ಲದ ದೋಷ"
 
-#: ../library/gnome-keyring-utils.c:91
+#: ../library/gnome-keyring-utils.c:155
 msgid "Access Denied"
 msgstr "ನಿಲುಕನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ"
 
-#: ../library/gnome-keyring-utils.c:93
+#: ../library/gnome-keyring-utils.c:157
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "gnome-keyring-daemon ಅನ್ವಯವು ಚಾಲನೆಯಲ್ಲಿಲ್ಲ."
 
-#: ../library/gnome-keyring-utils.c:95
+#: ../library/gnome-keyring-utils.c:159
 msgid "Error communicating with gnome-keyring-daemon"
-msgstr "gnome-keyring-daemon ನೊಂದಿಗೆ ವ್ಯವಹರಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ."
+msgstr "gnome-keyring-daemon ನೊಂದಿಗೆ ವ್ಯವಹರಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ"
 
-#: ../library/gnome-keyring-utils.c:97
+#: ../library/gnome-keyring-utils.c:161
 msgid "A keyring with that name already exists"
-msgstr "ಆ ಹೆಸರಿನ ಕೀಲಿ ಸುರುಳಿಯು ಈಗಾಗಲೆ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ."
+msgstr "ಆ ಹೆಸರಿನ ಕೀಲಿ ಸುರುಳಿಯು ಈಗಾಗಲೆ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ"
 
-#: ../library/gnome-keyring-utils.c:99
+#: ../library/gnome-keyring-utils.c:163
 msgid "Programmer error: The application sent invalid data."
 msgstr "ಪ್ರೊಗ್ರಾಂ ದೋಷ: ಅನ್ವಯವು ಅಮಾನ್ಯವಾದ ಮಾಹಿತಿಯನ್ನು ಕಳುಹಿಸಿದೆ."
 
-#: ../library/gnome-keyring-utils.c:101
+#: ../library/gnome-keyring-utils.c:165
 msgid "No matching results"
 msgstr "ತಾಳೆಯಾಗುವ ಯಾವುವೂ ದೊರೆತಿಲ್ಲ"
 
-#: ../library/gnome-keyring-utils.c:103
+#: ../library/gnome-keyring-utils.c:167
 msgid "A keyring with that name does not exist."
 msgstr "ಆ ಹೆಸರಿನ ಕೀಲಿ ಸುರುಳಿಯು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ."
 
-#: ../library/gnome-keyring-utils.c:110
+#: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
 msgstr "ಕೀಲಿಸುರುಳಿಯು ಈಗಾಗಲೆ ಅನ್‌ಲಾಕ್ ಮಾಡಲ್ಪಟ್ಟಿದೆ."
+
+#: ../pkcs11/gck/gck-certificate.c:710
+#| msgid "Certificate"
+msgid "Unnamed Certificate"
+msgstr "ಹೆಸರಿಲ್ಲದ ಪ್ರಮಾಣಪತ್ರ"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+#| msgid "Couldn't encode secure shell public key."
+msgid "Couldn't parse public SSH key"
+msgstr "ಸಾರ್ವಜನಿಕ SSH ಕೀಲಿಯನ್ನು ಪಾರ್ಸ್ ಮಾಡಲಾಗಿಲ್ಲ"
 
