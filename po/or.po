@@ -1,4 +1,4 @@
-# translation of gnome-keyring.HEAD.or.po to Oriya
+# translation of or.po to Oriya
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
@@ -6,10 +6,10 @@
 # Manoj Kumar Giri <mgiri@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.HEAD.or\n"
+"Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
 "POT-Creation-Date: 2009-02-14 14:22+0000\n"
-"PO-Revision-Date: 2009-03-11 04:20+0530\n"
+"PO-Revision-Date: 2009-03-26 19:19+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -35,7 +36,7 @@ msgstr "ମୂଳସ୍ଥାନ"
 
 #: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
-msgstr ""
+msgstr "ଏହି ଫାଇଲଟି ଦୃଶ୍ୟମାନ ହେଉଥିବା ଡିସ୍କ କିମ୍ବା ଡ୍ରାଇଭ ଉପସ୍ଥିତ ନାହିଁ"
 
 #: ../common/gkr-location.c:1137
 #, c-format
@@ -49,7 +50,7 @@ msgstr "ଫାଇଲ ଅପସାରଣ କରିହେବ ନାହିଁ: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:228
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "The application '%s' (%s) wants to access the password for '%s' in the "
 #| "default keyring."
@@ -57,42 +58,47 @@ msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in the default keyring."
 msgstr ""
-"'%s' (%s) ପ୍ରୟୋଗ '%s' ପାଇଁ ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ କି-ରିଙ୍ଗରେ ପ୍ରବେଶ ସଙ୍କେତକୁ ଅଭିଗମ କରିବା ପାଇଁ "
-"ଚାହୁଁଅଛି।"
+"'%s' (%s) ପ୍ରୟୋଗ '<object prop='name'/>' ପାଇଁ ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ କି-ରିଙ୍ଗରେ ପ୍ରବେଶ "
+"ସଙ୍କେତକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:232
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "The application '%s' (%s) wants to access the password for '%s' in %s."
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
-msgstr "'%s' (%s) ପ୍ରୟୋଗ '%s' ପାଇଁ '%s' ରେ ପ୍ରବେଶ ସଙ୍କେତକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
+msgstr ""
+"'%s' (%s) ପ୍ରୟୋଗ '<object prop='name'/>' ପାଇଁ %s ରେ ପ୍ରବେଶ ସଙ୍କେତକୁ "
+"ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "The application '%s' wants to access the password for '%s' in the default "
 #| "keyring."
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
-msgstr "'%s' ପ୍ରୟୋଗ '%s' ପାଇଁ ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ କି-ରିଙ୍ଗରେ ପ୍ରବେଶ ସଙ୍କେତକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
+msgstr ""
+"'%s' ପ୍ରୟୋଗ '<object prop='name'/>' ପାଇଁ ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ କି-ରିଙ୍ଗରେ ପ୍ରବେଶ "
+"ସଙ୍କେତକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, fuzzy, c-format
+#, c-format
 #| msgid "The application '%s' wants to access the password for '%s' in %s."
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "'%s' ପ୍ରୟୋଗ '%s' ପାଇଁ '%s' ରେ ପ୍ରବେଶ ସଙ୍କେତକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
+msgstr ""
+"'%s' ପ୍ରୟୋଗ '<object prop='name'/>' ପାଇଁ %s ରେ ପ୍ରବେଶ ସଙ୍କେତକୁ "
+"ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:258
-#, fuzzy
 #| msgid ""
 #| "An unknown application wants to access the password for '%s' in the "
 #| "default keyring."
@@ -100,17 +106,19 @@ msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
 msgstr ""
-"ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ '%s' ପାଇଁ ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ କି-ରିଙ୍ଗରେ ପ୍ରବେଶ ସଙ୍କେତକୁ ଅଭିଗମ କରିବା ପାଇଁ "
-"ଚାହୁଁଅଛି।"
+"ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ '<object prop='name'/>' ପାଇଁ ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ କି-ରିଙ୍ଗରେ ପ୍ରବେଶ ସଙ୍କେତକୁ "
+"ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:261
-#, fuzzy, c-format
+#, c-format
 #| msgid "An unknown application wants to access the password for '%s' in %s."
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr "ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ '%s' ପାଇଁ '%s' ରେ ପ୍ରବେଶ ସଙ୍କେତକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
+msgstr ""
+"ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ '<object prop='name'/>' ପାଇଁ '%s' ରେ ପ୍ରବେଶ ସଙ୍କେତକୁ "
+"ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି।"
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:267
@@ -175,7 +183,7 @@ msgstr "କି-ରିଙ୍ଗକୁ ଅାନଲକ କରନ୍ତୁ"
 
 #: ../daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
-msgstr ""
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି କିରିଙ୍ଗକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଅପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ।"
 
 #. TRANSLATORS: The password is for the new keyring
 #: ../daemon/gkr-daemon-ops.c:413
@@ -375,11 +383,11 @@ msgstr ""
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr ""
+msgstr "gnome-କିରିଙ୍ଗ PKCS#11 ଉପାଦାନଟି ସକ୍ରିୟ ହୋଇଛି କି ନାହିଁ।"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr ""
+msgstr "gnome-କିରିଙ୍ଗ SSH ସଦସ୍ୟଟି ସକ୍ରିୟ ହୋଇଛି କି ନାହିଁ।"
 
 #: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
 #| msgid "New Keyring Password"
@@ -393,16 +401,17 @@ msgid "Unlock Login Keyring"
 msgstr "ଲଗଇନ କି-ରିଙ୍ଗକୁ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:98
-#, fuzzy
 #| msgid "Enter password for default keyring to unlock"
 msgid "Enter login password to unlock keyring"
-msgstr "ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ କି-ରିଙ୍ଗକୁ ଅାନଲକ କରିବା ପାଇଁ ଗୋଟିଏ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
+msgstr "କି-ରିଙ୍ଗକୁ ଖୋଲିବା ପାଇଁ ଗୋଟିଏ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
 
 #: ../daemon/keyrings/gkr-keyring-login.c:100
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
 msgstr ""
+"ଆପଣଙ୍କର ଲଗଇନ କିରିଙ୍ଗଟି ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଅପରିବର୍ତ୍ତନୀୟ ହୋଇନଥିଲା ଯେତେବେଳେ ଆପଣ ଏହି କମ୍ପୁଟର "
+"ମଧ୍ଯରେ ଲଗଇନ ହୋଇଥିଲେ।"
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:124
@@ -420,6 +429,8 @@ msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
 msgstr ""
+"ଆପଣଙ୍କର ଲଗଇନ କିରିଙ୍ଗଟି ସ୍ୱୟଂଚାଳିତ ଭାବରେ ନିର୍ମିତ ହୋଇନଥିଲା ଯେତେବେଳେ ଆପଣ ଏହି କମ୍ପୁଟର ମଧ୍ଯରେ "
+"ଲଗଇନ ହୋଇଥିଲେ। ଏହା ବର୍ତ୍ତମାନ ନିର୍ମିତ ହେବ।"
 
 #: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
@@ -438,7 +449,7 @@ msgstr "ପ୍ରମାଣପତ୍ରକୁ ପରିବର୍ତ୍ତନୀ�
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
 msgid "Unlock public key"
-msgstr ""
+msgstr "ସାର୍ବଜନିକ କିକୁ ଅପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
 #| msgid "Unlock Keyring"
@@ -446,10 +457,9 @@ msgid "Unlock"
 msgstr "ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:360
-#, fuzzy
 #| msgid "Enter password for default keyring to unlock"
 msgid "Enter password to unlock the private key"
-msgstr "ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ କି-ରିଙ୍ଗକୁ ଅାନଲକ କରିବା ପାଇଁ ଗୋଟିଏ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
+msgstr "ବ୍ୟକ୍ତିଗତ କି କୁ ଖୋଲିବା ପାଇଁ ଗୋଟିଏ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:362
 msgid "Enter password to unlock the certificate"
@@ -467,89 +477,91 @@ msgstr "ପରିବର୍ତ୍ତନୀୟ କରିବା ପାଇଁ ପ୍
 
 #. TRANSLATORS: The private key is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "An unknown application wants access to the keyring '%s', but it is locked"
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ, '%s' କି-ରିଙ୍ଗକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ତାଳକିତ ଅଟେ"
+msgstr "ଗୋଟିଏ ପ୍ରୟୋଗ, ବ୍ୟକ୍ତିଗତ କି '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #. TRANSLATORS: The certificate is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "An unknown application wants access to the keyring '%s', but it is locked"
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ, '%s' କି-ରିଙ୍ଗକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ତାଳକିତ ଅଟେ"
+msgstr "ଗୋଟିଏ ପ୍ରୟୋଗ ପ୍ରମାଣପତ୍ର '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #. TRANSLATORS: The public key is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "An unknown application wants access to the keyring '%s', but it is locked"
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ, '%s' କି-ରିଙ୍ଗକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ତାଳକିତ ଅଟେ"
+msgstr "ଗୋଟିଏ ପ୍ରୟୋଗ ସାର୍ବଜନିକ କି '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "An unknown application wants access to the keyring '%s', but it is locked"
 msgid "An application wants access to '%s', but it is locked"
-msgstr "ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ, '%s' କି-ରିଙ୍ଗକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ତାଳକିତ ଅଟେ"
+msgstr "ଗୋଟିଏ ପ୍ରୟୋଗ '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
 msgid "Automatically unlock this private key when I log in."
-msgstr ""
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି ବ୍ୟକ୍ତିଗତ କିକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ।"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
 msgid "Automatically unlock this certificate when I log in."
-msgstr ""
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି ପ୍ରମାଣପତ୍ରକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ।"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
 msgid "Automatically unlock this public key when I log in."
-msgstr ""
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି ସାର୍ବଜନିକ କିକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ।"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
 msgid "Automatically unlock this when I log in"
-msgstr ""
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହାକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ।"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
 msgid "Unlock certificate/key storage"
-msgstr ""
+msgstr "ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟକୁ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
 msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
+msgstr "ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ପାଇଁ ପ୍ରବେଶ ସଂକେତ ଭରଣ କରନ୍ତୁ"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "An unknown application wants access to the keyring '%s', but it is locked"
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
-msgstr "ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ, '%s' କି-ରିଙ୍ଗକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ତାଳକିତ ଅଟେ"
+msgstr ""
+"ଗୋଟିଏ ପ୍ରୟୋଗ ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟ '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା "
+"ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:381
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:532
 msgid "Automatically unlock secure storage when I log in."
-msgstr ""
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ସୁରକ୍ଷିତ ସଂଗ୍ରହାଳୟକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ।"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
 msgid "New Password Required"
-msgstr ""
+msgstr "ନୂତନ ପ୍ରବେଶ ସଂକେତ ଆବଶ୍ୟକ"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:525
 msgid "New password required for secure storage"
-msgstr ""
+msgstr "ସୁରକ୍ଷିତ ସଂଗ୍ରହାଳୟ ପାଇଁ ନୂତନ ପ୍ରବେଶ ସଂକେତ ଆବଶ୍ୟକ"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:527
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr ""
+msgstr "ପ୍ରମାଣପତ୍ର କିମ୍ବା କିଗୁଡ଼ିକର ସଂଗ୍ରହାଳୟ ପାଇଁ '%s' କୁ ପ୍ରସ୍ତୁତ କରିବାକୁ , ଗୋଟିଏ ପ୍ରବେଶ ସଂକେତ ଆବଶ୍ୟକ"
 
 #: ../daemon/ui/gkr-ask-tool.c:230
 msgid ""
@@ -560,6 +572,12 @@ msgid ""
 "\n"
 "Try again."
 msgstr ""
+"<b><big>ଆପଣଙ୍କ ମାଉସକୁ ଧରି ପାରିଲା ନାହିଁ।</big></b>\n"
+"\n"
+"ଗୋଟିଏ ତ୍ରୁଟିଯୁକ୍ତ ଗ୍ରାହକ ଆପଣଙ୍କର ଅଧିବେଶନରେ eavesdropping କରିପାରନ୍ତି କିମ୍ବା ଆପଣ ଏବେ ଗୋଟିଏ "
+"ତାଲିକାକୁ କ୍ଲିକ କରିଥାଇପାରନ୍ତି କିମ୍ବା ଲକ୍ଷ୍ୟ କରିବା ପାଇଁ ବାଛିଥିବା କିଛି ପ୍ରୟୋଗ।\n"
+"\n"
+"ପୁଣିଥରେ ଚେଷ୍ଟାକରନ୍ତୁ।"
 
 #: ../daemon/ui/gkr-ask-tool.c:239
 msgid ""
@@ -570,10 +588,16 @@ msgid ""
 "\n"
 "Try again."
 msgstr ""
+"<b><big>ଆପଣଙ୍କ କିବୋର୍ଡ଼କୁ ଧରି ପାରିଲା ନାହିଁ।</big></b>\n"
+"\n"
+"ଗୋଟିଏ ତ୍ରୁଟିଯୁକ୍ତ ଗ୍ରାହକ ଆପଣଙ୍କର ଅଧିବେଶନରେ eavesdropping କରିପାରନ୍ତି କିମ୍ବା ଆପଣ ଏବେ ଗୋଟିଏ "
+"ତାଲିକାକୁ କ୍ଲିକ କରିଥାଇପାରନ୍ତି କିମ୍ବା ଲକ୍ଷ୍ୟ କରିବା ପାଇଁ ବାଛିଥିବା କିଛି ପ୍ରୟୋଗ।\n"
+"\n"
+"ପୁଣିଥରେ ଚେଷ୍ଟାକରନ୍ତୁ।"
 
 #: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
-msgstr ""
+msgstr "ପ୍ରବେଶ ସଂକେତକୁ ଅସଂଗୁପ୍ତ ଭାବରେ ସଞ୍ଚୟ କରିବେ କି?"
 
 #: ../daemon/ui/gkr-ask-tool.c:277
 msgid ""
@@ -581,10 +605,13 @@ msgid ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
+"ଗୋଟିଏ ଖାଲି ପ୍ରବେଶ ସଂକେତକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ବାଛିବା ଦ୍ୱାରା, ଆପଣଙ୍କର ସଂରକ୍ଷିତ ପ୍ରବେଶ ସଂକେତ "
+"ସୁରକ୍ଷିତ ଭାବରେ ସଂଗୁପ୍ତ ହେବ ନାହିଁ। ସେଗୁଡ଼ିକୁ ଆପଣଙ୍କ ଫାଇଲଗୁଡ଼ିକୁ ପ୍ରବେଶାନୁମତି ଥିବା ଯେକୌଣସି ବ୍ୟକ୍ତି ଦ୍ୱାରା "
+"ଅଭିଗମ୍ୟ ହୋଇପାରିବ।"
 
 #: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
-msgstr ""
+msgstr "ଅସୁରକ୍ଷିତ ସଂଗ୍ରହାଳୟ ବ୍ୟବହାର କରନ୍ତୁ"
 
 #: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
@@ -723,11 +750,11 @@ msgstr "ପ୍ରାରମ୍ଭିକଗୁଡିକ"
 
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr ""
+msgstr "ସୃଷ୍ଟି ଯୋଗ୍ୟ"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr ""
+msgstr "DN ଯୋଗ୍ୟ"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
@@ -783,7 +810,7 @@ msgstr "<b>କୁ ପ୍ରଦତ୍ତ</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:5
 msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr ""
+msgstr "<b> ପାଇଁ ନିମ୍ନଲିଖିତ</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:6
 msgid "<b>Validity</b>"
@@ -795,19 +822,19 @@ msgstr "ସାଧାରଣ ନାମ (CN)"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:8
 msgid "Email Recipient Certificate"
-msgstr ""
+msgstr "ଇ-ଡାକ"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:9
 msgid "Email Signer Certificate"
-msgstr ""
+msgstr "ଇ-ଡାକ"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:10
 msgid "Expires On"
-msgstr ""
+msgstr "ରେ"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:11
 msgid "Issued On"
-msgstr ""
+msgstr "ରେ"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:12
 msgid "MD5 Fingerprint"
@@ -815,23 +842,23 @@ msgstr "MD5 ଅଙ୍ଗୁଳି ଚିହ୍ନ"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:13
 msgid "Organization (O)"
-msgstr ""
+msgstr "ସଙ୍ଗଠନ O"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:14
 msgid "Organizational Unit (OU)"
-msgstr ""
+msgstr "ଏକକ"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:15
 msgid "SHA1 Fingerprint"
-msgstr ""
+msgstr "SHA1 ଅଙ୍ଗୁଳିଛବି "
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:16
 msgid "SSL Client Certificate"
-msgstr ""
+msgstr "SSL ଗ୍ରାହକ"
 
 #: ../gcr/gcr-certificate-basics-widget.glade.h:17
 msgid "SSL Server Certificate"
-msgstr ""
+msgstr "SSL ସେବକ"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -860,17 +887,17 @@ msgstr "ଗୁରୁତର"
 #. The subject
 #: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Subject Name"
-msgstr ""
+msgstr "ବିଷୟ ନାମ"
 
 #. The Issuer
 #: ../gcr/gcr-certificate-details-widget.c:315
 msgid "Issuer Name"
-msgstr ""
+msgstr "ପ୍ରଦାନକାରୀଙ୍କ ନାମ"
 
 #. The Issued Parameters
 #: ../gcr/gcr-certificate-details-widget.c:319
 msgid "Issued Certificate"
-msgstr ""
+msgstr "ପ୍ରଦତ୍ତ ପ୍ରମାଣପତ୍ର"
 
 #: ../gcr/gcr-certificate-details-widget.c:324
 msgid "Version"
@@ -878,11 +905,11 @@ msgstr "ସଂସ୍କରଣ"
 
 #: ../gcr/gcr-certificate-details-widget.c:337
 msgid "Not Valid Before"
-msgstr ""
+msgstr "ପୂର୍ବରୁ ବୈଧ ନଥିଲା"
 
 #: ../gcr/gcr-certificate-details-widget.c:342
 msgid "Not Valid After"
-msgstr ""
+msgstr "ପରେ ବୈଧ ନଥିଲା"
 
 #. Signature
 #: ../gcr/gcr-certificate-details-widget.c:347
@@ -896,24 +923,24 @@ msgstr "ହସ୍ତାକ୍ଷର ଆଲଗୋରିଦମ"
 
 #: ../gcr/gcr-certificate-details-widget.c:356
 msgid "Signature Parameters"
-msgstr ""
+msgstr "ହସ୍ତକ୍ଷର ପ୍ରାଚଳଗୁଡ଼ିକ"
 
 #. Public Key Info
 #: ../gcr/gcr-certificate-details-widget.c:367
 msgid "Public Key Info"
-msgstr ""
+msgstr "ସାର୍ବଜନିକ କି ସୂଚନା"
 
 #: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Algorithm"
-msgstr ""
+msgstr "କି ଆଲଗୋରିଦମ"
 
 #: ../gcr/gcr-certificate-details-widget.c:376
 msgid "Key Parameters"
-msgstr ""
+msgstr "କି ପ୍ରାଚଳଗୁଡ଼ିକ"
 
 #: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Key Size"
-msgstr ""
+msgstr "କି ଆକାର"
 
 #: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
 msgid "Public Key"
@@ -922,15 +949,15 @@ msgstr "ସର୍ବସାଧାରଣ କି "
 #. Fingerprints
 #: ../gcr/gcr-certificate-details-widget.c:394
 msgid "Fingerprints"
-msgstr ""
+msgstr "ଅଙ୍ଗୁଳି ଚିହ୍ନ"
 
 #: ../gcr/gcr-import-dialog.glade.h:1
 msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr ""
+msgstr "<span size='large' weight='bold'>ପ୍ରମାଣପତ୍ର ଏବଂ କିଗୁଡ଼ିକୁ ଆମଦାନି କରନ୍ତୁ</span>"
 
 #: ../gcr/gcr-import-dialog.glade.h:2
 msgid "Import Into:"
-msgstr ""
+msgstr "ଏହା ଭିତରକୁ ଆମଦାନି କରନ୍ତୁ:"
 
 #: ../gcr/gcr-import-dialog.glade.h:3
 #| msgid "_Password:"
@@ -939,81 +966,81 @@ msgstr "ପ୍ରବେଶ ସଙ୍କେତ:"
 
 #: ../gcr/gcr-importer.c:162 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
 msgid "The operation was cancelled"
-msgstr ""
+msgstr "ପ୍ରୟୋଗଟି ବାତିଲ ହୋଇଥିଲା"
 
 #: ../gcr/gcr-importer.c:254
 #, c-format
 msgid "No location available to import to"
-msgstr ""
+msgstr "କୁ ଆମଦାନି କରିବା ପାଇଁ କୌଣସି ସ୍ଥାନ ଉପଲବ୍ଧ ନାହିଁ"
 
 #: ../gcr/gcr-importer.c:328
 msgid "Import Certificates/Keys"
-msgstr ""
+msgstr "ପ୍ରମାଣପତ୍ର/କିଗୁଡ଼ିକୁ ଆମଦାନି କରନ୍ତୁ"
 
 #: ../gcr/gcr-importer.c:335
 msgid "Choose a location to store the imported certificates/keys."
-msgstr ""
+msgstr "ଆମଦାନି ହୋଇଥିବା ପ୍ରମାଣପତ୍ର/କିଗୁଡ଼ିକୁ ସଞ୍ଚୟକରିବା ପାଇଁ ଗୋଟିଏ ସ୍ଥାନ ବାଛନ୍ତୁ।"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:373
 msgid "In order to import the private key, it must be unlocked"
-msgstr ""
+msgstr "ବ୍ୟକ୍ତିଗତ କିକୁ ଆମଦାନି କରିବା ପାଇଁ, ଏହାକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ଉଚିତ"
 
 #. TRANSLATORS: The certificate is locked.
 #: ../gcr/gcr-importer.c:376
 msgid "In order to import the certificate, it must be unlocked"
-msgstr ""
+msgstr "ପ୍ରମାଣପତ୍ରକୁ ଆମଦାନି କରିବା ପାଇଁ, ଏହାକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ଉଚିତ"
 
 #. TRANSLATORS: The data is locked.
 #: ../gcr/gcr-importer.c:379
 msgid "In order to import the data, it must be unlocked"
-msgstr ""
+msgstr "ତଥ୍ୟକୁ ଆମଦାନି କରିବା ପାଇଁ, ଏହାକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ଉଚିତ"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:384
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
-msgstr ""
+msgstr "ବ୍ୟକ୍ତିଗତ କି '%s'କୁ ଆମଦାନି କରିବା ପାଇଁ, ଏହାକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ଉଚିତ"
 
 #. TRANSLATORS: The certificate is locked.
 #: ../gcr/gcr-importer.c:387
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr ""
+msgstr "ପ୍ରମାଣପତ୍ର '%s'କୁ ଆମଦାନି କରିବା ପାଇଁ, ଏହାକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ଉଚିତ"
 
 #. TRANSLATORS: The object '%s' is locked.
 #: ../gcr/gcr-importer.c:390
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
-msgstr ""
+msgstr "'%s'କୁ ଆମଦାନି କରିବା ପାଇଁ, ଏହାକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ଉଚିତ"
 
 #: ../gcr/gcr-parser.c:196
 msgid "Private Key"
-msgstr ""
+msgstr "ବ୍ୟକ୍ତିଗତ କି"
 
 #: ../gcr/gcr-parser.c:199
 msgid "Certificate"
-msgstr ""
+msgstr "ପ୍ରମାଣପତ୍ର"
 
 #: ../gcr/gcr-parser.c:1576
 msgid "Unrecognized or unsupported data."
-msgstr ""
+msgstr "ଅଚିହ୍ନା ଅଥବା ଅସମର୍ଥିତ ତଥ୍ୟ।"
 
 #: ../gcr/gcr-parser.c:1579
 msgid "Could not parse invalid or corrupted data."
-msgstr ""
+msgstr "ଅବୈଧ କିମ୍ବା ତ୍ରୁଟିଯୁକ୍ତ ତଥ୍ୟକୁ ବିଶ୍ଳେଷଣ କରିପାରିଲା ନାହିଁ।"
 
 #: ../gcr/gcr-parser.c:1582
 msgid "The data is locked"
-msgstr ""
+msgstr "ତଥ୍ୟଟି ଅପରିବର୍ତ୍ତନିୟ ଅଛି"
 
 #: ../gp11/gp11-misc.c:117
 msgid "Insufficient memory available"
-msgstr ""
+msgstr "ଯଥେଷ୍ଟ ସ୍ମୃତିସ୍ଥାନ ଉପଲବ୍ଧ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:119
 msgid "The specified slot ID is not valid"
-msgstr ""
+msgstr "ଉଲ୍ଲିଖିତ ସ୍ଲଟ ID ଟି ବୈଧ ନୁହଁ"
 
 #: ../gp11/gp11-misc.c:121
 msgid "Internal error"
@@ -1021,143 +1048,143 @@ msgstr "ଆଭ୍ଯନ୍ତରୀଣ ତ୍ରୁଟି"
 
 #: ../gp11/gp11-misc.c:123
 msgid "The operation failed"
-msgstr ""
+msgstr "ପ୍ରୟୋଗ ବିଫଳ ହୋଇଛି"
 
 #: ../gp11/gp11-misc.c:125
 msgid "Invalid arguments"
-msgstr ""
+msgstr "ଅବୈଧ ସ୍ୱତନ୍ତ୍ରଚର"
 
 #: ../gp11/gp11-misc.c:127
 msgid "The module cannot create needed threads"
-msgstr ""
+msgstr "ଏକକାଂଶଟି ଆବଶ୍ୟକୀୟ ସୂତ୍ର ନିର୍ମାଣ କରିପାରିବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:129
 msgid "The module cannot lock data properly"
-msgstr ""
+msgstr "ଏକକାଂଶଟି ତଥ୍ୟକୁ ସଠିକ ଭାବରେ ଅପରିବର୍ତ୍ତନୀୟ କରିପାରିବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:131
 msgid "The field is read-only"
-msgstr ""
+msgstr "କ୍ଷେତ୍ରଟି କେବଳ ପଠନୀୟ"
 
 #: ../gp11/gp11-misc.c:133
 msgid "The field is sensitive and cannot be revealed"
-msgstr ""
+msgstr "କ୍ଷେତ୍ରଟି ସ୍ପର୍ଷକାତର ଏବଂ ପ୍ରକାଶ କରାଯାଇପାରିବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:135
 msgid "The field is invalid or does not exist"
-msgstr ""
+msgstr "କ୍ଷେତ୍ରଟି ଅବୈଧ ଏବଂ ଅବସ୍ଥିତ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:137
 msgid "Invalid value for field"
-msgstr ""
+msgstr "କ୍ଷେତ୍ର ପାଇଁ ଅବୈଧ ମୂଲ୍ୟ"
 
 #: ../gp11/gp11-misc.c:139
 msgid "The data is not valid or unrecognized"
-msgstr ""
+msgstr "ତଥ୍ୟଟି ଅବୈଧ ନୁହଁ କିମ୍ବା ଅଚିହ୍ନା"
 
 #: ../gp11/gp11-misc.c:141
 msgid "The data is too long"
-msgstr ""
+msgstr "ତଥ୍ୟଟି ଅତ୍ୟଧିକ ଲମ୍ବା"
 
 #: ../gp11/gp11-misc.c:143
 msgid "An error occurred on the device"
-msgstr ""
+msgstr "ଉପକରଣରେ ଗୋଟିଏ ତ୍ରୁଟି ଘଟିଛି"
 
 #: ../gp11/gp11-misc.c:145
 msgid "Insufficient memory available on device"
-msgstr ""
+msgstr "ଯନ୍ତ୍ରରେ ଯଥେଷ୍ଟ ସ୍ମୃତିସ୍ଥାନ ଉପଲବ୍ଧ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:147
 msgid "The device was removed or unplugged"
-msgstr ""
+msgstr "ଯନ୍ତ୍ରଟିକୁ କଢ଼ାଯାଇଛି କିମ୍ବା ପ୍ଲଗ ହୋଇନାହିଁ"
 
 #: ../gp11/gp11-misc.c:149
 msgid "The encrypted data is not valid or unrecognized"
-msgstr ""
+msgstr "ସଂଗୁପ୍ତ ତଥ୍ୟଟି ବୈଧ ନୁହଁ କିମ୍ବା ଚିହ୍ନିହେଉନାହିଁ"
 
 #: ../gp11/gp11-misc.c:151
 msgid "The encrypted data is too long"
-msgstr ""
+msgstr "ସଂଗୁପ୍ତ ତଥ୍ୟଟି ବହୁତ ଲମ୍ବା"
 
 #: ../gp11/gp11-misc.c:153
 msgid "This operation is not supported"
-msgstr ""
+msgstr "ଏହି ପ୍ରୟୋଗଟି ସମର୍ଥିତ ନୁହଁ"
 
 #: ../gp11/gp11-misc.c:155
 msgid "The key is missing or invalid"
-msgstr ""
+msgstr "କି ଟି ଅନୁପସ୍ଥିତ କିମ୍ବା ଅବୈଧ"
 
 #: ../gp11/gp11-misc.c:157
 msgid "The key is the wrong size"
-msgstr ""
+msgstr "କି ର ଆକାର ଭୁଲ ଅଛି"
 
 #: ../gp11/gp11-misc.c:159
 msgid "The key is of the wrong type"
-msgstr ""
+msgstr "କି ଟି ଭୁଲ ପ୍ରକାରର"
 
 #: ../gp11/gp11-misc.c:161
 msgid "No key is needed"
-msgstr ""
+msgstr "କୌଣସି କି ଆବଶ୍ୟକ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:163
 msgid "The key is different than before"
-msgstr ""
+msgstr "କି ଟି ପୂର୍ବ ଅପେକ୍ଷା ଭିନ୍ନ"
 
 #: ../gp11/gp11-misc.c:165
 msgid "A key is needed"
-msgstr ""
+msgstr "କି ଟି ଆବଶ୍ୟକ"
 
 #: ../gp11/gp11-misc.c:167
 msgid "Cannot include the key in digest"
-msgstr ""
+msgstr "କି କୁ ଡାଇଜେଷ୍ଟରେ ଅନ୍ତର୍ଭୁକ୍ତ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:169
 msgid "This operation cannot be done with this key"
-msgstr ""
+msgstr "ଏହି କି ଦ୍ୱାରା ପ୍ରୟୋଗଟିକୁ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:171
 msgid "The key cannot be wrapped"
-msgstr ""
+msgstr "କିକୁ ଆବୃତ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:173
 msgid "Cannot export this key"
-msgstr ""
+msgstr "ଏହି କି କୁ ରପ୍ତାନୀ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:175
 msgid "The crypto mechanism is invalid or unrecognized"
-msgstr ""
+msgstr "କ୍ରିପ୍ଟୋ କାର୍ଯ୍ୟକାରିତାଟି ଅବୈଧ ଅଟେ କିମ୍ବା ଅଚିହ୍ନା"
 
 #: ../gp11/gp11-misc.c:177
 msgid "The crypto mechanism has an invalid argument"
-msgstr ""
+msgstr "କ୍ରିପ୍ଟୋ କାର୍ଯ୍ୟକାରିତାରେ ଅବୈଧ ସ୍ୱତନ୍ତ୍ରଚର ଅଛି"
 
 #: ../gp11/gp11-misc.c:179
 msgid "The object is missing or invalid"
-msgstr ""
+msgstr "ବସ୍ତୁଟି ଅନୁପସ୍ଥିତ ଅଛି କିମ୍ବା ଅବୈଧ ଅଟେ"
 
 #: ../gp11/gp11-misc.c:181
 msgid "Another operation is already taking place"
-msgstr ""
+msgstr "ଅନ୍ୟ ଏକ ପ୍ରୟୋଗ ପୂର୍ବରୁ ଘଟିଛି"
 
 #: ../gp11/gp11-misc.c:183
 msgid "No operation is taking place"
-msgstr ""
+msgstr "କୌଣସି ପ୍ରୟୋଗ ଘଟିନାହିଁ"
 
 #: ../gp11/gp11-misc.c:185
 msgid "The password or PIN is incorrect"
-msgstr ""
+msgstr "ପ୍ରବେଶ ସଂକେତ କିମ୍ବା PIN ଟି ଭୁଲ ଅଛି"
 
 #: ../gp11/gp11-misc.c:187
 msgid "The password or PIN is invalid"
-msgstr ""
+msgstr "ପ୍ରବେଶ ସଂକେତ କିମ୍ବା PIN ଟି ଅବୈଧ ଅଛି"
 
 #: ../gp11/gp11-misc.c:189
 msgid "The password or PIN is of an invalid length"
-msgstr ""
+msgstr "ପ୍ରବେଶ ସଂକେତ କିମ୍ବା PIN ଲମ୍ବା ଭୁଲ ଅଛି"
 
 #: ../gp11/gp11-misc.c:191
 msgid "The password or PIN has expired"
-msgstr ""
+msgstr "ପ୍ରବେଶ ସଂକେତ କିମ୍ବା PIN ର ସମୟ ସମାପ୍ତ ହୋଇଛି"
 
 #: ../gp11/gp11-misc.c:193
 #| msgid "Enter password for keyring '%s' to unlock"
@@ -1194,43 +1221,43 @@ msgstr "ପ୍ରଶାସକ ଅଧିବେଶନ ଅବସ୍ଥିତ ଅଛ
 
 #: ../gp11/gp11-misc.c:209
 msgid "The signature is bad or corrupted"
-msgstr ""
+msgstr "ହସ୍ତାକ୍ଷରଟି ଖରାପ କିମ୍ବା ତ୍ରୁଟିଯୁକ୍ତ"
 
 #: ../gp11/gp11-misc.c:211
 msgid "The signature is unrecognized or corrupted"
-msgstr ""
+msgstr "ହସ୍ତାକ୍ଷରଟି ଅଚିହ୍ନା ଅଥବା ତ୍ରୁଟିଯୁକ୍ତ"
 
 #: ../gp11/gp11-misc.c:213
 msgid "Certain required fields are missing"
-msgstr ""
+msgstr "କିଛି ଆବଶ୍ୟକୀୟ କ୍ଷେତ୍ରଗୁଡ଼ିକ ଅନୁପସ୍ଥିତ ଅଛି"
 
 #: ../gp11/gp11-misc.c:215
 msgid "Certain fields have invalid values"
-msgstr ""
+msgstr "କିଛି କ୍ଷେତ୍ରରେ ଅବୈଧ ମୂଲ୍ୟ ଅଛି"
 
 #: ../gp11/gp11-misc.c:217
 msgid "The device is not present or unplugged"
-msgstr ""
+msgstr "ଉପକରଣଟି ଉପସ୍ଥିତ ନାହିଁ କିମ୍ବା ପ୍ଲଗ ହୋଇନାହିଁ"
 
 #: ../gp11/gp11-misc.c:219
 msgid "The device is invalid or unrecognizable"
-msgstr ""
+msgstr "ଉପକରଣଟି ଅବୈଧ କିମ୍ବା ଚିହ୍ନିବାଯୋଗ୍ୟ ନୁହଁ"
 
 #: ../gp11/gp11-misc.c:221
 msgid "The device is write protected"
-msgstr ""
+msgstr "ଉପକରଣଟି ଲେଖାପ୍ରତିରୋଧିତ"
 
 #: ../gp11/gp11-misc.c:223
 msgid "Cannot import because the key is invalid"
-msgstr ""
+msgstr "ଆମଦାନି କରିପାରିବ ନାହିଁ କାରଣ କି ଟି ଅବୈଧ ଅଟେ"
 
 #: ../gp11/gp11-misc.c:225
 msgid "Cannot import because the key is of the wrong size"
-msgstr ""
+msgstr "ଆମଦାନି କରିପାରିବ ନାହିଁ କାରଣ କି ଟି ଭୁଲ ଆକାରର ଅଟେ"
 
 #: ../gp11/gp11-misc.c:227
 msgid "Cannot import because the key is of the wrong type"
-msgstr ""
+msgstr "ଆମଦାନି କରିପାରିବ ନାହିଁ କାରଣ କି ଟି ଭୁଲ ପ୍ରକାରର ଅଟେ"
 
 #: ../gp11/gp11-misc.c:229
 msgid "You are already logged in"
