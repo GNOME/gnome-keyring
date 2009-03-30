@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
 "POT-Creation-Date: 2009-02-14 14:22+0000\n"
-"PO-Revision-Date: 2009-03-26 19:19+0530\n"
+"PO-Revision-Date: 2009-03-30 12:36+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -372,6 +373,9 @@ msgid ""
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
+"ଏହି ବିକଳ୍ପ PKCS#11 ସଦସ୍ୟକୁ gnome-keyring ଡେମନରେ ସକ୍ରିୟ କରିଥାଏ। gnome-keyring-daemon "
+"ଆରମ୍ଭ ହେଲେ ଏହା ଘଟିଥାଏ, (ie: ଯେତେବେଳେ ଚାଳକମାନେ ଲଗଇନ କରନ୍ତି). "
+"ଏହି ବିନ୍ୟାସକୁ ନବଲିଖନ କରିହେବ।"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -380,6 +384,9 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
+"ଏହି ବିକଳ୍ପ SSH ସଦସ୍ୟକୁ gnome-keyring ଡେମନରେ ସକ୍ରିୟ କରିଥାଏ। gnome-keyring-daemon "
+"ଆରମ୍ଭ ହେଲେ ଏହା ଘଟିଥାଏ, (ie: ଯେତେବେଳେ ଚାଳକମାନେ ଲଗଇନ କରନ୍ତି). "
+"ଏହି ବିନ୍ୟାସକୁ ନବଲିଖନ କରିହେବ।"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -1261,95 +1268,95 @@ msgstr "ଆମଦାନି କରିପାରିବ ନାହିଁ କାରଣ
 
 #: ../gp11/gp11-misc.c:229
 msgid "You are already logged in"
-msgstr ""
+msgstr "ଆପଣ ପୂର୍ବରୁ ଲଗଇନ ଅଛନ୍ତି"
 
 #: ../gp11/gp11-misc.c:231
 msgid "No user has logged in"
-msgstr ""
+msgstr "କୌଣସି ଚାଳକ ଲଗଇନ ହୋଇନାହାନ୍ତି"
 
 #: ../gp11/gp11-misc.c:233
 msgid "The user's password or PIN is not set"
-msgstr ""
+msgstr "ଚାଳକଙ୍କର ପ୍ରବେଶ ସଂକେତ କିମ୍ବା PIN ସେଟ ହୋଇନାହିଁ"
 
 #: ../gp11/gp11-misc.c:235
 msgid "The user is of an invalid type"
-msgstr ""
+msgstr "ଚାଳକଟି ଗୋଟିଏ ଅବୈଧ ପ୍ରକାରର"
 
 #: ../gp11/gp11-misc.c:237
 msgid "Another user is already logged in"
-msgstr ""
+msgstr "ଅନ୍ୟ ଏକ ଚାଳକ ପୂର୍ବରୁ ଲଗଇନ ଅଛନ୍ତି"
 
 #: ../gp11/gp11-misc.c:239
 msgid "Too many users of different types logged in"
-msgstr ""
+msgstr "ବିଭିନ୍ନ ପ୍ରକାରର ଅନେକ ଚାଳକ ଲଗଇନ ଅଛିନ୍ତି"
 
 #: ../gp11/gp11-misc.c:241
 msgid "Cannot import an invalid key"
-msgstr ""
+msgstr "ଗୋଟିଏ ଅବୈଧ କିକୁ ଆମଦାନି କରିପାରିବେ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:243
 msgid "Cannot import a key of the wrong size"
-msgstr ""
+msgstr "ଭୁଲ ଆକାରର ଗୋଟିଏ କିକୁ ଆମଦାନି କରିପାରିବେ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:245
 msgid "Cannot export because the key is invalid"
-msgstr ""
+msgstr "କି ଟି ଅବୈଧ ଥିବା ହେତୁ ରପ୍ତାନି କରିପାରିବେ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:247
 msgid "Cannot export because the key is of the wrong size"
-msgstr ""
+msgstr "କି ଟି ଭୁଲ ଆକାରର ହୋଇଥିବା ହେତୁ ରପ୍ତାନି କରିପାରିବେ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:249
 msgid "Cannot export because the key is of the wrong type"
-msgstr ""
+msgstr "କି ଟି ଭୁଲ ପ୍ରକାରର ହୋଇଥିବା ହେତୁ ରପ୍ତାନି କରିପାରିବେ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:251
 msgid "Unable to initialize the random number generator"
-msgstr ""
+msgstr "କ୍ରମମୁକ୍ତ ସଂଖ୍ୟା ସୃଷ୍ଟିକର୍ତ୍ତାକୁ ଆରମ୍ଭ କରିବାରେ ଅସମର୍ଥ"
 
 #: ../gp11/gp11-misc.c:253
 msgid "No random number generator available"
-msgstr ""
+msgstr "କୌଣସି କ୍ରମମୁକ୍ତ ସଂଖ୍ୟା ସୃଷ୍ଟିକର୍ତ୍ତା ଉପଲବ୍ଧ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:255
 msgid "The crypto mechanism has an invalid parameter"
-msgstr ""
+msgstr "କ୍ରିପ୍ଟୋ କ୍ରିୟାବଳୀରେ ଗୋଟିଏ ଅବୈଧ ପ୍ରାଚଳ ଅଛି"
 
 #: ../gp11/gp11-misc.c:257
 msgid "Not enough space to store the result"
-msgstr ""
+msgstr "ଫଳାଫଳକୁ ସଂରକ୍ଷଣ କରିବା ପାଇଁ ଯଥେଷ୍ଟ ସ୍ଥାନ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:259
 msgid "The saved state is invalid"
-msgstr ""
+msgstr "ସଂରକ୍ଷିତ ସ୍ଥିତିଟି ଅବୈଧ"
 
 #: ../gp11/gp11-misc.c:261
 msgid "The information is sensitive and cannot be revealed"
-msgstr ""
+msgstr "ସୂଚନାଟି ସମ୍ବେଦନଶୀଳ ଅଟେ ଏବଂ ଏହାକୁ ପ୍ରକାଶ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:263
 msgid "The state cannot be saved"
-msgstr ""
+msgstr "ଏହି ସ୍ଥିତିକୁ ସଂରକ୍ଷଣ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:265
 msgid "The module has not been initialized"
-msgstr ""
+msgstr "ଏକକାଂଶଟିକୁ ଆରମ୍ଭ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:267
 msgid "The module has already been initialized"
-msgstr ""
+msgstr "ଏକକାଂଶଟିକୁ ପୂର୍ବରୁ ଆରମ୍ଭ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:269
 msgid "Cannot lock data"
-msgstr ""
+msgstr "ତଥ୍ୟକୁ ଅପରିବର୍ତ୍ତନୀୟ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:271
 msgid "The data cannot be locked"
-msgstr ""
+msgstr "ତଥ୍ୟକୁ ଅପରିବର୍ତ୍ତନୀୟ କରିହେବ ନାହିଁ"
 
 #: ../gp11/gp11-misc.c:273
 msgid "The signature request was rejected by the user"
-msgstr ""
+msgstr "ହସ୍ତାକ୍ଷର ଅନୁରୋଧକୁ ଚାଳକ ଦ୍ୱାରା ପ୍ରତ୍ୟାଖାନ କରାଯାଇଛି"
 
 #: ../gp11/gp11-misc.c:277
 msgid "Unknown error"
@@ -1357,41 +1364,41 @@ msgstr "ଅଜଣା ତ୍ରୁଟି"
 
 #: ../library/gnome-keyring-utils.c:155
 msgid "Access Denied"
-msgstr ""
+msgstr "ଅଭିଗମ୍ୟତା ବାରଣ ହୋଇଛି"
 
 #: ../library/gnome-keyring-utils.c:157
 msgid "The gnome-keyring-daemon application is not running."
-msgstr ""
+msgstr "gnome-keyring-daemon ପ୍ରୟୋଗ ଚାଲୁନାହିଁ।"
 
 #: ../library/gnome-keyring-utils.c:159
 msgid "Error communicating with gnome-keyring-daemon"
-msgstr ""
+msgstr "gnome-keyring-daemon ସହିତ ଯୋଗାଯୋଗ କରିବା ସମୟରେ ତ୍ରୁଟି"
 
 #: ../library/gnome-keyring-utils.c:161
 msgid "A keyring with that name already exists"
-msgstr ""
+msgstr "ଏହି ନାମରେ ଗୋଟିଏ କି ରିଙ୍ଗ ପୂର୍ବରୁ ଅବସ୍ଥିତ ଅଛି"
 
 #: ../library/gnome-keyring-utils.c:163
 msgid "Programmer error: The application sent invalid data."
-msgstr ""
+msgstr "ପ୍ରଗ୍ରାମ ତ୍ରୁଟି: ପ୍ରୟୋଗ ଅବୈଧ ତଥ୍ୟ ପଠାଇଅଛି।"
 
 #: ../library/gnome-keyring-utils.c:165
 msgid "No matching results"
-msgstr ""
+msgstr "କୌଣସି ମେଳଖାଉଥିବା ଫଳାଫଳ ନାହିଁ"
 
 #: ../library/gnome-keyring-utils.c:167
 msgid "A keyring with that name does not exist."
-msgstr ""
+msgstr "ଏହି ନାମରେ କୌଣସି କି ରିଙ୍ଗ ପୂର୍ବରୁ ଅବସ୍ଥିତ ନାହିଁ।"
 
 #: ../library/gnome-keyring-utils.c:174
 msgid "The keyring has already been unlocked."
-msgstr ""
+msgstr "କି ରିଙ୍ଗ ପୂର୍ବରୁ ଅପରିବର୍ତ୍ତନୀୟ ଅଛି।"
 
 #: ../pkcs11/gck/gck-certificate.c:710
 msgid "Unnamed Certificate"
-msgstr ""
+msgstr "ବେନାମୀ ପ୍ରମାଣପତ୍ର"
 
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
 msgid "Couldn't parse public SSH key"
-msgstr ""
+msgstr "ସାର୍ବଜନୀକ SSH କି କୁ ବିଶ୍ଳେଷଣ କରିପାରିଲା ନାହିଁ"
 
