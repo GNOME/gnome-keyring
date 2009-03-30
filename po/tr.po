@@ -6,50 +6,49 @@
 # Gorkem Cetin <gorkem@bahcesehir.edu.tr>, 2004.
 # Görkem Çetin <gorkem@gorkemcetin.com>, 2004.
 # Serdar CICEK <serdar@nerd.com.tr>, 2008.
-# Baris Cicek <baris@teamforce.name.tr>, 2008.
+# Baris Cicek <baris@teamforce.name.tr>, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-09 10:55+0300\n"
-"PO-Revision-Date: 2008-09-07 08:44+0300\n"
+"POT-Creation-Date: 2009-03-30 12:21+0300\n"
+"PO-Revision-Date: 2009-03-30 12:18+0300\n"
 "Last-Translator: Baris Cicek <baris@teamforce.name.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type:  text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=1; plural=0;\n"
 
-#: ../common/gkr-location.c:320
+#: ../common/gkr-location.c:321
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Taşınabilir Disk: %s"
 
-#: ../common/gkr-location.c:322
+#: ../common/gkr-location.c:323
 msgid "Removable Disk"
 msgstr "Taşınabilir Disk"
 
-#: ../common/gkr-location.c:543 ../common/gkr-location.c:555
+#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
 msgid "Home"
-msgstr "Ana Sayfa"
+msgstr "Başlangıç"
 
-#: ../common/gkr-location.c:1104 ../common/gkr-location.c:1128
-#: ../daemon/pkix/gkr-pkix-parser.c:524 ../daemon/pkix/gkr-pkix-serialize.c:58
+#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
 msgid "The disk or drive this file is located on is not present"
 msgstr "Bu dosyanın bulunduğu disk ya da sürücü mevcut değil"
 
-#: ../common/gkr-location.c:1136
+#: ../common/gkr-location.c:1137
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "Dizin oluşturulamadı: %s"
 
-#: ../common/gkr-location.c:1170
+#: ../common/gkr-location.c:1171
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Dosya silinemedi: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:227
+#: ../daemon/gkr-daemon-ops.c:228
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -59,7 +58,7 @@ msgstr ""
 "parolaya ulaşmak istiyor."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:231
+#: ../daemon/gkr-daemon-ops.c:232
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
@@ -69,7 +68,7 @@ msgstr ""
 "ulaşmak istiyor."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:237 ../daemon/gkr-daemon-ops.c:247
+#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -79,7 +78,7 @@ msgstr ""
 "parolaya ulaşmak istiyor."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:241 ../daemon/gkr-daemon-ops.c:251
+#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
 #, c-format
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
@@ -89,7 +88,7 @@ msgstr ""
 "istiyor."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:257
+#: ../daemon/gkr-daemon-ops.c:258
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
 ">' in the default keyring."
@@ -98,7 +97,7 @@ msgstr ""
 "anahtarlıktaki parolaya ulaşmak istiyor."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:260
+#: ../daemon/gkr-daemon-ops.c:261
 #, c-format
 msgid ""
 "An unknown application wants to access the password for '<object prop='name'/"
@@ -108,15 +107,16 @@ msgstr ""
 "ulaşmak istiyor."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow access"
 msgstr "Erişime izin ver"
 
-#: ../daemon/gkr-daemon-ops.c:266
+#: ../daemon/gkr-daemon-ops.c:267
 msgid "Allow application access to keyring?"
 msgstr "Uygulamanın anahtarlığa erişebilmesine izin verilsin mi?"
 
-#: ../daemon/gkr-daemon-ops.c:307
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -125,7 +125,8 @@ msgstr ""
 "'%s' (%s) uygulaması öntanımlı anahtarlığa ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#: ../daemon/gkr-daemon-ops.c:311
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
 #, c-format
 msgid ""
 "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
@@ -133,7 +134,8 @@ msgstr ""
 "'%s' (%s) uygulaması '%s' anahtarlığına ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#: ../daemon/gkr-daemon-ops.c:317 ../daemon/gkr-daemon-ops.c:327
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
 msgid ""
 "The application '%s' wants access to the default keyring, but it is locked"
@@ -141,13 +143,15 @@ msgstr ""
 "'%s' uygulaması öntanımlı anahtarlığa ulaşmak istiyor, fakat anahtarlık  "
 "kilitli"
 
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:332
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
 msgstr ""
 "'%s' uygulaması '%s' anahtarlığına ulaşmak istiyor, fakat anahtarlık kilitli"
 
-#: ../daemon/gkr-daemon-ops.c:338
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
 #, c-format
 msgid ""
 "An unknown application wants access to the default keyring, but it is locked"
@@ -155,7 +159,8 @@ msgstr ""
 "Bilinmeyen bir uygulama öntanımlı anahtarlığa ulaşmak istiyor, fakat "
 "anahtarlık kilitli"
 
-#: ../daemon/gkr-daemon-ops.c:342
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
 #, c-format
 msgid ""
 "An unknown application wants access to the keyring '%s', but it is locked"
@@ -163,25 +168,26 @@ msgstr ""
 "Bilinmeyen bir uygulama '%s' anahtarlığına ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#: ../daemon/gkr-daemon-ops.c:349
+#: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
 msgstr "Öntanımlı anahtarlık kilidini açmak için parola girin"
 
-#: ../daemon/gkr-daemon-ops.c:351
+#: ../daemon/gkr-daemon-ops.c:360
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' anahtarlık kilidini açmak için parola girin"
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:355
+#: ../daemon/gkr-daemon-ops.c:364
 msgid "Unlock Keyring"
 msgstr "Anahtarlık Kilidini Aç"
 
-#: ../daemon/gkr-daemon-ops.c:367 ../daemon/pk/gkr-pk-index.c:135
+#: ../daemon/gkr-daemon-ops.c:376
 msgid "Automatically unlock this keyring when I log in."
 msgstr "Giriş yaptığımda anahtarlığı kendiliğinden aç."
 
-#: ../daemon/gkr-daemon-ops.c:403
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new keyring called '%s'. You "
@@ -190,7 +196,8 @@ msgstr ""
 "'%s' (%s) uygulaması '%s' adında yeni bir anahtarlık oluşturmak istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:407
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to create a new default keyring. You have to "
@@ -199,7 +206,8 @@ msgstr ""
 "'%s' (%s) uygulaması yeni bir öntanımlı anahtarlık oluşturmak istiyor. Onun "
 "için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:413 ../daemon/gkr-daemon-ops.c:423
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
 #, c-format
 msgid ""
 "The application '%s' wants to create a new keyring called '%s'. You have to "
@@ -208,7 +216,8 @@ msgstr ""
 "'%s' uygulaması '%s' adında yeni bir anahtarlık oluşturmak istiyor. Onun "
 "için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:417 ../daemon/gkr-daemon-ops.c:427
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
 #, c-format
 msgid ""
 "The application '%s' wants to create a new default keyring. You have to "
@@ -217,7 +226,8 @@ msgstr ""
 "'%s' uygulaması yeni bir öntanımlı anahtarlık oluşturmak istiyor. Onun için "
 "kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:433
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
 #, c-format
 msgid ""
 "An unknown application wants to create a new keyring called '%s'. You have "
@@ -226,7 +236,8 @@ msgstr ""
 "Bilinmeyen bir uygulama '%s' adında yeni bir anahtarlık oluşturmak istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:437
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
 #, c-format
 msgid ""
 "An unknown application wants to create a new default keyring. You have to "
@@ -236,15 +247,15 @@ msgstr ""
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:443
+#: ../daemon/gkr-daemon-ops.c:460
 msgid "New Keyring Password"
 msgstr "Yeni Anahtarlık Parolası"
 
-#: ../daemon/gkr-daemon-ops.c:444
+#: ../daemon/gkr-daemon-ops.c:461
 msgid "Choose password for new keyring"
 msgstr "Yeni anahtarlık için parola seçin"
 
-#: ../daemon/gkr-daemon-ops.c:491
+#: ../daemon/gkr-daemon-ops.c:508
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the '%s' keyring. "
@@ -253,7 +264,7 @@ msgstr ""
 "'%s' (%s) uygulaması '%s' anahtarlığının parolasını değiştirmek istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:495
+#: ../daemon/gkr-daemon-ops.c:512
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to change the password for the default "
@@ -262,7 +273,7 @@ msgstr ""
 "'%s' (%s) uygulaması yeni bir öntanımlı anahtarlığın parolasını değiştirmek "
 "istiyor. Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:501 ../daemon/gkr-daemon-ops.c:511
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the '%s' keyring. You "
@@ -271,7 +282,7 @@ msgstr ""
 "'%s' uygulaması '%s' anahtarlığının parolasını değiştirmek istiyor. Onun "
 "için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:505 ../daemon/gkr-daemon-ops.c:515
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
 #, c-format
 msgid ""
 "The application '%s' wants to change the password for the default keyring. "
@@ -280,7 +291,7 @@ msgstr ""
 "'%s' uygulaması öntanımlı anahtarlığın parolasını değiştirmek istiyor. Onun "
 "için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:521
+#: ../daemon/gkr-daemon-ops.c:538
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the '%s' keyring. "
@@ -289,7 +300,7 @@ msgstr ""
 "Bilinmeyen bir uygulama '%s' anahtarlığının parolasını değiştirmek istiyor. "
 "Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:525
+#: ../daemon/gkr-daemon-ops.c:542
 #, c-format
 msgid ""
 "An unknown application wants to change the password for the default keyring. "
@@ -298,22 +309,22 @@ msgstr ""
 "Bilinmeyen bir uygulama öntanımlı anahtarlığın parolasını değiştirmek "
 "istiyor. Onun için kullanacağınız parolayı seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:535
+#: ../daemon/gkr-daemon-ops.c:552
 #, c-format
 msgid "Choose a new password for the '%s' keyring. "
 msgstr "'%s' anahtarlığı için yeni bir parola seçin. "
 
-#: ../daemon/gkr-daemon-ops.c:537
+#: ../daemon/gkr-daemon-ops.c:554
 #, c-format
 msgid "Choose a new password for the default keyring. "
 msgstr "Öntanımlı anahtarlık için yeni bir parola seçin."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:541
+#: ../daemon/gkr-daemon-ops.c:558
 msgid "Change Keyring Password"
 msgstr "Anahtarlık Parolası Değiştir"
 
-#: ../daemon/gkr-daemon-ops.c:614
+#: ../daemon/gkr-daemon-ops.c:631
 #, c-format
 msgid ""
 "The application '%s' (%s) wants to store a password, but there is no default "
@@ -324,7 +335,7 @@ msgstr ""
 "yok. Bir tane oluşturmak için, anahtarlık için kullanacağınız parolayı "
 "seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:618 ../daemon/gkr-daemon-ops.c:622
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
 #, c-format
 msgid ""
 "The application '%s' wants to store a password, but there is no default "
@@ -335,7 +346,7 @@ msgstr ""
 "tane oluşturmak istiyorsanız, anahtarlık için kullanacağınız parolayı "
 "seçmeniz gerekiyor."
 
-#: ../daemon/gkr-daemon-ops.c:626
+#: ../daemon/gkr-daemon-ops.c:643
 #, c-format
 msgid ""
 "An unknown application wants to store a password, but there is no default "
@@ -347,29 +358,15 @@ msgstr ""
 "parolayı seçmeniz gerekiyor."
 
 #. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Create Default Keyring"
 msgstr "Öntanımlı Anahtarlık Oluştur"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/gkr-daemon-ops.c:648
 msgid "Choose password for default keyring"
 msgstr "Öntanımlı anahtarlık için parola seçin"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"A list of paths to PKCS#11 modules to load. No modules are currently listed "
-"by default, as this is still an experimental feature. This is used by "
-"seahorse and other PKCS#11 aware applications."
-msgstr ""
-"Yüklemek için PKCS#11 modüllerinin yollarının bir listesi. Öntanımlı olarak "
-"hiçbir modül listelenmiyor, çünkü bu hala deneysel bir özellik. Bu seahorse "
-"ve diğer PKCS#11 haberdar uygulamalar tarafından kullanılır."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid "PKCS#11 Modules"
-msgstr "PKCS#11 Modülleri"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
@@ -381,7 +378,7 @@ msgstr ""
 "giriş yaptığında). Kesin komut parametleri servise geçildiğinde bu ayarın "
 "yerine geçer."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
 "effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
@@ -393,13 +390,17 @@ msgstr ""
 "yaptığında). Kesin komut parametleri servise geçildiğinde bu ayarın yerine "
 "geçer."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "Gnome-keyring PKCS#11 bileşeninin etkin olmaması."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Gnome-keyring SSH aracının etkin olmaması."
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr "GNOME Anahtarlık Servisi"
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:98
@@ -435,260 +436,166 @@ msgstr ""
 "Giriş anahtarlığınız bu bilgisayarda girdiğinizde kendiliğinden "
 "oluşturulamadı. Şimdi oluşturulacak."
 
-#: ../daemon/keyrings/gkr-keyring.c:584
+#: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "%s anahtarlığı için parolayı girin "
 
-#: ../daemon/pk/gkr-pk-import.c:88
-msgid "Import private key"
-msgstr "Özel anahtari içe aktar"
-
-#: ../daemon/pk/gkr-pk-import.c:90
-msgid "Import certificate"
-msgstr "Sertifikayı içe aktar"
-
-#: ../daemon/pk/gkr-pk-import.c:92
-msgid "Import public key"
-msgstr "Genel anahtarı içe aktar"
-
-#: ../daemon/pk/gkr-pk-import.c:94
-msgid "Import"
-msgstr "İçe Aktar"
-
-#: ../daemon/pk/gkr-pk-import.c:101 ../daemon/pk/gkr-pk-storage.c:166
-msgid "Enter password to unlock the private key"
-msgstr "Özel anahtarlık kilidini açmak için parola girin"
-
-#: ../daemon/pk/gkr-pk-import.c:103 ../daemon/pk/gkr-pk-storage.c:168
-msgid "Enter password to unlock the certificate"
-msgstr "Sertifikanın kilidini açmak için parola girin"
-
-#: ../daemon/pk/gkr-pk-import.c:105 ../daemon/pk/gkr-pk-storage.c:170
-msgid "Enter password to unlock the public key"
-msgstr "Genel anahtarlık kilidini açmak için parola girin"
-
-#: ../daemon/pk/gkr-pk-import.c:107 ../daemon/pk/gkr-pk-storage.c:172
-msgid "Enter password to unlock"
-msgstr "Kilidini açmak için parola girin"
-
-#: ../daemon/pk/gkr-pk-import.c:114
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr ""
-"Sistem '%s' özel anahtarlığını içeri aktarmak istiyor, fakat anahtarlık "
-"kilitli"
-
-#: ../daemon/pk/gkr-pk-import.c:116
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr ""
-"Sistem '%s' sertifikasını içeri aktarmak istiyor, fakat sertifika kilitli"
-
-#: ../daemon/pk/gkr-pk-import.c:118
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr ""
-"Sistem '%s' genel anahtarlığını içeri aktarmak istiyor, fakat anahtarlık "
-"kilitli"
-
-#: ../daemon/pk/gkr-pk-import.c:120
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr "Sistem '%s' için içe aktarım istiyor, fakat o kilitli"
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:93
-msgid "Create Storage for Key Information"
-msgstr "Anahtar Bilgisi için Kayıt Oluştur"
-
-#: ../daemon/pk/gkr-pk-index.c:94
-msgid "Choose password to protect storage"
-msgstr "Kaydı korumak için parola seç"
-
-#: ../daemon/pk/gkr-pk-index.c:97
-msgid ""
-"The system wants to store information about your keys and certificates. In "
-"order to protect this information, choose a password with which it will be "
-"locked."
-msgstr ""
-"Sistem anahtarlarınız ve sertifikalarınız hakkında bilgi saklamak istiyor. "
-"Bu bilgiyi korumak için onların kilitleneceği bir parola seçin."
-
-#. And put together the ask request
-#: ../daemon/pk/gkr-pk-index.c:124
-msgid "Unlock Storage for Key Information"
-msgstr "Anahtar Bilgisi için Kaydın Kilidini Kaldır"
-
-#: ../daemon/pk/gkr-pk-index.c:125
-msgid "Enter password to unlock storage"
-msgstr "Kayıt kilidini açmak için parola girin"
-
-#: ../daemon/pk/gkr-pk-index.c:128
-msgid ""
-"The system wants to access information about your keys and certificates, but "
-"it is locked."
-msgstr ""
-"Sistem anahtarlarınız ve sertifikalarınız hakkında bilgiler erişmek istiyor "
-"ancak kilitli."
-
-#: ../daemon/pk/gkr-pk-object.c:889
-msgid "Certificate"
-msgstr "Sertifika"
-
-#: ../daemon/pk/gkr-pk-object.c:891
-msgid "Private Key"
-msgstr "Özel Anahtar"
-
-#: ../daemon/pk/gkr-pk-object.c:893
-msgid "Public Key"
-msgstr "Genel Anahtar"
-
-#: ../daemon/pk/gkr-pk-object.c:895
-msgid "Trust Association"
-msgstr "Güven İlişkisi"
-
-#: ../daemon/pk/gkr-pk-object-storage.c:445
-#, c-format
-msgid "Cannot delete '%s' because it is tied to other objects."
-msgstr "'%s' silinemiyor çünkü diğer nesnelere bağlı."
-
-#: ../daemon/pk/gkr-pk-storage.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
 msgid "Unlock private key"
 msgstr "Özel anahtarın kilidini kaldır"
 
-#: ../daemon/pk/gkr-pk-storage.c:138
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
 msgid "Unlock certificate"
 msgstr "Sertifikanın kilidini kaldır"
 
-#: ../daemon/pk/gkr-pk-storage.c:140
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
 msgid "Unlock public key"
 msgstr "Genel anahtarın kilidini kaldır"
 
-#: ../daemon/pk/gkr-pk-storage.c:142
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
 msgid "Unlock"
 msgstr "Kilidini kaldır"
 
-#: ../daemon/pk/gkr-pk-storage.c:153
-msgid "Lock private key"
-msgstr "Özel anahtarı kilitle"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
+msgid "Enter password to unlock the private key"
+msgstr "Özel anahtarlık kilidini açmak için parola girin"
 
-#: ../daemon/pk/gkr-pk-storage.c:155
-msgid "Lock"
-msgstr "Kilitle"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
+msgid "Enter password to unlock the certificate"
+msgstr "Sertifikanın kilidini açmak için parola girin"
 
-#: ../daemon/pk/gkr-pk-storage.c:183
-msgid "Enter password to protect the private key"
-msgstr "Özel anahtarı korumak için parola girin"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+msgid "Enter password to unlock the public key"
+msgstr "Genel anahtarlık kilidini açmak için parola girin"
 
-#: ../daemon/pk/gkr-pk-storage.c:185
-msgid "Enter password to protect storage"
-msgstr "Kaydı korumak için parola girin"
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
+msgid "Enter password to unlock"
+msgstr "Kilidini açmak için parola girin"
 
-#: ../daemon/pk/gkr-pk-storage.c:196
-msgid "Automatically unlock this private key when I log in."
-msgstr "Giriş yaptığımda özel anahtarın kendiliğinden kilidini aç."
-
-#: ../daemon/pk/gkr-pk-storage.c:198
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Giriş yaptığımda sertifikanın kendiliğinden kilidini aç."
-
-#: ../daemon/pk/gkr-pk-storage.c:200
-msgid "Automatically unlock this public key when I log in."
-msgstr "Giriş yaptığımda genel anahtarın kilidini aç."
-
-#: ../daemon/pk/gkr-pk-storage.c:202
-msgid "Automatically unlock this when I log in"
-msgstr "Giriş yaptığımda bunun kendiliğinden kilidini aç"
-
-#: ../daemon/pk/gkr-pk-storage.c:209
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama '%s' özel anahtarlığına ulaşmak istiyor, fakat "
 "anahtarlık kilitli"
 
-#: ../daemon/pk/gkr-pk-storage.c:211
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama '%s' sertifikasına ulaşmak istiyor, fakat sertifika "
 "kilitli"
 
-#: ../daemon/pk/gkr-pk-storage.c:213
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama '%s' genel anahtarlığın ulaşmak istiyor, fakat "
 "anahtarlık kilitli"
 
-#: ../daemon/pk/gkr-pk-storage.c:215
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama '%s' anahtarlığa ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#: ../daemon/pk/gkr-pk-storage.c:228
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+msgid "Automatically unlock this private key when I log in."
+msgstr "Giriş yaptığımda özel anahtarın kendiliğinden kilidini aç."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+msgid "Automatically unlock this certificate when I log in."
+msgstr "Giriş yaptığımda sertifikanın kendiliğinden kilidini aç."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+msgid "Automatically unlock this public key when I log in."
+msgstr "Giriş yaptığımda genel anahtarın kilidini aç."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+msgid "Automatically unlock this when I log in"
+msgstr "Giriş yaptığımda bunun kendiliğinden kilidini aç"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
+msgid "Unlock certificate/key storage"
+msgstr "Sertifika/anahtar deposu kilidini aç"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Sertifika/anahtar deposu kilidini açmak için parolanızı girin"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
 #, c-format
 msgid ""
-"The system wants to store the private key '%s' on your disk. Please enter a "
-"password to lock it with."
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
 msgstr ""
-"Sistem '%s' özel anahtarlığını içeri disk üzerinde saklamak istiyor. Lütfen "
-"onunla kilitlemek için bir parola girin."
+"Bir uygulama sertifika/anahtar deposu '%s' için erişim istiyor, ancak kilitli"
 
-#: ../daemon/pk/gkr-pk-storage.c:230
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Giriş yapıldığında otomatik olarak güvenli depo kilidini aç."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
+msgid "New Password Required"
+msgstr "Yeni Parola Gerekli"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+msgid "New password required for secure storage"
+msgstr "Güvenli depolama için yeni parola gerekli"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
 #, c-format
 msgid ""
-"The system wants to store '%s' on your disk. Please enter a password to lock "
-"it with."
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
 msgstr ""
-"Sistem '%s' kaydını disk üzerinde yapmak istiyor. Lütfen onunla kilitlemek "
-"için bir parola girin."
+"'%s' parola ya da anahtar depolamaya hazırlamak için bir parola gereklidir"
 
-#: ../daemon/pkix/gkr-pkix-parser.c:451 ../gp11/gp11-misc.c:87
-msgid "The operation was cancelled"
-msgstr "İşlem iptal edildi"
+#: ../daemon/ui/gkr-ask-tool.c:230
+msgid ""
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<big><b>Fareniz yakalanamadı.</b></big>\n"
+"\n"
+"Zararlı bir istemci oturumunuzu üzerinde dinleme yapıyor olabilir veya bir "
+"menü ya da uygulamaya tıkladınız ve o da odağı almaya karar verdi.\n"
+"\n"
+"Tekrar deneyin."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:455
-msgid "Unrecognized or unsupported file."
-msgstr "Tanınmamış ya da desteklenmeyen dosya."
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<big><b>Klavyeniz yakalanamadı.</b></big>\n"
+"\n"
+"Zararlı bir istemci oturumunuzu üzerinde dinleme yapıyor olabilir veya bir "
+"menü ya da uygulamaya tıkladınız ve o da odağı almaya karar verdi.\n"
+"\n"
+"Tekrar deneyin."
 
-#: ../daemon/pkix/gkr-pkix-parser.c:459
-msgid "Could not parse invalid or corrupted file."
-msgstr "Geçersiz yada bozuk dosya ayrıştırılamadı."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:166
-#, c-format
-msgid "Couldn't encode secure shell public key."
-msgstr "Güvenli kabuk genel anahtarı kodlanamadı."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:412
-#, c-format
-msgid "Couldn't read secure shell private key: %s"
-msgstr "Güvenli kabuk özel anahtarı okunamadı: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:416
-#, c-format
-msgid "Invalid secure shell private key at: %s"
-msgstr "Geçersiz güvenli kabuk özel anahtarı konumu: %s"
-
-#: ../daemon/ssh/gkr-ssh-storage.c:465
-#, c-format
-msgid "Couldn't encrypt the SSH key to store it."
-msgstr "SSH anahtarı kaydetmek için şifrelenemedi."
-
-#: ../daemon/ssh/gkr-ssh-storage.c:481
-#, c-format
-msgid "Couldn't encode the SSH key to store it."
-msgstr "SSH anahtarı kaydetmek için kodlanamadı."
-
-#: ../daemon/ui/gkr-ask-tool.c:182
+#: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
 msgstr "Parolalar şifrelenmeden depolansın mı?"
 
-#: ../daemon/ui/gkr-ask-tool.c:183
+#: ../daemon/ui/gkr-ask-tool.c:277
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -697,409 +604,786 @@ msgstr ""
 "Parolayı boş kullanmak seçildiğinde, depolanan parolalarınız güvenli olarak "
 "şifrelenmeyecek. Parolalarınıza dosyalarınıza erişebilen kişiler erişecek."
 
-#: ../daemon/ui/gkr-ask-tool.c:190
+#: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
 msgstr "Güvenliksiz Depolama Kullan"
 
-#: ../daemon/ui/gkr-ask-tool.c:413
+#: ../daemon/ui/gkr-ask-tool.c:512
 msgid "_Location:"
 msgstr "_Konum:"
 
-#: ../daemon/ui/gkr-ask-tool.c:426
+#: ../daemon/ui/gkr-ask-tool.c:525
 msgid "_Old password:"
 msgstr "_Eski parola:"
 
-#: ../daemon/ui/gkr-ask-tool.c:446
+#: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
 msgstr "_Parola:"
 
-#: ../daemon/ui/gkr-ask-tool.c:468
+#: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
 msgstr "Parolayı _onayla:"
 
-#: ../daemon/ui/gkr-ask-tool.c:488
+#: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
 msgstr "Yeni parola gücü"
 
-#: ../daemon/ui/gkr-ask-tool.c:546
+#: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
 msgstr "Parolalar eşleşmedi."
 
-#: ../daemon/ui/gkr-ask-tool.c:562
+#: ../daemon/ui/gkr-ask-tool.c:661
 msgid "Password cannot be blank"
 msgstr "Parola boş olamaz"
 
-#: ../daemon/ui/gkr-ask-tool.c:613
-msgid "Deny"
-msgstr "Reddet"
+#: ../daemon/ui/gkr-ask-tool.c:712
+msgid "_Deny"
+msgstr "_Engelle"
 
-#: ../daemon/ui/gkr-ask-tool.c:625
+#: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
 msgstr "_Oluştur"
 
-#: ../daemon/ui/gkr-ask-tool.c:629
+#: ../daemon/ui/gkr-ask-tool.c:728
 msgid "C_hange"
 msgstr "_Değiştir"
 
-#: ../daemon/ui/gkr-ask-tool.c:633
+#: ../daemon/ui/gkr-ask-tool.c:732
 msgid "Allow _Once"
 msgstr "Bir _Kereliğine İzin ver"
 
-#: ../daemon/ui/gkr-ask-tool.c:637
+#: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "_Herzaman İzin ver"
 
-#: ../gp11/gp11-misc.c:90
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "Alan Bileşeni"
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "Kullanıcı ID"
+
+#: ../egg/egg-oid.c:46
+msgid "Email"
+msgstr "E-posta"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "Doğum Tarihi"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "Doğum Yeri"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "Cinsiyet"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "Vatandaşlık Ülkesi"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "Yerleşim Ülkesi"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "Ortak Ad"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "Soyadı"
+
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
+#: ../gcr/gcr-certificate-details-widget.c:330
+msgid "Serial Number"
+msgstr "Seri Numarası"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "Ülke"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "Yöre"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "Eyalet"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "Sokak"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "Organizasyon"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "Organizasyon Birimi"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "Başlık"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "Telefon Numarası"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "Verilen Ad"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "Başharfleri"
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr "Üretim Belirteci"
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "DN Belirteci"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "Takma ad"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "RSA ile MD2"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "RSA ile MD5"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "RSA ile SHA1"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "DSA ile SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>Sertifikanın bir parçası değil</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>bilinmeyen</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Sertifikanın Bir Parçası Değil>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Parmak izleri</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Veren</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Verilen</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>Bu sertifika aşağıdaki kullanımlar için doğrulandı:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Geçerlilik</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+msgid "Common Name (CN)"
+msgstr "Ortak Ad (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+msgid "Email Recipient Certificate"
+msgstr "E-posta Alıcı Sertifikası"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+msgid "Email Signer Certificate"
+msgstr "E-posta imzalayan Sertifikası"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+msgid "Expires On"
+msgstr "Son Kullanım"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+msgid "Issued On"
+msgstr "Verilme Zamanı"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 Parmakizi"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+msgid "Organization (O)"
+msgstr "Örgütü (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Organizasyonel Birim (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 Parmakizi"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+msgid "SSL Client Certificate"
+msgstr "SSL İstemci Sertifikası"
+
+#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+msgid "SSL Server Certificate"
+msgstr "SSL Sunucu Sertifikası"
+
+#: ../gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "Uzantı"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "Tanımlayıcı"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "Değer"
+
+#: ../gcr/gcr-certificate-details-widget.c:232
+msgid "Yes"
+msgstr "Evet"
+
+#: ../gcr/gcr-certificate-details-widget.c:234
+msgid "No"
+msgstr "Hayır"
+
+#: ../gcr/gcr-certificate-details-widget.c:237
+msgid "Critical"
+msgstr "Kritik"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:311
+msgid "Subject Name"
+msgstr "Konu Adı"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:315
+msgid "Issuer Name"
+msgstr "Veren İsmi"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:319
+msgid "Issued Certificate"
+msgstr "Verilen Sertifika"
+
+#: ../gcr/gcr-certificate-details-widget.c:324
+msgid "Version"
+msgstr "Sürüm"
+
+#: ../gcr/gcr-certificate-details-widget.c:337
+msgid "Not Valid Before"
+msgstr "Öncesi Geçerli Değil"
+
+#: ../gcr/gcr-certificate-details-widget.c:342
+msgid "Not Valid After"
+msgstr "Sonrası Geçerli Değil"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:347
+#: ../gcr/gcr-certificate-details-widget.c:363
+msgid "Signature"
+msgstr "İmza"
+
+#: ../gcr/gcr-certificate-details-widget.c:351
+msgid "Signature Algorithm"
+msgstr "İmza Algoritması"
+
+#: ../gcr/gcr-certificate-details-widget.c:356
+msgid "Signature Parameters"
+msgstr "İmza Parametreleri"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:367
+msgid "Public Key Info"
+msgstr "Genel Anahtar Bilgisi"
+
+#: ../gcr/gcr-certificate-details-widget.c:371
+msgid "Key Algorithm"
+msgstr "Anahtar Algoritması"
+
+#: ../gcr/gcr-certificate-details-widget.c:376
+msgid "Key Parameters"
+msgstr "Anahtar Parametreleri"
+
+#: ../gcr/gcr-certificate-details-widget.c:383
+msgid "Key Size"
+msgstr "Anahtar Boyutu"
+
+#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "Genel Anahtar"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:394
+msgid "Fingerprints"
+msgstr "Parmak izleri"
+
+#: ../gcr/gcr-import-dialog.glade.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr ""
+"<span size='large' weight='bold'>Sertifikaları ve Anahtarları İçe Aktar</"
+"span>"
+
+#: ../gcr/gcr-import-dialog.glade.h:2
+msgid "Import Into:"
+msgstr "İçine Aktar:"
+
+#: ../gcr/gcr-import-dialog.glade.h:3
+msgid "Password:"
+msgstr "Parola:"
+
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+msgid "The operation was cancelled"
+msgstr "İşlem iptal edildi"
+
+#: ../gcr/gcr-importer.c:255
+#, c-format
+msgid "No location available to import to"
+msgstr "İçe aktarmak için kullanılabilir bir konum yok"
+
+#: ../gcr/gcr-importer.c:404
+msgid "Import Certificates/Keys"
+msgstr "Sertifikaları/Anahtarları İçe Aktar"
+
+#: ../gcr/gcr-importer.c:411
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "İçe aktarılan sertifikaları/anahtarları saklamak için bir konum seçin."
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:449
+msgid "In order to import the private key, it must be unlocked"
+msgstr "Özel anahtarın içe aktarılması için, kilitli olması gerekmektedir"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:452
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "Sertifikayı içe aktarmak için, kilidinin kaldırılması gerekmektedir"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:455
+msgid "In order to import the data, it must be unlocked"
+msgstr "Veriyi içe aktarmak için, kilitli olmaması gerekmektedir"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:460
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "Gizli anahtar '%s' içe aktarmak için kilitli olmaması gerekmektedir"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:463
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "'%s' sertifikasını içe aktarmak için kilitli olmaması gerekmektedir"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:466
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "'%s' içe aktarmak için kilitli olmaması gerekmektedir"
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "Özel Anahtar"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "Sertifika"
+
+#: ../gcr/gcr-parser.c:1576
+msgid "Unrecognized or unsupported data."
+msgstr "Tanınmayan veya desteklenmeyen veri."
+
+#: ../gcr/gcr-parser.c:1579
+msgid "Could not parse invalid or corrupted data."
+msgstr "Geçersiz veya bozuk veri çözümlenemedi."
+
+#: ../gcr/gcr-parser.c:1582
+msgid "The data is locked"
+msgstr "Veri kilitli"
+
+#: ../gp11/gp11-misc.c:101
 msgid "Insufficient memory available"
 msgstr "Yetersiz bellek mevcut"
 
-#: ../gp11/gp11-misc.c:92
+#: ../gp11/gp11-misc.c:103
 msgid "The specified slot ID is not valid"
 msgstr "Belirtilen slot ID'si geçerli değil"
 
-#: ../gp11/gp11-misc.c:94
+#: ../gp11/gp11-misc.c:105
 msgid "Internal error"
 msgstr "Dahili hata"
 
-#: ../gp11/gp11-misc.c:96
+#: ../gp11/gp11-misc.c:107
 msgid "The operation failed"
 msgstr "İşlem başarısız oldu"
 
-#: ../gp11/gp11-misc.c:98
+#: ../gp11/gp11-misc.c:109
 msgid "Invalid arguments"
 msgstr "Geçersiz parametreler"
 
-#: ../gp11/gp11-misc.c:100
+#: ../gp11/gp11-misc.c:111
 msgid "The module cannot create needed threads"
 msgstr "Modül ihtiyaç duyulan thread'leri oluşturamıyor"
 
-#: ../gp11/gp11-misc.c:102
+#: ../gp11/gp11-misc.c:113
 msgid "The module cannot lock data properly"
 msgstr "Modül veriyi tam olarak kilitleyemiyor"
 
-#: ../gp11/gp11-misc.c:104
+#: ../gp11/gp11-misc.c:115
 msgid "The field is read-only"
 msgstr "Alan salt okunur"
 
-#: ../gp11/gp11-misc.c:106
+#: ../gp11/gp11-misc.c:117
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Alan hassas ve gösterilemiyor"
 
-#: ../gp11/gp11-misc.c:108
+#: ../gp11/gp11-misc.c:119
 msgid "The field is invalid or does not exist"
 msgstr "Alan geçersiz ya da mevcut değil"
 
-#: ../gp11/gp11-misc.c:110
+#: ../gp11/gp11-misc.c:121
 msgid "Invalid value for field"
 msgstr "Alan için geçersiz değer"
 
-#: ../gp11/gp11-misc.c:112
+#: ../gp11/gp11-misc.c:123
 msgid "The data is not valid or unrecognized"
 msgstr "Veri geçerli değil ya da algılanamadı"
 
-#: ../gp11/gp11-misc.c:114
+#: ../gp11/gp11-misc.c:125
 msgid "The data is too long"
 msgstr "Veri çok uzun"
 
-#: ../gp11/gp11-misc.c:116
+#: ../gp11/gp11-misc.c:127
 msgid "An error occurred on the device"
 msgstr "Aygıtta bir hata oluştu"
 
-#: ../gp11/gp11-misc.c:118
+#: ../gp11/gp11-misc.c:129
 msgid "Insufficient memory available on device"
 msgstr "Aygıtta yetersiz bellek"
 
-#: ../gp11/gp11-misc.c:120
+#: ../gp11/gp11-misc.c:131
 msgid "The device was removed or unplugged"
 msgstr "Aygıt kaldırıldı ya da çıkarıldı"
 
-#: ../gp11/gp11-misc.c:122
+#: ../gp11/gp11-misc.c:133
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Şifrelenmiş veri geçerli değil ya da algılanamadı"
 
-#: ../gp11/gp11-misc.c:124
+#: ../gp11/gp11-misc.c:135
 msgid "The encrypted data is too long"
 msgstr "Şifrelenmiş veri çok uzun"
 
-#: ../gp11/gp11-misc.c:126
+#: ../gp11/gp11-misc.c:137
 msgid "This operation is not supported"
 msgstr "Bu işlem desteklenmiyor"
 
-#: ../gp11/gp11-misc.c:128
+#: ../gp11/gp11-misc.c:139
 msgid "The key is missing or invalid"
 msgstr "Anahtar eksik ya da geçersiz"
 
-#: ../gp11/gp11-misc.c:130
+#: ../gp11/gp11-misc.c:141
 msgid "The key is the wrong size"
 msgstr "Anahtar yanlış boyutta"
 
-#: ../gp11/gp11-misc.c:132
+#: ../gp11/gp11-misc.c:143
 msgid "The key is of the wrong type"
 msgstr "Anahtar yanlış türde"
 
-#: ../gp11/gp11-misc.c:134
+#: ../gp11/gp11-misc.c:145
 msgid "No key is needed"
 msgstr "Hiçbir anahtara ihtiyaç yok"
 
-#: ../gp11/gp11-misc.c:136
+#: ../gp11/gp11-misc.c:147
 msgid "The key is different than before"
 msgstr "Anahtar öncekinden farklı"
 
-#: ../gp11/gp11-misc.c:138
+#: ../gp11/gp11-misc.c:149
 msgid "A key is needed"
 msgstr "Bir anahtar gerekli"
 
-#: ../gp11/gp11-misc.c:140
+#: ../gp11/gp11-misc.c:151
 msgid "Cannot include the key in digest"
 msgstr "Anahtar derleme içine dahil edilemiyor"
 
-#: ../gp11/gp11-misc.c:142
+#: ../gp11/gp11-misc.c:153
 msgid "This operation cannot be done with this key"
 msgstr "İşlem bu anahtar ile yapılamaz"
 
-#: ../gp11/gp11-misc.c:144
+#: ../gp11/gp11-misc.c:155
 msgid "The key cannot be wrapped"
 msgstr "Anahtar sarılamıyor"
 
-#: ../gp11/gp11-misc.c:146
+#: ../gp11/gp11-misc.c:157
 msgid "Cannot export this key"
 msgstr "Bu anahtar aktarılamıyor"
 
-#: ../gp11/gp11-misc.c:148
+#: ../gp11/gp11-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Şifreleme mekanizması geçersiz ya da algılanamamış"
 
-#: ../gp11/gp11-misc.c:150
+#: ../gp11/gp11-misc.c:161
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Sifreleme mekanizması geçersiz parametreye sahip"
 
-#: ../gp11/gp11-misc.c:152
+#: ../gp11/gp11-misc.c:163
 msgid "The object is missing or invalid"
 msgstr "Nesne eksik ya da geçersiz"
 
-#: ../gp11/gp11-misc.c:154
+#: ../gp11/gp11-misc.c:165
 msgid "Another operation is already taking place"
 msgstr "Başka bir işlem zaten gerçekleşiyor"
 
-#: ../gp11/gp11-misc.c:156
+#: ../gp11/gp11-misc.c:167
 msgid "No operation is taking place"
 msgstr "Hiçbir işlem gerçekleşmiyor"
 
-#: ../gp11/gp11-misc.c:158
+#: ../gp11/gp11-misc.c:169
 msgid "The password or PIN is incorrect"
 msgstr "Parola ya da PIN yanlış"
 
-#: ../gp11/gp11-misc.c:160
+#: ../gp11/gp11-misc.c:171
 msgid "The password or PIN is invalid"
 msgstr "Parola ya da PIN geçersiz"
 
-#: ../gp11/gp11-misc.c:162
+#: ../gp11/gp11-misc.c:173
 msgid "The password or PIN is of an invalid length"
 msgstr "Parola ya da PIN geçersiz boyutta"
 
-#: ../gp11/gp11-misc.c:164
+#: ../gp11/gp11-misc.c:175
 msgid "The password or PIN has expired"
 msgstr "Parola ya da PIN kullanım süresi doldu"
 
-#: ../gp11/gp11-misc.c:166
+#: ../gp11/gp11-misc.c:177
 msgid "The password or PIN is locked"
 msgstr "Parola ya da PIN kilitli"
 
-#: ../gp11/gp11-misc.c:168
+#: ../gp11/gp11-misc.c:179
 msgid "The session is closed"
 msgstr "Oturum kapatıldı"
 
-#: ../gp11/gp11-misc.c:170
+#: ../gp11/gp11-misc.c:181
 msgid "Too many sessions are active"
 msgstr "Çok fazla oturum etkin"
 
-#: ../gp11/gp11-misc.c:172
+#: ../gp11/gp11-misc.c:183
 msgid "The session is invalid"
 msgstr "Oturum geçersiz"
 
-#: ../gp11/gp11-misc.c:174
+#: ../gp11/gp11-misc.c:185
 msgid "The session is read-only"
 msgstr "Oturum salt okunur"
 
-#: ../gp11/gp11-misc.c:176
+#: ../gp11/gp11-misc.c:187
 msgid "An open session exists"
 msgstr "Bir açık oturum mevcut"
 
-#: ../gp11/gp11-misc.c:178
+#: ../gp11/gp11-misc.c:189
 msgid "A read-only session exists"
 msgstr "Bir salt okunur oturum mevcut"
 
-#: ../gp11/gp11-misc.c:180
+#: ../gp11/gp11-misc.c:191
 msgid "An administrator session exists"
 msgstr "Bir yönetici oturumu mevcut"
 
-#: ../gp11/gp11-misc.c:182
+#: ../gp11/gp11-misc.c:193
 msgid "The signature is bad or corrupted"
 msgstr "İmza kötü ya da bozuk"
 
-#: ../gp11/gp11-misc.c:184
+#: ../gp11/gp11-misc.c:195
 msgid "The signature is unrecognized or corrupted"
 msgstr "İmza tanımlanmıyor ya da bozuk"
 
-#: ../gp11/gp11-misc.c:186
+#: ../gp11/gp11-misc.c:197
 msgid "Certain required fields are missing"
 msgstr "Bazı gerekli alanlar eksik"
 
-#: ../gp11/gp11-misc.c:188
+#: ../gp11/gp11-misc.c:199
 msgid "Certain fields have invalid values"
 msgstr "Bazı alanlar geçersiz değerlere sahip"
 
-#: ../gp11/gp11-misc.c:190
+#: ../gp11/gp11-misc.c:201
 msgid "The device is not present or unplugged"
 msgstr "Aygıt mevcut değil ya da çıkartılmış"
 
-#: ../gp11/gp11-misc.c:192
+#: ../gp11/gp11-misc.c:203
 msgid "The device is invalid or unrecognizable"
 msgstr "Aygıt geçersiz ya da algılanabilir değil"
 
-#: ../gp11/gp11-misc.c:194
+#: ../gp11/gp11-misc.c:205
 msgid "The device is write protected"
 msgstr "Aygıt yazma korumalı"
 
-#: ../gp11/gp11-misc.c:196
+#: ../gp11/gp11-misc.c:207
 msgid "Cannot import because the key is invalid"
 msgstr "İçe aktarılamıyor çünkü anahtar geçersiz"
 
-#: ../gp11/gp11-misc.c:198
+#: ../gp11/gp11-misc.c:209
 msgid "Cannot import because the key is of the wrong size"
 msgstr "İçe aktarılamıyor çünkü anahtar yanlış boyutta"
 
-#: ../gp11/gp11-misc.c:200
+#: ../gp11/gp11-misc.c:211
 msgid "Cannot import because the key is of the wrong type"
 msgstr "İçe aktarılamıyor çünkü anahtar yanlış türde"
 
-#: ../gp11/gp11-misc.c:202
+#: ../gp11/gp11-misc.c:213
 msgid "You are already logged in"
 msgstr "Zaten giriş yapmıssınız"
 
-#: ../gp11/gp11-misc.c:204
+#: ../gp11/gp11-misc.c:215
 msgid "No user has logged in"
 msgstr "Hiçbir kullanıcı giriş yapmamış"
 
-#: ../gp11/gp11-misc.c:206
+#: ../gp11/gp11-misc.c:217
 msgid "The user's password or PIN is not set"
 msgstr "Kullanıcının parolası ya da PIN'i atanmamış"
 
-#: ../gp11/gp11-misc.c:208
+#: ../gp11/gp11-misc.c:219
 msgid "The user is of an invalid type"
 msgstr "Kullanıcı geçersiz bir türde"
 
-#: ../gp11/gp11-misc.c:210
+#: ../gp11/gp11-misc.c:221
 msgid "Another user is already logged in"
 msgstr "Başka bir kullanıcı zaten giriş yapmış"
 
-#: ../gp11/gp11-misc.c:212
+#: ../gp11/gp11-misc.c:223
 msgid "Too many users of different types logged in"
 msgstr "Farklı türlerde çok fazla kullanıcı giriş yapmış"
 
-#: ../gp11/gp11-misc.c:214
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot import an invalid key"
 msgstr "Geçersiz anahtar içe aktarılamıyor"
 
-#: ../gp11/gp11-misc.c:216
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot import a key of the wrong size"
 msgstr "Yanlış boyutta bir anahtarlık içe aktarılamıyor"
 
-#: ../gp11/gp11-misc.c:218
+#: ../gp11/gp11-misc.c:229
 msgid "Cannot export because the key is invalid"
 msgstr "Anahtar aktarılamıyor çünkü anahtar geçersiz"
 
-#: ../gp11/gp11-misc.c:220
+#: ../gp11/gp11-misc.c:231
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Anahtar aktarılamıyor çünkü anahtar yanlış boyutta"
 
-#: ../gp11/gp11-misc.c:222
+#: ../gp11/gp11-misc.c:233
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Anahtar aktarılamıyor çünkü anahtar yanlış türde"
 
-#: ../gp11/gp11-misc.c:224
+#: ../gp11/gp11-misc.c:235
 msgid "Unable to initialize the random number generator"
 msgstr "Rastgele sayı oluşturucu başlatılamadı"
 
-#: ../gp11/gp11-misc.c:226
+#: ../gp11/gp11-misc.c:237
 msgid "No random number generator available"
 msgstr "Hiçbir rastgele sayı oluşturucu mevcut değil"
 
-#: ../gp11/gp11-misc.c:228
+#: ../gp11/gp11-misc.c:239
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Şifreleme mekanizmasının geçersiz parametresi var"
 
-#: ../gp11/gp11-misc.c:230
+#: ../gp11/gp11-misc.c:241
 msgid "Not enough space to store the result"
 msgstr "Sonucu saklamak için yetersiz boş alan"
 
-#: ../gp11/gp11-misc.c:232
+#: ../gp11/gp11-misc.c:243
 msgid "The saved state is invalid"
 msgstr "Kayıtlı durum geçersiz"
 
-#: ../gp11/gp11-misc.c:234
+#: ../gp11/gp11-misc.c:245
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Bilgi hassasdır ve gösterilemez"
 
-#: ../gp11/gp11-misc.c:236
+#: ../gp11/gp11-misc.c:247
 msgid "The state cannot be saved"
 msgstr "Durum kaydedilemez"
 
-#: ../gp11/gp11-misc.c:238
+#: ../gp11/gp11-misc.c:249
 msgid "The module has not been initialized"
 msgstr "Modül başlatılmamış"
 
-#: ../gp11/gp11-misc.c:240
+#: ../gp11/gp11-misc.c:251
 msgid "The module has already been initialized"
 msgstr "Modül zaten başlatılmış"
 
-#: ../gp11/gp11-misc.c:242
+#: ../gp11/gp11-misc.c:253
 msgid "Cannot lock data"
 msgstr "Veri kilitlenemiyor"
 
-#: ../gp11/gp11-misc.c:244
+#: ../gp11/gp11-misc.c:255
 msgid "The data cannot be locked"
 msgstr "Veri kilitlenemiyor"
 
-#: ../gp11/gp11-misc.c:246
+#: ../gp11/gp11-misc.c:257
 msgid "The signature request was rejected by the user"
 msgstr "İmza isteği kullanıcı tarafından reddedildi"
 
-#: ../gp11/gp11-misc.c:250
+#: ../gp11/gp11-misc.c:261
 msgid "Unknown error"
 msgstr "Bilinmeyen hata"
 
-#: ../library/gnome-keyring-utils.c:91
+#: ../library/gnome-keyring-utils.c:168
 msgid "Access Denied"
 msgstr "Giriş Reddedildi"
 
-#: ../library/gnome-keyring-utils.c:93
+#: ../library/gnome-keyring-utils.c:170
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Gnome-keyring-daemon uygulaması çalışmıyor."
 
-#: ../library/gnome-keyring-utils.c:95
+#: ../library/gnome-keyring-utils.c:172
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Gnome-keyring-daemon ile iletişim hatası"
 
-#: ../library/gnome-keyring-utils.c:97
+#: ../library/gnome-keyring-utils.c:174
 msgid "A keyring with that name already exists"
 msgstr "Bu isimdeki anahtarlık zaten mevcut"
 
-#: ../library/gnome-keyring-utils.c:99
+#: ../library/gnome-keyring-utils.c:176
 msgid "Programmer error: The application sent invalid data."
 msgstr "Programcı hatası. Uygulama geçersiz veri gönderdi."
 
-#: ../library/gnome-keyring-utils.c:101
+#: ../library/gnome-keyring-utils.c:178
 msgid "No matching results"
 msgstr "Uyumsuz sonuç"
 
-#: ../library/gnome-keyring-utils.c:103
+#: ../library/gnome-keyring-utils.c:180
 msgid "A keyring with that name does not exist."
 msgstr "Bu isimde bir anahtarlık yok."
 
-#: ../library/gnome-keyring-utils.c:110
+#: ../library/gnome-keyring-utils.c:187
 msgid "The keyring has already been unlocked."
 msgstr "Anahtarlığın kilidi zaten açılmış."
 
-#~ msgid "Unlock password for '%s'"
-#~ msgstr "'%s' için parolanın kilidini kaldır"
+#: ../pkcs11/gck/gck-certificate.c:710
+msgid "Unnamed Certificate"
+msgstr "İsimlendirilmemiş Sertifika"
+
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
+msgid "Couldn't parse public SSH key"
+msgstr "Genel SSH anahtarı ayrıştırılamadı"
