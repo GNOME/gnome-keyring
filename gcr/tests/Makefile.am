@@ -33,3 +33,5 @@ ui_test_details_LDADD = \
 	$(LIBGCRYPT_LIBS) \
 	$(LIBTASN1_LIBS)
 	
+EXTRA_DIST = \
+	test-data
