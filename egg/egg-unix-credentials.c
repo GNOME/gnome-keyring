@@ -50,16 +50,12 @@ egg_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 	 * remote PID. */
 #if defined(HAVE_CMSGCRED)
 	struct cmsgcred *cred;
-	const size_t cmsglen = CMSG_LEN (sizeof (struct cmsgcred));
-	const size_t cmsgspace = CMSG_SPACE (sizeof (struct cmsgcred));
 #else /* defined(LOCAL_CREDS) */
 	struct sockcred *cred;
-	const size_t cmsglen = CMSG_LEN (sizeof (struct sockcred));
-	const size_t cmsgspace = CMSG_SPACE (sizeof (struct sockcred));
 #endif
 	union {
 		struct cmsghdr hdr;
-		char cred[cmsgspace];
+		char cred[CMSG_SPACE (sizeof *cred)];
 	} cmsg;
 #endif
 	
@@ -80,7 +76,7 @@ egg_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 #if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
 	memset (&cmsg, 0, sizeof (cmsg));
 	msg.msg_control = (caddr_t) &cmsg;
-	msg.msg_controllen = cmsgspace;
+	msg.msg_controllen = CMSG_SPACE(sizeof *cred);
 #endif
 
  again:
@@ -102,7 +98,8 @@ egg_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 	}
 
 #if defined(HAVE_CMSGCRED) || defined(LOCAL_CREDS)
-	if (cmsg.hdr.cmsg_len < cmsglen || cmsg.hdr.cmsg_type != SCM_CREDS) {
+	if (cmsg.hdr.cmsg_len < CMSG_LEN (sizeof *cred) ||
+	    cmsg.hdr.cmsg_type != SCM_CREDS) {
 		fprintf (stderr, "message from recvmsg() was not SCM_CREDS\n");
 		return -1;
 	}

@@ -1,5 +1,10 @@
 2009-04-01  Stef Walter  <stef@memberwebs.com>
 
+	* egg/egg-unix-credentials.c: Build fix for Clang.
+	Patch by Ed Schouten. 
+
+2009-04-01  Stef Walter  <stef@memberwebs.com>
+
 	* gcr/tests/Makefile.am: Distribute test data. 
 	Fixes bug #577397
 	
