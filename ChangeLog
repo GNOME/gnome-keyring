@@ -1,3 +1,8 @@
+2009-04-01  Stef Walter  <stef@memberwebs.com>
+
+	* egg/egg-secure-memory.c: Fix assertion that occurs when 
+	shrinking block of secure memory and then expanding again.
+
 2009-03-20  Stef Walter  <stef@memberwebs.com>
 
 	* configure.in: Quote shell variable properly in configure.in

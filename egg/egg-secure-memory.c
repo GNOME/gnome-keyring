@@ -625,7 +625,7 @@ sec_realloc (Block *block, void *memory, size_t length)
 	/* How many words we actually want */
 	n_words = sec_size_to_words (length) + 2;
 
-	/* Less memory is required */
+	/* Less memory is required than is in the cell */
 	if (n_words <= cell->n_words) {
 
 		/* TODO: No shrinking behavior yet */
@@ -636,7 +636,15 @@ sec_realloc (Block *block, void *memory, size_t length)
 		VALGRIND_MAKE_MEM_DEFINED (alloc, length);
 #endif
 		
-		return sec_clear_memory (alloc, valid, length);
+		/* 
+		 * Even though we may be reusing the same cell, that doesn't
+		 * mean that the allocation is shrinking. It could have shrunk
+		 * and is now expanding back some. 
+		 */ 
+		if (length < valid)
+			return sec_clear_memory (alloc, length, valid);
+		else
+			return alloc;
 	}
 	
 	/* Need braaaaaiiiiiinsss... */
