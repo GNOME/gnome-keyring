@@ -494,7 +494,7 @@ if test "$enable_valgrind" == "run"; then
 	VALGRIND_RUN="$VALGRIND $VALGRIND_ARG "
 
 	AC_DEFINE_UNQUOTED(VALGRIND, "$VALGRIND", [Path to valgrind executable])
-	AC_DEFINE_UNQUOTED(VALGRIND_ARG, "$VALGRIND_ARG", [Path to valgrind executable])
+	AC_DEFINE_UNQUOTED(VALGRIND_ARG, "$VALGRIND_ARG", [Valgrind arguments])
 	
 	enable_valgrind="yes"
 	valgrind_status="run"
@@ -545,7 +545,6 @@ common/Makefile
 common/tests/Makefile
 daemon/Makefile
 daemon/gnome-keyring-daemon.desktop.in
-daemon/org.gnome.keyring.service
 daemon/data/Makefile
 daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile

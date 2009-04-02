@@ -1,5 +1,13 @@
 2009-04-01  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in:
+	* daemon/Makefile.am:
+	* daemon/org.gnome.keyring.service.in: Include the full
+	path to gnome-keyring-daemon in the DBus service file.
+	Fixes problems with autostarting daemon. See bug #576630 
+
+2009-04-01  Stef Walter  <stef@memberwebs.com>
+
 	* egg/egg-secure-memory.c: Fix assertion that occurs when 
 	shrinking block of secure memory and then expanding again.
 	
