@@ -572,7 +572,7 @@ when_to_time (struct tm *when, gint offset)
 	return result;
 }
 
-time_t
+glong
 egg_asn1_time_parse_utc (const gchar *time)
 {
 	struct tm when;
@@ -690,7 +690,7 @@ parse_general_time (const gchar *time, struct tm* when, gint *offset)
 	return TRUE;
 }
 
-time_t
+glong
 egg_asn1_time_parse_general (const gchar *time)
 {
 	struct tm when;
