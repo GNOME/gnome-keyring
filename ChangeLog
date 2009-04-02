@@ -10,6 +10,11 @@
 	* egg/egg-secure-memory.c: Fix problem where freed memory
 	is not inserted into the unused ring properly. This caused
 	enless loops. Should fix bug #575247
+	
+	* egg/egg-secure-memory.c: 
+	* egg/tests/unit-test-secmem.c: Put in a semi-random test
+	excercising 1000 iterations of allocation, reallocation, 
+	freeing. Validates between each step.
 
 2009-03-20  Stef Walter  <stef@memberwebs.com>
 

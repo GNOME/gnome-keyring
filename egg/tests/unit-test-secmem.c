@@ -29,6 +29,9 @@
 
 #include "egg/egg-secure-memory.h"
 
+/* Declared in egg-secure-memory.c */
+extern int egg_secure_warnings;
+
 /* 
  * Each test looks like (on one line):
  *     void unit_test_xxxxx (CuTest* cu)
@@ -135,3 +138,69 @@ DEFINE_TEST(secmem_realloc)
 	g_assert (p == NULL);
 }
 
+DEFINE_TEST(secmem_multialloc)
+{
+	GPtrArray *memory;
+	gpointer data;
+	gsize size;
+	int i, action, index;
+
+	/* A predetermined seed to get a predetermined pattern */
+	g_random_set_seed (15);
+	memory = g_ptr_array_new ();
+	
+	/* Don't print "can't allocate" warnings */
+	egg_secure_warnings = 0;
+
+	for (i = 0; TRUE; ++i) {
+
+		/* Determine what we want to do */
+		if (memory->len > 0) {
+			if (i > 1000) /* Once we've done 1000 alocations start freeing */
+				action = 2;
+			else
+				action = g_random_int_range (0, 3);
+		} else {
+			action = 0; /* No allocations, so allocate */
+		}
+
+		switch (action) {
+		case 0: /* Allocate some memory */
+			size = g_random_int_range (1, 16384);
+			data = egg_secure_alloc (size);
+			g_assert (data);
+			memset (data, 0xCAFEBABE, size);
+			g_ptr_array_add (memory, data);
+			break;
+		case 1: /* Reallocate some memory */
+			index = g_random_int_range (0, memory->len);
+			data = g_ptr_array_index (memory, index);
+			g_assert (data);
+			size = g_random_int_range (1, 16384);
+			data = egg_secure_realloc (data, size);
+			g_assert (data);
+			memset (data, 0xCAFEBABE, size);
+			g_ptr_array_index (memory, index) = data;
+			break;
+		case 2: /* Free some memory */
+			index = g_random_int_range (0, memory->len);
+			data = g_ptr_array_index (memory, index);
+			g_assert (data);
+			egg_secure_free (data);
+			g_ptr_array_remove_index_fast (memory, index);
+			break;
+		default:
+			g_assert_not_reached ();
+		}
+		
+		egg_secure_validate ();
+		
+		if (i > 1000 && !memory->len)
+			break;
+	}
+	
+	g_assert (memory->len == 0);
+	g_ptr_array_free (memory, TRUE);
+	
+	egg_secure_warnings = 1;
+}

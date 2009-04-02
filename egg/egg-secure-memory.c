@@ -78,7 +78,7 @@
 	egg_memory_unlock ();
 
 static int lock_warning = 1;
-
+int egg_secure_warnings = 1;
 
 /* 
  * We allocate all memory in units of sizeof(void*). This 
@@ -791,7 +791,7 @@ sec_acquire_pages (size_t *sz)
 #if defined(HAVE_MLOCK)
 	pages = mmap (0, *sz, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
 	if (pages == MAP_FAILED) {
-		if (lock_warning)
+		if (lock_warning && egg_secure_warnings)
 			fprintf (stderr, "couldn't map %lu bytes of private memory: %s\n", 
 			         (unsigned long)*sz, strerror (errno));
 		lock_warning = 0;
@@ -799,7 +799,7 @@ sec_acquire_pages (size_t *sz)
 	}
 	
 	if (mlock (pages, *sz) < 0) {
-		if (lock_warning && errno != EPERM) {
+		if (lock_warning && egg_secure_warnings && errno != EPERM) {
 			fprintf (stderr, "couldn't lock %lu bytes of private memory: %s\n", 
 			         (unsigned long)*sz, strerror (errno));
 			lock_warning = 0;
@@ -814,7 +814,7 @@ sec_acquire_pages (size_t *sz)
 	return pages;
 	
 #else
-	if (lock_warning)
+	if (lock_warning && egg_secure_warnings)
 		fprintf (stderr, "your system does not support private memory");
 	lock_warning = 0;
 	return NULL;
@@ -829,10 +829,10 @@ sec_release_pages (void *pages, size_t sz)
 	ASSERT (sz % getpagesize () == 0);
 	
 #if defined(HAVE_MLOCK)
-	if (munlock (pages, sz) < 0)
+	if (munlock (pages, sz) < 0 && egg_secure_warnings)
 		fprintf (stderr, "couldn't unlock private memory: %s\n", strerror (errno));
 		
-	if (munmap (pages, sz) < 0)
+	if (munmap (pages, sz) < 0 && egg_secure_warnings)
 		fprintf (stderr, "couldn't unmap private anonymous memory: %s\n", strerror (errno));
 		
 	DEBUG_ALLOC ("gkr-secure-memory: freed block ", sz);
@@ -949,8 +949,9 @@ egg_secure_alloc_full (size_t length, int flags)
 	void *memory = NULL;
 		
 	if (length > 0xFFFFFFFF / 2) {
-		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", 
-		         (unsigned long)length);   
+		if (egg_secure_warnings)
+			fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", 
+			         (unsigned long)length);   
 		return NULL;
 	}
 
@@ -1007,9 +1008,9 @@ egg_secure_realloc_full (void *memory, size_t length, int flags)
 	void *alloc = NULL;
 	
 	if (length > 0xFFFFFFFF / 2) {
-		fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", 
-		         (unsigned long)length);
-		ASSERT (0 && "tried to allocate an insane amount of memory");
+		if (egg_secure_warnings)
+			fprintf (stderr, "tried to allocate an insane amount of memory: %lu\n", 
+			         (unsigned long)length);
 		return NULL;
 	}
 	
@@ -1061,8 +1062,9 @@ egg_secure_realloc_full (void *memory, size_t length, int flags)
 			 */
 			return egg_memory_fallback (memory, length);
 		} else {
-			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", 
-			         (unsigned long)memory);
+			if (egg_secure_warnings)
+				fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", 
+				         (unsigned long)memory);
 			ASSERT (0 && "memory does does not belong to gnome-keyring");
 			return NULL;
 		}
@@ -1122,8 +1124,9 @@ egg_secure_free_full (void *memory, int flags)
 		if ((flags & GKR_SECURE_USE_FALLBACK)) {
 			egg_memory_fallback (memory, 0);
 		} else {
-			fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", 
-			         (unsigned long)memory);
+			if (egg_secure_warnings)
+				fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", 
+				         (unsigned long)memory);
 			ASSERT (0 && "memory does does not belong to gnome-keyring");
 		}
 	}
