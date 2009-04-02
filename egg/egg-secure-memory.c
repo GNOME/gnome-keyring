@@ -341,7 +341,7 @@ sec_insert_cell_ring (Cell **ring, Cell *cell)
 	/* Insert back into the mix of available memory */ 
 	if (*ring) { 
 		cell->next = (*ring)->next;
-		cell->prev = (*ring)->prev;
+		cell->prev = *ring;
 		cell->next->prev = cell;
 		cell->prev->next = cell;
 	} else {

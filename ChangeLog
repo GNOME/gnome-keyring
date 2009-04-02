@@ -6,6 +6,10 @@
 	* egg/egg-secure-memory.c: 
 	* egg/egg-secure-memory.h: Add validator which walks the 
 	secure memory heap and checks for inconsistencies.
+	
+	* egg/egg-secure-memory.c: Fix problem where freed memory
+	is not inserted into the unused ring properly. This caused
+	enless loops. Should fix bug #575247
 
 2009-03-20  Stef Walter  <stef@memberwebs.com>
 
