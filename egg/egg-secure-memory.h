@@ -78,6 +78,8 @@ void   egg_secure_free_full    (void* p, int fallback);
 
 int    egg_secure_check        (const void* p); 
 
+void   egg_secure_validate     (void);
+
 void   egg_secure_dump_blocks  (void);
 
 char*  egg_secure_strdup       (const char *str);

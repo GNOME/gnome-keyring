@@ -2,6 +2,10 @@
 
 	* egg/egg-secure-memory.c: Fix assertion that occurs when 
 	shrinking block of secure memory and then expanding again.
+	
+	* egg/egg-secure-memory.c: 
+	* egg/egg-secure-memory.h: Add validator which walks the 
+	secure memory heap and checks for inconsistencies.
 
 2009-03-20  Stef Walter  <stef@memberwebs.com>
 

@@ -350,6 +350,8 @@ sec_insert_cell_ring (Cell **ring, Cell *cell)
 	}
 	
 	*ring = cell;
+	ASSERT (cell->next->prev == cell);
+	ASSERT (cell->prev->next == cell);
 }
 
 static void
@@ -359,7 +361,10 @@ sec_remove_cell_ring (Cell **ring, Cell *cell)
 	ASSERT (*ring);
 	ASSERT (cell->next);
 	ASSERT (cell->prev);
-	
+
+	ASSERT (cell->next->prev == cell);
+	ASSERT (cell->prev->next == cell);
+
 	if (cell == *ring) {
 		/* The last meta? */
 		if (cell->next == cell) {
@@ -725,6 +730,45 @@ sec_allocated (Block *block, void *memory)
 #endif
 	
 	return cell->allocated;
+}
+
+static void
+sec_validate (Block *block)
+{
+	Cell *cell;
+	word_t *word, *last;
+	
+	word = block->words;
+	last = word + block->n_words;
+
+	for (;;) {
+		ASSERT (word < last);
+
+		ASSERT (sec_is_valid_word (block, word));
+		ASSERT (pool_valid (*word));
+		cell = *word;
+	
+		/* Validate that it's actually for real */
+		sec_check_guards (cell);
+	
+		/* Is it an allocated block? */
+		if (cell->allocated > 0) {
+			ASSERT (cell->next == NULL);
+			ASSERT (cell->prev == NULL);
+			ASSERT (cell->allocated <= (cell->n_words - 2) * sizeof (word_t));
+		
+			/* An unused block */
+		} else {
+			ASSERT (cell->next);
+			ASSERT (cell->prev);
+			ASSERT (cell->next->prev == cell);
+			ASSERT (cell->prev->next == cell);
+		}
+		
+		word += cell->n_words;
+		if (word == last)
+			break;
+	}
 }
 
 /* -----------------------------------------------------------------------------
@@ -1102,6 +1146,19 @@ egg_secure_check (const void *memory)
 	
 	return block == NULL ? 0 : 1;
 } 
+
+void
+egg_secure_validate (void)
+{
+	Block *block = NULL;
+	
+	DO_LOCK ();
+	
+		for (block = all_blocks; block; block = block->next)
+			sec_validate (block);
+		
+	DO_UNLOCK ();
+}
 
 void
 egg_secure_dump_blocks (void)
