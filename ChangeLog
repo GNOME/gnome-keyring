@@ -1,5 +1,10 @@
 2009-04-10  Stef Walter  <stef@memberwebs.com>
 
+	* egg/egg-secure-memory.c: Fix problem with integer 
+	overflow in memory allocator.
+	
+2009-04-10  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon-dbus.c: Add DBus method for getting the 
 	important environment variables that the gnome-keyring
 	daemon wants to set. See bug #577614

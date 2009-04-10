@@ -156,7 +156,7 @@ DEFINE_TEST(secmem_multialloc)
 
 		/* Determine what we want to do */
 		if (memory->len > 0) {
-			if (i > 1000) /* Once we've done 1000 alocations start freeing */
+			if (i > 100000) /* Once we've done 100000 alocations start freeing */
 				action = 2;
 			else
 				action = g_random_int_range (0, 3);
@@ -195,7 +195,7 @@ DEFINE_TEST(secmem_multialloc)
 		
 		egg_secure_validate ();
 		
-		if (i > 1000 && !memory->len)
+		if (i > 100000 && !memory->len)
 			break;
 	}
 	
