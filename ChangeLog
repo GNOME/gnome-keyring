@@ -1,5 +1,11 @@
 2009-04-10  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/gkr-daemon-dbus.c: Add DBus method for getting the 
+	important environment variables that the gnome-keyring
+	daemon wants to set. See bug #577614
+	
+2009-04-10  Stef Walter  <stef@memberwebs.com>
+
 	* daemon/gkr-daemon-ops.c: Fix crash caused by not holding
 	a reference to the keyring while prompting.
 	
