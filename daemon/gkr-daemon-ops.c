@@ -1603,6 +1603,8 @@ find_in_each_keyring (GkrKeyring* keyring, gpointer data)
 	GkrKeyringItem *item;
 	GList *ilist;
 	
+	g_object_ref (keyring);
+	
 	for (ilist = keyring->items; ilist != NULL; ilist = ilist->next) {
 		item = ilist->data;
 		if (!gkr_keyring_item_match (item, ctx->type, keyring->locked ? ctx->hashed : ctx->attributes, FALSE))
@@ -1612,7 +1614,7 @@ find_in_each_keyring (GkrKeyring* keyring, gpointer data)
 			
 		if (keyring->locked) {
 			if (!request_keyring_access (ctx->req, keyring))
-				return TRUE;
+				break;
 		}
 
 		if (request_item_access (ctx->req, item, GNOME_KEYRING_ACCESS_READ, TRUE)) {
@@ -1620,7 +1622,9 @@ find_in_each_keyring (GkrKeyring* keyring, gpointer data)
 			ctx->items = g_list_prepend (ctx->items, item);
 		}
 	}
-	
+
+	g_object_unref (keyring);
+
 	return TRUE;
 }
 
