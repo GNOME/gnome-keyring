@@ -1,5 +1,10 @@
 2009-04-10  Stef Walter  <stef@memberwebs.com>
 
+	* configure.in: Bump glib dependency to 2.16, in all 
+	the pkg-config checks.
+
+2009-04-10  Stef Walter  <stef@memberwebs.com>
+
 	* egg/egg-secure-memory.c: Fix problem with integer 
 	overflow in memory allocator.
 	
