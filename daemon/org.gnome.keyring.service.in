@@ -1,3 +1,3 @@
 [D-BUS Service]
 Name=org.gnome.keyring
-Exec=@PATH@/gnome-keyring-daemon --foreground --components=keyring
+Exec=@PATH@/gnome-keyring-daemon --start --foreground --components=keyring

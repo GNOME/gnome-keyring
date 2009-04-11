@@ -1,5 +1,11 @@
 2009-04-10  Stef Walter  <stef@memberwebs.com>
 
+	* daemon/org.gnome.keyring.service.in: Don't autostart 
+	another gnome-keyring-daemon if one has already started, 
+	just initialize the one that's already running.
+
+2009-04-10  Stef Walter  <stef@memberwebs.com>
+
 	* configure.in: Bump glib dependency to 2.16, in all 
 	the pkg-config checks.
 
