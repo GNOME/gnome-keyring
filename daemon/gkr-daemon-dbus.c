@@ -79,7 +79,7 @@ send_end_session_response ()
 	dbus_message_unref (msg);
 	
 	if (!reply) {
-		g_warning ("dbus failure responding to ending session: %s", derr.message);
+		g_message ("dbus failure responding to ending session: %s", derr.message);
 		return;
 	}
 
@@ -119,7 +119,7 @@ unregister_daemon_in_session (void)
 	dbus_message_unref (msg);
 	
 	if (!reply) {
-		g_warning ("dbus failure unregistering from session: %s", derr.message);
+		g_message ("dbus failure unregistering from session: %s", derr.message);
 		return;
 	}
 	
@@ -246,7 +246,7 @@ register_daemon_in_session (void)
 	dbus_message_unref (msg);
 	
 	if (!reply) {
-		g_warning ("couldn't register in session: %s", derr.message);
+		g_message ("couldn't register in session: %s", derr.message);
 		dbus_error_free (&derr);
 		return;
 	}
@@ -254,7 +254,7 @@ register_daemon_in_session (void)
 	/* Get out our client path */
 	if (!dbus_message_iter_init (reply, &args) || 
 	    dbus_message_iter_get_arg_type (&args) != DBUS_TYPE_OBJECT_PATH) {
-		g_warning ("invalid register response from session");
+		g_message ("invalid register response from session");
 	} else {
 		dbus_message_iter_get_basic (&args, &client_session_path);
 		client_session_path = g_strdup (client_session_path);
@@ -279,7 +279,7 @@ register_daemon_in_session (void)
 	dbus_bus_add_match (dbus_conn, client_session_rule, &derr);
 	
 	if(dbus_error_is_set(&derr)) {
-		g_warning ("couldn't listen for signals in session: %s", derr.message);
+		g_message ("couldn't listen for signals in session: %s", derr.message);
 		dbus_error_free (&derr);
 		g_free (client_session_rule);
 		client_session_rule = NULL;
@@ -408,7 +408,7 @@ gkr_daemon_dbus_setup (void)
 	/* Get the dbus bus and hook up */
 	dbus_conn = dbus_bus_get (DBUS_BUS_SESSION, &derr);
 	if (!dbus_conn) {
-		g_warning ("couldn't connect to dbus session bus: %s", derr.message);
+		g_message ("couldn't connect to dbus session bus: %s", derr.message);
 		dbus_error_free (&derr);
 		return;
 	}
@@ -424,7 +424,7 @@ gkr_daemon_dbus_setup (void)
 	res = dbus_bus_request_name (dbus_conn, GNOME_KEYRING_DAEMON_SERVICE,
 				     DBUS_NAME_FLAG_DO_NOT_QUEUE, &derr);
 	if (dbus_error_is_set (&derr)) { 
-		g_warning ("couldn't request name on session bus: %s", derr.message);
+		g_message ("couldn't request name on session bus: %s", derr.message);
 		dbus_error_free (&derr);
    	}	
 
@@ -449,7 +449,7 @@ gkr_daemon_dbus_setup (void)
 	/* Now register the object */
 	if (!dbus_connection_register_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH, 
 	                                           &object_vtable, NULL)) {
-		g_warning ("couldn't register dbus object path");
+		g_message ("couldn't register dbus object path");
 		return;
 	}
 	

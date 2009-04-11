@@ -1,3 +1,8 @@
+2009-04-11  Stef Walter  <stef@memberwebs.com>
+
+	* daemon/gkr-daemon-dbus.c: Don't use g_warning when the problem
+	originated outside of our own process, just print a message.
+	
 2009-04-10  Stef Walter  <stef@memberwebs.com>
 
 	* daemon/org.gnome.keyring.service.in: Don't autostart 
