@@ -1,3 +1,12 @@
+=== gnome-keyring 2.26.1 ===
+
+2009-04-12  Stef Walter  <stef@memberwebs.com>
+
+	* NEWS: 
+	* docs/reference/gcr/Makefile.am:
+	* docs/reference/gp11/Makefile.am:
+	* docs/reference/gnome-keyring/Makefile.am: Version 2.26.1
+
 2009-04-12  Stef Walter  <stef@memberwebs.com>
 
 	* gcr/gcr-certificate.c: Fill in some API documentation.
