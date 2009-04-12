@@ -29,6 +29,18 @@
 
 #include <string.h>
 
+/**
+ * SECTION:gcr-certificate
+ * @title: GcrCertificate
+ * @short_description: Represents a certificate.
+ * 
+ * This is an interface that represents an X509 certificate. Objects can 
+ * implement this interface to make a certificate usable with the GCR
+ * library. 
+ * 
+ * You can use #GcrSimpleCertificate to simply load a certificate.
+ */
+
 /* 
  * The DER data in this structure is owned by the derived class. 
  * It is only valid for the duration of the current call stack
@@ -247,6 +259,15 @@ gcr_certificate_get_type (void)
  * PUBLIC 
  */
 
+/**
+ * gcr_certificate_get_der_data:
+ * @self: a #GcrCertificate
+ * @n_length: a pointer to a location to store the size of the resulting DER data.
+ * 
+ * Gets the raw DER data for an X509 certificate.
+ * 
+ * Returns: raw DER data of the X509 certificate.
+ */
 const guchar*
 gcr_certificate_get_der_data (GcrCertificate *self, gsize *n_length)
 {
@@ -255,12 +276,39 @@ gcr_certificate_get_der_data (GcrCertificate *self, gsize *n_length)
 	return GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data (self, n_length);
 }
 
+/**
+ * gcr_certificate_get_issuer_cn:
+ * @self: a #GcrCertificate
+ * 
+ * Get the common name of the issuer of this certificate. 
+ * 
+ * The string returned should be freed by the caller when no longer
+ * required.
+ * 
+ * Returns: The allocated issuer CN, or NULL if no issuer CN present.
+ */
 gchar*
 gcr_certificate_get_issuer_cn (GcrCertificate *self)
 {
 	return gcr_certificate_get_issuer_part (self, "cn");
 }
 
+/**
+ * gcr_certificate_get_issuer_part:
+ * @self: a #GcrCertificate
+ * @part: a DN type string or OID.
+ * 
+ * Get a part of the DN of the issuer of this certificate. 
+ * 
+ * Examples of a @part might be the 'OU' (organizational unit)
+ * or the 'CN' (common name). Only the value of that part 
+ * of the DN is returned.
+ * 
+ * The string returned should be freed by the caller when no longer
+ * required.
+ * 
+ * Returns: The allocated part of the issuer DN, or NULL if no such part is present.
+ */
 gchar*
 gcr_certificate_get_issuer_part (GcrCertificate *self, const char *part)
 {
@@ -274,6 +322,18 @@ gcr_certificate_get_issuer_part (GcrCertificate *self, const char *part)
 	return egg_asn1_read_dn_part (info->asn1, "tbsCertificate.issuer.rdnSequence", part);
 }
 
+/**
+ * gcr_certificate_get_issuer_dn:
+ * @self: a #GcrCertificate
+ * 
+ * Get the full issuer DN of the certificate as a (mostly) 
+ * readable string. 
+ * 
+ * The string returned should be freed by the caller when no longer
+ * required.
+ * 
+ * Returns: The allocated issuer DN of the certificate.
+ */
 gchar*
 gcr_certificate_get_issuer_dn (GcrCertificate *self)
 {
@@ -287,12 +347,39 @@ gcr_certificate_get_issuer_dn (GcrCertificate *self)
 	return egg_asn1_read_dn (info->asn1, "tbsCertificate.issuer.rdnSequence"); 
 }
 
+/**
+ * gcr_certificate_get_subject_cn:
+ * @self: a #GcrCertificate
+ * 
+ * Get the common name of the subject of this certificate. 
+ * 
+ * The string returned should be freed by the caller when no longer
+ * required.
+ * 
+ * Returns: The allocated subject CN, or NULL if no subject CN present.
+ */
 gchar* 
 gcr_certificate_get_subject_cn (GcrCertificate *self)
 {
 	return gcr_certificate_get_subject_part (self, "cn");
 }
 
+/**
+ * gcr_certificate_get_subject_part:
+ * @self: a #GcrCertificate
+ * @part: a DN type string or OID.
+ * 
+ * Get a part of the DN of the subject of this certificate. 
+ * 
+ * Examples of a @part might be the 'OU' (organizational unit)
+ * or the 'CN' (common name). Only the value of that part 
+ * of the DN is returned.
+ * 
+ * The string returned should be freed by the caller when no longer
+ * required.
+ * 
+ * Returns: The allocated part of the subject DN, or NULL if no such part is present.
+ */
 gchar* 
 gcr_certificate_get_subject_part (GcrCertificate *self, const char *part)
 {
@@ -306,6 +393,18 @@ gcr_certificate_get_subject_part (GcrCertificate *self, const char *part)
 	return egg_asn1_read_dn_part (info->asn1, "tbsCertificate.subject.rdnSequence", part); 
 }
 
+/**
+ * gcr_certificate_get_subject_dn:
+ * @self: a #GcrCertificate
+ * 
+ * Get the full subject DN of the certificate as a (mostly) 
+ * readable string. 
+ * 
+ * The string returned should be freed by the caller when no longer
+ * required.
+ * 
+ * Returns: The allocated subject DN of the certificate.
+ */
 gchar* 
 gcr_certificate_get_subject_dn (GcrCertificate *self)
 {
@@ -319,6 +418,17 @@ gcr_certificate_get_subject_dn (GcrCertificate *self)
 	return egg_asn1_read_dn (info->asn1, "tbsCertificate.issuer.rdnSequence"); 	
 }
 
+/**
+ * gcr_certificate_get_issued_date:
+ * @self: a #GcrCertificate
+ * 
+ * Get the issued date of this certificate.
+ * 
+ * The #GDate returned should be freed by the caller using 
+ * g_date_free() when no longer required.
+ * 
+ * Returns: An allocated issued date of this certificate.
+ */
 GDate* 
 gcr_certificate_get_issued_date (GcrCertificate *self)
 {
@@ -339,6 +449,17 @@ gcr_certificate_get_issued_date (GcrCertificate *self)
 	return date;
 }
 
+/**
+ * gcr_certificate_get_expiry_date:
+ * @self: a #GcrCertificate
+ * 
+ * Get the expiry date of this certificate.
+ * 
+ * The #GDate returned should be freed by the caller using 
+ * g_date_free() when no longer required.
+ * 
+ * Returns: An allocated expiry date of this certificate.
+ */
 GDate* 
 gcr_certificate_get_expiry_date (GcrCertificate *self)
 {
@@ -359,6 +480,15 @@ gcr_certificate_get_expiry_date (GcrCertificate *self)
 	return date;
 }
 
+/**
+ * gcr_certificate_get_key_size:
+ * @self: a #GcrCertificate
+ * 
+ * Get the key size in bits of the public key represented 
+ * by this certificate. 
+ * 
+ * Returns: The key size of the certificate.
+ */
 guint
 gcr_certificate_get_key_size (GcrCertificate *self)
 {
@@ -375,6 +505,22 @@ gcr_certificate_get_key_size (GcrCertificate *self)
 	return info->key_size;
 }
 
+/**
+ * gcr_certificate_get_fingerprint:
+ * @self: a #GcrCertificate
+ * @type: the type of algorithm for the fingerprint.
+ * @n_digest: The length of the resulting fingerprint.
+ * 
+ * Calculate the fingerprint for this certificate.
+ * 
+ * You can pass G_CHECKSUM_SHA1 or G_CHECKSUM_MD5 as the @type
+ * parameter.
+ * 
+ * The caller should free the returned data using g_free() when
+ * it is no longer required.
+ * 
+ * Returns: the raw binary fingerprint.  
+ */
 guchar*
 gcr_certificate_get_fingerprint (GcrCertificate *self, GChecksumType type, gsize *n_digest)
 {
@@ -397,6 +543,22 @@ gcr_certificate_get_fingerprint (GcrCertificate *self, GChecksumType type, gsize
 	return digest;
 }
 
+/**
+ * gcr_certificate_get_fingerprint_hex:
+ * @self: a #GcrCertificate
+ * @type: the type of algorithm for the fingerprint.
+ * 
+ * Calculate the fingerprint for this certificate, and return it 
+ * as a hex string.
+ * 
+ * You can pass G_CHECKSUM_SHA1 or G_CHECKSUM_MD5 as the @type
+ * parameter.
+ * 
+ * The caller should free the returned data using g_free() when
+ * it is no longer required.
+ * 
+ * Returns: an allocated hex string which contains the fingerprint.  
+ */
 gchar*
 gcr_certificate_get_fingerprint_hex (GcrCertificate *self, GChecksumType type)
 {
@@ -421,6 +583,18 @@ gcr_certificate_get_fingerprint_hex (GcrCertificate *self, GChecksumType type)
 	return hex;
 }
 
+/**
+ * gcr_certificate_get_serial_number:
+ * @self: a #GcrCertificate
+ * @length: the length of the returned data.
+ * 
+ * Get the raw binary serial number of the certificate.
+ * 
+ * The caller should free the returned data using g_free() when
+ * it is no longer required.
+ * 
+ * Returns: the raw binary serial number.
+ */
 guchar*
 gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 {
@@ -434,6 +608,17 @@ gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 	return egg_asn1_read_value (info->asn1, "tbsCertificate.serialNumber", n_length, g_realloc); 
 }
 
+/**
+ * gcr_certificate_get_serial_number_hex:
+ * @self: a #GcrCertificate
+ * 
+ * Get the serial number of the certificate as a hex string.
+ * 
+ * The caller should free the returned data using g_free() when
+ * it is no longer required.
+ * 
+ * Returns: an allocated string containing the serial number as hex.
+ */
 gchar*
 gcr_certificate_get_serial_number_hex (GcrCertificate *self)
 {
