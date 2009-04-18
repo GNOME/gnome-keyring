@@ -30,6 +30,7 @@ EXTRA_DIST = \
 	intltool-merge.in \
 	intltool-update.in \
 	keyring-intro.txt \
+	ChangeLog.old \
 	HACKING
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-tests
@@ -39,9 +40,22 @@ DISTCLEANFILES = \
 	intltool-merge \
 	intltool-update
 
-# Clean up any EXTRA_DIST we're distributing
+CHANGELOG_START = \
+	efb922c92fae5929ecc8c702770ebb6c390d38a4
+
 dist-hook:
-	rm -rf `find $(distdir)/ -name .svn`
+	@if test -d "$(srcdir)/.git"; \
+	then \
+		echo Creating ChangeLog && \
+		( cd "$(top_srcdir)" && \
+		  echo '# Generate automatically. Do not edit.'; echo; \
+		  $(top_srcdir)/missing --run git log $(CHANGELOG_START).. --stat ) | fmt --split-only > ChangeLog.tmp \
+		&& mv -f ChangeLog.tmp $(top_distdir)/ChangeLog \
+		|| ( rm -f ChangeLog.tmp ; \
+		     echo Failed to generate ChangeLog >&2 ); \
+	else \
+		echo A git clone is required to generate a ChangeLog >&2; \
+	fi
 
 distcheck-hook: 
 	@echo "RUNNING AUTOMATIC UNIT TESTS ---------------------------"
