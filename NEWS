@@ -1,3 +1,15 @@
+Changes in version 2.26.1 are:
+* Fix many problems with the new secure memory allocator.
+* DBus now automatically starts the gnome-keyring service properly.
+* When auto activating the gnome-keyring DBus service, check for an 
+  already running daemon.
+* Don't print critical warnings when registering with DBus fails.
+* Bump glib dependency.
+* Add DBus method for getting the gnome-keyring environment variables.
+* Fix crash when prompting to unlock the keyring.
+* Initialize daemon with LOGNAME and USERNAME environment variables.
+* Build fixes [Ed Schouten]
+
 Changes in version 2.26.0 are:
 * Implement support for running gnome-keyring-daemon under valgrind.
 * Checks for asn1Parser tool when configuring. [Alberto Ruiz].

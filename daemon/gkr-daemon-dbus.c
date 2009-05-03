@@ -43,7 +43,6 @@
 #define IFACE_SESSION_PRIVATE   "org.gnome.SessionManager.ClientPrivate"
 
 static DBusConnection *dbus_conn = NULL;
-static const char* socket_path = NULL;
 static gchar *client_session_path = NULL;
 static gchar *client_session_rule = NULL;
 static gboolean dbus_initialized = FALSE;
@@ -80,7 +79,7 @@ send_end_session_response ()
 	dbus_message_unref (msg);
 	
 	if (!reply) {
-		g_warning ("dbus failure responding to ending session: %s", derr.message);
+		g_message ("dbus failure responding to ending session: %s", derr.message);
 		return;
 	}
 
@@ -120,7 +119,7 @@ unregister_daemon_in_session (void)
 	dbus_message_unref (msg);
 	
 	if (!reply) {
-		g_warning ("dbus failure unregistering from session: %s", derr.message);
+		g_message ("dbus failure unregistering from session: %s", derr.message);
 		return;
 	}
 	
@@ -247,7 +246,7 @@ register_daemon_in_session (void)
 	dbus_message_unref (msg);
 	
 	if (!reply) {
-		g_warning ("couldn't register in session: %s", derr.message);
+		g_message ("couldn't register in session: %s", derr.message);
 		dbus_error_free (&derr);
 		return;
 	}
@@ -255,7 +254,7 @@ register_daemon_in_session (void)
 	/* Get out our client path */
 	if (!dbus_message_iter_init (reply, &args) || 
 	    dbus_message_iter_get_arg_type (&args) != DBUS_TYPE_OBJECT_PATH) {
-		g_warning ("invalid register response from session");
+		g_message ("invalid register response from session");
 	} else {
 		dbus_message_iter_get_basic (&args, &client_session_path);
 		client_session_path = g_strdup (client_session_path);
@@ -280,7 +279,7 @@ register_daemon_in_session (void)
 	dbus_bus_add_match (dbus_conn, client_session_rule, &derr);
 	
 	if(dbus_error_is_set(&derr)) {
-		g_warning ("couldn't listen for signals in session: %s", derr.message);
+		g_message ("couldn't listen for signals in session: %s", derr.message);
 		dbus_error_free (&derr);
 		g_free (client_session_rule);
 		client_session_rule = NULL;
@@ -302,22 +301,57 @@ message_handler_cb (DBusConnection *conn, DBusMessage *message, void *user_data)
 	 */
 	
 	DBusMessageIter args;
-	DBusMessage *reply;
+	DBusMessage *reply = NULL;	
 
-	if (dbus_message_get_type (message) != DBUS_MESSAGE_TYPE_METHOD_CALL ||
-	    !dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetSocketPath") ||
-	    !g_str_equal (dbus_message_get_signature (message), "")) {
+	/* GetSocketPath */
+	if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL &&
+	    dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetSocketPath") &&
+	    g_str_equal (dbus_message_get_signature (message), "")) {
+		
+		const gchar *socket_path = gkr_daemon_io_get_socket_path ();
+		g_return_val_if_fail (socket_path, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+		
+		/* Setup the result */ 
+		reply = dbus_message_new_method_return (message);
+		dbus_message_iter_init_append (reply, &args); 
+		if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_STRING, &socket_path))
+			g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
+		
+	/* GetEnvironment */
+	} else if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL &&
+	           dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetEnvironment") &&
+	           g_str_equal (dbus_message_get_signature (message), "")) {
+
+		const gchar **env;
+		DBusMessageIter items, entry;
+		gchar **parts;
+		
+		env = gkr_daemon_util_get_environment ();
+		g_return_val_if_fail (env, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+		
+		/* Setup the result */ 
+		reply = dbus_message_new_method_return (message);
+		dbus_message_iter_init_append (reply, &args);
+		if (!dbus_message_iter_open_container (&args, DBUS_TYPE_ARRAY, "{ss}", &items))
+			g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
+		while (*env) {
+			parts = g_strsplit (*env, "=", 2);
+			g_return_val_if_fail (parts && parts[0] && parts[1], DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+			if (!dbus_message_iter_open_container (&items, DBUS_TYPE_DICT_ENTRY, NULL, &entry) ||
+			    !dbus_message_iter_append_basic (&entry, DBUS_TYPE_STRING, &parts[0]) ||
+			    !dbus_message_iter_append_basic (&entry, DBUS_TYPE_STRING, &parts[1]) ||
+			    !dbus_message_iter_close_container (&items, &entry))
+				g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
+			++env;
+		}
+		if (!dbus_message_iter_close_container (&args, &items))
+			g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
+		
+	/* Unknown call */
+	} else {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
-
-	g_return_val_if_fail (socket_path, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-
-	/* Setup the result */ 
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &args); 
-	if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_STRING, &socket_path))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
-
+	
 	/* Send the reply */
 	if (!dbus_connection_send (dbus_conn, reply, NULL))
 		g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
@@ -356,25 +390,25 @@ gkr_daemon_dbus_setup (void)
 {
 	dbus_uint32_t res = 0;
 	DBusError derr = { 0 };
-	const gchar *env;
 	
 	if (dbus_initialized)
 		return;
 	
 #ifdef WITH_TESTS
-	/* If running as a test, don't do DBUS stuff */
-	env = g_getenv ("GNOME_KEYRING_TEST_PATH");
-	if (env && env[0])
-		return;
+	{
+		/* If running as a test, don't do DBUS stuff */
+		const gchar *env = g_getenv ("GNOME_KEYRING_TEST_PATH");
+		if (env && env[0])
+			return;
+	}
 #endif
 
-	socket_path = gkr_daemon_io_get_socket_path ();
 	dbus_error_init (&derr); 
 
 	/* Get the dbus bus and hook up */
 	dbus_conn = dbus_bus_get (DBUS_BUS_SESSION, &derr);
 	if (!dbus_conn) {
-		g_warning ("couldn't connect to dbus session bus: %s", derr.message);
+		g_message ("couldn't connect to dbus session bus: %s", derr.message);
 		dbus_error_free (&derr);
 		return;
 	}
@@ -390,7 +424,7 @@ gkr_daemon_dbus_setup (void)
 	res = dbus_bus_request_name (dbus_conn, GNOME_KEYRING_DAEMON_SERVICE,
 				     DBUS_NAME_FLAG_DO_NOT_QUEUE, &derr);
 	if (dbus_error_is_set (&derr)) { 
-		g_warning ("couldn't request name on session bus: %s", derr.message);
+		g_message ("couldn't request name on session bus: %s", derr.message);
 		dbus_error_free (&derr);
    	}	
 
@@ -415,7 +449,7 @@ gkr_daemon_dbus_setup (void)
 	/* Now register the object */
 	if (!dbus_connection_register_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH, 
 	                                           &object_vtable, NULL)) {
-		g_warning ("couldn't register dbus object path");
+		g_message ("couldn't register dbus object path");
 		return;
 	}
 	

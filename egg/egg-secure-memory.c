@@ -661,7 +661,7 @@ sec_realloc (Block *block, void *memory, size_t length)
 			break;
 		
 		/* Eat the whole neighbor if not too big */
-		if (n_words - cell->n_words >= other->n_words + WASTE) {
+		if (n_words - cell->n_words + WASTE >= other->n_words) {
 			cell->n_words += other->n_words;
 			sec_write_guards (cell);
 			sec_remove_cell_ring (&block->unused, other);
