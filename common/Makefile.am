@@ -20,7 +20,6 @@ libgkr_common_la_CFLAGS = \
 
 libgkr_common_la_SOURCES = \
 	gkr-async.c gkr-async.h \
-	gkr-cleanup.c gkr-cleanup.h \
 	gkr-location.c gkr-location.h \
 	gkr-location-watch.c gkr-location-watch.h
 

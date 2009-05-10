@@ -23,8 +23,8 @@
 
 #include "gkr-pkcs11-auth.h"
 
+#include "egg/egg-cleanup.h"
 #include "egg/egg-secure-memory.h"
-#include "common/gkr-cleanup.h"
 
 #include "keyrings/gkr-keyring-login.h"
 

@@ -26,7 +26,8 @@
 #include "gkr-daemon-util.h"
 
 #include "common/gkr-async.h"
-#include "common/gkr-cleanup.h"
+
+#include "egg/egg-cleanup.h"
 
 #include <glib.h>
 
@@ -290,7 +291,7 @@ init_master_directory (void)
 			g_warning ("couldn't create socket directory: %s", g_strerror (errno));
 	}
 	
-	gkr_cleanup_register (uninit_master_directory, NULL);
+	egg_cleanup_register (uninit_master_directory, NULL);
 }
 		
 const gchar*
@@ -322,7 +323,7 @@ init_environment ()
 	if (published_environ)
 		return;
 	published_environ = g_array_new (TRUE, TRUE, sizeof (gchar*)); 
-	gkr_cleanup_register (uninit_environment, NULL);
+	egg_cleanup_register (uninit_environment, NULL);
 }
 
 void

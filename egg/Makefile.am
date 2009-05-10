@@ -21,6 +21,7 @@ libegg_la_CFLAGS = \
 libegg_la_SOURCES = \
 	egg-asn1.c egg-asn1.h \
 	egg-buffer.c egg-buffer.h \
+	egg-cleanup.c egg-cleanup.h \
 	egg-hex.c egg-hex.h \
 	egg-libgcrypt.c egg-libgcrypt.h \
 	egg-oid.c egg-oid.h \

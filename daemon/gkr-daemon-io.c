@@ -36,8 +36,9 @@
 #include "gkr-daemon-util.h"
 
 #include "common/gkr-async.h"
+
 #include "egg/egg-buffer.h"
-#include "common/gkr-cleanup.h"
+#include "egg/egg-cleanup.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
 
@@ -408,7 +409,7 @@ gkr_daemon_io_create_master_socket (void)
 		unlink (socket_path);
 #endif
 
-	gkr_cleanup_register (cleanup_socket_dir, NULL);
+	egg_cleanup_register (cleanup_socket_dir, NULL);
 	
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {

@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-cleanup.h - for data cleanup at end of program
+/* egg-cleanup.h - for data cleanup at end of program
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,15 +21,15 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKRCLEANUP_H_
-#define GKRCLEANUP_H_
+#ifndef EGGCLEANUP_H_
+#define EGGCLEANUP_H_
 
 #include <glib.h>
 
-void    gkr_cleanup_register        (GDestroyNotify notify, gpointer user_data);
+void    egg_cleanup_register        (GDestroyNotify notify, gpointer user_data);
 
-void    gkr_cleanup_unregister      (GDestroyNotify notify, gpointer user_data);
+void    egg_cleanup_unregister      (GDestroyNotify notify, gpointer user_data);
 
-void    gkr_cleanup_perform         (void);
+void    egg_cleanup_perform         (void);
 
-#endif /* GKRCLEANUP_H_ */
+#endif /* EGGCLEANUP_H_ */

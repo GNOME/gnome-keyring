@@ -32,9 +32,10 @@
 #include "pkcs11/user-store/gck-user-store.h"
 
 #include "common/gkr-async.h"
-#include "common/gkr-cleanup.h"
 
 #include "daemon/gkr-daemon-util.h"
+
+#include "egg/egg-cleanup.h"
 
 /*
  * ALL calls into PKCS#11 and anything starting with 'gck'
@@ -114,7 +115,7 @@ gkr_pkcs11_daemon_initialize (void)
 		return FALSE;
 	}		
 	
-	gkr_cleanup_register (pkcs11_daemon_cleanup, NULL);
+	egg_cleanup_register (pkcs11_daemon_cleanup, NULL);
 	return TRUE;
 }
 
@@ -166,7 +167,7 @@ gkr_pkcs11_daemon_setup_pkcs11 (void)
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_rpc_client, NULL);
 	g_io_channel_unref (channel);
 
-	gkr_cleanup_register (pkcs11_rpc_cleanup, NULL);
+	egg_cleanup_register (pkcs11_rpc_cleanup, NULL);
 
 	return TRUE;
 }
@@ -222,7 +223,7 @@ gkr_pkcs11_daemon_setup_ssh (void)
 	/* gck-ssh-agent sets the environment variable */
 	gkr_daemon_util_push_environment ("SSH_AUTH_SOCK", g_getenv ("SSH_AUTH_SOCK"));
 
-	gkr_cleanup_register (pkcs11_ssh_cleanup, NULL);
+	egg_cleanup_register (pkcs11_ssh_cleanup, NULL);
 
 	return TRUE;
 }

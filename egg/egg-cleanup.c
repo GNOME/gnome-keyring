@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-cleanup.c - for data cleanup at end of program
+/* egg-cleanup.c - for data cleanup at end of program
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,19 +21,19 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "gkr-cleanup.h"
+#include "egg-cleanup.h"
 
-typedef struct _GkrCleanup {
+typedef struct _EggCleanup {
 	GDestroyNotify notify;
 	gpointer user_data;
-} GkrCleanup; 
+} EggCleanup;
 
 static GSList *registered_cleanups = NULL;
 
 void    
-gkr_cleanup_register (GDestroyNotify notify, gpointer user_data)
+egg_cleanup_register (GDestroyNotify notify, gpointer user_data)
 {
-	GkrCleanup *cleanup = g_new0 (GkrCleanup, 1);
+	EggCleanup *cleanup = g_new0 (EggCleanup, 1);
 	
 	g_assert (notify);
 	cleanup->notify = notify;
@@ -44,13 +44,13 @@ gkr_cleanup_register (GDestroyNotify notify, gpointer user_data)
 }
 
 void
-gkr_cleanup_unregister (GDestroyNotify notify, gpointer user_data)
+egg_cleanup_unregister (GDestroyNotify notify, gpointer user_data)
 {
-	GkrCleanup *cleanup;
+	EggCleanup *cleanup;
 	GSList *l;
 	
 	for (l = registered_cleanups; l; l = g_slist_next (l)) {
-		cleanup = (GkrCleanup*)l->data;
+		cleanup = (EggCleanup*)l->data;
 		if (cleanup->notify == notify && cleanup->user_data == user_data) {
 			registered_cleanups = g_slist_remove (registered_cleanups, cleanup);
 			break;
@@ -60,10 +60,10 @@ gkr_cleanup_unregister (GDestroyNotify notify, gpointer user_data)
 
 
 void    
-gkr_cleanup_perform (void)
+egg_cleanup_perform (void)
 {
 	GSList *cleanups, *l;
-	GkrCleanup *cleanup;
+	EggCleanup *cleanup;
 	
 	while (registered_cleanups) {
 		
@@ -76,7 +76,7 @@ gkr_cleanup_perform (void)
 		registered_cleanups = NULL;
 		
 		for (l = cleanups; l; l = g_slist_next (l)) {
-			cleanup = (GkrCleanup*)l->data;
+			cleanup = (EggCleanup*)l->data;
 			g_assert (cleanup->notify);
 			
 			(cleanup->notify) (cleanup->user_data);

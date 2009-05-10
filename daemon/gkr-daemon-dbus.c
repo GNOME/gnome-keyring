@@ -25,8 +25,7 @@
 #include "gkr-daemon.h"
 #include "gkr-daemon-util.h"
 
-#include "common/gkr-cleanup.h"
-
+#include "egg/egg-cleanup.h"
 #include "egg/egg-dbus.h"
 
 #include "library/gnome-keyring.h"
@@ -413,7 +412,7 @@ gkr_daemon_dbus_setup (void)
 		return;
 	}
 	
-	gkr_cleanup_register (daemon_dbus_cleanup, NULL);
+	egg_cleanup_register (daemon_dbus_cleanup, NULL);
 
 	egg_dbus_connect_with_mainloop (dbus_conn, NULL);
 

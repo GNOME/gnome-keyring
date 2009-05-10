@@ -27,25 +27,11 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-cleanup.h"
+#include "egg/egg-cleanup.h"
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
- 
 #define DATA "some string"
 
 typedef struct _CleanupParam {
-	CuTest *cu;
 	gpointer value;
 } CleanupParam;
 
@@ -53,23 +39,21 @@ static void
 cleanup_callback (gpointer user_data)
 {	
 	CleanupParam *param = (CleanupParam*)user_data;
-	CuAssert (param->cu, "invalid user_data passed to callback", 
-	          param->value && strcmp(param->value, DATA) == 0);
+	g_assert (param->value && strcmp(param->value, DATA) == 0);
 	param->value = NULL;
 }
 
-void unit_test_cleanup (CuTest* cu)
+DEFINE_TEST(cleanup)
 {
 	CleanupParam param;
 	
-	param.cu = cu;
 	param.value = DATA;
 	
-	gkr_cleanup_register (cleanup_callback, &param);
+	egg_cleanup_register (cleanup_callback, &param);
 	
-	gkr_cleanup_perform ();
+	egg_cleanup_perform ();
 	
-	CuAssert (cu, "cleanup handler not called", param.value == NULL);
+	g_assert (param.value == NULL);
 }
 
 /* -----------------------------------------------------------------------------
@@ -79,7 +63,6 @@ void unit_test_cleanup (CuTest* cu)
 static gint order_value = 0;
 
 typedef struct _OrderParam {
-	CuTest *cu;
 	gint reference;
 } OrderParam;
 
@@ -87,30 +70,32 @@ static void
 order_callback (gpointer user_data)
 {	
 	OrderParam *param = (OrderParam*)user_data;
-	CuAssert (param->cu, "cleanup handler called out of order", order_value == param->reference);
+	/* cleanup handler called out of order */
+	g_assert_cmpint (order_value, ==, param->reference);
 	param->reference = -1;
 	--order_value;
 }
- 
-void unit_test_order (CuTest* cu)
+
+DEFINE_TEST(order)
 {
 	OrderParam param[8];
 	int i;
 	
 	for (i = 0; i < 8; ++i) {
-		param[i].cu = cu;
 		param[i].reference = i;	
-		gkr_cleanup_register (order_callback, &param[i]);
+		egg_cleanup_register (order_callback, &param[i]);
 	}
 
 	order_value = i - 1;
 	
-	gkr_cleanup_perform ();
+	egg_cleanup_perform ();
 
 	for (i = 0; i < 8; ++i)
-		CuAssert (cu, "cleanup handler not called", param[i].reference == -1); 
+		/* "cleanup handler not called" */
+		g_assert (param[i].reference == -1);
 	
-	CuAssert (cu, "not all cleanup handlers called", order_value == -1);
+	/* "not all cleanup handlers called" */
+	g_assert_cmpint (order_value, ==, -1);
 }
 
 /* -----------------------------------------------------------------------------
@@ -128,18 +113,19 @@ second_callback (gpointer user_data)
 static void
 reregister_callback (gpointer user_data)
 {
-	gkr_cleanup_register (second_callback, NULL);	
+	egg_cleanup_register (second_callback, NULL);
 } 
 
-void unit_test_reregister (CuTest* cu)
+DEFINE_TEST(reregister)
 {
 	cleaned_up = FALSE;
 	
-	gkr_cleanup_register (reregister_callback, NULL);
+	egg_cleanup_register (reregister_callback, NULL);
 	
-	gkr_cleanup_perform ();
+	egg_cleanup_perform ();
 	
-	CuAssert (cu, "second cleanup handler not called", cleaned_up == TRUE);
+	/* "second cleanup handler not called" */
+	g_assert (cleaned_up == TRUE);
 }
 
 /* -----------------------------------------------------------------------------
@@ -154,13 +140,14 @@ remove_callback (gpointer user_data)
 	test_cleaned_up = TRUE;	
 }
 
-void unit_test_remove (CuTest* cu)
+DEFINE_TEST(remove)
 {
-	gkr_cleanup_register (remove_callback, NULL);
-	gkr_cleanup_register (remove_callback, DATA);
-	gkr_cleanup_unregister (remove_callback, DATA);
-	gkr_cleanup_unregister (remove_callback, NULL);
-	gkr_cleanup_perform ();
+	egg_cleanup_register (remove_callback, NULL);
+	egg_cleanup_register (remove_callback, DATA);
+	egg_cleanup_unregister (remove_callback, DATA);
+	egg_cleanup_unregister (remove_callback, NULL);
+	egg_cleanup_perform ();
 	
-	CuAssert (cu, "removed callback was called", test_cleaned_up == FALSE);		
+	/* "removed callback was called" */
+	g_assert (test_cleaned_up == FALSE);
 }

@@ -8,6 +8,7 @@ asn1-def-test.h: test.asn
 # Test files should be listed in order they need to run
 UNIT_AUTO = \
 	unit-test-asn1.c \
+	unit-test-cleanup.c \
 	unit-test-hex.c \
 	unit-test-oid.c \
 	unit-test-secmem.c \

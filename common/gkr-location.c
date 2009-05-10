@@ -25,8 +25,7 @@
 
 #include "gkr-location.h"
 
-#include "gkr-cleanup.h"
-
+#include "egg/egg-cleanup.h"
 #include "egg/egg-dbus.h"
 
 #ifdef WITH_HAL
@@ -634,7 +633,7 @@ gkr_location_manager_get (void)
 {
 	if (!location_manager_singleton) {
 		location_manager_singleton = g_object_new (GKR_TYPE_LOCATION_MANAGER, NULL);
-		gkr_cleanup_register (cleanup_location_manager, NULL);
+		egg_cleanup_register (cleanup_location_manager, NULL);
 	}
 	
 	return location_manager_singleton;

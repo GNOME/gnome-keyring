@@ -27,9 +27,10 @@
 #include "gkr-ask-request.h"
 
 #include "common/gkr-async.h"
-#include "common/gkr-cleanup.h"
 
 #include "daemon/gkr-daemon-util.h"
+
+#include "egg/egg-cleanup.h"
 
 #include <glib.h>
 
@@ -65,7 +66,7 @@ ask_daemon_init (void)
 	
 	wait_condition = gkr_async_wait_new ();
 	
-	gkr_cleanup_register (ask_daemon_cleanup, NULL);
+	egg_cleanup_register (ask_daemon_cleanup, NULL);
 }
 
 static gboolean

@@ -26,9 +26,10 @@
 
 #include "gkr-keyrings.h"
 
-#include "common/gkr-cleanup.h"
 #include "common/gkr-location.h"
 #include "common/gkr-location-watch.h"
+
+#include "egg/egg-cleanup.h"
 
 #include "library/gnome-keyring-proto.h"
 
@@ -200,7 +201,7 @@ keyrings_init (void)
 	g_signal_connect (location_watch, "location-changed", G_CALLBACK (load_keyring), NULL);
 	g_signal_connect (location_watch, "location-removed", G_CALLBACK (remove_keyring), NULL);
 	
-	gkr_cleanup_register (keyrings_cleanup, NULL);
+	egg_cleanup_register (keyrings_cleanup, NULL);
 }
 
 /* -----------------------------------------------------------------------------

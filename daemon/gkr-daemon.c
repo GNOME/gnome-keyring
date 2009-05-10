@@ -26,8 +26,8 @@
 #include "gkr-daemon-util.h"
 
 #include "common/gkr-async.h"
-#include "common/gkr-cleanup.h"
 
+#include "egg/egg-cleanup.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
@@ -125,7 +125,7 @@ parse_arguments (int *argc, char** argv[])
 	/* Take ownership of the string */
 	if (run_components) {
 		run_components = g_strdup (run_components);
-		gkr_cleanup_register (g_free, run_components);
+		egg_cleanup_register (g_free, run_components);
 	}
 	
 	/* Check the arguments */
@@ -402,7 +402,7 @@ read_login_password (int fd)
 static void
 cleanup_and_exit (int code)
 {
-	gkr_cleanup_perform ();
+	egg_cleanup_perform ();
 	exit (code);
 }
 
@@ -419,7 +419,7 @@ lifetime_slave_pipe_io (GIOChannel  *channel,
 			GIOCondition cond,
 			gpointer     callback_data)
 {
-	gkr_cleanup_perform ();
+	egg_cleanup_perform ();
 	_exit (2);
 	return FALSE;
 }
@@ -768,7 +768,7 @@ main (int argc, char *argv[])
 	gkr_async_workers_stop_all ();
 	
 	/* This wraps everything up in order */
-	gkr_cleanup_perform ();
+	egg_cleanup_perform ();
 	
 	/* Final shutdown of anything workers running about */
 	gkr_async_workers_uninit ();
