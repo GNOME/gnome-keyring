@@ -36,19 +36,6 @@
 #include <glib.h>
 #include <string.h>
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void)
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void)
- * 
- * Tests be run in the order specified here.
- */
-
 static GQuark
 location_for_test_data (const gchar *filename)
 {
@@ -67,38 +54,52 @@ location_for_test_data (const gchar *filename)
 }
  
 static void
-validate_keyring_contents (GkrKeyring *keyring, CuTest *cu)
+validate_keyring_contents (GkrKeyring *keyring)
 {
 	GnomeKeyringAccessControl *ac;
 	GkrKeyringItem* item; 
 	GArray *attrs;
 	
 	/* The keyring itself */
-	CuAssert (cu, "Missing keyring name", keyring->keyring_name != NULL);
-	CuAssert (cu, "Invalid keyring name", g_str_equal (keyring->keyring_name, "unit-test-keyring"));
-	CuAssert (cu, "Bad lock settings", !keyring->lock_on_idle && keyring->lock_timeout == 0);
-	CuAssert (cu, "Bad Creation Time", keyring->ctime == 1198027852);
-	CuAssert (cu, "Bad Modification Time", keyring->mtime == 1198027852);
-	CuAssert (cu, "Wrong number of items", g_list_length (keyring->items) == 2);
+	/* "Missing keyring name" */
+	g_assert (keyring->keyring_name != NULL);
+	/* "Invalid keyring name" */
+	g_assert_cmpstr (keyring->keyring_name, ==, "unit-test-keyring");
+	/* "Bad lock settings" */
+	g_assert (!keyring->lock_on_idle && keyring->lock_timeout == 0);
+	/* "Bad Creation Time" */
+	g_assert_cmpint (keyring->ctime, ==, 1198027852);
+	/* "Bad Modification Time" */
+	g_assert_cmpint (keyring->mtime, ==, 1198027852);
+	/* "Wrong number of items" */
+	g_assert_cmpint (g_list_length (keyring->items), ==, 2);
 	
 	/* Item #2 */
 	item = gkr_keyring_get_item (keyring, 2);
-	CuAssert (cu, "Couldn't find item", item != NULL);
-	CuAssert (cu, "Invalid item type", item->type == GNOME_KEYRING_ITEM_GENERIC_SECRET);
-	CuAssert (cu, "Missing secret", item->secret != NULL);
-	CuAssert (cu, "Wrong secret", g_str_equal (item->secret, "item-secret"));
-	CuAssert (cu, "Bad Creation Time", item->ctime == 1198027852);
+	/* "Couldn't find item" */
+	g_assert (item != NULL);
+	/* "Invalid item type" */
+	g_assert_cmpint (item->type, ==, GNOME_KEYRING_ITEM_GENERIC_SECRET);
+	/* "Missing secret" */
+	g_assert (item->secret != NULL);
+	/* "Wrong secret" */
+	g_assert_cmpstr (item->secret, ==, "item-secret");
+	/* "Bad Creation Time" */
+	g_assert_cmpint (item->ctime, ==, 1198027852);
 	
 	/* Item #2 ACL */
-	CuAssert (cu, "Bad ACLs", g_list_length (item->acl) == 1);
+	/* "Bad ACLs" */
+	g_assert_cmpint (g_list_length (item->acl), ==, 1);
 	ac = (GnomeKeyringAccessControl*)item->acl->data;
-	CuAssert (cu, "Invalid ACL", ac && ac->application);
-	CuAssert (cu, "Invalid ACL Path", ac->application->pathname && 
-			g_str_equal (ac->application->pathname, "/data/projects/gnome-keyring/library/tests/.libs/run-auto-test"));
-	CuAssert (cu, "Invalid ACL Display Name", ac->application->display_name && 
-			g_str_equal (ac->application->display_name, "run-auto-test"));
-	CuAssert (cu, "Invalid ACL Access Type", 
-			ac->types_allowed == (GNOME_KEYRING_ACCESS_READ | GNOME_KEYRING_ACCESS_WRITE | GNOME_KEYRING_ACCESS_REMOVE)); 
+	/* "Invalid ACL" */
+	g_assert (ac && ac->application);
+	/* "Invalid ACL Path" */
+	g_assert (ac->application->pathname && strstr (ac->application->pathname, "run-auto-test"));
+	/* "Invalid ACL Display Name" */
+	g_assert (ac->application->display_name);
+	g_assert_cmpstr (ac->application->display_name, ==, "run-auto-test");
+	/* "Invalid ACL Access Type" */
+	g_assert_cmpint (ac->types_allowed, ==, (GNOME_KEYRING_ACCESS_READ | GNOME_KEYRING_ACCESS_WRITE | GNOME_KEYRING_ACCESS_REMOVE)); 
 		
 	/* Item #3 */
 	attrs = gnome_keyring_attribute_list_new ();
@@ -108,14 +109,19 @@ validate_keyring_contents (GkrKeyring *keyring, CuTest *cu)
 	gnome_keyring_attribute_list_append_uint32 (attrs, "num", 3); 
 	item = gkr_keyring_find_item (keyring, GNOME_KEYRING_ITEM_GENERIC_SECRET, attrs, TRUE);
 	gnome_keyring_attribute_list_free (attrs);
-	CuAssert (cu, "Couldn't find item #3", item != NULL);
-	CuAssert (cu, "Invalid item found", item->id == 3);
-	CuAssert (cu, "Invalid item type", item->type == GNOME_KEYRING_ITEM_GENERIC_SECRET);
-	CuAssert (cu, "Missing secret", item->secret != NULL);
-	CuAssert (cu, "Wrong secret", g_str_equal (item->secret, "item-secret"));
+	/* "Couldn't find item #3" */
+	g_assert (item != NULL);
+	/* "Invalid item found" */
+	g_assert_cmpint (item->id, ==, 3);
+	/* "Invalid item type" */
+	g_assert_cmpint (item->type, ==, GNOME_KEYRING_ITEM_GENERIC_SECRET);
+	/* "Missing secret" */
+	g_assert (item->secret != NULL);
+	/* "Wrong secret" */
+	g_assert_cmpstr (item->secret, ==, "item-secret");
 }
 
-void unit_test_keyring_parse_encrypted (CuTest *cu)
+DEFINE_TEST(keyring_parse_encrypted)
 {
 	GkrKeyring *encrypted, *plain;
 	EggBuffer buffer, output;
@@ -136,34 +142,41 @@ void unit_test_keyring_parse_encrypted (CuTest *cu)
 	data = g_memdup (data, n_data); /* Make a copy for double parse */
 	ret = gkr_keyring_binary_parse (encrypted, &buffer);
 	egg_buffer_uninit (&buffer);
-	CuAssert (cu, "couldn't parse encrypted keyring", ret == 1);
-	CuAssert (cu, "didn't unlock encrypted keyring", !encrypted->locked);
+	/* "couldn't parse encrypted keyring" */
+	g_assert (ret == 1);
+	/* "didn't unlock encrypted keyring" */
+	g_assert (!encrypted->locked);
 	
-	validate_keyring_contents (encrypted, cu);
+	validate_keyring_contents (encrypted);
 
 	/* Double parse shouldn't change it */
 	egg_buffer_init_allocated (&buffer, (guchar*)data, n_data, NULL);
 	ret = gkr_keyring_binary_parse (encrypted, &buffer);
 	egg_buffer_uninit (&buffer);
-	CuAssert (cu, "couldn't parse encrypted keyring", ret == 1);
-	CuAssert (cu, "didn't unlock encrypted keyring", !encrypted->locked);
+	/* "couldn't parse encrypted keyring" */
+	g_assert (ret == 1);
+	/* "didn't unlock encrypted keyring" */
+	g_assert (!encrypted->locked);
 	
-	validate_keyring_contents (encrypted, cu);
+	validate_keyring_contents (encrypted);
 	
 	/* Output same data in the cleartext format */
 	egg_buffer_init (&output, 128);
 	success = gkr_keyring_textual_generate (encrypted, &output);
-	CuAssert (cu, "couldn't generate textual data", success);
+	/* "couldn't generate textual data" */
+	g_assert (success);
 	
 	/* Make sure it parses */
 	ret = gkr_keyring_textual_parse (plain, &output);
-	CuAssert (cu, "couldn't parse generated textual data", ret == 1);
-	CuAssert (cu, "keyring should not be locked", !plain->locked);
+	/* "couldn't parse generated textual data" */
+	g_assert (ret == 1);
+	/* "keyring should not be locked" */
+	g_assert (!plain->locked);
 	
-	validate_keyring_contents (plain, cu);
+	validate_keyring_contents (plain);
 }
 
-void unit_test_keyring_parse_plain (CuTest *cu)
+DEFINE_TEST(keyring_parse_plain)
 {
 	GkrKeyring *keyring;
 	EggBuffer buffer;
@@ -179,21 +192,25 @@ void unit_test_keyring_parse_plain (CuTest *cu)
 	/* Parse it */
 	egg_buffer_init_static (&buffer, (guchar*)data, n_data);
 	ret = gkr_keyring_textual_parse (keyring, &buffer);
-	CuAssert (cu, "couldn't parse generated textual data", ret == 1);
-	CuAssert (cu, "keyring should not be locked", !keyring->locked);
+	/* "couldn't parse generated textual data" */
+	g_assert (ret == 1);
+	/* "keyring should not be locked" */
+	g_assert (!keyring->locked);
 	
-	validate_keyring_contents (keyring, cu);
+	validate_keyring_contents (keyring);
 	
 	/* Double parse shouldn't change it */
 	egg_buffer_init_static (&buffer, (guchar*)data, n_data);
 	ret = gkr_keyring_textual_parse (keyring, &buffer);
-	CuAssert (cu, "couldn't parse generated textual data", ret == 1);
-	CuAssert (cu, "keyring should not be locked", !keyring->locked);
+	/* "couldn't parse generated textual data" */
+	g_assert (ret == 1);
+	/* "keyring should not be locked" */
+	g_assert (!keyring->locked);
 	
-	validate_keyring_contents (keyring, cu);
+	validate_keyring_contents (keyring);
 }
 
-void unit_test_keyring_double_lock_encrypted (CuTest *cu)
+DEFINE_TEST(keyring_double_lock_encrypted)
 {
 	GkrKeyring *encrypted;
 	gboolean ret;
@@ -201,35 +218,37 @@ void unit_test_keyring_double_lock_encrypted (CuTest *cu)
 	encrypted = gkr_keyring_new ("encrypted", location_for_test_data ("encrypted.keyring"));
 	encrypted->password = egg_secure_strdup ("my-keyring-password");
 	ret = gkr_keyring_update_from_disk (encrypted);
-	CuAssert (cu, "couldn't parse generated textual data", ret == TRUE);
+	/* "couldn't parse generated textual data" */
+	g_assert (ret == TRUE);
 	
 	/* Lock it */
 	gkr_keyring_lock (encrypted);
-	CuAssert (cu, "locked", encrypted->locked);
+	g_assert (encrypted->locked);
 	
 	/* Should succeed */
 	gkr_keyring_lock (encrypted);
-	CuAssert (cu, "locked", encrypted->locked);
+	g_assert (encrypted->locked);
 	
 	g_object_unref (encrypted);
 }
 
-void unit_test_keyring_double_lock_plain (CuTest *cu)
+DEFINE_TEST(keyring_double_lock_plain)
 {
 	GkrKeyring *keyring;
 	gboolean ret;
 	
 	keyring = gkr_keyring_new ("plain", location_for_test_data ("plain.keyring"));
 	ret = gkr_keyring_update_from_disk (keyring);
-	CuAssert (cu, "couldn't parse generated textual data", ret == TRUE);
+	/* "couldn't parse generated textual data" */
+	g_assert (ret == TRUE);
 
 	/* Lock it, shouldn't actually work, no way to lock */
 	gkr_keyring_lock (keyring);
-	CuAssert (cu, "locked", !keyring->locked);
+	g_assert (!keyring->locked);
 	
 	/* Shouldn't crash */
 	gkr_keyring_lock (keyring);
-	CuAssert (cu, "locked", !keyring->locked);
+	g_assert (!keyring->locked);
 	
 	g_object_unref (keyring);
 }

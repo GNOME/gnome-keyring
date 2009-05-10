@@ -50,7 +50,7 @@ static void
 TELL(const char* what)
 	{ printf("INTERACTION: %s\n", what); }
 
-void unit_setup_keyrings_login (void)
+DEFINE_START(keyrings_login)
 {
 	/* Remove the current login keyring */
 	GkrKeyring *login = gkr_keyrings_get_login ();
@@ -61,55 +61,68 @@ void unit_setup_keyrings_login (void)
 static gboolean had_prompt = FALSE;
 
 static void 
-verify_ask (GkrAskRequest *req, gpointer data)
+verify_ask (GkrAskRequest *req, gpointer unused)
 {
-	CuTest *cu = (CuTest*)data;
-	
-	CuAssert (cu, "should only have one prompt", !had_prompt);
+	/* "should only have one prompt" */
+	g_assert (!had_prompt);
 	had_prompt = TRUE;
 }
 
-void unit_test_keyrings_login (CuTest* cu)
+DEFINE_TEST(keyrings_login)
 {
 	gboolean ret;
 
-	gkr_ask_daemon_set_hook (verify_ask, cu);
+	gkr_ask_daemon_set_hook (verify_ask, NULL);
 
-	CuAssert (cu, "login not marked locked", !gkr_keyring_login_is_unlocked ());
+	/* "login not marked locked" */
+	g_assert (!gkr_keyring_login_is_unlocked ());
 	
 	/* cancel the prompt */
 	TELL("Press 'DENY'");
 	had_prompt = FALSE;
 	ret = gkr_keyring_login_unlock (NULL);
-	CuAssert (cu, "no prompt appeared", had_prompt);
-	CuAssert (cu, "gkr_keyring_login_unlock() return TRUE", !ret);
-	CuAssert (cu, "login not marked locked", !gkr_keyring_login_is_unlocked ());
+	/* "no prompt appeared" */
+	g_assert (had_prompt);
+	/* "gkr_keyring_login_unlock() return TRUE" */
+	g_assert (!ret);
+	/* "login not marked locked" */
+	g_assert (!gkr_keyring_login_is_unlocked ());
 	
 	/* Now create a keyring */
 	TELL("Type 'blah' and press 'OK'");
 	had_prompt = FALSE;
 	ret = gkr_keyring_login_unlock (NULL);
-	CuAssert (cu, "no prompt appeared", had_prompt);
-	CuAssert (cu, "gkr_keyring_login_unlock() return FALSE", ret);
-	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_is_unlocked ());
+	/*  "no prompt appeared" */
+	g_assert (had_prompt);
+	/* "gkr_keyring_login_unlock() return FALSE" */
+	g_assert (ret);
+	/* "login not marked unlocked" */
+	g_assert (gkr_keyring_login_is_unlocked ());
 	
 	/* Now lock it */
 	gkr_keyring_login_lock ();
-	CuAssert (cu, "didn't lock right keyring", !gkr_keyring_login_is_unlocked ());
+	/* "didn't lock right keyring" */
+	g_assert (!gkr_keyring_login_is_unlocked ());
 	
 	/* cancel the prompt */
 	TELL("Press 'DENY'");
 	had_prompt = FALSE;
 	ret = gkr_keyring_login_unlock (NULL);
-	CuAssert (cu, "no prompt appeared", had_prompt);
-	CuAssert (cu, "gkr_keyring_login_unlock() return TRUE", !ret);
-	CuAssert (cu, "login not marked locked", !gkr_keyring_login_is_unlocked ());
+	/* "no prompt appeared" */
+	g_assert (had_prompt);
+	/* "gkr_keyring_login_unlock() return TRUE" */
+	g_assert (!ret);
+	/* "login not marked locked" */
+	g_assert (!gkr_keyring_login_is_unlocked ());
 	
 	/* Now create a keyring */
 	TELL("Type 'blah' and press 'OK'");
 	had_prompt = FALSE;
 	ret = gkr_keyring_login_unlock (NULL);
-	CuAssert (cu, "no prompt appeared", had_prompt);
-	CuAssert (cu, "gkr_keyring_login_unlock() return FALSE", ret);
-	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_is_unlocked ());
+	/* "no prompt appeared" */
+	g_assert (had_prompt);
+	/* "gkr_keyring_login_unlock() return FALSE" */
+	g_assert (ret);
+	/* "login not marked unlocked" */
+	g_assert (gkr_keyring_login_is_unlocked ());
 }

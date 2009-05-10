@@ -6,8 +6,5 @@ UNIT_PROMPT = unit-test-pam-setup.c \
 
 UNIT_LIBS = \
 	-lpam
-
-UNIT_FLAGS = \
-	-DEXTERNAL_TEST
 	
-include $(top_srcdir)/tests/test.make
+include $(top_srcdir)/tests/gtest.make

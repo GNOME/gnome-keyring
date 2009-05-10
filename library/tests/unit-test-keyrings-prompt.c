@@ -30,19 +30,6 @@
 
 #include "library/gnome-keyring.h"
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
- 
 static void 
 TELL(const char* what)
 {
@@ -56,50 +43,49 @@ gchar* default_keyring = NULL;
 #define DISPLAY_NAME "Item Display Name"
 #define SECRET "item-secret"
 
-void unit_test_stash_default (CuTest* cu)
+DEFINE_TEST(stash_default)
 {
 	GnomeKeyringResult res;
 	res = gnome_keyring_get_default_keyring_sync (&default_keyring);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_create_prompt_keyring (CuTest* cu)
+DEFINE_TEST(create_prompt_keyring)
 {
 	GnomeKeyringResult res;
 
 	TELL("press 'DENY'");
 	res = gnome_keyring_create_sync (KEYRING_NAME, NULL);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_DENIED, ==, res);
 	
 	TELL("type in a new keyring password and click 'OK'");
 	
 	res = gnome_keyring_create_sync (KEYRING_NAME, NULL);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	res = gnome_keyring_create_sync (KEYRING_NAME, NULL);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_ALREADY_EXISTS, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_ALREADY_EXISTS, ==, res);
 	
 	res = gnome_keyring_set_default_keyring_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-
-void unit_test_change_prompt_keyring (CuTest* cu)
+DEFINE_TEST(change_prompt_keyring)
 {
 	GnomeKeyringResult res;
 
 	TELL("press 'DENY' here");	
 
 	res = gnome_keyring_change_password_sync (KEYRING_NAME, NULL, NULL); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_DENIED, ==, res);
 	
 	TELL("type in original password then new keyring password and click 'OK'");
 
 	res = gnome_keyring_change_password_sync (KEYRING_NAME, NULL, NULL); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res); 
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_acls (CuTest* cu)
+DEFINE_TEST(acls)
 {
 	GnomeKeyringResult res;
 	GnomeKeyringAccessControl *ac, *acl;
@@ -111,11 +97,11 @@ void unit_test_acls (CuTest* cu)
 	/* Create teh item */
 	res = gnome_keyring_item_create_sync (KEYRING_NAME, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      "Fry", NULL, "secret", FALSE, &id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Get the ACLs */
 	gnome_keyring_item_get_acl_sync (KEYRING_NAME, id, &acls);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Make sure we're in the list, since we created */
 	prog = g_get_prgname ();
@@ -128,18 +114,20 @@ void unit_test_acls (CuTest* cu)
 		}
 	}
 	
-	CuAssert(cu, "couldn't find ACL for this process on new item", acl != NULL);
+	/* "couldn't find ACL for this process on new item" */
+	g_assert (acl != NULL);
 	
 	/* Now remove all ACLs from the item */
 	l = NULL;
 	gnome_keyring_item_set_acl_sync (KEYRING_NAME, id, l);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Shouldn't be prompted here, not accessing secrets */
 	TELL("No prompt should show up at this point");
 	res = gnome_keyring_item_get_info_full_sync (KEYRING_NAME, id, GNOME_KEYRING_ITEM_INFO_BASICS, &info);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "returned a secret when it shouldn't have", gnome_keyring_item_info_get_secret (info) == NULL);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	/* "returned a secret when it shouldn't have" */
+	g_assert (gnome_keyring_item_info_get_secret (info) == NULL);
 	sleep(2);
 
 	/* Now try to read the item, should be prompted */
@@ -147,24 +135,25 @@ void unit_test_acls (CuTest* cu)
 	TELL("Press 'Allow Once' to give program access to the data");
 #endif
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "didn't return a secret when it should have", gnome_keyring_item_info_get_secret (info) != NULL);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	/* "didn't return a secret when it should have" */
+	g_assert (gnome_keyring_item_info_get_secret (info) != NULL);
 	
 #ifdef ENABLE_ACL_PROMPTS
 	/* Now try to read the item again, give forever access */
 	TELL("Press 'Always Allow' to give program access to the data");
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Now try to read the item, should be prompted */
 	TELL("No prompt should show up at this point");
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	sleep(2);	
 #endif
 }
 
-void unit_test_application_secret (CuTest* cu)
+DEFINE_TEST(application_secret)
 {
 	GnomeKeyringResult res;
 	GnomeKeyringItemInfo *info;
@@ -175,43 +164,43 @@ void unit_test_application_secret (CuTest* cu)
 	res = gnome_keyring_item_create_sync (KEYRING_NAME, 
 			GNOME_KEYRING_ITEM_GENERIC_SECRET | GNOME_KEYRING_ITEM_APPLICATION_SECRET, 
 	                "Fry", NULL, "secret", FALSE, &id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Remove all ACLs from the item */
 	acls = NULL;
 	gnome_keyring_item_set_acl_sync (KEYRING_NAME, id, acls);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Shouldn't be prompted here, not accessing secrets */
 	TELL("No prompt should show up at this point");
 	res = gnome_keyring_item_get_info_full_sync (KEYRING_NAME, id, GNOME_KEYRING_ITEM_INFO_BASICS, &info);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_DENIED, ==, res);
 	sleep(2);
 
 	/* Now try to read the item, should be prompted */
 	TELL("No prompt should show up at this point");
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_DENIED, ==, res);
 	sleep(2);
 }
 
-void unit_test_unlock_prompt (CuTest *cu)
+DEFINE_TEST(unlock_prompt)
 {
 	GnomeKeyringResult res;
 	
 	res = gnome_keyring_lock_all_sync ();
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	TELL("press 'DENY' here");
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, NULL);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_DENIED, ==, res);
 
 	TELL("type in keyring password and click 'OK'");
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, NULL);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_find_locked (CuTest *cu)
+DEFINE_TEST(find_locked)
 {
 	GnomeKeyringResult res;
 	GnomeKeyringAttributeList* attrs;
@@ -234,21 +223,22 @@ void unit_test_find_locked (CuTest *cu)
 	/* Create teh item */
 	res = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      "Yay!", attrs, SECRET, FALSE, &id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Lock the keyring ... */
 	res = gnome_keyring_lock_all_sync ();
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Now, try to access the item */	
 	TELL("type in keyring password and click 'OK'");
 	res = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, attrs, &found);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
-	CuAssert(cu, "Wrong number of items found", g_list_length (found) == 1);
+	/* "Wrong number of items found" */
+	g_assert_cmpint (g_list_length (found), ==, 1);
 }
 
-void unit_test_get_info_locked (CuTest *cu)
+DEFINE_TEST(get_info_locked)
 {
 	GnomeKeyringResult res;
 	GnomeKeyringItemInfo *info;
@@ -257,27 +247,27 @@ void unit_test_get_info_locked (CuTest *cu)
 	/* Create teh item */
 	res = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      "My test locked", NULL, SECRET, FALSE, &id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Lock the keyring ... */
 	res = gnome_keyring_lock_all_sync ();
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Now, try to access the item */	
 	TELL("type in keyring password and click 'OK'");
 	res = gnome_keyring_item_get_info_sync (NULL, id, &info);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_cleaup (CuTest* cu)
+DEFINE_TEST(cleanup)
 {
 	GnomeKeyringResult res;
 	
 	res = gnome_keyring_delete_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	if (default_keyring) {
 		res = gnome_keyring_set_default_keyring_sync (default_keyring);
-		CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+		g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	}	
 }

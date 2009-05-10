@@ -29,23 +29,10 @@
 #include "run-prompt-test.h"
 
 #include <security/pam_appl.h>
-
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
  
 extern pam_handle_t *test_pamh;
 
-void unit_test_pam_open (CuTest* cu)
+DEFINE_TEST(pam_open)
 {
 	char** pam_env;
 
@@ -55,31 +42,32 @@ void unit_test_pam_open (CuTest* cu)
 	int ret = pam_authenticate (test_pamh, 0);
 	if (ret != PAM_SUCCESS)
 		g_printerr ("Bad user/password?\n\n");
-	CuAssertIntEquals (cu, PAM_SUCCESS, ret);
+	g_assert_cmpint (PAM_SUCCESS, ==, ret);
 	
 	pam_env = pam_getenvlist (test_pamh);
 	while (*pam_env)
 		putenv ((char*)*(pam_env++));
 
 	ret = pam_open_session (test_pamh, 0);
-	CuAssertIntEquals (cu, PAM_SUCCESS, ret);
+	g_assert_cmpint (PAM_SUCCESS, ==, ret);
 }
 
-void unit_test_pam_env (CuTest* cu)
+DEFINE_TEST(pam_env)
 {
 	const char *socket;
 
-		
 	socket = g_getenv ("GNOME_KEYRING_SOCKET");
-	CuAssert (cu, "socket should have been setup", socket && socket[0]);
-	CuAssert (cu, "socket should have been created", g_file_test (socket, G_FILE_TEST_EXISTS));
+	/* "socket should have been setup" */
+	g_assert (socket && socket[0]);
+	/* "socket should have been created" */
+	g_assert (g_file_test (socket, G_FILE_TEST_EXISTS));
 
 	g_printerr ("GNOME_KEYRING_SOCKET is: %s\n", g_getenv ("GNOME_KEYRING_SOCKET"));
 	sleep (3);
 }
 
-void unit_test_pam_close (CuTest* cu)
+DEFINE_TEST(pam_close)
 {
 	int ret = pam_close_session (test_pamh, 0);
-	CuAssertIntEquals (cu, PAM_SUCCESS, ret);
+	g_assert_cmpint (PAM_SUCCESS, ==, ret);
 }

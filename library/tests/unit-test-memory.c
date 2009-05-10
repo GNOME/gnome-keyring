@@ -29,19 +29,6 @@
 
 #include "library/gnome-keyring-memory.h"
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
- 
 #define IS_ZERO ~0
  
 static gsize
@@ -56,86 +43,86 @@ find_non_zero (gpointer mem, gsize len)
 	
 	return IS_ZERO;
 }
- 
-void unit_test_alloc_free (CuTest* cu)
+
+DEFINE_TEST(alloc_free)
 {
 	gpointer p;
 	gboolean ret;
 	
 	p = gnome_keyring_memory_alloc (512);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 512));
+	g_assert (p != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 512));
 	
 	memset (p, 0x67, 512);
 	
 	ret = gnome_keyring_memory_is_secure (p);
-	CuAssertIntEquals (cu, ret, TRUE);
+	g_assert (ret == TRUE);
 	
 	gnome_keyring_memory_free (p);
 }
 
-void unit_test_alloc_two (CuTest* cu)
+DEFINE_TEST(alloc_two)
 {
 	gpointer p, p2;
 	gboolean ret;
 	
 	p2 = gnome_keyring_memory_alloc (4);
-	CuAssertPtrNotNull (cu, p2);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 4));
+	g_assert(p2 != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p2, 4));
 	
 	memset (p2, 0x67, 4);
 	
 	p = gnome_keyring_memory_alloc (16200);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 16200));
+	g_assert (p != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 16200));
 
 	memset (p, 0x67, 16200);
 	
 	ret = gnome_keyring_memory_is_secure (p);
-	CuAssertIntEquals (cu, ret, TRUE);
+	g_assert (ret == TRUE);
 	
 	gnome_keyring_memory_free (p2);
 	gnome_keyring_memory_free (p);
 }
 
-void unit_test_realloc (CuTest* cu)
+DEFINE_TEST(realloc)
 {
 	gchar *str = "a test string to see if realloc works properly";
 	gpointer p, p2;
-	int r;
 	gsize len;
 	
 	len = strlen (str) + 1;
 	
 	p = gnome_keyring_memory_realloc (NULL, len);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, len));
+	g_assert (p != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, len));
 	
 	strcpy ((gchar*)p, str);
 	
 	p2 = gnome_keyring_memory_realloc (p, 512);
-	CuAssertPtrNotNull (cu, p2);
+	g_assert (p2 != NULL);
 	
-	r = strcmp (p2, str);
-	CuAssert (cu, "strings not equal after realloc", r == 0);
+	/* "strings not equal after realloc" */
+	g_assert_cmpstr (p2, ==, str);
 	
 	p = gnome_keyring_memory_realloc (p2, 0);
-	CuAssert (cu, "should have freed memory", p == NULL);
+	/* "should have freed memory" */
+	g_assert (p == NULL);
 }
 
-void unit_test_realloc_across (CuTest *cu)
+DEFINE_TEST(realloc_across)
 {
 	gpointer p, p2;
 	
 	/* Tiny allocation */
 	p = gnome_keyring_memory_realloc (NULL, 1088);
-	CuAssertPtrNotNull (cu, p);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p, 1088));
+	g_assert (p != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p, 1088));
 
 	/* Reallocate to a large one, will have to have changed blocks */	
 	p2 = gnome_keyring_memory_realloc (p, 16200);
-	CuAssertPtrNotNull (cu, p2);
-	CuAssertIntEquals (cu, IS_ZERO, find_non_zero (p2, 16200));
+	g_assert (p2 != NULL);
+	g_assert_cmpint (IS_ZERO, ==, find_non_zero (p2, 16200));
 	
 	gnome_keyring_memory_free (p2);
 }

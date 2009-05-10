@@ -31,22 +31,9 @@
 
 #include "library/gnome-keyring.h"
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
- 
 static GPid daemon_pid;
 
-void unit_setup_daemon (void)
+DEFINE_START(setup_daemon)
 {
 	GError *err = NULL;
 	gchar *args[3];
@@ -86,7 +73,7 @@ void unit_setup_daemon (void)
 	sleep (2);
 }
 
-void unit_teardown_daemon (void)
+DEFINE_STOP(setup_daemon)
 {
 	if (daemon_pid)
 		kill (daemon_pid, SIGTERM);

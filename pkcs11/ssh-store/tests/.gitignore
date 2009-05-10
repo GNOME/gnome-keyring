@@ -1,5 +1,8 @@
 /run-auto-test.*
-/.*
+.deps
+.libs
 /Makefile
 /Makefile.in
 /run-auto-test
+run-prompt-test*
+

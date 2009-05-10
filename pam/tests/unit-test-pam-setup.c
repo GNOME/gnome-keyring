@@ -32,19 +32,6 @@
 
 #include <security/pam_appl.h>
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
-
 /* Used directly by the other tests */
 pam_handle_t *test_pamh = NULL;
   
@@ -92,7 +79,7 @@ conv_func (int n, const struct pam_message **msg,
 
 struct pam_conv conv = { conv_func, NULL };
 
-void unit_setup_pam (void)
+DEFINE_START(setup_pam)
 {
 	char user[1024];
 	int ret;
@@ -122,7 +109,7 @@ void unit_setup_pam (void)
 	g_assert (test_pamh);
 }	
 
-void unit_teardown_pam (void)
+DEFINE_STOP(setup_pam)
 {
 	g_assert (test_pamh);
 	pam_end (test_pamh, PAM_SUCCESS);

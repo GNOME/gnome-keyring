@@ -16,4 +16,4 @@ UNIT_LIBS =  \
 
 EXTRA_DIST = test-data
 
-include $(top_srcdir)/tests/test.make
+include $(top_srcdir)/tests/gtest.make

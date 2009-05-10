@@ -1,14 +1,12 @@
 
 EXTRA_DIST = \
 	ca-example \
-	cu-test \
-	test-helpers.c test-helpers.h \
 	gtest-helpers.c gtest-helpers.h \
-	prep-tests.sh prep-gtest.sh \
+	prep-gtest.sh \
 	run-tests.sh \
-	test.make gtest.make
+	gtest.make
 
-INCLUDES=					\
+INCLUDES=				\
 	-I$(top_srcdir) 		\
 	-I$(top_builddir) 		\
 	$(GTK_CFLAGS) 			\

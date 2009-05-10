@@ -14,7 +14,4 @@ UNIT_LIBS =  \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/library/libgnome-keyring.la
 
-UNIT_FLAGS = \
-	-DEXTERNAL_TEST
-	
-include $(top_srcdir)/tests/test.make
+include $(top_srcdir)/tests/gtest.make

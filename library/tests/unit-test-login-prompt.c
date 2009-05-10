@@ -29,19 +29,6 @@
 #include "run-prompt-test.h"
 
 #include "library/gnome-keyring.h"
-
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
  
 static void 
 TELL(const char* what)
@@ -57,61 +44,61 @@ TELL(const char* what)
 #define DISPLAY_NAME "Item Display Name"
 #define SECRET "item-secret"
 
-void unit_test_create_unlock_login (CuTest* cu)
+DEFINE_TEST(create_unlock_login)
 {
 	GnomeKeyringResult res;
 	
 	/* Remove the login keyring */
 	res = gnome_keyring_delete_sync (KEYRING_LOGIN);
 	if (res != GNOME_KEYRING_RESULT_NO_SUCH_KEYRING)
-		CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+		g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Now create it with our password */
 	res = gnome_keyring_create_sync (KEYRING_LOGIN, THE_PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_auto_keyring (CuTest* cu)
+DEFINE_TEST(auto_keyring)
 {
 	GnomeKeyringResult res;
 
 	/* Remove the auto unlock keyring */
 	res = gnome_keyring_delete_sync (KEYRING_NAME);
 	if (res != GNOME_KEYRING_RESULT_NO_SUCH_KEYRING)
-		CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+		g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	res = gnome_keyring_create_sync (KEYRING_NAME, THE_PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	res = gnome_keyring_lock_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Prompt the user to unlock, and check the option */
 	TELL("type 'test' as the password and check the 'Automatically unlock' option");
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, NULL);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	res = gnome_keyring_lock_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	TELL("No prompt should show up at this point");
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, NULL);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	sleep(2);
 }
 
-void unit_test_auto_keyring_stale (CuTest* cu)
+DEFINE_TEST(auto_keyring_stale)
 {
 	GnomeKeyringResult res;
 	
 	/* Remove the auto unlock keyring */
 	res = gnome_keyring_change_password_sync (KEYRING_NAME, THE_PASSWORD, OTHER_PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	res = gnome_keyring_lock_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	TELL("Press 'deny' here");	
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, NULL);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_DENIED, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_DENIED, ==, res);
 }

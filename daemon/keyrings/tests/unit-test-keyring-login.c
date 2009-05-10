@@ -35,20 +35,7 @@
 #include <glib.h>
 #include <memory.h>
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void)
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void)
- * 
- * Tests be run in the order specified here.
- */
-
-void unit_setup_keyrings_login (void)
+DEFINE_SETUP(keyrings_login)
 {
 	gkr_keyrings_update();
 
@@ -63,50 +50,58 @@ void unit_setup_keyrings_login (void)
 }
 
 static void 
-verify_no_ask (GkrAskRequest *req, gpointer data)
+verify_no_ask (GkrAskRequest *req, gpointer unused)
 {
-	CuTest *cu = (CuTest*)data;
-	CuAssert (cu, "should not have prompted", FALSE);
+	/* "should not have prompted" */
+	g_assert_not_reached ();
 }
 
-void unit_test_keyrings_login (CuTest* cu)
+DEFINE_TEST(keyrings_login)
 {
 	GkrKeyring *login;
 	gboolean ret;
 
-	gkr_ask_daemon_set_hook (verify_no_ask, cu);
+	gkr_ask_daemon_set_hook (verify_no_ask, NULL);
 	
 	/* Unlock and create a new login keyring */
 	ret = gkr_keyring_login_unlock ("blah");
-	CuAssert (cu, "gkr_keyring_login_unlock() return FALSE", ret);
-	CuAssert (cu, "login not marked unlocked", gkr_keyring_login_is_unlocked ());
+	/* "gkr_keyring_login_unlock() return FALSE" */
+	g_assert (ret);
+	/* "login not marked unlocked" */
+	g_assert (gkr_keyring_login_is_unlocked ());
 	
 	/* Make sure it worked */
 	login = gkr_keyrings_get_login ();
-	CuAssert (cu, "invalid keyring created by gkr_keyring_login_unlock()", login != NULL);
+	/* "invalid keyring created by gkr_keyring_login_unlock()" */
+	g_assert (login != NULL);
 	
 	/* Now lock it */
 	gkr_keyring_login_lock ();
-	CuAssert (cu, "didn't lock right keyring", login->locked);
-	CuAssert (cu, "login not marked locked", !gkr_keyring_login_is_unlocked ());
+	/* "didn't lock right keyring" */
+	g_assert (login->locked);
+	/* "login not marked locked" */
+	g_assert (!gkr_keyring_login_is_unlocked ());
 	
 	/* And unlock it again */
 	ret = gkr_keyring_login_unlock ("blah");
-	CuAssert (cu, "gkr_keyring_login_unlock() returned FALSE", ret);
+	/* "gkr_keyring_login_unlock() returned FALSE" */
+	g_assert (ret);
 	
 	/* Make sure it didn't create a new keyring */
-	CuAssert (cu, "gkr_keyring_login_unlock() created a second keyring", 
-	          login == gkr_keyrings_get_login());
+	/* "gkr_keyring_login_unlock() created a second keyring" */
+	g_assert (login == gkr_keyrings_get_login());
 }
 
-void unit_test_keyrings_login_master (CuTest *cu)
+DEFINE_TEST(keyrings_login_master)
 {
 	const gchar *master = gkr_keyring_login_master();
-	CuAssert (cu, "no master password in login keyring", master != NULL);
-	CuAssert (cu, "wrong master password in login keyring", strcmp (master, "blah") == 0);
+	/* "no master password in login keyring" */
+	g_assert (master != NULL);
+	/* "wrong master password in login keyring" */
+	g_assert_cmpstr (master, ==, "blah");
 }
 
-void unit_test_keyrings_login_secrets (CuTest* cu)
+DEFINE_TEST(keyrings_login_secrets)
 {
 	const gchar *password;
 	
@@ -120,8 +115,10 @@ void unit_test_keyrings_login_secrets (CuTest* cu)
 	password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                 "attr-string", "string",
 	                                 NULL);
-	CuAssert (cu, "no secret found in login keyring", password != NULL);
-	CuAssert (cu, "wrong secret found in login keyring", strcmp (password, "secret") == 0);
+	/* "no secret found in login keyring */
+	g_assert (password != NULL);
+	/* "wrong secret found in login keyring" */
+	g_assert_cmpstr (password, ==, "secret");
 	
 	/* Change it to a different password */
 	gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_GENERIC_SECRET,
@@ -133,8 +130,10 @@ void unit_test_keyrings_login_secrets (CuTest* cu)
 	password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                 "attr-string", "string",
 	                                 NULL);
-	CuAssert (cu, "no secret found in login keyring", password != NULL);
-	CuAssert (cu, "wrong secret found in login keyring", strcmp (password, "other") == 0);
+	/* "no secret found in login keyring" */
+	g_assert (password != NULL);
+	/* "wrong secret found in login keyring" */
+	g_assert_cmpstr (password, ==, "other");
 
 	/* Remove it */
 	gkr_keyring_login_remove_secret  (GNOME_KEYRING_ITEM_GENERIC_SECRET,
@@ -145,5 +144,6 @@ void unit_test_keyrings_login_secrets (CuTest* cu)
 	password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                 "attr-string", "string",
 	                                 NULL);
-	CuAssert (cu, "secret wasn't deleted properly", password == NULL);
+	/* "secret wasn't deleted properly" */
+	g_assert (password == NULL);
 }

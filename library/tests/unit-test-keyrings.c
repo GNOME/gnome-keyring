@@ -29,19 +29,6 @@
 
 #include "library/gnome-keyring.h"
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
- 
 static GList* keyrings = NULL;
 
 #define PASSWORD "my-keyring-password"
@@ -50,75 +37,76 @@ static GList* keyrings = NULL;
 #define DISPLAY_NAME "Item Display Name"
 #define SECRET "item-secret"
 
-void unit_test_remove_incomplete (CuTest* cu)
+DEFINE_TEST(remove_incomplete)
 {
 	GnomeKeyringResult res;
 	
 	res = gnome_keyring_delete_sync (KEYRING_NAME);
-	if (res != GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) 	
-		CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	if (res != GNOME_KEYRING_RESULT_NO_SUCH_KEYRING)
+		g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_create_keyring (CuTest* cu)
+DEFINE_TEST(create_keyring)
 {
 	GnomeKeyringResult res;
 	
 	/* No default keyring */
-	res = gnome_keyring_set_default_keyring_sync (NULL);	
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	res = gnome_keyring_set_default_keyring_sync (NULL);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	res = gnome_keyring_create_sync (KEYRING_NAME, PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	res = gnome_keyring_create_sync (KEYRING_NAME, PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_ALREADY_EXISTS, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_ALREADY_EXISTS, ==, res);
 }
 
-void unit_test_set_default_keyring (CuTest* cu)
+DEFINE_TEST(set_default_keyring)
 {
 	GnomeKeyringResult res;
 	gchar* name;
 	
 	res = gnome_keyring_set_default_keyring_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);	
 
 	res = gnome_keyring_set_default_keyring_sync (INVALID_KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, ==, res);
 		
 	res = gnome_keyring_get_default_keyring_sync (&name);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
-	CuAssertPtrNotNull(cu, name);
-	CuAssertStrEquals(cu, name, KEYRING_NAME);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	g_assert (name != NULL);
+	g_assert_cmpstr (name, ==, KEYRING_NAME);
 }
 
-void unit_test_delete_keyring (CuTest* cu)
+DEFINE_TEST(delete_keyring)
 {
 	GnomeKeyringResult res;
 	gchar* name;
 	
 	res = gnome_keyring_delete_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	res = gnome_keyring_delete_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, ==, res);	
 
 	res = gnome_keyring_get_default_keyring_sync (&name);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "returning deleted keyring as default", name == NULL || strcmp (name, KEYRING_NAME) != 0);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	/* "returning deleted keyring as default" */
+	g_assert(name == NULL || strcmp (name, KEYRING_NAME) != 0);
 }
 
-void unit_test_recreate_keyring (CuTest* cu)
+DEFINE_TEST(recreate_keyring)
 {
 	GnomeKeyringResult res;
 
 	/* Create the test keyring again and set as default */
 	res = gnome_keyring_create_sync (KEYRING_NAME, PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	res = gnome_keyring_set_default_keyring_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);		
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_create_list_items (CuTest* cu)
+DEFINE_TEST(create_list_items)
 {
 	GnomeKeyringResult res;
 	guint id, id2, id3;
@@ -129,76 +117,81 @@ void unit_test_create_list_items (CuTest* cu)
 	/* Try in an invalid keyring */
 	res = gnome_keyring_item_create_sync (INVALID_KEYRING_NAME, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      DISPLAY_NAME, NULL, SECRET, FALSE, &id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, ==, res);
 
 	/* Create for real in valid keyring */
 	res = gnome_keyring_item_create_sync (KEYRING_NAME, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      DISPLAY_NAME, NULL, SECRET, FALSE, &id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Update the item, shouldn't create new */
 	res = gnome_keyring_item_create_sync (KEYRING_NAME, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      DISPLAY_NAME, NULL, SECRET, TRUE, &id3);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "Updated item doesn't have the same id", id == id3);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	/* "Updated item doesn't have the same id" */
+	g_assert_cmpint (id, ==, id3);
 
 	/* Update in NULL keyring, should use default */
 	res = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      DISPLAY_NAME, NULL, SECRET, TRUE, &id3);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "Updated item in NULL keyring doesn't have the same id", id == id3);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	/* "Updated item doesn't have the same id" */
+	g_assert_cmpint (id, ==, id3);
 			
 	/* Create new,  shouldn't update */
 	res = gnome_keyring_item_create_sync (KEYRING_NAME, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      "Another display name", NULL, SECRET, FALSE, &id2);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "Two items created with the same id", id2 != id);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	/* "Two items created with the same id" */
+	g_assert_cmpint (id, !=, id2);
 	
 	/* Set some attributes, NULL keyring = default */
 	attrs = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (attrs, "bender", "rocks");
 	res = gnome_keyring_item_set_attributes_sync (NULL, id, attrs);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* List ids that were created */
 	res = gnome_keyring_list_item_ids_sync (KEYRING_NAME, &ids); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Check that they're the same ids */
-	CuAssert(cu, "Wrong number of ids created", g_list_length (ids) == 2);
+	/* "Wrong number of ids created" */
+	g_assert_cmpint (g_list_length (ids), ==, 2);
 	if (g_list_length (ids) == 2) {
-		CuAssertIntEquals(cu, id, GPOINTER_TO_UINT (ids->data));
-		CuAssertIntEquals(cu, id2, GPOINTER_TO_UINT (ids->next->data));
+		g_assert_cmpint (id, ==, GPOINTER_TO_UINT (ids->data));
+		g_assert_cmpint (id2, ==, GPOINTER_TO_UINT (ids->next->data));
 	}
 	
 	/* Now make sure both have that same secret */
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	if (res == GNOME_KEYRING_RESULT_OK)
-		CuAssert(cu, "Secret has changed", strcmp (gnome_keyring_item_info_get_secret (info), SECRET) == 0);	
+		/* "Secret has changed" */
+		g_assert_cmpstr (gnome_keyring_item_info_get_secret (info), ==, SECRET);	
 
 	/* And try it with a NULL (ie: default) keyring */
 	res = gnome_keyring_item_get_info_sync (NULL, id2, &info); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	if (res == GNOME_KEYRING_RESULT_OK)
-		CuAssert(cu, "Secret has changed", strcmp (gnome_keyring_item_info_get_secret (info), SECRET) == 0);
+		g_assert_cmpstr (gnome_keyring_item_info_get_secret (info), ==, SECRET);	
 		
 	/* Set the info back, should work */
 	res = gnome_keyring_item_set_info_sync (NULL, id2, info);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Make sure it's still the same */
 	res = gnome_keyring_item_get_info_sync (KEYRING_NAME, id, &info); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	if (res == GNOME_KEYRING_RESULT_OK)
-		CuAssert(cu, "Secret has changed", strcmp (gnome_keyring_item_info_get_secret (info), SECRET) == 0);	
+		g_assert_cmpstr (gnome_keyring_item_info_get_secret (info), ==, SECRET);	
 		
 	/* Now delete the item */
 	res = gnome_keyring_item_delete_sync (NULL, id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_find_keyrings (CuTest* cu)
+DEFINE_TEST(find_keyrings)
 {
 	GnomeKeyringResult res;
 	GnomeKeyringAttributeList* attrs;
@@ -216,20 +209,24 @@ void unit_test_find_keyrings (CuTest* cu)
 	/* Create the item */
 	res = gnome_keyring_item_create_sync ("session", GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      "Barnyard", attrs, SECRET, TRUE, &id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Now try to find it */
 	res = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, attrs, &found);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "Too many items found", g_list_length (found) == 1);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	/* "Too many items found" */
+	g_assert_cmpint (g_list_length (found), ==, 1);
 
 	f = (GnomeKeyringFound*)found->data;	
-	CuAssert(cu, "Wrong item found", f->item_id == id);
-	CuAssert(cu, "Found in wrong keyring", strcmp (f->keyring, "session") == 0);
-	CuAssert(cu, "Wrong secret came back", strcmp (f->secret, SECRET) == 0);
+	/* "Wrong item found" */
+	g_assert (f->item_id == id);
+	/* "Found in wrong keyring" */
+	g_assert_cmpstr (f->keyring, ==, "session");
+	/* "Wrong secret came back" */
+	g_assert_cmpstr (f->secret, ==, SECRET);
 	
 	res = gnome_keyring_item_get_attributes_sync ("session", id, &attrs);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Make sure that dog does in fact woof */
 	attr = NULL;
@@ -240,11 +237,14 @@ void unit_test_find_keyrings (CuTest* cu)
 			break;
 	}
 	
-	CuAssertPtrNotNull (cu, attr);
+	g_assert (attr != NULL);
 	if (attr) {
-		CuAssert (cu, "invalid attribute found", strcmp (attr->name, "dog") == 0);
-		CuAssert (cu, "invalid attribute type", attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING);
-		CuAssert (cu, "invalid attribute value", strcmp (attr->value.string, "woof") == 0);
+		/* "invalid attribute found" */
+		g_assert_cmpstr (attr->name, ==, "dog");
+		/* "invalid attribute type" */
+		g_assert_cmpint (attr->type, ==, GNOME_KEYRING_ATTRIBUTE_TYPE_STRING);
+		/* "invalid attribute value" */
+		g_assert_cmpstr (attr->value.string, ==, "woof");
 	}
 }
 
@@ -252,7 +252,7 @@ void unit_test_find_keyrings (CuTest* cu)
  * A find that does not match should return 'Not Found':
  * http://bugzilla.gnome.org/show_bug.cgi?id=476682
  */
-void unit_test_find_invalid (CuTest* cu)
+DEFINE_TEST(find_invalid)
 {
 	GnomeKeyringResult res;
 	GnomeKeyringAttributeList* attrs;
@@ -263,54 +263,54 @@ void unit_test_find_invalid (CuTest* cu)
 	
 	/* Now try to find it */
 	res = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET, attrs, &found);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_NO_MATCH, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_NO_MATCH, ==, res);
 }
 
-void unit_test_lock_keyrings (CuTest* cu)
+DEFINE_TEST(lock_keyrings)
 {
 	GnomeKeyringResult res;
 
 	res = gnome_keyring_lock_all_sync ();
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* An unlock when already unlocked is fine */
 	res = gnome_keyring_unlock_sync (KEYRING_NAME, PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	res = gnome_keyring_unlock_sync ("boooyaaah", PASSWORD);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, ==, res);
 }
 
-void unit_test_change_password (CuTest* cu)
+DEFINE_TEST(change_password)
 {
 	GnomeKeyringResult res;
 	
 	res = gnome_keyring_change_password_sync (KEYRING_NAME, PASSWORD, "new password"); 
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_keyring_info (CuTest* cu)
+DEFINE_TEST(keyring_info)
 {
 	GnomeKeyringResult res;
 	GnomeKeyringInfo *info;
 	
 	res = gnome_keyring_get_info_sync (NULL, &info);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	res = gnome_keyring_set_info_sync (NULL, info);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_list_keyrings (CuTest* cu)
+DEFINE_TEST(list_keyrings)
 {
 	GnomeKeyringResult res;
 	GList *l;
 	
 	res = gnome_keyring_list_keyring_names_sync (&keyrings);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	printf("\t\tkeyrings:\n");
 	for (l = keyrings; l; l = g_list_next (l))
@@ -319,13 +319,14 @@ void unit_test_list_keyrings (CuTest* cu)
 
 static GnomeKeyringResult grant_access_result = GNOME_KEYRING_RESULT_CANCELLED;
 
-static void done_grant_access (GnomeKeyringResult res, gpointer data)
+static void
+done_grant_access (GnomeKeyringResult res, gpointer data)
 {
 	grant_access_result = res;
 	test_mainloop_quit ();
 } 
 
-void unit_test_keyring_grant_access (CuTest *cu)
+DEFINE_TEST(keyring_grant_access)
 {
 	GList *acl, *l;
 	GnomeKeyringResult res;
@@ -336,37 +337,42 @@ void unit_test_keyring_grant_access (CuTest *cu)
 	/* Create teh item */
 	res = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET, 
 	                                      "Barnyard", NULL, SECRET, FALSE, &id);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 	
 	/* Grant strange program access (async) */
 	grant_access_result = GNOME_KEYRING_RESULT_CANCELLED;
 	op = gnome_keyring_item_grant_access_rights (NULL, "Strange Application", 
 	                                             "/usr/bin/strangeness", id, 
 	                                             GNOME_KEYRING_ACCESS_READ, 
-	                                             done_grant_access, NULL, NULL); 
-	CuAssert(cu, "return null op", op != NULL);
-	CuAssert(cu, "callback already called", grant_access_result == GNOME_KEYRING_RESULT_CANCELLED);
+	                                             done_grant_access, NULL, NULL);
+	/* "return null op" */
+	g_assert (op != NULL);
+	/* "callback already called" */
+	g_assert_cmpint (grant_access_result, ==, GNOME_KEYRING_RESULT_CANCELLED);
 		
 	test_mainloop_run (2000);
 	
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, grant_access_result);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, grant_access_result);
 	
 	/* Now list the stuff */
 	res = gnome_keyring_item_get_acl_sync (NULL, id, &acl);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Make sure it's in the list */
 	found = FALSE;	
 	for (l = acl; l; l = g_list_next (l)) {
 		GnomeKeyringAccessControl *ac = (GnomeKeyringAccessControl*)l->data;
-		CuAssert(cu, "null access control", ac != NULL);
-		CuAssert(cu, "null access control pathname", gnome_keyring_item_ac_get_path_name (ac) != NULL);
+		/* "null access control" */
+		g_assert (ac != NULL);
+		/* "null access control pathname" */
+		g_assert (gnome_keyring_item_ac_get_path_name (ac) != NULL);
 		
 		if (strcmp (gnome_keyring_item_ac_get_path_name (ac), "/usr/bin/strangeness") == 0)
 			found = TRUE;
 	}
 	
-	CuAssert(cu, "couldn't find acces granted", found == TRUE);
+	/* "couldn't find acces granted" */
+	g_assert (found == TRUE);
 
 	gnome_keyring_acl_free (acl);
 }
@@ -391,7 +397,7 @@ done_store_password (GnomeKeyringResult res, gpointer data)
 	test_mainloop_quit ();
 } 
 
-void unit_test_store_password (CuTest *cu)
+DEFINE_TEST(store_password)
 {
 	GnomeKeyringResult res;
 	gpointer op;
@@ -400,7 +406,7 @@ void unit_test_store_password (CuTest *cu)
 	res = gnome_keyring_store_password_sync (&our_schema, NULL,
 	                                         "Display name", "password", 
 	                                         NULL);
-	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_BAD_ARGUMENTS, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_BAD_ARGUMENTS, ==, res);
 	
 	/* Synchronous, save to default keyring */
 	res = gnome_keyring_store_password_sync (&our_schema, NULL,
@@ -408,7 +414,7 @@ void unit_test_store_password (CuTest *cu)
 	                                         "dog", "woof", 
 	                                         "legs", 4,
 	                                         NULL);
-	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 
 	/* Asynchronous, save to session */
 	res = GNOME_KEYRING_RESULT_CANCELLED;
@@ -418,31 +424,34 @@ void unit_test_store_password (CuTest *cu)
                                            "dog", "woof", 
 	                                   "legs", 4,
 	                                   NULL);
-	CuAssert(cu, "async operation is NULL", op != NULL);
-	CuAssert(cu, "callback already called", res == GNOME_KEYRING_RESULT_CANCELLED);
+	/* "async operation is NULL" */
+	g_assert (op != NULL);
+	/* "callback already called" */
+	g_assert_cmpint (res, ==, GNOME_KEYRING_RESULT_CANCELLED);
 		
 	test_mainloop_run (2000);
 	
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
 static GnomeKeyringResult find_password_result;
 
 static void 
-done_find_password (GnomeKeyringResult res, const gchar* password, gpointer data)
+done_find_password (GnomeKeyringResult res, const gchar* password, gpointer unused)
 {
 	find_password_result = res;
 	
 	if(res == GNOME_KEYRING_RESULT_OK) {
-		CuTest *cu = (CuTest*)data;
-		CuAssert(cu, "Null password returned", password != NULL);
-		CuAssert(cu, "Wrong returned from find", strcmp (password, "password") == 0);
+		/* "Null password returned" */
+		g_assert (password != NULL);
+		/* "Wrong returned from find" */
+		g_assert_cmpstr (password, ==, "password");
 	}
 
 	test_mainloop_quit ();
 } 
 
-void unit_test_find_password (CuTest *cu)
+DEFINE_TEST(find_password)
 {
 	GnomeKeyringResult res;
 	gchar *password;
@@ -451,30 +460,34 @@ void unit_test_find_password (CuTest *cu)
 	/* Synchronous, bad arguments */
 	res = gnome_keyring_find_password_sync (&our_schema, &password,
 	                                        NULL);
-	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_BAD_ARGUMENTS, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_BAD_ARGUMENTS, ==, res);
 	
 	/* Synchronous, valid*/
 	res = gnome_keyring_find_password_sync (&our_schema, &password,
 	                                        "dog", "woof", 
 	                                        "legs", 4,
 	                                        NULL);
-	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_OK, res);
-	CuAssert(cu, "Null password returned", password != NULL);
-	CuAssert(cu, "Wrong returned from find", strcmp (password, "password") == 0);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
+	/* "Null password returned" */
+	g_assert (password != NULL);
+	/* "Wrong returned from find" */
+	g_assert_cmpstr (password, ==, "password");
 	gnome_keyring_free_password (password);
 
 	/* Asynchronous, less arguments */
 	find_password_result = GNOME_KEYRING_RESULT_CANCELLED;
 	op = gnome_keyring_find_password (&our_schema, 
-	                                  done_find_password, cu, NULL,  
+	                                  done_find_password, NULL, NULL,
 	                                  "legs", 4,
 	                                  NULL);
-	CuAssert(cu, "async operation is NULL", op != NULL);
-	CuAssert(cu, "callback already called", find_password_result == GNOME_KEYRING_RESULT_CANCELLED);
+	/* "async operation is NULL" */
+	g_assert (op != NULL);
+	/* "callback already called" */
+	g_assert (find_password_result == GNOME_KEYRING_RESULT_CANCELLED);
 		
 	test_mainloop_run (2000);
 	
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, find_password_result);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, find_password_result);
 }
 
 static void 
@@ -484,21 +497,21 @@ done_delete_password (GnomeKeyringResult res, gpointer data)
 	test_mainloop_quit ();
 } 
 
-void unit_test_delete_password (CuTest *cu)
+DEFINE_TEST(delete_password)
 {
 	GnomeKeyringResult res;
 	gpointer op;
 	
 	/* Synchronous, bad arguments */
 	res = gnome_keyring_delete_password_sync (&our_schema, NULL);
-	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_BAD_ARGUMENTS, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_BAD_ARGUMENTS, ==, res);
 	
 	/* Synchronous, no match */
 	res = gnome_keyring_delete_password_sync (&our_schema, 
 	                                          "dog", "waoof", 
 	                                          "legs", 5,
 	                                          NULL);
-	CuAssertIntEquals (cu, GNOME_KEYRING_RESULT_NO_MATCH, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_NO_MATCH, ==, res);
 
 	/* Asynchronous, less arguments */
 	res = GNOME_KEYRING_RESULT_CANCELLED;
@@ -506,19 +519,21 @@ void unit_test_delete_password (CuTest *cu)
 	                                    done_delete_password, &res, NULL,  
 	                                    "legs", 4,
 	                                    NULL);
-	CuAssert(cu, "async operation is NULL", op != NULL);
-	CuAssert(cu, "callback already called", res == GNOME_KEYRING_RESULT_CANCELLED);
+	/* "async operation is NULL" */
+	g_assert (op != NULL);
+	/* "callback already called" */
+	g_assert (res == GNOME_KEYRING_RESULT_CANCELLED);
 		
 	test_mainloop_run (2000);
 	
 	/* Should have already been deleted by the second call above */
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }
 
-void unit_test_cleaup (CuTest* cu)
+DEFINE_TEST(cleanup)
 {
 	GnomeKeyringResult res;
 	
 	res = gnome_keyring_delete_sync (KEYRING_NAME);
-	CuAssertIntEquals(cu, GNOME_KEYRING_RESULT_OK, res);	
+	g_assert_cmpint (GNOME_KEYRING_RESULT_OK, ==, res);
 }

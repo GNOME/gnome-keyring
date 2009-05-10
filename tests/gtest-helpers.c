@@ -129,6 +129,7 @@ int
 main (int argc, char* argv[])
 {
 	GLogLevelFlags fatal_mask;
+	int ret;
 
 	g_thread_init (NULL);
 
@@ -151,5 +152,10 @@ main (int argc, char* argv[])
 	g_log_set_always_fatal (fatal_mask);
 
 	initialize_tests ();
-	return g_test_run ();
-} 
+
+	start_tests ();
+	ret = g_test_run ();
+	stop_tests();
+
+	return ret;
+}

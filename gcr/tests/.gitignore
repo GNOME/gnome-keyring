@@ -6,3 +6,5 @@
 /.deps
 /.libs
 /ui-test-details
+run-prompt-test*
+

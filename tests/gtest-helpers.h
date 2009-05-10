@@ -57,6 +57,16 @@ gchar* test_build_filename (const gchar *basename);
 #define DEFINE_TEST(x) \
 	void test_##x(int *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)
 
+#define DECLARE_START(x) \
+	void start_##x(void)
+#define DEFINE_START(x) \
+	void start_##x(void)
+
+#define DECLARE_STOP(x) \
+	void stop_##x(void)
+#define DEFINE_STOP(x) \
+	void stop_##x(void)
+
 /* #define DEFINE_ABORT(x) void abort_x(void *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)' */
 
 #endif /* GTEST_HELPERS_H_ */
