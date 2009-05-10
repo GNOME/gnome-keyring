@@ -33,7 +33,7 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-unix-signal.h"
+#include "egg/egg-unix-signal.h"
 
 /* 
  * Each test looks like (on one line):
@@ -52,7 +52,6 @@ static guint last_signal = 0;
 static const gchar *test_arg = "data";
 
 typedef struct _SignalParam {
-	CuTest *cu;
 	const gchar *argument;
 } SignalParam;
 
@@ -60,51 +59,49 @@ static gboolean
 handle_signal (guint sig, gpointer data)
 {
 	SignalParam *param = (SignalParam*)data;
-	CuAssert(param->cu, "user data not passed properly", param->argument == test_arg);
+	g_assert_cmpstr (param->argument, ==, test_arg);
 	last_signal = sig;
 	test_mainloop_quit ();
 	return TRUE;
 }
 
-void unit_test_unix_signal (CuTest* cu)
+DEFINE_TEST(unix_signal)
 {
 	SignalParam param;
 	GMainContext *ctx;
 	
-	param.cu = cu;
 	param.argument = test_arg;
 	
 	ctx = g_main_loop_get_context (test_mainloop_get ());
-	gkr_unix_signal_connect (ctx, SIGHUP, handle_signal, &param);
-	gkr_unix_signal_connect (ctx, SIGINT, handle_signal, &param);
+	egg_unix_signal_connect (ctx, SIGHUP, handle_signal, &param);
+	egg_unix_signal_connect (ctx, SIGINT, handle_signal, &param);
 
 	raise (SIGHUP);
 	test_mainloop_run (2000);
-	CuAssert (cu, "signal not handled", last_signal == SIGHUP);
+	g_assert_cmpint (last_signal, ==, SIGHUP);
 
 	raise (SIGINT);
 	test_mainloop_run (2000);
-	CuAssert (cu, "signal not handled", last_signal == SIGINT);
+	g_assert_cmpint (last_signal, ==, SIGINT);
 
-	gkr_unix_signal_connect (ctx, SIGTERM, handle_signal, &param);
+	egg_unix_signal_connect (ctx, SIGTERM, handle_signal, &param);
 	raise (SIGTERM);
 	test_mainloop_run (2000);
-	CuAssert (cu, "signal not handled", last_signal == SIGTERM);
+	g_assert_cmpint (last_signal, ==, SIGTERM);
 }		
 
-void unit_test_unix_sig_remove (CuTest* cu)
+DEFINE_TEST(unix_sig_remove)
 {
 	SignalParam param;
 	guint id;
 
-	param.cu = cu;
 	param.argument = test_arg;
 		
-	id = gkr_unix_signal_connect (g_main_loop_get_context (test_mainloop_get ()),
+	id = egg_unix_signal_connect (g_main_loop_get_context (test_mainloop_get ()),
 	                              SIGCONT, handle_signal, &param);
 	raise (SIGCONT);
 	test_mainloop_run (2000);
-	CuAssert (cu, "signal not handled", last_signal == SIGCONT);
+	g_assert_cmpint (last_signal, ==, SIGCONT);
 	
 	/* Remove the handler */
 	last_signal = 0;	
@@ -113,5 +110,5 @@ void unit_test_unix_sig_remove (CuTest* cu)
 	/* Should be ignored */
 	raise (SIGCONT);
 	test_mainloop_run (2000);
-	CuAssert (cu, "signal handler not removed properly", last_signal == 0);
+	g_assert_cmpint (last_signal, ==, 0);
 }

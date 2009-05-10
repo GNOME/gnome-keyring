@@ -28,6 +28,7 @@ libegg_la_SOURCES = \
 	egg-unix-credentials.c egg-unix-credentials.h \
 	egg-secure-memory.c egg-secure-memory.h \
 	egg-symkey.c egg-symkey.h \
+	egg-unix-signal.c egg-unix-signal.h \
 	$(BUILT_SOURCES)
 	
 asn1-def-pk.h: pk.asn

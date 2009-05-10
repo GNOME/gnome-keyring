@@ -27,11 +27,11 @@
 
 #include "common/gkr-async.h"
 #include "common/gkr-cleanup.h"
-#include "common/gkr-unix-signal.h"
 
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
+#include "egg/egg-unix-signal.h"
 
 #include "keyrings/gkr-keyring-login.h"
 
@@ -745,9 +745,9 @@ main (int argc, char *argv[])
 	prepare_logging();
 
 	signal (SIGPIPE, SIG_IGN);
-	gkr_unix_signal_connect (ctx, SIGINT, signal_handler, NULL);
-	gkr_unix_signal_connect (ctx, SIGHUP, signal_handler, NULL);
-	gkr_unix_signal_connect (ctx, SIGTERM, signal_handler, NULL);
+	egg_unix_signal_connect (ctx, SIGINT, signal_handler, NULL);
+	egg_unix_signal_connect (ctx, SIGHUP, signal_handler, NULL);
+	egg_unix_signal_connect (ctx, SIGTERM, signal_handler, NULL);
              
 	/* TODO: Do we still need this? XFCE still seems to use it. */
 	slave_lifetime_to_fd ();

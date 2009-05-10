@@ -2,8 +2,7 @@ UNIT_AUTO = \
 	unit-test-async.c \
 	unit-test-cleanup.c \
 	unit-test-location.c \
-	unit-test-location-watch.c \
-	unit-test-signal.c
+	unit-test-location-watch.c
 
 UNIT_PROMPT = 
 

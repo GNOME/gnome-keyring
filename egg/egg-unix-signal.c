@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-unix-signal.c - integrate unix signals into the main loop
+/* egg-unix-signal.c - integrate unix signals into the main loop
 
    Copyright (C) 2007 Stefan Walter
 
@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "gkr-unix-signal.h"
+#include "egg-unix-signal.h"
 
 #include <glib.h>
 
@@ -156,7 +156,7 @@ static gboolean
 signal_events_dispatch (GSource *source, GSourceFunc callback, gpointer user_data)
 {
 	SignalWatch *sw = (SignalWatch*)source;
-	GkrUnixSignalHandler func = (GkrUnixSignalHandler)callback;
+	EggUnixSignalHandler func = (EggUnixSignalHandler)callback;
 
 	wakeup_drain ();
 	
@@ -191,8 +191,8 @@ static GSourceFuncs signal_events_functions = {
 };
 
 guint 
-gkr_unix_signal_connect (GMainContext *ctx, guint sig, 
-                         GkrUnixSignalHandler func, gpointer user_data)
+egg_unix_signal_connect (GMainContext *ctx, guint sig,
+                         EggUnixSignalHandler func, gpointer user_data)
 {
 	SignalWatch *sw;
 	GSource *src;

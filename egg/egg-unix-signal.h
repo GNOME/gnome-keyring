@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-unix-signal.h - integrate unix signals into the main loop
+/* egg-unix-signal.h - integrate unix signals into the main loop
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,14 +21,14 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKRUNIXSIGNAL_H_
-#define GKRUNIXSIGNAL_H_
+#ifndef EGGUNIXSIGNAL_H_
+#define EGGUNIXSIGNAL_H_
 
 #include <glib.h>
 
-typedef gboolean (*GkrUnixSignalHandler)     (guint sig, gpointer user_data);
+typedef gboolean (*EggUnixSignalHandler)     (guint sig, gpointer user_data);
 
-guint    gkr_unix_signal_connect             (GMainContext *ctx, guint sig, 
-                                              GkrUnixSignalHandler handler, gpointer user_data);
+guint    egg_unix_signal_connect             (GMainContext *ctx, guint sig,
+                                              EggUnixSignalHandler handler, gpointer user_data);
 
-#endif /* GKRUNIXSIGNAL_H_ */
+#endif /* EGGUNIXSIGNAL_H_ */
