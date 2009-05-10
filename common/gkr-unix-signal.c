@@ -24,14 +24,96 @@
 #include "config.h"
 
 #include "gkr-unix-signal.h"
-#include "gkr-wakeup.h"
 
 #include <glib.h>
 
 #include <sys/types.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <signal.h>
+#include <string.h>
 #include <unistd.h>
+
+/* ------------------------------------------------------------------------
+ * MAIN LOOP WAKEUP
+ */
+
+static int wakeup_fds[2] = { -1, -1 };
+static guint wakeup_n = 0;
+static GPollFD poll_fd;
+static GMainContext *main_ctx;
+
+static void
+wakeup_register (GMainContext *ctx)
+{
+	if (wakeup_n++ == 0) {
+		if (pipe (wakeup_fds))
+			g_critical ("can't create wakeup pipe: %s", g_strerror (errno));
+
+		/* Non blocking to prevent deadlock */
+		fcntl (wakeup_fds[0], F_SETFL, fcntl (wakeup_fds[0], F_GETFL) | O_NONBLOCK);
+		fcntl (wakeup_fds[1], F_SETFL, fcntl (wakeup_fds[1], F_GETFL) | O_NONBLOCK);
+
+		/* Register poll fd with main context */
+		poll_fd.fd = wakeup_fds[0];
+		poll_fd.events = G_IO_IN;
+		poll_fd.revents = 0;
+
+		g_main_context_add_poll (ctx, &poll_fd, G_PRIORITY_HIGH_IDLE);
+		main_ctx = ctx;
+        }
+
+        g_assert (wakeup_fds[0] >= 0);
+}
+static void
+
+wakeup_unregister (void)
+{
+	if (--wakeup_n > 0)
+		return;
+
+	g_assert (wakeup_fds[0] >= 0);
+	close (wakeup_fds[0]);
+	wakeup_fds[0] = -1;
+
+	g_assert (wakeup_fds[1] >= 0);
+	close (wakeup_fds[1]);
+	wakeup_fds[1] = -1;
+
+	g_assert (main_ctx);
+	g_main_context_remove_poll (main_ctx, &poll_fd);
+	main_ctx = NULL;
+}
+
+static void
+wakeup_now (void)
+{
+	#define SIG_MSG "couldn't write signal byte to pipe\n"
+	guchar x = 0xAA;
+	int res;
+
+	if (wakeup_fds[1] < 0)
+		return;
+
+	/* Could be called from a signal handler, so try to not use library functions */
+	if (write (wakeup_fds[1], &x, 1) != 1)
+		res = write (2, SIG_MSG, strlen (SIG_MSG) - 1);
+}
+
+static void
+wakeup_drain (void)
+{
+	guchar x;
+
+	if (wakeup_fds[0] < 0)
+		return;
+
+	while (read (wakeup_fds[0], &x, 1) > 0);
+}
+
+/* ------------------------------------------------------------------------
+ * SIGNAL STUFF
+ */
 
 #define MAX_SIGNAL 64
 static gboolean handled_signals[MAX_SIGNAL] = { FALSE, };
@@ -42,7 +124,7 @@ signal_handler (int sig)
 {
 	if (sig >= 0 && sig < MAX_SIGNAL) {
 		received_signals[sig] = TRUE;
-		gkr_wakeup_now ();
+		wakeup_now ();
 	}
 }
 
@@ -56,7 +138,7 @@ signal_events_prepare (GSource *source, gint *timeout)
 {
 	SignalWatch *sw = (SignalWatch*)source;
 	*timeout = -1;
-	gkr_wakeup_drain (); 
+	wakeup_drain ();
 	g_assert (sw->signal < MAX_SIGNAL); 
 	return received_signals[sw->signal];
 }
@@ -65,7 +147,7 @@ static gboolean
 signal_events_check (GSource *source)
 {
 	SignalWatch *sw = (SignalWatch*)source;
-	gkr_wakeup_drain (); 
+	wakeup_drain ();
 	g_assert (sw->signal < MAX_SIGNAL); 
 	return received_signals[sw->signal];
 }
@@ -76,7 +158,7 @@ signal_events_dispatch (GSource *source, GSourceFunc callback, gpointer user_dat
 	SignalWatch *sw = (SignalWatch*)source;
 	GkrUnixSignalHandler func = (GkrUnixSignalHandler)callback;
 
-	gkr_wakeup_drain (); 
+	wakeup_drain ();
 	
 	g_assert (sw->signal < MAX_SIGNAL); 
 	g_assert (received_signals[sw->signal]);
@@ -92,7 +174,7 @@ signal_events_finalize (GSource *source)
 {
 	SignalWatch *sw = (SignalWatch*)source;
 	
-	gkr_wakeup_unregister ();
+	wakeup_unregister ();
 	
 	g_assert (sw->signal < MAX_SIGNAL);
 	if (sw->signal > 0)
@@ -128,7 +210,7 @@ gkr_unix_signal_connect (GMainContext *ctx, guint sig,
 	sw = (SignalWatch*)src;
 	sw->signal = sig;
 
-	gkr_wakeup_register (ctx);
+	wakeup_register (ctx);
 
 	g_source_set_callback (src, (GSourceFunc)func, user_data, NULL);
 	id = g_source_attach (src, ctx);

@@ -23,7 +23,6 @@
 
 
 #include "gkr-async.h"
-#include "gkr-wakeup.h"
 
 #include <glib.h>
 
@@ -42,7 +41,7 @@
 #define DO_LOCK(mtx) G_STMT_START { \
 		g_printerr ("%s LOCK %s\n", __func__, G_STRINGIFY(mtx));  \
 		g_atomic_int_inc (&waiting_on_lock); \
-		if (g_atomic_int_get (&waiting_on_poll)) gkr_wakeup_now (); \
+		if (g_atomic_int_get (&waiting_on_poll)) g_main_context_wakeup (main_ctx); \
 		g_mutex_lock (mtx);  \
 		g_atomic_int_add (&waiting_on_lock, -1); \
         } G_STMT_END
@@ -53,7 +52,7 @@
 #else
 #define DO_LOCK(mtx) G_STMT_START { \
 		g_atomic_int_inc (&waiting_on_lock); \
-		if (g_atomic_int_get (&waiting_on_poll)) gkr_wakeup_now (); \
+		if (g_atomic_int_get (&waiting_on_poll)) g_main_context_wakeup (main_ctx); \
 		g_mutex_lock (mtx); \
 		g_atomic_int_add (&waiting_on_lock, -1); \
 	} G_STMT_END
@@ -135,7 +134,6 @@ static gboolean
 async_source_dispatch(GSource* source, GSourceFunc callback, gpointer user_data)
 {
 	/* Let a worker run */
-	gkr_wakeup_drain ();
 	DO_UNLOCK (async_mutex);
 	g_thread_yield ();
 	DO_LOCK (async_mutex);
@@ -180,8 +178,6 @@ gkr_async_workers_init (GMainLoop *mainloop)
  	g_assert (orig_poll_func);
  	g_main_context_set_poll_func (main_ctx, async_poll_func);
 
-	gkr_wakeup_register (main_ctx);
-
 	/* 
 	 * The mutex gets locked each time the main loop is waiting 
 	 * for input. See lock_step_poll_func() 
@@ -197,8 +193,6 @@ gkr_async_workers_uninit (void)
 	gkr_async_workers_stop_all ();
 
 	DO_UNLOCK (async_mutex);
-	
-	gkr_wakeup_unregister ();
 	
 	/* Take out the source */
 	g_assert (async_source_id);
@@ -278,7 +272,7 @@ async_worker_thread (gpointer data)
 	
 	g_static_private_set (&thread_private, NULL, NULL);
 	
-	gkr_wakeup_now ();
+	g_main_context_wakeup (main_ctx);
 	
 	g_thread_exit (result);
 	return result;

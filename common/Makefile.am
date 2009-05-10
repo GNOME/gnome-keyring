@@ -23,8 +23,7 @@ libgkr_common_la_SOURCES = \
 	gkr-cleanup.c gkr-cleanup.h \
 	gkr-location.c gkr-location.h \
 	gkr-location-watch.c gkr-location-watch.h \
-	gkr-unix-signal.c gkr-unix-signal.h \
-	gkr-wakeup.c gkr-wakeup.h 
+	gkr-unix-signal.c gkr-unix-signal.h
 
 libgkr_common_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
