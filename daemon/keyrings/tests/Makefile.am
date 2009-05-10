@@ -11,7 +11,8 @@ UNIT_LIBS =  \
 	$(top_builddir)/daemon/ui/libgkr-ui.la \
 	$(top_builddir)/daemon/util/libgkr-daemon-util.la \
 	$(top_builddir)/library/libgnome-keyring-common.la \
-	$(top_builddir)/common/libgkr-common.la
+	$(top_builddir)/egg/libegg-dbus.la \
+	$(top_builddir)/egg/libegg.la
 
 EXTRA_DIST = test-data
 

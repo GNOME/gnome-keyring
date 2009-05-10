@@ -541,8 +541,6 @@ AC_SUBST(BINDIR)
 
 AC_OUTPUT([
 Makefile
-common/Makefile
-common/tests/Makefile
 daemon/Makefile
 daemon/gnome-keyring-daemon.desktop.in
 daemon/data/Makefile

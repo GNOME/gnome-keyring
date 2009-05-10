@@ -25,13 +25,13 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-location.h"
-
 #include "egg/egg-secure-memory.h"
 
 #include "keyrings/gkr-keyring.h"
 
 #include "library/gnome-keyring-private.h"
+
+#include "util/gkr-location.h"
 
 #include <glib.h>
 #include <string.h>

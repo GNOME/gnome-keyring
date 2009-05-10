@@ -27,7 +27,7 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-location.h"
+#include "util/gkr-location.h"
 
 /* 
  * Each test looks like (on one line):
@@ -46,77 +46,96 @@
 #define MEDIA_DEVICE2 "/media/DummyMount2"
 #define MEDIA_SERIAL "MEDIA-0239482093"
 
-
-void unit_test_location_simple (CuTest* cu)
+DEFINE_TEST(location_simple)
 {
 	gchar *path = g_build_filename (g_get_home_dir (), "blah", NULL);
 	gchar *path2;
 	GQuark loc, child;
 	
 	loc = gkr_location_from_path (path);
-	CuAssert (cu, "should return a non-zero loc quark", loc != 0);
+	/* "should return a non-zero loc quark" */
+	g_assert_cmpint (loc, !=, 0);
 
 	g_print ("quark: %s\n", g_quark_to_string (loc));
 	
 	path2 = gkr_location_to_path (loc);
-	CuAssert (cu, "should return non-null path", path2 != NULL);
-	CuAssert (cu, "should return the same path", strcmp (path2, path) == 0);
+	/* "should return non-null path" */
+	g_assert (path2 != NULL);
+	/* "should return the same path" */
+	g_assert_cmpstr (path2, ==, path);
 
 	child = gkr_location_from_child (loc, "3");
-	CuAssert (cu, "should return a non-zero loc quark", loc != 0);
+	/* "should return a non-zero loc quark" */
+	g_assert_cmpint (loc, !=, 0);
 
 	child = gkr_location_from_child (child, "2");
-	CuAssert (cu, "should return a non-zero loc quark", loc != 0);
+	/* "should return a non-zero loc quark" */
+	g_assert_cmpint (loc, !=, 0);
 
 	g_print ("child quark: %s\n", g_quark_to_string (child));
 
 	path2 = gkr_location_to_path (child);
-	CuAssert (cu, "should return non-null path", path2 != NULL);
-	
-	CuAssert (cu, "should be volume", gkr_location_is_volume (GKR_LOCATION_VOLUME_HOME));
-	CuAssert (cu, "should not be volume", !gkr_location_is_volume (loc));
-	CuAssert (cu, "should not be volume", !gkr_location_is_volume (child));
+	/* "should return non-null path" */
+	g_assert (path2 != NULL);
+
+	/* "should be volume" */
+	g_assert (gkr_location_is_volume (GKR_LOCATION_VOLUME_HOME));
+	/* "should not be volume" */
+	g_assert (!gkr_location_is_volume (loc));
+	/* "should not be volume" */
+	g_assert (!gkr_location_is_volume (child));
 }
 
-void unit_test_location_trailing (CuTest* cu)
+DEFINE_TEST (location_trailing)
 {
 	GQuark one, two, ref;
 	
 	one = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "/blah/");
-	CuAssert (cu, "should return a non-zero quark", one != 0);
+	/* "should return a non-zero quark" */
+	g_assert_cmpint (one, !=, 0);
 
 	two = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "blah//");
-	CuAssert (cu, "should return a non-zero quark", two != 0);
+	/* "should return a non-zero quark" */
+	g_assert_cmpint (two, !=, 0);
 
 	ref = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "blah");
-	CuAssert (cu, "should return a non-zero quark", ref != 0);
+	/* "should return a non-zero quark" */
+	g_assert_cmpint (ref, !=, 0);
 
 	/* Should all be identical */
-	CuAssert (cu, "stripping of leading and trailing slashes did not work", ref == one);
-	CuAssert (cu, "stripping of leading and trailing slashes did not work", ref == two);
+	/* "stripping of leading and trailing slashes did not work" */
+	g_assert (ref == one);
+	/* "stripping of leading and trailing slashes did not work" */
+	g_assert (ref == two);
 }
 
-void unit_test_location_parent (CuTest* cu)
+DEFINE_TEST(location_parent)
 {
 	GQuark child, ref, parent;
 
 	ref = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, "first");
-	CuAssert (cu, "should return a non-zero quark", ref != 0);
+	/* "should return a non-zero quark" */
+	g_assert_cmpint (ref, !=, 0);
 	
 	child = gkr_location_from_child (ref, "second");
-	CuAssert (cu, "should return a non-zero quark", child != 0);
+	/* "should return a non-zero quark" */
+	g_assert_cmpint (child, !=, 0);
 	
 	parent = gkr_location_to_parent (child);
-	CuAssert (cu, "should return a non-zero quark", parent != 0);
-	CuAssert (cu, "parent location does not equal original", parent == ref);
+	/* "should return a non-zero quark" */
+	g_assert_cmpint (parent, !=, 0);
+	/* "parent location does not equal original" */
+	g_assert (parent == ref);
 	
 	/* Should return the volume */
 	parent = gkr_location_to_parent (parent);
-	CuAssert (cu, "should return a non-zero quark", parent != 0);
-	CuAssert (cu, "parent of parent location does not equal volume", parent == GKR_LOCATION_VOLUME_LOCAL);
+	/* "should return a non-zero quark" */
+	g_assert_cmpint (parent, !=, 0);
+	/* "parent of parent location does not equal volume" */
+	g_assert (parent == GKR_LOCATION_VOLUME_LOCAL);
 }
 
-void unit_test_location_media (CuTest* cu)
+DEFINE_TEST(location_media)
 {
 	gchar *path = g_build_filename (MEDIA_DEVICE, "testo", NULL);
 	gchar *path2;
@@ -127,11 +146,14 @@ void unit_test_location_media (CuTest* cu)
 	                               MEDIA_SERIAL, MEDIA_DEVICE, "Test Media");
 	
 	loc = gkr_location_from_path (path);
-	CuAssert (cu, "should return a non-zero loc quark", loc != 0);
+	/* "should return a non-zero loc quark" */
+	g_assert_cmpint (loc, !=, 0);
 	
 	path2 = gkr_location_to_path (loc);
-	CuAssert (cu, "should return non-null path", path2 != NULL);
-	CuAssert (cu, "should return the same path", strcmp (path2, path) == 0);
+	/* "should return non-null path" */
+	g_assert (path2 != NULL);
+	/* "should return the same path" */
+	g_assert_cmpstr (path2, ==, path);
 
 	/* Device is removed */
 	gkr_location_manager_unregister (gkr_location_manager_get (), MEDIA_SERIAL);
@@ -141,12 +163,14 @@ void unit_test_location_media (CuTest* cu)
 	                               MEDIA_SERIAL, MEDIA_DEVICE2, "Test Media");
 	
 	path2 = gkr_location_to_path (loc);
-	CuAssert (cu, "should return non-null path", path2 != NULL);
-	CuAssert (cu, "should return a path at new prefix", strncmp (path2, MEDIA_DEVICE2, strlen (MEDIA_DEVICE2)) == 0);
+	/* "should return non-null path" */
+	g_assert (path2 != NULL);
+	/* "should return a path at new prefix" */
+	g_assert (strncmp (path2, MEDIA_DEVICE2, strlen (MEDIA_DEVICE2)) == 0);
 	
 }
 
-void unit_test_location_fileops (CuTest* cu)
+DEFINE_TEST(location_fileops)
 {
 	const guchar *data = (guchar*)"TEST DATA FOR FILE";
 	guchar *result;
@@ -155,23 +179,31 @@ void unit_test_location_fileops (CuTest* cu)
 	GQuark loc;
 	
 	loc = gkr_location_from_child (GKR_LOCATION_VOLUME_FILE, "/tmp/gkr-test-location-fileops");
-	CuAssert (cu, "should return a non-zero quark", loc != 0);
+	/* "should return a non-zero quark" */
+	g_assert_cmpint (loc, !=, 0);
 	
 	len = strlen ((gchar*)data);
 	ret = gkr_location_write_file (loc, data, len, NULL);
-	CuAssert (cu, "should be successful writing to temp file", ret == TRUE);
+	/* "should be successful writing to temp file" */
+	g_assert (ret == TRUE);
 
 	ret = gkr_location_read_file (loc, &result, &n_result, NULL);
-	CuAssert (cu, "should be successful reading from temp file", ret == TRUE);
-	CuAssert (cu, "should have read same length as written", n_result == len);
-	CuAssert (cu, "should have read same data as written", memcmp (data, result, len) == 0);
+	/* "should be successful reading from temp file" */
+	g_assert (ret == TRUE);
+	/* "should have read same length as written" */
+	g_assert (n_result == len);
+	/* "should have read same data as written" */
+	g_assert (memcmp (data, result, len) == 0);
 	
 	ret = gkr_location_delete_file (loc, NULL);
-	CuAssert (cu, "should have successfully deleted file", ret == TRUE);
+	/* "should have successfully deleted file" */
+	g_assert (ret == TRUE);
 
 	ret = gkr_location_read_file (loc, &result, &n_result, NULL);
-	CuAssert (cu, "shouldn't be able to read from deleted file", ret == FALSE);
+	/* "shouldn't be able to read from deleted file" */
+	g_assert (ret == FALSE);
 
 	ret = gkr_location_delete_file (loc, NULL);
-	CuAssert (cu, "should be able to successfully delete non-existant file", ret == TRUE);
+	/* "should be able to successfully delete non-existant file" */
+	g_assert (ret == TRUE);
 }

@@ -29,13 +29,14 @@
 #include "gkr-keyring-item.h"
 #include "gkr-keyrings.h"
 
-#include "common/gkr-location.h"
 #include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring.h"
 
 #include "ui/gkr-ask-daemon.h"
 #include "ui/gkr-ask-request.h"
+
+#include "util/gkr-location.h"
 
 #include <glib.h>
 #include <glib/gi18n.h>

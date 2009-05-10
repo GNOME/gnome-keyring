@@ -20,6 +20,8 @@ libgck_rpc_layer_la_SOURCES = \
 	gck-rpc-util.c
 
 libgck_rpc_layer_la_LIBADD = \
+	$(top_builddir)/egg/libegg-buffer.la \
+	$(top_builddir)/egg/libegg-creds.la \
 	$(GOBJECT_LIBS) \
     	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) 
@@ -59,5 +61,6 @@ gck_rpc_daemon_standalone_SOURCES = \
 	
 gck_rpc_daemon_standalone_LDADD = \
 	-ldl libgck-rpc-layer.la \
-	$(top_builddir)/common/libgkr-common.la
+	$(top_builddir)/egg/libegg-buffer.la \
+	$(top_builddir)/egg/libegg-creds.la
 	

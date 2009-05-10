@@ -28,8 +28,6 @@
 #include "gkr-ask-marshal.h"
 #include "gkr-ask-daemon.h"
 
-#include "common/gkr-location.h"
-
 #include "daemon/util/gkr-daemon-async.h"
 
 #include "egg/egg-secure-memory.h"
@@ -37,6 +35,8 @@
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
+
+#include "util/gkr-location.h"
 
 #include <unistd.h>
 #include <fcntl.h>

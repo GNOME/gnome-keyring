@@ -28,7 +28,7 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-location-watch.h"
+#include "util/gkr-location-watch.h"
 
 #include <glib/gstdio.h>
 
@@ -63,36 +63,42 @@ static guint n_locations_removed = 0;
 static GQuark last_location_removed = 0;
 
 static void
-location_added (GkrLocationWatch *watch, GQuark loc, CuTest *cu)
+location_added (GkrLocationWatch *watch, GQuark loc, gpointer unused)
 {
-	CuAssert (cu, "should be a non-null quark", loc != 0);
-	CuAssert (cu, "should be a valid quark", g_quark_to_string (loc) != NULL); 
+	/* "should be a non-null quark" */
+	g_assert_cmpint (loc, !=, 0);
+	/* "should be a valid quark" */
+	g_assert (g_quark_to_string (loc) != NULL);
 	
 	++n_locations_added;
 	last_location_added = loc;
 }
 
 static void
-location_changed (GkrLocationWatch *watch, GQuark loc, CuTest *cu)
+location_changed (GkrLocationWatch *watch, GQuark loc, gpointer unused)
 {
-	CuAssert (cu, "should be a non-null quark", loc != 0);
-	CuAssert (cu, "should be a valid quark", g_quark_to_string (loc) != NULL); 
+	/* "should be a non-null quark" */
+	g_assert_cmpint (loc, !=, 0);
+	/* "should be a valid quark" */
+	g_assert (g_quark_to_string (loc) != NULL);
 	
 	++n_locations_changed;
 	last_location_changed = loc;
 }
 
 static void
-location_removed (GkrLocationWatch *watch, GQuark loc, CuTest *cu)
+location_removed (GkrLocationWatch *watch, GQuark loc, gpointer unused)
 {
-	CuAssert (cu, "should be a non-null quark", loc != 0);
-	CuAssert (cu, "should be a valid quark", g_quark_to_string (loc) != NULL); 
+	/* "should be a non-null quark" */
+	g_assert_cmpint (loc, !=, 0);
+	/* "should be a valid quark" */
+	g_assert (g_quark_to_string (loc) != NULL);
 	
 	++n_locations_removed;
 	last_location_removed = loc;
 }
 
-void unit_test_location_watch (CuTest *cu)
+DEFINE_TEST(location_watch)
 {
 	GQuark loc;
 	
@@ -100,9 +106,9 @@ void unit_test_location_watch (CuTest *cu)
 	sleep (1);
 
 	the_watch = gkr_location_watch_new (NULL, 0, SUBDIR, WILDCARD, NULL);
-	g_signal_connect (the_watch, "location-added", G_CALLBACK (location_added), cu); 
-	g_signal_connect (the_watch, "location-removed", G_CALLBACK (location_removed), cu); 
-	g_signal_connect (the_watch, "location-changed", G_CALLBACK (location_changed), cu);
+	g_signal_connect (the_watch, "location-added", G_CALLBACK (location_added), NULL); 
+	g_signal_connect (the_watch, "location-removed", G_CALLBACK (location_removed), NULL); 
+	g_signal_connect (the_watch, "location-changed", G_CALLBACK (location_changed), NULL);
 	
 	/* Make a test directory */
 	loc = gkr_location_from_child (GKR_LOCATION_VOLUME_LOCAL, SUBDIR);
@@ -114,21 +120,21 @@ void unit_test_location_watch (CuTest *cu)
 	/* A watch for an empty directory, should have no responses */
 	gkr_location_watch_refresh (the_watch, FALSE);
 	
-	CuAssertIntEquals(cu, 0, n_locations_added);
-	CuAssertIntEquals(cu, 0, n_locations_changed);
-	CuAssertIntEquals(cu, 0, n_locations_removed);
+	g_assert_cmpint (0, ==, n_locations_added);
+	g_assert_cmpint (0, ==, n_locations_changed);
+	g_assert_cmpint (0, ==, n_locations_removed);
 	
 	g_mkdir_with_parents (test_dir, 0700);
 	
 	/* Should still have no responses even though it exists */
 	gkr_location_watch_refresh (the_watch, FALSE);
 	
-	CuAssertIntEquals(cu, 0, n_locations_added);
-	CuAssertIntEquals(cu, 0, n_locations_changed);
-	CuAssertIntEquals(cu, 0, n_locations_removed);
+	g_assert_cmpint (0, ==, n_locations_added);
+	g_assert_cmpint (0, ==, n_locations_changed);
+	g_assert_cmpint (0, ==, n_locations_removed);
 }
 
-void unit_test_location_file (CuTest *cu)
+DEFINE_TEST(location_file)
 {
 	gboolean ret;
 	GQuark loc;
@@ -144,19 +150,21 @@ void unit_test_location_file (CuTest *cu)
 	last_location_added = last_location_changed = last_location_removed = 0;
 
 	ret = g_file_set_contents (test_file, DATA, strlen (DATA), NULL);
-	CuAssertIntEquals (cu, ret, TRUE);
+	g_assert (ret == TRUE);
 	
 	/* Now make sure that file is located */
 	gkr_location_watch_refresh (the_watch, FALSE);
 	
-	CuAssertIntEquals (cu, 1, n_locations_added);
-	CuAssertIntEquals (cu, 0, n_locations_changed);
-	CuAssertIntEquals (cu, 0, n_locations_removed);
+	g_assert_cmpint (1, ==, n_locations_added);
+	g_assert_cmpint (0, ==, n_locations_changed);
+	g_assert_cmpint (0, ==, n_locations_removed);
 	
 	/* The added one should match our file */
 	loc = gkr_location_from_path (test_file);
-	CuAssert (cu, "returned zero location", loc != 0);
-	CuAssert (cu, "wrong location was signalled", loc == last_location_added);
+	/* "returned zero location" */
+	g_assert_cmpint (loc, !=, 0);
+	/* "wrong location was signalled" */
+	g_assert (loc == last_location_added);
 	
 	
 	
@@ -167,16 +175,17 @@ void unit_test_location_file (CuTest *cu)
 	
 	/* Shouldn't find the file again */
 	gkr_location_watch_refresh (the_watch, FALSE);
-	CuAssertIntEquals(cu, 0, n_locations_added);
-	CuAssertIntEquals(cu, 0, n_locations_changed);
-	CuAssertIntEquals(cu, 0, n_locations_removed);
+	g_assert_cmpint (0, ==, n_locations_added);
+	g_assert_cmpint (0, ==, n_locations_changed);
+	g_assert_cmpint (0, ==, n_locations_removed);
 	
 	/* But we should find the file if forced to */	
 	gkr_location_watch_refresh (the_watch, TRUE);
-	CuAssertIntEquals(cu, 0, n_locations_added);
-	CuAssertIntEquals(cu, 1, n_locations_changed);
-	CuAssertIntEquals(cu, 0, n_locations_removed);
-	CuAssert (cu, "wrong location was signalled", loc == last_location_changed);	
+	g_assert_cmpint (0, ==, n_locations_added);
+	g_assert_cmpint (1, ==, n_locations_changed);
+	g_assert_cmpint (0, ==, n_locations_removed);
+	/* "wrong location was signalled" */
+	g_assert (loc == last_location_changed);
 
 
 
@@ -184,14 +193,15 @@ void unit_test_location_file (CuTest *cu)
 	last_location_added = last_location_changed = last_location_removed = 0;
 
 	ret = g_file_set_contents (test_file, DATA, strlen (DATA), NULL);
-	CuAssertIntEquals (cu, ret, TRUE);
+	g_assert (ret == TRUE);
 
 	/* File was updated */
 	gkr_location_watch_refresh (the_watch, FALSE);
-	CuAssertIntEquals(cu, 0, n_locations_added);
-	CuAssertIntEquals(cu, 1, n_locations_changed);
-	CuAssertIntEquals(cu, 0, n_locations_removed);
-	CuAssert (cu, "wrong location was signalled", loc == last_location_changed);
+	g_assert_cmpint (0, ==, n_locations_added);
+	g_assert_cmpint (1, ==, n_locations_changed);
+	g_assert_cmpint (0, ==, n_locations_removed);
+	/* "wrong location was signalled" */
+	g_assert (loc == last_location_changed);
 	
 	
 	
@@ -203,13 +213,14 @@ void unit_test_location_file (CuTest *cu)
 	/* Now file should be removed */
 	gkr_location_watch_refresh (the_watch, FALSE);
 
-	CuAssertIntEquals(cu, 0, n_locations_added);
-	CuAssertIntEquals(cu, 0, n_locations_changed);
-	CuAssertIntEquals(cu, 1, n_locations_removed);	
-	CuAssert (cu, "wrong location was signalled", loc == last_location_removed);		
+	g_assert_cmpint (0, ==, n_locations_added);
+	g_assert_cmpint (0, ==, n_locations_changed);
+	g_assert_cmpint (1, ==, n_locations_removed);
+	/* "wrong location was signalled" */
+	g_assert (loc == last_location_removed);
 }
 
-void unit_test_location_nomatch (CuTest *cu)
+DEFINE_TEST(location_nomatch)
 {
 	gchar *file = g_build_filename (test_dir, "my-file.toot", NULL);
 	gboolean ret;
@@ -218,7 +229,7 @@ void unit_test_location_nomatch (CuTest *cu)
 	sleep (1);
 	
 	ret = g_file_set_contents (file, DATA, strlen (DATA), NULL);
-	CuAssertIntEquals (cu, ret, TRUE);
+	g_assert (ret == TRUE);
 
 	n_locations_added = n_locations_changed = n_locations_removed = 0;
 	last_location_added = last_location_changed = last_location_removed = 0;
@@ -226,9 +237,9 @@ void unit_test_location_nomatch (CuTest *cu)
 	/* Now make sure that file is not located */
 	gkr_location_watch_refresh (the_watch, FALSE);
 	
-	CuAssertIntEquals (cu, 0, n_locations_added);
-	CuAssertIntEquals (cu, 0, n_locations_changed);
-	CuAssertIntEquals (cu, 0, n_locations_removed);
+	g_assert_cmpint (0, ==, n_locations_added);
+	g_assert_cmpint (0, ==, n_locations_changed);
+	g_assert_cmpint (0, ==, n_locations_removed);
 	
 	g_unlink (file);
 }

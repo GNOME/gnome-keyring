@@ -25,12 +25,12 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-location.h"
-
 #include "keyrings/gkr-keyrings.h"
 #include "keyrings/gkr-keyring-login.h"
 
 #include "ui/gkr-ask-daemon.h"
+
+#include "util/gkr-location.h"
 
 #include <glib.h>
 #include <memory.h>

@@ -30,11 +30,12 @@
 #include "gkr-keyrings.h"
 
 #include "egg/egg-buffer.h"
-#include "common/gkr-location.h"
 #include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring-private.h"
 #include "library/gnome-keyring-proto.h"
+
+#include "util/gkr-location.h"
 
 #include <glib.h>
 #include <glib/gi18n.h>

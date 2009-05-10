@@ -26,12 +26,12 @@
 
 #include "gkr-keyrings.h"
 
-#include "common/gkr-location.h"
-#include "common/gkr-location-watch.h"
-
 #include "egg/egg-cleanup.h"
 
 #include "library/gnome-keyring-proto.h"
+
+#include "util/gkr-location.h"
+#include "util/gkr-location-watch.h"
 
 #include <unistd.h>
 #include <fcntl.h>

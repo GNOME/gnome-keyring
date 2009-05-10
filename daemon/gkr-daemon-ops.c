@@ -24,8 +24,6 @@
 
 #include "gkr-daemon.h"
 
-#include "common/gkr-location.h"
-
 #include "egg/egg-buffer.h"
 #include "egg/egg-secure-memory.h"
 
@@ -42,6 +40,7 @@
 #include "ui/gkr-ask-daemon.h"
 
 #include "util/gkr-daemon-util.h"
+#include "util/gkr-location.h"
 
 #include <unistd.h>
 #include <errno.h>

@@ -15,8 +15,10 @@ INCLUDES=	\
 
 libgkr_daemon_util_la_SOURCES = \
 	gkr-daemon-async.c gkr-daemon-async.h \
-	gkr-daemon-util.c gkr-daemon-util.h
-
+	gkr-daemon-util.c gkr-daemon-util.h \
+	gkr-location.c gkr-location.h \
+	gkr-location-watch.c gkr-location-watch.h
+	
 libgkr_daemon_util_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)

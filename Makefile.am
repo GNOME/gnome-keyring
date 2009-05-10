@@ -15,7 +15,6 @@ SUBDIRS = \
 	gp11 \
 	egg \
 	gcr \
-	common \
 	library \
 	pkcs11 \
 	daemon \
