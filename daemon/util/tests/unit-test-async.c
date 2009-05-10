@@ -30,26 +30,18 @@
 
 #include "run-auto-test.h"
 
-#include "common/gkr-async.h"
+#include "daemon/util/gkr-daemon-async.h"
 
-/* 
- * Each test looks like (on one line):
- *     void unit_test_xxxxx (CuTest* cu)
- * 
- * Each setup looks like (on one line):
- *     void unit_setup_xxxxx (void);
- * 
- * Each teardown looks like (on one line):
- *     void unit_teardown_xxxxx (void);
- * 
- * Tests be run in the order specified here.
- */
+DEFINE_SETUP(async_init)
+{
+	gkr_daemon_async_workers_init (test_mainloop_get ());
+}
   
 static gboolean 
 cancel_worker (gpointer data)
 {
-	if (gkr_async_worker_is_valid ((GkrAsyncWorker*)data))
-		gkr_async_worker_cancel ((GkrAsyncWorker*)data);
+	if (gkr_daemon_async_worker_is_valid ((GkrDaemonAsyncWorker*)data))
+		gkr_daemon_async_worker_cancel ((GkrDaemonAsyncWorker*)data);
 	/* Don't call again */
 	return FALSE;
 }
@@ -61,7 +53,6 @@ cancel_worker (gpointer data)
 #define SIMPLE_N  5
 
 typedef struct _SimpleParams {
-	CuTest *cu;
 	guint value;
 } SimpleParams;
 
@@ -73,7 +64,7 @@ simple_thread (gpointer data)
 	
 	for (i = 0; i < SIMPLE_N; ++i) {
 		++params->value;
-		gkr_async_usleep (G_USEC_PER_SEC / 5);
+		gkr_daemon_async_usleep (G_USEC_PER_SEC / 5);
 		g_printerr("+");
 	}
 	
@@ -82,29 +73,29 @@ simple_thread (gpointer data)
 }
 
 static void 
-simple_done (GkrAsyncWorker* worker, gpointer result, gpointer user_data)
+simple_done (GkrDaemonAsyncWorker* worker, gpointer result, gpointer user_data)
 {
 	SimpleParams *params = (SimpleParams*)user_data;
-	CuAssert (params->cu, "result didn't get passed through", result == &params->value);
+	/* "result didn't get passed through" */
+	g_assert (result == &params->value);
 	test_mainloop_quit ();
 }
 
-void unit_test_worker_simple (CuTest* cu)
+DEFINE_TEST(worker_simple)
 {
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 	SimpleParams params;
 	
 	memset (&params, 0, sizeof (params));
-	params.cu = cu;
 	
-	worker = gkr_async_worker_start (simple_thread, simple_done, &params);
-	CuAssertPtrNotNull (cu, worker);
+	worker = gkr_daemon_async_worker_start (simple_thread, simple_done, &params);
+	g_assert (worker != NULL);
 	 	
 	/* Run the main loop */
 	test_mainloop_run (20000);
-	
-	CuAssertIntEquals (cu, 0, gkr_async_workers_get_n ());
-	CuAssertIntEquals (cu, SIMPLE_N, params.value);	 
+
+	g_assert_cmpint (0, ==, gkr_daemon_async_workers_get_n ());
+	g_assert_cmpint (SIMPLE_N, ==, params.value);
 }
 
 /* -----------------------------------------------------------------------------
@@ -112,7 +103,6 @@ void unit_test_worker_simple (CuTest* cu)
  */
  
 typedef struct _CancelParams {
-	CuTest *cu;
 	guint value;
 } CancelParams;
 
@@ -121,10 +111,10 @@ cancel_thread (gpointer data)
 {
 	CancelParams *params = (CancelParams*)data;
 
-	while (!gkr_async_is_stopping ()) {
+	while (!gkr_daemon_async_is_stopping ()) {
 		++params->value;
 		g_printerr("+");
-		gkr_async_usleep (G_USEC_PER_SEC);
+		gkr_daemon_async_usleep (G_USEC_PER_SEC);
 	}
 	
 	g_printerr("!\n");
@@ -132,25 +122,26 @@ cancel_thread (gpointer data)
 }
 
 static void 
-cancel_done (GkrAsyncWorker* worker, gpointer result, gpointer user_data)
+cancel_done (GkrDaemonAsyncWorker* worker, gpointer result, gpointer user_data)
 {
-	CancelParams *params = (CancelParams*)user_data;
-	CuAssert (params->cu, "result didn't get passed through", result == user_data);	
-	CuAssert (params->cu, "completing worker is not valid", gkr_async_worker_is_valid (worker));
+	/* "result didn't get passed through" */
+	g_assert (result == user_data);
+	/* "completing worker is not valid" */
+	g_assert (gkr_daemon_async_worker_is_valid (worker));
 	test_mainloop_quit ();
 }
 
-void unit_test_worker_cancel (CuTest* cu)
+DEFINE_TEST(worker_cancel)
 {
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 	CancelParams params;
 	
 	memset (&params, 0, sizeof (params));
-	params.cu = cu;
 
-	worker = gkr_async_worker_start (cancel_thread, cancel_done, &params);
-	CuAssertPtrNotNull (cu, worker);
-	CuAssert (cu, "worker just started is not valid", gkr_async_worker_is_valid (worker));
+	worker = gkr_daemon_async_worker_start (cancel_thread, cancel_done, &params);
+	g_assert (worker != NULL);
+	/* "worker just started is not valid" */
+	g_assert (gkr_daemon_async_worker_is_valid (worker));
 
 	/* A less than two seconds later, cancel it */
 	g_timeout_add (1600, cancel_worker, worker);
@@ -159,9 +150,10 @@ void unit_test_worker_cancel (CuTest* cu)
 	test_mainloop_run (20000);
 	
 	/* Two seconds should have elapsed in other thread */
-	CuAssertIntEquals (cu, 2, params.value); 
-	CuAssertIntEquals (cu, 0, gkr_async_workers_get_n ());
-	CuAssert (cu, "worker is still valid after done", !gkr_async_worker_is_valid (worker));
+	g_assert_cmpint (2, ==, params.value);
+	g_assert_cmpint (0, ==, gkr_daemon_async_workers_get_n ());
+	/* "worker is still valid after done" */
+	g_assert (!gkr_daemon_async_worker_is_valid (worker));
 }
 
 /* -----------------------------------------------------------------------------
@@ -169,7 +161,6 @@ void unit_test_worker_cancel (CuTest* cu)
  */
  
 typedef struct _FiveParams {
-	CuTest *cu;
 	guint number;
 	guint value;
 } FiveParams;
@@ -179,19 +170,19 @@ five_thread (gpointer data)
 {
 	FiveParams *params = (FiveParams*)data;
 
-	while (gkr_async_yield ()) {
+	while (gkr_daemon_async_yield ()) {
 		++params->value;
 		g_printerr("%d", params->number);
-		gkr_async_sleep (1);
+		gkr_daemon_async_sleep (1);
 	}
 	
 	g_printerr("!\n");
 	return data;
 }
 
-void unit_test_worker_five (CuTest* cu)
+DEFINE_TEST(worker_five)
 {
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 	FiveParams params[5];
 	int i;
 	
@@ -199,30 +190,33 @@ void unit_test_worker_five (CuTest* cu)
 	
 	for (i = 0; i < 5; ++i)
 	{
-		params[i].cu = cu;
 		params[i].number = i;
 
 		/* Make the last one cancel the main loop */
-		worker = gkr_async_worker_start (five_thread, NULL, &params[i]);
-		CuAssertPtrNotNull (cu, worker);
-		CuAssert (cu, "worker just started is not valid", gkr_async_worker_is_valid (worker));
+		worker = gkr_daemon_async_worker_start (five_thread, NULL, &params[i]);
+		g_assert (worker != NULL);
+		/* "worker just started is not valid" */
+		g_assert (gkr_daemon_async_worker_is_valid (worker));
 
 		/* Stop each in a little less than i seconds */	
 		g_timeout_add ((1000 * i) - 200, cancel_worker, worker);
 	}
 	
-	CuAssertIntEquals (cu, 5, gkr_async_workers_get_n ());
+	g_assert_cmpint (5, ==, gkr_daemon_async_workers_get_n ());
 	 	
 	/* Run the main loop */
 	test_mainloop_run (1900); 
 
-	CuAssert (cu, "last worker should still be valid 2 seconds later", gkr_async_worker_is_valid (worker));
-	gkr_async_worker_stop (worker);
+	/* "last worker should still be valid 2 seconds later" */
+	g_assert (gkr_daemon_async_worker_is_valid (worker));
+	gkr_daemon_async_worker_stop (worker);
 	
-	CuAssert (cu, "all workers have somehow quit", gkr_async_workers_get_n () > 0);
-	gkr_async_workers_stop_all ();
+	/* "all workers have somehow quit" */
+	g_assert (gkr_daemon_async_workers_get_n () > 0);
+	gkr_daemon_async_workers_stop_all ();
 	
-	CuAssertIntEquals (cu, 0, gkr_async_workers_get_n ());
-	CuAssert (cu, "last worker is still valid after exit", !gkr_async_worker_is_valid (worker));
+	g_assert_cmpint (0, ==, gkr_daemon_async_workers_get_n ());
+	/* "last worker is still valid after exit" */
+	g_assert (!gkr_daemon_async_worker_is_valid (worker));
 }
 

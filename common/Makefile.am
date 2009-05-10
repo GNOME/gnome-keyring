@@ -19,7 +19,6 @@ libgkr_common_la_CFLAGS = \
 	$(GLIB_CFLAGS)
 
 libgkr_common_la_SOURCES = \
-	gkr-async.c gkr-async.h \
 	gkr-location.c gkr-location.h \
 	gkr-location-watch.c gkr-location-watch.h
 

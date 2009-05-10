@@ -29,7 +29,7 @@ void* egg_memory_fallback (void *p, size_t sz)
 }
 
 #ifndef EXTERNAL_TEST
-#include "common/gkr-async.h"
+#include "daemon/util/gkr-daemon-async.h"
 #endif
 
 static GMainLoop *mainloop = NULL;
@@ -110,7 +110,7 @@ main (int argc, char* argv[])
 
 #ifndef EXTERNAL_TEST
 
-	gkr_async_workers_init (mainloop);
+	gkr_daemon_async_workers_init (mainloop);
 	
 #endif
 

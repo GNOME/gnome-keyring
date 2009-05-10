@@ -550,6 +550,8 @@ daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile
 daemon/pkcs11/Makefile
 daemon/ui/Makefile
+daemon/util/Makefile
+daemon/util/tests/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/gcr/Makefile

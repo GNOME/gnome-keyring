@@ -23,7 +23,6 @@
 #include "config.h"
 
 #include "gkr-daemon.h"
-#include "gkr-daemon-util.h"
 
 #include "common/gkr-location.h"
 
@@ -41,6 +40,8 @@
 
 #include "ui/gkr-ask-request.h"
 #include "ui/gkr-ask-daemon.h"
+
+#include "util/gkr-daemon-util.h"
 
 #include <unistd.h>
 #include <errno.h>

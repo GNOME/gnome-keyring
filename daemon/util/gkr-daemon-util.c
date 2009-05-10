@@ -23,9 +23,8 @@
 
 #include "config.h"
 
+#include "gkr-daemon-async.h"
 #include "gkr-daemon-util.h"
-
-#include "common/gkr-async.h"
 
 #include "egg/egg-cleanup.h"
 
@@ -53,7 +52,7 @@ G_DEFINE_TYPE (GkrDaemonClient, gkr_daemon_client, G_TYPE_OBJECT);
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-static GkrAsyncPrivate *current_client = NULL;
+static GkrDaemonAsyncPrivate *current_client = NULL;
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -72,7 +71,7 @@ register_client (GkrDaemonClient *client)
 {
 	g_assert (GKR_IS_DAEMON_CLIENT (client));
 	g_assert (current_client);
-	gkr_async_private_set (current_client, client);
+	gkr_daemon_async_private_set (current_client, client);
 }
 
 /* -----------------------------------------------------------------------------
@@ -165,7 +164,7 @@ gkr_daemon_client_class_init (GkrDaemonClientClass *klass)
 			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkrDaemonClientClass, disconnected),
 			NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 	
-	current_client = gkr_async_private_new (unregister_client);
+	current_client = gkr_daemon_async_private_new (unregister_client);
 }
 
 /* -------------------------------------------------------------------------------------
@@ -217,7 +216,7 @@ gkr_daemon_client_get_current (void)
 {
 	if (!current_client)
 		return NULL;
-	return gkr_async_private_get (current_client);
+	return gkr_daemon_async_private_get (current_client);
 }
 
 pid_t

@@ -31,9 +31,8 @@
 #include "pkcs11/ssh-store/gck-ssh-store.h"
 #include "pkcs11/user-store/gck-user-store.h"
 
-#include "common/gkr-async.h"
-
-#include "daemon/gkr-daemon-util.h"
+#include "daemon/util/gkr-daemon-async.h"
+#include "daemon/util/gkr-daemon-util.h"
 
 #include "egg/egg-cleanup.h"
 
@@ -42,11 +41,11 @@
  * must be concurrent. That is must UNLOCK the demon lock, 
  * perform the call and then relock. 
  * 
- * 	gkr_async_begin_concurrent ();
+ * 	gkr_daemon_async_begin_concurrent ();
  *	
  *		gck_call_xxxx (xxx);
  *	
- *	gkr_async_end_concurrent ();
+ *	gkr_daemon_async_end_concurrent ();
  */
 
 /* The top level of our internal PKCS#11 module stack */
@@ -59,11 +58,11 @@ pkcs11_daemon_cleanup (gpointer unused)
 	
 	g_assert (pkcs11_roof);
 	
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 	
 		rv = (pkcs11_roof->C_Finalize) (NULL);
 	
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 	
 	if (rv != CKR_OK)
 		g_warning ("couldn't finalize internal PKCS#11 stack (code: %d)", (gint)rv);
@@ -81,7 +80,7 @@ gkr_pkcs11_daemon_initialize (void)
 	CK_RV rv;
 
 	/* Now initialize them all */
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 
 		/* SSH storage */
 		ssh_store = gck_ssh_store_get_functions ();
@@ -108,7 +107,7 @@ gkr_pkcs11_daemon_initialize (void)
 		/* Initialize the whole caboodle */
 		rv = (pkcs11_roof->C_Initialize) (NULL);
 
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 
 	if (rv != CKR_OK) {
 		g_warning ("couldn't initialize internal PKCS#11 stack (code: %d)", (gint)rv);
@@ -122,22 +121,22 @@ gkr_pkcs11_daemon_initialize (void)
 static void
 pkcs11_rpc_cleanup (gpointer unused)
 {
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 
 		gck_rpc_layer_uninitialize ();
 		
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 }
 
 static gboolean
 accept_rpc_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
 {
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 
 		if (cond == G_IO_IN)
 			gck_rpc_layer_accept ();
 		
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 	
 	return TRUE;
 }
@@ -154,11 +153,11 @@ gkr_pkcs11_daemon_setup_pkcs11 (void)
 	base_dir = gkr_daemon_util_get_master_directory ();
 	g_return_val_if_fail (base_dir, FALSE);
 
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 
 		sock = gck_rpc_layer_initialize (base_dir, pkcs11_roof);
 		
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 	
 	if (sock == -1)
 		return FALSE;
@@ -175,22 +174,22 @@ gkr_pkcs11_daemon_setup_pkcs11 (void)
 static void
 pkcs11_ssh_cleanup (gpointer unused)
 {
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 
 		gck_ssh_agent_uninitialize ();
 		
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 }
 
 static gboolean
 accept_ssh_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
 {
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 
 		if (cond == G_IO_IN)
 			gck_ssh_agent_accept ();
 		
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 				
 	return TRUE;
 }
@@ -207,11 +206,11 @@ gkr_pkcs11_daemon_setup_ssh (void)
 	base_dir = gkr_daemon_util_get_master_directory ();
 	g_return_val_if_fail (base_dir, FALSE);
 
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 	
 		sock = gck_ssh_agent_initialize (base_dir, pkcs11_roof);
 		
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 	
 	if (sock == -1)
 		return FALSE;

@@ -23,7 +23,7 @@
 
 #include "gkr-pkcs11-auth.h"
 
-#include "common/gkr-async.h"
+#include "daemon/util/gkr-daemon-async.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -47,10 +47,10 @@
 static CK_FUNCTION_LIST_PTR pkcs11_lower = NULL;
 
 #define DAEMON_ENTER() \
-	gkr_async_end_concurrent ()
+	gkr_daemon_async_end_concurrent ()
 
 #define DAEMON_LEAVE() \
-	gkr_async_begin_concurrent ()
+	gkr_daemon_async_begin_concurrent ()
 
 /* --------------------------------------------------------------------------------------
  * HELPERS 

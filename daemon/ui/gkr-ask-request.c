@@ -28,8 +28,10 @@
 #include "gkr-ask-marshal.h"
 #include "gkr-ask-daemon.h"
 
-#include "common/gkr-async.h"
 #include "common/gkr-location.h"
+
+#include "daemon/util/gkr-daemon-async.h"
+
 #include "egg/egg-secure-memory.h"
 
 #include "library/gnome-keyring.h"
@@ -501,16 +503,16 @@ read_until_end (GkrAskRequest *ask)
 	/* Passwords come through this buffer */
 	buf = egg_secure_alloc (128);
 
-	gkr_async_register_cancel (close_fd, &pv->out_fd);
+	gkr_daemon_async_register_cancel (close_fd, &pv->out_fd);
 
 	for (;;) {
 
-		if (gkr_async_is_stopping ())
+		if (gkr_daemon_async_is_stopping ())
 			break;
 
-		gkr_async_begin_concurrent ();
+		gkr_daemon_async_begin_concurrent ();
 			res = read (pv->out_fd, buf, 128);
-		gkr_async_end_concurrent ();
+		gkr_daemon_async_end_concurrent ();
 
 		/* Got an error */
 		if (res < 0) {
@@ -534,7 +536,7 @@ read_until_end (GkrAskRequest *ask)
 	egg_buffer_add_byte (&pv->buffer, 0);
 
 	egg_secure_free (buf);
-	gkr_async_unregister_cancel (close_fd, &pv->out_fd);
+	gkr_daemon_async_unregister_cancel (close_fd, &pv->out_fd);
 	
 	close_fd (&pv->out_fd);
 
@@ -596,16 +598,16 @@ send_all_data (GkrAskRequest *ask, const gchar *buf, gsize len)
 	
 	g_return_val_if_fail (pv->in_fd >= 0, FALSE);
 	
-	gkr_async_register_cancel (close_fd, &pv->in_fd);
+	gkr_daemon_async_register_cancel (close_fd, &pv->in_fd);
 
 	while (len > 0) {
 
-		if (gkr_async_is_stopping ())
+		if (gkr_daemon_async_is_stopping ())
 			break;
 
-		gkr_async_begin_concurrent ();
+		gkr_daemon_async_begin_concurrent ();
 			res = write (pv->in_fd, buf, len);
-		gkr_async_end_concurrent ();
+		gkr_daemon_async_end_concurrent ();
 
 		/* Got an error */
 		if (res < 0) {
@@ -629,7 +631,7 @@ send_all_data (GkrAskRequest *ask, const gchar *buf, gsize len)
 	if (len == 0)
 		ret = TRUE;
 	
-	gkr_async_unregister_cancel (close_fd, &pv->in_fd);
+	gkr_daemon_async_unregister_cancel (close_fd, &pv->in_fd);
 	
 	close_fd (&pv->in_fd);
 	return ret;

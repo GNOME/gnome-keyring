@@ -23,9 +23,6 @@
 #include "config.h"
 
 #include "gkr-daemon.h"
-#include "gkr-daemon-util.h"
-
-#include "common/gkr-async.h"
 
 #include "egg/egg-cleanup.h"
 #include "egg/egg-libgcrypt.h"
@@ -40,6 +37,9 @@
 #include "pkcs11/gkr-pkcs11-daemon.h"
 
 #include "ui/gkr-ask-daemon.h"
+
+#include "util/gkr-daemon-async.h"
+#include "util/gkr-daemon-util.h"
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -717,7 +717,7 @@ main (int argc, char *argv[])
 	/* Initialize our daemon main loop and threading */
 	loop = g_main_loop_new (NULL, FALSE);
 	ctx = g_main_loop_get_context (loop);
-	gkr_async_workers_init (loop);
+	gkr_daemon_async_workers_init (loop);
 	
 	/* 
 	 * Always initialize the keyring subsystem. This is a necessary
@@ -765,13 +765,13 @@ main (int argc, char *argv[])
 	g_main_loop_run (loop);
 
 	/* Make sure no other threads are running */
-	gkr_async_workers_stop_all ();
+	gkr_daemon_async_workers_stop_all ();
 	
 	/* This wraps everything up in order */
 	egg_cleanup_perform ();
 	
 	/* Final shutdown of anything workers running about */
-	gkr_async_workers_uninit ();
+	gkr_daemon_async_workers_uninit ();
 
 	return 0;
 }

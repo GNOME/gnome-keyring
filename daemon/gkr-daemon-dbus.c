@@ -23,13 +23,14 @@
 #include "config.h"
 
 #include "gkr-daemon.h"
-#include "gkr-daemon-util.h"
 
 #include "egg/egg-cleanup.h"
 #include "egg/egg-dbus.h"
 
 #include "library/gnome-keyring.h"
 #include "library/gnome-keyring-private.h"
+
+#include "util/gkr-daemon-util.h"
 
 #include <dbus/dbus.h>
 

@@ -33,9 +33,6 @@
 #include <sys/un.h>
 
 #include "gkr-daemon.h"
-#include "gkr-daemon-util.h"
-
-#include "common/gkr-async.h"
 
 #include "egg/egg-buffer.h"
 #include "egg/egg-cleanup.h"
@@ -49,6 +46,9 @@
 #include "library/gnome-keyring-proto.h"
 
 #include "ui/gkr-ask-daemon.h"
+
+#include "util/gkr-daemon-async.h"
+#include "util/gkr-daemon-util.h"
 
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
@@ -65,7 +65,7 @@ typedef enum {
 } GnomeKeyringClientStates;
 
 typedef struct {
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 	int sock;
 
 	GnomeKeyringApplicationRef *app_ref;
@@ -120,15 +120,15 @@ yield_and_read_all (int fd, guchar *buf, int len)
 	while (len > 0) {
 		
 		/* Is this worker stopping? */
-		if (gkr_async_is_stopping ())
+		if (gkr_daemon_async_is_stopping ())
 			return FALSE;
 			
 		/* Don't block other threads during the read */
-		gkr_async_begin_concurrent ();
+		gkr_daemon_async_begin_concurrent ();
 		
 			res = read (fd, buf, len);
 			
-		gkr_async_end_concurrent ();
+		gkr_daemon_async_end_concurrent ();
 		
 		if (res <= 0) {
 			if (errno == EAGAIN || errno == EINTR)
@@ -155,15 +155,15 @@ yield_and_write_all (int fd, const guchar *buf, int len)
 	while (len > 0) {
 		
 		/* Is this worker stopping? */
-		if (gkr_async_is_stopping ())
+		if (gkr_daemon_async_is_stopping ())
 			return FALSE;
 			
 		/* Don't block other threads during the read */
-		gkr_async_begin_concurrent ();
+		gkr_daemon_async_begin_concurrent ();
 
 			res = write (fd, buf, len);
 			
-		gkr_async_end_concurrent ();
+		gkr_daemon_async_end_concurrent ();
 		
 		if (res <= 0) {
 			if (errno == EAGAIN || errno == EINTR)
@@ -211,11 +211,11 @@ yield_and_read_credentials (int sock, pid_t *pid, uid_t *uid)
 {
 	gboolean ret;
 	
-	gkr_async_begin_concurrent ();
+	gkr_daemon_async_begin_concurrent ();
 	
 		ret = egg_unix_credentials_read (sock, pid, uid) >= 0;
 		
-	gkr_async_end_concurrent ();
+	gkr_daemon_async_end_concurrent ();
 	
 	return ret;
 }
@@ -241,7 +241,7 @@ client_worker_main (gpointer user_data)
 	char *str;
 
 	/* This helps any reads wakeup when this worker is stopping */
-	gkr_async_register_cancel (close_fd, &client->sock);
+	gkr_daemon_async_register_cancel (close_fd, &client->sock);
 	
 	/* 1. First we read and verify the client's user credentials */	
 	debug_print (("GNOME_CLIENT_STATE_CREDENTIALS %p\n", client));
@@ -316,7 +316,7 @@ client_worker_main (gpointer user_data)
 }
 
 static void
-client_worker_done (GkrAsyncWorker *worker, gpointer result, gpointer user_data)
+client_worker_done (GkrDaemonAsyncWorker *worker, gpointer result, gpointer user_data)
 {
 	GnomeKeyringClient *client = (GnomeKeyringClient*)user_data;
 
@@ -349,8 +349,8 @@ client_new (int fd)
 	 */  
 	egg_buffer_init_full (&client->input_buffer, 128, egg_secure_realloc);
 
-	client->worker = gkr_async_worker_start (client_worker_main, 
-	                                         client_worker_done, client);
+	client->worker = gkr_daemon_async_worker_start (client_worker_main,
+	                                                client_worker_done, client);
 	g_assert (client->worker);
 	
 	/* 

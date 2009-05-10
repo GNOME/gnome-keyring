@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-async.c - some daemon async functionality
+/* gkr-daemon-async.c - some daemon async functionality
 
    Copyright (C) 2007, Nate Nielsen
 
@@ -22,7 +22,7 @@
 */
 
 
-#include "gkr-async.h"
+#include "gkr-daemon-async.h"
 
 #include <glib.h>
 
@@ -154,10 +154,13 @@ static GSourceFuncs async_source_functions = {
 };
 
 void
-gkr_async_workers_init (GMainLoop *mainloop)
+gkr_daemon_async_workers_init (GMainLoop *mainloop)
 {
 	GSource *src;
 	
+	if (main_ctx)
+		return;
+
 	g_assert (mainloop);
 	
 	async_mutex = g_mutex_new ();
@@ -186,11 +189,11 @@ gkr_async_workers_init (GMainLoop *mainloop)
 }
 
 void 
-gkr_async_workers_uninit (void)
+gkr_daemon_async_workers_uninit (void)
 {
 	GSource* src;
 	
-	gkr_async_workers_stop_all ();
+	gkr_daemon_async_workers_stop_all ();
 
 	DO_UNLOCK (async_mutex);
 	
@@ -224,11 +227,11 @@ typedef struct _GkrCancelCallback {
 	gpointer user_data;
 } GkrCancelCallback;
  
-struct _GkrAsyncWorker {
+struct _GkrDaemonAsyncWorker {
 	GThread *thread;
 	
 	GThreadFunc func;
-	GkrAsyncWorkerCallback callback;
+	GkrDaemonAsyncWorkerCallback callback;
 	GQueue *cancel_funcs;
 	
 	/* The current status */
@@ -242,7 +245,7 @@ struct _GkrAsyncWorker {
 static gpointer 
 async_worker_thread (gpointer data)
 {
-	GkrAsyncWorker *worker = (GkrAsyncWorker*)data; 	
+	GkrDaemonAsyncWorker *worker = (GkrDaemonAsyncWorker*)data;
 	gpointer result;
 	
 	g_assert (worker);
@@ -281,7 +284,7 @@ async_worker_thread (gpointer data)
 static gboolean
 cleanup_done_thread (gpointer message, gpointer data)
 {
-	GkrAsyncWorker *worker = (GkrAsyncWorker*)message;
+	GkrDaemonAsyncWorker *worker = (GkrDaemonAsyncWorker*)message;
 	GkrCancelCallback *cb;
 	gpointer result;
 
@@ -337,11 +340,11 @@ cleanup_done_threads (void)
 	}
 }
 
-GkrAsyncWorker*    
-gkr_async_worker_start (GThreadFunc func, GkrAsyncWorkerCallback callback, 
-                        gpointer user_data)
+GkrDaemonAsyncWorker*
+gkr_daemon_async_worker_start (GThreadFunc func, GkrDaemonAsyncWorkerCallback callback, 
+                               gpointer user_data)
 {
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 	GError *err = NULL;
 	
 	ASSERT_IS_MAIN ();	
@@ -354,7 +357,7 @@ gkr_async_worker_start (GThreadFunc func, GkrAsyncWorkerCallback callback,
 		running_workers = g_hash_table_new (g_direct_hash, g_direct_equal);
 	}
 	
-	worker = g_new0 (GkrAsyncWorker, 1);
+	worker = g_new0 (GkrDaemonAsyncWorker, 1);
 	worker->func = func;
 	worker->callback = callback;
 	worker->cancel_funcs = g_queue_new ();
@@ -379,11 +382,11 @@ gkr_async_worker_start (GThreadFunc func, GkrAsyncWorkerCallback callback,
 }
 
 void
-gkr_async_worker_cancel (GkrAsyncWorker *worker)
+gkr_daemon_async_worker_cancel (GkrDaemonAsyncWorker *worker)
 {
 	GkrCancelCallback *cb;
 	
-	g_assert (gkr_async_worker_is_valid (worker));
+	g_assert (gkr_daemon_async_worker_is_valid (worker));
 	g_atomic_int_inc (&worker->cancelled);
 	
 	for (;;) {
@@ -396,25 +399,25 @@ gkr_async_worker_cancel (GkrAsyncWorker *worker)
 }
 
 void
-gkr_async_worker_stop (GkrAsyncWorker *worker)
+gkr_daemon_async_worker_stop (GkrDaemonAsyncWorker *worker)
 {
-	g_assert (gkr_async_worker_is_valid (worker));
+	g_assert (gkr_daemon_async_worker_is_valid (worker));
 	g_assert (worker);
 	ASSERT_IS_MAIN ();
 	
-	gkr_async_worker_cancel (worker);
+	gkr_daemon_async_worker_cancel (worker);
 	
 	while (!g_atomic_int_get (&worker->stopped)) {
 		g_assert (running_workers && g_hash_table_size (running_workers) > 0);
 		cleanup_done_threads ();
-		gkr_async_yield ();
+		gkr_daemon_async_yield ();
 	}
 
 	cleanup_done_threads ();
 }
 
 gboolean
-gkr_async_worker_is_valid (GkrAsyncWorker *worker)
+gkr_daemon_async_worker_is_valid (GkrDaemonAsyncWorker *worker)
 {
 	ASSERT_IS_MAIN ();
 	
@@ -423,7 +426,7 @@ gkr_async_worker_is_valid (GkrAsyncWorker *worker)
 }
 
 guint
-gkr_async_workers_get_n (void)
+gkr_daemon_async_workers_get_n (void)
 {
 	ASSERT_IS_MAIN ();
 	
@@ -435,11 +438,11 @@ gkr_async_workers_get_n (void)
 static void 
 cancel_each_worker (gpointer key, gpointer value, gpointer data)
 {
-	gkr_async_worker_cancel ((GkrAsyncWorker*)key);
+	gkr_daemon_async_worker_cancel ((GkrDaemonAsyncWorker*)key);
 }
 
 void
-gkr_async_workers_stop_all (void)
+gkr_daemon_async_workers_stop_all (void)
 {
 	ASSERT_IS_MAIN ();
 	
@@ -453,7 +456,7 @@ gkr_async_workers_stop_all (void)
 	while (running_workers) {
 		g_assert (g_hash_table_size (running_workers) > 0);
 		cleanup_done_threads ();
-		gkr_async_yield ();
+		gkr_daemon_async_yield ();
 	}
 }
 
@@ -462,13 +465,13 @@ gkr_async_workers_stop_all (void)
  */
 
 gboolean
-gkr_async_yield (void)
+gkr_daemon_async_yield (void)
 {
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 
 	g_assert (async_mutex);
 	
-	worker = (GkrAsyncWorker*)g_static_private_get (&thread_private);
+	worker = (GkrDaemonAsyncWorker*)g_static_private_get (&thread_private);
 	if (worker && g_atomic_int_get (&worker->cancelled))
 		return FALSE;
 
@@ -484,11 +487,11 @@ gkr_async_yield (void)
 }
 
 gboolean
-gkr_async_is_stopping (void)
+gkr_daemon_async_is_stopping (void)
 {
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 
-	worker = (GkrAsyncWorker*)g_static_private_get (&thread_private);
+	worker = (GkrDaemonAsyncWorker*)g_static_private_get (&thread_private);
 	if (worker && g_atomic_int_get (&worker->cancelled))
 		return TRUE;
 	
@@ -496,7 +499,7 @@ gkr_async_is_stopping (void)
 }
 
 void
-gkr_async_begin_concurrent (void)
+gkr_daemon_async_begin_concurrent (void)
 {
 	g_assert (async_mutex);
 	
@@ -505,7 +508,7 @@ gkr_async_begin_concurrent (void)
 }
 
 void
-gkr_async_end_concurrent (void)
+gkr_daemon_async_end_concurrent (void)
 {
 	g_assert (async_mutex);
 	
@@ -514,14 +517,14 @@ gkr_async_end_concurrent (void)
 }
 
 void
-gkr_async_register_cancel (GDestroyNotify cancel, gpointer data)
+gkr_daemon_async_register_cancel (GDestroyNotify cancel, gpointer data)
 {
 	GkrCancelCallback *cb;
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 
 	g_assert (cancel);
 	
-	worker = (GkrAsyncWorker*)g_static_private_get (&thread_private);
+	worker = (GkrDaemonAsyncWorker*)g_static_private_get (&thread_private);
 	
 	/* We don't support cancellation funcs for main thread */	
 	if (!worker)
@@ -541,15 +544,15 @@ match_cancel_func (gconstpointer a, gconstpointer b)
 }
 
 void
-gkr_async_unregister_cancel (GDestroyNotify cancel, gpointer data)
+gkr_daemon_async_unregister_cancel (GDestroyNotify cancel, gpointer data)
 {
 	GkrCancelCallback match;
-	GkrAsyncWorker *worker;
+	GkrDaemonAsyncWorker *worker;
 	GList *l;
 	
 	g_assert (cancel);
 	
-	worker = (GkrAsyncWorker*)g_static_private_get (&thread_private);
+	worker = (GkrDaemonAsyncWorker*)g_static_private_get (&thread_private);
 	
 	/* We don't support cancellation funcs for main thread */	
 	if (!worker)
@@ -569,14 +572,14 @@ gkr_async_unregister_cancel (GDestroyNotify cancel, gpointer data)
  * ASYNC WAITS
  */
  
-GkrAsyncWait* 
-gkr_async_wait_new (void)
+GkrDaemonAsyncWait*
+gkr_daemon_async_wait_new (void)
 {
-	return (GkrAsyncWait*)g_cond_new ();
+	return (GkrDaemonAsyncWait*)g_cond_new ();
 }
 
 void
-gkr_async_wait_free (GkrAsyncWait *wait)
+gkr_daemon_async_wait_free (GkrDaemonAsyncWait *wait)
 {
 	if (!wait)
 		return;
@@ -584,21 +587,21 @@ gkr_async_wait_free (GkrAsyncWait *wait)
 }
 
 void
-gkr_async_wait (GkrAsyncWait *wait)
+gkr_daemon_async_wait (GkrDaemonAsyncWait *wait)
 {
 	g_assert (wait);
 	g_cond_wait ((GCond*)wait, async_mutex);
 }
 
 void
-gkr_async_notify (GkrAsyncWait *wait)
+gkr_daemon_async_notify (GkrDaemonAsyncWait *wait)
 {
 	g_assert (wait);
 	g_cond_signal ((GCond*)wait);
 }
 
 void
-gkr_async_usleep (gulong microseconds)
+gkr_daemon_async_usleep (gulong microseconds)
 {
 	g_assert (async_mutex);
 	
@@ -611,7 +614,7 @@ gkr_async_usleep (gulong microseconds)
 }
 
 void
-gkr_async_sleep (glong seconds)
+gkr_daemon_async_sleep (glong seconds)
 {
 	g_assert (async_mutex);
 	

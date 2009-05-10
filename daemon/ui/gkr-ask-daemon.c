@@ -26,9 +26,8 @@
 #include "gkr-ask-daemon.h"
 #include "gkr-ask-request.h"
 
-#include "common/gkr-async.h"
-
-#include "daemon/gkr-daemon-util.h"
+#include "daemon/util/gkr-daemon-async.h"
+#include "daemon/util/gkr-daemon-util.h"
 
 #include "egg/egg-cleanup.h"
 
@@ -36,7 +35,7 @@
 
 static gboolean ask_daemon_inited = FALSE;
 
-static GkrAsyncWait *wait_condition = NULL;
+static GkrDaemonAsyncWait *wait_condition = NULL;
 static GkrAskRequest *current_ask = NULL;
 
 static GkrAskHook ask_daemon_hook = NULL;
@@ -51,7 +50,7 @@ ask_daemon_cleanup (gpointer unused)
 		gkr_ask_request_cancel (current_ask);
 	
 	g_assert (wait_condition);
-	gkr_async_wait_free (wait_condition);
+	gkr_daemon_async_wait_free (wait_condition);
 	wait_condition = NULL;
 	
 	ask_daemon_inited = FALSE;
@@ -64,7 +63,7 @@ ask_daemon_init (void)
 		return;
 	ask_daemon_inited = TRUE;
 	
-	wait_condition = gkr_async_wait_new ();
+	wait_condition = gkr_daemon_async_wait_new ();
 	
 	egg_cleanup_register (ask_daemon_cleanup, NULL);
 }
@@ -138,14 +137,14 @@ gkr_ask_daemon_process (GkrAskRequest* ask)
 	if (gkr_ask_request_check (ask))
 		goto done;
 	
-	if (gkr_async_is_stopping ()) {
+	if (gkr_daemon_async_is_stopping ()) {
 		gkr_ask_request_cancel (ask);
 		goto done;
 	}
 	
 	/* Wait until no other asks are prompting */
 	while (current_ask)
-		gkr_async_wait (wait_condition);
+		gkr_daemon_async_wait (wait_condition);
 
 	/* 
 	 * See if the user already denied this request.
@@ -180,7 +179,7 @@ gkr_ask_daemon_process (GkrAskRequest* ask)
 	current_ask = NULL;
 	
 	g_assert (wait_condition);
-	gkr_async_notify (wait_condition);
+	gkr_daemon_async_notify (wait_condition);
 	
 done:
 	g_assert (gkr_ask_request_is_complete (ask));
