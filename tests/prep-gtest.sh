@@ -48,13 +48,17 @@ build_source()
 
 	# Startup function
 	echo "static void start_tests (void) {"
-		sed -ne "s/.*DEFINE_START(\([^)]\+\)).*/	start_\1 ();/p" $@
+		for _file in $@; do
+			sed -ne "s/.*DEFINE_START(\([^)]\+\)).*/	start_\1 ();/p" $_file
+		done
 	echo "}"
 	echo
 
 	# Shutdown function
 	echo "static void stop_tests (void) {"
-		sed -ne "s/.*DEFINE_STOP(\([^)]\+\)).*/	stop_\1 ();/p" $@
+		for _file in $@; do
+			sed -ne "s/.*DEFINE_STOP(\([^)]\+\)).*/	stop_\1 ();/p" $_file
+		done
 	echo "}"
 	echo
 
