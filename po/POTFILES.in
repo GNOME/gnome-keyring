@@ -1,6 +1,5 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-common/gkr-location.c
 daemon/gkr-daemon-ops.c
 daemon/data/gnome-keyring.schemas.in
 daemon/gnome-keyring-daemon.desktop.in.in
@@ -9,6 +8,7 @@ daemon/keyrings/gkr-keyring-login.c
 daemon/keyrings/gkr-keyring.c
 daemon/pkcs11/gkr-pkcs11-auth.c
 daemon/ui/gkr-ask-tool.c
+daemon/util/gkr-location.c
 egg/egg-asn1.c
 egg/egg-oid.c
 gcr/gcr-certificate-basics-widget.c
