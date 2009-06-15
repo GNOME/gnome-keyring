@@ -8,9 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.gnome-2-26\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&component=general\n"
-"POT-Creation-Date: 2009-06-11 08:08+0000\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-04-17 14:34+0000\n"
 "PO-Revision-Date: 2009-06-15 15:01+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <discuss@lists.ankur.org.in>\n"
@@ -20,6 +19,33 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
+
+#: ../common/gkr-location.c:321
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "অপসারণযোগ্য ডিস্ক: %s"
+
+#: ../common/gkr-location.c:323
+msgid "Removable Disk"
+msgstr "অপসারণযোগ্য ডিস্ক"
+
+#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
+msgid "Home"
+msgstr "ব্যক্তিগত ফোল্ডার"
+
+#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
+msgid "The disk or drive this file is located on is not present"
+msgstr "ফাইল ধারণকারী ডিস্ক অথবা ড্রাইভ উপস্থিত নয়"
+
+#: ../common/gkr-location.c:1137
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "চিহ্নির ডিরেক্টরি নির্মাণ করা যায়নি: %s"
+
+#: ../common/gkr-location.c:1171
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "চিহ্নিত ফাইল মুছে ফেলা যায়নি: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:228
@@ -102,31 +128,25 @@ msgstr ""
 #. TRANSLATORS: The keyring '%s' is locked
 #: ../daemon/gkr-daemon-ops.c:314
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"'%s' (%s) অ্যাপ্লিকেশন '%s' কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "'%s' (%s) অ্যাপ্লিকেশন '%s' কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
 #. TRANSLATORS: The default keyring is locked
 #: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"'%s' অ্যাপ্লিকেশন ডিফল্ট কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "'%s' অ্যাপ্লিকেশন ডিফল্ট কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
 #. TRANSLATORS: The keyring '%s' is locked
 #: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
 #, c-format
 msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr ""
-"'%s' অ্যাপ্লিকেশন '%s' কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
+msgstr "'%s' অ্যাপ্লিকেশন '%s' কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
 #. TRANSLATORS: The default keyring is locked
 #: ../daemon/gkr-daemon-ops.c:346
 #, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
+msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr ""
 "একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা "
 "আছে"
@@ -134,10 +154,8 @@ msgstr ""
 #. TRANSLATORS: The keyring '%s' is locked
 #: ../daemon/gkr-daemon-ops.c:351
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন %s কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "একটি অজানা অ্যাপ্লিকেশন %s কি-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
 #: ../daemon/gkr-daemon-ops.c:358
 msgid "Enter password for default keyring to unlock"
@@ -371,31 +389,30 @@ msgid "GNOME Keyring Daemon"
 msgstr "GNOME Keyring ডেমন"
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
+#: ../daemon/keyrings/gkr-keyring-login.c:98
 msgid "Unlock Login Keyring"
 msgstr "কি-রিং আনলক করুন"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:99
+#: ../daemon/keyrings/gkr-keyring-login.c:98
 msgid "Enter login password to unlock keyring"
 msgstr "কি-রিং আন-লক করতে ব্যবহৃত পাসওয়ার্ড লিখুন"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:101
+#: ../daemon/keyrings/gkr-keyring-login.c:100
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr ""
-"এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কি-রিং স্বয়ংক্রিয়ভাবে আন-লক করা হয়নি"
+msgstr "এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কি-রিং স্বয়ংক্রিয়ভাবে আন-লক করা হয়নি"
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
+#: ../daemon/keyrings/gkr-keyring-login.c:124
 msgid "Create Login Keyring"
 msgstr "লগ-ইন কি-রিং তৈরি করুন"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:125
+#: ../daemon/keyrings/gkr-keyring-login.c:124
 msgid "Enter your login password"
 msgstr "লগ-ইন পাসওয়ার্ড পরিবর্তন লিখুন"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:127
+#: ../daemon/keyrings/gkr-keyring-login.c:126
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
@@ -403,7 +420,7 @@ msgstr ""
 "এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কি-রিং স্বয়ংক্রিয়ভাবে নির্মাণ করা "
 "হয়নি। এটি এখন নির্মাণ করা হবে।"
 
-#: ../daemon/keyrings/gkr-keyring.c:587
+#: ../daemon/keyrings/gkr-keyring.c:586
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "%s কি-রিং আন-লক করতে ব্যবহৃত পাসওয়ার্ড"
@@ -444,22 +461,19 @@ msgstr "আনলক করতে পাসওয়ার্ড লিখুন"
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"একটি অ্যাপ্লিকেশন, %s গোপনীয়-কি ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
+msgstr "একটি অ্যাপ্লিকেশন, %s গোপনীয়-কি ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
 #. TRANSLATORS: The certificate is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"একটি অ্যাপ্লিকেশন, %s সার্টিফিকেট ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
+msgstr "একটি অ্যাপ্লিকেশন, %s সার্টিফিকেট ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
 #. TRANSLATORS: The public key is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"একটি অ্যাপ্লিকেশন, %s সার্বজনীন-কি ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
+msgstr "একটি অ্যাপ্লিকেশন, %s সার্বজনীন-কি ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
@@ -519,8 +533,7 @@ msgstr "সংগ্রহস্থল নিরাপদ রাখতে পা
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr ""
-"সার্টিফিকেট ও কি সংগ্রহের জন্য '%s' প্রস্তুত করার উদ্দেশ্যে একটি পাসওয়ার্ড লেখা আবশ্যক"
+msgstr "সার্টিফিকেট ও কি সংগ্রহের জন্য '%s' প্রস্তুত করার উদ্দেশ্যে একটি পাসওয়ার্ড লেখা আবশ্যক"
 
 #: ../daemon/ui/gkr-ask-tool.c:230
 msgid ""
@@ -619,33 +632,6 @@ msgstr "একবার ব্যবহারের অনুমতি প্র
 #: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
 msgstr "সর্বদা ব্যবহারের অনুমতি প্রদান করা হবে (_A)"
-
-#: ../daemon/util/gkr-location.c:320
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "অপসারণযোগ্য ডিস্ক: %s"
-
-#: ../daemon/util/gkr-location.c:322
-msgid "Removable Disk"
-msgstr "অপসারণযোগ্য ডিস্ক"
-
-#: ../daemon/util/gkr-location.c:543 ../daemon/util/gkr-location.c:555
-msgid "Home"
-msgstr "ব্যক্তিগত ফোল্ডার"
-
-#: ../daemon/util/gkr-location.c:1104 ../daemon/util/gkr-location.c:1128
-msgid "The disk or drive this file is located on is not present"
-msgstr "ফাইল ধারণকারী ডিস্ক অথবা ড্রাইভ উপস্থিত নয়"
-
-#: ../daemon/util/gkr-location.c:1136
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "চিহ্নির ডিরেক্টরি নির্মাণ করা যায়নি: %s"
-
-#: ../daemon/util/gkr-location.c:1170
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "চিহ্নিত ফাইল মুছে ফেলা যায়নি: %s"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -1376,3 +1362,4 @@ msgstr "নামবিহীন সার্টিফিকেট"
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
 msgid "Couldn't parse public SSH key"
 msgstr "সার্বজনীন SSH-কি পার্স করতে ব্যর্থ"
+
