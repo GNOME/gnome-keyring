@@ -66,4 +66,5 @@ Makefile.in
 run-prompt-test
 run-prompt-test.c
 run-prompt-test.h
+*.stamp
 
