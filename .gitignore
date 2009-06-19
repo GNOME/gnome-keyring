@@ -55,4 +55,5 @@
 .*project
 .settings
 *.orig
+*.stamp
 

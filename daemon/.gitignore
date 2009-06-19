@@ -1,7 +1,7 @@
 /.libs
 /.deps
-/Makefile
-/Makefile.in
+Makefile
+Makefile.in
 /gnome-keyring-ask
 /gnome-keyring-daemon
 /org.gnome.keyring.service
