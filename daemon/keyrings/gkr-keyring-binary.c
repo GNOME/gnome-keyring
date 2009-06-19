@@ -75,35 +75,6 @@ typedef struct {
  * BINARY ENCRYPTED FILE FORMAT
  */
 
-static void
-init_salt (guchar salt[8])
-{
-	gboolean got_random;
-	int i, fd;
-
-	got_random = FALSE;
-#ifdef HAVE_DEVRANDOM
-	fd = open ("/dev/random", O_RDONLY);
-	if (fd != -1) {
-		struct stat st;
-		/* Make sure it's a character device */
-		if ((fstat (fd, &st) == 0) && S_ISCHR (st.st_mode)) {
-			if (read (fd, salt, 8) == 8) {
-				got_random = TRUE;
-			}
-		}
-		close (fd);
-	}
-#endif
-
-	if (!got_random) {
-		for (i=0; i < 8; i++) {
-			salt[i] = (int) (256.0*rand()/(RAND_MAX+1.0));
-		}
-	}
-	
-}
-
 static gboolean
 encrypt_buffer (EggBuffer *buffer,
 		const char *password,
@@ -302,7 +273,7 @@ gkr_keyring_binary_generate (GkrKeyring *keyring, EggBuffer *buffer)
 	/* Prepare the keyring for encryption */
 	if (!keyring->salt_valid) {
 		keyring->hash_iterations = 1000 + (int) (1000.0 * rand() / (RAND_MAX + 1.0));
-		init_salt (keyring->salt);
+		gcry_create_nonce (keyring->salt, sizeof (keyring->salt));
 		keyring->salt_valid = TRUE;
 	}	
 		
