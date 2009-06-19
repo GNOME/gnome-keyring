@@ -16,7 +16,10 @@ secrets-built-sources.stamp : Makefile.am $(INTERFACE_DEFS)
 	eggdbus-binding-tool								\
 		--namespace "Secrets"							\
 		--dbus-namespace "org.freedesktop.Secrets"				\
+		--introspection-xml org.freedesktop.Secrets.Collection.xml		\
+		--introspection-xml org.freedesktop.Secrets.Item.xml			\
 		--introspection-xml org.freedesktop.Secrets.Service.xml 		\
+		--introspection-xml org.freedesktop.Secrets.Session.xml			\
 		--stamp-file $@								\
 	$(NULL)
 
