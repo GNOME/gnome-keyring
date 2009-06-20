@@ -1,2 +1,2 @@
 
-SUBDIRS = gcr gnome-keyring gp11
+SUBDIRS = gcr gnome-keyring gp11 secrets

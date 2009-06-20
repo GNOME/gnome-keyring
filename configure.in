@@ -557,6 +557,7 @@ docs/reference/Makefile
 docs/reference/gcr/Makefile
 docs/reference/gnome-keyring/Makefile
 docs/reference/gp11/Makefile
+docs/reference/secrets/Makefile
 egg/Makefile
 egg/tests/Makefile
 gcr/gcr.pc
