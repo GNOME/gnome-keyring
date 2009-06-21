@@ -27,12 +27,14 @@
 #include "gkr-daemon-util.h"
 
 #include "egg/egg-cleanup.h"
+#include "egg/egg-unix-credentials.h"
 
 #include <glib.h>
 
 #include <sys/stat.h>
 
 #include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -175,38 +177,17 @@ GkrDaemonClient*
 gkr_daemon_client_set_current (pid_t pid, const gchar *app_path, const gchar *app_display)
 {
 	GkrDaemonClient *client;
-	gchar *path = NULL;
+	char *path = NULL;
 	
 	/* Try and figure out the path from the pid */
-#if defined(__linux__) || defined(__FreeBSD__)
-	if (pid > 0 && !app_path) {
-		char *buffer;
-		int len;
-		char *path = NULL;
-			
-#if defined(__linux__)
-		path = g_strdup_printf ("/proc/%d/exe", (gint)pid);
-#elif defined(__FreeBSD__)
-		path = g_strdup_printf ("/proc/%d/file", (gint)pid);
-#endif
-		buffer = g_file_read_link (path, NULL);
-		g_free (path);
-
-		len = (buffer != NULL) ? strlen (buffer) : 0;
-		if (len > 0) {
-			path = g_strndup (buffer, len);
-			app_path = path;
-		}
-		
-		g_free (buffer);
-	}
-#endif
+	if (pid > 0 && !app_path)
+		app_path = path = egg_unix_credentials_executable (pid);
 	
 	client = g_object_new (GKR_TYPE_DAEMON_CLIENT, "pid", pid, "app-path", app_path, 
 	                       "app-display", app_display, NULL);
 	
 	register_client (client);
-	g_free (path);
+	free (path);
 	
 	return client;
 }
