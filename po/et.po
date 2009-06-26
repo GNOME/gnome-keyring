@@ -2,10 +2,10 @@
 # Estonian translation of GNOME-keyring.
 #
 # Copyright (C) 2005, 2006 Free Software Foundation, Inc.
-# Copyright (C) 2007, 2008 The GNOME Project.
+# Copyright (C) 2007-2009 The GNOME Project.
 # This file is distributed under the same license as the gnome-keyring package.
 #
-# Ivar Smolin <okul@linux.ee>, 2005-2008.
+# Ivar Smolin <okul@linux.ee>, 2005-2009.
 # Priit Laes <amd@store20.com>, 2005, 2006.
 #
 msgid ""
@@ -13,35 +13,14 @@ msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2009-04-18 03:19+0000\n"
-"PO-Revision-Date: 2009-06-25 02:00+0300\n"
-"Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
+"POT-Creation-Date: 2009-06-25 11:31+0000\n"
+"PO-Revision-Date: 2009-06-26 08:50+0300\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "Eemaldatav ketas: %s"
-
-msgid "Removable Disk"
-msgstr "Eemaldatav ketas"
-
-msgid "Home"
-msgstr "Kodu"
-
-msgid "The disk or drive this file is located on is not present"
-msgstr "Selle faili asukohaks määratud ketas või seade pole kättesaadav"
-
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "Kataloogi pole võimalik luua: %s"
-
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "Faili pole võimalik kustutada: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #, c-format
@@ -338,7 +317,6 @@ msgstr "Kas gnome võtmerõnga PKCS#11 komponent on lubatud või mitte."
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Kas gnome võtmerõnga SSH komponent on lubatud või mitte."
 
-#| msgid "New Keyring Password"
 msgid "GNOME Keyring Daemon"
 msgstr "GNOME võtmerõnga deemon"
 
@@ -433,30 +411,24 @@ msgstr ""
 msgid "Automatically unlock this when I log in"
 msgstr "See võetakse minu sisselogimisel automaatselt lukust lahti."
 
-#| msgid "Unlock certificate"
 msgid "Unlock certificate/key storage"
 msgstr "Võta sertifikaatide--/võtmehoidla lukust lahti"
 
-#| msgid "Enter password to unlock the certificate"
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Sisesta sertifikaatide-/võtmehoidla lukust lahtivõtmise parool"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #, c-format
-#| msgid ""
-#| "An application wants access to the certificate '%s', but it is locked"
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
 "Rakendus tahab kasutada sertifikaatide-/võtmehoidlat '%s', kuid see on lukus"
 
-#| msgid "Automatically unlock this certificate when I log in."
 msgid "Automatically unlock secure storage when I log in."
 msgstr ""
 "See turvahoidla võetakse minu sisselogimisel automaatselt lukust lahti."
 
-#| msgid "New password strength"
 msgid "New Password Required"
 msgstr "Vajalik uus parool"
 
@@ -535,7 +507,6 @@ msgstr "Paroolid pole vastavuses."
 msgid "Password cannot be blank"
 msgstr "Parool ei tohi olla tühi"
 
-#| msgid "Deny"
 msgid "_Deny"
 msgstr "_Keela"
 
@@ -550,6 +521,27 @@ msgstr "Luba ainult _seekord"
 
 msgid "_Always Allow"
 msgstr "Luba _alati"
+
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Eemaldatav ketas: %s"
+
+msgid "Removable Disk"
+msgstr "Eemaldatav ketas"
+
+msgid "Home"
+msgstr "Kodu"
+
+msgid "The disk or drive this file is located on is not present"
+msgstr "Selle faili asukohaks määratud ketas või seade pole kättesaadav"
+
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Kataloogi pole võimalik luua: %s"
+
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "Faili pole võimalik kustutada: %s"
 
 msgid "Domain Component"
 msgstr "Domeeni osa"
@@ -614,14 +606,11 @@ msgstr "Eesnimi"
 msgid "Initials"
 msgstr "Initsiaalid"
 
-#, fuzzy
-#| msgid "The operation failed"
 msgid "Generation Qualifier"
-msgstr "Operatsioon nurjus"
+msgstr ""
 
-#, fuzzy
 msgid "DN Qualifier"
-msgstr "DN-piirang"
+msgstr ""
 
 msgid "Pseudonym"
 msgstr "Pseudonüüm"
@@ -650,7 +639,6 @@ msgstr "<i>Pole sertifikaadi osa</i>"
 msgid "<i>unknown</i>"
 msgstr "<i>tundmatu</i>"
 
-#| msgid "Import certificate"
 msgid "<Not Part of Certificate>"
 msgstr "<pole serdi osa>"
 
@@ -672,11 +660,9 @@ msgstr "<b>Kehtivus</b>"
 msgid "Common Name (CN)"
 msgstr "Tavanimi (CN)"
 
-#| msgid "Import certificate"
 msgid "Email Recipient Certificate"
 msgstr "Meili vastuvõtja sertifikaat"
 
-#| msgid "Certificate"
 msgid "Email Signer Certificate"
 msgstr "Meili allkirjastaja sertifikaat"
 
@@ -698,11 +684,9 @@ msgstr "Organisatsiooni üksus (OU)"
 msgid "SHA1 Fingerprint"
 msgstr "SHA1 sõrmejälg"
 
-#| msgid "Certificate"
 msgid "SSL Client Certificate"
 msgstr "SSL'i kliendisertifikaat"
 
-#| msgid "Certificate"
 msgid "SSL Server Certificate"
 msgstr "SSL'i serverisertifikaat"
 
@@ -721,21 +705,18 @@ msgstr "Jah"
 msgid "No"
 msgstr "ei"
 
-#| msgid "Certificate"
 msgid "Critical"
 msgstr "Kriitiline"
 
 #. The subject
-#, fuzzy
 msgid "Subject Name"
-msgstr "Tellija nimi"
+msgstr ""
 
 #. The Issuer
 msgid "Issuer Name"
 msgstr "Väljaandja nimi"
 
 #. The Issued Parameters
-#| msgid "Certificate"
 msgid "Issued Certificate"
 msgstr "Väljastatud sertifikaat"
 
@@ -759,7 +740,6 @@ msgid "Signature Parameters"
 msgstr "Allkirja parameetrid"
 
 #. Public Key Info
-#| msgid "Public Key"
 msgid "Public Key Info"
 msgstr "Avaliku võtme andmed"
 
@@ -783,11 +763,9 @@ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 msgstr ""
 "<span size='large' weight='bold'>Sertifikaatide ja võtmete importimine</span>"
 
-#| msgid "Import"
 msgid "Import Into:"
 msgstr "Impordi kuhu:"
 
-#| msgid "_Password:"
 msgid "Password:"
 msgstr "Parool:"
 
@@ -798,7 +776,6 @@ msgstr "Operatsioon katkestati"
 msgid "No location available to import to"
 msgstr "Asukohta, kuhu importida, pole saadaval"
 
-#| msgid "Import certificate"
 msgid "Import Certificates/Keys"
 msgstr "Sertifikaadi/võtmete importimine"
 
@@ -806,12 +783,10 @@ msgid "Choose a location to store the imported certificates/keys."
 msgstr "Vali asukoht imporditud sertifikaatide/võtmete säilitamiseks."
 
 #. TRANSLATORS: The key is locked.
-#| msgid "The system wants to import the private key '%s', but it is locked"
 msgid "In order to import the private key, it must be unlocked"
 msgstr "Salajase võtme importimiseks ei tohi see olla lukus"
 
 #. TRANSLATORS: The certificate is locked.
-#| msgid "The system wants to import the certificate '%s', but it is locked"
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "Sertifikaadi importimiseks ei tohi see olla lukus"
 
@@ -821,19 +796,16 @@ msgstr "Andmete importimiseks peavad need olema lukust lahti"
 
 #. TRANSLATORS: The key is locked.
 #, c-format
-#| msgid "The system wants to import the private key '%s', but it is locked"
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "Salajase võtme '%s' importimiseks ei tohi see olla lukus"
 
 #. TRANSLATORS: The certificate is locked.
 #, c-format
-#| msgid "The system wants to import the certificate '%s', but it is locked"
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "Sertifikaadi '%s' importimiseks ei tohi see olla lukus"
 
 #. TRANSLATORS: The object '%s' is locked.
 #, c-format
-#| msgid "The system wants to import '%s', but it is locked"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "'%s' importimiseks ei tohi see olla lukus"
 
@@ -843,15 +815,12 @@ msgstr "Salajane võti"
 msgid "Certificate"
 msgstr "Sertifikaat"
 
-#| msgid "Unrecognized or unsupported file."
 msgid "Unrecognized or unsupported data."
 msgstr "Arusaamatud või toetamata andmed."
 
-#| msgid "Could not parse invalid or corrupted file."
 msgid "Could not parse invalid or corrupted data."
 msgstr "Vigaseid või rikutud andmeid pole võimalik töödelda."
 
-#| msgid "The data cannot be locked"
 msgid "The data is locked"
 msgstr "Andmed on lukustatud"
 
@@ -930,9 +899,8 @@ msgstr "Võti erineb varasemast võtmest"
 msgid "A key is needed"
 msgstr "Võti on vajalik"
 
-#, fuzzy
 msgid "Cannot include the key in digest"
-msgstr "Võtit pole võimalik kaasata läbitöödatutesse"
+msgstr "Võtit pole võimalik sõnumilühendisse kaasata"
 
 msgid "This operation cannot be done with this key"
 msgstr "Selle võtmega pole seda operatsiooni võimalik lõpetada"
@@ -952,9 +920,8 @@ msgstr "Krüpteerimismehhanismile edastati sobimatu argument"
 msgid "The object is missing or invalid"
 msgstr "Objekt puudub või on vigane"
 
-#, fuzzy
 msgid "Another operation is already taking place"
-msgstr "samal ajal toimub muu tegevus"
+msgstr "Samal ajal toimub muu tegevus"
 
 msgid "No operation is taking place"
 msgstr "Operatsioon on töös"
@@ -1121,15 +1088,11 @@ msgstr "Selle nimega võtmerõngast pole olemas."
 msgid "The keyring has already been unlocked."
 msgstr "Võtmerõngas on juba lukust lahti võetud."
 
-#| msgid "Certificate"
 msgid "Unnamed Certificate"
 msgstr "Nimetu sertifikaat"
 
 msgid "Couldn't parse public SSH key"
 msgstr "Avalikku SSH võtit pole võimalik analüüsida"
-
-#~ msgid "PKCS#11 Modules"
-#~ msgstr "PKCS#11-moodulid"
 
 #~ msgid "Import private key"
 #~ msgstr "Salajase võtme importimine"
