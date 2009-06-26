@@ -62,7 +62,8 @@
 #endif /* ENABLE_NLS */
 
 enum {
-	ARG_AUTO_START          = 0x0010
+	ARG_AUTO_START          = 1 << 0,
+	ARG_IGNORE_SERVICE      = 1 << 1
 };
 
 #define LOGIN_KEYRING		"login"
@@ -218,6 +219,42 @@ write_string (int fd, const char* buf)
 	}
 	
 	return 0;
+}
+
+/* check for list match. */
+static int
+evaluate_inlist (const char *needle, const char *haystack)
+{
+	const char *item;
+	const char *remaining;
+
+	if (!needle)
+		return PAM_BAD_ITEM;
+
+	remaining = haystack;
+
+	for (;;) {
+		item = strstr (remaining, needle);
+		if (item == NULL)
+			break;
+
+		/* is it really the start of an item in the list? */
+		if (item == haystack || *(item - 1) == ',') {
+			item += strlen (needle);
+			/* is item really needle? */
+			if (*item == '\0' || *item == ',')
+                                return PAM_SUCCESS;
+		}
+
+                remaining = strchr (item, ',');
+                if (remaining == NULL)
+                        break;
+
+		/* skip ',' */
+		++remaining;
+        }
+
+        return PAM_BAD_ITEM;
 }
 
 /* -----------------------------------------------------------------------------
@@ -763,16 +800,33 @@ prompt_password (pam_handle_t *ph)
 }
 
 static uint 
-parse_args (int argc, const char **argv)
+parse_args (pam_handle_t *ph, int argc, const char **argv)
 {
 	uint args = 0;
-	
+	const void *svc;
+	int only_if_len;
+	int i;
+
+	svc = NULL;
+	if (pam_get_item (ph, PAM_SERVICE, &svc) != PAM_SUCCESS)
+		svc = NULL;
+
+	only_if_len = strlen ("only_if=");
+
 	/* Parse the arguments */
-	for (; argc-- > 0; ++argv) {
-		if (strcmp (argv[0], "auto_start") == 0)
+	for (i = 0; i < argc; i++) {
+		if (strcmp (argv[i], "auto_start") == 0) {
 			args |= ARG_AUTO_START;
-		else
-			syslog (GKR_LOG_WARN, "gkr-pam: invalid option: %s", argv[0]);
+
+		} else if (strncmp (argv[i], "only_if=", only_if_len) == 0) {
+			const char *value = argv[i] + only_if_len;
+			if (evaluate_inlist (svc, value) != PAM_SUCCESS)
+				args |= ARG_IGNORE_SERVICE;
+
+		} else {
+			syslog (GKR_LOG_WARN, "gkr-pam: invalid option: %s",
+				argv[i]);
+		}
 	}
 	
 	return args;
@@ -788,7 +842,10 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 	uint args;
 	int ret;
 	
-	args = parse_args (argc, argv);
+	args = parse_args (ph, argc, argv);
+
+	if (args & ARG_IGNORE_SERVICE)
+		return PAM_SUCCESS;
 		
 	/* Figure out and/or prompt for the user name */
 	ret = pam_get_user (ph, &user, NULL);
@@ -853,8 +910,13 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 	const char *user = NULL, *password = NULL;
 	struct passwd *pwd;
 	int ret;
-	uint args = parse_args (argc, argv);
+	uint args;
 	int started_daemon;
+
+	args = parse_args (ph, argc, argv);
+
+	if (args & ARG_IGNORE_SERVICE)
+		return PAM_SUCCESS;
 
 	/* Figure out the user name */
 	ret = pam_get_user (ph, &user, NULL);
@@ -1021,7 +1083,10 @@ pam_sm_chauthtok (pam_handle_t *ph, int flags, int argc, const char **argv)
 	uint args;
 	int ret;
 	
-	args = parse_args (argc, argv);
+	args = parse_args (ph, argc, argv);
+
+	if (args & ARG_IGNORE_SERVICE)
+		return PAM_SUCCESS;
 
 	/* Figure out and/or prompt for the user name */
 	ret = pam_get_user (ph, &user, NULL);
