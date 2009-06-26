@@ -199,12 +199,15 @@ unpad_rsa_pkcs1 (guchar bt, guint n_modulus, const guchar* padded,
                  gsize n_padded, gsize *n_raw)
 { 
 	const guchar *at;
+	guint check;
 	guchar *raw;
 	
-	/* The absolute minimum size including padding */
-	g_return_val_if_fail (n_modulus / 8 >= 3 + 8, NULL);
+	check = (n_modulus + 7) / 8;
 	
-	if (n_padded != n_modulus / 8)
+	/* The absolute minimum size including padding */
+	g_return_val_if_fail (check >= 3 + 8, NULL);
+	
+	if (n_padded != check)
 		return NULL;
 		
 	/* Check the header */
@@ -899,7 +902,7 @@ gck_crypto_rsa_pad_raw (guint n_modulus, const guchar* raw,
          *   padding               data
          */
 
-	total = n_modulus / 8;
+	total = (n_modulus + 7) / 8;
 	n_pad = total - n_raw;
 	if (n_pad < 0) /* minumum padding */
 		return NULL;
@@ -924,7 +927,7 @@ gck_crypto_rsa_pad_one (guint n_modulus, const guchar* raw,
          *      type  padding              data
          */
 
-	total = n_modulus / 8;
+	total = (n_modulus + 7) / 8;
 	n_pad = total - 3 - n_raw;
 	if (n_pad < 8) /* minumum padding */
 		return NULL;
@@ -950,7 +953,7 @@ gck_crypto_rsa_pad_two (guint n_modulus, const guchar* raw,
          *      type  padding              data
          */
 
-	total = n_modulus / 8;
+	total = (n_modulus + 7) / 8;
 	n_pad = total - 3 - n_raw;
 	if (n_pad < 8) /* minumum padding */
 		return NULL;
