@@ -60,6 +60,6 @@ gck_rpc_daemon_standalone_SOURCES = \
 	gck-rpc-daemon-standalone.c
 	
 gck_rpc_daemon_standalone_LDADD = \
-	-ldl libgck-rpc-layer.la \
-	$(top_builddir)/egg/libegg-buffer.la \
-	$(top_builddir)/egg/libegg-creds.la
+	$(DL_LIBS) libgck-rpc-layer.la \
+	$(top_builddir)/common/libgkr-common.la
+	
