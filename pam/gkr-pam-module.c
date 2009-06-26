@@ -54,6 +54,13 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#if defined(ENABLE_NLS) && defined(__linux__)
+#include <libintl.h>
+#define gkr_pam_gettext(msgid) dgettext ("Linux-PAM", msgid)
+#else
+#define gkr_pam_gettext(msgid) (msgid)
+#endif /* ENABLE_NLS */
+
 enum {
 	ARG_AUTO_START          = 0x0010
 };
@@ -730,7 +737,7 @@ prompt_password (pam_handle_t *ph)
 	memset (&msg, 0, sizeof (msg));
 	memset (&resp, 0, sizeof (resp));
 	msg.msg_style = PAM_PROMPT_ECHO_OFF;
-	msg.msg = "Password: ";
+	msg.msg = gkr_pam_gettext ("Password: ");
 	msgs[0] = &msg;
 	
 	/* Call away */
