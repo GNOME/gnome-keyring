@@ -7,6 +7,7 @@
 
 #include "egg/egg-buffer.h"
 #include "egg/egg-openssl.h"
+#include "egg/egg-secure-memory.h"
 
 typedef struct _ParsePrivate {
 	gcry_sexp_t sexp;
@@ -176,7 +177,7 @@ load_encrypted_key (const guchar *data, gsize n_data, const gchar *dekinfo,
 	
 	/* Try to parse */
 	ret = gck_data_der_read_private_key (decrypted, n_decrypted, skey);
-	gcry_free (decrypted);
+	egg_secure_free (decrypted);
 
 	if (ret != GCK_DATA_UNRECOGNIZED)
 		return ret;

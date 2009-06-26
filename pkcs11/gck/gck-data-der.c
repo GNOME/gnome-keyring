@@ -1023,7 +1023,7 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password,
 	gcry_cipher_setkey (cih, key, n_key);
 	
 	g_free (iv);
-	gcry_free (key);
+	egg_secure_free (key);
 	asn1_delete_structure (&asn1_params);
 	
 	return cih;
