@@ -90,6 +90,11 @@ main(int argc, char *argv[])
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
 	
+	if (argc <= 1) {
+		g_message ("specify pkcs11 module on the command line");
+		return 1;
+	}
+
 	module = gp11_module_initialize (argv[1], argc > 2 ? argv[2] : NULL, &error);
 	if (!module) {
 		g_message ("couldn't load pkcs11 module: %s", error->message);
