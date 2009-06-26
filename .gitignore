@@ -56,4 +56,14 @@ Makefile.in
 /depcomp
 /junk
 /TODO.tasks
+*.o
+*.la
+*.lo
+*.a
+.*project
+.settings
+*.orig
+run-prompt-test
+run-prompt-test.c
+run-prompt-test.h
 
