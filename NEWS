@@ -1,3 +1,9 @@
+Changes in version 2.26.3 are:
+* Build fixes. [Alexis Ballier, Daniel Macks]
+* Fix problem with RSA key sizes that are not a multiple of 8.
+  This affected use of SSH keys in particular.
+* Fix crash related to secure memory. [Ryan Beasley]
+
 Changes in version 2.26.1 are:
 * Fix many problems with the new secure memory allocator.
 * DBus now automatically starts the gnome-keyring service properly.
