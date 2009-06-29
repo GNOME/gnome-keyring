@@ -1,3 +1,40 @@
+=== gnome-keyring 2.26.3 ===
+
+2009-06-27  Stef Walter  <stef@memberwebs.com>
+
+    Remove == bashisms from 'test' calls configure.
+    
+    Patch by Alexis Ballier. POSIX does not document the == construction
+    for test. Fixes bug #587118
+
+2009-06-26  Stef Walter  <stef@memberwebs.com>
+
+    Fixed problem with RSA key sizes that were not a multiple of 8.
+    
+    This was a problem in the PKCS#1 padding functions, which calculated
+    the padding length incorrectly. All instances of this have been
+    searched out and fixed. Should fix bug #576700 at least with the
+    key that Robert Ancell posted.
+
+2009-06-26  Stef Walter  <stef@memberwebs.com>
+
+    Fix linking problem on FreeBSD.
+    
+    The dlopen function is in libc rather than libdl, so add a check for
+    that in configure.in. Fixes bug #584307
+
+2009-06-26  Stef Walter  <stef@memberwebs.com>
+
+    Add missing header.
+    
+    Fixes compilation problem on OS X 10.4. Bug #584781. Patch by Daniel Macks.
+
+2009-06-26  Stef Walter  <stef@memberwebs.com>
+
+    Use proper functions to free secure memory.
+    
+    Fixes crash reported in bug #586192. Patch by Ryan Beasley.
+
 === gnome-keyring 2.26.1 ===
 
 2009-04-12  Stef Walter  <stef@memberwebs.com>
