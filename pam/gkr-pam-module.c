@@ -63,7 +63,8 @@
 
 enum {
 	ARG_AUTO_START          = 1 << 0,
-	ARG_IGNORE_SERVICE      = 1 << 1
+	ARG_IGNORE_SERVICE      = 1 << 1,
+	ARG_USE_AUTHTOK	        = 1 << 2
 };
 
 #define LOGIN_KEYRING		"login"
@@ -823,6 +824,9 @@ parse_args (pam_handle_t *ph, int argc, const char **argv)
 			if (evaluate_inlist (svc, value) != PAM_SUCCESS)
 				args |= ARG_IGNORE_SERVICE;
 
+		} else if (strcmp (argv[i], "use_authtok") == 0) {
+			args |= ARG_USE_AUTHTOK;
+
 		} else {
 			syslog (GKR_LOG_WARN, "gkr-pam: invalid option: %s",
 				argv[i]);
@@ -1037,8 +1041,14 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 	if (ret != PAM_SUCCESS)
 		password = NULL;
 		
-	/* No password was entered, prompt for it */
 	if (password == NULL) {
+		/* No password was set, and we can't prompt for it */
+		if (args & ARG_USE_AUTHTOK) {
+			syslog (GKR_LOG_ERR, "gkr-pam: no password set, and use_authtok was specified");
+			return PAM_AUTHTOK_RECOVER_ERR;
+		}
+
+		/* No password was entered, prompt for it */
 		ret = prompt_password (ph);
 		if (ret != PAM_SUCCESS) {
 			syslog (GKR_LOG_ERR, "gkr-pam: couldn't get the password from user: %s", 
