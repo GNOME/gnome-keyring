@@ -42,8 +42,6 @@ DEFINE_SETUP(keyrings_login)
 	/* Remove the current login keyring */
 	GkrKeyring *login = gkr_keyrings_get_login ();
 	if (login) {
-		g_printerr ("removing old login keyring: %s\n", 
-                            gkr_location_to_path (login->location));
 		gkr_keyring_remove_from_disk (login);
 		gkr_keyrings_remove (login);
 	}
@@ -94,7 +92,14 @@ DEFINE_TEST(keyrings_login)
 
 DEFINE_TEST(keyrings_login_master)
 {
-	const gchar *master = gkr_keyring_login_master();
+	const gchar *master;
+	gboolean ret;
+	
+	/* Unlock and create a new login keyring */
+	ret = gkr_keyring_login_unlock ("blah");
+	g_assert (ret);
+	
+	master = gkr_keyring_login_master();
 	/* "no master password in login keyring" */
 	g_assert (master != NULL);
 	/* "wrong master password in login keyring" */
@@ -104,7 +109,10 @@ DEFINE_TEST(keyrings_login_master)
 DEFINE_TEST(keyrings_login_secrets)
 {
 	const gchar *password;
-	
+
+	/* Unlock and create a new login keyring */
+	gkr_keyring_login_unlock ("blah");
+
 	/* Save a password away */
 	gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                 "Display Name", "secret", 
