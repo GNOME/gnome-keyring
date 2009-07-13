@@ -56,7 +56,10 @@ run_prompt_test_CFLAGS = \
 # Run the tests
 
 test-auto: $(noinst_PROGRAMS)
-	gtester -k -m=slow ./run-auto-test
+	gtester --verbose -k -m=slow ./run-auto-test
 
 test-prompt: $(noinst_PROGRAMS)
-	gtester -k -m=slow ./run-prompt-test
+	gtester --verbose -k -m=slow ./run-prompt-test
+
+check-am: $(noinst_PROGRAMS)
+	gtester -m=slow ./run-auto-test

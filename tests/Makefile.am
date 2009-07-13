@@ -3,7 +3,6 @@ EXTRA_DIST = \
 	ca-example \
 	gtest-helpers.c gtest-helpers.h \
 	prep-gtest.sh \
-	run-tests.sh \
 	gtest.make
 
 INCLUDES=				\
@@ -45,15 +44,3 @@ test_keyring_two_SOURCES = \
 
 test_keyring_two_LDADD = \
 	$(top_builddir)/library/libgnome-keyring.la
-
-
-# ------------------------------------------------------------------------------
-# Run the tests
-
-run: run-auto
-
-run-auto: 
-	sh run-tests.sh $(top_srcdir) run-auto-test
-
-run-prompt: 
-	sh run-tests.sh $(top_srcdir) run-prompt-test

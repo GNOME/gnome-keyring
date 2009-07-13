@@ -56,14 +56,5 @@ dist-hook:
 		echo A git clone is required to generate a ChangeLog >&2; \
 	fi
 
-distcheck-hook: 
-	@echo "RUNNING AUTOMATIC UNIT TESTS ---------------------------"
-	@echo
-	@echo
-	$(MAKE) -C tests run-auto
-	@echo
-	@echo
-	@echo "DONE AUTOMATIC UNIT TESTS ------------------------------"
-
 install-pam:
 	@echo "WARNING: install-pam is no longer used, use the --with-pam-dir configure option instead"
