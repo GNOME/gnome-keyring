@@ -42,8 +42,8 @@ static GckLogin *login = NULL;
 
 DEFINE_SETUP(file_store)
 {
-	public_filename = g_build_filename ("test-data", "data-file-public.store", NULL); 
-	private_filename = g_build_filename ("test-data", "data-file-private.store", NULL); 
+	public_filename = g_build_filename (test_dir_testdata (), "data-file-public.store", NULL);
+	private_filename = g_build_filename (test_dir_testdata (), "data-file-private.store", NULL);
 	write_filename = test_build_filename ("unit-test-file.store");
 
 	data_file = gck_data_file_new ();

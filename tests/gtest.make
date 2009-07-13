@@ -62,4 +62,4 @@ test-prompt: $(noinst_PROGRAMS)
 	gtester --verbose -k -m=slow ./run-prompt-test
 
 check-am: $(noinst_PROGRAMS)
-	gtester -m=slow ./run-auto-test
+	TEST_DATA=$(srcdir)/test-data gtester -m=slow ./run-auto-test

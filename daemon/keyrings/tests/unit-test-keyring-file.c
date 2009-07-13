@@ -40,13 +40,9 @@ static GQuark
 location_for_test_data (const gchar *filename)
 {
 	GQuark quark;
-	gchar *dir;
 	gchar *path;
 	
-	dir = g_get_current_dir ();
-	g_assert (dir);
-	
-	path = g_build_filename (dir, "test-data", filename, NULL);
+	path = g_build_filename (test_dir_testdata (), filename, NULL);
 	quark = gkr_location_from_path (path);
 	g_free (path);
 	
@@ -125,7 +121,7 @@ DEFINE_TEST(keyring_parse_encrypted)
 {
 	GkrKeyring *encrypted, *plain;
 	EggBuffer buffer, output;
-	gchar *data;
+	guchar *data;
 	gsize n_data;
 	gint ret;
 	gboolean success;
@@ -134,11 +130,10 @@ DEFINE_TEST(keyring_parse_encrypted)
 	encrypted->password = "my-keyring-password";
 	plain = gkr_keyring_new ("plain", 0);
 	
-	if (!g_file_get_contents ("test-data/encrypted.keyring", &data, &n_data, NULL))
-		g_assert (FALSE && "couldn't read in encrypted.keyring");
-		
+	data = test_read_testdata ("encrypted.keyring", &n_data);
+
 	/* Parse it */
-	egg_buffer_init_allocated (&buffer, (guchar*)data, n_data, NULL);
+	egg_buffer_init_allocated (&buffer, data, n_data, NULL);
 	data = g_memdup (data, n_data); /* Make a copy for double parse */
 	ret = gkr_keyring_binary_parse (encrypted, &buffer);
 	egg_buffer_uninit (&buffer);
@@ -180,14 +175,13 @@ DEFINE_TEST(keyring_parse_plain)
 {
 	GkrKeyring *keyring;
 	EggBuffer buffer;
-	gchar *data;
+	guchar *data;
 	gsize n_data;
 	gint ret;
 	
 	keyring = gkr_keyring_new ("plain", 0);
 	
-	if (!g_file_get_contents ("test-data/plain.keyring", &data, &n_data, NULL))
-		g_assert (FALSE && "couldn't read in plain.keyring");
+	data = test_read_testdata ("plain.keyring", &n_data);
 		
 	/* Parse it */
 	egg_buffer_init_static (&buffer, (guchar*)data, n_data);
