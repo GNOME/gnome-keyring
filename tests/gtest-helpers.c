@@ -94,13 +94,44 @@ test_build_filename (const gchar *basename)
 	return g_build_filename (test_path, basename, NULL);
 }
 
+const gchar*
+test_dir_testdata (void)
+{
+	const gchar *dir;
+	gchar *cur, *env;
+
+	dir = g_getenv ("TEST_DATA");
+	if (dir == NULL)
+		dir = "./test-data";
+	if (!g_path_is_absolute (dir)) {
+		cur = g_get_current_dir ();
+		if (strncmp (dir, "./", 2) == 0)
+			dir += 2;
+		env = g_build_filename (cur, dir, NULL);
+		g_free (cur);
+		g_setenv ("TEST_DATA", env, TRUE);
+		g_free (env);
+		dir = g_getenv ("TEST_DATA");
+	}
+
+	return dir;
+}
+
 guchar* 
 test_read_testdata (const gchar *basename, gsize *n_result)
 {
-	gchar *file = g_build_filename ("test-data", basename, NULL);
+	GError *error = NULL;
 	gchar *result;
-	if (!g_file_get_contents (file, &result, n_result, NULL))
+	gchar *file;
+
+	file = g_build_filename (test_dir_testdata (), basename, NULL);
+	if (!g_file_get_contents (file, &result, n_result, &error)) {
+		g_warning ("could not read test data file: %s: %s", file,
+		           error && error->message ? error->message : "");
 		g_assert_not_reached ();
+	}
+
+	g_free (file);
 	return (guchar*)result;
 }
 
@@ -120,9 +151,6 @@ chdir_base_dir (char* argv0)
 			g_warning ("couldn't change directory to ..: %s",
 			           g_strerror (errno));
 	}
-
-	g_free (base);
-	g_free (dir);
 }
 
 int

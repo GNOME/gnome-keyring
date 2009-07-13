@@ -126,7 +126,7 @@ _gcr_initialize (void)
 			gp11_module_set_auto_authenticate (module, TRUE);
 			all_modules = g_list_prepend (all_modules, module);
 		} else { 
-			g_warning ("couldn't initialize PKCS#11 module: %s", 
+			g_message ("couldn't initialize PKCS#11 module: %s",
 			           error && error->message ? error->message : "");
 		}
 

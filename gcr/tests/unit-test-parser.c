@@ -113,7 +113,7 @@ DEFINE_TEST(parse_all)
 	gsize len;
 	GDir *dir;
 	
-	dir = g_dir_open ("test-data", 0, NULL);
+	dir = g_dir_open (test_dir_testdata (), 0, NULL);
 	g_assert (dir);
 
 	for (;;) {

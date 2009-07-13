@@ -13,16 +13,11 @@ static GcrCertificate *certificate = NULL;
 
 DEFINE_SETUP(certificate)
 {
-	GError *err = NULL;
-	gchar *contents;
+	guchar *contents;
 	gsize n_contents;
 	
-	if (!g_file_get_contents ("test-data/der-certificate.crt", &contents, &n_contents, &err)) {
-		g_warning ("couldn't read test-data/test-certificate-1.der: %s", err->message);
-		return;
-	}
-
-	certificate = gcr_simple_certificate_new ((const guchar*)contents, n_contents);
+	contents = test_read_testdata ("der-certificate.crt", &n_contents);
+	certificate = gcr_simple_certificate_new (contents, n_contents);
 	g_assert (certificate);
 	g_free (contents);
 }

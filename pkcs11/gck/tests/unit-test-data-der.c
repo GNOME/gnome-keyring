@@ -369,7 +369,7 @@ DEFINE_TEST(read_all_pkcs8)
 	guchar *data;
 	gsize n_data;
 	
-	dir = g_dir_open ("test-data", 0, NULL);
+	dir = g_dir_open (test_dir_testdata (), 0, NULL);
 	g_assert (dir);
 	
 	for(;;) {
