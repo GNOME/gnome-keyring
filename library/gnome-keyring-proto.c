@@ -125,8 +125,9 @@ gkr_proto_get_raw_secret (EggBuffer *buffer, gsize offset, gsize *next_offset,
 		return TRUE;
 	}
 
-	*secret = egg_secure_alloc (*n_secret);
+	*secret = egg_secure_alloc (*n_secret + 1);
 	memcpy (*secret, ptr, *n_secret);
+	(*secret)[*n_secret] = 0;
 	return TRUE;
 }
 
