@@ -434,6 +434,7 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, EggBuffer *buffer)
 	guint32 lock_timeout;
 	time_t mtime, ctime;
 	char *display_name;
+	gsize n_secret;
 	int i, j;
 	guint32 tmp;
 	guint32 num_items;
@@ -547,9 +548,17 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, EggBuffer *buffer)
 				                                &items[i].display_name)) {
 					goto bail;
 				}
-				if (!gkr_proto_get_utf8_secret (buffer, offset, &offset,
-				                                &items[i].secret)) {
+				if (!gkr_proto_get_raw_secret (buffer, offset, &offset,
+				                               (guchar**)(&items[i].secret), &n_secret)) {
 					goto bail;
+				}
+				/* We don't support binary secrets yet, skip */
+				if (!g_utf8_validate ((gchar*)items[i].secret, n_secret, NULL)) {
+					g_message ("discarding item with unsupported non-textual secret: %s", 
+					           items[i].display_name);
+					free (items[i].display_name);
+					free (items[i].secret);
+					continue;
 				}
 				if (!gkr_proto_get_time (buffer, offset, &offset,
 				                         &items[i].ctime)) {

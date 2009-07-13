@@ -112,6 +112,25 @@ gkr_proto_get_bytes (EggBuffer *buffer, gsize offset, gsize *next_offset,
 }
 
 gboolean
+gkr_proto_get_raw_secret (EggBuffer *buffer, gsize offset, gsize *next_offset,
+                          guchar **secret, gsize *n_secret)
+{
+	const guchar* ptr;
+	if (!egg_buffer_get_byte_array (buffer, offset, next_offset, &ptr, n_secret))
+		return FALSE;
+
+	if (ptr == NULL || *n_secret == 0) {
+		*secret = NULL;
+		*n_secret = 0;
+		return TRUE;
+	}
+
+	*secret = egg_secure_alloc (*n_secret);
+	memcpy (*secret, ptr, *n_secret);
+	return TRUE;
+}
+
+gboolean
 gkr_proto_get_utf8_string (EggBuffer *buffer, gsize offset, gsize *next_offset,
                            char **str_ret)
 {
