@@ -1,3 +1,15 @@
+Changes in version 2.27.4 are:
+* Insurance in parsing keyring format for future changes.
+* Add 'use_authtok' option to pam module.
+* Test utility fix [Jon Downland]
+* Add 'only_if=' option to pam module.
+* Make 'Password:' prompt translatable in pam module.
+* Use libgcrypt to generate iv/salt where needed.
+* Remove old cu-test style unit tests.
+* Code refactoring and cleanup, removed 'common' component.
+* Auto generated ChangeLog.
+* Cleanup unit tests, and make them run with 'make check'
+
 Changes in version 2.26.3 are:
 * Build fixes. [Alexis Ballier, Daniel Macks]
 * Fix problem with RSA key sizes that are not a multiple of 8.
