@@ -71,6 +71,11 @@ gboolean gkr_proto_get_utf8_secret                   (EggBuffer                 
                                                       gsize                       offset,
                                                       gsize                      *next_offset,
                                                       char                      **str_ret);
+gboolean gkr_proto_get_raw_secret                    (EggBuffer                  *buffer, 
+                                                      gsize                       offset, 
+                                                      gsize                      *next_offset,
+                                                      guchar                    **secret, 
+                                                      gsize                      *n_secret);
 gboolean gkr_proto_add_attribute_list                (EggBuffer                  *buffer,
                                                       GnomeKeyringAttributeList  *attributes);
 gboolean gkr_proto_add_acl                           (EggBuffer                  *buffer,
