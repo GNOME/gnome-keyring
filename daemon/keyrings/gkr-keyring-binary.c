@@ -380,17 +380,16 @@ decode_acl (EggBuffer *buffer, gsize offset, gsize *offset_out, GList **out)
 			g_free (name);
 			goto bail;
 		}
-		if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &reserved) ||
-		    reserved != NULL) {
+		reserved = NULL;
+		if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &reserved)) {
 			g_free (name);
 			g_free (path);
-			g_free (reserved);
 			goto bail;
 		}
+		g_free (reserved);
 		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &y)) {
 			g_free (name);
 			g_free (path);
-			g_free (reserved);
 			goto bail;
 		}
 
@@ -496,13 +495,8 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, EggBuffer *buffer)
 	}
 	
 	for (i = 0; i < 4; i++) {
-		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &tmp)) {
+		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &tmp))
 			goto bail;
-		}
-		/* reserved bytes must be zero */
-		if (tmp != 0) {
-			goto bail;
-		}
 	}
 	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &num_items)) {
 		goto bail;
@@ -529,11 +523,9 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, EggBuffer *buffer)
 					     &crypto_size)) {
 		goto bail;
 	}
-	/* Make sure the rest of the file is the crypted part only */
-	if (crypto_size % 16 != 0 ||
-	    buffer->len - offset != crypto_size) {
+	/* Make the crypted part is the right size */
+	if (crypto_size % 16 != 0)
 		goto bail;
-	}
 	
 	/* Copy the data into to_decrypt into non-pageable memory */
 	egg_buffer_init_static (&to_decrypt, buffer->buf + offset, crypto_size);
@@ -568,21 +560,13 @@ gkr_keyring_binary_parse (GkrKeyring *keyring, EggBuffer *buffer)
 					goto bail;
 				}
 				reserved = NULL;
-				if (!gkr_proto_get_utf8_string (buffer, offset, &offset,
-				                                &reserved) ||
-				    reserved != NULL) {
-					g_free (reserved);
+				if (!gkr_proto_get_utf8_string (buffer, offset, &offset, &reserved))
 					goto bail;
-				}
+				g_free (reserved);
 				for (j = 0; j < 4; j++) {
 					guint32 tmp;
-					if (!egg_buffer_get_uint32 (buffer, offset, &offset, &tmp)) {
+					if (!egg_buffer_get_uint32 (buffer, offset, &offset, &tmp))
 						goto bail;
-					}
-					/* reserved bytes must be zero */
-					if (tmp != 0) {
-						goto bail;
-					}
 				}
 				if (!gkr_proto_decode_attribute_list (buffer, offset, &offset,
 				                                      &items[i].attributes)) {
