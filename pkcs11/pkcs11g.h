@@ -97,4 +97,10 @@
 #define CKA_GNOME_PURPOSE_IPSEC_USER             (CKA_GNOME + 108)
 #define CKA_GNOME_PURPOSE_TIME_STAMPING          (CKA_GNOME + 109)
 
+/* -------------------------------------------------------------------
+ * AUTO-DESTRUCT
+ */
+
+#define CKA_GNOME_AUTO_DESTRUCT                  (CKO_GNOME + 200)
+
 #endif /* PKCS11G_H */
