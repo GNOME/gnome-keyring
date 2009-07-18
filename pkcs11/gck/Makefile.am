@@ -40,6 +40,7 @@ libgck_la_SOURCES = \
 	gck-session.c gck-session.h \
 	gck-sexp.c gck-sexp.h \
 	gck-store.c gck-store.h \
+	gck-timer.c gck-timer.h \
 	gck-transaction.c gck-transaction.h \
 	gck-types.h \
 	gck-util.c gck-util.h \

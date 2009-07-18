@@ -94,10 +94,10 @@ struct _GckModuleClass {
 	extern const CK_FUNCTION_LIST_PTR prefix ## _function_list
 
 #define GCK_DEFINE_MODULE(prefix, type) \
-	static GckModule* gck_module_instantiate (CK_C_INITIALIZE_ARGS_PTR args) \
-		{ return g_object_new ((type), "initialize-args", args, NULL); } \
+	static GckModule* gck_module_instantiate (CK_C_INITIALIZE_ARGS_PTR args, GMutex* mutex) \
+		{ return g_object_new ((type), "initialize-args", args, "mutex", mutex, NULL); } \
 	const CK_FUNCTION_LIST_PTR prefix ## _function_list = &gck_module_function_list;
-	
+
 GType                  gck_module_get_type                        (void);
 
 GckManager*            gck_module_get_manager                     (GckModule *self);
