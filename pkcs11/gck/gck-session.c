@@ -791,11 +791,6 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 		}
 	}
 	
-	if (!gck_transaction_get_failed (transaction)) {
-		g_object_set (object, "permanent", is_token, NULL);
-		gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
-	}
-
 	/* Give the object a chance to create additional attributes */
 	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
 		if (!gck_attribute_consumed (&attrs[i]))

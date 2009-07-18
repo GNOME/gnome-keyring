@@ -407,9 +407,6 @@ add_object (GckManager *self, GckObject *object)
 		gck_object_set_handle (object, handle);
 	}
 
-	/* Make the object know about its token state */
-	g_object_set (object, "permanent", self->pv->for_token, NULL);
-
 	/* 
 	 * We don't ref the objects or anything. They're expected to 
 	 * unregister upon dispose.   
