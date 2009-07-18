@@ -28,7 +28,7 @@
 #include <unistd.h>
 
 /* Forward declaration, this must be defined manually or using GCK_DEFINE_MODULE */
-static GckModule* gck_module_instantiate (CK_C_INITIALIZE_ARGS_PTR args);
+static GckModule* gck_module_instantiate (CK_C_INITIALIZE_ARGS_PTR args, GMutex *mutex);
 
 static GckModule *pkcs11_module = NULL;
 static pid_t pkcs11_module_pid = 0;
@@ -73,7 +73,7 @@ gck_C_Initialize (CK_VOID_PTR init_args)
 			else 
 				pkcs11_module_pid = pid;
 		} else {
-			pkcs11_module = gck_module_instantiate (args);
+			pkcs11_module = gck_module_instantiate (args, g_static_mutex_get_mutex (&pkcs11_module_mutex));
 			if (!pkcs11_module) {
 				g_warning ("module could not be instantiated");
 				rv = CKR_GENERAL_ERROR;
