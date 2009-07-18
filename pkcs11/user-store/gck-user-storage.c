@@ -30,6 +30,7 @@
 #include "gck/gck-data-file.h"
 #include "gck/gck-login.h"
 #include "gck/gck-manager.h"
+#include "gck/gck-module.h"
 #include "gck/gck-serializable.h"
 #include "gck/gck-util.h"
 
@@ -49,6 +50,7 @@
 
 enum {
 	PROP_0,
+	PROP_MODULE,
 	PROP_DIRECTORY,
 	PROP_MANAGER,
 	PROP_LOGIN
@@ -57,6 +59,7 @@ enum {
 struct _GckUserStorage {
 	GckStore parent;
 
+	GckModule *module;
 	GckManager *manager;
 
 	/* Information about file data */
@@ -547,7 +550,7 @@ data_file_entry_added (GckDataFile *store, const gchar *identifier, GckUserStora
 	}
 	
 	/* Create a new object for this identifier */
-	object = g_object_new (type, "unique", identifier, NULL);
+	object = g_object_new (type, "unique", identifier, "module", self->module, NULL);
 	g_return_if_fail (GCK_IS_SERIALIZABLE (object));
 	g_return_if_fail (GCK_SERIALIZABLE_GET_INTERFACE (object)->extension);
 
@@ -618,7 +621,7 @@ relock_object (GckUserStorage *self, GckTransaction *transaction, const gchar *p
 	}
 	
 	/* Create a dummy object for this identifier */
-	object = g_object_new (type, "unique", identifier, NULL);
+	object = g_object_new (type, "unique", identifier, "module", self->module, NULL);
 	if (!GCK_IS_SERIALIZABLE (object)) {
 		g_warning ("cannot relock unserializable object for file in user store: %s", identifier);
 		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
@@ -865,6 +868,7 @@ gck_user_storage_constructor (GType type, guint n_props, GObjectConstructParam *
 	self->filename = g_build_filename (self->directory, "user.keystore", NULL);
 	
 	g_return_val_if_fail (self->manager, NULL);
+	g_return_val_if_fail (self->module, NULL);
 	
 	return G_OBJECT (self);
 }
@@ -939,6 +943,10 @@ gck_user_storage_set_property (GObject *obj, guint prop_id, const GValue *value,
 		self->directory = g_value_dup_string (value);
 		g_return_if_fail (self->directory);
 		break;
+	case PROP_MODULE:
+		g_return_if_fail (!self->module);
+		self->module = g_value_get_object (value);
+		break;
 	case PROP_MANAGER:
 		g_return_if_fail (!self->manager);
 		self->manager = g_value_dup_object (value);
@@ -959,6 +967,9 @@ gck_user_storage_get_property (GObject *obj, guint prop_id, GValue *value,
 	switch (prop_id) {
 	case PROP_DIRECTORY:
 		g_value_set_string (value, gck_user_storage_get_directory (self));
+		break;
+	case PROP_MODULE:
+		g_value_set_object (value, self->module);
 		break;
 	case PROP_MANAGER:
 		g_value_set_object (value, gck_user_storage_get_manager (self));
@@ -991,6 +1002,10 @@ gck_user_storage_class_init (GckUserStorageClass *klass)
 	           g_param_spec_string ("directory", "Storage Directory", "Directory for storage", 
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
     
+	g_object_class_install_property (gobject_class, PROP_MODULE,
+	           g_param_spec_object ("module", "Module", "Module for objects", 
+	                                GCK_TYPE_MODULE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
 	g_object_class_install_property (gobject_class, PROP_MANAGER,
 	           g_param_spec_object ("manager", "Object Manager", "Object Manager", 
 	                                GCK_TYPE_MANAGER, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
@@ -1005,12 +1020,18 @@ gck_user_storage_class_init (GckUserStorageClass *klass)
  */
 
 GckUserStorage*
-gck_user_storage_new (GckManager *manager, const gchar *directory)
+gck_user_storage_new (GckModule *module, const gchar *directory)
 {
-	g_return_val_if_fail (GCK_IS_MANAGER (manager), NULL);
-	g_return_val_if_fail (directory, NULL);
+	GckManager *manager;
 	
-	return g_object_new (GCK_TYPE_USER_STORAGE, 
+	g_return_val_if_fail (GCK_IS_MODULE (module), NULL);
+	g_return_val_if_fail (directory, NULL);
+
+	manager = gck_module_get_manager (module);
+	g_return_val_if_fail (GCK_IS_MANAGER (manager), NULL);
+
+	return g_object_new (GCK_TYPE_USER_STORAGE,
+	                     "module", module,
 	                     "manager", manager, 
 	                     "directory", directory, 
 	                     NULL);

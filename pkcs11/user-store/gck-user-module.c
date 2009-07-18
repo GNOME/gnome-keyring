@@ -260,7 +260,7 @@ gck_user_module_constructor (GType type, guint n_props, GObjectConstructParam *p
 
 	if (!self->directory)
 		self->directory = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
-	self->storage = gck_user_storage_new (gck_module_get_manager (GCK_MODULE (self)), self->directory);
+	self->storage = gck_user_storage_new (GCK_MODULE (self), self->directory);
 
 	return G_OBJECT (self);
 }

@@ -80,7 +80,19 @@ gck_roots_certificate_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 static void
 gck_roots_certificate_init (GckRootsCertificate *self)
 {
-	self->trust = gck_certificate_trust_new (GCK_CERTIFICATE (self));
+	
+}
+
+static GObject* 
+gck_roots_certificate_constructor (GType type, guint n_props, GObjectConstructParam *props) 
+{
+	GckRootsCertificate *self = GCK_ROOTS_CERTIFICATE (G_OBJECT_CLASS (gck_roots_certificate_parent_class)->constructor(type, n_props, props));
+	g_return_val_if_fail (self, NULL);	
+
+	self->trust = gck_certificate_trust_new (gck_object_get_module (GCK_OBJECT (self)), 
+	                                         GCK_CERTIFICATE (self));
+	
+	return G_OBJECT (self);
 }
 
 static void
@@ -148,6 +160,7 @@ gck_roots_certificate_class_init (GckRootsCertificateClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
 	
+	gobject_class->constructor = gck_roots_certificate_constructor;
 	gobject_class->dispose = gck_roots_certificate_dispose;
 	gobject_class->finalize = gck_roots_certificate_finalize;
 	gobject_class->set_property = gck_roots_certificate_set_property;
@@ -169,9 +182,10 @@ gck_roots_certificate_class_init (GckRootsCertificateClass *klass)
  */
 
 GckRootsCertificate*
-gck_roots_certificate_new (const gchar *unique, const gchar *path)
+gck_roots_certificate_new (GckModule *module, const gchar *unique, const gchar *path)
 {
-	return g_object_new (GCK_TYPE_ROOTS_CERTIFICATE, "unique", unique, "path", path, NULL);
+	return g_object_new (GCK_TYPE_ROOTS_CERTIFICATE, "unique", unique, "path", path, 
+	                     "module", module, NULL);
 }
 
 const gchar*

@@ -48,7 +48,8 @@ struct _GckCertificateKeyClass {
 
 GType               gck_certificate_key_get_type               (void);
 
-GckCertificateKey*  gck_certificate_key_new                    (GckCertificate *cert);
+GckCertificateKey*  gck_certificate_key_new                    (GckModule *module,
+                                                                GckCertificate *cert);
 
 GckCertificate*     gck_certificate_key_get_certificate        (GckCertificateKey *self);
 

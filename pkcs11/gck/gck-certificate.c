@@ -30,6 +30,7 @@
 #include "gck-factory.h"
 #include "gck-key.h"
 #include "gck-manager.h"
+#include "gck-session.h"
 #include "gck-sexp.h"
 #include "gck-serializable.h"
 #include "gck-transaction.h"
@@ -260,7 +261,7 @@ factory_create_certificate (GckSession *session, GckTransaction *transaction,
 		return;
 	}
 	
-	cert = g_object_new (GCK_TYPE_CERTIFICATE, NULL);
+	cert = g_object_new (GCK_TYPE_CERTIFICATE, "module", gck_session_get_module (session), NULL);
 	
 	/* Load the certificate from the data specified */
 	if (!gck_serializable_load (GCK_SERIALIZABLE (cert), NULL, attr->pValue, attr->ulValueLen)) {
@@ -557,7 +558,7 @@ gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar 
 	/* Create ourselves a public key with that */
 	wrapper = gck_sexp_new (sexp);
 	if (!self->pv->key)
-		self->pv->key = gck_certificate_key_new (self);
+		self->pv->key = gck_certificate_key_new (gck_object_get_module (GCK_OBJECT (self)), self);
 	gck_key_set_base_sexp (GCK_KEY (self->pv->key), wrapper);
 	gck_sexp_unref (wrapper);
 		
