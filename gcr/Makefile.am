@@ -4,14 +4,9 @@
 
 uidir = $(datadir)/gcr/ui/
 
-GLADE_FILES = \
-	gcr-certificate-basics-widget.glade \
-	gcr-import-dialog.glade
-	
-.glade.ui: 
-	gtk-builder-convert --skip-windows $< $@
-	
-ui_DATA = $(GLADE_FILES:.glade=.ui)
+ui_DATA = \
+	gcr-certificate-basics-widget.ui \
+	gcr-import-dialog.ui
 
 # ------------------------------------------------------------------
 # HEADERS
@@ -94,11 +89,10 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
-	$(GLADE_FILES)
+	$(ui_DATA)
     
 CLEANFILES = \
 	$(BUILT_SOURCES) \
-    	$(ui_DATA) \
     	$(pkgconfig_DATA)
     	
 DISTCLEANFILES = \
