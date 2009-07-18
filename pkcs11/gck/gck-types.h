@@ -38,6 +38,7 @@ typedef struct _GckSessionPrivateKey GckSessionPrivateKey;
 typedef struct _GckSessionPublicKey GckSessionPublicKey;
 typedef struct _GckSexp GckSexp;
 typedef struct _GckStore GckStore;
+typedef struct _GckTimer GckTimer;
 typedef struct _GckTransaction GckTransaction;
 
 #endif /* __GCK_TYPES_H__ */

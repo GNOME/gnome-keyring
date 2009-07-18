@@ -56,6 +56,9 @@ struct _GckObjectClass {
 	
 	void (*set_attribute) (GckObject *object, GckTransaction *transaction, CK_ATTRIBUTE *attr);
 	
+	void (*create_attribute) (GckObject *object, GckTransaction *transaction, 
+	                          CK_ATTRIBUTE *attr, GckSession *session);
+
 	CK_RV (*unlock) (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
 };
 
@@ -87,6 +90,11 @@ CK_RV                  gck_object_get_attribute          (GckObject *self,
 void                   gck_object_set_attribute          (GckObject *self,
                                                           GckTransaction *transaction,
                                                           CK_ATTRIBUTE_PTR attr);
+
+void                   gck_object_create_attribute       (GckObject *self,
+                                                          GckTransaction *transaction,
+                                                          CK_ATTRIBUTE_PTR attr,
+                                                          GckSession *session);
 
 void                   gck_object_notify_attribute       (GckObject *self,
                                                           CK_ATTRIBUTE_TYPE attr_type);

@@ -28,6 +28,9 @@
 
 #include "pkcs11/pkcs11.h"
 
+CK_RV                 gck_attribute_get_time                           (CK_ATTRIBUTE_PTR attr,
+                                                                        glong *when);
+
 CK_RV                 gck_attribute_set_bool                           (CK_ATTRIBUTE_PTR attr,
                                                                         CK_BBOOL value);
 
@@ -39,6 +42,9 @@ CK_RV                 gck_attribute_set_string                         (CK_ATTRI
 
 CK_RV                 gck_attribute_set_date                           (CK_ATTRIBUTE_PTR attr,
                                                                         time_t when);
+
+CK_RV                 gck_attribute_set_time                           (CK_ATTRIBUTE_PTR attr,
+                                                                        glong when);
 
 CK_RV                 gck_attribute_set_data                           (CK_ATTRIBUTE_PTR attr,
                                                                         gconstpointer value,
@@ -56,6 +62,8 @@ guint                 gck_attribute_hash                               (gconstpo
 
 gboolean              gck_attribute_equal                              (gconstpointer a,
                                                                         gconstpointer b);
+
+void                  gck_attribute_consume                            (CK_ATTRIBUTE_PTR attr);
 
 gboolean              gck_attribute_consumed                           (CK_ATTRIBUTE_PTR attr);
 

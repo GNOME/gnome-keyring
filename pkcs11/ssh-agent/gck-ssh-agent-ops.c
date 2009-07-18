@@ -531,6 +531,59 @@ replace_key_pair (GP11Session *session, GP11Attributes *priv, GP11Attributes *pu
 	return TRUE;
 }
 
+static gboolean
+load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
+                 GP11Attributes *priv, GP11Attributes *pub)
+{
+	GTimeVal tv;
+	guchar constraint;
+	guint32 lifetime;
+	time_t time;
+	struct tm tm;
+	gchar buf[20];
+
+	/*
+	 * Constraints are a byte flag, and optional data depending
+	 * on the constraint.
+	 */
+
+	while (offset < egg_buffer_length (buffer)) {
+		if (!egg_buffer_get_byte (buffer, offset, &offset, &constraint))
+			return FALSE;
+
+		switch (constraint) {
+		case GCK_SSH_FLAG_CONSTRAIN_LIFETIME:
+			if (!egg_buffer_get_uint32 (buffer, offset, &offset, &lifetime))
+				return FALSE;
+
+			g_get_current_time (&tv);
+			time = tv.tv_sec + lifetime;
+
+			if (!gmtime_r (&time, &tm))
+				g_return_val_if_reached (FALSE);
+
+			if (!strftime(buf, sizeof (buf), "%Y%m%d%H%M%S00", &tm))
+				g_return_val_if_reached (FALSE);
+
+			gp11_attributes_add_data (pub, CKA_GNOME_AUTO_DESTRUCT, buf, 16);
+			gp11_attributes_add_data (priv, CKA_GNOME_AUTO_DESTRUCT, buf, 16);
+			break;
+
+		case GCK_SSH_FLAG_CONSTRAIN_CONFIRM:
+			/* We can't use prompting as access control on an insecure X desktop */
+			g_message ("prompt constraints are not supported.");
+			return FALSE;
+
+		default:
+			g_message ("unsupported constraint or other unsupported data");
+			return FALSE;
+		}
+	}
+
+	*next_offset = offset;
+	return TRUE;
+}
+
 /* -----------------------------------------------------------------------------
  * OPERATIONS
  */
@@ -580,9 +633,6 @@ op_add_identity (GckSshAgentCall *call)
 		return FALSE;
 	}
 		
-		
-	/* TODO: Blinding? See ssh-agent.c */
-
 	/* Get the comment */
 	if (!egg_buffer_get_string (call->req, offset, &offset, &comment, (EggBufferAllocator)g_realloc)) {
 		gp11_attributes_unref (pub);
@@ -593,7 +643,14 @@ op_add_identity (GckSshAgentCall *call)
 	gp11_attributes_add_string (pub, CKA_LABEL, comment);
 	gp11_attributes_add_string (priv, CKA_LABEL, comment);
 	g_free (comment);
-		
+
+	/* Any constraints on loading the key */
+	if (!load_contraints (call->req, offset, &offset, priv, pub)) {
+		gp11_attributes_unref (pub);
+		gp11_attributes_unref (priv);
+		return FALSE;
+	}
+
 	/* 
 	 * This is the session that owns these objects. Only 
 	 * one thread can use it at a time. 
@@ -638,6 +695,13 @@ op_v1_add_identity (GckSshAgentCall *call)
 	gp11_attributes_add_string (priv, CKA_LABEL, V1_LABEL);
 	gp11_attributes_add_string (pub, CKA_LABEL, V1_LABEL);
 	
+	/* Any constraints on loading the key */
+	if (!load_contraints (call->req, offset, &offset, priv, pub)) {
+		gp11_attributes_unref (pub);
+		gp11_attributes_unref (priv);
+		return FALSE;
+	}
+
 	/* 
 	 * This is the session that owns these objects. Only 
 	 * one thread can use it at a time. 
@@ -1228,6 +1292,6 @@ const GckSshAgentOperation gck_ssh_agent_operations[GCK_SSH_OP_MAX] = {
      op_not_implemented_success,                 /* GKR_SSH_OP_LOCK */
      op_not_implemented_success,                 /* GKR_SSH_OP_UNLOCK */
      op_v1_add_identity,                         /* GKR_SSH_OP_ADD_RSA_ID_CONSTRAINED */
-     op_not_implemented_failure,                 /* GKR_SSH_OP_ADD_ID_CONSTRAINED */
+     op_add_identity,                            /* GKR_SSH_OP_ADD_ID_CONSTRAINED */
      op_not_implemented_failure,                 /* GKR_SSH_OP_ADD_SMARTCARD_KEY_CONSTRAINED */
 };

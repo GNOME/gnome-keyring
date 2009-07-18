@@ -33,6 +33,7 @@
 #include "gck-private-key.h"
 #include "gck-public-key.h"
 #include "gck-session.h"
+#include "gck-timer.h"
 #include "gck-transaction.h"
 #include "gck-util.h"
 
@@ -40,7 +41,8 @@ enum {
 	PROP_0,
 	PROP_MANAGER,
 	PROP_WRITE_PROTECTED,
-	PROP_INITIALIZE_ARGS
+	PROP_INITIALIZE_ARGS,
+	PROP_MUTEX
 };
 
 struct _GckModulePrivate {
@@ -50,6 +52,7 @@ struct _GckModulePrivate {
 	gint handle_counter;                    /* Constantly incrementing counter for handles and the like */
 	GArray *factories;                      /* Various registered object factories */
 	gboolean factories_sorted;              /* Whether we need to sort the object factories */
+	GMutex *mutex;                          /* The mutex controlling entry to this module */
 };
 
 typedef struct _VirtualSlot {
@@ -127,6 +130,9 @@ static const MechanismAndInfo mechanism_list[] = {
 	 */
 	{ CKM_DSA, { 512, 1024, CKF_SIGN | CKF_VERIFY } }
 };
+
+/* Hidden function that you should not use */
+GMutex* _gck_module_get_scary_mutex_that_you_should_not_touch (GckModule *self);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
@@ -435,6 +441,8 @@ gck_module_constructor (GType type, guint n_props, GObjectConstructParam *props)
 static void
 gck_module_init (GckModule *self)
 {
+	gck_timer_initialize ();
+
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_MODULE, GckModulePrivate);
 	self->pv->token_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", TRUE, NULL);
 	self->pv->sessions_by_handle = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, 
@@ -486,6 +494,8 @@ gck_module_finalize (GObject *obj)
 	g_array_free (self->pv->factories, TRUE);
 	self->pv->factories = NULL;
 
+	gck_timer_shutdown ();
+
 	G_OBJECT_CLASS (gck_module_parent_class)->finalize (obj);
 }
 
@@ -501,6 +511,10 @@ gck_module_set_property (GObject *obj, guint prop_id, const GValue *value,
 		args = g_value_get_pointer (value);
 		if (args != NULL && args->pReserved != NULL) 
 			parse_arguments (self, args->pReserved);
+		break;
+	case PROP_MUTEX:
+		self->pv->mutex = g_value_get_pointer (value);
+		g_return_if_fail (self->pv->mutex);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -563,6 +577,10 @@ gck_module_class_init (GckModuleClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_INITIALIZE_ARGS,
 	           g_param_spec_pointer ("initialize-args", "Initialize Args", "Arguments passed to C_Initialize", 
+	                                 G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_MUTEX,
+	           g_param_spec_pointer ("mutex", "Mutex", "Module mutex",
 	                                 G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 }
 
@@ -729,6 +747,18 @@ gck_module_find_factory (GckModule *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_att
 	}
 	
 	return NULL;
+}
+
+/*
+ * Hidden method to get the mutex for a module. This is for timers to be
+ * able to reenter the module. Don't use this method.
+ */
+
+GMutex*
+_gck_module_get_scary_mutex_that_you_should_not_touch (GckModule *self)
+{
+	g_return_val_if_fail (GCK_IS_MODULE (self), NULL);
+	return self->pv->mutex;
 }
 
 /* -----------------------------------------------------------------------------
