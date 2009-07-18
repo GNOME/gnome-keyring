@@ -27,11 +27,13 @@
 #include <unistd.h>
 
 #include "run-auto-test.h"
+#include "test-module.h"
 
 #include "gck/gck-object.h"
 #include "gck/gck-memory-store.h"
 #include "gck/gck-transaction.h"
 
+static GckModule *module = NULL;
 static GckStore *store = NULL;
 static GckObject *object = NULL;
 static GckTransaction *transaction = NULL;
@@ -61,11 +63,14 @@ DEFINE_SETUP(memory_store)
 {
 	CK_ATTRIBUTE attr;
 	CK_ULONG twentyfour = 24;
+
+	module = test_module_initialize ();
+	test_module_enter ();
 	
 	attr.type = CKA_LABEL;
 	attr.pValue = "label";
 	attr.ulValueLen = 5;
-
+	
 	store = GCK_STORE (gck_memory_store_new ());
 	
 	gck_store_register_schema (store, &attr, test_validator, 0);
@@ -83,7 +88,7 @@ DEFINE_SETUP(memory_store)
 	
 	gck_store_register_schema (store, &attr, NULL, GCK_STORE_IS_INTERNAL);
 	
-	object = g_object_new (GCK_TYPE_OBJECT, NULL);
+	object = g_object_new (GCK_TYPE_OBJECT, "module", module, NULL); 
 	
 	transaction = gck_transaction_new ();
 }
@@ -99,6 +104,10 @@ DEFINE_TEARDOWN(memory_store)
 	if (object != NULL)
 		g_object_unref (object);
 	object = NULL;
+	
+	test_module_leave ();
+	test_module_finalize ();
+	module = NULL;
 }
 
 DEFINE_TEST(get_attribute_default)

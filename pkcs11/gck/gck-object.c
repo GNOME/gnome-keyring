@@ -36,6 +36,7 @@
 enum {
 	PROP_0,
 	PROP_HANDLE,
+	PROP_MODULE,
 	PROP_MANAGER,
 	PROP_STORE,
 	PROP_UNIQUE
@@ -55,6 +56,7 @@ typedef struct _GckObjectLifetime {
 
 struct _GckObjectPrivate {
 	CK_OBJECT_HANDLE handle;
+	GckModule *module;
 	GckManager *manager;
 	GckStore *store;
 	gchar *unique;
@@ -119,6 +121,15 @@ start_callback (GckTransaction *transaction, GObject *obj, gpointer user_data)
 	                                         lifetime->timed_when, kaboom_callback, self);
 
 	return TRUE;
+}
+
+static void
+module_went_away (gpointer data, GObject *old_module)
+{
+	GckObject *self = GCK_OBJECT (data);
+	g_return_if_fail (self->pv->module);
+	g_warning ("module destroyed before object that module contained");
+	self->pv->module = NULL;
 }
 
 /* -----------------------------------------------------------------------------
@@ -244,9 +255,9 @@ static GObject*
 gck_object_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
 	GckObject *self = GCK_OBJECT (G_OBJECT_CLASS (gck_object_parent_class)->constructor(type, n_props, props));
+
 	g_return_val_if_fail (self, NULL);	
-
-
+	g_return_val_if_fail (GCK_IS_MODULE (self->pv->module), NULL);
 	
 	return G_OBJECT (self);
 }
@@ -291,6 +302,10 @@ gck_object_finalize (GObject *obj)
 	
 	g_assert (self->pv->manager == NULL);
 	g_free (self->pv->unique);
+	
+	/* This is done here, as an object must have a module even after dispose */
+	g_object_weak_unref (G_OBJECT (self->pv->module), module_went_away, self);
+	self->pv->module = NULL;
 
 	g_assert (self->pv->lifetime == NULL);
 
@@ -308,6 +323,12 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 	switch (prop_id) {
 	case PROP_HANDLE:
 		gck_object_set_handle (self, g_value_get_ulong (value));
+		break;
+	case PROP_MODULE:
+		g_return_if_fail (!self->pv->module);
+		self->pv->module = g_value_get_object (value);
+		g_return_if_fail (GCK_IS_MODULE (self->pv->module));
+		g_object_weak_ref (G_OBJECT (self->pv->module), module_went_away, self);
 		break;
 	case PROP_MANAGER:
 		manager = g_value_get_object (value);
@@ -357,6 +378,10 @@ gck_object_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_HANDLE:
 		g_value_set_ulong (value, gck_object_get_handle (self));
 		break;
+	case PROP_MODULE:
+		g_return_if_fail (GCK_IS_MODULE (self->pv->module));
+		g_value_set_object (value, gck_object_get_module (self));
+		break;
 	case PROP_MANAGER:
 		g_value_set_object (value, gck_object_get_manager (self));
 		break;
@@ -395,6 +420,10 @@ gck_object_class_init (GckObjectClass *klass)
 	           g_param_spec_ulong ("handle", "Handle", "Object handle",
 	                               0, G_MAXULONG, 0, G_PARAM_READWRITE));
 
+	g_object_class_install_property (gobject_class, PROP_MODULE,
+	           g_param_spec_object ("module", "Module", "Object module", 
+	                                GCK_TYPE_MODULE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	
 	g_object_class_install_property (gobject_class, PROP_MANAGER,
 	           g_param_spec_object ("manager", "Manager", "Object manager", 
 	                                GCK_TYPE_MANAGER, G_PARAM_READWRITE));
@@ -543,6 +572,14 @@ gck_object_get_manager (GckObject *self)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
 	return self->pv->manager;
+}
+
+GckModule*
+gck_object_get_module (GckObject *self)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (GCK_IS_MODULE (self->pv->module), NULL);
+	return self->pv->module;
 }
 
 const gchar*

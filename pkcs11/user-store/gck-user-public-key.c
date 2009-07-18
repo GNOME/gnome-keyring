@@ -27,6 +27,7 @@
 #include "gck/gck-data-der.h"
 #include "gck/gck-factory.h"
 #include "gck/gck-serializable.h"
+#include "gck/gck-session.h"
 #include "gck/gck-object.h"
 #include "gck/gck-util.h"
 
@@ -56,7 +57,8 @@ factory_create_public_key (GckSession *session, GckTransaction *transaction,
 
 	sexp = gck_public_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp != NULL) {
-		*object = g_object_new (GCK_TYPE_USER_PUBLIC_KEY, "base-sexp", sexp, NULL);
+		*object = g_object_new (GCK_TYPE_USER_PUBLIC_KEY, "base-sexp", sexp, 
+		                        "module", gck_session_get_module (session), NULL);
 		gck_sexp_unref (sexp);
 	}
 }

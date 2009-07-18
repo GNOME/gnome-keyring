@@ -27,13 +27,18 @@
 #include <unistd.h>
 
 #include "run-auto-test.h"
+#include "test-module.h"
 
 #include "gck/gck-store.h"
 
+static GckModule *module = NULL;
 static GckStore *store = NULL;
 
 DEFINE_SETUP(store)
 {
+	module = test_module_initialize ();
+	test_module_enter ();
+	
 	store = g_object_new (GCK_TYPE_STORE, NULL);
 }
 
@@ -41,6 +46,10 @@ DEFINE_TEARDOWN(store)
 {
 	g_object_unref (store);
 	store = NULL;
+	
+	test_module_leave ();
+	test_module_finalize ();
+	module = NULL;
 }
 
 DEFINE_TEST(store_schema)

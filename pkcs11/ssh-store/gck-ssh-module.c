@@ -118,7 +118,7 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 	key = g_hash_table_lookup (self->keys_by_path, path);
 	if (key == NULL) {
 		unique = g_strdup_printf ("ssh-store:%s", private_path);
-		key = gck_ssh_private_key_new (unique);
+		key = gck_ssh_private_key_new (GCK_MODULE (self), unique);
 		g_free (unique);
 		
 		g_hash_table_replace (self->keys_by_path, g_strdup (path), key);

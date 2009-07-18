@@ -42,7 +42,8 @@ struct _GckRootsCertificateClass {
 
 GType                 gck_roots_certificate_get_type               (void);
 
-GckRootsCertificate*  gck_roots_certificate_new                    (const gchar *hash, 
+GckRootsCertificate*  gck_roots_certificate_new                    (GckModule *module,
+                                                                    const gchar *hash, 
                                                                     const gchar *path);
 
 const gchar*          gck_roots_certificate_get_unique             (GckRootsCertificate *self);

@@ -129,9 +129,10 @@ gck_ssh_public_key_class_init (GckSshPublicKeyClass *klass)
  */
 
 GckSshPublicKey*
-gck_ssh_public_key_new (const gchar *unique)
+gck_ssh_public_key_new (GckModule *module, const gchar *unique)
 {
-	return g_object_new (GCK_TYPE_SSH_PUBLIC_KEY, "unique", unique, NULL);
+	return g_object_new (GCK_TYPE_SSH_PUBLIC_KEY, "unique", unique, 
+	                     "module", module, NULL);
 }
 
 const gchar*

@@ -26,6 +26,7 @@
 #include "gck-attributes.h"
 #include "gck-factory.h"
 #include "gck-private-key.h"
+#include "gck-session.h"
 #include "gck-transaction.h"
 #include "gck-util.h"
 
@@ -156,7 +157,8 @@ factory_create_private_key (GckSession *session, GckTransaction *transaction,
 	if (sexp == NULL)
 		return;
 	
-	*object = g_object_new (GCK_TYPE_PRIVATE_KEY, "base-sexp", sexp, NULL);
+	*object = g_object_new (GCK_TYPE_PRIVATE_KEY, "base-sexp", sexp, 
+	                        "module", gck_session_get_module (session), NULL);
 	gck_private_key_store_private (GCK_PRIVATE_KEY (*object), sexp, G_MAXUINT);
 	gck_sexp_unref (sexp);
 }

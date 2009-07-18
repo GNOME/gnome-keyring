@@ -31,6 +31,7 @@
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
 #include "gck/gck-serializable.h"
+#include "gck/gck-session.h"
 #include "gck/gck-sexp.h"
 #include "gck/gck-util.h"
 
@@ -74,7 +75,8 @@ factory_create_private_key (GckSession *session, GckTransaction *transaction,
 	if (sexp == NULL)
 		return;
 	
-	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, NULL);
+	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, 
+	                    "module", gck_session_get_module (session), NULL);
 	g_return_if_fail (!key->private_sexp);
 	key->private_sexp = gck_sexp_ref (sexp);
 	

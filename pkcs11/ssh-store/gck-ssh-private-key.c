@@ -169,12 +169,14 @@ static GObject*
 gck_ssh_private_key_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
 	GckSshPrivateKey *self = GCK_SSH_PRIVATE_KEY (G_OBJECT_CLASS (gck_ssh_private_key_parent_class)->constructor(type, n_props, props));
+	GckObject *object;
 	gchar *unique;
 	
 	g_return_val_if_fail (self, NULL);	
 
-	unique = g_strdup_printf ("%s.pub", gck_object_get_unique (GCK_OBJECT (self)));
-	self->pubkey = gck_ssh_public_key_new (unique);
+	object = GCK_OBJECT (self);
+	unique = g_strdup_printf ("%s.pub", gck_object_get_unique (object));
+	self->pubkey = gck_ssh_public_key_new (gck_object_get_module (object), unique);
 	g_free (unique);
 	
 	return G_OBJECT (self);
@@ -278,9 +280,10 @@ gck_ssh_private_key_class_init (GckSshPrivateKeyClass *klass)
  */
 
 GckSshPrivateKey*
-gck_ssh_private_key_new (const gchar *unique)
+gck_ssh_private_key_new (GckModule *module, const gchar *unique)
 {
-	return g_object_new (GCK_TYPE_SSH_PRIVATE_KEY, "unique", unique, NULL);
+	return g_object_new (GCK_TYPE_SSH_PRIVATE_KEY, "unique", unique, 
+	                     "module", module, NULL);
 }
 
 gboolean

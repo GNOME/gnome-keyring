@@ -69,6 +69,8 @@ CK_OBJECT_HANDLE       gck_object_get_handle             (GckObject *self);
 void                   gck_object_set_handle             (GckObject *self,
                                                           CK_OBJECT_HANDLE handle);
 
+GckModule*             gck_object_get_module             (GckObject *self);
+
 GckManager*            gck_object_get_manager            (GckObject *self);
 
 const gchar*           gck_object_get_unique             (GckObject *self);

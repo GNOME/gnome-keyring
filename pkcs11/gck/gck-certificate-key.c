@@ -137,9 +137,9 @@ gck_certificate_key_class_init (GckCertificateKeyClass *klass)
  */
 
 GckCertificateKey*
-gck_certificate_key_new (GckCertificate *cert)
+gck_certificate_key_new (GckModule *module, GckCertificate *cert)
 {
-	return g_object_new (GCK_TYPE_CERTIFICATE_KEY, "certificate", cert, NULL);
+	return g_object_new (GCK_TYPE_CERTIFICATE_KEY, "module", module, "certificate", cert, NULL);
 }
 
 GckCertificate*

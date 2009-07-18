@@ -117,7 +117,7 @@ add_certificate_for_data (GckRootsModule *self, const guchar *data,
 	}
 
 	/* Create a new certificate object */
-	cert = GCK_CERTIFICATE (gck_roots_certificate_new (unique, path));
+	cert = GCK_CERTIFICATE (gck_roots_certificate_new (GCK_MODULE (self), unique, path));
 
 	if (!gck_serializable_load (GCK_SERIALIZABLE (cert), NULL, data, n_data)) {
 		g_message ("couldn't parse certificate(s): %s", path);
