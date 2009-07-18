@@ -28,6 +28,23 @@
 #include <stdio.h>
 #include <string.h>
 
+
+CK_RV
+gck_attribute_get_bool (CK_ATTRIBUTE_PTR attr, gboolean *value)
+{
+	CK_BBOOL* bool;
+
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (value, CKR_GENERAL_ERROR);
+
+	if (attr->ulValueLen != sizeof (CK_BBOOL) || attr->pValue == NULL)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	bool = attr->pValue;
+	*value = *bool ? TRUE : FALSE;
+	return CKR_OK;
+}
+
 #ifndef HAVE_TIMEGM
 static time_t
 timegm (struct tm *t)

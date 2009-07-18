@@ -34,6 +34,33 @@ DEFINE_TEST(attribute_consume)
 	g_assert (attr.type == (gulong)-1);
 }
 
+DEFINE_TEST(attribute_get_bool)
+{
+	CK_ATTRIBUTE attr;
+	CK_BBOOL val = CK_TRUE;
+	gboolean value;
+	CK_RV rv;
+	
+	attr.ulValueLen = sizeof (CK_BBOOL);
+	attr.pValue = &val;
+	rv = gck_attribute_get_bool (&attr, &value);
+	g_assert (rv == CKR_OK);
+	g_assert (value == TRUE);
+}
+
+DEFINE_TEST(attribute_get_bool_invalid)
+{
+	CK_ATTRIBUTE attr;
+	CK_ULONG val = 4;
+	gboolean value;
+	CK_RV rv;
+
+	attr.ulValueLen = sizeof (CK_ULONG);
+	attr.pValue = &val;
+	rv = gck_attribute_get_bool (&attr, &value);
+	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
+}
+
 DEFINE_TEST(attribute_set_time)
 {
 	CK_ATTRIBUTE attr;
