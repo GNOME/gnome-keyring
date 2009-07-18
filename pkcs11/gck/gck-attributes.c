@@ -28,6 +28,71 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef HAVE_TIMEGM
+static time_t
+timegm (struct tm *t)
+{
+	time_t tl, tb;
+	struct tm *tg;
+
+	tl = mktime (t);
+	if (tl == -1)
+	{
+		t->tm_hour--;
+		tl = mktime (t);
+		if (tl == -1)
+			return -1; /* can't deal with output from strptime */
+		tl += 3600;
+	}
+	tg = gmtime (&tl);
+	tg->tm_isdst = 0;
+	tb = mktime (tg);
+	if (tb == -1)
+	{
+		tg->tm_hour--;
+		tb = mktime (tg);
+		if (tb == -1)
+			return -1; /* can't deal with output from gmtime */
+		tb += 3600;
+	}
+	return (tl - (tb - tl));
+}
+#endif // NOT_HAVE_TIMEGM
+
+CK_RV
+gck_attribute_get_time (CK_ATTRIBUTE_PTR attr, glong *when)
+{
+	struct tm tm;
+	gchar buf[15];
+	time_t time;
+
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (when, CKR_GENERAL_ERROR);
+
+	if (attr->ulValueLen == 0) {
+		*when = (glong)-1;
+		return CKR_OK;
+	}
+
+	if (!attr->pValue || attr->ulValueLen != 16)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	memset (&tm, 0, sizeof (tm));
+	memcpy (buf, attr->pValue, 14);
+	buf[14] = 0;
+
+	if (!strptime(buf, "%Y%m%d%H%M%S", &tm))
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	/* Convert to seconds since epoch */
+	time = timegm (&tm);
+	if (time < 0)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	*when = time;
+	return CKR_OK;
+}
+
 CK_RV
 gck_attribute_set_bool (CK_ATTRIBUTE_PTR attr, CK_BBOOL value)
 {
@@ -80,6 +145,32 @@ gck_attribute_set_date (CK_ATTRIBUTE_PTR attr, time_t time)
 		
 	return gck_attribute_set_data (attr, &date, sizeof (date));
 }
+
+CK_RV
+gck_attribute_set_time (CK_ATTRIBUTE_PTR attr, glong when)
+{
+	struct tm tm;
+	gchar buf[20];
+
+	/* 'Empty' time as defined in PKCS#11 */
+	if (when == (glong)-1)
+		return gck_attribute_set_data (attr, NULL, 0);
+
+	if (!attr->pValue) {
+		attr->ulValueLen = 16;
+		return CKR_OK;
+	}
+
+	time_t time = when;
+	if (!gmtime_r (&time, &tm))
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+
+	if (!strftime(buf, sizeof (buf), "%Y%m%d%H%M%S00", &tm))
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+
+	return gck_attribute_set_data (attr, buf, 16);
+}
+
 CK_RV
 gck_attribute_set_data (CK_ATTRIBUTE_PTR attr, gconstpointer value, gsize n_value)
 {
@@ -170,6 +261,12 @@ gck_attribute_consumed (CK_ATTRIBUTE_PTR attr)
 {
 	g_return_val_if_fail (attr, FALSE);
 	return attr->type == (CK_ULONG)-1;
+}
+
+void
+gck_attribute_consume (CK_ATTRIBUTE_PTR attr)
+{
+	attr->type = (CK_ULONG)-1;
 }
 
 void

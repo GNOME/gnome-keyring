@@ -7,6 +7,7 @@ asn1-def-test.h: test.asn
 	
 # Test files should be listed in order they need to run
 UNIT_AUTO = \
+	unit-test-attributes.c \
 	unit-test-crypto.c \
 	unit-test-data-asn1.c \
 	unit-test-data-der.c \
