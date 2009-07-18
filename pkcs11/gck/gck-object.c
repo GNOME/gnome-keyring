@@ -49,10 +49,10 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-typedef struct _GckObjectLifetime {
+typedef struct _GckObjectTransient {
 	GckTimer *timed_timer;
 	glong timed_when;
-} GckObjectLifetime;
+} GckObjectTransient;
 
 struct _GckObjectPrivate {
 	CK_OBJECT_HANDLE handle;
@@ -60,7 +60,7 @@ struct _GckObjectPrivate {
 	GckManager *manager;
 	GckStore *store;
 	gchar *unique;
-	GckObjectLifetime *lifetime;
+	GckObjectTransient *transient;
 };
 
 G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
@@ -74,16 +74,16 @@ kaboom_callback (GckTimer *timer, gpointer user_data)
 {
 	GckObject *self = user_data;
 	GckTransaction *transaction;
-	GckObjectLifetime *lifetime;
+	GckObjectTransient *transient;
 	GckSession *session;
 	CK_RV rv;
 
 	g_return_if_fail (GCK_IS_OBJECT (self));
-	g_return_if_fail (self->pv->lifetime);
-	lifetime = self->pv->lifetime;
+	g_return_if_fail (self->pv->transient);
+	transient = self->pv->transient;
 
-	g_return_if_fail (timer == lifetime->timed_timer);
-	lifetime->timed_timer = NULL;
+	g_return_if_fail (timer == transient->timed_timer);
+	transient->timed_timer = NULL;
 
 	g_object_ref (self);
 
@@ -108,17 +108,15 @@ static gboolean
 start_callback (GckTransaction *transaction, GObject *obj, gpointer user_data)
 {
 	GckObject *self = GCK_OBJECT (obj);
-	GckObjectLifetime *lifetime;
-	GckSession *session = user_data;
+	GckObjectTransient *transient;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
-	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
-	g_return_val_if_fail (self->pv->lifetime, FALSE);
-	lifetime = self->pv->lifetime;
+	g_return_val_if_fail (self->pv->transient, FALSE);
+	transient = self->pv->transient;
 
-	g_return_val_if_fail (!lifetime->timed_timer, FALSE);
-	lifetime->timed_timer = gck_timer_start (gck_session_get_module (session), 
-	                                         lifetime->timed_when, kaboom_callback, self);
+	g_return_val_if_fail (!transient->timed_timer, FALSE);
+	transient->timed_timer = gck_timer_start (self->pv->module, transient->timed_when, 
+	                                          kaboom_callback, self);
 
 	return TRUE;
 }
@@ -158,9 +156,11 @@ gck_object_real_get_attribute (GckObject *self, CK_ATTRIBUTE* attr)
 		if (self->pv->unique)
 			return gck_attribute_set_string (attr, self->pv->unique);
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	case CKA_GNOME_TRANSIENT:
+		return gck_attribute_set_bool (attr, self->pv->transient ? TRUE : FALSE);
 	case CKA_GNOME_AUTO_DESTRUCT:
-		return gck_attribute_set_time (attr, self->pv->lifetime ?
-		                                     self->pv->lifetime->timed_when : -1);
+		return gck_attribute_set_time (attr, self->pv->transient ?
+		                                     self->pv->transient->timed_when : -1);
 	};
 
 	/* Give store a shot */
@@ -213,26 +213,54 @@ gck_object_real_set_attribute (GckObject *self, GckTransaction* transaction, CK_
 }
 
 static void
-gck_object_real_create_attribute (GckObject *self, GckTransaction *transaction, 
-	                          CK_ATTRIBUTE *attr, GckSession *session)
+gck_object_real_create_attributes (GckObject *self, GckTransaction *transaction, 
+                                   GckSession *session, CK_ATTRIBUTE *attrs, CK_ULONG n_attrs)
 {
+	CK_ATTRIBUTE_PTR transient_attr;
+	CK_ATTRIBUTE_PTR lifetime_attr;
+	gboolean transient = FALSE;
+	glong lifetime = -1;
 	CK_RV rv;
 
-	switch (attr->type) {
-	case CKA_GNOME_AUTO_DESTRUCT:
-		if (!self->pv->lifetime)
-			self->pv->lifetime = g_slice_new0 (GckObjectLifetime);
-		rv = gck_attribute_get_time (attr, &self->pv->lifetime->timed_when);
-		gck_attribute_consume (attr);
-		if (rv == CKR_OK) {
-			/* Must be a session object for an auto destruct */
-			if (self->pv->lifetime->timed_when >= 0)
-				gck_transaction_add (transaction, self, start_callback, session);
-		}
-		if (rv != CKR_OK)
+	/* Parse the transient attribute */
+	transient_attr = gck_attributes_find (attrs, n_attrs, CKA_GNOME_TRANSIENT);
+	if (transient_attr) {
+		rv = gck_attribute_get_bool (transient_attr, &transient);
+		gck_attribute_consume (transient_attr);
+		if (rv != CKR_OK) {
 			gck_transaction_fail (transaction, rv);
-		return;
-	};
+			return;
+		}
+	}
+
+	/* Parse the auto destruct attribute */
+	lifetime_attr = gck_attributes_find (attrs, n_attrs, CKA_GNOME_AUTO_DESTRUCT);
+	if (lifetime_attr) {
+		rv = gck_attribute_get_time (lifetime_attr, &lifetime);
+		gck_attribute_consume (lifetime_attr);
+		if (rv != CKR_OK) {
+			gck_transaction_fail (transaction, rv);
+			return;
+		}
+		
+		/* Default for the transient attribute */
+		if (!transient_attr)
+			transient = TRUE;
+	}
+
+	if (transient) {
+		self->pv->transient = g_slice_new0 (GckObjectTransient);
+		self->pv->transient->timed_when = lifetime;
+	}
+
+	if (lifetime >= 0) {
+		if (!self->pv->transient) {
+			gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+			return;
+		}
+
+		gck_transaction_add (transaction, self, start_callback, NULL);
+	}
 }
 
 static CK_RV
@@ -273,7 +301,7 @@ static void
 gck_object_dispose (GObject *obj)
 {
 	GckObject *self = GCK_OBJECT (obj);
-	GckObjectLifetime *lifetime;
+	GckObjectTransient *transient;
 	
 	if (self->pv->manager)
 		gck_manager_unregister_object (self->pv->manager, self);
@@ -282,14 +310,14 @@ gck_object_dispose (GObject *obj)
 	g_object_set (self, "store", NULL, NULL);
 	g_assert (self->pv->store == NULL);
 
-	if (self->pv->lifetime) {
-		lifetime = self->pv->lifetime;
-		if (lifetime->timed_timer)
-			gck_timer_cancel (lifetime->timed_timer);
-		lifetime->timed_timer = NULL;
+	if (self->pv->transient) {
+		transient = self->pv->transient;
+		if (transient->timed_timer)
+			gck_timer_cancel (transient->timed_timer);
+		transient->timed_timer = NULL;
 
-		g_slice_free (GckObjectLifetime, lifetime);
-		self->pv->lifetime = NULL;
+		g_slice_free (GckObjectTransient, transient);
+		self->pv->transient = NULL;
 	}
     
 	G_OBJECT_CLASS (gck_object_parent_class)->dispose (obj);
@@ -307,7 +335,7 @@ gck_object_finalize (GObject *obj)
 	g_object_weak_unref (G_OBJECT (self->pv->module), module_went_away, self);
 	self->pv->module = NULL;
 
-	g_assert (self->pv->lifetime == NULL);
+	g_assert (self->pv->transient == NULL);
 
 	G_OBJECT_CLASS (gck_object_parent_class)->finalize (obj);
 }
@@ -414,7 +442,7 @@ gck_object_class_init (GckObjectClass *klass)
 	klass->unlock = gck_object_real_unlock;
 	klass->get_attribute = gck_object_real_get_attribute;
 	klass->set_attribute = gck_object_real_set_attribute;
-	klass->create_attribute = gck_object_real_create_attribute;
+	klass->create_attributes = gck_object_real_create_attributes;
 	
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 	           g_param_spec_ulong ("handle", "Handle", "Object handle",
@@ -485,19 +513,19 @@ gck_object_set_attribute (GckObject *self, GckTransaction *transaction,
 }
 
 void
-gck_object_create_attribute (GckObject *self, GckTransaction *transaction,
-                             CK_ATTRIBUTE_PTR attr, GckSession *session)
+gck_object_create_attributes (GckObject *self, GckTransaction *transaction, GckSession *session,
+                              CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	g_return_if_fail (GCK_IS_OBJECT (self));
 	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
 	g_return_if_fail (!gck_transaction_get_failed (transaction));
 	g_return_if_fail (GCK_IS_SESSION (session));
-	g_return_if_fail (attr);
+	g_return_if_fail (attrs);
 
-	g_assert (GCK_OBJECT_GET_CLASS (self)->create_attribute);
+	g_assert (GCK_OBJECT_GET_CLASS (self)->create_attributes);
 
 	/* Check that the value will actually change */
-	GCK_OBJECT_GET_CLASS (self)->create_attribute (self, transaction, attr, session);
+	GCK_OBJECT_GET_CLASS (self)->create_attributes (self, transaction, session, attrs, n_attrs);
 }
 
 void
@@ -588,6 +616,14 @@ gck_object_get_unique (GckObject *self)
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
 	return self->pv->unique;
 }
+
+gboolean
+gck_object_get_transient (GckObject *self)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	return self->pv->transient ? TRUE : FALSE;
+}
+
 
 CK_RV
 gck_object_unlock (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)

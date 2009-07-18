@@ -269,8 +269,9 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 	 */
 	if (writable) {
 		if (is_token) {
-			if (gck_module_get_write_protected (self->pv->module))
-				return CKR_TOKEN_WRITE_PROTECTED;
+			if (!gck_object_get_transient (object))
+				if (gck_module_get_write_protected (self->pv->module))
+					return CKR_TOKEN_WRITE_PROTECTED;
 			if (self->pv->read_only)
 				return CKR_SESSION_READ_ONLY;
 		}
@@ -740,6 +741,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	CK_ULONG n_attrs, i;
 	GckFactory factory;
 	gboolean is_token;
+	gboolean is_transient;
 	gboolean is_private;
 	CK_RV rv;
 
@@ -756,11 +758,13 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	
 	/* Find out where we'll be creating this */
 	if (!gck_attributes_find_boolean (template, count, CKA_TOKEN, &is_token))
-		is_token = CK_FALSE;
+		is_token = FALSE;
+	if (!gck_attributes_find_boolean (template, count, CKA_GNOME_TRANSIENT, &is_transient))
+		is_transient = FALSE;
 		
 	/* See if we can create due to read-only */
 	if (is_token) {
-		if (gck_module_get_write_protected (self->pv->module))
+		if (!is_transient && gck_module_get_write_protected (self->pv->module))
 			return CKR_TOKEN_WRITE_PROTECTED;
 		if (self->pv->read_only)
 			return CKR_SESSION_READ_ONLY;
@@ -792,9 +796,8 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	}
 	
 	/* Give the object a chance to create additional attributes */
-	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
-		if (!gck_attribute_consumed (&attrs[i]))
-			gck_object_create_attribute (object, transaction, &attrs[i], self);
+	if (!gck_transaction_get_failed (transaction)) {
+		gck_object_create_attributes (object, transaction, self, attrs, n_attrs);
 	}
 
 	/* Find somewhere to store the object */

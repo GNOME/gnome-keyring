@@ -11,6 +11,7 @@ UNIT_AUTO = \
 	unit-test-crypto.c \
 	unit-test-data-asn1.c \
 	unit-test-data-der.c \
+	unit-test-object.c \
 	unit-test-timer.c \
 	unit-test-transaction.c \
 	unit-test-store.c \
