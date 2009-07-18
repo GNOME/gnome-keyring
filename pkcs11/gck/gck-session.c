@@ -558,6 +558,13 @@ gck_session_class_init (GckSessionClass *klass)
  * PUBLIC 
  */
 
+GckSession*
+gck_session_for_session_object (GckObject *obj)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (obj), NULL);
+	return GCK_SESSION (g_object_get_data (G_OBJECT (obj), "owned-by-session"));
+}
+
 CK_SESSION_HANDLE
 gck_session_get_handle (GckSession *self)
 {
@@ -652,6 +659,18 @@ gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_UL
 	g_return_val_if_fail (is_private == TRUE, CKR_GENERAL_ERROR);
 	
 	return gck_object_unlock (object, pin, n_pin);
+}
+
+void
+gck_session_destroy_session_object (GckSession *self, GckTransaction *transaction,
+                                    GckObject *obj)
+{
+	g_return_if_fail (GCK_IS_SESSION (self));
+	g_return_if_fail (gck_session_for_session_object (obj) == self);
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (!gck_transaction_get_failed (transaction));
+
+	remove_object (self, transaction, obj);
 }
 
 /* -----------------------------------------------------------------------------
@@ -772,6 +791,17 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 		}
 	}
 	
+	if (!gck_transaction_get_failed (transaction)) {
+		g_object_set (object, "permanent", is_token, NULL);
+		gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
+	}
+
+	/* Give the object a chance to create additional attributes */
+	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
+		if (!gck_attribute_consumed (&attrs[i]))
+			gck_object_create_attribute (object, transaction, &attrs[i], self);
+	}
+
 	/* Find somewhere to store the object */
 	if (!gck_transaction_get_failed (transaction)) {
 		if (is_token) 
@@ -885,7 +915,7 @@ gck_session_C_DestroyObject (GckSession* self, CK_OBJECT_HANDLE handle)
 	transaction = gck_transaction_new ();
 
 	/* Lookup the actual session that owns this object, if no session, then a token object */
-	session = g_object_get_data (G_OBJECT (object), "owned-by-session");
+	session = gck_session_for_session_object (object);
 	if (session != NULL)
 		remove_object (session, transaction, object);
 	else

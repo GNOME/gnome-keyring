@@ -28,7 +28,9 @@
 #include "gck-manager.h"
 #include "gck-object.h"
 #include "gck-transaction.h"
+#include "gck-session.h"
 #include "gck-store.h"
+#include "gck-timer.h"
 #include "gck-util.h"
 
 enum {
@@ -47,12 +49,18 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
+typedef struct _GckObjectLifetime {
+	GckTimer *timed_timer;
+	glong timed_when;
+} GckObjectLifetime;
+
 struct _GckObjectPrivate {
 	CK_OBJECT_HANDLE handle;
 	GckManager *manager;
 	GckStore *store;
 	gchar *unique;
 	gboolean permanent;
+	GckObjectLifetime *lifetime;
 };
 
 G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
@@ -60,6 +68,60 @@ G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
 /* -----------------------------------------------------------------------------
  * INTERNAL 
  */
+
+static void
+kaboom_callback (GckTimer *timer, gpointer user_data)
+{
+	GckObject *self = user_data;
+	GckTransaction *transaction;
+	GckObjectLifetime *lifetime;
+	GckSession *session;
+	CK_RV rv;
+
+	g_return_if_fail (GCK_IS_OBJECT (self));
+	g_return_if_fail (self->pv->lifetime);
+	lifetime = self->pv->lifetime;
+
+	g_return_if_fail (timer == lifetime->timed_timer);
+	lifetime->timed_timer = NULL;
+
+	g_object_ref (self);
+
+	transaction = gck_transaction_new ();
+
+	session = gck_session_for_session_object (self);
+	g_return_if_fail (session);
+	gck_session_destroy_session_object (session, transaction, GCK_OBJECT (self));
+
+	gck_transaction_complete (transaction);
+	rv = gck_transaction_get_result (transaction);
+	g_object_unref (transaction);
+
+	if (rv != CKR_OK)
+		g_warning ("Unexpected failure to auto destruct object (code: %lu)", (gulong)rv);
+
+	g_object_run_dispose (G_OBJECT (self));
+	g_object_unref (self);
+}
+
+static gboolean
+start_callback (GckTransaction *transaction, GObject *obj, gpointer user_data)
+{
+	GckObject *self = GCK_OBJECT (obj);
+	GckObjectLifetime *lifetime;
+	GckSession *session = user_data;
+
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (self->pv->lifetime, FALSE);
+	lifetime = self->pv->lifetime;
+
+	g_return_val_if_fail (!lifetime->timed_timer, FALSE);
+	lifetime->timed_timer = gck_timer_start (gck_session_get_module (session), 
+	                                         lifetime->timed_when, kaboom_callback, self);
+
+	return TRUE;
+}
 
 /* -----------------------------------------------------------------------------
  * OBJECT 
@@ -85,6 +147,9 @@ gck_object_real_get_attribute (GckObject *self, CK_ATTRIBUTE* attr)
 		if (self->pv->unique)
 			return gck_attribute_set_string (attr, self->pv->unique);
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	case CKA_GNOME_AUTO_DESTRUCT:
+		return gck_attribute_set_time (attr, self->pv->lifetime ?
+		                                     self->pv->lifetime->timed_when : -1);
 	};
 
 	/* Give store a shot */
@@ -136,6 +201,31 @@ gck_object_real_set_attribute (GckObject *self, GckTransaction* transaction, CK_
 	gck_transaction_fail (transaction, CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
+static void
+gck_object_real_create_attribute (GckObject *self, GckTransaction *transaction, 
+	                          CK_ATTRIBUTE *attr, GckSession *session)
+{
+	CK_RV rv;
+
+	switch (attr->type) {
+	case CKA_GNOME_AUTO_DESTRUCT:
+		if (!self->pv->lifetime)
+			self->pv->lifetime = g_slice_new0 (GckObjectLifetime);
+		rv = gck_attribute_get_time (attr, &self->pv->lifetime->timed_when);
+		gck_attribute_consume (attr);
+		if (rv == CKR_OK) {
+			/* Must be a session object for an auto destruct */
+			if (self->pv->lifetime->timed_when >= 0 && self->pv->permanent)
+				rv = CKR_TEMPLATE_INCONSISTENT;
+			else
+				gck_transaction_add (transaction, self, start_callback, session);
+		}
+		if (rv != CKR_OK)
+			gck_transaction_fail (transaction, rv);
+		return;
+	};
+}
+
 static CK_RV
 gck_object_real_unlock (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
@@ -174,6 +264,7 @@ static void
 gck_object_dispose (GObject *obj)
 {
 	GckObject *self = GCK_OBJECT (obj);
+	GckObjectLifetime *lifetime;
 	
 	if (self->pv->manager)
 		gck_manager_unregister_object (self->pv->manager, self);
@@ -181,6 +272,16 @@ gck_object_dispose (GObject *obj)
 	
 	g_object_set (self, "store", NULL, NULL);
 	g_assert (self->pv->store == NULL);
+
+	if (self->pv->lifetime) {
+		lifetime = self->pv->lifetime;
+		if (lifetime->timed_timer)
+			gck_timer_cancel (lifetime->timed_timer);
+		lifetime->timed_timer = NULL;
+
+		g_slice_free (GckObjectLifetime, lifetime);
+		self->pv->lifetime = NULL;
+	}
     
 	G_OBJECT_CLASS (gck_object_parent_class)->dispose (obj);
 }
@@ -192,6 +293,8 @@ gck_object_finalize (GObject *obj)
 	
 	g_assert (self->pv->manager == NULL);
 	g_free (self->pv->unique);
+
+	g_assert (self->pv->lifetime == NULL);
 
 	G_OBJECT_CLASS (gck_object_parent_class)->finalize (obj);
 }
@@ -295,6 +398,7 @@ gck_object_class_init (GckObjectClass *klass)
 	klass->unlock = gck_object_real_unlock;
 	klass->get_attribute = gck_object_real_get_attribute;
 	klass->set_attribute = gck_object_real_set_attribute;
+	klass->create_attribute = gck_object_real_create_attribute;
 	
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 	           g_param_spec_ulong ("handle", "Handle", "Object handle",
@@ -362,6 +466,22 @@ gck_object_set_attribute (GckObject *self, GckTransaction *transaction,
 	/* Check that the value will actually change */
 	if (rv == CKR_ATTRIBUTE_SENSITIVE || !gck_object_match (self, attr))
 		GCK_OBJECT_GET_CLASS (self)->set_attribute (self, transaction, attr);
+}
+
+void
+gck_object_create_attribute (GckObject *self, GckTransaction *transaction,
+                             CK_ATTRIBUTE_PTR attr, GckSession *session)
+{
+	g_return_if_fail (GCK_IS_OBJECT (self));
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (!gck_transaction_get_failed (transaction));
+	g_return_if_fail (GCK_IS_SESSION (session));
+	g_return_if_fail (attr);
+
+	g_assert (GCK_OBJECT_GET_CLASS (self)->create_attribute);
+
+	/* Check that the value will actually change */
+	GCK_OBJECT_GET_CLASS (self)->create_attribute (self, transaction, attr, session);
 }
 
 void
