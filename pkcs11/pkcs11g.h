@@ -103,4 +103,6 @@
 
 #define CKA_GNOME_AUTO_DESTRUCT                  (CKO_GNOME + 200)
 
+#define CKA_GNOME_TRANSIENT                      (CKO_GNOME + 201)
+
 #endif /* PKCS11G_H */

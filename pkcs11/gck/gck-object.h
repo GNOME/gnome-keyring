@@ -56,8 +56,8 @@ struct _GckObjectClass {
 	
 	void (*set_attribute) (GckObject *object, GckTransaction *transaction, CK_ATTRIBUTE *attr);
 	
-	void (*create_attribute) (GckObject *object, GckTransaction *transaction, 
-	                          CK_ATTRIBUTE *attr, GckSession *session);
+	void (*create_attributes) (GckObject *object, GckTransaction *transaction, GckSession *session,
+	                           CK_ATTRIBUTE *attrs, CK_ULONG n_attrs);
 
 	CK_RV (*unlock) (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
 };
@@ -74,6 +74,8 @@ GckModule*             gck_object_get_module             (GckObject *self);
 GckManager*            gck_object_get_manager            (GckObject *self);
 
 const gchar*           gck_object_get_unique             (GckObject *self);
+
+gboolean               gck_object_get_transient          (GckObject *self);
 
 CK_RV                  gck_object_unlock                 (GckObject *self, 
                                                           CK_UTF8CHAR_PTR pin, 
@@ -93,10 +95,11 @@ void                   gck_object_set_attribute          (GckObject *self,
                                                           GckTransaction *transaction,
                                                           CK_ATTRIBUTE_PTR attr);
 
-void                   gck_object_create_attribute       (GckObject *self,
+void                   gck_object_create_attributes      (GckObject *self,
                                                           GckTransaction *transaction,
-                                                          CK_ATTRIBUTE_PTR attr,
-                                                          GckSession *session);
+                                                          GckSession *session,
+                                                          CK_ATTRIBUTE_PTR attrs,
+                                                          CK_ULONG n_attrs);
 
 void                   gck_object_notify_attribute       (GckObject *self,
                                                           CK_ATTRIBUTE_TYPE attr_type);

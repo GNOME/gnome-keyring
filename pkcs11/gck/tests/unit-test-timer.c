@@ -26,7 +26,7 @@
 
 #include "gck/gck-timer.h"
 
-GckModule *module = NULL;
+static GckModule *module = NULL;
 
 DEFINE_SETUP(timer_setup)
 {

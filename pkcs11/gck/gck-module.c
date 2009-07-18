@@ -29,10 +29,12 @@
 #include "gck-certificate.h"
 #include "gck-factory.h"
 #include "gck-manager.h"
+#include "gck-memory-store.h"
 #include "gck-module.h"
 #include "gck-private-key.h"
 #include "gck-public-key.h"
 #include "gck-session.h"
+#include "gck-store.h"
 #include "gck-timer.h"
 #include "gck-transaction.h"
 #include "gck-util.h"
@@ -46,13 +48,17 @@ enum {
 };
 
 struct _GckModulePrivate {
+	GMutex *mutex;                          /* The mutex controlling entry to this module */
+
 	GckManager *token_manager; 
 	GHashTable *virtual_slots_by_id;        /* Various slot partitions by their ID */
 	GHashTable *sessions_by_handle;         /* Mapping of handle to all open sessions */
 	gint handle_counter;                    /* Constantly incrementing counter for handles and the like */
 	GArray *factories;                      /* Various registered object factories */
 	gboolean factories_sorted;              /* Whether we need to sort the object factories */
-	GMutex *mutex;                          /* The mutex controlling entry to this module */
+
+	GHashTable *transient_objects;          /* Token objects that are not stored permanently. */
+	GckStore *transient_store;              /* Store for trantsient objects. */
 };
 
 typedef struct _VirtualSlot {
@@ -133,6 +139,10 @@ static const MechanismAndInfo mechanism_list[] = {
 
 /* Hidden function that you should not use */
 GMutex* _gck_module_get_scary_mutex_that_you_should_not_touch (GckModule *self);
+
+static void  remove_transient_object (GckModule *self, GckTransaction *transaction, GckObject *object);
+
+static void  add_transient_object    (GckModule *self, GckTransaction *transaction, GckObject *object);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
@@ -340,6 +350,76 @@ done:
 	g_free (dup);
 }
 
+
+static gboolean
+complete_transient_remove (GckTransaction *transaction, GckModule *self, GckObject *object)
+{
+	if (gck_transaction_get_failed (transaction))
+		add_transient_object (self, NULL, object);
+	g_object_unref (object);
+	return TRUE;
+}
+
+static void
+remove_transient_object (GckModule *self, GckTransaction *transaction, GckObject *object)
+{
+	g_assert (GCK_IS_MODULE (self));
+	g_assert (GCK_IS_OBJECT (object));
+
+	g_object_ref (object);
+
+	gck_manager_unregister_object (self->pv->token_manager, object);
+	if (!g_hash_table_remove (self->pv->transient_objects, object))
+		g_return_if_reached ();
+	g_object_set (object, "store", NULL, NULL);
+
+	if (transaction) {
+		gck_transaction_add (transaction, self,
+		                     (GckTransactionFunc)complete_transient_remove, 
+		                     g_object_ref (object));
+	}
+
+	g_object_unref (object);
+}
+
+static gboolean
+complete_transient_add (GckTransaction *transaction, GckModule *self, GckObject *object)
+{
+	if (gck_transaction_get_failed (transaction))
+		remove_transient_object (self, NULL, object);
+	g_object_unref (object);
+	return TRUE;
+}
+
+static void
+add_transient_object (GckModule *self, GckTransaction *transaction, GckObject *object)
+{
+	g_assert (GCK_IS_MODULE (self));
+	g_assert (GCK_IS_OBJECT (object));
+
+	/* Must not already be associated with a session or manager */
+	g_return_if_fail (gck_object_get_manager (object) == NULL);
+	g_return_if_fail (g_hash_table_lookup (self->pv->transient_objects, object) == NULL);
+
+	g_hash_table_insert (self->pv->transient_objects, object, g_object_ref (object));
+	gck_manager_register_object (self->pv->token_manager, object);
+	g_object_set (object, "store", self->pv->transient_store, NULL);
+
+	if (transaction) {
+		gck_transaction_add (transaction, self,
+		                     (GckTransactionFunc)complete_transient_add, 
+		                     g_object_ref (object));
+	}
+}
+
+static void
+dispose_unref_object (gpointer obj)
+{
+	g_assert (G_IS_OBJECT (obj));
+	g_object_run_dispose (obj);
+	g_object_unref (obj);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -431,10 +511,16 @@ static GObject*
 gck_module_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
 	GckModule *self = GCK_MODULE (G_OBJECT_CLASS (gck_module_parent_class)->constructor(type, n_props, props));
+	CK_ATTRIBUTE attr;
+
 	g_return_val_if_fail (self, NULL);	
 
+	/* Register store attributes */
+	attr.type = CKA_LABEL;
+	attr.pValue = "";
+	attr.ulValueLen = 0;
+	gck_store_register_schema (self->pv->transient_store, &attr, NULL, 0);
 
-	
 	return G_OBJECT (self);
 }
 
@@ -453,6 +539,10 @@ gck_module_init (GckModule *self)
 	
 	g_atomic_int_set (&(self->pv->handle_counter), 1);
 	
+	/* Create the store for transient objects */
+	self->pv->transient_store = GCK_STORE (gck_memory_store_new ());
+	self->pv->transient_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, dispose_unref_object);
+
 	/* Register session object factories */
 	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
@@ -463,6 +553,8 @@ static void
 gck_module_dispose (GObject *obj)
 {
 	GckModule *self = GCK_MODULE (obj);
+
+	g_hash_table_remove_all (self->pv->transient_objects);
 
 	if (self->pv->token_manager)
 		g_object_unref (self->pv->token_manager);
@@ -480,7 +572,13 @@ static void
 gck_module_finalize (GObject *obj)
 {
 	GckModule *self = GCK_MODULE (obj);
+
+	g_hash_table_destroy (self->pv->transient_objects);
+	self->pv->transient_objects = NULL;
 	
+	g_object_unref (self->pv->transient_store);
+	self->pv->transient_store = NULL;
+
 	g_assert (self->pv->token_manager == NULL);
 
 	g_assert (g_hash_table_size (self->pv->virtual_slots_by_id) == 0);
@@ -691,7 +789,11 @@ gck_module_store_token_object (GckModule *self, GckTransaction *transaction, Gck
 	g_return_if_fail (GCK_IS_MODULE (self));
 	g_return_if_fail (GCK_IS_OBJECT (object));
 	g_assert (GCK_MODULE_GET_CLASS (self)->store_token_object);
-	GCK_MODULE_GET_CLASS (self)->store_token_object (self, transaction, object);
+
+	if (gck_object_get_transient (object))
+		add_transient_object (self, transaction, object);
+	else
+		GCK_MODULE_GET_CLASS (self)->store_token_object (self, transaction, object);
 }
 
 void
@@ -700,7 +802,11 @@ gck_module_remove_token_object (GckModule *self, GckTransaction *transaction, Gc
 	g_return_if_fail (GCK_IS_MODULE (self));
 	g_return_if_fail (GCK_IS_OBJECT (object));
 	g_assert (GCK_MODULE_GET_CLASS (self)->remove_token_object);
-	GCK_MODULE_GET_CLASS (self)->remove_token_object (self, transaction, object);
+
+	if (gck_object_get_transient (object))
+		remove_transient_object (self, transaction, object);
+	else
+		GCK_MODULE_GET_CLASS (self)->remove_token_object (self, transaction, object);
 }
 
 void
