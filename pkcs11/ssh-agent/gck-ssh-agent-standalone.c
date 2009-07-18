@@ -107,7 +107,7 @@ main(int argc, char *argv[])
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 	gp11_module_set_auto_authenticate (module, GP11_AUTHENTICATE_OBJECTS);
 
-	sock = gck_ssh_agent_initialize_with_module ("/tmp/test-gck-ssh-agent", module);
+	sock = gck_ssh_agent_initialize_with_module ("/tmp", module);
 	g_object_unref (module);
 	
 	if (sock == -1)
