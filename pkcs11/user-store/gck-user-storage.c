@@ -90,14 +90,6 @@ G_DEFINE_TYPE (GckUserStorage, gck_user_storage, GCK_TYPE_STORE);
  * HELPERS 
  */
 
-static void
-dispose_unref_object (gpointer obj)
-{
-	g_assert (G_IS_OBJECT (obj));
-	g_object_run_dispose (obj);
-	g_object_unref (obj);
-}
-
 #ifndef HAVE_FLOCK
 #define LOCK_SH 1
 #define LOCK_EX 2
@@ -882,7 +874,7 @@ gck_user_storage_init (GckUserStorage *self)
 	g_signal_connect (self->file, "entry-removed", G_CALLBACK (data_file_entry_removed), self);
 	
 	/* Each one owns the key and contains weak ref to other's key as its value */
-	self->object_to_identifier = g_hash_table_new_full (g_direct_hash, g_direct_equal, dispose_unref_object, NULL);
+	self->object_to_identifier = g_hash_table_new_full (g_direct_hash, g_direct_equal, gck_util_dispose_unref, NULL);
 	self->identifier_to_object = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	
 	self->read_fd = -1;

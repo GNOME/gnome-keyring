@@ -101,8 +101,18 @@
  * AUTO-DESTRUCT
  */
 
-#define CKA_GNOME_AUTO_DESTRUCT                  (CKO_GNOME + 200)
+#define CKA_GNOME_AUTO_DESTRUCT                  (CKA_GNOME + 200)
 
-#define CKA_GNOME_TRANSIENT                      (CKO_GNOME + 201)
+#define CKA_GNOME_TRANSIENT                      (CKA_GNOME + 201)
+
+/* -------------------------------------------------------------------
+ * AUTHENTICATOR
+ */
+
+#define CKO_GNOME_AUTHENTICATOR                  (CKO_GNOME + 100)
+
+#define CKA_GNOME_OBJECT                         (CKA_GNOME + 202)
+
+#define CKA_GNOME_USES_REMAINING                 (CKA_GNOME + 203)
 
 #endif /* PKCS11G_H */

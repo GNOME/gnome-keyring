@@ -75,7 +75,6 @@ kaboom_callback (GckTimer *timer, gpointer user_data)
 	GckObject *self = user_data;
 	GckTransaction *transaction;
 	GckObjectTransient *transient;
-	GckSession *session;
 	CK_RV rv;
 
 	g_return_if_fail (GCK_IS_OBJECT (self));
@@ -89,9 +88,8 @@ kaboom_callback (GckTimer *timer, gpointer user_data)
 
 	transaction = gck_transaction_new ();
 
-	session = gck_session_for_session_object (self);
-	g_return_if_fail (session);
-	gck_session_destroy_session_object (session, transaction, GCK_OBJECT (self));
+	/* Off we go */
+	gck_object_destroy (self, transaction);
 
 	gck_transaction_complete (transaction);
 	rv = gck_transaction_get_result (transaction);
@@ -100,7 +98,6 @@ kaboom_callback (GckTimer *timer, gpointer user_data)
 	if (rv != CKR_OK)
 		g_warning ("Unexpected failure to auto destruct object (code: %lu)", (gulong)rv);
 
-	g_object_run_dispose (G_OBJECT (self));
 	g_object_unref (self);
 }
 
@@ -128,6 +125,13 @@ module_went_away (gpointer data, GObject *old_module)
 	g_return_if_fail (self->pv->module);
 	g_warning ("module destroyed before object that module contained");
 	self->pv->module = NULL;
+}
+
+static gboolean
+complete_destroy (GckTransaction *transaction, GObject *unused, gpointer user_data)
+{
+	gck_util_dispose_unref (user_data);
+	return TRUE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -264,7 +268,7 @@ gck_object_real_create_attributes (GckObject *self, GckTransaction *transaction,
 }
 
 static CK_RV
-gck_object_real_unlock (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
+gck_object_real_unlock (GckObject *self, GckAuthenticator *auth)
 {
 	gboolean always_auth;
 	
@@ -626,11 +630,11 @@ gck_object_get_transient (GckObject *self)
 
 
 CK_RV
-gck_object_unlock (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
+gck_object_unlock (GckObject *self, GckAuthenticator *auth)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (GCK_OBJECT_GET_CLASS (self)->unlock, CKR_GENERAL_ERROR);
-	return GCK_OBJECT_GET_CLASS (self)->unlock (self, pin, n_pin);
+	return GCK_OBJECT_GET_CLASS (self)->unlock (self, auth);
 }
 
 
@@ -701,4 +705,34 @@ gck_object_get_attribute_data (GckObject *self, CK_ATTRIBUTE_TYPE type, gsize *n
 	
 	*n_data = attr.ulValueLen;
 	return attr.pValue;
+}
+
+void
+gck_object_destroy (GckObject *self, GckTransaction *transaction)
+{
+	GckSession *session;
+	GckManager *manager;
+	GckModule *module;
+
+	g_return_if_fail (GCK_IS_OBJECT (self));
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (!gck_transaction_get_failed (transaction));
+	g_return_if_fail (self->pv->module);
+
+	g_object_ref (self);
+
+	session = gck_session_for_session_object (self);
+	if (session != NULL) {
+		gck_session_destroy_session_object (session, transaction, self);
+	} else {
+		manager = gck_object_get_manager (self);
+		module = gck_object_get_module (self);
+		if (manager == gck_module_get_manager (module))
+			gck_module_remove_token_object (module, transaction, self);
+	}
+
+	/* Forcefully dispose of the object once the transaction completes */
+	gck_transaction_add (transaction, NULL, complete_destroy, g_object_ref (self));
+
+	g_object_unref (self);
 }

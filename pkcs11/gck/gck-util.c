@@ -23,6 +23,9 @@
 
 #include "gck-util.h"
 
+#include <glib.h>
+#include <glib-object.h>
+
 #include <stdio.h>
 #include <string.h>
 
@@ -86,4 +89,12 @@ CK_ULONG
 gck_util_next_handle (void)
 {
 	return (CK_ULONG)g_atomic_int_exchange_and_add (&next_handle, 1);
+}
+
+void
+gck_util_dispose_unref (gpointer object)
+{
+	g_return_if_fail (G_IS_OBJECT (object));
+	g_object_run_dispose (G_OBJECT (object));
+	g_object_unref (object);
 }

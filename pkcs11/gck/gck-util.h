@@ -47,4 +47,6 @@ CK_RV                 gck_attribute_set_mpi                       (CK_ATTRIBUTE_
 
 CK_ULONG              gck_util_next_handle                        (void);
 
+void                  gck_util_dispose_unref                      (gpointer object); 
+
 #endif /* GCKUTIL_H_ */

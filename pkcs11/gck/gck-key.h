@@ -48,7 +48,7 @@ struct _GckKeyClass {
 	
 	/* virtual methods */
 
-	GckSexp* (*acquire_crypto_sexp) (GckKey *self);
+	GckSexp* (*acquire_crypto_sexp) (GckKey *self, GckSession *session);
 };
 
 GType                      gck_key_get_type               (void);
@@ -65,6 +65,7 @@ CK_RV                      gck_key_set_key_part           (GckKey *self,
                                                            const char *part,
                                                            CK_ATTRIBUTE_PTR attr);
 
-GckSexp*                   gck_key_acquire_crypto_sexp    (GckKey *self);
+GckSexp*                   gck_key_acquire_crypto_sexp    (GckKey *self,
+                                                           GckSession *session);
 
 #endif /* __GCK_KEY_H__ */

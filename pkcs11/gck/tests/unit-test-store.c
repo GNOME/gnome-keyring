@@ -36,9 +36,7 @@ static GckStore *store = NULL;
 
 DEFINE_SETUP(store)
 {
-	module = test_module_initialize ();
-	test_module_enter ();
-	
+	module = test_module_initialize_and_enter ();
 	store = g_object_new (GCK_TYPE_STORE, NULL);
 }
 
@@ -47,8 +45,7 @@ DEFINE_TEARDOWN(store)
 	g_object_unref (store);
 	store = NULL;
 	
-	test_module_leave ();
-	test_module_finalize ();
+	test_module_leave_and_finalize ();
 	module = NULL;
 }
 

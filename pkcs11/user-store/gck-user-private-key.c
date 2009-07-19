@@ -100,7 +100,7 @@ gck_user_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 }
 
 static GckSexp* 
-gck_user_private_key_real_acquire_crypto_sexp (GckKey *base)
+gck_user_private_key_real_acquire_crypto_sexp (GckKey *base, GckSession *unused)
 {
 	GckUserPrivateKey *self = GCK_USER_PRIVATE_KEY (base);
 	gcry_sexp_t sexp;
@@ -295,7 +295,7 @@ gck_user_private_key_real_save (GckSerializable *base, GckLogin *login, guchar *
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 	
-	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_KEY (self));
+	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_KEY (self), NULL);
 	g_return_val_if_fail (sexp, FALSE);
 	
 	password = gck_login_get_password (login, &n_password);

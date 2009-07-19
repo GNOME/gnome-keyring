@@ -216,7 +216,7 @@ gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 }
 
 static GckSexp*
-gck_public_key_acquire_crypto_sexp (GckKey *self)
+gck_public_key_acquire_crypto_sexp (GckKey *self, GckSession *session)
 {
 	GckSexp* sexp;
 	

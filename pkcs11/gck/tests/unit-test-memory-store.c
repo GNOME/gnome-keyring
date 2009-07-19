@@ -64,8 +64,7 @@ DEFINE_SETUP(memory_store)
 	CK_ATTRIBUTE attr;
 	CK_ULONG twentyfour = 24;
 
-	module = test_module_initialize ();
-	test_module_enter ();
+	module = test_module_initialize_and_enter ();
 	
 	attr.type = CKA_LABEL;
 	attr.pValue = "label";
@@ -105,8 +104,7 @@ DEFINE_TEARDOWN(memory_store)
 		g_object_unref (object);
 	object = NULL;
 	
-	test_module_leave ();
-	test_module_finalize ();
+	test_module_leave_and_finalize ();
 	module = NULL;
 }
 

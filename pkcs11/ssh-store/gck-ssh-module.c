@@ -68,6 +68,8 @@ static const CK_TOKEN_INFO gck_ssh_module_token_info = {
 
 G_DEFINE_TYPE (GckSshModule, gck_ssh_module, GCK_TYPE_MODULE);
 
+GckModule*  _gck_ssh_store_get_module_for_testing (void);
+
 /* -----------------------------------------------------------------------------
  * ACTUAL PKCS#11 Module Implementation 
  */
@@ -264,4 +266,10 @@ gck_ssh_store_get_functions (void)
 {
 	gck_crypto_initialize ();
 	return gck_ssh_module_function_list;
+}
+
+GckModule*
+_gck_ssh_store_get_module_for_testing (void)
+{
+	return pkcs11_module;
 }
