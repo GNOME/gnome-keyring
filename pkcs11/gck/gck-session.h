@@ -96,7 +96,7 @@ void                     gck_session_destroy_session_object             (GckSess
                                                                          GckTransaction *transaction,
                                                                          GckObject *obj);
 
-void                     gck_session_for_each_authenticator             (GckSession *self,
+gboolean                 gck_session_for_each_authenticator             (GckSession *self,
                                                                          GckObject *object,
                                                                          GckAuthenticatorFunc func,
                                                                          gpointer user_data);

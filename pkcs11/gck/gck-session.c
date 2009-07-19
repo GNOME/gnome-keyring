@@ -697,7 +697,7 @@ gck_session_destroy_session_object (GckSession *self, GckTransaction *transactio
 	remove_object (self, transaction, obj);
 }
 
-void
+gboolean
 gck_session_for_each_authenticator (GckSession *self, GckObject *object,
                                     GckAuthenticatorFunc func, gpointer user_data)
 {
@@ -706,15 +706,15 @@ gck_session_for_each_authenticator (GckSession *self, GckObject *object,
 	CK_ATTRIBUTE attrs[2];
 	GList *results, *l;
 
-	g_return_if_fail (GCK_IS_SESSION (self));
-	g_return_if_fail (GCK_IS_OBJECT (object));
-	g_return_if_fail (func);
+	g_return_val_if_fail (GCK_IS_SESSION (self), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (func, FALSE);
 
 	/* Do we have one right on the session */
 	if (self->pv->authenticator != NULL &&
 	    gck_authenticator_get_object (self->pv->authenticator) == object) {
 		if ((func) (self->pv->authenticator, object, user_data))
-			return;
+			return TRUE;
 	}
 
 	klass = CKO_GNOME_AUTHENTICATOR;
@@ -739,7 +739,7 @@ gck_session_for_each_authenticator (GckSession *self, GckObject *object,
 	g_list_free (results);
 
 	if (l != NULL)
-		return;
+		return TRUE;
 
 	/* Find any in the token */
 	results = gck_manager_find_by_attributes (gck_module_get_manager (self->pv->module), 
@@ -751,6 +751,8 @@ gck_session_for_each_authenticator (GckSession *self, GckObject *object,
 	}
 
 	g_list_free (results);
+	
+	return (l != NULL);
 }
 
 /* -----------------------------------------------------------------------------
