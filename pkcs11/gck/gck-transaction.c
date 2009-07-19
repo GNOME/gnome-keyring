@@ -27,6 +27,7 @@
 #include <glib/gstdio.h>
 
 #include <errno.h>
+#include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -192,6 +193,62 @@ begin_link_temporary (GckTransaction *self, const gchar *filename)
 	}
 	
 	g_assert_not_reached ();
+}
+
+static gboolean
+write_sync_close (int fd, const guchar *data, gsize n_data)
+{
+	int res;
+
+	if (fd == -1)
+		return FALSE;
+
+	while (n_data > 0) {
+		res = write (fd, data, n_data);
+		if (res < 0) {
+			if (errno != EINTR && errno != EAGAIN) {
+				close (fd);
+				return FALSE;
+			}
+		}
+		n_data -= MAX (res, n_data);
+	}
+
+#ifdef HAVE_FSYNC
+	if (fsync (fd) < 0) {
+		close (fd);
+		return FALSE;
+	}
+#endif
+
+	if (close (fd) < 0)
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
+write_to_file (const gchar *filename, const guchar *data, gsize n_data)
+{
+	gchar *dirname;
+	gchar *template;
+	gboolean result;
+
+	g_assert (filename);
+
+	dirname = g_path_get_dirname (filename);
+	template = g_build_filename (dirname, ".temp-XXXXXX", NULL);
+	g_free (dirname);
+
+	if (write_sync_close (g_mkstemp (template), data, n_data)) {
+		result = g_rename (template, filename) == 0;
+	} else {
+		g_unlink (template);
+		result = FALSE;
+	}
+
+	g_free (template);
+	return result;
 }
 
 /* -----------------------------------------------------------------------------
@@ -396,15 +453,12 @@ void
 gck_transaction_write_file (GckTransaction *self, const gchar *filename,
                             const guchar *data, gsize n_data)
 {
-	GError *error = NULL;
-	
 	g_return_if_fail (GCK_IS_TRANSACTION (self));
 	g_return_if_fail (filename);
 	g_return_if_fail (data);
 	g_return_if_fail (!gck_transaction_get_failed (self));
 	
-	/* Open and lock the file */
-	
+	/* Prepare file to be reverted */
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS)) {
 		if (!begin_new_file (self, filename))
 			return;
@@ -413,9 +467,9 @@ gck_transaction_write_file (GckTransaction *self, const gchar *filename,
 			return;
 	}
 
-	if (!g_file_set_contents (filename, (const gchar*)data, n_data, &error)) {
-		g_warning ("couldn't write to file: %s: %s", filename, 
-		           error && error->message ? error->message : "");
+	/* Put data in the expected place */
+	if (!write_to_file (filename, data, n_data)) {
+		g_warning ("couldn't write to file: %s: %s", filename, g_strerror (errno));
 		gck_transaction_fail (self, CKR_DEVICE_ERROR);
 	}
 }
