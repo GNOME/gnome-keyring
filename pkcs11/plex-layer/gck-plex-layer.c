@@ -102,20 +102,6 @@ map_slot_down (CK_SLOT_ID_PTR slot, Mapping *mapping)
 	session &= HANDLE_REAL_MASK; \
 	} G_STMT_END 
 
-#define MAP_OBJECT_UP(map, object) G_STMT_START { \
-	g_return_val_if_fail ((object) < CK_GNOME_MAX_HANDLE, CKR_GENERAL_ERROR); \
-	object = ((object) | ((map.plex_slot) << HANDLE_SLOT_BITS)); \
-	} G_STMT_END
-
-#define MAP_SESSION_OBJECT_DOWN(session, object, map) G_STMT_START { \
-	CK_SLOT_ID slot = (session >> HANDLE_SLOT_BITS); \
-	if (!map_slot_down (&slot, &map)) \
-		return CKR_SESSION_HANDLE_INVALID; \
-	session &= HANDLE_REAL_MASK; \
-	object &= HANDLE_REAL_MASK; \
-	} G_STMT_END 
-		
-
 static CK_RV
 plex_C_Initialize (CK_VOID_PTR init_args)
 {
@@ -453,17 +439,8 @@ plex_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
                      CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
 	Mapping map;
-	CK_RV rv;
-	
-	if (new_object == NULL)
-		return CKR_ARGUMENTS_BAD;
-	
 	MAP_SESSION_DOWN (handle, map);
-	rv = (map.funcs->C_CreateObject) (handle, template, count, new_object);
-	if (rv == CKR_OK)
-		MAP_OBJECT_UP (map, *new_object);
-
-	return rv;
+	return (map.funcs->C_CreateObject) (handle, template, count, new_object);
 }
 
 static CK_RV
@@ -472,24 +449,15 @@ plex_C_CopyObject (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                    CK_OBJECT_HANDLE_PTR new_object)
 {
 	Mapping map;
-	CK_RV rv;
-	
-	if (new_object == NULL)
-		return CKR_ARGUMENTS_BAD;
-	
-	MAP_SESSION_OBJECT_DOWN (handle, object, map);
-	rv = (map.funcs->C_CopyObject) (handle, object, template, count, new_object);
-	if (rv == CKR_OK)
-		MAP_OBJECT_UP (map, *new_object);
-	
-	return rv;
+	MAP_SESSION_DOWN (handle, map);
+	return (map.funcs->C_CopyObject) (handle, object, template, count, new_object);
 }
 
 static CK_RV
 plex_C_DestroyObject (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, object, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_DestroyObject) (handle, object);
 }
 
@@ -498,7 +466,7 @@ plex_C_GetObjectSize (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                       CK_ULONG_PTR size)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, object, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_GetObjectSize) (handle, object, size);
 }
 
@@ -507,7 +475,7 @@ plex_C_GetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                           CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, object, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_GetAttributeValue) (handle, object, template, count);
 }
 
@@ -516,7 +484,7 @@ plex_C_SetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
                          CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, object, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_SetAttributeValue) (handle, object, template, count);
 }
 
@@ -534,21 +502,8 @@ plex_C_FindObjects (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE_PTR objects,
                     CK_ULONG max_count, CK_ULONG_PTR count)
 {
 	Mapping map;
-	CK_ULONG i;
-	CK_RV rv;
-	
-	if (count == NULL)
-		return CKR_ARGUMENTS_BAD;
-	
 	MAP_SESSION_DOWN (handle, map);
-	
-	rv = (map.funcs->C_FindObjects) (handle, objects, max_count, count);
-	if (rv == CKR_OK && objects) {
-		for (i = 0; i < *count; ++i)
-			MAP_OBJECT_UP (map, objects[i]);
-	}
-	
-	return rv;
+	return (map.funcs->C_FindObjects) (handle, objects, max_count, count);
 }
 
 static CK_RV
@@ -564,7 +519,7 @@ plex_C_EncryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                     CK_OBJECT_HANDLE key)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, key, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_EncryptInit) (handle, mechanism, key);
 }
 
@@ -601,7 +556,7 @@ plex_C_DecryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                     CK_OBJECT_HANDLE key)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, key, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_DecryptInit) (handle, mechanism, key);
 }
 
@@ -661,7 +616,7 @@ static CK_RV
 plex_C_DigestKey (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE key)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, key, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_DigestKey) (handle, key);
 }
 
@@ -679,7 +634,7 @@ plex_C_SignInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                  CK_OBJECT_HANDLE key)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, key, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_SignInit) (handle, mechanism, key);
 }
 
@@ -714,7 +669,7 @@ plex_C_SignRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                         CK_OBJECT_HANDLE key)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, key, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_SignRecoverInit) (handle, mechanism, key);
 }
 
@@ -732,7 +687,7 @@ plex_C_VerifyInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                    CK_OBJECT_HANDLE key)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, key, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_VerifyInit) (handle, mechanism, key);
 }
 
@@ -767,7 +722,7 @@ plex_C_VerifyRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                           CK_OBJECT_HANDLE key)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, key, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_VerifyRecoverInit) (handle, mechanism, key);
 }
 
@@ -826,17 +781,8 @@ plex_C_GenerateKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                     CK_OBJECT_HANDLE_PTR key)
 {
 	Mapping map;
-	CK_RV rv;
-	
-	if (key == NULL)
-		return CKR_ARGUMENTS_BAD;
-	
 	MAP_SESSION_DOWN (handle, map);
-	rv = (map.funcs->C_GenerateKey) (handle, mechanism, template, count, key);
-	if (rv == CKR_OK)
-		MAP_OBJECT_UP (map, *key);
-	
-	return rv;
+	return (map.funcs->C_GenerateKey) (handle, mechanism, template, count, key);
 }
 
 static CK_RV
@@ -846,19 +792,8 @@ plex_C_GenerateKeyPair (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                         CK_OBJECT_HANDLE_PTR pub_key, CK_OBJECT_HANDLE_PTR priv_key)
 {
 	Mapping map;
-	CK_RV rv;
-
-	if (priv_key == NULL || pub_key == NULL)
-		return CKR_ARGUMENTS_BAD;
-	
 	MAP_SESSION_DOWN (handle, map);
-	rv = (map.funcs->C_GenerateKeyPair) (handle, mechanism, pub_template, pub_count, priv_template, priv_count, pub_key, priv_key);
-	if (rv == CKR_OK) {
-		MAP_OBJECT_UP (map, *pub_key);
-		MAP_OBJECT_UP (map, *priv_key);
-	}
-	
-	return rv;
+	return (map.funcs->C_GenerateKeyPair) (handle, mechanism, pub_template, pub_count, priv_template, priv_count, pub_key, priv_key);
 }
 
 static CK_RV
@@ -867,7 +802,7 @@ plex_C_WrapKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                 CK_BYTE_PTR wrapped_key, CK_ULONG_PTR wrapped_key_len)
 {
 	Mapping map;
-	MAP_SESSION_OBJECT_DOWN (handle, key, map);
+	MAP_SESSION_DOWN (handle, map);
 	return (map.funcs->C_WrapKey) (handle, mechanism, wrapping_key, key, wrapped_key, wrapped_key_len);
 }
 
@@ -878,17 +813,8 @@ plex_C_UnwrapKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                   CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
 	Mapping map;
-	CK_RV rv;
-	
-	if (key == NULL)
-		return CKR_ARGUMENTS_BAD;
-	
 	MAP_SESSION_DOWN (handle, map);
-	rv = (map.funcs->C_UnwrapKey) (handle, mechanism, unwrapping_key, wrapped_key, wrapped_key_len, template, count, key);
-	if (rv == CKR_OK)
-		MAP_OBJECT_UP (map, *key);
-	
-	return rv;
+	return (map.funcs->C_UnwrapKey) (handle, mechanism, unwrapping_key, wrapped_key, wrapped_key_len, template, count, key);
 }
 
 static CK_RV
@@ -897,17 +823,8 @@ plex_C_DeriveKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                   CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
 	Mapping map;
-	CK_RV rv;
-	
-	if (key == NULL)
-		return CKR_ARGUMENTS_BAD;
-	
 	MAP_SESSION_DOWN (handle, map);
-	rv = (map.funcs->C_DeriveKey) (handle, mechanism, base_key, template, count, key);
-	if (rv == CKR_OK)
-		MAP_OBJECT_UP (map, *key);
-	
-	return rv;
+	return (map.funcs->C_DeriveKey) (handle, mechanism, base_key, template, count, key);
 }
 
 static CK_RV
