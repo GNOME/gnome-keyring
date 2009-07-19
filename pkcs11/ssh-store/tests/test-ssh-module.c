@@ -22,64 +22,83 @@
 */
 
 #include "config.h"
-#include "test-module.h"
+#include "test-ssh-module.h"
 
-/* Include all the module entry points */
-#include "gck/gck-module-ep.h"
-GCK_DEFINE_MODULE (test_module, GCK_TYPE_MODULE);
+#include "gck/gck-module.h"
+
+#include "ssh-store/gck-ssh-store.h"
+
+static GMutex *mutex = NULL;
+
+GckModule*  _gck_ssh_store_get_module_for_testing (void);
+GMutex* _gck_module_get_scary_mutex_that_you_should_not_touch (GckModule *module);
 
 GckModule*
-test_module_initialize_and_enter (void)
+test_ssh_module_initialize_and_enter (void)
 {
+	CK_FUNCTION_LIST_PTR funcs;
+	GckModule *module;
 	CK_RV rv;
 	
-	gck_crypto_initialize ();
-	rv = test_module_function_list->C_Initialize (NULL);
+	funcs = gck_ssh_store_get_functions ();
+	rv = (funcs->C_Initialize) (NULL);
 	g_return_val_if_fail (rv == CKR_OK, NULL);
 	
-	g_return_val_if_fail (pkcs11_module, NULL);
-
-	test_module_enter ();
-	return pkcs11_module;
+	module = _gck_ssh_store_get_module_for_testing ();
+	g_return_val_if_fail (module, NULL);
+	
+	mutex = _gck_module_get_scary_mutex_that_you_should_not_touch (module);
+	test_ssh_module_enter ();
+	
+	return module;
 }
 
 void
-test_module_leave_and_finalize (void)
+test_ssh_module_leave_and_finalize (void)
 {
+	CK_FUNCTION_LIST_PTR funcs;
 	CK_RV rv;
 	
-	test_module_leave ();
-	rv = test_module_function_list->C_Finalize (NULL);
+	test_ssh_module_leave ();
+	
+	funcs = gck_ssh_store_get_functions ();
+	rv = (funcs->C_Finalize) (NULL);
 	g_return_if_fail (rv == CKR_OK);
 }
 
 void
-test_module_leave (void)
+test_ssh_module_leave (void)
 {
-	g_static_mutex_unlock (&pkcs11_module_mutex);	
+	g_assert (mutex);
+	g_mutex_unlock (mutex);	
 }
 
 void
-test_module_enter (void)
+test_ssh_module_enter (void)
 {
-	g_static_mutex_lock (&pkcs11_module_mutex);
+	g_assert (mutex);
+	g_mutex_lock (mutex);
 }
 
 GckSession*
-test_module_open_session (gboolean writable)
+test_ssh_module_open_session (gboolean writable)
 {
 	CK_ULONG flags = CKF_SERIAL_SESSION;
 	CK_SESSION_HANDLE handle;
+	GckModule *module;
 	GckSession *session;
 	CK_RV rv;
+	
+	module = _gck_ssh_store_get_module_for_testing ();
+	g_return_val_if_fail (module, NULL);
 
 	if (writable)
 		flags |= CKF_RW_SESSION;
-
-	rv = gck_module_C_OpenSession (pkcs11_module, 1, flags, NULL, NULL, &handle);
+	
+	rv = gck_module_C_OpenSession (module, 1, flags, NULL, NULL, &handle);
 	g_assert (rv == CKR_OK);
 
-	session = gck_module_lookup_session (pkcs11_module, handle);
+	session = gck_module_lookup_session (module, handle);
 	g_assert (session);
 
 	return session;

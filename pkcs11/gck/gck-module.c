@@ -26,6 +26,7 @@
 #include "pkcs11/pkcs11i.h"
 
 #include "gck-attributes.h"
+#include "gck-authenticator.h"
 #include "gck-certificate.h"
 #include "gck-factory.h"
 #include "gck-manager.h"
@@ -412,14 +413,6 @@ add_transient_object (GckModule *self, GckTransaction *transaction, GckObject *o
 	}
 }
 
-static void
-dispose_unref_object (gpointer obj)
-{
-	g_assert (G_IS_OBJECT (obj));
-	g_object_run_dispose (obj);
-	g_object_unref (obj);
-}
-
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -541,12 +534,13 @@ gck_module_init (GckModule *self)
 	
 	/* Create the store for transient objects */
 	self->pv->transient_store = GCK_STORE (gck_memory_store_new ());
-	self->pv->transient_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, dispose_unref_object);
+	self->pv->transient_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gck_util_dispose_unref);
 
 	/* Register session object factories */
 	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
 	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_AUTHENTICATOR);
 }
 
 static void

@@ -1,5 +1,7 @@
 UNIT_AUTO = \
-	unit-test-ssh-openssh.c 
+	unit-test-ssh-openssh.c \
+	unit-test-private-key.c \
+	test-ssh-module.c test-ssh-module.h
 
 UNIT_PROMPT = 
 

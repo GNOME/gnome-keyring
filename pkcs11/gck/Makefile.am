@@ -18,6 +18,7 @@ BUILT_SOURCES = \
 
 libgck_la_SOURCES = \
 	gck-attributes.c gck-attributes.h \
+	gck-authenticator.c gck-authenticator.h \
 	gck-certificate.c gck-certificate.h \
 	gck-certificate-key.c gck-certificate-key.h \
 	gck-certificate-trust.c gck-certificate-trust.h \

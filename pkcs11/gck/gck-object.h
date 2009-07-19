@@ -59,7 +59,7 @@ struct _GckObjectClass {
 	void (*create_attributes) (GckObject *object, GckTransaction *transaction, GckSession *session,
 	                           CK_ATTRIBUTE *attrs, CK_ULONG n_attrs);
 
-	CK_RV (*unlock) (GckObject *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin);
+	CK_RV (*unlock) (GckObject *self, GckAuthenticator *auth);
 };
 
 GType                  gck_object_get_type               (void);
@@ -78,8 +78,10 @@ const gchar*           gck_object_get_unique             (GckObject *self);
 gboolean               gck_object_get_transient          (GckObject *self);
 
 CK_RV                  gck_object_unlock                 (GckObject *self, 
-                                                          CK_UTF8CHAR_PTR pin, 
-                                                          CK_ULONG n_pin);
+                                                          GckAuthenticator *auth);
+
+void                   gck_object_destroy                (GckObject *self,
+                                                          GckTransaction *transaction);
 
 gboolean               gck_object_match                  (GckObject *self,
                                                           CK_ATTRIBUTE_PTR attr);

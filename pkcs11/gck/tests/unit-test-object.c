@@ -38,35 +38,18 @@ static gsize certificate_n_data = 0;
 
 DEFINE_SETUP(object_setup)
 {
-	CK_SESSION_HANDLE handle;
-	CK_RV rv;
-	
-	module = test_module_initialize ();
-	test_module_enter ();
-	
-	rv = gck_module_C_OpenSession (module, 1, CKF_SERIAL_SESSION | CKF_RW_SESSION, 
-	                               NULL, NULL, &handle);
-	g_assert (rv == CKR_OK);
-	
-	session = gck_module_lookup_session (module, handle);
-	g_assert (session);
-	
+	module = test_module_initialize_and_enter ();
+	session = test_module_open_session (TRUE);
 	certificate_data = test_read_testdata ("test-certificate-1.der", &certificate_n_data);
 }
 
 DEFINE_TEARDOWN(object_teardown)
 {
-	CK_RV rv;
-	
 	g_free (certificate_data);
 	certificate_data = NULL;
 	certificate_n_data = 0;
 	
-	rv = gck_module_C_CloseAllSessions (module, 1);
-	g_assert (rv == CKR_OK);
-	
-	test_module_leave ();
-	test_module_finalize ();
+	test_module_leave_and_finalize ();
 	module = NULL;
 	session = NULL;
 }

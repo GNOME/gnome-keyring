@@ -48,8 +48,9 @@ gck_sexp_ref (GckSexp *sexp)
 }
 
 void
-gck_sexp_unref (GckSexp *sexp)
+gck_sexp_unref (gpointer data)
 {
+	GckSexp *sexp = data;
 	g_return_if_fail (sexp);
 	if (--(sexp->refs) == 0) {
 		g_assert (sexp->real);

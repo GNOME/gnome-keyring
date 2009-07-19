@@ -283,10 +283,10 @@ gck_key_set_key_part (GckKey *self, int algo, const char *part,
 }
 
 GckSexp*
-gck_key_acquire_crypto_sexp (GckKey *self)
+gck_key_acquire_crypto_sexp (GckKey *self, GckSession *session)
 {
 	g_return_val_if_fail (GCK_IS_KEY (self), NULL);
 	g_return_val_if_fail (GCK_KEY_GET_CLASS (self)->acquire_crypto_sexp, NULL);
-	return GCK_KEY_GET_CLASS (self)->acquire_crypto_sexp (self);
+	return GCK_KEY_GET_CLASS (self)->acquire_crypto_sexp (self, session);
 }
 

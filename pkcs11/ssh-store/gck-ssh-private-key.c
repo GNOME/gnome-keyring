@@ -25,6 +25,7 @@
 #include "gck-ssh-private-key.h"
 
 #include "gck/gck-attributes.h"
+#include "gck/gck-authenticator.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
 #include "gck/gck-sexp.h"
@@ -48,7 +49,6 @@ struct _GckSshPrivateKey {
 	guchar *private_data;
 	gsize n_private_data;
 	
-	GckSexp *private_sexp;
 	gboolean is_encrypted;
 };
 
@@ -59,7 +59,8 @@ G_DEFINE_TYPE (GckSshPrivateKey, gck_ssh_private_key, GCK_TYPE_PRIVATE_KEY);
  */
 
 static CK_RV
-unlock_private_key (GckSshPrivateKey *self, const gchar *password, gssize n_password)
+unlock_private_key (GckSshPrivateKey *self, const gchar *password,
+                    gssize n_password, GckSexp **result)
 {
 	GckDataResult res;
 	gcry_sexp_t sexp;
@@ -89,11 +90,10 @@ unlock_private_key (GckSshPrivateKey *self, const gchar *password, gssize n_pass
 
 	if (!password || !password[0])
 		self->is_encrypted = FALSE;
-
-	wrapper = gck_sexp_new (sexp);
-	gck_private_key_store_private (GCK_PRIVATE_KEY (self), wrapper, self->is_encrypted ? 1 : G_MAXUINT);
-	gck_sexp_unref (wrapper);
 	
+	wrapper = gck_sexp_new (sexp);
+	*result = wrapper;
+
 	return CKR_OK;
 }
 
@@ -121,13 +121,13 @@ realize_and_take_data (GckSshPrivateKey *self, gcry_sexp_t sexp, gchar *comment,
 	self->private_data = private_data;
 	self->n_private_data = n_private_data;
 
-	/* Force parsing next time required */
-	gck_private_key_store_private (GCK_PRIVATE_KEY (self), NULL, 0);
-	
 	/* Try to parse the private data, and note if it's not actually encrypted */
 	self->is_encrypted = TRUE;
-	if (unlock_private_key (self, "", 0) == CKR_OK) 
+	if (unlock_private_key (self, "", 0, &wrapper) == CKR_OK) {
 		self->is_encrypted = FALSE;
+		gck_private_key_set_unlocked_private (GCK_PRIVATE_KEY (self), wrapper);
+		gck_sexp_unref (wrapper);
+	}
 }
 
 /* -----------------------------------------------------------------------------
@@ -159,10 +159,26 @@ gck_ssh_private_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 }
 
 static CK_RV
-gck_ssh_private_key_unlock (GckObject *base, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
+gck_ssh_private_key_unlock (GckObject *base, GckAuthenticator *auth)
 {
 	GckSshPrivateKey *self = GCK_SSH_PRIVATE_KEY (base);
-	return unlock_private_key (self, (const gchar*)pin, n_pin);
+	const gchar *password;
+	GckSexp *wrapper;
+	gsize n_password;
+	CK_RV rv;
+
+	if (!self->is_encrypted)
+		return CKR_OK;
+
+	password = gck_authenticator_get_password (auth, &n_password);
+	rv = unlock_private_key (self, password, n_password, &wrapper);
+
+	if (rv == CKR_OK) {
+		gck_private_key_set_locked_private (GCK_PRIVATE_KEY (self), auth, wrapper, 1);
+		gck_sexp_unref (wrapper);
+	}
+
+	return rv;
 }
 
 static GObject* 

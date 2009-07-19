@@ -131,6 +131,7 @@ const gchar*
 gck_login_get_password (GckLogin *self, gsize *n_password)
 {
 	g_return_val_if_fail (GCK_IS_LOGIN (self), NULL);
+	g_return_val_if_fail (n_password, NULL);
 	*n_password = self->n_password;
 	return self->password;
 }
