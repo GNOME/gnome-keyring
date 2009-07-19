@@ -46,7 +46,7 @@ G_DEFINE_TYPE (GckSshPublicKey, gck_ssh_public_key, GCK_TYPE_PUBLIC_KEY);
  */
 
 static CK_RV
-gck_ssh_public_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
+gck_ssh_public_key_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GckSshPublicKey *self = GCK_SSH_PUBLIC_KEY (base);
 	
@@ -55,7 +55,7 @@ gck_ssh_public_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 		return gck_attribute_set_string (attr, self->label ? self->label : "");
 	}
 	
-	return GCK_OBJECT_CLASS (gck_ssh_public_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_ssh_public_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static void
@@ -129,9 +129,10 @@ gck_ssh_public_key_class_init (GckSshPublicKeyClass *klass)
  */
 
 GckSshPublicKey*
-gck_ssh_public_key_new (const gchar *unique)
+gck_ssh_public_key_new (GckModule *module, const gchar *unique)
 {
-	return g_object_new (GCK_TYPE_SSH_PUBLIC_KEY, "unique", unique, NULL);
+	return g_object_new (GCK_TYPE_SSH_PUBLIC_KEY, "unique", unique, 
+	                     "module", module, NULL);
 }
 
 const gchar*

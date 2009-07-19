@@ -45,7 +45,7 @@ struct _GckUserStorageClass {
 
 GType                       gck_user_storage_get_type               (void);
 
-GckUserStorage*             gck_user_storage_new                    (GckManager *manager,
+GckUserStorage*             gck_user_storage_new                    (GckModule *module,
                                                                      const gchar *directory);
 
 GckManager*                 gck_user_storage_get_manager            (GckUserStorage *self);

@@ -21,23 +21,23 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef TESTMODULE_H_
-#define TESTMODULE_H_
+#ifndef TEST_SSH_MODULE_H_
+#define TEST_SSH_MODULE_H_
 
 #include <glib.h>
 
-#include "gck-types.h"
+#include "gck/gck-types.h"
 
 #include "pkcs11.h"
 
-void                   test_module_leave                    (void);
+void                   test_ssh_module_leave                    (void);
 
-void                   test_module_enter                    (void);
+void                   test_ssh_module_enter                    (void);
 
-GckModule*             test_module_initialize_and_enter     (void);
+GckModule*             test_ssh_module_initialize_and_enter     (void);
 
-void                   test_module_leave_and_finalize       (void);
+void                   test_ssh_module_leave_and_finalize       (void);
 
-GckSession*            test_module_open_session             (gboolean writable);
+GckSession*            test_ssh_module_open_session             (gboolean writable);
 
-#endif /* TESTMODULE_H_ */
+#endif /* TEST_SSH_MODULE_H_ */

@@ -32,7 +32,7 @@ GckSexp*       gck_sexp_new           (gcry_sexp_t sexp);
 
 GckSexp*       gck_sexp_ref           (GckSexp *sexp);
 
-void           gck_sexp_unref         (GckSexp *sexp);
+void           gck_sexp_unref         (gpointer sexp);
 
 gcry_sexp_t    gck_sexp_get           (GckSexp *sexp);
 

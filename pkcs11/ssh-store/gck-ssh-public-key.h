@@ -42,7 +42,8 @@ struct _GckSshPublicKeyClass {
 
 GType               gck_ssh_public_key_get_type               (void);
 
-GckSshPublicKey*    gck_ssh_public_key_new                    (const gchar *unique);
+GckSshPublicKey*    gck_ssh_public_key_new                    (GckModule *self,
+                                                               const gchar *unique);
 
 const gchar*        gck_ssh_public_key_get_label              (GckSshPublicKey *key);
 

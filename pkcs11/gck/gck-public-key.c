@@ -27,6 +27,7 @@
 #include "gck-crypto.h"
 #include "gck-factory.h"
 #include "gck-public-key.h"
+#include "gck-session.h"
 #include "gck-transaction.h"
 #include "gck-util.h"
 
@@ -149,7 +150,8 @@ factory_create_public_key (GckSession *session, GckTransaction *transaction,
 
 	sexp = gck_public_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp != NULL) {
-		*object = g_object_new (GCK_TYPE_PUBLIC_KEY, "base-sexp", sexp, NULL);
+		*object = g_object_new (GCK_TYPE_PUBLIC_KEY, "base-sexp", sexp, 
+		                        "module", gck_session_get_module (session), NULL);
 		gck_sexp_unref (sexp);
 	}
 }
@@ -159,7 +161,7 @@ factory_create_public_key (GckSession *session, GckTransaction *transaction,
  */
 
 static CK_RV 
-gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
+gck_public_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	GckPublicKey *self = GCK_PUBLIC_KEY (base);
 	
@@ -210,11 +212,11 @@ gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "y", attr);
 	};
 	
-	return GCK_OBJECT_CLASS (gck_public_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_public_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static GckSexp*
-gck_public_key_acquire_crypto_sexp (GckKey *self)
+gck_public_key_acquire_crypto_sexp (GckKey *self, GckSession *session)
 {
 	GckSexp* sexp;
 	

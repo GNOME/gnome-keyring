@@ -25,6 +25,7 @@
 #include "pkcs11/pkcs11i.h"
 
 #include "gck-attributes.h"
+#include "gck-authenticator.h"
 #include "gck-crypto.h"
 #include "gck-key.h"
 #include "gck-factory.h"
@@ -33,6 +34,7 @@
 #include "gck-session.h"
 #include "gck-sexp.h"
 #include "gck-transaction.h"
+#include "gck-util.h"
 
 enum {
 	PROP_0,
@@ -62,9 +64,10 @@ struct _GckSessionPrivate {
 	/* Objects owned by this session */
 	GHashTable *objects;
 
-	/* Used for context specific logins */
+	/* Used for operations */
 	void (*current_operation) (GckSession *self);
 	GckObject *current_object;
+	GckAuthenticator *authenticator;
 
 	/* Used for find operations */
 	GArray *found_objects;
@@ -100,8 +103,14 @@ cleanup_crypto (GckSession *self)
 	g_assert (GCK_IS_KEY (self->pv->current_object));
 	if (self->pv->current_object)
 		g_object_unref (self->pv->current_object);
-	
 	self->pv->current_object = NULL;
+
+	if (self->pv->authenticator) {
+		g_object_set_data (G_OBJECT (self->pv->authenticator), "owned-by-session", NULL);
+		g_object_unref (self->pv->authenticator);
+		self->pv->authenticator = NULL;
+	}
+
 	self->pv->current_operation = NULL;
 }
 
@@ -135,7 +144,7 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 		return CKR_KEY_HANDLE_INVALID;
 
 	/* Lookup the mechanisms this object can do */
-	mechanisms = gck_object_get_attribute_data (object, CKA_ALLOWED_MECHANISMS, &n_data);
+	mechanisms = gck_object_get_attribute_data (object, self, CKA_ALLOWED_MECHANISMS, &n_data);
 	g_return_val_if_fail (mechanisms, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (n_data % sizeof (CK_MECHANISM_TYPE) == 0, CKR_GENERAL_ERROR);
 	n_mechanisms = n_data / sizeof (CK_MECHANISM_TYPE);
@@ -151,7 +160,7 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 		return CKR_KEY_TYPE_INCONSISTENT;
 
 	/* Check that the object can do this method */
-	if (!gck_object_get_attribute_boolean (object, method, &have) || !have)
+	if (!gck_object_get_attribute_boolean (object, self, method, &have) || !have)
 		return CKR_KEY_FUNCTION_NOT_PERMITTED;
 	
 	/* Track the cyrpto object */
@@ -186,7 +195,7 @@ process_crypto (GckSession *self, CK_ATTRIBUTE_TYPE method, CK_BYTE_PTR bufone,
 		/* Load up the actual sexp we're going to use */
 		if (!self->pv->crypto_sexp) {
 			g_return_val_if_fail (GCK_IS_KEY (self->pv->current_object), CKR_GENERAL_ERROR);
-			self->pv->crypto_sexp = gck_key_acquire_crypto_sexp (GCK_KEY (self->pv->current_object));
+			self->pv->crypto_sexp = gck_key_acquire_crypto_sexp (GCK_KEY (self->pv->current_object), self);
 			if (!self->pv->crypto_sexp)
 				rv = CKR_USER_NOT_LOGGED_IN;
 		}
@@ -257,7 +266,7 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 	 * non-logged in session 
 	 */
 	if (self->pv->logged_in != CKU_USER) {
-		if (!gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private))
+		if (!gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private))
 			is_private = FALSE;
 		if (is_private)
 			return CKR_USER_NOT_LOGGED_IN;
@@ -269,12 +278,13 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 	 */
 	if (writable) {
 		if (is_token) {
-			if (gck_module_get_write_protected (self->pv->module))
-				return CKR_TOKEN_WRITE_PROTECTED;
+			if (!gck_object_get_transient (object))
+				if (gck_module_get_write_protected (self->pv->module))
+					return CKR_TOKEN_WRITE_PROTECTED;
 			if (self->pv->read_only)
 				return CKR_SESSION_READ_ONLY;
 		}
-		if (!gck_object_get_attribute_boolean (object, CKA_MODIFIABLE, &is_modifiable))
+		if (!gck_object_get_attribute_boolean (object, self, CKA_MODIFIABLE, &is_modifiable))
 			is_modifiable = FALSE;
 		if (!is_modifiable) /* What's a better return code in this case? */
 			return CKR_ATTRIBUTE_READ_ONLY;
@@ -344,14 +354,6 @@ add_object (GckSession *self, GckTransaction *transaction, GckObject *object)
 		                     g_object_ref (object));
 }
 
-static void
-dispose_unref_object (gpointer obj)
-{
-	g_assert (G_IS_OBJECT (obj));
-	g_object_run_dispose (obj);
-	g_object_unref (obj);
-}
-
 static gboolean
 attributes_find_boolean (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, 
                          CK_ATTRIBUTE_TYPE type, CK_BBOOL *value)
@@ -399,7 +401,7 @@ static void
 gck_session_init (GckSession *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_SESSION, GckSessionPrivate);
-	self->pv->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, dispose_unref_object);
+	self->pv->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gck_util_dispose_unref);
 	self->pv->read_only = TRUE;
 	
 	/* Create the store and register attributes */
@@ -419,6 +421,12 @@ gck_session_dispose (GObject *obj)
 	if (self->pv->module)
 		g_object_unref (self->pv->module);
 	self->pv->module = NULL;
+
+	if (self->pv->authenticator) {
+		g_object_set_data (G_OBJECT (self->pv->authenticator), "owned-by-session", NULL);
+		g_object_unref (self->pv->authenticator);
+		self->pv->authenticator = NULL;
+	}
 
 	if (self->pv->manager)
 		g_object_unref (self->pv->manager);
@@ -634,9 +642,11 @@ gck_session_lookup_writable_object (GckSession *self, CK_OBJECT_HANDLE handle,
 CK_RV
 gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
+	GckAuthenticator *authenticator;
 	gboolean always_auth;
 	gboolean is_private;
 	GckObject *object;
+	CK_RV rv;
 	
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_GENERAL_ERROR);
 
@@ -646,9 +656,9 @@ gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_UL
 	object = self->pv->current_object;
 	g_return_val_if_fail (GCK_IS_OBJECT (object), CKR_GENERAL_ERROR);
 	
-	if (!gck_object_get_attribute_boolean (object, CKA_ALWAYS_AUTHENTICATE, &always_auth))
+	if (!gck_object_get_attribute_boolean (object, self, CKA_ALWAYS_AUTHENTICATE, &always_auth))
 		always_auth = FALSE; 
-	if (!gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private))
+	if (!gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private))
 		is_private = FALSE;
 	
 	/* A strange code, but that's what the spec says */
@@ -657,8 +667,18 @@ gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_UL
 	
 	/* Double check that the object has what it takes */
 	g_return_val_if_fail (is_private == TRUE, CKR_GENERAL_ERROR);
-	
-	return gck_object_unlock (object, pin, n_pin);
+
+	/* Now create the strange object */
+	rv = gck_authenticator_create (self->pv->current_object, pin, n_pin, &authenticator);
+	if (rv != CKR_OK)
+		return rv;
+
+	if (self->pv->authenticator)
+		g_object_unref (self->pv->authenticator);
+	g_object_set_data (G_OBJECT (authenticator), "owned-by-session", self);
+	self->pv->authenticator = authenticator;
+
+	return CKR_OK;
 }
 
 void
@@ -670,7 +690,69 @@ gck_session_destroy_session_object (GckSession *self, GckTransaction *transactio
 	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
 	g_return_if_fail (!gck_transaction_get_failed (transaction));
 
+	/* Don't actually destroy the authenticator */
+	if (self->pv->authenticator && GCK_OBJECT (self->pv->authenticator) == obj)
+		return;
+
 	remove_object (self, transaction, obj);
+}
+
+gboolean
+gck_session_for_each_authenticator (GckSession *self, GckObject *object,
+                                    GckAuthenticatorFunc func, gpointer user_data)
+{
+	CK_OBJECT_HANDLE handle;
+	CK_OBJECT_CLASS klass;
+	CK_ATTRIBUTE attrs[2];
+	GList *results, *l;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (func, FALSE);
+
+	/* Do we have one right on the session */
+	if (self->pv->authenticator != NULL &&
+	    gck_authenticator_get_object (self->pv->authenticator) == object) {
+		if ((func) (self->pv->authenticator, object, user_data))
+			return TRUE;
+	}
+
+	klass = CKO_GNOME_AUTHENTICATOR;
+	attrs[0].type = CKA_CLASS;
+	attrs[0].pValue = &klass;
+	attrs[0].ulValueLen = sizeof (klass);
+
+	handle = gck_object_get_handle (object);
+	attrs[1].type = CKA_GNOME_OBJECT;
+	attrs[1].pValue = &handle;
+	attrs[1].ulValueLen = sizeof (handle);
+
+	/* Find any on the session */
+	results = gck_manager_find_by_attributes (self->pv->manager,
+	                                          attrs, G_N_ELEMENTS (attrs));
+
+	for (l = results; l; l = g_list_next (l)) {
+		if ((func) (l->data, object, user_data))
+			break;
+	}
+
+	g_list_free (results);
+
+	if (l != NULL)
+		return TRUE;
+
+	/* Find any in the token */
+	results = gck_manager_find_by_attributes (gck_module_get_manager (self->pv->module), 
+	                                          attrs, G_N_ELEMENTS (attrs));
+
+	for (l = results; l; l = g_list_next (l)) {
+		if ((func) (l->data, object, user_data))
+			break;
+	}
+
+	g_list_free (results);
+	
+	return (l != NULL);
 }
 
 /* -----------------------------------------------------------------------------
@@ -740,6 +822,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	CK_ULONG n_attrs, i;
 	GckFactory factory;
 	gboolean is_token;
+	gboolean is_transient;
 	gboolean is_private;
 	CK_RV rv;
 
@@ -756,11 +839,13 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	
 	/* Find out where we'll be creating this */
 	if (!gck_attributes_find_boolean (template, count, CKA_TOKEN, &is_token))
-		is_token = CK_FALSE;
+		is_token = FALSE;
+	if (!gck_attributes_find_boolean (template, count, CKA_GNOME_TRANSIENT, &is_transient))
+		is_transient = FALSE;
 		
 	/* See if we can create due to read-only */
 	if (is_token) {
-		if (gck_module_get_write_protected (self->pv->module))
+		if (!is_transient && gck_module_get_write_protected (self->pv->module))
 			return CKR_TOKEN_WRITE_PROTECTED;
 		if (self->pv->read_only)
 			return CKR_SESSION_READ_ONLY;
@@ -785,21 +870,15 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 
 		/* Can only create public objects unless logged in */
 		if (gck_session_get_logged_in (self) != CKU_USER &&
-		    gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private) && 
+		    gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private) && 
 		    is_private == TRUE) {
 			gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 		}
 	}
 	
-	if (!gck_transaction_get_failed (transaction)) {
-		g_object_set (object, "permanent", is_token, NULL);
-		gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
-	}
-
 	/* Give the object a chance to create additional attributes */
-	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
-		if (!gck_attribute_consumed (&attrs[i]))
-			gck_object_create_attribute (object, transaction, &attrs[i], self);
+	if (!gck_transaction_get_failed (transaction)) {
+		gck_object_create_attributes (object, self, transaction, attrs, n_attrs);
 	}
 
 	/* Find somewhere to store the object */
@@ -814,7 +893,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
 	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
 		if (!gck_attribute_consumed (&attrs[i]))
-			gck_object_set_attribute (object, transaction, &attrs[i]);
+			gck_object_set_attribute (object, self, transaction, &attrs[i]);
 	}
 
 	gck_transaction_complete (transaction);
@@ -869,7 +948,7 @@ gck_session_C_GetAttributeValue (GckSession* self, CK_OBJECT_HANDLE handle,
 	rv = CKR_OK;
 	
 	for (i = 0; i < count; ++i) {
-		code = gck_object_get_attribute (object, &template[i]);
+		code = gck_object_get_attribute (object, self, &template[i]);
 
 		/* Not a true error, keep going */
 		if (code == CKR_ATTRIBUTE_SENSITIVE ||

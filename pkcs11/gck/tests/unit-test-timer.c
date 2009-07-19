@@ -26,18 +26,16 @@
 
 #include "gck/gck-timer.h"
 
-GckModule *module = NULL;
+static GckModule *module = NULL;
 
 DEFINE_SETUP(timer_setup)
 {
-	module = test_module_initialize ();
-	test_module_enter ();
+	module = test_module_initialize_and_enter ();
 }
 
 DEFINE_TEARDOWN(timer_teardown)
 {
-	test_module_leave ();
-	test_module_finalize ();
+	test_module_leave_and_finalize ();
 }
 
 DEFINE_TEST(timer_extra_initialize)

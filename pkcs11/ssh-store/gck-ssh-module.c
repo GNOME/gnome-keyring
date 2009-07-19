@@ -68,6 +68,8 @@ static const CK_TOKEN_INFO gck_ssh_module_token_info = {
 
 G_DEFINE_TYPE (GckSshModule, gck_ssh_module, GCK_TYPE_MODULE);
 
+GckModule*  _gck_ssh_store_get_module_for_testing (void);
+
 /* -----------------------------------------------------------------------------
  * ACTUAL PKCS#11 Module Implementation 
  */
@@ -118,7 +120,7 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 	key = g_hash_table_lookup (self->keys_by_path, path);
 	if (key == NULL) {
 		unique = g_strdup_printf ("ssh-store:%s", private_path);
-		key = gck_ssh_private_key_new (unique);
+		key = gck_ssh_private_key_new (GCK_MODULE (self), unique);
 		g_free (unique);
 		
 		g_hash_table_replace (self->keys_by_path, g_strdup (path), key);
@@ -264,4 +266,10 @@ gck_ssh_store_get_functions (void)
 {
 	gck_crypto_initialize ();
 	return gck_ssh_module_function_list;
+}
+
+GckModule*
+_gck_ssh_store_get_module_for_testing (void)
+{
+	return pkcs11_module;
 }

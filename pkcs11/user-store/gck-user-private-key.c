@@ -31,6 +31,7 @@
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
 #include "gck/gck-serializable.h"
+#include "gck/gck-session.h"
 #include "gck/gck-sexp.h"
 #include "gck/gck-util.h"
 
@@ -74,7 +75,8 @@ factory_create_private_key (GckSession *session, GckTransaction *transaction,
 	if (sexp == NULL)
 		return;
 	
-	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, NULL);
+	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, 
+	                    "module", gck_session_get_module (session), NULL);
 	g_return_if_fail (!key->private_sexp);
 	key->private_sexp = gck_sexp_ref (sexp);
 	
@@ -87,18 +89,18 @@ factory_create_private_key (GckSession *session, GckTransaction *transaction,
  */
 
 static CK_RV
-gck_user_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
+gck_user_private_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	switch (attr->type) {
 	case CKA_ALWAYS_AUTHENTICATE:
 		return gck_attribute_set_bool (attr, FALSE);
 	}
 	
-	return GCK_OBJECT_CLASS (gck_user_private_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_user_private_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static GckSexp* 
-gck_user_private_key_real_acquire_crypto_sexp (GckKey *base)
+gck_user_private_key_real_acquire_crypto_sexp (GckKey *base, GckSession *unused)
 {
 	GckUserPrivateKey *self = GCK_USER_PRIVATE_KEY (base);
 	gcry_sexp_t sexp;
@@ -293,7 +295,7 @@ gck_user_private_key_real_save (GckSerializable *base, GckLogin *login, guchar *
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 	
-	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_KEY (self));
+	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_KEY (self), NULL);
 	g_return_val_if_fail (sexp, FALSE);
 	
 	password = gck_login_get_password (login, &n_password);

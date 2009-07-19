@@ -30,6 +30,7 @@
 #include "gck-factory.h"
 #include "gck-key.h"
 #include "gck-manager.h"
+#include "gck-session.h"
 #include "gck-sexp.h"
 #include "gck-serializable.h"
 #include "gck-transaction.h"
@@ -260,7 +261,7 @@ factory_create_certificate (GckSession *session, GckTransaction *transaction,
 		return;
 	}
 	
-	cert = g_object_new (GCK_TYPE_CERTIFICATE, NULL);
+	cert = g_object_new (GCK_TYPE_CERTIFICATE, "module", gck_session_get_module (session), NULL);
 	
 	/* Load the certificate from the data specified */
 	if (!gck_serializable_load (GCK_SERIALIZABLE (cert), NULL, attr->pValue, attr->ulValueLen)) {
@@ -280,7 +281,7 @@ factory_create_certificate (GckSession *session, GckTransaction *transaction,
  */
 
 static CK_RV 
-gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
+gck_certificate_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	GckCertificate *self = GCK_CERTIFICATE (base);
 	CK_ULONG category;
@@ -342,7 +343,7 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 
 	case CKA_ID:
 		g_return_val_if_fail (self->pv->key, CKR_GENERAL_ERROR);
-		return gck_object_get_attribute (GCK_OBJECT (self->pv->key), attr);
+		return gck_object_get_attribute (GCK_OBJECT (self->pv->key), session, attr);
 
 	case CKA_ISSUER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
@@ -407,7 +408,7 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return read_certificate_purpose (self, OID_USAGE_TIME_STAMPING, attr);
 	};
 
-	return GCK_OBJECT_CLASS (gck_certificate_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_certificate_parent_class)->get_attribute (base, session, attr);
 }
 
 static GObject* 
@@ -557,7 +558,7 @@ gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar 
 	/* Create ourselves a public key with that */
 	wrapper = gck_sexp_new (sexp);
 	if (!self->pv->key)
-		self->pv->key = gck_certificate_key_new (self);
+		self->pv->key = gck_certificate_key_new (gck_object_get_module (GCK_OBJECT (self)), self);
 	gck_key_set_base_sexp (GCK_KEY (self->pv->key), wrapper);
 	gck_sexp_unref (wrapper);
 		

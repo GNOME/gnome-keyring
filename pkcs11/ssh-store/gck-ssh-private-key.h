@@ -44,7 +44,8 @@ struct _GckSshPrivateKeyClass {
 
 GType               gck_ssh_private_key_get_type               (void);
 
-GckSshPrivateKey*   gck_ssh_private_key_new                    (const gchar *unique);
+GckSshPrivateKey*   gck_ssh_private_key_new                    (GckModule *module, 
+                                                                const gchar *unique);
 
 gboolean            gck_ssh_private_key_parse                  (GckSshPrivateKey *self,
                                                                 const gchar *public_path,

@@ -132,7 +132,8 @@ has_enhanced_usage (GckCertificateTrust *self, CK_ATTRIBUTE_TYPE type, CK_ULONG 
 	g_return_val_if_fail (self->pv->certificate, CKR_GENERAL_ERROR);
 
 	/* Check if we have the purpose setup */
-	if (!gck_object_get_attribute_boolean (GCK_OBJECT (self->pv->certificate), type, &bval))
+	if (!gck_object_get_attribute_boolean (GCK_OBJECT (self->pv->certificate), 
+	                                       NULL, type, &bval))
 		bval = FALSE;
 	
 	/* Don't have the purpose */
@@ -142,7 +143,8 @@ has_enhanced_usage (GckCertificateTrust *self, CK_ATTRIBUTE_TYPE type, CK_ULONG 
 	}
 	
 	/* Ascertain the trust in this certificate */
-	if (!gck_object_get_attribute_boolean (GCK_OBJECT (self->pv->certificate), CKA_TRUSTED, &bval))
+	if (!gck_object_get_attribute_boolean (GCK_OBJECT (self->pv->certificate), 
+	                                       NULL, CKA_TRUSTED, &bval))
 		bval = FALSE;
 	
 	if (bval != TRUE) {
@@ -152,7 +154,7 @@ has_enhanced_usage (GckCertificateTrust *self, CK_ATTRIBUTE_TYPE type, CK_ULONG 
 	
 	/* See if we can delegate the purpase (ie: CA) */
 	if (!gck_object_get_attribute_ulong (GCK_OBJECT (self->pv->certificate),
-	                                     CKA_CERTIFICATE_CATEGORY, &nval))
+	                                     NULL, CKA_CERTIFICATE_CATEGORY, &nval))
 		nval = 0;
 
 	/* 2 is a certificate authority in PKCS#11 */
@@ -200,7 +202,7 @@ hash_certificate (GckCertificateTrust *self, int algo, CK_ATTRIBUTE_PTR result)
  */
 
 static CK_RV
-gck_certificate_trust_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
+gck_certificate_trust_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GckCertificateTrust *self = GCK_CERTIFICATE_TRUST (base);
 	
@@ -267,7 +269,7 @@ gck_certificate_trust_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 	case CKA_SERIAL_NUMBER:
 	case CKA_ISSUER:
 		g_return_val_if_fail (self->pv->certificate, CKR_GENERAL_ERROR);
-		return gck_object_get_attribute (GCK_OBJECT (self->pv->certificate), attr);
+		return gck_object_get_attribute (GCK_OBJECT (self->pv->certificate), session, attr);
 
 	case CKA_CERT_MD5_HASH:
 		return hash_certificate (self, GCRY_MD_MD5, attr);
@@ -278,7 +280,7 @@ gck_certificate_trust_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 		break;
 	};
 	
-	return GCK_OBJECT_CLASS (gck_certificate_trust_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_certificate_trust_parent_class)->get_attribute (base, session, attr);
 }
 
 static void
@@ -360,9 +362,9 @@ gck_certificate_trust_class_init (GckCertificateTrustClass *klass)
  */
 
 GckCertificateTrust*
-gck_certificate_trust_new (GckCertificate *cert)
+gck_certificate_trust_new (GckModule *module, GckCertificate *cert)
 {
-	return g_object_new (GCK_TYPE_CERTIFICATE_TRUST, "certificate", cert, NULL);
+	return g_object_new (GCK_TYPE_CERTIFICATE_TRUST, "module", module, "certificate", cert, NULL);
 }
 
 GckCertificate*

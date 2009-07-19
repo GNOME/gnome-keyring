@@ -50,9 +50,12 @@ struct _GckPrivateKeyClass {
 
 GType                      gck_private_key_get_type               (void);
 
-void                       gck_private_key_store_private          (GckPrivateKey *self, 
-                                                                   GckSexp *sexp, 
-                                                                   guint num_uses);               
+void                       gck_private_key_set_unlocked_private   (GckPrivateKey *self,
+                                                                   GckSexp *sexp);
+
+void                       gck_private_key_set_locked_private     (GckPrivateKey *self,
+                                                                   GckAuthenticator *auth,
+                                                                   GckSexp *sexp);               
 
 GckFactoryInfo*            gck_private_key_get_factory            (void);
 

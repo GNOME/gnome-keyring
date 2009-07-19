@@ -11,6 +11,8 @@ UNIT_AUTO = \
 	unit-test-crypto.c \
 	unit-test-data-asn1.c \
 	unit-test-data-der.c \
+	unit-test-object.c \
+	unit-test-authenticator.c \
 	unit-test-timer.c \
 	unit-test-transaction.c \
 	unit-test-store.c \
@@ -18,6 +20,7 @@ UNIT_AUTO = \
 	unit-test-login.c \
 	unit-test-data-file.c \
 	unit-test-file-tracker.c \
+	mock-locked-object.c mock-locked-object.h \
 	test-module.c test-module.h \
 	$(BUILT_SOURCES)
 

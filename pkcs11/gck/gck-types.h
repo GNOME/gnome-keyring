@@ -22,6 +22,7 @@
 #ifndef __GCK_TYPES_H__
 #define __GCK_TYPES_H__
 
+typedef struct _GckAuthenticator GckAuthenticator;
 typedef struct _GckCertificate GckCertificate;
 typedef struct _GckCertificateKey GckCertificateKey;
 typedef struct _GckCertificateTrust GckCertificateTrust;

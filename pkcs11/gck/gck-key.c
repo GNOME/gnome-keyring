@@ -49,7 +49,7 @@ G_DEFINE_TYPE (GckKey, gck_key, GCK_TYPE_OBJECT);
  */
 
 static CK_RV 
-gck_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
+gck_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	GckKey *self = GCK_KEY (base);
 	
@@ -108,7 +108,7 @@ gck_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return gck_attribute_set_data (attr, "", 0);
 	};
 
-	return GCK_OBJECT_CLASS (gck_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static GObject* 
@@ -283,10 +283,10 @@ gck_key_set_key_part (GckKey *self, int algo, const char *part,
 }
 
 GckSexp*
-gck_key_acquire_crypto_sexp (GckKey *self)
+gck_key_acquire_crypto_sexp (GckKey *self, GckSession *session)
 {
 	g_return_val_if_fail (GCK_IS_KEY (self), NULL);
 	g_return_val_if_fail (GCK_KEY_GET_CLASS (self)->acquire_crypto_sexp, NULL);
-	return GCK_KEY_GET_CLASS (self)->acquire_crypto_sexp (self);
+	return GCK_KEY_GET_CLASS (self)->acquire_crypto_sexp (self, session);
 }
 

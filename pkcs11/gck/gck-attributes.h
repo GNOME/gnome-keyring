@@ -28,8 +28,11 @@
 
 #include "pkcs11/pkcs11.h"
 
+CK_RV                 gck_attribute_get_bool                           (CK_ATTRIBUTE_PTR attr,
+                                                                        gboolean *value);
+
 CK_RV                 gck_attribute_get_time                           (CK_ATTRIBUTE_PTR attr,
-                                                                        glong *when);
+                                                                        glong *value);
 
 CK_RV                 gck_attribute_set_bool                           (CK_ATTRIBUTE_PTR attr,
                                                                         CK_BBOOL value);
