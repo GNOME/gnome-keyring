@@ -360,24 +360,34 @@ static void
 lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 {
 	GError *error = NULL;
+	GList *objects, *l;
+
 	g_assert (GP11_IS_SESSION (session));
+	g_assert (GP11_IS_OBJECT (priv));
 	g_assert (GP11_IS_OBJECT (pub));
-	
+
 	if (!login_session (session))
 		return;
 
-	gp11_object_set_session (priv, session);
-	gp11_object_set (priv, &error, CKA_GNOME_AUTH_CACHED, GP11_BOOLEAN, FALSE, GP11_INVALID);
-	if (error != NULL) {
-		g_warning ("couldn't clear cached authentication for key: %s", error->message);
+	/* Delete any authenticator objects */
+	objects = gp11_session_find_objects (session, &error,
+	                                     CKA_CLASS, GP11_ULONG, CKO_GNOME_AUTHENTICATOR,
+	                                     CKA_GNOME_OBJECT, GP11_ULONG, gp11_object_get_handle (priv),
+	                                     GP11_INVALID);
+
+	if (error) {
+		g_warning ("couldn't search for authenticator objects: %s", error->message);
 		g_clear_error (&error);
+		return;
 	}
-	
-	gp11_object_set_session (pub, session);
-	gp11_object_set (pub, &error, CKA_GNOME_AUTH_CACHED, GP11_BOOLEAN, FALSE, GP11_INVALID);
-	if (error != NULL) {
-		g_warning ("couldn't clear cached authentication for key: %s", error->message);
-		g_clear_error (&error);
+
+	/* Delete them all */
+	for (l = objects; l; l = g_list_next (l)) {
+		gp11_object_destroy (l->data, &error);
+		if (error) {
+			g_warning ("couldn't delete authenticator object: %s", error->message);
+			g_clear_error (&error);
+		}
 	}
 }
 
