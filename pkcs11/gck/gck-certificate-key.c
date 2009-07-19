@@ -46,18 +46,18 @@ G_DEFINE_TYPE (GckCertificateKey, gck_certificate_key, GCK_TYPE_PUBLIC_KEY);
  */
 
 static CK_RV
-gck_certificate_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
+gck_certificate_key_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GckCertificateKey *self = GCK_CERTIFICATE_KEY (base);
 	
 	switch (attr->type) {
 	case CKA_LABEL:
 		if (self->pv->certificate)
-			return gck_object_get_attribute (GCK_OBJECT (self->pv->certificate), attr);
+			return gck_object_get_attribute (GCK_OBJECT (self->pv->certificate), session, attr);
 		return gck_attribute_set_string (attr, "");
 	}
 	
-	return GCK_OBJECT_CLASS (gck_certificate_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_certificate_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static void

@@ -183,14 +183,22 @@ acquire_from_authenticator (GckAuthenticator *auth, GckObject *object, gpointer 
 	return FALSE;
 }
 
+static gboolean
+have_from_authenticator (GckAuthenticator *auth, GckObject *object, gpointer unused)
+{
+	/* The sexp we stored on the authenticator */
+	return g_object_get_data (G_OBJECT (auth), "private-key-sexp") ? TRUE : FALSE;
+}
+
 /* -----------------------------------------------------------------------------
  * PRIVATE_KEY 
  */
 
 static CK_RV 
-gck_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
+gck_private_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	GckPrivateKey *self = GCK_PRIVATE_KEY (base);
+	gboolean have;
 	
 	switch (attr->type) {
 	case CKA_CLASS:
@@ -230,7 +238,10 @@ gck_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 		
 	case CKA_ALWAYS_AUTHENTICATE:
-		return gck_attribute_set_bool (attr, self->pv->sexp == NULL);
+		have = self->pv->sexp ? TRUE : FALSE;
+		if (!have && session)
+			have = gck_session_for_each_authenticator (session, base, have_from_authenticator, NULL);
+		return gck_attribute_set_bool (attr, !have);
 		
 	case CKA_MODULUS:
 		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_RSA, "n", attr);
@@ -261,7 +272,7 @@ gck_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return CKR_ATTRIBUTE_SENSITIVE;
 	};	
 	
-	return GCK_OBJECT_CLASS (gck_private_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_private_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static GckSexp*
@@ -384,18 +395,16 @@ gck_private_key_set_unlocked_private (GckPrivateKey *self, GckSexp *sexp)
 
 void
 gck_private_key_set_locked_private (GckPrivateKey *self, GckAuthenticator *auth, 
-                                    GckSexp *sexp, gint num_uses)
+                                    GckSexp *sexp)
 {
 	g_return_if_fail (GCK_IS_PRIVATE_KEY (self));
 	g_return_if_fail (GCK_IS_AUTHENTICATOR (auth));
-	g_return_if_fail (!sexp || num_uses);
 
 	if (sexp == NULL)
 		g_object_set_data (G_OBJECT (auth), "private-key-sexp", NULL);
 	else
 		g_object_set_data_full (G_OBJECT (auth), "private-key-sexp",
 		                        gck_sexp_ref (sexp), gck_sexp_unref);
-	gck_authenticator_set_uses_remaining (auth, num_uses);
 }
 
 GckSexp*

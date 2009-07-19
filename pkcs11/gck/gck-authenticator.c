@@ -130,7 +130,7 @@ object_went_away (gpointer data, GObject *old_object)
  */
 
 static CK_RV 
-gck_authenticator_real_get_attribute (GckObject *base, CK_ATTRIBUTE *attr)
+gck_authenticator_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE *attr)
 {
 	GckAuthenticator *self = GCK_AUTHENTICATOR (base);
 
@@ -156,7 +156,7 @@ gck_authenticator_real_get_attribute (GckObject *base, CK_ATTRIBUTE *attr)
 		return CKR_ATTRIBUTE_SENSITIVE;
 	};
 
-	return GCK_OBJECT_CLASS (gck_authenticator_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_authenticator_parent_class)->get_attribute (base, session, attr);
 }
 
 static GObject* 
