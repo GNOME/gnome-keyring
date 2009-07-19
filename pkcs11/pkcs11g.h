@@ -30,17 +30,6 @@
 #define CKO_GNOME (CKO_VENDOR_DEFINED | 0x474E4D45 /* GNME */ ) 
 
 /* -------------------------------------------------------------------
- * OBJECT AUTHENTICATION 
- */
-
-#define CKA_GNOME_AUTH_CACHE                        (CKA_GNOME + 300)
-#define CKV_GNOME_AUTH_CACHE_NEVER                  ((CK_ULONG)-1)
-#define CKV_GNOME_AUTH_CACHE_SESSION                0x40000000
-#define CKV_GNOME_AUTH_CACHE_UNLIMITED              0x80000000
-
-#define CKA_GNOME_AUTH_CACHED                       (CKA_GNOME + 301)
-
-/* -------------------------------------------------------------------
  * OBJECT UNIQUE IDENTIFIER
  */
 

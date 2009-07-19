@@ -42,7 +42,6 @@ typedef struct _SlotData {
 	gint open_sessions;
 	GHashTable *session_to_specific;
 	GHashTable *session_to_filter;
-	GHashTable *auth_cache;
 } SlotData;
 
 /* A hash table of CK_SLOT_ID_PTR to SlotData */
@@ -213,15 +212,6 @@ gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO
 	if (object == NULL)
 		return FALSE;
 
-	/* Look in our internal password cache */
-	if (slot->auth_cache) {
-		password = g_hash_table_lookup (slot->auth_cache, &object->handle);
-		if (password != NULL) {
-			password_to_pin (password, pin, pin_len);
-			return TRUE;
-		}
-	}
-	
 	/* See if we can just use the login keyring password for this */
 	if (object->unique && object->token) {
 		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
@@ -280,21 +270,33 @@ gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO
 			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD, 
 			                                 object->label, ask->typed_password, 
 			                                 "unique", object->unique, NULL);
-		
-		/* Store for the session */
-		} else { 
-			/* This is delayed allocation because we may never use this for a slot */
-			if (slot->auth_cache == NULL)
-				slot->auth_cache = g_hash_table_new_full (ulong_hash, ulong_equal, ulong_free,
-				                                          (GDestroyNotify)egg_secure_free);
-			
-			g_hash_table_replace (slot->auth_cache, ulong_alloc (object->handle), 
-			                      egg_secure_strdup (ask->typed_password));
 		}
 	}
 	
 	g_object_unref (ask);
 	return ret;
+}
+
+CK_OBJECT_HANDLE
+gkr_pkcs11_auth_login_specific_object (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info)
+{
+	GkrPkcs11AuthObject *object;
+	SlotData *slot;
+
+	/* Because we should have been notified of open session */
+	g_return_val_if_fail (per_slot_data, 0);
+
+	/* Lookup the structure for this slot */
+	slot = g_hash_table_lookup (per_slot_data, &info->slotID);
+	if (slot == NULL || slot->session_to_specific == NULL)
+		return 0;
+
+	/* Find the object we're authenticating */
+	object = g_hash_table_lookup (slot->session_to_specific, &handle);
+	if (object == NULL)
+		return 0;
+
+	return object->handle;
 }
 
 void
@@ -325,7 +327,6 @@ gkr_pkcs11_auth_login_specific_done (CK_SESSION_HANDLE handle, CK_SESSION_INFO *
 		if (object->unique && object->token)
 			gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
 			                                 "unique", object->unique, NULL);
-		g_hash_table_remove (slot->auth_cache, &object->handle);
 		break;
 		
 	case CKR_OK:
@@ -603,128 +604,6 @@ gkr_pkcs11_auth_init_user_done (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *token_i
 }
 
 /* ---------------------------------------------------------------------------------
- * AUTH CACHED STATUS
- */
-
-/* 
- * Given information about an object, see if we have 
- * authentication cached, whether for the session or 
- * long term in the keyrings.
- */
-void
-gkr_pkcs11_auth_cached_lookup (GkrPkcs11AuthObject *object, CK_BBOOL *cached)
-{
-	SlotData *slot;
-	
-	g_assert (object);
-	g_assert (cached);
-
-	*cached = FALSE;
-
-	/* Lookup the structure for this slot */
-	slot = g_hash_table_lookup (per_slot_data, &object->slot);
-	g_return_if_fail (slot);
-
-	/* Look in our internal password cache */
-	if (slot->auth_cache) {
-		if (g_hash_table_lookup (slot->auth_cache, &object->handle) != NULL) {
-			*cached = TRUE;
-			return;
-		}
-	}
-	
-	if (object->unique && object->token && gkr_keyring_login_is_usable ()) {
-		if (gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
-		                                     "unique", object->unique, NULL) != NULL) {
-			*cached = TRUE;
-			return;
-		}
-	}
-	
-	return;
-}
-
-/*
- * Clear any cached authentication for an object whether it's just cached 
- * for the session, or for the long term in the keyrings.
- */
-void
-gkr_pkcs11_auth_cached_clear (GkrPkcs11AuthObject *object)
-{
-	SlotData *slot;
-
-	g_assert (object);
-	
-	/* Lookup the structure for this slot */
-	slot = g_hash_table_lookup (per_slot_data, &object->slot);
-	g_return_if_fail (slot);
-
-	if (slot->auth_cache) 
-		g_hash_table_remove (slot->auth_cache, &object->handle);
-	
-	if (object->unique && object->token && gkr_keyring_login_is_usable ())
-		gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
-		                                 "unique", object->unique, NULL);
-}
-
-void
-gkr_pkcs11_auth_cached_set_filter (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info, CK_BBOOL *cached)
-{
-	SlotData *slot;
-
-	/* 
-	 * Stash away a filter of a cached attribute for a given session,
-	 * This is used by the auth C_FindObjectsInit to preserve state until
-	 * C_FindObjects is called.
-	 */
-	
-	g_assert (info);
-	
-	/* Lookup the structure for this slot */
-	slot = g_hash_table_lookup (per_slot_data, &info->slotID);
-	g_return_if_fail (slot);
-	
-	if (cached == NULL) {
-		if (slot->session_to_filter)
-			g_hash_table_remove (slot->session_to_filter, &handle);
-	} else {
-		if (slot->session_to_filter == NULL)
-			slot->session_to_filter = g_hash_table_new_full (ulong_hash, ulong_equal, ulong_free, NULL);
-		g_hash_table_insert (slot->session_to_filter, ulong_alloc (handle), GUINT_TO_POINTER ((guint)(*cached)));
-	}
-
-}
-
-gboolean
-gkr_pkcs11_auth_cached_get_filter (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info, CK_BBOOL *cached)
-{
-	SlotData *slot;
-	gpointer value;
-	
-	/*
-	 * Lookup stashed filter of a cached attribute for a given session.
-	 * This is used by the auth C_FindObjects (see above)
-	 */
-
-	g_assert (info);
-	g_assert (cached);
-
-	/* Lookup the structure for this slot */
-	slot = g_hash_table_lookup (per_slot_data, &info->slotID);
-	g_return_val_if_fail (slot, FALSE);
-
-	if (!slot->session_to_filter)
-		return FALSE;
-	
-	if (!g_hash_table_lookup_extended (slot->session_to_filter, &handle, NULL, &value))
-		return FALSE;
-	
-	*cached = GPOINTER_TO_UINT (value);
-	return TRUE;
-}
-
-
-/* ---------------------------------------------------------------------------------
  * SLOT / SESSION TRACKING
  */
 
@@ -732,8 +611,6 @@ static void
 free_slot_data (SlotData *slot)
 {
 	g_assert (slot);
-	if (slot->auth_cache)
-		g_hash_table_destroy (slot->auth_cache);
 	if (slot->session_to_specific)
 		g_hash_table_destroy (slot->session_to_specific);
 	g_slice_free (SlotData, slot);
