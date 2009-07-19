@@ -37,7 +37,7 @@ G_DEFINE_TYPE (MockLockedObject, mock_locked_object, GCK_TYPE_OBJECT);
  */
 
 static CK_RV 
-mock_locked_object_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
+mock_locked_object_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	switch (attr->type) {
 	case CKA_CLASS:
@@ -46,7 +46,7 @@ mock_locked_object_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return gck_attribute_set_bool (attr, TRUE);
 	};
 
-	return GCK_OBJECT_CLASS (mock_locked_object_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (mock_locked_object_parent_class)->get_attribute (base, session, attr);
 }
 
 static CK_RV

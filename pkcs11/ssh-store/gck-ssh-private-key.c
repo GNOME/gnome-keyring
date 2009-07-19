@@ -135,7 +135,7 @@ realize_and_take_data (GckSshPrivateKey *self, gcry_sexp_t sexp, gchar *comment,
  */
 
 static CK_RV
-gck_ssh_private_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
+gck_ssh_private_key_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GckSshPrivateKey *self = GCK_SSH_PRIVATE_KEY (base);
 	gchar *digest;
@@ -155,7 +155,7 @@ gck_ssh_private_key_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 		return rv;
 	}
 	
-	return GCK_OBJECT_CLASS (gck_ssh_private_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_ssh_private_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static CK_RV
@@ -174,7 +174,7 @@ gck_ssh_private_key_unlock (GckObject *base, GckAuthenticator *auth)
 	rv = unlock_private_key (self, password, n_password, &wrapper);
 
 	if (rv == CKR_OK) {
-		gck_private_key_set_locked_private (GCK_PRIVATE_KEY (self), auth, wrapper, 1);
+		gck_private_key_set_locked_private (GCK_PRIVATE_KEY (self), auth, wrapper);
 		gck_sexp_unref (wrapper);
 	}
 

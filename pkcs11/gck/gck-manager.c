@@ -119,7 +119,7 @@ read_attribute(GckObject *object, CK_ATTRIBUTE_TYPE type, CK_ATTRIBUTE_PTR *resu
 	attr.ulValueLen = 0;
 		
 	/* Figure out memory length */
-	rv = gck_object_get_attribute (object, &attr);
+	rv = gck_object_get_attribute (object, NULL, &attr);
 	
 	/* Not an error, just not present */
 	if (rv == CKR_ATTRIBUTE_TYPE_INVALID) {
@@ -135,7 +135,7 @@ read_attribute(GckObject *object, CK_ATTRIBUTE_TYPE type, CK_ATTRIBUTE_PTR *resu
 	/* Allocate memory length */
 	if (attr.ulValueLen) {
 		attr.pValue = g_malloc0 (attr.ulValueLen);
-		rv = gck_object_get_attribute (object, &attr);
+		rv = gck_object_get_attribute (object, NULL, &attr);
 		if (rv != CKR_OK) {
 			g_warning ("accessing indexed attribute failed");
 			g_free (attr.pValue);
@@ -465,7 +465,7 @@ find_each_object (gpointer unused, gpointer object, gpointer user_data)
 			if (!index_contains (index, object, attr))
 				return;
 		} else {
-			if (!gck_object_match (object, attr))
+			if (!gck_object_match (object, NULL, attr))
 				return;
 		}
 	}
@@ -505,7 +505,7 @@ find_for_attributes (Finder *finder)
 	if (!index) {
 		
 		for (l = finder->manager->pv->objects; l; l = g_list_next (l)) {
-			if (gck_object_match (l->data, first))
+			if (gck_object_match (l->data, NULL, first))
 				find_each_object (NULL, l->data, finder);
 		}
 		
@@ -549,7 +549,7 @@ static void
 accumulate_public_handles (Finder *finder, GckObject *object)
 {
 	gboolean is_private;
-	if (gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private) && is_private)
+	if (gck_object_get_attribute_boolean (object, NULL, CKA_PRIVATE, &is_private) && is_private)
 		return;
 	accumulate_handles (finder, object);
 }
@@ -889,7 +889,7 @@ gck_manager_find_related (GckManager *self, CK_OBJECT_CLASS klass, GckObject *re
 	g_return_val_if_fail (GCK_IS_MANAGER (self), NULL);
 	g_return_val_if_fail (GCK_IS_OBJECT (related_to), NULL);
 	
-	id = gck_object_get_attribute_data (related_to, CKA_ID, &n_id);
+	id = gck_object_get_attribute_data (related_to, NULL, CKA_ID, &n_id);
 	if (id == NULL)
 		return NULL;
 	

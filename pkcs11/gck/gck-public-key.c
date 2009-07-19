@@ -161,7 +161,7 @@ factory_create_public_key (GckSession *session, GckTransaction *transaction,
  */
 
 static CK_RV 
-gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
+gck_public_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	GckPublicKey *self = GCK_PUBLIC_KEY (base);
 	
@@ -212,7 +212,7 @@ gck_public_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "y", attr);
 	};
 	
-	return GCK_OBJECT_CLASS (gck_public_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_public_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static GckSexp*

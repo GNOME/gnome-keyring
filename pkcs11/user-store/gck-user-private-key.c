@@ -89,14 +89,14 @@ factory_create_private_key (GckSession *session, GckTransaction *transaction,
  */
 
 static CK_RV
-gck_user_private_key_real_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
+gck_user_private_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	switch (attr->type) {
 	case CKA_ALWAYS_AUTHENTICATE:
 		return gck_attribute_set_bool (attr, FALSE);
 	}
 	
-	return GCK_OBJECT_CLASS (gck_user_private_key_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_user_private_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static GckSexp* 

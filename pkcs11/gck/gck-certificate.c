@@ -281,7 +281,7 @@ factory_create_certificate (GckSession *session, GckTransaction *transaction,
  */
 
 static CK_RV 
-gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
+gck_certificate_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	GckCertificate *self = GCK_CERTIFICATE (base);
 	CK_ULONG category;
@@ -343,7 +343,7 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 
 	case CKA_ID:
 		g_return_val_if_fail (self->pv->key, CKR_GENERAL_ERROR);
-		return gck_object_get_attribute (GCK_OBJECT (self->pv->key), attr);
+		return gck_object_get_attribute (GCK_OBJECT (self->pv->key), session, attr);
 
 	case CKA_ISSUER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
@@ -408,7 +408,7 @@ gck_certificate_real_get_attribute (GckObject *base, CK_ATTRIBUTE* attr)
 		return read_certificate_purpose (self, OID_USAGE_TIME_STAMPING, attr);
 	};
 
-	return GCK_OBJECT_CLASS (gck_certificate_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_certificate_parent_class)->get_attribute (base, session, attr);
 }
 
 static GObject* 

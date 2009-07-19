@@ -56,7 +56,7 @@ G_DEFINE_TYPE (GckRootsCertificate, gck_roots_certificate, GCK_TYPE_CERTIFICATE)
  */
 
 static CK_RV
-gck_roots_certificate_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
+gck_roots_certificate_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GckRootsCertificate *self = GCK_ROOTS_CERTIFICATE (base);
 	CK_ULONG category;
@@ -74,7 +74,7 @@ gck_roots_certificate_get_attribute (GckObject *base, CK_ATTRIBUTE_PTR attr)
 		return gck_attribute_set_ulong (attr, category);
 	}
 	
-	return GCK_OBJECT_CLASS (gck_roots_certificate_parent_class)->get_attribute (base, attr);
+	return GCK_OBJECT_CLASS (gck_roots_certificate_parent_class)->get_attribute (base, session, attr);
 }
 
 static void

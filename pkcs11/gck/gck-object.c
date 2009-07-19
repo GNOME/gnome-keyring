@@ -139,7 +139,7 @@ complete_destroy (GckTransaction *transaction, GObject *unused, gpointer user_da
  */
 
 static CK_RV 
-gck_object_real_get_attribute (GckObject *self, CK_ATTRIBUTE* attr)
+gck_object_real_get_attribute (GckObject *self, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	CK_RV rv;
 	
@@ -184,7 +184,8 @@ gck_object_real_get_attribute (GckObject *self, CK_ATTRIBUTE* attr)
 }
 
 static void 
-gck_object_real_set_attribute (GckObject *self, GckTransaction* transaction, CK_ATTRIBUTE* attr)
+gck_object_real_set_attribute (GckObject *self, GckSession *session,
+                               GckTransaction* transaction, CK_ATTRIBUTE* attr)
 {
 	switch (attr->type) {
 	case CKA_TOKEN:
@@ -217,8 +218,8 @@ gck_object_real_set_attribute (GckObject *self, GckTransaction* transaction, CK_
 }
 
 static void
-gck_object_real_create_attributes (GckObject *self, GckTransaction *transaction, 
-                                   GckSession *session, CK_ATTRIBUTE *attrs, CK_ULONG n_attrs)
+gck_object_real_create_attributes (GckObject *self, GckSession *session,
+                                   GckTransaction *transaction, CK_ATTRIBUTE *attrs, CK_ULONG n_attrs)
 {
 	CK_ATTRIBUTE_PTR transient_attr;
 	CK_ATTRIBUTE_PTR lifetime_attr;
@@ -270,17 +271,8 @@ gck_object_real_create_attributes (GckObject *self, GckTransaction *transaction,
 static CK_RV
 gck_object_real_unlock (GckObject *self, GckAuthenticator *auth)
 {
-	gboolean always_auth;
-	
-	if (!gck_object_get_attribute_boolean (self, CKA_ALWAYS_AUTHENTICATE, &always_auth))
-		always_auth = FALSE;
-	
-	/* A strange error code, but according to spec */
-	if (!always_auth)
-		return CKR_OPERATION_NOT_INITIALIZED;
-
 	/* A derived class should have overridden this */
-	g_return_val_if_reached (CKR_GENERAL_ERROR);
+	return CKR_FUNCTION_FAILED;
 }
 
 static GObject* 
@@ -479,17 +471,17 @@ gck_object_class_init (GckObjectClass *klass)
  */
 
 CK_RV
-gck_object_get_attribute (GckObject *self, CK_ATTRIBUTE_PTR attr)
+gck_object_get_attribute (GckObject *self, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
 	g_assert (GCK_OBJECT_GET_CLASS (self)->get_attribute);
-	return GCK_OBJECT_GET_CLASS (self)->get_attribute (self, attr);
+	return GCK_OBJECT_GET_CLASS (self)->get_attribute (self, session, attr);
 }
 
 void
-gck_object_set_attribute (GckObject *self, GckTransaction *transaction,
-                          CK_ATTRIBUTE_PTR attr)
+gck_object_set_attribute (GckObject *self, GckSession *session,
+                          GckTransaction *transaction, CK_ATTRIBUTE_PTR attr)
 {
 	CK_ATTRIBUTE check;
 	CK_RV rv;
@@ -505,19 +497,19 @@ gck_object_set_attribute (GckObject *self, GckTransaction *transaction,
 	check.type = attr->type;
 	check.pValue = 0;
 	check.ulValueLen = 0;
-	rv = gck_object_get_attribute (self, &check);
+	rv = gck_object_get_attribute (self, session, &check);
 	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_SENSITIVE) {
 		gck_transaction_fail (transaction, rv);
 		return;
 	}
 	
 	/* Check that the value will actually change */
-	if (rv == CKR_ATTRIBUTE_SENSITIVE || !gck_object_match (self, attr))
-		GCK_OBJECT_GET_CLASS (self)->set_attribute (self, transaction, attr);
+	if (rv == CKR_ATTRIBUTE_SENSITIVE || !gck_object_match (self, session, attr))
+		GCK_OBJECT_GET_CLASS (self)->set_attribute (self, session, transaction, attr);
 }
 
 void
-gck_object_create_attributes (GckObject *self, GckTransaction *transaction, GckSession *session,
+gck_object_create_attributes (GckObject *self, GckSession *session, GckTransaction *transaction,
                               CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	g_return_if_fail (GCK_IS_OBJECT (self));
@@ -529,7 +521,7 @@ gck_object_create_attributes (GckObject *self, GckTransaction *transaction, GckS
 	g_assert (GCK_OBJECT_GET_CLASS (self)->create_attributes);
 
 	/* Check that the value will actually change */
-	GCK_OBJECT_GET_CLASS (self)->create_attributes (self, transaction, session, attrs, n_attrs);
+	GCK_OBJECT_GET_CLASS (self)->create_attributes (self, session, transaction, attrs, n_attrs);
 }
 
 void
@@ -540,7 +532,7 @@ gck_object_notify_attribute  (GckObject *self, CK_ATTRIBUTE_TYPE attr_type)
 }
 
 gboolean
-gck_object_match (GckObject *self, CK_ATTRIBUTE_PTR match)
+gck_object_match (GckObject *self, GckSession *session, CK_ATTRIBUTE_PTR match)
 {
 	CK_ATTRIBUTE attr;
 	gboolean matched = FALSE;
@@ -557,7 +549,7 @@ gck_object_match (GckObject *self, CK_ATTRIBUTE_PTR match)
 	
 	matched = FALSE;
 	
-	rv = gck_object_get_attribute (self, &attr);
+	rv = gck_object_get_attribute (self, session, &attr);
 	matched = (rv == CKR_OK) && 
 	          (match->ulValueLen == attr.ulValueLen) &&
 	          (memcmp (match->pValue, attr.pValue, attr.ulValueLen) == 0);
@@ -567,14 +559,15 @@ gck_object_match (GckObject *self, CK_ATTRIBUTE_PTR match)
 }
 
 gboolean
-gck_object_match_all (GckObject *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+gck_object_match_all (GckObject *self, GckSession *session,
+                      CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	CK_ULONG i;
 	
 	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
 	
 	for (i = 0; i < n_attrs; ++i) {
-		if (!gck_object_match (self, &attrs[i]))
+		if (!gck_object_match (self, session, &attrs[i]))
 			return FALSE;
 	}
 	
@@ -639,7 +632,8 @@ gck_object_unlock (GckObject *self, GckAuthenticator *auth)
 
 
 gboolean
-gck_object_get_attribute_boolean (GckObject *self, CK_ATTRIBUTE_TYPE type, gboolean *value)
+gck_object_get_attribute_boolean (GckObject *self, GckSession *session,
+                                  CK_ATTRIBUTE_TYPE type, gboolean *value)
 {
 	CK_ATTRIBUTE attr;
 	CK_BBOOL bvalue;
@@ -651,7 +645,7 @@ gck_object_get_attribute_boolean (GckObject *self, CK_ATTRIBUTE_TYPE type, gbool
 	attr.ulValueLen = sizeof (CK_BBOOL);
 	attr.pValue = &bvalue;
 	
-	if (gck_object_get_attribute (self, &attr) != CKR_OK)
+	if (gck_object_get_attribute (self, session, &attr) != CKR_OK)
 		return FALSE;
 	
 	*value = (bvalue == CK_TRUE) ? TRUE : FALSE;
@@ -659,7 +653,8 @@ gck_object_get_attribute_boolean (GckObject *self, CK_ATTRIBUTE_TYPE type, gbool
 }
 
 gboolean
-gck_object_get_attribute_ulong (GckObject *self, CK_ATTRIBUTE_TYPE type, gulong *value)
+gck_object_get_attribute_ulong (GckObject *self, GckSession *session,
+                                CK_ATTRIBUTE_TYPE type, gulong *value)
 {
 	CK_ATTRIBUTE attr;
 	CK_ULONG uvalue;
@@ -671,7 +666,7 @@ gck_object_get_attribute_ulong (GckObject *self, CK_ATTRIBUTE_TYPE type, gulong 
 	attr.ulValueLen = sizeof (CK_ULONG);
 	attr.pValue = &uvalue;
 	
-	if (gck_object_get_attribute (self, &attr) != CKR_OK)
+	if (gck_object_get_attribute (self, session, &attr) != CKR_OK)
 		return FALSE;
 	
 	*value = uvalue;
@@ -679,7 +674,8 @@ gck_object_get_attribute_ulong (GckObject *self, CK_ATTRIBUTE_TYPE type, gulong 
 }
 
 void*
-gck_object_get_attribute_data (GckObject *self, CK_ATTRIBUTE_TYPE type, gsize *n_data)
+gck_object_get_attribute_data (GckObject *self, GckSession *session,
+                               CK_ATTRIBUTE_TYPE type, gsize *n_data)
 {
 	CK_ATTRIBUTE attr;
 	
@@ -690,7 +686,7 @@ gck_object_get_attribute_data (GckObject *self, CK_ATTRIBUTE_TYPE type, gsize *n
 	attr.ulValueLen = 0;
 	attr.pValue = NULL;
 	
-	if (gck_object_get_attribute (self, &attr) != CKR_OK)
+	if (gck_object_get_attribute (self, session, &attr) != CKR_OK)
 		return NULL;
 
 	if (attr.ulValueLen == 0)
@@ -698,7 +694,7 @@ gck_object_get_attribute_data (GckObject *self, CK_ATTRIBUTE_TYPE type, gsize *n
 	
 	attr.pValue = g_malloc0 (attr.ulValueLen);
 	
-	if (gck_object_get_attribute (self, &attr) != CKR_OK) {
+	if (gck_object_get_attribute (self, session, &attr) != CKR_OK) {
 		g_free (attr.pValue);
 		return NULL;
 	}

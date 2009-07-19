@@ -52,12 +52,14 @@ struct _GckObjectClass {
 	
 	/* virtual methods  --------------------------------------------------------- */
     
-	CK_RV (*get_attribute) (GckObject *object, CK_ATTRIBUTE *attr);
+	CK_RV (*get_attribute) (GckObject *object, GckSession *session,
+	                        CK_ATTRIBUTE *attr);
 	
-	void (*set_attribute) (GckObject *object, GckTransaction *transaction, CK_ATTRIBUTE *attr);
+	void (*set_attribute) (GckObject *object, GckSession *session,
+	                       GckTransaction *transaction, CK_ATTRIBUTE *attr);
 	
-	void (*create_attributes) (GckObject *object, GckTransaction *transaction, GckSession *session,
-	                           CK_ATTRIBUTE *attrs, CK_ULONG n_attrs);
+	void (*create_attributes) (GckObject *object, GckSession *session,
+	                           GckTransaction *transaction, CK_ATTRIBUTE *attrs, CK_ULONG n_attrs);
 
 	CK_RV (*unlock) (GckObject *self, GckAuthenticator *auth);
 };
@@ -84,22 +86,26 @@ void                   gck_object_destroy                (GckObject *self,
                                                           GckTransaction *transaction);
 
 gboolean               gck_object_match                  (GckObject *self,
+                                                          GckSession *session,
                                                           CK_ATTRIBUTE_PTR attr);
 
 gboolean               gck_object_match_all              (GckObject *self,
+                                                          GckSession *session,
                                                           CK_ATTRIBUTE_PTR attrs,
                                                           CK_ULONG n_attrs);
 
 CK_RV                  gck_object_get_attribute          (GckObject *self,
+                                                          GckSession *session,
                                                           CK_ATTRIBUTE_PTR attr);
 
 void                   gck_object_set_attribute          (GckObject *self,
+                                                          GckSession *session,
                                                           GckTransaction *transaction,
                                                           CK_ATTRIBUTE_PTR attr);
 
 void                   gck_object_create_attributes      (GckObject *self,
-                                                          GckTransaction *transaction,
                                                           GckSession *session,
+                                                          GckTransaction *transaction,
                                                           CK_ATTRIBUTE_PTR attrs,
                                                           CK_ULONG n_attrs);
 
@@ -107,14 +113,17 @@ void                   gck_object_notify_attribute       (GckObject *self,
                                                           CK_ATTRIBUTE_TYPE attr_type);
 
 gboolean               gck_object_get_attribute_boolean  (GckObject *self,
+                                                          GckSession *session,
                                                           CK_ATTRIBUTE_TYPE type,
                                                           gboolean *value);
 
 gboolean               gck_object_get_attribute_ulong    (GckObject *self,
+                                                          GckSession *session,
                                                           CK_ATTRIBUTE_TYPE type,
                                                           gulong *value);
 
 void*                  gck_object_get_attribute_data     (GckObject *self,
+                                                          GckSession *session,
                                                           CK_ATTRIBUTE_TYPE type,
                                                           gsize *n_data);
 

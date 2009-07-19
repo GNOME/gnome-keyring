@@ -165,14 +165,14 @@ identifier_for_object (GckObject *object)
 	g_return_val_if_fail (ext, NULL);
 	
 	/* First we try to use the CN of a subject */
-	data = gck_object_get_attribute_data (object, CKA_SUBJECT, &n_data);
+	data = gck_object_get_attribute_data (object, NULL, CKA_SUBJECT, &n_data);
 	if (data && n_data) 
 		name = name_for_subject (data, n_data);
 	g_free (data);
 	
 	/* Next we try hex encoding the ID */
 	if (name == NULL) {
-		data = gck_object_get_attribute_data (object, CKA_ID, &n_data);
+		data = gck_object_get_attribute_data (object, NULL, CKA_ID, &n_data);
 		if (data && n_data)
 			name = egg_hex_encode (data, n_data);
 		g_free (data);
@@ -1063,7 +1063,7 @@ gck_user_storage_create (GckUserStorage *self, GckTransaction *transaction, GckO
 	}
 	
 	/* Figure out whether this is a private object */ 
-	if (!gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private))
+	if (!gck_object_get_attribute_boolean (object, NULL, CKA_PRIVATE, &is_private))
 		is_private = FALSE;
 	
 	/* Can't serialize private if we're not unlocked */

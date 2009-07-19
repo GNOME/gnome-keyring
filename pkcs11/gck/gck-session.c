@@ -144,7 +144,7 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 		return CKR_KEY_HANDLE_INVALID;
 
 	/* Lookup the mechanisms this object can do */
-	mechanisms = gck_object_get_attribute_data (object, CKA_ALLOWED_MECHANISMS, &n_data);
+	mechanisms = gck_object_get_attribute_data (object, self, CKA_ALLOWED_MECHANISMS, &n_data);
 	g_return_val_if_fail (mechanisms, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (n_data % sizeof (CK_MECHANISM_TYPE) == 0, CKR_GENERAL_ERROR);
 	n_mechanisms = n_data / sizeof (CK_MECHANISM_TYPE);
@@ -160,7 +160,7 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 		return CKR_KEY_TYPE_INCONSISTENT;
 
 	/* Check that the object can do this method */
-	if (!gck_object_get_attribute_boolean (object, method, &have) || !have)
+	if (!gck_object_get_attribute_boolean (object, self, method, &have) || !have)
 		return CKR_KEY_FUNCTION_NOT_PERMITTED;
 	
 	/* Track the cyrpto object */
@@ -266,7 +266,7 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 	 * non-logged in session 
 	 */
 	if (self->pv->logged_in != CKU_USER) {
-		if (!gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private))
+		if (!gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private))
 			is_private = FALSE;
 		if (is_private)
 			return CKR_USER_NOT_LOGGED_IN;
@@ -284,7 +284,7 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 			if (self->pv->read_only)
 				return CKR_SESSION_READ_ONLY;
 		}
-		if (!gck_object_get_attribute_boolean (object, CKA_MODIFIABLE, &is_modifiable))
+		if (!gck_object_get_attribute_boolean (object, self, CKA_MODIFIABLE, &is_modifiable))
 			is_modifiable = FALSE;
 		if (!is_modifiable) /* What's a better return code in this case? */
 			return CKR_ATTRIBUTE_READ_ONLY;
@@ -656,9 +656,9 @@ gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_UL
 	object = self->pv->current_object;
 	g_return_val_if_fail (GCK_IS_OBJECT (object), CKR_GENERAL_ERROR);
 	
-	if (!gck_object_get_attribute_boolean (object, CKA_ALWAYS_AUTHENTICATE, &always_auth))
+	if (!gck_object_get_attribute_boolean (object, self, CKA_ALWAYS_AUTHENTICATE, &always_auth))
 		always_auth = FALSE; 
-	if (!gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private))
+	if (!gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private))
 		is_private = FALSE;
 	
 	/* A strange code, but that's what the spec says */
@@ -870,7 +870,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 
 		/* Can only create public objects unless logged in */
 		if (gck_session_get_logged_in (self) != CKU_USER &&
-		    gck_object_get_attribute_boolean (object, CKA_PRIVATE, &is_private) && 
+		    gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private) && 
 		    is_private == TRUE) {
 			gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 		}
@@ -878,7 +878,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	
 	/* Give the object a chance to create additional attributes */
 	if (!gck_transaction_get_failed (transaction)) {
-		gck_object_create_attributes (object, transaction, self, attrs, n_attrs);
+		gck_object_create_attributes (object, self, transaction, attrs, n_attrs);
 	}
 
 	/* Find somewhere to store the object */
@@ -893,7 +893,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
 	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
 		if (!gck_attribute_consumed (&attrs[i]))
-			gck_object_set_attribute (object, transaction, &attrs[i]);
+			gck_object_set_attribute (object, self, transaction, &attrs[i]);
 	}
 
 	gck_transaction_complete (transaction);
@@ -948,7 +948,7 @@ gck_session_C_GetAttributeValue (GckSession* self, CK_OBJECT_HANDLE handle,
 	rv = CKR_OK;
 	
 	for (i = 0; i < count; ++i) {
-		code = gck_object_get_attribute (object, &template[i]);
+		code = gck_object_get_attribute (object, self, &template[i]);
 
 		/* Not a true error, keep going */
 		if (code == CKR_ATTRIBUTE_SENSITIVE ||
