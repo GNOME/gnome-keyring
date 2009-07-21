@@ -151,6 +151,8 @@ chdir_base_dir (char* argv0)
 			g_warning ("couldn't change directory to ..: %s",
 			           g_strerror (errno));
 	}
+
+	g_free (dir);
 }
 
 int
