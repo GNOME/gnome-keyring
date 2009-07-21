@@ -156,6 +156,8 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 			have = TRUE;
 	}
 	
+	g_free (mechanisms);
+
 	if (have == FALSE)
 		return CKR_KEY_TYPE_INCONSISTENT;
 
