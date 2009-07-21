@@ -112,4 +112,6 @@ DEFINE_TEST(asn1_integers)
 	g_assert ("couldn't read mpi from asn1" && ret);
 	g_assert ("mpi returned is null" && mpt != NULL);
 	g_assert ("mpi is wrong number" && gcry_mpi_cmp (mpi, mpt) == 0);
+
+	g_free (data);
 }
