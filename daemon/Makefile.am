@@ -3,8 +3,7 @@ SUBDIRS = \
 	ui \
 	keyrings \
 	pkcs11 \
-	data \
-	secrets
+	data
 
 bin_PROGRAMS= \
 	gnome-keyring-daemon

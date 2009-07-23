@@ -558,8 +558,6 @@ daemon/data/Makefile
 daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile
 daemon/pkcs11/Makefile
-daemon/secrets/Makefile
-daemon/secrets/api/Makefile
 daemon/ui/Makefile
 daemon/util/Makefile
 daemon/util/tests/Makefile
@@ -593,6 +591,7 @@ pkcs11/ssh-store/Makefile
 pkcs11/ssh-store/tests/Makefile
 pkcs11/user-store/Makefile
 po/Makefile.in
+secrets/Makefile
 tests/Makefile
 tool/Makefile
 library/gnome-keyring-1.pc
