@@ -48,11 +48,18 @@ enum {
 	PROP_MUTEX
 };
 
+#define APARTMENT_APP(apt) \
+	((apt) & ~CK_GNOME_MAX_SLOT)
+#define APARTMENT_SLOT(apt) \
+	((apt) & CK_GNOME_MAX_SLOT)
+#define APARTMENT_ID(slot, app) \
+	(((slot) & CK_GNOME_MAX_SLOT) | ((app) & ~CK_GNOME_MAX_SLOT))
+
 struct _GckModulePrivate {
 	GMutex *mutex;                          /* The mutex controlling entry to this module */
 
-	GckManager *token_manager; 
-	GHashTable *virtual_slots_by_id;        /* Various slot partitions by their ID */
+	GckManager *token_manager;
+	GHashTable *apartments_by_id;           /* Apartment (slot + application) by their id */
 	GHashTable *sessions_by_handle;         /* Mapping of handle to all open sessions */
 	gint handle_counter;                    /* Constantly incrementing counter for handles and the like */
 	GArray *factories;                      /* Various registered object factories */
@@ -62,12 +69,15 @@ struct _GckModulePrivate {
 	GckStore *transient_store;              /* Store for trantsient objects. */
 };
 
-typedef struct _VirtualSlot {
+typedef struct _Apartment {
+	CK_ULONG apt_id;
 	CK_SLOT_ID slot_id;
+	CK_G_APPLICATION_ID app_id;
+	CK_G_APPLICATION_PTR app_ptr;
 	GckManager *session_manager;
 	GList *sessions;
 	CK_USER_TYPE logged_in;
-} VirtualSlot;
+} Apartment;
 
 /* Our slot identifier is 1 */
 #define GCK_SLOT_ID  1
@@ -79,7 +89,7 @@ G_DEFINE_TYPE (GckModule, gck_module, G_TYPE_OBJECT);
 static const CK_INFO default_module_info = {
 	{ CRYPTOKI_VERSION_MAJOR, CRYPTOKI_VERSION_MINOR },
 	"Gnome Keyring",
-	CKF_GNOME_APPARTMENTS,
+	CKF_G_APPLICATIONS,
 	"Gnome Keyring Module",
 	{ 1, 1 },
 };
@@ -177,88 +187,100 @@ extend_space_string (CK_UTF8CHAR_PTR string, gsize length)
 }
 
 static void
-virtual_slot_free (gpointer data)
+apartment_free (gpointer data)
 {
-	VirtualSlot *slot;
+	Apartment *apt;
 	GList *l;
-	
+
 	g_assert (data != NULL);
-	slot = (VirtualSlot*)data;
-	
-	g_return_if_fail (GCK_IS_MANAGER (slot->session_manager));
-	
+	apt = (Apartment*)data;
+
+	g_return_if_fail (GCK_IS_MANAGER (apt->session_manager));
+
 	/* Unreference all the sessions */
-	for (l = slot->sessions; l; l = g_list_next (l)) {
-		
+	for (l = apt->sessions; l; l = g_list_next (l)) {
+
 		/* Some sanity checks to make sure things have remained as expected */
 		g_return_if_fail (GCK_IS_SESSION (l->data));
-		g_return_if_fail (gck_session_get_slot_id (l->data) == slot->slot_id);
-		g_return_if_fail (gck_session_get_manager (l->data) == slot->session_manager);
-		g_return_if_fail (gck_session_get_logged_in (l->data) == slot->logged_in);
-		
+		g_return_if_fail (gck_session_get_apartment (l->data) == apt->apt_id);
+		g_return_if_fail (gck_session_get_manager (l->data) == apt->session_manager);
+		g_return_if_fail (gck_session_get_logged_in (l->data) == apt->logged_in);
+
 		g_object_unref (l->data);
 	}
-	
-	g_list_free (slot->sessions);
-	g_object_unref (slot->session_manager);
-	
-	g_slice_free (VirtualSlot, slot);
+
+	g_list_free (apt->sessions);
+	g_object_unref (apt->session_manager);
+
+	g_slice_free (Apartment, apt);
 }
 
-static VirtualSlot*
-virtual_slot_new (GckModuleClass *klass, CK_SLOT_ID slot_id)
+static Apartment*
+apartment_new (GckModuleClass *klass, CK_SLOT_ID slot_id, CK_G_APPLICATION_PTR app)
 {
-	VirtualSlot *slot;
+	Apartment *apt;
 
-	slot = g_slice_new0 (VirtualSlot);
-	slot->session_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", FALSE, NULL);
-	slot->logged_in = CKU_NONE;
-	slot->sessions = NULL;
-	slot->slot_id = slot_id;
-	
-	return slot;
+	apt = g_slice_new0 (Apartment);
+	apt->session_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", FALSE, NULL);
+	apt->logged_in = CKU_NONE;
+	apt->sessions = NULL;
+	apt->slot_id = slot_id;
+
+	if (app) {
+		if (!app->applicationId)
+			app->applicationId = gck_util_next_handle () << 8;
+		apt->app_id = app->applicationId;
+		apt->app_ptr = app;
+	} else {
+		apt->app_id = 0;
+		apt->app_ptr = NULL;
+	}
+
+	apt->apt_id = APARTMENT_ID (apt->slot_id, apt->app_id);
+
+	return apt;
 }
 
-static VirtualSlot*
-lookup_virtual_slot (GckModule *self, CK_SLOT_ID slot_id)
+static Apartment*
+lookup_apartment (GckModule *self, CK_ULONG apartment)
 {
 	g_assert (GCK_IS_MODULE (self));
-	return g_hash_table_lookup (self->pv->virtual_slots_by_id, &slot_id);
+	return g_hash_table_lookup (self->pv->apartments_by_id, &apartment);
 }
 
 static void
-register_virtual_slot (GckModule *self, VirtualSlot *slot)
+register_apartment (GckModule *self, Apartment *apt)
 {
-	g_assert (slot);
+	g_assert (apt);
 	g_assert (GCK_IS_MODULE (self));
-	g_assert (!g_hash_table_lookup (self->pv->virtual_slots_by_id, &(slot->slot_id)));
-	
-	g_hash_table_insert (self->pv->virtual_slots_by_id, 
-	                            gck_util_ulong_alloc (slot->slot_id), slot);
+	g_assert (!g_hash_table_lookup (self->pv->apartments_by_id, &(apt->apt_id)));
+
+	g_hash_table_insert (self->pv->apartments_by_id,
+	                     gck_util_ulong_alloc (apt->apt_id), apt);
 }
 
 static void
-unregister_virtual_slot (GckModule *self, VirtualSlot *slot)
+unregister_apartment (GckModule *self, Apartment *apt)
 {
-	g_assert (slot);
+	g_assert (apt);
 	g_assert (GCK_IS_MODULE (self));
-	
-	if (!g_hash_table_remove (self->pv->virtual_slots_by_id, &(slot->slot_id)))
+
+	if (!g_hash_table_remove (self->pv->apartments_by_id, &(apt->apt_id)))
 		g_assert_not_reached ();
 }
 
 static void
-mark_login_virtual_slot (GckModule *self, VirtualSlot *slot, CK_USER_TYPE user)
+mark_login_apartment (GckModule *self, Apartment *apt, CK_USER_TYPE user)
 {
 	GList *l;
 
-	g_assert (slot);
+	g_assert (apt);
 	g_assert (GCK_IS_MODULE (self));
-	
+
 	/* Mark all sessions in the partition as logged in */
-	for (l = slot->sessions; l; l = g_list_next (l)) 
+	for (l = apt->sessions; l; l = g_list_next (l))
 		gck_session_set_logged_in (l->data, user);
-	slot->logged_in = user;
+	apt->logged_in = user;
 }
 
 static void
@@ -464,43 +486,43 @@ gck_module_real_login_change (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_P
 }
 
 static CK_RV
-gck_module_real_login_user (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
+gck_module_real_login_user (GckModule *self, CK_ULONG apartment, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
-	VirtualSlot *slot;
-	
-	slot = lookup_virtual_slot (self, slot_id);
-	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+	Apartment *apt;
 
-	mark_login_virtual_slot (self, slot, CKU_USER);
+	apt = lookup_apartment (self, apartment);
+	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
+
+	mark_login_apartment (self, apt, CKU_USER);
 	return CKR_OK;
 }
 
 static CK_RV
-gck_module_real_login_so (GckModule *self, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
+gck_module_real_login_so (GckModule *self, CK_ULONG apartment, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
-	VirtualSlot *slot;
-	
-	slot = lookup_virtual_slot (self, slot_id);
-	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+	Apartment *apt;
 
-	mark_login_virtual_slot (self, slot, CKU_SO);
+	apt = lookup_apartment (self, apartment);
+	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
+
+	mark_login_apartment (self, apt, CKU_SO);
 	return CKR_OK;
 }
 
 static CK_RV
-gck_module_real_logout_any (GckModule *self, CK_SLOT_ID slot_id)
+gck_module_real_logout_any (GckModule *self, CK_ULONG apartment)
 {
-	VirtualSlot *slot;
+	Apartment *apt;
 
 	/* Calculate the partition identifier */
-	slot = lookup_virtual_slot (self, slot_id);
-	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+	apt = lookup_apartment (self, apartment);
+	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
 
-	mark_login_virtual_slot (self, slot, CKU_NONE);
+	mark_login_apartment (self, apt, CKU_NONE);
 	return CKR_OK;
 }
 
-static GObject* 
+static GObject*
 gck_module_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
 	GckModule *self = GCK_MODULE (G_OBJECT_CLASS (gck_module_parent_class)->constructor(type, n_props, props));
@@ -524,14 +546,14 @@ gck_module_init (GckModule *self)
 
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_MODULE, GckModulePrivate);
 	self->pv->token_manager = g_object_new (GCK_TYPE_MANAGER, "for-token", TRUE, NULL);
-	self->pv->sessions_by_handle = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, 
+	self->pv->sessions_by_handle = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal,
 	                                                      gck_util_ulong_free, g_object_unref);
-	self->pv->virtual_slots_by_id = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal, 
-	                                                       gck_util_ulong_free, virtual_slot_free);
+	self->pv->apartments_by_id = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal,
+	                                                    gck_util_ulong_free, apartment_free);
 	self->pv->factories = g_array_new (FALSE, TRUE, sizeof (GckFactoryInfo));
-	
+
 	g_atomic_int_set (&(self->pv->handle_counter), 1);
-	
+
 	/* Create the store for transient objects */
 	self->pv->transient_store = GCK_STORE (gck_memory_store_new ());
 	self->pv->transient_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gck_util_dispose_unref);
@@ -553,12 +575,12 @@ gck_module_dispose (GObject *obj)
 	if (self->pv->token_manager)
 		g_object_unref (self->pv->token_manager);
 	self->pv->token_manager = NULL;
-	
-	g_hash_table_remove_all (self->pv->virtual_slots_by_id);
+
+	g_hash_table_remove_all (self->pv->apartments_by_id);
 	g_hash_table_remove_all (self->pv->sessions_by_handle);
-	
+
 	g_array_set_size (self->pv->factories, 0);
-    
+
 	G_OBJECT_CLASS (gck_module_parent_class)->dispose (obj);
 }
 
@@ -575,10 +597,10 @@ gck_module_finalize (GObject *obj)
 
 	g_assert (self->pv->token_manager == NULL);
 
-	g_assert (g_hash_table_size (self->pv->virtual_slots_by_id) == 0);
-	g_hash_table_destroy (self->pv->virtual_slots_by_id);
-	self->pv->virtual_slots_by_id = NULL;
-	
+	g_assert (g_hash_table_size (self->pv->apartments_by_id) == 0);
+	g_hash_table_destroy (self->pv->apartments_by_id);
+	self->pv->apartments_by_id = NULL;
+
 	g_assert (g_hash_table_size (self->pv->sessions_by_handle) == 0);
 	g_hash_table_destroy (self->pv->sessions_by_handle);
 	self->pv->sessions_by_handle = NULL;
@@ -908,9 +930,9 @@ gck_module_C_GetSlotList (GckModule *self, CK_BBOOL token_present, CK_SLOT_ID_PT
 	}
 	
 	g_return_val_if_fail (slot_list, CKR_ARGUMENTS_BAD);
-	
+
 	/* Answer C_GetSlotList with 0 for app */
-	slot_list[0] = CK_GNOME_MAKE_APPARTMENT (GCK_SLOT_ID, 0);
+	slot_list[0] = GCK_SLOT_ID;
 	*count = 1;
 	return CKR_OK;
 }
@@ -922,12 +944,12 @@ gck_module_C_GetSlotInfo (GckModule *self, CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 	GckModuleClass *klass;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
-	if (CK_GNOME_APPARTMENT_SLOT (id) != GCK_SLOT_ID)
+
+	if (id != GCK_SLOT_ID)
 		return CKR_SLOT_ID_INVALID;
 	if (info == NULL)
 		return CKR_ARGUMENTS_BAD;
-	
+
 	/* Any slot ID is valid for partitioned module */
 	
 	klass = GCK_MODULE_GET_CLASS (self);
@@ -953,12 +975,12 @@ gck_module_C_GetTokenInfo (GckModule *self, CK_SLOT_ID id, CK_TOKEN_INFO_PTR inf
 	GckModuleClass *klass;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
-	if (CK_GNOME_APPARTMENT_SLOT (id) != GCK_SLOT_ID)
+
+	if (id != GCK_SLOT_ID)
 		return CKR_SLOT_ID_INVALID;
 	if (info == NULL)
 		return CKR_ARGUMENTS_BAD;
-	
+
 	/* Any slot ID is valid for partitioned module */
 	
 	klass = GCK_MODULE_GET_CLASS (self);
@@ -987,12 +1009,12 @@ gck_module_C_GetMechanismList (GckModule *self, CK_SLOT_ID id,
 	guint i;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
-	if (CK_GNOME_APPARTMENT_SLOT (id) != GCK_SLOT_ID)
+
+	if (id != GCK_SLOT_ID)
 		return CKR_SLOT_ID_INVALID;
 	if (count == NULL)
 		return CKR_ARGUMENTS_BAD;
-	
+
 	/* Just want to get the count */
 	if (mech_list == NULL) {
 		*count = n_mechanisms;
@@ -1020,8 +1042,8 @@ gck_module_C_GetMechanismInfo (GckModule *self, CK_SLOT_ID id,
 	guint index;
 	
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
-	if (CK_GNOME_APPARTMENT_SLOT (id) != GCK_SLOT_ID)
+
+	if (id != GCK_SLOT_ID)
 		return CKR_SLOT_ID_INVALID;
 	if (info == NULL)
 		return CKR_ARGUMENTS_BAD;
@@ -1049,43 +1071,56 @@ CK_RV
 gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data, 
                           CK_NOTIFY callback, CK_SESSION_HANDLE_PTR result)
 {
+	CK_G_APPLICATION_PTR app;
 	CK_SESSION_HANDLE handle;
-	VirtualSlot *slot;
 	gboolean read_only;
 	GckSession *session;
-	
+	Apartment *apt = NULL;
+
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
-	if (CK_GNOME_APPARTMENT_SLOT (id) != GCK_SLOT_ID)
+
+	if (APARTMENT_SLOT (id) != GCK_SLOT_ID)
 		return CKR_SLOT_ID_INVALID;
 	if (!result)
 		return CKR_ARGUMENTS_BAD;
-	
+
 	if (!(flags & CKF_SERIAL_SESSION))
 		return CKR_SESSION_PARALLEL_NOT_SUPPORTED;
 
-	/* Lookup or register the virtual slot */
-	slot = lookup_virtual_slot (self, id);
-	if (slot == NULL) {
-		slot = virtual_slot_new (GCK_MODULE_GET_CLASS (self), id);
-		register_virtual_slot (self, slot);
+	/*
+	 * If they're calling us with the 'application' extension, then
+	 * allocate or use our application identifier.
+	 */
+	if (flags & CKF_G_APPLICATION_SESSION) {
+		app = user_data;
+		if (app->applicationId)
+			apt = lookup_apartment (self, APARTMENT_ID (id, app->applicationId));
+	} else {
+		app = NULL;
+		apt = lookup_apartment (self, APARTMENT_ID (id, 0));
 	}
-	
+
+	/* The first time this application is accessing, or closed all sessions, allocate new */
+	if (apt == NULL) {
+		apt = apartment_new (GCK_MODULE_GET_CLASS (self), id, app);
+		register_apartment (self, apt);
+	}
+
 	/* Can't open read only session if SO login */
-	if (slot->logged_in == CKU_SO && !(flags & CKF_RW_SESSION))
-		return CKR_SESSION_READ_WRITE_SO_EXISTS; 
+	if (apt->logged_in == CKU_SO && !(flags & CKF_RW_SESSION))
+		return CKR_SESSION_READ_WRITE_SO_EXISTS;
 
 	/* Make and register a new session */
 	handle = gck_module_next_handle (self);
 	read_only = !(flags & CKF_RW_SESSION);
-	session = g_object_new (GCK_TYPE_SESSION, "slot-id", slot->slot_id, 
-	                        "read-only", read_only, "handle", handle, "module", self, 
-	                        "manager", slot->session_manager, "logged-in", slot->logged_in, NULL);
-	slot->sessions = g_list_prepend (slot->sessions, session);
-	
+	session = g_object_new (GCK_TYPE_SESSION, "slot-id", apt->slot_id, "apartment", apt->apt_id,
+	                        "read-only", read_only, "handle", handle, "module", self,
+	                        "manager", apt->session_manager, "logged-in", apt->logged_in, NULL);
+	apt->sessions = g_list_prepend (apt->sessions, session);
+
 	/* Track the session by handle */
-	g_hash_table_insert (self->pv->sessions_by_handle, 
-	                     gck_util_ulong_alloc (handle), 
+	g_hash_table_insert (self->pv->sessions_by_handle,
+	                     gck_util_ulong_alloc (handle),
 	                     g_object_ref (session));
 	
 	*result = handle;
@@ -1096,60 +1131,59 @@ CK_RV
 gck_module_C_CloseSession (GckModule *self, CK_SESSION_HANDLE handle)
 {
 	GckSession *session;
-	CK_SLOT_ID slot_id;
-	VirtualSlot *slot;
+	CK_ULONG apt_id;
+	Apartment *apt;
 	GList *link;
-	
+
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
+
 	session = gck_module_lookup_session (self, handle);
 	if (session == NULL)
 		return CKR_SESSION_HANDLE_INVALID;
 
 	/* Calculate the virtual slot */
-	slot_id = gck_session_get_slot_id (session);
-	slot = lookup_virtual_slot (self, slot_id);
-	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+	apt_id = gck_session_get_apartment (session);
+	apt = lookup_apartment (self, apt_id);
+	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
 
-	link = g_list_find (slot->sessions, session);
+	link = g_list_find (apt->sessions, session);
 	g_return_val_if_fail (link, CKR_GENERAL_ERROR);
-	slot->sessions = g_list_delete_link (slot->sessions, link);
+	apt->sessions = g_list_delete_link (apt->sessions, link);
 	g_object_unref (session);
-	if (!slot->sessions) 
-		unregister_virtual_slot (self, slot);
+	if (!apt->sessions)
+		unregister_apartment (self, apt);
 
 	if (!g_hash_table_remove (self->pv->sessions_by_handle, &handle))
 		g_assert_not_reached ();
-	
+
 	return CKR_OK;
 }
 
 CK_RV
 gck_module_C_CloseAllSessions (GckModule *self, CK_SLOT_ID id)
 {
-	VirtualSlot *slot;
+	Apartment *apt;
 	CK_SESSION_HANDLE handle;
 	GList *l;
-	
+
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
-	if (CK_GNOME_APPARTMENT_SLOT (id) != GCK_SLOT_ID)
+
+	if (APARTMENT_SLOT (id) != GCK_SLOT_ID)
 		return CKR_SLOT_ID_INVALID;
 
-	/* Calculate the virtual slot */
-	slot = lookup_virtual_slot (self, id);
-	if (slot == NULL)
+	apt = lookup_apartment (self, id);
+	if (apt == NULL)
 		return CKR_OK;
-	
+
 	/* Unregister all its sessions */
-	for (l = slot->sessions; l; l = g_list_next (l)) {
+	for (l = apt->sessions; l; l = g_list_next (l)) {
 		handle = gck_session_get_handle (l->data);
 		if (!g_hash_table_remove (self->pv->sessions_by_handle, &handle))
 			g_assert_not_reached ();
 	}
 
-	unregister_virtual_slot (self, slot);
-	return CKR_OK;	
+	unregister_apartment (self, apt);
+	return CKR_OK;
 }
 
 CK_RV
@@ -1157,25 +1191,25 @@ gck_module_C_InitPIN (GckModule* self, CK_SESSION_HANDLE handle,
                       CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
 	GckSession *session;
-	VirtualSlot *slot;
-	CK_SLOT_ID slot_id;
-	
+	Apartment *apt;
+	CK_ULONG apt_id;
+
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
+
 	session = gck_module_lookup_session (self, handle);
 	if (session == NULL)
 		return CKR_SESSION_HANDLE_INVALID;
-	
+
 	/* Calculate the virtual slot */
-	slot_id = gck_session_get_slot_id (session);
-	slot = lookup_virtual_slot (self, slot_id);
-	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
-	
-	if (slot->logged_in != CKU_SO)
+	apt_id = gck_session_get_apartment (session);
+	apt = lookup_apartment (self, apt_id);
+	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
+
+	if (apt->logged_in != CKU_SO)
 		return CKR_USER_NOT_LOGGED_IN;
 
 	/* Our InitPIN assumes an uninitialized PIN */
-	return gck_module_login_change (self, slot_id, NULL, 0, pin, n_pin);
+	return gck_module_login_change (self, apt_id, NULL, 0, pin, n_pin);
 }
 
 CK_RV
@@ -1183,34 +1217,34 @@ gck_module_C_SetPIN (GckModule* self, CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR 
                      CK_ULONG old_pin_len, CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
 {
 	GckSession *session;
-	VirtualSlot *slot;
-	CK_SLOT_ID slot_id;
-	
+	Apartment *apt;
+	CK_ULONG apt_id;
+
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
+
 	session = gck_module_lookup_session (self, handle);
 	if (session == NULL)
 		return CKR_SESSION_HANDLE_INVALID;
 
 	/* Calculate the virtual slot */
-	slot_id = gck_session_get_slot_id (session);
-	slot = lookup_virtual_slot (self, slot_id);
-	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+	apt_id = gck_session_get_apartment (session);
+	apt = lookup_apartment (self, apt_id);
+	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
 
-	return gck_module_login_change (self, slot_id, old_pin, old_pin_len, new_pin, new_pin_len);
+	return gck_module_login_change (self, apt_id, old_pin, old_pin_len, new_pin, new_pin_len);
 }
 
 CK_RV
 gck_module_C_Login (GckModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
                     CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
-	CK_SLOT_ID slot_id;
+	CK_ULONG apt_id;
 	GckSession *session;
-	VirtualSlot *slot;
+	Apartment *apt;
 	GList *l;
-	
+
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
+
 	session = gck_module_lookup_session (self, handle);
 	if (session == NULL)
 		return CKR_SESSION_HANDLE_INVALID;
@@ -1224,26 +1258,26 @@ gck_module_C_Login (GckModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user
 		return CKR_USER_TYPE_INVALID;
 
 	/* Calculate the virtual slot */
-	slot_id = gck_session_get_slot_id (session);
-	slot = lookup_virtual_slot (self, slot_id);
-	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+	apt_id = gck_session_get_apartment (session);
+	apt = lookup_apartment (self, apt_id);
+	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
 
-	if (slot->logged_in != CKU_NONE)
+	if (apt->logged_in != CKU_NONE)
 		return CKR_USER_ALREADY_LOGGED_IN;
 
 	if (user_type == CKU_SO) {
-		
+
 		/* Can't login as SO if read-only sessions exist */
-		for (l = slot->sessions; l; l = g_list_next (l)) {
+		for (l = apt->sessions; l; l = g_list_next (l)) {
 			if (gck_session_get_read_only (l->data))
 				return CKR_SESSION_READ_ONLY_EXISTS;
 		}
-		
-		return gck_module_login_so (self, slot_id, pin, pin_len);
-				
+
+		return gck_module_login_so (self, apt_id, pin, pin_len);
+
 	} else if (user_type == CKU_USER) {
-		return gck_module_login_user (self, slot_id, pin, pin_len);
-		
+		return gck_module_login_user (self, apt_id, pin, pin_len);
+
 	} else {
 		return CKR_USER_TYPE_INVALID;
 	}
@@ -1252,29 +1286,29 @@ gck_module_C_Login (GckModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user
 CK_RV
 gck_module_C_Logout (GckModule *self, CK_SESSION_HANDLE handle)
 {
-	CK_SLOT_ID slot_id;
-	VirtualSlot *slot;
+	CK_ULONG apt_id;
+	Apartment *apt;
 	GckSession *session;
-	
+
 	g_return_val_if_fail (GCK_IS_MODULE (self), CKR_CRYPTOKI_NOT_INITIALIZED);
-	
+
 	session = gck_module_lookup_session (self, handle);
 	if (session == NULL)
 		return CKR_SESSION_HANDLE_INVALID;
 
-	slot_id = gck_session_get_slot_id (session);
-	slot = lookup_virtual_slot (self, slot_id);
-	g_return_val_if_fail (slot, CKR_GENERAL_ERROR);
+	apt_id = gck_session_get_apartment (session);
+	apt = lookup_apartment (self, apt_id);
+	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
 
-	if (slot->logged_in == CKU_NONE)
+	if (apt->logged_in == CKU_NONE)
 		return CKR_USER_NOT_LOGGED_IN;
-	
-	else if (slot->logged_in == CKU_USER)
-		return gck_module_logout_user (self, slot_id);
 
-	else if (slot->logged_in == CKU_SO)
-		return gck_module_logout_so (self, slot_id);
+	else if (apt->logged_in == CKU_USER)
+		return gck_module_logout_user (self, apt_id);
 
-	else 
+	else if (apt->logged_in == CKU_SO)
+		return gck_module_logout_so (self, apt_id);
+
+	else
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
 }
