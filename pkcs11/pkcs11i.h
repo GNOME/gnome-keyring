@@ -30,43 +30,7 @@
 /* Signifies that nobody is logged in */
 #define CKU_NONE G_MAXULONG
 
-/* ----------------------------------------------------------------------
- * APARTMENT SLOTS
- * 
- * The lower 10 bits of the CK_SLOT_ID are used as the actual slot identifier, 
- * and the remainder are used as application identifiers.
- * 
- * This enables a single loaded module to serve multiple applications
- * concurrently. The caller of a module should check the 
- * CKF_GNOME_VIRTUAL_SLOTS flag before using this functionality.
- */
-
-/* Flag for CK_INFO when virtual slots are supported */
-#define CKF_GNOME_APPARTMENTS                       0x40000000
-
-/* Get an actual slot id from a virtual slot */
-#define CK_GNOME_APPARTMENT_SLOT(virt)              ((virt) & 0x000003FF)
-
-/* Get an app id from a virtual slot */
-#define CK_GNOME_APPARTMENT_APP(virt)               ((virt) >> 10)
-
-/* Is the app id valid for use in a virtual slot? */
-#define CK_GNOME_APPARTMENT_IS_APP(app)             ((app) < (((CK_ULONG)-1) >> 10))
-
-/* Build a virtual slot from an actual slot id, and an app id */
-#define CK_GNOME_MAKE_APPARTMENT(slot, app)         (((slot) & 0x000003FF) | ((app) << 10))
-
-
-/* -------------------------------------------------------------------
- * LIMITED HANDLES
- * 
- * The upper 10 bits of a CK_SESSION_HANDLE and CK_OBJECT_HANDLE are 
- * never used by Gnome Keyring PKCS#11 modules. These bits are used 
- * for tracking purposes when combining modules into a single module.
- */ 
-
-#define CK_GNOME_MAX_SLOT                           (0x000003FF)
-#define CK_GNOME_MAX_APP                            (((CK_ULONG)-1) >> 10)
+#define CK_GNOME_MAX_SLOT                           (0x000000FF)
 #define CK_GNOME_MAX_HANDLE                         (((CK_ULONG)-1) >> 10)
 
 /* -------------------------------------------------------------------
@@ -75,5 +39,28 @@
 
 #define CKA_GNOME_INTERNAL_SHA1                      (CKA_GNOME + 1000)
 
+
+/* -------------------------------------------------------------------
+ * APPLICATION
+ */
+
+/* Flag for CK_INFO when applications are supported */
+#define CKF_G_APPLICATIONS                       0x40000000
+
+/* Call C_OpenSession with this when passing CK_G_APPLICATION */
+#define CKF_G_APPLICATION_SESSION                0x40000000
+
+typedef CK_ULONG CK_G_APPLICATION_ID;
+
+typedef struct CK_G_APPLICATION {
+	CK_UTF8CHAR applicationName;
+	CK_VOID_PTR applicationData;
+	CK_FLAGS flags;
+	CK_G_APPLICATION_ID applicationId;
+} CK_G_APPLICATION;
+
+typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
+
+#define CKR_G_APPLICATION_ID_INVALID             (CKR_GNOME + 10)
 
 #endif /* PKCS11I_H */

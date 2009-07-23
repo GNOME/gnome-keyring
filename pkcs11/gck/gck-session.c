@@ -40,6 +40,7 @@ enum {
 	PROP_0,
 	PROP_MODULE,
 	PROP_SLOT_ID,
+	PROP_APARTMENT,
 	PROP_HANDLE,
 	PROP_READ_ONLY,
 	PROP_MANAGER,
@@ -50,7 +51,8 @@ struct _GckSessionPrivate {
 
 	CK_SESSION_HANDLE handle;
 	CK_SLOT_ID slot_id;
-	
+	CK_ULONG apartment;
+
 	GckModule *module;
 	GckManager *manager;
 	GckStore *store;
@@ -156,6 +158,8 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 			have = TRUE;
 	}
 	
+	g_free (mechanisms);
+
 	if (have == FALSE)
 		return CKR_KEY_TYPE_INCONSISTENT;
 
@@ -476,6 +480,9 @@ gck_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_SLOT_ID:
 		self->pv->slot_id = g_value_get_ulong (value);
 		break;
+	case PROP_APARTMENT:
+		self->pv->apartment = g_value_get_ulong (value);
+		break;
 	case PROP_HANDLE:
 		self->pv->handle = g_value_get_ulong (value);
 		g_return_if_fail (self->pv->handle != 0);
@@ -507,6 +514,9 @@ gck_session_get_property (GObject *obj, guint prop_id, GValue *value,
 		break;
 	case PROP_SLOT_ID:
 		g_value_set_ulong (value, gck_session_get_slot_id (self));
+		break;
+	case PROP_APARTMENT:
+		g_value_set_ulong (value, gck_session_get_apartment (self));
 		break;
 	case PROP_HANDLE:
 		g_value_set_ulong (value, gck_session_get_handle (self));
@@ -552,11 +562,15 @@ gck_session_class_init (GckSessionClass *klass)
 	g_object_class_install_property (gobject_class, PROP_SLOT_ID,
 	         g_param_spec_ulong ("slot-id", "Slot ID", "Slot ID this session is opened on", 
 	                             0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	
+
+	g_object_class_install_property (gobject_class, PROP_APARTMENT,
+	         g_param_spec_ulong ("apartment", "Apartment", "Apartment this session is opened on",
+	                             0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
 	g_object_class_install_property (gobject_class, PROP_READ_ONLY,
-	         g_param_spec_boolean ("read-only", "Read Only", "Whether a read-only session or not", 
+	         g_param_spec_boolean ("read-only", "Read Only", "Whether a read-only session or not",
 	                               TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	
+
 	g_object_class_install_property (gobject_class, PROP_LOGGED_IN,
 	         g_param_spec_ulong ("logged-in", "Logged in", "Whether this session is logged in or not", 
 	                             0, G_MAXULONG, CKU_NONE, G_PARAM_READWRITE));
@@ -585,6 +599,13 @@ gck_session_get_slot_id (GckSession *self)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), 0);
 	return self->pv->slot_id;	
+}
+
+CK_ULONG
+gck_session_get_apartment (GckSession *self)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (self), 0);
+	return self->pv->apartment;
 }
 
 GckModule*

@@ -203,6 +203,7 @@ register_environment_in_session (void)
 		
 		if (!reply) {
 			g_message ("couldn't set environment variable in session: %s", derr.message);
+			dbus_error_free (&derr);
 			return;
 		}
 		

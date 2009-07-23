@@ -58,9 +58,9 @@ static guint n_plex_mappings = 0;
 static gboolean
 map_slot_down (CK_SLOT_ID_PTR slot, Mapping *mapping)
 {
-	CK_SLOT_ID id = CK_GNOME_APPARTMENT_SLOT (*slot);
+	CK_SLOT_ID id = *slot;
 	gboolean ret = TRUE;
-	
+
 	if (id < PLEX_MAPPING_OFFSET)
 		return FALSE;
 	id -= PLEX_MAPPING_OFFSET;
@@ -73,9 +73,9 @@ map_slot_down (CK_SLOT_ID_PTR slot, Mapping *mapping)
 			ret = FALSE;
 		} else {
 			memcpy (mapping, &plex_mappings[id], sizeof (Mapping));
-			*slot = CK_GNOME_MAKE_APPARTMENT(mapping->real_slot, CK_GNOME_APPARTMENT_APP (*slot));
+			*slot = mapping->real_slot;
 		}
-		
+
 	G_UNLOCK (plex_layer);
 
 	return ret;
@@ -207,7 +207,7 @@ plex_C_GetInfo (CK_INFO_PTR info)
 	info->cryptokiVersion.minor = CRYPTOKI_VERSION_MINOR;
 	info->libraryVersion.major = LIBRARY_VERSION_MAJOR;
 	info->libraryVersion.minor = LIBRARY_VERSION_MINOR;
-	info->flags = CKF_GNOME_APPARTMENTS;
+	info->flags = 0;
 	strncpy ((char*)info->manufacturerID, MANUFACTURER_ID, 32);
 	strncpy ((char*)info->libraryDescription, LIBRARY_DESCRIPTION, 32);
 	return CKR_OK;
@@ -346,8 +346,10 @@ static CK_RV
 plex_C_CloseAllSessions (CK_SLOT_ID id)
 {
 	Mapping map;
+	CK_G_APPLICATION_ID app = id & ~CK_GNOME_MAX_SLOT;
+	id = id & CK_GNOME_MAX_SLOT;
 	MAP_SLOT_DOWN (id, map);
-	return (map.funcs->C_CloseAllSessions) (id);
+	return (map.funcs->C_CloseAllSessions) (id | app);
 }
 
 static CK_RV

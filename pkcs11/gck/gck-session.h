@@ -58,16 +58,15 @@ typedef gboolean         (*GckAuthenticatorFunc)                        (GckAuth
 
 GType                    gck_session_get_type                           (void);
 
-GckSession*              gck_session_new                                (GckModule *module, 
-                                                                         GckManager *manager,
-                                                                         CK_SLOT_ID slot_id,
-                                                                         CK_FLAGS flags);
+GckSession*              gck_session_for_session_object                 (GckObject *obj);
 
 GckSession*              gck_session_for_session_object                 (GckObject *obj);
 
 CK_SESSION_HANDLE        gck_session_get_handle                         (GckSession *self);
 
 CK_SLOT_ID               gck_session_get_slot_id                        (GckSession *self);
+
+CK_ULONG                 gck_session_get_apartment                      (GckSession *self);
 
 GckModule*               gck_session_get_module                         (GckSession *self);
 

@@ -82,7 +82,7 @@ typedef struct _CallState {
 	GckRpcMessage *req;
 	GckRpcMessage *resp;
 	void *allocated;
-	CK_ULONG appid;
+	CK_G_APPLICATION application;
 } CallState;
 
 static int
@@ -97,7 +97,10 @@ call_init (CallState *cs)
 		gck_rpc_message_free (cs->resp);
 		return 0;
 	}
-	
+
+	memset (&cs->application, 0, sizeof (cs->application));
+	cs->application.applicationData = cs;
+
 	cs->allocated = NULL;
 	return 1;
 }
@@ -780,9 +783,8 @@ rpc_C_Finalize (CallState *cs)
 {
 	CK_SLOT_ID_PTR slots;
 	CK_ULONG n_slots, i;
-	CK_SLOT_ID appartment;
 	CK_RV ret;
-	
+
 	debug (("C_Finalize: enter"));
 
 	assert (cs);
@@ -792,26 +794,26 @@ rpc_C_Finalize (CallState *cs)
 	 * We don't actually C_Finalize lower layers, since this would finalize
 	 * for all appartments, client applications. Anyway this is done by 
 	 * the code that loaded us.
-	 * 
+	 *
 	 * But we do need to cleanup resources used by this client, so instead
-	 * we call C_CloseAllSessions for each appartment for this client.
+	 * we call C_CloseAllSessions for each slot for this client application.
 	 */
-	
-	ret = (pkcs11_module->C_GetSlotList) (TRUE, NULL, &n_slots);
-	if (ret == CKR_OK) {
-		slots = calloc (n_slots, sizeof (CK_SLOT_ID));
-		if (slots == NULL) {
-			ret = CKR_DEVICE_MEMORY;
-		} else {
-			ret = (pkcs11_module->C_GetSlotList) (TRUE, slots, &n_slots);
-			for (i = 0; ret == CKR_OK && i < n_slots; ++i) {
-				appartment = CK_GNOME_MAKE_APPARTMENT (slots[i], cs->appid);
-				ret = (pkcs11_module->C_CloseAllSessions) (appartment);
+
+	if (cs->application.applicationId) {
+		ret = (pkcs11_module->C_GetSlotList) (TRUE, NULL, &n_slots);
+		if (ret == CKR_OK) {
+			slots = calloc (n_slots, sizeof (CK_SLOT_ID));
+			if (slots == NULL) {
+				ret = CKR_DEVICE_MEMORY;
+			} else {
+				ret = (pkcs11_module->C_GetSlotList) (TRUE, slots, &n_slots);
+				for (i = 0; ret == CKR_OK && i < n_slots; ++i)
+					ret = (pkcs11_module->C_CloseAllSessions) (slots[i] | cs->application.applicationId);
+				free (slots);
 			}
-			free (slots);
 		}
 	}
-	
+
 	debug (("ret: %d", ret));
 	return ret;
 }
@@ -852,7 +854,6 @@ rpc_C_GetSlotInfo (CallState *cs)
 
 	BEGIN_CALL (C_GetSlotInfo);
 		IN_ULONG (slot_id);
-		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 	PROCESS_CALL ((slot_id, &info));
 		OUT_SLOT_INFO (info);
 	END_CALL;
@@ -868,7 +869,6 @@ rpc_C_GetTokenInfo (CallState *cs)
 	
 	BEGIN_CALL (C_GetTokenInfo);
 		IN_ULONG (slot_id);
-		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 	PROCESS_CALL ((slot_id, &info));
 		OUT_TOKEN_INFO (info);
 	END_CALL;
@@ -885,7 +885,6 @@ rpc_C_GetMechanismList (CallState *cs)
 
 	BEGIN_CALL (C_GetMechanismList);
 		IN_ULONG (slot_id);
-		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 		IN_ULONG_BUFFER (mechanism_list, count);
 	PROCESS_CALL ((slot_id, mechanism_list, &count));
 		OUT_ULONG_ARRAY (mechanism_list, count);
@@ -903,7 +902,6 @@ rpc_C_GetMechanismInfo (CallState *cs)
 	
 	BEGIN_CALL (C_GetMechanismInfo);
 		IN_ULONG (slot_id);
-		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 		IN_ULONG (type);
 	PROCESS_CALL ((slot_id, type, &info));
 		OUT_MECHANISM_INFO (info);
@@ -922,7 +920,6 @@ rpc_C_InitToken (CallState *cs)
 
 	BEGIN_CALL (C_InitToken);
 		IN_ULONG (slot_id);
-		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 		IN_BYTE_ARRAY (pin, pin_len);
 		IN_STRING (label);
 	PROCESS_CALL ((slot_id, pin, pin_len, label));
@@ -940,7 +937,6 @@ rpc_C_WaitForSlotEvent (CallState *cs)
 	BEGIN_CALL (C_WaitForSlotEvent);
 		IN_ULONG (flags);
 	PROCESS_CALL ((flags, &slot_id, NULL));
-		slot_id = CK_GNOME_APPARTMENT_SLOT (slot_id);
 		OUT_ULONG (slot_id);
 	END_CALL;
 }
@@ -956,9 +952,9 @@ rpc_C_OpenSession (CallState *cs)
 
 	BEGIN_CALL (C_OpenSession);
 		IN_ULONG (slot_id);
-		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
 		IN_ULONG (flags);
-	PROCESS_CALL ((slot_id, flags, NULL, NULL, &session));
+		flags |= CKF_G_APPLICATION_SESSION;
+	PROCESS_CALL ((slot_id, flags, &cs->application, NULL, &session));
 		OUT_ULONG (session);
 	END_CALL;
 }
@@ -984,7 +980,7 @@ rpc_C_CloseAllSessions (CallState *cs)
 
 	BEGIN_CALL (C_CloseAllSessions);
 		IN_ULONG (slot_id);
-		slot_id = CK_GNOME_MAKE_APPARTMENT (slot_id, cs->appid);
+		slot_id |= cs->application.applicationId;
 	PROCESS_CALL ((slot_id));
 	END_CALL;
 }
@@ -1022,7 +1018,6 @@ rpc_C_GetSessionInfo (CallState *cs)
 	BEGIN_CALL (C_GetSessionInfo);
 		IN_ULONG (session);
 	PROCESS_CALL ((session, &info));
-		info.slotID  = CK_GNOME_APPARTMENT_SLOT (info.slotID);
 		OUT_SESSION_INFO (info);
 	END_CALL;
 }
@@ -2089,10 +2084,7 @@ run_dispatch_loop (int sock)
 		gck_rpc_warn ("couldn't read socket credentials");
 		return;
 	}
-	
-	/* The client application */
-	cs.appid = pid;
-	
+
 	/* Setup our buffers */
 	if (!call_init (&cs)) {
 		gck_rpc_warn ("out of memory");
@@ -2141,7 +2133,18 @@ run_dispatch_loop (int sock)
 		   !write_all (sock, cs.resp->buffer.buf, cs.resp->buffer.len))
 			break;
 	}
-	
+
+	/*
+	 * Close all sessions for the client application
+	 *
+	 * EXTENSION: In our extended application PKCS#11 model
+	 * C_CloseAllSessions accepts an application identifier as well
+	 * as slot ids. Calling with an application identifier closes all
+	 * sessions for just that application identifier.
+	 */
+	if (cs.application.applicationId)
+		(pkcs11_module->C_CloseAllSessions) (cs.application.applicationId);
+
 	call_uninit (&cs);
 }
 

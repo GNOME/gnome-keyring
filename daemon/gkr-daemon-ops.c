@@ -549,9 +549,9 @@ request_change_keyring_password (GkrKeyringRequest *req, GkrKeyring* keyring,
 		flags |= GKR_ASK_REQUEST_ORIGINAL_PASSWORD;
 
 	if (is_default) {
-		primary = g_markup_printf_escaped (_("Choose a new password for the '%s' keyring. "), keyring_name);
+		primary = g_markup_printf_escaped (_("Choose a new password for the '%s' keyring."), keyring_name);
 	} else {
-		primary = g_markup_printf_escaped (_("Choose a new password for the default keyring. "));
+		primary = g_markup_printf_escaped (_("Choose a new password for the default keyring."));
 	}
 	
 	/* And put together the ask request */

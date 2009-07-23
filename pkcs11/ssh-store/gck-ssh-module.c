@@ -144,6 +144,8 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 		if (!gck_object_get_manager (GCK_OBJECT (pubkey)))
 			gck_manager_register_object (manager, GCK_OBJECT (pubkey));
 	}
+
+	g_free (private_path);
 }
 
 static void
