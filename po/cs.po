@@ -12,42 +12,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-16 05:26+0100\n"
-"PO-Revision-Date: 2009-03-15 02:53+0100\n"
-"Last-Translator: Lucas Lommer <llommer@svn.gnome.org>\n"
+"POT-Creation-Date: 2009-07-24 13:52+0200\n"
+"PO-Revision-Date: 2009-07-24 02:53+0100\n"
+"Last-Translator: Andre Klapper <ak-47@gmx.net>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: KBabel 1.11.4\n"
-
-#: ../common/gkr-location.c:321
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "Výměnný disk: %s"
-
-#: ../common/gkr-location.c:323
-msgid "Removable Disk"
-msgstr "Výměnný disk"
-
-#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
-msgid "Home"
-msgstr "Domov"
-
-#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
-msgid "The disk or drive this file is located on is not present"
-msgstr "Disk nebo jednotka, na které je umístěn tento soubor, nejsou dostupné"
-
-#: ../common/gkr-location.c:1137
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "Nelze vytvořit adresář: %s"
-
-#: ../common/gkr-location.c:1171
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "Nelze odstranit soubor: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:228
@@ -298,13 +271,13 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:552
 #, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "Zvolte nové heslo pro klíčenku '%s'. "
+msgid "Choose a new password for the '%s' keyring."
+msgstr "Zvolte nové heslo pro klíčenku '%s'."
 
 #: ../daemon/gkr-daemon-ops.c:554
 #, c-format
-msgid "Choose a new password for the default keyring. "
-msgstr "Zvolte nové heslo pro výchozí klíčenku. "
+msgid "Choose a new password for the default keyring."
+msgstr "Zvolte nové heslo pro výchozí klíčenku."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:558
@@ -387,15 +360,15 @@ msgid "GNOME Keyring Daemon"
 msgstr "Démon klíčenky GNOME"
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Unlock Login Keyring"
 msgstr "Odemknout přihlašovací klíčenku"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Enter login password to unlock keyring"
 msgstr "Zadejte přihlašovací heslo k odemknutí klíčenky"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:100
+#: ../daemon/keyrings/gkr-keyring-login.c:101
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
@@ -404,15 +377,15 @@ msgstr ""
 "automaticky odemčena."
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Create Login Keyring"
 msgstr "Vytvořit přihlašovací klíčenku"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Enter your login password"
 msgstr "Zadejte své přihlašovací heslo"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:126
+#: ../daemon/keyrings/gkr-keyring-login.c:127
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
@@ -420,93 +393,93 @@ msgstr ""
 "Vaše přihlašovací klíčenka nebyla během vašeho přihlášení k tomuto počítači "
 "automaticky vytvořena. Bude vytvořena nyní."
 
-#: ../daemon/keyrings/gkr-keyring.c:586
+#: ../daemon/keyrings/gkr-keyring.c:587
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "Odemykací heslo pro klíčenku %s"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
 msgid "Unlock private key"
 msgstr "Odemknout soukromý klíč"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
 msgid "Unlock certificate"
 msgstr "Odemknout certifikát"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
 msgid "Unlock public key"
 msgstr "Odemknout veřejný klíč"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
 msgid "Unlock"
 msgstr "Odemknout"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Zadejte heslo k odemknutí soukromého klíče"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Zadejte heslo k odemknutí certifikátu"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
 msgid "Enter password to unlock the public key"
 msgstr "Zadejte heslo k odemknutí veřejného klíče"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Zadejte heslo k odemknutí"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Aplikace požaduje přístup k soukromému klíči \"%s\", ale ten je zamčen"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Aplikace požaduje přístup k certifikátu \"%s\", ale ten je zamčen"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Aplikace požaduje přístup k veřejnému klíči \"%s\", ale ten je zamčen"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Aplikace požaduje přístup k '%s', ale ta je zamčena"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
 msgid "Automatically unlock this private key when I log in."
 msgstr "Tento soukromý klíč při přihlášení automaticky odemknout."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
 msgid "Automatically unlock this certificate when I log in."
 msgstr "Tento certifikát při přihlášení automaticky odemknout."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
 msgid "Automatically unlock this public key when I log in."
 msgstr "Tento veřejný klíč při přihlášení automaticky odemknout."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
 msgid "Automatically unlock this when I log in"
 msgstr "Automaticky odemknout při přihlášení"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Unlock certificate/key storage"
 msgstr "Odemknout umístění certifikátů/klíčů"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Zadejte heslo k odemknutí umístění pro certifikáty/klíče"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -515,20 +488,20 @@ msgstr ""
 "Aplikace požaduje přístup k úložišti certifikátů/klíčů '%s', ale to je "
 "zamčeno"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Při přihlášení automaticky odemknout zabezpečené úložiště."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New Password Required"
 msgstr "Je vyžadováno nové heslo"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
 msgid "New password required for secure storage"
 msgstr "Je vyžadováno nové heslo pro zabezpečené úložiště"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -634,6 +607,33 @@ msgstr "Povolit _jednou"
 msgid "_Always Allow"
 msgstr "_Vždy povolit"
 
+#: ../daemon/util/gkr-location.c:320
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Výměnný disk: %s"
+
+#: ../daemon/util/gkr-location.c:322
+msgid "Removable Disk"
+msgstr "Výměnný disk"
+
+#: ../daemon/util/gkr-location.c:543 ../daemon/util/gkr-location.c:555
+msgid "Home"
+msgstr "Domov"
+
+#: ../daemon/util/gkr-location.c:1104 ../daemon/util/gkr-location.c:1128
+msgid "The disk or drive this file is located on is not present"
+msgstr "Disk nebo jednotka, na které je umístěn tento soubor, nejsou dostupné"
+
+#: ../daemon/util/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Nelze vytvořit adresář: %s"
+
+#: ../daemon/util/gkr-location.c:1170
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "Nelze odstranit soubor: %s"
+
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "Součást domény"
@@ -674,8 +674,7 @@ msgstr "Běžný název"
 msgid "Surname"
 msgstr "Příjmení"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:330
 msgid "Serial Number"
 msgstr "Sériové číslo"
 
@@ -762,74 +761,6 @@ msgstr "<i>Není součást certifikátu</i>"
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
 msgstr "<i>neznámé</i>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:1
-msgid "<Not Part of Certificate>"
-msgstr "<Není součást certifikátu>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:2
-msgid "<b>Fingerprints</b>"
-msgstr "<b>Otisky</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:3
-msgid "<b>Issued By</b>"
-msgstr "<b>Vydáno kým</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:4
-msgid "<b>Issued To</b>"
-msgstr "<b>Vydáno pro</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:5
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>Tento certifikát byl ověřen pro následující použití:</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:6
-msgid "<b>Validity</b>"
-msgstr "<b>Platnost</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:7
-msgid "Common Name (CN)"
-msgstr "Běžný název (CN)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:8
-msgid "Email Recipient Certificate"
-msgstr "Certifikát příjemce e-mailu"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:9
-msgid "Email Signer Certificate"
-msgstr "Certifikát odesilatele e-mailu"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:10
-msgid "Expires On"
-msgstr "Vyprší"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:11
-msgid "Issued On"
-msgstr "Vydáno"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:12
-msgid "MD5 Fingerprint"
-msgstr "Otisk MD5"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:13
-msgid "Organization (O)"
-msgstr "Organizace (O)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:14
-msgid "Organizational Unit (OU)"
-msgstr "Organizační jednotka (OU)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:15
-msgid "SHA1 Fingerprint"
-msgstr "Otisk SHA1"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:16
-msgid "SSL Client Certificate"
-msgstr "Certifikát klienta SSL"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:17
-msgid "SSL Server Certificate"
-msgstr "Certifikát serveru SSL"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -922,19 +853,7 @@ msgstr "Veřejný klíč"
 msgid "Fingerprints"
 msgstr "Otisky"
 
-#: ../gcr/gcr-import-dialog.glade.h:1
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr "<span size='large' weight='bold'>Import certifikátů a klíčů</span>"
-
-#: ../gcr/gcr-import-dialog.glade.h:2
-msgid "Import Into:"
-msgstr "Import do:"
-
-#: ../gcr/gcr-import-dialog.glade.h:3
-msgid "Password:"
-msgstr "Heslo:"
-
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Operace byla zrušena"
 
@@ -1004,362 +923,422 @@ msgstr "Nemohu analyzovat neplatná nebo poškozená data."
 msgid "The data is locked"
 msgstr "Data jsou uzamčena"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:101
 msgid "Insufficient memory available"
 msgstr "Není dostupný dostatek paměti"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:103
 msgid "The specified slot ID is not valid"
 msgstr "Zadané ID slotu není platné"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:105
 msgid "Internal error"
 msgstr "Interní chyba"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:107
 msgid "The operation failed"
 msgstr "Operace selhala"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:109
 msgid "Invalid arguments"
 msgstr "Neplatné argumenty"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:111
 msgid "The module cannot create needed threads"
 msgstr "Modul nemůže vytvořit potřebná vlákna"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:113
 msgid "The module cannot lock data properly"
 msgstr "Modul nemůže správně uzamknout data"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:115
 msgid "The field is read-only"
 msgstr "Pole je jen pro čtení"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:117
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Pole obsahuje citlivá data a nelze ho zobrazit"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:119
 msgid "The field is invalid or does not exist"
 msgstr "Pole je neplatné nebo neexistuje"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:121
 msgid "Invalid value for field"
 msgstr "Neplatná hodnota pole"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:123
 msgid "The data is not valid or unrecognized"
 msgstr "Data jsou neplatná nebo nerozpoznatelná"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:125
 msgid "The data is too long"
 msgstr "Data jsou příliš velká"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:127
 msgid "An error occurred on the device"
 msgstr "Na zařízení se vyskytla chyba"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:129
 msgid "Insufficient memory available on device"
 msgstr "Na zařízení není dostatek paměti"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:131
 msgid "The device was removed or unplugged"
 msgstr "Zařízení bylo odebráno nebo odpojeno"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:133
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Šifrovaná data jsou neplatná nebo nerozpoznatelná"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:135
 msgid "The encrypted data is too long"
 msgstr "Šifrovaná data jsou příliš velká"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:137
 msgid "This operation is not supported"
 msgstr "Operace není podporována"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:139
 msgid "The key is missing or invalid"
 msgstr "Klíč chybí nebo je neplatný"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:141
 msgid "The key is the wrong size"
 msgstr "Klíč nemá správnou velikost"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:143
 msgid "The key is of the wrong type"
 msgstr "Klíč je špatného typu"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:145
 msgid "No key is needed"
 msgstr "Klíč není potřeba"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:147
 msgid "The key is different than before"
 msgstr "Klíč je jiný, než byl dříve"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:149
 msgid "A key is needed"
 msgstr "Klíč je vyžadován"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:151
 msgid "Cannot include the key in digest"
 msgstr "Do kontrolního součtu nelze přiložit klíč"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:153
 msgid "This operation cannot be done with this key"
 msgstr "S tímto klíčem nelze tuto operaci provést"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:155
 msgid "The key cannot be wrapped"
 msgstr "Klíč nemůže být zabalen"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:157
 msgid "Cannot export this key"
 msgstr "Tento klíč nelze vyexportovat"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Šifrovací mechanismus je neplatný nebo nerozpoznaný"
 
-#: ../gp11/gp11-misc.c:177
+#: ../gp11/gp11-misc.c:161
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Šifrovací mechanismus má neplatný argument"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:163
 msgid "The object is missing or invalid"
 msgstr "Objekt je neplatný nebo chybí"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:165
 msgid "Another operation is already taking place"
 msgstr "Již probíhá jiná operace"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:167
 msgid "No operation is taking place"
 msgstr "Neprobíhá žádná operace"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:169
 msgid "The password or PIN is incorrect"
 msgstr "Heslo nebo PIN jsou nesprávné"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:171
 msgid "The password or PIN is invalid"
 msgstr "Heslo nebo PIN jsou neplatné"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:173
 msgid "The password or PIN is of an invalid length"
 msgstr "Heslo nebo PIN nemají správnou délku"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:175
 msgid "The password or PIN has expired"
 msgstr "Heslo nebo PIN již vypršely"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:177
 msgid "The password or PIN is locked"
 msgstr "Heslo nebo PIN jsou uzamčeny"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:179
 msgid "The session is closed"
 msgstr "Sezení je uzavřeno"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:181
 msgid "Too many sessions are active"
 msgstr "Příliš mnoho sezení je aktivních"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:183
 msgid "The session is invalid"
 msgstr "Sezení je neplatné"
 
-#: ../gp11/gp11-misc.c:201
+#: ../gp11/gp11-misc.c:185
 msgid "The session is read-only"
 msgstr "Sezení je jen pro čtení"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:187
 msgid "An open session exists"
 msgstr "Existuje otevřené sezení"
 
-#: ../gp11/gp11-misc.c:205
+#: ../gp11/gp11-misc.c:189
 msgid "A read-only session exists"
 msgstr "Existuje sezení jen pro čtení"
 
-#: ../gp11/gp11-misc.c:207
+#: ../gp11/gp11-misc.c:191
 msgid "An administrator session exists"
 msgstr "Existuje sezení správce"
 
-#: ../gp11/gp11-misc.c:209
+#: ../gp11/gp11-misc.c:193
 msgid "The signature is bad or corrupted"
 msgstr "Podpis je špatný nebo poškozený"
 
-#: ../gp11/gp11-misc.c:211
+#: ../gp11/gp11-misc.c:195
 msgid "The signature is unrecognized or corrupted"
 msgstr "Podpis je nerozpoznatelný nebo poškozený"
 
-#: ../gp11/gp11-misc.c:213
+#: ../gp11/gp11-misc.c:197
 msgid "Certain required fields are missing"
 msgstr "Některá vyžadovaná pole chybí"
 
-#: ../gp11/gp11-misc.c:215
+#: ../gp11/gp11-misc.c:199
 msgid "Certain fields have invalid values"
 msgstr "Některá vyžadovaná pole mají neplatné hodnoty"
 
-#: ../gp11/gp11-misc.c:217
+#: ../gp11/gp11-misc.c:201
 msgid "The device is not present or unplugged"
 msgstr "Zařízení není přítomno nebo je odpojeno"
 
-#: ../gp11/gp11-misc.c:219
+#: ../gp11/gp11-misc.c:203
 msgid "The device is invalid or unrecognizable"
 msgstr "Zařízení je nesprávné nebo nerozpoznatelné"
 
-#: ../gp11/gp11-misc.c:221
+#: ../gp11/gp11-misc.c:205
 msgid "The device is write protected"
 msgstr "Zařízení lze použít jen pro čtení"
 
-#: ../gp11/gp11-misc.c:223
+#: ../gp11/gp11-misc.c:207
 msgid "Cannot import because the key is invalid"
 msgstr "Nelze importovat, protože klíč je neplatný"
 
-#: ../gp11/gp11-misc.c:225
+#: ../gp11/gp11-misc.c:209
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Nelze importovat, protože klíč má špatnou velikost"
 
-#: ../gp11/gp11-misc.c:227
+#: ../gp11/gp11-misc.c:211
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Nelze importovat, protože klíč není správného typu"
 
-#: ../gp11/gp11-misc.c:229
+#: ../gp11/gp11-misc.c:213
 msgid "You are already logged in"
 msgstr "Již jste přihlášení"
 
-#: ../gp11/gp11-misc.c:231
+#: ../gp11/gp11-misc.c:215
 msgid "No user has logged in"
 msgstr "Žádný uživatel se nepřihlásil"
 
-#: ../gp11/gp11-misc.c:233
+#: ../gp11/gp11-misc.c:217
 msgid "The user's password or PIN is not set"
 msgstr "Heslo nebo PIN uživatele nejsou nastaveny"
 
-#: ../gp11/gp11-misc.c:235
+#: ../gp11/gp11-misc.c:219
 msgid "The user is of an invalid type"
 msgstr "Uživatel není platného typu"
 
-#: ../gp11/gp11-misc.c:237
+#: ../gp11/gp11-misc.c:221
 msgid "Another user is already logged in"
 msgstr "Již je přihlášen jiný uživatel"
 
-#: ../gp11/gp11-misc.c:239
+#: ../gp11/gp11-misc.c:223
 msgid "Too many users of different types logged in"
 msgstr "Je přihlášeno příliš mnoho uživatelů rozdílných typů"
 
-#: ../gp11/gp11-misc.c:241
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot import an invalid key"
 msgstr "Neplatný klíč nelze importovat"
 
-#: ../gp11/gp11-misc.c:243
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot import a key of the wrong size"
 msgstr "Nelze importovat klíč ze špatné stránky"
 
-#: ../gp11/gp11-misc.c:245
+#: ../gp11/gp11-misc.c:229
 msgid "Cannot export because the key is invalid"
 msgstr "Neplatný klíč nelze exportovat"
 
-#: ../gp11/gp11-misc.c:247
+#: ../gp11/gp11-misc.c:231
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Nelze exportovat, protože klíč má špatnou velikost"
 
-#: ../gp11/gp11-misc.c:249
+#: ../gp11/gp11-misc.c:233
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Nelze exportovat, protože klíč je špatného typu"
 
-#: ../gp11/gp11-misc.c:251
+#: ../gp11/gp11-misc.c:235
 msgid "Unable to initialize the random number generator"
 msgstr "Nelze spustit generátor náhodných čísel"
 
-#: ../gp11/gp11-misc.c:253
+#: ../gp11/gp11-misc.c:237
 msgid "No random number generator available"
 msgstr "Není dostupný žádný generátor náhodných čísel"
 
-#: ../gp11/gp11-misc.c:255
+#: ../gp11/gp11-misc.c:239
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Šifrovací mechanismus má neplatný parametr"
 
-#: ../gp11/gp11-misc.c:257
+#: ../gp11/gp11-misc.c:241
 msgid "Not enough space to store the result"
 msgstr "Nedostatek místa pro uložení výsledku"
 
-#: ../gp11/gp11-misc.c:259
+#: ../gp11/gp11-misc.c:243
 msgid "The saved state is invalid"
 msgstr "Uložený stav je neplatný"
 
-#: ../gp11/gp11-misc.c:261
+#: ../gp11/gp11-misc.c:245
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Informace jsou citlivé a nemohou být zobrazeny"
 
-#: ../gp11/gp11-misc.c:263
+#: ../gp11/gp11-misc.c:247
 msgid "The state cannot be saved"
 msgstr "Stav nelze uložit"
 
-#: ../gp11/gp11-misc.c:265
+#: ../gp11/gp11-misc.c:249
 msgid "The module has not been initialized"
 msgstr "Modul nebyl spuštěn"
 
-#: ../gp11/gp11-misc.c:267
+#: ../gp11/gp11-misc.c:251
 msgid "The module has already been initialized"
 msgstr "Modul již byl inicializován"
 
-#: ../gp11/gp11-misc.c:269
+#: ../gp11/gp11-misc.c:253
 msgid "Cannot lock data"
 msgstr "Nelze zamknout data"
 
-#: ../gp11/gp11-misc.c:271
+#: ../gp11/gp11-misc.c:255
 msgid "The data cannot be locked"
 msgstr "Data nemohou být uzamčena"
 
-#: ../gp11/gp11-misc.c:273
+#: ../gp11/gp11-misc.c:257
 msgid "The signature request was rejected by the user"
 msgstr "Dotaz na podpis byl uživatelem zamítnut"
 
-#: ../gp11/gp11-misc.c:277
+#: ../gp11/gp11-misc.c:261
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: ../library/gnome-keyring-utils.c:155
+#: ../library/gnome-keyring-utils.c:168
 msgid "Access Denied"
 msgstr "Přístup odmítnut"
 
-#: ../library/gnome-keyring-utils.c:157
+#: ../library/gnome-keyring-utils.c:170
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Aplikace gnome-keyring-daemon není spuštěna."
 
-#: ../library/gnome-keyring-utils.c:159
+#: ../library/gnome-keyring-utils.c:172
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Chyba při komunikaci s aplikací gnome-keyring-daemon"
 
-#: ../library/gnome-keyring-utils.c:161
+#: ../library/gnome-keyring-utils.c:174
 msgid "A keyring with that name already exists"
 msgstr "Klíčenka s tímto názvem již existuje"
 
-#: ../library/gnome-keyring-utils.c:163
+#: ../library/gnome-keyring-utils.c:176
 msgid "Programmer error: The application sent invalid data."
 msgstr "Chyba programátora: Aplikace poslala chybná data."
 
-#: ../library/gnome-keyring-utils.c:165
+#: ../library/gnome-keyring-utils.c:178
 msgid "No matching results"
 msgstr "Žádné odpovídající výsledky"
 
-#: ../library/gnome-keyring-utils.c:167
+#: ../library/gnome-keyring-utils.c:180
 msgid "A keyring with that name does not exist."
 msgstr "Klíčenka s tímto názvem neexistuje."
 
-#: ../library/gnome-keyring-utils.c:174
+#: ../library/gnome-keyring-utils.c:187
 msgid "The keyring has already been unlocked."
 msgstr "Klíčenka již byla odemčena."
 
-#: ../pkcs11/gck/gck-certificate.c:710
+#: ../pkcs11/gck/gck-certificate.c:711
 msgid "Unnamed Certificate"
 msgstr "Nepojmenovaný certifikát"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
 msgid "Couldn't parse public SSH key"
 msgstr "Nelze analyzovat veřejný klíč zabezpečeného shellu."
+
+#~ msgid "<Not Part of Certificate>"
+#~ msgstr "<Není součást certifikátu>"
+
+#~ msgid "<b>Fingerprints</b>"
+#~ msgstr "<b>Otisky</b>"
+
+#~ msgid "<b>Issued By</b>"
+#~ msgstr "<b>Vydáno kým</b>"
+
+#~ msgid "<b>Issued To</b>"
+#~ msgstr "<b>Vydáno pro</b>"
+
+#~ msgid "<b>This certificate has been verified for the following uses:</b>"
+#~ msgstr "<b>Tento certifikát byl ověřen pro následující použití:</b>"
+
+#~ msgid "<b>Validity</b>"
+#~ msgstr "<b>Platnost</b>"
+
+#~ msgid "Common Name (CN)"
+#~ msgstr "Běžný název (CN)"
+
+#~ msgid "Email Recipient Certificate"
+#~ msgstr "Certifikát příjemce e-mailu"
+
+#~ msgid "Email Signer Certificate"
+#~ msgstr "Certifikát odesilatele e-mailu"
+
+#~ msgid "Expires On"
+#~ msgstr "Vyprší"
+
+#~ msgid "Issued On"
+#~ msgstr "Vydáno"
+
+#~ msgid "MD5 Fingerprint"
+#~ msgstr "Otisk MD5"
+
+#~ msgid "Organization (O)"
+#~ msgstr "Organizace (O)"
+
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "Organizační jednotka (OU)"
+
+#~ msgid "SHA1 Fingerprint"
+#~ msgstr "Otisk SHA1"
+
+#~ msgid "SSL Client Certificate"
+#~ msgstr "Certifikát klienta SSL"
+
+#~ msgid "SSL Server Certificate"
+#~ msgstr "Certifikát serveru SSL"
+
+#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+#~ msgstr "<span size='large' weight='bold'>Import certifikátů a klíčů</span>"
+
+#~ msgid "Import Into:"
+#~ msgstr "Import do:"
+
+#~ msgid "Password:"
+#~ msgstr "Heslo:"
