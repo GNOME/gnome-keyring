@@ -105,4 +105,20 @@
 
 #define CKA_GNOME_USES_REMAINING                 (CKA_GNOME + 203)
 
+/* -------------------------------------------------------------------
+ * SECRETS
+ */
+
+#define CKO_G_COLLECTION                     (CKO_GNOME + 110)
+
+#define CKA_G_LOCKED                         (CKA_GNOME + 210)
+
+#define CKA_G_CREATED                        (CKA_GNOME + 211)
+
+#define CKA_G_MODIFIED                       (CKA_GNOME + 212)
+
+#define CKA_G_FIELDS                         (CKA_GNOME + 213)
+
+#define CKA_G_COLLECTION                     (CKA_GNOME + 214)
+
 #endif /* PKCS11G_H */
