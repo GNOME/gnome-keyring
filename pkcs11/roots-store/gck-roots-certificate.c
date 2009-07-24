@@ -160,6 +160,8 @@ gck_roots_certificate_class_init (GckRootsCertificateClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
 	
+	gck_roots_certificate_parent_class = g_type_class_peek_parent (klass);
+
 	gobject_class->constructor = gck_roots_certificate_constructor;
 	gobject_class->dispose = gck_roots_certificate_dispose;
 	gobject_class->finalize = gck_roots_certificate_finalize;
