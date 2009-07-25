@@ -14,7 +14,9 @@ noinst_LTLIBRARIES = \
 
 libgck_secret_store_la_SOURCES = \
 	gck-secret-collection.h gck-secret-collection.c \
+	gck-secret-fields.h gck-secret-fields.c \
 	gck-secret-item.h gck-secret-item.c \
-	gck-secret-object.h gck-secret-object.c
+	gck-secret-object.h gck-secret-object.c \
+	gck-secret-search.h gck-secret-search.c
 
 # -------------------------------------------------------------------------------

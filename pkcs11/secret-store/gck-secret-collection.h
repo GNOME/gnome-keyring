@@ -42,4 +42,7 @@ struct _GckSecretCollectionClass {
 
 GType                gck_secret_collection_get_type        (void);
 
+GckLogin*            gck_secret_collection_lookup_secret   (GckSecretCollection *self,
+                                                            const gchar *identifier);
+
 #endif /* __GCK_SECRET_COLLECTION_H__ */

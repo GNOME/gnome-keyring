@@ -31,6 +31,7 @@ enum {
 
 struct _GckSecretCollection {
 	GckSecretObject parent;
+	GHashTable *secrets;
 };
 
 G_DEFINE_TYPE (GckSecretCollection, gck_secret_collection, GCK_TYPE_SECRET_OBJECT);
@@ -59,11 +60,11 @@ gck_secret_collection_get_attribute (GckObject *base, GckSession *session, CK_AT
 static void
 gck_secret_collection_init (GckSecretCollection *self)
 {
-	
+	self->secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 }
 
-static GObject* 
-gck_secret_collection_constructor (GType type, guint n_props, GObjectConstructParam *props) 
+static GObject*
+gck_secret_collection_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (G_OBJECT_CLASS (gck_secret_collection_parent_class)->constructor(type, n_props, props));
 	g_return_val_if_fail (self, NULL);
@@ -102,9 +103,9 @@ gck_secret_collection_get_property (GObject *obj, guint prop_id, GValue *value,
 static void
 gck_secret_collection_dispose (GObject *obj)
 {
-#if 0
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
-#endif
+
+	g_hash_table_remove_all (self->secrets);
 
 	G_OBJECT_CLASS (gck_secret_collection_parent_class)->dispose (obj);
 }
@@ -112,9 +113,11 @@ gck_secret_collection_dispose (GObject *obj)
 static void
 gck_secret_collection_finalize (GObject *obj)
 {
-#if 0
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
-#endif
+
+	if (self->secrets)
+		g_hash_table_destroy (self->secrets);
+	self->secrets = NULL;
 
 	G_OBJECT_CLASS (gck_secret_collection_parent_class)->finalize (obj);
 }
@@ -137,5 +140,14 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 }
 
 /* -----------------------------------------------------------------------------
- * PUBLIC 
+ * PUBLIC
  */
+
+GckLogin*
+gck_secret_collection_lookup_secret (GckSecretCollection *self,
+                                     const gchar *identifier)
+{
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), NULL);
+	g_return_val_if_fail (identifier, NULL);
+	return g_hash_table_lookup (self->secrets, identifier);
+}

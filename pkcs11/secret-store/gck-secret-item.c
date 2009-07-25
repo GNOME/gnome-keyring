@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gck-secret-fields.h"
 #include "gck-secret-item.h"
 
 #include "gck/gck-attributes.h"
@@ -50,120 +51,6 @@ G_DEFINE_TYPE (GckSecretItem, gck_secret_item, GCK_TYPE_SECRET_OBJECT);
 /* -----------------------------------------------------------------------------
  * INTERNAL 
  */
-
-static GType
-fields_boxed_type (void)
-{
-	static GType type = 0;
-	if (!type) 
-		type = g_boxed_type_register_static ("GHashTable_Fields", 
-		                                     (GBoxedCopyFunc)g_hash_table_ref,
-		                                     (GBoxedFreeFunc)g_hash_table_unref);
-	return type;
-}
-
-static void
-each_field_append (gpointer key, gpointer value, gpointer user_data)
-{
-	GString *result = user_data;
-	g_string_append (result, key);
-	g_string_append_c (result, '\0');
-	g_string_append (result, value);
-	g_string_append_c (result, '\0');
-}
-
-static void
-each_field_length (gpointer key, gpointer value, gpointer user_data)
-{
-	gsize *length = user_data;
-	*length += strlen (key);
-	*length += strlen (value);
-	*length += 2;
-}
-
-static CK_RV
-attribute_set_fields (CK_ATTRIBUTE_PTR attr, GHashTable *fields)
-{
-	GString *result;
-	gsize length;
-	CK_RV rv;
-	
-	g_assert (attr);
-	g_assert (fields);
-	
-	if (!attr->pValue) {
-		length = 0;
-		g_hash_table_foreach (fields, each_field_length, &length);
-		attr->ulValueLen = length;
-		return CKR_OK;
-	}
-	
-	result = g_string_sized_new (256);
-	g_hash_table_foreach (fields, each_field_append, result);
-	
-	rv = gck_attribute_set_data (attr, result->str, result->len);
-	g_string_free (result, TRUE);
-	
-	return rv;
-}
-
-static CK_RV
-attribute_get_fields (CK_ATTRIBUTE_PTR attr, GHashTable **fields)
-{
-	GHashTable *result;
-	gchar *name;
-	gsize n_name;
-	gchar *value;
-	gsize n_value;
-	gchar *ptr;
-	gchar *last;
-	
-	g_assert (attr);
-	g_assert (fields);
-
-	ptr = attr->pValue;
-	last = ptr + attr->ulValueLen;
-	
-	if (!ptr && last != ptr)
-		return CKR_ATTRIBUTE_VALUE_INVALID;
-
-	result = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-
-	while (ptr && ptr != last) {
-		g_assert (ptr < last);
-		
-		name = ptr;
-		ptr = memchr (ptr, 0, last - ptr);
-		
-		/* No value is present? */
-		if (!ptr) {
-			g_hash_table_unref (result);
-			return CKR_ATTRIBUTE_VALUE_INVALID;
-		}
-		
-		n_name = ptr - name;
-		value = ptr;
-		ptr = memchr (ptr, 0, last - ptr);
-		
-		/* The last value */
-		if (ptr == NULL)
-			ptr = last;
-		
-		n_value = ptr - value;
-
-		/* Validate the name and value*/
-		if (!g_utf8_validate (name, n_name, NULL) || 
-		    !g_utf8_validate (value, n_value, NULL)) {
-			g_hash_table_unref (result);
-			return CKR_ATTRIBUTE_VALUE_INVALID;
-		}
-		
-		g_hash_table_replace (result, g_strndup (name, n_name), g_strndup (value, n_value));
-	}
-	
-	*fields = result;
-	return CKR_OK;
-}
 
 static gboolean
 complete_set_secret (GckTransaction *transaction, GObject *obj, gpointer user_data)
@@ -232,6 +119,15 @@ begin_set_fields (GckSecretItem *self, GckTransaction *transaction, GHashTable *
  * OBJECT 
  */
 
+static gboolean
+gck_secret_item_real_is_locked (GckSecretObject *obj, GckSession *session)
+{
+	GckSecretItem *self = GCK_SECRET_ITEM (obj);
+	if (!self->collection)
+		return TRUE;
+	return gck_secret_object_is_locked (GCK_SECRET_OBJECT (self), session);
+}
+
 static CK_RV
 gck_secret_item_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
@@ -242,7 +138,7 @@ gck_secret_item_real_get_attribute (GckObject *base, GckSession *session, CK_ATT
 	
 	switch (attr->type) {
 	case CKA_VALUE:
-		if (gck_secret_item_real_is_locked (self, session))
+		if (gck_secret_item_real_is_locked (GCK_SECRET_OBJECT (self), session))
 			return CKR_USER_NOT_LOGGED_IN;
 		g_return_val_if_fail (self->secret, CKR_GENERAL_ERROR);
 		password = gck_login_get_password (self->secret, &n_password);
@@ -252,11 +148,11 @@ gck_secret_item_real_get_attribute (GckObject *base, GckSession *session, CK_ATT
 		g_return_val_if_fail (self->collection, CKR_GENERAL_ERROR);
 		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (self->collection));
 		return gck_attribute_set_string (attr, identifier);
-		
+
 	case CKA_G_FIELDS:
-		return attribute_set_fields (attr, self->fields);
+		return gck_secret_fields_serialize (attr, self->fields);
 	}
-	
+
 	return GCK_OBJECT_CLASS (gck_secret_item_parent_class)->get_attribute (base, session, attr);
 }
 
@@ -268,21 +164,21 @@ gck_secret_item_real_set_attribute (GckObject *base, GckSession *session,
 	GHashTable *fields;
 	GckLogin *login;
 	CK_RV rv;
-	
+
 	/* Check that the object is not locked */
-	if (!gck_secret_item_real_is_locked (self, session)) {
+	if (!gck_secret_item_real_is_locked (GCK_SECRET_OBJECT (self), session)) {
 		gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 		return;
 	}
-	
+
 	switch (attr->type) {
 	case CKA_VALUE:
 		login = gck_login_new (attr->pValue, attr->ulValueLen);
 		begin_set_secret (self, transaction, login);
 		break;
-		
+
 	case CKA_G_FIELDS:
-		rv = attribute_get_fields (attr, &fields);
+		rv = gck_secret_fields_parse (attr, &fields);
 		if (rv != CKR_OK)
 			gck_transaction_fail (transaction, rv);
 		else
@@ -405,25 +301,24 @@ gck_secret_item_class_init (GckSecretItemClass *klass)
 
 	gck_class->get_attribute = gck_secret_item_real_get_attribute;
 	gck_class->set_attribute = gck_secret_item_real_set_attribute;
-	
+
 	secret_class->is_locked = gck_secret_item_real_is_locked;
-	secret_class->lock = gck_secret_item_real_lock;
 
 	g_object_class_install_property (gobject_class, PROP_SECRET,
-	           g_param_spec_object ("secret", "Secret", "Item's Secret", 
+	           g_param_spec_object ("secret", "Secret", "Item's Secret",
 	                                GCK_TYPE_LOGIN, G_PARAM_READWRITE));
-	
+
 	g_object_class_install_property (gobject_class, PROP_SECRET,
-	           g_param_spec_object ("collection", "Collection", "Item's Collection", 
+	           g_param_spec_object ("collection", "Collection", "Item's Collection",
 	                                GCK_TYPE_SECRET_COLLECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	
+
 	g_object_class_install_property (gobject_class, PROP_FIELDS,
-	           g_param_spec_boxed ("fields", "Fields", "Item's fields", 
-	                               fields_boxed_type (), G_PARAM_READWRITE));
+	           g_param_spec_boxed ("fields", "Fields", "Item's fields",
+	                               GCK_BOXED_SECRET_FIELDS, G_PARAM_READWRITE));
 }
 
 /* -----------------------------------------------------------------------------
- * PUBLIC 
+ * PUBLIC
  */
 
 GckSecretCollection*
