@@ -33,6 +33,10 @@ GType               gck_secret_fields_boxed_type    (void);
 
 GHashTable*         gck_secret_fields_new           (void);
 
+void                gck_secret_fields_add           (GHashTable *fields,
+                                                     const gchar *name,
+                                                     const gchar *value);
+
 CK_RV               gck_secret_fields_parse         (CK_ATTRIBUTE_PTR attr,
                                                      GHashTable **fields);
 
@@ -41,5 +45,11 @@ CK_RV               gck_secret_fields_serialize     (CK_ATTRIBUTE_PTR attr,
 
 gboolean            gck_secret_fields_match         (GHashTable *haystack,
                                                      GHashTable *needle);
-         
+
+GHashTable*         gck_secret_fields_hash          (GHashTable *fields);
+
+gboolean            gck_secret_fields_has_word      (GHashTable *fields,
+                                                     const gchar *name,
+                                                     const gchar *word);
+
 #endif /* __GCK_SECRET_FIELDS_H__ */

@@ -21,7 +21,13 @@
 
 #include "config.h"
 
+#include "gck-secret-binary.h"
 #include "gck-secret-collection.h"
+#include "gck-secret-textual.h"
+
+#include "egg/egg-buffer.h"
+
+#include "gck/gck-serializable.h"
 
 #include <glib/gi18n.h>
 
@@ -32,17 +38,23 @@ enum {
 struct _GckSecretCollection {
 	GckSecretObject parent;
 	GHashTable *secrets;
+	GList *items;
+	gchar *password;
 };
 
-G_DEFINE_TYPE (GckSecretCollection, gck_secret_collection, GCK_TYPE_SECRET_OBJECT);
+static void gck_secret_collection_serializable (GckSerializableIface *iface);
+
+G_DEFINE_TYPE_EXTENDED (GckSecretCollection, gck_secret_collection, GCK_TYPE_SECRET_OBJECT, 0,
+               G_IMPLEMENT_INTERFACE (GCK_TYPE_SERIALIZABLE, gck_secret_collection_serializable));
 
 /* -----------------------------------------------------------------------------
- * INTERNAL 
+ * INTERNAL
  */
 
 
+
 /* -----------------------------------------------------------------------------
- * OBJECT 
+ * OBJECT
  */
 
 static CK_RV
@@ -138,6 +150,52 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 
 	gck_class->get_attribute = gck_secret_collection_get_attribute;
 }
+
+static gboolean
+gck_secret_collection_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
+{
+	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
+	GckDataResult res;
+
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), FALSE);
+	g_return_val_if_fail (data, FALSE);
+	g_return_val_if_fail (n_data, FALSE);
+
+	res = gck_secret_binary_read (self, data, n_data);
+	if (res == GCK_DATA_UNRECOGNIZED)
+		res = gck_secret_textual_read (self, data, n_data);
+
+	/* TODO: This doesn't transfer knowledge of 'wrong password' back up */
+	return (res == GCK_DATA_SUCCESS);
+}
+
+static gboolean
+gck_secret_collection_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+{
+	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
+	GckDataResult res;
+
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), FALSE);
+	g_return_val_if_fail (data, FALSE);
+	g_return_val_if_fail (n_data, FALSE);
+
+	if (self->password == NULL)
+		res = gck_secret_textual_write (self, data, n_data);
+	else
+		res = gck_secret_binary_write (self, data, n_data);
+
+	/* TODO: This doesn't transfer knowledge of 'no password' back up */
+	return (res == GCK_DATA_SUCCESS);
+}
+
+static void
+gck_secret_collection_serializable (GckSerializableIface *iface)
+{
+	iface->extension = ".keyring";
+	iface->load = gck_secret_collection_real_load;
+	iface->save = gck_secret_collection_real_save;
+}
+
 
 /* -----------------------------------------------------------------------------
  * PUBLIC

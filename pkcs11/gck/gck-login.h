@@ -46,7 +46,9 @@ GType               gck_login_get_type               (void);
 GckLogin*           gck_login_new                    (CK_UTF8CHAR_PTR pin, 
                                                       CK_ULONG n_pin);
 
-const gchar*        gck_login_get_password           (GckLogin *self, 
+GckLogin*           gck_login_new_from_password      (const gchar *password);
+
+const gchar*        gck_login_get_password           (GckLogin *self,
                                                       gsize *n_pin);
 
 gboolean            gck_login_equals                 (GckLogin *self,

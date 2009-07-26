@@ -22,9 +22,11 @@
 #ifndef __GCK_SECRET_OBJECT_H__
 #define __GCK_SECRET_OBJECT_H__
 
-#include <glib-object.h>
+#include "gck-secret-types.h"
 
 #include "gck/gck-object.h"
+
+#include <glib-object.h>
 
 #define GCK_TYPE_SECRET_OBJECT               (gck_secret_object_get_type ())
 #define GCK_SECRET_OBJECT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_SECRET_OBJECT, GckSecretObject))
@@ -33,7 +35,6 @@
 #define GCK_IS_SECRET_OBJECT_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_SECRET_OBJECT))
 #define GCK_SECRET_OBJECT_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_SECRET_OBJECT, GckSecretObjectClass))
 
-typedef struct _GckSecretObject GckSecretObject;
 typedef struct _GckSecretObjectClass GckSecretObjectClass;
 typedef struct _GckSecretObjectPrivate GckSecretObjectPrivate;
 
@@ -60,7 +61,13 @@ void                 gck_secret_object_set_label       (GckSecretObject *self,
 
 glong                gck_secret_object_get_created     (GckSecretObject *self);
 
+void                 gck_secret_object_set_created     (GckSecretObject *self,
+                                                        glong value);
+
 glong                gck_secret_object_get_modified    (GckSecretObject *self);
+
+void                 gck_secret_object_set_modified    (GckSecretObject *self,
+                                                        glong value);
 
 void                 gck_secret_object_was_modified    (GckSecretObject *self);
 

@@ -33,16 +33,36 @@
 #define GCK_IS_SECRET_COLLECTION_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_SECRET_COLLECTION))
 #define GCK_SECRET_COLLECTION_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_SECRET_COLLECTION, GckSecretCollectionClass))
 
-typedef struct _GckSecretCollection GckSecretCollection;
 typedef struct _GckSecretCollectionClass GckSecretCollectionClass;
-    
+
 struct _GckSecretCollectionClass {
 	GckSecretObjectClass parent_class;
 };
 
+typedef enum _GckSecretState {
+	GCK_SECRET_EMPTY = 0,
+	GCK_SECRET_PARTIAL = 1,
+	GCK_SECRET_COMPLETE = 2
+} GckSecretState;
+
 GType                gck_secret_collection_get_type        (void);
+
+GckSecretState       gck_secret_collection_get_state       (GckSecretCollection *self);
+
+GList*               gck_secret_collection_get_items       (GckSecretCollection *self);
+
+GckSecretItem*       gck_secret_collection_get_item        (GckSecretCollection *self,
+                                                            const gchar *identifier);
+
+GckSecretItem*       gck_secret_collection_create_item     (GckSecretCollection *self,
+                                                            const gchar *identifier);
+
+void                 gck_secret_collection_remove_item     (GckSecretCollection *self,
+                                                            GckSecretItem *item);
 
 GckLogin*            gck_secret_collection_lookup_secret   (GckSecretCollection *self,
                                                             const gchar *identifier);
+
+const gchar *        gck_secret_collection_get_master_password (GckSecretCollection *self);
 
 #endif /* __GCK_SECRET_COLLECTION_H__ */

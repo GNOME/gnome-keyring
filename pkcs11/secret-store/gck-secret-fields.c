@@ -25,6 +25,7 @@
 
 #include "gck/gck-attributes.h"
 
+#include <ctype.h>
 #include <string.h>
 
 GType
@@ -167,4 +168,34 @@ gck_secret_fields_match (GHashTable *haystack, GHashTable *needle)
 	}
 	
 	return TRUE;
+}
+
+gboolean
+gck_secret_fields_has_word (GHashTable *fields, const gchar *name, const gchar *word)
+{
+	const gchar *string;
+	const gchar *at;
+	gsize len = strlen (word);
+
+	if (len == 0)
+		return FALSE;
+
+	string = g_hash_table_lookup (fields, name);
+	if (!string)
+		return FALSE;
+
+	for (;;) {
+		at = strstr (string, word);
+		if (at == NULL)
+			return FALSE;
+
+		/* The word exists, is at beginning or end, or spaces around it */
+		if ((at == string || isspace (*(at - 1))) &&
+		    (*(at + len) == 0 || isspace (*(at + len))))
+			return TRUE;
+
+		string = at + len;
+	}
+
+	g_assert_not_reached ();
 }

@@ -34,9 +34,8 @@
 #define GCK_IS_SECRET_ITEM_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_SECRET_ITEM))
 #define GCK_SECRET_ITEM_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_SECRET_ITEM, GckSecretItemClass))
 
-typedef struct _GckSecretItem GckSecretItem;
 typedef struct _GckSecretItemClass GckSecretItemClass;
-    
+
 struct _GckSecretItemClass {
 	GckSecretObjectClass parent_class;
 };

@@ -22,9 +22,11 @@
 #ifndef __GCK_SECRET_SEARCH_H__
 #define __GCK_SECRET_SEARCH_H__
 
-#include <glib-object.h>
+#include "gck-secret-types.h"
 
 #include "gck/gck-object.h"
+
+#include <glib-object.h>
 
 #define GCK_TYPE_SECRET_SEARCH               (gck_secret_search_get_type ())
 #define GCK_SECRET_SEARCH(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_SECRET_SEARCH, GckSecretSearch))
@@ -33,9 +35,8 @@
 #define GCK_IS_SECRET_SEARCH_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCK_TYPE_SECRET_SEARCH))
 #define GCK_SECRET_SEARCH_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCK_TYPE_SECRET_SEARCH, GckSecretSearchClass))
 
-typedef struct _GckSecretSearch GckSecretSearch;
 typedef struct _GckSecretSearchClass GckSecretSearchClass;
-    
+
 struct _GckSecretSearchClass {
 	GckObjectClass parent_class;
 };
