@@ -28,6 +28,7 @@
 #include "gck/gck-file-tracker.h"
 #include "gck/gck-serializable.h"
 
+#include <fcntl.h>
 #include <string.h>
 
 struct _GckSecretModule {
@@ -80,158 +81,67 @@ GCK_DEFINE_MODULE (gck_secret_module, GCK_TYPE_SECRET_MODULE);
  * INTERNAL 
  */
 
-static GckCertificate*
-add_certificate_for_data (GckSecretModule *self, const guchar *data, 
-                          gsize n_data, const gchar *path)
-{
-	GckCertificate *cert;
-	GckManager *manager;
-	gchar *hash, *unique;
-	
-	g_assert (GCK_IS_SECRET_MODULE (self));
-	g_assert (data);
-	g_assert (path);
-	
-	manager = gck_module_get_manager (GCK_MODULE (self));
-	g_return_val_if_fail (manager, NULL);
-
-	/* Hash the certificate */
-	hash = g_compute_checksum_for_data (G_CHECKSUM_MD5, data, n_data);
-	unique = g_strdup_printf ("%s:%s", path, hash);
-	g_free (hash);
-	
-	/* Try and find a certificate */
-	cert = GCK_CERTIFICATE (gck_manager_find_one_by_string_property (manager, "unique", unique));
-	if (cert != NULL) {
-		g_free (unique);
-		return cert;
-	}
-
-	/* Create a new certificate object */
-	cert = GCK_CERTIFICATE (gck_secret_certificate_new (GCK_MODULE (self), unique, path));
-
-	if (!gck_serializable_load (GCK_SERIALIZABLE (cert), NULL, data, n_data)) {
-		g_message ("couldn't parse certificate(s): %s", path);
-		g_object_unref (cert);
-		return NULL;
-	}
-	
-	/* Setup the right manager on the certificates */
-	gck_manager_register_object (manager, GCK_OBJECT (cert));
-	gck_manager_register_object (manager, GCK_OBJECT (gck_secret_certificate_get_netscape_trust (GCK_SECRET_CERTIFICATE (cert))));
-	
-	/* And add to our wonderful table */
-	g_hash_table_insert (self->certificates, cert, cert);
-	return cert;
-}
-
-static void
-parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
-                  GHashTable *headers, gpointer user_data)
-{
-	static GQuark PEM_CERTIFICATE;
-	static volatile gsize quarks_inited = 0;
-	
-	ParsePrivate *ctx = (ParsePrivate*)user_data;
-	GckCertificate *cert;
-	
-	g_assert (ctx);
-	
-	/* Initialize the first time through */
-	if (g_once_init_enter (&quarks_inited)) {
-		PEM_CERTIFICATE = g_quark_from_static_string ("CERTIFICATE");
-		g_once_init_leave (&quarks_inited, 1);
-	}
-	
-	if (type == PEM_CERTIFICATE) {
-		cert = add_certificate_for_data (ctx->module, data, n_data, ctx->path);
-		if (cert != NULL) {
-			g_hash_table_remove (ctx->checks, cert);
-			++ctx->count;
-		}
-	}
-}
-
-static void
-remove_each_certificate (gpointer key, gpointer value, gpointer user_data)
-{
-	GckSecretModule *self = user_data;
-	g_assert (GCK_IS_SECRET_MODULE (self));
-	if (!g_hash_table_remove (self->certificates, value))
-		g_return_if_reached ();	
-}
-
 static void
 file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 {
-	ParsePrivate ctx;
-	GckManager *manager;
-	GckCertificate *cert;
-	guchar *data;
-	GList *objects, *l;
+	GckSecretCollection *collection;
 	GError *error = NULL;
+	GckManager *manager;
+	gboolean created;
+	gchar *basename;
+	guchar *data;
 	gsize n_data;
-	guint num;
 
 	manager = gck_module_get_manager (GCK_MODULE (self));
 	g_return_if_fail (manager);
 
-	/* Read in the public key */
+	/* Read in the keyring */
 	if (!g_file_get_contents (path, (gchar**)&data, &n_data, &error)) {
-		g_warning ("couldn't load root certificates: %s: %s",
+		g_warning ("couldn't load keyring: %s: %s",
 		           path, error && error->message ? error->message : "");
 		return;
 	}
-	
-	memset (&ctx, 0, sizeof (ctx));
-	ctx.path = path;
-	ctx.module = self;
-	ctx.count = 0;
-	
-	/* Checks for what was at this path */
-	ctx.checks = g_hash_table_new (g_direct_hash, g_direct_equal);
-	objects = gck_manager_find_by_string_property (manager, "path", path);
-	for (l = objects; l; l = g_list_next (l))
-		g_hash_table_insert (ctx.checks, l->data, l->data);
-	g_list_free (objects);
-	
-	/* Try and parse the PEM */
-	num = egg_openssl_pem_parse (data, n_data, parsed_pem_block, &ctx);
 
-	/* If no PEM data, try to parse directly as DER  */
-	if (ctx.count == 0) {
-		cert = add_certificate_for_data (self, data, n_data, path);
-		if (cert != NULL)
-			g_hash_table_remove (ctx.checks, cert);
+	/* Do we have one for this path yet? */
+	basename = g_path_get_basename (path);
+	collection = g_hash_table_lookup (self->collections, basename);
+
+	if (collection == NULL) {
+		created = TRUE;
+		collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
+		                           "module", self,
+		                           "identifier", basename,
+		                           NULL);
 	}
-	
-	g_hash_table_foreach (ctx.checks, remove_each_certificate, self);
-	g_hash_table_destroy (ctx.checks);
-	
+
+	if (gck_serializable_load (GCK_SERIALIZABLE (collection), NULL, data, n_data)) {
+		if (created) {
+			g_hash_table_replace (self->collections, basename, collection);
+			gck_manager_register_object (manager, GCK_OBJECT (collection));
+			basename = NULL;
+		}
+	}
+
+	g_free (basename);
 	g_free (data);
 }
 
 static void
 file_remove (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 {
-	GList *objects, *l;
-	GckManager *manager;
-	
+	gchar *basename;
+
 	g_return_if_fail (path);
 	g_return_if_fail (GCK_IS_SECRET_MODULE (self));
 
-	manager = gck_module_get_manager (GCK_MODULE (self));
-	g_return_if_fail (manager);
-
-	objects = gck_manager_find_by_string_property (manager, "path", path);
-	for (l = objects; l; l = g_list_next (l))
-		if (!g_hash_table_remove (self->certificates, l->data))
-			g_return_if_reached ();
-	g_list_free (objects);
+	basename = g_path_get_basename (path);
+	if (!g_hash_table_remove (self->collections, basename))
+		g_return_if_reached ();
+	g_free (basename);
 }
 
 /* -----------------------------------------------------------------------------
- * OBJECT 
+ * OBJECT
  */
 
 static const CK_SLOT_INFO* 
@@ -269,33 +179,27 @@ static GObject*
 gck_secret_module_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
 	GckSecretModule *self = GCK_SECRET_MODULE (G_OBJECT_CLASS (gck_secret_module_parent_class)->constructor(type, n_props, props));
-	GckManager *manager;
 
-	g_return_val_if_fail (self, NULL);	
+	g_return_val_if_fail (self, NULL);
 
-#ifdef ROOT_CERTIFICATES
-	if (!self->directory)
-		self->directory = g_strdup (ROOT_CERTIFICATES);
-#endif
-	if (self->directory) {
-		self->tracker = gck_file_tracker_new (self->directory, "*", "*.0");
-		g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
-		g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
-		g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
+	if (!self->directory) {
+		self->directory = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
+		if (g_mkdir_with_parents (self->directory, S_IRWXU) < 0)
+			g_warning ("unable to create keyring dir: %s", self->directory);
 	}
-	
-	manager = gck_module_get_manager (GCK_MODULE (self));
-	gck_manager_add_property_index (manager, "unique", TRUE);
-	gck_manager_add_property_index (manager, "path", FALSE);
-	
+
+	self->tracker = gck_file_tracker_new (self->directory, "*.keyrings", NULL);
+	g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
+	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
+	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
+
 	return G_OBJECT (self);
 }
 
 static void
 gck_secret_module_init (GckSecretModule *self)
 {
-	self->certificates = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
-	
+	self->collections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 }
 
 static void
@@ -306,9 +210,9 @@ gck_secret_module_dispose (GObject *obj)
 	if (self->tracker)
 		g_object_unref (self->tracker);
 	self->tracker = NULL;
-	
-	g_hash_table_remove_all (self->certificates);
-    
+
+	g_hash_table_remove_all (self->collections);
+
 	G_OBJECT_CLASS (gck_secret_module_parent_class)->dispose (obj);
 }
 
@@ -318,10 +222,10 @@ gck_secret_module_finalize (GObject *obj)
 	GckSecretModule *self = GCK_SECRET_MODULE (obj);
 	
 	g_assert (self->tracker == NULL);
-	
-	g_hash_table_destroy (self->certificates);
-	self->certificates = NULL;
-	
+
+	g_hash_table_destroy (self->collections);
+	self->collections = NULL;
+
 	g_free (self->directory);
 	self->directory = NULL;
 
