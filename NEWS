@@ -1,3 +1,9 @@
+Changes in version 2.27.5 are:
+* Add support for lifetime constrained SSH identities.
+* Use GtkBuilder files where glade files were used.
+* Write private key files with tighter file permissions.
+* Use gio instead of libhal for monitoring volumes.
+
 Changes in version 2.27.4 are:
 * Insurance in parsing keyring format for future changes.
 * Add 'use_authtok' option to pam module.
