@@ -28,10 +28,7 @@
 #include "egg/egg-cleanup.h"
 #include "egg/egg-dbus.h"
 
-#ifdef WITH_HAL
-#include <libhal.h>
-#include <libhal-storage.h>
-#endif 
+#include <gio/gio.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -49,9 +46,6 @@ typedef struct _GkrLocationVolume {
 	gchar *prefix;
 	gchar *friendly;
 	gboolean hidden;
-#ifdef WITH_HAL
-	gboolean hal_volume;
-#endif
 } GkrLocationVolume;
 
 enum {
@@ -68,12 +62,8 @@ struct _GkrLocationManagerPrivate;
 typedef struct _GkrLocationManagerPrivate GkrLocationManagerPrivate;
 
 struct _GkrLocationManagerPrivate {
-#ifdef WITH_HAL
-	LibHalContext *hal_ctx;
-	gboolean hal_inited;
-	guint hal_retry;
-	DBusConnection *dbus_connection;
-#endif
+	GVolumeMonitor *monitor;
+
 	GHashTable *volumes_by_name;
 	GHashTable *volumes_by_loc;
 	GHashTable *volumes_by_prefix;
@@ -90,11 +80,6 @@ struct _GkrLocationManagerPrivate {
 	(G_TYPE_INSTANCE_GET_PRIVATE((o), GKR_TYPE_LOCATION_MANAGER, GkrLocationManagerPrivate))
 
 static GkrLocationManager *location_manager_singleton = NULL; 
-
-#ifdef WITH_HAL
-/* Forward declaration */
-static void location_manager_hal_init (GkrLocationManager *locmgr);
-#endif
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -145,6 +130,20 @@ free_location_volume (GkrLocationVolume *locvol)
 	}
 }
 
+static void
+remove_location_volume (GkrLocationManager *self, GkrLocationVolume *locvol)
+{
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (self);
+	GQuark volume_loc;
+
+	volume_loc = locvol->volume_loc;
+	g_hash_table_remove (pv->volumes_by_loc, GUINT_TO_POINTER (volume_loc));
+	g_hash_table_remove (pv->volumes_by_prefix, locvol->prefix);
+	g_hash_table_remove (pv->volumes_by_name, locvol->name);
+
+	g_signal_emit (self, signals[VOLUME_REMOVED], 0, volume_loc);
+}
+
 static GQuark
 make_volume_location (const gchar *name)
 {
@@ -177,21 +176,8 @@ make_hidden_volume (GkrLocationManager *locmgr, GkrLocationVolume *locvol,
 	
 }
 
-#ifdef WITH_HAL
-
-static gboolean 
-handle_retrieve_error (const char *what, const char *udi, DBusError *error)
-{
-	if (!dbus_error_is_set (error))
-		return FALSE;
-	g_warning ("Error retrieving %s on '%s': Error: '%s' Message: '%s'",
-	           what, udi, error->name, error->message);
-	dbus_error_free (error);
-	return TRUE;
-}
-
 static gchar*
-udi_to_location_name (LibHalContext *hal_ctx, const char *udi)
+udi_to_location_name (const char *udi)
 {
 	const char *x; 
 	char *name, *c;
@@ -215,307 +201,105 @@ udi_to_location_name (LibHalContext *hal_ctx, const char *udi)
 	return name;
 }
 
-static void 
-hal_device_added (LibHalContext *hal_ctx, const char *udi)
-{
-	DBusError error;
-	
-	dbus_error_init (&error);
-	
-	/* Make sure it's a drive volume */
-	if (!libhal_device_query_capability (hal_ctx, udi, "volume", NULL))
-		return;
-
-	if (!libhal_device_add_property_watch (hal_ctx, udi, &error)) {
-		g_warning ("Error adding watch on %s: Error: '%s' Message: '%s'",
-		           udi, error.name, error.message);
-		dbus_error_free (&error);
-	}
-}
-
-static void 
-hal_device_removed (LibHalContext *hal_ctx, const char *udi)
-{
-	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (libhal_ctx_get_user_data (hal_ctx));
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	DBusError error;
-	char *name = NULL;
-	
-	dbus_error_init (&error);
-	
-	if (!libhal_device_remove_property_watch (hal_ctx, udi, &error)) {
-		g_warning ("Error removing watch on %s: Error: '%s' Message: '%s'",
-		           udi, error.name, error.message);
-		dbus_error_free (&error);
-	}
-
-	name = udi_to_location_name (hal_ctx, udi);
-	g_return_if_fail (name && name[0]);
-	
-	if (g_hash_table_lookup (pv->volumes_by_name, name)) {
-		g_message ("removing removable location: %s", name); 
-		gkr_location_manager_unregister (locmgr, name);
-	}
-	
-	g_free (name);
-
-}
-
 static void
-hal_device_property (LibHalContext *hal_ctx, const char *udi, const char *key, 
-                     dbus_bool_t is_removed, dbus_bool_t is_added)
+mount_added (GVolumeMonitor *monitor, GMount *mount, GkrLocationManager *self)
 {
-	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (libhal_ctx_get_user_data (hal_ctx));
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	char *drive_udi = NULL;
-	char *mount = NULL;
-	char *name = NULL;
-	char *friendly = NULL;
-	char *product = NULL;
-	DBusError error;
-	gboolean removable, is_mounted;
-	GkrLocationVolume *locvol;
+	gboolean removable;
+	gchar *identifier;
+	gchar *name, *friendly, *path;
+	GDrive *drive;
+	GVolume *volume;
+	GFile *root;
 
-	if (g_ascii_strcasecmp (key, "volume.is_mounted") != 0)
+	drive = g_mount_get_drive (mount);
+	removable = drive && g_drive_is_media_removable (drive);
+	if (drive)
+		g_object_unref (drive);
+
+	if (!removable)
 		return;
 
-	dbus_error_init(&error);
+	volume = g_mount_get_volume (mount);
+	g_return_if_fail (volume);
 
-	/* Make sure it's a drive volume */
-	if (!libhal_device_query_capability (hal_ctx, udi, "volume", NULL))
-		goto done;
-		
-	is_mounted = libhal_device_get_property_bool (hal_ctx, udi, "volume.is_mounted", &error);
-	if (handle_retrieve_error ("volume.is_mounted", udi, &error))
-		goto done;
+	/* Figure out the location name */
+	identifier = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
+	g_return_if_fail (identifier);
+	name = udi_to_location_name (identifier);
+	g_free (identifier);
 
-	name = udi_to_location_name (hal_ctx, udi);
-	g_return_if_fail (name && name[0]);
-	
-	/* A mount was added? */
-	if (is_mounted &&  !g_hash_table_lookup (pv->volumes_by_name, name)) {
-		
-		drive_udi = libhal_device_get_property_string (hal_ctx, udi, "block.storage_device", &error);
-		if (!drive_udi) {
-			handle_retrieve_error ("block.storage_device", udi, &error);
-			goto done;
-		}
+	/* Figure out the friendly name */
+	identifier = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_LABEL);
+	if (identifier)
+		friendly = g_strdup_printf (_("Removable Disk: %s"), identifier);
+	else
+		friendly = g_strdup (_("Removable Disk"));
+	g_free (identifier);
 
-		removable = libhal_device_get_property_bool (hal_ctx, drive_udi, "storage.removable", &error);
-		if (!removable)
-			goto done;
-		
-		/* Get the mount point */
-		mount = libhal_device_get_property_string (hal_ctx, udi, "volume.mount_point", &error);
-		if (!mount) {
-			handle_retrieve_error ("volume.mount_point", udi, &error);
-			goto done;
-		}
-	
-		if (!mount[0])
-			goto done;
-			
-		product = libhal_device_get_property_string (hal_ctx, udi, "info.product", &error);
-		if (product && product)
-			friendly = g_strdup_printf (_("Removable Disk: %s"), product);
-		else 
-			friendly = g_strdup (_("Removable Disk"));
-		
-		g_message ("adding removable location: %s at %s", name, mount); 
-		gkr_location_manager_register (locmgr, name, mount, friendly);
-		
-		locvol = g_hash_table_lookup (pv->volumes_by_name, name);
-		if (locvol)
-			locvol->hal_volume = TRUE;
+	g_object_unref (volume);
 
-	/* A mount was removed? */		
-	} else if (!is_mounted && g_hash_table_lookup (pv->volumes_by_name, name)) {
-		
-		g_message ("removing removable location: %s", name); 
-		gkr_location_manager_unregister (locmgr, name);
-		
-	}
-	
-done:
-	if (drive_udi)
-		libhal_free_string (drive_udi);
-	if (mount)
-		libhal_free_string (mount);
-	if (product)
-		libhal_free_string (product);
+	/* Figure out the mount point */
+	root = g_mount_get_root (mount);
+	g_return_if_fail (root);
+	path = g_file_get_path (root);
+	g_return_if_fail (path);
+	g_object_unref (root);
+
+	g_message ("adding removable location: %s at %s", name, path);
+	gkr_location_manager_register (self, name, path, friendly);
+
+	g_free (name);
 	g_free (friendly);
-	g_free (name);
-
+	g_free (path);
 }
 
 static void
-populate_all_volumes (GkrLocationManager *locmgr)
+mount_removed (GVolumeMonitor *monitor, GMount *mount, GkrLocationManager *self)
 {
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	char **volumes;
-	int num_volumes, i;
-	DBusError error;
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (self);
+	GkrLocationVolume *locvol;
+	GFile *root;
+	gchar *path;
 
-	dbus_error_init (&error);
-	volumes = libhal_find_device_by_capability (pv->hal_ctx, "volume", &num_volumes, &error);
-		
-	if (volumes) {
-		for (i = 0; volumes && i < num_volumes; i++) {
-			hal_device_added (pv->hal_ctx, volumes[i]);
-			hal_device_property (pv->hal_ctx, volumes[i], "volume.is_mounted", FALSE, TRUE);
-		}
-		libhal_free_string_array (volumes);
-	}
-}	
+	root = g_mount_get_root (mount);
+	g_return_if_fail (root);
+	path = g_file_get_path (root);
+	g_return_if_fail (path);
+	g_object_unref (root);
 
-static gboolean
-location_manager_try_hal_connection (gpointer data) 
-{
-	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (data);
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+	g_message ("removing removable location: %s", path);
 
-	pv->hal_retry = 0;
-
-	location_manager_hal_init (locmgr);
-
-	return FALSE;
+	locvol = g_hash_table_lookup (pv->volumes_by_prefix, path);
+	if (!locvol)
+		g_warning ("no volume registered at: %s", path);
+	else
+		remove_location_volume (self, locvol);
+	g_free (path);
 }
-
-static void
-location_manager_schedule_hal_retry (GkrLocationManager *locmgr) {
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-
-	g_message ("Scheduling hal init retry");
-
-	if (pv->hal_retry == 0)
-		pv->hal_retry = g_timeout_add_seconds (30, location_manager_try_hal_connection, 
-		                                       locmgr);
-}
-
-static void
-location_manager_hal_uninit (GkrLocationManager *locmgr)
-{
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	DBusError error;
-
-	if (pv->hal_ctx) {
-		dbus_error_init (&error);
-		if (pv->dbus_connection != NULL) {
-			if (pv->hal_inited) {
-				if (!libhal_ctx_shutdown (pv->hal_ctx, &error)) {
-					g_warning ("failed to shutdown HAL context: %s\n", error.message ? error.message : "");
-					dbus_error_free (&error);
-				}
-				pv->hal_inited = FALSE;
-			}
-		} 
-		
-		if (!libhal_ctx_free (pv->hal_ctx)) 
-			g_warning ("failed to free HAL context");
-		pv->hal_ctx = NULL;
-	}
-
-	if (pv->dbus_connection != NULL) {
-		egg_dbus_disconnect_from_mainloop (pv->dbus_connection, NULL);
-		dbus_connection_unref (pv->dbus_connection);
-		pv->dbus_connection = NULL;
-	}
-}
-
-static void
-gather_hal_volume_names (gpointer key, gpointer value, gpointer user_data)
-{
-	GList **list = (GList**)user_data;
-	GkrLocationVolume *locvol = (GkrLocationVolume*)value;
-	if (locvol->hal_volume)
-		*list = g_list_prepend (*list, key);
-}
-
-static DBusHandlerResult
-location_manager_dbus_filter_function (DBusConnection *connection, DBusMessage *message, void *user_data) 
-{
-	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (user_data);
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	GList *l, *names = NULL;
-	
-	if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected") &&
-	    strcmp (dbus_message_get_path (message), DBUS_PATH_LOCAL) == 0) {
-		
-		/* Reconnect to HAL when we can */
-		location_manager_hal_uninit (locmgr);
-		location_manager_schedule_hal_retry (locmgr);
-
-		/* Remove all our HAL based volumes */
-		g_hash_table_foreach (pv->volumes_by_name, gather_hal_volume_names, &names);
-		for (l = names; l; l = g_list_next (l))
-			gkr_location_manager_unregister (locmgr, (const gchar*)l->data);
-		g_list_free (names);
-
-		return DBUS_HANDLER_RESULT_HANDLED;
-	}
-	
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
-static void
-location_manager_hal_init (GkrLocationManager *locmgr)
-{
-	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
-	DBusError error;
-
-	pv->hal_ctx = libhal_ctx_new ();
-	if (!pv->hal_ctx) {
-		g_warning ("failed to create a HAL context");
-		goto failed;
-	}
-	
-	/* 
-	 * Although we can be started before the session bus, we should be 
-	 * able to connect to the system bus without any trouble at all.
-	 */
-
-	dbus_error_init (&error);
-	pv->dbus_connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (dbus_error_is_set (&error)) {
-		g_warning ("error connecting to D-BUS system bus: %s", error.message ? error.message : "");
-		dbus_error_free (&error);
-		goto failed;
-	}
-	
-	egg_dbus_connect_with_mainloop (pv->dbus_connection, NULL);
-	dbus_connection_set_exit_on_disconnect (pv->dbus_connection, FALSE);
-
-	dbus_connection_add_filter (pv->dbus_connection, location_manager_dbus_filter_function, locmgr, NULL);
-
-	libhal_ctx_set_dbus_connection (pv->hal_ctx, pv->dbus_connection);
-
-	libhal_ctx_set_device_added (pv->hal_ctx, hal_device_added);
-	libhal_ctx_set_device_removed (pv->hal_ctx, hal_device_removed);
-	libhal_ctx_set_device_property_modified (pv->hal_ctx, hal_device_property);
-	
-	if (!libhal_ctx_init (pv->hal_ctx, &error)) {
-		g_warning ("failed to initialize a HAL context: %s\n", error.message ? error.message : "");
-		dbus_error_free (&error);
-		goto failed;
-	}
-	
-	pv->hal_inited = TRUE;
-	libhal_ctx_set_user_data (pv->hal_ctx, locmgr);
-	
-	populate_all_volumes (locmgr);
-
-	return;
-
-failed:
-	location_manager_hal_uninit (locmgr);
-	location_manager_schedule_hal_retry (locmgr);
-}
-
-#endif /* WITH_HAL */
 
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
+
+static GObject*
+gkr_location_manager_constructor (GType type, guint n_props, GObjectConstructParam *props)
+{
+	GkrLocationManager *self = GKR_LOCATION_MANAGER (G_OBJECT_CLASS (gkr_location_manager_parent_class)->constructor(type, n_props, props));
+	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (self);
+	GList *mounts, *l;
+
+	g_return_val_if_fail (self, NULL);
+
+	/* Add all mounted drives */
+	mounts = g_volume_monitor_get_mounts (pv->monitor);
+	for (l = mounts; l; l = g_list_next (l)) {
+		mount_added (pv->monitor, l->data, self);
+		g_object_unref (l->data);
+	}
+	g_list_free (mounts);
+
+	return G_OBJECT (self);
+}
 
 static void
 gkr_location_manager_init (GkrLocationManager *locmgr)
@@ -554,10 +338,10 @@ gkr_location_manager_init (GkrLocationManager *locmgr)
 
 	gkr_location_manager_register (locmgr, GKR_LOCATION_NAME_LOCAL, local, _("Home"));
 	g_free (local);
-	
-#ifdef WITH_HAL
-	location_manager_hal_init (locmgr);
-#endif
+
+	pv->monitor = g_volume_monitor_get ();
+	g_signal_connect (pv->monitor, "mount-added", G_CALLBACK (mount_added), locmgr);
+	g_signal_connect (pv->monitor, "mount-removed", G_CALLBACK (mount_removed), locmgr);
 }
 
 static void 
@@ -566,12 +350,12 @@ gkr_location_manager_dispose (GObject *obj)
 	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (obj);
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
 
-#ifdef WITH_HAL
-	location_manager_hal_uninit (locmgr);
-	if (pv->hal_retry != 0)
-		g_source_remove (pv->hal_retry);
-	pv->hal_retry = 0;
-#endif
+	if (pv->monitor) {
+		g_signal_handlers_disconnect_by_func (pv->monitor, mount_added, locmgr);
+		g_signal_handlers_disconnect_by_func (pv->monitor, mount_removed, locmgr);
+		g_object_unref (pv->monitor);
+		pv->monitor = NULL;
+	}
 
 	g_hash_table_remove_all (pv->volumes_by_loc);
 	g_hash_table_remove_all (pv->volumes_by_prefix);
@@ -587,6 +371,8 @@ gkr_location_manager_finalize (GObject *obj)
 {
 	GkrLocationManager *locmgr = GKR_LOCATION_MANAGER (obj);
 	GkrLocationManagerPrivate *pv = GKR_LOCATION_MANAGER_GET_PRIVATE (locmgr);
+
+	g_assert (!pv->monitor);
 
 	g_hash_table_destroy (pv->volumes_by_loc);
 	pv->volumes_by_loc = NULL;
@@ -607,7 +393,8 @@ gkr_location_manager_class_init (GkrLocationManagerClass *klass)
 	GObjectClass *gobject_class = (GObjectClass*)klass;
 
 	gkr_location_manager_parent_class  = g_type_class_peek_parent (klass);
-	
+
+	gobject_class->constructor = gkr_location_manager_constructor;
 	gobject_class->dispose = gkr_location_manager_dispose;
 	gobject_class->finalize = gkr_location_manager_finalize;
 	
@@ -678,10 +465,7 @@ gkr_location_manager_register (GkrLocationManager *locmgr, const gchar *name,
 	locvol->friendly = g_strdup (friendly);
 	locvol->volume_loc = volume_loc;
 	locvol->hidden = FALSE;
-#ifdef WITH_HAL
-	locvol->hal_volume = FALSE;
-#endif
-	
+
 	/* TODO: What about trailing slashes? */
 	
 	g_hash_table_replace (pv->volumes_by_name, locvol->name, locvol);
@@ -696,8 +480,7 @@ gkr_location_manager_unregister (GkrLocationManager *locmgr, const gchar *name)
 {
 	GkrLocationManagerPrivate *pv;
 	GkrLocationVolume *locvol;
-	GQuark volume_loc;
-	
+
 	if (!locmgr)
 		locmgr = gkr_location_manager_get ();
 	
@@ -710,13 +493,8 @@ gkr_location_manager_unregister (GkrLocationManager *locmgr, const gchar *name)
 		g_warning ("location device not registered: %s", name);
 		return;
 	}
-	
-	volume_loc = locvol->volume_loc;
-	g_hash_table_remove (pv->volumes_by_loc, GUINT_TO_POINTER (volume_loc));
-	g_hash_table_remove (pv->volumes_by_prefix, locvol->prefix);
-	g_hash_table_remove (pv->volumes_by_name, name);
-	
-	g_signal_emit (locmgr, signals[VOLUME_REMOVED], 0, volume_loc);
+
+	remove_location_volume (locmgr, locvol);
 }
 
 gboolean 
