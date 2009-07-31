@@ -10,11 +10,11 @@ INTERFACE_DEFS = \
 	$(NULL)	
 	
 secrets-built-sources.stamp : Makefile.am $(INTERFACE_DEFS)
-	eggdbus-binding-tool						\
-		--namespace "Secrets"					\
-		--dbus-namespace "org.freedesktop.Secrets"		\
-		--introspection-xml org.freedesktop.Secrets.xml		\
-		--stamp-file $@						\
+	eggdbus-binding-tool							\
+		--namespace "Secrets"						\
+		--dbus-namespace "org.freedesktop.Secrets"			\
+		--introspection-xml $(srcdir)/org.freedesktop.Secrets.xml	\
+		--stamp-file $@							\
 	$(NULL)
 
 EXTRA_DIST = \
