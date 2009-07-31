@@ -23,10 +23,104 @@
 
 #include "gck-secret-fields.h"
 
+#include "egg/egg-hex.h"
+
 #include "gck/gck-attributes.h"
 
 #include <ctype.h>
 #include <string.h>
+
+static gboolean
+begins_with (const gchar *string, const gchar *prefix)
+{
+	gsize len = strlen (prefix);
+	return (strncmp (string, prefix, len) == 0);
+}
+
+static gboolean
+is_compat_name (const gchar *name)
+{
+	g_assert (name);
+	return begins_with (name, "gkr:compat:");
+}
+
+static gchar*
+make_compat_hashed_name (const gchar *name)
+{
+	g_assert (!is_compat_name (name));
+	return g_strdup_printf ("gkr:compat:hashed:%s", name);
+}
+
+static gchar*
+make_compat_uint32_name (const gchar *name)
+{
+	g_assert (!is_compat_name (name));
+	return g_strdup_printf ("gkr:compat:uint32:%s", name);
+}
+
+static gboolean
+string_ptr_equal (const gchar *one, const gchar *two)
+{
+	if (one == two)
+		return TRUE;
+	if (!one || !two)
+		return FALSE;
+	return g_str_equal (one, two);
+}
+
+static gint
+string_ptr_compare (gconstpointer one, gconstpointer two)
+{
+	if (one == two)
+		return 0;
+	if (!one || !two)
+		return one < two;
+	return strcmp (one, two);
+}
+
+static gboolean
+parse_uint32 (const gchar *value, guint32 *result)
+{
+	gchar *end;
+	g_assert (value);
+	g_assert (result);
+	*result = strtoul(value, &end, 10);
+	return (*end == '\0');
+}
+
+static gchar*
+format_uint32 (guint32 value)
+{
+	return g_strdup_printf ("%u", value);
+}
+
+static gboolean
+compat_hash_value_as_uint32 (const gchar *value, guint32 *hash)
+{
+	guint32 x;
+
+	if (!value || !parse_uint32 (value, &x))
+		return FALSE;
+
+	/* The same algorithm as the old keyring code used */
+	*hash = 0x18273645 ^ x ^ (x << 16 | x >> 16);
+	return TRUE;
+}
+
+static gchar*
+compat_hash_value_as_string (const gchar *value)
+{
+	guchar digest[16];
+
+	if (!value)
+		return NULL;
+
+	g_assert (gcry_md_get_algo_dlen (GCRY_MD_MD5) == sizeof (digest));
+	gcry_md_hash_buffer (GCRY_MD_MD5, (void*)digest, value, strlen (value));
+
+	/* The old keyring code used lower case hex */
+	return egg_hex_encode_full (digest, sizeof (digest), FALSE, '\0', 0);
+}
 
 GType
 gck_secret_fields_boxed_type (void)
@@ -152,50 +246,223 @@ gboolean
 gck_secret_fields_match (GHashTable *haystack, GHashTable *needle)
 {
 	GHashTableIter iter;
-	gpointer key, value, hay;
+	const gchar *key, *value, *hay;
+	gchar *other_key, *hashed;
+	gboolean match;
+	guint32 number;
 
 	g_return_val_if_fail (haystack, FALSE);
 	g_return_val_if_fail (needle, FALSE);
 
 	g_hash_table_iter_init (&iter, needle);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
+	while (g_hash_table_iter_next (&iter, (gpointer*)&key, (gpointer*)&value)) {
 		g_assert (key && value);
-		hay = g_hash_table_lookup (haystack, key);
-		if (hay == NULL)
-			return FALSE;
-		if (!g_str_equal (hay, value))
-			return FALSE;
+		
+		/* Compat attributes in the needle make no difference */
+		if (is_compat_name (key))
+			continue;
+
+		/* A direct match? */
+		if (g_hash_table_lookup_extended (haystack, key, NULL, (gpointer*)&hay)) {
+			match = string_ptr_equal (hay, value);
+			if (!match)
+				return FALSE;
+		}
+
+		/* Try to find a hashed value? */
+		other_key = make_compat_hashed_name (key);
+		match = g_hash_table_lookup_extended (haystack, other_key, NULL, (gpointer*)&hay);
+		g_free (other_key);
+
+		if (match) {
+
+			/*
+			 * Now since the old keyring code would hash in two different
+			 * ways depending on whether it was a uint32 or string,
+			 * we need to do the same here.
+			 */
+
+			other_key = make_compat_uint32_name (key);
+			if (g_hash_table_lookup (haystack, other_key)) {
+				hashed = NULL;
+				if (compat_hash_value_as_uint32 (value, &number))
+					hashed = format_uint32 (number);
+			} else {
+				hashed = compat_hash_value_as_string (value);
+			}
+			g_free (other_key);
+
+			/* Does the incoming hashed value match our hashed value? */
+			match = string_ptr_equal (hay, hashed);
+			g_free (hashed);
+
+			if (!match)
+				return FALSE;
+		}
 	}
 	
 	return TRUE;
 }
 
-gboolean
-gck_secret_fields_has_word (GHashTable *fields, const gchar *name, const gchar *word)
+void
+gck_secret_fields_add (GHashTable *fields, const gchar *name,
+                       const gchar *value)
 {
-	const gchar *string;
-	const gchar *at;
-	gsize len = strlen (word);
+	g_return_if_fail (fields);
+	g_return_if_fail (name);
+	g_hash_table_replace (fields, g_strdup (name), g_strdup (value));
+}
 
-	if (len == 0)
-		return FALSE;
+const gchar*
+gck_secret_fields_get (GHashTable *fields, const gchar *name)
+{
+	g_return_val_if_fail (fields, NULL);
+	g_return_val_if_fail (name, NULL);
+	g_return_val_if_fail (!is_compat_name (name), NULL);
+	return g_hash_table_lookup (fields, name);
+}
 
-	string = g_hash_table_lookup (fields, name);
-	if (!string)
-		return FALSE;
+GList*
+gck_secret_fields_get_names (GHashTable *fields)
+{
+	const gchar *prefix = "gkr:compat:hashed:";
+	GList *keys, *l, *next;
+	gsize len = strlen (prefix);
+	gchar *last = NULL;
 
-	for (;;) {
-		at = strstr (string, word);
-		if (at == NULL)
-			return FALSE;
+	g_return_val_if_fail (fields, NULL);
 
-		/* The word exists, is at beginning or end, or spaces around it */
-		if ((at == string || isspace (*(at - 1))) &&
-		    (*(at + len) == 0 || isspace (*(at + len))))
-			return TRUE;
+	keys = g_hash_table_get_keys (fields);
 
-		string = at + len;
+	/* Include hashed compat attributes as their base name */
+	for (l = keys; l; l = g_list_next (l)) {
+		if (strncmp (prefix, l->data, len) == 0)
+			l->data = (gchar*)(l->data) + len;
 	}
 
-	g_assert_not_reached ();
+	/* Sort the list nicely */
+	keys = g_list_sort (keys, string_ptr_compare);
+
+	/* Remove all compat attributes, duplicates */
+	for (l = keys; l; l = next) {
+		next = g_list_next (l);
+		if (is_compat_name (l->data) || string_ptr_equal (last, l->data))
+			keys = g_list_delete_link (keys, l);
+		else
+			last = l->data;
+	}
+
+	return keys;
+}
+
+void
+gck_secret_fields_add_compat_uint32 (GHashTable *fields, const gchar *name,
+                                     guint32 value)
+{
+	g_return_if_fail (fields);
+	g_return_if_fail (name);
+	g_return_if_fail (!is_compat_name (name));
+	g_hash_table_replace (fields, g_strdup (name), format_uint32 (value));
+	g_hash_table_replace (fields, make_compat_uint32_name (name), g_strdup (name));
+}
+
+gboolean
+gck_secret_fields_get_compat_uint32 (GHashTable *fields, const gchar *name,
+                                     guint32 *value)
+{
+	gchar *other_key;
+	gboolean ret;
+
+	g_return_val_if_fail (fields, FALSE);
+	g_return_val_if_fail (name, FALSE);
+	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (!is_compat_name (name), FALSE);
+
+	other_key = make_compat_uint32_name (name);
+	ret = g_hash_table_lookup (fields, other_key) != NULL;
+	g_free (other_key);
+
+	if (ret)
+		ret = parse_uint32 (g_hash_table_lookup (fields, name), value);
+
+	return ret;
+}
+
+void
+gck_secret_fields_add_compat_hashed_string (GHashTable *fields, const gchar *name,
+                                            const gchar *value)
+{
+	g_return_if_fail (fields);
+	g_return_if_fail (name);
+	g_return_if_fail (!is_compat_name (name));
+	g_hash_table_replace (fields, make_compat_hashed_name (name), g_strdup (value));
+}
+
+gboolean
+gck_secret_fields_get_compat_hashed_string (GHashTable *fields, const gchar *name,
+                                            gchar **value)
+{
+	gchar *other_key;
+	gboolean ret;
+	const gchar *val;
+
+	g_return_val_if_fail (fields, FALSE);
+	g_return_val_if_fail (name, FALSE);
+	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (!is_compat_name (name), FALSE);
+
+	/* Even though this is more expensive, it's far more common */
+	if (g_hash_table_lookup_extended (fields, name, NULL, (gpointer*)&val)) {
+		*value = compat_hash_value_as_string (val);
+		return TRUE;
+	}
+	
+	/* See if we already have it hashed */
+	other_key = make_compat_hashed_name (name);
+	ret = g_hash_table_lookup_extended (fields, other_key, NULL, (gpointer*)&val);
+	g_free (other_key);
+
+	if (ret)
+		*value = g_strdup (val);
+	return ret;
+}
+
+void
+gck_secret_fields_add_compat_hashed_uint32 (GHashTable *fields, const gchar *name, 
+                                            guint32 value)
+{
+	g_return_if_fail (fields);
+	g_return_if_fail (name);
+	g_return_if_fail (!is_compat_name (name));
+	g_hash_table_replace (fields, make_compat_hashed_name (name), format_uint32 (value));
+	g_hash_table_replace (fields, make_compat_uint32_name (name), g_strdup (name));
+}
+
+gboolean
+gck_secret_fields_get_compat_hashed_uint32 (GHashTable *fields, const gchar *name, 
+                                            guint32 *value)
+{
+	const gchar *val;
+	gchar *other_key;
+	gboolean ret;
+	
+	g_return_val_if_fail (fields, FALSE);
+	g_return_val_if_fail (name, FALSE);
+	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (!is_compat_name (name), FALSE);
+	
+	/* Even though this is more expensive, it's far more common */
+	other_key = make_compat_uint32_name (name);
+	ret = g_hash_table_lookup_extended (fields, other_key, NULL, (gpointer*)&val);
+	g_free (other_key);
+	if (ret && compat_hash_value_as_uint32 (val, value))
+		return TRUE;
+	
+	/* See if we already have it hashed */
+	other_key = make_compat_hashed_name (name);
+	ret = g_hash_table_lookup_extended (fields, other_key, NULL, (gpointer*)&val);
+	g_free (other_key);
+	if (ret)
+		ret = parse_uint32 (val, value);
+	return ret;	
 }

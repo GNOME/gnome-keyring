@@ -209,3 +209,10 @@ gck_secret_collection_lookup_secret (GckSecretCollection *self,
 	g_return_val_if_fail (identifier, NULL);
 	return g_hash_table_lookup (self->secrets, identifier);
 }
+
+GList*
+gck_secret_collection_get_items (GckSecretCollection *self)
+{
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), NULL);
+	return g_list_copy (self->items);
+}

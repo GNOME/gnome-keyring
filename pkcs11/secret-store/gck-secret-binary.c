@@ -62,7 +62,6 @@ typedef struct {
 	guint32 id;
 	gchar *identifier;
 	guint32 type;
-	GHashTable *hashed_attributes;
 
 	/* encrypted: */
 	char *display_name;
@@ -173,19 +172,12 @@ buffer_get_raw_secret (EggBuffer *buffer, gsize offset, gsize *next_offset,
 	return TRUE;
 }
 
-typedef struct _AttributesCtx {
-	EggBuffer *buffer;
-	GHashTable *attributes;
-} AttributesCtx;
-
 static void
-add_each_attribute (gpointer key, gpointer value, gpointer user_data)
+buffer_add_attribute (EggBuffer *buffer, GHashTable *attributes, const gchar *key)
 {
-	AttributesCtx *ctx = user_data;
 	guint32 number;
-	gchar *end;
 	
-	buffer_add_utf8_string (ctx->buffer, key);
+	buffer_add_utf8_string (buffer, key);
 	
 	/* 
 	 * COMPATIBILITY:
@@ -199,32 +191,61 @@ add_each_attribute (gpointer key, gpointer value, gpointer user_data)
 	 */
 	
 	/* Determine if it's a uint32 compatible value, and store as such if it is */
-	if (gck_secret_fields_has_word (ctx->attributes, "compat-uint32", key)) {
-		number = strtoul (value, &end, 10);
-		if (!*end) {
-			egg_buffer_add_uint32 (ctx->buffer, 1);
-			egg_buffer_add_uint32 (ctx->buffer, number);
-			return;
-		}
+	if (gck_secret_fields_get_compat_uint32 (attributes, key, &number)) {
+		egg_buffer_add_uint32 (buffer, 1);
+		egg_buffer_add_uint32 (buffer, number);
+
+	/* A normal string attribute */
+	} else {
+		egg_buffer_add_uint32 (buffer, 0);
+		buffer_add_utf8_string (buffer, gck_secret_fields_get (attributes, key));
 	}
-	
-	/* A standard string attribute */
-	egg_buffer_add_uint32 (ctx->buffer, 0);
-	buffer_add_utf8_string (ctx->buffer, value);
 }
 
+static void
+buffer_add_hashed_attribute (EggBuffer *buffer, GHashTable *attributes, const gchar *key)
+{
+	guint32 number;
+	gchar *value;
+
+	buffer_add_utf8_string (buffer, key);
+
+	/* See comments in buffer_add_attribute. */
+
+	/* Determine if it's a uint32 compatible value, and store as such if it is */
+	if (gck_secret_fields_get_compat_hashed_uint32 (attributes, key, &number)) {
+		egg_buffer_add_uint32 (buffer, 1);
+		egg_buffer_add_uint32 (buffer, number);
+
+	/* A standard string attribute */
+	} else {
+		if (!gck_secret_fields_get_compat_hashed_string (attributes, key, &value))
+			g_return_if_reached ();
+		egg_buffer_add_uint32 (buffer, 0);
+		buffer_add_utf8_string (buffer, value);
+		g_free (value);
+	}
+}
 
 static gboolean
-buffer_add_attributes (EggBuffer *buffer, GHashTable *attributes)
+buffer_add_attributes (EggBuffer *buffer, GHashTable *attributes, gboolean hashed)
 {
-	AttributesCtx ctx;
+	GList *names, *l;
+	
+	g_assert (buffer);
+	
 	if (attributes == NULL) {
 		egg_buffer_add_uint32 (buffer, 0);
 	} else {
-		ctx.buffer = buffer;
-		ctx.attributes = attributes;
-		egg_buffer_add_uint32 (buffer, g_hash_table_size (attributes));
-		g_hash_table_foreach (attributes, add_each_attribute, &ctx);
+		names = gck_secret_fields_get_names (attributes);
+		egg_buffer_add_uint32 (buffer, g_list_length (names));
+		for (l = names; l; l = g_list_next (l)) {
+			if (hashed)
+				buffer_add_hashed_attribute (buffer, attributes, l->data);
+			else
+				buffer_add_attribute (buffer, attributes, l->data);
+		}
+		g_list_free (names);
 	}
 	
 	return !egg_buffer_has_error (buffer);
@@ -232,11 +253,10 @@ buffer_add_attributes (EggBuffer *buffer, GHashTable *attributes)
 
 static gboolean
 buffer_get_attributes (EggBuffer *buffer, gsize offset, gsize *next_offset,
-                       GHashTable **attributes_out)
+                       GHashTable **attributes_out, gboolean hashed)
 {
 	guint32 list_size;
 	GHashTable *attributes;
-	GString *compat_uint32;
 	char *name;
 	guint32 type;
 	char *str;
@@ -244,7 +264,6 @@ buffer_get_attributes (EggBuffer *buffer, gsize offset, gsize *next_offset,
 	int i;
 
 	attributes = NULL;
-	compat_uint32 = g_string_new ("");
 	
 	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &list_size))
 		goto bail;
@@ -263,18 +282,23 @@ buffer_get_attributes (EggBuffer *buffer, gsize offset, gsize *next_offset,
 				g_free (name);
 				goto bail;
 			}
-			g_hash_table_replace (attributes, name, str);
+			if (hashed)
+				gck_secret_fields_add_compat_hashed_string (attributes, name, str);
+			else
+				gck_secret_fields_add (attributes, name, str);
+			g_free (name);
+			g_free (str);
 			break;
 		case 1: /* A uint32 */
-			if (!egg_buffer_get_uint32 (buffer, offset, 
-			                            &offset, &val)) {
+			if (!egg_buffer_get_uint32 (buffer, offset, &offset, &val)) {
 				g_free (name);
 				goto bail;
 			}
-			g_string_append_c (compat_uint32, ' ');
-			g_string_append (compat_uint32, name);
-			str = g_strdup_printf ("%u", val);
-			g_hash_table_replace (attributes, name, str);
+			if (hashed)
+				gck_secret_fields_add_compat_hashed_uint32 (attributes, name, val);
+			else
+				gck_secret_fields_add_compat_uint32 (attributes, name, val);
+			g_free (name);
 			break;
 		default:
 			g_free (name);
@@ -282,18 +306,12 @@ buffer_get_attributes (EggBuffer *buffer, gsize offset, gsize *next_offset,
 		}
 	}
 	
-	if (compat_uint32->len)
-		g_hash_table_replace (attributes, "compat-uint32", g_string_free (compat_uint32, FALSE));
-	else
-		g_string_free (compat_uint32, TRUE);
-
 	*attributes_out = attributes;
 	*next_offset = offset;
 	
 	return TRUE;
 	
 bail:
-	g_string_free (compat_uint32, TRUE);
 	g_hash_table_unref (attributes);
 	return FALSE;
 }
@@ -490,9 +508,8 @@ generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection)
 		for (i = 0; i < 4; i++)
 			egg_buffer_add_uint32 (buffer, 0);
 
-		/* Null attributes = empty attribute array */
 		attributes = gck_secret_item_get_fields (item);
-		if (!buffer_add_attributes (buffer, attributes))
+		if (!buffer_add_attributes (buffer, attributes, FALSE))
 			break;
 
 		acl = g_object_get_data (G_OBJECT (item), "compat-acl");
@@ -507,10 +524,9 @@ generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection)
 }
 
 static gboolean
-generate_hashed_attributes (GckSecretCollection *collection, EggBuffer *buffer)
+generate_hashed_items (GckSecretCollection *collection, EggBuffer *buffer)
 {
 	GHashTable *attributes;
-	GHashTable *hashed;
 	const gchar *value;
 	GList *items, *l;
 	guint32 id, type;
@@ -526,14 +542,12 @@ generate_hashed_attributes (GckSecretCollection *collection, EggBuffer *buffer)
 		egg_buffer_add_uint32 (buffer, id);
 		
 		attributes = gck_secret_item_get_fields (l->data);
-		value = g_hash_table_lookup (attributes, "compat-item-type");
+		value = g_hash_table_lookup (attributes, "gkr:item-type");
 		if (!value || !convert_to_integer (value, &type))
 			type = 0;
 		egg_buffer_add_uint32 (buffer, type);
 		
-		hashed = gck_secret_fields_hash (attributes);
-		buffer_add_attributes (buffer, hashed);
-		g_hash_table_unref (hashed);
+		buffer_add_attributes (buffer, attributes, TRUE);
 	}
 	
 	g_list_free (items);
@@ -590,7 +604,7 @@ gck_secret_binary_write (GckSecretCollection *collection, guchar **data, gsize *
 		egg_buffer_add_uint32 (&buffer, 0);
 
 	/* Hashed items: */
-	generate_hashed_attributes (collection, &buffer);
+	generate_hashed_items (collection, &buffer);
 
 	/* Encrypted data. Use non-pageable memory */
 	egg_buffer_init_full (&to_encrypt, 4096, egg_secure_realloc);
@@ -714,16 +728,15 @@ setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
 	gck_secret_object_set_modified (obj, info->mtime);
 	
 	type = g_strdup_printf ("%u", info->type);
-	
+
+	gck_secret_fields_add (info->attributes, "gkr:item-type", type);
+	gck_secret_item_set_fields (item, info->attributes);
+
 	if (locked) {
-		gck_secret_fields_add (info->hashed_attributes, "compat-item-type", type);
-		gck_secret_item_set_fields (item, info->hashed_attributes);
 		g_object_set_data (G_OBJECT (item), "compat-acl", NULL);
 		gck_secret_item_set_secret (item, NULL);
 		
 	} else {
-		gck_secret_fields_add (info->attributes, "compat-item-type", type);
-		gck_secret_item_set_fields (item, info->attributes);
 		secret = gck_login_new_from_password (info->secret);
 		gck_secret_item_set_secret (item, secret);
 		g_object_unref (secret);
@@ -738,7 +751,6 @@ static void
 free_item_info (ItemInfo *info)
 {
 	g_free (info->identifier);
-	g_hash_table_unref (info->hashed_attributes);
 	g_free (info->display_name);
 	egg_secure_free (info->secret);
 	g_hash_table_unref (info->attributes);
@@ -822,7 +834,7 @@ gck_secret_binary_read (GckSecretCollection *collection, const guchar *data, gsi
 	for (i = 0; i < num_items; i++) {
 		if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &items[i].id) ||
 		    !egg_buffer_get_uint32 (&buffer, offset, &offset, &items[i].type) ||
-		    !buffer_get_attributes (&buffer, offset, &offset, &items[i].hashed_attributes))
+		    !buffer_get_attributes (&buffer, offset, &offset, &items[i].attributes, TRUE))
 			goto bail;
 		identifier = g_strdup_printf ("%u", items[i].id);
 	}
@@ -876,7 +888,9 @@ gck_secret_binary_read (GckSecretCollection *collection, const guchar *data, gsi
 					if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &tmp))
 						goto bail;
 				}
-				if (!buffer_get_attributes (&buffer, offset, &offset, &items[i].attributes))
+				if (items[i].attributes)
+					g_hash_table_unref (items[i].attributes);
+				if (!buffer_get_attributes (&buffer, offset, &offset, &items[i].attributes, FALSE))
 					goto bail;
 				if (!decode_acl (&buffer, offset, &offset, &items[i].acl))
 					goto bail;
