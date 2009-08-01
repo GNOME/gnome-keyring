@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.27.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-10 10:52+0200\n"
-"PO-Revision-Date: 2009-06-10 10:53+0200\n"
+"POT-Creation-Date: 2009-08-01 19:08+0200\n"
+"PO-Revision-Date: 2009-08-01 19:09+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -270,13 +270,13 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:552
 #, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "Velg et nytt passord for nøkkelring «%s». "
+msgid "Choose a new password for the '%s' keyring."
+msgstr "Velg et nytt passord for nøkkelring «%s»."
 
 #: ../daemon/gkr-daemon-ops.c:554
 #, c-format
-msgid "Choose a new password for the default keyring. "
-msgstr "Velg et nytt passord for forvalgt nøkkelring. "
+msgid "Choose a new password for the default keyring."
+msgstr "Velg et nytt passord for forvalgt nøkkelring."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:558
@@ -400,88 +400,88 @@ msgstr ""
 msgid "Unlock password for %s keyring"
 msgstr "Lås opp passord for %s nøkkelring"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
 msgid "Unlock private key"
 msgstr "Lås opp privat nøkkel"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
 msgid "Unlock certificate"
 msgstr "Lås opp sertifikat"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
 msgid "Unlock public key"
 msgstr "Lås opp offentlig nøkkel"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
 msgid "Unlock"
 msgstr "Lås opp"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Oppgi passord for å låse opp privat nøkkel"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Oppgi passord for å låse opp sertifikat"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
 msgid "Enter password to unlock the public key"
 msgstr "Oppgi passord for å låse opp offentlig nøkkel"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Oppgi passord for å låse opp"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Et program ønsker tilgang til privat nøkkel «%s», men den er låst"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Et program ønsker tilgang til sertifikat «%s», men den er låst"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Et program ønsker tilgang til offentlignøkkel «%s», men den er låst"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Et program ønsker tilgang til «%s», men den er låst"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
 msgid "Automatically unlock this private key when I log in."
 msgstr "Lås opp denne private nøkkelringen automatisk når jeg logger inn."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
 msgid "Automatically unlock this certificate when I log in."
 msgstr "Lås opp dette sertifikatet automatisk når jeg logger inn."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
 msgid "Automatically unlock this public key when I log in."
 msgstr "Lås opp denne offentlige nøkkelringen automatisk når jeg logger inn."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
 msgid "Automatically unlock this when I log in"
 msgstr "Lås denne opp automatisk når jeg logger inn."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Unlock certificate/key storage"
 msgstr "Lås opp lager for sertifikat/nøkkel"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Oppgi passord for å låse opp lager for sertifikat/nøkkel"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -490,20 +490,20 @@ msgstr ""
 "Et program ønsker tilgang til lager for sertifikat/nøkkel «%s», men det er "
 "låst"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Lås opp sikkerhetslageret automatisk når jeg logger inn."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New Password Required"
 msgstr "Nytt passord kreves"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
 msgid "New password required for secure storage"
 msgstr "Nytt passord kreves for sikkerhetslager"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -604,29 +604,29 @@ msgstr "Tillat én gang"
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
 
-#: ../daemon/util/gkr-location.c:320
+#: ../daemon/util/gkr-location.c:234
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Avtagbar disk: %s"
 
-#: ../daemon/util/gkr-location.c:322
+#: ../daemon/util/gkr-location.c:236
 msgid "Removable Disk"
 msgstr "Avtagbar disk"
 
-#: ../daemon/util/gkr-location.c:543 ../daemon/util/gkr-location.c:555
+#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
 msgid "Home"
 msgstr "Hjem"
 
-#: ../daemon/util/gkr-location.c:1104 ../daemon/util/gkr-location.c:1128
+#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller stasjonen denne filen er plassert på er ikke tilstede"
 
-#: ../daemon/util/gkr-location.c:1136
+#: ../daemon/util/gkr-location.c:914
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "Kunne ikke lage katalog: %s"
 
-#: ../daemon/util/gkr-location.c:1170
+#: ../daemon/util/gkr-location.c:948
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Kunne ikke slette filen: %s"
@@ -671,8 +671,7 @@ msgstr ""
 msgid "Surname"
 msgstr "Etternavn"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:330
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -759,74 +758,6 @@ msgstr "<i>Ikke del av sertifikatet</i>"
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
 msgstr "<i>ukjent</i>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:1
-msgid "<Not Part of Certificate>"
-msgstr "<Ikke en del av sertifikatet>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:2
-msgid "<b>Fingerprints</b>"
-msgstr "<b>Fingeravtrykk</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:3
-msgid "<b>Issued By</b>"
-msgstr "<b>Utstedt av</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:4
-msgid "<b>Issued To</b>"
-msgstr "<b>Utstedt til</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:5
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>Dette sertifikatet er verifisert for følgende bruksområder:</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:6
-msgid "<b>Validity</b>"
-msgstr "<b>Gyldighet</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:7
-msgid "Common Name (CN)"
-msgstr ""
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:8
-msgid "Email Recipient Certificate"
-msgstr "Sertifikat for e-postmottaker"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:9
-msgid "Email Signer Certificate"
-msgstr "Sertifikat for signering av e-post"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:10
-msgid "Expires On"
-msgstr "Utløper"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:11
-msgid "Issued On"
-msgstr "Utstedt"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:12
-msgid "MD5 Fingerprint"
-msgstr "MD5-fingeravtrykk"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:13
-msgid "Organization (O)"
-msgstr "Organisasjon (O)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:14
-msgid "Organizational Unit (OU)"
-msgstr "Organisasjonsenhet (OU)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:15
-msgid "SHA1 Fingerprint"
-msgstr "SHA1-fingeravtrykk"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:16
-msgid "SSL Client Certificate"
-msgstr "SSL klientsertifikat"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:17
-msgid "SSL Server Certificate"
-msgstr "SSL tjenersertifikat"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -918,19 +849,6 @@ msgstr "Offentlig nøkkel"
 #: ../gcr/gcr-certificate-details-widget.c:394
 msgid "Fingerprints"
 msgstr "Fingeravtrykk"
-
-#: ../gcr/gcr-import-dialog.glade.h:1
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr ""
-"<span size='large' weight='bold'>Importer sertifikater og nøkler</span>"
-
-#: ../gcr/gcr-import-dialog.glade.h:2
-msgid "Import Into:"
-msgstr "Importer til:"
-
-#: ../gcr/gcr-import-dialog.glade.h:3
-msgid "Password:"
-msgstr "Passord:"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1354,10 +1272,68 @@ msgstr "Det finnes ingen nøkkelring med dette navnet."
 msgid "The keyring has already been unlocked."
 msgstr "Nøkkelringen er allerede låst opp."
 
-#: ../pkcs11/gck/gck-certificate.c:710
+#: ../pkcs11/gck/gck-certificate.c:711
 msgid "Unnamed Certificate"
 msgstr "Sertifikat uten navn"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
 msgid "Couldn't parse public SSH key"
 msgstr "Kunne ikke lese offentlig nøkkel for SSH"
+
+#~ msgid "<Not Part of Certificate>"
+#~ msgstr "<Ikke en del av sertifikatet>"
+
+#~ msgid "<b>Fingerprints</b>"
+#~ msgstr "<b>Fingeravtrykk</b>"
+
+#~ msgid "<b>Issued By</b>"
+#~ msgstr "<b>Utstedt av</b>"
+
+#~ msgid "<b>Issued To</b>"
+#~ msgstr "<b>Utstedt til</b>"
+
+#~ msgid "<b>This certificate has been verified for the following uses:</b>"
+#~ msgstr "<b>Dette sertifikatet er verifisert for følgende bruksområder:</b>"
+
+#~ msgid "<b>Validity</b>"
+#~ msgstr "<b>Gyldighet</b>"
+
+#~ msgid "Email Recipient Certificate"
+#~ msgstr "Sertifikat for e-postmottaker"
+
+#~ msgid "Email Signer Certificate"
+#~ msgstr "Sertifikat for signering av e-post"
+
+#~ msgid "Expires On"
+#~ msgstr "Utløper"
+
+#~ msgid "Issued On"
+#~ msgstr "Utstedt"
+
+#~ msgid "MD5 Fingerprint"
+#~ msgstr "MD5-fingeravtrykk"
+
+#~ msgid "Organization (O)"
+#~ msgstr "Organisasjon (O)"
+
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "Organisasjonsenhet (OU)"
+
+#~ msgid "SHA1 Fingerprint"
+#~ msgstr "SHA1-fingeravtrykk"
+
+#~ msgid "SSL Client Certificate"
+#~ msgstr "SSL klientsertifikat"
+
+#~ msgid "SSL Server Certificate"
+#~ msgstr "SSL tjenersertifikat"
+
+#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+#~ msgstr ""
+#~ "<span size='large' weight='bold'>Importer sertifikater og nøkler</span>"
+
+#~ msgid "Import Into:"
+#~ msgstr "Importer til:"
+
+#~ msgid "Password:"
+#~ msgstr "Passord:"
