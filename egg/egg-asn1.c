@@ -222,6 +222,7 @@ egg_asn1_read_value (ASN1_TYPE asn, const gchar *part, gsize *len, EggAllocator 
 	
 	g_return_val_if_fail (asn != NULL, NULL);
 	g_return_val_if_fail (part != NULL, NULL);
+	g_return_val_if_fail (len != NULL, NULL);
 	
 	if (allocator == NULL)
 		allocator = (EggAllocator)g_realloc;
@@ -241,7 +242,7 @@ egg_asn1_read_value (ASN1_TYPE asn, const gchar *part, gsize *len, EggAllocator 
 	if (res != ASN1_SUCCESS) {
 		(allocator) (buf, 0);
 		buf = NULL;
-	} else if (len) {
+	} else {
 		*len = l;
 	}
 	
@@ -262,20 +263,42 @@ egg_asn1_write_value (ASN1_TYPE asn, const gchar *part,
 	return res == ASN1_SUCCESS;
 }
 
+static gboolean
+ascii_length_equals (const gchar *str, gconstpointer data, gsize n_data)
+{
+	g_assert (str);
+	if (!data)
+		return FALSE;
+	if (strlen (str) != n_data)
+		return FALSE;
+	return strncmp (str, data, n_data) == 0;
+}
+
+static gboolean
+ascii_length_case_equals (const gchar *str, gconstpointer data, gsize n_data)
+{
+	g_assert (str);
+	if (!data)
+		return FALSE;
+	if (strlen (str) != n_data)
+		return FALSE;
+	return g_ascii_strncasecmp (str, data, n_data) == 0;
+}
+
 gboolean
 egg_asn1_read_boolean (ASN1_TYPE asn, const gchar *part, gboolean *val)
 {
 	gchar buffer[32];
-	int n_buffer = sizeof (buffer) - 1;
+	int n_buffer = sizeof (buffer);
 	int res;
 	
 	memset (buffer, 0, sizeof (buffer));
 	
 	res = asn1_read_value (asn, part, buffer, &n_buffer);
-	if (res != ASN1_SUCCESS)
+	if (res != ASN1_SUCCESS || !n_buffer)
 		return FALSE;
 		
-	if (g_ascii_strcasecmp (buffer, "TRUE") == 0)
+	if (ascii_length_case_equals ("TRUE", buffer, n_buffer - 1))
 		*val = TRUE;
 	else
 		*val = FALSE;
@@ -332,15 +355,20 @@ egg_asn1_read_oid (ASN1_TYPE asn, const gchar *part)
 {
 	GQuark quark;
 	guchar *buf;
+	gpointer end;
 	gsize n_buf;
 	
 	buf = egg_asn1_read_value (asn, part, &n_buf, NULL);
-	if (!buf)
+	if (!buf || !n_buf)
 		return 0;
-		
+
+	/* Make sure the string is actually that long */
+	end = memchr (buf, 0, n_buf - 1);
+	if (end != NULL)
+		return 0;
+
 	quark = g_quark_from_string ((gchar*)buf);
 	g_free (buf);
-	
 	return quark;
 }
 
@@ -443,9 +471,9 @@ time_t timegm(struct tm *t)
 #endif //NOT_HAVE_TIMEGM
 
 static gboolean
-parse_utc_time (const gchar *time, struct tm* when, gint *offset)
+parse_utc_time (const gchar *time, gsize n_time,
+                struct tm* when, gint *offset)
 {
-	guint n_time;
 	const char *p, *e;
 	int year;
 
@@ -453,7 +481,8 @@ parse_utc_time (const gchar *time, struct tm* when, gint *offset)
 	g_assert (time);
 	g_assert (offset);
 	
-	n_time = strlen (time);
+	if (n_time != strlen (time))
+		return FALSE;
 	
 	/* YYMMDDhhmmss.ffff Z | +0000 */
 	if (n_time < 6 || n_time >= 28) 
@@ -573,30 +602,34 @@ when_to_time (struct tm *when, gint offset)
 }
 
 glong
-egg_asn1_time_parse_utc (const gchar *time)
+egg_asn1_time_parse_utc (const gchar *time, gssize n_time)
 {
 	struct tm when;
 	gint offset;
 	
 	g_return_val_if_fail (time, -1);
+
+	if (n_time == -1)
+		n_time = strlen (time);
 	
-	if (!parse_utc_time (time, &when, &offset))
+	if (!parse_utc_time (time, n_time, &when, &offset))
 		return -1;
 	
 	return when_to_time (&when, offset);
 }
 
 static gboolean
-parse_general_time (const gchar *time, struct tm* when, gint *offset)
+parse_general_time (const gchar *time, gsize n_time,
+                    struct tm* when, gint *offset)
 {
 	const char *p, *e;
-	guint n_time;
 
 	g_assert (time);
 	g_assert (when);
 	g_assert (offset);
-	
-	n_time = strlen (time);
+
+	if (strlen (time) != n_time)
+		return FALSE;
 	
 	/* YYYYMMDDhhmmss.ffff Z | +0000 */
 	if (n_time < 8 || n_time >= 30) 
@@ -691,14 +724,17 @@ parse_general_time (const gchar *time, struct tm* when, gint *offset)
 }
 
 glong
-egg_asn1_time_parse_general (const gchar *time)
+egg_asn1_time_parse_general (const gchar *time, gssize n_time)
 {
 	struct tm when;
 	gint offset;
 	
 	g_return_val_if_fail (time, -1);
 	
-	if (!parse_general_time (time, &when, &offset))
+	if (n_time == -1)
+		n_time = strlen (time);
+
+	if (!parse_general_time (time, n_time, &when, &offset))
 		return -1;
 	
 	return when_to_time (&when, offset);
@@ -716,31 +752,32 @@ read_asn1_time (ASN1_TYPE asn, const gchar *part, struct tm *when, gint *offset)
 	g_assert (when);
 	g_assert (offset);
 
-	len = sizeof (ttime) - 1;
+	len = sizeof (ttime);
 	res = asn1_read_value (asn, part, ttime, &len);
 	if (res != ASN1_SUCCESS)
 		return FALSE;
-		
+	--len; /* libtasn1 returns the null terminator in this count */
+
 	/* CHOICE */
-	if (strcmp (ttime, "generalTime") == 0) {
+	if (ascii_length_equals ("generalTime", ttime, len)) {
 		name = g_strconcat (part, ".generalTime", NULL);
 		len = sizeof (ttime) - 1;
 		res = asn1_read_value (asn, name, ttime, &len);
 		g_free (name);
 		if (res != ASN1_SUCCESS)
 			return FALSE;
-		return parse_general_time (ttime, when, offset);
+		return parse_general_time (ttime, len - 1, when, offset);
 		
 	/* UTCTIME */
-	} else {
+	} else if (ascii_length_equals ("utcTime", ttime, len)) {
 		name = g_strconcat (part, ".utcTime", NULL);
 		len = sizeof (ttime) - 1;
 		res = asn1_read_value (asn, name, ttime, &len);
 		g_free (name);
 		if (res != ASN1_SUCCESS)
 			return FALSE;
-		return parse_utc_time (ttime, when, offset);
-    	}
+		return parse_utc_time (ttime, len - 1, when, offset);
+	}
 
 	return FALSE;	
 }
@@ -807,6 +844,7 @@ dn_print_oid_value_parsed (GQuark oid, guint flags, const guchar *data, gsize le
 	ASN1_TYPE asn1;
 	gchar *part;
 	gchar *value;
+	gsize n_value;
 	
 	g_assert (data);
 	g_assert (len);
@@ -824,19 +862,19 @@ dn_print_oid_value_parsed (GQuark oid, guint flags, const guchar *data, gsize le
 		return NULL;
 	}
 
-	value = (gchar*)egg_asn1_read_value (asn1, "", NULL, NULL);
+	value = (gchar*)egg_asn1_read_value (asn1, "", &n_value, NULL);
 	
 	/*
 	 * If it's a choice element, then we have to read depending
 	 * on what's there.
 	 */
 	if (value && (flags & EGG_OID_IS_CHOICE)) {
-		if (strcmp ("printableString", value) == 0 ||
-		    strcmp ("ia5String", value) == 0 ||
-		    strcmp ("utf8String", value) == 0 ||
-		    strcmp ("teletexString", value) == 0) {
+		if (ascii_length_equals ("printableString", value, n_value - 1) ||
+			ascii_length_equals ("ia5String", value, n_value - 1 ) ||
+			ascii_length_equals ("utf8String", value, n_value - 1) ||
+			ascii_length_equals ("teletexString", value, n_value - 1)) {
 			part = value;
-			value = (gchar*)egg_asn1_read_value (asn1, part, NULL, NULL);
+			value = (gchar*)egg_asn1_read_value (asn1, part, &n_value, NULL);
 			g_free (part);
 		} else {
 			g_free (value);
@@ -852,8 +890,8 @@ dn_print_oid_value_parsed (GQuark oid, guint flags, const guchar *data, gsize le
 	/* 
 	 * Now we make sure it's UTF-8. 
 	 */
-	if (!g_utf8_validate (value, -1, NULL)) {
-		gchar *hex = dn_print_hex_value ((guchar*)value, strlen (value));
+	if (!g_utf8_validate (value, n_value, NULL)) {
+		gchar *hex = dn_print_hex_value ((guchar*)value, n_value);
 		g_free (value);
 		value = hex;
 	}

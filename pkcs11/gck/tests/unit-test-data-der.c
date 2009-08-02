@@ -280,6 +280,7 @@ static const guchar*
 find_extension (ASN1_TYPE asn, const guchar *data, gsize n_data, const gchar *oid, gsize *n_extension)
 {
 	const guchar *value;
+	gsize n_exoid;
 	guchar *exoid;
 	gchar *name;
 	guint index;
@@ -291,13 +292,13 @@ find_extension (ASN1_TYPE asn, const guchar *data, gsize n_data, const gchar *oi
 		
 		/* Make sure it is present */
 		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", index);
-		exoid = egg_asn1_read_value (asn, name, NULL, NULL);
+		exoid = egg_asn1_read_value (asn, name, &n_exoid, NULL);
 		g_free (name);
 
 		if (!exoid)
 			return NULL;
 
-		if (strcmp ((gchar*)exoid, oid) == 0) {
+		if (n_exoid == strlen (oid) && strcmp ((gchar*)exoid, oid) == 0) {
 			g_free (exoid);
 			name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
 			value = egg_asn1_read_content (asn, data, n_data, name, n_extension);

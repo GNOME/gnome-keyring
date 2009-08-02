@@ -75,9 +75,9 @@ gchar*             egg_asn1_read_dn                       (ASN1_TYPE asn, const 
 gchar*             egg_asn1_read_dn_part                  (ASN1_TYPE asn, const gchar *part, const gchar *match);
 
 
-glong              egg_asn1_time_parse_utc                (const gchar* value);
+glong              egg_asn1_time_parse_utc                (const gchar* value, gssize n_value);
 
-glong              egg_asn1_time_parse_general            (const gchar* value);
+glong              egg_asn1_time_parse_general            (const gchar* value, gssize n_value);
 
 
 typedef void       (*EggAsn1DnCallback)                   (guint index, GQuark oid, const guchar *value,

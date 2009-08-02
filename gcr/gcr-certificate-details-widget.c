@@ -182,10 +182,10 @@ append_extension (GcrCertificateDetailsWidget *self, ASN1_TYPE asn,
 {
 	GQuark oid;
 	gchar *name, *display;
-	gsize n_val, n_value;
+	gsize n_value;
 	const guchar *value;
 	const gchar *text;
-	guchar *val;
+	gboolean critical;
 	int len, res;
 	
 	/* Make sure it is present */
@@ -225,17 +225,9 @@ append_extension (GcrCertificateDetailsWidget *self, ASN1_TYPE asn,
 	
 	/* Critical */
 	name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", index);
-	val = egg_asn1_read_value (asn, name, &n_val, NULL);
+	if (egg_asn1_read_boolean (asn, name, &critical))
+		append_field_and_value (self, _("Critical"), critical ? _("Yes") : _("No"), FALSE);
 	g_free (name);
-	
-	if (!val || n_val < 1 || val[0] != 'T')
-		text = _("Yes");
-	else
-		text = _("No");
-	g_free (val);
-	
-	append_field_and_value (self, _("Critical"), text, FALSE);
-	
 	
 	return TRUE;
 }
@@ -273,7 +265,7 @@ on_parsed_dn_part (guint index, GQuark oid, const guchar *value,
 	
 	display = egg_asn1_dn_print_value (oid, value, n_value);
 	if (display == NULL)
-		display = "";
+		display = g_strdup ("");
 	
 	append_field_and_value (self, field, display, FALSE);
 	g_free (field);

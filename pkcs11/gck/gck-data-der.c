@@ -1223,9 +1223,9 @@ gck_data_der_read_key_usage (const guchar *data, gsize n_data, guint *key_usage)
 
 	memset (buf, 0, sizeof (buf));
 	len = sizeof (buf);
-  	res = asn1_read_value (asn, "", buf, &len);
-  	if (res != ASN1_SUCCESS)
-  		goto done;
+	res = asn1_read_value (asn, "", buf, &len);
+	if (res != ASN1_SUCCESS || len < 1 || len > 2)
+		goto done;
 
 	*key_usage = buf[0] | (buf[1] << 8);
 	ret = GCK_DATA_SUCCESS;

@@ -674,7 +674,12 @@ gck_certificate_get_extension (GckCertificate *self, GQuark oid,
 		val = egg_asn1_read_value (self->pv->asn1, name, &n_val, NULL);
 		g_free (name);
 		
-		if (!val || n_val < 1 || val[0] != 'T')
+		/*
+		 * We're pretty liberal in what we accept as critical. The goal
+		 * here is not to accidentally mark as non-critical what some
+		 * other x509 implementation meant to say critical.
+		 */
+		if (!val || n_val < 1 || g_ascii_toupper (val[0]) != 'T')
 			*critical = FALSE;
 		else
 			*critical = TRUE;
