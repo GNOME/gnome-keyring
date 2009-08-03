@@ -36,8 +36,12 @@ typedef struct _GckSecretAccess {
 	GckSecretAccessType types_allowed;
 } GckSecretAccess;
 
-void     gck_secret_compat_access_free (gpointer ac);
+void           gck_secret_compat_access_free         (gpointer ac);
 
-void     gck_secret_compat_acl_free    (gpointer acl);
+void           gck_secret_compat_acl_free            (gpointer acl);
+
+guint          gck_secret_compat_parse_item_type     (const gchar *value);
+
+const gchar*   gck_secret_compat_format_item_type    (guint value);
 
 #endif /* __GCK_SECRET_COMPAT_H__ */

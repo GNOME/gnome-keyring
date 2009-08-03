@@ -543,8 +543,7 @@ generate_hashed_items (GckSecretCollection *collection, EggBuffer *buffer)
 		
 		attributes = gck_secret_item_get_fields (l->data);
 		value = g_hash_table_lookup (attributes, "gkr:item-type");
-		if (!value || !convert_to_integer (value, &type))
-			type = 0;
+		type = gck_secret_compat_parse_item_type (value);
 		egg_buffer_add_uint32 (buffer, type);
 		
 		buffer_add_attributes (buffer, attributes, TRUE);
@@ -721,14 +720,13 @@ setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
 {
 	GckSecretObject *obj = GCK_SECRET_OBJECT (item);
 	GckLogin *secret;
-	gchar *type;
+	const gchar *type;
 	
 	gck_secret_object_set_label (obj, info->display_name);
 	gck_secret_object_set_created (obj, info->ctime);
 	gck_secret_object_set_modified (obj, info->mtime);
 	
-	type = g_strdup_printf ("%u", info->type);
-
+	type = gck_secret_compat_format_item_type (info->type);
 	gck_secret_fields_add (info->attributes, "gkr:item-type", type);
 	gck_secret_item_set_fields (item, info->attributes);
 
@@ -743,8 +741,6 @@ setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
 		g_object_set_data_full (G_OBJECT (item), "compat-acl", info->acl, gck_secret_compat_acl_free);
 		info->acl = NULL;
 	}
-
-	g_free (type);
 }
 
 static void

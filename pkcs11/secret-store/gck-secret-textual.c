@@ -317,12 +317,12 @@ generate_item (GKeyFile *file, GckSecretItem *item)
 	
 	/* 
 	 * COMPATIBILITY: We no longer have the concept of an item type.
-	 * The compat-item-type field serves that purpose.
+	 * The gkr:item-type field serves that purpose.
 	 */
 	
-	value = g_hash_table_lookup (attributes, "compat-item-type");
-	if (value != NULL)
-		g_key_file_set_string (file, groupname, "item-type", value);
+	value = g_hash_table_lookup (attributes, "gkr:item-type");
+	g_key_file_set_integer (file, groupname, "item-type",
+	                        gck_secret_compat_parse_item_type (value));
 
 	value = gck_secret_object_get_label (obj);
 	if (value != NULL)
@@ -349,9 +349,11 @@ parse_item (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 	GckSecretObject *obj;
 	GHashTable *attributes;
 	const gchar *groupname;
+	GError *err = NULL;
 	GckLogin *secret;
 	gchar *val;
 	guint64 num;
+	gint type;
 	
 	/* First the main item data */
 	
@@ -361,12 +363,17 @@ parse_item (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 	
 	/* 
 	 * COMPATIBILITY: We no longer have the concept of an item type.
-	 * The compat-item-type field serves that purpose.
+	 * The gkr:item-type field serves that purpose.
 	 */
-	
-	val = g_key_file_get_string (file, groupname, "item-type", NULL);
-	if (val != NULL)
-		g_hash_table_replace (attributes, g_strdup ("compat-item-type"), val);
+
+	type = g_key_file_get_integer (file, groupname, "item-type", &err);
+	if (err) {
+		g_clear_error (&err);
+		type = 0;
+	}
+
+	gck_secret_fields_add (attributes, "gkr:item-type",
+	                       gck_secret_compat_format_item_type (type));
 
 	val = g_key_file_get_string (file, groupname, "display-name", NULL);
 	gck_secret_object_set_label (obj, val);
