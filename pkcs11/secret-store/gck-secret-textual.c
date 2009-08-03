@@ -296,7 +296,7 @@ parse_acl (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 		acl = g_list_prepend (acl, ac);
 	}
 	
-	g_object_set_data_full (G_OBJECT (item), "compat-acl", acl, gck_secret_acl_free);
+	g_object_set_data_full (G_OBJECT (item), "compat-acl", acl, gck_secret_compat_acl_free);
 	g_free (prefix);
 }
 

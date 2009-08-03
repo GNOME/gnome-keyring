@@ -697,7 +697,7 @@ decode_acl (EggBuffer *buffer, gsize offset, gsize *offset_out, GList **out)
 	return TRUE;
 	
 bail:
-	gck_secret_acl_free (acl);
+	gck_secret_compat_acl_free (acl);
 	return FALSE;
 }
 
@@ -740,7 +740,7 @@ setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
 		secret = gck_login_new_from_password (info->secret);
 		gck_secret_item_set_secret (item, secret);
 		g_object_unref (secret);
-		g_object_set_data_full (G_OBJECT (item), "compat-acl", info->acl, gck_secret_acl_free);
+		g_object_set_data_full (G_OBJECT (item), "compat-acl", info->acl, gck_secret_compat_acl_free);
 		info->acl = NULL;
 	}
 
@@ -754,7 +754,7 @@ free_item_info (ItemInfo *info)
 	g_free (info->display_name);
 	egg_secure_free (info->secret);
 	g_hash_table_unref (info->attributes);
-	gck_secret_acl_free (info->acl);
+	gck_secret_compat_acl_free (info->acl);
 }
 
 gint

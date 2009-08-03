@@ -19,25 +19,27 @@
  * 02111-1307, USA.  
  */
 
-#ifndef __GCK_SECRET_COMPAT_H__
-#define __GCK_SECRET_COMPAT_H__
+#include "config.h"
 
-#include <glib.h>
+#include "gck-secret-compat.h"
 
-typedef enum {
-	GCK_SECRET_ACCESS_READ = 1 << 0,
-	GCK_SECRET_ACCESS_WRITE = 1 << 1,
-	GCK_SECRET_ACCESS_REMOVE = 1 << 2
-} GckSecretAccessType;
+void
+gck_secret_compat_access_free (gpointer data)
+{
+	GckSecretAccess *ac = data;
+	if (ac) {
+		g_free (ac->display_name);
+		g_free (ac->pathname);
+		g_free (ac);
+	}
+}
 
-typedef struct _GckSecretAccess {
-	char *display_name;
-	char *pathname;
-	GckSecretAccessType types_allowed;
-} GckSecretAccess;
+void
+gck_secret_compat_acl_free (gpointer acl)
+{
+	GList *l;
+	for (l = acl; l; l = g_list_next (l)) 
+		gck_secret_compat_access_free (l->data);
+	g_list_free (acl);
+}
 
-void     gck_secret_compat_access_free (gpointer ac);
-
-void     gck_secret_compat_acl_free    (gpointer acl);
-
-#endif /* __GCK_SECRET_COMPAT_H__ */
