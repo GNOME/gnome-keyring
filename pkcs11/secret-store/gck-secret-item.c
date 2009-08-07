@@ -25,7 +25,7 @@
 #include "gck-secret-item.h"
 
 #include "gck/gck-attributes.h"
-#include "gck/gck-login.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-transaction.h"
 
 #include "pkcs11/pkcs11g.h"
@@ -41,7 +41,7 @@ enum {
 
 struct _GckSecretItem {
 	GckSecretObject parent;
-	GckLogin *secret;
+	GckSecret *secret;
 	GHashTable *fields;
 	GckSecretCollection *collection;
 };
@@ -56,7 +56,7 @@ static gboolean
 complete_set_secret (GckTransaction *transaction, GObject *obj, gpointer user_data)
 {
 	GckSecretItem *self = GCK_SECRET_ITEM (obj);
-	GckLogin *old_secret = user_data;
+	GckSecret *old_secret = user_data;
 	
 	if (gck_transaction_get_failed (transaction)) {
 		gck_secret_item_set_secret (self, old_secret);
@@ -72,7 +72,7 @@ complete_set_secret (GckTransaction *transaction, GObject *obj, gpointer user_da
 }
 
 static void
-begin_set_secret (GckSecretItem *self, GckTransaction *transaction, GckLogin *secret)
+begin_set_secret (GckSecretItem *self, GckTransaction *transaction, GckSecret *secret)
 {
 	g_assert (GCK_IS_SECRET_OBJECT (self));
 	g_assert (!gck_transaction_get_failed (transaction));
@@ -141,7 +141,7 @@ gck_secret_item_real_get_attribute (GckObject *base, GckSession *session, CK_ATT
 		if (gck_secret_item_real_is_locked (GCK_SECRET_OBJECT (self), session))
 			return CKR_USER_NOT_LOGGED_IN;
 		g_return_val_if_fail (self->secret, CKR_GENERAL_ERROR);
-		password = gck_login_get_password (self->secret, &n_password);
+		password = gck_secret_get_password (self->secret, &n_password);
 		return gck_attribute_set_data (attr, password, n_password);
 		
 	case CKA_G_COLLECTION:
@@ -162,7 +162,7 @@ gck_secret_item_real_set_attribute (GckObject *base, GckSession *session,
 {
 	GckSecretItem *self = GCK_SECRET_ITEM (base);
 	GHashTable *fields;
-	GckLogin *login;
+	GckSecret *secret;
 	CK_RV rv;
 
 	/* Check that the object is not locked */
@@ -173,8 +173,8 @@ gck_secret_item_real_set_attribute (GckObject *base, GckSession *session,
 
 	switch (attr->type) {
 	case CKA_VALUE:
-		login = gck_login_new (attr->pValue, attr->ulValueLen);
-		begin_set_secret (self, transaction, login);
+		secret = gck_secret_new (attr->pValue, attr->ulValueLen);
+		begin_set_secret (self, transaction, secret);
 		break;
 
 	case CKA_G_FIELDS:
@@ -306,7 +306,7 @@ gck_secret_item_class_init (GckSecretItemClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_SECRET,
 	           g_param_spec_object ("secret", "Secret", "Item's Secret",
-	                                GCK_TYPE_LOGIN, G_PARAM_READWRITE));
+	                                GCK_TYPE_SECRET, G_PARAM_READWRITE));
 
 	g_object_class_install_property (gobject_class, PROP_SECRET,
 	           g_param_spec_object ("collection", "Collection", "Item's Collection",
@@ -328,15 +328,15 @@ gck_secret_item_get_collection (GckSecretItem *self)
 	return self->collection;
 }
 
-GckLogin*
+GckSecret*
 gck_secret_item_get_secret (GckSecretItem *self)
 {
 	g_return_val_if_fail (GCK_IS_SECRET_ITEM (self), NULL);
-	return self->secret;	
+	return self->secret;
 }
 
 void
-gck_secret_item_set_secret (GckSecretItem *self, GckLogin *secret)
+gck_secret_item_set_secret (GckSecretItem *self, GckSecret *secret)
 {
 	g_return_if_fail (GCK_IS_SECRET_ITEM (self));
 	

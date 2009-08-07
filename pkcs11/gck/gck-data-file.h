@@ -25,7 +25,7 @@
 #include <glib-object.h>
 
 #include "gck-data-types.h"
-#include "gck-login.h"
+#include "gck-secret.h"
 
 enum {
 	GCK_DATA_FILE_SECTION_PUBLIC  = 0x01,
@@ -62,11 +62,11 @@ GckDataFile*              gck_data_file_new                    (void);
 
 GckDataResult             gck_data_file_read_fd                (GckDataFile *self,
                                                                 int fd, 
-                                                                GckLogin *login);
+                                                                GckSecret *login);
 
 GckDataResult             gck_data_file_write_fd               (GckDataFile *self,
                                                                 int fd, 
-                                                                GckLogin *login);
+                                                                GckSecret *login);
 
 gboolean                  gck_data_file_have_section           (GckDataFile *self,
                                                                 guint section);

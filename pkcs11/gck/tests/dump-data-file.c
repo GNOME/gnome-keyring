@@ -60,7 +60,7 @@ main(int argc, char* argv[])
 	const gchar *password;
 	GckDataResult res;
 	GckDataFile *file;
-	GckLogin *login;
+	GckSecret *login;
 	int fd;
 	
 	g_type_init ();
@@ -74,7 +74,7 @@ main(int argc, char* argv[])
 		failure ("dump-data-file: couldn't open file: %s: %s", argv[1], g_strerror (errno));
 	
 	password = getpass ("Password: ");
-	login = gck_login_new ((guchar*)password, strlen (password));
+	login = gck_secret_new ((guchar*)password, strlen (password));
 	
 	file = gck_data_file_new ();
 	res = gck_data_file_read_fd (file, fd, login);

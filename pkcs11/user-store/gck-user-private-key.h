@@ -26,7 +26,7 @@
 
 #include "gck-user-private-key.h"
 
-#include "gck/gck-login.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-private-key.h"
 
 #define GCK_FACTORY_USER_PRIVATE_KEY            (gck_user_private_key_get_factory ())

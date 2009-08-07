@@ -152,7 +152,7 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 }
 
 static gboolean
-gck_secret_collection_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
+gck_secret_collection_real_load (GckSerializable *base, GckSecret *login, const guchar *data, gsize n_data)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
 	GckDataResult res;
@@ -170,7 +170,7 @@ gck_secret_collection_real_load (GckSerializable *base, GckLogin *login, const g
 }
 
 static gboolean
-gck_secret_collection_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+gck_secret_collection_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
 	GckDataResult res;
@@ -201,7 +201,7 @@ gck_secret_collection_serializable (GckSerializableIface *iface)
  * PUBLIC
  */
 
-GckLogin*
+GckSecret*
 gck_secret_collection_lookup_secret (GckSecretCollection *self,
                                      const gchar *identifier)
 {

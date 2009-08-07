@@ -63,7 +63,7 @@ gck_serializable_get_type (void)
 }
 
 gboolean
-gck_serializable_load (GckSerializable *self, GckLogin *login, const guchar *data, gsize n_data)
+gck_serializable_load (GckSerializable *self, GckSecret *login, const guchar *data, gsize n_data)
 {
 	g_return_val_if_fail (GCK_IS_SERIALIZABLE (self), FALSE);
 	g_return_val_if_fail (GCK_SERIALIZABLE_GET_INTERFACE (self)->load, FALSE);
@@ -71,7 +71,7 @@ gck_serializable_load (GckSerializable *self, GckLogin *login, const guchar *dat
 }
 
 gboolean
-gck_serializable_save (GckSerializable *self, GckLogin *login, guchar **data, gsize *n_data)
+gck_serializable_save (GckSerializable *self, GckSecret *login, guchar **data, gsize *n_data)
 {
 	g_return_val_if_fail (GCK_IS_SERIALIZABLE (self), FALSE);
 	g_return_val_if_fail (GCK_SERIALIZABLE_GET_INTERFACE (self)->save, FALSE);

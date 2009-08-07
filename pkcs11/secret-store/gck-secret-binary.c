@@ -34,7 +34,7 @@
 #include "egg/egg-symkey.h"
 #include "egg/egg-secure-memory.h"
 
-#include "gck/gck-login.h"
+#include "gck/gck-secret.h"
 
 #include <glib.h>
 
@@ -474,7 +474,7 @@ generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection)
 	GList *items, *l;
 	GHashTable *attributes;
 	const gchar *label;
-	GckLogin *secret;
+	GckSecret *secret;
 	const gchar *password;
 	gsize n_password;
 	GList *acl;
@@ -494,7 +494,7 @@ generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection)
 		secret = gck_secret_item_get_secret (item);
 		password = NULL;
 		if (secret != NULL)
-			password = gck_login_get_password (secret, &n_password);
+			password = gck_secret_get_password (secret, &n_password);
 		/* TODO: Need to support binary secrets somehow */
 		buffer_add_utf8_string (buffer, password);
 
@@ -719,7 +719,7 @@ static void
 setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
 {
 	GckSecretObject *obj = GCK_SECRET_OBJECT (item);
-	GckLogin *secret;
+	GckSecret *secret;
 	const gchar *type;
 	
 	gck_secret_object_set_label (obj, info->display_name);
@@ -735,7 +735,7 @@ setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
 		gck_secret_item_set_secret (item, NULL);
 		
 	} else {
-		secret = gck_login_new_from_password (info->secret);
+		secret = gck_secret_new_from_password (info->secret);
 		gck_secret_item_set_secret (item, secret);
 		g_object_unref (secret);
 		g_object_set_data_full (G_OBJECT (item), "compat-acl", info->acl, gck_secret_compat_acl_free);

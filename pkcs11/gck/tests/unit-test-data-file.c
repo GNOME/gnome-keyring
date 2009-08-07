@@ -38,7 +38,7 @@ static gchar *write_filename = NULL;
 static int write_fd = -1;
 static int public_fd = -1;
 static int private_fd = -1;
-static GckLogin *login = NULL;
+static GckSecret *login = NULL;
 
 DEFINE_SETUP(file_store)
 {
@@ -57,7 +57,7 @@ DEFINE_SETUP(file_store)
 	write_fd = g_open (write_filename, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	g_assert (write_fd != -1);
 	
-	login = gck_login_new ((CK_UTF8CHAR_PTR)"booo", 4);
+	login = gck_secret_new ((guchar*)"booo", 4);
 }
 
 DEFINE_TEARDOWN(file_store)

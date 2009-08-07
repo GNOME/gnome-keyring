@@ -41,20 +41,20 @@ struct _GckSerializableIface {
 	
 	const gchar *extension;
 
-	gboolean (*load) (GckSerializable *self, GckLogin *login, const guchar *data, gsize n_data);
+	gboolean (*load) (GckSerializable *self, GckSecret *login, const guchar *data, gsize n_data);
 	
-	gboolean (*save) (GckSerializable *self, GckLogin *login, guchar **data, gsize *n_data);
+	gboolean (*save) (GckSerializable *self, GckSecret *login, guchar **data, gsize *n_data);
 };
 
 GType                  gck_serializable_get_type                          (void) G_GNUC_CONST;
 
 gboolean               gck_serializable_load                              (GckSerializable *self,
-                                                                           GckLogin *login,
+                                                                           GckSecret *login,
                                                                            const guchar *data,
                                                                            gsize n_data);
 
 gboolean                gck_serializable_save                             (GckSerializable *self,
-                                                                           GckLogin *login,
+                                                                           GckSecret *login,
                                                                            guchar** data,
                                                                            gsize *n_data);
 

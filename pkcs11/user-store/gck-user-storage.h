@@ -24,8 +24,8 @@
 
 #include <glib-object.h>
 
-#include "gck/gck-login.h"
 #include "gck/gck-manager.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-store.h"
 #include "gck/gck-transaction.h"
 
@@ -52,7 +52,7 @@ GckManager*                 gck_user_storage_get_manager            (GckUserStor
 
 const gchar*                gck_user_storage_get_directory          (GckUserStorage *self);
 
-GckLogin*                   gck_user_storage_get_login              (GckUserStorage *self);
+GckSecret*                  gck_user_storage_get_login              (GckUserStorage *self);
 
 gulong                      gck_user_storage_token_flags            (GckUserStorage *self);
 
@@ -68,11 +68,11 @@ void                        gck_user_storage_destroy                (GckUserStor
 
 void                        gck_user_storage_relock                 (GckUserStorage *self, 
                                                                      GckTransaction *transaction, 
-                                                                     GckLogin *old_login, 
-                                                                     GckLogin *new_login);
+                                                                     GckSecret *old_login, 
+                                                                     GckSecret *new_login);
 
 CK_RV                       gck_user_storage_unlock                 (GckUserStorage *self,
-                                                                     GckLogin *login);
+                                                                     GckSecret *login);
 
 CK_RV                       gck_user_storage_lock                   (GckUserStorage *self);
 

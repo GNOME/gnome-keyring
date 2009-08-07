@@ -31,7 +31,7 @@
 
 #include "egg/egg-secure-memory.h"
 
-#include "gck/gck-login.h"
+#include "gck/gck-secret.h"
 
 #include <glib.h>
 
@@ -307,7 +307,7 @@ generate_item (GKeyFile *file, GckSecretItem *item)
 	GHashTable *attributes;
 	const gchar *value;
 	const gchar *groupname;
-	GckLogin *secret;
+	GckSecret *secret;
 	const gchar *password;
 	gsize n_password;
 	
@@ -330,7 +330,7 @@ generate_item (GKeyFile *file, GckSecretItem *item)
 	
 	secret = gck_secret_item_get_secret (item);
 	if (secret != NULL) {
-		password = gck_login_get_password (secret, &n_password);
+		password = gck_secret_get_password (secret, &n_password);
 		/* TODO: What about non-textual passwords? */
 		if (password != NULL) 
 			g_key_file_set_value (file, groupname, "secret", (gchar*)password);
@@ -350,7 +350,7 @@ parse_item (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 	GHashTable *attributes;
 	const gchar *groupname;
 	GError *err = NULL;
-	GckLogin *secret;
+	GckSecret *secret;
 	gchar *val;
 	guint64 num;
 	gint type;
@@ -383,7 +383,7 @@ parse_item (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 	if (val == NULL) {
 		gck_secret_item_set_secret (item, NULL);
 	} else {
-		secret = gck_login_new ((guchar*)val, strlen (val));
+		secret = gck_secret_new ((guchar*)val, strlen (val));
 		gck_secret_item_set_secret (item, secret);
 		g_object_unref (secret);
 		g_free (val);

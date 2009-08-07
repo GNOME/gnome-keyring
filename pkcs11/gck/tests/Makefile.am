@@ -17,7 +17,7 @@ UNIT_AUTO = \
 	unit-test-transaction.c \
 	unit-test-store.c \
 	unit-test-memory-store.c \
-	unit-test-login.c \
+	unit-test-secret.c \
 	unit-test-data-file.c \
 	unit-test-file-tracker.c \
 	mock-locked-object.c mock-locked-object.h \

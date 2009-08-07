@@ -517,7 +517,7 @@ gck_certificate_class_init (GckCertificateClass *klass)
 }
 
 static gboolean 
-gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
+gck_certificate_real_load (GckSerializable *base, GckSecret *login, const guchar *data, gsize n_data)
 {
 	GckCertificate *self = GCK_CERTIFICATE (base);
 	ASN1_TYPE asn1 = ASN1_TYPE_EMPTY;
@@ -573,7 +573,7 @@ gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar 
 }
 
 static gboolean 
-gck_certificate_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+gck_certificate_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
 	GckCertificate *self = GCK_CERTIFICATE (base);
 	

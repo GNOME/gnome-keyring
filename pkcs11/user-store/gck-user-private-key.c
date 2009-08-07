@@ -27,9 +27,9 @@
 #include "gck/gck-crypto.h"
 #include "gck/gck-data-der.h"
 #include "gck/gck-factory.h"
-#include "gck/gck-login.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-serializable.h"
 #include "gck/gck-session.h"
 #include "gck/gck-sexp.h"
@@ -49,7 +49,7 @@ struct _GckUserPrivateKey {
 	
 	GckSexp *private_sexp;
 	gboolean is_encrypted;
-	GckLogin *login;
+	GckSecret *login;
 };
 
 static void gck_user_private_key_serializable (GckSerializableIface *iface);
@@ -115,7 +115,7 @@ gck_user_private_key_real_acquire_crypto_sexp (GckKey *base, GckSession *unused)
 	g_return_val_if_fail (self->login, NULL);
 	g_return_val_if_fail (self->is_encrypted, NULL);
 	
-	password = gck_login_get_password (self->login, &n_password);
+	password = gck_secret_get_password (self->login, &n_password);
 	res = gck_data_der_read_private_pkcs8 (self->private_data, self->n_private_data, 
 	                                       password, n_password, &sexp);
 	g_return_val_if_fail (res == GCK_DATA_SUCCESS, NULL);
@@ -198,7 +198,7 @@ gck_user_private_key_class_init (GckUserPrivateKeyClass *klass)
 }
 
 static gboolean
-gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
+gck_user_private_key_real_load (GckSerializable *base, GckSecret *login, const guchar *data, gsize n_data)
 {
 	GckUserPrivateKey *self = GCK_USER_PRIVATE_KEY (base);
 	GckDataResult res;
@@ -225,7 +225,7 @@ gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const gu
 			return FALSE;
 		}
 	
-		password = gck_login_get_password (login, &n_password);
+		password = gck_secret_get_password (login, &n_password);
 		res = gck_data_der_read_private_pkcs8 (data, n_data, password, n_password, &sexp);
 	}
 
@@ -284,7 +284,7 @@ gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const gu
 }
 
 static gboolean 
-gck_user_private_key_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+gck_user_private_key_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
 	GckUserPrivateKey *self = GCK_USER_PRIVATE_KEY (base);
 	const gchar *password;
@@ -298,7 +298,7 @@ gck_user_private_key_real_save (GckSerializable *base, GckLogin *login, guchar *
 	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_KEY (self), NULL);
 	g_return_val_if_fail (sexp, FALSE);
 	
-	password = gck_login_get_password (login, &n_password);
+	password = gck_secret_get_password (login, &n_password);
 	if (password == NULL) 
 		*data = gck_data_der_write_private_pkcs8_plain (gck_sexp_get (sexp), n_data);
 	else

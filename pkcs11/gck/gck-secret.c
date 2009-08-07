@@ -69,36 +69,11 @@ gck_secret_finalize (GObject *obj)
 }
 
 static void
-gck_secret_set_property (GObject *obj, guint prop_id, const GValue *value, 
-                        GParamSpec *pspec)
-{
-	switch (prop_id) {
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
-		break;
-	}
-}
-
-static void
-gck_secret_get_property (GObject *obj, guint prop_id, GValue *value, 
-                        GParamSpec *pspec)
-{
-	switch (prop_id) {
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
-		break;
-	}
-}
-
-static void
 gck_secret_class_init (GckSecretClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    
 	gobject_class->dispose = gck_secret_dispose;
 	gobject_class->finalize = gck_secret_finalize;
-	gobject_class->set_property = gck_secret_set_property;
-	gobject_class->get_property = gck_secret_get_property;
 }
 
 /* -----------------------------------------------------------------------------

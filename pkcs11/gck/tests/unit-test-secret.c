@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-login.c: Test gck-login.c 
+/* unit-test-secret.c: Test gck-secret.c 
 
    Copyright (C) 2007 Stefan Walter
 
@@ -27,94 +27,117 @@
 
 #include "run-auto-test.h"
 
-#include "gck/gck-login.h"
+#include "gck/gck-secret.h"
 
-DEFINE_TEST(test_login)
+DEFINE_TEST(test_secret)
 {
-	GckLogin *login;
+	GckSecret *secret;
 	const gchar *password;
 	gsize n_password;
 	
-	login = gck_login_new ((CK_UTF8CHAR_PTR)"test-pin", 8);
-	g_assert (GCK_IS_LOGIN (login));
+	secret = gck_secret_new ((guchar*)"test-pin", 8);
+	g_assert (GCK_IS_SECRET (secret));
 	
-	password = gck_login_get_password (login, &n_password);
+	password = gck_secret_get_password (secret, &n_password);
 	g_assert (password);
 	g_assert_cmpuint (n_password, ==, 8);
 	g_assert (memcmp (password, "test-pin", 8) == 0);
 	
-	g_assert (gck_login_equals (login, (CK_UTF8CHAR_PTR)"test-pin", 8));
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"test-pino", 9));
-	g_assert (!gck_login_equals (login, NULL, 0));
-	g_assert (gck_login_equals (login, (CK_UTF8CHAR_PTR)"test-pin", -1));
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"", 0));
+	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"test-pin", 8));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"test-pino", 9));
+	g_assert (!gck_secret_equals (secret, NULL, 0));
+	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"test-pin", -1));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", 0));
 	
-	g_object_unref (login);
+	g_object_unref (secret);
+}
+
+DEFINE_TEST(test_secret_from_login)
+{
+	GckSecret *secret;
+	const gchar *password;
+	gsize n_password;
+	
+	secret = gck_secret_new_from_login ((guchar*)"test-pin", 8);
+	g_assert (GCK_IS_SECRET (secret));
+	password = gck_secret_get_password (secret, &n_password);
+	g_assert (password);
+	g_assert_cmpuint (n_password, ==, 8);
+	g_assert (memcmp (password, "test-pin", 8) == 0);
+	g_object_unref (secret);
+	
+	secret = gck_secret_new_from_login ((guchar*)"test-pin", (CK_ULONG)-1);
+	g_assert (GCK_IS_SECRET (secret));
+	password = gck_secret_get_password (secret, &n_password);
+	g_assert (password);
+	g_assert_cmpuint (n_password, ==, 8);
+	g_assert (memcmp (password, "test-pin", 8) == 0);
+	g_object_unref (secret);
 }
 
 DEFINE_TEST(test_null_terminated)
 {
-	GckLogin *login;
+	GckSecret *secret;
 	const gchar *password;
 	gsize n_password;
 	
-	login = gck_login_new ((CK_UTF8CHAR_PTR)"null-terminated", -1);
-	g_assert (GCK_IS_LOGIN (login));
+	secret = gck_secret_new ((CK_UTF8CHAR_PTR)"null-terminated", -1);
+	g_assert (GCK_IS_SECRET (secret));
 	
-	password = gck_login_get_password (login, &n_password);
+	password = gck_secret_get_password (secret, &n_password);
 	g_assert (password);
 	g_assert_cmpstr (password, ==, "null-terminated");
 	g_assert_cmpuint (n_password, ==, strlen ("null-terminated"));
 	
-	g_assert (gck_login_equals (login, (CK_UTF8CHAR_PTR)"null-terminated", strlen ("null-terminated")));
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"test-pino", 9));
-	g_assert (!gck_login_equals (login, NULL, 0));
-	g_assert (gck_login_equals (login, (CK_UTF8CHAR_PTR)"null-terminated", -1));
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"", 0));
+	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"null-terminated", strlen ("null-terminated")));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"test-pino", 9));
+	g_assert (!gck_secret_equals (secret, NULL, 0));
+	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"null-terminated", -1));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", 0));
 
-	g_object_unref (login);
+	g_object_unref (secret);
 }
 
 DEFINE_TEST(test_null)
 {
-	GckLogin *login;
+	GckSecret *secret;
 	const gchar *password;
 	gsize n_password;
 	
-	login = gck_login_new (NULL, 0);
-	g_assert (GCK_IS_LOGIN (login));
+	secret = gck_secret_new (NULL, 0);
+	g_assert (GCK_IS_SECRET (secret));
 	
-	password = gck_login_get_password (login, &n_password);
+	password = gck_secret_get_password (secret, &n_password);
 	g_assert (password == NULL);
 	g_assert_cmpuint (n_password, ==, 0);
 	
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"null-terminated", strlen ("null-terminated")));
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"test-pino", 9));
-	g_assert (gck_login_equals (login, NULL, 0));
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"null-terminated", -1));
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"", 0));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"null-terminated", strlen ("null-terminated")));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"test-pino", 9));
+	g_assert (gck_secret_equals (secret, NULL, 0));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"null-terminated", -1));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", 0));
 
-	g_object_unref (login);
+	g_object_unref (secret);
 }
 
 DEFINE_TEST(test_empty)
 {
-	GckLogin *login;
+	GckSecret *secret;
 	const gchar *password;
 	gsize n_password;
 	
-	login = gck_login_new ((CK_UTF8CHAR_PTR)"", 0);
-	g_assert (GCK_IS_LOGIN (login));
+	secret = gck_secret_new ((CK_UTF8CHAR_PTR)"", 0);
+	g_assert (GCK_IS_SECRET (secret));
 	
-	password = gck_login_get_password (login, &n_password);
+	password = gck_secret_get_password (secret, &n_password);
 	g_assert_cmpstr (password, ==, "");
 	g_assert_cmpuint (n_password, ==, 0);
 	
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"null-terminated", strlen ("null-terminated")));
-	g_assert (!gck_login_equals (login, (CK_UTF8CHAR_PTR)"test-pino", 9));
-	g_assert (!gck_login_equals (login, NULL, 0));
-	g_assert (gck_login_equals (login, (CK_UTF8CHAR_PTR)"", -1));
-	g_assert (gck_login_equals (login, (CK_UTF8CHAR_PTR)"", 0));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"null-terminated", strlen ("null-terminated")));
+	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"test-pino", 9));
+	g_assert (!gck_secret_equals (secret, NULL, 0));
+	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", -1));
+	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", 0));
 
-	g_object_unref (login);
+	g_object_unref (secret);
 }

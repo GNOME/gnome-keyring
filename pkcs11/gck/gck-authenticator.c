@@ -23,7 +23,7 @@
 
 #include "gck-attributes.h"
 #include "gck-authenticator.h"
-#include "gck-login.h"
+#include "gck-secret.h"
 #include "gck-session.h"
 #include "gck-transaction.h"
 
@@ -43,7 +43,7 @@ struct _GckAuthenticatorPrivate {
 	GckObject *object;
 	
 	/* Optional login */
-	GckLogin *login;
+	GckSecret *login;
 	
 	/* Can limit by number of uses remaining */
 	gint uses_remaining;
@@ -271,7 +271,7 @@ gck_authenticator_class_init (GckAuthenticatorClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_LOGIN,
 	           g_param_spec_object ("login", "Login", "Optiontal login", 
-	                                GCK_TYPE_LOGIN, G_PARAM_READWRITE));
+	                                GCK_TYPE_SECRET, G_PARAM_READWRITE));
 	
 	g_object_class_install_property (gobject_class, PROP_USES_REMAINING,
 	           g_param_spec_int ("uses-remaining", "Uses Remaining", "Uses remaining",
@@ -305,14 +305,14 @@ gck_authenticator_create (GckObject *object, CK_UTF8CHAR_PTR pin,
                           CK_ULONG n_pin, GckAuthenticator **result)
 {
 	GckAuthenticator *auth;
-	GckLogin *login = NULL;
+	GckSecret *login = NULL;
 	CK_RV rv;
 	
 	g_return_val_if_fail (GCK_IS_OBJECT (object), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (result, CKR_GENERAL_ERROR);
 	
 	if (pin != NULL)
-		login = gck_login_new (pin, n_pin);
+		login = gck_secret_new_from_login (pin, n_pin);
 	
 	auth = g_object_new (GCK_TYPE_AUTHENTICATOR, 
 	                     "module", gck_object_get_module (object), 
@@ -328,7 +328,7 @@ gck_authenticator_create (GckObject *object, CK_UTF8CHAR_PTR pin,
 	return rv;
 }
 
-GckLogin*
+GckSecret*
 gck_authenticator_get_login (GckAuthenticator *self)
 {
 	g_return_val_if_fail (GCK_IS_AUTHENTICATOR (self), NULL);
@@ -336,12 +336,12 @@ gck_authenticator_get_login (GckAuthenticator *self)
 }
 
 void
-gck_authenticator_set_login (GckAuthenticator *self, GckLogin *login)
+gck_authenticator_set_login (GckAuthenticator *self, GckSecret *login)
 {
 	g_return_if_fail (GCK_IS_AUTHENTICATOR (self));
 	
 	if (login) {
-		g_return_if_fail (GCK_IS_LOGIN (login));
+		g_return_if_fail (GCK_IS_SECRET (login));
 		g_object_ref (login);
 	}
 	if (self->pv->login)
@@ -362,7 +362,7 @@ gck_authenticator_get_password (GckAuthenticator *self, gsize *n_password)
 		return NULL;
 	}
 	
-	return gck_login_get_password (self->pv->login, n_password);	
+	return gck_secret_get_password (self->pv->login, n_password);
 }
 
 GckObject*

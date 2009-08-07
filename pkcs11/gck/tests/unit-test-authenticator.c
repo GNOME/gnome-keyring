@@ -27,8 +27,8 @@
 
 #include "gck/gck-attributes.h"
 #include "gck/gck-authenticator.h"
-#include "gck/gck-login.h"
 #include "gck/gck-object.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-session.h"
 #include "gck/gck-module.h"
 
@@ -223,7 +223,7 @@ DEFINE_TEST(authenticator_object_property)
 DEFINE_TEST(authenticator_login_property)
 {
 	GckAuthenticator *auth;
-	GckLogin *check, *login;
+	GckSecret *check, *login;
 	const gchar *password;
 	gsize n_password;
 	CK_RV rv;
@@ -234,7 +234,7 @@ DEFINE_TEST(authenticator_login_property)
 	
 	g_object_get (auth, "login", &check, NULL);
 	g_assert (check);
-	password = gck_login_get_password (check, &n_password);
+	password = gck_secret_get_password (check, &n_password);
 	g_assert (n_password == 4);
 	g_assert (memcmp (password, "mock", 4) == 0);
 	g_object_unref (check);
@@ -242,8 +242,8 @@ DEFINE_TEST(authenticator_login_property)
 	check = gck_authenticator_get_login (auth);
 	g_assert (n_password == 4);
 	g_assert (memcmp (password, "mock", 4) == 0);
-	
-	login = gck_login_new ((guchar*)"xxx", -1);
+
+	login = gck_secret_new ((guchar*)"xxx", -1);
 	gck_authenticator_set_login (auth, login);
 	check = gck_authenticator_get_login (auth);
 	g_assert (n_password == 4);

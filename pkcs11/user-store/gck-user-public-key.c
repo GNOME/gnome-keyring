@@ -114,7 +114,7 @@ gck_user_public_key_class_init (GckUserPublicKeyClass *klass)
 
 
 static gboolean
-gck_user_public_key_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
+gck_user_public_key_real_load (GckSerializable *base, GckSecret *login, const guchar *data, gsize n_data)
 {
 	GckUserPublicKey *self = GCK_USER_PUBLIC_KEY (base);
 	GckDataResult res;
@@ -150,7 +150,7 @@ gck_user_public_key_real_load (GckSerializable *base, GckLogin *login, const guc
 }
 
 static gboolean 
-gck_user_public_key_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+gck_user_public_key_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
 	GckUserPublicKey *self = GCK_USER_PUBLIC_KEY (base);
 	GckSexp *wrapper;

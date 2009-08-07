@@ -78,7 +78,7 @@ G_DEFINE_TYPE (GckDataFile, gck_data_file, G_TYPE_OBJECT);
 #define PUBLIC_ALLOC (EggBufferAllocator)g_realloc
 #define PRIVATE_ALLOC (EggBufferAllocator)egg_secure_realloc
 
-typedef GckDataResult (*BlockFunc) (guint block, EggBuffer *buffer, GckLogin *login, gpointer user_data);
+typedef GckDataResult (*BlockFunc) (guint block, EggBuffer *buffer, GckSecret *login, gpointer user_data);
 
 #define FILE_HEADER ((const guchar*)"Gnome Keyring Store 2\n\r\0")
 #define FILE_HEADER_LEN 24
@@ -178,7 +178,7 @@ write_all_bytes (int fd, const guchar *buf, gsize len)
 }
 
 static GckDataResult
-parse_file_blocks (int file, BlockFunc block_func, GckLogin *login, gpointer user_data)
+parse_file_blocks (int file, BlockFunc block_func, GckSecret *login, gpointer user_data)
 {
 	gchar header[FILE_HEADER_LEN];
 	GckDataResult res;
@@ -337,7 +337,7 @@ validate_buffer (EggBuffer *buffer, gsize *offset)
 }
 
 static gboolean
-create_cipher (GckLogin *login, int calgo, int halgo, const guchar *salt, 
+create_cipher (GckSecret *login, int calgo, int halgo, const guchar *salt, 
                gsize n_salt, guint iterations, gcry_cipher_hd_t *cipher)
 {
 	gsize n_key, n_block;
@@ -360,10 +360,10 @@ create_cipher (GckLogin *login, int calgo, int halgo, const guchar *salt,
 	g_return_val_if_fail (key, FALSE);
 	iv = g_malloc0 (n_block);
 	
-	password = gck_login_get_password (login, &n_password);
+	password = gck_secret_get_password (login, &n_password);
 	
 	if (!egg_symkey_generate_simple (calgo, halgo, password, n_password, 
-	                                        salt, n_salt, iterations, &key, &iv)) {
+	                                 salt, n_salt, iterations, &key, &iv)) {
 		gcry_free (key);
 		g_free (iv);
 		return FALSE;
@@ -389,7 +389,7 @@ create_cipher (GckLogin *login, int calgo, int halgo, const guchar *salt,
 }
 
 static gboolean
-encrypt_buffer (EggBuffer *input, GckLogin *login, EggBuffer *output)
+encrypt_buffer (EggBuffer *input, GckSecret *login, EggBuffer *output)
 {
 	gcry_cipher_hd_t cipher;
 	gcry_error_t gcry;
@@ -455,7 +455,7 @@ encrypt_buffer (EggBuffer *input, GckLogin *login, EggBuffer *output)
 }
 
 static gboolean
-decrypt_buffer (EggBuffer *input, gsize *offset, GckLogin *login, EggBuffer *output)
+decrypt_buffer (EggBuffer *input, gsize *offset, GckSecret *login, EggBuffer *output)
 {
 	gcry_cipher_hd_t cipher;
 	gcry_error_t gcry;
@@ -634,7 +634,7 @@ update_from_public_block (GckDataFile *self, EggBuffer *buffer)
 }
 
 static GckDataResult
-update_from_private_block (GckDataFile *self, EggBuffer *buffer, GckLogin *login)
+update_from_private_block (GckDataFile *self, EggBuffer *buffer, GckSecret *login)
 {
 	EggBuffer custom;
 	GckDataResult res;
@@ -659,7 +659,7 @@ update_from_private_block (GckDataFile *self, EggBuffer *buffer, GckLogin *login
 	egg_buffer_init_full (&custom, 1024, egg_secure_realloc);
 
 	/* Decrypt the buffer */
-	password = gck_login_get_password (login, &n_password);
+	password = gck_secret_get_password (login, &n_password);
 	if (!decrypt_buffer (buffer, &offset, login, &custom)) {
 		egg_buffer_uninit (&custom);
 		return GCK_DATA_FAILURE;
@@ -769,7 +769,7 @@ update_from_index_block (GckDataFile *self, EggBuffer *buffer)
 }
 
 static GckDataResult
-update_from_any_block (guint block, EggBuffer *buffer, GckLogin *login, gpointer user_data)
+update_from_any_block (guint block, EggBuffer *buffer, GckSecret *login, gpointer user_data)
 {
 	UnknownBlock *unknown;
 	GckDataFile *self;
@@ -860,7 +860,7 @@ write_entries_to_block (GckDataFile *self, GHashTable *entries, EggBuffer *buffe
 }
 
 static GckDataResult
-write_private_to_block (GckDataFile *self, EggBuffer *buffer, GckLogin *login)
+write_private_to_block (GckDataFile *self, EggBuffer *buffer, GckSecret *login)
 {
 	EggBuffer secure;
 	GckDataResult res;
@@ -1136,7 +1136,7 @@ gck_data_file_new (void)
 }
 
 GckDataResult
-gck_data_file_read_fd (GckDataFile *self, int fd, GckLogin *login)
+gck_data_file_read_fd (GckDataFile *self, int fd, GckSecret *login)
 {
 	GckDataResult res;
 	
@@ -1185,7 +1185,7 @@ gck_data_file_read_fd (GckDataFile *self, int fd, GckLogin *login)
 }
 
 GckDataResult
-gck_data_file_write_fd (GckDataFile *self, int fd, GckLogin *login)
+gck_data_file_write_fd (GckDataFile *self, int fd, GckSecret *login)
 {
 	guint types[3] = { FILE_BLOCK_INDEX, FILE_BLOCK_PRIVATE, FILE_BLOCK_PUBLIC };
 	GList *unknowns, *unk;

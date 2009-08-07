@@ -57,10 +57,10 @@ CK_RV                      gck_authenticator_create                 (GckObject *
                                                                      CK_ULONG n_pin,
                                                                      GckAuthenticator **result);
 
-GckLogin*                  gck_authenticator_get_login              (GckAuthenticator *self);
+GckSecret*                 gck_authenticator_get_login              (GckAuthenticator *self);
 
 void                       gck_authenticator_set_login              (GckAuthenticator *self,
-                                                                     GckLogin *login);
+                                                                     GckSecret *login);
 
 const gchar*               gck_authenticator_get_password           (GckAuthenticator *self,
                                                                      gsize *n_password);
