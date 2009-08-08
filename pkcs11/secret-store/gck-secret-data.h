@@ -26,6 +26,8 @@
 
 #include "gck-secret-types.h"
 
+#include "gck/gck-secret.h"
+
 #define GCK_TYPE_SECRET_DATA               (gck_secret_data_get_type ())
 #define GCK_SECRET_DATA(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_SECRET_DATA, GckSecretData))
 #define GCK_SECRET_DATA_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCK_TYPE_SECRET_DATA, GckSecretDataClass))
@@ -41,34 +43,19 @@ struct _GckSecretDataClass {
 
 GType                gck_secret_data_get_type        (void);
 
-const guchar*        gck_secret_data_get_secret      (GckSecretData *self,
-                                                      const gchar *identifer,
-                                                      gsize *n_secret);
+GckSecret*           gck_secret_data_get_secret      (GckSecretData *self,
+                                                      const gchar *identifier);
 
-void                 gck_secret_data_add_secret      (GckSecretData *self,
-                                                      const gchar *identifer,
-                                                      const guchar *secret,
-                                                      gsize n_secret);
+void                 gck_secret_data_set_secret      (GckSecretData *self,
+                                                      const gchar *identifier,
+                                                      GckSecret *secret);
 
 void                 gck_secret_data_remove_secret   (GckSecretData *self,
-                                                      const gchar *identifer);
+                                                      const gchar *identifier);
 
-void                 gck_secret_data_get_key         (GckSecretData *self,
-                                                      const guchar **key,
-                                                      gsize *n_key,
-                                                      const guchar **salt,
-                                                      gsize *n_salt,
-                                                      guint *iterations);
+GckSecret*           gck_secret_data_get_master      (GckSecretData *self);
 
-void                 gck_secret_data_set_key         (GckSecretData *self,
-                                                      const guchar *key,
-                                                      gsize n_key,
-                                                      const guchar *salt,
-                                                      gsize n_salt,
-                                                      guint iterations);
-
-void                 gck_secret_data_clear_key       (GckSecretData *self);
-
-gboolean             gck_secret_data_has_key         (GckSecretData *self);
+void                 gck_secret_data_set_master      (GckSecretData *self,
+                                                      GckSecret *master);
 
 #endif /* __GCK_SECRET_DATA_H__ */

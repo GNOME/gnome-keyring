@@ -329,22 +329,23 @@ convert_to_integer (const gchar *string, guint32 *result)
  */
 
 static gboolean
-encrypt_buffer (EggBuffer *buffer,
-		const char *password,
-		guchar salt[8],
-		int iterations)
+encrypt_buffer (EggBuffer *buffer, GckSecret *master,
+		guchar salt[8], int iterations)
 {
+	const gchar *password;
 	gcry_cipher_hd_t cih;
 	gcry_error_t gerr;
         guchar *key, *iv;
+	gsize n_password;
 	size_t pos;
 
 	g_assert (buffer->len % 16 == 0);
 	g_assert (16 == gcry_cipher_get_algo_blklen (GCRY_CIPHER_AES128));
 	g_assert (16 == gcry_cipher_get_algo_keylen (GCRY_CIPHER_AES128));
 	
+	password = gck_secret_get_password (master, &n_password);
 	if (!egg_symkey_generate_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
-	                                 password, -1, salt, 8, iterations, &key, &iv))
+	                                 password, n_password, salt, 8, iterations, &key, &iv))
 		return FALSE;
 
 	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
@@ -378,22 +379,23 @@ encrypt_buffer (EggBuffer *buffer,
 }
 
 static gboolean
-decrypt_buffer (EggBuffer *buffer,
-		const char *password,
-		guchar salt[8],
-		int iterations)
+decrypt_buffer (EggBuffer *buffer, GckSecret *master,
+		guchar salt[8], int iterations)
 {
+	const gchar *password;
 	gcry_cipher_hd_t cih;
 	gcry_error_t gerr;
         guchar *key, *iv;
+        gsize n_password;
 	size_t pos;
 
 	g_assert (buffer->len % 16 == 0);
 	g_assert (16 == gcry_cipher_get_algo_blklen (GCRY_CIPHER_AES128));
 	g_assert (16 == gcry_cipher_get_algo_keylen (GCRY_CIPHER_AES128));
 	
+	password = gck_secret_get_password (master, &n_password);
 	if (!egg_symkey_generate_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
-	                                 password, -1, salt, 8, iterations, &key, &iv))
+	                                 password, n_password, salt, 8, iterations, &key, &iv))
 		return FALSE;
 	
 	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
@@ -554,10 +556,9 @@ generate_hashed_items (GckSecretCollection *collection, EggBuffer *buffer)
 }
 
 GckDataResult 
-gck_secret_binary_write (GckSecretCollection *collection, guchar **data, gsize *n_data)
+gck_secret_binary_write (GckSecretCollection *collection, GckSecret *master,
+                         guchar **data, gsize *n_data)
 {
-	guint flags;
-	const gchar *password;
 	GckSecretObject *obj;
 	EggBuffer to_encrypt;
         guchar digest[16];
@@ -565,6 +566,7 @@ gck_secret_binary_write (GckSecretCollection *collection, guchar **data, gsize *
         gint hash_iterations;
         gint lock_timeout;
         guchar salt[8];
+	guint flags;
 	int i;
 
 	/* In case the world changes on us... */
@@ -624,8 +626,7 @@ gck_secret_binary_write (GckSecretCollection *collection, guchar **data, gsize *
 			     (guchar*)to_encrypt.buf + 16, to_encrypt.len - 16);
 	memcpy (to_encrypt.buf, digest, 16);
 	
-	password = gck_secret_collection_get_master_password (collection);
-	if (!encrypt_buffer (&to_encrypt, password, salt, hash_iterations)) {
+	if (!encrypt_buffer (&to_encrypt, master, salt, hash_iterations)) {
 		egg_buffer_uninit (&buffer);
 		egg_buffer_uninit (&to_encrypt);
 		return GCK_DATA_FAILURE;
@@ -754,7 +755,8 @@ free_item_info (ItemInfo *info)
 }
 
 gint
-gck_secret_binary_read (GckSecretCollection *collection, const guchar *data, gsize n_data)
+gck_secret_binary_read (GckSecretCollection *collection, GckSecret *master,
+                        const guchar *data, gsize n_data)
 {
 	gsize offset;
 	guchar major, minor, crypto, hash;
@@ -845,10 +847,9 @@ gck_secret_binary_read (GckSecretCollection *collection, const guchar *data, gsi
 	/* Copy the data into to_decrypt into non-pageable memory */
 	egg_buffer_init_static (&to_decrypt, buffer.buf + offset, crypto_size);
 
-	password = gck_secret_collection_get_master_password (collection);
-	if (password != NULL) {
+	if (master != NULL) {
 		
-		if (!decrypt_buffer (&to_decrypt, password, salt, hash_iterations))
+		if (!decrypt_buffer (&to_decrypt, master, salt, hash_iterations))
 			goto bail;
 		if (!verify_decrypted_buffer (&to_decrypt)) {
 			res = GCK_DATA_LOCKED;

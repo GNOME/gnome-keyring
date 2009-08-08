@@ -65,6 +65,4 @@ GckSecretData*       gck_secret_collection_get_data        (GckSecretCollection 
 void                 gck_secret_collection_set_data        (GckSecretCollection *self,
                                                             GckSecretData *data);
 
-const gchar*         gck_secret_collection_get_master_password (GckSecretCollection *self);
-
 #endif /* __GCK_SECRET_COLLECTION_H__ */

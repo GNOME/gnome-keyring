@@ -25,12 +25,15 @@
 #include "gck-secret-collection.h"
 
 #include "gck/gck-data-types.h"
+#include "gck/gck-types.h"
 
-GckDataResult          gck_secret_binary_read        (GckSecretCollection *collection, 
+GckDataResult          gck_secret_binary_read        (GckSecretCollection *collection,
+                                                      GckSecret *master,
                                                       const guchar *data,
                                                       gsize n_data);
 
 GckDataResult          gck_secret_binary_write       (GckSecretCollection *collection, 
+                                                      GckSecret *master,
                                                       guchar **data,
                                                       gsize *n_data);
 

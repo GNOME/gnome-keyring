@@ -166,7 +166,7 @@ gck_secret_collection_real_load (GckSerializable *base, GckSecret *login, const 
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
-	res = gck_secret_binary_read (self, data, n_data);
+	res = gck_secret_binary_read (self, login, data, n_data);
 	if (res == GCK_DATA_UNRECOGNIZED)
 		res = gck_secret_textual_read (self, data, n_data);
 
@@ -178,19 +178,21 @@ static gboolean
 gck_secret_collection_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
+	GckSecret *master;
 	GckDataResult res;
 
 	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
-	g_assert (FALSE && "TODO: Must complete");
-#if 0
-	if (self->password == NULL)
+	if (!self->data)
+		g_return_val_if_reached (FALSE);
+
+	master = gck_secret_data_get_master (self->data);
+	if (master == NULL)
 		res = gck_secret_textual_write (self, data, n_data);
 	else
-		res = gck_secret_binary_write (self, data, n_data);
-#endif
+		res = gck_secret_binary_write (self, master, data, n_data);
 
 	/* TODO: This doesn't transfer knowledge of 'no password' back up */
 	return (res == GCK_DATA_SUCCESS);
@@ -208,17 +210,6 @@ gck_secret_collection_serializable (GckSerializableIface *iface)
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
-
-#if 0
-GckSecret*
-gck_secret_collection_lookup_secret (GckSecretCollection *self,
-                                     const gchar *identifier)
-{
-	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), NULL);
-	g_return_val_if_fail (identifier, NULL);
-	return g_hash_table_lookup (self->secrets, identifier);
-}
-#endif
 
 GList*
 gck_secret_collection_get_items (GckSecretCollection *self)

@@ -1,5 +1,6 @@
 UNIT_AUTO = \
-	unit-test-secret-compat.c
+	unit-test-secret-compat.c \
+	unit-test-secret-data.c
 
 UNIT_PROMPT = 
 
