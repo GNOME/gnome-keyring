@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-ssh-openssh.c: Test OpenSSH parsing
+/* unit-test-secret-compat.c: Test secret compat files
 
    Copyright (C) 2008 Stefan Walter
 
