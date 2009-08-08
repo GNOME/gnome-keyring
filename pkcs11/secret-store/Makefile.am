@@ -16,6 +16,7 @@ libgck_secret_store_la_SOURCES = \
 	gck-secret-binary.c gck-secret-binary.h \
 	gck-secret-collection.h gck-secret-collection.c \
 	gck-secret-compat.h gck-secret-compat.c \
+	gck-secret-data.h gck-secret-data.c \
 	gck-secret-fields.h gck-secret-fields.c \
 	gck-secret-item.h gck-secret-item.c \
 	gck-secret-module.h gck-secret-module.c \

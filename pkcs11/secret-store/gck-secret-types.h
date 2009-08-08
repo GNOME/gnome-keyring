@@ -23,6 +23,7 @@
 #define __GCK_SECRET_TYPES_H__
 
 typedef struct _GckSecretCollection GckSecretCollection;
+typedef struct _GckSecretData GckSecretData;
 typedef struct _GckSecretItem GckSecretItem;
 typedef struct _GckSecretObject GckSecretObject;
 typedef struct _GckSecretModule GckSecretModule;

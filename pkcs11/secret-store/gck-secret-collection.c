@@ -23,6 +23,7 @@
 
 #include "gck-secret-binary.h"
 #include "gck-secret-collection.h"
+#include "gck-secret-data.h"
 #include "gck-secret-textual.h"
 
 #include "egg/egg-buffer.h"
@@ -33,13 +34,13 @@
 
 enum {
 	PROP_0,
+	PROP_DATA
 };
 
 struct _GckSecretCollection {
 	GckSecretObject parent;
-	GHashTable *secrets;
+	GckSecretData *data;
 	GList *items;
-	gchar *password;
 };
 
 static void gck_secret_collection_serializable (GckSerializableIface *iface);
@@ -72,7 +73,7 @@ gck_secret_collection_get_attribute (GckObject *base, GckSession *session, CK_AT
 static void
 gck_secret_collection_init (GckSecretCollection *self)
 {
-	self->secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+
 }
 
 static GObject*
@@ -88,10 +89,11 @@ static void
 gck_secret_collection_set_property (GObject *obj, guint prop_id, const GValue *value, 
                                     GParamSpec *pspec)
 {
-#if 0
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
-#endif
 	switch (prop_id) {
+	case PROP_DATA:
+		gck_secret_collection_set_data (self, g_value_get_object (value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -102,10 +104,11 @@ static void
 gck_secret_collection_get_property (GObject *obj, guint prop_id, GValue *value, 
                                     GParamSpec *pspec)
 {
-#if 0
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
-#endif
 	switch (prop_id) {
+	case PROP_DATA:
+		g_value_set_object (value, gck_secret_collection_get_data (self));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -117,7 +120,7 @@ gck_secret_collection_dispose (GObject *obj)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
 
-	g_hash_table_remove_all (self->secrets);
+	gck_secret_collection_set_data (self, NULL);
 
 	G_OBJECT_CLASS (gck_secret_collection_parent_class)->dispose (obj);
 }
@@ -127,9 +130,7 @@ gck_secret_collection_finalize (GObject *obj)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
 
-	if (self->secrets)
-		g_hash_table_destroy (self->secrets);
-	self->secrets = NULL;
+	g_assert (self->data == NULL);
 
 	G_OBJECT_CLASS (gck_secret_collection_parent_class)->finalize (obj);
 }
@@ -149,6 +150,10 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 	gobject_class->get_property = gck_secret_collection_get_property;
 
 	gck_class->get_attribute = gck_secret_collection_get_attribute;
+
+	g_object_class_install_property (gobject_class, PROP_DATA,
+	           g_param_spec_object ("data", "Data", "Secret Item Data",
+	                                GCK_TYPE_SECRET_DATA, G_PARAM_READWRITE));
 }
 
 static gboolean
@@ -179,10 +184,13 @@ gck_secret_collection_real_save (GckSerializable *base, GckSecret *login, guchar
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
+	g_assert (FALSE && "TODO: Must complete");
+#if 0
 	if (self->password == NULL)
 		res = gck_secret_textual_write (self, data, n_data);
 	else
 		res = gck_secret_binary_write (self, data, n_data);
+#endif
 
 	/* TODO: This doesn't transfer knowledge of 'no password' back up */
 	return (res == GCK_DATA_SUCCESS);
@@ -201,6 +209,7 @@ gck_secret_collection_serializable (GckSerializableIface *iface)
  * PUBLIC
  */
 
+#if 0
 GckSecret*
 gck_secret_collection_lookup_secret (GckSecretCollection *self,
                                      const gchar *identifier)
@@ -209,10 +218,33 @@ gck_secret_collection_lookup_secret (GckSecretCollection *self,
 	g_return_val_if_fail (identifier, NULL);
 	return g_hash_table_lookup (self->secrets, identifier);
 }
+#endif
 
 GList*
 gck_secret_collection_get_items (GckSecretCollection *self)
 {
 	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), NULL);
 	return g_list_copy (self->items);
+}
+
+GckSecretData*
+gck_secret_collection_get_data (GckSecretCollection *self)
+{
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), NULL);
+	return self->data;
+}
+
+void
+gck_secret_collection_set_data (GckSecretCollection *self, GckSecretData *data)
+{
+	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
+
+	if (self->data)
+		g_object_remove_weak_pointer (G_OBJECT (self->data),
+		                              (gpointer*)&(self->data));
+	self->data = data;
+	if (self->data)
+		g_object_add_weak_pointer (G_OBJECT (self->data),
+		                           (gpointer*)&self->data);
+	g_object_notify (G_OBJECT (self), "data");
 }

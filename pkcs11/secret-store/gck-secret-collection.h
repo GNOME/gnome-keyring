@@ -60,9 +60,11 @@ GckSecretItem*       gck_secret_collection_create_item     (GckSecretCollection 
 void                 gck_secret_collection_remove_item     (GckSecretCollection *self,
                                                             GckSecretItem *item);
 
-GckSecret*            gck_secret_collection_lookup_secret  (GckSecretCollection *self,
-                                                            const gchar *identifier);
+GckSecretData*       gck_secret_collection_get_data        (GckSecretCollection *self);
 
-const gchar *        gck_secret_collection_get_master_password (GckSecretCollection *self);
+void                 gck_secret_collection_set_data        (GckSecretCollection *self,
+                                                            GckSecretData *data);
+
+const gchar*         gck_secret_collection_get_master_password (GckSecretCollection *self);
 
 #endif /* __GCK_SECRET_COLLECTION_H__ */
