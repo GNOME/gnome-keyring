@@ -1197,21 +1197,27 @@ egg_secure_strdup (const char *str)
 }
 
 void
-egg_secure_strclear (char *str)
+egg_secure_clear (void *p, size_t length)
 {
 	volatile char *vp;
-	size_t len;
 	
-	if (!str)
+	if (p == NULL)
 		return;
 		
-        vp = (volatile char*)str;
-       	len = strlen (str);
-        while (len) { 
-        	*vp = 0xAA;
-        	vp++;
-        	len--; 
-        } 
+        vp = (volatile char*)p;
+        while (length) {
+	        *vp = 0xAA;
+	        vp++;
+	        length--;
+	}
+}
+
+void
+egg_secure_strclear (char *str)
+{
+	if (!str)
+		return;
+	egg_secure_clear ((unsigned char*)str, strlen (str));
 }
 
 void

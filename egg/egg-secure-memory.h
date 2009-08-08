@@ -76,6 +76,8 @@ void   egg_secure_free         (void* p);
 
 void   egg_secure_free_full    (void* p, int fallback); 
 
+void   egg_secure_clear        (void *p, size_t length);
+
 int    egg_secure_check        (const void* p); 
 
 void   egg_secure_validate     (void);
