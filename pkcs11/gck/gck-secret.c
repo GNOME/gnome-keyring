@@ -111,6 +111,12 @@ gck_secret_new_from_login (CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 		return gck_secret_new ((const guchar*)pin, (gssize)n_pin);
 }
 
+GckSecret*
+gck_secret_new_from_password (const gchar *password)
+{
+	return gck_secret_new ((const guchar*)password, -1);
+}
+
 const gchar*
 gck_secret_get_password (GckSecret *self, gsize *n_data)
 {
