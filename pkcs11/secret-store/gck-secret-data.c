@@ -24,6 +24,7 @@
 #include "gck-secret-data.h"
 
 #include "gck/gck-secret.h"
+#include "gck/gck-transaction.h"
 #include "gck/gck-util.h"
 
 #include "egg/egg-secure-memory.h"
@@ -37,6 +38,72 @@ struct _GckSecretData {
 };
 
 G_DEFINE_TYPE (GckSecretData, gck_secret_data, G_TYPE_OBJECT);
+
+/* -----------------------------------------------------------------------------
+ * INTERNAL
+ */
+
+typedef struct _set_secret_args {
+	gchar *identifier;
+	GckSecret *old_secret;
+} set_secret_args;
+
+static gboolean
+complete_set_secret (GckTransaction *transaction, GObject *obj, gpointer user_data)
+{
+	GckSecretData *self = GCK_SECRET_DATA (obj);
+	set_secret_args *args = user_data;
+
+	/* If the transaction failed, revert */
+	if (gck_transaction_get_failed (transaction)) {
+		if (!args->old_secret) {
+			g_hash_table_remove (self->secrets, args->identifier);
+		} else {
+			g_hash_table_replace (self->secrets, args->identifier, args->old_secret);
+			args->identifier = NULL; /* hash table took ownership */
+			args->old_secret = NULL; /* ditto */
+		}
+	}
+
+	/* Free up transaction data */
+	g_free (args->identifier);
+	if (args->old_secret)
+		g_object_unref (args->old_secret);
+	g_slice_free (set_secret_args, args);
+
+	return TRUE;
+}
+
+static void
+begin_set_secret (GckSecretData *self, GckTransaction *transaction,
+                  const gchar *identifier, GckSecret *secret)
+{
+	set_secret_args *args;
+
+	g_assert (GCK_IS_SECRET_DATA (self));
+	g_assert (!gck_transaction_get_failed (transaction));
+	g_assert (identifier);
+	g_assert (GCK_IS_SECRET (secret));
+
+	args = g_slice_new0 (set_secret_args);
+
+	/* Take ownership of the old data, if present */
+	if (g_hash_table_lookup_extended (self->secrets, identifier,
+	                                  (gpointer*)&args->identifier,
+	                                  (gpointer*)&args->old_secret)) {
+		if (!g_hash_table_steal (self->secrets, args->identifier))
+			g_assert_not_reached ();
+	} else {
+		args->identifier = g_strdup (identifier);
+	}
+
+	/* Replace with our new data */
+	g_hash_table_replace (self->secrets, g_strdup (identifier),
+	                      g_object_ref (secret));
+
+	/* Track in the transaction */
+	gck_transaction_add (transaction, self, complete_set_secret, args);
+}
 
 /* -----------------------------------------------------------------------------
  * OBJECT
@@ -84,6 +151,24 @@ gck_secret_data_get_secret (GckSecretData *self, const gchar *identifier)
 	return g_hash_table_lookup (self->secrets, identifier);
 }
 
+const guchar*
+gck_secret_data_get_raw (GckSecretData *self, const gchar *identifier,
+                         gsize *n_result)
+{
+	GckSecret *secret;
+
+	g_return_val_if_fail (GCK_IS_SECRET_DATA (self), NULL);
+	g_return_val_if_fail (identifier, NULL);
+	g_return_val_if_fail (n_result, NULL);
+
+	secret = gck_secret_data_get_secret (self, identifier);
+	if (secret == NULL)
+		return NULL;
+
+	return gck_secret_get (secret, n_result);
+}
+
+
 void
 gck_secret_data_set_secret (GckSecretData *self, const gchar *identifier,
                             GckSecret *secret)
@@ -93,6 +178,19 @@ gck_secret_data_set_secret (GckSecretData *self, const gchar *identifier,
 	g_return_if_fail (GCK_IS_SECRET (secret));
 	g_hash_table_replace (self->secrets, g_strdup (identifier),
 	                      g_object_ref (secret));
+}
+
+void
+gck_secret_data_set_transacted  (GckSecretData *self, GckTransaction *transaction,
+                                 const gchar *identifier, GckSecret *secret)
+{
+	g_return_if_fail (GCK_IS_SECRET_DATA (self));
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (!gck_transaction_get_failed (transaction));
+	g_return_if_fail (identifier);
+	g_return_if_fail (GCK_IS_SECRET (secret));
+
+	begin_set_secret (self, transaction, identifier, secret);
 }
 
 void

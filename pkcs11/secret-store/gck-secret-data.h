@@ -26,7 +26,7 @@
 
 #include "gck-secret-types.h"
 
-#include "gck/gck-secret.h"
+#include "gck/gck-types.h"
 
 #define GCK_TYPE_SECRET_DATA               (gck_secret_data_get_type ())
 #define GCK_SECRET_DATA(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_SECRET_DATA, GckSecretData))
@@ -46,7 +46,16 @@ GType                gck_secret_data_get_type        (void);
 GckSecret*           gck_secret_data_get_secret      (GckSecretData *self,
                                                       const gchar *identifier);
 
+const guchar*        gck_secret_data_get_raw         (GckSecretData *self,
+                                                      const gchar *identifier,
+                                                      gsize *n_result);
+
 void                 gck_secret_data_set_secret      (GckSecretData *self,
+                                                      const gchar *identifier,
+                                                      GckSecret *secret);
+
+void                 gck_secret_data_set_transacted  (GckSecretData *self,
+                                                      GckTransaction *transaction,
                                                       const gchar *identifier,
                                                       GckSecret *secret);
 
