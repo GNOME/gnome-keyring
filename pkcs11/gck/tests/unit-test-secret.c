@@ -98,6 +98,25 @@ DEFINE_TEST(test_null_terminated)
 	g_object_unref (secret);
 }
 
+DEFINE_TEST(test_always_has_null)
+{
+	GckSecret *secret;
+	const guchar *memory;
+	gsize n_memory;
+
+	/* A 4 byte 'binary' secret */
+	secret = gck_secret_new ((guchar*)"barn", 4);
+	g_assert (GCK_IS_SECRET (secret));
+
+	memory = gck_secret_get (secret, &n_memory);
+	g_assert_cmpuint (n_memory, ==, 4);
+
+	/* But it should be null-terminated anyway */
+	g_assert (memory[4] == 0);
+
+	g_object_unref (secret);
+}
+
 DEFINE_TEST(test_null)
 {
 	GckSecret *secret;

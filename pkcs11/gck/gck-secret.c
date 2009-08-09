@@ -29,8 +29,8 @@
 
 struct _GckSecret {
 	GObject parent;
-	gchar *data;
-	gsize n_data;
+	guchar *memory;
+	gsize n_memory;
 };
 
 G_DEFINE_TYPE (GckSecret, gck_secret, G_TYPE_OBJECT);
@@ -50,9 +50,7 @@ gck_secret_dispose (GObject *obj)
 {
 	GckSecret *self = GCK_SECRET (obj);
 	
-	egg_secure_strfree (self->data);
-	self->data = NULL;
-	self->n_data = 0;
+	egg_secure_clear (self->memory, self->n_memory);
     
 	G_OBJECT_CLASS (gck_secret_parent_class)->dispose (obj);
 }
@@ -61,9 +59,10 @@ static void
 gck_secret_finalize (GObject *obj)
 {
 	GckSecret *self = GCK_SECRET (obj);
-	
-	g_assert (!self->data);
-	g_assert (!self->n_data);
+
+	egg_secure_free (self->memory);
+	self->memory = NULL;
+	self->n_memory = 0;
 
 	G_OBJECT_CLASS (gck_secret_parent_class)->finalize (obj);
 }
@@ -87,16 +86,16 @@ gck_secret_new (const guchar *data, gssize n_data)
 	
 	if (data) {
 		if (n_data == -1) {
-			secret->data = egg_secure_strdup ((const gchar*)data);
-			secret->n_data = strlen (secret->data);
+			secret->memory = (guchar*)egg_secure_strdup ((const gchar*)data);
+			secret->n_memory = strlen ((const gchar*)data);
 		} else {
-			secret->data = egg_secure_alloc (n_data + 1);
-			memcpy (secret->data, data, n_data);
-			secret->n_data = n_data;
+			secret->memory = egg_secure_alloc (n_data + 1);
+			memcpy (secret->memory, data, n_data);
+			secret->n_memory = n_data;
 		}
 	} else {
-		secret->data = NULL;
-		secret->n_data = 0;
+		secret->memory = NULL;
+		secret->n_memory = 0;
 	}
 	
 	return secret;
@@ -117,13 +116,22 @@ gck_secret_new_from_password (const gchar *password)
 	return gck_secret_new ((const guchar*)password, -1);
 }
 
+const guchar*
+gck_secret_get (GckSecret *self, gsize *n_data)
+{
+	g_return_val_if_fail (GCK_IS_SECRET (self), NULL);
+	g_return_val_if_fail (n_data, NULL);
+	*n_data = self->n_memory;
+	return self->memory;
+}
+
 const gchar*
 gck_secret_get_password (GckSecret *self, gsize *n_data)
 {
 	g_return_val_if_fail (GCK_IS_SECRET (self), NULL);
 	g_return_val_if_fail (n_data, NULL);
-	*n_data = self->n_data;
-	return self->data;
+	*n_data = self->n_memory;
+	return (gchar*)self->memory;
 }
 
 gboolean
@@ -138,11 +146,11 @@ gck_secret_equals (GckSecret *self, const guchar* pin, gssize n_pin)
 	if (n_pin == -1 && pin != NULL)
 		n_pin = strlen ((const gchar*)pin);
 	
-	if (n_pin != self->n_data)
+	if (n_pin != self->n_memory)
 		return FALSE;
-	if (!pin && !self->data)
+	if (!pin && !self->memory)
 		return TRUE;
-	if (!pin || !self->data)
+	if (!pin || !self->memory)
 		return FALSE;
-	return memcmp (pin, self->data, n_pin) == 0;
+	return memcmp (pin, self->memory, n_pin) == 0;
 }
