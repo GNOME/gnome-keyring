@@ -56,11 +56,6 @@ CK_RV                 gck_attribute_set_data                           (CK_ATTRI
                                                                         gconstpointer value,
                                                                         gsize n_value);
 
-CK_RV                 gck_attribute_return_data                        (CK_VOID_PTR output,
-                                                                        CK_ULONG_PTR n_output,
-                                                                        gconstpointer input,
-                                                                        gsize n_input);
-
 CK_RV                 gck_attribute_set_mpi                            (CK_ATTRIBUTE_PTR attr, 
                                                                         gcry_mpi_t mpi);
 

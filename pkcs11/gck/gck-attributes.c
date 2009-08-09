@@ -111,6 +111,27 @@ gck_attribute_get_time (CK_ATTRIBUTE_PTR attr, glong *when)
 }
 
 CK_RV
+gck_attribute_get_string (CK_ATTRIBUTE_PTR attr, gchar **value)
+{
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (value, CKR_GENERAL_ERROR);
+
+	if (attr->ulValueLen == 0) {
+		*value = NULL;
+		return CKR_OK;
+	}
+
+	if (!attr->pValue)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	if (!g_utf8_validate (attr->pValue, attr->ulValueLen, NULL))
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	*value = g_strndup (attr->pValue, attr->ulValueLen);
+	return CKR_OK;
+}
+
+CK_RV
 gck_attribute_set_bool (CK_ATTRIBUTE_PTR attr, CK_BBOOL value)
 {
 	return gck_attribute_set_data (attr, &value, sizeof (CK_BBOOL));
@@ -216,7 +237,7 @@ gck_attribute_set_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi)
 	}
 	
 	if (len > attr->ulValueLen) {
-		attr->ulValueLen = len;
+		attr->ulValueLen = (CK_ULONG)-1;
 		return CKR_BUFFER_TOO_SMALL;
 	}
 
