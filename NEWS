@@ -1,3 +1,7 @@
+Changes in version 2.27.90 are:
+ * Build fixes on Solaris and FreeBSD.
+ * Take length of ASN.1 elements into account, when parsing.
+
 Changes in version 2.27.5 are:
 * Add support for lifetime constrained SSH identities.
 * Use GtkBuilder files where glade files were used.
