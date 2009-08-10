@@ -298,7 +298,7 @@ find_extension (ASN1_TYPE asn, const guchar *data, gsize n_data, const gchar *oi
 		if (!exoid)
 			return NULL;
 
-		if (n_exoid == strlen (oid) && strcmp ((gchar*)exoid, oid) == 0) {
+		if (n_exoid - 1 == strlen (oid) && strcmp ((gchar*)exoid, oid) == 0) {
 			g_free (exoid);
 			name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
 			value = egg_asn1_read_content (asn, data, n_data, name, n_extension);
