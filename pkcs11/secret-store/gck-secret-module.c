@@ -69,6 +69,8 @@ static const CK_TOKEN_INFO gck_secret_module_token_info = {
 
 G_DEFINE_TYPE (GckSecretModule, gck_secret_module, GCK_TYPE_MODULE);
 
+GckModule*  _gck_secret_store_get_module_for_testing (void);
+
 /* -----------------------------------------------------------------------------
  * ACTUAL PKCS#11 Module Implementation 
  */
@@ -108,10 +110,13 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 
 	if (collection == NULL) {
 		created = TRUE;
+		g_assert ("unimplemented");
+#if 0
 		collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
 		                           "module", self,
 		                           "identifier", basename,
 		                           NULL);
+#endif
 	}
 
 	if (gck_serializable_load (GCK_SERIALIZABLE (collection), NULL, data, n_data)) {
@@ -257,4 +262,10 @@ gck_secret_store_get_functions (void)
 {
 	gck_crypto_initialize ();
 	return gck_secret_module_function_list;
+}
+
+GckModule*
+_gck_secret_store_get_module_for_testing (void)
+{
+	return pkcs11_module;
 }

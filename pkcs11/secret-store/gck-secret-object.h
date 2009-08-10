@@ -45,8 +45,6 @@ struct _GckSecretObject {
 struct _GckSecretObjectClass {
 	GckObjectClass parent_class;
 	
-	CK_RV (*lock) (GckSecretObject *self, GckSession *session);
-
 	gboolean (*is_locked) (GckSecretObject *self, GckSession *session);
 };
 
@@ -72,9 +70,6 @@ void                 gck_secret_object_set_modified    (GckSecretObject *self,
 void                 gck_secret_object_was_modified    (GckSecretObject *self);
 
 gboolean             gck_secret_object_is_locked       (GckSecretObject *self,
-                                                        GckSession *session);
-
-void                 gck_secret_object_lock            (GckSecretObject *self,
                                                         GckSession *session);
 
 #endif /* __GCK_SECRET_OBJECT_H__ */

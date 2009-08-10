@@ -53,16 +53,6 @@ G_DEFINE_TYPE (GckSecretObject, gck_secret_object, GCK_TYPE_OBJECT);
  */
 
 static gboolean
-complete_lock (GckTransaction *transaction, GObject *obj, gpointer user_data)
-{
-	GckSecretObject *self = GCK_SECRET_OBJECT (obj);
-	g_return_val_if_fail (GCK_IS_SESSION (user_data), FALSE);
-	gck_secret_object_lock (self, GCK_SESSION (user_data));
-	g_object_unref (user_data);
-	return TRUE;
-}
-
-static gboolean
 complete_set_label (GckTransaction *transaction, GObject *obj, gpointer user_data)
 {
 	GckSecretObject *self = GCK_SECRET_OBJECT (obj);
@@ -125,12 +115,11 @@ gck_secret_object_set_attribute (GckObject *base, GckSession *session,
                                  GckTransaction *transaction, CK_ATTRIBUTE_PTR attr)
 {
 	GckSecretObject *self = GCK_SECRET_OBJECT (base);
-	gboolean locked;
 	gchar *label;
 	CK_RV rv;
 	
 	/* Check that the object is not locked */
-	if (!gck_secret_object_is_locked (self, session)) {
+	if (gck_secret_object_is_locked (self, session)) {
 		gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 		return;
 	}
@@ -144,19 +133,16 @@ gck_secret_object_set_attribute (GckObject *base, GckSession *session,
 		else
 			begin_set_label (self, transaction, label);
 		return;
-		
-	case CKA_G_LOCKED:
-		rv = gck_attribute_get_bool (attr, &locked);
-		if (rv != CKR_OK)
-			gck_transaction_fail (transaction, rv);
-		else if (!locked)
-			gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
-		else /* Not strictly correct, according to transaction semantics... */
-			gck_transaction_add (transaction, self, complete_lock, g_object_ref (session));
-		return;
 	}
 	
 	GCK_OBJECT_CLASS (gck_secret_object_parent_class)->set_attribute (base, session, transaction, attr);
+}
+
+static gboolean
+gck_secret_object_real_is_locked (GckSecretObject *self, GckSession *session)
+{
+	/* Derived classes override us */
+	return FALSE;
 }
 
 static void
@@ -169,7 +155,10 @@ static GObject*
 gck_secret_object_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
 	GckSecretObject *self = GCK_SECRET_OBJECT (G_OBJECT_CLASS (gck_secret_object_parent_class)->constructor(type, n_props, props));
-	g_return_val_if_fail (self, NULL);	
+	g_return_val_if_fail (self, NULL);
+
+	/* Must be created with an identifier */
+	g_return_val_if_fail (self->pv->identifier, NULL);
 
 	return G_OBJECT (self);
 }
@@ -190,14 +179,10 @@ gck_secret_object_set_property (GObject *obj, guint prop_id, const GValue *value
 		g_return_if_fail (self->pv->identifier);
 		break;
 	case PROP_CREATED:
-		g_return_if_fail (!self->pv->created);
-		self->pv->created = g_value_get_long (value);
-		g_return_if_fail (self->pv->created);
+		gck_secret_object_set_created (self, g_value_get_long (value));
 		break;
 	case PROP_MODIFIED:
-		g_return_if_fail (!self->pv->modified);
-		self->pv->modified = g_value_get_long (value);
-		g_return_if_fail (self->pv->modified);
+		gck_secret_object_set_modified (self, g_value_get_long (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -271,14 +256,16 @@ gck_secret_object_class_init (GckSecretObjectClass *klass)
 
 	gck_class->get_attribute = gck_secret_object_get_attribute;
 	gck_class->set_attribute = gck_secret_object_set_attribute;
-	
+
+	klass->is_locked = gck_secret_object_real_is_locked;
+
 	g_object_class_install_property (gobject_class, PROP_IDENTIFIER,
 	           g_param_spec_string ("identifier", "Identifier", "Object Identifier", 
-	                                "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	           g_param_spec_string ("label", "Label", "Object Label", 
-	                                "", G_PARAM_READWRITE));
+	                                "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	
 	g_object_class_install_property (gobject_class, PROP_CREATED,
 	           g_param_spec_long ("created", "Created", "Object Create Time",
@@ -307,11 +294,32 @@ gck_secret_object_get_label (GckSecretObject *self)
 	return self->pv->label;	
 }
 
+void
+gck_secret_object_set_label (GckSecretObject *self, const gchar *label)
+{
+	g_return_if_fail (GCK_IS_SECRET_OBJECT (self));
+
+	if (self->pv->label == label)
+		return;
+
+	g_free (self->pv->label);
+	self->pv->label = g_strdup (label);
+	g_object_notify (G_OBJECT (self), "label");
+}
+
 glong
 gck_secret_object_get_created (GckSecretObject *self)
 {
 	g_return_val_if_fail (GCK_IS_SECRET_OBJECT (self), 0);
-	return self->pv->created;		
+	return self->pv->created;
+}
+
+void
+gck_secret_object_set_created (GckSecretObject *self, glong when)
+{
+	g_return_if_fail (GCK_IS_SECRET_OBJECT (self));
+	self->pv->created = when;
+	g_object_notify (G_OBJECT (self), "created");
 }
 
 glong
@@ -321,18 +329,27 @@ gck_secret_object_get_modified (GckSecretObject *self)
 	return self->pv->modified;
 }
 
+void
+gck_secret_object_set_modified (GckSecretObject *self, glong when)
+{
+	g_return_if_fail (GCK_IS_SECRET_OBJECT (self));
+	self->pv->modified = when;
+	g_object_notify (G_OBJECT (self), "modified");
+}
+
+void
+gck_secret_object_was_modified (GckSecretObject *self)
+{
+	GTimeVal tv;
+	g_return_if_fail (GCK_IS_SECRET_OBJECT (self));
+	g_get_current_time (&tv);
+	gck_secret_object_set_modified (self, tv.tv_sec);
+}
+
 gboolean
 gck_secret_object_is_locked (GckSecretObject *self, GckSession *session)
 {
 	g_return_val_if_fail (GCK_IS_SECRET_OBJECT (self), TRUE);
 	g_return_val_if_fail (GCK_SECRET_OBJECT_GET_CLASS (self)->is_locked, TRUE);
 	return GCK_SECRET_OBJECT_GET_CLASS (self)->is_locked (self, session);
-}
-
-void
-gck_secret_object_lock (GckSecretObject *self, GckSession *session)
-{
-	g_return_if_fail (GCK_IS_SECRET_OBJECT (self));
-	g_return_if_fail (GCK_SECRET_OBJECT_GET_CLASS (self)->lock);
-	GCK_SECRET_OBJECT_GET_CLASS (self)->lock (self, session);	
 }
