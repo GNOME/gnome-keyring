@@ -703,13 +703,31 @@ gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_UL
 }
 
 void
+gck_session_add_session_object (GckSession *self, GckTransaction *transaction,
+                                GckObject *obj)
+{
+	g_return_if_fail (GCK_IS_SESSION (self));
+	g_return_if_fail (gck_session_for_session_object (obj) == NULL);
+
+	if (transaction) {
+		g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+		g_return_if_fail (!gck_transaction_get_failed (transaction));
+	}
+
+	add_object (self, transaction, obj);
+}
+
+void
 gck_session_destroy_session_object (GckSession *self, GckTransaction *transaction,
                                     GckObject *obj)
 {
 	g_return_if_fail (GCK_IS_SESSION (self));
 	g_return_if_fail (gck_session_for_session_object (obj) == self);
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (!gck_transaction_get_failed (transaction));
+
+	if (transaction) {
+		g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+		g_return_if_fail (!gck_transaction_get_failed (transaction));
+	}
 
 	/* Don't actually destroy the authenticator */
 	if (self->pv->authenticator && GCK_OBJECT (self->pv->authenticator) == obj)

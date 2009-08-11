@@ -91,6 +91,10 @@ CK_RV                    gck_session_login_context_specific             (GckSess
                                                                          CK_UTF8CHAR_PTR pin,
                                                                          CK_ULONG n_pin);
 
+void                     gck_session_add_session_object                 (GckSession *self,
+                                                                         GckTransaction *transaction,
+                                                                         GckObject *obj);
+
 void                     gck_session_destroy_session_object             (GckSession *self,
                                                                          GckTransaction *transaction,
                                                                          GckObject *obj);
