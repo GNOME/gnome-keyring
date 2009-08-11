@@ -413,7 +413,6 @@ gck_secret_textual_write (GckSecretCollection *collection, guchar **result, gsiz
 	gint idle_timeout;
 	
 	obj = GCK_SECRET_OBJECT (collection);
-	g_return_val_if_fail (!gck_secret_collection_get_state (collection) == GCK_SECRET_COMPLETE, FALSE);
 
 	file = g_key_file_new ();
 	

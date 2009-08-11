@@ -39,15 +39,7 @@ struct _GckSecretCollectionClass {
 	GckSecretObjectClass parent_class;
 };
 
-typedef enum _GckSecretState {
-	GCK_SECRET_EMPTY = 0,
-	GCK_SECRET_PARTIAL = 1,
-	GCK_SECRET_COMPLETE = 2
-} GckSecretState;
-
 GType                gck_secret_collection_get_type        (void);
-
-GckSecretState       gck_secret_collection_get_state       (GckSecretCollection *self);
 
 GList*               gck_secret_collection_get_items       (GckSecretCollection *self);
 
@@ -60,9 +52,7 @@ GckSecretItem*       gck_secret_collection_create_item     (GckSecretCollection 
 void                 gck_secret_collection_remove_item     (GckSecretCollection *self,
                                                             GckSecretItem *item);
 
-GckSecretData*       gck_secret_collection_get_data        (GckSecretCollection *self);
-
-void                 gck_secret_collection_set_data        (GckSecretCollection *self,
-                                                            GckSecretData *data);
+GckSecretData*       gck_secret_collection_unlocked_data   (GckSecretCollection *self,
+                                                            GckSession *session);
 
 #endif /* __GCK_SECRET_COLLECTION_H__ */

@@ -571,7 +571,6 @@ gck_secret_binary_write (GckSecretCollection *collection, GckSecret *master,
 
 	/* In case the world changes on us... */
 	g_return_val_if_fail (gcry_md_get_algo_dlen (GCRY_MD_MD5) == sizeof (digest), GCK_DATA_FAILURE);
-	g_return_val_if_fail (gck_secret_collection_get_state (collection) == GCK_SECRET_COMPLETE, GCK_DATA_FAILURE);
 	
 	egg_buffer_init_full (&buffer, 256, g_realloc);
 	obj = GCK_SECRET_OBJECT (collection);
