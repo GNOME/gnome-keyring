@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gck-secret-data.h"
 #include "gck-secret-fields.h"
 #include "gck-secret-item.h"
 
@@ -34,14 +35,12 @@
 
 enum {
 	PROP_0,
-	PROP_SECRET,
 	PROP_COLLECTION,
 	PROP_FIELDS
 };
 
 struct _GckSecretItem {
 	GckSecretObject parent;
-	GckSecret *secret;
 	GHashTable *fields;
 	GckSecretCollection *collection;
 };
@@ -56,33 +55,14 @@ static gboolean
 complete_set_secret (GckTransaction *transaction, GObject *obj, gpointer user_data)
 {
 	GckSecretItem *self = GCK_SECRET_ITEM (obj);
-	GckSecret *old_secret = user_data;
 	
-	if (gck_transaction_get_failed (transaction)) {
-		gck_secret_item_set_secret (self, old_secret);
-	} else {
+	if (!gck_transaction_get_failed (transaction)) {
 		gck_object_notify_attribute (GCK_OBJECT (obj), CKA_VALUE);
-		g_object_notify (G_OBJECT (obj), "secret");
 		gck_secret_object_was_modified (GCK_SECRET_OBJECT (self));
 	}
 
-	if (old_secret)
-		g_object_unref (old_secret);
 	return TRUE;
 }
-
-static void
-begin_set_secret (GckSecretItem *self, GckTransaction *transaction, GckSecret *secret)
-{
-	g_assert (GCK_IS_SECRET_OBJECT (self));
-	g_assert (!gck_transaction_get_failed (transaction));
-	
-	if (self->secret)
-		g_object_ref (self->secret);
-	gck_transaction_add (transaction, self, complete_set_secret, self->secret);
-	gck_secret_item_set_secret (self, secret);
-}
-
 
 static gboolean
 complete_set_fields (GckTransaction *transaction, GObject *obj, gpointer user_data)
@@ -125,31 +105,37 @@ gck_secret_item_real_is_locked (GckSecretObject *obj, GckSession *session)
 	GckSecretItem *self = GCK_SECRET_ITEM (obj);
 	if (!self->collection)
 		return TRUE;
-	return gck_secret_object_is_locked (GCK_SECRET_OBJECT (self), session);
+	return gck_secret_object_is_locked (GCK_SECRET_OBJECT (self->collection), session);
 }
 
 static CK_RV
 gck_secret_item_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GckSecretItem *self = GCK_SECRET_ITEM (base);
+	GckSecretData *sdata;
 	const gchar *identifier;
-	const gchar *password;
-	gsize n_password;
-	
+	const guchar *secret;
+	gsize n_secret = 0;
+
+	g_return_val_if_fail (self->collection, CKR_GENERAL_ERROR);
+
 	switch (attr->type) {
 	case CKA_VALUE:
-		if (gck_secret_item_real_is_locked (GCK_SECRET_OBJECT (self), session))
+		sdata = gck_secret_collection_unlocked_data (self->collection, session);
+		if (sdata == NULL)
 			return CKR_USER_NOT_LOGGED_IN;
-		g_return_val_if_fail (self->secret, CKR_GENERAL_ERROR);
-		password = gck_secret_get_password (self->secret, &n_password);
-		return gck_attribute_set_data (attr, password, n_password);
-		
+		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (self));
+		secret = gck_secret_data_get_raw (sdata, identifier, &n_secret);
+		return gck_attribute_set_data (attr, secret, n_secret);
+
 	case CKA_G_COLLECTION:
 		g_return_val_if_fail (self->collection, CKR_GENERAL_ERROR);
 		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (self->collection));
 		return gck_attribute_set_string (attr, identifier);
 
 	case CKA_G_FIELDS:
+		if (!self->fields)
+			return gck_attribute_set_data (attr, NULL, 0);
 		return gck_secret_fields_serialize (attr, self->fields);
 	}
 
@@ -161,21 +147,33 @@ gck_secret_item_real_set_attribute (GckObject *base, GckSession *session,
                                     GckTransaction *transaction, CK_ATTRIBUTE_PTR attr)
 {
 	GckSecretItem *self = GCK_SECRET_ITEM (base);
+	const gchar *identifier;
+	GckSecretData *sdata;
 	GHashTable *fields;
 	GckSecret *secret;
 	CK_RV rv;
 
+	if (!self->collection) {
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+		g_return_if_reached ();
+	}
+
 	/* Check that the object is not locked */
-	if (!gck_secret_item_real_is_locked (GCK_SECRET_OBJECT (self), session)) {
+	sdata = gck_secret_collection_unlocked_data (self->collection, session);
+	if (sdata == NULL) {
 		gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 		return;
 	}
 
 	switch (attr->type) {
 	case CKA_VALUE:
+		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (self));
 		secret = gck_secret_new (attr->pValue, attr->ulValueLen);
-		begin_set_secret (self, transaction, secret);
-		break;
+		gck_secret_data_set_transacted (sdata, transaction, identifier, secret);
+		g_object_unref (secret);
+		if (!gck_transaction_get_failed (transaction))
+			gck_transaction_add (transaction, self, complete_set_secret, NULL);
+		return;
 
 	case CKA_G_FIELDS:
 		rv = gck_secret_fields_parse (attr, &fields);
@@ -183,9 +181,9 @@ gck_secret_item_real_set_attribute (GckObject *base, GckSession *session,
 			gck_transaction_fail (transaction, rv);
 		else
 			begin_set_fields (self, transaction, fields);
-		break;
+		return;
 	}
-	
+
 	GCK_OBJECT_CLASS (gck_secret_item_parent_class)->set_attribute (base, session, transaction, attr);
 }
 
@@ -213,9 +211,6 @@ gck_secret_item_set_property (GObject *obj, guint prop_id, const GValue *value,
 	GckSecretItem *self = GCK_SECRET_ITEM (obj);
 	
 	switch (prop_id) {
-	case PROP_SECRET:
-		gck_secret_item_set_secret (self, g_value_get_object (value));
-		break;
 	case PROP_COLLECTION:
 		g_return_if_fail (!self->collection);
 		self->collection = g_value_get_object (value);
@@ -239,9 +234,6 @@ gck_secret_item_get_property (GObject *obj, guint prop_id, GValue *value,
 	GckSecretItem *self = GCK_SECRET_ITEM (obj);
 	
 	switch (prop_id) {
-	case PROP_SECRET:
-		g_value_set_object (value, gck_secret_item_get_secret (self));
-		break;
 	case PROP_COLLECTION:
 		g_value_set_object (value, gck_secret_item_get_collection (self));
 		break;
@@ -264,8 +256,6 @@ gck_secret_item_dispose (GObject *obj)
 		                              (gpointer*)&(self->collection));
 	self->collection = NULL;
 	
-	gck_secret_item_set_secret (self, NULL);
-	
 	G_OBJECT_CLASS (gck_secret_item_parent_class)->dispose (obj);
 }
 
@@ -275,7 +265,6 @@ gck_secret_item_finalize (GObject *obj)
 	GckSecretItem *self = GCK_SECRET_ITEM (obj);
 	
 	g_assert (!self->collection);
-	g_assert (!self->secret);
 	
 	if (self->fields)
 		g_hash_table_unref (self->fields);
@@ -304,11 +293,7 @@ gck_secret_item_class_init (GckSecretItemClass *klass)
 
 	secret_class->is_locked = gck_secret_item_real_is_locked;
 
-	g_object_class_install_property (gobject_class, PROP_SECRET,
-	           g_param_spec_object ("secret", "Secret", "Item's Secret",
-	                                GCK_TYPE_SECRET, G_PARAM_READWRITE));
-
-	g_object_class_install_property (gobject_class, PROP_SECRET,
+	g_object_class_install_property (gobject_class, PROP_COLLECTION,
 	           g_param_spec_object ("collection", "Collection", "Item's Collection",
 	                                GCK_TYPE_SECRET_COLLECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
@@ -328,32 +313,6 @@ gck_secret_item_get_collection (GckSecretItem *self)
 	return self->collection;
 }
 
-GckSecret*
-gck_secret_item_get_secret (GckSecretItem *self)
-{
-	g_return_val_if_fail (GCK_IS_SECRET_ITEM (self), NULL);
-	return self->secret;
-}
-
-void
-gck_secret_item_set_secret (GckSecretItem *self, GckSecret *secret)
-{
-	g_return_if_fail (GCK_IS_SECRET_ITEM (self));
-	
-	if (secret == self->secret)
-		return;
-	
-	if (self->secret)
-		g_object_remove_weak_pointer (G_OBJECT (self->secret),
-		                              (gpointer*)&(self->secret));
-	self->secret = secret;
-	if (self->secret)
-		g_object_add_weak_pointer (G_OBJECT (self->secret),
-		                           (gpointer*)&(self->secret));
-	
-	g_object_notify (G_OBJECT (self), "secret");
-} 
-
 GHashTable*
 gck_secret_item_get_fields (GckSecretItem *self)
 {
@@ -366,16 +325,12 @@ gck_secret_item_set_fields (GckSecretItem *self, GHashTable *fields)
 {
 	g_return_if_fail (GCK_IS_SECRET_ITEM (self));
 	
-	if (fields == self->fields)
-		return;
-	
-	if (self->fields)
-		g_hash_table_unref (fields);
-	self->fields = fields;
-	if (self->fields)
+	if (fields)
 		g_hash_table_ref (fields);
+	if (self->fields)
+		g_hash_table_unref (self->fields);
+	self->fields = fields;
 	
 	g_object_notify (G_OBJECT (self), "fields");
 	gck_object_notify_attribute (GCK_OBJECT (self), CKA_G_FIELDS);
-	gck_secret_object_was_modified (GCK_SECRET_OBJECT (self));
 }

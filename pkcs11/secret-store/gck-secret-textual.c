@@ -328,7 +328,10 @@ generate_item (GKeyFile *file, GckSecretItem *item)
 	if (value != NULL)
 		g_key_file_set_string (file, groupname, "display-name", value);
 	
+#if 0
 	secret = gck_secret_item_get_secret (item);
+#endif
+g_assert_not_reached ();
 	if (secret != NULL) {
 		password = gck_secret_get_password (secret, &n_password);
 		/* TODO: What about non-textual passwords? */
@@ -381,10 +384,16 @@ parse_item (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 
 	val = g_key_file_get_string (file, groupname, "secret", NULL);
 	if (val == NULL) {
+#if 0
 		gck_secret_item_set_secret (item, NULL);
+#endif
+g_assert_not_reached ();
 	} else {
 		secret = gck_secret_new ((guchar*)val, strlen (val));
+#if 0
 		gck_secret_item_set_secret (item, secret);
+#endif
+g_assert_not_reached ();
 		g_object_unref (secret);
 		g_free (val);
 	}

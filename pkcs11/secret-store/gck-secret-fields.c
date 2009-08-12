@@ -174,7 +174,7 @@ gck_secret_fields_parse (CK_ATTRIBUTE_PTR attr, GHashTable **fields)
 		}
 		
 		n_name = ptr - name;
-		value = ptr;
+		value = ++ptr;
 		ptr = memchr (ptr, 0, last - ptr);
 		
 		/* The last value */
@@ -182,6 +182,7 @@ gck_secret_fields_parse (CK_ATTRIBUTE_PTR attr, GHashTable **fields)
 			ptr = last;
 		
 		n_value = ptr - value;
+		++ptr;
 
 		/* Validate the name and value*/
 		if (!g_utf8_validate (name, n_name, NULL) || 

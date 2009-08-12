@@ -498,13 +498,13 @@ gck_object_set_attribute (GckObject *self, GckSession *session,
 	check.pValue = 0;
 	check.ulValueLen = 0;
 	rv = gck_object_get_attribute (self, session, &check);
-	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_SENSITIVE) {
+	if (rv == CKR_ATTRIBUTE_TYPE_INVALID) {
 		gck_transaction_fail (transaction, rv);
 		return;
 	}
 	
 	/* Check that the value will actually change */
-	if (rv == CKR_ATTRIBUTE_SENSITIVE || !gck_object_match (self, session, attr))
+	if (rv != CKR_OK || !gck_object_match (self, session, attr))
 		GCK_OBJECT_GET_CLASS (self)->set_attribute (self, session, transaction, attr);
 }
 

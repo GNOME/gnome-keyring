@@ -493,7 +493,10 @@ generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection)
 		label = gck_secret_object_get_label (obj);
 		buffer_add_utf8_string (buffer, label);
 
+#if 0
 		secret = gck_secret_item_get_secret (item);
+#endif
+g_assert_not_reached ();
 		password = NULL;
 		if (secret != NULL)
 			password = gck_secret_get_password (secret, &n_password);
@@ -732,11 +735,18 @@ setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
 
 	if (locked) {
 		g_object_set_data (G_OBJECT (item), "compat-acl", NULL);
+#if 0
 		gck_secret_item_set_secret (item, NULL);
+#endif
+g_assert_not_reached ();
+
 		
 	} else {
 		secret = gck_secret_new_from_password (info->secret);
+#if 0
 		gck_secret_item_set_secret (item, secret);
+#endif 
+g_assert_not_reached ();
 		g_object_unref (secret);
 		g_object_set_data_full (G_OBJECT (item), "compat-acl", info->acl, gck_secret_compat_acl_free);
 		info->acl = NULL;

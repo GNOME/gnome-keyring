@@ -44,11 +44,6 @@ GType                  gck_secret_item_get_type               (void);
 
 GckSecretCollection*   gck_secret_item_get_collection         (GckSecretItem *self);
 
-GckSecret*             gck_secret_item_get_secret             (GckSecretItem *self);
-
-void                   gck_secret_item_set_secret             (GckSecretItem *self,
-                                                               GckSecret *secret);
-
 GHashTable*            gck_secret_item_get_fields             (GckSecretItem *self);
 
 void                   gck_secret_item_set_fields             (GckSecretItem *self,
