@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the gnome-keyring package.
 # Timo Jyrinki <timo.jyrinki@iki.fi>, 2008.
 # Ilkka Tuohela <hile@iki.fi>, 2005-2009.
-# Tommi Vainikainen <Tommi.Vainikainen@iki.fi>, 2004-2006.
+# Tommi Vainikainen <Tommi.Vainikainen@iki.fi>, 2004-2006, 2009.
 #
 # Sanastoa:
 # keyring = avainnippu
@@ -11,41 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-28 19:41+0300\n"
-"PO-Revision-Date: 2009-02-18 19:30+0300\n"
-"Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
+"POT-Creation-Date: 2009-08-14 15:06+0300\n"
+"PO-Revision-Date: 2009-08-14 15:07+0300\n"
+"Last-Translator: Tommi Vainikainen <thv@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
-
-#: ../common/gkr-location.c:321
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "Irrotettava levy: %s"
-
-#: ../common/gkr-location.c:323
-msgid "Removable Disk"
-msgstr "Irrotettava levy"
-
-#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
-msgid "Home"
-msgstr "Koti"
-
-#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
-msgid "The disk or drive this file is located on is not present"
-msgstr "Levy tai asema, jossa tämä tiedosto on, ei ole saatavilla"
-
-#: ../common/gkr-location.c:1137
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "Kansiota ei voitu luda: %s"
-
-#: ../common/gkr-location.c:1171
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "Tiedostoa ei voitu poistaa: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:228
@@ -312,12 +285,12 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:552
 #, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "Valitse uusi salasana avainnipulle \"%s\"."
+msgid "Choose a new password for the '%s' keyring."
+msgstr "Valitse uusi salasana avainnipulle ”%s”."
 
 #: ../daemon/gkr-daemon-ops.c:554
 #, c-format
-msgid "Choose a new password for the default keyring. "
+msgid "Choose a new password for the default keyring."
 msgstr "Valitse uusi salasana oletusavainnipulle."
 
 #. And put together the ask request
@@ -401,15 +374,15 @@ msgid "GNOME Keyring Daemon"
 msgstr "Gnomen avainnippupalvelin"
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Unlock Login Keyring"
 msgstr "Avaa oletusavainnippu"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Enter login password to unlock keyring"
 msgstr "Avaa avainnippu syöttämällä kirjautumissalasana"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:100
+#: ../daemon/keyrings/gkr-keyring-login.c:101
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
@@ -418,15 +391,15 @@ msgstr ""
 "tietokoneelle."
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Create Login Keyring"
 msgstr "Luo oletusavainnippu"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Enter your login password"
 msgstr "Syötä kirjautumissalasanasi"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:126
+#: ../daemon/keyrings/gkr-keyring-login.c:127
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
@@ -434,96 +407,96 @@ msgstr ""
 "Oletusavainnippua ei luotu automaattisesti, kun kirjauduit tälle "
 "tietokoneelle. Se luodaan nyt."
 
-#: ../daemon/keyrings/gkr-keyring.c:586
+#: ../daemon/keyrings/gkr-keyring.c:587
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "Avainrenkaan %s avaava salasana"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
 msgid "Unlock private key"
 msgstr "Avaa salainen avain"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
 msgid "Unlock certificate"
 msgstr "Avaa varmenne"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
 msgid "Unlock public key"
 msgstr "Avaa julkinen avain"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
 msgid "Unlock"
 msgstr "Avaa lukitus"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Avaa salaisen avaimen lukitus syöttämällä salasana"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Avaa varmenteen lukitus syöttämällä salasana"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
 msgid "Enter password to unlock the public key"
 msgstr "Avaa julkisen avaimen lukitus syöttämällä salasana"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Avaa syöttämällä salasana"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
 "Sovellus haluaa päästä käsiksi salaiseen avaimeen \"%s\", mutta se on lukittu"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
 "Sovellus haluaa päästä käsiksi varmenteeseen \"%s\", mutta se on lukittu"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 "Sovellus haluaa päästä käsiksi julkiseen avaimeen \"%s\", mutta se on lukittu"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Sovellus haluaa päästä käsiksi kohteeseen \"%s\", mutta se on lukittu"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
 msgid "Automatically unlock this private key when I log in."
 msgstr "Avaa tämä salainen avain automaattisesti sisäänkirjauduttaessa."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
 msgid "Automatically unlock this certificate when I log in."
 msgstr "Avaa tämä varmenne automaattisesti sisäänkirjauduttaessa."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
 msgid "Automatically unlock this public key when I log in."
 msgstr "Avaa tämä julkinen avain automaattisesti sisäänkirjauduttaessa."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
 msgid "Automatically unlock this when I log in"
 msgstr "Avaa tämä automaattisesti sisäänkirjauduttaessa."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:371
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Unlock certificate/key storage"
 msgstr "Avaa varmenne- tai avainsäilö"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:372
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Avaa varmenne- tai avainsäilön lukitus syöttämällä salasana"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:375
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -532,20 +505,20 @@ msgstr ""
 "Sovellus haluaa päästä käsiksi varmenteeseen tai avainsäilöön  \"%s\", mutta "
 "se on lukittu"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:380
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:531
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Avaa turvallinen tallennus automaattisesti sisäänkirjauduttaessa."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:523
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New Password Required"
 msgstr "Uusi salasana vaaditaan"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:524
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
 msgid "New password required for secure storage"
 msgstr "Turvallinen säilö vaatii uuden salasanan"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:526
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -652,6 +625,33 @@ msgstr "Salli _kerran"
 msgid "_Always Allow"
 msgstr "Salli _aina"
 
+#: ../daemon/util/gkr-location.c:234
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Irrotettava levy: %s"
+
+#: ../daemon/util/gkr-location.c:236
+msgid "Removable Disk"
+msgstr "Irrotettava levy"
+
+#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
+msgid "Home"
+msgstr "Koti"
+
+#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
+msgid "The disk or drive this file is located on is not present"
+msgstr "Levy tai asema, jossa tämä tiedosto on, ei ole saatavilla"
+
+#: ../daemon/util/gkr-location.c:914
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Kansiota ei voitu luda: %s"
+
+#: ../daemon/util/gkr-location.c:948
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "Tiedostoa ei voitu poistaa: %s"
+
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "Aluenimen osa"
@@ -692,8 +692,7 @@ msgstr "Yleinen nimi"
 msgid "Surname"
 msgstr "Sukunimi"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "Sarjanumero"
 
@@ -781,74 +780,6 @@ msgstr "<i>Ei osa varmennetta</i>"
 msgid "<i>unknown</i>"
 msgstr "<i>tuntematon</i>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:1
-msgid "<Not Part of Certificate>"
-msgstr "<Ei varmenteen osa>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:2
-msgid "<b>Fingerprints</b>"
-msgstr "<b>Sormenjäljet</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:3
-msgid "<b>Issued By</b>"
-msgstr "<b>Myöntänyt</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:4
-msgid "<b>Issued To</b>"
-msgstr "<b>Myönnetty taholle</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:5
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>Tämä varmenne on vahvistettu seuraavia käyttökohteita varten:</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:6
-msgid "<b>Validity</b>"
-msgstr "<b>Kelpoisuus</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:7
-msgid "Common Name (CN)"
-msgstr "Yleinen nimi (CN)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:8
-msgid "Email Recipient Certificate"
-msgstr "Sähköpostin vastaanottajan varmenne"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:9
-msgid "Email Signer Certificate"
-msgstr "Sähköpostin allekirjoittajan varmenne"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:10
-msgid "Expires On"
-msgstr "Vanhenee"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:11
-msgid "Issued On"
-msgstr "Myönnetty"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:12
-msgid "MD5 Fingerprint"
-msgstr "MD5-sormenjälki"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:13
-msgid "Organization (O)"
-msgstr "Organisaatio (O)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:14
-msgid "Organizational Unit (OU)"
-msgstr "Organisaatioyksikkö (OU)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:15
-msgid "SHA1 Fingerprint"
-msgstr "SHA1-varmenne"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:16
-msgid "SSL Client Certificate"
-msgstr "SSL-asiakasvarmenne"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:17
-msgid "SSL Server Certificate"
-msgstr "SSL-palvelinvarmenne"
-
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
 msgstr "Pääte"
@@ -861,98 +792,86 @@ msgstr "Tunniste"
 msgid "Value"
 msgstr "Arvo"
 
-#: ../gcr/gcr-certificate-details-widget.c:232
-msgid "Yes"
-msgstr "Kyllä"
-
-#: ../gcr/gcr-certificate-details-widget.c:234
-msgid "No"
-msgstr "Ei"
-
-#: ../gcr/gcr-certificate-details-widget.c:237
+#: ../gcr/gcr-certificate-details-widget.c:229
 msgid "Critical"
 msgstr "Kriittinen"
 
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "Kyllä"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "Ei"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Subject Name"
 msgstr "Kohteen nimi"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:315
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issuer Name"
 msgstr "Myöntäjän nimi"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:319
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
 msgstr "Myöntäjän varmenne"
 
-#: ../gcr/gcr-certificate-details-widget.c:324
+#: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
 msgstr "Versio"
 
-#: ../gcr/gcr-certificate-details-widget.c:337
+#: ../gcr/gcr-certificate-details-widget.c:329
 msgid "Not Valid Before"
 msgstr "Ei voimassa ennen"
 
-#: ../gcr/gcr-certificate-details-widget.c:342
+#: ../gcr/gcr-certificate-details-widget.c:334
 msgid "Not Valid After"
 msgstr "Ei voimassa jälkeen"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:347
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Signature"
 msgstr "Allekirjoitus"
 
-#: ../gcr/gcr-certificate-details-widget.c:351
+#: ../gcr/gcr-certificate-details-widget.c:343
 msgid "Signature Algorithm"
 msgstr "Allekirjoituksen algoritmi"
 
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:348
 msgid "Signature Parameters"
 msgstr "Allekirjoituksen parametrit"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:367
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Public Key Info"
 msgstr "Tietoja julkisesta avaimesta"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Key Algorithm"
 msgstr "Avaimen algoritmi"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:368
 msgid "Key Parameters"
 msgstr "Avaimen parametrit"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:375
 msgid "Key Size"
 msgstr "Avaimen koko"
 
-#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Julkinen avain"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:394
+#: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "Sormenjäjet"
 
-#: ../gcr/gcr-import-dialog.glade.h:1
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr "<span size='large' weight='bold'>Tuo varmenteita ja avaimia</span>"
-
-#: ../gcr/gcr-import-dialog.glade.h:2
-msgid "Import Into:"
-msgstr "Tuo kohteeseen:"
-
-#: ../gcr/gcr-import-dialog.glade.h:3
-msgid "Password:"
-msgstr "Salasana:"
-
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:114
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Toiminto peruttiin"
 
@@ -1022,362 +941,423 @@ msgstr "Virheellistä tai viallista tietoa ei voitu tulkita."
 msgid "The data is locked"
 msgstr "tiedot on lukittu"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gp11/gp11-misc.c:101
 msgid "Insufficient memory available"
 msgstr "Muisti ei riitä"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gp11/gp11-misc.c:103
 msgid "The specified slot ID is not valid"
 msgstr "Annettu lohkotunniste ei ole kelvollinen"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gp11/gp11-misc.c:105
 msgid "Internal error"
 msgstr "Sisäinen virhe"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gp11/gp11-misc.c:107
 msgid "The operation failed"
 msgstr "Toiminto epäonnistui"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gp11/gp11-misc.c:109
 msgid "Invalid arguments"
 msgstr "Virheelliset argumentit"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gp11/gp11-misc.c:111
 msgid "The module cannot create needed threads"
 msgstr "Moduuli ei voi luoda vaadittuja säikeitä"
 
-#: ../gp11/gp11-misc.c:129
+#: ../gp11/gp11-misc.c:113
 msgid "The module cannot lock data properly"
 msgstr "Moduuli ei voi lukita tietoja kunnolla"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gp11/gp11-misc.c:115
 msgid "The field is read-only"
 msgstr "Kenttä on vain luettavissa"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gp11/gp11-misc.c:117
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Kenttä on luottamuksellinen eikä sitä voi paljastaa"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gp11/gp11-misc.c:119
 msgid "The field is invalid or does not exist"
 msgstr "Kenttä on virheellinen tai sitä ei ole olemassa"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gp11/gp11-misc.c:121
 msgid "Invalid value for field"
 msgstr "Virheellinen kentän arvo"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gp11/gp11-misc.c:123
 msgid "The data is not valid or unrecognized"
 msgstr "Tieto ei ollut kelvollinen tai sitä ei tunnistettu"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gp11/gp11-misc.c:125
 msgid "The data is too long"
 msgstr "Tieto on liian pitkä"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gp11/gp11-misc.c:127
 msgid "An error occurred on the device"
 msgstr "Tapahtui virhe laitteella"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gp11/gp11-misc.c:129
 msgid "Insufficient memory available on device"
 msgstr "Laitteen muisti ei riitä"
 
-#: ../gp11/gp11-misc.c:147
+#: ../gp11/gp11-misc.c:131
 msgid "The device was removed or unplugged"
 msgstr "Laite poistettiin tai irrotettiin"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gp11/gp11-misc.c:133
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Salattu tieto ei ole kelvollista tai sitä ei voitu tunnistaa"
 
-#: ../gp11/gp11-misc.c:151
+#: ../gp11/gp11-misc.c:135
 msgid "The encrypted data is too long"
 msgstr "Salattu tieto on liian pitkä"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gp11/gp11-misc.c:137
 msgid "This operation is not supported"
 msgstr "Tämä toiminto ei ole tuettu"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gp11/gp11-misc.c:139
 msgid "The key is missing or invalid"
 msgstr "Avain puuttuu tai on viallinen"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gp11/gp11-misc.c:141
 msgid "The key is the wrong size"
 msgstr "Avain on väärän kokoinen"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gp11/gp11-misc.c:143
 msgid "The key is of the wrong type"
 msgstr "Avain on väärän tyyppinen"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gp11/gp11-misc.c:145
 msgid "No key is needed"
 msgstr "Avainta ei tarvita"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gp11/gp11-misc.c:147
 msgid "The key is different than before"
 msgstr "Avain on eri kuin aikaisemmin"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gp11/gp11-misc.c:149
 msgid "A key is needed"
 msgstr "Avain tarvitaan"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gp11/gp11-misc.c:151
 msgid "Cannot include the key in digest"
 msgstr "Avainta ei voi liittää tiivisteeseen"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gp11/gp11-misc.c:153
 msgid "This operation cannot be done with this key"
 msgstr "Tätä toimintoa ei voi suorittaa tällä avaimella"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gp11/gp11-misc.c:155
 msgid "The key cannot be wrapped"
 msgstr "Avainta ei voi rivittää"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gp11/gp11-misc.c:157
 msgid "Cannot export this key"
 msgstr "Tätä avainta ei voi viedä"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gp11/gp11-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Salausmenetelmä on virheellinen tai sitä ei voitu tunnistaa"
 
-#: ../gp11/gp11-misc.c:177
+#: ../gp11/gp11-misc.c:161
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Salausmenetelmän argumentti on virheellinen"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gp11/gp11-misc.c:163
 msgid "The object is missing or invalid"
 msgstr "Kohde puuttuu tai on virheellinen"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gp11/gp11-misc.c:165
 msgid "Another operation is already taking place"
 msgstr "Toinen toiminto on jo käynnissä"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gp11/gp11-misc.c:167
 msgid "No operation is taking place"
 msgstr "Yhtään toimintoa ei ole käynnissä"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gp11/gp11-misc.c:169
 msgid "The password or PIN is incorrect"
 msgstr "Salasana tai PIN-koodi on väärä"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gp11/gp11-misc.c:171
 msgid "The password or PIN is invalid"
 msgstr "Salasana tai PIN-koodi on virheellinen"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gp11/gp11-misc.c:173
 msgid "The password or PIN is of an invalid length"
 msgstr "Salasanan tai PIN-koodin pituus ei ole kelvollinen"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gp11/gp11-misc.c:175
 msgid "The password or PIN has expired"
 msgstr "Salasana tai PIN-koodi on vanhentunut"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gp11/gp11-misc.c:177
 msgid "The password or PIN is locked"
 msgstr "Salasana tai PIN-koodin on lukittu"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gp11/gp11-misc.c:179
 msgid "The session is closed"
 msgstr "Istunto on suljettu"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gp11/gp11-misc.c:181
 msgid "Too many sessions are active"
 msgstr "Liian monta avointa istuntoa"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gp11/gp11-misc.c:183
 msgid "The session is invalid"
 msgstr "Istunto on virheellinen"
 
-#: ../gp11/gp11-misc.c:201
+#: ../gp11/gp11-misc.c:185
 msgid "The session is read-only"
 msgstr "Istunto on vain luettavissa"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gp11/gp11-misc.c:187
 msgid "An open session exists"
 msgstr "Avoin istunto on olemassa"
 
-#: ../gp11/gp11-misc.c:205
+#: ../gp11/gp11-misc.c:189
 msgid "A read-only session exists"
 msgstr "Vain luettavissa oleva istunto on olemassa"
 
-#: ../gp11/gp11-misc.c:207
+#: ../gp11/gp11-misc.c:191
 msgid "An administrator session exists"
 msgstr "Ylläpitäjän istunto on olemassa"
 
-#: ../gp11/gp11-misc.c:209
+#: ../gp11/gp11-misc.c:193
 msgid "The signature is bad or corrupted"
 msgstr "Allekirjoitus on virheellinen tai vioittunut"
 
-#: ../gp11/gp11-misc.c:211
+#: ../gp11/gp11-misc.c:195
 msgid "The signature is unrecognized or corrupted"
 msgstr "Allekirjoitusta ei voitu tunnistaa tai se on vioittunut"
 
-#: ../gp11/gp11-misc.c:213
+#: ../gp11/gp11-misc.c:197
 msgid "Certain required fields are missing"
 msgstr "Jotkut vaadituista kentistä puuttuvat"
 
-#: ../gp11/gp11-misc.c:215
+#: ../gp11/gp11-misc.c:199
 msgid "Certain fields have invalid values"
 msgstr "Joissain kentissä on virheellinen arvo"
 
-#: ../gp11/gp11-misc.c:217
+#: ../gp11/gp11-misc.c:201
 msgid "The device is not present or unplugged"
 msgstr "Laite ei ole saatavilla tai on irroitettu"
 
-#: ../gp11/gp11-misc.c:219
+#: ../gp11/gp11-misc.c:203
 msgid "The device is invalid or unrecognizable"
 msgstr "Laite on virheellinen tai sitä ei voi tunnistaa"
 
-#: ../gp11/gp11-misc.c:221
+#: ../gp11/gp11-misc.c:205
 msgid "The device is write protected"
 msgstr "Laite on kirjoitussuojattu"
 
-#: ../gp11/gp11-misc.c:223
+#: ../gp11/gp11-misc.c:207
 msgid "Cannot import because the key is invalid"
 msgstr "Tuonti epäonnistui, koska avain oli virheellinen"
 
-#: ../gp11/gp11-misc.c:225
+#: ../gp11/gp11-misc.c:209
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Tuonti epäonnistui, koska avain oli väärän kokoinen"
 
-#: ../gp11/gp11-misc.c:227
+#: ../gp11/gp11-misc.c:211
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Tuonti epäonnistui, koska avain oli väärän tyyppinen"
 
-#: ../gp11/gp11-misc.c:229
+#: ../gp11/gp11-misc.c:213
 msgid "You are already logged in"
 msgstr "Olet jo kirjautunut sisään"
 
-#: ../gp11/gp11-misc.c:231
+#: ../gp11/gp11-misc.c:215
 msgid "No user has logged in"
 msgstr "Yhtäkään käyttäjää ei ole kirjautunut sisään"
 
-#: ../gp11/gp11-misc.c:233
+#: ../gp11/gp11-misc.c:217
 msgid "The user's password or PIN is not set"
 msgstr "Käyttäjän salasanaa tai PIN-koodia ei ole asetettu"
 
-#: ../gp11/gp11-misc.c:235
+#: ../gp11/gp11-misc.c:219
 msgid "The user is of an invalid type"
 msgstr "Käyttäjä on väärän tyyppinen"
 
-#: ../gp11/gp11-misc.c:237
+#: ../gp11/gp11-misc.c:221
 msgid "Another user is already logged in"
 msgstr "Toinen käyttäjä on jo kirjautunut sisään"
 
-#: ../gp11/gp11-misc.c:239
+#: ../gp11/gp11-misc.c:223
 msgid "Too many users of different types logged in"
 msgstr "Liian monta erityyppistä käyttäjää on kirjautunut sisään"
 
-#: ../gp11/gp11-misc.c:241
+#: ../gp11/gp11-misc.c:225
 msgid "Cannot import an invalid key"
 msgstr "Virheellistä avainta ei voi tuoda"
 
-#: ../gp11/gp11-misc.c:243
+#: ../gp11/gp11-misc.c:227
 msgid "Cannot import a key of the wrong size"
 msgstr "Väärän kokoista avainta ei voi tuoda"
 
-#: ../gp11/gp11-misc.c:245
+#: ../gp11/gp11-misc.c:229
 msgid "Cannot export because the key is invalid"
 msgstr "Vienti ei onnistu, koska avain on virheellinen"
 
-#: ../gp11/gp11-misc.c:247
+#: ../gp11/gp11-misc.c:231
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Vienti ei onnistu, koska avain on väärän kokoinen"
 
-#: ../gp11/gp11-misc.c:249
+#: ../gp11/gp11-misc.c:233
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Vienti ei onnistu, koska avain on väärän kokoinen"
 
-#: ../gp11/gp11-misc.c:251
+#: ../gp11/gp11-misc.c:235
 msgid "Unable to initialize the random number generator"
 msgstr "Satunnaislukugeneraattoria ei voitu alustaa"
 
-#: ../gp11/gp11-misc.c:253
+#: ../gp11/gp11-misc.c:237
 msgid "No random number generator available"
 msgstr "Satunnaislukugeneraattoria ei ole saatavilla"
 
-#: ../gp11/gp11-misc.c:255
+#: ../gp11/gp11-misc.c:239
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Salausmenetelmän parametri on virheellinen"
 
-#: ../gp11/gp11-misc.c:257
+#: ../gp11/gp11-misc.c:241
 msgid "Not enough space to store the result"
 msgstr "Tila ei riitä tuloksen tallentamiseen"
 
-#: ../gp11/gp11-misc.c:259
+#: ../gp11/gp11-misc.c:243
 msgid "The saved state is invalid"
 msgstr "Tallennettu tila on virheellinen"
 
-#: ../gp11/gp11-misc.c:261
+#: ../gp11/gp11-misc.c:245
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Tieto on luttamuksellista eikä sitä voi näyttää"
 
-#: ../gp11/gp11-misc.c:263
+#: ../gp11/gp11-misc.c:247
 msgid "The state cannot be saved"
 msgstr "Tilaa ei voi tallentaa"
 
-#: ../gp11/gp11-misc.c:265
+#: ../gp11/gp11-misc.c:249
 msgid "The module has not been initialized"
 msgstr "Moduulia ei ole alustettu"
 
-#: ../gp11/gp11-misc.c:267
+#: ../gp11/gp11-misc.c:251
 msgid "The module has already been initialized"
 msgstr "Moduuli on jo alustettu"
 
-#: ../gp11/gp11-misc.c:269
+#: ../gp11/gp11-misc.c:253
 msgid "Cannot lock data"
 msgstr "Tietoja ei voi lukita"
 
-#: ../gp11/gp11-misc.c:271
+#: ../gp11/gp11-misc.c:255
 msgid "The data cannot be locked"
 msgstr "Tietoja ei voi lukita"
 
-#: ../gp11/gp11-misc.c:273
+#: ../gp11/gp11-misc.c:257
 msgid "The signature request was rejected by the user"
 msgstr "Käyttäjä ei hyväksynyt allekirjoituspyyntöä"
 
-#: ../gp11/gp11-misc.c:277
+#: ../gp11/gp11-misc.c:261
 msgid "Unknown error"
 msgstr "Tuntematon virhe"
 
-#: ../library/gnome-keyring-utils.c:155
+#: ../library/gnome-keyring-utils.c:168
 msgid "Access Denied"
 msgstr "Pääsy evätty"
 
-#: ../library/gnome-keyring-utils.c:157
+#: ../library/gnome-keyring-utils.c:170
 msgid "The gnome-keyring-daemon application is not running."
 msgstr "Prosessi gnome-keyring-daemon ei ole käynnissä."
 
-#: ../library/gnome-keyring-utils.c:159
+#: ../library/gnome-keyring-utils.c:172
 msgid "Error communicating with gnome-keyring-daemon"
 msgstr "Virhe yhteydessä prosessiin gnome-keyring-daemon"
 
-#: ../library/gnome-keyring-utils.c:161
+#: ../library/gnome-keyring-utils.c:174
 msgid "A keyring with that name already exists"
 msgstr "Tämänniminen avainrengas on jo olemassa"
 
-#: ../library/gnome-keyring-utils.c:163
+#: ../library/gnome-keyring-utils.c:176
 msgid "Programmer error: The application sent invalid data."
 msgstr "Ohjelmointivirhe: sovellus lähetti virheellistä tietoa."
 
-#: ../library/gnome-keyring-utils.c:165
+#: ../library/gnome-keyring-utils.c:178
 msgid "No matching results"
 msgstr "Ei täsmääviä tuloksia"
 
-#: ../library/gnome-keyring-utils.c:167
+#: ../library/gnome-keyring-utils.c:180
 msgid "A keyring with that name does not exist."
 msgstr "Tämännimistä avainrengasta ei ole olemassa."
 
-#: ../library/gnome-keyring-utils.c:174
+#: ../library/gnome-keyring-utils.c:187
 msgid "The keyring has already been unlocked."
 msgstr "Avainrenkaan lukitus on jo avattu."
 
-#: ../pkcs11/gck/gck-certificate.c:710
+#: ../pkcs11/gck/gck-certificate.c:716
 msgid "Unnamed Certificate"
 msgstr "Nimeämätön varmenne"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:296
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
 msgid "Couldn't parse public SSH key"
 msgstr "SSH-avaimen julkista osaa ei voitu tulkita."
+
+#~ msgid "<Not Part of Certificate>"
+#~ msgstr "<Ei varmenteen osa>"
+
+#~ msgid "<b>Fingerprints</b>"
+#~ msgstr "<b>Sormenjäljet</b>"
+
+#~ msgid "<b>Issued By</b>"
+#~ msgstr "<b>Myöntänyt</b>"
+
+#~ msgid "<b>Issued To</b>"
+#~ msgstr "<b>Myönnetty taholle</b>"
+
+#~ msgid "<b>This certificate has been verified for the following uses:</b>"
+#~ msgstr ""
+#~ "<b>Tämä varmenne on vahvistettu seuraavia käyttökohteita varten:</b>"
+
+#~ msgid "<b>Validity</b>"
+#~ msgstr "<b>Kelpoisuus</b>"
+
+#~ msgid "Common Name (CN)"
+#~ msgstr "Yleinen nimi (CN)"
+
+#~ msgid "Email Recipient Certificate"
+#~ msgstr "Sähköpostin vastaanottajan varmenne"
+
+#~ msgid "Email Signer Certificate"
+#~ msgstr "Sähköpostin allekirjoittajan varmenne"
+
+#~ msgid "Expires On"
+#~ msgstr "Vanhenee"
+
+#~ msgid "Issued On"
+#~ msgstr "Myönnetty"
+
+#~ msgid "MD5 Fingerprint"
+#~ msgstr "MD5-sormenjälki"
+
+#~ msgid "Organization (O)"
+#~ msgstr "Organisaatio (O)"
+
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "Organisaatioyksikkö (OU)"
+
+#~ msgid "SHA1 Fingerprint"
+#~ msgstr "SHA1-varmenne"
+
+#~ msgid "SSL Client Certificate"
+#~ msgstr "SSL-asiakasvarmenne"
+
+#~ msgid "SSL Server Certificate"
+#~ msgstr "SSL-palvelinvarmenne"
+
+#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+#~ msgstr "<span size='large' weight='bold'>Tuo varmenteita ja avaimia</span>"
+
+#~ msgid "Import Into:"
+#~ msgstr "Tuo kohteeseen:"
+
+#~ msgid "Password:"
+#~ msgstr "Salasana:"
