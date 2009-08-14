@@ -57,6 +57,10 @@ void            gck_secret_fields_add                         (GHashTable *field
                                                                const gchar *name,
                                                                const gchar *value);
 
+void            gck_secret_fields_take                        (GHashTable *fields,
+                                                               gchar *name,
+                                                               gchar *value);
+
 const gchar*    gck_secret_fields_get                         (GHashTable *fields,
                                                                const gchar *name);
 

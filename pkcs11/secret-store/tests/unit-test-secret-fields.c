@@ -54,13 +54,17 @@ DEFINE_TEST(fields_add_get_values)
 	const gchar *value;
 
 	gck_secret_fields_add (fields, "one", "value1");
-	gck_secret_fields_add (fields, "two", "value2");
+	gck_secret_fields_take (fields, g_strdup ("two"), g_strdup ("value2"));
+	gck_secret_fields_add (fields, "three", NULL);
 
 	value = gck_secret_fields_get (fields, "one");
 	g_assert_cmpstr (value, ==, "value1");
 
 	value = gck_secret_fields_get (fields, "two");
 	g_assert_cmpstr (value, ==, "value2");
+
+	value = gck_secret_fields_get (fields, "three");
+	g_assert_cmpstr (value, ==, "");
 
 	g_hash_table_unref (fields);
 }

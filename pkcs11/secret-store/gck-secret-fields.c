@@ -314,12 +314,22 @@ gck_secret_fields_match (GHashTable *haystack, GHashTable *needle)
 }
 
 void
+gck_secret_fields_take (GHashTable *fields, gchar *name, gchar *value)
+{
+	g_return_if_fail (fields);
+	g_return_if_fail (name);
+	if (value == NULL)
+		value = g_strdup ("");
+	g_hash_table_replace (fields, name, value);
+}
+
+void
 gck_secret_fields_add (GHashTable *fields, const gchar *name,
                        const gchar *value)
 {
 	g_return_if_fail (fields);
 	g_return_if_fail (name);
-	g_hash_table_replace (fields, g_strdup (name), g_strdup (value));
+	gck_secret_fields_take (fields, g_strdup (name), g_strdup (value));
 }
 
 const gchar*
