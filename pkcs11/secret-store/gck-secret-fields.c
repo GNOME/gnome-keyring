@@ -125,11 +125,16 @@ compat_hash_value_as_string (const gchar *value)
 GType
 gck_secret_fields_boxed_type (void)
 {
+	static volatile gsize type_inited = 0;
 	static GType type = 0;
-	if (!type) 
+
+	if (g_once_init_enter (&type_inited)) {
 		type = g_boxed_type_register_static ("GHashTable_Fields", 
 		                                     (GBoxedCopyFunc)g_hash_table_ref,
 		                                     (GBoxedFreeFunc)g_hash_table_unref);
+		g_once_init_leave (&type_inited, 1);
+	}
+
 	return type;
 }
 
@@ -177,9 +182,11 @@ gck_secret_fields_parse (CK_ATTRIBUTE_PTR attr, GHashTable **fields)
 		value = ++ptr;
 		ptr = memchr (ptr, 0, last - ptr);
 		
-		/* The last value */
-		if (ptr == NULL)
-			ptr = last;
+		/* Missing null terminator on value */
+		if (ptr == NULL) {
+			g_hash_table_unref (result);
+			return CKR_ATTRIBUTE_VALUE_INVALID;
+		}
 		
 		n_value = ptr - value;
 		++ptr;
@@ -268,6 +275,7 @@ gck_secret_fields_match (GHashTable *haystack, GHashTable *needle)
 			match = string_ptr_equal (hay, value);
 			if (!match)
 				return FALSE;
+			continue;
 		}
 
 		/* Try to find a hashed value? */
@@ -275,31 +283,31 @@ gck_secret_fields_match (GHashTable *haystack, GHashTable *needle)
 		match = g_hash_table_lookup_extended (haystack, other_key, NULL, (gpointer*)&hay);
 		g_free (other_key);
 
-		if (match) {
+		if (!match)
+			return FALSE;
 
-			/*
-			 * Now since the old keyring code would hash in two different
-			 * ways depending on whether it was a uint32 or string,
-			 * we need to do the same here.
-			 */
+		/*
+		 * Now since the old keyring code would hash in two different
+		 * ways depending on whether it was a uint32 or string,
+		 * we need to do the same here.
+		 */
 
-			other_key = make_compat_uint32_name (key);
-			if (g_hash_table_lookup (haystack, other_key)) {
-				hashed = NULL;
-				if (compat_hash_value_as_uint32 (value, &number))
-					hashed = format_uint32 (number);
-			} else {
-				hashed = compat_hash_value_as_string (value);
-			}
-			g_free (other_key);
-
-			/* Does the incoming hashed value match our hashed value? */
-			match = string_ptr_equal (hay, hashed);
-			g_free (hashed);
-
-			if (!match)
-				return FALSE;
+		other_key = make_compat_uint32_name (key);
+		if (g_hash_table_lookup (haystack, other_key)) {
+			hashed = NULL;
+			if (compat_hash_value_as_uint32 (value, &number))
+				hashed = format_uint32 (number);
+		} else {
+			hashed = compat_hash_value_as_string (value);
 		}
+		g_free (other_key);
+
+		/* Does the incoming hashed value match our hashed value? */
+		match = string_ptr_equal (hay, hashed);
+		g_free (hashed);
+
+		if (!match)
+			return FALSE;
 	}
 	
 	return TRUE;
@@ -364,7 +372,7 @@ gck_secret_fields_add_compat_uint32 (GHashTable *fields, const gchar *name,
 	g_return_if_fail (name);
 	g_return_if_fail (!is_compat_name (name));
 	g_hash_table_replace (fields, g_strdup (name), format_uint32 (value));
-	g_hash_table_replace (fields, make_compat_uint32_name (name), g_strdup (name));
+	g_hash_table_replace (fields, make_compat_uint32_name (name), g_strdup (""));
 }
 
 gboolean
@@ -417,7 +425,7 @@ gck_secret_fields_get_compat_hashed_string (GHashTable *fields, const gchar *nam
 		*value = compat_hash_value_as_string (val);
 		return TRUE;
 	}
-	
+
 	/* See if we already have it hashed */
 	other_key = make_compat_hashed_name (name);
 	ret = g_hash_table_lookup_extended (fields, other_key, NULL, (gpointer*)&val);
@@ -446,24 +454,31 @@ gck_secret_fields_get_compat_hashed_uint32 (GHashTable *fields, const gchar *nam
 	const gchar *val;
 	gchar *other_key;
 	gboolean ret;
-	
+
 	g_return_val_if_fail (fields, FALSE);
 	g_return_val_if_fail (name, FALSE);
 	g_return_val_if_fail (value, FALSE);
 	g_return_val_if_fail (!is_compat_name (name), FALSE);
-	
+
 	/* Even though this is more expensive, it's far more common */
+
+	/* Check if it's a uint32 */
 	other_key = make_compat_uint32_name (name);
-	ret = g_hash_table_lookup_extended (fields, other_key, NULL, (gpointer*)&val);
+	ret = g_hash_table_lookup_extended (fields, other_key, NULL, NULL);
 	g_free (other_key);
-	if (ret && compat_hash_value_as_uint32 (val, value))
-		return TRUE;
-	
+
+	/* It is a uint32 */
+	if (ret == TRUE) {
+		val = g_hash_table_lookup (fields, name);
+		if (val && compat_hash_value_as_uint32 (val, value))
+			return TRUE;
+	}
+
 	/* See if we already have it hashed */
 	other_key = make_compat_hashed_name (name);
 	ret = g_hash_table_lookup_extended (fields, other_key, NULL, (gpointer*)&val);
 	g_free (other_key);
 	if (ret)
 		ret = parse_uint32 (val, value);
-	return ret;	
+	return ret;
 }

@@ -2,6 +2,7 @@ UNIT_AUTO = \
 	unit-test-secret-collection.c \
 	unit-test-secret-compat.c \
 	unit-test-secret-data.c \
+	unit-test-secret-fields.c \
 	unit-test-secret-item.c \
 	unit-test-secret-object.c \
 	test-secret-module.c test-secret-module.h
