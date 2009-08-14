@@ -24,9 +24,15 @@
 #include "config.h"
 #include "test-secret-module.h"
 
+#include "gck/gck-secret.h"
 #include "gck/gck-module.h"
 
-#include "secret-store/gck-secret-store.h"
+#include "gck-secret-collection.h"
+#include "gck-secret-data.h"
+#include "gck-secret-fields.h"
+#include "gck-secret-item.h"
+#include "gck-secret-object.h"
+#include "gck-secret-store.h"
 
 static GMutex *mutex = NULL;
 
@@ -102,4 +108,140 @@ test_secret_module_open_session (gboolean writable)
 	g_assert (session);
 
 	return session;
+}
+
+/* Validates plain.keyring and encrypted.keyring in test-data */
+void
+test_secret_collection_validate (GckSecretCollection *collection, GckSecretData *sdata)
+{
+	GckSecretItem* item;
+	GckSecretObject *obj;
+	GHashTable *fields;
+	const gchar *value;
+	GckSecret *secret;
+	GList *items;
+	glong when;
+	guint32 num;
+
+	obj = GCK_SECRET_OBJECT (collection);
+
+	/* The keyring itself */
+	/* "Missing keyring name" */
+	value = gck_secret_object_get_label (obj);
+	g_assert (value != NULL);
+	/* "Invalid keyring name" */
+	g_assert_cmpstr (value, ==, "unit-test-keyring");
+#if 0
+	/* "Bad lock settings" */
+	g_assert (!keyring->lock_on_idle && keyring->lock_timeout == 0);
+#endif
+	/* "Bad Creation Time" */
+	when = gck_secret_object_get_created (obj);
+	g_assert (when == 1198027852);
+	/* "Bad Modification Time" */
+	when = gck_secret_object_get_modified (obj);
+	g_assert (when == 1198027852);
+	/* "Wrong number of items" */
+	items = gck_secret_collection_get_items (collection);
+	g_assert_cmpint (g_list_length (items), ==, 2);
+	g_list_free (items);
+
+	/* Item #2 */
+	item = gck_secret_collection_get_item (collection, "2");
+	obj = GCK_SECRET_OBJECT (item);
+	/* "Couldn't find item" */
+	g_assert (item != NULL);
+#if 0
+	/* "Invalid item type" */
+	g_assert_cmpint (item->type, ==, GNOME_KEYRING_ITEM_GENERIC_SECRET);
+#endif
+	/* "Missing secret" */
+	secret = gck_secret_data_get_secret (sdata, "2");
+	g_assert (secret != NULL);
+	/* "Wrong secret" */
+	g_assert (gck_secret_equals (secret, (guchar*)"item-secret", -1));
+	/* "Bad Creation Time" */
+	when = gck_secret_object_get_created (obj);
+	g_assert_cmpint (when, ==, 1198027852);
+
+#if 0
+	/* Item #2 ACL */
+	/* "Bad ACLs" */
+	g_assert_cmpint (g_list_length (item->acl), ==, 1);
+	ac = (GnomeKeyringAccessControl*)item->acl->data;
+	/* "Invalid ACL" */
+	g_assert (ac && ac->application);
+	/* "Invalid ACL Path" */
+	g_assert (ac->application->pathname && strstr (ac->application->pathname, "run-auto-test"));
+	/* "Invalid ACL Display Name" */
+	g_assert (ac->application->display_name);
+	g_assert_cmpstr (ac->application->display_name, ==, "run-auto-test");
+	/* "Invalid ACL Access Type" */
+	g_assert_cmpint (ac->types_allowed, ==, (GNOME_KEYRING_ACCESS_READ | GNOME_KEYRING_ACCESS_WRITE | GNOME_KEYRING_ACCESS_REMOVE));
+#endif
+
+	/* Item #3 */
+	item = gck_secret_collection_get_item (collection, "3");
+	obj = GCK_SECRET_OBJECT (item);
+	/* "Couldn't find item #3" */
+	g_assert (item != NULL);
+	fields = gck_secret_item_get_fields (item);
+	g_assert (fields != NULL);
+	/* Make fields are the same */
+	value = gck_secret_fields_get (fields, "dog");
+	g_assert_cmpstr (value, ==, "woof");
+	value = gck_secret_fields_get (fields, "bird");
+	g_assert_cmpstr (value, ==, "cheep");
+	value = gck_secret_fields_get (fields, "iguana");
+	g_assert_cmpstr (value, ==, "");
+	g_assert (gck_secret_fields_get_compat_uint32 (fields, "num", &num));
+	g_assert_cmpuint (num, ==, 3);
+#if 0
+	/* "Invalid item type" */
+	g_assert_cmpint (item->type, ==, GNOME_KEYRING_ITEM_GENERIC_SECRET);
+#endif
+	/* "Missing secret" */
+	secret = gck_secret_data_get_secret (sdata, "3");
+	g_assert (secret != NULL);
+	/* "Wrong secret" */
+	g_assert (gck_secret_equals (secret, (guchar*)"item-secret", -1));
+}
+
+/* Fills a collection with some junk data */
+void
+test_secret_collection_populate (GckSecretCollection *collection, GckSecretData *sdata)
+{
+	GckSecretItem *item;
+	GHashTable *fields;
+	GckSecret *secret;
+
+	item = gck_secret_collection_create_item (collection, "4");
+	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Noises");
+	secret = gck_secret_new_from_password ("4's secret");
+	gck_secret_data_set_secret (sdata, "4", secret);
+	g_object_unref (secret);
+	fields = gck_secret_item_get_fields (item);
+	gck_secret_fields_add (fields, "doggy", "fart");
+	gck_secret_fields_add (fields, "pig", "grunt");
+	gck_secret_fields_add_compat_uint32 (fields, "how-many", 292929);
+
+	item = gck_secret_collection_create_item (collection, "5");
+	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Colors");
+	secret = gck_secret_new_from_password ("5's secret");
+	gck_secret_data_set_secret (sdata, "5", secret);
+	g_object_unref (secret);
+	fields = gck_secret_item_get_fields (item);
+	gck_secret_fields_add (fields, "barney", "purple");
+	gck_secret_fields_add (fields, "piglet", "pink");
+	gck_secret_fields_add_compat_uint32 (fields, "number", 8);
+
+	item = gck_secret_collection_create_item (collection, "6");
+	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Binary Secret");
+	secret = gck_secret_new ((guchar*)"binary\0secret", 13);
+	gck_secret_data_set_secret (sdata, "6", secret);
+	g_object_unref (secret);
+	fields = gck_secret_item_get_fields (item);
+	gck_secret_fields_add (fields, "train", "zoom");
+	gck_secret_fields_add (fields, "hummer", NULL);
+	gck_secret_fields_add_compat_uint32 (fields, "number", 2);
 }

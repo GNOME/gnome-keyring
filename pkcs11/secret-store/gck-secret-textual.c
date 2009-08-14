@@ -161,6 +161,8 @@ parse_attributes (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 		g_free (type);
 	}
 	
+	gck_secret_item_set_fields (item, attributes);
+	g_hash_table_unref (attributes);
 	g_free (prefix);
 } 
 

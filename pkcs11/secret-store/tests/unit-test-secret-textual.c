@@ -79,44 +79,6 @@ DEFINE_TEARDOWN(textual)
 	session = NULL;
 }
 
-static void
-fill_in_collection (void)
-{
-	GckSecretItem *item;
-	GHashTable *fields;
-	GckSecret *secret;
-
-	item = gck_secret_collection_create_item (collection, "4");
-	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Noises");
-	secret = gck_secret_new_from_password ("4's secret");
-	gck_secret_data_set_secret (sdata, "4", secret);
-	g_object_unref (secret);
-	fields = gck_secret_item_get_fields (item);
-	gck_secret_fields_add (fields, "doggy", "fart");
-	gck_secret_fields_add (fields, "pig", "grunt");
-	gck_secret_fields_add_compat_uint32 (fields, "how-many", 292929);
-
-	item = gck_secret_collection_create_item (collection, "5");
-	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Colors");
-	secret = gck_secret_new_from_password ("5's secret");
-	gck_secret_data_set_secret (sdata, "5", secret);
-	g_object_unref (secret);
-	fields = gck_secret_item_get_fields (item);
-	gck_secret_fields_add (fields, "barney", "purple");
-	gck_secret_fields_add (fields, "piglet", "pink");
-	gck_secret_fields_add_compat_uint32 (fields, "number", 8);
-
-	item = gck_secret_collection_create_item (collection, "6");
-	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Binary Secret");
-	secret = gck_secret_new ((guchar*)"binary\0secret", 13);
-	gck_secret_data_set_secret (sdata, "6", secret);
-	g_object_unref (secret);
-	fields = gck_secret_item_get_fields (item);
-	gck_secret_fields_add (fields, "train", "zoom");
-	gck_secret_fields_add (fields, "hummer", NULL);
-	gck_secret_fields_add_compat_uint32 (fields, "number", 2);
-}
-
 DEFINE_TEST(textual_read)
 {
 	GckDataResult res;
@@ -126,6 +88,8 @@ DEFINE_TEST(textual_read)
 	data = test_read_testdata ("plain.keyring", &n_data);
 	res = gck_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
+
+	test_secret_collection_validate (collection, sdata);
 
 	g_assert (res == GCK_DATA_SUCCESS);
 }
@@ -171,7 +135,7 @@ DEFINE_TEST(textual_write)
 	guchar *data;
 	gsize n_data;
 
-	fill_in_collection ();
+	test_secret_collection_populate (collection, sdata);
 
 	res = gck_secret_textual_write (collection, sdata, &data, &n_data);
 	g_assert (res == GCK_DATA_SUCCESS);
@@ -200,7 +164,7 @@ DEFINE_TEST(textual_remove_unavailable)
 	g_list_free (items);
 
 	/* Fill in some more data */
-	fill_in_collection ();
+	test_secret_collection_populate (collection, sdata);
 
 	/* Should have added three more */
 	items = gck_secret_collection_get_items (collection);
