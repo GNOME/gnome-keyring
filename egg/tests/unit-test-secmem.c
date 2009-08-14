@@ -227,7 +227,7 @@ DEFINE_TEST(secmem_strclear)
 	str = egg_secure_strdup ("secret");
 	g_assert (str != NULL);
 	g_assert_cmpuint (strlen (str), ==, 6);
-	g_assert (strchr (str, 't') == str + 6);
+	g_assert (strchr (str, 't') == str + 5);
 
 	egg_secure_strclear (str);
 	g_assert_cmpuint (strlen (str), ==, 6);
