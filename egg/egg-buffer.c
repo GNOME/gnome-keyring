@@ -113,6 +113,20 @@ egg_buffer_uninit (EggBuffer *buffer)
 	memset (buffer, 0, sizeof (*buffer));
 }
 
+unsigned char*
+egg_buffer_uninit_steal (EggBuffer *buffer, size_t *n_result)
+{
+	unsigned char *result;
+
+	if (n_result)
+		*n_result = buffer->len;
+	result = buffer->buf;
+
+	memset (buffer, 0, sizeof (*buffer));
+
+	return result;
+}
+
 int
 egg_buffer_set_allocator (EggBuffer *buffer, EggBufferAllocator allocator)
 {
