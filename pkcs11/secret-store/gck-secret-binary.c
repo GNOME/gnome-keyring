@@ -27,6 +27,7 @@
 #include "gck-secret-binary.h"
 #include "gck-secret-collection.h"
 #include "gck-secret-compat.h"
+#include "gck-secret-data.h"
 #include "gck-secret-fields.h"
 #include "gck-secret-item.h"
 
@@ -65,7 +66,8 @@ typedef struct {
 
 	/* encrypted: */
 	char *display_name;
-	char *secret;
+	const guchar *ptr_secret;
+	gsize n_secret;
 	time_t ctime;
 	time_t mtime;
 	GHashTable *attributes;
@@ -153,23 +155,13 @@ buffer_get_utf8_string (EggBuffer *buffer, gsize offset, gsize *next_offset,
 }
 
 static gboolean
-buffer_get_raw_secret (EggBuffer *buffer, gsize offset, gsize *next_offset,
-                       guchar **secret, gsize *n_secret)
+buffer_add_secret (EggBuffer *buffer, GckSecret *secret)
 {
-	const guchar* ptr;
-	if (!egg_buffer_get_byte_array (buffer, offset, next_offset, &ptr, n_secret))
-		return FALSE;
-
-	if (ptr == NULL || *n_secret == 0) {
-		*secret = NULL;
-		*n_secret = 0;
-		return TRUE;
-	}
-
-	*secret = egg_secure_alloc (*n_secret + 1);
-	memcpy (*secret, ptr, *n_secret);
-	(*secret)[*n_secret] = 0;
-	return TRUE;
+	const guchar *data = NULL;
+	gsize n_data = 0;
+	if (secret != NULL)
+		data = gck_secret_get (secret, &n_data);
+	return egg_buffer_add_byte_array (buffer, data, n_data);
 }
 
 static void
@@ -282,12 +274,13 @@ buffer_get_attributes (EggBuffer *buffer, gsize offset, gsize *next_offset,
 				g_free (name);
 				goto bail;
 			}
-			if (hashed)
+			if (hashed) {
 				gck_secret_fields_add_compat_hashed_string (attributes, name, str);
-			else
-				gck_secret_fields_add (attributes, name, str);
-			g_free (name);
-			g_free (str);
+				g_free (name);
+				g_free (str);
+			} else {
+				gck_secret_fields_take (attributes, name, str);
+			}
 			break;
 		case 1: /* A uint32 */
 			if (!egg_buffer_get_uint32 (buffer, offset, &offset, &val)) {
@@ -461,7 +454,6 @@ generate_acl_data (EggBuffer *buffer, GList *acl)
 		/* Reserved: */
 		if (!buffer_add_utf8_string (buffer, NULL))
 			return FALSE;
-
 		egg_buffer_add_uint32 (buffer, 0);
 	}
 	
@@ -469,7 +461,8 @@ generate_acl_data (EggBuffer *buffer, GList *acl)
 }
 
 static gboolean
-generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection)
+generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection,
+                         GckSecretData *data)
 {
 	GckSecretObject *obj;
 	GckSecretItem *item;
@@ -477,11 +470,13 @@ generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection)
 	GHashTable *attributes;
 	const gchar *label;
 	GckSecret *secret;
-	const gchar *password;
-	gsize n_password;
 	GList *acl;
 	int i;
-	
+
+	g_assert (buffer);
+	g_assert (GCK_IS_SECRET_COLLECTION (collection));
+	g_assert (GCK_IS_SECRET_DATA (data));
+
 	/* Make sure we're using non-pageable memory */
 	egg_buffer_set_allocator (buffer, egg_secure_realloc);
 	
@@ -493,15 +488,8 @@ generate_encrypted_data (EggBuffer *buffer, GckSecretCollection *collection)
 		label = gck_secret_object_get_label (obj);
 		buffer_add_utf8_string (buffer, label);
 
-#if 0
-		secret = gck_secret_item_get_secret (item);
-#endif
-g_assert_not_reached ();
-		password = NULL;
-		if (secret != NULL)
-			password = gck_secret_get_password (secret, &n_password);
-		/* TODO: Need to support binary secrets somehow */
-		buffer_add_utf8_string (buffer, password);
+		secret = gck_secret_data_get_secret (data, gck_secret_object_get_identifier (obj));
+		buffer_add_secret (buffer, secret);
 
 		if (!buffer_add_time (buffer, gck_secret_object_get_created (obj)) || 
 		    !buffer_add_time (buffer, gck_secret_object_get_modified (obj)))
@@ -542,8 +530,11 @@ generate_hashed_items (GckSecretCollection *collection, EggBuffer *buffer)
 	for (l = items; l; l = g_list_next (l)) {
 		
 		value = gck_secret_object_get_identifier (l->data);
-		if (!convert_to_integer (value, &id))
+		if (!convert_to_integer (value, &id)) {
+			g_warning ("trying to save a non-numeric item identifier '%s' into "
+			           "the keyring file format which only supports numeric.", value);
 			continue;
+		}
 		egg_buffer_add_uint32 (buffer, id);
 		
 		attributes = gck_secret_item_get_fields (l->data);
@@ -559,11 +550,12 @@ generate_hashed_items (GckSecretCollection *collection, EggBuffer *buffer)
 }
 
 GckDataResult 
-gck_secret_binary_write (GckSecretCollection *collection, GckSecret *master,
+gck_secret_binary_write (GckSecretCollection *collection, GckSecretData *sdata,
                          guchar **data, gsize *n_data)
 {
 	GckSecretObject *obj;
 	EggBuffer to_encrypt;
+	GckSecret *master;
         guchar digest[16];
         EggBuffer buffer;
         gint hash_iterations;
@@ -572,11 +564,14 @@ gck_secret_binary_write (GckSecretCollection *collection, GckSecret *master,
 	guint flags;
 	int i;
 
-	/* In case the world changes on us... */
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (collection), GCK_DATA_FAILURE);
+	g_return_val_if_fail (GCK_IS_SECRET_DATA (sdata), GCK_DATA_LOCKED);
+	g_return_val_if_fail (data && n_data, GCK_DATA_FAILURE);
 	g_return_val_if_fail (gcry_md_get_algo_dlen (GCRY_MD_MD5) == sizeof (digest), GCK_DATA_FAILURE);
-	
-	egg_buffer_init_full (&buffer, 256, g_realloc);
+
 	obj = GCK_SECRET_OBJECT (collection);
+
+	egg_buffer_init_full (&buffer, 256, g_realloc);
 	
 	/* Prepare the keyring for encryption */
 	hash_iterations = 1000 + (int) (1000.0 * rand() / (RAND_MAX + 1.0));
@@ -614,7 +609,7 @@ gck_secret_binary_write (GckSecretCollection *collection, GckSecret *master,
 	
 	egg_buffer_append (&to_encrypt, (guchar*)digest, 16); /* Space for hash */
 
-	if (!generate_encrypted_data (&to_encrypt, collection)) {
+	if (!generate_encrypted_data (&to_encrypt, collection, sdata)) {
 		egg_buffer_uninit (&to_encrypt);
 		egg_buffer_uninit (&buffer);
 		return GCK_DATA_FAILURE;
@@ -628,6 +623,7 @@ gck_secret_binary_write (GckSecretCollection *collection, GckSecret *master,
 			     (guchar*)to_encrypt.buf + 16, to_encrypt.len - 16);
 	memcpy (to_encrypt.buf, digest, 16);
 	
+	master = gck_secret_data_get_master (sdata);
 	if (!encrypt_buffer (&to_encrypt, master, salt, hash_iterations)) {
 		egg_buffer_uninit (&buffer);
 		egg_buffer_uninit (&to_encrypt);
@@ -719,7 +715,7 @@ remove_unavailable_item (gpointer key, gpointer dummy, gpointer user_data)
 }
 
 static void
-setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
+setup_item_from_info (GckSecretItem *item, GckSecretData *data, ItemInfo *info)
 {
 	GckSecretObject *obj = GCK_SECRET_OBJECT (item);
 	GckSecret *secret;
@@ -733,24 +729,89 @@ setup_item_from_info (GckSecretItem *item, gboolean locked, ItemInfo *info)
 	gck_secret_fields_add (info->attributes, "gkr:item-type", type);
 	gck_secret_item_set_fields (item, info->attributes);
 
-	if (locked) {
+	/* Collection is locked */
+	if (!data) {
 		g_object_set_data (G_OBJECT (item), "compat-acl", NULL);
-#if 0
-		gck_secret_item_set_secret (item, NULL);
-#endif
-g_assert_not_reached ();
-
 		
 	} else {
-		secret = gck_secret_new_from_password (info->secret);
-#if 0
-		gck_secret_item_set_secret (item, secret);
-#endif 
-g_assert_not_reached ();
+		secret = gck_secret_new (info->ptr_secret, info->n_secret);
+		gck_secret_data_set_secret (data, gck_secret_object_get_identifier (obj), secret);
 		g_object_unref (secret);
 		g_object_set_data_full (G_OBJECT (item), "compat-acl", info->acl, gck_secret_compat_acl_free);
 		info->acl = NULL;
 	}
+}
+
+static gboolean
+read_hashed_item_info (EggBuffer *buffer, gsize *offset, ItemInfo *items, guint n_items)
+{
+	gint i;
+
+	g_assert (buffer);
+	g_assert (offset);
+	g_assert (items);
+
+	for (i = 0; i < n_items; i++) {
+		if (!egg_buffer_get_uint32 (buffer, *offset, offset, &items[i].id) ||
+		    !egg_buffer_get_uint32 (buffer, *offset, offset, &items[i].type) ||
+		    !buffer_get_attributes (buffer, *offset, offset, &items[i].attributes, TRUE))
+			return FALSE;
+		items[i].identifier = g_strdup_printf ("%u", items[i].id);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+read_full_item_info (EggBuffer *buffer, gsize *offset, ItemInfo *items, guint n_items)
+{
+	gchar *reserved;
+	guint32 tmp;
+	gint i, j;
+
+	g_assert (buffer);
+	g_assert (offset);
+	g_assert (items);
+
+	for (i = 0; i < n_items; i++) {
+
+		/* The display name */
+		if (!buffer_get_utf8_string (buffer, *offset, offset,
+		                             &items[i].display_name))
+			return FALSE;
+
+		/* The secret */
+		if (!egg_buffer_get_byte_array (buffer, *offset, offset,
+		                                &items[i].ptr_secret, &items[i].n_secret))
+			return FALSE;
+
+		/* The item times */
+		if (!buffer_get_time (buffer, *offset, offset, &items[i].ctime) ||
+		    !buffer_get_time (buffer, *offset, offset, &items[i].mtime)) 
+			return FALSE;
+
+		/* Reserved data */
+		reserved = NULL;
+		if (!buffer_get_utf8_string (buffer, *offset, offset, &reserved))
+			return FALSE;
+		g_free (reserved);
+		for (j = 0; j < 4; j++) {
+			if (!egg_buffer_get_uint32 (buffer, *offset, offset, &tmp))
+				return FALSE;
+		}
+
+		/* The attributes */
+		if (items[i].attributes)
+			g_hash_table_unref (items[i].attributes);
+		if (!buffer_get_attributes (buffer, *offset, offset, &items[i].attributes, FALSE))
+			return FALSE;
+
+		/* The ACLs */
+		if (!decode_acl (buffer, *offset, offset, &items[i].acl))
+			return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void
@@ -758,13 +819,12 @@ free_item_info (ItemInfo *info)
 {
 	g_free (info->identifier);
 	g_free (info->display_name);
-	egg_secure_free (info->secret);
 	g_hash_table_unref (info->attributes);
 	gck_secret_compat_acl_free (info->acl);
 }
 
 gint
-gck_secret_binary_read (GckSecretCollection *collection, GckSecret *master,
+gck_secret_binary_read (GckSecretCollection *collection, GckSecretData *sdata,
                         const guchar *data, gsize n_data)
 {
 	gsize offset;
@@ -773,24 +833,21 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecret *master,
 	guint32 lock_timeout;
 	time_t mtime, ctime;
 	char *display_name;
-	gsize n_secret;
-	int i, j;
 	guint32 tmp;
 	guint32 num_items;
 	guint32 crypto_size;
 	guint32 hash_iterations;
 	guchar salt[8];
 	ItemInfo *items;
-	const gchar *password;
+	GckSecret* master;
 	GckSecretObject *obj;
 	EggBuffer to_decrypt = EGG_BUFFER_EMPTY;
 	GckDataResult res = GCK_DATA_FAILURE;
 	GHashTable *checks = NULL;
 	GckSecretItem *item;
 	EggBuffer buffer;
-	char *reserved;
-	gchar *identifier;
 	GList *l, *iteml;
+	int i;
 
 	display_name = NULL;
 	items = 0;
@@ -816,9 +873,6 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecret *master,
 		return GCK_DATA_UNRECOGNIZED;
 	}
 	
-	/* We're decrypting this, so use secure memory */
-	egg_buffer_set_allocator (&to_decrypt, egg_secure_realloc);
-
 	if (!buffer_get_utf8_string (&buffer, offset, &offset, &display_name) || 
 	    !buffer_get_time (&buffer, offset, &offset, &ctime) ||		
 	    !buffer_get_time (&buffer, offset, &offset, &mtime) ||
@@ -836,15 +890,11 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecret *master,
 	if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &num_items))
 		goto bail;
 
-	items = g_new0 (ItemInfo, num_items);
+	items = g_new0 (ItemInfo, num_items + 1);
 
-	for (i = 0; i < num_items; i++) {
-		if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &items[i].id) ||
-		    !egg_buffer_get_uint32 (&buffer, offset, &offset, &items[i].type) ||
-		    !buffer_get_attributes (&buffer, offset, &offset, &items[i].attributes, TRUE))
-			goto bail;
-		identifier = g_strdup_printf ("%u", items[i].id);
-	}
+	/* Hashed data, without secrets */
+	if (!read_hashed_item_info (&buffer, &offset, items, num_items))
+		goto bail;
 
 	if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &crypto_size))
 		goto bail;
@@ -854,53 +904,23 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecret *master,
 		goto bail;
 	
 	/* Copy the data into to_decrypt into non-pageable memory */
-	egg_buffer_init_static (&to_decrypt, buffer.buf + offset, crypto_size);
+	egg_buffer_set_allocator (&to_decrypt, egg_secure_realloc);
+	egg_buffer_reserve (&to_decrypt, crypto_size);
+	memcpy (to_decrypt.buf, buffer.buf + offset, crypto_size);
+	to_decrypt.len = crypto_size;
 
-	if (master != NULL) {
-		
+	if (sdata != NULL) {
+		master = gck_secret_data_get_master (sdata);
+		g_return_val_if_fail (master, GCK_DATA_FAILURE);
 		if (!decrypt_buffer (&to_decrypt, master, salt, hash_iterations))
 			goto bail;
 		if (!verify_decrypted_buffer (&to_decrypt)) {
 			res = GCK_DATA_LOCKED;
 			goto bail;
 		} else {
-			offset += 16; /* Skip hash */
-			for (i = 0; i < num_items; i++) {
-				if (!buffer_get_utf8_string (&buffer, offset, &offset,
-				                             &items[i].display_name)) {
-					goto bail;
-				}
-				if (!buffer_get_raw_secret (&buffer, offset, &offset,
-				                            (guchar**)(&items[i].secret), &n_secret)) {
-					goto bail;
-				}
-				/* We don't support binary secrets yet, skip */
-				if (!g_utf8_validate ((gchar*)items[i].secret, n_secret, NULL)) {
-					g_message ("discarding item with unsupported non-textual secret: %s", 
-					           items[i].display_name);
-					free (items[i].display_name);
-					free (items[i].secret);
-					continue;
-				}
-				if (!buffer_get_time (&buffer, offset, &offset, &items[i].ctime) ||
-				    !buffer_get_time (&buffer, offset, &offset, &items[i].mtime)) 
-					goto bail;
-				reserved = NULL;
-				if (!buffer_get_utf8_string (&buffer, offset, &offset, &reserved))
-					goto bail;
-				g_free (reserved);
-				for (j = 0; j < 4; j++) {
-					guint32 tmp;
-					if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &tmp))
-						goto bail;
-				}
-				if (items[i].attributes)
-					g_hash_table_unref (items[i].attributes);
-				if (!buffer_get_attributes (&buffer, offset, &offset, &items[i].attributes, FALSE))
-					goto bail;
-				if (!decode_acl (&buffer, offset, &offset, &items[i].acl))
-					goto bail;
-			}
+			offset = 16; /* Skip hash */
+			if (!read_full_item_info (&to_decrypt, &offset, items, num_items))
+				goto bail;
 		}
 	}
 
@@ -912,7 +932,7 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecret *master,
 	gck_secret_object_set_created (obj, ctime);
 	g_object_set_data (G_OBJECT (collection), "lock-on-idle", GINT_TO_POINTER (!!(flags & LOCK_ON_IDLE_FLAG)));
 	g_object_set_data (G_OBJECT (collection), "lock-timeout", GINT_TO_POINTER (lock_timeout));
-	
+
 	/* Build a Hash table where we can track ids we haven't yet seen */
 	checks = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	iteml = gck_secret_collection_get_items (collection);
@@ -929,9 +949,9 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecret *master,
 		if (item == NULL)
 			item = gck_secret_collection_create_item (collection, items[i].identifier);
 		
-		setup_item_from_info (item, password == NULL, &items[i]);
+		setup_item_from_info (item, sdata, &items[i]);
 	}
-	
+
 	g_hash_table_foreach (checks, remove_unavailable_item, collection);
 	res = GCK_DATA_SUCCESS;
 
@@ -944,6 +964,6 @@ bail:
 	for (i = 0; items && i < num_items; i++)
 		free_item_info (&items[i]);
 	g_free (items);
-	
+
 	return res;
 }

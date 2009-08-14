@@ -28,12 +28,12 @@
 #include "gck/gck-types.h"
 
 GckDataResult          gck_secret_binary_read        (GckSecretCollection *collection,
-                                                      GckSecret *master,
+                                                      GckSecretData *sdata,
                                                       const guchar *data,
                                                       gsize n_data);
 
 GckDataResult          gck_secret_binary_write       (GckSecretCollection *collection, 
-                                                      GckSecret *master,
+                                                      GckSecretData *sdata,
                                                       guchar **data,
                                                       gsize *n_data);
 
