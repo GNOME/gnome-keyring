@@ -27,10 +27,12 @@
 #include "gck/gck-data-types.h"
 
 GckDataResult          gck_secret_textual_read       (GckSecretCollection *collection, 
+                                                      GckSecretData *sdata,
                                                       const guchar *data,
                                                       gsize n_data);
 
-GckDataResult          gck_secret_textual_write      (GckSecretCollection *collection, 
+GckDataResult          gck_secret_textual_write      (GckSecretCollection *collection,
+                                                      GckSecretData *sdata,
                                                       guchar **data,
                                                       gsize *n_data);
 

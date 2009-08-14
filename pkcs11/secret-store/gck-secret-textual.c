@@ -25,11 +25,13 @@
 
 #include "gck-secret-collection.h"
 #include "gck-secret-compat.h"
+#include "gck-secret-data.h"
 #include "gck-secret-fields.h"
 #include "gck-secret-item.h"
 #include "gck-secret-textual.h"
 
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-hex.h"
 
 #include "gck/gck-secret.h"
 
@@ -71,137 +73,93 @@ key_file_get_uint64 (GKeyFile *file, const gchar *group,
 	return TRUE;
 }
 
-typedef struct _AttributesCtx {
-	GckSecretItem *item;
-	gint index;
-	GKeyFile *file;
-	const gchar *compat_uint32;
-} AttributesCtx;
-
-static gboolean
-attribute_name_in_space_string (const gchar *string, const gchar *name)
-{
-	const gchar *at;
-	gsize len = strlen (name);
-	
-	if (len == 0)
-		return FALSE;
-
-	for (;;) {
-		at = strstr (string, name);
-		if (at == NULL)
-			return FALSE;
-		
-		/* The word exists, is at beginning or end, or spaces around it */
-		if ((at == string || isspace (*(at - 1))) && 
-		    (*(at + len) == 0 || isspace (*(at + len))))
-			return TRUE;
-	
-		string = at + len;
-	}
-
-	g_assert_not_reached ();
-}
-
-static void
-generate_each_attribute (gpointer key, gpointer value, gpointer user_data)
-{
-	AttributesCtx *ctx = user_data;
-	const gchar *name = key;
-	const gchar *string = value;
-	gchar *groupname;
-	
-	groupname = g_strdup_printf ("%s:attribute%d", 
-	                             gck_secret_object_get_identifier (GCK_SECRET_OBJECT (ctx->item)),
-	                             ctx->index);
-	
-	g_key_file_set_string (ctx->file, groupname, "name", name);
-	
-	/* 
-	 * COMPATIBILITY:
-	 * 
-	 * Our new Secrets API doesn't support integer attributes. However, to have 
-	 * compatibility with old keyring code reading this file, we need to set 
-	 * the type=uint32 attribute appropriately where expected. 
-	 * 
-	 * If there's an extra compat-uint32 attribute and the name of this attribute
-	 * is contained in that list, then write as a uint32.
-	 */
-	
-	/* Determine if it's a uint32 compatible value, and store as such if it is */
-	if (attribute_name_in_space_string (ctx->compat_uint32, name))
-		g_key_file_set_string (ctx->file, groupname, "type", "uint32");
-	else
-		g_key_file_set_string (ctx->file, groupname, "type", "string");
-	
-	g_key_file_set_string (ctx->file, groupname, "value", string);
-	
-	g_free (groupname);
-	++ctx->index;
-}
-
 static void
 generate_attributes (GKeyFile *file, GckSecretItem *item)
 {
 	GHashTable *attributes;
-	AttributesCtx ctx;
-	
-	attributes = gck_secret_item_get_fields (item);
-	if (!attributes)
-		return;
-	
-	ctx.item = item;
-	ctx.index = 0;
-	ctx.file = file;
-	ctx.compat_uint32 = g_hash_table_lookup (attributes, "compat-uint32");
-	if (!ctx.compat_uint32)
-		ctx.compat_uint32 = "";
+	gchar *groupname;
+	GList *names, *l;
+	guint32 number;
+	gint index = 0;
 
-	g_hash_table_foreach (attributes, generate_each_attribute, &ctx);
+	attributes = gck_secret_item_get_fields (item);
+	g_return_if_fail (attributes);
+
+	names = gck_secret_fields_get_names (attributes);
+	for (l = names; l; l = g_list_next (l)) {
+		groupname = g_strdup_printf ("%s:attribute%d",
+		                             gck_secret_object_get_identifier (GCK_SECRET_OBJECT (item)),
+		                             index);
+
+		g_key_file_set_string (file, groupname, "name", l->data);
+
+		/*
+		 * COMPATIBILITY:
+		 *
+		 * Our new Secrets API doesn't support integer attributes. However, to have
+		 * compatibility with old keyring code reading this file, we need to set
+		 * the type=uint32 attribute appropriately where expected.
+		 *
+		 * If there's an extra compat-uint32 attribute and the name of this attribute
+		 * is contained in that list, then write as a uint32.
+		 */
+
+		/* Determine if it's a uint32 compatible value, and store as such if it is */
+		if (gck_secret_fields_get_compat_uint32 (attributes, l->data, &number)) {
+			g_key_file_set_string (file, groupname, "type", "uint32");
+			key_file_set_uint64 (file, groupname, "value", number);
+
+		/* A normal string attribute */
+		} else {
+			g_key_file_set_string (file, groupname, "type", "string");
+			g_key_file_set_string (file, groupname, "value", gck_secret_fields_get (attributes, l->data));
+		}
+
+		g_free (groupname);
+		++index;
+	}
 }
 
 static void
 parse_attributes (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 {
 	GHashTable *attributes;
-	GString *compat_uint32;
 	const gchar *identifier;
 	const gchar **g;
 	gchar *prefix;
 	gchar *name, *type;
+	guint64 number;
 	
 	/* Now do the attributes */
 	
 	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (item));
 	prefix = g_strdup_printf ("%s:attribute", identifier);
 	attributes = gck_secret_fields_new ();
-	compat_uint32 = NULL;
 	
 	for (g = groups; *g; ++g) {
 		if (!g_str_has_prefix (*g, prefix)) 
 			continue;
 			
 		name = g_key_file_get_string (file, *g, "name", NULL);
-		if (!name || g_key_file_has_key (file, *g, "value", NULL))
+		if (!name)
 			continue;
 
 		type = g_key_file_get_string (file, *g, "type", NULL);
+
+		/* A uint32 type value */
 		if (type && g_str_equal (type, "uint32")) {
-			if (!compat_uint32)
-				compat_uint32 = g_string_new ("");
-			g_string_append (compat_uint32, name);
-			g_string_append_c (compat_uint32, ' ');
+			if (key_file_get_uint64 (file, *g, "value", &number))
+				gck_secret_fields_add_compat_uint32 (attributes, name, number);
+			g_free (name);
+
+		/* A string type value */
+		} else {
+			gck_secret_fields_take (attributes, name,
+			                        g_key_file_get_string (file, *g, "value", NULL));
 		}
 		
 		g_free (type);
-			
-		g_hash_table_replace (attributes, name, 
-		                      g_key_file_get_string (file, *g, "value", NULL));
 	}
-	
-	if (compat_uint32)
-		g_hash_table_replace (attributes, g_strdup ("compat-uint32"),
-		                      g_string_free (compat_uint32, FALSE));
 	
 	g_free (prefix);
 } 
@@ -301,75 +259,85 @@ parse_acl (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 }
 
 static void
-generate_item (GKeyFile *file, GckSecretItem *item)
+generate_item (GKeyFile *file, GckSecretItem *item, GckSecretData *sdata)
 {
 	GckSecretObject *obj;
 	GHashTable *attributes;
 	const gchar *value;
-	const gchar *groupname;
-	GckSecret *secret;
-	const gchar *password;
-	gsize n_password;
-	
+	const gchar *identifier;
+	const guchar *secret;
+	gsize n_secret;
+	gchar *hex;
+
+	g_assert (file);
+	g_assert (GCK_IS_SECRET_ITEM (item));
+	g_assert (GCK_IS_SECRET_DATA (sdata));
+
 	obj = GCK_SECRET_OBJECT (item);
-	groupname = gck_secret_object_get_identifier (obj);
+	identifier = gck_secret_object_get_identifier (obj);
 	attributes = gck_secret_item_get_fields (item);
-	
+
 	/* 
 	 * COMPATIBILITY: We no longer have the concept of an item type.
 	 * The gkr:item-type field serves that purpose.
 	 */
-	
-	value = g_hash_table_lookup (attributes, "gkr:item-type");
-	g_key_file_set_integer (file, groupname, "item-type",
+
+	value = gck_secret_fields_get (attributes, "gkr:item-type");
+	g_key_file_set_integer (file, identifier, "item-type",
 	                        gck_secret_compat_parse_item_type (value));
 
 	value = gck_secret_object_get_label (obj);
 	if (value != NULL)
-		g_key_file_set_string (file, groupname, "display-name", value);
-	
-#if 0
-	secret = gck_secret_item_get_secret (item);
-#endif
-g_assert_not_reached ();
+		g_key_file_set_string (file, identifier, "display-name", value);
+
+	secret = gck_secret_data_get_raw (sdata, identifier, &n_secret);
 	if (secret != NULL) {
-		password = gck_secret_get_password (secret, &n_password);
-		/* TODO: What about non-textual passwords? */
-		if (password != NULL) 
-			g_key_file_set_value (file, groupname, "secret", (gchar*)password);
+		/* A textual secret. Note that secrets are always null-terminated. */
+		if (g_utf8_validate ((gchar*)secret, n_secret, NULL)) {
+			g_key_file_set_value (file, identifier, "secret", (gchar*)secret);
+
+		/* A non-textual secret */
+		} else {
+			hex = egg_hex_encode (secret, n_secret);
+			g_key_file_set_value (file, identifier, "binary-secret", hex);
+			g_free (hex);
+		}
 	}
 
-	key_file_set_uint64 (file, groupname, "mtime", gck_secret_object_get_modified (obj));
-	key_file_set_uint64 (file, groupname, "ctime", gck_secret_object_get_created (obj));
-	
+	key_file_set_uint64 (file, identifier, "mtime", gck_secret_object_get_modified (obj));
+	key_file_set_uint64 (file, identifier, "ctime", gck_secret_object_get_created (obj));
+
 	generate_attributes (file, item);
 	generate_acl (file, item);
 }
 
 static void 
-parse_item (GKeyFile *file, GckSecretItem *item, const gchar **groups)
+parse_item (GKeyFile *file, GckSecretItem *item, GckSecretData *sdata,
+            const gchar **groups)
 {
 	GckSecretObject *obj;
 	GHashTable *attributes;
-	const gchar *groupname;
+	const gchar *identifier;
 	GError *err = NULL;
 	GckSecret *secret;
+	guchar *binary;
+	gsize n_binary;
 	gchar *val;
 	guint64 num;
 	gint type;
-	
+
 	/* First the main item data */
-	
+
 	obj = GCK_SECRET_OBJECT (item);
-	groupname = gck_secret_object_get_identifier (obj);
+	identifier = gck_secret_object_get_identifier (obj);
 	attributes = gck_secret_item_get_fields (item);
-	
+
 	/* 
 	 * COMPATIBILITY: We no longer have the concept of an item type.
 	 * The gkr:item-type field serves that purpose.
 	 */
 
-	type = g_key_file_get_integer (file, groupname, "item-type", &err);
+	type = g_key_file_get_integer (file, identifier, "item-type", &err);
 	if (err) {
 		g_clear_error (&err);
 		type = 0;
@@ -378,31 +346,41 @@ parse_item (GKeyFile *file, GckSecretItem *item, const gchar **groups)
 	gck_secret_fields_add (attributes, "gkr:item-type",
 	                       gck_secret_compat_format_item_type (type));
 
-	val = g_key_file_get_string (file, groupname, "display-name", NULL);
+	val = g_key_file_get_string (file, identifier, "display-name", NULL);
 	gck_secret_object_set_label (obj, val);
 	g_free (val);
 
-	val = g_key_file_get_string (file, groupname, "secret", NULL);
-	if (val == NULL) {
-#if 0
-		gck_secret_item_set_secret (item, NULL);
-#endif
-g_assert_not_reached ();
-	} else {
-		secret = gck_secret_new ((guchar*)val, strlen (val));
-#if 0
-		gck_secret_item_set_secret (item, secret);
-#endif
-g_assert_not_reached ();
-		g_object_unref (secret);
-		g_free (val);
+	if (sdata) {
+		secret = NULL;
+
+		/* A textual secret */
+		val = g_key_file_get_string (file, identifier, "secret", NULL);
+		if (val != NULL) {
+			secret = gck_secret_new_from_password (val);
+			g_free (val);
+
+		/* A binary secret */
+		} else {
+			val = g_key_file_get_string (file, identifier, "binary-secret", NULL);
+			if (val != NULL) {
+				binary = egg_hex_decode (val, -1, &n_binary);
+				secret = gck_secret_new (binary, n_binary);
+				g_free (binary);
+				g_free (val);
+			}
+		}
+
+		/* Put the secret in the right place */
+		gck_secret_data_set_secret (sdata, identifier, secret);
+		if (secret)
+			g_object_unref (secret);
 	}
 
 	num = 0;
-	if (key_file_get_uint64 (file, groupname, "mtime", &num))
+	if (key_file_get_uint64 (file, identifier, "mtime", &num))
 		gck_secret_object_set_modified (obj, num);
 	num = 0;
-	if (key_file_get_uint64 (file, groupname, "ctime", &num))
+	if (key_file_get_uint64 (file, identifier, "ctime", &num))
 		gck_secret_object_set_created (obj, num);
 
 	/* Now the other stuff */	
@@ -411,7 +389,8 @@ g_assert_not_reached ();
 }
 
 GckDataResult
-gck_secret_textual_write (GckSecretCollection *collection, guchar **result, gsize *n_result)
+gck_secret_textual_write (GckSecretCollection *collection, GckSecretData *sdata,
+                          guchar **data, gsize *n_data)
 {
 	GckSecretObject *obj;
 	GList *items, *l;
@@ -420,37 +399,40 @@ gck_secret_textual_write (GckSecretCollection *collection, guchar **result, gsiz
 	GError *err = NULL;
 	gboolean idle_lock;
 	gint idle_timeout;
-	
-	obj = GCK_SECRET_OBJECT (collection);
 
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (collection), GCK_DATA_FAILURE);
+	g_return_val_if_fail (GCK_IS_SECRET_DATA (sdata), GCK_DATA_LOCKED);
+	g_return_val_if_fail (data && n_data, GCK_DATA_FAILURE);
+
+	obj = GCK_SECRET_OBJECT (collection);
 	file = g_key_file_new ();
-	
+
 	value = gck_secret_object_get_label (obj);
 	if (value != NULL)
 		g_key_file_set_string (file, "keyring", "display-name", value);
-	
+
 	key_file_set_uint64 (file, "keyring", "ctime", gck_secret_object_get_created (obj));
 	key_file_set_uint64 (file, "keyring", "mtime", gck_secret_object_get_modified (obj));
-	
+
 	/* Not currently used :( */
 	idle_lock = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (collection), "lock-on-idle"));
 	g_key_file_set_boolean (file, "keyring", "lock-on-idle", idle_lock);
 	idle_timeout = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (collection), "lock-timeout"));
 	g_key_file_set_integer (file, "keyring", "lock-timeout", idle_timeout);
-	
+
 	items = gck_secret_collection_get_items (collection);
 	for (l = items; l; l = g_list_next (l)) 
-		generate_item (file, l->data);
+		generate_item (file, l->data, sdata);
 	g_list_free (items);
 
-	*result = (guchar*)g_key_file_to_data (file, n_result, &err);
+	*data = (guchar*)g_key_file_to_data (file, n_data, &err);
 	g_key_file_free (file);
-	
-	if (!*result) {
+
+	if (!*data) {
 		g_warning ("couldn't generate textual keyring file: %s", err->message);
 		return GCK_DATA_FAILURE;
 	}
-	
+
 	return GCK_DATA_SUCCESS;
 }
 
@@ -470,7 +452,8 @@ remove_unavailable_item (gpointer key, gpointer dummy, gpointer user_data)
 }
 
 GckDataResult
-gck_secret_textual_read (GckSecretCollection *collection, const guchar *data, gsize n_data) 
+gck_secret_textual_read (GckSecretCollection *collection, GckSecretData *sdata,
+                         const guchar *data, gsize n_data)
 {
 	GckSecretObject *obj;
 	GckSecretItem *item;
@@ -487,7 +470,10 @@ gck_secret_textual_read (GckSecretCollection *collection, const guchar *data, gs
 	gchar *value;
 	guint64 num;
 	gchar **g;
-	
+
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (collection), GCK_DATA_FAILURE);
+	g_return_val_if_fail (!sdata || GCK_IS_SECRET_DATA (sdata), GCK_DATA_FAILURE);
+
 	file = g_key_file_new ();
 	obj = GCK_SECRET_OBJECT (collection);
 	
@@ -528,11 +514,12 @@ gck_secret_textual_read (GckSecretCollection *collection, const guchar *data, gs
 		identifier = gck_secret_object_get_identifier (l->data);
 		g_hash_table_replace (checks, g_strdup (identifier), "unused");
 	}
-	
+	g_list_free (items);
+
 	groups = g_key_file_get_groups (file, NULL);
 	for (g = groups; *g; ++g) {
 		identifier = *g;
-		if (g_str_equal (identifier, "keyring"))
+		if (g_str_equal (identifier, "keyring") || strchr (identifier, ':'))
 			continue;
 
 		/* We've seen this id */
@@ -541,12 +528,12 @@ gck_secret_textual_read (GckSecretCollection *collection, const guchar *data, gs
 		item = gck_secret_collection_get_item (collection, identifier);
 		if (item == NULL)
 			item = gck_secret_collection_create_item (collection, identifier);
-		parse_item (file, item, (const gchar**)groups);
+		parse_item (file, item, sdata, (const gchar**)groups);
 	}
-	
+
 	g_hash_table_foreach (checks, (GHFunc)remove_unavailable_item, collection);
 	res = GCK_DATA_SUCCESS;
-	
+
 done:
 	if (checks)
 		g_hash_table_destroy (checks);
@@ -556,5 +543,5 @@ done:
 	g_free (start);
 	g_clear_error (&err);
 
-	return res;	
+	return res;
 }

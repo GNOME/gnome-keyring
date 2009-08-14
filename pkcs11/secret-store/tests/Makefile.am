@@ -5,6 +5,7 @@ UNIT_AUTO = \
 	unit-test-secret-fields.c \
 	unit-test-secret-item.c \
 	unit-test-secret-object.c \
+	unit-test-secret-textual.c \
 	test-secret-module.c test-secret-module.h
 
 UNIT_PROMPT = 

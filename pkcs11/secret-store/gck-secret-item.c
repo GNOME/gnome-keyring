@@ -317,6 +317,8 @@ GHashTable*
 gck_secret_item_get_fields (GckSecretItem *self)
 {
 	g_return_val_if_fail (GCK_IS_SECRET_ITEM (self), NULL);
+	if (self->fields == NULL)
+		self->fields = gck_secret_fields_new ();
 	return self->fields;
 }
 
