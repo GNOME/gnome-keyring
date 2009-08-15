@@ -311,12 +311,11 @@ gck_authenticator_create (GckObject *object, CK_UTF8CHAR_PTR pin,
 	g_return_val_if_fail (GCK_IS_OBJECT (object), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (result, CKR_GENERAL_ERROR);
 	
-	if (pin != NULL)
-		login = gck_secret_new_from_login (pin, n_pin);
-	
+	login = gck_secret_new_from_login (pin, n_pin);
 	auth = g_object_new (GCK_TYPE_AUTHENTICATOR, 
 	                     "module", gck_object_get_module (object), 
 	                     "login", login, "object", object, NULL);
+	g_object_unref (login);
 	
 	/* Now the unlock must work */
 	rv = gck_object_unlock (object, auth);
