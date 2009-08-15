@@ -527,6 +527,7 @@ Makefile
 daemon/Makefile
 daemon/gnome-keyring-daemon.desktop.in
 daemon/data/Makefile
+daemon/dbus/Makefile
 daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile
 daemon/pkcs11/Makefile

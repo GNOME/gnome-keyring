@@ -24,6 +24,8 @@
 
 #include "gkr-daemon.h"
 
+#include "dbus/gkd-dbus.h"
+
 #include "egg/egg-cleanup.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
@@ -634,7 +636,7 @@ gkr_daemon_complete_initialization_steps (void)
 			return FALSE;
 	}
 	
-	gkr_daemon_dbus_setup ();
+	gkd_dbus_setup ();
 	
 	initialization_completed = TRUE;
 	return TRUE;
