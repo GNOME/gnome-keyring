@@ -57,6 +57,9 @@ const guchar*       gck_secret_get                    (GckSecret *self,
 const gchar*        gck_secret_get_password           (GckSecret *self,
                                                        gsize *n_pin);
 
+gboolean            gck_secret_equal                  (GckSecret *self,
+                                                       GckSecret *other);
+
 gboolean            gck_secret_equals                 (GckSecret *self,
                                                        const guchar *data,
                                                        gssize n_data);

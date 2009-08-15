@@ -135,6 +135,16 @@ gck_secret_get_password (GckSecret *self, gsize *n_data)
 }
 
 gboolean
+gck_secret_equal (GckSecret *self, GckSecret *other)
+{
+	g_return_val_if_fail (GCK_IS_SECRET (self), FALSE);
+	g_return_val_if_fail (GCK_IS_SECRET (other), FALSE);
+	if (self == other)
+		return TRUE;
+	return gck_secret_equals (self, other->memory, other->n_memory);
+}
+
+gboolean
 gck_secret_equals (GckSecret *self, const guchar* pin, gssize n_pin)
 {
 	g_return_val_if_fail (GCK_IS_SECRET (self), FALSE);
@@ -145,12 +155,23 @@ gck_secret_equals (GckSecret *self, const guchar* pin, gssize n_pin)
 	
 	if (n_pin == -1 && pin != NULL)
 		n_pin = strlen ((const gchar*)pin);
-	
+
+	/* The same length */
 	if (n_pin != self->n_memory)
 		return FALSE;
+
+	/* Two null passwords */
 	if (!pin && !self->memory)
 		return TRUE;
+
+	/* For our purposes a null password equals an empty password */
+	if (n_pin == 0)
+		return TRUE;
+
+	/* One null, one not null */
 	if (!pin || !self->memory)
 		return FALSE;
+
+	/* Compare actual memory */
 	return memcmp (pin, self->memory, n_pin) == 0;
 }

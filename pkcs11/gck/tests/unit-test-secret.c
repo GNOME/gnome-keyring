@@ -134,7 +134,7 @@ DEFINE_TEST(test_null)
 	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"test-pino", 9));
 	g_assert (gck_secret_equals (secret, NULL, 0));
 	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"null-terminated", -1));
-	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", 0));
+	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", 0));
 
 	g_object_unref (secret);
 }
@@ -154,9 +154,25 @@ DEFINE_TEST(test_empty)
 	
 	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"null-terminated", strlen ("null-terminated")));
 	g_assert (!gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"test-pino", 9));
-	g_assert (!gck_secret_equals (secret, NULL, 0));
+	g_assert (gck_secret_equals (secret, NULL, 0));
 	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", -1));
 	g_assert (gck_secret_equals (secret, (CK_UTF8CHAR_PTR)"", 0));
 
 	g_object_unref (secret);
+}
+
+DEFINE_TEST(test_equal)
+{
+	GckSecret *one;
+	GckSecret *two;
+
+	one = two = gck_secret_new ((CK_UTF8CHAR_PTR)"funny", 5);
+	g_assert (gck_secret_equal (one, two));
+
+	two = gck_secret_new_from_password ("funny");
+	g_assert (gck_secret_equal (one, two));
+
+	g_object_unref (one);
+	one = gck_secret_new_from_password ("other");
+	g_assert (!gck_secret_equal (one, two));
 }
