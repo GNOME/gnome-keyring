@@ -332,7 +332,7 @@ DEFINE_TEST(general_time)
 	const TimeTestData *data;
 	
 	for (data = generalized_time_test_data; data->value; ++data) {
-		when = egg_asn1_time_parse_general (data->value);
+		when = egg_asn1_time_parse_general (data->value, -1);
 		if (data->ref != when) {
 			printf ("%s", data->value);
 			printf ("%s != ", ctime (&when));
@@ -350,7 +350,7 @@ DEFINE_TEST(utc_time)
 	const TimeTestData *data;
 	
 	for (data = utc_time_test_data; data->value; ++data) {
-		when = egg_asn1_time_parse_utc (data->value);
+		when = egg_asn1_time_parse_utc (data->value, -1);
 		if (data->ref != when) {
 			printf ("%s", data->value);
 			printf ("%s != ", ctime (&when));

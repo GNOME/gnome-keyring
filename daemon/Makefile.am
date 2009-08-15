@@ -19,6 +19,7 @@ INCLUDES=	\
 	$(DAEMON_CFLAGS)				\
 	$(GOBJECT_CFLAGS)				\
 	$(GTHREAD_CFLAGS)				\
+	$(GIO_CFLAGS)					\
 	$(GLIB_CFLAGS)
 
 gnome_keyring_daemon_SOURCES = \
@@ -45,6 +46,7 @@ gnome_keyring_daemon_LDADD = \
 	$(DAEMON_LIBS) \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
+	$(GIO_LIBS) \
 	$(DAEMON_LIBS) \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)

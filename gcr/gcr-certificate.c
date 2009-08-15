@@ -586,7 +586,7 @@ gcr_certificate_get_fingerprint_hex (GcrCertificate *self, GChecksumType type)
 /**
  * gcr_certificate_get_serial_number:
  * @self: a #GcrCertificate
- * @length: the length of the returned data.
+ * @n_length: the length of the returned data.
  * 
  * Get the raw binary serial number of the certificate.
  * 
@@ -601,6 +601,7 @@ gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 	GcrCertificateInfo *info;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (n_length, NULL);
 	
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);

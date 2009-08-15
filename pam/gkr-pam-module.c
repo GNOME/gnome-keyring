@@ -230,7 +230,7 @@ evaluate_inlist (const char *needle, const char *haystack)
 	const char *remaining;
 
 	if (!needle)
-		return PAM_BAD_ITEM;
+		return 0;
 
 	remaining = haystack;
 
@@ -244,7 +244,7 @@ evaluate_inlist (const char *needle, const char *haystack)
 			item += strlen (needle);
 			/* is item really needle? */
 			if (*item == '\0' || *item == ',')
-                                return PAM_SUCCESS;
+                                return 1;
 		}
 
                 remaining = strchr (item, ',');
@@ -255,7 +255,7 @@ evaluate_inlist (const char *needle, const char *haystack)
 		++remaining;
         }
 
-        return PAM_BAD_ITEM;
+        return 0;
 }
 
 /* -----------------------------------------------------------------------------
@@ -821,7 +821,7 @@ parse_args (pam_handle_t *ph, int argc, const char **argv)
 
 		} else if (strncmp (argv[i], "only_if=", only_if_len) == 0) {
 			const char *value = argv[i] + only_if_len;
-			if (evaluate_inlist (svc, value) != PAM_SUCCESS)
+			if (evaluate_inlist (svc, value))
 				args |= ARG_IGNORE_SERVICE;
 
 		} else if (strcmp (argv[i], "use_authtok") == 0) {
