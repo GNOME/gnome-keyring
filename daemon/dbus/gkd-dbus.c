@@ -42,6 +42,8 @@ daemon_dbus_cleanup (gpointer unused)
 	if (!dbus_conn)
 		return;
 
+	gkd_dbus_secrets_cleanup (dbus_conn);
+
 	if (dbus_do_session) {
 		gkd_dbus_session_cleanup (dbus_conn);
 		gkd_dbus_environment_cleanup (dbus_conn);
@@ -96,4 +98,7 @@ gkd_dbus_setup (void)
 		gkd_dbus_environment_init (dbus_conn);
 		gkd_dbus_session_init (dbus_conn);
 	}
+
+	/* Secrets API */
+	gkd_dbus_secrets_init (dbus_conn);
 }

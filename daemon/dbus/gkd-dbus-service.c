@@ -124,6 +124,7 @@ gkd_dbus_service_init (DBusConnection *conn)
 	if (dbus_error_is_set (&derr)) {
 		g_message ("couldn't request name on session bus: %s", derr.message);
 		dbus_error_free (&derr);
+		return;
 	}
 
 	switch (res) {

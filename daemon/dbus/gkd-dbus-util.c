@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkd-dbus-private.h - header bits for dbus components
+/* gkd-dbus.c - hook into dbus, call other bits
 
-   Copyright (C) 2009, Stefan Walter
+   Copyright (C) 2007, 2009, Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -21,26 +21,17 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKD_DBUS_PRIVATE_H
-#define GKD_DBUS_PRIVATE_H
+#include "config.h"
 
-#include <glib.h>
-#include <dbus/dbus.h>
+#include "gkd-dbus-util.h"
 
-/* DBus environment variables sent to session */
-void   gkd_dbus_environment_init        (DBusConnection *conn);
-void   gkd_dbus_environment_cleanup     (DBusConnection *conn);
-
-/* The gnome-keyring Dbus service, very simple */
-void   gkd_dbus_service_init            (DBusConnection *conn);
-void   gkd_dbus_service_cleanup         (DBusConnection *conn);
-
-/* DBus desktop session interaction */
-void   gkd_dbus_session_init            (DBusConnection *conn);
-void   gkd_dbus_session_cleanup         (DBusConnection *conn);
-
-/* DBus secrets API */
-void   gkd_dbus_secrets_init            (DBusConnection *conn);
-void   gkd_dbus_secrets_cleanup         (DBusConnection *conn);
-
-#endif /* GKD_DBUS_PRIVATE_H */
+GType
+gkd_dbus_connection_get_boxed_type (void)
+{
+	static GType type = 0;
+	if (!type)
+		type = g_boxed_type_register_static ("GkdDBusConnection",
+		                                     (GBoxedCopyFunc)dbus_connection_ref,
+		                                     (GBoxedFreeFunc)dbus_connection_unref);
+	return type;
+}

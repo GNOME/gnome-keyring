@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkd-dbus-private.h - header bits for dbus components
+/* gkd-dbus.h - header for dbus component
 
    Copyright (C) 2009, Stefan Walter
 
@@ -21,26 +21,15 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKD_DBUS_PRIVATE_H
-#define GKD_DBUS_PRIVATE_H
+#ifndef GKD_DBUS_H
+#define GKD_DBUS_H
 
 #include <glib.h>
+#include <glib-object.h>
 #include <dbus/dbus.h>
 
-/* DBus environment variables sent to session */
-void   gkd_dbus_environment_init        (DBusConnection *conn);
-void   gkd_dbus_environment_cleanup     (DBusConnection *conn);
+#define    GKD_DBUS_TYPE_CONNECTION                    (gkd_dbus_connection_get_boxed_type ())
 
-/* The gnome-keyring Dbus service, very simple */
-void   gkd_dbus_service_init            (DBusConnection *conn);
-void   gkd_dbus_service_cleanup         (DBusConnection *conn);
+GType      gkd_dbus_connection_get_boxed_type          (void) G_GNUC_CONST;
 
-/* DBus desktop session interaction */
-void   gkd_dbus_session_init            (DBusConnection *conn);
-void   gkd_dbus_session_cleanup         (DBusConnection *conn);
-
-/* DBus secrets API */
-void   gkd_dbus_secrets_init            (DBusConnection *conn);
-void   gkd_dbus_secrets_cleanup         (DBusConnection *conn);
-
-#endif /* GKD_DBUS_PRIVATE_H */
+#endif /* GKD_DBUS_H */
