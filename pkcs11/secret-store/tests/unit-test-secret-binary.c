@@ -112,6 +112,39 @@ DEFINE_TEST(binary_read_wrong_format)
 	g_assert (res == GCK_DATA_UNRECOGNIZED);
 }
 
+DEFINE_TEST(binary_read_wrong_master)
+{
+	GckDataResult res;
+	GckSecret *master;
+	guchar *data;
+	gsize n_data;
+
+	master = gck_secret_new_from_password ("wrong");
+	gck_secret_data_set_master (sdata, master);
+	g_object_unref (master);
+
+	data = test_read_testdata ("encrypted.keyring", &n_data);
+	res = gck_secret_binary_read (collection, sdata, data, n_data);
+	g_free (data);
+
+	g_assert (res == GCK_DATA_LOCKED);
+}
+
+DEFINE_TEST(binary_read_sdata_but_no_master)
+{
+	GckDataResult res;
+	guchar *data;
+	gsize n_data;
+
+	gck_secret_data_set_master (sdata, NULL);
+
+	data = test_read_testdata ("encrypted.keyring", &n_data);
+	res = gck_secret_binary_read (collection, sdata, data, n_data);
+	g_free (data);
+
+	g_assert (res == GCK_DATA_LOCKED);
+}
+
 DEFINE_TEST(binary_write)
 {
 	GckDataResult res;

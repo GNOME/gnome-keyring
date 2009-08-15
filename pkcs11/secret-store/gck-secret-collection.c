@@ -27,28 +27,56 @@
 #include "gck-secret-item.h"
 #include "gck-secret-textual.h"
 
+#include "gck/gck-authenticator.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-session.h"
 
 #include <glib/gi18n.h>
 
+enum {
+	PROP_0,
+	PROP_FILENAME
+};
+
 struct _GckSecretCollection {
 	GckSecretObject parent;
-	GckSecretData *data;
+	GckSecretData *sdata;
 	GHashTable *items;
+	gchar *filename;
 };
 
 G_DEFINE_TYPE (GckSecretCollection, gck_secret_collection, GCK_TYPE_SECRET_OBJECT);
 
-#if 0
-static void gck_secret_collection_serializable (GckSerializableIface *iface);
-
-G_DEFINE_TYPE_EXTENDED (GckSecretCollection, gck_secret_collection, GCK_TYPE_SECRET_OBJECT, 0,
-               G_IMPLEMENT_INTERFACE (GCK_TYPE_SERIALIZABLE, gck_secret_collection_serializable));
-#endif
-
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
+
+static GckDataResult
+load_collection_and_secret_data (GckSecretCollection *self, GckSecretData *sdata,
+                                 const gchar *path)
+{
+	GckDataResult res;
+	GError *error = NULL;
+	guchar *data;
+	gsize n_data;
+
+	/* Read in the keyring */
+	if (!g_file_get_contents (path, (gchar**)&data, &n_data, &error)) {
+		g_message ("problem reading keyring: %s: %s",
+		           path, error && error->message ? error->message : "");
+		g_clear_error (&error);
+		return GCK_DATA_FAILURE;
+	}
+
+	/* Try to load from an encrypted file, and otherwise plain text */
+	res = gck_secret_binary_read (self, sdata, data, n_data);
+	if (res == GCK_DATA_UNRECOGNIZED)
+		res = gck_secret_textual_read (self, sdata, data, n_data);
+
+	g_free (data);
+
+	return res;
+}
 
 static gboolean
 find_unlocked_secret_data (GckAuthenticator *auth, GckObject *object, gpointer user_data)
@@ -61,7 +89,7 @@ find_unlocked_secret_data (GckAuthenticator *auth, GckObject *object, gpointer u
 
 	sdata = g_object_get_data (G_OBJECT (auth), "collection-secret-data");
 	if (sdata) {
-		g_return_val_if_fail (sdata == self->data, FALSE);
+		g_return_val_if_fail (sdata == self->sdata, FALSE);
 		*result = sdata;
 		return TRUE;
 	}
@@ -74,13 +102,13 @@ track_secret_data (GckSecretCollection *self, GckSecretData *data)
 {
 	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
 
-	if (self->data)
-		g_object_remove_weak_pointer (G_OBJECT (self->data),
-		                              (gpointer*)&(self->data));
-	self->data = data;
-	if (self->data)
-		g_object_add_weak_pointer (G_OBJECT (self->data),
-		                           (gpointer*)&self->data);
+	if (self->sdata)
+		g_object_remove_weak_pointer (G_OBJECT (self->sdata),
+		                              (gpointer*)&(self->sdata));
+	self->sdata = data;
+	if (self->sdata)
+		g_object_add_weak_pointer (G_OBJECT (self->sdata),
+		                           (gpointer*)&self->sdata);
 }
 
 static void
@@ -98,16 +126,58 @@ static CK_RV
 gck_secret_collection_real_unlock (GckObject *obj, GckAuthenticator *auth)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
+	GckDataResult res;
 	GckSecretData *sdata;
+	GckSecret *master;
 
+	master = gck_authenticator_get_login (auth);
+
+	/* Already unlocked, make sure pin matches */
+	if (self->sdata) {
+		if (!gck_secret_equal (gck_secret_data_get_master (self->sdata), master))
+			return CKR_PIN_INCORRECT;
+
+		/* Authenticator now tracks our secret data */
+		g_object_set_data_full (G_OBJECT (auth), "collection-secret-data",
+		                        g_object_ref (self->sdata), g_object_unref);
+		return CKR_OK;
+	}
+
+	/* New secret data object, setup master password */
 	sdata = g_object_new (GCK_TYPE_SECRET_DATA, NULL);
+	gck_secret_data_set_master (sdata, master);
 
-	/* TODO: Implement actual unlock work here */
+	/* Load the data from a file, and decrypt if necessary */
+	if (self->filename) {
+		res = load_collection_and_secret_data (self, sdata, self->filename);
 
-	g_object_set_data_full (G_OBJECT (auth), "collection-secret-data", sdata, g_object_unref);
-	track_secret_data (self, sdata);
+	/* No filename, password must be null */
+	} else {
+		if (gck_secret_equals (master, NULL, 0))
+			res = GCK_DATA_SUCCESS;
+		else
+			res = GCK_DATA_LOCKED;
+	}
 
-	return CKR_OK;
+	switch (res) {
+	case GCK_DATA_SUCCESS:
+		g_object_set_data_full (G_OBJECT (auth), "collection-secret-data", sdata, g_object_unref);
+		track_secret_data (self, sdata);
+		return CKR_OK;
+	case GCK_DATA_LOCKED:
+		g_object_unref (sdata);
+		return CKR_PIN_INCORRECT;
+	case GCK_DATA_UNRECOGNIZED:
+		g_object_unref (sdata);
+		g_message ("unrecognized or invalid keyring: %s", self->filename);
+		return CKR_FUNCTION_FAILED;
+	case GCK_DATA_FAILURE:
+		g_object_unref (sdata);
+		g_message ("failed to read or parse keyring: %s", self->filename);
+		return CKR_GENERAL_ERROR;
+	default:
+		g_assert_not_reached ();
+	}
 }
 
 static gboolean
@@ -121,6 +191,39 @@ static void
 gck_secret_collection_init (GckSecretCollection *self)
 {
 	self->items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+}
+
+
+static void
+gck_secret_collection_set_property (GObject *obj, guint prop_id, const GValue *value,
+                                    GParamSpec *pspec)
+{
+	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
+
+	switch (prop_id) {
+	case PROP_FILENAME:
+		gck_secret_collection_set_filename (self, g_value_get_string (value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gck_secret_collection_get_property (GObject *obj, guint prop_id, GValue *value,
+                                    GParamSpec *pspec)
+{
+	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
+
+	switch (prop_id) {
+	case PROP_FILENAME:
+		g_value_set_string (value, gck_secret_collection_get_filename (self));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
 }
 
 static void
@@ -139,10 +242,13 @@ gck_secret_collection_finalize (GObject *obj)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
 
-	g_assert (self->data == NULL);
+	g_assert (self->sdata == NULL);
 
 	g_hash_table_destroy (self->items);
 	self->items = NULL;
+
+	g_free (self->filename);
+	self->filename = NULL;
 
 	G_OBJECT_CLASS (gck_secret_collection_parent_class)->finalize (obj);
 }
@@ -156,33 +262,21 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 
 	gck_secret_collection_parent_class = g_type_class_peek_parent (klass);
 
+	gobject_class->set_property = gck_secret_collection_set_property;
+	gobject_class->get_property = gck_secret_collection_get_property;
 	gobject_class->dispose = gck_secret_collection_dispose;
 	gobject_class->finalize = gck_secret_collection_finalize;
 
 	gck_class->unlock = gck_secret_collection_real_unlock;
 
 	secret_class->is_locked = gck_secret_collection_real_is_locked;
+
+	g_object_class_install_property (gobject_class, PROP_FILENAME,
+	           g_param_spec_string ("filename", "Filename", "Collection filename (without path)",
+	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 }
 
 #if 0
-static gboolean
-gck_secret_collection_real_load (GckSerializable *base, GckSecret *login, const guchar *data, gsize n_data)
-{
-	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
-	GckDataResult res;
-
-	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
-
-	res = gck_secret_binary_read (self, login, data, n_data);
-	if (res == GCK_DATA_UNRECOGNIZED)
-		res = gck_secret_textual_read (self, data, n_data);
-
-	/* TODO: This doesn't transfer knowledge of 'wrong password' back up */
-	return (res == GCK_DATA_SUCCESS);
-}
-
 static gboolean
 gck_secret_collection_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
@@ -194,10 +288,10 @@ gck_secret_collection_real_save (GckSerializable *base, GckSecret *login, guchar
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
-	if (!self->data)
+	if (!self->sdata)
 		g_return_val_if_reached (FALSE);
 
-	master = gck_secret_data_get_master (self->data);
+	master = gck_secret_data_get_master (self->sdata);
 	if (master == NULL)
 		res = gck_secret_textual_write (self, data, n_data);
 	else
@@ -207,18 +301,30 @@ gck_secret_collection_real_save (GckSerializable *base, GckSecret *login, guchar
 	return (res == GCK_DATA_SUCCESS);
 }
 
-static void
-gck_secret_collection_serializable (GckSerializableIface *iface)
-{
-	iface->extension = ".keyring";
-	iface->load = gck_secret_collection_real_load;
-	iface->save = gck_secret_collection_real_save;
-}
 #endif
 
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
+
+const gchar*
+gck_secret_collection_get_filename (GckSecretCollection *self)
+{
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), NULL);
+	return self->filename;
+}
+
+void
+gck_secret_collection_set_filename (GckSecretCollection *self, const gchar *filename)
+{
+	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
+
+	if (self->filename == filename)
+		return;
+	g_free (self->filename);
+	self->filename = g_strdup (filename);
+	g_object_notify (G_OBJECT (self), "filename");
+}
 
 GList*
 gck_secret_collection_get_items (GckSecretCollection *self)
@@ -282,11 +388,35 @@ gck_secret_collection_unlocked_data (GckSecretCollection *self, GckSession *sess
 	/*
 	 * Look for authenticator objects that this session has access
 	 * to, and use those to find the secret data. If a secret data is
-	 * found, it should match the one we are tracking in self->data.
+	 * found, it should match the one we are tracking in self->sdata.
 	 */
 
 	gck_session_for_each_authenticator (session, GCK_OBJECT (self),
 	                                    find_unlocked_secret_data, &sdata);
 
 	return sdata;
+}
+
+void
+gck_secret_collection_unlocked_clear (GckSecretCollection *self)
+{
+	/*
+	 * TODO: This is a tough one to implement. I'm holding off and wondering
+	 * if we don't need it, perhaps? As it currently stands, what needs to happen
+	 * here is we need to find each and every authenticator that references the
+	 * secret data for this collection and completely delete those objects.
+	 */
+	g_warning ("Clearing of secret data needs implementing");
+	track_secret_data (self, NULL);
+}
+
+GckDataResult
+gck_secret_collection_load (GckSecretCollection *self)
+{
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), GCK_DATA_FAILURE);
+
+	if (!self->filename)
+		return GCK_DATA_SUCCESS;
+
+	return load_collection_and_secret_data (self, self->sdata, self->filename);
 }

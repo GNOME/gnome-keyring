@@ -22,6 +22,9 @@
 #ifndef __GCK_SECRET_TYPES_H__
 #define __GCK_SECRET_TYPES_H__
 
+#include "gck/gck-types.h"
+#include "gck/gck-data-types.h"
+
 typedef struct _GckSecretCollection GckSecretCollection;
 typedef struct _GckSecretData GckSecretData;
 typedef struct _GckSecretItem GckSecretItem;

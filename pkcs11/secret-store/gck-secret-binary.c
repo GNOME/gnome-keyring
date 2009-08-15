@@ -375,18 +375,25 @@ static gboolean
 decrypt_buffer (EggBuffer *buffer, GckSecret *master,
 		guchar salt[8], int iterations)
 {
-	const gchar *password;
+	const gchar *password = NULL;
 	gcry_cipher_hd_t cih;
 	gcry_error_t gerr;
         guchar *key, *iv;
-        gsize n_password;
+        gsize n_password = 0;
 	size_t pos;
 
 	g_assert (buffer->len % 16 == 0);
 	g_assert (16 == gcry_cipher_get_algo_blklen (GCRY_CIPHER_AES128));
 	g_assert (16 == gcry_cipher_get_algo_keylen (GCRY_CIPHER_AES128));
 	
-	password = gck_secret_get_password (master, &n_password);
+	/* No password is set, try an null password */
+	if (master == NULL) {
+		password = NULL;
+		n_password = 0;
+	} else {
+		password = gck_secret_get_password (master, &n_password);
+	}
+
 	if (!egg_symkey_generate_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256, 
 	                                 password, n_password, salt, 8, iterations, &key, &iv))
 		return FALSE;
@@ -623,7 +630,10 @@ gck_secret_binary_write (GckSecretCollection *collection, GckSecretData *sdata,
 			     (guchar*)to_encrypt.buf + 16, to_encrypt.len - 16);
 	memcpy (to_encrypt.buf, digest, 16);
 	
+	/* If no master password is set, we shouldn't be writing binary... */
 	master = gck_secret_data_get_master (sdata);
+	g_return_val_if_fail (master, GCK_DATA_FAILURE);
+
 	if (!encrypt_buffer (&to_encrypt, master, salt, hash_iterations)) {
 		egg_buffer_uninit (&buffer);
 		egg_buffer_uninit (&to_encrypt);
@@ -911,7 +921,6 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecretData *sdata,
 
 	if (sdata != NULL) {
 		master = gck_secret_data_get_master (sdata);
-		g_return_val_if_fail (master, GCK_DATA_FAILURE);
 		if (!decrypt_buffer (&to_decrypt, master, salt, hash_iterations))
 			goto bail;
 		if (!verify_decrypted_buffer (&to_decrypt)) {

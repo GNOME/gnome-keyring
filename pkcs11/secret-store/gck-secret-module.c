@@ -26,7 +26,6 @@
 #include "gck-secret-store.h"
 
 #include "gck/gck-file-tracker.h"
-#include "gck/gck-serializable.h"
 
 #include <fcntl.h>
 #include <string.h>
@@ -84,25 +83,16 @@ GCK_DEFINE_MODULE (gck_secret_module, GCK_TYPE_SECRET_MODULE);
  */
 
 static void
-file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
+on_file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 {
 	GckSecretCollection *collection;
-	GError *error = NULL;
 	GckManager *manager;
+	GckDataResult res;
 	gboolean created;
 	gchar *basename;
-	guchar *data;
-	gsize n_data;
 
 	manager = gck_module_get_manager (GCK_MODULE (self));
 	g_return_if_fail (manager);
-
-	/* Read in the keyring */
-	if (!g_file_get_contents (path, (gchar**)&data, &n_data, &error)) {
-		g_warning ("couldn't load keyring: %s: %s",
-		           path, error && error->message ? error->message : "");
-		return;
-	}
 
 	/* Do we have one for this path yet? */
 	basename = g_path_get_basename (path);
@@ -110,29 +100,42 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 
 	if (collection == NULL) {
 		created = TRUE;
-		g_assert ("unimplemented");
-#if 0
 		collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
 		                           "module", self,
 		                           "identifier", basename,
+		                           "filename", path,
 		                           NULL);
-#endif
 	}
 
-	if (gck_serializable_load (GCK_SERIALIZABLE (collection), NULL, data, n_data)) {
+	res = gck_secret_collection_load (collection);
+
+	switch (res) {
+	case GCK_DATA_SUCCESS:
 		if (created) {
 			g_hash_table_replace (self->collections, basename, collection);
 			gck_manager_register_object (manager, GCK_OBJECT (collection));
 			basename = NULL;
 		}
+		break;
+	case GCK_DATA_LOCKED:
+		g_message ("master password for keyring changed without our knowledge: %s", path);
+		gck_secret_collection_unlocked_clear (collection);
+		break;
+	case GCK_DATA_UNRECOGNIZED:
+		g_message ("keyring was in an invalid or unrecognized format: %s", path);
+		break;
+	case GCK_DATA_FAILURE:
+		g_message ("failed to parse keyring: %s", path);
+		break;
+	default:
+		g_assert_not_reached ();
 	}
 
 	g_free (basename);
-	g_free (data);
 }
 
 static void
-file_remove (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
+on_file_remove (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 {
 	gchar *basename;
 
@@ -194,9 +197,9 @@ gck_secret_module_constructor (GType type, guint n_props, GObjectConstructParam 
 	}
 
 	self->tracker = gck_file_tracker_new (self->directory, "*.keyrings", NULL);
-	g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
-	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
-	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
+	g_signal_connect (self->tracker, "file-added", G_CALLBACK (on_file_load), self);
+	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (on_file_load), self);
+	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (on_file_remove), self);
 
 	return G_OBJECT (self);
 }

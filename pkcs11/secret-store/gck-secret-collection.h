@@ -41,6 +41,13 @@ struct _GckSecretCollectionClass {
 
 GType                gck_secret_collection_get_type        (void);
 
+GckDataResult        gck_secret_collection_load            (GckSecretCollection *self);
+
+const gchar*         gck_secret_collection_get_filename    (GckSecretCollection *self);
+
+void                 gck_secret_collection_set_filename    (GckSecretCollection *self,
+                                                            const gchar *filename);
+
 GList*               gck_secret_collection_get_items       (GckSecretCollection *self);
 
 GckSecretItem*       gck_secret_collection_get_item        (GckSecretCollection *self,
@@ -51,6 +58,8 @@ GckSecretItem*       gck_secret_collection_create_item     (GckSecretCollection 
 
 void                 gck_secret_collection_remove_item     (GckSecretCollection *self,
                                                             GckSecretItem *item);
+
+void                 gck_secret_collection_unlocked_clear  (GckSecretCollection *self);
 
 GckSecretData*       gck_secret_collection_unlocked_data   (GckSecretCollection *self,
                                                             GckSession *session);
