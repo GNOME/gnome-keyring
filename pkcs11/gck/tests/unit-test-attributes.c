@@ -94,6 +94,19 @@ DEFINE_TEST(attribute_set_data_length)
 	g_assert (attr.ulValueLen == 6);
 }
 
+DEFINE_TEST(attribute_set_empty)
+{
+	CK_ATTRIBUTE attr;
+	gchar buf[30];
+	CK_RV rv;
+
+	attr.ulValueLen = 30;
+	attr.pValue = buf;
+	rv = gck_attribute_set_empty (&attr);
+	g_assert (rv == CKR_OK);
+	g_assert (attr.ulValueLen == 0);
+}
+
 DEFINE_TEST(attribute_get_bool)
 {
 	CK_ATTRIBUTE attr;

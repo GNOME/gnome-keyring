@@ -132,6 +132,12 @@ gck_attribute_get_string (CK_ATTRIBUTE_PTR attr, gchar **value)
 }
 
 CK_RV
+gck_attribute_set_empty (CK_ATTRIBUTE_PTR attr)
+{
+	return gck_attribute_set_data (attr, "", 0);
+}
+
+CK_RV
 gck_attribute_set_bool (CK_ATTRIBUTE_PTR attr, CK_BBOOL value)
 {
 	return gck_attribute_set_data (attr, &value, sizeof (CK_BBOOL));
