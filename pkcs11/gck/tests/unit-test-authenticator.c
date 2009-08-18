@@ -246,8 +246,7 @@ DEFINE_TEST(authenticator_login_property)
 	login = gck_secret_new ((guchar*)"xxx", -1);
 	gck_authenticator_set_login (auth, login);
 	check = gck_authenticator_get_login (auth);
-	g_assert (n_password == 4);
-	g_assert (memcmp (password, "mock", 4) == 0);
+	g_assert (check == login);
 	g_object_unref (login);
 	
 	g_object_unref (auth);
