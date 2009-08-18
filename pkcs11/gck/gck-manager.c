@@ -23,6 +23,7 @@
 
 #include "gck-attributes.h"
 #include "gck-manager.h"
+#include "gck-marshal.h"
 #include "gck-util.h"
 
 #include <glib.h>
@@ -34,6 +35,15 @@ enum {
 	PROP_0,
 	PROP_FOR_TOKEN
 };
+
+enum {
+	OBJECT_ADDED,
+	OBJECT_REMOVED,
+	ATTRIBUTE_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 struct _GckManagerPrivate {
 	gboolean for_token;
@@ -375,6 +385,9 @@ notify_attribute (GckObject *object, CK_ATTRIBUTE_TYPE attr_type, GckManager *se
 	index = g_hash_table_lookup (self->pv->index_by_attribute, &attr_type);
 	if (index != NULL) 
 		index_update (index, object);
+
+	/* Tell everyone that this attribute changed on this object */
+	g_signal_emit (self, signals[ATTRIBUTE_CHANGED], 0, object, attr_type);
 }
 
 static void
@@ -421,6 +434,9 @@ add_object (GckManager *self, GckObject *object)
 	g_hash_table_foreach (self->pv->index_by_property, index_object_each, object);
 	g_signal_connect (object, "notify-attribute", G_CALLBACK (notify_attribute), self);
 	g_signal_connect (object, "notify", G_CALLBACK (notify_property), self);
+
+	/* Tell everyone we added this object */
+	g_signal_emit (self, signals[OBJECT_ADDED], 0, object);
 }
 
 static void
@@ -444,6 +460,9 @@ remove_object (GckManager *self, GckObject *object)
 	/* Release object management */		
 	self->pv->objects = g_list_remove (self->pv->objects, object);
 	g_object_set (object, "manager", NULL, NULL);
+
+	/* Tell everyone this object is gone */
+	g_signal_emit (self, signals[OBJECT_REMOVED], 0, object);
 }
 
 static void
@@ -712,7 +731,21 @@ gck_manager_class_init (GckManagerClass *klass)
 	g_object_class_install_property (gobject_class, PROP_FOR_TOKEN,
 	         g_param_spec_boolean ("for-token", "For Token", "Whether this manager is for token objects or not", 
 	                               FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	
+
+	signals[OBJECT_ADDED] = g_signal_new ("object-added", GCK_TYPE_MANAGER,
+	                                      G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckManagerClass, object_added),
+	                                      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+	                                      G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
+
+	signals[OBJECT_REMOVED] = g_signal_new ("object-removed", GCK_TYPE_MANAGER,
+	                                        G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckManagerClass, object_removed),
+	                                        NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+	                                        G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
+
+	signals[ATTRIBUTE_CHANGED] = g_signal_new ("attribute-removed", GCK_TYPE_MANAGER,
+	                                           G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckManagerClass, attribute_changed),
+	                                           NULL, NULL, gck_marshal_VOID__OBJECT_ULONG,
+	                                           G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
 }
 
 /* ------------------------------------------------------------------------
@@ -876,6 +909,20 @@ gck_manager_find_by_attributes (GckManager *self, CK_ATTRIBUTE_PTR attrs, CK_ULO
 	find_for_attributes (&finder);
 
 	return finder.results;
+}
+
+GList*
+gck_manager_find_by_class (GckManager *self, CK_OBJECT_CLASS klass)
+{
+	CK_ATTRIBUTE attr;
+
+	g_return_val_if_fail (GCK_IS_MANAGER (self), NULL);
+
+	attr.type = CKA_CLASS;
+	attr.ulValueLen = sizeof (klass);
+	attr.pValue = &klass;
+
+	return gck_manager_find_by_attributes (self, &attr, 1);
 }
 
 GckObject*
