@@ -24,7 +24,7 @@
 #include "gck-secret-fields.h"
 #include "gck-secret-search.h"
 
-#include "pkcs11g.h"
+#include "pkcs11i.h"
 
 #include <glib/gi18n.h>
 

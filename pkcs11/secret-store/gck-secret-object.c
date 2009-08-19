@@ -27,7 +27,7 @@
 #include "gck/gck-session.h"
 #include "gck/gck-transaction.h"
 
-#include "pkcs11/pkcs11g.h"
+#include "pkcs11/pkcs11i.h"
 
 #include <glib/gi18n.h>
 
