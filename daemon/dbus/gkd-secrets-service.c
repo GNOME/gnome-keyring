@@ -24,6 +24,7 @@
 #include "gkd-dbus-util.h"
 #include "gkd-secrets-service.h"
 #include "gkd-secrets-session.h"
+#include "gkd-secrets-types.h"
 
 #include "egg/egg-unix-credentials.h"
 
@@ -41,7 +42,8 @@ enum {
 struct _GkdSecretsService {
 	GObject parent;
 	DBusConnection *connection;
-	GList *sessions;
+	GHashTable *sessions;
+	gchar *match_rule;
 #if 0
 	gchar *default_collection;
 #endif
@@ -74,6 +76,64 @@ update_default (GkdSecretsService *self)
 	}
 }
 #endif
+
+static void
+dispose_session (GkdSecretsSession *session)
+{
+	g_object_run_dispose (G_OBJECT (session));
+	g_object_unref (session);
+}
+
+static void
+take_session (GkdSecretsService *self, GkdSecretsSession *session)
+{
+	GPtrArray *sessions;
+	const gchar *caller;
+
+	g_assert (GKD_SECRETS_SERVICE (self));
+	g_assert (GKD_SECRETS_SESSION (session));
+
+	caller = gkd_secrets_session_get_caller (session);
+	sessions = g_hash_table_lookup (self->sessions, caller);
+	if (!sessions) {
+		sessions = g_ptr_array_new ();
+		g_hash_table_replace (self->sessions, g_strdup (caller), sessions);
+	}
+
+	g_ptr_array_add (sessions, session);
+}
+
+static void
+remove_session (GkdSecretsService *self, GkdSecretsSession *session)
+{
+	GPtrArray *sessions;
+	const gchar *caller;
+
+	g_assert (GKD_SECRETS_SERVICE (self));
+	g_assert (GKD_SECRETS_SESSION (session));
+
+	caller = gkd_secrets_session_get_caller (session);
+	sessions = g_hash_table_lookup (self->sessions, caller);
+	g_return_if_fail (sessions);
+
+	g_ptr_array_remove_fast (sessions, session);
+	if (sessions->len == 0)
+		g_hash_table_remove (self->sessions, caller);
+
+	dispose_session (session);
+}
+
+static void
+free_sessions (gpointer data)
+{
+	GPtrArray *sessions = data;
+	guint i;
+
+	for (i = 0; i < sessions->len; ++i)
+		dispose_session (g_ptr_array_index (sessions, i));
+	g_ptr_array_free (sessions, TRUE);
+}
+
 
 typedef struct _on_get_connection_unix_process_id_args {
 	GkdSecretsService *self;
@@ -141,7 +201,7 @@ on_get_connection_unix_process_id (DBusPendingCall *pending, gpointer user_data)
 	g_free (caller_exec);
 
 	/* Take ownership of the session */
-	self->sessions = g_list_prepend (self->sessions, session);
+	take_session (self, session);
 
 	path = gkd_secrets_session_get_object_path (session);
 	reply = dbus_message_new_method_return (args->message);
@@ -261,6 +321,34 @@ gkd_secrets_service_message_handler (DBusConnection *conn, DBusMessage *message,
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
+static DBusHandlerResult
+gkd_secrets_service_filter_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
+{
+	GkdSecretsService *self = user_data;
+	const gchar *object_name;
+	const gchar *old_owner;
+	const gchar *new_owner;
+
+	g_return_val_if_fail (conn && message, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+
+	/* org.freedesktop.DBus.NameOwnerChanged(STRING name, STRING old_owner, STRING new_owner) */
+	if (!dbus_message_is_signal (message, BUS_INTERFACE, "NameOwnerChanged") || 
+	    !dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &object_name, 
+	                            DBUS_TYPE_STRING, &old_owner, DBUS_TYPE_STRING, &new_owner,
+	                            DBUS_TYPE_INVALID))
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+
+	g_return_val_if_fail (object_name && new_owner, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+
+	/* See if it's something that owns our sessions, close if so */
+	if (g_str_equal (new_owner, "") && object_name[0] == ':')
+		g_hash_table_remove (self->sessions, object_name);
+
+	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -269,6 +357,7 @@ static GObject*
 gkd_secrets_service_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
 	GkdSecretsService *self = GKD_SECRETS_SERVICE (G_OBJECT_CLASS (gkd_secrets_service_parent_class)->constructor(type, n_props, props));
+	DBusError error = DBUS_ERROR_INIT;
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->connection, NULL);
@@ -278,27 +367,43 @@ gkd_secrets_service_constructor (GType type, guint n_props, GObjectConstructPara
 	                                           &GKD_SECRETS_SERVICE_GET_CLASS (self)->dbus_vtable, self))
 		g_return_val_if_reached (NULL);
 
+	/* Register for signals that let us know when clients leave the bus */
+	self->match_rule = g_strdup_printf ("type='signal',member=NameOwnerChanged,"
+	                                    "interface='" BUS_INTERFACE "'");
+	dbus_bus_add_match (self->connection, self->match_rule, &error);
+	if (dbus_error_is_set (&error)) {
+		g_warning ("couldn't listen for NameOwnerChanged signal on session bus: %s", error.message);
+		dbus_error_free (&error);
+		g_free (self->match_rule);
+		self->match_rule = NULL;
+	} else {
+		dbus_connection_add_filter (self->connection, gkd_secrets_service_filter_handler, self, NULL);
+	}
+
 	return G_OBJECT (self);
 }
 
 static void
 gkd_secrets_service_init (GkdSecretsService *self)
 {
-	self->sessions = NULL;
+	self->sessions = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_sessions);
 }
 
 static void
 gkd_secrets_service_dispose (GObject *obj)
 {
 	GkdSecretsService *self = GKD_SECRETS_SERVICE (obj);
-	GList *l;
 
-	for (l = self->sessions; l; l = g_list_next (l)) {
-		g_object_run_dispose (G_OBJECT (l->data));
-		g_object_unref (l->data);
+	if (self->match_rule) {
+		g_return_if_fail (self->connection);
+		dbus_connection_remove_filter (self->connection, gkd_secrets_service_filter_handler, self);
+		dbus_bus_remove_match (self->connection, self->match_rule, NULL);
+		g_free (self->match_rule);
+		self->match_rule = NULL;
 	}
-	g_list_free (self->sessions);
-	self->sessions = NULL;
+
+	/* Closes all the sessions */
+	g_hash_table_remove_all (self->sessions);
 
 	if (self->connection) {
 		if (!dbus_connection_unregister_object_path (self->connection, SECRETS_SERVICE_PATH))
@@ -315,7 +420,9 @@ gkd_secrets_service_finalize (GObject *obj)
 {
 	GkdSecretsService *self = GKD_SECRETS_SERVICE (obj);
 
-	g_assert (!self->sessions);
+	g_assert (g_hash_table_size (self->sessions) == 0);
+	g_hash_table_destroy (self->sessions);
+	self->sessions = NULL;
 
 #if 0
 	g_free (self->pv->default_collection);
@@ -391,17 +498,10 @@ gkd_secrets_service_get_connection (GkdSecretsService *self)
 void
 gkd_secrets_service_close_session (GkdSecretsService *self, GkdSecretsSession *session)
 {
-	GList *l;
-
 	g_return_if_fail (GKD_SECRETS_IS_SERVICE (self));
 	g_return_if_fail (GKD_SECRETS_IS_SESSION (session));
 
-	l = g_list_find (self->sessions, session);
-	g_return_if_fail (l != NULL);
-	self->sessions = g_list_delete_link (self->sessions, l);
-
-	g_object_run_dispose (G_OBJECT (session));
-	g_object_unref (session);
+	remove_session (self, session);
 }
 
 #if 0

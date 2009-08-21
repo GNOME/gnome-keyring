@@ -22,6 +22,7 @@
 #ifndef __GKD_SECRETS_TYPES_H__
 #define __GKD_SECRETS_TYPES_H__
 
+#define BUS_INTERFACE                  "org.freedesktop.DBus"
 #define PROPERTIES_INTERFACE           "org.freedesktop.DBus.Properties"
 
 #define SECRETS_SERVICE_INTERFACE      "org.freedesktop.Secrets.Service"
