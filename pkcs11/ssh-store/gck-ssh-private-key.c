@@ -27,6 +27,7 @@
 #include "gck/gck-attributes.h"
 #include "gck/gck-authenticator.h"
 #include "gck/gck-manager.h"
+#include "gck/gck-module.h"
 #include "gck/gck-object.h"
 #include "gck/gck-sexp.h"
 #include "gck/gck-util.h"
@@ -181,6 +182,13 @@ gck_ssh_private_key_unlock (GckObject *base, GckAuthenticator *auth)
 	return rv;
 }
 
+static void
+gck_ssh_private_key_expose (GckObject *base, gboolean expose)
+{
+	GCK_OBJECT_CLASS (gck_ssh_private_key_parent_class)->expose_object (base, expose);
+	gck_object_expose (GCK_OBJECT (GCK_SSH_PRIVATE_KEY (base)->pubkey), expose);
+}
+
 static GObject* 
 gck_ssh_private_key_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
@@ -281,6 +289,7 @@ gck_ssh_private_key_class_init (GckSshPrivateKeyClass *klass)
 	
 	gck_class->get_attribute = gck_ssh_private_key_get_attribute;
 	gck_class->unlock = gck_ssh_private_key_unlock;
+	gck_class->expose_object = gck_ssh_private_key_expose;
 	
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	           g_param_spec_string ("label", "Label", "Object Label", 
@@ -299,7 +308,7 @@ GckSshPrivateKey*
 gck_ssh_private_key_new (GckModule *module, const gchar *unique)
 {
 	return g_object_new (GCK_TYPE_SSH_PRIVATE_KEY, "unique", unique, 
-	                     "module", module, NULL);
+	                     "module", module, "manager", gck_module_get_manager (module), NULL);
 }
 
 gboolean

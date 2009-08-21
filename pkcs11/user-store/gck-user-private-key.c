@@ -75,8 +75,10 @@ factory_create_private_key (GckSession *session, GckTransaction *transaction,
 	if (sexp == NULL)
 		return;
 	
-	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, 
-	                    "module", gck_session_get_module (session), NULL);
+	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp,
+	                    "module", gck_session_get_module (session),
+	                    "manager", gck_manager_for_template (attrs, n_attrs, session),
+	                    NULL);
 	g_return_if_fail (!key->private_sexp);
 	key->private_sexp = gck_sexp_ref (sexp);
 	

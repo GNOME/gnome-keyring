@@ -444,7 +444,7 @@ take_object_ownership (GckUserStorage *self, const gchar *identifier, GckObject 
 	g_hash_table_replace (self->object_to_identifier, object, str);;
 	
 	g_object_set (object, "store", self, NULL);
-	gck_manager_register_object (self->manager, object);
+	gck_object_expose (object, TRUE);
 }
 
 static gboolean
@@ -542,7 +542,8 @@ data_file_entry_added (GckDataFile *store, const gchar *identifier, GckUserStora
 	}
 	
 	/* Create a new object for this identifier */
-	object = g_object_new (type, "unique", identifier, "module", self->module, NULL);
+	object = g_object_new (type, "unique", identifier, "module", self->module,
+	                       "manager", gck_module_get_manager (self->module), NULL);
 	g_return_if_fail (GCK_IS_SERIALIZABLE (object));
 	g_return_if_fail (GCK_SERIALIZABLE_GET_INTERFACE (object)->extension);
 

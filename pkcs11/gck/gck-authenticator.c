@@ -62,6 +62,7 @@ factory_create_authenticator (GckSession *session, GckTransaction *transaction,
 	CK_OBJECT_HANDLE handle;
 	GckAuthenticator *auth;
 	CK_ATTRIBUTE *attr;
+	GckManager *manager;
 	GckObject *object;
 	CK_RV rv;
 	
@@ -87,7 +88,9 @@ factory_create_authenticator (GckSession *session, GckTransaction *transaction,
 
  	gck_attributes_consume (attrs, n_attrs, CKA_VALUE, CKA_GNOME_OBJECT, G_MAXULONG);
 	
-	rv = gck_authenticator_create (object, attr ? attr->pValue : NULL, 
+	manager = gck_manager_for_template (attrs, n_attrs, session);
+	rv = gck_authenticator_create (object, manager,
+	                               attr ? attr->pValue : NULL,
 	                               attr ? attr->ulValueLen : 0, &auth);
 	if (rv == CKR_OK)
 		*result = GCK_OBJECT (auth);
@@ -301,8 +304,9 @@ gck_authenticator_get_factory (void)
 }
 
 CK_RV
-gck_authenticator_create (GckObject *object, CK_UTF8CHAR_PTR pin,
-                          CK_ULONG n_pin, GckAuthenticator **result)
+gck_authenticator_create (GckObject *object, GckManager *manager,
+                          CK_UTF8CHAR_PTR pin, CK_ULONG n_pin,
+                          GckAuthenticator **result)
 {
 	GckAuthenticator *auth;
 	GckSecret *login = NULL;
@@ -313,8 +317,9 @@ gck_authenticator_create (GckObject *object, CK_UTF8CHAR_PTR pin,
 	
 	login = gck_secret_new_from_login (pin, n_pin);
 	auth = g_object_new (GCK_TYPE_AUTHENTICATOR, 
-	                     "module", gck_object_get_module (object), 
-	                     "login", login, "object", object, NULL);
+	                     "module", gck_object_get_module (object),
+	                     "manager", manager, "login", login,
+	                     "object", object, NULL);
 	g_object_unref (login);
 	
 	/* Now the unlock must work */

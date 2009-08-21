@@ -82,7 +82,10 @@ mock_locked_object_class_init (MockLockedObjectClass *klass)
  */
 
 GckObject*
-mock_locked_object_new (GckModule *module)
+mock_locked_object_new (GckModule *module, GckManager *manager)
 {
-	return g_object_new (MOCK_TYPE_LOCKED_OBJECT, "module", module, NULL);
+	return g_object_new (MOCK_TYPE_LOCKED_OBJECT,
+	                     "module", module,
+	                     "manager", manager,
+	                     NULL);
 }

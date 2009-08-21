@@ -391,7 +391,7 @@ remove_transient_object (GckModule *self, GckTransaction *transaction, GckObject
 
 	g_object_ref (object);
 
-	gck_manager_unregister_object (self->pv->token_manager, object);
+	gck_object_expose (object, FALSE);
 	if (!g_hash_table_remove (self->pv->transient_objects, object))
 		g_return_if_reached ();
 	g_object_set (object, "store", NULL, NULL);
@@ -421,12 +421,12 @@ add_transient_object (GckModule *self, GckTransaction *transaction, GckObject *o
 	g_assert (GCK_IS_OBJECT (object));
 
 	/* Must not already be associated with a session or manager */
-	g_return_if_fail (gck_object_get_manager (object) == NULL);
+	g_return_if_fail (gck_object_get_manager (object) == self->pv->token_manager);
 	g_return_if_fail (g_hash_table_lookup (self->pv->transient_objects, object) == NULL);
 
 	g_hash_table_insert (self->pv->transient_objects, object, g_object_ref (object));
-	gck_manager_register_object (self->pv->token_manager, object);
 	g_object_set (object, "store", self->pv->transient_store, NULL);
+	gck_object_expose (object, TRUE);
 
 	if (transaction) {
 		gck_transaction_add (transaction, self,

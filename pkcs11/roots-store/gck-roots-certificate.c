@@ -26,6 +26,7 @@
 #include "gck/gck-attributes.h"
 #include "gck/gck-certificate-trust.h"
 #include "gck/gck-manager.h"
+#include "gck/gck-module.h"
 #include "gck/gck-object.h"
 #include "gck/gck-sexp.h"
 #include "gck/gck-util.h"
@@ -78,6 +79,13 @@ gck_roots_certificate_get_attribute (GckObject *base, GckSession *session, CK_AT
 }
 
 static void
+gck_roots_certificate_expose_object (GckObject *obj, gboolean expose)
+{
+	GCK_OBJECT_CLASS (gck_roots_certificate_parent_class)->expose_object (obj, expose);
+	gck_object_expose (GCK_OBJECT (GCK_ROOTS_CERTIFICATE (obj)->trust), expose);
+}
+
+static void
 gck_roots_certificate_init (GckRootsCertificate *self)
 {
 	
@@ -89,7 +97,8 @@ gck_roots_certificate_constructor (GType type, guint n_props, GObjectConstructPa
 	GckRootsCertificate *self = GCK_ROOTS_CERTIFICATE (G_OBJECT_CLASS (gck_roots_certificate_parent_class)->constructor(type, n_props, props));
 	g_return_val_if_fail (self, NULL);	
 
-	self->trust = gck_certificate_trust_new (gck_object_get_module (GCK_OBJECT (self)), 
+	self->trust = gck_certificate_trust_new (gck_object_get_module (GCK_OBJECT (self)),
+	                                         gck_object_get_manager (GCK_OBJECT (self)),
 	                                         GCK_CERTIFICATE (self));
 	
 	return G_OBJECT (self);
@@ -169,6 +178,7 @@ gck_roots_certificate_class_init (GckRootsCertificateClass *klass)
 	gobject_class->get_property = gck_roots_certificate_get_property;
 
 	gck_class->get_attribute = gck_roots_certificate_get_attribute;
+	gck_class->expose_object = gck_roots_certificate_expose_object;
 	
 	g_object_class_install_property (gobject_class, PROP_PATH,
 	           g_param_spec_string ("path", "Path", "Certificate origin path", 
@@ -187,7 +197,7 @@ GckRootsCertificate*
 gck_roots_certificate_new (GckModule *module, const gchar *unique, const gchar *path)
 {
 	return g_object_new (GCK_TYPE_ROOTS_CERTIFICATE, "unique", unique, "path", path, 
-	                     "module", module, NULL);
+	                     "module", module, "manager", gck_module_get_manager (module), NULL);
 }
 
 const gchar*

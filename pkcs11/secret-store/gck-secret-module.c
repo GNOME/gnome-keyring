@@ -104,6 +104,7 @@ on_file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 		                           "module", self,
 		                           "identifier", basename,
 		                           "filename", path,
+		                           "manager", manager,
 		                           NULL);
 	}
 
@@ -113,7 +114,7 @@ on_file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 	case GCK_DATA_SUCCESS:
 		if (created) {
 			g_hash_table_replace (self->collections, basename, collection);
-			gck_manager_register_object (manager, GCK_OBJECT (collection));
+			gck_object_expose (GCK_OBJECT (collection), TRUE);
 			basename = NULL;
 		}
 		break;

@@ -49,6 +49,7 @@ struct _GckCertificateTrustClass {
 GType                 gck_certificate_trust_get_type               (void);
 
 GckCertificateTrust*  gck_certificate_trust_new                    (GckModule *module,
+                                                                    GckManager *manager,
                                                                     GckCertificate *cert);
 
 GckCertificate*       gck_certificate_trust_get_certificate        (GckCertificateTrust *self);

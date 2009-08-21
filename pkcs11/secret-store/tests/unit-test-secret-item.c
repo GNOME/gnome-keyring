@@ -76,8 +76,11 @@ unlock_collection(void)
 	CK_RV rv;
 
 	/* Create authenticator, which unlocks collection */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), NULL, 0, &auth); 
+	rv = gck_authenticator_create (GCK_OBJECT (collection),
+	                               gck_session_get_manager (session),
+	                               NULL, 0, &auth);
 	g_assert (rv == CKR_OK);
+
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
 }

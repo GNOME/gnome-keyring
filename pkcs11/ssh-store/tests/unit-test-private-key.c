@@ -89,7 +89,7 @@ DEFINE_TEST(private_key_parse_and_unlock)
 	g_free (pub_path);
 	g_free (priv_path);
 
-	rv = gck_authenticator_create (GCK_OBJECT (key), (guchar*)"password", 8, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (key), NULL, (guchar*)"password", 8, &auth);
 	g_assert (rv == CKR_OK);
 	
 	g_object_unref (auth);

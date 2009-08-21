@@ -316,7 +316,7 @@ remove_object (GckSession *self, GckTransaction *transaction, GckObject *object)
 	
 	g_object_ref (object);
 	
-	gck_manager_unregister_object (self->pv->manager, object);
+	gck_object_expose (object, FALSE);
 	if (!g_hash_table_remove (self->pv->objects, object))
 		g_return_if_reached ();
 	g_object_set (object, "store", NULL, NULL);
@@ -344,14 +344,14 @@ add_object (GckSession *self, GckTransaction *transaction, GckObject *object)
 	g_assert (GCK_IS_OBJECT (object));
 	
 	/* Must not already be associated with a session or manager */
-	g_return_if_fail (gck_object_get_manager (object) == NULL);
+	g_return_if_fail (gck_object_get_manager (object) == self->pv->manager);
 	g_return_if_fail (g_object_get_data (G_OBJECT (object), "owned-by-session") == NULL);
 	g_return_if_fail (g_hash_table_lookup (self->pv->objects, object) == NULL);
 	
 	g_hash_table_insert (self->pv->objects, object, g_object_ref (object));
 	g_object_set_data (G_OBJECT (object), "owned-by-session", self);
-	gck_manager_register_object (self->pv->manager, object);
 	g_object_set (object, "store", self->pv->store, NULL);
+	gck_object_expose (object, TRUE);
 
 	if (transaction)
 		gck_transaction_add (transaction, self, (GckTransactionFunc)complete_add, 
@@ -690,7 +690,8 @@ gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_UL
 	g_return_val_if_fail (is_private == TRUE, CKR_GENERAL_ERROR);
 
 	/* Now create the strange object */
-	rv = gck_authenticator_create (self->pv->current_object, pin, n_pin, &authenticator);
+	rv = gck_authenticator_create (self->pv->current_object, self->pv->manager, 
+	                               pin, n_pin, &authenticator);
 	if (rv != CKR_OK)
 		return rv;
 

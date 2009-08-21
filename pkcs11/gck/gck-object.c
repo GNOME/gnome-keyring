@@ -43,6 +43,7 @@ enum {
 };
 
 enum {
+	EXPOSE_OBJECT,
 	NOTIFY_ATTRIBUTE,
 	LAST_SIGNAL
 };
@@ -60,10 +61,15 @@ struct _GckObjectPrivate {
 	GckManager *manager;
 	GckStore *store;
 	gchar *unique;
+	gboolean exposed;
 	GckObjectTransient *transient;
 };
 
 G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
+
+/* Private friend functions from the manager */
+void  _gck_manager_register_object   (GckManager *self, GckObject *object);
+void  _gck_manager_unregister_object (GckManager *self, GckObject *object);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
@@ -275,6 +281,19 @@ gck_object_real_unlock (GckObject *self, GckAuthenticator *auth)
 	return CKR_FUNCTION_FAILED;
 }
 
+static void
+gck_object_real_expose_object (GckObject *self, gboolean expose)
+{
+	g_return_if_fail (expose != self->pv->exposed);
+	g_return_if_fail (self->pv->manager);
+
+	self->pv->exposed = expose;
+	if (expose)
+		_gck_manager_register_object (self->pv->manager, self);
+	else
+		_gck_manager_unregister_object (self->pv->manager, self);
+}
+
 static GObject* 
 gck_object_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
@@ -299,10 +318,15 @@ gck_object_dispose (GObject *obj)
 	GckObject *self = GCK_OBJECT (obj);
 	GckObjectTransient *transient;
 	
-	if (self->pv->manager)
-		gck_manager_unregister_object (self->pv->manager, self);
-	g_assert (self->pv->manager == NULL);
-	
+	if (self->pv->manager) {
+		if (self->pv->exposed)
+			gck_object_expose (self, FALSE);
+		g_return_if_fail (!self->pv->exposed);
+		g_object_remove_weak_pointer (G_OBJECT (self->pv->manager),
+		                              (gpointer*)&(self->pv->manager));
+		self->pv->manager = NULL;
+	}
+
 	g_object_set (self, "store", NULL, NULL);
 	g_assert (self->pv->store == NULL);
 
@@ -341,7 +365,6 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
                            GParamSpec *pspec)
 {
 	GckObject *self = GCK_OBJECT (obj);
-	GckManager *manager;
 	GckStore *store;
 	
 	switch (prop_id) {
@@ -355,18 +378,12 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_object_weak_ref (G_OBJECT (self->pv->module), module_went_away, self);
 		break;
 	case PROP_MANAGER:
-		manager = g_value_get_object (value);
+		g_return_if_fail (!self->pv->manager);
+		self->pv->manager = g_value_get_object (value);
 		if (self->pv->manager) {
-			g_return_if_fail (!manager);
-			g_object_remove_weak_pointer (G_OBJECT (self->pv->manager), 
-			                              (gpointer*)&(self->pv->manager));
-		}
-		self->pv->manager = manager;
-		if (self->pv->manager)
 			g_object_add_weak_pointer (G_OBJECT (self->pv->manager), 
 			                           (gpointer*)&(self->pv->manager));
-		
-		g_object_notify (G_OBJECT (self), "manager");
+		}
 		break;
 	case PROP_STORE:
 		store = g_value_get_object (value);
@@ -440,6 +457,8 @@ gck_object_class_init (GckObjectClass *klass)
 	klass->set_attribute = gck_object_real_set_attribute;
 	klass->create_attributes = gck_object_real_create_attributes;
 	
+	klass->expose_object = gck_object_real_expose_object;
+
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 	           g_param_spec_ulong ("handle", "Handle", "Object handle",
 	                               0, G_MAXULONG, 0, G_PARAM_READWRITE));
@@ -450,7 +469,7 @@ gck_object_class_init (GckObjectClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_MANAGER,
 	           g_param_spec_object ("manager", "Manager", "Object manager", 
-	                                GCK_TYPE_MANAGER, G_PARAM_READWRITE));
+	                                GCK_TYPE_MANAGER, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
 	g_object_class_install_property (gobject_class, PROP_STORE,
 	           g_param_spec_object ("store", "Store", "Object store", 
@@ -460,6 +479,11 @@ gck_object_class_init (GckObjectClass *klass)
 	           g_param_spec_string ("unique", "Unique Identifer", "Machine unique identifier", 
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
+	signals[EXPOSE_OBJECT] = g_signal_new ("expose-object", GCK_TYPE_OBJECT,
+	                                       G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, expose_object),
+		                               NULL, NULL, g_cclosure_marshal_VOID__BOOLEAN, 
+		                               G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+
 	signals[NOTIFY_ATTRIBUTE] = g_signal_new ("notify-attribute", GCK_TYPE_OBJECT, 
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, notify_attribute),
 	                                NULL, NULL, g_cclosure_marshal_VOID__ULONG, 
@@ -731,4 +755,16 @@ gck_object_destroy (GckObject *self, GckTransaction *transaction)
 	gck_transaction_add (transaction, NULL, complete_destroy, g_object_ref (self));
 
 	g_object_unref (self);
+}
+
+void
+gck_object_expose (GckObject *self, gboolean expose)
+{
+	if (!expose && !self)
+		return;
+
+	g_return_if_fail (GCK_IS_OBJECT (self));
+
+	if (self->pv->exposed != expose)
+		g_signal_emit (self, signals[EXPOSE_OBJECT], 0, expose);
 }

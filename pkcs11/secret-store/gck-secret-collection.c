@@ -118,6 +118,13 @@ each_value_to_list (gpointer key, gpointer value, gpointer user_data)
 	*list = g_list_prepend (*list, value);
 }
 
+static void
+expose_each_item (gpointer key, gpointer value, gpointer user_data)
+{
+	gboolean expose = GPOINTER_TO_INT (user_data);
+	gck_object_expose (value, expose);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -178,6 +185,13 @@ gck_secret_collection_real_unlock (GckObject *obj, GckAuthenticator *auth)
 	default:
 		g_assert_not_reached ();
 	}
+}
+
+static void
+gck_secret_collection_expose (GckObject *base, gboolean expose)
+{
+	GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->expose_object (base, expose);
+	g_hash_table_foreach (GCK_SECRET_COLLECTION (base)->items, expose_each_item, GINT_TO_POINTER (expose));
 }
 
 static gboolean
@@ -268,6 +282,7 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 	gobject_class->finalize = gck_secret_collection_finalize;
 
 	gck_class->unlock = gck_secret_collection_real_unlock;
+	gck_class->expose_object = gck_secret_collection_expose;
 
 	secret_class->is_locked = gck_secret_collection_real_is_locked;
 

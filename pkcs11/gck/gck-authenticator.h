@@ -53,6 +53,7 @@ GType                      gck_authenticator_get_type               (void);
 GckFactoryInfo*            gck_authenticator_get_factory            (void);
 
 CK_RV                      gck_authenticator_create                 (GckObject *object,
+                                                                     GckManager *manager,
                                                                      CK_UTF8CHAR_PTR pin,
                                                                      CK_ULONG n_pin,
                                                                      GckAuthenticator **result);

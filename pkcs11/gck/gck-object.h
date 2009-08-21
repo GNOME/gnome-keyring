@@ -47,7 +47,9 @@ struct _GckObjectClass {
 	GObjectClass parent_class;
 	
 	/* signals ------------------------------------------------------------------ */
-	
+
+	void (*expose_object) (GckObject *object, gboolean exposed);
+
 	void (*notify_attribute) (GckObject *object, CK_ATTRIBUTE_TYPE attr_type);
 	
 	/* virtual methods  --------------------------------------------------------- */
@@ -84,6 +86,9 @@ CK_RV                  gck_object_unlock                 (GckObject *self,
 
 void                   gck_object_destroy                (GckObject *self,
                                                           GckTransaction *transaction);
+
+void                   gck_object_expose                 (GckObject *self,
+                                                          gboolean expose);
 
 gboolean               gck_object_match                  (GckObject *self,
                                                           GckSession *session,

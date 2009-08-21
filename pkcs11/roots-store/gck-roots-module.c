@@ -125,9 +125,8 @@ add_certificate_for_data (GckRootsModule *self, const guchar *data,
 		return NULL;
 	}
 	
-	/* Setup the right manager on the certificates */
-	gck_manager_register_object (manager, GCK_OBJECT (cert));
-	gck_manager_register_object (manager, GCK_OBJECT (gck_roots_certificate_get_netscape_trust (GCK_ROOTS_CERTIFICATE (cert))));
+	/* Make the certificate show up */
+	gck_object_expose (GCK_OBJECT (cert), TRUE);
 	
 	/* And add to our wonderful table */
 	g_hash_table_insert (self->certificates, cert, cert);

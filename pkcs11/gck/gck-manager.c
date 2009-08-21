@@ -24,6 +24,8 @@
 #include "gck-attributes.h"
 #include "gck-manager.h"
 #include "gck-marshal.h"
+#include "gck-module.h"
+#include "gck-session.h"
 #include "gck-util.h"
 
 #include <glib.h>
@@ -69,6 +71,10 @@ typedef struct _Finder {
 } Finder;
 
 G_DEFINE_TYPE(GckManager, gck_manager, G_TYPE_OBJECT);
+
+/* Friend functions for GckObject */
+void  _gck_manager_register_object    (GckManager *self, GckObject *object);
+void  _gck_manager_unregister_object  (GckManager *self, GckObject *object);
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -411,7 +417,7 @@ add_object (GckManager *self, GckObject *object)
 	
 	g_assert (GCK_IS_MANAGER (self));
 	g_assert (GCK_IS_OBJECT (object));
-	g_assert (gck_object_get_manager (object) == NULL);
+	g_assert (gck_object_get_manager (object) == self);
 	
 	handle = gck_object_get_handle (object);
 	if (!handle) {
@@ -427,7 +433,6 @@ add_object (GckManager *self, GckObject *object)
 	
 	/* Note objects is being managed */
 	self->pv->objects = g_list_prepend (self->pv->objects, object);
-	g_object_set (object, "manager", self, NULL);
 	
 	/* Now index the object properly */
 	g_hash_table_foreach (self->pv->index_by_attribute, index_object_each, object);
@@ -459,7 +464,6 @@ remove_object (GckManager *self, GckObject *object)
 	
 	/* Release object management */		
 	self->pv->objects = g_list_remove (self->pv->objects, object);
-	g_object_set (object, "manager", NULL, NULL);
 
 	/* Tell everyone this object is gone */
 	g_signal_emit (self, signals[OBJECT_REMOVED], 0, object);
@@ -693,8 +697,8 @@ gck_manager_dispose (GObject *obj)
 
 	/* Unregister all objects */
 	objects = g_list_copy (self->pv->objects);
-	for (l = objects; l; l = g_list_next (l)) 
-		gck_manager_unregister_object (self, GCK_OBJECT (l->data));
+	for (l = objects; l; l = g_list_next (l))
+		remove_object (self, GCK_OBJECT (l->data));
 	g_list_free (objects);
 	
 	g_return_if_fail (self->pv->objects == NULL);
@@ -795,17 +799,17 @@ gck_manager_add_property_index (GckManager *self, const gchar *property, gboolea
 }
 
 void
-gck_manager_register_object (GckManager *self, GckObject *object)
+_gck_manager_register_object (GckManager *self, GckObject *object)
 {
 	g_return_if_fail (GCK_IS_MANAGER (self));
 	g_return_if_fail (GCK_IS_OBJECT (object));
-	g_return_if_fail (gck_object_get_manager (object) == NULL);
+	g_return_if_fail (gck_object_get_manager (object) == self);
 
 	add_object (self, object);
 }
 
 void
-gck_manager_unregister_object (GckManager *self, GckObject *object)
+_gck_manager_unregister_object (GckManager *self, GckObject *object)
 {
 	g_return_if_fail (GCK_IS_MANAGER (self));
 	g_return_if_fail (GCK_IS_OBJECT (object));
@@ -973,4 +977,16 @@ gck_manager_find_handles (GckManager *self, gboolean also_private,
 	find_for_attributes (&finder);
 
 	return CKR_OK;
+}
+
+/* Odd place for this function */
+
+GckManager*
+gck_manager_for_template (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckSession *session)
+{
+	gboolean is_token;
+	if (!gck_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token) || !is_token)
+		return gck_session_get_manager (session);
+	else
+		return gck_module_get_manager (gck_session_get_module (session));
 }

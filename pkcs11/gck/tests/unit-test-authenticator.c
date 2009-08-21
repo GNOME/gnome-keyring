@@ -47,8 +47,8 @@ DEFINE_SETUP(authenticator_setup)
 	rv = gck_module_C_Login (module, gck_session_get_handle (session), CKU_USER, NULL, 0);
 	g_assert (rv == CKR_OK);
 	
-	object = mock_locked_object_new (module);
-	gck_manager_register_object (gck_module_get_manager (module), object);
+	object = mock_locked_object_new (module, gck_module_get_manager (module));
+	gck_object_expose (object, TRUE);
 }
 
 DEFINE_TEARDOWN(authenticator_teardown)
@@ -181,7 +181,7 @@ DEFINE_TEST(authenticator_uses_property)
 	gint uses;
 	CK_RV rv;
 	
-	rv = gck_authenticator_create (object, (guchar*)"mock", 4, &auth);
+	rv = gck_authenticator_create (object, NULL, (guchar*)"mock", 4, &auth);
 	g_assert (rv == CKR_OK);
 	g_assert (auth);
 	
@@ -206,7 +206,7 @@ DEFINE_TEST(authenticator_object_property)
 	GckObject *check;
 	CK_RV rv;
 	
-	rv = gck_authenticator_create (object, (guchar*)"mock", 4, &auth);
+	rv = gck_authenticator_create (object, NULL, (guchar*)"mock", 4, &auth);
 	g_assert (rv == CKR_OK);
 	g_assert (auth);
 	
@@ -228,7 +228,7 @@ DEFINE_TEST(authenticator_login_property)
 	gsize n_password;
 	CK_RV rv;
 	
-	rv = gck_authenticator_create (object, (guchar*)"mock", 4, &auth);
+	rv = gck_authenticator_create (object, NULL, (guchar*)"mock", 4, &auth);
 	g_assert (rv == CKR_OK);
 	g_assert (auth);
 	

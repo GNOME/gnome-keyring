@@ -83,7 +83,7 @@ DEFINE_TEST(secret_collection_unlocked_data)
 	CK_RV rv;
 
 	/* Create authenticator, which unlocks collection */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), NULL, 0, &auth); 
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session), NULL, 0, &auth); 
 	g_assert (rv == CKR_OK);
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
@@ -138,7 +138,7 @@ DEFINE_TEST(secret_collection_load_unlock_plain)
 	g_assert (res == GCK_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), NULL, 0, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session), NULL, 0, &auth);
 	g_assert (rv == CKR_OK);
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
@@ -165,7 +165,8 @@ DEFINE_TEST(secret_collection_load_unlock_encrypted)
 	g_assert (res == GCK_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), (guchar*)"my-keyring-password", 19, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session), 
+	                               (guchar*)"my-keyring-password", 19, &auth);
 	g_assert (rv == CKR_OK);
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
@@ -191,7 +192,8 @@ DEFINE_TEST(secret_collection_load_unlock_bad_password)
 	g_assert (res == GCK_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), (guchar*)"wrong", 5, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session), 
+	                               (guchar*)"wrong", 5, &auth);
 	g_assert (rv == CKR_PIN_INCORRECT);
 }
 
@@ -207,7 +209,8 @@ DEFINE_TEST(secret_collection_unlock_without_load)
 	g_free (filename);
 
 	/* Unlock the keyring, which should load it */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), (guchar*)"my-keyring-password", 19, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session), 
+	                               (guchar*)"my-keyring-password", 19, &auth);
 	g_assert (rv == CKR_OK);
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
@@ -229,13 +232,15 @@ DEFINE_TEST(secret_collection_twice_unlock)
 	g_free (filename);
 
 	/* Unlock the keyring, which should load */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), (guchar*)"my-keyring-password", 19, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session), 
+	                               (guchar*)"my-keyring-password", 19, &auth);
 	g_assert (rv == CKR_OK);
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
 
 	/* Unlock the keyring again, which should not reload */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), (guchar*)"my-keyring-password", 19, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session), 
+	                               (guchar*)"my-keyring-password", 19, &auth);
 	g_assert (rv == CKR_OK);
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
@@ -257,13 +262,15 @@ DEFINE_TEST(secret_collection_twice_unlock_bad_password)
 	g_free (filename);
 
 	/* Unlock the keyring, which should load */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), (guchar*)"my-keyring-password", 19, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session),
+	                               (guchar*)"my-keyring-password", 19, &auth);
 	g_assert (rv == CKR_OK);
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
 
 	/* Unlock the keyring again, wrong password */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), (guchar*)"wrong", 5, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session),
+	                               (guchar*)"wrong", 5, &auth);
 	g_assert (rv == CKR_PIN_INCORRECT);
 
 	sdata = gck_secret_collection_unlocked_data (collection, session);
@@ -282,7 +289,8 @@ DEFINE_TEST(secret_collection_memory_unlock)
 	g_assert (res == GCK_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), NULL, 0, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session),
+	                               NULL, 0, &auth);
 	g_assert (rv == CKR_OK);
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
 	g_object_unref (auth);
@@ -299,6 +307,7 @@ DEFINE_TEST(secret_collection_memory_unlock_bad_password)
 	g_assert (res == GCK_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), (guchar*)"wrong", 5, &auth);
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session),
+	                               (guchar*)"wrong", 5, &auth);
 	g_assert (rv == CKR_PIN_INCORRECT);
 }

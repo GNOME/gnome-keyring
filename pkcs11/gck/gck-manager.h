@@ -83,6 +83,10 @@ struct _GckManagerClass {
 
 GType                   gck_manager_get_type                    (void) G_GNUC_CONST;
 
+GckManager*             gck_manager_for_template                (CK_ATTRIBUTE_PTR attrs,
+                                                                 CK_ULONG n_attrs,
+                                                                 GckSession *session);
+
 gboolean                gck_manager_get_for_token               (GckManager *self);
 
 void                    gck_manager_add_attribute_index         (GckManager *self,
@@ -92,12 +96,6 @@ void                    gck_manager_add_attribute_index         (GckManager *sel
 void                    gck_manager_add_property_index          (GckManager *self,
                                                                  const gchar *property,
                                                                  gboolean unique);
-
-void                    gck_manager_register_object             (GckManager *self, 
-                                                                 GckObject *object);
-
-void                    gck_manager_unregister_object           (GckManager *self, 
-                                                                 GckObject *object);
 
 GckObject*              gck_manager_find_by_handle              (GckManager *self,
                                                                  CK_OBJECT_HANDLE obj);
