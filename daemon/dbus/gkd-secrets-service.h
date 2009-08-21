@@ -49,12 +49,15 @@ struct _GkdSecretsServiceClass {
 
 GType                   gkd_secrets_service_get_type               (void);
 
+DBusConnection*         gkd_secrets_service_get_connection         (GkdSecretsService *self);
+
 #if 0
 void                    gkd_secrets_service_refresh                (GkdSecretsService *self);
+#endif
 
 void                    gkd_secrets_service_close_session          (GkdSecretsService *self,
                                                                     GkdSecretsSession *sess);
-
+#if 0
 GkdSecretsCollection*   gkd_secrets_service_get_default_collection (GkdSecretsService *self);
 #endif
 

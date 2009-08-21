@@ -23,9 +23,7 @@
 
 #include "gkd-dbus-util.h"
 #include "gkd-secrets-service.h"
-#if 0
 #include "gkd-secrets-session.h"
-#endif
 
 #include "egg/egg-unix-credentials.h"
 
@@ -43,7 +41,7 @@ enum {
 struct _GkdSecretsService {
 	GObject parent;
 	DBusConnection *connection;
-	GHashTable *sessions;
+	GList *sessions;
 #if 0
 	gchar *default_collection;
 #endif
@@ -58,13 +56,6 @@ G_DEFINE_TYPE (GkdSecretsService, gkd_secrets_service, G_TYPE_OBJECT);
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
-
-static gboolean
-dispose_each_object (gpointer key, gpointer value, gpointer data)
-{
-	g_object_run_dispose (G_OBJECT (value));
-	return TRUE;
-}
 
 #if 0
 static void
@@ -108,6 +99,7 @@ on_get_connection_unix_process_id (DBusPendingCall *pending, gpointer user_data)
 	DBusError error = DBUS_ERROR_INIT;
 	gchar *caller_exec = NULL;
 	dbus_uint32_t caller_pid = 0;
+	GkdSecretsSession *session;
 	GkdSecretsService *self;
 	const gchar *caller;
 	const gchar *path;
@@ -117,15 +109,6 @@ on_get_connection_unix_process_id (DBusPendingCall *pending, gpointer user_data)
 
 	caller = dbus_message_get_sender (args->message);
 	g_return_if_fail (caller);
-
-	/* Check in case we already have a session open for this caller */
-	if (g_hash_table_lookup (self->sessions, caller)) {
-		reply = dbus_message_new_error_printf (args->message, SECRETS_ERROR_ALREADY_EXISTS,
-		                                       "A session already exists for this caller: %s", caller);
-		dbus_connection_send (self->connection, reply, NULL);
-		dbus_message_unref (reply);
-		return;
-	}
 
 	/* Get the resulting process ID */
 	reply = dbus_pending_call_steal_reply (pending);
@@ -149,33 +132,22 @@ on_get_connection_unix_process_id (DBusPendingCall *pending, gpointer user_data)
 	if (caller_pid != 0)
 		caller_exec = egg_unix_credentials_executable (caller_pid);
 
-	g_printerr ("caller: %s   pid: %d   exec: %s", caller, caller_pid, caller_exec);
-
-#if 0
 	/* Now we can create a session with this information */
-	sess = g_object_new (GKD_SECRETS_TYPE_SESSION,
-	                     "connection", self->connection,
-	                     "caller-executable", caller_exec,
-	                     "caller", caller,
-	                     "service", self,
-	                     NULL);
+	session = g_object_new (GKD_SECRETS_TYPE_SESSION,
+	                        "caller-executable", caller_exec,
+	                        "caller", caller,
+	                        "service", self,
+	                        NULL);
 	g_free (caller_exec);
-#endif
 
-#if 0
-	path = gkd_secrets_session_get_object_path (sess);
-#endif
-	path = "/test";
+	/* Take ownership of the session */
+	self->sessions = g_list_prepend (self->sessions, session);
 
+	path = gkd_secrets_session_get_object_path (session);
 	reply = dbus_message_new_method_return (args->message);
 	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
 	dbus_connection_send (args->self->connection, reply, NULL);
 	dbus_message_unref (reply);
-
-#if 0
-	/* Add a reference to our session hash table for this caller */
-	g_hash_table_insert (self->sessions, g_strdup (caller), sess);
-#endif
 }
 
 /* -----------------------------------------------------------------------------
@@ -312,13 +284,21 @@ gkd_secrets_service_constructor (GType type, guint n_props, GObjectConstructPara
 static void
 gkd_secrets_service_init (GkdSecretsService *self)
 {
-	self->sessions = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	self->sessions = NULL;
 }
 
 static void
 gkd_secrets_service_dispose (GObject *obj)
 {
 	GkdSecretsService *self = GKD_SECRETS_SERVICE (obj);
+	GList *l;
+
+	for (l = self->sessions; l; l = g_list_next (l)) {
+		g_object_run_dispose (G_OBJECT (l->data));
+		g_object_unref (l->data);
+	}
+	g_list_free (self->sessions);
+	self->sessions = NULL;
 
 	if (self->connection) {
 		if (!dbus_connection_unregister_object_path (self->connection, SECRETS_SERVICE_PATH))
@@ -326,8 +306,6 @@ gkd_secrets_service_dispose (GObject *obj)
 		dbus_connection_unref (self->connection);
 		self->connection = NULL;
 	}
-
-	g_hash_table_foreach_remove (self->sessions, dispose_each_object, NULL);
 
 	G_OBJECT_CLASS (gkd_secrets_service_parent_class)->dispose (obj);
 }
@@ -337,9 +315,7 @@ gkd_secrets_service_finalize (GObject *obj)
 {
 	GkdSecretsService *self = GKD_SECRETS_SERVICE (obj);
 
-	g_assert (g_hash_table_size (self->sessions) == 0);
-	g_hash_table_destroy (self->sessions);
-	self->sessions = NULL;
+	g_assert (!self->sessions);
 
 #if 0
 	g_free (self->pv->default_collection);
@@ -375,7 +351,7 @@ gkd_secrets_service_get_property (GObject *obj, guint prop_id, GValue *value,
 
 	switch (prop_id) {
 	case PROP_CONNECTION:
-		g_value_set_boxed (value, self->connection);
+		g_value_set_boxed (value, gkd_secrets_service_get_connection (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -405,26 +381,30 @@ gkd_secrets_service_class_init (GkdSecretsServiceClass *klass)
  * PUBLIC
  */
 
-#if 0
-void
-gkd_secrets_service_close_session (GkdSecretsService *self, GkdSecretsSession *sess)
+DBusConnection*
+gkd_secrets_service_get_connection (GkdSecretsService *self)
 {
-	const gchar *caller;
-
-	g_return_if_fail (GKD_SECRETS_IS_SERVICE (self));
-	g_return_if_fail (GKD_SECRETS_IS_SESSION (sess));
-
-	caller = gkd_secrets_session_get_caller (sess);
-	g_return_if_fail (g_hash_table_lookup (self->pv->sessions, caller) == sess);
-	g_return_if_fail (gkd_secrets_session_get_service (sess) == self);
-
-	/* Close down the object for business */
-	g_object_ref (sess);
-	g_hash_table_remove (self->pv->sessions, caller);
-	g_object_run_dispose (G_OBJECT (sess));
-	g_object_unref (sess);
+	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), NULL);
+	return self->connection;
 }
 
+void
+gkd_secrets_service_close_session (GkdSecretsService *self, GkdSecretsSession *session)
+{
+	GList *l;
+
+	g_return_if_fail (GKD_SECRETS_IS_SERVICE (self));
+	g_return_if_fail (GKD_SECRETS_IS_SESSION (session));
+
+	l = g_list_find (self->sessions, session);
+	g_return_if_fail (l != NULL);
+	self->sessions = g_list_delete_link (self->sessions, l);
+
+	g_object_run_dispose (G_OBJECT (session));
+	g_object_unref (session);
+}
+
+#if 0
 GkdSecretsCollection*
 gkd_secrets_service_get_default_collection (GkdSecretsService *self)
 {
