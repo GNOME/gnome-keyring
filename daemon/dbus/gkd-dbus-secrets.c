@@ -26,13 +26,50 @@
 #include "gkd-dbus-private.h"
 #include "gkd-secrets-service.h"
 
+#include "daemon/pkcs11/gkr-pkcs11-daemon.h"
+
 static GkdSecretsService *secrets_service = NULL;
+
+static GP11Slot*
+calculate_secrets_slot (void)
+{
+	GP11Slot *slot = NULL;
+	GP11Module *module;
+	GList *slots, *l;
+	GP11SlotInfo *info;
+
+	module = gp11_module_new (gkr_pkcs11_daemon_get_functions ());
+	g_return_val_if_fail (module, NULL);
+
+	/*
+	 * Find the right slot.
+	 *
+	 * TODO: This isn't necessarily the best way to do this.
+	 * A good function could be added to gp11 library.
+	 * But needs more thought on how to do this.
+	 */
+	slots = gp11_module_get_slots (module, TRUE);
+	for (l = slots; !slot && l; l = g_list_next (l)) {
+		info = gp11_slot_get_info (l->data);
+		if (g_ascii_strcasecmp ("Secret Store", info->slot_description) == 0)
+			slot = g_object_ref (l->data);
+		gp11_slot_info_free (info);
+	}
+	gp11_list_unref_free (slots);
+
+	return slot;
+}
 
 void
 gkd_dbus_secrets_init (DBusConnection *conn)
 {
 	DBusError error = DBUS_ERROR_INIT;
 	dbus_uint32_t result = 0;
+	GP11Slot *slot;
+
+	/* Figure out which slot to use */
+	slot = calculate_secrets_slot ();
+	g_return_if_fail (slot);
 
 	/* Try and grab our name */
 	result = dbus_bus_request_name (conn, SECRETS_SERVICE, 0, &error);
@@ -66,7 +103,10 @@ gkd_dbus_secrets_init (DBusConnection *conn)
 	}
 
 	g_return_if_fail (!secrets_service);
-	secrets_service = g_object_new (GKD_SECRETS_TYPE_SERVICE, "connection", conn, NULL);
+	secrets_service = g_object_new (GKD_SECRETS_TYPE_SERVICE,
+	                                "connection", conn, "pkcs11-slot", slot, NULL);
+
+	g_object_unref (slot);
 }
 
 void

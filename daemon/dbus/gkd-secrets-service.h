@@ -22,11 +22,13 @@
 #ifndef __GKD_SECRETS_SERVICE_H__
 #define __GKD_SECRETS_SERVICE_H__
 
-#include <glib-object.h>
-
 #include "gkd-secrets-types.h"
 
+#include "gp11/gp11.h"
+
 #include <dbus/dbus.h>
+
+#include <glib-object.h>
 
 #define GKD_SECRETS_TYPE_SERVICE               (gkd_secrets_service_get_type ())
 #define GKD_SECRETS_SERVICE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRETS_TYPE_SERVICE, GkdSecretsService))
@@ -50,6 +52,8 @@ struct _GkdSecretsServiceClass {
 GType                   gkd_secrets_service_get_type               (void);
 
 DBusConnection*         gkd_secrets_service_get_connection         (GkdSecretsService *self);
+
+GP11Slot*               gkd_secrets_service_get_pkcs11_slot        (GkdSecretsService *self);
 
 #if 0
 void                    gkd_secrets_service_refresh                (GkdSecretsService *self);

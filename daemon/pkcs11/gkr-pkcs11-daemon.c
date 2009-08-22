@@ -232,3 +232,9 @@ gkr_pkcs11_daemon_setup_ssh (void)
 
 	return TRUE;
 }
+
+CK_FUNCTION_LIST_PTR
+gkr_pkcs11_daemon_get_functions (void)
+{
+	return pkcs11_roof;
+}

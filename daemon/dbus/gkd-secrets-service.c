@@ -28,9 +28,12 @@
 
 #include "egg/egg-unix-credentials.h"
 
+#include "gp11/gp11.h"
+
 enum {
 	PROP_0,
 	PROP_CONNECTION,
+	PROP_PKCS11_SLOT,
 #if 0
 	/* Secrets Service Properties */
 	PROP_COLLECTIONS,
@@ -44,6 +47,7 @@ struct _GkdSecretsService {
 	DBusConnection *connection;
 	GHashTable *sessions;
 	gchar *match_rule;
+	GP11Slot *pkcs11_slot;
 #if 0
 	gchar *default_collection;
 #endif
@@ -361,6 +365,7 @@ gkd_secrets_service_constructor (GType type, guint n_props, GObjectConstructPara
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->connection, NULL);
+	g_return_val_if_fail (self->pkcs11_slot, NULL);
 
 	/* Now register the object */
 	if (!dbus_connection_register_object_path (self->connection, SECRETS_SERVICE_PATH,
@@ -412,6 +417,11 @@ gkd_secrets_service_dispose (GObject *obj)
 		self->connection = NULL;
 	}
 
+	if (self->pkcs11_slot) {
+		g_object_unref (self->pkcs11_slot);
+		self->pkcs11_slot = NULL;
+	}
+
 	G_OBJECT_CLASS (gkd_secrets_service_parent_class)->dispose (obj);
 }
 
@@ -444,6 +454,11 @@ gkd_secrets_service_set_property (GObject *obj, guint prop_id, const GValue *val
 		self->connection = g_value_dup_boxed (value);
 		g_return_if_fail (self->connection);
 		break;
+	case PROP_PKCS11_SLOT:
+		g_return_if_fail (!self->pkcs11_slot);
+		self->pkcs11_slot = g_value_dup_object (value);
+		g_return_if_fail (self->pkcs11_slot);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -459,6 +474,9 @@ gkd_secrets_service_get_property (GObject *obj, guint prop_id, GValue *value,
 	switch (prop_id) {
 	case PROP_CONNECTION:
 		g_value_set_boxed (value, gkd_secrets_service_get_connection (self));
+		break;
+	case PROP_PKCS11_SLOT:
+		g_value_set_object (value, gkd_secrets_service_get_pkcs11_slot (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -482,6 +500,10 @@ gkd_secrets_service_class_init (GkdSecretsServiceClass *klass)
 	g_object_class_install_property (gobject_class, PROP_CONNECTION,
 		g_param_spec_boxed ("connection", "Connection", "DBus Connection",
 		                    GKD_DBUS_TYPE_CONNECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_PKCS11_SLOT,
+	        g_param_spec_object ("pkcs11-slot", "Pkcs11 Slot", "PKCS#11 slot that we use for secrets",
+	                             GP11_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -493,6 +515,13 @@ gkd_secrets_service_get_connection (GkdSecretsService *self)
 {
 	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), NULL);
 	return self->connection;
+}
+
+GP11Slot*
+gkd_secrets_service_get_pkcs11_slot (GkdSecretsService *self)
+{
+	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), NULL);
+	return self->pkcs11_slot;
 }
 
 void
