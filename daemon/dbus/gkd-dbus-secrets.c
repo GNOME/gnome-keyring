@@ -28,6 +28,8 @@
 
 #include "daemon/pkcs11/gkr-pkcs11-daemon.h"
 
+#include "gp11/gp11.h"
+
 static GkdSecretsService *secrets_service = NULL;
 
 static GP11Slot*

@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gkd-dbus-util.h"
+#include "gkd-secrets-objects.h"
 #include "gkd-secrets-service.h"
 #include "gkd-secrets-session.h"
 #include "gkd-secrets-types.h"
@@ -41,13 +42,12 @@ enum {
 #endif
 };
 
-
 struct _GkdSecretsService {
 	GObject parent;
 	DBusConnection *connection;
 	GHashTable *sessions;
 	gchar *match_rule;
-	GP11Slot *pkcs11_slot;
+	GkdSecretsObjects *objects;
 #if 0
 	gchar *default_collection;
 #endif
@@ -362,15 +362,27 @@ gkd_secrets_service_constructor (GType type, guint n_props, GObjectConstructPara
 {
 	GkdSecretsService *self = GKD_SECRETS_SERVICE (G_OBJECT_CLASS (gkd_secrets_service_parent_class)->constructor(type, n_props, props));
 	DBusError error = DBUS_ERROR_INIT;
+	GP11Slot *slot = NULL;
+	guint i;
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->connection, NULL);
-	g_return_val_if_fail (self->pkcs11_slot, NULL);
 
 	/* Now register the object */
 	if (!dbus_connection_register_object_path (self->connection, SECRETS_SERVICE_PATH,
 	                                           &GKD_SECRETS_SERVICE_GET_CLASS (self)->dbus_vtable, self))
 		g_return_val_if_reached (NULL);
+
+	/* Find the pkcs11-slot parameter */
+	for (i = 0; !slot && i < n_props; ++i) {
+		if (g_str_equal (props[i].pspec->name, "pkcs11-slot"))
+			slot = g_value_get_object (props[i].value);
+	}
+
+	/* Create our objects proxy */
+	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
+	self->objects = g_object_new (GKD_SECRETS_TYPE_OBJECTS,
+	                              "pkcs11-slot", slot, "service", self, NULL);
 
 	/* Register for signals that let us know when clients leave the bus */
 	self->match_rule = g_strdup_printf ("type='signal',member=NameOwnerChanged,"
@@ -410,16 +422,18 @@ gkd_secrets_service_dispose (GObject *obj)
 	/* Closes all the sessions */
 	g_hash_table_remove_all (self->sessions);
 
+	/* Hide all the objects */
+	if (self->objects) {
+		g_object_run_dispose (G_OBJECT (self->objects));
+		g_object_unref (self->objects);
+		self->objects = NULL;
+	}
+
 	if (self->connection) {
 		if (!dbus_connection_unregister_object_path (self->connection, SECRETS_SERVICE_PATH))
 			g_return_if_reached ();
 		dbus_connection_unref (self->connection);
 		self->connection = NULL;
-	}
-
-	if (self->pkcs11_slot) {
-		g_object_unref (self->pkcs11_slot);
-		self->pkcs11_slot = NULL;
 	}
 
 	G_OBJECT_CLASS (gkd_secrets_service_parent_class)->dispose (obj);
@@ -455,9 +469,7 @@ gkd_secrets_service_set_property (GObject *obj, guint prop_id, const GValue *val
 		g_return_if_fail (self->connection);
 		break;
 	case PROP_PKCS11_SLOT:
-		g_return_if_fail (!self->pkcs11_slot);
-		self->pkcs11_slot = g_value_dup_object (value);
-		g_return_if_fail (self->pkcs11_slot);
+		g_return_if_fail (!self->objects);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -521,7 +533,7 @@ GP11Slot*
 gkd_secrets_service_get_pkcs11_slot (GkdSecretsService *self)
 {
 	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), NULL);
-	return self->pkcs11_slot;
+	return gkd_secrets_objects_get_pkcs11_slot (self->objects);
 }
 
 void

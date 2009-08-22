@@ -40,6 +40,7 @@
 
 typedef struct _GkdSecretsCollection GkdSecretsCollection;
 typedef struct _GkdSecretsItem GkdSecretsItem;
+typedef struct _GkdSecretsObjects GkdSecretsObjects;
 typedef struct _GkdSecretsService GkdSecretsService;
 typedef struct _GkdSecretsSession GkdSecretsSession;
 
