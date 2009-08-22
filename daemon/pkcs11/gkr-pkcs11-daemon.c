@@ -27,6 +27,7 @@
 #include "pkcs11/plex-layer/gck-plex-layer.h"
 #include "pkcs11/roots-store/gck-roots-store.h"
 #include "pkcs11/rpc-layer/gck-rpc-layer.h"
+#include "pkcs11/secret-store/gck-secret-store.h"
 #include "pkcs11/ssh-agent/gck-ssh-agent.h"
 #include "pkcs11/ssh-store/gck-ssh-store.h"
 #include "pkcs11/user-store/gck-user-store.h"
@@ -74,13 +75,17 @@ gboolean
 gkr_pkcs11_daemon_initialize (void)
 {
 	CK_FUNCTION_LIST_PTR plex_layer;
-	CK_FUNCTION_LIST_PTR roots_store; 
+	CK_FUNCTION_LIST_PTR roots_store;
+	CK_FUNCTION_LIST_PTR secret_store;
 	CK_FUNCTION_LIST_PTR ssh_store;
 	CK_FUNCTION_LIST_PTR user_store;
 	CK_RV rv;
 
 	/* Now initialize them all */
 	gkr_daemon_async_begin_concurrent ();
+
+		/* Secrets */
+		secret_store = gck_secret_store_get_functions ();
 
 		/* SSH storage */
 		ssh_store = gck_ssh_store_get_functions ();
@@ -96,6 +101,7 @@ gkr_pkcs11_daemon_initialize (void)
 #ifdef ROOT_CERTIFICATES
 		gck_plex_layer_add_module (roots_store);
 #endif
+		gck_plex_layer_add_module (secret_store);
 		gck_plex_layer_add_module (user_store);
 		
 		plex_layer = gck_plex_layer_get_functions (); 

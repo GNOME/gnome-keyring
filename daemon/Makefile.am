@@ -38,6 +38,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/pkcs11/plex-layer/libgck-plex-layer.la \
 	$(top_builddir)/pkcs11/roots-store/libgck-roots-store.la \
 	$(top_builddir)/pkcs11/rpc-layer/libgck-rpc-layer.la \
+	$(top_builddir)/pkcs11/secret-store/libgck-secret-store.la \
 	$(top_builddir)/pkcs11/ssh-agent/libgck-ssh-agent.la \
 	$(top_builddir)/pkcs11/ssh-store/libgck-ssh-store.la \
 	$(top_builddir)/pkcs11/user-store/libgck-user-store.la \
