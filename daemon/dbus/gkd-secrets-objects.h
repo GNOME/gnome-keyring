@@ -39,10 +39,12 @@ typedef struct _GkdSecretsObjectsClass GkdSecretsObjectsClass;
 
 struct _GkdSecretsObjectsClass {
 	GObjectClass parent_class;
-	DBusObjectPathVTable dbus_vtable;
 };
 
 GType               gkd_secrets_objects_get_type               (void);
+
+DBusMessage*        gkd_secrets_objects_dispatch               (GkdSecretsObjects *self,
+                                                                DBusMessage *message);
 
 GP11Slot*           gkd_secrets_objects_get_pkcs11_slot        (GkdSecretsObjects *self);
 

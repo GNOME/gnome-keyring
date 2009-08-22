@@ -41,7 +41,6 @@ struct _GkdSecretsSession {
 	GkdSecretsService *service;
 	gchar *caller_exec;
 	gchar *caller;
-	gboolean registered;
 };
 
 G_DEFINE_TYPE (GkdSecretsSession, gkd_secrets_session, G_TYPE_OBJECT);
@@ -96,58 +95,6 @@ session_property_handler (GkdSecretsSession *self, DBusMessage *message)
 #endif
 }
 
-static DBusHandlerResult
-gkd_secrets_session_message_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
-{
-	GkdSecretsSession *self = user_data;
-	DBusMessage *reply = NULL;
-	const gchar *caller;
-
-	g_return_val_if_fail (conn && message, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-	g_return_val_if_fail (GKD_SECRETS_IS_SESSION (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-
-	/* Who is the caller of this message? */
-	caller = dbus_message_get_sender (message);
-	if (!caller || !g_str_equal (caller, self->caller)) {
-		reply = dbus_message_new_error (message, DBUS_ERROR_ACCESS_DENIED, 
-		                                "This session does not belong to your application");
-
-	/* Check if it's properties, and hand off to property handler. */
-	} else if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-		reply = session_property_handler (self, message);
-
-	/* org.freedesktop.Secrets.Session.Close() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Close"))
-		reply = session_method_close (self, message);
-
-	/* org.freedesktop.Secrets.Session.Negotiate() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Negotiate"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Session.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Session.SetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Session.GetSecrets() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecrets"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Session.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	if (reply == NULL)
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-
-	dbus_connection_send (conn, reply, NULL);
-	dbus_message_unref (reply);
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -161,11 +108,8 @@ gkd_secrets_session_constructor (GType type, guint n_props, GObjectConstructPara
 	g_return_val_if_fail (self->caller, NULL);
 	g_return_val_if_fail (self->service, NULL);
 
-	/* Now register the object */
+	/* Setup the path for the object */
 	self->object_path = g_strdup_printf (SECRETS_SESSION_PREFIX "/s%d", ++unique_session_number);
-	if (!dbus_connection_register_object_path (gkd_secrets_service_get_connection (self->service), self->object_path,
-	                                           &GKD_SECRETS_SESSION_GET_CLASS (self)->dbus_vtable, self))
-		g_return_val_if_reached (NULL);
 
 	return G_OBJECT (self);
 }
@@ -181,15 +125,8 @@ gkd_secrets_session_dispose (GObject *obj)
 {
 	GkdSecretsSession *self = GKD_SECRETS_SESSION (obj);
 
-	if (self->object_path) {
-		if (self->service) {
-			if (!dbus_connection_unregister_object_path (gkd_secrets_service_get_connection (self->service), 
-			                                             self->object_path))
-				g_return_if_reached ();
-		}
-		g_free (self->object_path);
-		self->object_path = NULL;
-	}
+	g_free (self->object_path);
+	self->object_path = NULL;
 
 	if (self->service) {
 		g_object_remove_weak_pointer (G_OBJECT (self->service),
@@ -281,8 +218,6 @@ gkd_secrets_session_class_init (GkdSecretsSessionClass *klass)
 	gobject_class->set_property = gkd_secrets_session_set_property;
 	gobject_class->get_property = gkd_secrets_session_get_property;
 
-	klass->dbus_vtable.message_function = gkd_secrets_session_message_handler;
-
 	g_object_class_install_property (gobject_class, PROP_CALLER,
 		g_param_spec_string ("caller", "Caller", "DBus caller name",
 		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
@@ -303,6 +238,51 @@ gkd_secrets_session_class_init (GkdSecretsSessionClass *klass)
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
+
+DBusMessage*
+gkd_secrets_session_dispatch (GkdSecretsSession *self, DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+	const gchar *caller;
+
+	g_return_val_if_fail (message, NULL);
+	g_return_val_if_fail (GKD_SECRETS_IS_SESSION (self), NULL);
+
+	/* This should already have been caught elsewhere */
+	caller = dbus_message_get_sender (message);
+	if (!caller || !g_str_equal (caller, self->caller))
+		g_return_val_if_reached (NULL);
+
+	/* Check if it's properties, and hand off to property handler. */
+	if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
+		reply = session_property_handler (self, message);
+
+	/* org.freedesktop.Secrets.Session.Close() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Close"))
+		reply = session_method_close (self, message);
+
+	/* org.freedesktop.Secrets.Session.Negotiate() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Negotiate"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Session.GetSecret() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Session.SetSecret() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SetSecret"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Session.GetSecrets() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecrets"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Session.GetSecret() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	return reply;
+}
 
 const gchar*
 gkd_secrets_session_get_caller (GkdSecretsSession *self)

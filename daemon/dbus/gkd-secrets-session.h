@@ -37,10 +37,12 @@ typedef struct _GkdSecretsSessionClass GkdSecretsSessionClass;
 
 struct _GkdSecretsSessionClass {
 	GObjectClass parent_class;
-	DBusObjectPathVTable dbus_vtable;
 };
 
 GType               gkd_secrets_session_get_type               (void);
+
+DBusMessage*        gkd_secrets_session_dispatch               (GkdSecretsSession *self,
+                                                                DBusMessage *message);
 
 const gchar*        gkd_secrets_session_get_caller             (GkdSecretsSession *self);
 

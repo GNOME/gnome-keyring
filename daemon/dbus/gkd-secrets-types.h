@@ -29,8 +29,8 @@
 #define SECRETS_SERVICE_PATH           "/org/freedesktop/secrets"
 #define SECRETS_SERVICE                "org.freedesktop.secrets"
 
+#define SECRETS_INTERFACE_PREFIX       "org.freedesktop.Secrets"
 #define SECRETS_COLLECTION_PREFIX      "/org/freedesktop/secrets/collection"
-
 #define SECRETS_SESSION_PREFIX         "/org/freedesktop/secrets/session"
 
 #define SECRETS_ERROR_ALREADY_EXISTS   "org.freedesktop.Secrets.Error.AlreadyExists"

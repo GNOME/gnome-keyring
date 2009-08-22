@@ -31,6 +31,10 @@
 
 #include "gp11/gp11.h"
 
+#include "pkcs11/pkcs11i.h"
+
+#include <string.h>
+
 enum {
 	PROP_0,
 	PROP_CONNECTION,
@@ -45,7 +49,7 @@ enum {
 struct _GkdSecretsService {
 	GObject parent;
 	DBusConnection *connection;
-	GHashTable *sessions;
+	GHashTable *clients;
 	gchar *match_rule;
 	GkdSecretsObjects *objects;
 #if 0
@@ -56,6 +60,18 @@ struct _GkdSecretsService {
 #if 0
 #define LOC_DEFAULT_FILE    (gkd_location_from_string ("LOCAL:/keyrings/default"))
 #endif
+
+typedef struct _ServiceClient {
+	gchar *caller_peer;
+	gchar *caller_exec;
+	pid_t caller_pid;
+	CK_G_APPLICATION app;
+	GP11Session *pkcs11_session;
+	GList *sessions;
+} ServiceClient;
+
+/* Forward declaration */
+static void service_dispatch_message (GkdSecretsService *, DBusMessage *);
 
 G_DEFINE_TYPE (GkdSecretsService, gkd_secrets_service, G_TYPE_OBJECT);
 
@@ -81,6 +97,21 @@ update_default (GkdSecretsService *self)
 }
 #endif
 
+static gboolean
+object_path_has_prefix (const gchar *path, const gchar *prefix)
+{
+	gsize len;
+
+	g_assert (prefix);
+
+	if (!path)
+		return FALSE;
+
+	len = strlen (prefix);
+	return g_ascii_strncasecmp (path, prefix, len) == 0 &&
+	       (path[len] == '\0' || path[len] == '/');
+}
+
 static void
 dispose_session (GkdSecretsSession *session)
 {
@@ -89,55 +120,32 @@ dispose_session (GkdSecretsSession *session)
 }
 
 static void
-take_session (GkdSecretsService *self, GkdSecretsSession *session)
+free_client (gpointer data)
 {
-	GPtrArray *sessions;
-	const gchar *caller;
+	ServiceClient *client = data;
+	GList *l;
 
-	g_assert (GKD_SECRETS_SERVICE (self));
-	g_assert (GKD_SECRETS_SESSION (session));
+	if (!client)
+		return;
 
-	caller = gkd_secrets_session_get_caller (session);
-	sessions = g_hash_table_lookup (self->sessions, caller);
-	if (!sessions) {
-		sessions = g_ptr_array_new ();
-		g_hash_table_replace (self->sessions, g_strdup (caller), sessions);
+	/* Info about our client */
+	g_free (client->caller_peer);
+	g_free (client->caller_exec);
+
+	/* The session we use for accessing as our client */
+	if (client->pkcs11_session) {
+#if 0
+		gp11_session_close (client->pkcs11_session, NULL);
+#endif
+		g_object_unref (client->pkcs11_session);
 	}
 
-	g_ptr_array_add (sessions, session);
+	/* The secrets API sessions client has open */
+	for (l = client->sessions; l; l = g_list_next (l))
+		dispose_session (l->data);
+
+	g_free (client);
 }
-
-static void
-remove_session (GkdSecretsService *self, GkdSecretsSession *session)
-{
-	GPtrArray *sessions;
-	const gchar *caller;
-
-	g_assert (GKD_SECRETS_SERVICE (self));
-	g_assert (GKD_SECRETS_SESSION (session));
-
-	caller = gkd_secrets_session_get_caller (session);
-	sessions = g_hash_table_lookup (self->sessions, caller);
-	g_return_if_fail (sessions);
-
-	g_ptr_array_remove_fast (sessions, session);
-	if (sessions->len == 0)
-		g_hash_table_remove (self->sessions, caller);
-
-	dispose_session (session);
-}
-
-static void
-free_sessions (gpointer data)
-{
-	GPtrArray *sessions = data;
-	guint i;
-
-	for (i = 0; i < sessions->len; ++i)
-		dispose_session (g_ptr_array_index (sessions, i));
-	g_ptr_array_free (sessions, TRUE);
-}
-
 
 typedef struct _on_get_connection_unix_process_id_args {
 	GkdSecretsService *self;
@@ -161,89 +169,76 @@ on_get_connection_unix_process_id (DBusPendingCall *pending, gpointer user_data)
 	on_get_connection_unix_process_id_args *args = user_data;
 	DBusMessage *reply = NULL;
 	DBusError error = DBUS_ERROR_INIT;
-	gchar *caller_exec = NULL;
 	dbus_uint32_t caller_pid = 0;
-	GkdSecretsSession *session;
 	GkdSecretsService *self;
+	ServiceClient *client;
 	const gchar *caller;
-	const gchar *path;
 
 	g_return_if_fail (GKD_SECRETS_IS_SERVICE (args->self));
 	self = args->self;
-
-	caller = dbus_message_get_sender (args->message);
-	g_return_if_fail (caller);
 
 	/* Get the resulting process ID */
 	reply = dbus_pending_call_steal_reply (pending);
 	g_return_if_fail (reply);
 
-	/* An error returned from GetConnectionUnixProcessID */
-	if (dbus_set_error_from_message (&error, reply)) {
-		g_message ("couldn't get the caller's unix process id: %s", error.message);
-		caller_pid = 0;
-		dbus_error_free (&error);
+	caller = dbus_message_get_sender (args->message);
+	g_return_if_fail (caller);
 
-	/* A PID was returned from GetConnectionUnixProcessID */
-	} else {
-		if (!dbus_message_get_args (reply, NULL, DBUS_TYPE_UINT32, &caller_pid, DBUS_TYPE_INVALID))
-			g_return_if_reached ();
+	client = g_hash_table_lookup (self->clients, caller);
+	if (client == NULL) {
+
+		/* An error returned from GetConnectionUnixProcessID */
+		if (dbus_set_error_from_message (&error, reply)) {
+			g_message ("couldn't get the caller's unix process id: %s", error.message);
+			caller_pid = 0;
+			dbus_error_free (&error);
+
+		/* A PID was returned from GetConnectionUnixProcessID */
+		} else {
+			if (!dbus_message_get_args (reply, NULL, DBUS_TYPE_UINT32, &caller_pid, DBUS_TYPE_INVALID))
+				g_return_if_reached ();
+		}
+
+		/* Initialize the client object */
+		client = g_new0 (ServiceClient, 1);
+		client->caller_peer = g_strdup (caller);
+		client->caller_pid = caller_pid;
+		if (caller_pid != 0)
+			client->caller_exec = egg_unix_credentials_executable (caller_pid);
+		client->app.applicationData = client;
+
+		g_hash_table_replace (self->clients, client->caller_peer, client);
 	}
 
 	dbus_message_unref (reply);
 
-	/* Dig out the process executable if possible */
-	if (caller_pid != 0)
-		caller_exec = egg_unix_credentials_executable (caller_pid);
-
-	/* Now we can create a session with this information */
-	session = g_object_new (GKD_SECRETS_TYPE_SESSION,
-	                        "caller-executable", caller_exec,
-	                        "caller", caller,
-	                        "service", self,
-	                        NULL);
-	g_free (caller_exec);
-
-	/* Take ownership of the session */
-	take_session (self, session);
-
-	path = gkd_secrets_session_get_object_path (session);
-	reply = dbus_message_new_method_return (args->message);
-	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
-	dbus_connection_send (args->self->connection, reply, NULL);
-	dbus_message_unref (reply);
+	/* Dispatch the original message again */
+	service_dispatch_message (self, args->message);
 }
 
-/* -----------------------------------------------------------------------------
- * DBUS
- */
-
-static DBusHandlerResult
-service_begin_open_session (GkdSecretsService *self, DBusConnection *conn, DBusMessage *message)
+static void
+initialize_service_client (GkdSecretsService *self, DBusMessage *message)
 {
 	on_get_connection_unix_process_id_args *args;
-	DBusMessage *request, *reply;
+	DBusMessage *request;
 	DBusPendingCall *pending;
 	const gchar *caller;
 
 	g_assert (GKD_SECRETS_IS_SERVICE (self));
-	g_assert (conn && message);
+	g_assert (message);
 
-	/* Who is the caller of this message? */
+	args = g_new0 (on_get_connection_unix_process_id_args, 1);
+	args->self = g_object_ref (self);
+	args->message = dbus_message_ref (message);
+
 	caller = dbus_message_get_sender (message);
-	if (caller == NULL) {
-		reply = dbus_message_new_error (message, DBUS_ERROR_FAILED,
-		                                "Could not not identify calling client application");
-		dbus_connection_send (conn, reply, NULL);
-		dbus_message_unref (reply);
-		return DBUS_HANDLER_RESULT_HANDLED;
-	}
+	g_return_if_fail (caller);
 
 	/* Message org.freedesktop.DBus.GetConnectionUnixProcessID(IN String caller) */
 	request = dbus_message_new_method_call ("org.freedesktop.DBus", "/org/freedesktop/DBus",
 	                                        "org.freedesktop.DBus", "GetConnectionUnixProcessID");
 	if (!request || !dbus_message_append_args (request, DBUS_TYPE_STRING, &caller, DBUS_TYPE_INVALID))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+		g_return_if_reached ();
 
 	/*
 	 * Send of request for GetConnectionUnixProcessID, with lowish timeout.
@@ -251,21 +246,20 @@ service_begin_open_session (GkdSecretsService *self, DBusConnection *conn, DBusM
 	 * In addition we want to send off a reply to our caller, before it
 	 * times out.
 	 */
-	if (!dbus_connection_send_with_reply (conn, request, &pending, 2000))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+	if (!dbus_connection_send_with_reply (self->connection, request, &pending, 2000))
+		g_return_if_reached ();
 	dbus_message_unref (request);
-
-	args = g_new0 (on_get_connection_unix_process_id_args, 1);
-	args->self = g_object_ref (self);
-	args->message = dbus_message_ref (message);
 
 	/* Track our new session object, on this call */
 	dbus_pending_call_set_notify (pending, on_get_connection_unix_process_id, args,
 	                              free_on_get_connection_unix_process_id_args);
 	dbus_pending_call_unref (pending);
-
-	return DBUS_HANDLER_RESULT_HANDLED;
 }
+
+
+/* -----------------------------------------------------------------------------
+ * DBUS
+ */
 
 static DBusMessage*
 service_property_handler (GkdSecretsService *self, DBusMessage *message)
@@ -290,45 +284,118 @@ service_property_handler (GkdSecretsService *self, DBusMessage *message)
 #endif
 }
 
-static DBusHandlerResult
-gkd_secrets_service_message_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
+static DBusMessage*
+service_method_open_session (GkdSecretsService *self, DBusMessage *message)
 {
-	GkdSecretsService *self = user_data;
+	GkdSecretsSession *session;
+	ServiceClient *client;
+	DBusMessage *reply;
+	const gchar *caller;
+	const gchar *path;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
+		return NULL;
+
+	caller = dbus_message_get_sender (message);
+
+	/* Now we can create a session with this information */
+	session = g_object_new (GKD_SECRETS_TYPE_SESSION,
+	                        "caller", caller,
+	                        "service", self,
+	                        NULL);
+
+	/* Take ownership of the session */
+	client = g_hash_table_lookup (self->clients, caller);
+	g_return_val_if_fail (client, NULL);
+	client->sessions = g_list_prepend (client->sessions, session);
+
+	/* Return the response */
+	path = gkd_secrets_session_get_object_path (session);
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
+	return reply;
+}
+
+static DBusMessage*
+service_method_handler (GkdSecretsService *self, DBusMessage *message)
+{
 	DBusMessage *reply = NULL;
 
-	g_return_val_if_fail (conn && message, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+	g_return_val_if_fail (message, NULL);
+	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), NULL);
 
-	/* Check if it's properties, and hand off to property handler. */
-	if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-		reply = service_property_handler (self, message);
+	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "OpenSession"))
+		reply = service_method_open_session (self, message);
 
-	/* org.freedesktop.Secrets.Service.OpenSession() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "OpenSession"))
-		return service_begin_open_session (self, conn, message);
+	return reply;
+}
 
-	/* org.freedesktop.Secrets.Service.CreateCollection() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "CreateCollection"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+static void
+service_dispatch_message (GkdSecretsService *self, DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+	const gchar *caller;
+	ServiceClient *client;
+	const gchar *path;
+	GList *l;
 
-	/* org.freedesktop.Secrets.Service.LockService() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "CreateCollection"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+	g_assert (GKD_SECRETS_IS_SERVICE (self));
+	g_assert (message);
 
-	/* org.freedesktop.Secrets.Service.SearchItems() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SearchItems"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+	/* The first thing we do is try to allocate a client context */
+	caller = dbus_message_get_sender (message);
+	if (caller == NULL) {
+		reply = dbus_message_new_error (message, DBUS_ERROR_FAILED,
+		                                "Could not not identify calling client application");
+		dbus_connection_send (self->connection, reply, NULL);
+		dbus_message_unref (reply);
+		return;
+	}
 
-	/* org.freedesktop.Secrets.Service.RetrieveSecrets() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "RetrieveSecrets"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+	client = g_hash_table_lookup (self->clients, caller);
+	if (client == NULL) {
+		initialize_service_client (self, message);
+		return; /* This function called again, when client is initialized */
+	}
 
-	if (reply == NULL)
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	path = dbus_message_get_path (message);
+	g_return_if_fail (path);
 
-	dbus_connection_send (conn, reply, NULL);
-	dbus_message_unref (reply);
-	return DBUS_HANDLER_RESULT_HANDLED;
+	/* Dispatched to a session, find a session in this client */
+	if (object_path_has_prefix (path, SECRETS_SESSION_PREFIX)) {
+		for (l = client->sessions; l; l = g_list_next (l)) {
+			if (g_str_equal (path, gkd_secrets_session_get_object_path (l->data))) {
+				reply = gkd_secrets_session_dispatch (l->data, message);
+				break;
+			}
+		}
+
+	/* Dispatched to a collection, off it goes */
+	} else if (object_path_has_prefix (path, SECRETS_COLLECTION_PREFIX)) {
+		reply = gkd_secrets_objects_dispatch (self->objects, message);
+
+	} else if (g_str_equal (path, SECRETS_SERVICE_PATH)) {
+
+		/* Check if it's properties, and hand off to property handler. */
+		if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
+			reply = service_property_handler (self, message);
+		else
+			reply = service_method_handler (self, message);
+	}
+
+	/* Should we send an error? */
+	if (!reply && dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL) {
+		reply = dbus_message_new_error_printf (message, DBUS_ERROR_UNKNOWN_METHOD, 
+		                                       "Method \"%s\" with signature \"%s\" on interface \"%s\" doesn't exist\n",
+		                                       dbus_message_get_member (message),
+		                                       dbus_message_get_signature (message),
+		                                       dbus_message_get_interface (message));
+	}
+
+	if (reply) {
+		dbus_connection_send (self->connection, reply, NULL);
+		dbus_message_unref (reply);
+	}
 }
 
 static DBusHandlerResult
@@ -338,25 +405,62 @@ gkd_secrets_service_filter_handler (DBusConnection *conn, DBusMessage *message, 
 	const gchar *object_name;
 	const gchar *old_owner;
 	const gchar *new_owner;
+	const gchar *path;
+	const gchar *interface;
 
 	g_return_val_if_fail (conn && message, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 
 	/* org.freedesktop.DBus.NameOwnerChanged(STRING name, STRING old_owner, STRING new_owner) */
-	if (!dbus_message_is_signal (message, BUS_INTERFACE, "NameOwnerChanged") || 
-	    !dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &object_name, 
-	                            DBUS_TYPE_STRING, &old_owner, DBUS_TYPE_STRING, &new_owner,
-	                            DBUS_TYPE_INVALID))
+	if (dbus_message_is_signal (message, BUS_INTERFACE, "NameOwnerChanged") && 
+	    dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &object_name, 
+	                           DBUS_TYPE_STRING, &old_owner, DBUS_TYPE_STRING, &new_owner,
+	                           DBUS_TYPE_INVALID)) {
+
+		/*
+		 * A peer is connecting or disconnecting from the bus,
+		 * remove any client info, when client gone.
+		 */
+
+		g_return_val_if_fail (object_name && new_owner, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+		if (g_str_equal (new_owner, "") && object_name[0] == ':')
+			g_hash_table_remove (self->clients, object_name);
+
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
 
-	g_return_val_if_fail (object_name && new_owner, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+	/*
+	 * If the path is a within our object tree, then we do our own dispatch.
+	 */
+	path = dbus_message_get_path (message);
+	switch (dbus_message_get_type (message)) {
 
-	/* See if it's something that owns our sessions, close if so */
-	if (g_str_equal (new_owner, "") && object_name[0] == ':')
-		g_hash_table_remove (self->sessions, object_name);
+	/* Dispatch any method call on our interfaces, for our objects */
+	case DBUS_MESSAGE_TYPE_METHOD_CALL:
+		if (object_path_has_prefix (path, SECRETS_SERVICE_PATH)) {
+			interface = dbus_message_get_interface (message);
+			if (interface == NULL ||
+			    g_str_has_prefix (interface, SECRETS_INTERFACE_PREFIX) ||
+			    g_str_equal (interface, DBUS_INTERFACE_PROPERTIES)) {
+				service_dispatch_message (self, message);
+				return DBUS_HANDLER_RESULT_HANDLED;
+			}
+		}
+		break;
+
+	/* Dispatch any signal for one of our objects */
+	case DBUS_MESSAGE_TYPE_SIGNAL:
+		if (object_path_has_prefix (path, SECRETS_SERVICE_PATH)) {
+			service_dispatch_message (self, message);
+			return DBUS_HANDLER_RESULT_HANDLED;
+		}
+		break;
+
+	default:
+		break;
+	}
 
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-
 }
 
 /* -----------------------------------------------------------------------------
@@ -373,11 +477,6 @@ gkd_secrets_service_constructor (GType type, guint n_props, GObjectConstructPara
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->connection, NULL);
-
-	/* Now register the object */
-	if (!dbus_connection_register_object_path (self->connection, SECRETS_SERVICE_PATH,
-	                                           &GKD_SECRETS_SERVICE_GET_CLASS (self)->dbus_vtable, self))
-		g_return_val_if_reached (NULL);
 
 	/* Find the pkcs11-slot parameter */
 	for (i = 0; !slot && i < n_props; ++i) {
@@ -399,9 +498,10 @@ gkd_secrets_service_constructor (GType type, guint n_props, GObjectConstructPara
 		dbus_error_free (&error);
 		g_free (self->match_rule);
 		self->match_rule = NULL;
-	} else {
-		dbus_connection_add_filter (self->connection, gkd_secrets_service_filter_handler, self, NULL);
 	}
+
+	if (!dbus_connection_add_filter (self->connection, gkd_secrets_service_filter_handler, self, NULL))
+		g_return_val_if_reached (NULL);
 
 	return G_OBJECT (self);
 }
@@ -409,7 +509,7 @@ gkd_secrets_service_constructor (GType type, guint n_props, GObjectConstructPara
 static void
 gkd_secrets_service_init (GkdSecretsService *self)
 {
-	self->sessions = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_sessions);
+	self->clients = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, free_client);
 }
 
 static void
@@ -419,14 +519,13 @@ gkd_secrets_service_dispose (GObject *obj)
 
 	if (self->match_rule) {
 		g_return_if_fail (self->connection);
-		dbus_connection_remove_filter (self->connection, gkd_secrets_service_filter_handler, self);
 		dbus_bus_remove_match (self->connection, self->match_rule, NULL);
 		g_free (self->match_rule);
 		self->match_rule = NULL;
 	}
 
 	/* Closes all the sessions */
-	g_hash_table_remove_all (self->sessions);
+	g_hash_table_remove_all (self->clients);
 
 	/* Hide all the objects */
 	if (self->objects) {
@@ -436,8 +535,7 @@ gkd_secrets_service_dispose (GObject *obj)
 	}
 
 	if (self->connection) {
-		if (!dbus_connection_unregister_object_path (self->connection, SECRETS_SERVICE_PATH))
-			g_return_if_reached ();
+		dbus_connection_remove_filter (self->connection, gkd_secrets_service_filter_handler, self);
 		dbus_connection_unref (self->connection);
 		self->connection = NULL;
 	}
@@ -450,9 +548,9 @@ gkd_secrets_service_finalize (GObject *obj)
 {
 	GkdSecretsService *self = GKD_SECRETS_SERVICE (obj);
 
-	g_assert (g_hash_table_size (self->sessions) == 0);
-	g_hash_table_destroy (self->sessions);
-	self->sessions = NULL;
+	g_assert (g_hash_table_size (self->clients) == 0);
+	g_hash_table_destroy (self->clients);
+	self->clients = NULL;
 
 #if 0
 	g_free (self->pv->default_collection);
@@ -513,8 +611,6 @@ gkd_secrets_service_class_init (GkdSecretsServiceClass *klass)
 	gobject_class->set_property = gkd_secrets_service_set_property;
 	gobject_class->get_property = gkd_secrets_service_get_property;
 
-	klass->dbus_vtable.message_function = gkd_secrets_service_message_handler;
-
 	g_object_class_install_property (gobject_class, PROP_CONNECTION,
 		g_param_spec_boxed ("connection", "Connection", "DBus Connection",
 		                    GKD_DBUS_TYPE_CONNECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
@@ -545,10 +641,18 @@ gkd_secrets_service_get_pkcs11_slot (GkdSecretsService *self)
 void
 gkd_secrets_service_close_session (GkdSecretsService *self, GkdSecretsSession *session)
 {
+	ServiceClient *client;
+	const gchar *caller;
+
 	g_return_if_fail (GKD_SECRETS_IS_SERVICE (self));
 	g_return_if_fail (GKD_SECRETS_IS_SESSION (session));
 
-	remove_session (self, session);
+	caller = gkd_secrets_session_get_caller (session);
+	client = g_hash_table_lookup (self->clients, caller);
+	g_return_if_fail (client);
+
+	client->sessions = g_list_remove (client->sessions, session);
+	dispose_session (session);
 }
 
 #if 0

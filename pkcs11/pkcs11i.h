@@ -53,9 +53,7 @@
 typedef CK_ULONG CK_G_APPLICATION_ID;
 
 typedef struct CK_G_APPLICATION {
-	CK_UTF8CHAR applicationName;
 	CK_VOID_PTR applicationData;
-	CK_FLAGS flags;
 	CK_G_APPLICATION_ID applicationId;
 } CK_G_APPLICATION;
 

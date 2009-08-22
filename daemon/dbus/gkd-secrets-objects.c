@@ -93,53 +93,6 @@ gkd_sercets_objects_property_handler (DBusConnection *conn, DBusMessage *message
 }
 #endif
 
-static DBusHandlerResult
-gkd_secrets_objects_message_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
-{
-	GkdSecretsObjects *self = user_data;
-	DBusMessage *reply = NULL;
-
-	g_return_val_if_fail (conn && message, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-
-#if 0
-	/* Check if it's properties, and hand off to property handler. */
-	if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-		return gkd_sercets_objects_property_handler (conn, message, self);
-
-	/* org.freedesktop.Secrets.Objects.Close() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Close"))
-		return gkd_secrets_objects_close (self, conn, message);
-
-	/* org.freedesktop.Secrets.Objects.Negotiate() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Negotiate"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Objects.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Objects.SetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Objects.GetSecrets() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecrets"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Objects.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-#endif
-
-	if (reply == NULL)
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-
-	dbus_connection_send (conn, reply, NULL);
-	dbus_message_unref (reply);
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -152,11 +105,6 @@ gkd_secrets_objects_constructor (GType type, guint n_props, GObjectConstructPara
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->pkcs11_slot, NULL);
 	g_return_val_if_fail (self->service, NULL);
-
-	/* Register all the collections, and items paths */
-	if (!dbus_connection_register_fallback (gkd_secrets_service_get_connection (self->service), SECRETS_COLLECTION_PREFIX,
-	                                        &GKD_SECRETS_OBJECTS_GET_CLASS (self)->dbus_vtable, self))
-		g_return_val_if_reached (NULL);
 
 	return G_OBJECT (self);
 }
@@ -178,9 +126,6 @@ gkd_secrets_objects_dispose (GObject *obj)
 	}
 
 	if (self->service) {
-		if (!dbus_connection_unregister_object_path (gkd_secrets_service_get_connection (self->service), 
-		                                             SECRETS_COLLECTION_PREFIX))
-			g_return_if_reached ();
 		g_object_remove_weak_pointer (G_OBJECT (self->service),
 		                              (gpointer*)&(self->service));
 		self->service = NULL;
@@ -255,8 +200,6 @@ gkd_secrets_objects_class_init (GkdSecretsObjectsClass *klass)
 	gobject_class->set_property = gkd_secrets_objects_set_property;
 	gobject_class->get_property = gkd_secrets_objects_get_property;
 
-	klass->dbus_vtable.message_function = gkd_secrets_objects_message_handler;
-
 	g_object_class_install_property (gobject_class, PROP_PKCS11_SLOT,
 	        g_param_spec_object ("pkcs11-slot", "Pkcs11 Slot", "PKCS#11 slot that we use for secrets",
 	                             GP11_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
@@ -275,4 +218,45 @@ gkd_secrets_objects_get_pkcs11_slot (GkdSecretsObjects *self)
 {
 	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), NULL);
 	return self->pkcs11_slot;
+}
+
+DBusMessage*
+gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+
+	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), NULL);
+	g_return_val_if_fail (message, NULL);
+
+#if 0
+	/* Check if it's properties, and hand off to property handler. */
+	if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
+		return gkd_sercets_objects_property_handler (conn, message, self);
+
+	/* org.freedesktop.Secrets.Objects.Close() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Close"))
+		return gkd_secrets_objects_close (self, conn, message);
+
+	/* org.freedesktop.Secrets.Objects.Negotiate() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Negotiate"))
+		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Objects.GetSecret() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
+		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Objects.SetSecret() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SetSecret"))
+		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Objects.GetSecrets() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecrets"))
+		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Objects.GetSecret() */
+	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
+		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+#endif
+
+	return reply;
 }

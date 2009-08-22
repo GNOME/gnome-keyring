@@ -41,7 +41,6 @@ typedef struct _GkdSecretsServiceClass GkdSecretsServiceClass;
 
 struct _GkdSecretsServiceClass {
 	GObjectClass parent_class;
-	DBusObjectPathVTable dbus_vtable;
 #if 0
 	/* signals --------------------------------------------------------- */
 
