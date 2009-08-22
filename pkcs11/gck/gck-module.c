@@ -1093,6 +1093,8 @@ gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID id, CK_FLAGS flags, CK_VOI
 	 */
 	if (flags & CKF_G_APPLICATION_SESSION) {
 		app = user_data;
+		if (app == NULL)
+			return CKR_ARGUMENTS_BAD;
 		if (app->applicationId)
 			apt = lookup_apartment (self, APARTMENT_ID (id, app->applicationId));
 	} else {
