@@ -486,11 +486,15 @@ GP11Session*        gp11_slot_open_session                  (GP11Slot *self,
 
 GP11Session*        gp11_slot_open_session_full             (GP11Slot *self,
                                                              gulong flags,
+                                                             gpointer app_data,
+                                                             CK_NOTIFY notify,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gp11_slot_open_session_async            (GP11Slot *self,
                                                              gulong flags,
+                                                             gpointer app_data,
+                                                             CK_NOTIFY notify,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);

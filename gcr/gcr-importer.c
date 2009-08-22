@@ -258,10 +258,10 @@ state_open_session (GcrImporter *self, gboolean async)
 	} else {
 		
 		if (async) {
-			gp11_slot_open_session_async (self->pv->slot, CKF_RW_SESSION, 
+			gp11_slot_open_session_async (self->pv->slot, CKF_RW_SESSION, NULL, NULL,
 			                              self->pv->cancel, on_open_session, self);
 		} else {
-			session = gp11_slot_open_session_full (self->pv->slot, CKF_RW_SESSION, 
+			session = gp11_slot_open_session_full (self->pv->slot, CKF_RW_SESSION, NULL, NULL,
 			                                       self->pv->cancel, &error);
 			complete_open_session (self, session, error);
 		}

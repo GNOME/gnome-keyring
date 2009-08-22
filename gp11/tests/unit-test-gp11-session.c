@@ -81,13 +81,13 @@ DEFINE_TEST(open_close_session)
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
 	
-	sess = gp11_slot_open_session_full (slot, 0, NULL, &err);
+	sess = gp11_slot_open_session_full (slot, 0, NULL, NULL, NULL, &err);
 	SUCCESS_RES (sess, err);
 	
 	g_object_unref (sess);
 	
 	/* Test opening async */
-	gp11_slot_open_session_async (slot, 0, NULL, fetch_async_result, &result);
+	gp11_slot_open_session_async (slot, 0, NULL, NULL, NULL, fetch_async_result, &result);
 	
 	WAIT_UNTIL (result);
 	g_assert (result != NULL);
@@ -130,7 +130,7 @@ DEFINE_TEST(open_reused)
 	g_object_unref (sess);
 	
 	/* Test opening async */
-	gp11_slot_open_session_async (slot, 0, NULL, fetch_async_result, &result);
+	gp11_slot_open_session_async (slot, 0, NULL, NULL, NULL, fetch_async_result, &result);
 	WAIT_UNTIL (result);
 	g_assert (result != NULL);
 	sess = gp11_slot_open_session_finish (slot, result, &err);
@@ -262,7 +262,7 @@ DEFINE_TEST(auto_login)
 	SUCCESS_RES (ret, err);
 	
 	/* Now try the same thing, but asyncronously */
-	gp11_slot_open_session_async (slot, CKF_RW_SESSION, NULL, fetch_async_result, &result);
+	gp11_slot_open_session_async (slot, CKF_RW_SESSION, NULL, NULL, NULL, fetch_async_result, &result);
 	WAIT_UNTIL (result);
 	g_assert (result != NULL);
 	new_session = gp11_slot_open_session_finish (slot, result, &err);
