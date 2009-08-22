@@ -219,7 +219,7 @@ on_get_connection_unix_process_id (DBusPendingCall *pending, gpointer user_data)
  */
 
 static DBusHandlerResult
-gkd_secrets_service_open_session (GkdSecretsService *self, DBusConnection *conn, DBusMessage *message)
+service_begin_open_session (GkdSecretsService *self, DBusConnection *conn, DBusMessage *message)
 {
 	on_get_connection_unix_process_id_args *args;
 	DBusMessage *request, *reply;
@@ -267,10 +267,10 @@ gkd_secrets_service_open_session (GkdSecretsService *self, DBusConnection *conn,
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
-static DBusHandlerResult
-gkd_sercets_service_property_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
+static DBusMessage*
+service_property_handler (GkdSecretsService *self, DBusMessage *message)
 {
-	g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+	g_return_val_if_reached (NULL); /* TODO: Need to implement */
 #if 0
 	/* org.freedesktop.DBus.Properties.Get */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get") &&
@@ -294,17 +294,18 @@ static DBusHandlerResult
 gkd_secrets_service_message_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
 {
 	GkdSecretsService *self = user_data;
+	DBusMessage *reply = NULL;
 
 	g_return_val_if_fail (conn && message, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 
 	/* Check if it's properties, and hand off to property handler. */
 	if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-		return gkd_sercets_service_property_handler (conn, message, self);
+		reply = service_property_handler (self, message);
 
 	/* org.freedesktop.Secrets.Service.OpenSession() */
 	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "OpenSession"))
-		return gkd_secrets_service_open_session (self, conn, message);
+		return service_begin_open_session (self, conn, message);
 
 	/* org.freedesktop.Secrets.Service.CreateCollection() */
 	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "CreateCollection"))
@@ -322,7 +323,12 @@ gkd_secrets_service_message_handler (DBusConnection *conn, DBusMessage *message,
 	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "RetrieveSecrets"))
 		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
 
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	if (reply == NULL)
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+
+	dbus_connection_send (conn, reply, NULL);
+	dbus_message_unref (reply);
+	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult

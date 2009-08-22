@@ -56,30 +56,27 @@ static guint unique_session_number = 0;
  * DBUS
  */
 
-static DBusHandlerResult
-gkd_secrets_session_close (GkdSecretsSession *self, DBusConnection *conn, DBusMessage *message)
+static DBusMessage*
+session_method_close (GkdSecretsSession *self, DBusMessage *message)
 {
 	DBusMessage *reply;
 
-	g_return_val_if_fail (self->service, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+	g_return_val_if_fail (self->service, NULL);
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+		return NULL;
 
 	gkd_secrets_service_close_session (self->service, self);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
-	dbus_connection_send (conn, reply, NULL);
-	dbus_message_unref (reply);
-
-	return DBUS_HANDLER_RESULT_HANDLED;
+	return reply;
 }
 
-static DBusHandlerResult
-gkd_sercets_session_property_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
+static DBusMessage*
+session_property_handler (GkdSecretsSession *self, DBusMessage *message)
 {
-	g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+	g_return_val_if_reached (NULL); /* TODO: Need to implement */
 #if 0
 	/* org.freedesktop.DBus.Properties.Get */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get") &&
@@ -103,8 +100,8 @@ static DBusHandlerResult
 gkd_secrets_session_message_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
 {
 	GkdSecretsSession *self = user_data;
+	DBusMessage *reply = NULL;
 	const gchar *caller;
-	DBusMessage *reply;
 
 	g_return_val_if_fail (conn && message, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 	g_return_val_if_fail (GKD_SECRETS_IS_SESSION (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
@@ -114,18 +111,14 @@ gkd_secrets_session_message_handler (DBusConnection *conn, DBusMessage *message,
 	if (!caller || !g_str_equal (caller, self->caller)) {
 		reply = dbus_message_new_error (message, DBUS_ERROR_ACCESS_DENIED, 
 		                                "This session does not belong to your application");
-		dbus_connection_send (conn, reply, NULL);
-		dbus_message_unref (reply);
-		return DBUS_HANDLER_RESULT_HANDLED;
-	}
 
 	/* Check if it's properties, and hand off to property handler. */
-	if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-		return gkd_sercets_session_property_handler (conn, message, self);
+	} else if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
+		reply = session_property_handler (self, message);
 
 	/* org.freedesktop.Secrets.Session.Close() */
 	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Close"))
-		return gkd_secrets_session_close (self, conn, message);
+		reply = session_method_close (self, message);
 
 	/* org.freedesktop.Secrets.Session.Negotiate() */
 	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Negotiate"))
@@ -147,7 +140,12 @@ gkd_secrets_session_message_handler (DBusConnection *conn, DBusMessage *message,
 	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
 		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
 
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	if (reply == NULL)
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+
+	dbus_connection_send (conn, reply, NULL);
+	dbus_message_unref (reply);
+	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 /* -----------------------------------------------------------------------------

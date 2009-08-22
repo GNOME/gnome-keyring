@@ -92,10 +92,12 @@ gkd_sercets_objects_property_handler (DBusConnection *conn, DBusMessage *message
 	}
 }
 #endif
+
 static DBusHandlerResult
 gkd_secrets_objects_message_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
 {
 	GkdSecretsObjects *self = user_data;
+	DBusMessage *reply = NULL;
 
 	g_return_val_if_fail (conn && message, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
@@ -130,7 +132,12 @@ gkd_secrets_objects_message_handler (DBusConnection *conn, DBusMessage *message,
 		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
 #endif
 
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	if (reply == NULL)
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+
+	dbus_connection_send (conn, reply, NULL);
+	dbus_message_unref (reply);
+	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 /* -----------------------------------------------------------------------------
