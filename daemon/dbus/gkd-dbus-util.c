@@ -25,6 +25,8 @@
 
 #include "gkd-dbus-util.h"
 
+#include <string.h>
+
 GType
 gkd_dbus_connection_get_boxed_type (void)
 {
@@ -34,4 +36,16 @@ gkd_dbus_connection_get_boxed_type (void)
 		                                     (GBoxedCopyFunc)dbus_connection_ref,
 		                                     (GBoxedFreeFunc)dbus_connection_unref);
 	return type;
+}
+
+gboolean
+gkd_dbus_interface_match (const gchar *interface, const gchar *match)
+{
+	g_return_val_if_fail (interface, FALSE);
+
+	/* Null or zero length matches anything */
+	if (!match || !match[0])
+		return TRUE;
+
+	return strcmp (interface, match) == 0;
 }

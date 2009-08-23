@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include "gkd-dbus-util.h"
+
 #include "gkd-secrets-service.h"
 #include "gkd-secrets-objects.h"
 #include "gkd-secrets-types.h"
@@ -504,9 +506,13 @@ item_property_get (GP11Object *object, DBusMessage *message)
 	const gchar *name;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
-	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID) ||
-	    !g_str_equal (interface, SECRETS_ITEM_INTERFACE))
+	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID))
 		return NULL;
+
+	if (!gkd_dbus_interface_match (SECRETS_ITEM_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED, 
+		                                      "Object does not have properties on interface '%s'", 
+		                                      interface);
 
 	return object_property_get (object, message, name);
 }
@@ -527,9 +533,13 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 	DBusMessage *reply;
 	const gchar *interface;
 
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID) ||
-	    !g_str_equal (interface, SECRETS_ITEM_INTERFACE))
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID))
 		return NULL;
+
+	if (!gkd_dbus_interface_match (SECRETS_ITEM_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED, 
+		                                      "Object does not have properties on interface '%s'", 
+		                                      interface);
 
 	attrs = gp11_object_get (object, &error,
 	                         CKA_LABEL,
@@ -626,9 +636,13 @@ collection_property_get (GkdSecretsObjects *self, GP11Object *object, DBusMessag
 	const gchar *name;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
-	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID) ||
-	    !g_str_equal (interface, SECRETS_COLLECTION_INTERFACE))
+	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID))
 		return NULL;
+
+	if (!gkd_dbus_interface_match (SECRETS_COLLECTION_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED, 
+		                                      "Object does not have properties on interface '%s'", 
+		                                      interface);
 
 	/* Special case, the Items property */
 	if (g_str_equal (name, "Items")) {
@@ -660,9 +674,13 @@ collection_property_getall (GkdSecretsObjects *self, GP11Object *object, DBusMes
 	const gchar *name;
 	const gchar *interface;
 
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID) ||
-	    !g_str_equal (interface, SECRETS_COLLECTION_INTERFACE))
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID))
 		return NULL;
+
+	if (!gkd_dbus_interface_match (SECRETS_COLLECTION_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED, 
+		                                      "Object does not have properties on interface '%s'", 
+		                                      interface);
 
 	attrs = gp11_object_get (object, &error,
 	                         CKA_LABEL,
