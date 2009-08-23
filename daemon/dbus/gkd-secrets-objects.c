@@ -75,22 +75,25 @@ typedef enum _DataType {
  * INTERNAL
  */
 
-#if 0
 static gchar*
-encode_object_path (const gchar* name)
+encode_object_identifier (const gchar* name, gssize length)
 {
 	GString *result;
 
-	g_return_val_if_fail (name, NULL);
+	g_assert (name);
 
-	result = g_string_sized_new (strlen (name) + 2);
-	while (*name) {
+	if (length < 0)
+		length = strlen (name);
+
+	result = g_string_sized_new (length + 2);
+	while (length > 0) {
 		char ch = *(name++);
+		--length;
 
 		/* Normal characters can go right through */
 		if (G_LIKELY ((ch >= 'A' && ch <= 'Z') ||
 		              (ch >= 'a' && ch <= 'z') ||
-		              (ch >= '0' && ch <= '1'))) {
+		              (ch >= '0' && ch <= '9'))) {
 			g_string_append_c_inline (result, ch);
 
 		/* Special characters are encoded with a _ */
@@ -101,14 +104,13 @@ encode_object_path (const gchar* name)
 
 	return g_string_free (result, FALSE);
 }
-#endif
 
 static gchar*
 decode_object_identifier (const gchar* enc, gssize length)
 {
 	GString *result;
 
-	g_return_val_if_fail (enc, NULL);
+	g_assert (enc);
 
 	if (length < 0)
 		length = strlen (enc);
@@ -426,6 +428,12 @@ item_for_identifier (GP11Session *session, const gchar *coll_id, const gchar *it
 	                                     CKA_ID, strlen (item_id), item_id,
 	                                     GP11_INVALID);
 
+	if (error != NULL) {
+		g_warning ("couldn't lookup '%s/%s' item: %s", coll_id, item_id, error->message);
+		g_clear_error (&error);
+		return NULL;
+	}
+
 	if (objects) {
 		object = objects->data;
 		gp11_object_set_session (object, session);
@@ -557,6 +565,95 @@ item_method_handler (GP11Object *object, DBusMessage *message)
 	g_return_val_if_reached (NULL); /* Not yet implemented */
 }
 
+static const gchar*
+collection_get_identifier (GP11Object *coll)
+{
+	return g_object_get_data (G_OBJECT (coll), "coll-identifier");
+}
+
+static GList*
+collection_lookup_items (GP11Object *coll)
+{
+	GP11Session *session;
+	const gchar *coll_id;
+	GError *error = NULL;
+	GList *l, *objects;
+
+	session = gp11_object_get_session (coll);
+	coll_id = collection_get_identifier (coll);
+	g_return_val_if_fail (session && coll, NULL);
+
+	objects = gp11_session_find_objects (session, &error,
+	                                     CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
+	                                     CKA_G_COLLECTION, strlen (coll_id), coll_id,
+	                                     GP11_INVALID);
+
+	if (error != NULL) {
+		g_warning ("couldn't lookup items in '%s' collection: %s", coll_id, error->message);
+		g_clear_error (&error);
+		return NULL;
+	}
+
+	for (l = objects; l; l = g_list_next (l))
+		gp11_object_set_session (l->data, session);
+
+	return objects;
+}
+
+static void
+collection_append_item_paths (DBusMessageIter *iter, GP11Object *coll)
+{
+	DBusMessageIter variant;
+	gchar *prefix, *suffix;
+	DBusMessageIter array;
+	const gchar *coll_id;
+	GError *error = NULL;
+	guchar *data;
+	gsize n_data;
+	gchar *path;
+	GList *items, *l;
+
+	g_assert (iter);
+	g_assert (coll);
+
+	items = collection_lookup_items (coll);
+
+	coll_id = collection_get_identifier (coll);
+	g_return_if_fail (coll);
+	prefix = encode_object_identifier (coll_id, -1);
+
+	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "ao", &variant);
+	dbus_message_iter_open_container (&variant, DBUS_TYPE_ARRAY, "o", &array);
+
+	for (l = items; l; l = g_list_next (l)) {
+
+		/* Dig out the raw item identifier */
+		data = gp11_object_get_data (l->data, CKA_ID, &n_data, &error);
+		if (error != NULL) {
+			g_warning ("couldn't retrieve item id: %s", error->message);
+			g_clear_error (&error);
+			continue;
+		}
+
+		/* Build up the object path */
+		suffix = encode_object_identifier ((gchar*)data, n_data);
+		path = g_strconcat (SECRETS_COLLECTION_PREFIX, "/", prefix, "/", suffix, NULL);
+		g_free (suffix);
+
+		g_free (data);
+
+		dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &path);
+		g_free (path);
+	}
+
+	dbus_message_iter_close_container (&variant, &array);
+	dbus_message_iter_close_container (iter, &variant);
+
+	g_free (prefix);
+
+	gp11_list_unref_free (items);
+}
+
 static GP11Object*
 collection_for_identifier (GP11Session *session, const gchar *coll_id)
 {
@@ -576,9 +673,16 @@ collection_for_identifier (GP11Session *session, const gchar *coll_id)
 	                                     CKA_ID, strlen (coll_id), coll_id,
 	                                     GP11_INVALID);
 
+	if (error != NULL) {
+		g_warning ("couldn't lookup '%s' collection: %s", coll_id, error->message);
+		g_clear_error (&error);
+		return NULL;
+	}
+
 	if (objects) {
 		object = objects->data;
 		gp11_object_set_session (object, session);
+		g_object_set_data_full (G_OBJECT (object), "coll-identifier", g_strdup (coll_id), g_free);
 		g_object_ref (object);
 	}
 
@@ -601,6 +705,14 @@ collection_property_get (GP11Object *object, DBusMessage *message)
 	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID) ||
 	    !g_str_equal (interface, SECRETS_COLLECTION_INTERFACE))
 		return NULL;
+
+	/* Special case, the Items property */
+	if (g_str_equal (name, "Items")) {
+		reply = dbus_message_new_method_return (message);
+		dbus_message_iter_init_append (reply, &iter);
+		collection_append_item_paths (&iter, object);
+		return reply;
+	}
 
 	/* What type of property is it? */
 	if (!property_to_attribute (name, &attr.type, &data_type)) {
@@ -677,6 +789,13 @@ collection_property_getall (GP11Object *object, DBusMessage *message)
 		iter_append_variant (&dict, data_type, attr);
 		dbus_message_iter_close_container (&array, &dict);
 	}
+
+	/* Append the Items property */
+	dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
+	name = "Items";
+	dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
+	collection_append_item_paths (&dict, object);
+	dbus_message_iter_close_container (&array, &dict);
 
 	dbus_message_iter_close_container (&iter, &array);
 	return reply;
@@ -876,6 +995,9 @@ gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
 			g_object_unref (object);
 		}
 	}
+
+	g_free (coll_id);
+	g_free (item_id);
 
 	return reply;
 }
