@@ -262,26 +262,84 @@ initialize_service_client (GkdSecretsService *self, DBusMessage *message)
  */
 
 static DBusMessage*
+service_property_get (GkdSecretsService *self, DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+	DBusMessageIter iter;
+	const gchar *interface;
+	const gchar *name;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
+	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID) ||
+	    !g_str_equal (interface, SECRETS_SERVICE_INTERFACE))
+		return NULL;
+
+	/* The "Collections" property */
+	if (g_str_equal (name, "Collections")) {
+		reply = dbus_message_new_method_return (message);
+		dbus_message_iter_init_append (reply, &iter);
+		gkd_secrets_objects_append_collection_paths (self->objects, &iter, message);
+
+	/* No such property */
+	} else {
+		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                       "Object does not have the '%s' property", name);
+	}
+
+	return reply;
+}
+
+static DBusMessage*
+service_property_set (GkdSecretsService *self, DBusMessage *message)
+{
+	return NULL; /* TODO: Need to implement */
+}
+
+static DBusMessage*
+service_property_getall (GkdSecretsService *self, DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+	DBusMessageIter array;
+	DBusMessageIter dict;
+	DBusMessageIter iter;
+	const gchar *interface;
+	const gchar *name;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID) ||
+	    !g_str_equal (interface, SECRETS_SERVICE_INTERFACE))
+		return NULL;
+
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{sv}", &array);
+
+	name = "Collections";
+	dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
+	dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
+	gkd_secrets_objects_append_collection_paths (self->objects, &dict, message);
+	dbus_message_iter_close_container (&array, &dict);
+
+	dbus_message_iter_close_container (&iter, &array);
+
+	return reply;
+}
+
+static DBusMessage*
 service_property_handler (GkdSecretsService *self, DBusMessage *message)
 {
-	g_return_val_if_reached (NULL); /* TODO: Need to implement */
-#if 0
 	/* org.freedesktop.DBus.Properties.Get */
-	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get") &&
-	    dbus_message_has_signature (message, "ss")) {
-		xxx;
+	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
+		return service_property_get (self, message);
 
 	/* org.freedesktop.DBus.Properties.Set */
-	} else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set") &&
-	           dbus_message_has_signature (message, "ssv")) {
-		xxx;
+	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
+		return service_property_set (self, message);
 
 	/* org.freedesktop.DBus.Properties.GetAll */
-	} else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll") &&
-	           dbus_message_has_signature (message, "s")) {
-		xxx;
-	}
-#endif
+	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
+		return service_property_getall (self, message);
+
+	return NULL;
 }
 
 static DBusMessage*

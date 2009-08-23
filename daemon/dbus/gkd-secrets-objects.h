@@ -41,11 +41,20 @@ struct _GkdSecretsObjectsClass {
 	GObjectClass parent_class;
 };
 
-GType               gkd_secrets_objects_get_type               (void);
+GType               gkd_secrets_objects_get_type                 (void);
 
-DBusMessage*        gkd_secrets_objects_dispatch               (GkdSecretsObjects *self,
-                                                                DBusMessage *message);
+DBusMessage*        gkd_secrets_objects_dispatch                 (GkdSecretsObjects *self,
+                                                                  DBusMessage *message);
 
-GP11Slot*           gkd_secrets_objects_get_pkcs11_slot        (GkdSecretsObjects *self);
+void                gkd_secrets_objects_append_collection_paths  (GkdSecretsObjects *self,
+                                                                  DBusMessageIter *iter,
+                                                                  DBusMessage *message);
+
+void                gkd_secrets_objects_append_item_paths        (GkdSecretsObjects *self, 
+                                                                  DBusMessageIter *iter,
+                                                                  DBusMessage *message, 
+                                                                  const gchar *coll_id);
+
+GP11Slot*           gkd_secrets_objects_get_pkcs11_slot          (GkdSecretsObjects *self);
 
 #endif /* __GKD_SECRETS_OBJECTS_H__ */
