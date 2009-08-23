@@ -198,6 +198,10 @@ property_to_attribute (const gchar *prop_name, CK_ATTRIBUTE_TYPE *attr_type, Dat
 		*attr_type = CKA_G_MODIFIED;
 		*data_type = DATA_TYPE_TIME;
 
+	} else if (g_str_equal (prop_name, "Attributes")) {
+		*attr_type = CKA_G_FIELDS;
+		*data_type = DATA_TYPE_FIELDS;
+
 	} else {
 		return FALSE;
 	}
@@ -227,6 +231,10 @@ attribute_to_property (CK_ATTRIBUTE_TYPE attr_type, const gchar **prop_name, Dat
 	case CKA_G_MODIFIED:
 		*prop_name = "Modified";
 		*data_type = DATA_TYPE_TIME;
+		break;
+	case CKA_G_FIELDS:
+		*prop_name = "Attributes";
+		*data_type = DATA_TYPE_FIELDS;
 		break;
 	default:
 		return FALSE;
@@ -306,6 +314,61 @@ iter_append_time (DBusMessageIter *iter, GP11Attribute *attr)
 }
 
 static void
+iter_append_fields (DBusMessageIter *iter, GP11Attribute *attr)
+{
+	DBusMessageIter array;
+	DBusMessageIter dict;
+	const gchar *ptr;
+	const gchar *last;
+	const gchar *name;
+	gsize n_name;
+	const gchar *value;
+	gsize n_value;
+	gchar *string;
+
+	g_assert (iter);
+	g_assert (attr);
+
+	ptr = (gchar*)attr->value;
+	last = ptr + attr->length;
+	g_return_if_fail (ptr || last == ptr);
+
+	dbus_message_iter_open_container (iter, DBUS_TYPE_ARRAY, "{ss}", &array);
+
+	while (ptr && ptr != last) {
+		g_assert (ptr < last);
+
+		name = ptr;
+		ptr = memchr (ptr, 0, last - ptr);
+		if (ptr == NULL) /* invalid */
+			break;
+
+		n_name = ptr - name;
+		value = ++ptr;
+		ptr = memchr (ptr, 0, last - ptr);
+		if (ptr == NULL) /* invalid */
+			break;
+
+		n_value = ptr - value;
+		++ptr;
+
+		dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
+
+		string = g_strndup (name, n_name);
+		dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &string);
+		g_free (string);
+
+		string = g_strndup (value, n_value);
+		dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &string);
+		g_free (string);
+
+		dbus_message_iter_close_container (&array, &dict);
+	}
+
+	dbus_message_iter_close_container (iter, &array);
+}
+
+static void
 iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *attr)
 {
 	DBusMessageIter sub;
@@ -329,7 +392,8 @@ iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *a
 		sig = DBUS_TYPE_INT64_AS_STRING;
 		break;
 	case DATA_TYPE_FIELDS:
-		g_return_if_reached (); /* TODO: Implement */
+		func = iter_append_fields;
+		sig = "a{ss}";
 		break;
 	default:
 		g_assert (FALSE);
@@ -440,6 +504,7 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 	                         CKA_G_LOCKED,
 	                         CKA_G_CREATED,
 	                         CKA_G_MODIFIED,
+	                         CKA_G_FIELDS,
 	                         GP11_INVALID);
 
 	if (error != NULL)
