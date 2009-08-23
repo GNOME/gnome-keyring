@@ -54,6 +54,9 @@ DBusConnection*         gkd_secrets_service_get_connection         (GkdSecretsSe
 
 GP11Slot*               gkd_secrets_service_get_pkcs11_slot        (GkdSecretsService *self);
 
+GP11Session*            gkd_secrets_service_get_pkcs11_session     (GkdSecretsService *self,
+                                                                    const gchar *caller);
+
 #if 0
 void                    gkd_secrets_service_refresh                (GkdSecretsService *self);
 #endif

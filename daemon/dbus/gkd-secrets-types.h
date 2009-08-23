@@ -26,6 +26,9 @@
 #define PROPERTIES_INTERFACE           "org.freedesktop.DBus.Properties"
 
 #define SECRETS_SERVICE_INTERFACE      "org.freedesktop.Secrets.Service"
+#define SECRETS_COLLECTION_INTERFACE   "org.freedesktop.Secrets.Collection"
+#define SECRETS_ITEM_INTERFACE         "org.freedesktop.Secrets.Item"
+
 #define SECRETS_SERVICE_PATH           "/org/freedesktop/secrets"
 #define SECRETS_SERVICE                "org.freedesktop.secrets"
 

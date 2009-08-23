@@ -25,6 +25,8 @@
 #include "gkd-secrets-objects.h"
 #include "gkd-secrets-types.h"
 
+#include "pkcs11/pkcs11i.h"
+
 #include <string.h>
 
 enum {
@@ -41,57 +43,517 @@ struct _GkdSecretsObjects {
 
 G_DEFINE_TYPE (GkdSecretsObjects, gkd_secrets_objects, G_TYPE_OBJECT);
 
+typedef enum _DataType {
+	DATA_TYPE_INVALID = 0,
+
+	/*
+	 * The attribute is a CK_BBOOL.
+	 * Property is DBUS_TYPE_BOOLEAN
+	 */
+	DATA_TYPE_BOOL,
+
+	/*
+	 * The attribute is in the format: "%Y%m%d%H%M%S00"
+	 * Property is DBUS_TYPE_INT64 since 1970 epoch.
+	 */
+	DATA_TYPE_TIME,
+
+	/*
+	 * The attribute is a CK_UTF8_CHAR string, not null-terminated
+	 * Property is a DBUS_TYPE_STRING
+	 */
+	DATA_TYPE_STRING,
+
+	/*
+	 * The attribute is in the format: name\0value\0name2\0value2
+	 * Property is dbus dictionary of strings: a{ss}
+	 */
+	DATA_TYPE_FIELDS
+} DataType;
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
 
-/* -----------------------------------------------------------------------------
- * DBUS
- */
-
 #if 0
-static DBusHandlerResult
-gkd_secrets_objects_close (GkdSecretsObjects *self, DBusConnection *conn, DBusMessage *message)
+static gchar*
+encode_object_path (const gchar* name)
 {
-	DBusMessage *reply;
+	GString *result;
 
-	g_return_val_if_fail (self->service, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+	g_return_val_if_fail (name, NULL);
 
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	result = g_string_sized_new (strlen (name) + 2);
+	while (*name) {
+		char ch = *(name++);
 
-	gkd_secrets_service_close_objects (self->service, self);
+		/* Normal characters can go right through */
+		if (G_LIKELY ((ch >= 'A' && ch <= 'Z') ||
+		              (ch >= 'a' && ch <= 'z') ||
+		              (ch >= '0' && ch <= '1'))) {
+			g_string_append_c_inline (result, ch);
 
-	reply = dbus_message_new_method_return (message);
-	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
-	dbus_connection_send (conn, reply, NULL);
-	dbus_message_unref (reply);
-
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
-gkd_sercets_objects_property_handler (DBusConnection *conn, DBusMessage *message, gpointer user_data)
-{
-	g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.DBus.Properties.Get */
-	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get") &&
-	    dbus_message_has_signature (message, "ss")) {
-		xxx;
-
-	/* org.freedesktop.DBus.Properties.Set */
-	} else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set") &&
-	           dbus_message_has_signature (message, "ssv")) {
-		xxx;
-
-	/* org.freedesktop.DBus.Properties.GetAll */
-	} else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll") &&
-	           dbus_message_has_signature (message, "s")) {
-		xxx;
+		/* Special characters are encoded with a _ */
+		} else {
+			g_string_append_printf (result, "_%02x", (unsigned int)ch);
+		}
 	}
+
+	return g_string_free (result, FALSE);
 }
 #endif
+
+static gchar*
+decode_object_identifier (const gchar* enc, gssize length)
+{
+	GString *result;
+
+	g_return_val_if_fail (enc, NULL);
+
+	if (length < 0)
+		length = strlen (enc);
+
+	result = g_string_sized_new (length);
+	while (length > 0) {
+		char ch = *(enc++);
+		--length;
+
+		/* Underscores get special handling */
+		if (G_UNLIKELY (ch == '_' &&
+		                g_ascii_isxdigit(enc[0]) &&
+		                g_ascii_isxdigit (enc[1]))) {
+			ch = (g_ascii_xdigit_value (enc[0]) * 16) +
+			     (g_ascii_xdigit_value (enc[1]));
+			enc += 2;
+			length -= 2;
+		}
+
+		g_string_append_c_inline (result, ch);
+	}
+
+	return g_string_free (result, FALSE);
+}
+
+static gboolean
+parse_collection_and_item_from_path (const gchar *path, gchar **collection, gchar **item)
+{
+	const gchar *pos;
+
+	g_return_val_if_fail (path, FALSE);
+	g_assert (collection);
+	g_assert (item);
+
+	/* Make sure it starts with our prefix */
+	if (!g_str_has_prefix (path, SECRETS_COLLECTION_PREFIX))
+		return FALSE;
+	path += strlen (SECRETS_COLLECTION_PREFIX);
+
+	/* Skip the path separator */
+	if (path[0] != '/')
+		return FALSE;
+	++path;
+
+	/* Make sure we have something */
+	if (path[0] == '\0')
+		return FALSE;
+
+	pos = strchr (path, '/');
+
+	/* No item, just a collection */
+	if (pos == NULL) {
+		*collection = decode_object_identifier (path, -1);
+		*item = NULL;
+		return TRUE;
+	}
+
+	/* Make sure we have an item, and no further path bits */
+	if (pos[1] == '\0' || strchr (pos + 1, '/'))
+		return FALSE;
+
+	*collection = decode_object_identifier (path, pos - path);
+	*item = decode_object_identifier (pos + 1, -1);
+	return TRUE;
+}
+
+static gboolean
+property_to_attribute (const gchar *prop_name, CK_ATTRIBUTE_TYPE *attr_type, DataType *data_type)
+{
+	g_return_val_if_fail (prop_name, FALSE);
+	g_assert (attr_type);
+	g_assert (data_type);
+
+	if (g_str_equal (prop_name, "Label")) {
+		*attr_type = CKA_LABEL;
+		*data_type = DATA_TYPE_STRING;
+
+	} else {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+attribute_to_property (CK_ATTRIBUTE_TYPE attr_type, const gchar **prop_name, DataType *data_type)
+{
+	g_assert (prop_name);
+	g_assert (data_type);
+
+	switch (attr_type) {
+	case CKA_LABEL:
+		*prop_name = "Label";
+		*data_type = DATA_TYPE_STRING;
+		break;
+	default:
+		return FALSE;
+	};
+
+	return TRUE;
+}
+
+typedef void (*IterAppendFunc) (DBusMessageIter*, GP11Attribute*);
+
+static void
+iter_append_string (DBusMessageIter *iter, GP11Attribute *attr)
+{
+	gchar *value;
+
+	g_assert (iter);
+	g_assert (attr);
+
+	if (attr->length == 0) {
+		value = "";
+		dbus_message_iter_append_basic (iter, DBUS_TYPE_STRING, &value);
+	} else {
+		value = g_strndup ((const gchar*)attr->value, attr->length);
+		dbus_message_iter_append_basic (iter, DBUS_TYPE_STRING, &value);
+		g_free (value);
+	}
+}
+
+static void
+iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *attr)
+{
+	DBusMessageIter sub;
+	IterAppendFunc func;
+	const gchar *sig;
+
+	g_assert (iter);
+	g_assert (attr);
+
+	switch (data_type) {
+	case DATA_TYPE_STRING:
+		func = iter_append_string;
+		sig = DBUS_TYPE_STRING_AS_STRING;
+		break;
+	case DATA_TYPE_BOOL:
+	case DATA_TYPE_FIELDS:
+	case DATA_TYPE_TIME:
+		g_return_if_reached (); /* TODO: Implement */
+		break;
+	default:
+		g_assert (FALSE);
+		break;
+	}
+
+	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, sig, &sub);
+	(func) (&sub, attr);
+	dbus_message_iter_close_container (iter, &sub);
+}
+
+static GP11Object*
+item_for_identifier (GP11Session *session, const gchar *coll_id, const gchar *item_id)
+{
+	GP11Object *object = NULL;
+	GError *error = NULL;
+	GList *objects;
+
+	g_assert (coll_id);
+	g_assert (item_id);
+
+	/*
+	 * TODO: I think this could benefit from some sort of
+	 * caching?
+	 */
+
+	objects = gp11_session_find_objects (session, &error,
+	                                     CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
+	                                     CKA_G_COLLECTION, strlen (coll_id), coll_id,
+	                                     CKA_ID, strlen (item_id), item_id,
+	                                     GP11_INVALID);
+
+	if (objects) {
+		object = objects->data;
+		gp11_object_set_session (object, session);
+		g_object_ref (object);
+	}
+
+	gp11_list_unref_free (objects);
+	return object;
+}
+
+static DBusMessage*
+item_property_get (GP11Object *object, DBusMessage *message)
+{
+	DBusMessageIter iter;
+	GError *error = NULL;
+	DBusMessage *reply;
+	GP11Attribute attr;
+	const gchar *interface;
+	const gchar *name;
+	DataType data_type;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
+	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID) ||
+	    !g_str_equal (interface, SECRETS_ITEM_INTERFACE))
+		return NULL;
+
+	/* What type of property is it? */
+	if (!property_to_attribute (name, &attr.type, &data_type)) {
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have the '%s' property", name);
+	}
+
+	/* Retrieve the actual attribute */
+	attr.value = gp11_object_get_data (object, attr.type, &attr.length, &error);
+	if (error != NULL) {
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Couldn't retrieve '%s' property: %s",
+		                                      name, error->message);
+	}
+
+	/* Marshall the data back out */
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	iter_append_variant (&iter, data_type, &attr);
+	g_free (attr.value);
+	return reply;
+}
+
+static DBusMessage*
+item_property_set (GP11Object *object, DBusMessage *message)
+{
+	g_return_val_if_reached (NULL); /* TODO: Need to implement */
+}
+
+static DBusMessage*
+item_property_getall (GP11Object *object, DBusMessage *message)
+{
+	GP11Attributes *attrs;
+	DBusMessageIter iter;
+	DBusMessageIter array;
+	DBusMessageIter dict;
+	GError *error = NULL;
+	GP11Attribute *attr;
+	DBusMessage *reply;
+	const gchar *name;
+	const gchar *interface;
+	DataType data_type;
+	gulong i, num;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID) ||
+	    !g_str_equal (interface, SECRETS_ITEM_INTERFACE))
+		return NULL;
+
+	attrs = gp11_object_get (object, &error,
+	                         CKA_LABEL,
+	                         GP11_INVALID);
+
+	if (error != NULL)
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Couldn't retrieve properties: %s", 
+		                                      error->message);
+
+	reply = dbus_message_new_method_return (message);
+
+	dbus_message_iter_init_append (reply, &iter);
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{sv}", &array);
+
+	num = gp11_attributes_count (attrs);
+	for (i = 0; i < num; ++i) {
+		attr = gp11_attributes_at (attrs, i);
+		if (!attribute_to_property (attr->type, &name, &data_type))
+			g_return_val_if_reached (NULL);
+
+		dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
+		dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
+		iter_append_variant (&dict, data_type, attr);
+		dbus_message_iter_close_container (&array, &dict);
+	}
+
+	dbus_message_iter_close_container (&iter, &array);
+	return reply;
+}
+
+static DBusMessage*
+item_property_handler (GP11Object *object, DBusMessage *message)
+{
+	/* org.freedesktop.DBus.Properties.Get */
+	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
+		return item_property_get (object, message);
+
+	/* org.freedesktop.DBus.Properties.Set */
+	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
+		return item_property_set (object, message);
+
+	/* org.freedesktop.DBus.Properties.GetAll */
+	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
+		return item_property_getall (object, message);
+
+	return NULL;
+}
+
+static DBusMessage*
+item_method_handler (GP11Object *object, DBusMessage *message)
+{
+	g_return_val_if_reached (NULL); /* Not yet implemented */
+}
+
+static GP11Object*
+collection_for_identifier (GP11Session *session, const gchar *coll_id)
+{
+	GP11Object *object = NULL;
+	GError *error = NULL;
+	GList *objects;
+
+	g_assert (coll_id);
+
+	/*
+	 * TODO: I think this could benefit from some sort of
+	 * caching?
+	 */
+
+	objects = gp11_session_find_objects (session, &error,
+	                                     CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
+	                                     CKA_ID, strlen (coll_id), coll_id,
+	                                     GP11_INVALID);
+
+	if (objects) {
+		object = objects->data;
+		gp11_object_set_session (object, session);
+		g_object_ref (object);
+	}
+
+	gp11_list_unref_free (objects);
+	return object;
+}
+
+static DBusMessage*
+collection_property_get (GP11Object *object, DBusMessage *message)
+{
+	DBusMessageIter iter;
+	GError *error = NULL;
+	DBusMessage *reply;
+	GP11Attribute attr;
+	const gchar *interface;
+	const gchar *name;
+	DataType data_type;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
+	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID) ||
+	    !g_str_equal (interface, SECRETS_COLLECTION_INTERFACE))
+		return NULL;
+
+	/* What type of property is it? */
+	if (!property_to_attribute (name, &attr.type, &data_type)) {
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have the '%s' property", name);
+	}
+
+	/* Retrieve the actual attribute */
+	attr.value = gp11_object_get_data (object, attr.type, &attr.length, &error);
+	if (error != NULL) {
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Couldn't retrieve '%s' property: %s",
+		                                      name, error->message);
+	}
+
+	/* Marshall the data back out */
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	iter_append_variant (&iter, data_type, &attr);
+	g_free (attr.value);
+	return reply;
+}
+
+static DBusMessage*
+collection_property_set (GP11Object *object, DBusMessage *message)
+{
+	g_return_val_if_reached (NULL); /* TODO: Need to implement */
+}
+
+static DBusMessage*
+collection_property_getall (GP11Object *object, DBusMessage *message)
+{
+	GP11Attributes *attrs;
+	DBusMessageIter iter;
+	DBusMessageIter array;
+	DBusMessageIter dict;
+	GError *error = NULL;
+	GP11Attribute *attr;
+	DBusMessage *reply;
+	const gchar *name;
+	const gchar *interface;
+	DataType data_type;
+	gulong i, num;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID) ||
+	    !g_str_equal (interface, SECRETS_COLLECTION_INTERFACE))
+		return NULL;
+
+	attrs = gp11_object_get (object, &error,
+	                         CKA_LABEL,
+	                         GP11_INVALID);
+
+	if (error != NULL)
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Couldn't retrieve properties: %s", 
+		                                      error->message);
+
+	reply = dbus_message_new_method_return (message);
+
+	dbus_message_iter_init_append (reply, &iter);
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{sv}", &array);
+
+	num = gp11_attributes_count (attrs);
+	for (i = 0; i < num; ++i) {
+		attr = gp11_attributes_at (attrs, i);
+		if (!attribute_to_property (attr->type, &name, &data_type))
+			g_return_val_if_reached (NULL);
+
+		dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
+		dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
+		iter_append_variant (&dict, data_type, attr);
+		dbus_message_iter_close_container (&array, &dict);
+	}
+
+	dbus_message_iter_close_container (&iter, &array);
+	return reply;
+}
+
+static DBusMessage*
+collection_property_handler (GP11Object *object, DBusMessage *message)
+{
+	/* org.freedesktop.DBus.Properties.Get */
+	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
+		return collection_property_get (object, message);
+
+	/* org.freedesktop.DBus.Properties.Set */
+	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
+		return collection_property_set (object, message);
+
+	/* org.freedesktop.DBus.Properties.GetAll */
+	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
+		return collection_property_getall (object, message);
+
+	return NULL;
+}
+
+static DBusMessage*
+collection_method_handler (GP11Object *object, DBusMessage *message)
+{
+	return NULL; /* TODO: Need to implement */
+}
 
 /* -----------------------------------------------------------------------------
  * OBJECT
@@ -224,39 +686,45 @@ DBusMessage*
 gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
 {
 	DBusMessage *reply = NULL;
+	GP11Object *object;
+	GP11Session *session;
+	gchar *coll_id;
+	gchar *item_id;
 
 	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), NULL);
 	g_return_val_if_fail (message, NULL);
 
-#if 0
-	/* Check if it's properties, and hand off to property handler. */
-	if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-		return gkd_sercets_objects_property_handler (conn, message, self);
+	/* The session we're using to access the object */
+	session = gkd_secrets_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
+	if (session == NULL)
+		return NULL;
 
-	/* org.freedesktop.Secrets.Objects.Close() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Close"))
-		return gkd_secrets_objects_close (self, conn, message);
+	/* Figure out which collection or item we're talking about */
+	if (!parse_collection_and_item_from_path (dbus_message_get_path (message), &coll_id, &item_id))
+		return NULL;
 
-	/* org.freedesktop.Secrets.Objects.Negotiate() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Negotiate"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
+	/* It's an item */
+	if (item_id) {
+		object = item_for_identifier (session, coll_id, item_id);
+		if (object != NULL) {
+			if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
+				reply = item_property_handler (object, message);
+			else
+				reply = item_method_handler (object, message);
+			g_object_unref (object);
+		}
 
-	/* org.freedesktop.Secrets.Objects.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Objects.SetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Objects.GetSecrets() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecrets"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-
-	/* org.freedesktop.Secrets.Objects.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NOT_YET_HANDLED); /* TODO: Need to implement */
-#endif
+	/* It's a collection */
+	} else {
+		object = collection_for_identifier (session, coll_id);
+		if (object != NULL) {
+			if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
+				reply = collection_property_handler (object, message);
+			else
+				reply = collection_method_handler (object, message);
+			g_object_unref (object);
+		}
+	}
 
 	return reply;
 }

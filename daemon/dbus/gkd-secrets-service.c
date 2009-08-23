@@ -638,6 +638,37 @@ gkd_secrets_service_get_pkcs11_slot (GkdSecretsService *self)
 	return gkd_secrets_objects_get_pkcs11_slot (self->objects);
 }
 
+GP11Session*
+gkd_secrets_service_get_pkcs11_session (GkdSecretsService *self, const gchar *caller)
+{
+	ServiceClient *client;
+	GError *error = NULL;
+	GP11Slot *slot;
+	gulong flags;
+
+	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (caller, NULL);
+
+	client = g_hash_table_lookup (self->clients, caller);
+	g_return_val_if_fail (client, NULL);
+
+	/* Open a new session if necessary */
+	if (!client->pkcs11_session) {
+		flags = CKF_RW_SESSION | CKF_G_APPLICATION_SESSION;
+		slot = gkd_secrets_service_get_pkcs11_slot (self);
+		client->pkcs11_session = gp11_slot_open_session_full (slot, flags, &client->app,
+		                                                      NULL, NULL, &error);
+		if (!client->pkcs11_session) {
+			g_warning ("couldn't open pkcs11 session for secrets service: %s",
+			           error->message);
+			g_clear_error (&error);
+			return NULL;
+		}
+	}
+
+	return client->pkcs11_session;
+}
+
 void
 gkd_secrets_service_close_session (GkdSecretsService *self, GkdSecretsSession *session)
 {
