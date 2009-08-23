@@ -27,11 +27,14 @@
 #include "gck-secret-item.h"
 #include "gck-secret-textual.h"
 
+#include "gck/gck-attributes.h"
 #include "gck/gck-authenticator.h"
 #include "gck/gck-secret.h"
 #include "gck/gck-session.h"
 
 #include <glib/gi18n.h>
+
+#include "pkcs11/pkcs11i.h"
 
 enum {
 	PROP_0,
@@ -128,6 +131,17 @@ expose_each_item (gpointer key, gpointer value, gpointer user_data)
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
+
+static CK_RV
+gck_secret_collection_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
+{
+	switch (attr->type) {
+	case CKA_CLASS:
+		return gck_attribute_set_ulong (attr, CKO_G_COLLECTION);
+	}
+
+	return GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->get_attribute (base, session, attr);
+}
 
 static CK_RV
 gck_secret_collection_real_unlock (GckObject *obj, GckAuthenticator *auth)
@@ -281,6 +295,7 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 	gobject_class->dispose = gck_secret_collection_dispose;
 	gobject_class->finalize = gck_secret_collection_finalize;
 
+	gck_class->get_attribute = gck_secret_collection_get_attribute;
 	gck_class->unlock = gck_secret_collection_real_unlock;
 	gck_class->expose_object = gck_secret_collection_expose;
 

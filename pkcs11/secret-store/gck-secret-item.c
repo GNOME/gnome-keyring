@@ -120,6 +120,9 @@ gck_secret_item_real_get_attribute (GckObject *base, GckSession *session, CK_ATT
 	g_return_val_if_fail (self->collection, CKR_GENERAL_ERROR);
 
 	switch (attr->type) {
+	case CKA_CLASS:
+		return gck_attribute_set_ulong (attr, CKO_SECRET_KEY);
+
 	case CKA_VALUE:
 		sdata = gck_secret_collection_unlocked_data (self->collection, session);
 		if (sdata == NULL)
