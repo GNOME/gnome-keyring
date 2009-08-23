@@ -197,7 +197,7 @@ gck_secret_module_constructor (GType type, guint n_props, GObjectConstructParam 
 			g_warning ("unable to create keyring dir: %s", self->directory);
 	}
 
-	self->tracker = gck_file_tracker_new (self->directory, "*.keyrings", NULL);
+	self->tracker = gck_file_tracker_new (self->directory, "*.keyring", NULL);
 	g_signal_connect (self->tracker, "file-added", G_CALLBACK (on_file_load), self);
 	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (on_file_load), self);
 	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (on_file_remove), self);
