@@ -186,6 +186,18 @@ property_to_attribute (const gchar *prop_name, CK_ATTRIBUTE_TYPE *attr_type, Dat
 		*attr_type = CKA_LABEL;
 		*data_type = DATA_TYPE_STRING;
 
+	} else if (g_str_equal (prop_name, "Locked")) {
+		*attr_type = CKA_G_LOCKED;
+		*data_type = DATA_TYPE_BOOL;
+
+	} else if (g_str_equal (prop_name, "Created")) {
+		*attr_type = CKA_G_CREATED;
+		*data_type = DATA_TYPE_TIME;
+
+	} else if (g_str_equal (prop_name, "Modified")) {
+		*attr_type = CKA_G_MODIFIED;
+		*data_type = DATA_TYPE_TIME;
+
 	} else {
 		return FALSE;
 	}
@@ -203,6 +215,18 @@ attribute_to_property (CK_ATTRIBUTE_TYPE attr_type, const gchar **prop_name, Dat
 	case CKA_LABEL:
 		*prop_name = "Label";
 		*data_type = DATA_TYPE_STRING;
+		break;
+	case CKA_G_LOCKED:
+		*prop_name = "Locked";
+		*data_type = DATA_TYPE_BOOL;
+		break;
+	case CKA_G_CREATED:
+		*prop_name = "Created";
+		*data_type = DATA_TYPE_TIME;
+		break;
+	case CKA_G_MODIFIED:
+		*prop_name = "Modified";
+		*data_type = DATA_TYPE_TIME;
 		break;
 	default:
 		return FALSE;
@@ -232,6 +256,56 @@ iter_append_string (DBusMessageIter *iter, GP11Attribute *attr)
 }
 
 static void
+iter_append_bool (DBusMessageIter *iter, GP11Attribute *attr)
+{
+	dbus_bool_t value;
+
+	g_assert (iter);
+	g_assert (attr);
+
+	value = gp11_attribute_get_boolean (attr) ? TRUE : FALSE;
+	dbus_message_iter_append_basic (iter, DBUS_TYPE_BOOLEAN, &value);
+}
+
+static void
+iter_append_time (DBusMessageIter *iter, GP11Attribute *attr)
+{
+	gint64 value;
+	struct tm tm;
+	gchar buf[15];
+
+	g_assert (iter);
+	g_assert (attr);
+
+	if (attr->length == 0) {
+		value = -1;
+
+	} else if (!attr->value || attr->length != 16) {
+		g_warning ("invalid length of time attribute");
+		value = -1;
+
+	} else {
+		memset (&tm, 0, sizeof (tm));
+		memcpy (buf, attr->value, 14);
+		buf[14] = 0;
+
+		if (!strptime(buf, "%Y%m%d%H%M%S", &tm)) {
+			g_warning ("invalid format of time attribute");
+			value = -1;
+		}
+
+		/* Convert to seconds since epoch */
+		value = timegm (&tm);
+		if (value < 0) {
+			g_warning ("invalid time attribute");
+			value = -1;
+		}
+	}
+
+	dbus_message_iter_append_basic (iter, DBUS_TYPE_INT64, &value);
+}
+
+static void
 iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *attr)
 {
 	DBusMessageIter sub;
@@ -247,8 +321,14 @@ iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *a
 		sig = DBUS_TYPE_STRING_AS_STRING;
 		break;
 	case DATA_TYPE_BOOL:
-	case DATA_TYPE_FIELDS:
+		func = iter_append_bool;
+		sig = DBUS_TYPE_BOOLEAN_AS_STRING;
+		break;
 	case DATA_TYPE_TIME:
+		func = iter_append_time;
+		sig = DBUS_TYPE_INT64_AS_STRING;
+		break;
+	case DATA_TYPE_FIELDS:
 		g_return_if_reached (); /* TODO: Implement */
 		break;
 	default:
@@ -357,6 +437,9 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 
 	attrs = gp11_object_get (object, &error,
 	                         CKA_LABEL,
+	                         CKA_G_LOCKED,
+	                         CKA_G_CREATED,
+	                         CKA_G_MODIFIED,
 	                         GP11_INVALID);
 
 	if (error != NULL)
@@ -503,6 +586,9 @@ collection_property_getall (GP11Object *object, DBusMessage *message)
 
 	attrs = gp11_object_get (object, &error,
 	                         CKA_LABEL,
+	                         CKA_G_LOCKED,
+	                         CKA_G_CREATED,
+	                         CKA_G_MODIFIED,
 	                         GP11_INVALID);
 
 	if (error != NULL)
