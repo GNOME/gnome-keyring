@@ -148,12 +148,12 @@ CK_RV
 gck_secret_fields_parse (CK_ATTRIBUTE_PTR attr, GHashTable **fields)
 {
 	GHashTable *result;
-	gchar *name;
+	const gchar *name;
 	gsize n_name;
-	gchar *value;
+	const gchar *value;
 	gsize n_value;
-	gchar *ptr;
-	gchar *last;
+	const gchar *ptr;
+	const gchar *last;
 	
 	g_assert (attr);
 	g_assert (fields);
