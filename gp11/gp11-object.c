@@ -1077,7 +1077,7 @@ perform_get_attribute_data (GetAttributeData *args)
 		return rv;
 	
 	/* Allocate memory for the value */
-	args->result = (args->allocator) (NULL, attr.ulValueLen);
+	args->result = (args->allocator) (NULL, attr.ulValueLen ? attr.ulValueLen : 1);
 	g_assert (args->result);
 	attr.pValue = args->result;
 	
