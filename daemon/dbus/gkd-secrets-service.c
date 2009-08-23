@@ -325,24 +325,6 @@ service_property_getall (GkdSecretsService *self, DBusMessage *message)
 }
 
 static DBusMessage*
-service_property_handler (GkdSecretsService *self, DBusMessage *message)
-{
-	/* org.freedesktop.DBus.Properties.Get */
-	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
-		return service_property_get (self, message);
-
-	/* org.freedesktop.DBus.Properties.Set */
-	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
-		return service_property_set (self, message);
-
-	/* org.freedesktop.DBus.Properties.GetAll */
-	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
-		return service_property_getall (self, message);
-
-	return NULL;
-}
-
-static DBusMessage*
 service_method_open_session (GkdSecretsService *self, DBusMessage *message)
 {
 	GkdSecretsSession *session;
@@ -375,15 +357,48 @@ service_method_open_session (GkdSecretsService *self, DBusMessage *message)
 }
 
 static DBusMessage*
-service_method_handler (GkdSecretsService *self, DBusMessage *message)
+service_message_handler (GkdSecretsService *self, DBusMessage *message)
 {
 	DBusMessage *reply = NULL;
 
 	g_return_val_if_fail (message, NULL);
 	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), NULL);
 
+	/* org.freedesktop.Secrets.Service.OpenSession() */
 	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "OpenSession"))
 		reply = service_method_open_session (self, message);
+
+	/* org.freedesktop.Secrets.Service.CreateCollection() */
+	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "CreateCollection"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Service.LockService() */
+	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "LockService"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Service.SearchItems() */
+	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SearchItems"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Service.BeginAuthenticate() */
+	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "BeginAuthenticate"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.Secrets.Service.CompleteAuthenticate() */
+	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "CompleteAuthenticate"))
+		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	/* org.freedesktop.DBus.Properties.Get() */
+	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
+		return service_property_get (self, message);
+
+	/* org.freedesktop.DBus.Properties.Set() */
+	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
+		return service_property_set (self, message);
+
+	/* org.freedesktop.DBus.Properties.GetAll() */
+	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
+		return service_property_getall (self, message);
 
 	return reply;
 }
@@ -435,10 +450,7 @@ service_dispatch_message (GkdSecretsService *self, DBusMessage *message)
 	} else if (g_str_equal (path, SECRETS_SERVICE_PATH)) {
 
 		/* Check if it's properties, and hand off to property handler. */
-		if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-			reply = service_property_handler (self, message);
-		else
-			reply = service_method_handler (self, message);
+		reply = service_message_handler (self, message);
 	}
 
 	/* Should we send an error? */

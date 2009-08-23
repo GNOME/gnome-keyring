@@ -554,8 +554,12 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 }
 
 static DBusMessage*
-item_property_handler (GP11Object *object, DBusMessage *message)
+item_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
 {
+	/* org.freedesktop.Secrets.Item.Delete() */
+	if (dbus_message_is_method_call (message, SECRETS_ITEM_INTERFACE, "Delete"))
+		g_return_val_if_reached (NULL);
+
 	/* org.freedesktop.DBus.Properties.Get */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
 		return item_property_get (object, message);
@@ -569,12 +573,6 @@ item_property_handler (GP11Object *object, DBusMessage *message)
 		return item_property_getall (object, message);
 
 	return NULL;
-}
-
-static DBusMessage*
-item_method_handler (GP11Object *object, DBusMessage *message)
-{
-	g_return_val_if_reached (NULL); /* Not yet implemented */
 }
 
 static const gchar*
@@ -699,27 +697,33 @@ collection_property_getall (GkdSecretsObjects *self, GP11Object *object, DBusMes
 }
 
 static DBusMessage*
-collection_property_handler (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+collection_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
 {
-	/* org.freedesktop.DBus.Properties.Get */
+	/* org.freedesktop.Secrets.Collection.Delete() */
+	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "Delete"))
+		g_return_val_if_reached (NULL);
+
+	/* org.freedesktop.Secrets.Collection.SearchItems() */
+	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "SearchItems"))
+		g_return_val_if_reached (NULL);
+
+	/* org.freedesktop.Secrets.Collection.CreateItem() */
+	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "CreateItem"))
+		g_return_val_if_reached (NULL);
+
+	/* org.freedesktop.DBus.Properties.Get() */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
 		return collection_property_get (self, object, message);
 
-	/* org.freedesktop.DBus.Properties.Set */
+	/* org.freedesktop.DBus.Properties.Set() */
 	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
 		return collection_property_set (self, object, message);
 
-	/* org.freedesktop.DBus.Properties.GetAll */
+	/* org.freedesktop.DBus.Properties.GetAll() */
 	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
 		return collection_property_getall (self, object, message);
 
 	return NULL;
-}
-
-static DBusMessage*
-collection_method_handler (GP11Object *object, DBusMessage *message)
-{
-	return NULL; /* TODO: Need to implement */
 }
 
 /* -----------------------------------------------------------------------------
@@ -874,10 +878,7 @@ gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
 	if (item_id) {
 		object = item_for_identifier (session, coll_id, item_id);
 		if (object != NULL) {
-			if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-				reply = item_property_handler (object, message);
-			else
-				reply = item_method_handler (object, message);
+			reply = item_message_handler (self, object, message);
 			g_object_unref (object);
 		}
 
@@ -885,10 +886,7 @@ gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
 	} else {
 		object = collection_for_identifier (session, coll_id);
 		if (object != NULL) {
-			if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-				reply = collection_property_handler (self, object, message);
-			else
-				reply = collection_method_handler (object, message);
+			reply = collection_message_handler (self, object, message);
 			g_object_unref (object);
 		}
 	}
