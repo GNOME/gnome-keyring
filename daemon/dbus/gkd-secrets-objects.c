@@ -407,6 +407,60 @@ iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *a
 	dbus_message_iter_close_container (iter, &sub);
 }
 
+static void
+iter_append_property_dict (DBusMessageIter *iter, GP11Attributes *attrs)
+{
+	DBusMessageIter dict;
+	GP11Attribute *attr;
+	DataType data_type;
+	const gchar *name;
+	gulong num, i;
+
+	num = gp11_attributes_count (attrs);
+	for (i = 0; i < num; ++i) {
+		attr = gp11_attributes_at (attrs, i);
+		if (!attribute_to_property (attr->type, &name, &data_type))
+			g_return_if_reached ();
+
+		dbus_message_iter_open_container (iter, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
+		dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
+		iter_append_variant (&dict, data_type, attr);
+		dbus_message_iter_close_container (iter, &dict);
+	}
+}
+
+static DBusMessage*
+object_property_get (GP11Object *object, DBusMessage *message,
+                     const gchar *prop_name)
+{
+	DBusMessageIter iter;
+	GError *error = NULL;
+	DBusMessage *reply;
+	GP11Attribute attr;
+	DataType data_type;
+
+	/* What type of property is it? */
+	if (!property_to_attribute (prop_name, &attr.type, &data_type)) {
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have the '%s' property", prop_name);
+	}
+
+	/* Retrieve the actual attribute */
+	attr.value = gp11_object_get_data (object, attr.type, &attr.length, &error);
+	if (error != NULL) {
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Couldn't retrieve '%s' property: %s",
+		                                      prop_name, error->message);
+	}
+
+	/* Marshall the data back out */
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	iter_append_variant (&iter, data_type, &attr);
+	g_free (attr.value);
+	return reply;
+}
+
 static GP11Object*
 item_for_identifier (GP11Session *session, const gchar *coll_id, const gchar *item_id)
 {
@@ -435,9 +489,8 @@ item_for_identifier (GP11Session *session, const gchar *coll_id, const gchar *it
 	}
 
 	if (objects) {
-		object = objects->data;
+		object = g_object_ref (objects->data);
 		gp11_object_set_session (object, session);
-		g_object_ref (object);
 	}
 
 	gp11_list_unref_free (objects);
@@ -447,39 +500,15 @@ item_for_identifier (GP11Session *session, const gchar *coll_id, const gchar *it
 static DBusMessage*
 item_property_get (GP11Object *object, DBusMessage *message)
 {
-	DBusMessageIter iter;
-	GError *error = NULL;
-	DBusMessage *reply;
-	GP11Attribute attr;
 	const gchar *interface;
 	const gchar *name;
-	DataType data_type;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
 	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID) ||
 	    !g_str_equal (interface, SECRETS_ITEM_INTERFACE))
 		return NULL;
 
-	/* What type of property is it? */
-	if (!property_to_attribute (name, &attr.type, &data_type)) {
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Object does not have the '%s' property", name);
-	}
-
-	/* Retrieve the actual attribute */
-	attr.value = gp11_object_get_data (object, attr.type, &attr.length, &error);
-	if (error != NULL) {
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Couldn't retrieve '%s' property: %s",
-		                                      name, error->message);
-	}
-
-	/* Marshall the data back out */
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &iter);
-	iter_append_variant (&iter, data_type, &attr);
-	g_free (attr.value);
-	return reply;
+	return object_property_get (object, message, name);
 }
 
 static DBusMessage*
@@ -494,14 +523,9 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 	GP11Attributes *attrs;
 	DBusMessageIter iter;
 	DBusMessageIter array;
-	DBusMessageIter dict;
 	GError *error = NULL;
-	GP11Attribute *attr;
 	DBusMessage *reply;
-	const gchar *name;
 	const gchar *interface;
-	DataType data_type;
-	gulong i, num;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID) ||
 	    !g_str_equal (interface, SECRETS_ITEM_INTERFACE))
@@ -524,19 +548,7 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 
 	dbus_message_iter_init_append (reply, &iter);
 	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{sv}", &array);
-
-	num = gp11_attributes_count (attrs);
-	for (i = 0; i < num; ++i) {
-		attr = gp11_attributes_at (attrs, i);
-		if (!attribute_to_property (attr->type, &name, &data_type))
-			g_return_val_if_reached (NULL);
-
-		dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
-		dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
-		iter_append_variant (&dict, data_type, attr);
-		dbus_message_iter_close_container (&array, &dict);
-	}
-
+	iter_append_property_dict (&array, attrs);
 	dbus_message_iter_close_container (&iter, &array);
 	return reply;
 }
@@ -694,12 +706,9 @@ static DBusMessage*
 collection_property_get (GP11Object *object, DBusMessage *message)
 {
 	DBusMessageIter iter;
-	GError *error = NULL;
 	DBusMessage *reply;
-	GP11Attribute attr;
 	const gchar *interface;
 	const gchar *name;
-	DataType data_type;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
 	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID) ||
@@ -714,26 +723,7 @@ collection_property_get (GP11Object *object, DBusMessage *message)
 		return reply;
 	}
 
-	/* What type of property is it? */
-	if (!property_to_attribute (name, &attr.type, &data_type)) {
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Object does not have the '%s' property", name);
-	}
-
-	/* Retrieve the actual attribute */
-	attr.value = gp11_object_get_data (object, attr.type, &attr.length, &error);
-	if (error != NULL) {
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Couldn't retrieve '%s' property: %s",
-		                                      name, error->message);
-	}
-
-	/* Marshall the data back out */
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &iter);
-	iter_append_variant (&iter, data_type, &attr);
-	g_free (attr.value);
-	return reply;
+	return object_property_get (object, message, name);
 }
 
 static DBusMessage*
@@ -750,12 +740,9 @@ collection_property_getall (GP11Object *object, DBusMessage *message)
 	DBusMessageIter array;
 	DBusMessageIter dict;
 	GError *error = NULL;
-	GP11Attribute *attr;
 	DBusMessage *reply;
 	const gchar *name;
 	const gchar *interface;
-	DataType data_type;
-	gulong i, num;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID) ||
 	    !g_str_equal (interface, SECRETS_COLLECTION_INTERFACE))
@@ -778,17 +765,8 @@ collection_property_getall (GP11Object *object, DBusMessage *message)
 	dbus_message_iter_init_append (reply, &iter);
 	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{sv}", &array);
 
-	num = gp11_attributes_count (attrs);
-	for (i = 0; i < num; ++i) {
-		attr = gp11_attributes_at (attrs, i);
-		if (!attribute_to_property (attr->type, &name, &data_type))
-			g_return_val_if_reached (NULL);
-
-		dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
-		dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
-		iter_append_variant (&dict, data_type, attr);
-		dbus_message_iter_close_container (&array, &dict);
-	}
+	/* Append all the usual properties */
+	iter_append_property_dict (&array, attrs);
 
 	/* Append the Items property */
 	dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
