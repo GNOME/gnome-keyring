@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-25 19:29+0200\n"
-"PO-Revision-Date: 2009-08-25 19:30+0100\n"
+"PO-Revision-Date: 2009-08-25 19:33+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
@@ -473,7 +473,7 @@ msgstr "Hasło nie może być puste"
 
 #: ../daemon/ui/gkr-ask-tool.c:712
 msgid "_Deny"
-msgstr "_Odmów"
+msgstr "O_dmów"
 
 #: ../daemon/ui/gkr-ask-tool.c:724
 msgid "C_reate"
