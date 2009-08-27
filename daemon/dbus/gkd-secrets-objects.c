@@ -582,6 +582,9 @@ item_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMessage *
 	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
 		return item_property_getall (object, message);
 
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "item");
+
 	return NULL;
 }
 
@@ -740,6 +743,9 @@ collection_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMes
 	/* org.freedesktop.DBus.Properties.GetAll() */
 	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
 		return collection_property_getall (self, object, message);
+
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "collection");
 
 	return NULL;
 }

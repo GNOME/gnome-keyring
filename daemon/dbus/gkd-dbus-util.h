@@ -28,10 +28,12 @@
 #include <glib-object.h>
 #include <dbus/dbus.h>
 
-#define    GKD_DBUS_TYPE_CONNECTION                    (gkd_dbus_connection_get_boxed_type ())
+#define       GKD_DBUS_TYPE_CONNECTION                    (gkd_dbus_connection_get_boxed_type ())
 
-GType      gkd_dbus_connection_get_boxed_type          (void) G_GNUC_CONST;
+GType         gkd_dbus_connection_get_boxed_type          (void) G_GNUC_CONST;
 
-gboolean   gkd_dbus_interface_match                    (const gchar *interface, const gchar *match);
+gboolean      gkd_dbus_interface_match                    (const gchar *interface, const gchar *match);
+
+DBusMessage*  gkd_dbus_introspect_handle                  (DBusMessage *message, const gchar *type);
 
 #endif /* GKD_DBUS_H */

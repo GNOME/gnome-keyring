@@ -24,6 +24,7 @@
 #include "gkd-secrets-service.h"
 #include "gkd-secrets-session.h"
 #include "gkd-secrets-types.h"
+#include "gkd-dbus-util.h"
 
 #include <string.h>
 
@@ -280,6 +281,9 @@ gkd_secrets_session_dispatch (GkdSecretsSession *self, DBusMessage *message)
 	/* org.freedesktop.Secrets.Session.GetSecret() */
 	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
 		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "session");
 
 	return reply;
 }

@@ -408,6 +408,9 @@ service_message_handler (GkdSecretsService *self, DBusMessage *message)
 	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
 		return service_property_getall (self, message);
 
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "service");
+
 	return reply;
 }
 
@@ -455,9 +458,8 @@ service_dispatch_message (GkdSecretsService *self, DBusMessage *message)
 	} else if (object_path_has_prefix (path, SECRETS_COLLECTION_PREFIX)) {
 		reply = gkd_secrets_objects_dispatch (self->objects, message);
 
+	/* Addressed to the service */
 	} else if (g_str_equal (path, SECRETS_SERVICE_PATH)) {
-
-		/* Check if it's properties, and hand off to property handler. */
 		reply = service_message_handler (self, message);
 	}
 
@@ -519,7 +521,8 @@ gkd_secrets_service_filter_handler (DBusConnection *conn, DBusMessage *message, 
 			interface = dbus_message_get_interface (message);
 			if (interface == NULL ||
 			    g_str_has_prefix (interface, SECRETS_INTERFACE_PREFIX) ||
-			    g_str_equal (interface, DBUS_INTERFACE_PROPERTIES)) {
+			    g_str_equal (interface, DBUS_INTERFACE_PROPERTIES) ||
+			    g_str_equal (interface, DBUS_INTERFACE_INTROSPECTABLE)) {
 				service_dispatch_message (self, message);
 				return DBUS_HANDLER_RESULT_HANDLED;
 			}

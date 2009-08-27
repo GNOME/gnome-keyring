@@ -49,3 +49,38 @@ gkd_dbus_interface_match (const gchar *interface, const gchar *match)
 
 	return strcmp (interface, match) == 0;
 }
+
+DBusMessage*
+gkd_dbus_introspect_handle (DBusMessage *message, const gchar *type)
+{
+	GError *error = NULL;
+	DBusMessage *reply;
+	gchar *filename;
+	gchar *data;
+
+	g_return_val_if_fail (message, NULL);
+	g_return_val_if_fail (type, NULL);
+
+	if (dbus_message_is_method_call (message, DBUS_INTERFACE_INTROSPECTABLE, "Introspect") &&
+	    dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID)) {
+
+		filename = g_strconcat (INTROSPECTDIR, G_DIR_SEPARATOR_S, "introspect-", type, ".xml", NULL);
+		g_file_get_contents (filename, &data, NULL, &error);
+		g_free (filename);
+
+		if (error != NULL) {
+			g_warning ("couldn't load introspect data file: %s: %s",
+			           filename, error->message ? error->message : "");
+			g_clear_error (&error);
+			return NULL;
+		}
+
+		reply = dbus_message_new_method_return (message);
+		if (!dbus_message_append_args (reply, DBUS_TYPE_STRING, &data, DBUS_TYPE_INVALID))
+			g_return_val_if_reached (NULL);
+		g_free (data);
+		return reply;
+	}
+
+	return NULL;
+}
