@@ -1,0 +1,76 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+	"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+
+	<interface name="org.freedesktop.DBus.Introspectable">
+		<method name="Introspect">
+			<arg name="data" direction="out" type="s"/>
+		</method>
+	</interface>
+
+	<interface name="org.freedesktop.DBus.Properties">
+		<method name="Get">
+			<arg name="interface" direction="in" type="s"/>
+			<arg name="propname" direction="in" type="s"/>
+			<arg name="value" direction="out" type="v"/>
+		</method>
+		<method name="Set">
+			<arg name="interface" direction="in" type="s"/>
+			<arg name="propname" direction="in" type="s"/>
+			<arg name="value" direction="in" type="v"/>
+		</method>
+		<method name="GetAll">
+			<arg name="interface" direction="in" type="s"/>
+			<arg name="props" direction="out" type="a{sv}"/>
+		</method>
+	</interface>
+
+	<interface name="org.freedesktop.Secrets.Service">
+
+		<property name="Collections" type="ao" access="read"/>
+		<property name="DefaultCollection" type="o" access="readwrite"/>
+
+		<method name="OpenSession">
+			<arg name="result" type="o" direction="out"/>
+		</method>
+
+		<method name="CreateCollection">
+			<arg name="label" type="s" direction="in"/>
+			<arg name="private" type="b" direction="in"/>
+		</method>
+
+		<method name="LockService">
+		</method>
+
+		<method name="SearchItems">
+			<arg name="attributes" type="a{ss}" direction="in"/>
+			<arg name="unlocked" type="ao" direction="out"/>
+			<arg name="locked" type="ao" direction="out"/>
+		</method>
+
+		<signal name="CollectionCreated">
+			<arg name="collection" type="o"/>
+		</signal>
+
+		<signal name="CollectionDeleted">
+			<arg name="collection" type="o"/>
+		</signal>
+
+		<method name="BeginAuthenticate">
+			<arg name="objects" type="ao" direction="in"/>
+			<arg name="window-id" type="s" direction="in"/>
+		</method>
+
+		<method name="CompleteAuthenticate">
+			<arg name="objects" type="ao" direction="in"/>
+			<arg name="authenticated" type="ao" direction="in"/>
+		</method>
+
+		<signal name="Authenticated">
+			<arg name="object" type="o"/>
+			<arg name="success" type="b"/>
+		</signal>
+
+	</interface>
+
+</node>

@@ -18,7 +18,16 @@ else
 install-data-local:
 endif
 
-EXTRA_DIST = $(schemas_in_files)
+introspectdir = $(datadir)/gnome-keyring/introspect
+
+introspect_DATA = \
+	introspect-collection.xml \
+	introspect-item.xml \
+	introspect-service.xml \
+	introspect-session.xml
+
+EXTRA_DIST = \
+	$(schemas_in_files) \
+	$(introspect_DATA)
 
 CLEANFILES = $(schemas_DATA)
-
