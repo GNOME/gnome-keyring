@@ -224,7 +224,11 @@ mount_added (GVolumeMonitor *monitor, GMount *mount, GkrLocationManager *self)
 
 	/* Figure out the location name */
 	identifier = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
-	g_return_if_fail (identifier);
+	if (!identifier) {
+		g_object_unref (volume);
+		return;
+	}
+
 	name = udi_to_location_name (identifier);
 	g_free (identifier);
 
