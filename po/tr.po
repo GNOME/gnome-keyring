@@ -11,41 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-30 12:21+0300\n"
-"PO-Revision-Date: 2009-03-30 12:18+0300\n"
+"POT-Creation-Date: 2009-08-29 00:19+0300\n"
+"PO-Revision-Date: 2009-08-29 00:20+0300\n"
 "Last-Translator: Baris Cicek <baris@teamforce.name.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=1; plural=0;\n"
-
-#: ../common/gkr-location.c:321
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "Taşınabilir Disk: %s"
-
-#: ../common/gkr-location.c:323
-msgid "Removable Disk"
-msgstr "Taşınabilir Disk"
-
-#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
-msgid "Home"
-msgstr "Başlangıç"
-
-#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
-msgid "The disk or drive this file is located on is not present"
-msgstr "Bu dosyanın bulunduğu disk ya da sürücü mevcut değil"
-
-#: ../common/gkr-location.c:1137
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "Dizin oluşturulamadı: %s"
-
-#: ../common/gkr-location.c:1171
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "Dosya silinemedi: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:228
@@ -311,12 +284,12 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:552
 #, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "'%s' anahtarlığı için yeni bir parola seçin. "
+msgid "Choose a new password for the '%s' keyring."
+msgstr "'%s' anahtarlığı için yeni bir parola seçin."
 
 #: ../daemon/gkr-daemon-ops.c:554
 #, c-format
-msgid "Choose a new password for the default keyring. "
+msgid "Choose a new password for the default keyring."
 msgstr "Öntanımlı anahtarlık için yeni bir parola seçin."
 
 #. And put together the ask request
@@ -403,15 +376,15 @@ msgid "GNOME Keyring Daemon"
 msgstr "GNOME Anahtarlık Servisi"
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Unlock Login Keyring"
 msgstr "Giriş Anahtarlık Kilidini Kaldır"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Enter login password to unlock keyring"
 msgstr "Anahtarlığı açmak için giriş parolasını gir"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:100
+#: ../daemon/keyrings/gkr-keyring-login.c:101
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
@@ -420,15 +393,15 @@ msgstr ""
 "açılmadı."
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Create Login Keyring"
 msgstr "Giriş Anahtarlığı Oluştur"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Enter your login password"
 msgstr "Giriş parolanızı girin"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:126
+#: ../daemon/keyrings/gkr-keyring-login.c:127
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
@@ -436,45 +409,45 @@ msgstr ""
 "Giriş anahtarlığınız bu bilgisayarda girdiğinizde kendiliğinden "
 "oluşturulamadı. Şimdi oluşturulacak."
 
-#: ../daemon/keyrings/gkr-keyring.c:586
+#: ../daemon/keyrings/gkr-keyring.c:587
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "%s anahtarlığı için parolayı girin "
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
 msgid "Unlock private key"
 msgstr "Özel anahtarın kilidini kaldır"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
 msgid "Unlock certificate"
 msgstr "Sertifikanın kilidini kaldır"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
 msgid "Unlock public key"
 msgstr "Genel anahtarın kilidini kaldır"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
 msgid "Unlock"
 msgstr "Kilidini kaldır"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Özel anahtarlık kilidini açmak için parola girin"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Sertifikanın kilidini açmak için parola girin"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
 msgid "Enter password to unlock the public key"
 msgstr "Genel anahtarlık kilidini açmak için parola girin"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Kilidini açmak için parola girin"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
@@ -482,7 +455,7 @@ msgstr ""
 "anahtarlık kilitli"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
@@ -490,7 +463,7 @@ msgstr ""
 "kilitli"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
@@ -498,39 +471,39 @@ msgstr ""
 "anahtarlık kilitli"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama '%s' anahtarlığa ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
 msgid "Automatically unlock this private key when I log in."
 msgstr "Giriş yaptığımda özel anahtarın kendiliğinden kilidini aç."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
 msgid "Automatically unlock this certificate when I log in."
 msgstr "Giriş yaptığımda sertifikanın kendiliğinden kilidini aç."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
 msgid "Automatically unlock this public key when I log in."
 msgstr "Giriş yaptığımda genel anahtarın kilidini aç."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
 msgid "Automatically unlock this when I log in"
 msgstr "Giriş yaptığımda bunun kendiliğinden kilidini aç"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Unlock certificate/key storage"
 msgstr "Sertifika/anahtar deposu kilidini aç"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Sertifika/anahtar deposu kilidini açmak için parolanızı girin"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -538,20 +511,20 @@ msgid ""
 msgstr ""
 "Bir uygulama sertifika/anahtar deposu '%s' için erişim istiyor, ancak kilitli"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Giriş yapıldığında otomatik olarak güvenli depo kilidini aç."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New Password Required"
 msgstr "Yeni Parola Gerekli"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
 msgid "New password required for secure storage"
 msgstr "Güvenli depolama için yeni parola gerekli"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -656,6 +629,33 @@ msgstr "Bir _Kereliğine İzin ver"
 msgid "_Always Allow"
 msgstr "_Herzaman İzin ver"
 
+#: ../daemon/util/gkr-location.c:234
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "Taşınabilir Disk: %s"
+
+#: ../daemon/util/gkr-location.c:236
+msgid "Removable Disk"
+msgstr "Taşınabilir Disk"
+
+#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
+msgid "Home"
+msgstr "Başlangıç"
+
+#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
+msgid "The disk or drive this file is located on is not present"
+msgstr "Bu dosyanın bulunduğu disk ya da sürücü mevcut değil"
+
+#: ../daemon/util/gkr-location.c:914
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "Dizin oluşturulamadı: %s"
+
+#: ../daemon/util/gkr-location.c:948
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "Dosya silinemedi: %s"
+
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "Alan Bileşeni"
@@ -696,8 +696,8 @@ msgstr "Ortak Ad"
 msgid "Surname"
 msgstr "Soyadı"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "Seri Numarası"
 
@@ -785,71 +785,71 @@ msgstr "<i>Sertifikanın bir parçası değil</i>"
 msgid "<i>unknown</i>"
 msgstr "<i>bilinmeyen</i>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
 msgid "<Not Part of Certificate>"
 msgstr "<Sertifikanın Bir Parçası Değil>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
 msgid "<b>Fingerprints</b>"
 msgstr "<b>Parmak izleri</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
 msgid "<b>Issued By</b>"
 msgstr "<b>Veren</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
 msgid "<b>Issued To</b>"
 msgstr "<b>Verilen</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
 msgid "<b>This certificate has been verified for the following uses:</b>"
 msgstr "<b>Bu sertifika aşağıdaki kullanımlar için doğrulandı:</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
 msgid "<b>Validity</b>"
 msgstr "<b>Geçerlilik</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
 msgid "Common Name (CN)"
 msgstr "Ortak Ad (CN)"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
 msgid "Email Recipient Certificate"
 msgstr "E-posta Alıcı Sertifikası"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
 msgid "Email Signer Certificate"
 msgstr "E-posta imzalayan Sertifikası"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
 msgid "Expires On"
 msgstr "Son Kullanım"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
 msgid "Issued On"
 msgstr "Verilme Zamanı"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
 msgid "MD5 Fingerprint"
 msgstr "MD5 Parmakizi"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
 msgid "Organization (O)"
 msgstr "Örgütü (O)"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
 msgid "Organizational Unit (OU)"
 msgstr "Organizasyonel Birim (OU)"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
 msgid "SHA1 Fingerprint"
 msgstr "SHA1 Parmakizi"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
 msgid "SSL Client Certificate"
 msgstr "SSL İstemci Sertifikası"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
 msgid "SSL Server Certificate"
 msgstr "SSL Sunucu Sertifikası"
 
@@ -865,96 +865,96 @@ msgstr "Tanımlayıcı"
 msgid "Value"
 msgstr "Değer"
 
-#: ../gcr/gcr-certificate-details-widget.c:232
-msgid "Yes"
-msgstr "Evet"
-
-#: ../gcr/gcr-certificate-details-widget.c:234
-msgid "No"
-msgstr "Hayır"
-
-#: ../gcr/gcr-certificate-details-widget.c:237
+#: ../gcr/gcr-certificate-details-widget.c:229
 msgid "Critical"
 msgstr "Kritik"
 
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "Evet"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "Hayır"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Subject Name"
 msgstr "Konu Adı"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:315
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issuer Name"
 msgstr "Veren İsmi"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:319
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
 msgstr "Verilen Sertifika"
 
-#: ../gcr/gcr-certificate-details-widget.c:324
+#: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
 msgstr "Sürüm"
 
-#: ../gcr/gcr-certificate-details-widget.c:337
+#: ../gcr/gcr-certificate-details-widget.c:329
 msgid "Not Valid Before"
 msgstr "Öncesi Geçerli Değil"
 
-#: ../gcr/gcr-certificate-details-widget.c:342
+#: ../gcr/gcr-certificate-details-widget.c:334
 msgid "Not Valid After"
 msgstr "Sonrası Geçerli Değil"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:347
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Signature"
 msgstr "İmza"
 
-#: ../gcr/gcr-certificate-details-widget.c:351
+#: ../gcr/gcr-certificate-details-widget.c:343
 msgid "Signature Algorithm"
 msgstr "İmza Algoritması"
 
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:348
 msgid "Signature Parameters"
 msgstr "İmza Parametreleri"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:367
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Public Key Info"
 msgstr "Genel Anahtar Bilgisi"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Key Algorithm"
 msgstr "Anahtar Algoritması"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:368
 msgid "Key Parameters"
 msgstr "Anahtar Parametreleri"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:375
 msgid "Key Size"
 msgstr "Anahtar Boyutu"
 
-#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Genel Anahtar"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:394
+#: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "Parmak izleri"
 
-#: ../gcr/gcr-import-dialog.glade.h:1
+#: ../gcr/gcr-import-dialog.ui.h:1
 msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 msgstr ""
 "<span size='large' weight='bold'>Sertifikaları ve Anahtarları İçe Aktar</"
 "span>"
 
-#: ../gcr/gcr-import-dialog.glade.h:2
+#: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
 msgstr "İçine Aktar:"
 
-#: ../gcr/gcr-import-dialog.glade.h:3
+#: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Parola:"
 
@@ -1380,10 +1380,10 @@ msgstr "Bu isimde bir anahtarlık yok."
 msgid "The keyring has already been unlocked."
 msgstr "Anahtarlığın kilidi zaten açılmış."
 
-#: ../pkcs11/gck/gck-certificate.c:710
+#: ../pkcs11/gck/gck-certificate.c:716
 msgid "Unnamed Certificate"
 msgstr "İsimlendirilmemiş Sertifika"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
 msgid "Couldn't parse public SSH key"
 msgstr "Genel SSH anahtarı ayrıştırılamadı"

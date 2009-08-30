@@ -28,9 +28,9 @@
 
 gboolean      gkr_pkcs11_daemon_initialize       (void);
 
-gboolean      gkr_pkcs11_daemon_setup_pkcs11     (void);
+gboolean      gkr_pkcs11_daemon_startup_pkcs11   (void);
 
-gboolean      gkr_pkcs11_daemon_setup_ssh        (void);
+gboolean      gkr_pkcs11_daemon_startup_ssh      (void);
 
 CK_FUNCTION_LIST_PTR   gkr_pkcs11_daemon_get_functions    (void);
 

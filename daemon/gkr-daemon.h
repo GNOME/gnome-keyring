@@ -47,7 +47,7 @@ extern GkrDaemonOperation keyring_ops[];
 
 void           gkr_daemon_quit (void);
 
-gboolean       gkr_daemon_complete_initialization (void);
+void           gkr_daemon_complete_initialization (void);
 
 gboolean       gkr_daemon_io_create_master_socket (void);
 

@@ -12,9 +12,9 @@ daemon/util/gkr-location.c
 egg/egg-asn1.c
 egg/egg-oid.c
 gcr/gcr-certificate-basics-widget.c
-gcr/gcr-certificate-basics-widget.ui
+[type: gettext/glade]gcr/gcr-certificate-basics-widget.ui
 gcr/gcr-certificate-details-widget.c
-gcr/gcr-import-dialog.ui
+[type: gettext/glade]gcr/gcr-import-dialog.ui
 gcr/gcr-importer.c
 gcr/gcr-parser.c
 gp11/gp11-misc.c

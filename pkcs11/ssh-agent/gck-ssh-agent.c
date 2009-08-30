@@ -191,52 +191,6 @@ static gboolean pkcs11_main_checked = FALSE;
 static GMutex *pkcs11_main_mutex = NULL;
 static GCond *pkcs11_main_cond = NULL;
 
-static gboolean
-init_pkcs11 (GP11Module *module)
-{
-	GP11Session *session = NULL;
-	GList *slots, *l;
-	GP11Mechanisms *mechs;
-	GError *error = NULL;
-	
-	g_assert (GP11_IS_MODULE (module));
-	
-	/* Find a good slot for our session keys */
-	slots = gp11_module_get_slots (module, TRUE);
-	for (l = slots; session == NULL && l; l = g_list_next (l)) {
-		
-		/* Check that it has the mechanisms we need */
-		mechs = gp11_slot_get_mechanisms (l->data);
-		if (gp11_mechanisms_check (mechs, CKM_RSA_PKCS, CKM_DSA, GP11_INVALID)) {
-
-			/* Try and open a session */
-			session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, &error);
-			if (!session) {
-				g_warning ("couldn't create pkcs#11 session: %s", error->message);
-				g_clear_error (&error);
-			}
-		}
-		
-		gp11_mechanisms_free (mechs);
-	}
-	
-	gp11_list_unref_free (slots);
-	
-	if (!session) {
-		g_warning ("couldn't select a usable pkcs#11 slot for the ssh agent to use");
-		return FALSE;
-	}
-
-	pkcs11_module = g_object_ref (module);
-	
-	pkcs11_main_mutex = g_mutex_new ();
-	pkcs11_main_cond = g_cond_new ();
-	pkcs11_main_checked = FALSE;
-	pkcs11_main_session = session;
-	
-	return TRUE;
-}
-
 GP11Session*
 gck_ssh_agent_checkout_main_session (void)
 {
@@ -270,28 +224,6 @@ gck_ssh_agent_checkin_main_session (GP11Session *session)
 		g_cond_signal (pkcs11_main_cond);
 		
 	g_mutex_unlock (pkcs11_main_mutex);
-}
-
-static void
-uninit_pkcs11 (void)
-{
-	gboolean ret;
-	
-	g_assert (pkcs11_main_mutex);
-	ret = g_mutex_trylock (pkcs11_main_mutex);
-	g_assert (ret);
-
-		g_assert (GP11_IS_SESSION (pkcs11_main_session));
-		g_assert (!pkcs11_main_checked);
-		g_object_unref (pkcs11_main_session);
-		pkcs11_main_session = NULL;
-		
-	g_mutex_unlock (pkcs11_main_mutex);
-	g_mutex_free (pkcs11_main_mutex);
-	g_cond_free (pkcs11_main_cond);
-	
-	g_assert (pkcs11_module);
-	g_object_unref (pkcs11_module);
 }
 
 /* --------------------------------------------------------------------------------------
@@ -358,7 +290,7 @@ gck_ssh_agent_accept (void)
 }
 
 void 
-gck_ssh_agent_uninitialize (void)
+gck_ssh_agent_shutdown (void)
 {
 	Client *client;
 	GList *l;
@@ -385,36 +317,99 @@ gck_ssh_agent_uninitialize (void)
 	
 	g_list_free (socket_clients);
 	socket_clients = NULL;
-	
-	uninit_pkcs11 ();
+}
+
+void
+gck_ssh_agent_uninitialize (void)
+{
+	gboolean ret;
+
+	g_assert (pkcs11_main_mutex);
+	ret = g_mutex_trylock (pkcs11_main_mutex);
+	g_assert (ret);
+
+		g_assert (GP11_IS_SESSION (pkcs11_main_session));
+		g_assert (!pkcs11_main_checked);
+		g_object_unref (pkcs11_main_session);
+		pkcs11_main_session = NULL;
+
+	g_mutex_unlock (pkcs11_main_mutex);
+	g_mutex_free (pkcs11_main_mutex);
+	g_cond_free (pkcs11_main_cond);
+
+	g_assert (pkcs11_module);
+	g_object_unref (pkcs11_module);
 }
 
 int
-gck_ssh_agent_initialize (const gchar *prefix, CK_FUNCTION_LIST_PTR funcs)
+gck_ssh_agent_initialize (CK_FUNCTION_LIST_PTR funcs)
 {
 	GP11Module *module;
-	int sock;
-	
+	gboolean ret;
+
 	g_return_val_if_fail (funcs, -1);
-	g_return_val_if_fail (prefix, -1);
-	
+
 	module = gp11_module_new (funcs);
 	gp11_module_set_auto_authenticate (module, GP11_AUTHENTICATE_OBJECTS);
 	gp11_module_set_pool_sessions (module, TRUE);
-	sock = gck_ssh_agent_initialize_with_module (prefix, module);
+	ret = gck_ssh_agent_initialize_with_module (module);
 	g_object_unref (module);
-		
-	return sock;
+	return ret;
+}
+
+gboolean
+gck_ssh_agent_initialize_with_module (GP11Module *module)
+{
+	GP11Session *session = NULL;
+	GList *slots, *l;
+	GP11Mechanisms *mechs;
+	GError *error = NULL;
+
+	g_assert (GP11_IS_MODULE (module));
+
+	/* Find a good slot for our session keys */
+	slots = gp11_module_get_slots (module, TRUE);
+	for (l = slots; session == NULL && l; l = g_list_next (l)) {
+
+		/* Check that it has the mechanisms we need */
+		mechs = gp11_slot_get_mechanisms (l->data);
+		if (gp11_mechanisms_check (mechs, CKM_RSA_PKCS, CKM_DSA, GP11_INVALID)) {
+
+			/* Try and open a session */
+			session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, &error);
+			if (!session) {
+				g_warning ("couldn't create pkcs#11 session: %s", error->message);
+				g_clear_error (&error);
+			}
+		}
+
+		gp11_mechanisms_free (mechs);
+	}
+
+	gp11_list_unref_free (slots);
+
+	if (!session) {
+		g_warning ("couldn't select a usable pkcs#11 slot for the ssh agent to use");
+		return FALSE;
+	}
+
+	pkcs11_module = g_object_ref (module);
+
+	pkcs11_main_mutex = g_mutex_new ();
+	pkcs11_main_cond = g_cond_new ();
+	pkcs11_main_checked = FALSE;
+	pkcs11_main_session = session;
+
+	return TRUE;
 }
 
 int 
-gck_ssh_agent_initialize_with_module (const gchar *prefix, GP11Module *module)
+gck_ssh_agent_startup (const gchar *prefix)
 {
 	struct sockaddr_un addr;
 	int sock;
 	
 	g_return_val_if_fail (prefix, -1);
-	g_return_val_if_fail (GP11_IS_MODULE (module), -1);
 	
 	snprintf (socket_path, sizeof (socket_path), "%s/socket.ssh", prefix);
 	unlink (socket_path);
@@ -439,13 +434,7 @@ gck_ssh_agent_initialize_with_module (const gchar *prefix, GP11Module *module)
 		close (sock);
 		return -1;
 	}
-	
-	/* Load our main session */
-	if (!init_pkcs11 (module)) {
-		close (sock);
-		return -1;
-	}
-	
+
 	g_setenv ("SSH_AUTH_SOCK", socket_path, TRUE);
 	
 	socket_fd = sock;

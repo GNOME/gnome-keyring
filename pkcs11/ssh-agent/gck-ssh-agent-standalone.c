@@ -83,6 +83,7 @@ main(int argc, char *argv[])
 	GError *error = NULL;
 	GIOChannel *channel;
 	GMainLoop *loop;
+	gboolean ret;
 	int sock;
 	
 	g_type_init ();
@@ -107,12 +108,16 @@ main(int argc, char *argv[])
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 	gp11_module_set_auto_authenticate (module, GP11_AUTHENTICATE_OBJECTS);
 
-	sock = gck_ssh_agent_initialize_with_module ("/tmp", module);
+	ret = gck_ssh_agent_initialize_with_module (module);
 	g_object_unref (module);
-	
+
+	if (ret == FALSE)
+		return 1;
+
+	sock = gck_ssh_agent_startup ("/tmp");
 	if (sock == -1)
 		return 1;
-	
+
 	channel = g_io_channel_unix_new (sock);
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_client, NULL);
 	g_io_channel_unref (channel);
@@ -123,8 +128,9 @@ main(int argc, char *argv[])
 	loop = g_main_loop_new (NULL, FALSE);
 	g_main_loop_run (loop);
 	g_main_loop_unref (loop);
-	
+
+	gck_ssh_agent_shutdown ();
 	gck_ssh_agent_uninitialize ();
-	
+
 	return 0;
 }

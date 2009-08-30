@@ -1,4 +1,4 @@
-# translation of gnome-keyring.gnome-2-26.gu.po to Gujarati
+# translation of gnome-keyring.master.gu.po to Gujarati
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
@@ -7,10 +7,10 @@
 # Sweta Kothari <swkothar@redhat.com>, 2008, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.gnome-2-26.gu\n"
+"Project-Id-Version: gnome-keyring.master.gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-04-17 14:34+0000\n"
-"PO-Revision-Date: 2009-07-14 05:35-0400\n"
+"POT-Creation-Date: 2009-07-21 14:16+0000\n"
+"PO-Revision-Date: 2009-08-24 15:42+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -25,33 +25,6 @@ msgstr ""
 "\n"
 "\n"
 "\n"
-
-#: ../common/gkr-location.c:321
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "દૂર કરી શકાય તેવી ડિસ્ક: %s"
-
-#: ../common/gkr-location.c:323
-msgid "Removable Disk"
-msgstr "દૂર કરી શકાય તેવી ડિસ્ક"
-
-#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
-msgid "Home"
-msgstr "ઘર"
-
-#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
-msgid "The disk or drive this file is located on is not present"
-msgstr "આ ફાઈલ જે ડિસ્ક કે ડ્રાઈવ પર સ્થિત થયેલ છે તે હાજર નથી"
-
-#: ../common/gkr-location.c:1137
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "ડિરેક્ટરીને બનાવી શકાઇ નહિં: %s"
-
-#: ../common/gkr-location.c:1171
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "ફાઇલને દૂર કરી શકાતી નથી: %s"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:228
@@ -294,13 +267,15 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:552
 #, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "'%s' કીરીંગ માટે નવો પાસવર્ડ પસંદ કરો. "
+#| msgid "Choose a new password for the '%s' keyring. "
+msgid "Choose a new password for the '%s' keyring."
+msgstr "'%s' કીરીંગ માટે નવો પાસવર્ડ પસંદ કરો."
 
 #: ../daemon/gkr-daemon-ops.c:554
 #, c-format
-msgid "Choose a new password for the default keyring. "
-msgstr "મૂળભૂત કીરીંગ માટે નવો પાસવર્ડ પસંદ કરો. "
+#| msgid "Choose a new password for the default keyring. "
+msgid "Choose a new password for the default keyring."
+msgstr "મૂળભૂત કીરીંગ માટે નવો પાસવર્ડ પસંદ કરો."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:558
@@ -381,30 +356,30 @@ msgid "GNOME Keyring Daemon"
 msgstr "GNOME કીરીંગ ડેઇમન"
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Unlock Login Keyring"
 msgstr "કીરીંગનો પ્રવેશ માટે તાળુ ખોલો"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Enter login password to unlock keyring"
 msgstr "કીરીંગનું તાળુ ખોલવા માટે પ્રવેશ માટે પાસવર્ડને દાખલ કરો"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:100
+#: ../daemon/keyrings/gkr-keyring-login.c:101
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
 msgstr "તમારા પ્રવેશ કીરીંગને આપોઆપ તાળું મરાયેલ નથી જ્યારે તમે આ કમ્પ્યૂટરમાં પ્રવેશ્યા."
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Create Login Keyring"
 msgstr "પ્રવેશ માટે કીરીંગ બનાવો"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Enter your login password"
 msgstr "તમારો પ્રવેશ માટે પાસવર્ડ દાખલ કરો"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:126
+#: ../daemon/keyrings/gkr-keyring-login.c:127
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
@@ -412,113 +387,113 @@ msgstr ""
 "તમારા પ્રવેશ કીરીંગને આપોઆપ તાળું મરાયેલ નથી જ્યારે તમે આ કમ્પ્યૂટરમાં પ્રવેશ્યા. તે બનાવવામાં "
 "આવશે નહિં."
 
-#: ../daemon/keyrings/gkr-keyring.c:586
+#: ../daemon/keyrings/gkr-keyring.c:587
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "%s કીરીંગ માટેનો પાસવર્ડ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
 msgid "Unlock private key"
 msgstr "ખાનગી કીનું તાળુ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
 msgid "Unlock certificate"
 msgstr "પ્રમાણપત્રનું તાળુ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
 msgid "Unlock public key"
 msgstr "સાર્વજનિક કીનું તાળુ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
 msgid "Unlock"
 msgstr "તાળુ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "ખાનગી કીનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "પ્રમાણપત્રનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
 msgid "Enter password to unlock the public key"
 msgstr "સાર્વજનિક કી ને તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "કાર્યક્રમ એ ખાનગી કી '%s' માં પ્રવેશવા માંગે છે, પરંતુ તે તાળુ મરાયેલ છે"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "એક કાર્યક્રમ પ્રમાણપત્ર '%s' ને ચલાવવા માંગે છે, પરંતુ તે તાળુ મરાયેલ છે"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "એક કાર્યક્રમ સાર્વજનિક કી '%s' ને ચલાવવા માંગે છે, પરંતુ તે તાળુ મરાયેલ છે"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "એક કાર્યક્રમ '%s' ને ચલાવવા માંગે છે, પરંતુ તે તાળુ મરાયેલ છે"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
 msgid "Automatically unlock this private key when I log in."
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ ખાનગી કીનુ તાળુ આપોઆપ ખોલો."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
 msgid "Automatically unlock this certificate when I log in."
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ પ્રમાણપત્રનું તાળુ આપોઆપ ખોલો."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
 msgid "Automatically unlock this public key when I log in."
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ સાર્વજનિક કીનું તાલુ આપોઆપ ખોલો."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
 msgid "Automatically unlock this when I log in"
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ તાળાને આપોઆપ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Unlock certificate/key storage"
 msgstr "પ્રમાણપત્ર/કી નો સંગ્રહનું તાળુ ખોલો"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "પ્રમાણપત્ર/કી સંગ્રહ તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr "કાર્યક્રમ એ કાર્યક્રમ/કી સંગ્રહ '%s' માં પ્રવેશ કરવા માંગે છે, પરંતુ તે તાળુ મારેલ છે"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
 msgid "Automatically unlock secure storage when I log in."
 msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ સુરક્ષિત સંગ્રહને આપોઆપ ખોલો."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New Password Required"
 msgstr "નવા પાસવર્ડની જરૂરિયાત"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
 msgid "New password required for secure storage"
 msgstr "સુરક્ષિત સંગ્રહ માટે નવા પાસવર્ડ ની જરૂરિયાત છે"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -622,6 +597,33 @@ msgstr "એક વાર પરવાનગી આપો (_O)"
 msgid "_Always Allow"
 msgstr "હંમેશા પરવાનગી આપો (_A)"
 
+#: ../daemon/util/gkr-location.c:320
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "દૂર કરી શકાય તેવી ડિસ્ક: %s"
+
+#: ../daemon/util/gkr-location.c:322
+msgid "Removable Disk"
+msgstr "દૂર કરી શકાય તેવી ડિસ્ક"
+
+#: ../daemon/util/gkr-location.c:543 ../daemon/util/gkr-location.c:555
+msgid "Home"
+msgstr "ઘર"
+
+#: ../daemon/util/gkr-location.c:1104 ../daemon/util/gkr-location.c:1128
+msgid "The disk or drive this file is located on is not present"
+msgstr "આ ફાઈલ જે ડિસ્ક કે ડ્રાઈવ પર સ્થિત થયેલ છે તે હાજર નથી"
+
+#: ../daemon/util/gkr-location.c:1136
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "ડિરેક્ટરીને બનાવી શકાઇ નહિં: %s"
+
+#: ../daemon/util/gkr-location.c:1170
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "ફાઇલને દૂર કરી શકાતી નથી: %s"
+
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "ડોમેઇન ઘટક"
@@ -662,8 +664,7 @@ msgstr "સામાન્ય નામ"
 msgid "Surname"
 msgstr "અટક"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:330
 msgid "Serial Number"
 msgstr "ક્રમાંક નંબર"
 
@@ -750,74 +751,6 @@ msgstr "<i>પ્રમાણપત્રને ભાગ નથી</i>"
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
 msgstr "<i>અજ્ઞાત</i>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:1
-msgid "<Not Part of Certificate>"
-msgstr "<પ્રમાણપત્રનો ભાગ નથી>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:2
-msgid "<b>Fingerprints</b>"
-msgstr "<b>ફિંગરપ્રિંટો</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:3
-msgid "<b>Issued By</b>"
-msgstr "<b>દ્દારા મોકલેલ છે</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:4
-msgid "<b>Issued To</b>"
-msgstr "<b>ને મોકલેલ છે</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:5
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>આ પ્રમાણપત્ર એ નીચેનાં વપરાશો માટે ચકાસી દેવામાં આવ્યુ છે:</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:6
-msgid "<b>Validity</b>"
-msgstr "<b>પ્રમાણભૂતતા</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:7
-msgid "Common Name (CN)"
-msgstr "Common Name (CN)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:8
-msgid "Email Recipient Certificate"
-msgstr "ઇમેઇલ પ્રાપ્ત કરનાર પ્રમાણપત્ર"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:9
-msgid "Email Signer Certificate"
-msgstr "ઇમેઇલ સહી કરનાર પ્રમાણપત્ર"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:10
-msgid "Expires On"
-msgstr "પર નિવૃત્ત છે"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:11
-msgid "Issued On"
-msgstr "પર મોકલેલ છે"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:12
-msgid "MD5 Fingerprint"
-msgstr "MD5 ફિંગરપ્રિંટ"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:13
-msgid "Organization (O)"
-msgstr "Organization (O)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:14
-msgid "Organizational Unit (OU)"
-msgstr "Organizational Unit (OU)"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:15
-msgid "SHA1 Fingerprint"
-msgstr "SHA1 ફિંગરપ્રિંટ"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:16
-msgid "SSL Client Certificate"
-msgstr "SSL ક્લાઇન્ટ પ્રમાણપત્ર"
-
-#: ../gcr/gcr-certificate-basics-widget.glade.h:17
-msgid "SSL Server Certificate"
-msgstr "SSL સર્વર પ્રમાણપત્ર"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -909,18 +842,6 @@ msgstr "સાર્વજનિક કી"
 #: ../gcr/gcr-certificate-details-widget.c:394
 msgid "Fingerprints"
 msgstr "ફિંગરપ્રિંટો"
-
-#: ../gcr/gcr-import-dialog.glade.h:1
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr "<span size='large' weight='bold'>પ્રમાણપત્રો અને કીઓ ને આયાત કરો</span>"
-
-#: ../gcr/gcr-import-dialog.glade.h:2
-msgid "Import Into:"
-msgstr "માં આયાત કરો:"
-
-#: ../gcr/gcr-import-dialog.glade.h:3
-msgid "Password:"
-msgstr "પાસવર્ડ:"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1344,11 +1265,11 @@ msgstr "તે નામ સાથેની કીરીંગ અસ્તિ�
 msgid "The keyring has already been unlocked."
 msgstr "કીરીંગનું તાળું પહેલાથી જ ખોલી દેવાયેલ છે."
 
-#: ../pkcs11/gck/gck-certificate.c:710
+#: ../pkcs11/gck/gck-certificate.c:711
 msgid "Unnamed Certificate"
 msgstr "નામ ન થયેલ પ્રમાણપત્ર"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
 msgid "Couldn't parse public SSH key"
 msgstr "સાર્વજનિક SSH કી નું પદચ્છેદન કરી શકાયુ નહિં"
 

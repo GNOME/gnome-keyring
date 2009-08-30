@@ -8,13 +8,14 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-09 13:39-0600\n"
-"PO-Revision-Date: 2009-08-09 14:21-0600\n"
+"PO-Revision-Date: 2009-08-15 00:13-0600\n"
 "Last-Translator: Seán de Búrca <leftmostcat@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n==2 ? 1 : 2;\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : (n%10==1 || n%10==2) ? 1 : (n%"
+"10>=3 && n%10<= 6) ? 2 : ((n%10>=7 && n%10<=9) || n==10) ? 3 : 4;\n"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:228
@@ -370,75 +371,83 @@ msgstr ""
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
 msgid "Unlock private key"
-msgstr ""
+msgstr "Díghlasáil eochair phríobháideach"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
 msgid "Unlock certificate"
-msgstr ""
+msgstr "Díghlasáil teastas"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
 msgid "Unlock public key"
-msgstr ""
+msgstr "Díghlasáil eochair phoiblí"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
 msgid "Unlock"
-msgstr ""
+msgstr "Díghlasáil"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
-msgstr ""
+msgstr "Iontráil focal faire chun an eochair phríobháideach a dhíghlasáil"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
-msgstr ""
+msgstr "Iontráil focal faire chun an teastas a dhíghlasáil"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
 msgid "Enter password to unlock the public key"
-msgstr ""
+msgstr "Iontráil focal faire chun an eochair phoiblí a dhíghlasáil"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
-msgstr ""
+msgstr "Iontráil focal faire chun díghlasáil"
 
 #. TRANSLATORS: The private key is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
+"Ba mhaith le feidhmchlár an eochair phríobháideach '%s' a rochtain, ach tá "
+"sé faoi ghlas"
 
 #. TRANSLATORS: The certificate is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
+"Ba mhaith le feidhmchlár an teastas '%s' a rochtain, ach tá sé faoi ghlas"
 
 #. TRANSLATORS: The public key is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
+"Ba mhaith le feidhmchlár an eochair phoiblí '%s' a rochtain, ach tá sé faoi "
+"ghlas"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr ""
+msgstr "Ba mhaith le feidhmchlár '%s' a rochtain, ach tá sé faoi ghlas"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
 msgid "Automatically unlock this private key when I log in."
 msgstr ""
+"Díghlasáil an eochair phríobháideach go huathoibríoch nuair a logálaim "
+"isteach."
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
 msgid "Automatically unlock this certificate when I log in."
-msgstr ""
+msgstr "Díghlasáil an teastas go huathoibríoch nuair a logálaim isteach."
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
 msgid "Automatically unlock this public key when I log in."
 msgstr ""
+"Díghlasáil an eochair phoiblí go huathoibríoch nuair a logálaim isteach."
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
 msgid "Automatically unlock this when I log in"
-msgstr ""
+msgstr "Díghlasáil é seo go huathoibríoch nuair a logálaim isteach"
 
 #: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Unlock certificate/key storage"
