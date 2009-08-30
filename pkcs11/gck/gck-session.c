@@ -1013,8 +1013,30 @@ CK_RV
 gck_session_C_SetAttributeValue (GckSession* self, CK_OBJECT_HANDLE handle, 
                                  CK_ATTRIBUTE_PTR template, CK_ULONG count)
 {
-	/* TODO: Need to implement this */
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	GckObject *object = NULL;
+	GckTransaction *transaction;
+	CK_ULONG i;
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
+	if (!(!count || template))
+		return CKR_ARGUMENTS_BAD;
+
+	rv = gck_session_lookup_writable_object (self, handle, &object);
+	if (rv != CKR_OK)
+		return rv;
+
+	/* The transaction for this whole dealio */
+	transaction = gck_transaction_new ();
+
+	for (i = 0; i < count && !gck_transaction_get_failed (transaction); ++i) 
+		gck_object_set_attribute (object, self, transaction, &template[i]);
+
+	gck_transaction_complete (transaction);
+	rv = gck_transaction_get_result (transaction);
+	g_object_unref (transaction);
+
+	return rv;
 }
 
 CK_RV
