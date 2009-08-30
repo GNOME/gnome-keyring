@@ -91,6 +91,9 @@ gck_secret_object_get_attribute (GckObject *base, GckSession *session, CK_ATTRIB
 	GckSecretObject *self = GCK_SECRET_OBJECT (base);
 	
 	switch (attr->type) {
+	case CKA_MODIFIABLE:
+		return gck_attribute_set_bool (attr, TRUE);
+
 	case CKA_ID:
 		return gck_attribute_set_string (attr, gck_secret_object_get_identifier (self));
 		
