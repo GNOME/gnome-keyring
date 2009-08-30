@@ -193,6 +193,9 @@ static void
 gck_object_real_set_attribute (GckObject *self, GckSession *session,
                                GckTransaction* transaction, CK_ATTRIBUTE* attr)
 {
+	CK_ATTRIBUTE check;
+	CK_RV rv;
+
 	switch (attr->type) {
 	case CKA_TOKEN:
 	case CKA_PRIVATE:
@@ -220,7 +223,15 @@ gck_object_real_set_attribute (GckObject *self, GckSession *session,
 		return;
 	}	
 
-	gck_transaction_fail (transaction, CKR_ATTRIBUTE_TYPE_INVALID);
+	/* Check if this attribute exists */
+	check.type = attr->type;
+	check.pValue = 0;
+	check.ulValueLen = 0;
+	rv = gck_object_get_attribute (self, session, &check);
+	if (rv == CKR_ATTRIBUTE_TYPE_INVALID)
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_TYPE_INVALID);
+	else
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_READ_ONLY);
 }
 
 static void
@@ -507,9 +518,6 @@ void
 gck_object_set_attribute (GckObject *self, GckSession *session,
                           GckTransaction *transaction, CK_ATTRIBUTE_PTR attr)
 {
-	CK_ATTRIBUTE check;
-	CK_RV rv;
-	
 	g_return_if_fail (GCK_IS_OBJECT (self));
 	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
 	g_return_if_fail (!gck_transaction_get_failed (transaction));
@@ -517,18 +525,8 @@ gck_object_set_attribute (GckObject *self, GckSession *session,
 
 	g_assert (GCK_OBJECT_GET_CLASS (self)->set_attribute);
 
-	/* Check if this attribute exists */
-	check.type = attr->type;
-	check.pValue = 0;
-	check.ulValueLen = 0;
-	rv = gck_object_get_attribute (self, session, &check);
-	if (rv == CKR_ATTRIBUTE_TYPE_INVALID) {
-		gck_transaction_fail (transaction, rv);
-		return;
-	}
-	
 	/* Check that the value will actually change */
-	if (rv != CKR_OK || !gck_object_match (self, session, attr))
+	if (!gck_object_match (self, session, attr))
 		GCK_OBJECT_GET_CLASS (self)->set_attribute (self, session, transaction, attr);
 }
 
