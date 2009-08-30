@@ -120,17 +120,15 @@ gck_secret_object_set_attribute (GckObject *base, GckSession *session,
 	GckSecretObject *self = GCK_SECRET_OBJECT (base);
 	gchar *label;
 	CK_RV rv;
-	
-	/* Check that the object is not locked */
-	if (gck_secret_object_is_locked (self, session)) {
-		gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
-		return;
-	}
-	
+
 	switch (attr->type) {
 	
 	case CKA_LABEL:
-		rv = gck_attribute_get_string (attr, &label);
+		/* Check that the object is not locked */
+		if (gck_secret_object_is_locked (self, session))
+			rv = CKR_USER_NOT_LOGGED_IN;
+		else
+			rv = gck_attribute_get_string (attr, &label);
 		if (rv != CKR_OK)
 			gck_transaction_fail (transaction, rv);
 		else
