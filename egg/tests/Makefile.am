@@ -14,7 +14,6 @@ UNIT_AUTO = \
 	unit-test-secmem.c \
 	unit-test-symkey.c \
 	unit-test-openssl.c \
-	unit-test-signal.c \
 	$(BUILT_SOURCES)
 
 UNIT_PROMPT = 
