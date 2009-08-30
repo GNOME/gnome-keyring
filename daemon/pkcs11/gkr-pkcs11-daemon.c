@@ -57,9 +57,11 @@ pkcs11_daemon_cleanup (gpointer unused)
 	CK_RV rv;
 	
 	g_assert (pkcs11_roof);
-	
+
 	gkr_daemon_async_begin_concurrent ();
-	
+
+		gck_ssh_agent_uninitialize ();
+		gck_rpc_layer_uninitialize ();
 		rv = (pkcs11_roof->C_Finalize) (NULL);
 	
 	gkr_daemon_async_end_concurrent ();
@@ -77,6 +79,7 @@ gkr_pkcs11_daemon_initialize (void)
 	CK_FUNCTION_LIST_PTR roots_store; 
 	CK_FUNCTION_LIST_PTR ssh_store;
 	CK_FUNCTION_LIST_PTR user_store;
+	gboolean ret;
 	CK_RV rv;
 
 	/* Now initialize them all */
@@ -115,7 +118,15 @@ gkr_pkcs11_daemon_initialize (void)
 	}		
 	
 	egg_cleanup_register (pkcs11_daemon_cleanup, NULL);
-	return TRUE;
+
+	gkr_daemon_async_begin_concurrent ();
+
+		ret = gck_ssh_agent_initialize (pkcs11_roof) &&
+		      gck_rpc_layer_initialize (pkcs11_roof);
+
+	gkr_daemon_async_end_concurrent ();
+
+	return ret;
 }
 
 static void
@@ -123,8 +134,8 @@ pkcs11_rpc_cleanup (gpointer unused)
 {
 	gkr_daemon_async_begin_concurrent ();
 
-		gck_rpc_layer_uninitialize ();
-		
+		gck_rpc_layer_shutdown ();
+
 	gkr_daemon_async_end_concurrent ();
 }
 
@@ -142,21 +153,19 @@ accept_rpc_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
 }
 
 gboolean
-gkr_pkcs11_daemon_setup_pkcs11 (void)
+gkr_pkcs11_daemon_startup_pkcs11 (void)
 {
 	GIOChannel *channel;
 	const gchar *base_dir;
 	int sock;
-	
-	g_assert (pkcs11_roof);
 
 	base_dir = gkr_daemon_util_get_master_directory ();
 	g_return_val_if_fail (base_dir, FALSE);
 
 	gkr_daemon_async_begin_concurrent ();
 
-		sock = gck_rpc_layer_initialize (base_dir, pkcs11_roof);
-		
+		sock = gck_rpc_layer_startup (base_dir);
+
 	gkr_daemon_async_end_concurrent ();
 	
 	if (sock == -1)
@@ -176,8 +185,8 @@ pkcs11_ssh_cleanup (gpointer unused)
 {
 	gkr_daemon_async_begin_concurrent ();
 
-		gck_ssh_agent_uninitialize ();
-		
+		gck_ssh_agent_shutdown ();
+
 	gkr_daemon_async_end_concurrent ();
 }
 
@@ -195,21 +204,19 @@ accept_ssh_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
 }
 
 gboolean
-gkr_pkcs11_daemon_setup_ssh (void)
+gkr_pkcs11_daemon_startup_ssh (void)
 {
 	GIOChannel *channel;
 	const gchar *base_dir;
 	int sock;
-	
-	g_assert (pkcs11_roof);
 
 	base_dir = gkr_daemon_util_get_master_directory ();
 	g_return_val_if_fail (base_dir, FALSE);
 
 	gkr_daemon_async_begin_concurrent ();
-	
-		sock = gck_ssh_agent_initialize (base_dir, pkcs11_roof);
-		
+
+		sock = gck_ssh_agent_startup (base_dir);
+
 	gkr_daemon_async_end_concurrent ();
 	
 	if (sock == -1)

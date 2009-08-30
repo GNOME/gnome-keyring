@@ -387,7 +387,7 @@ daemon_dbus_cleanup (gpointer unused)
 }
 
 void 
-gkr_daemon_dbus_setup (void)
+gkr_daemon_dbus_initialize (void)
 {
 	dbus_uint32_t res = 0;
 	DBusError derr = { 0 };

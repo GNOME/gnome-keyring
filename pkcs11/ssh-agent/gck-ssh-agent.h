@@ -5,9 +5,13 @@
 
 #include "pkcs11/pkcs11.h"
 
-int               gck_ssh_agent_initialize              (const gchar *prefix, CK_FUNCTION_LIST_PTR funcs);
+int               gck_ssh_agent_startup                 (const gchar *prefix);
 
 void              gck_ssh_agent_accept                  (void);
+
+void              gck_ssh_agent_shutdown                (void);
+
+gboolean          gck_ssh_agent_initialize              (CK_FUNCTION_LIST_PTR funcs);
 
 void              gck_ssh_agent_uninitialize            (void);
 

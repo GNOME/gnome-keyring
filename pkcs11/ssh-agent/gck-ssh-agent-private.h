@@ -91,7 +91,7 @@ extern const GckSshAgentOperation gck_ssh_agent_operations[GCK_SSH_OP_MAX];
  * gck-ssh-agent.c
  */
 
-int                   gck_ssh_agent_initialize_with_module          (const gchar *prefix, GP11Module *module);
+gboolean              gck_ssh_agent_initialize_with_module          (GP11Module *module);
 
 GP11Session*          gck_ssh_agent_checkout_main_session           (void);
 

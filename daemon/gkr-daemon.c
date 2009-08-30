@@ -28,7 +28,6 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
-#include "egg/egg-unix-signal.h"
 
 #include "keyrings/gkr-keyring-login.h"
 
@@ -68,8 +67,6 @@
 #define  STDIN   0
 #define  STDOUT  1
 #define  STDERR  2
-
-static GMainLoop *loop = NULL;
 
 #ifndef HAVE_SOCKLEN_T
 #define socklen_t int
@@ -330,18 +327,97 @@ prepare_logging ()
     g_log_set_default_handler (log_handler, NULL);
 }
 
+/* -----------------------------------------------------------------------------
+ * SIGNALS
+ */
+
+static sigset_t signal_set;
+static gint signal_quitting = 0;
+
+static gpointer
+signal_thread (gpointer user_data)
+{
+	GMainLoop *loop = user_data;
+	int sig, err;
+
+	for (;;) {
+		err = sigwait (&signal_set, &sig);
+		if (err != EINTR && err != 0) {
+			g_warning ("couldn't wait for signals: %s", g_strerror (err));
+			return NULL;
+		}
+
+		switch (sig) {
+		case SIGPIPE:
+			/* Ignore */
+			break;
+		case SIGINT:
+		case SIGHUP:
+		case SIGTERM:
+			g_atomic_int_set (&signal_quitting, 1);
+			g_main_loop_quit (loop);
+			return NULL;
+		default:
+			g_warning ("received unexpected signal when waiting for signals: %d", sig);
+			break;
+		}
+	}
+
+	g_assert_not_reached ();
+	return NULL;
+}
+
+static void
+setup_signal_handling (GMainLoop *loop)
+{
+	GError *error = NULL;
+
+	/*
+	 * Block these signals for this thread, and any threads
+	 * started up after this point (so essentially all threads).
+	 *
+	 * We also start a signal handling thread which uses signal_set
+	 * to catch the various signals we're interested in.
+	 */
+
+	sigemptyset (&signal_set);
+	sigaddset (&signal_set, SIGPIPE);
+	sigaddset (&signal_set, SIGINT);
+	sigaddset (&signal_set, SIGHUP);
+	sigaddset (&signal_set, SIGTERM);
+	pthread_sigmask (SIG_BLOCK, &signal_set, NULL);
+
+	g_thread_create (signal_thread, loop, FALSE, &error);
+	if (error != NULL) {
+		g_warning ("couldn't startup thread for signal handling: %s",
+		           error && error->message ? error->message : "");
+		g_clear_error (&error);
+	}
+}
+
 void
 gkr_daemon_quit (void)
 {
-	g_main_loop_quit (loop);
+	/*
+	 * Send a signal to terminate our signal thread,
+	 * which in turn runs stops the main loop and that
+	 * starts the shutdown process.
+	 */
+
+	raise (SIGTERM);
 }
 
-static gboolean
-signal_handler (guint sig, gpointer unused)
+static void
+cleanup_signal_handling (void)
 {
-	gkr_daemon_quit ();
-	return TRUE;
+	/* The thread is not joinable, so cleans itself up */
+	if (!g_atomic_int_get (&signal_quitting))
+		g_warning ("gkr_daemon_quit() was not used to shutdown the daemon");
 }
+
+/* -----------------------------------------------------------------------------
+ * STARTUP
+ */
 
 static int
 sane_dup2 (int fd1, int fd2)
@@ -614,59 +690,60 @@ fork_and_print_environment (void)
 }
 
 static gboolean
-gkr_daemon_complete_initialization_steps (void)
+gkr_daemon_startup_steps (void)
+{
+	/* Startup the appropriate components, creates sockets etc.. */
+#ifdef WITH_SSH	
+	if (check_run_component ("ssh")) {
+		if (!gkr_pkcs11_daemon_startup_ssh ())
+			return FALSE;
+	}
+#endif
+
+	if (check_run_component ("pkcs11")) {
+		if (!gkr_pkcs11_daemon_startup_pkcs11 ())
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+gkr_daemon_initialize_steps (void)
 {
 	/* Initialize new style PKCS#11 components */
 	if (!gkr_pkcs11_daemon_initialize ())
 		return FALSE;
-	
-	/* Initialize the appropriate components */
-	
-#ifdef WITH_SSH	
-	if (check_run_component ("ssh")) {
-		if (!gkr_pkcs11_daemon_setup_ssh ())
-			return FALSE;
-	}
-#endif
-	
-	if (check_run_component ("pkcs11")) {
-		if (!gkr_pkcs11_daemon_setup_pkcs11 ())
-			return FALSE;
-	}
-	
-	gkr_daemon_dbus_setup ();
-	
-	initialization_completed = TRUE;
+
+	gkr_daemon_dbus_initialize ();
 	return TRUE;
 }
 
-gboolean
+void
 gkr_daemon_complete_initialization (void)
 {
 	/*
 	 * Sometimes we don't initialize the full daemon right on 
 	 * startup. When run with --login is one such case.
 	 */
-	
+
 	if (initialization_completed) {
 		g_message ("The daemon was already initialized.");
-		return TRUE;
+		return;
 	}
 
 	/* Set this early so that two initializations don't overlap */
 	initialization_completed = TRUE;
-
-	/* But then set it back if initializing fails */
-	initialization_completed = gkr_daemon_complete_initialization_steps ();
-
-	return initialization_completed;
+	gkr_daemon_startup_steps ();
+	gkr_daemon_initialize_steps ();
 }
 
 int
 main (int argc, char *argv[])
 {
 	GMainContext *ctx;
-	
+	GMainLoop *loop;
+
 	/* 
 	 * The gnome-keyring startup is not as simple as I wish it could be. 
 	 * 
@@ -731,24 +808,28 @@ main (int argc, char *argv[])
 	if (run_for_login) {
 		login_password = read_login_password (STDIN);
 		atexit (clear_login_password);
-	
-	/* Not a login daemon. Initialize now. */
+
+	/* Not a login daemon. Startup stuff now.*/
 	} else {
-		if (!gkr_daemon_complete_initialization ())
+		/* These are things that can run before forking */
+		if (!gkr_daemon_startup_steps ())
 			cleanup_and_exit (1);
 	}
-	 
+
 	/* The whole forking and daemonizing dance starts here. */
 	fork_and_print_environment();
+
+	setup_signal_handling (loop);
 
 	/* Prepare logging a second time, since we may be in a different process */
 	prepare_logging();
 
-	signal (SIGPIPE, SIG_IGN);
-	egg_unix_signal_connect (ctx, SIGINT, signal_handler, NULL);
-	egg_unix_signal_connect (ctx, SIGHUP, signal_handler, NULL);
-	egg_unix_signal_connect (ctx, SIGTERM, signal_handler, NULL);
-             
+	/* Remainder initialization after forking, if initialization not delayed */
+	if (!run_for_login) {
+		initialization_completed = TRUE;
+		gkr_daemon_initialize_steps ();
+	}
+
 	/* TODO: Do we still need this? XFCE still seems to use it. */
 	slave_lifetime_to_fd ();
 
@@ -772,6 +853,9 @@ main (int argc, char *argv[])
 	
 	/* Final shutdown of anything workers running about */
 	gkr_daemon_async_workers_uninit ();
+
+	/* Wrap up signal handling here */
+	cleanup_signal_handling ();
 
 	return 0;
 }

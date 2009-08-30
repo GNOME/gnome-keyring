@@ -2234,7 +2234,53 @@ gck_rpc_layer_accept (void)
 }
 
 int
-gck_rpc_layer_initialize (const char *prefix, CK_FUNCTION_LIST_PTR module)
+gck_rpc_layer_initialize (CK_FUNCTION_LIST_PTR module)
+{
+	assert (module);
+
+	/* cannot be called more than once */
+	assert (!pkcs11_module);
+	pkcs11_module = module;
+	return 1;
+}
+
+void
+gck_rpc_layer_uninitialize (void)
+{
+	DispatchState *ds, *next;
+
+	if (!pkcs11_module)
+		return;
+
+	/* Close our main listening socket */
+	if (pkcs11_socket != -1)
+		close (pkcs11_socket);
+	pkcs11_socket = -1;
+
+	/* Delete our unix socket */
+	if(pkcs11_socket_path[0])
+		unlink (pkcs11_socket_path);
+	pkcs11_socket_path[0] = 0;
+
+	/* Stop all of the dispatch threads */
+	for (ds = pkcs11_dispatchers; ds; ds = next) {
+		next = ds->next;
+
+		/* Forcibly shutdown the connection */
+		if (ds->socket)
+			shutdown (ds->socket, SHUT_RDWR);
+		g_thread_join (ds->thread);
+
+		/* This is always closed by dispatch thread */
+		assert (ds->socket == -1);
+		free (ds);
+	}
+
+	pkcs11_module = NULL;
+}
+
+int
+gck_rpc_layer_startup (const char *prefix)
 {
 	struct sockaddr_un addr;
 	int sock;
@@ -2243,14 +2289,12 @@ gck_rpc_layer_initialize (const char *prefix, CK_FUNCTION_LIST_PTR module)
 	GCK_RPC_CHECK_CALLS ();
 #endif
 
-	assert (module);
 	assert (prefix);
 
 	/* cannot be called more than once */
-	assert (!pkcs11_module);
 	assert (pkcs11_socket == -1);
 	assert (pkcs11_dispatchers == NULL);
-	
+
 	snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), 
 	          "%s/socket.pkcs11", prefix);
 
@@ -2259,7 +2303,7 @@ gck_rpc_layer_initialize (const char *prefix, CK_FUNCTION_LIST_PTR module)
 		gck_rpc_warn ("couldn't create pkcs11 socket: %s", strerror (errno));
 		return -1;
 	}
-	
+
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
 	unlink (pkcs11_socket_path);
@@ -2269,27 +2313,23 @@ gck_rpc_layer_initialize (const char *prefix, CK_FUNCTION_LIST_PTR module)
 		                  pkcs11_socket_path, strerror (errno));
 		return -1;
 	}
-	
+
 	if (listen (sock, 128) < 0) {
 		gck_rpc_warn ("couldn't listen on pkcs11 socket: %s: %s", 
 		                  pkcs11_socket_path, strerror (errno));
 		return -1;
 	}
-	
-	pkcs11_module = module;
+
 	pkcs11_socket = sock;
 	pkcs11_dispatchers = NULL;
-	
+
 	return sock;
 }
 
 void
-gck_rpc_layer_uninitialize (void)
+gck_rpc_layer_shutdown (void)
 {
 	DispatchState *ds, *next;
-	
-	if (!pkcs11_module)
-		return;
 
 	/* Close our main listening socket */
 	if (pkcs11_socket != -1) 
@@ -2314,6 +2354,4 @@ gck_rpc_layer_uninitialize (void)
 		assert (ds->socket == -1);
 		free (ds);
 	}
-	
-	pkcs11_module = NULL;
 }

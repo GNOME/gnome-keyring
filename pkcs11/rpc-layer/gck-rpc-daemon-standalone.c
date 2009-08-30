@@ -100,7 +100,8 @@ main (int argc, char *argv[])
 		exit (1);
 	}
 	
-	sock = gck_rpc_layer_initialize (SOCKET_PATH, funcs);
+	gck_rpc_layer_initialize (funcs);
+	sock = gck_rpc_layer_startup (SOCKET_PATH);
 	if (sock == -1)
 		exit (1);
 	
@@ -120,6 +121,7 @@ main (int argc, char *argv[])
 			gck_rpc_layer_accept ();
 	}
 	
+	gck_rpc_layer_shutdown ();
 	gck_rpc_layer_uninitialize ();
 	
 	rv = (funcs->C_Finalize) (NULL);
