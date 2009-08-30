@@ -248,6 +248,7 @@ attribute_to_property (CK_ATTRIBUTE_TYPE attr_type, const gchar **prop_name, Dat
 }
 
 typedef void (*IterAppendFunc) (DBusMessageIter*, GP11Attribute*);
+typedef gboolean (*IterGetFunc) (DBusMessageIter*, GP11Attribute*);
 
 static void
 iter_append_string (DBusMessageIter *iter, GP11Attribute *attr)
@@ -267,6 +268,22 @@ iter_append_string (DBusMessageIter *iter, GP11Attribute *attr)
 	}
 }
 
+static gboolean
+iter_get_string (DBusMessageIter *iter, GP11Attribute* attr)
+{
+	const char *value;
+
+	g_assert (iter);
+	g_assert (attr);
+
+	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRING, FALSE);
+	dbus_message_iter_get_basic (iter, &value);
+	if (value == NULL)
+		value = "";
+	gp11_attribute_init_string (attr, attr->type, value);
+	return TRUE;
+}
+
 static void
 iter_append_bool (DBusMessageIter *iter, GP11Attribute *attr)
 {
@@ -277,6 +294,20 @@ iter_append_bool (DBusMessageIter *iter, GP11Attribute *attr)
 
 	value = gp11_attribute_get_boolean (attr) ? TRUE : FALSE;
 	dbus_message_iter_append_basic (iter, DBUS_TYPE_BOOLEAN, &value);
+}
+
+static gboolean
+iter_get_bool (DBusMessageIter *iter, GP11Attribute* attr)
+{
+	dbus_bool_t value;
+
+	g_assert (iter);
+	g_assert (attr);
+
+	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_BOOLEAN, FALSE);
+	dbus_message_iter_get_basic (iter, &value);
+	gp11_attribute_init_boolean (attr, attr->type, value ? TRUE : FALSE);
+	return TRUE;
 }
 
 static void
@@ -315,6 +346,35 @@ iter_append_time (DBusMessageIter *iter, GP11Attribute *attr)
 	}
 
 	dbus_message_iter_append_basic (iter, DBUS_TYPE_INT64, &value);
+}
+
+static gboolean
+iter_get_time (DBusMessageIter *iter, GP11Attribute* attr)
+{
+	time_t time;
+	struct tm tm;
+	gchar buf[20];
+	gint64 value;
+
+	g_assert (iter);
+	g_assert (attr);
+
+	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_INT64, FALSE);
+	dbus_message_iter_get_basic (iter, &value);
+	if (value < 0) {
+		gp11_attribute_init_empty (attr, attr->type);
+		return TRUE;
+	}
+
+	time = value;
+	if (!gmtime_r (&time, &tm))
+		g_return_val_if_reached (FALSE);
+
+	if (!strftime (buf, sizeof (buf), "%Y%m%d%H%M%S00", &tm))
+		g_return_val_if_reached (FALSE);
+
+	gp11_attribute_init (attr, attr->type, buf, 16);
+	return TRUE;
 }
 
 static void
@@ -372,6 +432,46 @@ iter_append_fields (DBusMessageIter *iter, GP11Attribute *attr)
 	dbus_message_iter_close_container (iter, &array);
 }
 
+static gboolean
+iter_get_fields (DBusMessageIter *iter, GP11Attribute* attr)
+{
+	DBusMessageIter array;
+	DBusMessageIter dict;
+	GString *result;
+	const gchar *string;
+
+	g_assert (iter);
+
+	result = g_string_new ("");
+
+	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_ARRAY, FALSE);
+	dbus_message_iter_recurse (iter, &array);
+
+	while (dbus_message_iter_get_arg_type (&array) == DBUS_TYPE_DICT_ENTRY) {
+		dbus_message_iter_recurse (&array, &dict);
+
+		/* Key */
+		g_return_val_if_fail (dbus_message_iter_get_arg_type (&dict) == DBUS_TYPE_STRING, FALSE);
+		dbus_message_iter_get_basic (&dict, &string);
+		g_string_append (result, string);
+		g_string_append_c (result, '\0');
+
+		dbus_message_iter_next (&dict);
+
+		/* Value */
+		g_return_val_if_fail (dbus_message_iter_get_arg_type (&dict) == DBUS_TYPE_STRING, FALSE);
+		dbus_message_iter_get_basic (&dict, &string);
+		g_string_append (result, string);
+		g_string_append_c (result, '\0');
+
+		dbus_message_iter_next (&array);
+	}
+
+	gp11_attribute_init (attr, attr->type, result->str, result->len);
+	g_string_free (result, TRUE);
+	return TRUE;
+}
+
 static void
 iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *attr)
 {
@@ -407,6 +507,54 @@ iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *a
 	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, sig, &sub);
 	(func) (&sub, attr);
 	dbus_message_iter_close_container (iter, &sub);
+}
+
+static gboolean
+iter_get_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *attr)
+{
+	DBusMessageIter variant;
+	IterGetFunc func;
+	gboolean ret;
+	const gchar *sig;
+	char *signature;
+
+	g_assert (iter);
+	g_assert (attr);
+
+	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_VARIANT, FALSE);
+	dbus_message_iter_recurse (iter, &variant);
+
+	switch (data_type) {
+	case DATA_TYPE_STRING:
+		func = iter_get_string;
+		sig = DBUS_TYPE_STRING_AS_STRING;
+		break;
+	case DATA_TYPE_BOOL:
+		func = iter_get_bool;
+		sig = DBUS_TYPE_BOOLEAN_AS_STRING;
+		break;
+	case DATA_TYPE_TIME:
+		func = iter_get_time;
+		sig = DBUS_TYPE_INT64_AS_STRING;
+		break;
+	case DATA_TYPE_FIELDS:
+		func = iter_get_fields;
+		sig = "a{ss}";
+		break;
+	default:
+		g_assert (FALSE);
+		break;
+	}
+
+	signature = dbus_message_iter_get_signature (&variant);
+	g_return_val_if_fail (signature, FALSE);
+	ret = g_str_equal (sig, signature);
+	dbus_free (signature);
+
+	if (ret == FALSE)
+		return FALSE;
+
+	return (func) (&variant, attr);
 }
 
 static void
@@ -450,9 +598,11 @@ object_property_get (GP11Object *object, DBusMessage *message,
 	/* Retrieve the actual attribute */
 	attr.value = gp11_object_get_data (object, attr.type, &attr.length, &error);
 	if (error != NULL) {
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Couldn't retrieve '%s' property: %s",
-		                                      prop_name, error->message);
+		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                       "Couldn't retrieve '%s' property: %s",
+		                                       prop_name, error->message);
+		g_clear_error (&error);
+		return reply;
 	}
 
 	/* Marshall the data back out */
@@ -461,6 +611,54 @@ object_property_get (GP11Object *object, DBusMessage *message,
 	iter_append_variant (&iter, data_type, &attr);
 	g_free (attr.value);
 	return reply;
+}
+
+static DBusMessage*
+object_property_set (GP11Object *object, DBusMessage *message,
+                     DBusMessageIter *iter, const gchar *prop_name)
+{
+	DBusMessage *reply;
+	GP11Attributes *attrs;
+	GP11Attribute *attr;
+	GError *error = NULL;
+	gulong attr_type;
+	DataType data_type;
+
+	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_VARIANT, NULL);
+
+	/* What type of property is it? */
+	if (!property_to_attribute (prop_name, &attr_type, &data_type)) {
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have the '%s' property", prop_name);
+	}
+
+	attrs = gp11_attributes_new ();
+	gp11_attributes_add_empty (attrs, attr_type);
+	attr = gp11_attributes_at (attrs, 0);
+
+	/* Retrieve the actual attribute value */
+	if (!iter_get_variant (iter, data_type, attr)) {
+		gp11_attributes_unref (attrs);
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "The property type or value was invalid: %s", prop_name);
+	}
+
+	gp11_object_set_full (object, attrs, NULL, &error);
+	gp11_attributes_unref (attrs);
+
+	if (error != NULL) {
+		if (error->code == CKR_USER_NOT_LOGGED_IN)
+			reply = dbus_message_new_error (message, SECRETS_ERROR_IS_LOCKED,
+			                                "Cannot set property on a locked object");
+		else
+			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+			                                       "Couldn't set '%s' property: %s",
+			                                       prop_name, error->message);
+		g_clear_error (&error);
+		return reply;
+	}
+
+	return dbus_message_new_method_return (message);
 }
 
 static GP11Object*
@@ -520,7 +718,25 @@ item_property_get (GP11Object *object, DBusMessage *message)
 static DBusMessage*
 item_property_set (GP11Object *object, DBusMessage *message)
 {
-	g_return_val_if_reached (NULL); /* TODO: Need to implement */
+	DBusMessageIter iter;
+	const char *interface;
+	const char *name;
+
+	if (!dbus_message_has_signature (message, "ssv"))
+		return NULL;
+
+	dbus_message_iter_init (message, &iter);
+	dbus_message_iter_get_basic (&iter, &interface);
+	dbus_message_iter_next (&iter);
+	dbus_message_iter_get_basic (&iter, &name);
+	dbus_message_iter_next (&iter);
+
+	if (!gkd_dbus_interface_match (SECRETS_ITEM_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have properties on interface '%s'",
+		                                      interface);
+
+	return object_property_set (object, message, &iter, name);
 }
 
 static DBusMessage*
@@ -662,7 +878,25 @@ collection_property_get (GkdSecretsObjects *self, GP11Object *object, DBusMessag
 static DBusMessage*
 collection_property_set (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
 {
-	g_return_val_if_reached (NULL); /* TODO: Need to implement */
+	DBusMessageIter iter;
+	const char *interface;
+	const char *name;
+
+	if (!dbus_message_has_signature (message, "ssv"))
+		return NULL;
+
+	dbus_message_iter_init (message, &iter);
+	dbus_message_iter_get_basic (&iter, &interface);
+	dbus_message_iter_next (&iter);
+	dbus_message_iter_get_basic (&iter, &name);
+	dbus_message_iter_next (&iter);
+
+	if (!gkd_dbus_interface_match (SECRETS_COLLECTION_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have properties on interface '%s'",
+		                                      interface);
+
+	return object_property_set (object, message, &iter, name);
 }
 
 static DBusMessage*
