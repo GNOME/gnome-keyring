@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master.gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-07-21 14:16+0000\n"
-"PO-Revision-Date: 2009-08-24 15:42+0530\n"
+"POT-Creation-Date: 2009-08-26 19:44+0000\n"
+"PO-Revision-Date: 2009-09-08 14:46+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -267,13 +267,11 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:552
 #, c-format
-#| msgid "Choose a new password for the '%s' keyring. "
 msgid "Choose a new password for the '%s' keyring."
 msgstr "'%s' કીરીંગ માટે નવો પાસવર્ડ પસંદ કરો."
 
 #: ../daemon/gkr-daemon-ops.c:554
 #, c-format
-#| msgid "Choose a new password for the default keyring. "
 msgid "Choose a new password for the default keyring."
 msgstr "મૂળભૂત કીરીંગ માટે નવો પાસવર્ડ પસંદ કરો."
 
@@ -597,29 +595,29 @@ msgstr "એક વાર પરવાનગી આપો (_O)"
 msgid "_Always Allow"
 msgstr "હંમેશા પરવાનગી આપો (_A)"
 
-#: ../daemon/util/gkr-location.c:320
+#: ../daemon/util/gkr-location.c:234
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "દૂર કરી શકાય તેવી ડિસ્ક: %s"
 
-#: ../daemon/util/gkr-location.c:322
+#: ../daemon/util/gkr-location.c:236
 msgid "Removable Disk"
 msgstr "દૂર કરી શકાય તેવી ડિસ્ક"
 
-#: ../daemon/util/gkr-location.c:543 ../daemon/util/gkr-location.c:555
+#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
 msgid "Home"
 msgstr "ઘર"
 
-#: ../daemon/util/gkr-location.c:1104 ../daemon/util/gkr-location.c:1128
+#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
 msgid "The disk or drive this file is located on is not present"
 msgstr "આ ફાઈલ જે ડિસ્ક કે ડ્રાઈવ પર સ્થિત થયેલ છે તે હાજર નથી"
 
-#: ../daemon/util/gkr-location.c:1136
+#: ../daemon/util/gkr-location.c:914
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "ડિરેક્ટરીને બનાવી શકાઇ નહિં: %s"
 
-#: ../daemon/util/gkr-location.c:1170
+#: ../daemon/util/gkr-location.c:948
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "ફાઇલને દૂર કરી શકાતી નથી: %s"
@@ -664,7 +662,8 @@ msgstr "સામાન્ય નામ"
 msgid "Surname"
 msgstr "અટક"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "ક્રમાંક નંબર"
 
@@ -752,6 +751,86 @@ msgstr "<i>પ્રમાણપત્રને ભાગ નથી</i>"
 msgid "<i>unknown</i>"
 msgstr "<i>અજ્ઞાત</i>"
 
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+#| msgid "<i>Not Part of Certificate</i>"
+msgid "<Not Part of Certificate>"
+msgstr "<પ્રમાણપત્રને ભાગ નથી>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+#| msgid "Fingerprints"
+msgid "<b>Fingerprints</b>"
+msgstr "<b>ફિંગરપ્રિંટો</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>દ્દારા અદા થયેલ</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>માં અદા થયેલ છે</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>આ પ્રમાણપત્ર નીચેનાં વપરાશો માટે ચકાસી દેવામાં આવ્યુ છે:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>ચકાસણી</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
+#| msgid "Common Name"
+msgid "Common Name (CN)"
+msgstr "સામાન્ય નામ (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+#| msgid "Unnamed Certificate"
+msgid "Email Recipient Certificate"
+msgstr "Email Recipient Certificate"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+#| msgid "Unnamed Certificate"
+msgid "Email Signer Certificate"
+msgstr "Email Signer Certificate"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr "પર વિવૃત્ત કરે છે"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+#| msgid "Issuer Name"
+msgid "Issued On"
+msgstr "પર અદા થયેલ છે"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+#| msgid "Fingerprints"
+msgid "MD5 Fingerprint"
+msgstr "MD5 આંગળીની છાપ"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+#| msgid "Organization"
+msgid "Organization (O)"
+msgstr "સંસ્થા (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+#| msgid "Organizational Unit"
+msgid "Organizational Unit (OU)"
+msgstr "Organizational Unit (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+#| msgid "Fingerprints"
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 આંગળીની છાપ"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+#| msgid "Certificate"
+msgid "SSL Client Certificate"
+msgstr "SSL ક્લાઇન્ટ પ્રમાણપત્ર"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+#| msgid "Certificate"
+msgid "SSL Server Certificate"
+msgstr "SSL સર્વર પ્રમાણપત્ર"
+
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
 msgstr "એક્સટેન્શન"
@@ -764,84 +843,97 @@ msgstr "ઓળખનાર"
 msgid "Value"
 msgstr "કિંમત"
 
-#: ../gcr/gcr-certificate-details-widget.c:232
-msgid "Yes"
-msgstr "હા"
-
-#: ../gcr/gcr-certificate-details-widget.c:234
-msgid "No"
-msgstr "ના"
-
-#: ../gcr/gcr-certificate-details-widget.c:237
+#: ../gcr/gcr-certificate-details-widget.c:229
 msgid "Critical"
 msgstr "સંકટમય"
 
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "હા"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "ના"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Subject Name"
 msgstr "વિષય નામ"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:315
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issuer Name"
 msgstr "પ્રકાશિત કરનારનું નામ"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:319
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
 msgstr "મોકલેલ પ્રમાણપત્ર"
 
-#: ../gcr/gcr-certificate-details-widget.c:324
+#: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
 msgstr "આવૃત્તિ"
 
-#: ../gcr/gcr-certificate-details-widget.c:337
+#: ../gcr/gcr-certificate-details-widget.c:329
 msgid "Not Valid Before"
 msgstr "પહેલા યોગ્ય નથી"
 
-#: ../gcr/gcr-certificate-details-widget.c:342
+#: ../gcr/gcr-certificate-details-widget.c:334
 msgid "Not Valid After"
 msgstr "પછી યોગ્ય નથી"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:347
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Signature"
 msgstr "હસ્તાક્ષર"
 
-#: ../gcr/gcr-certificate-details-widget.c:351
+#: ../gcr/gcr-certificate-details-widget.c:343
 msgid "Signature Algorithm"
 msgstr "હસ્તાક્ષરનાં ઍલ્ગરિધમ"
 
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:348
 msgid "Signature Parameters"
 msgstr "હસ્તાક્ષરનાં પરિમાણો"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:367
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Public Key Info"
 msgstr "સાર્વજનિક કી જાણકારી"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Key Algorithm"
 msgstr "કી ઍલ્ગરિધમ"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:368
 msgid "Key Parameters"
 msgstr "કી પરિમાણો"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:375
 msgid "Key Size"
 msgstr "કી માપ"
 
-#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "સાર્વજનિક કી"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:394
+#: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "ફિંગરપ્રિંટો"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>પ્રમાણપત્રો અને કીઓ ને આયાત કરો</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "માં આયાત કરો:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+#| msgid "_Password:"
+msgid "Password:"
+msgstr "પાસવર્ડ:"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1265,7 +1357,7 @@ msgstr "તે નામ સાથેની કીરીંગ અસ્તિ�
 msgid "The keyring has already been unlocked."
 msgstr "કીરીંગનું તાળું પહેલાથી જ ખોલી દેવાયેલ છે."
 
-#: ../pkcs11/gck/gck-certificate.c:711
+#: ../pkcs11/gck/gck-certificate.c:716
 msgid "Unnamed Certificate"
 msgstr "નામ ન થયેલ પ્રમાણપત્ર"
 
