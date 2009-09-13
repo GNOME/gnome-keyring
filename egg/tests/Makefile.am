@@ -1,10 +1,6 @@
-
-BUILT_SOURCES = \
-	asn1-def-test.h
-
 asn1-def-test.h: test.asn
 	$(ASN1PARSER) -o asn1-def-test.h $(srcdir)/test.asn 
-	
+
 # Test files should be listed in order they need to run
 UNIT_AUTO = \
 	unit-test-asn1.c \
@@ -14,7 +10,7 @@ UNIT_AUTO = \
 	unit-test-secmem.c \
 	unit-test-symkey.c \
 	unit-test-openssl.c \
-	$(BUILT_SOURCES)
+	asn1-def-test.h
 
 UNIT_PROMPT = 
 
@@ -26,3 +22,6 @@ EXTRA_DIST = \
 	test-data
 
 include $(top_srcdir)/tests/gtest.make
+
+BUILT_SOURCES += \
+	asn1-def-test.h
