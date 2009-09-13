@@ -1,3 +1,13 @@
+Changes in version 2.27.92 are:
+ * Some uses of glib memory routines to explicitly allocate memory.
+ * Fix erroneous assertion hit by gtk-doc and tests.
+ * Revert change which bumped libtasn1 required to 1.0.
+ * Fix logic for only_if option in PAM module.
+ * Handle unix signals on one thread.
+ * Better daemon startup and forking logic.
+ * Optional use of automake silent rules when available.
+ * No warning when a disk doesn't have a UDI identifier.
+
 Changes in version 2.27.90 are:
  * Build fixes on Solaris and FreeBSD.
  * Take length of ASN.1 elements into account, when parsing.
@@ -29,7 +39,7 @@ Changes in version 2.26.3 are:
 Changes in version 2.26.1 are:
 * Fix many problems with the new secure memory allocator.
 * DBus now automatically starts the gnome-keyring service properly.
-* When auto activating the gnome-keyring DBus service, check for an 
+* When auto activating the gnome-keyring DBus service, check for an
   already running daemon.
 * Don't print critical warnings when registering with DBus fails.
 * Bump glib dependency.
@@ -41,45 +51,45 @@ Changes in version 2.26.1 are:
 Changes in version 2.26.0 are:
 * Implement support for running gnome-keyring-daemon under valgrind.
 * Checks for asn1Parser tool when configuring. [Alberto Ruiz].
-* Only automatically expose PKCS#11 public key objects for private keys. 
-* Have the SSH agent only log into the token when we have a private 
+* Only automatically expose PKCS#11 public key objects for private keys.
+* Have the SSH agent only log into the token when we have a private
   key that we want to access.
 * Disable input method in password. [Takao Fujiwara]
 
 Changes in version 2.25.92 are:
-* Fix problems when multiple processes tried to initialize the 
+* Fix problems when multiple processes tried to initialize the
   gnome-keyring-daemon at the same time, often resulting in a user
   session that hung on login.
-* Add compatibility support for loading SSH unlock passwords from 
+* Add compatibility support for loading SSH unlock passwords from
   previous versions of gnome-keyring.
 * Fix compiler warnings on 32-bit systems.
 * Fix uninitialized variable usage. These resulted in crashes.
-* Initialize PKCS#11 tokens before importing certificates or keys 
-  to them. Remove previous auto-initialize idea. 
+* Initialize PKCS#11 tokens before importing certificates or keys
+  to them. Remove previous auto-initialize idea.
 * Add basic support for PKCS#11 SO logins.
 * Fix focus issues in the import certificate/key dialog.
-* When looking for PKCS#11 objects, skip tokens that have not been 
+* When looking for PKCS#11 objects, skip tokens that have not been
   initialized.
 * Exit properly when an error occurs on importing a certificate or key.
-* Hash objects when storing them in PKCS#11 user-store and validate the 
+* Hash objects when storing them in PKCS#11 user-store and validate the
   hashes when loading them.
 * Build fix on Solaris [Jeff Cai]
-* If login keyring doesn't exist when changing a PAM password, don't 
+* If login keyring doesn't exist when changing a PAM password, don't
   create it automatically. [Vincent Untz]
-* Close stdin/stdout when not running the daemon in foreground. This 
+* Close stdin/stdout when not running the daemon in foreground. This
   fixes a regression in scripts starting gnome-keyring-daemon.
 
 Changes in version 2.25.91 are:
 * Complete certificate details display in the gcr library.
 * Correctly escape prompt markup. [Joe Shaw, Magnus Boman]
 * Show correct MD5 hash in certificate display. [Fabrizio Tarizzo]
-* Overhaul the secure memory allocator to have memory guards, 
+* Overhaul the secure memory allocator to have memory guards,
   and also be more sparing with secure memory.
 * Add C++ header guards to public headers. [Xan Lopez]
 * Prompt to initialize new PKCS#11 tokens with a password.
 * Fix output of RSA keys to be interoperable.
-* Translation fixes. 
-* Fix problems importing certificates and keys. 
+* Translation fixes.
+* Fix problems importing certificates and keys.
 * More code reorganization.
 * Add support for netscape trust objects, so Root CA certificates
   can be trusted by NSS.
@@ -88,7 +98,7 @@ Changes in version 2.25.91 are:
 Changes in version 2.25.90 are:
 * Add certificate UI bit to gcr library.
 * Can now again clear the cached authentication from an SSH key.
-* Add some additional helper functions to gp11 library. 
+* Add some additional helper functions to gp11 library.
 * Fix some corner cases in signal handling. [James Henstridge]
 * Don't crash when trying to lock keyrings that don't have a password.
 * Fix problems running on 64-bit systems. [Christophe Fergeau]
@@ -119,7 +129,7 @@ Changes in version 2.25.4 are:
 * Add modular ssh-store, roots and rpc-layer PKCS#11 components.
 * Beginnings of a PKCS#11 based ssh-agent.
 * Transactional storage of PKCS#11 objects.
-* Add auto-authenticate support in GP11 library, which greatlty 
+* Add auto-authenticate support in GP11 library, which greatlty
   simplifies figuring out when to provide passwords.
 * Fix initialization problems which prevented SSH agent from setting
   environment variables properly [Yanko Kaneti]
@@ -132,16 +142,16 @@ Changes in version 2.25.2 are:
 * Rework initialization of daemon, and the way that it integrates
   with the session.
 * Close open file descriptors before starting daemon from PAM module.
-* Don't try and unlock keyring from PAM if daemon isn't 
+* Don't try and unlock keyring from PAM if daemon isn't
   running. [Vincent Untz]
-* Don't leave keyring daemon running if PAM just started it for 
+* Don't leave keyring daemon running if PAM just started it for
   a password change. [Vincent Untz]
 * Add a keyboard accelerator to the 'Deny' button. [Gabor Kelemen]
 * Use pkg-config to detect libtasn1. [Jeff Cai]
 * Register environment variables with session properly.
-* Make DBUS a required dependency of gnome-keyring. 
+* Make DBUS a required dependency of gnome-keyring.
 
-Changes in version 2.25.1 are: 
+Changes in version 2.25.1 are:
 * Remove usage of deprecated glib/gtk stuff.
 
 Changes in version 2.24.1 are:
@@ -155,21 +165,21 @@ Changes in version 2.24.0 are:
 * Fix build problems with gcc 4.3.
 * PKCS#11 initialize compatibility fix for OpenSC. [Joe Orton]
 * Make all errors from prompt process go to syslog.
-* When prompting for a password on import, don't go into an endless 
+* When prompting for a password on import, don't go into an endless
   loop for blank passwords.
 * Fix problems with PK indexes overwriting one another.
-* Don't add additional extensions on storage files when the extension 
+* Don't add additional extensions on storage files when the extension
   is already correct.
-* Load all objects when a PKCS#11 session is opened, regardless of 
+* Load all objects when a PKCS#11 session is opened, regardless of
   whether a C_FindObjects is run or not.
 
 Changes in version 2.23.92 are:
-* Build fix for Solaris. [Jeff Cai] 
+* Build fix for Solaris. [Jeff Cai]
 * Import the LANG environment variable into daemon enviroment
   so that dialogs display with correct translations.
-	
+
 Changes in version 2.23.91 are:
-* Use 'Change' instead of 'Create' when prompting the user for 
+* Use 'Change' instead of 'Create' when prompting the user for
   a password to change keyring password. [Adam Schreiber]
 * Fix RSA signing with X509 mechanism.
 * Tweaking of the asynchronous scheduling to prevent hangs.
@@ -178,12 +188,12 @@ Changes in version 2.23.91 are:
 * Build fixes. [Götz Waschk]
 
 Changes in version 2.23.90 are:
-* Use 'Create' button instead of 'OK' when prompting the user for 
+* Use 'Create' button instead of 'OK' when prompting the user for
   a password to create a new keyring. [Adam Schreiber]
-* Fix more cases where 'Deny' choice by a user resulted in 
+* Fix more cases where 'Deny' choice by a user resulted in
   more subsequent prompts.
 * Automatically create non-existant directories when storing files.
-* Fix problem prompting for the same password twice when parsing a 
+* Fix problem prompting for the same password twice when parsing a
   PFX or PKCS#12 file.
 * Don't offer to store password during import operation.
 * Don't try to store certificates encrypted on the disk.
@@ -194,11 +204,11 @@ Changes in version 2.23.90 are:
 Changes in version 2.23.6 are:
 * If the user denies a prompt, then don't prompt the same prompt
   again for that connection to the daemon.
-* Bug fixes for loading of SSH keys. 
+* Bug fixes for loading of SSH keys.
 * Add gconf schema for noting the user's configured PKCS#11 modules.
 * Update and bug fixes for the new GP11 library.
 * Better reference counting of internal objects.
-* When a certificate is in the roots storage, assume it is a CA if 
+* When a certificate is in the roots storage, assume it is a CA if
   no basic constraints are present.
 * Add ability of PKCS#11 module to accept a string on its reserved
   initialization argument, similar to NSS's libsoftkn3 module.
@@ -206,19 +216,19 @@ Changes in version 2.23.6 are:
 * Build fixes.
 
 Changes in version 2.23.5 are:
-* Load all SSH keys in ~/.ssh named id_?sa*, not just id_rsa 
+* Load all SSH keys in ~/.ssh named id_?sa*, not just id_rsa
   and id_dsa. Also load public portions of keys when needed ie: *.pub
 * Include new GP11 library, which is a GLib wrapper for PKCS#11
 * Add ability to import keys/certificates to PKCS#11.
 * Better storage and creation of PKCS#11 objects.
 * Start using GTest for new unit testing.
 * Better indexing of keys and certificates.
-* Better buffer handling, and threading fixes. [Jon Burgress] 
-* Fix warnings in logs caused by programs checking whether 
+* Better buffer handling, and threading fixes. [Jon Burgress]
+* Fix warnings in logs caused by programs checking whether
   gnome-keyring is available.
-* Standardize on libgcrypt random number generator. 
+* Standardize on libgcrypt random number generator.
 * Add --disable-acl-prompts option to disable all ACL prompting [Colin Walters]
-* Build fixes. 
+* Build fixes.
 
 Changes in version 2.22.2 are:
 * Streamline the importing of keys and make the proper prompts show up
@@ -229,8 +239,8 @@ Changes in version 2.22.2 are:
 * Build fixes [Brian Cameron, Matthias Drochner, Antoine Jacoutot]
 
 Changes in version 2.22.1 are:
-* Add SSH agent protocol 1 support. 
-* Make 'ssh-add -D' lock any SSH private keys that gnome-keyring is 
+* Add SSH agent protocol 1 support.
+* Make 'ssh-add -D' lock any SSH private keys that gnome-keyring is
   automatically loading.
 * Reconnect to system DBus whenever the system bus restarts. [Sjoerd Simons]
 * Log to syslog even when running in the foreground [Tony Espy]
@@ -241,9 +251,9 @@ Changes in version 2.22.0 are:
 * Build fix. [Jens Granseuer]
 
 Changes in version 2.21.92 are:
-* Sync up user's session environment with the daemon, so that 
+* Sync up user's session environment with the daemon, so that
   things like X authentication, DBUS etc... work properly.
-* Shutdown socket connections properly, so things don't hang, when 
+* Shutdown socket connections properly, so things don't hang, when
   wrong versions of daemon/library are used.
 * Limit PKCS#12 parsing to a clearly defined subset of the format.
 * Decrypt PKCS#12 with empty passwords properly.
@@ -251,7 +261,7 @@ Changes in version 2.21.92 are:
 * Translation fixes.
 
 Changes in version 2.21.91 are:
-* Don't prompt for a password from the PAM module since  
+* Don't prompt for a password from the PAM module since
   gnome-keyring is not an authenticator. [Ray Strode]
 * Check that PKCS#11 socket connections come from same user.
 * Don't lock the entire gnome-keyring-ask process in memory.
@@ -262,7 +272,7 @@ Changes in version 2.21.91 are:
 * Translation fixes.
 
 Changes in version 2.21.90 are:
-* Fix problem where most keyrings were being treated as insecure 
+* Fix problem where most keyrings were being treated as insecure
   from the point of view of storing passwords for keys or certificates.
 * Fix race condition that is causing deadlocks and freezes.
 
@@ -270,13 +280,13 @@ Changes in version 2.21.5 are:
 * Proper support for creating and destroying objects through PKCS#11.
 * Support for setting PKCS#11 attributes.
 * Fix hanging of daemon under certain conditions.
-* Add gconf setting for determining which components of the daemon 
+* Add gconf setting for determining which components of the daemon
   (such as SSH) are run at startup.
 * Better parsing of objects and prompting for passwords in PKCS#12 files.
 * Calculate trust and purpose/usage of certificates.
 * Mark certain key/certificate directories as special requiring certain
   special treatment (such as the CA root store, SSH keys etc...)
-* Add support for unencrypted keyrings which are used when the user 
+* Add support for unencrypted keyrings which are used when the user
   specifies a blank password.
 * Fix crasher [Jeff Cai]
 * Build fixes.
@@ -285,7 +295,7 @@ Changes in version 2.21.4 are:
 * x86_64 memory alignment fixes
 * Other build and install fixes
 * Solaris build fixes [Halton Huo]
-* Automatically activate keyring daemon via DBus if it is not already 
+* Automatically activate keyring daemon via DBus if it is not already
   running. [Tom Parker]
 
 Changes in version 2.21.3.2 are:
@@ -303,7 +313,7 @@ Changes in version 2.21.3.1 are:
 * Install PKCS#11 module to a better prefix
 
 Changes in version 2.21.3 are:
-* Added basic X.509 certificate and key store 
+* Added basic X.509 certificate and key store
 * PKCS#11 module for accessing certificates and keys
 * Now includes an SSH agent
 * PAM module now works with SELinux [Alexander Larrson]
@@ -319,13 +329,13 @@ Changes in version 2.20.2 are:
 * Build fixes for systems that require GNU_SOURCE to be defined. [Christopher Taylor]
 * Builds with the latest DBus [Owen Taylor]
 * Build fix for OpenBSD [Jasper Lievisse Adriaanse]
-* Don't print out a warning message in applications using libgnome-keyring when 
+* Don't print out a warning message in applications using libgnome-keyring when
   non-pageable memory cannot be allocated.
 
 Changes in version 2.20.1 are:
 * Link pam module properly with libpam [Sebastian Dröge]
 * Remove 'install-pam' make target [Rémi Cardona]
-* Return a 'not found' result when no results are returned 
+* Return a 'not found' result when no results are returned
   from a find operation.
 * Don't remove 'default' file on exit. [Alex Larrson]
 * Recognize newly created keyrings properly. [Darren Kenny]
@@ -336,18 +346,18 @@ Changes in version 2.20 are:
 
 Changes in version 2.19.91 are:
 * Builds with newer versions of DBus [Theppitak Karoonboonyanan]
-* In the PAM module we now support starting gnome-keyring-daemon when 
+* In the PAM module we now support starting gnome-keyring-daemon when
   the user's session actually starts, rather than during password validation.
   This makes us more solid and sane with GDM and well behaved PAM using
   applications. [Chris Rivera]
 * In the PAM module check that the socket is owned by the same user, before
   sending the login password there.
-* Don't read from /dev/random when not needed. This makes startup faster 
+* Don't read from /dev/random when not needed. This makes startup faster
   in many cases, as it won't block for entropy.
-* Get around more optimizations that cancel out wiping of strings in 
+* Get around more optimizations that cancel out wiping of strings in
   memory before freeing.
 * Now builds on FreeBSD [Joe Marcus Clarke]
-	
+
 Changes in version 2.19.90 are:
 * Fix problem where keyrings are created in wrong directory [Nathaniel McCallum]
 * Incorporated security fixes from Novell
@@ -364,7 +374,7 @@ Changes in version 2.19.6.1 are:
 Changes in version 2.19.6 are:
 * Grab the keyboard when prompting for passwords, and always put the prompt
   window above other windows.
-* Now supports use of keyrings on removable drives. 
+* Now supports use of keyrings on removable drives.
 * PAM module to automatically unlock keyrings on login, or unlocking
 * Simplify daemon code (now uses cooperative threading) and get it ready for
   other PKCS#11, SSH and other stuff running in same process.
@@ -394,27 +404,27 @@ Changes in version 2.19.4 are:
 * Added unit tests for the gnome-keyring API.
 * Refactored and reorganized the code.
 
-Changes in version 2.19.2 are: 
+Changes in version 2.19.2 are:
 * Sync up version number with GNOME release schedule
 * Use libgcrypt instead of hand-rolled encryption algorithms.
 * Internationalization fixes [Elijah Newren]
-* Solaris build fixes. 
+* Solaris build fixes.
 
-Changes in version 0.8 are: 
+Changes in version 0.8 are:
 * Translations
 
 Changes in version 0.7.92 are:
 * Fix build by including sys/types.h
-* In gnome_keyring_free() don't crash on NULL parameter. 
+* In gnome_keyring_free() don't crash on NULL parameter.
 
 Changes in version 0.7.91 are:
-* Add method for library to discover daemon via DBus. Adds soft 
+* Add method for library to discover daemon via DBus. Adds soft
   DBus dependency.
 * Fixes for building on kFreeBSD.
 
 Changes in version 0.7.3 are:
-* Fix endless loop when creating a keyring and a file by that name 
-  already exists. 
+* Fix endless loop when creating a keyring and a file by that name
+  already exists.
 * Fix crasher when deleting session keyring.
 * Fix crasher when doing find operation with NULL attribute string.
 * Sync files to disk after writing to keyring.
@@ -423,12 +433,12 @@ Changes in version 0.7.2 are:
 * Don't have multiple password dialogs presented for the same
   keyring
 
-Changes in version 0.7.1 are: 
-* Added GNOME_KEYRING_ITEM_APPLICATION_SECRET which allows an item 
+Changes in version 0.7.1 are:
+* Added GNOME_KEYRING_ITEM_APPLICATION_SECRET which allows an item
   to be for a single application only with strict access controls.
-* New function gnome_keyring_item_get_info_full(_sync) which allow 
-  retrieval of item meta data without the secret, thus not incurring 
-  an ACL prompt. 
+* New function gnome_keyring_item_get_info_full(_sync) which allow
+  retrieval of item meta data without the secret, thus not incurring
+  an ACL prompt.
 * Translation updates
 
 Changes in version 0.6.0 are:
