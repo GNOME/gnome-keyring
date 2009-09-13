@@ -97,6 +97,9 @@ async_poll_func (GPollFD *ufds, guint nfsd, gint timeout)
 	
 	g_assert (orig_poll_func);
 
+	if (done_queue && !g_queue_is_empty (done_queue))
+		cleanup_done_threads ();
+
 	/* 
 	 * These two atomic variables are interlocked in the 
 	 * opposite order from those in DO_LOCK which prevents
@@ -105,9 +108,6 @@ async_poll_func (GPollFD *ufds, guint nfsd, gint timeout)
 	g_atomic_int_set (&waiting_on_poll, 1);
 	if (g_atomic_int_get (&waiting_on_lock))
 		timeout = 0;
-
- 	if (done_queue && !g_queue_is_empty (done_queue))
- 		cleanup_done_threads ();
  	
 	ret = (orig_poll_func) (ufds, nfsd, timeout);
 
