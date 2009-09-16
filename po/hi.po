@@ -1,4 +1,4 @@
-# translation of gnome-keyring.gnome.po to Hindi
+# translation of gnome-keyring.master.po to Hindi
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
@@ -6,18 +6,17 @@
 # Rajesh Ranjan <rajesh672@gmail.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.gnome-2-26\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&component=general\n"
-"POT-Creation-Date: 2009-07-21 14:16+0000\n"
-"PO-Revision-Date: 2009-06-10 14:22+0530\n"
+"Project-Id-Version: gnome-keyring.master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-08-26 19:44+0000\n"
+"PO-Revision-Date: 2009-09-16 13:48+0530\n"
 "Last-Translator: Rajesh Ranjan <rajesh672@gmail.com>\n"
 "Language-Team: Hindi <hindi.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "\n"
@@ -41,8 +40,7 @@ msgstr ""
 msgid ""
 "The application '%s' (%s) wants to access the password for '<object "
 "prop='name'/>' in %s."
-msgstr ""
-"यह अनुप्रयोग '%s' (%s) '<object prop='name'/>' के लिए कूटशब्द की पहुँच चाहता है %s में."
+msgstr "यह अनुप्रयोग '%s' (%s) '<object prop='name'/>' के लिए कूटशब्द की पहुँच चाहता है %s में."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
@@ -60,8 +58,7 @@ msgstr ""
 msgid ""
 "The application '%s' wants to access the password for '<object prop='name'/"
 ">' in %s."
-msgstr ""
-"यह अनुप्रयोग '%s' <object prop='name'/>' के लिए कूटशब्द की पहुँच चाहता है %s में."
+msgstr "यह अनुप्रयोग '%s' <object prop='name'/>' के लिए कूटशब्द की पहुँच चाहता है %s में."
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:258
@@ -100,15 +97,13 @@ msgstr "अनुप्रयोग '%s' (%s) तयशुदा कुंजी
 #. TRANSLATORS: The keyring '%s' is locked
 #: ../daemon/gkr-daemon-ops.c:314
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
 msgstr "अनुप्रयोग '%s' (%s) तयशुदा कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
 
 #. TRANSLATORS: The default keyring is locked
 #: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
+msgid "The application '%s' wants access to the default keyring, but it is locked"
 msgstr "अनुप्रयोग '%s' तयशुदा कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
 #. TRANSLATORS: The keyring '%s' is locked
@@ -120,15 +115,13 @@ msgstr "अनुप्रयोग '%s' कुंजीरिंग '%s' मे
 #. TRANSLATORS: The default keyring is locked
 #: ../daemon/gkr-daemon-ops.c:346
 #, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
+msgid "An unknown application wants access to the default keyring, but it is locked"
 msgstr "अनजान अनुप्रयोग तयशुदा कुंजीरिंग में अभिगम चाहता है, लेकिन यह बंद है"
 
 #. TRANSLATORS: The keyring '%s' is locked
 #: ../daemon/gkr-daemon-ops.c:351
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
 msgstr "अनजान अनुप्रयोग तयशुदा कुंजीरिंग '%s' में अभिगम चाहता है, लेकिन यह बंद है"
 
 #: ../daemon/gkr-daemon-ops.c:358
@@ -273,14 +266,14 @@ msgstr ""
 "जिसे आप इसके लिये प्रयोग करना चाहते हैं."
 
 #: ../daemon/gkr-daemon-ops.c:552
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a new password for the '%s' keyring."
-msgstr "कीरिंग '%s' के लिये कूटशब्द चुनें"
+msgstr "कीरिंग '%s' के लिये नया कूटशब्द चुनें"
 
 #: ../daemon/gkr-daemon-ops.c:554
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a new password for the default keyring."
-msgstr "तयशुदा कीरिंग के लिये कूटशब्द बदलें."
+msgstr "तयशुदा कीरिंग के लिये नया कूटशब्द चुनें."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:558
@@ -373,8 +366,7 @@ msgstr "कीरिंग को खोलने के लिये लॉग�
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
-msgstr ""
-"आपका लॉगिन कीरिंग स्वतः अनलॉक नहीं किया गया था जब आप इस कंप्यूटर में लॉग इन होते हैं."
+msgstr "आपका लॉगिन कीरिंग स्वतः अनलॉक नहीं किया गया था जब आप इस कंप्यूटर में लॉग इन होते हैं."
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:125
@@ -603,29 +595,29 @@ msgstr "स्वीकारें एक बार"
 msgid "_Always Allow"
 msgstr "हमेशा स्वीकारें"
 
-#: ../daemon/util/gkr-location.c:320
+#: ../daemon/util/gkr-location.c:234
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "विस्थापनीय डिस्क: %s"
 
-#: ../daemon/util/gkr-location.c:322
+#: ../daemon/util/gkr-location.c:236
 msgid "Removable Disk"
 msgstr "विस्थापनीय डिस्क"
 
-#: ../daemon/util/gkr-location.c:543 ../daemon/util/gkr-location.c:555
+#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
 msgid "Home"
 msgstr "घर"
 
-#: ../daemon/util/gkr-location.c:1104 ../daemon/util/gkr-location.c:1128
+#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
 msgid "The disk or drive this file is located on is not present"
 msgstr "डिस्क या ड्राइव जिस पर यह फ़ाइल अवस्थित है मौजूद नहीं है"
 
-#: ../daemon/util/gkr-location.c:1136
+#: ../daemon/util/gkr-location.c:914
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "निर्देशिका नहीं बना सका: %s"
 
-#: ../daemon/util/gkr-location.c:1170
+#: ../daemon/util/gkr-location.c:948
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "फ़ाइल मिटा नहीं सका: %s"
@@ -670,7 +662,8 @@ msgstr "सामान्य नाम"
 msgid "Surname"
 msgstr "कुलनाम"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "क्रम संख्या"
 
@@ -758,6 +751,75 @@ msgstr "<i>प्रमाणपत्र का हिस्सा नहीं
 msgid "<i>unknown</i>"
 msgstr "<i>अज्ञात</i>"
 
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<प्रमाणपत्र का हिस्सा नहीं>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+#| msgid "Fingerprints"
+msgid "<b>Fingerprints</b>"
+msgstr "<b>फिंगरप्रिंट</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>के द्वारा निर्गत</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>को निर्गत</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>इस प्रमाणपत्र को निम्नलिखित प्रयोग से जाँचा गया है:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>वैधता</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
+msgid "Common Name (CN)"
+msgstr "सामान्य नाम (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+msgid "Email Recipient Certificate"
+msgstr "ई-मेल प्राप्तकर्ता प्रमाणपत्र"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+msgid "Email Signer Certificate"
+msgstr "ई-मेल हस्ताक्षरकर्ता प्रमाणपत्र"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr "यहाँ समय समाप्त"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+msgid "Issued On"
+msgstr "इस तिथि को निर्गत"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 फिंगरप्रिंट"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+msgid "Organization (O)"
+msgstr "संगठन (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+msgid "Organizational Unit (OU)"
+msgstr "सांगठनिक इकाई (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 फिंगरप्रिंट"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+msgid "SSL Client Certificate"
+msgstr "SSL क्लाइंट प्रमाणपत्र"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+msgid "SSL Server Certificate"
+msgstr "SSL सर्वर प्रमाणपत्र"
+
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
 msgstr "विस्तार"
@@ -770,84 +832,96 @@ msgstr "पहचानकर्ता"
 msgid "Value"
 msgstr "मान"
 
-#: ../gcr/gcr-certificate-details-widget.c:232
-msgid "Yes"
-msgstr "हाँ"
-
-#: ../gcr/gcr-certificate-details-widget.c:234
-msgid "No"
-msgstr "नहीं"
-
-#: ../gcr/gcr-certificate-details-widget.c:237
+#: ../gcr/gcr-certificate-details-widget.c:229
 msgid "Critical"
 msgstr "नाजुक"
 
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "हाँ"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "नहीं"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Subject Name"
 msgstr "विषय नाम"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:315
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issuer Name"
 msgstr "निर्गतकर्ता नाम"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:319
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
 msgstr "निर्गत प्रमाणपत्र"
 
-#: ../gcr/gcr-certificate-details-widget.c:324
+#: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
 msgstr "संस्करण"
 
-#: ../gcr/gcr-certificate-details-widget.c:337
+#: ../gcr/gcr-certificate-details-widget.c:329
 msgid "Not Valid Before"
 msgstr "इससे पहले वैध नहीं"
 
-#: ../gcr/gcr-certificate-details-widget.c:342
+#: ../gcr/gcr-certificate-details-widget.c:334
 msgid "Not Valid After"
 msgstr "इससे बाद वैध नहीं"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:347
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Signature"
 msgstr "हस्ताक्षर"
 
-#: ../gcr/gcr-certificate-details-widget.c:351
+#: ../gcr/gcr-certificate-details-widget.c:343
 msgid "Signature Algorithm"
 msgstr "हस्ताक्षर अलगोरिथम"
 
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:348
 msgid "Signature Parameters"
 msgstr "हस्ताक्षर पैरामीटर"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:367
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Public Key Info"
 msgstr "सार्वजनिक कुंजी सूचना"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Key Algorithm"
 msgstr "कुंजी अलगोरिथम"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:368
 msgid "Key Parameters"
 msgstr "कुंजी पैरामीटर"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:375
 msgid "Key Size"
 msgstr "कुंजी आकार"
 
-#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "सार्वजनिक कुंजी"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:394
+#: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "फिंगरप्रिंट"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>प्रमाणपत्र व कुंजी आयात करें</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "यहाँ आयात करें:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "कूटशब्द: "
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1271,7 +1345,7 @@ msgstr "उस नाम के साथ कीरिंग मौजूद न
 msgid "The keyring has already been unlocked."
 msgstr "यह कुंजीरिंग पहले से खुला है."
 
-#: ../pkcs11/gck/gck-certificate.c:711
+#: ../pkcs11/gck/gck-certificate.c:716
 msgid "Unnamed Certificate"
 msgstr "बेनाम प्रमाणपत्र"
 
@@ -1279,298 +1353,3 @@ msgstr "बेनाम प्रमाणपत्र"
 msgid "Couldn't parse public SSH key"
 msgstr "सार्वजनिक SSH कुंजी विश्लेषित नहीं कर सका"
 
-msgid "Keyring Manager"
-msgstr "कीरिंग प्रबंधक"
-
-msgid "Manage your keyrings"
-msgstr "अपना कीरिंग प्रबंधित करें"
-
-msgid "<b>_Method:</b>"
-msgstr "<b> विधि (_M)</b>"
-
-msgid "<b>_Note:</b>"
-msgstr "<b> नोट (_N)</b>"
-
-msgid "<b>_Object:</b>"
-msgstr "<b> वस्तु (_O)</b>"
-
-msgid "<b>_Port:</b>"
-msgstr "<b> पोर्ट (_P)</b>"
-
-msgid "<b>_Protocol:</b>"
-msgstr "<b> प्रोटोकाल (_P)</b>"
-
-msgid "<b>_Server:</b>"
-msgstr "<b> सर्वर (_S)</b>"
-
-msgid "<b>_Username:</b>"
-msgstr "<b> उपयोक्तानाम (_U):</b>"
-
-msgid ""
-"<span weight=\"bold\" size=\"larger\">Keyring name and password required</"
-"span>\n"
-"\n"
-"A name and password must be provided for the new keyring."
-msgstr ""
-"<span weight=\"bold\" size=\"larger\">कीरिंग नाम व शब्दकूट जरूरी</span>\n"
-"\n"
-"नये कीरिंग के लिये नाम व शब्दकूट जरूर दें."
-
-msgid "Applications"
-msgstr "अनुप्रयोग"
-
-msgid "Delete"
-msgstr "मिटाओ"
-
-msgid "Key"
-msgstr "कुंजी"
-
-msgid "Keyring _name:"
-msgstr "कीरिंग नाम (_n):"
-
-msgid "Read"
-msgstr "पढ़ें"
-
-msgid "Show n_ote"
-msgstr "दिखाएँ नोट (_o)"
-
-msgid "_More Options"
-msgstr "अधिक विकल्प (_M)"
-
-msgid "Display creation time column in the keyring item list."
-msgstr "कीरिंग मद सूची में निर्माण समय कॉलम दिखायें"
-
-msgid "Display creation time column in the keyring list."
-msgstr "कीरिंग सूची में निर्माण समय कॉलम दिखायें"
-
-msgid "Display id column in the keyring item list."
-msgstr "कीरिंग सूची में निर्माण आईडी कॉलम दिखायें"
-
-msgid "Display modification time column in the keyring item list."
-msgstr "कीरिंग मद सूची में रूपांतरण समय कॉलम दिखायें."
-
-msgid "Display modification time column in the keyring list."
-msgstr "कीरिंग मद सूची में रूपांतरण समय कॉलम दिखायें"
-
-msgid "Display the creation time"
-msgstr "निर्माण समय दिखायें"
-
-msgid "Display the item id"
-msgstr "मद आईडी दिखायें"
-
-msgid "Display the lock on idle column"
-msgstr "आदर्श कॉलम पर लॉक दिखायें"
-
-msgid "Display the lock on idle column in the keyring list."
-msgstr "कीरिंग सूची पर आदर्श कॉलम पर लॉक दिखायें."
-
-msgid "Display the lock timeout column"
-msgstr "लॉक समयसमाप्ति दिखायें"
-
-msgid "Display the lock timeout column in the keyring list."
-msgstr "कीरिंग सूची में लॉक समयसमाप्ति दिखायें"
-
-msgid "Display the modification time"
-msgstr "रूपांतरण समय दिखायें"
-
-msgid "Name"
-msgstr "नाम"
-
-msgid "%d second"
-msgid_plural "%d seconds"
-msgstr[0] "%d सेकेंड"
-msgstr[1] "%d सेकेंड"
-
-msgid "Locked"
-msgstr "तालाबंद"
-
-msgid "Lock on Idle"
-msgstr "तालाबंद में निष्क्रिय"
-
-msgid "Lock Timeout"
-msgstr "तालाबंद समय ख़त्म"
-
-msgid "Modification Time"
-msgstr "रूपांतरण समयए"
-
-msgid "Type"
-msgstr "क़िस्म"
-
-msgid "Delete the '%s' key?"
-msgstr "'%s' कुंजी मिटायें?"
-
-msgid "Deleting a key cannot be undone."
-msgstr "कुंजी मिटाकर वापस नहीं लिया जा सकता"
-
-msgid "Delete the '%s' keyring?"
-msgstr "'%s' कीरिंग मिटा रहा है?"
-
-msgid "Deleting a keyring cannot be undone."
-msgstr "कीरिंग मिटाना के वापस नहीं लिया जा सकता है"
-
-msgid "_Edit"
-msgstr "संपादन (_E)"
-
-msgid "_View"
-msgstr "देखें (_V)"
-
-msgid "_Help"
-msgstr "मदद (_H)"
-
-msgid "_New Key"
-msgstr "नया कुंजी (_N)"
-
-msgid "_Delete Key"
-msgstr "कुंजी मिटायें (_D)"
-
-msgid "_Contents"
-msgstr "विषय सूची (_C)"
-
-msgid "Show _Modification Time"
-msgstr "रूपांतरण समय दिखायें (_M)"
-
-msgid "Show Last _Accessed Time"
-msgstr "दिखाएँ अंतिम प्रवेश समय (_A)"
-
-msgid "building menus failed: %s"
-msgstr "मेनू निर्माण विफल: %s"
-
-#| msgid "Access denied to GNOME Keyring."
-msgid "Access denied to the keyring."
-msgstr "कीरिंग में पहुंच की मनाही."
-
-msgid "?"
-msgstr "?"
-
-msgid "Today %l:%M %p"
-msgstr "आज %l:%M %p"
-
-msgid "Yesterday %l:%M %p"
-msgstr "कल %l:%M %p"
-
-msgid "%a %l:%M %p"
-msgstr "%a %l:%M %p"
-
-msgid "%b %d %l:%M %p"
-msgstr "%b %d %l:%M %p"
-
-msgid "%b %d %Y"
-msgstr "%b %d %Y"
-
-msgid "A tool to manage the information stored in your keyrings."
-msgstr "आपके कीरिंह में जमा सूचना को प्रबंधित करने का औजार."
-
-msgid "Copyright © 2004, 2005 The GNOME Love Project"
-msgstr "Copyright © 2004, 2005 The GNOME Love Project"
-
-msgid "translator-credits"
-msgstr ""
-"रविशंकर श्रीवास्तव (raviratlami@yahoo.com)\n"
-"राजेश रंजन (rajeshkajha@yahoo.com)"
-
-msgid ""
-"Error while trying to remove the %s directory from the list of gconf "
-"directories we listen to: %s"
-msgstr "%s निर्देशिका को gconf निर्देशिका से हटाने के दौरान त्रुटि जिसमें हम सुन रहे हैं: %s"
-
-#, fuzzy
-#~ msgid "<b>Path:</b>"
-#~ msgstr "<b>वैधता</b>"
-
-#, fuzzy
-#~ msgid "<b>Permissions:</b>"
-#~ msgstr "<b>फ़िंगरप्रिंट्स</b>"
-
-#, fuzzy
-#~ msgid "<b>_Domain:</b>"
-#~ msgstr "<b>वैधता</b>"
-
-#, fuzzy
-#~ msgid "<b>_Password:</b>"
-#~ msgstr "पासवर्ड: (_P)"
-
-#, fuzzy
-#~ msgid "Keyrings"
-#~ msgstr "कीरिंग खोलें"
-
-#, fuzzy
-#~ msgid "Show pass_word"
-#~ msgstr "पुराना कूटशब्द (_O):"
-
-#, fuzzy
-#~ msgid "%s Keyring"
-#~ msgstr "कीरिंग खोलें"
-
-#, fuzzy
-#~ msgid "_Keyring"
-#~ msgstr "कीरिंग खोलें"
-
-#, fuzzy
-#~ msgid "New _Keyring"
-#~ msgstr "नया कीरिंग कूटशब्द"
-
-#, fuzzy
-#~ msgid "D_elete Keyring"
-#~ msgstr "बनाएँ डिफ़ॉल्ट कीरिंग"
-
-#, fuzzy
-#~ msgid "_Keyrings"
-#~ msgstr "कीरिंग खोलें"
-
-#, fuzzy
-#~ msgid "No such keyring."
-#~ msgstr "कीरिंग खोलें"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<प्रमाणपत्र का हिस्सा नहीं>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>के द्वारा निर्गत</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>को निर्गत</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>इस प्रमाणपत्र को निम्नलिखित प्रयोग से जाँचा गया है:</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "सामान्य नाम (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "ई-मेल प्राप्तकर्ता प्रमाणपत्र"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "ई-मेल हस्ताक्षरकर्ता प्रमाणपत्र"
-
-#~ msgid "Expires On"
-#~ msgstr "यहाँ समय समाप्त"
-
-#~ msgid "Issued On"
-#~ msgstr "इस तिथि को निर्गत"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5 फिंगरप्रिंट"
-
-#~ msgid "Organization (O)"
-#~ msgstr "संगठन (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "सांगठनिक इकाई (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1 फिंगरप्रिंट"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL क्लाइंट प्रमाणपत्र"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL सर्वर प्रमाणपत्र"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr "<span size='large' weight='bold'>प्रमाणपत्र व कुंजी आयात करें</span>"
-
-#~ msgid "Import Into:"
-#~ msgstr "यहाँ आयात करें:"
-
-#~ msgid "Password:"
-#~ msgstr "कूटशब्द: "
