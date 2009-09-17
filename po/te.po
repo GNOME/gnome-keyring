@@ -1,4 +1,4 @@
-# translation of gnome-keyring.gnome-2-26.te.po to Telugu
+# translation of gnome-keyring.master.te.po to Telugu
 # Telugu translation of gnome-keyring.
 # Copyright (C) 2007, Swecha Telugu Localisation Team <localisation@swecha.org>
 # This file is distributed under the same license as the gnome-keyring package.
@@ -7,10 +7,10 @@
 # Krishna Babu K <kkrothap@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.gnome-2-26.te\n"
+"Project-Id-Version: gnome-keyring.master.te\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-04-17 14:34+0000\n"
-"PO-Revision-Date: 2009-04-20 16:19+0530\n"
+"POT-Creation-Date: 2009-08-26 19:44+0000\n"
+"PO-Revision-Date: 2009-09-17 14:18+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,33 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
-
-#: ../common/gkr-location.c:321
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "తొలగించదగు డిస్కు: %s"
-
-#: ../common/gkr-location.c:323
-msgid "Removable Disk"
-msgstr "తొలగించదగు డిస్కు"
-
-#: ../common/gkr-location.c:544 ../common/gkr-location.c:556
-msgid "Home"
-msgstr "నివాసం"
-
-#: ../common/gkr-location.c:1105 ../common/gkr-location.c:1129
-msgid "The disk or drive this file is located on is not present"
-msgstr "ఈ దస్త్రము వుంచబడిన డిస్కు లేదా డ్రైవ్ ప్రవేశపెట్టబడిలేదు"
-
-#: ../common/gkr-location.c:1137
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "సంచయంను సృష్టించలేక పోయింది: %s"
-
-#: ../common/gkr-location.c:1171
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "దస్త్రమును తొలగించలేక పోయింది: %s"
+"\n"
 
 #. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
 #: ../daemon/gkr-daemon-ops.c:228
@@ -297,13 +271,15 @@ msgstr ""
 
 #: ../daemon/gkr-daemon-ops.c:552
 #, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "%s కీలకవలయానికి కొత్త సంకేతపదాన్ని ఎంచుకొనుము"
+#| msgid "Choose a new password for the '%s' keyring. "
+msgid "Choose a new password for the '%s' keyring."
+msgstr "'%s' కీరింగు కొరకు కొత్త సంకేతపదమును యెంచుకొనుము."
 
 #: ../daemon/gkr-daemon-ops.c:554
 #, c-format
-msgid "Choose a new password for the default keyring. "
-msgstr "అప్రమేయ కీలకవలయానికి కొత్త సంకేతపదాన్ని ఎంచుకొనుము"
+#| msgid "Choose a new password for the default keyring. "
+msgid "Choose a new password for the default keyring."
+msgstr "అప్రమేయ కీరింగునకు కొత్త సంకేతపదమును యెంచుకొనుము."
 
 #. And put together the ask request
 #: ../daemon/gkr-daemon-ops.c:558
@@ -385,30 +361,30 @@ msgid "GNOME Keyring Daemon"
 msgstr "GNOME కీరింగ్ డెమోన్"
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Unlock Login Keyring"
 msgstr "లాగిన్ కీరింగును అన్‌లాక్ చేయుము"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:98
+#: ../daemon/keyrings/gkr-keyring-login.c:99
 msgid "Enter login password to unlock keyring"
 msgstr "కీరింగును అన్‌లాక్ చేయుటకు లాగిన్ సంకేతపదమును ప్రవేశపెట్టండి"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:100
+#: ../daemon/keyrings/gkr-keyring-login.c:101
 msgid ""
 "Your login keyring was not automatically unlocked when you logged into this "
 "computer."
 msgstr "ఈ కంప్యూటర్‌కు లాగ్ అయినప్పుడు మీ లాగిన్ కీరింగ్ స్వయంచాలకంగా అన్‌లాక్ కాదు."
 
 #. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Create Login Keyring"
 msgstr "లాగిన్ కీరింగును సృష్టించుము"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:124
+#: ../daemon/keyrings/gkr-keyring-login.c:125
 msgid "Enter your login password"
 msgstr "మీ లాగిన్ సంకేతపదమును ప్రవేశపెట్టుము"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:126
+#: ../daemon/keyrings/gkr-keyring-login.c:127
 msgid ""
 "Your login keyring was not automatically created when you logged into this "
 "computer. It will now be created."
@@ -416,120 +392,118 @@ msgstr ""
 "మీరు ఈ కంప్యూటర్‌కు లాగైనప్పుడు మీ లాగిన్ కీరింగు స్వయంచాలకంగా సృష్టించబడదు. అది యిప్పుడు "
 "సృష్టించబడుతుంది."
 
-#: ../daemon/keyrings/gkr-keyring.c:586
+#: ../daemon/keyrings/gkr-keyring.c:587
 #, c-format
 msgid "Unlock password for %s keyring"
 msgstr "%s కీరింగు కొరకు సంకేతపదమును అన్‌లాక్ చేయుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:99
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
 msgid "Unlock private key"
 msgstr "వ్యక్తిగత కీను అన్‌లాక్ చేయుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:101
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
 msgid "Unlock certificate"
 msgstr "దృవీకరణపత్రంను అన్‌లాక్ చేయుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:103
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
 msgid "Unlock public key"
 msgstr "పబ్లిక్ కీను అన్‌లాక్ చేయుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:105
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
 msgid "Unlock"
 msgstr "అన్‌లాక్"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:114 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "వ్యక్తిగత కీను అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:116 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "దృవీకరణపత్రమును అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:118
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
 msgid "Enter password to unlock the public key"
 msgstr "పబ్లిక్ కీను అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:120 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టుము"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:130
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "ఒక అనువర్తనము వ్యక్తిగత కీ '%s'కు యాక్సిస్ కోరుకొనుచున్నది, అయితే యిది లాక్‌చేయబడింది"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:133
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "ఒక అనువర్తనము దృవీకరణపత్రం '%s'కు యాక్సిస్‌ను కోరుకొనుచున్నది, అయితే యిది లాకైంది"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:136
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "ఒక అనువర్తనము పబ్లిక్‌కీ '%s'కు యాక్సిస్‌ను కోరుకొనుచున్నది, అయితే యిది లాకైంది"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:139
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "ఒక అనువర్తనము '%s'కు యాక్సిస్‌ను కోరుకొనుచున్నది, అయితే యిది లాకైంది"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:148
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
 msgid "Automatically unlock this private key when I log in."
 msgstr "లాగిన్ అయినప్పుడు ఈ వ్యక్తిగత కీను స్వయంచాలకంగా అన్‌లాక్ చేయుము."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:150
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
 msgid "Automatically unlock this certificate when I log in."
 msgstr "నేను లాగిన్ అయ్యినప్పుడు స్వయంచాలకంగా ఈ దృవీకరణపత్రంను అన్‌లాక్ చేయుము."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:152
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
 msgid "Automatically unlock this public key when I log in."
 msgstr "నేను లాగిన్ అయ్యినప్పుడు ఈ పబ్లిక్ కీను స్వయంచాలకంగా అన్‌లాక్ చేయుము."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:154
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
 msgid "Automatically unlock this when I log in"
 msgstr "నేను లాగిన్ అయ్యినప్పుడు స్వయంచాలకంగా దీనిని అన్‌లాక్ చేయుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:393
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
 msgid "Unlock certificate/key storage"
 msgstr "దృవీకరణపత్రం/కీ నిల్వను అన్‌లాక్ చేయుము"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "దృవీకరణపత్రం/కీ నిల్వను అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టండి"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:397
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr "ఒక అనువర్తనము దృవీకరణపత్రం/కీ నిల్వ '%s'కు యాక్సిస్ కోరుచున్నది, అయితే యిది లాకైవుంది"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:402
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:553
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
 msgid "Automatically unlock secure storage when I log in."
 msgstr "నేను లాగిన్ అయినప్పుడు స్వయంచాలకంగా రక్షణ నిల్వను అన్‌లాక్ చేయుము."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:545
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
 msgid "New Password Required"
 msgstr "కొత్త సంకేతపదం అవసరమైంది"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
 msgid "New password required for secure storage"
 msgstr "రక్షణ నిల్వకు కొత్త సంకేతపదము అవసరమైంది"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:548
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr ""
-"దృవీకరణపత్రముల లేదా కీల నిల్వ కొరకు '%s'ను సమాయత్త పరచుటకు, సంకేతపదము "
-"అవసరము."
+msgstr "దృవీకరణపత్రముల లేదా కీల నిల్వ కొరకు '%s'ను సమాయత్త పరచుటకు, సంకేతపదము అవసరము."
 
 #: ../daemon/ui/gkr-ask-tool.c:230
 msgid ""
@@ -542,8 +516,8 @@ msgid ""
 msgstr ""
 "<b><big>మీ మౌస్‌ను లాగలేదు.</big></b>\n"
 "\n"
-"ఒక చెడ్డ కక్షిదారి మీ విభాగము(సెషన్)ను చెడగొడుతూవుండవచ్చును లేదా దృష్టిని కేంద్రీకరించుటకు "
-"నిర్ణయించిన మెనూను లేదా వొక అనువర్తనమును నొక్కివుండవచ్చును.\n"
+"ఒక చెడ్డ కక్షిదారి మీ విభాగము(సెషన్)ను చెడగొడుతూవుండవచ్చును లేదా దృష్టిని కేంద్రీకరించుటకు నిర్ణయించిన "
+"మెనూను లేదా వొక అనువర్తనమును నొక్కివుండవచ్చును.\n"
 "\n"
 "మరలా ప్రయత్నించండి."
 
@@ -558,8 +532,8 @@ msgid ""
 msgstr ""
 "<b><big>మీ కీబోర్డును లాగలేదు.</big></b>\n"
 "\n"
-"ఒక చెడ్డ కక్షిదారి మీ విభాగము(సెషన్)ను చెడగొడుతూవుండవచ్చును లేదా దృష్టిని కేంద్రీకరించుటకు "
-"నిర్ణయించిన మెనూను లేదా వొక అనువర్తనమును నొక్కివుండవచ్చును.\n"
+"ఒక చెడ్డ కక్షిదారి మీ విభాగము(సెషన్)ను చెడగొడుతూవుండవచ్చును లేదా దృష్టిని కేంద్రీకరించుటకు నిర్ణయించిన "
+"మెనూను లేదా వొక అనువర్తనమును నొక్కివుండవచ్చును.\n"
 "\n"
 "మరలా ప్రయత్నించండి."
 
@@ -573,9 +547,8 @@ msgid ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
-"ఖాళీ సంకేతపదమును యెంచుకొనుటవలన, మీ యొక్క నిల్వవుంచిన సంకేతపదములు "
-"సురక్షితముగా ఎన్క్రిప్టు చేయబడవు. మీరు ఫైలు యాక్సెస్‌తో కూడి అవి యెవరికైనా "
-"అందుబాటులో వుంటాయి."
+"ఖాళీ సంకేతపదమును యెంచుకొనుటవలన, మీ యొక్క నిల్వవుంచిన సంకేతపదములు సురక్షితముగా ఎన్క్రిప్టు "
+"చేయబడవు. మీరు ఫైలు యాక్సెస్‌తో కూడి అవి యెవరికైనా అందుబాటులో వుంటాయి."
 
 #: ../daemon/ui/gkr-ask-tool.c:284
 msgid "Use Unsafe Storage"
@@ -629,6 +602,33 @@ msgstr "ఒకసారి అనుమతించు (_O)"
 msgid "_Always Allow"
 msgstr "ఎల్లప్పుడు అనుమతించు (_A)"
 
+#: ../daemon/util/gkr-location.c:234
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "తొలగించదగు డిస్కు: %s"
+
+#: ../daemon/util/gkr-location.c:236
+msgid "Removable Disk"
+msgstr "తొలగించదగు డిస్కు"
+
+#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
+msgid "Home"
+msgstr "నివాసం"
+
+#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
+msgid "The disk or drive this file is located on is not present"
+msgstr "ఈ దస్త్రము వుంచబడిన డిస్కు లేదా డ్రైవ్ ప్రవేశపెట్టబడిలేదు"
+
+#: ../daemon/util/gkr-location.c:914
+#, c-format
+msgid "Couldn't create directory: %s"
+msgstr "సంచయంను సృష్టించలేక పోయింది: %s"
+
+#: ../daemon/util/gkr-location.c:948
+#, c-format
+msgid "Couldn't delete the file: %s"
+msgstr "దస్త్రమును తొలగించలేక పోయింది: %s"
+
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
 msgstr "డొమైన్ మూలకం"
@@ -669,8 +669,8 @@ msgstr "ఉమ్మడి నామం"
 msgid "Surname"
 msgstr "ఇంటిపేరు"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.glade.h:18
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "వరుసలో ఉన్న సంఖ్య"
 
@@ -758,71 +758,71 @@ msgstr "<i>దృవీకరణపత్రంలో భాగము కాద�
 msgid "<i>unknown</i>"
 msgstr "<i>తెలియని</i>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:1
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
 msgid "<Not Part of Certificate>"
 msgstr "<యోగ్యతాపత్రములో భాగముకాదు>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:2
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
 msgid "<b>Fingerprints</b>"
 msgstr "<b>వేలి ముద్రణలు</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:3
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
 msgid "<b>Issued By</b>"
 msgstr "<b>జారీచేయుట ద్వారా</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:4
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
 msgid "<b>Issued To</b>"
 msgstr "<b>జారీచేయుట కు</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:5
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
 msgid "<b>This certificate has been verified for the following uses:</b>"
 msgstr "<b>ఈ దృవీకరణపత్రం ఈ క్రింది ఉపయోగాల కొరకు నిర్ధారించబడింది:</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:6
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
 msgid "<b>Validity</b>"
 msgstr "<b>సయుక్తికత్వము</b>"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:7
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
 msgid "Common Name (CN)"
 msgstr "ఉమ్మడి పేరు(CN)"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:8
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
 msgid "Email Recipient Certificate"
 msgstr "ఈమెయిల్ స్వీకరణదారి దృవీకరణపత్రం"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:9
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
 msgid "Email Signer Certificate"
 msgstr "ఈమెయిల్ సంతకందారి దృవీకరణపత్రం"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:10
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
 msgid "Expires On"
 msgstr "కాలంచెల్లుతుంది"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:11
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
 msgid "Issued On"
 msgstr "పై జారీఅయింది"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:12
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
 msgid "MD5 Fingerprint"
 msgstr "MD5 వేలిముద్ర"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:13
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
 msgid "Organization (O)"
 msgstr "నిర్మాణ సంస్థ(O)"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:14
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
 msgid "Organizational Unit (OU)"
 msgstr "నిర్మాణ సంస్థ భాగము(OU)"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:15
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
 msgid "SHA1 Fingerprint"
 msgstr "SHA1 వేలిముద్ర"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:16
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
 msgid "SSL Client Certificate"
 msgstr "SSL క్లైంట్ యోగ్యతాపత్రిక"
 
-#: ../gcr/gcr-certificate-basics-widget.glade.h:17
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
 msgid "SSL Server Certificate"
 msgstr "SSL సేవిక యోగ్యతాపత్రిక"
 
@@ -838,94 +838,94 @@ msgstr "గుర్తింపుదారి"
 msgid "Value"
 msgstr "విలువ"
 
-#: ../gcr/gcr-certificate-details-widget.c:232
-msgid "Yes"
-msgstr "అవును"
-
-#: ../gcr/gcr-certificate-details-widget.c:234
-msgid "No"
-msgstr "వద్దు"
-
-#: ../gcr/gcr-certificate-details-widget.c:237
+#: ../gcr/gcr-certificate-details-widget.c:229
 msgid "Critical"
 msgstr "విషమం"
 
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "అవును"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "వద్దు"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Subject Name"
 msgstr "విషయం నామము"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:315
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issuer Name"
 msgstr "ఇచ్చువాని నామము"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:319
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
 msgstr "ఇచ్చిన దృవీకరణపత్రము"
 
-#: ../gcr/gcr-certificate-details-widget.c:324
+#: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
 msgstr "Version"
 
-#: ../gcr/gcr-certificate-details-widget.c:337
+#: ../gcr/gcr-certificate-details-widget.c:329
 msgid "Not Valid Before"
 msgstr "ఇంతకు మునుపు చెల్లునదికాదు"
 
-#: ../gcr/gcr-certificate-details-widget.c:342
+#: ../gcr/gcr-certificate-details-widget.c:334
 msgid "Not Valid After"
 msgstr "తర్వాత చెల్లునది కాదు"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:347
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Signature"
 msgstr "సంతకము"
 
-#: ../gcr/gcr-certificate-details-widget.c:351
+#: ../gcr/gcr-certificate-details-widget.c:343
 msgid "Signature Algorithm"
 msgstr "సంతకపు అల్గార్దెమ్"
 
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:348
 msgid "Signature Parameters"
 msgstr "సంతకం పారామితులు"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:367
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Public Key Info"
 msgstr "పబ్లిక్ కీ సమాచారము"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Key Algorithm"
 msgstr "కీ అల్గార్దెమ్"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:368
 msgid "Key Parameters"
 msgstr "కీ పారామితులు"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:375
 msgid "Key Size"
 msgstr "కీ పరిమాణం"
 
-#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Public Key"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:394
+#: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "వేలిముద్రలు"
 
-#: ../gcr/gcr-import-dialog.glade.h:1
+#: ../gcr/gcr-import-dialog.ui.h:1
 msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 msgstr "<span size='large' weight='bold'>దృవీకరణపత్రములు లేదా కీలను దిగుమతి చేయుము</span>"
 
-#: ../gcr/gcr-import-dialog.glade.h:2
+#: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
 msgstr "దీనికి దిగమతిచేయుము"
 
-#: ../gcr/gcr-import-dialog.glade.h:3
+#: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "సంకేతపదం:"
 
@@ -1351,11 +1351,11 @@ msgstr "ఆ నామముతో కీరింగ్ లేదు."
 msgid "The keyring has already been unlocked."
 msgstr "కీలకవలయం ఇంతకు ముందే తాళంవేయబడింది"
 
-#: ../pkcs11/gck/gck-certificate.c:710
+#: ../pkcs11/gck/gck-certificate.c:716
 msgid "Unnamed Certificate"
 msgstr "నామములేని దృవీకరణపత్రం"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:309
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
 msgid "Couldn't parse public SSH key"
 msgstr "పబ్లిక్ SSH కీను పార్శ్ చేయలేక పోయింది"
 
