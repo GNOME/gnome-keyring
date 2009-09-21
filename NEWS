@@ -1,3 +1,6 @@
+Changes in version 2.80.0 are:
+ * Fix build problems.
+
 Changes in version 2.27.92 are:
  * Some uses of glib memory routines to explicitly allocate memory.
  * Fix erroneous assertion hit by gtk-doc and tests.
