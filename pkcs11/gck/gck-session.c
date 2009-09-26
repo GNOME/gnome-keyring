@@ -795,6 +795,97 @@ gck_session_for_each_authenticator (GckSession *self, GckObject *object,
 	return (l != NULL);
 }
 
+CK_RV
+gck_session_create_object_for_factory (GckSession *self, GckFactory factory,
+                                       CK_ATTRIBUTE_PTR template, CK_ULONG count,
+                                       GckObject **object)
+{
+	GckTransaction *transaction;
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG n_attrs, i;
+	gboolean is_token;
+	gboolean is_transient;
+	gboolean is_private;
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (factory, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (template || !count, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
+
+	/* Find out where we'll be creating this */
+	if (!gck_attributes_find_boolean (template, count, CKA_TOKEN, &is_token))
+		is_token = FALSE;
+	if (!gck_attributes_find_boolean (template, count, CKA_GNOME_TRANSIENT, &is_transient))
+		is_transient = FALSE;
+
+	/* See if we can create due to read-only */
+	if (is_token) {
+		if (!is_transient && gck_module_get_write_protected (self->pv->module))
+			return CKR_TOKEN_WRITE_PROTECTED;
+		if (self->pv->read_only)
+			return CKR_SESSION_READ_ONLY;
+	}
+
+	/* The transaction for this whole dealio */
+	transaction = gck_transaction_new ();
+
+	/*
+	 * Duplicate the memory for the attributes (but not values) so we
+	 * can 'consume' in the factory function
+	 */
+	attrs = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
+	n_attrs = count;
+
+	/* Actually create the object */
+	*object = NULL;
+	(factory) (self, transaction, attrs, n_attrs, object);
+
+	if (!gck_transaction_get_failed (transaction)) {
+		g_return_val_if_fail (*object, CKR_GENERAL_ERROR);
+
+		/* Can only create public objects unless logged in */
+		if (gck_session_get_logged_in (self) != CKU_USER &&
+		    gck_object_get_attribute_boolean (*object, self, CKA_PRIVATE, &is_private) && 
+		    is_private == TRUE) {
+			gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+		}
+	}
+
+	/* Give the object a chance to create additional attributes */
+	if (!gck_transaction_get_failed (transaction)) {
+		gck_object_create_attributes (*object, self, transaction, attrs, n_attrs);
+	}
+
+	/* Find somewhere to store the object */
+	if (!gck_transaction_get_failed (transaction)) {
+		if (is_token)
+			gck_module_store_token_object (self->pv->module, transaction, *object); 
+		else
+			add_object (self, transaction, *object);
+	}
+
+	/* Next go through and set all attributes that weren't used initially */
+	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
+	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
+		if (!gck_attribute_consumed (&attrs[i]))
+			gck_object_set_attribute (*object, self, transaction, &attrs[i]);
+	}
+
+	g_free (attrs);
+
+	gck_transaction_complete (transaction);
+	rv = gck_transaction_get_result (transaction);
+	g_object_unref (transaction);
+
+	if (*object)
+		g_object_unref (*object);
+	if (rv != CKR_OK)
+		*object = NULL;
+
+	return rv;
+}
+
 /* -----------------------------------------------------------------------------
  * PKCS#11
  */
@@ -857,13 +948,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
                             CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
 	GckObject *object = NULL;
-	GckTransaction *transaction;
-	CK_ATTRIBUTE_PTR attrs;
-	CK_ULONG n_attrs, i;
 	GckFactory factory;
-	gboolean is_token;
-	gboolean is_transient;
-	gboolean is_private;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
@@ -876,77 +961,13 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	factory = gck_module_find_factory (gck_session_get_module (self), template, count);
 	if (!factory)
 		return CKR_TEMPLATE_INCOMPLETE;
-	
-	/* Find out where we'll be creating this */
-	if (!gck_attributes_find_boolean (template, count, CKA_TOKEN, &is_token))
-		is_token = FALSE;
-	if (!gck_attributes_find_boolean (template, count, CKA_GNOME_TRANSIENT, &is_transient))
-		is_transient = FALSE;
-		
-	/* See if we can create due to read-only */
-	if (is_token) {
-		if (!is_transient && gck_module_get_write_protected (self->pv->module))
-			return CKR_TOKEN_WRITE_PROTECTED;
-		if (self->pv->read_only)
-			return CKR_SESSION_READ_ONLY;
-	}
-	
-	/* The transaction for this whole dealio */
-	transaction = gck_transaction_new ();
-	
-	/* 
-	 * Duplicate the memory for the attributes (but not values) so we 
-	 * can 'consume' in the factory function 
-	 */
-	attrs = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
-	n_attrs = count;
-	
-	/* Actually create the object */
-	object = NULL;
-	(factory) (self, transaction, attrs, n_attrs, &object);
 
-	if (!gck_transaction_get_failed (transaction)) {
-		g_return_val_if_fail (object, CKR_GENERAL_ERROR);
-
-		/* Can only create public objects unless logged in */
-		if (gck_session_get_logged_in (self) != CKU_USER &&
-		    gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private) && 
-		    is_private == TRUE) {
-			gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
-		}
-	}
-	
-	/* Give the object a chance to create additional attributes */
-	if (!gck_transaction_get_failed (transaction)) {
-		gck_object_create_attributes (object, self, transaction, attrs, n_attrs);
-	}
-
-	/* Find somewhere to store the object */
-	if (!gck_transaction_get_failed (transaction)) {
-		if (is_token) 
-			gck_module_store_token_object (self->pv->module, transaction, object); 
-		else
-			add_object (self, transaction, object);
-	}
-
-	/* Next go through and set all attributes that weren't used initially */
-	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
-	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
-		if (!gck_attribute_consumed (&attrs[i]))
-			gck_object_set_attribute (object, self, transaction, &attrs[i]);
-	}
-
-	gck_transaction_complete (transaction);
-	rv = gck_transaction_get_result (transaction);
-	g_object_unref (transaction);
+	rv = gck_session_create_object_for_factory (self, factory, template, count, &object);
 	if (rv == CKR_OK) {
 		g_assert (object);
 		*new_object = gck_object_get_handle (object);
 	}
-	if (object) 
-		g_object_unref (object);
-	g_free (attrs);
-	
+
 	return rv;
 }
 

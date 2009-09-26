@@ -104,7 +104,11 @@ gboolean                 gck_session_for_each_authenticator             (GckSess
                                                                          GckAuthenticatorFunc func,
                                                                          gpointer user_data);
 
-
+CK_RV                    gck_session_create_object_for_factory          (GckSession *self,
+                                                                         GckFactory factory,
+                                                                         CK_ATTRIBUTE_PTR attrs,
+                                                                         CK_ULONG n_attrs,
+                                                                         GckObject **object);
 
 CK_RV                    gck_session_C_GetFunctionStatus                (GckSession *self);
 
