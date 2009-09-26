@@ -217,17 +217,19 @@ egg_unix_credentials_executable (pid_t pid)
 #if defined(__linux__) || defined(__FreeBSD__)
 	char path[1024];
 	char buffer[64];
-			
+	int count;
+
 #if defined(__linux__)
 	snprintf (buffer, sizeof (buffer), "/proc/%d/exe", (int)pid);
 #elif defined(__FreeBSD__)
 	snprintf (buffer, sizeof (buffer), "/proc/%d/file", (int)pid);
 #endif
-	
-	if (readlink(buffer, path, sizeof (path)) < 0)
+
+	count = readlink (buffer, path, sizeof (path));
+	if (count < 0)
 		fprintf (stderr, "readlink failed for file: %s", buffer);
 	else
-		result = strdup (path);
+		result = strndup (path, count);
 #endif
 
 	return result;
