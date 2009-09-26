@@ -9,13 +9,13 @@
 # Daniel S. Koda <danielskoda@gmail.com>, 2009.
 # Michel Recondo <mrecondo@gmail.com>, 2009.
 # Fabrício Godoy <skarllot@gmail.com>, 2009.
+# André Gondim <andregondim@ubuntu.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&component=general\n"
-"POT-Creation-Date: 2009-07-21 14:16+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-08 13:21-0300\n"
 "PO-Revision-Date: 2009-03-01 19:27-0300\n"
 "Last-Translator: Leonardo Ferreira Fontenelle <leonardof@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
@@ -632,32 +632,32 @@ msgstr "Autorizar _uma vez"
 
 #: ../daemon/ui/gkr-ask-tool.c:736
 msgid "_Always Allow"
-msgstr "_Sempre autorizar"
+msgstr "Sempre _autorizar"
 
-#: ../daemon/util/gkr-location.c:320
+#: ../daemon/util/gkr-location.c:238
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Disco removível: %s"
 
-#: ../daemon/util/gkr-location.c:322
+#: ../daemon/util/gkr-location.c:240
 msgid "Removable Disk"
 msgstr "Disco removível"
 
-#: ../daemon/util/gkr-location.c:543 ../daemon/util/gkr-location.c:555
+#: ../daemon/util/gkr-location.c:331 ../daemon/util/gkr-location.c:343
 msgid "Home"
 msgstr "Início"
 
-#: ../daemon/util/gkr-location.c:1104 ../daemon/util/gkr-location.c:1128
+#: ../daemon/util/gkr-location.c:886 ../daemon/util/gkr-location.c:910
 msgid "The disk or drive this file is located on is not present"
 msgstr ""
 "O disco ou dispositivo onde este arquivo está localizado não está presente"
 
-#: ../daemon/util/gkr-location.c:1136
+#: ../daemon/util/gkr-location.c:918
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "Não foi possível criar o diretório: %s"
 
-#: ../daemon/util/gkr-location.c:1170
+#: ../daemon/util/gkr-location.c:952
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Não foi possível excluir o arquivo: %s"
@@ -702,7 +702,8 @@ msgstr "Nome completo"
 msgid "Surname"
 msgstr "Sobrenome"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "Número de série"
 
@@ -790,6 +791,74 @@ msgstr "<i>Não é parte do certificado</i>"
 msgid "<i>unknown</i>"
 msgstr "<i>desconhecido</i>"
 
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Não é parte do certificado>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Impressões digitais</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Emitido por</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Emitido para</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>Este certificado foi verificado para os seguintes usos:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Validade</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
+msgid "Common Name (CN)"
+msgstr "Nome completo (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+msgid "Email Recipient Certificate"
+msgstr "Certificado do destinatário do email"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+msgid "Email Signer Certificate"
+msgstr "Certificado do signatário do email"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr "Expira em"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+msgid "Issued On"
+msgstr "Emitido em"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+msgid "MD5 Fingerprint"
+msgstr "Impressão digital MD5"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+msgid "Organization (O)"
+msgstr "Organização (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Unidade organizacional (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+msgid "SHA1 Fingerprint"
+msgstr "Impressão digital SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+msgid "SSL Client Certificate"
+msgstr "Certificado de cliente SSL"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+msgid "SSL Server Certificate"
+msgstr "Certificado de servidor SSL"
+
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
 msgstr "Ramal"
@@ -802,84 +871,96 @@ msgstr "Identificador"
 msgid "Value"
 msgstr "Valor"
 
-#: ../gcr/gcr-certificate-details-widget.c:232
-msgid "Yes"
-msgstr "Sim"
-
-#: ../gcr/gcr-certificate-details-widget.c:234
-msgid "No"
-msgstr "Não"
-
-#: ../gcr/gcr-certificate-details-widget.c:237
+#: ../gcr/gcr-certificate-details-widget.c:229
 msgid "Critical"
 msgstr "Crítico"
 
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "Sim"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "Não"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Subject Name"
 msgstr "Nome do portador"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:315
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issuer Name"
 msgstr "Nome do emissor"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:319
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
 msgstr "Certificado emitido"
 
-#: ../gcr/gcr-certificate-details-widget.c:324
+#: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
 msgstr "Versão"
 
-#: ../gcr/gcr-certificate-details-widget.c:337
+#: ../gcr/gcr-certificate-details-widget.c:329
 msgid "Not Valid Before"
 msgstr "Não é válido antes de"
 
-#: ../gcr/gcr-certificate-details-widget.c:342
+#: ../gcr/gcr-certificate-details-widget.c:334
 msgid "Not Valid After"
 msgstr "Não é válido após"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:347
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Signature"
 msgstr "Assinatura"
 
-#: ../gcr/gcr-certificate-details-widget.c:351
+#: ../gcr/gcr-certificate-details-widget.c:343
 msgid "Signature Algorithm"
 msgstr "Algoritmo da assinatura"
 
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:348
 msgid "Signature Parameters"
 msgstr "Parâmetros da assinatura"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:367
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Public Key Info"
 msgstr "Informações da chave pública"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Key Algorithm"
 msgstr "Algoritmo da chave"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:368
 msgid "Key Parameters"
 msgstr "Parâmetros da chave"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:375
 msgid "Key Size"
 msgstr "Tamanho da chave"
 
-#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Chave pública"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:394
+#: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "Impressões digitais"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>Importar certificados e chaves</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "Importar em:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "Senha:"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1308,74 +1389,13 @@ msgstr "Um chaveiro com este nome não existe."
 msgid "The keyring has already been unlocked."
 msgstr "O chaveiro já foi desbloqueado."
 
-#: ../pkcs11/gck/gck-certificate.c:711
+#: ../pkcs11/gck/gck-certificate.c:716
 msgid "Unnamed Certificate"
 msgstr "Certificado sem nome"
 
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
 msgid "Couldn't parse public SSH key"
 msgstr "Não foi possível analisar a chave pública do SSH"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Não é parte do certificado>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Impressões digitais</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Emitido por</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Emitido para</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>Este certificado foi verificado para os seguintes usos:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Validade</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Nome completo (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Certificado do destinatário do email"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Certificado do signatário do email"
-
-#~ msgid "Expires On"
-#~ msgstr "Expira em"
-
-#~ msgid "Issued On"
-#~ msgstr "Emitido em"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "Impressão digital MD5"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organização (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Unidade organizacional (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "Impressão digital SHA1"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "Certificado de cliente SSL"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "Certificado de servidor SSL"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Importar certificados e chaves</span>"
-
-#~ msgid "Import Into:"
-#~ msgstr "Importar em:"
-
-#~ msgid "Password:"
-#~ msgstr "Senha:"
 
 #~ msgid ""
 #~ "A list of paths to PKCS#11 modules to load. No modules are currently "

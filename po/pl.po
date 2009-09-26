@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-25 19:29+0200\n"
-"PO-Revision-Date: 2009-08-25 19:33+0100\n"
+"POT-Creation-Date: 2009-09-12 21:06+0200\n"
+"PO-Revision-Date: 2009-09-12 21:07+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
@@ -461,7 +461,7 @@ msgstr "Pot_wierdź hasło:"
 
 #: ../daemon/ui/gkr-ask-tool.c:587
 msgid "New password strength"
-msgstr "Nowa siła hasła"
+msgstr "Siła nowego hasła"
 
 #: ../daemon/ui/gkr-ask-tool.c:645
 msgid "Passwords do not match."
@@ -491,31 +491,31 @@ msgstr "_Zezwolenie jednokrotne"
 msgid "_Always Allow"
 msgstr "Zezwolenie st_ałe"
 
-#: ../daemon/util/gkr-location.c:234
+#: ../daemon/util/gkr-location.c:238
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Dysk wymienny: %s"
 
-#: ../daemon/util/gkr-location.c:236
+#: ../daemon/util/gkr-location.c:240
 msgid "Removable Disk"
 msgstr "Dysk wymienny"
 
-#: ../daemon/util/gkr-location.c:327
-#: ../daemon/util/gkr-location.c:339
+#: ../daemon/util/gkr-location.c:331
+#: ../daemon/util/gkr-location.c:343
 msgid "Home"
 msgstr "Katalog domowy"
 
-#: ../daemon/util/gkr-location.c:882
-#: ../daemon/util/gkr-location.c:906
+#: ../daemon/util/gkr-location.c:886
+#: ../daemon/util/gkr-location.c:910
 msgid "The disk or drive this file is located on is not present"
 msgstr "Dysk lub napęd, na którym znajduje się ten plik jest niedostępny"
 
-#: ../daemon/util/gkr-location.c:914
+#: ../daemon/util/gkr-location.c:918
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "Nie można utworzyć katalogu: %s"
 
-#: ../daemon/util/gkr-location.c:948
+#: ../daemon/util/gkr-location.c:952
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Nie można usunąć pliku: %s"
@@ -561,6 +561,7 @@ msgid "Surname"
 msgstr "Nazwisko"
 
 #: ../egg/egg-oid.c:69
+#: ../gcr/gcr-certificate-basics-widget.ui.h:18
 #: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "Numer seryjny"
@@ -648,6 +649,74 @@ msgstr "<i>Nie jest częścią certyfikatu</i>"
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
 msgstr "<i>nieznany</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Nie jest częścią certyfikatu>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Odciski palców</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Wydany przez</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Wydany dla</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>Ten certyfikat został zweryfikowany dla następujących użytkowników:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Ważność</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
+msgid "Common Name (CN)"
+msgstr "Nazwa powszechna (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+msgid "Email Recipient Certificate"
+msgstr "Certyfikat odbiorcy e-mail"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+msgid "Email Signer Certificate"
+msgstr "Certyfikat podpisującego e-mail"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr "Wygasa"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+msgid "Issued On"
+msgstr "Wydano"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+msgid "MD5 Fingerprint"
+msgstr "Odcisk palca MD5"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+msgid "Organization (O)"
+msgstr "Organizacja (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Jednostka organizacyjna (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+msgid "SHA1 Fingerprint"
+msgstr "Odcisk palca SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+msgid "SSL Client Certificate"
+msgstr "Certyfikat klienta SSL"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+msgid "SSL Server Certificate"
+msgstr "Certyfikat serwera SSL"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -740,6 +809,18 @@ msgstr "Klucz publiczny"
 #: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "Odciski palców"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>Importowanie certyfikatów i kluczy</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "Zaimportowanie do:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "Hasło:"
 
 #: ../gcr/gcr-importer.c:163
 #: ../gcr/gcr-parser.c:1573
@@ -1174,48 +1255,6 @@ msgstr "Certyfikat bez nazwy"
 msgid "Couldn't parse public SSH key"
 msgstr "Nie można przetworzyć klucza publicznego SSH"
 
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Nie jest częścią certyfikatu>"
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Odciski palców</b>"
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Wydany przez</b>"
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Wydany dla</b>"
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr ""
-#~ "<b>Ten certyfikat został zweryfikowany dla następujących użytkowników:</b>"
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Ważność</b>"
-#~ msgid "Common Name (CN)"
-#~ msgstr "Nazwa powszechna (CN)"
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Certyfikat odbiorcy e-mail"
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Certyfikat podpisującego e-mail"
-#~ msgid "Expires On"
-#~ msgstr "Wygasa"
-#~ msgid "Issued On"
-#~ msgstr "Wydano"
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "Odcisk palca MD5"
-#~ msgid "Organization (O)"
-#~ msgstr "Organizacja (O)"
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Jednostka organizacyjna (OU)"
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "Odcisk palca SHA1"
-#~ msgid "SSL Client Certificate"
-#~ msgstr "Certyfikat klienta SSL"
-#~ msgid "SSL Server Certificate"
-#~ msgstr "Certyfikat serwera SSL"
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Importowanie certyfikatów i kluczy</span>"
-#~ msgid "Import Into:"
-#~ msgstr "Zaimportowanie do:"
-#~ msgid "Password:"
-#~ msgstr "Hasło:"
 #~ msgid ""
 #~ "A list of paths to PKCS#11 modules to load. No modules are currently "
 #~ "listed by default, as this is still an experimental feature. This is used "

@@ -20,6 +20,7 @@ gnome_keyring_LDADD = \
 	$(top_builddir)/gp11/libgp11.la \
 	$(top_builddir)/gcr/libgcr.la \
 	$(top_builddir)/egg/libegg.la \
+	$(GTHREAD_LIBS) \
 	$(GTK_LIBS) \
 	$(GCRYPT_LIBS) \
 	$(LIBTASN1_LIBS) \

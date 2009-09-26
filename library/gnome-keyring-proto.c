@@ -1481,7 +1481,7 @@ gkr_proto_decode_prepare_environment_reply (EggBuffer *buffer, GnomeKeyringResul
 	*result = res;
 
 	if (res == GNOME_KEYRING_RESULT_OK) {
-		if (!egg_buffer_get_stringv (buffer, offset, &offset, environment, NULL))
+		if (!egg_buffer_get_stringv (buffer, offset, &offset, environment, g_realloc))
 			return FALSE; 
 	}		
 	

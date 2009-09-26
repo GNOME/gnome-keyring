@@ -23,8 +23,10 @@ noinst_PROGRAMS= \
 	run-auto-test \
 	run-prompt-test
 		
-run-auto-test.c: $(UNIT_AUTO) Makefile.am $(top_srcdir)/tests/prep-gtest.sh
+run-auto-test.h: $(UNIT_AUTO) Makefile.am $(top_srcdir)/tests/prep-gtest.sh
 	sh $(top_srcdir)/tests/prep-gtest.sh -b run-auto-test $(UNIT_AUTO)
+
+run-auto-test.c: run-auto-test.h
 
 run_auto_test_SOURCES = \
 	run-auto-test.c run-auto-test.h \
@@ -37,8 +39,10 @@ run_auto_test_LDADD = \
 run_auto_test_CFLAGS = \
 	$(UNIT_FLAGS)
 
-run-prompt-test.c: $(UNIT_PROMPT) Makefile.am $(top_srcdir)/tests/prep-gtest.sh
+run-prompt-test.h: $(UNIT_PROMPT) Makefile.am $(top_srcdir)/tests/prep-gtest.sh
 	sh $(top_srcdir)/tests/prep-gtest.sh -b run-prompt-test $(UNIT_PROMPT)
+
+run-prompt-test.c: run-prompt-test.h
 
 run_prompt_test_SOURCES = \
 	run-prompt-test.c \
@@ -51,6 +55,12 @@ run_prompt_test_LDADD = \
 
 run_prompt_test_CFLAGS = \
 	$(UNIT_FLAGS)
+
+BUILT_SOURCES = \
+	run-auto-test.c \
+	run-auto-test.h \
+	run-prompt-test.c \
+	run-prompt-test.h
 
 # ------------------------------------------------------------------------------
 # Run the tests

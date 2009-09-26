@@ -821,7 +821,7 @@ parse_args (pam_handle_t *ph, int argc, const char **argv)
 
 		} else if (strncmp (argv[i], "only_if=", only_if_len) == 0) {
 			const char *value = argv[i] + only_if_len;
-			if (evaluate_inlist (svc, value))
+			if (!evaluate_inlist (svc, value))
 				args |= ARG_IGNORE_SERVICE;
 
 		} else if (strcmp (argv[i], "use_authtok") == 0) {

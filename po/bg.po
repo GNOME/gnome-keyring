@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the gnome-keyring package.
 # Rostislav "zbrox" Raykov <zbrox@i-space.org>, 2004, 2005, 2006.
 # Alexander Shopov <ash@contact.bg>, 2007, 2008, 2009.
-# Yavor Doganov <yavor@gnu.org>, 2008.
+# Yavor Doganov <yavor@gnu.org>, 2008, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-14 07:45+0300\n"
-"PO-Revision-Date: 2009-08-14 07:45+0300\n"
-"Last-Translator: Alexander Shopov <ash@contact.bg>\n"
+"POT-Creation-Date: 2009-09-20 08:49+0300\n"
+"PO-Revision-Date: 2009-09-20 08:49+0300\n"
+"Last-Translator: Yavor Doganov <yavor@gnu.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -361,7 +361,7 @@ msgstr "Дали да се задейства агентът на SSH в gnome-k
 
 #: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
 msgid "GNOME Keyring Daemon"
-msgstr "Демон за ключодържатерли на GNOME"
+msgstr "Демон за ключодържатели на GNOME"
 
 #. And put together the ask request
 #: ../daemon/keyrings/gkr-keyring-login.c:99
@@ -609,29 +609,29 @@ msgstr "Позволяване _веднъж"
 msgid "_Always Allow"
 msgstr "_Позволяване винаги"
 
-#: ../daemon/util/gkr-location.c:234
+#: ../daemon/util/gkr-location.c:238
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Преносим диск: %s"
 
-#: ../daemon/util/gkr-location.c:236
+#: ../daemon/util/gkr-location.c:240
 msgid "Removable Disk"
 msgstr "Преносим диск"
 
-#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
+#: ../daemon/util/gkr-location.c:331 ../daemon/util/gkr-location.c:343
 msgid "Home"
 msgstr "Домашна папка"
 
-#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
+#: ../daemon/util/gkr-location.c:886 ../daemon/util/gkr-location.c:910
 msgid "The disk or drive this file is located on is not present"
 msgstr "Не е достъпно устройството, където се намира този файл"
 
-#: ../daemon/util/gkr-location.c:914
+#: ../daemon/util/gkr-location.c:918
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "Папката не може да бъде създадена: %s"
 
-#: ../daemon/util/gkr-location.c:948
+#: ../daemon/util/gkr-location.c:952
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Файлът не може да бъде изтрит: %s"
@@ -676,7 +676,8 @@ msgstr "Лично име"
 msgid "Surname"
 msgstr "Фамилия"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:322
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "Сериен номер"
 
@@ -763,6 +764,75 @@ msgstr "<i>Не е част от сертификата</i>"
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
 msgstr "<i>неизвестно</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Не е част от сертификата>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Отпечатъци</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Издаден от</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Издаден на</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>Този сертификат е бил проверен за следните употреби:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Валидност</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
+msgid "Common Name (CN)"
+msgstr "Общо име (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+msgid "Email Recipient Certificate"
+msgstr "Сертификат за получател на е-поща"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+msgid "Email Signer Certificate"
+msgstr "Сертификат за подпис на е-поща"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr "Изтича на"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+msgid "Issued On"
+msgstr "Издаден на"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+msgid "MD5 Fingerprint"
+msgstr "Отпечатък MD5"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+msgid "Organization (O)"
+msgstr "Организация (O)"
+
+# Така е в Evo.
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Организационна единица (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+msgid "SHA1 Fingerprint"
+msgstr "Отпечатък SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+msgid "SSL Client Certificate"
+msgstr "Сертификат за клиент по SSL"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+msgid "SSL Server Certificate"
+msgstr "Сертификат за сървър по SSL"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -854,6 +924,19 @@ msgstr "Публичен ключ"
 #: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "Отпечатъци"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr ""
+"<span size='large' weight='bold'>Внасяне на сертификати и ключове</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "Внасяне в:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "Парола:"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"

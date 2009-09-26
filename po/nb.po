@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.27.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-01 19:08+0200\n"
-"PO-Revision-Date: 2009-08-01 19:09+0200\n"
+"POT-Creation-Date: 2009-09-01 13:25+0200\n"
+"PO-Revision-Date: 2009-09-01 13:27+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -537,6 +537,11 @@ msgid ""
 "\n"
 "Try again."
 msgstr ""
+"<b><big>Kunne ikke ta over tastaturet.</big></b>\n"
+"\n"
+"En ondsinnet klient kan lytte på din sesjon eller det er mulig at du bare har klikket på en meny eller at et program bestemte seg for å ta fokus.\n"
+"\n"
+"Prøv igjen."
 
 #: ../daemon/ui/gkr-ask-tool.c:276
 msgid "Store passwords unencrypted?"
@@ -604,29 +609,29 @@ msgstr "Tillat én gang"
 msgid "_Always Allow"
 msgstr "Tillat _alltid"
 
-#: ../daemon/util/gkr-location.c:234
+#: ../daemon/util/gkr-location.c:238
 #, c-format
 msgid "Removable Disk: %s"
 msgstr "Avtagbar disk: %s"
 
-#: ../daemon/util/gkr-location.c:236
+#: ../daemon/util/gkr-location.c:240
 msgid "Removable Disk"
 msgstr "Avtagbar disk"
 
-#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
+#: ../daemon/util/gkr-location.c:331 ../daemon/util/gkr-location.c:343
 msgid "Home"
 msgstr "Hjem"
 
-#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
+#: ../daemon/util/gkr-location.c:886 ../daemon/util/gkr-location.c:910
 msgid "The disk or drive this file is located on is not present"
 msgstr "Disken eller stasjonen denne filen er plassert på er ikke tilstede"
 
-#: ../daemon/util/gkr-location.c:914
+#: ../daemon/util/gkr-location.c:918
 #, c-format
 msgid "Couldn't create directory: %s"
 msgstr "Kunne ikke lage katalog: %s"
 
-#: ../daemon/util/gkr-location.c:948
+#: ../daemon/util/gkr-location.c:952
 #, c-format
 msgid "Couldn't delete the file: %s"
 msgstr "Kunne ikke slette filen: %s"
@@ -657,21 +662,22 @@ msgstr "Kjønn"
 
 #: ../egg/egg-oid.c:60
 msgid "Country of Citizenship"
-msgstr ""
+msgstr "Land med statsborgerskap"
 
 #: ../egg/egg-oid.c:62
 msgid "Country of Residence"
-msgstr ""
+msgstr "Bostedsland"
 
 #: ../egg/egg-oid.c:65
 msgid "Common Name"
-msgstr ""
+msgstr "Vanlig navn"
 
 #: ../egg/egg-oid.c:67
 msgid "Surname"
 msgstr "Etternavn"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -681,7 +687,7 @@ msgstr "Land"
 
 #: ../egg/egg-oid.c:73
 msgid "Locality"
-msgstr ""
+msgstr "Lokalitet"
 
 #: ../egg/egg-oid.c:75
 msgid "State"
@@ -709,7 +715,7 @@ msgstr "Telefonnummer"
 
 #: ../egg/egg-oid.c:87
 msgid "Given Name"
-msgstr ""
+msgstr "Gitt navn"
 
 #: ../egg/egg-oid.c:89
 msgid "Initials"
@@ -717,11 +723,11 @@ msgstr "Initialer"
 
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr ""
+msgstr "Kvalifikator for generering"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr ""
+msgstr "DN-kvalifikator"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
@@ -759,6 +765,74 @@ msgstr "<i>Ikke del av sertifikatet</i>"
 msgid "<i>unknown</i>"
 msgstr "<i>ukjent</i>"
 
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Ikke en del av sertifikatet>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Fingeravtrykk</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>Utstedt av</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>Utstedt til</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>Dette sertifikatet er verifisert for følgende bruksområder:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Gyldighet</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
+msgid "Common Name (CN)"
+msgstr "Vanlig navn (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+msgid "Email Recipient Certificate"
+msgstr "Sertifikat for e-postmottaker"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+msgid "Email Signer Certificate"
+msgstr "Sertifikat for signering av e-post"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr "Utløper"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+msgid "Issued On"
+msgstr "Utstedt"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5-fingeravtrykk"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+msgid "Organization (O)"
+msgstr "Organisasjon (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Organisasjonsenhet (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1-fingeravtrykk"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+msgid "SSL Client Certificate"
+msgstr "SSL klientsertifikat"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+msgid "SSL Server Certificate"
+msgstr "SSL tjenersertifikat"
+
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
 msgstr "Utvidelse"
@@ -771,84 +845,97 @@ msgstr "Identifikator"
 msgid "Value"
 msgstr "Verdi"
 
-#: ../gcr/gcr-certificate-details-widget.c:232
-msgid "Yes"
-msgstr "Ja"
-
-#: ../gcr/gcr-certificate-details-widget.c:234
-msgid "No"
-msgstr "Nei"
-
-#: ../gcr/gcr-certificate-details-widget.c:237
+#: ../gcr/gcr-certificate-details-widget.c:229
 msgid "Critical"
 msgstr "Kritisk"
 
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "Ja"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "Nei"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Subject Name"
-msgstr ""
+msgstr "Navn på subjekt"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:315
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issuer Name"
 msgstr "Navn på utsteder"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:319
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
 msgstr "Utstedt sertifikat"
 
-#: ../gcr/gcr-certificate-details-widget.c:324
+#: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
 msgstr "Versjon"
 
-#: ../gcr/gcr-certificate-details-widget.c:337
+#: ../gcr/gcr-certificate-details-widget.c:329
 msgid "Not Valid Before"
 msgstr "Ikke gyldig før"
 
-#: ../gcr/gcr-certificate-details-widget.c:342
+#: ../gcr/gcr-certificate-details-widget.c:334
 msgid "Not Valid After"
 msgstr "Ikke gyldig etter"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:347
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Signature"
 msgstr "Signatur"
 
-#: ../gcr/gcr-certificate-details-widget.c:351
+#: ../gcr/gcr-certificate-details-widget.c:343
 msgid "Signature Algorithm"
 msgstr "Algoritme for signatur"
 
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:348
 msgid "Signature Parameters"
 msgstr "Parametere for signatur"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:367
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Public Key Info"
 msgstr "Informasjon om offentlig nøkkel"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Key Algorithm"
 msgstr "Algoritme for nøkkel"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:368
 msgid "Key Parameters"
 msgstr "Nøkkelparametere"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:375
 msgid "Key Size"
 msgstr "Størrelse på nøkkel"
 
-#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:394
+#: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "Fingeravtrykk"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr ""
+"<span size='large' weight='bold'>Importer sertifikater og nøkler</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "Importer til:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "Passord:"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1272,68 +1359,10 @@ msgstr "Det finnes ingen nøkkelring med dette navnet."
 msgid "The keyring has already been unlocked."
 msgstr "Nøkkelringen er allerede låst opp."
 
-#: ../pkcs11/gck/gck-certificate.c:711
+#: ../pkcs11/gck/gck-certificate.c:716
 msgid "Unnamed Certificate"
 msgstr "Sertifikat uten navn"
 
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
 msgid "Couldn't parse public SSH key"
 msgstr "Kunne ikke lese offentlig nøkkel for SSH"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Ikke en del av sertifikatet>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Fingeravtrykk</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Utstedt av</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Utstedt til</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>Dette sertifikatet er verifisert for følgende bruksområder:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Gyldighet</b>"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Sertifikat for e-postmottaker"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Sertifikat for signering av e-post"
-
-#~ msgid "Expires On"
-#~ msgstr "Utløper"
-
-#~ msgid "Issued On"
-#~ msgstr "Utstedt"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5-fingeravtrykk"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organisasjon (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Organisasjonsenhet (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1-fingeravtrykk"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL klientsertifikat"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL tjenersertifikat"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Importer sertifikater og nøkler</span>"
-
-#~ msgid "Import Into:"
-#~ msgstr "Importer til:"
-
-#~ msgid "Password:"
-#~ msgstr "Passord:"

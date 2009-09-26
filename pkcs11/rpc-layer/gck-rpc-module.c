@@ -225,7 +225,6 @@ call_connect (CallState *cs)
 	assert (cs);
 	assert (cs->socket == -1);
 	assert (cs->call_status == CALL_INVALID);
-	assert (pkcs11_socket_path[0]);
 	
 	debug (("connecting to: %s", pkcs11_socket_path));
 		
