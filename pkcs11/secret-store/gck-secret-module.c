@@ -23,6 +23,7 @@
 
 #include "gck-secret-collection.h"
 #include "gck-secret-module.h"
+#include "gck-secret-search.h"
 #include "gck-secret-store.h"
 
 #include "gck/gck-file-tracker.h"
@@ -209,6 +210,7 @@ static void
 gck_secret_module_init (GckSecretModule *self)
 {
 	self->collections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	gck_module_register_factory (GCK_MODULE (self), GCK_FACTORY_SECRET_SEARCH);
 }
 
 static void

@@ -5,6 +5,7 @@ UNIT_AUTO = \
 	unit-test-secret-object.c \
 	unit-test-secret-collection.c \
 	unit-test-secret-item.c \
+	unit-test-secret-search.c \
 	unit-test-secret-textual.c \
 	unit-test-secret-binary.c \
 	test-secret-module.c test-secret-module.h
