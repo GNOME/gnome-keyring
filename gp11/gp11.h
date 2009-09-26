@@ -177,33 +177,33 @@ GP11Attributes*     gp11_attributes_new_valist              (GP11Allocator alloc
 GP11Attribute*      gp11_attributes_at                      (GP11Attributes *attrs,
                                                              guint index);
 
-void                gp11_attributes_add                     (GP11Attributes *attrs,
+GP11Attribute*      gp11_attributes_add                     (GP11Attributes *attrs,
                                                              GP11Attribute *attr);
 
-void                gp11_attributes_add_data                (GP11Attributes *attrs,
+GP11Attribute*      gp11_attributes_add_data                (GP11Attributes *attrs,
                                                              gulong attr_type,
                                                              gconstpointer value,
                                                              gsize length);
 
-void                gp11_attributes_add_invalid             (GP11Attributes *attrs,
+GP11Attribute*      gp11_attributes_add_invalid             (GP11Attributes *attrs,
                                                              gulong attr_type);
 
-void                gp11_attributes_add_empty               (GP11Attributes *attrs,
+GP11Attribute*      gp11_attributes_add_empty               (GP11Attributes *attrs,
                                                              gulong attr_type);
 
-void                gp11_attributes_add_boolean             (GP11Attributes *attrs,
+GP11Attribute*      gp11_attributes_add_boolean             (GP11Attributes *attrs,
                                                              gulong attr_type,
                                                              gboolean value);
 
-void                gp11_attributes_add_string              (GP11Attributes *attrs,
+GP11Attribute*      gp11_attributes_add_string              (GP11Attributes *attrs,
                                                              gulong attr_type,
                                                              const gchar *string);
 
-void                gp11_attributes_add_date                (GP11Attributes *attrs,
+GP11Attribute*      gp11_attributes_add_date                (GP11Attributes *attrs,
                                                              gulong attr_type,
                                                              const GDate *date);
 
-void                gp11_attributes_add_ulong               (GP11Attributes *attrs,
+GP11Attribute*      gp11_attributes_add_ulong               (GP11Attributes *attrs,
                                                              gulong attr_type,
                                                              gulong value);
 
