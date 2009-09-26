@@ -746,10 +746,10 @@ gck_manager_class_init (GckManagerClass *klass)
 	                                        NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 	                                        G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
 
-	signals[ATTRIBUTE_CHANGED] = g_signal_new ("attribute-removed", GCK_TYPE_MANAGER,
+	signals[ATTRIBUTE_CHANGED] = g_signal_new ("attribute-changed", GCK_TYPE_MANAGER,
 	                                           G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckManagerClass, attribute_changed),
 	                                           NULL, NULL, gck_marshal_VOID__OBJECT_ULONG,
-	                                           G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
+	                                           G_TYPE_NONE, 2, GCK_TYPE_OBJECT, G_TYPE_ULONG);
 }
 
 /* ------------------------------------------------------------------------
