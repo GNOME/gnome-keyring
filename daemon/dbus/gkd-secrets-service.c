@@ -386,7 +386,7 @@ service_message_handler (GkdSecretsService *self, DBusMessage *message)
 
 	/* org.freedesktop.Secrets.Service.SearchItems() */
 	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SearchItems"))
-		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+		return gkd_secrets_objects_handle_search_items (self->objects, message, NULL);
 
 	/* org.freedesktop.Secrets.Service.BeginAuthenticate() */
 	if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "BeginAuthenticate"))

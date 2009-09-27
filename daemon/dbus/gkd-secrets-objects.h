@@ -46,6 +46,10 @@ GType               gkd_secrets_objects_get_type                 (void);
 DBusMessage*        gkd_secrets_objects_dispatch                 (GkdSecretsObjects *self,
                                                                   DBusMessage *message);
 
+DBusMessage*        gkd_secrets_objects_handle_search_items      (GkdSecretsObjects *self,
+                                                                  DBusMessage *message,
+                                                                  const gchar *coll_id);
+
 void                gkd_secrets_objects_append_collection_paths  (GkdSecretsObjects *self,
                                                                   DBusMessageIter *iter,
                                                                   DBusMessage *message);
