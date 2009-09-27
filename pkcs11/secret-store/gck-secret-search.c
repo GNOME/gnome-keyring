@@ -196,6 +196,9 @@ populate_search_from_managers (GckSecretSearch *self, GList *managers)
 	g_assert (!self->managers);
 	self->managers = managers;
 
+	/* Load any new items or collections */
+	gck_module_refresh_token (gck_object_get_module (GCK_OBJECT (self)));
+
 	for (l = self->managers; l; l = g_list_next (l)) {
 		manager = GCK_MANAGER (l->data);
 
