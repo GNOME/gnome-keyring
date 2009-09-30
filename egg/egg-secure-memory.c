@@ -873,8 +873,8 @@ sec_block_create (size_t size)
 	if (size < DEFAULT_BLOCK_SIZE)
 		size = DEFAULT_BLOCK_SIZE;
 		
-	block->n_words = size / sizeof (word_t);
 	block->words = sec_acquire_pages (&size);
+	block->n_words = size / sizeof (word_t);
 	if (!block->words) {
 		pool_free (block);
 		pool_free (cell);
