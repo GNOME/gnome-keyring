@@ -72,7 +72,7 @@ find_daemon_via_dbus ()
 	}
 
 	/* Send message and get a handle for a reply */
-	reply = dbus_connection_send_with_reply_and_block (dconn, msg, 1000, &derr);
+	reply = dbus_connection_send_with_reply_and_block (dconn, msg, -1, &derr);
 	dbus_message_unref (msg);
 	if (!reply) {
 		g_warning ("couldn't communicate with gnome keyring daemon via dbus: %s", derr.message);
