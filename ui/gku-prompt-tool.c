@@ -1,0 +1,365 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* gku-prompt-tool.c - Handles gui authentication for the keyring daemon.
+
+   Copyright (C) 2009 Stefan Walter
+
+   Gnome keyring is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+
+   Gnome keyring is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+   Author: Stef Walter <stef@memberwebs.com>
+*/
+
+#include "config.h"
+
+#include "egg/egg-secure-memory.h"
+
+#include <gtk/gtk.h>
+#include <glib/gi18n.h>
+
+#include <stdio.h>
+#include <string.h>
+#include <locale.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <unistd.h>
+#include <syslog.h>
+
+static GKeyFile *input_data = NULL;
+static GKeyFile *output_data = NULL;
+
+#define LOG_ERRORS 1
+
+/* ------------------------------------------------------------------------------ */
+
+static void
+prepare_visibility (GtkBuilder *builder)
+{
+	gchar **keys, **key;
+	GObject *object;
+
+	keys = g_key_file_get_keys (input_data, "visibility", NULL, NULL);
+	g_return_if_fail (keys);
+
+	for (key = keys; key && *key; ++key) {
+		object = gtk_builder_get_object (builder, *key);
+		if (!GTK_IS_WIDGET (object)) {
+			g_warning ("can't set visibility on invalid builder object: %s", *key);
+			continue;
+		}
+		if (g_key_file_get_boolean (input_data, "visibility", *key, NULL))
+			gtk_widget_show (GTK_WIDGET (object));
+		else
+			gtk_widget_hide (GTK_WIDGET (object));
+	}
+
+	g_strfreev (keys);
+}
+
+static GtkDialog*
+prepare_dialog (GtkBuilder *builder)
+{
+	GError *error = NULL;
+	GtkDialog *dialog;
+
+	if (!gtk_builder_add_from_file (builder, UIDIR "gku-prompt.ui", &error)) {
+		g_warning ("couldn't load prompt ui file: %s",
+		           error && error->message ? error->message : "");
+		g_clear_error (&error);
+		return NULL;
+	}
+
+	prepare_visibility (builder);
+
+	dialog = GTK_DIALOG (gtk_builder_get_object (builder, "prompt_dialog"));
+	g_return_val_if_fail (GTK_IS_DIALOG (dialog), NULL);
+	return dialog;
+}
+
+static void
+run_dialog (void)
+{
+	GtkBuilder *builder;
+	GtkDialog *dialog;
+
+	builder = gtk_builder_new ();
+	dialog = prepare_dialog (builder);
+	if (!dialog) {
+		g_object_unref (builder);
+		return;
+	}
+
+	for (;;) {
+		gtk_widget_show (GTK_WIDGET (dialog));
+		switch (gtk_dialog_run (dialog)) {
+		case GTK_RESPONSE_OK:
+			/* TODO: if (!validate_dialog (builder, dialog, response))
+				continue; */
+			/* TODO: output */
+			break;
+		case GTK_RESPONSE_CANCEL:
+		case GTK_RESPONSE_DELETE_EVENT:
+			break;
+		default:
+			g_return_if_reached ();
+			break;
+		}
+
+		/* Break out of the loop by default */
+		break;
+	}
+
+	g_object_unref (builder);
+}
+
+/* -----------------------------------------------------------------------------
+ * MEMORY
+ */
+
+static gboolean do_warning = TRUE;
+#define WARNING  "couldn't allocate secure memory to keep passwords " \
+		 "and or keys from being written to the disk"
+
+#define ABORTMSG "The GNOME_KEYRING_PARANOID environment variable was set. " \
+                 "Exiting..."
+
+/*
+ * These are called from gkr-secure-memory.c to provide appropriate
+ * locking for memory between threads
+ */
+
+void
+egg_memory_lock (void)
+{
+	/* No threads used in prompt tool, doesn't need locking */
+}
+
+void
+egg_memory_unlock (void)
+{
+	/* No threads used in prompt tool, doesn't need locking */
+}
+
+void*
+egg_memory_fallback (void *p, size_t sz)
+{
+	const gchar *env;
+
+	/* We were asked to free memory */
+	if (!sz) {
+		g_free (p);
+		return NULL;
+	}
+
+	/* We were asked to allocate */
+	if (!p) {
+		if (do_warning) {
+			g_message (WARNING);
+			do_warning = FALSE;
+		}
+
+		env = g_getenv ("GNOME_KEYRING_PARANOID");
+		if (env && *env)
+			g_error (ABORTMSG);
+		return g_malloc0 (sz);
+	}
+
+	/*
+	 * Reallocation is a bit of a gray area, as we can be asked
+	 * by external libraries (like libgcrypt) to reallocate a
+	 * non-secure block into secure memory. We cannot satisfy
+	 * this request (as we don't know the size of the original
+	 * block) so we just try our best here.
+	 */
+
+	return g_realloc (p, sz);
+}
+
+/* -------------------------------------------------------------------------
+ * HELPERS
+ */
+
+/* Because Solaris doesn't have err() :( */
+static void
+fatal (const char *msg1, const char *msg2)
+{
+	g_printerr ("%s: %s%s%s\n",
+	            g_get_prgname (),
+	            msg1 ? msg1 : "",
+	            msg1 && msg2 ? ": " : "",
+	            msg2 ? msg2 : "");
+#if LOG_ERRORS
+	syslog (LOG_AUTH | LOG_ERR, "%s%s%s\n",
+	         msg1 ? msg1 : "",
+	         msg1 && msg2 ? ": " : "",
+	         msg2 ? msg2 : "");
+#endif
+	exit (1);
+}
+
+static void
+log_handler (const gchar *log_domain, GLogLevelFlags log_level,
+             const gchar *message, gpointer user_data)
+{
+	int level;
+
+	/* Note that crit and err are the other way around in syslog */
+
+	switch (G_LOG_LEVEL_MASK & log_level) {
+	case G_LOG_LEVEL_ERROR:
+		level = LOG_CRIT;
+		break;
+	case G_LOG_LEVEL_CRITICAL:
+		level = LOG_ERR;
+		break;
+	case G_LOG_LEVEL_WARNING:
+		level = LOG_WARNING;
+		break;
+	case G_LOG_LEVEL_MESSAGE:
+		level = LOG_NOTICE;
+		break;
+	case G_LOG_LEVEL_INFO:
+		level = LOG_INFO;
+		break;
+	case G_LOG_LEVEL_DEBUG:
+		level = LOG_DEBUG;
+		break;
+	default:
+		level = LOG_ERR;
+		break;
+	}
+
+#if LOG_ERRORS
+	/* Log to syslog first */
+	if (log_domain)
+		syslog (level, "%s: %s", log_domain, message);
+	else
+		syslog (level, "%s", message);
+#endif /* LOG_ERRORS */
+
+	/* And then to default handler for aborting and stuff like that */
+	g_log_default_handler (log_domain, log_level, message, user_data);
+}
+
+static void
+prepare_logging ()
+{
+	GLogLevelFlags flags = G_LOG_FLAG_FATAL | G_LOG_LEVEL_ERROR |
+	                       G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING |
+	                       G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO;
+
+	openlog ("gnome-keyring-prompt", 0, LOG_AUTH);
+
+	g_log_set_handler (NULL, flags, log_handler, NULL);
+	g_log_set_handler ("Glib", flags, log_handler, NULL);
+	g_log_set_handler ("Gtk", flags, log_handler, NULL);
+	g_log_set_handler ("Gnome", flags, log_handler, NULL);
+	g_log_set_default_handler (log_handler, NULL);
+}
+
+static void
+write_all_output (const gchar *data, gsize len)
+{
+	int res;
+
+	while (len > 0) {
+		res = write (1, data, len);
+		if (res <= 0) {
+			if (errno == EAGAIN || errno == EINTR)
+				continue;
+			g_warning ("couldn't write dialog response to output: %s",
+			           g_strerror (errno));
+			exit (1);
+		} else  {
+			len -= res;
+			data += res;
+		}
+	}
+}
+
+static gchar*
+read_all_input (void)
+{
+	GString *data = g_string_new ("");
+	gchar buf[256];
+	int r;
+
+	for (;;) {
+		r = read (0, buf, sizeof (buf));
+		if (r < 0) {
+			if (errno == EAGAIN || errno == EINTR)
+				continue;
+			g_warning ("couldn't read auth dialog instructions from input: %s",
+			           g_strerror (errno));
+			exit (1);
+		}
+		if (r == 0)
+			break;
+		g_string_append_len (data, buf, r);
+	}
+
+	return g_string_free (data, FALSE);
+}
+
+int
+main (int argc, char *argv[])
+{
+	GError *err = NULL;
+	gchar *data;
+	gboolean ret;
+	gsize length;
+
+	prepare_logging ();
+
+	input_data = g_key_file_new ();
+	output_data = g_key_file_new ();
+
+	gtk_init (&argc, &argv);
+
+#ifdef HAVE_LOCALE_H
+	/* internationalisation */
+	setlocale (LC_ALL, "");
+#endif
+
+#ifdef HAVE_GETTEXT
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
+
+	data = read_all_input ();
+	g_assert (data);
+
+	if (!data[0])
+		fatal ("no auth dialog instructions", NULL);
+
+	ret = g_key_file_load_from_data (input_data, data, strlen (data), G_KEY_FILE_NONE, &err);
+	g_free (data);
+
+	if (!ret)
+		fatal ("couldn't parse auth dialog instructions", err ? err->message : "");
+
+	run_dialog ();
+
+	g_key_file_free (input_data);
+	data = g_key_file_to_data (output_data, &length, &err);
+	g_key_file_free (output_data);
+
+	if (!data)
+		fatal ("couldn't format auth dialog response: %s", err ? err->message : ""); 
+
+	write_all_output (data, length);
+	g_free (data);
+
+	return 0;
+}
