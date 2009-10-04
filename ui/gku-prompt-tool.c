@@ -43,7 +43,7 @@ static GKeyFile *output_data = NULL;
 /* ------------------------------------------------------------------------------ */
 
 static void
-prepare_visibility (GtkBuilder *builder)
+prepare_visibility (GtkBuilder *builder, GtkDialog *dialog)
 {
 	gchar **keys, **key;
 	GObject *object;
@@ -66,6 +66,45 @@ prepare_visibility (GtkBuilder *builder)
 	g_strfreev (keys);
 }
 
+static void
+prepare_titlebar (GtkBuilder *builder, GtkDialog *dialog)
+{
+	gchar *title;
+
+	title = g_key_file_get_value (input_data, "prompt", "title", NULL);
+	if (title)
+		gtk_window_set_title (GTK_WINDOW (dialog), title);
+	gtk_window_set_icon_name(GTK_WINDOW(dialog), "stock_lock");
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
+
+	gtk_window_set_keep_above (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+	gtk_window_set_type_hint (GTK_WINDOW (dialog), GDK_WINDOW_TYPE_HINT_NORMAL);
+}
+
+static void
+prepare_buttons (GtkBuilder *builder, GtkDialog *dialog)
+{
+	gchar *ok_text;
+	gchar *cancel_text;
+	gchar *other_text;
+
+	ok_text = g_key_file_get_value (input_data, "buttons", "ok", NULL);
+	cancel_text = g_key_file_get_value (input_data, "buttons", "cancel", NULL);
+	other_text = g_key_file_get_value (input_data, "buttons", "other", NULL);
+
+	if (other_text)
+		gtk_dialog_add_button (dialog, other_text, GTK_RESPONSE_APPLY);
+	gtk_dialog_add_button (dialog, cancel_text ? cancel_text : GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (dialog, ok_text ? ok_text : GTK_STOCK_OK, GTK_RESPONSE_OK);
+
+	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_OK);
+
+	g_free (ok_text);
+	g_free (cancel_text);
+	g_free (other_text);
+}
+
 static GtkDialog*
 prepare_dialog (GtkBuilder *builder)
 {
@@ -79,10 +118,13 @@ prepare_dialog (GtkBuilder *builder)
 		return NULL;
 	}
 
-	prepare_visibility (builder);
-
 	dialog = GTK_DIALOG (gtk_builder_get_object (builder, "prompt_dialog"));
 	g_return_val_if_fail (GTK_IS_DIALOG (dialog), NULL);
+
+	prepare_titlebar (builder, dialog);
+	prepare_visibility (builder, dialog);
+	prepare_buttons (builder, dialog);
+
 	return dialog;
 }
 
