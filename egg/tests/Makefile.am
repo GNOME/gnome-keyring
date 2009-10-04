@@ -10,6 +10,7 @@ UNIT_AUTO = \
 	unit-test-secmem.c \
 	unit-test-symkey.c \
 	unit-test-openssl.c \
+	unit-test-dh.c
 	asn1-def-test.h
 
 UNIT_PROMPT = 
