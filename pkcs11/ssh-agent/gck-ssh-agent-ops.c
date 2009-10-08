@@ -685,6 +685,7 @@ op_v1_add_identity (GckSshAgentCall *call)
 {
 	GP11Attributes *pub, *priv;
 	GP11Session *session;
+	gchar *comment = NULL;
 	gboolean ret;
 	gsize offset = 5;	
 	guint32 unused;
@@ -702,6 +703,15 @@ op_v1_add_identity (GckSshAgentCall *call)
 		return FALSE;		
 	}
 	
+	/* Get the comment */
+	if (!egg_buffer_get_string (call->req, offset, &offset, &comment, (EggBufferAllocator)g_realloc)) {
+		gp11_attributes_unref (pub);
+		gp11_attributes_unref (priv);
+		return FALSE;
+	}
+
+	g_free (comment);
+
 	gp11_attributes_add_string (priv, CKA_LABEL, V1_LABEL);
 	gp11_attributes_add_string (pub, CKA_LABEL, V1_LABEL);
 	
