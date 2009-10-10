@@ -61,7 +61,7 @@ struct _GckModulePrivate {
 	GckManager *token_manager;
 	GHashTable *apartments_by_id;           /* Apartment (slot + application) by their id */
 	GHashTable *sessions_by_handle;         /* Mapping of handle to all open sessions */
-	gint handle_counter;                    /* Constantly incrementing counter for handles and the like */
+	gulong handle_counter;                  /* Constantly incrementing counter for handles and the like */
 	GArray *factories;                      /* Various registered object factories */
 	gboolean factories_sorted;              /* Whether we need to sort the object factories */
 
@@ -552,7 +552,7 @@ gck_module_init (GckModule *self)
 	                                                    gck_util_ulong_free, apartment_free);
 	self->pv->factories = g_array_new (FALSE, TRUE, sizeof (GckFactoryInfo));
 
-	g_atomic_int_set (&(self->pv->handle_counter), 1);
+	self->pv->handle_counter = 1;
 
 	/* Create the store for transient objects */
 	self->pv->transient_store = GCK_STORE (gck_memory_store_new ());
