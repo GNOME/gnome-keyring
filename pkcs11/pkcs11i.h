@@ -30,8 +30,8 @@
 /* Signifies that nobody is logged in */
 #define CKU_NONE G_MAXULONG
 
-#define CK_GNOME_MAX_SLOT                           (0x000000FF)
-#define CK_GNOME_MAX_HANDLE                         (((CK_ULONG)-1) >> 10)
+#define CK_GNOME_MAX_SLOT                           (0x000000FFUL)
+#define CK_GNOME_MAX_HANDLE                         (((CK_ULONG)-1UL) >> 10)
 
 /* -------------------------------------------------------------------
  * OBJECT HASH
@@ -45,10 +45,10 @@
  */
 
 /* Flag for CK_INFO when applications are supported */
-#define CKF_G_APPLICATIONS                       0x40000000
+#define CKF_G_APPLICATIONS                       0x40000000UL
 
 /* Call C_OpenSession with this when passing CK_G_APPLICATION */
-#define CKF_G_APPLICATION_SESSION                0x40000000
+#define CKF_G_APPLICATION_SESSION                0x40000000UL
 
 typedef CK_ULONG CK_G_APPLICATION_ID;
 

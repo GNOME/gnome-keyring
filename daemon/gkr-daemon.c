@@ -45,6 +45,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -92,6 +93,8 @@ static gboolean run_for_start = FALSE;
 static gchar* run_components = NULL;
 static gchar* login_password = NULL;
 static gboolean initialization_completed = FALSE;
+static gboolean sig_thread_valid = FALSE;
+static pthread_t sig_thread;
 
 static GOptionEntry option_entries[] = {
 	{ "foreground", 'f', 0, G_OPTION_ARG_NONE, &run_foreground, 
@@ -372,7 +375,7 @@ signal_thread (gpointer user_data)
 static void
 setup_signal_handling (GMainLoop *loop)
 {
-	GError *error = NULL;
+	int res;
 
 	/*
 	 * Block these signals for this thread, and any threads
@@ -389,11 +392,12 @@ setup_signal_handling (GMainLoop *loop)
 	sigaddset (&signal_set, SIGTERM);
 	pthread_sigmask (SIG_BLOCK, &signal_set, NULL);
 
-	g_thread_create (signal_thread, loop, FALSE, &error);
-	if (error != NULL) {
+	res = pthread_create (&sig_thread, NULL, signal_thread, loop);
+	if (res == 0) {
+		sig_thread_valid = TRUE;
+	} else {
 		g_warning ("couldn't startup thread for signal handling: %s",
-		           error && error->message ? error->message : "");
-		g_clear_error (&error);
+		           g_strerror (res));
 	}
 }
 
@@ -406,7 +410,10 @@ gkr_daemon_quit (void)
 	 * starts the shutdown process.
 	 */
 
-	raise (SIGTERM);
+	if (sig_thread_valid)
+		pthread_kill (sig_thread, SIGTERM);
+	else
+		raise (SIGTERM);
 }
 
 static void
