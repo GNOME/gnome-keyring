@@ -43,6 +43,15 @@ DEFINE_TEST(dh_parse_pkcs3)
 	g_assert (ret == TRUE);
 	g_assert (gcry_mpi_get_nbits (p) == 1024);
 
+#if 0
+	guchar *output;
+	gsize n_written;
+	gcry_mpi_aprint (GCRYMPI_FMT_HEX, &output, &n_written, p);
+	g_printerr ("\nprime: %s\n", output);
+	gcry_mpi_aprint (GCRYMPI_FMT_HEX, &output, &n_written, g);
+	g_printerr ("\nbase: %s\n", output);
+#endif
+
 	gcry_mpi_release (p);
 	gcry_mpi_release (g);
 	g_free (data);
@@ -86,4 +95,18 @@ DEFINE_TEST(dh_perform)
 	gcry_mpi_release (x2);
 	gcry_mpi_release (X2);
 	gcry_mpi_release (k2);
+}
+
+DEFINE_TEST(dh_defaults)
+{
+	gboolean ret;
+	gcry_mpi_t p, g;
+
+	ret = egg_dh_default_params (&p, &g);
+	g_assert (ret);
+	g_assert_cmpint (gcry_mpi_get_nbits (p), ==, 1024);
+	g_assert_cmpint (gcry_mpi_get_nbits (g), <, gcry_mpi_get_nbits (p));
+
+	gcry_mpi_release (p);
+	gcry_mpi_release (g);
 }

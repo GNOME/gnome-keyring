@@ -25,6 +25,29 @@
 #include "egg-dh.h"
 #include "egg-openssl.h"
 
+/* Generated with openssl dhparam, same as contents of dh-params.pem */
+#define DEFAULT_PRIME "00E9991CBC77057BEB3E8165025E8338722BDB00297A910EA441129EA84ED091AF9DA55681A192E7E7C283FF6FA9EC5A81E03A8C0999F66B19DF80BE867D0A79B1DB3E42AE7EC1FCA057889F3ED666E86C3C248AA47C8E699997183C7A8093242C0D741CE5D4E1BA99CB5ACE895C53B92D9B9FE6B0D8203B5A8286567B8E9C2A33"
+#define DEFAULT_BASE  "02"
+#define DEFAULT_BITS  1024
+
+gboolean
+egg_dh_default_params (gcry_mpi_t *prime, gcry_mpi_t *base)
+{
+	gcry_error_t gcry;
+
+	g_return_val_if_fail (prime, FALSE);
+	g_return_val_if_fail (base, FALSE);
+
+	gcry = gcry_mpi_scan (prime, GCRYMPI_FMT_HEX, DEFAULT_PRIME, 0, NULL);
+	g_return_val_if_fail (gcry == 0, FALSE);
+	g_return_val_if_fail (gcry_mpi_get_nbits (*prime) == DEFAULT_BITS, FALSE);
+
+	gcry = gcry_mpi_scan (base, GCRYMPI_FMT_HEX, DEFAULT_BASE, 0, NULL);
+	g_return_val_if_fail (gcry == 0, FALSE);
+
+	return TRUE;
+}
+
 gboolean
 egg_dh_gen_secret (gcry_mpi_t p, gcry_mpi_t g,
                    gcry_mpi_t *X, gcry_mpi_t *x)

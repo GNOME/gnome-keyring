@@ -26,10 +26,12 @@
 
 #include <gcrypt.h>
 
-gboolean   egg_dh_gen_secret    (gcry_mpi_t p, gcry_mpi_t g, gcry_mpi_t *X, gcry_mpi_t *x);
+gboolean   egg_dh_default_params   (gcry_mpi_t *prime, gcry_mpi_t *base);
 
-gboolean   egg_dh_gen_key       (gcry_mpi_t Y, gcry_mpi_t x, gcry_mpi_t p, gcry_mpi_t *k);
+gboolean   egg_dh_gen_secret       (gcry_mpi_t p, gcry_mpi_t g, gcry_mpi_t *X, gcry_mpi_t *x);
 
-gboolean   egg_dh_parse_pkcs3   (const guchar *data, gsize n_data, gcry_mpi_t *p, gcry_mpi_t *g);
+gboolean   egg_dh_gen_key          (gcry_mpi_t Y, gcry_mpi_t x, gcry_mpi_t p, gcry_mpi_t *k);
+
+gboolean   egg_dh_parse_pkcs3      (const guchar *data, gsize n_data, gcry_mpi_t *p, gcry_mpi_t *g);
 
 #endif /* EGG_DH_H_ */
