@@ -620,6 +620,7 @@ gp11_slot_get_token_info (GP11Slot *self)
 			tokeninfo->utc_time = -1;
 		else
 			tokeninfo->utc_time = timegm (&tm);
+		g_free (string);
 	} else {
 		tokeninfo->utc_time = -1;
 	}
