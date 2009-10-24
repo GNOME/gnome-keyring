@@ -722,8 +722,6 @@ gkr_proto_decode_acl (EggBuffer *buffer, gsize offset, gsize *next_offset,
 	}
 
 	for (i = 0; i < list_size; i++) {
-		ac = g_new0 (GnomeKeyringAccessControl, 1);
-		ref = g_new0 (GnomeKeyringApplicationRef, 1);
 		if (!gkr_proto_get_utf8_string (buffer,
 							  offset, &offset,
 							  &display_name)) {
@@ -741,8 +739,10 @@ gkr_proto_decode_acl (EggBuffer *buffer, gsize offset, gsize *next_offset,
 			g_free (pathname);
 			goto bail;
 		}
+		ref = g_new0 (GnomeKeyringApplicationRef, 1);
 		ref->display_name = display_name;
 		ref->pathname = pathname;
+		ac = g_new0 (GnomeKeyringAccessControl, 1);
 		ac->application = ref;
 		ac->types_allowed = types_allowed;
 		acl = g_list_append (acl, ac);
@@ -757,7 +757,7 @@ gkr_proto_decode_acl (EggBuffer *buffer, gsize offset, gsize *next_offset,
 	return TRUE;
 	
  bail:
-	g_list_free (acl);
+	gnome_keyring_acl_free (acl);
 	return FALSE;
 }
 

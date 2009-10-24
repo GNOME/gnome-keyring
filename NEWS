@@ -1,4 +1,12 @@
-Changes in version 2.80.0 are:
+Changes in version 2.28.1 are:
+ * Fix support for SSH RSA1 keys.
+ * Fix a delay when the daemon quits.
+ * Use default D-Bus timeout when finding daemon.
+ * Make custom pkcs11 constants unsigned longs.
+ * Use unsigned long for module handle counter.
+ * Fix assertion when releasing secure memory block.
+
+Changes in version 2.28.0 are:
  * Fix build problems.
 
 Changes in version 2.27.92 are:
