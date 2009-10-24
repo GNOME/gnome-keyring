@@ -465,11 +465,13 @@ service_dispatch_message (GkdSecretsService *self, DBusMessage *message)
 
 	/* Should we send an error? */
 	if (!reply && dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL) {
-		reply = dbus_message_new_error_printf (message, DBUS_ERROR_UNKNOWN_METHOD, 
-		                                       "Method \"%s\" with signature \"%s\" on interface \"%s\" doesn't exist\n",
-		                                       dbus_message_get_member (message),
-		                                       dbus_message_get_signature (message),
-		                                       dbus_message_get_interface (message));
+		if (!dbus_message_get_no_reply (message) && !gkd_dbus_message_is_handled (message)) {
+			reply = dbus_message_new_error_printf (message, DBUS_ERROR_UNKNOWN_METHOD, 
+			                                       "Method \"%s\" with signature \"%s\" on interface \"%s\" doesn't exist\n",
+			                                       dbus_message_get_member (message),
+			                                       dbus_message_get_signature (message),
+			                                       dbus_message_get_interface (message));
+		}
 	}
 
 	if (reply) {

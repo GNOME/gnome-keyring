@@ -36,4 +36,8 @@ gboolean      gkd_dbus_interface_match                    (const gchar *interfac
 
 DBusMessage*  gkd_dbus_introspect_handle                  (DBusMessage *message, const gchar *type);
 
+void          gkd_dbus_message_mark_handled               (DBusMessage *message);
+
+gboolean      gkd_dbus_message_is_handled                 (DBusMessage *message);
+
 #endif /* GKD_DBUS_H */

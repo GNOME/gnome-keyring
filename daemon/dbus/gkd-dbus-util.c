@@ -84,3 +84,25 @@ gkd_dbus_introspect_handle (DBusMessage *message, const gchar *type)
 
 	return NULL;
 }
+
+static dbus_int32_t handled_slot = -1;
+
+void
+gkd_dbus_message_mark_handled (DBusMessage *message)
+{
+	g_return_if_fail (message);
+	if (handled_slot == -1) {
+		if (!dbus_message_allocate_data_slot (&handled_slot))
+			g_assert_not_reached ();
+	}
+	dbus_message_set_data (message, handled_slot, "TRUE", NULL);
+}
+
+gboolean
+gkd_dbus_message_is_handled (DBusMessage *message)
+{
+	g_return_val_if_fail (message, FALSE);
+	if (handled_slot == -1)
+		return FALSE;
+	return dbus_message_get_data (message, handled_slot) ? TRUE : FALSE;
+}
