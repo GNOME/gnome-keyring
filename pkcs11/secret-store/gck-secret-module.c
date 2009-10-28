@@ -50,7 +50,7 @@ static const CK_TOKEN_INFO gck_secret_module_token_info = {
 	"Secret Store",
 	"Gnome Keyring",
 	"1.0",
-	"1:SECRET:DEFAULT", /* Unique serial number for manufacturer */
+	"1:SECRET:MAIN", /* Unique serial number for manufacturer */
 	CKF_TOKEN_INITIALIZED | CKF_USER_PIN_INITIALIZED | CKF_LOGIN_REQUIRED,
 	CK_EFFECTIVELY_INFINITE,
 	CK_EFFECTIVELY_INFINITE,
