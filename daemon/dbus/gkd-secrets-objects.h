@@ -61,4 +61,8 @@ void                gkd_secrets_objects_append_item_paths        (GkdSecretsObje
 
 GP11Slot*           gkd_secrets_objects_get_pkcs11_slot          (GkdSecretsObjects *self);
 
+GP11Object*         gkd_secrets_objects_lookup_collection        (GkdSecretsObjects *self,
+                                                                  const gchar *caller,
+                                                                  const gchar *objpath);
+
 #endif /* __GKD_SECRETS_OBJECTS_H__ */

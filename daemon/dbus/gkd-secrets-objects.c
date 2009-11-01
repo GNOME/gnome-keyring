@@ -1395,3 +1395,34 @@ gkd_secrets_objects_handle_search_items (GkdSecretsObjects *self, DBusMessage *m
 
 	return reply;
 }
+
+GP11Object*
+gkd_secrets_objects_lookup_collection (GkdSecretsObjects *self, const gchar *caller,
+                                       const gchar *objpath)
+{
+	GP11Session *session;
+	GP11Object *coll;
+	gchar *coll_id;
+	gchar *item_id;
+
+	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), NULL);
+	g_return_val_if_fail (objpath, NULL);
+	g_return_val_if_fail (caller, NULL);
+
+	/* The session we're using to access the object */
+	session = gkd_secrets_service_get_pkcs11_session (self->service, caller);
+	g_return_val_if_fail (session, NULL);
+
+	/* Figure out which collection or item we're talking about */
+	if (!parse_collection_and_item_from_path (objpath, &coll_id, &item_id))
+		return NULL;
+
+	g_return_val_if_fail (coll_id, NULL);
+	coll = collection_for_identifier (session, coll_id);
+
+	g_free (coll_id);
+	g_free (item_id);
+
+	return coll;
+
+}

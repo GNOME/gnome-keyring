@@ -25,9 +25,10 @@
 #define BUS_INTERFACE                  "org.freedesktop.DBus"
 #define PROPERTIES_INTERFACE           "org.freedesktop.DBus.Properties"
 
-#define SECRETS_SERVICE_INTERFACE      "org.freedesktop.Secrets.Service"
 #define SECRETS_COLLECTION_INTERFACE   "org.freedesktop.Secrets.Collection"
 #define SECRETS_ITEM_INTERFACE         "org.freedesktop.Secrets.Item"
+#define SECRETS_PROMPT_INTERFACE       "org.freedesktop.Secrets.Prompt"
+#define SECRETS_SERVICE_INTERFACE      "org.freedesktop.Secrets.Service"
 
 #define SECRETS_SERVICE_PATH           "/org/freedesktop/secrets"
 #define SECRETS_SERVICE                "org.freedesktop.secrets"
@@ -35,6 +36,7 @@
 #define SECRETS_INTERFACE_PREFIX       "org.freedesktop.Secrets"
 #define SECRETS_COLLECTION_PREFIX      "/org/freedesktop/secrets/collection"
 #define SECRETS_SESSION_PREFIX         "/org/freedesktop/secrets/session"
+#define SECRETS_PROMPT_PREFIX          "/org/freedesktop/secrets/prompt"
 
 #define SECRETS_ERROR_ALREADY_EXISTS   "org.freedesktop.Secrets.Error.AlreadyExists"
 #define SECRETS_ERROR_IS_LOCKED        "org.freedesktop.Secrets.Error.IsLocked"
@@ -44,7 +46,9 @@
 typedef struct _GkdSecretsCollection GkdSecretsCollection;
 typedef struct _GkdSecretsItem GkdSecretsItem;
 typedef struct _GkdSecretsObjects GkdSecretsObjects;
+typedef struct _GkdSecretsPrompt GkdSecretsPrompt;
 typedef struct _GkdSecretsService GkdSecretsService;
 typedef struct _GkdSecretsSession GkdSecretsSession;
+typedef struct _GkdSecretsUnlock GkdSecretsUnlock;
 
 #endif /* __GKD_SECRETS_TYPES_H__ */

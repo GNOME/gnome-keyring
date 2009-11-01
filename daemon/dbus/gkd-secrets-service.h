@@ -57,12 +57,18 @@ GP11Slot*               gkd_secrets_service_get_pkcs11_slot        (GkdSecretsSe
 GP11Session*            gkd_secrets_service_get_pkcs11_session     (GkdSecretsService *self,
                                                                     const gchar *caller);
 
+GkdSecretsObjects*      gkd_secrets_service_get_objects            (GkdSecretsService *self);
+
 #if 0
 void                    gkd_secrets_service_refresh                (GkdSecretsService *self);
 #endif
 
 void                    gkd_secrets_service_close_session          (GkdSecretsService *self,
                                                                     GkdSecretsSession *sess);
+
+void                    gkd_secrets_service_send                   (GkdSecretsService *self,
+                                                                    DBusMessage *message);
+
 #if 0
 GkdSecretsCollection*   gkd_secrets_service_get_default_collection (GkdSecretsService *self);
 #endif

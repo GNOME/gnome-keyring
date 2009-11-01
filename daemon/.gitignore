@@ -1,5 +1,5 @@
-/.libs
-/.deps
+.libs
+.deps
 Makefile
 Makefile.in
 /gnome-keyring-ask
@@ -7,3 +7,5 @@ Makefile.in
 /org.gnome.keyring.service
 /gnome-keyring-daemon.desktop
 /gnome-keyring-daemon.desktop.in
+*-marshal.[ch]
+
