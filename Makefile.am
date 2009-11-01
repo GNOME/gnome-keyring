@@ -20,7 +20,6 @@ SUBDIRS = \
 	secrets \
 	daemon \
 	tool \
-	ui \
 	$(TESTS_DIR) \
 	$(PAM_DIR) \
 	po \

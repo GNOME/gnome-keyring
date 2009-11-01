@@ -8,4 +8,5 @@ Makefile.in
 /gnome-keyring-daemon.desktop
 /gnome-keyring-daemon.desktop.in
 *-marshal.[ch]
+gnome-keyring-prompt
 

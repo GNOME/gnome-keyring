@@ -571,7 +571,6 @@ po/Makefile.in
 secrets/Makefile
 tests/Makefile
 tool/Makefile
-ui/Makefile
 library/gnome-keyring-1.pc
 library/gnome-keyring-1-uninstalled.pc
 ])

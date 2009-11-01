@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gku-prompt-tool.c - Handles gui authentication for the keyring daemon.
+/* gkd-prompt-tool.c - Handles gui authentication for the keyring daemon.
 
    Copyright (C) 2009 Stefan Walter
 
@@ -37,10 +37,59 @@
 
 static GKeyFile *input_data = NULL;
 static GKeyFile *output_data = NULL;
+static gboolean keyboard_grabbed = FALSE;
 
 #define LOG_ERRORS 1
 
 /* ------------------------------------------------------------------------------ */
+
+static gchar*
+create_markup (const gchar *primary, const gchar *secondary)
+{
+	return g_markup_printf_escaped ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+					primary, secondary ? secondary : "");
+
+}
+
+static gboolean
+grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
+{
+	GdkGrabStatus status;
+	if (!keyboard_grabbed) {
+		status = gdk_keyboard_grab (win->window, FALSE, gdk_event_get_time (event));
+		if (status == GDK_GRAB_SUCCESS) {
+			keyboard_grabbed = TRUE;
+		} else {
+			g_message ("could not grab keyboard: %d", (int)status);
+		}
+	}
+	return FALSE;
+}
+
+static gboolean
+ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
+{
+	if (keyboard_grabbed)
+		gdk_keyboard_ungrab (gdk_event_get_time (event));
+	keyboard_grabbed = FALSE;
+	return FALSE;
+}
+
+static gboolean
+window_state_changed (GtkWidget *win, GdkEventWindowState *event, gpointer data)
+{
+	GdkWindowState state = gdk_window_get_state (win->window);
+
+	if (state & GDK_WINDOW_STATE_WITHDRAWN ||
+	    state & GDK_WINDOW_STATE_ICONIFIED ||
+	    state & GDK_WINDOW_STATE_FULLSCREEN ||
+	    state & GDK_WINDOW_STATE_MAXIMIZED)
+		ungrab_keyboard (win, (GdkEvent*)event, data);
+	else
+		grab_keyboard (win, (GdkEvent*)event, data);
+
+	return FALSE;
+}
 
 static void
 prepare_visibility (GtkBuilder *builder, GtkDialog *dialog)
@@ -83,6 +132,27 @@ prepare_titlebar (GtkBuilder *builder, GtkDialog *dialog)
 }
 
 static void
+prepare_prompt (GtkBuilder *builder, GtkDialog *dialog)
+{
+	gchar *primary, *secondary, *markup;
+	GtkLabel *label;
+
+	primary = g_key_file_get_value (input_data, "prompt", "primary", NULL);
+	g_return_if_fail (primary);
+	secondary = g_key_file_get_value (input_data, "prompt", "secondary", NULL);
+
+	markup = create_markup (primary, secondary);
+	g_free (primary);
+	g_free (secondary);
+
+	label = GTK_LABEL (gtk_builder_get_object (builder, "prompt_label"));
+	g_return_if_fail (label);
+
+	gtk_label_set_markup (label, markup);
+	g_free (markup);
+}
+
+static void
 prepare_buttons (GtkBuilder *builder, GtkDialog *dialog)
 {
 	gchar *ok_text;
@@ -105,13 +175,25 @@ prepare_buttons (GtkBuilder *builder, GtkDialog *dialog)
 	g_free (other_text);
 }
 
+static void
+prepare_security (GtkBuilder *builder, GtkDialog *dialog)
+{
+	/*
+	 * When passwords are involved we grab the keyboard so that people
+	 * don't accidentally type their passwords in other windows.
+	 */
+	g_signal_connect (dialog, "map-event", G_CALLBACK (grab_keyboard), NULL);
+	g_signal_connect (dialog, "unmap-event", G_CALLBACK (ungrab_keyboard), NULL);
+	g_signal_connect (dialog, "window-state-event", G_CALLBACK (window_state_changed), NULL);
+}
+
 static GtkDialog*
 prepare_dialog (GtkBuilder *builder)
 {
 	GError *error = NULL;
 	GtkDialog *dialog;
 
-	if (!gtk_builder_add_from_file (builder, UIDIR "gku-prompt.ui", &error)) {
+	if (!gtk_builder_add_from_file (builder, UIDIR "gkd-prompt.ui", &error)) {
 		g_warning ("couldn't load prompt ui file: %s",
 		           error && error->message ? error->message : "");
 		g_clear_error (&error);
@@ -122,8 +204,10 @@ prepare_dialog (GtkBuilder *builder)
 	g_return_val_if_fail (GTK_IS_DIALOG (dialog), NULL);
 
 	prepare_titlebar (builder, dialog);
+	prepare_prompt (builder, dialog);
 	prepare_visibility (builder, dialog);
 	prepare_buttons (builder, dialog);
+	prepare_security (builder, dialog);
 
 	return dialog;
 }
@@ -398,7 +482,7 @@ main (int argc, char *argv[])
 	g_key_file_free (output_data);
 
 	if (!data)
-		fatal ("couldn't format auth dialog response: %s", err ? err->message : ""); 
+		fatal ("couldn't format auth dialog response: %s", err ? err->message : "");
 
 	write_all_output (data, length);
 	g_free (data);
