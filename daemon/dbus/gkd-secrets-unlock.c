@@ -43,7 +43,7 @@ struct _GkdSecretsUnlock {
 	GArray *results;
 };
 
-G_DEFINE_TYPE (GkdSecretsUnlock, gkd_secrets_unlock, GKD_SECRETS_TYPE_UNLOCK);
+G_DEFINE_TYPE (GkdSecretsUnlock, gkd_secrets_unlock, GKD_SECRETS_TYPE_PROMPT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -319,22 +319,41 @@ gkd_secrets_unlock_new (GkdSecretsService *service, const gchar *caller)
 void
 gkd_secrets_unlock_queue (GkdSecretsUnlock *self, const gchar *objpath)
 {
+	GP11Object *coll;
+	gboolean locked;
+	gchar *path;
+
 	g_return_if_fail (GKD_SECRETS_IS_UNLOCK (self));
 	g_return_if_fail (objpath);
-	g_queue_push_tail (self->queued, g_strdup (objpath));
+
+	coll = gkd_secrets_prompt_lookup_collection (GKD_SECRETS_PROMPT (self), objpath);
+	if (coll == NULL)
+		return;
+
+	if (authenticate_collection (self, coll, &locked)) {
+		path = g_strdup (objpath);
+		if (locked)
+			g_queue_push_tail (self->queued, path);
+		else
+			g_array_append_val (self->results, path);
+	}
+
+	g_object_unref (coll);
 }
 
 gboolean
 gkd_secrets_unlock_have_queued (GkdSecretsUnlock *self)
 {
 	g_return_val_if_fail (GKD_SECRETS_IS_UNLOCK (self), FALSE);
-	return !g_queue_is_empty (self->queued) && !self->current;
+	return !g_queue_is_empty (self->queued) || self->current;
 }
 
 gchar**
-gkd_secrets_unlock_get_results (GkdSecretsUnlock *self)
+gkd_secrets_unlock_get_results (GkdSecretsUnlock *self, gint *n_results)
 {
 	g_return_val_if_fail (GKD_SECRETS_IS_UNLOCK (self), NULL);
+	g_return_val_if_fail (n_results, NULL);
+	*n_results = self->results->len;
 	return (gchar**)self->results->data;
 }
 

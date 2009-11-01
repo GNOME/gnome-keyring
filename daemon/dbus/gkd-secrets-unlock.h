@@ -36,7 +36,7 @@
 typedef struct _GkdSecretsUnlockClass GkdSecretsUnlockClass;
 
 struct _GkdSecretsUnlockClass {
-	GObjectClass parent_class;
+	GkdSecretsPromptClass parent_class;
 };
 
 GType               gkd_secrets_unlock_get_type               (void);
@@ -49,7 +49,8 @@ void                gkd_secrets_unlock_queue                  (GkdSecretsUnlock 
 
 gboolean            gkd_secrets_unlock_have_queued            (GkdSecretsUnlock *self);
 
-gchar**             gkd_secrets_unlock_get_results            (GkdSecretsUnlock *self);
+gchar**             gkd_secrets_unlock_get_results            (GkdSecretsUnlock *self,
+                                                               gint *n_results);
 
 void                gkd_secrets_unlock_reset_results          (GkdSecretsUnlock *self);
 

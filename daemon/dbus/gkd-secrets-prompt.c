@@ -337,6 +337,9 @@ gkd_secrets_prompt_dispatch (GkdSecretsPrompt *self, DBusMessage *message)
 	else if (dbus_message_is_method_call (message, SECRETS_PROMPT_INTERFACE, "Dismiss"))
 		reply = prompt_method_dismiss (self, message);
 
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "prompt");
+
 	return reply;
 }
 

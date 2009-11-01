@@ -32,6 +32,8 @@
 
 #include <gcrypt.h>
 
+#define DEBUG_PROMPT 1
+
 enum {
 	RESPONDED,
 	COMPLETED,
@@ -89,7 +91,7 @@ mark_completed (GkdPrompt *self)
 static gboolean
 on_standard_input (int fd, gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (self);
+	GkdPrompt *self = GKD_PROMPT (user_data);
 	gssize ret;
 
 	g_return_val_if_fail (GKD_IS_PROMPT (self), FALSE);
@@ -114,7 +116,7 @@ on_standard_input (int fd, gpointer user_data)
 static gboolean
 on_standard_output (int fd, gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (self);
+	GkdPrompt *self = GKD_PROMPT (user_data);
 	gchar buffer[1024];
 	gssize ret;
 
@@ -138,7 +140,7 @@ on_standard_output (int fd, gpointer user_data)
 static gboolean
 on_standard_error (int fd, gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (self);
+	GkdPrompt *self = GKD_PROMPT (user_data);
 	gchar buffer[1024];
 	gssize ret;
 	gchar *ptr;
@@ -171,7 +173,7 @@ on_standard_error (int fd, gpointer user_data)
 static void
 on_io_completed (gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (self);
+	GkdPrompt *self = GKD_PROMPT (user_data);
 	GError *error = NULL;
 
 	g_return_if_fail (GKD_IS_PROMPT (self));
@@ -189,6 +191,9 @@ on_io_completed (gpointer user_data)
 
 	/* Parse the output data properly */
 	if (!self->pv->failure) {
+#if DEBUG_PROMPT
+		g_printerr ("PROMPT OUTPUT:\n%s\n", self->pv->out_data->str);
+#endif
 		self->pv->output = g_key_file_new ();
 		if (!g_key_file_load_from_data (self->pv->output, self->pv->out_data->str,
 						self->pv->out_data->len, G_KEY_FILE_NONE, &error)) {
@@ -206,7 +211,7 @@ on_io_completed (gpointer user_data)
 static void
 on_child_exited (GPid pid, gint status, gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (self);
+	GkdPrompt *self = GKD_PROMPT (user_data);
 	gint code;
 
 	if (pid == self->pv->pid) {
@@ -428,6 +433,10 @@ prepare_input_data (GkdPrompt *self)
 		return FALSE;
 	}
 
+#if DEBUG_PROMPT
+	g_printerr ("PROMPT INPUT:\n%s\n", self->pv->in_data);
+#endif
+
 	/* No further modifications to input are possible */
 	g_key_file_free (self->pv->input);
 	self->pv->input = NULL;
@@ -544,7 +553,7 @@ gkd_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
 	g_return_val_if_fail (self, NULL);
 
 	if (!self->pv->executable)
-		self->pv->executable = g_strdup (LIBEXECDIR "/gnome-keyring-ask");
+		self->pv->executable = g_strdup (LIBEXECDIR "/gnome-keyring-prompt");
 
 	return G_OBJECT (self);
 }
@@ -573,6 +582,8 @@ gkd_prompt_finalize (GObject *obj)
 	GkdPrompt *self = GKD_PROMPT (obj);
 
 	g_assert (self->pv->pid == 0);
+	g_assert (!self->pv->input);
+	g_assert (!self->pv->output);
 	g_assert (!self->pv->in_data);
 	g_assert (!self->pv->out_data);
 	g_assert (!self->pv->err_data);
@@ -598,13 +609,13 @@ gkd_prompt_class_init (GkdPromptClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GkdPromptPrivate));
 
-	signals[COMPLETED] = g_signal_new ("signal", GKD_TYPE_PROMPT,
+	signals[COMPLETED] = g_signal_new ("completed", GKD_TYPE_PROMPT,
 	                                   G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkdPromptClass, completed),
 	                                   NULL, NULL, g_cclosure_marshal_VOID__VOID,
 	                                   G_TYPE_NONE, 0);
 
-	signals[RESPONDED] = g_signal_new ("signal", GKD_TYPE_PROMPT,
-	                                   G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkdPromptClass, responded),
+	signals[RESPONDED] = g_signal_new ("responded", GKD_TYPE_PROMPT,
+	                                   G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GkdPromptClass, responded),
 	                                   g_signal_accumulator_true_handled, NULL, gkd_prompt_marshal_BOOLEAN__VOID,
 	                                   G_TYPE_BOOLEAN, 0);
 }
@@ -788,7 +799,6 @@ void
 gkd_prompt_reset (GkdPrompt *self)
 {
 	g_return_if_fail (GKD_IS_PROMPT (self));
-	g_return_if_fail (self->pv->completed);
 
 	kill_process (self);
 	self->pv->pid = 0;

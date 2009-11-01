@@ -372,22 +372,23 @@ service_method_open_session (GkdSecretsService *self, DBusMessage *message)
 static DBusMessage*
 service_method_unlock (GkdSecretsService *self, DBusMessage *message)
 {
-	char **objpaths, **o;
 	GkdSecretsUnlock *unlock;
 	ServiceClient *client;
 	DBusMessage *reply;
 	const char *caller;
 	const gchar *path;
+	int n_objpaths, i;
+	char **objpaths;
 
 	if (!dbus_message_get_args (message, NULL,
-	                            DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &objpaths,
+	                            DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &objpaths, &n_objpaths,
 	                            DBUS_TYPE_INVALID))
 		return NULL;
 
 	caller = dbus_message_get_sender (message);
 	unlock = gkd_secrets_unlock_new (self, caller);
-	for (o = objpaths; o && *o; ++o)
-		gkd_secrets_unlock_queue (unlock, *o);
+	for (i = 0; i < n_objpaths; ++i)
+		gkd_secrets_unlock_queue (unlock, objpaths[i]);
 	dbus_free_string_array (objpaths);
 
 	/* So do we need to prompt? */
@@ -395,7 +396,7 @@ service_method_unlock (GkdSecretsService *self, DBusMessage *message)
 		client = g_hash_table_lookup (self->clients, caller);
 		g_return_val_if_fail (client, NULL);
 		path = gkd_secrets_prompt_get_object_path (GKD_SECRETS_PROMPT (unlock));
-		g_hash_table_replace (client->sessions, (gpointer)path, g_object_ref (unlock));
+		g_hash_table_replace (client->prompts, (gpointer)path, g_object_ref (unlock));
 
 	/* No need to prompt */
 	} else {
@@ -403,9 +404,10 @@ service_method_unlock (GkdSecretsService *self, DBusMessage *message)
 	}
 
 	reply = dbus_message_new_method_return (message);
+	objpaths = gkd_secrets_unlock_get_results (unlock, &n_objpaths);
 	dbus_message_append_args (reply,
-	                          DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, gkd_secrets_unlock_get_results (unlock),
-	                          DBUS_TYPE_OBJECT_PATH, path,
+	                          DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &objpaths, n_objpaths,
+	                          DBUS_TYPE_OBJECT_PATH, &path,
 	                          DBUS_TYPE_INVALID);
 
 	gkd_secrets_unlock_reset_results (unlock);

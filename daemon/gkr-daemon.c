@@ -356,7 +356,6 @@ signal_thread (gpointer user_data)
 		case SIGPIPE:
 			/* Ignore */
 			break;
-		case SIGINT:
 		case SIGHUP:
 		case SIGTERM:
 			g_atomic_int_set (&signal_quitting, 1);
@@ -387,7 +386,6 @@ setup_signal_handling (GMainLoop *loop)
 
 	sigemptyset (&signal_set);
 	sigaddset (&signal_set, SIGPIPE);
-	sigaddset (&signal_set, SIGINT);
 	sigaddset (&signal_set, SIGHUP);
 	sigaddset (&signal_set, SIGTERM);
 	pthread_sigmask (SIG_BLOCK, &signal_set, NULL);
