@@ -5,6 +5,7 @@ noinst_LTLIBRARIES = \
 	libegg-creds.la \
 	libegg-dbus.la \
 	libegg-secure.la \
+	libegg-prompt.la \
 	libegg-secure-entry.la
 
 BUILT_SOURCES = \
@@ -67,7 +68,7 @@ libegg_creds_la_SOURCES = \
 	egg-unix-credentials.c egg-unix-credentials.h	
 
 libegg_dbus_la_SOURCES = \
-	egg-dbus.c egg-dbus.h 
+	egg-dbus.c egg-dbus.h
 
 libegg_dbus_la_CFLAGS = \
 	$(DBUS_CFLAGS) \
@@ -76,7 +77,22 @@ libegg_dbus_la_CFLAGS = \
 libegg_dbus_la_LIBADD = \
 	$(DBUS_LIBS) \
 	$(GLIB_LIBS)
-	
+
+libegg_prompt_la_SOURCES = \
+	egg-dh.c egg-dh.h \
+	egg-hex.c egg-hex.h \
+	egg-libgcrypt.c egg-libgcrypt.h \
+	egg-secure-memory.c egg-secure-memory.h
+
+libegg_prompt_la_CFLAGS = \
+	-DEGG_DH_NO_ASN1=1 \
+	$(LIBGCRYPT_CFLAGS) \
+	$(GLIB_CFLAGS)
+
+libegg_prompt_la_LIBS = \
+	$(LIBGCRYPT_LIBS) \
+	$(GLIB_LIBS)
+
 # -------------------------------------------------------------------
 
 if WITH_TESTS

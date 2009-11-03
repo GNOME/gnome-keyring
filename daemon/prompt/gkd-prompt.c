@@ -23,6 +23,7 @@
 
 #include "gkd-prompt.h"
 #include "gkd-prompt-marshal.h"
+#include "gkd-prompt-util.h"
 
 #include "egg/egg-cleanup.h"
 #include "egg/egg-dh.h"
@@ -52,7 +53,7 @@ struct _GkdPromptPrivate {
 	/* Transport crypto */
 	gcry_mpi_t secret;
 	gcry_mpi_t prime;
-	guchar *key;
+	gpointer key;
 	gsize n_key;
 
 	/* Information about child */
@@ -234,32 +235,6 @@ on_child_exited (GPid pid, gint status, gpointer user_data)
 	g_spawn_close_pid (pid);
 }
 
-static gboolean
-encode_input_mpi (GkdPrompt *self, const gchar *section,
-                  const gchar *field, gcry_mpi_t mpi)
-{
-	gcry_error_t gcry;
-	guchar *data;
-	gsize n_data;
-
-	g_assert (self->pv->input);
-
-	/* Get the size */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_HEX, NULL, 0, &n_data, mpi);
-	g_return_val_if_fail (gcry == 0, FALSE);
-
-	data = g_malloc0 (n_data + 1);
-
-	/* Write into buffer */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_HEX, data, n_data, &n_data, mpi);
-	g_return_val_if_fail (gcry == 0, FALSE);
-
-	g_key_file_set_value (self->pv->input, section, field, (gchar*)data);
-	g_free (data);
-
-	return TRUE;
-}
-
 static void
 prepare_transport_crypto (GkdPrompt *self)
 {
@@ -274,64 +249,23 @@ prepare_transport_crypto (GkdPrompt *self)
 		g_return_if_reached ();
 
 	/* Send over the prime, base, and public bits */
-	if (!encode_input_mpi (self, "transport", "prime", self->pv->prime) ||
-	    !encode_input_mpi (self, "transport", "base", base) ||
-	    !encode_input_mpi (self, "transport", "public", pub))
-		g_return_if_reached ();
+	gkd_prompt_util_encode_mpi (self->pv->input, "transport", "prime", self->pv->prime);
+	gkd_prompt_util_encode_mpi (self->pv->input, "transport", "base", base);
+	gkd_prompt_util_encode_mpi (self->pv->input, "transport", "public", pub);
 
 	gcry_mpi_release (base);
 	gcry_mpi_release (pub);
 }
 
 static gboolean
-decode_output_mpi (GkdPrompt *self, const gchar *section,
-                   const gchar *field, gcry_mpi_t *mpi)
-{
-	gcry_error_t gcry;
-	gchar *data;
-
-	g_assert (self->pv->output);
-
-	data = g_key_file_get_value (self->pv->output, section, field, NULL);
-	if (!data)
-		return FALSE;
-
-	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_HEX, data, 0, NULL);
-	g_free (data);
-
-	return (gcry == 0);
-}
-
-static guchar*
-decode_output_hex (GkdPrompt *self, const gchar *section,
-                   const gchar *field, gsize *n_result)
-{
-	guchar *result;
-	gchar *data;
-
-	g_assert (self->pv->output);
-
-	data = g_key_file_get_value (self->pv->output, section, field, NULL);
-	if (!data)
-		return NULL;
-
-	result = egg_hex_decode (data, -1, n_result);
-	g_free (data);
-	return result;
-}
-
-static gboolean
 receive_transport_crypto (GkdPrompt *self)
 {
 	gcry_mpi_t key, peer;
-	gcry_error_t gcry;
-	guchar *buffer;
-	gsize n_buffer;
 	gboolean ret;
 
 	g_assert (self->pv->output);
 
-	if (!decode_output_mpi (self, "transport", "public", &peer))
+	if (!gkd_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
 		return FALSE;
 
 	ret = egg_dh_gen_key (peer, self->pv->secret, self->pv->prime, &key);
@@ -339,80 +273,18 @@ receive_transport_crypto (GkdPrompt *self)
 	if (!ret)
 		return FALSE;
 
-	/* Write the key out to raw data */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &n_buffer, peer);
-	g_return_val_if_fail (gcry == 0, FALSE);
-	buffer = egg_secure_alloc (n_buffer);
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, buffer, n_buffer, &n_buffer, peer);
-	g_return_val_if_fail (gcry == 0, FALSE);
-
-	/* Allocate memory for hashed key */
 	egg_secure_free (self->pv->key);
-	g_assert (16 == gcry_md_get_algo_dlen (GCRY_MD_MD5));
-	self->pv->key = egg_secure_alloc (16);
-	self->pv->n_key = 16;
+	ret = gkd_prompt_util_mpi_to_key (key, &self->pv->key, &self->pv->n_key);
+	gcry_mpi_release (key);
 
-	/* Use that as the input to derive a key for 128-bit AES */
-	gcry_md_hash_buffer (GCRY_MD_MD5, self->pv->key, buffer, n_buffer);
+	if (!ret) {
+		self->pv->key = NULL;
+		self->pv->n_key = 0;
+		return FALSE;
+	}
 
-	egg_secure_free (buffer);
 	return TRUE;
 }
-
-static gchar*
-decrypt_transport_crypto (GkdPrompt *self, guchar *data, gsize n_data,
-                          guchar *iv, gsize n_iv)
-{
-	gcry_cipher_hd_t cih;
-	gcry_error_t gcry;
-	gchar *result;
-	gsize pos;
-
-	g_assert (self->pv->key);
-	g_assert (self->pv->n_key == 16);
-
-	if (n_iv != 16) {
-		g_warning ("prompt response has iv of wrong length");
-		return NULL;
-	}
-
-	if (n_data % 16 != 0) {
-		g_warning ("prompt response encrypted password of wrong length");
-		return NULL;
-	}
-
-	gcry = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
-	if (gcry) {
-		g_warning ("couldn't create aes cipher context: %s", gcry_strerror (gcry));
-		return NULL;
-	}
-
-	/* 16 = 128 bits */
-	gcry = gcry_cipher_setkey (cih, self->pv->key, 16);
-	g_return_val_if_fail (gcry == 0, NULL);
-
-	/* 16 = 128 bits */
-	gcry = gcry_cipher_setiv (cih, iv, 16);
-	g_return_val_if_fail (gcry == 0, NULL);
-
-	/* Allocate memory for the result */
-	result = egg_secure_alloc (n_data);
-
-	for (pos = 0; pos < n_data; pos += 16) {
-		gcry = gcry_cipher_decrypt (cih, result + pos, 16, data + pos, 16);
-		g_return_val_if_fail (gcry == 0, NULL);
-	}
-
-	gcry_cipher_close (cih);
-
-	if (!g_utf8_validate (result, n_data, NULL)) {
-		egg_secure_free (result);
-		return NULL;
-	}
-
-	return result;
-}
-
 
 static gboolean
 prepare_input_data (GkdPrompt *self)
@@ -739,21 +611,21 @@ gkd_prompt_get_password (GkdPrompt *self, const gchar *password_type)
 		g_return_val_if_reached (NULL);
 
 	/* Parse out an IV */
-	iv = decode_output_hex (self, password_type, "iv", &n_iv);
+	iv = gkd_prompt_util_decode_hex (self->pv->input, password_type, "iv", &n_iv);
 	if (iv == NULL) {
 		g_warning ("prompt response has encrypted password, but no iv set");
 		return NULL;
 	}
 
 	/* Parse out the password */
-	data = decode_output_hex (self, password_type, "value", &n_data);
+	data = gkd_prompt_util_decode_hex (self->pv->input, password_type, "value", &n_data);
 	if (data == NULL) {
 		g_warning ("prompt response missing encrypted password value");
 		g_free (iv);
 		return NULL;
 	}
 
-	result = decrypt_transport_crypto (self, data, n_data, iv, n_iv);
+	result = gkd_prompt_util_decrypt_text (self->pv->key, self->pv->n_key, iv, n_iv, data, n_data);
 	g_free (data);
 	g_free (iv);
 

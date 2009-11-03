@@ -1,4 +1,12 @@
 
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR =
+endif
+
+SUBDIRS = . $(TESTS_DIR)
+
 INCLUDES= \
 	-DPREFIX=\""$(prefix)"\" \
 	-DBINDIR=\""$(bindir)"\" \
@@ -28,6 +36,7 @@ BUILT_SOURCES = \
 
 libgkd_prompt_la_SOURCES = \
 	gkd-prompt.c gkd-prompt.h \
+	gkd-prompt-util.c gkd-prompt-util.h \
 	$(BUILT_SOURCES)
 
 libgkd_prompt_la_LIBADD = \
@@ -51,12 +60,15 @@ libexec_PROGRAMS= \
 	gnome-keyring-prompt
 
 gnome_keyring_prompt_SOURCES = \
-	gkd-prompt-tool.c
+	gkd-prompt-tool.c \
+	gkd-prompt-util.c gkd-prompt-util.h
 
 gnome_keyring_prompt_LDADD = \
-	$(top_builddir)/egg/libegg.la \
+	$(top_builddir)/egg/libegg-prompt.la \
+	$(LIBGCRYPT_LIBS) \
 	$(GTK_LIBS)
 
 gnome_keyring_prompt_CFLAGS = \
 	-DUIDIR=\""$(uidir)"\" \
+	$(LIBGCRYPT_CFLAGS) \
 	$(GTK_CFLAGS)

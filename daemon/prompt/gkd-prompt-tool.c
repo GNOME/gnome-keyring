@@ -22,22 +22,32 @@
 
 #include "config.h"
 
+#include "gkd-prompt-util.h"
+
+#include "egg/egg-dh.h"
 #include "egg/egg-secure-memory.h"
 
-#include <gtk/gtk.h>
+#include <gcrypt.h>
+
 #include <glib/gi18n.h>
 
-#include <stdio.h>
-#include <string.h>
-#include <locale.h>
-#include <stdlib.h>
+#include <gtk/gtk.h>
+
 #include <errno.h>
-#include <unistd.h>
+#include <locale.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
+#include <unistd.h>
 
 static GKeyFile *input_data = NULL;
 static GKeyFile *output_data = NULL;
 static gboolean keyboard_grabbed = FALSE;
+
+/* An encryption key for returning passwords */
+static gpointer the_key = NULL;
+static gsize n_the_key = 0;
 
 #define LOG_ERRORS 1
 
@@ -212,11 +222,91 @@ prepare_dialog (GtkBuilder *builder)
 	return dialog;
 }
 
+static gboolean
+negotiate_transport_crypto (void)
+{
+	gcry_mpi_t base, prime, peer;
+	gcry_mpi_t key, pub, secret;
+	gboolean ret = FALSE;
+
+	g_assert (!the_key);
+	base = prime = peer = NULL;
+	key = pub = secret = NULL;
+
+	/* The DH stuff coming in from our caller */
+	if (gkd_prompt_util_decode_mpi (input_data, "transport", "prime", &prime) &&
+	    gkd_prompt_util_decode_mpi (input_data, "transport", "base", &base) &&
+	    gkd_prompt_util_decode_mpi (input_data, "transport", "public", &peer)) {
+
+		/* Generate our own public/secret, and then a key, send it back */
+		if (egg_dh_gen_secret (prime, base, &pub, &secret) &&
+		    egg_dh_gen_key (peer, secret, prime, &key)) {
+
+			/* Build up a key we can use */
+			gkd_prompt_util_encode_mpi (output_data, "transport", "public", pub);
+			if (gkd_prompt_util_mpi_to_key (key, &the_key, &n_the_key))
+				ret = TRUE;
+		}
+	}
+
+	gcry_mpi_release (base);
+	gcry_mpi_release (prime);
+	gcry_mpi_release (peer);
+	gcry_mpi_release (key);
+	gcry_mpi_release (pub);
+	gcry_mpi_release (secret);
+
+	return ret;
+}
+
+static void
+gather_password (GtkBuilder *builder, const gchar *password_type)
+{
+	GtkEntry *entry;
+	gchar iv[16];
+	gpointer data;
+	gsize n_data;
+
+	entry = GTK_ENTRY (gtk_builder_get_object (builder, "password_entry"));
+	g_return_if_fail (GTK_IS_ENTRY (entry));
+
+	/* A non-encrypted password: just send the value back */
+	if (!g_key_file_has_group (input_data, "transport")) {
+		g_key_file_set_boolean (output_data, password_type, "encrypted", FALSE);
+		g_key_file_set_value (output_data, password_type, "value",
+		                      gtk_entry_get_text (entry));
+		return;
+	}
+
+	g_key_file_set_boolean (output_data, password_type, "encrypted", TRUE);
+	if (!the_key && !negotiate_transport_crypto ()) {
+		g_warning ("couldn't negotiate transport crypto for password");
+		return;
+	}
+
+	gcry_create_nonce (iv, sizeof (iv));
+	data = gkd_prompt_util_encrypt_text (the_key, n_the_key, iv, sizeof (iv),
+	                                     gtk_entry_get_text (entry), &n_data);
+	g_return_if_fail (data);
+
+	gkd_prompt_util_encode_hex (output_data, password_type, "iv", iv, sizeof (iv));
+	gkd_prompt_util_encode_hex (output_data, password_type, "value", data, n_data);
+
+	g_free (data);
+}
+
+static void
+gather_dialog (GtkBuilder *builder, GtkDialog *dialog)
+{
+	gather_password (builder, "password");
+}
+
 static void
 run_dialog (void)
 {
 	GtkBuilder *builder;
 	GtkDialog *dialog;
+	gint res;
 
 	builder = gtk_builder_new ();
 	dialog = prepare_dialog (builder);
@@ -227,11 +317,13 @@ run_dialog (void)
 
 	for (;;) {
 		gtk_widget_show (GTK_WIDGET (dialog));
-		switch (gtk_dialog_run (dialog)) {
+		res = gtk_dialog_run (dialog);
+		switch (res) {
 		case GTK_RESPONSE_OK:
-			/* TODO: if (!validate_dialog (builder, dialog, response))
+		case GTK_RESPONSE_APPLY:
+			/* if (!validate_dialog (builder, dialog, res))
 				continue; */
-			/* TODO: output */
+			gather_dialog (builder, dialog);
 			break;
 		case GTK_RESPONSE_CANCEL:
 		case GTK_RESPONSE_DELETE_EVENT:
@@ -476,6 +568,14 @@ main (int argc, char *argv[])
 		fatal ("couldn't parse auth dialog instructions", err ? err->message : "");
 
 	run_dialog ();
+
+	/* Cleanup after any key */
+	if (the_key) {
+		egg_secure_clear (the_key, n_the_key);
+		egg_secure_free (the_key);
+		the_key = NULL;
+		n_the_key = 0;
+	}
 
 	g_key_file_free (input_data);
 	data = g_key_file_to_data (output_data, &length, &err);

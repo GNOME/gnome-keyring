@@ -32,6 +32,8 @@ gboolean   egg_dh_gen_secret       (gcry_mpi_t p, gcry_mpi_t g, gcry_mpi_t *X, g
 
 gboolean   egg_dh_gen_key          (gcry_mpi_t Y, gcry_mpi_t x, gcry_mpi_t p, gcry_mpi_t *k);
 
+#ifndef EGG_DH_NO_ASN1
 gboolean   egg_dh_parse_pkcs3      (const guchar *data, gsize n_data, gcry_mpi_t *p, gcry_mpi_t *g);
+#endif
 
 #endif /* EGG_DH_H_ */

@@ -107,6 +107,8 @@ typedef struct _Parameters {
 	gcry_mpi_t g;
 } Parameters;
 
+#ifndef EGG_DH_NO_ASN1
+
 static gboolean
 parse_der_pkcs3 (const guchar *data, gsize n_data, Parameters *params)
 {
@@ -165,3 +167,5 @@ egg_dh_parse_pkcs3 (const guchar *data, gsize n_data, gcry_mpi_t *p, gcry_mpi_t 
 	*g = params.g;
 	return TRUE;
 }
+
+#endif /* EGG_DH_NO_ASN1 */
