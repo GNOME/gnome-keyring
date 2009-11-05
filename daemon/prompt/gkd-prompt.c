@@ -612,7 +612,7 @@ gkd_prompt_get_response (GkdPrompt *self)
 	guint ret;
 
 	g_return_val_if_fail (GKD_IS_PROMPT (self), GKD_RESPONSE_FAILURE);
-	if (!self->pv->failure)
+	if (self->pv->failure)
 		return GKD_RESPONSE_FAILURE;
 
 	g_return_val_if_fail (self->pv->output, GKD_RESPONSE_FAILURE);
@@ -648,7 +648,7 @@ gkd_prompt_get_password (GkdPrompt *self, const gchar *password_type)
 	g_return_val_if_fail (GKD_IS_PROMPT (self), NULL);
 	g_return_val_if_fail (self->pv->output, NULL);
 
-	if (!self->pv->failure)
+	if (self->pv->failure)
 		return NULL;
 
 	g_assert (self->pv->output);
@@ -665,14 +665,14 @@ gkd_prompt_get_password (GkdPrompt *self, const gchar *password_type)
 		g_return_val_if_reached (NULL);
 
 	/* Parse out an IV */
-	iv = gkd_prompt_util_decode_hex (self->pv->input, password_type, "iv", &n_iv);
+	iv = gkd_prompt_util_decode_hex (self->pv->output, password_type, "iv", &n_iv);
 	if (iv == NULL) {
 		g_warning ("prompt response has encrypted password, but no iv set");
 		return NULL;
 	}
 
 	/* Parse out the password */
-	data = gkd_prompt_util_decode_hex (self->pv->input, password_type, "value", &n_data);
+	data = gkd_prompt_util_decode_hex (self->pv->output, password_type, "value", &n_data);
 	if (data == NULL) {
 		g_warning ("prompt response missing encrypted password value");
 		g_free (iv);
