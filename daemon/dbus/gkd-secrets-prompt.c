@@ -156,7 +156,7 @@ gkd_secrets_prompt_responded (GkdPrompt *base)
 	gint res;
 
 	res = gkd_prompt_get_response (GKD_PROMPT (self));
-	if (res == GKD_RESPONSE_NO || res == GKD_RESPONSE_FAILURE) {
+	if (res <= GKD_RESPONSE_NO) {
 		gkd_secrets_prompt_dismiss (self);
 		return FALSE;
 	}

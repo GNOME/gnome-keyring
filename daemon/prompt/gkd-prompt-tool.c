@@ -296,6 +296,30 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 }
 
 static void
+gather_response (gint response)
+{
+	const gchar *value = NULL;
+
+	switch (response) {
+	case GTK_RESPONSE_OK:
+		value = "ok";
+		break;
+	case GTK_RESPONSE_CANCEL:
+	case GTK_RESPONSE_DELETE_EVENT:
+		value = "no";
+		break;
+	case GTK_RESPONSE_APPLY:
+		value = "other";
+		break;
+	default:
+		g_return_if_reached ();
+		break;
+	}
+
+	g_key_file_set_value (output_data, "prompt", "response", value);
+}
+
+static void
 gather_dialog (GtkBuilder *builder, GtkDialog *dialog)
 {
 	gather_password (builder, "password");
@@ -337,6 +361,7 @@ run_dialog (void)
 		break;
 	}
 
+	gather_response (res);
 	g_object_unref (builder);
 }
 
