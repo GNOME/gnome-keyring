@@ -495,8 +495,9 @@ write_all_output (const gchar *data, gsize len)
 		if (res <= 0) {
 			if (errno == EAGAIN || errno == EINTR)
 				continue;
-			g_warning ("couldn't write dialog response to output: %s",
-			           g_strerror (errno));
+			if (errno != EPIPE)
+				g_warning ("couldn't write dialog response to output: %s",
+				           g_strerror (errno));
 			exit (1);
 		} else  {
 			len -= res;
@@ -529,6 +530,16 @@ read_all_input (void)
 	return g_string_free (data, FALSE);
 }
 
+static void
+hup_handler (int sig)
+{
+	/*
+	 * Exit due to being cancelled. No real need to do any
+	 * cleanup or anything. All memory will be freed on process end.
+	 **/
+	_exit (0);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -536,6 +547,9 @@ main (int argc, char *argv[])
 	gchar *data;
 	gboolean ret;
 	gsize length;
+
+	/* Exit on HUP signal */
+	signal(SIGINT,  hup_handler);
 
 	prepare_logging ();
 

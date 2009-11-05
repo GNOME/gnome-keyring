@@ -81,12 +81,13 @@ static void
 kill_process (GkdPrompt *self)
 {
 	if (self->pv->pid)
-		kill (self->pv->pid, SIGTERM);
+		kill (self->pv->pid, SIGHUP);
 }
 
 static void
 mark_completed (GkdPrompt *self)
 {
+	g_assert (GKD_IS_PROMPT (self));
 	g_assert (!self->pv->completed);
 	self->pv->completed = TRUE;
 	g_signal_emit (self, signals[COMPLETED], 0);
@@ -95,6 +96,7 @@ mark_completed (GkdPrompt *self)
 static void
 mark_failed (GkdPrompt *self)
 {
+	g_assert (GKD_IS_PROMPT (self));
 	g_assert (!self->pv->failure);
 	self->pv->failure = TRUE;
 	if (!self->pv->completed)
@@ -105,7 +107,10 @@ static void
 mark_responded (GkdPrompt *self)
 {
 	gboolean continu = FALSE;
+
+	g_assert (GKD_IS_PROMPT (self));
 	g_signal_emit (self, signals[RESPONDED], 0, &continu);
+	g_assert (GKD_IS_PROMPT (self));
 
 	/* The prompt gets displayed again */
 	if (continu) {
@@ -740,11 +745,25 @@ typedef struct _Attention {
 	GkdPromptAttentionFunc callback;
 	GDestroyNotify destroy;
 	gpointer user_data;
-	gulong completed_tag;
 	GkdPrompt *prompt;
+	gboolean active;
 } AttentionReq;
 
 static GHashTable *attention_reqs = NULL;
+
+static void
+done_attention_req (GkdPrompt *prompt, gpointer user_data)
+{
+	AttentionReq *att = user_data;
+
+	g_assert (att);
+	g_assert (GKD_IS_PROMPT (att->prompt));
+
+	if (att->active) {
+		att->active = FALSE;
+		next_attention_req (att->window_id);
+	}
+}
 
 static void
 clear_attention_reqs (gpointer unused)
@@ -769,15 +788,26 @@ static void
 free_attention_req (gpointer data)
 {
 	AttentionReq *att = data;
+	gchar *window_id = NULL;
 
 	if (att) {
-		g_free (att->window_id);
 		if (att->destroy)
 			(att->destroy) (att->user_data);
-		if (att->prompt)
+		if (att->prompt) {
+			g_signal_handlers_disconnect_by_func (att->prompt, done_attention_req, att);
 			g_object_unref (att->prompt);
+		}
+		if (att->active) {
+			window_id = att->window_id;
+			att->window_id = NULL;
+		}
+		g_free (att->window_id);
 		g_slice_free (AttentionReq, att);
 	}
+
+	if (window_id)
+		next_attention_req (window_id);
+	g_free (window_id);
 }
 
 static void
@@ -789,6 +819,7 @@ free_attention_queue (gpointer data)
 	if (queue) {
 		while (!g_queue_is_empty (queue)) {
 			att = g_queue_pop_head (queue);
+			att->active = FALSE;
 			free_attention_req (att);
 		}
 		g_queue_free (queue);
@@ -801,14 +832,6 @@ alloc_attention_queue (void)
 	return g_queue_new ();
 }
 
-static void
-done_attention_req (gpointer user_data, GClosure *unused)
-{
-	AttentionReq *att = user_data;
-	g_assert (att);
-	g_signal_handler_disconnect (att->prompt, att->completed_tag);
-	next_attention_req (att->window_id);
-}
 
 static void
 next_attention_req (const gchar *window_id)
@@ -846,10 +869,9 @@ next_attention_req (const gchar *window_id)
 		return;
 	}
 
-	att->completed_tag = g_signal_connect_data (att->prompt, "completed",
-	                                            G_CALLBACK (done_attention_req), att,
-	                                            (GClosureNotify)free_attention_req,
-	                                            G_CONNECT_AFTER);
+	att->active = TRUE;
+	g_signal_connect_data (att->prompt, "completed", G_CALLBACK (done_attention_req), att,
+	                       (GClosureNotify)free_attention_req, G_CONNECT_AFTER);
 
 	/* Actually display the prompt, "completed" signal will fire */
 	gkd_prompt_set_window_id (att->prompt, window_id);
