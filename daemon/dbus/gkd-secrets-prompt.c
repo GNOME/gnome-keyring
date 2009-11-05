@@ -158,13 +158,13 @@ gkd_secrets_prompt_responded (GkdPrompt *base)
 	res = gkd_prompt_get_response (GKD_PROMPT (self));
 	if (res == GKD_RESPONSE_NO || res == GKD_RESPONSE_FAILURE) {
 		gkd_secrets_prompt_dismiss (self);
-		return TRUE;
+		return FALSE;
 	}
 
 	/* Check with the prompt ready guys */
 	g_return_val_if_fail (GKD_SECRETS_PROMPT_GET_CLASS (self)->prompt_ready, TRUE);
 	GKD_SECRETS_PROMPT_GET_CLASS (self)->prompt_ready (self);
-	return self->pv->completed;
+	return !self->pv->completed;
 }
 
 static void

@@ -70,6 +70,9 @@ struct _GkdPromptPrivate {
 
 G_DEFINE_TYPE (GkdPrompt, gkd_prompt, G_TYPE_OBJECT);
 
+/* Forward declaration*/
+static void display_async_prompt (GkdPrompt *);
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
@@ -89,6 +92,31 @@ mark_completed (GkdPrompt *self)
 	g_signal_emit (self, signals[COMPLETED], 0);
 }
 
+static void
+mark_failed (GkdPrompt *self)
+{
+	g_assert (!self->pv->failure);
+	self->pv->failure = TRUE;
+	if (!self->pv->completed)
+		mark_completed (self);
+}
+
+static void
+mark_responded (GkdPrompt *self)
+{
+	gboolean continu = FALSE;
+	g_signal_emit (self, signals[RESPONDED], 0, &continu);
+
+	/* The prompt gets displayed again */
+	if (continu) {
+		display_async_prompt (self);
+
+	/* The prompt has completed */
+	} else {
+		mark_completed (self);
+	}
+}
+
 static gboolean
 on_standard_input (int fd, gpointer user_data)
 {
@@ -106,7 +134,7 @@ on_standard_input (int fd, gpointer user_data)
 
 	if (ret <= 0) {
 		g_warning ("couldn't write all input to prompt process");
-		self->pv->failure = TRUE;
+		mark_failed (self);
 		return FALSE;
 	}
 
@@ -126,7 +154,7 @@ on_standard_output (int fd, gpointer user_data)
 	ret = egg_spawn_read_output (fd, buffer, sizeof (buffer));
 	if (ret < 0) {
 		g_warning ("couldn't read output data from prompt process");
-		self->pv->failure = TRUE;
+		mark_failed (self);
 		return FALSE;
 	}
 
@@ -151,7 +179,7 @@ on_standard_error (int fd, gpointer user_data)
 	ret = egg_spawn_read_output (fd, buffer, sizeof (buffer));
 	if (ret < 0) {
 		g_warning ("couldn't read error data from prompt process");
-		self->pv->failure = TRUE;
+		mark_failed (self);
 		return FALSE;
 	}
 
@@ -163,9 +191,9 @@ on_standard_error (int fd, gpointer user_data)
 	/* Print all stderr lines as messages */
 	while ((ptr = strchr (self->pv->err_data->str, '\n')) != NULL) {
 		*ptr = '\0';
-		g_message ("%s", self->pv->err_data->str);
+		g_printerr ("%s\n", self->pv->err_data->str);
 		g_string_erase (self->pv->err_data, 0,
-		                ptr - self->pv->err_data->str);
+		                ptr - self->pv->err_data->str + 1);
 	}
 
 	return ret > 0;
@@ -192,6 +220,13 @@ on_io_completed (gpointer user_data)
 
 	/* Parse the output data properly */
 	if (!self->pv->failure) {
+		if (!self->pv->out_data->len) {
+			g_warning ("no data returned from the prompt");
+			mark_failed (self);
+		}
+	}
+
+	if (!self->pv->failure) {
 #if DEBUG_PROMPT
 		g_printerr ("PROMPT OUTPUT:\n%s\n", self->pv->out_data->str);
 #endif
@@ -202,9 +237,9 @@ on_io_completed (gpointer user_data)
 			g_warning ("couldn't parse output from prompt: %s",
 				   error && error->message ? error->message : "");
 			g_clear_error (&error);
-			self->pv->failure = TRUE;
+			mark_failed (self);
 		} else {
-			g_signal_emit (self, signals[RESPONDED], 0);
+			mark_responded (self);
 		}
 	}
 }
@@ -221,13 +256,13 @@ on_child_exited (GPid pid, gint status, gpointer user_data)
 			if (WIFEXITED (status)) {
 				code = WEXITSTATUS (status);
 				if (code != 0) {
-					g_warning ("prompt process exited with failure code: %d", code);
-					self->pv->failure = TRUE;
+					g_message ("prompt process exited with failure code: %d", code);
+					mark_failed (self);
 				}
 			} else if (WIFSIGNALED (status)) {
 				code = WTERMSIG (status);
-				g_warning ("prompt process was killed with signal: %d", code);
-				self->pv->failure = TRUE;
+				g_message ("prompt process was killed with signal: %d", code);
+				mark_failed (self);
 			}
 		}
 	}
@@ -300,8 +335,7 @@ prepare_input_data (GkdPrompt *self)
 		g_warning ("couldn't encode data for prompt: %s",
 		           error && error->message ? error->message : "");
 		g_clear_error (&error);
-		self->pv->failure = TRUE;
-		mark_completed (self);
+		mark_failed (self);
 		return FALSE;
 	}
 
@@ -359,8 +393,7 @@ display_async_prompt (GkdPrompt *self)
 		           error && error->message ? error->message : "");
 		g_clear_error (&error);
 		self->pv->pid = 0;
-		self->pv->failure = TRUE;
-		mark_completed (self);
+		mark_failed (self);
 		return;
 	}
 
@@ -417,6 +450,19 @@ clear_prompt_data (GkdPrompt *self)
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
+
+static gboolean
+gkd_prompt_real_responded (GkdPrompt *self)
+{
+	/* The prompt is done, if nobody overrode this signal and returned TRUE */
+	return FALSE;
+}
+
+static void
+gkd_prompt_real_completed (GkdPrompt *self)
+{
+	/* Nothing to do */
+}
 
 static GObject*
 gkd_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
@@ -478,6 +524,9 @@ gkd_prompt_class_init (GkdPromptClass *klass)
 	gobject_class->constructor = gkd_prompt_constructor;
 	gobject_class->dispose = gkd_prompt_dispose;
 	gobject_class->finalize = gkd_prompt_finalize;
+
+	klass->responded = gkd_prompt_real_responded;
+	klass->completed = gkd_prompt_real_completed;
 
 	g_type_class_add_private (klass, sizeof (GkdPromptPrivate));
 

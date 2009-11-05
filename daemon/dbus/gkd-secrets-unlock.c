@@ -89,7 +89,6 @@ prepare_unlock_prompt (GkdSecretsUnlock *self, GP11Object *coll)
 	g_free (text);
 
 	gkd_prompt_hide_widget (prompt, "name_area");
-	gkd_prompt_hide_widget (prompt, "original_area");
 	gkd_prompt_hide_widget (prompt, "confirm_area");
 	gkd_prompt_hide_widget (prompt, "details_area");
 

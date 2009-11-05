@@ -44,7 +44,7 @@ struct _GkdSecretsPrompt {
 };
 
 struct _GkdSecretsPromptClass {
-	GObjectClass parent_class;
+	GkdPromptClass parent_class;
 
 	/* virtual methods */
 	void (*prompt_ready) (GkdSecretsPrompt *self);
