@@ -795,8 +795,10 @@ gkd_secrets_service_get_pkcs11_session (GkdSecretsService *self, const gchar *ca
 {
 	ServiceClient *client;
 	GError *error = NULL;
+	GP11TokenInfo *info;
 	GP11Slot *slot;
 	gulong flags;
+	gboolean login;
 
 	g_return_val_if_fail (GKD_SECRETS_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (caller, NULL);
@@ -814,6 +816,19 @@ gkd_secrets_service_get_pkcs11_session (GkdSecretsService *self, const gchar *ca
 			g_warning ("couldn't open pkcs11 session for secrets service: %s",
 			           error->message);
 			g_clear_error (&error);
+			return NULL;
+		}
+
+		/* Perform the necessary 'user' login to secrets token. Doesn't unlock anything */
+		info = gp11_slot_get_token_info (slot);
+		login = info && (info->flags & CKF_LOGIN_REQUIRED);
+		gp11_token_info_free (info);
+		if (login && !gp11_session_login (client->pkcs11_session, CKU_USER, NULL, 0, &error)) {
+			g_warning ("couldn't log into pkcs11 session for secrets service: %s",
+			           error->message);
+			g_clear_error (&error);
+			g_object_unref (client->pkcs11_session);
+			client->pkcs11_session = NULL;
 			return NULL;
 		}
 	}
