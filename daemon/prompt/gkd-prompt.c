@@ -34,6 +34,7 @@
 #include <gcrypt.h>
 
 #define DEBUG_PROMPT 1
+#define DEBUG_STDERR 0
 
 enum {
 	RESPONDED,
@@ -389,6 +390,11 @@ display_async_prompt (GkdPrompt *self)
 	callbacks.standard_error = on_standard_error;
 	callbacks.completed = on_io_completed;
 	callbacks.finalize_func = g_object_unref;
+
+#ifdef DEBUG_STDERR
+	/* Let stderr show through if desired */
+	callbacks.standard_error = NULL;
+#endif
 
 	self->pv->io_tag = egg_spawn_async_with_callbacks (NULL, argv, envp, G_SPAWN_DO_NOT_REAP_CHILD,
 	                                                   &self->pv->pid, &callbacks, g_object_ref (self),

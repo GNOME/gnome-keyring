@@ -25,6 +25,7 @@
 #include "gkd-prompt-util.h"
 
 #include "egg/egg-dh.h"
+#include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
 #include <gcrypt.h>
@@ -50,6 +51,7 @@ static gpointer the_key = NULL;
 static gsize n_the_key = 0;
 
 #define LOG_ERRORS 1
+#define GRAB_KEYBOARD 1
 
 /* ------------------------------------------------------------------------------ */
 
@@ -65,7 +67,7 @@ static gboolean
 grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 {
 	GdkGrabStatus status;
-	if (!keyboard_grabbed) {
+	if (!keyboard_grabbed && GRAB_KEYBOARD) {
 		status = gdk_keyboard_grab (win->window, FALSE, gdk_event_get_time (event));
 		if (status == GDK_GRAB_SUCCESS) {
 			keyboard_grabbed = TRUE;
@@ -579,6 +581,8 @@ main (int argc, char *argv[])
 	signal(SIGINT,  hup_handler);
 
 	prepare_logging ();
+
+	egg_libgcrypt_initialize ();
 
 	input_data = g_key_file_new ();
 	output_data = g_key_file_new ();
