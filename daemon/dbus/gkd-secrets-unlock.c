@@ -250,14 +250,16 @@ gkd_secrets_unlock_encode_result (GkdSecretsPrompt *base, DBusMessageIter *iter)
 	GkdSecretsUnlock *self = GKD_SECRETS_UNLOCK (base);
 	DBusMessageIter variant;
 	DBusMessageIter array;
+	const char *value;
 	gint i;
 
 	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "ao", &variant);
 	dbus_message_iter_open_container (&variant, DBUS_TYPE_ARRAY, "o", &array);
 
-	for (i = 0; i < self->results->len; ++i)
-		dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH,
-		                                g_array_index (self->results, gchar*, i));
+	for (i = 0; i < self->results->len; ++i) {
+		value = g_array_index (self->results, gchar*, i);
+		dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &value);
+	}
 
 	dbus_message_iter_close_container (&variant, &array);
 	dbus_message_iter_close_container (iter, &variant);

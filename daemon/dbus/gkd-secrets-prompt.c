@@ -363,7 +363,7 @@ gkd_secrets_prompt_complete (GkdSecretsPrompt *self)
 	g_return_if_fail (GKD_SECRETS_IS_PROMPT (self));
 	g_return_if_fail (!self->pv->completed);
 	self->pv->completed = TRUE;
-	emit_completed (self, TRUE);
+	emit_completed (self, FALSE);
 }
 
 void
@@ -372,7 +372,7 @@ gkd_secrets_prompt_dismiss (GkdSecretsPrompt *self)
 	g_return_if_fail (GKD_SECRETS_IS_PROMPT (self));
 	g_return_if_fail (!self->pv->completed);
 	self->pv->completed = TRUE;
-	emit_completed (self, FALSE);
+	emit_completed (self, TRUE);
 }
 
 GP11Object*
