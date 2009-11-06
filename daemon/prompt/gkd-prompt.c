@@ -618,7 +618,7 @@ gkd_prompt_get_response (GkdPrompt *self)
 	g_return_val_if_fail (self->pv->output, GKD_RESPONSE_FAILURE);
 
 	response = g_key_file_get_value (self->pv->output, "prompt", "response", NULL);
-	if (!response) {
+	if (!response || g_str_equal (response, "")) {
 		ret = GKD_RESPONSE_NONE;
 	} else if (g_str_equal (response, "ok")) {
 		ret = GKD_RESPONSE_OK;

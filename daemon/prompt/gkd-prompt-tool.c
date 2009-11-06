@@ -305,8 +305,10 @@ gather_response (gint response)
 		value = "ok";
 		break;
 	case GTK_RESPONSE_CANCEL:
-	case GTK_RESPONSE_DELETE_EVENT:
 		value = "no";
+		break;
+	case GTK_RESPONSE_DELETE_EVENT:
+		value = "";
 		break;
 	case GTK_RESPONSE_APPLY:
 		value = "other";
