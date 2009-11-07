@@ -40,4 +40,6 @@ void                   test_module_leave_and_finalize       (void);
 
 GckSession*            test_module_open_session             (gboolean writable);
 
+GckObject*             test_module_object_new               (GckSession *session);
+
 #endif /* TESTMODULE_H_ */

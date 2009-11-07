@@ -87,7 +87,13 @@ CK_RV                  gck_object_unlock                 (GckObject *self,
 void                   gck_object_destroy                (GckObject *self,
                                                           GckTransaction *transaction);
 
+gboolean               gck_object_is_exposed             (GckObject *self);
+
 void                   gck_object_expose                 (GckObject *self,
+                                                          gboolean expose);
+
+void                   gck_object_expose_full            (GckObject *self,
+                                                          GckTransaction *transaction,
                                                           gboolean expose);
 
 gboolean               gck_object_match                  (GckObject *self,

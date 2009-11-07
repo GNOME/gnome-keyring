@@ -316,7 +316,7 @@ remove_object (GckSession *self, GckTransaction *transaction, GckObject *object)
 	
 	g_object_ref (object);
 	
-	gck_object_expose (object, FALSE);
+	gck_object_expose_full (object, transaction, FALSE);
 	if (!g_hash_table_remove (self->pv->objects, object))
 		g_return_if_reached ();
 	g_object_set (object, "store", NULL, NULL);
@@ -351,7 +351,7 @@ add_object (GckSession *self, GckTransaction *transaction, GckObject *object)
 	g_hash_table_insert (self->pv->objects, object, g_object_ref (object));
 	g_object_set_data (G_OBJECT (object), "owned-by-session", self);
 	g_object_set (object, "store", self->pv->store, NULL);
-	gck_object_expose (object, TRUE);
+	gck_object_expose_full (object, transaction, TRUE);
 
 	if (transaction)
 		gck_transaction_add (transaction, self, (GckTransactionFunc)complete_add, 

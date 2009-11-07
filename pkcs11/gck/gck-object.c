@@ -140,6 +140,18 @@ complete_destroy (GckTransaction *transaction, GObject *unused, gpointer user_da
 	return TRUE;
 }
 
+static gboolean
+complete_expose (GckTransaction *transaction, GObject *obj, gpointer user_data)
+{
+	GckObject *self = GCK_OBJECT (obj);
+	gboolean expose = GPOINTER_TO_UINT (user_data);
+
+	if (gck_transaction_get_failed (transaction))
+		gck_object_expose (self, !expose);
+
+	return TRUE;
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -755,6 +767,13 @@ gck_object_destroy (GckObject *self, GckTransaction *transaction)
 	g_object_unref (self);
 }
 
+gboolean
+gck_object_is_exposed (GckObject *self)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	return self->pv->exposed;
+}
+
 void
 gck_object_expose (GckObject *self, gboolean expose)
 {
@@ -765,4 +784,20 @@ gck_object_expose (GckObject *self, gboolean expose)
 
 	if (self->pv->exposed != expose)
 		g_signal_emit (self, signals[EXPOSE_OBJECT], 0, expose);
+}
+
+void
+gck_object_expose_full (GckObject *self, GckTransaction *transaction, gboolean expose)
+{
+	if (!expose && !self)
+		return;
+
+	g_return_if_fail (GCK_IS_OBJECT (self));
+	g_return_if_fail (!transaction || !gck_transaction_get_failed (transaction));
+
+	if (self->pv->exposed != expose) {
+		if (transaction)
+			gck_transaction_add (transaction, self, complete_expose, GUINT_TO_POINTER (expose));
+		gck_object_expose (self, expose);
+	}
 }
