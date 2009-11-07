@@ -129,7 +129,8 @@ module_went_away (gpointer data, GObject *old_module)
 {
 	GckObject *self = GCK_OBJECT (data);
 	g_return_if_fail (self->pv->module);
-	g_warning ("module destroyed before object that module contained");
+	g_warning ("module destroyed before %s that module contained",
+	           G_OBJECT_TYPE_NAME (self));
 	self->pv->module = NULL;
 }
 
