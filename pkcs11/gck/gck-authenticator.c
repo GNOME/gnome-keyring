@@ -285,7 +285,7 @@ gck_authenticator_class_init (GckAuthenticatorClass *klass)
  * PUBLIC 
  */
 
-GckFactoryInfo*
+GckFactory*
 gck_authenticator_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_GNOME_AUTHENTICATOR;
@@ -294,7 +294,7 @@ gck_authenticator_get_factory (void)
 		{ CKA_CLASS, &klass, sizeof (klass) },
 	};
 
-	static GckFactoryInfo factory = {
+	static GckFactory factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
 		factory_create_authenticator

@@ -50,7 +50,7 @@ struct _GckPublicKeyClass {
 
 GType                     gck_public_key_get_type               (void);
 
-GckFactoryInfo*           gck_public_key_get_factory            (void);
+GckFactory*               gck_public_key_get_factory            (void);
 
 GckSexp*                  gck_public_key_create_sexp            (GckSession *session, 
                                                                  GckTransaction *transaction, 

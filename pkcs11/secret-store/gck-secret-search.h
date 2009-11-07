@@ -45,7 +45,7 @@ struct _GckSecretSearchClass {
 
 GType                gck_secret_search_get_type        (void) G_GNUC_CONST;
 
-GckFactoryInfo*      gck_secret_search_get_factory     (void) G_GNUC_CONST;
+GckFactory*          gck_secret_search_get_factory     (void) G_GNUC_CONST;
 
 GHashTable*          gck_secret_search_get_fields      (GckSecretSearch *self);
 

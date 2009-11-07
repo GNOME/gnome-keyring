@@ -180,7 +180,7 @@ gck_user_public_key_serializable (GckSerializableIface *iface)
  * PUBLIC 
  */
 
-GckFactoryInfo*
+GckFactory*
 gck_user_public_key_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_PUBLIC_KEY;
@@ -191,7 +191,7 @@ gck_user_public_key_get_factory (void)
 		{ CKA_TOKEN, &token, sizeof (token) }, 
 	};
 
-	static GckFactoryInfo factory = {
+	static GckFactory factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
 		factory_create_public_key

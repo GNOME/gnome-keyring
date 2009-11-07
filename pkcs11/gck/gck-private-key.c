@@ -449,7 +449,7 @@ gck_private_key_create_sexp (GckSession *session, GckTransaction *transaction,
 	return gck_sexp_new (sexp);
 }
 
-GckFactoryInfo*
+GckFactory*
 gck_private_key_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_PRIVATE_KEY;
@@ -458,7 +458,7 @@ gck_private_key_get_factory (void)
 		{ CKA_CLASS, &klass, sizeof (klass) }
 	};
 
-	static GckFactoryInfo factory = {
+	static GckFactory factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
 		factory_create_private_key

@@ -796,7 +796,7 @@ gck_session_for_each_authenticator (GckSession *self, GckObject *object,
 }
 
 CK_RV
-gck_session_create_object_for_factory (GckSession *self, GckFactory factory,
+gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
                                        CK_ATTRIBUTE_PTR template, CK_ULONG count,
                                        GckObject **object)
 {
@@ -809,7 +809,7 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory factory,
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_GENERAL_ERROR);
-	g_return_val_if_fail (factory, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (factory && factory->func, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (template || !count, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
 
@@ -839,7 +839,7 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory factory,
 
 	/* Actually create the object */
 	*object = NULL;
-	(factory) (self, transaction, attrs, n_attrs, object);
+	(factory->func) (self, transaction, attrs, n_attrs, object);
 
 	if (!gck_transaction_get_failed (transaction)) {
 		g_return_val_if_fail (*object, CKR_GENERAL_ERROR);
@@ -948,7 +948,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
                             CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
 	GckObject *object = NULL;
-	GckFactory factory;
+	GckFactory *factory;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);

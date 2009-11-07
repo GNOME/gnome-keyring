@@ -50,7 +50,7 @@ struct _GckAuthenticatorClass {
 
 GType                      gck_authenticator_get_type               (void);
 
-GckFactoryInfo*            gck_authenticator_get_factory            (void);
+GckFactory*                gck_authenticator_get_factory            (void);
 
 CK_RV                      gck_authenticator_create                 (GckObject *object,
                                                                      GckManager *manager,

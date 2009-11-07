@@ -754,7 +754,7 @@ gck_certificate_hash (GckCertificate *self, int hash_algo, gsize *n_hash)
 	return hash;
 }
 
-GckFactoryInfo*
+GckFactory*
 gck_certificate_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
@@ -765,7 +765,7 @@ gck_certificate_get_factory (void)
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
 	};
 
-	static GckFactoryInfo factory = {
+	static GckFactory factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
 		factory_create_certificate

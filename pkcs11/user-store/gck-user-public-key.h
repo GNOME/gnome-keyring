@@ -44,7 +44,7 @@ struct _GckUserPublicKeyClass {
 
 GType                gck_user_public_key_get_type               (void);
 
-GckFactoryInfo*      gck_user_public_key_get_factory            (void);
+GckFactory*          gck_user_public_key_get_factory            (void);
 
 GckUserPublicKey*    gck_user_public_key_new                    (const gchar *unique);
 

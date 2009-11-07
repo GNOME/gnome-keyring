@@ -142,12 +142,12 @@ void                   gck_module_remove_token_object             (GckModule *se
                                                                    GckTransaction *transaction,
                                                                    GckObject *object);
 
-GckFactory             gck_module_find_factory                    (GckModule *self,
+GckFactory*            gck_module_find_factory                    (GckModule *self,
                                                                    CK_ATTRIBUTE_PTR attrs,
                                                                    CK_ULONG n_attrs);
 
 void                   gck_module_register_factory                (GckModule *self, 
-                                                                   GckFactoryInfo *factory);
+                                                                   GckFactory *factory);
 
 CK_RV                  gck_module_C_GetInfo                       (GckModule *self, 
                                                                    CK_INFO_PTR info);

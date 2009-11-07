@@ -107,7 +107,7 @@ test_module_object_new (GckSession *session)
 		{ CKA_VALUE, data, n_data },
 	};
 
-	if (gck_session_create_object_for_factory (session, GCK_FACTORY_CERTIFICATE->factory,
+	if (gck_session_create_object_for_factory (session, GCK_FACTORY_CERTIFICATE,
 	                                           attrs, G_N_ELEMENTS (attrs), &object) == CKR_OK)
 		return object;
 

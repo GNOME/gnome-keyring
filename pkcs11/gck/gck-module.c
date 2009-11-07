@@ -162,8 +162,8 @@ static void  add_transient_object    (GckModule *self, GckTransaction *transacti
 static gint
 sort_factory_by_n_attrs (gconstpointer a, gconstpointer b)
 {
-	const GckFactoryInfo *fa = a;
-	const GckFactoryInfo *fb = b;
+	const GckFactory *fa = a;
+	const GckFactory *fb = b;
 	
 	g_assert (a);
 	g_assert (b);
@@ -550,7 +550,7 @@ gck_module_init (GckModule *self)
 	                                                      gck_util_ulong_free, g_object_unref);
 	self->pv->apartments_by_id = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal,
 	                                                    gck_util_ulong_free, apartment_free);
-	self->pv->factories = g_array_new (FALSE, TRUE, sizeof (GckFactoryInfo));
+	self->pv->factories = g_array_new (FALSE, TRUE, sizeof (GckFactory));
 
 	self->pv->handle_counter = 1;
 
@@ -826,21 +826,21 @@ gck_module_remove_token_object (GckModule *self, GckTransaction *transaction, Gc
 }
 
 void
-gck_module_register_factory (GckModule *self, GckFactoryInfo *factory)
+gck_module_register_factory (GckModule *self, GckFactory *factory)
 {
 	g_return_if_fail (GCK_IS_MODULE (self));
 	g_return_if_fail (factory);
 	g_return_if_fail (factory->attrs || !factory->n_attrs);
-	g_return_if_fail (factory->factory);
+	g_return_if_fail (factory->func);
 	
 	g_array_append_val (self->pv->factories, *factory);
 	self->pv->factories_sorted = FALSE;
 }
 
-GckFactory
+GckFactory*
 gck_module_find_factory (GckModule *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
-	GckFactoryInfo *factory;
+	GckFactory *factory;
 	gboolean matched;
 	gulong j;
 	gsize i;
@@ -854,7 +854,7 @@ gck_module_find_factory (GckModule *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_att
 	}
 	
 	for (i = 0; i < self->pv->factories->len; ++i) {
-		factory = &(g_array_index (self->pv->factories, GckFactoryInfo, i));
+		factory = &(g_array_index (self->pv->factories, GckFactory, i));
 		
 		matched = TRUE;
 		for (j = 0; j < factory->n_attrs; ++j) {
@@ -865,7 +865,7 @@ gck_module_find_factory (GckModule *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_att
 		}
 		
 		if (matched)
-			return factory->factory;
+			return factory;
 	}
 	
 	return NULL;

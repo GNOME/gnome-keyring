@@ -44,7 +44,7 @@
 
 static GckModule *module = NULL;
 static GckSession *session = NULL;
-static GckFactory factory = NULL;
+static GckFactory *factory = NULL;
 static GckSecretCollection *collection = NULL;
 static GckSecretItem *item = NULL;
 
@@ -54,7 +54,7 @@ DEFINE_SETUP(secret_search)
 
 	module = test_secret_module_initialize_and_enter ();
 	session = test_secret_module_open_session (TRUE);
-	factory = GCK_FACTORY_SECRET_SEARCH->factory;
+	factory = GCK_FACTORY_SECRET_SEARCH;
 	g_assert (factory);
 
 	collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,

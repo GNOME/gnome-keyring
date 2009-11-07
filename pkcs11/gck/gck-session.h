@@ -105,7 +105,7 @@ gboolean                 gck_session_for_each_authenticator             (GckSess
                                                                          gpointer user_data);
 
 CK_RV                    gck_session_create_object_for_factory          (GckSession *self,
-                                                                         GckFactory factory,
+                                                                         GckFactory *factory,
                                                                          CK_ATTRIBUTE_PTR attrs,
                                                                          CK_ULONG n_attrs,
                                                                          GckObject **object);

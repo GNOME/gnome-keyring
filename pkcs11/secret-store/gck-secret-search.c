@@ -464,7 +464,7 @@ gck_secret_search_class_init (GckSecretSearchClass *klass)
  * PUBLIC
  */
 
-GckFactoryInfo*
+GckFactory*
 gck_secret_search_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_G_SEARCH;
@@ -475,7 +475,7 @@ gck_secret_search_get_factory (void)
 		{ CKA_TOKEN, &token, sizeof (token) },
 	};
 
-	static GckFactoryInfo factory = {
+	static GckFactory factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
 		factory_create_search

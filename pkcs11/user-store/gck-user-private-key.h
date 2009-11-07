@@ -47,6 +47,6 @@ struct _GckUserPrivateKeyClass {
 
 GType               gck_user_private_key_get_type               (void);
 
-GckFactoryInfo*     gck_user_private_key_get_factory            (void);
+GckFactory*         gck_user_private_key_get_factory            (void);
 
 #endif /* __GCK_USER_PRIVATE_KEY_H__ */
