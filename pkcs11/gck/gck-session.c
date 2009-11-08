@@ -282,7 +282,7 @@ lookup_object_from_handle (GckSession *self, CK_OBJECT_HANDLE handle,
 	 */
 	if (writable) {
 		if (is_token) {
-			if (!gck_object_get_transient (object))
+			if (!gck_object_is_transient (object))
 				if (gck_module_get_write_protected (self->pv->module))
 					return CKR_TOKEN_WRITE_PROTECTED;
 			if (self->pv->read_only)
@@ -803,8 +803,6 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 	GckTransaction *transaction;
 	CK_ATTRIBUTE_PTR attrs;
 	CK_ULONG n_attrs, i;
-	gboolean is_token;
-	gboolean is_transient;
 	gboolean is_private;
 	CK_RV rv;
 
@@ -812,20 +810,6 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 	g_return_val_if_fail (factory && factory->func, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (template || !count, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (object, CKR_GENERAL_ERROR);
-
-	/* Find out where we'll be creating this */
-	if (!gck_attributes_find_boolean (template, count, CKA_TOKEN, &is_token))
-		is_token = FALSE;
-	if (!gck_attributes_find_boolean (template, count, CKA_GNOME_TRANSIENT, &is_transient))
-		is_transient = FALSE;
-
-	/* See if we can create due to read-only */
-	if (is_token) {
-		if (!is_transient && gck_module_get_write_protected (self->pv->module))
-			return CKR_TOKEN_WRITE_PROTECTED;
-		if (self->pv->read_only)
-			return CKR_SESSION_READ_ONLY;
-	}
 
 	/* The transaction for this whole dealio */
 	transaction = gck_transaction_new ();
@@ -841,10 +825,20 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 	*object = NULL;
 	(factory->func) (self, transaction, attrs, n_attrs, object);
 
+	/* See if we can create due to read-only */
 	if (!gck_transaction_get_failed (transaction)) {
 		g_return_val_if_fail (*object, CKR_GENERAL_ERROR);
+		if (gck_object_is_token (*object)) {
+			if (!gck_object_is_transient (*object) &&
+			    gck_module_get_write_protected (self->pv->module))
+				gck_transaction_fail (transaction, CKR_TOKEN_WRITE_PROTECTED);
+			else if (self->pv->read_only)
+				gck_transaction_fail (transaction, CKR_SESSION_READ_ONLY);
+		}
+	}
 
-		/* Can only create public objects unless logged in */
+	/* Can only create public objects unless logged in */
+	if (!gck_transaction_get_failed (transaction)) {
 		if (gck_session_get_logged_in (self) != CKU_USER &&
 		    gck_object_get_attribute_boolean (*object, self, CKA_PRIVATE, &is_private) && 
 		    is_private == TRUE) {
@@ -859,7 +853,7 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 
 	/* Find somewhere to store the object */
 	if (!gck_transaction_get_failed (transaction)) {
-		if (is_token)
+		if (gck_object_is_token (*object))
 			gck_module_store_token_object (self->pv->module, transaction, *object); 
 		else
 			add_object (self, transaction, *object);

@@ -172,9 +172,7 @@ gck_object_real_get_attribute (GckObject *self, GckSession *session, CK_ATTRIBUT
 	case CKA_PRIVATE:
 		return gck_attribute_set_bool (attr, FALSE);
 	case CKA_TOKEN:
-		if (!self->pv->manager)
-			return gck_attribute_set_bool (attr, FALSE);
-		return gck_attribute_set_bool (attr, gck_manager_get_for_token (self->pv->manager));
+		return gck_attribute_set_bool (attr, gck_object_is_token (self));
 	case CKA_GNOME_UNIQUE:
 		if (self->pv->unique)
 			return gck_attribute_set_string (attr, self->pv->unique);
@@ -650,12 +648,20 @@ gck_object_get_unique (GckObject *self)
 }
 
 gboolean
-gck_object_get_transient (GckObject *self)
+gck_object_is_token (GckObject *self)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	if (!self->pv->manager)
+		return FALSE;
+	return gck_manager_get_for_token (self->pv->manager);
+}
+
+gboolean
+gck_object_is_transient (GckObject *self)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
 	return self->pv->transient ? TRUE : FALSE;
 }
-
 
 CK_RV
 gck_object_unlock (GckObject *self, GckAuthenticator *auth)

@@ -79,7 +79,9 @@ GckManager*            gck_object_get_manager            (GckObject *self);
 
 const gchar*           gck_object_get_unique             (GckObject *self);
 
-gboolean               gck_object_get_transient          (GckObject *self);
+gboolean               gck_object_is_token               (GckObject *self);
+
+gboolean               gck_object_is_transient           (GckObject *self);
 
 CK_RV                  gck_object_unlock                 (GckObject *self, 
                                                           GckAuthenticator *auth);

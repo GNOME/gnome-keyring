@@ -806,7 +806,7 @@ gck_module_store_token_object (GckModule *self, GckTransaction *transaction, Gck
 	g_return_if_fail (GCK_IS_OBJECT (object));
 	g_assert (GCK_MODULE_GET_CLASS (self)->store_token_object);
 
-	if (gck_object_get_transient (object))
+	if (gck_object_is_transient (object))
 		add_transient_object (self, transaction, object);
 	else
 		GCK_MODULE_GET_CLASS (self)->store_token_object (self, transaction, object);
@@ -819,7 +819,7 @@ gck_module_remove_token_object (GckModule *self, GckTransaction *transaction, Gc
 	g_return_if_fail (GCK_IS_OBJECT (object));
 	g_assert (GCK_MODULE_GET_CLASS (self)->remove_token_object);
 
-	if (gck_object_get_transient (object))
+	if (gck_object_is_transient (object))
 		remove_transient_object (self, transaction, object);
 	else
 		GCK_MODULE_GET_CLASS (self)->remove_token_object (self, transaction, object);

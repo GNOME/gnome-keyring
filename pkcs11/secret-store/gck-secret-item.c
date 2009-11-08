@@ -103,7 +103,8 @@ factory_create_item (GckSession *session, GckTransaction *transaction,
 {
 	GckSecretCollection *collection = NULL;
 	GckSecretItem *item;
-	GckManager *manager;
+	GckManager *m_manager;
+	GckManager *s_manager;
 	CK_ATTRIBUTE *attr;
 	gboolean is_token;
 
@@ -111,22 +112,24 @@ factory_create_item (GckSession *session, GckTransaction *transaction,
 	g_return_if_fail (attrs || !n_attrs);
 	g_return_if_fail (result);
 
-	if (!gck_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token))
-		is_token = FALSE;
-
 	/* See if a collection attribute was specified */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_G_COLLECTION);
-	if (attr != NULL) {
-		gck_attribute_consume (attr);
-		if (is_token)
-			manager = gck_module_get_manager (gck_session_get_module (session));
-		else
-			manager = gck_session_get_manager (session);
-		collection = gck_secret_collection_find (attr, manager, NULL);
-	}
+	if (attr == NULL)
+		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+
+	m_manager = gck_module_get_manager (gck_session_get_module (session));
+	s_manager = gck_session_get_manager (session);
+
+	gck_attribute_consume (attr);
+	if (!gck_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token))
+		collection = gck_secret_collection_find (attr, m_manager, s_manager, NULL);
+	else if (is_token)
+		collection = gck_secret_collection_find (attr, m_manager, NULL);
+	else
+		collection = gck_secret_collection_find (attr, s_manager, NULL);
 
 	if (!collection)
-		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
 
 	/* The collection owns the item */
 	item = gck_secret_collection_create_item (collection, transaction);
