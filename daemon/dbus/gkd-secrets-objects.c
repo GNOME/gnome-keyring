@@ -77,17 +77,15 @@ typedef enum _DataType {
  * INTERNAL
  */
 
-static gchar*
-encode_object_identifier (const gchar* name, gssize length)
+static void
+encode_object_identifier (GString *result, const gchar* name, gssize length)
 {
-	GString *result;
-
+	g_assert (result);
 	g_assert (name);
 
 	if (length < 0)
 		length = strlen (name);
 
-	result = g_string_sized_new (length + 2);
 	while (length > 0) {
 		char ch = *(name++);
 		--length;
@@ -103,8 +101,6 @@ encode_object_identifier (const gchar* name, gssize length)
 			g_string_append_printf (result, "_%02x", (unsigned int)ch);
 		}
 	}
-
-	return g_string_free (result, FALSE);
 }
 
 static gchar*
@@ -582,12 +578,12 @@ iter_append_property_dict (DBusMessageIter *iter, GP11Attributes *attrs)
 static void
 iter_append_item_paths (DBusMessageIter *iter, GList *items)
 {
-	gchar *part, *prefix, *path;
 	DBusMessageIter array;
 	GP11Attributes *attrs;
 	GError *error = NULL;
 	GP11Attribute *coll;
 	GP11Attribute *id;
+	GString *path;
 	GList *l;
 
 	dbus_message_iter_open_container (iter, DBUS_TYPE_ARRAY, "o", &array);
@@ -610,15 +606,15 @@ iter_append_item_paths (DBusMessageIter *iter, GList *items)
 			g_warning ("item has invalid collection or id");
 
 		} else {
-			prefix = encode_object_identifier ((gchar*)coll->value, coll->length);
-			part = encode_object_identifier ((gchar*)id->value, id->length);
-			path = g_strconcat (SECRETS_COLLECTION_PREFIX, "/", prefix, "/", part, NULL);
+			path = g_string_new (SECRETS_COLLECTION_PREFIX);
+			g_string_append_c (path, '/');
+			encode_object_identifier (path, (gchar*)coll->value, coll->length);
+			g_string_append_c (path, '/');
+			encode_object_identifier (path, (gchar*)id->value, id->length);
 
-			dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &path);
+			dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &(path->str));
 
-			g_free (part);
-			g_free (path);
-			g_free (prefix);
+			g_string_free (path, TRUE);
 		}
 
 		gp11_attributes_unref (attrs);
@@ -630,7 +626,7 @@ iter_append_item_paths (DBusMessageIter *iter, GList *items)
 static void
 iter_append_collection_paths (DBusMessageIter *iter, GList *collections)
 {
-	gchar *part, *path;
+	GString *path;
 	DBusMessageIter array;
 	GError *error = NULL;
 	gpointer data;
@@ -648,14 +644,11 @@ iter_append_collection_paths (DBusMessageIter *iter, GList *collections)
 			g_clear_error (&error);
 
 		} else if (n_data) {
-
-			/* Build up the object path */
-			part = encode_object_identifier ((gchar*)data, n_data);
-			path = g_strconcat (SECRETS_COLLECTION_PREFIX, "/", part, NULL);
-			g_free (part);
-
-			dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &path);
-			g_free (path);
+			path = g_string_new (SECRETS_COLLECTION_PREFIX);
+			g_string_append_c (path, '/');
+			encode_object_identifier (path, (gchar*)data, n_data);
+			dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &(path->str));
+			g_string_free (path, TRUE);
 		}
 
 		g_free (data);
@@ -873,9 +866,12 @@ item_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessage *me
 	DBusMessage *reply;
 	const gchar *prompt;
 
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
+		return NULL;
+
 	if (!gp11_object_destroy (object, &error)) {
 		if (error->code == CKR_USER_NOT_LOGGED_IN)
-			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+			reply = dbus_message_new_error_printf (message, SECRETS_ERROR_IS_LOCKED,
 			                                       "Cannot delete a locked item");
 		else
 			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
@@ -1074,12 +1070,155 @@ collection_method_search_items (GkdSecretsObjects *self, GP11Object *object, DBu
 	return gkd_secrets_objects_handle_search_items (self, message, coll_id);
 }
 
+static GP11Object*
+collection_find_matching_item (GkdSecretsObjects *self, GP11Object *coll, GP11Attribute *fields)
+{
+	GP11Attributes *attrs;
+	const gchar *identifier;
+	GP11Object *result;
+	GError *error = NULL;
+	GP11Session *session;
+	GP11Object *search;
+	gpointer data;
+	gsize n_data;
+
+	identifier = collection_get_identifier (coll);
+	g_return_val_if_fail (identifier, NULL);
+
+	/* Find items matching the collection and fields */
+	attrs = gp11_attributes_new ();
+	gp11_attributes_add (attrs, fields);
+	gp11_attributes_add_string (attrs, CKA_G_COLLECTION, identifier);
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_SEARCH);
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
+
+	/* The session we're using to find the object */
+	session = gp11_object_get_session (coll);
+	g_return_val_if_fail (session, NULL);
+
+	/* Create the search object */
+	search = gp11_session_create_object_full (session, attrs, NULL, &error);
+	gp11_attributes_unref (attrs);
+
+	if (error != NULL) {
+		g_warning ("couldn't search for matching item: %s", error->message);
+		g_clear_error (&error);
+		return NULL;
+	}
+
+	/* Get the matched item handles, and delete the search object */
+	gp11_object_set_session (search, session);
+	data = gp11_object_get_data (search, CKA_G_MATCHED, &n_data, NULL);
+	g_return_val_if_fail (data && n_data >= sizeof (CK_OBJECT_HANDLE), NULL);
+	gp11_object_destroy (search, NULL);
+	g_object_unref (search);
+
+	result = gp11_object_from_handle (gp11_session_get_slot (session),
+	                                  *((CK_OBJECT_HANDLE_PTR)data));
+	gp11_object_set_session (result, session);
+	g_free (data);
+
+	return result;
+}
+
+static DBusMessage*
+collection_method_create_item (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+{
+	dbus_bool_t replace = FALSE;
+	GP11Attributes *attrs;
+	GP11Attribute *fields;
+	DBusMessageIter iter;
+	GP11Object *item = NULL;
+	const gchar *prompt;
+	GError *error = NULL;
+	GP11Session *session;
+	DBusMessage *reply;
+	GString *path = NULL;
+	gpointer data;
+	gsize n_data;
+
+	/* Parse the message */
+	if (!dbus_message_has_signature (message, "a{sv}b"))
+		return NULL;
+	if (!dbus_message_iter_init (message, &iter))
+		g_return_val_if_reached (NULL);
+	attrs = gp11_attributes_new ();
+	if (!gkd_secrets_objects_parse_item_props (self, &iter, attrs)) {
+		gp11_attributes_unref (attrs);
+		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
+		                                      "Invalid properties");
+	}
+	dbus_message_iter_next (&iter);
+	dbus_message_iter_get_basic (&iter, &replace);
+
+	if (replace) {
+		fields = gp11_attributes_find (attrs, CKA_G_FIELDS);
+		if (fields)
+			item = collection_find_matching_item (self, object, fields);
+	}
+
+	/* Replace the item */
+	if (item) {
+		if (!gp11_object_set_full (item, attrs, NULL, &error)) {
+			g_object_unref (item);
+			item = NULL;
+		}
+
+	/* Create a new item */
+	} else {
+		session = gp11_object_get_session (object);
+		g_return_val_if_fail (session, NULL);
+		gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
+		gp11_attributes_add_string (attrs, CKA_G_COLLECTION, collection_get_identifier (object));
+		item = gp11_session_create_object_full (session, attrs, NULL, &error);
+	}
+
+	/* Build up the item identifier */
+	if (error == NULL) {
+		data = gp11_object_get_data (item, CKA_ID, &n_data, &error);
+		if (data != NULL) {
+			path = g_string_new (SECRETS_COLLECTION_PREFIX);
+			g_string_append_c (path, '/');
+			g_string_append (path, collection_get_identifier (object));
+			g_string_append_c (path, '/');
+			encode_object_identifier (path, data, n_data);
+			g_free (data);
+		}
+	}
+
+	if (error == NULL) {
+		prompt = "/";
+		reply = dbus_message_new_method_return (message);
+		dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &(path->str),
+		                          DBUS_TYPE_OBJECT_PATH, &prompt,
+		                          DBUS_TYPE_INVALID);
+
+	} else {
+		if (error->code == CKR_USER_NOT_LOGGED_IN)
+			reply = dbus_message_new_error_printf (message, SECRETS_ERROR_IS_LOCKED,
+			                                       "Cannot create an item in a locked collection");
+		else
+			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+			                                       "Couldn't create item: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	if (item)
+		g_object_unref (item);
+	if (path)
+		g_string_free (path, TRUE);
+	return reply;
+}
+
 static DBusMessage*
 collection_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
 {
 	GError *error = NULL;
 	DBusMessage *reply;
 	const gchar *prompt;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
+		return NULL;
 
 	if (!gp11_object_destroy (object, &error)) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
@@ -1108,7 +1247,7 @@ collection_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMes
 
 	/* org.freedesktop.Secrets.Collection.CreateItem() */
 	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "CreateItem"))
-		g_return_val_if_reached (NULL);
+		return collection_method_create_item (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Get() */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
@@ -1298,6 +1437,46 @@ gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
 
 	return reply;
 }
+
+gboolean
+gkd_secrets_objects_parse_item_props (GkdSecretsObjects *self, DBusMessageIter *iter,
+                                      GP11Attributes *attrs)
+{
+	DBusMessageIter array, dict;
+	CK_ATTRIBUTE_TYPE attr_type;
+	GP11Attribute *attr;
+	const char *name;
+	DataType data_type;
+
+	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), FALSE);
+	g_return_val_if_fail (iter, FALSE);
+	g_return_val_if_fail (attrs, FALSE);
+
+	dbus_message_iter_recurse (iter, &array);
+
+	while (dbus_message_iter_get_arg_type (&array) == DBUS_TYPE_DICT_ENTRY) {
+		dbus_message_iter_recurse (&array, &dict);
+
+		/* Property name */
+		g_return_val_if_fail (dbus_message_iter_get_arg_type (&dict) == DBUS_TYPE_STRING, FALSE);
+		dbus_message_iter_get_basic (&dict, &name);
+		dbus_message_iter_next (&dict);
+
+		if (!property_to_attribute (name, &attr_type, &data_type))
+			return FALSE;
+
+		/* Property value */
+		g_return_val_if_fail (dbus_message_iter_get_arg_type (&dict) == DBUS_TYPE_VARIANT, FALSE);
+		attr = gp11_attributes_add_empty (attrs, attr_type);
+		if (!iter_get_variant (&dict, data_type, attr))
+			return FALSE;
+
+		dbus_message_iter_next (&array);
+	}
+
+	return TRUE;
+}
+
 
 void
 gkd_secrets_objects_append_item_paths (GkdSecretsObjects *self, DBusMessageIter *iter,

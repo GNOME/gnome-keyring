@@ -39,10 +39,10 @@
 			<arg name="results" type="ao" direction="out"/>
 		</method>
 		<method name="CreateItem">
-			<arg name="attributes" type="a{ss}" direction="in"/>
-			<arg name="label" type="s" direction="in"/>
+			<arg name="props" type="a{sv}" direction="in"/>
 			<arg name="replace" type="b" direction="in"/>
 			<arg name="item" type="o" direction="out"/>
+			<arg name="prompt" type="o" direction="out"/>
 		</method>
 		<signal name="ItemCreated">
 			<arg name="item" type="o"/>

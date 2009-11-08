@@ -54,6 +54,10 @@ void                gkd_secrets_objects_append_collection_paths  (GkdSecretsObje
                                                                   DBusMessageIter *iter,
                                                                   DBusMessage *message);
 
+gboolean            gkd_secrets_objects_parse_item_props         (GkdSecretsObjects *self,
+                                                                  DBusMessageIter *iter,
+                                                                  GP11Attributes *attrs);
+
 void                gkd_secrets_objects_append_item_paths        (GkdSecretsObjects *self, 
                                                                   DBusMessageIter *iter,
                                                                   DBusMessage *message, 
