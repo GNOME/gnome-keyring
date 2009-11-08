@@ -27,12 +27,12 @@
 
 	<interface name="org.freedesktop.Secrets.Collection">
 		<property name="Items" type="ao" access="read"/>
-		<property name="Private" type="s" access="read"/>
 		<property name="Label" type="s" access="readwrite"/>
 		<property name="Locked" type="s" access="read"/>
 		<property name="Created" type="t" access="read"/>
 		<property name="Modified" type="t" access="read"/>
 		<method name="Delete">
+			<arg name="prompt" type="o" direction="out"/>
 		</method>
 		<method name="SearchItems">
 			<arg name="attributes" type="a{ss}" direction="in"/>

@@ -677,8 +677,9 @@ gck_secret_collection_save (GckSecretCollection *self, GckTransaction *transacti
 	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
 	g_return_if_fail (!gck_transaction_get_failed (transaction));
 
+	/* HACK: We can't save unless the secret data was loaded */
 	if (!self->sdata)
-		g_return_if_reached ();
+		return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 
 	master = gck_secret_data_get_master (self->sdata);
 	if (master == NULL || gck_secret_equals (master, NULL, 0))

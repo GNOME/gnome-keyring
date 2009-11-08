@@ -867,11 +867,36 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 }
 
 static DBusMessage*
+item_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+{
+	GError *error = NULL;
+	DBusMessage *reply;
+	const gchar *prompt;
+
+	if (!gp11_object_destroy (object, &error)) {
+		if (error->code == CKR_USER_NOT_LOGGED_IN)
+			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+			                                       "Cannot delete a locked item");
+		else
+			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+			                                       "Couldn't delete collection: %s",
+			                                       error->message);
+		g_clear_error (&error);
+		return reply;
+	}
+
+	prompt = "/"; /* No prompt necessary */
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &prompt, DBUS_TYPE_INVALID);
+	return reply;
+}
+
+static DBusMessage*
 item_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
 {
 	/* org.freedesktop.Secrets.Item.Delete() */
 	if (dbus_message_is_method_call (message, SECRETS_ITEM_INTERFACE, "Delete"))
-		g_return_val_if_reached (NULL);
+		return item_method_delete (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Get */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
@@ -1050,11 +1075,32 @@ collection_method_search_items (GkdSecretsObjects *self, GP11Object *object, DBu
 }
 
 static DBusMessage*
+collection_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+{
+	GError *error = NULL;
+	DBusMessage *reply;
+	const gchar *prompt;
+
+	if (!gp11_object_destroy (object, &error)) {
+		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                       "Couldn't delete collection: %s",
+		                                       error->message);
+		g_clear_error (&error);
+		return reply;
+	}
+
+	prompt = "/";
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &prompt, DBUS_TYPE_INVALID);
+	return reply;
+}
+
+static DBusMessage*
 collection_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
 {
 	/* org.freedesktop.Secrets.Collection.Delete() */
 	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "Delete"))
-		g_return_val_if_reached (NULL);
+		return collection_method_delete (self, object, message);
 
 	/* org.freedesktop.Secrets.Collection.SearchItems() */
 	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "SearchItems"))

@@ -32,6 +32,7 @@
 		<property name="Created" type="t" access="read"/>
 		<property name="Modified" type="t" access="read"/>
 		<method name="Delete">
+			<arg name="prompt" type="o" direction="out"/>
 		</method>
 	</interface>
 
