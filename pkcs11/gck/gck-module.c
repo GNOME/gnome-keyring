@@ -297,8 +297,9 @@ parse_argument (GckModule *self, char *arg)
 		*(value++) = 0;
 
 	g_strstrip (arg);
-	g_strstrip (value);
-	
+	if (value)
+		g_strstrip (value);
+
 	g_return_if_fail (GCK_MODULE_GET_CLASS (self)->parse_argument);
 	GCK_MODULE_GET_CLASS (self)->parse_argument (self, arg, value);
 }
