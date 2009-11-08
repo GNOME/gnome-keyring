@@ -572,13 +572,12 @@ gck_module_dispose (GObject *obj)
 	GckModule *self = GCK_MODULE (obj);
 
 	g_hash_table_remove_all (self->pv->transient_objects);
+	g_hash_table_remove_all (self->pv->sessions_by_handle);
+	g_hash_table_remove_all (self->pv->apartments_by_id);
 
 	if (self->pv->token_manager)
 		g_object_unref (self->pv->token_manager);
 	self->pv->token_manager = NULL;
-
-	g_hash_table_remove_all (self->pv->apartments_by_id);
-	g_hash_table_remove_all (self->pv->sessions_by_handle);
 
 	g_array_set_size (self->pv->factories, 0);
 

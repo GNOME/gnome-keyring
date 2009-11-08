@@ -432,12 +432,12 @@ gck_session_dispose (GObject *obj)
 		self->pv->authenticator = NULL;
 	}
 
+	g_hash_table_remove_all (self->pv->objects);
+
 	if (self->pv->manager)
 		g_object_unref (self->pv->manager);
 	self->pv->manager = NULL;
-	
-	g_hash_table_remove_all (self->pv->objects);
-	
+
 	G_OBJECT_CLASS (gck_session_parent_class)->dispose (obj);
 }
 
