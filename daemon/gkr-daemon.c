@@ -771,7 +771,13 @@ main (int argc, char *argv[])
 	 * Without either of these options, we follow a more boring and 
 	 * predictable startup.  
 	 */
-	
+
+#ifdef WITH_TESTS
+	g_setenv ("DBUS_FATAL_WARNINGS", "1", FALSE);
+	if (!g_getenv ("G_DEBUG"))
+		g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
+#endif
+
 	g_type_init ();
 	g_thread_init (NULL);
 	
