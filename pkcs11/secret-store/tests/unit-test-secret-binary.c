@@ -90,7 +90,7 @@ DEFINE_TEST(binary_read)
 	guchar *data;
 	gsize n_data;
 
-	data = test_read_testdata ("encrypted.keyring", &n_data);
+	data = test_data_read ("encrypted.keyring", &n_data);
 	res = gck_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -105,7 +105,7 @@ DEFINE_TEST(binary_read_wrong_format)
 	guchar *data;
 	gsize n_data;
 
-	data = test_read_testdata ("plain.keyring", &n_data);
+	data = test_data_read ("plain.keyring", &n_data);
 	res = gck_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -123,7 +123,7 @@ DEFINE_TEST(binary_read_wrong_master)
 	gck_secret_data_set_master (sdata, master);
 	g_object_unref (master);
 
-	data = test_read_testdata ("encrypted.keyring", &n_data);
+	data = test_data_read ("encrypted.keyring", &n_data);
 	res = gck_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -138,7 +138,7 @@ DEFINE_TEST(binary_read_sdata_but_no_master)
 
 	gck_secret_data_set_master (sdata, NULL);
 
-	data = test_read_testdata ("encrypted.keyring", &n_data);
+	data = test_data_read ("encrypted.keyring", &n_data);
 	res = gck_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -170,7 +170,7 @@ DEFINE_TEST(binary_remove_unavailable)
 	guchar *data;
 	gsize n_data;
 
-	data = test_read_testdata ("encrypted.keyring", &n_data);
+	data = test_data_read ("encrypted.keyring", &n_data);
 	res = gck_secret_binary_read (collection, sdata, data, n_data);
 	g_assert (res == GCK_DATA_SUCCESS);
 

@@ -42,7 +42,7 @@ location_for_test_data (const gchar *filename)
 	GQuark quark;
 	gchar *path;
 	
-	path = g_build_filename (test_dir_testdata (), filename, NULL);
+	path = test_data_filename (filename);
 	quark = gkr_location_from_path (path);
 	g_free (path);
 	
@@ -130,7 +130,7 @@ DEFINE_TEST(keyring_parse_encrypted)
 	encrypted->password = "my-keyring-password";
 	plain = gkr_keyring_new ("plain", 0);
 	
-	data = test_read_testdata ("encrypted.keyring", &n_data);
+	data = test_data_read ("encrypted.keyring", &n_data);
 
 	/* Parse it */
 	egg_buffer_init_allocated (&buffer, data, n_data, NULL);
@@ -181,7 +181,7 @@ DEFINE_TEST(keyring_parse_plain)
 	
 	keyring = gkr_keyring_new ("plain", 0);
 	
-	data = test_read_testdata ("plain.keyring", &n_data);
+	data = test_data_read ("plain.keyring", &n_data);
 		
 	/* Parse it */
 	egg_buffer_init_static (&buffer, (guchar*)data, n_data);

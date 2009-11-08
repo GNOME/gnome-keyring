@@ -38,7 +38,7 @@ DEFINE_TEST(dh_parse_pkcs3)
 	gsize n_data;
 	gboolean ret;
 
-	data = test_read_testdata ("dh-params.pem", &n_data);
+	data = test_data_read ("dh-params.pem", &n_data);
 	ret = egg_dh_parse_pkcs3 (data, n_data, &p, &g);
 	g_assert (ret == TRUE);
 	g_assert (gcry_mpi_get_nbits (p) == 1024);
@@ -67,7 +67,7 @@ DEFINE_TEST(dh_perform)
 	gboolean ret;
 
 	/* Load up the parameters */
-	data = test_read_testdata ("dh-params.pem", &n_data);
+	data = test_data_read ("dh-params.pem", &n_data);
 	if (!egg_dh_parse_pkcs3 (data, n_data, &p, &g))
 		g_assert_not_reached ();
 	g_free (data);

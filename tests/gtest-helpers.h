@@ -39,9 +39,11 @@ void test_mainloop_quit (void);
 void test_mainloop_run (int timeout);
 GMainLoop* test_mainloop_get (void);
 
-const gchar* test_dir_testdata (void);
-guchar* test_read_testdata (const gchar *basename, gsize *n_data);
-gchar* test_build_filename (const gchar *basename);
+const gchar* test_data_directory (void);
+const gchar* test_scratch_directory (void);
+guchar* test_data_read (const gchar *basename, gsize *n_data);
+gchar* test_scratch_filename (const gchar *basename);
+gchar* test_data_filename (const gchar *basename);
 
 #define DECLARE_SETUP(x) \
 	void setup_##x(int *v, gconstpointer d)

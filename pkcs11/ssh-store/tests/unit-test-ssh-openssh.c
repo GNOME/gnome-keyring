@@ -63,7 +63,7 @@ DEFINE_TEST(parse_public)
 	
 	for (i = 0; i < G_N_ELEMENTS (PUBLIC_FILES); ++i) {
 		
-		data = test_read_testdata (PUBLIC_FILES[i], &n_data);
+		data = test_data_read (PUBLIC_FILES[i], &n_data);
 		
 		res = gck_ssh_openssh_parse_public_key (data, n_data, &sexp, &comment);
 		if (res != GCK_DATA_SUCCESS) {
@@ -97,7 +97,7 @@ DEFINE_TEST(parse_private)
 	
 	for (i = 0; i < G_N_ELEMENTS (PRIVATE_FILES); ++i) {
 		
-		data = test_read_testdata (PRIVATE_FILES[i], &n_data);
+		data = test_data_read (PRIVATE_FILES[i], &n_data);
 		
 		res = gck_ssh_openssh_parse_private_key (data, n_data, "password", 8, &sexp);
 		if (res != GCK_DATA_SUCCESS) {

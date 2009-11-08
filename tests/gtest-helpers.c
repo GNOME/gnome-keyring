@@ -88,14 +88,26 @@ test_mainloop_get (void)
 	return mainloop;
 }
 
+const gchar*
+test_scratch_directory (void)
+{
+	return test_path;
+}
+
 gchar*
-test_build_filename (const gchar *basename)
+test_scratch_filename (const gchar *basename)
 {
 	return g_build_filename (test_path, basename, NULL);
 }
 
+gchar*
+test_data_filename (const gchar *basename)
+{
+	return g_build_filename (test_data_directory (), basename, NULL);
+}
+
 const gchar*
-test_dir_testdata (void)
+test_data_directory (void)
 {
 	const gchar *dir;
 	gchar *cur, *env;
@@ -118,13 +130,13 @@ test_dir_testdata (void)
 }
 
 guchar* 
-test_read_testdata (const gchar *basename, gsize *n_result)
+test_data_read (const gchar *basename, gsize *n_result)
 {
 	GError *error = NULL;
 	gchar *result;
 	gchar *file;
 
-	file = g_build_filename (test_dir_testdata (), basename, NULL);
+	file = test_data_filename (basename);
 	if (!g_file_get_contents (file, &result, n_result, &error)) {
 		g_warning ("could not read test data file: %s: %s", file,
 		           error && error->message ? error->message : "");

@@ -108,11 +108,11 @@ test_der_public (gcry_sexp_t key)
 
 DEFINE_SETUP(preload)
 {
-	certificate_data = test_read_testdata ("test-certificate-1.der", &n_certificate_data);	
+	certificate_data = test_data_read ("test-certificate-1.der", &n_certificate_data);
 	certificate = egg_asn1_decode ("PKIX1.Certificate", certificate_data, n_certificate_data);
 	g_assert (certificate);
 
-	certificate2_data = test_read_testdata ("test-certificate-2.der", &n_certificate2_data);	
+	certificate2_data = test_data_read ("test-certificate-2.der", &n_certificate2_data);
 	certificate2 = egg_asn1_decode ("PKIX1.Certificate", certificate2_data, n_certificate2_data);
 	g_assert (certificate2);
 }
@@ -370,7 +370,7 @@ DEFINE_TEST(read_all_pkcs8)
 	guchar *data;
 	gsize n_data;
 	
-	dir = g_dir_open (test_dir_testdata (), 0, NULL);
+	dir = g_dir_open (test_data_directory (), 0, NULL);
 	g_assert (dir);
 	
 	for(;;) {
@@ -381,7 +381,7 @@ DEFINE_TEST(read_all_pkcs8)
 		if (!g_pattern_match_simple ("der-pkcs8-*", name))
 			continue;
 		
-		data = test_read_testdata (name, &n_data);
+		data = test_data_read (name, &n_data);
 		res = gck_data_der_read_private_pkcs8 (data, n_data, "booo", 4, &sexp);
 		g_assert (res == GCK_DATA_SUCCESS);
 		
@@ -400,7 +400,7 @@ DEFINE_TEST(read_pkcs8_bad_password)
 	guchar *data;
 	gsize n_data;
 	
-	data = test_read_testdata ("der-pkcs8-encrypted-pkcs5.key", &n_data);
+	data = test_data_read ("der-pkcs8-encrypted-pkcs5.key", &n_data);
 	res = gck_data_der_read_private_pkcs8 (data, n_data, "wrong password", 4, &sexp);
 	g_assert (res == GCK_DATA_LOCKED);
 	

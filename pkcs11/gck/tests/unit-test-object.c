@@ -41,7 +41,7 @@ DEFINE_SETUP(object_setup)
 {
 	module = test_module_initialize_and_enter ();
 	session = test_module_open_session (TRUE);
-	certificate_data = test_read_testdata ("test-certificate-1.der", &certificate_n_data);
+	certificate_data = test_data_read ("test-certificate-1.der", &certificate_n_data);
 }
 
 DEFINE_TEARDOWN(object_teardown)

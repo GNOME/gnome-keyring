@@ -55,7 +55,7 @@ DEFINE_SETUP(asn1_tree)
 
 	/* -------- */
 	
-	data_cert = test_read_testdata ("test-certificate-1.der", &n_data_cert);
+	data_cert = test_data_read ("test-certificate-1.der", &n_data_cert);
 
 	/* We'll be catching this error later */
 	pkix = egg_asn1_get_pkix_asn1type ();

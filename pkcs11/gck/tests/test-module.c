@@ -98,7 +98,7 @@ test_module_object_new (GckSession *session)
 	CK_CERTIFICATE_TYPE type = CKC_X_509;
 
 	gsize n_data;
-	guchar *data = test_read_testdata ("test-certificate-1.der", &n_data);
+	guchar *data = test_data_read ("test-certificate-1.der", &n_data);
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_TOKEN, &token, sizeof (token) },

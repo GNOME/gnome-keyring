@@ -57,8 +57,8 @@ DEFINE_TEST(private_key_parse_plain)
 	key = gck_ssh_private_key_new (module, "my-unique");
 	g_assert (GCK_IS_SSH_PRIVATE_KEY (key));
 
-	pub_path = g_build_filename (test_dir_testdata (), "id_dsa_plain.pub", NULL);
-	priv_path = g_build_filename (test_dir_testdata (), "id_dsa_plain", NULL);
+	pub_path = test_data_filename ("id_dsa_plain.pub");
+	priv_path = test_data_filename ("id_dsa_plain");
 	
 	ret = gck_ssh_private_key_parse (key, pub_path, priv_path, NULL);
 	g_assert (ret == TRUE);
@@ -80,8 +80,8 @@ DEFINE_TEST(private_key_parse_and_unlock)
 	key = gck_ssh_private_key_new (module, "my-unique");
 	g_assert (GCK_IS_SSH_PRIVATE_KEY (key));
 
-	pub_path = g_build_filename (test_dir_testdata (), "id_dsa_encrypted.pub", NULL);
-	priv_path = g_build_filename (test_dir_testdata (), "id_dsa_encrypted", NULL);
+	pub_path = test_data_filename ("id_dsa_encrypted.pub");
+	priv_path = test_data_filename ("id_dsa_encrypted");
 	
 	ret = gck_ssh_private_key_parse (key, pub_path, priv_path, NULL);
 	g_assert (ret == TRUE);

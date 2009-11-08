@@ -85,7 +85,7 @@ DEFINE_TEST(textual_read)
 	guchar *data;
 	gsize n_data;
 
-	data = test_read_testdata ("plain.keyring", &n_data);
+	data = test_data_read ("plain.keyring", &n_data);
 	res = gck_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -100,7 +100,7 @@ DEFINE_TEST(textual_read_wrong_format)
 	guchar *data;
 	gsize n_data;
 
-	data = test_read_testdata ("encrypted.keyring", &n_data);
+	data = test_data_read ("encrypted.keyring", &n_data);
 	res = gck_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -115,7 +115,7 @@ DEFINE_TEST(textual_read_bad_number)
 	guchar *data;
 	gsize n_data;
 
-	data = test_read_testdata ("plain-bad-number.keyring", &n_data);
+	data = test_data_read ("plain-bad-number.keyring", &n_data);
 	res = gck_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -154,7 +154,7 @@ DEFINE_TEST(textual_remove_unavailable)
 	guchar *data;
 	gsize n_data;
 
-	data = test_read_testdata ("plain.keyring", &n_data);
+	data = test_data_read ("plain.keyring", &n_data);
 	res = gck_secret_textual_read (collection, sdata, data, n_data);
 	g_assert (res == GCK_DATA_SUCCESS);
 

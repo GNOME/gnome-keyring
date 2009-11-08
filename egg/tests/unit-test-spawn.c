@@ -172,14 +172,14 @@ DEFINE_TEST(test_spawn_sync)
 	data.parent_pid = getpid();
 	data.index = 80;
 
-	ret = egg_spawn_sync_with_callbacks (test_dir_testdata (),
+	ret = egg_spawn_sync_with_callbacks (test_data_directory (),
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     &exit_status, &error);
 	g_assert (ret == TRUE);
 	g_assert (pid != 0);
 	g_assert (WIFEXITED (exit_status));
-	g_assert (WEXITSTATUS(exit_status) == 3);
+	g_assert_cmpint (WEXITSTATUS(exit_status), ==, 3);
 	g_assert (error == NULL);
 	g_assert (data.finalized);
 	g_assert (data.completed);
@@ -192,7 +192,7 @@ DEFINE_TEST(test_spawn_sync_error)
 	GError *error = NULL;
 	gboolean ret;
 
-	ret = egg_spawn_sync_with_callbacks (test_dir_testdata (),
+	ret = egg_spawn_sync_with_callbacks (test_data_directory (),
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);
@@ -214,7 +214,7 @@ DEFINE_TEST(test_spawn_async)
 	data.index = 80;
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks (test_dir_testdata (),
+	ret = egg_spawn_async_with_callbacks (test_data_directory (),
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     NULL, &error);
@@ -242,7 +242,7 @@ DEFINE_TEST(test_spawn_async_none)
 	data.parent_pid = getpid();
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks (test_dir_testdata (),
+	ret = egg_spawn_async_with_callbacks (test_data_directory (),
 	                                     echo_argv, NULL, 0, NULL,
 	                                     &null_callbacks, &data,
 	                                     NULL, &error);
@@ -264,7 +264,7 @@ DEFINE_TEST(test_spawn_async_error)
 	GError *error = NULL;
 	guint ret;
 
-	ret = egg_spawn_async_with_callbacks (test_dir_testdata (),
+	ret = egg_spawn_async_with_callbacks (test_data_directory (),
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);

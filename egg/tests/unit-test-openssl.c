@@ -76,7 +76,7 @@ DEFINE_TEST(parse_reference)
 	gsize n_input;
 	guint num;
 	
-	input = test_read_testdata ("pem-rsa-enc.key", &n_input);
+	input = test_data_read ("pem-rsa-enc.key", &n_input);
 
 	num = egg_openssl_pem_parse (input, n_input, parse_reference, NULL);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
