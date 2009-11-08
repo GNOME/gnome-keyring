@@ -41,13 +41,30 @@ gkd_dbus_environment_cleanup (DBusConnection *conn)
 	/* Nothing to do here */
 }
 
+static void
+on_setenv_reply (DBusPendingCall *pending, void *user_data)
+{
+	DBusMessage *reply;
+	DBusError derr = DBUS_ERROR_INIT;
+
+	reply = dbus_pending_call_steal_reply (pending);
+	g_return_if_fail (reply);
+
+	if (dbus_set_error_from_message (&derr, reply)) {
+		if (!dbus_error_has_name (&derr, "org.gnome.SessionManager.NotInInitialization"))
+			g_message ("couldn't set environment variable in session: %s", derr.message);
+		dbus_error_free (&derr);
+	}
+
+	dbus_message_unref (reply);
+}
+
 void
 gkd_dbus_environment_init (DBusConnection *conn)
 {
-	DBusMessageIter args;
+	DBusPendingCall *pending = NULL;
+	DBusError derr = DBUS_ERROR_INIT;
 	DBusMessage *msg;
-	DBusMessage *reply;
-	DBusError derr = { 0 };
 	const gchar **envp;
 	const gchar *value;
 	gchar *name;
@@ -74,24 +91,24 @@ gkd_dbus_environment_init (DBusConnection *conn)
 		                                    "Setenv");
 		g_return_if_fail (msg);
 
-		dbus_message_iter_init_append (msg, &args);
-		if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_STRING, &name) ||
-		    !dbus_message_iter_append_basic (&args, DBUS_TYPE_STRING, &value))
+		if (!dbus_message_append_args (msg, DBUS_TYPE_STRING, &name,
+		                               DBUS_TYPE_STRING, &value,
+		                               DBUS_TYPE_INVALID))
 			g_return_if_reached ();
 
 		g_free (name);
 		value = name = NULL;
 
 		/* Send message and get a handle for a reply */
-		reply = dbus_connection_send_with_reply_and_block (conn, msg, 1000, &derr);
+		dbus_connection_send_with_reply (conn, msg, &pending, -1);
 		dbus_message_unref (msg);
-
-		if (!reply) {
-			g_message ("couldn't set environment variable in session: %s", derr.message);
+		if (pending) {
+			dbus_pending_call_set_notify (pending, on_setenv_reply, NULL, NULL);
+			dbus_pending_call_unref (pending);
+		} else {
+			g_warning ("couldn't send dbus message: %s",
+			           derr.message ? derr.message : "");
 			dbus_error_free (&derr);
-			return;
 		}
-
-		dbus_message_unref (reply);
 	}
 }
