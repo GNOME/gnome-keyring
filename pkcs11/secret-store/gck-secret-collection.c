@@ -31,6 +31,7 @@
 #include "gck/gck-authenticator.h"
 #include "gck/gck-secret.h"
 #include "gck/gck-session.h"
+#include "gck/gck-transaction.h"
 
 #include <glib/gi18n.h>
 
@@ -46,9 +47,14 @@ struct _GckSecretCollection {
 	GckSecretData *sdata;
 	GHashTable *items;
 	gchar *filename;
+	guint32 watermark;
 };
 
 G_DEFINE_TYPE (GckSecretCollection, gck_secret_collection, GCK_TYPE_SECRET_OBJECT);
+
+/* Forward declarations */
+static void add_item (GckSecretCollection *, GckTransaction *, GckSecretItem *);
+static void remove_item (GckSecretCollection *, GckTransaction *, GckSecretItem *);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -126,6 +132,141 @@ expose_each_item (gpointer key, gpointer value, gpointer user_data)
 {
 	gboolean expose = GPOINTER_TO_INT (user_data);
 	gck_object_expose (value, expose);
+}
+
+static gboolean
+complete_add (GckTransaction *transaction, GckSecretCollection *self, GckSecretItem *item)
+{
+	if (gck_transaction_get_failed (transaction))
+		remove_item (self, NULL, item);
+	g_object_unref (item);
+	return TRUE;
+}
+
+static void
+add_item (GckSecretCollection *self, GckTransaction *transaction, GckSecretItem *item)
+{
+	const gchar *identifier;
+	guint32 number;
+
+	g_assert (GCK_IS_SECRET_COLLECTION (self));
+	g_assert (GCK_IS_SECRET_ITEM (item));
+
+	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (item));
+	g_return_if_fail (identifier);
+
+	/* Make note of the highest numeric identifier, for later use */
+	number = strtoul (identifier, NULL, 10);
+	if (number > self->watermark)
+		self->watermark = number;
+
+	g_hash_table_replace (self->items, g_strdup (identifier), g_object_ref (item));
+
+	if (gck_object_is_exposed (GCK_OBJECT (self)))
+		gck_object_expose_full (GCK_OBJECT (item), transaction, TRUE);
+	if (transaction)
+		gck_transaction_add (transaction, self, (GckTransactionFunc)complete_add,
+		                     g_object_ref (item));
+
+}
+
+static gboolean
+complete_remove (GckTransaction *transaction, GckSecretCollection *self, GckSecretItem *item)
+{
+	if (gck_transaction_get_failed (transaction))
+		add_item (self, NULL, item);
+	g_object_unref (item);
+	return TRUE;
+}
+
+static void
+remove_item (GckSecretCollection *self, GckTransaction *transaction, GckSecretItem *item)
+{
+	const gchar *identifier;
+
+	g_assert (GCK_IS_SECRET_COLLECTION (self));
+	g_assert (GCK_IS_SECRET_ITEM (item));
+
+	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (item));
+	g_return_if_fail (identifier);
+
+	g_object_ref (item);
+
+	g_hash_table_remove (self->items, identifier);
+
+	gck_object_expose_full (GCK_OBJECT (item), transaction, FALSE);
+	if (transaction)
+		gck_transaction_add (transaction, self, (GckTransactionFunc)complete_remove,
+		                     g_object_ref (item));
+
+	g_object_unref (item);
+}
+
+static void
+factory_create_collection (GckSession *session, GckTransaction *transaction,
+                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
+{
+	GckSecretCollection *collection = NULL;
+	CK_ATTRIBUTE *attr;
+	GckManager *manager;
+	gchar *identifier = NULL;
+	gchar *label = NULL;
+	gboolean is_token;
+	GckAuthenticator *auth;
+	CK_RV rv;
+
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (attrs || !n_attrs);
+	g_return_if_fail (result);
+
+	if (!gck_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token))
+		is_token = FALSE;
+	if (is_token)
+		manager = gck_module_get_manager (gck_session_get_module (session));
+	else
+		manager = gck_session_get_manager (session);
+
+	/* See if a collection attribute was specified, not present means all collections */
+	attr = gck_attributes_find (attrs, n_attrs, CKA_LABEL);
+	if (attr != NULL) {
+		rv = gck_attribute_get_string (attr, &label);
+		if (rv != CKR_OK)
+			return gck_transaction_fail (transaction, rv);
+		identifier = g_utf8_strdown (label, -1);
+		g_strdelimit (identifier, ":/\\<>|\t\n\r\v ", '_');
+		gck_attribute_consume (attr);
+	}
+
+	if (!identifier || !identifier[0]) {
+		g_free (identifier);
+		identifier = g_strdup ("unnamed");
+	}
+
+	collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
+	                           "module", gck_session_get_module (session),
+	                           "identifier", identifier,
+	                           "manager", manager,
+	                           "label", label,
+	                           NULL);
+
+	g_free (identifier);
+	g_free (label);
+
+	/*
+	 * HACK: We are expected to have an unlocked collection. This is
+	 * currently a chicken and egg problem, as there's no way to set
+	 * credentials. Actually currently there's no way to set credentials.
+	 */
+	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session),
+	                               NULL, 0, &auth);
+	if (rv != CKR_OK) {
+		gck_transaction_fail (transaction, rv);
+		g_object_unref (collection);
+	} else {
+		gck_session_add_session_object (session, transaction, GCK_OBJECT (auth));
+		*result = GCK_OBJECT (collection);
+		g_object_unref (auth);
+	}
 }
 
 /* -----------------------------------------------------------------------------
@@ -304,38 +445,31 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 	g_object_class_install_property (gobject_class, PROP_FILENAME,
 	           g_param_spec_string ("filename", "Filename", "Collection filename (without path)",
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+	gck_secret_object_class_unique_identifiers (secret_class);
 }
-
-#if 0
-static gboolean
-gck_secret_collection_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
-{
-	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
-	GckSecret *master;
-	GckDataResult res;
-
-	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
-
-	if (!self->sdata)
-		g_return_val_if_reached (FALSE);
-
-	master = gck_secret_data_get_master (self->sdata);
-	if (master == NULL)
-		res = gck_secret_textual_write (self, data, n_data);
-	else
-		res = gck_secret_binary_write (self, master, data, n_data);
-
-	/* TODO: This doesn't transfer knowledge of 'no password' back up */
-	return (res == GCK_DATA_SUCCESS);
-}
-
-#endif
 
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
+
+GckFactory*
+gck_secret_collection_get_factory (void)
+{
+	static CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
+
+	static CK_ATTRIBUTE attributes[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+	};
+
+	static GckFactory factory = {
+		attributes,
+		G_N_ELEMENTS (attributes),
+		factory_create_collection
+	};
+
+	return &factory;
+}
 
 const gchar*
 gck_secret_collection_get_filename (GckSecretCollection *self)
@@ -373,8 +507,51 @@ gck_secret_collection_get_item (GckSecretCollection *self, const gchar *identifi
 	return g_hash_table_lookup (self->items, identifier);
 }
 
+gboolean
+gck_secret_collection_has_item (GckSecretCollection *self, GckSecretItem *item)
+{
+	const gchar *identifier;
+
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), FALSE);
+	g_return_val_if_fail (GCK_IS_SECRET_ITEM (item), FALSE);
+
+	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (item));
+	return g_hash_table_lookup (self->items, identifier) == item;
+}
+
+GckSecretCollection*
+gck_secret_collection_find (CK_ATTRIBUTE_PTR attr, ...)
+{
+	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
+	GckSecretCollection *result = NULL;
+	GckManager *manager;
+	CK_ATTRIBUTE attrs[2];
+	GList *objects;
+	va_list va;
+
+	g_assert (attr);
+
+	attrs[0].type = CKA_CLASS;
+	attrs[0].ulValueLen = sizeof (klass);
+	attrs[0].pValue = &klass;
+	attrs[1].type = CKA_ID;
+	attrs[1].ulValueLen = attr->ulValueLen;
+	attrs[1].pValue = attr->pValue;
+
+	va_start (va, attr);
+	while (!result && (manager = va_arg (va, GckManager*)) != NULL) {
+		objects = gck_manager_find_by_attributes (manager, attrs, 2);
+		if (objects && GCK_IS_SECRET_COLLECTION (objects->data))
+			result = objects->data;
+		g_list_free (objects);
+	}
+	va_end (va);
+
+	return result;
+}
+
 GckSecretItem*
-gck_secret_collection_create_item (GckSecretCollection *self, const gchar *identifier)
+gck_secret_collection_new_item (GckSecretCollection *self, const gchar *identifier)
 {
 	GckSecretItem *item;
 
@@ -389,22 +566,59 @@ gck_secret_collection_create_item (GckSecretCollection *self, const gchar *ident
 	                     "identifier", identifier,
 	                     NULL);
 
-	g_hash_table_replace (self->items, g_strdup (identifier), item);
+	add_item (self, NULL, item);
+	g_object_unref (item);
+	return item;
+}
+
+GckSecretItem*
+gck_secret_collection_create_item (GckSecretCollection *self, GckTransaction *transaction)
+{
+	GckSecretItem *item;
+	gchar *identifier = NULL;
+
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), NULL);
+	g_return_val_if_fail (transaction, NULL);
+	g_return_val_if_fail (!gck_transaction_get_failed (transaction), NULL);
+
+	do {
+		g_free (identifier);
+		identifier = g_strdup_printf ("%d", ++(self->watermark));
+	} while (g_hash_table_lookup (self->items, identifier));
+
+	item = g_object_new (GCK_TYPE_SECRET_ITEM,
+	                     "module", gck_object_get_module (GCK_OBJECT (self)),
+	                     "manager", gck_object_get_manager (GCK_OBJECT (self)),
+	                     "collection", self,
+	                     "identifier", identifier,
+	                     NULL);
+
+	g_free (identifier);
+	add_item (self, transaction, item);
+	g_object_unref (item);
 	return item;
 }
 
 void
 gck_secret_collection_remove_item (GckSecretCollection *self, GckSecretItem *item)
 {
-	const gchar *identifier;
-
 	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
 	g_return_if_fail (GCK_IS_SECRET_ITEM (item));
+	g_return_if_fail (gck_secret_collection_has_item (self, item));
 
-	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (item));
-	g_return_if_fail (identifier);
+	remove_item (self, NULL, item);
+}
 
-	g_hash_table_remove (self->items, identifier);
+void
+gck_secret_collection_destroy_item (GckSecretCollection *self, GckTransaction *transaction,
+                                    GckSecretItem *item)
+{
+	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (GCK_IS_SECRET_ITEM (item));
+	g_return_if_fail (gck_secret_collection_has_item (self, item));
+
+	remove_item (self, transaction, item);
 }
 
 GckSecretData*
@@ -449,4 +663,56 @@ gck_secret_collection_load (GckSecretCollection *self)
 		return GCK_DATA_SUCCESS;
 
 	return load_collection_and_secret_data (self, self->sdata, self->filename);
+}
+
+void
+gck_secret_collection_save (GckSecretCollection *self, GckTransaction *transaction)
+{
+	GckSecret *master;
+	GckDataResult res;
+	guchar *data;
+	gsize n_data;
+
+	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (!gck_transaction_get_failed (transaction));
+
+	if (!self->sdata)
+		g_return_if_reached ();
+
+	master = gck_secret_data_get_master (self->sdata);
+	if (master == NULL || gck_secret_equals (master, NULL, 0))
+		res = gck_secret_textual_write (self, self->sdata, &data, &n_data);
+	else
+		res = gck_secret_binary_write (self, self->sdata, &data, &n_data);
+
+	switch (res) {
+	case GCK_DATA_FAILURE:
+	case GCK_DATA_UNRECOGNIZED:
+		g_warning ("couldn't prepare to write out keyring: %s", self->filename);
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+		break;
+	case GCK_DATA_LOCKED:
+		g_warning ("locked error while writing out keyring: %s", self->filename);
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+		break;
+	case GCK_DATA_SUCCESS:
+		gck_transaction_write_file (transaction, self->filename, data, n_data);
+		g_free (data);
+		break;
+	default:
+		g_assert_not_reached ();
+	};
+}
+
+void
+gck_secret_collection_destroy (GckSecretCollection *self, GckTransaction *transaction)
+{
+	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (!gck_transaction_get_failed (transaction));
+
+	gck_object_expose_full (GCK_OBJECT (self), transaction, FALSE);
+	if (self->filename)
+		gck_transaction_remove_file (transaction, self->filename);
 }

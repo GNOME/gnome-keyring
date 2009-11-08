@@ -478,7 +478,12 @@ gck_secret_textual_read (GckSecretCollection *collection, GckSecretData *sdata,
 
 	file = g_key_file_new ();
 	obj = GCK_SECRET_OBJECT (collection);
-	
+
+	if (!n_data) {
+		res = GCK_DATA_UNRECOGNIZED;
+		goto done;
+	}
+
 	if (!g_key_file_load_from_data (file, (const gchar*)data, n_data, G_KEY_FILE_NONE, &err)) {
 		if (g_error_matches (err, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_PARSE))
 			res = GCK_DATA_UNRECOGNIZED;
@@ -529,7 +534,7 @@ gck_secret_textual_read (GckSecretCollection *collection, GckSecretData *sdata,
 		
 		item = gck_secret_collection_get_item (collection, identifier);
 		if (item == NULL)
-			item = gck_secret_collection_create_item (collection, identifier);
+			item = gck_secret_collection_new_item (collection, identifier);
 		parse_item (file, item, sdata, (const gchar**)groups);
 	}
 

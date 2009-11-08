@@ -64,7 +64,7 @@ DEFINE_SETUP(secret_search)
 	                           NULL);
 
 	/* Create an item */
-	item = gck_secret_collection_create_item (collection, "test-item");
+	item = gck_secret_collection_new_item (collection, "test-item");
 	fields = gck_secret_fields_new ();
 	gck_secret_fields_add (fields, "name1", "value1");
 	gck_secret_fields_add (fields, "name2", "value2");
@@ -331,7 +331,7 @@ DEFINE_TEST(create_search_for_collection_no_match)
 	                      "manager", gck_session_get_manager (session),
 	                      "identifier", "other-collection",
 	                      NULL);
-	oitem = gck_secret_collection_create_item (ocoll, "other-item");
+	oitem = gck_secret_collection_new_item (ocoll, "other-item");
 	gck_object_expose (GCK_OBJECT (ocoll), TRUE);
 
 	/* Make it match, but remember, wrong collection*/

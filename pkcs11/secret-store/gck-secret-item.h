@@ -27,6 +27,8 @@
 #include "gck-secret-object.h"
 #include "gck-secret-collection.h"
 
+#define GCK_FACTORY_SECRET_ITEM             (gck_secret_item_get_factory ())
+
 #define GCK_TYPE_SECRET_ITEM               (gck_secret_item_get_type ())
 #define GCK_SECRET_ITEM(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_SECRET_ITEM, GckSecretItem))
 #define GCK_SECRET_ITEM_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCK_TYPE_SECRET_ITEM, GckSecretItemClass))
@@ -41,6 +43,8 @@ struct _GckSecretItemClass {
 };
 
 GType                  gck_secret_item_get_type               (void);
+
+GckFactory*            gck_secret_item_get_factory            (void) G_GNUC_CONST;
 
 GckSecretCollection*   gck_secret_item_get_collection         (GckSecretItem *self);
 

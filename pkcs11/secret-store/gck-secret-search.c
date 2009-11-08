@@ -159,63 +159,26 @@ on_manager_gone_away (gpointer user_data, GObject *where_the_object_was)
 	self->managers = g_list_delete_link (self->managers, l);
 }
 
-static GckSecretCollection*
-find_collection_in_managers (GList *managers, CK_ATTRIBUTE_PTR attr)
-{
-	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
-	GckSecretCollection *result = NULL;
-	CK_ATTRIBUTE attrs[2];
-	GList *objects, *l;
-
-	g_assert (attr);
-
-	attrs[0].type = CKA_CLASS;
-	attrs[0].ulValueLen = sizeof (klass);
-	attrs[0].pValue = &klass;
-	attrs[1].type = CKA_ID;
-	attrs[1].ulValueLen = attr->ulValueLen;
-	attrs[1].pValue = attr->pValue;
-
-	for (l = managers; !result && l; l = g_list_next (l)) {
-		objects = gck_manager_find_by_attributes (l->data, attrs, 2);
-		if (objects && GCK_IS_SECRET_COLLECTION (objects->data))
-			result = objects->data;
-		g_list_free (objects);
-	}
-
-	return result;
-}
-
 static void
-populate_search_from_managers (GckSecretSearch *self, GList *managers)
+populate_search_from_manager (GckSecretSearch *self, GckManager *manager)
 {
 	GList *objects, *o;
-	GckManager *manager;
-	GList *l;
 
-	g_assert (!self->managers);
-	self->managers = managers;
+	self->managers = g_list_append (self->managers, manager);
 
-	/* Load any new items or collections */
-	gck_module_refresh_token (gck_object_get_module (GCK_OBJECT (self)));
+	/* Add in all the objects */
+	objects = gck_manager_find_by_class (manager, CKO_SECRET_KEY);
+	for (o = objects; o; o = g_list_next (o))
+		on_manager_added_object (manager, o->data, self);
+	g_list_free (objects);
 
-	for (l = self->managers; l; l = g_list_next (l)) {
-		manager = GCK_MANAGER (l->data);
+	/* Track this manager */
+	g_object_weak_ref (G_OBJECT (manager), on_manager_gone_away, self);
 
-		/* Add in all the objects */
-		objects = gck_manager_find_by_class (manager, CKO_SECRET_KEY);
-		for (o = objects; o; o = g_list_next (o))
-			on_manager_added_object (manager, o->data, self);
-		g_list_free (objects);
-
-		/* Track this manager */
-		g_object_weak_ref (G_OBJECT (manager), on_manager_gone_away, self);
-
-		/* Watch for further events of objects */
-		g_signal_connect (manager, "object-added", G_CALLBACK (on_manager_added_object), self);
-		g_signal_connect (manager, "object-removed", G_CALLBACK (on_manager_removed_object), self);
-		g_signal_connect (manager, "attribute-changed", G_CALLBACK (on_manager_changed_object), self);
-	}
+	/* Watch for further events of objects */
+	g_signal_connect (manager, "object-added", G_CALLBACK (on_manager_added_object), self);
+	g_signal_connect (manager, "object-removed", G_CALLBACK (on_manager_removed_object), self);
+	g_signal_connect (manager, "attribute-changed", G_CALLBACK (on_manager_changed_object), self);
 }
 
 static void
@@ -223,11 +186,10 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
                        CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
 {
 	GckSecretCollection *collection = NULL;
+	GckManager *s_manager, *m_manager;
 	GckSecretSearch *search;
-	GList *managers = NULL;
 	CK_ATTRIBUTE *attr;
 	GHashTable *fields;
-	GckManager *manager;
 	GckModule *module;
 	CK_RV rv;
 
@@ -250,21 +212,17 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 		return;
 	}
 
-	manager = gck_session_get_manager (session);
+	s_manager = gck_session_get_manager (session);
 	module = gck_session_get_module (session);
-
-	/* The managers we're going to be searching */
-	managers = g_list_prepend (managers, gck_module_get_manager (module));
-	managers = g_list_prepend (managers, manager);
+	m_manager = gck_module_get_manager (module);
 
 	/* See if a collection attribute was specified, not present means all collections */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_G_COLLECTION);
 	if (attr) {
-		collection = find_collection_in_managers (managers, attr);
+		collection = gck_secret_collection_find (attr, s_manager, m_manager, NULL);
 		gck_attribute_consume (attr);
 		if (!collection) {
 			g_hash_table_unref (fields);
-			g_list_free (managers);
 			gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
 			return;
 		}
@@ -272,12 +230,16 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 
 	search = g_object_new (GCK_TYPE_SECRET_SEARCH,
 	                       "module", module,
-	                       "manager", manager,
+	                       "manager", s_manager,
 	                       "fields", fields,
 	                       "collection", collection,
 	                       NULL);
 
-	populate_search_from_managers (search, managers);
+	/* Load any new items or collections */
+	gck_module_refresh_token (module);
+
+	populate_search_from_manager (search, s_manager);
+	populate_search_from_manager (search, m_manager);
 	*result = GCK_OBJECT (search);
 }
 

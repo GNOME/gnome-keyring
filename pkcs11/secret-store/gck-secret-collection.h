@@ -26,6 +26,8 @@
 
 #include "gck-secret-object.h"
 
+#define GCK_FACTORY_SECRET_COLLECTION            (gck_secret_collection_get_factory ())
+
 #define GCK_TYPE_SECRET_COLLECTION               (gck_secret_collection_get_type ())
 #define GCK_SECRET_COLLECTION(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_SECRET_COLLECTION, GckSecretCollection))
 #define GCK_SECRET_COLLECTION_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCK_TYPE_SECRET_COLLECTION, GckSecretCollectionClass))
@@ -37,11 +39,23 @@ typedef struct _GckSecretCollectionClass GckSecretCollectionClass;
 
 struct _GckSecretCollectionClass {
 	GckSecretObjectClass parent_class;
+	GHashTable *identifiers;
 };
 
 GType                gck_secret_collection_get_type        (void);
 
+GckFactory*          gck_secret_collection_get_factory     (void) G_GNUC_CONST;
+
+GckSecretCollection* gck_secret_collection_find            (CK_ATTRIBUTE_PTR attr,
+                                                            ...) G_GNUC_NULL_TERMINATED;
+
 GckDataResult        gck_secret_collection_load            (GckSecretCollection *self);
+
+void                 gck_secret_collection_save            (GckSecretCollection *self,
+                                                            GckTransaction *transaction);
+
+void                 gck_secret_collection_destroy         (GckSecretCollection *self,
+                                                            GckTransaction *transaction);
 
 const gchar*         gck_secret_collection_get_filename    (GckSecretCollection *self);
 
@@ -53,10 +67,20 @@ GList*               gck_secret_collection_get_items       (GckSecretCollection 
 GckSecretItem*       gck_secret_collection_get_item        (GckSecretCollection *self,
                                                             const gchar *identifier);
 
-GckSecretItem*       gck_secret_collection_create_item     (GckSecretCollection *self,
+gboolean             gck_secret_collection_has_item        (GckSecretCollection *self,
+                                                            GckSecretItem *item);
+
+GckSecretItem*       gck_secret_collection_new_item        (GckSecretCollection *self,
                                                             const gchar *identifier);
 
 void                 gck_secret_collection_remove_item     (GckSecretCollection *self,
+                                                            GckSecretItem *item);
+
+GckSecretItem*       gck_secret_collection_create_item     (GckSecretCollection *self,
+                                                            GckTransaction *transaction);
+
+void                 gck_secret_collection_destroy_item    (GckSecretCollection *self,
+                                                            GckTransaction *transaction,
                                                             GckSecretItem *item);
 
 void                 gck_secret_collection_unlocked_clear  (GckSecretCollection *self);

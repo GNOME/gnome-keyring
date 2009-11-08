@@ -26,7 +26,9 @@
 #include "gck-secret-item.h"
 
 #include "gck/gck-attributes.h"
+#include "gck/gck-module.h"
 #include "gck/gck-secret.h"
+#include "gck/gck-session.h"
 #include "gck/gck-transaction.h"
 
 #include "pkcs11/pkcs11i.h"
@@ -93,6 +95,44 @@ begin_set_fields (GckSecretItem *self, GckTransaction *transaction, GHashTable *
 	
 	gck_transaction_add (transaction, self, complete_set_fields, self->fields);
 	self->fields = fields;
+}
+
+static void
+factory_create_item (GckSession *session, GckTransaction *transaction,
+                     CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
+{
+	GckSecretCollection *collection = NULL;
+	GckSecretItem *item;
+	GckManager *manager;
+	CK_ATTRIBUTE *attr;
+	gboolean is_token;
+
+	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
+	g_return_if_fail (attrs || !n_attrs);
+	g_return_if_fail (result);
+
+	if (!gck_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token))
+		is_token = FALSE;
+
+	/* See if a collection attribute was specified */
+	attr = gck_attributes_find (attrs, n_attrs, CKA_G_COLLECTION);
+	if (attr != NULL) {
+		gck_attribute_consume (attr);
+		if (is_token)
+			manager = gck_module_get_manager (gck_session_get_module (session));
+		else
+			manager = gck_session_get_manager (session);
+		collection = gck_secret_collection_find (attr, manager, NULL);
+	}
+
+	if (!collection)
+		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+
+	/* The collection owns the item */
+	item = gck_secret_collection_create_item (collection, transaction);
+
+	/* All the other fields are set later ... */
+	*result = g_object_ref (item);
 }
 
 /* -----------------------------------------------------------------------------
@@ -308,6 +348,24 @@ gck_secret_item_class_init (GckSecretItemClass *klass)
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
+
+GckFactory*
+gck_secret_item_get_factory (void)
+{
+	static CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
+
+	static CK_ATTRIBUTE attributes[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+	};
+
+	static GckFactory factory = {
+		attributes,
+		G_N_ELEMENTS (attributes),
+		factory_create_item
+	};
+
+	return &factory;
+}
 
 GckSecretCollection*
 gck_secret_item_get_collection (GckSecretItem *self)

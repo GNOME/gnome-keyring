@@ -44,8 +44,10 @@ struct _GckSecretObject {
 };
 struct _GckSecretObjectClass {
 	GckObjectClass parent_class;
-	
+	GHashTable *identifiers;
+
 	gboolean (*is_locked) (GckSecretObject *self, GckSession *session);
+
 };
 
 GType                gck_secret_object_get_type        (void);
@@ -71,5 +73,9 @@ void                 gck_secret_object_was_modified    (GckSecretObject *self);
 
 gboolean             gck_secret_object_is_locked       (GckSecretObject *self,
                                                         GckSession *session);
+
+void       gck_secret_object_class_unique_identifiers  (GckSecretObjectClass *klass);
+
+gchar*     gck_secret_object_anonymous_identifier      (void);
 
 #endif /* __GCK_SECRET_OBJECT_H__ */

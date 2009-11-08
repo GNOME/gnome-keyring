@@ -81,6 +81,45 @@ begin_set_label (GckSecretObject *self, GckTransaction *transaction, gchar *labe
 	self->pv->label = label;
 }
 
+static gchar*
+register_identifier (GckSecretObjectClass *klass, const gchar *identifier)
+{
+	gchar *result;
+	gint i;
+
+	g_assert (klass);
+	g_assert (identifier);
+
+	if (!klass->identifiers)
+		return g_strdup (identifier);
+
+	for (i = 0; i < G_MAXINT; ++i) {
+		if (i == 0)
+			result = g_strdup (identifier);
+		else
+			result = g_strdup_printf ("%s_%d", identifier, i);
+		if (g_hash_table_lookup (klass->identifiers, result)) {
+			g_free (result);
+		} else {
+			g_hash_table_insert (klass->identifiers, result, result);
+			return result;
+		}
+	}
+
+	g_assert_not_reached ();
+}
+
+static void
+unregister_identifier (GckSecretObjectClass *klass, gchar *identifier)
+{
+	g_assert (klass);
+	g_assert (identifier);
+
+	if (klass->identifiers)
+		g_hash_table_remove (klass->identifiers, identifier);
+	g_free (identifier);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -168,16 +207,19 @@ static void
 gck_secret_object_set_property (GObject *obj, guint prop_id, const GValue *value, 
                                 GParamSpec *pspec)
 {
+	GckSecretObjectClass *klass = GCK_SECRET_OBJECT_GET_CLASS (obj);
 	GckSecretObject *self = GCK_SECRET_OBJECT (obj);
-	
+	const gchar *identifier;
+
 	switch (prop_id) {
 	case PROP_LABEL:
 		gck_secret_object_set_label (self, g_value_get_string (value));
 		break;
 	case PROP_IDENTIFIER:
 		g_return_if_fail (!self->pv->identifier);
-		self->pv->identifier = g_value_dup_string (value);
-		g_return_if_fail (self->pv->identifier);
+		identifier = g_value_get_string (value);
+		g_return_if_fail (identifier);
+		self->pv->identifier = register_identifier (klass, identifier);
 		break;
 	case PROP_CREATED:
 		gck_secret_object_set_created (self, g_value_get_long (value));
@@ -217,18 +259,13 @@ gck_secret_object_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gck_secret_object_dispose (GObject *obj)
-{
-	/* GckSecretObject *self = GCK_SECRET_OBJECT (obj); */
-	G_OBJECT_CLASS (gck_secret_object_parent_class)->dispose (obj);
-}
-
-static void
 gck_secret_object_finalize (GObject *obj)
 {
+	GckSecretObjectClass *klass = GCK_SECRET_OBJECT_GET_CLASS (obj);
 	GckSecretObject *self = GCK_SECRET_OBJECT (obj);
 
-	g_free (self->pv->identifier);
+	if (self->pv->identifier)
+		unregister_identifier (klass, self->pv->identifier);
 	self->pv->identifier = NULL;
 	
 	g_free (self->pv->label);
@@ -250,7 +287,6 @@ gck_secret_object_class_init (GckSecretObjectClass *klass)
 	g_type_class_add_private (klass, sizeof (GckSecretObjectPrivate));
 
 	gobject_class->constructor = gck_secret_object_constructor;
-	gobject_class->dispose = gck_secret_object_dispose;
 	gobject_class->finalize = gck_secret_object_finalize;
 	gobject_class->set_property = gck_secret_object_set_property;
 	gobject_class->get_property = gck_secret_object_get_property;
@@ -280,6 +316,13 @@ gck_secret_object_class_init (GckSecretObjectClass *klass)
 /* -----------------------------------------------------------------------------
  * PUBLIC 
  */
+
+void
+gck_secret_object_class_unique_identifiers (GckSecretObjectClass *klass)
+{
+	if (!klass->identifiers)
+		klass->identifiers = g_hash_table_new (g_str_hash, g_str_equal);
+}
 
 const gchar*
 gck_secret_object_get_identifier (GckSecretObject *self)

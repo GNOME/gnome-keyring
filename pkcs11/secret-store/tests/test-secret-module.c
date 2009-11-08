@@ -23,6 +23,7 @@
 
 #include "config.h"
 #include "test-secret-module.h"
+#include "run-auto-test.h"
 
 #include "gck/gck-secret.h"
 #include "gck/gck-module.h"
@@ -34,20 +35,53 @@
 #include "gck-secret-object.h"
 #include "gck-secret-store.h"
 
+#include <string.h>
+
 static GMutex *mutex = NULL;
 
 GckModule*  _gck_secret_store_get_module_for_testing (void);
 GMutex* _gck_module_get_scary_mutex_that_you_should_not_touch (GckModule *module);
 
+static void
+copy_scratch_file (const gchar *basename)
+{
+	gchar *filename;
+	gchar *data;
+	gsize n_data;
+
+	filename = test_data_filename (basename);
+	if (!g_file_get_contents (filename, &data, &n_data, NULL))
+		g_return_if_reached ();
+	g_free (filename);
+
+	filename = test_scratch_filename (basename);
+	if (!g_file_set_contents (filename, data, n_data, NULL))
+		g_return_if_reached ();
+	g_free (filename);
+	g_free (data);
+}
+
 GckModule*
 test_secret_module_initialize_and_enter (void)
 {
 	CK_FUNCTION_LIST_PTR funcs;
+	CK_C_INITIALIZE_ARGS args;
 	GckModule *module;
+	gchar *string;
 	CK_RV rv;
 
+	/* Setup test directory to work in */
+	memset (&args, 0, sizeof (args));
+	string = g_strdup_printf ("directory='%s'", test_scratch_directory ());
+	args.pReserved = string;
+	args.flags = CKF_OS_LOCKING_OK;
+
+	/* Copy files from test-data to scratch */
+	copy_scratch_file ("encrypted.keyring");
+	copy_scratch_file ("plain.keyring");
+
 	funcs = gck_secret_store_get_functions ();
-	rv = (funcs->C_Initialize) (NULL);
+	rv = (funcs->C_Initialize) (&args);
 	g_return_val_if_fail (rv == CKR_OK, NULL);
 
 	module = _gck_secret_store_get_module_for_testing ();
@@ -55,6 +89,8 @@ test_secret_module_initialize_and_enter (void)
 
 	mutex = _gck_module_get_scary_mutex_that_you_should_not_touch (module);
 	test_secret_module_enter ();
+
+	g_free (string);
 
 	return module;
 }
@@ -102,6 +138,9 @@ test_secret_module_open_session (gboolean writable)
 		flags |= CKF_RW_SESSION;
 
 	rv = gck_module_C_OpenSession (module, 1, flags, NULL, NULL, &handle);
+	g_assert (rv == CKR_OK);
+
+	rv = gck_module_C_Login (module, handle, CKU_USER, NULL, 0);
 	g_assert (rv == CKR_OK);
 
 	session = gck_module_lookup_session (module, handle);
@@ -215,7 +254,7 @@ test_secret_collection_populate (GckSecretCollection *collection, GckSecretData 
 	GHashTable *fields;
 	GckSecret *secret;
 
-	item = gck_secret_collection_create_item (collection, "4");
+	item = gck_secret_collection_new_item (collection, "4");
 	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Noises");
 	secret = gck_secret_new_from_password ("4's secret");
 	gck_secret_data_set_secret (sdata, "4", secret);
@@ -225,7 +264,7 @@ test_secret_collection_populate (GckSecretCollection *collection, GckSecretData 
 	gck_secret_fields_add (fields, "pig", "grunt");
 	gck_secret_fields_add_compat_uint32 (fields, "how-many", 292929);
 
-	item = gck_secret_collection_create_item (collection, "5");
+	item = gck_secret_collection_new_item (collection, "5");
 	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Colors");
 	secret = gck_secret_new_from_password ("5's secret");
 	gck_secret_data_set_secret (sdata, "5", secret);
@@ -235,7 +274,7 @@ test_secret_collection_populate (GckSecretCollection *collection, GckSecretData 
 	gck_secret_fields_add (fields, "piglet", "pink");
 	gck_secret_fields_add_compat_uint32 (fields, "number", 8);
 
-	item = gck_secret_collection_create_item (collection, "6");
+	item = gck_secret_collection_new_item (collection, "6");
 	gck_secret_object_set_label (GCK_SECRET_OBJECT (item), "Binary Secret");
 	secret = gck_secret_new ((guchar*)"binary\0secret", 13);
 	gck_secret_data_set_secret (sdata, "6", secret);

@@ -85,20 +85,102 @@ unlock_collection(void)
 	g_object_unref (auth);
 }
 
-DEFINE_TEST(secret_item_create)
+DEFINE_TEST(secret_item_new)
 {
 	GckSecretItem *item;
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	g_assert (GCK_IS_SECRET_ITEM (item));
 	g_assert_cmpstr (gck_secret_object_get_identifier (GCK_SECRET_OBJECT (item)), ==, "the-identifier");
+}
+
+DEFINE_TEST(secret_item_create)
+{
+	GckTransaction *transaction;
+	GckSecretItem *item;
+
+	transaction = gck_transaction_new ();
+	item = gck_secret_collection_create_item (collection, transaction);
+	g_assert (GCK_IS_SECRET_ITEM (item));
+	g_object_ref (item);
+	g_assert (gck_secret_collection_has_item (collection, item));
+
+	gck_transaction_complete (transaction);
+	g_object_unref (transaction);
+
+	/* Should still be there */
+	g_assert (gck_secret_collection_has_item (collection, item));
+	g_object_unref (item);
+}
+
+DEFINE_TEST(secret_item_create_failed)
+{
+	GckTransaction *transaction;
+	GckSecretItem *item;
+
+	transaction = gck_transaction_new ();
+	item = gck_secret_collection_create_item (collection, transaction);
+	g_assert (GCK_IS_SECRET_ITEM (item));
+	g_object_ref (item);
+	g_assert (gck_secret_collection_has_item (collection, item));
+
+	gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+	gck_transaction_complete (transaction);
+	g_object_unref (transaction);
+
+	/* Should no longer be there */
+	g_assert (!gck_secret_collection_has_item (collection, item));
+	g_object_unref (item);
+}
+
+DEFINE_TEST(secret_item_destroy)
+{
+	GckTransaction *transaction;
+	GckSecretItem *item;
+
+	item = gck_secret_collection_new_item (collection, "the-identifier");
+	g_assert (gck_secret_collection_has_item (collection, item));
+	g_object_ref (item);
+
+	transaction = gck_transaction_new ();
+	gck_secret_collection_destroy_item (collection, transaction, item);
+	g_assert (!gck_secret_collection_has_item (collection, item));
+
+	gck_transaction_complete (transaction);
+	g_object_unref (transaction);
+
+	/* Should not be there */
+	g_assert (!gck_secret_collection_has_item (collection, item));
+	g_object_unref (item);
+}
+
+DEFINE_TEST(secret_item_destroy_failed)
+{
+	GckTransaction *transaction;
+	GckSecretItem *item;
+
+	item = gck_secret_collection_new_item (collection, "the-identifier");
+	g_assert (gck_secret_collection_has_item (collection, item));
+	g_object_ref (item);
+
+	transaction = gck_transaction_new ();
+	gck_secret_collection_destroy_item (collection, transaction, item);
+	g_assert (!gck_secret_collection_has_item (collection, item));
+
+	gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+	gck_transaction_complete (transaction);
+	g_object_unref (transaction);
+
+	/* Should be there */
+	g_assert (gck_secret_collection_has_item (collection, item));
+	g_object_unref (item);
 }
 
 DEFINE_TEST(secret_item_collection_get)
 {
 	GckSecretItem *item, *check;
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	g_assert (GCK_IS_SECRET_ITEM (item));
 
 	check = gck_secret_collection_get_item (collection, "the-identifier");
@@ -110,9 +192,9 @@ DEFINE_TEST(secret_item_collection_items)
 	GList *l, *items;
 	const gchar *identifier;
 
-	gck_secret_collection_create_item (collection, "one-identifier");
-	gck_secret_collection_create_item (collection, "two-identifier");
-	gck_secret_collection_create_item (collection, "three-identifier");
+	gck_secret_collection_new_item (collection, "one-identifier");
+	gck_secret_collection_new_item (collection, "two-identifier");
+	gck_secret_collection_new_item (collection, "three-identifier");
 
 	items = gck_secret_collection_get_items (collection);
 	g_assert_cmpuint (g_list_length (items), ==, 3);
@@ -131,7 +213,7 @@ DEFINE_TEST(secret_item_collection_remove)
 {
 	GckSecretItem *item;
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	g_assert (gck_secret_collection_get_item (collection, "the-identifier") == item);
 
 	gck_secret_collection_remove_item (collection, item);
@@ -142,7 +224,7 @@ DEFINE_TEST(secret_item_is_locked)
 {
 	GckSecretItem *item;
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	g_assert (gck_secret_object_is_locked (GCK_SECRET_OBJECT (item), session) == 
 	          gck_secret_object_is_locked (GCK_SECRET_OBJECT (collection), session));
 
@@ -154,14 +236,14 @@ DEFINE_TEST(secret_item_is_locked)
 DEFINE_TEST(secret_item_get_collection)
 {
 	GckSecretItem *item;
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	g_assert (gck_secret_item_get_collection (item) == collection);
 }
 
 DEFINE_TEST(secret_item_tracks_collection)
 {
 	GckSecretItem *item;
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	g_object_ref (item);
 
 	unlock_collection();
@@ -185,7 +267,7 @@ DEFINE_TEST(secret_item_get_set_fields)
 	GHashTable *check;
 	GckSecretItem *item;
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	gck_secret_item_set_fields (item, fields);
 	gck_secret_item_set_fields (item, fields);
 
@@ -202,7 +284,7 @@ DEFINE_TEST(secret_item_collection_attr)
 	GckSecretItem *item;
 	CK_RV rv;
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	rv = gck_object_get_attribute (GCK_OBJECT (item), session, &check);
 	g_assert (rv == CKR_OK);
 	g_assert (check.ulValueLen == 4);
@@ -220,7 +302,7 @@ DEFINE_TEST(secret_item_secret_attr)
 
 	unlock_collection ();
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	gck_object_set_attribute (GCK_OBJECT (item), session, transaction, &attr);
 	g_assert (gck_transaction_get_failed (transaction) == FALSE);
 	gck_transaction_complete (transaction);
@@ -243,7 +325,7 @@ DEFINE_TEST(secret_item_secret_attr_locked)
 	GckSecretItem *item;
 	CK_RV rv;
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	gck_object_set_attribute (GCK_OBJECT (item), session, transaction, &attr);
 	g_assert (gck_transaction_get_failed (transaction) == TRUE);
 	gck_transaction_complete (transaction);
@@ -268,7 +350,7 @@ DEFINE_TEST(secret_item_fields_attr)
 
 	unlock_collection ();
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	gck_object_set_attribute (GCK_OBJECT (item), session, transaction, &attr);
 	g_assert (gck_transaction_get_failed (transaction) == FALSE);
 	gck_transaction_complete (transaction);
@@ -295,7 +377,7 @@ DEFINE_TEST(secret_item_fields_attr_locked)
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "name1\0value1\0name2\0value2", 26 };
 	GckSecretItem *item;
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 	gck_object_set_attribute (GCK_OBJECT (item), session, transaction, &attr);
 	g_assert (gck_transaction_get_failed (transaction) == TRUE);
 	gck_transaction_complete (transaction);
@@ -316,7 +398,7 @@ DEFINE_TEST(secret_item_fields_attr_reverts)
 
 	unlock_collection ();
 
-	item = gck_secret_collection_create_item (collection, "the-identifier");
+	item = gck_secret_collection_new_item (collection, "the-identifier");
 
 	/* Set the old value like so */
 	fields = gck_secret_fields_new ();

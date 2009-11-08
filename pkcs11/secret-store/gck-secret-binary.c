@@ -956,7 +956,7 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecretData *sdata,
 		
 		item = gck_secret_collection_get_item (collection, items[i].identifier);
 		if (item == NULL)
-			item = gck_secret_collection_create_item (collection, items[i].identifier);
+			item = gck_secret_collection_new_item (collection, items[i].identifier);
 		
 		setup_item_from_info (item, sdata, &items[i]);
 	}

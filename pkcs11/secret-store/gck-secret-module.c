@@ -22,12 +22,17 @@
 #include "config.h"
 
 #include "gck-secret-collection.h"
+#include "gck-secret-item.h"
 #include "gck-secret-module.h"
 #include "gck-secret-search.h"
 #include "gck-secret-store.h"
 
 #include "gck/gck-file-tracker.h"
+#include "gck/gck-transaction.h"
 
+#include <glib/gstdio.h>
+
+#include <errno.h>
 #include <fcntl.h>
 #include <string.h>
 
@@ -71,6 +76,10 @@ G_DEFINE_TYPE (GckSecretModule, gck_secret_module, GCK_TYPE_MODULE);
 
 GckModule*  _gck_secret_store_get_module_for_testing (void);
 
+/* Forward declarations */
+static void add_collection (GckSecretModule *, GckTransaction *, GckSecretCollection *);
+static void remove_collection (GckSecretModule *, GckTransaction *, GckSecretCollection *);
+
 /* -----------------------------------------------------------------------------
  * ACTUAL PKCS#11 Module Implementation 
  */
@@ -83,6 +92,107 @@ GCK_DEFINE_MODULE (gck_secret_module, GCK_TYPE_SECRET_MODULE);
  * INTERNAL 
  */
 
+static gboolean
+complete_add (GckTransaction *transaction, GObject *obj, gpointer user_data)
+{
+	GckSecretCollection *collection = GCK_SECRET_COLLECTION (user_data);
+	if (gck_transaction_get_failed (transaction))
+		remove_collection (GCK_SECRET_MODULE (obj), NULL, collection);
+	g_object_unref (collection);
+	return TRUE;
+}
+
+static void
+add_collection (GckSecretModule *self, GckTransaction *transaction, GckSecretCollection  *collection)
+{
+	const gchar *identifier;
+
+	g_assert (GCK_IS_SECRET_MODULE(self));
+	g_assert (GCK_IS_SECRET_COLLECTION (collection));
+
+	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (collection));
+	g_return_if_fail (identifier);
+
+	g_hash_table_replace (self->collections, g_strdup (identifier), g_object_ref (collection));
+
+	gck_object_expose_full (GCK_OBJECT (collection), transaction, TRUE);
+	if (transaction)
+		gck_transaction_add (transaction, self, complete_add, g_object_ref (collection));
+}
+
+static gboolean
+complete_remove (GckTransaction *transaction, GObject *obj, gpointer user_data)
+{
+	GckSecretCollection *collection = GCK_SECRET_COLLECTION (user_data);
+	if (gck_transaction_get_failed (transaction))
+		add_collection (GCK_SECRET_MODULE (obj), NULL, collection);
+	g_object_unref (collection);
+	return TRUE;
+}
+
+static void
+remove_collection (GckSecretModule *self, GckTransaction *transaction, GckSecretCollection *collection)
+{
+	const gchar *identifier;
+
+	g_assert (GCK_IS_SECRET_MODULE (self));
+	g_assert (GCK_IS_SECRET_COLLECTION (collection));
+
+	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (collection));
+	g_return_if_fail (identifier);
+
+	g_hash_table_remove (self->collections, identifier);
+
+	gck_object_expose_full (GCK_OBJECT (collection), transaction, FALSE);
+	if (transaction)
+		gck_transaction_add (transaction, self, complete_remove, g_object_ref (collection));
+}
+
+static gchar*
+identifier_from_filename (GckSecretModule *self, const gchar *filename)
+{
+	gchar *identifier;
+
+	/* Do we have one for this path yet? */
+	identifier = g_path_get_basename (filename);
+
+	/* Remove the keyring suffix */
+	if (g_str_has_suffix (identifier, ".keyring"))
+		identifier[strlen(identifier) - 8] = 0;
+
+	return identifier;
+}
+
+static gchar*
+identifier_to_new_filename (GckSecretModule *self, const gchar *identifier)
+{
+	gchar *filename;
+	gint i;
+	int fd;
+
+	for (i = 0; i < G_MAXINT; ++i) {
+		if (i == 0)
+			filename = g_strdup_printf ("%s/%s.keyring", self->directory, identifier);
+		else
+			filename = g_strdup_printf ("%s/%s_%d.keyring", self->directory, identifier, i);
+
+		/* Try to create the file, and check that it doesn't exist */
+		fd = g_open (filename, O_RDONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+		if (fd == -1) {
+			if (errno != EEXIST)
+				break;
+		} else {
+			close (fd);
+			break;
+		}
+
+		g_free (filename);
+	}
+
+	return filename;
+}
+
+
 static void
 on_file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 {
@@ -90,20 +200,20 @@ on_file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 	GckManager *manager;
 	GckDataResult res;
 	gboolean created;
-	gchar *basename;
+	gchar *identifier;
 
 	manager = gck_module_get_manager (GCK_MODULE (self));
 	g_return_if_fail (manager);
 
 	/* Do we have one for this path yet? */
-	basename = g_path_get_basename (path);
-	collection = g_hash_table_lookup (self->collections, basename);
+	identifier = identifier_from_filename (self, path);
+	collection = g_hash_table_lookup (self->collections, path);
 
 	if (collection == NULL) {
 		created = TRUE;
 		collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
 		                           "module", self,
-		                           "identifier", basename,
+		                           "identifier", identifier,
 		                           "filename", path,
 		                           "manager", manager,
 		                           NULL);
@@ -113,11 +223,8 @@ on_file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 
 	switch (res) {
 	case GCK_DATA_SUCCESS:
-		if (created) {
-			g_hash_table_replace (self->collections, basename, collection);
-			gck_object_expose (GCK_OBJECT (collection), TRUE);
-			basename = NULL;
-		}
+		if (created)
+			add_collection (self, NULL, collection);
 		break;
 	case GCK_DATA_LOCKED:
 		g_message ("master password for keyring changed without our knowledge: %s", path);
@@ -133,21 +240,21 @@ on_file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 		g_assert_not_reached ();
 	}
 
-	g_free (basename);
+	g_object_unref (collection);
+	g_free (identifier);
 }
 
 static void
 on_file_remove (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 {
-	gchar *basename;
+	GckSecretCollection *collection;
 
 	g_return_if_fail (path);
 	g_return_if_fail (GCK_IS_SECRET_MODULE (self));
 
-	basename = g_path_get_basename (path);
-	if (!g_hash_table_remove (self->collections, basename))
-		g_return_if_reached ();
-	g_free (basename);
+	collection = g_hash_table_lookup (self->collections, path);
+	if (collection)
+		remove_collection (self, NULL, collection);
 }
 
 /* -----------------------------------------------------------------------------
@@ -185,6 +292,74 @@ gck_secret_module_real_refresh_token (GckModule *base)
 	return CKR_OK;
 }
 
+static void
+gck_secret_module_real_store_object (GckModule *module, GckTransaction *transaction,
+                                     GckObject *object)
+{
+	GckSecretModule *self = GCK_SECRET_MODULE (module);
+	GckSecretCollection *collection = NULL;
+	const gchar *identifier;
+	gchar *filename;
+
+	/* Adding an item */
+	if (GCK_IS_SECRET_ITEM (object)) {
+		collection = gck_secret_item_get_collection (GCK_SECRET_ITEM (object));
+		g_return_if_fail (GCK_IS_SECRET_COLLECTION (collection));
+
+	/* Adding a collection */
+	} else if (GCK_IS_SECRET_COLLECTION (object)) {
+		collection = GCK_SECRET_COLLECTION (object);
+	}
+
+	/* No other kind of token object */
+	if (collection == NULL) {
+		g_warning ("can't store object of type '%s' on secret token", G_OBJECT_TYPE_NAME (object));
+		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+		return;
+	}
+
+	/* Setup a filename for this collection */
+	if (!gck_secret_collection_get_filename (collection)) {
+		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (collection));
+		filename = identifier_to_new_filename (self, identifier);
+		gck_secret_collection_set_filename (collection, filename);
+		g_free (filename);
+	}
+
+	gck_secret_collection_save (collection, transaction);
+	if (!gck_transaction_get_failed (transaction))
+		add_collection (self, transaction, collection);
+}
+
+static void
+gck_secret_module_real_remove_object (GckModule *module, GckTransaction *transaction,
+                                      GckObject *object)
+{
+	GckSecretModule *self = GCK_SECRET_MODULE (module);
+	GckSecretCollection *collection;
+
+	/* Removing an item */
+	if (GCK_IS_SECRET_ITEM (object)) {
+		collection = gck_secret_item_get_collection (GCK_SECRET_ITEM (object));
+		g_return_if_fail (GCK_IS_SECRET_COLLECTION (collection));
+		gck_secret_collection_destroy_item (collection, transaction, GCK_SECRET_ITEM (object));
+		if (!gck_transaction_get_failed (transaction))
+			gck_secret_collection_save (collection, transaction);
+
+	/* Removing a collection */
+	} else if (GCK_IS_SECRET_COLLECTION (object)) {
+		collection = GCK_SECRET_COLLECTION (object);
+		gck_secret_collection_destroy (collection, transaction);
+		if (!gck_transaction_get_failed (transaction))
+			remove_collection (self, transaction, collection);
+
+	/* No other token objects */
+	} else {
+		gck_transaction_fail (transaction, CKR_FUNCTION_NOT_SUPPORTED);
+		g_return_if_reached ();
+	}
+}
+
 static GObject* 
 gck_secret_module_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
@@ -211,6 +386,8 @@ gck_secret_module_init (GckSecretModule *self)
 {
 	self->collections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 	gck_module_register_factory (GCK_MODULE (self), GCK_FACTORY_SECRET_SEARCH);
+	gck_module_register_factory (GCK_MODULE (self), GCK_FACTORY_SECRET_ITEM);
+	gck_module_register_factory (GCK_MODULE (self), GCK_FACTORY_SECRET_COLLECTION);
 }
 
 static void
@@ -252,11 +429,13 @@ gck_secret_module_class_init (GckSecretModuleClass *klass)
 	gobject_class->constructor = gck_secret_module_constructor;
 	gobject_class->dispose = gck_secret_module_dispose;
 	gobject_class->finalize = gck_secret_module_finalize;
-	
+
 	module_class->get_slot_info = gck_secret_module_real_get_slot_info;
 	module_class->get_token_info = gck_secret_module_real_get_token_info;
 	module_class->parse_argument = gck_secret_module_real_parse_argument;
 	module_class->refresh_token = gck_secret_module_real_refresh_token;
+	module_class->remove_token_object = gck_secret_module_real_remove_object;
+	module_class->store_token_object = gck_secret_module_real_store_object;
 }
 
 /* ---------------------------------------------------------------------------------------
