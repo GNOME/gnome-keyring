@@ -245,7 +245,9 @@ gck_attribute_equal (gconstpointer v1, gconstpointer v2)
 		return FALSE;
 	if (a1->pValue == a2->pValue)
 		return TRUE;
-	
+	if (a1->ulValueLen == 0)
+		return TRUE;
+
 	g_assert (a1->pValue);
 	g_assert (a2->pValue);
 	
