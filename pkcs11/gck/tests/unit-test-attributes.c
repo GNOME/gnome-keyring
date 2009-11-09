@@ -25,6 +25,13 @@
 
 #include "gck/gck-attributes.h"
 
+DEFINE_TEST(attribute_equal_zero_len_null_ptr)
+{
+	CK_ATTRIBUTE attr1 = { CKA_LABEL, "", 0 };
+	CK_ATTRIBUTE attr2 = { CKA_LABEL, NULL, 0 };
+	g_assert (gck_attribute_equal (&attr1, &attr2));
+}
+
 DEFINE_TEST(attribute_consume)
 {
 	CK_ATTRIBUTE attr;
