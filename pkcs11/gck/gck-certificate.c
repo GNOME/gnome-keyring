@@ -345,7 +345,8 @@ gck_certificate_real_get_attribute (GckObject *base, GckSession *session, CK_ATT
 		return gck_attribute_set_data (attr, cdata, n_data);
 
 	case CKA_ID:
-		g_return_val_if_fail (self->pv->key, CKR_GENERAL_ERROR);
+		if (!self->pv->key)
+			return gck_attribute_set_data (attr, NULL, 0);
 		return gck_object_get_attribute (GCK_OBJECT (self->pv->key), session, attr);
 
 	case CKA_ISSUER:
@@ -551,29 +552,47 @@ gck_certificate_real_load (GckSerializable *base, GckSecret *login, const guchar
 	/* Now create us a nice public key with that identifier */
 	res = gck_data_der_read_public_key_info (keydata, n_keydata, &sexp);
 	g_free (keydata);
-	if (res != GCK_DATA_SUCCESS) {
+
+	switch (res) {
+
+	/* Create ourselves a public key with that */
+	case GCK_DATA_SUCCESS:
+		wrapper = gck_sexp_new (sexp);
+		if (!self->pv->key)
+			self->pv->key = gck_certificate_key_new (gck_object_get_module (GCK_OBJECT (self)),
+			                                         gck_object_get_manager (GCK_OBJECT (self)),
+			                                         self);
+		gck_key_set_base_sexp (GCK_KEY (self->pv->key), wrapper);
+		gck_sexp_unref (wrapper);
+		break;
+
+	/* Unknown type of public key for this certificate, just ignore */
+	case GCK_DATA_UNRECOGNIZED:
+		if (self->pv->key)
+			g_object_unref (self->pv->key);
+		self->pv->key = NULL;
+		break;
+
+	/* Bad key, drop certificate */
+	case GCK_DATA_FAILURE:
+	case GCK_DATA_LOCKED:
 		g_warning ("couldn't parse certificate key data");
 		g_free (copy);
 		asn1_delete_structure (&asn1);
 		return FALSE;
+
+	default:
+		g_assert_not_reached ();
+		break;
 	}
-		
-	/* Create ourselves a public key with that */
-	wrapper = gck_sexp_new (sexp);
-	if (!self->pv->key)
-		self->pv->key = gck_certificate_key_new (gck_object_get_module (GCK_OBJECT (self)), 
-		                                         gck_object_get_manager (GCK_OBJECT (self)),
-		                                         self);
-	gck_key_set_base_sexp (GCK_KEY (self->pv->key), wrapper);
-	gck_sexp_unref (wrapper);
-		
+
 	g_free (self->pv->data);
 	self->pv->data = copy;
 	self->pv->n_data = n_data;
-		
+
 	asn1_delete_structure (&self->pv->asn1);
 	self->pv->asn1 = asn1;
-		
+
 	return TRUE;
 }
 
@@ -650,7 +669,6 @@ GckCertificateKey*
 gck_certificate_get_public_key (GckCertificate *self)
 {
 	g_return_val_if_fail (GCK_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (GCK_IS_CERTIFICATE_KEY (self->pv->key), NULL);
 	return self->pv->key;
 }
 
