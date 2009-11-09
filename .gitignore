@@ -17,7 +17,7 @@ Makefile.in
 *-marshal.[ch]
 .libs
 .deps
-
+.anjuta*
 /compile
 /*.tmp
 /*.prj
