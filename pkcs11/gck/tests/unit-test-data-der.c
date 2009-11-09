@@ -29,6 +29,8 @@
 #include "gck/gck-data-asn1.h"
 #include "gck/gck-data-der.h"
 
+#include "egg/egg-openssl.h"
+
 #include <glib.h>
 #include <gcrypt.h>
 
@@ -273,6 +275,44 @@ DEFINE_TEST(write_certificate)
 	g_assert (data);
 	g_assert (n_data == n_certificate_data);
 	g_assert (memcmp (data, certificate_data, n_data) == 0);
+	g_free (data);
+}
+
+static void
+on_ca_certificate_public_key_info (GQuark type, const guchar *data, gsize n_data,
+                                   GHashTable *headers, gpointer user_data)
+{
+	ASN1_TYPE asn1 = ASN1_TYPE_EMPTY;
+	GckDataResult res;
+	gpointer keydata;
+	gsize n_keydata;
+	gcry_sexp_t sexp;
+
+	g_assert (g_quark_try_string ("CERTIFICATE") == type);
+
+	/* Parse the ASN1 data */
+	res = gck_data_der_read_certificate (data, n_data, &asn1);
+	g_assert (res == GCK_DATA_SUCCESS);
+
+	/* Generate a raw public key from our certificate */
+	keydata = egg_asn1_encode (asn1, "tbsCertificate.subjectPublicKeyInfo", &n_keydata, NULL);
+	g_assert (keydata);
+
+	/* Now create us a nice public key with that identifier */
+	res = gck_data_der_read_public_key_info (keydata, n_keydata, &sexp);
+	g_assert (res == GCK_DATA_SUCCESS || res == GCK_DATA_UNRECOGNIZED);
+
+	gcry_sexp_release (sexp);
+	g_free (keydata);
+}
+
+DEFINE_TEST(read_ca_certificates_public_key_info)
+{
+	gpointer data;
+	gsize n_data;
+
+	data = test_read_testdata ("ca-certificates.crt", &n_data);
+	egg_openssl_pem_parse (data, n_data, on_ca_certificate_public_key_info, NULL);
 	g_free (data);
 }
 

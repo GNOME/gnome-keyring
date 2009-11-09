@@ -458,6 +458,7 @@ gck_data_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t
 		
 	} else {
 		g_message ("unsupported key algorithm in certificate: %s", g_quark_to_string (oid));
+		ret = GCK_DATA_UNRECOGNIZED;
 		goto done;
 	}
 	
