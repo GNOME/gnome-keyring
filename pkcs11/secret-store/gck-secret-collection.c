@@ -96,7 +96,7 @@ find_unlocked_secret_data (GckCredential *cred, GckObject *object, gpointer user
 
 	g_return_val_if_fail (!*result, FALSE);
 
-	sdata = g_object_get_data (G_OBJECT (cred), "collection-secret-data");
+	sdata = gck_credential_get_data (cred);
 	if (sdata) {
 		g_return_val_if_fail (sdata == self->sdata, FALSE);
 		*result = sdata;
@@ -300,8 +300,7 @@ gck_secret_collection_real_unlock (GckObject *obj, GckCredential *cred)
 			return CKR_PIN_INCORRECT;
 
 		/* Credential now tracks our secret data */
-		g_object_set_data_full (G_OBJECT (cred), "collection-secret-data",
-		                        g_object_ref (self->sdata), g_object_unref);
+		gck_credential_set_data (cred, g_object_ref (self->sdata), g_object_unref);
 		return CKR_OK;
 	}
 
@@ -323,7 +322,7 @@ gck_secret_collection_real_unlock (GckObject *obj, GckCredential *cred)
 
 	switch (res) {
 	case GCK_DATA_SUCCESS:
-		g_object_set_data_full (G_OBJECT (cred), "collection-secret-data", sdata, g_object_unref);
+		gck_credential_set_data (cred, sdata, g_object_unref);
 		track_secret_data (self, sdata);
 		return CKR_OK;
 	case GCK_DATA_LOCKED:

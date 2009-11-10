@@ -68,6 +68,12 @@ const gchar*               gck_credential_get_password           (GckCredential 
 
 GckObject*                 gck_credential_get_object             (GckCredential *self);
 
+gpointer                   gck_credential_get_data               (GckCredential *self);
+
+void                       gck_credential_set_data               (GckCredential *self,
+                                                                  gpointer data,
+                                                                  GDestroyNotify destroy);
+
 gint                       gck_credential_get_uses_remaining     (GckCredential *self);
 
 void                       gck_credential_set_uses_remaining     (GckCredential *self,

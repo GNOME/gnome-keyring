@@ -251,3 +251,27 @@ DEFINE_TEST(credential_login_property)
 
 	g_object_unref (cred);
 }
+
+DEFINE_TEST(credential_data)
+{
+	GckCredential *cred;
+	CK_RV rv;
+
+	rv = gck_credential_create (object, NULL, (guchar*)"mock", 4, &cred);
+	g_assert (rv == CKR_OK);
+	g_assert (cred);
+
+	g_assert (gck_credential_get_data (cred) == NULL);
+
+	gck_credential_set_data (cred, g_strdup ("one"), g_free);
+
+	g_assert_cmpstr ("one", ==, gck_credential_get_data (cred));
+
+	gck_credential_set_data (cred, g_strdup ("ONE"), g_free);
+	g_assert_cmpstr ("ONE", ==, gck_credential_get_data (cred));
+
+	gck_credential_set_data (cred, NULL, NULL);
+	g_assert (gck_credential_get_data (cred) == NULL);
+
+	g_object_unref (cred);
+}

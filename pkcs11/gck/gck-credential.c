@@ -42,8 +42,10 @@ struct _GckCredentialPrivate {
 	/* The object we authenticated */
 	GckObject *object;
 
-	/* Optional secret */
+	/* Optional secret and/or data */
 	GckSecret *secret;
+	gpointer user_data;
+	GDestroyNotify destroy;
 
 	/* Can limit by number of uses remaining */
 	gint uses_remaining;
@@ -193,6 +195,11 @@ gck_credential_dispose (GObject *obj)
 		g_object_unref (self->pv->secret);
 	self->pv->secret = NULL;
 
+	if (self->pv->user_data && self->pv->destroy)
+		(self->pv->destroy)(self->pv->user_data);
+	self->pv->user_data = NULL;
+	self->pv->destroy = NULL;
+
 	G_OBJECT_CLASS (gck_credential_parent_class)->dispose (obj);
 }
 
@@ -203,6 +210,8 @@ gck_credential_finalize (GObject *obj)
 
 	g_assert (!self->pv->object);
 	g_assert (!self->pv->secret);
+	g_assert (!self->pv->user_data);
+	g_assert (!self->pv->destroy);
 
 	G_OBJECT_CLASS (gck_credential_parent_class)->finalize (obj);
 }
@@ -402,4 +411,22 @@ gck_credential_throw_away_one_use (GckCredential *self)
 		--(self->pv->uses_remaining);
 	if (self->pv->uses_remaining == 0)
 		self_destruct (self);
+}
+
+gpointer
+gck_credential_get_data (GckCredential *self)
+{
+	g_return_val_if_fail (GCK_IS_CREDENTIAL (self), NULL);
+	return self->pv->user_data;
+}
+
+void
+gck_credential_set_data (GckCredential *self, gpointer data, GDestroyNotify destroy)
+{
+	g_return_if_fail (GCK_IS_CREDENTIAL (self));
+
+	if (self->pv->user_data && self->pv->destroy)
+		(self->pv->destroy) (self->pv->user_data);
+	self->pv->user_data = data;
+	self->pv->destroy = destroy;
 }

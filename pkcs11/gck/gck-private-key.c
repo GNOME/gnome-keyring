@@ -175,7 +175,7 @@ acquire_from_credential (GckCredential *cred, GckObject *object, gpointer user_d
 	g_assert (!*result);
 
 	/* The sexp we stored on the credential */
-	*result = g_object_get_data (G_OBJECT (cred), "private-key-sexp");
+	*result = gck_credential_get_data (cred);
 	if (*result != NULL) {
 		*result = gck_sexp_ref (*result);
 		gck_credential_throw_away_one_use (cred);
@@ -189,7 +189,7 @@ static gboolean
 have_from_credential (GckCredential *cred, GckObject *object, gpointer unused)
 {
 	/* The sexp we stored on the credential */
-	return g_object_get_data (G_OBJECT (cred), "private-key-sexp") ? TRUE : FALSE;
+	return gck_credential_get_data (cred) ? TRUE : FALSE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -401,12 +401,10 @@ gck_private_key_set_locked_private (GckPrivateKey *self, GckCredential *cred,
 {
 	g_return_if_fail (GCK_IS_PRIVATE_KEY (self));
 	g_return_if_fail (GCK_IS_CREDENTIAL (cred));
-
-	if (sexp == NULL)
-		g_object_set_data (G_OBJECT (cred), "private-key-sexp", NULL);
-	else
-		g_object_set_data_full (G_OBJECT (cred), "private-key-sexp",
-		                        gck_sexp_ref (sexp), gck_sexp_unref);
+	g_return_if_fail (gck_credential_get_object (cred) == GCK_OBJECT (self));
+	if (sexp != NULL)
+		gck_sexp_ref (sexp);
+	gck_credential_set_data (cred, sexp, gck_sexp_unref);
 }
 
 GckSexp*
