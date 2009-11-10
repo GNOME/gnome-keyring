@@ -825,9 +825,14 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 	*object = NULL;
 	(factory->func) (self, transaction, attrs, n_attrs, object);
 
-	/* See if we can create due to read-only */
+	/* Give the object a chance to create additional attributes */
 	if (!gck_transaction_get_failed (transaction)) {
 		g_return_val_if_fail (*object, CKR_GENERAL_ERROR);
+		gck_object_create_attributes (*object, self, transaction, attrs, n_attrs);
+	}
+
+	/* See if we can create due to read-only */
+	if (!gck_transaction_get_failed (transaction)) {
 		if (gck_object_is_token (*object)) {
 			if (!gck_object_is_transient (*object) &&
 			    gck_module_get_write_protected (self->pv->module))
@@ -844,11 +849,6 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 		    is_private == TRUE) {
 			gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 		}
-	}
-
-	/* Give the object a chance to create additional attributes */
-	if (!gck_transaction_get_failed (transaction)) {
-		gck_object_create_attributes (*object, self, transaction, attrs, n_attrs);
 	}
 
 	/* Find somewhere to store the object */
