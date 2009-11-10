@@ -26,8 +26,8 @@
 #include "pkcs11/pkcs11i.h"
 
 #include "gck-attributes.h"
-#include "gck-authenticator.h"
 #include "gck-certificate.h"
+#include "gck-credential.h"
 #include "gck-factory.h"
 #include "gck-manager.h"
 #include "gck-memory-store.h"
@@ -563,7 +563,7 @@ gck_module_init (GckModule *self)
 	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
 	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_KEY);
-	gck_module_register_factory (self, GCK_FACTORY_AUTHENTICATOR);
+	gck_module_register_factory (self, GCK_FACTORY_CREDENTIAL);
 }
 
 static void

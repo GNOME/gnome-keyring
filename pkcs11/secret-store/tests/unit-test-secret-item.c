@@ -30,7 +30,7 @@
 #include "gck-secret-fields.h"
 #include "gck-secret-item.h"
 
-#include "gck/gck-authenticator.h"
+#include "gck/gck-credential.h"
 #include "gck/gck-session.h"
 #include "gck/gck-transaction.h"
 
@@ -72,17 +72,17 @@ DEFINE_TEARDOWN(secret_item)
 static void
 unlock_collection(void)
 {
-	GckAuthenticator *auth;
+	GckCredential *cred;
 	CK_RV rv;
 
-	/* Create authenticator, which unlocks collection */
-	rv = gck_authenticator_create (GCK_OBJECT (collection),
-	                               gck_session_get_manager (session),
-	                               NULL, 0, &auth);
+	/* Create credential, which unlocks collection */
+	rv = gck_credential_create (GCK_OBJECT (collection),
+	                            gck_session_get_manager (session),
+	                            NULL, 0, &cred);
 	g_assert (rv == CKR_OK);
 
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (auth));
-	g_object_unref (auth);
+	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	g_object_unref (cred);
 }
 
 DEFINE_TEST(secret_item_new)

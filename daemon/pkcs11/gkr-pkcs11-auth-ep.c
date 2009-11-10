@@ -69,7 +69,7 @@ auth_object_for_context_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE obj
 	CK_BBOOL token, always;
 	CK_ULONG n_attrs;
 	CK_RV rv;
-	
+
 	/* Lookup information about the specific object */
 	attrs[0].type = CKA_LABEL;
 	attrs[0].pValue = label = NULL;
@@ -161,26 +161,26 @@ auth_object_for_context_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE obj
 }
 
 static void
-auth_create_authenticator (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object,
-                           CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
+auth_create_credential (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE object,
+                         CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
-	CK_OBJECT_CLASS klass = CKO_GNOME_AUTHENTICATOR;
+	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_BBOOL transient = CK_TRUE;
 	CK_BBOOL token = CK_FALSE;
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_GNOME_OBJECT, &object, sizeof (object) },
+		{ CKA_G_OBJECT, &object, sizeof (object) },
 		{ CKA_GNOME_TRANSIENT, &transient, sizeof (transient) },
 		{ CKA_TOKEN, &token, sizeof (token) },
 		{ CKA_VALUE, pin, n_pin }
 	};
 
-	CK_OBJECT_HANDLE authenticator;
+	CK_OBJECT_HANDLE credential;
 	CK_RV rv;
 
-	rv = pkcs11_lower->C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &authenticator);
+	rv = pkcs11_lower->C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &credential);
 	if (rv != CKR_OK)
-		g_message ("failed to create authenticator object (code: %lu)", (gulong)rv);
+		g_message ("failed to create credential object (code: %lu)", (gulong)rv);
 }
 
 /* --------------------------------------------------------------------------------------
@@ -530,7 +530,7 @@ auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
 
 		/* If that was successful, then we can create an authenticator object */
 		if (user_type == CKU_CONTEXT_SPECIFIC && rv == CKR_OK && object != 0)
-			auth_create_authenticator (handle, object, pin, pin_len);
+			auth_create_credential (handle, object, pin, pin_len);
 
 		/* Wrap things up */
 		DAEMON_ENTER ();

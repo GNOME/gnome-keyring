@@ -54,8 +54,8 @@ void                       gck_private_key_set_unlocked_private   (GckPrivateKey
                                                                    GckSexp *sexp);
 
 void                       gck_private_key_set_locked_private     (GckPrivateKey *self,
-                                                                   GckAuthenticator *auth,
-                                                                   GckSexp *sexp);               
+                                                                   GckCredential *cred,
+                                                                   GckSexp *sexp);
 
 GckFactory*                gck_private_key_get_factory            (void);
 

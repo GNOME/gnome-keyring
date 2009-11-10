@@ -25,7 +25,7 @@
 #include "pkcs11/pkcs11i.h"
 
 #include "gck-attributes.h"
-#include "gck-authenticator.h"
+#include "gck-credential.h"
 #include "gck-crypto.h"
 #include "gck-key.h"
 #include "gck-factory.h"
@@ -69,7 +69,7 @@ struct _GckSessionPrivate {
 	/* Used for operations */
 	void (*current_operation) (GckSession *self);
 	GckObject *current_object;
-	GckAuthenticator *authenticator;
+	GckCredential *credential;
 
 	/* Used for find operations */
 	GArray *found_objects;
@@ -107,10 +107,10 @@ cleanup_crypto (GckSession *self)
 		g_object_unref (self->pv->current_object);
 	self->pv->current_object = NULL;
 
-	if (self->pv->authenticator) {
-		g_object_set_data (G_OBJECT (self->pv->authenticator), "owned-by-session", NULL);
-		g_object_unref (self->pv->authenticator);
-		self->pv->authenticator = NULL;
+	if (self->pv->credential) {
+		g_object_set_data (G_OBJECT (self->pv->credential), "owned-by-session", NULL);
+		g_object_unref (self->pv->credential);
+		self->pv->credential = NULL;
 	}
 
 	self->pv->current_operation = NULL;
@@ -426,10 +426,10 @@ gck_session_dispose (GObject *obj)
 		g_object_unref (self->pv->module);
 	self->pv->module = NULL;
 
-	if (self->pv->authenticator) {
-		g_object_set_data (G_OBJECT (self->pv->authenticator), "owned-by-session", NULL);
-		g_object_unref (self->pv->authenticator);
-		self->pv->authenticator = NULL;
+	if (self->pv->credential) {
+		g_object_set_data (G_OBJECT (self->pv->credential), "owned-by-session", NULL);
+		g_object_unref (self->pv->credential);
+		self->pv->credential = NULL;
 	}
 
 	g_hash_table_remove_all (self->pv->objects);
@@ -663,7 +663,7 @@ gck_session_lookup_writable_object (GckSession *self, CK_OBJECT_HANDLE handle,
 CK_RV
 gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
-	GckAuthenticator *authenticator;
+	GckCredential *cred;
 	gboolean always_auth;
 	gboolean is_private;
 	GckObject *object;
@@ -690,15 +690,15 @@ gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_UL
 	g_return_val_if_fail (is_private == TRUE, CKR_GENERAL_ERROR);
 
 	/* Now create the strange object */
-	rv = gck_authenticator_create (self->pv->current_object, self->pv->manager, 
-	                               pin, n_pin, &authenticator);
+	rv = gck_credential_create (self->pv->current_object, self->pv->manager,
+	                            pin, n_pin, &cred);
 	if (rv != CKR_OK)
 		return rv;
 
-	if (self->pv->authenticator)
-		g_object_unref (self->pv->authenticator);
-	g_object_set_data (G_OBJECT (authenticator), "owned-by-session", self);
-	self->pv->authenticator = authenticator;
+	if (self->pv->credential)
+		g_object_unref (self->pv->credential);
+	g_object_set_data (G_OBJECT (cred), "owned-by-session", self);
+	self->pv->credential = cred;
 
 	return CKR_OK;
 }
@@ -730,16 +730,16 @@ gck_session_destroy_session_object (GckSession *self, GckTransaction *transactio
 		g_return_if_fail (!gck_transaction_get_failed (transaction));
 	}
 
-	/* Don't actually destroy the authenticator */
-	if (self->pv->authenticator && GCK_OBJECT (self->pv->authenticator) == obj)
+	/* Don't actually destroy the credential */
+	if (self->pv->credential && GCK_OBJECT (self->pv->credential) == obj)
 		return;
 
 	remove_object (self, transaction, obj);
 }
 
 gboolean
-gck_session_for_each_authenticator (GckSession *self, GckObject *object,
-                                    GckAuthenticatorFunc func, gpointer user_data)
+gck_session_for_each_credential (GckSession *self, GckObject *object,
+                                 GckCredentialFunc func, gpointer user_data)
 {
 	CK_OBJECT_HANDLE handle;
 	CK_OBJECT_CLASS klass;
@@ -751,19 +751,19 @@ gck_session_for_each_authenticator (GckSession *self, GckObject *object,
 	g_return_val_if_fail (func, FALSE);
 
 	/* Do we have one right on the session */
-	if (self->pv->authenticator != NULL &&
-	    gck_authenticator_get_object (self->pv->authenticator) == object) {
-		if ((func) (self->pv->authenticator, object, user_data))
+	if (self->pv->credential != NULL &&
+	    gck_credential_get_object (self->pv->credential) == object) {
+		if ((func) (self->pv->credential, object, user_data))
 			return TRUE;
 	}
 
-	klass = CKO_GNOME_AUTHENTICATOR;
+	klass = CKO_G_CREDENTIAL;
 	attrs[0].type = CKA_CLASS;
 	attrs[0].pValue = &klass;
 	attrs[0].ulValueLen = sizeof (klass);
 
 	handle = gck_object_get_handle (object);
-	attrs[1].type = CKA_GNOME_OBJECT;
+	attrs[1].type = CKA_G_OBJECT;
 	attrs[1].pValue = &handle;
 	attrs[1].ulValueLen = sizeof (handle);
 

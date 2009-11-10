@@ -25,7 +25,7 @@
 #include "gck-ssh-private-key.h"
 
 #include "gck/gck-attributes.h"
-#include "gck/gck-authenticator.h"
+#include "gck/gck-credential.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-module.h"
 #include "gck/gck-object.h"
@@ -160,7 +160,7 @@ gck_ssh_private_key_get_attribute (GckObject *base, GckSession *session, CK_ATTR
 }
 
 static CK_RV
-gck_ssh_private_key_unlock (GckObject *base, GckAuthenticator *auth)
+gck_ssh_private_key_unlock (GckObject *base, GckCredential *cred)
 {
 	GckSshPrivateKey *self = GCK_SSH_PRIVATE_KEY (base);
 	const gchar *password;
@@ -171,11 +171,11 @@ gck_ssh_private_key_unlock (GckObject *base, GckAuthenticator *auth)
 	if (!self->is_encrypted)
 		return CKR_OK;
 
-	password = gck_authenticator_get_password (auth, &n_password);
+	password = gck_credential_get_password (cred, &n_password);
 	rv = unlock_private_key (self, password, n_password, &wrapper);
 
 	if (rv == CKR_OK) {
-		gck_private_key_set_locked_private (GCK_PRIVATE_KEY (self), auth, wrapper);
+		gck_private_key_set_locked_private (GCK_PRIVATE_KEY (self), cred, wrapper);
 		gck_sexp_unref (wrapper);
 	}
 

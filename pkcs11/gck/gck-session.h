@@ -52,7 +52,7 @@ struct _GckSessionClass {
 #endif
 };
 
-typedef gboolean         (*GckAuthenticatorFunc)                        (GckAuthenticator *auth,
+typedef gboolean         (*GckCredentialFunc)                           (GckCredential *cred,
                                                                          GckObject *object,
                                                                          gpointer user_data);
 
@@ -99,9 +99,9 @@ void                     gck_session_destroy_session_object             (GckSess
                                                                          GckTransaction *transaction,
                                                                          GckObject *obj);
 
-gboolean                 gck_session_for_each_authenticator             (GckSession *self,
+gboolean                 gck_session_for_each_credential                (GckSession *self,
                                                                          GckObject *object,
-                                                                         GckAuthenticatorFunc func,
+                                                                         GckCredentialFunc func,
                                                                          gpointer user_data);
 
 CK_RV                    gck_session_create_object_for_factory          (GckSession *self,

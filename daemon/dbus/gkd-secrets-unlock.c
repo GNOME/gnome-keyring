@@ -108,7 +108,7 @@ authenticate_collection (GkdSecretsUnlock *self, GP11Object *coll, gboolean *loc
 	GError *error = NULL;
 	GP11Attributes *attrs;
 	GP11Session *session;
-	GP11Object *auth;
+	GP11Object *cred;
 	gchar *password;
 	gsize n_password;
 
@@ -138,9 +138,9 @@ authenticate_collection (GkdSecretsUnlock *self, GP11Object *coll, gboolean *loc
 
 	password = gkd_prompt_get_password (GKD_PROMPT (self), "password");
 	n_password = password ? strlen (password) : 0;
-	auth = gp11_session_create_object (session, &error,
-	                                   CKA_CLASS, GP11_ULONG, CKO_GNOME_AUTHENTICATOR,
-	                                   CKA_GNOME_OBJECT, GP11_ULONG, gp11_object_get_handle (coll),
+	cred = gp11_session_create_object (session, &error,
+	                                   CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
+	                                   CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (coll),
 	                                   CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
 	                                   CKA_TOKEN, GP11_BOOLEAN, FALSE,
 	                                   CKA_VALUE, n_password, password,
@@ -148,8 +148,8 @@ authenticate_collection (GkdSecretsUnlock *self, GP11Object *coll, gboolean *loc
 	egg_secure_strfree (password);
 	g_object_unref (session);
 
-	if (auth) {
-		g_object_unref (auth);
+	if (cred) {
+		g_object_unref (cred);
 		*locked = FALSE;
 		return TRUE; /* Operation succeeded, and unlocked */
 
@@ -160,7 +160,7 @@ authenticate_collection (GkdSecretsUnlock *self, GP11Object *coll, gboolean *loc
 			return TRUE; /* Operation succeded, although not unlocked*/
 
 		} else {
-			g_warning ("couldn't create authenticator for collection: %s",
+			g_warning ("couldn't create credential for collection: %s",
 			           error->message);
 			g_clear_error (&error);
 			return FALSE; /* Operation failed */

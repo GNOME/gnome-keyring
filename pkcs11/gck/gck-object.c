@@ -297,7 +297,7 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
 }
 
 static CK_RV
-gck_object_real_unlock (GckObject *self, GckAuthenticator *auth)
+gck_object_real_unlock (GckObject *self, GckCredential *cred)
 {
 	/* A derived class should have overridden this */
 	return CKR_FUNCTION_FAILED;
@@ -664,11 +664,11 @@ gck_object_is_transient (GckObject *self)
 }
 
 CK_RV
-gck_object_unlock (GckObject *self, GckAuthenticator *auth)
+gck_object_unlock (GckObject *self, GckCredential *cred)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (GCK_OBJECT_GET_CLASS (self)->unlock, CKR_GENERAL_ERROR);
-	return GCK_OBJECT_GET_CLASS (self)->unlock (self, auth);
+	return GCK_OBJECT_GET_CLASS (self)->unlock (self, cred);
 }
 
 

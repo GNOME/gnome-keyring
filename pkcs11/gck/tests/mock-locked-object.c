@@ -24,7 +24,7 @@
 #include "mock-locked-object.h"
 
 #include "gck/gck-attributes.h"
-#include "gck/gck-authenticator.h"
+#include "gck/gck-credential.h"
 
 G_DEFINE_TYPE (MockLockedObject, mock_locked_object, GCK_TYPE_OBJECT);
 
@@ -50,12 +50,12 @@ mock_locked_object_real_get_attribute (GckObject *base, GckSession *session, CK_
 }
 
 static CK_RV
-mock_locked_object_real_unlock (GckObject *base, GckAuthenticator *auth)
+mock_locked_object_real_unlock (GckObject *base, GckCredential *auth)
 {
 	const gchar *password;
 	gsize n_password;
-	
-	password = gck_authenticator_get_password (auth, &n_password);
+
+	password = gck_credential_get_password (auth, &n_password);
 	if (n_password == 4 && memcmp (password, "mock", 4) == 0)
 		return CKR_OK;
 	

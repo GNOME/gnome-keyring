@@ -371,8 +371,8 @@ lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 
 	/* Delete any authenticator objects */
 	objects = gp11_session_find_objects (session, &error,
-	                                     CKA_CLASS, GP11_ULONG, CKO_GNOME_AUTHENTICATOR,
-	                                     CKA_GNOME_OBJECT, GP11_ULONG, gp11_object_get_handle (priv),
+	                                     CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
+	                                     CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (priv),
 	                                     GP11_INVALID);
 
 	if (error) {

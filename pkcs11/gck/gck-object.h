@@ -63,7 +63,7 @@ struct _GckObjectClass {
 	void (*create_attributes) (GckObject *object, GckSession *session,
 	                           GckTransaction *transaction, CK_ATTRIBUTE *attrs, CK_ULONG n_attrs);
 
-	CK_RV (*unlock) (GckObject *self, GckAuthenticator *auth);
+	CK_RV (*unlock) (GckObject *self, GckCredential *cred);
 };
 
 GType                  gck_object_get_type               (void);
@@ -83,8 +83,8 @@ gboolean               gck_object_is_token               (GckObject *self);
 
 gboolean               gck_object_is_transient           (GckObject *self);
 
-CK_RV                  gck_object_unlock                 (GckObject *self, 
-                                                          GckAuthenticator *auth);
+CK_RV                  gck_object_unlock                 (GckObject *self,
+                                                          GckCredential *cred);
 
 void                   gck_object_destroy                (GckObject *self,
                                                           GckTransaction *transaction);

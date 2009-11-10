@@ -28,7 +28,7 @@
 #include "gck-secret-textual.h"
 
 #include "gck/gck-attributes.h"
-#include "gck/gck-authenticator.h"
+#include "gck/gck-credential.h"
 #include "gck/gck-secret.h"
 #include "gck/gck-session.h"
 #include "gck/gck-transaction.h"
@@ -88,7 +88,7 @@ load_collection_and_secret_data (GckSecretCollection *self, GckSecretData *sdata
 }
 
 static gboolean
-find_unlocked_secret_data (GckAuthenticator *auth, GckObject *object, gpointer user_data)
+find_unlocked_secret_data (GckCredential *cred, GckObject *object, gpointer user_data)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (object);
 	GckSecretData **result = user_data;
@@ -96,7 +96,7 @@ find_unlocked_secret_data (GckAuthenticator *auth, GckObject *object, gpointer u
 
 	g_return_val_if_fail (!*result, FALSE);
 
-	sdata = g_object_get_data (G_OBJECT (auth), "collection-secret-data");
+	sdata = g_object_get_data (G_OBJECT (cred), "collection-secret-data");
 	if (sdata) {
 		g_return_val_if_fail (sdata == self->sdata, FALSE);
 		*result = sdata;
@@ -212,7 +212,7 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	gchar *identifier = NULL;
 	gchar *label = NULL;
 	gboolean is_token;
-	GckAuthenticator *auth;
+	GckCredential *cred;
 	CK_RV rv;
 
 	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
@@ -257,15 +257,15 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	 * currently a chicken and egg problem, as there's no way to set
 	 * credentials. Actually currently there's no way to set credentials.
 	 */
-	rv = gck_authenticator_create (GCK_OBJECT (collection), gck_session_get_manager (session),
-	                               NULL, 0, &auth);
+	rv = gck_credential_create (GCK_OBJECT (collection), gck_session_get_manager (session),
+	                            NULL, 0, &cred);
 	if (rv != CKR_OK) {
 		gck_transaction_fail (transaction, rv);
 		g_object_unref (collection);
 	} else {
-		gck_session_add_session_object (session, transaction, GCK_OBJECT (auth));
+		gck_session_add_session_object (session, transaction, GCK_OBJECT (cred));
 		*result = GCK_OBJECT (collection);
-		g_object_unref (auth);
+		g_object_unref (cred);
 	}
 }
 
@@ -285,22 +285,22 @@ gck_secret_collection_get_attribute (GckObject *base, GckSession *session, CK_AT
 }
 
 static CK_RV
-gck_secret_collection_real_unlock (GckObject *obj, GckAuthenticator *auth)
+gck_secret_collection_real_unlock (GckObject *obj, GckCredential *cred)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
 	GckDataResult res;
 	GckSecretData *sdata;
 	GckSecret *master;
 
-	master = gck_authenticator_get_login (auth);
+	master = gck_credential_get_secret (cred);
 
 	/* Already unlocked, make sure pin matches */
 	if (self->sdata) {
 		if (!gck_secret_equal (gck_secret_data_get_master (self->sdata), master))
 			return CKR_PIN_INCORRECT;
 
-		/* Authenticator now tracks our secret data */
-		g_object_set_data_full (G_OBJECT (auth), "collection-secret-data",
+		/* Credential now tracks our secret data */
+		g_object_set_data_full (G_OBJECT (cred), "collection-secret-data",
 		                        g_object_ref (self->sdata), g_object_unref);
 		return CKR_OK;
 	}
@@ -323,7 +323,7 @@ gck_secret_collection_real_unlock (GckObject *obj, GckAuthenticator *auth)
 
 	switch (res) {
 	case GCK_DATA_SUCCESS:
-		g_object_set_data_full (G_OBJECT (auth), "collection-secret-data", sdata, g_object_unref);
+		g_object_set_data_full (G_OBJECT (cred), "collection-secret-data", sdata, g_object_unref);
 		track_secret_data (self, sdata);
 		return CKR_OK;
 	case GCK_DATA_LOCKED:
@@ -630,13 +630,13 @@ gck_secret_collection_unlocked_data (GckSecretCollection *self, GckSession *sess
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
 
 	/*
-	 * Look for authenticator objects that this session has access
+	 * Look for credential objects that this session has access
 	 * to, and use those to find the secret data. If a secret data is
 	 * found, it should match the one we are tracking in self->sdata.
 	 */
 
-	gck_session_for_each_authenticator (session, GCK_OBJECT (self),
-	                                    find_unlocked_secret_data, &sdata);
+	gck_session_for_each_credential (session, GCK_OBJECT (self),
+	                                 find_unlocked_secret_data, &sdata);
 
 	return sdata;
 }
@@ -647,7 +647,7 @@ gck_secret_collection_unlocked_clear (GckSecretCollection *self)
 	/*
 	 * TODO: This is a tough one to implement. I'm holding off and wondering
 	 * if we don't need it, perhaps? As it currently stands, what needs to happen
-	 * here is we need to find each and every authenticator that references the
+	 * here is we need to find each and every credential that references the
 	 * secret data for this collection and completely delete those objects.
 	 */
 	g_warning ("Clearing of secret data needs implementing");

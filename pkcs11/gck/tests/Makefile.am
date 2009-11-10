@@ -9,7 +9,7 @@ UNIT_AUTO = \
 	unit-test-data-asn1.c \
 	unit-test-data-der.c \
 	unit-test-object.c \
-	unit-test-authenticator.c \
+	unit-test-credential.c \
 	unit-test-timer.c \
 	unit-test-transaction.c \
 	unit-test-store.c \
