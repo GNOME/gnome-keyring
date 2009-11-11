@@ -21,9 +21,9 @@
 
 #include "config.h"
 
-#include "gkd-secrets-service.h"
-#include "gkd-secrets-session.h"
-#include "gkd-secrets-types.h"
+#include "gkd-secret-service.h"
+#include "gkd-secret-session.h"
+#include "gkd-secret-types.h"
 #include "gkd-dbus-util.h"
 
 #include <string.h>
@@ -36,15 +36,15 @@ enum {
 	PROP_SERVICE
 };
 
-struct _GkdSecretsSession {
+struct _GkdSecretSession {
 	GObject parent;
 	gchar *object_path;
-	GkdSecretsService *service;
+	GkdSecretService *service;
 	gchar *caller_exec;
 	gchar *caller;
 };
 
-G_DEFINE_TYPE (GkdSecretsSession, gkd_secrets_session, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GkdSecretSession, gkd_secret_session, G_TYPE_OBJECT);
 
 static guint unique_session_number = 0;
 
@@ -57,7 +57,7 @@ static guint unique_session_number = 0;
  */
 
 static DBusMessage*
-session_method_close (GkdSecretsSession *self, DBusMessage *message)
+session_method_close (GkdSecretSession *self, DBusMessage *message)
 {
 	DBusMessage *reply;
 
@@ -66,7 +66,7 @@ session_method_close (GkdSecretsSession *self, DBusMessage *message)
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
 		return NULL;
 
-	gkd_secrets_service_close_session (self->service, self);
+	gkd_secret_service_close_session (self->service, self);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
@@ -74,7 +74,7 @@ session_method_close (GkdSecretsSession *self, DBusMessage *message)
 }
 
 static DBusMessage*
-session_property_handler (GkdSecretsSession *self, DBusMessage *message)
+session_property_handler (GkdSecretSession *self, DBusMessage *message)
 {
 	g_return_val_if_reached (NULL); /* TODO: Need to implement */
 #if 0
@@ -101,30 +101,30 @@ session_property_handler (GkdSecretsSession *self, DBusMessage *message)
  */
 
 static GObject*
-gkd_secrets_session_constructor (GType type, guint n_props, GObjectConstructParam *props) 
+gkd_secret_session_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
-	GkdSecretsSession *self = GKD_SECRETS_SESSION (G_OBJECT_CLASS (gkd_secrets_session_parent_class)->constructor(type, n_props, props));
+	GkdSecretSession *self = GKD_SECRET_SESSION (G_OBJECT_CLASS (gkd_secret_session_parent_class)->constructor(type, n_props, props));
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->caller, NULL);
 	g_return_val_if_fail (self->service, NULL);
 
 	/* Setup the path for the object */
-	self->object_path = g_strdup_printf (SECRETS_SESSION_PREFIX "/s%d", ++unique_session_number);
+	self->object_path = g_strdup_printf (SECRET_SESSION_PREFIX "/s%d", ++unique_session_number);
 
 	return G_OBJECT (self);
 }
 
 static void
-gkd_secrets_session_init (GkdSecretsSession *self)
+gkd_secret_session_init (GkdSecretSession *self)
 {
 
 }
 
 static void
-gkd_secrets_session_dispose (GObject *obj)
+gkd_secret_session_dispose (GObject *obj)
 {
-	GkdSecretsSession *self = GKD_SECRETS_SESSION (obj);
+	GkdSecretSession *self = GKD_SECRET_SESSION (obj);
 
 	g_free (self->object_path);
 	self->object_path = NULL;
@@ -135,13 +135,13 @@ gkd_secrets_session_dispose (GObject *obj)
 		self->service = NULL;
 	}
 
-	G_OBJECT_CLASS (gkd_secrets_session_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gkd_secret_session_parent_class)->dispose (obj);
 }
 
 static void
-gkd_secrets_session_finalize (GObject *obj)
+gkd_secret_session_finalize (GObject *obj)
 {
-	GkdSecretsSession *self = GKD_SECRETS_SESSION (obj);
+	GkdSecretSession *self = GKD_SECRET_SESSION (obj);
 
 	g_assert (!self->object_path);
 	g_assert (!self->service);
@@ -152,14 +152,14 @@ gkd_secrets_session_finalize (GObject *obj)
 	g_free (self->caller);
 	self->caller = NULL;
 
-	G_OBJECT_CLASS (gkd_secrets_session_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gkd_secret_session_parent_class)->finalize (obj);
 }
 
 static void
-gkd_secrets_session_set_property (GObject *obj, guint prop_id, const GValue *value, 
-                                  GParamSpec *pspec)
+gkd_secret_session_set_property (GObject *obj, guint prop_id, const GValue *value,
+                                 GParamSpec *pspec)
 {
-	GkdSecretsSession *self = GKD_SECRETS_SESSION (obj);
+	GkdSecretSession *self = GKD_SECRET_SESSION (obj);
 
 	switch (prop_id) {
 	case PROP_CALLER:
@@ -184,20 +184,20 @@ gkd_secrets_session_set_property (GObject *obj, guint prop_id, const GValue *val
 }
 
 static void
-gkd_secrets_session_get_property (GObject *obj, guint prop_id, GValue *value,
-                                     GParamSpec *pspec)
+gkd_secret_session_get_property (GObject *obj, guint prop_id, GValue *value,
+                                 GParamSpec *pspec)
 {
-	GkdSecretsSession *self = GKD_SECRETS_SESSION (obj);
+	GkdSecretSession *self = GKD_SECRET_SESSION (obj);
 
 	switch (prop_id) {
 	case PROP_CALLER:
-		g_value_set_string (value, gkd_secrets_session_get_caller (self));
+		g_value_set_string (value, gkd_secret_session_get_caller (self));
 		break;
 	case PROP_CALLER_EXECUTABLE:
-		g_value_set_string (value, gkd_secrets_session_get_caller_executable (self));
+		g_value_set_string (value, gkd_secret_session_get_caller_executable (self));
 		break;
 	case PROP_OBJECT_PATH:
-		g_value_set_boxed (value, gkd_secrets_session_get_object_path (self));
+		g_value_set_boxed (value, gkd_secret_session_get_object_path (self));
 		break;
 	case PROP_SERVICE:
 		g_value_set_object (value, self->service);
@@ -209,15 +209,15 @@ gkd_secrets_session_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gkd_secrets_session_class_init (GkdSecretsSessionClass *klass)
+gkd_secret_session_class_init (GkdSecretSessionClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	gobject_class->constructor = gkd_secrets_session_constructor;
-	gobject_class->dispose = gkd_secrets_session_dispose;
-	gobject_class->finalize = gkd_secrets_session_finalize;
-	gobject_class->set_property = gkd_secrets_session_set_property;
-	gobject_class->get_property = gkd_secrets_session_get_property;
+	gobject_class->constructor = gkd_secret_session_constructor;
+	gobject_class->dispose = gkd_secret_session_dispose;
+	gobject_class->finalize = gkd_secret_session_finalize;
+	gobject_class->set_property = gkd_secret_session_set_property;
+	gobject_class->get_property = gkd_secret_session_get_property;
 
 	g_object_class_install_property (gobject_class, PROP_CALLER,
 		g_param_spec_string ("caller", "Caller", "DBus caller name",
@@ -233,7 +233,7 @@ gkd_secrets_session_class_init (GkdSecretsSessionClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 		g_param_spec_object ("service", "Service", "Service which owns this session",
-		                     GKD_SECRETS_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -241,13 +241,13 @@ gkd_secrets_session_class_init (GkdSecretsSessionClass *klass)
  */
 
 DBusMessage*
-gkd_secrets_session_dispatch (GkdSecretsSession *self, DBusMessage *message)
+gkd_secret_session_dispatch (GkdSecretSession *self, DBusMessage *message)
 {
 	DBusMessage *reply = NULL;
 	const gchar *caller;
 
 	g_return_val_if_fail (message, NULL);
-	g_return_val_if_fail (GKD_SECRETS_IS_SESSION (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
 
 	/* This should already have been caught elsewhere */
 	caller = dbus_message_get_sender (message);
@@ -259,27 +259,27 @@ gkd_secrets_session_dispatch (GkdSecretsSession *self, DBusMessage *message)
 		reply = session_property_handler (self, message);
 
 	/* org.freedesktop.Secrets.Session.Close() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Close"))
+	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Close"))
 		reply = session_method_close (self, message);
 
 	/* org.freedesktop.Secrets.Session.Negotiate() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "Negotiate"))
+	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Negotiate"))
 		g_return_val_if_reached (NULL); /* TODO: Need to implement */
 
 	/* org.freedesktop.Secrets.Session.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
+	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "GetSecret"))
 		g_return_val_if_reached (NULL); /* TODO: Need to implement */
 
 	/* org.freedesktop.Secrets.Session.SetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "SetSecret"))
+	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SetSecret"))
 		g_return_val_if_reached (NULL); /* TODO: Need to implement */
 
 	/* org.freedesktop.Secrets.Session.GetSecrets() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecrets"))
+	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "GetSecrets"))
 		g_return_val_if_reached (NULL); /* TODO: Need to implement */
 
 	/* org.freedesktop.Secrets.Session.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRETS_SERVICE_INTERFACE, "GetSecret"))
+	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "GetSecret"))
 		g_return_val_if_reached (NULL); /* TODO: Need to implement */
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
@@ -289,22 +289,22 @@ gkd_secrets_session_dispatch (GkdSecretsSession *self, DBusMessage *message)
 }
 
 const gchar*
-gkd_secrets_session_get_caller (GkdSecretsSession *self)
+gkd_secret_session_get_caller (GkdSecretSession *self)
 {
-	g_return_val_if_fail (GKD_SECRETS_IS_SESSION (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
 	return self->caller;
 }
 
 const gchar*
-gkd_secrets_session_get_caller_executable (GkdSecretsSession *self)
+gkd_secret_session_get_caller_executable (GkdSecretSession *self)
 {
-	g_return_val_if_fail (GKD_SECRETS_IS_SESSION (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
 	return self->caller_exec;
 }
 
 const gchar*
-gkd_secrets_session_get_object_path (GkdSecretsSession *self)
+gkd_secret_session_get_object_path (GkdSecretSession *self)
 {
-	g_return_val_if_fail (GKD_SECRETS_IS_SESSION (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
 	return self->object_path;
 }

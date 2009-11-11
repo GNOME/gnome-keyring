@@ -19,54 +19,54 @@
  * 02111-1307, USA.
  */
 
-#ifndef __GKD_SECRETS_OBJECTS_H__
-#define __GKD_SECRETS_OBJECTS_H__
+#ifndef __GKD_SECRET_OBJECTS_H__
+#define __GKD_SECRET_OBJECTS_H__
 
-#include "gkd-secrets-types.h"
+#include "gkd-secret-types.h"
 
 #include "gp11/gp11.h"
 
 #include <glib-object.h>
 
-#define GKD_SECRETS_TYPE_OBJECTS               (gkd_secrets_objects_get_type ())
-#define GKD_SECRETS_OBJECTS(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRETS_TYPE_OBJECTS, GkdSecretsObjects))
-#define GKD_SECRETS_OBJECTS_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKD_SECRETS_TYPE_OBJECTS, GkdSecretsObjectsClass))
-#define GKD_SECRETS_IS_OBJECTS(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GKD_SECRETS_TYPE_OBJECTS))
-#define GKD_SECRETS_IS_OBJECTS_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GKD_SECRETS_TYPE_OBJECTS))
-#define GKD_SECRETS_OBJECTS_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GKD_SECRETS_TYPE_OBJECTS, GkdSecretsObjectsClass))
+#define GKD_SECRET_TYPE_OBJECTS               (gkd_secret_objects_get_type ())
+#define GKD_SECRET_OBJECTS(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRET_TYPE_OBJECTS, GkdSecretObjects))
+#define GKD_SECRET_OBJECTS_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKD_SECRET_TYPE_OBJECTS, GkdSecretObjectsClass))
+#define GKD_SECRET_IS_OBJECTS(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GKD_SECRET_TYPE_OBJECTS))
+#define GKD_SECRET_IS_OBJECTS_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GKD_SECRET_TYPE_OBJECTS))
+#define GKD_SECRET_OBJECTS_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GKD_SECRET_TYPE_OBJECTS, GkdSecretObjectsClass))
 
-typedef struct _GkdSecretsObjectsClass GkdSecretsObjectsClass;
+typedef struct _GkdSecretObjectsClass GkdSecretObjectsClass;
 
-struct _GkdSecretsObjectsClass {
+struct _GkdSecretObjectsClass {
 	GObjectClass parent_class;
 };
 
-GType               gkd_secrets_objects_get_type                 (void);
+GType               gkd_secret_objects_get_type                 (void);
 
-DBusMessage*        gkd_secrets_objects_dispatch                 (GkdSecretsObjects *self,
+DBusMessage*        gkd_secret_objects_dispatch                  (GkdSecretObjects *self,
                                                                   DBusMessage *message);
 
-DBusMessage*        gkd_secrets_objects_handle_search_items      (GkdSecretsObjects *self,
+DBusMessage*        gkd_secret_objects_handle_search_items       (GkdSecretObjects *self,
                                                                   DBusMessage *message,
                                                                   const gchar *coll_id);
 
-void                gkd_secrets_objects_append_collection_paths  (GkdSecretsObjects *self,
+void                gkd_secret_objects_append_collection_paths   (GkdSecretObjects *self,
                                                                   DBusMessageIter *iter,
                                                                   DBusMessage *message);
 
-gboolean            gkd_secrets_objects_parse_item_props         (GkdSecretsObjects *self,
+gboolean            gkd_secret_objects_parse_item_props          (GkdSecretObjects *self,
                                                                   DBusMessageIter *iter,
                                                                   GP11Attributes *attrs);
 
-void                gkd_secrets_objects_append_item_paths        (GkdSecretsObjects *self, 
+void                gkd_secret_objects_append_item_paths         (GkdSecretObjects *self,
                                                                   DBusMessageIter *iter,
-                                                                  DBusMessage *message, 
+                                                                  DBusMessage *message,
                                                                   const gchar *coll_id);
 
-GP11Slot*           gkd_secrets_objects_get_pkcs11_slot          (GkdSecretsObjects *self);
+GP11Slot*           gkd_secret_objects_get_pkcs11_slot           (GkdSecretObjects *self);
 
-GP11Object*         gkd_secrets_objects_lookup_collection        (GkdSecretsObjects *self,
+GP11Object*         gkd_secret_objects_lookup_collection         (GkdSecretObjects *self,
                                                                   const gchar *caller,
                                                                   const gchar *objpath);
 
-#endif /* __GKD_SECRETS_OBJECTS_H__ */
+#endif /* __GKD_SECRET_OBJECTS_H__ */

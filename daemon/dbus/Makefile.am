@@ -18,12 +18,12 @@ libgkr_dbus_la_SOURCES = \
 	gkd-dbus-service.c \
 	gkd-dbus-session.c \
 	gkd-dbus-util.c gkd-dbus-util.h \
-	gkd-secrets-objects.c gkd-secrets-objects.h \
-	gkd-secrets-prompt.c gkd-secrets-prompt.h \
-	gkd-secrets-service.c gkd-secrets-service.h \
-	gkd-secrets-session.c gkd-secrets-session.h \
-	gkd-secrets-types.h \
-	gkd-secrets-unlock.c gkd-secrets-unlock.h
+	gkd-secret-objects.c gkd-secret-objects.h \
+	gkd-secret-prompt.c gkd-secret-prompt.h \
+	gkd-secret-service.c gkd-secret-service.h \
+	gkd-secret-session.c gkd-secret-session.h \
+	gkd-secret-types.h \
+	gkd-secret-unlock.c gkd-secret-unlock.h
 
 libgkr_dbus_la_LIBADD = \
 	$(GLIB_LIBS) \

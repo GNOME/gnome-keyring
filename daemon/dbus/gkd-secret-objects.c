@@ -23,9 +23,9 @@
 
 #include "gkd-dbus-util.h"
 
-#include "gkd-secrets-service.h"
-#include "gkd-secrets-objects.h"
-#include "gkd-secrets-types.h"
+#include "gkd-secret-service.h"
+#include "gkd-secret-objects.h"
+#include "gkd-secret-types.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -37,13 +37,13 @@ enum {
 	PROP_SERVICE
 };
 
-struct _GkdSecretsObjects {
+struct _GkdSecretObjects {
 	GObject parent;
-	GkdSecretsService *service;
+	GkdSecretService *service;
 	GP11Slot *pkcs11_slot;
 };
 
-G_DEFINE_TYPE (GkdSecretsObjects, gkd_secrets_objects, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GkdSecretObjects, gkd_secret_objects, G_TYPE_OBJECT);
 
 typedef enum _DataType {
 	DATA_TYPE_INVALID = 0,
@@ -144,9 +144,9 @@ parse_collection_and_item_from_path (const gchar *path, gchar **collection, gcha
 	g_assert (item);
 
 	/* Make sure it starts with our prefix */
-	if (!g_str_has_prefix (path, SECRETS_COLLECTION_PREFIX))
+	if (!g_str_has_prefix (path, SECRET_COLLECTION_PREFIX))
 		return FALSE;
-	path += strlen (SECRETS_COLLECTION_PREFIX);
+	path += strlen (SECRET_COLLECTION_PREFIX);
 
 	/* Skip the path separator */
 	if (path[0] != '/')
@@ -606,7 +606,7 @@ iter_append_item_paths (DBusMessageIter *iter, GList *items)
 			g_warning ("item has invalid collection or id");
 
 		} else {
-			path = g_string_new (SECRETS_COLLECTION_PREFIX);
+			path = g_string_new (SECRET_COLLECTION_PREFIX);
 			g_string_append_c (path, '/');
 			encode_object_identifier (path, (gchar*)coll->value, coll->length);
 			g_string_append_c (path, '/');
@@ -644,7 +644,7 @@ iter_append_collection_paths (DBusMessageIter *iter, GList *collections)
 			g_clear_error (&error);
 
 		} else if (n_data) {
-			path = g_string_new (SECRETS_COLLECTION_PREFIX);
+			path = g_string_new (SECRET_COLLECTION_PREFIX);
 			g_string_append_c (path, '/');
 			encode_object_identifier (path, (gchar*)data, n_data);
 			dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &(path->str));
@@ -728,7 +728,7 @@ object_property_set (GP11Object *object, DBusMessage *message,
 
 	if (error != NULL) {
 		if (error->code == CKR_USER_NOT_LOGGED_IN)
-			reply = dbus_message_new_error (message, SECRETS_ERROR_IS_LOCKED,
+			reply = dbus_message_new_error (message, SECRET_ERROR_IS_LOCKED,
 			                                "Cannot set property on a locked object");
 		else
 			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
@@ -783,13 +783,13 @@ item_property_get (GP11Object *object, DBusMessage *message)
 	const gchar *interface;
 	const gchar *name;
 
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface,
 	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID))
 		return NULL;
 
-	if (!gkd_dbus_interface_match (SECRETS_ITEM_INTERFACE, interface))
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED, 
-		                                      "Object does not have properties on interface '%s'", 
+	if (!gkd_dbus_interface_match (SECRET_ITEM_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have properties on interface '%s'",
 		                                      interface);
 
 	return object_property_get (object, message, name);
@@ -811,7 +811,7 @@ item_property_set (GP11Object *object, DBusMessage *message)
 	dbus_message_iter_get_basic (&iter, &name);
 	dbus_message_iter_next (&iter);
 
-	if (!gkd_dbus_interface_match (SECRETS_ITEM_INTERFACE, interface))
+	if (!gkd_dbus_interface_match (SECRET_ITEM_INTERFACE, interface))
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                      "Object does not have properties on interface '%s'",
 		                                      interface);
@@ -832,9 +832,9 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID))
 		return NULL;
 
-	if (!gkd_dbus_interface_match (SECRETS_ITEM_INTERFACE, interface))
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED, 
-		                                      "Object does not have properties on interface '%s'", 
+	if (!gkd_dbus_interface_match (SECRET_ITEM_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have properties on interface '%s'",
 		                                      interface);
 
 	attrs = gp11_object_get (object, &error,
@@ -847,7 +847,7 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 
 	if (error != NULL)
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Couldn't retrieve properties: %s", 
+		                                      "Couldn't retrieve properties: %s",
 		                                      error->message);
 
 	reply = dbus_message_new_method_return (message);
@@ -860,7 +860,7 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 }
 
 static DBusMessage*
-item_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+item_method_delete (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	GError *error = NULL;
 	DBusMessage *reply;
@@ -871,7 +871,7 @@ item_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessage *me
 
 	if (!gp11_object_destroy (object, &error)) {
 		if (error->code == CKR_USER_NOT_LOGGED_IN)
-			reply = dbus_message_new_error_printf (message, SECRETS_ERROR_IS_LOCKED,
+			reply = dbus_message_new_error_printf (message, SECRET_ERROR_IS_LOCKED,
 			                                       "Cannot delete a locked item");
 		else
 			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
@@ -888,10 +888,10 @@ item_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessage *me
 }
 
 static DBusMessage*
-item_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+item_message_handler (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	/* org.freedesktop.Secrets.Item.Delete() */
-	if (dbus_message_is_method_call (message, SECRETS_ITEM_INTERFACE, "Delete"))
+	if (dbus_message_is_method_call (message, SECRET_ITEM_INTERFACE, "Delete"))
 		return item_method_delete (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Get */
@@ -955,27 +955,27 @@ collection_for_identifier (GP11Session *session, const gchar *coll_id)
 }
 
 static DBusMessage*
-collection_property_get (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+collection_property_get (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	DBusMessageIter iter;
 	DBusMessage *reply;
 	const gchar *interface;
 	const gchar *name;
 
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, 
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface,
 	                            DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID))
 		return NULL;
 
-	if (!gkd_dbus_interface_match (SECRETS_COLLECTION_INTERFACE, interface))
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED, 
-		                                      "Object does not have properties on interface '%s'", 
+	if (!gkd_dbus_interface_match (SECRET_COLLECTION_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have properties on interface '%s'",
 		                                      interface);
 
 	/* Special case, the Items property */
 	if (g_str_equal (name, "Items")) {
 		reply = dbus_message_new_method_return (message);
 		dbus_message_iter_init_append (reply, &iter);
-		gkd_secrets_objects_append_item_paths (self, &iter, message,
+		gkd_secret_objects_append_item_paths (self, &iter, message,
 		                                       collection_get_identifier (object));
 		return reply;
 	}
@@ -984,7 +984,7 @@ collection_property_get (GkdSecretsObjects *self, GP11Object *object, DBusMessag
 }
 
 static DBusMessage*
-collection_property_set (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+collection_property_set (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	DBusMessageIter iter;
 	const char *interface;
@@ -999,7 +999,7 @@ collection_property_set (GkdSecretsObjects *self, GP11Object *object, DBusMessag
 	dbus_message_iter_get_basic (&iter, &name);
 	dbus_message_iter_next (&iter);
 
-	if (!gkd_dbus_interface_match (SECRETS_COLLECTION_INTERFACE, interface))
+	if (!gkd_dbus_interface_match (SECRET_COLLECTION_INTERFACE, interface))
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                      "Object does not have properties on interface '%s'",
 		                                      interface);
@@ -1008,7 +1008,7 @@ collection_property_set (GkdSecretsObjects *self, GP11Object *object, DBusMessag
 }
 
 static DBusMessage*
-collection_property_getall (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+collection_property_getall (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	GP11Attributes *attrs;
 	DBusMessageIter iter;
@@ -1022,9 +1022,9 @@ collection_property_getall (GkdSecretsObjects *self, GP11Object *object, DBusMes
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID))
 		return NULL;
 
-	if (!gkd_dbus_interface_match (SECRETS_COLLECTION_INTERFACE, interface))
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED, 
-		                                      "Object does not have properties on interface '%s'", 
+	if (!gkd_dbus_interface_match (SECRET_COLLECTION_INTERFACE, interface))
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Object does not have properties on interface '%s'",
 		                                      interface);
 
 	attrs = gp11_object_get (object, &error,
@@ -1036,7 +1036,7 @@ collection_property_getall (GkdSecretsObjects *self, GP11Object *object, DBusMes
 
 	if (error != NULL)
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Couldn't retrieve properties: %s", 
+		                                      "Couldn't retrieve properties: %s",
 		                                      error->message);
 
 	reply = dbus_message_new_method_return (message);
@@ -1051,7 +1051,7 @@ collection_property_getall (GkdSecretsObjects *self, GP11Object *object, DBusMes
 	dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
 	name = "Items";
 	dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
-	gkd_secrets_objects_append_item_paths (self, &dict, message,
+	gkd_secret_objects_append_item_paths (self, &dict, message,
 	                                       collection_get_identifier (object));
 	dbus_message_iter_close_container (&array, &dict);
 
@@ -1060,18 +1060,18 @@ collection_property_getall (GkdSecretsObjects *self, GP11Object *object, DBusMes
 }
 
 static DBusMessage*
-collection_method_search_items (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+collection_method_search_items (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	const gchar *coll_id;
 
 	coll_id = collection_get_identifier (object);
 	g_return_val_if_fail (coll_id, NULL);
 
-	return gkd_secrets_objects_handle_search_items (self, message, coll_id);
+	return gkd_secret_objects_handle_search_items (self, message, coll_id);
 }
 
 static GP11Object*
-collection_find_matching_item (GkdSecretsObjects *self, GP11Object *coll, GP11Attribute *fields)
+collection_find_matching_item (GkdSecretObjects *self, GP11Object *coll, GP11Attribute *fields)
 {
 	GP11Attributes *attrs;
 	const gchar *identifier;
@@ -1122,7 +1122,7 @@ collection_find_matching_item (GkdSecretsObjects *self, GP11Object *coll, GP11At
 }
 
 static DBusMessage*
-collection_method_create_item (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	dbus_bool_t replace = FALSE;
 	GP11Attributes *attrs;
@@ -1143,7 +1143,7 @@ collection_method_create_item (GkdSecretsObjects *self, GP11Object *object, DBus
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
 	attrs = gp11_attributes_new ();
-	if (!gkd_secrets_objects_parse_item_props (self, &iter, attrs)) {
+	if (!gkd_secret_objects_parse_item_props (self, &iter, attrs)) {
 		gp11_attributes_unref (attrs);
 		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
 		                                      "Invalid properties");
@@ -1177,7 +1177,7 @@ collection_method_create_item (GkdSecretsObjects *self, GP11Object *object, DBus
 	if (error == NULL) {
 		data = gp11_object_get_data (item, CKA_ID, &n_data, &error);
 		if (data != NULL) {
-			path = g_string_new (SECRETS_COLLECTION_PREFIX);
+			path = g_string_new (SECRET_COLLECTION_PREFIX);
 			g_string_append_c (path, '/');
 			g_string_append (path, collection_get_identifier (object));
 			g_string_append_c (path, '/');
@@ -1195,7 +1195,7 @@ collection_method_create_item (GkdSecretsObjects *self, GP11Object *object, DBus
 
 	} else {
 		if (error->code == CKR_USER_NOT_LOGGED_IN)
-			reply = dbus_message_new_error_printf (message, SECRETS_ERROR_IS_LOCKED,
+			reply = dbus_message_new_error_printf (message, SECRET_ERROR_IS_LOCKED,
 			                                       "Cannot create an item in a locked collection");
 		else
 			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
@@ -1211,7 +1211,7 @@ collection_method_create_item (GkdSecretsObjects *self, GP11Object *object, DBus
 }
 
 static DBusMessage*
-collection_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+collection_method_delete (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	GError *error = NULL;
 	DBusMessage *reply;
@@ -1235,18 +1235,18 @@ collection_method_delete (GkdSecretsObjects *self, GP11Object *object, DBusMessa
 }
 
 static DBusMessage*
-collection_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMessage *message)
+collection_message_handler (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	/* org.freedesktop.Secrets.Collection.Delete() */
-	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "Delete"))
+	if (dbus_message_is_method_call (message, SECRET_COLLECTION_INTERFACE, "Delete"))
 		return collection_method_delete (self, object, message);
 
 	/* org.freedesktop.Secrets.Collection.SearchItems() */
-	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "SearchItems"))
+	if (dbus_message_is_method_call (message, SECRET_COLLECTION_INTERFACE, "SearchItems"))
 		return collection_method_search_items (self, object, message);
 
 	/* org.freedesktop.Secrets.Collection.CreateItem() */
-	if (dbus_message_is_method_call (message, SECRETS_COLLECTION_INTERFACE, "CreateItem"))
+	if (dbus_message_is_method_call (message, SECRET_COLLECTION_INTERFACE, "CreateItem"))
 		return collection_method_create_item (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Get() */
@@ -1272,9 +1272,9 @@ collection_message_handler (GkdSecretsObjects *self, GP11Object *object, DBusMes
  */
 
 static GObject*
-gkd_secrets_objects_constructor (GType type, guint n_props, GObjectConstructParam *props) 
+gkd_secret_objects_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
-	GkdSecretsObjects *self = GKD_SECRETS_OBJECTS (G_OBJECT_CLASS (gkd_secrets_objects_parent_class)->constructor(type, n_props, props));
+	GkdSecretObjects *self = GKD_SECRET_OBJECTS (G_OBJECT_CLASS (gkd_secret_objects_parent_class)->constructor(type, n_props, props));
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->pkcs11_slot, NULL);
@@ -1284,15 +1284,15 @@ gkd_secrets_objects_constructor (GType type, guint n_props, GObjectConstructPara
 }
 
 static void
-gkd_secrets_objects_init (GkdSecretsObjects *self)
+gkd_secret_objects_init (GkdSecretObjects *self)
 {
 
 }
 
 static void
-gkd_secrets_objects_dispose (GObject *obj)
+gkd_secret_objects_dispose (GObject *obj)
 {
-	GkdSecretsObjects *self = GKD_SECRETS_OBJECTS (obj);
+	GkdSecretObjects *self = GKD_SECRET_OBJECTS (obj);
 
 	if (self->pkcs11_slot) {
 		g_object_unref (self->pkcs11_slot);
@@ -1305,25 +1305,25 @@ gkd_secrets_objects_dispose (GObject *obj)
 		self->service = NULL;
 	}
 
-	G_OBJECT_CLASS (gkd_secrets_objects_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gkd_secret_objects_parent_class)->dispose (obj);
 }
 
 static void
-gkd_secrets_objects_finalize (GObject *obj)
+gkd_secret_objects_finalize (GObject *obj)
 {
-	GkdSecretsObjects *self = GKD_SECRETS_OBJECTS (obj);
+	GkdSecretObjects *self = GKD_SECRET_OBJECTS (obj);
 
 	g_assert (!self->pkcs11_slot);
 	g_assert (!self->service);
 
-	G_OBJECT_CLASS (gkd_secrets_objects_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gkd_secret_objects_parent_class)->finalize (obj);
 }
 
 static void
-gkd_secrets_objects_set_property (GObject *obj, guint prop_id, const GValue *value, 
-                                  GParamSpec *pspec)
+gkd_secret_objects_set_property (GObject *obj, guint prop_id, const GValue *value,
+                                 GParamSpec *pspec)
 {
-	GkdSecretsObjects *self = GKD_SECRETS_OBJECTS (obj);
+	GkdSecretObjects *self = GKD_SECRET_OBJECTS (obj);
 
 	switch (prop_id) {
 	case PROP_PKCS11_SLOT:
@@ -1345,14 +1345,14 @@ gkd_secrets_objects_set_property (GObject *obj, guint prop_id, const GValue *val
 }
 
 static void
-gkd_secrets_objects_get_property (GObject *obj, guint prop_id, GValue *value,
+gkd_secret_objects_get_property (GObject *obj, guint prop_id, GValue *value,
                                      GParamSpec *pspec)
 {
-	GkdSecretsObjects *self = GKD_SECRETS_OBJECTS (obj);
+	GkdSecretObjects *self = GKD_SECRET_OBJECTS (obj);
 
 	switch (prop_id) {
 	case PROP_PKCS11_SLOT:
-		g_value_set_object (value, gkd_secrets_objects_get_pkcs11_slot (self));
+		g_value_set_object (value, gkd_secret_objects_get_pkcs11_slot (self));
 		break;
 	case PROP_SERVICE:
 		g_value_set_object (value, self->service);
@@ -1364,15 +1364,15 @@ gkd_secrets_objects_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gkd_secrets_objects_class_init (GkdSecretsObjectsClass *klass)
+gkd_secret_objects_class_init (GkdSecretObjectsClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	gobject_class->constructor = gkd_secrets_objects_constructor;
-	gobject_class->dispose = gkd_secrets_objects_dispose;
-	gobject_class->finalize = gkd_secrets_objects_finalize;
-	gobject_class->set_property = gkd_secrets_objects_set_property;
-	gobject_class->get_property = gkd_secrets_objects_get_property;
+	gobject_class->constructor = gkd_secret_objects_constructor;
+	gobject_class->dispose = gkd_secret_objects_dispose;
+	gobject_class->finalize = gkd_secret_objects_finalize;
+	gobject_class->set_property = gkd_secret_objects_set_property;
+	gobject_class->get_property = gkd_secret_objects_get_property;
 
 	g_object_class_install_property (gobject_class, PROP_PKCS11_SLOT,
 	        g_param_spec_object ("pkcs11-slot", "Pkcs11 Slot", "PKCS#11 slot that we use for secrets",
@@ -1380,7 +1380,7 @@ gkd_secrets_objects_class_init (GkdSecretsObjectsClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 		g_param_spec_object ("service", "Service", "Service which owns this objects",
-		                     GKD_SECRETS_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -1388,14 +1388,14 @@ gkd_secrets_objects_class_init (GkdSecretsObjectsClass *klass)
  */
 
 GP11Slot*
-gkd_secrets_objects_get_pkcs11_slot (GkdSecretsObjects *self)
+gkd_secret_objects_get_pkcs11_slot (GkdSecretObjects *self)
 {
-	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
 	return self->pkcs11_slot;
 }
 
 DBusMessage*
-gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
+gkd_secret_objects_dispatch (GkdSecretObjects *self, DBusMessage *message)
 {
 	DBusMessage *reply = NULL;
 	GP11Object *object;
@@ -1403,11 +1403,11 @@ gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
 	gchar *coll_id;
 	gchar *item_id;
 
-	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
 	g_return_val_if_fail (message, NULL);
 
 	/* The session we're using to access the object */
-	session = gkd_secrets_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
+	session = gkd_secret_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
 	if (session == NULL)
 		return NULL;
 
@@ -1439,8 +1439,8 @@ gkd_secrets_objects_dispatch (GkdSecretsObjects *self, DBusMessage *message)
 }
 
 gboolean
-gkd_secrets_objects_parse_item_props (GkdSecretsObjects *self, DBusMessageIter *iter,
-                                      GP11Attributes *attrs)
+gkd_secret_objects_parse_item_props (GkdSecretObjects *self, DBusMessageIter *iter,
+                                     GP11Attributes *attrs)
 {
 	DBusMessageIter array, dict;
 	CK_ATTRIBUTE_TYPE attr_type;
@@ -1448,7 +1448,7 @@ gkd_secrets_objects_parse_item_props (GkdSecretsObjects *self, DBusMessageIter *
 	const char *name;
 	DataType data_type;
 
-	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), FALSE);
+	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), FALSE);
 	g_return_val_if_fail (iter, FALSE);
 	g_return_val_if_fail (attrs, FALSE);
 
@@ -1479,20 +1479,20 @@ gkd_secrets_objects_parse_item_props (GkdSecretsObjects *self, DBusMessageIter *
 
 
 void
-gkd_secrets_objects_append_item_paths (GkdSecretsObjects *self, DBusMessageIter *iter,
-                                       DBusMessage *message, const gchar *coll_id)
+gkd_secret_objects_append_item_paths (GkdSecretObjects *self, DBusMessageIter *iter,
+                                      DBusMessage *message, const gchar *coll_id)
 {
 	DBusMessageIter variant;
 	GP11Session *session;
 	GError *error = NULL;
 	GList *items;
 
-	g_return_if_fail (GKD_SECRETS_IS_OBJECTS (self));
+	g_return_if_fail (GKD_SECRET_IS_OBJECTS (self));
 	g_return_if_fail (coll_id);
 	g_return_if_fail (iter && message);
 
 	/* The session we're using to access the object */
-	session = gkd_secrets_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
+	session = gkd_secret_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
 	g_return_if_fail (session);
 
 	items = gp11_session_find_objects (session, &error,
@@ -1513,19 +1513,19 @@ gkd_secrets_objects_append_item_paths (GkdSecretsObjects *self, DBusMessageIter 
 }
 
 void
-gkd_secrets_objects_append_collection_paths (GkdSecretsObjects *self, DBusMessageIter *iter,
-                                             DBusMessage *message)
+gkd_secret_objects_append_collection_paths (GkdSecretObjects *self, DBusMessageIter *iter,
+                                            DBusMessage *message)
 {
 	DBusMessageIter variant;
 	GError *error = NULL;
 	GP11Session *session;
 	GList *colls;
 
-	g_return_if_fail (GKD_SECRETS_IS_OBJECTS (self));
+	g_return_if_fail (GKD_SECRET_IS_OBJECTS (self));
 	g_return_if_fail (iter && message);
 
 	/* The session we're using to access the object */
-	session = gkd_secrets_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
+	session = gkd_secret_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
 	g_return_if_fail (session);
 
 	colls = gp11_session_find_objects (session, &error,
@@ -1545,8 +1545,8 @@ gkd_secrets_objects_append_collection_paths (GkdSecretsObjects *self, DBusMessag
 }
 
 DBusMessage*
-gkd_secrets_objects_handle_search_items (GkdSecretsObjects *self, DBusMessage *message,
-                                         const gchar *coll_id)
+gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *message,
+                                        const gchar *coll_id)
 {
 	GP11Attributes *attrs;
 	GP11Attribute *attr;
@@ -1578,7 +1578,7 @@ gkd_secrets_objects_handle_search_items (GkdSecretsObjects *self, DBusMessage *m
 	gp11_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
 
 	/* The session we're using to access the object */
-	session = gkd_secrets_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
+	session = gkd_secret_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
 	g_return_val_if_fail (session, NULL);
 
 	/* Create the search object */
@@ -1622,20 +1622,20 @@ gkd_secrets_objects_handle_search_items (GkdSecretsObjects *self, DBusMessage *m
 }
 
 GP11Object*
-gkd_secrets_objects_lookup_collection (GkdSecretsObjects *self, const gchar *caller,
-                                       const gchar *objpath)
+gkd_secret_objects_lookup_collection (GkdSecretObjects *self, const gchar *caller,
+                                      const gchar *objpath)
 {
 	GP11Session *session;
 	GP11Object *coll;
 	gchar *coll_id;
 	gchar *item_id;
 
-	g_return_val_if_fail (GKD_SECRETS_IS_OBJECTS (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
 	g_return_val_if_fail (objpath, NULL);
 	g_return_val_if_fail (caller, NULL);
 
 	/* The session we're using to access the object */
-	session = gkd_secrets_service_get_pkcs11_session (self->service, caller);
+	session = gkd_secret_service_get_pkcs11_session (self->service, caller);
 	g_return_val_if_fail (session, NULL);
 
 	/* Figure out which collection or item we're talking about */

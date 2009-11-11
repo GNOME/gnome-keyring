@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkd-dbus-secrets.c - dbus secrets service
+/* gkd-dbus-secrets.c - dbus secret service
 
    Copyright (C) 2009, Stefan Walter
 
@@ -24,13 +24,13 @@
 #include "config.h"
 
 #include "gkd-dbus-private.h"
-#include "gkd-secrets-service.h"
+#include "gkd-secret-service.h"
 
 #include "daemon/pkcs11/gkr-pkcs11-daemon.h"
 
 #include "gp11/gp11.h"
 
-static GkdSecretsService *secrets_service = NULL;
+static GkdSecretService *secrets_service = NULL;
 
 static GP11Slot*
 calculate_secrets_slot (void)
@@ -74,10 +74,10 @@ gkd_dbus_secrets_init (DBusConnection *conn)
 	g_return_if_fail (slot);
 
 	/* Try and grab our name */
-	result = dbus_bus_request_name (conn, SECRETS_SERVICE, 0, &error);
+	result = dbus_bus_request_name (conn, SECRET_SERVICE, 0, &error);
 	if (dbus_error_is_set (&error)) {
 		g_message ("couldn't request name '%s' on session bus: %s",
-		           SECRETS_SERVICE, error.message);
+		           SECRET_SERVICE, error.message);
 		dbus_error_free (&error);
 
 	} else {
@@ -95,7 +95,7 @@ gkd_dbus_secrets_init (DBusConnection *conn)
 		/* Another daemon is running */
 		case DBUS_REQUEST_NAME_REPLY_IN_QUEUE:
 		case DBUS_REQUEST_NAME_REPLY_EXISTS:
-			g_message ("another secrets service is running");
+			g_message ("another secret service is running");
 			break;
 
 		default:
@@ -105,7 +105,7 @@ gkd_dbus_secrets_init (DBusConnection *conn)
 	}
 
 	g_return_if_fail (!secrets_service);
-	secrets_service = g_object_new (GKD_SECRETS_TYPE_SERVICE,
+	secrets_service = g_object_new (GKD_SECRET_TYPE_SERVICE,
 	                                "connection", conn, "pkcs11-slot", slot, NULL);
 
 	g_object_unref (slot);

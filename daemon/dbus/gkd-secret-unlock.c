@@ -21,10 +21,10 @@
 
 #include "config.h"
 
-#include "gkd-secrets-service.h"
-#include "gkd-secrets-prompt.h"
-#include "gkd-secrets-types.h"
-#include "gkd-secrets-unlock.h"
+#include "gkd-secret-service.h"
+#include "gkd-secret-prompt.h"
+#include "gkd-secret-types.h"
+#include "gkd-secret-unlock.h"
 
 #include "egg/egg-secure-memory.h"
 
@@ -36,21 +36,21 @@
 
 #include <string.h>
 
-struct _GkdSecretsUnlock {
-	GkdSecretsPrompt parent;
+struct _GkdSecretUnlock {
+	GkdSecretPrompt parent;
 	GQueue *queued;
 	gchar *current;
 	GArray *results;
 };
 
-G_DEFINE_TYPE (GkdSecretsUnlock, gkd_secrets_unlock, GKD_SECRETS_TYPE_PROMPT);
+G_DEFINE_TYPE (GkdSecretUnlock, gkd_secret_unlock, GKD_SECRET_TYPE_PROMPT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
 
 static void
-prepare_unlock_prompt (GkdSecretsUnlock *self, GP11Object *coll)
+prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 {
 	GError *error = NULL;
 	GkdPrompt *prompt;
@@ -59,7 +59,7 @@ prepare_unlock_prompt (GkdSecretsUnlock *self, GP11Object *coll)
 	gchar *label;
 	gchar *text;
 
-	g_assert (GKD_SECRETS_IS_UNLOCK (self));
+	g_assert (GKD_SECRET_IS_UNLOCK (self));
 	g_assert (coll);
 
 	prompt = GKD_PROMPT (self);
@@ -96,14 +96,14 @@ prepare_unlock_prompt (GkdSecretsUnlock *self, GP11Object *coll)
 }
 
 static void
-set_warning_wrong (GkdSecretsUnlock *self)
+set_warning_wrong (GkdSecretUnlock *self)
 {
-	g_assert (GKD_SECRETS_IS_UNLOCK (self));
+	g_assert (GKD_SECRET_IS_UNLOCK (self));
 	gkd_prompt_set_warning (GKD_PROMPT (self), _("The unlock password was incorrect"));
 }
 
 static gboolean
-authenticate_collection (GkdSecretsUnlock *self, GP11Object *coll, gboolean *locked)
+authenticate_collection (GkdSecretUnlock *self, GP11Object *coll, gboolean *locked)
 {
 	GError *error = NULL;
 	GP11Attributes *attrs;
@@ -112,7 +112,7 @@ authenticate_collection (GkdSecretsUnlock *self, GP11Object *coll, gboolean *loc
 	gchar *password;
 	gsize n_password;
 
-	g_assert (GKD_SECRETS_IS_UNLOCK (self));
+	g_assert (GKD_SECRET_IS_UNLOCK (self));
 	g_assert (locked);
 	g_assert (coll);
 
@@ -173,16 +173,16 @@ authenticate_collection (GkdSecretsUnlock *self, GP11Object *coll, gboolean *loc
  */
 
 static void
-gkd_secrets_unlock_prompt_ready (GkdSecretsPrompt *base)
+gkd_secret_unlock_prompt_ready (GkdSecretPrompt *base)
 {
-	GkdSecretsUnlock *self = GKD_SECRETS_UNLOCK (base);
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (base);
 	GP11Object *coll;
 	gboolean locked;
 	gchar *objpath;
 
 	/* Already prompted for an item */
 	if (self->current) {
-		coll = gkd_secrets_prompt_lookup_collection (base, self->current);
+		coll = gkd_secret_prompt_lookup_collection (base, self->current);
 
 		/* If the object or collection is gone, no need to unlock */
 		if (coll == NULL) {
@@ -216,12 +216,12 @@ gkd_secrets_unlock_prompt_ready (GkdSecretsPrompt *base)
 
 		/* Nothing more to prompt for? */
 		if (!objpath) {
-			gkd_secrets_prompt_complete (base);
+			gkd_secret_prompt_complete (base);
 			break;
 		}
 
 		/* Find the collection, make sure it's still around */
-		coll = gkd_secrets_prompt_lookup_collection (base, objpath);
+		coll = gkd_secret_prompt_lookup_collection (base, objpath);
 		if (coll == NULL) {
 			g_free (objpath);
 			continue;
@@ -245,9 +245,9 @@ gkd_secrets_unlock_prompt_ready (GkdSecretsPrompt *base)
 }
 
 static void
-gkd_secrets_unlock_encode_result (GkdSecretsPrompt *base, DBusMessageIter *iter)
+gkd_secret_unlock_encode_result (GkdSecretPrompt *base, DBusMessageIter *iter)
 {
-	GkdSecretsUnlock *self = GKD_SECRETS_UNLOCK (base);
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (base);
 	DBusMessageIter variant;
 	DBusMessageIter array;
 	const char *value;
@@ -266,16 +266,16 @@ gkd_secrets_unlock_encode_result (GkdSecretsPrompt *base, DBusMessageIter *iter)
 }
 
 static void
-gkd_secrets_unlock_init (GkdSecretsUnlock *self)
+gkd_secret_unlock_init (GkdSecretUnlock *self)
 {
 	self->queued = g_queue_new ();
 	self->results = g_array_new (TRUE, TRUE, sizeof (gchar*));
 }
 
 static void
-gkd_secrets_unlock_finalize (GObject *obj)
+gkd_secret_unlock_finalize (GObject *obj)
 {
-	GkdSecretsUnlock *self = GKD_SECRETS_UNLOCK (obj);
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (obj);
 
 	if (self->queued) {
 		while (!g_queue_is_empty (self->queued))
@@ -285,7 +285,7 @@ gkd_secrets_unlock_finalize (GObject *obj)
 	}
 
 	if (self->results) {
-		gkd_secrets_unlock_reset_results (self);
+		gkd_secret_unlock_reset_results (self);
 		g_array_free (self->results, TRUE);
 		self->results = NULL;
 	}
@@ -293,41 +293,41 @@ gkd_secrets_unlock_finalize (GObject *obj)
 	g_free (self->current);
 	self->current = NULL;
 
-	G_OBJECT_CLASS (gkd_secrets_unlock_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gkd_secret_unlock_parent_class)->finalize (obj);
 }
 
 static void
-gkd_secrets_unlock_class_init (GkdSecretsUnlockClass *klass)
+gkd_secret_unlock_class_init (GkdSecretUnlockClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GkdSecretsPromptClass *prompt_class = GKD_SECRETS_PROMPT_CLASS (klass);
+	GkdSecretPromptClass *prompt_class = GKD_SECRET_PROMPT_CLASS (klass);
 
-	gobject_class->finalize = gkd_secrets_unlock_finalize;
-	prompt_class->prompt_ready = gkd_secrets_unlock_prompt_ready;
-	prompt_class->encode_result = gkd_secrets_unlock_encode_result;
+	gobject_class->finalize = gkd_secret_unlock_finalize;
+	prompt_class->prompt_ready = gkd_secret_unlock_prompt_ready;
+	prompt_class->encode_result = gkd_secret_unlock_encode_result;
 }
 
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
 
-GkdSecretsUnlock*
-gkd_secrets_unlock_new (GkdSecretsService *service, const gchar *caller)
+GkdSecretUnlock*
+gkd_secret_unlock_new (GkdSecretService *service, const gchar *caller)
 {
-	return g_object_new (GKD_SECRETS_TYPE_UNLOCK, "service", service, "caller", caller, NULL);
+	return g_object_new (GKD_SECRET_TYPE_UNLOCK, "service", service, "caller", caller, NULL);
 }
 
 void
-gkd_secrets_unlock_queue (GkdSecretsUnlock *self, const gchar *objpath)
+gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
 {
 	GP11Object *coll;
 	gboolean locked;
 	gchar *path;
 
-	g_return_if_fail (GKD_SECRETS_IS_UNLOCK (self));
+	g_return_if_fail (GKD_SECRET_IS_UNLOCK (self));
 	g_return_if_fail (objpath);
 
-	coll = gkd_secrets_prompt_lookup_collection (GKD_SECRETS_PROMPT (self), objpath);
+	coll = gkd_secret_prompt_lookup_collection (GKD_SECRET_PROMPT (self), objpath);
 	if (coll == NULL)
 		return;
 
@@ -343,27 +343,27 @@ gkd_secrets_unlock_queue (GkdSecretsUnlock *self, const gchar *objpath)
 }
 
 gboolean
-gkd_secrets_unlock_have_queued (GkdSecretsUnlock *self)
+gkd_secret_unlock_have_queued (GkdSecretUnlock *self)
 {
-	g_return_val_if_fail (GKD_SECRETS_IS_UNLOCK (self), FALSE);
+	g_return_val_if_fail (GKD_SECRET_IS_UNLOCK (self), FALSE);
 	return !g_queue_is_empty (self->queued) || self->current;
 }
 
 gchar**
-gkd_secrets_unlock_get_results (GkdSecretsUnlock *self, gint *n_results)
+gkd_secret_unlock_get_results (GkdSecretUnlock *self, gint *n_results)
 {
-	g_return_val_if_fail (GKD_SECRETS_IS_UNLOCK (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_UNLOCK (self), NULL);
 	g_return_val_if_fail (n_results, NULL);
 	*n_results = self->results->len;
 	return (gchar**)self->results->data;
 }
 
 void
-gkd_secrets_unlock_reset_results (GkdSecretsUnlock *self)
+gkd_secret_unlock_reset_results (GkdSecretUnlock *self)
 {
 	gint i;
 
-	g_return_if_fail (GKD_SECRETS_IS_UNLOCK (self));
+	g_return_if_fail (GKD_SECRET_IS_UNLOCK (self));
 
 	for (i = 0; i < self->results->len; ++i)
 		g_free (g_array_index (self->results, gchar*, i));
