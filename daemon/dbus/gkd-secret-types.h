@@ -44,6 +44,7 @@
 #define SECRET_ERROR_NO_SESSION        "org.freedesktop.Secrets.Error.NoSession"
 
 typedef struct _GkdSecretCollection GkdSecretCollection;
+typedef struct _GkdSecretCreate GkdSecretCreate;
 typedef struct _GkdSecretItem GkdSecretItem;
 typedef struct _GkdSecretObjects GkdSecretObjects;
 typedef struct _GkdSecretPrompt GkdSecretPrompt;

@@ -60,6 +60,8 @@ const gchar*        gkd_secret_prompt_get_caller              (GkdSecretPrompt *
 
 const gchar*        gkd_secret_prompt_get_object_path         (GkdSecretPrompt *self);
 
+GP11Session*        gkd_secret_prompt_get_pkcs11_session      (GkdSecretPrompt *self);
+
 GP11Object*         gkd_secret_prompt_lookup_collection       (GkdSecretPrompt *self,
                                                                const gchar *objpath);
 

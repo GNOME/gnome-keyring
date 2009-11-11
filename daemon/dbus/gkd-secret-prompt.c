@@ -21,11 +21,12 @@
 
 #include "config.h"
 
+#include "gkd-dbus-util.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-types.h"
-#include "gkd-dbus-util.h"
+#include "gkd-secret-util.h"
 
 #include "prompt/gkd-prompt.h"
 
@@ -376,15 +377,16 @@ gkd_secret_prompt_dismiss (GkdSecretPrompt *self)
 }
 
 GP11Object*
-gkd_secret_prompt_lookup_collection (GkdSecretPrompt *self, const gchar *objpath)
+gkd_secret_prompt_lookup_collection (GkdSecretPrompt *self, const gchar *path)
 {
-	GkdSecretObjects *objects;
+	GP11Session *session;
 
 	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
 	g_return_val_if_fail (self->pv->service, NULL);
+	g_return_val_if_fail (path, NULL);
 
-	objects = gkd_secret_service_get_objects (self->pv->service);
-	g_return_val_if_fail (objects, NULL);
+	session = gkd_secret_service_get_pkcs11_session (self->pv->service, self->pv->caller);
+	g_return_val_if_fail (session, NULL);
 
-	return gkd_secret_objects_lookup_collection (objects, self->pv->caller, objpath);
+	return gkd_secret_util_path_to_collection (session, path);
 }

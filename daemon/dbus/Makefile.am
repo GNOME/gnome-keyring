@@ -23,7 +23,8 @@ libgkr_dbus_la_SOURCES = \
 	gkd-secret-service.c gkd-secret-service.h \
 	gkd-secret-session.c gkd-secret-session.h \
 	gkd-secret-types.h \
-	gkd-secret-unlock.c gkd-secret-unlock.h
+	gkd-secret-unlock.c gkd-secret-unlock.h \
+	gkd-secret-util.c gkd-secret-util.h
 
 libgkr_dbus_la_LIBADD = \
 	$(GLIB_LIBS) \
