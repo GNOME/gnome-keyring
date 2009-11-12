@@ -108,8 +108,8 @@ realize_and_take_data (GckSshPrivateKey *self, gcry_sexp_t sexp, gchar *comment,
 
 	/* The base public key gets setup. */
 	wrapper = gck_sexp_new (sexp);
-	gck_key_set_base_sexp (GCK_KEY (self), wrapper);
-	gck_key_set_base_sexp (GCK_KEY (self->pubkey), wrapper);
+	gck_sexp_key_set_base (GCK_SEXP_KEY (self), wrapper);
+	gck_sexp_key_set_base (GCK_SEXP_KEY (self->pubkey), wrapper);
 	gck_sexp_unref (wrapper);
 
 	/* Own the comment */

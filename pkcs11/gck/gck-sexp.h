@@ -40,4 +40,22 @@ gcry_sexp_t    gck_sexp_get           (GckSexp *sexp);
 
 GType          gck_sexp_boxed_type    (void);
 
-#endif /* GCKSEXPHANDLE_H_ */
+
+gboolean       gck_sexp_parse_key                (gcry_sexp_t sexp,
+                                                  int *algorithm,
+                                                  gboolean *is_private,
+                                                  gcry_sexp_t *numbers);
+
+gboolean       gck_sexp_key_to_public            (gcry_sexp_t sexp,
+                                                  gcry_sexp_t *pub);
+
+gboolean       gck_sexp_extract_mpi              (gcry_sexp_t sexp,
+                                                  gcry_mpi_t *mpi,
+                                                  ...) G_GNUC_NULL_TERMINATED;
+
+gcry_sexp_t    gck_sexp_get_childv               (gcry_sexp_t sexp,
+                                                  va_list va);
+
+void           gck_sexp_dump                     (gcry_sexp_t sexp);
+
+#endif /* GCKSEXP_H_ */

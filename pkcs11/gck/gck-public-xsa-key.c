@@ -24,14 +24,14 @@
 #include "pkcs11/pkcs11.h"
 
 #include "gck-attributes.h"
-#include "gck-crypto.h"
 #include "gck-factory.h"
 #include "gck-public-xsa-key.h"
 #include "gck-session.h"
+#include "gck-sexp.h"
 #include "gck-transaction.h"
 #include "gck-util.h"
 
-G_DEFINE_TYPE (GckPublicXsaKey, gck_public_xsa_key, GCK_TYPE_KEY);
+G_DEFINE_TYPE (GckPublicXsaKey, gck_public_xsa_key, GCK_TYPE_SEXP_KEY);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -45,8 +45,8 @@ return_modulus_bits (GckPublicXsaKey *self, CK_ATTRIBUTE_PTR attr)
 	int algorithm;
 	CK_RV rv;
 
-	if (!gck_crypto_sexp_parse_key (gck_sexp_get (gck_key_get_base_sexp (GCK_KEY (self))),
-	                                &algorithm, NULL, &numbers))
+	if (!gck_sexp_parse_key (gck_sexp_get (gck_sexp_key_get_base (GCK_SEXP_KEY (self))),
+	                         &algorithm, NULL, &numbers))
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
 
 	if (algorithm != GCRY_PK_RSA) {
@@ -55,7 +55,7 @@ return_modulus_bits (GckPublicXsaKey *self, CK_ATTRIBUTE_PTR attr)
 	}
 
 	g_assert (numbers);
-	if (!gck_crypto_sexp_extract_mpi (numbers, &mpi, "n", NULL))
+	if (!gck_sexp_extract_mpi (numbers, &mpi, "n", NULL))
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
 
 	gcry_sexp_release (numbers);
@@ -166,6 +166,7 @@ static CK_RV
 gck_public_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE* attr)
 {
 	GckPublicXsaKey *self = GCK_PUBLIC_XSA_KEY (base);
+	gint algorithm;
 
 	switch (attr->type)
 	{
@@ -174,7 +175,8 @@ gck_public_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK_
 		return gck_attribute_set_ulong (attr, CKO_PUBLIC_KEY);
 
 	case CKA_ENCRYPT:
-		return gck_attribute_set_bool (attr, gck_key_get_algorithm (GCK_KEY (self)) == GCRY_PK_RSA);
+		algorithm = gck_sexp_key_get_algorithm (GCK_SEXP_KEY (self));
+		return gck_attribute_set_bool (attr, algorithm == GCRY_PK_RSA);
 
 	case CKA_VERIFY:
 		return gck_attribute_set_bool (attr, TRUE);
@@ -195,34 +197,34 @@ gck_public_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK_
 		return return_modulus_bits (self, attr);
 
 	case CKA_MODULUS:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_RSA, "n", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_RSA, "n", attr);
 
 	case CKA_PUBLIC_EXPONENT:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_RSA, "e", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_RSA, "e", attr);
 
 	case CKA_PRIME:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "p", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_DSA, "p", attr);
 
 	case CKA_SUBPRIME:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "q", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_DSA, "q", attr);
 
 	case CKA_BASE:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "g", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_DSA, "g", attr);
 
 	/* DSA public value */
 	case CKA_VALUE:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "y", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_DSA, "y", attr);
 	};
 
 	return GCK_OBJECT_CLASS (gck_public_xsa_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static GckSexp*
-gck_public_xsa_key_acquire_crypto_sexp (GckKey *self, GckSession *session)
+gck_public_xsa_key_acquire_crypto_sexp (GckSexpKey *self, GckSession *session)
 {
 	GckSexp* sexp;
 
-	sexp = gck_key_get_base_sexp (self);
+	sexp = gck_sexp_key_get_base (self);
 	if (sexp != NULL)
 		gck_sexp_ref (sexp);
 
@@ -239,7 +241,7 @@ static void
 gck_public_xsa_key_class_init (GckPublicXsaKeyClass *klass)
 {
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
-	GckKeyClass *key_class = GCK_KEY_CLASS (klass);
+	GckSexpKeyClass *key_class = GCK_SEXP_KEY_CLASS (klass);
 
 	gck_public_xsa_key_parent_class = g_type_class_peek_parent (klass);
 

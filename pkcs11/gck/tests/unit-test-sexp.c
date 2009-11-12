@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-crypto.c: Test crypto stuff
+/* unit-test-sexp.c: Test sexp stuff
 
    Copyright (C) 2007 Stefan Walter
 
@@ -28,6 +28,7 @@
 #include "run-auto-test.h"
 
 #include "gck/gck-crypto.h"
+#include "gck/gck-sexp.h"
 
 #include <gcrypt.h>
 
@@ -55,9 +56,9 @@ gcry_sexp_t dsakey = NULL;
 DEFINE_SETUP(crypto_setup)
 {
 	gcry_error_t gcry;
-	
+
 	gck_crypto_initialize ();
-	
+
 	gcry = gcry_sexp_new (&rsakey, TEST_RSA, strlen (TEST_RSA), 1);
 	g_return_if_fail (gcry == 0);
 	gcry = gcry_sexp_new (&dsakey, TEST_DSA, strlen (TEST_DSA), 1);
@@ -79,15 +80,15 @@ DEFINE_TEST(parse_key)
 	gboolean ret;
 	gboolean is_priv = FALSE;
 	int algorithm = 0;
-	
+
 	/* Get the private key out */
-	ret = gck_crypto_sexp_parse_key (rsakey, &algorithm, &is_priv, &sexp);
+	ret = gck_sexp_parse_key (rsakey, &algorithm, &is_priv, &sexp);
 	g_assert (ret);
 	g_assert (algorithm == GCRY_PK_RSA);
 	g_assert (is_priv == TRUE);
 	g_assert (sexp != NULL);
-	
-	ret = gck_crypto_sexp_extract_mpi (rsakey, &mpi, "p", NULL);
+
+	ret = gck_sexp_extract_mpi (rsakey, &mpi, "p", NULL);
 	g_assert (ret);
 	g_assert (mpi != NULL);
 }
@@ -98,34 +99,34 @@ DEFINE_TEST(sexp_key_to_public)
 	guchar id1[20], id2[20];
 	gboolean ret;
 	guchar *p;
-	
+
 	/* RSA */
-	ret = gck_crypto_sexp_key_to_public (rsakey, &pubkey);
+	ret = gck_sexp_key_to_public (rsakey, &pubkey);
 	g_assert (ret);
 	g_assert (pubkey != NULL);
-	
+
 	p = gcry_pk_get_keygrip (rsakey, id1);
 	g_return_if_fail (p == id1);
 	p = gcry_pk_get_keygrip (pubkey, id2);
 	g_return_if_fail (p == id2);
 
 	g_assert (memcmp (id1, id2, sizeof (id1)) == 0);
-	
+
 	gcry_sexp_release (pubkey);
 
 
 	/* DSA */
-	ret = gck_crypto_sexp_key_to_public (dsakey, &pubkey);
+	ret = gck_sexp_key_to_public (dsakey, &pubkey);
 	g_assert (ret);
 	g_assert (pubkey != NULL);
-	
+
 	p = gcry_pk_get_keygrip (dsakey, id1);
 	g_return_if_fail (p == id1);
 	p = gcry_pk_get_keygrip (pubkey, id2);
 	g_return_if_fail (p == id2);
 
 	g_assert (memcmp (id1, id2, sizeof (id1)) == 0);
-	
+
 	gcry_sexp_release (pubkey);
 
 }

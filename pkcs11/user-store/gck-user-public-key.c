@@ -145,7 +145,7 @@ gck_user_public_key_real_load (GckSerializable *base, GckSecret *login, const gu
 	}
 
 	wrapper = gck_sexp_new (sexp);
-	gck_key_set_base_sexp (GCK_KEY (self), wrapper);
+	gck_sexp_key_set_base (GCK_SEXP_KEY (self), wrapper);
 	gck_sexp_unref (wrapper);
 	
 	return TRUE;
@@ -161,7 +161,7 @@ gck_user_public_key_real_save (GckSerializable *base, GckSecret *login, guchar *
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
-	wrapper = gck_key_get_base_sexp (GCK_KEY (self));
+	wrapper = gck_sexp_key_get_base (GCK_SEXP_KEY (self));
 	g_return_val_if_fail (wrapper, FALSE);
 	
 	*data = gck_data_der_write_public_key (gck_sexp_get (wrapper), n_data);

@@ -79,6 +79,12 @@ gulong                   gck_session_get_logged_in                      (GckSess
 void                     gck_session_set_logged_in                      (GckSession *self,
                                                                          gulong logged_in);
 
+gpointer                 gck_session_get_crypto_state                   (GckSession *self);
+
+void                     gck_session_set_crypto_state                   (GckSession *self,
+                                                                         gpointer state,
+                                                                         GDestroyNotify destroy);
+
 CK_RV                    gck_session_lookup_readable_object             (GckSession *self, 
                                                                          CK_OBJECT_HANDLE handle, 
                                                                          GckObject **result);

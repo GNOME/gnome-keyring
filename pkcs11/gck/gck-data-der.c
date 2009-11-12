@@ -23,10 +23,10 @@
 
 #include "config.h"
 
-#include "gck-crypto.h"
 #include "gck-data-asn1.h"
 #include "gck-data-der.h"
 #include "gck-data-types.h"
+#include "gck-sexp.h"
 
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-symkey.h"
@@ -674,8 +674,8 @@ gck_data_der_write_public_key_rsa (gcry_sexp_t s_key, gsize *len)
 	                           "PK.RSAPublicKey", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
-	if (!gck_crypto_sexp_extract_mpi (s_key, &n, "rsa", "n", NULL) || 
-	    !gck_crypto_sexp_extract_mpi (s_key, &e, "rsa", "e", NULL))
+	if (!gck_sexp_extract_mpi (s_key, &n, "rsa", "n", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &e, "rsa", "e", NULL))
 	    	goto done;
 	
 	if (!gck_data_asn1_write_mpi (asn, "modulus", n) ||
@@ -707,12 +707,12 @@ gck_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 	                           "PK.RSAPrivateKey", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
-	if (!gck_crypto_sexp_extract_mpi (s_key, &n, "rsa", "n", NULL) || 
-	    !gck_crypto_sexp_extract_mpi (s_key, &e, "rsa", "e", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &d, "rsa", "d", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &p, "rsa", "p", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &q, "rsa", "q", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &u, "rsa", "u", NULL))
+	if (!gck_sexp_extract_mpi (s_key, &n, "rsa", "n", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &e, "rsa", "e", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &d, "rsa", "d", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &p, "rsa", "p", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &q, "rsa", "q", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &u, "rsa", "u", NULL))
 		goto done;
 	
 	if (!gck_data_asn1_write_mpi (asn, "modulus", n) ||
@@ -778,10 +778,10 @@ gck_data_der_write_public_key_dsa (gcry_sexp_t s_key, gsize *len)
 	                           "PK.DSAPublicKey", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
-	if (!gck_crypto_sexp_extract_mpi (s_key, &p, "dsa", "p", NULL) || 
-	    !gck_crypto_sexp_extract_mpi (s_key, &q, "dsa", "q", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &g, "dsa", "g", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &y, "dsa", "y", NULL))
+	if (!gck_sexp_extract_mpi (s_key, &p, "dsa", "p", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &q, "dsa", "q", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &g, "dsa", "g", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &y, "dsa", "y", NULL))
 	    	goto done;
 	
 	if (!gck_data_asn1_write_mpi (asn, "p", p) ||
@@ -820,7 +820,7 @@ gck_data_der_write_private_key_dsa_part (gcry_sexp_t skey, gsize *n_key)
 	                           "PK.DSAPrivatePart", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
-	if (!gck_crypto_sexp_extract_mpi (skey, &x, "dsa", "x", NULL))
+	if (!gck_sexp_extract_mpi (skey, &x, "dsa", "x", NULL))
 	    	goto done;
 	
 	if (!gck_data_asn1_write_mpi (asn, "", x))
@@ -850,9 +850,9 @@ gck_data_der_write_private_key_dsa_params (gcry_sexp_t skey, gsize *n_params)
 	                           "PK.DSAParameters", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
-	if (!gck_crypto_sexp_extract_mpi (skey, &p, "dsa", "p", NULL) || 
-	    !gck_crypto_sexp_extract_mpi (skey, &q, "dsa", "q", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (skey, &g, "dsa", "g", NULL))
+	if (!gck_sexp_extract_mpi (skey, &p, "dsa", "p", NULL) ||
+	    !gck_sexp_extract_mpi (skey, &q, "dsa", "q", NULL) ||
+	    !gck_sexp_extract_mpi (skey, &g, "dsa", "g", NULL))
 	    	goto done;
 	
 	if (!gck_data_asn1_write_mpi (asn, "p", p) ||
@@ -886,11 +886,11 @@ gck_data_der_write_private_key_dsa (gcry_sexp_t s_key, gsize *len)
 	                           "PK.DSAPrivateKey", &asn);
 	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
 
-	if (!gck_crypto_sexp_extract_mpi (s_key, &p, "dsa", "p", NULL) || 
-	    !gck_crypto_sexp_extract_mpi (s_key, &q, "dsa", "q", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &g, "dsa", "g", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &y, "dsa", "y", NULL) ||
-	    !gck_crypto_sexp_extract_mpi (s_key, &x, "dsa", "x", NULL))
+	if (!gck_sexp_extract_mpi (s_key, &p, "dsa", "p", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &q, "dsa", "q", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &g, "dsa", "g", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &y, "dsa", "y", NULL) ||
+	    !gck_sexp_extract_mpi (s_key, &x, "dsa", "x", NULL))
 	    	goto done;
 	
 	if (!gck_data_asn1_write_mpi (asn, "p", p) ||
@@ -925,7 +925,7 @@ gck_data_der_write_public_key (gcry_sexp_t s_key, gsize *len)
 	
 	g_return_val_if_fail (s_key != NULL, NULL);
 	
-	if (!gck_crypto_sexp_parse_key (s_key, &algorithm, &is_priv, NULL))
+	if (!gck_sexp_parse_key (s_key, &algorithm, &is_priv, NULL))
 		g_return_val_if_reached (NULL);
 	
 	g_return_val_if_fail (!is_priv, NULL);
@@ -948,7 +948,7 @@ gck_data_der_write_private_key (gcry_sexp_t s_key, gsize *len)
 	
 	g_return_val_if_fail (s_key != NULL, NULL);
 	
-	if (!gck_crypto_sexp_parse_key (s_key, &algorithm, &is_priv, NULL))
+	if (!gck_sexp_parse_key (s_key, &algorithm, &is_priv, NULL))
 		g_return_val_if_reached (NULL);
 	
 	g_return_val_if_fail (is_priv, NULL);
@@ -1043,7 +1043,7 @@ gck_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 	init_quarks ();
 
 	/* Parse and check that the key is for real */
-	if (!gck_crypto_sexp_parse_key (skey, &algorithm, &is_priv, NULL))
+	if (!gck_sexp_parse_key (skey, &algorithm, &is_priv, NULL))
 		g_return_val_if_reached (NULL);
 	g_return_val_if_fail (is_priv == TRUE, NULL);
 	

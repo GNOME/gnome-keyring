@@ -27,12 +27,12 @@
 #include "gck-attributes.h"
 #include "gck-credential.h"
 #include "gck-crypto.h"
-#include "gck-key.h"
 #include "gck-factory.h"
 #include "gck-manager.h"
 #include "gck-memory-store.h"
 #include "gck-session.h"
 #include "gck-sexp.h"
+#include "gck-sexp-key.h"
 #include "gck-transaction.h"
 #include "gck-util.h"
 
@@ -73,9 +73,10 @@ struct _GckSessionPrivate {
 
 	/* Used for find operations */
 	GArray *found_objects;
-	
+
 	/* Used for crypto operations */
-	GckSexp *crypto_sexp;
+	gpointer crypto_state;
+	GDestroyNotify crypto_destroy;
 	CK_MECHANISM_TYPE crypto_mechanism;
 	CK_ATTRIBUTE_TYPE crypto_method;
 };
@@ -94,15 +95,14 @@ cleanup_crypto (GckSession *self)
 {
 	g_assert (self->pv->current_operation == cleanup_crypto);
 
-	if (self->pv->crypto_sexp) {
-		gck_sexp_unref (self->pv->crypto_sexp);
-		self->pv->crypto_sexp = NULL;
-	}
-
+	if (self->pv->crypto_state && self->pv->crypto_destroy)
+		(self->pv->crypto_destroy) (self->pv->crypto_state);
+	self->pv->crypto_state = NULL;
+	self->pv->crypto_destroy = NULL;
 	self->pv->crypto_mechanism = 0;
 	self->pv->crypto_method = 0;
 
-	g_assert (GCK_IS_KEY (self->pv->current_object));
+	g_assert (GCK_IS_OBJECT (self->pv->current_object));
 	if (self->pv->current_object)
 		g_object_unref (self->pv->current_object);
 	self->pv->current_object = NULL;
@@ -134,15 +134,15 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 		(self->pv->current_operation) (self);
 		g_assert (!self->pv->current_operation);
 	}
-	
-	g_assert (!self->pv->crypto_sexp);
-	
+
+	g_assert (!self->pv->crypto_state);
+
 	/* First find the object */
 	rv = gck_session_lookup_readable_object (self, handle, &object);
 	if (rv != CKR_OK)
 		return rv;
-	
-	if (!GCK_IS_KEY (object))
+
+	if (!GCK_IS_OBJECT (object))
 		return CKR_KEY_HANDLE_INVALID;
 
 	/* Lookup the mechanisms this object can do */
@@ -197,18 +197,16 @@ process_crypto (GckSession *self, CK_ATTRIBUTE_TYPE method, CK_BYTE_PTR bufone,
 	
 	if (rv == CKR_OK) {
 		/* Load up the actual sexp we're going to use */
-		if (!self->pv->crypto_sexp) {
-			g_return_val_if_fail (GCK_IS_KEY (self->pv->current_object), CKR_GENERAL_ERROR);
-			self->pv->crypto_sexp = gck_key_acquire_crypto_sexp (GCK_KEY (self->pv->current_object), self);
-			if (!self->pv->crypto_sexp)
-				rv = CKR_USER_NOT_LOGGED_IN;
+		if (!self->pv->crypto_state) {
+			g_return_val_if_fail (GCK_IS_OBJECT (self->pv->current_object), CKR_GENERAL_ERROR);
+			rv = gck_crypto_prepare (self, self->pv->crypto_mechanism, self->pv->current_object);
 		}
 	}
 
 	if (rv == CKR_OK) {
 		g_assert (self->pv->crypto_mechanism);
-		rv = gck_crypto_perform (gck_sexp_get (self->pv->crypto_sexp), self->pv->crypto_mechanism, 
-		                         method, bufone, n_bufone, buftwo, n_buftwo);
+		rv = gck_crypto_perform (self, self->pv->crypto_mechanism, method,
+		                         bufone, n_bufone, buftwo, n_buftwo);
 	}
 	
 	/* Under these conditions the operation isn't complete */
@@ -637,6 +635,26 @@ gck_session_set_logged_in (GckSession *self, gulong logged_in)
 	g_return_if_fail (GCK_IS_SESSION (self));
 	self->pv->logged_in = logged_in;
 	g_object_notify (G_OBJECT (self), "logged-in");
+}
+
+gpointer
+gck_session_get_crypto_state (GckSession *self)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
+	return self->pv->crypto_state;
+}
+
+void
+gck_session_set_crypto_state (GckSession *self, gpointer state,
+                              GDestroyNotify destroy)
+{
+	g_return_if_fail (GCK_IS_SESSION (self));
+	if (self->pv->crypto_state != state) {
+		if (self->pv->crypto_state && self->pv->crypto_destroy)
+			(self->pv->crypto_destroy) (self->pv->crypto_state);
+	}
+	self->pv->crypto_state = state;
+	self->pv->crypto_destroy = destroy;
 }
 
 gboolean

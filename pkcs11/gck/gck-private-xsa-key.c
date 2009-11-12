@@ -35,7 +35,7 @@ struct _GckPrivateXsaKeyPrivate {
 	GckSexp *sexp;
 };
 
-G_DEFINE_TYPE (GckPrivateXsaKey, gck_private_xsa_key, GCK_TYPE_KEY);
+G_DEFINE_TYPE (GckPrivateXsaKey, gck_private_xsa_key, GCK_TYPE_SEXP_KEY);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -201,6 +201,7 @@ gck_private_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK
 {
 	GckPrivateXsaKey *self = GCK_PRIVATE_XSA_KEY (base);
 	gboolean have;
+	gint algorithm;
 
 	switch (attr->type) {
 	case CKA_CLASS:
@@ -213,7 +214,8 @@ gck_private_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK
 		return gck_attribute_set_bool (attr, TRUE);
 
 	case CKA_DECRYPT:
-		return gck_attribute_set_bool (attr, gck_key_get_algorithm (GCK_KEY (self)) == GCRY_PK_RSA);
+		algorithm = gck_sexp_key_get_algorithm (GCK_SEXP_KEY (self));
+		return gck_attribute_set_bool (attr, algorithm == GCRY_PK_RSA);
 
 	case CKA_SIGN:
 		return gck_attribute_set_bool (attr, TRUE);
@@ -246,10 +248,10 @@ gck_private_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK
 		return gck_attribute_set_bool (attr, !have);
 
 	case CKA_MODULUS:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_RSA, "n", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_RSA, "n", attr);
 
 	case CKA_PUBLIC_EXPONENT:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_RSA, "e", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_RSA, "e", attr);
 
 	/* RSA private key parts */
 	case CKA_PRIVATE_EXPONENT:
@@ -261,13 +263,13 @@ gck_private_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK
 		return CKR_ATTRIBUTE_SENSITIVE;
 
 	case CKA_PRIME:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "p", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_DSA, "p", attr);
 
 	case CKA_SUBPRIME:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "q", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_DSA, "q", attr);
 
 	case CKA_BASE:
-		return gck_key_set_key_part (GCK_KEY (self), GCRY_PK_DSA, "g", attr);
+		return gck_sexp_key_set_part (GCK_SEXP_KEY (self), GCRY_PK_DSA, "g", attr);
 
 	/* DSA private parts */
 	case CKA_VALUE:
@@ -278,7 +280,7 @@ gck_private_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK
 }
 
 static GckSexp*
-gck_private_xsa_key_real_acquire_crypto_sexp (GckKey *base, GckSession *session)
+gck_private_xsa_key_real_acquire_crypto_sexp (GckSexpKey *base, GckSession *session)
 {
 	GckPrivateXsaKey *self = GCK_PRIVATE_XSA_KEY (base);
 	GckSexp *sexp = NULL;
@@ -328,7 +330,7 @@ gck_private_xsa_key_class_init (GckPrivateXsaKeyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
-	GckKeyClass *key_class = GCK_KEY_CLASS (klass);
+	GckSexpKeyClass *key_class = GCK_SEXP_KEY_CLASS (klass);
 
 	gck_private_xsa_key_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GckPrivateXsaKeyPrivate));

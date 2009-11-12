@@ -29,8 +29,9 @@ libgck_la_SOURCES = \
 	gck-data-types.h \
 	gck-factory.c gck-factory.h \
 	gck-file-tracker.c gck-file-tracker.h \
-	gck-key.c gck-key.h \
 	gck-manager.c gck-manager.h \
+	gck-mechanism-dsa.c gck-mechanism-dsa.h \
+	gck-mechanism-rsa.c gck-mechanism-rsa.h \
 	gck-memory-store.c gck-memory-store.h \
 	gck-module.c gck-module.h gck-module-ep.h \
 	gck-object.c gck-object.h \
@@ -40,6 +41,7 @@ libgck_la_SOURCES = \
 	gck-serializable.c gck-serializable.h \
 	gck-session.c gck-session.h \
 	gck-sexp.c gck-sexp.h \
+	gck-sexp-key.c gck-sexp-key.h \
 	gck-store.c gck-store.h \
 	gck-timer.c gck-timer.h \
 	gck-transaction.c gck-transaction.h \

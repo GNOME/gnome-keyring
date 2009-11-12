@@ -102,7 +102,7 @@ gck_user_private_key_real_get_attribute (GckObject *base, GckSession *session, C
 }
 
 static GckSexp* 
-gck_user_private_key_real_acquire_crypto_sexp (GckKey *base, GckSession *unused)
+gck_user_private_key_real_acquire_crypto_sexp (GckSexpKey *base, GckSession *unused)
 {
 	GckUserPrivateKey *self = GCK_USER_PRIVATE_KEY (base);
 	gcry_sexp_t sexp;
@@ -187,8 +187,8 @@ gck_user_private_key_class_init (GckUserPrivateKeyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
-	GckKeyClass *key_class = GCK_KEY_CLASS (klass);
-	
+	GckSexpKeyClass *key_class = GCK_SEXP_KEY_CLASS (klass);
+
 	gobject_class->dispose = gck_user_private_key_dispose;
 	gobject_class->finalize = gck_user_private_key_finalize;
 	gobject_class->set_property = gck_user_private_key_set_property;
@@ -248,12 +248,12 @@ gck_user_private_key_real_load (GckSerializable *base, GckSecret *login, const g
 	}
 	
 	/* Calculate a public key as our 'base' */
-	if (!gck_crypto_sexp_key_to_public (sexp, &pub))
+	if (!gck_sexp_key_to_public (sexp, &pub))
 		g_return_val_if_reached (FALSE);
 	
 	/* Keep the public part of the key around for answering queries */
 	wrapper = gck_sexp_new (pub);
-	gck_key_set_base_sexp (GCK_KEY (self), wrapper);
+	gck_sexp_key_set_base (GCK_SEXP_KEY (self), wrapper);
 	gck_sexp_unref (wrapper);
 	
 	/* Encrypted private key, keep login and data */
@@ -297,7 +297,7 @@ gck_user_private_key_real_save (GckSerializable *base, GckSecret *login, guchar 
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 	
-	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_KEY (self), NULL);
+	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_SEXP_KEY (self), NULL);
 	g_return_val_if_fail (sexp, FALSE);
 	
 	password = gck_secret_get_password (login, &n_password);

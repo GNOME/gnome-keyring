@@ -28,7 +28,7 @@
 #include "gck-data-asn1.h"
 #include "gck-data-der.h"
 #include "gck-factory.h"
-#include "gck-key.h"
+#include "gck-sexp-key.h"
 #include "gck-manager.h"
 #include "gck-session.h"
 #include "gck-sexp.h"
@@ -562,7 +562,7 @@ gck_certificate_real_load (GckSerializable *base, GckSecret *login, const guchar
 			self->pv->key = gck_certificate_key_new (gck_object_get_module (GCK_OBJECT (self)),
 			                                         gck_object_get_manager (GCK_OBJECT (self)),
 			                                         self);
-		gck_key_set_base_sexp (GCK_KEY (self->pv->key), wrapper);
+		gck_sexp_key_set_base (GCK_SEXP_KEY (self->pv->key), wrapper);
 		gck_sexp_unref (wrapper);
 		break;
 

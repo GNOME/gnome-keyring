@@ -24,7 +24,7 @@
 
 #include <glib-object.h>
 
-#include "gck-key.h"
+#include "gck-sexp-key.h"
 #include "gck-types.h"
 
 #define GCK_FACTORY_PRIVATE_XSA_KEY            (gck_private_xsa_key_get_factory ())
@@ -40,12 +40,12 @@ typedef struct _GckPrivateXsaKeyClass GckPrivateXsaKeyClass;
 typedef struct _GckPrivateXsaKeyPrivate GckPrivateXsaKeyPrivate;
 
 struct _GckPrivateXsaKey {
-	GckKey parent;
+	GckSexpKey parent;
 	GckPrivateXsaKeyPrivate *pv;
 };
 
 struct _GckPrivateXsaKeyClass {
-	GckKeyClass parent_class;
+	GckSexpKeyClass parent_class;
 };
 
 GType                  gck_private_xsa_key_get_type               (void);

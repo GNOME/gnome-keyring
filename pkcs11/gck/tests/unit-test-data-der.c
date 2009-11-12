@@ -28,6 +28,7 @@
 #include "gck/gck-crypto.h"
 #include "gck/gck-data-asn1.h"
 #include "gck/gck-data-der.h"
+#include "gck/gck-sexp.h"
 
 #include "egg/egg-openssl.h"
 
@@ -425,7 +426,7 @@ DEFINE_TEST(read_all_pkcs8)
 		res = gck_data_der_read_private_pkcs8 (data, n_data, "booo", 4, &sexp);
 		g_assert (res == GCK_DATA_SUCCESS);
 		
-		g_assert (gck_crypto_sexp_parse_key (sexp, NULL, NULL, NULL));
+		g_assert (gck_sexp_parse_key (sexp, NULL, NULL, NULL));
 		gcry_sexp_release (sexp);
 		g_free (data);
 	}
