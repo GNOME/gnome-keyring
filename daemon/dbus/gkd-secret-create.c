@@ -1,0 +1,267 @@
+/*
+ * gnome-keyring
+ *
+ * Copyright (C) 2008 Stefan Walter
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ */
+
+#include "config.h"
+
+#include "gkd-secret-create.h"
+#include "gkd-secret-service.h"
+#include "gkd-secret-prompt.h"
+#include "gkd-secret-types.h"
+#include "gkd-secret-util.h"
+
+#include "egg/egg-secure-memory.h"
+
+#include "pkcs11/pkcs11i.h"
+
+#include <glib/gi18n.h>
+
+#include <gp11/gp11.h>
+
+#include <string.h>
+
+enum {
+	PROP_0,
+	PROP_PKCS11_ATTRIBUTES
+};
+
+struct _GkdSecretCreate {
+	GkdSecretPrompt parent;
+	GP11Attributes *pkcs11_attrs;
+	gchar *result_path;
+};
+
+G_DEFINE_TYPE (GkdSecretCreate, gkd_secret_create, GKD_SECRET_TYPE_PROMPT);
+
+/* -----------------------------------------------------------------------------
+ * INTERNAL
+ */
+
+static void
+prepare_create_prompt (GkdSecretCreate *self)
+{
+	GkdPrompt *prompt;
+	gchar *label;
+	gchar *text;
+
+	g_assert (GKD_SECRET_IS_CREATE (self));
+	g_assert (self->pkcs11_attrs);
+
+	prompt = GKD_PROMPT (self);
+
+	if (!gp11_attributes_find_string (self->pkcs11_attrs, CKA_LABEL, &label))
+		label = g_strdup (_("Unnamed"));
+
+	gkd_prompt_reset (prompt);
+
+	gkd_prompt_set_title (prompt, _("New Keyring Password"));
+	gkd_prompt_set_primary_text (prompt, _("Choose password for new keyring"));
+
+	text = g_markup_printf_escaped (_("An application wants to create a new keyring called '%s'. "
+	                                  "Choose the password you want to use for it."), label);
+	gkd_prompt_set_secondary_text (prompt, text);
+	g_free (text);
+
+	gkd_prompt_hide_widget (prompt, "name_area");
+	gkd_prompt_hide_widget (prompt, "confirm_area");
+	gkd_prompt_hide_widget (prompt, "details_area");
+
+	g_free (label);
+}
+
+static gboolean
+create_collection (GkdSecretCreate *self, const gchar *password)
+{
+	GError *error = NULL;
+	GP11Session *session;
+	GP11Object *collection;
+	GP11Object *cred;
+	gsize n_password;
+	gboolean token;
+
+	g_assert (GKD_SECRET_IS_CREATE (self));
+	g_return_val_if_fail (self->pkcs11_attrs, FALSE);
+	g_return_val_if_fail (!self->result_path, FALSE);
+
+	if (gp11_attributes_find_boolean (self->pkcs11_attrs, CKA_TOKEN, &token))
+		token = FALSE;
+	n_password = password ? strlen (password) : 0;
+
+	session =  gkd_secret_prompt_get_pkcs11_session (GKD_SECRET_PROMPT (self));
+	g_return_val_if_fail (session, FALSE);
+
+	cred = gp11_session_create_object (session, &error,
+	                                   CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
+	                                   CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
+	                                   CKA_TOKEN, GP11_BOOLEAN, token,
+	                                   CKA_VALUE, n_password, password,
+	                                   GP11_INVALID);
+
+	if (!cred) {
+		g_warning ("couldn't create credential for new collection: %s", error->message);
+		g_clear_error (&error);
+		return FALSE;
+	}
+
+	/* Setup remainder of attributes on collection */
+	gp11_attributes_add_ulong (self->pkcs11_attrs, CKA_G_CREDENTIAL,
+	                           gp11_object_get_handle (cred));
+	g_object_unref (cred);
+
+	collection = gp11_session_create_object_full (session, self->pkcs11_attrs, NULL, &error);
+	if (!collection) {
+		g_warning ("couldn't create collection: %s", error->message);
+		g_clear_error (&error);
+		return FALSE;
+	}
+
+	gp11_object_set_session (collection, session);
+	self->result_path = gkd_secret_util_path_for_collection (collection);
+	g_object_unref (collection);
+
+	return TRUE;
+}
+
+/* -----------------------------------------------------------------------------
+ * OBJECT
+ */
+
+static void
+gkd_secret_create_prompt_ready (GkdSecretPrompt *base)
+{
+	GkdSecretCreate *self = GKD_SECRET_CREATE (base);
+	GkdPrompt *prompt = GKD_PROMPT (self);
+	gchar *password;
+
+	if (!gkd_prompt_has_response (prompt)) {
+		prepare_create_prompt (self);
+		return;
+	}
+
+	/* Already prompted, create collection */
+	g_return_if_fail (gkd_prompt_get_response (prompt) == GKD_RESPONSE_OK);
+	password = gkd_prompt_get_password (prompt, "password");
+
+	if (create_collection (self, password))
+		gkd_secret_prompt_complete (GKD_SECRET_PROMPT (self));
+	else
+		gkd_secret_prompt_dismiss (GKD_SECRET_PROMPT (self));
+
+	egg_secure_strfree (password);
+}
+
+static void
+gkd_secret_create_encode_result (GkdSecretPrompt *base, DBusMessageIter *iter)
+{
+	GkdSecretCreate *self = GKD_SECRET_CREATE (base);
+	DBusMessageIter variant;
+	const gchar *path;
+
+	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "o", &variant);
+	path = self->result_path ? self->result_path : "/";
+	dbus_message_iter_append_basic (&variant, DBUS_TYPE_OBJECT_PATH, &path);
+	dbus_message_iter_close_container (iter, &variant);
+}
+
+static void
+gkd_secret_create_init (GkdSecretCreate *self)
+{
+
+}
+
+static void
+gkd_secret_create_finalize (GObject *obj)
+{
+	GkdSecretCreate *self = GKD_SECRET_CREATE (obj);
+
+	if (self->pkcs11_attrs)
+		gp11_attributes_unref (self->pkcs11_attrs);
+	self->pkcs11_attrs = NULL;
+
+	G_OBJECT_CLASS (gkd_secret_create_parent_class)->finalize (obj);
+}
+
+static void
+gkd_secret_create_set_property (GObject *obj, guint prop_id, const GValue *value,
+                                GParamSpec *pspec)
+{
+	GkdSecretCreate *self = GKD_SECRET_CREATE (obj);
+
+	switch (prop_id) {
+	case PROP_PKCS11_ATTRIBUTES:
+		g_return_if_fail (!self->pkcs11_attrs);
+		self->pkcs11_attrs = g_value_dup_boxed (value);
+		gp11_attributes_add_ulong (self->pkcs11_attrs, CKA_CLASS, CKO_G_COLLECTION);
+		g_return_if_fail (self->pkcs11_attrs);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gkd_secret_create_get_property (GObject *obj, guint prop_id, GValue *value,
+                                GParamSpec *pspec)
+{
+	GkdSecretCreate *self = GKD_SECRET_CREATE (obj);
+
+	switch (prop_id) {
+	case PROP_PKCS11_ATTRIBUTES:
+		g_value_set_boxed (value, self->pkcs11_attrs);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gkd_secret_create_class_init (GkdSecretCreateClass *klass)
+{
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	GkdSecretPromptClass *prompt_class = GKD_SECRET_PROMPT_CLASS (klass);
+
+	gobject_class->finalize = gkd_secret_create_finalize;
+	gobject_class->get_property = gkd_secret_create_get_property;
+	gobject_class->set_property = gkd_secret_create_set_property;
+
+	prompt_class->prompt_ready = gkd_secret_create_prompt_ready;
+	prompt_class->encode_result = gkd_secret_create_encode_result;
+
+	g_object_class_install_property (gobject_class, PROP_PKCS11_ATTRIBUTES,
+		g_param_spec_boxed ("pkcs11-attributes", "PKCS11 Attributes", "PKCS11 Attributes",
+		                     GP11_TYPE_ATTRIBUTES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+}
+
+/* -----------------------------------------------------------------------------
+ * PUBLIC
+ */
+
+GkdSecretCreate*
+gkd_secret_create_new (GkdSecretService *service, const gchar *caller,
+                       GP11Attributes *attrs)
+{
+	return g_object_new (GKD_SECRET_TYPE_CREATE,
+	                     "service", service,
+	                     "caller", caller,
+	                     "pkcs11-attributes", attrs,
+	                     NULL);
+}

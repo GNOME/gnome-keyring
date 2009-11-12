@@ -358,6 +358,15 @@ gkd_secret_prompt_get_object_path (GkdSecretPrompt *self)
 	return self->pv->object_path;
 }
 
+GP11Session*
+gkd_secret_prompt_get_pkcs11_session (GkdSecretPrompt *self)
+{
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (self->pv->service, NULL);
+
+	return gkd_secret_service_get_pkcs11_session (self->pv->service, self->pv->caller);
+}
+
 void
 gkd_secret_prompt_complete (GkdSecretPrompt *self)
 {
@@ -374,19 +383,4 @@ gkd_secret_prompt_dismiss (GkdSecretPrompt *self)
 	g_return_if_fail (!self->pv->completed);
 	self->pv->completed = TRUE;
 	emit_completed (self, TRUE);
-}
-
-GP11Object*
-gkd_secret_prompt_lookup_collection (GkdSecretPrompt *self, const gchar *path)
-{
-	GP11Session *session;
-
-	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
-	g_return_val_if_fail (self->pv->service, NULL);
-	g_return_val_if_fail (path, NULL);
-
-	session = gkd_secret_service_get_pkcs11_session (self->pv->service, self->pv->caller);
-	g_return_val_if_fail (session, NULL);
-
-	return gkd_secret_util_path_to_collection (session, path);
 }

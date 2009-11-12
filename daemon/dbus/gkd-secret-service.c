@@ -22,8 +22,10 @@
 #include "config.h"
 
 #include "gkd-dbus-util.h"
+#include "gkd-secret-create.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-prompt.h"
+#include "gkd-secret-property.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
@@ -370,6 +372,60 @@ service_method_open_session (GkdSecretService *self, DBusMessage *message)
 }
 
 static DBusMessage*
+service_method_create_collection (GkdSecretService *self, DBusMessage *message)
+{
+	DBusMessageIter iter, array;
+	GP11Attributes *attrs, *all;
+	GP11Attribute *label;
+	GkdSecretCreate *create;
+	ServiceClient *client;
+	DBusMessage *reply;
+	const gchar *path;
+	const char *caller;
+	const gchar *coll;
+
+	/* Parse the incoming message */
+	if (!dbus_message_has_signature (message, "a{sv}"))
+		return NULL;
+	if (!dbus_message_iter_init (message, &iter))
+		g_return_val_if_reached (NULL);
+	all = gp11_attributes_new ();
+	dbus_message_iter_recurse (&iter, &array);
+	if (!gkd_secret_property_parse_all (&array, all)) {
+		gp11_attributes_unref (all);
+		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
+		                                      "Invalid properties");
+	}
+
+	/* The only thing we actually use from the properties right now is the label */
+	label = gp11_attributes_find (all, CKA_LABEL);
+	attrs = gp11_attributes_new ();
+	if (label != NULL)
+		gp11_attributes_add (attrs, label);
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gp11_attributes_unref (all);
+
+	/* Create the prompt object, for the password */
+	caller = dbus_message_get_sender (message);
+	create = gkd_secret_create_new (self, caller, attrs);
+	gp11_attributes_unref (attrs);
+
+	path = gkd_secret_prompt_get_object_path (GKD_SECRET_PROMPT (create));
+	client = g_hash_table_lookup (self->clients, caller);
+	g_return_val_if_fail (client, NULL);
+	g_hash_table_replace (client->prompts, (gpointer)path, create);
+
+	coll = "/";
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply,
+	                          DBUS_TYPE_OBJECT_PATH, &coll,
+	                          DBUS_TYPE_OBJECT_PATH, &path,
+	                          DBUS_TYPE_INVALID);
+
+	return reply;
+}
+
+static DBusMessage*
 service_method_unlock (GkdSecretService *self, DBusMessage *message)
 {
 	GkdSecretUnlock *unlock;
@@ -430,7 +486,7 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 
 	/* org.freedesktop.Secrets.Service.CreateCollection() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "CreateCollection"))
-		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+		reply = service_method_create_collection (self, message);
 
 	/* org.freedesktop.Secrets.Service.LockService() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "LockService"))

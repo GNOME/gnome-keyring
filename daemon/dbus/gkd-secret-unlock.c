@@ -25,6 +25,7 @@
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-types.h"
 #include "gkd-secret-unlock.h"
+#include "gkd-secret-util.h"
 
 #include "egg/egg-secure-memory.h"
 
@@ -168,6 +169,17 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *coll, gboolean *lock
 	}
 }
 
+static GP11Object*
+lookup_collection (GkdSecretUnlock *self, const gchar *path)
+{
+	GP11Session *session;
+
+	session = gkd_secret_prompt_get_pkcs11_session (GKD_SECRET_PROMPT (self));
+	g_return_val_if_fail (session, NULL);
+
+	return gkd_secret_util_path_to_collection (session, path);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -182,7 +194,7 @@ gkd_secret_unlock_prompt_ready (GkdSecretPrompt *base)
 
 	/* Already prompted for an item */
 	if (self->current) {
-		coll = gkd_secret_prompt_lookup_collection (base, self->current);
+		coll = lookup_collection (self, self->current);
 
 		/* If the object or collection is gone, no need to unlock */
 		if (coll == NULL) {
@@ -221,7 +233,7 @@ gkd_secret_unlock_prompt_ready (GkdSecretPrompt *base)
 		}
 
 		/* Find the collection, make sure it's still around */
-		coll = gkd_secret_prompt_lookup_collection (base, objpath);
+		coll = lookup_collection (self, objpath);
 		if (coll == NULL) {
 			g_free (objpath);
 			continue;
@@ -327,7 +339,7 @@ gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
 	g_return_if_fail (GKD_SECRET_IS_UNLOCK (self));
 	g_return_if_fail (objpath);
 
-	coll = gkd_secret_prompt_lookup_collection (GKD_SECRET_PROMPT (self), objpath);
+	coll = lookup_collection (self, objpath);
 	if (coll == NULL)
 		return;
 
