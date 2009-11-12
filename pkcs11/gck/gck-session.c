@@ -690,8 +690,8 @@ gck_session_login_context_specific (GckSession *self, CK_UTF8CHAR_PTR pin, CK_UL
 	g_return_val_if_fail (is_private == TRUE, CKR_GENERAL_ERROR);
 
 	/* Now create the strange object */
-	rv = gck_credential_create (self->pv->current_object, self->pv->manager,
-	                            pin, n_pin, &cred);
+	rv = gck_credential_create (self->pv->module, self->pv->manager,
+	                            self->pv->current_object, pin, n_pin, &cred);
 	if (rv != CKR_OK)
 		return rv;
 

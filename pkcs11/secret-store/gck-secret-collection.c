@@ -88,6 +88,21 @@ load_collection_and_secret_data (GckSecretCollection *self, GckSecretData *sdata
 }
 
 static gboolean
+find_unlocked_credential (GckCredential *cred, GckObject *object, gpointer user_data)
+{
+	CK_OBJECT_HANDLE *result = user_data;
+
+	g_return_val_if_fail (!*result, FALSE);
+
+	if (gck_credential_get_data (cred)) {
+		*result = gck_object_get_handle (GCK_OBJECT (cred));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
 find_unlocked_secret_data (GckCredential *cred, GckObject *object, gpointer user_data)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (object);
@@ -207,12 +222,15 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
 {
 	GckSecretCollection *collection = NULL;
+	CK_OBJECT_HANDLE handle;
 	CK_ATTRIBUTE *attr;
 	GckManager *manager;
 	gchar *identifier = NULL;
+	GckSecretData *sdata;
 	gchar *label = NULL;
 	gboolean is_token;
 	GckCredential *cred;
+	GckObject *object;
 	CK_RV rv;
 
 	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
@@ -225,6 +243,15 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 		manager = gck_module_get_manager (gck_session_get_module (session));
 	else
 		manager = gck_session_get_manager (session);
+
+	/* Must have a credential, which is not associated with an object yet */
+	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_G_CREDENTIAL, &handle))
+		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+	if (gck_session_lookup_readable_object (session, handle, &object) != CKR_OK)
+		return gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+	cred = GCK_CREDENTIAL (object);
+	if (gck_credential_get_object (cred) != NULL)
+		return gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
 
 	/* See if a collection attribute was specified, not present means all collections */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_LABEL);
@@ -252,21 +279,13 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	g_free (identifier);
 	g_free (label);
 
-	/*
-	 * HACK: We are expected to have an unlocked collection. This is
-	 * currently a chicken and egg problem, as there's no way to set
-	 * credentials. Actually currently there's no way to set credentials.
-	 */
-	rv = gck_credential_create (GCK_OBJECT (collection), gck_session_get_manager (session),
-	                            NULL, 0, &cred);
-	if (rv != CKR_OK) {
-		gck_transaction_fail (transaction, rv);
-		g_object_unref (collection);
-	} else {
-		gck_session_add_session_object (session, transaction, GCK_OBJECT (cred));
-		*result = GCK_OBJECT (collection);
-		g_object_unref (cred);
-	}
+	gck_credential_connect (cred, GCK_OBJECT (collection));
+	sdata = g_object_new (GCK_TYPE_SECRET_DATA, NULL);
+	gck_credential_set_data (cred, sdata, g_object_unref);
+	gck_secret_data_set_master (sdata, gck_credential_get_secret (cred));
+	track_secret_data (collection, sdata);
+
+	*result = GCK_OBJECT (collection);
 }
 
 /* -----------------------------------------------------------------------------
@@ -276,11 +295,17 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 static CK_RV
 gck_secret_collection_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
+	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
+	CK_OBJECT_HANDLE handle = 0;
+
 	switch (attr->type) {
 	case CKA_CLASS:
 		return gck_attribute_set_ulong (attr, CKO_G_COLLECTION);
+	case CKA_G_CREDENTIAL:
+		gck_session_for_each_credential (session, GCK_OBJECT (self),
+		                                 find_unlocked_credential, &handle);
+		return gck_attribute_set_ulong (attr, handle);
 	}
-
 	return GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->get_attribute (base, session, attr);
 }
 

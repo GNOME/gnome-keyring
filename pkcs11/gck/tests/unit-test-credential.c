@@ -104,6 +104,8 @@ DEFINE_TEST(credential_create_no_object)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_BBOOL token = CK_FALSE;
+	CK_OBJECT_HANDLE objhand = (CK_ULONG)-1;
+	CK_ATTRIBUTE attr;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_TOKEN, &token, sizeof (token) },
@@ -114,7 +116,15 @@ DEFINE_TEST(credential_create_no_object)
 	CK_RV rv;
 
 	rv = gck_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_TEMPLATE_INCOMPLETE);
+	g_assert (rv == CKR_OK);
+	g_assert (handle != 0);
+
+	attr.type = CKA_G_OBJECT;
+	attr.pValue = &objhand;
+	attr.ulValueLen = sizeof (objhand);
+	rv = gck_session_C_GetAttributeValue (session, handle, &attr, 1);
+	g_assert (rv == CKR_OK);
+	g_assert (objhand == 0);
 }
 
 DEFINE_TEST(credential_create_invalid_object)
@@ -181,7 +191,7 @@ DEFINE_TEST(credential_uses_property)
 	gint uses;
 	CK_RV rv;
 
-	rv = gck_credential_create (object, NULL, (guchar*)"mock", 4, &auth);
+	rv = gck_credential_create (module, NULL, object, (guchar*)"mock", 4, &auth);
 	g_assert (rv == CKR_OK);
 	g_assert (auth);
 
@@ -206,7 +216,7 @@ DEFINE_TEST(credential_object_property)
 	GckObject *check;
 	CK_RV rv;
 
-	rv = gck_credential_create (object, NULL, (guchar*)"mock", 4, &auth);
+	rv = gck_credential_create (module, NULL, object, (guchar*)"mock", 4, &auth);
 	g_assert (rv == CKR_OK);
 	g_assert (auth);
 
@@ -228,7 +238,7 @@ DEFINE_TEST(credential_login_property)
 	gsize n_password;
 	CK_RV rv;
 
-	rv = gck_credential_create (object, NULL, (guchar*)"mock", 4, &cred);
+	rv = gck_credential_create (module, NULL, object, (guchar*)"mock", 4, &cred);
 	g_assert (rv == CKR_OK);
 	g_assert (cred);
 
@@ -257,7 +267,7 @@ DEFINE_TEST(credential_data)
 	GckCredential *cred;
 	CK_RV rv;
 
-	rv = gck_credential_create (object, NULL, (guchar*)"mock", 4, &cred);
+	rv = gck_credential_create (module, NULL, object, (guchar*)"mock", 4, &cred);
 	g_assert (rv == CKR_OK);
 	g_assert (cred);
 
@@ -272,6 +282,21 @@ DEFINE_TEST(credential_data)
 
 	gck_credential_set_data (cred, NULL, NULL);
 	g_assert (gck_credential_get_data (cred) == NULL);
+
+	g_object_unref (cred);
+}
+
+DEFINE_TEST(credential_connect_object)
+{
+	GckCredential *cred;
+	CK_RV rv;
+
+	rv = gck_credential_create (module, NULL, NULL, (guchar*)"mock", 4, &cred);
+	g_assert (rv == CKR_OK);
+	g_assert (cred);
+
+	gck_credential_connect (cred, object);
+	g_assert (gck_credential_get_object (cred) == object);
 
 	g_object_unref (cred);
 }

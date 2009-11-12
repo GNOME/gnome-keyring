@@ -73,12 +73,14 @@ static void
 unlock_collection(void)
 {
 	GckCredential *cred;
+	GckObject *object;
 	CK_RV rv;
 
 	/* Create credential, which unlocks collection */
-	rv = gck_credential_create (GCK_OBJECT (collection),
+	object = GCK_OBJECT (collection);
+	rv = gck_credential_create (gck_object_get_module (object),
 	                            gck_session_get_manager (session),
-	                            NULL, 0, &cred);
+	                            object, NULL, 0, &cred);
 	g_assert (rv == CKR_OK);
 
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));

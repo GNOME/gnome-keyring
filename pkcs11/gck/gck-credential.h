@@ -52,11 +52,15 @@ GType                      gck_credential_get_type               (void);
 
 GckFactory*                gck_credential_get_factory            (void);
 
-CK_RV                      gck_credential_create                 (GckObject *object,
+CK_RV                      gck_credential_create                 (GckModule *module,
                                                                   GckManager *manager,
+                                                                  GckObject *object,
                                                                   CK_UTF8CHAR_PTR pin,
                                                                   CK_ULONG n_pin,
                                                                   GckCredential **result);
+
+void                       gck_credential_connect                (GckCredential *self,
+                                                                  GckObject *object);
 
 GckSecret*                 gck_credential_get_secret             (GckCredential *self);
 

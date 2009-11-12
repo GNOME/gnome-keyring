@@ -62,27 +62,26 @@ factory_create_credential (GckSession *session, GckTransaction *transaction,
                               CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
 {
 	CK_OBJECT_HANDLE handle;
-	GckCredential *auth;
+	GckCredential *cred;
 	CK_ATTRIBUTE *attr;
 	GckManager *manager;
-	GckObject *object;
+	GckModule *module;
+	GckObject *object = NULL;
 	CK_RV rv;
 
 	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
 	g_return_if_fail (attrs || !n_attrs);
 	g_return_if_fail (result);
 
-	/* The handle is required */
-	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_G_OBJECT, &handle)) {
-		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
-		return;
-	}
-
-	/* Must be a valid object */
-	rv = gck_session_lookup_readable_object (session, handle, &object);
-	if (rv != CKR_OK) {
-		gck_transaction_fail (transaction, rv);
-		return;
+	/* The handle is optional */
+	if (gck_attributes_find_ulong (attrs, n_attrs, CKA_G_OBJECT, &handle)) {
+		rv = gck_session_lookup_readable_object (session, handle, &object);
+		if (rv != CKR_OK) {
+			gck_transaction_fail (transaction, rv);
+			return;
+		}
+	} else {
+		object = NULL;
 	}
 
 	/* The value is optional */
@@ -90,12 +89,13 @@ factory_create_credential (GckSession *session, GckTransaction *transaction,
 
 	gck_attributes_consume (attrs, n_attrs, CKA_VALUE, CKA_G_OBJECT, G_MAXULONG);
 
+	module = gck_session_get_module (session);
 	manager = gck_manager_for_template (attrs, n_attrs, session);
-	rv = gck_credential_create (object, manager,
-	                               attr ? attr->pValue : NULL,
-	                               attr ? attr->ulValueLen : 0, &auth);
+	rv = gck_credential_create (module, manager, object,
+	                            attr ? attr->pValue : NULL,
+	                            attr ? attr->ulValueLen : 0, &cred);
 	if (rv == CKR_OK)
-		*result = GCK_OBJECT (auth);
+		*result = GCK_OBJECT (cred);
 	else
 		gck_transaction_fail (transaction, rv);
 }
@@ -138,6 +138,7 @@ static CK_RV
 gck_credential_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE *attr)
 {
 	GckCredential *self = GCK_CREDENTIAL (base);
+	CK_OBJECT_HANDLE handle;
 
 	switch (attr->type) {
 
@@ -148,8 +149,8 @@ gck_credential_real_get_attribute (GckObject *base, GckSession *session, CK_ATTR
 		return gck_attribute_set_bool (attr, TRUE);
 
 	case CKA_G_OBJECT:
-		g_return_val_if_fail (self->pv->object, CKR_GENERAL_ERROR);
-		return gck_attribute_set_ulong (attr, gck_object_get_handle (self->pv->object));
+		handle = self->pv->object ? gck_object_get_handle (self->pv->object) : 0;
+		return gck_attribute_set_ulong (attr, handle);
 
 	case CKA_G_USES_REMAINING:
 		if (self->pv->uses_remaining < 0)
@@ -169,8 +170,6 @@ gck_credential_constructor (GType type, guint n_props, GObjectConstructParam *pr
 {
 	GckCredential *self = GCK_CREDENTIAL (G_OBJECT_CLASS (gck_credential_parent_class)->constructor(type, n_props, props));
 	g_return_val_if_fail (self, NULL);
-
-	g_return_val_if_fail (self->pv->object, NULL);
 
 	return G_OBJECT (self);
 }
@@ -221,13 +220,15 @@ gck_credential_set_property (GObject *obj, guint prop_id, const GValue *value,
                                 GParamSpec *pspec)
 {
 	GckCredential *self = GCK_CREDENTIAL (obj);
+	GckObject *object;
 
 	switch (prop_id) {
 	case PROP_OBJECT:
-		g_return_if_fail (!self->pv->object);
-		self->pv->object = g_value_get_object (value);
-		g_return_if_fail (GCK_IS_OBJECT (self->pv->object));
-		g_object_weak_ref (G_OBJECT (self->pv->object), object_went_away, self);
+		object = g_value_get_object (value);
+		if (object)
+			gck_credential_connect (self, object);
+		else
+			g_return_if_fail (!self->pv->object);
 		break;
 	case PROP_SECRET:
 		gck_credential_set_secret (self, g_value_get_object (value));
@@ -279,7 +280,7 @@ gck_credential_class_init (GckCredentialClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_OBJECT,
 	           g_param_spec_object ("object", "Object", "Object authenticated",
-	                                GCK_TYPE_OBJECT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	                                GCK_TYPE_OBJECT, G_PARAM_READWRITE));
 
 	g_object_class_install_property (gobject_class, PROP_SECRET,
 	           g_param_spec_object ("secret", "Secret", "Optiontal secret",
@@ -313,32 +314,53 @@ gck_credential_get_factory (void)
 }
 
 CK_RV
-gck_credential_create (GckObject *object, GckManager *manager,
-                        CK_UTF8CHAR_PTR pin, CK_ULONG n_pin,
-                        GckCredential **result)
+gck_credential_create (GckModule *module, GckManager *manager, GckObject *object,
+                       CK_UTF8CHAR_PTR pin, CK_ULONG n_pin, GckCredential **result)
 {
-	GckCredential *auth;
+	GckCredential *cred;
 	GckSecret *secret = NULL;
 	CK_RV rv;
 
-	g_return_val_if_fail (GCK_IS_OBJECT (object), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GCK_IS_MODULE (module), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (!object || GCK_IS_OBJECT (object), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (!manager || GCK_IS_MANAGER (manager), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (result, CKR_GENERAL_ERROR);
 
 	secret = gck_secret_new_from_login (pin, n_pin);
-	auth = g_object_new (GCK_TYPE_CREDENTIAL,
-	                     "module", gck_object_get_module (object),
-	                     "manager", manager, "secret", secret,
-	                     "object", object, NULL);
+	cred = g_object_new (GCK_TYPE_CREDENTIAL,
+	                     "module", module,
+	                     "manager", manager,
+	                     "secret", secret,
+	                     "object", object,
+	                     NULL);
 	g_object_unref (secret);
 
-	/* Now the unlock must work */
-	rv = gck_object_unlock (object, auth);
-	if (rv == CKR_OK)
-		*result = auth;
-	else
-		g_object_unref (auth);
+	/* If we have an object, the unlock must work */
+	if (object) {
+		rv = gck_object_unlock (object, cred);
+		if (rv == CKR_OK)
+			*result = cred;
+		else
+			g_object_unref (cred);
+
+	/* Created credentials without object */
+	} else {
+		*result = cred;
+		rv = CKR_OK;
+	}
 
 	return rv;
+}
+
+void
+gck_credential_connect (GckCredential *self, GckObject *object)
+{
+	g_return_if_fail (GCK_IS_CREDENTIAL (self));
+	g_return_if_fail (GCK_IS_OBJECT (object));
+	g_return_if_fail (self->pv->object == NULL);
+	g_return_if_fail (GCK_OBJECT (self) != object);
+	self->pv->object = object;
+	g_object_weak_ref (G_OBJECT (self->pv->object), object_went_away, self);
 }
 
 GckSecret*
@@ -382,7 +404,6 @@ GckObject*
 gck_credential_get_object (GckCredential *self)
 {
 	g_return_val_if_fail (GCK_IS_CREDENTIAL (self), NULL);
-	g_return_val_if_fail (GCK_IS_OBJECT (self->pv->object), NULL);
 	return self->pv->object;
 }
 
