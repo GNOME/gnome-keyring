@@ -285,7 +285,7 @@ prepare_transport_crypto (GkdPrompt *self)
 	g_assert (!self->pv->secret);
 
 	/* Figure out our prime, base, public and secret bits */
-	if (!egg_dh_default_params (&self->pv->prime, &base) ||
+	if (!egg_dh_default_params ("ietf-ike-grp-modp-1536", &self->pv->prime, &base) ||
 	    !egg_dh_gen_secret (self->pv->prime, base, &pub, &self->pv->secret))
 		g_return_if_reached ();
 

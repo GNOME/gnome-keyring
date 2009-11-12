@@ -26,7 +26,7 @@
 
 #include <gcrypt.h>
 
-gboolean   egg_dh_default_params   (gcry_mpi_t *prime, gcry_mpi_t *base);
+gboolean   egg_dh_default_params   (const gchar *name, gcry_mpi_t *prime, gcry_mpi_t *base);
 
 gboolean   egg_dh_gen_secret       (gcry_mpi_t p, gcry_mpi_t g, gcry_mpi_t *X, gcry_mpi_t *x);
 
