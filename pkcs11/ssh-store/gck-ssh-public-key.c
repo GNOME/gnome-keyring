@@ -36,11 +36,11 @@ enum {
 };
 
 struct _GckSshPublicKey {
-	GckPublicKey parent;
+	GckPublicXsaKey parent;
 	gchar *label;
 };
 
-G_DEFINE_TYPE (GckSshPublicKey, gck_ssh_public_key, GCK_TYPE_PUBLIC_KEY);
+G_DEFINE_TYPE (GckSshPublicKey, gck_ssh_public_key, GCK_TYPE_PUBLIC_XSA_KEY);
 
 /* -----------------------------------------------------------------------------
  * OBJECT 

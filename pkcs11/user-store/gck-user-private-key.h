@@ -27,7 +27,7 @@
 #include "gck-user-private-key.h"
 
 #include "gck/gck-secret.h"
-#include "gck/gck-private-key.h"
+#include "gck/gck-private-xsa-key.h"
 
 #define GCK_FACTORY_USER_PRIVATE_KEY            (gck_user_private_key_get_factory ())
 
@@ -42,7 +42,7 @@ typedef struct _GckUserPrivateKey GckUserPrivateKey;
 typedef struct _GckUserPrivateKeyClass GckUserPrivateKeyClass;
     
 struct _GckUserPrivateKeyClass {
-	GckPrivateKeyClass parent_class;
+	GckPrivateXsaKeyClass parent_class;
 };
 
 GType               gck_user_private_key_get_type               (void);

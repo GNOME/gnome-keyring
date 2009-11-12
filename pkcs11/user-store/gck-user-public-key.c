@@ -34,12 +34,12 @@
 #include <glib/gi18n.h>
 
 struct _GckUserPublicKey {
-	GckPublicKey parent;
+	GckPublicXsaKey parent;
 };
 
 static void gck_user_public_key_serializable (GckSerializableIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (GckUserPublicKey, gck_user_public_key, GCK_TYPE_PUBLIC_KEY, 0,
+G_DEFINE_TYPE_EXTENDED (GckUserPublicKey, gck_user_public_key, GCK_TYPE_PUBLIC_XSA_KEY, 0,
                G_IMPLEMENT_INTERFACE (GCK_TYPE_SERIALIZABLE, gck_user_public_key_serializable));
 
 /* -----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ factory_create_public_key (GckSession *session, GckTransaction *transaction,
 	g_return_if_fail (attrs || !n_attrs);
 	g_return_if_fail (object);
 
-	sexp = gck_public_key_create_sexp (session, transaction, attrs, n_attrs);
+	sexp = gck_public_xsa_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp != NULL) {
 		*object = g_object_new (GCK_TYPE_USER_PUBLIC_KEY, "base-sexp", sexp,
 		                        "module", gck_session_get_module (session),

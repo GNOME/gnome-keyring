@@ -32,8 +32,8 @@
 #include "gck-manager.h"
 #include "gck-memory-store.h"
 #include "gck-module.h"
-#include "gck-private-key.h"
-#include "gck-public-key.h"
+#include "gck-private-xsa-key.h"
+#include "gck-public-xsa-key.h"
 #include "gck-session.h"
 #include "gck-store.h"
 #include "gck-timer.h"
@@ -560,9 +560,9 @@ gck_module_init (GckModule *self)
 	self->pv->transient_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gck_util_dispose_unref);
 
 	/* Register session object factories */
-	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_XSA_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
-	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_XSA_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CREDENTIAL);
 }
 

@@ -39,7 +39,7 @@ struct _GckCertificateKeyPrivate {
 	GckCertificate *certificate;
 };
 
-G_DEFINE_TYPE (GckCertificateKey, gck_certificate_key, GCK_TYPE_PUBLIC_KEY);
+G_DEFINE_TYPE (GckCertificateKey, gck_certificate_key, GCK_TYPE_PUBLIC_XSA_KEY);
 
 /* -----------------------------------------------------------------------------
  * OBJECT 

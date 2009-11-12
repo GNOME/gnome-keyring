@@ -43,8 +43,8 @@ enum {
 };
 
 struct _GckSshPrivateKey {
-	GckPrivateKey parent;
-	
+	GckPrivateXsaKey parent;
+
 	GckSshPublicKey *pubkey;
 	gchar *label;
 	guchar *private_data;
@@ -53,7 +53,7 @@ struct _GckSshPrivateKey {
 	gboolean is_encrypted;
 };
 
-G_DEFINE_TYPE (GckSshPrivateKey, gck_ssh_private_key, GCK_TYPE_PRIVATE_KEY);
+G_DEFINE_TYPE (GckSshPrivateKey, gck_ssh_private_key, GCK_TYPE_PRIVATE_XSA_KEY);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
@@ -126,7 +126,7 @@ realize_and_take_data (GckSshPrivateKey *self, gcry_sexp_t sexp, gchar *comment,
 	self->is_encrypted = TRUE;
 	if (unlock_private_key (self, "", 0, &wrapper) == CKR_OK) {
 		self->is_encrypted = FALSE;
-		gck_private_key_set_unlocked_private (GCK_PRIVATE_KEY (self), wrapper);
+		gck_private_xsa_key_set_unlocked_private (GCK_PRIVATE_XSA_KEY (self), wrapper);
 		gck_sexp_unref (wrapper);
 	}
 }
@@ -175,7 +175,7 @@ gck_ssh_private_key_unlock (GckObject *base, GckCredential *cred)
 	rv = unlock_private_key (self, password, n_password, &wrapper);
 
 	if (rv == CKR_OK) {
-		gck_private_key_set_locked_private (GCK_PRIVATE_KEY (self), cred, wrapper);
+		gck_private_xsa_key_set_locked_private (GCK_PRIVATE_XSA_KEY (self), cred, wrapper);
 		gck_sexp_unref (wrapper);
 	}
 

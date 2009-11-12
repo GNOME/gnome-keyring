@@ -42,8 +42,8 @@ enum {
 };
 
 struct _GckUserPrivateKey {
-	GckPrivateKey parent;
-	
+	GckPrivateXsaKey parent;
+
 	guchar *private_data;
 	gsize n_private_data;
 	
@@ -54,7 +54,7 @@ struct _GckUserPrivateKey {
 
 static void gck_user_private_key_serializable (GckSerializableIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (GckUserPrivateKey, gck_user_private_key, GCK_TYPE_PRIVATE_KEY, 0,
+G_DEFINE_TYPE_EXTENDED (GckUserPrivateKey, gck_user_private_key, GCK_TYPE_PRIVATE_XSA_KEY, 0,
                G_IMPLEMENT_INTERFACE (GCK_TYPE_SERIALIZABLE, gck_user_private_key_serializable));
 
 /* -----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ factory_create_private_key (GckSession *session, GckTransaction *transaction,
 	g_return_if_fail (attrs || !n_attrs);
 	g_return_if_fail (object);
 
-	sexp = gck_private_key_create_sexp (session, transaction, attrs, n_attrs);
+	sexp = gck_private_xsa_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp == NULL)
 		return;
 	

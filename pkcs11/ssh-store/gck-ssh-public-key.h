@@ -24,7 +24,7 @@
 
 #include <glib-object.h>
 
-#include "gck/gck-public-key.h"
+#include "gck/gck-public-xsa-key.h"
 
 #define GCK_TYPE_SSH_PUBLIC_KEY               (gck_ssh_public_key_get_type ())
 #define GCK_SSH_PUBLIC_KEY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_SSH_PUBLIC_KEY, GckSshPublicKey))
@@ -37,7 +37,7 @@ typedef struct _GckSshPublicKey GckSshPublicKey;
 typedef struct _GckSshPublicKeyClass GckSshPublicKeyClass;
     
 struct _GckSshPublicKeyClass {
-	GckPublicKeyClass parent_class;
+	GckPublicXsaKeyClass parent_class;
 };
 
 GType               gck_ssh_public_key_get_type               (void);
