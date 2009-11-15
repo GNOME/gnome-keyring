@@ -4,9 +4,11 @@
 *.lo
 *.a
 *.bak
-*.tmp
+*.Po
+*.Plo
 *.prj
 *.pws
+*.tmp
 *.anjuta
 .anjuta*
 *.tar.gz
@@ -22,6 +24,9 @@ Makefile.in
 core
 run-auto-test*
 run-prompt-test*
+*-marshal.[ch]
+.libs
+.deps
 
 /compile
 /ABOUT-NLS
