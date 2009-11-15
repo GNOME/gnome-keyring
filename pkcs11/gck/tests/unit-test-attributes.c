@@ -578,7 +578,7 @@ DEFINE_TEST(attribute_hash)
 
 	/* The hash value below could change as code changes */
 	hash = gck_attribute_hash (&attr);
-	g_assert_cmpuint (hash, ==, 3709494161);
+	g_assert_cmpuint (hash, !=, 0U);
 }
 
 DEFINE_TEST(attribute_contains)

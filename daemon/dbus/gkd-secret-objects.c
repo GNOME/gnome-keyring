@@ -100,13 +100,14 @@ object_property_get (GP11Object *object, DBusMessage *message,
 	GError *error = NULL;
 	DBusMessage *reply;
 	GP11Attribute attr;
+	gsize length;
 
 	if (!gkd_secret_property_get_type (prop_name, &attr.type))
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                      "Object does not have the '%s' property", prop_name);
 
 	/* Retrieve the actual attribute */
-	attr.value = gp11_object_get_data (object, attr.type, &attr.length, &error);
+	attr.value = gp11_object_get_data (object, attr.type, &length, &error);
 	if (error != NULL) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                       "Couldn't retrieve '%s' property: %s",
@@ -116,6 +117,7 @@ object_property_get (GP11Object *object, DBusMessage *message,
 	}
 
 	/* Marshall the data back out */
+	attr.length = length;
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	gkd_secret_property_append_variant (&iter, &attr);
