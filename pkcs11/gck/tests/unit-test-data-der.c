@@ -302,7 +302,8 @@ on_ca_certificate_public_key_info (GQuark type, const guchar *data, gsize n_data
 	res = gck_data_der_read_public_key_info (keydata, n_keydata, &sexp);
 	g_assert (res == GCK_DATA_SUCCESS || res == GCK_DATA_UNRECOGNIZED);
 
-	gcry_sexp_release (sexp);
+	if (res == GCK_DATA_SUCCESS)
+		gcry_sexp_release (sexp);
 	g_free (keydata);
 }
 
