@@ -45,6 +45,16 @@ guchar* test_data_read (const gchar *basename, gsize *n_data);
 gchar* test_scratch_filename (const gchar *basename);
 gchar* test_data_filename (const gchar *basename);
 
+#ifdef CRYPTOKI_VERSION_MAJOR
+void test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config);
+#endif
+
+
+typedef void (*TestExternalFunc) (void);
+void test_external_run (const gchar *name, TestExternalFunc func);
+const gchar* test_external_name (void);
+void test_external_fail (void);
+
 #define DECLARE_SETUP(x) \
 	void setup_##x(int *v, gconstpointer d)
 #define DEFINE_SETUP(x) \
@@ -69,6 +79,11 @@ gchar* test_data_filename (const gchar *basename);
 	void stop_##x(void)
 #define DEFINE_STOP(x) \
 	void stop_##x(void)
+
+#define DECLARE_EXTERNAL(x) \
+	void external_##x(void)
+#define DEFINE_EXTERNAL(x) \
+	void external_##x(void)
 
 /* #define DEFINE_ABORT(x) void abort_x(void *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)' */
 

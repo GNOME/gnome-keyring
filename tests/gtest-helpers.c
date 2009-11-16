@@ -23,6 +23,8 @@
 
 /* This file is included into the main .c file for each gtest unit-test program */
 
+#include "config.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
@@ -34,6 +36,11 @@
 #include "gtest-helpers.h"
 
 #include "egg/egg-secure-memory.h"
+
+#include <p11-tests.h>
+
+/* Forward declaration */
+void test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config);
 
 static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
 static const gchar *test_path = NULL;
@@ -147,6 +154,71 @@ test_data_read (const gchar *basename, gsize *n_result)
 	return (guchar*)result;
 }
 
+#ifdef WITH_P11_TESTS
+
+static void
+on_p11_tests_log (int level, const char *section, const char *message)
+{
+	if (level == P11_TESTS_NONE) {
+		g_message ("%s", message);
+	} else if (level != P11_TESTS_FAIL) {
+		g_message ("%s: %s", section, message);
+	} else {
+		g_print ("/%s/%s: FAIL: %s\n", test_external_name (), section, message);
+		test_external_fail ();
+	}
+}
+
+void
+test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
+{
+	p11_tests_set_log_func (on_p11_tests_log);
+	p11_tests_set_unexpected (1);
+	p11_tests_set_verbose (0);
+	p11_tests_set_write_session (1);
+	if (config)
+		p11_tests_load_config (config);
+	p11_tests_perform (module);
+}
+
+#else /* !WITH_P11_TESTS */
+
+gint
+test_p11_module (CK_FUNCTION_LIST_PTR module)
+{
+	g_message ("p11-tests support not built in");
+	return 0;
+}
+
+#endif /* !WITH_P11_TESTS */
+
+static const gchar *external_name = NULL;
+static gint external_fails = 0;
+
+void
+test_external_run (const gchar *name, TestExternalFunc func)
+{
+	external_fails = 0;
+	external_name = name;
+	func ();
+	if (external_fails) {
+		g_printerr ("/%s: FAIL: %d failures", name, external_fails);
+		abort();
+	}
+}
+
+const gchar*
+test_external_name (void)
+{
+	return external_name;
+}
+
+void
+test_external_fail (void)
+{
+	++external_fails;
+}
+
 static void 
 chdir_base_dir (char* argv0)
 {
@@ -197,6 +269,10 @@ main (int argc, char* argv[])
 
 	start_tests ();
 	ret = g_test_run ();
+
+	/* Any auxiliary suites */
+	run_externals ();
+
 	stop_tests();
 
 	return ret;
