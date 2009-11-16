@@ -286,7 +286,7 @@ prepare_transport_crypto (GkdPrompt *self)
 
 	/* Figure out our prime, base, public and secret bits */
 	if (!egg_dh_default_params ("ietf-ike-grp-modp-1536", &self->pv->prime, &base) ||
-	    !egg_dh_gen_secret (self->pv->prime, base, &pub, &self->pv->secret))
+	    !egg_dh_gen_pair (self->pv->prime, base, 0, &pub, &self->pv->secret))
 		g_return_if_reached ();
 
 	/* Send over the prime, base, and public bits */
@@ -309,7 +309,7 @@ receive_transport_crypto (GkdPrompt *self)
 	if (!gkd_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
 		return FALSE;
 
-	ret = egg_dh_gen_key (peer, self->pv->secret, self->pv->prime, &key);
+	ret = egg_dh_gen_secret (peer, self->pv->secret, self->pv->prime, &key);
 	gcry_mpi_release (peer);
 	if (!ret)
 		return FALSE;

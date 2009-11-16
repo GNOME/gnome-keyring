@@ -32,7 +32,9 @@
 #include "gck-manager.h"
 #include "gck-memory-store.h"
 #include "gck-module.h"
+#include "gck-dh-private-key.h"
 #include "gck-private-xsa-key.h"
+#include "gck-dh-public-key.h"
 #include "gck-public-xsa-key.h"
 #include "gck-session.h"
 #include "gck-store.h"
@@ -145,7 +147,19 @@ static const MechanismAndInfo mechanism_list[] = {
 	 * CKM_DSA
 	 * For DSA, min and max are the minimum and maximum modulus in bits
 	 */
-	{ CKM_DSA, { 512, 1024, CKF_SIGN | CKF_VERIFY } }
+	{ CKM_DSA, { 512, 1024, CKF_SIGN | CKF_VERIFY } },
+
+	/*
+	 * CKM_DH_PKCS_KEY_PAIR_GEN
+	 * For DH derivation the min and max are sizes of prime in bits.
+	 */
+	{ CKM_DH_PKCS_KEY_PAIR_GEN, { 768, 8192, CKF_GENERATE_KEY_PAIR } },
+
+	/*
+	 * CKM_DH_PKCS_DERIVE
+	 * For DH derivation the min and max are sizes of prime in bits.
+	 */
+	{ CKM_DH_PKCS_DERIVE, { 768, 8192, CKF_DERIVE } }
 };
 
 /* Hidden function that you should not use */
@@ -560,10 +574,12 @@ gck_module_init (GckModule *self)
 	self->pv->transient_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gck_util_dispose_unref);
 
 	/* Register session object factories */
-	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_XSA_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
-	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_XSA_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CREDENTIAL);
+	gck_module_register_factory (self, GCK_FACTORY_DH_PRIVATE_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_XSA_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_DH_PUBLIC_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_XSA_KEY);
 }
 
 static void

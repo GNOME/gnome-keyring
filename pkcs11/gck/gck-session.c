@@ -377,6 +377,52 @@ attributes_find_boolean (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
 	return FALSE;
 }
 
+static void
+finish_up_object_creation (GckSession *self, GckObject *object, GckTransaction *transaction,
+                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+{
+	gboolean is_private;
+	gulong i;
+
+	g_assert (GCK_IS_SESSION (self));
+	g_assert (GCK_IS_OBJECT (object));
+	g_assert (GCK_IS_TRANSACTION (transaction));
+	g_assert (!gck_transaction_get_failed (transaction));
+
+	gck_object_create_attributes (object, self, transaction, attrs, n_attrs);
+	if (gck_transaction_get_failed (transaction))
+		return;
+
+	/* See if we can create due to read-only */
+	if (gck_object_is_token (object)) {
+		if (!gck_object_is_transient (object) &&
+		    gck_module_get_write_protected (self->pv->module))
+			return gck_transaction_fail (transaction, CKR_TOKEN_WRITE_PROTECTED);
+		else if (self->pv->read_only)
+			return gck_transaction_fail (transaction, CKR_SESSION_READ_ONLY);
+	}
+
+	/* Can only create public objects unless logged in */
+	if (gck_session_get_logged_in (self) != CKU_USER &&
+	    gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private) && 
+	    is_private == TRUE) {
+		return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+	}
+
+	/* Find somewhere to store the object */
+	if (gck_object_is_token (object))
+		gck_module_store_token_object (self->pv->module, transaction, object); 
+	else
+		add_object (self, transaction, object);
+
+	/* Next go through and set all attributes that weren't used initially */
+	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
+	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
+		if (!gck_attribute_consumed (&attrs[i]))
+			gck_object_set_attribute (object, self, transaction, &attrs[i]);
+	}
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -819,9 +865,6 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
                                        GckObject **object)
 {
 	GckTransaction *transaction;
-	CK_ATTRIBUTE_PTR attrs;
-	CK_ULONG n_attrs, i;
-	gboolean is_private;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_GENERAL_ERROR);
@@ -836,55 +879,19 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 	 * Duplicate the memory for the attributes (but not values) so we
 	 * can 'consume' in the factory function
 	 */
-	attrs = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
-	n_attrs = count;
+	template = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
 
 	/* Actually create the object */
 	*object = NULL;
-	(factory->func) (self, transaction, attrs, n_attrs, object);
+	(factory->func) (self, transaction, template, count, object);
 
-	/* Give the object a chance to create additional attributes */
+	/* Complete creation, and do storage */
 	if (!gck_transaction_get_failed (transaction)) {
 		g_return_val_if_fail (*object, CKR_GENERAL_ERROR);
-		gck_object_create_attributes (*object, self, transaction, attrs, n_attrs);
+		finish_up_object_creation (self, *object, transaction, template, count);
 	}
 
-	/* See if we can create due to read-only */
-	if (!gck_transaction_get_failed (transaction)) {
-		if (gck_object_is_token (*object)) {
-			if (!gck_object_is_transient (*object) &&
-			    gck_module_get_write_protected (self->pv->module))
-				gck_transaction_fail (transaction, CKR_TOKEN_WRITE_PROTECTED);
-			else if (self->pv->read_only)
-				gck_transaction_fail (transaction, CKR_SESSION_READ_ONLY);
-		}
-	}
-
-	/* Can only create public objects unless logged in */
-	if (!gck_transaction_get_failed (transaction)) {
-		if (gck_session_get_logged_in (self) != CKU_USER &&
-		    gck_object_get_attribute_boolean (*object, self, CKA_PRIVATE, &is_private) && 
-		    is_private == TRUE) {
-			gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
-		}
-	}
-
-	/* Find somewhere to store the object */
-	if (!gck_transaction_get_failed (transaction)) {
-		if (gck_object_is_token (*object))
-			gck_module_store_token_object (self->pv->module, transaction, *object); 
-		else
-			add_object (self, transaction, *object);
-	}
-
-	/* Next go through and set all attributes that weren't used initially */
-	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
-	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
-		if (!gck_attribute_consumed (&attrs[i]))
-			gck_object_set_attribute (*object, self, transaction, &attrs[i]);
-	}
-
-	g_free (attrs);
+	g_free (template);
 
 	gck_transaction_complete (transaction);
 	rv = gck_transaction_get_result (transaction);
@@ -1462,8 +1469,59 @@ gck_session_C_GenerateKeyPair (GckSession* self, CK_MECHANISM_PTR mechanism,
                                CK_ATTRIBUTE_PTR priv_template, CK_ULONG priv_count,
                                CK_OBJECT_HANDLE_PTR pub_key, CK_OBJECT_HANDLE_PTR priv_key)
 {
-	/* TODO: We need to implement this */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	GckObject *pub = NULL;
+	GckObject *priv = NULL;
+	GckTransaction *transaction;
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
+	if (!mechanism)
+		return CKR_ARGUMENTS_BAD;
+	if (!(!pub_count || pub_template))
+		return CKR_ARGUMENTS_BAD;
+	if (!(!priv_count || priv_template))
+		return CKR_ARGUMENTS_BAD;
+	if (!pub_key || !priv_key)
+		return CKR_ARGUMENTS_BAD;
+
+	/*
+	 * Duplicate the memory for the attributes (but not values) so we
+	 * can 'consume' in the generator and create object functions.
+	 */
+	pub_template = g_memdup (pub_template, pub_count * sizeof (CK_ATTRIBUTE));
+	priv_template = g_memdup (priv_template, priv_count * sizeof (CK_ATTRIBUTE));
+	transaction = gck_transaction_new ();
+
+	/* Actually do the object creation */
+	rv = gck_crypto_generate_key_pair (self, mechanism->mechanism, pub_template, pub_count,
+	                                   priv_template, priv_count, &pub, &priv);
+	if (rv != CKR_OK)
+		gck_transaction_fail (transaction, rv);
+
+	if (!gck_transaction_get_failed (transaction))
+		finish_up_object_creation (self, pub, transaction, pub_template, pub_count);
+	if (!gck_transaction_get_failed (transaction))
+		finish_up_object_creation (self, priv, transaction, priv_template, priv_count);
+
+	g_free (pub_template);
+	g_free (priv_template);
+
+	gck_transaction_complete (transaction);
+	rv = gck_transaction_get_result (transaction);
+	g_object_unref (transaction);
+
+	if (rv == CKR_OK) {
+		*pub_key = gck_object_get_handle (pub);
+		*priv_key = gck_object_get_handle (priv);
+	}
+
+	/* Objects are owned by storage */
+	if (pub != NULL)
+		g_object_unref (pub);
+	if (priv != NULL)
+		g_object_unref (priv);
+
+	return rv;
 }
 
 CK_RV

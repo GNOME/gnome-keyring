@@ -122,4 +122,13 @@ CK_RV                    gck_crypto_data_to_sexp                       (const gc
                                                                         CK_ULONG n_data,
                                                                         gcry_sexp_t *sexp);
 
+CK_RV                    gck_crypto_generate_key_pair                  (GckSession *session,
+                                                                        CK_MECHANISM_TYPE mech,
+                                                                        CK_ATTRIBUTE_PTR pub_atts,
+                                                                        CK_ULONG n_pub_atts,
+                                                                        CK_ATTRIBUTE_PTR priv_atts,
+                                                                        CK_ULONG n_priv_atts,
+                                                                        GckObject **pub_key,
+                                                                        GckObject **priv_key);
+
 #endif /* GCKCRYPTO_H_ */

@@ -73,15 +73,15 @@ DEFINE_TEST(dh_perform)
 	g_free (data);
 
 	/* Generate secrets */
-	ret = egg_dh_gen_secret (p, g, &X1, &x1);
+	ret = egg_dh_gen_pair (p, g, 0, &X1, &x1);
 	g_assert (ret);
-	ret = egg_dh_gen_secret (p, g, &X2, &x2);
+	ret = egg_dh_gen_pair (p, g, 0, &X2, &x2);
 	g_assert (ret);
 
 	/* Calculate keys */
-	ret = egg_dh_gen_key (X2, x1, p, &k1);
+	ret = egg_dh_gen_secret (X2, x1, p, &k1);
 	g_assert (ret);
-	ret = egg_dh_gen_key (X1, x2, p, &k2);
+	ret = egg_dh_gen_secret (X1, x2, p, &k2);
 	g_assert (ret);
 
 	/* Keys must be the same */
@@ -95,6 +95,28 @@ DEFINE_TEST(dh_perform)
 	gcry_mpi_release (x2);
 	gcry_mpi_release (X2);
 	gcry_mpi_release (k2);
+}
+
+DEFINE_TEST(dh_short_pair)
+{
+	gcry_mpi_t p, g;
+	gcry_mpi_t x1, X1;
+	gboolean ret;
+
+	/* Load up the parameters */
+	ret = egg_dh_default_params ("ietf-ike-grp-modp-1024", &p, &g);
+	g_assert (ret);
+	g_assert_cmpuint (gcry_mpi_get_nbits (p), ==, 1024);
+	
+	/* Generate secrets */
+	ret = egg_dh_gen_pair (p, g, 512, &X1, &x1);
+	g_assert (ret);
+	g_assert_cmpuint (gcry_mpi_get_nbits (x1), <=, 512);
+
+	gcry_mpi_release (p);
+	gcry_mpi_release (g);
+	gcry_mpi_release (x1);
+	gcry_mpi_release (X1);
 }
 
 static void

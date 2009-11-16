@@ -28,9 +28,9 @@
 
 gboolean   egg_dh_default_params   (const gchar *name, gcry_mpi_t *prime, gcry_mpi_t *base);
 
-gboolean   egg_dh_gen_secret       (gcry_mpi_t p, gcry_mpi_t g, gcry_mpi_t *X, gcry_mpi_t *x);
+gboolean   egg_dh_gen_pair         (gcry_mpi_t p, gcry_mpi_t g, guint bits, gcry_mpi_t *X, gcry_mpi_t *x);
 
-gboolean   egg_dh_gen_key          (gcry_mpi_t Y, gcry_mpi_t x, gcry_mpi_t p, gcry_mpi_t *k);
+gboolean   egg_dh_gen_secret       (gcry_mpi_t Y, gcry_mpi_t x, gcry_mpi_t p, gcry_mpi_t *k);
 
 #ifndef EGG_DH_NO_ASN1
 gboolean   egg_dh_parse_pkcs3      (const guchar *data, gsize n_data, gcry_mpi_t *p, gcry_mpi_t *g);

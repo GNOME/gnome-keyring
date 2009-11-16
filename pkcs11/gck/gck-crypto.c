@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gck-crypto.h"
+#include "gck-dh-mechanism.h"
 #include "gck-mechanism-dsa.h"
 #include "gck-mechanism-rsa.h"
 #include "gck-session.h"
@@ -380,6 +381,26 @@ gck_crypto_perform (GckSession *session, CK_MECHANISM_TYPE mech, CK_ATTRIBUTE_TY
 		return gck_crypto_verify (session, mech, bufone, n_bufone, buftwo, *n_buftwo);
 	default:
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
+	}
+}
+
+CK_RV
+gck_crypto_generate_key_pair (GckSession *session, CK_MECHANISM_TYPE mech,
+                              CK_ATTRIBUTE_PTR pub_atts, CK_ULONG n_pub_atts,
+                              CK_ATTRIBUTE_PTR priv_atts, CK_ULONG n_priv_atts,
+                              GckObject **pub_key, GckObject **priv_key)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (session), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (pub_key, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (priv_key, CKR_GENERAL_ERROR);
+
+	switch (mech) {
+	case CKM_DH_PKCS_KEY_PAIR_GEN:
+		return gck_dh_mechanism_generate (session, pub_atts, n_pub_atts,
+		                                  priv_atts, n_priv_atts,
+		                                  pub_key, priv_key);
+	default:
+		return CKR_MECHANISM_INVALID;
 	}
 }
 

@@ -241,8 +241,8 @@ negotiate_transport_crypto (void)
 	    gkd_prompt_util_decode_mpi (input_data, "transport", "public", &peer)) {
 
 		/* Generate our own public/secret, and then a key, send it back */
-		if (egg_dh_gen_secret (prime, base, &pub, &secret) &&
-		    egg_dh_gen_key (peer, secret, prime, &key)) {
+		if (egg_dh_gen_pair (prime, base, 0, &pub, &secret) &&
+		    egg_dh_gen_secret (peer, secret, prime, &key)) {
 
 			/* Build up a key we can use */
 			gkd_prompt_util_encode_mpi (output_data, "transport", "public", pub);

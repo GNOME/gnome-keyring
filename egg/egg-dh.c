@@ -206,19 +206,24 @@ egg_dh_default_params (const gchar *name, gcry_mpi_t *prime, gcry_mpi_t *base)
 }
 
 gboolean
-egg_dh_gen_secret (gcry_mpi_t p, gcry_mpi_t g,
-                   gcry_mpi_t *X, gcry_mpi_t *x)
+egg_dh_gen_pair (gcry_mpi_t p, gcry_mpi_t g, guint bits,
+                 gcry_mpi_t *X, gcry_mpi_t *x)
 {
-	gint bits;
+	guint pbits;
 
 	g_return_val_if_fail (g, FALSE);
 	g_return_val_if_fail (p, FALSE);
 	g_return_val_if_fail (X, FALSE);
 	g_return_val_if_fail (x, FALSE);
 
-	/* Secret key value must be less than half of p */
-	bits = gcry_mpi_get_nbits (p) - 1;
-	g_return_val_if_fail (bits >= 0, FALSE);
+	pbits = gcry_mpi_get_nbits (p);
+	g_return_val_if_fail (pbits > 1, FALSE);
+
+	if (bits == 0) {
+		bits = pbits;
+	} else if (bits > pbits) {
+		g_return_val_if_reached (FALSE);
+	}
 
 	/*
 	 * Generate a strong random number of bits, and not zero.
@@ -229,9 +234,16 @@ egg_dh_gen_secret (gcry_mpi_t p, gcry_mpi_t g,
 	*x = gcry_mpi_snew (bits);
 	g_return_val_if_fail (*x, FALSE);
 	while (gcry_mpi_cmp_ui (*x, 0) == 0)
-		gcry_mpi_randomize (*x, (bits / 8) * 8, GCRY_STRONG_RANDOM);
+		gcry_mpi_randomize (*x, bits, GCRY_STRONG_RANDOM);
 
-	*X = gcry_mpi_new (bits);
+	/* Secret key value must be less than half of p */
+	if (gcry_mpi_get_nbits (*x) > bits)
+		gcry_mpi_clear_highbit (*x, bits);
+	if (gcry_mpi_get_nbits (*x) > pbits - 1)
+		gcry_mpi_clear_highbit (*x, pbits - 1);
+	g_assert (gcry_mpi_cmp (p, *x) > 0);
+
+	*X = gcry_mpi_new (gcry_mpi_get_nbits (*x));
 	g_return_val_if_fail (*X, FALSE);
 	gcry_mpi_powm (*X, g, *x, p);
 
@@ -239,8 +251,8 @@ egg_dh_gen_secret (gcry_mpi_t p, gcry_mpi_t g,
 }
 
 gboolean
-egg_dh_gen_key (gcry_mpi_t Y, gcry_mpi_t x,
-                gcry_mpi_t p, gcry_mpi_t *k)
+egg_dh_gen_secret (gcry_mpi_t Y, gcry_mpi_t x,
+                   gcry_mpi_t p, gcry_mpi_t *k)
 {
 	gint bits;
 
