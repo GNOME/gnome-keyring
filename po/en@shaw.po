@@ -1,0 +1,1260 @@
+# Shavian translation for gnome-keyring.
+# Copyright (C) 2009 The Gnome Foundation.
+# Thomas Thurman <tthurman@gnome.org>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2009-11-06 19:17+0200\n"
+"Last-Translator: Thomas Thurman <tthurman@gnome.org>\n"
+"Language-Team: Shavian <ubuntu-l10n-en-shaw@lists.launchpad.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:228
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in the default keyring."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑨𐑒𐑕𐑧𐑕 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 '<object prop='name'/>' 𐑦𐑯 𐑞 "
+"𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '<object "
+"prop='name'/>' in %s."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑨𐑒𐑕𐑧𐑕 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 '<object prop='name'/>' 𐑦𐑯 %s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑨𐑒𐑕𐑧𐑕 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 '<object prop='name'/>' 𐑦𐑯 𐑞 "
+"𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑨𐑒𐑕𐑧𐑕 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 '<object prop='name'/>' 𐑦𐑯 %s."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:258
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in the default keyring."
+msgstr ""
+"𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑨𐑒𐑕𐑧𐑕 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 '<object prop='name'/>' 𐑦𐑯 𐑞 "
+"𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙."
+
+#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
+#: ../daemon/gkr-daemon-ops.c:261
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '<object prop='name'/"
+">' in %s."
+msgstr ""
+"𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑨𐑒𐑕𐑧𐑕 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 '<object prop='name'/>' 𐑦𐑯 %s."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:267
+msgid "Allow access"
+msgstr "𐑩𐑤𐑬 𐑨𐑒𐑕𐑧𐑕"
+
+#: ../daemon/gkr-daemon-ops.c:267
+msgid "Allow application access to keyring?"
+msgstr "𐑩𐑤𐑬 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑒𐑰𐑮𐑦𐑙?"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:309
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr "𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙, 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:314
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑒𐑰𐑮𐑦𐑙 '%s', 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr "𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙, 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑒𐑰𐑮𐑦𐑙 '%s', 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#. TRANSLATORS: The default keyring is locked
+#: ../daemon/gkr-daemon-ops.c:346
+#, c-format
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr "𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙, 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#. TRANSLATORS: The keyring '%s' is locked
+#: ../daemon/gkr-daemon-ops.c:351
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑒𐑰𐑮𐑦𐑙 '%s', 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#: ../daemon/gkr-daemon-ops.c:358
+msgid "Enter password for default keyring to unlock"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙 𐑑 𐑩𐑯𐑤𐑭𐑒"
+
+#: ../daemon/gkr-daemon-ops.c:360
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑒𐑰𐑮𐑦𐑙 '%s' 𐑑 𐑩𐑯𐑤𐑭𐑒"
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:364
+msgid "Unlock Keyring"
+msgstr "𐑩𐑯𐑤𐑭𐑒 𐑒𐑰𐑮𐑦𐑙"
+
+#: ../daemon/gkr-daemon-ops.c:376
+msgid "Automatically unlock this keyring when I log in."
+msgstr "𐑷𐑑𐑩𐑥𐑨𐑑𐑦𐑒𐑤𐑦 𐑩𐑯𐑤𐑭𐑒 𐑞𐑦𐑕 𐑒𐑰𐑮𐑦𐑙 𐑢𐑧𐑯 𐑲 𐑤𐑪𐑜 𐑦𐑯."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:413
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑒𐑮𐑦𐑱𐑑 𐑩 𐑯𐑿 𐑒𐑰𐑮𐑦𐑙 𐑒𐑷𐑤𐑛 '%s'. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 "
+"𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:418
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑒𐑮𐑦𐑱𐑑 𐑩 𐑯𐑿 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 "
+"𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑒𐑮𐑦𐑱𐑑 𐑩 𐑯𐑿 𐑒𐑰𐑮𐑦𐑙 𐑒𐑷𐑤𐑛 '%s'. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 "
+"𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑒𐑮𐑦𐑱𐑑 𐑩 𐑯𐑿 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 "
+"𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:449
+#, c-format
+msgid ""
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
+msgstr ""
+"𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑒𐑮𐑦𐑱𐑑 𐑩 𐑯𐑿 𐑒𐑰𐑮𐑦𐑙 𐑒𐑷𐑤𐑛 '%s'. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 "
+"𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#. TRANSLATORS: The password is for the new keyring
+#: ../daemon/gkr-daemon-ops.c:454
+#, c-format
+msgid ""
+"An unknown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑒𐑮𐑦𐑱𐑑 𐑩 𐑯𐑿 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 "
+"𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:460
+msgid "New Keyring Password"
+msgstr "𐑯𐑿 𐑒𐑰𐑮𐑦𐑙 𐑐𐑭𐑕𐑢𐑼𐑛"
+
+#: ../daemon/gkr-daemon-ops.c:461
+msgid "Choose password for new keyring"
+msgstr "𐑗𐑵𐑟 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑯𐑿 𐑒𐑰𐑮𐑦𐑙"
+
+#: ../daemon/gkr-daemon-ops.c:508
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑗𐑱𐑯𐑡 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 '%s' 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 "
+"𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#: ../daemon/gkr-daemon-ops.c:512
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑗𐑱𐑯𐑡 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 "
+"𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑗𐑱𐑯𐑡 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 '%s' 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 "
+"𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑗𐑱𐑯𐑡 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 "
+"𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#: ../daemon/gkr-daemon-ops.c:538
+#, c-format
+msgid ""
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑗𐑱𐑯𐑡 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 '%s' 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 "
+"𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#: ../daemon/gkr-daemon-ops.c:542
+#, c-format
+msgid ""
+"An unknown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+"𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑗𐑱𐑯𐑡 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑿 𐑣𐑨𐑝 𐑑 𐑗𐑵𐑟 𐑞 "
+"𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#: ../daemon/gkr-daemon-ops.c:552
+#, c-format
+msgid "Choose a new password for the '%s' keyring."
+msgstr "𐑗𐑵𐑟 𐑩 𐑯𐑿 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 '%s' 𐑒𐑰𐑮𐑦𐑙."
+
+#: ../daemon/gkr-daemon-ops.c:554
+#, c-format
+msgid "Choose a new password for the default keyring."
+msgstr "𐑗𐑵𐑟 𐑩 𐑯𐑿 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:558
+msgid "Change Keyring Password"
+msgstr "𐑗𐑱𐑯𐑡 𐑒𐑰𐑮𐑦𐑙 𐑐𐑭𐑕𐑢𐑼𐑛"
+
+#: ../daemon/gkr-daemon-ops.c:631
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' (%s) 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑕𐑑𐑹 𐑩 𐑐𐑭𐑕𐑢𐑼𐑛, 𐑚𐑳𐑑 𐑞𐑺 𐑦𐑟 𐑯𐑴 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑑 "
+"𐑒𐑮𐑦𐑱𐑑 𐑢𐑳𐑯, 𐑿 𐑯𐑰𐑛 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑦𐑖 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 '%s' 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑕𐑑𐑹 𐑩 𐑐𐑭𐑕𐑢𐑼𐑛, 𐑚𐑳𐑑 𐑞𐑺 𐑦𐑟 𐑯𐑴 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑑 𐑒𐑮𐑦𐑱𐑑 "
+"𐑢𐑳𐑯, 𐑿 𐑯𐑰𐑛 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑦𐑖 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#: ../daemon/gkr-daemon-ops.c:643
+#, c-format
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"𐑩𐑯 𐑳𐑯𐑴𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑑 𐑕𐑑𐑹 𐑩 𐑐𐑭𐑕𐑢𐑼𐑛, 𐑚𐑳𐑑 𐑞𐑺 𐑦𐑟 𐑯𐑴 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙. 𐑑 𐑒𐑮𐑦𐑱𐑑 "
+"𐑢𐑳𐑯, 𐑿 𐑯𐑰𐑛 𐑑 𐑗𐑵𐑟 𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑿 𐑢𐑦𐑖 𐑑 𐑿𐑕 𐑓𐑹 𐑦𐑑."
+
+#. And put together the ask request
+#: ../daemon/gkr-daemon-ops.c:648
+msgid "Create Default Keyring"
+msgstr "𐑒𐑮𐑦𐑱𐑑 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙"
+
+#: ../daemon/gkr-daemon-ops.c:648
+msgid "Choose password for default keyring"
+msgstr "𐑗𐑵𐑟 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑰𐑮𐑦𐑙"
+
+#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
+msgid "GNOME Keyring Daemon"
+msgstr "·𐑜𐑯𐑴𐑥 𐑒𐑰𐑮𐑦𐑙 𐑛𐑰𐑥𐑩𐑯"
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:99
+msgid "Unlock Login Keyring"
+msgstr "𐑩𐑯𐑤𐑭𐑒 𐑤𐑪𐑜𐑦𐑯 𐑒𐑰𐑮𐑦𐑙"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:99
+msgid "Enter login password to unlock keyring"
+msgstr "𐑧𐑯𐑑𐑼 𐑤𐑪𐑜𐑦𐑯 𐑐𐑭𐑕𐑢𐑼𐑛 𐑑 𐑩𐑯𐑤𐑭𐑒 𐑒𐑰𐑮𐑦𐑙"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:101
+msgid ""
+"Your login keyring was not automatically unlocked when you logged into this "
+"computer."
+msgstr "𐑿𐑼 𐑤𐑪𐑜𐑦𐑯 𐑒𐑰𐑮𐑦𐑙 𐑢𐑪𐑟 𐑯𐑪𐑑 𐑷𐑑𐑩𐑥𐑨𐑑𐑦𐑒𐑤𐑦 𐑩𐑯𐑤𐑭𐑒𐑑 𐑢𐑧𐑯 𐑿 𐑤𐑪𐑜𐑛 𐑦𐑯𐑑𐑫 𐑞𐑦𐑕 𐑒𐑩𐑥𐑐𐑿𐑑𐑼."
+
+#. And put together the ask request
+#: ../daemon/keyrings/gkr-keyring-login.c:125
+msgid "Create Login Keyring"
+msgstr "𐑒𐑮𐑦𐑱𐑑 𐑤𐑪𐑜𐑦𐑯 𐑒𐑰𐑮𐑦𐑙"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:125
+msgid "Enter your login password"
+msgstr "𐑧𐑯𐑑𐑼 𐑿𐑼 𐑤𐑪𐑜𐑦𐑯 𐑐𐑭𐑕𐑢𐑼𐑛"
+
+#: ../daemon/keyrings/gkr-keyring-login.c:127
+msgid ""
+"Your login keyring was not automatically created when you logged into this "
+"computer. It will now be created."
+msgstr ""
+"𐑿𐑼 𐑤𐑪𐑜𐑦𐑯 𐑒𐑰𐑮𐑦𐑙 𐑢𐑪𐑟 𐑯𐑪𐑑 𐑷𐑑𐑩𐑥𐑨𐑑𐑦𐑒𐑤𐑦 𐑒𐑮𐑦𐑱𐑑𐑩𐑛 𐑢𐑧𐑯 𐑿 𐑤𐑪𐑜𐑛 𐑦𐑯𐑑𐑫 𐑞𐑦𐑕 𐑒𐑩𐑥𐑐𐑿𐑑𐑼. 𐑦𐑑 "
+"𐑢𐑦𐑤 𐑯𐑬 𐑚𐑰 𐑒𐑮𐑦𐑱𐑑𐑩𐑛."
+
+#: ../daemon/keyrings/gkr-keyring.c:587
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "𐑩𐑯𐑤𐑭𐑒 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 %s 𐑒𐑰𐑮𐑦𐑙"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
+msgid "Unlock private key"
+msgstr "𐑩𐑯𐑤𐑭𐑒 𐑐𐑮𐑲𐑝𐑩𐑑 𐑒𐑰"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
+msgid "Unlock certificate"
+msgstr "𐑩𐑯𐑤𐑭𐑒 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
+msgid "Unlock public key"
+msgstr "𐑩𐑯𐑤𐑭𐑒 𐑐𐑳𐑚𐑤𐑦𐑒 𐑒𐑰"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
+msgid "Unlock"
+msgstr "𐑩𐑯𐑤𐑭𐑒"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
+msgid "Enter password to unlock the private key"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑑 𐑩𐑯𐑤𐑭𐑒 𐑞 𐑐𐑮𐑲𐑝𐑩𐑑 𐑒𐑰"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
+msgid "Enter password to unlock the certificate"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑑 𐑩𐑯𐑤𐑭𐑒 𐑞 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
+msgid "Enter password to unlock the public key"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑑 𐑩𐑯𐑤𐑭𐑒 𐑞 𐑐𐑳𐑚𐑤𐑦𐑒 𐑒𐑰"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
+msgid "Enter password to unlock"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑑 𐑩𐑯𐑤𐑭𐑒"
+
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "𐑩𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑐𐑮𐑲𐑝𐑩𐑑 𐑒𐑰 '%s', 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "𐑩𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 '%s', 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "𐑩𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑐𐑳𐑚𐑤𐑦𐑒 𐑒𐑰 '%s', 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "𐑩𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 '%s', 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
+msgid "Automatically unlock this private key when I log in."
+msgstr "𐑷𐑑𐑩𐑥𐑨𐑑𐑦𐑒𐑤𐑦 𐑩𐑯𐑤𐑭𐑒 𐑞𐑦𐑕 𐑐𐑮𐑲𐑝𐑩𐑑 𐑒𐑰 𐑢𐑧𐑯 𐑲 𐑤𐑪𐑜 𐑦𐑯."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
+msgid "Automatically unlock this certificate when I log in."
+msgstr "𐑷𐑑𐑩𐑥𐑨𐑑𐑦𐑒𐑤𐑦 𐑩𐑯𐑤𐑭𐑒 𐑞𐑦𐑕 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑢𐑧𐑯 𐑲 𐑤𐑪𐑜 𐑦𐑯."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
+msgid "Automatically unlock this public key when I log in."
+msgstr "𐑷𐑑𐑩𐑥𐑨𐑑𐑦𐑒𐑤𐑦 𐑩𐑯𐑤𐑭𐑒 𐑞𐑦𐑕 𐑐𐑳𐑚𐑤𐑦𐑒 𐑒𐑰 𐑢𐑧𐑯 𐑲 𐑤𐑪𐑜 𐑦𐑯."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
+msgid "Automatically unlock this when I log in"
+msgstr "𐑷𐑑𐑩𐑥𐑨𐑑𐑦𐑒𐑤𐑦 𐑩𐑯𐑤𐑭𐑒 𐑞𐑦𐑕 𐑢𐑧𐑯 𐑲 𐑤𐑪𐑜 𐑦𐑯"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+msgid "Unlock certificate/key storage"
+msgstr "𐑩𐑯𐑤𐑭𐑒 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑/𐑒𐑰 𐑕𐑑𐑹𐑦𐑡"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑑 𐑩𐑯𐑤𐑭𐑒 𐑞 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑/𐑒𐑰 𐑕𐑑𐑹𐑦𐑡"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "𐑩𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑢𐑪𐑯𐑑𐑕 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑞 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑/𐑒𐑰 𐑕𐑑𐑹𐑦𐑡 '%s', 𐑚𐑳𐑑 𐑦𐑑 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
+msgid "Automatically unlock secure storage when I log in."
+msgstr "𐑷𐑑𐑩𐑥𐑨𐑑𐑦𐑒𐑤𐑦 𐑩𐑯𐑤𐑭𐑒 𐑕𐑦𐑒𐑘𐑫𐑼 𐑕𐑑𐑹𐑦𐑡 𐑢𐑧𐑯 𐑲 𐑤𐑪𐑜 𐑦𐑯."
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+msgid "New Password Required"
+msgstr "𐑯𐑿 𐑐𐑭𐑕𐑢𐑼𐑛 𐑮𐑦𐑒𐑢𐑲𐑼𐑛"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
+msgid "New password required for secure storage"
+msgstr "𐑯𐑿 𐑐𐑭𐑕𐑢𐑼𐑛 𐑮𐑦𐑒𐑢𐑲𐑼𐑛 𐑓𐑹 𐑕𐑦𐑒𐑘𐑫𐑼 𐑕𐑑𐑹𐑦𐑡"
+
+#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "𐑦𐑯 𐑹𐑛𐑼 𐑑 𐑐𐑮𐑰𐑐𐑺 '%s' 𐑓𐑹 𐑕𐑑𐑹𐑦𐑡 𐑝 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑𐑕 𐑹 𐑒𐑰𐑟, 𐑩 𐑐𐑭𐑕𐑢𐑼𐑛 𐑦𐑟 𐑮𐑦𐑒𐑢𐑲𐑼𐑛"
+
+#: ../daemon/ui/gkr-ask-tool.c:230
+msgid ""
+"<b><big>Could not grab your mouse.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>𐑒𐑫𐑛 𐑯𐑪𐑑 𐑜𐑮𐑨𐑚 𐑿𐑼 𐑥𐑬𐑕.</big></b>\n"
+"\n"
+"𐑩 𐑥𐑩𐑤𐑦𐑖𐑩𐑕 𐑒𐑤𐑲𐑩𐑯𐑑 𐑥𐑱 𐑚𐑰 𐑰𐑝𐑟𐑛𐑮𐑭𐑐𐑦𐑙 𐑪𐑯 𐑿𐑼 𐑕𐑧𐑖𐑩𐑯 𐑹 𐑿 𐑥𐑱 𐑣𐑨𐑝 𐑡𐑳𐑕𐑑 𐑒𐑤𐑦𐑒𐑑 𐑩 𐑥𐑧𐑯𐑿 𐑹 "
+"𐑕𐑳𐑥 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑡𐑳𐑕𐑑 𐑛𐑦𐑕𐑲𐑛𐑩𐑛 𐑑 𐑜𐑧𐑑 𐑓𐑴𐑒𐑩𐑕.\n"
+"\n"
+"𐑑𐑮𐑲 𐑩𐑜𐑱𐑯."
+
+#: ../daemon/ui/gkr-ask-tool.c:239
+msgid ""
+"<b><big>Could not grab your keyboard.</big></b>\n"
+"\n"
+"A malicious client may be eavesdropping on your session or you may have just "
+"clicked a menu or some application just decided to get focus.\n"
+"\n"
+"Try again."
+msgstr ""
+"<b><big>𐑒𐑫𐑛 𐑯𐑪𐑑 𐑜𐑮𐑨𐑚 𐑿𐑼 𐑒𐑰𐑚𐑪𐑮𐑛.</big></b>\n"
+"\n"
+"𐑩 𐑥𐑩𐑤𐑦𐑖𐑩𐑕 𐑒𐑤𐑲𐑩𐑯𐑑 𐑥𐑱 𐑚𐑰 𐑰𐑝𐑟𐑛𐑮𐑭𐑐𐑦𐑙 𐑪𐑯 𐑿𐑼 𐑕𐑧𐑖𐑩𐑯 𐑹 𐑿 𐑥𐑱 𐑣𐑨𐑝 𐑡𐑳𐑕𐑑 𐑒𐑤𐑦𐑒𐑑 𐑩 𐑥𐑧𐑯𐑿 𐑹 "
+"𐑕𐑳𐑥 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑡𐑳𐑕𐑑 𐑛𐑦𐑕𐑲𐑛𐑩𐑛 𐑑 𐑜𐑧𐑑 𐑓𐑴𐑒𐑩𐑕.\n"
+"\n"
+"𐑑𐑮𐑲 𐑩𐑜𐑱𐑯."
+
+#: ../daemon/ui/gkr-ask-tool.c:277
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"𐑚𐑲 𐑗𐑵𐑟𐑦𐑙 𐑑 𐑿𐑕 𐑩 𐑚𐑤𐑨𐑙𐑒 𐑐𐑭𐑕𐑢𐑼𐑛, 𐑿𐑼 𐑕𐑑𐑹𐑛 𐑐𐑭𐑕𐑢𐑼𐑛𐑟 𐑢𐑦𐑤 𐑯𐑪𐑑 𐑚𐑰 𐑕𐑱𐑓𐑤𐑦 𐑦𐑯𐑒𐑮𐑦𐑐𐑑𐑩𐑛. 𐑞𐑱 "
+"𐑢𐑦𐑤 𐑚𐑰 𐑨𐑒𐑕𐑧𐑕𐑩𐑚𐑩𐑤 𐑚𐑲 𐑧𐑯𐑦𐑢𐑳𐑯 𐑢𐑦𐑞 𐑨𐑒𐑕𐑧𐑕 𐑑 𐑿𐑼 𐑓𐑲𐑤𐑟."
+
+#: ../daemon/ui/gkr-ask-tool.c:284
+msgid "Use Unsafe Storage"
+msgstr "𐑿𐑟 𐑩𐑯𐑕𐑱𐑓 𐑕𐑑𐑹𐑦𐑡"
+
+#: ../daemon/ui/gkr-ask-tool.c:512
+msgid "_Location:"
+msgstr "_𐑤𐑴𐑒𐑱𐑖𐑩𐑯:"
+
+#: ../daemon/ui/gkr-ask-tool.c:525
+msgid "_Old password:"
+msgstr "_𐑴𐑤𐑛 𐑐𐑭𐑕𐑢𐑼𐑛:"
+
+#: ../daemon/ui/gkr-ask-tool.c:545
+msgid "_Password:"
+msgstr "_𐑐𐑭𐑕𐑢𐑼𐑛:"
+
+#: ../daemon/ui/gkr-ask-tool.c:567
+msgid "_Confirm password:"
+msgstr "_𐑒𐑪𐑯𐑓𐑻𐑥 𐑐𐑭𐑕𐑢𐑼𐑛:"
+
+#: ../daemon/ui/gkr-ask-tool.c:587
+msgid "New password strength"
+msgstr "𐑯𐑿 𐑐𐑭𐑕𐑢𐑼𐑛 𐑕𐑑𐑮𐑧𐑙𐑔"
+
+#: ../daemon/ui/gkr-ask-tool.c:645
+msgid "Passwords do not match."
+msgstr "𐑐𐑭𐑕𐑢𐑼𐑛𐑟 𐑛𐑵 𐑯𐑪𐑑 𐑥𐑨𐑗."
+
+#: ../daemon/ui/gkr-ask-tool.c:661
+msgid "Password cannot be blank"
+msgstr "𐑐𐑭𐑕𐑢𐑼𐑛 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑚𐑤𐑨𐑙𐑒"
+
+#: ../daemon/ui/gkr-ask-tool.c:712
+msgid "_Deny"
+msgstr "_𐑛𐑦𐑯𐑲"
+
+#: ../daemon/ui/gkr-ask-tool.c:732
+msgid "Allow _Once"
+msgstr "𐑩𐑤𐑬 _𐑢𐑳𐑯𐑕"
+
+#: ../daemon/ui/gkr-ask-tool.c:736
+msgid "_Always Allow"
+msgstr "_𐑷𐑤𐑢𐑱𐑟 𐑩𐑤𐑬"
+
+#: ../daemon/util/gkr-location.c:238
+#, c-format
+msgid "Removable Disk: %s"
+msgstr "𐑮𐑦𐑥𐑵𐑝𐑩𐑚𐑩𐑤 𐑛𐑦𐑕𐑒: %s"
+
+#: ../daemon/util/gkr-location.c:240
+msgid "Removable Disk"
+msgstr "𐑮𐑦𐑥𐑵𐑝𐑩𐑚𐑩𐑤 𐑛𐑦𐑕𐑒"
+
+#: ../daemon/util/gkr-location.c:331 ../daemon/util/gkr-location.c:343
+msgid "Home"
+msgstr "𐑣𐑴𐑥"
+
+#: ../daemon/util/gkr-location.c:886 ../daemon/util/gkr-location.c:910
+msgid "The disk or drive this file is located on is not present"
+msgstr "𐑞 𐑛𐑦𐑕𐑒 𐑹 𐑛𐑮𐑲𐑝 𐑞𐑦𐑕 𐑓𐑲𐑤 𐑦𐑟 𐑤𐑴𐑒𐑱𐑑𐑩𐑛 𐑪𐑯 𐑦𐑟 𐑯𐑪𐑑 𐑐𐑮𐑩𐑟𐑧𐑯𐑑"
+
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "𐑛𐑴𐑥𐑱𐑯 𐑒𐑩𐑥𐑐𐑴𐑯𐑩𐑯𐑑"
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "𐑿𐑟𐑼 ID"
+
+#: ../egg/egg-oid.c:46
+msgid "Email"
+msgstr "𐑰𐑥𐑱𐑤"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "𐑛𐑱𐑑 𐑝 𐑚𐑻𐑔"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "𐑐𐑤𐑱𐑕 𐑝 𐑚𐑻𐑔"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "𐑡𐑧𐑯𐑛𐑻"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "𐑒𐑳𐑯𐑑𐑮𐑰 𐑝 𐑕𐑦𐑑𐑦𐑟𐑩𐑯𐑖𐑦𐑐"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "𐑒𐑳𐑯𐑑𐑮𐑰 𐑝 𐑮𐑧𐑟𐑦𐑛𐑩𐑯𐑕"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "𐑒𐑪𐑥𐑩𐑯 𐑯𐑱𐑥"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "𐑕𐑻𐑯𐑱𐑥"
+
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
+msgid "Serial Number"
+msgstr "𐑕𐑦𐑮𐑰𐑩𐑤 𐑯𐑳𐑥𐑚𐑼"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "𐑒𐑳𐑯𐑑𐑮𐑰"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "𐑤𐑴𐑒𐑩𐑤𐑦𐑑𐑦"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "𐑕𐑑𐑱𐑑"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "𐑕𐑑𐑮𐑰𐑑"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "𐑹𐑜𐑩𐑯𐑦𐑟𐑱𐑖𐑩𐑯"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "𐑪𐑮𐑜𐑩𐑯𐑩𐑟𐑱𐑖𐑩𐑯𐑩𐑤 𐑿𐑯𐑦𐑑"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "𐑑𐑲𐑑𐑩𐑤"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "𐑑𐑧𐑤𐑩𐑓𐑴𐑯 𐑯𐑳𐑥𐑚𐑼"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "𐑜𐑦𐑝𐑩𐑯 𐑯𐑱𐑥"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "𐑦𐑯𐑦𐑖𐑩𐑤𐑟"
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr "𐑡𐑧𐑯𐑻𐑱𐑖𐑪𐑯 𐑒𐑢𐑭𐑤𐑩𐑓𐑲𐑻"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "𐑕𐑵𐑛𐑩𐑯𐑦𐑥"
+
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr "<i>𐑯𐑪𐑑 𐑐𐑸𐑑 𐑝 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>𐑳𐑯𐑴𐑯</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<𐑯𐑪𐑑 𐑐𐑸𐑑 𐑝 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>𐑓𐑦𐑙𐑜𐑼𐑐𐑮𐑦𐑯𐑑𐑕</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>𐑦𐑖𐑵𐑛 𐑚𐑲</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>𐑦𐑖𐑵𐑛 𐑑</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>𐑞𐑦𐑕 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑣𐑨𐑟 𐑚𐑰𐑯 𐑝𐑧𐑮𐑦𐑓𐑲𐑛 𐑓𐑹 𐑞 𐑓𐑪𐑤𐑴𐑦𐑙 𐑿𐑟𐑩𐑟:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>𐑝𐑩𐑤𐑦𐑛𐑩𐑑𐑰</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+msgid "Email Recipient Certificate"
+msgstr "𐑰𐑥𐑱𐑤 𐑮𐑩𐑕𐑦𐑐𐑰𐑩𐑯𐑑 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+msgid "Email Signer Certificate"
+msgstr "𐑰𐑥𐑱𐑤 𐑕𐑲𐑯𐑻 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr "𐑦𐑒𐑕𐑐𐑲𐑻𐑟 𐑪𐑯"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+msgid "Issued On"
+msgstr "𐑦𐑖𐑵𐑛 𐑪𐑯"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 𐑓𐑦𐑙𐑜𐑼𐑐𐑮𐑦𐑯𐑑"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+msgid "Organization (O)"
+msgstr "𐑹𐑜𐑩𐑯𐑦𐑟𐑱𐑖𐑩𐑯 (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+msgid "Organizational Unit (OU)"
+msgstr "𐑪𐑮𐑜𐑩𐑯𐑩𐑟𐑱𐑖𐑩𐑯𐑩𐑤 𐑿𐑯𐑦𐑑 (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 𐑓𐑦𐑙𐑜𐑼𐑐𐑮𐑦𐑯𐑑"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+msgid "SSL Client Certificate"
+msgstr "SSL 𐑒𐑤𐑲𐑩𐑯𐑑 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+msgid "SSL Server Certificate"
+msgstr "SSL 𐑕𐑻𐑝𐑼 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../gcr/gcr-certificate-details-widget.c:207
+msgid "Extension"
+msgstr "𐑩𐑒𐑕𐑑𐑧𐑯𐑖𐑩𐑯"
+
+#: ../gcr/gcr-certificate-details-widget.c:212
+msgid "Identifier"
+msgstr "𐑲𐑛𐑧𐑯𐑑𐑦𐑓𐑲𐑼"
+
+#: ../gcr/gcr-certificate-details-widget.c:222
+msgid "Value"
+msgstr "𐑝𐑨𐑤𐑿"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Critical"
+msgstr "𐑒𐑮𐑦𐑑𐑦𐑒𐑩𐑤"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "𐑘𐑧𐑕"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "𐑯𐑴"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:303
+msgid "Subject Name"
+msgstr "𐑕𐑳𐑚𐑡𐑧𐑒𐑑 𐑯𐑱𐑥"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:307
+msgid "Issuer Name"
+msgstr "𐑦𐑖𐑵𐑻 𐑯𐑱𐑥"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:311
+msgid "Issued Certificate"
+msgstr "𐑦𐑖𐑵𐑛 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../gcr/gcr-certificate-details-widget.c:316
+msgid "Version"
+msgstr "𐑝𐑻𐑠𐑩𐑯"
+
+#: ../gcr/gcr-certificate-details-widget.c:329
+msgid "Not Valid Before"
+msgstr "𐑯𐑪𐑑 𐑝𐑨𐑤𐑦𐑛 𐑚𐑦𐑓𐑹"
+
+#: ../gcr/gcr-certificate-details-widget.c:334
+msgid "Not Valid After"
+msgstr "𐑯𐑪𐑑 𐑝𐑨𐑤𐑦𐑛 𐑭𐑓𐑑𐑼"
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
+msgid "Signature"
+msgstr "𐑕𐑦𐑜𐑯𐑩𐑗𐑼"
+
+#: ../gcr/gcr-certificate-details-widget.c:343
+msgid "Signature Algorithm"
+msgstr "𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑨𐑤𐑜𐑻𐑦𐑞𐑩𐑥"
+
+#: ../gcr/gcr-certificate-details-widget.c:348
+msgid "Signature Parameters"
+msgstr "𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑐𐑼𐑨𐑥𐑩𐑑𐑼𐑟"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:359
+msgid "Public Key Info"
+msgstr "𐑐𐑳𐑚𐑤𐑦𐑒 𐑒𐑰 𐑦𐑯𐑓𐑴"
+
+#: ../gcr/gcr-certificate-details-widget.c:363
+msgid "Key Algorithm"
+msgstr "𐑒𐑰 𐑨𐑤𐑜𐑻𐑦𐑞𐑩𐑥"
+
+#: ../gcr/gcr-certificate-details-widget.c:368
+msgid "Key Parameters"
+msgstr "𐑒𐑰 𐑐𐑼𐑨𐑥𐑩𐑑𐑼𐑟"
+
+#: ../gcr/gcr-certificate-details-widget.c:375
+msgid "Key Size"
+msgstr "𐑒𐑰 𐑕𐑲𐑟"
+
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+msgid "Public Key"
+msgstr "𐑐𐑳𐑚𐑤𐑦𐑒 𐑒𐑰"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:386
+msgid "Fingerprints"
+msgstr "𐑓𐑦𐑙𐑜𐑼𐑐𐑮𐑦𐑯𐑑𐑕"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>𐑦𐑥𐑐𐑹𐑑 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑𐑕 𐑯 𐑒𐑰𐑟</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "𐑦𐑥𐑐𐑹𐑑 𐑦𐑯𐑑𐑫:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "𐑐𐑭𐑕𐑢𐑼𐑛:"
+
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+msgid "The operation was cancelled"
+msgstr "𐑞 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑢𐑪𐑟 𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../gcr/gcr-importer.c:255
+#, c-format
+msgid "No location available to import to"
+msgstr "𐑯𐑴 𐑤𐑴𐑒𐑱𐑖𐑩𐑯 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤 𐑑 𐑦𐑥𐑐𐑹𐑑 𐑑"
+
+#: ../gcr/gcr-importer.c:404
+msgid "Import Certificates/Keys"
+msgstr "𐑦𐑥𐑐𐑹𐑑 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑𐑕/𐑒𐑰𐑟"
+
+#: ../gcr/gcr-importer.c:411
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "𐑗𐑵𐑟 𐑩 𐑤𐑴𐑒𐑱𐑖𐑩𐑯 𐑑 𐑕𐑑𐑹 𐑞 𐑦𐑥𐑐𐑹𐑑𐑩𐑛 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑𐑕/𐑒𐑰𐑟."
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:449
+msgid "In order to import the private key, it must be unlocked"
+msgstr "𐑦𐑯 𐑹𐑛𐑼 𐑑 𐑦𐑥𐑐𐑹𐑑 𐑞 𐑐𐑮𐑲𐑝𐑩𐑑 𐑒𐑰, 𐑦𐑑 𐑥𐑳𐑕𐑑 𐑚𐑰 𐑩𐑯𐑤𐑭𐑒𐑑"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:452
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "𐑦𐑯 𐑹𐑛𐑼 𐑑 𐑦𐑥𐑐𐑹𐑑 𐑞 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑, 𐑦𐑑 𐑥𐑳𐑕𐑑 𐑚𐑰 𐑩𐑯𐑤𐑭𐑒𐑑"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:455
+msgid "In order to import the data, it must be unlocked"
+msgstr "𐑦𐑯 𐑹𐑛𐑼 𐑑 𐑦𐑥𐑐𐑹𐑑 𐑞 𐑛𐑱𐑑𐑩, 𐑦𐑑 𐑥𐑳𐑕𐑑 𐑚𐑰 𐑩𐑯𐑤𐑭𐑒𐑑"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:460
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "𐑦𐑯 𐑹𐑛𐑼 𐑑 𐑦𐑥𐑐𐑹𐑑 𐑞 𐑐𐑮𐑲𐑝𐑩𐑑 𐑒𐑰 '%s', 𐑦𐑑 𐑥𐑳𐑕𐑑 𐑚𐑰 𐑩𐑯𐑤𐑭𐑒𐑑"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:463
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "𐑦𐑯 𐑹𐑛𐑼 𐑑 𐑦𐑥𐑐𐑹𐑑 𐑞 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 '%s', 𐑦𐑑 𐑥𐑳𐑕𐑑 𐑚𐑰 𐑩𐑯𐑤𐑭𐑒𐑑"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:466
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "𐑦𐑯 𐑹𐑛𐑼 𐑑 𐑦𐑥𐑐𐑹𐑑 '%s', 𐑦𐑑 𐑥𐑳𐑕𐑑 𐑚𐑰 𐑩𐑯𐑤𐑭𐑒𐑑"
+
+#: ../gcr/gcr-parser.c:196
+msgid "Private Key"
+msgstr "𐑐𐑮𐑲𐑝𐑩𐑑 𐑒𐑰"
+
+#: ../gcr/gcr-parser.c:199
+msgid "Certificate"
+msgstr "𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../gcr/gcr-parser.c:1576
+msgid "Unrecognized or unsupported data."
+msgstr "𐑩𐑯𐑮𐑧𐑒𐑩𐑜𐑯𐑲𐑟𐑛 𐑹 𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑛𐑱𐑑𐑩."
+
+#: ../gcr/gcr-parser.c:1579
+msgid "Could not parse invalid or corrupted data."
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑐𐑸𐑕 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑹 𐑒𐑼𐑳𐑐𐑑𐑩𐑛 𐑛𐑱𐑑𐑩."
+
+#: ../gcr/gcr-parser.c:1582
+msgid "The data is locked"
+msgstr "𐑞 𐑛𐑱𐑑𐑩 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#: ../gp11/gp11-misc.c:101
+msgid "Insufficient memory available"
+msgstr "𐑦𐑯𐑕𐑩𐑓𐑦𐑖𐑩𐑯𐑑 𐑥𐑧𐑥𐑼𐑦 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../gp11/gp11-misc.c:103
+msgid "The specified slot ID is not valid"
+msgstr "𐑞 𐑕𐑐𐑧𐑕𐑦𐑓𐑲𐑛 𐑕𐑤𐑪𐑑 ID 𐑦𐑟 𐑯𐑪𐑑 𐑝𐑨𐑤𐑦𐑛"
+
+#: ../gp11/gp11-misc.c:105
+msgid "Internal error"
+msgstr "𐑦𐑯𐑑𐑻𐑯𐑩𐑤 𐑻𐑼"
+
+#: ../gp11/gp11-misc.c:107
+msgid "The operation failed"
+msgstr "𐑞 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑓𐑱𐑤𐑛"
+
+#: ../gp11/gp11-misc.c:109
+msgid "Invalid arguments"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑸𐑜𐑿𐑥𐑩𐑯𐑑𐑕"
+
+#: ../gp11/gp11-misc.c:111
+msgid "The module cannot create needed threads"
+msgstr "𐑞 𐑥𐑪𐑛𐑿𐑤 𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑯𐑰𐑛𐑩𐑛 𐑔𐑮𐑧𐑛𐑟"
+
+#: ../gp11/gp11-misc.c:113
+msgid "The module cannot lock data properly"
+msgstr "𐑞 𐑥𐑪𐑛𐑿𐑤 𐑒𐑨𐑯𐑪𐑑 𐑤𐑪𐑒 𐑛𐑱𐑑𐑩 𐑐𐑮𐑪𐑐𐑼𐑤𐑦"
+
+#: ../gp11/gp11-misc.c:115
+msgid "The field is read-only"
+msgstr "𐑞 𐑓𐑰𐑤𐑛 𐑦𐑟 𐑮𐑧𐑛-𐑴𐑯𐑤𐑦"
+
+#: ../gp11/gp11-misc.c:117
+msgid "The field is sensitive and cannot be revealed"
+msgstr "𐑞 𐑓𐑰𐑤𐑛 𐑦𐑟 𐑕𐑧𐑯𐑕𐑦𐑑𐑦𐑝 𐑯 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑮𐑦𐑝𐑰𐑤𐑛"
+
+#: ../gp11/gp11-misc.c:119
+msgid "The field is invalid or does not exist"
+msgstr "𐑞 𐑓𐑰𐑤𐑛 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑹 𐑛𐑴𐑟 𐑯𐑪𐑑 𐑧𐑒𐑟𐑦𐑕𐑑"
+
+#: ../gp11/gp11-misc.c:121
+msgid "Invalid value for field"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑝𐑨𐑤𐑿 𐑓𐑹 𐑓𐑰𐑤𐑛"
+
+#: ../gp11/gp11-misc.c:123
+msgid "The data is not valid or unrecognized"
+msgstr "𐑞 𐑛𐑱𐑑𐑩 𐑦𐑟 𐑯𐑪𐑑 𐑝𐑨𐑤𐑦𐑛 𐑹 𐑩𐑯𐑮𐑧𐑒𐑩𐑜𐑯𐑲𐑟𐑛"
+
+#: ../gp11/gp11-misc.c:125
+msgid "The data is too long"
+msgstr "𐑞 𐑛𐑱𐑑𐑩 𐑦𐑟 𐑑𐑵 𐑤𐑪𐑙"
+
+#: ../gp11/gp11-misc.c:127
+msgid "An error occurred on the device"
+msgstr "𐑩𐑯 𐑻𐑼 𐑪𐑒𐑻𐑛 𐑪𐑯 𐑞 𐑛𐑦𐑝𐑲𐑕"
+
+#: ../gp11/gp11-misc.c:129
+msgid "Insufficient memory available on device"
+msgstr "𐑦𐑯𐑕𐑩𐑓𐑦𐑖𐑩𐑯𐑑 𐑥𐑧𐑥𐑼𐑦 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤 𐑪𐑯 𐑛𐑦𐑝𐑲𐑕"
+
+#: ../gp11/gp11-misc.c:131
+msgid "The device was removed or unplugged"
+msgstr "𐑞 𐑛𐑦𐑝𐑲𐑕 𐑢𐑪𐑟 𐑮𐑦𐑥𐑵𐑝𐑛 𐑹 𐑩𐑯𐑐𐑤𐑩𐑜𐑛"
+
+#: ../gp11/gp11-misc.c:133
+msgid "The encrypted data is not valid or unrecognized"
+msgstr "𐑞 𐑦𐑯𐑒𐑮𐑦𐑐𐑑𐑩𐑛 𐑛𐑱𐑑𐑩 𐑦𐑟 𐑯𐑪𐑑 𐑝𐑨𐑤𐑦𐑛 𐑹 𐑩𐑯𐑮𐑧𐑒𐑩𐑜𐑯𐑲𐑟𐑛"
+
+#: ../gp11/gp11-misc.c:135
+msgid "The encrypted data is too long"
+msgstr "𐑞 𐑦𐑯𐑒𐑮𐑦𐑐𐑑𐑩𐑛 𐑛𐑱𐑑𐑩 𐑦𐑟 𐑑𐑵 𐑤𐑪𐑙"
+
+#: ../gp11/gp11-misc.c:137
+msgid "This operation is not supported"
+msgstr "𐑞𐑦𐑕 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑦𐑟 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛"
+
+#: ../gp11/gp11-misc.c:139
+msgid "The key is missing or invalid"
+msgstr "𐑞 𐑒𐑰 𐑦𐑟 𐑥𐑦𐑕𐑦𐑙 𐑹 𐑦𐑯𐑝𐑨𐑤𐑦𐑛"
+
+#: ../gp11/gp11-misc.c:141
+msgid "The key is the wrong size"
+msgstr "𐑞 𐑒𐑰 𐑦𐑟 𐑞 𐑮𐑪𐑙 𐑕𐑲𐑟"
+
+#: ../gp11/gp11-misc.c:143
+msgid "The key is of the wrong type"
+msgstr "𐑞 𐑒𐑰 𐑦𐑟 𐑝 𐑞 𐑮𐑪𐑙 𐑑𐑲𐑐"
+
+#: ../gp11/gp11-misc.c:145
+msgid "No key is needed"
+msgstr "𐑯𐑴 𐑒𐑰 𐑦𐑟 𐑯𐑰𐑛𐑩𐑛"
+
+#: ../gp11/gp11-misc.c:147
+msgid "The key is different than before"
+msgstr "𐑞 𐑒𐑰 𐑦𐑟 𐑛𐑦𐑓𐑼𐑩𐑯𐑑 𐑞𐑨𐑯 𐑚𐑦𐑓𐑹"
+
+#: ../gp11/gp11-misc.c:149
+msgid "A key is needed"
+msgstr "𐑩 𐑒𐑰 𐑦𐑟 𐑯𐑰𐑛𐑩𐑛"
+
+#: ../gp11/gp11-misc.c:151
+msgid "Cannot include the key in digest"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑦𐑯𐑒𐑤𐑵𐑛 𐑞 𐑒𐑰 𐑦𐑯 𐑛𐑲𐑡𐑧𐑕𐑑"
+
+#: ../gp11/gp11-misc.c:153
+msgid "This operation cannot be done with this key"
+msgstr "𐑞𐑦𐑕 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑛𐑳𐑯 𐑢𐑦𐑞 𐑞𐑦𐑕 𐑒𐑰"
+
+#: ../gp11/gp11-misc.c:155
+msgid "The key cannot be wrapped"
+msgstr "𐑞 𐑒𐑰 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑮𐑨𐑐𐑑"
+
+#: ../gp11/gp11-misc.c:157
+msgid "Cannot export this key"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑧𐑒𐑕𐑐𐑹𐑑 𐑞𐑦𐑕 𐑒𐑰"
+
+#: ../gp11/gp11-misc.c:159
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr "𐑞 𐑒𐑮𐑦𐑐𐑑𐑴 𐑥𐑧𐑒𐑩𐑯𐑦𐑟𐑥 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑹 𐑩𐑯𐑮𐑧𐑒𐑩𐑜𐑯𐑲𐑟𐑛"
+
+#: ../gp11/gp11-misc.c:161
+msgid "The crypto mechanism has an invalid argument"
+msgstr "𐑞 𐑒𐑮𐑦𐑐𐑑𐑴 𐑥𐑧𐑒𐑩𐑯𐑦𐑟𐑥 𐑣𐑨𐑟 𐑩𐑯 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑸𐑜𐑿𐑥𐑩𐑯𐑑"
+
+#: ../gp11/gp11-misc.c:163
+msgid "The object is missing or invalid"
+msgstr "𐑞 𐑪𐑚𐑡𐑧𐑒𐑑 𐑦𐑟 𐑥𐑦𐑕𐑦𐑙 𐑹 𐑦𐑯𐑝𐑨𐑤𐑦𐑛"
+
+#: ../gp11/gp11-misc.c:165
+msgid "Another operation is already taking place"
+msgstr "𐑩𐑯𐑳𐑞𐑼 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑦𐑟 𐑷𐑤𐑮𐑧𐑛𐑦 𐑑𐑱𐑒𐑦𐑙 𐑐𐑤𐑱𐑕"
+
+#: ../gp11/gp11-misc.c:167
+msgid "No operation is taking place"
+msgstr "𐑯𐑴 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑦𐑟 𐑑𐑱𐑒𐑦𐑙 𐑐𐑤𐑱𐑕"
+
+#: ../gp11/gp11-misc.c:169
+msgid "The password or PIN is incorrect"
+msgstr "𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑹 PIN 𐑦𐑟 𐑦𐑯𐑒𐑼𐑧𐑒𐑑"
+
+#: ../gp11/gp11-misc.c:171
+msgid "The password or PIN is invalid"
+msgstr "𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑹 PIN 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛"
+
+#: ../gp11/gp11-misc.c:173
+msgid "The password or PIN is of an invalid length"
+msgstr "𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑹 PIN 𐑦𐑟 𐑝 𐑩𐑯 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑤𐑧𐑙𐑔"
+
+#: ../gp11/gp11-misc.c:175
+msgid "The password or PIN has expired"
+msgstr "𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑹 PIN 𐑣𐑨𐑟 𐑦𐑒𐑕𐑐𐑲𐑮𐑛"
+
+#: ../gp11/gp11-misc.c:177
+msgid "The password or PIN is locked"
+msgstr "𐑞 𐑐𐑭𐑕𐑢𐑼𐑛 𐑹 PIN 𐑦𐑟 𐑤𐑪𐑒𐑑"
+
+#: ../gp11/gp11-misc.c:179
+msgid "The session is closed"
+msgstr "𐑞 𐑕𐑧𐑖𐑩𐑯 𐑦𐑟 𐑒𐑤𐑴𐑟𐑛"
+
+#: ../gp11/gp11-misc.c:181
+msgid "Too many sessions are active"
+msgstr "𐑑𐑵 𐑥𐑧𐑯𐑦 𐑕𐑧𐑖𐑩𐑯𐑟 𐑸 𐑨𐑒𐑑𐑦𐑝"
+
+#: ../gp11/gp11-misc.c:183
+msgid "The session is invalid"
+msgstr "𐑞 𐑕𐑧𐑖𐑩𐑯 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛"
+
+#: ../gp11/gp11-misc.c:185
+msgid "The session is read-only"
+msgstr "𐑞 𐑕𐑧𐑖𐑩𐑯 𐑦𐑟 𐑮𐑧𐑛-𐑴𐑯𐑤𐑦"
+
+#: ../gp11/gp11-misc.c:187
+msgid "An open session exists"
+msgstr "𐑩𐑯 𐑴𐑐𐑩𐑯 𐑕𐑧𐑖𐑩𐑯 𐑧𐑒𐑟𐑦𐑕𐑑𐑕"
+
+#: ../gp11/gp11-misc.c:189
+msgid "A read-only session exists"
+msgstr "𐑩 𐑮𐑧𐑛-𐑴𐑯𐑤𐑦 𐑕𐑧𐑖𐑩𐑯 𐑧𐑒𐑟𐑦𐑕𐑑𐑕"
+
+#: ../gp11/gp11-misc.c:191
+msgid "An administrator session exists"
+msgstr "𐑩𐑯 𐑩𐑛𐑥𐑦𐑯𐑦𐑕𐑑𐑮𐑱𐑑𐑼 𐑕𐑧𐑖𐑩𐑯 𐑧𐑒𐑟𐑦𐑕𐑑𐑕"
+
+#: ../gp11/gp11-misc.c:193
+msgid "The signature is bad or corrupted"
+msgstr "𐑞 𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑦𐑟 𐑚𐑨𐑛 𐑹 𐑒𐑼𐑳𐑐𐑑𐑩𐑛"
+
+#: ../gp11/gp11-misc.c:195
+msgid "The signature is unrecognized or corrupted"
+msgstr "𐑞 𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑦𐑟 𐑩𐑯𐑮𐑧𐑒𐑩𐑜𐑯𐑲𐑟𐑛 𐑹 𐑒𐑼𐑳𐑐𐑑𐑩𐑛"
+
+#: ../gp11/gp11-misc.c:197
+msgid "Certain required fields are missing"
+msgstr "𐑕𐑻𐑑𐑩𐑯 𐑮𐑦𐑒𐑢𐑲𐑼𐑛 𐑓𐑰𐑤𐑛𐑟 𐑸 𐑥𐑦𐑕𐑦𐑙"
+
+#: ../gp11/gp11-misc.c:199
+msgid "Certain fields have invalid values"
+msgstr "𐑕𐑻𐑑𐑩𐑯 𐑓𐑰𐑤𐑛𐑟 𐑣𐑨𐑝 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑝𐑨𐑤𐑿𐑟"
+
+#: ../gp11/gp11-misc.c:201
+msgid "The device is not present or unplugged"
+msgstr "𐑞 𐑛𐑦𐑝𐑲𐑕 𐑦𐑟 𐑯𐑪𐑑 𐑐𐑮𐑩𐑟𐑧𐑯𐑑 𐑹 𐑩𐑯𐑐𐑤𐑩𐑜𐑛"
+
+#: ../gp11/gp11-misc.c:203
+msgid "The device is invalid or unrecognizable"
+msgstr "𐑞 𐑛𐑦𐑝𐑲𐑕 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑹 𐑩𐑯𐑮𐑧𐑒𐑩𐑜𐑯𐑲𐑟𐑩𐑚𐑩𐑤"
+
+#: ../gp11/gp11-misc.c:205
+msgid "The device is write protected"
+msgstr "𐑞 𐑛𐑦𐑝𐑲𐑕 𐑦𐑟 𐑮𐑲𐑑 𐑐𐑮𐑩𐑑𐑧𐑒𐑑𐑩𐑛"
+
+#: ../gp11/gp11-misc.c:207
+msgid "Cannot import because the key is invalid"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑦𐑥𐑐𐑹𐑑 𐑚𐑦𐑒𐑪𐑟 𐑞 𐑒𐑰 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛"
+
+#: ../gp11/gp11-misc.c:209
+msgid "Cannot import because the key is of the wrong size"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑦𐑥𐑐𐑹𐑑 𐑚𐑦𐑒𐑪𐑟 𐑞 𐑒𐑰 𐑦𐑟 𐑝 𐑞 𐑮𐑪𐑙 𐑕𐑲𐑟"
+
+#: ../gp11/gp11-misc.c:211
+msgid "Cannot import because the key is of the wrong type"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑦𐑥𐑐𐑹𐑑 𐑚𐑦𐑒𐑪𐑟 𐑞 𐑒𐑰 𐑦𐑟 𐑝 𐑞 𐑮𐑪𐑙 𐑑𐑲𐑐"
+
+#: ../gp11/gp11-misc.c:213
+msgid "You are already logged in"
+msgstr "𐑿 𐑸 𐑷𐑤𐑮𐑧𐑛𐑦 𐑤𐑪𐑜𐑛 𐑦𐑯"
+
+#: ../gp11/gp11-misc.c:215
+msgid "No user has logged in"
+msgstr "𐑯𐑴 𐑿𐑟𐑼 𐑣𐑨𐑟 𐑤𐑪𐑜𐑛 𐑦𐑯"
+
+#: ../gp11/gp11-misc.c:217
+msgid "The user's password or PIN is not set"
+msgstr "𐑞 𐑿𐑟𐑼'𐑕 𐑐𐑭𐑕𐑢𐑼𐑛 𐑹 PIN 𐑦𐑟 𐑯𐑪𐑑 𐑕𐑧𐑑"
+
+#: ../gp11/gp11-misc.c:219
+msgid "The user is of an invalid type"
+msgstr "𐑞 𐑿𐑟𐑼 𐑦𐑟 𐑝 𐑩𐑯 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑑𐑲𐑐"
+
+#: ../gp11/gp11-misc.c:221
+msgid "Another user is already logged in"
+msgstr "𐑩𐑯𐑳𐑞𐑼 𐑿𐑟𐑼 𐑦𐑟 𐑷𐑤𐑮𐑧𐑛𐑦 𐑤𐑪𐑜𐑛 𐑦𐑯"
+
+#: ../gp11/gp11-misc.c:223
+msgid "Too many users of different types logged in"
+msgstr "𐑑𐑵 𐑥𐑧𐑯𐑦 𐑿𐑟𐑼𐑟 𐑝 𐑛𐑦𐑓𐑼𐑩𐑯𐑑 𐑑𐑲𐑐𐑕 𐑤𐑪𐑜𐑛 𐑦𐑯"
+
+#: ../gp11/gp11-misc.c:225
+msgid "Cannot import an invalid key"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑦𐑥𐑐𐑹𐑑 𐑩𐑯 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑒𐑰"
+
+#: ../gp11/gp11-misc.c:227
+msgid "Cannot import a key of the wrong size"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑦𐑥𐑐𐑹𐑑 𐑩 𐑒𐑰 𐑝 𐑞 𐑮𐑪𐑙 𐑕𐑲𐑟"
+
+#: ../gp11/gp11-misc.c:229
+msgid "Cannot export because the key is invalid"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑧𐑒𐑕𐑐𐑹𐑑 𐑚𐑦𐑒𐑪𐑟 𐑞 𐑒𐑰 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛"
+
+#: ../gp11/gp11-misc.c:231
+msgid "Cannot export because the key is of the wrong size"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑧𐑒𐑕𐑐𐑹𐑑 𐑚𐑦𐑒𐑪𐑟 𐑞 𐑒𐑰 𐑦𐑟 𐑝 𐑞 𐑮𐑪𐑙 𐑕𐑲𐑟"
+
+#: ../gp11/gp11-misc.c:233
+msgid "Cannot export because the key is of the wrong type"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑧𐑒𐑕𐑐𐑹𐑑 𐑚𐑦𐑒𐑪𐑟 𐑞 𐑒𐑰 𐑦𐑟 𐑝 𐑞 𐑮𐑪𐑙 𐑑𐑲𐑐"
+
+#: ../gp11/gp11-misc.c:235
+msgid "Unable to initialize the random number generator"
+msgstr "𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑦𐑯𐑦𐑖𐑩𐑤𐑲𐑟 𐑞 𐑮𐑨𐑯𐑛𐑩𐑥 𐑯𐑳𐑥𐑚𐑼 𐑡𐑧𐑯𐑻𐑱𐑑𐑻"
+
+#: ../gp11/gp11-misc.c:237
+msgid "No random number generator available"
+msgstr "𐑯𐑴 𐑮𐑨𐑯𐑛𐑩𐑥 𐑯𐑳𐑥𐑚𐑼 𐑡𐑧𐑯𐑻𐑱𐑑𐑻 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../gp11/gp11-misc.c:239
+msgid "The crypto mechanism has an invalid parameter"
+msgstr "𐑞 𐑒𐑮𐑦𐑐𐑑𐑴 𐑥𐑧𐑒𐑩𐑯𐑦𐑟𐑥 𐑣𐑨𐑟 𐑩𐑯 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑐𐑼𐑨𐑥𐑩𐑑𐑼"
+
+#: ../gp11/gp11-misc.c:241
+msgid "Not enough space to store the result"
+msgstr "𐑯𐑪𐑑 𐑦𐑯𐑳𐑓 𐑕𐑐𐑱𐑕 𐑑 𐑕𐑑𐑹 𐑞 𐑮𐑦𐑟𐑳𐑤𐑑"
+
+#: ../gp11/gp11-misc.c:243
+msgid "The saved state is invalid"
+msgstr "𐑞 𐑕𐑱𐑝𐑛 𐑕𐑑𐑱𐑑 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛"
+
+#: ../gp11/gp11-misc.c:245
+msgid "The information is sensitive and cannot be revealed"
+msgstr "𐑞 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯 𐑦𐑟 𐑕𐑧𐑯𐑕𐑦𐑑𐑦𐑝 𐑯 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑮𐑦𐑝𐑰𐑤𐑛"
+
+#: ../gp11/gp11-misc.c:247
+msgid "The state cannot be saved"
+msgstr "𐑞 𐑕𐑑𐑱𐑑 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑕𐑱𐑝𐑛"
+
+#: ../gp11/gp11-misc.c:249
+msgid "The module has not been initialized"
+msgstr "𐑞 𐑥𐑪𐑛𐑿𐑤 𐑣𐑨𐑟 𐑯𐑪𐑑 𐑚𐑰𐑯 𐑦𐑯𐑦𐑖𐑩𐑤𐑲𐑟𐑛"
+
+#: ../gp11/gp11-misc.c:251
+msgid "The module has already been initialized"
+msgstr "𐑞 𐑥𐑪𐑛𐑿𐑤 𐑣𐑨𐑟 𐑷𐑤𐑮𐑧𐑛𐑦 𐑚𐑰𐑯 𐑦𐑯𐑦𐑖𐑩𐑤𐑲𐑟𐑛"
+
+#: ../gp11/gp11-misc.c:253
+msgid "Cannot lock data"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑤𐑪𐑒 𐑛𐑱𐑑𐑩"
+
+#: ../gp11/gp11-misc.c:255
+msgid "The data cannot be locked"
+msgstr "𐑞 𐑛𐑱𐑑𐑩 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑤𐑪𐑒𐑑"
+
+#: ../gp11/gp11-misc.c:257
+msgid "The signature request was rejected by the user"
+msgstr "𐑞 𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑮𐑦𐑒𐑢𐑧𐑕𐑑 𐑢𐑪𐑟 𐑮𐑦𐑡𐑧𐑒𐑑𐑧𐑛 𐑚𐑲 𐑞 𐑿𐑟𐑼"
+
+#: ../gp11/gp11-misc.c:261
+msgid "Unknown error"
+msgstr "𐑳𐑯𐑴𐑯 𐑻𐑼"
+
+#: ../library/gnome-keyring-utils.c:168
+msgid "Access Denied"
+msgstr "𐑨𐑒𐑕𐑧𐑕 𐑛𐑦𐑯𐑲𐑛"
+
+#: ../library/gnome-keyring-utils.c:170
+msgid "The gnome-keyring-daemon application is not running."
+msgstr "𐑞 𐑯𐑴𐑥-𐑒𐑰𐑮𐑦𐑙-𐑛𐑰𐑥𐑩𐑯 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑦𐑟 𐑯𐑪𐑑 𐑮𐑳𐑯𐑦𐑙."
+
+#: ../library/gnome-keyring-utils.c:172
+msgid "Error communicating with gnome-keyring-daemon"
+msgstr "𐑻𐑼 𐑒𐑩𐑥𐑿𐑯𐑦𐑒𐑱𐑑𐑦𐑙 𐑢𐑦𐑞 𐑯𐑴𐑥-𐑒𐑰𐑮𐑦𐑙-𐑛𐑰𐑥𐑩𐑯"
+
+#: ../library/gnome-keyring-utils.c:174
+msgid "A keyring with that name already exists"
+msgstr "𐑩 𐑒𐑰𐑮𐑦𐑙 𐑢𐑦𐑞 𐑞𐑨𐑑 𐑯𐑱𐑥 𐑷𐑤𐑮𐑧𐑛𐑦 𐑧𐑒𐑟𐑦𐑕𐑑𐑕"
+
+#: ../library/gnome-keyring-utils.c:176
+msgid "Programmer error: The application sent invalid data."
+msgstr "𐑐𐑮𐑴𐑜𐑮𐑨𐑥𐑼 𐑻𐑼: 𐑞 𐑩𐑐𐑤𐑦𐑒𐑱𐑕𐑩𐑯 𐑕𐑧𐑯𐑑 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑛𐑱𐑑𐑩."
+
+#: ../library/gnome-keyring-utils.c:178
+msgid "No matching results"
+msgstr "𐑯𐑴 𐑥𐑨𐑗𐑦𐑙 𐑮𐑦𐑟𐑳𐑤𐑑𐑕"
+
+#: ../library/gnome-keyring-utils.c:180
+msgid "A keyring with that name does not exist."
+msgstr "𐑩 𐑒𐑰𐑮𐑦𐑙 𐑢𐑦𐑞 𐑞𐑨𐑑 𐑯𐑱𐑥 𐑛𐑳𐑟 𐑯𐑪𐑑 𐑧𐑒𐑟𐑦𐑕𐑑."
+
+#: ../library/gnome-keyring-utils.c:187
+msgid "The keyring has already been unlocked."
+msgstr "𐑞 𐑒𐑰𐑮𐑦𐑙 𐑣𐑨𐑟 𐑷𐑤𐑮𐑧𐑛𐑦 𐑚𐑰𐑯 𐑩𐑯𐑤𐑭𐑒𐑑."
+
+#: ../pkcs11/gck/gck-certificate.c:716
+msgid "Unnamed Certificate"
+msgstr "𐑩𐑯𐑯𐑱𐑥𐑛 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
