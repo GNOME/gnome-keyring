@@ -1,0 +1,299 @@
+# -*- mode:po; coding:utf-8; -*- Slovenian message catalogue for gnome-keyring.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+# Matej Urbančič <matej.urban@gmail.com>, 2005.
+# Matic Zgur <mr.zgur@gmail.com>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-04-17 14:33+0000\n"
+"PO-Revision-Date: 2009-11-14 10:01+0100\n"
+"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Slovenian\n"
+"X-Poedit-Country: SLOVENIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
+
+#: ../gnome-keyring-ask.c:165
+msgid "_Password:"
+msgstr "_Geslo:"
+
+#: ../gnome-keyring-ask.c:186
+msgid "_Confirm password:"
+msgstr "_Potrdite geslo:"
+
+#: ../gnome-keyring-ask.c:210
+msgid "Password cannot be blank."
+msgstr "Geslo ne more biti prazno."
+
+#: ../gnome-keyring-ask.c:218
+msgid "Passwords do not match."
+msgstr "Gesli se ne ujemata."
+
+#: ../gnome-keyring-ask.c:277
+#, c-format
+msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
+msgstr "Program '%s' (%s) želi dostop do privzete zbirke ključev, vendar je zaklenjena"
+
+#: ../gnome-keyring-ask.c:281
+#, c-format
+msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr "Program '%s' (%s) želi dostop do zbirke ključev '%s', vendar je zaklenjena"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:286
+#, c-format
+msgid "The application '%s' (%s) wants access to an unknown keyring, but it is locked"
+msgstr "Program '%s' (%s) želi dostop do neznane zbirke ključev, vendar je zaklenjena"
+
+#: ../gnome-keyring-ask.c:292
+#: ../gnome-keyring-ask.c:306
+#, c-format
+msgid "The application '%s' wants access to the default keyring, but it is locked"
+msgstr "Program '%s' želi dostop do privzete zbirke ključev, vendar je zaklenjena"
+
+#: ../gnome-keyring-ask.c:296
+#: ../gnome-keyring-ask.c:311
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr "Program '%s' želi dostop do zbirke ključev '%s', vendar je zaklenjena"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:300
+#: ../gnome-keyring-ask.c:316
+#, c-format
+msgid "The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr "Program '%s' želi dostop do neznane zbirke ključev, vendar je zaklenjena"
+
+#: ../gnome-keyring-ask.c:322
+#, c-format
+msgid "An unknown application wants access to the default keyring, but it is locked"
+msgstr "Neznani program želi dostop do privzete zbirke ključev, vendar je zaklenjena"
+
+#: ../gnome-keyring-ask.c:326
+#, c-format
+msgid "An unknown application wants access to the keyring '%s', but it is locked"
+msgstr "Neznan program želi dostop do zbirke ključev '%s',vendar je zaklenjena"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:331
+#, c-format
+msgid "An unknown application wants access to an unknown keyring, but it is locked"
+msgstr "Neznan program želi dostop do neznane zbirke ključev, vendar je zaklenjena"
+
+#: ../gnome-keyring-ask.c:338
+msgid "Enter password for default keyring to unlock"
+msgstr "Vnesite geslo za dostop do privzete zbirke ključev"
+
+#: ../gnome-keyring-ask.c:340
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Vnesite geslo za dostop do '%s' zbirke ključev"
+
+#: ../gnome-keyring-ask.c:344
+msgid "Unlock Keyring"
+msgstr "Odklenite zbirko ključev"
+
+#: ../gnome-keyring-ask.c:349
+#: ../gnome-keyring-ask.c:433
+#: ../gnome-keyring-ask.c:484
+#: ../gnome-keyring-ask.c:571
+msgid "_Deny"
+msgstr "Zavrni"
+
+#: ../gnome-keyring-ask.c:387
+#, c-format
+msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Program '%s' (%s) želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati morate geslo za to zbirko."
+
+#: ../gnome-keyring-ask.c:391
+#, c-format
+msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Program '%s' (%s) želi ustvariti novo privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
+
+#: ../gnome-keyring-ask.c:397
+#: ../gnome-keyring-ask.c:407
+#, c-format
+msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Program '%s' želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati morate geslo za to zbirko."
+
+#: ../gnome-keyring-ask.c:401
+#: ../gnome-keyring-ask.c:411
+#, c-format
+msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Program '%s' želi ustvariti novo privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
+
+#: ../gnome-keyring-ask.c:417
+#, c-format
+msgid "An unkown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
+msgstr "Program želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati morate geslo za to zbirko."
+
+#: ../gnome-keyring-ask.c:421
+#, c-format
+msgid "An unkown application wants to create a new default keyring. You have to choose the password you want to use for it."
+msgstr "Neznan program želi ustvariti novo privzeto zbirko ključev. Izbrati morate geslo za to zbirko."
+
+#: ../gnome-keyring-ask.c:428
+msgid "New Keyring Password"
+msgstr "Novo geslo za zbirko ključev"
+
+#: ../gnome-keyring-ask.c:429
+msgid "Choose password for new keyring"
+msgstr "Izberite geslo za novo zbirko ključev"
+
+#: ../gnome-keyring-ask.c:462
+#, c-format
+msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Program '%s' (%s) želi shraniti geslo, vendar ni privzete zbirke ključev. Da jo ustvarite, morate izbrati geslo za to zbirko."
+
+#: ../gnome-keyring-ask.c:466
+#: ../gnome-keyring-ask.c:470
+#, c-format
+msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Program '%s' želi shraniti geslo, vendar ni privzete zbirke ključev. Da jo ustvarite, morate izbrati geslo za to zbirko."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:474
+#, c-format
+msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
+msgstr "Neznan program želi shraniti geslo, vendar ni privzete zbirke ključev. Da jo ustvarite, morate izbrati geslo za to zbirko."
+
+#: ../gnome-keyring-ask.c:479
+msgid "Create Default Keyring"
+msgstr "Ustvari privzeto zbirko ključev"
+
+#: ../gnome-keyring-ask.c:480
+msgid "Choose password for default keyring"
+msgstr "Izberite geslo za privzeto zbirko ključev"
+
+#: ../gnome-keyring-ask.c:520
+msgid "Allow application access to keyring?"
+msgstr "Naj dovolim programom dostop do zbirke ključev?"
+
+#: ../gnome-keyring-ask.c:523
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "Program '%s' (%s) želi dostop do gesla za '%s' v %s."
+
+#: ../gnome-keyring-ask.c:526
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in the default keyring."
+msgstr "Program '%s' (%s) želi dostop do gesla za '%s' v privzeti zbirki ključev."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:529
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in an unknown keyring."
+msgstr "Program '%s' (%s) želi dostop do gesla za '%s' v neznani zbirki ključev."
+
+#: ../gnome-keyring-ask.c:534
+#: ../gnome-keyring-ask.c:545
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "Program '%s' želi dostop do gesla za '%s' v %s."
+
+#: ../gnome-keyring-ask.c:537
+#: ../gnome-keyring-ask.c:548
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in the default keyring."
+msgstr "Program '%s' želi dostop do gesla za '%s' v privzeti zbirki ključev."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:540
+#: ../gnome-keyring-ask.c:551
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in an unknown keyring."
+msgstr "Program '%s' želi dostop do gesla za '%s' v neznani zbirki ključev."
+
+#: ../gnome-keyring-ask.c:556
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "Neznan program želi dostop do gesla za '%s' v %s."
+
+#: ../gnome-keyring-ask.c:559
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in the default keyring."
+msgstr "Neznan program želi dostop do gesla za '%s' v privzeti zbirki ključev."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:562
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in an unknown keyring."
+msgstr "Neznan program želi dostop do gesla za '%s' v neznani zbirki ključev."
+
+#: ../gnome-keyring-ask.c:567
+msgid "Allow access"
+msgstr "Dovoli dostop"
+
+#: ../gnome-keyring-ask.c:572
+msgid "Allow _Once"
+msgstr "Dovoli enkrat"
+
+#: ../gnome-keyring-ask.c:573
+msgid "_Always Allow"
+msgstr "Vedno dovoli"
+
+#: ../gnome-keyring-ask.c:613
+#, c-format
+msgid "You must specify the type of request to run\n"
+msgstr "Določiti morate vrsto zahteve za zagon\n"
+
+#: ../gnome-keyring-ask.c:626
+#, c-format
+msgid "Unknown request type\n"
+msgstr "Neznana vrsta zahteve\n"
+
+#~ msgid "_Old password:"
+#~ msgstr "_Staro geslo:"
+#~ msgid "<span weight=\"bold\">Password strength meter:</span>"
+#~ msgstr "<span weight=\"bold\">Merilnik jakosti gesla:</span>"
+#~ msgid "Old password cannot be blank."
+#~ msgstr "Staro geslo ne more biti prazno."
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the '%s' "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Program '%s' (%s) želi spremeniti geslo za zbirko ključev '%s'. Izbrati "
+#~ "morate geslo za to zbirko."
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Program '%s' (%s) želi spremeniti geslo za privzeto zbirko ključev. "
+#~ "Izbrati morate geslo za to zbirko."
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the '%s' keyring. "
+#~ "You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Program '%s' želi spremeniti geslo za zbirko ključev '%s'. Izbrati morate "
+#~ "geslo za to zbirko."
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Program '%s' želi spremeniti geslo za privzeto zbirko ključev. Izbrati "
+#~ "morate geslo za to zbirko."
+#~ msgid ""
+#~ "An unknown application wants to change the password for the '%s' keyring. "
+#~ "You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Neznan program želi spremeniti geslo za zbirko ključev '%s'. Izbrati "
+#~ "morate geslo za to zbirko."
+#~ msgid ""
+#~ "An unknown application wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Neznan program želi spremeniti geslo za privzeto zbirko ključev. Izbrati "
+#~ "morate geslo za to zbirko."
+#~ msgid "Choose a new password for the '%s' keyring. "
+#~ msgstr "Izberite novo geslo za zbirko ključev '%s'."
+#~ msgid "Choose a new password for the default keyring. "
+#~ msgstr "Izberite novo geslo za privzeto zbirko ključev."
+#~ msgid "Change Keyring Password"
+#~ msgstr "Spremeni geslo zbirke ključev"
+
