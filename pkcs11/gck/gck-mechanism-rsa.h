@@ -37,56 +37,31 @@ static const CK_MECHANISM_TYPE GCK_CRYPTO_RSA_MECHANISMS[] = {
 };
 
 CK_RV                    gck_mechanism_rsa_encrypt                     (gcry_sexp_t sexp,
-                                                                        GckCryptoPadding padding,
+                                                                        GckPadding padding,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG n_data,
                                                                         CK_BYTE_PTR encrypted,
                                                                         CK_ULONG_PTR n_encrypted);
 
 CK_RV                    gck_mechanism_rsa_decrypt                     (gcry_sexp_t sexp,
-                                                                        GckCryptoPadding padding,
+                                                                        GckPadding padding,
                                                                         CK_BYTE_PTR encrypted,
                                                                         CK_ULONG n_encrypted,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG_PTR n_data);
 
 CK_RV                    gck_mechanism_rsa_sign                        (gcry_sexp_t sexp,
-                                                                        GckCryptoPadding padding,
+                                                                        GckPadding padding,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG n_data,
                                                                         CK_BYTE_PTR signature,
                                                                         CK_ULONG_PTR n_signature);
 
 CK_RV                    gck_mechanism_rsa_verify                      (gcry_sexp_t sexp,
-                                                                        GckCryptoPadding padding,
+                                                                        GckPadding padding,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG n_data,
                                                                         CK_BYTE_PTR signature,
                                                                         CK_ULONG n_signature);
-
-guchar*                  gck_mechanism_rsa_pad_raw                     (guint bits,
-                                                                        const guchar* raw,
-                                                                        gsize n_raw,
-                                                                        gsize *n_padded);
-
-guchar*                  gck_mechanism_rsa_pad_one                     (guint bits,
-                                                                        const guchar* raw,
-                                                                        gsize n_raw,
-                                                                        gsize *n_padded);
-
-guchar*                  gck_mechanism_rsa_pad_two                     (guint bits,
-                                                                        const guchar* raw,
-                                                                        gsize n_raw,
-                                                                        gsize *n_padded);
-
-guchar*                  gck_mechanism_rsa_unpad_one                   (guint bits,
-                                                                        const guchar *padded,
-                                                                        gsize n_padded,
-                                                                        gsize *n_raw);
-
-guchar*                  gck_mechanism_rsa_unpad_two                   (guint bits,
-                                                                        const guchar* padded,
-                                                                        gsize n_padded,
-                                                                        gsize *n_raw);
 
 #endif /* GCK_MECHANISM_RSA_H_ */

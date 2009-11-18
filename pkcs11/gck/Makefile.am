@@ -41,6 +41,7 @@ libgck_la_SOURCES = \
 	gck-memory-store.c gck-memory-store.h \
 	gck-module.c gck-module.h gck-module-ep.h \
 	gck-object.c gck-object.h \
+	gck-padding.c gck-padding.h \
 	gck-private-xsa-key.c gck-private-xsa-key.h \
 	gck-public-xsa-key.c gck-public-xsa-key.h \
 	gck-secret.c gck-secret.h \

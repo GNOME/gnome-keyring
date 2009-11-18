@@ -38,28 +38,32 @@
  */
 
 CK_RV
-gck_crypto_data_to_sexp (const gchar *format, guint nbits, GckCryptoPadding padding,
+gck_crypto_data_to_sexp (const gchar *format, guint nbits, GckPadding padding,
                          CK_BYTE_PTR data, CK_ULONG n_data, gcry_sexp_t *sexp)
 {
-	guchar *padded = NULL;
+	gpointer padded = NULL;
 	gcry_error_t gcry;
 	gcry_mpi_t mpi;
 	gsize n_padded;
+	gsize block;
 
 	g_assert (format);
 	g_assert (sexp);	
 	
 	g_return_val_if_fail (data, CKR_ARGUMENTS_BAD);
 
+	block = (nbits + 7) / 8;
+	if (n_data > block)
+		return CKR_DATA_LEN_RANGE;
+
 	if (padding) {
-		padded = (padding) (nbits, data, n_data, &n_padded);
-		if (!padded)
+		if (!(padding) (g_realloc, block, data, n_data, &padded, &n_padded))
 			return CKR_DATA_LEN_RANGE;
 	}
 		
 	/* Prepare the input s expression */
 	gcry = gcry_mpi_scan (&mpi, GCRYMPI_FMT_USG, 
-                              padded ? padded : data, 
+	                      padded ? padded : data,
 	                      padded ? n_padded : n_data, NULL);
 	g_free (padded);
 
@@ -76,15 +80,17 @@ gck_crypto_data_to_sexp (const gchar *format, guint nbits, GckCryptoPadding padd
 
 CK_RV
 gck_crypto_sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
-                         CK_ULONG *n_data, GckCryptoPadding padding, ...)
+                         CK_ULONG *n_data, GckPadding padding, ...)
 {
 	gcry_sexp_t at = NULL;
 	gsize n_block, offset, len;
 	gcry_mpi_t mpi = NULL;
+	gpointer padded;
 	guchar *block;
 	va_list va;
+	gboolean ret;
 	gcry_error_t gcry;
-	
+
 	g_assert (sexp);
 	g_assert (data);
 	g_assert (n_data);
@@ -102,7 +108,7 @@ gck_crypto_sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
 	mpi = gcry_sexp_nth_mpi (at, 1, GCRYMPI_FMT_USG);
 	g_return_val_if_fail (at != NULL, CKR_GENERAL_ERROR);
 	gcry_sexp_release (at);
-	
+
 	/* Print out the MPI into the end of a temporary buffer */
 	n_block = (bits + 7) / 8;
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &len, mpi);
@@ -115,16 +121,16 @@ gck_crypto_sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
 	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (len == n_block - offset, CKR_GENERAL_ERROR);
 	gcry_mpi_release (mpi);
-		
+
 	/* Pad it properly if necessary */
 	if (padding != NULL) {
-		guchar *padded = (padding) (bits, block, n_block, &n_block);
+		ret = (padding) (g_realloc, n_block, block, n_block, &padded, &n_block);
 		g_free (block);
-		if (!padded)
+		if (ret == FALSE)
 			return CKR_DATA_LEN_RANGE;
 		block = padded;
 	}
-	
+
 	/* Now stuff it into the output buffer */
 	if (n_block > *n_data)
 		return CKR_BUFFER_TOO_SMALL;
@@ -132,7 +138,7 @@ gck_crypto_sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
 	memcpy (data, block, n_block);
 	*n_data = n_block;
 	g_free (block);
-	
+
 	return CKR_OK;
 }
 
@@ -177,11 +183,11 @@ gck_crypto_encrypt_xsa (gcry_sexp_t sexp, CK_MECHANISM_TYPE mech, CK_BYTE_PTR da
 	switch (mech) {
 	case CKM_RSA_PKCS:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR); 
-		rv = gck_mechanism_rsa_encrypt (sexp, gck_mechanism_rsa_pad_two, data, n_data, encrypted, n_encrypted);
+		rv = gck_mechanism_rsa_encrypt (sexp, gck_padding_pkcs1_pad_02, data, n_data, encrypted, n_encrypted);
 		break;
 	case CKM_RSA_X_509:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR);
-		rv = gck_mechanism_rsa_encrypt (sexp, gck_mechanism_rsa_pad_raw, data, n_data, encrypted, n_encrypted);
+		rv = gck_mechanism_rsa_encrypt (sexp, gck_padding_zero_pad, data, n_data, encrypted, n_encrypted);
 		break;
 	default:
 		/* Again shouldn't be reached */
@@ -231,7 +237,7 @@ gck_crypto_decrypt_xsa (gcry_sexp_t sexp, CK_MECHANISM_TYPE mech, CK_BYTE_PTR en
 	switch (mech) {
 	case CKM_RSA_PKCS:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR); 
-		rv = gck_mechanism_rsa_decrypt (sexp, gck_mechanism_rsa_unpad_two, encrypted, n_encrypted, data, n_data);
+		rv = gck_mechanism_rsa_decrypt (sexp, gck_padding_pkcs1_unpad_02, encrypted, n_encrypted, data, n_data);
 		break;
 	case CKM_RSA_X_509:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR);
@@ -286,11 +292,11 @@ gck_crypto_sign_xsa (gcry_sexp_t sexp, CK_MECHANISM_TYPE mech, CK_BYTE_PTR data,
 	switch (mech) {
 	case CKM_RSA_PKCS:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR); 
-		rv = gck_mechanism_rsa_sign (sexp, gck_mechanism_rsa_pad_one, data, n_data, signature, n_signature);
+		rv = gck_mechanism_rsa_sign (sexp, gck_padding_pkcs1_pad_01, data, n_data, signature, n_signature);
 		break;
 	case CKM_RSA_X_509:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR);
-		rv = gck_mechanism_rsa_sign (sexp, gck_mechanism_rsa_pad_raw, data, n_data, signature, n_signature);
+		rv = gck_mechanism_rsa_sign (sexp, gck_padding_zero_pad, data, n_data, signature, n_signature);
 		break;
 	case CKM_DSA:
 		g_return_val_if_fail (algorithm == GCRY_PK_DSA, CKR_GENERAL_ERROR);
@@ -345,11 +351,11 @@ gck_crypto_verify_xsa (gcry_sexp_t sexp, CK_MECHANISM_TYPE mech, CK_BYTE_PTR dat
 	switch (mech) {
 	case CKM_RSA_PKCS:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR); 
-		rv = gck_mechanism_rsa_verify (sexp, gck_mechanism_rsa_pad_one, data, n_data, signature, n_signature);
+		rv = gck_mechanism_rsa_verify (sexp, gck_padding_pkcs1_pad_01, data, n_data, signature, n_signature);
 		break;
 	case CKM_RSA_X_509:
 		g_return_val_if_fail (algorithm == GCRY_PK_RSA, CKR_GENERAL_ERROR);
-		rv = gck_mechanism_rsa_verify (sexp, gck_mechanism_rsa_pad_raw, data, n_data, signature, n_signature);
+		rv = gck_mechanism_rsa_verify (sexp, gck_padding_zero_pad, data, n_data, signature, n_signature);
 		break;
 	case CKM_DSA:
 		g_return_val_if_fail (algorithm == GCRY_PK_DSA, CKR_GENERAL_ERROR);

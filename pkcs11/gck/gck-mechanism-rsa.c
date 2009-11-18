@@ -28,82 +28,11 @@
 #include "egg/egg-secure-memory.h"
 
 /* ----------------------------------------------------------------------------
- * INTERNAL
- */
-
-static void
-fill_random_nonzero (guchar *data, gsize n_data)
-{
-	guchar *rnd;
-	guint n_zero, i, j;
-
-	gcry_randomize (data, n_data, GCRY_STRONG_RANDOM);
-
-	/* Find any zeros in random data */
-	n_zero = 0;
-	for (i = 0; i < n_data; ++i) {
-		if (data[i] == 0x00)
-			++n_zero;
-	}
-
-	while (n_zero > 0) {
-		rnd = gcry_random_bytes (n_zero, GCRY_STRONG_RANDOM);
-		n_zero = 0;
-		for (i = 0, j = 0; i < n_data; ++i) {
-			if (data[i] != 0x00)
-				continue;
-
-			/* Use some of the replacement data */
-			data[i] = rnd[j];
-			++j;
-
-			/* It's zero again :( */
-			if (data[i] == 0x00)
-				n_zero++;
-		}
-
-		gcry_free (rnd);
-	}
-}
-
-static guchar*
-unpad_rsa_pkcs1 (guchar bt, guint n_modulus, const guchar* padded,
-                 gsize n_padded, gsize *n_raw)
-{
-	const guchar *at;
-	guint check;
-	guchar *raw;
-
-	check = (n_modulus + 7) / 8;
-
-	/* The absolute minimum size including padding */
-	g_return_val_if_fail (check >= 3 + 8, NULL);
-
-	if (n_padded != check)
-		return NULL;
-
-	/* Check the header */
-	if (padded[0] != 0x00 || padded[1] != bt)
-		return NULL;
-
-	/* The first zero byte after the header */
-	at = memchr (padded + 2, 0x00, n_padded - 2);
-	if (!at)
-		return NULL;
-
-	++at;
-	*n_raw = n_padded - (at - padded);
-	raw = g_new0 (guchar, *n_raw);
-	memcpy (raw, at, *n_raw);
-	return raw;
-}
-
-/* ----------------------------------------------------------------------------
  * PUBLIC
  */
 
 CK_RV
-gck_mechanism_rsa_encrypt (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR data,
+gck_mechanism_rsa_encrypt (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR data,
                            CK_ULONG n_data, CK_BYTE_PTR encrypted, CK_ULONG_PTR n_encrypted)
 {
 	gcry_sexp_t splain, sdata;
@@ -149,7 +78,7 @@ gck_mechanism_rsa_encrypt (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_P
 }
 
 CK_RV
-gck_mechanism_rsa_decrypt (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR encrypted,
+gck_mechanism_rsa_decrypt (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR encrypted,
                            CK_ULONG n_encrypted, CK_BYTE_PTR data, CK_ULONG_PTR n_data)
 {
 	gcry_sexp_t splain, sdata;
@@ -197,7 +126,7 @@ gck_mechanism_rsa_decrypt (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_P
 }
 
 CK_RV
-gck_mechanism_rsa_sign (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR data,
+gck_mechanism_rsa_sign (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR data,
                         CK_ULONG n_data, CK_BYTE_PTR signature, CK_ULONG_PTR n_signature)
 {
 	gcry_sexp_t ssig, sdata;
@@ -242,7 +171,7 @@ gck_mechanism_rsa_sign (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR 
 }
 
 CK_RV
-gck_mechanism_rsa_verify (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PTR data,
+gck_mechanism_rsa_verify (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR data,
                           CK_ULONG n_data, CK_BYTE_PTR signature, CK_ULONG n_signature)
 {
 	gcry_sexp_t ssig, sdata;
@@ -288,100 +217,4 @@ gck_mechanism_rsa_verify (gcry_sexp_t sexp, GckCryptoPadding padding, CK_BYTE_PT
 	}
 
 	return CKR_OK;
-}
-
-/* ----------------------------------------------------------------------------
- * PADDING FUNCTIONS
- */
-
-
-guchar*
-gck_mechanism_rsa_pad_raw (guint n_modulus, const guchar* raw,
-                        gsize n_raw, gsize *n_padded)
-{
-	gint total, n_pad;
-	guchar *padded;
-
-	/*
-	 * 0x00 0x00 0x00 ... 0x?? 0x?? 0x?? ...
-	 *   padding               data
-	 */
-
-	total = (n_modulus + 7) / 8;
-	n_pad = total - n_raw;
-	if (n_pad < 0) /* minumum padding */
-		return NULL;
-
-	padded = g_new0 (guchar, total);
-	memset (padded, 0x00, n_pad);
-	memcpy (padded + n_pad, raw, n_raw);
-
-	*n_padded = total;
-	return padded;
-}
-
-guchar*
-gck_mechanism_rsa_pad_one (guint n_modulus, const guchar* raw,
-                           gsize n_raw, gsize *n_padded)
-{
-	gint total, n_pad;
-	guchar *padded;
-
-	/*
-	 * 0x00 0x01 0xFF 0xFF ... 0x00 0x?? 0x?? 0x?? ...
-	 *      type  padding              data
-	 */
-
-	total = (n_modulus + 7) / 8;
-	n_pad = total - 3 - n_raw;
-	if (n_pad < 8) /* minumum padding */
-		return NULL;
-
-	padded = g_new0 (guchar, total);
-	padded[1] = 1; /* Block type */
-	memset (padded + 2, 0xff, n_pad);
-	memcpy (padded + 3 + n_pad, raw, n_raw);
-
-	*n_padded = total;
-	return padded;
-}
-
-guchar*
-gck_mechanism_rsa_pad_two (guint n_modulus, const guchar* raw,
-                           gsize n_raw, gsize *n_padded)
-{
-	gint total, n_pad;
-	guchar *padded;
-
-	/*
-	 * 0x00 0x01 0x?? 0x?? ... 0x00 0x?? 0x?? 0x?? ...
-	 *      type  padding              data
-	 */
-
-	total = (n_modulus + 7) / 8;
-	n_pad = total - 3 - n_raw;
-	if (n_pad < 8) /* minumum padding */
-		return NULL;
-
-	padded = g_new0 (guchar, total);
-	padded[1] = 2; /* Block type */
-	fill_random_nonzero (padded + 2, n_pad);
-	memcpy (padded + 3 + n_pad, raw, n_raw);
-
-	*n_padded = total;
-	return padded;
-}
-
-guchar*
-gck_mechanism_rsa_unpad_one (guint bits, const guchar *padded,
-                             gsize n_padded, gsize *n_raw)
-{
-	return unpad_rsa_pkcs1 (0x01, bits, padded, n_padded, n_raw);
-}
-
-guchar*
-gck_mechanism_rsa_unpad_two (guint bits, const guchar *padded,
-                             gsize n_padded, gsize *n_raw)
-{
-	return unpad_rsa_pkcs1 (0x02, bits, padded, n_padded, n_raw);
 }

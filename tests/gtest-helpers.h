@@ -87,4 +87,9 @@ void test_external_fail (void);
 
 /* #define DEFINE_ABORT(x) void abort_x(void *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)' */
 
+#ifndef g_assert_cmpsize
+#define g_assert_cmpsize(a, o, b) \
+	g_assert_cmpuint ((guint)(a), o, (guint)(b))
+#endif
+
 #endif /* GTEST_HELPERS_H_ */

@@ -22,6 +22,7 @@
 #ifndef GCKCRYPTO_H_
 #define GCKCRYPTO_H_
 
+#include "gck-padding.h"
 #include "gck-types.h"
 
 #include "pkcs11/pkcs11.h"
@@ -29,10 +30,6 @@
 #include <glib.h>
 
 #include <gcrypt.h>
-
-typedef guchar* (*GckCryptoPadding) (guint n_modulus, const guchar* raw, 
-                                     gsize n_raw, gsize *n_padded);
-
 
 void                     gck_crypto_initialize                         (void);
 
@@ -112,12 +109,12 @@ CK_RV                    gck_crypto_sexp_to_data                       (gcry_sex
                                                                         guint bits,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG *n_data,
-                                                                        GckCryptoPadding padding,
+                                                                        GckPadding padding,
                                                                         ...) G_GNUC_NULL_TERMINATED;
 
 CK_RV                    gck_crypto_data_to_sexp                       (const gchar *format,
                                                                         guint nbits,
-                                                                        GckCryptoPadding padding,
+                                                                        GckPadding padding,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG n_data,
                                                                         gcry_sexp_t *sexp);

@@ -6,6 +6,7 @@ asn1-def-test.h: test.asn
 UNIT_AUTO = \
 	unit-test-attributes.c \
 	unit-test-sexp.c \
+	test-padding.c \
 	unit-test-data-asn1.c \
 	unit-test-data-der.c \
 	unit-test-object.c \
