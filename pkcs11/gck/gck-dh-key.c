@@ -146,3 +146,10 @@ gck_dh_key_initialize (GckDhKey *self, gcry_mpi_t prime, gcry_mpi_t base,
 	self->pv->id = id;
 	self->pv->n_id = n_id;
 }
+
+gcry_mpi_t
+gck_dh_key_get_prime (GckDhKey *self)
+{
+	g_return_val_if_fail (GCK_IS_DH_KEY (self), NULL);
+	return self->pv->prime;
+}

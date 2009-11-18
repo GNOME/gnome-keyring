@@ -54,4 +54,6 @@ void                      gck_dh_key_initialize         (GckDhKey *self,
                                                          gpointer id,
                                                          gsize n_id);
 
+gcry_mpi_t                gck_dh_key_get_prime          (GckDhKey *self);
+
 #endif /* __GCK_DH_KEY_H__ */

@@ -205,3 +205,10 @@ gck_dh_private_key_new (GckModule *module, GckManager *manager,
 	key->value = value;
 	return key;
 }
+
+gcry_mpi_t
+gck_dh_private_key_get_value (GckDhPrivateKey *self)
+{
+	g_return_val_if_fail (GCK_IS_DH_PRIVATE_KEY (self), NULL);
+	return self->value;
+}

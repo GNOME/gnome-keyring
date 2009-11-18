@@ -17,6 +17,8 @@ BUILT_SOURCES = \
 	asn1-def-pk.h asn1-def-pkix.h
 
 libgck_la_SOURCES = \
+	gck-aes-key.c gck-aes-key.h \
+	gck-aes-mechanism.h \
 	gck-attributes.c gck-attributes.h \
 	gck-certificate.c gck-certificate.h \
 	gck-certificate-key.c gck-certificate-key.h \
@@ -42,6 +44,7 @@ libgck_la_SOURCES = \
 	gck-private-xsa-key.c gck-private-xsa-key.h \
 	gck-public-xsa-key.c gck-public-xsa-key.h \
 	gck-secret.c gck-secret.h \
+	gck-secret-key.c gck-secret-key.h \
 	gck-serializable.c gck-serializable.h \
 	gck-session.c gck-session.h \
 	gck-sexp.c gck-sexp.h \

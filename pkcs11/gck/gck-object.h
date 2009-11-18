@@ -140,4 +140,14 @@ void*                  gck_object_get_attribute_data     (GckObject *self,
                                                           CK_ATTRIBUTE_TYPE type,
                                                           gsize *n_data);
 
+gboolean               gck_object_has_attribute_ulong    (GckObject *self,
+                                                          GckSession *session,
+                                                          CK_ATTRIBUTE_TYPE type,
+                                                          gulong value);
+
+gboolean               gck_object_has_attribute_boolean  (GckObject *self,
+                                                          GckSession *session,
+                                                          CK_ATTRIBUTE_TYPE type,
+                                                          gboolean value);
+
 #endif /* __GCK_OBJECT_H__ */

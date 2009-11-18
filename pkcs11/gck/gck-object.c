@@ -744,6 +744,46 @@ gck_object_get_attribute_data (GckObject *self, GckSession *session,
 	return attr.pValue;
 }
 
+gboolean
+gck_object_has_attribute_ulong (GckObject *self, GckSession *session,
+                                CK_ATTRIBUTE_TYPE type, gulong value)
+{
+	gulong *data;
+	gsize n_data, i;
+
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
+
+	data = gck_object_get_attribute_data (self, session, type, &n_data);
+	if (data == NULL)
+		return FALSE;
+
+	g_return_val_if_fail (n_data % sizeof (gulong) == 0, FALSE);
+	for (i = 0; i < n_data / sizeof (gulong); ++i) {
+		if (data[i] == value) {
+			g_free (data);
+			return TRUE;
+		}
+	}
+
+	g_free (data);
+	return FALSE;
+}
+
+gboolean
+gck_object_has_attribute_boolean (GckObject *self, GckSession *session,
+                                  CK_ATTRIBUTE_TYPE type, gboolean value)
+{
+	gboolean data;
+
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
+
+	if (!gck_object_get_attribute_boolean (self, session, type, &data))
+		return FALSE;
+	return data == value;
+}
+
 void
 gck_object_destroy (GckObject *self, GckTransaction *transaction)
 {

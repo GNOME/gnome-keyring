@@ -131,4 +131,13 @@ CK_RV                    gck_crypto_generate_key_pair                  (GckSessi
                                                                         GckObject **pub_key,
                                                                         GckObject **priv_key);
 
+CK_RV                    gck_crypto_derive_key                         (GckSession *session,
+                                                                        CK_MECHANISM_PTR mech,
+                                                                        GckObject *base,
+                                                                        CK_ATTRIBUTE_PTR attrs,
+                                                                        CK_ULONG n_attrs,
+                                                                        GckObject **derived);
+
+gulong                   gck_crypto_secret_key_length                  (CK_KEY_TYPE type);
+
 #endif /* GCKCRYPTO_H_ */

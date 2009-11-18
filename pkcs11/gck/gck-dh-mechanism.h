@@ -42,4 +42,11 @@ CK_RV                    gck_dh_mechanism_generate                     (GckSessi
                                                                         GckObject **pub_key,
                                                                         GckObject **priv_key);
 
+CK_RV                    gck_dh_mechanism_derive                       (GckSession *session,
+                                                                        CK_MECHANISM_PTR mech,
+                                                                        GckObject *base,
+                                                                        CK_ATTRIBUTE_PTR attrs,
+                                                                        CK_ULONG n_attrs,
+                                                                        GckObject **derived);
+
 #endif /* GCK_DH_MECHANISM_H_ */

@@ -25,6 +25,7 @@
 #include "pkcs11/pkcs11g.h"
 #include "pkcs11/pkcs11i.h"
 
+#include "gck-aes-key.h"
 #include "gck-attributes.h"
 #include "gck-certificate.h"
 #include "gck-credential.h"
@@ -574,6 +575,7 @@ gck_module_init (GckModule *self)
 	self->pv->transient_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gck_util_dispose_unref);
 
 	/* Register session object factories */
+	gck_module_register_factory (self, GCK_FACTORY_AES_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
 	gck_module_register_factory (self, GCK_FACTORY_CREDENTIAL);
 	gck_module_register_factory (self, GCK_FACTORY_DH_PRIVATE_KEY);

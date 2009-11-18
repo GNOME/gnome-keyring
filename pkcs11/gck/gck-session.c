@@ -905,6 +905,22 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 	return rv;
 }
 
+CK_RV
+gck_session_create_object_for_attributes (GckSession *self, CK_ATTRIBUTE_PTR attrs,
+                                          CK_ULONG n_attrs, GckObject **object)
+{
+	GckFactory *factory;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_GENERAL_ERROR);
+
+	/* Find out if we can create such an object */
+	factory = gck_module_find_factory (gck_session_get_module (self), attrs, n_attrs);
+	if (factory == NULL)
+		return CKR_TEMPLATE_INCOMPLETE;
+
+	return gck_session_create_object_for_factory (self, factory, attrs, n_attrs, object);
+}
+
 /* -----------------------------------------------------------------------------
  * PKCS#11
  */
@@ -967,7 +983,6 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
                             CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
 	GckObject *object = NULL;
-	GckFactory *factory;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
@@ -976,12 +991,7 @@ gck_session_C_CreateObject (GckSession* self, CK_ATTRIBUTE_PTR template,
 	if (!(!count || template))
 		return CKR_ARGUMENTS_BAD;
 
-	/* Find out if we can create such an object */
-	factory = gck_module_find_factory (gck_session_get_module (self), template, count);
-	if (!factory)
-		return CKR_TEMPLATE_INCOMPLETE;
-
-	rv = gck_session_create_object_for_factory (self, factory, template, count, &object);
+	rv = gck_session_create_object_for_attributes (self, template, count, &object);
 	if (rv == CKR_OK) {
 		g_assert (object);
 		*new_object = gck_object_get_handle (object);
@@ -1548,8 +1558,45 @@ gck_session_C_DeriveKey (GckSession* self, CK_MECHANISM_PTR mechanism,
                          CK_OBJECT_HANDLE base_key, CK_ATTRIBUTE_PTR template,
                          CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
-	/* Our keys don't support derivation */
- 	return CKR_FUNCTION_NOT_SUPPORTED;	
+	GckTransaction *transaction;
+	GckObject *base = NULL;
+	GckObject *derived = NULL;
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
+	if (!mechanism)
+		return CKR_ARGUMENTS_BAD;
+	if (!(!count || template))
+		return CKR_ARGUMENTS_BAD;
+	if (!key)
+		return CKR_ARGUMENTS_BAD;
+
+	rv = gck_session_lookup_readable_object (self, base_key, &base);
+	if (rv != CKR_OK)
+		return rv;
+
+	/*
+	 * Duplicate the memory for the attributes (but not values) so we
+	 * can 'consume' in the generator and create object functions.
+	 */
+	template = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
+	transaction = gck_transaction_new ();
+
+	/* Actually do the object creation */
+	rv = gck_crypto_derive_key (self, mechanism, base, template, count, &derived);
+	if (rv != CKR_OK)
+		gck_transaction_fail (transaction, rv);
+
+	g_free (template);
+
+	gck_transaction_complete (transaction);
+	rv = gck_transaction_get_result (transaction);
+	g_object_unref (transaction);
+
+	if (rv == CKR_OK)
+		*key = gck_object_get_handle (derived);
+
+	return rv;
 }
 
 CK_RV

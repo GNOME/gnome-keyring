@@ -54,4 +54,6 @@ GckDhPrivateKey*          gck_dh_private_key_new               (GckModule *modul
                                                                 gpointer id,
                                                                 gsize n_id);
 
+gcry_mpi_t                gck_dh_private_key_get_value         (GckDhPrivateKey *self);
+
 #endif /* __GCK_DH_PRIVATE_KEY_H__ */

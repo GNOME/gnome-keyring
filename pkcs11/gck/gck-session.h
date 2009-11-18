@@ -116,6 +116,11 @@ CK_RV                    gck_session_create_object_for_factory          (GckSess
                                                                          CK_ULONG n_attrs,
                                                                          GckObject **object);
 
+CK_RV                    gck_session_create_object_for_attributes       (GckSession *self,
+                                                                         CK_ATTRIBUTE_PTR attrs,
+                                                                         CK_ULONG n_attrs,
+                                                                         GckObject **object);
+
 CK_RV                    gck_session_C_GetFunctionStatus                (GckSession *self);
 
 CK_RV                    gck_session_C_CancelFunction                   (GckSession *self);

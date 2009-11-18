@@ -22,6 +22,7 @@
 #ifndef __GCK_TYPES_H__
 #define __GCK_TYPES_H__
 
+typedef struct _GckAesKey GckAesKey;
 typedef struct _GckCertificate GckCertificate;
 typedef struct _GckCertificateKey GckCertificateKey;
 typedef struct _GckCertificateTrust GckCertificateTrust;
@@ -36,6 +37,7 @@ typedef struct _GckObject GckObject;
 typedef struct _GckPrivateXsaKey GckPrivateXsaKey;
 typedef struct _GckPublicXsaKey GckPublicXsaKey;
 typedef struct _GckSecret GckSecret;
+typedef struct _GckSecretKey GckSecretKey;
 typedef struct _GckSession GckSession;
 typedef struct _GckSessionPrivateKey GckSessionPrivateKey;
 typedef struct _GckSessionPublicKey GckSessionPublicKey;

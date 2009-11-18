@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gck-attributes.h"
+#include "gck-crypto.h"
 #include "gck-dh-mechanism.h"
 #include "gck-dh-private-key.h"
 #include "gck-dh-public-key.h"
@@ -110,4 +111,102 @@ gck_dh_mechanism_generate (GckSession *session, CK_ATTRIBUTE_PTR pub_atts,
 
 	g_free (buffer);
 	return CKR_OK;
+}
+
+static gpointer
+prepare_and_truncate_secret (gcry_mpi_t secret, CK_ATTRIBUTE_PTR attrs,
+                             CK_ULONG n_attrs, gsize *n_value)
+{
+	CK_ULONG length = 0;
+	CK_KEY_TYPE type;
+	gcry_error_t gcry;
+	guchar *value;
+	gsize offset = 0;
+
+	g_assert (n_value);
+
+	/* What length should we truncate to? */
+	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_VALUE_LEN, &length)) {
+		if (gck_attributes_find_ulong (attrs, n_attrs, CKA_KEY_TYPE, &type))
+			length = gck_crypto_secret_key_length (type);
+	}
+
+	/* Write out the secret */
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, n_value, secret);
+	g_return_val_if_fail (gcry == 0, NULL);
+	if (*n_value < length)
+		offset = length - *n_value;
+	value = egg_secure_alloc (*n_value + offset);
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value + offset, *n_value, n_value, secret);
+	g_return_val_if_fail (gcry == 0, NULL);
+
+	if (length != 0 && length < *n_value) {
+		offset = *n_value - length;
+		memmove (value, value + offset, length);
+		*n_value = length;
+	}
+
+	return value;
+}
+
+CK_RV
+gck_dh_mechanism_derive (GckSession *session, CK_MECHANISM_PTR mech, GckObject *base,
+                         CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **derived)
+{
+	gcry_mpi_t peer = NULL;
+	gcry_mpi_t prime;
+	gcry_mpi_t priv;
+	gcry_mpi_t secret;
+	gcry_error_t gcry;
+	CK_ATTRIBUTE attr;
+	GArray *array;
+	gboolean ret;
+	gsize n_value;
+	gpointer value;
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_DH_PRIVATE_KEY (base), CKR_GENERAL_ERROR);
+
+	if (mech->ulParameterLen && mech->pParameter) {
+		gcry = gcry_mpi_scan (&peer, GCRYMPI_FMT_USG, mech->pParameter,
+		                      mech->ulParameterLen, NULL);
+		if (gcry != 0)
+			peer = NULL;
+	}
+
+	if (peer == NULL)
+		return CKR_MECHANISM_PARAM_INVALID;
+
+	prime = gck_dh_key_get_prime (GCK_DH_KEY (base));
+	priv = gck_dh_private_key_get_value (GCK_DH_PRIVATE_KEY (base));
+	ret = egg_dh_gen_secret (peer, priv, prime, &secret);
+	gcry_mpi_release (peer);
+
+	if (ret != TRUE)
+		return CKR_FUNCTION_FAILED;
+
+	value = prepare_and_truncate_secret (secret, attrs, n_attrs, &n_value);
+	g_return_val_if_fail (value, CKR_GENERAL_ERROR);
+	gcry_mpi_release (secret);
+
+	/* Now setup the attributes with our new value */
+	array = g_array_new (FALSE, FALSE, sizeof (CK_ATTRIBUTE));
+
+	/* Prepend the value */
+	attr.type = CKA_VALUE;
+	attr.pValue = value;
+	attr.ulValueLen = n_value;
+	g_array_append_val (array, attr);
+
+	/* Add the remainder of the attributes */
+	g_array_append_vals (array, attrs, n_attrs);
+
+	/* Now create an object with these attributes */
+	rv = gck_session_create_object_for_attributes (session, (CK_ATTRIBUTE_PTR)array->data,
+	                                               array->len, derived);
+
+	egg_secure_free (value);
+	g_array_free (array, TRUE);
+
+	return rv;
 }

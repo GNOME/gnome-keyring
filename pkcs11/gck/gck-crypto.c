@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gck-crypto.h"
+#include "gck-aes-mechanism.h"
 #include "gck-dh-mechanism.h"
 #include "gck-mechanism-dsa.h"
 #include "gck-mechanism-rsa.h"
@@ -404,6 +405,29 @@ gck_crypto_generate_key_pair (GckSession *session, CK_MECHANISM_TYPE mech,
 	}
 }
 
+CK_RV
+gck_crypto_derive_key (GckSession *session, CK_MECHANISM_PTR mech, GckObject *base,
+                       CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **derived)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (session), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GCK_IS_OBJECT (base), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (derived, CKR_GENERAL_ERROR);
+
+	if (!gck_object_has_attribute_ulong (base, session, CKA_ALLOWED_MECHANISMS, mech->mechanism))
+		return CKR_KEY_TYPE_INCONSISTENT;
+
+	if (!gck_object_has_attribute_boolean (base, session, CKA_DERIVE, TRUE))
+		return CKR_KEY_FUNCTION_NOT_PERMITTED;
+
+	switch (mech->mechanism) {
+	case CKM_DH_PKCS_DERIVE:
+		return gck_dh_mechanism_derive (session, mech, base, attrs,
+		                                n_attrs, derived);
+	default:
+		return CKR_MECHANISM_INVALID;
+	}
+}
+
 /* ----------------------------------------------------------------------------
  * PREPARE FUNCTIONS
  */
@@ -441,7 +465,7 @@ gck_crypto_prepare_xsa (GckSession *session, CK_MECHANISM_TYPE mech, GckObject *
 }
 
 /* --------------------------------------------------------------------------
- * INITIALIZATION
+ * UTILITY
  */
 
 
@@ -450,3 +474,15 @@ gck_crypto_initialize (void)
 {
 	egg_libgcrypt_initialize ();
 }
+
+gulong
+gck_crypto_secret_key_length (CK_KEY_TYPE type)
+{
+	switch (type) {
+	case CKK_AES:
+		return GCK_AES_MECHANISM_KEY_LENGTH;
+	default:
+		return 0;
+	}
+}
+
