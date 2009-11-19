@@ -26,6 +26,7 @@
 #include "pkcs11/pkcs11i.h"
 
 #include "gck-aes-key.h"
+#include "gck-aes-mechanism.h"
 #include "gck-attributes.h"
 #include "gck-certificate.h"
 #include "gck-credential.h"
@@ -160,7 +161,13 @@ static const MechanismAndInfo mechanism_list[] = {
 	 * CKM_DH_PKCS_DERIVE
 	 * For DH derivation the min and max are sizes of prime in bits.
 	 */
-	{ CKM_DH_PKCS_DERIVE, { 768, 8192, CKF_DERIVE } }
+	{ CKM_DH_PKCS_DERIVE, { 768, 8192, CKF_DERIVE } },
+
+	/*
+	 * CKM_AES_CBC_PAD
+	 * For AES the min and max are sizes of key in bytes.
+	 */
+	{ CKM_AES_CBC_PAD, { GCK_AES_MECHANISM_MIN_LENGTH, GCK_AES_MECHANISM_MAX_LENGTH, CKF_WRAP | CKF_UNWRAP } },
 };
 
 /* Hidden function that you should not use */

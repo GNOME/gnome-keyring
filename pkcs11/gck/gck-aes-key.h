@@ -27,6 +27,8 @@
 #include "gck-secret-key.h"
 #include "gck-types.h"
 
+#include <gcrypt.h>
+
 #define GCK_FACTORY_AES_KEY            (gck_aes_key_get_factory ())
 
 #define GCK_TYPE_AES_KEY               (gck_aes_key_get_type ())
@@ -46,5 +48,10 @@ struct _GckAesKeyClass {
 GType                     gck_aes_key_get_type           (void);
 
 GckFactory*               gck_aes_key_get_factory        (void);
+
+gsize                     gck_aes_key_get_block_size     (GckAesKey *self);
+
+gcry_cipher_hd_t          gck_aes_key_get_cipher         (GckAesKey *self,
+                                                          int mode);
 
 #endif /* __GCK_AES_KEY_H__ */

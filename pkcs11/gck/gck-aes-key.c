@@ -23,6 +23,7 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "gck-aes-mechanism.h"
 #include "gck-attributes.h"
 #include "gck-crypto.h"
 #include "gck-aes-key.h"
@@ -64,7 +65,6 @@ attribute_set_check_value (GckAesKey *self, CK_ATTRIBUTE *attr)
 {
 	gcry_cipher_hd_t cih;
 	gcry_error_t gcry;
-	int algorithm;
 	gpointer data;
 	CK_RV rv;
 
@@ -77,19 +77,9 @@ attribute_set_check_value (GckAesKey *self, CK_ATTRIBUTE *attr)
 		return CKR_OK;
 	}
 
-	algorithm = algorithm_for_length (self->n_value);
-	g_return_val_if_fail (algorithm != 0, CKR_GENERAL_ERROR);
-
-	gcry = gcry_cipher_open (&cih, algorithm, GCRY_CIPHER_MODE_ECB, 0);
-	if (gcry != 0) {
-		g_warning ("couldn't open %s cipher in ECB mode: %s",
-		           gcry_cipher_algo_name (algorithm), gcry_strerror (gcry));
+	cih = gck_aes_key_get_cipher (self, GCRY_CIPHER_MODE_ECB);
+	if (cih == NULL)
 		return CKR_FUNCTION_FAILED;
-	}
-
-	/* Setup the key */
-	gcry = gcry_cipher_setkey (cih, self->value, self->n_value);
-	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
 
 	/* Buffer of zeros */
 	data = g_malloc0 (self->n_value);
@@ -151,6 +141,10 @@ gck_aes_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBU
 	case CKA_KEY_TYPE:
 		return gck_attribute_set_ulong (attr, CKK_AES);
 
+	case CKA_UNWRAP:
+	case CKA_WRAP:
+		return gck_attribute_set_bool (attr, CK_TRUE);
+
 	case CKA_VALUE:
 		return gck_attribute_set_data (attr, self->value, self->n_value);
 
@@ -161,7 +155,8 @@ gck_aes_key_real_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBU
 		return attribute_set_check_value (self, attr);
 
 	case CKA_ALLOWED_MECHANISMS:
-		return gck_attribute_set_empty (attr);
+		return gck_attribute_set_data (attr, (CK_VOID_PTR)GCK_AES_MECHANISMS,
+		                               sizeof (GCK_AES_MECHANISMS));
 	};
 
 	return GCK_OBJECT_CLASS (gck_aes_key_parent_class)->get_attribute (base, session, attr);
@@ -223,4 +218,43 @@ gck_aes_key_get_factory (void)
 	};
 
 	return &factory;
+}
+
+gsize
+gck_aes_key_get_block_size (GckAesKey *self)
+{
+	int algorithm;
+
+	g_return_val_if_fail (GCK_IS_AES_KEY (self), 0);
+
+	algorithm = algorithm_for_length (self->n_value);
+	g_return_val_if_fail (algorithm != 0, 0);
+
+	return self->n_value;
+}
+
+gcry_cipher_hd_t
+gck_aes_key_get_cipher (GckAesKey *self, int mode)
+{
+	gcry_cipher_hd_t cih;
+	gcry_error_t gcry;
+	int algorithm;
+
+	g_return_val_if_fail (GCK_IS_AES_KEY (self), NULL);
+
+	algorithm = algorithm_for_length (self->n_value);
+	g_return_val_if_fail (algorithm != 0, NULL);
+
+	gcry = gcry_cipher_open (&cih, algorithm, mode, 0);
+	if (gcry != 0) {
+		g_warning ("couldn't open %s cipher: %s",
+		           gcry_cipher_algo_name (algorithm), gcry_strerror (gcry));
+		return NULL;
+	}
+
+	/* Setup the key */
+	gcry = gcry_cipher_setkey (cih, self->value, self->n_value);
+	g_return_val_if_fail (gcry == 0, NULL);
+
+	return cih;
 }

@@ -434,6 +434,56 @@ gck_crypto_derive_key (GckSession *session, CK_MECHANISM_PTR mech, GckObject *ba
 	}
 }
 
+CK_RV
+gck_crypto_wrap_key (GckSession *session, CK_MECHANISM_PTR mech, GckObject *wrapper,
+                     GckObject *wrapped, CK_BYTE_PTR output, CK_ULONG_PTR n_output)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (session), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GCK_IS_OBJECT (wrapper), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GCK_IS_OBJECT (wrapped), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (mech, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (n_output, CKR_GENERAL_ERROR);
+
+	if (!gck_object_has_attribute_ulong (wrapper, session, CKA_ALLOWED_MECHANISMS, mech->mechanism))
+		return CKR_KEY_TYPE_INCONSISTENT;
+
+	if (!gck_object_has_attribute_boolean (wrapper, session, CKA_WRAP, TRUE))
+		return CKR_KEY_FUNCTION_NOT_PERMITTED;
+
+	switch (mech->mechanism) {
+	case CKM_AES_CBC_PAD:
+		return gck_aes_mechanism_wrap (session, mech, wrapper, wrapped,
+		                               output, n_output);
+	default:
+		return CKR_MECHANISM_INVALID;
+	}
+}
+
+CK_RV
+gck_crypto_unwrap_key (GckSession *session, CK_MECHANISM_PTR mech, GckObject *wrapper,
+                       CK_VOID_PTR input, CK_ULONG n_input, CK_ATTRIBUTE_PTR attrs,
+                       CK_ULONG n_attrs, GckObject **unwrapped)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (session), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GCK_IS_OBJECT (wrapper), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (mech, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (unwrapped, CKR_GENERAL_ERROR);
+
+	if (!gck_object_has_attribute_ulong (wrapper, session, CKA_ALLOWED_MECHANISMS, mech->mechanism))
+		return CKR_KEY_TYPE_INCONSISTENT;
+
+	if (!gck_object_has_attribute_boolean (wrapper, session, CKA_UNWRAP, TRUE))
+		return CKR_KEY_FUNCTION_NOT_PERMITTED;
+
+	switch (mech->mechanism) {
+	case CKM_AES_CBC_PAD:
+		return gck_aes_mechanism_unwrap (session, mech, wrapper, input,
+		                                 n_input, attrs, n_attrs, unwrapped);
+	default:
+		return CKR_MECHANISM_INVALID;
+	}
+}
+
 /* ----------------------------------------------------------------------------
  * PREPARE FUNCTIONS
  */
@@ -486,7 +536,7 @@ gck_crypto_secret_key_length (CK_KEY_TYPE type)
 {
 	switch (type) {
 	case CKK_AES:
-		return GCK_AES_MECHANISM_KEY_LENGTH;
+		return GCK_AES_MECHANISM_MIN_LENGTH;
 	default:
 		return 0;
 	}

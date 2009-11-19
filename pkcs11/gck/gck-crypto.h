@@ -135,6 +135,22 @@ CK_RV                    gck_crypto_derive_key                         (GckSessi
                                                                         CK_ULONG n_attrs,
                                                                         GckObject **derived);
 
+CK_RV                    gck_crypto_wrap_key                           (GckSession *session,
+                                                                        CK_MECHANISM_PTR mech,
+                                                                        GckObject *wrapper,
+                                                                        GckObject *wrapped,
+                                                                        CK_BYTE_PTR output,
+                                                                        CK_ULONG_PTR n_output);
+
+CK_RV                    gck_crypto_unwrap_key                         (GckSession *session,
+                                                                        CK_MECHANISM_PTR mech,
+                                                                        GckObject *wrapper,
+                                                                        CK_VOID_PTR input,
+                                                                        CK_ULONG n_input,
+                                                                        CK_ATTRIBUTE_PTR attrs,
+                                                                        CK_ULONG n_attrs,
+                                                                        GckObject **unwrapped);
+
 gulong                   gck_crypto_secret_key_length                  (CK_KEY_TYPE type);
 
 #endif /* GCKCRYPTO_H_ */

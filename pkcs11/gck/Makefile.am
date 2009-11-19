@@ -18,7 +18,7 @@ BUILT_SOURCES = \
 
 libgck_la_SOURCES = \
 	gck-aes-key.c gck-aes-key.h \
-	gck-aes-mechanism.h \
+	gck-aes-mechanism.c gck-aes-mechanism.h \
 	gck-attributes.c gck-attributes.h \
 	gck-certificate.c gck-certificate.h \
 	gck-certificate-key.c gck-certificate-key.h \

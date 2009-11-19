@@ -1539,8 +1539,30 @@ gck_session_C_WrapKey (GckSession* self, CK_MECHANISM_PTR mechanism,
                        CK_OBJECT_HANDLE wrapping_key, CK_OBJECT_HANDLE key,
                        CK_BYTE_PTR wrapped_key, CK_ULONG_PTR wrapped_key_len)
 {
-	/* TODO: We need to implement this */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	GckObject *wrapper = NULL;
+	GckObject *wrapped = NULL;
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
+	if (!mechanism)
+		return CKR_ARGUMENTS_BAD;
+	if (!wrapped_key_len)
+		return CKR_ARGUMENTS_BAD;
+
+	rv = gck_session_lookup_readable_object (self, wrapping_key, &wrapper);
+	if (rv == CKR_OBJECT_HANDLE_INVALID)
+		return CKR_WRAPPING_KEY_HANDLE_INVALID;
+	else if (rv != CKR_OK)
+		return rv;
+
+	rv = gck_session_lookup_readable_object (self, key, &wrapped);
+	if (rv == CKR_OBJECT_HANDLE_INVALID)
+		return CKR_KEY_HANDLE_INVALID;
+	else if (rv != CKR_OK)
+		return rv;
+
+	return gck_crypto_wrap_key (self, mechanism, wrapper, wrapped,
+	                              wrapped_key, wrapped_key_len);
 }
 
 CK_RV
@@ -1549,8 +1571,39 @@ gck_session_C_UnwrapKey (GckSession* self, CK_MECHANISM_PTR mechanism,
                          CK_ULONG wrapped_key_len, CK_ATTRIBUTE_PTR template,
                          CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
-	/* TODO: We need to implement this */
- 	return CKR_FUNCTION_NOT_SUPPORTED;
+	GckObject *wrapper = NULL;
+	GckObject *unwrapped = NULL;
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), CKR_SESSION_HANDLE_INVALID);
+	if (!mechanism)
+		return CKR_ARGUMENTS_BAD;
+	if (!(!count || template))
+		return CKR_ARGUMENTS_BAD;
+	if (!key)
+		return CKR_ARGUMENTS_BAD;
+
+	rv = gck_session_lookup_readable_object (self, unwrapping_key, &wrapper);
+	if (rv == CKR_OBJECT_HANDLE_INVALID)
+		return CKR_WRAPPING_KEY_HANDLE_INVALID;
+	else if (rv != CKR_OK)
+		return rv;
+
+	/*
+	 * Duplicate the memory for the attributes (but not values) so we
+	 * can 'consume' in the generator and create object functions.
+	 */
+	template = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
+
+	rv = gck_crypto_unwrap_key (self, mechanism, wrapper, wrapped_key,
+	                            wrapped_key_len, template, count, &unwrapped);
+
+	g_free (template);
+
+	if (rv == CKR_OK)
+		*key = gck_object_get_handle (unwrapped);
+
+	return rv;
 }
 
 CK_RV
@@ -1558,7 +1611,6 @@ gck_session_C_DeriveKey (GckSession* self, CK_MECHANISM_PTR mechanism,
                          CK_OBJECT_HANDLE base_key, CK_ATTRIBUTE_PTR template,
                          CK_ULONG count, CK_OBJECT_HANDLE_PTR key)
 {
-	GckTransaction *transaction;
 	GckObject *base = NULL;
 	GckObject *derived = NULL;
 	CK_RV rv;
@@ -1580,18 +1632,11 @@ gck_session_C_DeriveKey (GckSession* self, CK_MECHANISM_PTR mechanism,
 	 * can 'consume' in the generator and create object functions.
 	 */
 	template = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
-	transaction = gck_transaction_new ();
 
 	/* Actually do the object creation */
 	rv = gck_crypto_derive_key (self, mechanism, base, template, count, &derived);
-	if (rv != CKR_OK)
-		gck_transaction_fail (transaction, rv);
 
 	g_free (template);
-
-	gck_transaction_complete (transaction);
-	rv = gck_transaction_get_result (transaction);
-	g_object_unref (transaction);
 
 	if (rv == CKR_OK)
 		*key = gck_object_get_handle (derived);
