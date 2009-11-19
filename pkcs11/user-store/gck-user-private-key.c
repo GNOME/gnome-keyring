@@ -61,29 +61,30 @@ G_DEFINE_TYPE_EXTENDED (GckUserPrivateKey, gck_user_private_key, GCK_TYPE_PRIVAT
  * INTERNAL 
  */
 
-static void
+static GckObject*
 factory_create_private_key (GckSession *session, GckTransaction *transaction, 
-                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GckUserPrivateKey *key;
 	GckSexp *sexp;
-	
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
+
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
 	sexp = gck_private_xsa_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp == NULL)
-		return;
-	
+		return NULL;
+
 	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp,
 	                    "module", gck_session_get_module (session),
 	                    "manager", gck_manager_for_template (attrs, n_attrs, session),
 	                    NULL);
-	g_return_if_fail (!key->private_sexp);
+	g_return_val_if_fail (!key->private_sexp, NULL);
 	key->private_sexp = gck_sexp_ref (sexp);
-	
-	*object = GCK_OBJECT (key);
+
 	gck_sexp_unref (sexp);
+
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (key), attrs, n_attrs);
+	return GCK_OBJECT (key);
 }
 
 /* -----------------------------------------------------------------------------

@@ -77,4 +77,6 @@ void                        gck_transaction_write_file             (GckTransacti
 void                        gck_transaction_remove_file            (GckTransaction *self,
                                                                     const gchar *filename);
 
+CK_RV                       gck_transaction_complete_and_unref     (GckTransaction *self);
+
 #endif /* __GCK_TRANSACTION_H__ */

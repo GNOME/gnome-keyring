@@ -52,7 +52,6 @@ DEFINE_SETUP(secret_collection)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	GckObject *cred;
-	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -69,15 +68,17 @@ DEFINE_SETUP(secret_collection)
 	g_assert (GCK_IS_SECRET_COLLECTION (collection));
 
 	/* Make two credentials */
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_CREDENTIAL,
-	                                            attrs, G_N_ELEMENTS (attrs), &cred);
-	g_assert (rv == CKR_OK);
+	cred = gck_session_create_object_for_factory (session, GCK_FACTORY_CREDENTIAL, NULL,
+	                                            attrs, G_N_ELEMENTS (attrs));
+	g_assert (cred != NULL);
 	credential = gck_object_get_handle (GCK_OBJECT (cred));
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_CREDENTIAL,
-	                                            attrs, G_N_ELEMENTS (attrs), &cred);
-	g_assert (rv == CKR_OK);
-	credential2 = gck_object_get_handle (GCK_OBJECT (cred));
+	g_object_unref (cred);
 
+	cred = gck_session_create_object_for_factory (session, GCK_FACTORY_CREDENTIAL, NULL,
+	                                            attrs, G_N_ELEMENTS (attrs));
+	g_assert (cred != NULL);
+	credential2 = gck_object_get_handle (GCK_OBJECT (cred));
+	g_object_unref (cred);
 }
 
 DEFINE_TEARDOWN(secret_collection)
@@ -349,7 +350,6 @@ DEFINE_TEST(secret_collection_factory)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	GckObject *object;
-	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -357,12 +357,13 @@ DEFINE_TEST(secret_collection_factory)
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
 	};
 
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION,
-	                                            attrs, G_N_ELEMENTS (attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	                                                attrs, G_N_ELEMENTS (attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_COLLECTION (object));
 
 	g_assert_cmpstr (gck_secret_object_get_label (GCK_SECRET_OBJECT (object)), ==, "blah");
+	g_object_unref (object);
 }
 
 DEFINE_TEST(secret_collection_factory_unnamed)
@@ -370,20 +371,20 @@ DEFINE_TEST(secret_collection_factory_unnamed)
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	const gchar *identifier;
 	GckObject *object;
-	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
 	};
 
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION,
-	                                            attrs, G_N_ELEMENTS (attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	                                                attrs, G_N_ELEMENTS (attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_COLLECTION (object));
 
 	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
 	g_assert_cmpstr (identifier, !=, "");
+	g_object_unref (object);
 }
 
 DEFINE_TEST(secret_collection_factory_token)
@@ -392,7 +393,6 @@ DEFINE_TEST(secret_collection_factory_token)
 	const gchar *identifier;
 	GckObject *object;
 	CK_BBOOL token = CK_TRUE;
-	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -401,13 +401,14 @@ DEFINE_TEST(secret_collection_factory_token)
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
 	};
 
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION,
-	                                            attrs, G_N_ELEMENTS (attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	                                                attrs, G_N_ELEMENTS (attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_COLLECTION (object));
 
 	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
 	g_assert (strstr (identifier, "blah"));
+	g_object_unref (object);
 }
 
 DEFINE_TEST(secret_collection_factory_duplicate)
@@ -415,7 +416,6 @@ DEFINE_TEST(secret_collection_factory_duplicate)
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	const gchar *identifier1, *identifier2;
 	GckObject *object;
-	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
@@ -423,23 +423,25 @@ DEFINE_TEST(secret_collection_factory_duplicate)
 		{ CKA_LABEL, "blah", 4 },
 	};
 
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION,
-	                                            attrs, G_N_ELEMENTS (attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	                                                attrs, G_N_ELEMENTS (attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_COLLECTION (object));
 
 	identifier1 = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
 	g_assert (strstr (identifier1, "blah"));
+	g_object_unref (object);
 
 	/* Use second credential for second object */
 	attrs[0].pValue = &credential2;
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION,
-	                                            attrs, G_N_ELEMENTS (attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	                                                attrs, G_N_ELEMENTS (attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_COLLECTION (object));
 
 	identifier2 = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
 	g_assert (strstr (identifier2, "blah"));
+	g_object_unref (object);
 
 	g_assert_cmpstr (identifier1, !=, identifier2);
 }
@@ -451,7 +453,6 @@ DEFINE_TEST(secret_collection_factory_item)
 	const gchar *identifier;
 	GckObject *object;
 	CK_BBOOL token = CK_TRUE;
-	CK_RV rv;
 
 	CK_ATTRIBUTE c_attrs[] = {
 		{ CKA_CLASS, &c_klass, sizeof (c_klass) },
@@ -467,18 +468,20 @@ DEFINE_TEST(secret_collection_factory_item)
 		{ CKA_LABEL, "Item", 4 },
 	};
 
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION,
-	                                            c_attrs, G_N_ELEMENTS (c_attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	                                                c_attrs, G_N_ELEMENTS (c_attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_COLLECTION (object));
-
 	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
+	g_object_unref (object);
+
 	i_attrs[0].pValue = (gpointer)identifier;
 	i_attrs[0].ulValueLen = strlen (identifier);
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_ITEM,
-	                                            i_attrs, G_N_ELEMENTS (i_attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_ITEM, NULL,
+	                                                i_attrs, G_N_ELEMENTS (i_attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_ITEM (object));
+	g_object_unref (object);
 }
 
 DEFINE_TEST(secret_collection_token_remove)
@@ -487,7 +490,6 @@ DEFINE_TEST(secret_collection_token_remove)
 	GckTransaction *transaction;
 	GckObject *object;
 	CK_BBOOL token = CK_TRUE;
-	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -496,9 +498,9 @@ DEFINE_TEST(secret_collection_token_remove)
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
 	};
 
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION,
-	                                            attrs, G_N_ELEMENTS (attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	                                                attrs, G_N_ELEMENTS (attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_COLLECTION (object));
 
 	transaction = gck_transaction_new ();
@@ -506,6 +508,7 @@ DEFINE_TEST(secret_collection_token_remove)
 	g_assert (!gck_transaction_get_failed (transaction));
 	gck_transaction_complete (transaction);
 	g_object_unref (transaction);
+	g_object_unref (object);
 }
 
 DEFINE_TEST(secret_collection_token_item_remove)
@@ -516,7 +519,6 @@ DEFINE_TEST(secret_collection_token_item_remove)
 	const gchar *identifier;
 	GckObject *object;
 	CK_BBOOL token = CK_TRUE;
-	CK_RV rv;
 
 	CK_ATTRIBUTE c_attrs[] = {
 		{ CKA_CLASS, &c_klass, sizeof (c_klass) },
@@ -532,17 +534,18 @@ DEFINE_TEST(secret_collection_token_item_remove)
 		{ CKA_LABEL, "Item", 4 },
 	};
 
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION,
-	                                            c_attrs, G_N_ELEMENTS (c_attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	                                                c_attrs, G_N_ELEMENTS (c_attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_COLLECTION (object));
-
 	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
+	g_object_unref (object);
+
 	i_attrs[0].pValue = (gpointer)identifier;
 	i_attrs[0].ulValueLen = strlen (identifier);
-	rv = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_ITEM,
-	                                            i_attrs, G_N_ELEMENTS (i_attrs), &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_ITEM, NULL,
+	                                                i_attrs, G_N_ELEMENTS (i_attrs));
+	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_ITEM (object));
 
 	transaction = gck_transaction_new ();
@@ -550,4 +553,5 @@ DEFINE_TEST(secret_collection_token_item_remove)
 	g_assert (!gck_transaction_get_failed (transaction));
 	gck_transaction_complete (transaction);
 	g_object_unref (transaction);
+	g_object_unref (object);
 }

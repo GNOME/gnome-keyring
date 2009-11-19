@@ -25,12 +25,57 @@
 #include "gck-crypto.h"
 #include "gck-dh-mechanism.h"
 #include "gck-dh-private-key.h"
-#include "gck-dh-public-key.h"
 #include "gck-session.h"
+#include "gck-transaction.h"
 
 #include "egg/egg-dh.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
+
+static GckObject*
+create_dh_object (GckSession *session, GckTransaction *transaction, CK_OBJECT_CLASS klass,
+                  CK_ATTRIBUTE_PTR value, CK_ATTRIBUTE_PTR prime, CK_ATTRIBUTE_PTR base,
+                  CK_ATTRIBUTE_PTR id, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+{
+	CK_KEY_TYPE type = CKK_DH;
+	CK_ATTRIBUTE attr;
+	GckObject *object;
+	GArray *array;
+
+	array = g_array_new (FALSE, TRUE, sizeof (CK_ATTRIBUTE));
+
+	/* Setup the value */
+	g_array_append_val (array, *value);
+
+	/* Add in the DH params */
+	g_array_append_val (array, *prime);
+	g_array_append_val (array, *base);
+
+	/* Setup the class */
+	attr.type = CKA_CLASS;
+	attr.pValue = &klass;
+	attr.ulValueLen = sizeof (klass);
+	g_array_append_val (array, attr);
+
+	/* Setup the key type */
+	attr.type = CKA_KEY_TYPE;
+	attr.pValue = &type;
+	attr.ulValueLen = sizeof (type);
+	g_array_append_val (array, attr);
+
+	/* All the other values */
+	g_array_append_vals (array, attrs, n_attrs);
+
+	/* Add in the identifier last */
+	g_array_append_val (array, *id);
+
+	/* Create the public key object */
+	object = gck_session_create_object_for_attributes (session, transaction,
+	                                                   (CK_ATTRIBUTE_PTR)array->data, array->len);
+
+	g_array_free (array, TRUE);
+	return object;
+}
 
 CK_RV
 gck_dh_mechanism_generate (GckSession *session, CK_ATTRIBUTE_PTR pub_atts,
@@ -43,28 +88,39 @@ gck_dh_mechanism_generate (GckSession *session, CK_ATTRIBUTE_PTR pub_atts,
 	gcry_mpi_t pub = NULL;
 	gcry_mpi_t priv = NULL;
 	gcry_error_t gcry;
-	guchar *buffer, *id;
-	gsize n_buffer, n_id;
-	GckManager *manager;
-	GckModule *module;
+	CK_ATTRIBUTE value, id;
+	CK_ATTRIBUTE_PTR aprime;
+	CK_ATTRIBUTE_PTR abase;
+	GckTransaction *transaction;
+	gboolean ret;
+	gsize length;
 	gulong bits;
+	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SESSION (session), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (pub_key, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (priv_key, CKR_GENERAL_ERROR);
 
-	if (!gck_attributes_find_mpi (pub_atts, n_pub_atts, CKA_PRIME, &prime) ||
-	    !gck_attributes_find_mpi (pub_atts, n_pub_atts, CKA_BASE, &base)) {
-		gcry_mpi_release (prime);
-		gcry_mpi_release (base);
-		return CKR_TEMPLATE_INCOMPLETE;
-	}
+	*priv_key = NULL;
+	*pub_key = NULL;
 
-	gck_attributes_consume (pub_atts, n_pub_atts, CKA_PRIME, CKA_BASE, G_MAXULONG);
+	aprime = gck_attributes_find (pub_atts, n_pub_atts, CKA_PRIME);
+	abase = gck_attributes_find (pub_atts, n_pub_atts, CKA_BASE);
+	if (!aprime || !abase)
+		return CKR_TEMPLATE_INCOMPLETE;
+
+	rv = gck_attribute_get_mpi (aprime, &prime);
+	if (rv != CKR_OK)
+		return rv;
+
+	rv = gck_attribute_get_mpi (abase, &base);
+	if (rv != CKR_OK) {
+		gcry_mpi_release (prime);
+		return rv;
+	}
 
 	if (!gck_attributes_find_ulong (priv_atts, n_priv_atts, CKA_VALUE_BITS, &bits))
 		bits = gcry_mpi_get_nbits (prime);
-
 	gck_attributes_consume (priv_atts, n_priv_atts, CKA_VALUE_BITS, G_MAXULONG);
 
 	/* The private key must be less than or equal to prime */
@@ -74,43 +130,73 @@ gck_dh_mechanism_generate (GckSession *session, CK_ATTRIBUTE_PTR pub_atts,
 		return CKR_TEMPLATE_INCONSISTENT;
 	}
 
-	if (!egg_dh_gen_pair (prime, base, bits, &priv, &pub)) {
-		gcry_mpi_release (prime);
-		gcry_mpi_release (base);
+	ret = egg_dh_gen_pair (prime, base, bits, &priv, &pub);
+
+	gcry_mpi_release (prime);
+	gcry_mpi_release (base);
+
+	if (ret == FALSE)
 		return CKR_FUNCTION_FAILED;
-	}
 
-	/* Write the public key out to raw data, so we can use it for an ID */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &n_buffer, pub);
+	/* Write the public key out to raw data */
+	value.type = CKA_VALUE;
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &length, pub);
 	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-	buffer = g_malloc (n_buffer);
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, buffer, n_buffer, &n_buffer, pub);
+	value.pValue = g_malloc (length);
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value.pValue, length, &length, pub);
 	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-	if (n_buffer < 16) {
-		n_id = n_buffer;
-		id = g_memdup (buffer, n_id);
+	value.ulValueLen = length;
+
+	/* Create an identifier */
+	id.type = CKA_ID;
+	if (value.ulValueLen < 16) {
+		id.ulValueLen = value.ulValueLen;
+		id.pValue = g_memdup (value.pValue, value.ulValueLen);
 	} else {
-		n_id = 16;
-		id = g_memdup (buffer + (n_buffer - 16), n_id);
+		id.ulValueLen = 16;
+		id.pValue = g_memdup ((guchar*)value.pValue + (value.ulValueLen - 16), id.ulValueLen);
 	}
 
-	manager = gck_manager_for_template (pub_atts, n_pub_atts, session);
-	module = gck_session_get_module (session);
+	transaction = gck_transaction_new ();
 
-	*pub_key = GCK_OBJECT (gck_dh_public_key_new (module, manager, prime, base,
-	                                              pub, id, n_id));
+	*pub_key = create_dh_object (session, transaction, CKO_PUBLIC_KEY, &value,
+	                            aprime, abase, &id, pub_atts, n_pub_atts);
+	g_free (value.pValue);
 
-	id = g_memdup (id, n_id);
-	prime = gcry_mpi_copy (prime);
-	base = gcry_mpi_copy (base);
+	if (!gck_transaction_get_failed (transaction)) {
 
-	*priv_key = GCK_OBJECT (gck_dh_private_key_new (module, manager, prime, base,
-	                                                priv, id, n_id));
+		/* Write the private key out to raw data */
+		value.type = CKA_VALUE;
+		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &length, pub);
+		g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+		value.pValue = egg_secure_alloc (length);
+		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value.pValue, length, &length, pub);
+		g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+		value.ulValueLen = length;
+
+		*priv_key = create_dh_object (session, transaction, CKO_PRIVATE_KEY, &value,
+		                              aprime, abase, &id, priv_atts, n_priv_atts);
+		egg_secure_clear (value.pValue, value.ulValueLen);
+		egg_secure_free (value.pValue);
+	}
+
+	g_free (id.pValue);
+
+	gck_transaction_complete (transaction);
+	if (gck_transaction_get_failed (transaction)) {
+		if (*pub_key)
+			g_object_unref (*pub_key);
+		if (*priv_key)
+			g_object_unref (*priv_key);
+		*priv_key = *pub_key = NULL;
+	}
+
+	rv = gck_transaction_get_result (transaction);
+	g_object_unref (transaction);
 
 	gck_attributes_consume (pub_atts, n_pub_atts, CKA_PRIME, CKA_BASE, G_MAXULONG);
 
-	g_free (buffer);
-	return CKR_OK;
+	return rv;
 }
 
 static gpointer
@@ -163,7 +249,7 @@ gck_dh_mechanism_derive (GckSession *session, CK_MECHANISM_PTR mech, GckObject *
 	gboolean ret;
 	gsize n_value;
 	gpointer value;
-	CK_RV rv;
+	GckTransaction *transaction;
 
 	g_return_val_if_fail (GCK_IS_DH_PRIVATE_KEY (base), CKR_GENERAL_ERROR);
 
@@ -201,12 +287,14 @@ gck_dh_mechanism_derive (GckSession *session, CK_MECHANISM_PTR mech, GckObject *
 	/* Add the remainder of the attributes */
 	g_array_append_vals (array, attrs, n_attrs);
 
+	transaction = gck_transaction_new ();
+
 	/* Now create an object with these attributes */
-	rv = gck_session_create_object_for_attributes (session, (CK_ATTRIBUTE_PTR)array->data,
-	                                               array->len, derived);
+	*derived = gck_session_create_object_for_attributes (session, transaction,
+	                                                     (CK_ATTRIBUTE_PTR)array->data, array->len);
 
 	egg_secure_free (value);
 	g_array_free (array, TRUE);
 
-	return rv;
+	return gck_transaction_complete_and_unref (transaction);
 }

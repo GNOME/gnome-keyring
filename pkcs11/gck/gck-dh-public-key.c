@@ -42,15 +42,16 @@ G_DEFINE_TYPE (GckDhPublicKey, gck_dh_public_key, GCK_TYPE_DH_KEY);
  * INTERNAL
  */
 
-static void
+static GckObject*
 factory_create_dh_public_key (GckSession *session, GckTransaction *transaction,
-                              CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                              CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GckManager *manager;
 	gcry_mpi_t prime = NULL;
 	gcry_mpi_t base = NULL;
 	gcry_mpi_t value = NULL;
 	CK_ATTRIBUTE_PTR idattr;
+	GckObject *object;
 
 	if (!gck_attributes_find_mpi (attrs, n_attrs, CKA_PRIME, &prime) ||
 	    !gck_attributes_find_mpi (attrs, n_attrs, CKA_BASE, &base) ||
@@ -58,17 +59,21 @@ factory_create_dh_public_key (GckSession *session, GckTransaction *transaction,
 		gcry_mpi_release (prime);
 		gcry_mpi_release (base);
 		gcry_mpi_release (value);
-		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return NULL;
 	}
 
 	manager = gck_manager_for_template (attrs, n_attrs, session);
 	idattr = gck_attributes_find (attrs, n_attrs, CKA_ID);
 
-	*object = GCK_OBJECT (gck_dh_public_key_new (gck_session_get_module (session),
-	                                             manager, prime, base, value,
-	                                             idattr ? g_memdup (idattr->pValue, idattr->ulValueLen) : NULL,
-	                                             idattr ? idattr->ulValueLen : 0));
+	object = GCK_OBJECT (gck_dh_public_key_new (gck_session_get_module (session),
+	                                            manager, prime, base, value,
+	                                            idattr ? g_memdup (idattr->pValue, idattr->ulValueLen) : NULL,
+	                                            idattr ? idattr->ulValueLen : 0));
 	gck_attributes_consume (attrs, n_attrs, CKA_PRIME, CKA_BASE, CKA_VALUE, G_MAXULONG);
+
+	gck_session_complete_object_creation (session, transaction, object, attrs, n_attrs);
+	return object;
 }
 
 /* -----------------------------------------------------------------------------

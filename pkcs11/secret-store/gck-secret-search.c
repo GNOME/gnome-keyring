@@ -181,9 +181,9 @@ populate_search_from_manager (GckSecretSearch *self, GckManager *manager)
 	g_signal_connect (manager, "attribute-changed", G_CALLBACK (on_manager_changed_object), self);
 }
 
-static void
+static GckObject*
 factory_create_search (GckSession *session, GckTransaction *transaction,
-                       CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
+                       CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GckSecretCollection *collection = NULL;
 	GckManager *s_manager, *m_manager;
@@ -193,15 +193,14 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 	GckModule *module;
 	CK_RV rv;
 
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (result);
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
 	/* Find the fields being requested */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_G_FIELDS);
 	if (attr == NULL) {
 		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
-		return;
+		return NULL;
 	}
 
 	/* Parse the fields, into our internal representation */
@@ -209,7 +208,7 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 	gck_attribute_consume (attr);
 	if (rv != CKR_OK) {
 		gck_transaction_fail (transaction, rv);
-		return;
+		return NULL;
 	}
 
 	s_manager = gck_session_get_manager (session);
@@ -224,7 +223,7 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 		if (!collection) {
 			g_hash_table_unref (fields);
 			gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
-			return;
+			return NULL;
 		}
 	}
 
@@ -240,7 +239,9 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 
 	populate_search_from_manager (search, s_manager);
 	populate_search_from_manager (search, m_manager);
-	*result = GCK_OBJECT (search);
+
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (search), attrs, n_attrs);
+	return GCK_OBJECT (search);
 }
 
 static void

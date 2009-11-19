@@ -57,9 +57,9 @@ G_DEFINE_TYPE (GckCredential, gck_credential, GCK_TYPE_OBJECT);
  * INTERNAL
  */
 
-static void
+static GckObject*
 factory_create_credential (GckSession *session, GckTransaction *transaction,
-                              CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
+                              CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	CK_OBJECT_HANDLE handle;
 	GckCredential *cred;
@@ -69,16 +69,15 @@ factory_create_credential (GckSession *session, GckTransaction *transaction,
 	GckObject *object = NULL;
 	CK_RV rv;
 
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (result);
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
 	/* The handle is optional */
 	if (gck_attributes_find_ulong (attrs, n_attrs, CKA_G_OBJECT, &handle)) {
 		rv = gck_session_lookup_readable_object (session, handle, &object);
 		if (rv != CKR_OK) {
 			gck_transaction_fail (transaction, rv);
-			return;
+			return NULL;
 		}
 	} else {
 		object = NULL;
@@ -94,10 +93,14 @@ factory_create_credential (GckSession *session, GckTransaction *transaction,
 	rv = gck_credential_create (module, manager, object,
 	                            attr ? attr->pValue : NULL,
 	                            attr ? attr->ulValueLen : 0, &cred);
-	if (rv == CKR_OK)
-		*result = GCK_OBJECT (cred);
-	else
+
+	if (rv == CKR_OK) {
+		gck_session_complete_object_creation (session, transaction, GCK_OBJECT (cred), attrs, n_attrs);
+		return GCK_OBJECT (cred);
+	} else {
 		gck_transaction_fail (transaction, rv);
+		return NULL;
+	}
 }
 
 static void

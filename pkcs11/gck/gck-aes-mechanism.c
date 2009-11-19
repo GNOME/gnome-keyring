@@ -25,6 +25,7 @@
 #include "gck-aes-mechanism.h"
 #include "gck-padding.h"
 #include "gck-session.h"
+#include "gck-transaction.h"
 #include "gck-util.h"
 
 #include "egg/egg-libgcrypt.h"
@@ -152,9 +153,9 @@ gck_aes_mechanism_unwrap (GckSession *session, CK_MECHANISM_PTR mech,
 	GckAesKey *key;
 	gpointer padded, value;
 	gsize n_padded, n_value;
+	GckTransaction *transaction;
 	gsize block, pos;
 	gboolean ret;
-	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SESSION (session), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (mech, CKR_GENERAL_ERROR);
@@ -212,12 +213,14 @@ gck_aes_mechanism_unwrap (GckSession *session, CK_MECHANISM_PTR mech,
 	/* Add the remainder of the attributes */
 	g_array_append_vals (array, attrs, n_attrs);
 
+	transaction = gck_transaction_new ();
+
 	/* Now create an object with these attributes */
-	rv = gck_session_create_object_for_attributes (session, (CK_ATTRIBUTE_PTR)array->data,
-	                                               array->len, unwrapped);
+	*unwrapped = gck_session_create_object_for_attributes (session, transaction,
+	                                                       (CK_ATTRIBUTE_PTR)array->data, array->len);
 
 	egg_secure_free (value);
 	g_array_free (array, TRUE);
 
-	return rv;
+	return gck_transaction_complete_and_unref (transaction);
 }

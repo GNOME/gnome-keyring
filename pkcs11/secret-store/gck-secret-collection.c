@@ -217,9 +217,9 @@ remove_item (GckSecretCollection *self, GckTransaction *transaction, GckSecretIt
 	g_object_unref (item);
 }
 
-static void
+static GckObject*
 factory_create_collection (GckSession *session, GckTransaction *transaction,
-                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
+                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GckSecretCollection *collection = NULL;
 	CK_OBJECT_HANDLE handle;
@@ -228,37 +228,40 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	gchar *identifier = NULL;
 	GckSecretData *sdata;
 	gchar *label = NULL;
-	gboolean is_token;
 	GckCredential *cred;
 	GckObject *object;
 	CK_RV rv;
 
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (result);
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
-	if (!gck_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token))
-		is_token = FALSE;
-	if (is_token)
-		manager = gck_module_get_manager (gck_session_get_module (session));
-	else
-		manager = gck_session_get_manager (session);
+	manager = gck_manager_for_template (attrs, n_attrs, session);
 
 	/* Must have a credential, which is not associated with an object yet */
-	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_G_CREDENTIAL, &handle))
-		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
-	if (gck_session_lookup_readable_object (session, handle, &object) != CKR_OK)
-		return gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_G_CREDENTIAL, &handle)) {
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return NULL;
+	}
+
+	if (gck_session_lookup_readable_object (session, handle, &object) != CKR_OK) {
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+		return NULL;
+	}
+
 	cred = GCK_CREDENTIAL (object);
-	if (gck_credential_get_object (cred) != NULL)
-		return gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+	if (gck_credential_get_object (cred) != NULL) {
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+		return NULL;
+	}
 
 	/* See if a collection attribute was specified, not present means all collections */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_LABEL);
 	if (attr != NULL) {
 		rv = gck_attribute_get_string (attr, &label);
-		if (rv != CKR_OK)
-			return gck_transaction_fail (transaction, rv);
+		if (rv != CKR_OK) {
+			gck_transaction_fail (transaction, rv);
+			return NULL;
+		}
 		identifier = g_utf8_strdown (label, -1);
 		g_strdelimit (identifier, ":/\\<>|\t\n\r\v ", '_');
 		gck_attribute_consume (attr);
@@ -285,7 +288,8 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	gck_secret_data_set_master (sdata, gck_credential_get_secret (cred));
 	track_secret_data (collection, sdata);
 
-	*result = GCK_OBJECT (collection);
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (collection), attrs, n_attrs);
+	return GCK_OBJECT (collection);
 }
 
 /* -----------------------------------------------------------------------------

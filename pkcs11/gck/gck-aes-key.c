@@ -98,33 +98,39 @@ attribute_set_check_value (GckAesKey *self, CK_ATTRIBUTE *attr)
 	return rv;
 }
 
-static void
+static GckObject*
 factory_create_aes_key (GckSession *session, GckTransaction *transaction,
-                        CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                        CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GckAesKey *key;
 	GckManager *manager;
 	CK_ATTRIBUTE_PTR value;
 
 	value = gck_attributes_find (attrs, n_attrs, CKA_VALUE);
-	if (value == NULL)
-		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+	if (value == NULL) {
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return NULL;
+	}
 
-	if (algorithm_for_length (value->ulValueLen) == 0)
-		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+	if (algorithm_for_length (value->ulValueLen) == 0) {
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+		return NULL;
+	}
 
 	manager = gck_manager_for_template (attrs, n_attrs, session);
-	*object = g_object_new (GCK_TYPE_AES_KEY,
-	                        "module", gck_session_get_module (session),
-	                        "manager", manager,
-	                        NULL);
-	key = GCK_AES_KEY (*object);
+	key = g_object_new (GCK_TYPE_AES_KEY,
+	                    "module", gck_session_get_module (session),
+	                    "manager", manager,
+	                    NULL);
 
 	key->value = egg_secure_alloc (value->ulValueLen);
 	key->n_value = value->ulValueLen;
 	memcpy (key->value, value->pValue, key->n_value);
 
 	gck_attribute_consume (value);
+
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (key), attrs, n_attrs);
+	return GCK_OBJECT (key);
 }
 
 /* -----------------------------------------------------------------------------

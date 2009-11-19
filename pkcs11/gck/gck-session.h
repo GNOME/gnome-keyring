@@ -110,16 +110,22 @@ gboolean                 gck_session_for_each_credential                (GckSess
                                                                          GckCredentialFunc func,
                                                                          gpointer user_data);
 
-CK_RV                    gck_session_create_object_for_factory          (GckSession *self,
+GckObject*               gck_session_create_object_for_factory          (GckSession *self,
                                                                          GckFactory *factory,
+                                                                         GckTransaction *transaction,
                                                                          CK_ATTRIBUTE_PTR attrs,
-                                                                         CK_ULONG n_attrs,
-                                                                         GckObject **object);
+                                                                         CK_ULONG n_attrs);
 
-CK_RV                    gck_session_create_object_for_attributes       (GckSession *self,
+GckObject*               gck_session_create_object_for_attributes       (GckSession *self,
+                                                                         GckTransaction *transaction,
                                                                          CK_ATTRIBUTE_PTR attrs,
-                                                                         CK_ULONG n_attrs,
-                                                                         GckObject **object);
+                                                                         CK_ULONG n_attrs);
+
+void                     gck_session_complete_object_creation           (GckSession *self,
+                                                                         GckTransaction *transaction,
+                                                                         GckObject *object,
+                                                                         CK_ATTRIBUTE_PTR attrs,
+                                                                         CK_ULONG n_attrs);
 
 CK_RV                    gck_session_C_GetFunctionStatus                (GckSession *self);
 

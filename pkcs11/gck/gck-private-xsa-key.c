@@ -143,27 +143,28 @@ done:
 	return ret;
 }
 
-static void
+static GckObject*
 factory_create_private_xsa_key (GckSession *session, GckTransaction *transaction,
-                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GckPrivateXsaKey *key;
 	GckSexp *sexp;
 
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
 	sexp = gck_private_xsa_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp == NULL)
-		return;
+		return NULL;
 
 	key = g_object_new (GCK_TYPE_PRIVATE_XSA_KEY, "base-sexp", sexp,
 	                    "module", gck_session_get_module (session),
 	                    "manager", gck_manager_for_template (attrs, n_attrs, session),
 	                    NULL);
 	key->pv->sexp = sexp;
-	*object = GCK_OBJECT (key);
+
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (key), attrs, n_attrs);
+	return GCK_OBJECT (key);
 }
 
 static gboolean

@@ -87,10 +87,10 @@ DEFINE_TEST(create_search_incomplete)
 {
 	CK_ATTRIBUTE attrs[1];
 	GckObject *object = NULL;
-	CK_RV rv; 
+	GckTransaction *transaction = gck_transaction_new ();
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 0, &object);
-	g_assert (rv == CKR_TEMPLATE_INCOMPLETE);
+	object = gck_session_create_object_for_factory (session, factory, transaction, attrs, 0);
+	g_assert (gck_transaction_complete_and_unref (transaction) == CKR_TEMPLATE_INCOMPLETE);
 	g_assert (object == NULL);
 }
 
@@ -101,10 +101,10 @@ DEFINE_TEST(create_search_bad_fields)
 	};
 
 	GckObject *object = NULL;
-	CK_RV rv;
+	GckTransaction *transaction = gck_transaction_new ();
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 1, &object);
-	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
+	object = gck_session_create_object_for_factory (session, factory, transaction, attrs, 1);
+	g_assert (gck_transaction_complete_and_unref (transaction) == CKR_ATTRIBUTE_VALUE_INVALID);
 	g_assert (object == NULL);
 }
 
@@ -121,21 +121,17 @@ DEFINE_TEST(create_search)
 	gulong vulong;
 	gboolean vbool;
 	gsize vsize;
-	CK_RV rv;
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 1, &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, factory, NULL, attrs, 1);
 	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_SEARCH (object));
 
 	if (!gck_object_get_attribute_ulong (object, session, CKA_CLASS, &vulong))
 		g_assert_not_reached ();
-	g_assert (rv == CKR_OK);
 	g_assert (vulong == CKO_G_SEARCH);
 
 	if (!gck_object_get_attribute_boolean (object, session, CKA_MODIFIABLE, &vbool))
 		g_assert_not_reached ();
-	g_assert (rv == CKR_OK);
 	g_assert (vbool == CK_TRUE);
 
 	vdata = gck_object_get_attribute_data (object, session, CKA_G_FIELDS, &vsize);
@@ -162,6 +158,8 @@ DEFINE_TEST(create_search)
 	/* No collection */
 	collection = gck_secret_search_get_collection (GCK_SECRET_SEARCH (object));
 	g_assert (collection == NULL);
+
+	g_object_unref (object);
 }
 
 DEFINE_TEST(create_search_and_match)
@@ -173,10 +171,8 @@ DEFINE_TEST(create_search_and_match)
 	GckObject *object = NULL;
 	gpointer vdata;
 	gsize vsize;
-	CK_RV rv;
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 1, &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, factory, NULL, attrs, 1);
 	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_SEARCH (object));
 
@@ -186,6 +182,8 @@ DEFINE_TEST(create_search_and_match)
 	g_assert (vsize == sizeof (CK_OBJECT_HANDLE));
 	g_assert (*((CK_OBJECT_HANDLE_PTR)vdata) == gck_object_get_handle (GCK_OBJECT (item)));
 	g_free (vdata);
+
+	g_object_unref (object);
 }
 
 DEFINE_TEST(create_search_and_change_to_match)
@@ -198,15 +196,13 @@ DEFINE_TEST(create_search_and_change_to_match)
 	GHashTable *fields;
 	gpointer vdata;
 	gsize vsize;
-	CK_RV rv;
 
 	/* Make it not match */
 	fields = gck_secret_fields_new ();
 	gck_secret_item_set_fields (item, fields);
 	g_hash_table_unref (fields);
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 1, &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, factory, NULL, attrs, 1);
 	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_SEARCH (object));
 
@@ -228,6 +224,8 @@ DEFINE_TEST(create_search_and_change_to_match)
 	g_assert (vsize == sizeof (CK_OBJECT_HANDLE));
 	g_assert (*((CK_OBJECT_HANDLE_PTR)vdata) == gck_object_get_handle (GCK_OBJECT (item)));
 	g_free (vdata);
+
+	g_object_unref (object);
 }
 
 DEFINE_TEST(create_search_and_change_to_not_match)
@@ -240,10 +238,8 @@ DEFINE_TEST(create_search_and_change_to_not_match)
 	GHashTable *fields;
 	gpointer vdata;
 	gsize vsize;
-	CK_RV rv;
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 1, &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, factory, NULL, attrs, 1);
 	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_SEARCH (object));
 
@@ -263,6 +259,8 @@ DEFINE_TEST(create_search_and_change_to_not_match)
 	vdata = gck_object_get_attribute_data (object, session, CKA_G_MATCHED, &vsize);
 	g_assert (vsize == 0);
 	g_free (vdata);
+
+	g_object_unref (object);
 }
 
 DEFINE_TEST(create_search_for_bad_collection)
@@ -273,10 +271,10 @@ DEFINE_TEST(create_search_for_bad_collection)
 	};
 
 	GckObject *object = NULL;
-	CK_RV rv;
+	GckTransaction *transaction = gck_transaction_new ();
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 2, &object);
-	g_assert (rv == CKR_TEMPLATE_INCONSISTENT);
+	object = gck_session_create_object_for_factory (session, factory, transaction, attrs, 2);
+	g_assert (gck_transaction_complete_and_unref (transaction) == CKR_TEMPLATE_INCONSISTENT);
 }
 
 DEFINE_TEST(create_search_for_collection)
@@ -289,10 +287,8 @@ DEFINE_TEST(create_search_for_collection)
 	GckObject *object = NULL;
 	gpointer vdata;
 	gsize vsize;
-	CK_RV rv;
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 2, &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, factory, NULL, attrs, 2);
 	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_SEARCH (object));
 
@@ -309,6 +305,8 @@ DEFINE_TEST(create_search_for_collection)
 	g_assert (vsize == sizeof (CK_OBJECT_HANDLE));
 	g_assert (*((CK_OBJECT_HANDLE_PTR)vdata) == gck_object_get_handle (GCK_OBJECT (item)));
 	g_free (vdata);
+
+	g_object_unref (object);
 }
 
 DEFINE_TEST(create_search_for_collection_no_match)
@@ -324,7 +322,6 @@ DEFINE_TEST(create_search_for_collection_no_match)
 	GHashTable *fields;
 	gpointer vdata;
 	gsize vsize;
-	CK_RV rv;
 
 	ocoll = g_object_new (GCK_TYPE_SECRET_COLLECTION,
 	                      "module", module,
@@ -340,8 +337,7 @@ DEFINE_TEST(create_search_for_collection_no_match)
 	gck_secret_item_set_fields (oitem, fields);
 	g_hash_table_unref (fields);
 
-	rv = gck_session_create_object_for_factory (session, factory, attrs, 2, &object);
-	g_assert (rv == CKR_OK);
+	object = gck_session_create_object_for_factory (session, factory, NULL, attrs, 2);
 	g_assert (object != NULL);
 	g_assert (GCK_IS_SECRET_SEARCH (object));
 
@@ -350,5 +346,6 @@ DEFINE_TEST(create_search_for_collection_no_match)
 	g_assert (vsize == 0);
 	g_free (vdata);
 
+	g_object_unref (object);
 	g_object_unref (ocoll);
 }

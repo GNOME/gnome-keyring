@@ -138,24 +138,27 @@ done:
 	return ret;
 }
 
-static void
+static GckObject*
 factory_create_public_xsa_key (GckSession *session, GckTransaction *transaction,
-                               CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                               CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
+	GckObject *object = NULL;
 	GckSexp *sexp;
 
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
 	sexp = gck_public_xsa_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp != NULL) {
-		*object = g_object_new (GCK_TYPE_PUBLIC_XSA_KEY, "base-sexp", sexp,
-		                        "module", gck_session_get_module (session),
-		                        "manager", gck_manager_for_template (attrs, n_attrs, session),
-		                        NULL);
+		object = g_object_new (GCK_TYPE_PUBLIC_XSA_KEY, "base-sexp", sexp,
+		                       "module", gck_session_get_module (session),
+		                       "manager", gck_manager_for_template (attrs, n_attrs, session),
+		                       NULL);
 		gck_sexp_unref (sexp);
+		gck_session_complete_object_creation (session, transaction, object, attrs, n_attrs);
 	}
+
+	return object;
 }
 
 /* -----------------------------------------------------------------------------

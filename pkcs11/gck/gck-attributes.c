@@ -132,6 +132,22 @@ gck_attribute_get_string (CK_ATTRIBUTE_PTR attr, gchar **value)
 }
 
 CK_RV
+gck_attribute_get_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t *value)
+{
+	gcry_error_t gcry;
+
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (value, CKR_GENERAL_ERROR);
+
+	gcry = gcry_mpi_scan (value, GCRYMPI_FMT_USG, attr->pValue, attr->ulValueLen, NULL);
+	if (gcry != 0)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	return CKR_OK;
+}
+
+
+CK_RV
 gck_attribute_set_empty (CK_ATTRIBUTE_PTR attr)
 {
 	return gck_attribute_set_data (attr, "", 0);
@@ -417,22 +433,31 @@ gck_attributes_find_ulong (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, CK_ATTRIBUT
 }
 
 gboolean
-gck_attributes_find_mpi (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, CK_ATTRIBUTE_TYPE type, gcry_mpi_t *value)
+gck_attributes_find_mpi (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
+                         CK_ATTRIBUTE_TYPE type, gcry_mpi_t *value)
 {
 	CK_ATTRIBUTE_PTR attr;
-	gcry_error_t gcry;
-	
+
 	g_assert (attrs || !n_attrs);
-	
+
 	attr = gck_attributes_find (attrs, n_attrs, type);
 	if (attr == NULL)
 		return FALSE;
-	
-	if (value != NULL) {
-		gcry = gcry_mpi_scan (value, GCRYMPI_FMT_USG, attr->pValue, attr->ulValueLen, NULL);
-		if (gcry != 0)
-			return FALSE;
-	}
-	
-	return TRUE;
+
+	return gck_attribute_get_mpi (attr, value) == CKR_OK;
+}
+
+gboolean
+gck_attributes_find_string (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
+                            CK_ATTRIBUTE_TYPE type, gchar **value)
+{
+	CK_ATTRIBUTE_PTR attr;
+
+	g_return_val_if_fail (attrs || !n_attrs, FALSE);
+
+	attr = gck_attributes_find (attrs, n_attrs, type);
+	if (attr == NULL)
+		return FALSE;
+
+	return gck_attribute_get_string (attr, value) == CKR_OK;
 }

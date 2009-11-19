@@ -97,9 +97,9 @@ begin_set_fields (GckSecretItem *self, GckTransaction *transaction, GHashTable *
 	self->fields = fields;
 }
 
-static void
+static GckObject*
 factory_create_item (GckSession *session, GckTransaction *transaction,
-                     CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **result)
+                     CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GckSecretCollection *collection = NULL;
 	GckSecretItem *item;
@@ -108,14 +108,15 @@ factory_create_item (GckSession *session, GckTransaction *transaction,
 	CK_ATTRIBUTE *attr;
 	gboolean is_token;
 
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (result);
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
 	/* See if a collection attribute was specified */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_G_COLLECTION);
-	if (attr == NULL)
-		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+	if (attr == NULL) {
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return NULL;
+	}
 
 	m_manager = gck_module_get_manager (gck_session_get_module (session));
 	s_manager = gck_session_get_manager (session);
@@ -128,14 +129,15 @@ factory_create_item (GckSession *session, GckTransaction *transaction,
 	else
 		collection = gck_secret_collection_find (attr, s_manager, NULL);
 
-	if (!collection)
-		return gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+	if (!collection) {
+		gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+		return NULL;
+	}
 
-	/* The collection owns the item */
+	/* Create a new collection which will own the item */
 	item = gck_secret_collection_create_item (collection, transaction);
-
-	/* All the other fields are set later ... */
-	*result = g_object_ref (item);
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (item), attrs, n_attrs);
+	return g_object_ref (item);
 }
 
 /* -----------------------------------------------------------------------------

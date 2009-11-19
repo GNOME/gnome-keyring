@@ -37,6 +37,9 @@ CK_RV                 gck_attribute_get_time                           (CK_ATTRI
 CK_RV                 gck_attribute_get_string                         (CK_ATTRIBUTE_PTR attr,
                                                                         gchar **value);
 
+CK_RV                 gck_attribute_get_mpi                            (CK_ATTRIBUTE_PTR attr,
+                                                                        gcry_mpi_t *value);
+
 CK_RV                 gck_attribute_set_empty                          (CK_ATTRIBUTE_PTR attr);
 
 CK_RV                 gck_attribute_set_bool                           (CK_ATTRIBUTE_PTR attr,
@@ -97,5 +100,10 @@ gboolean              gck_attributes_find_mpi                          (CK_ATTRI
                                                                         CK_ULONG n_attrs,
                                                                         CK_ATTRIBUTE_TYPE type,
                                                                         gcry_mpi_t *mpi);
+
+gboolean              gck_attributes_find_string                       (CK_ATTRIBUTE_PTR attrs,
+                                                                        CK_ULONG n_attrs,
+                                                                        CK_ATTRIBUTE_TYPE type,
+                                                                        gchar **value);
 
 #endif /* GCK_ATTRIBUTE_H_ */

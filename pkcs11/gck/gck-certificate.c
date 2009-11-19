@@ -243,22 +243,21 @@ find_certificate_extension (GckCertificate *self, GQuark oid)
 	return 0;
 }
 
-static void
+static GckObject*
 factory_create_certificate (GckSession *session, GckTransaction *transaction, 
-                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	CK_ATTRIBUTE_PTR attr;
 	GckCertificate *cert;
-	
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
-	
+
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
+
 	/* Dig out the value */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_VALUE);
 	if (attr == NULL) {
 		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
-		return;
+		return NULL;
 	}
 	
 	cert = g_object_new (GCK_TYPE_CERTIFICATE,
@@ -270,13 +269,14 @@ factory_create_certificate (GckSession *session, GckTransaction *transaction,
 	if (!gck_serializable_load (GCK_SERIALIZABLE (cert), NULL, attr->pValue, attr->ulValueLen)) {
 		gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
 		g_object_unref (cert);
-		return;
+		return NULL;
 	}
 		
 	/* Note that we ignore the subject */
  	gck_attributes_consume (attrs, n_attrs, CKA_VALUE, CKA_SUBJECT, G_MAXULONG);
 
- 	*object = GCK_OBJECT (cert);
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (cert), attrs, n_attrs);
+	return GCK_OBJECT (cert);
 }
 
 /* -----------------------------------------------------------------------------

@@ -28,8 +28,8 @@
 
 #include "gck-types.h"
 
-typedef void (*GckFactoryFunc) (GckSession *session, GckTransaction *transaction,
-                                CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object);
+typedef GckObject* (*GckFactoryFunc) (GckSession *session, GckTransaction *transaction,
+                                      CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs);
 
 struct _GckFactory {
 	CK_ATTRIBUTE_PTR attrs;

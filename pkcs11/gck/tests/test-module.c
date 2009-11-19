@@ -91,11 +91,10 @@ test_module_open_session (gboolean writable)
 GckObject*
 test_module_object_new (GckSession *session)
 {
-	GckObject *object;
-
 	CK_BBOOL token = CK_FALSE;
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
 	CK_CERTIFICATE_TYPE type = CKC_X_509;
+	GckObject *object;
 
 	gsize n_data;
 	guchar *data = test_data_read ("test-certificate-1.der", &n_data);
@@ -107,9 +106,9 @@ test_module_object_new (GckSession *session)
 		{ CKA_VALUE, data, n_data },
 	};
 
-	if (gck_session_create_object_for_factory (session, GCK_FACTORY_CERTIFICATE,
-	                                           attrs, G_N_ELEMENTS (attrs), &object) == CKR_OK)
-		return object;
-
-	return NULL;
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_CERTIFICATE, NULL,
+	                                              attrs, G_N_ELEMENTS (attrs));
+	if (object) /* Owned by storage */
+		g_object_unref (object);
+	return object;
 }
