@@ -75,6 +75,16 @@ free_session (gpointer data)
 	g_free (sess);
 }
 
+static GP11Attributes*
+lookup_object (Session *session, CK_OBJECT_HANDLE hObject)
+{
+	GP11Attributes *attrs;
+	attrs = g_hash_table_lookup (the_objects, GUINT_TO_POINTER (hObject));
+	if (!attrs)
+		attrs = g_hash_table_lookup (session->objects, GUINT_TO_POINTER (hObject));
+	return attrs;
+}
+
 static CK_RV
 test_C_Initialize (CK_VOID_PTR pInitArgs)
 {
@@ -136,6 +146,10 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
 	                              CKA_DECRYPT, GP11_BOOLEAN, TRUE,
 	                              CKA_PRIVATE, GP11_BOOLEAN, TRUE,
+	                              CKA_WRAP, GP11_BOOLEAN, TRUE,
+	                              CKA_UNWRAP, GP11_BOOLEAN, TRUE,
+	                              CKA_DERIVE, GP11_BOOLEAN, TRUE,
+	                              CKA_VALUE, GP11_STRING, "value",
 	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_CAPITALIZE), attrs);
 
@@ -146,6 +160,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
 	                              CKA_ENCRYPT, GP11_BOOLEAN, TRUE,
 	                              CKA_PRIVATE, GP11_BOOLEAN, FALSE,
+	                              CKA_VALUE, GP11_STRING, "value",
 	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_CAPITALIZE), attrs);
 
@@ -157,6 +172,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_SIGN, GP11_BOOLEAN, TRUE,
 	                              CKA_PRIVATE, GP11_BOOLEAN, TRUE,
 	                              CKA_ALWAYS_AUTHENTICATE, GP11_BOOLEAN, TRUE,
+	                              CKA_VALUE, GP11_STRING, "value",
 	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_PREFIX), attrs);
 
@@ -167,6 +183,7 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
 	                              CKA_VERIFY, GP11_BOOLEAN, TRUE,
 	                              CKA_PRIVATE, GP11_BOOLEAN, FALSE,
+	                              CKA_VALUE, GP11_STRING, "value",
 	                              GP11_INVALID);
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_PREFIX), attrs);
 	
@@ -613,10 +630,8 @@ test_C_DestroyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject)
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
-	
-	attrs = g_hash_table_lookup (the_objects, GUINT_TO_POINTER (hObject));
-	if (!attrs)
-		attrs = g_hash_table_lookup (session->objects, GUINT_TO_POINTER (hObject));
+
+	attrs = lookup_object (session, hObject);
 	if (!attrs) {
 		g_assert_not_reached (); /* "no such object found" */
 		return CKR_OBJECT_HANDLE_INVALID;
@@ -654,9 +669,7 @@ test_C_GetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 	
-	attrs = g_hash_table_lookup (the_objects, GUINT_TO_POINTER (hObject));
-	if (!attrs)
-		attrs = g_hash_table_lookup (session->objects, GUINT_TO_POINTER (hObject));
+	attrs = lookup_object (session, hObject);
 	if (!attrs) {
 		g_assert_not_reached (); /* "invalid object handle passed" */
 		return CKR_OBJECT_HANDLE_INVALID;
@@ -703,9 +716,7 @@ test_C_SetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
 
-	attrs = g_hash_table_lookup (the_objects, GUINT_TO_POINTER (hObject));
-	if (!attrs)
-		attrs = g_hash_table_lookup (session->objects, GUINT_TO_POINTER (hObject));
+	attrs = lookup_object (session, hObject);
 	if (!attrs) {
 		g_assert_not_reached (); /* "invalid object handle passed" */
 		return CKR_OBJECT_HANDLE_INVALID;
@@ -1340,21 +1351,123 @@ test_C_GenerateKey (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
 
 static CK_RV
 test_C_GenerateKeyPair (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
-                      CK_ATTRIBUTE_PTR pPublicKeyTemplate, CK_ULONG ulPublicKeyAttributeCount,
-                      CK_ATTRIBUTE_PTR pPrivateKeyTemplate, CK_ULONG ulPrivateKeyAttributeCount,
-                      CK_OBJECT_HANDLE_PTR phPublicKey, CK_OBJECT_HANDLE_PTR phPrivateKey)
+                        CK_ATTRIBUTE_PTR pPublicKeyTemplate, CK_ULONG ulPublicKeyAttributeCount,
+                        CK_ATTRIBUTE_PTR pPrivateKeyTemplate, CK_ULONG ulPrivateKeyAttributeCount,
+                        CK_OBJECT_HANDLE_PTR phPublicKey, CK_OBJECT_HANDLE_PTR phPrivateKey)
 {
-	g_assert_not_reached (); /* Not yet used by library */
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	GP11Attributes *attrs;
+	Session *session;
+	gboolean token;
+	CK_ULONG i;
+
+	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
+	g_assert (session != NULL && "No such session found");
+	if (!session)
+		return CKR_SESSION_HANDLE_INVALID;
+
+	g_assert (pMechanism);
+	g_assert (pPublicKeyTemplate);
+	g_assert (ulPublicKeyAttributeCount);
+	g_assert (pPrivateKeyTemplate);
+	g_assert (phPublicKey);
+	g_assert (phPrivateKey);
+
+	if (pMechanism->mechanism != CKM_GENERATE)
+		return CKR_MECHANISM_INVALID;
+
+	if (!pMechanism->pParameter || pMechanism->ulParameterLen != 9 ||
+	    memcmp (pMechanism->pParameter, "generate", 9) != 0) {
+		g_assert_not_reached ();
+		return CKR_MECHANISM_PARAM_INVALID;
+	}
+
+	attrs = gp11_attributes_new ();
+	gp11_attributes_add_string (attrs, CKA_VALUE, "generated");
+	for (i = 0; i < ulPublicKeyAttributeCount; ++i)
+		gp11_attributes_add_data (attrs, pPublicKeyTemplate[i].type,
+		                          pPublicKeyTemplate[i].pValue,
+		                          pPublicKeyTemplate[i].ulValueLen);
+	*phPublicKey = ++unique_identifier;
+	if (gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token) && token)
+		g_hash_table_insert (the_objects, GUINT_TO_POINTER (*phPublicKey), attrs);
+	else
+		g_hash_table_insert (session->objects, GUINT_TO_POINTER (*phPublicKey), attrs);
+
+	attrs = gp11_attributes_new ();
+	gp11_attributes_add_string (attrs, CKA_VALUE, "generated");
+	for (i = 0; i < ulPrivateKeyAttributeCount; ++i)
+		gp11_attributes_add_data (attrs, pPrivateKeyTemplate[i].type,
+		                          pPrivateKeyTemplate[i].pValue,
+		                          pPrivateKeyTemplate[i].ulValueLen);
+	*phPrivateKey = ++unique_identifier;
+	if (gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token) && token)
+		g_hash_table_insert (the_objects, GUINT_TO_POINTER (*phPrivateKey), attrs);
+	else
+		g_hash_table_insert (session->objects, GUINT_TO_POINTER (*phPrivateKey), attrs);
+	return CKR_OK;
 }
 
 static CK_RV
 test_C_WrapKey (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
-              CK_OBJECT_HANDLE hWrappingKey, CK_OBJECT_HANDLE hKey,
-              CK_BYTE_PTR pWrappedKey, CK_ULONG_PTR pulWrappedKeyLen)
+                CK_OBJECT_HANDLE hWrappingKey, CK_OBJECT_HANDLE hKey,
+                CK_BYTE_PTR pWrappedKey, CK_ULONG_PTR pulWrappedKeyLen)
 {
-	g_assert_not_reached (); /* Not yet used by library */
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	GP11Attributes *attrs;
+	GP11Attribute *attr;
+	Session *session;
+
+	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
+	if (!session) {
+		g_assert_not_reached ();
+		return CKR_SESSION_HANDLE_INVALID;
+	}
+
+	g_assert (pMechanism);
+	g_assert (hWrappingKey);
+	g_assert (hKey);
+	g_assert (pulWrappedKeyLen);
+
+	attrs = lookup_object (session, hWrappingKey);
+	if (!attrs) {
+		g_assert_not_reached ();
+		return CKR_WRAPPING_KEY_HANDLE_INVALID;
+	}
+
+	attrs = lookup_object (session, hKey);
+	if (!attrs) {
+		g_assert_not_reached ();
+		return CKR_WRAPPED_KEY_INVALID;
+	}
+
+	if (pMechanism->mechanism != CKM_WRAP)
+		return CKR_MECHANISM_INVALID;
+
+	if (pMechanism->pParameter) {
+		if (pMechanism->ulParameterLen != 4 ||
+		    memcmp (pMechanism->pParameter, "wrap", 4) != 0) {
+			g_assert_not_reached ();
+			return CKR_MECHANISM_PARAM_INVALID;
+		}
+	}
+
+	attr = gp11_attributes_find (attrs, CKA_VALUE);
+	if (attr == NULL)
+		return CKR_WRAPPED_KEY_INVALID;
+
+	if (!pWrappedKey) {
+		*pulWrappedKeyLen = attr->length;
+		return CKR_OK;
+	}
+
+	if (*pulWrappedKeyLen < attr->length) {
+		*pulWrappedKeyLen = attr->length;
+		return CKR_BUFFER_TOO_SMALL;
+	}
+
+	memcpy (pWrappedKey, attr->value, attr->length);
+	*pulWrappedKeyLen = attr->length;
+
+	return CKR_OK;
 }
 
 static CK_RV
@@ -1363,8 +1476,56 @@ test_C_UnwrapKey (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                 CK_ULONG pulWrappedKeyLen, CK_ATTRIBUTE_PTR pTemplate,
                 CK_ULONG ulCount, CK_OBJECT_HANDLE_PTR phKey)
 {
-	g_assert_not_reached (); /* Not yet used by library */
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	GP11Attributes *attrs;
+	Session *session;
+	gboolean token;
+	CK_ULONG i;
+
+	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
+	if (!session) {
+		g_assert_not_reached ();
+		return CKR_SESSION_HANDLE_INVALID;
+	}
+
+	g_assert (pMechanism);
+	g_assert (pUnwrappingKey);
+	g_assert (pWrappedKey);
+	g_assert (pulWrappedKeyLen);
+	g_assert (phKey);
+	g_assert (ulCount);
+	g_assert (pTemplate);
+	g_assert (phKey);
+
+	attrs = lookup_object (session, pUnwrappingKey);
+	if (!attrs) {
+		g_assert_not_reached ();
+		return CKR_WRAPPING_KEY_HANDLE_INVALID;
+	}
+
+	if (pMechanism->mechanism != CKM_WRAP)
+		return CKR_MECHANISM_INVALID;
+
+	if (pMechanism->pParameter) {
+		if (pMechanism->ulParameterLen != 4 ||
+		    memcmp (pMechanism->pParameter, "wrap", 4) != 0) {
+			g_assert_not_reached ();
+			return CKR_MECHANISM_PARAM_INVALID;
+		}
+	}
+
+	attrs = gp11_attributes_new ();
+	gp11_attributes_add_data (attrs, CKA_VALUE, pWrappedKey, pulWrappedKeyLen);
+	for (i = 0; i < ulCount; ++i)
+		gp11_attributes_add_data (attrs, pTemplate[i].type,
+		                          pTemplate[i].pValue,
+		                          pTemplate[i].ulValueLen);
+	*phKey = ++unique_identifier;
+	if (gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token) && token)
+		g_hash_table_insert (the_objects, GUINT_TO_POINTER (*phKey), attrs);
+	else
+		g_hash_table_insert (session->objects, GUINT_TO_POINTER (*phKey), attrs);
+
+	return CKR_OK;
 }
 
 static CK_RV
@@ -1372,8 +1533,54 @@ test_C_DeriveKey (CK_SESSION_HANDLE hSession, CK_MECHANISM_PTR pMechanism,
                 CK_OBJECT_HANDLE hBaseKey, CK_ATTRIBUTE_PTR pTemplate,
                 CK_ULONG ulCount, CK_OBJECT_HANDLE_PTR phKey)
 {
-	g_assert_not_reached (); /* Not yet used by library */
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	GP11Attributes *attrs, *copy;
+	Session *session;
+	gboolean token;
+	CK_ULONG i;
+
+	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
+	if (!session) {
+		g_assert_not_reached ();
+		return CKR_SESSION_HANDLE_INVALID;
+	}
+
+	g_assert (pMechanism);
+	g_assert (ulCount);
+	g_assert (pTemplate);
+	g_assert (phKey);
+
+	attrs = lookup_object (session, hBaseKey);
+	if (!attrs) {
+		g_assert_not_reached ();
+		return CKR_WRAPPING_KEY_HANDLE_INVALID;
+	}
+
+	if (pMechanism->mechanism != CKM_DERIVE)
+		return CKR_MECHANISM_INVALID;
+
+	if (pMechanism->pParameter) {
+		if (pMechanism->ulParameterLen != 6 ||
+		    memcmp (pMechanism->pParameter, "derive", 6) != 0) {
+			g_assert_not_reached ();
+			return CKR_MECHANISM_PARAM_INVALID;
+		}
+	}
+
+	copy = gp11_attributes_new ();
+	gp11_attributes_add_string (copy, CKA_VALUE, "derived");
+	for (i = 0; i < ulCount; ++i)
+		gp11_attributes_add_data (copy, pTemplate[i].type,
+		                          pTemplate[i].pValue,
+		                          pTemplate[i].ulValueLen);
+	for (i = 0; i < gp11_attributes_count (attrs); ++i)
+		gp11_attributes_add (copy, gp11_attributes_at (attrs, i));
+	*phKey = ++unique_identifier;
+	if (gp11_attributes_find_boolean (copy, CKA_TOKEN, &token) && token)
+		g_hash_table_insert (the_objects, GUINT_TO_POINTER (*phKey), copy);
+	else
+		g_hash_table_insert (session->objects, GUINT_TO_POINTER (*phKey), copy);
+
+	return CKR_OK;
 }
 
 static CK_RV

@@ -57,6 +57,16 @@ typedef struct GP11Mechanism {
 	gulong n_parameter;
 } GP11Mechanism;
 
+GP11Mechanism*      gp11_mechanism_new                      (gulong type);
+
+GP11Mechanism*      gp11_mechanism_new_with_param           (gulong type,
+                                                             gconstpointer parameter,
+                                                             gulong n_parameter);
+
+GP11Mechanism*      gp11_mechanism_ref                      (GP11Mechanism* mech);
+
+void                gp11_mechanism_unref                    (GP11Mechanism* mech);
+
 typedef struct GP11Attribute {
 	gulong type;
 	guchar *value;
@@ -714,25 +724,32 @@ GP11Object*         gp11_session_generate_key_finish        (GP11Session *self,
                                                              GError **err,
                                                              ...) GP11_INVALID_TERMINATED;
 
-gboolean            gp11_session_generate_key_pair          (GP11Session *self,
+#endif /* UNIMPLEMENTED */
+
+gboolean            gp11_session_generate_key_pair_full     (GP11Session *self,
                                                              GP11Mechanism *mechanism,
+                                                             GP11Attributes *public_attrs,
+                                                             GP11Attributes *private_attrs,
                                                              GP11Object **public_key,
                                                              GP11Object **private_key,
-                                                             GError **err,
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             GCancellable *cancellable,
+                                                             GError **err);
 
 void                gp11_session_generate_key_pair_async    (GP11Session *self,
                                                              GP11Mechanism *mechanism,
+                                                             GP11Attributes *public_attrs,
+                                                             GP11Attributes *private_attrs,
+                                                             GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
-                                                             gpointer user_data,
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             gpointer user_data);
 
 gboolean            gp11_session_generate_key_pair_finish   (GP11Session *self,
                                                              GAsyncResult *result,
                                                              GP11Object **public_key,
                                                              GP11Object **private_key,
-                                                             GError **err,
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             GError **err);
+
+#ifdef UNIMPLEMENTED
 
 gboolean            gp11_session_seed_random                (GP11Session *self,
                                                              const guchar *seed,
@@ -774,7 +791,7 @@ guchar*             gp11_session_encrypt                     (GP11Session *self,
 
 guchar*             gp11_session_encrypt_full                (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -783,7 +800,7 @@ guchar*             gp11_session_encrypt_full                (GP11Session *self,
 
 void                gp11_session_encrypt_async               (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GCancellable *cancellable,
@@ -799,13 +816,13 @@ guchar*             gp11_session_encrypt_finish              (GP11Session *self,
 
 GP11Processor*      gp11_session_batch_encrypt               (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               GCancellable *cancellable,
                                                               GError **err);
 
 void                gp11_session_batch_encrypt_async         (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               GCancellable *cancellable,
                                                               GAsyncReadyCallback callback,
                                                               gpointer user_data);
@@ -827,7 +844,7 @@ guchar*             gp11_session_decrypt                     (GP11Session *self,
 
 guchar*             gp11_session_decrypt_full                (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -836,7 +853,7 @@ guchar*             gp11_session_decrypt_full                (GP11Session *self,
 
 void                gp11_session_decrypt_async               (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GCancellable *cancellable,
@@ -852,13 +869,13 @@ guchar*             gp11_session_decrypt_finish              (GP11Session *self,
 
 GP11Processor*      gp11_session_batch_decrypt               (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               GCancellable *cancellable,
                                                               GError **err);
 
 void                gp11_session_batch_decrypt_async         (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               GCancellable *cancellable,
                                                               GAsyncReadyCallback callback,
                                                               gpointer user_data);
@@ -875,7 +892,7 @@ guchar*             gp11_session_digest                      (GP11Session *self,
                                                               GError **err);
 
 guchar*             gp11_session_digest_full                 (GP11Session *self,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -883,7 +900,7 @@ guchar*             gp11_session_digest_full                 (GP11Session *self,
                                                               GError **err);
 
 void                gp11_session_digest_async                (GP11Session *self,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GCancellable *cancellable,
@@ -896,12 +913,12 @@ guchar*             gp11_session_digest_finish               (GP11Session *self,
                                                               GError **err);
 
 GP11Processor*      gp11_session_batch_digest	             (GP11Session *self,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               GCancellable *cancellable,
                                                               GError **err);
 
 void                gp11_session_batch_digest_async          (GP11Session *self,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               GCancellable *cancellable,
                                                               GAsyncReadyCallback callback,
                                                               gpointer user_data);
@@ -979,7 +996,7 @@ guchar*             gp11_session_sign                        (GP11Session *self,
 
 guchar*             gp11_session_sign_full                   (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -988,7 +1005,7 @@ guchar*             gp11_session_sign_full                   (GP11Session *self,
 
 void                gp11_session_sign_async                  (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GCancellable *cancellable,
@@ -1004,13 +1021,13 @@ guchar*             gp11_session_sign_finish                 (GP11Session *self,
 
 GP11Processor*      gp11_session_batch_sign                  (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               GCancellable *cancellable,
                                                               GError **err);
 
 void                gp11_session_batch_sign_async            (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               GCancellable *cancellable,
                                                               GAsyncReadyCallback callback,
                                                               gpointer user_data);
@@ -1048,7 +1065,7 @@ guchar*             gp11_session_sign_recover                (GP11Session *self,
 
 guchar*             gp11_session_sign_recover_full           (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -1057,7 +1074,7 @@ guchar*             gp11_session_sign_recover_full           (GP11Session *self,
 
 void                gp11_session_sign_recover_async          (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GCancellable *cancellable,
@@ -1082,7 +1099,7 @@ gboolean            gp11_session_verify                      (GP11Session *self,
 
 gboolean            gp11_session_verify_full                 (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               const guchar *signature,
@@ -1118,7 +1135,7 @@ GkrProcessor*       gp11_session_batch_verify                (GP11Session *self,
 
 void                gp11_session_batch_verify_async          (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GCancellable *cancellable,
@@ -1139,7 +1156,7 @@ guchar*             gp11_session_verify_recover              (GP11Session *self,
 
 guchar*             gp11_session_verify_recover_full         (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
@@ -1148,7 +1165,7 @@ guchar*             gp11_session_verify_recover_full         (GP11Session *self,
 
 void                gp11_session_verify_recover_async        (GP11Session *self,
                                                               GP11Object *key,
-                                                              GP11Mechanism *mech_args,
+                                                              GP11Mechanism *mechanism,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               GCancellable *cancellable,
@@ -1160,92 +1177,91 @@ guchar*             gp11_session_verify_recover_finish       (GP11Session *self,
                                                               gsize *n_result,
                                                               GError **err);
 
-guchar*             gp11_session_wrap                        (GP11Session *self,
-                                                              GP11Object *key,
-                                                              gulong mech_type,
-                                                              GP11Object *wrapped_key,
-                                                              gsize *n_result,
-                                                              GError **err);
-
-guchar*             gp11_session_wrap                        (GP11Session *self,
-                                                              GP11Object *key,
-                                                              GP11Mechanism *mech_args,
-                                                              GP11Object *wrapped_key,
-                                                              gsize *n_result,
-                                                              GCancellable *cancellable,
-                                                              GError **err);
-
-void                gp11_session_wrap_async                  (GP11Session *self,
-                                                              GP11Object *key,
-                                                              GP11Mechanism *mech_args,
-                                                              GP11Object *wrapped_key,
-                                                              GCancellable *cancellable,
-                                                              GAsyncReadyCallback callback,
-                                                              gpointer user_data);
-
-guchar*             gp11_session_wrap_finish                 (GP11Session *self,
-                                                              GAsyncResult *result,
-                                                              gsize *n_result,
-                                                              GError **err);
-
-GP11Object*         gp11_session_unwrap                      (GP11Session *self,
-                                                              GP11Object *key,
-                                                              gulong mech_type,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              GError **err,
-                                                              ...) GP11_INVALID_TERMINATED;
-
-GP11Object*         gp11_session_unwrap                      (GP11Session *self,
-                                                              GP11Object *key,
-                                                              GP11Mechanism *mech_args,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              GCancellable *cancellable,
-                                                              GError **err,
-                                                              ...) GP11_INVALID_TERMINATED;
-
-void                gp11_session_unwrap_async                (GP11Session *self,
-                                                              GP11Object *key,
-                                                              GP11Mechanism *mech_args,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              GCancellable *cancellable,
-                                                              GAsyncReadyCallback callback,
-                                                              gpointer user_data);
-                                                              ...) GP11_INVALID_TERMINATED;
-
-GP11Object*         gp11_session_unwrap_finish               (GP11Session *self,
-                                                              GAsyncResult *result,
-                                                              GError **err);
-
-GP11Object*         gp11_session_derive                      (GP11Session *self,
-                                                              GP11Object *key,
-                                                              gulong mech_type,
-                                                              GError **err,
-                                                              ...) GP11_INVALID_TERMINATED;
-
-GP11Object*         gp11_session_derive_full                 (GP11Session *self,
-                                                              GP11Object *key,
-                                                              GP11Mechanism *mech_args,
-                                                              GCancellable *cancellable,
-                                                              GError **err,
-                                                              ...) GP11_INVALID_TERMINATED;
-
-void                gp11_session_derive_async                (GP11Session *self,
-                                                              GP11Object *key,
-                                                              GP11Mechanism *mech_args,
-                                                              GCancellable *cancellable,
-                                                              GAsyncReadyCallback callback,
-                                                              gpointer user_data);
-                                                              ...) GP11_INVALID_TERMINATED;
-
-GP11Object*         gp11_session_derive_finish               (GP11Session *self,
-                                                              GAsyncResult *result,
-                                                              GError **err);
-
 #endif /* UNIMPLEMENTED */
 
+gpointer            gp11_session_wrap_key                    (GP11Session *self,
+                                                              GP11Object *wrapper,
+                                                              gulong mech_type,
+                                                              GP11Object *wrapped,
+                                                              gsize *n_result,
+                                                              GError **err);
+
+gpointer            gp11_session_wrap_key_full               (GP11Session *self,
+                                                              GP11Object *wrapper,
+                                                              GP11Mechanism *mechanism,
+                                                              GP11Object *wrapped,
+                                                              gsize *n_result,
+                                                              GCancellable *cancellable,
+                                                              GError **err);
+
+void                gp11_session_wrap_key_async              (GP11Session *self,
+                                                              GP11Object *wrapper,
+                                                              GP11Mechanism *mechanism,
+                                                              GP11Object *wrapped,
+                                                              GCancellable *cancellable,
+                                                              GAsyncReadyCallback callback,
+                                                              gpointer user_data);
+
+gpointer            gp11_session_wrap_key_finish             (GP11Session *self,
+                                                              GAsyncResult *result,
+                                                              gsize *n_result,
+                                                              GError **err);
+
+GP11Object*         gp11_session_unwrap_key                  (GP11Session *self,
+                                                              GP11Object *wrapper,
+                                                              gulong mech_type,
+                                                              gconstpointer input,
+                                                              gsize n_input,
+                                                              GError **err,
+                                                              ...) GP11_INVALID_TERMINATED;
+
+GP11Object*         gp11_session_unwrap_key_full             (GP11Session *self,
+                                                              GP11Object *wrapper,
+                                                              GP11Mechanism *mechanism,
+                                                              gconstpointer input,
+                                                              gsize n_input,
+                                                              GP11Attributes *attrs,
+                                                              GCancellable *cancellable,
+                                                              GError **err);
+
+void                gp11_session_unwrap_key_async            (GP11Session *self,
+                                                              GP11Object *wrapper,
+                                                              GP11Mechanism *mechanism,
+                                                              gconstpointer input,
+                                                              gsize n_input,
+                                                              GP11Attributes *attrs,
+                                                              GCancellable *cancellable,
+                                                              GAsyncReadyCallback callback,
+                                                              gpointer user_data);
+
+GP11Object*         gp11_session_unwrap_key_finish           (GP11Session *self,
+                                                              GAsyncResult *result,
+                                                              GError **err);
+
+GP11Object*         gp11_session_derive_key                  (GP11Session *self,
+                                                              GP11Object *base,
+                                                              gulong mech_type,
+                                                              GError **err,
+                                                              ...) GP11_INVALID_TERMINATED;
+
+GP11Object*         gp11_session_derive_key_full             (GP11Session *self,
+                                                              GP11Object *base,
+                                                              GP11Mechanism *mechanism,
+                                                              GP11Attributes *attrs,
+                                                              GCancellable *cancellable,
+                                                              GError **err);
+
+void                gp11_session_derive_key_async            (GP11Session *self,
+                                                              GP11Object *base,
+                                                              GP11Mechanism *mechanism,
+                                                              GP11Attributes *attrs,
+                                                              GCancellable *cancellable,
+                                                              GAsyncReadyCallback callback,
+                                                              gpointer user_data);
+
+GP11Object*         gp11_session_derive_key_finish           (GP11Session *self,
+                                                              GAsyncResult *result,
+                                                              GError **err);
 
 /* ------------------------------------------------------------------------
  * OBJECT

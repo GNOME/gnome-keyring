@@ -29,9 +29,22 @@
  * CKM_PREFIX (sign/verify)
  *     sign prefixes data with key label
  *     verify unprefixes data with key label. 
+ *
+ * CKM_GENERATE (generate-pair)
+ *     generates a pair of keys, mechanism param should be 'generate'
+ *
+ * CKM_WRAP (wrap key)
+ *     wraps key by returning value, mechanism param should be 'wrap'
+ *
+ * CKM_DERIVE (derive-key)
+ *     derives key by setting value to 'derived'.
+ *     mechanism param should be 'derive'
  */
 
 #define CKM_CAPITALIZE    (CKM_VENDOR_DEFINED | 1)
 #define CKM_PREFIX        (CKM_VENDOR_DEFINED | 2)
+#define CKM_GENERATE      (CKM_VENDOR_DEFINED | 3)
+#define CKM_WRAP          (CKM_VENDOR_DEFINED | 4)
+#define CKM_DERIVE        (CKM_VENDOR_DEFINED | 5)
 
 #endif /*TESTGP11HELPERS_H_*/

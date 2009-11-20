@@ -2,6 +2,7 @@
 # Keep these in the order they should be tested
 UNIT_AUTO = \
 	unit-test-gp11-attributes.c \
+	test-gp11-mechanism.c \
 	unit-test-gp11-module.c \
 	unit-test-gp11-slot.c \
 	unit-test-gp11-session.c \

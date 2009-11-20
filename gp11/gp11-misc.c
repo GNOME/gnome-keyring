@@ -352,3 +352,86 @@ _gp11_ulong_equal (gconstpointer v1, gconstpointer v2)
 {
 	return *((const gulong*)v1) == *((const gulong*)v2);
 }
+
+static GQuark mechanism_quark = 0;
+
+static void
+free_refs (gpointer data)
+{
+	gint *refs = data;
+	g_assert (refs);
+	g_assert (*refs == 0);
+	g_slice_free (gint, data);
+}
+
+GP11Mechanism*
+gp11_mechanism_new (gulong type)
+{
+	return gp11_mechanism_new_with_param (type, NULL, 0);
+}
+
+GP11Mechanism*
+gp11_mechanism_new_with_param (gulong type, gconstpointer parameter,
+                               gulong n_parameter)
+{
+	static volatile gsize inited_quark = 0;
+	GP11Mechanism *mech;
+	gint *refs;
+
+	/* Initialize first time around */
+	if (g_once_init_enter (&inited_quark)) {
+		mechanism_quark = g_quark_from_static_string ("GP11Mechanism::refs");
+		g_once_init_leave (&inited_quark, 1);
+	}
+
+	mech = g_slice_new (GP11Mechanism);
+	mech->type = type;
+	mech->parameter = g_memdup (parameter, n_parameter);
+	mech->n_parameter = n_parameter;
+
+	refs = g_slice_new (gint);
+	*refs = 1;
+	g_dataset_id_set_data_full (mech, mechanism_quark, refs, free_refs);
+
+	return mech;
+}
+
+GP11Mechanism*
+gp11_mechanism_ref (GP11Mechanism* mech)
+{
+	gint *refs;
+
+	g_return_val_if_fail (mech, NULL);
+
+	refs = g_dataset_id_get_data (mech, mechanism_quark);
+	if (refs == NULL) {
+		g_warning ("Encountered invalid GP11Mechanism struct. Either it was unreffed or "
+		           "possibly allocated on the stack. Always use gp11_mechanism_new () and friends.");
+		return NULL;
+	}
+
+	g_atomic_int_add (refs, 1);
+	return mech;
+}
+
+void
+gp11_mechanism_unref (GP11Mechanism* mech)
+{
+	gint *refs;
+
+	if (!mech)
+		return;
+
+	refs = g_dataset_id_get_data (mech, mechanism_quark);
+	if (refs == NULL) {
+		g_warning ("Encountered invalid GP11Mechanism struct. Either it was unreffed or "
+		           "possibly allocated on the stack. Always use gp11_mechanism_new () and friends.");
+		return;
+	}
+
+	if (g_atomic_int_dec_and_test (refs)) {
+		g_free (mech->parameter);
+		g_dataset_id_remove_data (mech, mechanism_quark);
+		g_slice_free (GP11Mechanism, mech);
+	}
+}
