@@ -123,12 +123,32 @@ static void
 test_dh_default (const gchar *name, guint bits)
 {
 	gboolean ret;
-	gcry_mpi_t p, g;
+	gcry_mpi_t p, g, check;
+	gconstpointer prime, base;
+	gsize n_prime, n_base;
+	gcry_error_t gcry;
 
 	ret = egg_dh_default_params (name, &p, &g);
 	g_assert (ret);
 	g_assert_cmpint (gcry_mpi_get_nbits (p), ==, bits);
 	g_assert_cmpint (gcry_mpi_get_nbits (g), <, gcry_mpi_get_nbits (p));
+
+	ret = egg_dh_default_params_raw (name, &prime, &n_prime, &base, &n_base);
+	g_assert (ret);
+	g_assert (prime != NULL);
+	g_assert_cmpsize (n_prime, >, 0);
+	g_assert (base != NULL);
+	g_assert_cmpsize (n_base, >, 0);
+
+	gcry = gcry_mpi_scan (&check, GCRYMPI_FMT_USG, prime, n_prime, NULL);
+	g_assert (gcry == 0);
+	g_assert (gcry_mpi_cmp (check, p) == 0);
+	gcry_mpi_release (check);
+
+	gcry = gcry_mpi_scan (&check, GCRYMPI_FMT_USG, base, n_base, NULL);
+	g_assert (gcry == 0);
+	g_assert (gcry_mpi_cmp (check, g) == 0);
+	gcry_mpi_release (check);
 
 	gcry_mpi_release (p);
 	gcry_mpi_release (g);

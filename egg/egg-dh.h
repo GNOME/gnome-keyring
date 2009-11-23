@@ -28,6 +28,12 @@
 
 gboolean   egg_dh_default_params   (const gchar *name, gcry_mpi_t *prime, gcry_mpi_t *base);
 
+gboolean   egg_dh_default_params_raw                          (const gchar *name,
+                                                               gconstpointer *prime,
+                                                               gsize *n_prime,
+                                                               gconstpointer *base,
+                                                               gsize *n_base);
+
 gboolean   egg_dh_gen_pair         (gcry_mpi_t p, gcry_mpi_t g, guint bits, gcry_mpi_t *X, gcry_mpi_t *x);
 
 gboolean   egg_dh_gen_secret       (gcry_mpi_t Y, gcry_mpi_t x, gcry_mpi_t p, gcry_mpi_t *k);
