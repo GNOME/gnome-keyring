@@ -846,7 +846,7 @@ main (int argc, char *argv[])
 	 */
 	if (login_password) {
 		if (!gkr_keyring_login_unlock (login_password))
-			g_warning ("Failed to unlock login on startup");
+			g_message ("Failed to unlock login on startup");
 		egg_secure_strclear (login_password);
 	}
 	
