@@ -315,6 +315,14 @@ log_handler (const gchar *log_domain, GLogLevelFlags log_level,
 }
 
 static void
+printerr_handler (const gchar *string)
+{
+	/* Print to syslog and stderr */
+	syslog (LOG_WARNING, "%s", string);
+	fprintf (stderr, "%s", string);
+}
+
+static void
 prepare_logging ()
 {
     GLogLevelFlags flags = G_LOG_FLAG_FATAL | G_LOG_LEVEL_ERROR | 
@@ -328,6 +336,7 @@ prepare_logging ()
     g_log_set_handler ("Gtk", flags, log_handler, NULL);
     g_log_set_handler ("Gnome", flags, log_handler, NULL);
     g_log_set_default_handler (log_handler, NULL);
+    g_set_printerr_handler (printerr_handler);
 }
 
 /* -----------------------------------------------------------------------------
