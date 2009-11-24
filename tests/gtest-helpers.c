@@ -37,7 +37,11 @@
 
 #include "egg/egg-secure-memory.h"
 
+#include "pkcs11/pkcs11.h"
+
+#ifdef WITH_P11_TESTS
 #include <p11-tests.h>
+#endif
 
 /* Forward declaration */
 void test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config);
@@ -183,11 +187,10 @@ test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
 
 #else /* !WITH_P11_TESTS */
 
-gint
-test_p11_module (CK_FUNCTION_LIST_PTR module)
+void
+test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
 {
 	g_message ("p11-tests support not built in");
-	return 0;
 }
 
 #endif /* !WITH_P11_TESTS */
