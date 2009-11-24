@@ -565,7 +565,6 @@ docs/reference/Makefile
 docs/reference/gcr/Makefile
 docs/reference/gnome-keyring/Makefile
 docs/reference/gp11/Makefile
-docs/reference/secrets/Makefile
 egg/Makefile
 egg/tests/Makefile
 gcr/gcr.pc
@@ -593,7 +592,6 @@ pkcs11/ssh-store/tests/Makefile
 pkcs11/user-store/Makefile
 pkcs11/user-store/tests/Makefile
 po/Makefile.in
-secrets/Makefile
 tests/Makefile
 tool/Makefile
 library/gnome-keyring-1.pc

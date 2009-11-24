@@ -17,7 +17,6 @@ SUBDIRS = \
 	gcr \
 	library \
 	pkcs11 \
-	secrets \
 	daemon \
 	tool \
 	$(TESTS_DIR) \
