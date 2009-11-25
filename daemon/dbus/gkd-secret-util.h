@@ -42,4 +42,6 @@ gchar*            gkd_secret_util_path_for_item                         (GP11Obj
 
 gchar*            gkd_secret_util_identifier_for_collection             (GP11Object *collection);
 
+GP11Attributes*   gkd_secret_util_attributes_for_item                   (GP11Object *item);
+
 #endif /* __GKD_SECRET_UTIL_H__ */

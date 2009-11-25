@@ -107,6 +107,7 @@ factory_create_item (GckSession *session, GckTransaction *transaction,
 	GckManager *s_manager;
 	CK_ATTRIBUTE *attr;
 	gboolean is_token;
+	gchar *identifier;
 
 	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
@@ -132,6 +133,18 @@ factory_create_item (GckSession *session, GckTransaction *transaction,
 	if (!collection) {
 		gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
 		return NULL;
+	}
+
+	/* If an ID was specified, then try and see if that ID already exists */
+	if (gck_attributes_find_string (attrs, n_attrs, CKA_ID, &identifier)) {
+		item = gck_secret_collection_get_item (collection, identifier);
+		if (item == NULL) {
+			gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+			return NULL;
+		} else {
+			gck_attributes_consume (attrs, n_attrs, CKA_ID, G_MAXULONG);
+			return g_object_ref (item);
+		}
 	}
 
 	/* Create a new collection which will own the item */

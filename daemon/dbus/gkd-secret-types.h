@@ -48,6 +48,7 @@ typedef struct _GkdSecretCreate GkdSecretCreate;
 typedef struct _GkdSecretItem GkdSecretItem;
 typedef struct _GkdSecretObjects GkdSecretObjects;
 typedef struct _GkdSecretPrompt GkdSecretPrompt;
+typedef struct _GkdSecretSecret GkdSecretSecret;
 typedef struct _GkdSecretService GkdSecretService;
 typedef struct _GkdSecretSession GkdSecretSession;
 typedef struct _GkdSecretUnlock GkdSecretUnlock;

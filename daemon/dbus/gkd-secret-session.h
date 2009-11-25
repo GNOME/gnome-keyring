@@ -50,4 +50,13 @@ const gchar*        gkd_secret_session_get_caller_executable   (GkdSecretSession
 
 const gchar*        gkd_secret_session_get_object_path         (GkdSecretSession *self);
 
+GkdSecretSecret*    gkd_secret_session_get_item_secret         (GkdSecretSession *self,
+                                                                GP11Object *item,
+                                                                DBusError *derr);
+
+gboolean            gkd_secret_session_set_item_secret         (GkdSecretSession *self,
+                                                                GP11Object *item,
+                                                                GkdSecretSecret *secret,
+                                                                DBusError *derr);
+
 #endif /* __GKD_SECRET_SESSION_H__ */

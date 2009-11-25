@@ -23,9 +23,11 @@
 
 #include "gkd-dbus-util.h"
 
-#include "gkd-secret-service.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-property.h"
+#include "gkd-secret-secret.h"
+#include "gkd-secret-service.h"
+#include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
 
@@ -282,11 +284,95 @@ item_method_delete (GkdSecretObjects *self, GP11Object *object, DBusMessage *mes
 }
 
 static DBusMessage*
+item_method_get_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *message)
+{
+	DBusError derr = DBUS_ERROR_INIT;
+	GkdSecretSession *session;
+	GkdSecretSecret *secret;
+	DBusMessage *reply;
+	DBusMessageIter iter;
+	const char *caller;
+	const char *path;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
+		return NULL;
+
+	caller = dbus_message_get_sender (message);
+	g_return_val_if_fail (caller, NULL);
+
+	session = gkd_secret_service_lookup_session (self->service, path, caller);
+	if (session == NULL)
+		return dbus_message_new_error_printf (message, SECRET_ERROR_NO_SESSION,
+		                                      "No such session exists");
+
+	secret = gkd_secret_session_get_item_secret (session, item, &derr);
+	if (secret == NULL) {
+		reply = dbus_message_new_error (message, derr.name, derr.message);
+		dbus_error_free (&derr);
+		return reply;
+	}
+
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	gkd_secret_secret_append (secret, &iter);
+	gkd_secret_secret_free (secret);
+	return reply;
+}
+
+static DBusMessage*
+item_method_set_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *message)
+{
+	DBusError derr = DBUS_ERROR_INIT;
+	DBusMessageIter iter;
+	DBusMessage *reply;
+	GkdSecretSecret *secret;
+	GkdSecretSession *session;
+	const char *caller;
+
+	if (!dbus_message_has_signature (message, GKD_SECRET_SECRET_SIG))
+		return NULL;
+	dbus_message_iter_init (message, &iter);
+	secret = gkd_secret_secret_parse (&iter);
+	if (secret == NULL)
+		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+		                               "The secret is invalid");
+
+	caller = dbus_message_get_sender (message);
+	g_return_val_if_fail (caller, NULL);
+
+	session = gkd_secret_service_lookup_session (self->service, secret->path, caller);
+	if (session == NULL) {
+		gkd_secret_secret_free (secret);
+		return dbus_message_new_error_printf (message, SECRET_ERROR_NO_SESSION,
+		                                      "No such session exists");
+	}
+
+	gkd_secret_session_set_item_secret (session, item, secret, &derr);
+	gkd_secret_secret_free (secret);
+
+	if (dbus_error_is_set (&derr)) {
+		reply = dbus_message_new_error (message, derr.name, derr.message);
+		dbus_error_free (&derr);
+		return reply;
+	}
+
+	return dbus_message_new_method_return (message);
+}
+
+static DBusMessage*
 item_message_handler (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
 	/* org.freedesktop.Secrets.Item.Delete() */
 	if (dbus_message_is_method_call (message, SECRET_ITEM_INTERFACE, "Delete"))
 		return item_method_delete (self, object, message);
+
+	/* org.freedesktop.Secrets.Session.GetSecret() */
+	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "GetSecret"))
+		return item_method_get_secret (self, object, message);
+
+	/* org.freedesktop.Secrets.Session.SetSecret() */
+	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SetSecret"))
+		return item_method_set_secret (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Get */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))

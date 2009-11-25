@@ -59,9 +59,9 @@ GP11Session*            gkd_secret_service_get_pkcs11_session      (GkdSecretSer
 
 GkdSecretObjects*       gkd_secret_service_get_objects             (GkdSecretService *self);
 
-#if 0
-void                    gkd_secret_service_refresh                 (GkdSecretService *self);
-#endif
+GkdSecretSession*       gkd_secret_service_lookup_session          (GkdSecretService *self,
+                                                                    const gchar *path,
+                                                                    const gchar *caller);
 
 void                    gkd_secret_service_close_session           (GkdSecretService *self,
                                                                     GkdSecretSession *sess);

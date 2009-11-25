@@ -409,3 +409,27 @@ gkd_secret_util_identifier_for_collection (GP11Object *collection)
 
 	return identifier;
 }
+
+GP11Attributes*
+gkd_secret_util_attributes_for_item (GP11Object *item)
+{
+	gchar *coll, *identifier;
+	GP11Attributes *attrs;
+	gchar *path;
+
+	path = gkd_secret_util_path_for_item (item);
+	if (path == NULL)
+		return NULL;
+
+	if (!parse_collection_and_item_from_path (path, &coll, &identifier))
+		g_return_val_if_reached (NULL);
+
+	attrs = gp11_attributes_new ();
+	gp11_attributes_add_string (attrs, CKA_G_COLLECTION, coll);
+	gp11_attributes_add_string (attrs, CKA_ID, identifier);
+
+	g_free (identifier);
+	g_free (coll);
+	g_free (path);
+	return attrs;
+}

@@ -892,6 +892,22 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 	return client->pkcs11_session;
 }
 
+GkdSecretSession*
+gkd_secret_service_lookup_session (GkdSecretService *self, const gchar *path,
+                                   const gchar *caller)
+{
+	ServiceClient *client;
+
+	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (path, NULL);
+	g_return_val_if_fail (caller, NULL);
+
+	client = g_hash_table_lookup (self->clients, caller);
+	g_return_val_if_fail (client, NULL);
+
+	return g_hash_table_lookup (client->sessions, path);
+}
+
 void
 gkd_secret_service_close_session (GkdSecretService *self, GkdSecretSession *session)
 {
