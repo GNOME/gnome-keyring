@@ -84,11 +84,11 @@ emit_completed (GkdSecretPrompt *self, gboolean dismissed)
 	dbus_message_set_destination (signal, self->pv->caller);
 	dbus_message_iter_init_append (signal, &iter);
 
-	g_return_if_fail (GKD_SECRET_PROMPT_GET_CLASS (self)->encode_result);
-	GKD_SECRET_PROMPT_GET_CLASS (self)->encode_result (self, &iter);
-
 	bval = dismissed;
 	dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &bval);
+
+	g_return_if_fail (GKD_SECRET_PROMPT_GET_CLASS (self)->encode_result);
+	GKD_SECRET_PROMPT_GET_CLASS (self)->encode_result (self, &iter);
 
 	gkd_secret_service_send (self->pv->service, signal);
 	dbus_message_unref (signal);
