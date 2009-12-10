@@ -841,7 +841,7 @@ gkd_secret_objects_dispatch (GkdSecretObjects *self, DBusMessage *message)
 
 	object = gkd_secret_util_path_to_object (session, path, &is_item);
 	if (!object)
-		return NULL;
+		return gkd_secret_util_no_such_object (message);
 
 	if (is_item)
 		reply = item_message_handler (self, object, message);

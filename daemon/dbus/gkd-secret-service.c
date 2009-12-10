@@ -30,6 +30,7 @@
 #include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
 #include "gkd-secret-unlock.h"
+#include "gkd-secret-util.h"
 
 #include "egg/egg-unix-credentials.h"
 
@@ -556,13 +557,17 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 	/* Dispatched to a session, find a session in this client */
 	if (object_path_has_prefix (path, SECRET_SESSION_PREFIX)) {
 		object = g_hash_table_lookup (client->sessions, path);
-		if (object != NULL)
+		if (object == NULL)
+			reply = gkd_secret_util_no_such_object (message);
+		else
 			reply = gkd_secret_session_dispatch (object, message);
 
 	/* Dispatched to a prompt, find a prompt in this client */
 	} else if (object_path_has_prefix (path, SECRET_PROMPT_PREFIX)) {
 		object = g_hash_table_lookup (client->prompts, path);
-		if (object != NULL)
+		if (object == NULL)
+			reply = gkd_secret_util_no_such_object (message);
+		else
 			reply = gkd_secret_prompt_dispatch (object, message);
 
 	/* Dispatched to a collection, off it goes */
@@ -576,7 +581,7 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 
 	/* Should we send an error? */
 	if (!reply && dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL) {
-		if (!dbus_message_get_no_reply (message) && !gkd_dbus_message_is_handled (message)) {
+		if (!dbus_message_get_no_reply (message)) {
 			reply = dbus_message_new_error_printf (message, DBUS_ERROR_UNKNOWN_METHOD,
 			                                       "Method \"%s\" with signature \"%s\" on interface \"%s\" doesn't exist\n",
 			                                       dbus_message_get_member (message),

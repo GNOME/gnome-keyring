@@ -42,6 +42,7 @@
 #define SECRET_ERROR_IS_LOCKED         "org.freedesktop.Secrets.Error.IsLocked"
 #define SECRET_ERROR_NOT_SUPPORTED     "org.freedesktop.Secrets.Error.NotSupported"
 #define SECRET_ERROR_NO_SESSION        "org.freedesktop.Secrets.Error.NoSession"
+#define SECRET_ERROR_NO_SUCH_OBJECT    "org.freedesktop.Secrets.Error.NoSuchObject"
 
 typedef struct _GkdSecretCollection GkdSecretCollection;
 typedef struct _GkdSecretCreate GkdSecretCreate;

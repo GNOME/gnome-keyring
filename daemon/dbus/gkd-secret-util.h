@@ -26,6 +26,8 @@
 
 #include "gp11/gp11.h"
 
+#include <dbus/dbus.h>
+
 GP11Object*       gkd_secret_util_path_to_collection                    (GP11Session *session,
                                                                          const gchar *path);
 
@@ -43,5 +45,7 @@ gchar*            gkd_secret_util_path_for_item                         (GP11Obj
 gchar*            gkd_secret_util_identifier_for_collection             (GP11Object *collection);
 
 GP11Attributes*   gkd_secret_util_attributes_for_item                   (GP11Object *item);
+
+DBusMessage*      gkd_secret_util_no_such_object                        (DBusMessage *message);
 
 #endif /* __GKD_SECRET_UTIL_H__ */
