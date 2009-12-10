@@ -477,7 +477,7 @@ service_method_unlock (GkdSecretService *self, DBusMessage *message)
 
 	/* No need to prompt */
 	} else {
-		path = "";
+		path = "/";
 	}
 
 	reply = dbus_message_new_method_return (message);
