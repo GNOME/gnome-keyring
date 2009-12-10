@@ -50,6 +50,10 @@ DBusMessage*        gkd_secret_objects_handle_search_items       (GkdSecretObjec
                                                                   DBusMessage *message,
                                                                   GP11Object *object);
 
+DBusMessage*        gkd_secret_objects_handle_collection         (GkdSecretObjects *self,
+                                                                  GP11Object *collection,
+                                                                  DBusMessage *message);
+
 void                gkd_secret_objects_append_collection_paths   (GkdSecretObjects *self,
                                                                   DBusMessageIter *iter,
                                                                   DBusMessage *message);

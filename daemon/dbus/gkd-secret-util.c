@@ -181,8 +181,8 @@ item_for_identifier (GP11Session *session, const gchar *coll_id, const gchar *it
 	return object;
 }
 
-static GP11Object*
-collection_for_identifier (GP11Session *session, const gchar *coll_id)
+GP11Object*
+gkd_secret_util_identifier_to_collection (GP11Session *session, const gchar *coll_id)
 {
 	GP11Object *object = NULL;
 	GError *error = NULL;
@@ -205,7 +205,6 @@ collection_for_identifier (GP11Session *session, const gchar *coll_id)
 	if (objects) {
 		object = objects->data;
 		gp11_object_set_session (object, session);
-		g_object_set_data_full (G_OBJECT (object), "coll-identifier", g_strdup (coll_id), g_free);
 		g_object_ref (object);
 	}
 
@@ -228,7 +227,7 @@ gkd_secret_util_path_to_collection (GP11Session *session, const gchar *path)
 		return NULL;
 
 	g_return_val_if_fail (coll_id, NULL);
-	collection = collection_for_identifier (session, coll_id);
+	collection = gkd_secret_util_identifier_to_collection (session, coll_id);
 
 	g_free (coll_id);
 	g_free (item_id);
@@ -362,7 +361,7 @@ gkd_secret_util_path_to_object (GP11Session *session, const gchar *path,
 		if (is_item)
 			*is_item = TRUE;
 	} else {
-		object = collection_for_identifier (session, coll_id);
+		object = gkd_secret_util_identifier_to_collection (session, coll_id);
 	}
 
 	g_free (coll_id);

@@ -44,11 +44,6 @@ enum {
 	PROP_0,
 	PROP_CONNECTION,
 	PROP_PKCS11_SLOT,
-#if 0
-	/* Secrets Service Properties */
-	PROP_COLLECTIONS,
-	PROP_DEFAULT_COLLECTION
-#endif
 };
 
 struct _GkdSecretService {
@@ -57,14 +52,8 @@ struct _GkdSecretService {
 	GHashTable *clients;
 	gchar *match_rule;
 	GkdSecretObjects *objects;
-#if 0
 	gchar *default_collection;
-#endif
 };
-
-#if 0
-#define LOC_DEFAULT_FILE    (gkd_location_from_string ("LOCAL:/keyrings/default"))
-#endif
 
 typedef struct _ServiceClient {
 	gchar *caller_peer;
@@ -85,23 +74,51 @@ G_DEFINE_TYPE (GkdSecretService, gkd_secret_service, G_TYPE_OBJECT);
  * INTERNAL
  */
 
-#if 0
-static void
-update_default (GkdSecretService *self)
+static gchar*
+default_path (void)
 {
-	gchar *contents;
+	return g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", "default", NULL);
+}
 
-	if (gkd_location_read_file (LOC_DEFAULT_FILE, (guchar**)&contents, NULL, NULL)) {
+static void
+update_default (GkdSecretService *self, gboolean force)
+{
+	gchar *contents = NULL;
+	gchar *path;
+
+	if (!force && self->default_collection)
+		return;
+
+	path = default_path ();
+	if (g_file_get_contents (path, &contents, NULL, NULL)) {
 		g_strstrip (contents);
 		if (!contents[0]) {
 			g_free (contents);
 			contents = NULL;
 		}
-		g_free (self->pv->default_collection);
-		self->pv->default_collection = contents;
 	}
+	g_free (path);
+
+	g_free (self->default_collection);
+	self->default_collection = contents;
 }
-#endif
+
+static void
+store_default (GkdSecretService *self)
+{
+	GError *error = NULL;
+	gchar *path;
+
+	if (!self->default_collection)
+		return;
+
+	path = default_path ();
+	if (!g_file_set_contents (path, self->default_collection, -1, &error)) {
+		g_message ("couldn't store default keyring: %s",
+		           error->message ? error->message : "");
+	}
+	g_free (path);
+}
 
 static gboolean
 object_path_has_prefix (const gchar *path, const gchar *prefix)
@@ -216,6 +233,9 @@ on_get_connection_unix_process_id (DBusPendingCall *pending, gpointer user_data)
 		client->prompts = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, dispose_and_unref);
 
 		g_hash_table_replace (self->clients, client->caller_peer, client);
+
+		/* Update default collection each time someone connects */
+		update_default (self, TRUE);
 	}
 
 	dbus_message_unref (reply);
@@ -474,36 +494,105 @@ service_method_unlock (GkdSecretService *self, DBusMessage *message)
 }
 
 static DBusMessage*
+service_method_read_alias (GkdSecretService *self, DBusMessage *message)
+{
+	GP11Object *collection;
+	GP11Session *session;
+	DBusMessage *reply;
+	const char *alias;
+	gchar *path = NULL;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &alias, DBUS_TYPE_INVALID))
+		return NULL;
+
+	if (alias && g_str_equal (alias, "default")) {
+		update_default (self, FALSE);
+		if (self->default_collection) {
+			session = gkd_secret_service_get_pkcs11_session (self, dbus_message_get_sender (message));
+			collection = gkd_secret_util_identifier_to_collection (session, self->default_collection);
+		}
+	}
+
+	reply = dbus_message_new_method_return (message);
+	if (collection) {
+		path = gkd_secret_util_path_for_collection (collection);
+		g_object_unref (collection);
+	}
+
+	if (path == NULL)
+		path = g_strdup ("/");
+	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
+	g_free (path);
+
+	return reply;
+}
+
+static DBusMessage*
+service_method_set_alias (GkdSecretService *self, DBusMessage *message)
+{
+	GP11Object *collection;
+	GP11Session *session;
+	const char *alias;
+	const char *path;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &alias,
+	                            DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
+		return NULL;
+
+	if (!alias || !g_str_equal (alias, "default"))
+		return dbus_message_new_error (message, DBUS_ERROR_NOT_SUPPORTED,
+		                               "Only the 'default' alias is supported");
+
+	/* Find a collection with that path */
+	session = gkd_secret_service_get_pkcs11_session (self, dbus_message_get_sender (message));
+	collection = gkd_secret_util_path_to_collection (session, path);
+	if (collection == NULL)
+		return dbus_message_new_error_printf (message, SECRET_ERROR_NO_SUCH_OBJECT,
+		                                      "No such collection: %s", path);
+
+	/* Convert into an identifier */
+	g_free (self->default_collection);
+	self->default_collection = gkd_secret_util_identifier_for_collection (collection);
+	g_object_unref (collection);
+
+	store_default (self);
+
+	return dbus_message_new_method_return (message);
+}
+
+static DBusMessage*
 service_message_handler (GkdSecretService *self, DBusMessage *message)
 {
-	DBusMessage *reply = NULL;
-
 	g_return_val_if_fail (message, NULL);
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
 
-	/* org.freedesktop.Secrets.Service.OpenSession() */
+	/* org.freedesktop.Secret.Service.OpenSession() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "OpenSession"))
-		reply = service_method_open_session (self, message);
+		return service_method_open_session (self, message);
 
-	/* org.freedesktop.Secrets.Service.CreateCollection() */
+	/* org.freedesktop.Secret.Service.CreateCollection() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "CreateCollection"))
-		reply = service_method_create_collection (self, message);
+		return service_method_create_collection (self, message);
 
-	/* org.freedesktop.Secrets.Service.LockService() */
+	/* org.freedesktop.Secret.Service.LockService() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "LockService"))
 		g_return_val_if_reached (NULL); /* TODO: Need to implement */
 
-	/* org.freedesktop.Secrets.Service.SearchItems() */
+	/* org.freedesktop.Secret.Service.SearchItems() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SearchItems"))
 		return gkd_secret_objects_handle_search_items (self->objects, message, NULL);
 
-	/* org.freedesktop.Secrets.Service.Unlock() */
+	/* org.freedesktop.Secret.Service.Unlock() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Unlock"))
-		reply = service_method_unlock (self, message);
+		return service_method_unlock (self, message);
 
-	/* org.freedesktop.Secrets.Service.CompleteAuthenticate() */
-	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "CompleteAuthenticate"))
-		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+	/* org.freedesktop.Secret.Service.ReadAlias */
+	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "ReadAlias"))
+		return service_method_read_alias (self, message);
+
+	/* org.freedesktop.Secret.Service.SetAlias */
+	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SetAlias"))
+		return service_method_set_alias (self, message);
 
 	/* org.freedesktop.DBus.Properties.Get() */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
@@ -520,6 +609,33 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
 		return gkd_dbus_introspect_handle (message, "service");
 
+	return NULL;
+}
+
+static DBusMessage*
+service_alias_handler (GkdSecretService *self, const gchar *alias, DBusMessage *message)
+{
+	GP11Object *collection;
+	GP11Session *session;
+	DBusMessage *reply;
+
+	g_return_val_if_fail (alias, NULL);
+	g_return_val_if_fail (message, NULL);
+
+	if (!g_str_equal (alias, "default"))
+		return gkd_secret_util_no_such_object (message);
+
+	update_default (self, FALSE);
+	if (!self->default_collection)
+		return gkd_secret_util_no_such_object (message);
+
+	session = gkd_secret_service_get_pkcs11_session (self, dbus_message_get_sender (message));
+	collection = gkd_secret_util_identifier_to_collection (session, self->default_collection);
+	if (!collection)
+		return gkd_secret_util_no_such_object (message);
+
+	reply = gkd_secret_objects_handle_collection (self->objects, collection, message);
+	g_object_unref (collection);
 	return reply;
 }
 
@@ -573,6 +689,11 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 	/* Dispatched to a collection, off it goes */
 	} else if (object_path_has_prefix (path, SECRET_COLLECTION_PREFIX)) {
 		reply = gkd_secret_objects_dispatch (self->objects, message);
+
+	/* Dispatched to an alias, send it off */
+	} else if (object_path_has_prefix (path, SECRET_ALIAS_PREFIX)) {
+		path += strlen (SECRET_ALIAS_PREFIX);
+		reply = service_alias_handler (self, path, message);
 
 	/* Addressed to the service */
 	} else if (g_str_equal (path, SECRET_SERVICE_PATH)) {

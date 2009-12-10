@@ -37,6 +37,7 @@
 #define SECRET_COLLECTION_PREFIX       "/org/freedesktop/secrets/collection"
 #define SECRET_SESSION_PREFIX          "/org/freedesktop/secrets/session"
 #define SECRET_PROMPT_PREFIX           "/org/freedesktop/secrets/prompt"
+#define SECRET_ALIAS_PREFIX            "/org/freedesktop/secrets/aliases"
 
 #define SECRET_ERROR_ALREADY_EXISTS    "org.freedesktop.Secret.Error.AlreadyExists"
 #define SECRET_ERROR_IS_LOCKED         "org.freedesktop.Secret.Error.IsLocked"

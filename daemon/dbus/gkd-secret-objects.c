@@ -852,6 +852,15 @@ gkd_secret_objects_dispatch (GkdSecretObjects *self, DBusMessage *message)
 	return reply;
 }
 
+DBusMessage*
+gkd_secret_objects_handle_collection (GkdSecretObjects *self, GP11Object *collection, DBusMessage *message)
+{
+	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
+	g_return_val_if_fail (GP11_IS_OBJECT (collection), NULL);
+	g_return_val_if_fail (message, NULL);
+	return collection_message_handler (self, collection, message);
+}
+
 void
 gkd_secret_objects_append_item_paths (GkdSecretObjects *self, DBusMessageIter *iter,
                                       DBusMessage *message, GP11Object *collection)
