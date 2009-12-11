@@ -19,15 +19,15 @@
 		</method>
 		<method name="GetSecret">
 			<arg name="item" type="o" direction="in"/>
-			<arg name="secret" type="(sayay)" direction="out"/>
+			<arg name="secret" type="(oayay)" direction="out"/>
 		</method>
 		<method name="SetSecret">
 			<arg name="item" type="o" direction="in"/>
-			<arg name="secret" type="(sayay)" direction="in"/>
+			<arg name="secret" type="(oayay)" direction="in"/>
 		</method>
 		<method name="GetSecrets">
 			<arg name="items" type="ao" direction="in"/>
-			<arg name="secrets" type="a{o(sayay)}" direction="out"/>
+			<arg name="secrets" type="a{o(oayay)}" direction="out"/>
 		</method>
 	</interface>
 

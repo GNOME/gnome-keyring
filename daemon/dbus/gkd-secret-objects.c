@@ -556,32 +556,52 @@ collection_find_matching_item (GkdSecretObjects *self, GP11Object *coll, GP11Att
 static DBusMessage*
 collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
+	GP11Session *pkcs11_session = NULL;
+	DBusError derr = DBUS_ERROR_INIT;
+	GkdSecretSecret *secret = NULL;
+	GkdSecretSession *session;
 	dbus_bool_t replace = FALSE;
-	GP11Attributes *attrs;
+	GP11Attributes *attrs = NULL;
 	GP11Attribute *fields;
 	DBusMessageIter iter, array;
 	GP11Object *item = NULL;
 	const gchar *prompt;
 	GError *error = NULL;
-	GP11Session *session;
-	DBusMessage *reply;
+	DBusMessage *reply = NULL;
 	gchar *path = NULL;
 	gchar *identifier;
+	gboolean created = FALSE;
 
 	/* Parse the message */
-	if (!dbus_message_has_signature (message, "a{sv}b"))
+	if (!dbus_message_has_signature (message, "a{sv}(oayay)b"))
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
 	attrs = gp11_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
 	if (!gkd_secret_property_parse_all (&array, attrs)) {
-		gp11_attributes_unref (attrs);
-		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
-		                                      "Invalid properties");
+		reply = dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+		                                "Invalid properties argument");
+		goto cleanup;
+	}
+	dbus_message_iter_next (&iter);
+	secret = gkd_secret_secret_parse (&iter);
+	if (secret == NULL) {
+		reply = dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+		                                "Invalid secret argument");
+		goto cleanup;
 	}
 	dbus_message_iter_next (&iter);
 	dbus_message_iter_get_basic (&iter, &replace);
+
+	/* Figure out which session we're dealing with */
+	session = gkd_secret_service_lookup_session (self->service, secret->path,
+	                                             dbus_message_get_sender (message));
+	if (session == NULL) {
+		reply = dbus_message_new_error (message, SECRET_ERROR_NO_SESSION,
+		                                "No such secret session exists");
+		goto cleanup;
+	}
 
 	if (replace) {
 		fields = gp11_attributes_find (attrs, CKA_G_FIELDS);
@@ -591,47 +611,68 @@ collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusM
 
 	/* Replace the item */
 	if (item) {
-		if (!gp11_object_set_full (item, attrs, NULL, &error)) {
-			g_object_unref (item);
-			item = NULL;
-		}
+		if (!gp11_object_set_full (item, attrs, NULL, &error))
+			goto cleanup;
 
 	/* Create a new item */
 	} else {
-		session = gp11_object_get_session (object);
-		g_return_val_if_fail (session, NULL);
+		pkcs11_session = gp11_object_get_session (object);
+		g_return_val_if_fail (pkcs11_session, NULL);
 		identifier = gkd_secret_util_identifier_for_collection (object);
 		g_return_val_if_fail (identifier, NULL);
-		gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 		gp11_attributes_add_string (attrs, CKA_G_COLLECTION, identifier);
-		item = gp11_session_create_object_full (session, attrs, NULL, &error);
 		g_free (identifier);
+		gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
+		item = gp11_session_create_object_full (pkcs11_session, attrs, NULL, &error);
+		if (item == NULL)
+			goto cleanup;
+		gp11_object_set_session (item, pkcs11_session);
+		created = TRUE;
+	}
+
+	/* Set the secret */
+	if (!gkd_secret_session_set_item_secret (session, item, secret, &derr)) {
+		if (created) /* If we created, then try to destroy on failure */
+			gp11_object_destroy (item, NULL);
+		goto cleanup;
 	}
 
 	/* Build up the item identifier */
-	if (error == NULL)
-		path = gkd_secret_util_path_for_item (item);
+	path = gkd_secret_util_path_for_item (item);
+	g_return_val_if_fail (path, NULL);
+	prompt = "/";
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path,
+	                          DBUS_TYPE_OBJECT_PATH, &prompt,
+	                          DBUS_TYPE_INVALID);
 
-	if (path != NULL) {
-		prompt = "/";
-		reply = dbus_message_new_method_return (message);
-		dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path,
-		                          DBUS_TYPE_OBJECT_PATH, &prompt,
-		                          DBUS_TYPE_INVALID);
-
-	} else {
-		if (error->code == CKR_USER_NOT_LOGGED_IN)
-			reply = dbus_message_new_error_printf (message, SECRET_ERROR_IS_LOCKED,
-			                                       "Cannot create an item in a locked collection");
-		else
-			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-			                                       "Couldn't create item: %s", error->message);
+cleanup:
+	if (error) {
+		if (!reply) {
+			if (error->code == CKR_USER_NOT_LOGGED_IN)
+				reply = dbus_message_new_error_printf (message, SECRET_ERROR_IS_LOCKED,
+				                                       "Cannot create an item in a locked collection");
+			else
+				reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+				                                       "Couldn't create item: %s", error->message);
+		}
 		g_clear_error (&error);
 	}
 
+	if (dbus_error_is_set (&derr)) {
+		if (!reply)
+			reply = dbus_message_new_error (message, derr.name, derr.message);
+		dbus_error_free (&derr);
+	}
+
+	gkd_secret_secret_free (secret);
+	gp11_attributes_unref (attrs);
 	if (item)
 		g_object_unref (item);
+	if (pkcs11_session)
+		g_object_unref (pkcs11_session);
 	g_free (path);
+
 	return reply;
 }
 

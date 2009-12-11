@@ -46,7 +46,7 @@ gkd_secret_secret_create_and_take_memory (const gchar *path, gpointer parameter,
 GkdSecretSecret*
 gkd_secret_secret_parse (DBusMessageIter *iter)
 {
-	DBusMessageIter struc;
+	DBusMessageIter struc, array;
 	const void *parameter, *value;
 	int n_value, n_parameter;
 	const char *path;
@@ -64,14 +64,16 @@ gkd_secret_secret_parse (DBusMessageIter *iter)
 	    dbus_message_iter_get_arg_type (&struc) != DBUS_TYPE_ARRAY ||
 	    dbus_message_iter_get_element_type(&struc) != DBUS_TYPE_BYTE)
 		return NULL;
-	dbus_message_iter_get_fixed_array (&struc, &parameter, &n_parameter);
+	dbus_message_iter_recurse (&struc, &array);
+	dbus_message_iter_get_fixed_array (&array, &parameter, &n_parameter);
 
 	/* Get the value */
 	if (!dbus_message_iter_next (&struc) ||
 	    dbus_message_iter_get_arg_type (&struc) != DBUS_TYPE_ARRAY ||
 	    dbus_message_iter_get_element_type(&struc) != DBUS_TYPE_BYTE)
 		return NULL;
-	dbus_message_iter_get_fixed_array (&struc, &value, &n_value);
+	dbus_message_iter_recurse (&struc, &array);
+	dbus_message_iter_get_fixed_array (&array, &value, &n_value);
 
 	return gkd_secret_secret_create_and_take_memory (path,
 	                                                 n_parameter ? g_memdup (parameter, n_parameter) : NULL,
