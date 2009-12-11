@@ -59,4 +59,7 @@ gboolean            gkd_secret_session_set_item_secret         (GkdSecretSession
                                                                 GkdSecretSecret *secret,
                                                                 DBusError *derr);
 
+DBusMessage*        gkd_secret_session_handle_open             (GkdSecretSession *self,
+                                                                DBusMessage *message);
+
 #endif /* __GKD_SECRET_SESSION_H__ */

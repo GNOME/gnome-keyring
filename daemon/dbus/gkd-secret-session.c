@@ -119,7 +119,10 @@ aes_derive_key (GP11Session *session, GP11Object *priv_key,
 	GP11Attributes *attrs;
 
 	mech = gp11_mechanism_new_with_param (CKM_DH_PKCS_DERIVE, input, n_input);
-	attrs = gp11_attributes_newv (CKA_VALUE_LEN, GP11_ULONG, 16UL, GP11_INVALID);
+	attrs = gp11_attributes_newv (CKA_VALUE_LEN, GP11_ULONG, 16UL,
+	                              CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
+	                              CKA_KEY_TYPE, GP11_ULONG, CKK_AES,
+	                              GP11_INVALID);
 
 	*aes_key = gp11_session_derive_key_full (session, priv_key, mech, attrs, NULL, &error);
 
@@ -138,10 +141,9 @@ aes_derive_key (GP11Session *session, GP11Object *priv_key,
 static DBusMessage*
 aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input, gsize n_input)
 {
-	DBusMessageIter iter, variant;
+	DBusMessageIter iter, variant, array;
 	GP11Session *session;
 	GP11Object *pub, *priv, *key;
-	gboolean complete = TRUE;
 	GError *error = NULL;
 	DBusMessage *reply;
 	gpointer output;
@@ -184,11 +186,13 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 	take_session_key (self, key);
 
 	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (message, &iter);
+	dbus_message_iter_init_append (reply, &iter);
 	dbus_message_iter_open_container (&iter, DBUS_TYPE_VARIANT, "ay", &variant);
-	dbus_message_iter_append_fixed_array (&variant, DBUS_TYPE_BYTE, &output, n_output);
+	dbus_message_iter_open_container (&variant, DBUS_TYPE_ARRAY, "y", &array);
+	dbus_message_iter_append_fixed_array (&array, DBUS_TYPE_BYTE, &output, n_output);
+	dbus_message_iter_close_container (&variant, &array);
 	dbus_message_iter_close_container (&iter, &variant);
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &complete);
+	dbus_message_iter_append_basic (&iter, DBUS_TYPE_OBJECT_PATH, &self->object_path);
 
 	g_free (output);
 	return reply;
@@ -302,17 +306,16 @@ plain_negotiate (GkdSecretSession *self, DBusMessage *message)
 {
 	DBusMessageIter iter, variant;
 	const char *output = "";
-	dbus_bool_t complete = TRUE;
 	DBusMessage *reply;
 
 	take_session_key (self, NULL);
 
 	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (message, &iter);
+	dbus_message_iter_init_append (reply, &iter);
 	dbus_message_iter_open_container (&iter, DBUS_TYPE_VARIANT, "s", &variant);
 	dbus_message_iter_append_basic (&variant, DBUS_TYPE_STRING, &output);
 	dbus_message_iter_close_container (&iter, &variant);
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &complete);
+	dbus_message_iter_append_basic (&iter, DBUS_TYPE_OBJECT_PATH, &self->object_path);
 	return reply;
 }
 
@@ -393,46 +396,6 @@ session_method_close (GkdSecretSession *self, DBusMessage *message)
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
-	return reply;
-}
-
-static DBusMessage*
-session_method_negotiate (GkdSecretSession *self, DBusMessage *message)
-{
-	DBusMessage *reply;
-	const char *algorithm;
-	DBusMessageIter iter, variant;
-	gconstpointer input;
-	int n_input;
-
-	/* Parse the incoming message */
-	if (!dbus_message_has_signature (message, "sv"))
-		return NULL;
-	if (!dbus_message_iter_init (message, &iter))
-		g_return_val_if_reached (NULL);
-	dbus_message_iter_get_basic (&iter, &algorithm);
-	g_return_val_if_fail (algorithm, NULL);
-	if (!dbus_message_iter_next (&iter))
-		g_return_val_if_reached (NULL);
-	dbus_message_iter_recurse (&iter, &variant);
-
-	/* Plain transfers? just remove our session key */
-	if (g_str_equal (algorithm, "plain")) {
-		if (!g_str_equal ("s", dbus_message_iter_get_signature (&variant)))
-			return NULL; /* TODO: Return bad parameter? */
-		reply = plain_negotiate (self, message);
-
-	} else if (g_str_equal (algorithm, "dh-ietf1024-aes128-cbc-pkcs7")) {
-		if (!g_str_equal ("ay", dbus_message_iter_get_signature (&variant)))
-			return NULL; /* TODO: Return bad paramater? */
-		dbus_message_iter_get_fixed_array (&variant, &input, &n_input);
-		reply = aes_negotiate (self, message, input, n_input);
-
-	} else {
-		reply = dbus_message_new_error_printf (message, SECRET_ERROR_NOT_SUPPORTED,
-		                                       "The algorithm '%s' is not supported", algorithm);
-	}
-
 	return reply;
 }
 
@@ -628,19 +591,55 @@ gkd_secret_session_dispatch (GkdSecretSession *self, DBusMessage *message)
 	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Close"))
 		reply = session_method_close (self, message);
 
-	/* org.freedesktop.Secrets.Session.Negotiate() */
-	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Negotiate"))
-		reply = session_method_negotiate (self, message);
-
-	/* org.freedesktop.Secrets.Session.GetSecrets() */
-	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "GetSecrets"))
-		g_return_val_if_reached (NULL); /* TODO: Need to implement */
-
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
 		return gkd_dbus_introspect_handle (message, "session");
 
 	return reply;
 }
+
+DBusMessage*
+gkd_secret_session_handle_open (GkdSecretSession *self, DBusMessage *message)
+{
+	DBusMessage *reply;
+	const char *algorithm;
+	DBusMessageIter iter, variant, array;
+	gconstpointer input;
+	int n_input;
+
+	/* Parse the incoming message */
+	if (!dbus_message_has_signature (message, "sv"))
+		return NULL;
+	if (!dbus_message_iter_init (message, &iter))
+		g_return_val_if_reached (NULL);
+	dbus_message_iter_get_basic (&iter, &algorithm);
+	g_return_val_if_fail (algorithm, NULL);
+	if (!dbus_message_iter_next (&iter))
+		g_return_val_if_reached (NULL);
+	dbus_message_iter_recurse (&iter, &variant);
+
+	/* Plain transfers? just remove our session key */
+	if (g_str_equal (algorithm, "plain")) {
+		if (!g_str_equal ("s", dbus_message_iter_get_signature (&variant)))
+			return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+			                               "The session algorithm input argument was invalid");
+		reply = plain_negotiate (self, message);
+
+	} else if (g_str_equal (algorithm, "dh-ietf1024-aes128-cbc-pkcs7")) {
+		if (!g_str_equal ("ay", dbus_message_iter_get_signature (&variant)))
+			return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+			                               "The session algorithm input argument was invalid");
+		dbus_message_iter_recurse (&variant, &array);
+		dbus_message_iter_get_fixed_array (&array, &input, &n_input);
+		reply = aes_negotiate (self, message, input, n_input);
+
+	} else {
+		reply = dbus_message_new_error_printf (message, SECRET_ERROR_NOT_SUPPORTED,
+		                                       "The algorithm '%s' is not supported", algorithm);
+	}
+
+	return reply;
+}
+
 
 const gchar*
 gkd_secret_session_get_caller (GkdSecretSession *self)

@@ -364,11 +364,11 @@ service_method_open_session (GkdSecretService *self, DBusMessage *message)
 {
 	GkdSecretSession *session;
 	ServiceClient *client;
-	DBusMessage *reply;
+	DBusMessage *reply = NULL;
 	const gchar *caller;
 	const gchar *path;
 
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
+	if (!dbus_message_has_signature (message, "sv"))
 		return NULL;
 
 	caller = dbus_message_get_sender (message);
@@ -379,16 +379,20 @@ service_method_open_session (GkdSecretService *self, DBusMessage *message)
 	                        "service", self,
 	                        NULL);
 
-	/* Take ownership of the session */
-	client = g_hash_table_lookup (self->clients, caller);
-	g_return_val_if_fail (client, NULL);
-	path = gkd_secret_session_get_object_path (session);
-	g_return_val_if_fail (!g_hash_table_lookup (client->sessions, path), NULL);
-	g_hash_table_replace (client->sessions, (gpointer)path, session);
+	reply = gkd_secret_session_handle_open (session, message);
 
-	/* Return the response */
-	reply = dbus_message_new_method_return (message);
-	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
+	if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN) {
+		/* Take ownership of the session */
+		client = g_hash_table_lookup (self->clients, caller);
+		g_return_val_if_fail (client, NULL);
+		path = gkd_secret_session_get_object_path (session);
+		g_return_val_if_fail (!g_hash_table_lookup (client->sessions, path), NULL);
+		g_hash_table_replace (client->sessions, (gpointer)path, session);
+
+	} else {
+		g_object_unref (session);
+	}
+
 	return reply;
 }
 
