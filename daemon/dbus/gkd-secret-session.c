@@ -588,7 +588,7 @@ gkd_secret_session_dispatch (GkdSecretSession *self, DBusMessage *message)
 		reply = session_property_handler (self, message);
 
 	/* org.freedesktop.Secrets.Session.Close() */
-	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Close"))
+	else if (dbus_message_is_method_call (message, SECRET_SESSION_INTERFACE, "Close"))
 		reply = session_method_close (self, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))

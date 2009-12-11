@@ -367,11 +367,11 @@ item_message_handler (GkdSecretObjects *self, GP11Object *object, DBusMessage *m
 		return item_method_delete (self, object, message);
 
 	/* org.freedesktop.Secrets.Session.GetSecret() */
-	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "GetSecret"))
+	else if (dbus_message_is_method_call (message, SECRET_ITEM_INTERFACE, "GetSecret"))
 		return item_method_get_secret (self, object, message);
 
 	/* org.freedesktop.Secrets.Session.SetSecret() */
-	else if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SetSecret"))
+	else if (dbus_message_is_method_call (message, SECRET_ITEM_INTERFACE, "SetSecret"))
 		return item_method_set_secret (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Get */
