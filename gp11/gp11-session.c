@@ -1114,9 +1114,11 @@ gp11_session_generate_key_pair_full (GP11Session *self, GP11Mechanism *mechanism
 	g_return_val_if_fail (private_key, FALSE);
 
 	_gp11_attributes_lock (public_attrs);
-	_gp11_attributes_lock (private_attrs);
+	if (public_attrs != private_attrs)
+		_gp11_attributes_lock (private_attrs);
 	ret = _gp11_call_sync (self, perform_generate_key_pair, NULL, &args, cancellable, err);
-	_gp11_attributes_unlock (private_attrs);
+	if (public_attrs != private_attrs)
+		_gp11_attributes_unlock (private_attrs);
 	_gp11_attributes_unlock (public_attrs);
 
 	if (!ret)
@@ -1157,7 +1159,8 @@ gp11_session_generate_key_pair_async (GP11Session *self, GP11Mechanism *mechanis
 	args->public_attrs = gp11_attributes_ref (public_attrs);
 	_gp11_attributes_lock (public_attrs);
 	args->private_attrs = gp11_attributes_ref (private_attrs);
-	_gp11_attributes_lock (private_attrs);
+	if (public_attrs != private_attrs)
+		_gp11_attributes_lock (private_attrs);
 	args->mechanism = gp11_mechanism_ref (mechanism);
 
 	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
@@ -1189,7 +1192,8 @@ gp11_session_generate_key_pair_finish (GP11Session *self, GAsyncResult *result,
 
 	args = _gp11_call_arguments (result, GenerateKeyPair);
 	_gp11_attributes_unlock (args->public_attrs);
-	_gp11_attributes_unlock (args->private_attrs);
+	if (args->public_attrs != args->private_attrs)
+		_gp11_attributes_unlock (args->private_attrs);
 
 	if (!_gp11_call_basic_finish (result, err))
 		return FALSE;
