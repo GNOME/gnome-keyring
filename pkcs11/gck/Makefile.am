@@ -40,6 +40,8 @@ libgck_la_SOURCES = \
 	gck-mechanism-rsa.c gck-mechanism-rsa.h \
 	gck-memory-store.c gck-memory-store.h \
 	gck-module.c gck-module.h gck-module-ep.h \
+	gck-null-key.c gck-null-key.h \
+	gck-null-mechanism.c gck-null-mechanism.h \
 	gck-object.c gck-object.h \
 	gck-padding.c gck-padding.h \
 	gck-private-xsa-key.c gck-private-xsa-key.h \

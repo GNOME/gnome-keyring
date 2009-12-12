@@ -33,6 +33,7 @@ typedef struct _GckDhPublicKey GckDhPublicKey;
 typedef struct _GckFactory GckFactory;
 typedef struct _GckManager GckManager;
 typedef struct _GckModule GckModule;
+typedef struct _GckNullKey GckNullKey;
 typedef struct _GckObject GckObject;
 typedef struct _GckPrivateXsaKey GckPrivateXsaKey;
 typedef struct _GckPublicXsaKey GckPublicXsaKey;

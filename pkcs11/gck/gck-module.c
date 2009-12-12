@@ -34,6 +34,8 @@
 #include "gck-manager.h"
 #include "gck-memory-store.h"
 #include "gck-module.h"
+#include "gck-null-key.h"
+#include "gck-null-mechanism.h"
 #include "gck-dh-private-key.h"
 #include "gck-private-xsa-key.h"
 #include "gck-dh-public-key.h"
@@ -168,6 +170,12 @@ static const MechanismAndInfo mechanism_list[] = {
 	 * For AES the min and max are sizes of key in bytes.
 	 */
 	{ CKM_AES_CBC_PAD, { GCK_AES_MECHANISM_MIN_LENGTH, GCK_AES_MECHANISM_MAX_LENGTH, CKF_WRAP | CKF_UNWRAP } },
+
+	/*
+	 * CKM_G_NULL
+	 * For NULL min and max are zero
+	 */
+	{ CKM_G_NULL, { GCK_NULL_MECHANISM_MIN_LENGTH, GCK_NULL_MECHANISM_MAX_LENGTH, CKF_WRAP | CKF_UNWRAP } },
 };
 
 /* Hidden function that you should not use */
@@ -585,6 +593,7 @@ gck_module_init (GckModule *self)
 	gck_module_register_factory (self, GCK_FACTORY_AES_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
 	gck_module_register_factory (self, GCK_FACTORY_CREDENTIAL);
+	gck_module_register_factory (self, GCK_FACTORY_NULL_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_DH_PRIVATE_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_XSA_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_DH_PUBLIC_KEY);

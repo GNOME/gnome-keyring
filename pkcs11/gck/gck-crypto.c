@@ -26,6 +26,7 @@
 #include "gck-dh-mechanism.h"
 #include "gck-mechanism-dsa.h"
 #include "gck-mechanism-rsa.h"
+#include "gck-null-mechanism.h"
 #include "gck-session.h"
 #include "gck-sexp.h"
 #include "gck-sexp-key.h"
@@ -454,6 +455,9 @@ gck_crypto_wrap_key (GckSession *session, CK_MECHANISM_PTR mech, GckObject *wrap
 	case CKM_AES_CBC_PAD:
 		return gck_aes_mechanism_wrap (session, mech, wrapper, wrapped,
 		                               output, n_output);
+	case CKM_G_NULL:
+		return gck_null_mechanism_wrap (session, mech, wrapper, wrapped,
+		                                output, n_output);
 	default:
 		return CKR_MECHANISM_INVALID;
 	}
@@ -479,6 +483,9 @@ gck_crypto_unwrap_key (GckSession *session, CK_MECHANISM_PTR mech, GckObject *wr
 	case CKM_AES_CBC_PAD:
 		return gck_aes_mechanism_unwrap (session, mech, wrapper, input,
 		                                 n_input, attrs, n_attrs, unwrapped);
+	case CKM_G_NULL:
+		return gck_null_mechanism_unwrap (session, mech, wrapper, input,
+		                                  n_input, attrs, n_attrs, unwrapped);
 	default:
 		return CKR_MECHANISM_INVALID;
 	}

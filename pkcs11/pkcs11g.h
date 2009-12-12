@@ -26,9 +26,11 @@
 
 #include "pkcs11.h"
 
-#define CKA_GNOME (CKA_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
-#define CKO_GNOME (CKO_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
-#define CKR_GNOME (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKA_GNOME   (CKA_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKO_GNOME   (CKO_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKR_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKM_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKK_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
 
 /* -------------------------------------------------------------------
  * OBJECT UNIQUE IDENTIFIER

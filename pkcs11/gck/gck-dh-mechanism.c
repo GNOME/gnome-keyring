@@ -209,7 +209,7 @@ gck_dh_mechanism_derive (GckSession *session, CK_MECHANISM_PTR mech, GckObject *
 	gcry_error_t gcry;
 	CK_ATTRIBUTE attr;
 	GArray *array;
-	CK_ULONG n_value;
+	CK_ULONG n_value = 0;
 	gpointer value;
 	GckTransaction *transaction;
 	CK_KEY_TYPE type;
@@ -230,11 +230,14 @@ gck_dh_mechanism_derive (GckSession *session, CK_MECHANISM_PTR mech, GckObject *
 	priv = gck_dh_private_key_get_value (GCK_DH_PRIVATE_KEY (base));
 
 	/* What length should we truncate to? */
-	n_value = (gcry_mpi_get_nbits(prime) + 7) / 8;
 	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_VALUE_LEN, &n_value)) {
 		if (gck_attributes_find_ulong (attrs, n_attrs, CKA_KEY_TYPE, &type))
 			n_value = gck_crypto_secret_key_length (type);
 	}
+
+	/* Default to full length of the DH prime */
+	if (n_value == 0)
+		n_value = (gcry_mpi_get_nbits (prime) + 7) / 8;
 
 	value = egg_dh_gen_secret (peer, priv, prime, n_value);
 	gcry_mpi_release (peer);

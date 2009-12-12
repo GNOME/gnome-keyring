@@ -82,4 +82,13 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 
 #define CKA_G_MATCHED                        (CKA_GNOME + 215)
 
+/* -------------------------------------------------------------------
+ * MECHANISMS
+ */
+
+/* Used for wrapping and unwrapping as null */
+#define CKM_G_NULL                           (CKM_GNOME + 100)
+
+#define CKK_G_NULL                           (CKK_GNOME + 100)
+
 #endif /* PKCS11I_H */
