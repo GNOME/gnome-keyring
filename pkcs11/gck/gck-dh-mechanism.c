@@ -130,7 +130,7 @@ gck_dh_mechanism_generate (GckSession *session, CK_ATTRIBUTE_PTR pub_atts,
 		return CKR_TEMPLATE_INCONSISTENT;
 	}
 
-	ret = egg_dh_gen_pair (prime, base, bits, &priv, &pub);
+	ret = egg_dh_gen_pair (prime, base, bits, &pub, &priv);
 
 	gcry_mpi_release (prime);
 	gcry_mpi_release (base);
@@ -167,10 +167,10 @@ gck_dh_mechanism_generate (GckSession *session, CK_ATTRIBUTE_PTR pub_atts,
 
 		/* Write the private key out to raw data */
 		value.type = CKA_VALUE;
-		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &length, pub);
+		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &length, priv);
 		g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
 		value.pValue = egg_secure_alloc (length);
-		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value.pValue, length, &length, pub);
+		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value.pValue, length, &length, priv);
 		g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
 		value.ulValueLen = length;
 
