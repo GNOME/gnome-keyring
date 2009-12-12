@@ -49,6 +49,7 @@ struct _GkdSecretSession {
 	gchar *caller_exec;
 	gchar *caller;
 	GP11Object *key;
+	CK_MECHANISM_TYPE mech_type;
 };
 
 G_DEFINE_TYPE (GkdSecretSession, gkd_secret_session, G_TYPE_OBJECT);
@@ -60,15 +61,11 @@ static guint unique_session_number = 0;
  */
 
 static void
-take_session_key (GkdSecretSession *self, GP11Object *key)
+take_session_key (GkdSecretSession *self, GP11Object *key, CK_MECHANISM_TYPE mech)
 {
-	if (self->key) {
-		gp11_object_destroy (self->key, NULL);
-		g_object_unref (self->key);
-		self->key = NULL;
-	}
-
+	g_return_if_fail (!self->key);
 	self->key = key;
+	self->mech_type = mech;
 }
 
 static gboolean
@@ -183,7 +180,7 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 	}
 
 	gp11_object_set_session (key, session);
-	take_session_key (self, key);
+	take_session_key (self, key, CKM_AES_CBC_PAD);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
@@ -198,117 +195,32 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 	return reply;
 }
 
-static GkdSecretSecret*
-aes_wrap_item_secret (GkdSecretSession *self, GP11Object *item, DBusError *derr)
-{
-	GP11Mechanism *mech;
-	GP11Session *session;
-	gpointer value, iv;
-	gsize n_value, n_iv;
-	GError *error = NULL;
-
-	g_assert (GP11_IS_OBJECT (self->key));
-
-	session = gp11_object_get_session (item);
-	g_return_val_if_fail (session, FALSE);
-
-	n_iv = 16;
-	iv = g_malloc (n_iv);
-	gcry_create_nonce (iv, n_iv);
-
-	mech = gp11_mechanism_new_with_param (CKM_AES_CBC_PAD, iv, n_iv);
-
-	value = gp11_session_wrap_key_full (session, self->key, mech, item, &n_value,
-	                                    NULL, &error);
-
-	gp11_mechanism_unref (mech);
-
-	if (value == NULL) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN) {
-			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
-			                      "Cannot get secret of a locked object");
-		} else {
-			g_message ("couldn't wrap item secret: %s", error->message);
-			dbus_set_error_const (derr, DBUS_ERROR_FAILED,
-			                      "Couldn't get item secret");
-		}
-		g_clear_error (&error);
-		g_free (iv);
-		return NULL;
-	}
-
-	return gkd_secret_secret_create_and_take_memory (self->object_path, iv, n_iv, value, n_value);
-}
-
-static gboolean
-aes_unwrap_item_secret (GkdSecretSession *self, GP11Object *item,
-                        GkdSecretSecret *secret, DBusError *derr)
-{
-	GP11Mechanism *mech;
-	GP11Object *object;
-	GP11Session *session;
-	GError *error = NULL;
-	GP11Attributes *attrs;
-
-	g_assert (GP11_IS_OBJECT (self->key));
-
-	session = gp11_object_get_session (item);
-	g_return_val_if_fail (session, FALSE);
-
-	/*
-	 * By getting these attributes, and then using them in the unwrap,
-	 * the unwrap won't generate a new object, but merely set the secret.
-	 */
-
-	attrs = gkd_secret_util_attributes_for_item (item);
-	g_return_val_if_fail (attrs, FALSE);
-
-	mech = gp11_mechanism_new_with_param (CKM_AES_CBC_PAD, secret->parameter,
-	                                      secret->n_parameter);
-
-	object = gp11_session_unwrap_key_full (session, self->key, mech, secret->value,
-	                                       secret->n_value, attrs, NULL, &error);
-
-	gp11_mechanism_unref (mech);
-	gp11_attributes_unref (attrs);
-
-	if (object == NULL) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN) {
-			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
-			                      "Cannot set secret of a locked item");
-		} else if (error->code == CKR_WRAPPED_KEY_INVALID ||
-		           error->code == CKR_WRAPPED_KEY_LEN_RANGE ||
-		           error->code == CKR_MECHANISM_PARAM_INVALID) {
-			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
-			                      "The secret was transferred or encrypted in an invalid way.");
-		} else {
-			g_message ("couldn't unwrap item secret: %s", error->message);
-			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
-		}
-		g_clear_error (&error);
-		return FALSE;
-	}
-
-	if (!gp11_object_equal (object, item)) {
-		g_warning ("unwrapped secret went to new object, instead of item");
-		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
-		g_object_unref (object);
-		return FALSE;
-	}
-
-	g_object_unref (object);
-	return TRUE;
-}
-
-
 static DBusMessage*
 plain_negotiate (GkdSecretSession *self, DBusMessage *message)
 {
 	DBusMessageIter iter, variant;
+	GError *error = NULL;
 	const char *output = "";
 	DBusMessage *reply;
+	GP11Object *key;
+	GP11Session *session;
 
-	take_session_key (self, NULL);
+	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
+	g_return_val_if_fail (session, NULL);
+
+	key = gp11_session_create_object (session, &error,
+	                                  CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
+	                                  CKA_KEY_TYPE, GP11_ULONG, CKK_G_NULL,
+	                                  GP11_INVALID);
+
+	if (key == NULL) {
+		g_warning ("couldn't create null key: %s", error->message);
+		g_clear_error (&error);
+		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+		                                      "Failed to create necessary plain keys.");
+	}
+
+	take_session_key (self, key, CKM_G_NULL);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
@@ -317,65 +229,6 @@ plain_negotiate (GkdSecretSession *self, DBusMessage *message)
 	dbus_message_iter_close_container (&iter, &variant);
 	dbus_message_iter_append_basic (&iter, DBUS_TYPE_OBJECT_PATH, &self->object_path);
 	return reply;
-}
-
-static GkdSecretSecret*
-plain_get_item_secret (GkdSecretSession *self, GP11Object *item, DBusError *derr)
-{
-	GError *error = NULL;
-	gpointer value;
-	gsize n_value;
-
-	/*
-	 * We're going to be sending this over DBus, which is going to litter it
-	 * all over memory. So we don't need to worry about using 'secure' memory.
-	 */
-
-	value = gp11_object_get_data (item, CKA_VALUE, &n_value, &error);
-	if (value == NULL) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN) {
-			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
-			                      "Cannot get secret of a locked object");
-		} else {
-			g_message ("couldn't get item secret: %s", error->message);
-			dbus_set_error_const (derr, DBUS_ERROR_FAILED,
-			                      "Couldn't get item secret");
-		}
-		g_clear_error (&error);
-		return NULL;
-	}
-
-	return gkd_secret_secret_create_and_take_memory (self->object_path, NULL, 0, value, n_value);
-}
-
-static gboolean
-plain_set_item_secret (GkdSecretSession *self, GP11Object *item,
-                       GkdSecretSecret *secret, DBusError *derr)
-{
-	GP11Attributes *attrs;
-	GError *error = NULL;
-	gboolean ret;
-
-	attrs = gp11_attributes_new ();
-	gp11_attributes_add_data (attrs, CKA_VALUE, secret->value, secret->n_value);
-
-	ret = gp11_object_set_full (item, attrs, NULL, &error);
-
-	gp11_attributes_unref (attrs);
-
-	if (ret == FALSE) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN) {
-			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
-			                      "Cannot set secret of a locked item");
-		} else {
-			g_message ("couldn't set item secret: %s", error->message);
-			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
-		}
-		g_clear_error (&error);
-		return FALSE;
-	}
-
-	return TRUE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -438,7 +291,10 @@ gkd_secret_session_dispose (GObject *obj)
 		self->service = NULL;
 	}
 
-	take_session_key (self, NULL);
+	if (self->key) {
+		g_object_unref (self->key);
+		self->key = NULL;
+	}
 
 	G_OBJECT_CLASS (gkd_secret_session_parent_class)->dispose (obj);
 }
@@ -638,25 +494,150 @@ GkdSecretSecret*
 gkd_secret_session_get_item_secret (GkdSecretSession *self, GP11Object *item,
                                     DBusError *derr)
 {
-	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
-	g_return_val_if_fail (GP11_IS_OBJECT (item), NULL);
+	GP11Mechanism *mech;
+	GP11Session *session;
+	gpointer value, iv;
+	gsize n_value, n_iv;
+	GError *error = NULL;
 
-	if (self->key == NULL)
-		return plain_get_item_secret (self, item, derr);
-	else
-		return aes_wrap_item_secret (self, item, derr);
+	g_assert (GP11_IS_OBJECT (self->key));
+
+	session = gp11_object_get_session (item);
+	g_return_val_if_fail (session, FALSE);
+
+	if (self->mech_type == CKM_AES_CBC_PAD) {
+		n_iv = 16;
+		iv = g_malloc (n_iv);
+		gcry_create_nonce (iv, n_iv);
+		mech = gp11_mechanism_new_with_param (CKM_AES_CBC_PAD, iv, n_iv);
+		g_free (iv);
+	} else {
+		n_iv = 0;
+		iv = NULL;
+		mech = gp11_mechanism_new (self->mech_type);
+	}
+
+	value = gp11_session_wrap_key_full (session, self->key, mech, item, &n_value,
+	                                    NULL, &error);
+	gp11_mechanism_unref (mech);
+
+	if (value == NULL) {
+		if (error->code == CKR_USER_NOT_LOGGED_IN) {
+			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
+			                      "Cannot get secret of a locked object");
+		} else {
+			g_message ("couldn't wrap item secret: %s", error->message);
+			dbus_set_error_const (derr, DBUS_ERROR_FAILED,
+			                      "Couldn't get item secret");
+		}
+		g_clear_error (&error);
+		g_free (iv);
+		return NULL;
+	}
+
+	return gkd_secret_secret_create_and_take_memory (self->object_path, iv, n_iv, value, n_value);
 }
 
 gboolean
 gkd_secret_session_set_item_secret (GkdSecretSession *self, GP11Object *item,
                                     GkdSecretSecret *secret, DBusError *derr)
 {
+	GP11Mechanism *mech;
+	GP11Object *object;
+	GP11Session *session;
+	GError *error = NULL;
+	GP11Attributes *attrs;
+
 	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), FALSE);
 	g_return_val_if_fail (GP11_IS_OBJECT (item), FALSE);
 	g_return_val_if_fail (secret, FALSE);
 
-	if (self->key == NULL)
-		return plain_set_item_secret (self, item, secret, derr);
-	else
-		return aes_unwrap_item_secret (self, item, secret, derr);
+	g_assert (GP11_IS_OBJECT (self->key));
+
+	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
+	g_return_val_if_fail (session, FALSE);
+
+	/*
+	 * By getting these attributes, and then using them in the unwrap,
+	 * the unwrap won't generate a new object, but merely set the secret.
+	 */
+
+	attrs = gkd_secret_util_attributes_for_item (item);
+	g_return_val_if_fail (attrs, FALSE);
+
+	mech = gp11_mechanism_new_with_param (self->mech_type, secret->parameter,
+	                                      secret->n_parameter);
+
+	object = gp11_session_unwrap_key_full (session, self->key, mech, secret->value,
+	                                       secret->n_value, attrs, NULL, &error);
+
+	gp11_mechanism_unref (mech);
+	gp11_attributes_unref (attrs);
+
+	if (object == NULL) {
+		if (error->code == CKR_USER_NOT_LOGGED_IN) {
+			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
+			                      "Cannot set secret of a locked item");
+		} else if (error->code == CKR_WRAPPED_KEY_INVALID ||
+		           error->code == CKR_WRAPPED_KEY_LEN_RANGE ||
+		           error->code == CKR_MECHANISM_PARAM_INVALID) {
+			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
+			                      "The secret was transferred or encrypted in an invalid way.");
+		} else {
+			g_message ("couldn't unwrap item secret: %s", error->message);
+			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
+		}
+		g_clear_error (&error);
+		return FALSE;
+	}
+
+	if (!gp11_object_equal (object, item)) {
+		g_warning ("unwrapped secret went to new object, instead of item");
+		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
+		g_object_unref (object);
+		return FALSE;
+	}
+
+	g_object_unref (object);
+	return TRUE;
+}
+
+GP11Object*
+gkd_secret_session_create_credential (GkdSecretSession *self, GP11Attributes *attrs,
+                                      GkdSecretSecret *secret, DBusError *derr)
+{
+	GP11Mechanism *mech;
+	GP11Object *object;
+	GP11Session *session;
+	GError *error = NULL;
+
+	g_assert (GP11_IS_OBJECT (self->key));
+	g_assert (attrs);
+
+	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
+	g_return_val_if_fail (session, NULL);
+
+	mech = gp11_mechanism_new_with_param (self->mech_type, secret->parameter,
+	                                      secret->n_parameter);
+
+	object = gp11_session_unwrap_key_full (session, self->key, mech, secret->value,
+	                                       secret->n_value, attrs, NULL, &error);
+
+	gp11_mechanism_unref (mech);
+
+	if (object == NULL) {
+		if (error->code == CKR_WRAPPED_KEY_INVALID ||
+		    error->code == CKR_WRAPPED_KEY_LEN_RANGE ||
+		    error->code == CKR_MECHANISM_PARAM_INVALID) {
+			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
+			                      "The secret was transferred or encrypted in an invalid way.");
+		} else {
+			g_message ("couldn't unwrap credential: %s", error->message);
+			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't use credentials");
+		}
+		g_clear_error (&error);
+		return NULL;
+	}
+
+	return object;
 }

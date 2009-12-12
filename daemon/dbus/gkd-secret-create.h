@@ -48,4 +48,9 @@ GkdSecretCreate*    gkd_secret_create_new                     (GkdSecretService 
                                                                const gchar *caller,
                                                                GP11Attributes *attrs);
 
+DBusMessage*        gkd_secret_create_without_prompting       (GkdSecretService *service,
+                                                               DBusMessage *message,
+                                                               GP11Attributes *attrs,
+                                                               GkdSecretSecret *master);
+
 #endif /* __GKD_SECRET_CREATE_H__ */

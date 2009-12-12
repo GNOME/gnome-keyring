@@ -59,6 +59,11 @@ gboolean            gkd_secret_session_set_item_secret         (GkdSecretSession
                                                                 GkdSecretSecret *secret,
                                                                 DBusError *derr);
 
+GP11Object*         gkd_secret_session_create_credential       (GkdSecretSession *self,
+                                                                GP11Attributes *attrs,
+                                                                GkdSecretSecret *secret,
+                                                                DBusError *derr);
+
 DBusMessage*        gkd_secret_session_handle_open             (GkdSecretSession *self,
                                                                 DBusMessage *message);
 

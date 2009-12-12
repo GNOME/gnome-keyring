@@ -25,6 +25,8 @@
 #define BUS_INTERFACE                  "org.freedesktop.DBus"
 #define PROPERTIES_INTERFACE           "org.freedesktop.DBus.Properties"
 
+#define INTERNAL_SERVICE_INTERFACE      "org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface"
+
 #define SECRET_COLLECTION_INTERFACE    "org.freedesktop.Secret.Collection"
 #define SECRET_ITEM_INTERFACE          "org.freedesktop.Secret.Item"
 #define SECRET_PROMPT_INTERFACE        "org.freedesktop.Secret.Prompt"

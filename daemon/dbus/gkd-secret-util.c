@@ -424,6 +424,7 @@ gkd_secret_util_attributes_for_item (GP11Object *item)
 		g_return_val_if_reached (NULL);
 
 	attrs = gp11_attributes_new ();
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 	gp11_attributes_add_string (attrs, CKA_G_COLLECTION, coll);
 	gp11_attributes_add_string (attrs, CKA_ID, identifier);
 

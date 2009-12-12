@@ -26,6 +26,7 @@
 #include "gkd-secret-objects.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-property.h"
+#include "gkd-secret-secret.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
@@ -451,6 +452,45 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 }
 
 static DBusMessage*
+service_method_create_with_master_password (GkdSecretService *self, DBusMessage *message)
+{
+	DBusMessageIter iter, array;
+	DBusMessage *reply = NULL;
+	GkdSecretSecret *secret = NULL;
+	GP11Attributes *attrs = NULL;
+	const char *caller;
+
+	caller = dbus_message_get_sender (message);
+	g_return_val_if_fail (caller, NULL);
+
+	/* Parse the incoming message */
+	if (!dbus_message_has_signature (message, "a{sv}(oayay)"))
+		return NULL;
+	if (!dbus_message_iter_init (message, &iter))
+		g_return_val_if_reached (NULL);
+	attrs = gp11_attributes_new ();
+	dbus_message_iter_recurse (&iter, &array);
+	if (!gkd_secret_property_parse_all (&array, attrs)) {
+		gp11_attributes_unref (attrs);
+		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+		                               "Invalid properties argument");
+	}
+	dbus_message_iter_next (&iter);
+	secret = gkd_secret_secret_parse (&iter);
+	if (secret == NULL) {
+		gp11_attributes_unref (attrs);
+		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+		                               "Invalid secret argument");
+	}
+
+	reply = gkd_secret_create_without_prompting (self, message, attrs, secret);
+	gp11_attributes_unref (attrs);
+	gkd_secret_secret_free (secret);
+
+	return reply;
+}
+
+static DBusMessage*
 service_method_unlock (GkdSecretService *self, DBusMessage *message)
 {
 	GkdSecretUnlock *unlock;
@@ -597,6 +637,10 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 	/* org.freedesktop.Secret.Service.SetAlias */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SetAlias"))
 		return service_method_set_alias (self, message);
+
+	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.CreateCollectionWithPassword */
+	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "CreateWithMasterPassword"))
+		return service_method_create_with_master_password (self, message);
 
 	/* org.freedesktop.DBus.Properties.Get() */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
@@ -765,6 +809,7 @@ gkd_secret_service_filter_handler (DBusConnection *conn, DBusMessage *message, g
 			if (interface == NULL ||
 			    g_str_has_prefix (interface, SECRET_INTERFACE_PREFIX) ||
 			    g_str_equal (interface, DBUS_INTERFACE_PROPERTIES) ||
+			    g_str_equal (interface, INTERNAL_SERVICE_INTERFACE) ||
 			    g_str_equal (interface, DBUS_INTERFACE_INTROSPECTABLE)) {
 				service_dispatch_message (self, message);
 				return DBUS_HANDLER_RESULT_HANDLED;
