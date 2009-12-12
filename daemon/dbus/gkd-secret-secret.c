@@ -85,15 +85,19 @@ gkd_secret_secret_parse (DBusMessageIter *iter)
 void
 gkd_secret_secret_append (GkdSecretSecret *secret, DBusMessageIter *iter)
 {
-	DBusMessageIter struc;
+	DBusMessageIter struc, array;
 	int length;
 
-	dbus_message_iter_open_container (iter, DBUS_TYPE_STRUCT, "oayay", &struc);
-	dbus_message_iter_append_basic (iter, DBUS_TYPE_OBJECT_PATH, &(secret->path));
+	dbus_message_iter_open_container (iter, DBUS_TYPE_STRUCT, NULL, &struc);
+	dbus_message_iter_append_basic (&struc, DBUS_TYPE_OBJECT_PATH, &(secret->path));
+	dbus_message_iter_open_container (&struc, DBUS_TYPE_ARRAY, "y", &array);
 	length = secret->n_parameter;
-	dbus_message_iter_append_fixed_array (iter, DBUS_TYPE_BYTE, &(secret->parameter), length);
+	dbus_message_iter_append_fixed_array (&array, DBUS_TYPE_BYTE, &(secret->parameter), length);
+	dbus_message_iter_close_container (&struc, &array);
+	dbus_message_iter_open_container (&struc, DBUS_TYPE_ARRAY, "y", &array);
 	length = secret->n_value;
-	dbus_message_iter_append_fixed_array (iter, DBUS_TYPE_BYTE, &(secret->value), length);
+	dbus_message_iter_append_fixed_array (&array, DBUS_TYPE_BYTE, &(secret->value), length);
+	dbus_message_iter_close_container (&struc, &array);
 	dbus_message_iter_close_container (iter, &struc);
 }
 
