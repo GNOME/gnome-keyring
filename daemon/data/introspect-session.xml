@@ -11,24 +11,6 @@
 	<interface name="org.freedesktop.Secrets.Session">
 		<method name="Close">
 		</method>
-		<method name="Negotiate">
-			<arg name="algorithm" type="s" direction="in"/>
-			<arg name="input" type="v" direction="in"/>
-			<arg name="output" type="v" direction="out"/>
-			<arg name="complete" type="b" direction="out"/>
-		</method>
-		<method name="GetSecret">
-			<arg name="item" type="o" direction="in"/>
-			<arg name="secret" type="(oayay)" direction="out"/>
-		</method>
-		<method name="SetSecret">
-			<arg name="item" type="o" direction="in"/>
-			<arg name="secret" type="(oayay)" direction="in"/>
-		</method>
-		<method name="GetSecrets">
-			<arg name="items" type="ao" direction="in"/>
-			<arg name="secrets" type="a{o(oayay)}" direction="out"/>
-		</method>
 	</interface>
 
 </node>

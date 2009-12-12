@@ -399,29 +399,6 @@ session_method_close (GkdSecretSession *self, DBusMessage *message)
 	return reply;
 }
 
-static DBusMessage*
-session_property_handler (GkdSecretSession *self, DBusMessage *message)
-{
-	g_return_val_if_reached (NULL); /* TODO: Need to implement */
-#if 0
-	/* org.freedesktop.DBus.Properties.Get */
-	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get") &&
-	    dbus_message_has_signature (message, "ss")) {
-		xxx;
-
-	/* org.freedesktop.DBus.Properties.Set */
-	} else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set") &&
-	           dbus_message_has_signature (message, "ssv")) {
-		xxx;
-
-	/* org.freedesktop.DBus.Properties.GetAll */
-	} else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll") &&
-	           dbus_message_has_signature (message, "s")) {
-		xxx;
-	}
-#endif
-}
-
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -572,7 +549,6 @@ gkd_secret_session_class_init (GkdSecretSessionClass *klass)
 DBusMessage*
 gkd_secret_session_dispatch (GkdSecretSession *self, DBusMessage *message)
 {
-	DBusMessage *reply = NULL;
 	const gchar *caller;
 
 	g_return_val_if_fail (message, NULL);
@@ -583,18 +559,14 @@ gkd_secret_session_dispatch (GkdSecretSession *self, DBusMessage *message)
 	if (!caller || !g_str_equal (caller, self->caller))
 		g_return_val_if_reached (NULL);
 
-	/* Check if it's properties, and hand off to property handler. */
-	if (dbus_message_has_interface (message, PROPERTIES_INTERFACE))
-		reply = session_property_handler (self, message);
-
 	/* org.freedesktop.Secrets.Session.Close() */
 	else if (dbus_message_is_method_call (message, SECRET_SESSION_INTERFACE, "Close"))
-		reply = session_method_close (self, message);
+		return session_method_close (self, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
 		return gkd_dbus_introspect_handle (message, "session");
 
-	return reply;
+	return NULL;
 }
 
 DBusMessage*
