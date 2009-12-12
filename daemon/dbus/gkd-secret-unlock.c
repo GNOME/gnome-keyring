@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gkd-secret-objects.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-types.h"
@@ -172,12 +173,12 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *coll, gboolean *lock
 static GP11Object*
 lookup_collection (GkdSecretUnlock *self, const gchar *path)
 {
-	GP11Session *session;
+	GkdSecretObjects *objects;
+	const gchar *caller;
 
-	session = gkd_secret_prompt_get_pkcs11_session (GKD_SECRET_PROMPT (self));
-	g_return_val_if_fail (session, NULL);
-
-	return gkd_secret_util_path_to_collection (session, path);
+	objects = gkd_secret_prompt_get_objects (GKD_SECRET_PROMPT (self));
+	caller = gkd_secret_prompt_get_caller (GKD_SECRET_PROMPT (self));
+	return gkd_secret_objects_lookup_collection (objects, caller, path);
 }
 
 /* -----------------------------------------------------------------------------

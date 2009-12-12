@@ -22,9 +22,9 @@
 #include "config.h"
 
 #include "gkd-secret-create.h"
-#include "gkd-secret-service.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-secret.h"
+#include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
@@ -94,6 +94,8 @@ create_collection_with_credential (GkdSecretCreate *self, GP11Object *cred)
 	GError *error = NULL;
 	GP11Object *collection;
 	GP11Session *session;
+	gpointer identifier;
+	gsize n_identifier;
 
 	g_assert (GKD_SECRET_IS_CREATE (self));
 	g_return_val_if_fail (self->pkcs11_attrs, FALSE);
@@ -115,8 +117,17 @@ create_collection_with_credential (GkdSecretCreate *self, GP11Object *cred)
 	}
 
 	gp11_object_set_session (collection, session);
-	self->result_path = gkd_secret_util_path_for_collection (collection);
+	identifier = gp11_object_get_data (collection, CKA_ID, &n_identifier, &error);
 	g_object_unref (collection);
+
+	if (!identifier) {
+		g_warning ("couldn't lookup new collection identifier: %s", error->message);
+		g_clear_error (&error);
+		return FALSE;
+	}
+
+	self->result_path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
+	g_free (identifier);
 
 	return TRUE;
 }
@@ -299,6 +310,8 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 	GP11Object *collection;
 	GP11Session *pkcs11_session;
 	GError *error = NULL;
+	gpointer identifier;
+	gsize n_identifier;
 	gchar *path;
 
 	/* Figure out the session */
@@ -348,13 +361,25 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 		                               "Couldn't create new collection");
 	}
 
-	path = gkd_secret_util_path_for_collection (collection);
+	gp11_object_set_session (collection, pkcs11_session);
+	identifier = gp11_object_get_data (collection, CKA_ID, &n_identifier, &error);
 	g_object_unref (collection);
+
+	if (!identifier) {
+		g_warning ("couldn't lookup new collection identifier: %s", error->message);
+		g_clear_error (&error);
+		return dbus_message_new_error (message, DBUS_ERROR_FAILED,
+		                               "Couldn't find new collection just created");
+	}
+
+	path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
+	g_free (identifier);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply,
 	                          DBUS_TYPE_OBJECT_PATH, &path,
 	                          DBUS_TYPE_INVALID);
+	g_free (path);
 
 	return reply;
 }

@@ -540,29 +540,32 @@ service_method_unlock (GkdSecretService *self, DBusMessage *message)
 static DBusMessage*
 service_method_read_alias (GkdSecretService *self, DBusMessage *message)
 {
-	GP11Object *collection;
-	GP11Session *session;
 	DBusMessage *reply;
 	const char *alias;
 	gchar *path = NULL;
+	const gchar *identifier;
+	GP11Object  *collection;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &alias, DBUS_TYPE_INVALID))
 		return NULL;
 
-	if (alias && g_str_equal (alias, "default")) {
-		update_default (self, FALSE);
-		if (self->default_collection) {
-			session = gkd_secret_service_get_pkcs11_session (self, dbus_message_get_sender (message));
-			collection = gkd_secret_util_identifier_to_collection (session, self->default_collection);
-		}
-	}
+	update_default (self, FALSE);
 
-	reply = dbus_message_new_method_return (message);
-	if (collection) {
-		path = gkd_secret_util_path_for_collection (collection);
+	identifier = gkd_secret_objects_get_alias (self->objects, alias);
+	if (identifier)
+		path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, -1);
+
+	/* Make sure it actually exists */
+	collection = gkd_secret_objects_lookup_collection (self->objects,
+	                                                   dbus_message_get_sender (message), path);
+	if (collection == NULL) {
+		g_free (path);
+		path = NULL;
+	} else {
 		g_object_unref (collection);
 	}
 
+	reply = dbus_message_new_method_return (message);
 	if (path == NULL)
 		path = g_strdup ("/");
 	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
@@ -575,29 +578,37 @@ static DBusMessage*
 service_method_set_alias (GkdSecretService *self, DBusMessage *message)
 {
 	GP11Object *collection;
-	GP11Session *session;
+	gchar *identifier;
 	const char *alias;
 	const char *path;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &alias,
 	                            DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
 		return NULL;
+	g_return_val_if_fail (alias, NULL);
 
-	if (!alias || !g_str_equal (alias, "default"))
+	if (!g_str_equal (alias, "default"))
 		return dbus_message_new_error (message, DBUS_ERROR_NOT_SUPPORTED,
 		                               "Only the 'default' alias is supported");
 
 	/* Find a collection with that path */
-	session = gkd_secret_service_get_pkcs11_session (self, dbus_message_get_sender (message));
-	collection = gkd_secret_util_path_to_collection (session, path);
-	if (collection == NULL)
-		return dbus_message_new_error_printf (message, SECRET_ERROR_NO_SUCH_OBJECT,
-		                                      "No such collection: %s", path);
+	if (!object_path_has_prefix (path, SECRET_COLLECTION_PREFIX) ||
+	    !gkd_secret_util_parse_path (path, &identifier, NULL))
+		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+		                               "Invalid collection object path");
 
-	/* Convert into an identifier */
-	g_free (self->default_collection);
-	self->default_collection = gkd_secret_util_identifier_for_collection (collection);
+	collection = gkd_secret_objects_lookup_collection (self->objects,
+	                                                   dbus_message_get_sender (message), path);
+	if (collection == NULL) {
+		g_free (identifier);
+		return dbus_message_new_error (message, SECRET_ERROR_NO_SUCH_OBJECT,
+		                               "No such collection exists");
+	}
+
 	g_object_unref (collection);
+
+	gkd_secret_objects_set_alias (self->objects, alias, identifier);
+	g_free (identifier);
 
 	store_default (self);
 
@@ -660,33 +671,6 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 	return NULL;
 }
 
-static DBusMessage*
-service_alias_handler (GkdSecretService *self, const gchar *alias, DBusMessage *message)
-{
-	GP11Object *collection;
-	GP11Session *session;
-	DBusMessage *reply;
-
-	g_return_val_if_fail (alias, NULL);
-	g_return_val_if_fail (message, NULL);
-
-	if (!g_str_equal (alias, "default"))
-		return gkd_secret_util_no_such_object (message);
-
-	update_default (self, FALSE);
-	if (!self->default_collection)
-		return gkd_secret_util_no_such_object (message);
-
-	session = gkd_secret_service_get_pkcs11_session (self, dbus_message_get_sender (message));
-	collection = gkd_secret_util_identifier_to_collection (session, self->default_collection);
-	if (!collection)
-		return gkd_secret_util_no_such_object (message);
-
-	reply = gkd_secret_objects_handle_collection (self->objects, collection, message);
-	g_object_unref (collection);
-	return reply;
-}
-
 static void
 service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 {
@@ -735,13 +719,9 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 			reply = gkd_secret_prompt_dispatch (object, message);
 
 	/* Dispatched to a collection, off it goes */
-	} else if (object_path_has_prefix (path, SECRET_COLLECTION_PREFIX)) {
+	} else if (object_path_has_prefix (path, SECRET_COLLECTION_PREFIX) ||
+	           object_path_has_prefix (path, SECRET_ALIAS_PREFIX)) {
 		reply = gkd_secret_objects_dispatch (self->objects, message);
-
-	/* Dispatched to an alias, send it off */
-	} else if (object_path_has_prefix (path, SECRET_ALIAS_PREFIX)) {
-		path += strlen (SECRET_ALIAS_PREFIX);
-		reply = service_alias_handler (self, path, message);
 
 	/* Addressed to the service */
 	} else if (g_str_equal (path, SECRET_SERVICE_PATH)) {
@@ -921,11 +901,6 @@ gkd_secret_service_finalize (GObject *obj)
 	g_hash_table_destroy (self->clients);
 	self->clients = NULL;
 
-#if 0
-	g_free (self->pv->default_collection);
-	self->pv->default_collection = NULL;
-#endif
-
 	G_OBJECT_CLASS (gkd_secret_service_parent_class)->finalize (obj);
 }
 
@@ -1100,37 +1075,3 @@ gkd_secret_service_close_session (GkdSecretService *self, GkdSecretSession *sess
 	path = gkd_secret_session_get_object_path (session);
 	g_hash_table_remove (client->sessions, path);
 }
-
-#if 0
-GkdSecretCollection*
-gkd_secret_service_get_default_collection (GkdSecretService *self)
-{
-	GkdSecretCollection *collection = NULL;
-
-	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
-
-	if (!self->pv->default_collection)
-		update_default (self);
-
-	if (self->pv->default_collection != NULL)
-		collection = gkd_secret_service_get_collection (self, self->pv->default_collection);
-
-	/*
-	 * We prefer to make the 'login' keyring the default
-	 * keyring when nothing else is setup.
-	 */
-	if (collection == NULL)
-		collection = gkd_secret_service_get_collection (self, "login");
-
-	/*
-	 * Otherwise fall back to the 'default' keyring setup
-	 * if PAM integration is borked, and the user had to
-	 * create a new keyring.
-	 */
-	if (collection == NULL)
-		collection = gkd_secret_service_get_collection (self, "default");
-
-	return collection;
-}
-
-#endif

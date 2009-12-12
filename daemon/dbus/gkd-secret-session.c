@@ -554,16 +554,22 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GP11Object *item,
 
 	g_assert (GP11_IS_OBJECT (self->key));
 
-	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
-	g_return_val_if_fail (session, FALSE);
-
 	/*
 	 * By getting these attributes, and then using them in the unwrap,
 	 * the unwrap won't generate a new object, but merely set the secret.
 	 */
 
-	attrs = gkd_secret_util_attributes_for_item (item);
-	g_return_val_if_fail (attrs, FALSE);
+	attrs = gp11_object_get (item, &error, CKA_ID, CKA_G_COLLECTION, GP11_INVALID);
+	if (attrs == NULL) {
+		g_message ("couldn't get item attributes: %s", error->message);
+		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
+		g_clear_error (&error);
+		return FALSE;
+	}
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
+
+	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
+	g_return_val_if_fail (session, FALSE);
 
 	mech = gp11_mechanism_new_with_param (self->mech_type, secret->parameter,
 	                                      secret->n_parameter);

@@ -41,11 +41,6 @@ typedef struct _GkdSecretServiceClass GkdSecretServiceClass;
 
 struct _GkdSecretServiceClass {
 	GObjectClass parent_class;
-#if 0
-	/* signals --------------------------------------------------------- */
-
-	void (*signal) (GkdSecretService *self);
-#endif
 };
 
 GType                   gkd_secret_service_get_type                (void);
@@ -59,6 +54,8 @@ GP11Session*            gkd_secret_service_get_pkcs11_session      (GkdSecretSer
 
 GkdSecretObjects*       gkd_secret_service_get_objects             (GkdSecretService *self);
 
+GkdSecretIndex*         gkd_secret_service_get_index               (GkdSecretService *self);
+
 GkdSecretSession*       gkd_secret_service_lookup_session          (GkdSecretService *self,
                                                                     const gchar *path,
                                                                     const gchar *caller);
@@ -68,9 +65,5 @@ void                    gkd_secret_service_close_session           (GkdSecretSer
 
 void                    gkd_secret_service_send                    (GkdSecretService *self,
                                                                     DBusMessage *message);
-
-#if 0
-GkdSecretCollection*    gkd_secret_service_get_default_collection  (GkdSecretService *self);
-#endif
 
 #endif /* ___SECRET_SERVICE_H__ */

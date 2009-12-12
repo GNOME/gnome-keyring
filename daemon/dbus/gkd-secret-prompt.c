@@ -363,8 +363,15 @@ gkd_secret_prompt_get_pkcs11_session (GkdSecretPrompt *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
 	g_return_val_if_fail (self->pv->service, NULL);
-
 	return gkd_secret_service_get_pkcs11_session (self->pv->service, self->pv->caller);
+}
+
+GkdSecretObjects*
+gkd_secret_prompt_get_objects (GkdSecretPrompt *self)
+{
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (self->pv->service, NULL);
+	return gkd_secret_service_get_objects (self->pv->service);
 }
 
 void

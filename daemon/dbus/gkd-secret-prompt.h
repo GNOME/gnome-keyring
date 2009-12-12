@@ -66,6 +66,8 @@ const gchar*        gkd_secret_prompt_get_object_path         (GkdSecretPrompt *
 
 GP11Session*        gkd_secret_prompt_get_pkcs11_session      (GkdSecretPrompt *self);
 
+GkdSecretObjects*   gkd_secret_prompt_get_objects             (GkdSecretPrompt *self);
+
 void                gkd_secret_prompt_complete                (GkdSecretPrompt *self);
 
 void                gkd_secret_prompt_dismiss                 (GkdSecretPrompt *self);

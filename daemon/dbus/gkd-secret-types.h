@@ -50,6 +50,7 @@
 
 typedef struct _GkdSecretCollection GkdSecretCollection;
 typedef struct _GkdSecretCreate GkdSecretCreate;
+typedef struct _GkdSecretIndex GkdSecretIndex;
 typedef struct _GkdSecretItem GkdSecretItem;
 typedef struct _GkdSecretObjects GkdSecretObjects;
 typedef struct _GkdSecretPrompt GkdSecretPrompt;

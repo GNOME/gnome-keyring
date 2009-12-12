@@ -24,30 +24,17 @@
 
 #include "gkd-secret-types.h"
 
-#include "gp11/gp11.h"
+#include <glib.h>
 
 #include <dbus/dbus.h>
 
-GP11Object*       gkd_secret_util_path_to_collection                    (GP11Session *session,
-                                                                         const gchar *path);
+gboolean          gkd_secret_util_parse_path                            (const gchar *path,
+                                                                         gchar **collection,
+                                                                         gchar **item);
 
-GP11Object*       gkd_secret_util_path_to_item                          (GP11Session *session,
-                                                                         const gchar *path);
-
-GP11Object*       gkd_secret_util_path_to_object                        (GP11Session *session,
-                                                                         const gchar *path,
-                                                                         gboolean *is_item);
-
-gchar*            gkd_secret_util_path_for_collection                   (GP11Object *object);
-
-gchar*            gkd_secret_util_path_for_item                         (GP11Object *object);
-
-gchar*            gkd_secret_util_identifier_for_collection             (GP11Object *collection);
-
-GP11Object*       gkd_secret_util_identifier_to_collection              (GP11Session *session,
-                                                                         const gchar *identifier);
-
-GP11Attributes*   gkd_secret_util_attributes_for_item                   (GP11Object *item);
+gchar*            gkd_secret_util_build_path                            (const gchar *base,
+                                                                         gconstpointer identifier,
+                                                                         gssize n_identifier);
 
 DBusMessage*      gkd_secret_util_no_such_object                        (DBusMessage *message);
 
