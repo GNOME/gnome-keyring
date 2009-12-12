@@ -44,6 +44,4 @@ gpointer    gkd_prompt_util_encrypt_text                 (gpointer key, gsize n_
 gchar*      gkd_prompt_util_decrypt_text                 (gpointer key, gsize n_key, gpointer iv, gsize n_iv,
                                                           gpointer data, gsize n_data);
 
-gboolean    gkd_prompt_util_mpi_to_key                   (gcry_mpi_t mpi, gpointer *key, gsize *n_key);
-
 #endif /* __GKD_PROMPT_H__ */

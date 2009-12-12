@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-dh.c: Test egg-dh.c
+/* test-dh.c: Test egg-dh.c
 
    Copyright (C) 2009 Stefan Walter
 
@@ -28,49 +28,21 @@
 #include "run-auto-test.h"
 
 #include "egg-dh.h"
+#include "egg-secure-memory.h"
 
 #include <gcrypt.h>
 
-DEFINE_TEST(dh_parse_pkcs3)
-{
-	gcry_mpi_t p, g;
-	guchar *data;
-	gsize n_data;
-	gboolean ret;
-
-	data = test_data_read ("dh-params.pem", &n_data);
-	ret = egg_dh_parse_pkcs3 (data, n_data, &p, &g);
-	g_assert (ret == TRUE);
-	g_assert (gcry_mpi_get_nbits (p) == 1024);
-
-#if 0
-	guchar *output;
-	gsize n_written;
-	gcry_mpi_aprint (GCRYMPI_FMT_HEX, &output, &n_written, p);
-	g_printerr ("\nprime: %s\n", output);
-	gcry_mpi_aprint (GCRYMPI_FMT_HEX, &output, &n_written, g);
-	g_printerr ("\nbase: %s\n", output);
-#endif
-
-	gcry_mpi_release (p);
-	gcry_mpi_release (g);
-	g_free (data);
-}
-
 DEFINE_TEST(dh_perform)
 {
-	guchar *data;
-	gsize n_data;
 	gcry_mpi_t p, g;
-	gcry_mpi_t x1, X1, k1;
-	gcry_mpi_t x2, X2, k2;
+	gcry_mpi_t x1, X1;
+	gcry_mpi_t x2, X2;
+	gpointer k1, k2;
 	gboolean ret;
 
 	/* Load up the parameters */
-	data = test_data_read ("dh-params.pem", &n_data);
-	if (!egg_dh_parse_pkcs3 (data, n_data, &p, &g))
+	if (!egg_dh_default_params ("ietf-ike-grp-modp-768", &p, &g))
 		g_assert_not_reached ();
-	g_free (data);
 
 	/* Generate secrets */
 	ret = egg_dh_gen_pair (p, g, 0, &X1, &x1);
@@ -79,22 +51,22 @@ DEFINE_TEST(dh_perform)
 	g_assert (ret);
 
 	/* Calculate keys */
-	ret = egg_dh_gen_secret (X2, x1, p, &k1);
-	g_assert (ret);
-	ret = egg_dh_gen_secret (X1, x2, p, &k2);
-	g_assert (ret);
+	k1 = egg_dh_gen_secret (X2, x1, p, 96);
+	g_assert (k1);
+	k2 = egg_dh_gen_secret (X1, x2, p, 96);
+	g_assert (k2);
 
 	/* Keys must be the same */
-	g_assert (gcry_mpi_cmp (k1, k2) == 0);
+	g_assert (memcmp (k1, k2, 96) == 0);
 
 	gcry_mpi_release (p);
 	gcry_mpi_release (g);
 	gcry_mpi_release (x1);
 	gcry_mpi_release (X1);
-	gcry_mpi_release (k1);
+	egg_secure_free (k1);
 	gcry_mpi_release (x2);
 	gcry_mpi_release (X2);
-	gcry_mpi_release (k2);
+	egg_secure_free (k2);
 }
 
 DEFINE_TEST(dh_short_pair)
@@ -107,7 +79,7 @@ DEFINE_TEST(dh_short_pair)
 	ret = egg_dh_default_params ("ietf-ike-grp-modp-1024", &p, &g);
 	g_assert (ret);
 	g_assert_cmpuint (gcry_mpi_get_nbits (p), ==, 1024);
-	
+
 	/* Generate secrets */
 	ret = egg_dh_gen_pair (p, g, 512, &X1, &x1);
 	g_assert (ret);

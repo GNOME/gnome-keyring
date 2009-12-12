@@ -228,26 +228,27 @@ static gboolean
 negotiate_transport_crypto (void)
 {
 	gcry_mpi_t base, prime, peer;
-	gcry_mpi_t key, pub, secret;
+	gcry_mpi_t key, pub, priv;
 	gboolean ret = FALSE;
 
 	g_assert (!the_key);
 	base = prime = peer = NULL;
-	key = pub = secret = NULL;
+	key = pub = priv = NULL;
 
 	/* The DH stuff coming in from our caller */
 	if (gkd_prompt_util_decode_mpi (input_data, "transport", "prime", &prime) &&
 	    gkd_prompt_util_decode_mpi (input_data, "transport", "base", &base) &&
 	    gkd_prompt_util_decode_mpi (input_data, "transport", "public", &peer)) {
 
-		/* Generate our own public/secret, and then a key, send it back */
-		if (egg_dh_gen_pair (prime, base, 0, &pub, &secret) &&
-		    egg_dh_gen_secret (peer, secret, prime, &key)) {
+		/* Generate our own public/priv, and then a key, send it back */
+		if (egg_dh_gen_pair (prime, base, 0, &pub, &priv)) {
+
+			gkd_prompt_util_encode_mpi (output_data, "transport", "public", pub);
 
 			/* Build up a key we can use */
-			gkd_prompt_util_encode_mpi (output_data, "transport", "public", pub);
-			if (gkd_prompt_util_mpi_to_key (key, &the_key, &n_the_key))
-				ret = TRUE;
+			n_the_key = 16;
+			the_key = egg_dh_gen_secret (peer, priv, prime, n_the_key);
+			ret = (the_key != NULL);
 		}
 	}
 
@@ -256,7 +257,7 @@ negotiate_transport_crypto (void)
 	gcry_mpi_release (peer);
 	gcry_mpi_release (key);
 	gcry_mpi_release (pub);
-	gcry_mpi_release (secret);
+	gcry_mpi_release (priv);
 
 	return ret;
 }

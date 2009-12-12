@@ -96,7 +96,6 @@ DEFINE_TEST(decode_nonexistant_hex)
 static void
 do_encrypt_decrypt_text (const gchar *text)
 {
-	gcry_mpi_t mpi;
 	gpointer key, enc;
 	gsize n_key, n_enc;
 	guchar iv[16];
@@ -105,24 +104,17 @@ do_encrypt_decrypt_text (const gchar *text)
 	g_test_message ("prompt encrypt/decrypt text: %s", text);
 
 	/* Test making a key */
-	mpi = gcry_mpi_new (512);
-	gcry_mpi_randomize (mpi, 512, GCRY_WEAK_RANDOM);
-
-	if (!gkd_prompt_util_mpi_to_key (mpi, &key, &n_key))
-		g_assert_not_reached ();
+	n_key = 16;
+	key = egg_secure_alloc (n_key);
+	gcry_randomize (key, n_key, GCRY_WEAK_RANDOM);
 
 	gcry_create_nonce (iv, 16);
 	enc = gkd_prompt_util_encrypt_text (key, n_key, iv, 16, text, &n_enc);
-	egg_secure_clear (key, n_key);
-	egg_secure_free (key);
 
 	g_assert (enc);
 	/* Always greater due to null term */
 	g_assert (n_enc > strlen (text));
 	g_assert (n_enc % 16 == 0);
-
-	if (!gkd_prompt_util_mpi_to_key (mpi, &key, &n_key))
-		g_assert_not_reached ();
 
 	check = gkd_prompt_util_decrypt_text (key, n_key, iv, 16, enc, n_enc);
 	egg_secure_clear (key, n_key);
@@ -132,8 +124,6 @@ do_encrypt_decrypt_text (const gchar *text)
 	g_assert (check);
 	g_assert (strlen (check) < n_enc);
 	g_assert_cmpstr (check, ==, text);
-
-	gcry_mpi_release (mpi);
 }
 
 DEFINE_TEST(encrypt_decrypt_text)

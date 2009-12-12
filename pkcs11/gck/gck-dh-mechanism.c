@@ -199,42 +199,6 @@ gck_dh_mechanism_generate (GckSession *session, CK_ATTRIBUTE_PTR pub_atts,
 	return rv;
 }
 
-static gpointer
-prepare_and_truncate_secret (gcry_mpi_t secret, CK_ATTRIBUTE_PTR attrs,
-                             CK_ULONG n_attrs, gsize *n_value)
-{
-	CK_ULONG length = 0;
-	CK_KEY_TYPE type;
-	gcry_error_t gcry;
-	guchar *value;
-	gsize offset = 0;
-
-	g_assert (n_value);
-
-	/* What length should we truncate to? */
-	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_VALUE_LEN, &length)) {
-		if (gck_attributes_find_ulong (attrs, n_attrs, CKA_KEY_TYPE, &type))
-			length = gck_crypto_secret_key_length (type);
-	}
-
-	/* Write out the secret */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, n_value, secret);
-	g_return_val_if_fail (gcry == 0, NULL);
-	if (*n_value < length)
-		offset = length - *n_value;
-	value = egg_secure_alloc (*n_value + offset);
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value + offset, *n_value, n_value, secret);
-	g_return_val_if_fail (gcry == 0, NULL);
-
-	if (length != 0 && length < *n_value) {
-		offset = *n_value - length;
-		memmove (value, value + offset, length);
-		*n_value = length;
-	}
-
-	return value;
-}
-
 CK_RV
 gck_dh_mechanism_derive (GckSession *session, CK_MECHANISM_PTR mech, GckObject *base,
                          CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **derived)
@@ -242,14 +206,13 @@ gck_dh_mechanism_derive (GckSession *session, CK_MECHANISM_PTR mech, GckObject *
 	gcry_mpi_t peer = NULL;
 	gcry_mpi_t prime;
 	gcry_mpi_t priv;
-	gcry_mpi_t secret;
 	gcry_error_t gcry;
 	CK_ATTRIBUTE attr;
 	GArray *array;
-	gboolean ret;
-	gsize n_value;
+	CK_ULONG n_value;
 	gpointer value;
 	GckTransaction *transaction;
+	CK_KEY_TYPE type;
 
 	g_return_val_if_fail (GCK_IS_DH_PRIVATE_KEY (base), CKR_GENERAL_ERROR);
 
@@ -265,15 +228,19 @@ gck_dh_mechanism_derive (GckSession *session, CK_MECHANISM_PTR mech, GckObject *
 
 	prime = gck_dh_key_get_prime (GCK_DH_KEY (base));
 	priv = gck_dh_private_key_get_value (GCK_DH_PRIVATE_KEY (base));
-	ret = egg_dh_gen_secret (peer, priv, prime, &secret);
+
+	/* What length should we truncate to? */
+	n_value = (gcry_mpi_get_nbits(prime) + 7) / 8;
+	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_VALUE_LEN, &n_value)) {
+		if (gck_attributes_find_ulong (attrs, n_attrs, CKA_KEY_TYPE, &type))
+			n_value = gck_crypto_secret_key_length (type);
+	}
+
+	value = egg_dh_gen_secret (peer, priv, prime, n_value);
 	gcry_mpi_release (peer);
 
-	if (ret != TRUE)
+	if (value == NULL)
 		return CKR_FUNCTION_FAILED;
-
-	value = prepare_and_truncate_secret (secret, attrs, n_attrs, &n_value);
-	g_return_val_if_fail (value, CKR_GENERAL_ERROR);
-	gcry_mpi_release (secret);
 
 	/* Now setup the attributes with our new value */
 	array = g_array_new (FALSE, FALSE, sizeof (CK_ATTRIBUTE));

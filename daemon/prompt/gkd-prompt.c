@@ -301,28 +301,22 @@ prepare_transport_crypto (GkdPrompt *self)
 static gboolean
 receive_transport_crypto (GkdPrompt *self)
 {
-	gcry_mpi_t key, peer;
-	gboolean ret;
+	gcry_mpi_t peer;
+	gpointer value;
 
 	g_assert (self->pv->output);
 
 	if (!gkd_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
 		return FALSE;
 
-	ret = egg_dh_gen_secret (peer, self->pv->secret, self->pv->prime, &key);
+	value = egg_dh_gen_secret (peer, self->pv->secret, self->pv->prime, 16);
 	gcry_mpi_release (peer);
-	if (!ret)
+	if (!value)
 		return FALSE;
 
 	egg_secure_free (self->pv->key);
-	ret = gkd_prompt_util_mpi_to_key (key, &self->pv->key, &self->pv->n_key);
-	gcry_mpi_release (key);
-
-	if (!ret) {
-		self->pv->key = NULL;
-		self->pv->n_key = 0;
-		return FALSE;
-	}
+	self->pv->key = value;
+	self->pv->n_key = 16;
 
 	return TRUE;
 }

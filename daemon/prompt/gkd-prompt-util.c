@@ -111,36 +111,6 @@ gkd_prompt_util_decode_mpi (GKeyFile *key_file, const gchar *section,
 	return (gcry == 0);
 }
 
-gboolean
-gkd_prompt_util_mpi_to_key (gcry_mpi_t mpi, gpointer *key, gsize *n_key)
-{
-	gcry_error_t gcry;
-	guchar *buffer;
-	gsize n_buffer;
-
-	g_return_val_if_fail (mpi, FALSE);
-	g_return_val_if_fail (key, FALSE);
-	g_return_val_if_fail (n_key, FALSE);
-
-	/* Write the key out to raw data */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &n_buffer, mpi);
-	g_return_val_if_fail (gcry == 0, FALSE);
-	buffer = egg_secure_alloc (n_buffer);
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, buffer, n_buffer, &n_buffer, mpi);
-	g_return_val_if_fail (gcry == 0, FALSE);
-
-	/* Allocate memory for hashed key */
-	g_assert (16 == gcry_md_get_algo_dlen (GCRY_MD_MD5));
-	*key = egg_secure_alloc (16);
-	*n_key = 16;
-
-	/* Use that as the input to derive a key for 128-bit AES */
-	gcry_md_hash_buffer (GCRY_MD_MD5, *key, buffer, n_buffer);
-
-	egg_secure_free (buffer);
-	return TRUE;
-}
-
 gpointer
 gkd_prompt_util_encrypt_text (gpointer key, gsize n_key, gpointer iv, gsize n_iv,
                               const gchar *text, gsize *n_result)
