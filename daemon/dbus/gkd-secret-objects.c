@@ -399,7 +399,7 @@ item_method_set_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *m
 	GkdSecretSession *session;
 	const char *caller;
 
-	if (!dbus_message_has_signature (message, GKD_SECRET_SECRET_SIG))
+	if (!dbus_message_has_signature (message, "(oayay)"))
 		return NULL;
 	dbus_message_iter_init (message, &iter);
 	secret = gkd_secret_secret_parse (&iter);

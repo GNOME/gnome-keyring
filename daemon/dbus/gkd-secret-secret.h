@@ -28,8 +28,6 @@
 
 #include <dbus/dbus.h>
 
-#define GKD_SECRET_SECRET_SIG "{sayay}"
-
 struct _GkdSecretSecret {
 	gchar *path;
 	gpointer parameter;
