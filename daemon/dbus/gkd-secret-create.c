@@ -105,18 +105,13 @@ create_collection_with_credential (GkdSecretCreate *self, GP11Object *cred)
 	session =  gkd_secret_prompt_get_pkcs11_session (GKD_SECRET_PROMPT (self));
 	g_return_val_if_fail (session, FALSE);
 
-	/* Setup remainder of attributes on collection */
-	gp11_attributes_add_ulong (self->pkcs11_attrs, CKA_G_CREDENTIAL,
-	                           gp11_object_get_handle (cred));
-
-	collection = gp11_session_create_object_full (session, self->pkcs11_attrs, NULL, &error);
+	collection = gkd_secret_create_with_credential (session, self->pkcs11_attrs, cred, &error);
 	if (!collection) {
 		g_warning ("couldn't create collection: %s", error->message);
 		g_clear_error (&error);
 		return FALSE;
 	}
 
-	gp11_object_set_session (collection, session);
 	identifier = gp11_object_get_data (collection, CKA_ID, &n_identifier, &error);
 	g_object_unref (collection);
 
@@ -144,7 +139,7 @@ create_collection_with_password (GkdSecretCreate *self, const gchar *password)
 
 	g_assert (GKD_SECRET_IS_CREATE (self));
 
-	if (gp11_attributes_find_boolean (self->pkcs11_attrs, CKA_TOKEN, &token))
+	if (!gp11_attributes_find_boolean (self->pkcs11_attrs, CKA_TOKEN, &token))
 		token = FALSE;
 	n_password = password ? strlen (password) : 0;
 
@@ -239,7 +234,6 @@ gkd_secret_create_set_property (GObject *obj, guint prop_id, const GValue *value
 	case PROP_PKCS11_ATTRIBUTES:
 		g_return_if_fail (!self->pkcs11_attrs);
 		self->pkcs11_attrs = g_value_dup_boxed (value);
-		gp11_attributes_add_ulong (self->pkcs11_attrs, CKA_CLASS, CKO_G_COLLECTION);
 		g_return_if_fail (self->pkcs11_attrs);
 		break;
 	default:
@@ -297,6 +291,35 @@ gkd_secret_create_new (GkdSecretService *service, const gchar *caller,
 	                     NULL);
 }
 
+GP11Object*
+gkd_secret_create_with_credential (GP11Session *session, GP11Attributes *attrs,
+                                   GP11Object *cred, GError **error)
+{
+	GP11Attributes *atts;
+	GP11Attribute *attr;
+	GP11Object *collection;
+	gboolean token;
+
+	atts = gp11_attributes_newv (CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (cred),
+	                             CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
+	                             GP11_INVALID);
+
+	attr = gp11_attributes_find (attrs, CKA_LABEL);
+	if (attr != NULL)
+		gp11_attributes_add (atts, attr);
+	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
+		token = FALSE;
+	gp11_attributes_add_boolean (atts, CKA_TOKEN, token);
+
+	collection = gp11_session_create_object_full (session, atts, NULL, error);
+	gp11_attributes_unref (atts);
+
+	if (collection != NULL)
+		gp11_object_set_session (collection, session);
+
+	return collection;
+}
+
 DBusMessage*
 gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *message,
                                      GP11Attributes *attrs, GkdSecretSecret *master)
@@ -304,7 +327,6 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 	DBusError derr = DBUS_ERROR_INIT;
 	GkdSecretSession *session;
 	GP11Attributes *atts;
-	GP11Attribute *label;
 	DBusMessage *reply;
 	GP11Object *cred;
 	GP11Object *collection;
@@ -312,6 +334,7 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 	GError *error = NULL;
 	gpointer identifier;
 	gsize n_identifier;
+	gboolean token;
 	gchar *path;
 
 	/* Figure out the session */
@@ -321,9 +344,12 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 		return dbus_message_new_error (message, SECRET_ERROR_NO_SESSION,
 		                               "No such session exists");
 
+	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
+		token = FALSE;
+
 	atts = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
 	                             CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
-	                             CKA_TOKEN, GP11_BOOLEAN, TRUE,
+	                             CKA_TOKEN, GP11_BOOLEAN, token,
 	                             GP11_INVALID);
 
 	/* Create ourselves some credentials */
@@ -336,23 +362,13 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 		return reply;
 	}
 
-	/* The only thing we actually use from the properties right now is the label */
-	atts = gp11_attributes_newv (CKA_TOKEN, GP11_BOOLEAN, TRUE,
-	                             CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (cred),
-	                             CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
-	                             GP11_INVALID);
-
-	label = gp11_attributes_find (attrs, CKA_LABEL);
-	if (label != NULL)
-		gp11_attributes_add (atts, label);
-
-	g_object_unref (cred);
-
 	pkcs11_session = gkd_secret_service_get_pkcs11_session (service, dbus_message_get_sender (message));
 	g_return_val_if_fail (pkcs11_session, NULL);
 
-	collection = gp11_session_create_object_full (pkcs11_session, atts, NULL, &error);
+	collection = gkd_secret_create_with_credential (pkcs11_session, attrs, cred, &error);
+
 	gp11_attributes_unref (atts);
+	g_object_unref (cred);
 
 	if (collection == NULL) {
 		g_warning ("couldn't create collection: %s", error->message);

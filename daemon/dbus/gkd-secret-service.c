@@ -401,8 +401,7 @@ static DBusMessage*
 service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 {
 	DBusMessageIter iter, array;
-	GP11Attributes *attrs, *all;
-	GP11Attribute *label;
+	GP11Attributes *attrs;
 	GkdSecretCreate *create;
 	ServiceClient *client;
 	DBusMessage *reply;
@@ -415,21 +414,15 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
-	all = gp11_attributes_new ();
+	attrs = gp11_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
-	if (!gkd_secret_property_parse_all (&array, all)) {
-		gp11_attributes_unref (all);
+	if (!gkd_secret_property_parse_all (&array, attrs)) {
+		gp11_attributes_unref (attrs);
 		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
 		                                      "Invalid properties");
 	}
 
-	/* The only thing we actually use from the properties right now is the label */
-	label = gp11_attributes_find (all, CKA_LABEL);
-	attrs = gp11_attributes_new ();
-	if (label != NULL)
-		gp11_attributes_add (attrs, label);
 	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
-	gp11_attributes_unref (all);
 
 	/* Create the prompt object, for the password */
 	caller = dbus_message_get_sender (message);
@@ -483,6 +476,7 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 		                               "Invalid secret argument");
 	}
 
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 	reply = gkd_secret_create_without_prompting (self, message, attrs, secret);
 	gp11_attributes_unref (attrs);
 	gkd_secret_secret_free (secret);

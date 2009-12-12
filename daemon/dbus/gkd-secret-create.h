@@ -48,6 +48,11 @@ GkdSecretCreate*    gkd_secret_create_new                     (GkdSecretService 
                                                                const gchar *caller,
                                                                GP11Attributes *attrs);
 
+GP11Object*         gkd_secret_create_with_credential         (GP11Session *session,
+                                                               GP11Attributes *attrs,
+                                                               GP11Object *cred,
+                                                               GError **error);
+
 DBusMessage*        gkd_secret_create_without_prompting       (GkdSecretService *service,
                                                                DBusMessage *message,
                                                                GP11Attributes *attrs,
