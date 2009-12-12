@@ -29,6 +29,7 @@
 #define SECRET_ITEM_INTERFACE          "org.freedesktop.Secret.Item"
 #define SECRET_PROMPT_INTERFACE        "org.freedesktop.Secret.Prompt"
 #define SECRET_SERVICE_INTERFACE       "org.freedesktop.Secret.Service"
+#define SECRET_SESSION_INTERFACE       "org.freedesktop.Secret.Session"
 
 #define SECRET_SERVICE_PATH            "/org/freedesktop/secrets"
 #define SECRET_SERVICE                 "org.freedesktop.secrets"
