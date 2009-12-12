@@ -510,7 +510,6 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GP11Object *item,
 		iv = g_malloc (n_iv);
 		gcry_create_nonce (iv, n_iv);
 		mech = gp11_mechanism_new_with_param (CKM_AES_CBC_PAD, iv, n_iv);
-		g_free (iv);
 	} else {
 		n_iv = 0;
 		iv = NULL;
