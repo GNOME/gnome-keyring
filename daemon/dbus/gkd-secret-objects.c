@@ -1062,6 +1062,51 @@ gkd_secret_objects_lookup_collection (GkdSecretObjects *self, const gchar *calle
 	return object;
 }
 
+GP11Object*
+gkd_secret_objects_lookup_item (GkdSecretObjects *self, const gchar *caller,
+                                const gchar *path)
+{
+	GP11Object *object = NULL;
+	GError *error = NULL;
+	GList *objects;
+	GP11Session *session;
+	gchar *collection;
+	gchar *identifier;
+
+	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
+	g_return_val_if_fail (caller, NULL);
+	g_return_val_if_fail (path, NULL);
+
+	if (!parse_object_path (self, path, &collection, &identifier))
+		return NULL;
+
+	/* The session we're using to access the object */
+	session = gkd_secret_service_get_pkcs11_session (self->service, caller);
+	g_return_val_if_fail (session, NULL);
+
+	objects = gp11_session_find_objects (session, &error,
+	                                     CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
+	                                     CKA_ID, strlen (identifier), identifier,
+	                                     CKA_G_COLLECTION, strlen (collection), collection,
+	                                     GP11_INVALID);
+
+	g_free (identifier);
+	g_free (collection);
+
+	if (error != NULL) {
+		g_warning ("couldn't lookup item: %s: %s", path, error->message);
+		g_clear_error (&error);
+	}
+
+	if (objects) {
+		object = g_object_ref (objects->data);
+		gp11_object_set_session (object, session);
+	}
+
+	gp11_list_unref_free (objects);
+	return object;
+}
+
 void
 gkd_secret_objects_append_item_paths (GkdSecretObjects *self, const gchar *base,
                                       DBusMessageIter *iter, DBusMessage *message)
@@ -1228,6 +1273,76 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	return reply;
 }
 
+DBusMessage*
+gkd_secret_objects_handle_get_secrets (GkdSecretObjects *self, DBusMessage *message)
+{
+	DBusError derr = DBUS_ERROR_INIT;
+	GkdSecretSession *session;
+	GkdSecretSecret *secret;
+	DBusMessage *reply;
+	GP11Object *item;
+	DBusMessageIter iter, array, dict;
+	const char *session_path;
+	const char *caller;
+	char **paths;
+	int n_paths, i;
+
+	if (!dbus_message_get_args (message, NULL,
+	                            DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &paths, &n_paths,
+	                            DBUS_TYPE_OBJECT_PATH, &session_path,
+	                            DBUS_TYPE_INVALID))
+		return NULL;
+
+	caller = dbus_message_get_sender (message);
+	g_return_val_if_fail (caller, NULL);
+
+	session = gkd_secret_service_lookup_session (self->service, session_path, caller);
+	if (session == NULL)
+		return dbus_message_new_error (message, SECRET_ERROR_NO_SESSION,
+		                               "No such session exists");
+
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{o(oayay)}", &array);
+
+	for (i = 0; i < n_paths; ++i) {
+
+		/* Try to find the item, if it doesn't exist, just ignore */
+		item = gkd_secret_objects_lookup_item (self, caller, paths[i]);
+		if (!item)
+			continue;
+
+		secret = gkd_secret_session_get_item_secret (session, item, &derr);
+		g_object_unref (item);
+
+		if (secret == NULL) {
+			/* We ignore is locked, and just leave out from response */
+			if (dbus_error_has_name (&derr, SECRET_ERROR_IS_LOCKED)) {
+				dbus_error_free (&derr);
+				continue;
+
+			/* All other errors stop the operation */
+			} else {
+				dbus_message_unref (reply);
+				reply = dbus_message_new_error (message, derr.name, derr.message);
+				dbus_error_free (&derr);
+				break;
+			}
+		}
+
+		dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
+		dbus_message_iter_append_basic (&dict, DBUS_TYPE_OBJECT_PATH, &(paths[i]));
+		gkd_secret_secret_append (secret, &dict);
+		gkd_secret_secret_free (secret);
+		dbus_message_iter_close_container (&array, &dict);
+	}
+
+	if (i == n_paths)
+		dbus_message_iter_close_container (&iter, &array);
+	dbus_free_string_array (paths);
+
+	return reply;
+}
 
 const gchar*
 gkd_secret_objects_get_alias (GkdSecretObjects *self, const gchar *alias)

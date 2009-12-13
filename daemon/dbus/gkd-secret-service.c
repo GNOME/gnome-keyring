@@ -631,6 +631,10 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SearchItems"))
 		return gkd_secret_objects_handle_search_items (self->objects, message, NULL);
 
+	/* org.freedesktop.Secret.Service.GetSecrets() */
+	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "GetSecrets"))
+		return gkd_secret_objects_handle_get_secrets (self->objects, message);
+
 	/* org.freedesktop.Secret.Service.Unlock() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Unlock"))
 		return service_method_unlock (self, message);

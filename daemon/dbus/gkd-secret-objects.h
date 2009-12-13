@@ -52,6 +52,9 @@ DBusMessage*        gkd_secret_objects_handle_search_items       (GkdSecretObjec
                                                                   DBusMessage *message,
                                                                   const gchar *base);
 
+DBusMessage*        gkd_secret_objects_handle_get_secrets        (GkdSecretObjects *self,
+                                                                  DBusMessage *message);
+
 void                gkd_secret_objects_append_collection_paths   (GkdSecretObjects *self,
                                                                   DBusMessageIter *iter,
                                                                   DBusMessage *message);
@@ -64,6 +67,10 @@ void                gkd_secret_objects_append_item_paths         (GkdSecretObjec
 GP11Slot*           gkd_secret_objects_get_pkcs11_slot           (GkdSecretObjects *self);
 
 GP11Object*         gkd_secret_objects_lookup_collection         (GkdSecretObjects *self,
+                                                                  const gchar *caller,
+                                                                  const gchar *path);
+
+GP11Object*         gkd_secret_objects_lookup_item               (GkdSecretObjects *self,
                                                                   const gchar *caller,
                                                                   const gchar *path);
 
