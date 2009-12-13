@@ -709,6 +709,10 @@ gck_secret_collection_save (GckSecretCollection *self, GckTransaction *transacti
 	if (!self->sdata)
 		return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 
+	/* Don't save ourselves if no filename */
+	if (!self->filename)
+		return;
+
 	master = gck_secret_data_get_master (self->sdata);
 	if (master == NULL || gck_secret_equals (master, NULL, 0))
 		res = gck_secret_textual_write (self, self->sdata, &data, &n_data);

@@ -27,6 +27,7 @@
 #include "gck-secret-search.h"
 #include "gck-secret-store.h"
 
+#include "gck/gck-credential.h"
 #include "gck/gck-file-tracker.h"
 #include "gck/gck-transaction.h"
 
@@ -41,6 +42,10 @@ struct _GckSecretModule {
 	GckFileTracker *tracker;
 	GHashTable *collections;
 	gchar *directory;
+
+	/* Special 'session' keyring */
+	GckCredential *session_credential;
+	GckSecretCollection *session_collection;
 };
 
 static const CK_SLOT_INFO gck_secret_module_slot_info = {
@@ -364,6 +369,8 @@ static GObject*
 gck_secret_module_constructor (GType type, guint n_props, GObjectConstructParam *props) 
 {
 	GckSecretModule *self = GCK_SECRET_MODULE (G_OBJECT_CLASS (gck_secret_module_parent_class)->constructor(type, n_props, props));
+	GckManager *manager;
+	CK_RV rv;
 
 	g_return_val_if_fail (self, NULL);
 
@@ -377,6 +384,24 @@ gck_secret_module_constructor (GType type, guint n_props, GObjectConstructParam 
 	g_signal_connect (self->tracker, "file-added", G_CALLBACK (on_file_load), self);
 	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (on_file_load), self);
 	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (on_file_remove), self);
+
+	manager = gck_module_get_manager (GCK_MODULE (self));
+
+	/* Create the 'session' keyring, which is not stored to disk */
+	self->session_collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
+	                                         "module", self,
+	                                         "identifier", "session",
+	                                         "manager", manager,
+	                                         NULL);
+	gck_object_expose (GCK_OBJECT (self->session_collection), TRUE);
+
+	/* Unlock the 'session' keyring */
+	rv = gck_credential_create (GCK_MODULE (self), manager, GCK_OBJECT (self->session_collection),
+	                            NULL, 0, &self->session_credential);
+	if (rv == CKR_OK)
+		gck_object_expose (GCK_OBJECT (self->session_credential), TRUE);
+	else
+		g_warning ("couldn't unlock the 'session' keyring");
 
 	return G_OBJECT (self);
 }
@@ -394,10 +419,18 @@ static void
 gck_secret_module_dispose (GObject *obj)
 {
 	GckSecretModule *self = GCK_SECRET_MODULE (obj);
-	
+
 	if (self->tracker)
 		g_object_unref (self->tracker);
 	self->tracker = NULL;
+
+	if (self->session_collection)
+		g_object_unref (self->session_collection);
+	self->session_collection = NULL;
+
+	if (self->session_credential)
+		g_object_unref (self->session_credential);
+	self->session_credential = NULL;
 
 	g_hash_table_remove_all (self->collections);
 
@@ -416,6 +449,9 @@ gck_secret_module_finalize (GObject *obj)
 
 	g_free (self->directory);
 	self->directory = NULL;
+
+	g_assert (!self->session_credential);
+	g_assert (!self->session_collection);
 
 	G_OBJECT_CLASS (gck_secret_module_parent_class)->finalize (obj);
 }
