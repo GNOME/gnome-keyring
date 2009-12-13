@@ -27,29 +27,48 @@
 
 #include <string.h>
 
+static void
+destroy_with_owned_memory (gpointer data)
+{
+	GkdSecretSecret *secret = data;
+	g_free (secret->path);
+	g_free (secret->caller);
+	g_free (secret->parameter);
+	g_free (secret->value);
+}
+
 GkdSecretSecret*
-gkd_secret_secret_create_and_take_memory (const gchar *path, gpointer parameter,
-                                          gsize n_parameter, gpointer value,
-                                          gsize n_value)
+gkd_secret_secret_new_take_memory (const gchar *path, const gchar *caller,
+                                   gpointer parameter, gsize n_parameter,
+                                   gpointer value, gsize n_value)
 {
 	GkdSecretSecret *secret;
 
+	g_return_val_if_fail (path, NULL);
+	g_return_val_if_fail (caller, NULL);
+
 	secret = g_slice_new0 (GkdSecretSecret);
 	secret->path = g_strdup (path);
+	secret->caller = g_strdup (caller);
 	secret->parameter = parameter;
 	secret->n_parameter = n_parameter;
 	secret->value = value;
 	secret->n_value = n_value;
+
+	secret->destroy_func = destroy_with_owned_memory;
+	secret->destroy_data = secret;
+
 	return secret;
 }
 
 GkdSecretSecret*
-gkd_secret_secret_parse (DBusMessageIter *iter)
+gkd_secret_secret_parse (DBusMessage *message, DBusMessageIter *iter)
 {
+	GkdSecretSecret *secret;
 	DBusMessageIter struc, array;
-	const void *parameter, *value;
+	void *parameter, *value;
 	int n_value, n_parameter;
-	const char *path;
+	char *path;
 
 	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRUCT, NULL);
 	dbus_message_iter_recurse (iter, &struc);
@@ -75,11 +94,18 @@ gkd_secret_secret_parse (DBusMessageIter *iter)
 	dbus_message_iter_recurse (&struc, &array);
 	dbus_message_iter_get_fixed_array (&array, &value, &n_value);
 
-	return gkd_secret_secret_create_and_take_memory (path,
-	                                                 n_parameter ? g_memdup (parameter, n_parameter) : NULL,
-	                                                 n_parameter,
-	                                                 n_value ? g_memdup (value, n_value) : NULL,
-	                                                 n_value);
+	secret = g_slice_new0 (GkdSecretSecret);
+	secret->path = path;
+	secret->caller = (char*)dbus_message_get_sender (message);
+	secret->parameter = parameter;
+	secret->n_parameter = n_parameter;
+	secret->value = value;
+	secret->n_value = n_value;
+
+	/* All the memory is owned by the message */
+	secret->destroy_data = dbus_message_ref (message);
+	secret->destroy_func = (GDestroyNotify)dbus_message_unref;
+	return secret;
 }
 
 void
@@ -109,6 +135,8 @@ gkd_secret_secret_free (gpointer data)
 	if (!data)
 		return;
 
+	secret = data;
+
 	/*
 	 * These are not usually actual plain text secrets. However in
 	 * the case that they are, we want to clear them from memory.
@@ -117,12 +145,12 @@ gkd_secret_secret_free (gpointer data)
 	 * have been sent over DBus, and through all sorts of processes.
 	 */
 
-	secret = data;
-	g_free (secret->path);
 	egg_secure_clear (secret->parameter, secret->n_parameter);
-	g_free (secret->parameter);
 	egg_secure_clear (secret->value, secret->n_value);
-	g_free (secret->value);
-	g_slice_free (GkdSecretSecret, secret);
 
+	/* Call the destructor of memory */
+	if (secret->destroy_func)
+		(secret->destroy_func) (secret->destroy_data);
+
+	g_slice_free (GkdSecretSecret, secret);
 }

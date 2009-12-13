@@ -23,6 +23,7 @@
 
 #include "gkd-dbus-util.h"
 #include "gkd-secret-create.h"
+#include "gkd-secret-error.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-property.h"
@@ -469,7 +470,7 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 		                               "Invalid properties argument");
 	}
 	dbus_message_iter_next (&iter);
-	secret = gkd_secret_secret_parse (&iter);
+	secret = gkd_secret_secret_parse (message, &iter);
 	if (secret == NULL) {
 		gp11_attributes_unref (attrs);
 		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
@@ -482,6 +483,16 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 	gkd_secret_secret_free (secret);
 
 	return reply;
+}
+
+static DBusMessage*
+service_method_lock_service (GkdSecretService *self, DBusMessage *message)
+{
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
+		return NULL;
+
+	/* TODO: Need to implement */
+	return dbus_message_new_method_return (message);
 }
 
 static DBusMessage*
@@ -625,7 +636,7 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 
 	/* org.freedesktop.Secret.Service.LockService() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "LockService"))
-		g_return_val_if_reached (NULL); /* TODO: Need to implement */
+		return service_method_lock_service (self, message);
 
 	/* org.freedesktop.Secret.Service.SearchItems() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SearchItems"))
@@ -704,7 +715,7 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 	if (object_path_has_prefix (path, SECRET_SESSION_PREFIX)) {
 		object = g_hash_table_lookup (client->sessions, path);
 		if (object == NULL)
-			reply = gkd_secret_util_no_such_object (message);
+			reply = gkd_secret_error_no_such_object (message);
 		else
 			reply = gkd_secret_session_dispatch (object, message);
 
@@ -712,7 +723,7 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 	} else if (object_path_has_prefix (path, SECRET_PROMPT_PREFIX)) {
 		object = g_hash_table_lookup (client->prompts, path);
 		if (object == NULL)
-			reply = gkd_secret_util_no_such_object (message);
+			reply = gkd_secret_error_no_such_object (message);
 		else
 			reply = gkd_secret_prompt_dispatch (object, message);
 

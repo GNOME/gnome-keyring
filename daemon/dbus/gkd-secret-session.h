@@ -41,6 +41,15 @@ struct _GkdSecretSessionClass {
 
 GType               gkd_secret_session_get_type                (void);
 
+GkdSecretSession*   gkd_secret_session_for_path                (GkdSecretService *service,
+                                                                const gchar *path,
+                                                                const gchar *caller,
+                                                                DBusError *derr);
+
+GkdSecretSession*   gkd_secret_session_for_secret              (GkdSecretService *service,
+                                                                GkdSecretSecret *secret,
+                                                                DBusError *derr);
+
 DBusMessage*        gkd_secret_session_dispatch                (GkdSecretSession *self,
                                                                 DBusMessage *message);
 
@@ -60,6 +69,7 @@ gboolean            gkd_secret_session_set_item_secret         (GkdSecretSession
                                                                 DBusError *derr);
 
 GP11Object*         gkd_secret_session_create_credential       (GkdSecretSession *self,
+                                                                GP11Session *session,
                                                                 GP11Attributes *attrs,
                                                                 GkdSecretSecret *secret,
                                                                 DBusError *derr);

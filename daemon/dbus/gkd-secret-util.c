@@ -147,11 +147,3 @@ gkd_secret_util_build_path (const gchar *base, gconstpointer identifier, gssize 
 
 	return g_string_free (result, FALSE);
 }
-
-DBusMessage*
-gkd_secret_util_no_such_object (DBusMessage *message)
-{
-	g_return_val_if_fail (message, NULL);
-	return dbus_message_new_error_printf (message, SECRET_ERROR_NO_SUCH_OBJECT,
-	                                      "The '%s' object does not exist", dbus_message_get_path (message));
-}

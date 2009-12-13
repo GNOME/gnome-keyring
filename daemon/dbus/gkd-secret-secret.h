@@ -30,19 +30,25 @@
 
 struct _GkdSecretSecret {
 	gchar *path;
+	gchar *caller;
 	gpointer parameter;
 	gsize n_parameter;
 	gpointer value;
 	gsize n_value;
+
+	GDestroyNotify destroy_func;
+	gpointer destroy_data;
 };
 
-GkdSecretSecret*       gkd_secret_secret_create_and_take_memory   (const gchar *path,
+GkdSecretSecret*       gkd_secret_secret_new_take_memory          (const gchar *path,
+                                                                   const gchar *caller,
                                                                    gpointer parameter,
                                                                    gsize n_parameter,
                                                                    gpointer value,
                                                                    gsize n_value);
 
-GkdSecretSecret*       gkd_secret_secret_parse                    (DBusMessageIter *iter);
+GkdSecretSecret*       gkd_secret_secret_parse                    (DBusMessage *message,
+                                                                   DBusMessageIter *iter);
 
 void                   gkd_secret_secret_append                   (GkdSecretSecret *secret,
                                                                    DBusMessageIter *iter);

@@ -534,7 +534,8 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GP11Object *item,
 		return NULL;
 	}
 
-	return gkd_secret_secret_create_and_take_memory (self->object_path, iv, n_iv, value, n_value);
+	return gkd_secret_secret_new_take_memory (self->object_path, self->caller,
+	                                          iv, n_iv, value, n_value);
 }
 
 gboolean
@@ -607,20 +608,54 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GP11Object *item,
 	return TRUE;
 }
 
-GP11Object*
-gkd_secret_session_create_credential (GkdSecretSession *self, GP11Attributes *attrs,
-                                      GkdSecretSecret *secret, DBusError *derr)
+GkdSecretSession*
+gkd_secret_session_for_path (GkdSecretService *service, const gchar *path,
+                             const gchar *caller, DBusError *derr)
 {
+	GkdSecretSession *self;
+
+	self = gkd_secret_service_lookup_session (service, path, caller);
+	if (self == NULL)
+		dbus_set_error (derr, SECRET_ERROR_NO_SESSION, "The session does not exist");
+
+	return self;
+}
+
+GkdSecretSession*
+gkd_secret_session_for_secret (GkdSecretService *service, GkdSecretSecret *secret, DBusError *derr)
+{
+	GkdSecretSession *self;
+
+	self = gkd_secret_service_lookup_session (service, secret->path, secret->caller);
+	if (self == NULL)
+		dbus_set_error (derr, SECRET_ERROR_NO_SESSION,
+		                "The session wrapping the secret does not exist");
+
+	return self;
+}
+
+GP11Object*
+gkd_secret_session_create_credential (GkdSecretSession *self, GP11Session *session,
+                                      GP11Attributes *attrs, GkdSecretSecret *secret,
+                                      DBusError *derr)
+{
+	GP11Attributes *alloc = NULL;
 	GP11Mechanism *mech;
 	GP11Object *object;
-	GP11Session *session;
 	GError *error = NULL;
 
 	g_assert (GP11_IS_OBJECT (self->key));
+	g_assert (GP11_IS_SESSION (session));
 	g_assert (attrs);
 
-	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
+	if (session == NULL)
+		session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
 	g_return_val_if_fail (session, NULL);
+
+	if (attrs == NULL)
+		alloc = attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
+		                                      CKA_TOKEN, GP11_BOOLEAN, FALSE,
+		                                      GP11_INVALID);
 
 	mech = gp11_mechanism_new_with_param (self->mech_type, secret->parameter,
 	                                      secret->n_parameter);
@@ -629,6 +664,8 @@ gkd_secret_session_create_credential (GkdSecretSession *self, GP11Attributes *at
 	                                       secret->n_value, attrs, NULL, &error);
 
 	gp11_mechanism_unref (mech);
+	if (alloc != NULL)
+		gp11_attributes_unref (alloc);
 
 	if (object == NULL) {
 		if (error->code == CKR_WRAPPED_KEY_INVALID ||

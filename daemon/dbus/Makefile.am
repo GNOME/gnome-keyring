@@ -19,6 +19,7 @@ libgkr_dbus_la_SOURCES = \
 	gkd-dbus-session.c \
 	gkd-dbus-util.c gkd-dbus-util.h \
 	gkd-secret-create.c gkd-secret-create.h \
+	gkd-secret-error.c gkd-secret-error.h \
 	gkd-secret-objects.c gkd-secret-objects.h \
 	gkd-secret-property.c gkd-secret-property.h \
 	gkd-secret-prompt.c gkd-secret-prompt.h \

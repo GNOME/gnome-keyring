@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gkd-secret-create.h"
+#include "gkd-secret-error.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-service.h"
@@ -338,11 +339,9 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 	gchar *path;
 
 	/* Figure out the session */
-	session = gkd_secret_service_lookup_session (service, master->path,
-	                                             dbus_message_get_sender (message));
+	session = gkd_secret_session_for_secret (service, master, &derr);
 	if (session == NULL)
-		return dbus_message_new_error (message, SECRET_ERROR_NO_SESSION,
-		                               "No such session exists");
+		return gkd_secret_error_to_reply (message, &derr);
 
 	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
@@ -352,18 +351,15 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 	                             CKA_TOKEN, GP11_BOOLEAN, token,
 	                             GP11_INVALID);
 
-	/* Create ourselves some credentials */
-	cred = gkd_secret_session_create_credential (session, atts, master, &derr);
-	gp11_attributes_unref (atts);
-
-	if (cred == NULL) {
-		reply = dbus_message_new_error (message, derr.name, derr.message);
-		dbus_error_free (&derr);
-		return reply;
-	}
-
 	pkcs11_session = gkd_secret_service_get_pkcs11_session (service, dbus_message_get_sender (message));
 	g_return_val_if_fail (pkcs11_session, NULL);
+
+	/* Create ourselves some credentials */
+	cred = gkd_secret_session_create_credential (session, pkcs11_session, atts, master, &derr);
+	gp11_attributes_unref (atts);
+
+	if (cred == NULL)
+		return gkd_secret_error_to_reply (message, &derr);
 
 	collection = gkd_secret_create_with_credential (pkcs11_session, attrs, cred, &error);
 

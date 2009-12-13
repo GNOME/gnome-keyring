@@ -23,6 +23,7 @@
 
 #include "gkd-dbus-util.h"
 
+#include "gkd-secret-error.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-property.h"
 #include "gkd-secret-secret.h"
@@ -361,26 +362,18 @@ item_method_get_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *m
 	GkdSecretSecret *secret;
 	DBusMessage *reply;
 	DBusMessageIter iter;
-	const char *caller;
 	const char *path;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
 		return NULL;
 
-	caller = dbus_message_get_sender (message);
-	g_return_val_if_fail (caller, NULL);
-
-	session = gkd_secret_service_lookup_session (self->service, path, caller);
+	session = gkd_secret_session_for_path (self->service, path, dbus_message_get_sender (message), &derr);
 	if (session == NULL)
-		return dbus_message_new_error_printf (message, SECRET_ERROR_NO_SESSION,
-		                                      "No such session exists");
+		return gkd_secret_error_to_reply (message, &derr);
 
 	secret = gkd_secret_session_get_item_secret (session, item, &derr);
-	if (secret == NULL) {
-		reply = dbus_message_new_error (message, derr.name, derr.message);
-		dbus_error_free (&derr);
-		return reply;
-	}
+	if (secret == NULL)
+		return gkd_secret_error_to_reply (message, &derr);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
@@ -394,7 +387,6 @@ item_method_set_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *m
 {
 	DBusError derr = DBUS_ERROR_INIT;
 	DBusMessageIter iter;
-	DBusMessage *reply;
 	GkdSecretSecret *secret;
 	GkdSecretSession *session;
 	const char *caller;
@@ -402,7 +394,7 @@ item_method_set_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *m
 	if (!dbus_message_has_signature (message, "(oayay)"))
 		return NULL;
 	dbus_message_iter_init (message, &iter);
-	secret = gkd_secret_secret_parse (&iter);
+	secret = gkd_secret_secret_parse (message, &iter);
 	if (secret == NULL)
 		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
 		                               "The secret is invalid");
@@ -410,21 +402,17 @@ item_method_set_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *m
 	caller = dbus_message_get_sender (message);
 	g_return_val_if_fail (caller, NULL);
 
-	session = gkd_secret_service_lookup_session (self->service, secret->path, caller);
+	session = gkd_secret_session_for_secret (self->service, secret, &derr);
 	if (session == NULL) {
 		gkd_secret_secret_free (secret);
-		return dbus_message_new_error_printf (message, SECRET_ERROR_NO_SESSION,
-		                                      "No such session exists");
+		return gkd_secret_error_to_reply (message, &derr);
 	}
 
 	gkd_secret_session_set_item_secret (session, item, secret, &derr);
 	gkd_secret_secret_free (secret);
 
-	if (dbus_error_is_set (&derr)) {
-		reply = dbus_message_new_error (message, derr.name, derr.message);
-		dbus_error_free (&derr);
-		return reply;
-	}
+	if (dbus_error_is_set (&derr))
+		return gkd_secret_error_to_reply (message, &derr);
 
 	return dbus_message_new_method_return (message);
 }
@@ -682,7 +670,7 @@ collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusM
 		goto cleanup;
 	}
 	dbus_message_iter_next (&iter);
-	secret = gkd_secret_secret_parse (&iter);
+	secret = gkd_secret_secret_parse (message, &iter);
 	if (secret == NULL) {
 		reply = dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
 		                                "Invalid secret argument");
@@ -692,11 +680,9 @@ collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusM
 	dbus_message_iter_get_basic (&iter, &replace);
 
 	/* Figure out which session we're dealing with */
-	session = gkd_secret_service_lookup_session (self->service, secret->path,
-	                                             dbus_message_get_sender (message));
+	session = gkd_secret_session_for_secret (self->service, secret, &derr);
 	if (session == NULL) {
-		reply = dbus_message_new_error (message, SECRET_ERROR_NO_SESSION,
-		                                "No such secret session exists");
+		reply = gkd_secret_error_to_reply (message, &derr);
 		goto cleanup;
 	}
 
@@ -978,7 +964,7 @@ gkd_secret_objects_dispatch (GkdSecretObjects *self, DBusMessage *message)
 	g_return_val_if_fail (path, NULL);
 
 	if (!parse_object_path (self, path, &c_ident, &i_ident) || !c_ident)
-		return gkd_secret_util_no_such_object (message);
+		return gkd_secret_error_no_such_object (message);
 
 	/* The session we're using to access the object */
 	session = gkd_secret_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
@@ -1008,7 +994,7 @@ gkd_secret_objects_dispatch (GkdSecretObjects *self, DBusMessage *message)
 	}
 
 	if (!objects)
-		return gkd_secret_util_no_such_object (message);
+		return gkd_secret_error_no_such_object (message);
 
 	gp11_object_set_session (objects->data, session);
 	if (is_item)
@@ -1296,10 +1282,10 @@ gkd_secret_objects_handle_get_secrets (GkdSecretObjects *self, DBusMessage *mess
 	caller = dbus_message_get_sender (message);
 	g_return_val_if_fail (caller, NULL);
 
-	session = gkd_secret_service_lookup_session (self->service, session_path, caller);
+	session = gkd_secret_session_for_path (self->service, session_path,
+	                                       dbus_message_get_sender (message), &derr);
 	if (session == NULL)
-		return dbus_message_new_error (message, SECRET_ERROR_NO_SESSION,
-		                               "No such session exists");
+		return gkd_secret_error_to_reply (message, &derr);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);

@@ -1,7 +1,7 @@
 /*
  * gnome-keyring
  *
- * Copyright (C) 2009 Stefan Walter
+ * Copyright (C) 2008 Stefan Walter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,21 +19,30 @@
  * 02111-1307, USA.
  */
 
-#ifndef __GKD_SECRET_UTIL_H__
-#define __GKD_SECRET_UTIL_H__
-
-#include "gkd-secret-types.h"
+#include "config.h"
 
 #include <glib.h>
 
-#include <dbus/dbus.h>
+#include "gkd-secret-error.h"
 
-gboolean          gkd_secret_util_parse_path                            (const gchar *path,
-                                                                         gchar **collection,
-                                                                         gchar **item);
+DBusMessage*
+gkd_secret_error_no_such_object (DBusMessage *message)
+{
+	g_return_val_if_fail (message, NULL);
+	return dbus_message_new_error_printf (message, SECRET_ERROR_NO_SUCH_OBJECT,
+	                                      "The '%s' object does not exist", dbus_message_get_path (message));
+}
 
-gchar*            gkd_secret_util_build_path                            (const gchar *base,
-                                                                         gconstpointer identifier,
-                                                                         gssize n_identifier);
+DBusMessage*
+gkd_secret_error_to_reply (DBusMessage *message, DBusError *derr)
+{
+	DBusMessage *reply;
 
-#endif /* __GKD_SECRET_UTIL_H__ */
+	g_return_val_if_fail (message, NULL);
+	g_return_val_if_fail (derr, NULL);
+	g_return_val_if_fail (dbus_error_is_set (derr), NULL);
+
+	reply = dbus_message_new_error (message, derr->name, derr->message);
+	dbus_error_free (derr);
+	return reply;
+}

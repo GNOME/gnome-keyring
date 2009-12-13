@@ -19,21 +19,16 @@
  * 02111-1307, USA.
  */
 
-#ifndef __GKD_SECRET_UTIL_H__
-#define __GKD_SECRET_UTIL_H__
+#ifndef __GKD_SECRET_ERROR_H__
+#define __GKD_SECRET_ERROR_H__
 
 #include "gkd-secret-types.h"
 
-#include <glib.h>
-
 #include <dbus/dbus.h>
 
-gboolean          gkd_secret_util_parse_path                            (const gchar *path,
-                                                                         gchar **collection,
-                                                                         gchar **item);
+DBusMessage*      gkd_secret_error_no_such_object                       (DBusMessage *message);
 
-gchar*            gkd_secret_util_build_path                            (const gchar *base,
-                                                                         gconstpointer identifier,
-                                                                         gssize n_identifier);
+DBusMessage*      gkd_secret_error_to_reply                             (DBusMessage *message,
+                                                                         DBusError *derr);
 
-#endif /* __GKD_SECRET_UTIL_H__ */
+#endif /* __GKD_SECRET_ERROR_H__ */
