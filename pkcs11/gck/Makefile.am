@@ -43,7 +43,6 @@ libgck_la_SOURCES = \
 	gck-null-key.c gck-null-key.h \
 	gck-null-mechanism.c gck-null-mechanism.h \
 	gck-object.c gck-object.h \
-	gck-padding.c gck-padding.h \
 	gck-private-xsa-key.c gck-private-xsa-key.h \
 	gck-public-xsa-key.c gck-public-xsa-key.h \
 	gck-secret.c gck-secret.h \

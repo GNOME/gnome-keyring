@@ -32,7 +32,7 @@
  */
 
 CK_RV
-gck_mechanism_rsa_encrypt (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR data,
+gck_mechanism_rsa_encrypt (gcry_sexp_t sexp, EggPadding padding, CK_BYTE_PTR data,
                            CK_ULONG n_data, CK_BYTE_PTR encrypted, CK_ULONG_PTR n_encrypted)
 {
 	gcry_sexp_t splain, sdata;
@@ -78,7 +78,7 @@ gck_mechanism_rsa_encrypt (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR dat
 }
 
 CK_RV
-gck_mechanism_rsa_decrypt (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR encrypted,
+gck_mechanism_rsa_decrypt (gcry_sexp_t sexp, EggPadding padding, CK_BYTE_PTR encrypted,
                            CK_ULONG n_encrypted, CK_BYTE_PTR data, CK_ULONG_PTR n_data)
 {
 	gcry_sexp_t splain, sdata;
@@ -126,7 +126,7 @@ gck_mechanism_rsa_decrypt (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR enc
 }
 
 CK_RV
-gck_mechanism_rsa_sign (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR data,
+gck_mechanism_rsa_sign (gcry_sexp_t sexp, EggPadding padding, CK_BYTE_PTR data,
                         CK_ULONG n_data, CK_BYTE_PTR signature, CK_ULONG_PTR n_signature)
 {
 	gcry_sexp_t ssig, sdata;
@@ -171,7 +171,7 @@ gck_mechanism_rsa_sign (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR data,
 }
 
 CK_RV
-gck_mechanism_rsa_verify (gcry_sexp_t sexp, GckPadding padding, CK_BYTE_PTR data,
+gck_mechanism_rsa_verify (gcry_sexp_t sexp, EggPadding padding, CK_BYTE_PTR data,
                           CK_ULONG n_data, CK_BYTE_PTR signature, CK_ULONG n_signature)
 {
 	gcry_sexp_t ssig, sdata;

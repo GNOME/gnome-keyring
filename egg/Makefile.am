@@ -28,6 +28,7 @@ libegg_la_SOURCES = \
 	egg-libgcrypt.c egg-libgcrypt.h \
 	egg-mkdtemp.c egg-mkdtemp.h \
 	egg-oid.c egg-oid.h \
+	egg-padding.c egg-padding.h \
 	egg-openssl.c egg-openssl.h \
 	egg-unix-credentials.c egg-unix-credentials.h \
 	egg-secure-memory.c egg-secure-memory.h \
@@ -83,6 +84,7 @@ libegg_prompt_la_SOURCES = \
 	egg-dh.c egg-dh.h \
 	egg-hex.c egg-hex.h \
 	egg-libgcrypt.c egg-libgcrypt.h \
+	egg-padding.c egg-padding.h \
 	egg-secure-memory.c egg-secure-memory.h
 
 libegg_prompt_la_CFLAGS = \

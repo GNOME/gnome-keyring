@@ -21,10 +21,10 @@
 
 #include "config.h"
 
-#include "gck-padding.h"
-#include "gck-sexp.h"
+#include "egg-padding.h"
 
-#include "egg/egg-libgcrypt.h"
+#include <gcrypt.h>
+
 #include "egg/egg-secure-memory.h"
 
 /* ----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ fill_random_nonzero (guchar *data, gsize n_data)
 }
 
 static gboolean
-unpad_pkcs1 (guchar bt, GckAllocator alloc, gsize block, const guchar* padded,
+unpad_pkcs1 (guchar bt, EggAllocator alloc, gsize block, const guchar* padded,
              gsize n_padded, gpointer *raw, gsize *n_raw)
 {
 	const guchar *at;
@@ -90,10 +90,13 @@ unpad_pkcs1 (guchar bt, GckAllocator alloc, gsize block, const guchar* padded,
 	++at;
 	*n_raw = n_padded - (at - padded);
 	if (raw) {
-		*raw = (alloc) (NULL, MAX (*n_raw, 1));
+		*raw = (alloc) (NULL, *n_raw + 1);
 		if (*raw == NULL)
 			return FALSE;
 		memcpy (*raw, at, *n_raw);
+
+		/* Convenience null terminate the result */
+		memset (((guchar*)*raw) + *n_raw, 0, 1);
 	}
 
 	return TRUE;
@@ -104,7 +107,7 @@ unpad_pkcs1 (guchar bt, GckAllocator alloc, gsize block, const guchar* padded,
  */
 
 gboolean
-gck_padding_zero_pad (GckAllocator alloc, gsize block, gconstpointer raw,
+egg_padding_zero_pad (EggAllocator alloc, gsize block, gconstpointer raw,
                       gsize n_raw, gpointer *padded, gsize *n_padded)
 {
 	guchar *pad;
@@ -137,7 +140,7 @@ gck_padding_zero_pad (GckAllocator alloc, gsize block, gconstpointer raw,
 }
 
 gboolean
-gck_padding_pkcs1_pad_01 (GckAllocator alloc, gsize block, gconstpointer raw,
+egg_padding_pkcs1_pad_01 (EggAllocator alloc, gsize block, gconstpointer raw,
                            gsize n_raw, gpointer *padded, gsize *n_padded)
 {
 	guchar *pad;
@@ -175,7 +178,7 @@ gck_padding_pkcs1_pad_01 (GckAllocator alloc, gsize block, gconstpointer raw,
 }
 
 gboolean
-gck_padding_pkcs1_pad_02 (GckAllocator alloc, gsize block, gconstpointer raw,
+egg_padding_pkcs1_pad_02 (EggAllocator alloc, gsize block, gconstpointer raw,
                            gsize n_raw, gpointer *padded, gsize *n_padded)
 {
 	guchar *pad;
@@ -213,21 +216,21 @@ gck_padding_pkcs1_pad_02 (GckAllocator alloc, gsize block, gconstpointer raw,
 }
 
 gboolean
-gck_padding_pkcs1_unpad_01 (GckAllocator alloc, gsize block, gconstpointer padded,
+egg_padding_pkcs1_unpad_01 (EggAllocator alloc, gsize block, gconstpointer padded,
                              gsize n_padded, gpointer *raw, gsize *n_raw)
 {
 	return unpad_pkcs1 (0x01, alloc, block, padded, n_padded, raw, n_raw);
 }
 
 gboolean
-gck_padding_pkcs1_unpad_02 (GckAllocator alloc, gsize block, gconstpointer padded,
+egg_padding_pkcs1_unpad_02 (EggAllocator alloc, gsize block, gconstpointer padded,
                              gsize n_padded, gpointer *raw, gsize *n_raw)
 {
 	return unpad_pkcs1 (0x02, alloc, block, padded, n_padded, raw, n_raw);
 }
 
 gboolean
-gck_padding_pkcs7_pad (GckAllocator alloc, gsize block, gconstpointer raw,
+egg_padding_pkcs7_pad (EggAllocator alloc, gsize block, gconstpointer raw,
                        gsize n_raw, gpointer *padded, gsize *n_padded)
 {
 	guchar *pad;
@@ -256,7 +259,7 @@ gck_padding_pkcs7_pad (GckAllocator alloc, gsize block, gconstpointer raw,
 }
 
 gboolean
-gck_padding_pkcs7_unpad (GckAllocator alloc, gsize block, gconstpointer padded,
+egg_padding_pkcs7_unpad (EggAllocator alloc, gsize block, gconstpointer padded,
                          gsize n_padded, gpointer *raw, gsize *n_raw)
 {
 	const guchar *pad;
@@ -286,10 +289,13 @@ gck_padding_pkcs7_unpad (GckAllocator alloc, gsize block, gconstpointer padded,
 		alloc = g_realloc;
 
 	if (raw) {
-		*raw = (alloc) (NULL, MAX (*n_raw, 1));
+		*raw = (alloc) (NULL, *n_raw + 1);
 		if (*raw == NULL)
 			return FALSE;
+
+		/* Output the result, null terminated */
 		memcpy (*raw, pad, *n_raw);
+		memset (((guchar*)*raw) + *n_raw, 0, 1);
 	}
 
 	return TRUE;

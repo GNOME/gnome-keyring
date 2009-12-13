@@ -23,7 +23,6 @@
 
 #include "gck-null-key.h"
 #include "gck-null-mechanism.h"
-#include "gck-padding.h"
 #include "gck-session.h"
 #include "gck-transaction.h"
 #include "gck-util.h"

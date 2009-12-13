@@ -22,10 +22,11 @@
 #ifndef GCKCRYPTO_H_
 #define GCKCRYPTO_H_
 
-#include "gck-padding.h"
 #include "gck-types.h"
 
 #include "pkcs11/pkcs11.h"
+
+#include "egg/egg-padding.h"
 
 #include <glib.h>
 
@@ -109,12 +110,12 @@ CK_RV                    gck_crypto_sexp_to_data                       (gcry_sex
                                                                         guint bits,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG *n_data,
-                                                                        GckPadding padding,
+                                                                        EggPadding padding,
                                                                         ...) G_GNUC_NULL_TERMINATED;
 
 CK_RV                    gck_crypto_data_to_sexp                       (const gchar *format,
                                                                         guint nbits,
-                                                                        GckPadding padding,
+                                                                        EggPadding padding,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG n_data,
                                                                         gcry_sexp_t *sexp);

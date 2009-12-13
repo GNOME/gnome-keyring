@@ -27,12 +27,12 @@
 
 #include "run-auto-test.h"
 
-#include "gck/gck-padding.h"
+#include "egg/egg-padding.h"
 
 #include <gcrypt.h>
 
 static void
-test_padding (GckPadding padding, gsize block, gconstpointer input,
+test_padding (EggPadding padding, gsize block, gconstpointer input,
               gsize n_input, gconstpointer output, gsize n_output)
 {
 	gpointer result;
@@ -59,30 +59,30 @@ DEFINE_TEST(zero_padding)
 {
 	guchar padded[] = { 0x00, 0x00, 0x00, 0x00, 'T', 'E', 'S', 'T' };
 	gchar raw[] = "TEST";
-	test_padding (gck_padding_zero_pad, 8, raw, 4, padded, 8);
+	test_padding (egg_padding_zero_pad, 8, raw, 4, padded, 8);
 }
 
 DEFINE_TEST(zero_padding_no_data)
 {
 	guchar padded[] = { };
 	gchar raw[] = "";
-	test_padding (gck_padding_zero_pad, 8, raw, 0, padded, 0);
+	test_padding (egg_padding_zero_pad, 8, raw, 0, padded, 0);
 }
 
 DEFINE_TEST(pkcs1_one_padding)
 {
 	guchar padded[] = { 0x00, 0x01, 0xFF, 0x00, 'T', 'E', 'S', 'T' };
 	gchar raw[] = "TEST";
-	test_padding (gck_padding_pkcs1_pad_01, 8, raw, 4, padded, 8);
-	test_padding (gck_padding_pkcs1_unpad_01, 8, padded, 8, raw, 4);
+	test_padding (egg_padding_pkcs1_pad_01, 8, raw, 4, padded, 8);
+	test_padding (egg_padding_pkcs1_unpad_01, 8, padded, 8, raw, 4);
 }
 
 DEFINE_TEST(pkcs1_one_padding_no_data)
 {
 	guchar padded[] = { 0x00, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 	gchar raw[] = "";
-	test_padding (gck_padding_pkcs1_pad_01, 8, raw, 0, padded, 8);
-	test_padding (gck_padding_pkcs1_unpad_01, 8, padded, 8, raw, 0);
+	test_padding (egg_padding_pkcs1_pad_01, 8, raw, 0, padded, 8);
+	test_padding (egg_padding_pkcs1_unpad_01, 8, padded, 8, raw, 0);
 }
 
 DEFINE_TEST(pkcs1_two_padding)
@@ -93,10 +93,10 @@ DEFINE_TEST(pkcs1_two_padding)
 	gpointer vesult;
 	gsize n_result;
 
-	test_padding (gck_padding_pkcs1_unpad_02, 8, padded, 8, raw, 2);
+	test_padding (egg_padding_pkcs1_unpad_02, 8, padded, 8, raw, 2);
 
 	/* PKCS#1 02 padding is unpredictable */
-	if (!gck_padding_pkcs1_pad_02 (NULL, 8, raw, 2, &vesult, &n_result))
+	if (!egg_padding_pkcs1_pad_02 (NULL, 8, raw, 2, &vesult, &n_result))
 		g_assert_not_reached ();
 	result = vesult;
 	g_assert (result != NULL);
@@ -114,25 +114,25 @@ DEFINE_TEST(pkcs1_two_padding)
 DEFINE_TEST(pkcs1_padding_invalid_prefix)
 {
 	guchar padded[] = { 0x01, 0x04, 0x04, 0x04 };
-	test_padding (gck_padding_pkcs1_unpad_01, 4, padded, 4, NULL, 0);
+	test_padding (egg_padding_pkcs1_unpad_01, 4, padded, 4, NULL, 0);
 }
 
 DEFINE_TEST(pkcs1_padding_invalid_type)
 {
 	guchar padded[] = { 0x00, 0x03, 0xFF, 0x00, 'T', 'E', 'S', 'T' };
-	test_padding (gck_padding_pkcs1_unpad_01, 8, padded, 8, NULL, 0);
+	test_padding (egg_padding_pkcs1_unpad_01, 8, padded, 8, NULL, 0);
 }
 
 DEFINE_TEST(pkcs1_padding_invalid_no_zero)
 {
 	guchar padded[] = { 0x00, 0x01, 0xFF, 0xFF, 'T', 'E', 'S', 'T' };
-	test_padding (gck_padding_pkcs1_unpad_01, 8, padded, 8, NULL, 0);
+	test_padding (egg_padding_pkcs1_unpad_01, 8, padded, 8, NULL, 0);
 }
 
 DEFINE_TEST(pkcs1_padding_invalid_length)
 {
 	guchar padded[] = { 0x00, 0x01, 0xFF, 0xFF, 'T', 'E', 'S' };
-	test_padding (gck_padding_pkcs1_unpad_01, 8, padded, 7, NULL, 0);
+	test_padding (egg_padding_pkcs1_unpad_01, 8, padded, 7, NULL, 0);
 }
 
 DEFINE_TEST(pkcs7_padding)
@@ -140,8 +140,8 @@ DEFINE_TEST(pkcs7_padding)
 	guchar padded[] = { 'T', 'E', 'S', 'T', 0x04, 0x04, 0x04, 0x04 };
 	gchar raw[] = "TEST";
 
-	test_padding (gck_padding_pkcs7_pad, 8, raw, 4, padded, 8);
-	test_padding (gck_padding_pkcs7_unpad, 8, padded, 8, raw, 4);
+	test_padding (egg_padding_pkcs7_pad, 8, raw, 4, padded, 8);
+	test_padding (egg_padding_pkcs7_unpad, 8, padded, 8, raw, 4);
 }
 
 DEFINE_TEST(pkcs7_padding_equal_block)
@@ -149,8 +149,8 @@ DEFINE_TEST(pkcs7_padding_equal_block)
 	guchar padded[] = { 'T', 'E', 'S', 'T', 'T', 'E', 'S', 'T', 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08 };
 	gchar raw[] = "TESTTEST";
 
-	test_padding (gck_padding_pkcs7_pad, 8, raw, 8, padded, 16);
-	test_padding (gck_padding_pkcs7_unpad, 8, padded, 16, raw, 8);
+	test_padding (egg_padding_pkcs7_pad, 8, raw, 8, padded, 16);
+	test_padding (egg_padding_pkcs7_unpad, 8, padded, 16, raw, 8);
 }
 
 DEFINE_TEST(pkcs7_padding_zero)
@@ -158,25 +158,25 @@ DEFINE_TEST(pkcs7_padding_zero)
 	guchar padded[] = { 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08 };
 	gchar raw[] = "";
 
-	test_padding (gck_padding_pkcs7_pad, 8, raw, 0, padded, 8);
-	test_padding (gck_padding_pkcs7_unpad, 8, padded, 8, raw, 0);
+	test_padding (egg_padding_pkcs7_pad, 8, raw, 0, padded, 8);
+	test_padding (egg_padding_pkcs7_unpad, 8, padded, 8, raw, 0);
 }
 
 DEFINE_TEST(pkcs7_padding_invalid_zero)
 {
 	guchar padded[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-	test_padding (gck_padding_pkcs7_unpad, 8, padded, 8, NULL, 0);
+	test_padding (egg_padding_pkcs7_unpad, 8, padded, 8, NULL, 0);
 }
 
 DEFINE_TEST(pkcs7_padding_invalid_too_long)
 {
 	guchar padded[] = { 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08 };
-	test_padding (gck_padding_pkcs7_unpad, 4, padded, 8, NULL, 0);
-	test_padding (gck_padding_pkcs7_unpad, 4, padded, 4, NULL, 0);
+	test_padding (egg_padding_pkcs7_unpad, 4, padded, 8, NULL, 0);
+	test_padding (egg_padding_pkcs7_unpad, 4, padded, 4, NULL, 0);
 }
 
 DEFINE_TEST(pkcs7_padding_invalid_different)
 {
 	guchar padded[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-	test_padding (gck_padding_pkcs7_unpad, 8, padded, 8, NULL, 0);
+	test_padding (egg_padding_pkcs7_unpad, 8, padded, 8, NULL, 0);
 }

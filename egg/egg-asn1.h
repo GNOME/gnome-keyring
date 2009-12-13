@@ -28,7 +28,10 @@
 
 #include <libtasn1.h>
 
+#ifndef HAVE_EGG_ALLOCATOR
 typedef void* (*EggAllocator) (void* p, gsize);
+#define HAVE_EGG_ALLOCATOR
+#endif
 
 ASN1_TYPE          egg_asn1_get_pk_asn1type               (void);
 

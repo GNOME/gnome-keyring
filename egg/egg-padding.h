@@ -19,68 +19,70 @@
  * 02111-1307, USA.
  */
 
-#ifndef GCK_PADDING_H_
-#define GCK_PADDING_H_
+#ifndef EGG_PADDING_H_
+#define EGG_PADDING_H_
 
 #include <glib.h>
 
-typedef gpointer         (*GckAllocator)                               (gpointer,
-                                                                        gsize);
+#ifndef HAVE_EGG_ALLOCATOR
+typedef void* (*EggAllocator) (void* p, gsize);
+#define HAVE_EGG_ALLOCATOR
+#endif
 
-typedef gboolean         (*GckPadding)                                 (GckAllocator alloc,
+typedef gboolean         (*EggPadding)                                 (EggAllocator alloc,
                                                                         gsize n_block,
                                                                         gconstpointer input,
                                                                         gsize n_input,
                                                                         gpointer *output,
                                                                         gsize *n_output);
 
-gboolean                 gck_padding_zero_pad                          (GckAllocator alloc,
+gboolean                 egg_padding_zero_pad                          (EggAllocator alloc,
                                                                         gsize n_block,
                                                                         gconstpointer raw,
                                                                         gsize n_raw,
                                                                         gpointer *padded,
                                                                         gsize *n_padded);
 
-gboolean                 gck_padding_pkcs1_pad_01                     (GckAllocator alloc,
+gboolean                 egg_padding_pkcs1_pad_01                      (EggAllocator alloc,
                                                                         gsize n_block,
                                                                         gconstpointer raw,
                                                                         gsize n_raw,
                                                                         gpointer *padded,
                                                                         gsize *n_padded);
 
-gboolean                 gck_padding_pkcs1_pad_02                     (GckAllocator alloc,
+gboolean                 egg_padding_pkcs1_pad_02                      (EggAllocator alloc,
                                                                         gsize n_block,
                                                                         gconstpointer raw,
                                                                         gsize n_raw,
                                                                         gpointer *padded,
                                                                         gsize *n_padded);
 
-gboolean                 gck_padding_pkcs1_unpad_01                   (GckAllocator alloc,
+gboolean                 egg_padding_pkcs1_unpad_01                    (EggAllocator alloc,
                                                                         gsize n_block,
                                                                         gconstpointer padded,
                                                                         gsize n_padded,
                                                                         gpointer *raw,
                                                                         gsize *n_raw);
 
-gboolean                 gck_padding_pkcs1_unpad_02                   (GckAllocator alloc,
+gboolean                 egg_padding_pkcs1_unpad_02                    (EggAllocator alloc,
                                                                         gsize n_block,
                                                                         gconstpointer padded,
                                                                         gsize n_padded,
                                                                         gpointer *raw,
                                                                         gsize *n_raw);
 
-gboolean                 gck_padding_pkcs7_pad                         (GckAllocator alloc,
+gboolean                 egg_padding_pkcs7_pad                         (EggAllocator alloc,
                                                                         gsize n_block,
                                                                         gconstpointer raw,
                                                                         gsize n_raw,
                                                                         gpointer *padded,
                                                                         gsize *n_padded);
 
-gboolean                 gck_padding_pkcs7_unpad                       (GckAllocator alloc,
+gboolean                 egg_padding_pkcs7_unpad                       (EggAllocator alloc,
                                                                         gsize n_block,
                                                                         gconstpointer raw,
                                                                         gsize n_raw,
                                                                         gpointer *padded,
                                                                         gsize *n_padded);
 
-#endif /* GCK_PADDING_H_ */
+#endif /* EGG_PADDING_H_ */
