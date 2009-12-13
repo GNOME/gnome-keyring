@@ -462,6 +462,40 @@ item_message_handler (GkdSecretObjects *self, GP11Object *object, DBusMessage *m
 	return NULL;
 }
 
+static void
+item_cleanup_search_results (GP11Session *session, GList *items,
+                             GList **locked, GList **unlocked)
+{
+	GError *error = NULL;
+	gpointer value;
+	gsize n_value;
+	GList *l;
+
+	*locked = NULL;
+	*unlocked = NULL;
+
+	for (l = items; l; l = g_list_next (l)) {
+
+		gp11_object_set_session (l->data, session);
+		value = gp11_object_get_data (l->data, CKA_G_LOCKED, &n_value, &error);
+		if (value == NULL) {
+			if (error->code != CKR_OBJECT_HANDLE_INVALID)
+				g_warning ("couldn't check if item is locked: %s", error->message);
+			g_clear_error (&error);
+
+		/* Is not locked */
+		} if (n_value == 1 && *((CK_BBOOL*)value) == CK_FALSE) {
+			*unlocked = g_list_prepend (*unlocked, l->data);
+
+		/* Is locked */
+		} else {
+			*locked = g_list_prepend (*locked, l->data);
+		}
+
+		g_free (value);
+	}
+}
+
 static DBusMessage*
 collection_property_get (GkdSecretObjects *self, GP11Object *object, DBusMessage *message)
 {
@@ -1114,6 +1148,7 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	gchar *identifier;
 	gpointer data;
 	gsize n_data;
+	GList *locked, *unlocked;
 	GList *items;
 
 	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
@@ -1177,10 +1212,17 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	                                        data, n_data / sizeof (CK_OBJECT_HANDLE));
 	g_free (data);
 
+	/* Filter out the locked items */
+	item_cleanup_search_results (session, items, &locked, &unlocked);
+
 	/* Prepare the reply message */
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	iter_append_item_paths (NULL, items, &iter);
+	iter_append_item_paths (NULL, unlocked, &iter);
+	iter_append_item_paths (NULL, locked, &iter);
+
+	g_list_free (locked);
+	g_list_free (unlocked);
 	gp11_list_unref_free (items);
 
 	return reply;
