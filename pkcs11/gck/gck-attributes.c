@@ -45,6 +45,22 @@ gck_attribute_get_bool (CK_ATTRIBUTE_PTR attr, gboolean *value)
 	return CKR_OK;
 }
 
+CK_RV
+gck_attribute_get_ulong (CK_ATTRIBUTE_PTR attr, CK_ULONG *value)
+{
+	CK_ULONG* ulong;
+
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (value, CKR_GENERAL_ERROR);
+
+	if (attr->ulValueLen != sizeof (CK_ULONG) || attr->pValue == NULL)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	ulong = attr->pValue;
+	*value = *ulong;
+	return CKR_OK;
+}
+
 #ifndef HAVE_TIMEGM
 static time_t
 timegm (struct tm *t)

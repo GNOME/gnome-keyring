@@ -87,6 +87,20 @@ load_collection_and_secret_data (GckSecretCollection *self, GckSecretData *sdata
 	return res;
 }
 
+static GckCredential*
+lookup_unassociated_credential (GckSession *session, CK_OBJECT_HANDLE handle)
+{
+	GckObject *object;
+
+	if (gck_session_lookup_readable_object (session, handle, &object) != CKR_OK)
+		return NULL;
+
+	if (gck_credential_get_object (GCK_CREDENTIAL (object)) != NULL)
+		return NULL;
+
+	return GCK_CREDENTIAL (object);
+}
+
 static gboolean
 find_unlocked_credential (GckCredential *cred, GckObject *object, gpointer user_data)
 {
@@ -229,7 +243,6 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	GckSecretData *sdata;
 	gchar *label = NULL;
 	GckCredential *cred;
-	GckObject *object;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
@@ -243,13 +256,8 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 		return NULL;
 	}
 
-	if (gck_session_lookup_readable_object (session, handle, &object) != CKR_OK) {
-		gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
-		return NULL;
-	}
-
-	cred = GCK_CREDENTIAL (object);
-	if (gck_credential_get_object (cred) != NULL) {
+	cred = lookup_unassociated_credential (session, handle);
+	if (cred == NULL) {
 		gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
 		return NULL;
 	}
@@ -292,6 +300,47 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	return GCK_OBJECT (collection);
 }
 
+static gboolean
+complete_master_password (GckTransaction *transaction, GObject *object, gpointer user_data)
+{
+	GckSecretCollection *self = GCK_SECRET_COLLECTION (object);
+	GckSecret *previous = user_data;
+
+	if (gck_transaction_get_failed (transaction)) {
+		if (self->sdata)
+			gck_secret_data_set_master (self->sdata, previous);
+	}
+
+	if (previous)
+		g_object_unref (previous);
+
+	return TRUE;
+}
+
+static void
+change_master_password (GckSecretCollection *self, GckTransaction *transaction,
+                        GckCredential *cred)
+{
+	GckSecret *previous;
+
+	g_assert (GCK_IS_SECRET_COLLECTION (self));
+	g_assert (GCK_IS_TRANSACTION (transaction));
+	g_assert (GCK_IS_CREDENTIAL (cred));
+
+	if (!self->sdata)
+		return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+
+	previous = gck_secret_data_get_master (self->sdata);
+	if (previous != NULL)
+		g_object_ref (previous);
+
+	gck_credential_connect (cred, GCK_OBJECT (self));
+	gck_credential_set_data (cred, g_object_ref (self->sdata), g_object_unref);
+	gck_secret_data_set_master (self->sdata, gck_credential_get_secret (cred));
+
+	gck_transaction_add (transaction, self, complete_master_password, previous);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -311,6 +360,34 @@ gck_secret_collection_get_attribute (GckObject *base, GckSession *session, CK_AT
 		return gck_attribute_set_ulong (attr, handle);
 	}
 	return GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->get_attribute (base, session, attr);
+}
+
+static void
+gck_secret_collection_set_attribute (GckObject *object, GckSession *session,
+                                     GckTransaction *transaction, CK_ATTRIBUTE *attr)
+{
+	GckSecretCollection *self = GCK_SECRET_COLLECTION (object);
+	CK_OBJECT_HANDLE handle = 0;
+	GckCredential *cred;
+	CK_RV rv;
+
+	switch (attr->type) {
+	case CKA_G_CREDENTIAL:
+		gck_session_for_each_credential (session, GCK_OBJECT (self),
+		                                 find_unlocked_credential, &handle);
+		if (handle == 0)
+			return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+		rv = gck_attribute_get_ulong (attr, &handle);
+		if (rv != CKR_OK)
+			return gck_transaction_fail (transaction, rv);
+		cred = lookup_unassociated_credential (session, handle);
+		if (cred == NULL)
+			return gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+		change_master_password (self, transaction, cred);
+		return;
+	};
+
+	return GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->set_attribute (object, session, transaction, attr);
 }
 
 static CK_RV
@@ -465,6 +542,7 @@ gck_secret_collection_class_init (GckSecretCollectionClass *klass)
 	gobject_class->finalize = gck_secret_collection_finalize;
 
 	gck_class->get_attribute = gck_secret_collection_get_attribute;
+	gck_class->set_attribute = gck_secret_collection_set_attribute;
 	gck_class->unlock = gck_secret_collection_real_unlock;
 	gck_class->expose_object = gck_secret_collection_expose;
 

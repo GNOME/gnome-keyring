@@ -31,6 +31,9 @@
 CK_RV                 gck_attribute_get_bool                           (CK_ATTRIBUTE_PTR attr,
                                                                         gboolean *value);
 
+CK_RV                 gck_attribute_get_ulong                          (CK_ATTRIBUTE_PTR attr,
+                                                                        CK_ULONG *value);
+
 CK_RV                 gck_attribute_get_time                           (CK_ATTRIBUTE_PTR attr,
                                                                         glong *value);
 
