@@ -23,6 +23,8 @@
 
 /* This file is included into the main .c file for each gtest unit-test program */
 
+#include "config.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
@@ -34,6 +36,15 @@
 #include "gtest-helpers.h"
 
 #include "egg/egg-secure-memory.h"
+
+#include "pkcs11/pkcs11.h"
+
+#ifdef WITH_P11_TESTS
+#include <p11-tests.h>
+#endif
+
+/* Forward declaration */
+void test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config);
 
 static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT;
 static const gchar *test_path = NULL;
@@ -88,14 +99,26 @@ test_mainloop_get (void)
 	return mainloop;
 }
 
+const gchar*
+test_scratch_directory (void)
+{
+	return test_path;
+}
+
 gchar*
-test_build_filename (const gchar *basename)
+test_scratch_filename (const gchar *basename)
 {
 	return g_build_filename (test_path, basename, NULL);
 }
 
+gchar*
+test_data_filename (const gchar *basename)
+{
+	return g_build_filename (test_data_directory (), basename, NULL);
+}
+
 const gchar*
-test_dir_testdata (void)
+test_data_directory (void)
 {
 	const gchar *dir;
 	gchar *cur, *env;
@@ -118,13 +141,13 @@ test_dir_testdata (void)
 }
 
 guchar* 
-test_read_testdata (const gchar *basename, gsize *n_result)
+test_data_read (const gchar *basename, gsize *n_result)
 {
 	GError *error = NULL;
 	gchar *result;
 	gchar *file;
 
-	file = g_build_filename (test_dir_testdata (), basename, NULL);
+	file = test_data_filename (basename);
 	if (!g_file_get_contents (file, &result, n_result, &error)) {
 		g_warning ("could not read test data file: %s: %s", file,
 		           error && error->message ? error->message : "");
@@ -133,6 +156,70 @@ test_read_testdata (const gchar *basename, gsize *n_result)
 
 	g_free (file);
 	return (guchar*)result;
+}
+
+#ifdef WITH_P11_TESTS
+
+static void
+on_p11_tests_log (int level, const char *section, const char *message)
+{
+	if (level == P11_TESTS_NONE) {
+		g_message ("%s", message);
+	} else if (level != P11_TESTS_FAIL) {
+		g_message ("%s: %s", section, message);
+	} else {
+		g_print ("/%s/%s: FAIL: %s\n", test_external_name (), section, message);
+		test_external_fail ();
+	}
+}
+
+void
+test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
+{
+	p11_tests_set_log_func (on_p11_tests_log);
+	p11_tests_set_unexpected (1);
+	p11_tests_set_verbose (0);
+	p11_tests_set_write_session (1);
+	if (config)
+		p11_tests_load_config (config);
+	p11_tests_perform (module);
+}
+
+#else /* !WITH_P11_TESTS */
+
+void
+test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
+{
+	g_message ("p11-tests support not built in");
+}
+
+#endif /* !WITH_P11_TESTS */
+
+static const gchar *external_name = NULL;
+static gint external_fails = 0;
+
+void
+test_external_run (const gchar *name, TestExternalFunc func)
+{
+	external_fails = 0;
+	external_name = name;
+	func ();
+	if (external_fails) {
+		g_printerr ("/%s: FAIL: %d failures", name, external_fails);
+		abort();
+	}
+}
+
+const gchar*
+test_external_name (void)
+{
+	return external_name;
+}
+
+void
+test_external_fail (void)
+{
+	++external_fails;
 }
 
 static void 
@@ -185,6 +272,10 @@ main (int argc, char* argv[])
 
 	start_tests ();
 	ret = g_test_run ();
+
+	/* Any auxiliary suites */
+	run_externals ();
+
 	stop_tests();
 
 	return ret;

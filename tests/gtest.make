@@ -12,13 +12,15 @@ INCLUDES=				\
 	-I$(srcdir)/..			\
 	-I$(srcdir)/../..		\
 	$(GTK_CFLAGS)			\
-	$(GLIB_CFLAGS)  
-	
+	$(GLIB_CFLAGS) \
+	$(P11_TESTS_CFLAGS)
+
 LIBS = \
 	$(GTK_LIBS) \
 	$(GLIB_LIBS) \
-	$(GTHREAD_LIBS) 
-	
+	$(GTHREAD_LIBS) \
+	$(P11_TESTS_LIBS)
+
 noinst_PROGRAMS= \
 	run-auto-test \
 	run-prompt-test

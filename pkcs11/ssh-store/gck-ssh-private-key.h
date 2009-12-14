@@ -26,7 +26,7 @@
 
 #include "gck-ssh-public-key.h"
 
-#include "gck/gck-private-key.h"
+#include "gck/gck-private-xsa-key.h"
 
 #define GCK_TYPE_SSH_PRIVATE_KEY               (gck_ssh_private_key_get_type ())
 #define GCK_SSH_PRIVATE_KEY(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_SSH_PRIVATE_KEY, GckSshPrivateKey))
@@ -39,7 +39,7 @@ typedef struct _GckSshPrivateKey GckSshPrivateKey;
 typedef struct _GckSshPrivateKeyClass GckSshPrivateKeyClass;
     
 struct _GckSshPrivateKeyClass {
-	GckPrivateKeyClass parent_class;
+	GckPrivateXsaKeyClass parent_class;
 };
 
 GType               gck_ssh_private_key_get_type               (void);

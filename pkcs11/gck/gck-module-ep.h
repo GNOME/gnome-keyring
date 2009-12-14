@@ -582,7 +582,7 @@ gck_C_SetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
 		if (pkcs11_module != NULL) {
 			session = gck_module_lookup_session (pkcs11_module, handle);
 			if (session != NULL)
-				rv = gck_session_C_SetAttributeValue (session, handle, template, count);
+				rv = gck_session_C_SetAttributeValue (session, object, template, count);
 			else
 				rv = CKR_SESSION_HANDLE_INVALID;
 		}

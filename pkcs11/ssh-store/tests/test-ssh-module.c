@@ -28,6 +28,8 @@
 
 #include "ssh-store/gck-ssh-store.h"
 
+#include "run-auto-test.h"
+
 static GMutex *mutex = NULL;
 
 GckModule*  _gck_ssh_store_get_module_for_testing (void);
@@ -102,4 +104,10 @@ test_ssh_module_open_session (gboolean writable)
 	g_assert (session);
 
 	return session;
+}
+
+DEFINE_EXTERNAL(ssh_module)
+{
+	CK_FUNCTION_LIST_PTR funcs = gck_ssh_store_get_functions ();
+	test_p11_module (funcs, "p11-tests.conf");
 }

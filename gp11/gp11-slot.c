@@ -823,6 +823,8 @@ typedef struct OpenSession {
 	GP11Arguments base;
 	GP11Slot *slot;
 	gulong flags;
+	gpointer app_data;
+	CK_NOTIFY notify;
 	gchar *password;
 	gboolean auto_login;
 	CK_SESSION_HANDLE session;
@@ -840,7 +842,7 @@ perform_open_session (OpenSession *args)
 	/* First step, open session */
 	if (!args->session) {
 		rv = (args->base.pkcs11->C_OpenSession) (args->base.handle, args->flags, 
-		                                         NULL, NULL, &args->session);
+		                                         args->app_data, args->notify, &args->session);
 	}
 
 	if (rv != CKR_OK || !args->auto_login)
@@ -911,13 +913,15 @@ free_open_session (OpenSession *args)
 GP11Session*
 gp11_slot_open_session (GP11Slot *self, gulong flags, GError **err)
 {
-	return gp11_slot_open_session_full (self, flags, NULL, err);
+	return gp11_slot_open_session_full (self, flags, NULL, NULL, NULL, err);
 }
 
 /**
  * gp11_slot_open_session_full:
  * @self: The slot to open a session on.
  * @flags: The flags to open a session with.
+ * @app_data: Application data for notification callback.
+ * @notify: PKCS#11 notification callback.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error, or NULL.
  * 
@@ -929,7 +933,8 @@ gp11_slot_open_session (GP11Slot *self, gulong flags, GError **err)
  * Return value: A new session or NULL if an error occurs.
  **/
 GP11Session*
-gp11_slot_open_session_full (GP11Slot *self, gulong flags, GCancellable *cancellable, GError **err)
+gp11_slot_open_session_full (GP11Slot *self, gulong flags, gpointer app_data,
+                             CK_NOTIFY notify, GCancellable *cancellable, GError **err)
 {
 	GP11Session *session = NULL;
 	GP11Module *module = NULL;
@@ -953,6 +958,8 @@ gp11_slot_open_session_full (GP11Slot *self, gulong flags, GCancellable *cancell
 		
 		args.slot = self;
 		args.flags = flags;
+		args.app_data = app_data;
+		args.notify = notify;
 		args.password = NULL;
 		args.auto_login = (gp11_module_get_auto_authenticate (module) & GP11_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
 		args.session = 0;
@@ -971,6 +978,8 @@ gp11_slot_open_session_full (GP11Slot *self, gulong flags, GCancellable *cancell
  * gp11_slot_open_session_async:
  * @self: The slot to open a session on.
  * @flags: The flags to open a session with.
+ * @app_data: Application data for notification callback.
+ * @notify: PKCS#11 notification callback.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: Called when the operation completes.
  * @user_data: Data to pass to the callback.
@@ -981,7 +990,8 @@ gp11_slot_open_session_full (GP11Slot *self, gulong flags, GCancellable *cancell
  * This call will return immediately and complete asynchronously.
  **/
 void
-gp11_slot_open_session_async (GP11Slot *self, gulong flags, GCancellable *cancellable, 
+gp11_slot_open_session_async (GP11Slot *self, gulong flags, gpointer app_data,
+                              CK_NOTIFY notify, GCancellable *cancellable,
                               GAsyncReadyCallback callback, gpointer user_data)
 {
 	GP11Module *module = NULL;
@@ -997,6 +1007,8 @@ gp11_slot_open_session_async (GP11Slot *self, gulong flags, GCancellable *cancel
 	                               sizeof (*args), free_open_session);
 
 	args->flags = flags;
+	args->app_data = app_data;
+	args->notify = notify;
 	args->slot = g_object_ref (self);
 
 	/* Try to use a cached session */

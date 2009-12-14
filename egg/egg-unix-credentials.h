@@ -29,4 +29,6 @@ int egg_unix_credentials_read (int sock, pid_t *pid, uid_t *uid);
 
 int egg_unix_credentials_write (int sock);
  
+char* egg_unix_credentials_executable (pid_t pid);
+
 #endif /*EGGUNIXCREDENTIALS_H_*/

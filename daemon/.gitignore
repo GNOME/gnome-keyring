@@ -1,9 +1,13 @@
-/.libs
-/.deps
-/Makefile
-/Makefile.in
+.libs
+.deps
+Makefile
+Makefile.in
 /gnome-keyring-ask
 /gnome-keyring-daemon
 /org.gnome.keyring.service
 /gnome-keyring-daemon.desktop
 /gnome-keyring-daemon.desktop.in
+*-marshal.[ch]
+gnome-keyring-prompt
+run-auto-test*
+

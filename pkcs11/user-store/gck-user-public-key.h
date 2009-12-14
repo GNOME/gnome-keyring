@@ -24,7 +24,7 @@
 
 #include <glib-object.h>
 
-#include "gck/gck-public-key.h"
+#include "gck/gck-public-xsa-key.h"
 
 #define GCK_FACTORY_USER_PUBLIC_KEY            (gck_user_public_key_get_factory ())
 
@@ -39,12 +39,12 @@ typedef struct _GckUserPublicKey GckUserPublicKey;
 typedef struct _GckUserPublicKeyClass GckUserPublicKeyClass;
     
 struct _GckUserPublicKeyClass {
-	GckPublicKeyClass parent_class;
+	GckPublicXsaKeyClass parent_class;
 };
 
 GType                gck_user_public_key_get_type               (void);
 
-GckFactoryInfo*      gck_user_public_key_get_factory            (void);
+GckFactory*          gck_user_public_key_get_factory            (void);
 
 GckUserPublicKey*    gck_user_public_key_new                    (const gchar *unique);
 

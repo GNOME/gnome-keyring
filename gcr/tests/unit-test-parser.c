@@ -113,7 +113,7 @@ DEFINE_TEST(parse_all)
 	gsize len;
 	GDir *dir;
 	
-	dir = g_dir_open (test_dir_testdata (), 0, NULL);
+	dir = g_dir_open (test_data_directory (), 0, NULL);
 	g_assert (dir);
 
 	for (;;) {
@@ -124,7 +124,7 @@ DEFINE_TEST(parse_all)
 			continue;
 		
 		filedesc = filename;
-		contents = test_read_testdata (filename, &len);
+		contents = test_data_read (filename, &len);
 		
 		result = gcr_parser_parse_data (parser, contents, len, &err);
 		if (!result) { 

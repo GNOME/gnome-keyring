@@ -24,6 +24,8 @@
 
 #include "gkr-daemon.h"
 
+#include "dbus/gkd-dbus.h"
+
 #include "egg/egg-cleanup.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
@@ -363,7 +365,6 @@ signal_thread (gpointer user_data)
 		case SIGPIPE:
 			/* Ignore */
 			break;
-		case SIGINT:
 		case SIGHUP:
 		case SIGTERM:
 			g_atomic_int_set (&signal_quitting, 1);
@@ -394,7 +395,6 @@ setup_signal_handling (GMainLoop *loop)
 
 	sigemptyset (&signal_set);
 	sigaddset (&signal_set, SIGPIPE);
-	sigaddset (&signal_set, SIGINT);
 	sigaddset (&signal_set, SIGHUP);
 	sigaddset (&signal_set, SIGTERM);
 	pthread_sigmask (SIG_BLOCK, &signal_set, NULL);
@@ -721,6 +721,7 @@ gkr_daemon_startup_steps (void)
 			return FALSE;
 	}
 
+	initialization_completed = TRUE;
 	return TRUE;
 }
 
@@ -731,7 +732,7 @@ gkr_daemon_initialize_steps (void)
 	if (!gkr_pkcs11_daemon_initialize ())
 		return FALSE;
 
-	gkr_daemon_dbus_initialize ();
+	gkd_dbus_setup ();
 	return TRUE;
 }
 
@@ -779,7 +780,13 @@ main (int argc, char *argv[])
 	 * Without either of these options, we follow a more boring and 
 	 * predictable startup.  
 	 */
-	
+
+#ifdef WITH_TESTS
+	g_setenv ("DBUS_FATAL_WARNINGS", "1", FALSE);
+	if (!g_getenv ("G_DEBUG"))
+		g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
+#endif
+
 	g_type_init ();
 	g_thread_init (NULL);
 	

@@ -24,7 +24,7 @@
 #include "run-auto-test.h"
 #include "test-ssh-module.h"
 
-#include "gck/gck-authenticator.h"
+#include "gck/gck-credential.h"
 #include "gck/gck-session.h"
 #include "gck/gck-module.h"
 
@@ -57,8 +57,8 @@ DEFINE_TEST(private_key_parse_plain)
 	key = gck_ssh_private_key_new (module, "my-unique");
 	g_assert (GCK_IS_SSH_PRIVATE_KEY (key));
 
-	pub_path = g_build_filename (test_dir_testdata (), "id_dsa_plain.pub", NULL);
-	priv_path = g_build_filename (test_dir_testdata (), "id_dsa_plain", NULL);
+	pub_path = test_data_filename ("id_dsa_plain.pub");
+	priv_path = test_data_filename ("id_dsa_plain");
 	
 	ret = gck_ssh_private_key_parse (key, pub_path, priv_path, NULL);
 	g_assert (ret == TRUE);
@@ -72,7 +72,7 @@ DEFINE_TEST(private_key_parse_plain)
 DEFINE_TEST(private_key_parse_and_unlock)
 {
 	GckSshPrivateKey *key;
-	GckAuthenticator *auth;
+	GckCredential *cred;
 	gchar *pub_path, *priv_path;
 	gboolean ret;
 	CK_RV rv;
@@ -80,8 +80,8 @@ DEFINE_TEST(private_key_parse_and_unlock)
 	key = gck_ssh_private_key_new (module, "my-unique");
 	g_assert (GCK_IS_SSH_PRIVATE_KEY (key));
 
-	pub_path = g_build_filename (test_dir_testdata (), "id_dsa_encrypted.pub", NULL);
-	priv_path = g_build_filename (test_dir_testdata (), "id_dsa_encrypted", NULL);
+	pub_path = test_data_filename ("id_dsa_encrypted.pub");
+	priv_path = test_data_filename ("id_dsa_encrypted");
 	
 	ret = gck_ssh_private_key_parse (key, pub_path, priv_path, NULL);
 	g_assert (ret == TRUE);
@@ -89,9 +89,9 @@ DEFINE_TEST(private_key_parse_and_unlock)
 	g_free (pub_path);
 	g_free (priv_path);
 
-	rv = gck_authenticator_create (GCK_OBJECT (key), (guchar*)"password", 8, &auth);
+	rv = gck_credential_create (module, NULL, GCK_OBJECT (key), (guchar*)"password", 8, &cred);
 	g_assert (rv == CKR_OK);
-	
-	g_object_unref (auth);
+
+	g_object_unref (cred);
 	g_object_unref (key);
 }

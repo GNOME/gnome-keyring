@@ -207,3 +207,30 @@ again:
 		
 	return 0;
 }
+
+char*
+egg_unix_credentials_executable (pid_t pid)
+{
+	char *result = NULL;
+
+	/* Try and figure out the path from the pid */
+#if defined(__linux__) || defined(__FreeBSD__)
+	char path[1024];
+	char buffer[64];
+	int count;
+
+#if defined(__linux__)
+	snprintf (buffer, sizeof (buffer), "/proc/%d/exe", (int)pid);
+#elif defined(__FreeBSD__)
+	snprintf (buffer, sizeof (buffer), "/proc/%d/file", (int)pid);
+#endif
+
+	count = readlink (buffer, path, sizeof (path));
+	if (count < 0)
+		fprintf (stderr, "readlink failed for file: %s", buffer);
+	else
+		result = strndup (path, count);
+#endif
+
+	return result;
+}

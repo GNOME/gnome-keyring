@@ -24,6 +24,7 @@
 #include "gck-ssh-public-key.h"
 
 #include "gck/gck-attributes.h"
+#include "gck/gck-module.h"
 #include "gck/gck-object.h"
 #include "gck/gck-util.h"
 
@@ -35,11 +36,11 @@ enum {
 };
 
 struct _GckSshPublicKey {
-	GckPublicKey parent;
+	GckPublicXsaKey parent;
 	gchar *label;
 };
 
-G_DEFINE_TYPE (GckSshPublicKey, gck_ssh_public_key, GCK_TYPE_PUBLIC_KEY);
+G_DEFINE_TYPE (GckSshPublicKey, gck_ssh_public_key, GCK_TYPE_PUBLIC_XSA_KEY);
 
 /* -----------------------------------------------------------------------------
  * OBJECT 
@@ -132,7 +133,7 @@ GckSshPublicKey*
 gck_ssh_public_key_new (GckModule *module, const gchar *unique)
 {
 	return g_object_new (GCK_TYPE_SSH_PUBLIC_KEY, "unique", unique, 
-	                     "module", module, NULL);
+	                     "module", module, "manager", gck_module_get_manager (module), NULL);
 }
 
 const gchar*

@@ -33,6 +33,7 @@ build_header()
 		sed -ne 's/.*DEFINE_TEST[ 	]*(\([^)]\+\))/DECLARE_TEST(\1);/p' $_file
 		sed -ne 's/.*DEFINE_START[ 	]*(\([^)]\+\))/DECLARE_START(\1);/p' $_file
 		sed -ne 's/.*DEFINE_STOP[ 	]*(\([^)]\+\))/DECLARE_STOP(\1);/p' $_file
+		sed -ne 's/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\))/DECLARE_EXTERNAL(\1);/p' $_file
 	done
 	echo
 }
@@ -83,10 +84,17 @@ build_source()
 		sed -ne "s/.*DEFINE_TEST(\([^)]\+\)).*/	g_test_add(\"\/$_name\/\1\", int, NULL, $_setup, test_\1, $_teardown);/p" $_file
 		
 	done
-	
 	echo "}"
 	echo
-		
+
+	# External function
+	echo "static void run_externals (void) {"
+	for _file in $@; do
+		sed -ne "s/.*DEFINE_EXTERNAL(\([^)]\+\)).*/	test_external_run (\"\1\", external_\1);/p" $_file
+	done
+	echo "}"
+	echo
+
 	echo "#include \"tests/gtest-helpers.c\""
 }
 

@@ -53,14 +53,42 @@
 typedef CK_ULONG CK_G_APPLICATION_ID;
 
 typedef struct CK_G_APPLICATION {
-	CK_UTF8CHAR applicationName;
 	CK_VOID_PTR applicationData;
-	CK_FLAGS flags;
 	CK_G_APPLICATION_ID applicationId;
 } CK_G_APPLICATION;
 
 typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 
 #define CKR_G_APPLICATION_ID_INVALID             (CKR_GNOME + 10)
+
+
+/* -------------------------------------------------------------------
+ * SECRETS
+ */
+
+#define CKO_G_COLLECTION                     (CKO_GNOME + 110)
+
+#define CKO_G_SEARCH                         (CKO_GNOME + 111)
+
+#define CKA_G_LOCKED                         (CKA_GNOME + 210)
+
+#define CKA_G_CREATED                        (CKA_GNOME + 211)
+
+#define CKA_G_MODIFIED                       (CKA_GNOME + 212)
+
+#define CKA_G_FIELDS                         (CKA_GNOME + 213)
+
+#define CKA_G_COLLECTION                     (CKA_GNOME + 214)
+
+#define CKA_G_MATCHED                        (CKA_GNOME + 215)
+
+/* -------------------------------------------------------------------
+ * MECHANISMS
+ */
+
+/* Used for wrapping and unwrapping as null */
+#define CKM_G_NULL                           (CKM_GNOME + 100)
+
+#define CKK_G_NULL                           (CKK_GNOME + 100)
 
 #endif /* PKCS11I_H */

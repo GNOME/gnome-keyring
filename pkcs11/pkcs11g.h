@@ -26,9 +26,11 @@
 
 #include "pkcs11.h"
 
-#define CKA_GNOME (CKA_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
-#define CKO_GNOME (CKO_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
-#define CKR_GNOME (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKA_GNOME   (CKA_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKO_GNOME   (CKO_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKR_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKM_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKK_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
 
 /* -------------------------------------------------------------------
  * OBJECT UNIQUE IDENTIFIER
@@ -96,13 +98,15 @@
 #define CKA_GNOME_TRANSIENT                      (CKA_GNOME + 201)
 
 /* -------------------------------------------------------------------
- * AUTHENTICATOR
+ * CREDENTIAL
  */
 
-#define CKO_GNOME_AUTHENTICATOR                  (CKO_GNOME + 100)
+#define CKO_G_CREDENTIAL                         (CKO_GNOME + 100)
 
-#define CKA_GNOME_OBJECT                         (CKA_GNOME + 202)
+#define CKA_G_OBJECT                             (CKA_GNOME + 202)
 
-#define CKA_GNOME_USES_REMAINING                 (CKA_GNOME + 203)
+#define CKA_G_USES_REMAINING                     (CKA_GNOME + 203)
+
+#define CKA_G_CREDENTIAL                         (CKA_GNOME + 204)
 
 #endif /* PKCS11G_H */

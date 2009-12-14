@@ -1039,6 +1039,740 @@ gp11_session_find_objects_finish (GP11Session *self, GAsyncResult *result, GErro
 	return objlist_from_handles (self, args->objects, args->n_objects);
 }
 
+/* -----------------------------------------------------------------------------
+ * KEY PAIR GENERATION
+ */
+
+typedef struct _GenerateKeyPair {
+	GP11Arguments base;
+	GP11Mechanism *mechanism;
+	GP11Attributes *public_attrs;
+	GP11Attributes *private_attrs;
+	CK_OBJECT_HANDLE public_key;
+	CK_OBJECT_HANDLE private_key;
+} GenerateKeyPair;
+
+static void
+free_generate_key_pair (GenerateKeyPair *args)
+{
+	gp11_mechanism_unref (args->mechanism);
+	gp11_attributes_unref (args->public_attrs);
+	gp11_attributes_unref (args->private_attrs);
+	g_free (args);
+}
+
+static CK_RV
+perform_generate_key_pair (GenerateKeyPair *args)
+{
+	CK_ATTRIBUTE_PTR pub_attrs, priv_attrs;
+	CK_ULONG n_pub_attrs, n_priv_attrs;
+
+	g_assert (sizeof (CK_MECHANISM) == sizeof (GP11Mechanism));
+
+	pub_attrs = _gp11_attributes_commit_out (args->public_attrs, &n_pub_attrs);
+	priv_attrs = _gp11_attributes_commit_out (args->private_attrs, &n_priv_attrs);
+
+	return (args->base.pkcs11->C_GenerateKeyPair) (args->base.handle,
+	                                               (CK_MECHANISM_PTR)args->mechanism,
+	                                               pub_attrs, n_pub_attrs,
+	                                               priv_attrs, n_priv_attrs,
+	                                               &args->public_key,
+	                                               &args->private_key);
+}
+
+/**
+ * gp11_session_generate_key_pair_full:
+ * @self: The session to use.
+ * @mechanism: The mechanism to use for key generation.
+ * @public_attrs: Additional attributes for the generated public key.
+ * @private_attrs: Additional attributes for the generated private key.
+ * @public_key: A location to return the resulting public key.
+ * @private_key: A location to return the resulting private key.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Generate a new key pair of public and private keys. This call may block for an
+ * indefinite period.
+ *
+ * Return value: TRUE if the operation succeeded.
+ **/
+gboolean
+gp11_session_generate_key_pair_full (GP11Session *self, GP11Mechanism *mechanism,
+                                     GP11Attributes *public_attrs, GP11Attributes *private_attrs,
+                                     GP11Object **public_key, GP11Object **private_key,
+                                     GCancellable *cancellable, GError **err)
+{
+	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
+	GenerateKeyPair args = { GP11_ARGUMENTS_INIT, mechanism, public_attrs, private_attrs, 0, 0 };
+	gboolean ret;
+
+	g_return_val_if_fail (GP11_IS_SESSION (self), FALSE);
+	g_return_val_if_fail (mechanism, FALSE);
+	g_return_val_if_fail (public_attrs, FALSE);
+	g_return_val_if_fail (private_attrs, FALSE);
+	g_return_val_if_fail (public_key, FALSE);
+	g_return_val_if_fail (private_key, FALSE);
+
+	_gp11_attributes_lock (public_attrs);
+	if (public_attrs != private_attrs)
+		_gp11_attributes_lock (private_attrs);
+	ret = _gp11_call_sync (self, perform_generate_key_pair, NULL, &args, cancellable, err);
+	if (public_attrs != private_attrs)
+		_gp11_attributes_unlock (private_attrs);
+	_gp11_attributes_unlock (public_attrs);
+
+	if (!ret)
+		return FALSE;
+
+	*public_key = gp11_object_from_handle (data->slot, args.public_key);
+	*private_key = gp11_object_from_handle (data->slot, args.private_key);
+	return TRUE;
+}
+
+/**
+ * gp11_session_generate_key_pair_async:
+ * @self: The session to use.
+ * @mechanism: The mechanism to use for key generation.
+ * @public_attrs: Additional attributes for the generated public key.
+ * @private_attrs: Additional attributes for the generated private key.
+ * @cancellable: Optional cancellation object or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ *
+ * Generate a new key pair of public and private keys. This call will
+ * return immediately and complete asynchronously.
+ **/
+void
+gp11_session_generate_key_pair_async (GP11Session *self, GP11Mechanism *mechanism,
+                                      GP11Attributes *public_attrs, GP11Attributes *private_attrs,
+                                      GCancellable *cancellable, GAsyncReadyCallback callback,
+                                      gpointer user_data)
+{
+	GenerateKeyPair *args = _gp11_call_async_prep (self, self, perform_generate_key_pair,
+	                                               NULL, sizeof (*args), free_generate_key_pair);
+
+	g_return_if_fail (GP11_IS_SESSION (self));
+	g_return_if_fail (mechanism);
+	g_return_if_fail (public_attrs);
+	g_return_if_fail (private_attrs);
+
+	args->public_attrs = gp11_attributes_ref (public_attrs);
+	_gp11_attributes_lock (public_attrs);
+	args->private_attrs = gp11_attributes_ref (private_attrs);
+	if (public_attrs != private_attrs)
+		_gp11_attributes_lock (private_attrs);
+	args->mechanism = gp11_mechanism_ref (mechanism);
+
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
+}
+
+/**
+ * gp11_session_generate_key_pair_finish:
+ * @self: The session to use.
+ * @result: The async result passed to the callback.
+ * @public_key: A location to return the resulting public key.
+ * @private_key: A location to return the resulting private key.
+ * @err: A location to return an error.
+ *
+ * Get the result of a generate key pair operation.
+ *
+ * Return value: TRUE if the operation succeeded.
+ **/
+gboolean
+gp11_session_generate_key_pair_finish (GP11Session *self, GAsyncResult *result,
+                                       GP11Object **public_key, GP11Object **private_key,
+                                       GError **err)
+{
+	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
+	GenerateKeyPair *args;
+
+	g_return_val_if_fail (GP11_IS_SESSION (self), FALSE);
+	g_return_val_if_fail (public_key, FALSE);
+	g_return_val_if_fail (private_key, FALSE);
+
+	args = _gp11_call_arguments (result, GenerateKeyPair);
+	_gp11_attributes_unlock (args->public_attrs);
+	if (args->public_attrs != args->private_attrs)
+		_gp11_attributes_unlock (args->private_attrs);
+
+	if (!_gp11_call_basic_finish (result, err))
+		return FALSE;
+
+	*public_key = gp11_object_from_handle (data->slot, args->public_key);
+	*private_key = gp11_object_from_handle (data->slot, args->private_key);
+	return TRUE;
+}
+
+/* -----------------------------------------------------------------------------
+ * KEY WRAPPING
+ */
+
+typedef struct _WrapKey {
+	GP11Arguments base;
+	GP11Mechanism *mechanism;
+	CK_OBJECT_HANDLE wrapper;
+	CK_OBJECT_HANDLE wrapped;
+	gpointer result;
+	gulong n_result;
+} WrapKey;
+
+static void
+free_wrap_key (WrapKey *args)
+{
+	gp11_mechanism_unref (args->mechanism);
+	g_free (args->result);
+	g_free (args);
+}
+
+static CK_RV
+perform_wrap_key (WrapKey *args)
+{
+	CK_RV rv;
+
+	g_assert (sizeof (CK_MECHANISM) == sizeof (GP11Mechanism));
+
+	/* Get the length of the result */
+	rv = (args->base.pkcs11->C_WrapKey) (args->base.handle,
+	                                     (CK_MECHANISM_PTR)args->mechanism,
+	                                     args->wrapper, args->wrapped,
+	                                     NULL, &args->n_result);
+	if (rv != CKR_OK)
+		return rv;
+
+	/* And try again with a real buffer */
+	args->result = g_malloc0 (args->n_result);
+	return (args->base.pkcs11->C_WrapKey) (args->base.handle,
+	                                       (CK_MECHANISM_PTR)args->mechanism,
+	                                       args->wrapper, args->wrapped,
+	                                       args->result, &args->n_result);
+}
+
+/**
+ * gp11_session_wrap_key:
+ * @self: The session to use.
+ * @wrapper: The key to use for wrapping.
+ * @mechanism: The mechanism type to use for wrapping.
+ * @wrapped: The key to wrap.
+ * @n_result: A location in which to return the length of the wrapped data.
+ * @err: A location to return an error, or NULL.
+ *
+ * Wrap a key into a byte stream. This call may block for an
+ * indefinite period.
+ *
+ * Return value: The wrapped data or NULL if the operation failed.
+ **/
+gpointer
+gp11_session_wrap_key (GP11Session *self, GP11Object *key, gulong mech_type,
+                       GP11Object *wrapped, gsize *n_result, GError **err)
+{
+	GP11Mechanism mech = { mech_type, NULL, 0 };
+	return gp11_session_wrap_key_full (self, key, &mech, wrapped, n_result, NULL, err);
+}
+
+/**
+ * gp11_session_wrap_key_full:
+ * @self: The session to use.
+ * @wrapper: The key to use for wrapping.
+ * @mechanism: The mechanism to use for wrapping.
+ * @wrapped: The key to wrap.
+ * @n_result: A location in which to return the length of the wrapped data.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Wrap a key into a byte stream. This call may block for an
+ * indefinite period.
+ *
+ * Return value: The wrapped data or NULL if the operation failed.
+ **/
+gpointer
+gp11_session_wrap_key_full (GP11Session *self, GP11Object *wrapper, GP11Mechanism *mechanism,
+                            GP11Object *wrapped, gsize *n_result, GCancellable *cancellable,
+                            GError **err)
+{
+	WrapKey args = { GP11_ARGUMENTS_INIT, mechanism, 0, 0, NULL, 0 };
+	gboolean ret;
+
+	g_return_val_if_fail (GP11_IS_SESSION (self), FALSE);
+	g_return_val_if_fail (mechanism, FALSE);
+	g_return_val_if_fail (GP11_IS_OBJECT (wrapped), FALSE);
+	g_return_val_if_fail (GP11_IS_OBJECT (wrapper), FALSE);
+	g_return_val_if_fail (n_result, FALSE);
+
+	g_object_get (wrapper, "handle", &args.wrapper, NULL);
+	g_return_val_if_fail (args.wrapper != 0, NULL);
+	g_object_get (wrapped, "handle", &args.wrapped, NULL);
+	g_return_val_if_fail (args.wrapped != 0, NULL);
+
+	ret = _gp11_call_sync (self, perform_wrap_key, NULL, &args, cancellable, err);
+
+	if (!ret)
+		return FALSE;
+
+	*n_result = args.n_result;
+	return args.result;
+}
+
+/**
+ * gp11_session_wrap_key_async:
+ * @self: The session to use.
+ * @wrapper: The key to use for wrapping.
+ * @mechanism: The mechanism to use for wrapping.
+ * @wrapped: The key to wrap.
+ * @cancellable: Optional cancellation object or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ *
+ * Wrap a key into a byte stream. This call will
+ * return immediately and complete asynchronously.
+ **/
+void
+gp11_session_wrap_key_async (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
+                             GP11Object *wrapped, GCancellable *cancellable,
+                             GAsyncReadyCallback callback, gpointer user_data)
+{
+	WrapKey *args = _gp11_call_async_prep (self, self, perform_wrap_key,
+	                                       NULL, sizeof (*args), free_wrap_key);
+
+	g_return_if_fail (GP11_IS_SESSION (self));
+	g_return_if_fail (mechanism);
+	g_return_if_fail (GP11_IS_OBJECT (wrapped));
+	g_return_if_fail (GP11_IS_OBJECT (key));
+
+	args->mechanism = gp11_mechanism_ref (mechanism);
+	g_object_get (key, "handle", &args->wrapper, NULL);
+	g_return_if_fail (args->wrapper != 0);
+	g_object_get (wrapped, "handle", &args->wrapped, NULL);
+	g_return_if_fail (args->wrapped != 0);
+
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
+}
+
+/**
+ * gp11_session_wrap_key_finish:
+ * @self: The session to use.
+ * @result: The async result passed to the callback.
+ * @n_result: A location in which to return the length of the wrapped data.
+ * @err: A location to return an error.
+ *
+ * Get the result of a wrap key operation.
+ *
+ * Return value: The wrapped data or NULL if the operation failed.
+ **/
+gpointer
+gp11_session_wrap_key_finish (GP11Session *self, GAsyncResult *result,
+                              gsize *n_result, GError **err)
+{
+	WrapKey *args;
+	gpointer ret;
+
+	g_return_val_if_fail (GP11_IS_SESSION (self), NULL);
+	g_return_val_if_fail (n_result, NULL);
+
+	args = _gp11_call_arguments (result, WrapKey);
+
+	if (!_gp11_call_basic_finish (result, err))
+		return NULL;
+
+	*n_result = args->n_result;
+	args->n_result = 0;
+	ret = args->result;
+	args->result = NULL;
+
+	return ret;
+}
+
+/* -----------------------------------------------------------------------------
+ * KEY UNWRAPPING
+ */
+
+typedef struct _UnwrapKey {
+	GP11Arguments base;
+	GP11Mechanism *mechanism;
+	GP11Attributes *attrs;
+	CK_OBJECT_HANDLE wrapper;
+	gconstpointer input;
+	gulong n_input;
+	CK_OBJECT_HANDLE unwrapped;
+} UnwrapKey;
+
+static void
+free_unwrap_key (UnwrapKey *args)
+{
+	gp11_mechanism_unref (args->mechanism);
+	gp11_attributes_unref (args->attrs);
+	g_free (args);
+}
+
+static CK_RV
+perform_unwrap_key (UnwrapKey *args)
+{
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG n_attrs;
+
+	g_assert (sizeof (CK_MECHANISM) == sizeof (GP11Mechanism));
+
+	attrs = _gp11_attributes_commit_out (args->attrs, &n_attrs);
+
+	return (args->base.pkcs11->C_UnwrapKey) (args->base.handle,
+	                                         (CK_MECHANISM_PTR)args->mechanism,
+	                                         args->wrapper, (CK_BYTE_PTR)args->input,
+	                                         args->n_input, attrs, n_attrs,
+	                                         &args->unwrapped);
+}
+
+/**
+ * gp11_session_unwrap_key:
+ * @self: The session to use.
+ * @wrapper: The key to use for unwrapping.
+ * @mech_type: The mechanism type to use for derivation.
+ * @input: The wrapped data as a byte stream.
+ * @n_input: The length of the wrapped data.
+ * @err: A location to return an error, or NULL.
+ * @...: Additional attributes for the unwrapped key.
+ *
+ * Unwrap a key from a byte stream. This call may block for an
+ * indefinite period.
+ *
+ * The arguments must be triples of: attribute type, data type, value
+ *
+ * <para>The variable argument list should contain:
+ * 	<variablelist>
+ *		<varlistentry>
+ * 			<term>a)</term>
+ * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>b)</term>
+ * 			<listitem><para>The attribute data type (one of GP11_BOOLEAN, GP11_ULONG,
+ * 				GP11_STRING, GP11_DATE) orthe raw attribute value length.</para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>c)</term>
+ * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
+ * 				a pointer to a raw attribute value.</para></listitem>
+ * 		</varlistentry>
+ * 	</variablelist>
+ * The variable argument list should be terminated with GP11_INVALID.</para>
+ *
+ * Return value: The new unwrapped key or NULL if the operation failed.
+ **/
+GP11Object*
+gp11_session_unwrap_key (GP11Session *self, GP11Object *key, gulong mech_type,
+                         gconstpointer input, gsize n_input, GError **err, ...)
+{
+	GP11Mechanism mech = { mech_type, NULL, 0 };
+	GP11Attributes *attrs;
+	GP11Object *object;
+	va_list va;
+
+	va_start (va, err);
+	attrs = gp11_attributes_new_valist (g_realloc, va);
+	va_end (va);
+
+	object = gp11_session_unwrap_key_full (self, key, &mech, input, n_input, attrs, NULL, err);
+	gp11_attributes_unref (attrs);
+	return object;
+}
+
+/**
+ * gp11_session_unwrap_key_full:
+ * @self: The session to use.
+ * @wrapper: The key to use for unwrapping.
+ * @mechanism: The mechanism to use for unwrapping.
+ * @input: The wrapped data as a byte stream.
+ * @n_input: The length of the wrapped data.
+ * @attrs: Additional attributes for the unwrapped key.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Unwrap a key from a byte stream. This call may block for an
+ * indefinite period.
+ *
+ * Return value: The new unwrapped key or NULL if the operation failed.
+ **/
+GP11Object*
+gp11_session_unwrap_key_full (GP11Session *self, GP11Object *wrapper, GP11Mechanism *mechanism,
+                              gconstpointer input, gsize n_input, GP11Attributes *attrs,
+                              GCancellable *cancellable, GError **err)
+{
+	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
+	UnwrapKey args = { GP11_ARGUMENTS_INIT, mechanism, attrs, 0, input, n_input, 0 };
+	gboolean ret;
+
+	g_return_val_if_fail (GP11_IS_SESSION (self), FALSE);
+	g_return_val_if_fail (GP11_IS_OBJECT (wrapper), FALSE);
+	g_return_val_if_fail (mechanism, FALSE);
+	g_return_val_if_fail (attrs, FALSE);
+
+	g_object_get (wrapper, "handle", &args.wrapper, NULL);
+	g_return_val_if_fail (args.wrapper != 0, NULL);
+
+	_gp11_attributes_lock (attrs);
+	ret = _gp11_call_sync (self, perform_unwrap_key, NULL, &args, cancellable, err);
+	_gp11_attributes_unlock (attrs);
+
+	if (!ret)
+		return NULL;
+
+	return gp11_object_from_handle (data->slot, args.unwrapped);
+}
+
+/**
+ * gp11_session_unwrap_key_async:
+ * @self: The session to use.
+ * @wrapper: The key to use for unwrapping.
+ * @mechanism: The mechanism to use for unwrapping.
+ * @input: The wrapped data as a byte stream.
+ * @n_input: The length of the wrapped data.
+ * @attrs: Additional attributes for the unwrapped key.
+ * @cancellable: Optional cancellation object or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ *
+ * Unwrap a key from a byte stream. This call will
+ * return immediately and complete asynchronously.
+ **/
+void
+gp11_session_unwrap_key_async (GP11Session *self, GP11Object *wrapper, GP11Mechanism *mechanism,
+                               gconstpointer input, gsize n_input, GP11Attributes *attrs,
+                               GCancellable *cancellable, GAsyncReadyCallback callback,
+                               gpointer user_data)
+{
+	UnwrapKey *args = _gp11_call_async_prep (self, self, perform_unwrap_key,
+	                                         NULL, sizeof (*args), free_unwrap_key);
+
+	g_return_if_fail (GP11_IS_SESSION (self));
+	g_return_if_fail (GP11_IS_OBJECT (wrapper));
+	g_return_if_fail (attrs);
+
+	g_object_get (wrapper, "handle", &args->wrapper, NULL);
+	g_return_if_fail (args->wrapper != 0);
+
+	args->mechanism = gp11_mechanism_ref (mechanism);
+	args->attrs = gp11_attributes_ref (attrs);
+	args->input = input;
+	args->n_input = n_input;
+	_gp11_attributes_lock (attrs);
+
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
+}
+
+/**
+ * gp11_session_wrap_key_finish:
+ * @self: The session to use.
+ * @result: The async result passed to the callback.
+ * @err: A location to return an error.
+ *
+ * Get the result of a unwrap key operation.
+ *
+ * Return value: The new unwrapped key or NULL if the operation failed.
+ **/
+GP11Object*
+gp11_session_unwrap_key_finish (GP11Session *self, GAsyncResult *result, GError **err)
+{
+	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
+	UnwrapKey *args;
+
+	g_return_val_if_fail (GP11_IS_SESSION (self), NULL);
+
+	args = _gp11_call_arguments (result, UnwrapKey);
+	_gp11_attributes_unlock (args->attrs);
+
+	if (!_gp11_call_basic_finish (result, err))
+		return NULL;
+	return gp11_object_from_handle (data->slot, args->unwrapped);
+}
+
+/* -----------------------------------------------------------------------------
+ * KEY DERIVATION
+ */
+
+typedef struct _DeriveKey {
+	GP11Arguments base;
+	GP11Mechanism *mechanism;
+	GP11Attributes *attrs;
+	CK_OBJECT_HANDLE key;
+	CK_OBJECT_HANDLE derived;
+} DeriveKey;
+
+static void
+free_derive_key (DeriveKey *args)
+{
+	gp11_mechanism_unref (args->mechanism);
+	gp11_attributes_unref (args->attrs);
+	g_free (args);
+}
+
+static CK_RV
+perform_derive_key (DeriveKey *args)
+{
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG n_attrs;
+
+	g_assert (sizeof (CK_MECHANISM) == sizeof (GP11Mechanism));
+
+	attrs = _gp11_attributes_commit_out (args->attrs, &n_attrs);
+
+	return (args->base.pkcs11->C_DeriveKey) (args->base.handle,
+	                                         (CK_MECHANISM_PTR)args->mechanism,
+	                                         args->key, attrs, n_attrs,
+	                                         &args->derived);
+}
+
+/**
+ * gp11_session_derive_key_full:
+ * @self: The session to use.
+ * @base: The key to derive from.
+ * @mech_type: The mechanism type to use for derivation.
+ * @err: A location to return an error, or NULL.
+ * @...: Additional attributes for the derived key.
+ *
+ * Derive a key from another key. This call may block for an
+ * indefinite period.
+ *
+ * The arguments must be triples of: attribute type, data type, value
+ *
+ * <para>The variable argument list should contain:
+ * 	<variablelist>
+ *		<varlistentry>
+ * 			<term>a)</term>
+ * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>b)</term>
+ * 			<listitem><para>The attribute data type (one of GP11_BOOLEAN, GP11_ULONG,
+ * 				GP11_STRING, GP11_DATE) orthe raw attribute value length.</para></listitem>
+ * 		</varlistentry>
+ * 		<varlistentry>
+ * 			<term>c)</term>
+ * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
+ * 				a pointer to a raw attribute value.</para></listitem>
+ * 		</varlistentry>
+ * 	</variablelist>
+ * The variable argument list should be terminated with GP11_INVALID.</para>
+ *
+ * Return value: The new derived key or NULL if the operation failed.
+ **/
+GP11Object*
+gp11_session_derive_key (GP11Session *self, GP11Object *key, gulong mech_type,
+                         GError **err, ...)
+{
+	GP11Mechanism mech = { mech_type, NULL, 0 };
+	GP11Attributes *attrs;
+	GP11Object *object;
+	va_list va;
+
+	va_start (va, err);
+	attrs = gp11_attributes_new_valist (g_realloc, va);
+	va_end (va);
+
+	object = gp11_session_derive_key_full (self, key, &mech, attrs, NULL, err);
+	gp11_attributes_unref (attrs);
+	return object;
+}
+
+/**
+ * gp11_session_derive_key_full:
+ * @self: The session to use.
+ * @base: The key to derive from.
+ * @mechanism: The mechanism to use for derivation.
+ * @attrs: Additional attributes for the derived key.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Derive a key from another key. This call may block for an
+ * indefinite period.
+ *
+ * Return value: The new derived key or NULL if the operation failed.
+ **/
+GP11Object*
+gp11_session_derive_key_full (GP11Session *self, GP11Object *base, GP11Mechanism *mechanism,
+                              GP11Attributes *attrs, GCancellable *cancellable, GError **err)
+{
+	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
+	DeriveKey args = { GP11_ARGUMENTS_INIT, mechanism, attrs, 0, 0 };
+	gboolean ret;
+
+	g_return_val_if_fail (GP11_IS_SESSION (self), FALSE);
+	g_return_val_if_fail (GP11_IS_OBJECT (base), FALSE);
+	g_return_val_if_fail (mechanism, FALSE);
+	g_return_val_if_fail (attrs, FALSE);
+
+	g_object_get (base, "handle", &args.key, NULL);
+	g_return_val_if_fail (args.key != 0, NULL);
+
+	_gp11_attributes_lock (attrs);
+	ret = _gp11_call_sync (self, perform_derive_key, NULL, &args, cancellable, err);
+	_gp11_attributes_unlock (attrs);
+
+	if (!ret)
+		return NULL;
+
+	return gp11_object_from_handle (data->slot, args.derived);
+}
+
+/**
+ * gp11_session_derive_key_async:
+ * @self: The session to use.
+ * @base: The key to derive from.
+ * @mechanism: The mechanism to use for derivation.
+ * @attrs: Additional attributes for the derived key.
+ * @cancellable: Optional cancellation object or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ *
+ * Derive a key from another key. This call will
+ * return immediately and complete asynchronously.
+ **/
+void
+gp11_session_derive_key_async (GP11Session *self, GP11Object *base, GP11Mechanism *mechanism,
+                               GP11Attributes *attrs, GCancellable *cancellable,
+                               GAsyncReadyCallback callback, gpointer user_data)
+{
+	DeriveKey *args = _gp11_call_async_prep (self, self, perform_derive_key,
+	                                         NULL, sizeof (*args), free_derive_key);
+
+	g_return_if_fail (GP11_IS_SESSION (self));
+	g_return_if_fail (GP11_IS_OBJECT (base));
+	g_return_if_fail (attrs);
+
+	g_object_get (base, "handle", &args->key, NULL);
+	g_return_if_fail (args->key != 0);
+
+	args->mechanism = gp11_mechanism_ref (mechanism);
+	args->attrs = gp11_attributes_ref (attrs);
+	_gp11_attributes_lock (attrs);
+
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
+}
+
+/**
+ * gp11_session_wrap_key_finish:
+ * @self: The session to use.
+ * @result: The async result passed to the callback.
+ * @err: A location to return an error.
+ *
+ * Get the result of a derive key operation.
+ *
+ * Return value: The new derived key or NULL if the operation failed.
+ **/
+GP11Object*
+gp11_session_derive_key_finish (GP11Session *self, GAsyncResult *result, GError **err)
+{
+	GP11SessionData *data = GP11_SESSION_GET_DATA (self);
+	DeriveKey *args;
+
+	g_return_val_if_fail (GP11_IS_SESSION (self), NULL);
+
+	args = _gp11_call_arguments (result, DeriveKey);
+	_gp11_attributes_unlock (args->attrs);
+
+	if (!_gp11_call_basic_finish (result, err))
+		return NULL;
+
+	return gp11_object_from_handle (data->slot, args->derived);
+}
+
 /* --------------------------------------------------------------------------------------------------
  * AUTHENTICATE 
  */
@@ -1227,7 +1961,7 @@ typedef struct _Crypt {
 	
 	/* Input */
 	CK_OBJECT_HANDLE key;
-	CK_MECHANISM mech;
+	GP11Mechanism *mech;
 	guchar *input;
 	CK_ULONG n_input;
 	
@@ -1249,7 +1983,7 @@ perform_crypt (Crypt *args)
 	g_assert (!args->n_result);
 	
 	/* Initialize the crypt operation */
-	rv = (args->init_func) (args->base.handle, &args->mech, args->key);
+	rv = (args->init_func) (args->base.handle, (CK_MECHANISM_PTR)args->mech, args->key);
 	if (rv != CKR_OK)
 		return rv;
 	
@@ -1281,13 +2015,13 @@ static void
 free_crypt (Crypt *args)
 {
 	g_free (args->input);
-	g_free (args->mech.pParameter);
+	gp11_mechanism_unref (args->mech);
 	g_free (args->result);
 	g_free (args);
 }
 
 static guchar*
-crypt_sync (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const guchar *input, 
+crypt_sync (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism, const guchar *input,
             gsize n_input, gsize *n_result, GCancellable *cancellable, GError **err,
             CK_C_EncryptInit init_func, CK_C_Encrypt complete_func)
 {
@@ -1295,18 +2029,16 @@ crypt_sync (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const 
 	GP11Slot *slot;
 
 	g_return_val_if_fail (GP11_IS_OBJECT (key), NULL);
-	g_return_val_if_fail (mech_args, NULL);
+	g_return_val_if_fail (mechanism, NULL);
 	g_return_val_if_fail (init_func, NULL);
 	g_return_val_if_fail (complete_func, NULL);
 
 	memset (&args, 0, sizeof (args));
 	g_object_get (key, "handle", &args.key, NULL);
 	g_return_val_if_fail (args.key != 0, NULL);
-	
-	args.mech.mechanism = mech_args->type;
-	args.mech.pParameter = mech_args->parameter;
-	args.mech.ulParameterLen = mech_args->n_parameter;
-	
+
+	args.mech = mechanism;
+
 	/* No need to copy in this case */
 	args.input = (guchar*)input;
 	args.n_input = n_input;
@@ -1328,7 +2060,7 @@ crypt_sync (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const 
 }
 
 static void
-crypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const guchar *input, 
+crypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism, const guchar *input,
              gsize n_input, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data,
              CK_C_EncryptInit init_func, CK_C_Encrypt complete_func)
 {
@@ -1336,18 +2068,15 @@ crypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args, const
 	GP11Slot *slot;
 
 	g_return_if_fail (GP11_IS_OBJECT (key));
-	g_return_if_fail (mech_args);
+	g_return_if_fail (mechanism);
 	g_return_if_fail (init_func);
 	g_return_if_fail (complete_func);
 	
 	g_object_get (key, "handle", &args->key, NULL);
 	g_return_if_fail (args->key != 0);
 
-	args->mech.mechanism = mech_args->type;
-	args->mech.pParameter = mech_args->parameter && mech_args->n_parameter ? 
-	                                   g_memdup (mech_args->parameter, mech_args->n_parameter) : NULL;
-	args->mech.ulParameterLen = mech_args->n_parameter;
-	
+	args->mech = gp11_mechanism_ref (mechanism);
+
 	args->input = input && n_input ? g_memdup (input, n_input) : NULL;
 	args->n_input = n_input;
 	
@@ -1403,15 +2132,15 @@ guchar*
 gp11_session_encrypt (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input, 
                       gsize n_input, gsize *n_result, GError **err)
 {
-	GP11Mechanism mech_args = { mech_type, NULL, 0 };
-	return gp11_session_encrypt_full (self, key, &mech_args, input, n_input, n_result, NULL, err);
+	GP11Mechanism mechanism = { mech_type, NULL, 0 };
+	return gp11_session_encrypt_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
 }
 
 /**
  * gp11_session_encrypt_full:
  * @self: The session.
  * @key: The key to encrypt with.
- * @mech_args: The mechanism type and parameters to use for encryption.
+ * @mechanism: The mechanism type and parameters to use for encryption.
  * @input: The data to encrypt.
  * @n_input: The length of the data to encrypt.
  * @n_result: A location to store the length of the result data.
@@ -1424,7 +2153,7 @@ gp11_session_encrypt (GP11Session *self, GP11Object *key, gulong mech_type, cons
  * Returns: The data that was encrypted, or NULL if an error occured.
  */
 guchar*
-gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
+gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
                            const guchar *input, gsize n_input, gsize *n_result,
                            GCancellable *cancellable, GError **err)
 {
@@ -1438,7 +2167,7 @@ gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	funcs = gp11_module_get_functions (module);
 	g_return_val_if_fail (module != NULL, NULL);
 
-	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err, 
+	ret = crypt_sync (self, key, mechanism, input, n_input, n_result, cancellable, err,
 	                  funcs->C_EncryptInit, funcs->C_Encrypt);
 	
 	g_object_unref (module);
@@ -1449,7 +2178,7 @@ gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
  * gp11_session_encrypt_async:
  * @self: The session.
  * @key: The key to encrypt with.
- * @mech_args: The mechanism type and parameters to use for encryption.
+ * @mechanism: The mechanism type and parameters to use for encryption.
  * @input: The data to encrypt.
  * @n_input: The length of the data to encrypt.
  * @cancellable: A GCancellable which can be used to cancel the operation.
@@ -1458,11 +2187,9 @@ gp11_session_encrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
  * 
  * Encrypt data in a mechanism specific manner. This call will 
  * return immediately and complete asynchronously.
- * 
- * Returns: The data that was encrypted.
- */
+ **/
 void
-gp11_session_encrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
+gp11_session_encrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
                             const guchar *input, gsize n_input, GCancellable *cancellable,
                             GAsyncReadyCallback callback, gpointer user_data)
 {
@@ -1475,7 +2202,7 @@ gp11_session_encrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *m
 	funcs = gp11_module_get_functions (module);
 	g_return_if_fail (module != NULL);
 
-	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,
+	crypt_async (self, key, mechanism, input, n_input, cancellable, callback, user_data,
 	             funcs->C_EncryptInit, funcs->C_Encrypt);
 	
 	g_object_unref (module);
@@ -1522,15 +2249,15 @@ guchar*
 gp11_session_decrypt (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input,
                       gsize n_input, gsize *n_result, GError **err)
 {
-	GP11Mechanism mech_args = { mech_type, NULL, 0 };
-	return gp11_session_decrypt_full (self, key, &mech_args, input, n_input, n_result, NULL, err);
+	GP11Mechanism mechanism = { mech_type, NULL, 0 };
+	return gp11_session_decrypt_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
 }
 
 /**
  * gp11_session_decrypt_full:
  * @self: The session.
  * @key: The key to decrypt with.
- * @mech_args: The mechanism type and parameters to use for decryption.
+ * @mechanism: The mechanism type and parameters to use for decryption.
  * @input: The data to decrypt.
  * @n_input: The length of the data to decrypt.
  * @n_result: A location to store the length of the result data.
@@ -1543,7 +2270,7 @@ gp11_session_decrypt (GP11Session *self, GP11Object *key, gulong mech_type, cons
  * Returns: The data that was decrypted, or NULL if an error occured.
  */
 guchar*
-gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
+gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
                            const guchar *input, gsize n_input, gsize *n_result,
                            GCancellable *cancellable, GError **err)
 {
@@ -1557,7 +2284,7 @@ gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	funcs = gp11_module_get_functions (module);
 	g_return_val_if_fail (module != NULL, NULL);
 
-	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err,
+	ret = crypt_sync (self, key, mechanism, input, n_input, n_result, cancellable, err,
 	                  funcs->C_DecryptInit, funcs->C_Decrypt);
 	g_object_unref (module);
 	return ret;
@@ -1567,7 +2294,7 @@ gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
  * gp11_session_decrypt_async:
  * @self: The session.
  * @key: The key to decrypt with.
- * @mech_args: The mechanism type and parameters to use for decryption.
+ * @mechanism: The mechanism type and parameters to use for decryption.
  * @input: The data to decrypt.
  * @n_input: The length of the data to decrypt.
  * @cancellable: A GCancellable which can be used to cancel the operation.
@@ -1576,11 +2303,9 @@ gp11_session_decrypt_full (GP11Session *self, GP11Object *key, GP11Mechanism *me
  * 
  * Decrypt data in a mechanism specific manner. This call will 
  * return immediately and complete asynchronously.
- * 
- * Returns: The data that was decrypted.
  */
 void
-gp11_session_decrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
+gp11_session_decrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
                             const guchar *input, gsize n_input, GCancellable *cancellable,
                             GAsyncReadyCallback callback, gpointer user_data)
 {
@@ -1593,7 +2318,7 @@ gp11_session_decrypt_async (GP11Session *self, GP11Object *key, GP11Mechanism *m
 	funcs = gp11_module_get_functions (module);
 	g_return_if_fail (module != NULL);
 
-	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,
+	crypt_async (self, key, mechanism, input, n_input, cancellable, callback, user_data,
 	             funcs->C_DecryptInit, funcs->C_Decrypt);
 	g_object_unref (module);
 }
@@ -1639,15 +2364,15 @@ guchar*
 gp11_session_sign (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input, 
                    gsize n_input, gsize *n_result, GError **err)
 {
-	GP11Mechanism mech_args = { mech_type, NULL, 0 };
-	return gp11_session_sign_full (self, key, &mech_args, input, n_input, n_result, NULL, err);
+	GP11Mechanism mechanism = { mech_type, NULL, 0 };
+	return gp11_session_sign_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
 }
 
 /**
  * gp11_session_sign_full:
  * @self: The session.
  * @key: The key to sign with.
- * @mech_args: The mechanism type and parameters to use for signing.
+ * @mechanism: The mechanism type and parameters to use for signing.
  * @input: The data to sign.
  * @n_input: The length of the data to sign.
  * @n_result: A location to store the length of the result data.
@@ -1660,7 +2385,7 @@ gp11_session_sign (GP11Session *self, GP11Object *key, gulong mech_type, const g
  * Returns: The data that was signed, or NULL if an error occured.
  */
 guchar*
-gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
+gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
                         const guchar *input, gsize n_input, gsize *n_result,
                         GCancellable *cancellable, GError **err)
 {
@@ -1674,7 +2399,7 @@ gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_
 	funcs = gp11_module_get_functions (module);
 	g_return_val_if_fail (module != NULL, NULL);
 
-	ret = crypt_sync (self, key, mech_args, input, n_input, n_result, cancellable, err,
+	ret = crypt_sync (self, key, mechanism, input, n_input, n_result, cancellable, err,
 	                  funcs->C_SignInit, funcs->C_Sign);
 	g_object_unref (module);
 	return ret;
@@ -1684,7 +2409,7 @@ gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_
  * gp11_session_sign_async:
  * @self: The session.
  * @key: The key to sign with.
- * @mech_args: The mechanism type and parameters to use for signing.
+ * @mechanism: The mechanism type and parameters to use for signing.
  * @input: The data to sign.
  * @n_input: The length of the data to sign.
  * @cancellable: A GCancellable which can be used to cancel the operation.
@@ -1693,11 +2418,9 @@ gp11_session_sign_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_
  * 
  * Sign data in a mechanism specific manner. This call will 
  * return immediately and complete asynchronously.
- * 
- * Returns: The data that was signed.
  */
 void
-gp11_session_sign_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
+gp11_session_sign_async (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
                          const guchar *input, gsize n_input, GCancellable *cancellable,
                          GAsyncReadyCallback callback, gpointer user_data)
 {
@@ -1710,7 +2433,7 @@ gp11_session_sign_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech
 	funcs = gp11_module_get_functions (module);
 	g_return_if_fail (module != NULL);
 
-	crypt_async (self, key, mech_args, input, n_input, cancellable, callback, user_data,
+	crypt_async (self, key, mechanism, input, n_input, cancellable, callback, user_data,
 	             funcs->C_SignInit, funcs->C_Sign);
 	g_object_unref (module);
 }
@@ -1745,7 +2468,7 @@ typedef struct _Verify {
 
 	/* Input */
 	CK_OBJECT_HANDLE key;
-	CK_MECHANISM mech;
+	GP11Mechanism *mech;
 	guchar *input;
 	CK_ULONG n_input;
 	guchar *signature;
@@ -1759,7 +2482,7 @@ perform_verify (Verify *args)
 	CK_RV rv;
 	
 	/* Initialize the crypt operation */
-	rv = (args->base.pkcs11->C_VerifyInit) (args->base.handle, &args->mech, args->key);
+	rv = (args->base.pkcs11->C_VerifyInit) (args->base.handle, (CK_MECHANISM_PTR)args->mech, args->key);
 	if (rv != CKR_OK)
 		return rv;
 	
@@ -1787,7 +2510,7 @@ free_verify (Verify *args)
 {
 	g_free (args->input);
 	g_free (args->signature);
-	g_free (args->mech.pParameter);
+	gp11_mechanism_unref (args->mech);
 	g_free (args);
 }
 
@@ -1811,8 +2534,8 @@ gboolean
 gp11_session_verify (GP11Session *self, GP11Object *key, gulong mech_type, const guchar *input,
                      gsize n_input, const guchar *signature, gsize n_signature, GError **err)
 {
-	GP11Mechanism mech_args = { mech_type, NULL, 0 };
-	return gp11_session_verify_full (self, key, &mech_args, input, n_input, 
+	GP11Mechanism mechanism = { mech_type, NULL, 0 };
+	return gp11_session_verify_full (self, key, &mechanism, input, n_input,
 	                                 signature, n_signature, NULL, err);	
 }
 
@@ -1820,7 +2543,7 @@ gp11_session_verify (GP11Session *self, GP11Object *key, gulong mech_type, const
  * gp11_session_verify_full:
  * @self: The session.
  * @key: The key to verify with.
- * @mech_args: The mechanism type and parameters to use for signing.
+ * @mechanism: The mechanism type and parameters to use for signing.
  * @input: The data to verify.
  * @n_input: The length of the data to verify.
  * @signature: The signature.
@@ -1834,7 +2557,7 @@ gp11_session_verify (GP11Session *self, GP11Object *key, gulong mech_type, const
  * Returns: TRUE if the data verified correctly, otherwise a failure or error occurred.
  */
 gboolean
-gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
+gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
                           const guchar *input, gsize n_input, const guchar *signature,
                           gsize n_signature, GCancellable *cancellable, GError **err)
 {
@@ -1842,16 +2565,14 @@ gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mec
 	GP11Slot *slot;
 	
 	g_return_val_if_fail (GP11_IS_OBJECT (key), FALSE);
-	g_return_val_if_fail (mech_args, FALSE);
+	g_return_val_if_fail (mechanism, FALSE);
 
 	memset (&args, 0, sizeof (args));
 	g_object_get (key, "handle", &args.key, NULL);
 	g_return_val_if_fail (args.key != 0, FALSE);
-	
-	args.mech.mechanism = mech_args->type;
-	args.mech.pParameter = mech_args->parameter;
-	args.mech.ulParameterLen = mech_args->n_parameter;
-	
+
+	args.mech = mechanism;
+
 	/* No need to copy in this case */
 	args.input = (guchar*)input;
 	args.n_input = n_input;
@@ -1869,7 +2590,7 @@ gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mec
  * gp11_session_verify_async:
  * @self: The session.
  * @key: The key to verify with.
- * @mech_args: The mechanism type and parameters to use for signing.
+ * @mechanism: The mechanism type and parameters to use for signing.
  * @input: The data to verify.
  * @n_input: The length of the data to verify.
  * @signature: The signature.
@@ -1882,7 +2603,7 @@ gp11_session_verify_full (GP11Session *self, GP11Object *key, GP11Mechanism *mec
  * immediately and completes asynchronously.
  */
 void
-gp11_session_verify_async (GP11Session *self, GP11Object *key, GP11Mechanism *mech_args,
+gp11_session_verify_async (GP11Session *self, GP11Object *key, GP11Mechanism *mechanism,
                            const guchar *input, gsize n_input, const guchar *signature,
                            gsize n_signature, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
@@ -1891,16 +2612,13 @@ gp11_session_verify_async (GP11Session *self, GP11Object *key, GP11Mechanism *me
 	GP11Slot *slot;
 	
 	g_return_if_fail (GP11_IS_OBJECT (key));
-	g_return_if_fail (mech_args);
+	g_return_if_fail (mechanism);
 	
 	g_object_get (key, "handle", &args->key, NULL);
 	g_return_if_fail (args->key != 0);
 
-	args->mech.mechanism = mech_args->type;
-	args->mech.pParameter = mech_args->parameter && mech_args->n_parameter ? 
-	                                   g_memdup (mech_args->parameter, mech_args->n_parameter) : NULL;
-	args->mech.ulParameterLen = mech_args->n_parameter;
-	
+	args->mech = gp11_mechanism_ref (mechanism);
+
 	args->input = input && n_input ? g_memdup (input, n_input) : NULL;
 	args->n_input = n_input;
 	args->signature = signature && n_signature ? g_memdup (signature, n_signature) : NULL;

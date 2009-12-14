@@ -955,16 +955,19 @@ attributes_push (GP11Attributes *attrs)
  * Add the specified attribute to the array. 
  * 
  * The value stored in the attribute will be copied.
+ *
+ * Return value: The attribute that was added.
  **/
-void
+GP11Attribute*
 gp11_attributes_add (GP11Attributes *attrs, GP11Attribute *attr)
 {
 	GP11Attribute *added;
-	g_return_if_fail (attrs && attrs->array);
-	g_return_if_fail (!attrs->locked);
-	g_return_if_fail (attr);
+	g_return_val_if_fail (attrs && attrs->array, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
+	g_return_val_if_fail (attr, NULL);
 	added = attributes_push (attrs);
 	attribute_init_copy (added, attr, attrs->allocator);
+	return added;
 }
 
 /**
@@ -977,16 +980,19 @@ gp11_attributes_add (GP11Attributes *attrs, GP11Attribute *attr)
  * Add an attribute with the specified type and value to the array. 
  * 
  * The value stored in the attribute will be copied.
+ *
+ * Return value: The attribute that was added.
  **/
-void 
+GP11Attribute*
 gp11_attributes_add_data (GP11Attributes *attrs, gulong attr_type,
                           gconstpointer value, gsize length)
 {
 	GP11Attribute *added;
-	g_return_if_fail (attrs);
-	g_return_if_fail (!attrs->locked);
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
 	added = attributes_push (attrs);
 	attribute_init (added, attr_type, value, length, attrs->allocator);
+	return added;
 }
 
 /**
@@ -995,15 +1001,18 @@ gp11_attributes_add_data (GP11Attributes *attrs, gulong attr_type,
  * @attr_type: The type of attribute to add.
  * 
  * Add an attribute with the specified type and an 'invalid' value to the array. 
+ *
+ * Return value: The attribute that was added.
  **/
-void
+GP11Attribute*
 gp11_attributes_add_invalid (GP11Attributes *attrs, gulong attr_type)
 {
 	GP11Attribute *added;
-	g_return_if_fail (attrs);
-	g_return_if_fail (!attrs->locked);
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
 	added = attributes_push (attrs);
 	gp11_attribute_init_invalid (added, attr_type);	
+	return added;
 }
 
 /**
@@ -1012,15 +1021,18 @@ gp11_attributes_add_invalid (GP11Attributes *attrs, gulong attr_type)
  * @attr_type: The type of attribute to add.
  * 
  * Add an attribute with the specified type, with empty data.
+ *
+ * Return value: The attribute that was added.
  **/
-void
+GP11Attribute*
 gp11_attributes_add_empty (GP11Attributes *attrs, gulong attr_type)
 {
 	GP11Attribute *added;
-	g_return_if_fail (attrs);
-	g_return_if_fail (!attrs->locked);
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
 	added = attributes_push (attrs);
 	gp11_attribute_init_empty (added, attr_type);		
+	return added;
 }
 
 /**
@@ -1032,15 +1044,18 @@ gp11_attributes_add_empty (GP11Attributes *attrs, gulong attr_type)
  * Add an attribute with the specified type and value to the array. 
  * 
  * The value will be stored as a CK_BBOOL PKCS#11 style attribute.
+ *
+ * Return value: The attribute that was added.
  **/
-void
+GP11Attribute*
 gp11_attributes_add_boolean (GP11Attributes *attrs, gulong attr_type, gboolean value)
 {
 	GP11Attribute *added;
-	g_return_if_fail (attrs);
-	g_return_if_fail (!attrs->locked);
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
 	added = attributes_push (attrs);
 	attribute_init_boolean (added, attr_type, value, attrs->allocator);
+	return added;
 }
 
 /**
@@ -1052,15 +1067,18 @@ gp11_attributes_add_boolean (GP11Attributes *attrs, gulong attr_type, gboolean v
  * Add an attribute with the specified type and value to the array. 
  * 
  * The value will be copied into the attribute.
+ *
+ * Return value: The attribute that was added.
  **/
-void
+GP11Attribute*
 gp11_attributes_add_string (GP11Attributes *attrs, gulong attr_type, const gchar *value)
 {
 	GP11Attribute *added;
-	g_return_if_fail (attrs);
-	g_return_if_fail (!attrs->locked);
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
 	added = attributes_push (attrs);
 	attribute_init_string (added, attr_type, value, attrs->allocator);
+	return added;
 }
 
 /**
@@ -1072,15 +1090,18 @@ gp11_attributes_add_string (GP11Attributes *attrs, gulong attr_type, const gchar
  * Add an attribute with the specified type and value to the array. 
  * 
  * The value will be stored as a CK_DATE PKCS#11 style attribute.
+ *
+ * Return value: The attribute that was added.
  **/
-void
+GP11Attribute*
 gp11_attributes_add_date (GP11Attributes *attrs, gulong attr_type, const GDate *value)
 {
 	GP11Attribute *added;
-	g_return_if_fail (attrs);
-	g_return_if_fail (!attrs->locked);
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
 	added = attributes_push (attrs);
 	attribute_init_date (added, attr_type, value, attrs->allocator);
+	return added;
 }
 
 /**
@@ -1092,15 +1113,18 @@ gp11_attributes_add_date (GP11Attributes *attrs, gulong attr_type, const GDate *
  * Add an attribute with the specified type and value to the array. 
  * 
  * The value will be stored as a CK_ULONG PKCS#11 style attribute.
+ *
+ * Return value: The attribute that was added.
  **/
-void
+GP11Attribute*
 gp11_attributes_add_ulong (GP11Attributes *attrs, gulong attr_type, gulong value)
 {
 	GP11Attribute *added;
-	g_return_if_fail (attrs);
-	g_return_if_fail (!attrs->locked);
+	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (!attrs->locked, NULL);
 	added = attributes_push (attrs);
 	attribute_init_ulong (added, attr_type, value, attrs->allocator);
+	return added;
 }
 
 /**

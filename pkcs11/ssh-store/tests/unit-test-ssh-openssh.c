@@ -27,7 +27,7 @@
 
 #include "gck-ssh-openssh.h"
 
-#include "gck/gck-crypto.h"
+#include "gck/gck-sexp.h"
 
 #include <glib.h>
 
@@ -63,15 +63,15 @@ DEFINE_TEST(parse_public)
 	
 	for (i = 0; i < G_N_ELEMENTS (PUBLIC_FILES); ++i) {
 		
-		data = test_read_testdata (PUBLIC_FILES[i], &n_data);
+		data = test_data_read (PUBLIC_FILES[i], &n_data);
 		
 		res = gck_ssh_openssh_parse_public_key (data, n_data, &sexp, &comment);
 		if (res != GCK_DATA_SUCCESS) {
 			g_warning ("couldn't parse public key: %s", PUBLIC_FILES[i]);
 			g_assert_cmpint (res, ==, GCK_DATA_SUCCESS);
 		}
-		
-		if (!gck_crypto_sexp_parse_key (sexp, &algorithm, &is_private, NULL))
+
+		if (!gck_sexp_parse_key (sexp, &algorithm, &is_private, NULL))
 			g_assert_not_reached ();
 		
 		g_assert_cmpstr (comment, ==, COMMENT);
@@ -97,15 +97,15 @@ DEFINE_TEST(parse_private)
 	
 	for (i = 0; i < G_N_ELEMENTS (PRIVATE_FILES); ++i) {
 		
-		data = test_read_testdata (PRIVATE_FILES[i], &n_data);
+		data = test_data_read (PRIVATE_FILES[i], &n_data);
 		
 		res = gck_ssh_openssh_parse_private_key (data, n_data, "password", 8, &sexp);
 		if (res != GCK_DATA_SUCCESS) {
 			g_warning ("couldn't parse private key: %s", PRIVATE_FILES[i]);
 			g_assert_cmpint (res, ==, GCK_DATA_SUCCESS);
 		}
-		
-		if (!gck_crypto_sexp_parse_key (sexp, &algorithm, &is_private, NULL))
+
+		if (!gck_sexp_parse_key (sexp, &algorithm, &is_private, NULL))
 			g_assert_not_reached ();
 		
 		g_assert_cmpint (algorithm, !=, 0);

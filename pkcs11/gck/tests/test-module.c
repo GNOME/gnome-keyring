@@ -23,10 +23,13 @@
 
 #include "config.h"
 #include "test-module.h"
+#include "run-auto-test.h"
 
 /* Include all the module entry points */
 #include "gck/gck-module-ep.h"
 GCK_DEFINE_MODULE (test_module, GCK_TYPE_MODULE);
+
+#include "gck/gck-certificate.h"
 
 GckModule*
 test_module_initialize_and_enter (void)
@@ -83,4 +86,29 @@ test_module_open_session (gboolean writable)
 	g_assert (session);
 
 	return session;
+}
+
+GckObject*
+test_module_object_new (GckSession *session)
+{
+	CK_BBOOL token = CK_FALSE;
+	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
+	CK_CERTIFICATE_TYPE type = CKC_X_509;
+	GckObject *object;
+
+	gsize n_data;
+	guchar *data = test_data_read ("test-certificate-1.der", &n_data);
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_TOKEN, &token, sizeof (token) },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
+		{ CKA_VALUE, data, n_data },
+	};
+
+	object = gck_session_create_object_for_factory (session, GCK_FACTORY_CERTIFICATE, NULL,
+	                                              attrs, G_N_ELEMENTS (attrs));
+	if (object) /* Owned by storage */
+		g_object_unref (object);
+	return object;
 }

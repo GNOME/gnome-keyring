@@ -48,10 +48,10 @@ gck_user_store_standalone_la_LIBADD = \
 
 # -------------------------------------------------------------------------------
 
-# if WITH_TESTS
-# TESTS_DIR = tests
-# else
+if WITH_TESTS
+TESTS_DIR = tests
+else
 TESTS_DIR = 
-# endif
+endif
 
 SUBDIRS = . $(TESTS_DIR)

@@ -362,9 +362,10 @@ gck_certificate_trust_class_init (GckCertificateTrustClass *klass)
  */
 
 GckCertificateTrust*
-gck_certificate_trust_new (GckModule *module, GckCertificate *cert)
+gck_certificate_trust_new (GckModule *module, GckManager *manager, GckCertificate *cert)
 {
-	return g_object_new (GCK_TYPE_CERTIFICATE_TRUST, "module", module, "certificate", cert, NULL);
+	return g_object_new (GCK_TYPE_CERTIFICATE_TRUST, "module", module,
+	                     "manager", manager, "certificate", cert, NULL);
 }
 
 GckCertificate*

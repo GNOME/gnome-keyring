@@ -28,7 +28,7 @@
 #include "gck-data-asn1.h"
 #include "gck-data-der.h"
 #include "gck-factory.h"
-#include "gck-key.h"
+#include "gck-sexp-key.h"
 #include "gck-manager.h"
 #include "gck-session.h"
 #include "gck-sexp.h"
@@ -243,37 +243,40 @@ find_certificate_extension (GckCertificate *self, GQuark oid)
 	return 0;
 }
 
-static void
+static GckObject*
 factory_create_certificate (GckSession *session, GckTransaction *transaction, 
-                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	CK_ATTRIBUTE_PTR attr;
 	GckCertificate *cert;
-	
-	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
-	
+
+	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
+
 	/* Dig out the value */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_VALUE);
 	if (attr == NULL) {
 		gck_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
-		return;
+		return NULL;
 	}
 	
-	cert = g_object_new (GCK_TYPE_CERTIFICATE, "module", gck_session_get_module (session), NULL);
+	cert = g_object_new (GCK_TYPE_CERTIFICATE,
+	                     "module", gck_session_get_module (session),
+	                     "manager", gck_manager_for_template (attrs, n_attrs, session),
+	                     NULL);
 	
 	/* Load the certificate from the data specified */
 	if (!gck_serializable_load (GCK_SERIALIZABLE (cert), NULL, attr->pValue, attr->ulValueLen)) {
 		gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
 		g_object_unref (cert);
-		return;
+		return NULL;
 	}
 		
 	/* Note that we ignore the subject */
  	gck_attributes_consume (attrs, n_attrs, CKA_VALUE, CKA_SUBJECT, G_MAXULONG);
 
- 	*object = GCK_OBJECT (cert);
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (cert), attrs, n_attrs);
+	return GCK_OBJECT (cert);
 }
 
 /* -----------------------------------------------------------------------------
@@ -518,7 +521,7 @@ gck_certificate_class_init (GckCertificateClass *klass)
 }
 
 static gboolean 
-gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
+gck_certificate_real_load (GckSerializable *base, GckSecret *login, const guchar *data, gsize n_data)
 {
 	GckCertificate *self = GCK_CERTIFICATE (base);
 	ASN1_TYPE asn1 = ASN1_TYPE_EMPTY;
@@ -556,8 +559,10 @@ gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar 
 	case GCK_DATA_SUCCESS:
 		wrapper = gck_sexp_new (sexp);
 		if (!self->pv->key)
-			self->pv->key = gck_certificate_key_new (gck_object_get_module (GCK_OBJECT (self)), self);
-		gck_key_set_base_sexp (GCK_KEY (self->pv->key), wrapper);
+			self->pv->key = gck_certificate_key_new (gck_object_get_module (GCK_OBJECT (self)),
+			                                         gck_object_get_manager (GCK_OBJECT (self)),
+			                                         self);
+		gck_sexp_key_set_base (GCK_SEXP_KEY (self->pv->key), wrapper);
 		gck_sexp_unref (wrapper);
 		break;
 
@@ -592,7 +597,7 @@ gck_certificate_real_load (GckSerializable *base, GckLogin *login, const guchar 
 }
 
 static gboolean 
-gck_certificate_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+gck_certificate_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
 	GckCertificate *self = GCK_CERTIFICATE (base);
 	
@@ -767,7 +772,7 @@ gck_certificate_hash (GckCertificate *self, int hash_algo, gsize *n_hash)
 	return hash;
 }
 
-GckFactoryInfo*
+GckFactory*
 gck_certificate_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
@@ -778,7 +783,7 @@ gck_certificate_get_factory (void)
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
 	};
 
-	static GckFactoryInfo factory = {
+	static GckFactory factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
 		factory_create_certificate

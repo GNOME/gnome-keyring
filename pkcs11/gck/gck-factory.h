@@ -28,13 +28,13 @@
 
 #include "gck-types.h"
 
-typedef void (*GckFactory) (GckSession *session, GckTransaction *transaction, 
-                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object);
+typedef GckObject* (*GckFactoryFunc) (GckSession *session, GckTransaction *transaction,
+                                      CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs);
 
-struct _GckFactoryInfo {
+struct _GckFactory {
 	CK_ATTRIBUTE_PTR attrs;
 	CK_ULONG n_attrs;
-	GckFactory factory;
+	GckFactoryFunc func;
 };
 
 #endif /* __GCK_FACTORY_H__ */

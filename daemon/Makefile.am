@@ -1,8 +1,10 @@
 SUBDIRS = \
 	util \
 	ui \
+	prompt \
 	keyrings \
 	pkcs11 \
+	dbus \
 	data
 
 bin_PROGRAMS= \
@@ -24,19 +26,21 @@ INCLUDES=	\
 
 gnome_keyring_daemon_SOURCES = \
 	gkr-daemon.c gkr-daemon.h \
-	gkr-daemon-dbus.c \
 	gkr-daemon-io.c \
 	gkr-daemon-ops.c
 
 gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/pkcs11/libgkr-pkcs11.la \
+	$(top_builddir)/daemon/dbus/libgkr-dbus.la \
 	$(top_builddir)/daemon/keyrings/libgkr-keyrings.la \
 	$(top_builddir)/daemon/ui/libgkr-ui.la \
+	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
 	$(top_builddir)/daemon/util/libgkr-daemon-util.la \
 	$(top_builddir)/library/libgnome-keyring-common.la \
 	$(top_builddir)/pkcs11/plex-layer/libgck-plex-layer.la \
 	$(top_builddir)/pkcs11/roots-store/libgck-roots-store.la \
 	$(top_builddir)/pkcs11/rpc-layer/libgck-rpc-layer.la \
+	$(top_builddir)/pkcs11/secret-store/libgck-secret-store.la \
 	$(top_builddir)/pkcs11/ssh-agent/libgck-ssh-agent.la \
 	$(top_builddir)/pkcs11/ssh-store/libgck-ssh-store.la \
 	$(top_builddir)/pkcs11/user-store/libgck-user-store.la \

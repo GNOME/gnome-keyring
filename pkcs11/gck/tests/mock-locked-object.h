@@ -47,6 +47,6 @@ struct _MockLockedObjectClass {
 
 GType                      mock_locked_object_get_type               (void);
 
-GckObject*                 mock_locked_object_new                    (GckModule *module);
+GckObject*                 mock_locked_object_new                    (GckModule *module, GckManager *manager);
 
 #endif /* __MOCK_LOCKED_OBJECT_H__ */

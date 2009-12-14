@@ -503,6 +503,9 @@ gkr_daemon_async_begin_concurrent (void)
 {
 	g_assert (async_mutex);
 	
+	if (g_static_private_get (&thread_private) == NULL)
+		return;
+
 	/* Let another worker or the main loop run */
 	DO_UNLOCK (async_mutex);
 }
@@ -512,6 +515,9 @@ gkr_daemon_async_end_concurrent (void)
 {
 	g_assert (async_mutex);
 	
+	if (g_static_private_get (&thread_private) == NULL)
+		return;
+
 	/* Make sure only one thread is running */
 	DO_LOCK (async_mutex);
 }

@@ -47,7 +47,9 @@ struct _GckObjectClass {
 	GObjectClass parent_class;
 	
 	/* signals ------------------------------------------------------------------ */
-	
+
+	void (*expose_object) (GckObject *object, gboolean exposed);
+
 	void (*notify_attribute) (GckObject *object, CK_ATTRIBUTE_TYPE attr_type);
 	
 	/* virtual methods  --------------------------------------------------------- */
@@ -61,7 +63,7 @@ struct _GckObjectClass {
 	void (*create_attributes) (GckObject *object, GckSession *session,
 	                           GckTransaction *transaction, CK_ATTRIBUTE *attrs, CK_ULONG n_attrs);
 
-	CK_RV (*unlock) (GckObject *self, GckAuthenticator *auth);
+	CK_RV (*unlock) (GckObject *self, GckCredential *cred);
 };
 
 GType                  gck_object_get_type               (void);
@@ -77,13 +79,24 @@ GckManager*            gck_object_get_manager            (GckObject *self);
 
 const gchar*           gck_object_get_unique             (GckObject *self);
 
-gboolean               gck_object_get_transient          (GckObject *self);
+gboolean               gck_object_is_token               (GckObject *self);
 
-CK_RV                  gck_object_unlock                 (GckObject *self, 
-                                                          GckAuthenticator *auth);
+gboolean               gck_object_is_transient           (GckObject *self);
+
+CK_RV                  gck_object_unlock                 (GckObject *self,
+                                                          GckCredential *cred);
 
 void                   gck_object_destroy                (GckObject *self,
                                                           GckTransaction *transaction);
+
+gboolean               gck_object_is_exposed             (GckObject *self);
+
+void                   gck_object_expose                 (GckObject *self,
+                                                          gboolean expose);
+
+void                   gck_object_expose_full            (GckObject *self,
+                                                          GckTransaction *transaction,
+                                                          gboolean expose);
 
 gboolean               gck_object_match                  (GckObject *self,
                                                           GckSession *session,
@@ -126,5 +139,15 @@ void*                  gck_object_get_attribute_data     (GckObject *self,
                                                           GckSession *session,
                                                           CK_ATTRIBUTE_TYPE type,
                                                           gsize *n_data);
+
+gboolean               gck_object_has_attribute_ulong    (GckObject *self,
+                                                          GckSession *session,
+                                                          CK_ATTRIBUTE_TYPE type,
+                                                          gulong value);
+
+gboolean               gck_object_has_attribute_boolean  (GckObject *self,
+                                                          GckSession *session,
+                                                          CK_ATTRIBUTE_TYPE type,
+                                                          gboolean value);
 
 #endif /* __GCK_OBJECT_H__ */

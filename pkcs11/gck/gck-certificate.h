@@ -50,7 +50,7 @@ struct _GckCertificateClass {
 
 GType                      gck_certificate_get_type               (void);
 
-GckFactoryInfo*            gck_certificate_get_factory            (void);
+GckFactory*                gck_certificate_get_factory            (void);
 
 gboolean                   gck_certificate_calc_category          (GckCertificate *self, 
                                                                    CK_ULONG* category);

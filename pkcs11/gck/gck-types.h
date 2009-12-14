@@ -22,22 +22,28 @@
 #ifndef __GCK_TYPES_H__
 #define __GCK_TYPES_H__
 
-typedef struct _GckAuthenticator GckAuthenticator;
+typedef struct _GckAesKey GckAesKey;
 typedef struct _GckCertificate GckCertificate;
 typedef struct _GckCertificateKey GckCertificateKey;
 typedef struct _GckCertificateTrust GckCertificateTrust;
-typedef struct _GckKey GckKey;
-typedef struct _GckFactoryInfo GckFactoryInfo;
-typedef struct _GckLogin GckLogin;
+typedef struct _GckCredential GckCredential;
+typedef struct _GckDhKey GckDhKey;
+typedef struct _GckDhPrivateKey GckDhPrivateKey;
+typedef struct _GckDhPublicKey GckDhPublicKey;
+typedef struct _GckFactory GckFactory;
 typedef struct _GckManager GckManager;
 typedef struct _GckModule GckModule;
+typedef struct _GckNullKey GckNullKey;
 typedef struct _GckObject GckObject;
-typedef struct _GckPrivateKey GckPrivateKey;
-typedef struct _GckPublicKey GckPublicKey;
+typedef struct _GckPrivateXsaKey GckPrivateXsaKey;
+typedef struct _GckPublicXsaKey GckPublicXsaKey;
+typedef struct _GckSecret GckSecret;
+typedef struct _GckSecretKey GckSecretKey;
 typedef struct _GckSession GckSession;
 typedef struct _GckSessionPrivateKey GckSessionPrivateKey;
 typedef struct _GckSessionPublicKey GckSessionPublicKey;
 typedef struct _GckSexp GckSexp;
+typedef struct _GckSexpKey GckSexpKey;
 typedef struct _GckStore GckStore;
 typedef struct _GckTimer GckTimer;
 typedef struct _GckTransaction GckTransaction;

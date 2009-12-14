@@ -7,9 +7,12 @@ UNIT_AUTO = \
 	unit-test-cleanup.c \
 	unit-test-hex.c \
 	unit-test-oid.c \
+	test-padding.c \
 	unit-test-secmem.c \
 	unit-test-symkey.c \
 	unit-test-openssl.c \
+	unit-test-dh.c \
+	unit-test-spawn.c \
 	asn1-def-test.h
 
 UNIT_PROMPT = 

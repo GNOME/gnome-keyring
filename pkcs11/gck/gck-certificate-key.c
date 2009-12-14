@@ -39,7 +39,7 @@ struct _GckCertificateKeyPrivate {
 	GckCertificate *certificate;
 };
 
-G_DEFINE_TYPE (GckCertificateKey, gck_certificate_key, GCK_TYPE_PUBLIC_KEY);
+G_DEFINE_TYPE (GckCertificateKey, gck_certificate_key, GCK_TYPE_PUBLIC_XSA_KEY);
 
 /* -----------------------------------------------------------------------------
  * OBJECT 
@@ -137,9 +137,10 @@ gck_certificate_key_class_init (GckCertificateKeyClass *klass)
  */
 
 GckCertificateKey*
-gck_certificate_key_new (GckModule *module, GckCertificate *cert)
+gck_certificate_key_new (GckModule *module, GckManager *manager, GckCertificate *cert)
 {
-	return g_object_new (GCK_TYPE_CERTIFICATE_KEY, "module", module, "certificate", cert, NULL);
+	return g_object_new (GCK_TYPE_CERTIFICATE_KEY, "module", module,
+	                     "manager", manager, "certificate", cert, NULL);
 }
 
 GckCertificate*

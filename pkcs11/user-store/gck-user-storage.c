@@ -28,9 +28,9 @@
 #include "gck/gck-certificate.h"
 #include "gck/gck-data-asn1.h"
 #include "gck/gck-data-file.h"
-#include "gck/gck-login.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-module.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-serializable.h"
 #include "gck/gck-util.h"
 
@@ -67,7 +67,7 @@ struct _GckUserStorage {
 	gchar *filename;
 	GckDataFile *file;
 	time_t last_mtime;
-	GckLogin *login;
+	GckSecret *login;
 	
 	/* Mapping of objects loaded */
 	GHashTable *object_to_identifier;
@@ -444,7 +444,7 @@ take_object_ownership (GckUserStorage *self, const gchar *identifier, GckObject 
 	g_hash_table_replace (self->object_to_identifier, object, str);;
 	
 	g_object_set (object, "store", self, NULL);
-	gck_manager_register_object (self->manager, object);
+	gck_object_expose (object, TRUE);
 }
 
 static gboolean
@@ -542,7 +542,8 @@ data_file_entry_added (GckDataFile *store, const gchar *identifier, GckUserStora
 	}
 	
 	/* Create a new object for this identifier */
-	object = g_object_new (type, "unique", identifier, "module", self->module, NULL);
+	object = g_object_new (type, "unique", identifier, "module", self->module,
+	                       "manager", gck_module_get_manager (self->module), NULL);
 	g_return_if_fail (GCK_IS_SERIALIZABLE (object));
 	g_return_if_fail (GCK_SERIALIZABLE_GET_INTERFACE (object)->extension);
 
@@ -589,7 +590,7 @@ data_file_entry_removed (GckDataFile *store, const gchar *identifier, GckUserSto
 
 static void
 relock_object (GckUserStorage *self, GckTransaction *transaction, const gchar *path, 
-               const gchar *identifier, GckLogin *old_login, GckLogin *new_login)
+               const gchar *identifier, GckSecret *old_login, GckSecret *new_login)
 {
 	GError *error = NULL;
 	GckObject *object;
@@ -674,8 +675,8 @@ relock_object (GckUserStorage *self, GckTransaction *transaction, const gchar *p
 typedef struct _RelockArgs {
 	GckUserStorage *self;
 	GckTransaction *transaction;
-	GckLogin *old_login;
-	GckLogin *new_login;
+	GckSecret *old_login;
+	GckSecret *new_login;
 } RelockArgs;
 
 static void
@@ -702,7 +703,7 @@ relock_each_object (GckDataFile *file, const gchar *identifier, gpointer data)
 }
 
 static CK_RV
-refresh_with_login (GckUserStorage *self, GckLogin *login)
+refresh_with_login (GckUserStorage *self, GckSecret *login)
 {
 	GckDataResult res;
 	struct stat sb;
@@ -1004,7 +1005,7 @@ gck_user_storage_class_init (GckUserStorageClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_LOGIN,
 	           g_param_spec_object ("login", "Login", "Login used to unlock", 
-	                                GCK_TYPE_LOGIN, G_PARAM_READABLE));
+	                                GCK_TYPE_SECRET, G_PARAM_READABLE));
 }
 
 /* -----------------------------------------------------------------------------
@@ -1180,7 +1181,7 @@ gck_user_storage_destroy (GckUserStorage *self, GckTransaction *transaction, Gck
 
 void
 gck_user_storage_relock (GckUserStorage *self, GckTransaction *transaction, 
-                         GckLogin *old_login, GckLogin *new_login)
+                         GckSecret *old_login, GckSecret *new_login)
 {
 	GckDataFile *file;
 	GckDataResult res;
@@ -1245,7 +1246,7 @@ gck_user_storage_relock (GckUserStorage *self, GckTransaction *transaction,
 }
 
 CK_RV
-gck_user_storage_unlock (GckUserStorage *self, GckLogin *login)
+gck_user_storage_unlock (GckUserStorage *self, GckSecret *login)
 {
 	CK_RV rv;
 	
@@ -1279,7 +1280,7 @@ gck_user_storage_unlock (GckUserStorage *self, GckLogin *login)
 CK_RV
 gck_user_storage_lock (GckUserStorage *self)
 {
-	GckLogin *prev;
+	GckSecret *prev;
 	CK_RV rv;
 	
 	g_return_val_if_fail (GCK_IS_USER_STORAGE (self), CKR_GENERAL_ERROR);
@@ -1322,7 +1323,7 @@ gck_user_storage_get_directory (GckUserStorage *self)
 	return self->directory;
 }
 
-GckLogin*
+GckSecret*
 gck_user_storage_get_login (GckUserStorage *self)
 {
 	g_return_val_if_fail (GCK_IS_USER_STORAGE (self), NULL);

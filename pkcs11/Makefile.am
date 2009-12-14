@@ -15,6 +15,7 @@ SUBDIRS = . \
 	roots-store \
 	rpc-layer \
 	plex-layer \
+	secret-store \
 	ssh-agent \
 	ssh-store \
 	user-store

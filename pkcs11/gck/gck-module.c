@@ -25,15 +25,21 @@
 #include "pkcs11/pkcs11g.h"
 #include "pkcs11/pkcs11i.h"
 
+#include "gck-aes-key.h"
+#include "gck-aes-mechanism.h"
 #include "gck-attributes.h"
-#include "gck-authenticator.h"
 #include "gck-certificate.h"
+#include "gck-credential.h"
 #include "gck-factory.h"
 #include "gck-manager.h"
 #include "gck-memory-store.h"
 #include "gck-module.h"
-#include "gck-private-key.h"
-#include "gck-public-key.h"
+#include "gck-null-key.h"
+#include "gck-null-mechanism.h"
+#include "gck-dh-private-key.h"
+#include "gck-private-xsa-key.h"
+#include "gck-dh-public-key.h"
+#include "gck-public-xsa-key.h"
 #include "gck-session.h"
 #include "gck-store.h"
 #include "gck-timer.h"
@@ -145,7 +151,31 @@ static const MechanismAndInfo mechanism_list[] = {
 	 * CKM_DSA
 	 * For DSA, min and max are the minimum and maximum modulus in bits
 	 */
-	{ CKM_DSA, { 512, 1024, CKF_SIGN | CKF_VERIFY } }
+	{ CKM_DSA, { 512, 1024, CKF_SIGN | CKF_VERIFY } },
+
+	/*
+	 * CKM_DH_PKCS_KEY_PAIR_GEN
+	 * For DH derivation the min and max are sizes of prime in bits.
+	 */
+	{ CKM_DH_PKCS_KEY_PAIR_GEN, { 768, 8192, CKF_GENERATE_KEY_PAIR } },
+
+	/*
+	 * CKM_DH_PKCS_DERIVE
+	 * For DH derivation the min and max are sizes of prime in bits.
+	 */
+	{ CKM_DH_PKCS_DERIVE, { 768, 8192, CKF_DERIVE } },
+
+	/*
+	 * CKM_AES_CBC_PAD
+	 * For AES the min and max are sizes of key in bytes.
+	 */
+	{ CKM_AES_CBC_PAD, { GCK_AES_MECHANISM_MIN_LENGTH, GCK_AES_MECHANISM_MAX_LENGTH, CKF_WRAP | CKF_UNWRAP } },
+
+	/*
+	 * CKM_G_NULL
+	 * For NULL min and max are zero
+	 */
+	{ CKM_G_NULL, { GCK_NULL_MECHANISM_MIN_LENGTH, GCK_NULL_MECHANISM_MAX_LENGTH, CKF_WRAP | CKF_UNWRAP } },
 };
 
 /* Hidden function that you should not use */
@@ -162,8 +192,8 @@ static void  add_transient_object    (GckModule *self, GckTransaction *transacti
 static gint
 sort_factory_by_n_attrs (gconstpointer a, gconstpointer b)
 {
-	const GckFactoryInfo *fa = a;
-	const GckFactoryInfo *fb = b;
+	const GckFactory *fa = a;
+	const GckFactory *fb = b;
 	
 	g_assert (a);
 	g_assert (b);
@@ -297,8 +327,9 @@ parse_argument (GckModule *self, char *arg)
 		*(value++) = 0;
 
 	g_strstrip (arg);
-	g_strstrip (value);
-	
+	if (value)
+		g_strstrip (value);
+
 	g_return_if_fail (GCK_MODULE_GET_CLASS (self)->parse_argument);
 	GCK_MODULE_GET_CLASS (self)->parse_argument (self, arg, value);
 }
@@ -391,7 +422,7 @@ remove_transient_object (GckModule *self, GckTransaction *transaction, GckObject
 
 	g_object_ref (object);
 
-	gck_manager_unregister_object (self->pv->token_manager, object);
+	gck_object_expose (object, FALSE);
 	if (!g_hash_table_remove (self->pv->transient_objects, object))
 		g_return_if_reached ();
 	g_object_set (object, "store", NULL, NULL);
@@ -421,12 +452,12 @@ add_transient_object (GckModule *self, GckTransaction *transaction, GckObject *o
 	g_assert (GCK_IS_OBJECT (object));
 
 	/* Must not already be associated with a session or manager */
-	g_return_if_fail (gck_object_get_manager (object) == NULL);
+	g_return_if_fail (gck_object_get_manager (object) == self->pv->token_manager);
 	g_return_if_fail (g_hash_table_lookup (self->pv->transient_objects, object) == NULL);
 
 	g_hash_table_insert (self->pv->transient_objects, object, g_object_ref (object));
-	gck_manager_register_object (self->pv->token_manager, object);
 	g_object_set (object, "store", self->pv->transient_store, NULL);
+	gck_object_expose (object, TRUE);
 
 	if (transaction) {
 		gck_transaction_add (transaction, self,
@@ -550,7 +581,7 @@ gck_module_init (GckModule *self)
 	                                                      gck_util_ulong_free, g_object_unref);
 	self->pv->apartments_by_id = g_hash_table_new_full (gck_util_ulong_hash, gck_util_ulong_equal,
 	                                                    gck_util_ulong_free, apartment_free);
-	self->pv->factories = g_array_new (FALSE, TRUE, sizeof (GckFactoryInfo));
+	self->pv->factories = g_array_new (FALSE, TRUE, sizeof (GckFactory));
 
 	self->pv->handle_counter = 1;
 
@@ -559,10 +590,14 @@ gck_module_init (GckModule *self)
 	self->pv->transient_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gck_util_dispose_unref);
 
 	/* Register session object factories */
-	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_AES_KEY);
 	gck_module_register_factory (self, GCK_FACTORY_CERTIFICATE);
-	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_KEY);
-	gck_module_register_factory (self, GCK_FACTORY_AUTHENTICATOR);
+	gck_module_register_factory (self, GCK_FACTORY_CREDENTIAL);
+	gck_module_register_factory (self, GCK_FACTORY_NULL_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_DH_PRIVATE_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_PRIVATE_XSA_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_DH_PUBLIC_KEY);
+	gck_module_register_factory (self, GCK_FACTORY_PUBLIC_XSA_KEY);
 }
 
 static void
@@ -571,13 +606,12 @@ gck_module_dispose (GObject *obj)
 	GckModule *self = GCK_MODULE (obj);
 
 	g_hash_table_remove_all (self->pv->transient_objects);
+	g_hash_table_remove_all (self->pv->sessions_by_handle);
+	g_hash_table_remove_all (self->pv->apartments_by_id);
 
 	if (self->pv->token_manager)
 		g_object_unref (self->pv->token_manager);
 	self->pv->token_manager = NULL;
-
-	g_hash_table_remove_all (self->pv->apartments_by_id);
-	g_hash_table_remove_all (self->pv->sessions_by_handle);
 
 	g_array_set_size (self->pv->factories, 0);
 
@@ -806,7 +840,7 @@ gck_module_store_token_object (GckModule *self, GckTransaction *transaction, Gck
 	g_return_if_fail (GCK_IS_OBJECT (object));
 	g_assert (GCK_MODULE_GET_CLASS (self)->store_token_object);
 
-	if (gck_object_get_transient (object))
+	if (gck_object_is_transient (object))
 		add_transient_object (self, transaction, object);
 	else
 		GCK_MODULE_GET_CLASS (self)->store_token_object (self, transaction, object);
@@ -819,28 +853,28 @@ gck_module_remove_token_object (GckModule *self, GckTransaction *transaction, Gc
 	g_return_if_fail (GCK_IS_OBJECT (object));
 	g_assert (GCK_MODULE_GET_CLASS (self)->remove_token_object);
 
-	if (gck_object_get_transient (object))
+	if (gck_object_is_transient (object))
 		remove_transient_object (self, transaction, object);
 	else
 		GCK_MODULE_GET_CLASS (self)->remove_token_object (self, transaction, object);
 }
 
 void
-gck_module_register_factory (GckModule *self, GckFactoryInfo *factory)
+gck_module_register_factory (GckModule *self, GckFactory *factory)
 {
 	g_return_if_fail (GCK_IS_MODULE (self));
 	g_return_if_fail (factory);
 	g_return_if_fail (factory->attrs || !factory->n_attrs);
-	g_return_if_fail (factory->factory);
+	g_return_if_fail (factory->func);
 	
 	g_array_append_val (self->pv->factories, *factory);
 	self->pv->factories_sorted = FALSE;
 }
 
-GckFactory
+GckFactory*
 gck_module_find_factory (GckModule *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
-	GckFactoryInfo *factory;
+	GckFactory *factory;
 	gboolean matched;
 	gulong j;
 	gsize i;
@@ -854,7 +888,7 @@ gck_module_find_factory (GckModule *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_att
 	}
 	
 	for (i = 0; i < self->pv->factories->len; ++i) {
-		factory = &(g_array_index (self->pv->factories, GckFactoryInfo, i));
+		factory = &(g_array_index (self->pv->factories, GckFactory, i));
 		
 		matched = TRUE;
 		for (j = 0; j < factory->n_attrs; ++j) {
@@ -865,7 +899,7 @@ gck_module_find_factory (GckModule *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_att
 		}
 		
 		if (matched)
-			return factory->factory;
+			return factory;
 	}
 	
 	return NULL;
@@ -1093,6 +1127,8 @@ gck_module_C_OpenSession (GckModule *self, CK_SLOT_ID id, CK_FLAGS flags, CK_VOI
 	 */
 	if (flags & CKF_G_APPLICATION_SESSION) {
 		app = user_data;
+		if (app == NULL)
+			return CKR_ARGUMENTS_BAD;
 		if (app->applicationId)
 			apt = lookup_apartment (self, APARTMENT_ID (id, app->applicationId));
 	} else {

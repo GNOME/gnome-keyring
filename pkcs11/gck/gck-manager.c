@@ -23,6 +23,9 @@
 
 #include "gck-attributes.h"
 #include "gck-manager.h"
+#include "gck-marshal.h"
+#include "gck-module.h"
+#include "gck-session.h"
 #include "gck-util.h"
 
 #include <glib.h>
@@ -34,6 +37,15 @@ enum {
 	PROP_0,
 	PROP_FOR_TOKEN
 };
+
+enum {
+	OBJECT_ADDED,
+	OBJECT_REMOVED,
+	ATTRIBUTE_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 struct _GckManagerPrivate {
 	gboolean for_token;
@@ -59,6 +71,10 @@ typedef struct _Finder {
 } Finder;
 
 G_DEFINE_TYPE(GckManager, gck_manager, G_TYPE_OBJECT);
+
+/* Friend functions for GckObject */
+void  _gck_manager_register_object    (GckManager *self, GckObject *object);
+void  _gck_manager_unregister_object  (GckManager *self, GckObject *object);
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -375,6 +391,9 @@ notify_attribute (GckObject *object, CK_ATTRIBUTE_TYPE attr_type, GckManager *se
 	index = g_hash_table_lookup (self->pv->index_by_attribute, &attr_type);
 	if (index != NULL) 
 		index_update (index, object);
+
+	/* Tell everyone that this attribute changed on this object */
+	g_signal_emit (self, signals[ATTRIBUTE_CHANGED], 0, object, attr_type);
 }
 
 static void
@@ -398,7 +417,7 @@ add_object (GckManager *self, GckObject *object)
 	
 	g_assert (GCK_IS_MANAGER (self));
 	g_assert (GCK_IS_OBJECT (object));
-	g_assert (gck_object_get_manager (object) == NULL);
+	g_assert (gck_object_get_manager (object) == self);
 	
 	handle = gck_object_get_handle (object);
 	if (!handle) {
@@ -414,13 +433,15 @@ add_object (GckManager *self, GckObject *object)
 	
 	/* Note objects is being managed */
 	self->pv->objects = g_list_prepend (self->pv->objects, object);
-	g_object_set (object, "manager", self, NULL);
 	
 	/* Now index the object properly */
 	g_hash_table_foreach (self->pv->index_by_attribute, index_object_each, object);
 	g_hash_table_foreach (self->pv->index_by_property, index_object_each, object);
 	g_signal_connect (object, "notify-attribute", G_CALLBACK (notify_attribute), self);
 	g_signal_connect (object, "notify", G_CALLBACK (notify_property), self);
+
+	/* Tell everyone we added this object */
+	g_signal_emit (self, signals[OBJECT_ADDED], 0, object);
 }
 
 static void
@@ -443,7 +464,9 @@ remove_object (GckManager *self, GckObject *object)
 	
 	/* Release object management */		
 	self->pv->objects = g_list_remove (self->pv->objects, object);
-	g_object_set (object, "manager", NULL, NULL);
+
+	/* Tell everyone this object is gone */
+	g_signal_emit (self, signals[OBJECT_REMOVED], 0, object);
 }
 
 static void
@@ -674,8 +697,8 @@ gck_manager_dispose (GObject *obj)
 
 	/* Unregister all objects */
 	objects = g_list_copy (self->pv->objects);
-	for (l = objects; l; l = g_list_next (l)) 
-		gck_manager_unregister_object (self, GCK_OBJECT (l->data));
+	for (l = objects; l; l = g_list_next (l))
+		remove_object (self, GCK_OBJECT (l->data));
 	g_list_free (objects);
 	
 	g_return_if_fail (self->pv->objects == NULL);
@@ -712,7 +735,21 @@ gck_manager_class_init (GckManagerClass *klass)
 	g_object_class_install_property (gobject_class, PROP_FOR_TOKEN,
 	         g_param_spec_boolean ("for-token", "For Token", "Whether this manager is for token objects or not", 
 	                               FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	
+
+	signals[OBJECT_ADDED] = g_signal_new ("object-added", GCK_TYPE_MANAGER,
+	                                      G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckManagerClass, object_added),
+	                                      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+	                                      G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
+
+	signals[OBJECT_REMOVED] = g_signal_new ("object-removed", GCK_TYPE_MANAGER,
+	                                        G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckManagerClass, object_removed),
+	                                        NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+	                                        G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
+
+	signals[ATTRIBUTE_CHANGED] = g_signal_new ("attribute-changed", GCK_TYPE_MANAGER,
+	                                           G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckManagerClass, attribute_changed),
+	                                           NULL, NULL, gck_marshal_VOID__OBJECT_ULONG,
+	                                           G_TYPE_NONE, 2, GCK_TYPE_OBJECT, G_TYPE_ULONG);
 }
 
 /* ------------------------------------------------------------------------
@@ -762,17 +799,17 @@ gck_manager_add_property_index (GckManager *self, const gchar *property, gboolea
 }
 
 void
-gck_manager_register_object (GckManager *self, GckObject *object)
+_gck_manager_register_object (GckManager *self, GckObject *object)
 {
 	g_return_if_fail (GCK_IS_MANAGER (self));
 	g_return_if_fail (GCK_IS_OBJECT (object));
-	g_return_if_fail (gck_object_get_manager (object) == NULL);
+	g_return_if_fail (gck_object_get_manager (object) == self);
 
 	add_object (self, object);
 }
 
 void
-gck_manager_unregister_object (GckManager *self, GckObject *object)
+_gck_manager_unregister_object (GckManager *self, GckObject *object)
 {
 	g_return_if_fail (GCK_IS_MANAGER (self));
 	g_return_if_fail (GCK_IS_OBJECT (object));
@@ -878,6 +915,20 @@ gck_manager_find_by_attributes (GckManager *self, CK_ATTRIBUTE_PTR attrs, CK_ULO
 	return finder.results;
 }
 
+GList*
+gck_manager_find_by_class (GckManager *self, CK_OBJECT_CLASS klass)
+{
+	CK_ATTRIBUTE attr;
+
+	g_return_val_if_fail (GCK_IS_MANAGER (self), NULL);
+
+	attr.type = CKA_CLASS;
+	attr.ulValueLen = sizeof (klass);
+	attr.pValue = &klass;
+
+	return gck_manager_find_by_attributes (self, &attr, 1);
+}
+
 GckObject*
 gck_manager_find_related (GckManager *self, CK_OBJECT_CLASS klass, GckObject *related_to)
 {
@@ -926,4 +977,16 @@ gck_manager_find_handles (GckManager *self, gboolean also_private,
 	find_for_attributes (&finder);
 
 	return CKR_OK;
+}
+
+/* Odd place for this function */
+
+GckManager*
+gck_manager_for_template (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckSession *session)
+{
+	gboolean is_token;
+	if (!gck_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token) || !is_token)
+		return gck_session_get_manager (session);
+	else
+		return gck_module_get_manager (gck_session_get_module (session));
 }

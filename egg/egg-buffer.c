@@ -60,15 +60,15 @@ egg_buffer_init_full (EggBuffer *buffer, size_t reserve, EggBufferAllocator allo
 }
 
 void
-egg_buffer_init_static (EggBuffer* buffer, unsigned char *buf, size_t len)
+egg_buffer_init_static (EggBuffer* buffer, const unsigned char *buf, size_t len)
 {
 	memset (buffer, 0, sizeof (*buffer));
-		
-	buffer->buf = buf;
+
+	buffer->buf = (unsigned char*)buf;
 	buffer->len = len;
 	buffer->allocated_len = len;
 	buffer->failures = 0;
-	
+
 	/* A null allocator, and the buffer can't change in size */
 	buffer->allocator = NULL;	
 }
@@ -111,6 +111,20 @@ egg_buffer_uninit (EggBuffer *buffer)
 		(buffer->allocator) (buffer->buf, 0);
 		
 	memset (buffer, 0, sizeof (*buffer));
+}
+
+unsigned char*
+egg_buffer_uninit_steal (EggBuffer *buffer, size_t *n_result)
+{
+	unsigned char *result;
+
+	if (n_result)
+		*n_result = buffer->len;
+	result = buffer->buf;
+
+	memset (buffer, 0, sizeof (*buffer));
+
+	return result;
 }
 
 int

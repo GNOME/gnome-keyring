@@ -100,7 +100,6 @@ static void
 file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 {
 	GckSshPrivateKey *key;
-	GckSshPublicKey *pubkey;
 	gchar *private_path;
 	GckManager *manager;
 	GError *error = NULL;
@@ -109,6 +108,8 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 	g_return_if_fail (path);
 	g_return_if_fail (GCK_IS_SSH_MODULE (self));
 	
+	manager = gck_module_get_manager (GCK_MODULE (self));
+
 	private_path = private_path_for_public (path);
 	if (!private_path || !g_file_test (private_path, G_FILE_TEST_IS_REGULAR)) {
 		g_message ("no private key present for public key: %s", path);
@@ -131,18 +132,11 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 		g_message ("couldn't parse data: %s: %s", path,
 		           error && error->message ? error->message : "");
 		g_clear_error (&error);
+		gck_object_expose (GCK_OBJECT (key), FALSE);
 		
 	/* When successful register with the object manager */
 	} else {
-		manager = gck_module_get_manager (GCK_MODULE (self));
-		
-		/* Make sure the private key has the right manager */
-		if (!gck_object_get_manager (GCK_OBJECT (key))) 
-			gck_manager_register_object (manager, GCK_OBJECT (key));
-		
-		pubkey = gck_ssh_private_key_get_public_key (key);
-		if (!gck_object_get_manager (GCK_OBJECT (pubkey)))
-			gck_manager_register_object (manager, GCK_OBJECT (pubkey));
+		gck_object_expose (GCK_OBJECT (key), TRUE);
 	}
 
 	g_free (private_path);

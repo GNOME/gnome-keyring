@@ -52,11 +52,13 @@ struct _GckSessionClass {
 #endif
 };
 
-typedef gboolean         (*GckAuthenticatorFunc)                        (GckAuthenticator *auth,
+typedef gboolean         (*GckCredentialFunc)                           (GckCredential *cred,
                                                                          GckObject *object,
                                                                          gpointer user_data);
 
 GType                    gck_session_get_type                           (void);
+
+GckSession*              gck_session_for_session_object                 (GckObject *obj);
 
 GckSession*              gck_session_for_session_object                 (GckObject *obj);
 
@@ -77,6 +79,12 @@ gulong                   gck_session_get_logged_in                      (GckSess
 void                     gck_session_set_logged_in                      (GckSession *self,
                                                                          gulong logged_in);
 
+gpointer                 gck_session_get_crypto_state                   (GckSession *self);
+
+void                     gck_session_set_crypto_state                   (GckSession *self,
+                                                                         gpointer state,
+                                                                         GDestroyNotify destroy);
+
 CK_RV                    gck_session_lookup_readable_object             (GckSession *self, 
                                                                          CK_OBJECT_HANDLE handle, 
                                                                          GckObject **result);
@@ -89,16 +97,35 @@ CK_RV                    gck_session_login_context_specific             (GckSess
                                                                          CK_UTF8CHAR_PTR pin,
                                                                          CK_ULONG n_pin);
 
+void                     gck_session_add_session_object                 (GckSession *self,
+                                                                         GckTransaction *transaction,
+                                                                         GckObject *obj);
+
 void                     gck_session_destroy_session_object             (GckSession *self,
                                                                          GckTransaction *transaction,
                                                                          GckObject *obj);
 
-gboolean                 gck_session_for_each_authenticator             (GckSession *self,
+gboolean                 gck_session_for_each_credential                (GckSession *self,
                                                                          GckObject *object,
-                                                                         GckAuthenticatorFunc func,
+                                                                         GckCredentialFunc func,
                                                                          gpointer user_data);
 
+GckObject*               gck_session_create_object_for_factory          (GckSession *self,
+                                                                         GckFactory *factory,
+                                                                         GckTransaction *transaction,
+                                                                         CK_ATTRIBUTE_PTR attrs,
+                                                                         CK_ULONG n_attrs);
 
+GckObject*               gck_session_create_object_for_attributes       (GckSession *self,
+                                                                         GckTransaction *transaction,
+                                                                         CK_ATTRIBUTE_PTR attrs,
+                                                                         CK_ULONG n_attrs);
+
+void                     gck_session_complete_object_creation           (GckSession *self,
+                                                                         GckTransaction *transaction,
+                                                                         GckObject *object,
+                                                                         CK_ATTRIBUTE_PTR attrs,
+                                                                         CK_ULONG n_attrs);
 
 CK_RV                    gck_session_C_GetFunctionStatus                (GckSession *self);
 

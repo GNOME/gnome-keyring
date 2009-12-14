@@ -28,6 +28,7 @@
 #include "gck/gck-object.h"
 #include "gck/gck-session.h"
 #include "gck/gck-module.h"
+#include "gck/gck-transaction.h"
 
 #include "pkcs11g.h"
 
@@ -40,7 +41,7 @@ DEFINE_SETUP(object_setup)
 {
 	module = test_module_initialize_and_enter ();
 	session = test_module_open_session (TRUE);
-	certificate_data = test_read_testdata ("test-certificate-1.der", &certificate_n_data);
+	certificate_data = test_data_read ("test-certificate-1.der", &certificate_n_data);
 }
 
 DEFINE_TEARDOWN(object_teardown)
@@ -242,4 +243,60 @@ DEFINE_TEST(object_create_auto_destruct_bad_value)
 	/* Can't have a non-transient object that auto-destructs */
 	rv = gck_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
+}
+
+DEFINE_TEST(object_expose)
+{
+	CK_OBJECT_HANDLE handle;
+	GckManager *manager;
+	GckObject *check, *object;
+
+	manager = gck_session_get_manager (session);
+	object = test_module_object_new (session);
+
+	handle = gck_object_get_handle (object);
+	gck_object_expose (object, TRUE);
+
+	/* Now it should have a handle, and be visible */
+	check = gck_manager_find_by_handle (manager, handle);
+	g_assert (check == object);
+
+	gck_object_expose (object, FALSE);
+
+	/* Now should be invisible */
+	check = gck_manager_find_by_handle (manager, handle);
+	g_assert (check == NULL);
+}
+
+DEFINE_TEST(object_expose_transaction)
+{
+	CK_OBJECT_HANDLE handle;
+	GckManager *manager;
+	GckObject *check, *object;
+	GckTransaction *transaction;
+
+	manager = gck_session_get_manager (session);
+	object = test_module_object_new (session);
+
+	handle = gck_object_get_handle (object);
+	transaction = gck_transaction_new ();
+
+	/* Should be hidden */
+	gck_object_expose (object, FALSE);
+	check = gck_manager_find_by_handle (manager, handle);
+	g_assert (check == NULL);
+
+	/* Now it should have a handle, and be visible */
+	gck_object_expose_full (object, transaction, TRUE);
+	check = gck_manager_find_by_handle (manager, handle);
+	g_assert (check == object);
+
+	gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
+	gck_transaction_complete (transaction);
+
+	/* Now should be invisible */
+	check = gck_manager_find_by_handle (manager, handle);
+	g_assert (check == NULL);
+
+	g_object_unref (transaction);
 }

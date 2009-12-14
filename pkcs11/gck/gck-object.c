@@ -43,6 +43,7 @@ enum {
 };
 
 enum {
+	EXPOSE_OBJECT,
 	NOTIFY_ATTRIBUTE,
 	LAST_SIGNAL
 };
@@ -60,10 +61,15 @@ struct _GckObjectPrivate {
 	GckManager *manager;
 	GckStore *store;
 	gchar *unique;
+	gboolean exposed;
 	GckObjectTransient *transient;
 };
 
 G_DEFINE_TYPE (GckObject, gck_object, G_TYPE_OBJECT);
+
+/* Private friend functions from the manager */
+void  _gck_manager_register_object   (GckManager *self, GckObject *object);
+void  _gck_manager_unregister_object (GckManager *self, GckObject *object);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
@@ -123,7 +129,8 @@ module_went_away (gpointer data, GObject *old_module)
 {
 	GckObject *self = GCK_OBJECT (data);
 	g_return_if_fail (self->pv->module);
-	g_warning ("module destroyed before object that module contained");
+	g_warning ("module destroyed before %s that module contained",
+	           G_OBJECT_TYPE_NAME (self));
 	self->pv->module = NULL;
 }
 
@@ -131,6 +138,18 @@ static gboolean
 complete_destroy (GckTransaction *transaction, GObject *unused, gpointer user_data)
 {
 	gck_util_dispose_unref (user_data);
+	return TRUE;
+}
+
+static gboolean
+complete_expose (GckTransaction *transaction, GObject *obj, gpointer user_data)
+{
+	GckObject *self = GCK_OBJECT (obj);
+	gboolean expose = GPOINTER_TO_UINT (user_data);
+
+	if (gck_transaction_get_failed (transaction))
+		gck_object_expose (self, !expose);
+
 	return TRUE;
 }
 
@@ -153,9 +172,7 @@ gck_object_real_get_attribute (GckObject *self, GckSession *session, CK_ATTRIBUT
 	case CKA_PRIVATE:
 		return gck_attribute_set_bool (attr, FALSE);
 	case CKA_TOKEN:
-		if (!self->pv->manager)
-			return gck_attribute_set_bool (attr, FALSE);
-		return gck_attribute_set_bool (attr, gck_manager_get_for_token (self->pv->manager));
+		return gck_attribute_set_bool (attr, gck_object_is_token (self));
 	case CKA_GNOME_UNIQUE:
 		if (self->pv->unique)
 			return gck_attribute_set_string (attr, self->pv->unique);
@@ -187,6 +204,9 @@ static void
 gck_object_real_set_attribute (GckObject *self, GckSession *session,
                                GckTransaction* transaction, CK_ATTRIBUTE* attr)
 {
+	CK_ATTRIBUTE check;
+	CK_RV rv;
+
 	switch (attr->type) {
 	case CKA_TOKEN:
 	case CKA_PRIVATE:
@@ -214,7 +234,15 @@ gck_object_real_set_attribute (GckObject *self, GckSession *session,
 		return;
 	}	
 
-	gck_transaction_fail (transaction, CKR_ATTRIBUTE_TYPE_INVALID);
+	/* Check if this attribute exists */
+	check.type = attr->type;
+	check.pValue = 0;
+	check.ulValueLen = 0;
+	rv = gck_object_get_attribute (self, session, &check);
+	if (rv == CKR_ATTRIBUTE_TYPE_INVALID)
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_TYPE_INVALID);
+	else
+		gck_transaction_fail (transaction, CKR_ATTRIBUTE_READ_ONLY);
 }
 
 static void
@@ -269,10 +297,23 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
 }
 
 static CK_RV
-gck_object_real_unlock (GckObject *self, GckAuthenticator *auth)
+gck_object_real_unlock (GckObject *self, GckCredential *cred)
 {
 	/* A derived class should have overridden this */
 	return CKR_FUNCTION_FAILED;
+}
+
+static void
+gck_object_real_expose_object (GckObject *self, gboolean expose)
+{
+	g_return_if_fail (expose != self->pv->exposed);
+	g_return_if_fail (self->pv->manager);
+
+	self->pv->exposed = expose;
+	if (expose)
+		_gck_manager_register_object (self->pv->manager, self);
+	else
+		_gck_manager_unregister_object (self->pv->manager, self);
 }
 
 static GObject* 
@@ -299,10 +340,15 @@ gck_object_dispose (GObject *obj)
 	GckObject *self = GCK_OBJECT (obj);
 	GckObjectTransient *transient;
 	
-	if (self->pv->manager)
-		gck_manager_unregister_object (self->pv->manager, self);
-	g_assert (self->pv->manager == NULL);
-	
+	if (self->pv->manager) {
+		if (self->pv->exposed)
+			gck_object_expose (self, FALSE);
+		g_return_if_fail (!self->pv->exposed);
+		g_object_remove_weak_pointer (G_OBJECT (self->pv->manager),
+		                              (gpointer*)&(self->pv->manager));
+		self->pv->manager = NULL;
+	}
+
 	g_object_set (self, "store", NULL, NULL);
 	g_assert (self->pv->store == NULL);
 
@@ -311,11 +357,8 @@ gck_object_dispose (GObject *obj)
 		if (transient->timed_timer)
 			gck_timer_cancel (transient->timed_timer);
 		transient->timed_timer = NULL;
-
-		g_slice_free (GckObjectTransient, transient);
-		self->pv->transient = NULL;
 	}
-    
+
 	G_OBJECT_CLASS (gck_object_parent_class)->dispose (obj);
 }
 
@@ -331,7 +374,10 @@ gck_object_finalize (GObject *obj)
 	g_object_weak_unref (G_OBJECT (self->pv->module), module_went_away, self);
 	self->pv->module = NULL;
 
-	g_assert (self->pv->transient == NULL);
+	if (self->pv->transient) {
+		g_slice_free (GckObjectTransient, self->pv->transient);
+		self->pv->transient = NULL;
+	}
 
 	G_OBJECT_CLASS (gck_object_parent_class)->finalize (obj);
 }
@@ -341,7 +387,6 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
                            GParamSpec *pspec)
 {
 	GckObject *self = GCK_OBJECT (obj);
-	GckManager *manager;
 	GckStore *store;
 	
 	switch (prop_id) {
@@ -355,18 +400,12 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_object_weak_ref (G_OBJECT (self->pv->module), module_went_away, self);
 		break;
 	case PROP_MANAGER:
-		manager = g_value_get_object (value);
+		g_return_if_fail (!self->pv->manager);
+		self->pv->manager = g_value_get_object (value);
 		if (self->pv->manager) {
-			g_return_if_fail (!manager);
-			g_object_remove_weak_pointer (G_OBJECT (self->pv->manager), 
-			                              (gpointer*)&(self->pv->manager));
-		}
-		self->pv->manager = manager;
-		if (self->pv->manager)
 			g_object_add_weak_pointer (G_OBJECT (self->pv->manager), 
 			                           (gpointer*)&(self->pv->manager));
-		
-		g_object_notify (G_OBJECT (self), "manager");
+		}
 		break;
 	case PROP_STORE:
 		store = g_value_get_object (value);
@@ -440,6 +479,8 @@ gck_object_class_init (GckObjectClass *klass)
 	klass->set_attribute = gck_object_real_set_attribute;
 	klass->create_attributes = gck_object_real_create_attributes;
 	
+	klass->expose_object = gck_object_real_expose_object;
+
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 	           g_param_spec_ulong ("handle", "Handle", "Object handle",
 	                               0, G_MAXULONG, 0, G_PARAM_READWRITE));
@@ -450,7 +491,7 @@ gck_object_class_init (GckObjectClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_MANAGER,
 	           g_param_spec_object ("manager", "Manager", "Object manager", 
-	                                GCK_TYPE_MANAGER, G_PARAM_READWRITE));
+	                                GCK_TYPE_MANAGER, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
 	g_object_class_install_property (gobject_class, PROP_STORE,
 	           g_param_spec_object ("store", "Store", "Object store", 
@@ -460,6 +501,11 @@ gck_object_class_init (GckObjectClass *klass)
 	           g_param_spec_string ("unique", "Unique Identifer", "Machine unique identifier", 
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	
+	signals[EXPOSE_OBJECT] = g_signal_new ("expose-object", GCK_TYPE_OBJECT,
+	                                       G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, expose_object),
+		                               NULL, NULL, g_cclosure_marshal_VOID__BOOLEAN, 
+		                               G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+
 	signals[NOTIFY_ATTRIBUTE] = g_signal_new ("notify-attribute", GCK_TYPE_OBJECT, 
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, notify_attribute),
 	                                NULL, NULL, g_cclosure_marshal_VOID__ULONG, 
@@ -483,9 +529,6 @@ void
 gck_object_set_attribute (GckObject *self, GckSession *session,
                           GckTransaction *transaction, CK_ATTRIBUTE_PTR attr)
 {
-	CK_ATTRIBUTE check;
-	CK_RV rv;
-	
 	g_return_if_fail (GCK_IS_OBJECT (self));
 	g_return_if_fail (GCK_IS_TRANSACTION (transaction));
 	g_return_if_fail (!gck_transaction_get_failed (transaction));
@@ -493,18 +536,8 @@ gck_object_set_attribute (GckObject *self, GckSession *session,
 
 	g_assert (GCK_OBJECT_GET_CLASS (self)->set_attribute);
 
-	/* Check if this attribute exists */
-	check.type = attr->type;
-	check.pValue = 0;
-	check.ulValueLen = 0;
-	rv = gck_object_get_attribute (self, session, &check);
-	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_SENSITIVE) {
-		gck_transaction_fail (transaction, rv);
-		return;
-	}
-	
 	/* Check that the value will actually change */
-	if (rv == CKR_ATTRIBUTE_SENSITIVE || !gck_object_match (self, session, attr))
+	if (!gck_object_match (self, session, attr))
 		GCK_OBJECT_GET_CLASS (self)->set_attribute (self, session, transaction, attr);
 }
 
@@ -615,19 +648,27 @@ gck_object_get_unique (GckObject *self)
 }
 
 gboolean
-gck_object_get_transient (GckObject *self)
+gck_object_is_token (GckObject *self)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	if (!self->pv->manager)
+		return FALSE;
+	return gck_manager_get_for_token (self->pv->manager);
+}
+
+gboolean
+gck_object_is_transient (GckObject *self)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
 	return self->pv->transient ? TRUE : FALSE;
 }
 
-
 CK_RV
-gck_object_unlock (GckObject *self, GckAuthenticator *auth)
+gck_object_unlock (GckObject *self, GckCredential *cred)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (GCK_OBJECT_GET_CLASS (self)->unlock, CKR_GENERAL_ERROR);
-	return GCK_OBJECT_GET_CLASS (self)->unlock (self, auth);
+	return GCK_OBJECT_GET_CLASS (self)->unlock (self, cred);
 }
 
 
@@ -703,6 +744,46 @@ gck_object_get_attribute_data (GckObject *self, GckSession *session,
 	return attr.pValue;
 }
 
+gboolean
+gck_object_has_attribute_ulong (GckObject *self, GckSession *session,
+                                CK_ATTRIBUTE_TYPE type, gulong value)
+{
+	gulong *data;
+	gsize n_data, i;
+
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
+
+	data = gck_object_get_attribute_data (self, session, type, &n_data);
+	if (data == NULL)
+		return FALSE;
+
+	g_return_val_if_fail (n_data % sizeof (gulong) == 0, FALSE);
+	for (i = 0; i < n_data / sizeof (gulong); ++i) {
+		if (data[i] == value) {
+			g_free (data);
+			return TRUE;
+		}
+	}
+
+	g_free (data);
+	return FALSE;
+}
+
+gboolean
+gck_object_has_attribute_boolean (GckObject *self, GckSession *session,
+                                  CK_ATTRIBUTE_TYPE type, gboolean value)
+{
+	gboolean data;
+
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
+
+	if (!gck_object_get_attribute_boolean (self, session, type, &data))
+		return FALSE;
+	return data == value;
+}
+
 void
 gck_object_destroy (GckObject *self, GckTransaction *transaction)
 {
@@ -731,4 +812,39 @@ gck_object_destroy (GckObject *self, GckTransaction *transaction)
 	gck_transaction_add (transaction, NULL, complete_destroy, g_object_ref (self));
 
 	g_object_unref (self);
+}
+
+gboolean
+gck_object_is_exposed (GckObject *self)
+{
+	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
+	return self->pv->exposed;
+}
+
+void
+gck_object_expose (GckObject *self, gboolean expose)
+{
+	if (!expose && !self)
+		return;
+
+	g_return_if_fail (GCK_IS_OBJECT (self));
+
+	if (self->pv->exposed != expose)
+		g_signal_emit (self, signals[EXPOSE_OBJECT], 0, expose);
+}
+
+void
+gck_object_expose_full (GckObject *self, GckTransaction *transaction, gboolean expose)
+{
+	if (!expose && !self)
+		return;
+
+	g_return_if_fail (GCK_IS_OBJECT (self));
+	g_return_if_fail (!transaction || !gck_transaction_get_failed (transaction));
+
+	if (self->pv->exposed != expose) {
+		if (transaction)
+			gck_transaction_add (transaction, self, complete_expose, GUINT_TO_POINTER (expose));
+		gck_object_expose (self, expose);
+	}
 }

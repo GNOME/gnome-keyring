@@ -17,29 +17,40 @@ BUILT_SOURCES = \
 	asn1-def-pk.h asn1-def-pkix.h
 
 libgck_la_SOURCES = \
+	gck-aes-key.c gck-aes-key.h \
+	gck-aes-mechanism.c gck-aes-mechanism.h \
 	gck-attributes.c gck-attributes.h \
-	gck-authenticator.c gck-authenticator.h \
 	gck-certificate.c gck-certificate.h \
 	gck-certificate-key.c gck-certificate-key.h \
 	gck-certificate-trust.c gck-certificate-trust.h \
+	gck-credential.c gck-credential.h \
 	gck-crypto.c gck-crypto.h \
 	gck-data-asn1.c gck-data-asn1.h \
 	gck-data-der.c gck-data-der.h \
 	gck-data-file.c gck-data-file.h \
 	gck-data-types.h \
+	gck-dh-key.c gdk-dh-key.h \
+	gck-dh-mechanism.c gck-dh-mechanism.h \
+	gck-dh-private-key.c gck-dh-private-key.h \
+	gck-dh-public-key.c gck-dh-public-key.h \
 	gck-factory.c gck-factory.h \
 	gck-file-tracker.c gck-file-tracker.h \
-	gck-key.c gck-key.h \
-	gck-login.c gck-login.h \
 	gck-manager.c gck-manager.h \
+	gck-mechanism-dsa.c gck-mechanism-dsa.h \
+	gck-mechanism-rsa.c gck-mechanism-rsa.h \
 	gck-memory-store.c gck-memory-store.h \
 	gck-module.c gck-module.h gck-module-ep.h \
+	gck-null-key.c gck-null-key.h \
+	gck-null-mechanism.c gck-null-mechanism.h \
 	gck-object.c gck-object.h \
-	gck-private-key.c gck-private-key.h \
-	gck-public-key.c gck-public-key.h \
+	gck-private-xsa-key.c gck-private-xsa-key.h \
+	gck-public-xsa-key.c gck-public-xsa-key.h \
+	gck-secret.c gck-secret.h \
+	gck-secret-key.c gck-secret-key.h \
 	gck-serializable.c gck-serializable.h \
 	gck-session.c gck-session.h \
 	gck-sexp.c gck-sexp.h \
+	gck-sexp-key.c gck-sexp-key.h \
 	gck-store.c gck-store.h \
 	gck-timer.c gck-timer.h \
 	gck-transaction.c gck-transaction.h \

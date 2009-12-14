@@ -27,9 +27,9 @@
 #include "gck/gck-crypto.h"
 #include "gck/gck-data-der.h"
 #include "gck/gck-factory.h"
-#include "gck/gck-login.h"
 #include "gck/gck-manager.h"
 #include "gck/gck-object.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-serializable.h"
 #include "gck/gck-session.h"
 #include "gck/gck-sexp.h"
@@ -42,46 +42,49 @@ enum {
 };
 
 struct _GckUserPrivateKey {
-	GckPrivateKey parent;
-	
+	GckPrivateXsaKey parent;
+
 	guchar *private_data;
 	gsize n_private_data;
 	
 	GckSexp *private_sexp;
 	gboolean is_encrypted;
-	GckLogin *login;
+	GckSecret *login;
 };
 
 static void gck_user_private_key_serializable (GckSerializableIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (GckUserPrivateKey, gck_user_private_key, GCK_TYPE_PRIVATE_KEY, 0,
+G_DEFINE_TYPE_EXTENDED (GckUserPrivateKey, gck_user_private_key, GCK_TYPE_PRIVATE_XSA_KEY, 0,
                G_IMPLEMENT_INTERFACE (GCK_TYPE_SERIALIZABLE, gck_user_private_key_serializable));
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
  */
 
-static void
+static GckObject*
 factory_create_private_key (GckSession *session, GckTransaction *transaction, 
-                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                            CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GckUserPrivateKey *key;
 	GckSexp *sexp;
-	
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
 
-	sexp = gck_private_key_create_sexp (session, transaction, attrs, n_attrs);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
+
+	sexp = gck_private_xsa_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp == NULL)
-		return;
-	
-	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp, 
-	                    "module", gck_session_get_module (session), NULL);
-	g_return_if_fail (!key->private_sexp);
+		return NULL;
+
+	key = g_object_new (GCK_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp,
+	                    "module", gck_session_get_module (session),
+	                    "manager", gck_manager_for_template (attrs, n_attrs, session),
+	                    NULL);
+	g_return_val_if_fail (!key->private_sexp, NULL);
 	key->private_sexp = gck_sexp_ref (sexp);
-	
-	*object = GCK_OBJECT (key);
+
 	gck_sexp_unref (sexp);
+
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (key), attrs, n_attrs);
+	return GCK_OBJECT (key);
 }
 
 /* -----------------------------------------------------------------------------
@@ -100,7 +103,7 @@ gck_user_private_key_real_get_attribute (GckObject *base, GckSession *session, C
 }
 
 static GckSexp* 
-gck_user_private_key_real_acquire_crypto_sexp (GckKey *base, GckSession *unused)
+gck_user_private_key_real_acquire_crypto_sexp (GckSexpKey *base, GckSession *unused)
 {
 	GckUserPrivateKey *self = GCK_USER_PRIVATE_KEY (base);
 	gcry_sexp_t sexp;
@@ -115,7 +118,7 @@ gck_user_private_key_real_acquire_crypto_sexp (GckKey *base, GckSession *unused)
 	g_return_val_if_fail (self->login, NULL);
 	g_return_val_if_fail (self->is_encrypted, NULL);
 	
-	password = gck_login_get_password (self->login, &n_password);
+	password = gck_secret_get_password (self->login, &n_password);
 	res = gck_data_der_read_private_pkcs8 (self->private_data, self->n_private_data, 
 	                                       password, n_password, &sexp);
 	g_return_val_if_fail (res == GCK_DATA_SUCCESS, NULL);
@@ -185,8 +188,8 @@ gck_user_private_key_class_init (GckUserPrivateKeyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckObjectClass *gck_class = GCK_OBJECT_CLASS (klass);
-	GckKeyClass *key_class = GCK_KEY_CLASS (klass);
-	
+	GckSexpKeyClass *key_class = GCK_SEXP_KEY_CLASS (klass);
+
 	gobject_class->dispose = gck_user_private_key_dispose;
 	gobject_class->finalize = gck_user_private_key_finalize;
 	gobject_class->set_property = gck_user_private_key_set_property;
@@ -198,7 +201,7 @@ gck_user_private_key_class_init (GckUserPrivateKeyClass *klass)
 }
 
 static gboolean
-gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
+gck_user_private_key_real_load (GckSerializable *base, GckSecret *login, const guchar *data, gsize n_data)
 {
 	GckUserPrivateKey *self = GCK_USER_PRIVATE_KEY (base);
 	GckDataResult res;
@@ -225,7 +228,7 @@ gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const gu
 			return FALSE;
 		}
 	
-		password = gck_login_get_password (login, &n_password);
+		password = gck_secret_get_password (login, &n_password);
 		res = gck_data_der_read_private_pkcs8 (data, n_data, password, n_password, &sexp);
 	}
 
@@ -246,12 +249,12 @@ gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const gu
 	}
 	
 	/* Calculate a public key as our 'base' */
-	if (!gck_crypto_sexp_key_to_public (sexp, &pub))
+	if (!gck_sexp_key_to_public (sexp, &pub))
 		g_return_val_if_reached (FALSE);
 	
 	/* Keep the public part of the key around for answering queries */
 	wrapper = gck_sexp_new (pub);
-	gck_key_set_base_sexp (GCK_KEY (self), wrapper);
+	gck_sexp_key_set_base (GCK_SEXP_KEY (self), wrapper);
 	gck_sexp_unref (wrapper);
 	
 	/* Encrypted private key, keep login and data */
@@ -284,7 +287,7 @@ gck_user_private_key_real_load (GckSerializable *base, GckLogin *login, const gu
 }
 
 static gboolean 
-gck_user_private_key_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+gck_user_private_key_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
 	GckUserPrivateKey *self = GCK_USER_PRIVATE_KEY (base);
 	const gchar *password;
@@ -295,10 +298,10 @@ gck_user_private_key_real_save (GckSerializable *base, GckLogin *login, guchar *
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 	
-	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_KEY (self), NULL);
+	sexp = gck_user_private_key_real_acquire_crypto_sexp (GCK_SEXP_KEY (self), NULL);
 	g_return_val_if_fail (sexp, FALSE);
 	
-	password = gck_login_get_password (login, &n_password);
+	password = gck_secret_get_password (login, &n_password);
 	if (password == NULL) 
 		*data = gck_data_der_write_private_pkcs8_plain (gck_sexp_get (sexp), n_data);
 	else
@@ -321,7 +324,7 @@ gck_user_private_key_serializable (GckSerializableIface *iface)
  * PUBLIC 
  */
 
-GckFactoryInfo*
+GckFactory*
 gck_user_private_key_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_PRIVATE_KEY;
@@ -332,7 +335,7 @@ gck_user_private_key_get_factory (void)
 		{ CKA_TOKEN, &token, sizeof (token) }, 
 	};
 
-	static GckFactoryInfo factory = {
+	static GckFactory factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
 		factory_create_private_key

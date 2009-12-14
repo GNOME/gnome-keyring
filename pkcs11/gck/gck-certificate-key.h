@@ -24,7 +24,7 @@
 
 #include <glib-object.h>
 
-#include "gck-public-key.h"
+#include "gck-public-xsa-key.h"
 #include "gck-types.h"
 
 #define GCK_TYPE_CERTIFICATE_KEY               (gck_certificate_key_get_type ())
@@ -38,17 +38,18 @@ typedef struct _GckCertificateKeyClass GckCertificateKeyClass;
 typedef struct _GckCertificateKeyPrivate GckCertificateKeyPrivate;
     
 struct _GckCertificateKey {
-	GckPublicKey parent;
+	GckPublicXsaKey parent;
 	GckCertificateKeyPrivate *pv;
 };
 
 struct _GckCertificateKeyClass {
-	GckPublicKeyClass parent_class;
+	GckPublicXsaKeyClass parent_class;
 };
 
 GType               gck_certificate_key_get_type               (void);
 
 GckCertificateKey*  gck_certificate_key_new                    (GckModule *module,
+                                                                GckManager *manager,
                                                                 GckCertificate *cert);
 
 GckCertificate*     gck_certificate_key_get_certificate        (GckCertificateKey *self);

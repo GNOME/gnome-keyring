@@ -494,3 +494,17 @@ gck_transaction_remove_file (GckTransaction *self, const gchar *filename)
 		gck_transaction_fail (self, CKR_DEVICE_ERROR);
 	}
 }
+
+CK_RV
+gck_transaction_complete_and_unref (GckTransaction *self)
+{
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_TRANSACTION (self), CKR_GENERAL_ERROR);
+
+	gck_transaction_complete (self);
+	rv = gck_transaction_get_result (self);
+	g_object_unref (self);
+
+	return rv;
+}

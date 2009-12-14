@@ -34,33 +34,38 @@
 #include <glib/gi18n.h>
 
 struct _GckUserPublicKey {
-	GckPublicKey parent;
+	GckPublicXsaKey parent;
 };
 
 static void gck_user_public_key_serializable (GckSerializableIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (GckUserPublicKey, gck_user_public_key, GCK_TYPE_PUBLIC_KEY, 0,
+G_DEFINE_TYPE_EXTENDED (GckUserPublicKey, gck_user_public_key, GCK_TYPE_PUBLIC_XSA_KEY, 0,
                G_IMPLEMENT_INTERFACE (GCK_TYPE_SERIALIZABLE, gck_user_public_key_serializable));
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
 
-static void
+static GckObject*
 factory_create_public_key (GckSession *session, GckTransaction *transaction, 
-                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GckObject **object)
+                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
+	GckObject *object = NULL;
 	GckSexp *sexp;
-	
-	g_return_if_fail (attrs || !n_attrs);
-	g_return_if_fail (object);
 
-	sexp = gck_public_key_create_sexp (session, transaction, attrs, n_attrs);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
+
+	sexp = gck_public_xsa_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp != NULL) {
-		*object = g_object_new (GCK_TYPE_USER_PUBLIC_KEY, "base-sexp", sexp, 
-		                        "module", gck_session_get_module (session), NULL);
+		object = g_object_new (GCK_TYPE_USER_PUBLIC_KEY, "base-sexp", sexp,
+		                       "module", gck_session_get_module (session),
+		                       "manager", gck_manager_for_template (attrs, n_attrs, session),
+		                       NULL);
 		gck_sexp_unref (sexp);
+		gck_session_complete_object_creation (session, transaction, object, attrs, n_attrs);
 	}
+
+	return object;
 }
 
 /* -----------------------------------------------------------------------------
@@ -114,7 +119,7 @@ gck_user_public_key_class_init (GckUserPublicKeyClass *klass)
 
 
 static gboolean
-gck_user_public_key_real_load (GckSerializable *base, GckLogin *login, const guchar *data, gsize n_data)
+gck_user_public_key_real_load (GckSerializable *base, GckSecret *login, const guchar *data, gsize n_data)
 {
 	GckUserPublicKey *self = GCK_USER_PUBLIC_KEY (base);
 	GckDataResult res;
@@ -143,14 +148,14 @@ gck_user_public_key_real_load (GckSerializable *base, GckLogin *login, const guc
 	}
 
 	wrapper = gck_sexp_new (sexp);
-	gck_key_set_base_sexp (GCK_KEY (self), wrapper);
+	gck_sexp_key_set_base (GCK_SEXP_KEY (self), wrapper);
 	gck_sexp_unref (wrapper);
 	
 	return TRUE;
 }
 
 static gboolean 
-gck_user_public_key_real_save (GckSerializable *base, GckLogin *login, guchar **data, gsize *n_data)
+gck_user_public_key_real_save (GckSerializable *base, GckSecret *login, guchar **data, gsize *n_data)
 {
 	GckUserPublicKey *self = GCK_USER_PUBLIC_KEY (base);
 	GckSexp *wrapper;
@@ -159,7 +164,7 @@ gck_user_public_key_real_save (GckSerializable *base, GckLogin *login, guchar **
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
-	wrapper = gck_key_get_base_sexp (GCK_KEY (self));
+	wrapper = gck_sexp_key_get_base (GCK_SEXP_KEY (self));
 	g_return_val_if_fail (wrapper, FALSE);
 	
 	*data = gck_data_der_write_public_key (gck_sexp_get (wrapper), n_data);
@@ -178,7 +183,7 @@ gck_user_public_key_serializable (GckSerializableIface *iface)
  * PUBLIC 
  */
 
-GckFactoryInfo*
+GckFactory*
 gck_user_public_key_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_PUBLIC_KEY;
@@ -189,7 +194,7 @@ gck_user_public_key_get_factory (void)
 		{ CKA_TOKEN, &token, sizeof (token) }, 
 	};
 
-	static GckFactoryInfo factory = {
+	static GckFactory factory = {
 		attributes,
 		G_N_ELEMENTS (attributes),
 		factory_create_public_key

@@ -29,8 +29,8 @@
 
 #include "gck/gck-certificate.h"
 #include "gck/gck-data-asn1.h"
-#include "gck/gck-login.h"
 #include "gck/gck-manager.h"
+#include "gck/gck-secret.h"
 #include "gck/gck-transaction.h"
 #include "gck/gck-util.h"
 
@@ -147,7 +147,7 @@ gck_user_module_real_login_change (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8C
                                    CK_ULONG n_old_pin, CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin)
 {
 	GckUserModule *self = GCK_USER_MODULE (base);
-	GckLogin *old_login, *new_login;
+	GckSecret *old_login, *new_login;
 	GckTransaction *transaction;
 	CK_RV rv;
 	
@@ -156,8 +156,8 @@ gck_user_module_real_login_change (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8C
 	 * sessions will remain logged in, and vice versa.
 	 */ 
 	
-	old_login = gck_login_new (old_pin, n_old_pin);
-	new_login = gck_login_new (new_pin, n_new_pin);
+	old_login = gck_secret_new_from_login (old_pin, n_old_pin);
+	new_login = gck_secret_new_from_login (new_pin, n_new_pin);
 	
 	transaction = gck_transaction_new ();
 	
@@ -177,7 +177,7 @@ static CK_RV
 gck_user_module_real_login_user (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHAR_PTR pin, CK_ULONG n_pin)
 {
 	GckUserModule *self = GCK_USER_MODULE (base);
-	GckLogin *login;
+	GckSecret *login;
 	CK_RV rv;
 
 	/* See if this application has logged in */
@@ -192,7 +192,7 @@ gck_user_module_real_login_user (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHA
 		g_return_val_if_fail (login == NULL, CKR_GENERAL_ERROR);
 
 		/* So actually unlock the store */
-		login = gck_login_new (pin, n_pin);
+		login = gck_secret_new_from_login (pin, n_pin);
 		rv = gck_user_storage_unlock (self->storage, login);
 		g_object_unref (login);
 		
@@ -202,7 +202,7 @@ gck_user_module_real_login_user (GckModule *base, CK_SLOT_ID slot_id, CK_UTF8CHA
 		g_return_val_if_fail (login != NULL, CKR_GENERAL_ERROR);
 		
 		/* Compare our pin to the one used originally */
-		if (!gck_login_equals (login, pin, n_pin))
+		if (!gck_secret_equals (login, pin, n_pin))
 			rv = CKR_PIN_INCORRECT;
 		else
 			rv = CKR_OK;

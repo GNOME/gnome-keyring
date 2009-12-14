@@ -204,3 +204,34 @@ DEFINE_TEST(secmem_multialloc)
 	
 	egg_secure_warnings = 1;
 }
+
+DEFINE_TEST(secmem_clear)
+{
+	gpointer p;
+
+	p = egg_secure_alloc_full (188, 0);
+	g_assert (p != NULL);
+	memset (p, 0x89, 188);
+	g_assert (memchr (p, 0x89, 188) == p);
+
+	egg_secure_clear (p, 188);
+	g_assert (memchr (p, 0x89, 188) == NULL);
+
+	egg_secure_free_full (p, 0);
+}
+
+DEFINE_TEST(secmem_strclear)
+{
+	gchar *str;
+
+	str = egg_secure_strdup ("secret");
+	g_assert (str != NULL);
+	g_assert_cmpuint (strlen (str), ==, 6);
+	g_assert (strchr (str, 't') == str + 5);
+
+	egg_secure_strclear (str);
+	g_assert_cmpuint (strlen (str), ==, 6);
+	g_assert (strchr (str, 't') == NULL);
+
+	egg_secure_free_full (str, 0);
+}

@@ -129,7 +129,8 @@ require_session_async (GP11Object *self, GP11Call *call,
 		run_call_with_session (call, session);
 		g_object_unref (session);
 	} else {
-		gp11_slot_open_session_async (data->slot, flags, cancellable, opened_session, call);
+		gp11_slot_open_session_async (data->slot, flags, NULL, NULL,
+		                              cancellable, opened_session, call);
 	}
 	
 }
@@ -1076,7 +1077,7 @@ perform_get_attribute_data (GetAttributeData *args)
 		return rv;
 	
 	/* Allocate memory for the value */
-	args->result = (args->allocator) (NULL, attr.ulValueLen);
+	args->result = (args->allocator) (NULL, attr.ulValueLen ? attr.ulValueLen : 1);
 	g_assert (args->result);
 	attr.pValue = args->result;
 	
