@@ -425,15 +425,15 @@ item_message_handler (GkdSecretObjects *self, GP11Object *object, DBusMessage *m
 		return item_method_set_secret (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Get */
-	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
+	if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "Get"))
 		return item_property_get (object, message);
 
 	/* org.freedesktop.DBus.Properties.Set */
-	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
+	else if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "Set"))
 		return item_property_set (object, message);
 
 	/* org.freedesktop.DBus.Properties.GetAll */
-	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
+	else if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "GetAll"))
 		return item_property_getall (object, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
@@ -783,15 +783,15 @@ collection_message_handler (GkdSecretObjects *self, GP11Object *object, DBusMess
 		return collection_method_create_item (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Get() */
-	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
+	if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "Get"))
 		return collection_property_get (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.Set() */
-	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
+	else if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "Set"))
 		return collection_property_set (self, object, message);
 
 	/* org.freedesktop.DBus.Properties.GetAll() */
-	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
+	else if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "GetAll"))
 		return collection_property_getall (self, object, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))

@@ -22,9 +22,6 @@
 #ifndef __GKD_SECRET_TYPES_H__
 #define __GKD_SECRET_TYPES_H__
 
-#define BUS_INTERFACE                  "org.freedesktop.DBus"
-#define PROPERTIES_INTERFACE           "org.freedesktop.DBus.Properties"
-
 #define INTERNAL_SERVICE_INTERFACE     "org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface"
 #define INTERNAL_ERROR_DENIED          "org.gnome.keyring.Error.Denied"
 

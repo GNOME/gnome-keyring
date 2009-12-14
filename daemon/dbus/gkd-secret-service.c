@@ -858,15 +858,15 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 		return service_method_unlock_with_master_password (self, message);
 
 	/* org.freedesktop.DBus.Properties.Get() */
-	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))
+	if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "Get"))
 		return service_property_get (self, message);
 
 	/* org.freedesktop.DBus.Properties.Set() */
-	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Set"))
+	else if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "Set"))
 		return service_property_set (self, message);
 
 	/* org.freedesktop.DBus.Properties.GetAll() */
-	else if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "GetAll"))
+	else if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "GetAll"))
 		return service_property_getall (self, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
@@ -963,7 +963,7 @@ gkd_secret_service_filter_handler (DBusConnection *conn, DBusMessage *message, g
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 
 	/* org.freedesktop.DBus.NameOwnerChanged(STRING name, STRING old_owner, STRING new_owner) */
-	if (dbus_message_is_signal (message, BUS_INTERFACE, "NameOwnerChanged") &&
+	if (dbus_message_is_signal (message, DBUS_INTERFACE_DBUS, "NameOwnerChanged") &&
 	    dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &object_name,
 	                           DBUS_TYPE_STRING, &old_owner, DBUS_TYPE_STRING, &new_owner,
 	                           DBUS_TYPE_INVALID)) {
@@ -1044,7 +1044,7 @@ gkd_secret_service_constructor (GType type, guint n_props, GObjectConstructParam
 
 	/* Register for signals that let us know when clients leave the bus */
 	self->match_rule = g_strdup_printf ("type='signal',member=NameOwnerChanged,"
-	                                    "interface='" BUS_INTERFACE "'");
+	                                    "interface='" DBUS_INTERFACE_DBUS "'");
 	dbus_bus_add_match (self->connection, self->match_rule, &error);
 	if (dbus_error_is_set (&error)) {
 		g_warning ("couldn't listen for NameOwnerChanged signal on session bus: %s", error.message);
