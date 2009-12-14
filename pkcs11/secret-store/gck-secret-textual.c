@@ -373,9 +373,12 @@ parse_item (GKeyFile *file, GckSecretItem *item, GckSecretData *sdata,
 		}
 
 		/* Put the secret in the right place */
-		gck_secret_data_set_secret (sdata, identifier, secret);
-		if (secret)
+		if (secret == NULL) {
+			gck_secret_data_remove_secret (sdata, identifier);
+		} else {
+			gck_secret_data_set_secret (sdata, identifier, secret);
 			g_object_unref (secret);
+		}
 	}
 
 	num = 0;
