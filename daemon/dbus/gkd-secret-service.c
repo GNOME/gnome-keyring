@@ -22,8 +22,10 @@
 #include "config.h"
 
 #include "gkd-dbus-util.h"
+#include "gkd-secret-change.h"
 #include "gkd-secret-create.h"
 #include "gkd-secret-error.h"
+#include "gkd-secret-lock.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-property.h"
@@ -376,11 +378,7 @@ service_method_open_session (GkdSecretService *self, DBusMessage *message)
 	caller = dbus_message_get_sender (message);
 
 	/* Now we can create a session with this information */
-	session = g_object_new (GKD_SECRET_TYPE_SESSION,
-	                        "caller", caller,
-	                        "service", self,
-	                        NULL);
-
+	session = gkd_secret_session_new (self, caller);
 	reply = gkd_secret_session_handle_open (session, message);
 
 	if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN) {
@@ -446,46 +444,6 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 }
 
 static DBusMessage*
-service_method_create_with_master_password (GkdSecretService *self, DBusMessage *message)
-{
-	DBusMessageIter iter, array;
-	DBusMessage *reply = NULL;
-	GkdSecretSecret *secret = NULL;
-	GP11Attributes *attrs = NULL;
-	const char *caller;
-
-	caller = dbus_message_get_sender (message);
-	g_return_val_if_fail (caller, NULL);
-
-	/* Parse the incoming message */
-	if (!dbus_message_has_signature (message, "a{sv}(oayay)"))
-		return NULL;
-	if (!dbus_message_iter_init (message, &iter))
-		g_return_val_if_reached (NULL);
-	attrs = gp11_attributes_new ();
-	dbus_message_iter_recurse (&iter, &array);
-	if (!gkd_secret_property_parse_all (&array, attrs)) {
-		gp11_attributes_unref (attrs);
-		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
-		                               "Invalid properties argument");
-	}
-	dbus_message_iter_next (&iter);
-	secret = gkd_secret_secret_parse (message, &iter);
-	if (secret == NULL) {
-		gp11_attributes_unref (attrs);
-		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
-		                               "Invalid secret argument");
-	}
-
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
-	reply = gkd_secret_create_without_prompting (self, message, attrs, secret);
-	gp11_attributes_unref (attrs);
-	gkd_secret_secret_free (secret);
-
-	return reply;
-}
-
-static DBusMessage*
 service_method_lock_service (GkdSecretService *self, DBusMessage *message)
 {
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
@@ -539,6 +497,78 @@ service_method_unlock (GkdSecretService *self, DBusMessage *message)
 	gkd_secret_unlock_reset_results (unlock);
 	g_object_unref (unlock);
 
+	return reply;
+}
+
+static DBusMessage*
+service_method_lock (GkdSecretService *self, DBusMessage *message)
+{
+	DBusMessage *reply;
+	const char *caller;
+	const gchar *prompt;
+	GP11Object *collection;
+	int n_objpaths, i;
+	char **objpaths;
+	GPtrArray *array;
+
+	if (!dbus_message_get_args (message, NULL,
+	                            DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &objpaths, &n_objpaths,
+	                            DBUS_TYPE_INVALID))
+		return NULL;
+
+	caller = dbus_message_get_sender (message);
+	array = g_ptr_array_new ();
+	for (i = 0; i < n_objpaths; ++i) {
+		collection = gkd_secret_objects_lookup_collection (self->objects, caller, objpaths[i]);
+		if (collection != NULL) {
+			if (gkd_secret_lock (collection, NULL))
+				g_ptr_array_add (array, objpaths[i]);
+			g_object_unref (collection);
+		}
+	}
+
+	prompt = "/";
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply,
+	                          DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &array->pdata, array->len,
+	                          DBUS_TYPE_OBJECT_PATH, &prompt,
+	                          DBUS_TYPE_INVALID);
+
+	dbus_free_string_array (objpaths);
+	return reply;
+}
+
+static DBusMessage*
+service_method_change_lock (GkdSecretService *self, DBusMessage *message)
+{
+	GkdSecretChange *change;
+	ServiceClient *client;
+	DBusMessage *reply;
+	const char *caller;
+	const gchar *path;
+	GP11Object *collection;
+
+	caller = dbus_message_get_sender (message);
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
+		return NULL;
+
+	/* Make sure it exists */
+	collection = gkd_secret_objects_lookup_collection (self->objects, caller, path);
+	if (!collection)
+		return dbus_message_new_error (message, SECRET_ERROR_NO_SUCH_OBJECT,
+		                               "The collection does not exist");
+	g_object_unref (collection);
+
+	change = gkd_secret_change_new (self, caller, path);
+	client = g_hash_table_lookup (self->clients, caller);
+	g_return_val_if_fail (client, NULL);
+	path = gkd_secret_prompt_get_object_path (GKD_SECRET_PROMPT (change));
+	g_hash_table_replace (client->prompts, (gpointer)path, g_object_ref (change));
+
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
+
+	g_object_unref (change);
 	return reply;
 }
 
@@ -621,6 +651,151 @@ service_method_set_alias (GkdSecretService *self, DBusMessage *message)
 }
 
 static DBusMessage*
+service_method_create_with_master_password (GkdSecretService *self, DBusMessage *message)
+{
+	DBusError derr = DBUS_ERROR_INIT;
+	DBusMessageIter iter, array;
+	DBusMessage *reply = NULL;
+	GkdSecretSecret *secret = NULL;
+	GP11Attributes *attrs = NULL;
+	gchar *path;
+
+	/* Parse the incoming message */
+	if (!dbus_message_has_signature (message, "a{sv}(oayay)"))
+		return NULL;
+	if (!dbus_message_iter_init (message, &iter))
+		g_return_val_if_reached (NULL);
+	attrs = gp11_attributes_new ();
+	dbus_message_iter_recurse (&iter, &array);
+	if (!gkd_secret_property_parse_all (&array, attrs)) {
+		gp11_attributes_unref (attrs);
+		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+		                               "Invalid properties argument");
+	}
+	dbus_message_iter_next (&iter);
+	secret = gkd_secret_secret_parse (self, message, &iter, &derr);
+	if (secret == NULL) {
+		gp11_attributes_unref (attrs);
+		return gkd_secret_error_to_reply (message, &derr);
+	}
+
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	path = gkd_secret_create_with_secret (attrs, secret, &derr);
+	gp11_attributes_unref (attrs);
+	gkd_secret_secret_free (secret);
+
+	if (path == NULL)
+		return gkd_secret_error_to_reply (message, &derr);
+
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
+	g_free (path);
+
+	return reply;
+}
+
+static DBusMessage*
+service_method_change_with_master_password (GkdSecretService *self, DBusMessage *message)
+{
+	DBusError derr = DBUS_ERROR_INIT;
+	GkdSecretSecret *original, *master;
+	GP11Object *collection;
+	DBusMessageIter iter;
+	DBusMessage *reply;
+	const gchar *path;
+
+	/* Parse the incoming message */
+	if (!dbus_message_has_signature (message, "o(oayay)(oayay)"))
+		return NULL;
+	if (!dbus_message_iter_init (message, &iter))
+		g_return_val_if_reached (NULL);
+	dbus_message_iter_get_basic (&iter, &path);
+	dbus_message_iter_next (&iter);
+	original = gkd_secret_secret_parse (self, message, &iter, &derr);
+	if (original == NULL)
+		return gkd_secret_error_to_reply (message, &derr);
+	dbus_message_iter_next (&iter);
+	master = gkd_secret_secret_parse (self, message, &iter, &derr);
+	if (master == NULL) {
+		gkd_secret_secret_free (original);
+		return gkd_secret_error_to_reply (message, &derr);
+	}
+
+	/* Make sure we have such a collection */
+	collection = gkd_secret_objects_lookup_collection (self->objects,
+	                                                   dbus_message_get_sender (message),
+	                                                   path);
+
+	/* No such collection */
+	if (collection == NULL)
+		reply = dbus_message_new_error (message, SECRET_ERROR_NO_SUCH_OBJECT,
+		                                "The collection does not exist");
+
+	/* Success */
+	else if (gkd_secret_change_with_secrets (collection, original, master, &derr))
+		reply = dbus_message_new_method_return (message);
+
+	/* Failure */
+	else
+		reply = gkd_secret_error_to_reply (message, &derr);
+
+	gkd_secret_secret_free (original);
+	gkd_secret_secret_free (master);
+
+	if (collection)
+		g_object_unref (collection);
+
+	return reply;
+}
+
+static DBusMessage*
+service_method_unlock_with_master_password (GkdSecretService *self, DBusMessage *message)
+{
+	DBusError derr = DBUS_ERROR_INIT;
+	GkdSecretSecret *master;
+	GP11Object *collection;
+	DBusMessageIter iter;
+	DBusMessage *reply;
+	const gchar *path;
+
+	/* Parse the incoming message */
+	if (!dbus_message_has_signature (message, "o(oayay)"))
+		return NULL;
+	if (!dbus_message_iter_init (message, &iter))
+		g_return_val_if_reached (NULL);
+	dbus_message_iter_get_basic (&iter, &path);
+	dbus_message_iter_next (&iter);
+	master = gkd_secret_secret_parse (self, message, &iter, &derr);
+	if (master == NULL)
+		return gkd_secret_error_to_reply (message, &derr);
+
+	/* Make sure we have such a collection */
+	collection = gkd_secret_objects_lookup_collection (self->objects,
+	                                                   dbus_message_get_sender (message),
+	                                                   path);
+
+	/* No such collection */
+	if (collection == NULL)
+		reply = dbus_message_new_error (message, SECRET_ERROR_NO_SUCH_OBJECT,
+		                                "The collection does not exist");
+
+	/* Success */
+	else if (gkd_secret_unlock_with_secret (collection, master, &derr))
+		reply = dbus_message_new_method_return (message);
+
+	/* Failure */
+	else
+		reply = gkd_secret_error_to_reply (message, &derr);
+
+	gkd_secret_secret_free (master);
+
+	if (collection)
+		g_object_unref (collection);
+
+	return reply;
+}
+
+static DBusMessage*
 service_message_handler (GkdSecretService *self, DBusMessage *message)
 {
 	g_return_val_if_fail (message, NULL);
@@ -650,17 +825,37 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Unlock"))
 		return service_method_unlock (self, message);
 
-	/* org.freedesktop.Secret.Service.ReadAlias */
+	/* org.freedesktop.Secret.Service.Lock() */
+	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Lock"))
+		return service_method_lock (self, message);
+
+	/* org.gnome.keyring.Service.ChangeLock() */
+	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "ChangeLock"))
+		return service_method_change_lock (self, message);
+
+	/* org.freedesktop.Secret.Service.ReadAlias() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "ReadAlias"))
 		return service_method_read_alias (self, message);
 
-	/* org.freedesktop.Secret.Service.SetAlias */
+	/* org.freedesktop.Secret.Service.SetAlias() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SetAlias"))
 		return service_method_set_alias (self, message);
 
-	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.CreateCollectionWithPassword */
+	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.ChangeLock() */
+	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "ChangeLock"))
+		return service_method_change_lock (self, message);
+
+	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.CreateWithMasterPassword */
 	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "CreateWithMasterPassword"))
 		return service_method_create_with_master_password (self, message);
+
+	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.ChangeWithMasterPassword() */
+	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "ChangeWithMasterPassword"))
+		return service_method_change_with_master_password (self, message);
+
+	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.UnlockWithMasterPassword() */
+	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "UnlockWithMasterPassword"))
+		return service_method_unlock_with_master_password (self, message);
 
 	/* org.freedesktop.DBus.Properties.Get() */
 	if (dbus_message_is_method_call (message, PROPERTIES_INTERFACE, "Get"))

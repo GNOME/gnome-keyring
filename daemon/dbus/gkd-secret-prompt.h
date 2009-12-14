@@ -66,7 +66,17 @@ const gchar*        gkd_secret_prompt_get_object_path         (GkdSecretPrompt *
 
 GP11Session*        gkd_secret_prompt_get_pkcs11_session      (GkdSecretPrompt *self);
 
+GkdSecretService*   gkd_secret_prompt_get_service             (GkdSecretPrompt *self);
+
 GkdSecretObjects*   gkd_secret_prompt_get_objects             (GkdSecretPrompt *self);
+
+GkdSecretSession*   gkd_secret_prompt_get_session             (GkdSecretPrompt *self);
+
+GkdSecretSecret*    gkd_secret_prompt_get_secret              (GkdSecretPrompt *self,
+                                                               const gchar *password_type);
+
+GP11Object*         gkd_secret_prompt_lookup_collection       (GkdSecretPrompt *self,
+                                                               const gchar *path);
 
 void                gkd_secret_prompt_complete                (GkdSecretPrompt *self);
 

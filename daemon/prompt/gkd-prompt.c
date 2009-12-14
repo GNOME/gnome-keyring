@@ -44,6 +44,13 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
+typedef struct _TransportCrypto {
+	gcry_mpi_t private;
+	gcry_mpi_t prime;
+	gpointer key;
+	gsize n_key;
+} TransportCrypto;
+
 struct _GkdPromptPrivate {
 	GKeyFile *input;
 	GKeyFile *output;
@@ -52,10 +59,7 @@ struct _GkdPromptPrivate {
 	gboolean failure;
 
 	/* Transport crypto */
-	gcry_mpi_t secret;
-	gcry_mpi_t prime;
-	gpointer key;
-	gsize n_key;
+	TransportCrypto *transport;
 
 	/* Information about child */
 	GPid pid;
@@ -279,46 +283,70 @@ on_child_exited (GPid pid, gint status, gpointer user_data)
 static void
 prepare_transport_crypto (GkdPrompt *self)
 {
+	TransportCrypto *transport;
 	gcry_mpi_t pub, base;
 
-	g_assert (!self->pv->prime);
-	g_assert (!self->pv->secret);
+	if (!g_key_file_has_group (self->pv->input, "transport")) {
+		g_assert (!self->pv->transport);
+		transport = g_slice_new0 (TransportCrypto);
 
-	/* Figure out our prime, base, public and secret bits */
-	if (!egg_dh_default_params ("ietf-ike-grp-modp-1536", &self->pv->prime, &base) ||
-	    !egg_dh_gen_pair (self->pv->prime, base, 0, &pub, &self->pv->secret))
-		g_return_if_reached ();
+		/* Figure out our prime, base, public and secret bits */
+		if (!egg_dh_default_params ("ietf-ike-grp-modp-1536", &transport->prime, &base) ||
+		    !egg_dh_gen_pair (transport->prime, base, 0, &pub, &transport->private))
+			g_return_if_reached ();
 
-	/* Send over the prime, base, and public bits */
-	gkd_prompt_util_encode_mpi (self->pv->input, "transport", "prime", self->pv->prime);
-	gkd_prompt_util_encode_mpi (self->pv->input, "transport", "base", base);
-	gkd_prompt_util_encode_mpi (self->pv->input, "transport", "public", pub);
+		/* Send over the prime, base, and public bits */
+		gkd_prompt_util_encode_mpi (self->pv->input, "transport", "prime", transport->prime);
+		gkd_prompt_util_encode_mpi (self->pv->input, "transport", "base", base);
+		gkd_prompt_util_encode_mpi (self->pv->input, "transport", "public", pub);
 
-	gcry_mpi_release (base);
-	gcry_mpi_release (pub);
+		gcry_mpi_release (base);
+		gcry_mpi_release (pub);
+
+		self->pv->transport = transport;
+	}
+
+	if (self->pv->transport) {
+		egg_secure_free (self->pv->transport->key);
+		self->pv->transport->key = NULL;
+		self->pv->transport->n_key = 0;
+	}
 }
 
-static gboolean
-receive_transport_crypto (GkdPrompt *self)
+static gconstpointer
+calculate_transport_key (GkdPrompt *self, gsize *n_key)
 {
 	gcry_mpi_t peer;
 	gpointer value;
 
 	g_assert (self->pv->output);
+	g_assert (n_key);
 
-	if (!gkd_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
-		return FALSE;
+	if (!self->pv->transport) {
+		g_warning ("GkdPrompt did not negotiate crypto, but its caller is now asking"
+		           " it to do the decryption. This is an error in gnome-keyring");
+		return NULL;
+	}
 
-	value = egg_dh_gen_secret (peer, self->pv->secret, self->pv->prime, 16);
-	gcry_mpi_release (peer);
-	if (!value)
-		return FALSE;
+	if (!self->pv->transport->key) {
+		if (!gkd_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
+			return NULL;
 
-	egg_secure_free (self->pv->key);
-	self->pv->key = value;
-	self->pv->n_key = 16;
+		value = egg_dh_gen_secret (peer, self->pv->transport->private,
+		                           self->pv->transport->prime, 16);
 
-	return TRUE;
+		gcry_mpi_release (peer);
+
+		if (!value)
+			return NULL;
+
+		egg_secure_free (self->pv->transport->key);
+		self->pv->transport->key = value;
+		self->pv->transport->n_key = 16;
+	}
+
+	*n_key = self->pv->transport->n_key;
+	return self->pv->transport->key;
 }
 
 static gboolean
@@ -409,6 +437,8 @@ display_async_prompt (GkdPrompt *self)
 static void
 clear_prompt_data (GkdPrompt *self)
 {
+	TransportCrypto *transport;
+
 	if (self->pv->input)
 		g_key_file_free (self->pv->input);
 	self->pv->input = NULL;
@@ -436,19 +466,18 @@ clear_prompt_data (GkdPrompt *self)
 		g_source_remove (self->pv->io_tag);
 	self->pv->io_tag = 0;
 
-	if (self->pv->prime)
-		gcry_mpi_release (self->pv->prime);
-	self->pv->prime = NULL;
-
-	if (self->pv->secret)
-		gcry_mpi_release (self->pv->secret);
-	self->pv->secret = NULL;
-
-	if (self->pv->key) {
-		egg_secure_clear (self->pv->key, self->pv->n_key);
-		egg_secure_free (self->pv->key);
-		self->pv->key = NULL;
-		self->pv->n_key = 0;
+	if (self->pv->transport) {
+		transport = self->pv->transport;
+		if (transport->prime)
+			gcry_mpi_release (transport->prime);
+		if (transport->private)
+			gcry_mpi_release (transport->private);
+		if (transport->key) {
+			egg_secure_clear (transport->key, transport->n_key);
+			egg_secure_free (transport->key);
+		}
+		g_slice_free (TransportCrypto, transport);
+		self->pv->transport = NULL;
 	}
 }
 
@@ -511,9 +540,7 @@ gkd_prompt_finalize (GObject *obj)
 	g_assert (!self->pv->out_data);
 	g_assert (!self->pv->err_data);
 	g_assert (!self->pv->io_tag);
-	g_assert (!self->pv->prime);
-	g_assert (!self->pv->secret);
-	g_assert (!self->pv->key);
+	g_assert (!self->pv->transport);
 
 	g_free (self->pv->executable);
 	self->pv->executable = NULL;
@@ -638,51 +665,37 @@ gkd_prompt_get_response (GkdPrompt *self)
 gchar*
 gkd_prompt_get_password (GkdPrompt *self, const gchar *password_type)
 {
-	gboolean encrypted;
 	gchar *result;
-	guchar *data;
+	gpointer data;
 	gsize n_data;
-	guchar *iv;
-	gsize n_iv;
+	gconstpointer key;
+	gsize n_key;
+	gpointer parameter;
+	gsize n_parameter;
 
 	g_return_val_if_fail (GKD_IS_PROMPT (self), NULL);
-	g_return_val_if_fail (self->pv->output, NULL);
 
-	if (self->pv->failure)
+	if (!gkd_prompt_get_transport_password (self, password_type,
+	                                        &parameter, &n_parameter,
+	                                        &data, &n_data))
 		return NULL;
-
-	g_assert (self->pv->output);
-
-	if (!password_type)
-		password_type = "password";
-
-	encrypted = g_key_file_get_boolean (self->pv->output, password_type, "encrypted", NULL);
-	if (!encrypted)
-		return g_key_file_get_string (self->pv->output, password_type, "value", NULL);
 
 	/* Parse the encryption params and figure out a key */
-	if (!self->pv->key && !receive_transport_crypto (self))
-		g_return_val_if_reached (NULL);
+	if (n_parameter) {
+		key = calculate_transport_key (self, &n_key);
+		g_return_val_if_fail (key, NULL);
+		result = gkd_prompt_util_decrypt_text (key, n_key,
+		                                       parameter, n_parameter,
+		                                       data, n_data);
 
-	/* Parse out an IV */
-	iv = gkd_prompt_util_decode_hex (self->pv->output, password_type, "iv", &n_iv);
-	if (iv == NULL) {
-		g_warning ("prompt response has encrypted password, but no iv set");
-		return NULL;
+	/* A non-encrypted password */
+	} else {
+		result = egg_secure_alloc (n_data + 1);
+		memcpy (result, data, n_data);
 	}
 
-	/* Parse out the password */
-	data = gkd_prompt_util_decode_hex (self->pv->output, password_type, "value", &n_data);
-	if (data == NULL) {
-		g_warning ("prompt response missing encrypted password value");
-		g_free (iv);
-		return NULL;
-	}
-
-	result = gkd_prompt_util_decrypt_text (self->pv->key, self->pv->n_key, iv, n_iv, data, n_data);
+	g_free (parameter);
 	g_free (data);
-	g_free (iv);
-
 	return result;
 }
 
@@ -731,6 +744,65 @@ gkd_prompt_reset (GkdPrompt *self)
 
 	clear_prompt_data (self);
 	self->pv->input = g_key_file_new ();
+}
+
+
+void
+gkd_prompt_set_transport_param (GkdPrompt *self, const gchar *name,
+                                gconstpointer value, gsize n_value)
+{
+	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (self->pv->input);
+	g_return_if_fail (name);
+	gkd_prompt_util_encode_hex (self->pv->input, "transport", name, value, n_value);
+}
+
+gpointer
+gkd_prompt_get_transport_param (GkdPrompt *self, const gchar *name, gsize *n_value)
+{
+	g_return_val_if_fail (GKD_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (name, NULL);
+	g_return_val_if_fail (*n_value, NULL);
+
+	if (self->pv->failure)
+		return NULL;
+
+	g_return_val_if_fail (self->pv->output, NULL);
+	return gkd_prompt_util_decode_hex (self->pv->output, "transport", name, n_value);
+
+}
+
+gboolean
+gkd_prompt_get_transport_password (GkdPrompt *self, const gchar *password_type,
+                                   gpointer *parameter, gsize *n_parameter,
+                                   gpointer *value, gsize *n_value)
+{
+	if (!password_type)
+		password_type = "password";
+
+	g_return_val_if_fail (parameter, FALSE);
+	g_return_val_if_fail (n_parameter, FALSE);
+	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (n_value, FALSE);
+
+	if (self->pv->failure)
+		return FALSE;
+
+	g_return_val_if_fail (self->pv->output, FALSE);
+
+	/* Parse out an IV */
+	*parameter = gkd_prompt_util_decode_hex (self->pv->output, password_type,
+	                                         "parameter", n_parameter);
+	if (*parameter == NULL)
+		*n_parameter = 0;
+
+	/* Parse out the password */
+	*value = gkd_prompt_util_decode_hex (self->pv->output, password_type,
+	                                     "value", n_value);
+	if (*value == NULL)
+		*n_value = 0;
+
+	return TRUE;
 }
 
 /* ----------------------------------------------------------------------------------
@@ -925,4 +997,3 @@ gkd_prompt_request_attention_async (const gchar *window_id, GkdPromptAttentionFu
 
 	g_timeout_add (0, service_attention_req, att);
 }
-

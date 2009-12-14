@@ -25,7 +25,8 @@
 #define BUS_INTERFACE                  "org.freedesktop.DBus"
 #define PROPERTIES_INTERFACE           "org.freedesktop.DBus.Properties"
 
-#define INTERNAL_SERVICE_INTERFACE      "org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface"
+#define INTERNAL_SERVICE_INTERFACE     "org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface"
+#define INTERNAL_ERROR_DENIED          "org.gnome.keyring.Error.Denied"
 
 #define SECRET_COLLECTION_INTERFACE    "org.freedesktop.Secret.Collection"
 #define SECRET_ITEM_INTERFACE          "org.freedesktop.Secret.Item"
@@ -49,6 +50,7 @@
 #define SECRET_ERROR_NO_SUCH_OBJECT    "org.freedesktop.Secret.Error.NoSuchObject"
 
 typedef struct _GkdSecretCollection GkdSecretCollection;
+typedef struct _GkdSecretChange GkdSecretChange;
 typedef struct _GkdSecretCreate GkdSecretCreate;
 typedef struct _GkdSecretIndex GkdSecretIndex;
 typedef struct _GkdSecretItem GkdSecretItem;

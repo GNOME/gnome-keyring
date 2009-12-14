@@ -53,9 +53,8 @@ GP11Object*         gkd_secret_create_with_credential         (GP11Session *sess
                                                                GP11Object *cred,
                                                                GError **error);
 
-DBusMessage*        gkd_secret_create_without_prompting       (GkdSecretService *service,
-                                                               DBusMessage *message,
-                                                               GP11Attributes *attrs,
-                                                               GkdSecretSecret *master);
+gchar*              gkd_secret_create_with_secret             (GP11Attributes *attrs,
+                                                               GkdSecretSecret *master,
+                                                               DBusError *derr);
 
 #endif /* __GKD_SECRET_CREATE_H__ */

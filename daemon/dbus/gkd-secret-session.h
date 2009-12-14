@@ -41,14 +41,16 @@ struct _GkdSecretSessionClass {
 
 GType               gkd_secret_session_get_type                (void);
 
-GkdSecretSession*   gkd_secret_session_for_path                (GkdSecretService *service,
-                                                                const gchar *path,
-                                                                const gchar *caller,
-                                                                DBusError *derr);
+GkdSecretSession*   gkd_secret_session_new                     (GkdSecretService *service,
+                                                                const gchar *caller);
 
-GkdSecretSession*   gkd_secret_session_for_secret              (GkdSecretService *service,
-                                                                GkdSecretSecret *secret,
-                                                                DBusError *derr);
+gpointer            gkd_secret_session_begin                   (GkdSecretSession *self,
+                                                                const gchar *group,
+                                                                gsize *n_public);
+
+gboolean            gkd_secret_session_complete                (GkdSecretSession *self,
+                                                                gconstpointer peer,
+                                                                gsize n_peer);
 
 DBusMessage*        gkd_secret_session_dispatch                (GkdSecretSession *self,
                                                                 DBusMessage *message);
@@ -58,6 +60,8 @@ const gchar*        gkd_secret_session_get_caller              (GkdSecretSession
 const gchar*        gkd_secret_session_get_caller_executable   (GkdSecretSession *self);
 
 const gchar*        gkd_secret_session_get_object_path         (GkdSecretSession *self);
+
+GP11Session*        gkd_secret_session_get_pkcs11_session      (GkdSecretSession *self);
 
 GkdSecretSecret*    gkd_secret_session_get_item_secret         (GkdSecretSession *self,
                                                                 GP11Object *item,

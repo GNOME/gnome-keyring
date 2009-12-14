@@ -25,10 +25,14 @@
 #include "gkd-secret-service.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-objects.h"
+#include "gkd-secret-secret.h"
+#include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
 
 #include "prompt/gkd-prompt.h"
+
+#include "egg/egg-dh.h"
 
 #include <string.h>
 
@@ -39,11 +43,15 @@ enum {
 	PROP_SERVICE
 };
 
+#define PROMPT_IKE_GROUP  "ietf-ike-grp-modp-1536"
+
 struct _GkdSecretPromptPrivate {
 	GkdPrompt parent;
 	gchar *object_path;
 	GkdSecretService *service;
+	GkdSecretSession *session;
 	gboolean prompted;
+	gboolean negotiated;
 	gboolean completed;
 	gchar *caller;
 	gchar *window_id;
@@ -58,6 +66,61 @@ static guint unique_prompt_number = 0;
  * INTERNAL
  */
 
+static void
+setup_transport_params (GkdSecretPrompt *self)
+{
+	GkdPrompt *prompt = GKD_PROMPT (self);
+	gsize n_public, n_prime, n_base;
+	gconstpointer prime, base;
+	gpointer public;
+
+	if (self->pv->session)
+		g_object_unref (self->pv->session);
+	self->pv->session = gkd_secret_session_new (self->pv->service, self->pv->caller);
+
+	public = gkd_secret_session_begin (self->pv->session, PROMPT_IKE_GROUP, &n_public);
+	g_return_if_fail (public);
+	self->pv->negotiated = FALSE;
+
+	gkd_prompt_set_transport_param (prompt, "public", public, n_public);
+	g_free (public);
+
+	/* Setup transport crypto */
+	if (!egg_dh_default_params_raw (PROMPT_IKE_GROUP, &prime, &n_prime, &base, &n_base))
+		g_return_if_reached ();
+
+	gkd_prompt_set_transport_param (prompt, "prime", prime, n_prime);
+	gkd_prompt_set_transport_param (prompt, "base", base, n_base);
+}
+
+static gboolean
+complete_transport_params (GkdSecretPrompt *self)
+{
+	GkdPrompt *prompt = GKD_PROMPT (self);
+	gboolean result;
+	gsize n_peer;
+	gpointer peer;
+
+	if (self->pv->negotiated)
+		return TRUE;
+
+	g_return_val_if_fail (self->pv->session, FALSE);
+
+	peer = gkd_prompt_get_transport_param (prompt, "public", &n_peer);
+	if (peer == NULL) {
+		g_warning ("prompt did not return a public dh key");
+		return FALSE;
+	}
+
+	result = gkd_secret_session_complete (self->pv->session, peer, n_peer);
+	g_free (peer);
+
+	if (!result)
+		g_warning ("negotiation of transport crypto with prompt failed");
+
+	return result;
+}
+
 static GkdPrompt*
 on_prompt_attention (gpointer user_data)
 {
@@ -69,6 +132,8 @@ on_prompt_attention (gpointer user_data)
 
 	if (self->pv->completed)
 		return NULL;
+
+	setup_transport_params (self);
 	return g_object_ref (self);
 }
 
@@ -165,7 +230,14 @@ gkd_secret_prompt_responded (GkdPrompt *base)
 	/* Check with the prompt ready guys */
 	g_return_val_if_fail (GKD_SECRET_PROMPT_GET_CLASS (self)->prompt_ready, TRUE);
 	GKD_SECRET_PROMPT_GET_CLASS (self)->prompt_ready (self);
-	return !self->pv->completed;
+
+	/* Not yet done, will display again */
+	if (!self->pv->completed) {
+		setup_transport_params (self);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void
@@ -217,6 +289,10 @@ gkd_secret_prompt_dispose (GObject *obj)
 		self->pv->service = NULL;
 	}
 
+	if (self->pv->session)
+		g_object_unref (self->pv->session);
+	self->pv->session = NULL;
+
 	G_OBJECT_CLASS (gkd_secret_prompt_parent_class)->dispose (obj);
 }
 
@@ -227,6 +303,7 @@ gkd_secret_prompt_finalize (GObject *obj)
 
 	g_assert (!self->pv->object_path);
 	g_assert (!self->pv->service);
+	g_assert (!self->pv->session);
 
 	g_free (self->pv->caller);
 	self->pv->caller = NULL;
@@ -390,4 +467,45 @@ gkd_secret_prompt_dismiss (GkdSecretPrompt *self)
 	g_return_if_fail (!self->pv->completed);
 	self->pv->completed = TRUE;
 	emit_completed (self, TRUE);
+}
+
+GkdSecretSession*
+gkd_secret_prompt_get_session (GkdSecretPrompt *self)
+{
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (self->pv->service, NULL);
+	return self->pv->session;
+}
+
+GP11Object*
+gkd_secret_prompt_lookup_collection (GkdSecretPrompt *self, const gchar *path)
+{
+	GkdSecretObjects *objects;
+
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (path, NULL);
+
+	objects = gkd_secret_prompt_get_objects (GKD_SECRET_PROMPT (self));
+	return gkd_secret_objects_lookup_collection (objects, self->pv->caller, path);
+}
+
+GkdSecretSecret*
+gkd_secret_prompt_get_secret (GkdSecretPrompt *self, const gchar *password_type)
+{
+	gpointer parameter, value;
+	gsize n_parameter, n_value;
+
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
+
+	if (!complete_transport_params (self))
+		return NULL;
+
+	if (!gkd_prompt_get_transport_password (GKD_PROMPT (self), password_type,
+	                                        &parameter, &n_parameter,
+	                                        &value, &n_value))
+		return NULL;
+
+	return gkd_secret_secret_new_take_memory (self->pv->session,
+	                                          parameter, n_parameter,
+	                                          value, n_value);
 }

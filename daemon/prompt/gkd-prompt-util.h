@@ -38,10 +38,12 @@ gboolean    gkd_prompt_util_decode_mpi                   (GKeyFile *key_file, co
 gpointer    gkd_prompt_util_decode_hex                   (GKeyFile *key_file, const gchar *section,
                                                           const gchar *field, gsize *n_result);
 
-gpointer    gkd_prompt_util_encrypt_text                 (gpointer key, gsize n_key, gpointer iv, gsize n_iv,
+gpointer    gkd_prompt_util_encrypt_text                 (gconstpointer key, gsize n_key,
+                                                          gconstpointer iv, gsize n_iv,
                                                           const gchar *text, gsize *n_result);
 
-gchar*      gkd_prompt_util_decrypt_text                 (gpointer key, gsize n_key, gpointer iv, gsize n_iv,
-                                                          gpointer data, gsize n_data);
+gchar*      gkd_prompt_util_decrypt_text                 (gconstpointer key, gsize n_key,
+                                                          gconstpointer iv, gsize n_iv,
+                                                          gconstpointer data, gsize n_data);
 
 #endif /* __GKD_PROMPT_H__ */

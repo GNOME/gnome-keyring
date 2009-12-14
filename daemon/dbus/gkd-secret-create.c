@@ -90,80 +90,23 @@ prepare_create_prompt (GkdSecretCreate *self)
 }
 
 static gboolean
-create_collection_with_credential (GkdSecretCreate *self, GP11Object *cred)
+create_collection_with_secret (GkdSecretCreate *self, GkdSecretSecret *master)
 {
-	GError *error = NULL;
-	GP11Object *collection;
-	GP11Session *session;
-	gpointer identifier;
-	gsize n_identifier;
+	DBusError derr = DBUS_ERROR_INIT;
 
 	g_assert (GKD_SECRET_IS_CREATE (self));
-	g_return_val_if_fail (self->pkcs11_attrs, FALSE);
-	g_return_val_if_fail (!self->result_path, FALSE);
-	g_return_val_if_fail (GP11_IS_OBJECT (cred), FALSE);
+	g_assert (master);
+	g_assert (!self->result_path);
 
-	session =  gkd_secret_prompt_get_pkcs11_session (GKD_SECRET_PROMPT (self));
-	g_return_val_if_fail (session, FALSE);
+	self->result_path = gkd_secret_create_with_secret (self->pkcs11_attrs, master, &derr);
 
-	collection = gkd_secret_create_with_credential (session, self->pkcs11_attrs, cred, &error);
-	if (!collection) {
-		g_warning ("couldn't create collection: %s", error->message);
-		g_clear_error (&error);
+	if (!self->result_path) {
+		g_warning ("couldn't create new collection: %s", derr.message);
+		dbus_error_free (&derr);
 		return FALSE;
 	}
-
-	identifier = gp11_object_get_data (collection, CKA_ID, &n_identifier, &error);
-	g_object_unref (collection);
-
-	if (!identifier) {
-		g_warning ("couldn't lookup new collection identifier: %s", error->message);
-		g_clear_error (&error);
-		return FALSE;
-	}
-
-	self->result_path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
-	g_free (identifier);
 
 	return TRUE;
-}
-
-static gboolean
-create_collection_with_password (GkdSecretCreate *self, const gchar *password)
-{
-	GError *error = NULL;
-	GP11Session *session;
-	GP11Object *cred;
-	gsize n_password;
-	gboolean token;
-	gboolean result;
-
-	g_assert (GKD_SECRET_IS_CREATE (self));
-
-	if (!gp11_attributes_find_boolean (self->pkcs11_attrs, CKA_TOKEN, &token))
-		token = FALSE;
-	n_password = password ? strlen (password) : 0;
-
-	session =  gkd_secret_prompt_get_pkcs11_session (GKD_SECRET_PROMPT (self));
-	g_return_val_if_fail (session, FALSE);
-
-	cred = gp11_session_create_object (session, &error,
-	                                   CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-	                                   CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
-	                                   CKA_TOKEN, GP11_BOOLEAN, token,
-	                                   CKA_VALUE, n_password, password,
-	                                   GP11_INVALID);
-
-	if (!cred) {
-		g_warning ("couldn't create credential for new collection: %s", error->message);
-		g_clear_error (&error);
-		return FALSE;
-	}
-
-	result = create_collection_with_credential (self, cred);
-	g_object_unref (cred);
-
-	return result;
 }
 
 /* -----------------------------------------------------------------------------
@@ -171,27 +114,26 @@ create_collection_with_password (GkdSecretCreate *self, const gchar *password)
  */
 
 static void
-gkd_secret_create_prompt_ready (GkdSecretPrompt *base)
+gkd_secret_create_prompt_ready (GkdSecretPrompt *prompt)
 {
-	GkdSecretCreate *self = GKD_SECRET_CREATE (base);
-	GkdPrompt *prompt = GKD_PROMPT (self);
-	gchar *password;
+	GkdSecretCreate *self = GKD_SECRET_CREATE (prompt);
+	GkdSecretSecret *master;
 
-	if (!gkd_prompt_has_response (prompt)) {
+	if (!gkd_prompt_has_response (GKD_PROMPT (prompt))) {
 		prepare_create_prompt (self);
 		return;
 	}
 
 	/* Already prompted, create collection */
-	g_return_if_fail (gkd_prompt_get_response (prompt) == GKD_RESPONSE_OK);
-	password = gkd_prompt_get_password (prompt, "password");
+	g_return_if_fail (gkd_prompt_get_response (GKD_PROMPT (prompt)) == GKD_RESPONSE_OK);
+	master = gkd_secret_prompt_get_secret (prompt, "password");
 
-	if (create_collection_with_password (self, password))
-		gkd_secret_prompt_complete (GKD_SECRET_PROMPT (self));
+	if (master && create_collection_with_secret (self, master))
+		gkd_secret_prompt_complete (prompt);
 	else
-		gkd_secret_prompt_dismiss (GKD_SECRET_PROMPT (self));
+		gkd_secret_prompt_dismiss (prompt);
 
-	egg_secure_strfree (password);
+	gkd_secret_secret_free (master);
 }
 
 static void
@@ -221,6 +163,9 @@ gkd_secret_create_finalize (GObject *obj)
 	if (self->pkcs11_attrs)
 		gp11_attributes_unref (self->pkcs11_attrs);
 	self->pkcs11_attrs = NULL;
+
+	g_free (self->result_path);
+	self->result_path = NULL;
 
 	G_OBJECT_CLASS (gkd_secret_create_parent_class)->finalize (obj);
 }
@@ -321,27 +266,19 @@ gkd_secret_create_with_credential (GP11Session *session, GP11Attributes *attrs,
 	return collection;
 }
 
-DBusMessage*
-gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *message,
-                                     GP11Attributes *attrs, GkdSecretSecret *master)
+gchar*
+gkd_secret_create_with_secret (GP11Attributes *attrs, GkdSecretSecret *master,
+                               DBusError *derr)
 {
-	DBusError derr = DBUS_ERROR_INIT;
-	GkdSecretSession *session;
 	GP11Attributes *atts;
-	DBusMessage *reply;
 	GP11Object *cred;
 	GP11Object *collection;
-	GP11Session *pkcs11_session;
+	GP11Session *session;
 	GError *error = NULL;
 	gpointer identifier;
 	gsize n_identifier;
 	gboolean token;
 	gchar *path;
-
-	/* Figure out the session */
-	session = gkd_secret_session_for_secret (service, master, &derr);
-	if (session == NULL)
-		return gkd_secret_error_to_reply (message, &derr);
 
 	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
@@ -351,17 +288,17 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 	                             CKA_TOKEN, GP11_BOOLEAN, token,
 	                             GP11_INVALID);
 
-	pkcs11_session = gkd_secret_service_get_pkcs11_session (service, dbus_message_get_sender (message));
-	g_return_val_if_fail (pkcs11_session, NULL);
+	session = gkd_secret_session_get_pkcs11_session (master->session);
+	g_return_val_if_fail (session, NULL);
 
 	/* Create ourselves some credentials */
-	cred = gkd_secret_session_create_credential (session, pkcs11_session, atts, master, &derr);
+	cred = gkd_secret_session_create_credential (master->session, session, atts, master, derr);
 	gp11_attributes_unref (atts);
 
 	if (cred == NULL)
-		return gkd_secret_error_to_reply (message, &derr);
+		return FALSE;
 
-	collection = gkd_secret_create_with_credential (pkcs11_session, attrs, cred, &error);
+	collection = gkd_secret_create_with_credential (session, attrs, cred, &error);
 
 	gp11_attributes_unref (atts);
 	g_object_unref (cred);
@@ -369,29 +306,22 @@ gkd_secret_create_without_prompting (GkdSecretService *service, DBusMessage *mes
 	if (collection == NULL) {
 		g_warning ("couldn't create collection: %s", error->message);
 		g_clear_error (&error);
-		return dbus_message_new_error (message, DBUS_ERROR_FAILED,
-		                               "Couldn't create new collection");
+		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't create new collection");
+		return FALSE;
 	}
 
-	gp11_object_set_session (collection, pkcs11_session);
+	gp11_object_set_session (collection, session);
 	identifier = gp11_object_get_data (collection, CKA_ID, &n_identifier, &error);
 	g_object_unref (collection);
 
 	if (!identifier) {
 		g_warning ("couldn't lookup new collection identifier: %s", error->message);
 		g_clear_error (&error);
-		return dbus_message_new_error (message, DBUS_ERROR_FAILED,
-		                               "Couldn't find new collection just created");
+		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't find new collection just created");
+		return FALSE;
 	}
 
 	path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
 	g_free (identifier);
-
-	reply = dbus_message_new_method_return (message);
-	dbus_message_append_args (reply,
-	                          DBUS_TYPE_OBJECT_PATH, &path,
-	                          DBUS_TYPE_INVALID);
-	g_free (path);
-
-	return reply;
+	return path;
 }

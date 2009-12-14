@@ -292,7 +292,7 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 	                                     gtk_entry_get_text (entry), &n_data);
 	g_return_if_fail (data);
 
-	gkd_prompt_util_encode_hex (output_data, password_type, "iv", iv, sizeof (iv));
+	gkd_prompt_util_encode_hex (output_data, password_type, "parameter", iv, sizeof (iv));
 	gkd_prompt_util_encode_hex (output_data, password_type, "value", data, n_data);
 
 	g_free (data);

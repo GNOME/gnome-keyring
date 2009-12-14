@@ -29,8 +29,8 @@
 #include <dbus/dbus.h>
 
 struct _GkdSecretSecret {
-	gchar *path;
-	gchar *caller;
+	GkdSecretSession *session;
+
 	gpointer parameter;
 	gsize n_parameter;
 	gpointer value;
@@ -40,15 +40,16 @@ struct _GkdSecretSecret {
 	gpointer destroy_data;
 };
 
-GkdSecretSecret*       gkd_secret_secret_new_take_memory          (const gchar *path,
-                                                                   const gchar *caller,
+GkdSecretSecret*       gkd_secret_secret_new_take_memory          (GkdSecretSession *session,
                                                                    gpointer parameter,
                                                                    gsize n_parameter,
                                                                    gpointer value,
                                                                    gsize n_value);
 
-GkdSecretSecret*       gkd_secret_secret_parse                    (DBusMessage *message,
-                                                                   DBusMessageIter *iter);
+GkdSecretSecret*       gkd_secret_secret_parse                    (GkdSecretService *service,
+                                                                   DBusMessage *message,
+                                                                   DBusMessageIter *iter,
+                                                                   DBusError *derr);
 
 void                   gkd_secret_secret_append                   (GkdSecretSecret *secret,
                                                                    DBusMessageIter *iter);

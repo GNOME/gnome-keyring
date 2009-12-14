@@ -24,6 +24,8 @@
 #include "gkd-secret-objects.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-prompt.h"
+#include "gkd-secret-secret.h"
+#include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
 #include "gkd-secret-unlock.h"
 #include "gkd-secret-util.h"
@@ -105,80 +107,67 @@ set_warning_wrong (GkdSecretUnlock *self)
 }
 
 static gboolean
-authenticate_collection (GkdSecretUnlock *self, GP11Object *coll, gboolean *locked)
+check_locked_collection (GP11Object *collection, gboolean *locked)
 {
 	GError *error = NULL;
-	GP11Attributes *attrs;
-	GP11Session *session;
-	GP11Object *cred;
-	gchar *password;
-	gsize n_password;
+	gpointer value;
+	gsize n_value;
 
-	g_assert (GKD_SECRET_IS_UNLOCK (self));
-	g_assert (locked);
-	g_assert (coll);
-
-	attrs = gp11_object_get (coll, &error, CKA_G_LOCKED, GP11_INVALID);
-	if (!attrs) {
+	value = gp11_object_get_data (collection, CKA_G_LOCKED, &n_value, &error);
+	if (value == NULL) {
 		if (error->code != CKR_OBJECT_HANDLE_INVALID)
 			g_warning ("couldn't check locked status of collection: %s",
 			           error->message);
-		g_clear_error (&error);
 		return FALSE;
 	}
 
-	if (!gp11_attributes_find_boolean (attrs, CKA_G_LOCKED, locked))
-		g_return_val_if_reached (FALSE);
-	if (!locked)
-		return TRUE;
+	*locked = (value && n_value == sizeof (CK_BBOOL) && *(CK_BBOOL*)value);
+	g_free (value);
+	return TRUE;
+}
 
-	session = gp11_object_get_session (coll);
-	g_return_val_if_fail (session, FALSE);
+static gboolean
+authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean *locked)
+{
+	DBusError derr = DBUS_ERROR_INIT;
+	GkdSecretSecret *master;
+	gboolean result;
 
-	if (!gkd_prompt_has_response (GKD_PROMPT (self)))
-		return TRUE; /* Bail out early, just checking locked status */
+	g_assert (GKD_SECRET_IS_UNLOCK (self));
+	g_assert (GP11_IS_OBJECT (collection));
+	g_assert (locked);
 
-	password = gkd_prompt_get_password (GKD_PROMPT (self), "password");
-	n_password = password ? strlen (password) : 0;
-	cred = gp11_session_create_object (session, &error,
-	                                   CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-	                                   CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (coll),
-	                                   CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
-	                                   CKA_TOKEN, GP11_BOOLEAN, FALSE,
-	                                   CKA_VALUE, n_password, password,
-	                                   GP11_INVALID);
-	egg_secure_strfree (password);
-	g_object_unref (session);
+	/* Bail out early, just checking locked status */
+	if (!gkd_prompt_has_response (GKD_PROMPT (self))) {
+		return check_locked_collection (collection, locked);
+	}
 
-	if (cred) {
-		g_object_unref (cred);
+	master = gkd_secret_prompt_get_secret (GKD_SECRET_PROMPT (self), "password");
+	if (master == NULL) {
+		g_warning ("couldn't get password from prompt");
+		return FALSE;
+	}
+
+	result = gkd_secret_unlock_with_secret (collection, master, &derr);
+	gkd_secret_secret_free (master);
+
+	if (result) {
 		*locked = FALSE;
 		return TRUE; /* Operation succeeded, and unlocked */
 
 	} else {
-		if (error->code == (gint)CKR_PIN_INCORRECT) {
-			g_clear_error (&error);
+		if (dbus_error_has_name (&derr, INTERNAL_ERROR_DENIED)) {
+			dbus_error_free (&derr);
 			*locked = TRUE;
 			return TRUE; /* Operation succeded, although not unlocked*/
 
 		} else {
 			g_warning ("couldn't create credential for collection: %s",
-			           error->message);
-			g_clear_error (&error);
+			           derr.message);
+			dbus_error_free (&derr);
 			return FALSE; /* Operation failed */
 		}
 	}
-}
-
-static GP11Object*
-lookup_collection (GkdSecretUnlock *self, const gchar *path)
-{
-	GkdSecretObjects *objects;
-	const gchar *caller;
-
-	objects = gkd_secret_prompt_get_objects (GKD_SECRET_PROMPT (self));
-	caller = gkd_secret_prompt_get_caller (GKD_SECRET_PROMPT (self));
-	return gkd_secret_objects_lookup_collection (objects, caller, path);
 }
 
 /* -----------------------------------------------------------------------------
@@ -186,16 +175,16 @@ lookup_collection (GkdSecretUnlock *self, const gchar *path)
  */
 
 static void
-gkd_secret_unlock_prompt_ready (GkdSecretPrompt *base)
+gkd_secret_unlock_prompt_ready (GkdSecretPrompt *prompt)
 {
-	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (base);
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (prompt);
 	GP11Object *coll;
 	gboolean locked;
 	gchar *objpath;
 
 	/* Already prompted for an item */
 	if (self->current) {
-		coll = lookup_collection (self, self->current);
+		coll = gkd_secret_prompt_lookup_collection (prompt, self->current);
 
 		/* If the object or collection is gone, no need to unlock */
 		if (coll == NULL) {
@@ -229,12 +218,12 @@ gkd_secret_unlock_prompt_ready (GkdSecretPrompt *base)
 
 		/* Nothing more to prompt for? */
 		if (!objpath) {
-			gkd_secret_prompt_complete (base);
+			gkd_secret_prompt_complete (prompt);
 			break;
 		}
 
 		/* Find the collection, make sure it's still around */
-		coll = lookup_collection (self, objpath);
+		coll = gkd_secret_prompt_lookup_collection (prompt, objpath);
 		if (coll == NULL) {
 			g_free (objpath);
 			continue;
@@ -340,7 +329,7 @@ gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
 	g_return_if_fail (GKD_SECRET_IS_UNLOCK (self));
 	g_return_if_fail (objpath);
 
-	coll = lookup_collection (self, objpath);
+	coll = gkd_secret_prompt_lookup_collection (GKD_SECRET_PROMPT (self), objpath);
 	if (coll == NULL)
 		return;
 
@@ -381,4 +370,34 @@ gkd_secret_unlock_reset_results (GkdSecretUnlock *self)
 	for (i = 0; i < self->results->len; ++i)
 		g_free (g_array_index (self->results, gchar*, i));
 	g_array_set_size (self->results, 0);
+}
+
+gboolean
+gkd_secret_unlock_with_secret (GP11Object *collection, GkdSecretSecret *master,
+                               DBusError *derr)
+{
+	GP11Attributes *attrs;
+	GP11Object *cred;
+	gboolean locked;
+
+	g_return_val_if_fail (GP11_IS_OBJECT (collection), FALSE);
+	g_return_val_if_fail (master, FALSE);
+
+	/* Shortcut if already unlocked */
+	if (check_locked_collection (collection, &locked) && !locked)
+		return TRUE;
+
+	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
+	                              CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (collection),
+	                              CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
+	                              CKA_TOKEN, GP11_BOOLEAN, TRUE,
+	                              GP11_INVALID);
+
+	cred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, derr);
+
+	gp11_attributes_unref (attrs);
+
+	if (cred != NULL)
+		g_object_unref (cred);
+	return (cred != NULL);
 }

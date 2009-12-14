@@ -50,6 +50,8 @@ struct _GkdPrompt {
 
 struct _GkdPromptClass {
 	GObjectClass parent_class;
+
+	/* signals */
 	gboolean (*responded) (GkdPrompt *self);
 	void (*completed) (GkdPrompt *self);
 };
@@ -88,6 +90,22 @@ gint                gkd_prompt_get_response           (GkdPrompt *prompt);
 
 gchar*              gkd_prompt_get_password           (GkdPrompt *prompt,
                                                        const gchar *password_type);
+
+gpointer            gkd_prompt_get_transport_param    (GkdPrompt *prompt,
+                                                       const gchar *name,
+                                                       gsize *n_value);
+
+void                gkd_prompt_set_transport_param    (GkdPrompt *prompt,
+                                                       const gchar *name,
+                                                       gconstpointer value,
+                                                       gsize n_value);
+
+gboolean            gkd_prompt_get_transport_password (GkdPrompt *self,
+                                                       const gchar *password_type,
+                                                       gpointer *parameter,
+                                                       gsize *n_parameter,
+                                                       gpointer *value,
+                                                       gsize *n_value);
 
 gboolean            gkd_prompt_is_widget_selected     (GkdPrompt *prompt,
                                                        const gchar *widget);

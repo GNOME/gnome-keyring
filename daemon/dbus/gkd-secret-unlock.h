@@ -54,4 +54,8 @@ gchar**             gkd_secret_unlock_get_results             (GkdSecretUnlock *
 
 void                gkd_secret_unlock_reset_results           (GkdSecretUnlock *self);
 
+gboolean            gkd_secret_unlock_with_secret             (GP11Object *collection,
+                                                               GkdSecretSecret *master,
+                                                               DBusError *derr);
+
 #endif /* __GKD_SECRET_UNLOCK_H__ */

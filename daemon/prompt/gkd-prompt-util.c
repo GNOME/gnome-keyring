@@ -26,6 +26,7 @@
 
 #include "egg/egg-dh.h"
 #include "egg/egg-hex.h"
+#include "egg/egg-padding.h"
 #include "egg/egg-secure-memory.h"
 
 void
@@ -42,16 +43,16 @@ gkd_prompt_util_encode_mpi (GKeyFile *key_file, const gchar *section,
 	g_return_if_fail (mpi);
 
 	/* Get the size */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_HEX, NULL, 0, &n_data, mpi);
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &n_data, mpi);
 	g_return_if_fail (gcry == 0);
 
-	data = g_malloc0 (n_data + 1);
+	data = g_malloc0 (n_data);
 
 	/* Write into buffer */
-	gcry = gcry_mpi_print (GCRYMPI_FMT_HEX, data, n_data, &n_data, mpi);
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, data, n_data, &n_data, mpi);
 	g_return_if_fail (gcry == 0);
 
-	g_key_file_set_value (key_file, section, field, (gchar*)data);
+	gkd_prompt_util_encode_hex (key_file, section, field, data, n_data);
 	g_free (data);
 }
 
@@ -94,25 +95,27 @@ gkd_prompt_util_decode_mpi (GKeyFile *key_file, const gchar *section,
                             const gchar *field, gcry_mpi_t *mpi)
 {
 	gcry_error_t gcry;
-	gchar *data;
+	gpointer data;
+	gsize n_data;
 
 	g_return_val_if_fail (key_file, FALSE);
 	g_return_val_if_fail (section, FALSE);
 	g_return_val_if_fail (field, FALSE);
 	g_return_val_if_fail (mpi, FALSE);
 
-	data = g_key_file_get_value (key_file, section, field, NULL);
+	data = gkd_prompt_util_decode_hex (key_file, section, field, &n_data);
 	if (data == NULL)
 		return FALSE;
 
-	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_HEX, data, 0, NULL);
+	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_USG, data, n_data, NULL);
 	g_free (data);
 
 	return (gcry == 0);
 }
 
 gpointer
-gkd_prompt_util_encrypt_text (gpointer key, gsize n_key, gpointer iv, gsize n_iv,
+gkd_prompt_util_encrypt_text (gconstpointer key, gsize n_key,
+                              gconstpointer iv, gsize n_iv,
                               const gchar *text, gsize *n_result)
 {
 	gcry_cipher_hd_t cih;
@@ -141,15 +144,11 @@ gkd_prompt_util_encrypt_text (gpointer key, gsize n_key, gpointer iv, gsize n_iv
 	gcry = gcry_cipher_setiv (cih, iv, 16);
 	g_return_val_if_fail (gcry == 0, NULL);
 
-	/* Allocate memory for the operation */
-	n_text = strlen (text) + 1;
-	*n_result = ((n_text + 15) / 16) * 16;
-	padded = egg_secure_alloc (*n_result);
+	/* Pad the text properly */
+	n_text = strlen (text);
+	if (!egg_padding_pkcs7_pad (egg_secure_realloc, 16, text, n_text, (gpointer*)&padded, n_result))
+		g_return_val_if_reached (NULL);
 	result = g_malloc0 (*n_result);
-
-	/* Setup the padding */
-	memset (padded, 0, *n_result);
-	memcpy (padded, text, n_text);
 
 	for (pos = 0; pos < *n_result; pos += 16) {
 		gcry = gcry_cipher_encrypt (cih, result + pos, 16, padded + pos, 16);
@@ -164,13 +163,13 @@ gkd_prompt_util_encrypt_text (gpointer key, gsize n_key, gpointer iv, gsize n_iv
 }
 
 gchar*
-gkd_prompt_util_decrypt_text (gpointer key, gsize n_key, gpointer iv, gsize n_iv,
-                              gpointer data, gsize n_data)
+gkd_prompt_util_decrypt_text (gconstpointer key, gsize n_key, gconstpointer iv, gsize n_iv,
+                              gconstpointer data, gsize n_data)
 {
 	gcry_cipher_hd_t cih;
 	gcry_error_t gcry;
-	gchar *result;
-	gsize pos;
+	gchar *result, *padded;
+	gsize pos, n_result;
 
 	g_return_val_if_fail (key, NULL);
 	g_return_val_if_fail (n_key == 16, NULL);
@@ -200,18 +199,23 @@ gkd_prompt_util_decrypt_text (gpointer key, gsize n_key, gpointer iv, gsize n_iv
 	g_return_val_if_fail (gcry == 0, NULL);
 
 	/* Allocate memory for the result */
-	result = egg_secure_alloc (n_data);
+	padded = egg_secure_alloc (n_data);
 
 	for (pos = 0; pos < n_data; pos += 16) {
-		gcry = gcry_cipher_decrypt (cih, result + pos, 16, (guchar*)data + pos, 16);
+		gcry = gcry_cipher_decrypt (cih, padded + pos, 16, (guchar*)data + pos, 16);
 		g_return_val_if_fail (gcry == 0, NULL);
 	}
 
 	gcry_cipher_close (cih);
 
-	if (!g_utf8_validate (result, -1, NULL)) {
+	if (!egg_padding_pkcs7_unpad (egg_secure_realloc, 16, padded, n_data, (gpointer*)&result, &n_result))
+		result = NULL;
+
+	egg_secure_free (padded);
+
+	if (result && !g_utf8_validate (result, n_result, NULL)) {
 		egg_secure_free (result);
-		return NULL;
+		result = NULL;
 	}
 
 	return result;

@@ -367,9 +367,9 @@ item_method_get_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *m
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
 		return NULL;
 
-	session = gkd_secret_session_for_path (self->service, path, dbus_message_get_sender (message), &derr);
+	session = gkd_secret_service_lookup_session (self->service, path, dbus_message_get_sender (message));
 	if (session == NULL)
-		return gkd_secret_error_to_reply (message, &derr);
+		return dbus_message_new_error (message, SECRET_ERROR_NO_SESSION, "The session does not exist");
 
 	secret = gkd_secret_session_get_item_secret (session, item, &derr);
 	if (secret == NULL)
@@ -388,27 +388,19 @@ item_method_set_secret (GkdSecretObjects *self, GP11Object *item, DBusMessage *m
 	DBusError derr = DBUS_ERROR_INIT;
 	DBusMessageIter iter;
 	GkdSecretSecret *secret;
-	GkdSecretSession *session;
 	const char *caller;
 
 	if (!dbus_message_has_signature (message, "(oayay)"))
 		return NULL;
 	dbus_message_iter_init (message, &iter);
-	secret = gkd_secret_secret_parse (message, &iter);
+	secret = gkd_secret_secret_parse (self->service, message, &iter, &derr);
 	if (secret == NULL)
-		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
-		                               "The secret is invalid");
+		return gkd_secret_error_to_reply (message, &derr);
 
 	caller = dbus_message_get_sender (message);
 	g_return_val_if_fail (caller, NULL);
 
-	session = gkd_secret_session_for_secret (self->service, secret, &derr);
-	if (session == NULL) {
-		gkd_secret_secret_free (secret);
-		return gkd_secret_error_to_reply (message, &derr);
-	}
-
-	gkd_secret_session_set_item_secret (session, item, secret, &derr);
+	gkd_secret_session_set_item_secret (secret->session, item, secret, &derr);
 	gkd_secret_secret_free (secret);
 
 	if (dbus_error_is_set (&derr))
@@ -643,7 +635,6 @@ collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusM
 	GP11Session *pkcs11_session = NULL;
 	DBusError derr = DBUS_ERROR_INIT;
 	GkdSecretSecret *secret = NULL;
-	GkdSecretSession *session;
 	dbus_bool_t replace = FALSE;
 	GP11Attributes *attrs = NULL;
 	GP11Attribute *fields;
@@ -670,21 +661,13 @@ collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusM
 		goto cleanup;
 	}
 	dbus_message_iter_next (&iter);
-	secret = gkd_secret_secret_parse (message, &iter);
+	secret = gkd_secret_secret_parse (self->service, message, &iter, &derr);
 	if (secret == NULL) {
-		reply = dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
-		                                "Invalid secret argument");
+		reply = gkd_secret_error_to_reply (message, &derr);
 		goto cleanup;
 	}
 	dbus_message_iter_next (&iter);
 	dbus_message_iter_get_basic (&iter, &replace);
-
-	/* Figure out which session we're dealing with */
-	session = gkd_secret_session_for_secret (self->service, secret, &derr);
-	if (session == NULL) {
-		reply = gkd_secret_error_to_reply (message, &derr);
-		goto cleanup;
-	}
 
 	base = dbus_message_get_path (message);
 	if (!parse_object_path (self, base, &identifier, NULL))
@@ -717,7 +700,7 @@ collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusM
 	}
 
 	/* Set the secret */
-	if (!gkd_secret_session_set_item_secret (session, item, secret, &derr)) {
+	if (!gkd_secret_session_set_item_secret (secret->session, item, secret, &derr)) {
 		if (created) /* If we created, then try to destroy on failure */
 			gp11_object_destroy (item, NULL);
 		goto cleanup;
@@ -1282,10 +1265,10 @@ gkd_secret_objects_handle_get_secrets (GkdSecretObjects *self, DBusMessage *mess
 	caller = dbus_message_get_sender (message);
 	g_return_val_if_fail (caller, NULL);
 
-	session = gkd_secret_session_for_path (self->service, session_path,
-	                                       dbus_message_get_sender (message), &derr);
+	session = gkd_secret_service_lookup_session (self->service, session_path,
+	                                             dbus_message_get_sender (message));
 	if (session == NULL)
-		return gkd_secret_error_to_reply (message, &derr);
+		return dbus_message_new_error (message, SECRET_ERROR_NO_SESSION, "The session does not exist");
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
