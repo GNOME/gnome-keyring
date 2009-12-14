@@ -343,6 +343,16 @@ gck_secret_module_real_remove_object (GckModule *module, GckTransaction *transac
 	GckSecretModule *self = GCK_SECRET_MODULE (module);
 	GckSecretCollection *collection;
 
+	/* Ignore the session keyring credentials */
+	if (self->session_credential != NULL &&
+	    GCK_OBJECT (self->session_credential) == object)
+		return;
+
+	/* Ignore the session keyring collection */
+	if (self->session_collection != NULL &&
+	    GCK_OBJECT (self->session_collection) == object)
+		return;
+
 	/* Removing an item */
 	if (GCK_IS_SECRET_ITEM (object)) {
 		collection = gck_secret_item_get_collection (GCK_SECRET_ITEM (object));
@@ -360,8 +370,9 @@ gck_secret_module_real_remove_object (GckModule *module, GckTransaction *transac
 
 	/* No other token objects */
 	} else {
+		g_warning ("Trying to remove token object of type '%s' from secret "
+		           "module, but that type is not supported.", G_OBJECT_TYPE_NAME (object));
 		gck_transaction_fail (transaction, CKR_FUNCTION_NOT_SUPPORTED);
-		g_return_if_reached ();
 	}
 }
 

@@ -357,11 +357,8 @@ gck_object_dispose (GObject *obj)
 		if (transient->timed_timer)
 			gck_timer_cancel (transient->timed_timer);
 		transient->timed_timer = NULL;
-
-		g_slice_free (GckObjectTransient, transient);
-		self->pv->transient = NULL;
 	}
-    
+
 	G_OBJECT_CLASS (gck_object_parent_class)->dispose (obj);
 }
 
@@ -377,7 +374,10 @@ gck_object_finalize (GObject *obj)
 	g_object_weak_unref (G_OBJECT (self->pv->module), module_went_away, self);
 	self->pv->module = NULL;
 
-	g_assert (self->pv->transient == NULL);
+	if (self->pv->transient) {
+		g_slice_free (GckObjectTransient, self->pv->transient);
+		self->pv->transient = NULL;
+	}
 
 	G_OBJECT_CLASS (gck_object_parent_class)->finalize (obj);
 }
