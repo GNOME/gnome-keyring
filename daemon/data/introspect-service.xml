@@ -28,9 +28,11 @@
 	<interface name="org.freedesktop.Secrets.Service">
 
 		<property name="Collections" type="ao" access="read"/>
-		<property name="DefaultCollection" type="o" access="readwrite"/>
 
 		<method name="OpenSession">
+			<arg name="algorithm" type="s" direction="in"/>
+			<arg name="input" type="v" direction="in"/>
+			<arg name="output" type="v" direction="out"/>
 			<arg name="result" type="o" direction="out"/>
 		</method>
 
@@ -40,13 +42,38 @@
 			<arg name="prompt" type="o" direction="out"/>
 		</method>
 
-		<method name="LockService">
-		</method>
-
 		<method name="SearchItems">
 			<arg name="attributes" type="a{ss}" direction="in"/>
 			<arg name="unlocked" type="ao" direction="out"/>
 			<arg name="locked" type="ao" direction="out"/>
+		</method>
+
+		<method name="Unlock">
+			<arg name="objects" type="ao" direction="in"/>
+			<arg name="unlocked" type="ao" direction="out"/>
+			<arg name="prompt" type="o" direction="out"/>
+		</method>
+
+		<method name="Lock">
+			<arg name="objects" type="ao" direction="in"/>
+			<arg name="locked" type="ao" direction="out"/>
+			<arg name="Prompt" type="o" direction="out"/>
+		</method>
+
+		<method name="GetSecrets">
+			<arg name="items" type="ao" direction="in"/>
+			<arg name="session" type="o" direction="in"/>
+			<arg name="secrets" type="a{o(oayay)}" direction="out"/>
+		</method>
+
+		<method name="ReadAlias">
+			<arg name="name" type='s' direction='in'/>
+			<arg name="collection" type='o' direction='out'/>
+		</method>
+
+		<method name="SetAlias">
+			<arg name="name" type='s' direction='in'/>
+			<arg name="collection" type='o' direction='in'/>
 		</method>
 
 		<signal name="CollectionCreated">
@@ -57,19 +84,8 @@
 			<arg name="collection" type="o"/>
 		</signal>
 
-		<method name="BeginAuthenticate">
-			<arg name="objects" type="ao" direction="in"/>
-			<arg name="window-id" type="s" direction="in"/>
-		</method>
-
-		<method name="CompleteAuthenticate">
-			<arg name="objects" type="ao" direction="in"/>
-			<arg name="authenticated" type="ao" direction="in"/>
-		</method>
-
-		<signal name="Authenticated">
-			<arg name="object" type="o"/>
-			<arg name="success" type="b"/>
+		<signal name="CollectionChanged">
+			<arg name="collection" type="o"/>
 		</signal>
 
 	</interface>

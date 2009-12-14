@@ -15,8 +15,8 @@
 		<method name="Dismiss">
 		</method>
 		<signal name="Completed">
-			<arg name="result" type="v"/>
 			<arg name="dismissed" type="b"/>
+			<arg name="result" type="v"/>
 		</signal>
 	</interface>
 

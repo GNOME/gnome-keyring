@@ -34,7 +34,13 @@
 		<method name="Delete">
 			<arg name="prompt" type="o" direction="out"/>
 		</method>
+		<method name="GetSecret">
+			<arg name="session" type="o" direction="in"/>
+			<arg name="secret" type="(oayay)" direction="out"/>
+		</method>
+		<method name="SetSecret">
+			<arg name="secret" type="(oayay)" direction="in"/>
+		</method>
 	</interface>
-
 
 </node>
