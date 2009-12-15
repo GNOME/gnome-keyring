@@ -550,6 +550,7 @@ AC_OUTPUT([
 Makefile
 daemon/Makefile
 daemon/gnome-keyring-daemon.desktop.in
+daemon/control/Makefile
 daemon/data/Makefile
 daemon/dbus/Makefile
 daemon/keyrings/Makefile

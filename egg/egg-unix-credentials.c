@@ -208,6 +208,20 @@ again:
 	return 0;
 }
 
+int
+egg_unix_credentials_setup (int sock)
+{
+	int retval = 0;
+#if defined(LOCAL_CREDS) && !defined(HAVE_CMSGCRED)
+	int val = 1;
+	if (setsockopt (sock, 0, LOCAL_CREDS, &val, sizeof (val)) < 0) {
+		fprintf (stderr, "unable to set LOCAL_CREDS socket option on fd %d\n", fd);
+		retval = -1;
+	}
+#endif
+	return retval;
+}
+
 char*
 egg_unix_credentials_executable (pid_t pid)
 {

@@ -3,6 +3,7 @@ SUBDIRS = \
 	ui \
 	prompt \
 	keyrings \
+	control \
 	pkcs11 \
 	dbus \
 	data
