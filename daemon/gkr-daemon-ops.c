@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include "gkd-main.h"
+#include "gkd-util.h"
 #include "gkr-daemon.h"
 
 #include "egg/egg-buffer.h"
@@ -39,7 +41,6 @@
 #include "ui/gkr-ask-request.h"
 #include "ui/gkr-ask-daemon.h"
 
-#include "util/gkr-daemon-util.h"
 #include "util/gkr-location.h"
 
 #include <unistd.h>
@@ -1738,12 +1739,12 @@ op_prepare_daemon_environment (EggBuffer *packet, EggBuffer *result, GkrKeyringR
 	 * We've now definitely received everything we need to run. Ask
 	 * the daemon to complete the initialization. 
 	 */
-	gkr_daemon_complete_initialization();
+	gkd_main_complete_initialization();
 
 	egg_buffer_add_uint32 (result, GNOME_KEYRING_RESULT_OK);
 
 	/* These are the environment variables that the daemon setup */
-	daemonenv = gkr_daemon_util_get_environment ();
+	daemonenv = gkd_util_get_environment ();
 	g_return_val_if_fail (daemonenv, FALSE);
 	
 	egg_buffer_add_stringv (result, daemonenv);

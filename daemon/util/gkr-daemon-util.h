@@ -31,14 +31,6 @@ G_BEGIN_DECLS
 
 #include <sys/types.h>
 
-const gchar*    gkr_daemon_util_get_master_directory    (void);
-
-void            gkr_daemon_util_push_environment        (const gchar *name, const gchar *value);
-
-void            gkr_daemon_util_push_environment_full   (const gchar *env);
-
-const gchar**   gkr_daemon_util_get_environment         (void);
-
 #define GKR_TYPE_DAEMON_CLIENT             (gkr_daemon_client_get_type ())
 #define GKR_DAEMON_CLIENT(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKR_TYPE_DAEMON_CLIENT, GkrDaemonClient))
 #define GKR_DAEMON_CLIENT_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GKR_TYPE_DAEMON_CLIENT, GkrDaemonClientClass))

@@ -24,8 +24,7 @@
 #include "config.h"
 
 #include "gkd-dbus-private.h"
-
-#include "gkr-daemon.h"
+#include "gkd-main.h"
 
 #include <dbus/dbus.h>
 
@@ -121,7 +120,7 @@ signal_filter (DBusConnection *conn, DBusMessage *msg, void *user_data)
 	/* Quit the daemon when the session is over */
 	if (dbus_message_is_signal (msg, IFACE_SESSION_PRIVATE, "Stop")) {
 		unregister_daemon_in_session (conn);
-		gkr_daemon_quit ();
+		gkd_main_quit ();
 		return DBUS_HANDLER_RESULT_HANDLED;
 	} else if (dbus_message_is_signal (msg, IFACE_SESSION_PRIVATE, "QueryEndSession")) {
 		send_end_session_response (conn);
@@ -129,7 +128,7 @@ signal_filter (DBusConnection *conn, DBusMessage *msg, void *user_data)
 	} else if (dbus_message_is_signal (msg, IFACE_SESSION_PRIVATE, "EndSession")) {
 		send_end_session_response (conn);
 		unregister_daemon_in_session (conn);
-		gkr_daemon_quit ();
+		gkd_main_quit ();
 		return DBUS_HANDLER_RESULT_HANDLED;
 	}
 

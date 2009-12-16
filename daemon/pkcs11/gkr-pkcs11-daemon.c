@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gkd-util.h"
 #include "gkr-pkcs11-auth.h"
 #include "gkr-pkcs11-daemon.h"
 
@@ -33,7 +34,6 @@
 #include "pkcs11/user-store/gck-user-store.h"
 
 #include "daemon/util/gkr-daemon-async.h"
-#include "daemon/util/gkr-daemon-util.h"
 
 #include "egg/egg-cleanup.h"
 
@@ -165,7 +165,7 @@ gkr_pkcs11_daemon_startup_pkcs11 (void)
 	const gchar *base_dir;
 	int sock;
 
-	base_dir = gkr_daemon_util_get_master_directory ();
+	base_dir = gkd_util_get_master_directory ();
 	g_return_val_if_fail (base_dir, FALSE);
 
 	gkr_daemon_async_begin_concurrent ();
@@ -216,7 +216,7 @@ gkr_pkcs11_daemon_startup_ssh (void)
 	const gchar *base_dir;
 	int sock;
 
-	base_dir = gkr_daemon_util_get_master_directory ();
+	base_dir = gkd_util_get_master_directory ();
 	g_return_val_if_fail (base_dir, FALSE);
 
 	gkr_daemon_async_begin_concurrent ();
@@ -233,7 +233,7 @@ gkr_pkcs11_daemon_startup_ssh (void)
 	g_io_channel_unref (channel);
 	
 	/* gck-ssh-agent sets the environment variable */
-	gkr_daemon_util_push_environment ("SSH_AUTH_SOCK", g_getenv ("SSH_AUTH_SOCK"));
+	gkd_util_push_environment ("SSH_AUTH_SOCK", g_getenv ("SSH_AUTH_SOCK"));
 
 	egg_cleanup_register (pkcs11_ssh_cleanup, NULL);
 

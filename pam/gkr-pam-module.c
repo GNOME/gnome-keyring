@@ -67,10 +67,10 @@ enum {
 	ARG_USE_AUTHTOK	        = 1 << 2
 };
 
-#define LOGIN_KEYRING		"login"
+#define LOGIN_KEYRING           "login"
 
-#define ENV_SOCKET 		"GNOME_KEYRING_SOCKET"
-#define ENV_PID    		"GNOME_KEYRING_PID"
+#define ENV_CONTROL             "GNOME_KEYRING_CONTROL"
+#define ENV_PID                 "GNOME_KEYRING_PID"
 
 /* read & write ends of a pipe */
 #define  READ_END   0
@@ -578,15 +578,15 @@ static int
 start_daemon_if_necessary (pam_handle_t *ph, struct passwd *pwd, 
                            const char *password, int* started)
 {
-	const char *socket;
+	const char *control;
 	int ret;
-	
+
 	*started = 0;
-	
+
 	/* See if it's already running, and transfer env variables */
-	socket = get_any_env (ph, ENV_SOCKET);
-	if (socket) {
-		ret = setup_pam_env (ph, ENV_SOCKET, socket);
+	control = get_any_env (ph, ENV_CONTROL);
+	if (control) {
+		ret = setup_pam_env (ph, ENV_CONTROL, control);
 		if (ret != PAM_SUCCESS) {
 			syslog (GKR_LOG_ERR, "gkr-pam: couldn't set environment variables: %s",
 			        pam_strerror (ph, ret));
@@ -647,15 +647,15 @@ done:
 static int
 create_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
-	const char *socket;
+	const char *control;
 	GnomeKeyringResult res;
 	const char *argv[2];
 	
 	assert (pwd);
 	assert (password);
-	
-	socket = get_any_env (ph, ENV_SOCKET);
-	if (!socket) {
+
+	control = get_any_env (ph, ENV_CONTROL);
+	if (!control) {
 		syslog (GKR_LOG_WARN, "gkr-pam: couldn't create '%s' keyring: %s", 
 		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
 		return PAM_SERVICE_ERR;
@@ -664,7 +664,7 @@ create_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 	argv[0] = LOGIN_KEYRING;
 	argv[1] = password;
 	
-	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
+	res = gkr_pam_client_run_operation (pwd, control, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
 	if (res != GNOME_KEYRING_RESULT_OK) {
 		syslog (GKR_LOG_ERR, "gkr-pam: couldn't create '%s' keyring: %d", LOGIN_KEYRING, res);
 		return PAM_SERVICE_ERR;
@@ -678,15 +678,15 @@ create_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 static int
 unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
-	const char *socket;
+	const char *control;
 	GnomeKeyringResult res;
 	const char *argv[2];
 	
 	assert (pwd);
 	assert (password);
-	
-	socket = get_any_env (ph, ENV_SOCKET);
-	if (!socket) {
+
+	control = get_any_env (ph, ENV_CONTROL);
+	if (!control) {
 		syslog (GKR_LOG_WARN, "gkr-pam: couldn't unlock '%s' keyring: %s", 
 		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
 		return PAM_SERVICE_ERR;
@@ -695,7 +695,7 @@ unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 	argv[0] = LOGIN_KEYRING;
 	argv[1] = password;
 	
-	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_UNLOCK_KEYRING, 2, argv);
+	res = gkr_pam_client_run_operation (pwd, control, GNOME_KEYRING_OP_UNLOCK_KEYRING, 2, argv);
 
 	/* 'login' keyring doesn't exist, create it */
 	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
@@ -715,16 +715,16 @@ static int
 change_keyring_password (pam_handle_t *ph, struct passwd *pwd, 
                          const char *password, const char *original)
 {
-	const char *socket;
+	const char *control;
 	GnomeKeyringResult res;
 	const char *argv[3];
 	
 	assert (pwd);
 	assert (password);
 	assert (original);
-	
-	socket = get_any_env (ph, ENV_SOCKET);
-	if (!socket) {
+
+	control = get_any_env (ph, ENV_CONTROL);
+	if (!control) {
 		syslog (GKR_LOG_WARN, "gkr-pam: couldn't change password on '%s' keyring: %s", 
 		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
 		return PAM_SERVICE_ERR;
@@ -734,7 +734,7 @@ change_keyring_password (pam_handle_t *ph, struct passwd *pwd,
 	argv[1] = original;
 	argv[2] = password;	
 	
-	res = gkr_pam_client_run_operation (pwd, socket, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
+	res = gkr_pam_client_run_operation (pwd, control, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
 
 	/* No keyring, not an error. Will be created at initial authenticate. */
 	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
@@ -841,7 +841,7 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 {
 	struct passwd *pwd;
 	const char *user, *password;
-	const char *socket;
+	const char *control;
 	int started_daemon;
 	uint args;
 	int ret;
@@ -884,11 +884,11 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 		if (ret != PAM_SUCCESS)
 			return ret;
 	}
-	
-	socket = get_any_env (ph, ENV_SOCKET);
+
+	control = get_any_env (ph, ENV_CONTROL);
 
 	/* If gnome keyring is running, then unlock now */
-	if (socket) {
+	if (control) {
 		/* If we started the daemon, its already unlocked, since we passed the password */
 		if (!started_daemon) {
 			ret = unlock_keyring (ph, pwd, password);
@@ -958,7 +958,7 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 	}
 
 	/* If gnome keyring is running, but we didn't start it here, then unlock now */
-	if (get_any_env (ph, ENV_SOCKET) != NULL) {
+	if (get_any_env (ph, ENV_CONTROL) != NULL) {
 		if (!started_daemon && password != NULL) {
 			if (unlock_keyring (ph, pwd, password) != PAM_SUCCESS)
 				return PAM_SERVICE_ERR;

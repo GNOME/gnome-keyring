@@ -24,9 +24,8 @@
 #include "config.h"
 
 #include "gkd-dbus-private.h"
-
+#include "gkd-util.h"
 #include "gkr-daemon.h"
-#include "util/gkr-daemon-util.h"
 
 #include <dbus/dbus.h>
 
@@ -71,7 +70,7 @@ message_handler_cb (DBusConnection *conn, DBusMessage *message, void *user_data)
 		DBusMessageIter items, entry;
 		gchar **parts;
 
-		env = gkr_daemon_util_get_environment ();
+		env = gkd_util_get_environment ();
 		g_return_val_if_fail (env, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 
 		/* Setup the result */

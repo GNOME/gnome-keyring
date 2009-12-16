@@ -24,8 +24,7 @@
 #include "config.h"
 
 #include "gkd-dbus-private.h"
-
-#include "util/gkr-daemon-util.h"
+#include "gkd-util.h"
 
 #include <dbus/dbus.h>
 
@@ -73,7 +72,7 @@ gkd_dbus_environment_init (DBusConnection *conn)
 	 * The list of all environment variables registered by
 	 * various components in the daemon.
 	 */
-	envp = gkr_daemon_util_get_environment ();
+	envp = gkd_util_get_environment ();
 
 	for (; *envp; ++envp) {
 

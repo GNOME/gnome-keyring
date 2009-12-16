@@ -26,7 +26,8 @@ INCLUDES=	\
 	$(GLIB_CFLAGS)
 
 gnome_keyring_daemon_SOURCES = \
-	gkr-daemon.c gkr-daemon.h \
+	gkd-main.c gkd-main.h \
+	gkd-util.c gkd-util.h \
 	gkr-daemon-io.c \
 	gkr-daemon-ops.c
 
@@ -35,6 +36,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/dbus/libgkr-dbus.la \
 	$(top_builddir)/daemon/keyrings/libgkr-keyrings.la \
 	$(top_builddir)/daemon/ui/libgkr-ui.la \
+	$(top_builddir)/daemon/control/libgkd-control.la \
 	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
 	$(top_builddir)/daemon/util/libgkr-daemon-util.la \
 	$(top_builddir)/library/libgnome-keyring-common.la \

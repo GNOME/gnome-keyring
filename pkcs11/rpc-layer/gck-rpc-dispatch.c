@@ -2296,7 +2296,7 @@ gck_rpc_layer_startup (const char *prefix)
 	assert (pkcs11_dispatchers == NULL);
 
 	snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), 
-	          "%s/socket.pkcs11", prefix);
+	          "%s/pkcs11", prefix);
 
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {

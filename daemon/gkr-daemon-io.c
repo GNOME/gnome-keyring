@@ -32,6 +32,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+#include "gkd-util.h"
 #include "gkr-daemon.h"
 
 #include "egg/egg-buffer.h"
@@ -399,15 +400,12 @@ gkr_daemon_io_create_master_socket (void)
 	struct sockaddr_un addr;
 	GIOChannel *channel;
 
-	tmp_dir = gkr_daemon_util_get_master_directory ();
+	tmp_dir = gkd_util_get_master_directory ();
 	g_return_val_if_fail (tmp_dir, FALSE);
 		
 	snprintf (socket_path, sizeof (socket_path), "%s/socket", tmp_dir);
-	
-#ifdef WITH_TESTS
-	if (g_getenv ("GNOME_KEYRING_TEST_PATH"))
-		unlink (socket_path);
-#endif
+
+	unlink (socket_path);
 
 	egg_cleanup_register (cleanup_socket_dir, NULL);
 	
@@ -437,7 +435,7 @@ gkr_daemon_io_create_master_socket (void)
 	channel = g_io_channel_unix_new (sock);
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_client, NULL);
 	g_io_channel_unref (channel);
-	
-	gkr_daemon_util_push_environment ("GNOME_KEYRING_SOCKET", socket_path);
+
+	gkd_util_push_environment ("GNOME_KEYRING_SOCKET", socket_path);
 	return TRUE;
 }

@@ -45,10 +45,6 @@ typedef gboolean (*GkrDaemonOperation) (EggBuffer *packet, EggBuffer *result,
 
 extern GkrDaemonOperation keyring_ops[];
 
-void           gkr_daemon_quit (void);
-
-void           gkr_daemon_complete_initialization (void);
-
 gboolean       gkr_daemon_io_create_master_socket (void);
 
 const gchar*   gkr_daemon_io_get_socket_path      (void);

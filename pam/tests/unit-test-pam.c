@@ -37,7 +37,7 @@ DEFINE_TEST(pam_open)
 	char** pam_env;
 
 	/* Clear out this environment variable so we force a new daemon */
-	putenv("GNOME_KEYRING_SOCKET=");
+	putenv("GNOME_KEYRING_CONTROL=");
 
 	int ret = pam_authenticate (test_pamh, 0);
 	if (ret != PAM_SUCCESS)
@@ -56,13 +56,13 @@ DEFINE_TEST(pam_env)
 {
 	const char *socket;
 
-	socket = g_getenv ("GNOME_KEYRING_SOCKET");
+	socket = g_getenv ("GNOME_KEYRING_CONTROL");
 	/* "socket should have been setup" */
 	g_assert (socket && socket[0]);
 	/* "socket should have been created" */
 	g_assert (g_file_test (socket, G_FILE_TEST_EXISTS));
 
-	g_printerr ("GNOME_KEYRING_SOCKET is: %s\n", g_getenv ("GNOME_KEYRING_SOCKET"));
+	g_printerr ("GNOME_KEYRING_CONTROL is: %s\n", g_getenv ("GNOME_KEYRING_CONTROL"));
 	sleep (3);
 }
 

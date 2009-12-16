@@ -19,13 +19,13 @@
  * 02111-1307, USA.
  */
 
-#ifndef __GKD_CONTROL_H__
-#define __GKD_CONTROL_H__
+#ifndef GKD_MAIN_H_
+#define GKD_MAIN_H_
 
 #include <glib.h>
 
-gboolean          gkd_control_listen        (void);
+void           gkd_main_quit (void);
 
-gboolean          gkd_control_initialize    (const gchar *directory);
+void           gkd_main_complete_initialization (void);
 
-#endif /* __GKD_CONTROL_H__ */
+#endif /* GKD_MAIN_H_ */

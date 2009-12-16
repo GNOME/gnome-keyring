@@ -1176,12 +1176,12 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 			}
 		}
 		
-		/* Lookup the socket path, append '.pkcs11' */
+		/* Lookup the socket path, append '/pkcs11' */
 		if (pkcs11_socket_path[0] == 0) {
 			pkcs11_socket_path[0] = 0;
-			path = getenv ("GNOME_KEYRING_SOCKET");
+			path = getenv ("GNOME_KEYRING_CONTROL");
 			if (path && path[0]) {
-				snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s.pkcs11", path);
+				snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s/pkcs11", path);
 				pkcs11_socket_path[sizeof (pkcs11_socket_path) - 1] = 0;
 			}
 		}

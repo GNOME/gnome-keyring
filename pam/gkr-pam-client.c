@@ -29,6 +29,7 @@
 #include "egg/egg-unix-credentials.h"
 
 #include <sys/types.h>
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/un.h>
@@ -53,9 +54,6 @@
 #include <sys/param.h>
 #include <sys/ucred.h>
 #endif
-
-#define PAM_APP_NAME      "Auto Login (PAM)"
-#define PAM_APP_NAME_LEN  (sizeof (PAM_APP_NAME) - 1)
 
 static int
 check_peer_same_uid (int sock)
@@ -143,16 +141,24 @@ write_credentials_byte (int sock)
 }
 
 static int
-connect_to_daemon (const char *path)
+connect_to_daemon (const char *control)
 {
+	char path[MAXPATHLEN];
 	struct sockaddr_un addr;
 	struct stat st;
 	int sock;
-	
-	/* First a bunch of checks to make sure nothing funny is going on */
-	
+
+	/* Build up the directory name */
+	if (strlen (control) + strlen ("/control") + 1 >= MAXPATHLEN) {
+		syslog (GKR_LOG_ERR, "The gnome keyring socket directory is too long");
+		return -1;
+	}
+	strcpy (path, control);
+	strcat (path, "/control");
+
+	/* A bunch of checks to make sure nothing funny is going on */
 	if (lstat (path, &st) < 0) {
-		syslog (GKR_LOG_ERR, "Couldn't access gnome keyring socket: %s: %s", 
+		syslog (GKR_LOG_ERR, "Couldn't access gnome keyring socket: %s: %s",
 		        path, strerror (errno));
 		return -1;
 	}
@@ -176,7 +182,7 @@ connect_to_daemon (const char *path)
 	
 	sock = socket (AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
-		syslog (GKR_LOG_ERR, "couldn't create socket: %s", strerror (errno));
+		syslog (GKR_LOG_ERR, "couldn't create control socket: %s", strerror (errno));
 		return -1;
 	}
 
@@ -184,7 +190,7 @@ connect_to_daemon (const char *path)
 	fcntl (sock, F_SETFD, 1);
 
 	if (connect (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
-		syslog (GKR_LOG_ERR, "couldn't connect to daemon at: %s: %s", 
+		syslog (GKR_LOG_ERR, "couldn't connect to gnome-keyring-daemon socket at: %s: %s",
 		        path, strerror (errno));
 		close (sock);
 		return -1;
@@ -262,16 +268,16 @@ read_part (int fd, unsigned char *data, int len)
 }
 
 static GnomeKeyringResult 
-keyring_daemon_op (const char *socket, GnomeKeyringOpCode op, int argc, 
+keyring_daemon_op (const char *control, GnomeKeyringOpCode op, int argc,
                    const char* argv[])
 {
 	GnomeKeyringResult ret = GNOME_KEYRING_RESULT_OK;
 	unsigned char buf[4];
 	int i, sock = -1;
 	uint oplen, l;
-	
-	assert (socket);
-	
+
+	assert (control);
+
 	/* 
 	 * We only support operations with zero or more strings
 	 * and an empty (only result code) return. 
@@ -281,19 +287,12 @@ keyring_daemon_op (const char *socket, GnomeKeyringOpCode op, int argc,
 	        op == GNOME_KEYRING_OP_CREATE_KEYRING || 
 	        op == GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD);
 
-	sock = connect_to_daemon (socket);
+	sock = connect_to_daemon (control);
 	if (sock < 0) {
 		ret = -1;
 		goto done;
 	}
-	
-	/* Send the application packet / name */
-	egg_buffer_encode_uint32 (buf, PAM_APP_NAME_LEN + 8);
-	write_part (sock, buf, 4, &ret);
-	egg_buffer_encode_uint32 (buf, PAM_APP_NAME_LEN);
-	write_part (sock, buf, 4, &ret);
-	write_part (sock, (unsigned char*)PAM_APP_NAME, PAM_APP_NAME_LEN, &ret);
-	    
+
 	/* Calculate the packet length */
 	oplen = 8; /* The packet size, and op code */
 	for (i = 0; i < argc; ++i)  
@@ -348,7 +347,7 @@ done:
 }
 
 GnomeKeyringResult
-gkr_pam_client_run_operation (struct passwd *pwd, const char *socket, 
+gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
                               GnomeKeyringOpCode op, int argc, const char* argv[])
 {
 	struct sigaction ignpipe, oldpipe, defchld, oldchld;
@@ -371,7 +370,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *socket,
 	    pwd->pw_uid == geteuid () && pwd->pw_gid == getegid ()) {
 
 		/* Already running as the right user, simple */
-		res = keyring_daemon_op (socket, op, argc, argv);
+		res = keyring_daemon_op (control, op, argc, argv);
 		
 	} else {
 		
@@ -392,7 +391,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *socket,
 				exit (GNOME_KEYRING_RESULT_IO_ERROR);
 			}
 	
-			res = keyring_daemon_op (socket, op, argc, argv);
+			res = keyring_daemon_op (control, op, argc, argv);
 			exit (res);
 			return 0; /* Never reached */
 			

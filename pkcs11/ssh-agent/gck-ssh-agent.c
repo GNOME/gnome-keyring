@@ -411,7 +411,7 @@ gck_ssh_agent_startup (const gchar *prefix)
 	
 	g_return_val_if_fail (prefix, -1);
 	
-	snprintf (socket_path, sizeof (socket_path), "%s/socket.ssh", prefix);
+	snprintf (socket_path, sizeof (socket_path), "%s/ssh", prefix);
 	unlink (socket_path);
 
 	sock = socket (AF_UNIX, SOCK_STREAM, 0);
