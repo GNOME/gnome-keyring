@@ -499,16 +499,37 @@ static CK_RV
 test_C_InitPIN (CK_SESSION_HANDLE hSession, CK_UTF8CHAR_PTR pPin, 
                 CK_ULONG ulPinLen)
 {
-	g_assert_not_reached (); /* Not yet used by library */
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	Session *session;
+
+	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
+	g_assert (session != NULL && "No such session found");
+	if (!session)
+		return CKR_SESSION_HANDLE_INVALID;
+
+	g_free (the_pin);
+	the_pin = g_strndup ((gchar*)pPin, ulPinLen);
+	return CKR_OK;
 }
 
 static CK_RV
 test_C_SetPIN (CK_SESSION_HANDLE hSession, CK_UTF8CHAR_PTR pOldPin,
-             CK_ULONG ulOldLen, CK_UTF8CHAR_PTR pNewPin, CK_ULONG ulNewLen)
+               CK_ULONG ulOldLen, CK_UTF8CHAR_PTR pNewPin, CK_ULONG ulNewLen)
 {
-	g_assert_not_reached (); /* Not yet used by library */
-	return CKR_FUNCTION_NOT_SUPPORTED;
+	Session *session;
+	gchar *old;
+
+	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
+	g_assert (session != NULL && "No such session found");
+	if (!session)
+		return CKR_SESSION_HANDLE_INVALID;
+
+	old = g_strndup ((gchar*)pOldPin, ulOldLen);
+	if (!g_str_equal (old, the_pin))
+		return CKR_PIN_INCORRECT;
+
+	g_free (the_pin);
+	the_pin = g_strndup ((gchar*)pNewPin, ulNewLen);
+	return CKR_OK;
 }
 
 static CK_RV

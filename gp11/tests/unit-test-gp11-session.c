@@ -160,6 +160,40 @@ DEFINE_TEST(open_reused)
 }
 
 
+DEFINE_TEST(init_set_pin)
+{
+	GAsyncResult *result = NULL;
+	GError *err = NULL;
+	gboolean ret;
+
+	/* init pin */
+	ret = gp11_session_init_pin (session, (guchar*)"booo", 4, &err);
+	SUCCESS_RES (ret, err);
+
+	/* set pin */
+	ret = gp11_session_set_pin (session, (guchar*)"booo", 4, (guchar*)"tooo", 4, &err);
+	SUCCESS_RES (ret, err);
+
+	/* init pin async */
+	gp11_session_init_pin_async (session, (guchar*)"booo", 4, NULL, fetch_async_result, &result);
+	WAIT_UNTIL (result);
+	g_assert (result != NULL);
+	ret = gp11_session_init_pin_finish (session, result, &err);
+	SUCCESS_RES (ret, err);
+	g_object_unref (result);
+	result = NULL;
+
+	/* set pin async */
+	gp11_session_set_pin_async (session, (guchar*)"booo", 4, (guchar*)"tooo", 4, NULL, fetch_async_result, &result);
+	WAIT_UNTIL (result);
+	g_assert (result != NULL);
+	ret = gp11_session_set_pin_finish (session, result, &err);
+	SUCCESS_RES (ret, err);
+	g_object_unref (result);
+	result = NULL;
+}
+
+
 DEFINE_TEST(login_logout)
 {
 	GAsyncResult *result = NULL;

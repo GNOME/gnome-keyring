@@ -560,16 +560,21 @@ CK_SESSION_HANDLE   gp11_session_get_handle                 (GP11Session *self);
 
 GP11SessionInfo*    gp11_session_get_info                   (GP11Session *self);
 
-#if UNIMPLEMENTED
-
 gboolean            gp11_session_init_pin                   (GP11Session *self, 
                                                              const guchar *pin,
                                                              gsize n_pin,
                                                              GError **err);
 
+gboolean            gp11_session_init_pin_full              (GP11Session *self,
+                                                             const guchar *pin,
+                                                             gsize n_pin,
+                                                             GCancellable *cancellable,
+                                                             GError **err);
+
 void                gp11_session_init_pin_async             (GP11Session *self, 
                                                              const guchar *pin,
                                                              gsize n_pin,
+                                                             GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);
 
@@ -584,17 +589,28 @@ gboolean            gp11_session_set_pin                    (GP11Session *self,
                                                              gsize n_new_pin,
                                                              GError **err);
 
+gboolean            gp11_session_set_pin_full               (GP11Session *self,
+                                                             const guchar *old_pin,
+                                                             gsize n_old_pin,
+                                                             const guchar *new_pin,
+                                                             gsize n_new_pin,
+                                                             GCancellable *cancellable,
+                                                             GError **err);
+
 void                gp11_session_set_pin_async              (GP11Session *self,
                                                              const guchar *old_pin,
                                                              gsize n_old_pin,
                                                              const guchar *new_pin,
                                                              gsize n_new_pin,
+                                                             GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);
 
 gboolean            gp11_session_set_pin_finish             (GP11Session *self,
                                                              GAsyncResult *result,
                                                              GError **err);
+
+#if UNIMPLEMENTED
 
 guchar*             gp11_session_get_operation_state        (GP11Session *self,
                                                              gsize *n_result,

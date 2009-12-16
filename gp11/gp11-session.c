@@ -472,9 +472,247 @@ gp11_session_get_info (GP11Session *self)
 	return sessioninfo;
 }
 
+/* ---------------------------------------------------------------------------------------------
+ * INIT PIN
+ */
+
+typedef struct _InitPin {
+	GP11Arguments base;
+	guchar *pin;
+	gsize n_pin;
+} InitPin;
 
 
-/* LOGIN */
+static void
+free_init_pin (InitPin *args)
+{
+	g_free (args->pin);
+	g_free (args);
+}
+
+static CK_RV
+perform_init_pin (InitPin *args)
+{
+	return (args->base.pkcs11->C_InitPIN) (args->base.handle, (CK_BYTE_PTR)args->pin,
+	                                       args->n_pin);
+}
+
+/**
+ * gp11_session_init_pin:
+ * @self: Initialize PIN for this session's slot.
+ * @pin: The user's PIN, or NULL for protected authentication path.
+ * @n_pin: The length of the PIN.
+ * @err: A location to return an error.
+ *
+ * Initialize the user's pin on this slot that this session is opened on.
+ * According to the PKCS#11 standards, the session must be logged in with
+ * the CKU_SO user type.
+ *
+ * This call may block for an indefinite period.
+ *
+ * Return value: Whether successful or not.
+ **/
+gboolean
+gp11_session_init_pin (GP11Session *self, const guchar *pin, gsize n_pin,
+                       GError **err)
+{
+	return gp11_session_init_pin_full (self, pin, n_pin, NULL, err);
+}
+
+/**
+ * gp11_session_init_pin_full:
+ * @self: Initialize PIN for this session's slot.
+ * @pin: The user's PIN, or NULL for protected authentication path.
+ * @n_pin: The length of the PIN.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error.
+ *
+ * Initialize the user's pin on this slot that this session is opened on.
+ * According to the PKCS#11 standards, the session must be logged in with
+ * the CKU_SO user type.
+ *
+ * This call may block for an indefinite period.
+ *
+ * Return value: Whether successful or not.
+ **/
+gboolean
+gp11_session_init_pin_full (GP11Session *self, const guchar *pin, gsize n_pin,
+                            GCancellable *cancellable, GError **err)
+{
+	InitPin args = { GP11_ARGUMENTS_INIT, (guchar*)pin, n_pin };
+	return _gp11_call_sync (self, perform_init_pin, NULL, &args, cancellable, err);
+
+}
+
+/**
+ * gp11_session_init_pin_async:
+ * @self: Initialize PIN for this session's slot.
+ * @pin: The user's PIN, or NULL for protected authentication path.
+ * @n_pin: The length of the PIN.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ *
+ * Initialize the user's pin on this slot that this session is opened on.
+ * According to the PKCS#11 standards, the session must be logged in with
+ * the CKU_SO user type.
+ *
+ * This call will return immediately and completes asynchronously.
+ **/
+void
+gp11_session_init_pin_async (GP11Session *self, const guchar *pin, gsize n_pin,
+                             GCancellable *cancellable, GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	InitPin* args = _gp11_call_async_prep (self, self, perform_init_pin, NULL, sizeof (*args), free_init_pin);
+
+	args->pin = pin && n_pin ? g_memdup (pin, n_pin) : NULL;
+	args->n_pin = n_pin;
+
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
+}
+
+/**
+ * gp11_session_init_pin_finish:
+ * @self: The session.
+ * @result: The result passed to the callback.
+ * @err: A location to return an error.
+ *
+ * Get the result of initializing a user's PIN.
+ *
+ * Return value: Whether the operation was successful or not.
+ **/
+gboolean
+gp11_session_init_pin_finish (GP11Session *self, GAsyncResult *result, GError **err)
+{
+	return _gp11_call_basic_finish (result, err);
+}
+
+
+/* ---------------------------------------------------------------------------------------------
+ * SET PIN
+ */
+
+typedef struct _SetPin {
+	GP11Arguments base;
+	guchar *old_pin;
+	gsize n_old_pin;
+	guchar *new_pin;
+	gsize n_new_pin;
+} SetPin;
+
+static void
+free_set_pin (SetPin *args)
+{
+	g_free (args->old_pin);
+	g_free (args->new_pin);
+	g_free (args);
+}
+
+static CK_RV
+perform_set_pin (SetPin *args)
+{
+	return (args->base.pkcs11->C_SetPIN) (args->base.handle, (CK_BYTE_PTR)args->old_pin,
+	                                      args->n_old_pin, args->new_pin, args->n_new_pin);
+}
+
+/**
+ * gp11_session_set_pin:
+ * @self: Change the PIN for this session's slot.
+ * @old_pin: The user's old PIN, or NULL for protected authentication path.
+ * @n_old_pin: The length of the PIN.
+ * @new_pin: The user's new PIN, or NULL for protected authentication path.
+ * @n_new_pin: The length of the PIN.
+ * @err: A location to return an error.
+ *
+ * Change the user's pin on this slot that this session is opened on.
+ *
+ * This call may block for an indefinite period.
+ *
+ * Return value: Whether successful or not.
+ **/
+gboolean
+gp11_session_set_pin (GP11Session *self, const guchar *old_pin, gsize n_old_pin,
+                      const guchar *new_pin, gsize n_new_pin, GError **err)
+{
+	return gp11_session_set_pin_full (self, old_pin, n_old_pin, new_pin, n_new_pin, NULL, err);
+}
+
+/**
+ * gp11_session_set_pin_full:
+ * @self: Change the PIN for this session's slot.
+ * @old_pin: The user's old PIN, or NULL for protected authentication path.
+ * @n_old_pin: The length of the PIN.
+ * @new_pin: The user's new PIN, or NULL for protected authentication path.
+ * @n_new_pin: The length of the PIN.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error.
+ *
+ * Change the user's pin on this slot that this session is opened on.
+ *
+ * This call may block for an indefinite period.
+ *
+ * Return value: Whether successful or not.
+ **/
+gboolean
+gp11_session_set_pin_full (GP11Session *self, const guchar *old_pin, gsize n_old_pin,
+                           const guchar *new_pin, gsize n_new_pin, GCancellable *cancellable,
+                           GError **err)
+{
+	SetPin args = { GP11_ARGUMENTS_INIT, (guchar*)old_pin, n_old_pin, (guchar*)new_pin, n_new_pin };
+	return _gp11_call_sync (self, perform_set_pin, NULL, &args, cancellable, err);
+}
+
+/**
+ * gp11_session_set_pin_async:
+ * @self: Change the PIN for this session's slot.
+ * @old_pin: The user's old PIN, or NULL for protected authentication path.
+ * @n_old_pin: The length of the PIN.
+ * @new_pin: The user's new PIN, or NULL for protected authentication path.
+ * @n_new_pin: The length of the PIN.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ *
+ * Change the user's pin on this slot that this session is opened on.
+ *
+ * This call will return immediately and completes asynchronously.
+ **/
+void
+gp11_session_set_pin_async (GP11Session *self, const guchar *old_pin, gsize n_old_pin,
+                            const guchar *new_pin, gsize n_new_pin, GCancellable *cancellable,
+                            GAsyncReadyCallback callback, gpointer user_data)
+{
+	SetPin* args = _gp11_call_async_prep (self, self, perform_set_pin, NULL, sizeof (*args), free_set_pin);
+
+	args->old_pin = old_pin && n_old_pin ? g_memdup (old_pin, n_old_pin) : NULL;
+	args->n_old_pin = n_old_pin;
+	args->new_pin = new_pin && n_new_pin ? g_memdup (new_pin, n_new_pin) : NULL;
+	args->n_new_pin = n_new_pin;
+
+	_gp11_call_async_ready_go (args, cancellable, callback, user_data);
+}
+
+/**
+ * gp11_session_set_pin_finish:
+ * @self: The session.
+ * @result: The result passed to the callback.
+ * @err: A location to return an error.
+ *
+ * Get the result of changing a user's PIN.
+ *
+ * Return value: Whether the operation was successful or not.
+ **/
+gboolean
+gp11_session_set_pin_finish (GP11Session *self, GAsyncResult *result, GError **err)
+{
+	return _gp11_call_basic_finish (result, err);
+}
+
+
+/* ---------------------------------------------------------------------------------------------
+ * LOGIN
+ */
 
 typedef struct _Login {
 	GP11Arguments base;
