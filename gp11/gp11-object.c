@@ -1077,17 +1077,19 @@ perform_get_attribute_data (GetAttributeData *args)
 		return rv;
 	
 	/* Allocate memory for the value */
-	args->result = (args->allocator) (NULL, attr.ulValueLen ? attr.ulValueLen : 1);
+	args->result = (args->allocator) (NULL, attr.ulValueLen + 1);
 	g_assert (args->result);
 	attr.pValue = args->result;
-	
+
 	/* Now get the actual value */
 	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object,
 	                                               &attr, 1);
 
-	if (rv == CKR_OK)
+	if (rv == CKR_OK) {
 		args->n_result = attr.ulValueLen;
-	
+		args->result[args->n_result] = 0;
+	}
+
 	return rv;
 }
 
@@ -1106,8 +1108,10 @@ free_get_attribute_data (GetAttributeData *args)
  * @n_data: The length of the resulting data.
  * @err: A location to store an error.
  * 
- * Get the data for the specified attribute from the object. This call 
- * may block for an indefinite period.
+ * Get the data for the specified attribute from the object. For convenience
+ * the returned data has a null terminator.
+ *
+ * This call may block for an indefinite period.
  * 
  * Return value: The resulting PKCS#11 attribute data, or NULL if an error occurred. 
  **/
@@ -1130,8 +1134,10 @@ gp11_object_get_data (GP11Object *self, gulong attr_type, gsize *n_data, GError 
  * @n_data: The length of the resulting data.
  * @err: A location to store an error.
  * 
- * Get the data for the specified attribute from the object. This call 
- * may block for an indefinite period.
+ * Get the data for the specified attribute from the object. For convenience
+ * the returned data has an extra null terminator, not included in the returned length.
+ *
+ * This call may block for an indefinite period.
  * 
  * Return value: The resulting PKCS#11 attribute data, or NULL if an error occurred. 
  **/
@@ -1183,8 +1189,9 @@ gp11_object_get_data_full (GP11Object *self, gulong attr_type, GP11Allocator all
  * @callback: Called when the operation completes.
  * @user_data: Data to be passed to the callback.
  * 
- * Get the data for the specified attribute from the object. This call will
- * return immediately and complete asynchronously.
+ * Get the data for the specified attribute from the object.
+ *
+ * This call will return immediately and complete asynchronously.
  **/
 void
 gp11_object_get_data_async (GP11Object *self, gulong attr_type, GP11Allocator allocator, 
@@ -1218,8 +1225,10 @@ gp11_object_get_data_async (GP11Object *self, gulong attr_type, GP11Allocator al
  * @n_data: The length of the resulting data.
  * @err: A location to store an error.
  *
- * Get the result of an operation to get attribute data from 
- * an object. 
+ * Get the result of an operation to get attribute data from
+ * an object. For convenience the returned data has an extra null terminator,
+ * not included in the returned length.
+ *
  * 
  * Return value: The PKCS#11 attribute data or NULL if an error occurred.
  **/
