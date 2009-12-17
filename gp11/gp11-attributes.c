@@ -653,34 +653,39 @@ struct _GP11Attributes {
 
 /**
  * GP11_BOOLEAN:
+ *
  * The attribute data is a gboolean. Used with variable argument functions.
- */
+ **/
 
 /**
  * GP11_ULONG:
+ *
  * The attribute data is a gulong. Used with variable argument functions.  
- */
+ **/
 
 /**
  * GP11_STRING:
+ *
  * The attribute data is a gchar. Used with variable argument functions.  
- */
+ **/
 
 /**
  * GP11_DATE:
+ *
  * The attribute data is a GDate. Used with variable argument functions.  
- */
+ **/
 
 /**
  * GP11_DATE:
+ *
  * Signifies that no more attributes follow. Used with variable argument functions.  
- */
+ **/
 
 /**
  * GP11_ATTRIBUTES_TYPE:
  * 
  * A boxed type that can be used to hold a GP11Attributes object.
- */
+ **/
 
 /**
  * GP11Allocator:
@@ -691,8 +696,10 @@ struct _GP11Attributes {
  * 
  * This is a function that acts like g_realloc. Specifically it frees when length is 
  * set to zero, it allocates when data is set to NULL, and it reallocates when both 
- * are valid.   
- */
+ * are valid.
+ *
+ * Returns: The allocated memory, or NULL when freeing.
+ **/
 
 /**
  * gp11_attributes_get_boxed_type:
@@ -755,9 +762,10 @@ gp11_attributes_new_full (GP11Allocator allocator)
 /**
  * gp11_attributes_new_empty:
  * @attr_type: The first attribute type to add as empty.
+ * @...: The arguments should be values of attribute types, terminated with GP11_INVALID.
  * 
  * Creates an GP11Attributes array with empty attributes. The arguments 
- * should be values of attribute types, terminated with -1.
+ * should be values of attribute types, terminated with GP11_INVALID.
  * 
  * Return value: The new attributes array. When done with the array 
  * release it with gp11_attributes_unref().
@@ -834,10 +842,10 @@ initialize_from_valist (GP11Allocator allocator, gulong type, va_list va)
 
 /**
  * gp11_attributes_newv:
- * 
+ * @attr_type: The first attribute type.
+ * @...: The arguments must be triples of: attribute type, data type, value
+ *
  * Create a new GP11Attributes array, containing a list of attributes.
- * 
- * The arguments must be triples of: attribute type, data type, value
  * 
  * <para>The variable argument list should contain:
  * 	<variablelist>
@@ -862,20 +870,20 @@ initialize_from_valist (GP11Allocator allocator, gulong type, va_list va)
  * release it with gp11_attributes_unref().
  **/
 GP11Attributes*
-gp11_attributes_newv (gulong first_type, ...)
+gp11_attributes_newv (gulong attr_type, ...)
 {
 	GP11Attributes *attrs;
 	va_list va;
 	
-	va_start (va, first_type);
-	attrs = initialize_from_valist (g_realloc, first_type, va);
+	va_start (va, attr_type);
+	attrs = initialize_from_valist (g_realloc, attr_type, va);
 	va_end (va);
 	
 	return attrs;
 }
 
 /**
- * gp11_attributes_newv:
+ * gp11_attributes_new_valist:
  * @allocator: Memory allocator for attribute data, or NULL for default.
  * @va: Variable argument containing attributes to add. 
  * 
@@ -1289,9 +1297,11 @@ gp11_attributes_find_date (GP11Attributes *attrs, gulong attr_type, GDate *value
 /**
  * gp11_attributes_ref:
  * @attrs: An attribute array
- * 
+ *
  * Reference this attributes array.
- */
+ *
+ * Returns: The attributes.
+ **/
 GP11Attributes*
 gp11_attributes_ref (GP11Attributes *attrs)
 {

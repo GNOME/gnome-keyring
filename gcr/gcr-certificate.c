@@ -267,13 +267,13 @@ gcr_certificate_get_type (void)
  * Gets the raw DER data for an X509 certificate.
  * 
  * Returns: raw DER data of the X509 certificate.
- */
+ **/
 const guchar*
-gcr_certificate_get_der_data (GcrCertificate *self, gsize *n_length)
+gcr_certificate_get_der_data (GcrCertificate *self, gsize *n_data)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	g_return_val_if_fail (GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data, NULL);
-	return GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data (self, n_length);
+	return GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data (self, n_data);
 }
 
 /**
@@ -509,7 +509,7 @@ gcr_certificate_get_key_size (GcrCertificate *self)
  * gcr_certificate_get_fingerprint:
  * @self: a #GcrCertificate
  * @type: the type of algorithm for the fingerprint.
- * @n_digest: The length of the resulting fingerprint.
+ * @n_length: The length of the resulting fingerprint.
  * 
  * Calculate the fingerprint for this certificate.
  * 
@@ -520,24 +520,24 @@ gcr_certificate_get_key_size (GcrCertificate *self)
  * it is no longer required.
  * 
  * Returns: the raw binary fingerprint.  
- */
+ **/
 guchar*
-gcr_certificate_get_fingerprint (GcrCertificate *self, GChecksumType type, gsize *n_digest)
+gcr_certificate_get_fingerprint (GcrCertificate *self, GChecksumType type, gsize *n_length)
 {
 	GChecksum *sum;
 	guchar *digest;
 	gssize length;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (n_digest, NULL);
+	g_return_val_if_fail (n_length, NULL);
 	
 	sum = digest_certificate (self, type);
 	g_return_val_if_fail (sum, NULL);
 	length = g_checksum_type_get_length (type);
 	g_return_val_if_fail (length > 0, NULL);
 	digest = g_malloc (length);
-	*n_digest = length;
-	g_checksum_get_digest (sum, digest, n_digest);
+	*n_length = length;
+	g_checksum_get_digest (sum, digest, n_length);
 	g_checksum_free (sum);
 	
 	return digest;

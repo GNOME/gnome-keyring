@@ -761,9 +761,7 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 /**
  * gp11_module_new:
  * @funcs: Initialized PKCS#11 function list pointer
- * @reserved: Extra arguments for the PKCS#11 module, should usually be NULL.
- * @err: A location to store an error resulting from a failed load.
- * 
+ *
  * Create a GP11Module representing a PKCS#11 module. It is assumed that 
  * this the module is already initialized. In addition it will not be 
  * finalized when complete.
@@ -978,7 +976,7 @@ gp11_module_get_pool_sessions (GP11Module *self)
 /**
  * gp11_module_set_pool_sessions:
  * @self: The module to set the setting on.
- * @reuse: Whether to reuse sessions or not.
+ * @pool: Whether to reuse sessions or not.
  * 
  * When this is set, sessions will be pooled and reused
  * if their flags match when gp11_slot_open_session() is called.
@@ -1032,7 +1030,7 @@ gp11_module_get_auto_authenticate (GP11Module *self)
 /**
  * gp11_module_set_auto_authenticate:
  * @self: The module to set the setting on.
- * @auto_login: Whether auto login or not.
+ * @auto_authenticate: Whether auto login or not.
  * 
  * When this is set, this slot 
  * will emit the 'authenticate-slot' signal when a session
@@ -1040,18 +1038,18 @@ gp11_module_get_auto_authenticate (GP11Module *self)
  * signal when an object requires authintication.
  **/
 void
-gp11_module_set_auto_authenticate (GP11Module *self, gint auto_login)
+gp11_module_set_auto_authenticate (GP11Module *self, gint auto_authenticate)
 {
 	GP11ModulePrivate *pv = lock_private (self);
 	
 	/* HACK: Get needed fix around API freeze. */
-	if (auto_login == 1)
-		auto_login = GP11_AUTHENTICATE_TOKENS | GP11_AUTHENTICATE_OBJECTS;
+	if (auto_authenticate == 1)
+		auto_authenticate = GP11_AUTHENTICATE_TOKENS | GP11_AUTHENTICATE_OBJECTS;
 
 	g_return_if_fail (pv);
 	
 	{
-		pv->auto_authenticate = auto_login;
+		pv->auto_authenticate = auto_authenticate;
 	}
 	
 	unlock_private (self, pv);
@@ -1061,14 +1059,13 @@ gp11_module_set_auto_authenticate (GP11Module *self, gint auto_login)
 /**
  * gp11_module_enumerate_objects:
  * @self: The module to enumerate objects.
- * @attrs: Attributes that the objects must have, or empty for all objects.
  * @func: Function to call for each object.
  * @user_data: Data to pass to the function.
- * 
+ * @...: The arguments must be triples of: attribute type, data type, value.
+ *
  * Call a function for every matching object on the module. This call may 
  * block for an indefinite period.
  * 
- * The arguments must be triples of: attribute type, data type, value
  * 
  * <para>The variable argument list should contain:
  * 	<variablelist>

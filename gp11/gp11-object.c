@@ -669,7 +669,7 @@ free_set_attributes (SetAttributes *args)
  * gp11_object_set:
  * @self: The object to set attributes on.
  * @err: A location to return an error.
- * ...: The attributes to set.
+ * @...: The attributes to set.
  *
  * Set PKCS#11 attributes on an object.
  * This call may block for an indefinite period.
@@ -893,8 +893,8 @@ free_get_attributes (GetAttributes *args)
  * gp11_object_get:
  * @self: The object to get attributes from.
  * @err: A location to store an error.
- * ...: The attribute types to get.
- * 
+ * @...: The attribute types to get.
+ *
  * Get the specified attributes from the object. This call may
  * block for an indefinite period.
  * 
@@ -930,7 +930,7 @@ gp11_object_get (GP11Object *self, GError **err, ...)
 }
 
 /**
- * gp11_object_get:
+ * gp11_object_get_full:
  * @self: The object to get attributes from.
  * @attrs: The attributes to get, with the types filled in.
  * @cancellable: Optional cancellation object, or NULL.

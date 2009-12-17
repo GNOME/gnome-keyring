@@ -934,7 +934,7 @@ perform_create_object (CreateObject *args)
  * gp11_session_create_object:
  * @self: The session to create the object on.
  * @err: A location to store an error.
- * ...: The attributes to create the new object with.
+ * @...: The attributes to create the new object with.
  * 
  * Create a new PKCS#11 object. This call may block 
  * for an indefinite period.
@@ -1157,7 +1157,7 @@ objlist_from_handles (GP11Session *self, CK_OBJECT_HANDLE_PTR objects,
  * gp11_session_find_objects:
  * @self: The session to find objects on.
  * @err: A location to return an error or NULL.
- * ...: The attributes to match.
+ * @...: The attributes to match.
  * 
  * Find objects matching the passed attributes. This call may 
  * block for an indefinite period.

@@ -74,13 +74,13 @@ gp11_get_error_quark (void)
 
 /**
  * gp11_message_from_rv:
- * rv: The PKCS#11 return value to get a message for.
+ * @rv: The PKCS#11 return value to get a message for.
  * 
  * Get a message for a PKCS#11 return value or error code. Do not 
  * pass CKR_OK or other such non errors to this function.
  * 
  * Return value: The user readable message. 
- */
+ **/
 const gchar*
 gp11_message_from_rv (CK_RV rv)
 {
@@ -273,11 +273,11 @@ gp11_message_from_rv (CK_RV rv)
 
 /**
  * gp11_list_unref_free:
- * reflist: List of Gobject reference counted pointers.
+ * @reflist: List of Gobject reference counted pointers.
  * 
  * Free a list of GObject based pointers. All objects in the list
  * will be unreffed and then the list itself will be freed.
- */
+ **/
 void
 gp11_list_unref_free (GList *reflist)
 {
@@ -291,14 +291,14 @@ gp11_list_unref_free (GList *reflist)
 
 /**
  * gp11_list_ref_copy:
- * reflist: List of GObject reference counted objects.
+ * @reflist: List of GObject reference counted objects.
  * 
  * Copy a list of GObject based pointers. All objects 
  * in the list will be reffed and the list will be copied.
  * 
  * Return value: The copied and reffed list. When done, free it with 
  * gp11_list_unref_free ()
- */
+ **/
 GList*
 gp11_list_ref_copy (GList *reflist)
 {

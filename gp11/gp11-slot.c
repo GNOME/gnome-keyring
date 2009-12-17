@@ -375,6 +375,7 @@ gp11_mechanism_info_free (GP11MechanismInfo *mech_info)
 /**
  * gp11_mechanisms_check:
  * @mechanisms: A list of mechanisms, perhaps retrieved from gp11_slot_get_mechanisms().
+ * @...: A list of mechanism types followed by GP11_INVALID.
  * 
  * Check whether all the mechanism types are in the list.
  * 

@@ -90,13 +90,6 @@ enum {
 	GP11_AUTHENTICATE_OBJECTS = 4
 };
 
-/* Used on varargs functions that should end with GP11_INVALID */
-#ifdef NOT_YET_SUPPORTED
-#define GP11_INVALID_TERMINATED __attribute__((__sentinel__(G_MAXULONG)))
-#else
-#define GP11_INVALID_TERMINATED
-#endif
-
 void                gp11_attribute_init                     (GP11Attribute *attr,
                                                              gulong attr_type,
                                                              gconstpointer value,
@@ -174,12 +167,12 @@ GType               gp11_attributes_get_boxed_type          (void) G_GNUC_CONST;
 GP11Attributes*     gp11_attributes_new                     (void);
 
 GP11Attributes*     gp11_attributes_new_empty               (gulong attr_type, 
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             ...);
 
 GP11Attributes*     gp11_attributes_new_full                (GP11Allocator allocator);
 
 GP11Attributes*     gp11_attributes_newv                    (gulong attr_type, 
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             ...);
 
 GP11Attributes*     gp11_attributes_new_valist              (GP11Allocator allocator, 
                                                              va_list va);
@@ -207,11 +200,11 @@ GP11Attribute*      gp11_attributes_add_boolean             (GP11Attributes *att
 
 GP11Attribute*      gp11_attributes_add_string              (GP11Attributes *attrs,
                                                              gulong attr_type,
-                                                             const gchar *string);
+                                                             const gchar *value);
 
 GP11Attribute*      gp11_attributes_add_date                (GP11Attributes *attrs,
                                                              gulong attr_type,
-                                                             const GDate *date);
+                                                             const GDate *value);
 
 GP11Attribute*      gp11_attributes_add_ulong               (GP11Attributes *attrs,
                                                              gulong attr_type,
@@ -319,7 +312,7 @@ GList*                gp11_module_get_slots                   (GP11Module *self,
 gboolean              gp11_module_get_pool_sessions           (GP11Module *self);
 
 void                  gp11_module_set_pool_sessions           (GP11Module *self, 
-                                                               gboolean pool_sessions);
+                                                               gboolean pool);
 
 gint                  gp11_module_get_auto_authenticate       (GP11Module *self);
 
@@ -329,7 +322,7 @@ void                  gp11_module_set_auto_authenticate       (GP11Module *self,
 gboolean              gp11_module_enumerate_objects           (GP11Module *self,
                                                                GP11ObjectForeachFunc func,
                                                                gpointer user_data,
-                                                               ...) GP11_INVALID_TERMINATED;
+                                                               ...);
 
 gboolean              gp11_module_enumerate_objects_full      (GP11Module *self,
                                                                GP11Attributes *attrs,
@@ -686,7 +679,7 @@ gboolean            gp11_session_logout_finish              (GP11Session *self,
 
 GP11Object*         gp11_session_create_object              (GP11Session *self, 
                                                              GError **err, 
-                                                             ...) GP11_INVALID_TERMINATED; 
+                                                             ...);
 
 GP11Object*         gp11_session_create_object_full         (GP11Session *self,
                                                              GP11Attributes *attrs,
@@ -705,7 +698,7 @@ GP11Object*         gp11_session_create_object_finish       (GP11Session *self,
 
 GList*              gp11_session_find_objects               (GP11Session *self,
                                                              GError **err,
-                                                             ...) GP11_INVALID_TERMINATED; 
+                                                             ...);
 
 GList*              gp11_session_find_objects_full          (GP11Session *self,
                                                              GP11Attributes *attrs,
@@ -727,18 +720,18 @@ GList*              gp11_session_find_objects_finish        (GP11Session *self,
 GP11Object*         gp11_session_generate_key               (GP11Session *self,
                                                              GP11Mechanism *mechanism,
                                                              GError **err,
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             ...);
 
 void                gp11_session_generate_key_async         (GP11Session *self,
                                                              GP11Mechanism *mechanism,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data,
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             ...);
 
 GP11Object*         gp11_session_generate_key_finish        (GP11Session *self,
                                                              GAsyncResult *result,
                                                              GError **err,
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             ...);
 
 #endif /* UNIMPLEMENTED */
 
@@ -1229,7 +1222,7 @@ GP11Object*         gp11_session_unwrap_key                  (GP11Session *self,
                                                               gconstpointer input,
                                                               gsize n_input,
                                                               GError **err,
-                                                              ...) GP11_INVALID_TERMINATED;
+                                                              ...);
 
 GP11Object*         gp11_session_unwrap_key_full             (GP11Session *self,
                                                               GP11Object *wrapper,
@@ -1258,7 +1251,7 @@ GP11Object*         gp11_session_derive_key                  (GP11Session *self,
                                                               GP11Object *base,
                                                               gulong mech_type,
                                                               GError **err,
-                                                              ...) GP11_INVALID_TERMINATED;
+                                                              ...);
 
 GP11Object*         gp11_session_derive_key_full             (GP11Session *self,
                                                               GP11Object *base,
@@ -1311,10 +1304,10 @@ GList*              gp11_objects_from_handle_array          (GP11Slot *slot,
                                                              CK_OBJECT_HANDLE_PTR handles,
                                                              CK_ULONG n_handles);
 
-gboolean            gp11_object_equal                       (gconstpointer slot1,
-                                                             gconstpointer slot2);
+gboolean            gp11_object_equal                       (gconstpointer object1,
+                                                             gconstpointer object2);
 
-guint               gp11_object_hash                        (gconstpointer slot);
+guint               gp11_object_hash                        (gconstpointer object);
 
 GP11Module*         gp11_object_get_module                  (GP11Object *self);
 
@@ -1386,7 +1379,7 @@ gssize              gp11_object_get_size_finish             (GP11Object *self,
 
 gboolean            gp11_object_set                         (GP11Object *self,
                                                              GError **err,
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             ...);
 
 gboolean            gp11_object_set_full                    (GP11Object *self,
                                                              GP11Attributes *attrs,
@@ -1405,7 +1398,7 @@ gboolean            gp11_object_set_finish                  (GP11Object *self,
 
 GP11Attributes*     gp11_object_get                         (GP11Object *self,
                                                              GError **err,
-                                                             ...) GP11_INVALID_TERMINATED;
+                                                             ...);
 
 GP11Attributes*     gp11_object_get_full                    (GP11Object *self,
                                                              GP11Attributes *attrs,
