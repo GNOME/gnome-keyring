@@ -15,7 +15,6 @@ SUBDIRS = \
 	gp11 \
 	egg \
 	gcr \
-	library \
 	pkcs11 \
 	daemon \
 	tool \
@@ -28,7 +27,6 @@ EXTRA_DIST = \
 	intltool-extract.in \
 	intltool-merge.in \
 	intltool-update.in \
-	keyring-intro.txt \
 	ChangeLog.old \
 	HACKING
 

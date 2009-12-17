@@ -24,7 +24,8 @@ noinst_LTLIBRARIES = \
 	libgkd-control-client.la
 
 libgkd_control_la_SOURCES = \
-	gkd-control-server.c gkd-control-client.c gkd-control.h
+	gkd-control-server.c gkd-control-client.c \
+	gkd-control.h gkd-control-codes.h
 
 libgkd_control_client_la_SOURCES = \
 	gkd-control-client.c gkd-control.h

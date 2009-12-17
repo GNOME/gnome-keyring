@@ -22,7 +22,7 @@
 #include "config.h"
 
 #include "gkd-control.h"
-#include "gkd-control-private.h"
+#include "gkd-control-codes.h"
 
 #include "gkd-main.h"
 #include "gkd-util.h"

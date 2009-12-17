@@ -28,6 +28,8 @@
 #include "egg/egg-buffer.h"
 #include "egg/egg-unix-credentials.h"
 
+#include "daemon/control/gkd-control-codes.h"
+
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -214,7 +216,7 @@ connect_to_daemon (const char *control)
 }
 
 static void
-write_part (int fd, const unsigned char *data, int len, GnomeKeyringResult *res)
+write_part (int fd, const unsigned char *data, int len, int *res)
 {
 	assert (res);
 	
@@ -267,11 +269,10 @@ read_part (int fd, unsigned char *data, int len)
 	return all;
 }
 
-static GnomeKeyringResult 
-keyring_daemon_op (const char *control, GnomeKeyringOpCode op, int argc,
-                   const char* argv[])
+static int
+keyring_daemon_op (const char *control, int op, int argc, const char* argv[])
 {
-	GnomeKeyringResult ret = GNOME_KEYRING_RESULT_OK;
+	int ret = GNOME_KEYRING_RESULT_OK;
 	unsigned char buf[4];
 	int i, sock = -1;
 	uint oplen, l;
@@ -346,12 +347,12 @@ done:
 	return ret;
 }
 
-GnomeKeyringResult
+int
 gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
-                              GnomeKeyringOpCode op, int argc, const char* argv[])
+                              int op, int argc, const char* argv[])
 {
 	struct sigaction ignpipe, oldpipe, defchld, oldchld;
-	GnomeKeyringResult res;
+	int res;
 	pid_t pid;
 	int status;
 	

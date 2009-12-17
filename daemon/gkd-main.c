@@ -25,7 +25,6 @@
 
 #include "gkd-main.h"
 #include "gkd-util.h"
-#include "gkr-daemon.h"
 
 #include "control/gkd-control.h"
 
@@ -633,14 +632,6 @@ fork_and_print_environment (void)
 static gboolean
 gkr_daemon_startup_steps (void)
 {
-	/*
-	 * Always initialize the keyring subsystem. This is a necessary
-	 * component that everything else depends on in one way or
-	 * another.
-	 */
-	if (!gkr_daemon_io_create_master_socket ())
-		return FALSE;
-
 	/* Startup the appropriate components, creates sockets etc.. */
 #ifdef WITH_SSH
 	if (check_run_component ("ssh")) {

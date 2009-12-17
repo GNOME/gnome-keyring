@@ -25,7 +25,6 @@
 
 #include "gkd-dbus-private.h"
 #include "gkd-util.h"
-#include "gkr-daemon.h"
 
 #include <dbus/dbus.h>
 
@@ -47,24 +46,10 @@ message_handler_cb (DBusConnection *conn, DBusMessage *message, void *user_data)
 	DBusMessageIter args;
 	DBusMessage *reply = NULL;
 
-	/* GetSocketPath */
-	if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL &&
-	    dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetSocketPath") &&
-	    g_str_equal (dbus_message_get_signature (message), "")) {
-
-		const gchar *socket_path = gkr_daemon_io_get_socket_path ();
-		g_return_val_if_fail (socket_path, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-
-		/* Setup the result */
-		reply = dbus_message_new_method_return (message);
-		dbus_message_iter_init_append (reply, &args);
-		if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_STRING, &socket_path))
-			g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
-
 	/* GetEnvironment */
-	} else if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL &&
-	           dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetEnvironment") &&
-	           g_str_equal (dbus_message_get_signature (message), "")) {
+	if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL &&
+	    dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetEnvironment") &&
+	    g_str_equal (dbus_message_get_signature (message), "")) {
 
 		const gchar **env;
 		DBusMessageIter items, entry;

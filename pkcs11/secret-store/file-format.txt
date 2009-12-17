@@ -41,13 +41,13 @@ num_items *
 guin32 num_encrypted bytes
  encrypted data:
   bytes[16] encryted hash, (for decrypt ok verify)
-  
+
   num_items *
    string display_name
    string secret
    time_t ctime
    time_t mtime
-   
+
    string reserved_str
    guint[4] reserved_int2
 
@@ -65,5 +65,4 @@ guin32 num_encrypted bytes
      string reserved_str
      guint32 reserved_uint
 
-  zero padding to make even multiple of 16   
-
+  zero padding to make even multiple of 16

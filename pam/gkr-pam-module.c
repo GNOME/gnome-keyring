@@ -31,8 +31,7 @@
 
 #include "gkr-pam.h"
 
-#include "library/gnome-keyring-result.h"
-#include "library/gnome-keyring-opcodes.h"
+#include "daemon/control/gkd-control-codes.h"
 
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
@@ -648,7 +647,7 @@ static int
 create_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
 	const char *control;
-	GnomeKeyringResult res;
+	int res;
 	const char *argv[2];
 	
 	assert (pwd);
@@ -679,7 +678,7 @@ static int
 unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
 	const char *control;
-	GnomeKeyringResult res;
+	int res;
 	const char *argv[2];
 	
 	assert (pwd);
@@ -716,9 +715,9 @@ change_keyring_password (pam_handle_t *ph, struct passwd *pwd,
                          const char *password, const char *original)
 {
 	const char *control;
-	GnomeKeyringResult res;
 	const char *argv[3];
-	
+	int res;
+
 	assert (pwd);
 	assert (password);
 	assert (original);

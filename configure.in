@@ -1,4 +1,4 @@
-AC_INIT(library/gnome-keyring.h)
+AC_INIT(daemon/gkd-main.c)
 
 AM_INIT_AUTOMAKE(gnome-keyring, 2.29.4)
 AM_CONFIG_HEADER(config.h)
@@ -554,8 +554,6 @@ daemon/control/Makefile
 daemon/control/tests/Makefile
 daemon/data/Makefile
 daemon/dbus/Makefile
-daemon/keyrings/Makefile
-daemon/keyrings/tests/Makefile
 daemon/login/Makefile
 daemon/pkcs11/Makefile
 daemon/prompt/Makefile
@@ -566,7 +564,6 @@ daemon/util/tests/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/gcr/Makefile
-docs/reference/gnome-keyring/Makefile
 docs/reference/gp11/Makefile
 egg/Makefile
 egg/tests/Makefile
@@ -576,8 +573,6 @@ gcr/tests/Makefile
 gp11/gp11.pc
 gp11/Makefile
 gp11/tests/Makefile
-library/Makefile
-library/tests/Makefile
 pam/Makefile
 pam/tests/Makefile
 pkcs11/Makefile
@@ -597,8 +592,6 @@ pkcs11/user-store/tests/Makefile
 po/Makefile.in
 tests/Makefile
 tool/Makefile
-library/gnome-keyring-1.pc
-library/gnome-keyring-1-uninstalled.pc
 ])
 
 # ------------------------------------------------------------------------------

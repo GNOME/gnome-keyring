@@ -1,5 +1,0 @@
-/run-keyrings-test.*
-/run-*-test*
-/.*
-/Makefile
-/Makefile.in

@@ -1,7 +1,6 @@
 UNIT_AUTO = \
 	unit-test-async.c \
-	unit-test-location.c \
-	unit-test-location-watch.c
+	unit-test-location.c
 
 UNIT_PROMPT = 
 

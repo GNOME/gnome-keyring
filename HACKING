@@ -14,18 +14,8 @@ http://live.gnome.org/GnomeKeyring/Architecture
 Gnome Keyring is made up of several distinct parts working on concert with 
 each other. These parts generally live in different directories:
 
-common
-   Deprecated. This code will shortly live elsewhere. Daemon code will be moved 
-   into daemon/ some code may move into egg/ etc...
-   
 daemon 
    The main daemon startup code and gnome-keyring password protocol operations. 
-   
-daemon/keyrings
-   Code that manages the user's password keyrings 
-
-daemon/pk
-   Old code, disappearing presently, not in use. 
 
 daemon/pkcs11
    The various hooks that connect the PKCS#11 modules and code into the daemon.
@@ -42,9 +32,6 @@ gcr
    
 gp11
    A public library for accessing PKCS#11 modules. 
-
-library
-   The gnome-keyring library for accessing passwords and secrets. 
 
 pam 
    The PAM module that unlocks the login keyring when the user logs in.

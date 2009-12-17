@@ -22,7 +22,7 @@
 #include "config.h"
 
 #include "gkd-control.h"
-#include "gkd-control-private.h"
+#include "gkd-control-codes.h"
 
 #include "egg/egg-buffer.h"
 #include "egg/egg-secure-memory.h"
