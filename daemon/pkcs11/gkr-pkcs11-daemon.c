@@ -51,6 +51,7 @@
 
 /* The top level of our internal PKCS#11 module stack */
 static CK_FUNCTION_LIST_PTR pkcs11_roof = NULL;
+static CK_FUNCTION_LIST_PTR pkcs11_base = NULL;
 
 static void
 pkcs11_daemon_cleanup (gpointer unused)
@@ -76,7 +77,6 @@ pkcs11_daemon_cleanup (gpointer unused)
 gboolean
 gkr_pkcs11_daemon_initialize (void)
 {
-	CK_FUNCTION_LIST_PTR plex_layer;
 	CK_FUNCTION_LIST_PTR roots_store;
 	CK_FUNCTION_LIST_PTR secret_store;
 	CK_FUNCTION_LIST_PTR ssh_store;
@@ -106,11 +106,11 @@ gkr_pkcs11_daemon_initialize (void)
 #endif
 		gck_plex_layer_add_module (secret_store);
 		gck_plex_layer_add_module (user_store);
-		
-		plex_layer = gck_plex_layer_get_functions (); 
-		
+
+		pkcs11_base = gck_plex_layer_get_functions ();
+
 		/* The auth component is the top component */
-		gkr_pkcs11_auth_chain_functions (plex_layer);
+		gkr_pkcs11_auth_chain_functions (pkcs11_base);
 		pkcs11_roof = gkr_pkcs11_auth_get_functions ();
 	
 		/* Initialize the whole caboodle */
@@ -244,4 +244,10 @@ CK_FUNCTION_LIST_PTR
 gkr_pkcs11_daemon_get_functions (void)
 {
 	return pkcs11_roof;
+}
+
+CK_FUNCTION_LIST_PTR
+gkr_pkcs11_daemon_get_base_functions (void)
+{
+	return pkcs11_base;
 }

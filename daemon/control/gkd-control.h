@@ -26,6 +26,14 @@
 
 gboolean          gkd_control_listen        (void);
 
-gboolean          gkd_control_initialize    (const gchar *directory);
+gchar**           gkd_control_initialize    (const gchar *directory,
+                                             const gchar **env);
+
+gboolean          gkd_control_unlock        (const gchar *directory,
+                                             const gchar *password);
+
+gboolean          gkd_control_change_lock   (const gchar *directory,
+                                             const gchar *original,
+                                             const gchar *password);
 
 #endif /* __GKD_CONTROL_H__ */

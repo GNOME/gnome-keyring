@@ -34,4 +34,6 @@ gboolean      gkr_pkcs11_daemon_startup_ssh      (void);
 
 CK_FUNCTION_LIST_PTR   gkr_pkcs11_daemon_get_functions    (void);
 
+CK_FUNCTION_LIST_PTR   gkr_pkcs11_daemon_get_base_functions    (void);
+
 #endif /* GKRPKCS11DAEMON_H_ */

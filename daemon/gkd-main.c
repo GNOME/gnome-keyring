@@ -36,9 +36,7 @@
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
 
-#include "keyrings/gkr-keyring-login.h"
-
-#include "library/gnome-keyring.h"
+#include "login/gkd-login.h"
 
 #include "pkcs11/gkr-pkcs11-daemon.h"
 
@@ -527,12 +525,24 @@ print_environment (pid_t pid)
 static gboolean
 start_or_initialize_daemon (const gchar *directory)
 {
+	gchar **ourenv, **daemonenv, **e;
+
 	if (!directory)
 		return FALSE;
 
+	/* Exchange environment variables, and try to initialize daemon */
+	ourenv = gkd_util_build_environment (GKD_UTIL_IN_ENVIRONMENT);
+	daemonenv = gkd_control_initialize (directory, (const gchar**)ourenv);
+	g_strfreev (ourenv);
+
 	/* Initialization failed, start this process up as a daemon */
-	if (!gkd_control_initialize (directory))
+	if (!daemonenv)
 		return FALSE;
+
+	/* Setup all the environment variables we were passed */
+	for (e = daemonenv; *e; ++e)
+		gkd_util_push_environment_full (*e);
+	g_strfreev (daemonenv);
 
 	/*
 	 * Now we've initialized the daemon, we need to print out
@@ -660,7 +670,7 @@ gkr_daemon_initialize_steps (void)
 	 * If it does not exist. We create it.
 	 */
 	if (login_password) {
-		if (!gkr_keyring_login_unlock (login_password))
+		if (!gkd_login_unlock (login_password))
 			g_message ("Failed to unlock login on startup");
 		egg_secure_strclear (login_password);
 	}
@@ -792,7 +802,7 @@ main (int argc, char *argv[])
 	 * If it does not exist. We create it.
 	 */
 	if (login_password) {
-		if (!gkr_keyring_login_unlock (login_password))
+		if (!gkd_login_unlock (login_password))
 			g_message ("Failed to unlock login on startup");
 		egg_secure_strclear (login_password);
 	}

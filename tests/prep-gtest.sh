@@ -95,6 +95,16 @@ build_source()
 	echo "}"
 	echo
 
+	echo "static int run(void) {"
+	echo "	int ret;"
+	echo "	initialize_tests ();"
+	echo "	start_tests ();"
+	echo "	ret = g_test_run ();"
+	echo "	run_externals ();"
+	echo "	stop_tests();"
+	echo "	return ret;"
+	echo "}"
+
 	echo "#include \"tests/gtest-helpers.c\""
 }
 

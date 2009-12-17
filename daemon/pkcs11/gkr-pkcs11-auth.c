@@ -26,12 +26,12 @@
 #include "egg/egg-cleanup.h"
 #include "egg/egg-secure-memory.h"
 
-#include "keyrings/gkr-keyring-login.h"
+#include "login/gkd-login.h"
+
+#include "pkcs11/pkcs11.h"
 
 #include "ui/gkr-ask-request.h"
 #include "ui/gkr-ask-daemon.h"
-
-#include "pkcs11/pkcs11.h"
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -85,7 +85,7 @@ password_to_pin (const gchar *password, CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len)
 		*pin = NULL;
 		*pin_len = 0;
 	} else {
-		*pin = (CK_UTF8CHAR_PTR)egg_secure_strdup (password);
+		*pin = (CK_UTF8CHAR_PTR)password;
 		*pin_len = strlen (password);
 	}
 }
@@ -214,8 +214,7 @@ gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO
 
 	/* See if we can just use the login keyring password for this */
 	if (object->unique && object->token) {
-		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
-		                                            "unique", object->unique, NULL);
+		password = gkd_login_lookup_secret ("unique", object->unique, NULL);
 		if (password != NULL) { 
 			password_to_pin (password, pin, pin_len);
 			return TRUE;
@@ -225,13 +224,11 @@ gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO
 	/* COMPAT: Check old method of storing secrets for objects in login keyring */
 	if (object->digest) {
 		convert_upper_case (object->digest);
-		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_PK_STORAGE,
-		                                            "object-digest", object->digest, NULL);
+		password = gkd_login_lookup_secret ("object-digest", object->digest, NULL);
 		if (password != NULL) {
 			if (object->unique)
-				gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD, 
-				                                 object->label, password, 
-		                                                 "unique", object->unique, NULL);
+				gkd_login_attach_secret (object->label, password,
+				                         "unique", object->unique, NULL);
 			password_to_pin (password, pin, pin_len);
 			return TRUE;
 		}
@@ -246,7 +243,7 @@ gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO
 	gkr_ask_request_set_secondary (ask, secondary);
 	g_free (secondary);
 
-	if (object->unique && gkr_keyring_login_is_usable ())
+	if (object->unique && gkd_login_is_usable ())
 		gkr_ask_request_set_check_option (ask, prepare_specific_check (object->klass));
 
 	/* Prompt the user */
@@ -267,9 +264,8 @@ gkr_pkcs11_auth_login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO
 		
 		/* Store forever */
 		if (ask->checked && object->unique && object->token) {
-			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD, 
-			                                 object->label, ask->typed_password, 
-			                                 "unique", object->unique, NULL);
+			gkd_login_attach_secret (object->label, ask->typed_password,
+			                         "unique", object->unique, NULL);
 		}
 	}
 	
@@ -325,8 +321,7 @@ gkr_pkcs11_auth_login_specific_done (CK_SESSION_HANDLE handle, CK_SESSION_INFO *
 	case CKR_PIN_LEN_RANGE:
 	case CKR_PIN_LOCKED:
 		if (object->unique && object->token)
-			gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,
-			                                 "unique", object->unique, NULL);
+			gkd_login_remove_secret ("unique", object->unique, NULL);
 		break;
 		
 	case CKR_OK:
@@ -374,12 +369,11 @@ gkr_pkcs11_auth_login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info
 	label = g_strndup ((gchar*)info->label, sizeof (info->label));
 	g_strchomp (label);
 	
-	if (gkr_keyring_login_is_usable ()) {
+	if (gkd_login_is_usable ()) {
 
-		password = gkr_keyring_login_lookup_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, 
-		                                            "manufacturer", manufacturer,
-		                                            "serial-number", serial,
-		                                            NULL);
+		password = gkd_login_lookup_secret ("manufacturer", manufacturer,
+		                                    "serial-number", serial,
+		                                    NULL);
 		if (password != NULL) {
 			password_to_pin (password, pin, pin_len);
 			g_free (manufacturer);
@@ -399,7 +393,7 @@ gkr_pkcs11_auth_login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info
 	gkr_ask_request_set_secondary (ask, secondary);
 	g_free (secondary);
 	
-	if (gkr_keyring_login_is_usable ())
+	if (gkd_login_is_usable ())
 		gkr_ask_request_set_check_option (ask, _("Automatically unlock secure storage when I log in."));
 
 	/* Prompt the user */
@@ -420,11 +414,10 @@ gkr_pkcs11_auth_login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info
 		
 		/* Store forever */
 		if (ask->checked) {
-			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, 
-			                                 label, ask->typed_password,
-			                                 "manufacturer", manufacturer, 
-			                                 "serial-number", serial,
-			                                 NULL);
+			gkd_login_attach_secret (label, ask->typed_password,
+			                         "manufacturer", manufacturer,
+			                         "serial-number", serial,
+			                         NULL);
 		}
 	}
 	
@@ -444,7 +437,7 @@ clear_user_login (CK_TOKEN_INFO *info)
 	
 	g_assert (info);
 	
-	if (gkr_keyring_login_is_usable ()) {
+	if (gkd_login_is_usable ()) {
 		/* 
 		 * The manufacturer and serial number together uniquely identify token 
 		 * They're stored with space padded in the token info structure.
@@ -456,10 +449,9 @@ clear_user_login (CK_TOKEN_INFO *info)
 		serial = g_strndup ((gchar*)info->serialNumber, sizeof (info->serialNumber));
 		g_strchomp (serial);
 
-		gkr_keyring_login_remove_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,
-						 "manufacturer", manufacturer, 
-						 "serial-number", serial, 
-						 NULL);
+		gkd_login_remove_secret ("manufacturer", manufacturer,
+		                         "serial-number", serial,
+		                         NULL);
 		
 		g_free (manufacturer);
 		g_free (serial);
@@ -498,7 +490,6 @@ gkr_pkcs11_auth_init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	gchar *secondary;
 	gchar *manufacturer;
 	gchar *serial;
-	const gchar *password;
 	gboolean ret = TRUE;
 	guint flags;
 	
@@ -520,27 +511,6 @@ gkr_pkcs11_auth_init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	label = g_strndup ((gchar*)info->label, sizeof (info->label));
 	g_strchomp (label);
 
-	/* We try to use the login keyring password if available */
-	password = gkr_keyring_login_master ();
-	if (password != NULL) {
-		password_to_pin (password, pin, pin_len);
-		
-		/* Save this away in case the main password changes without us being aware */
-		if (gkr_keyring_login_is_usable ())
-			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, 
-			                                 label, password,
-			                                 "manufacturer", manufacturer, 
-			                                 "serial-number", serial,
-			                                 NULL);
-		
-		g_free (manufacturer);
-		g_free (serial);
-		g_free (label);
-		return TRUE;
-	}
-
-	/* Otherwise we have to prompt for it */
-	
 	/* Build up the prompt */
 	flags = GKR_ASK_REQUEST_NEW_PASSWORD;
 	ask = gkr_ask_request_new (_("New Password Required"), 
@@ -550,7 +520,7 @@ gkr_pkcs11_auth_init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	gkr_ask_request_set_secondary (ask, secondary);
 	g_free (secondary);
 
-	if (gkr_keyring_login_is_usable ())
+	if (gkd_login_is_usable ())
 		gkr_ask_request_set_check_option (ask, _("Automatically unlock secure storage when I log in."));
 
 	/* Prompt the user */
@@ -569,11 +539,10 @@ gkr_pkcs11_auth_init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 		password_to_pin (ask->typed_password, pin, pin_len);
 		
 		if (ask->checked) {
-			gkr_keyring_login_attach_secret (GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD, 
-			                                 label, ask->typed_password,
-			                                 "manufacturer", manufacturer, 
-			                                 "serial-number", serial,
-			                                 NULL);
+			gkd_login_attach_secret (label, ask->typed_password,
+			                         "manufacturer", manufacturer,
+			                         "serial-number", serial,
+			                         NULL);
 		}
 		
 		ret = TRUE;

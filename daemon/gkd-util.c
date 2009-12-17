@@ -92,14 +92,16 @@ gkd_util_init_master_directory (const gchar *replace)
 	if (replace) {
 		exists = TRUE;
 		if (lstat (replace, &st) < 0) {
-			if (errno != ENOTDIR && errno != ENOENT)
+			if (errno == ENOTDIR || errno == ENOENT) {
 				exists = FALSE;
+				valid = TRUE;
+			}
 		} else if (st.st_uid != geteuid ()) {
 			g_message ("The gnome-keyring control directory is not owned with the same "
 			           "credentials as the user login: %s", replace);
-		} else if (st.st_mode != (S_IRUSR | S_IWUSR | S_IXUSR)) {
+		} else if ((st.st_mode & 0777) != 0700) {
 			g_message ("The gnome-keyring control directory has invalid permissions. It "
-			           "must be only be accessible by its owner (ie: 0600): %s", replace);
+			           "must be only be accessible by its owner (ie: 0700): %s", replace);
 		} else {
 			valid = TRUE;
 		}
@@ -115,7 +117,7 @@ gkd_util_init_master_directory (const gchar *replace)
 	} else if (!exists) {
 		g_assert (replace);
 		master_directory = g_strdup (replace);
-		if (g_mkdir_with_parents (master_directory, S_IRUSR | S_IWUSR | S_IXUSR) < 0)
+		if (g_mkdir_with_parents (master_directory, 0700) < 0)
 			g_warning ("couldn't create socket directory: %s", g_strerror (errno));
 
 	/* A valid existing directory was supplied */

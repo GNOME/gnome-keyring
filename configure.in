@@ -551,10 +551,12 @@ Makefile
 daemon/Makefile
 daemon/gnome-keyring-daemon.desktop.in
 daemon/control/Makefile
+daemon/control/tests/Makefile
 daemon/data/Makefile
 daemon/dbus/Makefile
 daemon/keyrings/Makefile
 daemon/keyrings/tests/Makefile
+daemon/login/Makefile
 daemon/pkcs11/Makefile
 daemon/prompt/Makefile
 daemon/prompt/tests/Makefile

@@ -1,10 +1,3 @@
-if WITH_TESTS
-TESTS_DIR = tests
-else
-TESTS_DIR =
-endif
-
-SUBDIRS = . $(TESTS_DIR)
 
 INCLUDES= \
 	-DPREFIX=\""$(prefix)"\" \
@@ -14,17 +7,18 @@ INCLUDES= \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/daemon \
 	-I$(top_builddir) \
+	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 # ------------------------------------------------------------------
 # DAEMON CODE
 
-noinst_LTLIBRARIES = \
-	libgkd-control.la \
-	libgkd-control-client.la
+noinst_LTLIBRARIES = libgkd-login.la
 
-libgkd_control_la_SOURCES = \
-	gkd-control-server.c gkd-control-client.c gkd-control.h
+libgkd_login_la_SOURCES = \
+	gkd-login.c gkd-login.h
 
-libgkd_control_client_la_SOURCES = \
-	gkd-control-client.c gkd-control.h
+libgkd_login_la_LIBADD = \
+	$(top_builddir)/gp11/libgp11.la \
+	$(GOBJECT_LIBS) \
+	$(GLIB_LIBS)

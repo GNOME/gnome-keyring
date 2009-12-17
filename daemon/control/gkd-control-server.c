@@ -22,6 +22,8 @@
 #include "config.h"
 
 #include "gkd-control.h"
+#include "gkd-control-private.h"
+
 #include "gkd-main.h"
 #include "gkd-util.h"
 
@@ -29,6 +31,8 @@
 #include "egg/egg-cleanup.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
+
+#include "login/gkd-login.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -41,52 +45,6 @@ typedef struct _ControlData {
 	EggBuffer buffer;
 	gsize position;
 } ControlData;
-
-/* All the old op codes, most are no longer used */
-enum {
-	GNOME_KEYRING_OP_LOCK_ALL,
-	GNOME_KEYRING_OP_SET_DEFAULT_KEYRING,
-	GNOME_KEYRING_OP_GET_DEFAULT_KEYRING,
-	GNOME_KEYRING_OP_LIST_KEYRINGS,
-	GNOME_KEYRING_OP_CREATE_KEYRING,
-	GNOME_KEYRING_OP_LOCK_KEYRING,
-	GNOME_KEYRING_OP_UNLOCK_KEYRING,
-	GNOME_KEYRING_OP_DELETE_KEYRING,
-	GNOME_KEYRING_OP_GET_KEYRING_INFO,
-	GNOME_KEYRING_OP_SET_KEYRING_INFO,
-	GNOME_KEYRING_OP_LIST_ITEMS,
-	GNOME_KEYRING_OP_FIND,
-	GNOME_KEYRING_OP_CREATE_ITEM,
-	GNOME_KEYRING_OP_DELETE_ITEM,
-	GNOME_KEYRING_OP_GET_ITEM_INFO,
-	GNOME_KEYRING_OP_SET_ITEM_INFO,
-	GNOME_KEYRING_OP_GET_ITEM_ATTRIBUTES,
-	GNOME_KEYRING_OP_SET_ITEM_ATTRIBUTES,
-	GNOME_KEYRING_OP_GET_ITEM_ACL,
-	GNOME_KEYRING_OP_SET_ITEM_ACL,
-	GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD,
-	GNOME_KEYRING_OP_SET_DAEMON_DISPLAY,
-	GNOME_KEYRING_OP_GET_ITEM_INFO_FULL,
-	GNOME_KEYRING_OP_PREPARE_ENVIRONMENT,
-
-	/* Add new ops here */
-
-	GNOME_KEYRING_NUM_OPS
-};
-
-/* All the old result codes */
-enum {
-	GNOME_KEYRING_RESULT_OK,
-	GNOME_KEYRING_RESULT_DENIED,
-	GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON,
-	GNOME_KEYRING_RESULT_ALREADY_UNLOCKED,
-	GNOME_KEYRING_RESULT_NO_SUCH_KEYRING,
-	GNOME_KEYRING_RESULT_BAD_ARGUMENTS,
-	GNOME_KEYRING_RESULT_IO_ERROR,
-	GNOME_KEYRING_RESULT_CANCELLED,
-	GNOME_KEYRING_RESULT_KEYRING_ALREADY_EXISTS,
-	GNOME_KEYRING_RESULT_NO_MATCH
-};
 
 /* -----------------------------------------------------------------------------------
  * CONTROL SERVER
@@ -126,8 +84,10 @@ control_unlock_keyring (EggBuffer *buffer)
 	}
 
 	if (!name || g_str_equal (name, "login")) {
-		// TODO: Perform unlocking */
-		res = GNOME_KEYRING_RESULT_DENIED;
+		if (gkd_login_unlock (master))
+			res = GNOME_KEYRING_RESULT_OK;
+		else
+			res = GNOME_KEYRING_RESULT_DENIED;
 	} else {
 		g_message ("keyring request not supported");
 		res = GNOME_KEYRING_RESULT_NO_SUCH_KEYRING;
@@ -162,8 +122,10 @@ control_change_keyring_password (EggBuffer *buffer)
 	}
 
 	if (!name || g_str_equal (name, "login")) {
-		// TODO: Perform unlocking */
-		res = GNOME_KEYRING_RESULT_DENIED;
+		if (gkd_login_change_lock (original, master))
+			res = GNOME_KEYRING_RESULT_OK;
+		else
+			res = GNOME_KEYRING_RESULT_DENIED;
 	} else {
 		g_message ("keyring request not supported");
 		res = GNOME_KEYRING_RESULT_NO_SUCH_KEYRING;
@@ -449,201 +411,4 @@ gkd_control_listen (void)
 	egg_cleanup_register ((GDestroyNotify)g_io_channel_unref, channel);
 
 	return TRUE;
-}
-
-/* -----------------------------------------------------------------------------------
- * CONTROL CLIENT
- */
-
-static int
-control_connect (const gchar *path)
-{
-	struct sockaddr_un addr;
-	struct stat st;
-	int sock;
-
-	/* First a bunch of checks to make sure nothing funny is going on */
-	if (lstat (path, &st) < 0) {
-		g_message ("couldn't access conrol socket: %s: %s", path, g_strerror (errno));
-		return -1;
-
-	} else if (st.st_uid != geteuid ()) {
-		g_message("The control socket is not owned with the same "
-		          "credentials as the user login: %s", path);
-		return -1;
-
-	} else if (S_ISLNK (st.st_mode) || !S_ISSOCK (st.st_mode)) {
-		g_message ("The control socket is not a valid simple non-linked socket");
-		return -1;
-	}
-
-	addr.sun_family = AF_UNIX;
-	g_strlcpy (addr.sun_path, path, sizeof (addr.sun_path));
-
-	/* Now we connect */
-	sock = socket (AF_UNIX, SOCK_STREAM, 0);
-	if (sock < 0) {
-		g_warning ("couldn't create control socket: %s", g_strerror (errno));
-		return -1;
-	}
-
-	/* Close on exec */
-	fcntl (sock, F_SETFD, 1);
-
-	if (connect (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
-		g_message ("couldn't connect to control socket at: %s: %s",
-		           addr.sun_path, g_strerror (errno));
-		close (sock);
-		return -1;
-	}
-
-	/* This lets the server verify us */
-	for (;;) {
-		if (egg_unix_credentials_write (sock) < 0) {
-			if (errno == EINTR || errno == EAGAIN)
-				continue;
-			g_message ("couldn't send credentials to control socket: %s",
-			           g_strerror (errno));
-			close (sock);
-			return -1;
-		}
-
-		return sock;
-	}
-}
-
-static gboolean
-control_write (int fd, EggBuffer *buf)
-{
-	gsize bytes = 0;
-	gssize res;
-
-	while (bytes < buf->len) {
-		res = write (fd, buf->buf + bytes, buf->len - bytes);
-		if (res < 0) {
-			if (errno != EINTR && errno != EAGAIN) {
-				g_warning ("couldn't write all bytes to control socket: %s",
-				           g_strerror (errno));
-				return FALSE;
-			}
-		} else {
-			bytes += res;
-		}
-	}
-
-	return TRUE;
-}
-
-static gsize
-control_read_raw (int fd, guchar *buf, size_t len)
-{
-	gsize bytes;
-	gssize res;
-
-	bytes = 0;
-	while (bytes < len) {
-		res = read (fd, buf + bytes, len - bytes);
-		if (res <= 0) {
-			if (res == 0)
-				res = -1;
-			else if (errno == EAGAIN)
-				continue;
-			else
-				g_warning ("couldn't read %u bytes from control socket: %s",
-					   (unsigned int)len, g_strerror (errno));
-			return res;
-		}
-		bytes += res;
-	}
-	return bytes;
-}
-
-
-static gboolean
-control_read (int fd, EggBuffer *buffer)
-{
-	guint32 packet_size;
-
-	egg_buffer_resize (buffer, 4);
-	if (control_read_raw (fd, buffer->buf, 4) != 4)
-		return FALSE;
-
-	if (!egg_buffer_get_uint32 (buffer, 0, NULL, &packet_size) ||
-	    packet_size < 4)
-		return FALSE;
-
-	egg_buffer_resize (buffer, packet_size);
-	if (control_read_raw (fd, buffer->buf + 4, packet_size - 4) != packet_size - 4)
-		return FALSE;
-
-	return TRUE;
-}
-
-static gboolean
-control_chat (int sock)
-{
-	gchar **envp, **e;
-	EggBuffer buffer;
-	gsize offset;
-	gboolean ret;
-	guint32 res;
-
-	envp = gkd_util_build_environment (GKD_UTIL_IN_ENVIRONMENT);
-
-	egg_buffer_init_full (&buffer, 128, g_realloc);
-	egg_buffer_add_uint32 (&buffer, 0);
-	egg_buffer_add_uint32 (&buffer, GNOME_KEYRING_OP_PREPARE_ENVIRONMENT);
-	egg_buffer_add_stringv (&buffer, (const char**)envp);
-	egg_buffer_set_uint32 (&buffer, 0, buffer.len);
-
-	g_strfreev (envp);
-
-	g_return_val_if_fail (!egg_buffer_has_error (&buffer), FALSE);
-
-	envp = NULL;
-
-	ret = control_write (sock, &buffer) &&
-	      control_read (sock, &buffer);
-
-	offset = 4;
-	if (ret)
-		ret = egg_buffer_get_uint32 (&buffer, offset, &offset, &res);
-	if (ret && res == GNOME_KEYRING_RESULT_OK)
-	      egg_buffer_get_stringv (&buffer, offset, &offset, &envp, g_realloc);
-
-	egg_buffer_uninit (&buffer);
-
-	if (!ret || res != GNOME_KEYRING_RESULT_OK) {
-		g_message ("couldn't initialize running daemon");
-		return FALSE;
-	}
-
-	g_return_val_if_fail (envp, FALSE);
-	for (e = envp; *e; ++e)
-		gkd_util_push_environment_full (*e);
-	g_strfreev (envp);
-
-	return TRUE;
-}
-
-gboolean
-gkd_control_initialize (const gchar *directory)
-{
-	gboolean ret;
-	gchar *path;
-	int sock;
-
-	g_return_val_if_fail (directory, FALSE);
-
-	path = g_strdup_printf ("%s/control", directory);
-	sock = control_connect (path);
-	g_free (path);
-
-	if (sock < 0)
-		return FALSE;
-
-	ret = control_chat (sock);
-
-	close (sock);
-	return ret;
 }

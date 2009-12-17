@@ -158,7 +158,7 @@ test_data_read (const gchar *basename, gsize *n_result)
 	return (guchar*)result;
 }
 
-#ifdef WITH_P11_TESTS
+#if WITH_P11_TESTS
 
 static void
 on_p11_tests_log (int level, const char *section, const char *message)
@@ -246,7 +246,6 @@ int
 main (int argc, char* argv[])
 {
 	GLogLevelFlags fatal_mask;
-	int ret;
 
 	g_thread_init (NULL);
 
@@ -268,15 +267,6 @@ main (int argc, char* argv[])
 	fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
 	g_log_set_always_fatal (fatal_mask);
 
-	initialize_tests ();
-
-	start_tests ();
-	ret = g_test_run ();
-
-	/* Any auxiliary suites */
-	run_externals ();
-
-	stop_tests();
-
-	return ret;
+	/* Must have been defined by the test including this file */
+	return run();
 }

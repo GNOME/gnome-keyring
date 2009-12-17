@@ -3,6 +3,7 @@ SUBDIRS = \
 	ui \
 	prompt \
 	keyrings \
+	login \
 	control \
 	pkcs11 \
 	dbus \
@@ -35,6 +36,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/pkcs11/libgkr-pkcs11.la \
 	$(top_builddir)/daemon/dbus/libgkr-dbus.la \
 	$(top_builddir)/daemon/keyrings/libgkr-keyrings.la \
+	$(top_builddir)/daemon/login/libgkd-login.la \
 	$(top_builddir)/daemon/ui/libgkr-ui.la \
 	$(top_builddir)/daemon/control/libgkd-control.la \
 	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
