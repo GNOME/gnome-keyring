@@ -55,6 +55,14 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkLabel" id="warning_label">
+                        <property name="selectable">True</property>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkVBox" id="prompt_area">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
@@ -193,7 +201,7 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                         </child>
                       </object>
                       <packing>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>

@@ -7,7 +7,7 @@ window-id=
 [visibility]
 name_area=false
 original_area=false
-confirm_area=false
+confirm_area=true
 details_area=false
 
 [transport]

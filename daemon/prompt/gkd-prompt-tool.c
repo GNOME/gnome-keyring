@@ -145,9 +145,25 @@ prepare_titlebar (GtkBuilder *builder, GtkDialog *dialog)
 }
 
 static void
+prepare_warning (GtkBuilder *builder, const gchar *text)
+{
+	GtkLabel *label;
+	gchar *markup;
+
+	label = GTK_LABEL (gtk_builder_get_object (builder, "warning_label"));
+	g_return_if_fail (label);
+
+	markup = g_markup_printf_escaped ("<span style=\"italic\">%s</span>", text);
+	gtk_label_set_markup (label, markup);
+	g_free (markup);
+
+	gtk_widget_show (GTK_WIDGET (label));
+}
+
+static void
 prepare_prompt (GtkBuilder *builder, GtkDialog *dialog)
 {
-	gchar *primary, *secondary, *markup;
+	gchar *primary, *secondary, *markup, *warning;
 	GtkLabel *label;
 
 	primary = g_key_file_get_value (input_data, "prompt", "primary", NULL);
@@ -163,6 +179,11 @@ prepare_prompt (GtkBuilder *builder, GtkDialog *dialog)
 
 	gtk_label_set_markup (label, markup);
 	g_free (markup);
+
+	warning = g_key_file_get_value (input_data, "prompt", "warning", NULL);
+	if (warning != NULL)
+		prepare_warning (builder, warning);
+	g_free (warning);
 }
 
 static void
@@ -251,6 +272,85 @@ prepare_dialog (GtkBuilder *builder)
 }
 
 static gboolean
+validate_blank_password (GtkWindow *parent)
+{
+	GtkWidget *dialog;
+	gchar *markup;
+	gint ret;
+
+	dialog = gtk_message_dialog_new (parent, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING,
+	                                 GTK_BUTTONS_NONE, NULL);
+
+	markup = create_markup (_("Store passwords unencrypted?"),
+	                        _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
+	                          "They will be accessible by anyone with access to your files."));
+	gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), markup);
+	g_free (markup);
+
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+	                        GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+	                        _("Use Unsafe Storage"), GTK_RESPONSE_ACCEPT,
+	                        NULL);
+
+	ret = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	return ret == GTK_RESPONSE_ACCEPT;
+}
+
+static gboolean
+validate_passwords (GtkBuilder *builder, GtkDialog *dialog)
+{
+	GtkWidget *pentry, *centry;
+	const gchar *password, *confirm;
+	const gchar *env;
+
+	pentry = GTK_WIDGET (gtk_builder_get_object (builder, "password_entry"));
+	centry = GTK_WIDGET (gtk_builder_get_object (builder, "confirm_entry"));
+	g_return_val_if_fail (pentry && centry, FALSE);
+
+	/* No confirm, no password check */
+	if (!GTK_WIDGET_REALIZED (centry))
+		return TRUE;
+
+	password = gtk_entry_get_text (GTK_ENTRY (pentry));
+	confirm = gtk_entry_get_text (GTK_ENTRY (centry));
+	g_return_val_if_fail (password && confirm, FALSE);
+
+	/* Do the passwords match? */
+	if (!g_str_equal (password, confirm)) {
+		prepare_warning (builder, _("Passwords do not match."));
+		return FALSE;
+	}
+
+	/* Double check about blank passwords */
+	if (!password[0]) {
+
+		/* Don't allow blank passwords if in paranoid mode */
+		env = g_getenv ("GNOME_KEYRING_PARANOID");
+		if (env && *env) {
+			prepare_warning (builder, _("Password cannot be blank"));
+			return FALSE;
+
+		/* Double check with the user */
+		} else if (!validate_blank_password (GTK_WINDOW (dialog))) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+static gboolean
+validate_dialog (GtkBuilder *builder, GtkDialog *dialog, gint response)
+{
+	if (!validate_passwords (builder, dialog))
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
 negotiate_transport_crypto (void)
 {
 	gcry_mpi_t base, prime, peer;
@@ -295,19 +395,24 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 	gchar iv[16];
 	gpointer data;
 	gsize n_data;
+	gchar *name;
 
-	entry = GTK_ENTRY (gtk_builder_get_object (builder, "password_entry"));
+	name = g_strdup_printf ("%s_entry", password_type);
+	entry = GTK_ENTRY (gtk_builder_get_object (builder, name));
 	g_return_if_fail (GTK_IS_ENTRY (entry));
+	g_free (name);
+
+	if (!GTK_WIDGET_REALIZED (GTK_WIDGET (entry)))
+		return;
 
 	/* A non-encrypted password: just send the value back */
 	if (!g_key_file_has_group (input_data, "transport")) {
-		g_key_file_set_boolean (output_data, password_type, "encrypted", FALSE);
+		g_key_file_set_value (output_data, password_type, "parameter", "");
 		g_key_file_set_value (output_data, password_type, "value",
 		                      gtk_entry_get_text (entry));
 		return;
 	}
 
-	g_key_file_set_boolean (output_data, password_type, "encrypted", TRUE);
 	if (!the_key && !negotiate_transport_crypto ()) {
 		g_warning ("couldn't negotiate transport crypto for password");
 		return;
@@ -354,6 +459,8 @@ static void
 gather_dialog (GtkBuilder *builder, GtkDialog *dialog)
 {
 	gather_password (builder, "password");
+	gather_password (builder, "confirm");
+	gather_password (builder, "original");
 }
 
 static void
@@ -376,8 +483,8 @@ run_dialog (void)
 		switch (res) {
 		case GTK_RESPONSE_OK:
 		case GTK_RESPONSE_APPLY:
-			/* if (!validate_dialog (builder, dialog, res))
-				continue; */
+			if (!validate_dialog (builder, dialog, res))
+				continue;
 			gather_dialog (builder, dialog);
 			break;
 		case GTK_RESPONSE_CANCEL:
