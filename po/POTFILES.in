@@ -1,13 +1,17 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 daemon/data/gnome-keyring.schemas.in
+daemon/dbus/gkd-secret-change.c
+daemon/dbus/gkd-secret-create.c
+daemon/dbus/gkd-secret-unlock.c
 daemon/gnome-keyring-daemon.desktop.in.in
 daemon/org.gnome.keyring.service.in
-daemon/pkcs11/gkr-pkcs11-auth.c
-daemon/ui/gkr-ask-tool.c
-daemon/util/gkr-location.c
+daemon/pkcs11/gkd-pkcs11-auth.c
+daemon/prompt/gkd-prompt-tool.c
+[type: gettext/glade]daemon/prompt/gkd-prompt.ui
 egg/egg-asn1.c
 egg/egg-oid.c
+egg/egg-spawn.c
 gcr/gcr-certificate-basics-widget.c
 [type: gettext/glade]gcr/gcr-certificate-basics-widget.ui
 gcr/gcr-certificate-details-widget.c
