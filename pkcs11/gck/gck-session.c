@@ -147,10 +147,11 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 
 	/* Lookup the mechanisms this object can do */
 	mechanisms = gck_object_get_attribute_data (object, self, CKA_ALLOWED_MECHANISMS, &n_data);
-	g_return_val_if_fail (mechanisms, CKR_GENERAL_ERROR);
-	g_return_val_if_fail (n_data % sizeof (CK_MECHANISM_TYPE) == 0, CKR_GENERAL_ERROR);
-	n_mechanisms = n_data / sizeof (CK_MECHANISM_TYPE);
-	
+	if (mechanisms)
+		n_mechanisms = n_data / sizeof (CK_MECHANISM_TYPE);
+	else
+		n_mechanisms = 0;
+
 	/* See if ours is represented */
 	have = FALSE;
 	for (i = 0; !have && i < n_mechanisms; ++i) {
