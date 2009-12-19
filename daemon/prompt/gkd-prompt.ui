@@ -167,28 +167,65 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="confirm_area">
+                          <object class="GtkVBox" id="confirm_area">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <property name="spacing">6</property>
                             <child>
-                              <object class="GtkLabel" id="confirm_label">
+                              <object class="GtkHBox" id="confirm_box">
                                 <property name="visible">True</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">_Confirm:</property>
-                                <property name="use_underline">True</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkLabel" id="confirm_label">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">_Confirm:</property>
+                                    <property name="use_underline">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="confirm_entry">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="visibility">False</property>
+                                    <property name="invisible_char">&#x2022;</property>
+                                    <property name="activates_default">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="confirm_entry">
+                              <object class="GtkHBox" id="hbox3">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="visibility">False</property>
-                                <property name="invisible_char">&#x2022;</property>
-                                <property name="activates_default">True</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkLabel" id="strength_label">
+                                    <property name="visible">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkProgressBar" id="strength_bar">
+                                    <property name="visible">True</property>
+                                    <property name="text" translatable="yes">New password strength</property>
+                                  </object>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
                                 <property name="position">1</property>
@@ -445,6 +482,7 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
       <widget name="original_label"/>
       <widget name="password_label"/>
       <widget name="confirm_label"/>
+      <widget name="strength_label"/>
     </widgets>
   </object>
 </interface>

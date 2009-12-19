@@ -104,6 +104,61 @@ window_state_changed (GtkWidget *win, GdkEventWindowState *event, gpointer data)
 	return FALSE;
 }
 
+
+static void
+on_password_changed (GtkEditable *editable, gpointer user_data)
+{
+	const char *password;
+	int length, i;
+	int upper, lower, digit, misc;
+	gdouble pwstrength;
+
+	password = gtk_entry_get_text (GTK_ENTRY (editable));
+
+	/*
+	 * This code is based on the Master Password dialog in Firefox
+	 * (pref-masterpass.js)
+	 * Original code triple-licensed under the MPL, GPL, and LGPL
+	 * so is license-compatible with this file
+	 */
+
+	length = strlen (password);
+	upper = 0;
+	lower = 0;
+	digit = 0;
+	misc = 0;
+
+	for ( i = 0; i < length ; i++) {
+		if (g_ascii_isdigit (password[i]))
+			digit++;
+		else if (g_ascii_islower (password[i]))
+			lower++;
+		else if (g_ascii_isupper (password[i]))
+			upper++;
+		else
+			misc++;
+	}
+
+	if (length > 5)
+		length = 5;
+	if (digit > 3)
+		digit = 3;
+	if (upper > 3)
+		upper = 3;
+	if (misc > 3)
+		misc = 3;
+
+	pwstrength = ((length*0.1)-0.2) + (digit*0.1) + (misc*0.15) + (upper*0.1);
+
+	if (pwstrength < 0.0)
+		pwstrength = 0.0;
+	if (pwstrength > 1.0)
+		pwstrength = 1.0;
+
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (user_data), pwstrength);
+}
+
+
 static void
 prepare_visibility (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -222,9 +277,13 @@ static void
 prepare_passwords (GtkBuilder *builder, GtkDialog *dialog)
 {
 	GtkEntry *entry;
+	GtkWidget *strength;
 
 	entry = GTK_ENTRY(gtk_builder_get_object (builder, "password_entry"));
 	prepare_password_entry (entry);
+
+	strength = GTK_WIDGET (gtk_builder_get_object (builder, "strength_bar"));
+	g_signal_connect (entry, "changed", G_CALLBACK (on_password_changed), strength);
 
 	entry = GTK_ENTRY(gtk_builder_get_object (builder, "original_entry"));
 	prepare_password_entry (entry);
@@ -261,9 +320,9 @@ prepare_dialog (GtkBuilder *builder)
 	dialog = GTK_DIALOG (gtk_builder_get_object (builder, "prompt_dialog"));
 	g_return_val_if_fail (GTK_IS_DIALOG (dialog), NULL);
 
+	prepare_visibility (builder, dialog);
 	prepare_titlebar (builder, dialog);
 	prepare_prompt (builder, dialog);
-	prepare_visibility (builder, dialog);
 	prepare_buttons (builder, dialog);
 	prepare_passwords (builder, dialog);
 	prepare_security (builder, dialog);
