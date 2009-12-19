@@ -14,6 +14,7 @@
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
+            <property name="border_width">6</property>
             <property name="orientation">vertical</property>
             <property name="spacing">12</property>
             <child>
@@ -473,11 +474,11 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
   </object>
   <object class="GtkSizeGroup" id="prompt_label_sizegroup">
     <widgets>
-      <widget name="strength_label"/>
-      <widget name="confirm_label"/>
-      <widget name="password_label"/>
-      <widget name="original_label"/>
       <widget name="name_label"/>
+      <widget name="original_label"/>
+      <widget name="password_label"/>
+      <widget name="confirm_label"/>
+      <widget name="strength_label"/>
     </widgets>
   </object>
 </interface>
