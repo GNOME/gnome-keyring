@@ -7,7 +7,7 @@ UNIT_AUTO = \
 UNIT_LIBS =  \
 	$(top_builddir)/gcr/libgcr.la \
 	$(top_builddir)/egg/libegg.la \
-	$(top_builddir)/egg/libegg-secure-entry.la \
+	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gp11/libgp11.la
 	
 UNIT_FLAGS = \
