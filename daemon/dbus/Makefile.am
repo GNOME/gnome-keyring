@@ -8,9 +8,9 @@ INCLUDES = \
 	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS)
 
-noinst_LTLIBRARIES = libgkr-dbus.la
+noinst_LTLIBRARIES = libgkd-dbus.la
 
-libgkr_dbus_la_SOURCES = \
+libgkd_dbus_la_SOURCES = \
 	gkd-dbus.c gkd-dbus.h \
 	gkd-dbus-environment.c \
 	gkd-dbus-private.h \
@@ -32,7 +32,7 @@ libgkr_dbus_la_SOURCES = \
 	gkd-secret-unlock.c gkd-secret-unlock.h \
 	gkd-secret-util.c gkd-secret-util.h
 
-libgkr_dbus_la_LIBADD = \
+libgkd_dbus_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 

@@ -29,7 +29,7 @@ gnome_keyring_daemon_SOURCES = \
 
 gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/pkcs11/libgkd-pkcs11.la \
-	$(top_builddir)/daemon/dbus/libgkr-dbus.la \
+	$(top_builddir)/daemon/dbus/libgkd-dbus.la \
 	$(top_builddir)/daemon/login/libgkd-login.la \
 	$(top_builddir)/daemon/control/libgkd-control.la \
 	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
