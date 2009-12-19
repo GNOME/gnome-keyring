@@ -93,6 +93,39 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                           </packing>
                         </child>
                         <child>
+                          <object class="GtkHBox" id="original_area">
+                            <property name="visible">True</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkLabel" id="original_label">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">_Old Password:</property>
+                                <property name="use_underline">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="original_entry">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="visibility">False</property>
+                                <property name="invisible_char">&#x2022;</property>
+                                <property name="activates_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkHBox" id="password_area">
                             <property name="visible">True</property>
                             <property name="spacing">6</property>
@@ -122,7 +155,7 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                             </child>
                           </object>
                           <packing>
-                            <property name="position">1</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                         <child>
@@ -155,7 +188,7 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                             </child>
                           </object>
                           <packing>
-                            <property name="position">2</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                       </object>
@@ -401,6 +434,7 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
   <object class="GtkSizeGroup" id="prompt_label_sizegroup">
     <widgets>
       <widget name="name_label"/>
+      <widget name="original_label"/>
       <widget name="password_label"/>
       <widget name="confirm_label"/>
     </widgets>
