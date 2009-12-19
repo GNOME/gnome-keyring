@@ -66,8 +66,6 @@ enum {
 	ARG_USE_AUTHTOK	        = 1 << 2
 };
 
-#define LOGIN_KEYRING           "login"
-
 #define ENV_CONTROL             "GNOME_KEYRING_CONTROL"
 #define ENV_PID                 "GNOME_KEYRING_PID"
 
@@ -644,37 +642,6 @@ done:
 }
 
 static int
-create_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
-{
-	const char *control;
-	int res;
-	const char *argv[2];
-	
-	assert (pwd);
-	assert (password);
-
-	control = get_any_env (ph, ENV_CONTROL);
-	if (!control) {
-		syslog (GKR_LOG_WARN, "gkr-pam: couldn't create '%s' keyring: %s", 
-		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
-		return PAM_SERVICE_ERR;
-	}
-	
-	argv[0] = LOGIN_KEYRING;
-	argv[1] = password;
-	
-	res = gkr_pam_client_run_operation (pwd, control, GNOME_KEYRING_OP_CREATE_KEYRING, 2, argv);
-	if (res != GNOME_KEYRING_RESULT_OK) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't create '%s' keyring: %d", LOGIN_KEYRING, res);
-		return PAM_SERVICE_ERR;
-	}
-	
-	
-	syslog (GKR_LOG_NOTICE, "gkr-pam: created '%s' keyring", LOGIN_KEYRING);
-	return PAM_SUCCESS; 
-}
-
-static int
 unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 {
 	const char *control;
@@ -686,27 +653,25 @@ unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 
 	control = get_any_env (ph, ENV_CONTROL);
 	if (!control) {
-		syslog (GKR_LOG_WARN, "gkr-pam: couldn't unlock '%s' keyring: %s", 
-		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
+		syslog (GKR_LOG_WARN, "gkr-pam: couldn't unlock login keyring: %s",
+		        "gnome-keyring-daemon is not running");
 		return PAM_SERVICE_ERR;
 	}
 	
-	argv[0] = LOGIN_KEYRING;
-	argv[1] = password;
-	
-	res = gkr_pam_client_run_operation (pwd, control, GNOME_KEYRING_OP_UNLOCK_KEYRING, 2, argv);
+	argv[0] = password;
 
-	/* 'login' keyring doesn't exist, create it */
-	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-		return create_keyring (ph, pwd, password);
+	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_UNLOCK, 1, argv);
 
 	/* An error unlocking */
-	} else if (res != GNOME_KEYRING_RESULT_OK) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't unlock '%s' keyring: %d", LOGIN_KEYRING, res);
+	if (res == GKD_CONTROL_RESULT_DENIED) {
+		syslog (GKR_LOG_ERR, "gkr-pam: the password for the login keyring was invalid.");
 		return PAM_SERVICE_ERR;
-	} 	
-		
-	syslog (GKR_LOG_INFO, "gkr-pam: unlocked '%s' keyring", LOGIN_KEYRING);
+	} else if (res != GKD_CONTROL_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't unlock the login keyring.");
+		return PAM_SERVICE_ERR;
+	}
+
+	syslog (GKR_LOG_INFO, "gkr-pam: unlocked login keyring");
 	return PAM_SUCCESS;
 }
 
@@ -724,29 +689,26 @@ change_keyring_password (pam_handle_t *ph, struct passwd *pwd,
 
 	control = get_any_env (ph, ENV_CONTROL);
 	if (!control) {
-		syslog (GKR_LOG_WARN, "gkr-pam: couldn't change password on '%s' keyring: %s", 
-		        LOGIN_KEYRING, "gnome-keyring-daemon is not running");
+		syslog (GKR_LOG_WARN, "gkr-pam: couldn't change password on login keyring: %s",
+		        "gnome-keyring-daemon is not running");
 		return PAM_SERVICE_ERR;
 	}
 	
-	argv[0] = LOGIN_KEYRING;
-	argv[1] = original;
-	argv[2] = password;	
+	argv[0] = original;
+	argv[1] = password;
 	
-	res = gkr_pam_client_run_operation (pwd, control, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD, 3, argv);
+	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_CHANGE, 2, argv);
 
 	/* No keyring, not an error. Will be created at initial authenticate. */
-	if (res == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-		syslog (GKR_LOG_INFO, "gkr-pam: '%s' keyring does not exist, not changing password", LOGIN_KEYRING);
-		return PAM_SUCCESS;
-		
-	/* An error occured unlocking */
-	} else if (res != GNOME_KEYRING_RESULT_OK) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't change password for '%s' keyring: %d", LOGIN_KEYRING, res);
+	if (res == GKD_CONTROL_RESULT_DENIED) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't change password for the login keyring: the passwords didn't match.");
+		return PAM_SERVICE_ERR;
+	} else if (res != GKD_CONTROL_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't change password for the login keyring.");
 		return PAM_SERVICE_ERR;
 	}
-	
-	syslog (GKR_LOG_NOTICE, "gkr-pam: changed password for '%s' keyring", LOGIN_KEYRING);
+
+	syslog (GKR_LOG_NOTICE, "gkr-pam: changed password for login keyring");
 	return PAM_SUCCESS;
 }
  
@@ -1031,8 +993,8 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 	
 	ret = pam_get_item (ph, PAM_OLDAUTHTOK, (const void**)&original);
 	if (ret != PAM_SUCCESS || original == NULL) {
-		syslog (GKR_LOG_WARN, "gkr-pam: couldn't update the '%s' keyring password: %s", 
-		        LOGIN_KEYRING, "no old password was entered");
+		syslog (GKR_LOG_WARN, "gkr-pam: couldn't update the login keyring password: %s",
+		        "no old password was entered");
 		return PAM_IGNORE;
 	}
 		

@@ -24,8 +24,8 @@
 
 #include <glib.h>
 
-void           gkd_main_quit (void);
+void           gkd_main_quit                    (void);
 
-void           gkd_main_complete_initialization (void);
+void           gkd_main_complete_initialization (const gchar *components);
 
 #endif /* GKD_MAIN_H_ */

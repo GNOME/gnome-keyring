@@ -72,6 +72,10 @@ const gchar *GKD_UTIL_IN_ENVIRONMENT[] = {
 static gchar* master_directory = NULL;
 static GArray* published_environ = NULL;
 
+static GFunc watch_environ = NULL;
+static gpointer watch_user_data = NULL;
+static GDestroyNotify watch_destroy_notify = NULL;
+
 static void
 uninit_master_directory (gpointer data)
 {
@@ -148,6 +152,12 @@ uninit_environment (gpointer data)
 	}
 
 	published_environ = NULL;
+
+	if (watch_destroy_notify && watch_user_data)
+		(watch_destroy_notify) (watch_user_data);
+	watch_user_data = NULL;
+	watch_destroy_notify = NULL;
+	watch_environ = NULL;
 }
 
 static void
@@ -168,6 +178,9 @@ gkd_util_push_environment (const gchar *name, const gchar *value)
 
 	env = g_strdup_printf ("%s=%s", name, value);
 	g_array_append_val (published_environ, env);
+
+	if (watch_environ)
+		(watch_environ) (env, watch_user_data);
 }
 
 void
@@ -180,6 +193,9 @@ gkd_util_push_environment_full (const gchar *var)
 
 	env = g_strdup (var);
 	g_array_append_val (published_environ, env);
+
+	if (watch_environ)
+		(watch_environ) (env, watch_user_data);
 }
 
 const gchar**
@@ -187,6 +203,18 @@ gkd_util_get_environment (void)
 {
 	init_environment ();
 	return (const gchar**)published_environ->data;
+}
+
+void
+gkd_util_watch_environment (GFunc func, gpointer user_data,
+                            GDestroyNotify destroy_notify)
+{
+	g_return_if_fail (func);
+	g_return_if_fail (!watch_environ);
+
+	watch_environ = func;
+	watch_user_data = user_data;
+	watch_destroy_notify = destroy_notify;
 }
 
 gchar**

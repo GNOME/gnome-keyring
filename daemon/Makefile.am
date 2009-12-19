@@ -58,7 +58,7 @@ EXTRA_DIST = \
 CLEANFILES = \
 	org.gnome.keyring.service \
 	$(desktop_DATA)
-	
+
 servicedir       = $(DBUS_SERVICES_DIR)
 service_in_files = org.gnome.keyring.service.in
 service_DATA     = $(service_in_files:.service.in=.service)
@@ -68,7 +68,10 @@ service_PATH     = $(VALGRIND_RUN)$(bindir)
 $(service_DATA): $(service_in_files) Makefile
 	@sed -e "s|\@PATH\@|$(service_PATH)|" $< > $@
 
-desktop_in_files = gnome-keyring-daemon.desktop.in
+desktop_in_files = \
+	gnome-keyring-pkcs11.desktop.in \
+	gnome-keyring-secrets.desktop.in \
+	gnome-keyring-ssh.desktop.in
 desktopdir       = $(sysconfdir)/xdg/autostart
 desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
 

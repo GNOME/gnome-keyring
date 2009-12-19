@@ -59,9 +59,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include <gconf/gconf.h>
-#include <gconf/gconf-client.h>
-
 #include <gcrypt.h>
 
 /* preset file descriptors */
@@ -77,18 +74,22 @@
  * COMMAND LINE
  */
 
-/* All the components to run on startup if not set in gconf */
+/* All the components to run on startup if not specified on command line */
 #ifdef WITH_SSH
-#define DEFAULT_COMPONENTS  "ssh,pkcs11"
+#define DEFAULT_COMPONENTS  "pkcs11,secrets,ssh"
 #else
-#define DEFAULT_COMPONENTS  "pkcs11"
+#define DEFAULT_COMPONENTS  "pkcs11,secrets"
 #endif
+
+static gchar* run_components = DEFAULT_COMPONENTS;
+static gboolean pkcs11_started = FALSE;
+static gboolean secrets_started = FALSE;
+static gboolean ssh_started = FALSE;
 
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
 static gboolean run_for_login = FALSE;
 static gboolean run_for_start = FALSE;
-static gchar* run_components = NULL;
 static gchar* login_password = NULL;
 static const gchar* control_directory = NULL;
 static gboolean initialization_completed = FALSE;
@@ -125,8 +126,9 @@ parse_arguments (int *argc, char** argv[])
 		g_clear_error (&err);
 	}
 
-	/* Take ownership of the string */
-	if (run_components) {
+	if (!run_components || !run_components[0]) {
+		run_components = DEFAULT_COMPONENTS;
+	} else {
 		run_components = g_strdup (run_components);
 		egg_cleanup_register (g_free, run_components);
 	}
@@ -138,71 +140,6 @@ parse_arguments (int *argc, char** argv[])
 	}
 
 	g_option_context_free (context);
-}
-
-static gboolean
-check_conf_component (const gchar* component, gboolean *enabled)
-{
-	GConfClient *client;
-	GConfValue *value;
-	GError *err = NULL;
-	gchar *key;
-
-	*enabled = FALSE;
-
-	client = gconf_client_get_default ();
-	g_return_val_if_fail (client, FALSE);
-
-	key = g_strdup_printf ("/apps/gnome-keyring/daemon-components/%s", component);
-	value = gconf_client_get (client, key, &err);
-	g_free (key);
-	g_object_unref (client);
-
-	if (err) {
-		g_printerr ("gnome-keyring-daemon: couldn't lookup %s component setting: %s",
-		            component, err->message ? err->message : "");
-		g_clear_error (&err);
-		return FALSE;
-	}
-
-	/* Value is unset */
-	if (!value)
-		return FALSE;
-
-	/* Should be a list of type string */
-	if (value->type != GCONF_VALUE_BOOL) {
-		g_printerr ("gnome-keyring-daemon: bad gconf value type for daemon-components");
-		g_clear_error (&err);
-		gconf_value_free (value);
-		return FALSE;
-	}
-
-	*enabled = gconf_value_get_bool (value);
-	gconf_value_free (value);
-	return TRUE;
-}
-
-static gboolean
-check_run_component (const char* component)
-{
-	const gchar *run = run_components;
-	gboolean enabled;
-
-	if (run == NULL) {
-
-		/* Use gconf to determine whether the component should be enabled */
-		if (check_conf_component (component, &enabled))
-			return enabled;
-
-		/* No gconf, error or unset, use built in defaults */
-		run = DEFAULT_COMPONENTS;
-	}
-
-	/*
-	 * Note that this assumes that no components are substrings of
-	 * one another. Which makes things quick, and simple.
-	 */
-	return strstr (run, component) ? TRUE : FALSE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -527,7 +464,8 @@ start_or_initialize_daemon (const gchar *directory)
 
 	/* Exchange environment variables, and try to initialize daemon */
 	ourenv = gkd_util_build_environment (GKD_UTIL_IN_ENVIRONMENT);
-	daemonenv = gkd_control_initialize (directory, (const gchar**)ourenv);
+	daemonenv = gkd_control_initialize (directory, run_components,
+	                                    (const gchar**)ourenv);
 	g_strfreev (ourenv);
 
 	/* Initialization failed, start this process up as a daemon */
@@ -626,63 +564,105 @@ fork_and_print_environment (void)
 }
 
 static gboolean
-gkr_daemon_startup_steps (void)
+gkr_daemon_startup_steps (const gchar *components)
 {
-	/* Startup the appropriate components, creates sockets etc.. */
+	g_assert (components);
+
+	/*
+	 * Startup that must run before forking.
+	 * Note that we set initialized flags early so that two
+	 * initializations don't overlap
+	 */
+
 #ifdef WITH_SSH
-	if (check_run_component ("ssh")) {
-		if (!gkd_pkcs11_startup_ssh ())
-			return FALSE;
+	if (strstr (components, "ssh")) {
+		if (ssh_started) {
+			g_message ("The SSH agent was already initialized");
+		} else {
+			ssh_started = TRUE;
+			if (!gkd_pkcs11_startup_ssh ()) {
+				ssh_started = FALSE;
+				return FALSE;
+			}
+		}
 	}
 #endif
 
-	if (check_run_component ("pkcs11")) {
-		if (!gkd_pkcs11_startup_pkcs11 ())
-			return FALSE;
-	}
-
-	initialization_completed = TRUE;
 	return TRUE;
 }
 
 static gboolean
-gkr_daemon_initialize_steps (void)
+gkr_daemon_initialize_steps (const gchar *components)
 {
-	/* Initialize new style PKCS#11 components */
-	if (!gkd_pkcs11_initialize ())
-		return FALSE;
+	g_assert (components);
 
 	/*
-	 * Unlock the login keyring if we were given a password on STDIN.
-	 * If it does not exist. We create it.
+	 * Startup that can run after forking.
+	 * Note that we set initialized flags early so that two
+	 * initializations don't overlap
 	 */
-	if (login_password) {
-		if (!gkd_login_unlock (login_password))
-			g_message ("Failed to unlock login on startup");
-		egg_secure_strclear (login_password);
+
+	if (!initialization_completed) {
+		initialization_completed = TRUE;
+
+		/* Initialize new style PKCS#11 components */
+		if (!gkd_pkcs11_initialize ())
+			return FALSE;
+
+		/*
+		 * Unlock the login keyring if we were given a password on STDIN.
+		 * If it does not exist. We create it.
+		 */
+		if (login_password) {
+			if (!gkd_login_unlock (login_password))
+				g_message ("Failed to unlock login on startup");
+			egg_secure_strclear (login_password);
+		}
+
+		gkd_dbus_setup ();
 	}
 
-	gkd_dbus_setup ();
+	/* The Secret Service API */
+	if (strstr (components, "secret") || strstr (components, "keyring")) {
+		if (secrets_started) {
+			g_message ("The Secret Service was already initialized");
+		} else {
+			secrets_started = TRUE;
+			if (!gkd_dbus_secrets_startup ()) {
+				secrets_started = FALSE;
+				return FALSE;
+			}
+		}
+	}
+
+	/* The PKCS#11 remoting */
+	if (strstr (components, "pkcs11")) {
+		if (pkcs11_started) {
+			g_message ("The PKCS#11 component was already initialized");
+		} else {
+			pkcs11_started = TRUE;
+			if (!gkd_pkcs11_startup_pkcs11 ()) {
+				pkcs11_started = FALSE;
+				return FALSE;
+			}
+		}
+	}
+
 	return TRUE;
 }
 
 void
-gkd_main_complete_initialization (void)
+gkd_main_complete_initialization (const gchar *components)
 {
+	g_assert (components);
+
 	/*
 	 * Sometimes we don't initialize the full daemon right on
 	 * startup. When run with --login is one such case.
 	 */
 
-	if (initialization_completed) {
-		g_message ("The daemon was already initialized.");
-		return;
-	}
-
-	/* Set this early so that two initializations don't overlap */
-	initialization_completed = TRUE;
-	gkr_daemon_startup_steps ();
-	gkr_daemon_initialize_steps ();
+	gkr_daemon_startup_steps (components);
+	gkr_daemon_initialize_steps (components);
 }
 
 int
@@ -695,8 +675,8 @@ main (int argc, char *argv[])
 	 * The gnome-keyring startup is not as simple as I wish it could be.
 	 *
 	 * It's often started in the primidoral stages of a session, where
-	 * there's no DBus, no GConf, and no proper X display. This is the
-	 * strange world of PAM.
+	 * there's no DBus, and no proper X display. This is the strange world
+	 * of PAM.
 	 *
 	 * When started with the --login option, we do as little initialization
 	 * as possible. We expect a login password on the stdin, and unlock
@@ -765,7 +745,7 @@ main (int argc, char *argv[])
 	/* Not a login daemon. Startup stuff now.*/
 	} else {
 		/* These are things that can run before forking */
-		if (!gkr_daemon_startup_steps ())
+		if (!gkr_daemon_startup_steps (run_components))
 			cleanup_and_exit (1);
 	}
 
@@ -779,18 +759,7 @@ main (int argc, char *argv[])
 
 	/* Remainder initialization after forking, if initialization not delayed */
 	if (!run_for_login) {
-		initialization_completed = TRUE;
-		gkr_daemon_initialize_steps ();
-	}
-
-	/*
-	 * Unlock the login keyring if we were given a password on STDIN.
-	 * If it does not exist. We create it.
-	 */
-	if (login_password) {
-		if (!gkd_login_unlock (login_password))
-			g_message ("Failed to unlock login on startup");
-		egg_secure_strclear (login_password);
+		gkr_daemon_initialize_steps (run_components);
 	}
 
 	g_main_loop_run (loop);

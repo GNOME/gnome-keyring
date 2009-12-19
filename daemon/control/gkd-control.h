@@ -27,6 +27,7 @@
 gboolean          gkd_control_listen        (void);
 
 gchar**           gkd_control_initialize    (const gchar *directory,
+                                             const gchar *components,
                                              const gchar **env);
 
 gboolean          gkd_control_unlock        (const gchar *directory,

@@ -24,6 +24,10 @@
 #ifndef GKD_DBUS_H
 #define GKD_DBUS_H
 
-void   gkd_dbus_setup (void);
+#include <glib.h>
+
+void      gkd_dbus_setup            (void);
+
+gboolean  gkd_dbus_secrets_startup  (void);
 
 #endif /* GKD_DBUS_H */

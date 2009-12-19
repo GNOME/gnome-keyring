@@ -180,7 +180,8 @@ control_chat (const gchar *directory, EggBuffer *buffer)
 
 
 gchar**
-gkd_control_initialize (const gchar *directory, const gchar **envp)
+gkd_control_initialize (const gchar *directory, const gchar *components,
+                        const gchar **envp)
 {
 	gchar **env = NULL;
 	EggBuffer buffer;
@@ -190,7 +191,8 @@ gkd_control_initialize (const gchar *directory, const gchar **envp)
 
 	egg_buffer_init_full (&buffer, 128, g_realloc);
 	egg_buffer_add_uint32 (&buffer, 0);
-	egg_buffer_add_uint32 (&buffer, GNOME_KEYRING_OP_PREPARE_ENVIRONMENT);
+	egg_buffer_add_uint32 (&buffer, GKD_CONTROL_OP_INITIALIZE);
+	egg_buffer_add_string (&buffer, components);
 	egg_buffer_add_stringv (&buffer, (const char**)envp);
 	egg_buffer_set_uint32 (&buffer, 0, buffer.len);
 
@@ -200,12 +202,12 @@ gkd_control_initialize (const gchar *directory, const gchar **envp)
 
 	if (ret)
 		ret = egg_buffer_get_uint32 (&buffer, offset, &offset, &res);
-	if (ret && res == GNOME_KEYRING_RESULT_OK)
+	if (ret && res == GKD_CONTROL_RESULT_OK)
 	      ret = egg_buffer_get_stringv (&buffer, offset, &offset, &env, g_realloc);
 
 	egg_buffer_uninit (&buffer);
 
-	if (!ret || res != GNOME_KEYRING_RESULT_OK) {
+	if (!ret || res != GKD_CONTROL_RESULT_OK) {
 		g_message ("couldn't initialize running daemon");
 		return NULL;
 	}
@@ -223,8 +225,7 @@ gkd_control_unlock (const gchar *directory, const gchar *password)
 
 	egg_buffer_init_full (&buffer, 128, egg_secure_realloc);
 	egg_buffer_add_uint32 (&buffer, 0);
-	egg_buffer_add_uint32 (&buffer, GNOME_KEYRING_OP_UNLOCK_KEYRING);
-	egg_buffer_add_string (&buffer, "login");
+	egg_buffer_add_uint32 (&buffer, GKD_CONTROL_OP_UNLOCK);
 	egg_buffer_add_string (&buffer, password);
 	egg_buffer_set_uint32 (&buffer, 0, buffer.len);
 
@@ -237,7 +238,7 @@ gkd_control_unlock (const gchar *directory, const gchar *password)
 
 	egg_buffer_uninit (&buffer);
 
-	if (!ret || res != GNOME_KEYRING_RESULT_OK) {
+	if (!ret || res != GKD_CONTROL_RESULT_OK) {
 		g_message ("couldn't unlock login keyring");
 		return FALSE;
 	}
@@ -256,8 +257,7 @@ gkd_control_change_lock (const gchar *directory, const gchar *original,
 
 	egg_buffer_init_full (&buffer, 128, egg_secure_realloc);
 	egg_buffer_add_uint32 (&buffer, 0);
-	egg_buffer_add_uint32 (&buffer, GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD);
-	egg_buffer_add_string (&buffer, "login");
+	egg_buffer_add_uint32 (&buffer, GKD_CONTROL_OP_CHANGE);
 	egg_buffer_add_string (&buffer, original);
 	egg_buffer_add_string (&buffer, password);
 	egg_buffer_set_uint32 (&buffer, 0, buffer.len);
@@ -271,7 +271,7 @@ gkd_control_change_lock (const gchar *directory, const gchar *original,
 
 	egg_buffer_uninit (&buffer);
 
-	if (!ret || res != GNOME_KEYRING_RESULT_OK) {
+	if (!ret || res != GKD_CONTROL_RESULT_OK) {
 		g_message ("couldn't change lock on login keyring");
 		return FALSE;
 	}

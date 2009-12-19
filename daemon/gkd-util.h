@@ -35,9 +35,14 @@ void            gkd_util_init_master_directory   (const gchar *replace);
 
 const gchar*    gkd_util_get_master_directory    (void);
 
-void            gkd_util_push_environment        (const gchar *name, const gchar *value);
+void            gkd_util_push_environment        (const gchar *name,
+                                                  const gchar *value);
 
 void            gkd_util_push_environment_full   (const gchar *env);
+
+void            gkd_util_watch_environment       (GFunc func,
+                                                  gpointer user_data,
+                                                  GDestroyNotify destroy_notify);
 
 const gchar**   gkd_util_get_environment         (void);
 

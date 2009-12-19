@@ -67,9 +67,6 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
 AM_GCONF_SOURCE_2
-PKG_CHECK_MODULES(GCONF, gconf-2.0)
-DAEMON_CFLAGS="$DAEMON_CFLAGS $GCONF_CFLAGS"
-DAEMON_LIBS="$DAEMON_LIBS $GCONF_LIBS"
 
 GETTEXT_PACKAGE=gnome-keyring
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [The gettext domain name])
@@ -549,7 +546,9 @@ AC_SUBST(BINDIR)
 AC_OUTPUT([
 Makefile
 daemon/Makefile
-daemon/gnome-keyring-daemon.desktop.in
+daemon/gnome-keyring-pkcs11.desktop.in
+daemon/gnome-keyring-secrets.desktop.in
+daemon/gnome-keyring-ssh.desktop.in
 daemon/control/Makefile
 daemon/control/tests/Makefile
 daemon/data/Makefile

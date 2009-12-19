@@ -221,7 +221,7 @@ write_part (int fd, const unsigned char *data, int len, int *res)
 	assert (res);
 	
 	/* Already an error present */
-	if (*res != GNOME_KEYRING_RESULT_OK)
+	if (*res != GKD_CONTROL_RESULT_OK)
 		return;
 	
 	assert (data);
@@ -233,7 +233,7 @@ write_part (int fd, const unsigned char *data, int len, int *res)
 				continue;
 			syslog (GKR_LOG_ERR, "couldn't send data to gnome-keyring-daemon: %s", 
 			        strerror (errno));
-			*res = GNOME_KEYRING_RESULT_IO_ERROR;
+			*res = GKD_CONTROL_RESULT_FAILED;
 			return;
 		}
 		data += r;
@@ -272,7 +272,7 @@ read_part (int fd, unsigned char *data, int len)
 static int
 keyring_daemon_op (const char *control, int op, int argc, const char* argv[])
 {
-	int ret = GNOME_KEYRING_RESULT_OK;
+	int ret = GKD_CONTROL_RESULT_OK;
 	unsigned char buf[4];
 	int i, sock = -1;
 	uint oplen, l;
@@ -284,9 +284,7 @@ keyring_daemon_op (const char *control, int op, int argc, const char* argv[])
 	 * and an empty (only result code) return. 
 	 */
 	 
-	assert (op == GNOME_KEYRING_OP_UNLOCK_KEYRING || 
-	        op == GNOME_KEYRING_OP_CREATE_KEYRING || 
-	        op == GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD);
+	assert (op == GKD_CONTROL_OP_CHANGE || op == GKD_CONTROL_OP_UNLOCK);
 
 	sock = connect_to_daemon (control);
 	if (sock < 0) {
@@ -317,12 +315,12 @@ keyring_daemon_op (const char *control, int op, int argc, const char* argv[])
 			write_part (sock, (unsigned char*)argv[i], l, &ret);
 	}
 	
-	if (ret != GNOME_KEYRING_RESULT_OK)
+	if (ret != GKD_CONTROL_RESULT_OK)
 		goto done;
 	    	
 	/* Read the response length */
 	if (read_part (sock, buf, 4) != 4) {
-		ret = GNOME_KEYRING_RESULT_IO_ERROR;
+		ret = GKD_CONTROL_RESULT_FAILED;
 		goto done;
 	}
 
@@ -330,12 +328,12 @@ keyring_daemon_op (const char *control, int op, int argc, const char* argv[])
 	l = egg_buffer_decode_uint32 (buf);
 	if (l != 8) {
 		syslog (GKR_LOG_ERR, "invalid length response from gnome-keyring-daemon: %d", l);
-		ret = GNOME_KEYRING_RESULT_IO_ERROR;
+		ret = GKD_CONTROL_RESULT_FAILED;
 		goto done;
 	}
 
 	if (read_part (sock, buf, 4) != 4) {
-		ret = GNOME_KEYRING_RESULT_IO_ERROR;
+		ret = GKD_CONTROL_RESULT_FAILED;
 		goto done;
 	}
 	ret = egg_buffer_decode_uint32 (buf);
@@ -380,7 +378,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
 		case -1:
 			syslog (GKR_LOG_ERR, "gkr-pam: couldn't fork: %s", 
 			        strerror (errno));
-			res = GNOME_KEYRING_RESULT_IO_ERROR;
+			res = GKD_CONTROL_RESULT_FAILED;
 			break;
 			
 		case 0:
@@ -389,7 +387,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
 			    setegid (pwd->pw_gid) < 0 || seteuid (pwd->pw_uid) < 0) {
 				syslog (GKR_LOG_ERR, "gkr-pam: couldn't switch to user: %s: %s", 
 				        pwd->pw_name, strerror (errno));
-				exit (GNOME_KEYRING_RESULT_IO_ERROR);
+				exit (GKD_CONTROL_RESULT_FAILED);
 			}
 	
 			res = keyring_daemon_op (control, op, argc, argv);
@@ -401,7 +399,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
 			if (wait (&status) != pid) {
 				syslog (GKR_LOG_ERR, "gkr-pam: couldn't wait on child process: %s", 
 				        strerror (errno));
-				res = GNOME_KEYRING_RESULT_IO_ERROR;
+				res = GKD_CONTROL_RESULT_FAILED;
 			}
 			
 			res = WEXITSTATUS (status);

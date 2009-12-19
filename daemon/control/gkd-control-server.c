@@ -68,85 +68,67 @@ control_data_free (gpointer data)
 }
 
 static guint32
-control_unlock_keyring (EggBuffer *buffer)
+control_unlock_login (EggBuffer *buffer)
 {
-	gchar *name;
 	gchar *master;
 	gsize offset = 8;
 	guint32 res;
 
-	if (!egg_buffer_get_string (buffer, offset, &offset, &name, g_realloc))
-		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	if (!egg_buffer_get_string (buffer, offset, &offset, &master, egg_secure_realloc))
+		return GKD_CONTROL_RESULT_FAILED;
 
-	if (!egg_buffer_get_string (buffer, offset, &offset, &master, egg_secure_realloc)) {
-		g_free (name);
-		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
-	}
-
-	if (!name || g_str_equal (name, "login")) {
-		if (gkd_login_unlock (master))
-			res = GNOME_KEYRING_RESULT_OK;
-		else
-			res = GNOME_KEYRING_RESULT_DENIED;
-	} else {
-		g_message ("keyring request not supported");
-		res = GNOME_KEYRING_RESULT_NO_SUCH_KEYRING;
-	}
+	if (gkd_login_unlock (master))
+		res = GKD_CONTROL_RESULT_OK;
+	else
+		res = GKD_CONTROL_RESULT_DENIED;
 
 	egg_secure_strfree (master);
-	g_free (name);
 	return res;
 }
 
 static guint32
-control_change_keyring_password (EggBuffer *buffer)
+control_change_login (EggBuffer *buffer)
 {
 	gsize offset = 8;
 	guint32 res;
-	gchar *name;
 	gchar *master;
 	gchar *original;
 
-	if (!egg_buffer_get_string (buffer, offset, &offset, &name, g_realloc))
-		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
-
 	if (!egg_buffer_get_string (buffer, offset, &offset, &original, egg_secure_realloc)) {
-		g_free (name);
-		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+		return GKD_CONTROL_RESULT_FAILED;
 	}
 
 	if (!egg_buffer_get_string (buffer, offset, &offset, &master, egg_secure_realloc)) {
 		egg_secure_strfree (original);
-		g_free (name);
-		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+		return GKD_CONTROL_RESULT_FAILED;
 	}
 
-	if (!name || g_str_equal (name, "login")) {
-		if (gkd_login_change_lock (original, master))
-			res = GNOME_KEYRING_RESULT_OK;
-		else
-			res = GNOME_KEYRING_RESULT_DENIED;
-	} else {
-		g_message ("keyring request not supported");
-		res = GNOME_KEYRING_RESULT_NO_SUCH_KEYRING;
-	}
+	if (gkd_login_change_lock (original, master))
+		res = GKD_CONTROL_RESULT_OK;
+	else
+		res = GKD_CONTROL_RESULT_DENIED;
 
 	egg_secure_strfree (master);
 	egg_secure_strfree (original);
-	g_free (name);
 	return res;
 }
 
 static guint32
-control_prepare_environment (EggBuffer *buffer)
+control_initialize_components (EggBuffer *buffer)
 {
+	gchar *components;
 	gchar **environment, **e;
 	gsize offset = 8;
 	gchar *x;
 	int i;
 
-	if (!egg_buffer_get_stringv (buffer, offset, &offset, &environment, g_realloc))
-		return GNOME_KEYRING_RESULT_BAD_ARGUMENTS;
+	if (!egg_buffer_get_string (buffer, offset, &offset, &components, g_realloc))
+		return GKD_CONTROL_RESULT_FAILED;
+
+	if (!egg_buffer_get_stringv (buffer, offset, &offset, &environment, g_realloc)) {
+		g_free (components);
+		return GKD_CONTROL_RESULT_FAILED;
+	}
 
 	/* Accept environment from outside */
 	for (e = environment; *e; ++e) {
@@ -169,8 +151,10 @@ control_prepare_environment (EggBuffer *buffer)
 	 * We've now definitely received everything we need to run. Ask
 	 * the daemon to complete the initialization.
 	 */
-	gkd_main_complete_initialization ();
-	return GNOME_KEYRING_RESULT_OK;
+	gkd_main_complete_initialization (components);
+	g_free (components);
+
+	return GKD_CONTROL_RESULT_OK;
 }
 
 static gboolean
@@ -213,21 +197,20 @@ control_process (EggBuffer *req, GIOChannel *channel)
 	}
 
 	switch (op) {
-	case GNOME_KEYRING_OP_CREATE_KEYRING:
-	case GNOME_KEYRING_OP_UNLOCK_KEYRING:
-		res = control_unlock_keyring (req);
+	case GKD_CONTROL_OP_UNLOCK:
+		res = control_unlock_login (req);
 		cdata = control_data_new ();
 		egg_buffer_add_uint32 (&cdata->buffer, 0);
 		egg_buffer_add_uint32 (&cdata->buffer, res);
 		break;
-	case GNOME_KEYRING_OP_CHANGE_KEYRING_PASSWORD:
-		res = control_change_keyring_password (req);
+	case GKD_CONTROL_OP_CHANGE:
+		res = control_change_login (req);
 		cdata = control_data_new ();
 		egg_buffer_add_uint32 (&cdata->buffer, 0);
 		egg_buffer_add_uint32 (&cdata->buffer, res);
 		break;
-	case GNOME_KEYRING_OP_PREPARE_ENVIRONMENT:
-		res = control_prepare_environment (req);
+	case GKD_CONTROL_OP_INITIALIZE:
+		res = control_initialize_components (req);
 		cdata = control_data_new ();
 		egg_buffer_add_uint32 (&cdata->buffer, 0);
 		egg_buffer_add_uint32 (&cdata->buffer, res);

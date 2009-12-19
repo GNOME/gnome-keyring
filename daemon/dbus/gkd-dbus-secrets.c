@@ -23,13 +23,17 @@
 
 #include "config.h"
 
+#include "gkd-dbus.h"
 #include "gkd-dbus-private.h"
 #include "gkd-secret-service.h"
 
 #include "daemon/pkcs11/gkd-pkcs11.h"
 
+#include "egg/egg-cleanup.h"
+
 #include "gp11/gp11.h"
 
+static DBusConnection *dbus_conn = NULL;
 static GkdSecretService *secrets_service = NULL;
 
 static GP11Slot*
@@ -62,19 +66,21 @@ calculate_secrets_slot (void)
 	return slot;
 }
 
-void
-gkd_dbus_secrets_init (DBusConnection *conn)
+gboolean
+gkd_dbus_secrets_startup (void)
 {
 	DBusError error = DBUS_ERROR_INIT;
 	dbus_uint32_t result = 0;
 	GP11Slot *slot;
 
+	g_return_val_if_fail (dbus_conn, FALSE);
+
 	/* Figure out which slot to use */
 	slot = calculate_secrets_slot ();
-	g_return_if_fail (slot);
+	g_return_val_if_fail (slot, FALSE);
 
 	/* Try and grab our name */
-	result = dbus_bus_request_name (conn, SECRET_SERVICE, 0, &error);
+	result = dbus_bus_request_name (dbus_conn, SECRET_SERVICE, 0, &error);
 	if (dbus_error_is_set (&error)) {
 		g_message ("couldn't request name '%s' on session bus: %s",
 		           SECRET_SERVICE, error.message);
@@ -89,7 +95,7 @@ gkd_dbus_secrets_init (DBusConnection *conn)
 
 		/* We already acquired the service name. Odd */
 		case DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
-			g_return_if_reached ();
+			g_return_val_if_reached (FALSE);
 			break;
 
 		/* Another daemon is running */
@@ -99,16 +105,32 @@ gkd_dbus_secrets_init (DBusConnection *conn)
 			break;
 
 		default:
-			g_return_if_reached ();
+			g_return_val_if_reached (FALSE);
 			break;
 		};
 	}
 
-	g_return_if_fail (!secrets_service);
+	g_return_val_if_fail (!secrets_service, FALSE);
 	secrets_service = g_object_new (GKD_SECRET_TYPE_SERVICE,
-	                                "connection", conn, "pkcs11-slot", slot, NULL);
+	                                "connection", dbus_conn, "pkcs11-slot", slot, NULL);
 
 	g_object_unref (slot);
+	return TRUE;
+}
+
+static void
+cleanup_dbus_conn (gpointer unused)
+{
+	g_assert (dbus_conn);
+	dbus_connection_unref (dbus_conn);
+	dbus_conn = NULL;
+}
+
+void
+gkd_dbus_secrets_init (DBusConnection *conn)
+{
+	dbus_conn = dbus_connection_ref (conn);
+	egg_cleanup_register (cleanup_dbus_conn, NULL);
 }
 
 void
