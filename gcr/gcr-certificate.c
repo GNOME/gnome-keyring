@@ -262,7 +262,7 @@ gcr_certificate_get_type (void)
 /**
  * gcr_certificate_get_der_data:
  * @self: a #GcrCertificate
- * @n_length: a pointer to a location to store the size of the resulting DER data.
+ * @n_data: a pointer to a location to store the size of the resulting DER data.
  * 
  * Gets the raw DER data for an X509 certificate.
  * 

@@ -58,6 +58,8 @@ struct _GkdPromptClass {
 
 GType               gkd_prompt_get_type               (void);
 
+GkdPrompt*          gkd_prompt_new                    (void);
+
 void                gkd_prompt_reset                  (GkdPrompt *prompt);
 
 void                gkd_prompt_set_title              (GkdPrompt *prompt,
@@ -113,6 +115,11 @@ gboolean            gkd_prompt_is_widget_selected     (GkdPrompt *prompt,
 typedef GkdPrompt*  (*GkdPromptAttentionFunc)             (gpointer user_data);
 
 void                gkd_prompt_request_attention_async    (const gchar *window_id,
+                                                           GkdPromptAttentionFunc callback,
+                                                           gpointer user_data,
+                                                           GDestroyNotify destroy_notify);
+
+void                gkd_prompt_request_attention_sync     (const gchar *window_id,
                                                            GkdPromptAttentionFunc callback,
                                                            gpointer user_data,
                                                            GDestroyNotify destroy_notify);

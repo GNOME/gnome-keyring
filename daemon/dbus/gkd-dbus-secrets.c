@@ -26,7 +26,7 @@
 #include "gkd-dbus-private.h"
 #include "gkd-secret-service.h"
 
-#include "daemon/pkcs11/gkr-pkcs11-daemon.h"
+#include "daemon/pkcs11/gkd-pkcs11.h"
 
 #include "gp11/gp11.h"
 
@@ -40,7 +40,7 @@ calculate_secrets_slot (void)
 	GList *slots, *l;
 	GP11SlotInfo *info;
 
-	module = gp11_module_new (gkr_pkcs11_daemon_get_functions ());
+	module = gp11_module_new (gkd_pkcs11_get_functions ());
 	g_return_val_if_fail (module, NULL);
 
 	/*

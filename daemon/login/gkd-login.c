@@ -25,7 +25,7 @@
 
 #include "egg/egg-secure-memory.h"
 
-#include "pkcs11/gkr-pkcs11-daemon.h"
+#include "pkcs11/gkd-pkcs11.h"
 #include "pkcs11/pkcs11i.h"
 
 #include <string.h>
@@ -41,7 +41,7 @@ note_that_unlock_failed (void)
 static GP11Module*
 module_instance (void)
 {
-	GP11Module *module = gp11_module_new (gkr_pkcs11_daemon_get_base_functions ());
+	GP11Module *module = gp11_module_new (gkd_pkcs11_get_base_functions ());
 	gp11_module_set_pool_sessions (module, FALSE);
 	gp11_module_set_auto_authenticate (module, FALSE);
 	g_return_val_if_fail (module, NULL);
@@ -52,14 +52,20 @@ static GP11Session*
 open_and_login_session (GP11Slot *slot, CK_USER_TYPE user_type, GError **error)
 {
 	GP11Session *session;
+	GError *err = NULL;
 
 	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
+
+	if (!error)
+		error = &err;
 
 	session = gp11_slot_open_session (slot, CKF_RW_SESSION, error);
 	if (session != NULL) {
 		if (!gp11_session_login (session, user_type, NULL, 0, error)) {
-			g_object_unref (session);
-			session = NULL;
+			if ((*error)->code != CKR_USER_ALREADY_LOGGED_IN) {
+				g_object_unref (session);
+				session = NULL;
+			}
 		}
 	}
 
@@ -458,7 +464,7 @@ gkd_login_is_usable (void)
 		login = lookup_login_keyring (session);
 		if (login) {
 			data = gp11_object_get_data (login, CKA_G_LOCKED, &n_data, NULL);
-			usable = (data && n_data == sizeof (CK_BBOOL) && *((CK_BBOOL*)data));
+			usable = (data && n_data == sizeof (CK_BBOOL) && !*((CK_BBOOL*)data));
 			g_free (data);
 			g_object_unref (login);
 		}
@@ -491,7 +497,7 @@ static GP11Object*
 find_login_keyring_item (GP11Session *session, GP11Attribute *fields)
 {
 	GP11Object *search;
-	GP11Object *item;
+	GP11Object *item = NULL;
 	GList *objects;
 	GError *error = NULL;
 	gpointer data;
@@ -503,6 +509,7 @@ find_login_keyring_item (GP11Session *session, GP11Attribute *fields)
 	search = gp11_session_create_object (session, &error,
 	                                     CKA_CLASS, GP11_ULONG, CKO_G_SEARCH,
 	                                     CKA_G_COLLECTION, 5, "login",
+	                                     CKA_TOKEN, GP11_BOOLEAN, FALSE,
 	                                     CKA_G_FIELDS, fields->length, fields->value,
 	                                     GP11_INVALID);
 
@@ -591,12 +598,11 @@ gkd_login_attach_secret (const gchar *display_name, const gchar *secret,
 gchar*
 gkd_login_lookup_secret (const gchar *first, ...)
 {
-	GError *error = NULL;
 	GP11Attribute fields;
 	GP11Session *session;
 	GP11Module *module;
 	GP11Object* item;
-	gpointer data;
+	gpointer data = NULL;
 	gsize n_data;
 	va_list va;
 
@@ -609,9 +615,9 @@ gkd_login_lookup_secret (const gchar *first, ...)
 	va_end(va);
 
 	item = find_login_keyring_item (session, &fields);
-	if (item == NULL) {
-		data = gp11_object_get_data_full (item, CKA_VALUE, egg_secure_realloc, NULL, &n_data, &error);
-		if (!g_utf8_validate (data, n_data, NULL)) {
+	if (item != NULL) {
+		data = gp11_object_get_data_full (item, CKA_VALUE, egg_secure_realloc, NULL, &n_data, NULL);
+		if (data && !g_utf8_validate (data, n_data, NULL)) {
 			g_warning ("expected string, but found binary secret in login keyring");
 			egg_secure_clear (data, n_data);
 			egg_secure_free (data);
@@ -646,7 +652,7 @@ gkd_login_remove_secret (const gchar *first, ...)
 	va_end(va);
 
 	item = find_login_keyring_item (session, &fields);
-	if (item == NULL) {
+	if (item != NULL) {
 		if (!gp11_object_destroy (item, &error)) {
 			g_warning ("couldn't remove stored secret from login keyring: %s", error->message);
 			g_clear_error (&error);

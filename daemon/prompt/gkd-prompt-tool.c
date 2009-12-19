@@ -22,10 +22,10 @@
 
 #include "config.h"
 
-#include "gkd-prompt-buffer.h"
 #include "gkd-prompt-util.h"
 
 #include "egg/egg-dh.h"
+#include "egg/egg-entry-buffer.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
@@ -267,7 +267,7 @@ prepare_buttons (GtkBuilder *builder, GtkDialog *dialog)
 static void
 prepare_password_entry (GtkEntry *entry)
 {
-	GtkEntryBuffer *buffer = gkd_prompt_buffer_new ();
+	GtkEntryBuffer *buffer = egg_entry_buffer_new ();
 	g_return_if_fail (entry);
 	gtk_entry_set_buffer (entry, buffer);
 	g_object_unref (buffer);

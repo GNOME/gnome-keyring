@@ -1,8 +1,0 @@
-[general]
-flags=16641
-title=Test Ask Dialog
-primary=Primary prompt text.
-secondary=Some secondary prompt text is here.
-check-enable=true
-check-text=The check text
-

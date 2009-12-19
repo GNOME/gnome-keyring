@@ -577,6 +577,12 @@ gkd_prompt_class_init (GkdPromptClass *klass)
  * PUBLIC
  */
 
+GkdPrompt*
+gkd_prompt_new (void)
+{
+	return g_object_new (GKD_TYPE_PROMPT, NULL);
+}
+
 void
 gkd_prompt_set_title (GkdPrompt *self, const gchar *title)
 {
@@ -819,9 +825,11 @@ typedef struct _Attention {
 	gpointer user_data;
 	GkdPrompt *prompt;
 	gboolean active;
+	GCond *cond;
 } AttentionReq;
 
 static GHashTable *attention_reqs = NULL;
+static GStaticMutex attention_mutex = G_STATIC_MUTEX_INIT;
 
 static void
 done_attention_req (GkdPrompt *prompt, gpointer user_data)
@@ -834,6 +842,13 @@ done_attention_req (GkdPrompt *prompt, gpointer user_data)
 	if (att->active) {
 		att->active = FALSE;
 		next_attention_req (att->window_id);
+	}
+
+	if (att->cond) {
+		g_static_mutex_lock (&attention_mutex);
+		g_cond_broadcast (att->cond);
+		g_static_mutex_unlock (&attention_mutex);
+		att->cond = NULL;
 	}
 }
 
@@ -863,6 +878,7 @@ free_attention_req (gpointer data)
 	gchar *window_id = NULL;
 
 	if (att) {
+		att->cond = NULL;
 		if (att->destroy)
 			(att->destroy) (att->user_data);
 		if (att->prompt) {
@@ -903,7 +919,6 @@ alloc_attention_queue (void)
 {
 	return g_queue_new ();
 }
-
 
 static void
 next_attention_req (const gchar *window_id)
@@ -980,13 +995,13 @@ service_attention_req (gpointer user_data)
 	return FALSE;
 }
 
-void
-gkd_prompt_request_attention_async (const gchar *window_id, GkdPromptAttentionFunc callback,
-                                    gpointer user_data, GDestroyNotify destroy_notify)
+static AttentionReq*
+prepare_attention_req (const gchar *window_id, GkdPromptAttentionFunc callback,
+                       gpointer user_data, GDestroyNotify destroy_notify)
 {
 	AttentionReq *att;
 
-	g_return_if_fail (callback);
+	g_return_val_if_fail (callback, NULL);
 
 	if (!window_id)
 		window_id = "";
@@ -995,5 +1010,35 @@ gkd_prompt_request_attention_async (const gchar *window_id, GkdPromptAttentionFu
 	att->user_data = user_data;
 	att->destroy = destroy_notify;
 
+	return att;
+}
+
+void
+gkd_prompt_request_attention_async (const gchar *window_id, GkdPromptAttentionFunc callback,
+                                    gpointer user_data, GDestroyNotify destroy_notify)
+{
+	AttentionReq *att = prepare_attention_req (window_id, callback, user_data, destroy_notify);
+	g_return_if_fail (att);
 	g_timeout_add (0, service_attention_req, att);
+}
+
+void
+gkd_prompt_request_attention_sync (const gchar *window_id, GkdPromptAttentionFunc callback,
+                                   gpointer user_data, GDestroyNotify destroy_notify)
+{
+	AttentionReq *att = prepare_attention_req (window_id, callback, user_data, destroy_notify);
+	GCond *cond = g_cond_new ();
+
+	g_return_if_fail (att);
+	att->cond = cond;
+
+	g_static_mutex_lock (&attention_mutex);
+		g_timeout_add (0, service_attention_req, att);
+
+		/* WARNING: att may have been destroyed past this point */
+
+		g_cond_wait (cond, g_static_mutex_get_mutex (&attention_mutex));
+	g_static_mutex_unlock (&attention_mutex);
+
+	g_cond_free (cond);
 }

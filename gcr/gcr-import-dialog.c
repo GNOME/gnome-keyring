@@ -24,7 +24,7 @@
 #include "gcr-import-dialog.h"
 #include "gcr-internal.h"
 
-#include "egg/egg-secure-entry.h"
+#include "egg/egg-entry-buffer.h"
 
 enum {
 	PROP_0,
@@ -43,7 +43,7 @@ enum {
 
 struct _GcrImportDialogPrivate {
 	GtkBuilder *builder;
-	EggSecureEntry *entry;
+	GtkEntry *entry;
 	GtkWidget *button;
 	GtkComboBox *combo;
 	GtkListStore *slots;
@@ -120,8 +120,9 @@ gcr_import_dialog_constructor (GType type, guint n_props, GObjectConstructParam 
 {
 	GcrImportDialog *self = GCR_IMPORT_DIALOG (G_OBJECT_CLASS (_gcr_import_dialog_parent_class)->constructor(type, n_props, props));
 	GtkCellRenderer *renderer;
+	GtkEntryBuffer *buffer;
 	GtkWidget *widget;
-	
+
 	g_return_val_if_fail (self, NULL);
 	
 	if (!gtk_builder_add_from_file (self->pv->builder, UIDIR "gcr-import-dialog.ui", NULL))
@@ -133,7 +134,9 @@ gcr_import_dialog_constructor (GType type, guint n_props, GObjectConstructParam 
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (self)->vbox), widget);
 
 	/* Add a secure entry */
-	self->pv->entry = EGG_SECURE_ENTRY (egg_secure_entry_new ());
+	buffer = egg_entry_buffer_new ();
+	self->pv->entry = GTK_ENTRY (gtk_entry_new_with_buffer (buffer));
+	g_object_unref (buffer);
 	widget = GTK_WIDGET (gtk_builder_get_object (self->pv->builder, "password-area"));
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (self->pv->entry));
 	gtk_widget_show (GTK_WIDGET (self->pv->entry));
@@ -384,7 +387,7 @@ const gchar*
 _gcr_import_dialog_get_password (GcrImportDialog *self)
 {
 	g_return_val_if_fail (GCR_IS_IMPORT_DIALOG (self), NULL);
-	return egg_secure_entry_get_text (self->pv->entry);
+	return gtk_entry_get_text (self->pv->entry);
 }
 
 void
@@ -393,7 +396,7 @@ _gcr_import_dialog_set_password (GcrImportDialog *self, const gchar *password)
 	g_return_if_fail (GCR_IS_IMPORT_DIALOG (self));
 	if (password == NULL)
 		password = "";
-	egg_secure_entry_set_text (self->pv->entry, password);
+	gtk_entry_set_text (self->pv->entry, password);
 }
 
 void

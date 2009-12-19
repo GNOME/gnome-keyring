@@ -1,6 +1,4 @@
 SUBDIRS = \
-	util \
-	ui \
 	prompt \
 	login \
 	control \
@@ -30,13 +28,11 @@ gnome_keyring_daemon_SOURCES = \
 	gkd-util.c gkd-util.h
 
 gnome_keyring_daemon_LDADD = \
-	$(top_builddir)/daemon/pkcs11/libgkr-pkcs11.la \
+	$(top_builddir)/daemon/pkcs11/libgkd-pkcs11.la \
 	$(top_builddir)/daemon/dbus/libgkr-dbus.la \
 	$(top_builddir)/daemon/login/libgkd-login.la \
-	$(top_builddir)/daemon/ui/libgkr-ui.la \
 	$(top_builddir)/daemon/control/libgkd-control.la \
 	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
-	$(top_builddir)/daemon/util/libgkr-daemon-util.la \
 	$(top_builddir)/pkcs11/plex-layer/libgck-plex-layer.la \
 	$(top_builddir)/pkcs11/roots-store/libgck-roots-store.la \
 	$(top_builddir)/pkcs11/rpc-layer/libgck-rpc-layer.la \

@@ -37,11 +37,7 @@
 
 #include "login/gkd-login.h"
 
-#include "pkcs11/gkr-pkcs11-daemon.h"
-
-#include "ui/gkr-ask-daemon.h"
-
-#include "util/gkr-daemon-async.h"
+#include "pkcs11/gkd-pkcs11.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -635,13 +631,13 @@ gkr_daemon_startup_steps (void)
 	/* Startup the appropriate components, creates sockets etc.. */
 #ifdef WITH_SSH
 	if (check_run_component ("ssh")) {
-		if (!gkr_pkcs11_daemon_startup_ssh ())
+		if (!gkd_pkcs11_startup_ssh ())
 			return FALSE;
 	}
 #endif
 
 	if (check_run_component ("pkcs11")) {
-		if (!gkr_pkcs11_daemon_startup_pkcs11 ())
+		if (!gkd_pkcs11_startup_pkcs11 ())
 			return FALSE;
 	}
 
@@ -653,7 +649,7 @@ static gboolean
 gkr_daemon_initialize_steps (void)
 {
 	/* Initialize new style PKCS#11 components */
-	if (!gkr_pkcs11_daemon_initialize ())
+	if (!gkd_pkcs11_initialize ())
 		return FALSE;
 
 	/*
@@ -756,7 +752,6 @@ main (int argc, char *argv[])
 	/* Initialize our daemon main loop and threading */
 	loop = g_main_loop_new (NULL, FALSE);
 	ctx = g_main_loop_get_context (loop);
-	gkr_daemon_async_workers_init (loop);
 
 	/* Initialize our control socket */
 	if (!gkd_control_listen ())
@@ -800,14 +795,8 @@ main (int argc, char *argv[])
 
 	g_main_loop_run (loop);
 
-	/* Make sure no other threads are running */
-	gkr_daemon_async_workers_stop_all ();
-
 	/* This wraps everything up in order */
 	egg_cleanup_perform ();
-
-	/* Final shutdown of anything workers running about */
-	gkr_daemon_async_workers_uninit ();
 
 	/* Wrap up signal handling here */
 	cleanup_signal_handling ();

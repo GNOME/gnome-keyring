@@ -8,14 +8,15 @@ INCLUDES = \
 	$(GLIB_CFLAGS)
 
 DAEMON_SRCS = \
-	gkr-pkcs11-auth.c gkr-pkcs11-auth.h gkr-pkcs11-auth-ep.c \
-	gkr-pkcs11-daemon.c gkr-pkcs11-daemon.h
+	gkd-pkcs11-auth.c gkd-pkcs11-auth.h \
+	gkd-pkcs11-data.c gkd-pkcs11-data.h \
+	gkd-pkcs11.c gkd-pkcs11.h
 
-noinst_LTLIBRARIES = libgkr-pkcs11.la
+noinst_LTLIBRARIES = libgkd-pkcs11.la
 
-libgkr_pkcs11_la_SOURCES = $(DAEMON_SRCS)
+libgkd_pkcs11_la_SOURCES = $(DAEMON_SRCS)
 
-libgkr_pkcs11_la_LIBADD = \
+libgkd_pkcs11_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 

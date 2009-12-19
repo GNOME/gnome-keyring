@@ -63,7 +63,7 @@ libgcr_la_LDFLAGS = \
     
 libgcr_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
-	$(top_builddir)/egg/libegg-secure-entry.la \
+	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gp11/libgp11.la \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS) \
