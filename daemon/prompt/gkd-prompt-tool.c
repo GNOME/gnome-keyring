@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#include "gkd-prompt-buffer.h"
 #include "gkd-prompt-util.h"
 
 #include "egg/egg-dh.h"
@@ -188,6 +189,30 @@ prepare_buttons (GtkBuilder *builder, GtkDialog *dialog)
 }
 
 static void
+prepare_password_entry (GtkEntry *entry)
+{
+	GtkEntryBuffer *buffer = gkd_prompt_buffer_new ();
+	g_return_if_fail (entry);
+	gtk_entry_set_buffer (entry, buffer);
+	g_object_unref (buffer);
+}
+
+static void
+prepare_passwords (GtkBuilder *builder, GtkDialog *dialog)
+{
+	GtkEntry *entry;
+
+	entry = GTK_ENTRY(gtk_builder_get_object (builder, "password_entry"));
+	prepare_password_entry (entry);
+
+	entry = GTK_ENTRY(gtk_builder_get_object (builder, "original_entry"));
+	prepare_password_entry (entry);
+
+	entry = GTK_ENTRY(gtk_builder_get_object (builder, "confirm_entry"));
+	prepare_password_entry (entry);
+}
+
+static void
 prepare_security (GtkBuilder *builder, GtkDialog *dialog)
 {
 	/*
@@ -219,6 +244,7 @@ prepare_dialog (GtkBuilder *builder)
 	prepare_prompt (builder, dialog);
 	prepare_visibility (builder, dialog);
 	prepare_buttons (builder, dialog);
+	prepare_passwords (builder, dialog);
 	prepare_security (builder, dialog);
 
 	return dialog;

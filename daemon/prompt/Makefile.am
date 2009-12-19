@@ -61,6 +61,7 @@ libexec_PROGRAMS= \
 
 gnome_keyring_prompt_SOURCES = \
 	gkd-prompt-tool.c \
+	gkd-prompt-buffer.c gkd-prompt-buffer.h \
 	gkd-prompt-util.c gkd-prompt-util.h
 
 gnome_keyring_prompt_LDADD = \
