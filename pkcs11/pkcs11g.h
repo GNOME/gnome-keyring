@@ -90,23 +90,8 @@
 #define CKA_GNOME_PURPOSE_TIME_STAMPING          (CKA_GNOME + 109)
 
 /* -------------------------------------------------------------------
- * AUTO-DESTRUCT
  */
-
-#define CKA_GNOME_AUTO_DESTRUCT                  (CKA_GNOME + 200)
 
 #define CKA_GNOME_TRANSIENT                      (CKA_GNOME + 201)
-
-/* -------------------------------------------------------------------
- * CREDENTIAL
- */
-
-#define CKO_G_CREDENTIAL                         (CKO_GNOME + 100)
-
-#define CKA_G_OBJECT                             (CKA_GNOME + 202)
-
-#define CKA_G_USES_REMAINING                     (CKA_GNOME + 203)
-
-#define CKA_G_CREDENTIAL                         (CKA_GNOME + 204)
 
 #endif /* PKCS11G_H */

@@ -28,6 +28,7 @@
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
+#include "pkcs11/pkcs11i.h"
 
 #include "egg/egg-secure-memory.h"
 
@@ -545,12 +546,8 @@ static gboolean
 load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
                  GP11Attributes *priv, GP11Attributes *pub)
 {
-	GTimeVal tv;
 	guchar constraint;
 	guint32 lifetime;
-	time_t time;
-	struct tm tm;
-	gchar buf[20];
 
 	/*
 	 * Constraints are a byte flag, and optional data depending
@@ -566,17 +563,8 @@ load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
 			if (!egg_buffer_get_uint32 (buffer, offset, &offset, &lifetime))
 				return FALSE;
 
-			g_get_current_time (&tv);
-			time = tv.tv_sec + lifetime;
-
-			if (!gmtime_r (&time, &tm))
-				g_return_val_if_reached (FALSE);
-
-			if (!strftime(buf, sizeof (buf), "%Y%m%d%H%M%S00", &tm))
-				g_return_val_if_reached (FALSE);
-
-			gp11_attributes_add_data (pub, CKA_GNOME_AUTO_DESTRUCT, buf, 16);
-			gp11_attributes_add_data (priv, CKA_GNOME_AUTO_DESTRUCT, buf, 16);
+			gp11_attributes_add_ulong (pub, CKA_G_DESTRUCT_AFTER, lifetime);
+			gp11_attributes_add_ulong (priv, CKA_G_DESTRUCT_AFTER, lifetime);
 			break;
 
 		case GKD_SSH_FLAG_CONSTRAIN_CONFIRM:

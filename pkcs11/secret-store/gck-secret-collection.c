@@ -48,6 +48,11 @@ struct _GckSecretCollection {
 	GHashTable *items;
 	gchar *filename;
 	guint32 watermark;
+
+	/* Template for credential */
+	CK_ATTRIBUTE tp_attrs[2];
+	CK_ULONG tp_idle;
+	CK_BBOOL tp_token;
 };
 
 G_DEFINE_TYPE (GckSecretCollection, gck_secret_collection, GCK_TYPE_SECRET_OBJECT);
@@ -108,7 +113,7 @@ find_unlocked_credential (GckCredential *cred, GckObject *object, gpointer user_
 
 	g_return_val_if_fail (!*result, FALSE);
 
-	if (gck_credential_get_data (cred)) {
+	if (gck_credential_peek_data (cred, GCK_TYPE_SECRET_DATA)) {
 		*result = gck_object_get_handle (GCK_OBJECT (cred));
 		return TRUE;
 	}
@@ -121,14 +126,12 @@ find_unlocked_secret_data (GckCredential *cred, GckObject *object, gpointer user
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (object);
 	GckSecretData **result = user_data;
-	GckSecretData *sdata;
 
 	g_return_val_if_fail (!*result, FALSE);
 
-	sdata = gck_credential_get_data (cred);
-	if (sdata) {
-		g_return_val_if_fail (sdata == self->sdata, FALSE);
-		*result = sdata;
+	*result = gck_credential_pop_data (cred, GCK_TYPE_SECRET_DATA);
+	if (*result) {
+		g_return_val_if_fail (*result == self->sdata, FALSE);
 		return TRUE;
 	}
 
@@ -292,9 +295,10 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 
 	gck_credential_connect (cred, GCK_OBJECT (collection));
 	sdata = g_object_new (GCK_TYPE_SECRET_DATA, NULL);
-	gck_credential_set_data (cred, sdata, g_object_unref);
+	gck_credential_set_data (cred, GCK_TYPE_SECRET_DATA, sdata);
 	gck_secret_data_set_master (sdata, gck_credential_get_secret (cred));
 	track_secret_data (collection, sdata);
+	g_object_unref (sdata);
 
 	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (collection), attrs, n_attrs);
 	return GCK_OBJECT (collection);
@@ -335,7 +339,7 @@ change_master_password (GckSecretCollection *self, GckTransaction *transaction,
 		g_object_ref (previous);
 
 	gck_credential_connect (cred, GCK_OBJECT (self));
-	gck_credential_set_data (cred, g_object_ref (self->sdata), g_object_unref);
+	gck_credential_set_data (cred, GCK_TYPE_SECRET_DATA, self->sdata);
 	gck_secret_data_set_master (self->sdata, gck_credential_get_secret (cred));
 
 	gck_transaction_add (transaction, self, complete_master_password, previous);
@@ -349,15 +353,12 @@ static CK_RV
 gck_secret_collection_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (base);
-	CK_OBJECT_HANDLE handle = 0;
 
 	switch (attr->type) {
 	case CKA_CLASS:
 		return gck_attribute_set_ulong (attr, CKO_G_COLLECTION);
-	case CKA_G_CREDENTIAL:
-		gck_session_for_each_credential (session, GCK_OBJECT (self),
-		                                 find_unlocked_credential, &handle);
-		return gck_attribute_set_ulong (attr, handle);
+	case CKA_G_CREDENTIAL_TEMPLATE:
+		return gck_attribute_set_template (attr, self->tp_attrs, G_N_ELEMENTS (self->tp_attrs));
 	}
 	return GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->get_attribute (base, session, attr);
 }
@@ -373,8 +374,8 @@ gck_secret_collection_set_attribute (GckObject *object, GckSession *session,
 
 	switch (attr->type) {
 	case CKA_G_CREDENTIAL:
-		gck_session_for_each_credential (session, GCK_OBJECT (self),
-		                                 find_unlocked_credential, &handle);
+		gck_credential_for_each (session, GCK_OBJECT (self),
+		                         find_unlocked_credential, &handle);
 		if (handle == 0)
 			return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 		rv = gck_attribute_get_ulong (attr, &handle);
@@ -397,6 +398,7 @@ gck_secret_collection_real_unlock (GckObject *obj, GckCredential *cred)
 	GckDataResult res;
 	GckSecretData *sdata;
 	GckSecret *master;
+	CK_RV rv;
 
 	master = gck_credential_get_secret (cred);
 
@@ -406,7 +408,7 @@ gck_secret_collection_real_unlock (GckObject *obj, GckCredential *cred)
 			return CKR_PIN_INCORRECT;
 
 		/* Credential now tracks our secret data */
-		gck_credential_set_data (cred, g_object_ref (self->sdata), g_object_unref);
+		gck_credential_set_data (cred, GCK_TYPE_SECRET_DATA, self->sdata);
 		return CKR_OK;
 	}
 
@@ -428,23 +430,27 @@ gck_secret_collection_real_unlock (GckObject *obj, GckCredential *cred)
 
 	switch (res) {
 	case GCK_DATA_SUCCESS:
-		gck_credential_set_data (cred, sdata, g_object_unref);
+		gck_credential_set_data (cred, GCK_TYPE_SECRET_DATA, sdata);
 		track_secret_data (self, sdata);
-		return CKR_OK;
+		rv = CKR_OK;
+		break;
 	case GCK_DATA_LOCKED:
-		g_object_unref (sdata);
-		return CKR_PIN_INCORRECT;
+		rv = CKR_PIN_INCORRECT;
+		break;
 	case GCK_DATA_UNRECOGNIZED:
-		g_object_unref (sdata);
 		g_message ("unrecognized or invalid keyring: %s", self->filename);
-		return CKR_FUNCTION_FAILED;
+		rv = CKR_FUNCTION_FAILED;
+		break;
 	case GCK_DATA_FAILURE:
-		g_object_unref (sdata);
 		g_message ("failed to read or parse keyring: %s", self->filename);
-		return CKR_GENERAL_ERROR;
+		rv = CKR_GENERAL_ERROR;
+		break;
 	default:
 		g_assert_not_reached ();
 	}
+
+	g_object_unref (sdata);
+	return rv;
 }
 
 static void
@@ -458,15 +464,24 @@ static gboolean
 gck_secret_collection_real_is_locked (GckSecretObject *obj, GckSession *session)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
-	return gck_secret_collection_unlocked_data (self, session) ? FALSE : TRUE;
+	return gck_secret_collection_unlocked_have (self, session);
 }
 
 static void
 gck_secret_collection_init (GckSecretCollection *self)
 {
 	self->items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-}
 
+	self->tp_token = CK_FALSE;
+	self->tp_attrs[0].type = CKA_TOKEN;
+	self->tp_attrs[0].pValue = &self->tp_token;
+	self->tp_attrs[0].ulValueLen = sizeof (self->tp_token);
+
+	self->tp_idle = 0;
+	self->tp_attrs[1].type = CKA_G_DESTRUCT_IDLE;
+	self->tp_attrs[1].pValue = &self->tp_idle;
+	self->tp_attrs[1].ulValueLen = sizeof (self->tp_idle);
+}
 
 static void
 gck_secret_collection_set_property (GObject *obj, guint prop_id, const GValue *value,
@@ -727,8 +742,26 @@ gck_secret_collection_destroy_item (GckSecretCollection *self, GckTransaction *t
 	remove_item (self, transaction, item);
 }
 
+gboolean
+gck_secret_collection_unlocked_have (GckSecretCollection *self, GckSession *session)
+{
+	CK_OBJECT_HANDLE handle = 0;
+
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), FALSE);
+	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
+
+	/*
+	 * Look for credential objects that this session has access
+	 * to, and use those to find the secret data. If a secret data is
+	 * found, it should match the one we are tracking in self->sdata.
+	 */
+
+	gck_credential_for_each (session, GCK_OBJECT (self), find_unlocked_credential, &handle);
+	return handle != 0;
+}
+
 GckSecretData*
-gck_secret_collection_unlocked_data (GckSecretCollection *self, GckSession *session)
+gck_secret_collection_unlocked_use (GckSecretCollection *self, GckSession *session)
 {
 	GckSecretData *sdata = NULL;
 
@@ -741,8 +774,8 @@ gck_secret_collection_unlocked_data (GckSecretCollection *self, GckSession *sess
 	 * found, it should match the one we are tracking in self->sdata.
 	 */
 
-	gck_session_for_each_credential (session, GCK_OBJECT (self),
-	                                 find_unlocked_secret_data, &sdata);
+	gck_credential_for_each (session, GCK_OBJECT (self),
+	                         find_unlocked_secret_data, &sdata);
 
 	return sdata;
 }
@@ -826,4 +859,20 @@ gck_secret_collection_destroy (GckSecretCollection *self, GckTransaction *transa
 	gck_object_expose_full (GCK_OBJECT (self), transaction, FALSE);
 	if (self->filename)
 		gck_transaction_remove_file (transaction, self->filename);
+}
+
+gint
+gck_secret_collection_get_lock_idle (GckSecretCollection *self)
+{
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), 0);
+	return (gint)self->tp_idle;
+}
+
+void
+gck_secret_collection_set_lock_idle (GckSecretCollection *self, gint lock_timeout)
+{
+	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
+	if (lock_timeout < 0)
+		lock_timeout = 0;
+	self->tp_idle = (CK_ULONG)lock_timeout;
 }

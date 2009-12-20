@@ -32,7 +32,7 @@
 #include "gck/gck-session.h"
 #include "gck/gck-module.h"
 
-#include "pkcs11g.h"
+#include "pkcs11i.h"
 
 static GckModule *module = NULL;
 static GckSession *session = NULL;
@@ -174,40 +174,6 @@ DEFINE_TEST(credential_get_attributes)
 	g_assert (rv == CKR_OK);
 	g_assert (check.ulValueLen == sizeof (value));
 	g_assert (value == locked);
-
-	check.type = CKA_G_USES_REMAINING;
-	check.pValue = &value;
-	check.ulValueLen = sizeof (value);
-
-	rv = gck_session_C_GetAttributeValue (session, handle, &check, 1);
-	g_assert (rv == CKR_OK);
-	g_assert (check.ulValueLen == sizeof (value));
-	g_assert (value == (CK_ULONG)-1);
-}
-
-DEFINE_TEST(credential_uses_property)
-{
-	GckCredential *auth;
-	gint uses;
-	CK_RV rv;
-
-	rv = gck_credential_create (module, NULL, object, (guchar*)"mock", 4, &auth);
-	g_assert (rv == CKR_OK);
-	g_assert (auth);
-
-	g_object_get (auth, "uses-remaining", &uses, NULL);
-	g_assert (uses == -1);
-
-	gck_credential_set_uses_remaining (auth, 5);
-
-	uses = gck_credential_get_uses_remaining (auth);
-	g_assert (uses == 5);
-
-	gck_credential_throw_away_one_use (auth);
-	uses = gck_credential_get_uses_remaining (auth);
-	g_assert (uses == 4);
-
-	g_object_unref (auth);
 }
 
 DEFINE_TEST(credential_object_property)
@@ -262,26 +228,43 @@ DEFINE_TEST(credential_login_property)
 	g_object_unref (cred);
 }
 
+static GType
+boxed_string (void)
+{
+	static GType type = 0;
+	if (!type)
+		type = g_boxed_type_register_static ("TestBoxedString",
+		                                     (GBoxedCopyFunc)g_strdup,
+		                                     (GBoxedFreeFunc)g_free);
+	return type;
+}
+
 DEFINE_TEST(credential_data)
 {
 	GckCredential *cred;
+	GType type = boxed_string ();
+	gchar *check;
 	CK_RV rv;
 
 	rv = gck_credential_create (module, NULL, object, (guchar*)"mock", 4, &cred);
 	g_assert (rv == CKR_OK);
 	g_assert (cred);
 
-	g_assert (gck_credential_get_data (cred) == NULL);
+	g_assert (gck_credential_peek_data (cred, type) == NULL);
 
-	gck_credential_set_data (cred, g_strdup ("one"), g_free);
+	gck_credential_set_data (cred, type, "one");
 
-	g_assert_cmpstr ("one", ==, gck_credential_get_data (cred));
+	check = gck_credential_pop_data (cred, type);
+	g_assert_cmpstr ("one", ==, check);
+	g_free (check);
 
-	gck_credential_set_data (cred, g_strdup ("ONE"), g_free);
-	g_assert_cmpstr ("ONE", ==, gck_credential_get_data (cred));
+	g_assert_cmpstr ("one", ==, gck_credential_peek_data (cred, type));
 
-	gck_credential_set_data (cred, NULL, NULL);
-	g_assert (gck_credential_get_data (cred) == NULL);
+	gck_credential_set_data (cred, type, "ONE");
+	g_assert_cmpstr ("ONE", ==, gck_credential_peek_data (cred, type));
+
+	gck_credential_set_data (cred, 0, NULL);
+	g_assert (gck_credential_peek_data (cred, 0) == NULL);
 
 	g_object_unref (cred);
 }

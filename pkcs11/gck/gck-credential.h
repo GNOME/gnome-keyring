@@ -72,17 +72,24 @@ const gchar*               gck_credential_get_password           (GckCredential 
 
 GckObject*                 gck_credential_get_object             (GckCredential *self);
 
-gpointer                   gck_credential_get_data               (GckCredential *self);
+gpointer                   gck_credential_peek_data              (GckCredential *self,
+                                                                  GType type);
+
+gpointer                   gck_credential_pop_data               (GckCredential *self,
+                                                                  GType type);
 
 void                       gck_credential_set_data               (GckCredential *self,
-                                                                  gpointer data,
-                                                                  GDestroyNotify destroy);
+                                                                  GType type,
+                                                                  gpointer data);
 
-gint                       gck_credential_get_uses_remaining     (GckCredential *self);
+typedef gboolean           (*GckCredentialFunc)                  (GckCredential *cred,
+                                                                  GckObject *object,
+                                                                  gpointer user_data);
 
-void                       gck_credential_set_uses_remaining     (GckCredential *self,
-                                                                  gint use_count);
 
-void                       gck_credential_throw_away_one_use     (GckCredential *self);
+gboolean                   gck_credential_for_each               (GckSession *self,
+                                                                  GckObject *object,
+                                                                  GckCredentialFunc func,
+                                                                  gpointer user_data);
 
 #endif /* __GCK_CREDENTIAL_H__ */

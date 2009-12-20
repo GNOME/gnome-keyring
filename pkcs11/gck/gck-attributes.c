@@ -287,6 +287,48 @@ gck_attribute_set_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi)
 	return CKR_OK;
 }
 
+CK_RV
+gck_attribute_set_template (CK_ATTRIBUTE_PTR attr, CK_ATTRIBUTE_PTR template,
+                            CK_ULONG n_template)
+{
+	CK_ATTRIBUTE_PTR array;
+	CK_RV rv;
+	gulong len;
+	gulong i;
+
+	g_assert (attr);
+	g_warn_if_fail ((attr->type & CKF_ARRAY_ATTRIBUTE) != 0);
+
+	len = sizeof (CK_ATTRIBUTE) * n_template;
+	if (!attr->pValue) {
+		attr->ulValueLen = len;
+		return CKR_OK;
+	} else if (len > attr->ulValueLen) {
+		attr->ulValueLen = (CK_ULONG)-1;
+		return CKR_BUFFER_TOO_SMALL;
+	}
+
+	attr->ulValueLen = len;
+	array = attr->pValue;
+	rv = CKR_OK;
+
+	/* Start working with individual elements */
+	for (i = 0; i < n_template; ++i) {
+		array[i].type = template[i].type;
+		if (!array[i].pValue) {
+			array[i].ulValueLen = template[i].ulValueLen;
+		} else if (array[i].ulValueLen < template[i].ulValueLen) {
+			array[i].ulValueLen = (CK_ULONG)-1;
+			rv = CKR_BUFFER_TOO_SMALL;
+		} else {
+			memcpy(array[i].pValue, template[i].pValue, template[i].ulValueLen);
+			array[i].ulValueLen = template[i].ulValueLen;
+		}
+	}
+
+	return CKR_OK;
+}
+
 gboolean
 gck_attribute_equal (gconstpointer v1, gconstpointer v2)
 {

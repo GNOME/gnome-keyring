@@ -390,7 +390,6 @@ gck_secret_textual_write (GckSecretCollection *collection, GckSecretData *sdata,
 	const gchar *value;
 	GKeyFile *file;
 	GError *err = NULL;
-	gboolean idle_lock;
 	gint idle_timeout;
 
 	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (collection), GCK_DATA_FAILURE);
@@ -408,8 +407,8 @@ gck_secret_textual_write (GckSecretCollection *collection, GckSecretData *sdata,
 	key_file_set_uint64 (file, "keyring", "mtime", gck_secret_object_get_modified (obj));
 
 	/* Not currently used :( */
-	idle_lock = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (collection), "lock-on-idle"));
-	g_key_file_set_boolean (file, "keyring", "lock-on-idle", idle_lock);
+	idle_timeout = gck_secret_collection_get_lock_idle (collection);
+	g_key_file_set_boolean (file, "keyring", "lock-on-idle", idle_timeout > 0);
 	idle_timeout = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (collection), "lock-timeout"));
 	g_key_file_set_integer (file, "keyring", "lock-timeout", idle_timeout);
 

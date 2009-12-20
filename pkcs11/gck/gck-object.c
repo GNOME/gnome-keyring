@@ -23,8 +23,10 @@
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
+#include "pkcs11/pkcs11i.h"
 
 #include "gck-attributes.h"
+#include "gck-credential.h"
 #include "gck-manager.h"
 #include "gck-object.h"
 #include "gck-transaction.h"
@@ -51,8 +53,12 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 typedef struct _GckObjectTransient {
-	GckTimer *timed_timer;
-	glong timed_when;
+	GckTimer *timer;
+	gulong timed_after;
+	gulong timed_idle;
+	glong stamp_used;
+	glong stamp_created;
+	gulong uses_remaining;
 } GckObjectTransient;
 
 struct _GckObjectPrivate {
@@ -76,33 +82,62 @@ void  _gck_manager_unregister_object (GckManager *self, GckObject *object);
  */
 
 static void
-kaboom_callback (GckTimer *timer, gpointer user_data)
+self_destruct (GckObject *self)
 {
-	GckObject *self = user_data;
 	GckTransaction *transaction;
-	GckObjectTransient *transient;
 	CK_RV rv;
-
-	g_return_if_fail (GCK_IS_OBJECT (self));
-	g_return_if_fail (self->pv->transient);
-	transient = self->pv->transient;
-
-	g_return_if_fail (timer == transient->timed_timer);
-	transient->timed_timer = NULL;
-
-	g_object_ref (self);
 
 	transaction = gck_transaction_new ();
 
-	/* Off we go */
 	gck_object_destroy (self, transaction);
 
 	gck_transaction_complete (transaction);
 	rv = gck_transaction_get_result (transaction);
 	g_object_unref (transaction);
-
 	if (rv != CKR_OK)
 		g_warning ("Unexpected failure to auto destruct object (code: %lu)", (gulong)rv);
+}
+
+static void
+timer_callback (GckTimer *timer, gpointer user_data)
+{
+	GckObject *self = user_data;
+	glong after, idle, offset;
+	GckObjectTransient *transient;
+	GTimeVal tv;
+
+	g_return_if_fail (GCK_IS_OBJECT (self));
+
+	g_object_ref (self);
+
+	g_return_if_fail (self->pv->transient);
+	transient = self->pv->transient;
+	g_return_if_fail (timer == transient->timer);
+	transient->timer = NULL;
+
+	g_get_current_time (&tv);
+	idle = after = G_MAXLONG;
+
+	/* Are we supposed to be destroyed after a certain time? */
+	if (transient->timed_after) {
+		g_return_if_fail (transient->stamp_created);
+		after = (transient->stamp_created + transient->timed_after) - tv.tv_sec;
+	}
+
+	/* Are we supposed to be destroyed after an idle time? */
+	if (transient->timed_idle) {
+		g_return_if_fail (transient->stamp_used);
+		idle = (transient->stamp_used + transient->timed_idle) - tv.tv_sec;
+	}
+
+	/* Okay, time to destroy? */
+	offset = MIN (after, idle);
+	if (offset <= 0)
+		self_destruct (self);
+
+	/* Setup the next timer */
+	else
+		transient->timer = gck_timer_start (self->pv->module, offset, timer_callback, self);
 
 	g_object_unref (self);
 }
@@ -112,15 +147,19 @@ start_callback (GckTransaction *transaction, GObject *obj, gpointer user_data)
 {
 	GckObject *self = GCK_OBJECT (obj);
 	GckObjectTransient *transient;
+	GTimeVal tv;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
 	g_return_val_if_fail (self->pv->transient, FALSE);
 	transient = self->pv->transient;
+	g_return_val_if_fail (!transient->timer, FALSE);
 
-	g_return_val_if_fail (!transient->timed_timer, FALSE);
-	transient->timed_timer = gck_timer_start (self->pv->module, transient->timed_when, 
-	                                          kaboom_callback, self);
+	g_get_current_time (&tv);
+	transient->stamp_created = tv.tv_sec;
+	transient->stamp_used = tv.tv_sec;
 
+	/* Start the timer going */
+	timer_callback (NULL, self);
 	return TRUE;
 }
 
@@ -153,6 +192,15 @@ complete_expose (GckTransaction *transaction, GObject *obj, gpointer user_data)
 	return TRUE;
 }
 
+static gboolean
+find_credential (GckCredential *cred, GckObject *object, gpointer user_data)
+{
+	CK_OBJECT_HANDLE *result = user_data;
+	g_return_val_if_fail (!*result, FALSE);
+	*result = gck_object_get_handle (GCK_OBJECT (cred));
+	return TRUE;
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -160,8 +208,9 @@ complete_expose (GckTransaction *transaction, GObject *obj, gpointer user_data)
 static CK_RV 
 gck_object_real_get_attribute (GckObject *self, GckSession *session, CK_ATTRIBUTE* attr)
 {
+	CK_OBJECT_HANDLE handle = 0;
 	CK_RV rv;
-	
+
 	switch (attr->type)
 	{
 	case CKA_CLASS:
@@ -173,15 +222,24 @@ gck_object_real_get_attribute (GckObject *self, GckSession *session, CK_ATTRIBUT
 		return gck_attribute_set_bool (attr, FALSE);
 	case CKA_TOKEN:
 		return gck_attribute_set_bool (attr, gck_object_is_token (self));
+	case CKA_G_CREDENTIAL:
+		gck_credential_for_each (session, GCK_OBJECT (self), find_credential, &handle);
+		return gck_attribute_set_ulong (attr, handle);
 	case CKA_GNOME_UNIQUE:
 		if (self->pv->unique)
 			return gck_attribute_set_string (attr, self->pv->unique);
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	case CKA_GNOME_TRANSIENT:
 		return gck_attribute_set_bool (attr, self->pv->transient ? TRUE : FALSE);
-	case CKA_GNOME_AUTO_DESTRUCT:
-		return gck_attribute_set_time (attr, self->pv->transient ?
-		                                     self->pv->transient->timed_when : -1);
+	case CKA_G_DESTRUCT_AFTER:
+		return gck_attribute_set_ulong (attr, self->pv->transient ?
+		                                      self->pv->transient->timed_after : 0);
+	case CKA_G_DESTRUCT_IDLE:
+		return gck_attribute_set_ulong (attr, self->pv->transient ?
+		                                      self->pv->transient->timed_idle : 0);
+	case CKA_G_DESTRUCT_USES:
+		return gck_attribute_set_ulong (attr, self->pv->transient ?
+		                                      self->pv->transient->uses_remaining : 0);
 	};
 
 	/* Give store a shot */
@@ -250,9 +308,9 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
                                    GckTransaction *transaction, CK_ATTRIBUTE *attrs, CK_ULONG n_attrs)
 {
 	CK_ATTRIBUTE_PTR transient_attr;
-	CK_ATTRIBUTE_PTR lifetime_attr;
 	gboolean transient = FALSE;
-	glong lifetime = -1;
+	gulong after = 0;
+	gulong idle = 0;
 	CK_RV rv;
 
 	/* Parse the transient attribute */
@@ -267,15 +325,8 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
 	}
 
 	/* Parse the auto destruct attribute */
-	lifetime_attr = gck_attributes_find (attrs, n_attrs, CKA_GNOME_AUTO_DESTRUCT);
-	if (lifetime_attr) {
-		rv = gck_attribute_get_time (lifetime_attr, &lifetime);
-		gck_attribute_consume (lifetime_attr);
-		if (rv != CKR_OK) {
-			gck_transaction_fail (transaction, rv);
-			return;
-		}
-		
+	if (gck_attributes_find_ulong (attrs, n_attrs, CKA_G_DESTRUCT_AFTER, &after) ||
+	    gck_attributes_find_ulong (attrs, n_attrs, CKA_G_DESTRUCT_IDLE, &idle)) {
 		/* Default for the transient attribute */
 		if (!transient_attr)
 			transient = TRUE;
@@ -283,10 +334,11 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
 
 	if (transient) {
 		self->pv->transient = g_slice_new0 (GckObjectTransient);
-		self->pv->transient->timed_when = lifetime;
+		self->pv->transient->timed_after = after;
+		self->pv->transient->timed_idle = idle;
 	}
 
-	if (lifetime >= 0) {
+	if (after || idle) {
 		if (!self->pv->transient) {
 			gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
 			return;
@@ -354,9 +406,9 @@ gck_object_dispose (GObject *obj)
 
 	if (self->pv->transient) {
 		transient = self->pv->transient;
-		if (transient->timed_timer)
-			gck_timer_cancel (transient->timed_timer);
-		transient->timed_timer = NULL;
+		if (transient->timer)
+			gck_timer_cancel (transient->timer);
+		transient->timer = NULL;
 	}
 
 	G_OBJECT_CLASS (gck_object_parent_class)->dispose (obj);
@@ -661,6 +713,28 @@ gck_object_is_transient (GckObject *self)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
 	return self->pv->transient ? TRUE : FALSE;
+}
+
+void
+gck_object_mark_used (GckObject *self)
+{
+	GckObjectTransient *transient;
+	GTimeVal tv;
+
+	g_return_if_fail (GCK_IS_OBJECT (self));
+	transient = self->pv->transient;
+
+	if (transient) {
+		if (transient->timed_idle) {
+			g_get_current_time (&tv);
+			transient->stamp_used = tv.tv_sec;
+		}
+		if (transient->uses_remaining) {
+			--(transient->uses_remaining);
+			if (transient->uses_remaining == 0)
+				self_destruct (self);
+		}
+	}
 }
 
 CK_RV

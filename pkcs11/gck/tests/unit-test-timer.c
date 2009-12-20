@@ -55,12 +55,10 @@ timer_callback (GckTimer *timer, gpointer user_data)
 
 DEFINE_TEST(timer_simple)
 {
-	GTimeVal tv;
 	GckTimer *timer;
-	
-	g_get_current_time (&tv);
-	timer = gck_timer_start (module, tv.tv_sec + 2, timer_callback, &timer);
-	
+
+	timer = gck_timer_start (module, 2, timer_callback, &timer);
+
 	test_module_leave ();
 	test_mainloop_run (2200);
 	test_module_enter ();
@@ -70,12 +68,10 @@ DEFINE_TEST(timer_simple)
 
 DEFINE_TEST(timer_cancel)
 {
-	GTimeVal tv;
 	GckTimer *timer;
-	
-	g_get_current_time (&tv);
-	timer = gck_timer_start (module, tv.tv_sec + 2, timer_callback, &timer);
-	
+
+	timer = gck_timer_start (module, 2, timer_callback, &timer);
+
 	test_module_leave ();
 	test_mainloop_run (500);
 	test_module_enter ();
@@ -92,13 +88,11 @@ DEFINE_TEST(timer_cancel)
 
 DEFINE_TEST(timer_immediate)
 {
-	GTimeVal tv;
 	GckTimer *timer;
-	
+
 	/* Setup timer in the past, should execute as soon as possible */
-	g_get_current_time (&tv);
-	timer = gck_timer_start (module, tv.tv_sec - 5, timer_callback, &timer);
-	
+	timer = gck_timer_start (module, -5, timer_callback, &timer);
+
 	/* Should not be called immediately */
 	g_assert (timer != NULL);
 	
@@ -126,16 +120,13 @@ multiple_callback (GckTimer *timer, gpointer user_data)
 
 DEFINE_TEST(timer_multiple)
 {
-	GTimeVal tv;
-	
 	timer_check = 0;
-	g_get_current_time (&tv);
-	
+
 	/* Multiple timers, add out of order, should be called in order */
-	gck_timer_start (module, tv.tv_sec + 1, multiple_callback, GINT_TO_POINTER (1));
-	gck_timer_start (module, tv.tv_sec + 3, multiple_callback, GINT_TO_POINTER (3));
-	gck_timer_start (module, tv.tv_sec + 2, multiple_callback, GINT_TO_POINTER (2));
-	gck_timer_start (module, tv.tv_sec + 0, multiple_callback, GINT_TO_POINTER (0));
+	gck_timer_start (module, 1, multiple_callback, GINT_TO_POINTER (1));
+	gck_timer_start (module, 3, multiple_callback, GINT_TO_POINTER (3));
+	gck_timer_start (module, 2, multiple_callback, GINT_TO_POINTER (2));
+	gck_timer_start (module, 0, multiple_callback, GINT_TO_POINTER (0));
 	
 	test_module_leave ();
 	test_mainloop_run (3500);
@@ -146,12 +137,8 @@ DEFINE_TEST(timer_multiple)
 
 DEFINE_TEST(timer_outstanding)
 {
-	GTimeVal tv;
-	
-	g_get_current_time (&tv);
-
 	/* A timer that can't be called */
-	gck_timer_start (module, tv.tv_sec + 5, timer_callback, NULL);
-	gck_timer_start (module, tv.tv_sec + 10, timer_callback, NULL);
-	gck_timer_start (module, tv.tv_sec + 1, timer_callback, NULL);
+	gck_timer_start (module, 5, timer_callback, NULL);
+	gck_timer_start (module, 10, timer_callback, NULL);
+	gck_timer_start (module, 1, timer_callback, NULL);
 }

@@ -67,6 +67,10 @@ CK_RV                 gck_attribute_set_data                           (CK_ATTRI
 CK_RV                 gck_attribute_set_mpi                            (CK_ATTRIBUTE_PTR attr, 
                                                                         gcry_mpi_t mpi);
 
+CK_RV                 gck_attribute_set_template                       (CK_ATTRIBUTE_PTR attr,
+                                                                        CK_ATTRIBUTE_PTR template,
+                                                                        CK_ULONG n_template);
+
 guint                 gck_attribute_hash                               (gconstpointer v);
 
 gboolean              gck_attribute_equal                              (gconstpointer a,

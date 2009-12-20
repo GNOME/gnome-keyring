@@ -587,19 +587,19 @@ gck_secret_binary_write (GckSecretCollection *collection, GckSecretData *sdata,
 	egg_buffer_append (&buffer, (guchar*)KEYRING_FILE_HEADER, KEYRING_FILE_HEADER_LEN);
 	egg_buffer_add_byte (&buffer, 0); /* Major version */
 	egg_buffer_add_byte (&buffer, 0); /* Minor version */
-	egg_buffer_add_byte (&buffer, 0); /* crypto (0 == AEL) */
+	egg_buffer_add_byte (&buffer, 0); /* crypto (0 == AES) */
 	egg_buffer_add_byte (&buffer, 0); /* hash (0 == MD5) */
 
 	buffer_add_utf8_string (&buffer, gck_secret_object_get_label (obj));
 	buffer_add_time (&buffer, gck_secret_object_get_modified (obj));
 	buffer_add_time (&buffer, gck_secret_object_get_created (obj));
-	
+
 	flags = 0;
-	if (g_object_get_data (G_OBJECT (collection), "lock-on-idle")) 
-		flags |= 1;
+	lock_timeout = gck_secret_collection_get_lock_idle (collection);
+	if (lock_timeout)
+		flags |= LOCK_ON_IDLE_FLAG;
 	egg_buffer_add_uint32 (&buffer, flags);
-	
-	lock_timeout = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (collection), "lock-on-idle"));
+
 	egg_buffer_add_uint32 (&buffer, lock_timeout);
 	egg_buffer_add_uint32 (&buffer, hash_iterations);
 	egg_buffer_append (&buffer, salt, 8);
@@ -939,8 +939,9 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecretData *sdata,
 	gck_secret_object_set_label (obj, display_name);
 	gck_secret_object_set_modified (obj, mtime);
 	gck_secret_object_set_created (obj, ctime);
-	g_object_set_data (G_OBJECT (collection), "lock-on-idle", GINT_TO_POINTER (!!(flags & LOCK_ON_IDLE_FLAG)));
-	g_object_set_data (G_OBJECT (collection), "lock-timeout", GINT_TO_POINTER (lock_timeout));
+	if (!(flags & LOCK_ON_IDLE_FLAG))
+		lock_timeout = 0;
+	gck_secret_collection_set_lock_idle (collection, lock_timeout);
 
 	/* Build a Hash table where we can track ids we haven't yet seen */
 	checks = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);

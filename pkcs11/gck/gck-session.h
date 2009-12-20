@@ -52,10 +52,6 @@ struct _GckSessionClass {
 #endif
 };
 
-typedef gboolean         (*GckCredentialFunc)                           (GckCredential *cred,
-                                                                         GckObject *object,
-                                                                         gpointer user_data);
-
 GType                    gck_session_get_type                           (void);
 
 GckSession*              gck_session_for_session_object                 (GckObject *obj);
@@ -85,6 +81,8 @@ void                     gck_session_set_crypto_state                   (GckSess
                                                                          gpointer state,
                                                                          GDestroyNotify destroy);
 
+GckCredential*           gck_session_get_credential                     (GckSession *self);
+
 CK_RV                    gck_session_lookup_readable_object             (GckSession *self, 
                                                                          CK_OBJECT_HANDLE handle, 
                                                                          GckObject **result);
@@ -104,11 +102,6 @@ void                     gck_session_add_session_object                 (GckSess
 void                     gck_session_destroy_session_object             (GckSession *self,
                                                                          GckTransaction *transaction,
                                                                          GckObject *obj);
-
-gboolean                 gck_session_for_each_credential                (GckSession *self,
-                                                                         GckObject *object,
-                                                                         GckCredentialFunc func,
-                                                                         gpointer user_data);
 
 GckObject*               gck_session_create_object_for_factory          (GckSession *self,
                                                                          GckFactory *factory,

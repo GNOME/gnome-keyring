@@ -157,15 +157,18 @@ gck_timer_shutdown (void)
 GMutex* _gck_module_get_scary_mutex_that_you_should_not_touch (GckModule *self);
 
 GckTimer*
-gck_timer_start (GckModule *module, glong when, GckTimerFunc callback, gpointer user_data)
+gck_timer_start (GckModule *module, glong seconds, GckTimerFunc callback, gpointer user_data)
 {
 	GckTimer *timer;
+	GTimeVal tv;
 
 	g_return_val_if_fail (callback, NULL);
 	g_return_val_if_fail (timer_queue, NULL);
 
+	g_get_current_time (&tv);
+
 	timer = g_slice_new (GckTimer);
-	timer->when = when;
+	timer->when = seconds + tv.tv_sec;
 	timer->callback = callback;
 	timer->user_data = user_data;
 

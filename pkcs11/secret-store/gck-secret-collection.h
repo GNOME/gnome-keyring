@@ -85,7 +85,15 @@ void                 gck_secret_collection_destroy_item    (GckSecretCollection 
 
 void                 gck_secret_collection_unlocked_clear  (GckSecretCollection *self);
 
-GckSecretData*       gck_secret_collection_unlocked_data   (GckSecretCollection *self,
+GckSecretData*       gck_secret_collection_unlocked_use    (GckSecretCollection *self,
                                                             GckSession *session);
+
+gboolean             gck_secret_collection_unlocked_have   (GckSecretCollection *self,
+                                                            GckSession *session);
+
+gint                 gck_secret_collection_get_lock_idle   (GckSecretCollection *self);
+
+void                 gck_secret_collection_set_lock_idle   (GckSecretCollection *self,
+                                                            gint lock_timeout);
 
 #endif /* __GCK_SECRET_COLLECTION_H__ */

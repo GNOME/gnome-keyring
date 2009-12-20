@@ -115,9 +115,10 @@ DEFINE_TEST(secret_collection_unlocked_data)
 	g_object_unref (cred);
 
 	/* Collection should now be unlocked */
-	sdata = gck_secret_collection_unlocked_data (collection, session);
+	sdata = gck_secret_collection_unlocked_use (collection, session);
 	g_assert (GCK_IS_SECRET_DATA (sdata));
 	g_assert (!gck_secret_object_is_locked (GCK_SECRET_OBJECT (collection), session));
+	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_get_filename)
@@ -177,9 +178,10 @@ DEFINE_TEST(secret_collection_load_unlock_plain)
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
 	g_object_unref (cred);
 
-	sdata = gck_secret_collection_unlocked_data (collection, session);
+	sdata = gck_secret_collection_unlocked_use (collection, session);
 	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
+	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_load_unlock_encrypted)
@@ -205,9 +207,10 @@ DEFINE_TEST(secret_collection_load_unlock_encrypted)
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
 	g_object_unref (cred);
 
-	sdata = gck_secret_collection_unlocked_data (collection, session);
+	sdata = gck_secret_collection_unlocked_use (collection, session);
 	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
+	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_load_unlock_bad_password)
@@ -249,9 +252,10 @@ DEFINE_TEST(secret_collection_unlock_without_load)
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
 	g_object_unref (cred);
 
-	sdata = gck_secret_collection_unlocked_data (collection, session);
+	sdata = gck_secret_collection_unlocked_use (collection, session);
 	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
+	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_twice_unlock)
@@ -279,9 +283,10 @@ DEFINE_TEST(secret_collection_twice_unlock)
 	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
 	g_object_unref (cred);
 
-	sdata = gck_secret_collection_unlocked_data (collection, session);
+	sdata = gck_secret_collection_unlocked_use (collection, session);
 	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
+	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_twice_unlock_bad_password)
@@ -307,9 +312,10 @@ DEFINE_TEST(secret_collection_twice_unlock_bad_password)
 	                            (guchar*)"wrong", 5, &cred);
 	g_assert (rv == CKR_PIN_INCORRECT);
 
-	sdata = gck_secret_collection_unlocked_data (collection, session);
+	sdata = gck_secret_collection_unlocked_use (collection, session);
 	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
+	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_memory_unlock)

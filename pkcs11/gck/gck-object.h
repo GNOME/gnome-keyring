@@ -83,6 +83,8 @@ gboolean               gck_object_is_token               (GckObject *self);
 
 gboolean               gck_object_is_transient           (GckObject *self);
 
+void                   gck_object_mark_used              (GckObject *self);
+
 CK_RV                  gck_object_unlock                 (GckObject *self,
                                                           GckCredential *cred);
 

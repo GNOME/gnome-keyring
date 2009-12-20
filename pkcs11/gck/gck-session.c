@@ -756,62 +756,11 @@ gck_session_destroy_session_object (GckSession *self, GckTransaction *transactio
 	remove_object (self, transaction, obj);
 }
 
-gboolean
-gck_session_for_each_credential (GckSession *self, GckObject *object,
-                                 GckCredentialFunc func, gpointer user_data)
+GckCredential*
+gck_session_get_credential (GckSession *self)
 {
-	CK_OBJECT_HANDLE handle;
-	CK_OBJECT_CLASS klass;
-	CK_ATTRIBUTE attrs[2];
-	GList *results, *l;
-
-	g_return_val_if_fail (GCK_IS_SESSION (self), FALSE);
-	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
-	g_return_val_if_fail (func, FALSE);
-
-	/* Do we have one right on the session */
-	if (self->pv->credential != NULL &&
-	    gck_credential_get_object (self->pv->credential) == object) {
-		if ((func) (self->pv->credential, object, user_data))
-			return TRUE;
-	}
-
-	klass = CKO_G_CREDENTIAL;
-	attrs[0].type = CKA_CLASS;
-	attrs[0].pValue = &klass;
-	attrs[0].ulValueLen = sizeof (klass);
-
-	handle = gck_object_get_handle (object);
-	attrs[1].type = CKA_G_OBJECT;
-	attrs[1].pValue = &handle;
-	attrs[1].ulValueLen = sizeof (handle);
-
-	/* Find any on the session */
-	results = gck_manager_find_by_attributes (self->pv->manager,
-	                                          attrs, G_N_ELEMENTS (attrs));
-
-	for (l = results; l; l = g_list_next (l)) {
-		if ((func) (l->data, object, user_data))
-			break;
-	}
-
-	g_list_free (results);
-
-	if (l != NULL)
-		return TRUE;
-
-	/* Find any in the token */
-	results = gck_manager_find_by_attributes (gck_module_get_manager (self->pv->module), 
-	                                          attrs, G_N_ELEMENTS (attrs));
-
-	for (l = results; l; l = g_list_next (l)) {
-		if ((func) (l->data, object, user_data))
-			break;
-	}
-
-	g_list_free (results);
-	
-	return (l != NULL);
+	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
+	return self->pv->credential;
 }
 
 GckObject*

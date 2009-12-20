@@ -30,7 +30,7 @@ typedef void    (*GckTimerFunc)                (GckTimer *timer,
                                                 gpointer user_data); 
 
 GckTimer*       gck_timer_start                (GckModule *module, 
-                                                glong when,
+                                                glong seconds,
                                                 GckTimerFunc func, 
                                                 gpointer user_data);
 

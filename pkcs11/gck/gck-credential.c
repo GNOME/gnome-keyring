@@ -28,13 +28,12 @@
 #include "gck-transaction.h"
 
 #include "pkcs11/pkcs11.h"
-#include "pkcs11/pkcs11g.h"
+#include "pkcs11/pkcs11i.h"
 
 enum {
 	PROP_0,
 	PROP_OBJECT,
-	PROP_SECRET,
-	PROP_USES_REMAINING
+	PROP_SECRET
 };
 
 struct _GckCredentialPrivate {
@@ -42,13 +41,12 @@ struct _GckCredentialPrivate {
 	/* The object we authenticated */
 	GckObject *object;
 
-	/* Optional secret and/or data */
+	/* Secret which created this credential */
 	GckSecret *secret;
-	gpointer user_data;
-	GDestroyNotify destroy;
 
-	/* Can limit by number of uses remaining */
-	gint uses_remaining;
+	/* Stored data */
+	GType user_type;
+	gpointer user_data;
 };
 
 G_DEFINE_TYPE (GckCredential, gck_credential, GCK_TYPE_OBJECT);
@@ -133,6 +131,21 @@ object_went_away (gpointer data, GObject *old_object)
 	self_destruct (self);
 }
 
+static void
+clear_data (GckCredential *self)
+{
+	if (!self->pv->user_data)
+		return;
+	if (G_TYPE_IS_BOXED (self->pv->user_type))
+		g_boxed_free (self->pv->user_type, self->pv->user_data);
+	else if (G_TYPE_IS_OBJECT (self->pv->user_type))
+		g_object_unref (self->pv->user_data);
+	else
+		g_assert_not_reached ();
+	self->pv->user_data = NULL;
+	self->pv->user_type = 0;
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -155,12 +168,6 @@ gck_credential_real_get_attribute (GckObject *base, GckSession *session, CK_ATTR
 		handle = self->pv->object ? gck_object_get_handle (self->pv->object) : 0;
 		return gck_attribute_set_ulong (attr, handle);
 
-	case CKA_G_USES_REMAINING:
-		if (self->pv->uses_remaining < 0)
-			return gck_attribute_set_ulong (attr, (CK_ULONG)-1);
-		else
-			return gck_attribute_set_ulong (attr, self->pv->uses_remaining);
-
 	case CKA_VALUE:
 		return CKR_ATTRIBUTE_SENSITIVE;
 	};
@@ -181,7 +188,6 @@ static void
 gck_credential_init (GckCredential *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_CREDENTIAL, GckCredentialPrivate);
-	self->pv->uses_remaining = -1;
 }
 
 static void
@@ -193,14 +199,7 @@ gck_credential_dispose (GObject *obj)
 		g_object_weak_unref (G_OBJECT (self->pv->object), object_went_away, self);
 	self->pv->object = NULL;
 
-	if (self->pv->secret)
-		g_object_unref (self->pv->secret);
-	self->pv->secret = NULL;
-
-	if (self->pv->user_data && self->pv->destroy)
-		(self->pv->destroy)(self->pv->user_data);
-	self->pv->user_data = NULL;
-	self->pv->destroy = NULL;
+	clear_data (self);
 
 	G_OBJECT_CLASS (gck_credential_parent_class)->dispose (obj);
 }
@@ -211,9 +210,8 @@ gck_credential_finalize (GObject *obj)
 	GckCredential *self = GCK_CREDENTIAL (obj);
 
 	g_assert (!self->pv->object);
-	g_assert (!self->pv->secret);
+	g_assert (!self->pv->user_type);
 	g_assert (!self->pv->user_data);
-	g_assert (!self->pv->destroy);
 
 	G_OBJECT_CLASS (gck_credential_parent_class)->finalize (obj);
 }
@@ -255,9 +253,6 @@ gck_credential_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_SECRET:
 		g_value_set_object (value, gck_credential_get_secret (self));
 		break;
-	case PROP_USES_REMAINING:
-		g_value_set_int (value, gck_credential_get_uses_remaining (self));
-		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -288,10 +283,6 @@ gck_credential_class_init (GckCredentialClass *klass)
 	g_object_class_install_property (gobject_class, PROP_SECRET,
 	           g_param_spec_object ("secret", "Secret", "Optiontal secret",
 	                                GCK_TYPE_SECRET, G_PARAM_READWRITE));
-
-	g_object_class_install_property (gobject_class, PROP_USES_REMAINING,
-	           g_param_spec_int ("uses-remaining", "Uses Remaining", "Uses remaining",
-	                             -1, G_MAXINT, -1, G_PARAM_READWRITE));
 }
 
 /* -----------------------------------------------------------------------------
@@ -410,47 +401,124 @@ gck_credential_get_object (GckCredential *self)
 	return self->pv->object;
 }
 
-gint
-gck_credential_get_uses_remaining (GckCredential *self)
-{
-	g_return_val_if_fail (GCK_IS_CREDENTIAL (self), 0);
-	return self->pv->uses_remaining;
-}
-
-void
-gck_credential_set_uses_remaining (GckCredential *self, gint use_count)
-{
-	g_return_if_fail (GCK_IS_CREDENTIAL (self));
-	g_return_if_fail (use_count != 0);
-
-	self->pv->uses_remaining = use_count;
-	g_object_notify (G_OBJECT (self), "uses-remaining");
-}
-
-void
-gck_credential_throw_away_one_use (GckCredential *self)
-{
-	g_return_if_fail (GCK_IS_CREDENTIAL (self));
-	if (self->pv->uses_remaining > 0)
-		--(self->pv->uses_remaining);
-	if (self->pv->uses_remaining == 0)
-		self_destruct (self);
-}
-
 gpointer
-gck_credential_get_data (GckCredential *self)
+gck_credential_peek_data (GckCredential *self, GType type)
 {
 	g_return_val_if_fail (GCK_IS_CREDENTIAL (self), NULL);
+	if (!self->pv->user_data)
+		return NULL;
+	g_return_val_if_fail (type == self->pv->user_type, NULL);
 	return self->pv->user_data;
 }
 
+gpointer
+gck_credential_pop_data (GckCredential *self, GType type)
+{
+	gpointer data = NULL;
+	g_return_val_if_fail (GCK_IS_CREDENTIAL (self), NULL);
+
+	if (self->pv->user_data) {
+		g_return_val_if_fail (type == self->pv->user_type, NULL);
+		if (G_TYPE_IS_BOXED (self->pv->user_type))
+			data = g_boxed_copy (self->pv->user_type, self->pv->user_data);
+		else if (G_TYPE_IS_OBJECT (self->pv->user_type))
+			data = g_object_ref (self->pv->user_data);
+		else
+			g_assert_not_reached ();
+	}
+
+	gck_object_mark_used (GCK_OBJECT (self));
+	return data;
+}
+
 void
-gck_credential_set_data (GckCredential *self, gpointer data, GDestroyNotify destroy)
+gck_credential_set_data (GckCredential *self, GType type, gpointer data)
 {
 	g_return_if_fail (GCK_IS_CREDENTIAL (self));
 
-	if (self->pv->user_data && self->pv->destroy)
-		(self->pv->destroy) (self->pv->user_data);
-	self->pv->user_data = data;
-	self->pv->destroy = destroy;
+	if (data) {
+		g_return_if_fail (type);
+		g_return_if_fail (G_TYPE_IS_BOXED (type) || G_TYPE_IS_OBJECT (type));
+	}
+
+	clear_data (self);
+
+	if (data) {
+		self->pv->user_type = type;
+		if (G_TYPE_IS_BOXED (type))
+			self->pv->user_data = g_boxed_copy (type, data);
+		else if (G_TYPE_IS_OBJECT (type))
+			self->pv->user_data = g_object_ref (data);
+		else
+			g_assert_not_reached ();
+	}
+}
+
+gboolean
+gck_credential_for_each (GckSession *session, GckObject *object,
+                         GckCredentialFunc func, gpointer user_data)
+{
+	CK_OBJECT_HANDLE handle;
+	CK_OBJECT_CLASS klass;
+	CK_ATTRIBUTE attrs[2];
+	GList *results, *l;
+	GckCredential *cred;
+	gboolean ret;
+
+	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (func, FALSE);
+
+	/* Do we have one right on the session */
+	cred = gck_session_get_credential (session);
+	if (cred && gck_credential_get_object (cred) == object) {
+		g_object_ref (cred);
+		ret = (func) (cred, object, user_data);
+		g_object_unref (cred);
+		if (ret)
+			return TRUE;
+	}
+
+	klass = CKO_G_CREDENTIAL;
+	attrs[0].type = CKA_CLASS;
+	attrs[0].pValue = &klass;
+	attrs[0].ulValueLen = sizeof (klass);
+
+	handle = gck_object_get_handle (object);
+	attrs[1].type = CKA_G_OBJECT;
+	attrs[1].pValue = &handle;
+	attrs[1].ulValueLen = sizeof (handle);
+
+	/* Find any on the session */
+	results = gck_manager_find_by_attributes (gck_session_get_manager (session),
+	                                          attrs, G_N_ELEMENTS (attrs));
+
+	for (l = results; l; l = g_list_next (l)) {
+		g_object_ref (l->data);
+		ret = (func) (l->data, object, user_data);
+		g_object_unref (l->data);
+		if (ret)
+			break;
+	}
+
+	g_list_free (results);
+
+	if (l != NULL)
+		return TRUE;
+
+	/* Find any in the token */
+	results = gck_manager_find_by_attributes (gck_module_get_manager (gck_session_get_module (session)),
+	                                          attrs, G_N_ELEMENTS (attrs));
+
+	for (l = results; l; l = g_list_next (l)) {
+		g_object_ref (l->data);
+		ret = (func) (l->data, object, user_data);
+		g_object_unref (l->data);
+		if (ret)
+			break;
+	}
+
+	g_list_free (results);
+
+	return (l != NULL);
 }

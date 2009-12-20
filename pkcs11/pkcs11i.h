@@ -95,4 +95,26 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 
 #define CKK_G_NULL                           (CKK_GNOME + 100)
 
+/* -------------------------------------------------------------------
+ * AUTO DESTRUCT
+ */
+
+#define CKA_G_DESTRUCT_IDLE                  (CKA_GNOME + 190)
+
+#define CKA_G_DESTRUCT_AFTER                 (CKA_GNOME + 191)
+
+#define CKA_G_DESTRUCT_USES                  (CKA_GNOME + 192)
+
+/* -------------------------------------------------------------------
+ * CREDENTIAL
+ */
+
+#define CKO_G_CREDENTIAL                         (CKO_GNOME + 100)
+
+#define CKA_G_OBJECT                             (CKA_GNOME + 202)
+
+#define CKA_G_CREDENTIAL                         (CKA_GNOME + 204)
+
+#define CKA_G_CREDENTIAL_TEMPLATE                (CKA_GNOME + 205)
+
 #endif /* PKCS11I_H */

@@ -207,6 +207,7 @@ gck_secret_item_real_get_attribute (GckObject *base, GckSession *session, CK_ATT
 	const gchar *identifier;
 	const guchar *secret;
 	gsize n_secret = 0;
+	CK_RV rv;
 
 	g_return_val_if_fail (self->collection, CKR_GENERAL_ERROR);
 
@@ -215,12 +216,14 @@ gck_secret_item_real_get_attribute (GckObject *base, GckSession *session, CK_ATT
 		return gck_attribute_set_ulong (attr, CKO_SECRET_KEY);
 
 	case CKA_VALUE:
-		sdata = gck_secret_collection_unlocked_data (self->collection, session);
+		sdata = gck_secret_collection_unlocked_use (self->collection, session);
 		if (sdata == NULL)
 			return CKR_USER_NOT_LOGGED_IN;
 		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (self));
 		secret = gck_secret_data_get_raw (sdata, identifier, &n_secret);
-		return gck_attribute_set_data (attr, secret, n_secret);
+		rv = gck_attribute_set_data (attr, secret, n_secret);
+		g_object_unref (sdata);
+		return rv;
 
 	case CKA_G_COLLECTION:
 		g_return_val_if_fail (self->collection, CKR_GENERAL_ERROR);
@@ -257,18 +260,20 @@ gck_secret_item_real_set_attribute (GckObject *base, GckSession *session,
 	}
 
 	/* Check that the object is not locked */
-	sdata = gck_secret_collection_unlocked_data (self->collection, session);
-	if (sdata == NULL) {
+	if (!gck_secret_collection_unlocked_have (self->collection, session)) {
 		gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
 		return;
 	}
 
 	switch (attr->type) {
 	case CKA_VALUE:
+		sdata = gck_secret_collection_unlocked_use (self->collection, session);
+		g_return_if_fail (sdata);
 		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (self));
 		secret = gck_secret_new (attr->pValue, attr->ulValueLen);
 		gck_secret_data_set_transacted (sdata, transaction, identifier, secret);
 		g_object_unref (secret);
+		g_object_unref (sdata);
 		if (!gck_transaction_get_failed (transaction))
 			gck_transaction_add (transaction, self, complete_set_secret, NULL);
 		return;

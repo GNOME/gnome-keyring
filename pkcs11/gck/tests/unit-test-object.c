@@ -30,7 +30,7 @@
 #include "gck/gck-module.h"
 #include "gck/gck-transaction.h"
 
-#include "pkcs11g.h"
+#include "pkcs11i.h"
 
 static GckModule *module = NULL;
 static GckSession *session = NULL;
@@ -157,12 +157,12 @@ DEFINE_TEST(object_create_auto_destruct)
 	CK_BBOOL token = CK_FALSE;
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
 	CK_CERTIFICATE_TYPE type = CKC_X_509;
-	gchar lifetime[16];
-	gchar check[16];
-	
+	CK_ULONG lifetime = 2;
+	CK_ULONG check;
+
 	CK_ATTRIBUTE attrs[] = {
-       		{ CKA_GNOME_AUTO_DESTRUCT, lifetime, sizeof (lifetime) },
-	        { CKA_TOKEN, &token, sizeof (token) },
+		{ CKA_G_DESTRUCT_AFTER, &lifetime, sizeof (lifetime) },
+		{ CKA_TOKEN, &token, sizeof (token) },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
 		{ CKA_VALUE, certificate_data, certificate_n_data },
@@ -171,19 +171,13 @@ DEFINE_TEST(object_create_auto_destruct)
 	CK_BBOOL transient;
 	
 	CK_ATTRIBUTE lookups[] = { 
-		{ CKA_GNOME_AUTO_DESTRUCT, check, sizeof (check) },
+		{ CKA_G_DESTRUCT_AFTER, &check, sizeof (check) },
 		{ CKA_GNOME_TRANSIENT, &transient, sizeof (transient) }
 	};
 	
 	CK_OBJECT_HANDLE handle;
-	GTimeVal tv;
 	CK_RV rv;
-	
-	/* Fill in the special attribute */
-	g_get_current_time (&tv);
-	rv = gck_attribute_set_time (&attrs[0], tv.tv_sec + 2);
-	g_assert (rv == CKR_OK);
-	
+
 	rv = gck_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_OK);
 	g_assert (handle != 0);
@@ -194,7 +188,7 @@ DEFINE_TEST(object_create_auto_destruct)
 	rv = gck_session_C_GetAttributeValue (session, handle, lookups, G_N_ELEMENTS (lookups));
 	g_assert (rv == CKR_OK);
 	g_assert (transient == TRUE);
-	g_assert (memcmp (lifetime, check, 16) == 0);
+	g_assert (memcmp (&lifetime, &check, sizeof (lifetime)) == 0);
 	
 	test_module_leave ();
 	test_mainloop_run (2200);
@@ -207,10 +201,11 @@ DEFINE_TEST(object_create_auto_destruct_not_transient)
 {
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
 	CK_CERTIFICATE_TYPE type = CKC_X_509;
-	CK_BBOOL transient = CK_FALSE; 
-	
+	CK_BBOOL transient = CK_FALSE;
+	CK_ULONG after = 1;
+
 	CK_ATTRIBUTE attrs[] = {
-       		{ CKA_GNOME_AUTO_DESTRUCT, "1999010101010100", 16 },
+		{ CKA_G_DESTRUCT_AFTER, &after, sizeof (after) },
 		{ CKA_GNOME_TRANSIENT, &transient, sizeof (transient) },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
@@ -223,26 +218,6 @@ DEFINE_TEST(object_create_auto_destruct_not_transient)
 	/* Can't have a non-transient object that auto-destructs */
 	rv = gck_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_TEMPLATE_INCONSISTENT);
-}
-
-DEFINE_TEST(object_create_auto_destruct_bad_value)
-{
-	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
-	CK_CERTIFICATE_TYPE type = CKC_X_509;
-	
-	CK_ATTRIBUTE attrs[] = {
-       		{ CKA_GNOME_AUTO_DESTRUCT, "1999", 4 },
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
-		{ CKA_VALUE, certificate_data, certificate_n_data },
-	};
-
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
-	
-	/* Can't have a non-transient object that auto-destructs */
-	rv = gck_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
 DEFINE_TEST(object_expose)

@@ -176,12 +176,9 @@ acquire_from_credential (GckCredential *cred, GckObject *object, gpointer user_d
 	g_assert (!*result);
 
 	/* The sexp we stored on the credential */
-	*result = gck_credential_get_data (cred);
-	if (*result != NULL) {
-		*result = gck_sexp_ref (*result);
-		gck_credential_throw_away_one_use (cred);
+	*result = gck_credential_pop_data (cred, GCK_BOXED_SEXP);
+	if (*result != NULL)
 		return TRUE;
-	}
 
 	return FALSE;
 }
@@ -190,7 +187,7 @@ static gboolean
 have_from_credential (GckCredential *cred, GckObject *object, gpointer unused)
 {
 	/* The sexp we stored on the credential */
-	return gck_credential_get_data (cred) ? TRUE : FALSE;
+	return gck_credential_peek_data (cred, GCK_BOXED_SEXP) ? TRUE : FALSE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -245,7 +242,7 @@ gck_private_xsa_key_real_get_attribute (GckObject *base, GckSession *session, CK
 	case CKA_ALWAYS_AUTHENTICATE:
 		have = self->pv->sexp ? TRUE : FALSE;
 		if (!have && session)
-			have = gck_session_for_each_credential (session, base, have_from_credential, NULL);
+			have = gck_credential_for_each (session, base, have_from_credential, NULL);
 		return gck_attribute_set_bool (attr, !have);
 
 	case CKA_MODULUS:
@@ -292,8 +289,8 @@ gck_private_xsa_key_real_acquire_crypto_sexp (GckSexpKey *base, GckSession *sess
 
 	/* Find an credential, with an unlocked copy */
 	else
-		gck_session_for_each_credential (session, GCK_OBJECT (self),
-		                                 acquire_from_credential, &sexp);
+		gck_credential_for_each (session, GCK_OBJECT (self),
+		                         acquire_from_credential, &sexp);
 
 	return sexp;
 }
@@ -368,9 +365,7 @@ gck_private_xsa_key_set_locked_private (GckPrivateXsaKey *self, GckCredential *c
 	g_return_if_fail (GCK_IS_PRIVATE_XSA_KEY (self));
 	g_return_if_fail (GCK_IS_CREDENTIAL (cred));
 	g_return_if_fail (gck_credential_get_object (cred) == GCK_OBJECT (self));
-	if (sexp != NULL)
-		gck_sexp_ref (sexp);
-	gck_credential_set_data (cred, sexp, gck_sexp_unref);
+	gck_credential_set_data (cred, GCK_BOXED_SEXP, sexp);
 }
 
 GckSexp*
