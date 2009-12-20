@@ -1439,6 +1439,46 @@ gpointer            gp11_object_get_data_finish             (GP11Object *self,
                                                              gsize *n_data,
                                                              GError **err);
 
+gboolean            gp11_object_set_template                (GP11Object *self,
+                                                             gulong attr_type,
+                                                             GP11Attributes *attrs,
+                                                             GError **err);
+
+gboolean            gp11_object_set_template_full           (GP11Object *self,
+                                                             gulong attr_type,
+                                                             GP11Attributes *attrs,
+                                                             GCancellable *cancellable,
+                                                             GError **err);
+
+void                gp11_object_set_template_async          (GP11Object *self,
+                                                             gulong attr_type,
+                                                             GP11Attributes *attrs,
+                                                             GCancellable *cancellable,
+                                                             GAsyncReadyCallback callback,
+                                                             gpointer user_data);
+
+gboolean            gp11_object_set_template_finish         (GP11Object *self,
+                                                             GAsyncResult *result,
+                                                             GError **err);
+
+GP11Attributes*     gp11_object_get_template                (GP11Object *self,
+                                                             gulong attr_type,
+                                                             GError **err);
+
+GP11Attributes*     gp11_object_get_template_full           (GP11Object *self,
+                                                             gulong attr_type,
+                                                             GCancellable *cancellable,
+                                                             GError **err);
+
+void                gp11_object_get_template_async          (GP11Object *self,
+                                                             gulong attr_type,
+                                                             GCancellable *cancellable,
+                                                             GAsyncReadyCallback callback,
+                                                             gpointer user_data);
+
+GP11Attributes*     gp11_object_get_template_finish         (GP11Object *self,
+                                                             GAsyncResult *result,
+                                                             GError **err);
 
 /* ----------------------------------------------------------------------
  * PROCESSOR

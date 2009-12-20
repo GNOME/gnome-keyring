@@ -861,11 +861,9 @@ perform_get_attributes (GetAttributes *args)
 	/* Get the size of each value */
 	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object,
 	                                               attrs, n_attrs);
-	if (!is_ok_get_attributes_rv (rv)) {
-		g_free (attrs);
+	if (!is_ok_get_attributes_rv (rv))
 		return rv;
-	}
-	
+
 	/* Allocate memory for each value */
 	attrs = _gp11_attributes_commit_in (args->attrs, &n_attrs);
 	
@@ -1254,4 +1252,360 @@ gp11_object_get_data_finish (GP11Object *self, GAsyncResult *result,
 	args->result = NULL;
 	
 	return data;
+}
+
+/* ---------------------------------------------------------------------------------------
+ * SET TEMPLATE
+ */
+
+typedef struct _set_template_args {
+	GP11Arguments base;
+	CK_OBJECT_HANDLE object;
+	CK_ATTRIBUTE_TYPE type;
+	GP11Attributes *attrs;
+} set_template_args;
+
+static CK_RV
+perform_set_template (set_template_args *args)
+{
+	CK_ATTRIBUTE attr;
+	CK_ULONG n_attrs;
+
+	g_assert (args);
+
+	attr.type = args->type;
+	attr.pValue = _gp11_attributes_commit_out (args->attrs, &n_attrs);
+	attr.ulValueLen = n_attrs * sizeof (CK_ATTRIBUTE);
+
+	return (args->base.pkcs11->C_SetAttributeValue) (args->base.handle, args->object, &attr, 1);
+}
+
+static void
+free_set_template (set_template_args *args)
+{
+	g_assert (args);
+	gp11_attributes_unref (args->attrs);
+	g_free (args);
+}
+
+/**
+ * gp11_object_set_template:
+ * @self: The object to set an attribute template on.
+ * @attr_type: The attribute template type.
+ * @attrs: The attribute template.
+ * @err: A location to store an error.
+ *
+ * Set an attribute template on the object. The attr_type must be for
+ * an attribute which contains a template.
+ *
+ * This call may block for an indefinite period.
+ *
+ * Return value: TRUE if the operation succeeded.
+ **/
+gboolean
+gp11_object_set_template (GP11Object *self, gulong attr_type, GP11Attributes *attrs,
+                          GError **err)
+{
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+	return gp11_object_set_template_full (self, attr_type, attrs, NULL, err);
+}
+
+/**
+ * gp11_object_set_template_full:
+ * @self: The object to set an attribute template on.
+ * @attr_type: The attribute template type.
+ * @attrs: The attribute template.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to store an error.
+ *
+ * Set an attribute template on the object. The attr_type must be for
+ * an attribute which contains a template.
+ *
+ * This call may block for an indefinite period.
+ *
+ * Return value: TRUE if the operation succeeded.
+ **/
+gboolean
+gp11_object_set_template_full (GP11Object *self, gulong attr_type, GP11Attributes *attrs,
+                               GCancellable *cancellable, GError **err)
+{
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	set_template_args args;
+	GP11Session *session;
+	gboolean ret = FALSE;
+
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (attrs, FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+
+	_gp11_attributes_lock (attrs);
+
+	memset (&args, 0, sizeof (args));
+	args.attrs = attrs;
+	args.type = attr_type;
+	args.object = data->handle;
+
+	session = require_session_sync (self, CKF_RW_SESSION, err);
+	if (session)
+		ret = _gp11_call_sync (session, perform_set_attributes, NULL, &args, cancellable, err);
+
+	_gp11_attributes_unlock (attrs);
+	g_object_unref (session);
+	return ret;
+}
+
+/**
+ * gp11_object_set_template_async:
+ * @self: The object to set an attribute template on.
+ * @attr_type: The attribute template type.
+ * @attrs: The attribute template.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to be passed to the callback.
+ *
+ * Set an attribute template on the object. The attr_type must be for
+ * an attribute which contains a template.
+ *
+ * This call will return immediately and complete asynchronously.
+ **/
+void
+gp11_object_set_template_async (GP11Object *self, gulong attr_type, GP11Attributes *attrs,
+                                GCancellable *cancellable, GAsyncReadyCallback callback,
+                                gpointer user_data)
+{
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	set_template_args *args;
+	GP11Call *call;
+
+	g_return_if_fail (GP11_IS_OBJECT (self));
+	g_return_if_fail (attrs);
+
+	args = _gp11_call_async_prep (data->slot, self, perform_set_template,
+	                              NULL, sizeof (*args), free_set_template);
+
+	_gp11_attributes_lock (attrs);
+	args->attrs = gp11_attributes_ref (attrs);
+	args->type = attr_type;
+	args->object = data->handle;
+
+	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
+	require_session_async (self, call, CKF_RW_SESSION, cancellable);
+}
+
+/**
+ * gp11_object_set_template_finish:
+ * @self: The object to set an attribute template on.
+ * @result: The result passed to the callback.
+ * @err: A location to store an error.
+ *
+ * Get the result of an operation to set attribute template on
+ * an object.
+ *
+ * Return value: TRUE if the operation succeeded.
+ **/
+gboolean
+gp11_object_set_template_finish (GP11Object *self, GAsyncResult *result, GError **err)
+{
+	set_template_args *args;
+
+	g_return_val_if_fail (GP11_IS_OBJECT (self), FALSE);
+	g_return_val_if_fail (GP11_IS_CALL (result), FALSE);
+	g_return_val_if_fail (!err || !*err, FALSE);
+
+	/* Unlock the attributes we were using */
+	args = _gp11_call_arguments (result, set_template_args);
+	g_assert (args->attrs);
+	_gp11_attributes_unlock (args->attrs);
+
+	return _gp11_call_basic_finish (result, err);
+}
+
+/* ---------------------------------------------------------------------------------------
+ * GET TEMPLATE
+ */
+
+typedef struct _get_template_args {
+	GP11Arguments base;
+	CK_OBJECT_HANDLE object;
+	CK_ATTRIBUTE_TYPE type;
+	GP11Attributes *attrs;
+} get_template_args;
+
+static CK_RV
+perform_get_template (get_template_args *args)
+{
+	CK_ATTRIBUTE attr;
+	CK_ULONG n_attrs, i;
+	CK_RV rv;
+
+	g_assert (args);
+	g_assert (!args->attrs);
+
+	args->attrs = gp11_attributes_new ();
+	attr.type = args->type;
+	attr.ulValueLen = 0;
+	attr.pValue = 0;
+
+	/* Get the length of the entire template */
+	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object, &attr, 1);
+	if (rv != CKR_OK)
+		return rv;
+
+	/* Number of attributes, rounded down */
+	n_attrs = (attr.ulValueLen / sizeof (CK_ATTRIBUTE));
+	for (i = 0; i < n_attrs; ++i)
+		gp11_attributes_add_empty (args->attrs, 0);
+
+	/* Prepare all the attributes */
+	attr.pValue = _gp11_attributes_prepare_in (args->attrs, &n_attrs);
+
+	/* Get the size of each value */
+	rv = (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object, &attr, 1);
+	if (rv != CKR_OK)
+		return rv;
+
+	/* Allocate memory for each value */
+	attr.pValue = _gp11_attributes_commit_in (args->attrs, &n_attrs);
+
+	/* Now get the actual values */
+	return (args->base.pkcs11->C_GetAttributeValue) (args->base.handle, args->object, &attr, 1);
+}
+
+static void
+free_get_template (get_template_args *args)
+{
+	g_assert (args);
+	gp11_attributes_unref (args->attrs);
+	g_free (args);
+}
+
+/**
+ * gp11_object_get_template:
+ * @self: The object to get an attribute template from.
+ * @attr_type: The attribute template type.
+ * @err: A location to store an error.
+ *
+ * Get an attribute template from the object. The attr_type must be for
+ * an attribute which returns a template.
+ *
+ * This call may block for an indefinite period.
+ *
+ * Return value: The resulting PKCS#11 attribute template, or NULL if an error occurred.
+ **/
+GP11Attributes*
+gp11_object_get_template (GP11Object *self, gulong attr_type, GError **err)
+{
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+
+	return gp11_object_get_template_full (self, attr_type, NULL, err);
+}
+
+/**
+ * gp11_object_get_template_full:
+ * @self: The object to get an attribute template from.
+ * @attr_type: The template attribute type.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to store an error.
+ *
+ * Get an attribute template from the object. The attr_type must be for
+ * an attribute which returns a template.
+ *
+ * This call may block for an indefinite period.
+ *
+ * Return value: The resulting PKCS#11 attribute template, or NULL if an error occurred.
+ **/
+GP11Attributes*
+gp11_object_get_template_full (GP11Object *self, gulong attr_type,
+                               GCancellable *cancellable, GError **err)
+{
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	get_template_args args;
+	GP11Session *session;
+	gboolean ret;
+
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+
+	session = require_session_sync (self, 0, err);
+	if (!session)
+		return NULL;
+
+	memset (&args, 0, sizeof (args));
+	args.object = data->handle;
+	args.type = attr_type;
+
+	ret = _gp11_call_sync (session, perform_get_template, NULL, &args, cancellable, err);
+	g_object_unref (session);
+
+	/* Free any value if failed */
+	if (!ret) {
+		gp11_attributes_unref (args.attrs);
+		args.attrs = NULL;
+	}
+
+	return args.attrs;
+}
+
+/**
+ * gp11_object_get_template_async:
+ * @self: The object to get an attribute template from.
+ * @attr_type: The template attribute type.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to be passed to the callback.
+ *
+ * Get an attribute template from the object. The attr_type must be for
+ * an attribute which returns a template.
+ *
+ * This call will return immediately and complete asynchronously.
+ **/
+void
+gp11_object_get_template_async (GP11Object *self, gulong attr_type,
+                                GCancellable *cancellable, GAsyncReadyCallback callback,
+                                gpointer user_data)
+{
+	GP11ObjectData *data = GP11_OBJECT_GET_DATA (self);
+	get_template_args *args;
+	GP11Call *call;
+
+	g_return_if_fail (GP11_IS_OBJECT (self));
+
+	args = _gp11_call_async_prep (data->slot, self, perform_get_template,
+	                              NULL, sizeof (*args), free_get_template);
+
+	args->object = data->handle;
+	args->type = attr_type;
+
+	call = _gp11_call_async_ready (args, cancellable, callback, user_data);
+	require_session_async (self, call, 0, cancellable);
+}
+
+/**
+ * gp11_object_get_template_finish:
+ * @self: The object to get an attribute from.
+ * @result: The result passed to the callback.
+ * @err: A location to store an error.
+ *
+ * Get the result of an operation to get attribute template from
+ * an object.
+ *
+ * Return value: The resulting PKCS#11 attribute template, or NULL if an error occurred.
+ **/
+GP11Attributes*
+gp11_object_get_template_finish (GP11Object *self, GAsyncResult *result,
+                                 GError **err)
+{
+	get_template_args *args;
+
+	g_return_val_if_fail (GP11_IS_OBJECT (self), NULL);
+	g_return_val_if_fail (GP11_IS_CALL (result), NULL);
+	g_return_val_if_fail (!err || !*err, NULL);
+
+	if (!_gp11_call_basic_finish (result, err))
+		return NULL;
+
+	args = _gp11_call_arguments (result, get_template_args);
+	return gp11_attributes_ref (args->attrs);
 }
