@@ -1,6 +1,7 @@
 
 noinst_LTLIBRARIES = \
 	libegg.la \
+	libegg-asn1x.la \
 	libegg-buffer.la \
 	libegg-creds.la \
 	libegg-dbus.la \
@@ -52,7 +53,14 @@ DISTCLEANFILES = \
 	
 # --------------------------------------------------------------------
 # COMMON STUFF COMPILED INTO SMALLER COMPONENTS
- 
+
+libegg_asn1x_la_SOURCES = \
+	egg-asn1x.c egg-asn1x.h
+
+libegg_asn1x_la_CFLAGS = \
+	$(LIBTASN1_CFLAGS) \
+	$(GLIB_CFLAGS)
+
 libegg_secure_la_SOURCES = \
 	egg-secure-memory.c egg-secure-memory.h
 
