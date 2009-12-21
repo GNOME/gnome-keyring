@@ -50,7 +50,9 @@ gkd-prompt-marshal.c: gkd-prompt-marshal.list $(GLIB_GENMARSHAL)
 	echo "#include \"gkd-prompt-marshal.h\"" > $@ && \
 	$(GLIB_GENMARSHAL) $< --body --prefix=gkd_prompt_marshal >> $@
 
-EXTRA_DIST = gkd-prompt-marshal.list
+EXTRA_DIST = \
+	gkd-prompt-marshal.list \
+	$(ui_DATA)
 
 # ------------------------------------------------------------------
 # PROMPT TOOL

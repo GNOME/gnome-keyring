@@ -29,7 +29,7 @@ libgck_la_SOURCES = \
 	gck-data-der.c gck-data-der.h \
 	gck-data-file.c gck-data-file.h \
 	gck-data-types.h \
-	gck-dh-key.c gdk-dh-key.h \
+	gck-dh-key.c gck-dh-key.h \
 	gck-dh-mechanism.c gck-dh-mechanism.h \
 	gck-dh-private-key.c gck-dh-private-key.h \
 	gck-dh-public-key.c gck-dh-public-key.h \

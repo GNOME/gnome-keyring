@@ -8,8 +8,7 @@ PKG_NAME="gnome-keyring"
 REQUIRED_AUTOMAKE_VERSION=1.6
 
 (test -f $srcdir/configure.in \
-  && test -f $srcdir/library/gnome-keyring.h \
-  && test -f $srcdir/library/gnome-keyring.c) || {
+  && test -f $srcdir/daemon/gkd-main.c) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
     echo " top-level $PKG_NAME directory"
     exit 1

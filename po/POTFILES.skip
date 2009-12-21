@@ -1,3 +1,5 @@
-daemon/gnome-keyring-daemon.desktop.in
+daemon/gnome-keyring-pkcs11.desktop.in
+daemon/gnome-keyring-secrets.desktop.in
+daemon/gnome-keyring-ssh.desktop.in
 gcr/gcr-import-dialog.ui
 gcr/gcr-certificate-basics-widget.ui

@@ -50,8 +50,10 @@ copy_scratch_file (const gchar *basename)
 	gsize n_data;
 
 	filename = test_data_filename (basename);
-	if (!g_file_get_contents (filename, &data, &n_data, NULL))
+	if (!g_file_get_contents (filename, &data, &n_data, NULL)) {
+		g_warning ("couldn't read: %s", filename);
 		g_return_if_reached ();
+	}
 	g_free (filename);
 
 	filename = test_scratch_filename (basename);

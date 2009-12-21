@@ -1,3 +1,24 @@
+Changes in version 2.29.4 are:
+ * Refactor how the daemon starts up.
+ * Allow init with already present environment variables, using --start.
+ * Install autostart files for each component of the daemon.
+ * New DBus Secret Service API for accessing passwords and secrets.
+ * Old protocol for accessing secrets is no longer present.
+ * libgnome-keyring is now its own module, and no longer bundled
+   with gnome-keyring.
+ * Use normal GtkEntry when prompting for passwords.
+ * Requires GTK+ 2.18
+ * Implement new more flexible control protocol for pam and startup.
+ * Complete more of the gp11 PKCS#11 wrapper library.
+ * Implement AES key wrapping and unwrapping in PKCS#11 components.
+ * Implement DH key generation and derivation in PKCS#11 components.
+ * Integrate testing of PKCS#11 components via p11-tests.
+ * Implement PKCS#11 component for storing 'keyring' style secrets.
+ * Don't complain if we can't set session environment variables.
+ * When running a debug build, warnings are fatal.
+ * Refactor testing.
+ * Encrypted channel for password with prompting dialog.
+
 Changes in version 2.28.2 are:
  * Add license to reference documentation.
  * Sent output of g_printerr to syslog.
