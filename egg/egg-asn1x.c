@@ -62,35 +62,34 @@ enum {
 };
 
 enum {
-	CONST_UNIVERSAL = (1<<8),
-	CONST_PRIVATE = (1<<9),
-	CONST_APPLICATION = (1<<10),
-	CONST_EXPLICIT = (1<<11),
-	CONST_IMPLICIT = (1<<12),
-	CONST_TAG = (1<<13),
-	CONST_OPTION = (1<<14),
-	CONST_DEFAULT = (1<<15),
-	CONST_TRUE = (1<<16),
-	CONST_FALSE = (1<<17),
-	CONST_LIST = (1<<18),
-	CONST_MIN_MAX = (1<<19),
-	CONST_1_PARAM = (1<<20),
-	CONST_SIZE = (1<<21),
-	CONST_DEFINED_BY = (1<<22),
-	CONST_GENERALIZED = (1<<23),
-	CONST_UTC = (1<<24),
-	CONST_IMPORTS = (1<<25),
-	CONST_NOT_USED = (1<<26),
-	CONST_SET = (1<<27),
-	CONST_ASSIGN = (1<<28),
-	CONST_DOWN = (1<<29),
-	CONST_RIGHT = (1<<30),
+	FLAG_UNIVERSAL = (1<<8),
+	FLAG_PRIVATE = (1<<9),
+	FLAG_APPLICATION = (1<<10),
+	FLAG_EXPLICIT = (1<<11),
+	FLAG_IMPLICIT = (1<<12),
+	FLAG_TAG = (1<<13),
+	FLAG_OPTION = (1<<14),
+	FLAG_DEFAULT = (1<<15),
+	FLAG_TRUE = (1<<16),
+	FLAG_FALSE = (1<<17),
+	FLAG_LIST = (1<<18),
+	FLAG_MIN_MAX = (1<<19),
+	FLAG_1_PARAM = (1<<20),
+	FLAG_SIZE = (1<<21),
+	FLAG_DEFINED_BY = (1<<22),
+	FLAG_GENERALIZED = (1<<23),
+	FLAG_UTC = (1<<24),
+	FLAG_IMPORTS = (1<<25),
+	FLAG_NOT_USED = (1<<26),
+	FLAG_SET = (1<<27),
+	FLAG_ASSIGN = (1<<28),
+	FLAG_DOWN = (1<<29),
+	FLAG_RIGHT = (1<<30),
 };
 
 typedef struct Anode {
-	const gchar *name;
-	guint type;
-	const gchar *value;
+	const ASN1_ARRAY_TYPE *def;
+	const ASN1_ARRAY_TYPE *join;
 	gint state;
 	gconstpointer data;
 	gsize n_data;
@@ -99,17 +98,15 @@ typedef struct Anode {
 /* Forward Declarations */
 static gssize anode_decode_any (GNode*, const guchar*, gsize);
 
-static Anode*
+static GNode*
 anode_new (const ASN1_ARRAY_TYPE *def)
 {
 	Anode *an = g_slice_new0 (Anode);
-	an->name = def->name;
-	an->value = def->value;
-	an->type = def->type;
+	an->def = def;
 	an->state = NO_VALUE;
 	an->data = NULL;
 	an->n_data = 0;
-	return an;
+	return g_node_new (an);
 }
 
 static void
@@ -119,128 +116,33 @@ anode_free (gpointer data)
 		g_slice_free (Anode, data);
 }
 
-#if 0
-static Anode*
-anode_decode_until (GNode **node, int type)
-{
-	Anode *an;
-
-	g_assert (*node);
-	while (*node) {
-		an = (*node)->data;
-		if ((an->type & 0xFF) == type)
-			return an;
-
-		/* The node must be optional or have a default */
-		g_assert_not_reached (); /* TODO: */
-		*node = (*node)->next;
-	}
-
-	return NULL;
-}
-
-
-
-
-static GNode*
-anode_decode_utc_time (GNode *node, const guchar *data, gsize n_data)
+static int
+anode_def_type (GNode *node)
 {
 	Anode *an = node->data;
-	if (n_data < 6 || n_data >= 28)
-		return NULL;
-	an->data = data;
-	an->n_data = n_data;
-	return node;
+	return an->def->type & 0xFF;
 }
 
-static GNode*
-anode_decode_generalized_time (GNode *node, const guchar *data, gsize n_data)
+static int
+anode_def_flags (GNode *node)
 {
 	Anode *an = node->data;
-	if (n_data < 8 || n_data >= 30)
-		return NULL;
-	an->data = data;
-	an->n_data = n_data;
-	return node;
+	return an->def->type & 0xFFFFFF00;
 }
 
-static GNode*
-anode_decode_sequence (GNode *node, const guchar *data, gsize n_data)
+static const gchar*
+anode_def_name (GNode *node)
 {
-
+	Anode *an = node->data;
+	return an->def->name;
 }
 
-static gssize
-anode_decode_any (GNode *node, const guchar *data, gsize n_data)
+static const gchar*
+anode_def_value (GNode *node)
 {
-	guchar cls;
-	gulong tag;
-	gint cb, len;
-	gsize offset = 0;
-	gsize ret;
-
-	g_assert (node);
-
-	if (asn1_get_tag_der (data, n_data, &cls, &cb, &tag) != ASN1_SUCCESS)
-		return -1;
-
-	offset += cb;
-	data += cb;
-	n_data -= cb;
-
-	len = asn1_get_length_der (data + cb, n_data - cb, &cb);
-	if (len < 0)
-		return -1;
-
-	offset += cb;
-	data += cb;
-	n_data -= cb;
-
-	switch (tag) {
-	case ASN1_TAG_BOOLEAN:
-		ret = anode_decode_boolean (node, data, n_data);
-		break;
-	case ASN1_TAG_INTEGER:
-		ret = anode_decode_value (node, data, n_data);
-		break;
-	case ASN1_TAG_SEQUENCE:
-		ret = anode_decode_sequence (node, data, n_data);
-		break;
-	case ASN1_TAG_SET:
-		ret = anode_decode_set (node, data, n_data);
-		break;
-	case ASN1_TAG_OCTET_STRING:
-		ret = anode_decode_value (node, data, n_data);
-		break;
-	case ASN1_TAG_BIT_STRING:
-		ret = anode_decode_bit_string (node, data, n_data);
-		break;
-	case ASN1_TAG_UTCTime:
-		ret = anode_decode_utc_time (node, data, n_data);
-		break;
-	case ASN1_TAG_GENERALIZEDTime:
-		ret = anode_decode_generalized_time (node, data, n_data);
-		break;
-	case ASN1_TAG_OBJECT_ID:
-		ret = anode_decode_value (node, data, n_data);
-		break;
-	case ASN1_TAG_ENUMERATED:
-		ret = anode_decode_enumerated (node, data, n_data);
-		break;
-	case ASN1_TAG_NULL:
-		ret = anode_decode_null (node, data, n_data);
-		break;
-	case ASN1_TAG_GENERALSTRING:
-		ret = anode_decode_value (node, data, n_data);
-		break;
-	default:
-		g_return_val_if_reached (-1);
-	}
-
-	g_printerr ("class: %u(%x) / len: %d / tag: %lu\n", (guint)cls, (guint)(cls & 0x1F), len, tag);
-	return offset + len;
+	Anode *an = node->data;
+	return an->def->value;
 }
-#endif
 
 static gsize
 anode_decode_tag (int ctag, int ccls, const guchar *data, gsize n_data)
@@ -424,10 +326,9 @@ anode_decode_sequence (GNode *node, const guchar *data, gsize n_data)
 static gssize
 anode_decode_any (GNode *node, const guchar *data, gsize n_data)
 {
-	Anode *an = node->data;
-	gboolean ret = FALSE;
+	gboolean ret;
 
-	switch (an->type & 0xFF) {
+	switch (anode_def_type (node)) {
 	case TYPE_INTEGER:
 		ret = anode_decode_integer (node, data, n_data);
 		break;
@@ -511,12 +412,13 @@ traverse_and_create_identifier (GNode *node, gpointer data)
 	Anode *ans;
 	GNode *seq;
 
-	if ((an->type & 0xFF) == TYPE_IDENTIFIER) {
-		seq = egg_asn1x_create (defs, an->value);
+	if (anode_def_type (node) == TYPE_IDENTIFIER) {
+		seq = egg_asn1x_create (defs, anode_def_value (node));
 		g_return_val_if_fail (seq, TRUE);
 		ans = seq->data;
-		an->type = ans->type;
+		an->join = ans->def;
 		g_node_children_foreach (seq, G_TRAVERSE_ALL, move_each_child, node);
+		egg_asn1x_destroy (seq);
 	}
 
 	return FALSE;
@@ -527,7 +429,7 @@ egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
 {
 	const ASN1_ARRAY_TYPE *def;
 	GNode *root, *parent, *node;
-	Anode *an;
+	int flags;
 
 	g_return_val_if_fail (defs, NULL);
 	g_return_val_if_fail (identifier, NULL);
@@ -545,24 +447,23 @@ egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
 		return NULL;
 
 	/* The node for this item */
-	an = anode_new (def);
-	root = g_node_new (an);
+	root = anode_new (def);
 
 	/* Build up nodes for underlying level */
-	if (def->type & CONST_DOWN) {
+	if (def->type & FLAG_DOWN) {
 		node = root;
 		for (;;) {
-			if (def->type & CONST_DOWN) {
+			if (def->type & FLAG_DOWN) {
 				parent = node;
-			} else if (def->type & CONST_RIGHT) {
+			} else if (def->type & FLAG_RIGHT) {
 				g_assert (node->parent);
 				parent = node->parent;
 			} else {
 				parent = node->parent;
 				while (parent) {
-					an = parent->data;
+					flags = anode_def_flags (parent);
 					parent = parent->parent;
-					if (an->type & CONST_RIGHT)
+					if (flags & FLAG_RIGHT)
 						break;
 				}
 			}
@@ -571,7 +472,7 @@ egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
 				break;
 
 			++def;
-			node = g_node_new (anode_new (def));
+			node = anode_new (def);
 			g_node_append (parent, node);
 		}
 	}
@@ -589,19 +490,17 @@ traverse_and_dump (GNode *node, gpointer data)
 	guint i, depth;
 	GString *output;
 	gchar *string;
-	Anode *an;
 	int flags;
 	int type;
 
 	depth = g_node_depth (node);
 	for (i = 0; i < depth - 1; ++i)
 		g_printerr ("    ");
-	an = node->data;
 
 	output = g_string_new ("");
 
 	/* Figure out the type */
-	type = an->type & 0xFF;
+	type = anode_def_type (node);
 	#define XX(x) if (type == TYPE_##x) g_string_append (output, #x " ")
 	XX(CONSTANT); XX(IDENTIFIER); XX(INTEGER); XX(BOOLEAN); XX(SEQUENCE); XX(BIT_STRING);
 	XX(OCTET_STRING); XX(TAG); XX(DEFAULT); XX(SIZE); XX(SEQUENCE_OF); XX(OBJECT_ID); XX(ANY);
@@ -612,8 +511,8 @@ traverse_and_dump (GNode *node, gpointer data)
 	#undef XX
 
 	/* Figure out the flags */
-	flags = an->type;
-	#define XX(x) if ((CONST_##x & flags) == CONST_##x) g_string_append (output, #x " ")
+	flags = anode_def_flags (node);
+	#define XX(x) if ((FLAG_##x & flags) == FLAG_##x) g_string_append (output, #x " ")
 	XX(UNIVERSAL); XX(PRIVATE); XX(APPLICATION); XX(EXPLICIT); XX(IMPLICIT); XX(TAG); XX(OPTION);
 	XX(DEFAULT); XX(TRUE); XX(FALSE); XX(LIST); XX(MIN_MAX); XX(1_PARAM); XX(SIZE); XX(DEFINED_BY);
 	XX(GENERALIZED); XX(UTC); XX(IMPORTS); XX(NOT_USED); XX(SET); XX(ASSIGN);
@@ -622,7 +521,7 @@ traverse_and_dump (GNode *node, gpointer data)
 
 	string = g_utf8_casefold (output->str, output->len - 1);
 	g_string_free (output, TRUE);
-	g_printerr ("%s: %s [%s]\n", an->name, an->value, string);
+	g_printerr ("%s: %s [%s]\n", anode_def_name (node), anode_def_value (node), string);
 	g_free (string);
 	return FALSE;
 }
