@@ -468,6 +468,11 @@ anode_decode_any (GNode *node, const guchar *data, gsize n_data)
 	case TYPE_IMPORTS:
 	case TYPE_ENUMERATED:
 		g_assert_not_reached (); /* TODO: */
+		ret = FALSE;
+		break;
+	default:
+		g_assert_not_reached (); /* TODO: */
+		ret = FALSE;
 		break;
 	}
 
@@ -582,12 +587,43 @@ static gboolean
 traverse_and_dump (GNode *node, gpointer data)
 {
 	guint i, depth;
+	GString *output;
+	gchar *string;
 	Anode *an;
+	int flags;
+	int type;
+
 	depth = g_node_depth (node);
 	for (i = 0; i < depth - 1; ++i)
 		g_printerr ("    ");
 	an = node->data;
-	g_printerr ("%s: %s [%08x]\n", an->name, an->value, (guint)an->type);
+
+	output = g_string_new ("");
+
+	/* Figure out the type */
+	type = an->type & 0xFF;
+	#define XX(x) if (type == TYPE_##x) g_string_append (output, #x " ")
+	XX(CONSTANT); XX(IDENTIFIER); XX(INTEGER); XX(BOOLEAN); XX(SEQUENCE); XX(BIT_STRING);
+	XX(OCTET_STRING); XX(TAG); XX(DEFAULT); XX(SIZE); XX(SEQUENCE_OF); XX(OBJECT_ID); XX(ANY);
+	XX(SET); XX(SET_OF); XX(DEFINITIONS); XX(TIME); XX(CHOICE); XX(IMPORTS); XX(NULL);
+	XX(ENUMERATED); XX(GENERALSTRING);
+	if (output->len == 0)
+		g_string_printf (output, "%d ", (int)type);
+	#undef XX
+
+	/* Figure out the flags */
+	flags = an->type;
+	#define XX(x) if ((CONST_##x & flags) == CONST_##x) g_string_append (output, #x " ")
+	XX(UNIVERSAL); XX(PRIVATE); XX(APPLICATION); XX(EXPLICIT); XX(IMPLICIT); XX(TAG); XX(OPTION);
+	XX(DEFAULT); XX(TRUE); XX(FALSE); XX(LIST); XX(MIN_MAX); XX(1_PARAM); XX(SIZE); XX(DEFINED_BY);
+	XX(GENERALIZED); XX(UTC); XX(IMPORTS); XX(NOT_USED); XX(SET); XX(ASSIGN);
+	/* XX(DOWN); XX(RIGHT); */
+	#undef XX
+
+	string = g_utf8_casefold (output->str, output->len - 1);
+	g_string_free (output, TRUE);
+	g_printerr ("%s: %s [%s]\n", an->name, an->value, string);
+	g_free (string);
 	return FALSE;
 }
 
