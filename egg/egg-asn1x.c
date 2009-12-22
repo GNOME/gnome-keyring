@@ -27,6 +27,7 @@
 
 #include <libtasn1.h>
 
+#include <stdlib.h>
 #include <string.h>
 
 enum {
@@ -95,8 +96,10 @@ typedef struct Anode {
 	gsize n_data;
 } Anode;
 
+/* TODO: Validate: LIST SIZE */
+
 /* Forward Declarations */
-static gssize anode_decode_any (GNode*, const guchar*, gsize);
+static gssize anode_decode_anything (GNode*, const guchar*, gsize);
 
 static GNode*
 anode_new (const ASN1_ARRAY_TYPE *def)
@@ -109,25 +112,53 @@ anode_new (const ASN1_ARRAY_TYPE *def)
 	return g_node_new (an);
 }
 
-static void
-anode_free (gpointer data)
+static gboolean
+anode_free_func (GNode *node, gpointer unused)
 {
-	if (data)
-		g_slice_free (Anode, data);
+	g_slice_free (Anode, node->data);
+	return FALSE;
+}
+
+static void
+anode_destroy (GNode *node)
+{
+	g_node_traverse (node, G_IN_ORDER, G_TRAVERSE_ALL, -1, anode_free_func, NULL);
+	g_node_destroy (node);
+
+}
+
+static gpointer
+anode_copy_func (gconstpointer src, gpointer unused)
+{
+	const Anode *san = src;
+	Anode *an = g_slice_new0 (Anode);
+	an->def = san->def;
+	an->join = san->join;
+	return an;
+}
+
+static GNode*
+anode_clone (GNode *node)
+{
+	return g_node_copy_deep (node, anode_copy_func, NULL);
 }
 
 static int
 anode_def_type (GNode *node)
 {
 	Anode *an = node->data;
-	return an->def->type & 0xFF;
+	gint type = an->join ? an->join->type : an->def->type;
+	return type & 0xFF;
 }
 
 static int
 anode_def_flags (GNode *node)
 {
 	Anode *an = node->data;
-	return an->def->type & 0xFFFFFF00;
+	gint type = an->def->type;
+	if (an->join)
+		type |= an->join->type;
+	return type & 0xFFFFFF00;
 }
 
 static const gchar*
@@ -144,256 +175,348 @@ anode_def_value (GNode *node)
 	return an->def->value;
 }
 
-static gsize
-anode_decode_tag (int ctag, int ccls, const guchar *data, gsize n_data)
+static gulong
+anode_def_value_as_ulong (GNode *node)
 {
-	guchar cls;
-	gulong tag;
-	gint cb, len;
-	gsize offset = 0;
+	const gchar* value;
+	gchar *end = NULL;
+	gulong ulval;
 
-	if (asn1_get_tag_der (data, n_data, &cls, &cb, &tag) != ASN1_SUCCESS)
-		return 0;
-	if (cls != ccls || tag != ctag)
-		return 0;
-
-	offset += cb;
-	data += cb;
-	n_data -= cb;
-
-	len = asn1_get_length_der (data, n_data , &cb);
-	if (len < 0)
-		return 0;
-
-	offset += cb;
-	n_data -= cb;
-	if (len != n_data)
-		return 0;
-
-	return offset;
+	value = anode_def_value (node);
+	g_return_val_if_fail (value, G_MAXULONG);
+	ulval = strtoul (value, &end, 10);
+	g_return_val_if_fail (end && !end[0], G_MAXULONG);
+	return ulval;
 }
 
-static gsize
-anode_decode_length (const guchar *data, gsize n_data)
-{
-	guchar cls;
-	gulong tag;
-	gint cb1, cb2, len;
-
-	if (asn1_get_tag_der (data, n_data, &cls, &cb1, &tag) != ASN1_SUCCESS)
-		return -1;
-	len = asn1_get_length_der (data + cb1, n_data - cb1, &cb2);
-	if (len < 0)
-		return -1;
-	return len + cb1 + cb2;
-}
-
-static gboolean
-anode_decode_boolean (GNode *node, const guchar *data, gsize n_data)
-{
-	Anode *an = node->data;
-	gsize offset;
-
-	offset = anode_decode_tag (ASN1_TAG_BOOLEAN, ASN1_CLASS_UNIVERSAL, data, n_data);
-	if (!offset)
-		return FALSE;
-	data += offset;
-	n_data -= offset;
-	if (n_data != 1)
-		return FALSE;
-	if (data[0] != 1 && data[0] != 0)
-		return FALSE;
-	an->data = data;
-	an->n_data = 1;
-	return TRUE;
-}
-
-static gboolean
-anode_decode_integer (GNode *node, const guchar *data, gsize n_data)
-{
-	Anode *an = node->data;
-	gsize offset;
-
-	offset = anode_decode_tag (ASN1_TAG_INTEGER, ASN1_CLASS_UNIVERSAL, data, n_data);
-	if (!offset)
-		return FALSE;
-	an->data = data + offset;
-	an->n_data = n_data - offset;
-	return TRUE;
-}
-
-static gboolean
-anode_decode_bit_string (GNode *node, const guchar *data, gsize n_data)
-{
-	Anode *an = node->data;
-	gsize offset = anode_decode_tag (ASN1_TAG_BIT_STRING, ASN1_CLASS_UNIVERSAL, data, n_data);
-	if (!offset)
-		return FALSE;
-	data += offset;
-	n_data -= offset;
-	if (n_data < 2)
-		return FALSE;
-	if (data[0] < 8)
-		return FALSE;
-	an->data = data;
-	an->n_data = n_data;
-	return TRUE;
-}
-
-static gboolean
-anode_decode_null (GNode *node, const guchar *data, gsize n_data)
-{
-	Anode *an = node->data;
-	gsize offset = anode_decode_tag (ASN1_TAG_BIT_STRING, ASN1_CLASS_UNIVERSAL, data, n_data);
-	if (!offset)
-		return FALSE;
-	data += offset;
-	n_data -= offset;
-	if (n_data - offset != 0)
-		return FALSE;
-	an->data = data + offset;
-	an->n_data = 0;
-	return TRUE;
-}
-
-static gboolean
-anode_decode_octet_string (GNode *node, const guchar *data, gsize n_data)
-{
-	Anode *an = node->data;
-	gsize offset = anode_decode_tag (ASN1_TAG_OCTET_STRING, ASN1_CLASS_UNIVERSAL, data, n_data);
-	if (!offset)
-		return FALSE;
-	an->data = data + offset;
-	an->n_data = n_data - offset;
-	return TRUE;
-}
-
-static gboolean
-anode_decode_time (GNode *node, const guchar *data, gsize n_data)
-{
-	Anode *an = node->data;
-	gsize offset = anode_decode_tag (ASN1_TAG_UTCTime, ASN1_CLASS_UNIVERSAL, data, n_data);
-	if (!offset)
-		offset = anode_decode_tag (ASN1_TAG_GENERALIZEDTime, ASN1_CLASS_UNIVERSAL, data, n_data);
-	if (!offset)
-		return FALSE;
-	/* TODO: More validation */
-	an->data = data + offset;
-	an->n_data = n_data - offset;
-	return TRUE;
-}
-
-static gboolean
-anode_decode_generalstring (GNode *node, const guchar *data, gsize n_data)
-{
-	Anode *an = node->data;
-	gsize offset = anode_decode_tag (ASN1_TAG_GENERALSTRING, ASN1_CLASS_UNIVERSAL, data, n_data);
-	if (!offset)
-		return FALSE;
-	/* TODO: More validation */
-	an->data = data + offset;
-	an->n_data = n_data - offset;
-	return TRUE;
-}
-
-static gboolean
-anode_decode_sequence (GNode *node, const guchar *data, gsize n_data)
+static GNode*
+anode_child_with_type (GNode *node, gint type)
 {
 	GNode *child;
-	gssize length;
-	gsize offset;
-
-	offset  = anode_decode_tag (ASN1_TAG_SEQUENCE, ASN1_CLASS_STRUCTURED, data, n_data);
-	if (!offset)
-		return FALSE;
-	data += offset;
-	n_data -= offset;
 
 	for (child = node->children; child; child = child->next) {
-		length = anode_decode_length (data, n_data);
-		if (length < 0)
-			return FALSE;
-		g_assert (length <= n_data);
-		if (!anode_decode_any (child, data, length))
-			return FALSE;
-		data += length;
-		n_data -= length;
+		if (anode_def_type (child) == type)
+			return child;
 	}
 
-	return TRUE;
+	return NULL;
+}
+
+static GNode*
+anode_child_with_any_data_type (GNode *node)
+{
+	GNode *child;
+
+	for (child = node->children; child; child = child->next) {
+		switch (anode_def_type (child)) {
+		case TYPE_INTEGER:
+		case TYPE_BOOLEAN:
+		case TYPE_SEQUENCE:
+		case TYPE_BIT_STRING:
+		case TYPE_OCTET_STRING:
+		case TYPE_SEQUENCE_OF:
+		case TYPE_OBJECT_ID:
+		case TYPE_ANY:
+		case TYPE_SET:
+		case TYPE_SET_OF:
+		case TYPE_TIME:
+		case TYPE_CHOICE:
+		case TYPE_NULL:
+		case TYPE_ENUMERATED:
+		case TYPE_GENERALSTRING:
+			return child;
+		case TYPE_CONSTANT:
+		case TYPE_IDENTIFIER:
+		case TYPE_TAG:
+		case TYPE_DEFAULT:
+		case TYPE_SIZE:
+		case TYPE_DEFINITIONS:
+		case TYPE_IMPORTS:
+			break;
+		default:
+			g_return_val_if_reached (NULL);
+		}
+	}
+
+	return NULL;
 }
 
 static gssize
-anode_decode_any (GNode *node, const guchar *data, gsize n_data)
+anode_decode_cls_tag_len (const guchar *data, gsize n_data,
+                          guchar *cls, gulong *tag, gsize *len)
 {
-	gboolean ret;
+	gint cb1, cb2;
+	if (asn1_get_tag_der (data, n_data, cls, &cb1, tag) != ASN1_SUCCESS)
+		return -1;
+	*len = asn1_get_length_der (data + cb1, n_data - cb1, &cb2);
+	if (*len < 0)
+		return -1;
+	return cb1 + cb2;
+}
 
-	switch (anode_def_type (node)) {
+static gssize
+anode_decode_value_data (GNode *node, const guchar *data, gsize n_data)
+{
+	Anode *an = node->data;
+
+	/* All validation is done later */
+	an->data = data;
+	an->n_data = n_data;
+
+	return n_data;
+}
+
+static gssize
+anode_decode_sequence (GNode *node, const guchar *data, gsize n_data)
+{
+	GNode *child;
+	gssize read, off;
+
+	read = 0;
+	for (child = node->children; child; child = child->next) {
+		g_assert (read <= n_data);
+		off = anode_decode_anything (child, data + read, n_data - read);
+		if (off < 0)
+			return -1;
+		g_assert (off <= n_data - read);
+		read += off;
+	}
+
+	return read;
+}
+
+static gssize
+anode_decode_sequence_or_set_of (GNode *node, const guchar *data, gsize n_data)
+{
+	GNode *child, *copy;
+	gssize read, off;
+
+	/* The one and only child */
+	child = anode_child_with_any_data_type (node);
+	g_return_val_if_fail (child, -1);
+
+	/* Try to dig out as many of them as possible */
+	read = 0;
+	while (read < n_data) {
+		copy = anode_clone (child);
+		off = anode_decode_anything (copy, data + read, n_data - read);
+		if (off < 0) {
+			anode_destroy (copy);
+			return -1;
+		}
+		g_return_val_if_fail (off != 0, -1);
+		g_assert (off <= n_data - read);
+		read += off;
+		g_node_append (node, copy);
+	}
+
+	return read;
+}
+
+static gssize
+anode_decode_choice (GNode *node, const guchar *data, gsize n_data)
+{
+	GNode *child;
+	gssize off;
+
+	for (child = node->children; child; child = child->next) {
+		off = anode_decode_anything (child, data, n_data);
+		if (off >= 0) {
+			g_return_val_if_fail (off == n_data, -1);
+			return off;
+		}
+	}
+
+	return -1;
+}
+
+static gssize
+anode_decode_type_and_value (GNode *node, const guchar *data, gsize n_data)
+{
+	gint type;
+	guchar cls;
+	gulong tag;
+	gsize len;
+	gssize off;
+	gint want, flags;
+
+	off = anode_decode_cls_tag_len (data, n_data, &cls, &tag, &len);
+	if (off < 0)
+		return -1;
+
+	type = anode_def_type (node);
+	switch (type) {
+
+	/* The primitive value types */
 	case TYPE_INTEGER:
-		ret = anode_decode_integer (node, data, n_data);
+		if (cls != ASN1_CLASS_UNIVERSAL || tag != ASN1_TAG_INTEGER ||
+		    anode_decode_value_data (node, data + off, len) < 0)
+			return -1;
 		break;
 	case TYPE_BOOLEAN:
-		ret = anode_decode_boolean (node, data, n_data);
+		if (cls != ASN1_CLASS_UNIVERSAL || tag != ASN1_TAG_BOOLEAN ||
+		    anode_decode_value_data (node, data + off, len) < 0)
+			return -1;
 		break;
 	case TYPE_BIT_STRING:
-		ret = anode_decode_bit_string (node, data, n_data);
+		if (cls != ASN1_CLASS_UNIVERSAL || tag != ASN1_TAG_BIT_STRING ||
+		    anode_decode_value_data (node, data + off, len) < 0)
+			return -1;
 		break;
 	case TYPE_OCTET_STRING:
-		ret = anode_decode_octet_string (node, data, n_data);
+		if (cls != ASN1_CLASS_UNIVERSAL || tag != ASN1_TAG_OCTET_STRING ||
+		    anode_decode_value_data (node, data + off, len) < 0)
+			return -1;
 		break;
-	case TYPE_TIME:
-		ret = anode_decode_time (node, data, n_data);
+	case TYPE_OBJECT_ID:
+		if (cls != ASN1_CLASS_UNIVERSAL || tag != ASN1_TAG_OBJECT_ID ||
+		    anode_decode_value_data (node, data + off, len) < 0)
+			return -1;
 		break;
 	case TYPE_NULL:
-		ret = anode_decode_null (node, data, n_data);
+		if (cls != ASN1_CLASS_UNIVERSAL || tag != ASN1_TAG_NULL ||
+		    anode_decode_value_data (node, data + off, len) < 0)
+			return -1;
 		break;
 	case TYPE_GENERALSTRING:
-		ret = anode_decode_generalstring (node, data, n_data);
-		break;
-	case TYPE_SEQUENCE:
-		ret = anode_decode_sequence (node, data, n_data);
+		if (cls != ASN1_CLASS_UNIVERSAL || tag != ASN1_TAG_GENERALSTRING ||
+		    anode_decode_value_data (node, data + off, len) < 0)
+			return -1;
+	case TYPE_TIME:
+		flags = anode_def_flags (node);
+		if (flags & FLAG_GENERALIZED)
+			want = ASN1_TAG_GENERALIZEDTime;
+		else if (flags & FLAG_UTC)
+			want = ASN1_TAG_UTCTime;
+		else
+			g_return_val_if_reached (-1);
+		if (cls != ASN1_CLASS_UNIVERSAL || tag != want ||
+		    anode_decode_value_data (node, data + off, len) < 0)
+			return -1;
 		break;
 
+	/* SEQUENCE: A sequence of child TLV's */
+	case TYPE_SEQUENCE:
+		if (cls != (ASN1_CLASS_STRUCTURED | ASN1_CLASS_UNIVERSAL) ||
+		    tag != ASN1_TAG_SEQUENCE ||
+		    anode_decode_sequence (node, data + off, len) != len)
+			return -1;
+		break;
+
+	/* SEQUENCE OF: A sequence of one type of child TLV */
+	case TYPE_SEQUENCE_OF:
+		if (cls != (ASN1_CLASS_STRUCTURED | ASN1_CLASS_UNIVERSAL) ||
+		    tag != ASN1_TAG_SEQUENCE ||
+		    anode_decode_sequence_or_set_of (node, data + off, len) != len)
+			return -1;
+		break;
+
+	/* SET OF: A set of one type of child TLV */
+	case TYPE_SET_OF:
+		if (cls != (ASN1_CLASS_STRUCTURED | ASN1_CLASS_UNIVERSAL) ||
+		    tag != ASN1_TAG_SET ||
+		    anode_decode_sequence_or_set_of (node, data + off, len) != len)
+			return -1;
+		break;
+
+	case TYPE_SET:
+		g_assert (0 && "TODO");
+		break;
+
+	/* ANY: The entire TLV is the value */
+	case TYPE_ANY:
+		if (anode_decode_value_data (node, data, off + len) < 0)
+			return -1;
+		break;
+
+	/* CHOICE: The entire TLV is one of children */
+	case TYPE_CHOICE:
+		if (anode_decode_choice (node, data, off + len) != off + len)
+			return -1;
+		break;
+
+	case TYPE_ENUMERATED:
+		g_assert (0 && "TODO");
+		break;
+
+	/* These node types should not appear here */
 	case TYPE_CONSTANT:
 	case TYPE_IDENTIFIER:
-	case TYPE_SEQUENCE_OF:
 	case TYPE_TAG:
 	case TYPE_DEFAULT:
 	case TYPE_SIZE:
-	case TYPE_OBJECT_ID:
-	case TYPE_ANY:
-	case TYPE_SET:
-	case TYPE_SET_OF:
 	case TYPE_DEFINITIONS:
-	case TYPE_CHOICE:
 	case TYPE_IMPORTS:
-	case TYPE_ENUMERATED:
-		g_assert_not_reached (); /* TODO: */
-		ret = FALSE;
-		break;
+		g_return_val_if_reached (-1);
+
 	default:
-		g_assert_not_reached (); /* TODO: */
-		ret = FALSE;
-		break;
+		g_return_val_if_reached (-1);
 	}
 
-	if (!ret) {
-		/* Try to parse a context specific tag thingy */
+	return off + len;
+}
 
-		g_assert_not_reached (); /* TODO: Implement checking */
+static gssize
+anode_decode_explicit_or_type (GNode *node, const guchar *data, gsize n_data)
+{
+	GNode *child;
+	guchar cls;
+	gulong tag;
+	gsize len, offset;
+	gint flags;
+
+	flags = anode_def_flags (node);
+
+	/*
+	 * An explicitly tagged value, is one that has a tag specially assigned.
+	 * These tags cannot be parsed
+	 */
+	if (flags & FLAG_TAG) {
+		offset = anode_decode_cls_tag_len (data, n_data, &cls, &tag, &len);
+		if (offset < 0)
+			return -1;
+		if (cls != (ASN1_CLASS_CONTEXT_SPECIFIC | ASN1_CLASS_STRUCTURED))
+			return -1;
+		child = anode_child_with_type (node, TYPE_TAG);
+		g_return_val_if_fail (child, -1);
+		if (tag != anode_def_value_as_ulong (child))
+			return -1;
+		if (anode_decode_type_and_value (node, data + offset, len) != len)
+			return -1;
+		return offset + len;
 	}
 
-	return ret;
+	return anode_decode_type_and_value (node, data, n_data);
+}
+
+static gssize
+anode_decode_anything (GNode *node, const guchar *data, gsize n_data)
+{
+	gssize off;
+	int flags;
+
+	off = anode_decode_explicit_or_type (node, data, n_data);
+	if (off < 0) {
+		flags = anode_def_flags (node);
+		if (flags & FLAG_OPTION)
+			off = 0;
+		else if (flags & FLAG_DEFAULT)
+			g_assert (0 && "TODO");
+	}
+	return off;
 }
 
 gboolean
 egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
 {
+	gsize offset;
+
 	g_return_val_if_fail (asn, FALSE);
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
-	return anode_decode_any (asn, data, n_data);
+	offset = anode_decode_anything (asn, data, n_data);
+	return (offset == n_data);
 }
 
 static void
@@ -408,13 +531,13 @@ static gboolean
 traverse_and_create_identifier (GNode *node, gpointer data)
 {
 	const ASN1_ARRAY_TYPE *defs = data;
-	Anode *an = node->data;
-	Anode *ans;
+	Anode *an, *ans;
 	GNode *seq;
 
 	if (anode_def_type (node) == TYPE_IDENTIFIER) {
 		seq = egg_asn1x_create (defs, anode_def_value (node));
 		g_return_val_if_fail (seq, TRUE);
+		an = node->data;
 		ans = seq->data;
 		an->join = ans->def;
 		g_node_children_foreach (seq, G_TRAVERSE_ALL, move_each_child, node);
@@ -534,19 +657,9 @@ egg_asn1x_dump (GNode *asn)
 	g_node_traverse (asn, G_PRE_ORDER, G_TRAVERSE_ALL, -1, traverse_and_dump, &depth);
 }
 
-static gboolean
-traverse_and_free (GNode *node, gpointer data)
-{
-	anode_free (node->data);
-	return FALSE;
-}
-
 void
 egg_asn1x_destroy (gpointer data)
 {
-	GNode *asn = data;
-	if (!data)
-		return;
-	g_node_traverse (asn, G_IN_ORDER, G_TRAVERSE_ALL, -1, traverse_and_free, NULL);
-	g_node_destroy (asn);
+	if (data)
+		anode_destroy (data);
 }
