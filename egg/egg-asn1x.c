@@ -779,7 +779,7 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
 }
 
 static void
-move_each_child (GNode *child, gpointer data)
+join_each_child (GNode *child, gpointer data)
 {
 	GNode *node = data;
 	g_node_unlink (child);
@@ -787,22 +787,31 @@ move_each_child (GNode *child, gpointer data)
 }
 
 static gboolean
-traverse_and_create_identifier (GNode *node, gpointer data)
+traverse_and_create_joins (GNode *node, gpointer data)
 {
 	const ASN1_ARRAY_TYPE *defs = data;
-	Anode *an, *ans;
-	GNode *seq;
+	Anode *an, *anj;
+	GNode *join = NULL;
+	const gchar *identifier;
 
-	if (anode_def_type (node) == TYPE_IDENTIFIER) {
-		seq = egg_asn1x_create (defs, anode_def_value (node));
-		g_return_val_if_fail (seq, TRUE);
+	/* A while, because the stuff we join, could also be an identifier */
+	while (anode_def_type (node) == TYPE_IDENTIFIER) {
 		an = node->data;
-		ans = seq->data;
-		an->join = ans->def;
-		g_node_children_foreach (seq, G_TRAVERSE_ALL, move_each_child, node);
-		egg_asn1x_destroy (seq);
+		identifier = an->join ? an->join->value : an->def->value;
+		g_return_val_if_fail (identifier, TRUE);
+		egg_asn1x_destroy (join);
+		join = egg_asn1x_create (defs, identifier);
+		g_return_val_if_fail (join, TRUE);
+		anj = join->data;
+		an->join = anj->def;
 	}
 
+	if (join) {
+		g_node_children_foreach (join, G_TRAVERSE_ALL, join_each_child, node);
+		egg_asn1x_destroy (join);
+	}
+
+	/* Continue traversal */
 	return FALSE;
 }
 
@@ -861,7 +870,7 @@ egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
 
 	/* Load up sub identifiers */
 	g_node_traverse (root, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-	                 traverse_and_create_identifier, (gpointer)defs);
+	                 traverse_and_create_joins, (gpointer)defs);
 
 	return root;
 }
