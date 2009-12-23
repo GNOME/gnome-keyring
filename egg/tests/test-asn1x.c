@@ -17,16 +17,16 @@ run (void)
 	gpointer data;
 	gsize n_data;
 
-	data = testing_data_read ("test-pkcs12-1.der", &n_data);
-	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-12-PFX");
+	data = testing_data_read ("test-certificate-1.der", &n_data);
+	asn = egg_asn1x_create (pkix_asn1_tab, "Certificate");
 	egg_asn1x_dump (asn);
 	if (!egg_asn1x_decode (asn, data, n_data))
 		g_assert_not_reached ();
 	egg_asn1x_destroy (asn);
 	g_free (data);
 
-	data = testing_data_read ("test-certificate-1.der", &n_data);
-	asn = egg_asn1x_create (pkix_asn1_tab, "Certificate");
+	data = testing_data_read ("test-pkcs12-1.der", &n_data);
+	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-12-PFX");
 	egg_asn1x_dump (asn);
 	if (!egg_asn1x_decode (asn, data, n_data))
 		g_assert_not_reached ();

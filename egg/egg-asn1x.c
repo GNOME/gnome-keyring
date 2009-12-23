@@ -459,10 +459,8 @@ anode_decode_choice (GNode *node, const guchar *data, gsize n_data)
 
 	for (child = node->children; child; child = child->next) {
 		off = anode_decode_anything (child, data, n_data);
-		if (off >= 0) {
-			g_return_val_if_fail (off == n_data, -1);
+		if (off >= 0)
 			return off;
-		}
 	}
 
 	return -1;
@@ -742,6 +740,7 @@ anode_decode_explicit_or_type (GNode *node, const guchar *data, gsize n_data)
 			if (len <= 0 || off + len > n_data)
 				return -1;
 		}
+
 		return off + len;
 	}
 
