@@ -51,6 +51,8 @@ gpointer            egg_asn1x_encode             (GNode *asn,
                                                   EggAllocator allocator,
                                                   gsize *n_data);
 
+const gchar*        egg_asn1x_message            (GNode *asn);
+
 void                egg_asn1x_destroy            (gpointer asn);
 
 #endif /*EGG_ASN1X_H_*/

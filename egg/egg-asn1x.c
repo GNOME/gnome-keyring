@@ -101,6 +101,7 @@ typedef struct _Anode {
 	const ASN1_ARRAY_TYPE *def;
 	const ASN1_ARRAY_TYPE *join;
 	Atlv *data;
+	gchar* failure;
 } Anode;
 
 /* TODO: Validate: LIST SIZE */
@@ -115,7 +116,6 @@ anode_new (const ASN1_ARRAY_TYPE *def)
 {
 	Anode *an = g_slice_new0 (Anode);
 	an->def = def;
-	an->data = NULL;
 	return g_node_new (an);
 }
 
@@ -126,6 +126,8 @@ anode_clear (GNode *node)
 	if (an->data);
 		g_slice_free (Atlv, an->data);
 	an->data = NULL;
+	g_free (an->failure);
+	an->failure = NULL;
 }
 
 static gboolean
@@ -341,6 +343,32 @@ anode_get_tlv_data (GNode *node)
 	return an->data;
 }
 
+static gboolean
+anode_failure (GNode *node, const gchar *failure)
+{
+	Anode *an = node->data;
+	const gchar *prefix = an->def->name;
+	if (!prefix && an->join)
+		prefix = an->join->name;
+	if (!prefix)
+		prefix = an->def->value;
+	if (!prefix && an->join)
+		prefix = an->join->value;
+	if (!prefix)
+		prefix = "unknown";
+
+	g_free (an->failure);
+	an->failure = g_strdup_printf ("%s: %s", prefix, failure);
+	return FALSE; /* So this can be changed */
+}
+
+static const gchar*
+anode_failure_get (GNode *node)
+{
+	Anode *an = node->data;
+	return an->failure;
+}
+
 static gulong
 anode_encode_tag_for_flags (GNode *node, gint flags)
 {
@@ -554,7 +582,7 @@ anode_decode_choice (GNode *node, Atlv *tlv)
 		}
 	}
 
-	return FALSE;
+	return anode_failure (node, "no choice is present");
 }
 
 static gboolean
@@ -568,9 +596,9 @@ anode_decode_struct_string (GNode *node, Atlv *outer)
 
 	for (i = 0; TRUE; ++i) {
 		if (!anode_decode_tlv_for_contents (outer, i == 0, &tlv))
-			return FALSE;
+			return anode_failure (node, "invalid encoding of child");
 		if (tlv.tag != outer->tag)
-			return FALSE;
+			return anode_failure (node, "contents have an invalid tag");
 		outer->len = (tlv.end - outer->buf) - outer->off;
 	}
 
@@ -584,7 +612,7 @@ anode_decode_struct_any (GNode *node, Atlv *tlv)
 {
 	if (tlv->len < 0) {
 		if (!anode_decode_indefinite_len (tlv->buf + tlv->off, tlv->end, &tlv->len))
-			return FALSE;
+			return anode_failure (node, "could not find end of encoding");
 		tlv->end = tlv->buf + tlv->off + tlv->len;
 	}
 
@@ -612,7 +640,7 @@ anode_decode_sequence_or_set (GNode *node, Atlv *outer)
 	     child; child = anode_next_with_real_type (child), ++i) {
 
 		if (!anode_decode_tlv_for_contents (outer, i == 0, &tlv))
-			return FALSE;
+			return anode_failure (node, "invalid encoding of child");
 
 		if (!anode_decode_anything (child, &tlv))
 			return FALSE;
@@ -642,19 +670,17 @@ anode_decode_sequence_or_set_of (GNode *node, Atlv *outer)
 	for (i = 0; TRUE; ++i) {
 
 		if (!anode_decode_tlv_for_contents (outer, i == 0, &tlv))
-			return FALSE;
+			return anode_failure (node, "invalid encoding of child");
 
 		/* The end of the road for us */
 		if (tlv.off == 0)
 			break;
 
 		copy = anode_clone (child);
-		if (!anode_decode_anything (copy, &tlv)) {
-			anode_destroy (copy);
-			return FALSE;
-		}
-
 		g_node_append (node, copy);
+		if (!anode_decode_anything (copy, &tlv))
+			return FALSE;
+
 		outer->len = (tlv.end - outer->buf) - outer->off;
 	}
 
@@ -670,7 +696,7 @@ anode_decode_primitive (GNode *node, Atlv *tlv, gint flags)
 
 	/* Must have a definite length */
 	if (tlv->len < 0)
-		return FALSE;
+		return anode_failure (node, "primitive value with an indefinite length");
 
 	type = anode_def_type (node);
 	switch (type) {
@@ -697,7 +723,7 @@ anode_decode_primitive (GNode *node, Atlv *tlv, gint flags)
 		return anode_decode_choice (node, tlv);
 
 	default:
-		return FALSE;
+		return anode_failure (node, "primitive value of an unexpected type");
 	}
 
 	g_assert_not_reached ();
@@ -720,7 +746,7 @@ anode_decode_structured (GNode *node, Atlv *tlv, gint flags)
 	/* An explicit, wrapped tag */
 	if (flags & FLAG_TAG && !(flags & FLAG_IMPLICIT)) {
 		if (!anode_decode_tlv_for_contents (tlv, TRUE, &ctlv))
-			return FALSE;
+			return anode_failure (node, "invalid encoding of child");
 		flags &= ~FLAG_TAG;
 		if (!anode_decode_anything_for_flags (node, &ctlv, flags))
 			return FALSE;
@@ -764,15 +790,15 @@ anode_decode_structured (GNode *node, Atlv *tlv, gint flags)
 	if (!definite) {
 		if (!anode_decode_cls_tag_len (tlv->buf + (tlv->off + tlv->len), end,
 		                               &cls, &tag, &off, &len))
-			return FALSE;
+			return anode_failure (node, "end of indefinite content is missing");
 		if (!anode_check_indefinite_end (cls, tag, len))
-			return FALSE;
+			return anode_failure (node, "end of indefinite content is invalid");
 		end = tlv->buf + tlv->off + tlv->len + off;
 	}
 
 	/* A structure must be filled up, no stuff ignored */
 	if (tlv->buf + tlv->off + tlv->len + off != end)
-		return FALSE;
+		return anode_failure (node, "extra data at the end of the content");
 
 	tlv->end = end;
 	return TRUE;
@@ -831,7 +857,7 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
 	egg_asn1x_clear (asn);
 
 	if (!anode_decode_tlv_for_data (data, (const guchar*)data + n_data, &tlv))
-		return FALSE;
+		return anode_failure (asn, "content is not encoded properly");
 
 	if (!anode_decode_anything (asn, &tlv))
 		return FALSE;
@@ -1159,7 +1185,7 @@ anode_read_time (GNode *node, Atlv *tlv, time_t *value)
 		g_return_val_if_reached (FALSE);
 
 	if (!ret)
-		return FALSE;
+		return anode_failure (node, "invalid time content");
 
 	/* In order to work with 32 bit time_t. */
 	if (sizeof (time_t) <= 4 && when.tm_year >= 2038) {
@@ -1168,8 +1194,7 @@ anode_read_time (GNode *node, Atlv *tlv, time_t *value)
 	/* Convert to seconds since epoch */
 	} else {
 		*value = timegm (&when);
-		if (*time < 0)
-			return FALSE;
+		g_return_val_if_fail (*time >= 0, FALSE);
 		*value += offset;
 	}
 
@@ -1212,7 +1237,7 @@ anode_read_string (GNode *node, Atlv *tlv, gpointer value, gsize *n_value)
 		*n_value = 0;
 		for (i = 0; TRUE; ++i) {
 			if (!anode_decode_tlv_for_contents (tlv, i == 0, &ctlv))
-				return FALSE;
+				return anode_failure (node, "invalid encoding of child");
 			if (ctlv.off == 0)
 				break;
 			if (ctlv.cls & ASN1_CLASS_STRUCTURED)
@@ -1261,10 +1286,10 @@ anode_validate_size (GNode *node, gulong length)
 			if (!anode_def_size_value (size, anode_def_name (size), &value2))
 				g_return_val_if_reached (FALSE);
 			if (length < value1 || length >= value2)
-				return FALSE;
+				return anode_failure (node, "content size is out of bounds");
 		} else {
 			if (length != value1)
-				return FALSE;
+				return anode_failure (node, "content size is not correct");
 		}
 	}
 
@@ -1283,13 +1308,13 @@ anode_validate_integer (GNode *node, Atlv *tlv)
 
 	/* Integers must be at least one byte long */
 	if (tlv->len <= 0)
-		return FALSE;
+		return anode_failure (node, "zero length integer");
 
 	flags = anode_def_flags (node);
 	if (flags & FLAG_LIST) {
 		/* Parse out the value, we only support small integers*/
 		if (!anode_read_integer_as_long (node, tlv, &value))
-			return FALSE;
+			return anode_failure (node, "integer not part of list");
 
 		/* Look through the list of constants */
 		found = FALSE;
@@ -1304,7 +1329,7 @@ anode_validate_integer (GNode *node, Atlv *tlv)
 		}
 
 		if (!found)
-			return FALSE;
+			return anode_failure (node, "integer not part of listed set");
 	}
 
 	return TRUE;
@@ -1320,7 +1345,7 @@ anode_validate_enumerated (GNode *node, Atlv *tlv)
 	g_assert (tlv->len); /* Checked above */
 	/* Enumerated must be positive */
 	if (tlv->buf[tlv->off] & 0x80)
-		return FALSE;
+		return anode_failure (node, "enumerated must be positive");
 	return TRUE;
 }
 
@@ -1331,9 +1356,9 @@ anode_validate_boolean (GNode *node, Atlv *tlv)
 
 	/* Must one byte, and zero or all ones */
 	if (tlv->len != 1)
-		return FALSE;
+		return anode_failure (node, "invalid length boolean");
 	if (tlv->buf[tlv->off] != 0x00 && tlv->buf[tlv->off] != 0xFF)
-		return FALSE;
+		return anode_failure (node, "boolean must be true or false");
 	return TRUE;
 }
 
@@ -1345,15 +1370,15 @@ anode_validate_bit_string (GNode *node, Atlv *tlv)
 
 	/* At least two bytes in length */
 	if (tlv->len < 2)
-		return FALSE;
+		return anode_failure (node, "invalid length bit string");
 	/* First byte is the number of free bits at end */
 	empty = tlv->buf[tlv->off];
 	if (empty > 7)
-		return FALSE;
-	/* Free octets at end must be zero */
+		return anode_failure (node, "bit string has invalid header");
+	/* Free bits at end must be zero */
 	mask = 0xFF >> (8 - empty);
 	if (tlv->buf[tlv->off + tlv->len - 1] & mask)
-		return FALSE;
+		return anode_failure (node, "bit string has invalid trailing bits");
 	return TRUE;
 }
 
@@ -1363,7 +1388,7 @@ anode_validate_string (GNode *node, Atlv *tlv)
 	gsize length;
 
 	if (!anode_read_string (node, tlv, NULL, &length))
-		return FALSE;
+		return anode_failure (node, "string content is invalid");
 
 	return anode_validate_size (node, (gulong)length);
 }
@@ -1385,12 +1410,12 @@ anode_validate_object_id (GNode *node, Atlv *tlv)
 	for (k = 1, lead = 1, val = 0, pval = 0; k < tlv->len; ++k) {
 		/* X.690: the leading byte must never be 0x80 */
 		if (lead && p[k] == 0x80)
-			return FALSE;
+			return anode_failure (node, "object id encoding is invalid");
 		val = val << 7;
 		val |= p[k] & 0x7F;
 		/* Check for wrap around */
 		if (val < pval)
-			return FALSE;
+			return anode_failure (node, "object id encoding is invalid");
 		pval = val;
 		if (!(p[k] & 0x80)) {
 			pval = val = 0;
@@ -1426,14 +1451,16 @@ anode_validate_choice (GNode *node)
 	     child; child = anode_next_with_real_type (child)) {
 		if (anode_get_tlv_data (child)) {
 			if (have)
-				return FALSE;
+				return anode_failure (node, "only one choice may be set");
 			have = TRUE;
 			if (!anode_validate_anything (child))
 				return FALSE;
 		}
 	}
 
-	return have;
+	if (!have)
+		return anode_failure (node, "one choice must be set");
+	return TRUE;
 }
 
 static gboolean
@@ -1477,7 +1504,7 @@ anode_validate_sequence_or_set_of (GNode *node)
 			tlv = anode_get_tlv_data (child);
 			g_return_val_if_fail (tlv, FALSE);
 			if (tlv->tag != tag)
-				return FALSE;
+				return anode_failure (node, "invalid mismatched content");
 		}
 
 		++count;
@@ -1498,7 +1525,7 @@ anode_validate_anything (GNode *node)
 	if (!tlv) {
 		if (anode_def_flags (node) & FLAG_OPTION)
 			return TRUE;
-		return FALSE;
+		return anode_failure (node, "missing value");
 	}
 
 	switch (type) {
@@ -1717,7 +1744,7 @@ egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
 }
 
 /* -----------------------------------------------------------------------------------
- * DUMPING
+ * DUMPING and MESSAGES
  */
 
 static gboolean
@@ -1767,6 +1794,24 @@ egg_asn1x_dump (GNode *asn)
 {
 	g_return_if_fail (asn);
 	g_node_traverse (asn, G_PRE_ORDER, G_TRAVERSE_ALL, -1, traverse_and_dump, NULL);
+}
+
+static gboolean
+traverse_and_get_failure (GNode *node, gpointer user_data)
+{
+	const gchar **failure = user_data;
+	g_assert (!*failure);
+	*failure = anode_failure_get (node);
+	return (*failure != NULL);
+}
+
+const gchar*
+egg_asn1x_message (GNode *asn)
+{
+	const gchar *failure = NULL;
+	g_return_val_if_fail (asn, NULL);
+	g_node_traverse (asn, G_POST_ORDER, G_TRAVERSE_ALL, -1, traverse_and_get_failure, &failure);
+	return failure;
 }
 
 /* -----------------------------------------------------------------------------------
