@@ -95,7 +95,6 @@ typedef struct _Atlv {
 	gint len;
 	const guchar *buf;
 	const guchar *end;
-	struct _Atlv *next;
 } Atlv;
 
 typedef struct _Anode {
@@ -109,6 +108,7 @@ typedef struct _Anode {
 /* Forward Declarations */
 static gboolean anode_decode_anything (GNode*, Atlv*);
 static gboolean anode_decode_anything_for_flags (GNode *, Atlv*, gint);
+static gboolean anode_validate_anything (GNode*);
 
 static GNode*
 anode_new (const ASN1_ARRAY_TYPE *def)
@@ -124,7 +124,7 @@ anode_clear (GNode *node)
 {
 	Anode *an = node->data;
 	if (an->data);
-		g_slice_free_chain (Atlv, an->data, next);
+		g_slice_free (Atlv, an->data);
 	an->data = NULL;
 }
 
@@ -176,19 +176,20 @@ anode_def_type_is_real (GNode *node)
 	switch (anode_def_type (node)) {
 	case TYPE_INTEGER:
 	case TYPE_BOOLEAN:
-	case TYPE_SEQUENCE:
 	case TYPE_BIT_STRING:
 	case TYPE_OCTET_STRING:
-	case TYPE_SEQUENCE_OF:
 	case TYPE_OBJECT_ID:
-	case TYPE_ANY:
-	case TYPE_SET:
-	case TYPE_SET_OF:
 	case TYPE_TIME:
-	case TYPE_CHOICE:
 	case TYPE_NULL:
 	case TYPE_ENUMERATED:
 	case TYPE_GENERALSTRING:
+		return TRUE;
+	case TYPE_SEQUENCE:
+	case TYPE_SEQUENCE_OF:
+	case TYPE_ANY:
+	case TYPE_SET:
+	case TYPE_SET_OF:
+	case TYPE_CHOICE:
 		return TRUE;
 	case TYPE_CONSTANT:
 	case TYPE_IDENTIFIER:
@@ -227,18 +228,31 @@ anode_def_value (GNode *node)
 	return an->def->value;
 }
 
-static gulong
-anode_def_value_as_ulong (GNode *node)
+static glong
+anode_def_value_as_long (GNode *node)
 {
 	const gchar* value;
 	gchar *end = NULL;
-	gulong ulval;
+	gulong lval;
 
 	value = anode_def_value (node);
 	g_return_val_if_fail (value, G_MAXULONG);
-	ulval = strtoul (value, &end, 10);
+	lval = strtol (value, &end, 10);
 	g_return_val_if_fail (end && !end[0], G_MAXULONG);
-	return ulval;
+	return lval;
+}
+
+static GNode*
+anode_child_with_name (GNode *node, const gchar *name)
+{
+	GNode *child;
+
+	for (child = node->children; child; child = child->next) {
+		if (g_str_equal (name, anode_def_name (child)))
+			return child;
+	}
+
+	return NULL;
 }
 
 static GNode*
@@ -251,6 +265,16 @@ anode_child_with_type (GNode *node, gint type)
 			return child;
 	}
 
+	return NULL;
+}
+
+static GNode*
+anode_next_with_type (GNode *node, gint type)
+{
+	for (node = node->next; node; node = node->next) {
+		if (anode_def_type (node) == type)
+			return node;
+	}
 	return NULL;
 }
 
@@ -278,22 +302,50 @@ anode_next_with_real_type (GNode *node)
 	return NULL;
 }
 
+static gboolean
+anode_def_size_value (GNode *node, const gchar *text, gulong *value)
+{
+	gchar *end = NULL;
+
+	if (text == NULL) {
+		*value = 0;
+		return FALSE;
+	} else if (g_str_equal (text, "MAX")) {
+		*value = G_MAXULONG;
+		return TRUE;
+	} else if (g_ascii_isalpha (text[0])) {
+		node = anode_child_with_name (node, text);
+		g_return_val_if_fail (node, FALSE);
+		return anode_def_size_value (node, anode_def_value (node), value);
+	}
+
+	*value = strtoul (text, &end, 10);
+	g_return_val_if_fail (end && !end[0], FALSE);
+	return TRUE;
+}
+
 static void
-anode_add_tlv_data (GNode *node, Atlv *tlv)
+anode_set_tlv_data (GNode *node, Atlv *tlv)
 {
 	Anode *an = node->data;
-	Atlv **last = &an->data;
+	g_assert (!an->data);
 	g_assert (tlv->len >= 0);
-	while (*last)
-		last = &(*last)->next;
-	*last = g_slice_new0 (Atlv);
-	memcpy (*last, tlv, sizeof (tlv));
+	an->data = g_slice_new0 (Atlv);
+	memcpy (an->data, tlv, sizeof (Atlv));
+}
+
+static Atlv*
+anode_get_tlv_data (GNode *node)
+{
+	Anode *an = node->data;
+	return an->data;
 }
 
 static gulong
 anode_encode_tag_for_flags (GNode *node, gint flags)
 {
 	GNode *child;
+	gulong tag;
 
 	g_return_val_if_fail (anode_def_type_is_real (node), G_MAXULONG);
 
@@ -301,7 +353,9 @@ anode_encode_tag_for_flags (GNode *node, gint flags)
 	if (flags & FLAG_TAG) {
 		child = anode_child_with_type (node, TYPE_TAG);
 		g_return_val_if_fail (child, G_MAXULONG);
-		return anode_def_value_as_ulong (child);
+		tag = anode_def_value_as_long (child);
+		g_return_val_if_fail (tag >= 0, G_MAXULONG);
+		return tag;
 	}
 
 	/* A tag from the universal set */
@@ -488,28 +542,16 @@ anode_decode_tlv_for_contents (Atlv *outer, gboolean first, Atlv *tlv)
 }
 
 static gboolean
-anode_decode_tlv_ensure_length (Atlv *tlv)
-{
-	if (tlv->len >= 0)
-		return TRUE;
-
-	if (!anode_decode_indefinite_len (tlv->buf + tlv->off, tlv->end, &tlv->len))
-		return FALSE;
-
-	g_assert (tlv->len >= 0);
-	tlv->end = tlv->buf + tlv->off + tlv->len;
-	return TRUE;
-}
-
-static gboolean
 anode_decode_choice (GNode *node, Atlv *tlv)
 {
 	GNode *child;
 
 	for (child = anode_child_with_real_type (node);
 	     child; child = anode_next_with_real_type (child)) {
-		if (anode_decode_anything (child, tlv))
+		if (anode_decode_anything (child, tlv)) {
+			anode_set_tlv_data (node, tlv);
 			return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -527,11 +569,26 @@ anode_decode_struct_string (GNode *node, Atlv *outer)
 	for (i = 0; TRUE; ++i) {
 		if (!anode_decode_tlv_for_contents (outer, i == 0, &tlv))
 			return FALSE;
-		anode_add_tlv_data (node, &tlv);
+		if (tlv.tag != outer->tag)
+			return FALSE;
 		outer->len = (tlv.end - outer->buf) - outer->off;
 	}
 
 	g_assert (outer->len >= 0);
+	anode_set_tlv_data (node, outer);
+	return TRUE;
+}
+
+static gboolean
+anode_decode_struct_any (GNode *node, Atlv *tlv)
+{
+	if (tlv->len < 0) {
+		if (!anode_decode_indefinite_len (tlv->buf + tlv->off, tlv->end, &tlv->len))
+			return FALSE;
+		tlv->end = tlv->buf + tlv->off + tlv->len;
+	}
+
+	anode_set_tlv_data (node, tlv);
 	return TRUE;
 }
 
@@ -564,6 +621,7 @@ anode_decode_sequence_or_set (GNode *node, Atlv *outer)
 	}
 
 	g_assert (outer->len >= 0);
+	anode_set_tlv_data (node, outer);
 	return TRUE;
 }
 
@@ -601,6 +659,7 @@ anode_decode_sequence_or_set_of (GNode *node, Atlv *outer)
 	}
 
 	g_assert (outer->len >= 0);
+	anode_set_tlv_data (node, outer);
 	return TRUE;
 }
 
@@ -626,13 +685,14 @@ anode_decode_primitive (GNode *node, Atlv *tlv, gint flags)
 	case TYPE_NULL:
 	case TYPE_GENERALSTRING:
 	case TYPE_TIME:
-		anode_add_tlv_data (node, tlv);
+		anode_set_tlv_data (node, tlv);
 		return TRUE;
 
 	/* Transparent types */
 	case TYPE_ANY:
-		anode_add_tlv_data (node, tlv);
+		anode_set_tlv_data (node, tlv);
 		return TRUE;
+
 	case TYPE_CHOICE:
 		return anode_decode_choice (node, tlv);
 
@@ -664,22 +724,20 @@ anode_decode_structured (GNode *node, Atlv *tlv, gint flags)
 		flags &= ~FLAG_TAG;
 		if (!anode_decode_anything_for_flags (node, &ctlv, flags))
 			return FALSE;
-		tlv->len = ctlv.off + ctlv.len;
+		g_assert (ctlv.end >= ctlv.buf);
+		tlv->len = ctlv.end - ctlv.buf;
 
 	/* Other structured types */
 	} else {
 		switch (anode_def_type (node)) {
 		case TYPE_ANY:
-			if (!anode_decode_tlv_ensure_length (tlv))
+			if (!anode_decode_struct_any (node, tlv))
 				return FALSE;
-			anode_add_tlv_data (node, tlv);
 			break;
-
 		case TYPE_CHOICE:
 			if (!anode_decode_choice (node, tlv))
 				return FALSE;
 			break;
-
 		case TYPE_GENERALSTRING:
 		case TYPE_OCTET_STRING:
 			if (!anode_decode_struct_string (node, tlv))
@@ -709,12 +767,11 @@ anode_decode_structured (GNode *node, Atlv *tlv, gint flags)
 			return FALSE;
 		if (!anode_check_indefinite_end (cls, tag, len))
 			return FALSE;
-		tlv->len += off;
-		end = tlv->buf + tlv->off + tlv->len;
+		end = tlv->buf + tlv->off + tlv->len + off;
 	}
 
 	/* A structure must be filled up, no stuff ignored */
-	if (tlv->buf + tlv->off + tlv->len != end)
+	if (tlv->buf + tlv->off + tlv->len + off != end)
 		return FALSE;
 
 	tlv->end = end;
@@ -779,11 +836,723 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
 	if (!anode_decode_anything (asn, &tlv))
 		return FALSE;
 
-	if (tlv.buf + tlv.off + tlv.len != tlv.end)
+	return egg_asn1x_validate (asn);
+}
+
+/* -----------------------------------------------------------------------------------
+ * READing
+ */
+
+static int
+atoin (const char *p, int digits)
+{
+	int ret = 0, base = 1;
+	while(--digits >= 0) {
+		if (p[digits] < '0' || p[digits] > '9')
+			return -1;
+		ret += (p[digits] - '0') * base;
+		base *= 10;
+	}
+	return ret;
+}
+
+static int
+two_to_four_digit_year (int year)
+{
+	time_t now;
+	struct tm tm;
+	int century, current;
+
+	g_return_val_if_fail (year >= 0 && year <= 99, -1);
+
+	/* Get the current year */
+	now = time (NULL);
+	g_return_val_if_fail (now >= 0, -1);
+	if (!gmtime_r (&now, &tm))
+		g_return_val_if_reached (-1);
+
+	current = (tm.tm_year % 100);
+	century = (tm.tm_year + 1900) - current;
+
+	/*
+	 * Check if it's within 40 years before the
+	 * current date.
+	 */
+	if (current < 40) {
+		if (year < current)
+			return century + year;
+		if (year > 100 - (40 - current))
+			return (century - 100) + year;
+	} else {
+		if (year < current && year > (current - 40))
+			return century + year;
+	}
+
+	/*
+	 * If it's after then adjust for overflows to
+	 * the next century.
+	 */
+	if (year < current)
+		return century + 100 + year;
+	else
+		return century + year;
+}
+
+#ifndef HAVE_TIMEGM
+time_t timegm(struct tm *t)
+{
+	time_t tl, tb;
+	struct tm *tg;
+
+	tl = mktime (t);
+	if (tl == -1)
+	{
+		t->tm_hour--;
+		tl = mktime (t);
+		if (tl == -1)
+			return -1; /* can't deal with output from strptime */
+		tl += 3600;
+	}
+	tg = gmtime (&tl);
+	tg->tm_isdst = 0;
+	tb = mktime (tg);
+	if (tb == -1)
+	{
+		tg->tm_hour--;
+		tb = mktime (tg);
+		if (tb == -1)
+			return -1; /* can't deal with output from gmtime */
+		tb += 3600;
+	}
+	return (tl - (tb - tl));
+}
+#endif // NOT_HAVE_TIMEGM
+
+static gboolean
+parse_utc_time (const gchar *time, gsize n_time,
+                struct tm* when, gint *offset)
+{
+	const char *p, *e;
+	int year;
+
+	g_assert (when);
+	g_assert (time);
+	g_assert (offset);
+
+	/* YYMMDDhhmmss.ffff Z | +0000 */
+	if (n_time < 6 || n_time >= 28)
+		return FALSE;
+
+	/* Reset everything to default legal values */
+	memset (when, 0, sizeof (*when));
+	*offset = 0;
+	when->tm_mday = 1;
+
+	/* Select the digits part of it */
+	p = time;
+	for (e = p; *e >= '0' && *e <= '9'; ++e);
+
+	if (p + 2 <= e) {
+		year = atoin (p, 2);
+		p += 2;
+
+		/*
+		 * 40 years in the past is our century. 60 years
+		 * in the future is the next century.
+		 */
+		when->tm_year = two_to_four_digit_year (year) - 1900;
+	}
+	if (p + 2 <= e) {
+		when->tm_mon = atoin (p, 2) - 1;
+		p += 2;
+	}
+	if (p + 2 <= e) {
+		when->tm_mday = atoin (p, 2);
+		p += 2;
+	}
+	if (p + 2 <= e) {
+		when->tm_hour = atoin (p, 2);
+		p += 2;
+	}
+	if (p + 2 <= e) {
+		when->tm_min = atoin (p, 2);
+		p += 2;
+	}
+	if (p + 2 <= e) {
+		when->tm_sec = atoin (p, 2);
+		p += 2;
+	}
+
+	if (when->tm_year < 0 || when->tm_year > 9999 ||
+	    when->tm_mon < 0 || when->tm_mon > 11 ||
+	    when->tm_mday < 1 || when->tm_mday > 31 ||
+	    when->tm_hour < 0 || when->tm_hour > 23 ||
+	    when->tm_min < 0 || when->tm_min > 59 ||
+	    when->tm_sec < 0 || when->tm_sec > 59)
+		return FALSE;
+
+	/* Make sure all that got parsed */
+	if (p != e)
+		return FALSE;
+
+	/* Now the remaining optional stuff */
+	e = time + n_time;
+
+	/* See if there's a fraction, and discard it if so */
+	if (p < e && *p == '.' && p + 5 <= e)
+		p += 5;
+
+	/* See if it's UTC */
+	if (p < e && *p == 'Z') {
+		p += 1;
+
+	/* See if it has a timezone */
+	} else if ((*p == '-' || *p == '+') && p + 3 <= e) {
+		int off, neg;
+
+		neg = *p == '-';
+		++p;
+
+		off = atoin (p, 2) * 3600;
+		if (off < 0 || off > 86400)
+			return -1;
+		p += 2;
+
+		if (p + 2 <= e) {
+			off += atoin (p, 2) * 60;
+			p += 2;
+		}
+
+		/* Use TZ offset */
+		if (neg)
+			*offset = 0 - off;
+		else
+			*offset = off;
+	}
+
+	/* Make sure everything got parsed */
+	if (p != e)
 		return FALSE;
 
 	return TRUE;
 }
+
+static gboolean
+parse_general_time (const gchar *time, gsize n_time,
+                    struct tm* when, gint *offset)
+{
+	const char *p, *e;
+
+	g_assert (time);
+	g_assert (when);
+	g_assert (offset);
+
+	/* YYYYMMDDhhmmss.ffff Z | +0000 */
+	if (n_time < 8 || n_time >= 30)
+		return FALSE;
+
+	/* Reset everything to default legal values */
+	memset (when, 0, sizeof (*when));
+	*offset = 0;
+	when->tm_mday = 1;
+
+	/* Select the digits part of it */
+	p = time;
+	for (e = p; *e >= '0' && *e <= '9'; ++e);
+
+	if (p + 4 <= e) {
+		when->tm_year = atoin (p, 4) - 1900;
+		p += 4;
+	}
+	if (p + 2 <= e) {
+		when->tm_mon = atoin (p, 2) - 1;
+		p += 2;
+	}
+	if (p + 2 <= e) {
+		when->tm_mday = atoin (p, 2);
+		p += 2;
+	}
+	if (p + 2 <= e) {
+		when->tm_hour = atoin (p, 2);
+		p += 2;
+	}
+	if (p + 2 <= e) {
+		when->tm_min = atoin (p, 2);
+		p += 2;
+	}
+	if (p + 2 <= e) {
+		when->tm_sec = atoin (p, 2);
+		p += 2;
+	}
+
+	if (when->tm_year < 0 || when->tm_year > 9999 ||
+	    when->tm_mon < 0 || when->tm_mon > 11 ||
+	    when->tm_mday < 1 || when->tm_mday > 31 ||
+	    when->tm_hour < 0 || when->tm_hour > 23 ||
+	    when->tm_min < 0 || when->tm_min > 59 ||
+	    when->tm_sec < 0 || when->tm_sec > 59)
+		return FALSE;
+
+	/* Make sure all that got parsed */
+	if (p != e)
+		return FALSE;
+
+	/* Now the remaining optional stuff */
+	e = time + n_time;
+
+	/* See if there's a fraction, and discard it if so */
+	if (p < e && *p == '.' && p + 5 <= e)
+		p += 5;
+
+	/* See if it's UTC */
+	if (p < e && *p == 'Z') {
+		p += 1;
+
+	/* See if it has a timezone */
+	} else if ((*p == '-' || *p == '+') && p + 3 <= e) {
+		int off, neg;
+
+		neg = *p == '-';
+		++p;
+
+		off = atoin (p, 2) * 3600;
+		if (off < 0 || off > 86400)
+			return -1;
+		p += 2;
+
+		if (p + 2 <= e) {
+			off += atoin (p, 2) * 60;
+			p += 2;
+		}
+
+		/* Use TZ offset */
+		if (neg)
+			*offset = 0 - off;
+		else
+			*offset = off;
+	}
+
+	/* Make sure everything got parsed */
+	if (p != e)
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
+anode_read_time (GNode *node, Atlv *tlv, time_t *value)
+{
+	const gchar *data;
+	gboolean ret;
+	struct tm when;
+	gint offset;
+	gint flags;
+
+	flags = anode_def_flags (node);
+	data = (gchar*)(tlv->buf + tlv->off);
+
+	if (flags & FLAG_GENERALIZED)
+		ret = parse_general_time (data, tlv->len, &when, &offset);
+	else if (flags & FLAG_UTC)
+		ret = parse_utc_time (data, tlv->len, &when, &offset);
+	else
+		g_return_val_if_reached (FALSE);
+
+	if (!ret)
+		return FALSE;
+
+	/* In order to work with 32 bit time_t. */
+	if (sizeof (time_t) <= 4 && when.tm_year >= 2038) {
+		*value = (time_t)2145914603;  /* 2037-12-31 23:23:23 */
+
+	/* Convert to seconds since epoch */
+	} else {
+		*value = timegm (&when);
+		if (*time < 0)
+			return FALSE;
+		*value += offset;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+anode_read_integer_as_long (GNode *node, Atlv *tlv, glong *value)
+{
+	const guchar *p;
+	gsize k;
+
+	if (tlv->len < 1 || tlv->len > 4)
+		return FALSE;
+
+	p = tlv->buf + tlv->off;
+	*value = 0;
+	for (k = 0; k < tlv->len; ++k)
+		*value |= p[k] << (8 * ((tlv->len - 1) - k));
+
+	return TRUE;
+}
+
+static gboolean
+anode_read_string (GNode *node, Atlv *tlv, gpointer value, gsize *n_value)
+{
+	Atlv ctlv;
+	guchar *buf;
+	gint n_buf;
+	gint i;
+
+	g_assert (tlv);
+	g_assert (n_value);
+
+	buf = value;
+	n_buf = *n_value;
+
+	/* Is it constructed ? */
+	if (tlv->cls & ASN1_CLASS_STRUCTURED) {
+		*n_value = 0;
+		for (i = 0; TRUE; ++i) {
+			if (!anode_decode_tlv_for_contents (tlv, i == 0, &ctlv))
+				return FALSE;
+			if (ctlv.off == 0)
+				break;
+			if (ctlv.cls & ASN1_CLASS_STRUCTURED)
+				return FALSE;
+			*n_value += ctlv.len;
+			if (buf) {
+				if (n_buf >= ctlv.len)
+					memcpy (buf, ctlv.buf + ctlv.off, ctlv.len);
+				buf += ctlv.len;
+				n_buf -= ctlv.len;
+			}
+		}
+		if (n_buf < 0)
+			return FALSE;
+
+	/* Primitive, just return the contents */
+	} else {
+		*n_value = tlv->len;
+		if (buf) {
+			if (n_buf < tlv->len)
+				return FALSE;
+			memcpy (buf, tlv->buf + tlv->off, tlv->len);
+		}
+	}
+
+	return TRUE;
+}
+
+/* -----------------------------------------------------------------------------------
+ * VALIDATION
+ */
+
+static gboolean
+anode_validate_size (GNode *node, gulong length)
+{
+	GNode *size;
+	gulong value1 = 0;
+	gulong value2 = G_MAXULONG;
+
+	if (anode_def_flags (node) & FLAG_SIZE) {
+		size = anode_child_with_type (node, TYPE_SIZE);
+		g_return_val_if_fail (size, FALSE);
+		if (!anode_def_size_value (size, anode_def_value (size), &value1))
+			g_return_val_if_reached (FALSE);
+		if (anode_def_flags (size) & FLAG_MIN_MAX) {
+			if (!anode_def_size_value (size, anode_def_name (size), &value2))
+				g_return_val_if_reached (FALSE);
+			if (length < value1 || length >= value2)
+				return FALSE;
+		} else {
+			if (length != value1)
+				return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+static gboolean
+anode_validate_integer (GNode *node, Atlv *tlv)
+{
+	glong value, check;
+	gboolean found;
+	GNode *child;
+	gint flags;
+
+	g_assert (tlv);
+
+	/* Integers must be at least one byte long */
+	if (tlv->len <= 0)
+		return FALSE;
+
+	flags = anode_def_flags (node);
+	if (flags & FLAG_LIST) {
+		/* Parse out the value, we only support small integers*/
+		if (!anode_read_integer_as_long (node, tlv, &value))
+			return FALSE;
+
+		/* Look through the list of constants */
+		found = FALSE;
+		for (child = anode_child_with_type (node, TYPE_CONSTANT);
+		     child; child = anode_next_with_type (child, TYPE_CONSTANT)) {
+			check = anode_def_value_as_long (child);
+			g_return_val_if_fail (check != G_MAXULONG, FALSE);
+			if (check == value) {
+				found = TRUE;
+				break;
+			}
+		}
+
+		if (!found)
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+anode_validate_enumerated (GNode *node, Atlv *tlv)
+{
+	g_assert (tlv);
+
+	if (!anode_validate_integer (node, tlv))
+		return FALSE;
+	g_assert (tlv->len); /* Checked above */
+	/* Enumerated must be positive */
+	if (tlv->buf[tlv->off] & 0x80)
+		return FALSE;
+	return TRUE;
+}
+
+static gboolean
+anode_validate_boolean (GNode *node, Atlv *tlv)
+{
+	g_assert (tlv);
+
+	/* Must one byte, and zero or all ones */
+	if (tlv->len != 1)
+		return FALSE;
+	if (tlv->buf[tlv->off] != 0x00 && tlv->buf[tlv->off] != 0xFF)
+		return FALSE;
+	return TRUE;
+}
+
+static gboolean
+anode_validate_bit_string (GNode *node, Atlv *tlv)
+{
+	guchar empty, mask;
+	g_assert (tlv);
+
+	/* At least two bytes in length */
+	if (tlv->len < 2)
+		return FALSE;
+	/* First byte is the number of free bits at end */
+	empty = tlv->buf[tlv->off];
+	if (empty > 7)
+		return FALSE;
+	/* Free octets at end must be zero */
+	mask = 0xFF >> (8 - empty);
+	if (tlv->buf[tlv->off + tlv->len - 1] & mask)
+		return FALSE;
+	return TRUE;
+}
+
+static gboolean
+anode_validate_string (GNode *node, Atlv *tlv)
+{
+	gsize length;
+
+	if (!anode_read_string (node, tlv, NULL, &length))
+		return FALSE;
+
+	return anode_validate_size (node, (gulong)length);
+}
+
+static gboolean
+anode_validate_object_id (GNode *node, Atlv *tlv)
+{
+	const guchar *p;
+	gboolean lead;
+	guint val, pval;
+	gint k;
+
+	g_assert (tlv);
+	if (tlv->len <= 0)
+		return FALSE;
+	p = tlv->buf + tlv->off;
+
+	/* TODO: Validate first byte? */
+	for (k = 1, lead = 1, val = 0, pval = 0; k < tlv->len; ++k) {
+		/* X.690: the leading byte must never be 0x80 */
+		if (lead && p[k] == 0x80)
+			return FALSE;
+		val = val << 7;
+		val |= p[k] & 0x7F;
+		/* Check for wrap around */
+		if (val < pval)
+			return FALSE;
+		pval = val;
+		if (!(p[k] & 0x80)) {
+			pval = val = 0;
+			lead = 1;
+		}
+	}
+
+	return TRUE;
+}
+
+static gboolean
+anode_validate_null (GNode *node, Atlv *tlv)
+{
+	g_assert (tlv);
+	return (tlv->len == 0);
+}
+
+static gboolean
+anode_validate_time (GNode *node, Atlv *tlv)
+{
+	glong time;
+	return anode_read_time (node, tlv, &time);
+}
+
+static gboolean
+anode_validate_choice (GNode *node)
+{
+	gboolean have = FALSE;
+	GNode *child;
+
+	/* One and only one of the children must be set */
+	for (child = anode_child_with_real_type (node);
+	     child; child = anode_next_with_real_type (child)) {
+		if (anode_get_tlv_data (child)) {
+			if (have)
+				return FALSE;
+			have = TRUE;
+			if (!anode_validate_anything (child))
+				return FALSE;
+		}
+	}
+
+	return have;
+}
+
+static gboolean
+anode_validate_sequence_or_set (GNode *node)
+{
+	GNode *child;
+
+	/* All of the children must validate properly */
+	for (child = anode_child_with_real_type (node);
+	     child; child = anode_next_with_real_type (child)) {
+		if (!anode_validate_anything (child))
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+anode_validate_sequence_or_set_of (GNode *node)
+{
+	GNode *child;
+	Atlv *tlv;
+	gulong tag;
+	gulong count;
+
+	/* The first one must be empty */
+	child = anode_child_with_real_type (node);
+	g_return_val_if_fail (child, FALSE);
+	g_return_val_if_fail (!anode_get_tlv_data (child), FALSE);
+
+	tag = anode_encode_tag (child);
+
+	/* All of the other children must validate properly */
+	for (child = anode_next_with_real_type (child);
+	     child; child = anode_next_with_real_type (child)) {
+		if (!anode_validate_anything (child))
+			return FALSE;
+
+		/* Must have same tag as the top */
+		if (tag != G_MAXULONG) {
+			tlv = anode_get_tlv_data (child);
+			g_return_val_if_fail (tlv, FALSE);
+			if (tlv->tag != tag)
+				return FALSE;
+		}
+
+		++count;
+	}
+
+	return anode_validate_size (node, count);
+}
+
+static gboolean
+anode_validate_anything (GNode *node)
+{
+	Atlv *tlv;
+	gint type;
+
+	type = anode_def_type (node);
+	tlv = anode_get_tlv_data (node);
+
+	if (!tlv) {
+		if (anode_def_flags (node) & FLAG_OPTION)
+			return TRUE;
+		return FALSE;
+	}
+
+	switch (type) {
+
+	/* The primitive value types */
+	case TYPE_INTEGER:
+		return anode_validate_integer (node, tlv);
+	case TYPE_ENUMERATED:
+		return anode_validate_enumerated (node, tlv);
+	case TYPE_BOOLEAN:
+		return anode_validate_boolean (node, tlv);
+	case TYPE_BIT_STRING:
+		return anode_validate_bit_string (node, tlv);
+	case TYPE_OCTET_STRING:
+		return anode_validate_string (node, tlv);
+	case TYPE_OBJECT_ID:
+		return anode_validate_object_id (node, tlv);
+	case TYPE_NULL:
+		return anode_validate_null (node, tlv);
+	case TYPE_GENERALSTRING:
+		return anode_validate_string (node, tlv);
+	case TYPE_TIME:
+		return anode_validate_time (node, tlv);
+
+	/* Transparent types */
+	case TYPE_ANY:
+		return TRUE;
+	case TYPE_CHOICE:
+		return anode_validate_choice (node);
+
+	/* Structured types */
+	case TYPE_SEQUENCE:
+	case TYPE_SET:
+		return anode_validate_sequence_or_set (node);
+
+	case TYPE_SEQUENCE_OF:
+	case TYPE_SET_OF:
+		return anode_validate_sequence_or_set_of (node);
+
+	default:
+		g_return_val_if_reached (FALSE);
+	}
+}
+
+gboolean
+egg_asn1x_validate (GNode *asn)
+{
+	g_return_val_if_fail (asn, FALSE);
+	return anode_validate_anything (asn);
+}
+
+/* -----------------------------------------------------------------------------------
+ * TREE CREATION
+ */
 
 static gint
 compare_nodes_by_tag (gconstpointer a, gconstpointer b)
@@ -814,6 +1583,20 @@ join_each_child (GNode *child, gpointer data)
 	g_node_append (node, child);
 }
 
+static GNode*
+lookup_type_node (const ASN1_ARRAY_TYPE *defs, const gchar *identifier, gint type)
+{
+	/* Find the one we're interested in */
+	while (defs && (defs->value || defs->type || defs->name)) {
+		if ((defs->type & 0xFF) == type &&
+		    defs->name && g_str_equal (identifier, defs->name))
+			return anode_new (defs);
+		++defs;
+	}
+
+	return NULL;
+}
+
 static gboolean
 traverse_and_prepare (GNode *node, gpointer data)
 {
@@ -839,6 +1622,17 @@ traverse_and_prepare (GNode *node, gpointer data)
 	if (join) {
 		g_node_children_foreach (join, G_TRAVERSE_ALL, join_each_child, node);
 		egg_asn1x_destroy (join);
+	}
+
+	/* Lookup the max set size */
+	if (anode_def_type (node) == TYPE_SIZE) {
+		identifier = anode_def_name (node);
+		if (identifier && !g_str_equal (identifier, "MAX") &&
+		    g_ascii_isalpha (identifier[0])) {
+			join = lookup_type_node (defs, identifier, TYPE_INTEGER);
+			g_return_val_if_fail (join, TRUE);
+			g_node_append (node, join);
+		}
 	}
 
 	/* Sort the children of any sets */

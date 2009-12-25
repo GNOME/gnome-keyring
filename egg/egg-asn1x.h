@@ -45,6 +45,8 @@ gboolean            egg_asn1x_decode             (GNode *asn,
                                                   gconstpointer data,
                                                   gsize n_data);
 
+gboolean            egg_asn1x_validate           (GNode *asn);
+
 gpointer            egg_asn1x_encode             (GNode *asn,
                                                   EggAllocator allocator,
                                                   gsize *n_data);
