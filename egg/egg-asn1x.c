@@ -119,12 +119,20 @@ anode_new (const ASN1_ARRAY_TYPE *def)
 	return g_node_new (an);
 }
 
-static gboolean
-anode_free_func (GNode *node, gpointer unused)
+static void
+anode_clear (GNode *node)
 {
 	Anode *an = node->data;
 	if (an->data);
 		g_slice_free_chain (Atlv, an->data, next);
+	an->data = NULL;
+}
+
+static gboolean
+anode_free_func (GNode *node, gpointer unused)
+{
+	Anode *an = node->data;
+	anode_clear (node);
 	g_slice_free (Anode, an);
 	return FALSE;
 }
@@ -132,9 +140,10 @@ anode_free_func (GNode *node, gpointer unused)
 static void
 anode_destroy (GNode *node)
 {
+	if (!G_NODE_IS_ROOT (node))
+		g_node_unlink (node);
 	g_node_traverse (node, G_IN_ORDER, G_TRAVERSE_ALL, -1, anode_free_func, NULL);
 	g_node_destroy (node);
-
 }
 
 static gpointer
@@ -762,6 +771,8 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
+	egg_asn1x_clear (asn);
+
 	if (!anode_decode_tlv_for_data (data, (const guchar*)data + n_data, &tlv))
 		return FALSE;
 
@@ -911,8 +922,12 @@ egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
 	return root;
 }
 
+/* -----------------------------------------------------------------------------------
+ * DUMPING
+ */
+
 static gboolean
-traverse_and_dump (GNode *node, gpointer data)
+traverse_and_dump (GNode *node, gpointer unused)
 {
 	guint i, depth;
 	GString *output;
@@ -956,9 +971,47 @@ traverse_and_dump (GNode *node, gpointer data)
 void
 egg_asn1x_dump (GNode *asn)
 {
-	guint depth = 0;
 	g_return_if_fail (asn);
-	g_node_traverse (asn, G_PRE_ORDER, G_TRAVERSE_ALL, -1, traverse_and_dump, &depth);
+	g_node_traverse (asn, G_PRE_ORDER, G_TRAVERSE_ALL, -1, traverse_and_dump, NULL);
+}
+
+/* -----------------------------------------------------------------------------------
+ * CLEARING and DESTROYING
+ */
+
+static gboolean
+traverse_and_clear (GNode *node, gpointer unused)
+{
+	GNode *child, *next;
+	gint type;
+
+	anode_clear (node);
+
+	type = anode_def_type (node);
+	if (type == TYPE_SET_OF || type == TYPE_SEQUENCE_OF) {
+
+		/* The first 'real' child is the template */
+		child = anode_child_with_real_type (node);
+		g_return_val_if_fail (child, TRUE);
+
+		/* And any others are extras */
+		child = anode_next_with_real_type (child);
+		while (child) {
+			next = anode_next_with_real_type (child);
+			anode_destroy (child);
+			child = next;
+		}
+	}
+
+	/* Don't stop traversal */
+	return FALSE;
+}
+
+void
+egg_asn1x_clear (GNode *asn)
+{
+	g_return_if_fail (asn);
+	g_node_traverse (asn, G_POST_ORDER, G_TRAVERSE_ALL, -1, traverse_and_clear, NULL);
 }
 
 void

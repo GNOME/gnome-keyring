@@ -43,65 +43,39 @@ build_personal_name (void)
 }
 #endif
 
-static int
-run (void)
+static void
+test_some_asn1_stuff (const ASN1_ARRAY_TYPE *defs, const gchar *file, const gchar *identifier)
 {
 	GNode *asn;
 	gpointer data;
 	gsize n_data;
+
+	data = testing_data_read (file, &n_data);
+	asn = egg_asn1x_create (defs, identifier);
+	egg_asn1x_dump (asn);
+	if (!egg_asn1x_decode (asn, data, n_data))
+		g_assert_not_reached ();
+	egg_asn1x_clear (asn);
+	egg_asn1x_destroy (asn);
+	g_free (data);
+}
+
+static int
+run (void)
+{
 
 	/* Build up a personal name, which is a set */
 #if 0
 	build_personal_name ();
 #endif
 
-	data = testing_data_read ("test-certificate-1.der", &n_data);
-	asn = egg_asn1x_create (pkix_asn1_tab, "Certificate");
-	egg_asn1x_dump (asn);
-	if (!egg_asn1x_decode (asn, data, n_data))
-		g_assert_not_reached ();
-	egg_asn1x_destroy (asn);
-	g_free (data);
 
-	data = testing_data_read ("test-pkcs8-1.der", &n_data);
-	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-8-PrivateKeyInfo");
-	egg_asn1x_dump (asn);
-	if (!egg_asn1x_decode (asn, data, n_data))
-		g_assert_not_reached ();
-	egg_asn1x_destroy (asn);
-	g_free (data);
-
-	data = testing_data_read ("test-rsakey-1.der", &n_data);
-	asn = egg_asn1x_create (pk_asn1_tab, "RSAPrivateKey");
-	egg_asn1x_dump (asn);
-	if (!egg_asn1x_decode (asn, data, n_data))
-		g_assert_not_reached ();
-	egg_asn1x_destroy (asn);
-	g_free (data);
-
-	data = testing_data_read ("test-personalname-1.der", &n_data);
-	asn = egg_asn1x_create (pkix_asn1_tab, "PersonalName");
-	egg_asn1x_dump (asn);
-	if (!egg_asn1x_decode (asn, data, n_data))
-		g_assert_not_reached ();
-	egg_asn1x_destroy (asn);
-	g_free (data);
-
-	data = testing_data_read ("test-pkcs7-1.der", &n_data);
-	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-7-ContentInfo");
-	egg_asn1x_dump (asn);
-	if (!egg_asn1x_decode (asn, data, n_data))
-		g_assert_not_reached ();
-	egg_asn1x_destroy (asn);
-	g_free (data);
-
-	data = testing_data_read ("test-pkcs12-1.der", &n_data);
-	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-12-PFX");
-	egg_asn1x_dump (asn);
-	if (!egg_asn1x_decode (asn, data, n_data))
-		g_assert_not_reached ();
-	egg_asn1x_destroy (asn);
-	g_free (data);
+	test_some_asn1_stuff (pkix_asn1_tab, "test-certificate-1.der", "Certificate");
+	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo");
+	test_some_asn1_stuff (pk_asn1_tab, "test-rsakey-1.der", "RSAPrivateKey");
+	test_some_asn1_stuff (pkix_asn1_tab, "test-personalname-1.der", "PersonalName");
+	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs7-1.der", "pkcs-7-ContentInfo");
+	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs12-1.der", "pkcs-12-PFX");
 
 	return 0;
 }

@@ -39,6 +39,8 @@ GNode*              egg_asn1x_create             (const ASN1_ARRAY_TYPE *defs,
 
 void                egg_asn1x_dump               (GNode *asn);
 
+void                egg_asn1x_clear              (GNode *asn);
+
 gboolean            egg_asn1x_decode             (GNode *asn,
                                                   gconstpointer data,
                                                   gsize n_data);
