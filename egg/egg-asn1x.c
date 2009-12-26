@@ -30,12 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum {
-	NO_VALUE = 0,
-	DER_VALUE,
-	C_VALUE
-};
-
 /* From libtasn1's int.h */
 enum {
 	TYPE_CONSTANT = 1,
@@ -100,11 +94,10 @@ typedef struct _Atlv {
 typedef struct _Anode {
 	const ASN1_ARRAY_TYPE *def;
 	const ASN1_ARRAY_TYPE *join;
+	GList *opts;
 	Atlv *data;
 	gchar* failure;
 } Anode;
-
-/* TODO: Validate: LIST SIZE */
 
 /* Forward Declarations */
 static gboolean anode_decode_anything (GNode*, Atlv*);
@@ -135,6 +128,7 @@ anode_free_func (GNode *node, gpointer unused)
 {
 	Anode *an = node->data;
 	anode_clear (node);
+	g_list_free (an->opts);
 	g_slice_free (Anode, an);
 	return FALSE;
 }
@@ -155,6 +149,7 @@ anode_copy_func (gconstpointer src, gpointer unused)
 	Anode *an = g_slice_new0 (Anode);
 	an->def = san->def;
 	an->join = san->join;
+	an->opts = g_list_copy (san->opts);
 	return an;
 }
 
@@ -231,15 +226,13 @@ anode_def_value (GNode *node)
 }
 
 static gulong
-anode_def_value_as_ulong (GNode *node)
+anode_def_value_as_ulong (ASN1_ARRAY_TYPE *def)
 {
-	const gchar* value;
 	gchar *end = NULL;
 	gulong lval;
 
-	value = anode_def_value (node);
-	g_return_val_if_fail (value, G_MAXULONG);
-	lval = strtoul (value, &end, 10);
+	g_return_val_if_fail (def->value, G_MAXULONG);
+	lval = strtoul (def->value, &end, 10);
 	g_return_val_if_fail (end && !end[0], G_MAXULONG);
 	return lval;
 }
@@ -257,73 +250,47 @@ anode_child_with_name (GNode *node, const gchar *name)
 	return NULL;
 }
 
-static GNode*
-anode_child_with_type (GNode *node, gint type)
+static void
+anode_opt_add (GNode *node, const ASN1_ARRAY_TYPE *def)
 {
-	GNode *child;
+	Anode *an = node->data;
+	an->opts = g_list_append (an->opts, (gpointer)def);
+}
 
-	for (child = node->children; child; child = child->next) {
-		if (anode_def_type (child) == type)
-			return child;
+static ASN1_ARRAY_TYPE*
+anode_opt_lookup (GNode *node, gint type, const gchar *name)
+{
+	Anode *an = node->data;
+	ASN1_ARRAY_TYPE* def;
+	GList *l;
+
+	for (l = an->opts; l; l = g_list_next (l)) {
+		def = l->data;
+		if (name && def->name && !g_str_equal (name, def->name))
+			continue;
+		if ((def->type & 0xFF) == type)
+			return def;
 	}
 
 	return NULL;
 }
 
-static GNode*
-anode_next_with_type (GNode *node, gint type)
+static GList*
+anode_opts_lookup (GNode *node, gint type, const gchar *name)
 {
-	for (node = node->next; node; node = node->next) {
-		if (anode_def_type (node) == type)
-			return node;
-	}
-	return NULL;
-}
+	Anode *an = node->data;
+	ASN1_ARRAY_TYPE* def;
+	GList *l, *res = NULL;
 
-static GNode*
-anode_child_with_real_type (GNode *node)
-{
-	GNode *child;
-
-	for (child = node->children; child; child = child->next) {
-		if (anode_def_type_is_real (child))
-			return child;
+	for (l = an->opts; l; l = g_list_next (l)) {
+		def = l->data;
+		if (name && def->name && !g_str_equal (name, def->name))
+			continue;
+		if ((def->type & 0xFF) == type)
+			res = g_list_prepend (res, def);
 	}
 
-	return NULL;
-}
-
-static GNode*
-anode_next_with_real_type (GNode *node)
-{
-	for (node = node->next; node; node = node->next) {
-		if (anode_def_type_is_real (node))
-			return node;
-	}
-
-	return NULL;
-}
-
-static gboolean
-anode_def_size_value (GNode *node, const gchar *text, gulong *value)
-{
-	gchar *end = NULL;
-
-	if (text == NULL) {
-		*value = 0;
-		return FALSE;
-	} else if (g_str_equal (text, "MAX")) {
-		*value = G_MAXULONG;
-		return TRUE;
-	} else if (g_ascii_isalpha (text[0])) {
-		node = anode_child_with_name (node, text);
-		g_return_val_if_fail (node, FALSE);
-		return anode_def_size_value (node, anode_def_value (node), value);
-	}
-
-	*value = strtoul (text, &end, 10);
-	g_return_val_if_fail (end && !end[0], FALSE);
-	return TRUE;
+	return g_list_reverse (res);
 }
 
 static void
@@ -372,15 +339,13 @@ anode_failure_get (GNode *node)
 static gulong
 anode_encode_tag_for_flags (GNode *node, gint flags)
 {
-	GNode *child;
-
-	g_return_val_if_fail (anode_def_type_is_real (node), G_MAXULONG);
+	ASN1_ARRAY_TYPE *def;
 
 	/* A context specific tag */
 	if (flags & FLAG_TAG) {
-		child = anode_child_with_type (node, TYPE_TAG);
-		g_return_val_if_fail (child, G_MAXULONG);
-		return anode_def_value_as_ulong (child);
+		def = anode_opt_lookup (node, TYPE_TAG, NULL);
+		g_return_val_if_fail (def, G_MAXULONG);
+		return anode_def_value_as_ulong (def);
 	}
 
 	/* A tag from the universal set */
@@ -571,8 +536,7 @@ anode_decode_choice (GNode *node, Atlv *tlv)
 {
 	GNode *child;
 
-	for (child = anode_child_with_real_type (node);
-	     child; child = anode_next_with_real_type (child)) {
+	for (child = node->children; child; child = child->next) {
 		if (anode_decode_anything (child, tlv)) {
 			anode_set_tlv_data (node, tlv);
 			return TRUE;
@@ -633,8 +597,7 @@ anode_decode_sequence_or_set (GNode *node, Atlv *outer)
 	 * we have are sorted.
 	 */
 
-	for (child = anode_child_with_real_type (node), i = 0;
-	     child; child = anode_next_with_real_type (child), ++i) {
+	for (child = node->children, i = 0; child; child = child->next, ++i) {
 
 		if (!anode_decode_tlv_for_contents (outer, i == 0, &tlv))
 			return anode_failure (node, "invalid encoding of child");
@@ -653,15 +616,19 @@ anode_decode_sequence_or_set (GNode *node, Atlv *outer)
 static gboolean
 anode_decode_sequence_or_set_of (GNode *node, Atlv *outer)
 {
-	GNode *child, *copy;
+	GNode *child, *other;
 	Atlv tlv;
 	gint i;
 
 	outer->len = 0;
 
-	/* The one and only child */
-	child = anode_child_with_real_type (node);
-	g_return_val_if_fail (child, -1);
+	/* The first child */
+	child = node->children;
+	g_return_val_if_fail (child, FALSE);
+
+	/* Remove all the other children */
+	while (child->next)
+		anode_destroy (child->next);
 
 	/* Try to dig out as many of them as possible */
 	for (i = 0; TRUE; ++i) {
@@ -673,9 +640,14 @@ anode_decode_sequence_or_set_of (GNode *node, Atlv *outer)
 		if (tlv.off == 0)
 			break;
 
-		copy = anode_clone (child);
-		g_node_append (node, copy);
-		if (!anode_decode_anything (copy, &tlv))
+		if (i == 0) {
+			other = child;
+		} else {
+			other = anode_clone (child);
+			g_node_append (node, other);
+		}
+
+		if (!anode_decode_anything (other, &tlv))
 			return FALSE;
 
 		outer->len = (tlv.end - outer->buf) - outer->off;
@@ -1345,7 +1317,7 @@ egg_asn1x_node (GNode *asn, ...)
 	const gchar *name;
 	va_list va;
 	gint type;
-	gint index, i;
+	gint index;
 
 	g_return_val_if_fail (asn, NULL);
 	va_start (va, asn);
@@ -1358,10 +1330,7 @@ egg_asn1x_node (GNode *asn, ...)
 			index = va_arg (va, gint);
 			if (index == 0)
 				return node;
-			node = anode_child_with_real_type (node);
-			g_return_val_if_fail (node, NULL);
-			for (i = 1; node && i <= index; ++i)
-				node = anode_next_with_real_type (node);
+			node = g_node_nth_child (node, index);
 			if (node == NULL)
 				return NULL;
 
@@ -1543,19 +1512,46 @@ egg_asn1x_get_oid_as_quark (GNode *node)
  */
 
 static gboolean
+anode_parse_size (GNode *node, const gchar *text, gulong *value)
+{
+	ASN1_ARRAY_TYPE *def;
+	gchar *end = NULL;
+
+	if (text == NULL) {
+		*value = 0;
+		return FALSE;
+	} else if (g_str_equal (text, "MAX")) {
+		*value = G_MAXULONG;
+		return TRUE;
+	} else if (g_ascii_isalpha (text[0])) {
+		def = anode_opt_lookup (node, TYPE_INTEGER, text);
+		g_return_val_if_fail (def, FALSE);
+		return anode_parse_size (node, def->value, value);
+	}
+
+	*value = strtoul (text, &end, 10);
+	g_return_val_if_fail (end && !end[0], FALSE);
+	return TRUE;
+}
+
+
+static gboolean
 anode_validate_size (GNode *node, gulong length)
 {
-	GNode *size;
+	ASN1_ARRAY_TYPE *size;
 	gulong value1 = 0;
 	gulong value2 = G_MAXULONG;
 
 	if (anode_def_flags (node) & FLAG_SIZE) {
-		size = anode_child_with_type (node, TYPE_SIZE);
+		size = anode_opt_lookup (node, TYPE_SIZE, NULL);
+		if (size == NULL) {
+			egg_asn1x_dump (g_node_get_root (node));
+		}
 		g_return_val_if_fail (size, FALSE);
-		if (!anode_def_size_value (size, anode_def_value (size), &value1))
+		if (!anode_parse_size (node, size->value, &value1))
 			g_return_val_if_reached (FALSE);
-		if (anode_def_flags (size) & FLAG_MIN_MAX) {
-			if (!anode_def_size_value (size, anode_def_name (size), &value2))
+		if (size->type & FLAG_MIN_MAX) {
+			if (!anode_parse_size (node, size->name, &value2))
 				g_return_val_if_reached (FALSE);
 			if (length < value1 || length >= value2)
 				return anode_failure (node, "content size is out of bounds");
@@ -1571,9 +1567,9 @@ anode_validate_size (GNode *node, gulong length)
 static gboolean
 anode_validate_integer (GNode *node, Atlv *tlv)
 {
+	GList *constants, *l;
 	gulong value, check;
 	gboolean found;
-	GNode *child;
 	gint flags;
 
 	g_assert (tlv);
@@ -1590,15 +1586,16 @@ anode_validate_integer (GNode *node, Atlv *tlv)
 
 		/* Look through the list of constants */
 		found = FALSE;
-		for (child = anode_child_with_type (node, TYPE_CONSTANT);
-		     child; child = anode_next_with_type (child, TYPE_CONSTANT)) {
-			check = anode_def_value_as_ulong (child);
+		constants = anode_opts_lookup (node, TYPE_CONSTANT, NULL);
+		for (l = constants; l; l = g_list_next (l)) {
+			check = anode_def_value_as_ulong (l->data);
 			g_return_val_if_fail (check != G_MAXULONG, FALSE);
 			if (check == value) {
 				found = TRUE;
 				break;
 			}
 		}
+		g_list_free (constants);
 
 		if (!found)
 			return anode_failure (node, "integer not part of listed set");
@@ -1692,8 +1689,7 @@ anode_validate_choice (GNode *node)
 	GNode *child;
 
 	/* One and only one of the children must be set */
-	for (child = anode_child_with_real_type (node);
-	     child; child = anode_next_with_real_type (child)) {
+	for (child = node->children; child; child = child->next) {
 		if (anode_get_tlv_data (child)) {
 			if (have)
 				return anode_failure (node, "only one choice may be set");
@@ -1714,8 +1710,7 @@ anode_validate_sequence_or_set (GNode *node)
 	GNode *child;
 
 	/* All of the children must validate properly */
-	for (child = anode_child_with_real_type (node);
-	     child; child = anode_next_with_real_type (child)) {
+	for (child = node->children; child; child = child->next) {
 		if (!anode_validate_anything (child))
 			return FALSE;
 	}
@@ -1730,17 +1725,15 @@ anode_validate_sequence_or_set_of (GNode *node)
 	Atlv *tlv;
 	gulong tag;
 	gulong count;
+	gint i;
 
 	/* The first one must be empty */
-	child = anode_child_with_real_type (node);
-	g_return_val_if_fail (child, FALSE);
-	g_return_val_if_fail (!anode_get_tlv_data (child), FALSE);
 
-	tag = anode_encode_tag (child);
+	/* All the children must validate properly */
+	for (child = node->children, i = 0; child; child = child->next, ++i) {
+		if (i == 0)
+			tag = anode_encode_tag (child);
 
-	/* All of the other children must validate properly */
-	for (child = anode_next_with_real_type (child);
-	     child; child = anode_next_with_real_type (child)) {
 		if (!anode_validate_anything (child))
 			return FALSE;
 
@@ -1855,14 +1848,14 @@ join_each_child (GNode *child, gpointer data)
 	g_node_append (node, child);
 }
 
-static GNode*
-lookup_type_node (const ASN1_ARRAY_TYPE *defs, const gchar *identifier, gint type)
+static const ASN1_ARRAY_TYPE*
+lookup_def (const ASN1_ARRAY_TYPE *defs, const gchar *identifier, gint type)
 {
 	/* Find the one we're interested in */
 	while (defs && (defs->value || defs->type || defs->name)) {
 		if ((defs->type & 0xFF) == type &&
 		    defs->name && g_str_equal (identifier, defs->name))
-			return anode_new (defs);
+			return defs;
 		++defs;
 	}
 
@@ -1873,6 +1866,7 @@ static gboolean
 traverse_and_prepare (GNode *node, gpointer data)
 {
 	const ASN1_ARRAY_TYPE *defs = data;
+	const ASN1_ARRAY_TYPE *def;
 	const gchar *identifier;
 	Anode *an, *anj;
 	GNode *join = NULL;
@@ -1891,34 +1885,51 @@ traverse_and_prepare (GNode *node, gpointer data)
 		an->join = anj->def;
 	}
 
-	if (join) {
+	if (join)
 		g_node_children_foreach (join, G_TRAVERSE_ALL, join_each_child, node);
-		egg_asn1x_destroy (join);
-	}
 
 	/* Lookup the max set size */
 	if (anode_def_type (node) == TYPE_SIZE) {
 		identifier = anode_def_name (node);
 		if (identifier && !g_str_equal (identifier, "MAX") &&
 		    g_ascii_isalpha (identifier[0])) {
-			join = lookup_type_node (defs, identifier, TYPE_INTEGER);
-			g_return_val_if_fail (join, TRUE);
-			g_node_append (node, join);
+			def = lookup_def (defs, identifier, TYPE_INTEGER);
+			g_return_val_if_fail (def, TRUE);
+			anode_opt_add (node, def);
 		}
+	}
+
+	/* Anything child not a real node, we put into opts */
+	if (anode_def_type_is_real (node)) {
+		child = node->children;
+		while (child) {
+			next = child->next;
+			if (!anode_def_type_is_real (child)) {
+				an = child->data;
+				anode_opt_add (node, an->def);
+				for (l = an->opts; l; l = g_list_next (l))
+					anode_opt_add (node, l->data);
+				g_node_unlink (child);
+				g_node_destroy (child);
+			}
+			child = next;
+		}
+	}
+
+	if (join) {
+		an = join->data;
+		for (l = an->opts; l; l = g_list_next (l))
+			anode_opt_add (node, l->data);
+		egg_asn1x_destroy (join);
 	}
 
 	/* Sort the children of any sets */
 	if (anode_def_type (node) == TYPE_SET) {
-		child = node->children;
-		while (child) {
-			next = child->next;
-			if (anode_def_type_is_real (child)) {
-				g_node_unlink (child);
-				list = g_list_prepend (list, child);
-			}
-			child = next;
-		}
+		for (child = node->children; child; child = child->next)
+			list = g_list_prepend (list, child);
 		list = g_list_sort (list, compare_nodes_by_tag);
+		for (l = list; l; l = g_list_next (l))
+			g_node_unlink (l->data);
 		for (l = list; l; l = g_list_next (l))
 			g_node_append (node, l->data);
 		g_list_free (list);
@@ -1992,23 +2003,9 @@ egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
  * DUMPING and MESSAGES
  */
 
-static gboolean
-traverse_and_dump (GNode *node, gpointer unused)
+static void
+dump_append_type (GString *output, gint type)
 {
-	guint i, depth;
-	GString *output;
-	gchar *string;
-	int flags;
-	int type;
-
-	depth = g_node_depth (node);
-	for (i = 0; i < depth - 1; ++i)
-		g_printerr ("    ");
-
-	output = g_string_new ("");
-
-	/* Figure out the type */
-	type = anode_def_type (node);
 	#define XX(x) if (type == TYPE_##x) g_string_append (output, #x " ")
 	XX(CONSTANT); XX(IDENTIFIER); XX(INTEGER); XX(BOOLEAN); XX(SEQUENCE); XX(BIT_STRING);
 	XX(OCTET_STRING); XX(TAG); XX(DEFAULT); XX(SIZE); XX(SEQUENCE_OF); XX(OBJECT_ID); XX(ANY);
@@ -2017,20 +2014,57 @@ traverse_and_dump (GNode *node, gpointer unused)
 	if (output->len == 0)
 		g_string_printf (output, "%d ", (int)type);
 	#undef XX
+}
 
-	/* Figure out the flags */
-	flags = anode_def_flags (node);
+static void
+dump_append_flags (GString *output, gint flags)
+{
 	#define XX(x) if ((FLAG_##x & flags) == FLAG_##x) g_string_append (output, #x " ")
 	XX(UNIVERSAL); XX(PRIVATE); XX(APPLICATION); XX(EXPLICIT); XX(IMPLICIT); XX(TAG); XX(OPTION);
 	XX(DEFAULT); XX(TRUE); XX(FALSE); XX(LIST); XX(MIN_MAX); XX(1_PARAM); XX(SIZE); XX(DEFINED_BY);
 	XX(GENERALIZED); XX(UTC); XX(IMPORTS); XX(NOT_USED); XX(SET); XX(ASSIGN);
 	/* XX(DOWN); XX(RIGHT); */
 	#undef XX
+}
 
+static gboolean
+traverse_and_dump (GNode *node, gpointer unused)
+{
+	ASN1_ARRAY_TYPE *def;
+	guint i, depth;
+	GString *output;
+	gchar *string;
+	Anode *an;
+	GList *l;
+
+	depth = g_node_depth (node);
+	for (i = 0; i < depth - 1; ++i)
+		g_printerr ("    ");
+
+	output = g_string_new ("");
+	dump_append_type (output, anode_def_type (node));
+	dump_append_flags (output, anode_def_flags (node));
 	string = g_utf8_casefold (output->str, output->len - 1);
 	g_string_free (output, TRUE);
-	g_printerr ("%s: %s [%s]\n", anode_def_name (node), anode_def_value (node), string);
+	g_printerr ("+ %s: %s [%s]\n", anode_def_name (node), anode_def_value (node), string);
 	g_free (string);
+
+	/* Print out all the options */
+	an = node->data;
+	for (l = an->opts; l; l = g_list_next (l)) {
+		for (i = 0; i < depth; ++i)
+			g_printerr ("    ");
+
+		def = l->data;
+		output = g_string_new ("");
+		dump_append_type (output, def->type & 0xFF);
+		dump_append_flags (output, def->type);
+		string = g_utf8_casefold (output->str, output->len - 1);
+		g_string_free (output, TRUE);
+		g_printerr ("- %s: %s [%s]\n", def->name, (const gchar*)def->value, string);
+		g_free (string);
+	}
+
 	return FALSE;
 }
 
@@ -2075,13 +2109,13 @@ traverse_and_clear (GNode *node, gpointer unused)
 	if (type == TYPE_SET_OF || type == TYPE_SEQUENCE_OF) {
 
 		/* The first 'real' child is the template */
-		child = anode_child_with_real_type (node);
+		child = node->children;
 		g_return_val_if_fail (child, TRUE);
 
 		/* And any others are extras */
-		child = anode_next_with_real_type (child);
+		child = child->next;
 		while (child) {
-			next = anode_next_with_real_type (child);
+			next = child->next;
 			anode_destroy (child);
 			child = next;
 		}
