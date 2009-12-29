@@ -47,16 +47,27 @@ static void
 test_some_asn1_stuff (const ASN1_ARRAY_TYPE *defs, const gchar *file, const gchar *identifier)
 {
 	GNode *asn;
-	gpointer data;
-	gsize n_data;
+	gpointer data, encoded;
+	gsize n_data, n_encoded;
 
 	data = testing_data_read (file, &n_data);
 	asn = egg_asn1x_create (defs, identifier);
 	egg_asn1x_dump (asn);
+
 	if (!egg_asn1x_decode (asn, data, n_data))
 		g_warning ("decode of %s failed: %s", identifier, egg_asn1x_message (asn));
+
+	encoded = egg_asn1x_encode (asn, NULL, &n_encoded);
+	if (encoded == NULL)
+		g_warning ("encode of %s failed: %s", identifier, egg_asn1x_message (asn));
+
+	/* Decode the encoding */
+	if (!egg_asn1x_decode (asn, encoded, n_encoded))
+		g_warning ("decode of encoded %s failed: %s", identifier, egg_asn1x_message (asn));
+
 	egg_asn1x_clear (asn);
 	egg_asn1x_destroy (asn);
+	g_free (encoded);
 	g_free (data);
 }
 
