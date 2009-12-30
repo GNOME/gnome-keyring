@@ -25,6 +25,7 @@ libegg_la_SOURCES = \
 	egg-buffer.c egg-buffer.h \
 	egg-cleanup.c egg-cleanup.h \
 	egg-dh.c egg-dh.h \
+	egg-dn.c egg-dn.h \
 	egg-error.h \
 	egg-hex.c egg-hex.h \
 	egg-libgcrypt.c egg-libgcrypt.h \

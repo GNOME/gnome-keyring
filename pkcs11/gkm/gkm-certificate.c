@@ -36,6 +36,8 @@
 #include "gkm-transaction.h"
 #include "gkm-util.h"
 
+#include "egg/egg-dn.h"
+
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
 
@@ -730,11 +732,11 @@ gkm_certificate_get_label (GkmCertificate *self)
 		g_return_val_if_fail (self->pv->asn1, "");
 
 		/* Look for the CN in the certificate */
-		label = egg_asn1_read_dn_part (self->pv->asn1, "tbsCertificate.subject.rdnSequence", "cn");
+		label = egg_dn_read_part (self->pv->asn1, "tbsCertificate.subject.rdnSequence", "cn");
 
 		/* Otherwise use the full DN */
 		if (!label)
-			label = egg_asn1_read_dn (self->pv->asn1, "tbsCertificate.subject.rdnSequence");
+			label = egg_dn_read (self->pv->asn1, "tbsCertificate.subject.rdnSequence");
 
 		if (!label)
 			label = g_strdup (_("Unnamed Certificate"));

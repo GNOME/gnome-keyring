@@ -1683,7 +1683,7 @@ anode_read_time (GNode *node, Atlv *tlv, glong *value)
 	const gchar *data;
 	gboolean ret;
 	struct tm when;
-	gint offset;
+	gint offset = 0;
 	gint flags;
 
 	flags = anode_def_flags (node);

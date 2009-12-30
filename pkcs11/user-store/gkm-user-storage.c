@@ -34,6 +34,7 @@
 #include "gkm/gkm-serializable.h"
 #include "gkm/gkm-util.h"
 
+#include "egg/egg-dn.h"
 #include "egg/egg-error.h"
 #include "egg/egg-hex.h"
 
@@ -141,7 +142,7 @@ name_for_subject (const guchar *subject, gsize n_subject)
 	asn = egg_asn1_decode ("PKIX1.Name", subject, n_subject);
 	g_return_val_if_fail (asn, NULL);
 
-	name = egg_asn1_read_dn_part (asn, "rdnSequence", "CN");
+	name = egg_dn_read_part (asn, "rdnSequence", "CN");
 	asn1_delete_structure (&asn);
 
 	return name;

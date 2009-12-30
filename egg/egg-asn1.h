@@ -73,22 +73,8 @@ gint               egg_asn1_element_length                (const guchar *data, g
 
 const guchar*      egg_asn1_element_content               (const guchar *data, gsize n_data, gsize *n_content);
 
-gchar*             egg_asn1_read_dn                       (ASN1_TYPE asn, const gchar *part);
-
-gchar*             egg_asn1_read_dn_part                  (ASN1_TYPE asn, const gchar *part, const gchar *match);
-
-
 glong              egg_asn1_time_parse_utc                (const gchar* value, gssize n_value);
 
 glong              egg_asn1_time_parse_general            (const gchar* value, gssize n_value);
-
-
-typedef void       (*EggAsn1DnCallback)                   (guint index, GQuark oid, const guchar *value,
-                                                           gsize n_value, gpointer user_data);
-
-gboolean           egg_asn1_dn_parse                      (ASN1_TYPE asn, const gchar *part, 
-                                                           EggAsn1DnCallback callback, gpointer user_data);
-
-gchar*             egg_asn1_dn_print_value                (GQuark oid, const guchar *value, gsize n_value);
 
 #endif /*EGG_ASN1_H_*/

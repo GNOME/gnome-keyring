@@ -29,6 +29,7 @@
 #include "gcr-types.h"
 
 #include "egg/egg-asn1.h"
+#include "egg/egg-dn.h"
 #include "egg/egg-openssl.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-symkey.h"
@@ -623,7 +624,7 @@ parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 	parsed_clear (self, CKO_CERTIFICATE);
 	parsed_ulong (self, CKA_CERTIFICATE_TYPE, CKC_X_509);
 
-	name = egg_asn1_read_dn_part (asn, "tbsCertificate.subject.rdnSequence", "CN");
+	name = egg_dn_read_part (asn, "tbsCertificate.subject.rdnSequence", "CN");
 	asn1_delete_structure (&asn);
 		
 	if (name != NULL) {

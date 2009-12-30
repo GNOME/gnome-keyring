@@ -4,6 +4,7 @@ asn1-def-test.h: test.asn
 # Test files should be listed in order they need to run
 TESTING_FILES = \
 	unit-test-asn1.c \
+	test-dn.c \
 	unit-test-cleanup.c \
 	unit-test-hex.c \
 	unit-test-oid.c \

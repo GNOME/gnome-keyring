@@ -25,6 +25,7 @@
 #include "gcr-certificate.h"
 
 #include "egg/egg-asn1.h"
+#include "egg/egg-dn.h"
 #include "egg/egg-hex.h"
 
 #include <string.h>
@@ -319,7 +320,7 @@ gcr_certificate_get_issuer_part (GcrCertificate *self, const char *part)
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_dn_part (info->asn1, "tbsCertificate.issuer.rdnSequence", part);
+	return egg_dn_read_part (info->asn1, "tbsCertificate.issuer.rdnSequence", part);
 }
 
 /**
@@ -344,7 +345,7 @@ gcr_certificate_get_issuer_dn (GcrCertificate *self)
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_dn (info->asn1, "tbsCertificate.issuer.rdnSequence"); 
+	return egg_dn_read (info->asn1, "tbsCertificate.issuer.rdnSequence");
 }
 
 /**
@@ -390,7 +391,7 @@ gcr_certificate_get_subject_part (GcrCertificate *self, const char *part)
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_dn_part (info->asn1, "tbsCertificate.subject.rdnSequence", part); 
+	return egg_dn_read_part (info->asn1, "tbsCertificate.subject.rdnSequence", part);
 }
 
 /**
@@ -415,7 +416,7 @@ gcr_certificate_get_subject_dn (GcrCertificate *self)
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 	
-	return egg_asn1_read_dn (info->asn1, "tbsCertificate.issuer.rdnSequence"); 	
+	return egg_dn_read (info->asn1, "tbsCertificate.issuer.rdnSequence");
 }
 
 /**
