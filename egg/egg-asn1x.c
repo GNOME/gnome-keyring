@@ -931,6 +931,9 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
 	if (!anode_decode_anything (asn, &tlv))
 		return FALSE;
 
+	if (tlv.end - tlv.buf != n_data)
+		return FALSE;
+
 	return egg_asn1x_validate (asn);
 }
 
@@ -1820,7 +1823,7 @@ anode_read_boolean (GNode *node, Atlv *tlv, gboolean *value)
 		return FALSE;
 	if (tlv->buf[tlv->off] == 0x00)
 		*value = FALSE;
-	if (tlv->buf[tlv->off] == 0xFF)
+	else if (tlv->buf[tlv->off] == 0xFF)
 		*value = TRUE;
 	else
 		return FALSE;
@@ -2003,7 +2006,8 @@ egg_asn1x_get_boolean (GNode *node, gboolean *value)
 	g_return_val_if_fail (anode_def_type (node) == TYPE_BOOLEAN, FALSE);
 
 	tlv = anode_get_tlv_data (node);
-	g_return_val_if_fail (tlv, FALSE);
+	if (tlv == NULL)
+		return FALSE;
 
 	return anode_read_boolean (node, tlv, value);
 }
@@ -2035,7 +2039,8 @@ egg_asn1x_get_integer_as_ulong (GNode *node, gulong *value)
 	g_return_val_if_fail (anode_def_type (node) == TYPE_INTEGER, FALSE);
 
 	tlv = anode_get_tlv_data (node);
-	g_return_val_if_fail (tlv, FALSE);
+	if (tlv == NULL)
+		return FALSE;
 
 	return anode_read_integer_as_ulong(node, tlv, value);
 }
@@ -2066,7 +2071,8 @@ egg_asn1x_get_raw_value (GNode *node, gsize *n_content)
 	g_return_val_if_fail (n_content, NULL);
 
 	tlv = anode_get_tlv_data (node);
-	g_return_val_if_fail (tlv, NULL);
+	if (tlv == NULL)
+		return FALSE;
 	g_return_val_if_fail (!(tlv->cls & ASN1_CLASS_STRUCTURED), NULL);
 
 	*n_content = tlv->len;
@@ -2099,7 +2105,8 @@ egg_asn1x_get_string_as_raw (GNode *node, EggAllocator allocator, gsize *n_strin
 	g_return_val_if_fail (type == TYPE_OCTET_STRING || type == TYPE_GENERALSTRING, NULL);
 
 	tlv = anode_get_tlv_data (node);
-	g_return_val_if_fail (tlv, NULL);
+	if (tlv == NULL)
+		return NULL;
 
 	if (!anode_read_string (node, tlv, NULL, &length))
 		return NULL;
@@ -2182,7 +2189,8 @@ egg_asn1x_get_time_as_long (GNode *node)
 	g_return_val_if_fail (anode_def_type (node) == TYPE_TIME, -1);
 
 	tlv = anode_get_tlv_data (node);
-	g_return_val_if_fail (tlv, -1);
+	if (tlv == NULL)
+		return -1;
 
 	if (!anode_read_time (node, tlv, &time))
 		return -1;
@@ -2199,7 +2207,8 @@ egg_asn1x_get_oid_as_string (GNode *node)
 	g_return_val_if_fail (anode_def_type (node) == TYPE_OBJECT_ID, NULL);
 
 	tlv = anode_get_tlv_data (node);
-	g_return_val_if_fail (tlv, NULL);
+	if (tlv == NULL)
+		return NULL;
 
 	if (!anode_read_object_id (node, tlv, &oid))
 		return NULL;

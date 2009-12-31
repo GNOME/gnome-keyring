@@ -22,6 +22,7 @@ libegg_la_CFLAGS = \
 
 libegg_la_SOURCES = \
 	egg-asn1.c egg-asn1.h \
+	egg-asn1x.c egg-asn1x.h \
 	egg-buffer.c egg-buffer.h \
 	egg-cleanup.c egg-cleanup.h \
 	egg-dh.c egg-dh.h \
