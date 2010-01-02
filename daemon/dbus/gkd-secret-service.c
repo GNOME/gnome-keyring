@@ -579,7 +579,7 @@ service_method_read_alias (GkdSecretService *self, DBusMessage *message)
 	const char *alias;
 	gchar *path = NULL;
 	const gchar *identifier;
-	GP11Object  *collection;
+	GP11Object  *collection = NULL;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &alias, DBUS_TYPE_INVALID))
 		return NULL;
@@ -591,8 +591,9 @@ service_method_read_alias (GkdSecretService *self, DBusMessage *message)
 		path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, -1);
 
 	/* Make sure it actually exists */
-	collection = gkd_secret_objects_lookup_collection (self->objects,
-	                                                   dbus_message_get_sender (message), path);
+	if (path)
+		collection = gkd_secret_objects_lookup_collection (self->objects,
+		                                                   dbus_message_get_sender (message), path);
 	if (collection == NULL) {
 		g_free (path);
 		path = NULL;
