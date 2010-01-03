@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gck-ssh-agent.c - handles SSH i/o from the clients
+/* gkd-ssh-agent.c - handles SSH i/o from the clients
 
    Copyright (C) 2007 Stefan Walter
 
@@ -7,12 +7,12 @@
    modify it under the terms of the GNU General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
-  
+
    Gnome keyring is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    General Public License for more details.
-  
+
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -33,8 +33,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "gck-ssh-agent.h"
-#include "gck-ssh-agent-private.h"
+#include "gkd-ssh-agent.h"
+#include "gkd-ssh-agent-private.h"
 
 #include "egg/egg-buffer.h"
 #include "egg/egg-secure-memory.h"
@@ -51,16 +51,16 @@ read_all (int fd, guchar *buf, int len)
 {
 	int all = len;
 	int res;
-	
+
 	while (len > 0) {
-		
+
 		res = read (fd, buf, len);
-			
+
 		if (res <= 0) {
 			if (errno == EAGAIN && errno == EINTR)
 				continue;
 			if (res < 0)
-				g_warning ("couldn't read %u bytes from client: %s", all, 
+				g_warning ("couldn't read %u bytes from client: %s", all,
 				           g_strerror (errno));
 			return FALSE;
 		} else  {
@@ -68,7 +68,7 @@ read_all (int fd, guchar *buf, int len)
 			buf += res;
 		}
 	}
-	
+
 	return TRUE;
 }
 
@@ -77,15 +77,15 @@ write_all (int fd, const guchar *buf, int len)
 {
 	int all = len;
 	int res;
-	
+
 	while (len > 0) {
-		
+
 		res = write (fd, buf, len);
 
 		if (res <= 0) {
 			if (errno == EAGAIN && errno == EINTR)
 				continue;
-			g_warning ("couldn't write %u bytes to client: %s", all, 
+			g_warning ("couldn't write %u bytes to client: %s", all,
 			           res < 0 ? g_strerror (errno) : "");
 			return FALSE;
 		} else  {
@@ -93,25 +93,25 @@ write_all (int fd, const guchar *buf, int len)
 			buf += res;
 		}
 	}
-	
+
 	return TRUE;
 }
 
 static gboolean
-read_packet_with_size (GckSshAgentCall *call)
+read_packet_with_size (GkdSshAgentCall *call)
 {
 	int fd;
 	guint32 packet_size;
 
 	fd = call->sock;
-	
+
 	egg_buffer_resize (call->req, 4);
 	if (!read_all (fd, call->req->buf, 4))
 		return FALSE;
 
-	if (!egg_buffer_get_uint32 (call->req, 0, NULL, &packet_size) || 
+	if (!egg_buffer_get_uint32 (call->req, 0, NULL, &packet_size) ||
 	    packet_size < 1) {
-	    	g_warning ("invalid packet size from client");
+		g_warning ("invalid packet size from client");
 		return FALSE;
 	}
 
@@ -126,17 +126,17 @@ static gpointer
 run_client_thread (gpointer data)
 {
 	gint *socket = data;
-	GckSshAgentCall call;
+	GkdSshAgentCall call;
 	EggBuffer req;
 	EggBuffer resp;
 	guchar op;
-	
+
 	g_assert (GP11_IS_MODULE (pkcs11_module));
-	
+
 	memset (&call, 0, sizeof (call));
 	call.sock = g_atomic_int_get (socket);
 	g_assert (call.sock != -1);
-	
+
 	egg_buffer_init_full (&req, 128, egg_secure_realloc);
 	egg_buffer_init_full (&resp, 128, (EggBufferAllocator)g_realloc);
 	call.req = &req;
@@ -144,24 +144,24 @@ run_client_thread (gpointer data)
 	call.module = g_object_ref (pkcs11_module);
 
 	for (;;) {
-		
+
 		egg_buffer_reset (call.req);
-		
+
 		/* 1. Read in the request */
 		if (!read_packet_with_size (&call))
 			break;
 
 		/* 2. Now decode the operation */
 		if (!egg_buffer_get_byte (call.req, 4, NULL, &op))
-			break; 
-		if (op >= GCK_SSH_OP_MAX)
 			break;
-		g_assert (gck_ssh_agent_operations[op]);
-		
+		if (op >= GKD_SSH_OP_MAX)
+			break;
+		g_assert (gkd_ssh_agent_operations[op]);
+
 		/* 3. Execute the right operation */
 		egg_buffer_reset (call.resp);
 		egg_buffer_add_uint32 (call.resp, 0);
-		if (!(gck_ssh_agent_operations[op]) (&call))
+		if (!(gkd_ssh_agent_operations[op]) (&call))
 			break;
 		if (!egg_buffer_set_uint32 (call.resp, 0, call.resp->len - 4))
 			break;
@@ -170,14 +170,14 @@ run_client_thread (gpointer data)
 		if (!write_all (call.sock, call.resp->buf, call.resp->len))
 			break;
 	}
-	
+
 	egg_buffer_uninit (&req);
 	egg_buffer_uninit (&resp);
 	g_object_unref (call.module);
-	
+
 	close (call.sock);
 	g_atomic_int_set (socket, -1);
-	
+
 	return NULL;
 }
 
@@ -192,37 +192,37 @@ static GMutex *pkcs11_main_mutex = NULL;
 static GCond *pkcs11_main_cond = NULL;
 
 GP11Session*
-gck_ssh_agent_checkout_main_session (void)
+gkd_ssh_agent_checkout_main_session (void)
 {
 	GP11Session *result;
-	
+
 	g_mutex_lock (pkcs11_main_mutex);
-	
+
 		g_assert (GP11_IS_SESSION (pkcs11_main_session));
 		while (pkcs11_main_checked)
 			g_cond_wait (pkcs11_main_cond, pkcs11_main_mutex);
 		pkcs11_main_checked = TRUE;
 		result = g_object_ref (pkcs11_main_session);
-	
+
 	g_mutex_unlock (pkcs11_main_mutex);
-	
+
 	return result;
 }
 
 void
-gck_ssh_agent_checkin_main_session (GP11Session *session)
+gkd_ssh_agent_checkin_main_session (GP11Session *session)
 {
 	g_assert (GP11_IS_SESSION (session));
-	
+
 	g_mutex_lock (pkcs11_main_mutex);
-	
+
 		g_assert (session == pkcs11_main_session);
 		g_assert (pkcs11_main_checked);
-		
+
 		g_object_unref (session);
 		pkcs11_main_checked = FALSE;
 		g_cond_signal (pkcs11_main_cond);
-		
+
 	g_mutex_unlock (pkcs11_main_mutex);
 }
 
@@ -236,7 +236,7 @@ typedef struct _Client {
 } Client;
 
 /* Each client thread in this list */
-static GList *socket_clients = NULL; 
+static GList *socket_clients = NULL;
 
 /* The main socket we listen on */
 static int socket_fd = -1;
@@ -245,7 +245,7 @@ static int socket_fd = -1;
 static char socket_path[1024] = { 0, };
 
 void
-gck_ssh_agent_accept (void)
+gkd_ssh_agent_accept (void)
 {
 	Client *client;
 	struct sockaddr_un addr;
@@ -266,61 +266,61 @@ gck_ssh_agent_accept (void)
 		}
 	}
 	socket_clients = g_list_remove_all (socket_clients, NULL);
-	
+
 	addrlen = sizeof (addr);
 	new_fd = accept (socket_fd, (struct sockaddr*) &addr, &addrlen);
 	if (socket_fd < 0) {
 		g_warning ("cannot accept SSH agent connection: %s", strerror (errno));
 		return;
 	}
-	
+
 	client = g_slice_new0 (Client);
 	client->sock = new_fd;
-	
+
 	/* And create a new thread/process */
 	client->thread = g_thread_create (run_client_thread, &client->sock, TRUE, &error);
 	if (!client->thread) {
-		g_warning ("couldn't create thread SSH agent connection: %s", 
+		g_warning ("couldn't create thread SSH agent connection: %s",
 		           error && error->message ? error->message : "");
 		g_slice_free (Client, client);
 		return;
 	}
-	
+
 	socket_clients = g_list_append (socket_clients, client);
 }
 
-void 
-gck_ssh_agent_shutdown (void)
+void
+gkd_ssh_agent_shutdown (void)
 {
 	Client *client;
 	GList *l;
-	
+
 	if (socket_fd != -1)
 		close (socket_fd);
-	
+
 	if (*socket_path)
 		unlink (socket_path);
-	
+
 	/* Stop all of the dispatch threads */
 	for (l = socket_clients; l; l = g_list_next (l)) {
 		client = l->data;
-		
+
 		/* Forcibly shutdown the connection */
 		if (client->sock != -1)
 			shutdown (client->sock, SHUT_RDWR);
 		g_thread_join (client->thread);
-		
+
 		/* This is always closed by client thread */
 		g_assert (client->sock == -1);
 		g_slice_free (Client, client);
 	}
-	
+
 	g_list_free (socket_clients);
 	socket_clients = NULL;
 }
 
 void
-gck_ssh_agent_uninitialize (void)
+gkd_ssh_agent_uninitialize (void)
 {
 	gboolean ret;
 
@@ -342,7 +342,7 @@ gck_ssh_agent_uninitialize (void)
 }
 
 int
-gck_ssh_agent_initialize (CK_FUNCTION_LIST_PTR funcs)
+gkd_ssh_agent_initialize (CK_FUNCTION_LIST_PTR funcs)
 {
 	GP11Module *module;
 	gboolean ret;
@@ -352,13 +352,13 @@ gck_ssh_agent_initialize (CK_FUNCTION_LIST_PTR funcs)
 	module = gp11_module_new (funcs);
 	gp11_module_set_auto_authenticate (module, GP11_AUTHENTICATE_OBJECTS);
 	gp11_module_set_pool_sessions (module, TRUE);
-	ret = gck_ssh_agent_initialize_with_module (module);
+	ret = gkd_ssh_agent_initialize_with_module (module);
 	g_object_unref (module);
 	return ret;
 }
 
 gboolean
-gck_ssh_agent_initialize_with_module (GP11Module *module)
+gkd_ssh_agent_initialize_with_module (GP11Module *module)
 {
 	GP11Session *session = NULL;
 	GList *slots, *l;
@@ -403,14 +403,14 @@ gck_ssh_agent_initialize_with_module (GP11Module *module)
 	return TRUE;
 }
 
-int 
-gck_ssh_agent_startup (const gchar *prefix)
+int
+gkd_ssh_agent_startup (const gchar *prefix)
 {
 	struct sockaddr_un addr;
 	int sock;
-	
+
 	g_return_val_if_fail (prefix, -1);
-	
+
 	snprintf (socket_path, sizeof (socket_path), "%s/ssh", prefix);
 	unlink (socket_path);
 
@@ -419,7 +419,7 @@ gck_ssh_agent_startup (const gchar *prefix)
 		g_warning ("couldn't create socket: %s", g_strerror (errno));
 		return -1;
 	}
-	
+
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
 	strncpy (addr.sun_path, socket_path, sizeof (addr.sun_path));
@@ -428,7 +428,7 @@ gck_ssh_agent_startup (const gchar *prefix)
 		close (sock);
 		return -1;
 	}
-	
+
 	if (listen (sock, 128) < 0) {
 		g_warning ("couldn't listen on socket: %s", g_strerror (errno));
 		close (sock);
@@ -436,7 +436,7 @@ gck_ssh_agent_startup (const gchar *prefix)
 	}
 
 	g_setenv ("SSH_AUTH_SOCK", socket_path, TRUE);
-	
+
 	socket_fd = sock;
 	return sock;
 }

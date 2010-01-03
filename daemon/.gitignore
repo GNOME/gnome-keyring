@@ -18,3 +18,5 @@ run-auto-test*
 /control/tests/test-control-change
 /control/tests/test-control-init
 /control/tests/test-control-unlock
+
+/ssh-agent/gkd-ssh-agent-standalone

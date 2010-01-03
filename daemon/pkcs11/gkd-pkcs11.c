@@ -25,15 +25,16 @@
 #include "gkd-pkcs11-auth.h"
 #include "gkd-pkcs11.h"
 
+#include "egg/egg-cleanup.h"
+
 #include "pkcs11/plex-layer/gck-plex-layer.h"
 #include "pkcs11/roots-store/gck-roots-store.h"
 #include "pkcs11/rpc-layer/gck-rpc-layer.h"
 #include "pkcs11/secret-store/gck-secret-store.h"
-#include "pkcs11/ssh-agent/gck-ssh-agent.h"
 #include "pkcs11/ssh-store/gck-ssh-store.h"
 #include "pkcs11/user-store/gck-user-store.h"
 
-#include "egg/egg-cleanup.h"
+#include "ssh-agent/gkd-ssh-agent.h"
 
 /* The top level of our internal PKCS#11 module stack */
 static CK_FUNCTION_LIST_PTR pkcs11_roof = NULL;
@@ -46,7 +47,7 @@ pkcs11_daemon_cleanup (gpointer unused)
 
 	g_assert (pkcs11_roof);
 
-	gck_ssh_agent_uninitialize ();
+	gkd_ssh_agent_uninitialize ();
 	gck_rpc_layer_uninitialize ();
 	rv = (pkcs11_roof->C_Finalize) (NULL);
 
@@ -102,7 +103,7 @@ gkd_pkcs11_initialize (void)
 
 	egg_cleanup_register (pkcs11_daemon_cleanup, NULL);
 
-	ret = gck_ssh_agent_initialize (pkcs11_roof) &&
+	ret = gkd_ssh_agent_initialize (pkcs11_roof) &&
 	      gck_rpc_layer_initialize (pkcs11_roof);
 
 	return ret;
@@ -149,14 +150,14 @@ gkd_pkcs11_startup_pkcs11 (void)
 static void
 pkcs11_ssh_cleanup (gpointer unused)
 {
-	gck_ssh_agent_shutdown ();
+	gkd_ssh_agent_shutdown ();
 }
 
 static gboolean
 accept_ssh_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
 {
 	if (cond == G_IO_IN)
-		gck_ssh_agent_accept ();
+		gkd_ssh_agent_accept ();
 	return TRUE;
 }
 
@@ -170,7 +171,7 @@ gkd_pkcs11_startup_ssh (void)
 	base_dir = gkd_util_get_master_directory ();
 	g_return_val_if_fail (base_dir, FALSE);
 
-	sock = gck_ssh_agent_startup (base_dir);
+	sock = gkd_ssh_agent_startup (base_dir);
 	if (sock == -1)
 		return FALSE;
 
