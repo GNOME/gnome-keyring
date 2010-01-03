@@ -831,7 +831,7 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 		return service_method_lock (self, message);
 
 	/* org.gnome.keyring.Service.ChangeLock() */
-	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "ChangeLock"))
+	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "ChangeLock"))
 		return service_method_change_lock (self, message);
 
 	/* org.freedesktop.Secret.Service.ReadAlias() */
@@ -841,10 +841,6 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 	/* org.freedesktop.Secret.Service.SetAlias() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SetAlias"))
 		return service_method_set_alias (self, message);
-
-	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.ChangeLock() */
-	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "ChangeLock"))
-		return service_method_change_lock (self, message);
 
 	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.CreateWithMasterPassword */
 	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "CreateWithMasterPassword"))
