@@ -126,7 +126,7 @@ lookup_login_keyring (GP11Session *session)
 	objects = gp11_session_find_objects (session, &error,
 	                                     CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
 	                                     CKA_TOKEN, GP11_BOOLEAN, TRUE,
-	                                     CKA_ID, 5, "login",
+	                                     CKA_ID, (gsize)5, "login",
 	                                     GP11_INVALID);
 
 	if (error) {
@@ -157,7 +157,7 @@ create_login_keyring (GP11Session *session, GP11Object *cred, GError **error)
 
 	login = gp11_session_create_object (session, error,
 	                                    CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
-	                                    CKA_ID, 5, "login",
+	                                    CKA_ID, (gsize)5, "login",
 	                                    CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (cred),
 	                                    CKA_TOKEN, GP11_BOOLEAN, TRUE,
 	                                    GP11_INVALID);
@@ -508,7 +508,7 @@ find_login_keyring_item (GP11Session *session, GP11Attribute *fields)
 	/* Create a search object */
 	search = gp11_session_create_object (session, &error,
 	                                     CKA_CLASS, GP11_ULONG, CKO_G_SEARCH,
-	                                     CKA_G_COLLECTION, 5, "login",
+	                                     CKA_G_COLLECTION, (gsize)5, "login",
 	                                     CKA_TOKEN, GP11_BOOLEAN, FALSE,
 	                                     CKA_G_FIELDS, fields->length, fields->value,
 	                                     GP11_INVALID);
@@ -579,7 +579,7 @@ gkd_login_attach_secret (const gchar *display_name, const gchar *secret,
 		                                   CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
 		                                   CKA_LABEL, strlen (display_name), display_name,
 		                                   CKA_VALUE, strlen (secret), secret,
-		                                   CKA_G_COLLECTION, 5, "login",
+		                                   CKA_G_COLLECTION, (gsize)5, "login",
 		                                   CKA_G_FIELDS, fields.length, fields.value,
 		                                   GP11_INVALID);
 	}
@@ -672,7 +672,7 @@ gkd_login_attributes_for_secret (const gchar *first, ...)
 	va_list va;
 
 	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
-	                              CKA_G_COLLECTION, 5, "login",
+	                              CKA_G_COLLECTION, (gsize)5, "login",
 	                              GP11_INVALID);
 
 	va_start(va, first);
