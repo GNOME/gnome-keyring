@@ -95,6 +95,7 @@ prepare_change_prompt (GkdSecretChange *self, GP11Object *collection)
 	gkd_prompt_hide_widget (prompt, "name_area");
 	gkd_prompt_hide_widget (prompt, "details_area");
 
+	gkd_prompt_show_widget (prompt, "password_area");
 	gkd_prompt_show_widget (prompt, "original_area");
 	gkd_prompt_show_widget (prompt, "confirm_area");
 
