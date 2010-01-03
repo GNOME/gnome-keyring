@@ -115,7 +115,9 @@ complete_transport_params (GkdSecretPrompt *self)
 	result = gkd_secret_session_complete (self->pv->session, peer, n_peer);
 	g_free (peer);
 
-	if (!result)
+	if (result)
+		self->pv->negotiated = TRUE;
+	else
 		g_warning ("negotiation of transport crypto with prompt failed");
 
 	return result;

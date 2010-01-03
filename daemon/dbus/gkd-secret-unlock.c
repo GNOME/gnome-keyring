@@ -95,6 +95,7 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 	gkd_prompt_hide_widget (prompt, "name_area");
 	gkd_prompt_hide_widget (prompt, "confirm_area");
 	gkd_prompt_hide_widget (prompt, "details_area");
+	gkd_prompt_show_widget (prompt, "password_area");
 
 	g_free (label);
 }
@@ -235,7 +236,7 @@ gkd_secret_unlock_prompt_ready (GkdSecretPrompt *prompt)
 			g_free (objpath);
 			continue;
 		} else if (!locked) {
-			g_array_append_val (self->results, self->current);
+			g_array_append_val (self->results, objpath);
 			g_object_unref (coll);
 			continue;
 		}
