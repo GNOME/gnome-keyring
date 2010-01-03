@@ -132,6 +132,15 @@ static void
 gck_user_module_real_store_token_object (GckModule *base, GckTransaction *transaction, GckObject *object)
 {
 	GckUserModule *self = GCK_USER_MODULE (base);
+	GckStore *store = NULL;
+
+	/* TODO: Need to support storing changes better */
+	g_object_get (object, "store", &store, NULL);
+	if (store != NULL) {
+		g_object_unref (store);
+		return;
+	}
+
 	gck_user_storage_create (self->storage, transaction, object);
 }
 

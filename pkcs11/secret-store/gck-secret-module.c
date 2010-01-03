@@ -306,12 +306,12 @@ gck_secret_module_real_store_object (GckModule *module, GckTransaction *transact
 	const gchar *identifier;
 	gchar *filename;
 
-	/* Adding an item */
+	/* Storing an item */
 	if (GCK_IS_SECRET_ITEM (object)) {
 		collection = gck_secret_item_get_collection (GCK_SECRET_ITEM (object));
 		g_return_if_fail (GCK_IS_SECRET_COLLECTION (collection));
 
-	/* Adding a collection */
+	/* Storing a collection */
 	} else if (GCK_IS_SECRET_COLLECTION (object)) {
 		collection = GCK_SECRET_COLLECTION (object);
 	}
