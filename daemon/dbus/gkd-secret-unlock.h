@@ -58,4 +58,9 @@ gboolean            gkd_secret_unlock_with_secret             (GP11Object *colle
                                                                GkdSecretSecret *master,
                                                                DBusError *derr);
 
+gboolean            gkd_secret_unlock_with_password           (GP11Object *collection,
+                                                               const guchar *password,
+                                                               gsize n_password,
+                                                               DBusError *derr);
+
 #endif /* __GKD_SECRET_UNLOCK_H__ */
