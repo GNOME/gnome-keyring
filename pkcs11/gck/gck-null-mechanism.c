@@ -30,40 +30,44 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
-static gboolean
+static CK_RV
 retrieve_length (GckSession *session, GckObject *wrapped, gsize *length)
 {
 	CK_ATTRIBUTE attr;
+	CK_RV rv;
 
 	attr.type = CKA_VALUE;
 	attr.pValue = NULL;
 	attr.ulValueLen = 0;
 
-	if (gck_object_get_attribute (wrapped, session, &attr) != CKR_OK)
-		return FALSE;
-
-	*length = attr.ulValueLen;
-	return TRUE;
+	rv = gck_object_get_attribute (wrapped, session, &attr);
+	if (rv == CKR_OK)
+		*length = attr.ulValueLen;
+	return rv;
 }
 
-static gpointer
-retrieve_value (GckSession *session, GckObject *wrapped, gsize *n_value)
+static CK_RV
+retrieve_value (GckSession *session, GckObject *wrapped,
+                gpointer *value, gsize *n_value)
 {
 	CK_ATTRIBUTE attr;
+	CK_RV rv;
 
-	if (!retrieve_length (session, wrapped, n_value))
-		return NULL;
+	rv = retrieve_length (session, wrapped, n_value);
+	if (rv != CKR_OK)
+		return rv;
 
 	attr.type = CKA_VALUE;
 	attr.pValue = egg_secure_alloc (*n_value);
 	attr.ulValueLen = *n_value;
 
-	if (gck_object_get_attribute (wrapped, session, &attr) != CKR_OK) {
+	rv = gck_object_get_attribute (wrapped, session, &attr);
+	if (rv == CKR_OK)
+		*value = attr.pValue;
+	else
 		egg_secure_free (attr.pValue);
-		return NULL;
-	}
 
-	return attr.pValue;
+	return rv;
 }
 
 CK_RV
@@ -88,18 +92,18 @@ gck_null_mechanism_wrap (GckSession *session, CK_MECHANISM_PTR mech,
 
 	/* They just want the length */
 	if (!output) {
-		if (!retrieve_length (session, wrapped, &n_value))
-			return CKR_KEY_NOT_WRAPPABLE;
-		*n_output = n_value;
-		return CKR_OK;
+		rv = retrieve_length (session, wrapped, &n_value);
+		if (rv == CKR_OK)
+			*n_output = n_value;
+		return rv;
 	}
 
 	if (mech->ulParameterLen)
 		return CKR_MECHANISM_PARAM_INVALID;
 
-	value = retrieve_value (session, wrapped, &n_value);
-	if (value == NULL)
-		return CKR_KEY_NOT_WRAPPABLE;
+	rv = retrieve_value (session, wrapped, &value, &n_value);
+	if (rv != CKR_OK)
+		return rv;
 
 	rv = gck_util_return_data (output, n_output, value, n_value);
 	egg_secure_free (value);

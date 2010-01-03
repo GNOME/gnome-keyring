@@ -31,40 +31,44 @@
 #include "egg/egg-padding.h"
 #include "egg/egg-secure-memory.h"
 
-static gboolean
+static CK_RV
 retrieve_length (GckSession *session, GckObject *wrapped, gsize *length)
 {
 	CK_ATTRIBUTE attr;
+	CK_RV rv;
 
 	attr.type = CKA_VALUE;
 	attr.pValue = NULL;
 	attr.ulValueLen = 0;
 
-	if (gck_object_get_attribute (wrapped, session, &attr) != CKR_OK)
-		return FALSE;
-
-	*length = attr.ulValueLen;
-	return TRUE;
+	rv = gck_object_get_attribute (wrapped, session, &attr);
+	if (rv == CKR_OK)
+		*length = attr.ulValueLen;
+	return rv;
 }
 
-static gpointer
-retrieve_value (GckSession *session, GckObject *wrapped, gsize *n_value)
+static CK_RV
+retrieve_value (GckSession *session, GckObject *wrapped,
+                gpointer *value, gsize *n_value)
 {
 	CK_ATTRIBUTE attr;
+	CK_RV rv;
 
-	if (!retrieve_length (session, wrapped, n_value))
-		return NULL;
+	rv = retrieve_length (session, wrapped, n_value);
+	if (rv != CKR_OK)
+		return rv;
 
 	attr.type = CKA_VALUE;
 	attr.pValue = egg_secure_alloc (*n_value);
 	attr.ulValueLen = *n_value;
 
-	if (gck_object_get_attribute (wrapped, session, &attr) != CKR_OK) {
+	rv = gck_object_get_attribute (wrapped, session, &attr);
+	if (rv == CKR_OK)
+		*value = attr.pValue;
+	else
 		egg_secure_free (attr.pValue);
-		return NULL;
-	}
 
-	return attr.pValue;
+	return rv;
 }
 
 CK_RV
@@ -96,8 +100,9 @@ gck_aes_mechanism_wrap (GckSession *session, CK_MECHANISM_PTR mech,
 
 	/* They just want the length */
 	if (!output) {
-		if (!retrieve_length (session, wrapped, &n_value))
-			return CKR_KEY_NOT_WRAPPABLE;
+		rv = retrieve_length (session, wrapped, &n_value);
+		if (rv != CKR_OK)
+			return rv;
 		if (!egg_padding_pkcs7_pad (NULL, block, NULL, n_value, NULL, &n_padded))
 			return CKR_KEY_SIZE_RANGE;
 		*n_output = n_padded;
@@ -113,10 +118,10 @@ gck_aes_mechanism_wrap (GckSession *session, CK_MECHANISM_PTR mech,
 		return CKR_MECHANISM_PARAM_INVALID;
 	}
 
-	value = retrieve_value (session, wrapped, &n_value);
-	if (value == NULL) {
+	rv = retrieve_value (session, wrapped, &value, &n_value);
+	if (rv != CKR_OK) {
 		gcry_cipher_close (cih);
-		return CKR_KEY_NOT_WRAPPABLE;
+		return rv;
 	}
 
 	ret = egg_padding_pkcs7_pad (egg_secure_realloc, block, value, n_value, &padded, &n_padded);
