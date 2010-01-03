@@ -82,7 +82,10 @@ prepare_change_prompt (GkdSecretChange *self, GP11Object *collection)
 	gkd_prompt_reset (prompt);
 
 	gkd_prompt_set_title (prompt, _("Change Keyring Password"));
-	gkd_prompt_set_primary_text (prompt, _("Choose a new password for the '%s' keyring"));
+
+	text = g_markup_printf_escaped (_("Choose a new password for the '%s' keyring"), label);
+	gkd_prompt_set_primary_text (prompt, text);
+	g_free (text);
 
 	text = g_markup_printf_escaped (_("An application wants to change the password for the '%s' keyring. "
 	                                  "Choose the new password you want to use for it."), label);
