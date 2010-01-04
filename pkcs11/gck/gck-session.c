@@ -1099,7 +1099,7 @@ gck_session_C_SetAttributeValue (GckSession* self, CK_OBJECT_HANDLE handle,
 		gck_object_set_attribute (object, self, transaction, &template[i]);
 
 	/* Store the object */
-	if (gck_object_is_token (object))
+	if (!gck_transaction_get_failed (transaction) && gck_object_is_token (object))
 		gck_module_store_token_object (self->pv->module, transaction, object);
 
 	gck_transaction_complete (transaction);
