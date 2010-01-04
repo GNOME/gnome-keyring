@@ -287,6 +287,7 @@ gck_secret_item_real_set_attribute (GckObject *base, GckSession *session,
 			gck_transaction_fail (transaction, rv);
 		else
 			begin_set_schema (self, transaction, schema);
+		return;
 	}
 
 	GCK_OBJECT_CLASS (gck_secret_item_parent_class)->set_attribute (base, session, transaction, attr);
