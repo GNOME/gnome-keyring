@@ -29,6 +29,7 @@
 		<property name="Locked" type="b" access="read"/>
 		<property name="Attributes" type="a{ss}" access="readwrite"/>
 		<property name="Label" type="s" access="readwrite"/>
+		<property name="Type" type="s" access="readwrite"/>
 		<property name="Created" type="t" access="read"/>
 		<property name="Modified" type="t" access="read"/>
 		<method name="Delete">

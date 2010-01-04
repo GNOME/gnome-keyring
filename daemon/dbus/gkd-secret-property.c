@@ -71,6 +71,10 @@ property_to_attribute (const gchar *prop_name, CK_ATTRIBUTE_TYPE *attr_type, Dat
 		*attr_type = CKA_LABEL;
 		*data_type = DATA_TYPE_STRING;
 
+	} else if (g_str_equal (prop_name, "Type")) {
+		*attr_type = CKA_G_SCHEMA;
+		*data_type = DATA_TYPE_STRING;
+
 	} else if (g_str_equal (prop_name, "Locked")) {
 		*attr_type = CKA_G_LOCKED;
 		*data_type = DATA_TYPE_BOOL;
@@ -103,6 +107,10 @@ attribute_to_property (CK_ATTRIBUTE_TYPE attr_type, const gchar **prop_name, Dat
 	switch (attr_type) {
 	case CKA_LABEL:
 		*prop_name = "Label";
+		*data_type = DATA_TYPE_STRING;
+		break;
+	case CKA_G_SCHEMA:
+		*prop_name = "Type";
 		*data_type = DATA_TYPE_STRING;
 		break;
 	case CKA_G_LOCKED:

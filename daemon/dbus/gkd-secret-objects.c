@@ -306,6 +306,7 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 
 	attrs = gp11_object_get (object, &error,
 	                         CKA_LABEL,
+	                         CKA_G_SCHEMA,
 	                         CKA_G_LOCKED,
 	                         CKA_G_CREATED,
 	                         CKA_G_MODIFIED,
