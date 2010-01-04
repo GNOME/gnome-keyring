@@ -66,17 +66,17 @@ DEFINE_TEST(parse_item_type)
 {
 	guint type;
 
-	type = gck_secret_compat_parse_item_type ("generic-secret");
+	type = gck_secret_compat_parse_item_type ("org.freedesktop.Secret.Generic");
 	g_assert_cmpuint (type, ==, 0);
-	type = gck_secret_compat_parse_item_type ("network-password");
+	type = gck_secret_compat_parse_item_type ("org.gnome.keyring.NetworkPassword");
 	g_assert_cmpuint (type, ==, 1);
-	type = gck_secret_compat_parse_item_type ("note");
+	type = gck_secret_compat_parse_item_type ("org.gnome.keyring.Note");
 	g_assert_cmpuint (type, ==, 2);
-	type = gck_secret_compat_parse_item_type ("chained-keyring-password");
+	type = gck_secret_compat_parse_item_type ("org.gnome.keyring.ChainedKeyring");
 	g_assert_cmpuint (type, ==, 3);
-	type = gck_secret_compat_parse_item_type ("encryption-key-password");
+	type = gck_secret_compat_parse_item_type ("org.gnome.keyring.EncryptionKey");
 	g_assert_cmpuint (type, ==, 4);
-	type = gck_secret_compat_parse_item_type ("pk-storage");
+	type = gck_secret_compat_parse_item_type ("org.gnome.keyring.PkStorage");
 	g_assert_cmpuint (type, ==, 0x100);
 
 	/* Invalid returns generic secret */
@@ -93,21 +93,21 @@ DEFINE_TEST(format_item_type)
 	const gchar *type;
 
 	type = gck_secret_compat_format_item_type (0);
-	g_assert_cmpstr (type, ==, "generic-secret");
+	g_assert_cmpstr (type, ==, "org.freedesktop.Secret.Generic");
 	type = gck_secret_compat_format_item_type (1);
-	g_assert_cmpstr (type, ==, "network-password");
+	g_assert_cmpstr (type, ==, "org.gnome.keyring.NetworkPassword");
 	type = gck_secret_compat_format_item_type (2);
-	g_assert_cmpstr (type, ==, "note");
+	g_assert_cmpstr (type, ==, "org.gnome.keyring.Note");
 	type = gck_secret_compat_format_item_type (3);
-	g_assert_cmpstr (type, ==, "chained-keyring-password");
+	g_assert_cmpstr (type, ==, "org.gnome.keyring.ChainedKeyring");
 	type = gck_secret_compat_format_item_type (4);
-	g_assert_cmpstr (type, ==, "encryption-key-password");
+	g_assert_cmpstr (type, ==, "org.gnome.keyring.EncryptionKey");
 	type = gck_secret_compat_format_item_type (0x100);
-	g_assert_cmpstr (type, ==, "pk-storage");
+	g_assert_cmpstr (type, ==, "org.gnome.keyring.PkStorage");
 
 	/* Higher bits shouldn't make a difference */
 	type = gck_secret_compat_format_item_type (0xF0000001);
-	g_assert_cmpstr (type, ==, "network-password");
+	g_assert_cmpstr (type, ==, "org.gnome.keyring.NetworkPassword");
 
 	/* Unrecognized should be null */
 	type = gck_secret_compat_format_item_type (32);

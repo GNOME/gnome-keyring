@@ -543,12 +543,12 @@ generate_hashed_items (GckSecretCollection *collection, EggBuffer *buffer)
 			continue;
 		}
 		egg_buffer_add_uint32 (buffer, id);
-		
-		attributes = gck_secret_item_get_fields (l->data);
-		value = g_hash_table_lookup (attributes, "gkr:item-type");
+
+		value = gck_secret_item_get_schema (l->data);
 		type = gck_secret_compat_parse_item_type (value);
 		egg_buffer_add_uint32 (buffer, type);
-		
+
+		attributes = gck_secret_item_get_fields (l->data);
 		buffer_add_attributes (buffer, attributes, TRUE);
 	}
 	
@@ -736,7 +736,7 @@ setup_item_from_info (GckSecretItem *item, GckSecretData *data, ItemInfo *info)
 	gck_secret_object_set_modified (obj, info->mtime);
 	
 	type = gck_secret_compat_format_item_type (info->type);
-	gck_secret_fields_add (info->attributes, "gkr:item-type", type);
+	gck_secret_item_set_schema (item, type);
 	gck_secret_item_set_fields (item, info->attributes);
 
 	/* Collection is locked */

@@ -279,12 +279,7 @@ generate_item (GKeyFile *file, GckSecretItem *item, GckSecretData *sdata)
 	identifier = gck_secret_object_get_identifier (obj);
 	attributes = gck_secret_item_get_fields (item);
 
-	/* 
-	 * COMPATIBILITY: We no longer have the concept of an item type.
-	 * The gkr:item-type field serves that purpose.
-	 */
-
-	value = gck_secret_fields_get (attributes, "gkr:item-type");
+	value = gck_secret_item_get_schema (item);
 	g_key_file_set_integer (file, identifier, "item-type",
 	                        gck_secret_compat_parse_item_type (value));
 
@@ -334,19 +329,12 @@ parse_item (GKeyFile *file, GckSecretItem *item, GckSecretData *sdata,
 	identifier = gck_secret_object_get_identifier (obj);
 	attributes = gck_secret_item_get_fields (item);
 
-	/* 
-	 * COMPATIBILITY: We no longer have the concept of an item type.
-	 * The gkr:item-type field serves that purpose.
-	 */
-
 	type = g_key_file_get_integer (file, identifier, "item-type", &err);
 	if (err) {
 		g_clear_error (&err);
 		type = 0;
 	}
-
-	gck_secret_fields_add (attributes, "gkr:item-type",
-	                       gck_secret_compat_format_item_type (type));
+	gck_secret_item_set_schema (item, gck_secret_compat_format_item_type (type));
 
 	val = g_key_file_get_string (file, identifier, "display-name", NULL);
 	gck_secret_object_set_label (obj, val);

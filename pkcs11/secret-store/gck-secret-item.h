@@ -53,4 +53,9 @@ GHashTable*            gck_secret_item_get_fields             (GckSecretItem *se
 void                   gck_secret_item_set_fields             (GckSecretItem *self,
                                                                GHashTable *fields);
 
+const gchar*           gck_secret_item_get_schema             (GckSecretItem *self);
+
+void                   gck_secret_item_set_schema             (GckSecretItem *self,
+                                                               const gchar *type);
+
 #endif /* __GCK_SECRET_ITEM_H__ */

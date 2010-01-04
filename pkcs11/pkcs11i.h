@@ -68,6 +68,8 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 
 #define CKO_G_COLLECTION                     (CKO_GNOME + 110)
 
+#define CKK_G_SECRET_ITEM                    (CKK_GNOME + 101)
+
 #define CKO_G_SEARCH                         (CKO_GNOME + 111)
 
 #define CKA_G_LOCKED                         (CKA_GNOME + 210)
@@ -81,6 +83,8 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 #define CKA_G_COLLECTION                     (CKA_GNOME + 214)
 
 #define CKA_G_MATCHED                        (CKA_GNOME + 215)
+
+#define CKA_G_SCHEMA                         (CKA_GNOME + 216)
 
 /* -------------------------------------------------------------------
  * MECHANISMS

@@ -50,17 +50,17 @@ gck_secret_compat_parse_item_type (const gchar *value)
 {
 	if (value == NULL)
 		return 0; /* The default */
-	if (strcmp (value, "generic-secret") == 0)
+	if (strcmp (value, "org.freedesktop.Secret.Generic") == 0)
 		return 0; /* GNOME_KEYRING_ITEM_GENERIC_SECRET */
-	if (strcmp (value, "network-password") == 0)
+	if (strcmp (value, "org.gnome.keyring.NetworkPassword") == 0)
 		return 1; /* GNOME_KEYRING_ITEM_NETWORK_PASSWORD */
-	if (strcmp (value, "note") == 0)
+	if (strcmp (value, "org.gnome.keyring.Note") == 0)
 		return 2; /* GNOME_KEYRING_ITEM_NOTE */
-	if (strcmp (value, "chained-keyring-password") == 0)
+	if (strcmp (value, "org.gnome.keyring.ChainedKeyring") == 0)
 		return 3; /* GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD */
-	if (strcmp (value, "encryption-key-password") == 0)
+	if (strcmp (value, "org.gnome.keyring.EncryptionKey") == 0)
 		return 4; /* GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD */
-	if (strcmp (value, "pk-storage") == 0)
+	if (strcmp (value, "org.gnome.keyring.PkStorage") == 0)
 		return 0x100; /* GNOME_KEYRING_ITEM_PK_STORAGE */
 
 	/* The default: GNOME_KEYRING_ITEM_GENERIC_SECRET */
@@ -74,17 +74,17 @@ gck_secret_compat_format_item_type (guint value)
 	switch (value & 0x0000ffff)
 	{
 	case 0: /* GNOME_KEYRING_ITEM_GENERIC_SECRET */
-		return "generic-secret";
+		return "org.freedesktop.Secret.Generic";
 	case 1: /* GNOME_KEYRING_ITEM_NETWORK_PASSWORD */
-		return "network-password";
+		return "org.gnome.keyring.NetworkPassword";
 	case 2: /* GNOME_KEYRING_ITEM_NOTE */
-		return "note";
+		return "org.gnome.keyring.Note";
 	case 3: /* GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD */
-		return "chained-keyring-password";
+		return "org.gnome.keyring.ChainedKeyring";
 	case 4: /* GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD */
-		return "encryption-key-password";
+		return "org.gnome.keyring.EncryptionKey";
 	case 0x100: /* GNOME_KEYRING_ITEM_PK_STORAGE */
-		return "pk-storage";
+		return "org.gnome.keyring.PkStorage";
 	default:
 		return NULL;
 	};
