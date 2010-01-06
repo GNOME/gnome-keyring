@@ -269,7 +269,7 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                             <property name="label_xalign">0</property>
                             <property name="shadow_type">none</property>
                             <child>
-                              <object class="GtkAlignment" id="alignment2">
+                              <object class="GtkAlignment" id="options_area">
                                 <property name="visible">True</property>
                                 <property name="top_padding">3</property>
                                 <property name="left_padding">12</property>
@@ -395,7 +395,6 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                         </child>
                         <child>
                           <object class="GtkAlignment" id="info_area">
-                            <property name="visible">True</property>
                             <property name="left_padding">6</property>
                             <child>
                               <object class="GtkTable" id="table1">

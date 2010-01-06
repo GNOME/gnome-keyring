@@ -304,6 +304,44 @@ prepare_security (GtkBuilder *builder, GtkDialog *dialog)
 	g_signal_connect (dialog, "window-state-event", G_CALLBACK (window_state_changed), NULL);
 }
 
+static void
+on_auto_check_unlock_toggled (GtkToggleButton *check, GtkBuilder *builder)
+{
+	GtkWidget *area;
+
+	area = GTK_WIDGET (gtk_builder_get_object (builder, "options_area"));
+	gtk_widget_set_sensitive (area, !gtk_toggle_button_get_active (check));
+}
+
+static void
+on_timeout_choices_toggled (GtkToggleButton *unused, GtkBuilder *builder)
+{
+	GtkWidget *spin, *after, *idle;
+
+	spin = GTK_WIDGET (gtk_builder_get_object (builder, "lock_minutes_spin"));
+	after = GTK_WIDGET (gtk_builder_get_object (builder, "lock_after_choice"));
+	idle = GTK_WIDGET (gtk_builder_get_object (builder, "lock_idle_choice"));
+	gtk_widget_set_sensitive (spin, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (after)) ||
+	                                gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(idle)));
+
+}
+
+static void
+prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
+{
+	GtkWidget *check;
+
+	check = GTK_WIDGET (gtk_builder_get_object (builder, "auto_unlock_check"));
+	g_signal_connect (check, "toggled", G_CALLBACK (on_auto_check_unlock_toggled), builder);
+	on_auto_check_unlock_toggled (GTK_TOGGLE_BUTTON (check), builder);
+
+	check = GTK_WIDGET (gtk_builder_get_object (builder, "lock_after_choice"));
+	g_signal_connect (check, "toggled", G_CALLBACK (on_timeout_choices_toggled), builder);
+	check = GTK_WIDGET (gtk_builder_get_object (builder, "lock_idle_choice"));
+	g_signal_connect (check, "toggled", G_CALLBACK (on_timeout_choices_toggled), builder);
+	on_timeout_choices_toggled (GTK_TOGGLE_BUTTON (check), builder);
+}
+
 static GtkDialog*
 prepare_dialog (GtkBuilder *builder)
 {
@@ -326,6 +364,7 @@ prepare_dialog (GtkBuilder *builder)
 	prepare_buttons (builder, dialog);
 	prepare_passwords (builder, dialog);
 	prepare_security (builder, dialog);
+	prepare_lock (builder, dialog);
 
 	return dialog;
 }
