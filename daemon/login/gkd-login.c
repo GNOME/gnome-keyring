@@ -654,7 +654,8 @@ gkd_login_remove_secret (const gchar *first, ...)
 	item = find_login_keyring_item (session, &fields);
 	if (item != NULL) {
 		if (!gp11_object_destroy (item, &error)) {
-			g_warning ("couldn't remove stored secret from login keyring: %s", error->message);
+			if (error->code != CKR_OBJECT_HANDLE_INVALID)
+				g_warning ("couldn't remove stored secret from login keyring: %s", error->message);
 			g_clear_error (&error);
 		}
 		g_object_unref (item);
