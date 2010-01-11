@@ -531,6 +531,7 @@ find_login_keyring_item (GP11Session *session, GP11Attribute *fields)
 		return NULL;
 	}
 
+	n_data /= sizeof (CK_OBJECT_HANDLE);
 	objects = gp11_objects_from_handle_array (gp11_session_get_slot (session), data,
 	                                          MIN (sizeof (CK_OBJECT_HANDLE), n_data));
 	g_free (data);
