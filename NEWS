@@ -1,3 +1,10 @@
+Changes in version 2.29.5 are:
+ * Implement lookup collection passwords in login keyring.
+ * Various prompting fixes.
+ * Store PKCS#11 objects after any attribute change.
+ * Add 'Type' property to Secret Service API DBus item interface
+ * Various warning, and uninitialized memory fixes.
+
 Changes in version 2.29.4 are:
  * Refactor how the daemon starts up.
  * Allow init with already present environment variables, using --start.
