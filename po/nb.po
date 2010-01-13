@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.29.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-07 15:58+0100\n"
-"PO-Revision-Date: 2010-01-07 16:07+0100\n"
+"POT-Creation-Date: 2010-01-13 21:36+0100\n"
+"PO-Revision-Date: 2010-01-13 21:40+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,11 @@ msgid ""
 "only takes effect during startup with gnome-session, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
-msgstr "Dette alternativet aktiverer PKCS#11-komponenten for gnome-keyring-tjenesten. Dette trer kun i kraft under oppstart med gnome-session. Altså når brukeren logger inn. Denne innstillingen kan overstyres med spesifikke kommandolinjeargumenter gis til tjenesten."
+msgstr ""
+"Dette alternativet aktiverer PKCS#11-komponenten for gnome-keyring-"
+"tjenesten. Dette trer kun i kraft under oppstart med gnome-session. Altså "
+"når brukeren logger inn. Denne innstillingen kan overstyres med spesifikke "
+"kommandolinjeargumenter gis til tjenesten."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -134,13 +138,12 @@ msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME nøkkelring: PKCS#11-komponent"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-#, fuzzy
 msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME nøkkelringtjeneste"
+msgstr "GNOME nøkkelring: Hemmelige tjenester"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
-msgstr ""
+msgstr "Lagringstjeneste for hemmeligheter"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "GNOME Keyring: SSH Agent"
@@ -246,11 +249,11 @@ msgstr ""
 "Et program ønsker tilgang til lager for sertifikat/nøkkel «%s», men det er "
 "låst"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:343
+#: ../daemon/prompt/gkd-prompt-tool.c:382
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:344
+#: ../daemon/prompt/gkd-prompt-tool.c:383
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -260,26 +263,28 @@ msgstr ""
 "krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
 "tilgang til dine filer."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:351
+#: ../daemon/prompt/gkd-prompt-tool.c:390
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:381
+#: ../daemon/prompt/gkd-prompt-tool.c:420
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:391
+#: ../daemon/prompt/gkd-prompt-tool.c:430
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 
 #: ../daemon/prompt/gkd-prompt.ui.h:1
-#, fuzzy
 msgid ""
 "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to "
 "unlock</span>\n"
 "\n"
 "An application wants access to the keyring 'xxx', but it is locked."
-msgstr "Et ukjent program ønsker tilgang til nøkkelring «%s», men den er låst"
+msgstr ""
+"<span size=\"large\" weight=\"bold\">Oppgi passord for å låse opp nøkkelring «login»</span>\n"
+"\n"
+"Et program ønsker tilgang til nøkkelring «login», men den er låst"
 
 #: ../daemon/prompt/gkd-prompt.ui.h:4
 msgid "Automatically unlock this keyring whenever I'm logged in."
@@ -302,9 +307,8 @@ msgid "New password strength"
 msgstr "Styrke for nytt passord"
 
 #: ../daemon/prompt/gkd-prompt.ui.h:9
-#, fuzzy
 msgid "Prompt me for each application that accesses this keyring."
-msgstr "Gi program tilgang til nøkkelring?"
+msgstr "Spør for hvert program som vil ha tilgang til denne nøkkelringen."
 
 #: ../daemon/prompt/gkd-prompt.ui.h:10
 msgid "_Application:"
