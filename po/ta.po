@@ -6,14 +6,15 @@
 # Felix <ifelix@redhat.com>, 2006.
 # Dr.T.Vasudevan <agnihot3@gmail.com>, 2007, 2008, 2009.
 # I. Felix <ifelix@redhat.com>, 2009.
+# Dr,T,Vasudevan <agnihot3@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-29 08:52+0530\n"
-"PO-Revision-Date: 2009-07-29 08:54+0530\n"
-"Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
-"Language-Team: Tamil <Ubuntu-l10n-tam@lists.ubuntu.com>\n"
+"POT-Creation-Date: 2010-01-21 13:40+0530\n"
+"PO-Revision-Date: 2010-01-21 14:00+0530\n"
+"Last-Translator: Dr,T,Vasudevan <agnihot3@gmail.com>\n"
+"Language-Team: Tamil <Ubuntu-l10n-tam@lists.ubuntu.com>>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,321 +24,14 @@ msgstr ""
 "\n"
 "X-Generator: Lokalize 0.3\n"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:228
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr ""
-"பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தில் '<object prop='name'/>' க்கான  "
-"கடவுச்சொல்லை அணுக விரும்புகிறது"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr ""
-"பயன்பாடு '%s' (%s) '%s' இல் உள்ள '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக "
-"விரும்புகிறது"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"பயன்பாடு '%s' இயல்பான விசை வளையத்தில் '<object prop='name'/>' இன்  கடவுச்சொல்லை "
-"அணுக விரும்புகிறது"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"பயன்பாடு '%s' '%s' இல் உள்ள '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக "
-"விரும்புகிறது"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:258
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"தெரியாத பயன்பாடு '<object prop='name'/>' க்கு கடவுச்சொல்லை இயல்பான விசை "
-"வளையத்திலிருந்து அணுக விரும்புகிறது"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:261
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"தெரியாத பயன்பாடு '<object prop='name'/>' க்கு %s இல் உள்ள கடவுச்சொல்லை அணுக "
-"விரும்புகிறது"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow access"
-msgstr "அணுக அனுமதிக்கவும்"
-
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow application access to keyring?"
-msgstr "பயன்பாடுகள் விசை வளையத்தை அணுக அனுமதிக்கவா?"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:309
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது "
-"பூட்டப்பட்டுள்ளது."
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:314
-#, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"பயன்பாடு '%s' (%s) விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
-"பூட்டப்பட்டுள்ளது."
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
-#, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"பயன்பாடு '%s' இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "பயன்பாடு '%s' விசை வளையம்  '%s' ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:346
-#, c-format
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"தெரியாத பயன்பாடு இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது ஆனால் அது பூட்டப்பட்டுள்ளது."
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:351
-#, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"தெரியாத பயன்பாடு இயல்பான விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது ஆனால் அது "
-"பூட்டப்பட்டுள்ளது."
-
-#: ../daemon/gkr-daemon-ops.c:358
-msgid "Enter password for default keyring to unlock"
-msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/gkr-daemon-ops.c:360
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "பூட்டைத்திறக்க '%s' விசை வளையத்தின் கடவுச்சொல்லை உள்ளிடவும்"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:364
-msgid "Unlock Keyring"
-msgstr "விசை வளையத்தின் பூட்டை திற"
-
-#: ../daemon/gkr-daemon-ops.c:376
-msgid "Automatically unlock this keyring when I log in."
-msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த விசை வளையத்தை பூட்டு திறக்கவும்."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:413
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s' (%s) புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் "
-"பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:418
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s' (%s) புதிய இயல்பான விசை வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் "
-"பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s' புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த "
-"விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s'  புதிய இயல்பான விசை  ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த "
-"விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:449
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"தெரியாத பயன்பாடு புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த "
-"விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:454
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"தெரியாத பயன்பாடு புதிய இயல்பான விசை வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் "
-"பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:460
-msgid "New Keyring Password"
-msgstr "புதிய விசை வளைய கடவுச்சொல்"
-
-#: ../daemon/gkr-daemon-ops.c:461
-msgid "Choose password for new keyring"
-msgstr "புதிய விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
-
-#: ../daemon/gkr-daemon-ops.c:508
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s' (%s) '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
-"கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#: ../daemon/gkr-daemon-ops.c:512
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s' (%s) முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. "
-"அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s' '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
-"கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"பயன்பாடு '%s' முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
-"கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#: ../daemon/gkr-daemon-ops.c:538
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"தெரியாத பயன்பாடு '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
-"கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#: ../daemon/gkr-daemon-ops.c:542
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"தெரியாத பயன்பாடு முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. "
-"அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#: ../daemon/gkr-daemon-ops.c:552, c-format
-msgid "Choose a new password for the '%s' keyring."
-msgstr "'%s' விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
-
-#: ../daemon/gkr-daemon-ops.c:554, c-format
-msgid "Choose a new password for the default keyring."
-msgstr "முன்னிருப்பு விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:558
-msgid "Change Keyring Password"
-msgstr "விசை வளைய கடவுச்சொல்லை மாற்றவும்"
-
-#: ../daemon/gkr-daemon-ops.c:631
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"பயன்பாடு '%s' (%s) கடவுச்சொல்லை சேமிக்க விரும்புகிறது ஆனால் இயல்பான விசை வளையம் "
-"இல்லை. அதை உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"பயன்பாடு '%s' கடவுச்சொல்லை சேமிக்க விரும்புகிறது ஆனால் இயல்பான கடவுச்சொல் இல்லை. "
-"உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/gkr-daemon-ops.c:643
-#, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"தெரியாத பயன்பாடு கடவுச்சொல்லை சேமிக்க விரும்புகிறதும் ஆனால் இயல்பான கடவுச்சொல் இல்லை. "
-"அதை உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Create Default Keyring"
-msgstr "புதிய இயல்பான விசை வளையத்தை உருவாக்கவும்"
-
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Choose password for default keyring"
-msgstr "இயல்பான விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
-
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"only takes effect during startup with gnome-session, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
-"இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் PKCS#11 கூறால் பயன்படுத்தப்படுகிறது. இது அந்த கிங்கரன் "
+"இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் PKCS#11 கூறால் பயன்படுத்தப்படுகிறது. இது  க்னோம் "
 "துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த அமைப்பு "
 "கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
 
@@ -353,90 +47,166 @@ msgstr ""
 "தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
+msgid ""
+"This option enables the secret service component in the gnome-keyring "
+"daemon. It only takes effect during startup with gnome-session, (ie: when "
+"the user logs in). This setting may be overridden when certain command line "
+"arguments are passed to the daemon."
+msgstr ""
+"இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் ரகசிய சேவை கூறால் பயன்படுத்தப்படுகிறது. இது க்னோம்"
+"துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த அமைப்பு "
+"கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "க்னோம் விசை வளைய அடக்கம் PKCS#11 செயற்படுத்தப் பட வேண்டுமா"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "க்னோம் விசை வளைய SSH முகவர் செயற்படுத்தி உள்ளதா"
 
-#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-msgid "GNOME Keyring Daemon"
-msgstr "GNOME கீரிங் டீமான்"
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
+msgid "Whether the gnome-keyring secret service is enabled."
+msgstr "க்னோம் விசை வளைய  ரகசிய சேவைசெயற்படுத்தி உள்ளதா"
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Unlock Login Keyring"
+#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
+#: ../daemon/dbus/gkd-secret-unlock.c:105
+msgid "Unnamed"
+msgstr "பெயரில்லாதது"
+
+#: ../daemon/dbus/gkd-secret-change.c:84
+msgid "Change Keyring Password"
+msgstr "விசை வளைய கடவுச்சொல்லை மாற்றவும்"
+
+#: ../daemon/dbus/gkd-secret-change.c:86, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "'%s' விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
+
+#: ../daemon/dbus/gkd-secret-change.c:90, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"ஒரு பயன்பாடு '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
+"கடவுச்சொல்லை நீங்கள் தேர்ந்தெடுக்க வேண்டும்."
+
+#: ../daemon/dbus/gkd-secret-change.c:109
+msgid "The original password was incorrect"
+msgstr "அசல் கடவுச்சொல் தவறானது."
+
+#: ../daemon/dbus/gkd-secret-create.c:77
+msgid "New Keyring Password"
+msgstr "புதிய விசை வளைய கடவுச்சொல்"
+
+#: ../daemon/dbus/gkd-secret-create.c:78
+msgid "Choose password for new keyring"
+msgstr "புதிய விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
+
+#: ../daemon/dbus/gkd-secret-create.c:80, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"ஒருபயன்பாடு புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. அதற்கு நீங்கள் பயன்படுத்த "
+"விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:112
+msgid "Unlock Keyring"
 msgstr "விசை வளையத்தின் பூட்டை திற"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Enter login password to unlock keyring"
-msgstr "%s விசை வளையத்தை திறக்க உள்நுழைவு கடவுச்சொல்லை உள்ளிடுக"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:101
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
-msgstr ""
-"நீங்கள் இந்த கணினியில் உள்நுழைந்த போது உங்கள் உள்நுழைவு விசை வளையம் தானியங்கியாக பூட்டு "
-"நீக்கப்படவில்லை."
-
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Create Login Keyring"
-msgstr "உள்நுழைவு விசை வளையத்தை உருவாக்கவும்"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Enter your login password"
-msgstr "உள்நுழைவு கடவுச்சொல்லை உள்ளிடுக"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:127
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
-msgstr ""
-"உங்கள் உள் நுழைவு விசை வளையம் நீங்கள் இந்த கணினியுள் நுழைந்த போது தானியங்கியாக "
-"உருவாக்கப்ப டசு"
-
-#: ../daemon/keyrings/gkr-keyring.c:587
+#: ../daemon/dbus/gkd-secret-unlock.c:114
 #, c-format
-msgid "Unlock password for %s keyring"
-msgstr "%s விசை வளையத்தை திறக்க கடவுச்சொல்"
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "பூட்டைத்திறக்க '%s' விசை வளையத்தின் கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
+#: ../daemon/dbus/gkd-secret-unlock.c:118, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"ஒரு பயன்பாடு இயல்பான விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது ஆனால் அது "
+"பூட்டப்பட்டுள்ளது."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:134
+msgid "The unlock password was incorrect"
+msgstr "திறவு கடவுச்சொல் தவறானது."
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "சான்றிதழ்/விசை சேமிப்பகம்"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME கீரிங்:  PKCS#11 கூறு"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME கீரிங்: ரகசிய சேவை"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr " ரகசிய சேமிப்பு சேவை"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME கீரிங்: SSH முகவர்"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "SSH முகவர்"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
+msgid "New Password Required"
+msgstr "புதிய கடவுச்சொல் தேவைப்படுகிறது"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
+msgid "New password required for secure storage"
+msgstr "சேமிப்பை பாதுகாக்க புதிய கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "'%s'ஐ சான்றிதழ்கள் அல்லது விசைகளுக்கு சேமிப்பகமாக்க ஒரு கடவுச்சொல் தேவைப்படுகிறது"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:303
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
+msgid "Automatically unlock secure storage when I log in."
+msgstr "நான் உள்நுழையும்போது தானாக பாதுகாப்பு சேமிப்பகம் பூட்டு நீக்கப்பட வேண்டும்."
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:361
 msgid "Unlock private key"
 msgstr "அந்தரங்க விசையின் பூட்டை திற"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:363
 msgid "Unlock certificate"
 msgstr "சான்றிதழின் பூட்டை திற"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:365
 msgid "Unlock public key"
 msgstr "பொது விசையின் பூட்டை திற"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:367
 msgid "Unlock"
 msgstr "பூட்டை திற"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:376 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:378 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "சான்றிதழின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:380
 msgid "Enter password to unlock the public key"
 msgstr "பொது விசையின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:382 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:392
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
@@ -444,51 +214,35 @@ msgstr ""
 "பூட்டப்பட்டுள்ளது."
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:395
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
 "ஒரு பயன்பாடு உங்கள் சான்றிதழ் '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:398
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 "ஒரு பயன்பாடு உங்கள் பொது விசை '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:401
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "ஒரு பயன்பாடு '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
-msgid "Automatically unlock this private key when I log in."
-msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த அந்தரங்க விசையை பூட்டு திறக்கவும்."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
-msgid "Automatically unlock this certificate when I log in."
-msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த சான்றிதழை பூட்டு திறக்கவும்."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
-msgid "Automatically unlock this public key when I log in."
-msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த பொது விசையை பூட்டு திறக்கவும்."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
-msgid "Automatically unlock this when I log in"
-msgstr "நான் உள்நுழையும்போது தானியங்கியாக இதைை பூட்டு திறக்கவும்."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:589
 msgid "Unlock certificate/key storage"
 msgstr "பூட்டப்படாத சான்றிதழ்/விசை சேமிப்பகம்"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:590
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "சான்றிதழ்/விசை சேமிப்பக பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:593
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -497,63 +251,11 @@ msgstr ""
 "ஒரு பயன்பாடு உங்கள் சான்றிதழ்/விசை சேமிப்பக'%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
 "பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
-msgid "Automatically unlock secure storage when I log in."
-msgstr "நான் உள்நுழையும்போது தானாக பாதுகாப்பு சேமிப்பகம் பூட்டு நீக்கப்பட வேண்டும்."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
-msgid "New Password Required"
-msgstr "புதிய கடவுச்சொல் தேவைப்படுகிறது"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
-msgid "New password required for secure storage"
-msgstr "சேமிப்பை பாதுகாக்க புதிய கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr "'%s'ஐ சான்றிதழ்கள் அல்லது விசைகளுக்கு சேமிப்பகமாக்க ஒரு கடவுச்சொல் தேவைப்படுகிறது"
-
-#: ../daemon/ui/gkr-ask-tool.c:230
-msgid ""
-"<b><big>Could not grab your mouse.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>உங்கள் சுட்டியை எடுக்க வேண்டாம்.</big></b>\n"
-"\n"
-"ஒரு தவறான கிளையன் உங்கள் அமர்வை eavesdropping செய்யலாம் அல்லது நீங்கள் ஒரு மெனு அல்லது "
-"சில பயன்பாட்டை சொடுக்கி ஃபோகஸ் பெற தீர்மானிக்கலாம்.\n"
-"\n"
-"மீண்டும் முயற்சி செய்."
-
-#: ../daemon/ui/gkr-ask-tool.c:239
-msgid ""
-"<b><big>Could not grab your keyboard.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>உங்கள் விசைப்பலகையை எடுக்க வேண்டாம்.</big></b>\n"
-"\n"
-"ஒரு தவறான கிளையன் உங்கள் அமர்வை eavesdropping செய்யலாம் அல்லது நீங்கள் ஒரு மெனு அல்லது "
-"சில பயன்பாட்டை சொடுக்கி ஃபோகஸ் பெற தீர்மானிக்கலாம்.\n"
-"\n"
-"மீண்டும் முயற்சி செய்."
-
-#: ../daemon/ui/gkr-ask-tool.c:276
+#: ../daemon/prompt/gkd-prompt-tool.c:382
 msgid "Store passwords unencrypted?"
 msgstr "கடவுச்சொற்களை சுருக்க குறியாக்கம் செய்யாமலே சேமிக்கவா? "
 
-#: ../daemon/ui/gkr-ask-tool.c:277
+#: ../daemon/prompt/gkd-prompt-tool.c:383
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -562,84 +264,82 @@ msgstr ""
 "ஒரு வெற்று கடவுச்சொல்லை தேர்ந்தெடுப்பதால் உங்கள் சேமிக்கப்பட்ட கடவுச்சொறகள் மறையாக்கம் "
 "செய்யப்படவில்லை. உங்கள் கோப்பை யாரால் அணூக முடியுமோ அவர் இதை பார்க்கலாம்."
 
-#: ../daemon/ui/gkr-ask-tool.c:284
+#: ../daemon/prompt/gkd-prompt-tool.c:390
 msgid "Use Unsafe Storage"
 msgstr "பாதுகாப்பு இல்லாத கிடங்கை பயன்படுத்து."
 
-#: ../daemon/ui/gkr-ask-tool.c:512
-msgid "_Location:"
-msgstr "(_L)இடம்:"
-
-#: ../daemon/ui/gkr-ask-tool.c:525
-msgid "_Old password:"
-msgstr "பழைய கடவுச்சொல் (_O):"
-
-#: ../daemon/ui/gkr-ask-tool.c:545
-msgid "_Password:"
-msgstr "கடவுச்சொல் (_P):"
-
-#: ../daemon/ui/gkr-ask-tool.c:567
-msgid "_Confirm password:"
-msgstr "கடவுச்சொல்லை _உறுதிபடுத்துக:"
-
-#: ../daemon/ui/gkr-ask-tool.c:587
-msgid "New password strength"
-msgstr "புதிய கடவுச்சொல்லின் பலம்"
-
-#: ../daemon/ui/gkr-ask-tool.c:645
+#: ../daemon/prompt/gkd-prompt-tool.c:420
 msgid "Passwords do not match."
 msgstr "கடவுச்சொற்கள் பொருந்தவில்லை"
 
-#: ../daemon/ui/gkr-ask-tool.c:661
+#: ../daemon/prompt/gkd-prompt-tool.c:430
 msgid "Password cannot be blank"
 msgstr "கடவுச்சொல் வெறுமையாக இருக்க முடியாது"
 
-#: ../daemon/ui/gkr-ask-tool.c:712
-msgid "_Deny"
-msgstr "மறுக்கவும் (_D)"
+#: ../daemon/prompt/gkd-prompt.ui.h:1
+msgid ""
+"<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to "
+"unlock</span>\n"
+"\n"
+"An application wants access to the keyring 'xxx', but it is locked."
+msgstr ""
+"<span size=\"large\" weight=\"bold\">பூட்டை திறக்க விசை வளைய உள் நுழைவுக்கு கடவுச்சொல் "
+"உள்ளிடுக</span>\n"
+"\n"
+"ஒரு பயன்பாடு இயல்பான விசை வளையம் ''xxx'  ஐ அணுக முயற்சிக்கிறது ஆனால் அது "
+"பூட்டப்பட்டுள்ளது."
 
-#: ../daemon/ui/gkr-ask-tool.c:724
-msgid "C_reate"
-msgstr "(_r) உருவாக்கு"
+#: ../daemon/prompt/gkd-prompt.ui.h:4
+msgid "Automatically unlock this keyring whenever I'm logged in."
+msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த விசை வளையத்தை பூட்டு திறக்கவும்."
 
-#: ../daemon/ui/gkr-ask-tool.c:728
-msgid "C_hange"
-msgstr "(_h) மாற்றுக"
+#: ../daemon/prompt/gkd-prompt.ui.h:5
+msgid "Lock this keyring after"
+msgstr "இவ்வளவு நேரம் கழிந்த பின் விசை வளையத்தை பூட்டவும்"
 
-#: ../daemon/ui/gkr-ask-tool.c:732
-msgid "Allow _Once"
-msgstr "(_O) ஒரு முறை அனுமதி"
+#: ../daemon/prompt/gkd-prompt.ui.h:6
+msgid "Lock this keyring if idle for"
+msgstr "இவ்வளவு நேரம் சும்மாயிருப்பின் விசை வளையத்தை பூட்டவும்"
 
-#: ../daemon/ui/gkr-ask-tool.c:736
-msgid "_Always Allow"
-msgstr "(_A)எப்போதும் அனுமதி"
+#: ../daemon/prompt/gkd-prompt.ui.h:7
+msgid "Lock this keyring when I log out."
+msgstr "நான் வெளி செல்லும்போது தானியங்கியாக இந்த விசை வளையத்தை பூட்டவும்."
 
-#: ../daemon/util/gkr-location.c:234
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "நீக்கக்கூடிய வட்டு: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:8
+msgid "New password strength"
+msgstr "புதிய கடவுச்சொல்லின் பலம்"
 
-#: ../daemon/util/gkr-location.c:236
-msgid "Removable Disk"
-msgstr "நீக்கக்கூடிய வட்டு"
+#: ../daemon/prompt/gkd-prompt.ui.h:9
+msgid "Prompt me for each application that accesses this keyring."
+msgstr "பயன்பாடுகள் விசை வளையத்தை அணுகினால் என்னை அனுமதி கேட்கவும்"
 
-#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
-msgid "Home"
-msgstr "இல்லம்"
+#: ../daemon/prompt/gkd-prompt.ui.h:10
+msgid "_Application:"
+msgstr "பயன்பாடு (_A):"
 
-#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
-msgid "The disk or drive this file is located on is not present"
-msgstr "இந்த கோப்பு இருக்கும் வட்டு அல்லது இயக்கி இப்போது இல்லை"
+#: ../daemon/prompt/gkd-prompt.ui.h:11
+msgid "_Confirm:"
+msgstr "_C உறுதிபடுத்துக:"
 
-#: ../daemon/util/gkr-location.c:914
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "அடைவு  %s ஐ உருவாக்க முடியவில்லை"
+#: ../daemon/prompt/gkd-prompt.ui.h:12
+msgid "_Details:"
+msgstr "விவரங்கள் (_D):"
 
-#: ../daemon/util/gkr-location.c:948
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "அடைவு %s ஐ நீக்க முடியவில்லை"
+#: ../daemon/prompt/gkd-prompt.ui.h:13
+msgid "_Name:"
+msgstr "(_N) பெயர்:"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:14
+msgid "_Old Password:"
+msgstr "பழைய கடவுச்சொல் (_O):"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:15
+msgid "_Password:"
+msgstr "கடவுச்சொல் (_P):"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:16
+msgid "minutes."
+msgstr "நிமிடங்கள்"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -681,7 +381,8 @@ msgstr "பொதுவான பெயர்"
 msgid "Surname"
 msgstr "புனைப்பெயர்"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-details-widget.c:330
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "வரிசை எண்"
 
@@ -761,6 +462,16 @@ msgstr "DSA"
 msgid "SHA1 with DSA"
 msgstr "SHA1 உடன் DSA"
 
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr "select()ல் சேய் செயல்பாட்டிலிருந்து தரவுகளை படிக்கும் போது பிழை (%s)"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "waitpid() ல் எதிர்பாராத பிழை(%s)"
+
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
 msgstr "<i>சான்றிதழலில் பங்கு இல்லை</i>"
@@ -768,6 +479,74 @@ msgstr "<i>சான்றிதழலில் பங்கு இல்லை<
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
 msgstr "<i>தெரியாத</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+msgid "<Not Part of Certificate>"
+msgstr "<Not Part of Certificate>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>கைரேகைகள்</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr "<b>வழங்கியது</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr "<b>வழங்கப்பட்டது</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr "<b>இந்த சான்றிதழ் பின்வரும் பயன்களுக்காக சரிபார்க்கப்பட்டது:</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>மதிப்பளவு</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
+msgid "Common Name (CN)"
+msgstr "பொதுவான பெயர் (CN)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+msgid "Email Recipient Certificate"
+msgstr "மின்னஞ்சல் பெறுநர் சான்றிதழ்"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+msgid "Email Signer Certificate"
+msgstr "மின்னஞ்சல் கையொப்ப சான்றிதழ்"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr "முடிவடைந்த அன்று"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+msgid "Issued On"
+msgstr "வழங்கப்பட்ட அன்று"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+msgid "MD5 Fingerprint"
+msgstr "MD5 கைரேகை"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+msgid "Organization (O)"
+msgstr "நிறுவனம் (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+msgid "Organizational Unit (OU)"
+msgstr "நிறுவனத்தின் அலகு (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 கைரேகை"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+msgid "SSL Client Certificate"
+msgstr "SSL கிளையன்ட் சான்றிதழ்"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+msgid "SSL Server Certificate"
+msgstr "SSL  சேவையகத்தின் சான்றிதழ்"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -781,84 +560,96 @@ msgstr "அடையாளம் காட்டுபவர்"
 msgid "Value"
 msgstr "மதிப்பு"
 
-#: ../gcr/gcr-certificate-details-widget.c:232
-msgid "Yes"
-msgstr "ஆம்"
-
-#: ../gcr/gcr-certificate-details-widget.c:234
-msgid "No"
-msgstr "இல்லை"
-
-#: ../gcr/gcr-certificate-details-widget.c:237
+#: ../gcr/gcr-certificate-details-widget.c:229
 msgid "Critical"
 msgstr "அவசரம்"
 
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "Yes"
+msgstr "ஆம்"
+
+#: ../gcr/gcr-certificate-details-widget.c:229
+msgid "No"
+msgstr "இல்லை"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Subject Name"
 msgstr "பொருளின் பெயர்"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:315
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issuer Name"
 msgstr "வழங்குபவரின் பெயர்"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:319
+#: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
 msgstr "தரப்பட்ட சான்றிதழ்"
 
-#: ../gcr/gcr-certificate-details-widget.c:324
+#: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
 msgstr "பதிப்பு"
 
-#: ../gcr/gcr-certificate-details-widget.c:337
+#: ../gcr/gcr-certificate-details-widget.c:329
 msgid "Not Valid Before"
 msgstr "இதற்கு முன் செல்லுபடியாகாது"
 
-#: ../gcr/gcr-certificate-details-widget.c:342
+#: ../gcr/gcr-certificate-details-widget.c:334
 msgid "Not Valid After"
 msgstr "அதற்கு பின் செல்லுபடியாகாது"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:347
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Signature"
 msgstr "கையொப்பம்"
 
-#: ../gcr/gcr-certificate-details-widget.c:351
+#: ../gcr/gcr-certificate-details-widget.c:343
 msgid "Signature Algorithm"
 msgstr "கையொப்ப கணிமுறை"
 
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:348
 msgid "Signature Parameters"
 msgstr "கையொப்ப பாராமீட்டர்கள்"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:367
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Public Key Info"
 msgstr "பொது விசை தகவல்"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-details-widget.c:363
 msgid "Key Algorithm"
 msgstr "விசை கணிமுறை"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:368
 msgid "Key Parameters"
 msgstr "விசை பாராமீட்டர்கள்"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:375
 msgid "Key Size"
 msgstr "விசை அளவு"
 
-#: ../gcr/gcr-certificate-details-widget.c:390 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "பொது விசை"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:394
+#: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
 msgstr "கைரேகைகள்"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>சான்றிதழ்களையும் விசைகளையும் இறக்கவும்</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "இதில் இறக்குமதி செய்:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "கடவுச்சொல்:"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1250,110 +1041,321 @@ msgstr "பயனர் கையெழுத்து வேண்டுதல�
 msgid "Unknown error"
 msgstr "தெரியாத பிழை "
 
-#: ../library/gnome-keyring-utils.c:168
-msgid "Access Denied"
-msgstr "அணுகல் மறுக்கப்பட்டது"
-
-#: ../library/gnome-keyring-utils.c:170
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "க்னோம் விசை வளைய கிங்கரன் இயங்கவில்லை"
-
-#: ../library/gnome-keyring-utils.c:172
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "க்னோம் விசை வளைய கிங்கரன் உடன் தொடர்பு கொள்வதில் பிழை"
-
-#: ../library/gnome-keyring-utils.c:174
-msgid "A keyring with that name already exists"
-msgstr "அந்த பெயருடன் விசை வளையம் ஏற்கெனவே இருப்பில் உள்ளது."
-
-#: ../library/gnome-keyring-utils.c:176
-msgid "Programmer error: The application sent invalid data."
-msgstr "நிரல் பிழை: நிரல் பிழையான தரவை அனுப்பியது."
-
-#: ../library/gnome-keyring-utils.c:178
-msgid "No matching results"
-msgstr "பொருத்தமான விடைகள் இல்லை"
-
-#: ../library/gnome-keyring-utils.c:180
-msgid "A keyring with that name does not exist."
-msgstr "அந்த பெயருடன் விசை வளையம்  இருப்பில் இல்லை"
-
-#: ../library/gnome-keyring-utils.c:187
-msgid "The keyring has already been unlocked."
-msgstr "விசைவளைய ஏற்கெனவே பூட்டு திறக்கப்பட்டு விட்டது."
-
-#: ../pkcs11/gck/gck-certificate.c:711
+#: ../pkcs11/gck/gck-certificate.c:739
 msgid "Unnamed Certificate"
 msgstr "பெயரிடப்படாத சான்றிதழ்"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:337
 msgid "Couldn't parse public SSH key"
 msgstr "பொது SSH விசையை பகுக்க முடியாது"
 
-#~| msgid "Import certificate"
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Not Part of Certificate>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>கைரேகைகள்</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>வழங்கியது</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>வழங்கப்பட்டது</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>இந்த சான்றிதழ் பின்வரும் பயன்களுக்காக சரிபார்க்கப்பட்டது:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>மதிப்பளவு</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "பொதுவான பெயர் (CN)"
-
-#~| msgid "Import certificate"
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "மின்னஞ்சல் பெறுநர் சான்றிதழ்"
-
-#~| msgid "Certificate"
-#~ msgid "Email Signer Certificate"
-#~ msgstr "மின்னஞ்சல் கையொப்ப சான்றிதழ்"
-
-#~ msgid "Expires On"
-#~ msgstr "முடிவடைந்த அன்று"
-
-#~ msgid "Issued On"
-#~ msgstr "வழங்கப்பட்ட அன்று"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5 கைரேகை"
-
-#~ msgid "Organization (O)"
-#~ msgstr "நிறுவனம் (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "நிறுவனத்தின் அலகு (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1 கைரேகை"
-
-#~| msgid "Certificate"
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL கிளையன்ட் சான்றிதழ்"
-
-#~| msgid "Certificate"
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL  சேவையகத்தின் சான்றிதழ்"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
 #~ msgstr ""
-#~ "<span size='large' weight='bold'>சான்றிதழ்களையும் விசைகளையும் இறக்கவும்</span>"
+#~ "பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தில் '<object prop='name'/>' க்கான  "
+#~ "கடவுச்சொல்லை அணுக விரும்புகிறது"
 
-#~| msgid "Import"
-#~ msgid "Import Into:"
-#~ msgstr "இதில் இறக்குமதி செய்:"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' (%s) '%s' இல் உள்ள '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக "
+#~ "விரும்புகிறது"
 
-#~| msgid "_Password:"
-#~ msgid "Password:"
-#~ msgstr "கடவுச்சொல்:"
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' இயல்பான விசை வளையத்தில் '<object prop='name'/>' இன்  கடவுச்சொல்லை "
+#~ "அணுக விரும்புகிறது"
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' '%s' இல் உள்ள '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக "
+#~ "விரும்புகிறது"
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "தெரியாத பயன்பாடு '<object prop='name'/>' க்கு கடவுச்சொல்லை இயல்பான விசை "
+#~ "வளையத்திலிருந்து அணுக விரும்புகிறது"
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "தெரியாத பயன்பாடு '<object prop='name'/>' க்கு %s இல் உள்ள கடவுச்சொல்லை அணுக "
+#~ "விரும்புகிறது"
+
+#~ msgid "Allow access"
+#~ msgstr "அணுக அனுமதிக்கவும்"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது "
+#~ "பூட்டப்பட்டுள்ளது."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "பயன்பாடு '%s' (%s) விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
+#~ "பூட்டப்பட்டுள்ளது."
+
+#~ msgid ""
+#~ "The application '%s' wants access to the default keyring, but it is locked"
+#~ msgstr ""
+#~ "பயன்பாடு '%s' இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது "
+#~ "பூட்டப்பட்டுள்ளது."
+
+#~ msgid ""
+#~ "The application '%s' wants access to the keyring '%s', but it is locked"
+#~ msgstr ""
+#~ "பயன்பாடு '%s' விசை வளையம்  '%s' ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#~ msgid ""
+#~ "An unknown application wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "தெரியாத பயன்பாடு இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது ஆனால் அது "
+#~ "பூட்டப்பட்டுள்ளது."
+
+#~ msgid "Enter password for default keyring to unlock"
+#~ msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
+#~ "have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' (%s) புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் "
+#~ "பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new default keyring. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' (%s) புதிய இயல்பான விசை வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் "
+#~ "பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new keyring called '%s'. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த "
+#~ "விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s'  புதிய இயல்பான விசை  ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த "
+#~ "விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#~ msgid ""
+#~ "An unknown application wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "தெரியாத பயன்பாடு புதிய இயல்பான விசை வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் "
+#~ "பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the '%s' "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' (%s) '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. "
+#~ "அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' (%s) முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற "
+#~ "விரும்புகிறது. அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the '%s' keyring. "
+#~ "You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
+#~ "கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. "
+#~ "அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
+
+#~ msgid ""
+#~ "An unknown application wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "தெரியாத பயன்பாடு முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. "
+#~ "அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
+
+#~ msgid "Choose a new password for the default keyring."
+#~ msgstr "முன்னிருப்பு விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to store a password, but there is no "
+#~ "default keyring. To create one, you need to choose the password you wish "
+#~ "to use for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' (%s) கடவுச்சொல்லை சேமிக்க விரும்புகிறது ஆனால் இயல்பான விசை வளையம் "
+#~ "இல்லை. அதை உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
+
+#~ msgid ""
+#~ "The application '%s' wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "பயன்பாடு '%s' கடவுச்சொல்லை சேமிக்க விரும்புகிறது ஆனால் இயல்பான கடவுச்சொல் இல்லை. "
+#~ "உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
+
+#~ msgid ""
+#~ "An unknown application wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "தெரியாத பயன்பாடு கடவுச்சொல்லை சேமிக்க விரும்புகிறதும் ஆனால் இயல்பான கடவுச்சொல் "
+#~ "இல்லை. அதை உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
+
+#~ msgid "Create Default Keyring"
+#~ msgstr "புதிய இயல்பான விசை வளையத்தை உருவாக்கவும்"
+
+#~ msgid "Choose password for default keyring"
+#~ msgstr "இயல்பான விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
+
+#~ msgid "Unlock Login Keyring"
+#~ msgstr "விசை வளையத்தின் பூட்டை திற"
+
+#~ msgid "Enter login password to unlock keyring"
+#~ msgstr "%s விசை வளையத்தை திறக்க உள்நுழைவு கடவுச்சொல்லை உள்ளிடுக"
+
+#~ msgid ""
+#~ "Your login keyring was not automatically unlocked when you logged into "
+#~ "this computer."
+#~ msgstr ""
+#~ "நீங்கள் இந்த கணினியில் உள்நுழைந்த போது உங்கள் உள்நுழைவு விசை வளையம் தானியங்கியாக "
+#~ "பூட்டு நீக்கப்படவில்லை."
+
+#~ msgid "Create Login Keyring"
+#~ msgstr "உள்நுழைவு விசை வளையத்தை உருவாக்கவும்"
+
+#~ msgid "Enter your login password"
+#~ msgstr "உள்நுழைவு கடவுச்சொல்லை உள்ளிடுக"
+
+#~ msgid ""
+#~ "Your login keyring was not automatically created when you logged into "
+#~ "this computer. It will now be created."
+#~ msgstr ""
+#~ "உங்கள் உள் நுழைவு விசை வளையம் நீங்கள் இந்த கணினியுள் நுழைந்த போது தானியங்கியாக "
+#~ "உருவாக்கப்ப டசு"
+
+#~ msgid "Unlock password for %s keyring"
+#~ msgstr "%s விசை வளையத்தை திறக்க கடவுச்சொல்"
+
+#~ msgid "Automatically unlock this private key when I log in."
+#~ msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த அந்தரங்க விசையை பூட்டு திறக்கவும்."
+
+#~ msgid "Automatically unlock this certificate when I log in."
+#~ msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த சான்றிதழை பூட்டு திறக்கவும்."
+
+#~ msgid "Automatically unlock this public key when I log in."
+#~ msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த பொது விசையை பூட்டு திறக்கவும்."
+
+#~ msgid "Automatically unlock this when I log in"
+#~ msgstr "நான் உள்நுழையும்போது தானியங்கியாக இதைை பூட்டு திறக்கவும்."
+
+#~ msgid ""
+#~ "<b><big>Could not grab your mouse.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>உங்கள் சுட்டியை எடுக்க வேண்டாம்.</big></b>\n"
+#~ "\n"
+#~ "ஒரு தவறான கிளையன் உங்கள் அமர்வை eavesdropping செய்யலாம் அல்லது நீங்கள் ஒரு மெனு "
+#~ "அல்லது சில பயன்பாட்டை சொடுக்கி ஃபோகஸ் பெற தீர்மானிக்கலாம்.\n"
+#~ "\n"
+#~ "மீண்டும் முயற்சி செய்."
+
+#~ msgid ""
+#~ "<b><big>Could not grab your keyboard.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>உங்கள் விசைப்பலகையை எடுக்க வேண்டாம்.</big></b>\n"
+#~ "\n"
+#~ "ஒரு தவறான கிளையன் உங்கள் அமர்வை eavesdropping செய்யலாம் அல்லது நீங்கள் ஒரு மெனு "
+#~ "அல்லது சில பயன்பாட்டை சொடுக்கி ஃபோகஸ் பெற தீர்மானிக்கலாம்.\n"
+#~ "\n"
+#~ "மீண்டும் முயற்சி செய்."
+
+#~ msgid "_Deny"
+#~ msgstr "மறுக்கவும் (_D)"
+
+#~ msgid "C_reate"
+#~ msgstr "(_r) உருவாக்கு"
+
+#~ msgid "C_hange"
+#~ msgstr "(_h) மாற்றுக"
+
+#~ msgid "Allow _Once"
+#~ msgstr "(_O) ஒரு முறை அனுமதி"
+
+#~ msgid "_Always Allow"
+#~ msgstr "(_A)எப்போதும் அனுமதி"
+
+#~ msgid "Removable Disk: %s"
+#~ msgstr "நீக்கக்கூடிய வட்டு: %s"
+
+#~ msgid "Removable Disk"
+#~ msgstr "நீக்கக்கூடிய வட்டு"
+
+#~ msgid "Home"
+#~ msgstr "இல்லம்"
+
+#~ msgid "The disk or drive this file is located on is not present"
+#~ msgstr "இந்த கோப்பு இருக்கும் வட்டு அல்லது இயக்கி இப்போது இல்லை"
+
+#~ msgid "Couldn't create directory: %s"
+#~ msgstr "அடைவு  %s ஐ உருவாக்க முடியவில்லை"
+
+#~ msgid "Couldn't delete the file: %s"
+#~ msgstr "அடைவு %s ஐ நீக்க முடியவில்லை"
+
+#~ msgid "Access Denied"
+#~ msgstr "அணுகல் மறுக்கப்பட்டது"
+
+#~ msgid "The gnome-keyring-daemon application is not running."
+#~ msgstr "க்னோம் விசை வளைய கிங்கரன் இயங்கவில்லை"
+
+#~ msgid "Error communicating with gnome-keyring-daemon"
+#~ msgstr "க்னோம் விசை வளைய கிங்கரன் உடன் தொடர்பு கொள்வதில் பிழை"
+
+#~ msgid "A keyring with that name already exists"
+#~ msgstr "அந்த பெயருடன் விசை வளையம் ஏற்கெனவே இருப்பில் உள்ளது."
+
+#~ msgid "Programmer error: The application sent invalid data."
+#~ msgstr "நிரல் பிழை: நிரல் பிழையான தரவை அனுப்பியது."
+
+#~ msgid "No matching results"
+#~ msgstr "பொருத்தமான விடைகள் இல்லை"
+
+#~ msgid "A keyring with that name does not exist."
+#~ msgstr "அந்த பெயருடன் விசை வளையம்  இருப்பில் இல்லை"
+
+#~ msgid "The keyring has already been unlocked."
+#~ msgstr "விசைவளைய ஏற்கெனவே பூட்டு திறக்கப்பட்டு விட்டது."
