@@ -518,8 +518,15 @@ login_specific_done (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info,
 	case CKR_PIN_INVALID:
 	case CKR_PIN_LEN_RANGE:
 	case CKR_PIN_LOCKED:
+		/* Clear out any stored secret */
 		if (object->unique && object->token)
 			gkd_login_remove_secret ("unique", object->unique, NULL);
+
+		/* COMPAT: Clear old method of storing secrets for objects in login keyring */
+		if (object->digest) {
+			convert_upper_case (object->digest);
+			gkd_login_remove_secret ("object-digest", object->digest, NULL);
+		}
 		break;
 
 	case CKR_OK:
