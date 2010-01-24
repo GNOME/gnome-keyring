@@ -6,15 +6,15 @@
 # Runa Bhattacharjee <runabh@gmail.com>, 2007.
 # Runa Bhattacharjee <runab@redhat.com>, 2008, 2009.
 # Maruf Ovee <maruf@ankur.org.bd>, 2009.
+# Loba Yeasmeen <loba@ankur.org.bd>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&component=general\n"
-"POT-Creation-Date: 2009-08-31 16:19+0000\n"
-"PO-Revision-Date: 2009-08-31 12:32+0700\n"
-"Last-Translator: Maruf Ovee <maruf@ankur.org.bd>\n"
+"Project-Id-Version: bn\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2009-12-21 21:10+0000\n"
+"PO-Revision-Date: 2010-01-25 05:10+0700\n"
+"Last-Translator: Loba Yeasmeen <loba@ankur.org.bd>\n"
 "Language-Team: Bengali <ankur-bd-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,633 +22,315 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:228
+#: ../daemon/data/gnome-keyring.schemas.in.h:1
+#| msgid ""
+#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+#| "in). This setting may be overridden when certain command line arguments "
+#| "are passed to the daemon."
+msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect during startup with gnome-session, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "এই অপশনের সাহায্যে gnome-keyring ডেমনের মধ্যে PKCS#11 সামগ্রী সক্রিয় করা হবে। gnome-keyring-daemon আরম্ভের সময় (অর্থাৎ, ব্যবহারকারী লগ-ইন করার সময়) এটি প্রয়োগ করা হবে। কমান্ড-লাইন থেকে প্রযোজ্য কিছু আর্গুমেন্ট এই ডেমনের ব্যবহারের জন্য উল্লেখ করা হলে এই বৈশিষ্ট্য উপেক্ষা করা যাবে।"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:2
+msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "এই অপশনের সাহায্যে gnome-keyring ডেমনের মধ্যে SSH agent সক্রিয় করা হবে। gnome-keyring-daemon আরম্ভের সময় (অর্থাৎ, ব্যবহারকারী লগ-ইন করার সময়) এটি প্রয়োগ করা হবে। কমান্ড-লাইন থেকে প্রযোজ্য কিছু আর্গুমেন্ট এই ডেমনের ব্যবহারের জন্য উল্লেখ করা হলে এই বৈশিষ্ট্য উপেক্ষা করা যাবে।"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:3
+#| msgid ""
+#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+#| "in). This setting may be overridden when certain command line arguments "
+#| "are passed to the daemon."
+msgid "This option enables the secret service component in the gnome-keyring daemon. It only takes effect during startup with gnome-session, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
+msgstr "এই অপশনের সাহায্যে gnome-keyring ডেমনের মধ্যে গোপন সার্ভিস সামগ্রী সক্রিয় করা হবে। gnome-session আরম্ভের সময় প্রভাব (অর্থাৎ, ব্যবহারকারী লগ-ইন করার সময়) প্রয়োগ করা হবে। কমান্ড-লাইন থেকে প্রযোজ্য কিছু আর্গুমেন্ট এই ডেমনের ব্যবহারের জন্য উল্লেখ করা হলে এই বৈশিষ্ট্য উপেক্ষা করা যেতে পারে।"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "gnome-keyring PKCS#11 সামগ্রী সক্রিয় কি না।"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
+msgid "Whether the gnome-keyring SSH agent is enabled."
+msgstr "gnome-keyring SSH agent সক্রিয় কি না।"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#| msgid "Whether the gnome-keyring SSH agent is enabled."
+msgid "Whether the gnome-keyring secret service is enabled."
+msgstr "gnome-keyring SSH এজেন্ট সক্রিয় কি না।"
+
+#: ../daemon/dbus/gkd-secret-change.c:77
+#: ../daemon/dbus/gkd-secret-create.c:73
+#: ../daemon/dbus/gkd-secret-unlock.c:78
+msgid "Unnamed"
+msgstr "নামবিহীন"
+
+#: ../daemon/dbus/gkd-secret-change.c:84
+msgid "Change Keyring Password"
+msgstr "কী-রিং-এর পাসওয়ার্ড পরিবর্তন করুন"
+
+#: ../daemon/dbus/gkd-secret-change.c:85
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন, ডিফল্ট কe-রিং-এ অবস্থিত '<object prop='name'/>'-এর "
-"পাসওয়ার্ডটি ব্যবহার করতে ইচ্ছুক।"
+#| msgid "Choose a new password for the '%s' keyring."
+msgid "Choose a new password for the '%s' keyring"
+msgstr "'%s' keyring এর জন্য নতুন পাসওয়ার্ড নির্বাচন করুন।"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232
+#: ../daemon/dbus/gkd-secret-change.c:87
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন, %3$s-এ অবস্থিত '<object prop='name'/>'-এর "
-"পাসওয়ার্ডটি ব্যবহার করতে ইচ্ছুক।"
+#| msgid ""
+#| "An unknown application wants to change the password for the '%s' keyring. "
+#| "You have to choose the password you want to use for it."
+msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
+msgstr "একটি অজানা অ্যাপ্লিকেশন '%s' keyring এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এতে ব্যবহারের জন্য পাসওয়ার্ড নির্বাচন করুন।"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
+#: ../daemon/dbus/gkd-secret-change.c:105
+#| msgid "The password or PIN is incorrect"
+msgid "The original password was incorrect"
+msgstr "প্রকৃত পাসওয়ার্ডটি সঠিক নয়"
+
+#: ../daemon/dbus/gkd-secret-create.c:77
+msgid "New Keyring Password"
+msgstr "নতুন কী-রিং পাসওয়ার্ড"
+
+#: ../daemon/dbus/gkd-secret-create.c:78
+msgid "Choose password for new keyring"
+msgstr "নতুন কী-রিং-এর জন্য পাসওয়ার্ড নির্বাচন করুন"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"'%s' অ্যাপ্লিকেশন, ডিফল্ট কী-রিং-এ অবস্থিত '<object prop='name'/>'-এর পাসওয়ার্ডটি "
-"ব্যবহার করতে ইচ্ছুক।"
+#| msgid ""
+#| "An unknown application wants to create a new keyring called '%s'. You "
+#| "have to choose the password you want to use for it."
+msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
+msgstr "একটি অ্যাপ্লিকেশন '%s' নামক একটি নতুন keyring তৈরি করতে ইচ্ছুক। এতে ব্যবহারের জন্য পাসওয়ার্ড নির্বাচন করা হবে।"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"'%1$s' অ্যাপ্লিকেশন %2$s-এ অবস্থিত '<object prop='name'/>'-এর পাসওয়ার্ড ব্যবহার "
-"করতে ইচ্ছুক।"
+#: ../daemon/dbus/gkd-secret-unlock.c:85
+msgid "Unlock Keyring"
+msgstr "কী-রিং আনলক করুন"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:258
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কী-রিং-এ অবস্থিত '<object prop='name'/>'-এর "
-"পাসওয়ার্ড ব্যবহার করতে ইচ্ছুক।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:261
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন %s-এ অবস্থিত '<object prop='name'/>'-এর পাসওয়ার্ড ব্যবহার "
-"করতে ইচ্ছুক।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow access"
-msgstr "ব্যবহারের অনুমতি প্রদান করা হবে"
-
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow application access to keyring?"
-msgstr "অ্যাপ্লিকেশনকে কী-রিং ব্যবহারের অনুমতি প্রদান করা হবে কি?"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:309
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন ডিফল্ট কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক "
-"করা আছে"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:314
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন '%3$s' কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক "
-"করা আছে"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"'%s' অ্যাপ্লিকেশন ডিফল্ট কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr ""
-"'%1$s' অ্যাপ্লিকেশন '%2$s' কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:346
-#, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা "
-"আছে"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:351
-#, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন %s কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
-
-#: ../daemon/gkr-daemon-ops.c:358
-msgid "Enter password for default keyring to unlock"
-msgstr "ডিফল্ট কী-রিং আনলক করতে পাসওয়ার্ড লিখুন"
-
-#: ../daemon/gkr-daemon-ops.c:360
+#: ../daemon/dbus/gkd-secret-unlock.c:87
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' কী-রিং আনলক করতে পাসওয়ার্ড লিখুন"
 
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:364
-msgid "Unlock Keyring"
-msgstr "কী-রিং আনলক করুন"
-
-#: ../daemon/gkr-daemon-ops.c:376
-msgid "Automatically unlock this keyring when I log in."
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই কী-রিং আন-লক করা হবে।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:413
+#: ../daemon/dbus/gkd-secret-unlock.c:91
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন '%3$s' নামক একটি নতুন কি-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "একটি অ্যাপ্লিকেশন %s keyring এ ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা রয়েছে"
 
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:418
+#: ../daemon/dbus/gkd-secret-unlock.c:106
+#| msgid "The password or PIN is incorrect"
+msgid "The unlock password was incorrect"
+msgstr "আনলক করার পাসওয়ার্ড সঠিক নয়"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+#| msgid "Unlock certificate/key storage"
+msgid "Certificate and Key Storage"
+msgstr "সার্টিফিকেট/কি স্টোরেজ"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME Keyring ডেমন: PKCS#11 কম্পোনেন্ট"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME Keyring ডেমন: গোপন সার্ভিস"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "গোপন সংরক্ষণ সম্পর্কিত সার্ভিস"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME Keyring ডেমন: SSH এজেন্ট"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "SSH কী এজেন্ট"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
+msgid "New Password Required"
+msgstr "নতুন পাসওয়ার্ড আবশ্যক"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
+msgid "New password required for secure storage"
+msgstr "সংগ্রহস্থল নিরাপদ রাখতে পাসওয়ার্ড লেখা আবশ্যক"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
 #, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন একটি ডিফল্ট কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "সার্টিফিকেট ও কি সংগ্রহের জন্য '%s' প্রস্তুত করার উদ্দেশ্যে একটি পাসওয়ার্ড লেখা আবশ্যক"
 
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"'%1$s' অ্যাপ্লিকেশন '%2$s' নামক একটি নতুন কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:303
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
+msgid "Automatically unlock secure storage when I log in."
+msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে নিরাপদ সংগ্রস্থল আন-লক করা হবে।"
 
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"'%s' অ্যাপ্লিকেশন একটি নতুন ডিফল্ট কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে ব্যবহারযোগ্য "
-"পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:449
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন '%s' নামক একটি নতুন কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:454
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন একটি নতুন ডিফল্ট কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:460
-msgid "New Keyring Password"
-msgstr "নতুন কী-রিং পাসওয়ার্ড"
-
-#: ../daemon/gkr-daemon-ops.c:461
-msgid "Choose password for new keyring"
-msgstr "নতুন কী-রিং-এর জন্য পাসওয়ার্ড নির্বাচন করুন"
-
-#: ../daemon/gkr-daemon-ops.c:508
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন  '%3$s' কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই "
-"কর্মে ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#: ../daemon/gkr-daemon-ops.c:512
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন ডিফল্ট কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"'%1$s' অ্যাপ্লিকেশন '%2$s' কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"'%s' অ্যাপ্লিকেশন ডিফল্ট কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#: ../daemon/gkr-daemon-ops.c:538
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন '%s' কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#: ../daemon/gkr-daemon-ops.c:542
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
-"ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#: ../daemon/gkr-daemon-ops.c:552
-#, c-format
-msgid "Choose a new password for the '%s' keyring."
-msgstr "'%s' কী-রিং-এর জন্য নতুন পাসওয়ার্ড নির্বাচন করুন।"
-
-#: ../daemon/gkr-daemon-ops.c:554
-#, c-format
-msgid "Choose a new password for the default keyring."
-msgstr "ডিফল্ট কী-রিং-এর জন্য নতুন পাসওয়ার্ড নির্বাচন করুন।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:558
-msgid "Change Keyring Password"
-msgstr "কী-রিং-এর পাসওয়ার্ড পরিবর্তন করুন"
-
-#: ../daemon/gkr-daemon-ops.c:631
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"'%1$s' (%2$s) অ্যাপ্লিকেশন একটি পাসওয়ার্ড সংরক্ষণ করতে ইচ্ছুক, কিন্তু কোনো ডিফল্ট কী-"
-"রিং উপস্থিত নেই। নতুন কি-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা "
-"আবশ্যক।"
-
-#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"'%s' অ্যাপ্লিকেশন একটি পাসওয়ার্ড সংরক্ষণ করতে ইচ্ছুক, কিন্তু কোনো ডিফল্ট কি-রিং "
-"উপস্থিত নেই। নতুন কী-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#: ../daemon/gkr-daemon-ops.c:643
-#, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"একটি অজানা অ্যাপ্লিকেশন একটি পাসওয়ার্ড সংরক্ষণ করতে ইচ্ছুক, কিন্তু কোনো ডিফল্ট কী-রিং "
-"উপস্থিত নেই। নতুন কি-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Create Default Keyring"
-msgstr "ডিফল্ট কী-রিং তৈরি করুন"
-
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Choose password for default keyring"
-msgstr "ডিফল্ট কী-রিং-এর জন্য পাসওয়ার্ড নির্বাচন করুন"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"এই অপশনের সাহায্যে gnome-keyring ডেমনের মধ্যে PKCS#11 সামগ্রী সক্রিয় করা হবে। "
-"gnome-keyring-daemon আরম্ভের সময় (অর্থাৎ, ব্যবহারকারী লগ-ইন করার সময়) এটি প্রয়োগ "
-"করা হবে। কমান্ড-লাইন থেকে প্রযোজ্য কিছু আর্গুমেন্ট এই ডেমনের ব্যবহারের জন্য উল্লেখ করা "
-"হলে এই বৈশিষ্ট্য উপেক্ষা করা যাবে।"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"এই অপশনের সাহায্যে gnome-keyring ডেমনের মধ্যে SSH agent সক্রিয় করা হবে। gnome-"
-"keyring-daemon আরম্ভের সময় (অর্থাৎ, ব্যবহারকারী লগ-ইন করার সময়) এটি প্রয়োগ করা "
-"হবে। কমান্ড-লাইন থেকে প্রযোজ্য কিছু আর্গুমেন্ট এই ডেমনের ব্যবহারের জন্য উল্লেখ করা হলে "
-"এই বৈশিষ্ট্য উপেক্ষা করা যাবে।"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "gnome-keyring PKCS#11 সামগ্রী সক্রিয় কি না।"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "gnome-keyring SSH agent সক্রিয় কি না।"
-
-#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-msgid "GNOME Keyring Daemon"
-msgstr "GNOME Keyring ডেমন"
-
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Unlock Login Keyring"
-msgstr "কী-রিং আনলক করুন"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Enter login password to unlock keyring"
-msgstr "কী-রিং আন-লক করতে ব্যবহৃত পাসওয়ার্ড লিখুন"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:101
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
-msgstr ""
-"এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কী-রিং স্বয়ংক্রিয়ভাবে আন-লক করা হয়নি"
-
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Create Login Keyring"
-msgstr "লগ-ইন কী-রিং তৈরি করুন"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Enter your login password"
-msgstr "লগ-ইন পাসওয়ার্ড পরিবর্তন লিখুন"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:127
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
-msgstr ""
-"এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কী-রিং স্বয়ংক্রিয়ভাবে নির্মাণ করা "
-"হয়নি। এটি এখন নির্মাণ করা হবে।"
-
-#: ../daemon/keyrings/gkr-keyring.c:587
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "%s কী-রিং আন-লক করতে ব্যবহৃত পাসওয়ার্ড"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:361
 msgid "Unlock private key"
 msgstr "গোপনীয়-কী আন-লক করুন"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:363
 msgid "Unlock certificate"
 msgstr "সার্টিফিকেট আন-লক করুন"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:365
 msgid "Unlock public key"
 msgstr "সার্বজনীন-কী আন-লক করুন"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:367
 msgid "Unlock"
 msgstr "আন-লক করুন"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:376
+#: ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "গোপনীয় কী আনলক করতে পাসওয়ার্ড লিখুন"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:378
+#: ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "সার্টিফিকেট আন-লক করার জন্য পাসওয়ার্ড লিখুন"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:380
 msgid "Enter password to unlock the public key"
 msgstr "সার্বজনীন কী আনলক করতে পাসওয়ার্ড লিখুন"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:382
+#: ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "আনলক করতে পাসওয়ার্ড লিখুন"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:392
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"একটি অ্যাপ্লিকেশন, %s গোপনীয়-কী ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
+msgstr "একটি অ্যাপ্লিকেশন, %s গোপনীয়-কী ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:395
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"একটি অ্যাপ্লিকেশন, %s সার্টিফিকেট ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
+msgstr "একটি অ্যাপ্লিকেশন, %s সার্টিফিকেট ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:398
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"একটি অ্যাপ্লিকেশন, %s সার্বজনীন-কী ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
+msgstr "একটি অ্যাপ্লিকেশন, %s সার্বজনীন-কী ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:401
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "একটি অ্যাপ্লিকেশন, %s ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
-msgid "Automatically unlock this private key when I log in."
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই গোপনীয়-কী আন-লক করা হবে।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
-msgid "Automatically unlock this certificate when I log in."
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই সার্টিফিকেট আন-লক করা হবে।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
-msgid "Automatically unlock this public key when I log in."
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই সার্বজনীন-কী আন-লক করা হবে।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
-msgid "Automatically unlock this when I log in"
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এটি আন-লক করা হবে।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:589
 msgid "Unlock certificate/key storage"
 msgstr "সার্টিফিকেট/কি সংগ্রহস্থল আন-লক করুন"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:590
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "সার্টিফিকেট/কি সংগ্রহস্থল আন-লক করার জন্য পাসওয়ার্ড লিখুন"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:593
 #, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"একটি অ্যাপ্লিকেশন, %s সার্টিফিকেট/কী সংগ্রহস্থল ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে "
-"এটি লক করা আছে"
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "একটি অ্যাপ্লিকেশন, %s সার্টিফিকেট/কী সংগ্রহস্থল ব্যবহার করতে ইচ্ছুক, কিন্তু বর্তমানে এটি লক করা আছে"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
-msgid "Automatically unlock secure storage when I log in."
-msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে নিরাপদ সংগ্রস্থল আন-লক করা হবে।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
-msgid "New Password Required"
-msgstr "নতুন পাসওয়ার্ড আবশ্যক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
-msgid "New password required for secure storage"
-msgstr "সংগ্রহস্থল নিরাপদ রাখতে পাসওয়ার্ড লেখা আবশ্যক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"সার্টিফিকেট ও কি সংগ্রহের জন্য '%s' প্রস্তুত করার উদ্দেশ্যে একটি পাসওয়ার্ড লেখা আবশ্যক"
-
-#: ../daemon/ui/gkr-ask-tool.c:230
-msgid ""
-"<b><big>Could not grab your mouse.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>মাউসের উপর নিয়ন্ত্রণ করা সম্ভব হয়নি।</big></b>\n"
-"\n"
-"কোনো ক্ষতিকারী ক্লায়েন্ট সম্ভবত আপনার সেশান বিনা অধিকারে নিরীক্ষণ করছে অথবা সম্ভবত "
-"আপনি কোনো মেনু ক্লিক করেছেন অথবা কোনো অ্যাপ্লিকেশন নিজের উপর আকর্ষণ সৃষ্টি করেছে।\n"
-"\n"
-"পুনরায় চেষ্টা করুন।"
-
-#: ../daemon/ui/gkr-ask-tool.c:239
-msgid ""
-"<b><big>Could not grab your keyboard.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>কি-বোর্ডের উপর নিয়ন্ত্রণ করা সম্ভব হয়নি।</big></b>\n"
-"\n"
-"কোনো ক্ষতিকারী ক্লায়েন্ট সম্ভবত আপনার সেশান বিনা অধিকারে নিরীক্ষণ করছে অথবা সম্ভবত "
-"আপনি কোনো মেনু ক্লিক করেছেন অথবা কোনো অ্যাপ্লিকেশন নিজের উপর আকর্ষণ সৃষ্টি করেছে।\n"
-"\n"
-"পুনরায় চেষ্টা করুন।"
-
-#: ../daemon/ui/gkr-ask-tool.c:276
+#: ../daemon/prompt/gkd-prompt-tool.c:343
 msgid "Store passwords unencrypted?"
 msgstr "এনক্রিপশন ছাড়া পাসওয়ার্ড সংরক্ষণ করা হবে কি?"
 
-#: ../daemon/ui/gkr-ask-tool.c:277
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"ফাঁকা পাসওয়ার্ড নির্বাচনের ফলে, আপনার সংরক্ষিত পাসওয়ার্ডগুলি নিরাপদভাবে এনক্রিপ্ট "
-"করা সম্ভব হবে না। আপনার ফাইলগুলো পড়তে অনুমোদিত যে কোনো ব্যবহারকারী দ্বারা এইগুলো "
-"প্রয়োগ করা সম্ভব হবে।"
+#: ../daemon/prompt/gkd-prompt-tool.c:344
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "ফাঁকা পাসওয়ার্ড নির্বাচনের ফলে, আপনার সংরক্ষিত পাসওয়ার্ডগুলি নিরাপদভাবে এনক্রিপ্ট করা সম্ভব হবে না। আপনার ফাইলগুলো পড়তে অনুমোদিত যে কোনো ব্যবহারকারী দ্বারা এইগুলো প্রয়োগ করা সম্ভব হবে।"
 
-#: ../daemon/ui/gkr-ask-tool.c:284
+#: ../daemon/prompt/gkd-prompt-tool.c:351
 msgid "Use Unsafe Storage"
 msgstr "অনিরাপদ সংগ্রহস্থল ব্যবহার করা হবে"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
-msgid "_Location:"
-msgstr "অবস্থান: (_L)"
-
-#: ../daemon/ui/gkr-ask-tool.c:525
-msgid "_Old password:"
-msgstr "পুরোনো পাসওয়ার্ড:(_O)"
-
-#: ../daemon/ui/gkr-ask-tool.c:545
-msgid "_Password:"
-msgstr "পাসওয়ার্ড:(_P)"
-
-#: ../daemon/ui/gkr-ask-tool.c:567
-msgid "_Confirm password:"
-msgstr "পাসওয়ার্ড নিশ্চিত করুন:(_C)"
-
-#: ../daemon/ui/gkr-ask-tool.c:587
-msgid "New password strength"
-msgstr "নতুন পাসওয়ার্ডের দৃঢ়তা"
-
-#: ../daemon/ui/gkr-ask-tool.c:645
+#: ../daemon/prompt/gkd-prompt-tool.c:381
 msgid "Passwords do not match."
 msgstr "পাসওয়ার্ডে গরমিল।"
 
-#: ../daemon/ui/gkr-ask-tool.c:661
+#: ../daemon/prompt/gkd-prompt-tool.c:391
 msgid "Password cannot be blank"
 msgstr "পাসওয়ার্ড ফাঁকা রাখা যাবে না"
 
-#: ../daemon/ui/gkr-ask-tool.c:712
-msgid "_Deny"
-msgstr "প্রত্যাখ্যান করুন (_D)"
+#: ../daemon/prompt/gkd-prompt.ui.h:1
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid ""
+"<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to unlock</span>\n"
+"\n"
+"An application wants access to the keyring 'xxx', but it is locked."
+msgstr ""
+"<span size=\"large\" weight=\"bold\">আনলক করার জন্য 'লগইন' keyring এর জন্য পাসওয়ার্ড প্রবেশ করান </span>\n"
+"\n"
+"একটি অ্যাপ্লিকেশন 'xxx' keyring ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
 
-#: ../daemon/ui/gkr-ask-tool.c:724
-msgid "C_reate"
-msgstr "নির্মাণ করুন (_r)"
+#: ../daemon/prompt/gkd-prompt.ui.h:4
+#| msgid "Automatically unlock this keyring when I log in."
+msgid "Automatically unlock this keyring whenever I'm logged in."
+msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়ভাবে এই keyring আন-লক করা হবে।"
 
-#: ../daemon/ui/gkr-ask-tool.c:728
-msgid "C_hange"
-msgstr "পরিবর্তন করুন (_h)"
+#: ../daemon/prompt/gkd-prompt.ui.h:5
+msgid "Lock this keyring after"
+msgstr "পরবর্তীতে এই keyring আবদ্ধ করা হবে"
 
-#: ../daemon/ui/gkr-ask-tool.c:732
-msgid "Allow _Once"
-msgstr "একবার ব্যবহারের অনুমতি প্রদান করা হবে (_O)"
+#: ../daemon/prompt/gkd-prompt.ui.h:6
+msgid "Lock this keyring if idle for"
+msgstr "নিষ্ক্রিয়তার জন্য এই কীরিংটি আবদ্ধ করা হবে"
 
-#: ../daemon/ui/gkr-ask-tool.c:736
-msgid "_Always Allow"
-msgstr "সর্বদা ব্যবহারের অনুমতি প্রদান করা হবে (_A)"
+#: ../daemon/prompt/gkd-prompt.ui.h:7
+#| msgid "Automatically unlock this keyring when I log in."
+msgid "Lock this keyring when I log out."
+msgstr "লগআউট করার সময় স্বয়ংক্রিয়ভাবে এই keyring লক করা হবে।"
 
-#: ../daemon/util/gkr-location.c:238
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "অপসারণযোগ্য ডিস্ক: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:8
+msgid "New password strength"
+msgstr "নতুন পাসওয়ার্ডের দৃঢ়তা"
 
-#: ../daemon/util/gkr-location.c:240
-msgid "Removable Disk"
-msgstr "অপসারণযোগ্য ডিস্ক"
+#: ../daemon/prompt/gkd-prompt.ui.h:9
+#| msgid "Allow application access to keyring?"
+msgid "Prompt me for each application that accesses this keyring."
+msgstr "এই keyring ব্যবহারকারী প্রতিটি অ্যাপ্লিকেশন ব্যবহার করা থেকে বিরত থাকুন।"
 
-#: ../daemon/util/gkr-location.c:331 ../daemon/util/gkr-location.c:343
-msgid "Home"
-msgstr "হোম"
+#: ../daemon/prompt/gkd-prompt.ui.h:10
+#| msgid "_Location:"
+msgid "_Application:"
+msgstr "অবস্থান: (_A)"
 
-#: ../daemon/util/gkr-location.c:886 ../daemon/util/gkr-location.c:910
-msgid "The disk or drive this file is located on is not present"
-msgstr "ফাইল ধারণকারী ডিস্ক অথবা ড্রাইভ উপস্থিত নয়"
+#: ../daemon/prompt/gkd-prompt.ui.h:11
+#| msgid "_Confirm password:"
+msgid "_Confirm:"
+msgstr "নিশ্চিত করুন: (_C)"
 
-#: ../daemon/util/gkr-location.c:918
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "চিহ্নির ডিরেক্টরি নির্মাণ করা যায়নি: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:12
+msgid "_Details:"
+msgstr "বিস্তারিত: (_D)"
 
-#: ../daemon/util/gkr-location.c:952
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "চিহ্নিত ফাইল মুছে ফেলা যায়নি: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:13
+msgid "_Name:"
+msgstr "নাম: (_N)"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:14
+#| msgid "_Old password:"
+msgid "_Old Password:"
+msgstr "পুরোনো পাসওয়ার্ড: (_O)"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:15
+msgid "_Password:"
+msgstr "পাসওয়ার্ড:(_P)"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:16
+msgid "minutes."
+msgstr "মিনিট।"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -690,7 +372,8 @@ msgstr "নাম"
 msgid "Surname"
 msgstr "পদবি"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../egg/egg-oid.c:69
+#: ../gcr/gcr-certificate-basics-widget.ui.h:18
 #: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
 msgstr "ক্রমিক সংখ্যা"
@@ -770,6 +453,16 @@ msgstr "DSA"
 #: ../egg/egg-oid.c:109
 msgid "SHA1 with DSA"
 msgstr "DSA সহ SHA1"
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr "একটি চাইল্ড প্রসেস থেকে ডাটা রিড করতে select() এ অনাকাঙ্খিত ত্রুটি (%s)"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "waitpid() (%s) তে অনাকাঙ্খিত ত্রুটি"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -929,7 +622,8 @@ msgstr "কী-এর প্যারামিটার"
 msgid "Key Size"
 msgstr "কী-এর মাপ"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:382
+#: ../gcr/gcr-parser.c:202
 msgid "Public Key"
 msgstr "সার্বজনীন কী"
 
@@ -950,7 +644,9 @@ msgstr "চিহ্নিত স্থানে ইম্পোর্ট কর
 msgid "Password:"
 msgstr "পাসওয়ার্ড:"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163
+#: ../gcr/gcr-parser.c:1573
+#: ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "কাজ বাতিল করা হয়েছে"
 
@@ -1340,42 +1036,266 @@ msgstr "স্বাক্ষরের অনুরোধ ব্যবহার�
 msgid "Unknown error"
 msgstr "অজানা ত্রুটি"
 
-#: ../library/gnome-keyring-utils.c:168
-msgid "Access Denied"
-msgstr "প্রবেশাধিকার প্রত্যাখ্যাত"
-
-#: ../library/gnome-keyring-utils.c:170
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "gnome-keyring-daemon অ্যাপ্লিকেশন বর্তমানে চলছে না।"
-
-#: ../library/gnome-keyring-utils.c:172
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "gnome-keyring-daemon-এর সাথে যোগাযোগ করতে সমস্যা"
-
-#: ../library/gnome-keyring-utils.c:174
-msgid "A keyring with that name already exists"
-msgstr "এই নামের একটি কী-রং বর্তমানে উপস্থিত রয়েছে"
-
-#: ../library/gnome-keyring-utils.c:176
-msgid "Programmer error: The application sent invalid data."
-msgstr "প্রোগ্রামার ত্রুটি: অ্যাপ্লিকেশন দ্বারা অকার্যকর তথ্য প্রেরিত হয়েছে।"
-
-#: ../library/gnome-keyring-utils.c:178
-msgid "No matching results"
-msgstr "কোনো মিল পাওয়া যায়নি"
-
-#: ../library/gnome-keyring-utils.c:180
-msgid "A keyring with that name does not exist."
-msgstr "এই নামের কী-রং বর্তমানে উপস্থিত নেই।"
-
-#: ../library/gnome-keyring-utils.c:187
-msgid "The keyring has already been unlocked."
-msgstr "কী-রিং পূর্বে আন-লক করা হয়েছে।"
-
-#: ../pkcs11/gck/gck-certificate.c:716
+#: ../pkcs11/gck/gck-certificate.c:739
 msgid "Unnamed Certificate"
 msgstr "নামবিহীন সার্টিফিকেট"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:337
 msgid "Couldn't parse public SSH key"
 msgstr "সার্বজনীন SSH-কী পার্স করতে ব্যর্থ"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন, ডিফল্ট কe-রিং-এ অবস্থিত '<object prop='name'/>'-"
+#~ "এর পাসওয়ার্ডটি ব্যবহার করতে ইচ্ছুক।"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন, %3$s-এ অবস্থিত '<object prop='name'/>'-এর "
+#~ "পাসওয়ার্ডটি ব্যবহার করতে ইচ্ছুক।"
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "'%s' অ্যাপ্লিকেশন, ডিফল্ট কী-রিং-এ অবস্থিত '<object prop='name'/>'-এর "
+#~ "পাসওয়ার্ডটি ব্যবহার করতে ইচ্ছুক।"
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "'%1$s' অ্যাপ্লিকেশন %2$s-এ অবস্থিত '<object prop='name'/>'-এর পাসওয়ার্ড "
+#~ "ব্যবহার করতে ইচ্ছুক।"
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কী-রিং-এ অবস্থিত '<object prop='name'/>'-এর "
+#~ "পাসওয়ার্ড ব্যবহার করতে ইচ্ছুক।"
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "একটি অজানা অ্যাপ্লিকেশন %s-এ অবস্থিত '<object prop='name'/>'-এর পাসওয়ার্ড "
+#~ "ব্যবহার করতে ইচ্ছুক।"
+#~ msgid "Allow access"
+#~ msgstr "ব্যবহারের অনুমতি প্রদান করা হবে"
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন ডিফল্ট কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে "
+#~ "লক করা আছে"
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন '%3$s' কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে "
+#~ "লক করা আছে"
+#~ msgid ""
+#~ "The application '%s' wants access to the default keyring, but it is locked"
+#~ msgstr ""
+#~ "'%s' অ্যাপ্লিকেশন ডিফল্ট কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা আছে"
+#~ msgid ""
+#~ "The application '%s' wants access to the keyring '%s', but it is locked"
+#~ msgstr ""
+#~ "'%1$s' অ্যাপ্লিকেশন '%2$s' কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক করা "
+#~ "আছে"
+#~ msgid ""
+#~ "An unknown application wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কী-রিং ব্যবহার করতে ইচ্ছুক, কিন্তু তা বর্তমানে লক "
+#~ "করা আছে"
+#~ msgid "Enter password for default keyring to unlock"
+#~ msgstr "ডিফল্ট কী-রিং আনলক করতে পাসওয়ার্ড লিখুন"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
+#~ "have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন '%3$s' নামক একটি নতুন কি-রিং তৈরি করতে ইচ্ছুক। এই "
+#~ "কর্মে ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new default keyring. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন একটি ডিফল্ট কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
+#~ "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "The application '%s' wants to create a new keyring called '%s'. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%1$s' অ্যাপ্লিকেশন '%2$s' নামক একটি নতুন কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
+#~ "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "The application '%s' wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' অ্যাপ্লিকেশন একটি নতুন ডিফল্ট কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে ব্যবহারযোগ্য "
+#~ "পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "An unknown application wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "একটি অজানা অ্যাপ্লিকেশন একটি নতুন ডিফল্ট কী-রিং তৈরি করতে ইচ্ছুক। এই কর্মে "
+#~ "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the '%s' "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন  '%3$s' কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই "
+#~ "কর্মে ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন ডিফল্ট কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই "
+#~ "কর্মে ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the '%s' keyring. "
+#~ "You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%1$s' অ্যাপ্লিকেশন '%2$s' কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
+#~ "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' অ্যাপ্লিকেশন ডিফল্ট কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
+#~ "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "An unknown application wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "একটি অজানা অ্যাপ্লিকেশন ডিফল্ট কী-রিং-এর পাসওয়ার্ড পরিবর্তন করতে ইচ্ছুক। এই কর্মে "
+#~ "ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid "Choose a new password for the default keyring."
+#~ msgstr "ডিফল্ট কী-রিং-এর জন্য নতুন পাসওয়ার্ড নির্বাচন করুন।"
+#~ msgid ""
+#~ "The application '%s' (%s) wants to store a password, but there is no "
+#~ "default keyring. To create one, you need to choose the password you wish "
+#~ "to use for it."
+#~ msgstr ""
+#~ "'%1$s' (%2$s) অ্যাপ্লিকেশন একটি পাসওয়ার্ড সংরক্ষণ করতে ইচ্ছুক, কিন্তু কোনো ডিফল্ট "
+#~ "কী-রিং উপস্থিত নেই। নতুন কি-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন "
+#~ "করা আবশ্যক।"
+#~ msgid ""
+#~ "The application '%s' wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "'%s' অ্যাপ্লিকেশন একটি পাসওয়ার্ড সংরক্ষণ করতে ইচ্ছুক, কিন্তু কোনো ডিফল্ট কি-রিং "
+#~ "উপস্থিত নেই। নতুন কী-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা আবশ্যক।"
+#~ msgid ""
+#~ "An unknown application wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "একটি অজানা অ্যাপ্লিকেশন একটি পাসওয়ার্ড সংরক্ষণ করতে ইচ্ছুক, কিন্তু কোনো ডিফল্ট কী-"
+#~ "রিং উপস্থিত নেই। নতুন কি-রিং নির্মাণের জন্য ব্যবহারযোগ্য পাসওয়ার্ড নির্বাচন করা "
+#~ "আবশ্যক।"
+#~ msgid "Create Default Keyring"
+#~ msgstr "ডিফল্ট কী-রিং তৈরি করুন"
+#~ msgid "Choose password for default keyring"
+#~ msgstr "ডিফল্ট কী-রিং-এর জন্য পাসওয়ার্ড নির্বাচন করুন"
+#~ msgid "Unlock Login Keyring"
+#~ msgstr "কী-রিং আনলক করুন"
+#~ msgid "Enter login password to unlock keyring"
+#~ msgstr "কী-রিং আন-লক করতে ব্যবহৃত পাসওয়ার্ড লিখুন"
+#~ msgid ""
+#~ "Your login keyring was not automatically unlocked when you logged into "
+#~ "this computer."
+#~ msgstr ""
+#~ "এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কী-রিং স্বয়ংক্রিয়ভাবে আন-লক করা "
+#~ "হয়নি"
+#~ msgid "Create Login Keyring"
+#~ msgstr "লগ-ইন কী-রিং তৈরি করুন"
+#~ msgid "Enter your login password"
+#~ msgstr "লগ-ইন পাসওয়ার্ড পরিবর্তন লিখুন"
+#~ msgid ""
+#~ "Your login keyring was not automatically created when you logged into "
+#~ "this computer. It will now be created."
+#~ msgstr ""
+#~ "এই কম্পিউটারে লগ-ইন করার সময়, আপনার লগ-ইন কী-রিং স্বয়ংক্রিয়ভাবে নির্মাণ করা "
+#~ "হয়নি। এটি এখন নির্মাণ করা হবে।"
+#~ msgid "Unlock password for %s keyring"
+#~ msgstr "%s কী-রিং আন-লক করতে ব্যবহৃত পাসওয়ার্ড"
+#~ msgid "Automatically unlock this private key when I log in."
+#~ msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই গোপনীয়-কী আন-লক করা হবে।"
+#~ msgid "Automatically unlock this certificate when I log in."
+#~ msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই সার্টিফিকেট আন-লক করা হবে।"
+#~ msgid "Automatically unlock this public key when I log in."
+#~ msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এই সার্বজনীন-কী আন-লক করা হবে।"
+#~ msgid "Automatically unlock this when I log in"
+#~ msgstr "লগ-ইন করার সময় স্বয়ংক্রিয়রূপে এটি আন-লক করা হবে।"
+#~ msgid ""
+#~ "<b><big>Could not grab your mouse.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>মাউসের উপর নিয়ন্ত্রণ করা সম্ভব হয়নি।</big></b>\n"
+#~ "\n"
+#~ "কোনো ক্ষতিকারী ক্লায়েন্ট সম্ভবত আপনার সেশান বিনা অধিকারে নিরীক্ষণ করছে অথবা "
+#~ "সম্ভবত আপনি কোনো মেনু ক্লিক করেছেন অথবা কোনো অ্যাপ্লিকেশন নিজের উপর আকর্ষণ সৃষ্টি "
+#~ "করেছে।\n"
+#~ "\n"
+#~ "পুনরায় চেষ্টা করুন।"
+#~ msgid ""
+#~ "<b><big>Could not grab your keyboard.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>কি-বোর্ডের উপর নিয়ন্ত্রণ করা সম্ভব হয়নি।</big></b>\n"
+#~ "\n"
+#~ "কোনো ক্ষতিকারী ক্লায়েন্ট সম্ভবত আপনার সেশান বিনা অধিকারে নিরীক্ষণ করছে অথবা "
+#~ "সম্ভবত আপনি কোনো মেনু ক্লিক করেছেন অথবা কোনো অ্যাপ্লিকেশন নিজের উপর আকর্ষণ সৃষ্টি "
+#~ "করেছে।\n"
+#~ "\n"
+#~ "পুনরায় চেষ্টা করুন।"
+#~ msgid "_Deny"
+#~ msgstr "প্রত্যাখ্যান করুন (_D)"
+#~ msgid "C_reate"
+#~ msgstr "নির্মাণ করুন (_r)"
+#~ msgid "C_hange"
+#~ msgstr "পরিবর্তন করুন (_h)"
+#~ msgid "Allow _Once"
+#~ msgstr "একবার ব্যবহারের অনুমতি প্রদান করা হবে (_O)"
+#~ msgid "_Always Allow"
+#~ msgstr "সর্বদা ব্যবহারের অনুমতি প্রদান করা হবে (_A)"
+#~ msgid "Removable Disk: %s"
+#~ msgstr "অপসারণযোগ্য ডিস্ক: %s"
+#~ msgid "Removable Disk"
+#~ msgstr "অপসারণযোগ্য ডিস্ক"
+#~ msgid "Home"
+#~ msgstr "হোম"
+#~ msgid "The disk or drive this file is located on is not present"
+#~ msgstr "ফাইল ধারণকারী ডিস্ক অথবা ড্রাইভ উপস্থিত নয়"
+#~ msgid "Couldn't create directory: %s"
+#~ msgstr "চিহ্নির ডিরেক্টরি নির্মাণ করা যায়নি: %s"
+#~ msgid "Couldn't delete the file: %s"
+#~ msgstr "চিহ্নিত ফাইল মুছে ফেলা যায়নি: %s"
+#~ msgid "Access Denied"
+#~ msgstr "প্রবেশাধিকার প্রত্যাখ্যাত"
+#~ msgid "The gnome-keyring-daemon application is not running."
+#~ msgstr "gnome-keyring-daemon অ্যাপ্লিকেশন বর্তমানে চলছে না।"
+#~ msgid "Error communicating with gnome-keyring-daemon"
+#~ msgstr "gnome-keyring-daemon-এর সাথে যোগাযোগ করতে সমস্যা"
+#~ msgid "A keyring with that name already exists"
+#~ msgstr "এই নামের একটি কী-রং বর্তমানে উপস্থিত রয়েছে"
+#~ msgid "Programmer error: The application sent invalid data."
+#~ msgstr "প্রোগ্রামার ত্রুটি: অ্যাপ্লিকেশন দ্বারা অকার্যকর তথ্য প্রেরিত হয়েছে।"
+#~ msgid "No matching results"
+#~ msgstr "কোনো মিল পাওয়া যায়নি"
+#~ msgid "A keyring with that name does not exist."
+#~ msgstr "এই নামের কী-রং বর্তমানে উপস্থিত নেই।"
+#~ msgid "The keyring has already been unlocked."
+#~ msgstr "কী-রিং পূর্বে আন-লক করা হয়েছে।"
+
